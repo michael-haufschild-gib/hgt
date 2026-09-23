@@ -52,22 +52,22 @@ theorem genusOneBoundConst_pos : 0 < genusOneBoundConst := Real.exp_pos _
 
 /-- **The genus-one estimate.**  On the half disc `E₁` deviates from `1` quadratically. -/
 theorem norm_genusOneFactor_sub_one_le {w : ℂ} (hw : ‖w‖ ≤ 1 / 2) :
-    ‖eulerProcessGenusOneFactor w - 1‖ ≤ genusOneBoundConst * ‖w‖ ^ 2 := by
+    ‖eulerProcessGenusOneFactor w - 1‖ ≤ genusOneBoundConst * ‖w‖ ^ (2 : ℕ) := by
   rw [eulerProcessGenusOneFactor_eq_weierstrassFactor, genusOneBoundConst]
   simpa using norm_weierstrassFactor_sub_one_le 1 hw
 
 /-- **The reciprocal genus-one estimate.** -/
 theorem norm_inv_genusOneFactor_sub_one_le {w : ℂ} (hw : ‖w‖ ≤ 1 / 2)
-    (hsmall : genusOneBoundConst * ‖w‖ ^ 2 ≤ 1 / 2) :
-    ‖(eulerProcessGenusOneFactor w)⁻¹ - 1‖ ≤ 2 * genusOneBoundConst * ‖w‖ ^ 2 := by
+    (hsmall : genusOneBoundConst * ‖w‖ ^ (2 : ℕ) ≤ 1 / 2) :
+    ‖(eulerProcessGenusOneFactor w)⁻¹ - 1‖ ≤ 2 * genusOneBoundConst * ‖w‖ ^ (2 : ℕ) := by
   have hdev : ‖eulerProcessGenusOneFactor w - 1‖ ≤ 1 / 2 :=
     le_trans (norm_genusOneFactor_sub_one_le hw) hsmall
   have h := norm_inv_sub_one_le hdev
   have h2 := norm_genusOneFactor_sub_one_le hw
   calc ‖(eulerProcessGenusOneFactor w)⁻¹ - 1‖
       ≤ 2 * ‖eulerProcessGenusOneFactor w - 1‖ := h
-    _ ≤ 2 * (genusOneBoundConst * ‖w‖ ^ 2) := by linarith
-    _ = 2 * genusOneBoundConst * ‖w‖ ^ 2 := by ring
+    _ ≤ 2 * (genusOneBoundConst * ‖w‖ ^ (2 : ℕ)) := by linarith
+    _ = 2 * genusOneBoundConst * ‖w‖ ^ (2 : ℕ) := by ring
 
 /-! ## Multiplying near-one numbers -/
 

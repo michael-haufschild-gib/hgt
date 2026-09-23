@@ -61,16 +61,16 @@ theorem posDef_one_sub_smul {H : Type*} [NormedAddCommGroup H] [InnerProductSpac
     0 < inner ℝ (x - mu • R x) x := by
   have hxpos : 0 < ‖x‖ := norm_pos_iff.mpr hx
   have hinner : (inner ℝ (x - mu • R x) x : ℝ)
-      = ‖x‖ ^ 2 - mu * inner ℝ (R x) x := by
+      = ‖x‖ ^ (2 : ℕ) - mu * inner ℝ (R x) x := by
     rw [inner_sub_left, real_inner_smul_left, real_inner_self_eq_norm_sq]
-  have hbound : (inner ℝ (R x) x : ℝ) ≤ ‖R‖ * ‖x‖ ^ 2 := by
+  have hbound : (inner ℝ (R x) x : ℝ) ≤ ‖R‖ * ‖x‖ ^ (2 : ℕ) := by
     have h1 : (inner ℝ (R x) x : ℝ) ≤ ‖R x‖ * ‖x‖ := real_inner_le_norm (R x) x
     have h2 : ‖R x‖ ≤ ‖R‖ * ‖x‖ := R.le_opNorm x
     nlinarith [norm_nonneg x, norm_nonneg (R x)]
-  have hxsq : 0 < ‖x‖ ^ 2 := pow_pos hxpos 2
-  have h3 : mu * inner ℝ (R x) x ≤ mu * (‖R‖ * ‖x‖ ^ 2) :=
+  have hxsq : 0 < ‖x‖ ^ (2 : ℕ) := pow_pos hxpos 2
+  have h3 : mu * inner ℝ (R x) x ≤ mu * (‖R‖ * ‖x‖ ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_left hbound hmu
-  have h4 : mu * (‖R‖ * ‖x‖ ^ 2) < ‖x‖ ^ 2 := by nlinarith [hxsq, hnorm]
+  have h4 : mu * (‖R‖ * ‖x‖ ^ (2 : ℕ)) < ‖x‖ ^ (2 : ℕ) := by nlinarith [hxsq, hnorm]
   rw [hinner]
   linarith
 

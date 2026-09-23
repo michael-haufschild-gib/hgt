@@ -33,7 +33,7 @@ theorem tendsto_gaussianWindowWeightedMoment_atTop_zero
     simpa using hinv.pow (m + 1)
   have hcooled :
       Tendsto (cooledMoment J · m) atTop
-        (𝓝 ((∫ y, y ^ m * Real.exp (-y ^ 2)) * J 0)) := by
+        (𝓝 ((∫ y, y ^ m * Real.exp (-y ^ (2 : ℕ))) * J 0)) := by
     simpa [cooledMoment] using tendsto_gaussianCooledMoment J hJc hJb m
   have hproduct :
       Tendsto

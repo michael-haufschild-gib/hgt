@@ -76,13 +76,13 @@ into the shifted weight, and the two factors of the power combine with the weigh
 theorem deningerPowerPull_boundaryNormSq (ℓ : ι → ℝ) (q : ℝ) (τ : ι → ι) (S : Finset ι)
     (hq : 0 < q) (hinj : ∀ x ∈ S, ∀ y ∈ S, τ x = τ y → x = y)
     (hτ : ∀ a, ℓ (τ a) = q * ℓ a) (φ : ι → ℂ) :
-    (∑ a ∈ S, |ℓ a| * ‖deningerPowerPull q τ φ a‖ ^ 2)
-      = q * ∑ b ∈ S.image τ, |ℓ b| * ‖φ b‖ ^ 2 := by
+    (∑ a ∈ S, |ℓ a| * ‖deningerPowerPull q τ φ a‖ ^ (2 : ℕ))
+      = q * ∑ b ∈ S.image τ, |ℓ b| * ‖φ b‖ ^ (2 : ℕ) := by
   rw [Finset.sum_image hinj, Finset.mul_sum]
   refine Finset.sum_congr rfl fun a _ => ?_
   have habs : |ℓ (τ a)| = q * |ℓ a| := by
     rw [hτ a, abs_mul, abs_of_pos hq]
-  have hnorm : ‖deningerPowerPull q τ φ a‖ ^ 2 = q ^ 2 * ‖φ (τ a)‖ ^ 2 := by
+  have hnorm : ‖deningerPowerPull q τ φ a‖ ^ (2 : ℕ) = q ^ (2 : ℕ) * ‖φ (τ a)‖ ^ (2 : ℕ) := by
     rw [deningerPowerPull, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hq, mul_pow]
   rw [habs, hnorm]
   ring
@@ -91,15 +91,15 @@ theorem deningerPowerPull_boundaryNormSq (ℓ : ι → ℝ) (q : ℝ) (τ : ι �
 theorem deningerPowerPull_unitary (ℓ : ι → ℝ) (q : ℝ) (τ : ι → ι) (S : Finset ι)
     (hq : 0 < q) (hinj : ∀ x ∈ S, ∀ y ∈ S, τ x = τ y → x = y)
     (hτ : ∀ a, ℓ (τ a) = q * ℓ a) (φ : ι → ℂ) :
-    (∑ a ∈ S, |ℓ a| * ‖((Real.sqrt q)⁻¹ : ℂ) * deningerPowerPull q τ φ a‖ ^ 2)
-      = ∑ b ∈ S.image τ, |ℓ b| * ‖φ b‖ ^ 2 := by
+    (∑ a ∈ S, |ℓ a| * ‖((Real.sqrt q)⁻¹ : ℂ) * deningerPowerPull q τ φ a‖ ^ (2 : ℕ))
+      = ∑ b ∈ S.image τ, |ℓ b| * ‖φ b‖ ^ (2 : ℕ) := by
   have hsqrt : (0 : ℝ) < Real.sqrt q := Real.sqrt_pos.mpr hq
-  have hterm : ∀ a : ι, |ℓ a| * ‖((Real.sqrt q)⁻¹ : ℂ) * deningerPowerPull q τ φ a‖ ^ 2
-      = q⁻¹ * (|ℓ a| * ‖deningerPowerPull q τ φ a‖ ^ 2) := by
+  have hterm : ∀ a : ι, |ℓ a| * ‖((Real.sqrt q)⁻¹ : ℂ) * deningerPowerPull q τ φ a‖ ^ (2 : ℕ)
+      = q⁻¹ * (|ℓ a| * ‖deningerPowerPull q τ φ a‖ ^ (2 : ℕ)) := by
     intro a
     have hnorm : ‖((Real.sqrt q : ℝ) : ℂ)⁻¹‖ = (Real.sqrt q)⁻¹ := by
       rw [norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hsqrt]
-    have hsq : ((Real.sqrt q)⁻¹) ^ 2 = q⁻¹ := by
+    have hsq : ((Real.sqrt q)⁻¹) ^ (2 : ℕ) = q⁻¹ := by
       rw [inv_pow, Real.sq_sqrt (le_of_lt hq)]
     rw [norm_mul, hnorm, mul_pow, hsq]
     ring

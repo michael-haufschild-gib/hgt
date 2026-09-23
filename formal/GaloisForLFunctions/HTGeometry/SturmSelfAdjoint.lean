@@ -8,7 +8,7 @@ interval: integrating by parts once sends both sides to `- int w u' v'`, and eve
 carries the factor `w`, which vanishes there.
 
 This is Lagrange's identity in the degenerate case that makes the finite Fourier transform commute
-with the prolate differential operator: the prolate weight `1 - t^2` vanishes exactly at the ends of
+with the prolate differential operator: the prolate weight `1 - t^(2 : ℕ)` vanishes exactly at the ends of
 the band.
 -/
 

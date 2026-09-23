@@ -66,7 +66,7 @@ theorem heatMonomial_nonneg_of_nonneg {w : ℝ} (hw : 0 ≤ w) (n : ℕ) (t : �
 spectrum is what makes the heat trace a Laplace transform of a positive measure: the node of a zero
 is the square of its spectral point, which is nonnegative exactly when that point is real. -/
 theorem sq_nonneg_iff_isReal (z : ℂ) :
-    (z ^ 2).im = 0 ∧ 0 ≤ (z ^ 2).re ↔ z.im = 0 ∧ 0 ≤ z.re ∨ z.im = 0 ∧ z.re ≤ 0 := by
+    (z ^ (2 : ℕ)).im = 0 ∧ 0 ≤ (z ^ (2 : ℕ)).re ↔ z.im = 0 ∧ 0 ≤ z.re ∨ z.im = 0 ∧ z.re ≤ 0 := by
   constructor
   · rintro ⟨him, hre⟩
     rw [sq, Complex.mul_im] at him

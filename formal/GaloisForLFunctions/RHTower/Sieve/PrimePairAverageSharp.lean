@@ -22,7 +22,7 @@ theorem selbergBoundingSum_ge_mertens_sharp (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 �
     {z : ℝ} (hz : 1 ≤ z) (hh2 : 2 ≤ h) (hP₁h : P₁ ≤ h)
     (hlev : ((h : ℝ)) ^ (18 : ℝ) ≤ Real.sqrt z)
     (hlog : 20 * mertensFirstConst ≤ Real.log h) :
-    (1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2
+    (1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
         * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ)))
       ≤ SelbergSieve.selbergBoundingSum (roughPairSieve Y hP₁ h d hz) := by
   classical
@@ -39,11 +39,11 @@ theorem selbergBoundingSum_ge_mertens_sharp (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 �
     exact div_nonneg (by linarith) (by linarith)
   have hmert := prod_rangePrimes_ge P₁ h hP₁h
   have hexp0 : (0 : ℝ) < Real.exp (mertensS h - mertensS P₁) := Real.exp_pos _
-  have hsq : Real.exp (mertensS h - mertensS P₁) ^ 2
-      ≤ (∏ p ∈ rangePrimes P₁ h, ((p : ℝ) / ((p : ℝ) - 1))) ^ 2 :=
+  have hsq : Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
+      ≤ (∏ p ∈ rangePrimes P₁ h, ((p : ℝ) / ((p : ℝ) - 1))) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hexp0.le hmert 2
   have heuler := prod_pairFactor_ge d hp3
-  have hstep : Real.exp (mertensS h - mertensS P₁) ^ 2
+  have hstep : Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
         * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))
       ≤ ∏ p ∈ rangePrimes P₁ h,
           (pairClassCount d p / ((p : ℝ) - pairClassCount d p) + 1) := by
@@ -59,7 +59,7 @@ theorem card_roughPair_le_sharp (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h :
     ((((Finset.Icc 1 ⌊Y⌋₊).filter
           (fun m => (∀ p ∈ rangePrimes P₁ h, ¬ p ∣ m)
             ∧ ∀ p ∈ rangePrimes P₁ h, ¬ p ∣ (m + d))).card : ℕ) : ℝ)
-      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2
+      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
             * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))))
         + ∑ e ∈ (rangePrimorial P₁ h).divisors,
             (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) := by
@@ -78,10 +78,10 @@ theorem card_roughPair_le_sharp (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h :
     have hnum : (0 : ℝ) < (p : ℝ) - 1 := by linarith
     have hden : (0 : ℝ) < (p : ℝ) := by linarith
     positivity
-  set L : ℝ := (1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2 * C) with hL
+  set L : ℝ := (1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ) * C) with hL
   have hL0 : (0 : ℝ) < L := by
     rw [hL]
-    have : (0 : ℝ) < Real.exp (mertensS h - mertensS P₁) ^ 2 := by positivity
+    have : (0 : ℝ) < Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ) := by positivity
     positivity
   have hSge : L ≤ SelbergSieve.selbergBoundingSum s :=
     selbergBoundingSum_ge_mertens_sharp Y hP₁ d hz hh2 hP₁h hlev hlog
@@ -114,7 +114,7 @@ theorem card_primePair_le_sharp (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h :
     (hlog : 20 * mertensFirstConst ≤ Real.log h) :
     ((((Finset.Icc 1 ⌊Y⌋₊).filter
           (fun m => m.Prime ∧ (m + d).Prime ∧ h < m)).card : ℕ) : ℝ)
-      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2
+      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
             * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))))
         + ∑ e ∈ (rangePrimorial P₁ h).divisors,
             (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) := by
@@ -130,7 +130,7 @@ theorem sum_card_primePair_le_sharp (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) 
     ∑ d ∈ Finset.Icc 1 K,
         ((((Finset.Icc 1 ⌊Y⌋₊).filter
             (fun m => m.Prime ∧ (m + d).Prime ∧ h < m)).card : ℕ) : ℝ)
-      ≤ 2 * Real.exp 1 * (K : ℝ) * Y / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+      ≤ 2 * Real.exp 1 * (K : ℝ) * Y / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
         + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
             (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) := by
   classical
@@ -154,7 +154,7 @@ theorem sum_card_primePair_le_sharp (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) 
   have hterm : ∀ d : ℕ,
       ((((Finset.Icc 1 ⌊Y⌋₊).filter
             (fun m => m.Prime ∧ (m + d).Prime ∧ h < m)).card : ℕ) : ℝ)
-        ≤ (2 * Y / E ^ 2)
+        ≤ (2 * Y / E ^ (2 : ℕ))
             * (∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), ((p : ℝ) / ((p : ℝ) - 1)))
           + R := by
     intro d
@@ -167,9 +167,9 @@ theorem sum_card_primePair_le_sharp (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) 
       rw [inv_div]
     refine add_le_add ?_ le_rfl
     rw [hinv]
-    have hval : Y / ((1 / 2) * (E ^ 2
+    have hval : Y / ((1 / 2) * (E ^ (2 : ℕ)
           * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))))
-        = (2 * Y / E ^ 2)
+        = (2 * Y / E ^ (2 : ℕ))
           * (∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d),
               (((p : ℝ) - 1) / (p : ℝ)))⁻¹ := by
       field_simp
@@ -184,11 +184,11 @@ theorem sum_card_primePair_le_sharp (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) 
   have hbound : ∑ d ∈ Finset.Icc 1 K,
       (∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), ((p : ℝ) / ((p : ℝ) - 1)))
       ≤ Real.exp 1 * (K : ℝ) := sum_inv_shiftCorrection_le hP₁ h K
-  have hcoef : (0 : ℝ) ≤ 2 * Y / E ^ 2 := by positivity
-  calc (2 * Y / E ^ 2) * ∑ d ∈ Finset.Icc 1 K,
+  have hcoef : (0 : ℝ) ≤ 2 * Y / E ^ (2 : ℕ) := by positivity
+  calc (2 * Y / E ^ (2 : ℕ)) * ∑ d ∈ Finset.Icc 1 K,
         (∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), ((p : ℝ) / ((p : ℝ) - 1)))
-      ≤ (2 * Y / E ^ 2) * (Real.exp 1 * (K : ℝ)) := mul_le_mul_of_nonneg_left hbound hcoef
-    _ = 2 * Real.exp 1 * (K : ℝ) * Y / E ^ 2 := by ring
+      ≤ (2 * Y / E ^ (2 : ℕ)) * (Real.exp 1 * (K : ℝ)) := mul_le_mul_of_nonneg_left hbound hcoef
+    _ = 2 * Real.exp 1 * (K : ℝ) * Y / E ^ (2 : ℕ) := by ring
 
 /-- **The shifted-pair budget of a marker block, at a fixed level ratio.** -/
 theorem sum_card_shift_bigPrimeSet_le_sieve_sharp {M₀ b : ℕ} {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : ℕ}
@@ -198,7 +198,7 @@ theorem sum_card_shift_bigPrimeSet_le_sieve_sharp {M₀ b : ℕ} {P₁ : ℕ} (h
     ∑ d ∈ Finset.Icc 1 K,
         ((((bigPrimeSet M₀ b).filter
           (fun p => p + d ∈ bigPrimeSet M₀ b)).card : ℕ) : ℝ)
-      ≤ 2 * Real.exp 1 * (K : ℝ) * (b : ℝ) / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+      ≤ 2 * Real.exp 1 * (K : ℝ) * (b : ℝ) / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
         + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
             (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) := by
   classical

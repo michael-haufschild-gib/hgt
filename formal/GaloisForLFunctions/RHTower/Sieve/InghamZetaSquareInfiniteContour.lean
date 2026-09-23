@@ -53,7 +53,7 @@ theorem inghamZetaSquareMellin_infinite_contour_shift_line
           inghamZetaSquareMellinIntegrand (linePt tau) x
             (((-3 / 4 : ℝ) : ℂ) + (v : ℂ) * I)) =
       2 * Real.pi * I *
-        (riemannZeta (linePt tau) ^ 2 +
+        (riemannZeta (linePt tau) ^ (2 : ℕ) +
           confluentResidueCoeff (inghamZetaSquarePoleNumerator (linePt tau) x)
             (1 - linePt tau)) := by
   let F : ℂ → ℂ := inghamZetaSquareMellinIntegrand (linePt tau) x
@@ -82,7 +82,7 @@ theorem inghamZetaSquareMellin_infinite_contour_shift_line
         I • (∫ v : ℝ in (-T)..T,
           F (((-3 / 4 : ℝ) : ℂ) + (v : ℂ) * I)) =
         2 * Real.pi * I *
-          (riemannZeta (linePt tau) ^ 2 +
+          (riemannZeta (linePt tau) ^ (2 : ℕ) +
             confluentResidueCoeff (inghamZetaSquarePoleNumerator (linePt tau) x)
               (1 - linePt tau)) := by
     filter_upwards [eventually_gt_atTop |tau|] with T hT
@@ -94,12 +94,12 @@ theorem inghamZetaSquareMellin_infinite_contour_shift_line
   have hrhs : Tendsto
       (fun _T : ℝ =>
         2 * Real.pi * I *
-          (riemannZeta (linePt tau) ^ 2 +
+          (riemannZeta (linePt tau) ^ (2 : ℕ) +
             confluentResidueCoeff (inghamZetaSquarePoleNumerator (linePt tau) x)
               (1 - linePt tau)))
       atTop
       (𝓝 (2 * Real.pi * I *
-        (riemannZeta (linePt tau) ^ 2 +
+        (riemannZeta (linePt tau) ^ (2 : ℕ) +
           confluentResidueCoeff (inghamZetaSquarePoleNumerator (linePt tau) x)
             (1 - linePt tau)))) := tendsto_const_nhds
   exact tendsto_nhds_unique (hlimit'.congr' hevent) hrhs

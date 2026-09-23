@@ -30,7 +30,7 @@ theorem card_le_good_add_correlation {X L R M : ℕ} {ε W : ℝ} (hR : 1 ≤ R)
       |∑ n ∈ (Finset.range (X + L + 1 - h)).filter (fun n => L ≤ n ∧ n + h ≤ X),
         ((moebius n : ℤ) : ℝ) * ((moebius (n + h) : ℤ) : ℝ)| ≤ ε)
     (hdef : ∑ t ∈ Finset.range X, ∑ d ∈ Finset.Icc (R + 1) M,
-        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) ≤ W) :
+        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) ≤ W) :
     ((Finset.range X).card : ℝ)
       ≤ (((Finset.range X).filter (fun t =>
           (3 / 16) * squarefreeDensity * (L : ℝ)
@@ -39,7 +39,7 @@ theorem card_le_good_add_correlation {X L R M : ℕ} {ε W : ℝ} (hR : 1 ≤ R)
               ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
         + ((L : ℝ) * (((Finset.range (X + L + 1)).filter (fun n => Squarefree n)).card : ℝ)
             + 2 * (L : ℝ) * ((L : ℝ) * ε + ((2 * L + 1 : ℕ) : ℝ) * (L : ℝ)))
-          / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ 2
+          / ((1 / 8) * squarefreeDensity * (L : ℝ)) ^ (2 : ℕ)
         + W / ((1 / 2) * ((L : ℝ) * squarefreeDensity) - ((R : ℝ) + (L : ℝ) / (R : ℝ))) :=
   card_le_good_add_explicit hR hM hδ hθ (sum_sq_moebius_le_of_correlation hε hcorr) hdef
 

@@ -43,10 +43,10 @@ theorem norm_sq_scalarRemovedStaticChoiKrylovCarrier_one_eq
     (target : EuclideanSpace ℂ (Fin d × Fin d))
     (henergyZero : ∑ i, energy i = 0) :
     ‖spectralKrylovCarrier (fun i => -energy i) 1
-        (staticChoiTracelessDiagonal energy target)‖ ^ 2 =
+        (staticChoiTracelessDiagonal energy target)‖ ^ (2 : ℕ) =
       ‖inner ℂ (spectralPowerVector (fun i => -energy i) 1)
-        (staticChoiTracelessDiagonal energy target)‖ ^ 2 /
-      ‖spectralPowerVector (fun i => -energy i) 1‖ ^ 2 := by
+        (staticChoiTracelessDiagonal energy target)‖ ^ (2 : ℕ) /
+      ‖spectralPowerVector (fun i => -energy i) 1‖ ^ (2 : ℕ) := by
   apply norm_sq_spectralKrylovCarrier_one_eq_of_sum_zero
   · exact sum_staticChoiTracelessDiagonal_eq_zero hd energy target
   · simpa [Finset.sum_neg_distrib] using congrArg Neg.neg henergyZero
@@ -60,8 +60,8 @@ theorem scalarRemovedStaticChoiKrylovReplicaLoad_one_eq
     (henergyZero : ∑ i, energy i = 0) :
     scalarRemovedStaticChoiKrylovReplicaLoad target energy 1 r =
       ∑ w, (‖inner ℂ (spectralPowerVector (fun i => -energy i) 1)
-          (staticChoiTracelessDiagonal energy (target w))‖ ^ 2 /
-        ‖spectralPowerVector (fun i => -energy i) 1‖ ^ 2) ^ r := by
+          (staticChoiTracelessDiagonal energy (target w))‖ ^ (2 : ℕ) /
+        ‖spectralPowerVector (fun i => -energy i) 1‖ ^ (2 : ℕ)) ^ r := by
   unfold scalarRemovedStaticChoiKrylovReplicaLoad
     finiteKrylovCarrierReplicaLoad
   apply Finset.sum_congr rfl

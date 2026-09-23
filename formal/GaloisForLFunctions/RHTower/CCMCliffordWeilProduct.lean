@@ -117,7 +117,7 @@ def coefficient (J : H →ₗᵢ[ℂ] H) (a : H) : ℂ :=
 @[simp]
 theorem gram_zero_zero
     (J : H →ₗᵢ[ℂ] H) (a : H) :
-    gram J a 0 0 = ((‖a‖ ^ 2 : ℝ) : ℂ) := by
+    gram J a 0 0 = ((‖a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   simp [gram, packet, Matrix.gram_apply, inner_self_eq_norm_sq_to_K]
 
 @[simp]
@@ -140,7 +140,7 @@ theorem gram_one_zero
 @[simp]
 theorem gram_one_one
     (J : H →ₗᵢ[ℂ] H) (a : H) :
-    gram J a 1 1 = ((‖a‖ ^ 2 : ℝ) : ℂ) := by
+    gram J a 1 1 = ((‖a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   change inner ℂ (Complex.I • J a) (Complex.I • J a) = _
   have hI : (starRingEnd ℂ) Complex.I * Complex.I = 1 := by
     rw [Complex.conj_I]
@@ -152,8 +152,8 @@ theorem gram_one_one
 theorem gram_eq
     (J : H →ₗᵢ[ℂ] H) (hJ : Function.Involutive J) (a : H) :
     gram J a =
-      !![((‖a‖ ^ 2 : ℝ) : ℂ), Complex.I * (quadratic J a : ℂ);
-        -Complex.I * (quadratic J a : ℂ), ((‖a‖ ^ 2 : ℝ) : ℂ)] := by
+      !![((‖a‖ ^ (2 : ℕ) : ℝ) : ℂ), Complex.I * (quadratic J a : ℂ);
+        -Complex.I * (quadratic J a : ℂ), ((‖a‖ ^ (2 : ℕ) : ℝ) : ℂ)] := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [gram_zero_zero, gram_zero_one,
     gram_one_zero, gram_one_one, hJ]
@@ -175,7 +175,7 @@ theorem coefficient_eq_quadratic
 /-- Positive-channel energy identity. -/
 theorem plus_channel_energy_eq
     (J : H →ₗᵢ[ℂ] H) (hJ : Function.Involutive J) (a : H) :
-    ‖a + J a‖ ^ 2 / 2 = ‖a‖ ^ 2 + quadratic J a := by
+    ‖a + J a‖ ^ (2 : ℕ) / 2 = ‖a‖ ^ (2 : ℕ) + quadratic J a := by
   have hinner : RCLike.re (inner ℂ a (J a)) = quadratic J a := by
     rw [← inner_map_left_eq_inner_map_right J hJ a a]
     rfl
@@ -185,7 +185,7 @@ theorem plus_channel_energy_eq
 /-- Negative-channel energy identity. -/
 theorem minus_channel_energy_eq
     (J : H →ₗᵢ[ℂ] H) (hJ : Function.Involutive J) (a : H) :
-    ‖a - J a‖ ^ 2 / 2 = ‖a‖ ^ 2 - quadratic J a := by
+    ‖a - J a‖ ^ (2 : ℕ) / 2 = ‖a‖ ^ (2 : ℕ) - quadratic J a := by
   have hinner : RCLike.re (inner ℂ a (J a)) = quadratic J a := by
     rw [← inner_map_left_eq_inner_map_right J hJ a a]
     rfl

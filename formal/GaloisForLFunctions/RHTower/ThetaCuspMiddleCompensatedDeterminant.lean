@@ -16,9 +16,9 @@ theorem thetaCuspNativeOddCompensatedDet_pos_on_lower_middle {C x : ℝ}
   have hH := thetaCuspNativeOddHankelThreeDet_lower_middle_normalized_lower hq0 hq1
   have hH0 : 0 < thetaCuspNativeOddHankelThreeDet x := by
     have hpos : 0 < thetaCuspNativeOddHankelThreeDet x /
-        (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9) := by linarith
+        (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)) := by linarith
     have hh := (lt_div_iff₀ (by positivity : 0 <
-      thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9)).mp hpos
+      thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ))).mp hpos
     simpa only [zero_mul] using hh
   have hG := thetaCuspCenterCompensationSource_pos_on_scale_five hq0 hq1
   have hD := thetaCuspNativeOddHeadDet_pos x
@@ -31,12 +31,12 @@ theorem thetaCuspNativeOddCompensatedDet_upper_middle_normalized_lower {C x : �
     (hq0 : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hq1 : thetaCuspSingleAtomReflectionScale 1 x ≤ 7) :
     30000000000 ≤ thetaCuspNativeOddCompensatedDet C x /
-      (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9) := by
+      (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let f := thetaCuspSourceTerm x 1
-  let H := thetaCuspNativeOddHankelThreeDet x/(f^6*q^9)
-  let D := thetaCuspNativeOddHeadDet x/(f^4*q^4)
-  let G := thetaCuspCenterCompensationSource x/(f^2*q^5)
+  let H := thetaCuspNativeOddHankelThreeDet x/(f^(6 : ℕ)*q^(9 : ℕ))
+  let D := thetaCuspNativeOddHeadDet x/(f^(4 : ℕ)*q^(4 : ℕ))
+  let G := thetaCuspCenterCompensationSource x/(f^(2 : ℕ)*q^(5 : ℕ))
   have hx := thetaCusp_pos_of_thirtySevenTenths_le (x := x) (by linarith)
   have hf : 0 < f := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < q := by dsimp [q]; linarith
@@ -46,11 +46,11 @@ theorem thetaCuspNativeOddCompensatedDet_upper_middle_normalized_lower {C x : �
     (by linarith) hq1
   have hCD := mul_le_mul hC1 hD.2 hD.1.le (by norm_num : (0 : ℝ) ≤ 3000000000)
   have hCG := mul_le_mul_of_nonneg_left hG (mul_nonneg hC0 hD.1.le)
-  have heq : thetaCuspNativeOddCompensatedDet C x/(f^6*q^9) = H+C*D*G := by
+  have heq : thetaCuspNativeOddCompensatedDet C x/(f^(6 : ℕ)*q^(9 : ℕ)) = H+C*D*G := by
     dsimp [H,D,G]
     unfold thetaCuspNativeOddCompensatedDet
     field_simp
-  change 30000000000 ≤ thetaCuspNativeOddCompensatedDet C x/(f^6*q^9)
+  change 30000000000 ≤ thetaCuspNativeOddCompensatedDet C x/(f^(6 : ℕ)*q^(9 : ℕ))
   rw [heq]
   nlinarith only [hH, hCD, hCG]
 
@@ -68,9 +68,9 @@ theorem thetaCuspNativeOddCompensatedDet_pos_on_middle {C x : ℝ}
     have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
     have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith
     have hpos : 0 < thetaCuspNativeOddCompensatedDet C x /
-        (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9) := by linarith
+        (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)) := by linarith
     have hh := (lt_div_iff₀ (by positivity : 0 <
-      thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9)).mp hpos
+      thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ))).mp hpos
     simpa only [zero_mul] using hh
 
 end

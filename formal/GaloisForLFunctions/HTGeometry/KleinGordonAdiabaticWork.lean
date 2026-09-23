@@ -81,7 +81,7 @@ theorem abs_kgAdiabaticEnergy_sub_le (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r�
     (hWds : ∀ y : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => Wd r y)
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     |kgAdiabaticEnergy W g h t - kgAdiabaticEnergy W g h 0|
-      ≤ L * ((‖g‖ + ‖h‖) * Real.exp (b * |t|)) ^ 2 * |t| := by
+      ≤ L * ((‖g‖ + ‖h‖) * Real.exp (b * |t|)) ^ (2 : ℕ) * |t| := by
   have hD0 : (0 : ℝ) ≤ ‖g‖ + ‖h‖ := by positivity
   have hgf : ‖kgFreqInvOp (E := E) g‖ ≤ ‖g‖ := by
     have hc := (kgFreqInvOp (E := E)).le_of_opNorm_le norm_kgFreqInvOp_le g
@@ -89,7 +89,7 @@ theorem abs_kgAdiabaticEnergy_sub_le (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r�
   have hbd : ∀ s ∈ Set.uIoc (0 : ℝ) t,
       ‖RCLike.re (inner ℂ (Wd s (kgFieldMildT W (kgFreqInvOp g) h s))
         (kgFieldMildT W (kgFreqInvOp g) h s))‖
-        ≤ L * ((‖g‖ + ‖h‖) * Real.exp (b * |t|)) ^ 2 := by
+        ≤ L * ((‖g‖ + ‖h‖) * Real.exp (b * |t|)) ^ (2 : ℕ) := by
     intro s hs
     have habs : |s| ≤ |t| := abs_le_abs_of_mem_uIoc_zero hs
     have h1 : ‖kgFieldMildT W (kgFreqInvOp g) h s‖
@@ -100,15 +100,15 @@ theorem abs_kgAdiabaticEnergy_sub_le (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r�
     have h2 : ‖kgFieldMildT W (kgFreqInvOp g) h s‖ ≤ (‖g‖ + ‖h‖) * Real.exp (b * |t|) := by
       refine h1.trans ?_
       exact mul_le_mul (by linarith) hexp (Real.exp_pos _).le hD0
-    have h3 : ‖kgFieldMildT W (kgFreqInvOp g) h s‖ ^ 2
-        ≤ ((‖g‖ + ‖h‖) * Real.exp (b * |t|)) ^ 2 :=
+    have h3 : ‖kgFieldMildT W (kgFreqInvOp g) h s‖ ^ (2 : ℕ)
+        ≤ ((‖g‖ + ‖h‖) * Real.exp (b * |t|)) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) h2 2
     have h4 := abs_re_inner_potential_le (hWL s) (kgFieldMildT W (kgFreqInvOp g) h s)
     rw [Real.norm_eq_abs]
     calc |RCLike.re (inner ℂ (Wd s (kgFieldMildT W (kgFreqInvOp g) h s))
           (kgFieldMildT W (kgFreqInvOp g) h s))|
-        ≤ L * ‖kgFieldMildT W (kgFreqInvOp g) h s‖ ^ 2 := h4
-      _ ≤ L * ((‖g‖ + ‖h‖) * Real.exp (b * |t|)) ^ 2 := mul_le_mul_of_nonneg_left h3 hL0
+        ≤ L * ‖kgFieldMildT W (kgFreqInvOp g) h s‖ ^ (2 : ℕ) := h4
+      _ ≤ L * ((‖g‖ + ‖h‖) * Real.exp (b * |t|)) ^ (2 : ℕ) := mul_le_mul_of_nonneg_left h3 hL0
   rw [kgAdiabaticEnergy_sub hb0 hWb hWs hsa hWd hWL hWds g h t, abs_neg,
     ← Real.norm_eq_abs]
   have hle := intervalIntegral.norm_integral_le_of_norm_le_const hbd

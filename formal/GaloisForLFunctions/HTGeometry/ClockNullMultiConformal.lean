@@ -29,7 +29,7 @@ theorem gradPair_nullMultiLift (h : IsC1OnMulti u A B C Ω) {x : Fin (k + n + 2)
         (slabEps_ne_zero (k + n))).chart.gradPair (nullMultiLift u n) (nullMultiLift u n) x
       = -4 * (A (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i))
           * B (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i)))
-        + ∑ i : Fin k, C i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')) ^ 2 := by
+        + ∑ i : Fin k, C i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')) ^ (2 : ℕ) := by
   classical
   have hz : ∀ j : Fin (k + n + 2), j ≠ 0 → j ≠ 1 → (∀ i : Fin k, j ≠ transIdx k n i) →
       (slabEps (k + n) j)⁻¹ * coordPartial j (nullMultiLift u n) x
@@ -43,7 +43,7 @@ theorem gradPair_nullMultiLift (h : IsC1OnMulti u A B C Ω) {x : Fin (k + n + 2)
   have hsum : ∑ i : Fin k, (slabEps (k + n) (transIdx k n i))⁻¹
         * coordPartial (transIdx k n i) (nullMultiLift u n) x
         * coordPartial (transIdx k n i) (nullMultiLift u n) x
-      = ∑ i : Fin k, C i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')) ^ 2 := by
+      = ∑ i : Fin k, C i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')) ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [slabEps_of_ne (k + n) (transIdx_ne_zero (n := n) i),
       coordPartial_nullMultiLift_trans h hx i]
@@ -63,7 +63,7 @@ noncomputable def conformalPotentialMulti (a massSq : ℝ)
     ℝ → ℝ → (Fin k → ℝ) → ℝ :=
   fun s t y => massSq * Real.exp (2 * u s t y)
     - a * (-2 * (Ab s t y + Ba s t y) + ∑ i : Fin k, Cc i i s t y)
-    - a ^ 2 * (-4 * (A s t y * B s t y) + ∑ i : Fin k, C i s t y ^ 2)
+    - a ^ (2 : ℕ) * (-4 * (A s t y * B s t y) + ∑ i : Fin k, C i s t y ^ (2 : ℕ))
 
 /-- **The effective potential of such a scale function is again a function of the same
 coordinates**, given explicitly by the derivatives of the scale. -/
@@ -77,7 +77,7 @@ theorem conformalPotential_nullMultiLift (h : IsC1OnMulti u A B C Ω)
   show massSq * Real.exp (2 * nullMultiLift u n x)
       - (a * (SmoothPseudoMetric.ofSignature (slabEps (k + n))
           (slabEps_ne_zero (k + n))).chart.dalembert (nullMultiLift u n) x
-        + a ^ 2 * (SmoothPseudoMetric.ofSignature (slabEps (k + n))
+        + a ^ (2 : ℕ) * (SmoothPseudoMetric.ofSignature (slabEps (k + n))
           (slabEps_ne_zero (k + n))).chart.gradPair (nullMultiLift u n) (nullMultiLift u n) x)
     = _
   rw [dalembert_nullMultiLift h hA hB hC hx, gradPair_nullMultiLift h hx]
@@ -85,16 +85,16 @@ theorem conformalPotential_nullMultiLift (h : IsC1OnMulti u A B C Ω)
       - (a * (-2 * (Ab (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i))
               + Ba (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i)))
             + ∑ i : Fin k, Cc i i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')))
-        + a ^ 2 * (-4 * (A (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i))
+        + a ^ (2 : ℕ) * (-4 * (A (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i))
               * B (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i)))
-            + ∑ i : Fin k, C i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')) ^ 2))
+            + ∑ i : Fin k, C i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')) ^ (2 : ℕ)))
     = massSq * Real.exp (2 * u (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i)))
       - a * (-2 * (Ab (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i))
             + Ba (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i)))
           + ∑ i : Fin k, Cc i i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')))
-      - a ^ 2 * (-4 * (A (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i))
+      - a ^ (2 : ℕ) * (-4 * (A (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i))
             * B (x 0 + x 1) (x 0 - x 1) (fun i => x (transIdx k n i)))
-          + ∑ i : Fin k, C i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')) ^ 2)
+          + ∑ i : Fin k, C i (x 0 + x 1) (x 0 - x 1) (fun i' => x (transIdx k n i')) ^ (2 : ℕ))
   ring
 
 /-- **The effective potential, as an identity of fields on the region where the scale is

@@ -24,13 +24,13 @@ def nearDiagonalPhaseD1 (T r u : ℝ) : ℝ := -(T / (2 * Real.pi)) * (r / (u * 
 
 /-- Its second derivative in the summation variable. -/
 def nearDiagonalPhaseD2 (T r u : ℝ) : ℝ :=
-  T / (2 * Real.pi) * (r * (2 * u + r) / (u ^ 2 * (u + r) ^ 2))
+  T / (2 * Real.pi) * (r * (2 * u + r) / (u ^ (2 : ℕ) * (u + r) ^ (2 : ℕ)))
 
 theorem hasDerivAt_nearDiagonalPhase (T : ℝ) {r u : ℝ} (hr : 0 ≤ r) (hu : 0 < u) :
     HasDerivAt (nearDiagonalPhase T r) (nearDiagonalPhaseD1 T r u) u := by
   have hune : u ≠ 0 := ne_of_gt hu
   have hpos : (0 : ℝ) < 1 + r / u := by positivity
-  have hinner : HasDerivAt (fun x : ℝ => 1 + r / x) (-(r / u ^ 2)) u := by
+  have hinner : HasDerivAt (fun x : ℝ => 1 + r / x) (-(r / u ^ (2 : ℕ))) u := by
     have h := (hasDerivAt_const u r).div (hasDerivAt_id u) hune
     have h2 := h.const_add (1 : ℝ)
     refine h2.congr_deriv ?_
@@ -51,7 +51,7 @@ theorem hasDerivAt_nearDiagonalPhaseD1 (T : ℝ) {r u : ℝ} (hr : 0 ≤ r) (hu 
   have hden : HasDerivAt (fun x : ℝ => x * (x + r)) (1 * (u + r) + u * 1) u :=
     (hasDerivAt_id u).mul ((hasDerivAt_id u).add_const r)
   have hinv : HasDerivAt (fun x : ℝ => r / (x * (x + r)))
-      ((0 * (u * (u + r)) - r * (1 * (u + r) + u * 1)) / (u * (u + r)) ^ 2) u :=
+      ((0 * (u * (u + r)) - r * (1 * (u + r) + u * 1)) / (u * (u + r)) ^ (2 : ℕ)) u :=
     (hasDerivAt_const u r).div hden (by positivity)
   have h := hinv.const_mul (-(T / (2 * Real.pi)))
   refine h.congr_deriv ?_
@@ -66,7 +66,7 @@ theorem nearDiagonalPhaseD2_pos {T r u : ℝ} (hT : 0 < T) (hr : 0 < r) (hu : 0 
   positivity
 
 /-- The dyadic curvature scale `λ = T r / (36 π M³)`. -/
-def nearDiagonalLambda (T r M : ℝ) : ℝ := T * r / (36 * Real.pi * M ^ 3)
+def nearDiagonalLambda (T r M : ℝ) : ℝ := T * r / (36 * Real.pi * M ^ (3 : ℕ))
 
 theorem nearDiagonalLambda_pos {T r M : ℝ} (hT : 0 < T) (hr : 0 < r) (hM : 0 < M) :
     0 < nearDiagonalLambda T r M := by
@@ -81,19 +81,19 @@ theorem nearDiagonalLambda_le_D2 {T r M u : ℝ} (hT : 0 < T) (hr : 0 < r) (hM :
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hu0 : (0 : ℝ) < u := lt_of_lt_of_le hM hu1
   have hur : (0 : ℝ) < u + r := by linarith
-  have hkey : u ^ 2 * (u + r) ^ 2 ≤ 18 * M ^ 3 * (2 * u + r) := by
-    have h1 : u ^ 2 ≤ 4 * M ^ 2 := by nlinarith
-    have h2 : (u + r) ^ 2 ≤ 9 * M ^ 2 := by nlinarith
+  have hkey : u ^ (2 : ℕ) * (u + r) ^ (2 : ℕ) ≤ 18 * M ^ (3 : ℕ) * (2 * u + r) := by
+    have h1 : u ^ (2 : ℕ) ≤ 4 * M ^ (2 : ℕ) := by nlinarith
+    have h2 : (u + r) ^ (2 : ℕ) ≤ 9 * M ^ (2 : ℕ) := by nlinarith
     have h3 : (2 : ℝ) * M ≤ 2 * u + r := by linarith
-    have hA : u ^ 2 * (u + r) ^ 2 ≤ (4 * M ^ 2) * (9 * M ^ 2) :=
+    have hA : u ^ (2 : ℕ) * (u + r) ^ (2 : ℕ) ≤ (4 * M ^ (2 : ℕ)) * (9 * M ^ (2 : ℕ)) :=
       mul_le_mul h1 h2 (sq_nonneg _) (by positivity)
-    have hB : 18 * M ^ 3 * (2 * M) ≤ 18 * M ^ 3 * (2 * u + r) := by
-      have hM3 : (0 : ℝ) ≤ 18 * M ^ 3 := by positivity
+    have hB : 18 * M ^ (3 : ℕ) * (2 * M) ≤ 18 * M ^ (3 : ℕ) * (2 * u + r) := by
+      have hM3 : (0 : ℝ) ≤ 18 * M ^ (3 : ℕ) := by positivity
       nlinarith
     nlinarith [hA, hB]
   have hfrac : nearDiagonalPhaseD2 T r u - nearDiagonalLambda T r M
-      = T * r * (18 * M ^ 3 * (2 * u + r) - u ^ 2 * (u + r) ^ 2)
-        / (36 * Real.pi * M ^ 3 * (u ^ 2 * (u + r) ^ 2)) := by
+      = T * r * (18 * M ^ (3 : ℕ) * (2 * u + r) - u ^ (2 : ℕ) * (u + r) ^ (2 : ℕ))
+        / (36 * Real.pi * M ^ (3 : ℕ) * (u ^ (2 : ℕ) * (u + r) ^ (2 : ℕ))) := by
     rw [nearDiagonalPhaseD2, nearDiagonalLambda]
     field_simp
     ring
@@ -111,19 +111,19 @@ theorem D2_le_nearDiagonalLambda {T r M u : ℝ} (hT : 0 < T) (hr : 0 < r) (hM :
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hu0 : (0 : ℝ) < u := lt_of_lt_of_le hM hu1
   have hur : (0 : ℝ) < u + r := by linarith
-  have hkey : M ^ 3 * (2 * u + r) ≤ 5 * (u ^ 2 * (u + r) ^ 2) := by
-    have h1 : M ^ 2 ≤ u ^ 2 := by nlinarith
-    have h2 : M ^ 2 ≤ (u + r) ^ 2 := by nlinarith
+  have hkey : M ^ (3 : ℕ) * (2 * u + r) ≤ 5 * (u ^ (2 : ℕ) * (u + r) ^ (2 : ℕ)) := by
+    have h1 : M ^ (2 : ℕ) ≤ u ^ (2 : ℕ) := by nlinarith
+    have h2 : M ^ (2 : ℕ) ≤ (u + r) ^ (2 : ℕ) := by nlinarith
     have h3 : 2 * u + r ≤ 5 * M := by linarith
-    have hA : M ^ 3 * (2 * u + r) ≤ M ^ 3 * (5 * M) := by
-      have hM3 : (0 : ℝ) ≤ M ^ 3 := by positivity
+    have hA : M ^ (3 : ℕ) * (2 * u + r) ≤ M ^ (3 : ℕ) * (5 * M) := by
+      have hM3 : (0 : ℝ) ≤ M ^ (3 : ℕ) := by positivity
       nlinarith
-    have hB : (M ^ 2) * (M ^ 2) ≤ u ^ 2 * (u + r) ^ 2 :=
+    have hB : (M ^ (2 : ℕ)) * (M ^ (2 : ℕ)) ≤ u ^ (2 : ℕ) * (u + r) ^ (2 : ℕ) :=
       mul_le_mul h1 h2 (by positivity) (by positivity)
     nlinarith [hA, hB]
   have hfrac : 90 * nearDiagonalLambda T r M - nearDiagonalPhaseD2 T r u
-      = T * r * (5 * (u ^ 2 * (u + r) ^ 2) - M ^ 3 * (2 * u + r))
-        / (2 * Real.pi * M ^ 3 * (u ^ 2 * (u + r) ^ 2)) := by
+      = T * r * (5 * (u ^ (2 : ℕ) * (u + r) ^ (2 : ℕ)) - M ^ (3 : ℕ) * (2 * u + r))
+        / (2 * Real.pi * M ^ (3 : ℕ) * (u ^ (2 : ℕ) * (u + r) ^ (2 : ℕ))) := by
     rw [nearDiagonalPhaseD2, nearDiagonalLambda]
     field_simp
     ring

@@ -135,12 +135,12 @@ theorem rhLadder_iff_xiDescent_upperHalf (k : ℕ) :
     have hxi0 : xi ρ = 0 := by
       rw [hρdef, ← xiDescent_of_ne_zero (slitPlane_ne_zero hw)]; exact hw0
     have hord : analyticOrderAt xiDescent w = analyticOrderAt xi ρ := by
-      have hsq : (ρ - (1 / 2 : ℂ)) ^ 2 = w := by
+      have hsq : (ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) = w := by
         rw [hρdef, add_sub_cancel_left]; exact uSqrt_sq (slitPlane_ne_zero hw)
       rw [← hsq]; exact analyticOrderAt_xiDescent_center_sq hρ
     rw [hord]; exact h ρ hρ hρim hxi0
   · intro h ρ hρ hρim hxi0
-    set w : ℂ := (ρ - (1 / 2 : ℂ)) ^ 2 with hwdef
+    set w : ℂ := (ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) with hwdef
     have hwre : 0 < (ρ - (1 / 2 : ℂ)).re := by
       rw [Complex.sub_re, show (1 / 2 : ℂ).re = (1 / 2 : ℝ) from by norm_num]
       linarith [mem_rightHalf.mp hρ]

@@ -24,21 +24,21 @@ namespace RHTower.RouteUDyadicCayley
 
 /-- Abstract Cayley hard-edge node. -/
 def cayleyNode (a z : ℂ) : ℂ :=
-  (a ^ 2 - z ^ 2) / (a ^ 2 + z ^ 2)
+  (a ^ (2 : ℕ) - z ^ (2 : ℕ)) / (a ^ (2 : ℕ) + z ^ (2 : ℕ))
 
 /-- Exact node obtained by applying `T₂` after doubling hard-edge mass. -/
 def dyadicTransportedNode (a z : ℂ) : ℂ :=
-  (16 * a ^ 4 - 24 * a ^ 2 * z ^ 2 + z ^ 4) /
-    (4 * a ^ 2 + z ^ 2) ^ 2
+  (16 * a ^ (4 : ℕ) - 24 * a ^ (2 : ℕ) * z ^ (2 : ℕ) + z ^ (4 : ℕ)) /
+    (4 * a ^ (2 : ℕ) + z ^ (2 : ℕ)) ^ (2 : ℕ)
 
 /-- Dyadic Chebyshev parity lives at a nonlinear transported spectral node, not at the original
 mass-`a` Cayley node. -/
 theorem cayleyNode_doubling_eq_dyadicTransportedNode
-    {a z : ℂ} (hplus : 4 * a ^ 2 + z ^ 2 ≠ 0) :
+    {a z : ℂ} (hplus : 4 * a ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) :
     (Polynomial.Chebyshev.T ℂ 2).eval (cayleyNode (2 * a) z) =
       dyadicTransportedNode a z := by
   have hx : cayleyNode (2 * a) z =
-      (4 * a ^ 2 - z ^ 2) / (4 * a ^ 2 + z ^ 2) := by
+      (4 * a ^ (2 : ℕ) - z ^ (2 : ℕ)) / (4 * a ^ (2 : ℕ) + z ^ (2 : ℕ)) := by
     rw [cayleyNode]
     congr 1 <;> ring
   rw [Polynomial.Chebyshev.T_two, hx]
@@ -51,16 +51,16 @@ theorem cayleyNode_doubling_eq_dyadicTransportedNode
 /-- Exact drift from the original mass-`a` node.  Its numerator begins at spectral order four;
 the quadratic drift cancels identically under tangent doubling. -/
 theorem dyadicTransportedNode_sub_cayleyNode
-    {a z : ℂ} (hplus : 4 * a ^ 2 + z ^ 2 ≠ 0)
-    (hcoarse : a ^ 2 + z ^ 2 ≠ 0) :
+    {a z : ℂ} (hplus : 4 * a ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0)
+    (hcoarse : a ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) :
     dyadicTransportedNode a z - cayleyNode a z =
-      2 * z ^ 4 * (z ^ 2 - 8 * a ^ 2) /
-        ((4 * a ^ 2 + z ^ 2) ^ 2 * (a ^ 2 + z ^ 2)) := by
+      2 * z ^ (4 : ℕ) * (z ^ (2 : ℕ) - 8 * a ^ (2 : ℕ)) /
+        ((4 * a ^ (2 : ℕ) + z ^ (2 : ℕ)) ^ (2 : ℕ) * (a ^ (2 : ℕ) + z ^ (2 : ℕ))) := by
   rw [dyadicTransportedNode, cayleyNode]
-  have hden : (4 * a ^ 2 + z ^ 2) ^ 2 * (a ^ 2 + z ^ 2) ≠ 0 :=
+  have hden : (4 * a ^ (2 : ℕ) + z ^ (2 : ℕ)) ^ (2 : ℕ) * (a ^ (2 : ℕ) + z ^ (2 : ℕ)) ≠ 0 :=
     mul_ne_zero (pow_ne_zero 2 hplus) hcoarse
-  have hplus' : a ^ 2 * 4 + z ^ 2 ≠ 0 := by
-    rw [show a ^ 2 * 4 + z ^ 2 = 4 * a ^ 2 + z ^ 2 by ring]
+  have hplus' : a ^ (2 : ℕ) * 4 + z ^ (2 : ℕ) ≠ 0 := by
+    rw [show a ^ (2 : ℕ) * 4 + z ^ (2 : ℕ) = 4 * a ^ (2 : ℕ) + z ^ (2 : ℕ) by ring]
     exact hplus
   apply (eq_div_iff hden).2
   field_simp [hplus, hplus', hcoarse]
@@ -105,7 +105,7 @@ theorem arcsineL_C_mul (a : ℝ) (P : Polynomial ℝ) :
 
 /-- Every finite detail sector has nonnegative arcsine energy. -/
 theorem arcsineL_sq_nonneg (P : Polynomial ℝ) :
-    0 ≤ arcsineL (P ^ 2) := by
+    0 ≤ arcsineL (P ^ (2 : ℕ)) := by
   rw [arcsineL]
   apply div_nonneg
   · apply MeasureTheory.integral_nonneg
@@ -152,24 +152,24 @@ theorem arcsineL_evenPacket_mul_oddPacket
 /-- Exact flat even/odd Pythagorean law. -/
 theorem flatPythagorean
     (M N : ℕ) (c d : ℕ → ℝ) :
-    arcsineL ((evenPacket M c + oddPacket N d) ^ 2) =
-      arcsineL ((evenPacket M c) ^ 2) +
-        arcsineL ((oddPacket N d) ^ 2) := by
+    arcsineL ((evenPacket M c + oddPacket N d) ^ (2 : ℕ)) =
+      arcsineL ((evenPacket M c) ^ (2 : ℕ)) +
+        arcsineL ((oddPacket N d) ^ (2 : ℕ)) := by
   have hcross := arcsineL_evenPacket_mul_oddPacket M N c d
-  rw [show (evenPacket M c + oddPacket N d) ^ 2 =
-      (evenPacket M c) ^ 2 +
+  rw [show (evenPacket M c + oddPacket N d) ^ (2 : ℕ) =
+      (evenPacket M c) ^ (2 : ℕ) +
         (evenPacket M c * oddPacket N d +
           evenPacket M c * oddPacket N d) +
-        (oddPacket N d) ^ 2 by ring]
+        (oddPacket N d) ^ (2 : ℕ) by ring]
   rw [arcsineL_add, arcsineL_add, arcsineL_add, hcross]
   ring
 
 /-- Exact dyadic refinement: one half of the transported coarse packet plus fresh odd detail. -/
 theorem flatHalfPythagorean
     (M N : ℕ) (c d : ℕ → ℝ) :
-    arcsineL (((1 / 2 : ℝ) • evenPacket M c + oddPacket N d) ^ 2) =
-      (1 / 4 : ℝ) * arcsineL ((evenPacket M c) ^ 2) +
-        arcsineL ((oddPacket N d) ^ 2) := by
+    arcsineL (((1 / 2 : ℝ) • evenPacket M c + oddPacket N d) ^ (2 : ℕ)) =
+      (1 / 4 : ℝ) * arcsineL ((evenPacket M c) ^ (2 : ℕ)) +
+        arcsineL ((oddPacket N d) ^ (2 : ℕ)) := by
   have hcross := arcsineL_evenPacket_mul_oddPacket M N c d
   have hhalfMul :
       Polynomial.C (1 / 2 : ℝ) * (2 : Polynomial ℝ) = 1 := by
@@ -177,7 +177,7 @@ theorem flatHalfPythagorean
     rw [← Polynomial.C_mul]
     norm_num
   have hhalfSq :
-      Polynomial.C (1 / 2 : ℝ) ^ 2 = Polynomial.C (1 / 4 : ℝ) := by
+      Polynomial.C (1 / 2 : ℝ) ^ (2 : ℕ) = Polynomial.C (1 / 4 : ℝ) := by
     rw [← Polynomial.C_pow]
     norm_num
   have hcrossPoly :
@@ -196,10 +196,10 @@ theorem flatHalfPythagorean
           Polynomial.C (1 / 2 : ℝ) * evenPacket M c * oddPacket N d * 2 := by
             ring
       _ = evenPacket M c * oddPacket N d := hcrossPoly
-  rw [show (((1 / 2 : ℝ) • evenPacket M c + oddPacket N d) ^ 2) =
-      (1 / 4 : ℝ) • (evenPacket M c) ^ 2 +
+  rw [show (((1 / 2 : ℝ) • evenPacket M c + oddPacket N d) ^ (2 : ℕ)) =
+      (1 / 4 : ℝ) • (evenPacket M c) ^ (2 : ℕ) +
         Polynomial.C (1 : ℝ) * (evenPacket M c * oddPacket N d) +
-        (oddPacket N d) ^ 2 by
+        (oddPacket N d) ^ (2 : ℕ) by
       simp only [smul_eq_C_mul]
       rw [add_sq, mul_pow, hhalfSq, hcrossPoly']
       simp]
@@ -209,8 +209,8 @@ theorem flatHalfPythagorean
 /-- Sharp flat half-submartingale inequality.  The gap is exactly the fresh odd detail energy. -/
 theorem flatHalfSubmartingale
     (M N : ℕ) (c d : ℕ → ℝ) :
-    (1 / 4 : ℝ) * arcsineL ((evenPacket M c) ^ 2) ≤
-      arcsineL (((1 / 2 : ℝ) • evenPacket M c + oddPacket N d) ^ 2) := by
+    (1 / 4 : ℝ) * arcsineL ((evenPacket M c) ^ (2 : ℕ)) ≤
+      arcsineL (((1 / 2 : ℝ) • evenPacket M c + oddPacket N d) ^ (2 : ℕ)) := by
   rw [flatHalfPythagorean]
   exact le_add_of_nonneg_right (arcsineL_sq_nonneg (oddPacket N d))
 

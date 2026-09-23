@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.XiPhysicalPrimeEndpointUltravioletTail
 # Quantitative phase-collision tail rate for physical prime endpoints
 
 Finite atomic Wiener convergence is made effective for inverse-square ultraviolet tails.  A
-nontrivial unit phase has tail at most `2 / (|1-w| (N+1)^2)`.  Expanding a finite exponential
+nontrivial unit phase has tail at most `2 / (|1-w| (N+1)^(2 : ℕ))`.  Expanding a finite exponential
 pencil therefore exposes an explicit ordered-pair collision budget.  Specialization to physical
 prime-log endpoints gives finite-frequency error bounds for both differentiated moments and raw
 FCRJ amplitudes.

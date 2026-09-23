@@ -60,7 +60,7 @@ theorem finPhaseAmpConj_eq (e : J → (ι → Bool) → ℂ) (j : J) (c : MonLe 
   rw [map_mul, charFinite_neg_index, Complex.conj_conj]
 
 theorem sq_finPhaseAmp (e : J → (ι → Bool) → ℂ) (j : J) (c : MonLe ι m → ZMod 8) :
-    (finPhaseAmp e j c) ^ 2 =
+    (finPhaseAmp e j c) ^ (2 : ℕ) =
       ∑ p : (ι → Bool) × (ι → Bool), (e j p.1 * e j p.2) *
         charFinite (-(Pi.single p.1 1) + -(Pi.single p.2 1)) c := by
   rw [sq, finPhaseAmp, trigFinite, Finset.sum_mul_sum, Fintype.sum_prod_type]
@@ -70,7 +70,7 @@ theorem sq_finPhaseAmp (e : J → (ι → Bool) → ℂ) (j : J) (c : MonLe ι m
   ring
 
 theorem sq_finPhaseAmpConj (e : J → (ι → Bool) → ℂ) (j : J) (c : MonLe ι m → ZMod 8) :
-    (finPhaseAmpConj e j c) ^ 2 =
+    (finPhaseAmpConj e j c) ^ (2 : ℕ) =
       ∑ p : (ι → Bool) × (ι → Bool),
         ((starRingEnd ℂ) (e j p.1) * (starRingEnd ℂ) (e j p.2)) *
           charFinite (Pi.single p.1 1 + Pi.single p.2 1) c := by
@@ -82,11 +82,11 @@ theorem sq_finPhaseAmpConj (e : J → (ι → Bool) → ℂ) (j : J) (c : MonLe 
 
 /-- The unnormalized collision of the eighth-root seed with a family. -/
 def finQuarticSum (e : J → (ι → Bool) → ℂ) (c : MonLe ι m → ZMod 8) : ℂ :=
-  ∑ j, (finPhaseAmp e j c * finPhaseAmpConj e j c) ^ 2
+  ∑ j, (finPhaseAmp e j c * finPhaseAmpConj e j c) ^ (2 : ℕ)
 
 /-- The real collision of the eighth-root seed with a family. -/
 def finCollision (e : J → (ι → Bool) → ℂ) (c : MonLe ι m → ZMod 8) : ℝ :=
-  ∑ j, ‖finPhaseAmp e j c‖ ^ 4
+  ∑ j, ‖finPhaseAmp e j c‖ ^ (4 : ℕ)
 
 theorem finQuarticSum_eq_ofReal (e : J → (ι → Bool) → ℂ) (c : MonLe ι m → ZMod 8) :
     finQuarticSum e c = ((finCollision e c : ℝ) : ℂ) := by
@@ -157,10 +157,10 @@ theorem average_finQuarticSum (e : J → (ι → Bool) → ℂ) :
 
 /-- **The second moment of the collision transfers.** -/
 theorem average_finQuarticSum_sq (e : J → (ι → Bool) → ℂ) :
-    ((cubicSeedCount ι : ℂ))⁻¹ * ∑ c : MonLe ι 3 → ZMod 8, (finQuarticSum e c) ^ 2 =
-      ∫ x in torusBox (ι → Bool), (quarticSum e x) ^ 2 := by
+    ((cubicSeedCount ι : ℂ))⁻¹ * ∑ c : MonLe ι 3 → ZMod 8, (finQuarticSum e c) ^ (2 : ℕ) =
+      ∫ x in torusBox (ι → Bool), (quarticSum e x) ^ (2 : ℕ) := by
   classical
-  have hfin : ∀ c : MonLe ι 3 → ZMod 8, (finQuarticSum e c) ^ 2 =
+  have hfin : ∀ c : MonLe ι 3 → ZMod 8, (finQuarticSum e c) ^ (2 : ℕ) =
       trigFinite (Finset.univ ×ˢ Finset.univ)
         (fun qq => quarticFreq qq.1.2 + quarticFreq qq.2.2)
         (fun qq => quarticCoeff e qq.1 * quarticCoeff e qq.2) c := by
@@ -169,7 +169,7 @@ theorem average_finQuarticSum_sq (e : J → (ι → Bool) → ℂ) :
     have h := finQuarticSum_eq_trigFinite (m := 3) e
     rw [h]
     exact trigFinite_mul _ _ _ _ _ _ c
-  have hcont : ∀ x : (ι → Bool) → ℝ, (quarticSum e x) ^ 2 =
+  have hcont : ∀ x : (ι → Bool) → ℝ, (quarticSum e x) ^ (2 : ℕ) =
       trigLift (Finset.univ ×ˢ Finset.univ)
         (fun qq => quarticFreq qq.1.2 + quarticFreq qq.2.2)
         (fun qq => quarticCoeff e qq.1 * quarticCoeff e qq.2) x := by

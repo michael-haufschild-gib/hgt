@@ -27,8 +27,8 @@ private theorem geometric_lower_forces_base (c C r t : ℝ) (hc : 0 < c)
 theorem egbFixedChargeAGibbsCollisionExcess_input_exponent_iff (n : ℕ) (β q : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     (∃ M : ℝ, 0 < M ∧ ∀ m : ℕ,
-      egbFixedChargeAGibbsCollisionExcess n m β E ≤ M * (q ^ 2) ^ m) ↔
-        egbFixedChargeAGibbsDominantCollisionRate n β E ≤ q ^ 2 := by
+      egbFixedChargeAGibbsCollisionExcess n m β E ≤ M * (q ^ (2 : ℕ)) ^ m) ↔
+        egbFixedChargeAGibbsDominantCollisionRate n β E ≤ q ^ (2 : ℕ) := by
   have hr := (egbFixedChargeAGibbsDominantCollisionRate_bounds n β E).1
   constructor
   · rintro ⟨M, _, hM⟩
@@ -39,13 +39,13 @@ theorem egbFixedChargeAGibbsCollisionExcess_input_exponent_iff (n : ℕ) (β q :
       have hW := (egbFixedChargeAGibbsDominantModeEnergy_pos_iff n β E).mpr hp
       apply geometric_lower_forces_base
         (egbFixedChargeAGibbsDominantModeEnergy n β E *
-          egbFixedChargeAGibbsDominantCollisionRate n β E) (M * q ^ 2)
+          egbFixedChargeAGibbsDominantCollisionRate n β E) (M * q ^ (2 : ℕ))
         _ _ (mul_pos hW hp) hp (sq_nonneg q)
       intro m
       have hl := (egbFixedChargeAGibbsCollisionExcess_dominant_bounds n m β E).1
       have hu := hM (m + 1)
       rw [pow_succ (egbFixedChargeAGibbsDominantCollisionRate n β E) m] at hl
-      rw [pow_succ (q ^ 2) m] at hu
+      rw [pow_succ (q ^ (2 : ℕ)) m] at hu
       nlinarith
   · intro hq
     let M := egbFixedChargeAGibbsCollisionExcess n 0 β E +
@@ -65,18 +65,18 @@ theorem egbFixedChargeAGibbsCollisionExcess_input_exponent_iff (n : ℕ) (β q :
         _ ≤ egbFixedChargeAGibbsDominantCollisionRate n β E ^ (m + 1) *
             (egbFixedChargeAGibbsSlowModeEnergy n β E + egbFixedChargeAGibbsFastModeEnergy n β E) :=
           (egbFixedChargeAGibbsCollisionExcess_dominant_bounds n m β E).2
-        _ ≤ (q ^ 2) ^ (m + 1) *
+        _ ≤ (q ^ (2 : ℕ)) ^ (m + 1) *
             (egbFixedChargeAGibbsSlowModeEnergy n β E + egbFixedChargeAGibbsFastModeEnergy n β E) :=
           mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hr hq _) (add_nonneg hA hB)
-        _ ≤ (q ^ 2) ^ (m + 1) * M := mul_le_mul_of_nonneg_left hsum (by positivity)
+        _ ≤ (q ^ (2 : ℕ)) ^ (m + 1) * M := mul_le_mul_of_nonneg_left hsum (by positivity)
         _ = _ := mul_comm _ _
 
 /-- The best entropy exponent depends on the actual Gibbs input through its surviving rate. -/
 theorem egbFixedChargeAGibbsEntropyDeficit_input_exponent_iff (n : ℕ) (β q : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     (∃ M : ℝ, 0 < M ∧ ∀ m : ℕ,
-      egbFixedChargeAGibbsEntropyDeficit n m β E ≤ M * (q ^ 2) ^ m) ↔
-        egbFixedChargeAGibbsDominantCollisionRate n β E ≤ q ^ 2 := by
+      egbFixedChargeAGibbsEntropyDeficit n m β E ≤ M * (q ^ (2 : ℕ)) ^ m) ↔
+        egbFixedChargeAGibbsDominantCollisionRate n β E ≤ q ^ (2 : ℕ) := by
   constructor
   · rintro ⟨M, hM, hm⟩
     apply (egbFixedChargeAGibbsCollisionExcess_input_exponent_iff n β q E).mp
@@ -89,7 +89,7 @@ theorem egbFixedChargeAGibbsEntropyDeficit_input_exponent_iff (n : ℕ) (β q : 
     calc
       _ ≤ (2 : ℝ) ^ (n + 3) * egbFixedChargeAGibbsCollisionExcess n m β E :=
         egbFixedChargeAGibbsEntropyDeficit_collision_upper n m β E
-      _ ≤ (2 : ℝ) ^ (n + 3) * (M * (q ^ 2) ^ m) :=
+      _ ≤ (2 : ℝ) ^ (n + 3) * (M * (q ^ (2 : ℕ)) ^ m) :=
         mul_le_mul_of_nonneg_left (hm m) (by positivity)
       _ = _ := by ring
 
@@ -97,8 +97,8 @@ theorem egbFixedChargeAGibbsEntropyDeficit_input_exponent_iff (n : ℕ) (β q : 
 theorem egbFixedChargeAGibbsHellingerSquared_input_exponent_iff (n : ℕ) (β q : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     (∃ M : ℝ, 0 < M ∧ ∀ m : ℕ,
-      egbFixedChargeAGibbsHellingerSquared n m β E ≤ M * (q ^ 2) ^ m) ↔
-        egbFixedChargeAGibbsDominantCollisionRate n β E ≤ q ^ 2 := by
+      egbFixedChargeAGibbsHellingerSquared n m β E ≤ M * (q ^ (2 : ℕ)) ^ m) ↔
+        egbFixedChargeAGibbsDominantCollisionRate n β E ≤ q ^ (2 : ℕ) := by
   constructor
   · rintro ⟨M, hM, hm⟩
     apply (egbFixedChargeAGibbsCollisionExcess_input_exponent_iff n β q E).mp

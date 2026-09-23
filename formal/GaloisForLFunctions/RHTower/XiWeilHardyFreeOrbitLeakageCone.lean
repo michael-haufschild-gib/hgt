@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiWeilHardyCriticalLocusVerifiedHeightBand
 For an off-critical Xi copy with centered spectral point `a`, the line-conjugate resolvent pair
 has anti-Herglotz sign whenever
 
-`a.im ^ 2 < (z.re - a.re) ^ 2 + z.im ^ 2`.
+`a.im ^ (2 : ℕ) < (z.re - a.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)`.
 
 This is the spacelike side of a literal Lorentzian cone.  A first separation argument confines
 positive response to the closed timelike cones.  At regular observation points, the exact pair
@@ -28,15 +28,15 @@ noncomputable section
 off-critical Xi copy. -/
 def XiOffCriticalLeakageConeAvoidance (z : ℂ) : Prop :=
   ∀ q : XiZeroCopy, q ∉ xiCriticalLineZeroCopySet →
-    (xiSpectralPoint q).im ^ 2 <
-      (z.re - (xiSpectralPoint q).re) ^ 2 + z.im ^ 2
+    (xiSpectralPoint q).im ^ (2 : ℕ) <
+      (z.re - (xiSpectralPoint q).re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)
 
 /-- An observation point lies in the closed Lorentzian leakage cone of at least one off-critical
 Xi copy. -/
 def XiOffCriticalLeakageConeHit (z : ℂ) : Prop :=
   ∃ q : XiZeroCopy, q ∉ xiCriticalLineZeroCopySet ∧
-    (z.re - (xiSpectralPoint q).re) ^ 2 + z.im ^ 2 ≤
-      (xiSpectralPoint q).im ^ 2
+    (z.re - (xiSpectralPoint q).re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) ≤
+      (xiSpectralPoint q).im ^ (2 : ℕ)
 
 /-- Leakage-cone hit is exactly failure of strict avoidance. -/
 theorem not_xiOffCriticalLeakageConeAvoidance_iff_hit (z : ℂ) :
@@ -127,14 +127,14 @@ theorem riemannHypothesis_iff_offCriticalRelativeResolventPositiveFrequencyLeaka
 allowed: cone boundaries are neutral at regular points. -/
 def XiOffCriticalLeakageConeInteriorAvoidance (z : ℂ) : Prop :=
   ∀ q : XiZeroCopy, q ∉ xiCriticalLineZeroCopySet →
-    (xiSpectralPoint q).im ^ 2 ≤
-      (z.re - (xiSpectralPoint q).re) ^ 2 + z.im ^ 2
+    (xiSpectralPoint q).im ^ (2 : ℕ) ≤
+      (z.re - (xiSpectralPoint q).re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)
 
 /-- An observation point lies in the strict interior of an off-critical leakage cone. -/
 def XiOffCriticalLeakageConeInteriorHit (z : ℂ) : Prop :=
   ∃ q : XiZeroCopy, q ∉ xiCriticalLineZeroCopySet ∧
-    (z.re - (xiSpectralPoint q).re) ^ 2 + z.im ^ 2 <
-      (xiSpectralPoint q).im ^ 2
+    (z.re - (xiSpectralPoint q).re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) <
+      (xiSpectralPoint q).im ^ (2 : ℕ)
 
 /-- Strict cone-interior hit is exactly failure of interior avoidance. -/
 theorem not_xiOffCriticalLeakageConeInteriorAvoidance_iff_hit (z : ℂ) :
@@ -155,8 +155,8 @@ anti-Herglotz sign.  Unlike the strict-core lemma, this includes the neutral lig
 regularity supplies the two pole exclusions. -/
 theorem xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core_nonneg
     (z : ℂ) (hzIm : 0 < z.im) (hXi : XiC z ≠ 0) (q : XiZeroCopy)
-    (hcore : 0 ≤ (z.re - (xiSpectralPoint q).re) ^ 2 + z.im ^ 2
-      - (xiSpectralPoint q).im ^ 2) :
+    (hcore : 0 ≤ (z.re - (xiSpectralPoint q).re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)
+      - (xiSpectralPoint q).im ^ (2 : ℕ)) :
     (xiRelativeResolventTerm z q +
       xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im ≤ 0 := by
   set a : ℂ := xiSpectralPoint q with ha_def
@@ -171,11 +171,11 @@ theorem xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core_nonneg
     rw [h]
     simpa only [ha_def, xiSpectralPoint_lineConj] using
       XiC_xiSpectralPoint_eq_zero (xiZeroCopyLineConjEquiv q)
-  have hdenOne : 0 < (z.re - a.re) ^ 2 + (z.im - a.im) ^ 2 := by
+  have hdenOne : 0 < (z.re - a.re) ^ (2 : ℕ) + (z.im - a.im) ^ (2 : ℕ) := by
     have hne : z - a ≠ 0 := sub_ne_zero.mpr hza
     have hnorm : 0 < Complex.normSq (z - a) := Complex.normSq_pos.mpr hne
     simpa [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, sq] using hnorm
-  have hdenTwo : 0 < (z.re - a.re) ^ 2 + (z.im + a.im) ^ 2 := by
+  have hdenTwo : 0 < (z.re - a.re) ^ (2 : ℕ) + (z.im + a.im) ^ (2 : ℕ) := by
     have hne : z - (starRingEnd ℂ) a ≠ 0 := sub_ne_zero.mpr hzac
     have hnorm : 0 < Complex.normSq (z - (starRingEnd ℂ) a) :=
       Complex.normSq_pos.mpr hne

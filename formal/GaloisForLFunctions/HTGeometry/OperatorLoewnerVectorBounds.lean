@@ -29,11 +29,11 @@ theorem re_inner_nonneg_of_nonneg {T : E →L[ℂ] E} (hT : 0 ≤ T) (v : E) :
 
 /-- A Loewner lower bound is a lower bound on the quadratic form. -/
 theorem smul_one_le_re_inner {T : E →L[ℂ] E} {m : ℝ} (h : m • (1 : E →L[ℂ] E) ≤ T) (v : E) :
-    m * ‖v‖ ^ 2 ≤ RCLike.re (inner ℂ (T v) v) := by
+    m * ‖v‖ ^ (2 : ℕ) ≤ RCLike.re (inner ℂ (T v) v) := by
   have hnn := re_inner_nonneg_of_nonneg (sub_nonneg.mpr h) v
   have hval : ((T - m • (1 : E →L[ℂ] E)) v) = T v - ((m : ℂ)) • v := by
     simp [sub_apply, Complex.coe_smul]
-  have hsm : RCLike.re (inner ℂ (((m : ℂ)) • v) v) = m * ‖v‖ ^ 2 := by
+  have hsm : RCLike.re (inner ℂ (((m : ℂ)) • v) v) = m * ‖v‖ ^ (2 : ℕ) := by
     rw [inner_smul_left, Complex.conj_ofReal, inner_self_eq_norm_sq_to_K]
     simp only [← RCLike.ofReal_pow]
     norm_num
@@ -43,8 +43,8 @@ theorem smul_one_le_re_inner {T : E →L[ℂ] E} {m : ℝ} (h : m • (1 : E →
 
 /-- A Loewner lower bound gives a vector-wise lower bound on the norm. -/
 theorem sq_mul_norm_sq_le_norm_apply_sq {T : E →L[ℂ] E} {m : ℝ} (hm : 0 ≤ m)
-    (h : m • (1 : E →L[ℂ] E) ≤ T) (v : E) : (m * m) * ‖v‖ ^ 2 ≤ ‖T v‖ ^ 2 := by
-  have h1 : m * ‖v‖ ^ 2 ≤ RCLike.re (inner ℂ (T v) v) := smul_one_le_re_inner h v
+    (h : m • (1 : E →L[ℂ] E) ≤ T) (v : E) : (m * m) * ‖v‖ ^ (2 : ℕ) ≤ ‖T v‖ ^ (2 : ℕ) := by
+  have h1 : m * ‖v‖ ^ (2 : ℕ) ≤ RCLike.re (inner ℂ (T v) v) := smul_one_le_re_inner h v
   have h2 : RCLike.re (inner ℂ (T v) v) ≤ ‖T v‖ * ‖v‖ := by
     calc RCLike.re (inner ℂ (T v) v) ≤ ‖(inner ℂ (T v) v : ℂ)‖ := RCLike.re_le_norm _
       _ ≤ ‖T v‖ * ‖v‖ := norm_inner_le_norm _ _

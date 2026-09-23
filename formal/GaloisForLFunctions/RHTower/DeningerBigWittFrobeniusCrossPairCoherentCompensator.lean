@@ -172,7 +172,7 @@ theorem deningerBigWittCrossPairLeg_product_eq_physical
     (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
     deningerBigWittCrossPairLeftLeg a p q * deningerBigWittCrossPairRightLeg a p q =
       ((deningerBigWittPrimePairExtendedPhysicalAtom p q *
-        ‖a p - a q‖ ^ 2 : ℝ) : ℂ) := by
+        ‖a p - a q‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [deningerBigWittCrossPairLeftLeg, deningerBigWittCrossPairRightLeg,
     deningerBigWittPrimePairExtendedPhysicalAtom_eq,
     ← Complex.normSq_eq_norm_sq]

@@ -18,13 +18,13 @@ open Finset Filter Topology
 namespace RHTower
 
 private lemma reciprocal_phase_d1 (T x : ℝ) (hx : x≠0) :
-    HasDerivAt (fun x : ℝ => T/x) (-T/x^2) x := by
+    HasDerivAt (fun x : ℝ => T/x) (-T/x^(2 : ℕ)) x := by
   convert! (hasDerivAt_const x T).div (hasDerivAt_id x) hx using 1
   dsimp
   ring
 
 private lemma reciprocal_phase_d2 (T x : ℝ) (hx : x≠0) :
-    HasDerivAt (fun x : ℝ => -T/x^2) (2*T/x^3) x := by
+    HasDerivAt (fun x : ℝ => -T/x^(2 : ℕ)) (2*T/x^(3 : ℕ)) x := by
   convert! (hasDerivAt_const x (-T)).div ((hasDerivAt_id x).pow 2) (pow_ne_zero 2 hx) using 1
   dsimp
   field_simp
@@ -32,12 +32,12 @@ private lemma reciprocal_phase_d2 (T x : ℝ) (hx : x≠0) :
 
 private theorem norm_reciprocal_phase_sum_le
     (T a B : ℝ) (N : ℕ) (hT : 0<T) (ha : 0<a)
-    (hN : 1≤N) (hspan : a+(N-1:ℕ)≤B) (hlam : 2*T/B^3≤1) :
+    (hN : 1≤N) (hspan : a+(N-1:ℕ)≤B) (hlam : 2*T/B^(3 : ℕ)≤1) :
     ‖∑ n ∈ range N, Complex.exp (((2*Real.pi*(T/(a+n)):ℝ):ℂ)*Complex.I)‖ ≤
-      8*N*(B/a)^3*Real.sqrt (2*T/B^3)+12/Real.sqrt (2*T/B^3) := by
+      8*N*(B/a)^(3 : ℕ)*Real.sqrt (2*T/B^(3 : ℕ))+12/Real.sqrt (2*T/B^(3 : ℕ)) := by
   have hB : 0<B := ha.trans_le (le_trans (le_add_of_nonneg_right (Nat.cast_nonneg _)) hspan)
-  apply Sieve.second_derivative_test' (fun x => T/x) (fun x => -T/x^2)
-    (fun x => 2*T/x^3) a N hN (by positivity) hlam
+  apply Sieve.second_derivative_test' (fun x => T/x) (fun x => -T/x^(2 : ℕ))
+    (fun x => 2*T/x^(3 : ℕ)) a N hN (by positivity) hlam
   · intro x hx
     exact reciprocal_phase_d1 T x (ha.trans_le hx.1).ne'
   · intro x hx
@@ -49,17 +49,17 @@ private theorem norm_reciprocal_phase_sum_le
       (pow_le_pow_left₀ hx0.le hxB 3)
   · intro x hx
     have hx0 : 0<x := ha.trans_le hx.1
-    have heq : (B/a)^3*(2*T/B^3)=2*T/a^3 := by field_simp
+    have heq : (B/a)^(3 : ℕ)*(2*T/B^(3 : ℕ))=2*T/a^(3 : ℕ) := by field_simp
     rw [heq]
     exact div_le_div_of_nonneg_left (by positivity) (pow_pos ha 3)
       (pow_le_pow_left₀ ha.le hx.1 3)
 
 private lemma reciprocal_phase_window_uniform
     (h T : ℝ) (N k A b : ℕ) (hh : 1≤h) (hk : 1≤k) (hN : 1≤N)
-    (hTlo : (N:ℝ)^2≤T) (hThi : T≤4*(N:ℝ)^2) (hlarge : 8*h≤N)
+    (hTlo : (N:ℝ)^(2 : ℕ)≤T) (hThi : T≤4*(N:ℝ)^(2 : ℕ)) (hlarge : 8*h≤N)
     (hA : A=N/k+1) (hab : A≤b) (hb : b≤N) :
     ‖∑ d ∈ Icc A b, Complex.exp (((2*Real.pi*(h*T/(d:ℝ)):ℝ):ℂ)*Complex.I)‖ ≤
-      (24*(k:ℝ)^3*h+12)*Real.sqrt N := by
+      (24*(k:ℝ)^(3 : ℕ)*h+12)*Real.sqrt N := by
   have hn : (0:ℝ)<N := by exact_mod_cast hN
   have ht : 0<T := (sq_pos_of_pos hn).trans_le hTlo
   have hApos : 0<A := by rw [hA]; exact Nat.zero_lt_succ _
@@ -70,10 +70,10 @@ private lemma reciprocal_phase_window_uniform
     have hnA : N≤k*A := by rw [hA]; nlinarith only [he,hm]
     exact_mod_cast hnA
   have hratio : (N:ℝ)/(A:ℝ)≤k := (div_le_iff₀ ha).mpr (by nlinarith only [hak])
-  let lam := 2*(h*T)/(N:ℝ)^3
+  let lam := 2*(h*T)/(N:ℝ)^(3 : ℕ)
   have hl0 : 0<lam := by dsimp [lam]; positivity
   have hlN : 1≤lam*N ∧ lam*N≤8*h := by
-    have heq : lam*(N:ℝ)=2*h*T/(N:ℝ)^2 := by dsimp [lam]; field_simp
+    have heq : lam*(N:ℝ)=2*h*T/(N:ℝ)^(2 : ℕ) := by dsimp [lam]; field_simp
     rw [heq]
     constructor
     · rw [le_div_iff₀ (sq_pos_of_pos hn)]
@@ -90,29 +90,29 @@ private lemma reciprocal_phase_window_uniform
     rw [← Ico_add_one_right_eq_Icc, sum_Ico_eq_sum_range]
     simp only [Nat.cast_add]
   rw [hsum]
-  change _ ≤ 8*(b+1-A:ℕ)*((N:ℝ)/A)^3*Real.sqrt lam+12/Real.sqrt lam at htest
+  change _ ≤ 8*(b+1-A:ℕ)*((N:ℝ)/A)^(3 : ℕ)*Real.sqrt lam+12/Real.sqrt lam at htest
   have hsN := Real.sq_sqrt hn.le
   have hsL := Real.sq_sqrt hl0.le
   have hsN0 : 0<Real.sqrt (N:ℝ) := Real.sqrt_pos.mpr hn
   have hsL0 : 0<Real.sqrt lam := Real.sqrt_pos.mpr hl0
   have hprod : 1≤Real.sqrt lam*Real.sqrt (N:ℝ) ∧
       Real.sqrt lam*Real.sqrt (N:ℝ)≤3*h := by
-    have hs : (Real.sqrt lam*Real.sqrt (N:ℝ))^2=lam*N := by rw [mul_pow,hsN,hsL]
+    have hs : (Real.sqrt lam*Real.sqrt (N:ℝ))^(2 : ℕ)=lam*N := by rw [mul_pow,hsN,hsL]
     constructor <;> nlinarith only [hs,hlN.1,hlN.2,hh,mul_pos hsL0 hsN0, sq_nonneg (h-1)]
   have hinv : 12/Real.sqrt lam≤12*Real.sqrt (N:ℝ) := by
     rw [div_le_iff₀ hsL0]
     nlinarith only [hprod.1]
   have hlen : ((b+1-A:ℕ):ℝ)≤N := by exact_mod_cast (show b+1-A≤N by omega)
   have hrat3 := pow_le_pow_left₀ (by positivity : 0≤(N:ℝ)/A) hratio 3
-  have hlead : 8*(b+1-A:ℕ)*((N:ℝ)/A)^3*Real.sqrt lam ≤
-      24*(k:ℝ)^3*h*Real.sqrt (N:ℝ) := by
+  have hlead : 8*(b+1-A:ℕ)*((N:ℝ)/A)^(3 : ℕ)*Real.sqrt lam ≤
+      24*(k:ℝ)^(3 : ℕ)*h*Real.sqrt (N:ℝ) := by
     have h1 := mul_le_mul hlen hrat3 (by positivity) (Nat.cast_nonneg (α:=ℝ) N)
     have h2 := mul_le_mul_of_nonneg_right h1 hsL0.le
-    have h3 := mul_le_mul_of_nonneg_right hprod.2 (by positivity : 0≤(k:ℝ)^3*Real.sqrt (N:ℝ))
-    have he : Real.sqrt lam*Real.sqrt (N:ℝ)*((k:ℝ)^3*Real.sqrt (N:ℝ))=
-        (N:ℝ)*(k:ℝ)^3*Real.sqrt lam := by
+    have h3 := mul_le_mul_of_nonneg_right hprod.2 (by positivity : 0≤(k:ℝ)^(3 : ℕ)*Real.sqrt (N:ℝ))
+    have he : Real.sqrt lam*Real.sqrt (N:ℝ)*((k:ℝ)^(3 : ℕ)*Real.sqrt (N:ℝ))=
+        (N:ℝ)*(k:ℝ)^(3 : ℕ)*Real.sqrt lam := by
       calc
-        _ = (Real.sqrt (N:ℝ))^2*(k:ℝ)^3*Real.sqrt lam := by ring
+        _ = (Real.sqrt (N:ℝ))^(2 : ℕ)*(k:ℝ)^(3 : ℕ)*Real.sqrt lam := by ring
         _ = _ := by rw [hsN]
     rw [he] at h3
     linarith only [h2,h3]
@@ -120,9 +120,9 @@ private lemma reciprocal_phase_window_uniform
 
 private lemma norm_reciprocal_phase_prefix_le
     (h T : ℝ) (N k b : ℕ) (hh : 1≤h) (hk : 1≤k) (hN : 1≤N)
-    (hTlo : (N:ℝ)^2≤T) (hThi : T≤4*(N:ℝ)^2) (hlarge : 8*h≤N) (hb : b≤N) :
+    (hTlo : (N:ℝ)^(2 : ℕ)≤T) (hThi : T≤4*(N:ℝ)^(2 : ℕ)) (hlarge : 8*h≤N) (hb : b≤N) :
     ‖∑ d ∈ Icc 1 b, Complex.exp (((2*Real.pi*(h*T/(d:ℝ)):ℝ):ℂ)*Complex.I)‖ ≤
-      (N:ℝ)/(k:ℝ)+1+(24*(k:ℝ)^3*h+12)*Real.sqrt N := by
+      (N:ℝ)/(k:ℝ)+1+(24*(k:ℝ)^(3 : ℕ)*h+12)*Real.sqrt N := by
   let A := N/k+1
   let f := fun d : ℕ => Complex.exp (((2*Real.pi*(h*T/(d:ℝ)):ℝ):ℂ)*Complex.I)
   have hApos : 0<A := Nat.zero_lt_succ _
@@ -139,7 +139,7 @@ private lemma norm_reciprocal_phase_prefix_le
     dsimp [A]
     push_cast
     linarith only [h]
-  have hC : 0≤(24*(k:ℝ)^3*h+12)*Real.sqrt (N:ℝ) := by positivity
+  have hC : 0≤(24*(k:ℝ)^(3 : ℕ)*h+12)*Real.sqrt (N:ℝ) := by positivity
   change ‖∑ d ∈ Icc 1 b,f d‖≤_
   by_cases hab : A≤b
   · have htail := reciprocal_phase_window_uniform h T N k A b hh hk hN hTlo hThi hlarge rfl hab hb
@@ -182,17 +182,17 @@ private lemma norm_nat_weighted_sum_le (f : ℕ→ℂ) (N : ℕ) (hN : 1≤N)
 
 private theorem norm_reciprocal_weighted_sum_le
     (h T : ℝ) (N k : ℕ) (hh : 1≤h) (hk : 1≤k) (hN : 1≤N)
-    (hTlo : (N:ℝ)^2≤T) (hThi : T≤4*(N:ℝ)^2) (hlarge : 8*h≤N) :
+    (hTlo : (N:ℝ)^(2 : ℕ)≤T) (hThi : T≤4*(N:ℝ)^(2 : ℕ)) (hlarge : 8*h≤N) :
     ‖∑ d ∈ Icc 1 N,(d:ℂ)*Complex.exp (((2*Real.pi*(h*T/(d:ℝ)):ℝ):ℂ)*Complex.I)‖ ≤
-      3*(N:ℝ)*((N:ℝ)/(k:ℝ)+1+(24*(k:ℝ)^3*h+12)*Real.sqrt N) := by
+      3*(N:ℝ)*((N:ℝ)/(k:ℝ)+1+(24*(k:ℝ)^(3 : ℕ)*h+12)*Real.sqrt N) := by
   apply norm_nat_weighted_sum_le _ N hN _ (by positivity)
   exact fun b hb => norm_reciprocal_phase_prefix_le h T N k b hh hk hN hTlo hThi hlarge hb
 
 private theorem eventually_reciprocal_weighted_sum_small (h : ℝ) (hh : 1≤h)
     (ε : ℝ) (hε : 0<ε) :
-    ∀ᶠ N : ℕ in atTop, ∀ T : ℝ, (N:ℝ)^2≤T → T≤4*(N:ℝ)^2 →
+    ∀ᶠ N : ℕ in atTop, ∀ T : ℝ, (N:ℝ)^(2 : ℕ)≤T → T≤4*(N:ℝ)^(2 : ℕ) →
       ‖∑ d ∈ Icc 1 N,(d:ℂ)*Complex.exp (((2*Real.pi*(h*T/(d:ℝ)):ℝ):ℂ)*Complex.I)‖ ≤
-        ε*(N:ℝ)^2 := by
+        ε*(N:ℝ)^(2 : ℕ) := by
   obtain ⟨k,hk⟩ := exists_nat_gt (6/ε)
   have hk0 : 0<k := by
     have hp : (0:ℝ)<6/ε := by positivity
@@ -202,7 +202,7 @@ private theorem eventually_reciprocal_weighted_sum_small (h : ℝ) (hh : 1≤h)
     have h := (div_lt_iff₀ hε).mp hk
     rw [div_lt_iff₀ hkR]
     nlinarith only [h]
-  let C : ℝ := 24*(k:ℝ)^3*h+12
+  let C : ℝ := 24*(k:ℝ)^(3 : ℕ)*h+12
   have hC : 0<C := by dsimp [C]; positivity
   have hrec : Tendsto (fun N : ℕ => 3/(N:ℝ)+3*C/Real.sqrt N) atTop (𝓝 0) := by
     have h1 : Tendsto (fun N : ℕ => (N:ℝ)⁻¹) atTop (𝓝 0) :=
@@ -240,13 +240,13 @@ private lemma nat_sqrt_tendsto : Tendsto Nat.sqrt atTop atTop := by
   exact Nat.le_sqrt.mpr hM
 
 private lemma sqrt_window {M : ℕ} (hM : 1≤M) :
-    1≤Nat.sqrt M ∧ ((Nat.sqrt M:ℕ):ℝ)^2≤M ∧
-      (M:ℝ)≤4*((Nat.sqrt M:ℕ):ℝ)^2 := by
+    1≤Nat.sqrt M ∧ ((Nat.sqrt M:ℕ):ℝ)^(2 : ℕ)≤M ∧
+      (M:ℝ)≤4*((Nat.sqrt M:ℕ):ℝ)^(2 : ℕ) := by
   have hN : 1≤Nat.sqrt M := Nat.le_sqrt.mpr (by simpa using hM)
   refine ⟨hN,?_,?_⟩
   · exact_mod_cast Nat.sqrt_le' M
   · have h := Nat.lt_succ_sqrt' M
-    exact_mod_cast (show M≤4*(Nat.sqrt M)^2 by nlinarith only [h,hN])
+    exact_mod_cast (show M≤4*(Nat.sqrt M)^(2 : ℕ) by nlinarith only [h,hN])
 
 private def terminalReciprocalMode (M : ℕ) (k : ℤ) : ℂ :=
   (∑ d ∈ Icc 1 (Nat.sqrt M),(d:ℂ)*fourier k (((M:ℝ)/(d:ℝ)):AddCircle (1:ℝ)))/(M:ℂ)
@@ -298,7 +298,7 @@ private lemma terminalReciprocalMode_norm_le (M : ℕ) (k : ℤ) :
   · subst M; simp [terminalReciprocalMode]
   have hM : (0:ℝ)<M := by exact_mod_cast (show 0<M by omega)
   have hnorm : ‖∑ d ∈ Icc 1 (Nat.sqrt M),(d:ℂ)*fourier k (((M:ℝ)/(d:ℝ)):AddCircle (1:ℝ))‖≤
-      ((Nat.sqrt M:ℕ):ℝ)^2 := by
+      ((Nat.sqrt M:ℕ):ℝ)^(2 : ℕ) := by
     calc
       _ ≤ ∑ d ∈ Icc 1 (Nat.sqrt M),‖(d:ℂ)*fourier k (((M:ℝ)/(d:ℝ)):AddCircle (1:ℝ))‖ := norm_sum_le _ _
       _ = ∑ d ∈ Icc 1 (Nat.sqrt M),(d:ℝ) := by
@@ -308,7 +308,7 @@ private lemma terminalReciprocalMode_norm_le (M : ℕ) (k : ℤ) :
         intro d hd
         exact_mod_cast (mem_Icc.mp hd).2
       _ = _ := by simp; ring
-  have hN : ((Nat.sqrt M:ℕ):ℝ)^2≤M := by exact_mod_cast Nat.sqrt_le' M
+  have hN : ((Nat.sqrt M:ℕ):ℝ)^(2 : ℕ)≤M := by exact_mod_cast Nat.sqrt_le' M
   rw [terminalReciprocalMode,norm_div,Complex.norm_natCast,div_le_one hM]
   exact hnorm.trans hN
 

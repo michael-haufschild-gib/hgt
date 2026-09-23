@@ -28,7 +28,7 @@ def causalSmoothBoundaryChain (b : ℝ) : causalSmoothGraph :=
 /-- Coordinate zero of the genuine boundary chain is the actual normalized rational datum. -/
 theorem causalSmoothBoundaryChain_zero (b : ℝ) :
     causalSmoothGraphCoordinate 0 (causalSmoothBoundaryChain b) = (causalBoundaryEigenvector b 0).val := by
-  change ((causalBoundaryRate b 0).val)^0 • (causalBoundaryEigenvector b 0).val =
+  change ((causalBoundaryRate b 0).val)^(0 : ℕ) • (causalBoundaryEigenvector b 0).val =
     (causalBoundaryEigenvector b 0).val
   rw [pow_zero, one_smul]
 

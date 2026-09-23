@@ -49,7 +49,7 @@ theorem egbFixedChargeAGibbsCollisionShiftedEnergy_completion (n m : ℕ) (β : 
       egbFixedChargeAGibbsCollisionShiftedEnergy n m β E c =
       egbFixedChargeAGibbsCollisionHankelDefect n m β E +
         (egbFixedChargeAGibbsCollisionExcess n (m + 1) β E * c -
-          egbFixedChargeAGibbsCollisionExcess n (m + 2) β E) ^ 2 := by
+          egbFixedChargeAGibbsCollisionExcess n (m + 2) β E) ^ (2 : ℕ) := by
   exact _root_.HTGeometry.mass_mul_scalarShiftedQuantumTangentValue _ _ _ c
 
 /-- The retained collision fraction realizes the normalized projective defect, even at equilibrium. -/
@@ -107,7 +107,7 @@ theorem egbFixedChargeAGibbsCollisionShiftedEnergy_minimizer_iff (n m : ℕ) (β
     · intro he
       rw [he] at hcomp
       have hs : (egbFixedChargeAGibbsCollisionExcess n (m + 1) β E * c -
-          egbFixedChargeAGibbsCollisionExcess n (m + 2) β E) ^ 2 = 0 := by
+          egbFixedChargeAGibbsCollisionExcess n (m + 2) β E) ^ (2 : ℕ) = 0 := by
         nlinarith [hbase, hcomp]
       have heq : egbFixedChargeAGibbsCollisionExcess n (m + 1) β E * c =
           egbFixedChargeAGibbsCollisionExcess n (m + 2) β E :=

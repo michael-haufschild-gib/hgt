@@ -32,7 +32,7 @@ def collisionTransverseCharge [AddCommGroup K]
 /-- Nonnegative dissipative action seen by the transverse collision reporter. -/
 def collisionTransverseAction [NormedAddCommGroup K]
     (tau : H →+ K) (collision : H × H) : ℝ :=
-  ‖collisionTransverseCharge tau collision‖ ^ 2
+  ‖collisionTransverseCharge tau collision‖ ^ (2 : ℕ)
 
 theorem collisionTransverseAction_nonneg [NormedAddCommGroup K]
     (tau : H →+ K) (collision : H × H) :

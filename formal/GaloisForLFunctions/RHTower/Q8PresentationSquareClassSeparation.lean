@@ -77,23 +77,23 @@ private theorem nat_threeHundredSixty_not_square : ¬ IsSquare (360 : ℕ) := by
     norm_num at this
 
 private theorem firstQuadratic_sq_ne_eightyTwo_div_five (v : K1) :
-    v ^ 2 ≠ (82 / 5 : K1) := by
+    v ^ (2 : ℕ) ≠ (82 / 5 : K1) := by
   intro hv
   obtain ⟨r, s, hrs⟩ := deningerQ8RootNumberNegOneFirstQuadratic_normal_form v
-  have hscaled : (5 : K1) * v ^ 2 = 82 := by rw [hv]; norm_num
+  have hscaled : (5 : K1) * v ^ (2 : ℕ) = 82 := by rw [hv]; norm_num
   have hcoord :
-      ((5 * r ^ 2 + 25 * s ^ 2 - 82 : ℚ) : K1) +
+      ((5 * r ^ (2 : ℕ) + 25 * s ^ (2 : ℕ) - 82 : ℚ) : K1) +
           (10 * r * s : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot = 0 := by
     calc
-      ((5 * r ^ 2 + 25 * s ^ 2 - 82 : ℚ) : K1) +
+      ((5 * r ^ (2 : ℕ) + 25 * s ^ (2 : ℕ) - 82 : ℚ) : K1) +
           (10 * r * s : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot =
-          (5 : K1) * ((r : K1) ^ 2 + 2 * (r : K1) * (s : K1) *
-            deningerQ8RootNumberNegOneFirstQuadraticRoot + (s : K1) ^ 2 *
-              deningerQ8RootNumberNegOneFirstQuadraticRoot ^ 2) - 82 := by
+          (5 : K1) * ((r : K1) ^ (2 : ℕ) + 2 * (r : K1) * (s : K1) *
+            deningerQ8RootNumberNegOneFirstQuadraticRoot + (s : K1) ^ (2 : ℕ) *
+              deningerQ8RootNumberNegOneFirstQuadraticRoot ^ (2 : ℕ)) - 82 := by
             rw [deningerQ8RootNumberNegOneFirstQuadraticRoot_sq]
             push_cast
             ring
-      _ = (5 : K1) * ((r : K1) + s * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ 2 - 82 := by
+      _ = (5 : K1) * ((r : K1) + s * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ (2 : ℕ) - 82 := by
         ring
       _ = 0 := by rw [← hrs, hscaled]; ring
   rcases deningerQ8RootNumberNegOneFirstQuadratic_coordinates_eq_zero hcoord with
@@ -116,56 +116,56 @@ private theorem firstQuadratic_sq_ne_eightyTwo_div_five (v : K1) :
     linarith
 
 private theorem firstQuadratic_sq_ne_serreTraceDefect (v : K1) :
-    v ^ 2 ≠ (3362 - 984 * deningerQ8RootNumberNegOneFirstQuadraticRoot) / 205 := by
+    v ^ (2 : ℕ) ≠ (3362 - 984 * deningerQ8RootNumberNegOneFirstQuadraticRoot) / 205 := by
   intro hv
   obtain ⟨r, s, hrs⟩ := deningerQ8RootNumberNegOneFirstQuadratic_normal_form v
-  have hscaled : (205 : K1) * v ^ 2 =
+  have hscaled : (205 : K1) * v ^ (2 : ℕ) =
       3362 - 984 * deningerQ8RootNumberNegOneFirstQuadraticRoot := by
     rw [hv]
     field_simp
   have hcoord :
-      ((205 * r ^ 2 + 1025 * s ^ 2 - 3362 : ℚ) : K1) +
+      ((205 * r ^ (2 : ℕ) + 1025 * s ^ (2 : ℕ) - 3362 : ℚ) : K1) +
           (410 * r * s + 984 : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot = 0 := by
     calc
-      ((205 * r ^ 2 + 1025 * s ^ 2 - 3362 : ℚ) : K1) +
+      ((205 * r ^ (2 : ℕ) + 1025 * s ^ (2 : ℕ) - 3362 : ℚ) : K1) +
           (410 * r * s + 984 : ℚ) * deningerQ8RootNumberNegOneFirstQuadraticRoot =
-          (205 : K1) * ((r : K1) ^ 2 + 2 * (r : K1) * (s : K1) *
-            deningerQ8RootNumberNegOneFirstQuadraticRoot + (s : K1) ^ 2 *
-              deningerQ8RootNumberNegOneFirstQuadraticRoot ^ 2) -
+          (205 : K1) * ((r : K1) ^ (2 : ℕ) + 2 * (r : K1) * (s : K1) *
+            deningerQ8RootNumberNegOneFirstQuadraticRoot + (s : K1) ^ (2 : ℕ) *
+              deningerQ8RootNumberNegOneFirstQuadraticRoot ^ (2 : ℕ)) -
             (3362 - 984 * deningerQ8RootNumberNegOneFirstQuadraticRoot) := by
             rw [deningerQ8RootNumberNegOneFirstQuadraticRoot_sq]
             push_cast
             ring
-      _ = (205 : K1) * ((r : K1) + s * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ 2 -
+      _ = (205 : K1) * ((r : K1) + s * deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ (2 : ℕ) -
             (3362 - 984 * deningerQ8RootNumberNegOneFirstQuadraticRoot) := by
         ring
       _ = 0 := by rw [← hrs, hscaled]; ring
   rcases deningerQ8RootNumberNegOneFirstQuadratic_coordinates_eq_zero hcoord with
     ⟨hscalar, hcross⟩
-  have hscalarEq : 205 * (r ^ 2 + 5 * s ^ 2) = 3362 := by
+  have hscalarEq : 205 * (r ^ (2 : ℕ) + 5 * s ^ (2 : ℕ)) = 3362 := by
     nlinarith [hscalar]
   have hcrossEq : 410 * r * s = -984 := by
     nlinarith [hcross]
-  have hscalarSq : (205 * (r ^ 2 + 5 * s ^ 2)) ^ 2 = 3362 ^ 2 := by
+  have hscalarSq : (205 * (r ^ (2 : ℕ) + 5 * s ^ (2 : ℕ))) ^ (2 : ℕ) = 3362 ^ (2 : ℕ) := by
     rw [hscalarEq]
-  have hcrossSq : (410 * r * s) ^ 2 = 984 ^ 2 := by
+  have hcrossSq : (410 * r * s) ^ (2 : ℕ) = 984 ^ (2 : ℕ) := by
     rw [hcrossEq]
     norm_num
-  have hnormSq : (205 * (r ^ 2 - 5 * s ^ 2)) ^ 2 = 2542 ^ 2 := by
+  have hnormSq : (205 * (r ^ (2 : ℕ) - 5 * s ^ (2 : ℕ))) ^ (2 : ℕ) = 2542 ^ (2 : ℕ) := by
     calc
-      (205 * (r ^ 2 - 5 * s ^ 2)) ^ 2 =
-          (205 * (r ^ 2 + 5 * s ^ 2)) ^ 2 - 5 * (410 * r * s) ^ 2 := by ring
-      _ = 3362 ^ 2 - 5 * 984 ^ 2 := by rw [hscalarSq, hcrossSq]
-      _ = 2542 ^ 2 := by norm_num
+      (205 * (r ^ (2 : ℕ) - 5 * s ^ (2 : ℕ))) ^ (2 : ℕ) =
+          (205 * (r ^ (2 : ℕ) + 5 * s ^ (2 : ℕ))) ^ (2 : ℕ) - 5 * (410 * r * s) ^ (2 : ℕ) := by ring
+      _ = 3362 ^ (2 : ℕ) - 5 * 984 ^ (2 : ℕ) := by rw [hscalarSq, hcrossSq]
+      _ = 2542 ^ (2 : ℕ) := by norm_num
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hnormSq with hnorm | hnorm
-  · have hrSq : r ^ 2 = 72 / 5 := by
+  · have hrSq : r ^ (2 : ℕ) = 72 / 5 := by
       nlinarith [hscalarEq, hnorm]
     apply nat_threeHundredSixty_not_square
     apply Rat.isSquare_natCast_iff.mp
     refine ⟨5 * r, ?_⟩
     norm_num [pow_two] at hrSq ⊢
     linarith
-  · have hrSq : r ^ 2 = 2 := by
+  · have hrSq : r ^ (2 : ℕ) = 2 := by
       nlinarith [hscalarEq, hnorm]
     apply nat_two_not_square
     apply Rat.isSquare_natCast_iff.mp
@@ -230,10 +230,10 @@ theorem q8PresentationRatio_add_conj :
 
 /-- The quotient of the two upper radical factors is not a square in the
 common biquadratic base field. -/
-theorem q8PresentationRatio_not_square (w : K2) : w ^ 2 ≠ q8PresentationRatio := by
+theorem q8PresentationRatio_not_square (w : K2) : w ^ (2 : ℕ) ≠ q8PresentationRatio := by
   intro hw
   let n : K2 := w * deningerQ8RootNumberNegOneSecondConjugation w
-  have ha : (deningerQ8RootNumberNegOneFirstQuadraticRoot : K2) ^ 2 = 5 := by
+  have ha : (deningerQ8RootNumberNegOneFirstQuadraticRoot : K2) ^ (2 : ℕ) = 5 := by
     rw [← map_pow, deningerQ8RootNumberNegOneFirstQuadraticRoot_sq]
     exact (map_natCast
       (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial) 5).symm
@@ -241,18 +241,18 @@ theorem q8PresentationRatio_not_square (w : K2) : w ^ 2 ≠ q8PresentationRatio 
     intro h
     rw [h] at ha
     norm_num at ha
-  have hsix : (6 / (deningerQ8RootNumberNegOneFirstQuadraticRoot : K2)) ^ 2 =
+  have hsix : (6 / (deningerQ8RootNumberNegOneFirstQuadraticRoot : K2)) ^ (2 : ℕ) =
       (36 / 5 : K2) := by
     rw [div_pow, ha]
     norm_num
-  have hnSq : n ^ 2 = (36 / 5 : K2) := by
+  have hnSq : n ^ (2 : ℕ) = (36 / 5 : K2) := by
     unfold n
     calc
-      (w * deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 =
-          w ^ 2 * (deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 := by ring
+      (w * deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) =
+          w ^ (2 : ℕ) * (deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) := by ring
       _ = q8PresentationRatio * deningerQ8RootNumberNegOneSecondConjugation
           q8PresentationRatio := by
-        have hconj : (deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 =
+        have hconj : (deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) =
             deningerQ8RootNumberNegOneSecondConjugation q8PresentationRatio := by
           rw [← map_pow, hw]
         rw [hw, hconj]
@@ -264,15 +264,15 @@ theorem q8PresentationRatio_not_square (w : K2) : w ^ 2 ≠ q8PresentationRatio 
       rw [map_add, deningerQ8RootNumberNegOne_secondConjugation_involutive]
       ring
     obtain ⟨v, hv⟩ := deningerQ8RootNumberNegOne_secondConjugation_fixed_descent t htFixed
-    have htSq : t ^ 2 = (82 / 5 : K2) := by
+    have htSq : t ^ (2 : ℕ) = (82 / 5 : K2) := by
       unfold t
       calc
-        (w + deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 = w ^ 2 +
+        (w + deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) = w ^ (2 : ℕ) +
             2 * (w * deningerQ8RootNumberNegOneSecondConjugation w) +
-              (deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 := by ring
+              (deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) := by ring
         _ = q8PresentationRatio + 2 * n +
             deningerQ8RootNumberNegOneSecondConjugation q8PresentationRatio := by
-          have hconj : (deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 =
+          have hconj : (deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) =
               deningerQ8RootNumberNegOneSecondConjugation q8PresentationRatio := by
             rw [← map_pow, hw]
           rw [hw, hconj]
@@ -289,8 +289,8 @@ theorem q8PresentationRatio_not_square (w : K2) : w ^ 2 ≠ q8PresentationRatio 
     apply firstQuadratic_sq_ne_eightyTwo_div_five v
     apply (algebraMap K1 K2).injective
     calc
-      algebraMap K1 K2 (v ^ 2) = (v : K2) ^ 2 := map_pow _ v 2
-      _ = t ^ 2 := by rw [hv]
+      algebraMap K1 K2 (v ^ (2 : ℕ)) = (v : K2) ^ (2 : ℕ) := map_pow _ v 2
+      _ = t ^ (2 : ℕ) := by rw [hv]
       _ = 82 / 5 := htSq
       _ = algebraMap K1 K2 (82 / 5) := by
         rw [map_div₀]
@@ -304,16 +304,16 @@ theorem q8PresentationRatio_not_square (w : K2) : w ^ 2 ≠ q8PresentationRatio 
       rw [map_add, deningerQ8RootNumberNegOne_secondConjugation_involutive]
       ring
     obtain ⟨v, hv⟩ := deningerQ8RootNumberNegOne_secondConjugation_fixed_descent t htFixed
-    have htSq : t ^ 2 =
+    have htSq : t ^ (2 : ℕ) =
         (3362 - 984 * deningerQ8RootNumberNegOneFirstQuadraticRoot) / 205 := by
       unfold t
       calc
-        (w + deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 = w ^ 2 +
+        (w + deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) = w ^ (2 : ℕ) +
             2 * (w * deningerQ8RootNumberNegOneSecondConjugation w) +
-              (deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 := by ring
+              (deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) := by ring
         _ = q8PresentationRatio + 2 * n +
             deningerQ8RootNumberNegOneSecondConjugation q8PresentationRatio := by
-          have hconj : (deningerQ8RootNumberNegOneSecondConjugation w) ^ 2 =
+          have hconj : (deningerQ8RootNumberNegOneSecondConjugation w) ^ (2 : ℕ) =
               deningerQ8RootNumberNegOneSecondConjugation q8PresentationRatio := by
             rw [← map_pow, hw]
           rw [hw, hconj]
@@ -330,8 +330,8 @@ theorem q8PresentationRatio_not_square (w : K2) : w ^ 2 ≠ q8PresentationRatio 
     apply firstQuadratic_sq_ne_serreTraceDefect v
     apply (algebraMap K1 K2).injective
     calc
-      algebraMap K1 K2 (v ^ 2) = (v : K2) ^ 2 := map_pow _ v 2
-      _ = t ^ 2 := by rw [hv]
+      algebraMap K1 K2 (v ^ (2 : ℕ)) = (v : K2) ^ (2 : ℕ) := map_pow _ v 2
+      _ = t ^ (2 : ℕ) := by rw [hv]
       _ = (3362 - 984 * deningerQ8RootNumberNegOneFirstQuadraticRoot) / 205 := htSq
       _ = algebraMap K1 K2
           ((3362 - 984 * deningerQ8RootNumberNegOneFirstQuadraticRoot) / 205) := by
@@ -366,7 +366,7 @@ theorem serreQ8TopRadicand_div_deningerQ8RootNumberNegOneTopRadicand :
 /-- The two top radicands have different square classes in the common
 biquadratic base field. -/
 theorem serreQ8TopRadicand_div_deningerQ8RootNumberNegOneTopRadicand_not_square
-    (w : K2) : w ^ 2 ≠ serreQ8TopRadicand / deningerQ8RootNumberNegOneTopRadicand := by
+    (w : K2) : w ^ (2 : ℕ) ≠ serreQ8TopRadicand / deningerQ8RootNumberNegOneTopRadicand := by
   rw [serreQ8TopRadicand_div_deningerQ8RootNumberNegOneTopRadicand]
   exact q8PresentationRatio_not_square w
 

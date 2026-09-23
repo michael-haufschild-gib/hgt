@@ -17,7 +17,7 @@ open Finset
 open scoped RealInnerProductSpace
 
 /-- Coordinate expression of the Euclidean squared norm. -/
-theorem euclidean_norm_sq {m : ℕ} (v : EuclideanSpace ℝ (Fin m)) : ‖v‖ ^ 2 = ∑ i, v i ^ 2 := by
+theorem euclidean_norm_sq {m : ℕ} (v : EuclideanSpace ℝ (Fin m)) : ‖v‖ ^ (2 : ℕ) = ∑ i, v i ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
   exact Finset.sum_congr rfl fun i _ => by rw [Real.norm_eq_abs, sq_abs]
 
@@ -32,8 +32,8 @@ theorem productLayer_gradient_sum_sq_le (F : BusemannFlow X) {m : ℕ}
     (hposG : ∀ z k, 0 ≤ G z k) {τ : ℝ} (hτ₀ : 0 ≤ τ) (hτ : τ ≤ 2 / L) (x y : Fin m → X) :
     ∑ k, dist
         (productLayerFun F (fun z k => τ * G (WithLp.toLp 2 z) k) x k)
-        (productLayerFun F (fun z k => τ * G (WithLp.toLp 2 z) k) y k) ^ 2
-      ≤ ∑ k, dist (x k) (y k) ^ 2 := by
+        (productLayerFun F (fun z k => τ * G (WithLp.toLp 2 z) k) y k) ^ (2 : ℕ)
+      ≤ ∑ k, dist (x k) (y k) ^ (2 : ℕ) := by
   refine productLayer_sum_sq_le F _ (fun z k => mul_nonneg hτ₀ (hposG _ _)) ?_ x y
   intro z w
   set Z : EuclideanSpace ℝ (Fin m) := WithLp.toLp 2 z with hZ
@@ -43,14 +43,14 @@ theorem productLayer_gradient_sum_sq_le (F : BusemannFlow X) {m : ℕ}
       (Z - τ • G Z - (W - τ • G W)) k = (z k - τ * G Z k) - (w k - τ * G W k) := by
     intro k; simp [hZ, hW]
   have hcoordR : ∀ k : Fin m, (Z - W) k = z k - w k := by intro k; simp [hZ, hW]
-  have hL2 : ‖Z - τ • G Z - (W - τ • G W)‖ ^ 2
-      = ∑ k, ((z k - τ * G Z k) - (w k - τ * G W k)) ^ 2 := by
+  have hL2 : ‖Z - τ • G Z - (W - τ • G W)‖ ^ (2 : ℕ)
+      = ∑ k, ((z k - τ * G Z k) - (w k - τ * G W k)) ^ (2 : ℕ) := by
     rw [euclidean_norm_sq]
     exact Finset.sum_congr rfl fun k _ => by rw [hcoordL k]
-  have hR2 : ‖Z - W‖ ^ 2 = ∑ k, (z k - w k) ^ 2 := by
+  have hR2 : ‖Z - W‖ ^ (2 : ℕ) = ∑ k, (z k - w k) ^ (2 : ℕ) := by
     rw [euclidean_norm_sq]
     exact Finset.sum_congr rfl fun k _ => by rw [hcoordR k]
-  have hsq : ‖Z - τ • G Z - (W - τ • G W)‖ ^ 2 ≤ ‖Z - W‖ ^ 2 := by
+  have hsq : ‖Z - τ • G Z - (W - τ • G W)‖ ^ (2 : ℕ) ≤ ‖Z - W‖ ^ (2 : ℕ) := by
     nlinarith [hstep, norm_nonneg (Z - τ • G Z - (W - τ • G W)), norm_nonneg (Z - W)]
   rw [hL2, hR2] at hsq
   exact hsq

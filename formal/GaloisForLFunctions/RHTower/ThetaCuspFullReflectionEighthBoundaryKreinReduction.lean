@@ -31,34 +31,34 @@ def reflectedProductEighthJetShift
 def signedEvenHankelThreeFirstVariation
     (p₀ p₂ p₄ p₆ p₈ q₀ q₂ q₄ q₆ q₈ : ℝ) : ℝ :=
   q₀ * p₄ * p₈ + p₀ * q₄ * p₈ + p₀ * p₄ * q₈ -
-    (q₀ * p₆ ^ 2 + 2 * p₀ * p₆ * q₆) -
-    (2 * p₂ * q₂ * p₈ + p₂ ^ 2 * q₈) +
+    (q₀ * p₆ ^ (2 : ℕ) + 2 * p₀ * p₆ * q₆) -
+    (2 * p₂ * q₂ * p₈ + p₂ ^ (2 : ℕ) * q₈) +
     2 * (q₂ * p₄ * p₆ + p₂ * q₄ * p₆ + p₂ * p₄ * q₆) -
-    3 * p₄ ^ 2 * q₄
+    3 * p₄ ^ (2 : ℕ) * q₄
 
 /-- Canonical cofactor null vector of a singular rank-three Hankel face. -/
 def signedEvenHankelThreeBoundaryVector
     (p₀ p₂ p₄ p₆ : ℝ) : Fin 3 → ℝ :=
-  ![p₂ * p₆ - p₄ ^ 2, p₂ * p₄ - p₀ * p₆, p₀ * p₄ - p₂ ^ 2]
+  ![p₂ * p₆ - p₄ ^ (2 : ℕ), p₂ * p₄ - p₀ * p₆, p₀ * p₄ - p₂ ^ (2 : ℕ)]
 
 /-- Quadratic crossing form of a Hankel first variation on the canonical boundary vector. -/
 def signedEvenHankelThreeBoundaryCrossing
     (p₀ p₂ p₄ p₆ q₀ q₂ q₄ q₆ q₈ : ℝ) : ℝ :=
-  let a := p₂ * p₆ - p₄ ^ 2
+  let a := p₂ * p₆ - p₄ ^ (2 : ℕ)
   let b := p₂ * p₄ - p₀ * p₆
-  let c := p₀ * p₄ - p₂ ^ 2
-  q₀ * a ^ 2 + 2 * q₂ * a * b + q₄ * (2 * a * c + b ^ 2) +
-    2 * q₆ * b * c + q₈ * c ^ 2
+  let c := p₀ * p₄ - p₂ ^ (2 : ℕ)
+  q₀ * a ^ (2 : ℕ) + 2 * q₂ * a * b + q₄ * (2 * a * c + b ^ (2 : ℕ)) +
+    2 * q₆ * b * c + q₈ * c ^ (2 : ℕ)
 
 /-- Jacobi--Krein law: on a singular rank-three face, determinant variation is the canonical
 null-line crossing form divided by the strict leading rank-two minor. -/
 theorem signedEvenHankelThreeFirstVariation_eq_boundaryCrossing_div
     {p₀ p₂ p₄ p₆ p₈ q₀ q₂ q₄ q₆ q₈ : ℝ}
     (hdet : signedEvenHankelThreeDet p₀ p₂ p₄ p₆ p₈ = 0)
-    (hhead : p₀ * p₄ - p₂ ^ 2 ≠ 0) :
+    (hhead : p₀ * p₄ - p₂ ^ (2 : ℕ) ≠ 0) :
     signedEvenHankelThreeFirstVariation p₀ p₂ p₄ p₆ p₈ q₀ q₂ q₄ q₆ q₈ =
       signedEvenHankelThreeBoundaryCrossing p₀ p₂ p₄ p₆ q₀ q₂ q₄ q₆ q₈ /
-        (p₀ * p₄ - p₂ ^ 2) := by
+        (p₀ * p₄ - p₂ ^ (2 : ℕ)) := by
   unfold signedEvenHankelThreeDet at hdet
   field_simp [hhead]
   unfold signedEvenHankelThreeFirstVariation
@@ -67,7 +67,7 @@ theorem signedEvenHankelThreeFirstVariation_eq_boundaryCrossing_div
 
 /-- Pure center-shift first variation of the signed rank-three reflected Hankel determinant. -/
 def signedEvenHankelThreeShiftVariation (f : ℕ → ℝ) : ℝ :=
-  let p₀ := f 0 ^ 2
+  let p₀ := f 0 ^ (2 : ℕ)
   let p₂ := reflectedProductSecondJet (f 0) (f 1) (f 2)
   let p₄ := reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4)
   let p₆ := reflectedProductSixthJet
@@ -87,18 +87,18 @@ def signedEvenHankelThreeShiftVariation (f : ℕ → ℝ) : ℝ :=
 theorem signedEvenHankelThreeShiftVariation_eq_boundaryCrossing_div
     (f : ℕ → ℝ)
     (hdet : signedEvenHankelThreeDet
-      (f 0 ^ 2)
+      (f 0 ^ (2 : ℕ))
       (reflectedProductSecondJet (f 0) (f 1) (f 2))
       (reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4))
       (reflectedProductSixthJet (f 0) (f 1) (f 2) (f 3) (f 4) (f 5) (f 6))
       (reflectedProductEighthJet
         (f 0) (f 1) (f 2) (f 3) (f 4) (f 5) (f 6) (f 7) (f 8)) = 0)
     (hhead :
-      f 0 ^ 2 * reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4) -
-        reflectedProductSecondJet (f 0) (f 1) (f 2) ^ 2 ≠ 0) :
+      f 0 ^ (2 : ℕ) * reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4) -
+        reflectedProductSecondJet (f 0) (f 1) (f 2) ^ (2 : ℕ) ≠ 0) :
     signedEvenHankelThreeShiftVariation f =
       signedEvenHankelThreeBoundaryCrossing
-        (f 0 ^ 2)
+        (f 0 ^ (2 : ℕ))
         (reflectedProductSecondJet (f 0) (f 1) (f 2))
         (reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4))
         (reflectedProductSixthJet (f 0) (f 1) (f 2) (f 3) (f 4) (f 5) (f 6))
@@ -109,8 +109,8 @@ theorem signedEvenHankelThreeShiftVariation_eq_boundaryCrossing_div
           (f 0) (f 1) (f 2) (f 3) (f 4) (f 5) (f 6) (f 7))
         (reflectedProductEighthJetShift
           (f 0) (f 1) (f 2) (f 3) (f 4) (f 5) (f 6) (f 7) (f 8) (f 9)) /
-      (f 0 ^ 2 * reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4) -
-        reflectedProductSecondJet (f 0) (f 1) (f 2) ^ 2) := by
+      (f 0 ^ (2 : ℕ) * reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4) -
+        reflectedProductSecondJet (f 0) (f 1) (f 2) ^ (2 : ℕ)) := by
   simpa only [signedEvenHankelThreeShiftVariation] using
     signedEvenHankelThreeFirstVariation_eq_boundaryCrossing_div hdet hhead
 
@@ -135,23 +135,23 @@ theorem hasDerivAt_thetaCuspFullSourceReflectionEighthHankelCurvature_shiftVaria
       simpa only [F] using iteratedDeriv_thetaCuspFullSource n]
     simpa only [F, f, iteratedDeriv_thetaCuspFullSource] using
       hasDerivAt_thetaCuspFullDerivative n x
-  let p₀ : ℝ → ℝ := fun y => F 0 y ^ 2
-  let p₂ : ℝ → ℝ := fun y => 2 * (F 0 y * F 2 y - F 1 y ^ 2)
+  let p₀ : ℝ → ℝ := fun y => F 0 y ^ (2 : ℕ)
+  let p₂ : ℝ → ℝ := fun y => 2 * (F 0 y * F 2 y - F 1 y ^ (2 : ℕ))
   let p₄ : ℝ → ℝ := fun y => F 0 y * F 4 y * 2 - F 1 y * F 3 y * 8 +
-    F 2 y ^ 2 * 6
+    F 2 y ^ (2 : ℕ) * 6
   let p₆ : ℝ → ℝ := fun y => F 0 y * F 6 y * 2 - F 1 y * F 5 y * 12 +
-    F 2 y * F 4 y * 30 - F 3 y ^ 2 * 20
+    F 2 y * F 4 y * 30 - F 3 y ^ (2 : ℕ) * 20
   let p₈ : ℝ → ℝ := fun y => F 0 y * F 8 y * 2 - F 1 y * F 7 y * 16 +
-    F 2 y * F 6 y * 56 - F 3 y * F 5 y * 112 + F 4 y ^ 2 * 70
+    F 2 y * F 6 y * 56 - F 3 y * F 5 y * 112 + F 4 y ^ (2 : ℕ) * 70
   have hp₀ : HasDerivAt p₀
       (HilbertMetric.reflectedProductZeroJetShift (f 0) (f 1)) x := by
-    change HasDerivAt (fun y => F 0 y ^ 2) (2 * f 0 * f 1) x
+    change HasDerivAt (fun y => F 0 y ^ (2 : ℕ)) (2 * f 0 * f 1) x
     convert (hj 0).pow 2 using 1
     all_goals first | rfl | (norm_num [f])
   have hp₂ : HasDerivAt p₂
       (HilbertMetric.reflectedProductSecondJetShift (f 0) (f 1) (f 2) (f 3)) x := by
     have h := ((hj 0).mul (hj 2)).sub ((hj 1).pow 2)
-    change HasDerivAt (fun y => 2 * (F 0 y * F 2 y - F 1 y ^ 2))
+    change HasDerivAt (fun y => 2 * (F 0 y * F 2 y - F 1 y ^ (2 : ℕ)))
       (2 * (f 0 * f 3 - f 1 * f 2)) x
     convert h.const_mul 2 using 1
     all_goals try rfl
@@ -206,8 +206,8 @@ theorem hasDerivAt_thetaCuspFullSourceReflectionEighthHankelCurvature_shiftVaria
       ((hp₂.pow 2).mul hp₈)).add
       (((hp₂.mul hp₄).mul hp₆).const_mul 2) |>.sub (hp₄.pow 3)
   have hfun :
-      ((p₀ * p₄ * p₈ - p₀ * p₆ ^ 2 - p₂ ^ 2 * p₈ +
-          fun y => 2 * (p₂ * p₄ * p₆) y) - p₄ ^ 3) =
+      ((p₀ * p₄ * p₈ - p₀ * p₆ ^ (2 : ℕ) - p₂ ^ (2 : ℕ) * p₈ +
+          fun y => 2 * (p₂ * p₄ * p₆) y) - p₄ ^ (3 : ℕ)) =
         thetaCuspFullSourceReflectionEighthHankelCurvature := by
     funext y
     simp only [thetaCuspFullSourceReflectionEighthHankelCurvature,
@@ -242,7 +242,7 @@ theorem hasDerivAt_thetaCuspReflectedEighthSourceProjectiveValue_shiftNumerator
     (x : ℝ) :
     HasDerivAt thetaCuspReflectedEighthSourceProjectiveValue
       (thetaCuspFullSourceReflectionEighthProjectiveShiftNumerator x /
-        thetaCuspFullSource x ^ 7) x := by
+        thetaCuspFullSource x ^ (7 : ℕ)) x := by
   have hraw :=
     hasDerivAt_thetaCuspFullSourceReflectionEighthHankelCurvature_shiftVariation x
   have hsource : HasDerivAt thetaCuspFullSource
@@ -255,13 +255,13 @@ theorem hasDerivAt_thetaCuspReflectedEighthSourceProjectiveValue_shiftNumerator
   have hquot := hraw.div (hsource.pow 6) (pow_ne_zero 6 hpos.ne')
   have hfun :
       (fun y => thetaCuspFullSourceReflectionEighthHankelCurvature y /
-        thetaCuspFullSource y ^ 6) =
+        thetaCuspFullSource y ^ (6 : ℕ)) =
       thetaCuspReflectedEighthSourceProjectiveValue := by
     funext y
     exact (thetaCuspReflectedEighthSourceProjectiveValue_eq_raw_div_source_pow_six y).symm
   change HasDerivAt
     (fun y => thetaCuspFullSourceReflectionEighthHankelCurvature y /
-      thetaCuspFullSource y ^ 6) _ x at hquot
+      thetaCuspFullSource y ^ (6 : ℕ)) _ x at hquot
   rw [hfun] at hquot
   refine hquot.congr_deriv ?_
   unfold thetaCuspFullSourceReflectionEighthProjectiveShiftNumerator
@@ -284,18 +284,18 @@ theorem thetaCuspReflectedEighthSourceProjectiveDrift_pos_iff_shiftNumerator_pos
     exact thetaCuspModularSourceFactor_re_pos x
   have hsource := thetaCuspFullSource_pos_all x
   have hq7 : 0 < (thetaCuspModularSourcePositiveState
-      HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ 7 := pow_pos hqpos 7
-  have hs7 : 0 < thetaCuspFullSource x ^ 7 := pow_pos hsource 7
+      HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ (7 : ℕ) := pow_pos hqpos 7
+  have hs7 : 0 < thetaCuspFullSource x ^ (7 : ℕ) := pow_pos hsource 7
   constructor
   · intro h
     have hdiv : 0 < thetaCuspReflectedEighthSourceProjectiveDrift x /
         (thetaCuspModularSourcePositiveState
-          HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ 7 := div_pos h hq7
+          HTGeometry.ModularThetaSourcePositiveState.Q x).re ^ (7 : ℕ) := div_pos h hq7
     rw [heq] at hdiv
     exact (div_pos_iff_of_pos_right hs7).mp hdiv
   · intro h
     have hdiv : 0 < thetaCuspFullSourceReflectionEighthProjectiveShiftNumerator x /
-        thetaCuspFullSource x ^ 7 := div_pos h hs7
+        thetaCuspFullSource x ^ (7 : ℕ) := div_pos h hs7
     rw [← heq] at hdiv
     exact (div_pos_iff_of_pos_right hq7).mp hdiv
 
@@ -316,7 +316,7 @@ theorem thetaCuspReflectedEighthSourceProjectiveDrift_pos_iff_shiftVariation_pos
 def thetaCuspFullSourceReflectionEighthBoundaryCrossing (x : ℝ) : ℝ :=
   let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource x
   HilbertMetric.signedEvenHankelThreeBoundaryCrossing
-    (f 0 ^ 2)
+    (f 0 ^ (2 : ℕ))
     (HilbertMetric.reflectedProductSecondJet (f 0) (f 1) (f 2))
     (HilbertMetric.reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4))
     (HilbertMetric.reflectedProductSixthJet
@@ -341,7 +341,7 @@ theorem thetaCuspReflectedEighthSourceProjectiveDrift_pos_iff_boundaryCrossing_p
     hzero]
   let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource x
   have hdet : HilbertMetric.signedEvenHankelThreeDet
-      (f 0 ^ 2)
+      (f 0 ^ (2 : ℕ))
       (HilbertMetric.reflectedProductSecondJet (f 0) (f 1) (f 2))
       (HilbertMetric.reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4))
       (HilbertMetric.reflectedProductSixthJet
@@ -350,9 +350,9 @@ theorem thetaCuspReflectedEighthSourceProjectiveDrift_pos_iff_boundaryCrossing_p
         (f 0) (f 1) (f 2) (f 3) (f 4) (f 5) (f 6) (f 7) (f 8)) = 0 := by
     simpa only [thetaCuspFullSourceReflectionEighthHankelCurvature, f] using hzero
   have hheadPos : 0 <
-      f 0 ^ 2 * HilbertMetric.reflectedProductFourthJet
+      f 0 ^ (2 : ℕ) * HilbertMetric.reflectedProductFourthJet
         (f 0) (f 1) (f 2) (f 3) (f 4) -
-      HilbertMetric.reflectedProductSecondJet (f 0) (f 1) (f 2) ^ 2 := by
+      HilbertMetric.reflectedProductSecondJet (f 0) (f 1) (f 2) ^ (2 : ℕ) := by
     simpa only [thetaCuspSourceReflectionJetZero,
       thetaCuspSourceReflectionJetTwo, thetaCuspSourceReflectionJetFour,
       HilbertMetric.reflectedProductSecondJet,
@@ -361,9 +361,9 @@ theorem thetaCuspReflectedEighthSourceProjectiveDrift_pos_iff_boundaryCrossing_p
   rw [HilbertMetric.signedEvenHankelThreeShiftVariation_eq_boundaryCrossing_div
     f hdet hheadPos.ne']
   change 0 < thetaCuspFullSourceReflectionEighthBoundaryCrossing x /
-      (f 0 ^ 2 * HilbertMetric.reflectedProductFourthJet
+      (f 0 ^ (2 : ℕ) * HilbertMetric.reflectedProductFourthJet
         (f 0) (f 1) (f 2) (f 3) (f 4) -
-      HilbertMetric.reflectedProductSecondJet (f 0) (f 1) (f 2) ^ 2) ↔ _
+      HilbertMetric.reflectedProductSecondJet (f 0) (f 1) (f 2) ^ (2 : ℕ)) ↔ _
   rw [div_pos_iff_of_pos_right hheadPos]
 
 end

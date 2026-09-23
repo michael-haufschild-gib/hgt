@@ -8,11 +8,11 @@ Shifted reciprocal moments obey the Möbius transport law
 `s_k' = -(k+1)s_(k+1)`.  Its polynomial metric has a unique first-order half-density
 connection
 
-`K P = X^2 P' + (1/2) X P`.
+`K P = X^(2 : ℕ) P' + (1/2) X P`.
 
 The connection is forced before arithmetic aggregation: it splits the literal completed adaptive
 source into multiplication Gram bulk and connection cost.  Its covariant multiplication law is
-the nonisospectral Riccati identity `nabla(XP) - X nabla(P) = -X^2 P`.  Consequently a
+the nonisospectral Riccati identity `nabla(XP) - X nabla(P) = -X^(2 : ℕ) P`.  Consequently a
 source-parallel amplitude has strictly decreasing odd current on every positive moment form.
 
 The final statement also exposes the exact effectivity wall.  `K` raises polynomial degree by one,
@@ -27,7 +27,7 @@ noncomputable section
 
 /-- Weight-`c` polynomial lift of the infinitesimal mass Möbius vector field. -/
 def xiShiftedMobiusDensityGenerator (c : ℝ) (P : Polynomial ℝ) : Polynomial ℝ :=
-  X ^ 2 * P.derivative + c • (X * P)
+  X ^ (2 : ℕ) * P.derivative + c • (X * P)
 
 /-- The uniquely metric-compatible weight is one half. -/
 def xiShiftedMobiusHalfDensityGenerator (P : Polynomial ℝ) : Polynomial ℝ :=
@@ -43,7 +43,7 @@ theorem xiShiftedMobiusDensityGenerator_product
     (c : ℝ) (P Q : Polynomial ℝ) :
     xiShiftedMobiusDensityGenerator c P * Q +
         P * xiShiftedMobiusDensityGenerator c Q =
-      X ^ 2 * (P * Q).derivative + c • (X * (P * Q)) +
+      X ^ (2 : ℕ) * (P * Q).derivative + c • (X * (P * Q)) +
         c • (X * (P * Q)) := by
   simp only [xiShiftedMobiusDensityGenerator, Polynomial.derivative_mul,
     Polynomial.smul_eq_C_mul]
@@ -64,7 +64,7 @@ theorem xiShiftedMobiusHalfDensityGenerator_product
     norm_num
   linear_combination (X * (P * Q)) * hhalf
 
-/-- **Uniqueness of half density.**  Among generators `X^2 d/dX + cX`, metric compatibility
+/-- **Uniqueness of half density.**  Among generators `X^(2 : ℕ) d/dX + cX`, metric compatibility
 for every polynomial pair forces `c = 1/2`. -/
 theorem xiShiftedMobiusDensityGenerator_product_eq_source_iff
     (c : ℝ) :
@@ -86,18 +86,18 @@ theorem xiShiftedMobiusDensityGenerator_product_eq_source_iff
 /-- The half-density generator has the exact quadratic commutator with multiplication. -/
 theorem xiShiftedMobiusHalfDensityGenerator_X_mul (P : Polynomial ℝ) :
     xiShiftedMobiusHalfDensityGenerator (X * P) =
-      X * xiShiftedMobiusHalfDensityGenerator P + X ^ 2 * P := by
+      X * xiShiftedMobiusHalfDensityGenerator P + X ^ (2 : ℕ) * P := by
   simp only [xiShiftedMobiusHalfDensityGenerator, xiShiftedMobiusDensityGenerator,
     Polynomial.derivative_mul, Polynomial.derivative_X, one_mul,
     Polynomial.smul_eq_C_mul]
   ring
 
 /-- **Covariant multiplication Riccati law.**  Multiplication by `X` has covariant derivative
-`-X^2` under the source-forced half-density connection. -/
+`-X^(2 : ℕ)` under the source-forced half-density connection. -/
 theorem xiShiftedMobiusHalfDensityCovariantVelocity_X
     (V P : Polynomial ℝ) :
     xiShiftedMobiusHalfDensityCovariantVelocity (X * V) (X * P) =
-      X * xiShiftedMobiusHalfDensityCovariantVelocity V P - X ^ 2 * P := by
+      X * xiShiftedMobiusHalfDensityCovariantVelocity V P - X ^ (2 : ℕ) * P := by
   rw [xiShiftedMobiusHalfDensityCovariantVelocity,
     xiShiftedMobiusHalfDensityCovariantVelocity,
     xiShiftedMobiusHalfDensityGenerator_X_mul]
@@ -121,9 +121,9 @@ theorem xiShiftedMobiusHalfDensityGenerator_X_pow (n : ℕ) :
         congr 1
         ring
       calc
-        _ = X ^ 2 * X ^ n *
+        _ = X ^ (2 : ℕ) * X ^ n *
             (Polynomial.C (1 + (n : ℝ)) + Polynomial.C (1 / 2 : ℝ)) := by ring
-        _ = X ^ 2 * X ^ n * Polynomial.C (3 / 2 + (n : ℝ)) := by rw [hc]
+        _ = X ^ (2 : ℕ) * X ^ n * Polynomial.C (3 / 2 + (n : ℝ)) := by rw [hc]
         _ = _ := by ring
 
 /-- Exact degree growth of the source connection on the top monomial. -/
@@ -168,11 +168,11 @@ theorem xiShiftedBoundaryAdaptiveBilinearShearPolynomial_eq_halfDensityLanding
           ((X * P) * (X * Q)) := by ring
       _ = (X * P) * (X * Q) := by rw [hhalf, one_mul]
   calc
-    _ = X ^ 2 * P.derivative * (X * Q) +
-        (X * P) * (X ^ 2 * Q.derivative) +
+    _ = X ^ (2 : ℕ) * P.derivative * (X * Q) +
+        (X * P) * (X ^ (2 : ℕ) * Q.derivative) +
         2 * ((X * P) * (X * Q)) := by ring
-    _ = X ^ 2 * P.derivative * (X * Q) +
-        (X * P) * (X ^ 2 * Q.derivative) +
+    _ = X ^ (2 : ℕ) * P.derivative * (X * Q) +
+        (X * P) * (X ^ (2 : ℕ) * Q.derivative) +
         (Polynomial.C (1 / 2 : ℝ) * ((X * P) * (X * Q)) +
           Polynomial.C (1 / 2 : ℝ) * ((X * P) * (X * Q))) +
         (X * P) * (X * Q) := by rw [hscaled]; ring
@@ -248,8 +248,8 @@ theorem hasDerivAt_xiShiftedMovingOddCurrent_eq_halfDensityConnection
             (X * P) := by ring
         _ = X * P := by rw [hhalf, one_mul]
     calc
-      _ = X ^ 2 * P.derivative + X * P := by ring
-      _ = X ^ 2 * P.derivative +
+      _ = X ^ (2 : ℕ) * P.derivative + X * P := by ring
+      _ = X ^ (2 : ℕ) * P.derivative +
           (Polynomial.C (1 / 2 : ℝ) * (X * P) +
             Polynomial.C (1 / 2 : ℝ) * (X * P)) := by rw [hscaled]
       _ = _ := by ring

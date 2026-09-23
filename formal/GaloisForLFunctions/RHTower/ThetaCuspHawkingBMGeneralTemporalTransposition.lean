@@ -146,7 +146,7 @@ private theorem laplace_circle_continuous (q : XiZeroCopy) (X k : ℝ) :
   have hp (p : ℝ × ℝ) : 0 < logCircle p.1 p.2 X k 1 :=
     mul_pos (Real.exp_pos _) (one_div_pos.mpr (denominator_pos _ _))
   have he : (fun p : ℝ × ℝ => scalarLaplacian (fullSquarePotential q) (logCircle p.1 p.2 X k)) =
-      fun p => (logCircle p.1 p.2 X k 1:ℂ)^2 *
+      fun p => (logCircle p.1 p.2 X k 1:ℂ)^(2 : ℕ) *
         (coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle p.1 p.2 X k)+
          coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (logCircle p.1 p.2 X k)) := by
     funext p
@@ -205,7 +205,7 @@ def coneKernel (q : XiZeroCopy) (y u v X k : ℝ) : ℂ :=
 
 private def closedConeAction (q : XiZeroCopy) (y X k : ℝ) (p : ℝ × ℝ) : ℂ :=
   angularAction q (max 1 (invariant ((p.1+p.2)/2) (y+(p.1-p.2)/2) y)) X k /
-    (4*(Real.cosh (y+(p.1-p.2)/2):ℂ)^2)
+    (4*(Real.cosh (y+(p.1-p.2)/2):ℂ)^(2 : ℕ))
 
 private theorem closedConeAction_continuous (q : XiZeroCopy) (y X k : ℝ) :
     Continuous (closedConeAction q y X k) := by
@@ -253,7 +253,7 @@ theorem coneKernel_joint_transposition (q : XiZeroCopy) (y X k U V : ℝ)
       fullSquarePotential q ![X,Real.exp k]*eta (0,0) +
       ∫ u in (0:ℝ)..U, ∫ v in (0:ℝ)..V,
         angularAction q (invariant ((u+v)/2) (y+(u-v)/2) y) X k /
-          (4*(Real.cosh (y+(u-v)/2):ℂ)^2)*eta (u,v) := by
+          (4*(Real.cosh (y+(u-v)/2):ℂ)^(2 : ℕ))*eta (u,v) := by
   have h := vertex_primitive_joint_pair (fullSquarePotential q ![X,Real.exp k])
     (closedConeAction q y X k) eta etau etauv U V
     (closedConeAction_continuous q y X k) he heu heuv hdu hduv heU heV
@@ -527,7 +527,7 @@ def temporalConeResidual (q : XiZeroCopy) (s y X k : ℝ)
   if |p.2-y| ≤ s-p.1 then
     nativeRiemannKernel q (s-p.1) p.2 y X k * eventWave phi p -
       angularAction q (invariant (s-p.1) p.2 y) X k /
-        (Real.cosh p.2:ℂ)^2 * phi p
+        (Real.cosh p.2:ℂ)^(2 : ℕ) * phi p
   else 0
 
 private theorem pastVertex_causal (s y : ℝ) (p : ℝ × ℝ) :
@@ -547,7 +547,7 @@ private theorem residual_pullback (q : XiZeroCopy) (s y X k : ℝ)
       (coneKernel_primitive q y p.1 p.2 X k hp.1 hp.2).symm
     have hJ : closedConeAction q y X k p =
         angularAction q (invariant ((p.1+p.2)/2) (y+(p.1-p.2)/2) y) X k /
-          (4*(Real.cosh (y+(p.1-p.2)/2):ℂ)^2) := by
+          (4*(Real.cosh (y+(p.1-p.2)/2):ℂ)^(2 : ℕ)) := by
       simp only [closedConeAction,max_eq_right (invariant_causal ⟨_,_,_,cone_inside y p.1 p.2 hp.1 hp.2⟩)]
     rw [hK,hJ]
     simp only [coneKernel,pastVertex]
@@ -593,7 +593,7 @@ def dirichletWaveTest (q : XiZeroCopy) (s y X k : ℝ)
   nativeDirichletCausalKernel q (s-p.1) p.2 y X k * eventWave phi p -
     ((if |p.2-y| ≤ s-p.1 then angularAction q (invariant (s-p.1) p.2 y) X k else 0)-
       (if |p.2+y| ≤ s-p.1 then angularAction q (invariant (s-p.1) p.2 (-y)) X k else 0)) /
-      (2*(Real.cosh p.2:ℂ)^2) * phi p
+      (2*(Real.cosh p.2:ℂ)^(2 : ℕ)) * phi p
 
 private theorem dirichletWaveTest_split (q : XiZeroCopy) (s y X k : ℝ)
     (phi : ℝ × ℝ → ℂ) (p : ℝ × ℝ) :

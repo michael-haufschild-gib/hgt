@@ -36,7 +36,7 @@ private theorem source_eq_neg_modular_approximant (N : ℕ) :
 chronological predictable drift; every possible unbounded component is in that drift. -/
 theorem modular_norm_drift_gap (N : ℕ) :
     |‖bdMobiusModularApproximantVec N‖ -
-      ‖DeletionResidueMartingale.predictableDrift N‖| ^ 2 ≤ 2 := by
+      ‖DeletionResidueMartingale.predictableDrift N‖| ^ (2 : ℕ) ≤ 2 := by
   rw [← norm_neg (bdMobiusModularApproximantVec N),
     ← source_eq_neg_modular_approximant]
   exact DeletionResidueMartingale.source_drift_norm_gap N
@@ -45,7 +45,7 @@ theorem modular_norm_drift_gap (N : ℕ) :
 chronological drift, up to a cutoff-independent additive constant. -/
 theorem sourceGramEnergy_le_two_drift_sq_add_four (N : ℕ) :
     DeletionRamarePhysical.sourceGramEnergy N ≤
-      2 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ 2 + 4 := by
+      2 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ (2 : ℕ) + 4 := by
   rw [DeletionRamarePhysical.sourceGramEnergy_eq_modular_norm_sq]
   have hgap := modular_norm_drift_gap N
   rw [sq_abs] at hgap
@@ -58,8 +58,8 @@ theorem packetField_energy_le_two_drift_sq_add_four {P : Finset ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (N : ℕ) :
     (∫ u in Set.Ioi (1 : ℝ),
       (DeletionRamarePhysical.rough P N u -
-        ∑ p ∈ P, DeletionRamarePhysical.packet P N p u) ^ 2) ≤
-      2 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ 2 + 4 := by
+        ∑ p ∈ P, DeletionRamarePhysical.packet P N p u) ^ (2 : ℕ)) ≤
+      2 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ (2 : ℕ) + 4 := by
   rw [DeletionRamarePhysical.integral_packetField_sq_eq_sourceGramEnergy hPprime N]
   exact sourceGramEnergy_le_two_drift_sq_add_four N
 

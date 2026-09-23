@@ -27,7 +27,7 @@ theorem one_half_lt_thetaCuspSingleAtomReflectionFactor_of_sameHalfLine
   let Y := Real.exp (2 * u)
   let A := thetaCuspSingleAtomReflectionScale 1 u
   let z := thetaCuspSingleAtomReflectionDefect t
-  let Z := (Y - 1) ^ 2 / (2 * Y)
+  let Z := (Y - 1) ^ (2 : ℕ) / (2 * Y)
   have hu : 0 ≤ u := le_trans ht htu
   have hY : 0 < Y := by
     dsimp [Y]
@@ -53,33 +53,33 @@ theorem one_half_lt_thetaCuspSingleAtomReflectionFactor_of_sameHalfLine
     dsimp [z, thetaCuspSingleAtomReflectionDefect]
     rw [← hcoshZ]
     linarith
-  have hAZ : 6 * A * Z = 3 * Real.pi * (Y - 1) ^ 2 := by
+  have hAZ : 6 * A * Z = 3 * Real.pi * (Y - 1) ^ (2 : ℕ) := by
     dsimp [A, Z, Y, thetaCuspSingleAtomReflectionScale]
     simp only [Nat.cast_one, one_pow]
     field_simp [Real.exp_ne_zero]
     ring
   have hgapIdentity :
-      (A - 3 / 2) ^ 2 - 3 * Real.pi * (Y - 1) ^ 2 =
-        Real.pi * (Real.pi - 3) * Y ^ 2 +
+      (A - 3 / 2) ^ (2 : ℕ) - 3 * Real.pi * (Y - 1) ^ (2 : ℕ) =
+        Real.pi * (Real.pi - 3) * Y ^ (2 : ℕ) +
           3 * Real.pi * (Y - 1) + 9 / 4 := by
     dsimp [A, Y, thetaCuspSingleAtomReflectionScale]
     simp only [Nat.cast_one, one_pow]
     ring
   have hgapPos :
-      0 < (A - 3 / 2) ^ 2 - 3 * Real.pi * (Y - 1) ^ 2 := by
+      0 < (A - 3 / 2) ^ (2 : ℕ) - 3 * Real.pi * (Y - 1) ^ (2 : ℕ) := by
     rw [hgapIdentity]
     have hpiGap : 0 < Real.pi - 3 := sub_pos.mpr Real.pi_gt_three
-    have hYsq : 0 < Y ^ 2 := sq_pos_of_pos hY
+    have hYsq : 0 < Y ^ (2 : ℕ) := sq_pos_of_pos hY
     have hfirst :
-        0 < Real.pi * (Real.pi - 3) * Y ^ 2 := by positivity
+        0 < Real.pi * (Real.pi - 3) * Y ^ (2 : ℕ) := by positivity
     have hsecond : 0 ≤ 3 * Real.pi * (Y - 1) := by positivity
     positivity
-  have hmain : 6 * A * z < (A - 3 / 2) ^ 2 := by
+  have hmain : 6 * A * z < (A - 3 / 2) ^ (2 : ℕ) := by
     have hle : 6 * A * z ≤ 6 * A * Z :=
       mul_le_mul_of_nonneg_left hzle (mul_nonneg (by norm_num) hA.le)
     rw [hAZ] at hle
     linarith
-  have hden : 0 < (A - 3 / 2) ^ 2 := by
+  have hden : 0 < (A - 3 / 2) ^ (2 : ℕ) := by
     have hAthree : 3 < A := by
       simpa only [A] using
         three_lt_thetaCuspSingleAtomReflectionScale
@@ -89,8 +89,8 @@ theorem one_half_lt_thetaCuspSingleAtomReflectionFactor_of_sameHalfLine
       thetaCuspSingleAtomReflectionLambda A * z < 1 / 2 := by
     unfold thetaCuspSingleAtomReflectionLambda
     rw [show
-      3 * A / (A - 3 / 2) ^ 2 * z =
-        (3 * A * z) / (A - 3 / 2) ^ 2 by ring]
+      3 * A / (A - 3 / 2) ^ (2 : ℕ) * z =
+        (3 * A * z) / (A - 3 / 2) ^ (2 : ℕ) by ring]
     apply (div_lt_iff₀ hden).2
     nlinarith
   unfold thetaCuspSingleAtomReflectionFactor
@@ -244,21 +244,21 @@ theorem thetaCuspSingleAtomRiccatiReducedMargin_crossBudget
         0 < (32 * A - 52 / 5) * (z + 1) - 92 / 5 := by
       nlinarith [mul_nonneg (by linarith : 0 ≤ 32 * A - 52 / 5) hz]
     exact mul_pos hA0 hinner
-  have hwSq : w ^ 2 < 8 * w := by
+  have hwSq : w ^ (2 : ℕ) < 8 * w := by
     nlinarith [mul_pos hw (sub_pos.mpr hw8)]
-  have hKw : -4 * w ^ 2 ≤ K * w ^ 2 :=
+  have hKw : -4 * w ^ (2 : ℕ) ≤ K * w ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_right hK (sq_nonneg w)
   have hHw : 32 * w < H * w :=
     mul_lt_mul_of_pos_right hH hw
-  have hpositive : 0 < K * w ^ 2 + H * w + J := by
-    have hpair : 0 < K * w ^ 2 + H * w := by
+  have hpositive : 0 < K * w ^ (2 : ℕ) + H * w + J := by
+    have hpair : 0 < K * w ^ (2 : ℕ) + H * w := by
       nlinarith
     linarith
   have hidentity :
       4 * thetaCuspSingleAtomReflectedReducedMargin A z -
           (26 / 5 * thetaCuspSingleAtomReflectionSlope A z +
             13 / 10 * thetaCuspSingleAtomReflectedActionJetTwo A z) =
-        K * w ^ 2 + H * w + J := by
+        K * w ^ (2 : ℕ) + H * w + J := by
     unfold thetaCuspSingleAtomReflectedReducedMargin
       thetaCuspSingleAtomReflectionSlope
       thetaCuspSingleAtomReflectedActionJetTwo
@@ -377,13 +377,13 @@ theorem thetaCuspFullSource_reflectedCorrelationAngle_subadditive
     Real.arccos
         (thetaCuspFullSource (u + (x + y)) *
           thetaCuspFullSource (u - (x + y)) /
-          thetaCuspFullSource u ^ 2) ≤
+          thetaCuspFullSource u ^ (2 : ℕ)) ≤
       Real.arccos
           (thetaCuspFullSource (u + x) * thetaCuspFullSource (u - x) /
-            thetaCuspFullSource u ^ 2) +
+            thetaCuspFullSource u ^ (2 : ℕ)) +
         Real.arccos
           (thetaCuspFullSource (u + y) * thetaCuspFullSource (u - y) /
-            thetaCuspFullSource u ^ 2) := by
+            thetaCuspFullSource u ^ (2 : ℕ)) := by
   apply
     thetaCuspFullSource_reflectedCorrelationAngle_subadditive_of_margin_nonneg
       hx hy hxyu

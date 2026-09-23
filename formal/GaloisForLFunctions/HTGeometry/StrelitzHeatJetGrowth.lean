@@ -33,9 +33,9 @@ theorem eventually_strelitzJet_le_logRadius
     (hu : ∀ n : ℕ, ‖u n - (ν n : ℂ)‖ ≤
       (1 / ((n : ℝ) + 1)) * (ν n : ℝ))
     (hv : ∀ n : ℕ, ‖v n‖ ≤
-      (1 / ((n : ℝ) + 1)) * (ν n : ℝ) ^ 2) :
+      (1 / ((n : ℝ) + 1)) * (ν n : ℝ) ^ (2 : ℕ)) :
     ∀ᶠ n : ℕ in atTop,
-      (ν n : ℝ) ≤ x n ∧ ‖u n‖ ≤ 2 * x n ∧ ‖v n‖ ≤ (x n) ^ 2 := by
+      (ν n : ℝ) ≤ x n ∧ ‖u n‖ ≤ 2 * x n ∧ ‖v n‖ ≤ (x n) ^ (2 : ℕ) := by
   have hxpos : ∀ᶠ n : ℕ in atTop, 0 < x n := hxTop.eventually_gt_atTop 0
   have hratio : ∀ᶠ n : ℕ in atTop, (ν n : ℝ) / x n < 1 :=
     hνx.eventually_lt_const zero_lt_one
@@ -53,13 +53,13 @@ theorem eventually_strelitzJet_le_logRadius
       simpa using norm_add_le (u n - (ν n : ℂ)) (ν n : ℂ)
     rw [Complex.norm_natCast] at htri
     linarith
-  have hv' : ‖v n‖ ≤ (x n) ^ 2 := by
+  have hv' : ‖v n‖ ≤ (x n) ^ (2 : ℕ) := by
     calc
-      ‖v n‖ ≤ (1 / ((n : ℝ) + 1)) * (ν n : ℝ) ^ 2 := hv n
-      _ ≤ (ν n : ℝ) ^ 2 := by
-        have hνsq : (0 : ℝ) ≤ (ν n : ℝ) ^ 2 := sq_nonneg _
+      ‖v n‖ ≤ (1 / ((n : ℝ) + 1)) * (ν n : ℝ) ^ (2 : ℕ) := hv n
+      _ ≤ (ν n : ℝ) ^ (2 : ℕ) := by
+        have hνsq : (0 : ℝ) ≤ (ν n : ℝ) ^ (2 : ℕ) := sq_nonneg _
         nlinarith
-      _ ≤ (x n) ^ 2 := pow_le_pow_left₀ (by positivity) hνle 2
+      _ ≤ (x n) ^ (2 : ℕ) := pow_le_pow_left₀ (by positivity) hνle 2
   exact ⟨hνle, hu', hv'⟩
 
 variable {a : ℕ → ℂ}
@@ -71,7 +71,7 @@ fixed polynomial bounds in `x`. -/
 theorem exists_nonzero_strelitzBaseCoefficient_with_logarithmicJetBounds_of_order_two_entireHeat_isMaximumOnCircle
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
@@ -86,14 +86,14 @@ theorem exists_nonzero_strelitzBaseCoefficient_with_logarithmicJetBounds_of_orde
             (centralIndex a (Real.exp (x n)) : ℂ)‖
           ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
         (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ)) ∧
         Tendsto x atTop atTop ∧
         Tendsto (fun n => (centralIndex a (Real.exp (x n)) : ℝ) / x n)
           atTop (nhds 0) ∧
         (∀ᶠ n : ℕ in atTop,
           (centralIndex a (Real.exp (x n)) : ℝ) ≤ x n ∧
           ‖eulerLogDeriv (coeffFun a) (z n)‖ ≤ 2 * x n ∧
-          ‖eulerLogDerivSecond (coeffFun a) (z n)‖ ≤ (x n) ^ 2) ∧
+          ‖eulerLogDerivSecond (coeffFun a) (z n)‖ ≤ (x n) ^ (2 : ℕ)) ∧
         (∀ j : ℕ, Tendsto (fun n : ℕ =>
           ‖(strelitzBaseSpecialization P
             ![eulerLogDeriv (coeffFun a) (z n),
@@ -124,7 +124,7 @@ fixed polynomial bounds in `x`. -/
 theorem exists_nonzero_strelitzBaseCoefficient_with_logarithmicJetBounds_of_order_two_entireHeat
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
@@ -139,14 +139,14 @@ theorem exists_nonzero_strelitzBaseCoefficient_with_logarithmicJetBounds_of_orde
             (centralIndex a (Real.exp (x n)) : ℂ)‖
           ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
         (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ)) ∧
         Tendsto x atTop atTop ∧
         Tendsto (fun n => (centralIndex a (Real.exp (x n)) : ℝ) / x n)
           atTop (nhds 0) ∧
         (∀ᶠ n : ℕ in atTop,
           (centralIndex a (Real.exp (x n)) : ℝ) ≤ x n ∧
           ‖eulerLogDeriv (coeffFun a) (z n)‖ ≤ 2 * x n ∧
-          ‖eulerLogDerivSecond (coeffFun a) (z n)‖ ≤ (x n) ^ 2) ∧
+          ‖eulerLogDerivSecond (coeffFun a) (z n)‖ ≤ (x n) ^ (2 : ℕ)) ∧
         ∀ j : ℕ, Tendsto (fun n : ℕ =>
           ‖(strelitzBaseSpecialization P
             ![eulerLogDeriv (coeffFun a) (z n),

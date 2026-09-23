@@ -71,7 +71,7 @@ private theorem majorant_nonneg (n : ℕ) : 0 ≤ majorant n := by
   positivity
 private theorem majorant_summable : Summable majorant := by
   have hs := ((Real.summable_one_div_nat_add_rpow 2 2).mpr (by norm_num : (1:ℝ)<2)).mul_left 4
-  change Summable (fun n : ℕ => 4 / ((n:ℝ)+2)^2)
+  change Summable (fun n : ℕ => 4 / ((n:ℝ)+2)^(2 : ℕ))
   simpa only [Real.rpow_two, sq_abs, one_div, div_eq_mul_inv, one_mul] using! hs
 
 theorem budget_nonneg : 0 ≤ budget := tsum_nonneg majorant_nonneg
@@ -300,14 +300,14 @@ theorem shiftedMoment_lower_primeCorrection (N : ℕ) (hN : 5 ≤ N) {r : ℝ} (
   linarith
 
 private theorem invZeta_two_real_gt : (3/5:ℝ) < (Sieve.invZeta (2:ℂ)).re := by
-  have heq : (Sieve.invZeta (2:ℂ)).re = 6 / Real.pi^2 := by
+  have heq : (Sieve.invZeta (2:ℂ)).re = 6 / Real.pi^(2 : ℕ) := by
     rw [Sieve.invZeta_eq_inv (by norm_num : (2:ℂ)≠1), riemannZeta_two]
-    have hc : (((Real.pi:ℂ)^2/6)⁻¹) = ((6/Real.pi^2:ℝ):ℂ) := by
+    have hc : (((Real.pi:ℂ)^(2 : ℕ)/6)⁻¹) = ((6/Real.pi^(2 : ℕ):ℝ):ℂ) := by
       push_cast
       rw [inv_div]
     simpa only [Complex.ofReal_re] using congrArg Complex.re hc
   rw [heq]
-  have hp : Real.pi^2 < 10 := by nlinarith [Real.pi_pos, Real.pi_lt_d4]
+  have hp : Real.pi^(2 : ℕ) < 10 := by nlinarith [Real.pi_pos, Real.pi_lt_d4]
   apply (lt_div_iff₀ (sq_pos_of_pos Real.pi_pos)).2
   linarith
 

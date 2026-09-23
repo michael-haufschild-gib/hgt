@@ -22,17 +22,17 @@ namespace GaloisForLFunctions.HTGeometry
 /-- A constant sum of polynomial squares forces every coordinate to be constant. -/
 theorem polynomial_sum_squares_constant_iff {ι : Type*} [Fintype ι]
     (p : ι → Polynomial ℝ) :
-    (∀ t : ℝ, ∑ i, ((p i).eval t)^2 = ∑ i, ((p i).eval 0)^2) ↔
+    (∀ t : ℝ, ∑ i, ((p i).eval t)^(2 : ℕ) = ∑ i, ((p i).eval 0)^(2 : ℕ)) ↔
       ∀ i, p i = Polynomial.C ((p i).eval 0) := by
   classical
   constructor
   · intro h i
     have hbound : IsBoundedUnder (· ≤ ·) atTop (fun t : ℝ => |(p i).eval t|) := by
-      refine ⟨(∑ j, ((p j).eval 0)^2) + 1, ?_⟩
+      refine ⟨(∑ j, ((p j).eval 0)^(2 : ℕ)) + 1, ?_⟩
       apply eventually_map.mpr
       apply Eventually.of_forall
       intro t
-      have hs : ((p i).eval t)^2 ≤ ∑ j, ((p j).eval t)^2 :=
+      have hs : ((p i).eval t)^(2 : ℕ) ≤ ∑ j, ((p j).eval t)^(2 : ℕ) :=
         Finset.single_le_sum (fun j _ => sq_nonneg ((p j).eval t)) (Finset.mem_univ i)
       rw [h t] at hs
       nlinarith [sq_abs ((p i).eval t), sq_nonneg (|(p i).eval t| - 1/2)]
@@ -48,13 +48,13 @@ theorem polynomial_sum_squares_constant_iff {ι : Type*} [Fintype ι]
 
 /-- Unit-circle polynomial coordinates are precisely constant unit vectors. -/
 theorem polynomial_circle_coordinates_iff (p q : Polynomial ℝ) :
-    (∀ t : ℝ, (p.eval t)^2 + (q.eval t)^2 = 1) ↔
+    (∀ t : ℝ, (p.eval t)^(2 : ℕ) + (q.eval t)^(2 : ℕ) = 1) ↔
       p = Polynomial.C (p.eval 0) ∧ q = Polynomial.C (q.eval 0) ∧
-        (p.eval 0)^2 + (q.eval 0)^2 = 1 := by
+        (p.eval 0)^(2 : ℕ) + (q.eval 0)^(2 : ℕ) = 1 := by
   constructor
   · intro h
     let f : Bool → Polynomial ℝ := fun b => if b then p else q
-    have hs : ∀ t : ℝ, ∑ b, ((f b).eval t)^2 = ∑ b, ((f b).eval 0)^2 := by
+    have hs : ∀ t : ℝ, ∑ b, ((f b).eval t)^(2 : ℕ) = ∑ b, ((f b).eval 0)^(2 : ℕ) := by
       intro t
       simpa [f, add_comm] using (h t).trans (h 0).symm
     have hc := (polynomial_sum_squares_constant_iff f).mp hs
@@ -73,7 +73,7 @@ theorem polynomial_orthogonal_family_iff {ι : Type*} [Fintype ι] [DecidableEq 
   · intro h
     refine ⟨?_, h 0⟩
     intro i j
-    have hs : ∀ t : ℝ, ∑ k, ((P k j).eval t)^2 = ∑ k, ((P k j).eval 0)^2 := by
+    have hs : ∀ t : ℝ, ∑ k, ((P k j).eval t)^(2 : ℕ) = ∑ k, ((P k j).eval 0)^(2 : ℕ) := by
       intro t
       have ht := congrFun₂ (h t) j j
       have h0 := congrFun₂ (h 0) j j
@@ -92,7 +92,7 @@ theorem realCayley_no_polynomial_coordinates :
     ¬ ∃ p q : Polynomial ℝ,
       ∀ t : ℝ, realCayley t = ((p.eval t : ℝ) : ℂ) + Complex.I * ((q.eval t : ℝ) : ℂ) := by
   rintro ⟨p, q, he⟩
-  have hs : ∀ t : ℝ, (p.eval t)^2 + (q.eval t)^2 = 1 := by
+  have hs : ∀ t : ℝ, (p.eval t)^(2 : ℕ) + (q.eval t)^(2 : ℕ) = 1 := by
     intro t
     have hn : Complex.normSq (realCayley t) = 1 := by
       rw [Complex.normSq_eq_norm_sq, norm_realCayley, one_pow]

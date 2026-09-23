@@ -13,11 +13,11 @@ theorem IsMaassEigenfunction.contDiffOn {eigenvalue : ℝ} {f : ℍ → ℂ}
     (hf : IsMaassEigenfunction eigenvalue f) :
     ContDiffOn ℝ ∞ (f ∘ ofComplex) {z : ℂ | 0 < z.im} := by
   let Ω : TopologicalSpace.Opens ℂ := ⟨{z : ℂ | 0 < z.im}, isOpen_upperHalfPlaneSet⟩
-  let V : ℂ → ℂ := fun z => -(eigenvalue : ℂ)/(z.im : ℂ)^2
+  let V : ℂ → ℂ := fun z => -(eigenvalue : ℂ)/(z.im : ℂ)^(2 : ℕ)
   have hV : ContDiffOn ℝ ∞ V Ω := by
     intro z hz
     have hy : (z.im : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hz)
-    have hd : ContDiffAt ℝ ∞ (fun w : ℂ => (w.im : ℂ)^2) z :=
+    have hd : ContDiffAt ℝ ∞ (fun w : ℂ => (w.im : ℂ)^(2 : ℕ)) z :=
       ((Complex.ofRealCLM.contDiff.comp Complex.imCLM.contDiff).pow 2).contDiffAt
     simpa only [V,div_eq_mul_inv] using
       (contDiffAt_const.mul (hd.fun_inv (pow_ne_zero 2 hy))).contDiffWithinAt
@@ -25,12 +25,12 @@ theorem IsMaassEigenfunction.contDiffOn {eigenvalue : ℝ} {f : ℍ → ℂ}
   intro z hz
   have hy : (z.im : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hz)
   have he := hf.2 ⟨z,hz⟩
-  change -(z.im : ℂ)^2 *
+  change -(z.im : ℂ)^(2 : ℕ) *
     (HTGeometry.PlanarElliptic.dir 1 (HTGeometry.PlanarElliptic.dir 1 (f ∘ ofComplex)) z +
       HTGeometry.PlanarElliptic.dir Complex.I
         (HTGeometry.PlanarElliptic.dir Complex.I (f ∘ ofComplex)) z) =
     (eigenvalue : ℂ)*f ⟨z,hz⟩ at he
-  change _ = (-(eigenvalue : ℂ)/(z.im : ℂ)^2) * f (ofComplex z)
+  change _ = (-(eigenvalue : ℂ)/(z.im : ℂ)^(2 : ℕ)) * f (ofComplex z)
   rw [ofComplex_apply_of_im_pos hz]
   apply mul_left_cancel₀ (pow_ne_zero 2 hy)
   field_simp

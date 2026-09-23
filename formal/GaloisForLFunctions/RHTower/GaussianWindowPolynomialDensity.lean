@@ -4,13 +4,13 @@ import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 /-!
 # Gaussian-window polynomial density
 
-The finite measure `exp (-tau*x^2) dx`, for `tau > 0`, has a bilateral moment-generating
+The finite measure `exp (-tau*x^(2 : ℕ)) dx`, for `tau > 0`, has a bilateral moment-generating
 function on the whole real axis.  The general entire-exponential-moment theorem therefore makes
 real polynomials dense in its `L²` space.
 
 The proof of the exponential window uses the exact completion-of-the-square majorant
 
-`exp (t*x - tau*x^2) <= exp (t^2/(2*tau)) * exp (-(tau/2)*x^2)`.
+`exp (t*x - tau*x^(2 : ℕ)) <= exp (t^(2 : ℕ)/(2*tau)) * exp (-(tau/2)*x^(2 : ℕ))`.
 
 No Gaussian integral value is used; only integrability and `tau > 0` matter.
 -/
@@ -22,7 +22,7 @@ open scoped ENNReal
 
 namespace RHTower
 
-/-- The unnormalised Gaussian window measure `exp (-tau*x^2) dx`. -/
+/-- The unnormalised Gaussian window measure `exp (-tau*x^(2 : ℕ)) dx`. -/
 def gaussianWindowMeasure (tau : ℝ) : Measure ℝ :=
   volume.withDensity fun x => ENNReal.ofReal (Real.exp (-tau * x ^ 2))
 

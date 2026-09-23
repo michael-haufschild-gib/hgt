@@ -142,11 +142,11 @@ theorem re_one_sub_exp_pos_of_mem_Ioo {θ : ℝ} (hθ : θ ∈ Set.Ioo 0 (2 * Re
         nlinarith
       have hhalf : Real.sin (θ / 2) ≠ 0 := by
         refine Real.sin_pos_of_pos_of_lt_pi (by linarith [hθ.1]) (by linarith [hθ.2]) |>.ne'
-      have hcos2 : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ 2 := by
+      have hcos2 : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ (2 : ℕ) := by
         have hc := Real.cos_two_mul' (θ / 2)
         rw [show 2 * (θ / 2) = θ by ring] at hc
         nlinarith [Real.sin_sq_add_cos_sq (θ / 2)]
-      have : Real.sin (θ / 2) ^ 2 = 0 := by nlinarith
+      have : Real.sin (θ / 2) ^ (2 : ℕ) = 0 := by nlinarith
       exact hhalf (pow_eq_zero_iff (by norm_num) |>.mp this)
     · exact h
   simp
@@ -170,7 +170,7 @@ theorem one_sub_exp_mul_I_eq {θ : ℝ} :
   have hs : Real.sin ((θ - Real.pi) / 2) = -Real.cos (θ / 2) := by
     have : (θ - Real.pi) / 2 = θ / 2 - Real.pi / 2 := by ring
     rw [this, Real.sin_sub_pi_div_two]
-  have hcosθ : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ 2 := by
+  have hcosθ : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ (2 : ℕ) := by
     have hc2 := Real.cos_two_mul' (θ / 2)
     rw [show 2 * (θ / 2) = θ by ring] at hc2
     nlinarith [Real.sin_sq_add_cos_sq (θ / 2)]
@@ -268,7 +268,7 @@ theorem tendsto_sum_sawtoothSine {θ : ℝ} (hθ : θ ∈ Set.Ioo 0 (2 * Real.pi
       Complex.div_im]
     have hnre : ((n : ℂ)).re = (n : ℝ) := by simp
     have hnim : ((n : ℂ)).im = 0 := by simp
-    have hnorm : Complex.normSq (n : ℂ) = (n : ℝ) ^ 2 := by
+    have hnorm : Complex.normSq (n : ℂ) = (n : ℝ) ^ (2 : ℕ) := by
       rw [Complex.normSq_apply, hnre, hnim]
       ring
     simp only [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re,

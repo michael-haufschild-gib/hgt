@@ -115,10 +115,10 @@ theorem exists_xi_firstTraceZeroFreeCusp_extension_of_farHalf_root
         riemannZeta ((β : ℂ) + (γ : ℂ) * I) ≠ 0)
     (hT₀T : T₀ ≤ T) (hT : 4 ≤ T) (k : ℕ)
     (g₁ : ℂ → ℂ) (hg₁ : AnalyticOnNhd ℂ g₁ farHalf)
-    (hg₁pow : ∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) :
+    (hg₁pow : ∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) :
     ∃ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g (firstTraceZeroFreeCusp T) ∧
-        (∀ s ∈ firstTraceZeroFreeCusp T, g s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ firstTraceZeroFreeCusp T, g s ^ (2 : ℕ) ^ k = xi s) ∧
         EqOn g g₁ (firstTraceZeroFreeCusp T ∩ farHalf) := by
   have hcuspOpen := isOpen_firstTraceZeroFreeCusp hT
   have hcuspSimply := isSimplyConnected_firstTraceZeroFreeCusp hT
@@ -146,11 +146,11 @@ theorem exists_xi_firstTraceZeroFreeCusp_extension_of_farHalf_root
     rw [hzero, zero_pow (pow_ne_zero k two_ne_zero)] at hpow
     exact hxia hpow.symm
   let omega : ℂ := g₁ a / g a
-  have homegaPow : omega ^ 2 ^ k = 1 := by
-    change (g₁ a / g a) ^ 2 ^ k = 1
+  have homegaPow : omega ^ (2 : ℕ) ^ k = 1 := by
+    change (g₁ a / g a) ^ (2 : ℕ) ^ k = 1
     rw [div_pow, hg₁pow a haFar, hgpow a haCusp, div_self hxia]
   have hroot : ∀ s ∈ firstTraceZeroFreeCusp T,
-      (omega * g s) ^ 2 ^ k = xi s := by
+      (omega * g s) ^ (2 : ℕ) ^ k = xi s := by
     intro s hs
     rw [mul_pow, homegaPow, one_mul, hgpow s hs]
   have hmatch : omega * g a = g₁ a := by
@@ -179,10 +179,10 @@ theorem exists_xi_firstTraceZeroFreeLowerCusp_extension_of_farHalf_root
         riemannZeta ((β : ℂ) + (γ : ℂ) * I) ≠ 0)
     (hT₀T : T₀ ≤ T) (hT : 4 ≤ T) (k : ℕ)
     (g₁ : ℂ → ℂ) (hg₁ : AnalyticOnNhd ℂ g₁ farHalf)
-    (hg₁pow : ∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) :
+    (hg₁pow : ∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) :
     ∃ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g (firstTraceZeroFreeLowerCusp T) ∧
-        (∀ s ∈ firstTraceZeroFreeLowerCusp T, g s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ firstTraceZeroFreeLowerCusp T, g s ^ (2 : ℕ) ^ k = xi s) ∧
         EqOn g g₁ (firstTraceZeroFreeLowerCusp T ∩ farHalf) := by
   have hcuspOpen := isOpen_firstTraceZeroFreeLowerCusp hT
   have hcuspSimply := isSimplyConnected_firstTraceZeroFreeLowerCusp hT
@@ -211,11 +211,11 @@ theorem exists_xi_firstTraceZeroFreeLowerCusp_extension_of_farHalf_root
     rw [hzero, zero_pow (pow_ne_zero k two_ne_zero)] at hpow
     exact hxia hpow.symm
   let omega : ℂ := g₁ a / g a
-  have homegaPow : omega ^ 2 ^ k = 1 := by
-    change (g₁ a / g a) ^ 2 ^ k = 1
+  have homegaPow : omega ^ (2 : ℕ) ^ k = 1 := by
+    change (g₁ a / g a) ^ (2 : ℕ) ^ k = 1
     rw [div_pow, hg₁pow a haFar, hgpow a haCusp, div_self hxia]
   have hroot : ∀ s ∈ firstTraceZeroFreeLowerCusp T,
-      (omega * g s) ^ 2 ^ k = xi s := by
+      (omega * g s) ^ (2 : ℕ) ^ k = xi s := by
     intro s hs
     rw [mul_pow, homegaPow, one_mul, hgpow s hs]
   have hmatch : omega * g a = g₁ a := by
@@ -240,10 +240,10 @@ theorem exists_xi_firstTraceZeroFreeLowerCusp_extension_of_farHalf_root
 theorem exists_xi_symmetricZeroFreeCusp_extension_of_farHalf_root_all_levels :
     ∃ T : ℝ, 4 ≤ T ∧ ∀ (k : ℕ) (g₁ : ℂ → ℂ),
       AnalyticOnNhd ℂ g₁ farHalf →
-      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+      (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
       ∃ g : ℂ → ℂ,
         AnalyticOnNhd ℂ g (firstTraceSymmetricZeroFreeCusp T) ∧
-          (∀ s ∈ firstTraceSymmetricZeroFreeCusp T, g s ^ 2 ^ k = xi s) ∧
+          (∀ s ∈ firstTraceSymmetricZeroFreeCusp T, g s ^ (2 : ℕ) ^ k = xi s) ∧
           EqOn g g₁ farHalf := by
   obtain ⟨T₀, hT₀, hzf⟩ := Sieve.exists_zero_free_region_explicit
   let T : ℝ := max T₀ 4
@@ -292,9 +292,9 @@ theorem exists_xi_symmetricZeroFreeCusp_extension_of_farHalf_root_all_levels :
 theorem exists_xi_symmetricZeroFreeCusp_arithmetic_extensions_all_levels :
     ∃ T : ℝ, 4 ≤ T ∧ ∀ k : ℕ, ∃ g₁ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g₁ farHalf ∧
-        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) ∧
         AnalyticOnNhd ℂ g (firstTraceSymmetricZeroFreeCusp T) ∧
-        (∀ s ∈ firstTraceSymmetricZeroFreeCusp T, g s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ firstTraceSymmetricZeroFreeCusp T, g s ^ (2 : ℕ) ^ k = xi s) ∧
         EqOn g g₁ farHalf := by
   obtain ⟨T, hT, hext⟩ :=
     exists_xi_symmetricZeroFreeCusp_extension_of_farHalf_root_all_levels

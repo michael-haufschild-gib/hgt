@@ -11,7 +11,7 @@ theorem exists_reciprocal_rational_approximation
     {ξ : ℝ} (hξ : 0 < ξ) :
     ∃ a q : ℕ,
       0 < q ∧ Nat.Coprime a q ∧
-      |ξ - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ 2 ∧
+      |ξ - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ (2 : ℕ) ∧
       1 / ξ - 1 / 2 ≤ (q : ℝ) ∧
       (q : ℝ) < 2 / ξ + 1 := by
   let H : ℕ := ⌈2 / ξ⌉₊
@@ -62,13 +62,13 @@ theorem exists_reciprocal_rational_approximation
     exact r.reduced
   have hqH : q ≤ H := hrH
   have hquadratic :
-      |ξ - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ 2 := by
+      |ξ - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ (2 : ℕ) := by
     rw [← hrat]
     calc
       _ ≤ 1 / (((H : ℝ) + 1) * (q : ℝ)) := hr
-      _ ≤ 1 / (q : ℝ) ^ 2 := by
+      _ ≤ 1 / (q : ℝ) ^ (2 : ℕ) := by
         have hqR : 0 < (q : ℝ) := by positivity
-        have hle : (q : ℝ) ^ 2 ≤ ((H : ℝ) + 1) * (q : ℝ) := by
+        have hle : (q : ℝ) ^ (2 : ℕ) ≤ ((H : ℝ) + 1) * (q : ℝ) := by
           have : (q : ℝ) ≤ (H : ℝ) + 1 := by exact_mod_cast (show q ≤ H + 1 by omega)
           nlinarith
         exact one_div_le_one_div_of_le (sq_pos_of_pos hqR) hle

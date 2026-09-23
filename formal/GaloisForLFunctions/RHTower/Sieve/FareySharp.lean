@@ -33,12 +33,12 @@ theorem mem_properFareySet {Q : ℕ} {p : ℕ × ℕ} :
 
 /-- **The sharp large sieve at Farey points.** -/
 theorem largeSieve_farey_sharp (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 ≤ Q) (c : Fin N → ℂ) :
-    ∑ x ∈ properFareyReals Q, ‖expSum N c x‖ ^ 2
-      ≤ ((Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ 2 := by
+    ∑ x ∈ properFareyReals Q, ‖expSum N c x‖ ^ (2 : ℕ)
+      ≤ ((Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   classical
   have hQR : (2 : ℝ) ≤ (Q : ℝ) := by exact_mod_cast hQ
   have hQ0 : (0 : ℝ) < (Q : ℝ) := by linarith
-  set δ : ℝ := 1 / (Q : ℝ) ^ 2 with hδdef
+  set δ : ℝ := 1 / (Q : ℝ) ^ (2 : ℕ) with hδdef
   have hδ : (0 : ℝ) < δ := by rw [hδdef]; positivity
   -- membership unpacked
   have hunpack : ∀ x ∈ properFareyReals Q, ∃ p ∈ properFareySet Q,
@@ -101,7 +101,7 @@ theorem largeSieve_farey_sharp (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 ≤ Q) (
         linarith
       linarith
   have hbase := largeSieve_gallagher_circle N hN c (properFareyReals Q) hδ hne hsep hwin
-  have hinv : (1 : ℝ) / δ = (Q : ℝ) ^ 2 := by
+  have hinv : (1 : ℝ) / δ = (Q : ℝ) ^ (2 : ℕ) := by
     rw [hδdef, one_div_one_div]
   rw [hinv] at hbase
   exact hbase

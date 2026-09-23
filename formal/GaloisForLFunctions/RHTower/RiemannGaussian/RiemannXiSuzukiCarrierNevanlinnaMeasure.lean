@@ -5,7 +5,7 @@ import Mathlib.MeasureTheory.Measure.ResolventTransform
 # The finite Nevanlinna measure of Suzuki's xi carrier
 
 The arithmetic carrier density itself is merely bounded and may have infinite
-Lebesgue mass.  Dividing it by `1 + x^2` produces a finite positive measure.
+Lebesgue mass.  Dividing it by `1 + x^(2 : ℕ)` produces a finite positive measure.
 This file constructs that measure and identifies the normalized carrier
 Herglotz transform with an affine multiple of its standard finite-measure
 resolvent transform.
@@ -244,7 +244,7 @@ theorem hasDerivAt_suzukiXiCarrierNevanlinnaResolventTransform
     (nonreal_not_mem_carrierNevanlinnaMeasure_support_image hz)
 
 /-- The finite-measure integrand naturally produced by the normalization
-`dμ = density(x) dx / (1 + x^2)`. -/
+`dμ = density(x) dx / (1 + x^(2 : ℕ))`. -/
 def suzukiXiCarrierNevanlinnaIntegrand (z : ℂ) (x : ℝ) : ℂ :=
   (1 + (x : ℂ) * z) / ((x : ℂ) - z)
 

@@ -104,7 +104,7 @@ theorem norm_xiPhysicalThetaAbelEntireModeAmplitude_xiRight_le
 /-- Energy coefficient: square of the entire scalar physical mode amplitude. -/
 def xiPhysicalThetaAbelEnergyCoefficient
     (L A c : ℝ) (q : XiRightZeroCopy) : ℂ :=
-  xiPhysicalThetaAbelEntireModeAmplitude L A c (xiRightCenteredZero q) ^ 2
+  xiPhysicalThetaAbelEntireModeAmplitude L A c (xiRightCenteredZero q) ^ (2 : ℕ)
 
 theorem xiPhysicalThetaAbelEntireModeAmplitude_conj
     (L A c : ℝ) (w : ℂ) :
@@ -142,7 +142,7 @@ def xiPhysicalThetaAbelEnergyCoefficientSystem
     XiRightCoefficientSystem where
   coefficient := xiPhysicalThetaAbelEnergyCoefficient L A c
   normBound :=
-    (4 * (1 + Real.exp (A / 2)) * (1 + Real.exp (|L| / 2))) ^ 2
+    (4 * (1 + Real.exp (A / 2)) * (1 + Real.exp (|L| / 2))) ^ (2 : ℕ)
   normBound_nonneg := sq_nonneg _
   norm_le q := by
     rw [xiPhysicalThetaAbelEnergyCoefficient, norm_pow]
@@ -426,20 +426,20 @@ theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_squareSummable
   let C : ℝ := 2 * Real.exp (|a| / 2) *
     (4 * (1 + Real.exp A) * (1 + Real.exp (|L| / 2)))
   have hmajor : Summable (fun q : XiZeroCopy =>
-      C ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
-    xiSpectralPoint_inv_sq_summable.mul_left (C ^ 2)
+      C ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
+    xiSpectralPoint_inv_sq_summable.mul_left (C ^ (2 : ℕ))
   refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_) hmajor
   have h := norm_xiPhysicalThetaAbelEnergyTwoEdgeTransform_xiZero_le hA hc L a q
   calc
-    ‖xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a (xiSpectralPoint q)‖ ^ 2 ≤
-        (C / ‖xiSpectralPoint q‖) ^ 2 :=
+    ‖xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
+        (C / ‖xiSpectralPoint q‖) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) h 2
-    _ = C ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by field_simp
+    _ = C ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by field_simp
 
 theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_analyticOnNhd
     (L A c a : ℝ) :
     AnalyticOnNhd ℂ
-      (fun s => xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a s ^ 2)
+      (fun s => xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a s ^ (2 : ℕ))
       Set.univ := by
   have hw : Differentiable ℂ (fun s : ℂ => I * s) :=
     (differentiable_const _).mul differentiable_id
@@ -463,10 +463,10 @@ theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_analyticOnNhd
 def xiPhysicalThetaAbelEnergyTwoEdgeDominantCore
     (L A c a : ℝ) (w : ℂ) : ℂ :=
   if 0 < w.re then
-    xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ 2 *
+    xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ (2 : ℕ) *
       Complex.exp (2 * (a : ℂ) * w)
   else if w.re < 0 then
-    xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ 2 *
+    xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ (2 : ℕ) *
       Complex.exp (-2 * (a : ℂ) * w)
   else 0
 
@@ -474,24 +474,24 @@ def xiPhysicalThetaAbelEnergyTwoEdgeDominantCore
 two-edge detector. -/
 def xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound
     (L A : ℝ) : ℝ :=
-  4 * (4 * (1 + Real.exp A) * (1 + Real.exp (|L| / 2))) ^ 2
+  4 * (4 * (1 + Real.exp A) * (1 + Real.exp (|L| / 2))) ^ (2 : ℕ)
 
 theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_decomposition
     (L A c a : ℝ) (s : ℂ) :
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a s ^ 2 =
-      xiPhysicalThetaAbelEntireModeAmplitude L A c (I * s) ^ 2 *
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a s ^ (2 : ℕ) =
+      xiPhysicalThetaAbelEntireModeAmplitude L A c (I * s) ^ (2 : ℕ) *
           Complex.exp (2 * (a : ℂ) * (I * s)) +
         2 * xiPhysicalThetaAbelEntireModeAmplitude L A c (I * s) *
           xiPhysicalThetaAbelEntireModeAmplitude L A c (-(I * s)) +
-        xiPhysicalThetaAbelEntireModeAmplitude L A c (-(I * s)) ^ 2 *
+        xiPhysicalThetaAbelEntireModeAmplitude L A c (-(I * s)) ^ (2 : ℕ) *
           Complex.exp (-2 * (a : ℂ) * (I * s)) := by
   let w : ℂ := I * s
-  have hp : Complex.exp ((a : ℂ) * w) ^ 2 =
+  have hp : Complex.exp ((a : ℂ) * w) ^ (2 : ℕ) =
       Complex.exp (2 * (a : ℂ) * w) := by
     rw [pow_two, ← Complex.exp_add]
     congr 1
     ring
-  have hn : Complex.exp (-(a : ℂ) * w) ^ 2 =
+  have hn : Complex.exp (-(a : ℂ) * w) ^ (2 : ℕ) =
       Complex.exp (-2 * (a : ℂ) * w) := by
     rw [pow_two, ← Complex.exp_add]
     congr 1
@@ -502,19 +502,19 @@ theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_decomposition
     simp
   rw [xiPhysicalThetaAbelEnergyTwoEdgeTransform, add_sq, mul_pow, mul_pow]
   change
-    Complex.exp ((a : ℂ) * w) ^ 2 *
-          xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ 2 +
+    Complex.exp ((a : ℂ) * w) ^ (2 : ℕ) *
+          xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ (2 : ℕ) +
         2 * (Complex.exp ((a : ℂ) * w) *
           xiPhysicalThetaAbelEntireModeAmplitude L A c w) *
           (Complex.exp (-(a : ℂ) * w) *
             xiPhysicalThetaAbelEntireModeAmplitude L A c (-w)) +
-        Complex.exp (-(a : ℂ) * w) ^ 2 *
-          xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ 2 =
-      xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ 2 *
+        Complex.exp (-(a : ℂ) * w) ^ (2 : ℕ) *
+          xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ (2 : ℕ) =
+      xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ (2 : ℕ) *
           Complex.exp (2 * (a : ℂ) * w) +
         2 * xiPhysicalThetaAbelEntireModeAmplitude L A c w *
           xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) +
-        xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ 2 *
+        xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ (2 : ℕ) *
           Complex.exp (-2 * (a : ℂ) * w)
   rw [hp, hn]
   rw [show 2 * (Complex.exp ((a : ℂ) * w) *
@@ -551,7 +551,7 @@ theorem xiPhysicalThetaAbelEnergyTwoEdgeDominantCore_even
 theorem xiPhysicalThetaAbelEnergyTwoEdgeDominantCore_logSample_of_pos
     (L A c : ℝ) {n : ℕ} (hn : 1 ≤ n) {w : ℂ} (hwre : 0 < w.re) :
     xiPhysicalThetaAbelEnergyTwoEdgeDominantCore L A c (Real.log n / 2) w =
-      xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ 2 * (n : ℂ) ^ w := by
+      xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ (2 : ℕ) * (n : ℂ) ^ w := by
   rw [xiPhysicalThetaAbelEnergyTwoEdgeDominantCore, if_pos hwre]
   congr 1
   rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr (by omega : n ≠ 0))]
@@ -570,16 +570,16 @@ def xiPhysicalThetaAbelEnergyTwoEdgeDominant
 /-- Multiplicity-exact physical-energy two-edge remainder term. -/
 def xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm
     (L A c a : ℝ) (q : XiZeroCopy) : ℂ :=
-  xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a (xiSpectralPoint q) ^ 2 -
+  xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a (xiSpectralPoint q) ^ (2 : ℕ) -
     xiPhysicalThetaAbelEnergyTwoEdgeDominant L A c a (xiSpectralPoint q)
 
 theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_sub_dominant_of_pos
     (L A c a : ℝ) {s : ℂ} (hpos : 0 < (I * s).re) :
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a s ^ 2 -
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a s ^ (2 : ℕ) -
         xiPhysicalThetaAbelEnergyTwoEdgeDominant L A c a s =
       2 * xiPhysicalThetaAbelEntireModeAmplitude L A c (I * s) *
           xiPhysicalThetaAbelEntireModeAmplitude L A c (-(I * s)) +
-        xiPhysicalThetaAbelEntireModeAmplitude L A c (-(I * s)) ^ 2 *
+        xiPhysicalThetaAbelEntireModeAmplitude L A c (-(I * s)) ^ (2 : ℕ) *
           Complex.exp (-2 * (a : ℂ) * (I * s)) := by
   rw [xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_decomposition,
     xiPhysicalThetaAbelEnergyTwoEdgeDominant,
@@ -588,11 +588,11 @@ theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_sub_dominant_of_pos
 
 theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_sub_dominant_of_neg
     (L A c a : ℝ) {s : ℂ} (hneg : (I * s).re < 0) :
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a s ^ 2 -
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a s ^ (2 : ℕ) -
         xiPhysicalThetaAbelEnergyTwoEdgeDominant L A c a s =
       2 * xiPhysicalThetaAbelEntireModeAmplitude L A c (-(I * s)) *
           xiPhysicalThetaAbelEntireModeAmplitude L A c (I * s) +
-        xiPhysicalThetaAbelEntireModeAmplitude L A c (I * s) ^ 2 *
+        xiPhysicalThetaAbelEntireModeAmplitude L A c (I * s) ^ (2 : ℕ) *
           Complex.exp (2 * (a : ℂ) * (I * s)) := by
   rw [xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_decomposition,
     xiPhysicalThetaAbelEnergyTwoEdgeDominant,
@@ -612,7 +612,7 @@ theorem norm_xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm_le
     {a : ℝ} (ha : 0 ≤ a) (q : XiZeroCopy) :
     ‖xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm L A c a q‖ ≤
       xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A /
-        ‖xiSpectralPoint q‖ ^ 2 := by
+        ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   let w : ℂ := I * xiSpectralPoint q
   let C0 : ℝ := 4 * (1 + Real.exp A) * (1 + Real.exp (|L| / 2))
   let B : ℝ := C0 / ‖xiSpectralPoint q‖
@@ -634,32 +634,32 @@ theorem norm_xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm_le
     have hfirst : 2 * ‖xiPhysicalThetaAbelEntireModeAmplitude L A c (-w)‖ *
         ‖xiPhysicalThetaAbelEntireModeAmplitude L A c w‖ ≤ 2 * B * B := by
       gcongr
-    have hP2 : ‖xiPhysicalThetaAbelEntireModeAmplitude L A c w‖ ^ 2 ≤ B ^ 2 :=
+    have hP2 : ‖xiPhysicalThetaAbelEntireModeAmplitude L A c w‖ ^ (2 : ℕ) ≤ B ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hP 2
-    have hsecond : ‖xiPhysicalThetaAbelEntireModeAmplitude L A c w‖ ^ 2 *
-        ‖Complex.exp (2 * (a : ℂ) * w)‖ ≤ B ^ 2 := by
+    have hsecond : ‖xiPhysicalThetaAbelEntireModeAmplitude L A c w‖ ^ (2 : ℕ) *
+        ‖Complex.exp (2 * (a : ℂ) * w)‖ ≤ B ^ (2 : ℕ) := by
       calc
-        _ ≤ B ^ 2 * 1 :=
+        _ ≤ B ^ (2 : ℕ) * 1 :=
           mul_le_mul hP2 hdec (norm_nonneg _) (sq_nonneg B)
-        _ = B ^ 2 := mul_one _
+        _ = B ^ (2 : ℕ) := mul_one _
     rw [xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm,
       xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_sub_dominant_of_neg
         L A c a hneg]
     calc
       ‖2 * xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) *
             xiPhysicalThetaAbelEntireModeAmplitude L A c w +
-          xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ 2 *
+          xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ (2 : ℕ) *
             Complex.exp (2 * (a : ℂ) * w)‖ ≤
         ‖2 * xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) *
             xiPhysicalThetaAbelEntireModeAmplitude L A c w‖ +
-          ‖xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ 2 *
+          ‖xiPhysicalThetaAbelEntireModeAmplitude L A c w ^ (2 : ℕ) *
             Complex.exp (2 * (a : ℂ) * w)‖ := norm_add_le _ _
-      _ ≤ 2 * B * B + B ^ 2 := by
+      _ ≤ 2 * B * B + B ^ (2 : ℕ) := by
         simp only [norm_mul, norm_ofNat, norm_pow]
         exact add_le_add hfirst hsecond
-      _ ≤ 4 * B ^ 2 := by nlinarith [sq_nonneg B]
+      _ ≤ 4 * B ^ (2 : ℕ) := by nlinarith [sq_nonneg B]
       _ = xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         dsimp only [B, C0, xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound]
         field_simp
   · have hp : ‖Complex.exp ((a : ℂ) * w)‖ = 1 := by
@@ -689,10 +689,10 @@ theorem norm_xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm_le
       sub_zero, norm_pow]
     calc
       ‖xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-          (xiSpectralPoint q)‖ ^ 2 ≤ (2 * B) ^ 2 :=
+          (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤ (2 * B) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) hF 2
       _ = xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         dsimp only [B, C0, xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound]
         field_simp
         ring
@@ -705,32 +705,32 @@ theorem norm_xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm_le
     have hfirst : 2 * ‖xiPhysicalThetaAbelEntireModeAmplitude L A c w‖ *
         ‖xiPhysicalThetaAbelEntireModeAmplitude L A c (-w)‖ ≤ 2 * B * B := by
       gcongr
-    have hPn2 : ‖xiPhysicalThetaAbelEntireModeAmplitude L A c (-w)‖ ^ 2 ≤ B ^ 2 :=
+    have hPn2 : ‖xiPhysicalThetaAbelEntireModeAmplitude L A c (-w)‖ ^ (2 : ℕ) ≤ B ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hPn 2
-    have hsecond : ‖xiPhysicalThetaAbelEntireModeAmplitude L A c (-w)‖ ^ 2 *
-        ‖Complex.exp (-2 * (a : ℂ) * w)‖ ≤ B ^ 2 := by
+    have hsecond : ‖xiPhysicalThetaAbelEntireModeAmplitude L A c (-w)‖ ^ (2 : ℕ) *
+        ‖Complex.exp (-2 * (a : ℂ) * w)‖ ≤ B ^ (2 : ℕ) := by
       calc
-        _ ≤ B ^ 2 * 1 :=
+        _ ≤ B ^ (2 : ℕ) * 1 :=
           mul_le_mul hPn2 hdec (norm_nonneg _) (sq_nonneg B)
-        _ = B ^ 2 := mul_one _
+        _ = B ^ (2 : ℕ) := mul_one _
     rw [xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm,
       xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_sub_dominant_of_pos
         L A c a hpos]
     calc
       ‖2 * xiPhysicalThetaAbelEntireModeAmplitude L A c w *
             xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) +
-          xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ 2 *
+          xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ (2 : ℕ) *
             Complex.exp (-2 * (a : ℂ) * w)‖ ≤
         ‖2 * xiPhysicalThetaAbelEntireModeAmplitude L A c w *
             xiPhysicalThetaAbelEntireModeAmplitude L A c (-w)‖ +
-          ‖xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ 2 *
+          ‖xiPhysicalThetaAbelEntireModeAmplitude L A c (-w) ^ (2 : ℕ) *
             Complex.exp (-2 * (a : ℂ) * w)‖ := norm_add_le _ _
-      _ ≤ 2 * B * B + B ^ 2 := by
+      _ ≤ 2 * B * B + B ^ (2 : ℕ) := by
         simp only [norm_mul, norm_ofNat, norm_pow]
         exact add_le_add hfirst hsecond
-      _ ≤ 4 * B ^ 2 := by nlinarith [sq_nonneg B]
+      _ ≤ 4 * B ^ (2 : ℕ) := by nlinarith [sq_nonneg B]
       _ = xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         dsimp only [B, C0, xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound]
         field_simp
 
@@ -745,10 +745,10 @@ theorem xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm_summable
   calc
     ‖xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm L A c a q‖ ≤
         xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A /
-          ‖xiSpectralPoint q‖ ^ 2 :=
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
       norm_xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm_le hA hc L ha q
     _ = xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 theorem xiWeilPolarization_physicalThetaAbelEnergy_eq_tsum_sq
     (L A c a : ℝ) :
@@ -756,7 +756,7 @@ theorem xiWeilPolarization_physicalThetaAbelEnergy_eq_tsum_sq
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a) =
       ∑' q : XiZeroCopy,
         xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-          (xiSpectralPoint q) ^ 2 := by
+          (xiSpectralPoint q) ^ (2 : ℕ) := by
   unfold xiWeilPolarization
   apply tsum_congr
   intro q
@@ -767,7 +767,7 @@ theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_summable
     {A c : ℝ} (hA : 0 < A) (hc : 0 < c) (L a : ℝ) :
     Summable (fun q : XiZeroCopy =>
       xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-        (xiSpectralPoint q) ^ 2) := by
+        (xiSpectralPoint q) ^ (2 : ℕ)) := by
   apply Summable.of_norm
   simpa only [XiWeilSquareSummable, norm_pow] using
     xiPhysicalThetaAbelEnergyTwoEdgeTransform_squareSummable hA hc L a
@@ -795,7 +795,7 @@ theorem norm_xiWeilPolarization_physicalThetaAbelEnergy_sub_dominant_le
           xiPhysicalThetaAbelEnergyTwoEdgeDominant L A c a
             (xiSpectralPoint q)‖ ≤
       xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A *
-        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   rw [xiWeilPolarization_physicalThetaAbelEnergy_eq_tsum_sq]
   have hsq := xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_summable
     hA hc L a
@@ -809,7 +809,7 @@ theorem norm_xiWeilPolarization_physicalThetaAbelEnergy_sub_dominant_le
   calc
     ‖∑' q : XiZeroCopy,
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-              (xiSpectralPoint q) ^ 2 -
+              (xiSpectralPoint q) ^ (2 : ℕ) -
           xiPhysicalThetaAbelEnergyTwoEdgeDominant L A c a
             (xiSpectralPoint q))‖ =
       ‖∑' q : XiZeroCopy,
@@ -819,17 +819,17 @@ theorem norm_xiWeilPolarization_physicalThetaAbelEnergy_sub_dominant_le
       norm_tsum_le_tsum_norm hrem.norm
     _ ≤ ∑' q : XiZeroCopy,
         xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A *
-          (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       exact hrem.norm.tsum_le_tsum (fun q => by
         calc
           ‖xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm L A c a q‖ ≤
               xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A /
-                ‖xiSpectralPoint q‖ ^ 2 :=
+                ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
             norm_xiPhysicalThetaAbelEnergyTwoEdgeRemainderTerm_le hA hc L ha q
           _ = xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A *
-              (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring) hmajor
+              (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring) hmajor
     _ = xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A *
-        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       rw [tsum_mul_left]
 
 theorem xiPhysicalThetaAbelEnergyTwoEdgeDominant_reflect
@@ -975,7 +975,7 @@ theorem xiWeilPolarization_physicalThetaAbelEnergy_logSample_cofinally_unbounded
           (Real.log n / 2))).re < B := by
   intro B N0
   let K : ℝ := xiPhysicalThetaAbelEnergyTwoEdgeRemainderBound L A *
-    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   obtain ⟨N : ℕ, hN⟩ := exists_nat_gt
     (max (N0 : ℝ) (Real.exp (2 * L)))
   have hN0 : N0 ≤ N := by
@@ -1076,11 +1076,11 @@ theorem exists_admissible_rectIntegral_physicalThetaAbelEnergySource_eq_sum_cont
       z₁.re < z₂.re ∧ z₁.im < z₂.im ∧
       (∀ q ∈ t, q ∈ xiZeroCopyClosedRectangle z₁ z₂) ∧
       rectIntegral (fun z =>
-          xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+          xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
             continuedPrimeArchSourceRelativeTrace z) z₁ z₂ =
         2 * Real.pi * I * ∑ q ∈ xiZeroCopyClosedRectangle z₁ z₂,
           xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-            (xiSpectralPoint q) ^ 2 :=
+            (xiSpectralPoint q) ^ (2 : ℕ) :=
   exists_admissible_rectIntegral_source_eq_xiZeroCopy_sum_containing t
     (xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_analyticOnNhd L A c a)
 
@@ -1089,7 +1089,7 @@ physical-energy detector. -/
 def xiPhysicalThetaAbelEnergyNormalizedSourceContour
     (L A c a : ℝ) (z₁ z₂ : ℂ) : ℂ :=
   (2 * Real.pi * I)⁻¹ * rectIntegral (fun z =>
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
       continuedPrimeArchSourceRelativeTrace z) z₁ z₂
 
 /-- Full physical-energy Weil value is a cofinal limit of exact continued
@@ -1105,7 +1105,7 @@ theorem exists_admissible_physicalThetaAbelEnergySourceContour_approximates_weil
           (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a)) < epsilon := by
   let f : XiZeroCopy → ℂ := fun q =>
     xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-      (xiSpectralPoint q) ^ 2
+      (xiSpectralPoint q) ^ (2 : ℕ)
   have hsum : Summable f :=
     xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_summable hA hc L a
   have hball : Metric.ball (∑' q, f q) epsilon ∈ nhds (∑' q, f q) :=

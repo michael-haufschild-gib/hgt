@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.FokasLenellsInverseFrequency
 
 The existing global first-inverse-frequency bound controls the tail after
 one more division by z. The local origin classification therefore gives
-an exact L^2 criterion on the entire positive squared spectral axis for
+an exact L^(2 : ℕ) criterion on the entire positive squared spectral axis for
 the actual globally small scattering data.
 -/
 
@@ -81,7 +81,7 @@ theorem regularSecondInverseReflection_upper_globalSmall_positive_memLp_iff (q :
 theorem regularSecondInverseReflection_upper_globalSmall_positive_iff_balance (q : SchwartzMap ℝ ℂ) :
     MemLp (regularSecondInverseReflection (globalSmallScatteringPotential q) true) 2
       (volume.restrict (Ioi 0)) ↔
-      (∫ x : ℝ, q x) = I*(globalScatteringScale q : ℂ)^2*parityCoupling q := by
+      (∫ x : ℝ, q x) = I*(globalScatteringScale q : ℂ)^(2 : ℕ)*parityCoupling q := by
   rw [regularSecondInverseReflection_upper_globalSmall_positive_memLp_iff,
     ← rawReflection_isBigO_fifth_iff]
   exact rawReflection_globalSmall_isBigO_fifth_iff q

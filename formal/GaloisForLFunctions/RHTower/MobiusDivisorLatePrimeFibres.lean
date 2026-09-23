@@ -102,14 +102,14 @@ theorem mobiusDivisorSelectionEnergy_insert_late_prime {M p : ℕ} (hp : p.Prime
   have hpU : p ∈ mobiusDivisorSelectionPrimes M := mem_filter.mpr ⟨mem_range.mpr hpM,hp⟩
   have hsingle := mobiusDivisorSelectionFibre_late_prime hp hpM hM P {p} hpP (mem_singleton_self p)
   simp only [if_true] at hsingle
-  change (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset, (mobiusDivisorSelectionFibre M (insert p P) R)^2)-
-    (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset, (mobiusDivisorSelectionFibre M P R)^2)=_
+  change (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset, (mobiusDivisorSelectionFibre M (insert p P) R)^(2 : ℕ))-
+    (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset, (mobiusDivisorSelectionFibre M P R)^(2 : ℕ))=_
   rw [← sum_sub_distrib]
   have he : ∀ R : Finset ℕ,
-      (mobiusDivisorSelectionFibre M (insert p P) R)^2-(mobiusDivisorSelectionFibre M P R)^2 =
+      (mobiusDivisorSelectionFibre M (insert p P) R)^(2 : ℕ)-(mobiusDivisorSelectionFibre M P R)^(2 : ℕ) =
       (if R=∅ then 2*mobiusDivisorSelectionFibre M P ∅*mobiusDivisorDilationChannel M p+
-        (mobiusDivisorDilationChannel M p)^2 else 0) -
-      (if R={p} then (mobiusDivisorDilationChannel M p)^2 else 0) := by
+        (mobiusDivisorDilationChannel M p)^(2 : ℕ) else 0) -
+      (if R={p} then (mobiusDivisorDilationChannel M p)^(2 : ℕ) else 0) := by
     intro R
     rw [mobiusDivisorSelectionFibre_insert_late_prime hp hpM hM P R hpP]
     by_cases hR0 : R=∅

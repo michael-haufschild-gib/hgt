@@ -46,7 +46,7 @@ theorem exists_mem_real_endpointComplete_quadraticRate_ne_zero
           ((genericLocalExtensionMatrix (ρ := Bool) (fun a => (E a : ℂ)) M).map
             (MvPolynomial.eval₂Hom (RingHom.id ℂ) (fun t => (q t : ℂ))), energy i) = 0) →
         ∀ σ : Equiv.Perm (A × Bool),
-          (∑ j, c (σ.symm j) * energy j) ^ 2 - κ * ∑ j, energy j ^ 2 ≠ 0 := by
+          (∑ j, c (σ.symm j) * energy j) ^ (2 : ℕ) - κ * ∑ j, energy j ^ (2 : ℕ) ≠ 0 := by
   obtain ⟨X, hXherm, hX⟩ := exists_hermitian_covering_endpoint_probe ψ hpsi
   have hMherm : (endpointChannel ψ X).IsHermitian := isHermitian_endpointChannel ψ hXherm
   have hM : ∀ α β : A, α ≠ β → endpointChannel ψ X β α ≠ 0 := fun α β hab =>

@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 # Integer aperture of complete multiplicative cells
 
 Three independently varying positive integer factors force a corner span `W` with
-`27 * L^2 ≤ W^3`, where `L` is the lower product. The exponent and constant are
+`27 * L^(2 : ℕ) ≤ W^(3 : ℕ)`, where `L` is the lower product. The exponent and constant are
 sharp for general integer factor cubes. This excludes three nonconstant integer
 components in complete singleton histogram cells at the actual growing marker
 window. It does not estimate the mass of incomplete cells or signed covariance.
@@ -19,7 +19,7 @@ noncomputable section
 namespace RHTower.IntegerCubeAperture
 
 private theorem amgm_min (x y z : ℝ) (hz : 0 ≤ z) (hzx : z ≤ x) (hzy : z ≤ y) :
-    27*x*y*z ≤ (x+y+z)^3 := by
+    27*x*y*z ≤ (x+y+z)^(3 : ℕ) := by
   have hs : 0 ≤ x+y-2*z := by linarith
   have h1 := pow_nonneg hs 3
   have h2 := mul_nonneg hz (sq_nonneg (x-y))
@@ -28,7 +28,7 @@ private theorem amgm_min (x y z : ℝ) (hz : 0 ≤ z) (hzx : z ≤ x) (hzy : z �
   nlinarith only [h1,h2,h3,h4]
 
 private theorem amgm_three (x y z : ℝ) (hx : 0 ≤ x) (hy : 0 ≤ y) (hz : 0 ≤ z) :
-    27*x*y*z ≤ (x+y+z)^3 := by
+    27*x*y*z ≤ (x+y+z)^(3 : ℕ) := by
   rcases le_total x y with hxy | hyx
   · rcases le_total x z with hxz | hzx
     · convert amgm_min y z x hx hxy hxz using 1 <;> ring
@@ -37,33 +37,33 @@ private theorem amgm_three (x y z : ℝ) (hx : 0 ≤ x) (hy : 0 ≤ y) (hz : 0 �
     · convert amgm_min x z y hy hyx hyz using 1 <;> ring
     · exact amgm_min x y z hz (hzy.trans hyx) hzy
 
-private theorem amgm_three_nat (x y z : ℕ) : 27*x*y*z ≤ (x+y+z)^3 := by
+private theorem amgm_three_nat (x y z : ℕ) : 27*x*y*z ≤ (x+y+z)^(3 : ℕ) := by
   exact_mod_cast amgm_three (x:ℝ) (y:ℝ) (z:ℝ) (by positivity) (by positivity) (by positivity)
 
 /-- Integer increments force a cubic lower bound for a three-axis product span. -/
 theorem three_axis_span (a b d A B D : ℕ) (ha : a < A) (hb : b < B) (hd : d < D) :
-    27*(a*b*d)^2 ≤ (A*B*D-a*b*d)^3 := by
+    27*(a*b*d)^(2 : ℕ) ≤ (A*B*D-a*b*d)^(3 : ℕ) := by
   have hp : (a+1)*(b+1)*(d+1) ≤ A*B*D :=
     Nat.mul_le_mul (Nat.mul_le_mul ha hb) hd
   have he : (a+1)*(b+1)*(d+1) = a*b*d+(a*b+a*d+b*d)+a+b+d+1 := by ring
   have hs : a*b+a*d+b*d ≤ A*B*D-a*b*d := by omega
   calc
-    27*(a*b*d)^2 = 27*(a*b)*(a*d)*(b*d) := by ring
-    _ ≤ (a*b+a*d+b*d)^3 := amgm_three_nat _ _ _
-    _ ≤ (A*B*D-a*b*d)^3 := by gcongr
+    27*(a*b*d)^(2 : ℕ) = 27*(a*b)*(a*d)*(b*d) := by ring
+    _ ≤ (a*b+a*d+b*d)^(3 : ℕ) := amgm_three_nat _ _ _
+    _ ≤ (A*B*D-a*b*d)^(3 : ℕ) := by gcongr
 
 theorem three_axis_span_spectator (c a b d A B D : ℕ)
     (ha : a < A) (hb : b < B) (hd : d < D) :
-    27*c*(c*a*b*d)^2 ≤ (c*(A*B*D-a*b*d))^3 := by
+    27*c*(c*a*b*d)^(2 : ℕ) ≤ (c*(A*B*D-a*b*d))^(3 : ℕ) := by
   calc
-    27*c*(c*a*b*d)^2 = c^3*(27*(a*b*d)^2) := by ring
-    _ ≤ c^3*(A*B*D-a*b*d)^3 := Nat.mul_le_mul_left _ (three_axis_span a b d A B D ha hb hd)
-    _ = (c*(A*B*D-a*b*d))^3 := by ring
+    27*c*(c*a*b*d)^(2 : ℕ) = c^(3 : ℕ)*(27*(a*b*d)^(2 : ℕ)) := by ring
+    _ ≤ c^(3 : ℕ)*(A*B*D-a*b*d)^(3 : ℕ) := Nat.mul_le_mul_left _ (three_axis_span a b d A B D ha hb hd)
+    _ = (c*(A*B*D-a*b*d))^(3 : ℕ) := by ring
 
 theorem three_axis_window (c a b d A B D X H : ℕ)
     (hc : 1 ≤ c) (ha : a < A) (hb : b < B) (hd : d < D)
     (hlower : X ≤ c*a*b*d) (hupper : c*A*B*D ≤ X+H) :
-    27*X^2 ≤ H^3 := by
+    27*X^(2 : ℕ) ≤ H^(3 : ℕ) := by
   have hp : a*b*d ≤ A*B*D := Nat.mul_le_mul (Nat.mul_le_mul ha.le hb.le) hd.le
   have he : c*(A*B*D-a*b*d)+c*a*b*d = c*A*B*D := by
     calc
@@ -71,17 +71,17 @@ theorem three_axis_window (c a b d A B D X H : ℕ)
       _ = _ := by rw [Nat.sub_add_cancel hp]; ring
   have hs : c*(A*B*D-a*b*d) ≤ H := by omega
   calc
-    27*X^2 ≤ 27*(c*a*b*d)^2 := by gcongr
-    _ ≤ 27*c*(c*a*b*d)^2 := by gcongr; omega
-    _ ≤ (c*(A*B*D-a*b*d))^3 := three_axis_span_spectator c a b d A B D ha hb hd
-    _ ≤ H^3 := by gcongr
+    27*X^(2 : ℕ) ≤ 27*(c*a*b*d)^(2 : ℕ) := by gcongr
+    _ ≤ 27*c*(c*a*b*d)^(2 : ℕ) := by gcongr; omega
+    _ ≤ (c*(A*B*D-a*b*d))^(3 : ℕ) := three_axis_span_spectator c a b d A B D ha hb hd
+    _ ≤ H^(3 : ℕ) := by gcongr
 
 /-- Selecting any three changing factors preserves the span bound in any dimension. -/
 theorem product_span_of_three_changes {ι : Type*} [DecidableEq ι]
     (s : Finset ι) (a b : ι → ℕ)
     (ha : ∀ i ∈ s, 1 ≤ a i) (hab : ∀ i ∈ s, a i ≤ b i)
     (hcard : 2 < (s.filter fun i => a i < b i).card) :
-    27*(∏ i ∈ s, a i)^2 ≤ ((∏ i ∈ s, b i)-(∏ i ∈ s, a i))^3 := by
+    27*(∏ i ∈ s, a i)^(2 : ℕ) ≤ ((∏ i ∈ s, b i)-(∏ i ∈ s, a i))^(3 : ℕ) := by
   obtain ⟨i,j,k,hi,hj,hk,hij,hik,hjk⟩ := Finset.two_lt_card_iff.mp hcard
   obtain ⟨his,hiab⟩ := mem_filter.mp hi
   obtain ⟨hjs,hjab⟩ := mem_filter.mp hj
@@ -114,27 +114,27 @@ theorem at_most_two_changes {ι : Type*} [DecidableEq ι]
     (s : Finset ι) (a b : ι → ℕ) (X H : ℕ)
     (ha : ∀ i ∈ s, 1 ≤ a i) (hab : ∀ i ∈ s, a i ≤ b i)
     (hlower : X ≤ ∏ i ∈ s, a i) (hupper : (∏ i ∈ s, b i) ≤ X+H)
-    (hwidth : H^3 < 27*X^2) :
+    (hwidth : H^(3 : ℕ) < 27*X^(2 : ℕ)) :
     (s.filter fun i => a i < b i).card ≤ 2 := by
   by_contra hn
   have he := product_span_of_three_changes s a b ha hab (by omega)
-  have hl : 27*X^2 ≤ 27*(∏ i ∈ s, a i)^2 := by gcongr
+  have hl : 27*X^(2 : ℕ) ≤ 27*(∏ i ∈ s, a i)^(2 : ℕ) := by gcongr
   have hs : (∏ i ∈ s, b i)-(∏ i ∈ s, a i) ≤ H := by omega
-  have hu : ((∏ i ∈ s, b i)-(∏ i ∈ s, a i))^3 ≤ H^3 := by gcongr
+  have hu : ((∏ i ∈ s, b i)-(∏ i ∈ s, a i))^(3 : ℕ) ≤ H^(3 : ℕ) := by gcongr
   omega
 
 /-- Sharp leading constant for integer cubes; no Möbius admissibility is asserted. -/
 theorem unit_increment_sharpness :
     Tendsto (fun n : ℕ =>
-      (((((n+2)^3-(n+1)^3 : ℕ) : ℝ)^3)/((n+1:ℕ):ℝ)^6)) atTop (𝓝 27) := by
+      (((((n+2)^(3 : ℕ)-(n+1)^(3 : ℕ) : ℕ) : ℝ)^(3 : ℕ))/((n+1:ℕ):ℝ)^(6 : ℕ))) atTop (𝓝 27) := by
   have ht : Tendsto (fun n : ℕ => (((n+1:ℕ):ℝ))⁻¹) atTop (𝓝 (0:ℝ)) :=
     tendsto_inv_atTop_zero.comp (tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1))
   have hconst : Tendsto (fun _ : ℕ => (3:ℝ)) atTop (𝓝 3) := tendsto_const_nhds
   have hh := ((hconst.add (hconst.mul ht)).add (ht.pow 2)).pow 3
   have he (n : ℕ) :
-      (((((n+2)^3-(n+1)^3 : ℕ) : ℝ)^3)/((n+1:ℕ):ℝ)^6) =
-        (3+3*(((n+1:ℕ):ℝ))⁻¹+((((n+1:ℕ):ℝ))⁻¹)^2)^3 := by
-    have hn : (n+1)^3 ≤ (n+2)^3 := by gcongr; omega
+      (((((n+2)^(3 : ℕ)-(n+1)^(3 : ℕ) : ℕ) : ℝ)^(3 : ℕ))/((n+1:ℕ):ℝ)^(6 : ℕ)) =
+        (3+3*(((n+1:ℕ):ℝ))⁻¹+((((n+1:ℕ):ℝ))⁻¹)^(2 : ℕ))^(3 : ℕ) := by
+    have hn : (n+1)^(3 : ℕ) ≤ (n+2)^(3 : ℕ) := by gcongr; omega
     rw [Nat.cast_sub hn]
     push_cast
     field_simp
@@ -148,19 +148,19 @@ theorem at_most_two_changes_real_window {ι : Type*} [DecidableEq ι]
     (hX : 0 ≤ X) (_hH : 0 ≤ H)
     (hlower : X ≤ ((∏ i ∈ s, a i : ℕ):ℝ))
     (hupper : ((∏ i ∈ s, b i : ℕ):ℝ) ≤ X+H)
-    (hwidth : H^3 < 27*X^2) :
+    (hwidth : H^(3 : ℕ) < 27*X^(2 : ℕ)) :
     (s.filter fun i => a i < b i).card ≤ 2 := by
   by_contra hn
   have hprod : (∏ i ∈ s, a i) ≤ ∏ i ∈ s, b i := Finset.prod_le_prod' hab
-  have he : 27*(((∏ i ∈ s, a i : ℕ):ℝ))^2 ≤
-      (((∏ i ∈ s, b i : ℕ):ℝ)-((∏ i ∈ s, a i : ℕ):ℝ))^3 := by
+  have he : 27*(((∏ i ∈ s, a i : ℕ):ℝ))^(2 : ℕ) ≤
+      (((∏ i ∈ s, b i : ℕ):ℝ)-((∏ i ∈ s, a i : ℕ):ℝ))^(3 : ℕ) := by
     rw [← Nat.cast_sub hprod]
     exact_mod_cast product_span_of_three_changes s a b ha hab (by omega)
-  have hl : 27*X^2 ≤ 27*(((∏ i ∈ s, a i : ℕ):ℝ))^2 := by gcongr
+  have hl : 27*X^(2 : ℕ) ≤ 27*(((∏ i ∈ s, a i : ℕ):ℝ))^(2 : ℕ) := by gcongr
   have hs : ((∏ i ∈ s, b i : ℕ):ℝ)-((∏ i ∈ s, a i : ℕ):ℝ) ≤ H := by linarith
   have hzero : (0:ℝ) ≤ ((∏ i ∈ s, b i : ℕ):ℝ)-((∏ i ∈ s, a i : ℕ):ℝ) := by
     exact_mod_cast Nat.zero_le ((∏ i ∈ s, b i)-(∏ i ∈ s, a i))
-  have hu : (((∏ i ∈ s, b i : ℕ):ℝ)-((∏ i ∈ s, a i : ℕ):ℝ))^3 ≤ H^3 := by gcongr
+  have hu : (((∏ i ∈ s, b i : ℕ):ℝ)-((∏ i ∈ s, a i : ℕ):ℝ))^(3 : ℕ) ≤ H^(3 : ℕ) := by gcongr
   linarith
 
 private def cornerHistory (n M : ℕ) (choice : Fin n → Bool) :
@@ -193,7 +193,7 @@ private theorem cornerHistory_receiver (n M : ℕ) (choice : Fin n → Bool)
 theorem complete_histogram_integer_components_at_most_two
     (n M : ℕ) (value : Fin n → Bool → ℕ) (X H : ℝ)
     (hvalue : ∀ c b, 1 ≤ value c b) (hH : 0 ≤ H) (hHX : H ≤ X)
-    (hwidth : (2*H)^3 < 27*(X-H)^2)
+    (hwidth : (2*H)^(3 : ℕ) < 27*(X-H)^(2 : ℕ))
     (haperture : ∀ h ∈ routeEComponentHistogramCell (fun _ : Fin n => Bool) (M+2)
         (routeEComponentHistoryLabel (fun _ : Fin n => Bool) (routeEPrimeActivationSeed n M)),
       ∀ r, routeEComponentSlotReceiver (fun _ : Fin n => Bool) (fun c b => (value c b:ℝ))
@@ -230,8 +230,8 @@ theorem growing_window_aperture :
     ∀ᶠ X : ℝ in atTop,
       0 ≤ Sieve.growingReciprocalMarkerWindow X ∧
       Sieve.growingReciprocalMarkerWindow X ≤ X ∧
-      (2*Sieve.growingReciprocalMarkerWindow X)^3 <
-        27*(X-Sieve.growingReciprocalMarkerWindow X)^2 := by
+      (2*Sieve.growingReciprocalMarkerWindow X)^(3 : ℕ) <
+        27*(X-Sieve.growingReciprocalMarkerWindow X)^(2 : ℕ) := by
   have hlim := Sieve.tendsto_log_growingReciprocalMarkerWindow_div_log_half
   filter_upwards [eventually_gt_atTop (27:ℝ),
     hlim.eventually (Iio_mem_nhds (by norm_num : (1:ℝ)/2 < 2/3))] with X hX hratio
@@ -240,17 +240,17 @@ theorem growing_window_aperture :
     mul_pos (Real.sqrt_pos.mpr hX0) (Sieve.growingReciprocalMarkerH_pos X)
   have hlog : Real.log (Sieve.growingReciprocalMarkerWindow X) < (2/3:ℝ)*Real.log X :=
     (div_lt_iff₀ (Real.log_pos (by linarith))).mp hratio
-  have hcube : (Sieve.growingReciprocalMarkerWindow X)^3 < X^2 := by
+  have hcube : (Sieve.growingReciprocalMarkerWindow X)^(3 : ℕ) < X^(2 : ℕ) := by
     apply (Real.log_lt_log_iff (by positivity) (by positivity)).mp
     rw [Real.log_pow,Real.log_pow]
     norm_num
     linarith
   have hsmall : 3*Sieve.growingReciprocalMarkerWindow X < X := by
     by_contra hn
-    have hc : X^3 ≤ (3*Sieve.growingReciprocalMarkerWindow X)^3 := by gcongr; linarith
-    have hp : 0 < (X-27)*X^2 := mul_pos (by linarith) (by positivity)
+    have hc : X^(3 : ℕ) ≤ (3*Sieve.growingReciprocalMarkerWindow X)^(3 : ℕ) := by gcongr; linarith
+    have hp : 0 < (X-27)*X^(2 : ℕ) := mul_pos (by linarith) (by positivity)
     nlinarith
-  have hmid : (2*X)^2 ≤ (3*(X-Sieve.growingReciprocalMarkerWindow X))^2 := by
+  have hmid : (2*X)^(2 : ℕ) ≤ (3*(X-Sieve.growingReciprocalMarkerWindow X))^(2 : ℕ) := by
     exact pow_le_pow_left₀ (by positivity) (by linarith) 2
   refine ⟨hW.le, by linarith, ?_⟩
   nlinarith [sq_nonneg X]

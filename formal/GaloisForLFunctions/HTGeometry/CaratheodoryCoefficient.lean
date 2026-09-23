@@ -79,16 +79,16 @@ theorem norm_circleAverage_le (g : ℂ → ℂ) (c : ℂ) (R : ℝ) :
 /-! ## Carathéodory's coefficient inequality -/
 
 theorem inv_eq_conj_div {R : ℝ} (hR : 0 < R) {z : ℂ} (hz : ‖z‖ = R) :
-    z⁻¹ = (starRingEnd ℂ) z / ((R : ℂ) ^ 2) := by
+    z⁻¹ = (starRingEnd ℂ) z / ((R : ℂ) ^ (2 : ℕ)) := by
   have hzne : z ≠ 0 := by
     intro h
     rw [h, norm_zero] at hz
     exact (ne_of_gt hR) hz.symm
-  have hmul : z * (starRingEnd ℂ) z = ((R : ℂ)) ^ 2 := by
+  have hmul : z * (starRingEnd ℂ) z = ((R : ℂ)) ^ (2 : ℕ) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hz]
     push_cast
     ring
-  have hRne : ((R : ℂ)) ^ 2 ≠ 0 := pow_ne_zero 2 (by exact_mod_cast ne_of_gt hR)
+  have hRne : ((R : ℂ)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (by exact_mod_cast ne_of_gt hR)
   rw [eq_div_iff hRne, inv_mul_eq_iff_eq_mul₀ hzne, ← hmul]
 
 theorem continuousOn_closedBall_of_diffContOnCl {f : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
@@ -128,13 +128,13 @@ theorem circleAverage_inv_pow_mul_conj_eq_zero (f : ℂ → ℂ) {R : ℝ} (hR :
     rw [habs] at hz
     have hznorm : ‖z‖ = R := by
       simpa using mem_sphere_zero_iff_norm.1 hz
-    have hinv : z⁻¹ = (starRingEnd ℂ) z / ((R : ℂ) ^ 2) := inv_eq_conj_div hR hznorm
+    have hinv : z⁻¹ = (starRingEnd ℂ) z / ((R : ℂ) ^ (2 : ℕ)) := inv_eq_conj_div hR hznorm
     rw [hinv, div_pow, map_mul, map_pow, ← pow_mul, mul_comm 2 n, pow_mul]
     field_simp
   rw [hcongr, circleAverage_const_mul, circleAverage_conj, hzero, map_zero, mul_zero]
 
 
-theorem circleMap_ne_zero {R : ℝ} (hR : 0 < R) (θ : ℝ) : circleMap 0 R θ ≠ 0 := by
+theorem circleMap_ne_zero_caratheodoryCoefficient {R : ℝ} (hR : 0 < R) (θ : ℝ) : circleMap 0 R θ ≠ 0 := by
   intro h
   have hmem := circleMap_mem_sphere 0 hR.le θ
   rw [h] at hmem
@@ -159,7 +159,7 @@ theorem cauchyCoeff_eq_two_mul_re_average (f : ℂ → ℂ) {R : ℝ} (hR : 0 < 
       = 2 * Real.circleAverage (fun z : ℂ => (z⁻¹) ^ n * ((f z).re : ℂ)) 0 R := by
   have hcont := continuous_circle_comp hR hf
   have hinvcont : Continuous fun θ : ℝ => ((circleMap 0 R θ)⁻¹) ^ n :=
-    (((continuous_circleMap 0 R).inv₀ (circleMap_ne_zero hR))).pow n
+    (((continuous_circleMap 0 R).inv₀ (circleMap_ne_zero_caratheodoryCoefficient hR))).pow n
   have hg1 : Continuous fun θ : ℝ =>
       2 * (((circleMap 0 R θ)⁻¹) ^ n * (((f (circleMap 0 R θ)).re : ℝ) : ℂ)) :=
     continuous_const.mul (hinvcont.mul

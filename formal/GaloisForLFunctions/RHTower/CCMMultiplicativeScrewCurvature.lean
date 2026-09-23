@@ -4,8 +4,8 @@ import GaloisForLFunctions.RHTower.CCMRectangularScrewCurvature
 # Multiplicative coordinates for the rectangular screw curvature
 
 When the fixed width is `log m` and the screw coordinate is
-`log (m^2 n)`, the three moving samples are exactly the multiplicative
-triple `n, mn, m^2 n`.  This exposes the rectangular RH detector as a
+`log (m^(2 : ℕ) n)`, the three moving samples are exactly the multiplicative
+triple `n, mn, m^(2 : ℕ) n`.  This exposes the rectangular RH detector as a
 multiplicative midpoint curvature, the form needed by any arithmetic
 covariance or conditional-negative-type construction.
 -/
@@ -44,7 +44,7 @@ theorem xiScrewWindowCurvature_log_mul_sq
   rw [xiScrewWindowCurvature, hlogm2n, hlogmn]
   ring_nf
 
-/-- The logarithmically sampled rectangular Weil value at `m^2 n` is the
+/-- The logarithmically sampled rectangular Weil value at `m^(2 : ℕ) n` is the
 multiplicative midpoint curvature of the Xi screw profile. -/
 theorem xiWeilPolarization_rectangular_log_mul_sq_eq_screwCurvature
     {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) :

@@ -26,8 +26,8 @@ theorem eq_one_sub_conj_of_norm_eq_norm_one_sub
     {u : ℂ} (h : ‖u‖ = ‖1 - u‖) :
     u = 1 - conj u := by
   apply Complex.ext
-  · have hsq := congrArg (fun x : ℝ => x ^ 2) h
-    change ‖u‖ ^ 2 = ‖1 - u‖ ^ 2 at hsq
+  · have hsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) h
+    change ‖u‖ ^ (2 : ℕ) = ‖1 - u‖ ^ (2 : ℕ) at hsq
     rw [Complex.sq_norm, Complex.sq_norm] at hsq
     simp only [Complex.normSq_apply, Complex.sub_re, Complex.one_re,
       Complex.sub_im, Complex.one_im] at hsq
@@ -55,7 +55,7 @@ theorem reflectedBernsteinCrossMoment_one_sub_conj
         bernsteinAffineRowCoefficient u n k *
           conj (bernsteinAffineRowCoefficient (1 - conj u) n k)) =
         ∑ k ∈ Finset.range (n + 1),
-          ((n.choose k : ℂ) ^ 2 * (u * (1 - u)) ^ n) := by
+          ((n.choose k : ℂ) ^ (2 : ℕ) * (u * (1 - u)) ^ n) := by
       apply Finset.sum_congr rfl
       intro k hk
       have hkn : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
@@ -65,14 +65,14 @@ theorem reflectedBernsteinCrossMoment_one_sub_conj
       calc
         ((n.choose k : ℂ) * u ^ k * (1 - u) ^ (n - k)) *
               ((n.choose k : ℂ) * (1 - u) ^ k * u ^ (n - k)) =
-            (n.choose k : ℂ) ^ 2 *
+            (n.choose k : ℂ) ^ (2 : ℕ) *
               (u ^ k * u ^ (n - k)) *
               ((1 - u) ^ (n - k) * (1 - u) ^ k) := by ring
-        _ = (n.choose k : ℂ) ^ 2 * (u ^ n * (1 - u) ^ n) := by
+        _ = (n.choose k : ℂ) ^ (2 : ℕ) * (u ^ n * (1 - u) ^ n) := by
           rw [← pow_add, Nat.add_sub_of_le hkn, ← pow_add,
             Nat.sub_add_cancel hkn]
           ring
-    _ = (∑ k ∈ Finset.range (n + 1), (n.choose k : ℂ) ^ 2) *
+    _ = (∑ k ∈ Finset.range (n + 1), (n.choose k : ℂ) ^ (2 : ℕ)) *
           (u * (1 - u)) ^ n := by rw [Finset.sum_mul]
     _ = (Nat.centralBinom n : ℂ) * (u * (1 - u)) ^ n := by
       congr 1
@@ -85,7 +85,7 @@ theorem centralBinom_le_four_pow (n : ℕ) :
   calc
     (2 * n).choose n ≤ 2 ^ (2 * n) := Nat.choose_le_two_pow _ _
     _ = 4 ^ n := by
-      rw [show (4 : ℕ) = 2 ^ 2 by norm_num, ← pow_mul]
+      rw [show (4 : ℕ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul]
 
 /-- The exact reflected-fibre moment is controlled by the geometric base
 `4 * |u| * |1-u|`. -/
@@ -106,10 +106,10 @@ theorem norm_reflectedBernsteinCrossMoment_one_sub_conj_le
 /-- A distinct reflected pair has a strict cross base below the squared common amplitude. -/
 theorem four_mul_norm_mul_norm_one_sub_lt_amplitude_sq_of_ne_reflection
     {u : ℂ} (hreflect : u ≠ 1 - conj u) :
-    4 * ‖u‖ * ‖1 - u‖ < (‖u‖ + ‖1 - u‖) ^ 2 := by
+    4 * ‖u‖ * ‖1 - u‖ < (‖u‖ + ‖1 - u‖) ^ (2 : ℕ) := by
   have hnorm : ‖u‖ ≠ ‖1 - u‖ := fun h =>
     hreflect (eq_one_sub_conj_of_norm_eq_norm_one_sub h)
-  have hsquare : 0 < (‖u‖ - ‖1 - u‖) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hnorm)
+  have hsquare : 0 < (‖u‖ - ‖1 - u‖) ^ (2 : ℕ) := sq_pos_of_ne_zero (sub_ne_zero.mpr hnorm)
   nlinarith
 
 /-- **Complete equal-amplitude mixed-mode gap.**  Distinct nonreal nodes of one Bernstein ellipse
@@ -121,7 +121,7 @@ theorem exists_reflectedBernsteinCrossMoment_gap_of_distinct_equalAmplitude
     (huB : ‖u‖ + ‖1 - u‖ = B)
     (hvB : ‖v‖ + ‖1 - v‖ = B)
     (huv : u ≠ v) :
-    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
+    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ (2 : ℕ) ∧
       ∀ n : ℕ, ‖reflectedBernsteinCrossMoment u v n‖ ≤ gamma ^ n := by
   by_cases hphase : bernsteinEllipsePhase u = bernsteinEllipsePhase v
   · rcases eq_or_eq_one_sub_conj_of_bernsteinEllipsePhase_eq_of_amplitude_eq

@@ -41,9 +41,9 @@ theorem nonneg_of_deriv {g g' : ℝ → ℝ} (hg0 : g 0 = 0)
 
 /-- Derivative of the quadratic-times-exponential `(v²+av+b)·eᵛ`, as a clean lambda. -/
 theorem hasDerivAt_quad_exp (a b x : ℝ) :
-    HasDerivAt (fun v => (v^2 + a*v + b) * Real.exp v)
-      (((2*x + a) + (x^2 + a*x + b)) * Real.exp x) x := by
-  have hp : HasDerivAt (fun v : ℝ => v^2 + a*v + b) (2*x + a) x := by
+    HasDerivAt (fun v => (v^(2 : ℕ) + a*v + b) * Real.exp v)
+      (((2*x + a) + (x^(2 : ℕ) + a*x + b)) * Real.exp x) x := by
+  have hp : HasDerivAt (fun v : ℝ => v^(2 : ℕ) + a*v + b) (2*x + a) x := by
     simpa using! (((hasDerivAt_pow 2 x).add
       ((hasDerivAt_id x).const_mul a)).add_const b)
   apply (hp.mul (Real.hasDerivAt_exp x)).congr_deriv
@@ -87,15 +87,15 @@ theorem pade_one {u : ℝ} (hu : 0 ≤ u) : (2 - u) * Real.exp u ≤ 2 + u := by
 /-- `[2/2]` Padé inequality `(u²+6u+12) ≤ (u²−6u+12)eᵘ` for `u ≥ 0`: with
 `m(u) = (u²−6u+12)eᵘ−(u²+6u+12)`, all of `m, m', m''` vanish at `0` and `m'''(u) = u²eᵘ ≥ 0`. -/
 theorem pade_two {u : ℝ} (hu : 0 ≤ u) :
-    (u^2 + 6*u + 12) ≤ (u^2 - 6*u + 12) * Real.exp u := by
-  have hm2 : ∀ {v : ℝ}, 0 ≤ v → 0 ≤ (v^2 + (-2)*v + 2) * Real.exp v - 2 := by
-    apply nonneg_of_deriv (g' := fun v => v^2 * Real.exp v) (by norm_num)
+    (u^(2 : ℕ) + 6*u + 12) ≤ (u^(2 : ℕ) - 6*u + 12) * Real.exp u := by
+  have hm2 : ∀ {v : ℝ}, 0 ≤ v → 0 ≤ (v^(2 : ℕ) + (-2)*v + 2) * Real.exp v - 2 := by
+    apply nonneg_of_deriv (g' := fun v => v^(2 : ℕ) * Real.exp v) (by norm_num)
     · intro x; have h := (hasDerivAt_quad_exp (-2) 2 x).sub_const 2
       apply h.congr_deriv
       ring
     · intro x _; positivity
-  have hm1 : ∀ {v : ℝ}, 0 ≤ v → 0 ≤ (v^2 + (-4)*v + 6) * Real.exp v - (2*v + 6) := by
-    apply nonneg_of_deriv (g' := fun v => (v^2 + (-2)*v + 2) * Real.exp v - 2) (by norm_num)
+  have hm1 : ∀ {v : ℝ}, 0 ≤ v → 0 ≤ (v^(2 : ℕ) + (-4)*v + 6) * Real.exp v - (2*v + 6) := by
+    apply nonneg_of_deriv (g' := fun v => (v^(2 : ℕ) + (-2)*v + 2) * Real.exp v - 2) (by norm_num)
     · intro x
       have hlin : HasDerivAt (fun v : ℝ => 2*v + 6) 2 x := by
         simpa using! ((hasDerivAt_id x).const_mul 2).add_const 6
@@ -103,10 +103,10 @@ theorem pade_two {u : ℝ} (hu : 0 ≤ u) :
       apply h.congr_deriv
       ring
     · intro x hx; have := hm2 hx; linarith
-  have hm : ∀ {v : ℝ}, 0 ≤ v → 0 ≤ (v^2 + (-6)*v + 12) * Real.exp v - (v^2 + 6*v + 12) := by
-    apply nonneg_of_deriv (g' := fun v => (v^2 + (-4)*v + 6) * Real.exp v - (2*v + 6)) (by norm_num)
+  have hm : ∀ {v : ℝ}, 0 ≤ v → 0 ≤ (v^(2 : ℕ) + (-6)*v + 12) * Real.exp v - (v^(2 : ℕ) + 6*v + 12) := by
+    apply nonneg_of_deriv (g' := fun v => (v^(2 : ℕ) + (-4)*v + 6) * Real.exp v - (2*v + 6)) (by norm_num)
     · intro x
-      have hquad : HasDerivAt (fun v : ℝ => v^2 + 6*v + 12) (2*x + 6) x := by
+      have hquad : HasDerivAt (fun v : ℝ => v^(2 : ℕ) + 6*v + 12) (2*x + 6) x := by
         simpa using! (((hasDerivAt_pow 2 x).add
           ((hasDerivAt_id x).const_mul 6)).add_const 12)
       have h := (hasDerivAt_quad_exp (-6) 12 x).sub hquad
@@ -114,7 +114,7 @@ theorem pade_two {u : ℝ} (hu : 0 ≤ u) :
       ring
     · intro x hx; have := hm1 hx; linarith
   have h := hm hu
-  have heq : (u^2 + (-6)*u + 12) * Real.exp u = (u^2 - 6*u + 12) * Real.exp u := by ring
+  have heq : (u^(2 : ℕ) + (-6)*u + 12) * Real.exp u = (u^(2 : ℕ) - 6*u + 12) * Real.exp u := by ring
   linarith [h, heq]
 
 /-- **Lower Euler–Maclaurin bound of the pole-excess field.** `1/u − 1/2 ≤ poleExcess u` for
@@ -134,7 +134,7 @@ theorem poleExcess_em_upper {u : ℝ} (hu : 0 < u) : poleExcess u ≤ 1/u - 1/2 
   have h1 : 0 < Real.exp u - 1 := by have := Real.one_lt_exp_iff.mpr hu; linarith
   have hP := pade_two hu.le
   rw [poleExcess]
-  have e1 : 1/u - 1/2 + u/12 = (u^2 - 6*u + 12)/(12*u) := by field_simp; ring
+  have e1 : 1/u - 1/2 + u/12 = (u^(2 : ℕ) - 6*u + 12)/(12*u) := by field_simp; ring
   rw [e1, div_le_div_iff₀ h1 (by positivity)]
   nlinarith [hP]
 

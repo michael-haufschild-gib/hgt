@@ -77,7 +77,7 @@ theorem strictAntiOn_ratio_of_strictAnti_derivRatio {N D N' D' : ℝ → ℝ} {t
     rw [interior_Ioc] at hs
     have hs' : s ∈ Ioc 0 t := ⟨hs.1, hs.2.le⟩
     have hderiv : HasDerivAt (fun x => N x / D x)
-        ((N' s * D s - N s * D' s) / (D s) ^ 2) s :=
+        ((N' s * D s - N s * D' s) / (D s) ^ (2 : ℕ)) s :=
       (hN s hs).div (hD s hs) (hDpos s hs').ne'
     rw [hderiv.deriv]
     apply div_neg_of_neg_of_pos _ (sq_pos_of_pos (hDpos s hs'))

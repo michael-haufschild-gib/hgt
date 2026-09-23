@@ -144,8 +144,8 @@ theorem ququart_first_energy_moment_eq :
 
 /-- The periodic and irrational packets have the same second energy moment. -/
 theorem ququart_second_energy_moment_eq :
-    (∑ i, ququartPeriodicWeight i * ququartEnergy i ^ 2) =
-      ∑ i, ququartAperiodicWeight i * ququartEnergy i ^ 2 := by
+    (∑ i, ququartPeriodicWeight i * ququartEnergy i ^ (2 : ℕ)) =
+      ∑ i, ququartAperiodicWeight i * ququartEnergy i ^ (2 : ℕ) := by
   simp [ququartPeriodicWeight, ququartAperiodicWeight,
     ququartEnergy,
     Fin.sum_univ_four]
@@ -176,7 +176,7 @@ theorem ququartAperiodic_fidelityDeficit_eq (n : ℕ) :
     weightedFidelityDeficit ququartAperiodicWeight
         (ququartAperiodicTickPhase n) =
       ququartIrrationalMass * (1 - ququartIrrationalMass) *
-        ‖HTGeometry.ee ((n : ℝ) * Real.sqrt 2) - 1‖ ^ 2 := by
+        ‖HTGeometry.ee ((n : ℝ) * Real.sqrt 2) - 1‖ ^ (2 : ℕ) := by
   let phase := ququartAperiodicTickPhase n
   have hphase : ∀ i, ‖phase i‖ = 1 := by
     intro i
@@ -190,7 +190,7 @@ theorem ququartAperiodic_fidelityDeficit_eq (n : ℕ) :
   rw [weightedFidelityDeficit]
   rw [show projectiveWeightedPairwiseEnergy ququartAperiodicWeight phase =
       2 * ququartIrrationalMass * (1 - ququartIrrationalMass) *
-        ‖HTGeometry.ee ((n : ℝ) * Real.sqrt 2) - 1‖ ^ 2 by
+        ‖HTGeometry.ee ((n : ℝ) * Real.sqrt 2) - 1‖ ^ (2 : ℕ) by
     simp [projectiveWeightedPairwiseEnergy, ququartAperiodicWeight,
       phase, ququartAperiodicTickPhase, Fin.sum_univ_four,
       norm_sub_rev]
@@ -312,11 +312,11 @@ theorem exists_ququartAperiodic_tickRecurrenceAmplitude_upper
 
 /-- Squared Hilbert--Schmidt speed of the `c=1/2` four-level family. -/
 def ququartMixedSpikeHSSpeedSq (w : Fin 4 → ℝ) : ℝ :=
-  2 * (1 / 2 : ℝ) ^ 2 * finiteWeightedVariance w ququartEnergy
+  2 * (1 / 2 : ℝ) ^ (2 : ℕ) * finiteWeightedVariance w ququartEnergy
 
 /-- SLD quantum Fisher information of the `b=1/8`, `c=1/2` family. -/
 def ququartMixedSpikeQuantumFisher (w : Fin 4 → ℝ) : ℝ :=
-  4 * (1 / 2 : ℝ) ^ 2 / (2 * (1 / 8 : ℝ) + 1 / 2) *
+  4 * (1 / 2 : ℝ) ^ (2 : ℕ) / (2 * (1 / 8 : ℝ) + 1 / 2) *
     finiteWeightedVariance w ququartEnergy
 
 theorem ququart_mixedSpikeHSSpeedSq_eq :
@@ -472,8 +472,8 @@ for the other.
 theorem ququart_equal_moments_information_global_recurrence_separation :
     (∑ i, ququartPeriodicWeight i * ququartEnergy i) =
         ∑ i, ququartAperiodicWeight i * ququartEnergy i ∧
-    (∑ i, ququartPeriodicWeight i * ququartEnergy i ^ 2) =
-        ∑ i, ququartAperiodicWeight i * ququartEnergy i ^ 2 ∧
+    (∑ i, ququartPeriodicWeight i * ququartEnergy i ^ (2 : ℕ)) =
+        ∑ i, ququartAperiodicWeight i * ququartEnergy i ^ (2 : ℕ) ∧
     ContinuousLinearMap.hsNormSq
         (mixedSpikeUnitaryTangent (1 / 2)
           (finiteDiagonalHamiltonian ququartEnergy)

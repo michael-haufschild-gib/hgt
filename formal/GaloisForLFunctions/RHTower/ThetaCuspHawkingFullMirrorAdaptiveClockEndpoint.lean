@@ -18,7 +18,7 @@ RH is exactly synchronization of all these clocks at the quadratic exponent `2`.
 
 This is compatible with the resonance-theory phenomenon proved by Cornean--Jensen--Nenciu
 (`arXiv:1311.7502`): when the ordinary Fermi-golden-rule constant vanishes, metastable decay can
-move from order `epsilon^2` to order `epsilon^4`.  The literature result motivates the clock
+move from order `epsilon^(2 : ℕ)` to order `epsilon^(4 : ℕ)`.  The literature result motivates the clock
 interpretation; the all-order theta-mirror statement below is derived internally from the exact
 eikonal coupling continuation.
 

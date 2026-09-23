@@ -7,7 +7,7 @@ Heat-damping the sharp quadratic witness does not beat `13/18`, because the
 adversarial model's two nonzero atoms are roots of that witness.  This module
 therefore retains an independent channel: the ordinary weighted heat trace
 
-`H₀(u) = sum_i w_i exp(-u x_i^2)`.
+`H₀(u) = sum_i w_i exp(-u x_i^(2 : ℕ))`.
 
 The first-moment normalization forces every degree-four model to carry some
 strictly positive weight away from zero.  Consequently `H₀(u)` is strictly
@@ -38,7 +38,7 @@ noncomputable section
 def DegreeFourMomentModel.independentHeatExcess
     {ι : Type*} [Fintype ι] (M : DegreeFourMomentModel ι) (u : ℝ) : ℝ :=
   ∑ i, if M.node i = 0 then 0
-    else M.weight i * Real.exp (-u * M.node i ^ 2)
+    else M.weight i * Real.exp (-u * M.node i ^ (2 : ℕ))
 
 /-- Every degree-four model has a positive-weight nonzero atom.  This follows
 already from its first moment being one. -/
@@ -108,7 +108,7 @@ theorem DegreeFourMomentModel.tendsto_heatMoment_zero_atTop_zeroMass
     Tendsto (M.heatMoment 0) atTop (nhds M.zeroMass) := by
   have hsum : Tendsto
       (fun u : ℝ ↦ ∑ i,
-        M.weight i * Real.exp (-u * M.node i ^ 2)) atTop
+        M.weight i * Real.exp (-u * M.node i ^ (2 : ℕ))) atTop
       (nhds (∑ i, M.weight i *
         (if M.node i = 0 then 1 else 0))) := by
     exact tendsto_finsetSum Finset.univ fun i _hi ↦
@@ -123,8 +123,8 @@ theorem DegreeFourMomentModel.tendsto_heatMoment_zero_atTop_zeroMass
     by_cases hi : M.node i = 0 <;> simp [hi]
   rw [hlimit] at hsum
   change Tendsto
-    (fun u : ℝ ↦ ∑ i, M.weight i * M.node i ^ 0 *
-      Real.exp (-u * M.node i ^ 2)) atTop (nhds M.zeroMass)
+    (fun u : ℝ ↦ ∑ i, M.weight i * M.node i ^ (0 : ℕ) *
+      Real.exp (-u * M.node i ^ (2 : ℕ))) atTop (nhds M.zeroMass)
   simpa using hsum
 
 /-- An ordinary heat-trace upper bound at `5/36` strictly beats the static

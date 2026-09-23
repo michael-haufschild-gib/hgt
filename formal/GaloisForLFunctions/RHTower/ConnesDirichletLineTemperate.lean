@@ -68,14 +68,14 @@ theorem connes_dirichletL_hasTemperateGrowth {χ : DirichletCharacter ℂ N} (h�
           linarith [him.1, him.2]
     have habs : (0 : ℝ) ≤ |s| := abs_nonneg s
     linarith
-  have hcube : ‖z - 4‖ ^ 3 ≤ 125 * (1 + |s|) ^ 3 := by
+  have hcube : ‖z - 4‖ ^ (3 : ℕ) ≤ 125 * (1 + |s|) ^ (3 : ℕ) := by
     have h0 : (0 : ℝ) ≤ ‖z - 4‖ := norm_nonneg _
     have hpow := pow_le_pow_left₀ h0 hnorm 3
-    calc ‖z - 4‖ ^ 3 ≤ (5 * (1 + |s|)) ^ 3 := hpow
-      _ = 125 * (1 + |s|) ^ 3 := by ring
-  calc ‖DirichletCharacter.LFunction χ z‖ ≤ C * ‖z - 4‖ ^ 3 := hb
-    _ ≤ C * (125 * (1 + |s|) ^ 3) := mul_le_mul_of_nonneg_left hcube hC0.le
-    _ = C * 125 * (1 + |s|) ^ 3 := by ring
+    calc ‖z - 4‖ ^ (3 : ℕ) ≤ (5 * (1 + |s|)) ^ (3 : ℕ) := hpow
+      _ = 125 * (1 + |s|) ^ (3 : ℕ) := by ring
+  calc ‖DirichletCharacter.LFunction χ z‖ ≤ C * ‖z - 4‖ ^ (3 : ℕ) := hb
+    _ ≤ C * (125 * (1 + |s|) ^ (3 : ℕ)) := mul_le_mul_of_nonneg_left hcube hC0.le
+    _ = C * 125 * (1 + |s|) ^ (3 : ℕ) := by ring
 
 /-- **The multiplier of App I (25) for a Dirichlet `L`-function.** -/
 def connesDirichletLineMultiplier (χ : DirichletCharacter ℂ N) :

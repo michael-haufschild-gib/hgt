@@ -50,7 +50,7 @@ theorem quadratic_windowShiftSum_normSq_le_divisorRpow [DecidableEq I]
     (P : OddPrimeFamily I) (A M : ℕ) (b : ℕ → ℂ) {ε : ℝ} (hε : 0 < ε) :
     ∑ x : ZMod P.modulus, Complex.normSq (quadraticWindowShiftSum P A M b x) ≤
       ((M : ℝ) * (Sieve.divisorBoundConst ε * (P.modulus : ℝ) ^ ε) +
-        (P.modulus : ℝ)) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ 2 := by
+        (P.modulus : ℝ)) * ∑ n ∈ Finset.Icc 1 M, ‖b n‖ ^ (2 : ℕ) := by
   rw [quadratic_windowShiftSum_normSq_eq_interval]
   exact quadratic_intervalShiftSum_normSq_le_divisorRpow P M b hε
 

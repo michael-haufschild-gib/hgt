@@ -81,12 +81,12 @@ theorem ladder_rung_ratio_tendsto (k : ℕ) {A₀ A₁ : ℝ} (hA₀ : 0 < A₀)
       Filter.atTop (nhds (constrainedProlateHermiteTheta k)) := by
   have hS := constrainedProlateHermiteWeightSum_pos k
   have hw := constrainedProlateHermiteWeight_pos (k + 1)
-  have hsqS : Real.sqrt (constrainedProlateHermiteWeightSum k) ^ 2
+  have hsqS : Real.sqrt (constrainedProlateHermiteWeightSum k) ^ (2 : ℕ)
       = constrainedProlateHermiteWeightSum k := Real.sq_sqrt hS.le
-  have hsqw : Real.sqrt (constrainedProlateHermiteWeight (k + 1)) ^ 2
+  have hsqw : Real.sqrt (constrainedProlateHermiteWeight (k + 1)) ^ (2 : ℕ)
       = constrainedProlateHermiteWeight (k + 1) := Real.sq_sqrt hw.le
-  have hl : Real.sqrt (constrainedProlateHermiteWeightSum k) ^ 2
-      + Real.sqrt (constrainedProlateHermiteWeight (k + 1)) ^ 2 ≠ 0 := by
+  have hl : Real.sqrt (constrainedProlateHermiteWeightSum k) ^ (2 : ℕ)
+      + Real.sqrt (constrainedProlateHermiteWeight (k + 1)) ^ (2 : ℕ) ≠ 0 := by
     rw [hsqS, hsqw]; positivity
   have h := twoModeSecularRoot_fuchs_ratio_tendsto hA₀ hA₁ n hm hl
   rw [hsqS, hsqw, ← constrainedProlateHermiteWeightSum_succ,

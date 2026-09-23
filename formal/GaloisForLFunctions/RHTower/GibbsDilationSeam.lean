@@ -63,8 +63,8 @@ theorem gibbsDiag_eq_sum_dilates (S : Finset ℕ) (x z : ℝ) :
 `p⁻¹`.  This is the spectral normalization that places the commuting dilation family on
 the Mellin critical line. -/
 theorem integral_dilate_sq (p : ℝ) (hp : 0 < p) (f : ℝ → ℝ) :
-    ∫ x : ℝ, (dilate p f x) ^ 2 = p⁻¹ * ∫ x : ℝ, (f x) ^ 2 := by
-  have h := MeasureTheory.Measure.integral_comp_mul_left (fun y => (f y) ^ 2) p
+    ∫ x : ℝ, (dilate p f x) ^ (2 : ℕ) = p⁻¹ * ∫ x : ℝ, (f x) ^ (2 : ℕ) := by
+  have h := MeasureTheory.Measure.integral_comp_mul_left (fun y => (f y) ^ (2 : ℕ)) p
   simp only [dilate]
   rw [h, smul_eq_mul, abs_of_pos (inv_pos.mpr hp)]
 

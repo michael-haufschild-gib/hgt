@@ -23,7 +23,7 @@ namespace HilbertSchmidt
 variable {ι : Type*}
 
 theorem hsNormSq_kernel_smul (c : ℂ) (K : ι × ι → ℂ) :
-    hsNormSq (c • K) = ‖c‖ ^ 2 * hsNormSq K := by
+    hsNormSq (c • K) = ‖c‖ ^ (2 : ℕ) * hsNormSq K := by
   rw [hsNormSq, hsNormSq, ← tsum_mul_left]
   refine tsum_congr fun p => ?_
   rw [Pi.smul_apply, norm_smul, mul_pow]

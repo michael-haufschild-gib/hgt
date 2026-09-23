@@ -89,7 +89,7 @@ required. -/
 theorem weight_generating_zero : Real.cos (π / 2) = 0 := Real.cos_pi_div_two
 
 /-- The corresponding point in the squared variable is negative. -/
-theorem weight_zero_negative : -((π / 2) ^ 2) < 0 := by
+theorem weight_zero_negative : -((π / 2) ^ (2 : ℕ)) < 0 := by
   have : 0 < π := Real.pi_pos
   nlinarith
 

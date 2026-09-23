@@ -65,7 +65,7 @@ def modularThetaSourcePositiveSl2R : ModularThetaSourcePositivePolynomial :=
 /-- One sixteenth of the reconstructed source-positive gap. -/
 def modularThetaSourcePositiveSl2K : ModularThetaSourcePositivePolynomial :=
   MvPolynomial.X .Q + MvPolynomial.C (3 / 8 : ℂ) -
-    MvPolynomial.C (3 / 8 : ℂ) * MvPolynomial.X .B ^ 2
+    MvPolynomial.C (3 / 8 : ℂ) * MvPolynomial.X .B ^ (2 : ℕ)
 
 /-- Lie derivative along an arbitrary rank-three polynomial field. -/
 def modularThetaSourcePositiveFieldLie
@@ -135,7 +135,7 @@ theorem modularThetaSourcePositiveVectorField_coordinates :
           MvPolynomial.C (16 : ℂ) * modularThetaSourcePositiveSl2K ∧
       modularThetaSourcePositiveFieldLie modularThetaSourcePositiveVectorField
           (MvPolynomial.X .B) =
-        MvPolynomial.X .B ^ 2 +
+        MvPolynomial.X .B ^ (2 : ℕ) +
           MvPolynomial.C (4 : ℂ) * modularThetaSourcePositiveSl2K - 1 ∧
       modularThetaSourcePositiveFieldLie modularThetaSourcePositiveVectorField
           modularThetaSourcePositiveSl2K =

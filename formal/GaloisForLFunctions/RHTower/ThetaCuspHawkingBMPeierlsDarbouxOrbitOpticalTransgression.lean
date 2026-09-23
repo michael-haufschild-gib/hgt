@@ -30,11 +30,11 @@ theorem hbXiPeierlsFESchwarzOrbitDarbouxPhaseMismatch_optical_eq
     let b := (q.1 : ℂ).im
     let c := d4BMXiHorizonDarbouxAlgebraicWeight q
     let d := d4BMXiHorizonDarbouxAlgebraicWeight (xiZeroCopyReflectEquiv q)
-    let y := 12 * horizonAmplitude ^ 2 * omega
-    b ^ 2 * (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2) *
+    let y := 12 * horizonAmplitude ^ (2 : ℕ) * omega
+    b ^ (2 : ℕ) * (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ)) *
         d4BMXiAbsorbedHorizonDarbouxPhaseMismatch q horizonAmplitude omega *
           (8 * (n : ℝ) + 5) =
-      -16 * y ^ 2 * a ^ 2 * (1 - a) ^ 2 *
+      -16 * y ^ (2 : ℕ) * a ^ (2 : ℕ) * (1 - a) ^ (2 : ℕ) *
         (hbXiPeierlsFESchwarzOrbitCubicTrace n q).re := by
   dsimp only
   have hopt := d4BMXiAbsorbedHorizonDarbouxPhaseMismatch_optical_eq
@@ -51,7 +51,7 @@ variable {H K : Type*}
 /-- Positive optical power canonically extracted from the negative Peierls orbit trace. -/
 def hbXiPeierlsFESchwarzOrbitRadiationPower
     (radiation : H →ₗ[ℂ] K) (psi : H) (n : ℕ) (q : XiZeroCopy) : ℝ :=
-  -(hbXiPeierlsFESchwarzOrbitCubicTrace n q).re * ‖radiation psi‖ ^ 2
+  -(hbXiPeierlsFESchwarzOrbitCubicTrace n q).re * ‖radiation psi‖ ^ (2 : ℕ)
 
 theorem hbXiPeierlsFESchwarzOrbitRadiationPower_eq_flux
     (radiation : H →ₗ[ℂ] K) (psi : H) (n : ℕ) (q : XiZeroCopy) :
@@ -107,11 +107,11 @@ theorem hbXiPeierlsFESchwarzOrbitDarbouxRadiation_optical_eq
     let b := (q.1 : ℂ).im
     let c := d4BMXiHorizonDarbouxAlgebraicWeight q
     let d := d4BMXiHorizonDarbouxAlgebraicWeight (xiZeroCopyReflectEquiv q)
-    let y := 12 * horizonAmplitude ^ 2 * omega
-    b ^ 2 * (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2) *
+    let y := 12 * horizonAmplitude ^ (2 : ℕ) * omega
+    b ^ (2 : ℕ) * (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ)) *
         d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy
           radiation psi q horizonAmplitude omega * (8 * (n : ℝ) + 5) =
-      16 * y ^ 2 * a ^ 2 * (1 - a) ^ 2 *
+      16 * y ^ (2 : ℕ) * a ^ (2 : ℕ) * (1 - a) ^ (2 : ℕ) *
         hbXiPeierlsFESchwarzOrbitRadiationPower radiation psi n q := by
   dsimp only
   have hopt :=

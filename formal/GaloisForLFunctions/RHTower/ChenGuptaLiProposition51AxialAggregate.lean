@@ -135,7 +135,7 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_equalCharacterTailBudge
       ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
         (cglLemma45FibreRows P) (cglProposition51AxialFrequencyVector m.val)‖ ≤
       ∑ u : CGLLemma45FibreEqualCharacterOffDiagonalTriple P,
-        ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+        ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
           cglProposition51FibreAxialAnalyticBudget P w N n *
             cglProposition51AxialFrequencyTailMass w N (cglLemma45FibreModulus q)
               (P.ordinate u.1.2.2 - P.ordinate u.1.1) := by
@@ -172,7 +172,7 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_equalCharacterTailBudge
             (cglLemma45FibreRows P) u.1 m.val‖ :=
       Summable.tsum_finsetSum fun u _ => hrowNorm u
     _ ≤ ∑ u : CGLLemma45FibreEqualCharacterOffDiagonalTriple P,
-        ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+        ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
           cglProposition51FibreAxialAnalyticBudget P w N n *
             cglProposition51AxialFrequencyTailMass w N (cglLemma45FibreModulus q)
               (P.ordinate u.1.2.2 - P.ordinate u.1.1) := by

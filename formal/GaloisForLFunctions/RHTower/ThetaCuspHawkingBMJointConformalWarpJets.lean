@@ -14,7 +14,7 @@ def heightRootFirst (y : ℝ) : ℝ := Real.sqrt y/(2*y)
 
 theorem warp_pos (t : ℝ) : 0 < warp t := inv_pos.mpr (Real.cosh_pos t)
 
-theorem warp_relation (t : ℝ) : radialUnit t^2+warp t^2 = 1 := by
+theorem warp_relation (t : ℝ) : radialUnit t^(2 : ℕ)+warp t^(2 : ℕ) = 1 := by
   have hc := ne_of_gt (Real.cosh_pos t)
   unfold warp radialUnit
   field_simp
@@ -25,12 +25,12 @@ theorem warp_hasDerivAt (t : ℝ) : HasDerivAt warp (warp t*radialUnit t) t := b
   dsimp [warp,radialUnit]
   field_simp
 
-theorem radialUnit_warp_derivative (t : ℝ) : HasDerivAt radialUnit (-(warp t)^2) t := by
+theorem radialUnit_warp_derivative (t : ℝ) : HasDerivAt radialUnit (-(warp t)^(2 : ℕ)) t := by
   convert radialUnit_hasDerivAt t using 1
   linarith [warp_relation t]
 
 theorem warpFirst_hasDerivAt (t : ℝ) :
-    HasDerivAt (fun x => warp x*radialUnit x) (warp t*(2*radialUnit t^2-1)) t := by
+    HasDerivAt (fun x => warp x*radialUnit x) (warp t*(2*radialUnit t^(2 : ℕ)-1)) t := by
   apply ((warp_hasDerivAt t).mul (radialUnit_hasDerivAt t)).congr_deriv
   ring
 
@@ -47,7 +47,7 @@ theorem radialRoot_hasDerivAt (t : ℝ) :
 
 theorem radialRootFirst_hasDerivAt (t : ℝ) :
     HasDerivAt (fun x => -radialUnit x/2*radialRoot x)
-      ((warp t^2/2+radialUnit t^2/4)*radialRoot t) t := by
+      ((warp t^(2 : ℕ)/2+radialUnit t^(2 : ℕ)/4)*radialRoot t) t := by
   apply (((radialUnit_warp_derivative t).neg.div_const 2).mul
     (radialRoot_hasDerivAt t)).congr_deriv
   simp only [Pi.neg_apply]
@@ -62,7 +62,7 @@ theorem heightRoot_hasDerivAt (y : ℝ) (hy : 0 < y) :
   exact (Real.sq_sqrt hy.le).symm
 
 theorem heightRootFirst_hasDerivAt (y : ℝ) (hy : 0 < y) :
-    HasDerivAt heightRootFirst (-Real.sqrt y/(4*y^2)) y := by
+    HasDerivAt heightRootFirst (-Real.sqrt y/(4*y^(2 : ℕ))) y := by
   apply ((heightRoot_hasDerivAt y hy).div ((hasDerivAt_id y).const_mul 2)
     (by positivity : (2:ℝ)*y ≠ 0)).congr_deriv
   dsimp [heightRootFirst]

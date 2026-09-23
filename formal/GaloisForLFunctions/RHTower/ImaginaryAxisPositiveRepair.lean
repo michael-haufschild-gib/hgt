@@ -169,7 +169,7 @@ theorem exists_scalar_add_mul_pos_real_on_imaginaryAxis
 
 /-- Polynomial form of one real-even quartet atom. -/
 def quartetFlatPolynomial (α : ℂ) : Polynomial ℂ :=
-  (X ^ 2 - C (α ^ 2)) * (X ^ 2 - C (((starRingEnd ℂ) α) ^ 2))
+  (X ^ (2 : ℕ) - C (α ^ (2 : ℕ))) * (X ^ (2 : ℕ) - C (((starRingEnd ℂ) α) ^ (2 : ℕ)))
 
 /-- Polynomial carrying a finite packet of quartet multiplicities. -/
 def simultaneousFlatPolynomial {ι : Type*} [Fintype ι]
@@ -222,7 +222,7 @@ theorem quartetFlatPolynomial_pow_dvd_simultaneousFlatPolynomial
 /-- The polynomial packet is strictly positive real on the imaginary axis. -/
 theorem simultaneousFlatPolynomial_mul_I_pos_real {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) (y : ℝ)
-    (hne : ∀ i, ((y : ℂ) ^ 2) + (α i) ^ 2 ≠ 0) :
+    (hne : ∀ i, ((y : ℂ) ^ (2 : ℕ)) + (α i) ^ (2 : ℕ) ≠ 0) :
     ∃ r : ℝ, 0 < r ∧
       (simultaneousFlatPolynomial M α).eval ((y : ℂ) * I) = (r : ℂ) := by
   simpa only [simultaneousFlatPolynomial_eval] using
@@ -244,7 +244,7 @@ theorem exists_scalar_add_simultaneousFlatPolynomial_pos_real_on_imaginaryAxis
     {ι : Type*} [Fintype ι]
     (B : Polynomial ℂ) (M : ι → ℕ) (α : ι → ℂ)
     (hBreal : ∀ y : ℝ, (B.eval ((y : ℂ) * I)).im = 0)
-    (hne : ∀ i y, ((y : ℂ) ^ 2) + (α i) ^ 2 ≠ 0)
+    (hne : ∀ i y, ((y : ℂ) ^ (2 : ℕ)) + (α i) ^ (2 : ℕ) ≠ 0)
     (hdegree : B.degree < (simultaneousFlatPolynomial M α).degree) :
     ∃ L : ℝ,
       (∀ i, quartetFlatPolynomial (α i) ^ M i ∣

@@ -22,7 +22,7 @@ noncomputable section
 arcsine mean. -/
 theorem tendsto_scaled_xiShiftedDegreeOneNullRoot_squareParam :
     Tendsto
-      (fun w : ℝ => w ^ 2 * xiShiftedDegreeOneNullRoot (w ^ 2))
+      (fun w : ℝ => w ^ (2 : ℕ) * xiShiftedDegreeOneNullRoot (w ^ (2 : ℕ)))
       atTop (nhds (1 / 2 : ℝ)) := by
   have h0 := tendsto_scaled_re_xiShiftedReciprocalMoment_squareParam 0
   have h1 := tendsto_scaled_re_xiShiftedReciprocalMoment_squareParam 1
@@ -40,7 +40,7 @@ theorem tendsto_scaled_xiShiftedDegreeOneNullRoot_squareParam :
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with w hw
   have hw0 : w ≠ 0 := ne_of_gt (lt_trans zero_lt_one hw)
   have hlog : Real.log w ≠ 0 := ne_of_gt (Real.log_pos hw)
-  have hm0 : (xiShiftedReciprocalMoment (w ^ 2) 0).re ≠ 0 := by
+  have hm0 : (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) 0).re ≠ 0 := by
     simpa [xiShiftedCassiniResponse] using
       (xiShiftedCassiniResponse_pos (sq_pos_of_pos (lt_trans zero_lt_one hw))).ne'
   rw [xiShiftedDegreeOneNullRoot, xiShiftedCassiniResponse]
@@ -51,9 +51,9 @@ theorem tendsto_scaled_xiShiftedDegreeOneNullRoot_squareParam :
 /-- Canonical degree-one null polynomial is the scaled moving amplitude at its endogenous root. -/
 theorem xiShiftedDegreeOneNullPolynomial_eq_scaledAmplitude
     {w : ℝ} (hw : w ≠ 0) :
-    xiShiftedDegreeOneNullPolynomial (w ^ 2) =
+    xiShiftedDegreeOneNullPolynomial (w ^ (2 : ℕ)) =
       xiShiftedAdaptiveScaledDegreeOneAmplitude
-        (w ^ 2 * xiShiftedDegreeOneNullRoot (w ^ 2)) w := by
+        (w ^ (2 : ℕ) * xiShiftedDegreeOneNullRoot (w ^ (2 : ℕ))) w := by
   simp only [xiShiftedDegreeOneNullPolynomial,
     xiShiftedAdaptiveScaledDegreeOneAmplitude]
   congr 1
@@ -63,11 +63,11 @@ theorem xiShiftedDegreeOneNullPolynomial_eq_scaledAmplitude
 the moving first Hankel null flag has exact positive limit `11/64`. -/
 theorem tendsto_scaled_xiShiftedDegreeOneAdmittedArithmeticSource :
     Tendsto
-      (fun w : ℝ => w ^ 9 / Real.log w *
+      (fun w : ℝ => w ^ (9 : ℕ) / Real.log w *
         xiShiftedAdaptiveMixedCompletedArithmeticSource w
-          (xiShiftedDegreeOneNullPolynomial (w ^ 2)))
+          (xiShiftedDegreeOneNullPolynomial (w ^ (2 : ℕ))))
       atTop (nhds (11 / 64 : ℝ)) := by
-  let R : ℝ → ℝ := fun w => w ^ 2 * xiShiftedDegreeOneNullRoot (w ^ 2)
+  let R : ℝ → ℝ := fun w => w ^ (2 : ℕ) * xiShiftedDegreeOneNullRoot (w ^ (2 : ℕ))
   have hR : Tendsto R atTop (nhds (1 / 2 : ℝ)) := by
     simpa [R] using tendsto_scaled_xiShiftedDegreeOneNullRoot_squareParam
   have h2 := tendsto_scaled_re_xiShiftedReciprocalMoment_squareParam 2
@@ -78,7 +78,7 @@ theorem tendsto_scaled_xiShiftedDegreeOneAdmittedArithmeticSource :
   have ht4 := h4.const_mul 2
   have h := (ht2.add ht3).add ht4
   have hlim :
-      (1 / 2 : ℝ) ^ 2 *
+      (1 / 2 : ℝ) ^ (2 : ℕ) *
           GaloisForLFunctions.HTGeometry.normalizedCentralBinom 2 +
         (-3 * (1 / 2 : ℝ)) *
           GaloisForLFunctions.HTGeometry.normalizedCentralBinom 3 +
@@ -102,12 +102,12 @@ sufficiently far right. -/
 theorem xiShiftedDegreeOneAdmittedArithmeticSource_eventually_pos :
     ∀ᶠ w : ℝ in atTop,
       0 < xiShiftedAdaptiveMixedCompletedArithmeticSource w
-        (xiShiftedDegreeOneNullPolynomial (w ^ 2)) := by
+        (xiShiftedDegreeOneNullPolynomial (w ^ (2 : ℕ))) := by
   have hlimit : (0 : ℝ) < 11 / 64 := by norm_num
   have hscaled := tendsto_scaled_xiShiftedDegreeOneAdmittedArithmeticSource.eventually
     (Ioi_mem_nhds hlimit)
   filter_upwards [hscaled, eventually_gt_atTop (1 : ℝ)] with w hs hw
-  have hscale : 0 < w ^ 9 / Real.log w :=
+  have hscale : 0 < w ^ (9 : ℕ) / Real.log w :=
     div_pos (pow_pos (lt_trans zero_lt_one hw) _) (Real.log_pos hw)
   rcases mul_pos_iff.mp hs with h | h
   · exact h.2

@@ -212,7 +212,7 @@ from the already-proved Cauchy Gram rather than from a pointwise estimate. -/
 theorem norm_sq_halfLineLaplaceFeature_vertical
     {h t : ℝ} (hh : 0 < h) :
     ‖halfLineLaplaceFeature
-        ((h : ℂ) + I * (t : ℂ)) (by simp; exact hh)‖ ^ 2 =
+        ((h : ℂ) + I * (t : ℂ)) (by simp; exact hh)‖ ^ (2 : ℕ) =
       1 / (2 * h) := by
   have hi := inner_halfLineLaplaceFeature
     (w := ((h : ℂ) + I * (t : ℂ)))

@@ -61,7 +61,7 @@ end Bottcher
 namespace Bottcher
 
 theorem summable_exp_neg_half (y : ℝ) (hy : 0 < y) :
-    Summable (fun n : ℤ => Real.exp (-π * ((n : ℝ) ^ 2 + n) * y)) := by
+    Summable (fun n : ℤ => Real.exp (-π * ((n : ℝ) ^ (2 : ℕ) + n) * y)) := by
   apply Summable.of_nonneg_of_le (fun n => (Real.exp_pos _).le) ?_
     (summable_pow_mul_jacobiTheta₂_term_bound (y / 2) hy 0)
   intro n
@@ -71,8 +71,8 @@ theorem summable_exp_neg_half (y : ℝ) (hy : 0 < y) :
   have h : (0 : ℝ) ≤ ((|n| : ℤ) : ℝ) + (n : ℝ) := by exact_mod_cast hz
   nlinarith [mul_nonneg (mul_pos Real.pi_pos hy).le h]
 
-theorem quad_nonneg (n : ℤ) : (0 : ℝ) ≤ (n : ℝ) ^ 2 + n := by
-  have hq : (0 : ℤ) ≤ n ^ 2 + n := by
+theorem quad_nonneg (n : ℤ) : (0 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) + n := by
+  have hq : (0 : ℤ) ≤ n ^ (2 : ℕ) + n := by
     by_cases h : 0 ≤ n
     · nlinarith [mul_nonneg h h]
     · push Not at h
@@ -80,7 +80,7 @@ theorem quad_nonneg (n : ℤ) : (0 : ℝ) ≤ (n : ℝ) ^ 2 + n := by
   exact_mod_cast hq
 
 theorem norm_thetaTwo_le {τ : ℂ} (hτ : 0 < τ.im) :
-    ‖thetaTwo τ‖ ≤ Real.exp (-π * τ.im / 4) * ∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ 2 + n) * τ.im) := by
+    ‖thetaTwo τ‖ ≤ Real.exp (-π * τ.im / 4) * ∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ (2 : ℕ) + n) * τ.im) := by
   unfold thetaTwo
   rw [norm_mul]
   have hpf : ‖Complex.exp ((Real.pi : ℂ) * I * τ / 4)‖ = Real.exp (-π * τ.im / 4) := by
@@ -88,7 +88,7 @@ theorem norm_thetaTwo_le {τ : ℂ} (hτ : 0 < τ.im) :
   rw [hpf]
   have hsummN : Summable (fun n : ℤ => ‖jacobiTheta₂_term n (τ / 2) τ‖) := by
     simp only [norm_jacobiTheta₂_half_term]; exact summable_exp_neg_half τ.im hτ
-  have hbound : ‖jacobiTheta₂ (τ / 2) τ‖ ≤ ∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ 2 + n) * τ.im) := by
+  have hbound : ‖jacobiTheta₂ (τ / 2) τ‖ ≤ ∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ (2 : ℕ) + n) * τ.im) := by
     rw [jacobiTheta₂]
     refine (norm_tsum_le_tsum_norm hsummN).trans ?_
     rw [tsum_congr (fun n => norm_jacobiTheta₂_half_term τ n)]
@@ -105,7 +105,7 @@ theorem tendsto_exp_neg_pi_im_div4 :
 theorem tendsto_thetaTwo_atImInfty :
     Tendsto thetaTwo (comap Complex.im atTop) (𝓝 0) := by
   have hb : ∀ᶠ τ : ℂ in comap Complex.im atTop,
-      ‖thetaTwo τ‖ ≤ Real.exp (-π * τ.im / 4) * ∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ 2 + n)) := by
+      ‖thetaTwo τ‖ ≤ Real.exp (-π * τ.im / 4) * ∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ (2 : ℕ) + n)) := by
     filter_upwards [tendsto_comap.eventually (eventually_ge_atTop (1:ℝ))] with τ hτ
     refine (norm_thetaTwo_le (by linarith : 0 < τ.im)).trans ?_
     apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
@@ -116,9 +116,9 @@ theorem tendsto_thetaTwo_atImInfty :
     nlinarith [mul_nonneg (mul_nonneg Real.pi_pos.le (quad_nonneg n))
       (by linarith : (0:ℝ) ≤ τ.im - 1)]
   have htend : Tendsto
-      (fun τ : ℂ => Real.exp (-π * τ.im / 4) * ∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ 2 + n)))
+      (fun τ : ℂ => Real.exp (-π * τ.im / 4) * ∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ (2 : ℕ) + n)))
       (comap Complex.im atTop) (𝓝 0) := by
-    have h := tendsto_exp_neg_pi_im_div4.mul_const (∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ 2 + n)))
+    have h := tendsto_exp_neg_pi_im_div4.mul_const (∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ (2 : ℕ) + n)))
     simpa using h
   exact squeeze_zero_norm' hb htend
 

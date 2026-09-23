@@ -83,7 +83,7 @@ def poleQNum (ω : ℝ) (z : ℂ) : ℂ :=
 
 /-- The denominator of the parameter derivative of the shifted pole-unit quotient. -/
 def poleQDen (ω : ℝ) (z : ℂ) : ℂ :=
-  ((1 + (ω : ℂ) + z) * zetaPoleUnit (1 + 2 * (ω : ℂ) + z)) ^ 2
+  ((1 + (ω : ℂ) + z) * zetaPoleUnit (1 + 2 * (ω : ℂ) + z)) ^ (2 : ℕ)
 
 theorem mobiusCausalQDeriv_eq_div (ω : ℝ) (z : ℂ) :
     mobiusCausalQDeriv ω z = poleQNum ω z / poleQDen ω z := rfl
@@ -100,7 +100,7 @@ def poleQDenDeriv (ω : ℝ) (z : ℂ) : ℂ :=
     (zetaPoleUnit (1 + 2 * (ω : ℂ) + z) +
       (1 + (ω : ℂ) + z) * deriv zetaPoleUnit (1 + 2 * (ω : ℂ) + z))
 
-theorem hasDerivAt_shift (c : ℂ) (z : ℂ) : HasDerivAt (fun w : ℂ => c + w) 1 z := by
+theorem hasDerivAt_shift_mobiusCausalNearOriginBound (c : ℂ) (z : ℂ) : HasDerivAt (fun w : ℂ => c + w) 1 z := by
   simpa using (hasDerivAt_id z).const_add c
 
 theorem hasDerivAt_zetaPoleUnit_comp (ω : ℝ) (z : ℂ) :
@@ -125,8 +125,8 @@ theorem hasDerivAt_poleQNum (ω : ℝ) (z : ℂ) :
     HasDerivAt (fun w : ℂ => poleQNum ω w) (poleQNumDeriv ω z) z := by
   have hZ := hasDerivAt_zetaPoleUnit_comp ω z
   have hZ' := hasDerivAt_deriv_zetaPoleUnit_comp ω z
-  have ha : HasDerivAt (fun w : ℂ => 1 + (ω : ℂ) + w) 1 z := hasDerivAt_shift (1 + (ω : ℂ)) z
-  have hu : HasDerivAt (fun w : ℂ => 2 * (ω : ℂ) + w) 1 z := hasDerivAt_shift (2 * (ω : ℂ)) z
+  have ha : HasDerivAt (fun w : ℂ => 1 + (ω : ℂ) + w) 1 z := hasDerivAt_shift_mobiusCausalNearOriginBound (1 + (ω : ℂ)) z
+  have hu : HasDerivAt (fun w : ℂ => 2 * (ω : ℂ) + w) 1 z := hasDerivAt_shift_mobiusCausalNearOriginBound (2 * (ω : ℂ)) z
   have h := ((ha.mul hZ).const_mul (2 : ℂ)).sub
     (hu.mul (hZ.add (ha.mul (hZ'.const_mul (2 : ℂ)))))
   refine h.congr_deriv ?_
@@ -137,7 +137,7 @@ theorem hasDerivAt_poleQNum (ω : ℝ) (z : ℂ) :
 theorem hasDerivAt_poleQDen (ω : ℝ) (z : ℂ) :
     HasDerivAt (fun w : ℂ => poleQDen ω w) (poleQDenDeriv ω z) z := by
   have hZ := hasDerivAt_zetaPoleUnit_comp ω z
-  have ha : HasDerivAt (fun w : ℂ => 1 + (ω : ℂ) + w) 1 z := hasDerivAt_shift (1 + (ω : ℂ)) z
+  have ha : HasDerivAt (fun w : ℂ => 1 + (ω : ℂ) + w) 1 z := hasDerivAt_shift_mobiusCausalNearOriginBound (1 + (ω : ℂ)) z
   have h := (ha.mul hZ).pow 2
   refine h.congr_deriv ?_
   simp only [Pi.mul_apply]
@@ -161,11 +161,11 @@ theorem exists_near_origin_bound :
         ‖mobiusCausalMultiplierDeriv ω z‖ ≤ C := by
   obtain ⟨ρ, Cb, hρpos, hρ8, hCb1, hbd⟩ := exists_poleUnit_ball_bounds
   have hCb0 : (0 : ℝ) < Cb := by linarith
-  refine ⟨ρ / 4, ρ / 8, Cb * (2 * (40 * Cb ^ 2) * (40 * Cb ^ 2) / (1 / 16 : ℝ) ^ 2) +
-    Cb * ((40 * Cb ^ 2) / (1 / 16 : ℝ)), by linarith, by linarith, by positivity, ?_⟩
+  refine ⟨ρ / 4, ρ / 8, Cb * (2 * (40 * Cb ^ (2 : ℕ)) * (40 * Cb ^ (2 : ℕ)) / (1 / 16 : ℝ) ^ (2 : ℕ)) +
+    Cb * ((40 * Cb ^ (2 : ℕ)) / (1 / 16 : ℝ)), by linarith, by linarith, by positivity, ?_⟩
   intro ω hω hωle z hzre hz0 hzδ
   -- abbreviations
-  set B : ℝ := 40 * Cb ^ 2 with hBdef
+  set B : ℝ := 40 * Cb ^ (2 : ℕ) with hBdef
   have hB0 : (0 : ℝ) ≤ B := by positivity
   -- membership facts, valid for every point of the small ball
   have hmemZ : ∀ w : ℂ, ‖w‖ ≤ ρ / 4 → (1 : ℂ) + 2 * (ω : ℂ) + w ∈ closedBall (1 : ℂ) ρ := by
@@ -294,7 +294,7 @@ theorem exists_near_origin_bound :
     intro w hw
     obtain ⟨-, hZ, -, -⟩ := hbd _ (hmemZ w hw)
     have ha := haub w hw
-    have e1 : ‖poleQDen ω w‖ = (‖1 + (ω : ℂ) + w‖ * ‖zetaPoleUnit (1 + 2 * (ω : ℂ) + w)‖) ^ 2 := by
+    have e1 : ‖poleQDen ω w‖ = (‖1 + (ω : ℂ) + w‖ * ‖zetaPoleUnit (1 + 2 * (ω : ℂ) + w)‖) ^ (2 : ℕ) := by
       rw [poleQDen, norm_pow, norm_mul]
     have hp1 : ‖1 + (ω : ℂ) + w‖ * ‖zetaPoleUnit (1 + 2 * (ω : ℂ) + w)‖ ≤ 2 * Cb :=
       mul_le_mul ha hZ (norm_nonneg _) (by norm_num)
@@ -330,7 +330,7 @@ theorem exists_near_origin_bound :
     intro w hw
     obtain ⟨hZlb, -, -, -⟩ := hbd _ (hmemZ w hw)
     have ha := halb w hw
-    have e1 : ‖poleQDen ω w‖ = (‖1 + (ω : ℂ) + w‖ * ‖zetaPoleUnit (1 + 2 * (ω : ℂ) + w)‖) ^ 2 := by
+    have e1 : ‖poleQDen ω w‖ = (‖1 + (ω : ℂ) + w‖ * ‖zetaPoleUnit (1 + 2 * (ω : ℂ) + w)‖) ^ (2 : ℕ) := by
       rw [poleQDen, norm_pow, norm_mul]
     have h4 : (1 / 4 : ℝ) ≤ ‖1 + (ω : ℂ) + w‖ * ‖zetaPoleUnit (1 + 2 * (ω : ℂ) + w)‖ := by
       nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ ‖1 + (ω : ℂ) + w‖ - 1 / 2)
@@ -366,7 +366,7 @@ theorem exists_near_origin_bound :
       h0ball hzball
     simpa [zetaPoleUnit_one] using h
   -- the quotient difference
-  have hq : ‖mobiusCausalQDeriv ω z - mobiusCausalQDeriv ω 0‖ ≤ 2 * B * (B * ‖z‖) / (1 / 16 : ℝ) ^ 2 := by
+  have hq : ‖mobiusCausalQDeriv ω z - mobiusCausalQDeriv ω 0‖ ≤ 2 * B * (B * ‖z‖) / (1 / 16 : ℝ) ^ (2 : ℕ) := by
     rw [mobiusCausalQDeriv_eq_div, mobiusCausalQDeriv_eq_div]
     refine HTGeometry.norm_div_sub_div_le (by norm_num)
       (hdenlb z hzδ) (hdenlb 0 (by simpa using le_of_lt (by linarith : (0:ℝ) < ρ / 4)))
@@ -391,18 +391,18 @@ theorem exists_near_origin_bound :
   rw [mobiusCausalMultiplierDeriv_eq_numeratorDeriv_div hω hzre hz0, norm_div, hsplit]
   have hnorm : ‖zetaPoleUnit (1 + z) * (mobiusCausalQDeriv ω z - mobiusCausalQDeriv ω 0) +
       (zetaPoleUnit (1 + z) - 1) * mobiusCausalQDeriv ω 0‖
-      ≤ (Cb * (2 * B * (B * ‖z‖) / (1 / 16 : ℝ) ^ 2) + Cb * ‖z‖ * (B / (1 / 16 : ℝ))) := by
+      ≤ (Cb * (2 * B * (B * ‖z‖) / (1 / 16 : ℝ) ^ (2 : ℕ)) + Cb * ‖z‖ * (B / (1 / 16 : ℝ))) := by
     refine le_trans (norm_add_le _ _) ?_
     rw [norm_mul, norm_mul]
     have h1 : ‖zetaPoleUnit (1 + z)‖ * ‖mobiusCausalQDeriv ω z - mobiusCausalQDeriv ω 0‖
-        ≤ Cb * (2 * B * (B * ‖z‖) / (1 / 16 : ℝ) ^ 2) :=
+        ≤ Cb * (2 * B * (B * ‖z‖) / (1 / 16 : ℝ) ^ (2 : ℕ)) :=
       mul_le_mul hZub hq (norm_nonneg _) (by positivity)
     have h2 : ‖zetaPoleUnit (1 + z) - 1‖ * ‖mobiusCausalQDeriv ω 0‖ ≤ Cb * ‖z‖ * (B / (1 / 16 : ℝ)) :=
       mul_le_mul hmvZ hq0 (norm_nonneg _) (by positivity)
     linarith
   rw [div_le_iff₀ hznorm]
-  have hfin : (Cb * (2 * B * (B * ‖z‖) / (1 / 16 : ℝ) ^ 2) + Cb * ‖z‖ * (B / (1 / 16 : ℝ)))
-      = (Cb * (2 * B * B / (1 / 16 : ℝ) ^ 2) + Cb * (B / (1 / 16 : ℝ))) * ‖z‖ := by
+  have hfin : (Cb * (2 * B * (B * ‖z‖) / (1 / 16 : ℝ) ^ (2 : ℕ)) + Cb * ‖z‖ * (B / (1 / 16 : ℝ)))
+      = (Cb * (2 * B * B / (1 / 16 : ℝ) ^ (2 : ℕ)) + Cb * (B / (1 / 16 : ℝ))) * ‖z‖ := by
     ring
   rw [← hfin]
   exact hnorm

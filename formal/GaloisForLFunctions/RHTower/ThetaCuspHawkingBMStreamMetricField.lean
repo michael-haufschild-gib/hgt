@@ -40,8 +40,8 @@ private theorem radius_smooth (p : D4BMBackground.ExteriorPoint) :
 
 private theorem factor_ne_zero (p : D4BMBackground.ExteriorPoint) :
     (p.val 1 : ℂ)*(p.val 1 : ℂ)+(-1) ≠ 0 := by
-  have h : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  have h : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
   simpa only [← pow_two,← sub_eq_add_neg] using h
 
 private theorem block_smooth (w a : ℂ) (square : Bool) (p : D4BMBackground.ExteriorPoint) :

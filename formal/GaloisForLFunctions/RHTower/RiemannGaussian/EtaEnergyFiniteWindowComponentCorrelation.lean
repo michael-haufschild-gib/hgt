@@ -64,15 +64,15 @@ def pairedEtaTopPrefixFiniteCutoffFamilySameChannelSelfMass
     {d : Type*} [Fintype d] (cutoff : d → ℕ)
     (rho : NontrivialZetaZero) : ℝ :=
   ∑ j, (‖pairedEtaCompletedLeadingLogCutoffCenteredPartnerResidualFiniteWorkTopPrefixFinitePartnerTerm
-      rho (cutoff j)‖ ^ 2 +
-    ‖pairedEtaTopPrefixFiniteAlignedConjugateTerm rho (cutoff j)‖ ^ 2)
+      rho (cutoff j)‖ ^ (2 : ℕ) +
+    ‖pairedEtaTopPrefixFiniteAlignedConjugateTerm rho (cutoff j)‖ ^ (2 : ℕ))
 
 /-- The squared-norm sum of the packed hyperbolic feature is twice the
 same-channel self-mass. -/
 theorem sum_norm_sq_cutoffFamilyFeature_eq_two_mul_sameChannelSelfMass
     {d : Type*} [Fintype d] (cutoff : d → ℕ)
     (rho : NontrivialZetaZero) :
-    (∑ x, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho x‖ ^ 2) =
+    (∑ x, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho x‖ ^ (2 : ℕ)) =
       2 * pairedEtaTopPrefixFiniteCutoffFamilySameChannelSelfMass
         cutoff rho := by
   have h :=
@@ -82,7 +82,7 @@ theorem sum_norm_sq_cutoffFamilyFeature_eq_two_mul_sameChannelSelfMass
       star (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) ⬝ᵥ
           pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho =
         (((∑ x,
-          ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho x‖ ^ 2 : ℝ) : ℂ)) := by
+          ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho x‖ ^ (2 : ℕ) : ℝ) : ℂ)) := by
     unfold dotProduct
     push_cast
     apply Finset.sum_congr rfl
@@ -109,9 +109,9 @@ same-channel prefix families. -/
 def pairedEtaTopPrefixFiniteZeroWindowDiagonalSameChannelMass
     {d : Type*} [Fintype d] (cutoff : d → ℕ) (T : ℝ) : ℝ :=
   4 * ∑ rho ∈ spectralZetaZeroWindow T,
-    (analyticZetaZeroMultiplicity rho : ℝ) ^ 2 *
+    (analyticZetaZeroMultiplicity rho : ℝ) ^ (2 : ℕ) *
       pairedEtaTopPrefixFiniteCutoffFamilySameChannelSelfMass
-        cutoff rho ^ 2
+        cutoff rho ^ (2 : ℕ)
 
 /-- The signed distinct-zero eta mass written entirely in terms of the two
 completed same-channel prefix families. -/
@@ -122,7 +122,7 @@ def pairedEtaTopPrefixFiniteZeroWindowOffDiagonalSameChannelMass
       ((((analyticZetaZeroMultiplicity rho : ℝ) *
           (analyticZetaZeroMultiplicity sigma : ℝ) : ℝ) : ℂ) *
         (2 * pairedEtaTopPrefixFiniteCutoffFamilySameChannelCorrelation
-          cutoff sigma rho) ^ 2).re
+          cutoff sigma rho) ^ (2 : ℕ)).re
 
 /-- The abstract diagonal packed-feature mass equals the literal
 same-channel completed-prefix mass. -/

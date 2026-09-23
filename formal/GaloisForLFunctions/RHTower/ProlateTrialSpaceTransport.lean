@@ -29,7 +29,7 @@ theorem contDiff_polyEval (p : Polynomial ℝ) :
 theorem contDiff_hermiteFun (n : ℕ) :
     ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (hermiteFun n) := by
   obtain ⟨p, hp⟩ := exists_poly_hermiteFun n
-  have heq : hermiteFun n = fun x : ℝ => p.eval x * Real.exp (-(1 / 2 * x ^ 2)) := funext hp
+  have heq : hermiteFun n = fun x : ℝ => p.eval x * Real.exp (-(1 / 2 * x ^ (2 : ℕ))) := funext hp
   rw [heq]
   refine (contDiff_polyEval p).mul (Real.contDiff_exp.comp ?_)
   exact (contDiff_const.mul (contDiff_id.pow 2)).neg

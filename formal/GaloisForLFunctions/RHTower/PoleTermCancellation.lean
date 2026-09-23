@@ -72,9 +72,9 @@ theorem tent_window_translate (L x : ℝ) (f : ℝ → ℝ) :
 prime main term have `e^{x/2}` coefficient `4(1 - e^{-L/2})²`. -/
 theorem tent_window_leading (L x : ℝ)
     (htent : (∫ v in (0 : ℝ)..(2 * L), tent L v * Real.exp (-v / 2))
-      = 4 * (1 - Real.exp (-L / 2)) ^ 2) :
+      = 4 * (1 - Real.exp (-L / 2)) ^ (2 : ℕ)) :
     (∫ u in (x - 2 * L)..x, tent L (x - u) * Real.exp (u / 2))
-      = Real.exp (x / 2) * (4 * (1 - Real.exp (-L / 2)) ^ 2) := by
+      = Real.exp (x / 2) * (4 * (1 - Real.exp (-L / 2)) ^ (2 : ℕ)) := by
   rw [tent_window_translate L x (tent L), htent]
 
 /-- **Exact cancellation.**  The pole term and the prime main term are the same integral, so their

@@ -31,7 +31,7 @@ theorem polyGaussSchwartz_mem_deningerExpSchwartz (P : Polynomial ℝ) :
   let S : ℝ := coeffNormSum QC
   let d : ℕ := Q.natDegree
   let B : ℝ := |A| + d
-  refine ⟨S * Real.exp (B ^ 2 / (4 * Real.pi)), fun x => ?_⟩
+  refine ⟨S * Real.exp (B ^ (2 : ℕ) / (4 * Real.pi)), fun x => ?_⟩
   have hcomp :
       (fun y : ℝ => (((P.eval y * gaussReal y : ℝ) : ℂ))) =
         Complex.ofRealLI ∘ (fun y : ℝ => P.eval y * gaussReal y) := rfl
@@ -63,7 +63,7 @@ theorem polyGaussSchwartz_mem_deningerExpSchwartz (P : Polynomial ℝ) :
   have hpoly' : |Q.eval x| ≤ S * Real.exp ((d : ℝ) * |x|) :=
     hpoly.trans (mul_le_mul_of_nonneg_left hpow hS)
   have hA : A ≤ |A| := le_abs_self A
-  have hquad : B * |x| - Real.pi * x ^ 2 ≤ B ^ 2 / (4 * Real.pi) := by
+  have hquad : B * |x| - Real.pi * x ^ (2 : ℕ) ≤ B ^ (2 : ℕ) / (4 * Real.pi) := by
     rw [le_div_iff₀ (by positivity : 0 < 4 * Real.pi)]
     rw [← sq_abs x]
     nlinarith [sq_nonneg (2 * Real.pi * |x| - B)]
@@ -73,22 +73,22 @@ theorem polyGaussSchwartz_mem_deningerExpSchwartz (P : Polynomial ℝ) :
           (S * Real.exp ((d : ℝ) * |x|) * gaussReal x) := by
       gcongr
       exact (gaussReal_pos x).le
-    _ = S * Real.exp ((A + d) * |x| - Real.pi * x ^ 2) := by
+    _ = S * Real.exp ((A + d) * |x| - Real.pi * x ^ (2 : ℕ)) := by
       rw [gaussReal]
       calc
         Real.exp (A * |x|) *
-            (S * Real.exp ((d : ℝ) * |x|) * Real.exp (-(Real.pi * x ^ 2))) =
+            (S * Real.exp ((d : ℝ) * |x|) * Real.exp (-(Real.pi * x ^ (2 : ℕ)))) =
           S * ((Real.exp (A * |x|) * Real.exp ((d : ℝ) * |x|)) *
-            Real.exp (-(Real.pi * x ^ 2))) := by ring
-        _ = S * Real.exp ((A + d) * |x| - Real.pi * x ^ 2) := by
+            Real.exp (-(Real.pi * x ^ (2 : ℕ)))) := by ring
+        _ = S * Real.exp ((A + d) * |x| - Real.pi * x ^ (2 : ℕ)) := by
           rw [← Real.exp_add, ← Real.exp_add]
           congr 2
           ring
-    _ ≤ S * Real.exp (B * |x| - Real.pi * x ^ 2) := by
+    _ ≤ S * Real.exp (B * |x| - Real.pi * x ^ (2 : ℕ)) := by
       gcongr
       dsimp only [B]
       nlinarith [abs_nonneg x]
-    _ ≤ S * Real.exp (B ^ 2 / (4 * Real.pi)) := by
+    _ ≤ S * Real.exp (B ^ (2 : ℕ) / (4 * Real.pi)) := by
       gcongr
 
 /-- The Fourier transform of every polynomial Gaussian also lies in the exponential-Schwartz

@@ -48,7 +48,7 @@ theorem suzukiCoalescingResolvent_reflection {θ : ℂ → ℂ} {c : ℝ} {z : �
 theorem norm_sq_mul_suzukiCoalescingResolvent_le {θ : ℂ → ℂ} {c A r : ℝ} {q z : ℂ}
     (hz : z ∈ Metric.closedBall q r)
     (hbd : ‖suzukiCoalescingResolvent θ c z‖ ≤ A) :
-    ‖z ^ 2 * suzukiCoalescingResolvent θ c z‖ ≤ (‖q‖ + |r|) ^ 2 * A := by
+    ‖z ^ (2 : ℕ) * suzukiCoalescingResolvent θ c z‖ ≤ (‖q‖ + |r|) ^ (2 : ℕ) * A := by
   have hzq : ‖z - q‖ ≤ r := by simpa [Metric.mem_closedBall, dist_eq_norm] using hz
   have hznorm : ‖z‖ ≤ ‖q‖ + |r| := by
     have h1 : ‖z‖ ≤ ‖z - q‖ + ‖q‖ := by

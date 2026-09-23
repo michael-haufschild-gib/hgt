@@ -73,13 +73,13 @@ theorem abs_integral_flux_le_of_integrable
       rw [abs_le]
       constructor <;> linarith [hMle.1, hMle.2]
     have hsq : 2 * (|u (t, x)| * |waveDirDeriv (timeDir d) u (t, x)|)
-        ≤ (u (t, x)) ^ 2 + (waveDirDeriv (timeDir d) u (t, x)) ^ 2 := by
+        ≤ (u (t, x)) ^ (2 : ℕ) + (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ) := by
       have h := two_mul_le_add_sq |u (t, x)| |waveDirDeriv (timeDir d) u (t, x)|
       rw [sq_abs, sq_abs] at h
       linarith
-    have hdens : (u (t, x)) ^ 2 + (waveDirDeriv (timeDir d) u (t, x)) ^ 2
+    have hdens : (u (t, x)) ^ (2 : ℕ) + (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ)
         ≤ energyDensity u (t, x) := by
-      have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2 :=
+      have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ (2 : ℕ) :=
         Finset.sum_nonneg fun i _ => sq_nonneg _
       rw [energyDensity]
       linarith
@@ -171,10 +171,10 @@ theorem eq_zero_of_waveEnergy_zero_of_decaying (h : DecayingSolution u V) {M : �
   have ht0 : waveEnergy u t = 0 := le_antisymm hle (waveEnergy_nonneg u t)
   have hden := energyDensity_eq_zero_of_waveEnergy_eq_zero_of_integrable h.smooth
     (h.energyInt t) ht0 x
-  have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2 :=
+  have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun i _ => sq_nonneg _
   rw [energyDensity] at hden
-  have hsq : (u (t, x)) ^ 2 = 0 := by
+  have hsq : (u (t, x)) ^ (2 : ℕ) = 0 := by
     nlinarith [sq_nonneg (waveDirDeriv (timeDir d) u (t, x)), sq_nonneg (u (t, x))]
   exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hsq
 

@@ -301,7 +301,7 @@ theorem sourceHypGradY_continuous : Continuous (sourceHypGradY N f) :=
 /-- The finite-deck weighted derivative energy is the physical hyperbolic
 energy density, with no scalar descent. -/
 theorem sourceHypGrad_energy (z : ℍ) :
-    ‖sourceHypGradX N f z‖ ^ 2 + ‖sourceHypGradY N f z‖ ^ 2 =
+    ‖sourceHypGradX N f z‖ ^ (2 : ℕ) + ‖sourceHypGradY N f z‖ ^ (2 : ℕ) =
       hyperbolicGradient N f z := by
   rw [sourceHypGradX, sourceHypGradY]
   simp only [norm_smul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs]

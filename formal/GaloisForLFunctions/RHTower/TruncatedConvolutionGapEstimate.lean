@@ -70,7 +70,7 @@ theorem truncConvResidual_add {xi f : ℝ → ℂ} (x : ℝ) :
 
 theorem l2NormSq_truncConvResidual {k : ℝ → ℝ} {lam gap : ℝ} {xi : ℝ → ℂ}
     (H : TruncConvOddGround k lam gap xi) {f : ℝ → ℂ} (hf : Continuous f) :
-    l2NormSq (truncConvResidual xi f) = l2NormSq f - ‖l2Pair xi f‖ ^ 2 := by
+    l2NormSq (truncConvResidual xi f) = l2NormSq f - ‖l2Pair xi f‖ ^ (2 : ℕ) := by
   set c : ℂ := l2Pair xi f with hc
   set g : ℝ → ℂ := truncConvResidual xi f with hg
   have hgc : Continuous g := continuous_truncConvResidual H.contXi hf
@@ -79,7 +79,7 @@ theorem l2NormSq_truncConvResidual {k : ℝ → ℝ} {lam gap : ℝ} {xi : ℝ �
     rw [← l2Pair_conj xi g, hgz, map_zero]
   have hf' : f = fun x => c * xi x + g x := funext fun x => truncConvResidual_add x
   have hu : Continuous fun x => c * xi x := continuous_const.mul H.contXi
-  have hexp : l2Pair f f = ((‖c‖ ^ 2 : ℝ) : ℂ) + l2Pair g g := by
+  have hexp : l2Pair f f = ((‖c‖ ^ (2 : ℕ) : ℝ) : ℂ) + l2Pair g g := by
     conv_lhs => rw [hf']
     rw [l2Pair_add_left (f := fun x => c * xi x) (g := g) (h := fun x => c * xi x + g x)
       hu hgc (hu.add hgc)]
@@ -87,7 +87,7 @@ theorem l2NormSq_truncConvResidual {k : ℝ → ℝ} {lam gap : ℝ} {xi : ℝ �
     rw [l2Pair_add_right g (fun x => c * xi x) g hu hgc hgc]
     rw [l2Pair_smul_left c xi (fun x => c * xi x), l2Pair_smul_right c xi xi,
       l2Pair_smul_left c xi g, l2Pair_smul_right c g xi, l2Pair_xi_xi H, hgz, hgz']
-    have hnorm : ((‖c‖ ^ 2 : ℝ) : ℂ) = (starRingEnd ℂ) c * c := by
+    have hnorm : ((‖c‖ ^ (2 : ℕ) : ℝ) : ℂ) = (starRingEnd ℂ) c * c := by
       rw [← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
     rw [hnorm]
     ring
@@ -101,7 +101,7 @@ theorem l2Pair_form_decompose {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k'
     (heven : ∀ u, k (-u) = k u) {lam gap : ℝ} {xi : ℝ → ℂ}
     (H : TruncConvOddGround k lam gap xi) {f : ℝ → ℂ} (hf : Continuous f) :
     l2Pair f (truncConv k f)
-      = ((‖l2Pair xi f‖ ^ 2 * lam : ℝ) : ℂ)
+      = ((‖l2Pair xi f‖ ^ (2 : ℕ) * lam : ℝ) : ℂ)
         + l2Pair (truncConvResidual xi f) (truncConv k (truncConvResidual xi f)) := by
   have hkc : Continuous k := continuous_iff_continuousAt.2 fun u => (hk u).continuousAt
   set c : ℂ := l2Pair xi f with hc
@@ -137,8 +137,8 @@ theorem l2Pair_form_decompose {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k'
   rw [l2Pair_smul_left c xi (fun x => c * truncConv k xi x),
     l2Pair_smul_right c xi (truncConv k xi), l2Pair_smul_left c xi (truncConv k g),
     l2Pair_smul_right c g (truncConv k xi), hxixi, hcross1, hcross2]
-  have hnorm : ((‖c‖ ^ 2 * lam : ℝ) : ℂ) = (starRingEnd ℂ) c * (c * (lam : ℂ)) := by
-    have h1 : ((‖c‖ ^ 2 : ℝ) : ℂ) = (starRingEnd ℂ) c * c := by
+  have hnorm : ((‖c‖ ^ (2 : ℕ) * lam : ℝ) : ℂ) = (starRingEnd ℂ) c * (c * (lam : ℂ)) := by
+    have h1 : ((‖c‖ ^ (2 : ℕ) : ℝ) : ℂ) = (starRingEnd ℂ) c * c := by
       rw [← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
     rw [Complex.ofReal_mul, h1]
     ring
@@ -158,7 +158,7 @@ theorem truncConv_gap_estimate {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k
   have hlow := H.gapLower _ hgc (l2Pair_xi_truncConvResidual H hf)
   have hsplit := l2NormSq_truncConvResidual H hf
   rw [hre]
-  have h1 : l2NormSq f = l2NormSq (truncConvResidual xi f) + ‖l2Pair xi f‖ ^ 2 := by
+  have h1 : l2NormSq f = l2NormSq (truncConvResidual xi f) + ‖l2Pair xi f‖ ^ (2 : ℕ) := by
     rw [hsplit]
     ring
   rw [h1]

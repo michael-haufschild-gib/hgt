@@ -25,7 +25,7 @@ def upperHalfPlaneInverseSquareCoefficient (z : ℂ) : ℝ :=
   2 + (1 + 2 * z.re ^ 2) / z.im ^ 2
 
 /-- At an upper observation point, the reflected Blaschke denominator
-controls `1 + alpha.re^2` uniformly over all upper `alpha`. -/
+controls `1 + alpha.re^(2 : ℕ)` uniformly over all upper `alpha`. -/
 theorem one_add_re_sq_le_upperHalfPlaneInverseSquareCoefficient_mul_normSq
     {z alpha : ℂ} (hz : 0 < z.im) (halpha : 0 < alpha.im) :
     1 + alpha.re ^ 2 ≤

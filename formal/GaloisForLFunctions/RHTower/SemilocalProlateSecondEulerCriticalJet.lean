@@ -304,7 +304,7 @@ theorem publishedSecondSquaredRadiusBracket_eq (n : ℕ) :
 
 /-- Exact published relative `q²` coefficient after parity-sum reduction. -/
 def squaredJacobiRadiusSecondRelativeCoefficient (n : ℕ) : ℝ :=
-  semilocalFirstEulerAtom n ^ 2 * secondSquaredRadiusBracket n
+  semilocalFirstEulerAtom n ^ (2 : ℕ) * secondSquaredRadiusBracket n
 
 /-- Exact `q²` coefficient of the squared Jacobi radius. -/
 def squaredJacobiRadiusSecondCoefficient (n : ℕ) : ℝ :=
@@ -313,34 +313,34 @@ def squaredJacobiRadiusSecondCoefficient (n : ℕ) : ℝ :=
 
 /-- Exact `q²` coefficient on the positive square-root radius branch. -/
 def jacobiRadiusSecondCoefficient (n : ℕ) : ℝ :=
-  (squaredJacobiRadiusSecondCoefficient n - jacobiRadiusJet n ^ 2) /
+  (squaredJacobiRadiusSecondCoefficient n - jacobiRadiusJet n ^ (2 : ℕ)) /
     (2 * semilocalArchimedeanJacobiCoefficient n)
 
 theorem semilocalFirstEulerAtom_sq (n : ℕ) :
-    semilocalFirstEulerAtom n ^ 2 =
-      8 * normalizedCentralBinom n ^ 2 := by
+    semilocalFirstEulerAtom n ^ (2 : ℕ) =
+      8 * normalizedCentralBinom n ^ (2 : ℕ) := by
   unfold semilocalFirstEulerAtom signedCentralBinom
   rw [mul_pow, mul_pow]
-  have hsqrt : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hsqrt : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   rw [hsqrt]
-  have hsign : ((-1 : ℝ) ^ n) ^ 2 = 1 := by
+  have hsign : ((-1 : ℝ) ^ n) ^ (2 : ℕ) = 1 := by
     rw [← pow_mul]
     norm_num
   rw [mul_pow, hsign]
   ring
 
 private theorem tendsto_normalizedCentralBinom_sq_zero :
-    Tendsto (fun n : ℕ => normalizedCentralBinom n ^ 2)
+    Tendsto (fun n : ℕ => normalizedCentralBinom n ^ (2 : ℕ))
       atTop (nhds 0) := by
   simpa using tendsto_normalizedCentralBinom_zero.pow 2
 
 theorem tendsto_succ_mul_normalizedCentralBinom_sq :
     Tendsto
-      (fun n : ℕ => ((n : ℝ) + 1) * normalizedCentralBinom n ^ 2)
+      (fun n : ℕ => ((n : ℝ) + 1) * normalizedCentralBinom n ^ (2 : ℕ))
       atTop (nhds (1 / Real.pi)) := by
   have hmain :
       Tendsto
-        (fun n : ℕ => (n : ℝ) * normalizedCentralBinom n ^ 2)
+        (fun n : ℕ => (n : ℝ) * normalizedCentralBinom n ^ (2 : ℕ))
         atTop (nhds (1 / Real.pi)) := by
     convert tendsto_sqrtNat_mul_normalizedCentralBinom_sq using 1
     funext n
@@ -370,7 +370,7 @@ theorem tendsto_sqrt_succ_mul_normalizedCentralBinom :
 
 theorem tendsto_succ_mul_semilocalFirstEulerAtom_sq :
     Tendsto
-      (fun n : ℕ => ((n : ℝ) + 1) * semilocalFirstEulerAtom n ^ 2)
+      (fun n : ℕ => ((n : ℝ) + 1) * semilocalFirstEulerAtom n ^ (2 : ℕ))
       atTop (nhds (8 / Real.pi)) := by
   have h := tendsto_succ_mul_normalizedCentralBinom_sq.const_mul 8
   convert h using 1
@@ -469,7 +469,7 @@ theorem tendsto_centralBinomJumpFactor :
 
 theorem tendsto_jacobiRadiusJet_sq_div_succ :
     Tendsto
-      (fun n : ℕ => jacobiRadiusJet n ^ 2 / ((n : ℝ) + 1))
+      (fun n : ℕ => jacobiRadiusJet n ^ (2 : ℕ) / ((n : ℝ) + 1))
       atTop (nhds (8 / Real.pi)) := by
   have hr := tendsto_semilocalArchimedeanJacobiCoefficient_div_succ
   have hc := tendsto_succ_mul_normalizedCentralBinom_sq
@@ -480,17 +480,17 @@ theorem tendsto_jacobiRadiusJet_sq_div_succ :
     rw [jacobiRadiusJet_eq_signed_positive]
     unfold positiveEulerRadiusJet
     have hn : (n : ℝ) + 1 ≠ 0 := by positivity
-    have hsign : ((-1 : ℝ) ^ (n + 1)) ^ 2 = 1 := by
+    have hsign : ((-1 : ℝ) ^ (n + 1)) ^ (2 : ℕ) = 1 := by
       rw [← pow_mul]
       norm_num
     rw [mul_pow, hsign, one_mul]
-    have hsqrt : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+    have hsqrt : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
     rw [show
       (Real.sqrt 2 * semilocalArchimedeanJacobiCoefficient n *
-        centralBinomJumpFactor n * normalizedCentralBinom n) ^ 2 =
-        2 * semilocalArchimedeanJacobiCoefficient n ^ 2 *
-          centralBinomJumpFactor n ^ 2 *
-          normalizedCentralBinom n ^ 2 by
+        centralBinomJumpFactor n * normalizedCentralBinom n) ^ (2 : ℕ) =
+        2 * semilocalArchimedeanJacobiCoefficient n ^ (2 : ℕ) *
+          centralBinomJumpFactor n ^ (2 : ℕ) *
+          normalizedCentralBinom n ^ (2 : ℕ) by
             rw [mul_pow, mul_pow, mul_pow, hsqrt]]
     field_simp [hn]
   · field_simp [Real.pi_ne_zero]
@@ -499,7 +499,7 @@ theorem tendsto_jacobiRadiusJet_sq_div_succ :
 theorem jacobiRadiusSecondCoefficient_eq_normalized (n : ℕ) :
     jacobiRadiusSecondCoefficient n =
       ((squaredJacobiRadiusSecondCoefficient n / ((n : ℝ) + 1)) -
-        (jacobiRadiusJet n ^ 2 / ((n : ℝ) + 1))) /
+        (jacobiRadiusJet n ^ (2 : ℕ) / ((n : ℝ) + 1))) /
       (2 * (semilocalArchimedeanJacobiCoefficient n / ((n : ℝ) + 1))) := by
   unfold jacobiRadiusSecondCoefficient
   have hn : (n : ℝ) + 1 ≠ 0 := by positivity
@@ -535,8 +535,8 @@ def criticalResidualSecondLinearCoefficient (n : ℕ) : ℝ :=
 def criticalResidualFirstJetQuadraticCoefficient (n : ℕ) : ℝ :=
   let m := 2 * n
   jacobiRadiusJet m * jacobiRadiusJet (m + 1) -
-    jacobiRadiusJet (m + 1) ^ 2 -
-    jacobiRadiusJet (m + 2) ^ 2 +
+    jacobiRadiusJet (m + 1) ^ (2 : ℕ) -
+    jacobiRadiusJet (m + 2) ^ (2 : ℕ) +
     jacobiRadiusJet (m + 2) * jacobiRadiusJet (m + 3)
 
 /-- Exact `q²` coefficient of the four-radius critical residual. -/
@@ -551,8 +551,8 @@ theorem criticalResidualSecondCoefficient_eq_expanded (n : ℕ) :
       let u := jacobiRadiusJet
       let v := jacobiRadiusSecondCoefficient
       v m * r (m + 1) + u m * u (m + 1) + r m * v (m + 1) -
-        (u (m + 1) ^ 2 + 2 * r (m + 1) * v (m + 1)) -
-        (u (m + 2) ^ 2 + 2 * r (m + 2) * v (m + 2)) +
+        (u (m + 1) ^ (2 : ℕ) + 2 * r (m + 1) * v (m + 1)) -
+        (u (m + 2) ^ (2 : ℕ) + 2 * r (m + 2) * v (m + 2)) +
         v (m + 2) * r (m + 3) + u (m + 2) * u (m + 3) +
         r (m + 2) * v (m + 3) := by
   unfold criticalResidualSecondCoefficient
@@ -646,10 +646,10 @@ def positiveEulerBoundaryAmplitude : ℝ :=
   2 * Real.sqrt 2 / Real.sqrt Real.pi
 
 theorem positiveEulerBoundaryAmplitude_sq :
-    positiveEulerBoundaryAmplitude ^ 2 = 8 / Real.pi := by
+    positiveEulerBoundaryAmplitude ^ (2 : ℕ) = 8 / Real.pi := by
   unfold positiveEulerBoundaryAmplitude
-  have hsqrtTwo : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
-  have hsqrtPi : Real.sqrt Real.pi ^ 2 = Real.pi :=
+  have hsqrtTwo : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
+  have hsqrtPi : Real.sqrt Real.pi ^ (2 : ℕ) = Real.pi :=
     Real.sq_sqrt Real.pi_nonneg
   field_simp [Real.sqrt_ne_zero'.2 Real.pi_pos]
   rw [hsqrtPi, hsqrtTwo]
@@ -670,7 +670,7 @@ theorem tendsto_positiveEulerRadiusJet_div_sqrt_succ :
     have hn : (n : ℝ) + 1 ≠ 0 := by positivity
     have hsqrt : Real.sqrt ((n : ℝ) + 1) ≠ 0 := by positivity
     have hsquare :
-        Real.sqrt ((n : ℝ) + 1) ^ 2 = (n : ℝ) + 1 :=
+        Real.sqrt ((n : ℝ) + 1) ^ (2 : ℕ) = (n : ℝ) + 1 :=
       Real.sq_sqrt (by positivity)
     field_simp [hn, hsqrt]
     rw [hsquare]
@@ -720,8 +720,8 @@ theorem criticalResidualFirstJetQuadraticCoefficient_eq_negative_amplitudes
     criticalResidualFirstJetQuadraticCoefficient (n + 1) =
       -(positiveEulerRadiusJet (criticalBoundaryDegree n) *
           positiveEulerRadiusJet (criticalBoundaryDegree n + 1)) -
-        positiveEulerRadiusJet (criticalBoundaryDegree n + 1) ^ 2 -
-        positiveEulerRadiusJet (criticalBoundaryDegree n + 2) ^ 2 -
+        positiveEulerRadiusJet (criticalBoundaryDegree n + 1) ^ (2 : ℕ) -
+        positiveEulerRadiusJet (criticalBoundaryDegree n + 2) ^ (2 : ℕ) -
         positiveEulerRadiusJet (criticalBoundaryDegree n + 2) *
           positiveEulerRadiusJet (criticalBoundaryDegree n + 3) := by
   unfold criticalResidualFirstJetQuadraticCoefficient criticalBoundaryDegree
@@ -756,7 +756,7 @@ theorem tendsto_criticalResidualFirstJetQuadraticCoefficient_div_boundary :
     have hm : Real.sqrt (criticalBoundaryDegree n) ≠ 0 :=
       (Real.sqrt_pos.2 hmpos).ne'
     have hsquare :
-        Real.sqrt (criticalBoundaryDegree n) ^ 2 =
+        Real.sqrt (criticalBoundaryDegree n) ^ (2 : ℕ) =
           (criticalBoundaryDegree n : ℝ) :=
       Real.sq_sqrt hmpos.le
     field_simp [hm, hmpos.ne']
@@ -764,10 +764,10 @@ theorem tendsto_criticalResidualFirstJetQuadraticCoefficient_div_boundary :
     ring
   · rw [show
       -(positiveEulerBoundaryAmplitude * positiveEulerBoundaryAmplitude) -
-          positiveEulerBoundaryAmplitude ^ 2 -
-          positiveEulerBoundaryAmplitude ^ 2 -
+          positiveEulerBoundaryAmplitude ^ (2 : ℕ) -
+          positiveEulerBoundaryAmplitude ^ (2 : ℕ) -
           positiveEulerBoundaryAmplitude * positiveEulerBoundaryAmplitude =
-        -4 * positiveEulerBoundaryAmplitude ^ 2 by ring,
+        -4 * positiveEulerBoundaryAmplitude ^ (2 : ℕ) by ring,
       positiveEulerBoundaryAmplitude_sq]
     field_simp [Real.pi_ne_zero]
     ring

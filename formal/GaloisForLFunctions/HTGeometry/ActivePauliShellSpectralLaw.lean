@@ -44,15 +44,15 @@ theorem frobSq_activePauliFinShellHamiltonian {n q : ℕ}
   rw [activePauliFinHamiltonian, frobSq_activePauliHamiltonian]
   have hnorm : ‖(θ : EuclideanSpace ℝ (ActivePauliCoordinate n q))‖ = 1 := by
     simpa [dist_eq_norm] using θ.property
-  have hsq := congrArg (fun x : ℝ => x ^ 2) hnorm
+  have hsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hnorm
   rw [EuclideanSpace.norm_sq_eq] at hsq
   have hsum : (∑ P : PauliTracelessLabel n q,
       ‖((shellCoefficientMap (ActivePauliCoordinate n q) θ
-        (pauliTracelessLabelEquivFin n q P) : ℝ) : ℂ)‖ ^ 2) = 1 := by
+        (pauliTracelessLabelEquivFin n q P) : ℝ) : ℂ)‖ ^ (2 : ℕ)) = 1 := by
     rw [Fintype.sum_equiv (pauliTracelessLabelEquivFin n q)
       (fun P => ‖((shellCoefficientMap (ActivePauliCoordinate n q) θ
-        (pauliTracelessLabelEquivFin n q P) : ℝ) : ℂ)‖ ^ 2)
-      (fun t => ‖((shellCoefficientMap (ActivePauliCoordinate n q) θ t : ℝ) : ℂ)‖ ^ 2)
+        (pauliTracelessLabelEquivFin n q P) : ℝ) : ℂ)‖ ^ (2 : ℕ))
+      (fun t => ‖((shellCoefficientMap (ActivePauliCoordinate n q) θ t : ℝ) : ℂ)‖ ^ (2 : ℕ))
       (fun _ => rfl)]
     simpa [shellCoefficientMap, Real.norm_eq_abs, sq_abs] using hsq
   rw [hsum, mul_one]

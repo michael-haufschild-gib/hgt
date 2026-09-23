@@ -9,22 +9,22 @@ noncomputable section
 
 /-- The two radial factors of the complete forced stream. -/
 def streamRadialValue (_w r B : ℂ) (square : Bool) : ℂ :=
-  if square then B/r^2 else B
+  if square then B/r^(2 : ℕ) else B
 
 def streamRadialFirst (w r B : ℂ) (square : Bool) : ℂ :=
-  if square then B*(-2/r^3+w/(r^3*(r^2-1))) else B*w/(r*(r^2-1))
+  if square then B*(-2/r^(3 : ℕ)+w/(r^(3 : ℕ)*(r^(2 : ℕ)-1))) else B*w/(r*(r^(2 : ℕ)-1))
 
 def streamRadialSecond (w r B : ℂ) (square : Bool) : ℂ :=
-  if square then B*(6/r^4-4*w/(r^4*(r^2-1))+
-    (w^2-w*(3*r^2-1))/(r^4*(r^2-1)^2))
-  else B*(w^2-w*(3*r^2-1))/(r^2*(r^2-1)^2)
+  if square then B*(6/r^(4 : ℕ)-4*w/(r^(4 : ℕ)*(r^(2 : ℕ)-1))+
+    (w^(2 : ℕ)-w*(3*r^(2 : ℕ)-1))/(r^(4 : ℕ)*(r^(2 : ℕ)-1)^(2 : ℕ)))
+  else B*(w^(2 : ℕ)-w*(3*r^(2 : ℕ)-1))/(r^(2 : ℕ)*(r^(2 : ℕ)-1)^(2 : ℕ))
 
 /-- The complete third derivative coefficient, required by the reconstructed metric two-jet. -/
 def streamRadialThird (w r B : ℂ) (square : Bool) : ℂ :=
-  let a := w/(r*(r^2-1))
-  let b := (w^2-w*(3*r^2-1))/(r^2*(r^2-1)^2)
-  let c := (w^3-3*w^2*(3*r^2-1)+w*(12*r^4-6*r^2+2))/(r^3*(r^2-1)^3)
-  if square then B*(c/r^2-6*b/r^3+18*a/r^4-24/r^5) else B*c
+  let a := w/(r*(r^(2 : ℕ)-1))
+  let b := (w^(2 : ℕ)-w*(3*r^(2 : ℕ)-1))/(r^(2 : ℕ)*(r^(2 : ℕ)-1)^(2 : ℕ))
+  let c := (w^(3 : ℕ)-3*w^(2 : ℕ)*(3*r^(2 : ℕ)-1)+w*(12*r^(4 : ℕ)-6*r^(2 : ℕ)+2))/(r^(3 : ℕ)*(r^(2 : ℕ)-1)^(3 : ℕ))
+  if square then B*(c/r^(2 : ℕ)-6*b/r^(3 : ℕ)+18*a/r^(4 : ℕ)-24/r^(5 : ℕ)) else B*c
 
 /-- Full product jet of the two original radial factors. -/
 def streamRadialProductJet (w r B : ℂ) (square : Bool) : ScalarTwoJet (Fin 4) ℂ :=
@@ -43,7 +43,7 @@ def streamRadialDerivativeJet (w r B : ℂ) (square : Bool) : ScalarTwoJet (Fin 
 
 set_option maxRecDepth 2048 in
 /-- The full radial product jet retains the actual first and second coefficient slots. -/
-theorem streamRadialProductJet_eq (w r B : ℂ) (square : Bool) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
+theorem streamRadialProductJet_eq (w r B : ℂ) (square : Bool) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     streamRadialProductJet w r B square = radialJet w (streamRadialValue w r B square)
       (streamRadialFirst w r B square) (streamRadialSecond w r B square) := by
   cases square <;> apply ScalarTwoJet.ext
@@ -56,7 +56,7 @@ theorem streamRadialProductJet_eq (w r B : ℂ) (square : Bool) (hr : r ≠ 0) (
 
 set_option maxRecDepth 4096 in
 set_option maxHeartbeats 400000 in
-private theorem base_derivative_jet (w r B : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
+private theorem base_derivative_jet (w r B : ℂ) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     streamRadialDerivativeJet w r B false = radialJet w (streamRadialFirst w r B false)
       (streamRadialSecond w r B false) (streamRadialThird w r B false) := by
   apply ScalarTwoJet.ext
@@ -71,7 +71,7 @@ private theorem base_derivative_jet (w r B : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠
 set_option maxRecDepth 4096 in
 set_option maxHeartbeats 400000 in
 /-- The derivative jet contains the full third radial derivative and both mixed time derivatives. -/
-theorem streamRadialDerivativeJet_eq (w r B : ℂ) (square : Bool) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
+theorem streamRadialDerivativeJet_eq (w r B : ℂ) (square : Bool) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     streamRadialDerivativeJet w r B square = radialJet w (streamRadialFirst w r B square)
       (streamRadialSecond w r B square) (streamRadialThird w r B square) := by
   cases square

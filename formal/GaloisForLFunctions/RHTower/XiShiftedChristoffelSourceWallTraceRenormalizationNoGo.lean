@@ -72,11 +72,11 @@ theorem adaptiveOrthoJacobiEnergy_gt_succ_mul_nextBeta
   have hsquares :
       0 ≤ ∑ j ∈ Finset.range n,
         (HTGeometry.monicOrthoAlpha s j +
-          HTGeometry.monicOrthoAlpha s n / 2) ^ 2 :=
+          HTGeometry.monicOrthoAlpha s n / 2) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hdiag :
       0 ≤ (3 * (n : ℝ) / 4 + 1) *
-        HTGeometry.monicOrthoAlpha s n ^ 2 := by positivity
+        HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) := by positivity
   have hinterior :
       0 ≤ 2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) := by
     apply mul_nonneg (by norm_num)
@@ -173,7 +173,7 @@ theorem
     {w : ℝ} {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
-    xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall (w ^ 2) n =
+    xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall (w ^ (2 : ℕ)) n =
       xiShiftedAdaptiveGaussArithmeticBulk w n /
         (32 * HTGeometry.monicOrthoNormSq
           (xiShiftedRealMomentSequence w) (n + 1)) := by
@@ -189,7 +189,7 @@ theorem xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_dimensionTax_add_lit
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
-    xiShiftedCanonicalAdmissionChristoffelSourceWall (w ^ 2) n =
+    xiShiftedCanonicalAdmissionChristoffelSourceWall (w ^ (2 : ℕ)) n =
       xiShiftedChristoffelSourceWallDimensionTax n +
         (xiShiftedAdaptiveMixedCompletedArithmeticSource w
               (HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n) -
@@ -204,9 +204,9 @@ theorem xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_dimensionTax_add_lit
     xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall_eq_literalGaussBulk_div_nextNorm
       hn hH
   calc
-    xiShiftedCanonicalAdmissionChristoffelSourceWall (w ^ 2) n =
+    xiShiftedCanonicalAdmissionChristoffelSourceWall (w ^ (2 : ℕ)) n =
         xiShiftedChristoffelSourceWallDimensionTax n +
-          xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall (w ^ 2) n := by
+          xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall (w ^ (2 : ℕ)) n := by
       unfold xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall
       ring
     _ = xiShiftedChristoffelSourceWallDimensionTax n +

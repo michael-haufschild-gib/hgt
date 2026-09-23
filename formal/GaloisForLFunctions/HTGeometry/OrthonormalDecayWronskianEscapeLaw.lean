@@ -22,7 +22,7 @@ kernel is summable, the two adjacent recurrence-weighted second-kind coordinates
 every real bound. -/
 theorem orthonormalDecay_forces_weightedSecondKind_escape
     (h : PositiveMomentForm s) (x : ℝ)
-    (hsum : Summable fun k => ((monicOrtho s k).eval x) ^ 2 /
+    (hsum : Summable fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k)) :
     ∀ C : ℝ, ∃ n : ℕ,
       C < |recurOffSqrt s n * (secondKindNorm s n).eval x| ∨

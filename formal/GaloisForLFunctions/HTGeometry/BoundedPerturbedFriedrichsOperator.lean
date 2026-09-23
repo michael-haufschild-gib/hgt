@@ -161,23 +161,23 @@ theorem boundedPerturbedFormRiesz_isSelfAdjoint
 /-- Exact coercivity: the shifted form controls the original form-domain norm with constant one. -/
 theorem boundedPerturbedFormRiesz_coercive
     (J : V →L[ℂ] H) (B : H →L[ℂ] H) (u : V) :
-    ‖u‖ ^ 2 ≤ (inner ℂ (boundedPerturbedFormRiesz J B u) u).re := by
+    ‖u‖ ^ (2 : ℕ) ≤ (inner ℂ (boundedPerturbedFormRiesz J B u) u).re := by
   have hBnorm :
-      |(inner ℂ (B (J u)) (J u)).re| ≤ ‖B‖ * ‖J u‖ ^ 2 := by
+      |(inner ℂ (B (J u)) (J u)).re| ≤ ‖B‖ * ‖J u‖ ^ (2 : ℕ) := by
     calc
       |(inner ℂ (B (J u)) (J u)).re| ≤ ‖inner ℂ (B (J u)) (J u)‖ :=
         Complex.abs_re_le_norm _
       _ ≤ ‖B (J u)‖ * ‖J u‖ := norm_inner_le_norm _ _
       _ ≤ (‖B‖ * ‖J u‖) * ‖J u‖ :=
         mul_le_mul_of_nonneg_right (B.le_opNorm (J u)) (norm_nonneg _)
-      _ = ‖B‖ * ‖J u‖ ^ 2 := by ring
+      _ = ‖B‖ * ‖J u‖ ^ (2 : ℕ) := by ring
   have hBbelow :
-      -(‖B‖ * ‖J u‖ ^ 2) ≤ (inner ℂ (B (J u)) (J u)).re :=
+      -(‖B‖ * ‖J u‖ ^ (2 : ℕ)) ≤ (inner ℂ (B (J u)) (J u)).re :=
     (neg_le_neg hBnorm).trans (neg_abs_le _)
   have hexpand :
       (inner ℂ (boundedPerturbedFormRiesz J B u) u).re =
-        ‖u‖ ^ 2 + (inner ℂ (B (J u)) (J u)).re +
-          boundedPerturbedFormShift B * ‖J u‖ ^ 2 := by
+        ‖u‖ ^ (2 : ℕ) + (inner ℂ (B (J u)) (J u)).re +
+          boundedPerturbedFormShift B * ‖J u‖ ^ (2 : ℕ) := by
     rw [boundedPerturbedFormRiesz_apply, inner_add_left, inner_add_left,
       inner_smul_left, inner_self_eq_norm_sq_to_K,
       J.adjoint_inner_left, J.adjoint_inner_left,
@@ -185,7 +185,7 @@ theorem boundedPerturbedFormRiesz_coercive
     simp [boundedPerturbedFormShift]
     norm_cast
   rw [hexpand]
-  have hJu : 0 ≤ ‖J u‖ ^ 2 := sq_nonneg _
+  have hJu : 0 ≤ ‖J u‖ ^ (2 : ℕ) := sq_nonneg _
   have hBu : 0 ≤ ‖B‖ := norm_nonneg _
   unfold boundedPerturbedFormShift
   nlinarith
@@ -287,7 +287,7 @@ theorem boundedPerturbedFormRieszInv_isPositive
   change 0 ≤ (inner ℂ u x).re
   rw [← hx]
   calc
-    0 ≤ ‖u‖ ^ 2 := sq_nonneg _
+    0 ≤ ‖u‖ ^ (2 : ℕ) := sq_nonneg _
     _ ≤ (inner ℂ (boundedPerturbedFormRiesz J B u) u).re :=
       boundedPerturbedFormRiesz_coercive J B u
     _ = (inner ℂ u (boundedPerturbedFormRiesz J B u)).re :=
@@ -394,7 +394,7 @@ theorem closedDenseInverse_re_inner_lower
     [Nontrivial H] (C : H →L[ℂ] H)
     (hCinj : Function.Injective C) (hCpos : ContinuousLinearMap.IsPositive C)
     (x : (closedDenseInverse C).domain) :
-    ‖C‖⁻¹ * ‖(x : H)‖ ^ 2 ≤
+    ‖C‖⁻¹ * ‖(x : H)‖ ^ (2 : ℕ) ≤
       (inner ℂ (closedDenseInverse C x) (x : H)).re := by
   have hCne : C ≠ 0 := by
     intro hzero
@@ -411,14 +411,14 @@ theorem closedDenseInverse_re_inner_lower
     (ContinuousLinearMap.le_def _ _).mp horder
   have hnonneg := hdiff.re_inner_nonneg_left y
   have hCsymm := hCpos.inner_left_eq_inner_right
-  have hineq : ‖(x : H)‖ ^ 2 ≤
+  have hineq : ‖(x : H)‖ ^ (2 : ℕ) ≤
       ‖C‖ * (inner ℂ y (x : H)).re := by
     change 0 ≤ (inner ℂ
       ((‖C‖ : ℂ) • C y - C (C y)) y).re at hnonneg
     rw [inner_sub_left, Complex.sub_re, inner_smul_left] at hnonneg
     have hfirst : (inner ℂ (C y) y).re = (inner ℂ y (C y)).re := by
       exact congrArg Complex.re (hCsymm y y)
-    have hsecond : (inner ℂ (C (C y)) y).re = ‖C y‖ ^ 2 := by
+    have hsecond : (inner ℂ (C (C y)) y).re = ‖C y‖ ^ (2 : ℕ) := by
       rw [hCsymm (C y) y, inner_self_eq_norm_sq_to_K]
       norm_cast
     have hscalar :
@@ -499,7 +499,7 @@ theorem boundedPerturbedFriedrichsOperator_ground_mul_norm_sq_le
     (hJinj : Function.Injective J) (hDense : Dense (J.range : Set H))
     (x : (boundedPerturbedFriedrichsOperator J B hB).domain) :
     (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
-          boundedPerturbedFormShift B) * ‖(x : H)‖ ^ 2 ≤
+          boundedPerturbedFormShift B) * ‖(x : H)‖ ^ (2 : ℕ) ≤
       (inner ℂ (boundedPerturbedFriedrichsOperator J B hB x) (x : H)).re := by
   let x0 : (closedDenseInverse
       (boundedPerturbedFormCovariance J B hB)).domain :=
@@ -515,7 +515,7 @@ theorem boundedPerturbedFriedrichsOperator_ground_mul_norm_sq_le
   rw [boundedPerturbedFriedrichsOperator_apply]
   change
     (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
-          boundedPerturbedFormShift B) * ‖(x : H)‖ ^ 2 ≤
+          boundedPerturbedFormShift B) * ‖(x : H)‖ ^ (2 : ℕ) ≤
       (inner ℂ
         (closedDenseInverse (boundedPerturbedFormCovariance J B hB) x0 -
           (boundedPerturbedFormShift B : ℂ) • (x : H))
@@ -524,30 +524,30 @@ theorem boundedPerturbedFriedrichsOperator_ground_mul_norm_sq_le
   have hscalar :
       ((starRingEnd ℂ) (boundedPerturbedFormShift B : ℂ) *
           inner ℂ (x : H) (x : H)).re =
-        boundedPerturbedFormShift B * ‖(x : H)‖ ^ 2 := by
+        boundedPerturbedFormShift B * ‖(x : H)‖ ^ (2 : ℕ) := by
     calc
       _ = ((starRingEnd ℂ) (boundedPerturbedFormShift B : ℂ) *
-          (‖(x : H)‖ : ℂ) ^ 2).re := by
+          (‖(x : H)‖ : ℂ) ^ (2 : ℕ)).re := by
             rw [inner_self_eq_norm_sq_to_K]
             rfl
-      _ = boundedPerturbedFormShift B * ‖(x : H)‖ ^ 2 := by
+      _ = boundedPerturbedFormShift B * ‖(x : H)‖ ^ (2 : ℕ) := by
         exact (by
           intro s r
           have hsre : ((starRingEnd ℂ) (s : ℂ)).re = s := by norm_num
           have hsim : ((starRingEnd ℂ) (s : ℂ)).im = 0 := by norm_num
-          have hpre : ((r : ℂ) ^ 2).re = r ^ 2 := by
+          have hpre : ((r : ℂ) ^ (2 : ℕ)).re = r ^ (2 : ℕ) := by
             rw [pow_two, Complex.mul_re]
             norm_num
             ring
-          have hpim : ((r : ℂ) ^ 2).im = 0 := by
+          have hpim : ((r : ℂ) ^ (2 : ℕ)).im = 0 := by
             rw [pow_two, Complex.mul_im]
             norm_num
           rw [Complex.mul_re, hsre, hsim, hpre, hpim]
           ring : ∀ s r : ℝ,
-            (((starRingEnd ℂ) (s : ℂ)) * (r : ℂ) ^ 2).re = s * r ^ 2)
+            (((starRingEnd ℂ) (s : ℂ)) * (r : ℂ) ^ (2 : ℕ)).re = s * r ^ (2 : ℕ))
           (boundedPerturbedFormShift B) ‖(x : H)‖
   rw [hscalar]
-  change ‖boundedPerturbedFormCovariance J B hB‖⁻¹ * ‖(x : H)‖ ^ 2 ≤ _ at hlower
+  change ‖boundedPerturbedFormCovariance J B hB‖⁻¹ * ‖(x : H)‖ ^ (2 : ℕ) ≤ _ at hlower
   nlinarith
 
 /-- The covariance-norm eigenvalue is below every real eigenvalue of the represented operator. -/
@@ -600,12 +600,12 @@ theorem boundedPerturbedFriedrichsOperator_ground_le_eigenvalue
       _ = ((r : ℂ)⁻¹) • (x : H) := by rw [hrCx]
   have hrneReal : r ≠ 0 := by exact_mod_cast hrne
   have hCpos := boundedPerturbedFormCovariance_isPositive J B hB
-  have hquad : 0 ≤ (r⁻¹) * ‖(x : H)‖ ^ 2 := by
+  have hquad : 0 ≤ (r⁻¹) * ‖(x : H)‖ ^ (2 : ℕ) := by
     have h := hCpos.re_inner_nonneg_left (x : H)
     rw [hCx, inner_smul_left, inner_self_eq_norm_sq_to_K] at h
     norm_num [Complex.mul_re, pow_two] at h
     simpa [pow_two] using h
-  have hxnorm : 0 < ‖(x : H)‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hxne)
+  have hxnorm : 0 < ‖(x : H)‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hxne)
   have hrInvPos : 0 < r⁻¹ := by
     have hrInvNe : r⁻¹ ≠ 0 := inv_ne_zero hrneReal
     by_contra hnot
@@ -874,12 +874,12 @@ theorem boundedPerturbedForm_ground_mul_norm_sq_le
     (hJinj : Function.Injective J) (hDense : Dense (J.range : Set H))
     (u : V) :
     (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
-          boundedPerturbedFormShift B) * ‖J u‖ ^ 2 ≤
+          boundedPerturbedFormShift B) * ‖J u‖ ^ (2 : ℕ) ≤
       (inner ℂ u u + inner ℂ (B (J u)) (J u)).re := by
   let L : H →L[ℂ] V := boundedPerturbedFormRieszInv J B hB ∘L J.adjoint
   let P : V → Prop := fun v =>
     (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
-          boundedPerturbedFormShift B) * ‖J v‖ ^ 2 ≤
+          boundedPerturbedFormShift B) * ‖J v‖ ^ (2 : ℕ) ≤
       (inner ℂ v v + inner ℂ (B (J v)) (J v)).re
   apply DenseRange.induction_on (p := P)
     (boundedPerturbedRepresentationCore_denseRange J B hB hJinj) u
@@ -903,7 +903,7 @@ theorem boundedPerturbedForm_ground_mul_norm_sq_le
     change P (L y)
     change
       (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
-            boundedPerturbedFormShift B) * ‖J v‖ ^ 2 ≤
+            boundedPerturbedFormShift B) * ‖J v‖ ^ (2 : ℕ) ≤
         (inner ℂ v v + inner ℂ (B (J v)) (J v)).re
     rw [← hform, ← hxv]
     exact hlower

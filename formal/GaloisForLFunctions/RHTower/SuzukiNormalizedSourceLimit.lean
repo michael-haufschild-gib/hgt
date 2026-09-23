@@ -78,9 +78,9 @@ theorem normalizedOddSource_eq_zero {a z : ℝ} (hz : a ≤ z) : normalizedOddSo
 
 /-- The inner error integral. -/
 theorem integral_innerError (a : ℝ) :
-    (∫ z in (0 : ℝ)..a, (Real.exp (-2 * a + z) / 2) ^ 2)
+    (∫ z in (0 : ℝ)..a, (Real.exp (-2 * a + z) / 2) ^ (2 : ℕ))
       = (Real.exp (-2 * a) - Real.exp (-4 * a)) / 8 := by
-  have hsq : ∀ z : ℝ, (Real.exp (-2 * a + z) / 2) ^ 2
+  have hsq : ∀ z : ℝ, (Real.exp (-2 * a + z) / 2) ^ (2 : ℕ)
       = Real.exp (-4 * a) / 4 * Real.exp (2 * z) := by
     intro z
     rw [div_pow, ← Real.exp_nat_mul]
@@ -113,10 +113,10 @@ theorem integral_innerError (a : ℝ) :
 
 /-- The tail error integral. -/
 theorem integral_tailError (a : ℝ) :
-    (∫ z in Set.Ioi a, laplaceSource z ^ 2) = Real.exp (-2 * a) / 8 := by
-  have hsq : ∀ z : ℝ, laplaceSource z ^ 2 = (1 / 4 : ℝ) * Real.exp (-2 * z) := by
+    (∫ z in Set.Ioi a, laplaceSource z ^ (2 : ℕ)) = Real.exp (-2 * a) / 8 := by
+  have hsq : ∀ z : ℝ, laplaceSource z ^ (2 : ℕ) = (1 / 4 : ℝ) * Real.exp (-2 * z) := by
     intro z
-    have h : Real.exp (-z) ^ 2 = Real.exp (-2 * z) := by
+    have h : Real.exp (-z) ^ (2 : ℕ) = Real.exp (-2 * z) := by
       rw [sq, ← Real.exp_add]; congr 1; ring
     rw [laplaceSource, div_pow, h]
     ring
@@ -145,8 +145,8 @@ theorem integral_tailError (a : ℝ) :
 
 /-- **`(281)`: the total squared error of either normalized source.** -/
 theorem sourceError_eq (a : ℝ) :
-    (∫ z in (0 : ℝ)..a, (Real.exp (-2 * a + z) / 2) ^ 2)
-        + (∫ z in Set.Ioi a, laplaceSource z ^ 2)
+    (∫ z in (0 : ℝ)..a, (Real.exp (-2 * a + z) / 2) ^ (2 : ℕ))
+        + (∫ z in Set.Ioi a, laplaceSource z ^ (2 : ℕ))
       = (2 * Real.exp (-2 * a) - Real.exp (-4 * a)) / 8 := by
   rw [integral_innerError, integral_tailError]
   ring
@@ -161,7 +161,7 @@ theorem tendsto_sourceError_zero :
 
 /-- **`(281)`: the squared norm of the limiting Laplace profile is `1/8`.** -/
 theorem integral_laplaceSource_sq :
-    (∫ z in Set.Ioi (0 : ℝ), laplaceSource z ^ 2) = 1 / 8 := by
+    (∫ z in Set.Ioi (0 : ℝ), laplaceSource z ^ (2 : ℕ)) = 1 / 8 := by
   rw [integral_tailError]
   norm_num
 

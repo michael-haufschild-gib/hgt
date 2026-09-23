@@ -77,7 +77,7 @@ theorem barbanVehovLongFirstLogKernelContinuous_maxEndpoint_eq
       1 / (Nat.lcm q r : ℝ) *
         (Real.log ((M : ℝ) / (((max q r : ℕ) : ℝ))) *
             Real.log (((L * max q r : ℕ) : ℝ) / (r : ℝ)) +
-          Real.log ((M : ℝ) / (((max q r : ℕ) : ℝ))) ^ 2 / 2) := by
+          Real.log ((M : ℝ) / (((max q r : ℕ) : ℝ))) ^ (2 : ℕ) / 2) := by
   have hm : 0 < max q r := lt_max_iff.mpr (Or.inl hq)
   have he : 0 < Nat.lcm q r := Nat.lcm_pos hq hr
   have her := log_natDiv_eq_sub_log_of_dvd he (Nat.dvd_lcm_right q r)
@@ -96,10 +96,10 @@ theorem barbanVehovLongSecondLogKernelContinuous_maxEndpoint_eq
         (Real.log ((M : ℝ) / (((max q r : ℕ) : ℝ))) *
             Real.log (((L * max q r : ℕ) : ℝ) / (q : ℝ)) *
             Real.log (((L * max q r : ℕ) : ℝ) / (r : ℝ)) +
-          Real.log ((M : ℝ) / (((max q r : ℕ) : ℝ))) ^ 2 / 2 *
+          Real.log ((M : ℝ) / (((max q r : ℕ) : ℝ))) ^ (2 : ℕ) / 2 *
             (Real.log (((L * max q r : ℕ) : ℝ) / (q : ℝ)) +
               Real.log (((L * max q r : ℕ) : ℝ) / (r : ℝ))) +
-          Real.log ((M : ℝ) / (((max q r : ℕ) : ℝ))) ^ 3 / 3) := by
+          Real.log ((M : ℝ) / (((max q r : ℕ) : ℝ))) ^ (3 : ℕ) / 3) := by
   have hm : 0 < max q r := lt_max_iff.mpr (Or.inl hq)
   have he : 0 < Nat.lcm q r := Nat.lcm_pos hq hr
   have heq := log_natDiv_eq_sub_log_of_dvd he (Nat.dvd_lcm_left q r)

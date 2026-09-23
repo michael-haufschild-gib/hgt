@@ -68,7 +68,7 @@ theorem norm_intervalIntegral_physicalSlice_mul_adjacentKernel_low_le
             ((1 : ℂ) + (y : ℝ) * I) -
           routeTNormalizedSmoothWindowMellin N H
             ((1 : ℂ) + (y : ℝ) * I))‖ ≤
-      16 * ((B : ℝ) * (Real.log B / A)) * (R / N) * U ^ 2 := by
+      16 * ((B : ℝ) * (Real.log B / A)) * (R / N) * U ^ (2 : ℕ) := by
   let P : ℝ := (B : ℝ) * (Real.log B / A)
   have hP : 0 ≤ P :=
     (norm_nonneg (dirPoly B (routeTVonMangoldtSliceCoeff A B) 0)).trans
@@ -115,7 +115,7 @@ theorem exists_integral_norm_physicalSlice_mul_adjacentKernel_tail_le :
               routeTNormalizedSmoothWindowMellin N H
                 ((1 : ℂ) + (y : ℝ) * I))‖) ≤
           ((B : ℝ) * (Real.log B / A)) *
-            (130 * C * (N / R) ^ 2 / U) := by
+            (130 * C * (N / R) ^ (2 : ℕ) / U) := by
   obtain ⟨C, hC, htail⟩ :=
     exists_integral_routeTAdjacentNormalizedKernel_one_general_tail_le
   refine ⟨C, hC, ?_⟩
@@ -157,7 +157,7 @@ theorem exists_integral_norm_physicalSlice_mul_adjacentKernel_tail_le :
         ∫ y in {y : ℝ | U ≤ |y|}, ‖F y * K y‖ := by rfl
     _ ≤ ∫ y in {y : ℝ | U ≤ |y|}, P * ‖K y‖ := hmono
     _ = P * ∫ y in {y : ℝ | U ≤ |y|}, ‖K y‖ := hscale
-    _ ≤ P * (130 * C * (N / R) ^ 2 / U) :=
+    _ ≤ P * (130 * C * (N / R) ^ (2 : ℕ) / U) :=
       mul_le_mul_of_nonneg_left (by simpa only [K] using hfar) hP
     _ = _ := by rfl
 
@@ -195,9 +195,9 @@ theorem exists_positive_interval_norm_ge_quarter_of_physicalSlice_annulus :
               routeTNormalizedSmoothWindowMellin N H
                 ((1 : ℂ) + (y : ℝ) * I))‖ →
         let E := D -
-          16 * ((B : ℝ) * (Real.log B / A)) * (R / N) * U ^ 2 -
+          16 * ((B : ℝ) * (Real.log B / A)) * (R / N) * U ^ (2 : ℕ) -
           ((B : ℝ) * (Real.log B / A)) *
-            (130 * C * (N / R) ^ 2 / V)
+            (130 * C * (N / R) ^ (2 : ℕ) / V)
         E / 4 ≤ ‖∫ y in U..T,
           dirPoly B (routeTVonMangoldtSliceCoeff A B) (-y) *
             (routeTNormalizedSmoothWindowMellin N R
@@ -221,9 +221,9 @@ theorem exists_positive_interval_norm_ge_quarter_of_physicalSlice_annulus :
         routeTNormalizedSmoothWindowMellin N H
           ((1 : ℂ) + (y : ℝ) * I))
   let E : ℝ := D -
-    16 * ((B : ℝ) * (Real.log B / A)) * (R / N) * U ^ 2 -
+    16 * ((B : ℝ) * (Real.log B / A)) * (R / N) * U ^ (2 : ℕ) -
     ((B : ℝ) * (Real.log B / A)) *
-      (130 * C * (N / R) ^ 2 / V)
+      (130 * C * (N / R) ^ (2 : ℕ) / V)
   change E / 4 ≤ ‖∫ y in U..T,
       dirPoly B (routeTVonMangoldtSliceCoeff A B) (-y) *
         (routeTNormalizedSmoothWindowMellin N R

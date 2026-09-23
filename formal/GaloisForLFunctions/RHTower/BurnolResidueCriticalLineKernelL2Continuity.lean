@@ -120,8 +120,8 @@ def burnolCriticalLineBaseKernelL2 : Lp ℂ 2 (volume : Measure ℝ) :=
 theorem norm_burnolResidueCriticalLineKernelL2_le_quadratic
     (s : BurnolSourceHalfStrip) :
     ‖burnolResidueCriticalLineKernelL2 s‖ ≤
-      9 * (1 + ‖(s : ℂ)‖ ^ 2) * ‖burnolCriticalLineBaseKernelL2‖ := by
-  let C : ℝ := 9 * (1 + ‖(s : ℂ)‖ ^ 2)
+      9 * (1 + ‖(s : ℂ)‖ ^ (2 : ℕ)) * ‖burnolCriticalLineBaseKernelL2‖ := by
+  let C : ℝ := 9 * (1 + ‖(s : ℂ)‖ ^ (2 : ℕ))
   let phi : ℝ → ℂ := burnolResidueCriticalLineMultiplier s.1
   have hC0 : 0 ≤ C := by
     dsimp [C]
@@ -171,7 +171,7 @@ theorem norm_burnolResidueCriticalLineKernelL2_le_quadratic
     _ ≤ C * ‖burnolCriticalLineBaseKernelL2‖ := by
       gcongr
       exact norm_lpBoundedMulCLM_le hphiMeas hC0 hphi
-    _ = 9 * (1 + ‖(s : ℂ)‖ ^ 2) * ‖burnolCriticalLineBaseKernelL2‖ := rfl
+    _ = 9 * (1 + ‖(s : ℂ)‖ ^ (2 : ℕ)) * ‖burnolCriticalLineBaseKernelL2‖ := rfl
 
 theorem norm_burnolResidueCriticalLineKernelL2_sub_le
     (s r : BurnolSourceHalfStrip) :

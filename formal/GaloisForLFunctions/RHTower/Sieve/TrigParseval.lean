@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.Sieve.TrigExpansion
 /-!
 # Parseval for trigonometric polynomials
 
-`∫_0^1 |S(t)|² dt = ∑_{n < N} |c_n|²`  for  `S(t) = ∑_{n < N} c_n e(nt)`.
+`∫_0^(1 : ℕ) |S(t)|² dt = ∑_{n < N} |c_n|²`  for  `S(t) = ∑_{n < N} c_n e(nt)`.
 
 The expansion of `TrigExpansion.lean` writes the integrand as a finite double sum of characters;
 interchanging the integral with the sums and applying orthogonality kills every off-diagonal term
@@ -26,7 +26,7 @@ theorem intervalIntegrable_circleFreq_sub (m n : ℕ) (a b : ℝ) :
 
 /-- **Parseval for trigonometric polynomials.** -/
 theorem integral_normSq_expSum (N : ℕ) (c : Fin N → ℂ) :
-    (∫ t in (0 : ℝ)..1, ‖expSum N c t‖ ^ 2) = ∑ n : Fin N, ‖c n‖ ^ 2 := by
+    (∫ t in (0 : ℝ)..1, ‖expSum N c t‖ ^ (2 : ℕ)) = ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   classical
   -- each cross term integrates to a Kronecker delta
   have hterm : ∀ m n : Fin N,
@@ -49,8 +49,8 @@ theorem integral_normSq_expSum (N : ℕ) (c : Fin N → ℂ) :
     rw [intervalIntegral.integral_finsetSum]
     · exact Finset.sum_congr rfl fun n _ => hterm m n
     · exact fun n _ => (intervalIntegrable_circleFreq_sub _ _ 0 1).const_mul _
-  have hcomplex : (∫ t in (0 : ℝ)..1, ((‖expSum N c t‖ ^ 2 : ℝ) : ℂ))
-      = ∑ m : Fin N, ((‖c m‖ ^ 2 : ℝ) : ℂ) := by
+  have hcomplex : (∫ t in (0 : ℝ)..1, ((‖expSum N c t‖ ^ (2 : ℕ) : ℝ) : ℂ))
+      = ∑ m : Fin N, ((‖c m‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [intervalIntegral.integral_congr (fun t _ => normSq_expSum_eq N c t)]
     rw [intervalIntegral.integral_finsetSum]
     · refine Finset.sum_congr rfl fun m _ => ?_

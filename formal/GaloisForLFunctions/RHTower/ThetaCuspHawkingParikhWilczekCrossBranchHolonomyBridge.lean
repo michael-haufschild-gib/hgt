@@ -37,7 +37,7 @@ def d4BMPeierlsCrossAngularParameter (q : XiZeroCopy) : ℂ :=
 /-- Exact literal-coordinate form of the complementary source parameter. -/
 theorem d4BMPeierlsCrossAngularParameter_eq (q : XiZeroCopy) :
     d4BMPeierlsCrossAngularParameter q =
-      8 * (q.1 : ℂ) ^ 2 - 8 * (q.1 : ℂ) + 6 := by
+      8 * (q.1 : ℂ) ^ (2 : ℕ) - 8 * (q.1 : ℂ) + 6 := by
   unfold d4BMPeierlsCrossAngularParameter
   rw [D4BMModularCore.parameter_physicalRate q true,
     D4BMModularCore.parameter_physicalRate q false]
@@ -51,7 +51,7 @@ theorem d4BMPeierlsCrossAngularParameter_reflect (q : XiZeroCopy) :
       d4BMPeierlsCrossAngularParameter q := by
   rw [d4BMPeierlsCrossAngularParameter_eq,
     d4BMPeierlsCrossAngularParameter_eq]
-  change 8 * (1 - (q.1 : ℂ)) ^ 2 - 8 * (1 - (q.1 : ℂ)) + 6 = _
+  change 8 * (1 - (q.1 : ℂ)) ^ (2 : ℕ) - 8 * (1 - (q.1 : ℂ)) + 6 = _
   ring
 
 /-- PW closed-history recoil holonomy at one literal Xi copy and Borel grade. -/
@@ -63,11 +63,11 @@ is a grade-dependent quadratic polynomial of the literal complementary
 Peierls angular parameter. -/
 theorem d4BMPeierlsCrossBorelHolonomy_polynomial (q : XiZeroCopy) (k : ℕ) :
     64 * d4BMPeierlsCrossBorelHolonomy q k =
-      d4BMPeierlsCrossAngularParameter q ^ 2 -
-        (16 * (2 * (k : ℂ) + 1) ^ 2 + 12) *
+      d4BMPeierlsCrossAngularParameter q ^ (2 : ℕ) -
+        (16 * (2 * (k : ℂ) + 1) ^ (2 : ℕ) + 12) *
           d4BMPeierlsCrossAngularParameter q +
-        64 * (2 * (k : ℂ) + 1) ^ 4 +
-          32 * (2 * (k : ℂ) + 1) ^ 2 + 36 := by
+        64 * (2 * (k : ℂ) + 1) ^ (4 : ℕ) +
+          32 * (2 * (k : ℂ) + 1) ^ (2 : ℕ) + 36 := by
   rw [d4BMPeierlsCrossAngularParameter_eq]
   simp only [d4BMPeierlsCrossBorelHolonomy,
     schwarzschildParikhWilczekBorelRecoilHolonomy,

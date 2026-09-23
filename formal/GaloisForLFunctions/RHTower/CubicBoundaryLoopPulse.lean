@@ -26,7 +26,7 @@ def cubicLoopSign (t : ℝ) : ℝ := 1 - 2 * Real.smoothTransition (t - 1)
 def cubicLoopC (t : ℝ) : ℝ := cubicLoopSign t * cubicLoopB t
 def cubicLoopFlux (t : ℝ) : ℝ := cubicLoopB t * cubicLoopC t
 def cubicLoopPrimitive (t : ℝ) : ℝ :=
-  cubicLoopSign t * (cubicLoopA t ^ 2 - (2 / 3 : ℝ) * cubicLoopA t ^ 3 - 1 / 3)
+  cubicLoopSign t * (cubicLoopA t ^ (2 : ℕ) - (2 / 3 : ℝ) * cubicLoopA t ^ (3 : ℕ) - 1 / 3)
 
 theorem cubicLoopAngle_smooth : ContDiff ℝ ∞ cubicLoopAngle := by
   exact contDiff_const.mul (Real.smoothTransition.contDiff.sub
@@ -61,10 +61,10 @@ theorem cubicLoopSign_right {t : ℝ} (ht : 2 ≤ t) : cubicLoopSign t = -1 := b
   simp only [cubicLoopSign, Real.smoothTransition.one_of_one_le (show 1 ≤ t - 1 by linarith)]
   ring
 
-theorem cubicLoop_circle (t : ℝ) : cubicLoopA t ^ 2 + cubicLoopB t ^ 2 = 1 :=
+theorem cubicLoop_circle (t : ℝ) : cubicLoopA t ^ (2 : ℕ) + cubicLoopB t ^ (2 : ℕ) = 1 :=
   Real.cos_sq_add_sin_sq _
 
-theorem cubicLoopC_sq (t : ℝ) : cubicLoopC t ^ 2 = cubicLoopB t ^ 2 := by
+theorem cubicLoopC_sq (t : ℝ) : cubicLoopC t ^ (2 : ℕ) = cubicLoopB t ^ (2 : ℕ) := by
   by_cases h1 : t ≤ 1
   · simp [cubicLoopC, cubicLoopSign_left h1]
   by_cases h2 : 2 ≤ t
@@ -98,7 +98,7 @@ theorem cubicLoopB_hasDerivAt (t : ℝ) :
   exact (cubicLoopAngle_smooth.differentiable (by simp) t).hasDerivAt.sin
 
 theorem cubicLoopFlux_deriv (t : ℝ) :
-    deriv cubicLoopFlux t = deriv cubicLoopSign t * cubicLoopB t ^ 2 +
+    deriv cubicLoopFlux t = deriv cubicLoopSign t * cubicLoopB t ^ (2 : ℕ) +
       2 * cubicLoopSign t * cubicLoopB t * cubicLoopA t * deriv cubicLoopAngle t := by
   have hs := (cubicLoopSign_smooth.differentiable (by simp) t).hasDerivAt
   have hb := cubicLoopB_hasDerivAt t
@@ -110,8 +110,8 @@ theorem cubicLoopFlux_deriv (t : ℝ) :
 
 theorem cubicLoopPrimitive_deriv (t : ℝ) :
     deriv cubicLoopPrimitive t =
-      deriv cubicLoopSign t * (cubicLoopA t ^ 2 - 2 / 3 * cubicLoopA t ^ 3 - 1 / 3) +
-      cubicLoopSign t * ((2 * cubicLoopA t - 2 * cubicLoopA t ^ 2) *
+      deriv cubicLoopSign t * (cubicLoopA t ^ (2 : ℕ) - 2 / 3 * cubicLoopA t ^ (3 : ℕ) - 1 / 3) +
+      cubicLoopSign t * ((2 * cubicLoopA t - 2 * cubicLoopA t ^ (2 : ℕ)) *
         (-cubicLoopB t * deriv cubicLoopAngle t)) := by
   have hs := (cubicLoopSign_smooth.differentiable (by simp) t).hasDerivAt
   have ha := cubicLoopA_hasDerivAt t
@@ -126,7 +126,7 @@ theorem cubicLoop_flux_exact (t : ℝ) :
       deriv cubicLoopPrimitive t - (4 / 3 : ℝ) * deriv cubicLoopSign t := by
   rw [cubicLoopFlux_deriv, cubicLoopPrimitive_deriv]
   have hc := cubicLoop_circle t
-  have hb : cubicLoopB t ^ 2 = 1 - cubicLoopA t ^ 2 := by linarith
+  have hb : cubicLoopB t ^ (2 : ℕ) = 1 - cubicLoopA t ^ (2 : ℕ) := by linarith
   rw [hb]
   have hz := cubicLoopSign_deriv_annihilator t
   linear_combination -(cubicLoopA t - 2) * (cubicLoopA t + 1) / 3 * hz

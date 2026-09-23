@@ -19,7 +19,7 @@ def egbFixedChargeALogScale (w φ τ : ℝ) : ℝ := log (egbFixedChargeALargeRa
 def egbFixedChargeATemperature (w φ τ : ℝ) : ℝ :=
   egbFixedChargeATemperatureWeight τ φ / (4 * Real.pi * egbFixedChargeALargeRadius w φ τ)
 def egbFixedChargeAPressure (w φ τ : ℝ) : ℝ :=
-  egbFixedChargeAPressureWeight τ φ / (8 * Real.pi * egbFixedChargeALargeRadius w φ τ ^ 2)
+  egbFixedChargeAPressureWeight τ φ / (8 * Real.pi * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ))
 
 theorem egbFixedChargeALargeRadius_pos (w φ τ : ℝ) : 0 < egbFixedChargeALargeRadius w φ τ :=
   div_pos (exp_pos w) (sqrt_pos.mpr (egbFixedChargeAWeight_pos τ φ))
@@ -35,30 +35,30 @@ theorem egbFixedChargeALogScale_exp (w φ τ : ℝ) :
   exp_log (egbFixedChargeALargeRadius_pos w φ τ)
 
 theorem egbFixedChargeA_effective_scale (w φ τ : ℝ) :
-    egbFixedChargeALargeRadius w φ τ ^ 2 * egbFixedChargeAWeight τ φ = exp w ^ 2 := by
+    egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) * egbFixedChargeAWeight τ φ = exp w ^ (2 : ℕ) := by
   have hs := egbFixedChargeAWeight_pos τ φ
   unfold egbFixedChargeALargeRadius
   rw [div_pow, sq_sqrt hs.le]
   field_simp
 
 theorem egbFixedChargeA_conserved_scale (w φ : ℝ) :
-    (exp w * cos φ) ^ 2 + (exp w * sin φ) ^ 2 = exp w ^ 2 := by
+    (exp w * cos φ) ^ (2 : ℕ) + (exp w * sin φ) ^ (2 : ℕ) = exp w ^ (2 : ℕ) := by
   calc
-    _ = exp w ^ 2 * (sin φ ^ 2 + cos φ ^ 2) := by ring
+    _ = exp w ^ (2 : ℕ) * (sin φ ^ (2 : ℕ) + cos φ ^ (2 : ℕ)) := by ring
     _ = _ := by rw [sin_sq_add_cos_sq, mul_one]
 
 theorem egbFixedChargeA_coupling_square (w φ τ : ℝ) :
-    egbCoexistenceACouplingRoot (egbFixedChargeALogScale w φ τ) τ (egbFixedChargeAAngle τ φ) ^ 2 =
-      (exp w * sin φ) ^ 2 := by
+    egbCoexistenceACouplingRoot (egbFixedChargeALogScale w φ τ) τ (egbFixedChargeAAngle τ φ) ^ (2 : ℕ) =
+      (exp w * sin φ) ^ (2 : ℕ) := by
   rw [egbCoexistenceACouplingRoot_sq, egbFixedChargeALogScale_exp, egbFixedChargeAAngle_coupling]
   unfold egbFixedChargeACouplingWeight egbFixedChargeAFraction
   calc
-    _ = (egbFixedChargeALargeRadius w φ τ ^ 2 * egbFixedChargeAWeight τ φ) * sin φ ^ 2 := by ring
+    _ = (egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) * egbFixedChargeAWeight τ φ) * sin φ ^ (2 : ℕ) := by ring
     _ = _ := by rw [egbFixedChargeA_effective_scale]; ring
 
 theorem egbFixedChargeA_charge_square (w φ τ : ℝ) :
-    egbCoexistenceACharge (egbFixedChargeALogScale w φ τ) τ (egbFixedChargeAAngle τ φ) ^ 2 =
-      (exp w * cos φ) ^ 2 := by
+    egbCoexistenceACharge (egbFixedChargeALogScale w φ τ) τ (egbFixedChargeAAngle τ φ) ^ (2 : ℕ) =
+      (exp w * cos φ) ^ (2 : ℕ) := by
   have h := egbCoexistenceA_effective_charge (egbFixedChargeALogScale w φ τ) τ (egbFixedChargeAAngle τ φ)
   rw [egbFixedChargeALogScale_exp, egbFixedChargeAAngle_charge_weight,
     egbFixedChargeA_effective_scale, egbFixedChargeA_coupling_square] at h

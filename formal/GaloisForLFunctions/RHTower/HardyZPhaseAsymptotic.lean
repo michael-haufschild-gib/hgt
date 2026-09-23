@@ -16,7 +16,7 @@ The existing vertical digamma and trigamma estimates then give the classical fir
 
 `gammaHardyPhaseRate(t) = (1/2) log(t / (2*pi)) + o(1)`.
 
-Here the error is bounded explicitly by `33/(16*t^2) + pi/(2*t)`, while the exact second jet is
+Here the error is bounded explicitly by `33/(16*t^(2 : ℕ)) + pi/(2*t)`, while the exact second jet is
 the imaginary part of trigamma and has an unconditional `O(1/t)` bound.  Consequently the rate
 tends to infinity and is eventually positive.  These statements close the archimedean phase and
 first-derivative interfaces needed by future Riemann--Siegel and symmetric

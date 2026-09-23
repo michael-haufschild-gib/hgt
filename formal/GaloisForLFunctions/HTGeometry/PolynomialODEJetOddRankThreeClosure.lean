@@ -16,21 +16,21 @@ set_option maxHeartbeats 6000000
 /-- Modular polynomial for the signed odd rank-three reflected seam. -/
 def modularThetaReflectedTenthSeamPolynomial {K : Type*} [Field K] (X : K) : K :=
     (16275380625 / 512) +
-    (-142861674375 / 512) * X ^ 1 +
-    (47752328428875 / 65536) * X ^ 2 +
-    (-202162197691125 / 262144) * X ^ 3 +
-    (359654516607375 / 1048576) * X ^ 4 +
-    (-312458771094525 / 4194304) * X ^ 5 +
-    (277466964716925 / 16777216) * X ^ 6 +
-    (-289890788929155 / 67108864) * X ^ 7 +
-    (65149999997625 / 268435456) * X ^ 8 +
-    (-5811676667055 / 1073741824) * X ^ 9 +
-    (1347619807251 / 1073741824) * X ^ 10 +
-    (-86414468409 / 4294967296) * X ^ 11 +
-    (34486304985 / 17179869184) * X ^ 12 +
-    (-4788287325 / 17179869184) * X ^ 13 +
-    (-374144625 / 137438953472) * X ^ 14 +
-    (64029375 / 549755813888) * X ^ 15
+    (-142861674375 / 512) * X ^ (1 : ℕ) +
+    (47752328428875 / 65536) * X ^ (2 : ℕ) +
+    (-202162197691125 / 262144) * X ^ (3 : ℕ) +
+    (359654516607375 / 1048576) * X ^ (4 : ℕ) +
+    (-312458771094525 / 4194304) * X ^ (5 : ℕ) +
+    (277466964716925 / 16777216) * X ^ (6 : ℕ) +
+    (-289890788929155 / 67108864) * X ^ (7 : ℕ) +
+    (65149999997625 / 268435456) * X ^ (8 : ℕ) +
+    (-5811676667055 / 1073741824) * X ^ (9 : ℕ) +
+    (1347619807251 / 1073741824) * X ^ (10 : ℕ) +
+    (-86414468409 / 4294967296) * X ^ (11 : ℕ) +
+    (34486304985 / 17179869184) * X ^ (12 : ℕ) +
+    (-4788287325 / 17179869184) * X ^ (13 : ℕ) +
+    (-374144625 / 137438953472) * X ^ (14 : ℕ) +
+    (64029375 / 549755813888) * X ^ (15 : ℕ)
 
 /-- Exact twelfth-jet elimination for the odd rank-three reflection block. -/
 theorem modularThetaReflectedTenthSeamJetElimination
@@ -59,15 +59,15 @@ theorem modularThetaReflectedTenthSeamJetElimination
       fun n => (h (n + 2) - (1 / 4 : ℂ) * h n) / 2
     signedEvenHankelThreeDetC
       (-2 * f 0 * f 2)
-      (2 * f 0 * f 4 + 6 * f 2 ^ 2)
+      (2 * f 0 * f 4 + 6 * f 2 ^ (2 : ℕ))
       (-2 * f 0 * f 6 - 30 * f 2 * f 4)
-      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2)
+      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ (2 : ℕ))
       (-2 * f 0 * f 10 - 90 * f 2 * f 8 - 420 * f 4 * f 6) =
-      M ^ 6 * modularThetaReflectedTenthSeamPolynomial (R ^ 2) := by
+      M ^ (6 : ℕ) * modularThetaReflectedTenthSeamPolynomial (R ^ (2 : ℕ)) := by
   have step1 : h 1 = M*(0) ∧
-      z 1 = ((-1 / 1)*R^1) ∧
+      z 1 = ((-1 / 1)*R^(1 : ℕ)) ∧
       r 1 = (0) ∧
-      p 1 = ((3 / 1) + (1 / 4)*R^2) := by
+      p 1 = ((3 / 1) + (1 / 4)*R^(2 : ℕ)) := by
     as_aux_lemma =>
       have hh1 := hh 0
       have hz1 := hz 0
@@ -83,9 +83,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hr1
       · convert hp1 using 1; ring
   obtain ⟨hh1, hz1, hr1, hp1⟩ := step1
-  have step2 : h 2 = M*((-1 / 2) + (1 / 8)*R^2) ∧
+  have step2 : h 2 = M*((-1 / 2) + (1 / 8)*R^(2 : ℕ)) ∧
       z 2 = (0) ∧
-      r 2 = ((-2 / 1)*R^1 + (1 / 2)*R^3) ∧
+      r 2 = ((-2 / 1)*R^(1 : ℕ) + (1 / 2)*R^(3 : ℕ)) ∧
       p 2 = (0) := by
     as_aux_lemma =>
       have hh2 := hh 1
@@ -103,9 +103,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hp2
   obtain ⟨hh2, hz2, hr2, hp2⟩ := step2
   have step3 : h 3 = M*(0) ∧
-      z 3 = ((2 / 1)*R^1 + (3 / 2)*R^3) ∧
+      z 3 = ((2 / 1)*R^(1 : ℕ) + (3 / 2)*R^(3 : ℕ)) ∧
       r 3 = (0) ∧
-      p 3 = ((-6 / 1) + (-2 / 1)*R^2 + (3 / 8)*R^4) := by
+      p 3 = ((-6 / 1) + (-2 / 1)*R^(2 : ℕ) + (3 / 8)*R^(4 : ℕ)) := by
     as_aux_lemma =>
       have hh3 := hh 2
       have hz3 := hz 2
@@ -121,9 +121,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hr3
       · convert hp3 using 1; ring
   obtain ⟨hh3, hz3, hr3, hp3⟩ := step3
-  have step4 : h 4 = M*((7 / 4) + (-11 / 8)*R^2 + (-1 / 64)*R^4) ∧
+  have step4 : h 4 = M*((7 / 4) + (-11 / 8)*R^(2 : ℕ) + (-1 / 64)*R^(4 : ℕ)) ∧
       z 4 = (0) ∧
-      r 4 = ((16 / 1)*R^1 + (-10 / 1)*R^3 + (1 / 2)*R^5) ∧
+      r 4 = ((16 / 1)*R^(1 : ℕ) + (-10 / 1)*R^(3 : ℕ) + (1 / 2)*R^(5 : ℕ)) ∧
       p 4 = (0) := by
     as_aux_lemma =>
       have hh4 := hh 3
@@ -142,9 +142,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hp4
   obtain ⟨hh4, hz4, hr4, hp4⟩ := step4
   have step5 : h 5 = M*(0) ∧
-      z 5 = ((-16 / 1)*R^1 + (-30 / 1)*R^3 + (-13 / 2)*R^5) ∧
+      z 5 = ((-16 / 1)*R^(1 : ℕ) + (-30 / 1)*R^(3 : ℕ) + (-13 / 2)*R^(5 : ℕ)) ∧
       r 5 = (0) ∧
-      p 5 = ((48 / 1) + (34 / 1)*R^2 + (-15 / 1)*R^4 + (3 / 8)*R^6) := by
+      p 5 = ((48 / 1) + (34 / 1)*R^(2 : ℕ) + (-15 / 1)*R^(4 : ℕ) + (3 / 8)*R^(6 : ℕ)) := by
     as_aux_lemma =>
       have hh5 := hh 4
       have hz5 := hz 4
@@ -161,9 +161,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hr5
       · convert hp5 using 1; ring
   obtain ⟨hh5, hz5, hr5, hp5⟩ := step5
-  have step6 : h 6 = M*((-139 / 8) + (889 / 32)*R^2 + (95 / 128)*R^4 + (51 / 512)*R^6) ∧
+  have step6 : h 6 = M*((-139 / 8) + (889 / 32)*R^(2 : ℕ) + (95 / 128)*R^(4 : ℕ) + (51 / 512)*R^(6 : ℕ)) ∧
       z 6 = (0) ∧
-      r 6 = ((-272 / 1)*R^1 + (308 / 1)*R^3 + (-35 / 1)*R^5 + (3 / 4)*R^7) ∧
+      r 6 = ((-272 / 1)*R^(1 : ℕ) + (308 / 1)*R^(3 : ℕ) + (-35 / 1)*R^(5 : ℕ) + (3 / 4)*R^(7 : ℕ)) ∧
       p 6 = (0) := by
     as_aux_lemma =>
       have hh6 := hh 5
@@ -182,9 +182,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hp6
   obtain ⟨hh6, hz6, hr6, hp6⟩ := step6
   have step7 : h 7 = M*(0) ∧
-      z 7 = ((272 / 1)*R^1 + (924 / 1)*R^3 + (455 / 1)*R^5 + (189 / 4)*R^7) ∧
+      z 7 = ((272 / 1)*R^(1 : ℕ) + (924 / 1)*R^(3 : ℕ) + (455 / 1)*R^(5 : ℕ) + (189 / 4)*R^(7 : ℕ)) ∧
       r 7 = (0) ∧
-      p 7 = ((-816 / 1) + (-992 / 1)*R^2 + (756 / 1)*R^4 + (-42 / 1)*R^6 + (39 / 16)*R^8) := by
+      p 7 = ((-816 / 1) + (-992 / 1)*R^(2 : ℕ) + (756 / 1)*R^(4 : ℕ) + (-42 / 1)*R^(6 : ℕ) + (39 / 16)*R^(8 : ℕ)) := by
     as_aux_lemma =>
       have hh7 := hh 6
       have hz7 := hz 6
@@ -202,9 +202,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hr7
       · convert hp7 using 1; ring
   obtain ⟨hh7, hz7, hr7, hp7⟩ := step7
-  have step8 : h 8 = M*((5473 / 16) + (-14677 / 16)*R^2 + (-5397 / 128)*R^4 + (-3213 / 256)*R^6 + (849 / 4096)*R^8) ∧
+  have step8 : h 8 = M*((5473 / 16) + (-14677 / 16)*R^(2 : ℕ) + (-5397 / 128)*R^(4 : ℕ) + (-3213 / 256)*R^(6 : ℕ) + (849 / 4096)*R^(8 : ℕ)) ∧
       z 8 = (0) ∧
-      r 8 = ((7936 / 1)*R^1 + (-14080 / 1)*R^3 + (2688 / 1)*R^5 + (-126 / 1)*R^7 + (9 / 2)*R^9) ∧
+      r 8 = ((7936 / 1)*R^(1 : ℕ) + (-14080 / 1)*R^(3 : ℕ) + (2688 / 1)*R^(5 : ℕ) + (-126 / 1)*R^(7 : ℕ) + (9 / 2)*R^(9 : ℕ)) ∧
       p 8 = (0) := by
     as_aux_lemma =>
       have hh8 := hh 7
@@ -224,9 +224,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hp8
   obtain ⟨hh8, hz8, hr8, hp8⟩ := step8
   have step9 : h 9 = M*(0) ∧
-      z 9 = ((-7936 / 1)*R^1 + (-42240 / 1)*R^3 + (-34944 / 1)*R^5 + (-7938 / 1)*R^7 + (-1017 / 2)*R^9) ∧
+      z 9 = ((-7936 / 1)*R^(1 : ℕ) + (-42240 / 1)*R^(3 : ℕ) + (-34944 / 1)*R^(5 : ℕ) + (-7938 / 1)*R^(7 : ℕ) + (-1017 / 2)*R^(9 : ℕ)) ∧
       r 9 = (0) ∧
-      p 9 = ((23808 / 1) + (44224 / 1)*R^2 + (-50880 / 1)*R^4 + (4662 / 1)*R^6 + (-585 / 1)*R^8 + (27 / 8)*R^10) := by
+      p 9 = ((23808 / 1) + (44224 / 1)*R^(2 : ℕ) + (-50880 / 1)*R^(4 : ℕ) + (4662 / 1)*R^(6 : ℕ) + (-585 / 1)*R^(8 : ℕ) + (27 / 8)*R^(10 : ℕ)) := by
     as_aux_lemma =>
       have hh9 := hh 8
       have hz9 := hz 8
@@ -244,9 +244,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hr9
       · convert hp9 using 1; ring
   obtain ⟨hh9, hz9, hr9, hp9⟩ := step9
-  have step10 : h 10 = M*((-357721 / 32) + (5771821 / 128)*R^2 + (797555 / 256)*R^4 + (1562589 / 1024)*R^6 + (-445725 / 8192)*R^8 + (-26199 / 32768)*R^10) ∧
+  have step10 : h 10 = M*((-357721 / 32) + (5771821 / 128)*R^(2 : ℕ) + (797555 / 256)*R^(4 : ℕ) + (1562589 / 1024)*R^(6 : ℕ) + (-445725 / 8192)*R^(8 : ℕ) + (-26199 / 32768)*R^(10 : ℕ)) ∧
       z 10 = (0) ∧
-      r 10 = ((-353792 / 1)*R^1 + (902528 / 1)*R^3 + (-254320 / 1)*R^5 + (19404 / 1)*R^7 + (-1485 / 1)*R^9 + (117 / 4)*R^11) ∧
+      r 10 = ((-353792 / 1)*R^(1 : ℕ) + (902528 / 1)*R^(3 : ℕ) + (-254320 / 1)*R^(5 : ℕ) + (19404 / 1)*R^(7 : ℕ) + (-1485 / 1)*R^(9 : ℕ) + (117 / 4)*R^(11 : ℕ)) ∧
       p 10 = (0) := by
     as_aux_lemma =>
       have hh10 := hh 9
@@ -267,9 +267,9 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hp10
   obtain ⟨hh10, hz10, hr10, hp10⟩ := step10
   have step11 : h 11 = M*(0) ∧
-      z 11 = ((353792 / 1)*R^1 + (2707584 / 1)*R^3 + (3306160 / 1)*R^5 + (1222452 / 1)*R^7 + (167805 / 1)*R^9 + (30591 / 4)*R^11) ∧
+      z 11 = ((353792 / 1)*R^(1 : ℕ) + (2707584 / 1)*R^(3 : ℕ) + (3306160 / 1)*R^(5 : ℕ) + (1222452 / 1)*R^(7 : ℕ) + (167805 / 1)*R^(9 : ℕ) + (30591 / 4)*R^(11 : ℕ)) ∧
       r 11 = (0) ∧
-      p 11 = ((-1061376 / 1) + (-2796032 / 1)*R^2 + (4491696 / 1)*R^4 + (-598224 / 1)*R^6 + (120978 / 1)*R^8 + (-1485 / 1)*R^10 + (1341 / 16)*R^12) := by
+      p 11 = ((-1061376 / 1) + (-2796032 / 1)*R^(2 : ℕ) + (4491696 / 1)*R^(4 : ℕ) + (-598224 / 1)*R^(6 : ℕ) + (120978 / 1)*R^(8 : ℕ) + (-1485 / 1)*R^(10 : ℕ) + (1341 / 16)*R^(12 : ℕ)) := by
     as_aux_lemma =>
       have hh11 := hh 10
       have hz11 := hz 10
@@ -288,7 +288,7 @@ theorem modularThetaReflectedTenthSeamJetElimination
       · exact hr11
       · convert hp11 using 1; ring
   obtain ⟨hh11, hz11, hr11, hp11⟩ := step11
-  have step12 : h 12 = M*((34988647 / 64) + (-395756081 / 128)*R^2 + (-304210511 / 1024)*R^4 + (-216096639 / 1024)*R^6 + (198388377 / 16384)*R^8 + (12392127 / 32768)*R^10 + (1341999 / 262144)*R^12) := by
+  have step12 : h 12 = M*((34988647 / 64) + (-395756081 / 128)*R^(2 : ℕ) + (-304210511 / 1024)*R^(4 : ℕ) + (-216096639 / 1024)*R^(6 : ℕ) + (198388377 / 16384)*R^(8 : ℕ) + (12392127 / 32768)*R^(10 : ℕ) + (1341999 / 262144)*R^(12 : ℕ)) := by
     as_aux_lemma =>
       have hh12 := hh 11
       norm_num [scalarJetConvolution, scalarJetUnit, Finset.sum_range_succ, Nat.choose,
@@ -301,41 +301,41 @@ theorem modularThetaReflectedTenthSeamJetElimination
       convert hh12 using 1; ring
   have hh12 := step12
   let f : ℕ → ℂ := fun n => (h (n+2)-(1/4:ℂ)*h n)/2
-  let p0 (X : ℂ) : ℂ := (45 / 64) + (-165 / 256)*X^1 + (21 / 256)*X^2 + (1 / 1024)*X^3
-  have he0 : -2 * f 0 * f 2 = M^2*p0 (R^2) := by
+  let p0 (X : ℂ) : ℂ := (45 / 64) + (-165 / 256)*X^(1 : ℕ) + (21 / 256)*X^(2 : ℕ) + (1 / 1024)*X^(3 : ℕ)
+  have he0 : -2 * f 0 * f 2 = M^(2 : ℕ)*p0 (R^(2 : ℕ)) := by
     dsimp [f]
     simp only [hh0, hh2, hh4]
     dsimp [p0]
     ring
-  let p1 (X : ℂ) : ℂ := (765 / 64) + (-2505 / 128)*X^1 + (4461 / 1024)*X^2 + (77 / 1024)*X^3 + (27 / 4096)*X^4
-  have he1 : 2 * f 0 * f 4 + 6 * f 2 ^ 2 = M^2*p1 (R^2) := by
+  let p1 (X : ℂ) : ℂ := (765 / 64) + (-2505 / 128)*X^(1 : ℕ) + (4461 / 1024)*X^(2 : ℕ) + (77 / 1024)*X^(3 : ℕ) + (27 / 4096)*X^(4 : ℕ)
+  have he1 : 2 * f 0 * f 4 + 6 * f 2 ^ (2 : ℕ) = M^(2 : ℕ)*p1 (R^(2 : ℕ)) := by
     dsimp [f]
     simp only [hh0, hh2, hh4, hh6]
     dsimp [p1]
     ring
-  let p2 (X : ℂ) : ℂ := (24345 / 64) + (-243615 / 256)*X^1 + (333759 / 1024)*X^2 + (31519 / 4096)*X^3 + (8199 / 4096)*X^4 + (-21 / 16384)*X^5
-  have he2 : -2 * f 0 * f 6 - 30 * f 2 * f 4 = M^2*p2 (R^2) := by
+  let p2 (X : ℂ) : ℂ := (24345 / 64) + (-243615 / 256)*X^(1 : ℕ) + (333759 / 1024)*X^(2 : ℕ) + (31519 / 4096)*X^(3 : ℕ) + (8199 / 4096)*X^(4 : ℕ) + (-21 / 16384)*X^(5 : ℕ)
+  have he2 : -2 * f 0 * f 6 - 30 * f 2 * f 4 = M^(2 : ℕ)*p2 (R^(2 : ℕ)) := by
     dsimp [f]
     simp only [hh0, hh2, hh4, hh6, hh8]
     dsimp [p2]
     ring
-  let p3 (X : ℂ) : ℂ := (1207665 / 64) + (-2122095 / 32)*X^1 + (16407993 / 512)*X^2 + (1024127 / 1024)*X^3 + (7963857 / 16384)*X^4 + (-30027 / 16384)*X^5 + (5133 / 65536)*X^6
-  have he3 : 2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2 = M^2*p3 (R^2) := by
+  let p3 (X : ℂ) : ℂ := (1207665 / 64) + (-2122095 / 32)*X^(1 : ℕ) + (16407993 / 512)*X^(2 : ℕ) + (1024127 / 1024)*X^(3 : ℕ) + (7963857 / 16384)*X^(4 : ℕ) + (-30027 / 16384)*X^(5 : ℕ) + (5133 / 65536)*X^(6 : ℕ)
+  have he3 : 2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ (2 : ℕ) = M^(2 : ℕ)*p3 (R^(2 : ℕ)) := by
     dsimp [f]
     simp only [hh0, hh2, hh4, hh6, hh8, hh10]
     dsimp [p3]
     ring
-  let p4 (X : ℂ) : ℂ := (85066245 / 64) + (-1591823865 / 256)*X^1 + (2049802467 / 512)*X^2 + (327670217 / 2048)*X^3 + (1966854177 / 16384)*X^4 + (-62366877 / 65536)*X^5 + (3218985 / 65536)*X^6 + (-725859 / 262144)*X^7
-  have he4 : -2 * f 0 * f 10 - 90 * f 2 * f 8 - 420 * f 4 * f 6 = M^2*p4 (R^2) := by
+  let p4 (X : ℂ) : ℂ := (85066245 / 64) + (-1591823865 / 256)*X^(1 : ℕ) + (2049802467 / 512)*X^(2 : ℕ) + (327670217 / 2048)*X^(3 : ℕ) + (1966854177 / 16384)*X^(4 : ℕ) + (-62366877 / 65536)*X^(5 : ℕ) + (3218985 / 65536)*X^(6 : ℕ) + (-725859 / 262144)*X^(7 : ℕ)
+  have he4 : -2 * f 0 * f 10 - 90 * f 2 * f 8 - 420 * f 4 * f 6 = M^(2 : ℕ)*p4 (R^(2 : ℕ)) := by
     dsimp [f]
     simp only [hh0, hh2, hh4, hh6, hh8, hh10, hh12]
     dsimp [p4]
     ring
-  change signedEvenHankelThreeDetC (-2 * f 0 * f 2) (2 * f 0 * f 4 + 6 * f 2 ^ 2) (-2 * f 0 * f 6 - 30 * f 2 * f 4) (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2) (-2 * f 0 * f 10 - 90 * f 2 * f 8 - 420 * f 4 * f 6) = _
+  change signedEvenHankelThreeDetC (-2 * f 0 * f 2) (2 * f 0 * f 4 + 6 * f 2 ^ (2 : ℕ)) (-2 * f 0 * f 6 - 30 * f 2 * f 4) (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ (2 : ℕ)) (-2 * f 0 * f 10 - 90 * f 2 * f 8 - 420 * f 4 * f 6) = _
   rw [he0,he1,he2,he3,he4]
   have hscale (a b c d e : ℂ) :
-      signedEvenHankelThreeDetC (M^2*a) (M^2*b) (M^2*c) (M^2*d) (M^2*e) =
-      M^6*signedEvenHankelThreeDetC a b c d e := by
+      signedEvenHankelThreeDetC (M^(2 : ℕ)*a) (M^(2 : ℕ)*b) (M^(2 : ℕ)*c) (M^(2 : ℕ)*d) (M^(2 : ℕ)*e) =
+      M^(6 : ℕ)*signedEvenHankelThreeDetC a b c d e := by
     unfold signedEvenHankelThreeDetC
     ring
   rw [hscale]
@@ -344,7 +344,7 @@ theorem modularThetaReflectedTenthSeamJetElimination
       modularThetaReflectedTenthSeamPolynomial X := by
     dsimp [p0,p1,p2,p3,p4,signedEvenHankelThreeDetC,modularThetaReflectedTenthSeamPolynomial]
     ring
-  exact hp (R^2)
+  exact hp (R^(2 : ℕ))
 
 
 /-- The analytic modular ODE supplies every jet premise in the elimination. -/
@@ -368,11 +368,11 @@ theorem modularThetaReflectedTenthSeamClosure_of_ode
         (1 / 4 : ℂ) * iteratedDeriv n h 0) / 2
     signedEvenHankelThreeDetC
       (-2 * f 0 * f 2)
-      (2 * f 0 * f 4 + 6 * f 2 ^ 2)
+      (2 * f 0 * f 4 + 6 * f 2 ^ (2 : ℕ))
       (-2 * f 0 * f 6 - 30 * f 2 * f 4)
-      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2)
+      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ (2 : ℕ))
       (-2 * f 0 * f 10 - 90 * f 2 * f 8 - 420 * f 4 * f 6) =
-      M ^ 6 * modularThetaReflectedTenthSeamPolynomial (R ^ 2) := by
+      M ^ (6 : ℕ) * modularThetaReflectedTenthSeamPolynomial (R ^ (2 : ℕ)) := by
   let jh : ℕ → ℂ := fun n => iteratedDeriv n h 0
   let jz : ℕ → ℂ := fun n => iteratedDeriv n z 0
   let jr : ℕ → ℂ := fun n => iteratedDeriv n r 0
@@ -604,21 +604,21 @@ theorem modularThetaReflectedTenthSeamPolynomial_neg
   have hp15 := hp 15
   have hid : -modularThetaReflectedTenthSeamPolynomial X =
     (3080564923922620491692066740103039457303 / 879609302220800000000000) +
-    (288928943152129489135184947353297944079 / 87960930222080000000000) * y ^ 1 +
-    (11321713529114845042401117131584954431 / 8796093022208000000000) * y ^ 2 +
-    (253119115555290587202283703900801943 / 879609302220800000000) * y ^ 3 +
-    (3659802059631348335832242882094531 / 87960930222080000000) * y ^ 4 +
-    (36394175284728826123552042590939 / 8796093022208000000) * y ^ 5 +
-    (255841041175510266612905628123 / 879609302220800000) * y ^ 6 +
-    (1270263926884626239933284947 / 87960930222080000) * y ^ 7 +
-    (4263297908633393345054181 / 8796093022208000) * y ^ 8 +
-    (8062147230190312679757 / 879609302220800) * y ^ 9 +
-    (1437012024369451011 / 87960930222080) * (1 - y ^ 10) +
-    (59484862171607931 / 8796093022208) * (1 - y ^ 11) +
-    (930978403404795 / 4398046511104) * (1 - y ^ 12) +
-    (7596952502175 / 2199023255552) * (1 - y ^ 13) +
-    (33695674875 / 1099511627776) * (1 - y ^ 14) +
-    (64029375 / 549755813888) * (1 - y ^ 15) := by
+    (288928943152129489135184947353297944079 / 87960930222080000000000) * y ^ (1 : ℕ) +
+    (11321713529114845042401117131584954431 / 8796093022208000000000) * y ^ (2 : ℕ) +
+    (253119115555290587202283703900801943 / 879609302220800000000) * y ^ (3 : ℕ) +
+    (3659802059631348335832242882094531 / 87960930222080000000) * y ^ (4 : ℕ) +
+    (36394175284728826123552042590939 / 8796093022208000000) * y ^ (5 : ℕ) +
+    (255841041175510266612905628123 / 879609302220800000) * y ^ (6 : ℕ) +
+    (1270263926884626239933284947 / 87960930222080000) * y ^ (7 : ℕ) +
+    (4263297908633393345054181 / 8796093022208000) * y ^ (8 : ℕ) +
+    (8062147230190312679757 / 879609302220800) * y ^ (9 : ℕ) +
+    (1437012024369451011 / 87960930222080) * (1 - y ^ (10 : ℕ)) +
+    (59484862171607931 / 8796093022208) * (1 - y ^ (11 : ℕ)) +
+    (930978403404795 / 4398046511104) * (1 - y ^ (12 : ℕ)) +
+    (7596952502175 / 2199023255552) * (1 - y ^ (13 : ℕ)) +
+    (33695674875 / 1099511627776) * (1 - y ^ (14 : ℕ)) +
+    (64029375 / 549755813888) * (1 - y ^ (15 : ℕ)) := by
     dsimp [y, modularThetaReflectedTenthSeamPolynomial]
     ring
   have hpos : 0 < -modularThetaReflectedTenthSeamPolynomial X := by

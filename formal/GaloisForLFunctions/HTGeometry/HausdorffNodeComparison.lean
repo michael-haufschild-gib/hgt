@@ -71,7 +71,7 @@ theorem abs_node_pow_sub_ratio_le {N m k : ℕ} (hm : m ≤ N) (hk : k ≤ N) (h
   · -- below the diagonal the falling factorial vanishes
     have hzero : k.descFactorial m = 0 := Nat.descFactorial_eq_zero_iff_lt.mpr hlt
     have hpow : ((k : ℝ) / (N : ℝ)) ^ m ≤ (k : ℝ) / (N : ℝ) := by
-      calc ((k : ℝ) / (N : ℝ)) ^ m ≤ ((k : ℝ) / (N : ℝ)) ^ 1 :=
+      calc ((k : ℝ) / (N : ℝ)) ^ m ≤ ((k : ℝ) / (N : ℝ)) ^ (1 : ℕ) :=
             pow_le_pow_of_le_one hx0 hx1 hmpos
         _ = (k : ℝ) / (N : ℝ) := pow_one _
     have hkm : (k : ℝ) ≤ (m : ℝ) := by exact_mod_cast le_of_lt hlt

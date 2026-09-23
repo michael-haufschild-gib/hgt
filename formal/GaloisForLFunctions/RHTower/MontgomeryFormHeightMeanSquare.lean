@@ -48,8 +48,8 @@ theorem conj_lorentzShift (a : ℂ) (t : ℝ) :
 
 /-- `(i(ρ − 1/2) − conj(i(ρ' − 1/2)))² = −(ρ + ρ̄' − 1)²`. -/
 theorem lorentzCentre_sub_conj_sq (ρ ρ' : ℂ) :
-    (lorentzCentre ρ - (starRingEnd ℂ) (lorentzCentre ρ')) ^ 2
-      = -(ρ + (starRingEnd ℂ) ρ' - 1) ^ 2 := by
+    (lorentzCentre ρ - (starRingEnd ℂ) (lorentzCentre ρ')) ^ (2 : ℕ)
+      = -(ρ + (starRingEnd ℂ) ρ' - 1) ^ (2 : ℕ) := by
   have h : lorentzCentre ρ - (starRingEnd ℂ) (lorentzCentre ρ')
       = I * (ρ + (starRingEnd ℂ) ρ' - 1) := by
     simp only [lorentzCentre, map_mul, Complex.conj_I, map_sub, map_div₀, map_one, map_ofNat]
@@ -61,7 +61,7 @@ theorem montgomeryZeroTerm_eq_lorentz (x t : ℝ) (q : XiZeroCopy) :
     montgomeryZeroTerm x t q
       = -2 * (x : ℂ) ^ (q.1 : ℂ) * lorentzShift (lorentzCentre (q.1 : ℂ)) t := by
   have hD : ((q.1 : ℂ) - montgomeryPoleUp t) * ((q.1 : ℂ) - montgomeryPoleDown t)
-      = -(1 + ((t : ℂ) + lorentzCentre (q.1 : ℂ)) ^ 2) := by
+      = -(1 + ((t : ℂ) + lorentzCentre (q.1 : ℂ)) ^ (2 : ℕ)) := by
     simp only [montgomeryPoleUp, montgomeryPoleDown, lorentzCentre]
     push_cast
     ring_nf
@@ -100,7 +100,7 @@ theorem ofReal_cpow_mul_conj_cpow {x : ℝ} (hx : 0 < x) (u v : ℂ) :
 /-- `|Σ_j c_j(t)|²` expanded as the double sum of pair integrands. -/
 theorem normSq_lorentzZeroSum_eq {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) {x : ℝ} (hx : 0 < x)
     (t : ℝ) :
-    ((‖lorentzZeroSum s ρ x t‖ ^ 2 : ℝ) : ℂ) = ∑ j ∈ s, ∑ k ∈ s, lorentzPairIntegrand ρ x j k t := by
+    ((‖lorentzZeroSum s ρ x t‖ ^ (2 : ℕ) : ℝ) : ℂ) = ∑ j ∈ s, ∑ k ∈ s, lorentzPairIntegrand ρ x j k t := by
   rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, lorentzZeroSum, map_sum, Finset.sum_mul_sum]
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
   rw [lorentzPairIntegrand, map_mul, conj_lorentzShift]
@@ -112,12 +112,12 @@ theorem normSq_lorentzZeroSum_eq {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) 
 
 /-- A uniform bound for the Lorentzian at a strip shift. -/
 theorem norm_lorentzShift_le_const {a : ℂ} (ha : a ∈ unitStrip) (t : ℝ) :
-    ‖lorentzShift a t‖ ≤ 4 / (1 - |a.im|) ^ 2 := by
+    ‖lorentzShift a t‖ ≤ 4 / (1 - |a.im|) ^ (2 : ℕ) := by
   refine (norm_lorentzShift_le ha t).trans ?_
   have hη : 0 < 1 - |a.im| := by rw [mem_unitStrip] at ha; linarith
-  have : 1 / (1 + (t + a.re) ^ 2) ≤ 1 := by
+  have : 1 / (1 + (t + a.re) ^ (2 : ℕ)) ≤ 1 := by
     rw [div_le_one (by positivity)]; nlinarith [sq_nonneg (t + a.re)]
-  calc (4 / (1 - |a.im|) ^ 2) * (1 / (1 + (t + a.re) ^ 2)) ≤ (4 / (1 - |a.im|) ^ 2) * 1 := by
+  calc (4 / (1 - |a.im|) ^ (2 : ℕ)) * (1 / (1 + (t + a.re) ^ (2 : ℕ))) ≤ (4 / (1 - |a.im|) ^ (2 : ℕ)) * 1 := by
         gcongr
     _ = _ := mul_one _
 
@@ -146,7 +146,7 @@ theorem integral_lorentzPairIntegrand {ι : Type*} (ρ : ι → ℂ) (x : ℝ) {
   unfold lorentzPairIntegrand
   rw [integral_const_mul, lorentzProduct_eq ha hb, lorentzCentre_sub_conj_sq, montgomeryWeight]
   have hπ : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  have hne' : (4 : ℂ) - (ρ j + (starRingEnd ℂ) (ρ k) - 1) ^ 2 ≠ 0 := by
+  have hne' : (4 : ℂ) - (ρ j + (starRingEnd ℂ) (ρ k) - 1) ^ (2 : ℕ) ≠ 0 := by
     intro h; apply hne; rw [← h]; ring
   push_cast
   field_simp
@@ -158,7 +158,7 @@ theorem integral_lorentzPairIntegrand {ι : Type*} (ρ : ι → ℂ) (x : ℝ) {
 theorem montgomeryForm_eq_integral_height {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) {x : ℝ}
     (hx : 0 < x) (hρ : ∀ j ∈ s, 0 < (ρ j).re ∧ (ρ j).re < 1) :
     montgomeryForm s ρ x
-      = ((2 / Real.pi : ℝ) : ℂ) * ∫ t : ℝ, ((‖lorentzZeroSum s ρ x t‖ ^ 2 : ℝ) : ℂ) := by
+      = ((2 / Real.pi : ℝ) : ℂ) * ∫ t : ℝ, ((‖lorentzZeroSum s ρ x t‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   simp_rw [normSq_lorentzZeroSum_eq s ρ hx]
   rw [integral_finsetSum _ (fun j hj => integrable_finsetSum _
     (fun k hk => integrable_lorentzPairIntegrand ρ x (hρ j hj) (hρ k hk)))]
@@ -175,10 +175,10 @@ theorem montgomeryForm_eq_integral_height {ι : Type*} (s : Finset ι) (ρ : ι 
 /-- The real form: `Re F(x) = (2/π) ∫ |Σ_j …|² dt`; the imaginary part vanishes. -/
 theorem montgomeryForm_re_eq_integral_height {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) {x : ℝ}
     (hx : 0 < x) (hρ : ∀ j ∈ s, 0 < (ρ j).re ∧ (ρ j).re < 1) :
-    (montgomeryForm s ρ x).re = (2 / Real.pi) * ∫ t : ℝ, ‖lorentzZeroSum s ρ x t‖ ^ 2 := by
+    (montgomeryForm s ρ x).re = (2 / Real.pi) * ∫ t : ℝ, ‖lorentzZeroSum s ρ x t‖ ^ (2 : ℕ) := by
   rw [montgomeryForm_eq_integral_height s ρ hx hρ]
-  have : (∫ t : ℝ, ((‖lorentzZeroSum s ρ x t‖ ^ 2 : ℝ) : ℂ))
-      = ((∫ t : ℝ, ‖lorentzZeroSum s ρ x t‖ ^ 2 : ℝ) : ℂ) := by
+  have : (∫ t : ℝ, ((‖lorentzZeroSum s ρ x t‖ ^ (2 : ℕ) : ℝ) : ℂ))
+      = ((∫ t : ℝ, ‖lorentzZeroSum s ρ x t‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     exact_mod_cast (integral_ofReal (𝕜 := ℂ))
   rw [this, ← Complex.ofReal_mul, Complex.ofReal_re]
 

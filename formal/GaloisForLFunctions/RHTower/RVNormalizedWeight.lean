@@ -106,7 +106,7 @@ theorem tendsto_rvWeightSum_inv {α : ℝ} (hα0 : 0 ≤ α) (hα1 : α < 1) {L 
   ring
 
 
-/-- **The card's `(10)`.**  The normalized weight is `w_α(p/X)` up to a factor `(1 ± c)^4`,
+/-- **The card's `(10)`.**  The normalized weight is `w_α(p/X)` up to a factor `(1 ± c)^(4 : ℕ)`,
 uniformly on the shell `(aX, bX]`. -/
 theorem rvNormReal_bounds {α : ℝ} (hα0 : 0 ≤ α) (hα1 : α < 1) {L : ℝ → ℝ}
     (hL : IsSlowlyVarying L) {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (hb1 : b ≤ 1)

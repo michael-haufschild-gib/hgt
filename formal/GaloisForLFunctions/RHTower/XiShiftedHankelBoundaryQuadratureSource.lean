@@ -29,7 +29,7 @@ def xiShiftedHankelBoundaryPrimeArchJet
 normalized completed-source boundary jet. -/
 theorem xiShiftedHankelBoundaryQuadratureError_eq_sourceJet
     {w : ℝ} (hw : 0 < w) (n : ℕ) (c : Fin (n + 1) → ℝ) :
-    xiShiftedHankelBoundaryQuadratureError (w ^ 2) c
+    xiShiftedHankelBoundaryQuadratureError (w ^ (2 : ℕ)) c
         (X ^ (n + 1) * xiShiftedHankelNullPolynomial c) =
       xiShiftedHankelBoundarySourceJet w (n + 1) c := by
   rw [← xiShiftedHankelFirstOmittedCoupling_eq_boundaryQuadratureError]
@@ -39,7 +39,7 @@ theorem xiShiftedHankelBoundaryQuadratureError_eq_sourceJet
 archimedean and cancellation-preserving prime-discrepancy parts. -/
 theorem xiShiftedHankelBoundaryQuadratureError_eq_archimedean_add_discrepancy
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) (c : Fin (n + 1) → ℝ) :
-    xiShiftedHankelBoundaryQuadratureError (w ^ 2) c
+    xiShiftedHankelBoundaryQuadratureError (w ^ (2 : ℕ)) c
         (X ^ (n + 1) * xiShiftedHankelNullPolynomial c) =
       xiShiftedHankelBoundaryArchimedeanJet w (n + 1) c +
         xiShiftedHankelBoundaryDiscrepancyJet w (n + 1) c := by
@@ -50,7 +50,7 @@ theorem xiShiftedHankelBoundaryQuadratureError_eq_archimedean_add_discrepancy
 the archimedean boundary jet strictly dominating the negative prime-discrepancy jet. -/
 theorem xiShiftedHankelBoundaryQuadratureError_pos_iff_sourceDominance
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) (c : Fin (n + 1) → ℝ) :
-    0 < xiShiftedHankelBoundaryQuadratureError (w ^ 2) c
+    0 < xiShiftedHankelBoundaryQuadratureError (w ^ (2 : ℕ)) c
         (X ^ (n + 1) * xiShiftedHankelNullPolynomial c) ↔
       -xiShiftedHankelBoundaryDiscrepancyJet w (n + 1) c <
         xiShiftedHankelBoundaryArchimedeanJet w (n + 1) c := by

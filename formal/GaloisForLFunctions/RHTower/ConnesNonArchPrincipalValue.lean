@@ -54,13 +54,13 @@ theorem integral_eq_zero_of_translationCharacter {G : Type*} [MeasurableSpace G]
 
 /-- **Appendix II (29), term `B`.**  The shell series of the non-archimedean logarithm. -/
 theorem connes_shellLogSeries (q : ℝ) (hq : 1 < q) :
-    (1 - 1 / q) ^ 2 * ∑' n : ℕ, (-(n : ℝ) * Real.log q) * (1 / q) ^ n
+    (1 - 1 / q) ^ (2 : ℕ) * ∑' n : ℕ, (-(n : ℝ) * Real.log q) * (1 / q) ^ n
       = -(Real.log q) / q := by
   have hq0 : (0:ℝ) < q := lt_trans one_pos hq
   have ht : ‖(1 / q : ℝ)‖ < 1 := by
     rw [Real.norm_eq_abs, abs_of_pos (by positivity)]
     rw [div_lt_one hq0]; exact hq
-  have hgeo : ∑' n : ℕ, (n : ℝ) * (1 / q) ^ n = (1 / q) / (1 - 1 / q) ^ 2 :=
+  have hgeo : ∑' n : ℕ, (n : ℝ) * (1 / q) ^ n = (1 / q) / (1 - 1 / q) ^ (2 : ℕ) :=
     tsum_coe_mul_geometric_of_norm_lt_one ht
   have hne : (1 - 1 / q : ℝ) ≠ 0 := by
     have : (1:ℝ) / q < 1 := by rw [div_lt_one hq0]; exact hq
@@ -75,7 +75,7 @@ theorem connes_shellLogSeries (q : ℝ) (hq : 1 < q) :
 non-archimedean place with unramified basic character. -/
 theorem connes_nonArch_A_add_B_eq_zero (q : ℝ) (hq : 1 < q) :
     (1 / q) * Real.log q
-        + (1 - 1 / q) ^ 2 * ∑' n : ℕ, (-(n : ℝ) * Real.log q) * (1 / q) ^ n = 0 := by
+        + (1 - 1 / q) ^ (2 : ℕ) * ∑' n : ℕ, (-(n : ℝ) * Real.log q) * (1 / q) ^ n = 0 := by
   have hq0 : (0:ℝ) < q := lt_trans one_pos hq
   rw [connes_shellLogSeries q hq]
   field_simp

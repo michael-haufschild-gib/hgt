@@ -15,12 +15,12 @@ theorem jointWaveResponse_cuspGraph_uniform (w : ℂ) (hw : 0 < w.re)
       2 (radialMeasure.prod D4BMModularCore.measure)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℝ, ∀ hN : 0 < N,
       ‖jointCuspWeight N hN (jointWaveResponse w hw F)‖ ≤ C := by
-  let K := w.re*‖w‖/((w.re^2+w.im^2)*(w.re^2-9/4))
+  let K := w.re*‖w‖/((w.re^(2 : ℕ)+w.im^(2 : ℕ))*(w.re^(2 : ℕ)-9/4))
   let B := ‖hF.toLp _‖
   let V := K*B
-  let A := ‖w‖*V*B+(9/4)*w.re*V^2
-  let D := (2*w.re*A+9*w.im^2*V^2)/w.re^2
-  have hδ : 0 < w.re^2-(9/4:ℝ) := by nlinarith
+  let A := ‖w‖*V*B+(9/4)*w.re*V^(2 : ℕ)
+  let D := (2*w.re*A+9*w.im^(2 : ℕ)*V^(2 : ℕ))/w.re^(2 : ℕ)
+  have hδ : 0 < w.re^(2 : ℕ)-(9/4:ℝ) := by nlinarith
   have hK : 0 ≤ K := by dsimp [K]; positivity
   have hB : 0 ≤ B := norm_nonneg _
   have hV : 0 ≤ V := mul_nonneg hK hB
@@ -40,7 +40,7 @@ theorem jointWaveResponse_cuspGraph_uniform (w : ℂ) (hw : 0 < w.re)
       (mul_le_mul_of_nonneg_left hsource hK)
   have hr : ‖r‖ ≤ (3/2)*V := (cuspSpatialLogSlope_bound N hN v).trans
     (mul_le_mul_of_nonneg_left hv (by norm_num))
-  have hr2 : ‖r‖^2 ≤ (9/4)*V^2 := by
+  have hr2 : ‖r‖^(2 : ℕ) ≤ (9/4)*V^(2 : ℕ) := by
     have h := pow_le_pow_left₀ (norm_nonneg _) hr 2
     nlinarith only [h]
   have hdX : ‖d‖ ≤ X := PiLp.norm_apply_le (jointCuspWeight N hN u : JointEnergySpace) 3
@@ -61,16 +61,16 @@ theorem jointWaveResponse_cuspGraph_uniform (w : ℂ) (hw : 0 < w.re)
       _ = ‖w‖*‖v‖*‖cuspSpatialMultiply N hN F‖ := by ring
       _ ≤ _ := by gcongr
   have he := jointCuspWeight_rotated_identity N hN w F u (jointWaveResponse_spec w hw F)
-  change w.re*X^2+w.re*(w.re^2+w.im^2-1)*‖v‖^2-w.re*‖r‖^2+
+  change w.re*X^(2 : ℕ)+w.re*(w.re^(2 : ℕ)+w.im^(2 : ℕ)-1)*‖v‖^(2 : ℕ)-w.re*‖r‖^(2 : ℕ)+
     2*w.im*(inner ℂ r d).im = _ at he
-  have hdrop : 0 ≤ w.re*(w.re^2+w.im^2-1)*‖v‖^2 := by
-    have hs : 0 ≤ w.re^2+w.im^2-1 := by nlinarith [sq_nonneg w.im]
+  have hdrop : 0 ≤ w.re*(w.re^(2 : ℕ)+w.im^(2 : ℕ)-1)*‖v‖^(2 : ℕ) := by
+    have hs : 0 ≤ w.re^(2 : ℕ)+w.im^(2 : ℕ)-1 := by nlinarith [sq_nonneg w.im]
     positivity
-  have hb : w.re*X^2 ≤ A+3*|w.im| *V*X := by
+  have hb : w.re*X^(2 : ℕ) ≤ A+3*|w.im| *V*X := by
     have hr' := mul_le_mul_of_nonneg_left hr2 hw.le
     dsimp [A]
     nlinarith only [he,hdrop,hr',hc,hright]
-  have hx2 : X^2 ≤ D := by
+  have hx2 : X^(2 : ℕ) ≤ D := by
     apply (le_div_iff₀ (sq_pos_of_pos hw)).mpr
     have hb' := mul_le_mul_of_nonneg_left hb (show 0 ≤ 2*w.re by positivity)
     have hsq := sq_nonneg (w.re*X-3*|w.im| *V)

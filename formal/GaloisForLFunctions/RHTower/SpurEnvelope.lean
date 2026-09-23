@@ -44,7 +44,7 @@ theorem phi_product_multiplierTruncPoly_abs_bound_half_constant (P n : ℕ) {j d
       _ ≤ 2 * ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
           exact mul_le_mul_of_nonneg_left htail_div (by norm_num : (0 : ℝ) ≤ 2)
   have htrunc_eq :
-      ((n : ℝ) * ((j : ℝ) ^ 2 / d)) ^ P / (P.factorial : ℝ) =
+      ((n : ℝ) * ((j : ℝ) ^ (2 : ℕ) / d)) ^ P / (P.factorial : ℝ) =
         ((n : ℝ) ^ P / (P.factorial : ℝ)) *
           ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
     rw [mul_pow, div_pow]
@@ -54,7 +54,7 @@ theorem phi_product_multiplierTruncPoly_abs_bound_half_constant (P n : ℕ) {j d
     |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
         (multiplierTruncPoly P n j).eval ((d : ℝ)⁻¹)|
         ≤ 2 * (j : ℝ) ^ (n + 2) / (d : ℝ) ^ (n + 1) +
-            ((n : ℝ) * ((j : ℝ) ^ 2 / d)) ^ P / (P.factorial : ℝ) := hbase
+            ((n : ℝ) * ((j : ℝ) ^ (2 : ℕ) / d)) ^ P / (P.factorial : ℝ) := hbase
     _ ≤ 2 * ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) +
           ((n : ℝ) ^ P / (P.factorial : ℝ)) *
             ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
@@ -71,13 +71,13 @@ theorem phi_product_multiplierTruncPoly_abs_bound_half_order (P : ℕ) {j d : �
         ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
   exact phi_product_multiplierTruncPoly_abs_bound_half_constant P (P - 1) hd hj hhalf (by omega)
 
-/-- R1's single-constant envelope on the paper range `j^3 <= d^2`.
+/-- R1's single-constant envelope on the paper range `j^(3 : ℕ) <= d^(2 : ℕ)`.
 
-The hypothesis `j^3 <= d^2` is the arithmetic replacement for `j <= d^(2/3)`;
+The hypothesis `j^(3 : ℕ) <= d^(2 : ℕ)` is the arithmetic replacement for `j <= d^(2/3)`;
 the small threshold `8 <= d` converts it to the half-range used by the log-tail
 estimate. -/
 theorem phi_product_multiplierTruncPoly_abs_bound_cube_square_order (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P) :
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) (hP : 1 ≤ P) :
     |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
         (multiplierTruncPoly P (P - 1) j).eval ((d : ℝ)⁻¹)| ≤
       (2 + ((P - 1 : ℕ) : ℝ) ^ P / (P.factorial : ℝ)) *
@@ -116,9 +116,9 @@ theorem phi_product_multiplierCoeff_sum_abs_bound_half_order (P : ℕ) {j d : �
 
 This is the closest formal shape to doc 34's R1 statement currently exposed in Lean:
 the actual multiplier is controlled by an explicit finite coefficient sum on
-`j^3 <= d^2`. -/
+`j^(3 : ℕ) <= d^(2 : ℕ)`. -/
 theorem phi_product_multiplierCoeff_sum_abs_bound_cube_square_order (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P) :
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) (hP : 1 ≤ P) :
     |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
         ∑ p ∈ Finset.range (P * (P - 1) + 1),
           multiplierCoeff P (P - 1) j p * ((d : ℝ)⁻¹) ^ p| ≤
@@ -179,7 +179,7 @@ theorem phi_product_multiplierJet_abs_bound_with_tail_half_order (P : ℕ) {j d 
 
 /-- Paper-range jet-tail split for R1. -/
 theorem phi_product_multiplierJet_abs_bound_with_tail_cube_square_order (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P) :
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) (hP : 1 ≤ P) :
     ∃ Q : ℝ[X],
       |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
           (multiplierJetPoly P (P - 1) j).eval ((d : ℝ)⁻¹)| ≤
@@ -195,7 +195,7 @@ theorem phi_product_multiplierJet_abs_bound_with_tail_cube_square_order (P : ℕ
 This is the Lean-facing version of doc 34's `Σ_{p<P} e_p(j)/d^p` statement before
 the final coefficient-tail estimate is supplied. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_with_tail_cube_square_order
-    (P : ℕ) {j d : ℕ} (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P) :
+    (P : ℕ) {j d : ℕ} (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) (hP : 1 ≤ P) :
     ∃ Q : ℝ[X],
       |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
           ∑ p ∈ Finset.range P, multiplierCoeff P (P - 1) j p * ((d : ℝ)⁻¹) ^ p| ≤
@@ -210,7 +210,7 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_with_tail_cube_square_orde
 /-- Paper-range low-sum R1 once the coefficient-tail provider is supplied. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_order
     (K : ℝ) (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P)
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) (hP : 1 ≤ P)
     (hTail : multiplierJetTailEvalBound K P (P - 1) j d) :
     |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
         ∑ p ∈ Finset.range P, multiplierCoeff P (P - 1) j p * ((d : ℝ)⁻¹) ^ p| ≤
@@ -256,7 +256,7 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_
 /-- Paper-range low-sum R1 from a concrete finite high-coefficient tail bound. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_sum_bound_cube_square_order
     (K : ℝ) (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P)
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) (hP : 1 ≤ P)
     (hCoeff :
       ∑ r ∈ Finset.range (P * (P - 1) + 1),
         |multiplierCoeff P (P - 1) j (P + r)| * |((d : ℝ)⁻¹)| ^ r ≤
@@ -271,7 +271,7 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_sum_bound_cube_sq
 /-- Paper-range low-sum R1 from the sharper cumulant-power high-tail provider. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_cumulant_power_tail_bound_cube_square_order
     (K : ℝ) (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P)
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) (hP : 1 ≤ P)
     (hPower : cumulantPowerTailCoeffBound K P j d) :
     |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
         ∑ p ∈ Finset.range P, multiplierCoeff P (P - 1) j p * ((d : ℝ)⁻¹) ^ p| ≤
@@ -285,7 +285,7 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_cumulant_power_tail_bou
 finite constant depending only on `P`. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_explicit_cube_square_order
     (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P) :
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) (hP : 1 ≤ P) :
     |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
         ∑ p ∈ Finset.range P, multiplierCoeff P (P - 1) j p * ((d : ℝ)⁻¹) ^ p| ≤
       (2 + ((P - 1 : ℕ) : ℝ) ^ P / (P.factorial : ℝ) +
@@ -298,7 +298,7 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_explicit_cube_square_order
 /-- Paper-range low-sum R1 from an unweighted high-coefficient tail bound. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_abs_sum_bound_cube_square_order
     (K : ℝ) (P : ℕ) {j d : ℕ}
-    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P)
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ (3 : ℕ) ≤ d ^ (2 : ℕ)) (hP : 1 ≤ P)
     (hCoeff :
       ∑ r ∈ Finset.range (P * (P - 1) + 1),
         |multiplierCoeff P (P - 1) j (P + r)| ≤ K * (j : ℝ) ^ (2 * P)) :

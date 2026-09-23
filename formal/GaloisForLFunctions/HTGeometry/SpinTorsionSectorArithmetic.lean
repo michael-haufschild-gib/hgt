@@ -4,9 +4,9 @@ import Mathlib
 # Flux-sector arithmetic and curvature closure
 
 Odd fluxes split into the two residue classes `4k+1` and `4k+3`; on each class the quotient
-`m(n^2-1)/8` has a polynomial formula.  Quadratic family binding then gives an exact three-versus-six
+`m(n^(2 : ℕ)-1)/8` has a polynomial formula.  Quadratic family binding then gives an exact three-versus-six
 sector crossover law.  The FLRW Kretschmann bracket has its unique minimum at equation-of-state
-parameter `-1/3`, and the closure-density substitution gives the exact curvature `12/ell^4`.
+parameter `-1/3`, and the closure-density substitution gives the exact curvature `12/ell^(4 : ℕ)`.
 -/
 
 noncomputable section
@@ -14,13 +14,13 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 
 /-- Chiral family multiplicity determined by the two flux integers. -/
-def familyCount (m n : ℕ) : ℕ := m * (n ^ 2 - 1) / 8
+def familyCount (m n : ℕ) : ℕ := m * (n ^ (2 : ℕ) - 1) / 8
 
 /-- Polynomial family count on the odd residue class `1 mod 4`. -/
 theorem familyCount_four_mul_add_one (m k : ℕ) :
     familyCount m (4 * k + 1) = m * (k * (2 * k + 1)) := by
   unfold familyCount
-  have h : (4 * k + 1) ^ 2 - 1 = 8 * (k * (2 * k + 1)) := by
+  have h : (4 * k + 1) ^ (2 : ℕ) - 1 = 8 * (k * (2 * k + 1)) := by
     ring_nf
     omega
   rw [h]
@@ -34,7 +34,7 @@ theorem familyCount_four_mul_add_one (m k : ℕ) :
 theorem familyCount_four_mul_add_three (m k : ℕ) :
     familyCount m (4 * k + 3) = m * ((k + 1) * (2 * k + 1)) := by
   unfold familyCount
-  have h : (4 * k + 3) ^ 2 - 1 = 8 * ((k + 1) * (2 * k + 1)) := by
+  have h : (4 * k + 3) ^ (2 : ℕ) - 1 = 8 * ((k + 1) * (2 * k + 1)) := by
     ring_nf
     omega
   rw [h]
@@ -61,7 +61,7 @@ theorem familyCount_five (m : ℕ) : familyCount m 5 = 3 * m := by
 
 /-- Baseline sector energy with quadratic family-dependent binding. -/
 def familyWeightedEnergy (baseline family coupling : ℝ) : ℝ :=
-  baseline - coupling * family ^ 2
+  baseline - coupling * family ^ (2 : ℕ)
 
 /-- Exact coupling where three- and six-family sectors exchange order. -/
 def threeSixCrossoverCoupling (threeBaseline sixBaseline : ℝ) : ℝ :=
@@ -95,7 +95,7 @@ theorem sixFamily_wins_above_crossover (threeBaseline sixBaseline margin : ℝ) 
   nlinarith [Real.exp_pos margin]
 
 /-- Equation-of-state factor in the homogeneous FLRW Kretschmann scalar. -/
-def flrwKretschmannBracket (w : ℝ) : ℝ := 4 + (1 + 3 * w) ^ 2
+def flrwKretschmannBracket (w : ℝ) : ℝ := 4 + (1 + 3 * w) ^ (2 : ℕ)
 
 /-- The FLRW Kretschmann bracket is minimized at `w=-1/3`. -/
 theorem flrwKretschmannBracket_minimum (w : ℝ) :
@@ -113,7 +113,7 @@ theorem flrwKretschmannBracket_eq_minimum_iff (w : ℝ) :
 
 /-- Kretschmann scalar with positive gravitational and density scales encoded logarithmically. -/
 def flrwKretschmann (logG logRho w : ℝ) : ℝ :=
-  (64 * Real.pi ^ 2 * Real.exp (2 * logG) * Real.exp (2 * logRho) / 3) *
+  (64 * Real.pi ^ (2 : ℕ) * Real.exp (2 * logG) * Real.exp (2 * logRho) / 3) *
     flrwKretschmannBracket w
 
 /-- Multiplying by physical scales preserves the equation-of-state minimum. -/
@@ -123,17 +123,17 @@ theorem flrwKretschmann_minimum (logG logRho w : ℝ) :
   exact mul_le_mul_of_nonneg_left (flrwKretschmannBracket_minimum w) (by positivity)
 
 /-- Density at which a homogeneous Hubble radius equals the cell scale. -/
-def closureDensity (G c ell : ℝ) : ℝ := 3 * c ^ 2 / (8 * Real.pi * G * ell ^ 2)
+def closureDensity (G c ell : ℝ) : ℝ := 3 * c ^ (2 : ℕ) / (8 * Real.pi * G * ell ^ (2 : ℕ))
 
 /-- Minimum FLRW Kretschmann scalar at a fixed density. -/
 def minimumKretschmannAtDensity (G c rho : ℝ) : ℝ :=
-  256 * Real.pi ^ 2 * G ^ 2 * rho ^ 2 / (3 * c ^ 4)
+  256 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ) * rho ^ (2 : ℕ) / (3 * c ^ (4 : ℕ))
 
-/-- Closure-density substitution gives the exact curvature `12/ell^4`. -/
+/-- Closure-density substitution gives the exact curvature `12/ell^(4 : ℕ)`. -/
 theorem closureKretschmann_eq (logG logC logEll : ℝ) :
     minimumKretschmannAtDensity (Real.exp logG) (Real.exp logC)
         (closureDensity (Real.exp logG) (Real.exp logC) (Real.exp logEll)) =
-      12 / Real.exp logEll ^ 4 := by
+      12 / Real.exp logEll ^ (4 : ℕ) := by
   unfold minimumKretschmannAtDensity closureDensity
   field_simp [Real.exp_ne_zero, Real.pi_ne_zero]
   ring

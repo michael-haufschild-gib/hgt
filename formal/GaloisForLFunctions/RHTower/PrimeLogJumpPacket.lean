@@ -218,31 +218,31 @@ theorem tendsto_jumpMean_atTop (hAB : A < B) :
   filter_upwards [Filter.eventually_gt_atTop 0] with κ hκ
   exact hbound κ hκ
 
-theorem jumpShell_sq (A B : ℝ) (x : ℝ) : (jumpShell A B x) ^ 2 = jumpShell A B x := by
+theorem jumpShell_sq (A B : ℝ) (x : ℝ) : (jumpShell A B x) ^ (2 : ℕ) = jumpShell A B x := by
   classical
   by_cases hx : x ∈ jumpShellSet A B <;> simp [jumpShell, hx]
 
 /-- The exact squared mass of the jump packet. -/
 theorem integral_jumpPacket_sq (hA : 0 < A) (hAB : A < B) (hκ : κ ≠ 0) :
-    ∫ x, (jumpPacket A B κ x) ^ 2
+    ∫ x, (jumpPacket A B κ x) ^ (2 : ℕ)
       = (B - A) + (Real.sin (2 * κ * B) - Real.sin (2 * κ * A)) / (2 * κ)
-        - 2 * (B - A) * (jumpMean A B κ) ^ 2 := by
+        - 2 * (B - A) * (jumpMean A B κ) ^ (2 : ℕ) := by
   have hκ2 : (2 : ℝ) * κ ≠ 0 := by simpa using hκ
   have hcont : Continuous fun x : ℝ => Real.cos (κ * x) :=
     Real.continuous_cos.comp (continuous_const.mul continuous_id)
   have hcont2 : Continuous fun x : ℝ => Real.cos (2 * κ * x) :=
     Real.continuous_cos.comp (continuous_const.mul continuous_id)
-  have hexp : (fun x => (jumpPacket A B κ x) ^ 2)
+  have hexp : (fun x => (jumpPacket A B κ x) ^ (2 : ℕ))
       = fun x => (1 / 2 : ℝ) * (jumpShell A B x * 1)
         + (1 / 2 : ℝ) * (jumpShell A B x * Real.cos (2 * κ * x))
         - (2 * jumpMean A B κ) * (jumpShell A B x * Real.cos (κ * x))
-        + (jumpMean A B κ) ^ 2 * (jumpShell A B x * 1) := by
+        + (jumpMean A B κ) ^ (2 : ℕ) * (jumpShell A B x * 1) := by
     funext x
     have hsq := jumpShell_sq A B x
-    have hcos : (Real.cos (κ * x)) ^ 2 = 1 / 2 + Real.cos (2 * (κ * x)) / 2 := Real.cos_sq _
+    have hcos : (Real.cos (κ * x)) ^ (2 : ℕ) = 1 / 2 + Real.cos (2 * (κ * x)) / 2 := Real.cos_sq _
     simp only [jumpPacket, mul_one]
     rw [show (2 : ℝ) * κ * x = 2 * (κ * x) by ring]
-    linear_combination ((Real.cos (κ * x) - jumpMean A B κ) ^ 2) * hsq
+    linear_combination ((Real.cos (κ * x) - jumpMean A B κ) ^ (2 : ℕ)) * hsq
       + (jumpShell A B x) * hcos
   have hi1 : Integrable (fun x => jumpShell A B x * (1 : ℝ)) :=
     integrable_jumpShell_mul continuous_const hA hAB
@@ -255,7 +255,7 @@ theorem integral_jumpPacket_sq (hA : 0 < A) (hAB : A < B) (hκ : κ ≠ 0) :
     hi2.const_mul _
   have hs3 : Integrable
       (fun x => (2 * jumpMean A B κ) * (jumpShell A B x * Real.cos (κ * x))) := hi3.const_mul _
-  have hs4 : Integrable (fun x => (jumpMean A B κ) ^ 2 * (jumpShell A B x * 1)) := hi1.const_mul _
+  have hs4 : Integrable (fun x => (jumpMean A B κ) ^ (2 : ℕ) * (jumpShell A B x * 1)) := hi1.const_mul _
   have hs12 : Integrable (fun x => (1 / 2 : ℝ) * (jumpShell A B x * 1)
       + (1 / 2 : ℝ) * (jumpShell A B x * Real.cos (2 * κ * x))) := hs1.add hs2
   have hs123 : Integrable (fun x => (1 / 2 : ℝ) * (jumpShell A B x * 1)
@@ -274,7 +274,7 @@ theorem integral_jumpPacket_sq (hA : 0 < A) (hAB : A < B) (hκ : κ ≠ 0) :
 
 /-- **`(9)`, second half.**  The squared mass of the jump packet tends to the shell half-width. -/
 theorem tendsto_integral_jumpPacket_sq (hA : 0 < A) (hAB : A < B) :
-    Filter.Tendsto (fun κ : ℝ => ∫ x, (jumpPacket A B κ x) ^ 2) Filter.atTop
+    Filter.Tendsto (fun κ : ℝ => ∫ x, (jumpPacket A B κ x) ^ (2 : ℕ)) Filter.atTop
       (nhds (B - A)) := by
   have hD : 0 < B - A := by linarith
   -- the two correction terms vanish
@@ -303,13 +303,13 @@ theorem tendsto_integral_jumpPacket_sq (hA : 0 < A) (hAB : A < B) :
     refine squeeze_zero_norm' ?_ hlim
     filter_upwards [Filter.eventually_gt_atTop 0] with κ hκ
     exact hbound κ hκ
-  have hcorr2 : Filter.Tendsto (fun κ : ℝ => 2 * (B - A) * (jumpMean A B κ) ^ 2)
+  have hcorr2 : Filter.Tendsto (fun κ : ℝ => 2 * (B - A) * (jumpMean A B κ) ^ (2 : ℕ))
       Filter.atTop (nhds 0) := by
     have h := (tendsto_jumpMean_atTop (A := A) (B := B) hAB).pow 2
     simpa using (h.const_mul (2 * (B - A)))
   have hmain : Filter.Tendsto
       (fun κ : ℝ => (B - A) + (Real.sin (2 * κ * B) - Real.sin (2 * κ * A)) / (2 * κ)
-        - 2 * (B - A) * (jumpMean A B κ) ^ 2) Filter.atTop (nhds (B - A)) := by
+        - 2 * (B - A) * (jumpMean A B κ) ^ (2 : ℕ)) Filter.atTop (nhds (B - A)) := by
     have := ((tendsto_const_nhds (x := B - A) (f := Filter.atTop (α := ℝ))).add hcorr1).sub hcorr2
     simpa using this
   refine hmain.congr' ?_

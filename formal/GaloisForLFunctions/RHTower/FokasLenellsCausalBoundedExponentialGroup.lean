@@ -9,19 +9,19 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance felExpGroupCompleteSpaceHardyPerp : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance felExpGroupCompleteSpaceChain : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance felExpGroupNormedAddCommGroupChain : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance felExpGroupNormedSpaceChain : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance felExpGroupNormedRingCLM : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance felExpGroupTopSpaceCLM : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance felExpGroupIsTopRingCLM : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
-local instance : NormedAlgebra ℚ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance felExpGroupNormedAlgebraRatCLM : NormedAlgebra ℚ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   .restrictScalars ℚ ℂ _
 
 /-- The actual bounded derivative-shift exponential obeys the complex additive group law. -/

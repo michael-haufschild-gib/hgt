@@ -29,19 +29,19 @@ open scoped Real Topology
 namespace Bottcher
 
 noncomputable def thetaHeatTerm (n : ℤ) (z τ : ℂ) : ℂ :=
-  (2 * π * I * n) ^ 2 * jacobiTheta₂_term n z τ
+  (2 * π * I * n) ^ (2 : ℕ) * jacobiTheta₂_term n z τ
 
 theorem thetaHeatTerm_eq (n : ℤ) (z τ : ℂ) :
-    thetaHeatTerm n z τ = 4 * π * I * (π * I * n ^ 2 * jacobiTheta₂_term n z τ) := by
+    thetaHeatTerm n z τ = 4 * π * I * (π * I * n ^ (2 : ℕ) * jacobiTheta₂_term n z τ) := by
   unfold thetaHeatTerm; ring
 
 /-- Norm bound: `‖thetaHeatTerm n z τ‖ ≤ 4π²|n|²·exp(-π(T n² - 2S|n|))` when `|im z| ≤ S`, `T ≤ im τ`. -/
 theorem norm_thetaHeatTerm_le {S T : ℝ} (hT : 0 < T) {z τ : ℂ} (hz : |im z| ≤ S) (hτ : T ≤ im τ)
-    (n : ℤ) : ‖thetaHeatTerm n z τ‖ ≤ 4 * π ^ 2 * ((|n| ^ 2 : ℝ) * Real.exp (-π * (T * n ^ 2 - 2 * S * |n|))) := by
+    (n : ℤ) : ‖thetaHeatTerm n z τ‖ ≤ 4 * π ^ (2 : ℕ) * ((|n| ^ (2 : ℕ) : ℝ) * Real.exp (-π * (T * n ^ (2 : ℕ) - 2 * S * |n|))) := by
   rw [thetaHeatTerm, norm_mul]
-  have hb : ‖jacobiTheta₂_term n z τ‖ ≤ Real.exp (-π * (T * n ^ 2 - 2 * S * |n|)) :=
+  have hb : ‖jacobiTheta₂_term n z τ‖ ≤ Real.exp (-π * (T * n ^ (2 : ℕ) - 2 * S * |n|)) :=
     norm_jacobiTheta₂_term_le hT hz hτ n
-  have hcoef : ‖(2 * (π : ℂ) * I * (n : ℂ)) ^ 2‖ = 4 * π ^ 2 * (|n| ^ 2 : ℝ) := by
+  have hcoef : ‖(2 * (π : ℂ) * I * (n : ℂ)) ^ (2 : ℕ)‖ = 4 * π ^ (2 : ℕ) * (|n| ^ (2 : ℕ) : ℝ) := by
     rw [norm_pow, norm_mul, norm_mul, norm_mul, Complex.norm_I, mul_one, Complex.norm_ofNat,
       Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg Real.pi_nonneg, Complex.norm_intCast]
     rw [← Int.cast_abs]; push_cast; ring
@@ -52,20 +52,20 @@ theorem summable_thetaHeatTerm {z τ : ℂ} (hτ : 0 < im τ) :
     Summable (thetaHeatTerm · z τ) := by
   obtain ⟨T, hT, hτ'⟩ := exists_between hτ
   obtain ⟨S, hz⟩ := exists_gt |im z|
-  exact ((summable_pow_mul_jacobiTheta₂_term_bound S hT 2).mul_left (4 * π ^ 2)).of_norm_bounded
+  exact ((summable_pow_mul_jacobiTheta₂_term_bound S hT 2).mul_left (4 * π ^ (2 : ℕ))).of_norm_bounded
     (fun n => norm_thetaHeatTerm_le hT hz.le hτ'.le n)
 
 /-- **Per-term second `z`-derivative**: `d/dz (jacobiTheta₂'_term n · τ) = thetaHeatTerm n · τ`. -/
 theorem hasDerivAt_jacobiTheta₂'_term (n : ℤ) (z τ : ℂ) :
     HasDerivAt (fun w => jacobiTheta₂'_term n w τ) (thetaHeatTerm n z τ) z := by
-  have h1 : HasDerivAt (fun w : ℂ => 2 * (π : ℂ) * I * (n : ℂ) * w + (π : ℂ) * I * (n : ℂ) ^ 2 * τ)
+  have h1 : HasDerivAt (fun w : ℂ => 2 * (π : ℂ) * I * (n : ℂ) * w + (π : ℂ) * I * (n : ℂ) ^ (2 : ℕ) * τ)
       (2 * (π : ℂ) * I * (n : ℂ)) z := by
     simpa using ((hasDerivAt_id z).const_mul (2 * (π : ℂ) * I * (n : ℂ))).add_const
-      ((π : ℂ) * I * (n : ℂ) ^ 2 * τ)
+      ((π : ℂ) * I * (n : ℂ) ^ (2 : ℕ) * τ)
   have h2 := (h1.cexp).const_mul (2 * (π : ℂ) * I * (n : ℂ))
   have hfun : (fun w => jacobiTheta₂'_term n w τ)
       = (fun w => 2 * (π : ℂ) * I * (n : ℂ) *
-          Complex.exp (2 * (π : ℂ) * I * (n : ℂ) * w + (π : ℂ) * I * (n : ℂ) ^ 2 * τ)) := by
+          Complex.exp (2 * (π : ℂ) * I * (n : ℂ) * w + (π : ℂ) * I * (n : ℂ) ^ (2 : ℕ) * τ)) := by
     funext w; rw [jacobiTheta₂'_term, jacobiTheta₂_term]
   rw [hfun]
   apply h2.congr_deriv
@@ -89,8 +89,8 @@ theorem hasDerivAt_jacobiTheta₂'_fst (z : ℂ) {τ : ℂ} (hτ : 0 < im τ) :
     rw [ht_def, ht_eq]
     exact ((convex_halfSpace_im_gt (-S)).inter (convex_halfSpace_im_lt S)).isPreconnected
   have hzt : z ∈ t := hz
-  set u : ℤ → ℝ := fun n => 4 * π ^ 2 *
-    ((|n| ^ 2 : ℝ) * Real.exp (-π * (im τ * n ^ 2 - 2 * S * |n|))) with hu_def
+  set u : ℤ → ℝ := fun n => 4 * π ^ (2 : ℕ) *
+    ((|n| ^ (2 : ℕ) : ℝ) * Real.exp (-π * (im τ * n ^ (2 : ℕ) - 2 * S * |n|))) with hu_def
   have hu : Summable u := (summable_pow_mul_jacobiTheta₂_term_bound S hτ 2).mul_left _
   have hg : ∀ (n : ℤ) (w : ℂ), w ∈ t →
       HasDerivAt (fun w => jacobiTheta₂'_term n w τ) (thetaHeatTerm n w τ) w :=
@@ -103,7 +103,7 @@ theorem hasDerivAt_jacobiTheta₂'_fst (z : ℂ) {τ : ℂ} (hτ : 0 < im τ) :
 
 /-- Summand in the series for the `τ`-derivative of the Jacobi theta function: `πin²·term`. -/
 noncomputable def jacobiTheta₂_snd_term (n : ℤ) (z τ : ℂ) : ℂ :=
-  (π : ℂ) * I * (n : ℂ) ^ 2 * jacobiTheta₂_term n z τ
+  (π : ℂ) * I * (n : ℂ) ^ (2 : ℕ) * jacobiTheta₂_term n z τ
 
 /-- **`τ`-derivative of the Jacobi theta function** (companion to mathlib's `z`-derivative
 `hasDerivAt_jacobiTheta₂_fst`): differentiating `jacobiTheta₂ z ·` gives `∑ πin²·term`. Evaluate the

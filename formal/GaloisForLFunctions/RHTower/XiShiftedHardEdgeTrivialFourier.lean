@@ -22,7 +22,7 @@ namespace RHTower
 /-- **The rational hard-edge test is square integrable.**  Its square transports to a bounded
 continuous function on a bounded angular interval. -/
 theorem integrable_routeUHardEdgeRationalTest_sq {a : ℝ} (ha : 0 < a) (p : Polynomial ℝ) :
-    MeasureTheory.Integrable (fun x : ℝ => routeUHardEdgeRationalTest a p x ^ 2) := by
+    MeasureTheory.Integrable (fun x : ℝ => routeUHardEdgeRationalTest a p x ^ (2 : ℕ)) := by
   have hiff := MeasureTheory.integrableOn_image_iff_integrableOn_abs_deriv_smul
     (s := Set.Ioo (-Real.pi) Real.pi)
     (f := routeUHardEdgeAngularChart a) (f' := routeUHardEdgeAngularJacobian a)
@@ -30,19 +30,19 @@ theorem integrable_routeUHardEdgeRationalTest_sq {a : ℝ} (ha : 0 < a) (p : Pol
     (fun θ hθ => (hasDerivAt_routeUHardEdgeAngularChart
       (ne_of_gt (cos_half_pos_of_mem_Ioo hθ))).hasDerivWithinAt)
     (injOn_routeUHardEdgeAngularChart ha)
-    (fun x : ℝ => routeUHardEdgeRationalTest a p x ^ 2)
+    (fun x : ℝ => routeUHardEdgeRationalTest a p x ^ (2 : ℕ))
   rw [image_routeUHardEdgeAngularChart ha] at hiff
   rw [← MeasureTheory.integrableOn_univ]
   refine hiff.2 ?_
   have hcongr : ∀ θ ∈ Set.Ioo (-Real.pi) Real.pi,
       |routeUHardEdgeAngularJacobian a θ|
-          • routeUHardEdgeRationalTest a p (routeUHardEdgeAngularChart a θ) ^ 2
-        = a / 2 * ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ 2 := by
+          • routeUHardEdgeRationalTest a p (routeUHardEdgeAngularChart a θ) ^ (2 : ℕ)
+        = a / 2 * ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ (2 : ℕ) := by
     intro θ hθ
     have hcos := cos_half_pos_of_mem_Ioo hθ
     have hcosne : Real.cos (θ / 2) ≠ 0 := ne_of_gt hcos
     have hjac : |routeUHardEdgeAngularJacobian a θ|
-        = a * (1 / Real.cos (θ / 2) ^ 2 * (1 / 2)) := by
+        = a * (1 / Real.cos (θ / 2) ^ (2 : ℕ) * (1 / 2)) := by
       rw [routeUHardEdgeAngularJacobian, abs_of_pos (by positivity)]
     have hval : routeUHardEdgeRationalTest a p (routeUHardEdgeAngularChart a θ)
         = Real.cos (θ / 2) * (routeUHardEdgeAngularPoly a p).eval (Real.cos θ) :=
@@ -57,11 +57,11 @@ theorem integrable_routeUHardEdgeRationalTest_sq {a : ℝ} (ha : 0 < a) (p : Pol
 /-- The oscillatory integrand of the hard-edge Fourier transform is integrable. -/
 theorem integrable_routeUHardEdgeFourierSq_integrand {a : ℝ} (ha : 0 < a) (p : Polynomial ℝ)
     (L : ℝ) :
-    MeasureTheory.Integrable (fun x : ℝ => ((routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ)
+    MeasureTheory.Integrable (fun x : ℝ => ((routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ)
       * Complex.exp (((-(L * x) : ℝ) : ℂ) * Complex.I)) := by
   have hbase := integrable_routeUHardEdgeRationalTest_sq ha p
   have hmeas : MeasureTheory.AEStronglyMeasurable
-      (fun x : ℝ => ((routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ)
+      (fun x : ℝ => ((routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ)
         * Complex.exp (((-(L * x) : ℝ) : ℂ) * Complex.I)) volume := by
     refine (Complex.continuous_ofReal.comp_aestronglyMeasurable
       (hbase.aestronglyMeasurable)).mul ?_
@@ -70,9 +70,9 @@ theorem integrable_routeUHardEdgeFourierSq_integrand {a : ℝ} (ha : 0 < a) (p :
       ((Complex.continuous_ofReal.comp (continuous_const.mul continuous_id).neg).mul
         continuous_const)
   refine ⟨hmeas, ?_⟩
-  have hbound : ∀ x : ℝ, ‖((routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ)
+  have hbound : ∀ x : ℝ, ‖((routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ)
       * Complex.exp (((-(L * x) : ℝ) : ℂ) * Complex.I)‖
-      = ‖routeUHardEdgeRationalTest a p x ^ 2‖ := by
+      = ‖routeUHardEdgeRationalTest a p x ^ (2 : ℕ)‖ := by
     intro x
     rw [norm_mul, Complex.norm_real, Complex.norm_exp]
     have hre : ((((-(L * x) : ℝ) : ℂ) * Complex.I)).re = 0 := by
@@ -87,10 +87,10 @@ theorem integrable_routeUHardEdgeFourierSq_integrand {a : ℝ} (ha : 0 < a) (p :
 squared test is at most its `L²` mass. -/
 theorem norm_routeUHardEdgeFourierSq_le_l2 (a : ℝ) (p : Polynomial ℝ) (L : ℝ) :
     ‖routeUHardEdgeFourierSq a p L‖
-      ≤ ∫ x : ℝ, routeUHardEdgeRationalTest a p x ^ 2 := by
-  have hnorm : ∀ x : ℝ, ‖((routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ)
+      ≤ ∫ x : ℝ, routeUHardEdgeRationalTest a p x ^ (2 : ℕ) := by
+  have hnorm : ∀ x : ℝ, ‖((routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ)
       * Complex.exp (((-(L * x) : ℝ) : ℂ) * Complex.I)‖
-      = routeUHardEdgeRationalTest a p x ^ 2 := by
+      = routeUHardEdgeRationalTest a p x ^ (2 : ℕ) := by
     intro x
     rw [norm_mul, Complex.norm_real, Complex.norm_exp]
     have hre : ((((-(L * x) : ℝ) : ℂ) * Complex.I)).re = 0 := by

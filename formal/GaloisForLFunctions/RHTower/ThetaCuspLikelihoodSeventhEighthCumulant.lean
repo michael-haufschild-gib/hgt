@@ -19,20 +19,20 @@ def thetaCuspLikelihoodSeventhCumulant (B : ℝ) : ℝ :=
     7 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 6 -
     21 * thetaCuspLikelihoodNormalizedMoment B 2 * thetaCuspLikelihoodNormalizedMoment B 5 -
     35 * thetaCuspLikelihoodNormalizedMoment B 3 * thetaCuspLikelihoodNormalizedMoment B 4 +
-    42 * thetaCuspLikelihoodMean B ^ 2 * thetaCuspLikelihoodNormalizedMoment B 5 +
+    42 * thetaCuspLikelihoodMean B ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 5 +
     210 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 2 *
       thetaCuspLikelihoodNormalizedMoment B 4 +
-    140 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 3 ^ 2 +
-    210 * thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 *
+    140 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 3 ^ (2 : ℕ) +
+    210 * thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B 3 -
-    210 * thetaCuspLikelihoodMean B ^ 3 * thetaCuspLikelihoodNormalizedMoment B 4 -
-    1260 * thetaCuspLikelihoodMean B ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 *
+    210 * thetaCuspLikelihoodMean B ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 4 -
+    1260 * thetaCuspLikelihoodMean B ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 *
       thetaCuspLikelihoodNormalizedMoment B 3 -
-    630 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 2 ^ 3 +
-    840 * thetaCuspLikelihoodMean B ^ 4 * thetaCuspLikelihoodNormalizedMoment B 3 +
-    2520 * thetaCuspLikelihoodMean B ^ 3 * thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 -
-    2520 * thetaCuspLikelihoodMean B ^ 5 * thetaCuspLikelihoodNormalizedMoment B 2 +
-    720 * thetaCuspLikelihoodMean B ^ 7
+    630 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 2 ^ (3 : ℕ) +
+    840 * thetaCuspLikelihoodMean B ^ (4 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 +
+    2520 * thetaCuspLikelihoodMean B ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) -
+    2520 * thetaCuspLikelihoodMean B ^ (5 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 +
+    720 * thetaCuspLikelihoodMean B ^ (7 : ℕ)
 
 /-- Eighth cumulant of the normalized higher-tail likelihood state. -/
 def thetaCuspLikelihoodEighthCumulant (B : ℝ) : ℝ :=
@@ -40,31 +40,31 @@ def thetaCuspLikelihoodEighthCumulant (B : ℝ) : ℝ :=
     8 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 7 -
     28 * thetaCuspLikelihoodNormalizedMoment B 2 * thetaCuspLikelihoodNormalizedMoment B 6 -
     56 * thetaCuspLikelihoodNormalizedMoment B 3 * thetaCuspLikelihoodNormalizedMoment B 5 -
-    35 * thetaCuspLikelihoodNormalizedMoment B 4 ^ 2 +
-    56 * thetaCuspLikelihoodMean B ^ 2 * thetaCuspLikelihoodNormalizedMoment B 6 +
+    35 * thetaCuspLikelihoodNormalizedMoment B 4 ^ (2 : ℕ) +
+    56 * thetaCuspLikelihoodMean B ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 6 +
     336 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 2 *
       thetaCuspLikelihoodNormalizedMoment B 5 +
     560 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 3 *
       thetaCuspLikelihoodNormalizedMoment B 4 +
-    420 * thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 *
+    420 * thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B 4 +
     560 * thetaCuspLikelihoodNormalizedMoment B 2 *
-      thetaCuspLikelihoodNormalizedMoment B 3 ^ 2 -
-    336 * thetaCuspLikelihoodMean B ^ 3 * thetaCuspLikelihoodNormalizedMoment B 5 -
-    2520 * thetaCuspLikelihoodMean B ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 *
+      thetaCuspLikelihoodNormalizedMoment B 3 ^ (2 : ℕ) -
+    336 * thetaCuspLikelihoodMean B ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 5 -
+    2520 * thetaCuspLikelihoodMean B ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 *
       thetaCuspLikelihoodNormalizedMoment B 4 -
-    1680 * thetaCuspLikelihoodMean B ^ 2 * thetaCuspLikelihoodNormalizedMoment B 3 ^ 2 -
-    5040 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 *
+    1680 * thetaCuspLikelihoodMean B ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 ^ (2 : ℕ) -
+    5040 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B 3 -
-    630 * thetaCuspLikelihoodNormalizedMoment B 2 ^ 4 +
-    1680 * thetaCuspLikelihoodMean B ^ 4 * thetaCuspLikelihoodNormalizedMoment B 4 +
-    13440 * thetaCuspLikelihoodMean B ^ 3 * thetaCuspLikelihoodNormalizedMoment B 2 *
+    630 * thetaCuspLikelihoodNormalizedMoment B 2 ^ (4 : ℕ) +
+    1680 * thetaCuspLikelihoodMean B ^ (4 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 4 +
+    13440 * thetaCuspLikelihoodMean B ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 *
       thetaCuspLikelihoodNormalizedMoment B 3 +
-    10080 * thetaCuspLikelihoodMean B ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 ^ 3 -
-    6720 * thetaCuspLikelihoodMean B ^ 5 * thetaCuspLikelihoodNormalizedMoment B 3 -
-    25200 * thetaCuspLikelihoodMean B ^ 4 * thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 +
-    20160 * thetaCuspLikelihoodMean B ^ 6 * thetaCuspLikelihoodNormalizedMoment B 2 -
-    5040 * thetaCuspLikelihoodMean B ^ 8
+    10080 * thetaCuspLikelihoodMean B ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 ^ (3 : ℕ) -
+    6720 * thetaCuspLikelihoodMean B ^ (5 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 -
+    25200 * thetaCuspLikelihoodMean B ^ (4 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) +
+    20160 * thetaCuspLikelihoodMean B ^ (6 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 -
+    5040 * thetaCuspLikelihoodMean B ^ (8 : ℕ)
 
 /-- Sixth cumulant differentiates to negative seventh cumulant under likelihood cooling. -/
 theorem hasDerivAt_thetaCuspLikelihoodSixthCumulant {B : ℝ} (hB : 0 < B) :
@@ -141,7 +141,7 @@ private theorem moment_fourfold_le
           thetaCuspLikelihoodNormalizedMoment B j *
         thetaCuspLikelihoodNormalizedMoment B k *
       thetaCuspLikelihoodNormalizedMoment B l ≤
-    thetaCuspLikelihoodTailProbability B ^ 3 *
+    thetaCuspLikelihoodTailProbability B ^ (3 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B (i + j + k + l) := by
   let e := thetaCuspLikelihoodNormalizedMoment B
   let p := thetaCuspLikelihoodTailProbability B
@@ -164,10 +164,10 @@ private theorem moment_fourfold_le
       exact mul_le_mul hij hkl
         (mul_nonneg (moment_nonneg hB k) (moment_nonneg hB l))
         (mul_nonneg hp (moment_nonneg hB (i + j)))
-    _ = p ^ 2 * (e (i + j) * e (k + l)) := by ring
-    _ ≤ p ^ 2 * (p * e ((i + j) + (k + l))) :=
+    _ = p ^ (2 : ℕ) * (e (i + j) * e (k + l)) := by ring
+    _ ≤ p ^ (2 : ℕ) * (p * e ((i + j) + (k + l))) :=
       mul_le_mul_of_nonneg_left hsum (sq_nonneg p)
-    _ = p ^ 3 * e (i + j + k + l) := by
+    _ = p ^ (3 : ℕ) * e (i + j + k + l) := by
       simp only [e, p]
       ring_nf
 
@@ -179,7 +179,7 @@ private theorem moment_sixfold_le
         thetaCuspLikelihoodNormalizedMoment B l *
       thetaCuspLikelihoodNormalizedMoment B u *
       thetaCuspLikelihoodNormalizedMoment B v ≤
-    thetaCuspLikelihoodTailProbability B ^ 5 *
+    thetaCuspLikelihoodTailProbability B ^ (5 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B (i + j + k + l + u + v) := by
   let e := thetaCuspLikelihoodNormalizedMoment B
   let p := thetaCuspLikelihoodTailProbability B
@@ -190,21 +190,21 @@ private theorem moment_sixfold_le
   have h2 := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB u v
   have hsum := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul
     hB (i + j + k + l) (u + v)
-  change e i * e j * e k * e l ≤ p ^ 3 * e (i + j + k + l) at h4
+  change e i * e j * e k * e l ≤ p ^ (3 : ℕ) * e (i + j + k + l) at h4
   change e u * e v ≤ p * e (u + v) at h2
   change e (i + j + k + l) * e (u + v) ≤
     p * e ((i + j + k + l) + (u + v)) at hsum
   calc
     e i * e j * e k * e l * e u * e v =
         (e i * e j * e k * e l) * (e u * e v) := by ring
-    _ ≤ (p ^ 3 * e (i + j + k + l)) * (p * e (u + v)) := by
+    _ ≤ (p ^ (3 : ℕ) * e (i + j + k + l)) * (p * e (u + v)) := by
       exact mul_le_mul h4 h2
         (mul_nonneg (moment_nonneg hB u) (moment_nonneg hB v))
         (mul_nonneg (pow_nonneg hp 3) (moment_nonneg hB (i + j + k + l)))
-    _ = p ^ 4 * (e (i + j + k + l) * e (u + v)) := by ring
-    _ ≤ p ^ 4 * (p * e ((i + j + k + l) + (u + v))) :=
+    _ = p ^ (4 : ℕ) * (e (i + j + k + l) * e (u + v)) := by ring
+    _ ≤ p ^ (4 : ℕ) * (p * e ((i + j + k + l) + (u + v))) :=
       mul_le_mul_of_nonneg_left hsum (pow_nonneg hp 4)
-    _ = p ^ 5 * e (i + j + k + l + u + v) := by
+    _ = p ^ (5 : ℕ) * e (i + j + k + l + u + v) := by
       simp only [e, p]
       ring_nf
 
@@ -218,7 +218,7 @@ private theorem moment_eightfold_le
         thetaCuspLikelihoodNormalizedMoment B v *
       thetaCuspLikelihoodNormalizedMoment B w *
       thetaCuspLikelihoodNormalizedMoment B r ≤
-    thetaCuspLikelihoodTailProbability B ^ 7 *
+    thetaCuspLikelihoodTailProbability B ^ (7 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B (i + j + k + l + u + v + w + r) := by
   let e := thetaCuspLikelihoodNormalizedMoment B
   let p := thetaCuspLikelihoodTailProbability B
@@ -229,15 +229,15 @@ private theorem moment_eightfold_le
   have hb := moment_fourfold_le hB u v w r
   have hsum := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul
     hB (i + j + k + l) (u + v + w + r)
-  change e i * e j * e k * e l ≤ p ^ 3 * e (i + j + k + l) at ha
-  change e u * e v * e w * e r ≤ p ^ 3 * e (u + v + w + r) at hb
+  change e i * e j * e k * e l ≤ p ^ (3 : ℕ) * e (i + j + k + l) at ha
+  change e u * e v * e w * e r ≤ p ^ (3 : ℕ) * e (u + v + w + r) at hb
   change e (i + j + k + l) * e (u + v + w + r) ≤
     p * e ((i + j + k + l) + (u + v + w + r)) at hsum
   calc
     e i * e j * e k * e l * e u * e v * e w * e r =
         (e i * e j * e k * e l) * (e u * e v * e w * e r) := by ring
-    _ ≤ (p ^ 3 * e (i + j + k + l)) *
-        (p ^ 3 * e (u + v + w + r)) := by
+    _ ≤ (p ^ (3 : ℕ) * e (i + j + k + l)) *
+        (p ^ (3 : ℕ) * e (u + v + w + r)) := by
       exact mul_le_mul ha hb
         (mul_nonneg
           (mul_nonneg
@@ -245,10 +245,10 @@ private theorem moment_eightfold_le
             (moment_nonneg hB w))
           (moment_nonneg hB r))
         (mul_nonneg (pow_nonneg hp 3) (moment_nonneg hB (i + j + k + l)))
-    _ = p ^ 6 * (e (i + j + k + l) * e (u + v + w + r)) := by ring
-    _ ≤ p ^ 6 * (p * e ((i + j + k + l) + (u + v + w + r))) :=
+    _ = p ^ (6 : ℕ) * (e (i + j + k + l) * e (u + v + w + r)) := by ring
+    _ ≤ p ^ (6 : ℕ) * (p * e ((i + j + k + l) + (u + v + w + r))) :=
       mul_le_mul_of_nonneg_left hsum (pow_nonneg hp 6)
-    _ = p ^ 7 * e (i + j + k + l + u + v + w + r) := by
+    _ = p ^ (7 : ℕ) * e (i + j + k + l + u + v + w + r) := by
       simp only [e, p]
       ring_nf
 
@@ -286,7 +286,7 @@ theorem two_thirds_mul_thetaCuspLikelihoodNormalizedMoment_eight_lt_eighthCumula
     simpa only [B, p] using
       four_hundred_mul_thetaCuspLikelihoodTailProbability_coordinate_lt_one hx
   have hp : 0 < p := by
-    have hmle : m ^ 2 ≤ p * e 2 := by
+    have hmle : m ^ (2 : ℕ) ≤ p * e 2 := by
       simpa only [m, e, p, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
         show 1 + 1 = 2 by norm_num, pow_two] using
         thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
@@ -300,57 +300,57 @@ theorem two_thirds_mul_thetaCuspLikelihoodNormalizedMoment_eight_lt_eighthCumula
     simpa only [e, p] using
       thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB i j
   have h4 (i j k l : ℕ) : e i * e j * e k * e l ≤
-      p ^ 3 * e (i + j + k + l) := by
+      p ^ (3 : ℕ) * e (i + j + k + l) := by
     simpa only [e, p] using moment_fourfold_le hB i j k l
   have h6 (i j k l u v : ℕ) : e i * e j * e k * e l * e u * e v ≤
-      p ^ 5 * e (i + j + k + l + u + v) := by
+      p ^ (5 : ℕ) * e (i + j + k + l + u + v) := by
     simpa only [e, p] using moment_sixfold_le hB i j k l u v
   have h8 (i j k l u v w r : ℕ) :
       e i * e j * e k * e l * e u * e v * e w * e r ≤
-        p ^ 7 * e (i + j + k + l + u + v + w + r) := by
+        p ^ (7 : ℕ) * e (i + j + k + l + u + v + w + r) := by
     simpa only [e, p] using moment_eightfold_le hB i j k l u v w r
   have hm1 : m = e 1 := by
     simpa only [m, e] using
       (thetaCuspLikelihoodNormalizedMoment_one_eq_mean (B := B)).symm
   have hpair :
-      8 * m * e 7 + 28 * e 2 * e 6 + 56 * e 3 * e 5 + 35 * e 4 ^ 2 ≤
+      8 * m * e 7 + 28 * e 2 * e 6 + 56 * e 3 * e 5 + 35 * e 4 ^ (2 : ℕ) ≤
         127 * p * e 8 := by
     rw [hm1, pow_two]
     nlinarith [h2 1 7, h2 2 6, h2 3 5, h2 4 4]
   have hfour :
-      336 * m ^ 3 * e 5 + 2520 * m ^ 2 * e 2 * e 4 +
-          1680 * m ^ 2 * e 3 ^ 2 + 5040 * m * e 2 ^ 2 * e 3 +
-        630 * e 2 ^ 4 ≤ 10206 * p ^ 3 * e 8 := by
+      336 * m ^ (3 : ℕ) * e 5 + 2520 * m ^ (2 : ℕ) * e 2 * e 4 +
+          1680 * m ^ (2 : ℕ) * e 3 ^ (2 : ℕ) + 5040 * m * e 2 ^ (2 : ℕ) * e 3 +
+        630 * e 2 ^ (4 : ℕ) ≤ 10206 * p ^ (3 : ℕ) * e 8 := by
     rw [hm1]
     nlinarith [h4 1 1 1 5, h4 1 1 2 4, h4 1 1 3 3,
       h4 1 2 2 3, h4 2 2 2 2]
   have hsix :
-      6720 * m ^ 5 * e 3 + 25200 * m ^ 4 * e 2 ^ 2 ≤
-        31920 * p ^ 5 * e 8 := by
+      6720 * m ^ (5 : ℕ) * e 3 + 25200 * m ^ (4 : ℕ) * e 2 ^ (2 : ℕ) ≤
+        31920 * p ^ (5 : ℕ) * e 8 := by
     rw [hm1]
     nlinarith [h6 1 1 1 1 1 3, h6 1 1 1 1 2 2]
-  have height : 5040 * m ^ 8 ≤ 5040 * p ^ 7 * e 8 := by
+  have height : 5040 * m ^ (8 : ℕ) ≤ 5040 * p ^ (7 : ℕ) * e 8 := by
     rw [hm1]
     nlinarith [h8 1 1 1 1 1 1 1 1]
-  have hp3 : p ^ 3 < (1 / 400 : ℝ) ^ 3 :=
+  have hp3 : p ^ (3 : ℕ) < (1 / 400 : ℝ) ^ (3 : ℕ) :=
     pow_lt_pow_left₀ (by nlinarith : p < (1 / 400 : ℝ)) hp0 (by norm_num)
-  have hp5 : p ^ 5 < (1 / 400 : ℝ) ^ 5 :=
+  have hp5 : p ^ (5 : ℕ) < (1 / 400 : ℝ) ^ (5 : ℕ) :=
     pow_lt_pow_left₀ (by nlinarith : p < (1 / 400 : ℝ)) hp0 (by norm_num)
-  have hp7 : p ^ 7 < (1 / 400 : ℝ) ^ 7 :=
+  have hp7 : p ^ (7 : ℕ) < (1 / 400 : ℝ) ^ (7 : ℕ) :=
     pow_lt_pow_left₀ (by nlinarith : p < (1 / 400 : ℝ)) hp0 (by norm_num)
   have hbudget :
-      127 * p + 10206 * p ^ 3 + 31920 * p ^ 5 + 5040 * p ^ 7 < 1 / 3 := by
+      127 * p + 10206 * p ^ (3 : ℕ) + 31920 * p ^ (5 : ℕ) + 5040 * p ^ (7 : ℕ) < 1 / 3 := by
     norm_num at hp3 hp5 hp7 ⊢
     nlinarith
   have hloss :
-      (127 * p + 10206 * p ^ 3 + 31920 * p ^ 5 + 5040 * p ^ 7) * e 8 <
+      (127 * p + 10206 * p ^ (3 : ℕ) + 31920 * p ^ (5 : ℕ) + 5040 * p ^ (7 : ℕ)) * e 8 <
         (1 / 3 : ℝ) * e 8 :=
     mul_lt_mul_of_pos_right hbudget he8
   have hpositive : 0 ≤
-      56 * m ^ 2 * e 6 + 336 * m * e 2 * e 5 + 560 * m * e 3 * e 4 +
-        420 * e 2 ^ 2 * e 4 + 560 * e 2 * e 3 ^ 2 +
-      1680 * m ^ 4 * e 4 + 13440 * m ^ 3 * e 2 * e 3 +
-        10080 * m ^ 2 * e 2 ^ 3 + 20160 * m ^ 6 * e 2 := by
+      56 * m ^ (2 : ℕ) * e 6 + 336 * m * e 2 * e 5 + 560 * m * e 3 * e 4 +
+        420 * e 2 ^ (2 : ℕ) * e 4 + 560 * e 2 * e 3 ^ (2 : ℕ) +
+      1680 * m ^ (4 : ℕ) * e 4 + 13440 * m ^ (3 : ℕ) * e 2 * e 3 +
+        10080 * m ^ (2 : ℕ) * e 2 ^ (3 : ℕ) + 20160 * m ^ (6 : ℕ) * e 2 := by
     have he2nonneg := he 2
     have he3nonneg := he 3
     have he4nonneg := he 4
@@ -377,7 +377,7 @@ theorem thetaCuspLikelihoodEighthCumulant_pos
 /-- Hypothesis-free square-parameter form of eighth likelihood-cumulant positivity. -/
 theorem thetaCuspLikelihoodEighthCumulant_sq_pos (x : ℝ) :
     0 < thetaCuspLikelihoodEighthCumulant
-      (thetaCuspLikelihoodCoordinate (x ^ 2)) :=
+      (thetaCuspLikelihoodCoordinate (x ^ (2 : ℕ))) :=
   thetaCuspLikelihoodEighthCumulant_pos (sq_nonneg x)
 
 end

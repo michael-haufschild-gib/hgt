@@ -29,14 +29,14 @@ theorem sum_shift_roughSet_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : �
     (∑ d ∈ Finset.Ico 1 (H + 1),
       ((((roughSet P₁ h ⌊Y⌋₊ ∩ D).filter
         (fun m => m + d ∈ roughSet P₁ h ⌊Y⌋₊ ∩ D)).card : ℕ) : ℝ))
-      ≤ (H : ℝ) * (Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2
+      ≤ (H : ℝ) * (Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
             * (1 - Real.log H / (Real.log P₁ * (P₁ : ℝ)))))
           + ∑ e ∈ (rangePrimorial P₁ h).divisors,
               (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)) := by
   classical
   set R : ℝ := ∑ e ∈ (rangePrimorial P₁ h).divisors,
       (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) with hR
-  set E : ℝ := Real.exp (mertensS h - mertensS P₁) ^ 2 with hE
+  set E : ℝ := Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ) with hE
   have hE0 : (0 : ℝ) < E := by
     rw [hE]
     positivity

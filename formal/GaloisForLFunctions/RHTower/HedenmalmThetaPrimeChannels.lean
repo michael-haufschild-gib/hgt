@@ -94,7 +94,7 @@ theorem centeredWindow_nonneg (n : ℕ) (x : ℝ) : 0 ≤ centeredWindow thetaSo
 theorem integrable_centeredWindow {n : ℕ} (hn : 1 ≤ n) :
     Integrable (centeredWindow thetaSource n) (volume : Measure ℝ) := by
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs (by norm_num : (0:ℝ) < 1)).const_mul (channelBoundConstant n))
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (by norm_num : (0:ℝ) < 1)).const_mul (channelBoundConstant n))
     (continuous_centeredWindow hn).aestronglyMeasurable ?_
   filter_upwards with x
   rw [Real.norm_eq_abs, abs_of_nonneg (centeredWindow_nonneg n x), one_mul]

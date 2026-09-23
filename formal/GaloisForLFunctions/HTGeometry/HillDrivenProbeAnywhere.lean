@@ -92,7 +92,7 @@ theorem exists_hillDrivenProbe_at
     ∃ (W : Set (Fin (d + 1) → ℝ)) (u : (Fin (d + 1) → ℝ) → ℝ), IsOpen W ∧ y₀ ∈ W ∧
       SmoothMetricChart.DifferentiablePartialsOn u W ∧
       SolvesPotentialWaveOn (hillWaveOp d a.speed)
-        (fun y => hillDrivenChartPotential b y - a.mass ^ 2) u W ∧ (∀ y ∈ W, u y ≠ 0) := by
+        (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) u W ∧ (∀ y ∈ W, u y ≠ 0) := by
   have hdim : (Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) : ℝ) < (K + 2 : ℕ) := by
     push_cast
     linarith
@@ -137,7 +137,7 @@ theorem exists_hillDrivenProbe_at
   · have hsolve := solvesPotentialWave_hillDrivenChartField hK a' b' G₀ hreal' (y + sh)
     have hcov := hillWaveOp_comp_timeShift (c := a.speed) (v := v) t₀ hdiff1 hdiff2 y
     show hillWaveOp d a.speed (fun z : Fin (d + 1) → ℝ => v (z + sh)) y +
-      (hillDrivenChartPotential b y - a.mass ^ 2) * v (y + sh) = 0
+      (hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) * v (y + sh) = 0
     rw [hcov, ← hillDrivenChartPotential_timeShift b t₀ y]
     exact hsolve
 
@@ -147,7 +147,7 @@ theorem openProbes_hillWaveOp_driven
     (hK : (Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) : ℝ) < K) (a : HillSpeed)
     (b : WienerFamily (EuclideanSpace ℝ (Fin d)) (K + 2)) (hreal : IsRealFamily b) :
     OpenProbes (hillWaveOp d a.speed)
-      (fun y => hillDrivenChartPotential b y - a.mass ^ 2) := by
+      (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) := by
   intro y₀
   obtain ⟨W, u, hWopen, hWmem, _, hsolve, hne⟩ := exists_hillDrivenProbe_at hK a b hreal y₀
   exact ⟨W, hWopen, hWmem, u, hsolve, hne⟩
@@ -157,7 +157,7 @@ theorem regularOpenProbes_hillWaveOp_driven
     (hK : (Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) : ℝ) < K) (a : HillSpeed)
     (b : WienerFamily (EuclideanSpace ℝ (Fin d)) (K + 2)) (hreal : IsRealFamily b) :
     RegularOpenProbes (hillWaveOp d a.speed)
-      (fun y => hillDrivenChartPotential b y - a.mass ^ 2) := by
+      (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) := by
   intro y₀
   obtain ⟨W, u, hWopen, hWmem, hreg, hsolve, hne⟩ := exists_hillDrivenProbe_at hK a b hreal y₀
   exact ⟨W, hWopen, hWmem, u, hreg, hsolve, hne⟩
@@ -171,13 +171,13 @@ theorem openProbes_hillWaveOp_smooth
     {P : ℝ × EuclideanSpace ℝ (Fin d) → ℝ} (hP : ContDiff ℝ ∞ P) :
     OpenProbes (hillWaveOp d a.speed) (fun y : Fin (d + 1) → ℝ => P (y 0, kgSpatial d y)) := by
   intro y₀
-  have hP' : ContDiff ℝ ∞ fun p : ℝ × EuclideanSpace ℝ (Fin d) => P p + (a.mass ^ 2 - 1) :=
+  have hP' : ContDiff ℝ ∞ fun p : ℝ × EuclideanSpace ℝ (Fin d) => P p + (a.mass ^ (2 : ℕ) - 1) :=
     hP.add contDiff_const
   obtain ⟨B, V, hBreal, hVopen, hVmem, hVeq⟩ :=
     exists_locally_kgChartPotential_of_smooth_spacetime (N := K + 2) hP' y₀
   obtain ⟨W, u, hWopen, hWmem, _, hsolve, hne⟩ := exists_hillDrivenProbe_at hK a B hBreal y₀
   refine ⟨V ∩ W, hVopen.inter hWopen, ⟨hVmem, hWmem⟩, u, fun y hy => ?_, fun y hy => hne y hy.2⟩
-  have hpot : hillDrivenChartPotential B y - a.mass ^ 2 = P (y 0, kgSpatial d y) := by
+  have hpot : hillDrivenChartPotential B y - a.mass ^ (2 : ℕ) = P (y 0, kgSpatial d y) := by
     have hval := hVeq hy.1
     rw [hillDrivenChartPotential_eq, ← hval]
     ring

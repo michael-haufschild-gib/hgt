@@ -18,12 +18,12 @@ namespace RHTower
 def zetaFisherReal (x : ℝ) : ℝ := (zetaFisherMetric (x : ℂ)).re
 
 theorem tendsto_sub_one_sq_mul_zetaFisherReal :
-    Tendsto (fun x : ℝ => (x - 1) ^ 2 * zetaFisherReal x) (𝓝[>] (1 : ℝ)) (𝓝 1) := by
+    Tendsto (fun x : ℝ => (x - 1) ^ (2 : ℕ) * zetaFisherReal x) (𝓝[>] (1 : ℝ)) (𝓝 1) := by
   have h := tendsto_sub_one_sq_mul_zetaFisherMetric.comp tendsto_ofReal_nhdsGT_one_ne
   have hre := (Complex.continuous_re.tendsto (1 : ℂ)).comp h
   simp only [Function.comp_def, Complex.one_re] at hre
   refine hre.congr fun x => ?_
-  have hcast : ((x : ℂ) - 1) ^ 2 = (((x - 1) ^ 2 : ℝ) : ℂ) := by push_cast; ring
+  have hcast : ((x : ℂ) - 1) ^ (2 : ℕ) = (((x - 1) ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; ring
   rw [zetaFisherReal, hcast, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
   ring
 
@@ -38,7 +38,7 @@ theorem analyticAt_riemannZeta_ofReal {x : ℝ} (hx : 1 < x) :
     (differentiableAt_riemannZeta (by simpa using hz)).differentiableWithinAt
   exact (hdiff.analyticOnNhd isOpen_compl_singleton) _ (by simpa using hne)
 
-theorem riemannZeta_ofReal_ne_zero {x : ℝ} (hx : 1 < x) : riemannZeta ((x : ℝ) : ℂ) ≠ 0 :=
+theorem riemannZeta_ofReal_ne_zero_zetaFisherHorizon {x : ℝ} (hx : 1 < x) : riemannZeta ((x : ℝ) : ℂ) ≠ 0 :=
   riemannZeta_ne_zero_of_one_lt_re (by simpa using hx)
 
 theorem analyticAt_zetaFisherMetric {x : ℝ} (hx : 1 < x) :
@@ -48,7 +48,7 @@ theorem analyticAt_zetaFisherMetric {x : ℝ} (hx : 1 < x) :
     have hfun : logDeriv riemannZeta = fun z : ℂ => deriv riemannZeta z / riemannZeta z := by
       funext z; exact logDeriv_apply _ _
     rw [hfun]
-    exact hana.deriv.div hana (riemannZeta_ofReal_ne_zero hx)
+    exact hana.deriv.div hana (riemannZeta_ofReal_ne_zero_zetaFisherHorizon hx)
   exact hlog.deriv
 
 theorem continuousOn_zetaFisherReal : ContinuousOn zetaFisherReal (Set.Ioi (1 : ℝ)) := by
@@ -63,19 +63,19 @@ theorem continuousOn_zetaFisherReal : ContinuousOn zetaFisherReal (Set.Ioi (1 : 
 /-! ### The divergent Fisher length -/
 
 theorem sqrt_zetaFisherReal_ge_of_gt {x : ℝ} (hx : 1 < x)
-    (h : 1 / 4 < (x - 1) ^ 2 * zetaFisherReal x) :
+    (h : 1 / 4 < (x - 1) ^ (2 : ℕ) * zetaFisherReal x) :
     (1 / 2) * (x - 1)⁻¹ ≤ Real.sqrt (zetaFisherReal x) := by
   have hpos : 0 < x - 1 := by linarith
-  have hsq : 0 < (x - 1) ^ 2 := by positivity
-  have hg : 1 / (4 * (x - 1) ^ 2) < zetaFisherReal x := by
+  have hsq : 0 < (x - 1) ^ (2 : ℕ) := by positivity
+  have hg : 1 / (4 * (x - 1) ^ (2 : ℕ)) < zetaFisherReal x := by
     rw [div_lt_iff₀ (by positivity)]
     nlinarith
-  have hval : ((1 / 2) * (x - 1)⁻¹) ^ 2 = 1 / (4 * (x - 1) ^ 2) := by
+  have hval : ((1 / 2) * (x - 1)⁻¹) ^ (2 : ℕ) = 1 / (4 * (x - 1) ^ (2 : ℕ)) := by
     field_simp
     ring
-  have hle : ((1 / 2) * (x - 1)⁻¹) ^ 2 ≤ zetaFisherReal x := by rw [hval]; linarith
+  have hle : ((1 / 2) * (x - 1)⁻¹) ^ (2 : ℕ) ≤ zetaFisherReal x := by rw [hval]; linarith
   have hnn : 0 ≤ (1 / 2) * (x - 1)⁻¹ := by positivity
-  calc (1 / 2) * (x - 1)⁻¹ = Real.sqrt (((1 / 2) * (x - 1)⁻¹) ^ 2) := by
+  calc (1 / 2) * (x - 1)⁻¹ = Real.sqrt (((1 / 2) * (x - 1)⁻¹) ^ (2 : ℕ)) := by
         rw [Real.sqrt_sq_eq_abs, abs_of_nonneg hnn]
     _ ≤ Real.sqrt (zetaFisherReal x) := Real.sqrt_le_sqrt hle
 
@@ -99,7 +99,7 @@ Fisher arclength of `(a, b]` tends to infinity as `a` approaches the wall. -/
 theorem exists_tendsto_zetaFisherLength_atTop :
     ∃ b : ℝ, 1 < b ∧ Tendsto (fun a : ℝ => ∫ x in a..b, Real.sqrt (zetaFisherReal x))
       (𝓝[>] (1 : ℝ)) atTop := by
-  have hev : ∀ᶠ x : ℝ in 𝓝[>] (1 : ℝ), 1 / 4 < (x - 1) ^ 2 * zetaFisherReal x :=
+  have hev : ∀ᶠ x : ℝ in 𝓝[>] (1 : ℝ), 1 / 4 < (x - 1) ^ (2 : ℕ) * zetaFisherReal x :=
     tendsto_sub_one_sq_mul_zetaFisherReal.eventually
       (eventually_gt_nhds (by norm_num : (1 : ℝ) / 4 < 1))
   obtain ⟨u, hu, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp hev

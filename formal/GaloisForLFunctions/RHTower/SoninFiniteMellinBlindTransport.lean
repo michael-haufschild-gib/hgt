@@ -35,7 +35,7 @@ theorem tendsto_soninAperturePacketTransportRatio_one
     have h1 : Tendsto (fun n : ℕ => r n * q) atTop atTop :=
       Filter.Tendsto.atTop_mul_const hq hr
     exact Filter.Tendsto.const_mul_atTop (by positivity : (0 : ℝ) < 2 * Real.pi) h1
-  set L : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2)
+  set L : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ))
   have hLpos : 0 < L := sqrt_half_energy_pos b c hb hbc
   have hpacket :
       Tendsto

@@ -73,7 +73,7 @@ theorem exists_fraction_jetAtom (hσ : 0 < σ.im) (q : ℂ) (j : ℕ) :
         filter_upwards [hopen.mem_nhds hBz] with w hw
         exact hid w hw
       have hdd : deriv (fun w ↦ A w / B w) z
-          = (deriv A z * B z - A z * deriv B z) / B z ^ 2 :=
+          = (deriv A z * B z - A z * deriv B z) / B z ^ (2 : ℕ) :=
         deriv_fun_div (hA z (Set.mem_univ z)).differentiableAt
           (hB z (Set.mem_univ z)).differentiableAt hBz
       rw [← deriv_jetAtom σ q k, heq.deriv_eq, hdd]

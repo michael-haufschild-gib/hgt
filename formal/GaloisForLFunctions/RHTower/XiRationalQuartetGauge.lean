@@ -4,7 +4,7 @@ completed-xi symmetries.
 
 For real `a, b`, the centered even polynomial
 
-  Q_{a,b}(s) = (((s - 1/2) - a)^2 + b^2) (((s - 1/2) + a)^2 + b^2)
+  Q_{a,b}(s) = (((s - 1/2) - a)^(2 : ℕ) + b^(2 : ℕ)) (((s - 1/2) + a)^(2 : ℕ) + b^(2 : ℕ))
 
 commutes with `s ↦ 1-s` and complex conjugation.  If `a ≠ 0` and `b > 0`,
 then `Q_{a,b} * xi` is entire, satisfies the same two symmetries as `xi`, is
@@ -25,8 +25,8 @@ open Complex
 /-- The centered real-even quartic gauge with zero quartet
 `1/2 ± a ± b i`. -/
 noncomputable def centeredQuartetGauge (a b : ℝ) (s : ℂ) : ℂ :=
-  ((((s - (1 / 2 : ℂ)) - (a : ℂ)) ^ 2 + (b : ℂ) ^ 2) *
-    (((s - (1 / 2 : ℂ)) + (a : ℂ)) ^ 2 + (b : ℂ) ^ 2))
+  ((((s - (1 / 2 : ℂ)) - (a : ℂ)) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ)) *
+    (((s - (1 / 2 : ℂ)) + (a : ℂ)) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ)))
 
 /-- Completed xi multiplied by the centered quartic gauge. -/
 noncomputable def quartetGaugedXi (a b : ℝ) (s : ℂ) : ℂ :=
@@ -57,7 +57,7 @@ theorem centeredQuartetGauge_quartetPoint (a b : ℝ) :
     centeredQuartetGauge a b (quartetPoint a b) = 0 := by
   simp only [centeredQuartetGauge, quartetPoint]
   rw [show
-    (((1 / 2 : ℂ) + (a : ℂ) + (b : ℂ) * I - 1 / 2 - (a : ℂ)) ^ 2 + (b : ℂ) ^ 2) = 0 by
+    (((1 / 2 : ℂ) + (a : ℂ) + (b : ℂ) * I - 1 / 2 - (a : ℂ)) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ)) = 0 by
       rw [show (1 / 2 : ℂ) + (a : ℂ) + (b : ℂ) * I - 1 / 2 - (a : ℂ) = (b : ℂ) * I by ring]
       rw [mul_pow, Complex.I_sq]
       ring]
@@ -99,7 +99,7 @@ theorem quartetGaugedXi_conj (a b : ℝ) (s : ℂ) :
 /-- On the real axis the gauge is the positive real product of two sums of squares. -/
 theorem centeredQuartetGauge_ofReal (a b σ : ℝ) :
     centeredQuartetGauge a b (σ : ℂ) =
-      ((((σ - 1 / 2) - a) ^ 2 + b ^ 2) * (((σ - 1 / 2) + a) ^ 2 + b ^ 2) : ℝ) := by
+      ((((σ - 1 / 2) - a) ^ (2 : ℕ) + b ^ (2 : ℕ)) * (((σ - 1 / 2) + a) ^ (2 : ℕ) + b ^ (2 : ℕ)) : ℝ) := by
   simp only [centeredQuartetGauge]
   push_cast
   ring
@@ -159,7 +159,7 @@ DA-gauge-invariant data cannot. -/
 theorem centeredQuartetGauge_concrete_hasDerivAt_zero :
     HasDerivAt (centeredQuartetGauge (1 / 4) 1) (-19 / 8 : ℂ) 0 := by
   have hfun : centeredQuartetGauge (1 / 4) 1 =
-      fun s : ℂ => ((s - 3 / 4) ^ 2 + 1) * ((s - 1 / 4) ^ 2 + 1) := by
+      fun s : ℂ => ((s - 3 / 4) ^ (2 : ℕ) + 1) * ((s - 1 / 4) ^ (2 : ℕ) + 1) := by
     funext s
     norm_num [centeredQuartetGauge]
     ring

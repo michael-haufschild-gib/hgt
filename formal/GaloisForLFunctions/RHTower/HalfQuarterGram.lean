@@ -61,7 +61,7 @@ theorem bdGram_half_quarter :
 /-- The `{2,4}` Gram matrix is invertible: its determinant is positive. -/
 theorem bdGram_half_quarter_det_pos :
     0 < bdGram (1 / (2 : ℝ)) (1 / (2 : ℝ)) * bdGram (1 / (4 : ℝ)) (1 / (4 : ℝ))
-      - bdGram (1 / (2 : ℝ)) (1 / (4 : ℝ)) ^ 2 := by
+      - bdGram (1 / (2 : ℝ)) (1 / (4 : ℝ)) ^ (2 : ℕ) := by
   rw [bdGram_half, bdGram_quarter, bdGram_half_quarter]
   have h2 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
   have h2' : Real.log 2 < 0.6931471808 := Real.log_two_lt_d9

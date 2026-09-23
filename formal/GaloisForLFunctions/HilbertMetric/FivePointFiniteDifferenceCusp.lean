@@ -99,24 +99,24 @@ def fivePointJetMatrix (j0 j2 j4 j6 j8 : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
      j4, 0, j6, 0, j8]
 
 private theorem twoQuadratic_pos {a b c x y : ℝ}
-    (ha : 0 < a) (hd : 0 < a*c-b^2) (hxy : x ≠ 0 ∨ y ≠ 0) :
-    0 < a*x^2 + 2*b*x*y + c*y^2 := by
+    (ha : 0 < a) (hd : 0 < a*c-b^(2 : ℕ)) (hxy : x ≠ 0 ∨ y ≠ 0) :
+    0 < a*x^(2 : ℕ) + 2*b*x*y + c*y^(2 : ℕ) := by
   by_cases hy : y = 0
   · subst y
     have hx : x ≠ 0 := hxy.resolve_right (by simp)
     simpa using mul_pos ha (sq_pos_of_ne_zero hx)
-  · have hid : a*(a*x^2+2*b*x*y+c*y^2) =
-        (a*x+b*y)^2 + (a*c-b^2)*y^2 := by ring
-    have hp : 0 < a*(a*x^2+2*b*x*y+c*y^2) := by
+  · have hid : a*(a*x^(2 : ℕ)+2*b*x*y+c*y^(2 : ℕ)) =
+        (a*x+b*y)^(2 : ℕ) + (a*c-b^(2 : ℕ))*y^(2 : ℕ) := by ring
+    have hp : 0 < a*(a*x^(2 : ℕ)+2*b*x*y+c*y^(2 : ℕ)) := by
       rw [hid]
       exact add_pos_of_nonneg_of_pos (sq_nonneg _) (mul_pos hd (sq_pos_of_ne_zero hy))
     exact (mul_pos_iff_of_pos_left ha).mp hp
 
 private theorem threeQuadratic_pos {a b c d e x y z : ℝ}
-    (ha : 0 < a) (hd : 0 < a*c-b^2)
+    (ha : 0 < a) (hd : 0 < a*c-b^(2 : ℕ))
     (hD : 0 < signedEvenHankelThreeDet a b c d e)
     (hxyz : x ≠ 0 ∨ y ≠ 0 ∨ z ≠ 0) :
-    0 < a*x^2+2*b*x*y+c*(y^2+2*x*z)+2*d*y*z+e*z^2 := by
+    0 < a*x^(2 : ℕ)+2*b*x*y+c*(y^(2 : ℕ)+2*x*z)+2*d*y*z+e*z^(2 : ℕ) := by
   by_cases hz : z = 0
   · subst z
     have hxy : x ≠ 0 ∨ y ≠ 0 := by simpa using hxyz
@@ -126,7 +126,7 @@ private theorem threeQuadratic_pos {a b c d e x y z : ℝ}
 /-- The two strict jet blocks give the full five-dimensional limiting form. -/
 theorem fivePointJetMatrix_posDef {j0 j2 j4 j6 j8 : ℝ}
     (h0 : 0 < j0) (h2 : j2 < 0)
-    (h4 : 0 < j0*j4-j2^2) (h6 : 0 < j2*j6-j4^2)
+    (h4 : 0 < j0*j4-j2^(2 : ℕ)) (h6 : 0 < j2*j6-j4^(2 : ℕ))
     (h8 : 0 < signedEvenHankelThreeDet j0 j2 j4 j6 j8) :
     (fivePointJetMatrix j0 j2 j4 j6 j8).PosDef := by
   apply Matrix.PosDef.of_dotProduct_mulVec_pos
@@ -134,9 +134,9 @@ theorem fivePointJetMatrix_posDef {j0 j2 j4 j6 j8 : ℝ}
     ext i j
     fin_cases i <;> fin_cases j <;> simp [fivePointJetMatrix]
   · intro v hv
-    let E := j0*(v 0)^2+2*j2*v 0*v 2+j4*((v 2)^2+2*v 0*v 4)+
-      2*j6*v 2*v 4+j8*(v 4)^2
-    let O := -j2*(v 1)^2+2*(-j4)*v 1*v 3+(-j6)*(v 3)^2
+    let E := j0*(v 0)^(2 : ℕ)+2*j2*v 0*v 2+j4*((v 2)^(2 : ℕ)+2*v 0*v 4)+
+      2*j6*v 2*v 4+j8*(v 4)^(2 : ℕ)
+    let O := -j2*(v 1)^(2 : ℕ)+2*(-j4)*v 1*v 3+(-j6)*(v 3)^(2 : ℕ)
     have hEp : (v 0 ≠ 0 ∨ v 2 ≠ 0 ∨ v 4 ≠ 0) → 0 < E :=
       fun h => threeQuadratic_pos h0 h4 h8 h
     have hOp : (v 1 ≠ 0 ∨ v 3 ≠ 0) → 0 < O := by
@@ -171,13 +171,13 @@ theorem fivePointJetMatrix_posDef {j0 j2 j4 j6 j8 : ℝ}
 
 /-- Central-difference normalization of the five-point Gram form. -/
 def fivePointNormalizedMatrix (f : ℝ → ℝ) (h : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
-  let e2 := fiveSampleStencil ![-2,2,0,0,0] f h / h^2
-  let e4 := fiveSampleStencil ![6,-8,2,0,0] f h / h^4
-  let e6 := fiveSampleStencil ![-20,30,-12,2,0] f h / h^6
-  let e8 := fiveSampleStencil ![70,-112,56,-16,2] f h / h^8
-  let o2 := fiveSampleStencil ![1/2,0,-1/2,0,0] f h / h^2
-  let o4 := fiveSampleStencil ![-1,1/2,1,-1/2,0] f h / h^4
-  let o6 := fiveSampleStencil ![5/2,-2,-2,2,-1/2] f h / h^6
+  let e2 := fiveSampleStencil ![-2,2,0,0,0] f h / h^(2 : ℕ)
+  let e4 := fiveSampleStencil ![6,-8,2,0,0] f h / h^(4 : ℕ)
+  let e6 := fiveSampleStencil ![-20,30,-12,2,0] f h / h^(6 : ℕ)
+  let e8 := fiveSampleStencil ![70,-112,56,-16,2] f h / h^(8 : ℕ)
+  let o2 := fiveSampleStencil ![1/2,0,-1/2,0,0] f h / h^(2 : ℕ)
+  let o4 := fiveSampleStencil ![-1,1/2,1,-1/2,0] f h / h^(4 : ℕ)
+  let o6 := fiveSampleStencil ![5/2,-2,-2,2,-1/2] f h / h^(6 : ℕ)
   !![f 0, 0, e2, 0, e4;
      0, o2, 0, o4, 0;
      e2, 0, e4, 0, e6;
@@ -193,7 +193,7 @@ theorem tendsto_fivePointNormalizedMatrix {f : ℝ → ℝ}
     Tendsto (fun h => fivePointNormalizedMatrix f h i j) (𝓝[≠] 0)
       (𝓝 (fivePointJetMatrix (f 0) (iteratedDeriv 2 f 0) (iteratedDeriv 4 f 0)
         (iteratedDeriv 6 f 0) (iteratedDeriv 8 f 0) i j)) := by
-  have he2 : Tendsto (fun h => fiveSampleStencil ![-2,2,0,0,0] f h / h^2)
+  have he2 : Tendsto (fun h => fiveSampleStencil ![-2,2,0,0,0] f h / h^(2 : ℕ))
       (𝓝[≠] 0) (𝓝 (iteratedDeriv 2 f 0)) := by
     have hh := tendsto_fiveSampleStencil_div_pow (n:=2)
       (hf.of_le (by norm_num)) ![-2,2,0,0,0] (1) (by
@@ -202,7 +202,7 @@ theorem tendsto_fivePointNormalizedMatrix {f : ℝ → ℝ}
           norm_num [Fin.sum_univ_succ, h1, h3, h5, h7]) (by
         norm_num [Fin.sum_univ_succ, Nat.factorial])
     simpa using hh
-  have he4 : Tendsto (fun h => fiveSampleStencil ![6,-8,2,0,0] f h / h^4)
+  have he4 : Tendsto (fun h => fiveSampleStencil ![6,-8,2,0,0] f h / h^(4 : ℕ))
       (𝓝[≠] 0) (𝓝 (iteratedDeriv 4 f 0)) := by
     have hh := tendsto_fiveSampleStencil_div_pow (n:=4)
       (hf.of_le (by norm_num)) ![6,-8,2,0,0] (1) (by
@@ -211,7 +211,7 @@ theorem tendsto_fivePointNormalizedMatrix {f : ℝ → ℝ}
           norm_num [Fin.sum_univ_succ, h1, h3, h5, h7]) (by
         norm_num [Fin.sum_univ_succ, Nat.factorial])
     simpa using hh
-  have he6 : Tendsto (fun h => fiveSampleStencil ![-20,30,-12,2,0] f h / h^6)
+  have he6 : Tendsto (fun h => fiveSampleStencil ![-20,30,-12,2,0] f h / h^(6 : ℕ))
       (𝓝[≠] 0) (𝓝 (iteratedDeriv 6 f 0)) := by
     have hh := tendsto_fiveSampleStencil_div_pow (n:=6)
       (hf.of_le (by norm_num)) ![-20,30,-12,2,0] (1) (by
@@ -220,7 +220,7 @@ theorem tendsto_fivePointNormalizedMatrix {f : ℝ → ℝ}
           norm_num [Fin.sum_univ_succ, h1, h3, h5, h7]) (by
         norm_num [Fin.sum_univ_succ, Nat.factorial])
     simpa using hh
-  have he8 : Tendsto (fun h => fiveSampleStencil ![70,-112,56,-16,2] f h / h^8)
+  have he8 : Tendsto (fun h => fiveSampleStencil ![70,-112,56,-16,2] f h / h^(8 : ℕ))
       (𝓝[≠] 0) (𝓝 (iteratedDeriv 8 f 0)) := by
     have hh := tendsto_fiveSampleStencil_div_pow (n:=8)
       (hf.of_le (by norm_num)) ![70,-112,56,-16,2] (1) (by
@@ -229,7 +229,7 @@ theorem tendsto_fivePointNormalizedMatrix {f : ℝ → ℝ}
           norm_num [Fin.sum_univ_succ, h1, h3, h5, h7]) (by
         norm_num [Fin.sum_univ_succ, Nat.factorial])
     simpa using hh
-  have ho2 : Tendsto (fun h => fiveSampleStencil ![1/2,0,-1/2,0,0] f h / h^2)
+  have ho2 : Tendsto (fun h => fiveSampleStencil ![1/2,0,-1/2,0,0] f h / h^(2 : ℕ))
       (𝓝[≠] 0) (𝓝 (-iteratedDeriv 2 f 0)) := by
     have hh := tendsto_fiveSampleStencil_div_pow (n:=2)
       (hf.of_le (by norm_num)) ![1/2,0,-1/2,0,0] (-1) (by
@@ -238,7 +238,7 @@ theorem tendsto_fivePointNormalizedMatrix {f : ℝ → ℝ}
           norm_num [Fin.sum_univ_succ, h1, h3, h5, h7]) (by
         norm_num [Fin.sum_univ_succ, Nat.factorial])
     simpa using hh
-  have ho4 : Tendsto (fun h => fiveSampleStencil ![-1,1/2,1,-1/2,0] f h / h^4)
+  have ho4 : Tendsto (fun h => fiveSampleStencil ![-1,1/2,1,-1/2,0] f h / h^(4 : ℕ))
       (𝓝[≠] 0) (𝓝 (-iteratedDeriv 4 f 0)) := by
     have hh := tendsto_fiveSampleStencil_div_pow (n:=4)
       (hf.of_le (by norm_num)) ![-1,1/2,1,-1/2,0] (-1) (by
@@ -247,7 +247,7 @@ theorem tendsto_fivePointNormalizedMatrix {f : ℝ → ℝ}
           norm_num [Fin.sum_univ_succ, h1, h3, h5, h7]) (by
         norm_num [Fin.sum_univ_succ, Nat.factorial])
     simpa using hh
-  have ho6 : Tendsto (fun h => fiveSampleStencil ![5/2,-2,-2,2,-1/2] f h / h^6)
+  have ho6 : Tendsto (fun h => fiveSampleStencil ![5/2,-2,-2,2,-1/2] f h / h^(6 : ℕ))
       (𝓝[≠] 0) (𝓝 (-iteratedDeriv 6 f 0)) := by
     have hh := tendsto_fiveSampleStencil_div_pow (n:=6)
       (hf.of_le (by norm_num)) ![5/2,-2,-2,2,-1/2] (-1) (by
@@ -280,9 +280,9 @@ def fivePointSampleMatrix (f : ℝ → ℝ) (h : ℝ) : Matrix (Fin 5) (Fin 5) �
 def fivePointDifferenceCoordinates (h : ℝ) (v : Fin 5 → ℝ) : Fin 5 → ℝ :=
   ![v 0+v 1+v 2+v 3+v 4,
     h*(v 3-v 1+2*(v 4-v 0)),
-    h^2/2*(v 1+v 3+4*v 0+4*v 4),
-    h^3*(v 4-v 0),
-    h^4/2*(v 0+v 4)]
+    h^(2 : ℕ)/2*(v 1+v 3+4*v 0+4*v 4),
+    h^(3 : ℕ)*(v 4-v 0),
+    h^(4 : ℕ)/2*(v 0+v 4)]
 
 private theorem fivePointDifferenceCoordinates_ne_zero {h : ℝ} (hh : h ≠ 0)
     {v : Fin 5 → ℝ} (hv : v ≠ 0) : fivePointDifferenceCoordinates h v ≠ 0 := by
@@ -294,9 +294,9 @@ private theorem fivePointDifferenceCoordinates_ne_zero {h : ℝ} (hh : h ≠ 0)
   have h4 := congrFun hz 4
   change v 0+v 1+v 2+v 3+v 4 = 0 at h0
   change h*(v 3-v 1+2*(v 4-v 0)) = 0 at h1
-  change h^2/2*(v 1+v 3+4*v 0+4*v 4) = 0 at h2
-  change h^3*(v 4-v 0) = 0 at h3
-  change h^4/2*(v 0+v 4) = 0 at h4
+  change h^(2 : ℕ)/2*(v 1+v 3+4*v 0+4*v 4) = 0 at h2
+  change h^(3 : ℕ)*(v 4-v 0) = 0 at h3
+  change h^(4 : ℕ)/2*(v 0+v 4) = 0 at h4
   have h30 : v 4-v 0 = 0 := (mul_eq_zero.mp h3).resolve_left (pow_ne_zero 3 hh)
   have h40 : v 0+v 4 = 0 := (mul_eq_zero.mp h4).resolve_left
     (div_ne_zero (pow_ne_zero 4 hh) (by norm_num))
@@ -335,14 +335,14 @@ theorem fivePointSampleMatrix_posDef_of_normalized {f : ℝ → ℝ} {h : ℝ}
     rw [fivePointSampleMatrix_quadratic_eq_normalized hh]
     exact hM.dotProduct_mulVec_pos (fivePointDifferenceCoordinates_ne_zero hh hv)
 
-/-- Strict signed jet minors open the five-point cusp using only `C^8` regularity. -/
+/-- Strict signed jet minors open the five-point cusp using only `C^(8 : ℕ)` regularity. -/
 theorem eventually_fivePointSampleMatrix_posDef {f : ℝ → ℝ}
     (hf : ContDiff ℝ 8 f)
     (h1 : iteratedDeriv 1 f 0 = 0) (h3 : iteratedDeriv 3 f 0 = 0)
     (h5 : iteratedDeriv 5 f 0 = 0) (h7 : iteratedDeriv 7 f 0 = 0)
     (h0 : 0 < f 0) (h2 : iteratedDeriv 2 f 0 < 0)
-    (h4 : 0 < f 0*iteratedDeriv 4 f 0-(iteratedDeriv 2 f 0)^2)
-    (h6 : 0 < iteratedDeriv 2 f 0*iteratedDeriv 6 f 0-(iteratedDeriv 4 f 0)^2)
+    (h4 : 0 < f 0*iteratedDeriv 4 f 0-(iteratedDeriv 2 f 0)^(2 : ℕ))
+    (h6 : 0 < iteratedDeriv 2 f 0*iteratedDeriv 6 f 0-(iteratedDeriv 4 f 0)^(2 : ℕ))
     (h8 : 0 < signedEvenHankelThreeDet (f 0) (iteratedDeriv 2 f 0)
       (iteratedDeriv 4 f 0) (iteratedDeriv 6 f 0) (iteratedDeriv 8 f 0)) :
     ∀ᶠ h in 𝓝[≠] 0, (fivePointSampleMatrix f h).PosDef := by

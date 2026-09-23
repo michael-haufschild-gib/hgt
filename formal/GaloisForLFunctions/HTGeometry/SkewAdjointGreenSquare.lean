@@ -40,7 +40,7 @@ square. -/
 theorem matrixGreenSquare_eq_neg_sq_of_skew
     {n : Type*} [Fintype n] [DecidableEq n]
     {G : Matrix n n ℂ} (hG : Gᴴ = -G) :
-    matrixGreenSquare G = -(G ^ 2) := by
+    matrixGreenSquare G = -(G ^ (2 : ℕ)) := by
   rw [matrixGreenSquare, hG, pow_two]
   simp
 
@@ -72,7 +72,7 @@ theorem inverse_matrixGreenSquare_eq_neg_sq
     {n : Type*} [Fintype n] [DecidableEq n]
     {C G : Matrix n n ℂ} (hC : Cᴴ = -C)
     (hGC : G * C = 1) :
-    matrixGreenSquare G = -(G ^ 2) :=
+    matrixGreenSquare G = -(G ^ (2 : ℕ)) :=
   matrixGreenSquare_eq_neg_sq_of_skew
     (leftInverse_conjTranspose_eq_neg_of_skew hC hGC)
 
@@ -80,7 +80,7 @@ theorem inverse_matrixGreenSquare_eq_neg_sq
 theorem matrixGreenTracePowerMoment_nonnegative
     {n : Type*} [Fintype n] [DecidableEq n]
     (G : Matrix n n ℂ) (p : Polynomial ℝ) :
-    0 ≤ momentFunctional (matrixTracePowerMoment (matrixGreenSquare G)) (p ^ 2) :=
+    0 ≤ momentFunctional (matrixTracePowerMoment (matrixGreenSquare G)) (p ^ (2 : ℕ)) :=
   matrixTracePowerMoment_nonnegative (matrixGreenSquare_posSemidef G) p
 
 end

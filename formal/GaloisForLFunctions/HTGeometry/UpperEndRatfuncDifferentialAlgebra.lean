@@ -12,7 +12,7 @@ meromorphic field, and hence what lets finitary differential-independence argume
 rather than only over `ℂ`.
 
 The proof is the quotient rule on both sides: on a fraction `p / q` each derivation produces
-`q⁻¹ ^ 2 * (q * p' - p * q')`, and the embedding is a ring map that sends a polynomial's formal
+`q⁻¹ ^ (2 : ℕ) * (q * p' - p * q')`, and the embedding is a ring map that sends a polynomial's formal
 derivative to the upper-end derivative of its germ.
 -/
 

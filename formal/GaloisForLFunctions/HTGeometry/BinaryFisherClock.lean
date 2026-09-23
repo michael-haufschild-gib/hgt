@@ -66,7 +66,7 @@ theorem binaryFisherClock_reciprocal_speed (t : ℝ) :
     (Real.sqrt (finiteTiltVariance binaryEscortWeight binaryEscortScore t))⁻¹ =
       2 * Real.cosh (t / 2) := by
   rw [binary_sqrt_variance, Real.cosh_eq, Real.exp_neg]
-  have he : Real.exp t = Real.exp (t / 2) ^ 2 := by
+  have he : Real.exp t = Real.exp (t / 2) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring

@@ -19,15 +19,15 @@ open MeasureTheory Set intervalIntegral
 namespace GaloisForLFunctions.RHTower
 
 theorem abs_dilated_inv_speed_deriv_left {s k t : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1) (hk : 1 ≤ k)
-    (ht0 : 0 < t) (hkt : 2 ≤ k * t) : |k * xiInvSpeedDeriv s (k * t)| ≤ 1 / t ^ 2 := by
+    (ht0 : 0 < t) (hkt : 2 ≤ k * t) : |k * xiInvSpeedDeriv s (k * t)| ≤ 1 / t ^ (2 : ℕ) := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
-  have hbase : |xiInvSpeedDeriv s (k * t)| ≤ 1 / (k * t) ^ 2 :=
+  have hbase : |xiInvSpeedDeriv s (k * t)| ≤ 1 / (k * t) ^ (2 : ℕ) :=
     abs_deriv_inv_xiSpeed_le hs0 hs1 hkt
   rw [abs_mul, abs_of_pos hk0]
-  have hstep : k * |xiInvSpeedDeriv s (k * t)| ≤ k * (1 / (k * t) ^ 2) :=
+  have hstep : k * |xiInvSpeedDeriv s (k * t)| ≤ k * (1 / (k * t) ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_left hbase hk0.le
   refine le_trans hstep ?_
-  have hval : k * (1 / (k * t) ^ 2) = 1 / (k * t ^ 2) := by
+  have hval : k * (1 / (k * t) ^ (2 : ℕ)) = 1 / (k * t ^ (2 : ℕ)) := by
     field_simp
   rw [hval, div_le_div_iff₀ (by positivity) (by positivity)]
   nlinarith [hk, sq_nonneg t, ht0, mul_pos ht0 ht0]

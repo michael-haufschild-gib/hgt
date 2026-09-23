@@ -21,7 +21,7 @@ noncomputable section
 
 /-- Reflection-centered reciprocal-square coordinate. -/
 def reflectedReciprocalSquare (w : ℂ) : ℂ :=
-  -(w⁻¹) ^ 2
+  -(w⁻¹) ^ (2 : ℕ)
 
 /-- Norm of the reflected reciprocal-square coordinate. -/
 theorem norm_reflectedReciprocalSquare (w : ℂ) :
@@ -32,7 +32,7 @@ theorem norm_reflectedReciprocalSquare (w : ℂ) :
 /-- Real part of the reflected reciprocal-square coordinate. -/
 theorem reflectedReciprocalSquare_re {w : ℂ} (hw : w ≠ 0) :
     (reflectedReciprocalSquare w).re =
-      (w.im ^ 2 - w.re ^ 2) / (Complex.normSq w) ^ 2 := by
+      (w.im ^ (2 : ℕ) - w.re ^ (2 : ℕ)) / (Complex.normSq w) ^ (2 : ℕ) := by
   rw [reflectedReciprocalSquare, Complex.neg_re, pow_two, Complex.mul_re,
     Complex.inv_re, Complex.inv_im]
   have hnormSq : Complex.normSq w ≠ 0 := (Complex.normSq_pos.mpr hw).ne'
@@ -43,7 +43,7 @@ theorem reflectedReciprocalSquare_re {w : ℂ} (hw : w ≠ 0) :
 quadratically and divided by the fourth power of radial distance. -/
 theorem transverseDefect_reflectedReciprocalSquare {w : ℂ} (hw : w ≠ 0) :
     transverseDefect (reflectedReciprocalSquare w) =
-      2 * w.re ^ 2 / (Complex.normSq w) ^ 2 := by
+      2 * w.re ^ (2 : ℕ) / (Complex.normSq w) ^ (2 : ℕ) := by
   rw [transverseDefect, norm_reflectedReciprocalSquare,
     reflectedReciprocalSquare_re hw]
   have hnormSq : Complex.normSq w ≠ 0 := (Complex.normSq_pos.mpr hw).ne'
@@ -56,11 +56,11 @@ theorem transverseDefect_reflectedReciprocalSquare_eq_zero_iff
     {w : ℂ} (hw : w ≠ 0) :
     transverseDefect (reflectedReciprocalSquare w) = 0 ↔ w.re = 0 := by
   rw [transverseDefect_reflectedReciprocalSquare hw]
-  have hden : (Complex.normSq w) ^ 2 ≠ 0 :=
+  have hden : (Complex.normSq w) ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (Complex.normSq_pos.mpr hw).ne'
   constructor
   · intro h
-    have hnum : 2 * w.re ^ 2 = 0 :=
+    have hnum : 2 * w.re ^ (2 : ℕ) = 0 :=
       (div_eq_zero_iff.mp h).resolve_right hden
     exact (mul_eq_zero.mp hnum).resolve_left (by norm_num) |>
       sq_eq_zero_iff.mp
@@ -74,8 +74,8 @@ defect bound. -/
 theorem transverseDefect_reflectedReciprocalSquare_le
     {w : ℂ} {A H : ℝ}
     (hA : 0 ≤ A) (hH : 0 < H)
-    (hre : w.re ^ 2 ≤ A) (him : H ≤ w.im ^ 2) :
-    transverseDefect (reflectedReciprocalSquare w) ≤ 2 * A / H ^ 2 := by
+    (hre : w.re ^ (2 : ℕ) ≤ A) (him : H ≤ w.im ^ (2 : ℕ)) :
+    transverseDefect (reflectedReciprocalSquare w) ≤ 2 * A / H ^ (2 : ℕ) := by
   have hw : w ≠ 0 := by
     intro hw
     subst w
@@ -83,18 +83,18 @@ theorem transverseDefect_reflectedReciprocalSquare_le
     linarith
   rw [transverseDefect_reflectedReciprocalSquare hw]
   let D : ℝ := Complex.normSq w
-  have hD : D = w.re ^ 2 + w.im ^ 2 := by
+  have hD : D = w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ) := by
     dsimp only [D]
     rw [Complex.normSq_apply]
     ring
   have hHD : H ≤ D := by rw [hD]; nlinarith [sq_nonneg w.re]
   have hDpos : 0 < D := hH.trans_le hHD
-  have hsq : H ^ 2 ≤ D ^ 2 := pow_le_pow_left₀ hH.le hHD 2
-  have hleft : 2 * w.re ^ 2 * H ^ 2 ≤ 2 * A * D ^ 2 := by
+  have hsq : H ^ (2 : ℕ) ≤ D ^ (2 : ℕ) := pow_le_pow_left₀ hH.le hHD 2
+  have hleft : 2 * w.re ^ (2 : ℕ) * H ^ (2 : ℕ) ≤ 2 * A * D ^ (2 : ℕ) := by
     calc
-      2 * w.re ^ 2 * H ^ 2 ≤ 2 * A * H ^ 2 := by
+      2 * w.re ^ (2 : ℕ) * H ^ (2 : ℕ) ≤ 2 * A * H ^ (2 : ℕ) := by
         gcongr
-      _ ≤ 2 * A * D ^ 2 := by
+      _ ≤ 2 * A * D ^ (2 : ℕ) := by
         exact mul_le_mul_of_nonneg_left hsq (mul_nonneg (by norm_num) hA)
   rw [show Complex.normSq w = D by rfl]
   exact (div_le_div_iff₀ (sq_pos_of_pos hDpos) (sq_pos_of_pos hH)).2 hleft
@@ -104,7 +104,7 @@ theorem transverseDefectEnvelope_reflectedReciprocalSquare_image
     (W : Set ℂ) (hzero : 0 ∉ W) :
     transverseDefectEnvelope (reflectedReciprocalSquare '' W) =
       sSup ((fun w : ℂ =>
-        2 * w.re ^ 2 / (Complex.normSq w) ^ 2) '' W) := by
+        2 * w.re ^ (2 : ℕ) / (Complex.normSq w) ^ (2 : ℕ)) '' W) := by
   rw [transverseDefectEnvelope]
   congr 1
   ext y
@@ -122,9 +122,9 @@ and above a vertical square floor has reciprocal-square transverse envelope at m
 theorem transverseDefectEnvelope_reflectedReciprocalSquare_le
     {W : Set ℂ} (hne : W.Nonempty) {A H : ℝ}
     (hA : 0 ≤ A) (hH : 0 < H)
-    (hre : ∀ w ∈ W, w.re ^ 2 ≤ A)
-    (him : ∀ w ∈ W, H ≤ w.im ^ 2) :
-    transverseDefectEnvelope (reflectedReciprocalSquare '' W) ≤ 2 * A / H ^ 2 := by
+    (hre : ∀ w ∈ W, w.re ^ (2 : ℕ) ≤ A)
+    (him : ∀ w ∈ W, H ≤ w.im ^ (2 : ℕ)) :
+    transverseDefectEnvelope (reflectedReciprocalSquare '' W) ≤ 2 * A / H ^ (2 : ℕ) := by
   rw [transverseDefectEnvelope]
   apply csSup_le ((hne.image reflectedReciprocalSquare).image transverseDefect)
   rintro y ⟨z, ⟨w, hw, rfl⟩, rfl⟩

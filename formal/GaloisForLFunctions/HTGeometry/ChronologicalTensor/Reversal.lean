@@ -14,10 +14,10 @@ namespace GaloisForLFunctions.HTGeometry.ChronologicalTensor
 noncomputable section
 
 theorem separated_cubic_gap (x y : ℝ) :
-    (x+y)^3 - (27/4 : ℝ)*x*y^2 = (x-y/2)^2*(x+4*y) := by ring
+    (x+y)^(3 : ℕ) - (27/4 : ℝ)*x*y^(2 : ℕ) = (x-y/2)^(2 : ℕ)*(x+4*y) := by ring
 
 theorem normalized_separated_bound (a b c d e : ℝ) :
-    |27*separatedThree a b c d e| ≤ sixCost a b c d e ^ 3 := by
+    |27*separatedThree a b c d e| ≤ sixCost a b c d e ^ (3 : ℕ) := by
   have h := weightedSix_majorant 27 0 a b c d e
   simp only [weightedSixResponse, zero_mul, add_zero, abs_zero,
     abs_of_nonneg (show (0 : ℝ) ≤ 27 by positivity)] at h
@@ -32,7 +32,7 @@ theorem normalized_separated_bound (a b c d e : ℝ) :
   linarith
 
 theorem rainbow_bound (a b c d e : ℝ) :
-    |rainbowThree a b c d e| ≤ sixCost a b c d e ^ 3 := by
+    |rainbowThree a b c d e| ≤ sixCost a b c d e ^ (3 : ℕ) := by
   have h := weightedSix_majorant 0 1 a b c d e
   simp only [weightedSixResponse, zero_mul, zero_add, one_mul, abs_zero, abs_one,
     zero_div] at h
@@ -41,7 +41,7 @@ theorem rainbow_bound (a b c d e : ℝ) :
   have hx : 0 ≤ x := by dsimp [x]; positivity
   have hxt : x ≤ t := by dsimp [x,t,sixCost]; linarith [abs_nonneg a, abs_nonneg e]
   have ht : 0 ≤ t := hx.trans hxt
-  have hh : t*x^2 ≤ t^3 := by
+  have hh : t*x^(2 : ℕ) ≤ t^(3 : ℕ) := by
     nlinarith [mul_nonneg ht (sq_nonneg (t-x)),
       mul_nonneg (mul_nonneg ht hx) (sub_nonneg.mpr hxt)]
   exact h.trans hh
@@ -50,7 +50,7 @@ def reversalResponse (a b c d e : ℝ) : ℝ :=
   27*separatedThree a b c d e - rainbowThree a b c d e
 
 theorem monotone_reversal_bound (a b c d e : ℝ) :
-    |reversalResponse |a| |b| |c| |d| (|e|)| ≤ sixCost a b c d e ^ 3 := by
+    |reversalResponse |a| |b| |c| |d| (|e|)| ≤ sixCost a b c d e ^ (3 : ℕ) := by
   have hd := normalized_separated_bound |a| |b| |c| |d| |e|
   have hr := rainbow_bound |a| |b| |c| |d| |e|
   have hd0 : 0 ≤ 27*separatedThree |a| |b| |c| |d| |e| := by

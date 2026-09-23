@@ -44,7 +44,7 @@ theorem norm_cpow_neg_sub_cpow_neg_le {w : ℂ} (hc : w.re ≠ 0) {A B : ℝ} (h
     linarith [hy.1]
   have hderiv : ∀ y ∈ Set.uIcc A B,
       HasDerivAt (fun y : ℝ => (y : ℂ) ^ (-w)) (-w * (y : ℂ) ^ (-w - 1)) y :=
-    fun y hy => hasDerivAt_ofReal_cpow_neg (hpos y hy)
+    fun y hy => hasDerivAt_ofReal_cpow_neg_highBlockCutoffMonotone (hpos y hy)
   have hfun : (fun y : ℝ => -w * (y : ℂ) ^ (-w - 1)) = fun y : ℝ => -w * (y : ℂ) ^ (-(w + 1)) := by
     funext y
     congr 2
@@ -53,7 +53,7 @@ theorem norm_cpow_neg_sub_cpow_neg_le {w : ℂ} (hc : w.re ≠ 0) {A B : ℝ} (h
     rw [hfun]
     intro y hy
     exact (continuousAt_const.mul
-      (hasDerivAt_ofReal_cpow_neg (w := w + 1) (hpos y hy)).continuousAt).continuousWithinAt
+      (hasDerivAt_ofReal_cpow_neg_highBlockCutoffMonotone (w := w + 1) (hpos y hy)).continuousAt).continuousWithinAt
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hcont.intervalIntegrable
   rw [← hFTC]
   refine (intervalIntegral.norm_integral_le_integral_norm hAB).trans ?_
@@ -372,7 +372,7 @@ theorem exists_sum_norm_dualWeight_sub_le_right :
         have : 0 ≤ (dualPt x L) ^ (-K) := by positivity
         linarith
 
-/-- `‖χ(½−d+iT)⁻¹‖ ≤ (2π)^d T^{−d} e^5` for `T ≥ 1`, `0 ≤ d ≤ ¼`. -/
+/-- `‖χ(½−d+iT)⁻¹‖ ≤ (2π)^d T^{−d} e^(5 : ℕ)` for `T ≥ 1`, `0 ≤ d ≤ ¼`. -/
 theorem norm_inv_zetaChi_displacedLinePt_le {d T : ℝ} (hd0 : 0 ≤ d) (hd4 : d ≤ 1 / 4)
     (hT : 1 ≤ T) :
     ‖(zetaChi (displacedLinePt d T))⁻¹‖ ≤ (2 * Real.pi) ^ d * T ^ (-d) * Real.exp 5 := by
@@ -455,7 +455,7 @@ theorem exists_norm_smoothAFEZetaDisplacedDualWeight_le_uniform :
       calc (2 * Real.pi) ^ d ≤ (2 * Real.pi) ^ (1 : ℝ) :=
             Real.rpow_le_rpow_of_exponent_le (by linarith [Real.pi_gt_three]) (by linarith)
         _ = 2 * Real.pi := Real.rpow_one _
-    -- assemble: C₁ (1+T)^{3/2} S Y^{-(3/2-d)} ≤ C₁ · 4 T^{3/2} · (2π)^d T^{-d} e^5 · T^{-(3/2-d)}
+    -- assemble: C₁ (1+T)^{3/2} S Y^{-(3/2-d)} ≤ C₁ · 4 T^{3/2} · (2π)^d T^{-d} e^(5 : ℕ) · T^{-(3/2-d)}
     have hTT : T ^ (3 / 2 : ℝ) * T ^ (-d) * T ^ (-(3 / 2 - d)) = 1 := by
       rw [← Real.rpow_add hTpos, ← Real.rpow_add hTpos]
       rw [show (3 / 2 : ℝ) + -d + -(3 / 2 - d) = 0 by ring, Real.rpow_zero]

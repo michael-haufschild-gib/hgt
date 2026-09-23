@@ -11,7 +11,7 @@ before taking the Laplace transform.  Its transform is the squared resolvent and
 cubic Cauchy kernel.
 
 The generator is necessarily unbounded at the critical wall.  For a positive real rate `a`, its
-base energy is `1/(2a)`, its graph energy is `1/(4a^3)`, and the exact gain is `1/(2a^2)`.
+base energy is `1/(2a)`, its graph energy is `1/(4a^(3 : ℕ))`, and the exact gain is `1/(2a^(2 : ℕ))`.
 Consequently no uniform graph bound exists even on `0 < a ≤ 1/2`.  Thus the missing Route P map
 must pay a coefficient-faithful polar--Gamma graph norm; P-G197 base-Hardy positivity alone cannot
 provide W-H184's cubic zero Gram.
@@ -104,7 +104,7 @@ theorem integral_xiWardResolvedRadialGeneratorMode_laplace
     (∫ L : ℝ in Ioi 0,
       Complex.exp (-(w * (L : ℂ))) *
         xiWardResolvedRadialGeneratorMode lam L) =
-      (w + lam)⁻¹ ^ 2 := by
+      (w + lam)⁻¹ ^ (2 : ℕ) := by
   have hgamma :=
     GaloisForLFunctions.HTGeometry.integral_cpow_mul_exp_neg_mul_Ioi
       (s := (2 : ℂ)) (w := w + lam) (by norm_num) h
@@ -136,7 +136,7 @@ theorem integral_xiWardResolvedRadialGeneratorMode_laplace
 zero-mode parameter. -/
 theorem hasDerivAt_xiWard_resolvedColumn
     {w lam : ℂ} (hne : w + lam ≠ 0) :
-    HasDerivAt (fun z : ℂ => 1 / (w + z)) (-1 / (w + lam) ^ 2) lam := by
+    HasDerivAt (fun z : ℂ => 1 / (w + z)) (-1 / (w + lam) ^ (2 : ℕ)) lam := by
   have hbase : HasDerivAt (fun z : ℂ => z + w) 1 lam :=
     (hasDerivAt_id lam).add_const w
   simpa only [one_div, one_mul, neg_div, add_comm] using!
@@ -145,7 +145,7 @@ theorem hasDerivAt_xiWard_resolvedColumn
 /-- Pointwise squared norm of a positive real resolved radial mode. -/
 theorem norm_xiWardResolvedRadialMode_sq
     (a L : ℝ) :
-    ‖xiWardResolvedRadialMode (a : ℂ) L‖ ^ 2 = Real.exp (-2 * a * L) := by
+    ‖xiWardResolvedRadialMode (a : ℂ) L‖ ^ (2 : ℕ) = Real.exp (-2 * a * L) := by
   rw [xiWardResolvedRadialMode, Complex.norm_exp]
   simp only [neg_re, mul_re, ofReal_re, ofReal_im, zero_mul, sub_zero]
   rw [← Real.exp_nat_mul]
@@ -156,8 +156,8 @@ theorem norm_xiWardResolvedRadialMode_sq
 /-- Pointwise squared norm after applying the common radial position generator. -/
 theorem norm_xiWardResolvedRadialGeneratorMode_sq
     (a L : ℝ) :
-    ‖xiWardResolvedRadialGeneratorMode (a : ℂ) L‖ ^ 2 =
-      L ^ 2 * Real.exp (-2 * a * L) := by
+    ‖xiWardResolvedRadialGeneratorMode (a : ℂ) L‖ ^ (2 : ℕ) =
+      L ^ (2 : ℕ) * Real.exp (-2 * a * L) := by
   rw [xiWardResolvedRadialGeneratorMode, norm_mul, mul_pow,
     Complex.norm_real, Real.norm_eq_abs, norm_xiWardResolvedRadialMode_sq]
   rw [sq_abs]
@@ -165,7 +165,7 @@ theorem norm_xiWardResolvedRadialGeneratorMode_sq
 /-- Exact base `L²` energy of one positive real resolved Ward mode. -/
 theorem integral_norm_xiWardResolvedRadialMode_sq
     {a : ℝ} (ha : 0 < a) :
-    (∫ L : ℝ in Ioi 0, ‖xiWardResolvedRadialMode (a : ℂ) L‖ ^ 2) =
+    (∫ L : ℝ in Ioi 0, ‖xiWardResolvedRadialMode (a : ℂ) L‖ ^ (2 : ℕ)) =
       1 / (2 * a) := by
   simp_rw [norm_xiWardResolvedRadialMode_sq]
   rw [integral_exp_mul_Ioi (by linarith : -2 * a < 0) 0]
@@ -176,8 +176,8 @@ theorem integral_norm_xiWardResolvedRadialMode_sq
 theorem integral_norm_xiWardResolvedRadialGeneratorMode_sq
     {a : ℝ} (ha : 0 < a) :
     (∫ L : ℝ in Ioi 0,
-      ‖xiWardResolvedRadialGeneratorMode (a : ℂ) L‖ ^ 2) =
-      1 / (4 * a ^ 3) := by
+      ‖xiWardResolvedRadialGeneratorMode (a : ℂ) L‖ ^ (2 : ℕ)) =
+      1 / (4 * a ^ (3 : ℕ)) := by
   simp_rw [norm_xiWardResolvedRadialGeneratorMode_sq]
   rw [integral_Ioi_sq_mul_exp_neg_two_mul ha (le_refl 0)]
   rw [xiWardCubicConormalTailEnergy]
@@ -188,9 +188,9 @@ conormal mode. -/
 theorem xiWardResolvedRadialGenerator_energy_ratio
     {a : ℝ} (ha : 0 < a) :
     (∫ L : ℝ in Ioi 0,
-      ‖xiWardResolvedRadialGeneratorMode (a : ℂ) L‖ ^ 2) /
-        (∫ L : ℝ in Ioi 0, ‖xiWardResolvedRadialMode (a : ℂ) L‖ ^ 2) =
-      1 / (2 * a ^ 2) := by
+      ‖xiWardResolvedRadialGeneratorMode (a : ℂ) L‖ ^ (2 : ℕ)) /
+        (∫ L : ℝ in Ioi 0, ‖xiWardResolvedRadialMode (a : ℂ) L‖ ^ (2 : ℕ)) =
+      1 / (2 * a ^ (2 : ℕ)) := by
   rw [integral_norm_xiWardResolvedRadialGeneratorMode_sq ha,
     integral_norm_xiWardResolvedRadialMode_sq ha]
   field_simp [ha.ne']
@@ -199,7 +199,7 @@ theorem xiWardResolvedRadialGenerator_energy_ratio
 /-- The generator gain is arbitrarily large inside the strict-right zero-rate chamber. -/
 theorem exists_xiWardResolvedRadialGenerator_gain_gt
     (C : ℝ) :
-    ∃ a : ℝ, 0 < a ∧ a ≤ 1 / 2 ∧ C < 1 / (2 * a ^ 2) := by
+    ∃ a : ℝ, 0 < a ∧ a ≤ 1 / 2 ∧ C < 1 / (2 * a ^ (2 : ℕ)) := by
   let u : ℝ := |C| + 1
   let a : ℝ := 1 / (2 * u)
   have hu : 0 < u := by dsimp [u]; linarith [abs_nonneg C]
@@ -208,12 +208,12 @@ theorem exists_xiWardResolvedRadialGenerator_gain_gt
   · dsimp [a]
     have hu1 : 1 ≤ u := by dsimp [u]; linarith [abs_nonneg C]
     exact (div_le_iff₀ (by positivity : 0 < 2 * u)).2 (by nlinarith)
-  · have hgain : 1 / (2 * a ^ 2) = 2 * u ^ 2 := by
+  · have hgain : 1 / (2 * a ^ (2 : ℕ)) = 2 * u ^ (2 : ℕ) := by
       dsimp [a]
       field_simp [hu.ne']
     rw [hgain]
     have hC : C ≤ |C| := le_abs_self C
-    have hsq : 0 ≤ |C| ^ 2 := sq_nonneg |C|
+    have hsq : 0 ≤ |C| ^ (2 : ℕ) := sq_nonneg |C|
     dsimp [u]
     nlinarith
 
@@ -222,9 +222,9 @@ generator required for the cubic conormal landing, even when restricted to `0 < 
 theorem not_exists_uniform_xiWardResolvedRadialGenerator_energy_bound :
     ¬ ∃ C : ℝ, ∀ a : ℝ, 0 < a → a ≤ 1 / 2 →
       (∫ L : ℝ in Ioi 0,
-        ‖xiWardResolvedRadialGeneratorMode (a : ℂ) L‖ ^ 2) ≤
+        ‖xiWardResolvedRadialGeneratorMode (a : ℂ) L‖ ^ (2 : ℕ)) ≤
       C * (∫ L : ℝ in Ioi 0,
-        ‖xiWardResolvedRadialMode (a : ℂ) L‖ ^ 2) := by
+        ‖xiWardResolvedRadialMode (a : ℂ) L‖ ^ (2 : ℕ)) := by
   rintro ⟨C, hC⟩
   obtain ⟨a, ha, hahalf, hgain⟩ :=
     exists_xiWardResolvedRadialGenerator_gain_gt C
@@ -232,7 +232,7 @@ theorem not_exists_uniform_xiWardResolvedRadialGenerator_energy_bound :
   rw [integral_norm_xiWardResolvedRadialGeneratorMode_sq ha,
     integral_norm_xiWardResolvedRadialMode_sq ha] at hbound
   have hbase : 0 < 1 / (2 * a) := by positivity
-  have hratio : 1 / (2 * a ^ 2) ≤ C := by
+  have hratio : 1 / (2 * a ^ (2 : ℕ)) ≤ C := by
     rw [← xiWardResolvedRadialGenerator_energy_ratio ha]
     rw [integral_norm_xiWardResolvedRadialGeneratorMode_sq ha,
       integral_norm_xiWardResolvedRadialMode_sq ha]

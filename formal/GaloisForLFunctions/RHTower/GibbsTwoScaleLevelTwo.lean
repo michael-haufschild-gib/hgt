@@ -23,14 +23,14 @@ open Real
 
 /-- The real part of a quadratic against a conjugate quadratic. -/
 theorem re_mul_conj_quadratic (a₁ b₁ c₁ a₂ b₂ c₂ : ℝ) (z : ℂ) :
-    ((((a₁ : ℝ) : ℂ) + z * ((b₁ : ℝ) : ℂ) + z ^ 2 * ((c₁ : ℝ) : ℂ))
+    ((((a₁ : ℝ) : ℂ) + z * ((b₁ : ℝ) : ℂ) + z ^ (2 : ℕ) * ((c₁ : ℝ) : ℂ))
         * (starRingEnd ℂ)
-          (((a₂ : ℝ) : ℂ) + z * ((b₂ : ℝ) : ℂ) + z ^ 2 * ((c₂ : ℝ) : ℂ))).re
+          (((a₂ : ℝ) : ℂ) + z * ((b₂ : ℝ) : ℂ) + z ^ (2 : ℕ) * ((c₂ : ℝ) : ℂ))).re
       = a₁ * a₂ + (a₁ * b₂ + a₂ * b₁) * z.re
-        + (a₁ * c₂ + a₂ * c₁) * (z.re ^ 2 - z.im ^ 2)
-        + b₁ * b₂ * (z.re ^ 2 + z.im ^ 2)
-        + (b₁ * c₂ + b₂ * c₁) * ((z.re ^ 2 + z.im ^ 2) * z.re)
-        + c₁ * c₂ * (z.re ^ 2 + z.im ^ 2) ^ 2 := by
+        + (a₁ * c₂ + a₂ * c₁) * (z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ))
+        + b₁ * b₂ * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ))
+        + (b₁ * c₂ + b₂ * c₁) * ((z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) * z.re)
+        + c₁ * c₂ * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) ^ (2 : ℕ) := by
   simp only [map_add, map_mul, Complex.conj_ofReal, Complex.add_re,
     Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.conj_re, Complex.conj_im,
     Complex.ofReal_re, Complex.ofReal_im, pow_two]
@@ -44,24 +44,24 @@ theorem re_mul_conj_quadratic_pos (a₁ b₁ c₁ a₂ b₂ c₂ : ℝ)
     (ha₂ : 0 < a₂) (hb₂ : 0 ≤ b₂) (hc₂ : 0 ≤ c₂)
     (hdom : a₁ * c₂ + a₂ * c₁ ≤ b₁ * b₂)
     (z : ℂ) (hz : 0 ≤ z.re) :
-    0 < ((((a₁ : ℝ) : ℂ) + z * ((b₁ : ℝ) : ℂ) + z ^ 2 * ((c₁ : ℝ) : ℂ))
+    0 < ((((a₁ : ℝ) : ℂ) + z * ((b₁ : ℝ) : ℂ) + z ^ (2 : ℕ) * ((c₁ : ℝ) : ℂ))
         * (starRingEnd ℂ)
-          (((a₂ : ℝ) : ℂ) + z * ((b₂ : ℝ) : ℂ) + z ^ 2 * ((c₂ : ℝ) : ℂ))).re := by
+          (((a₂ : ℝ) : ℂ) + z * ((b₂ : ℝ) : ℂ) + z ^ (2 : ℕ) * ((c₂ : ℝ) : ℂ))).re := by
   rw [re_mul_conj_quadratic]
   have hE : (0 : ℝ) ≤ a₁ * c₂ + a₂ * c₁ :=
     add_nonneg (mul_nonneg ha₁.le hc₂) (mul_nonneg ha₂.le hc₁)
-  have hmid : 0 ≤ (a₁ * c₂ + a₂ * c₁) * (z.re ^ 2 - z.im ^ 2)
-      + b₁ * b₂ * (z.re ^ 2 + z.im ^ 2) := by
-    have hstep : (a₁ * c₂ + a₂ * c₁) * (z.re ^ 2 + z.im ^ 2)
-        ≤ b₁ * b₂ * (z.re ^ 2 + z.im ^ 2) :=
+  have hmid : 0 ≤ (a₁ * c₂ + a₂ * c₁) * (z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ))
+      + b₁ * b₂ * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
+    have hstep : (a₁ * c₂ + a₂ * c₁) * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ))
+        ≤ b₁ * b₂ * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_right hdom (by positivity)
     nlinarith [hstep, sq_nonneg z.re, hE]
   have h1 : 0 ≤ (a₁ * b₂ + a₂ * b₁) * z.re :=
     mul_nonneg (add_nonneg (mul_nonneg ha₁.le hb₂) (mul_nonneg ha₂.le hb₁)) hz
-  have h2 : 0 ≤ (b₁ * c₂ + b₂ * c₁) * ((z.re ^ 2 + z.im ^ 2) * z.re) :=
+  have h2 : 0 ≤ (b₁ * c₂ + b₂ * c₁) * ((z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) * z.re) :=
     mul_nonneg (add_nonneg (mul_nonneg hb₁ hc₂) (mul_nonneg hb₂ hc₁))
       (mul_nonneg (by positivity) hz)
-  have h3 : 0 ≤ c₁ * c₂ * (z.re ^ 2 + z.im ^ 2) ^ 2 := by positivity
+  have h3 : 0 ≤ c₁ * c₂ * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
   have h0 : 0 < a₁ * a₂ := mul_pos ha₁ ha₂
   linarith
 
@@ -71,7 +71,7 @@ theorem gibbsDiagC_pair_quadratic (q r : ℕ) (hqr : q ∉ ({r} : Finset ℕ))
     gibbsDiagC {q, r} x z
       = ((Real.exp (-x) : ℝ) : ℂ)
         + z * ((Real.exp (-((r : ℝ) * x)) + Real.exp (-((q : ℝ) * x)) : ℝ) : ℂ)
-        + z ^ 2 * ((Real.exp (-((r : ℝ) * ((q : ℝ) * x))) : ℝ) : ℂ) := by
+        + z ^ (2 : ℕ) * ((Real.exp (-((r : ℝ) * ((q : ℝ) * x))) : ℝ) : ℂ) := by
   rw [show ({q, r} : Finset ℕ) = insert q {r} from rfl,
     gibbsDiagC_insert q {r} hqr, gibbsDiagC_singleton, gibbsDiagC_singleton]
   push_cast

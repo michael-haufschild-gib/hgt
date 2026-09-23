@@ -21,7 +21,7 @@ def radiationClickScore (tau : ℝ) : Fin 2 → ℝ :=
   ![-Real.exp tau, Real.exp tau * thermalRatio tau / (1 - thermalRatio tau)]
 
 def radiationClickFisher (tau : ℝ) : ℝ :=
-  ∑ i, radiationClickProbability tau i * radiationClickScore tau i ^ 2
+  ∑ i, radiationClickProbability tau i * radiationClickScore tau i ^ (2 : ℕ)
 
 /-- The click probability is the sum of all strictly positive occupations. -/
 theorem radiationClickProbability_hasSum (tau : ℝ) :
@@ -63,7 +63,7 @@ theorem radiationClickScore_centered (tau : ℝ) :
   ring
 
 theorem radiationClickFisher_formula (tau : ℝ) :
-    radiationClickFisher tau = Real.exp tau ^ 2 * thermalRatio tau / (1 - thermalRatio tau) := by
+    radiationClickFisher tau = Real.exp tau ^ (2 : ℕ) * thermalRatio tau / (1 - thermalRatio tau) := by
   unfold radiationClickFisher
   simp only [Fin.sum_univ_two, radiationClickProbability, radiationClickScore,
     Matrix.cons_val_zero, Matrix.cons_val_one]
@@ -91,7 +91,7 @@ theorem radiationClickClock_speed (tau : ℝ) :
       Real.exp tau * coherentRadius tau / Real.sqrt (1 - thermalRatio tau) := by
   have hs := Real.sq_sqrt (sub_pos.mpr (thermalRatio_lt_one tau)).le
   have he : radiationClickFisher tau =
-      (Real.exp tau * coherentRadius tau / Real.sqrt (1 - thermalRatio tau)) ^ 2 := by
+      (Real.exp tau * coherentRadius tau / Real.sqrt (1 - thermalRatio tau)) ^ (2 : ℕ) := by
     rw [radiationClickFisher_formula, div_pow, mul_pow, hs, coherentRadius_sq]
   rw [he, Real.sqrt_sq_eq_abs, abs_of_pos]
   exact div_pos (mul_pos (Real.exp_pos tau) (coherentRadius_pos tau))

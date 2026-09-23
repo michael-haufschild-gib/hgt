@@ -47,12 +47,12 @@ theorem absOp_comp_self (T : H →L[ℂ] H) : absOp T ∘L absOp T = energyOp T 
 theorem norm_absOp_apply (T : H →L[ℂ] H) (x : H) : ‖absOp T x‖ = ‖T x‖ := by
   have hsym : (absOp T).IsSymmetric :=
     isSelfAdjoint_iff_isSymmetric.mp (isSelfAdjoint_absOp T)
-  have h1 : ‖absOp T x‖ ^ 2 = RCLike.re (inner ℂ x ((absOp T ∘L absOp T) x)) := by
+  have h1 : ‖absOp T x‖ ^ (2 : ℕ) = RCLike.re (inner ℂ x ((absOp T ∘L absOp T) x)) := by
     rw [comp_apply, ← inner_self_eq_norm_sq (𝕜 := ℂ) (absOp T x)]
     exact congrArg RCLike.re (hsym x (absOp T x))
-  have h2 : ‖T x‖ ^ 2 = RCLike.re (inner ℂ x ((absOp T ∘L absOp T) x)) := by
+  have h2 : ‖T x‖ ^ (2 : ℕ) = RCLike.re (inner ℂ x ((absOp T ∘L absOp T) x)) := by
     rw [absOp_comp_self, re_inner_energyOp_self]
-  have h3 : ‖absOp T x‖ ^ 2 = ‖T x‖ ^ 2 := by rw [h1, ← h2]
+  have h3 : ‖absOp T x‖ ^ (2 : ℕ) = ‖T x‖ ^ (2 : ℕ) := by rw [h1, ← h2]
   nlinarith [norm_nonneg (absOp T x), norm_nonneg (T x)]
 
 /-- `|T|` is Hilbert–Schmidt exactly when `T` is. -/

@@ -19,7 +19,7 @@ theorem exists_mass_cover_with_square_reserve {α : Type*} [DecidableEq α]
     (U : Finset α) (w : α → ℝ) (a : ℝ) (ha : 0 ≤ a) :
     ∀ h : ℝ,0 ≤ h → (∀ p ∈ U,0 ≤ w p ∧ w p ≤ a) → h ≤ ∑ p ∈ U,w p →
       ∃ L ⊆ U,0 ≤ (∑ p ∈ L,w p)-h ∧ (∑ p ∈ L,w p)-h ≤ a ∧
-        ((∑ p ∈ L,w p)-h)^2 ≤ ∑ p ∈ L,(w p)^2 := by
+        ((∑ p ∈ L,w p)-h)^(2 : ℕ) ≤ ∑ p ∈ L,(w p)^(2 : ℕ) := by
   induction U using Finset.induction_on with
   | empty =>
     intro h hh hw hcover
@@ -88,7 +88,7 @@ theorem exists_mobiusDivisorLatePrime_head_neutralization (M : ℕ) (P U : Finse
     ∃ L ⊆ U,
       (-Real.sqrt M ≤ mobiusDivisorSelectionFibre M (P ∪ L) ∅ ∧
         mobiusDivisorSelectionFibre M (P ∪ L) ∅ ≤ 0) ∧
-      (mobiusDivisorSelectionFibre M (P ∪ L) ∅)^2 ≤ M ∧
+      (mobiusDivisorSelectionFibre M (P ∪ L) ∅)^(2 : ℕ) ≤ M ∧
       mobiusDivisorSelectionEnergy M (P ∪ L) ≤ mobiusDivisorNonemptyEnergy M P ∧
       ∀ R ⊆ L,mobiusDivisorSelectionEnergy M (P ∪ R) ≤ mobiusDivisorSelectionEnergy M P := by
   obtain ⟨L,hLU,h0,h1,hsq⟩ := exists_mass_cover_with_square_reserve U
@@ -108,8 +108,8 @@ theorem exists_mobiusDivisorLatePrime_head_neutralization (M : ℕ) (P U : Finse
       -(∑ p ∈ L,divisorUnsignedDilationChannel M p) := by
     rw [← sum_neg_distrib]
     exact sum_congr rfl hc
-  have hsquares : (∑ p ∈ L,(mobiusDivisorDilationChannel M p)^2) =
-      ∑ p ∈ L,(divisorUnsignedDilationChannel M p)^2 := by
+  have hsquares : (∑ p ∈ L,(mobiusDivisorDilationChannel M p)^(2 : ℕ)) =
+      ∑ p ∈ L,(divisorUnsignedDilationChannel M p)^(2 : ℕ) := by
     apply sum_congr rfl
     intro p hp
     rw [hc p hp,neg_sq]
@@ -118,7 +118,7 @@ theorem exists_mobiusDivisorLatePrime_head_neutralization (M : ℕ) (P U : Finse
   have hrange : -Real.sqrt M ≤ mobiusDivisorSelectionFibre M (P ∪ L) ∅ ∧
       mobiusDivisorSelectionFibre M (P ∪ L) ∅ ≤ 0 := by
     constructor <;> linarith only [hhead,h0,h1]
-  have hHsq : (mobiusDivisorSelectionFibre M (P ∪ L) ∅)^2 ≤ M := by
+  have hHsq : (mobiusDivisorSelectionFibre M (P ∪ L) ∅)^(2 : ℕ) ≤ M := by
     have hprod := mul_nonneg (show 0 ≤ Real.sqrt M+mobiusDivisorSelectionFibre M (P ∪ L) ∅ by linarith only [hrange.1])
       (show 0 ≤ Real.sqrt M-mobiusDivisorSelectionFibre M (P ∪ L) ∅ by linarith [Real.sqrt_nonneg (M:ℝ),hrange.2])
     nlinarith only [hprod,Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) M)]
@@ -182,7 +182,7 @@ theorem eventually_exists_mobiusDivisorInitialHeadNeutralization :
     ∀ᶠ N : ℕ in atTop,∃ L ⊆ mobiusDivisorActiveLatePrimes (4*N),
       (-Real.sqrt (4*N:ℕ) ≤ mobiusDivisorSelectionFibre (4*N) L ∅ ∧
         mobiusDivisorSelectionFibre (4*N) L ∅ ≤ 0) ∧
-      (mobiusDivisorSelectionFibre (4*N) L ∅)^2 ≤ (4*N:ℕ) ∧
+      (mobiusDivisorSelectionFibre (4*N) L ∅)^(2 : ℕ) ≤ (4*N:ℕ) ∧
       mobiusDivisorSelectionEnergy (4*N) L ≤ mobiusDivisorNonemptyEnergy (4*N) ∅ ∧
       ∀ R ⊆ L,mobiusDivisorSelectionEnergy (4*N) R ≤ mobiusDivisorSelectionEnergy (4*N) ∅ := by
   filter_upwards [eventually_mobiusDivisorLatePrimeMass_covers_initial_head] with N hcover

@@ -23,7 +23,7 @@ theorem tsum_inner_integral {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ 
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {s η : ℝ} (hsT : |s| ≤ T) (hηT : |η| ≤ T)
     {z : ℂ} (hz : |z.im| ≤ ρ) :
     (∑' m : ℕ, ∫ t in (0 : ℝ)..η, clockStripStep (V s t) (clockIterate V m s t) z)
@@ -46,7 +46,7 @@ theorem tsum_outer_integral {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ 
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T)
     {z : ℂ} (hz : |z.im| ≤ ρ) :
     (∑' m : ℕ, ∫ s in (0 : ℝ)..ξ, ∫ t in (0 : ℝ)..η,
@@ -77,7 +77,7 @@ theorem clockStripStep_tsum_clockIterate {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ�
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {s t : ℝ} (hsT : |s| ≤ T) (htT : |t| ≤ T)
     {z : ℂ} (hz : |z.im| ≤ ρ) :
     clockStripStep (V s t) (clockSolution V s t) z
@@ -100,17 +100,17 @@ theorem clockStripStep_tsum_clockIterate {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ�
     obtain ⟨holo, _⟩ := clockIterate_regular hV m
     exact (holo s t).mono (imStrip_mono hσρ₀.le)
   have hbound : ∀ (m : ℕ), ∀ w ∈ imStrip σ, ‖clockIterate V m s t w‖
-      ≤ (4 + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-        / ((m.factorial : ℝ) ^ 2 * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
+      ≤ (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
     intro m w hw
     have hbase := clockIterate_norm_le hρ₀ hV hMv0 hMv m σ hσ0 hσρ₀ s t hsT htT w
       (le_of_lt (mem_imStrip.mp hw))
     rw [hrem] at hbase
     refine hbase.trans ?_
     gcongr
-  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hGhalf : (0 : ℝ) < (ρ₀ - ρ) / 2 := by linarith
-  have hMs := summable_ovsyannikov_bound (K := 4 + Mv * ρ₀ ^ 2 / 4) (G := (ρ₀ - ρ) / 2)
+  have hMs := summable_ovsyannikov_bound (K := 4 + Mv * ρ₀ ^ (2 : ℕ) / 4) (G := (ρ₀ - ρ) / 2)
     (T := T) hK0 hGhalf hT hsmall
   have hdef : clockSolution V s t = fun w => ∑' m : ℕ, clockIterate V m s t w := rfl
   rw [hdef]
@@ -122,7 +122,7 @@ theorem clockSolution_integral_equation {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ�
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T)
     {z : ℂ} (hz : |z.im| ≤ ρ) :
     clockSolution V ξ η z
@@ -185,7 +185,7 @@ theorem continuous_clampedStep {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : �
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {z : ℂ} (hz : |z.im| ≤ ρ) :
     Continuous fun r : ℝ × ℝ => clampedStep V T z r.1 r.2 := by
   have hMs := summable_stepMajorant hMv0 hρ hT hsmall
@@ -225,7 +225,7 @@ theorem continuousAt_clockStripStep_clockSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ 
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {z : ℂ} (hz : |z.im| ≤ ρ) {p : ℝ × ℝ} (hp1T : |p.1| < T) (hp2T : |p.2| < T) :
     ContinuousAt (fun r : ℝ × ℝ => clockStripStep (V r.1 r.2) (clockSolution V r.1 r.2) z) p := by
   refine ((continuous_clampedStep hρ₀ hV hMv0 hMv hρ0 hρ hT hsmall hz).continuousAt).congr ?_

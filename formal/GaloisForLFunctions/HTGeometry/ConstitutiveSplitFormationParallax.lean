@@ -192,7 +192,7 @@ def parallaxEnergy
     {X Z : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     (F : ι → SplitLinearFormation ℝ X Z) (i j : ι) (x : X) : ℝ :=
-  ∑ k, ‖ternaryInterference (F i) (F j) (F k) x‖ ^ 2
+  ∑ k, ‖ternaryInterference (F i) (F j) (F k) x‖ ^ (2 : ℕ)
 
 /-- Hilbert realization: formation is isometric and recovery is its inner-product adjoint. -/
 def IsIsometricAdjointFormation
@@ -209,8 +209,8 @@ def IsResidualFusionFrame
     [NormedAddCommGroup Z] [InnerProductSpace ℝ Z]
     (F : ι → SplitLinearFormation ℝ X Z) (j : ι) (A B : ℝ) : Prop :=
   ∀ z, (F j).recover z = 0 →
-    A * ‖z‖ ^ 2 ≤ ∑ k, ‖(F k).recover z‖ ^ 2 ∧
-      (∑ k, ‖(F k).recover z‖ ^ 2) ≤ B * ‖z‖ ^ 2
+    A * ‖z‖ ^ (2 : ℕ) ≤ ∑ k, ‖(F k).recover z‖ ^ (2 : ℕ) ∧
+      (∑ k, ‖(F k).recover z‖ ^ (2 : ℕ)) ≤ B * ‖z‖ ^ (2 : ℕ)
 
 /-- Orthogonal defect identity for two isometric adjoint split formations. -/
 theorem hiddenResidual_norm_sq
@@ -219,8 +219,8 @@ theorem hiddenResidual_norm_sq
     (Fi Fj : SplitLinearFormation ℝ X Z)
     (hi : IsIsometricAdjointFormation Fi)
     (hj : IsIsometricAdjointFormation Fj) (x : X) :
-    ‖hiddenResidual Fi Fj x‖ ^ 2 =
-      ‖x‖ ^ 2 - ‖compressedComparison Fi Fj x‖ ^ 2 := by
+    ‖hiddenResidual Fi Fj x‖ ^ (2 : ℕ) =
+      ‖x‖ ^ (2 : ℕ) - ‖compressedComparison Fi Fj x‖ ^ (2 : ℕ) := by
   have hkernel : Fj.recover (hiddenResidual Fi Fj x) = 0 := by
     change (Fj.recover.comp (hiddenResidual Fi Fj)) x = 0
     rw [recover_hiddenResidual]
@@ -236,14 +236,14 @@ theorem hiddenResidual_norm_sq
       Fi.form x := by
     simpa using hsplit
   rw [hsplit', hi.1, hj.1] at hpy
-  have hpy' : ‖x‖ ^ 2 =
-      ‖compressedComparison Fi Fj x‖ ^ 2 + ‖hiddenResidual Fi Fj x‖ ^ 2 := by
+  have hpy' : ‖x‖ ^ (2 : ℕ) =
+      ‖compressedComparison Fi Fj x‖ ^ (2 : ℕ) + ‖hiddenResidual Fi Fj x‖ ^ (2 : ℕ) := by
     simpa only [pow_two] using hpy
   calc
-    ‖hiddenResidual Fi Fj x‖ ^ 2 =
-        (‖compressedComparison Fi Fj x‖ ^ 2 + ‖hiddenResidual Fi Fj x‖ ^ 2) -
-          ‖compressedComparison Fi Fj x‖ ^ 2 := by abel
-    _ = ‖x‖ ^ 2 - ‖compressedComparison Fi Fj x‖ ^ 2 := by rw [← hpy']
+    ‖hiddenResidual Fi Fj x‖ ^ (2 : ℕ) =
+        (‖compressedComparison Fi Fj x‖ ^ (2 : ℕ) + ‖hiddenResidual Fi Fj x‖ ^ (2 : ℕ)) -
+          ‖compressedComparison Fi Fj x‖ ^ (2 : ℕ) := by abel
+    _ = ‖x‖ ^ (2 : ℕ) - ‖compressedComparison Fi Fj x‖ ^ (2 : ℕ) := by rw [← hpy']
 
 /-- Fusion-frame conservation bounds the full ternary energy by the hidden residual norm. -/
 theorem parallaxEnergy_fusionFrame_bounds
@@ -252,8 +252,8 @@ theorem parallaxEnergy_fusionFrame_bounds
     [NormedAddCommGroup Z] [InnerProductSpace ℝ Z]
     (F : ι → SplitLinearFormation ℝ X Z) (i j : ι) (x : X) {A B : ℝ}
     (hframe : IsResidualFusionFrame F j A B) :
-    A * ‖hiddenResidual (F i) (F j) x‖ ^ 2 ≤ parallaxEnergy F i j x ∧
-      parallaxEnergy F i j x ≤ B * ‖hiddenResidual (F i) (F j) x‖ ^ 2 := by
+    A * ‖hiddenResidual (F i) (F j) x‖ ^ (2 : ℕ) ≤ parallaxEnergy F i j x ∧
+      parallaxEnergy F i j x ≤ B * ‖hiddenResidual (F i) (F j) x‖ ^ (2 : ℕ) := by
   have hkernel : (F j).recover (hiddenResidual (F i) (F j) x) = 0 := by
     change ((F j).recover.comp (hiddenResidual (F i) (F j))) x = 0
     rw [recover_hiddenResidual]
@@ -273,7 +273,7 @@ theorem parallaxEnergy_parseval
     [NormedAddCommGroup Z] [InnerProductSpace ℝ Z]
     (F : ι → SplitLinearFormation ℝ X Z) (i j : ι) (x : X)
     (hframe : IsResidualFusionFrame F j 1 1) :
-    parallaxEnergy F i j x = ‖hiddenResidual (F i) (F j) x‖ ^ 2 := by
+    parallaxEnergy F i j x = ‖hiddenResidual (F i) (F j) x‖ ^ (2 : ℕ) := by
   have h := parallaxEnergy_fusionFrame_bounds F i j x hframe
   simpa using le_antisymm h.2 h.1
 
@@ -287,7 +287,7 @@ theorem parallaxEnergy_parseval_eq_source_defect
     (hj : IsIsometricAdjointFormation (F j))
     (hframe : IsResidualFusionFrame F j 1 1) :
     parallaxEnergy F i j x =
-      ‖x‖ ^ 2 - ‖compressedComparison (F i) (F j) x‖ ^ 2 := by
+      ‖x‖ ^ (2 : ℕ) - ‖compressedComparison (F i) (F j) x‖ ^ (2 : ℕ) := by
   rw [parallaxEnergy_parseval F i j x hframe,
     hiddenResidual_norm_sq (F i) (F j) hi hj x]
 

@@ -155,7 +155,7 @@ theorem contourReflectionAmplitude_norm (q : SchwartzMap ℝ ℂ) (vertical nega
 /-- The determinant reduction `a â + b² = 1` holds on the entire nonzero contour. -/
 theorem contourScattering_amplitude_identity (q : SchwartzMap ℝ ℂ) (vertical negative : Bool) (κ : ℝ) :
     contourTransmission q vertical negative κ*contourReverseTransmission q vertical negative κ+
-      contourReflectionAmplitude q vertical negative κ^2 = 1 := by
+      contourReflectionAmplitude q vertical negative κ^(2 : ℕ) = 1 := by
   have hd := contourScatteringMatrix_det q vertical negative κ
   rw [Matrix.det_fin_two] at hd
   change contourTransmission q vertical negative κ*contourReverseTransmission q vertical negative κ-

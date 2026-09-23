@@ -24,7 +24,7 @@ def oddCompactReflectedJetPolynomial (n : ℕ) : ModularThetaLyapunovPolynomial 
 /-- Leading signed odd minor in the normalized polynomial source. -/
 def oddCompactHeadPolynomial : ModularThetaLyapunovPolynomial :=
   (-oddCompactReflectedJetPolynomial 2)*(-oddCompactReflectedJetPolynomial 6) -
-    oddCompactReflectedJetPolynomial 4^2
+    oddCompactReflectedJetPolynomial 4^(2 : ℕ)
 
 /-- Full signed odd rank-three determinant polynomial. -/
 def oddCompactDetPolynomial : ModularThetaLyapunovPolynomial :=
@@ -33,7 +33,7 @@ def oddCompactDetPolynomial : ModularThetaLyapunovPolynomial :=
   let c := -oddCompactReflectedJetPolynomial 6
   let d := oddCompactReflectedJetPolynomial 8
   let e := -oddCompactReflectedJetPolynomial 10
-  a*c*e-a*d^2-b^2*e+C 2*b*c*d-c^3
+  a*c*e-a*d^(2 : ℕ)-b^(2 : ℕ)*e+C 2*b*c*d-c^(3 : ℕ)
 
 /-- Nonnegative drift coordinate is the negative of the original modular drift. -/
 def oddCompactState (u a w : ℝ) : ModularThetaLyapunovState → ℂ
@@ -50,15 +50,15 @@ def oddCompactHead (u a w : ℝ) : ℝ :=
   (MvPolynomial.eval (oddCompactState u a w) oddCompactHeadPolynomial).re
 
 /-- Mass-normalized zeroth source coordinate. -/
-def oddCompactSourceZero (u a : ℝ) : ℝ := u^2/24+a/16-3/8
+def oddCompactSourceZero (u a : ℝ) : ℝ := u^(2 : ℕ)/24+a/16-3/8
 
 /-- Mass-normalized first source derivative. -/
 def oddCompactSourceFirst (u a w : ℝ) : ℝ :=
-  5*u^3/144+7*u*a/96-5*u/16-a*w/8
+  5*u^(3 : ℕ)/144+7*u*a/96-5*u/16-a*w/8
 
 /-- Compact lower source correction on centers at most `137/2000`. -/
 def oddCompactLowerSource (u a w : ℝ) : ℝ :=
-  3*(oddCompactSourceZero u a)^2 -
+  3*(oddCompactSourceZero u a)^(2 : ℕ) -
     (137/1000 : ℝ)*oddCompactSourceZero u a*(a*w/8+5*u/16)
 
 /-- Complete nonnegative remainder discarded in the cubic reduction. -/

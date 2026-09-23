@@ -50,7 +50,7 @@ private theorem CuspHeightTest.logProfile_deriv (h : CuspHeightTest) :
 /-- Logarithmic conjugation of the actual cusp differential expression is
 exactly the free second derivative with threshold `5/4`. -/
 theorem CuspHeightTest.log_operator_identity (h : CuspHeightTest) (t : ℝ) :
-    cuspLogWeight t*(h.field (Real.exp t)-(Real.exp t:ℂ)^2*
+    cuspLogWeight t*(h.field (Real.exp t)-(Real.exp t:ℂ)^(2 : ℕ)*
       deriv (deriv h.field) (Real.exp t)) =
       (5/4:ℂ)*h.logProfile t-deriv (deriv h.logProfile) t := by
   have hd := ((h.smooth.differentiable (by simp)) (Real.exp t)).hasDerivAt.scomp t
@@ -69,21 +69,21 @@ theorem CuspHeightTest.log_operator_identity (h : CuspHeightTest) (t : ℝ) :
     Pi.add_apply,Pi.mul_apply,Pi.neg_apply]
   ring
 
-private theorem cuspLogWeight_sq (t : ℝ) : cuspLogWeight t^2*(Real.exp t:ℂ) = 1 := by
-  have hr : Real.exp (-t/2)^2*Real.exp t = 1 := by
+private theorem cuspLogWeight_sq (t : ℝ) : cuspLogWeight t^(2 : ℕ)*(Real.exp t:ℂ) = 1 := by
+  have hr : Real.exp (-t/2)^(2 : ℕ)*Real.exp t = 1 := by
     rw [pow_two,← Real.exp_add,← Real.exp_add]
     rw [show -t/2 + -t/2 + t = 0 by ring,Real.exp_zero]
-  change (Real.exp (-t/2):ℂ)^2*(Real.exp t:ℂ) = 1
+  change (Real.exp (-t/2):ℂ)^(2 : ℕ)*(Real.exp t:ℂ) = 1
   exact_mod_cast hr
 
 /-- Exact logarithmic-height transport of a native cusp pairing. -/
 theorem integral_cusp_pairing_log (a b : ℝ → ℂ) :
-    (∫ y in Ioi 2, conj (a y)*b y/(y:ℂ)^2) =
+    (∫ y in Ioi 2, conj (a y)*b y/(y:ℂ)^(2 : ℕ)) =
       ∫ t in Ioi (Real.log 2), conj (cuspLogWeight t*a (Real.exp t))*
         (cuspLogWeight t*b (Real.exp t)) := by
   have he := integral_image_eq_integral_abs_deriv_smul measurableSet_Ioi
     (fun t (_ : t ∈ Ioi (Real.log 2)) => (Real.hasDerivAt_exp t).hasDerivWithinAt)
-    Real.exp_injective.injOn (fun y => conj (a y)*b y/(y:ℂ)^2)
+    Real.exp_injective.injOn (fun y => conj (a y)*b y/(y:ℂ)^(2 : ℕ))
   rw [Real.image_exp_Ioi,Real.exp_log (by norm_num : (0:ℝ)<2)] at he
   rw [he]
   apply setIntegral_congr_fun measurableSet_Ioi

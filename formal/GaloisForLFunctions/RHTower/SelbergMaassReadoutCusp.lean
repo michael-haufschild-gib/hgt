@@ -57,7 +57,7 @@ theorem readout_cuspidal (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ) :
 theorem readout_eigen (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ) (z : ℍ) :
     positiveHyperbolicLaplacian (fun z => L (sourceVector N f z)) z =
       (lam : ℂ)*L (sourceVector N f z) := by
-  change -(z.im : ℂ)^2*(dir 1 (dir 1 (fun w => L (sourceVector N f (ofComplex w)))) (z : ℂ)+
+  change -(z.im : ℂ)^(2 : ℕ)*(dir 1 (dir 1 (fun w => L (sourceVector N f (ofComplex w)))) (z : ℂ)+
     dir Complex.I (dir Complex.I (fun w => L (sourceVector N f (ofComplex w)))) (z : ℂ)) = _
   rw [source_readout_laplacian]
   have hz : (z.im : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr z.im_pos.ne'
@@ -96,7 +96,7 @@ def readoutQuarterSlice (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ) (y : ℝ
   ∫ x in (0 : ℝ)..(N+1 : ℕ),
     normSq (directional 1 (fun w => L (sourceVector N f (ofComplex w))) (point x y))+
     normSq (directional Complex.I (fun w => L (sourceVector N f (ofComplex w))) (point x y))-
-    (1/(4*y^2))*normSq (L (sourceVector N f (ofComplex (point x y))))
+    (1/(4*y^(2 : ℕ)))*normSq (L (sourceVector N f (ofComplex (point x y))))
 
 /-- The complete original Bessel square integral for each observed Fourier mode. -/
 def readoutModeSquareTail (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ) (T : ℝ) (n : ℤ) : ℝ :=
@@ -181,7 +181,7 @@ theorem readout_flux_boundary_identity (N : ℕ) (lam : Ioo (0 : ℝ) (1/4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N+1))) (lam : ℝ))
     (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ) (T : ℝ) :
     -readoutFlux N f L (Real.exp T)+((lam : ℝ)-1/4)*
-      (∫ y in Ioi (Real.exp T), readoutMass N f L y/y^2) =
+      (∫ y in Ioi (Real.exp T), readoutMass N f L y/y^(2 : ℕ)) =
       (∑' n : ℤ, SelbergBesselModes.seam (Real.log (N+1 : ℕ)) T n *
         normSq (coefficient (N+1 : ℕ) n (fun w => L (sourceVector N f (ofComplex w))) (Real.exp T)))+
       ∑' n : ℤ, readoutModeSquareTail N f L T n := by

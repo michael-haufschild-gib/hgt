@@ -20,7 +20,7 @@ theorem isClosed_infDist_le_sqrt_formBudget {N : ℕ} (V : Set (DeckL2 N))
     (A B : ℝ) :
     IsClosed {w : FormTriple N |
       Metric.infDist (w.ofLp 0) V ≤
-        Real.sqrt (A * ‖w‖ ^ 2) + Real.sqrt (B * ‖w‖ ^ 2)} := by
+        Real.sqrt (A * ‖w‖ ^ (2 : ℕ)) + Real.sqrt (B * ‖w‖ ^ (2 : ℕ))} := by
   apply isClosed_le
   · exact (Metric.continuous_infDist_pt V).comp
       (PiLp.proj (𝕜 := ℂ) 2 (fun _ : Fin 3 => DeckL2 N) 0).continuous

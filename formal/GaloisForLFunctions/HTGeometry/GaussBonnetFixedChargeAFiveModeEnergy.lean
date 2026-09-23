@@ -8,13 +8,13 @@ noncomputable section
 /-- The energy of any five-mode multiplier is an exact sum over its five distinct coordinates. -/
 theorem egbFixedChargeAFiveModeSpectrum_energy (n : ℕ) (a : Fin 5 → ℝ)
     (f : Fin (2 ^ (n + 3)) → ℂ) :
-    ∑ j, ‖egbFixedChargeAFiveModeSpectrum n a j * f j‖ ^ 2 =
-      ∑ k : Fin 5, (a k) ^ 2 * ‖f (egbFixedChargeAFiveFourierModes n k)‖ ^ 2 := by
+    ∑ j, ‖egbFixedChargeAFiveModeSpectrum n a j * f j‖ ^ (2 : ℕ) =
+      ∑ k : Fin 5, (a k) ^ (2 : ℕ) * ‖f (egbFixedChargeAFiveFourierModes n k)‖ ^ (2 : ℕ) := by
   classical
   have hp (j : Fin (2 ^ (n + 3))) :
-      ‖egbFixedChargeAFiveModeSpectrum n a j * f j‖ ^ 2 =
+      ‖egbFixedChargeAFiveModeSpectrum n a j * f j‖ ^ (2 : ℕ) =
         ∑ k : Fin 5, if egbFixedChargeAFiveFourierModes n k = j then
-          (a k) ^ 2 * ‖f j‖ ^ 2 else 0 := by
+          (a k) ^ (2 : ℕ) * ‖f j‖ ^ (2 : ℕ) else 0 := by
     by_cases hj : ∃ k : Fin 5, j = egbFixedChargeAFiveFourierModes n k
     · obtain ⟨k, rfl⟩ := hj
       simp [egbFixedChargeAFiveModeSpectrum_mode,
@@ -35,9 +35,9 @@ theorem egbFixedChargeAFiveModeSpectrum_energy (n : ℕ) (a : Fin 5 → ℝ)
 /-- Every positive transition power has a five-term exact energy decomposition. -/
 theorem egbFixedChargeACriticalMarkovMatrix_five_mode_energy (n m : ℕ)
     (f : Fin (2 ^ (n + 3)) → ℂ) :
-    ∑ i, ‖((egbFixedChargeACriticalMarkovMatrix n ^ (m + 1)) *ᵥ f) i‖ ^ 2 =
-      ∑ k : Fin 5, (egbFixedChargeACriticalMarkovEigenvalues k ^ (m + 1)) ^ 2 *
-        ‖egbFixedChargeACriticalFourierCoordinates n f (egbFixedChargeAFiveFourierModes n k)‖ ^ 2 := by
+    ∑ i, ‖((egbFixedChargeACriticalMarkovMatrix n ^ (m + 1)) *ᵥ f) i‖ ^ (2 : ℕ) =
+      ∑ k : Fin 5, (egbFixedChargeACriticalMarkovEigenvalues k ^ (m + 1)) ^ (2 : ℕ) *
+        ‖egbFixedChargeACriticalFourierCoordinates n f (egbFixedChargeAFiveFourierModes n k)‖ ^ (2 : ℕ) := by
   rw [egbFixedChargeACriticalMarkovMatrix_spectral_energy]
   simp_rw [egbFixedChargeAFiveModeSpectrum_pow]
   exact egbFixedChargeAFiveModeSpectrum_energy n _ _

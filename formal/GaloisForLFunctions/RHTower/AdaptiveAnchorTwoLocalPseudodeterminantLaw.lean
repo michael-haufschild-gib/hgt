@@ -37,21 +37,21 @@ theorem twoLocalPauli_gaussianLaplaceProduct_le_exp_harmonicRate_mul_traceDefici
           Real.sqrt (Real.pi /
             (((r : ℝ) *
                 (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                scale ^ 2 / B ^ 2) *
-              (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+              (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
               1 / 2))) ≤
       Real.exp (-(twoLocalAnchorTransverseHarmonicRate n r scale B *
         RHTower.unitaryProjectiveTraceDeficit U)) := by
   let D : ℝ := (2 : ℝ) ^ n
   let a2 : ℝ := ‖Matrix.trace
       (U : Matrix (FiniteQubitConfiguration (Fin n))
-        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 / D ^ 2
+        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) / D ^ (2 : ℕ)
   let b : ℝ := 1 - a2
-  let tau : ℝ := (r : ℝ) * D⁻¹ * scale ^ 2 / B ^ 2
+  let tau : ℝ := (r : ℝ) * D⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)
   let S : ℝ := ∑ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
-    (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2
+    (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ)
   let Q : ℝ := ∑ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
-    (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 4
+    (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (4 : ℕ)
   let A := twoLocalAnchorTransverseActivationRate n r scale B
   let K := twoLocalAnchorTransverseStableRate n
   let q := twoLocalAnchorTransverseHarmonicRate n r scale B
@@ -61,7 +61,7 @@ theorem twoLocalPauli_gaussianLaplaceProduct_le_exp_harmonicRate_mul_traceDefici
     positivity
   have htrace : ‖Matrix.trace
       (U : Matrix (FiniteQubitConfiguration (Fin n))
-        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 ≤ D ^ 2 := by
+        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) ≤ D ^ (2 : ℕ) := by
     have h := finiteUnitary_trace_normSq_le_card_sq U
     simpa [Complex.sq_norm, D] using h
   have hb0 : 0 ≤ b := by
@@ -84,16 +84,16 @@ theorem twoLocalPauli_gaussianLaplaceProduct_le_exp_harmonicRate_mul_traceDefici
   have hSfloor : 4 * ((n - 1 : ℕ) : ℝ) * D * b ≤ S := by
     simpa [S, D, b, a2] using
       sum_sq_twoLocalPauliUnitaryCommutator_singularValues_ge_traceDeficit U
-  have hRfloor : K * b ≤ S ^ 2 / Q := by
+  have hRfloor : K * b ≤ S ^ (2 : ℕ) / Q := by
     simpa [K, twoLocalAnchorTransverseStableRate, S, Q, b, a2, D,
       twoLocalPauliUnitaryCommutatorGramStableRatio] using
       twoLocalPauliUnitaryCommutatorGramStableRatio_ge_sixNSubFour_normalizedTraceDeficit U
   have hprodTotal := gaussianLaplaceProduct_le_exp_stableRatio_total
     (fun i : Fin (Fintype.card (PauliTracelessLabel n 2)) =>
-      (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2)
+      (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ))
     (fun i => sq_nonneg _) htau
   by_cases hb : b = 0
-  · have hfrac0 : 0 ≤ (tau * S ^ 2) / (tau * Q + S) :=
+  · have hfrac0 : 0 ≤ (tau * S ^ (2 : ℕ)) / (tau * Q + S) :=
       div_nonneg (mul_nonneg htau.le (sq_nonneg S))
         (add_nonneg (mul_nonneg htau.le hQ0) hS0)
     calc
@@ -102,15 +102,15 @@ theorem twoLocalPauli_gaussianLaplaceProduct_le_exp_harmonicRate_mul_traceDefici
             Real.sqrt (Real.pi /
               (((r : ℝ) *
                   (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                  scale ^ 2 / B ^ 2) *
-                (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                  scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+                (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                 1 / 2))) =
           ∏ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
             (Real.sqrt (2 * Real.pi))⁻¹ *
               Real.sqrt (Real.pi /
-                (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                   1 / 2)) := by simp [tau, D]
-      _ ≤ Real.exp (-((tau * S ^ 2) / (tau * Q + S))) := by
+      _ ≤ Real.exp (-((tau * S ^ (2 : ℕ)) / (tau * Q + S))) := by
         simpa only [S, Q, ← pow_mul, Nat.reduceMul] using hprodTotal
       _ ≤ 1 := Real.exp_le_one_iff.mpr (neg_nonpos.mpr hfrac0)
       _ = Real.exp (-(q * b)) := by rw [hb]; simp
@@ -123,7 +123,7 @@ theorem twoLocalPauli_gaussianLaplaceProduct_le_exp_harmonicRate_mul_traceDefici
         have hn1 : 0 < ((n - 1 : ℕ) : ℝ) := by exact_mod_cast Nat.sub_pos_of_lt hn
         positivity
       exact this.trans_le hSfloor
-    have hRpos : 0 < S ^ 2 / Q := (mul_pos hK hbpos).trans_le hRfloor
+    have hRpos : 0 < S ^ (2 : ℕ) / Q := (mul_pos hK hbpos).trans_le hRfloor
     have hQ : 0 < Q := by
       rcases hQ0.eq_or_lt with hQzero | hQpos
       · rw [← hQzero, div_zero] at hRpos
@@ -137,12 +137,12 @@ theorem twoLocalPauli_gaussianLaplaceProduct_le_exp_harmonicRate_mul_traceDefici
           field_simp [ne_of_gt hD, ne_of_gt hB]
         _ ≤ tau * S := hmul
     have hharmonic : q * b ≤
-        (tau * S) * (S ^ 2 / Q) / (tau * S + S ^ 2 / Q) := by
+        (tau * S) * (S ^ (2 : ℕ) / Q) / (tau * S + S ^ (2 : ℕ) / Q) := by
       simpa [q, twoLocalAnchorTransverseHarmonicRate, A, K] using
         harmonic_mean_lower_of_linear_floors hA hK hbpos htauS hRfloor
     have hprod := gaussianLaplaceProduct_le_exp_activationStableHarmonicMean
       (fun i : Fin (Fintype.card (PauliTracelessLabel n 2)) =>
-        (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2)
+        (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ))
       (fun i => sq_nonneg _) htau hS (by
         simpa only [Q, ← pow_mul, Nat.reduceMul] using hQ)
     calc
@@ -151,16 +151,16 @@ theorem twoLocalPauli_gaussianLaplaceProduct_le_exp_harmonicRate_mul_traceDefici
             Real.sqrt (Real.pi /
               (((r : ℝ) *
                   (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                  scale ^ 2 / B ^ 2) *
-                (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                  scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+                (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                 1 / 2))) =
           ∏ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
             (Real.sqrt (2 * Real.pi))⁻¹ *
               Real.sqrt (Real.pi /
-                (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                   1 / 2)) := by simp [tau, D]
-      _ ≤ Real.exp (-((tau * S) * (S ^ 2 / Q) /
-          (tau * S + S ^ 2 / Q))) := by
+      _ ≤ Real.exp (-((tau * S) * (S ^ (2 : ℕ) / Q) /
+          (tau * S + S ^ (2 : ℕ) / Q))) := by
         simpa only [S, Q, ← pow_mul, Nat.reduceMul] using hprod
       _ ≤ Real.exp (-(q * b)) := Real.exp_le_exp.mpr (by linarith)
       _ = _ := by
@@ -176,8 +176,8 @@ theorem twoLocalPauliPencil_gaussianLaplaceProduct_le_exp_harmonicRate_mul_trace
           Real.sqrt (Real.pi /
             (((r : ℝ) *
                 (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                scale ^ 2 / B ^ 2) *
-              ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ 2 +
+                scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+              ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ (2 : ℕ) +
               1 / 2))) ≤
       Real.exp (-(twoLocalAnchorTransverseHarmonicRate n r scale B *
         RHTower.unitaryProjectiveTraceDeficit U)) := by
@@ -195,7 +195,7 @@ def adaptiveAnchorGaussianPrefactor
     (anchor : C → ℝ) (c : C) : ℝ :=
   if anchor c = 0 then
     Real.exp (-(r : ℝ) *
-      (‖Matrix.trace (U c : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ 2)
+      (‖Matrix.trace (U c : Matrix ι ι ℂ)‖ / Fintype.card ι) ^ (2 : ℕ))
   else 1
 
 /-- Raw first-hit anchors are retained only off the projective scalar sector. -/
@@ -225,9 +225,9 @@ theorem weighted_twoLocalPauliPencil_traceSafeAnchor_mul_gaussianLaplaceProduct_
           Real.sqrt (Real.pi /
             (((r : ℝ) *
                 (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                scale ^ 2 / B ^ 2) *
+                scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
               ((twoLocalPauliGaussianHermitianPencil n).commutatorMap
-                  (U c)).singularValues i ^ 2 +
+                  (U c)).singularValues i ^ (2 : ℕ) +
               1 / 2))) ≤
       Real.exp (-twoLocalAdaptiveAnchorUniformRate n r scale B β) := by
   calc
@@ -252,23 +252,23 @@ theorem weighted_twoLocalPauliPencil_traceSafeAnchor_mul_gaussianLaplaceProduct_
                     (((r : ℝ) *
                         (Fintype.card
                           (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                        scale ^ 2 / B ^ 2) *
+                        scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
                       ((twoLocalPauliGaussianHermitianPencil n).commutatorMap
-                          (U c)).singularValues i ^ 2 + 1 / 2)) =
+                          (U c)).singularValues i ^ (2 : ℕ) + 1 / 2)) =
               Real.exp (-(r : ℝ) *
                   (‖Matrix.trace
                     (U c : Matrix (FiniteQubitConfiguration (Fin n))
                       (FiniteQubitConfiguration (Fin n)) ℂ)‖ /
-                    Fintype.card (FiniteQubitConfiguration (Fin n))) ^ 2) *
+                    Fintype.card (FiniteQubitConfiguration (Fin n))) ^ (2 : ℕ)) *
                 ∏ i : Fin (Module.finrank ℝ (TwoLocalPauliCoefficientSpace n)),
                   (Real.sqrt (2 * Real.pi))⁻¹ *
                     Real.sqrt (Real.pi /
                       (((r : ℝ) *
                           (Fintype.card
                             (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                          scale ^ 2 / B ^ 2) *
+                          scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
                         ((twoLocalPauliGaussianHermitianPencil n).commutatorMap
-                            (U c)).singularValues i ^ 2 + 1 / 2)) := by
+                            (U c)).singularValues i ^ (2 : ℕ) + 1 / 2)) := by
                 simp [adaptiveAnchorGaussianPrefactor, ha]
           _ ≤ Real.exp (-twoLocalAnchorTransverseUniformRate n r scale B) := hzero
           _ ≤ Real.exp (-twoLocalAdaptiveAnchorUniformRate n r scale B β) :=
@@ -300,18 +300,18 @@ theorem weighted_twoLocalPauliPencil_traceSafeAnchor_mul_gaussianLaplaceProduct_
                     (((r : ℝ) *
                         (Fintype.card
                           (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                        scale ^ 2 / B ^ 2) *
+                        scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
                       ((twoLocalPauliGaussianHermitianPencil n).commutatorMap
-                          (U c)).singularValues i ^ 2 + 1 / 2)) =
+                          (U c)).singularValues i ^ (2 : ℕ) + 1 / 2)) =
               ∏ i : Fin (Module.finrank ℝ (TwoLocalPauliCoefficientSpace n)),
                 (Real.sqrt (2 * Real.pi))⁻¹ *
                   Real.sqrt (Real.pi /
                     (((r : ℝ) *
                         (Fintype.card
                           (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                        scale ^ 2 / B ^ 2) *
+                        scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
                       ((twoLocalPauliGaussianHermitianPencil n).commutatorMap
-                          (U c)).singularValues i ^ 2 + 1 / 2)) := by
+                          (U c)).singularValues i ^ (2 : ℕ) + 1 / 2)) := by
                 simp [adaptiveAnchorGaussianPrefactor, ha]
           _ ≤ Real.exp (-(twoLocalAnchorTransverseHarmonicRate n r scale B *
               RHTower.unitaryProjectiveTraceDeficit (U c))) := hprod
@@ -331,7 +331,7 @@ theorem directStaticChoiTargetNearActionMass_arbitraryAnchorResidual_hermitianSp
           (GaloisForLFunctions.RHTower.choiVector
             (hermitianSpectralEndpoint hH U : Matrix (Fin d) (Fin d) ℂ)))
         hH.eigenvalues r δ ≤
-      Real.exp (-(((r : ℝ) * (d : ℝ)⁻¹ / B ^ 2) *
+      Real.exp (-(((r : ℝ) * (d : ℝ)⁻¹ / B ^ (2 : ℕ)) *
         finiteMatrixHilbertSchmidtEnergy
           (H * (U : Matrix (Fin d) (Fin d) ℂ) -
             (U : Matrix (Fin d) (Fin d) ℂ) * H))) := by
@@ -342,10 +342,10 @@ theorem directStaticChoiTargetNearActionMass_arbitraryAnchorResidual_hermitianSp
   refine hraw.trans (Real.exp_le_exp.mpr ?_)
   have hspos : 0 < staticChoiOscillationScale hH.eigenvalues :=
     staticChoiOscillationScale_pos hH.eigenvalues
-  have hsq : staticChoiOscillationScale hH.eigenvalues ^ 2 ≤ B ^ 2 :=
+  have hsq : staticChoiOscillationScale hH.eigenvalues ^ (2 : ℕ) ≤ B ^ (2 : ℕ) :=
     (sq_le_sq₀ hspos.le hB.le).2 hscale
-  have hinv : (B ^ 2)⁻¹ ≤
-      (staticChoiOscillationScale hH.eigenvalues ^ 2)⁻¹ :=
+  have hinv : (B ^ (2 : ℕ))⁻¹ ≤
+      (staticChoiOscillationScale hH.eigenvalues ^ (2 : ℕ))⁻¹ :=
     (inv_le_inv₀ (sq_pos_of_pos hB) (sq_pos_of_pos hspos)).2 hsq
   let E := finiteMatrixHilbertSchmidtEnergy
     (H * (U : Matrix (Fin d) (Fin d) ℂ) -
@@ -357,23 +357,23 @@ theorem directStaticChoiTargetNearActionMass_arbitraryAnchorResidual_hermitianSp
   have hfull := mul_le_mul_of_nonneg_right hcoef hE
   have hanchor : 0 ≤ ‖staticChoiAnchorComponent hH.eigenvalues anchor
       (GaloisForLFunctions.RHTower.choiVector
-        (hermitianSpectralEndpoint hH U : Matrix (Fin d) (Fin d) ℂ))‖ ^ 2 :=
+        (hermitianSpectralEndpoint hH U : Matrix (Fin d) (Fin d) ℂ))‖ ^ (2 : ℕ) :=
     sq_nonneg _
   calc
     -(r : ℝ) *
         (‖staticChoiAnchorComponent hH.eigenvalues anchor
             (GaloisForLFunctions.RHTower.choiVector
-              (hermitianSpectralEndpoint hH U : Matrix (Fin d) (Fin d) ℂ))‖ ^ 2 +
+              (hermitianSpectralEndpoint hH U : Matrix (Fin d) (Fin d) ℂ))‖ ^ (2 : ℕ) +
           (d : ℝ)⁻¹ * E /
-            staticChoiOscillationScale hH.eigenvalues ^ 2) ≤
+            staticChoiOscillationScale hH.eigenvalues ^ (2 : ℕ)) ≤
         -(((r : ℝ) * (d : ℝ)⁻¹) *
-          (staticChoiOscillationScale hH.eigenvalues ^ 2)⁻¹ * E) := by
+          (staticChoiOscillationScale hH.eigenvalues ^ (2 : ℕ))⁻¹ * E) := by
       have hr0 : 0 ≤ (r : ℝ) := Nat.cast_nonneg r
       rw [div_eq_mul_inv]
       nlinarith [mul_nonneg hr0 hanchor]
-    _ ≤ -(((r : ℝ) * (d : ℝ)⁻¹) * (B ^ 2)⁻¹ * E) := by
+    _ ≤ -(((r : ℝ) * (d : ℝ)⁻¹) * (B ^ (2 : ℕ))⁻¹ * E) := by
       linarith
-    _ = -(((r : ℝ) * (d : ℝ)⁻¹ / B ^ 2) * E) := by ring
+    _ = -(((r : ℝ) * (d : ℝ)⁻¹ / B ^ (2 : ℕ)) * E) := by ring
 
 variable {E ι : Type*} [Fintype ι] [DecidableEq ι]
   [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -394,8 +394,8 @@ theorem FiniteGaussianHermitianPencil.affineArbitraryAnchorResidualNearAction_le
             (P.affineSpectralEndpoint hH₀ x U :
               Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ)))
         (P.affineSpectralEnergy hH₀ x) r δ ≤
-      Real.exp (-(((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ / B ^ 2) *
-        ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ 2)) := by
+      Real.exp (-(((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ / B ^ (2 : ℕ)) *
+        ‖P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U‖ ^ (2 : ℕ))) := by
   let Ufin := finiteGaussianHermitianPencilReindexedEndpoint U
   have h :=
     directStaticChoiTargetNearActionMass_arbitraryAnchorResidual_hermitianSpectralEndpoint_le_exp_action_of_scale
@@ -422,9 +422,9 @@ theorem FiniteGaussianHermitianPencil.scaledAffineArbitraryAnchorResidualNearAct
             (P.scaledAffineSpectralEndpoint hH₀ scale x U :
               Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ)))
         (P.scaledAffineSpectralEnergy hH₀ scale x) r δ ≤
-      Real.exp (-(((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ 2 / B ^ 2) *
+      Real.exp (-(((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
         ‖P.commutatorMap U x -
-          scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ 2)) := by
+          scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ (2 : ℕ))) := by
   have h := P.affineArbitraryAnchorResidualNearAction_le_exp_action_of_scale
     hH₀ (scale • x) U anchor r δ B hosc hB
   rw [P.scaledAffineCommutatorEnergy hscale H₀ x U] at h
@@ -458,10 +458,10 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_weightedScaledAffineAd
       (∑ c, w c * adaptiveAnchorGaussianPrefactor r U anchor c *
         ∏ i : Fin n, (Real.sqrt (2 * Real.pi))⁻¹ *
           Real.sqrt (Real.pi /
-            (((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ 2 / B ^ 2) *
-              (P.commutatorMap (U c)).singularValues i ^ 2 + 1 / 2))) / κ := by
+            (((r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+              (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ) + 1 / 2))) / κ := by
   let tau : ℝ :=
-    (r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ 2 / B ^ 2
+    (r : ℝ) * (Fintype.card ι : ℝ)⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)
   let prefactor : C → ℝ := adaptiveAnchorGaussianPrefactor r U anchor
   have htau : 0 ≤ tau := by
     dsimp [tau]

@@ -74,7 +74,7 @@ theorem jetValueMap_inr (f : ℂ → ℂ) (S : Finset ℂ) (d N : ℕ) (z₀ : �
 /-! ### The dimension count -/
 
 theorem card_jetValueSource (N : ℕ) :
-    Fintype.card (Fin (N + 1) × Fin (N + 1)) = (N + 1) ^ 2 := by
+    Fintype.card (Fin (N + 1) × Fin (N + 1)) = (N + 1) ^ (2 : ℕ) := by
   simp [Fintype.card_prod, sq]
 
 theorem card_jetValueTarget (S : Finset ℂ) (d : ℕ) :
@@ -84,7 +84,7 @@ theorem card_jetValueTarget (S : Finset ℂ) (d : ℕ) :
 /-- **The count.**  At degree `N = 2·A·m + 1` the monomials outnumber the principal-part
 coefficients: quadratic growth beats linear growth. -/
 theorem exists_degree_gt (A m : ℕ) :
-    ∃ N : ℕ, 1 ≤ N ∧ A * (2 * m * N) + 1 < (N + 1) ^ 2 := by
+    ∃ N : ℕ, 1 ≤ N ∧ A * (2 * m * N) + 1 < (N + 1) ^ (2 : ℕ) := by
   refine ⟨2 * A * m + 1, by omega, ?_⟩
   have hexp : A * (2 * m * (2 * A * m + 1)) = 2 * A * m * (2 * A * m + 1) := by ring
   rw [hexp]

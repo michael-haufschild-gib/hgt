@@ -76,7 +76,7 @@ theorem xiWardSchwarzCapDifference_eq (tau s x : ℝ) :
         -(xiWardTransverseLevel s : ℂ) := by
     calc
       I * ((xiWardTransverseLevel s : ℂ) * I) =
-          (xiWardTransverseLevel s : ℂ) * I ^ 2 := by ring
+          (xiWardTransverseLevel s : ℂ) * I ^ (2 : ℕ) := by ring
       _ = -(xiWardTransverseLevel s : ℂ) := by rw [I_sq]; ring
   have hden₁ :
       ((((51 / 100 : ℝ) + xiWardTransverseLevel s : ℝ) : ℂ) +

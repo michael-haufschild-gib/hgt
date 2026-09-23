@@ -62,12 +62,12 @@ theorem xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceChargeMass_eq
 minus current newborn-norm arcsine vacuum. -/
 theorem xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceChargeMass_sq_eq_literal
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
-    xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceChargeMass (w ^ 2) n =
+    xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceChargeMass (w ^ (2 : ℕ)) n =
       xiShiftedAdaptiveMixedCompletedArithmeticSource w
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) n) -
         32 * XiShiftedCanonicalAdmission.arcsineVacuumSourceCounterterm n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) := by
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) := by
   rw [xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceChargeMass,
     xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass_sq_eq_arithmetic hw]
 
@@ -75,23 +75,23 @@ theorem xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceChargeMass_sq_eq_
 uses completed source itself as the dominating function; no moment computation is needed. -/
 theorem tendsto_xiShiftedCanonicalAdmissionNorm_succ_square_zero
     {n : ℕ} (hn : 0 < n) :
-    Tendsto (fun w : ℝ => xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1))
+    Tendsto (fun w : ℝ => xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1))
       atTop (nhds 0) := by
   have hsource :=
     XiShiftedCanonicalAdmission.tendsto_xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass_square_zero hn
   have hupper : Tendsto
       (fun w : ℝ =>
-        xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ 2) n /
+        xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ (2 : ℕ)) n /
           (2 * (n + 1 : ℝ))) atTop (nhds 0) := by
     simpa using hsource.div_const (2 * (n + 1 : ℝ))
   have hevent : ∀ᶠ w : ℝ in atTop,
-      0 ≤ xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) ∧
-      xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) ≤
-        xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ 2) n /
+      0 ≤ xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) ∧
+      xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) ≤
+        xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ (2 : ℕ)) n /
           (2 * (n + 1 : ℝ)) := by
     filter_upwards [xiShiftedMomentHankelMatrix_squareParam_posDef_eventually (n + 2),
       eventually_gt_atTop (1 : ℝ)] with w hH hw
-    let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re
+    let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re
     have hheadN : (HTGeometry.momentHankelMatrix s n).PosDef :=
       xiShiftedMomentHankel_posDef_of_le (by omega) hH
     have hheadNext : (HTGeometry.momentHankelMatrix s (n + 1)).PosDef :=
@@ -99,11 +99,11 @@ theorem tendsto_xiShiftedCanonicalAdmissionNorm_succ_square_zero
     have hP : HTGeometry.monicMomentAdmissionPolynomial s n =
         HTGeometry.monicOrtho s n := by
       exact xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho_of_hankelPosDef hheadN
-    have hNeq : xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) =
+    have hNeq : xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) =
         HTGeometry.monicOrthoNormSq s (n + 1) := by
       exact xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm_of_head_posDef hheadNext
     have hs : xiShiftedRealMomentSequence w = s := by rfl
-    have hNpos : 0 < xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) := by
+    have hNpos : 0 < xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) := by
       rw [hNeq]
       exact HTGeometry.monicOrthoNorm_pos_below
         (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH) (by omega)

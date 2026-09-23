@@ -54,7 +54,7 @@ theorem tendsto_truncation_error_div {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) 
     Tendsto (fun T : ℝ => 131072 * T ^ α *
         ((C + Real.log (2 * T + 5)) ^ 2 * (3 * Real.log (1 + T) + 2) + 64)
         / ((T / 4) * (α * Real.log T))) atTop (𝓝 0) := by
-  -- dominating function `K (log T)^2 / T^{1-α}`
+  -- dominating function `K (log T)^(2 : ℕ) / T^{1-α}`
   set K : ℝ := 524288 / α * (8 * (C + 2) ^ 2 + 64) with hK
   have hK0 : 0 ≤ K := by positivity
   have hdom := (tendsto_log_pow_div_rpow 2 (s := 1 - α) (by linarith)).const_mul K

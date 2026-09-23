@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionProjectiveArithmet
 The literal adaptive mixed `P^sharp` source contains one intrinsic positive action after current
 admission drift is removed.  If `F_n` is cumulative Jacobi flux, define
 
-`J_n = source_n / h_n - alpha_n F_n - 2 n alpha_n^2`.
+`J_n = source_n / h_n - alpha_n F_n - 2 n alpha_n^(2 : ℕ)`.
 
 In every positive shifted-Xi chamber this source-first object is exactly cumulative Jacobi
 dissipation.  Consequently
@@ -15,11 +15,11 @@ dissipation.  Consequently
 
 and projective arithmetic surplus is its exact nonlinear capitalization
 
-`Pi_n = (2n+1) J_n - F_n^2`.
+`Pi_n = (2n+1) J_n - F_n^(2 : ℕ)`.
 
 After forced trace-multiplicity normalization `U_n = F_n/(2n+1)`, the literal source law becomes
 
-`U_n' = -U_n^2 - Pi_n/(2n+1)^2`.
+`U_n' = -U_n^(2 : ℕ) - Pi_n/(2n+1)^(2 : ℕ)`.
 
 Degree renewal and mass transport also form one exact plaquette: the adjacent degree edge is
 `F_(n+1)-F_n = alpha_n+alpha_(n+1)`, while its mass derivative is `J_n-J_(n+1)`.
@@ -41,11 +41,11 @@ noncomputable def xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction
     (w : ℝ) (n : ℕ) : ℝ :=
   let s := xiShiftedRealMomentSequence w
   let alpha := HTGeometry.monicOrthoAlpha s n
-  let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n
+  let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n
   let h := HTGeometry.monicOrthoNormSq s n
   let source := xiShiftedAdaptiveMixedCompletedArithmeticSource w
     (HTGeometry.monicMomentAdmissionPolynomial s n)
-  source / h - alpha * F - 2 * (n : ℝ) * alpha ^ 2
+  source / h - alpha * F - 2 * (n : ℝ) * alpha ^ (2 : ℕ)
 
 /-- Projective surplus is exactly degree weight times literal source action minus squared flux.
 This identity is division-free in the projective variables. -/
@@ -54,7 +54,7 @@ theorem xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_degreeWeight_m
     xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus w n =
       (2 * n + 1 : ℝ) *
           xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w n -
-        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n ^ 2 := by
+        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n ^ (2 : ℕ) := by
   rfl
 
 /-- **Exact arithmetic source law.**  In a positive block, the drift-removed literal completed
@@ -64,7 +64,7 @@ theorem xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction_eq_cumulat
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w n =
-      xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ 2) n := by
+      xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ (2 : ℕ)) n := by
   have hsurplus :=
     xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_cauchyGap hw hn hH
   rw [xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_degreeWeight_mul_sourceAction_sub_flux_sq]
@@ -91,7 +91,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_neg_source
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     HasDerivAt
       (fun y => xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n)
-      (-xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w n) (w ^ 2) := by
+      (-xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w n) (w ^ (2 : ℕ)) := by
   rw [xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction_eq_cumulativeJacobiDissipation
     hw hn hH]
   exact hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux
@@ -103,9 +103,9 @@ theorem xiShiftedCanonicalAdmissionSourceAction_div_degreeWeight_eq_renormalized
     (w : ℝ) (n : ℕ) :
     xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w n /
         (2 * n + 1 : ℝ) =
-      xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ 2) n ^ 2 +
+      xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ (2 : ℕ)) n ^ (2 : ℕ) +
         xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus w n /
-          (2 * n + 1 : ℝ) ^ 2 := by
+          (2 * n + 1 : ℝ) ^ (2 : ℕ) := by
   have hc : (2 * n + 1 : ℝ) ≠ 0 := by positivity
   rw [xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_degreeWeight_mul_sourceAction_sub_flux_sq]
   unfold xiShiftedCanonicalAdmissionRenormalizedJacobiFlux
@@ -119,8 +119,8 @@ theorem xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_neg_degreeWeig
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus w n =
       -(2 * n + 1 : ℝ) *
-          deriv (fun y => xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n) (w ^ 2) -
-        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n ^ 2 := by
+          deriv (fun y => xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n) (w ^ (2 : ℕ)) -
+        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n ^ (2 : ℕ) := by
   rw [xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_cauchyGap hw hn hH,
     (hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux
       (sq_pos_of_pos (lt_trans (by norm_num) hw)) hn hH).deriv]
@@ -134,9 +134,9 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionRenormalizedJacobiFlux_eq_neg_sq_s
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     HasDerivAt
       (fun y => xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n)
-      (-xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ 2) n ^ 2 -
+      (-xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ (2 : ℕ)) n ^ (2 : ℕ) -
         xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus w n /
-          (2 * n + 1 : ℝ) ^ 2) (w ^ 2) := by
+          (2 * n + 1 : ℝ) ^ (2 : ℕ)) (w ^ (2 : ℕ)) := by
   let c : ℝ := (2 * n + 1 : ℝ)
   have hc : c ≠ 0 := by positivity
   have hflux :=
@@ -157,19 +157,19 @@ theorem xiShiftedCanonicalAdmissionCumulativeJacobiFlux_succ_sub_eq_adjacentAlph
     {w : ℝ} {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 3)).PosDef) :
-    xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) (n + 1) -
-        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n =
+    xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) (n + 1) -
+        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n =
       HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n +
         HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) (n + 1) := by
   have hHn : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef :=
     xiShiftedMomentHankel_posDef_of_le (by omega) hH
-  change xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) (n + 1) -
-      xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n =
+  change xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) (n + 1) -
+      xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n =
     HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n +
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n +
       HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 1)
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 1)
   rw [xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_trace (by omega) hH,
     xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_trace hn hHn,
     Finset.sum_range_succ]
@@ -186,7 +186,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_degreeEdge_eq
         xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n)
       (xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w n -
         xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w (n + 1))
-      (w ^ 2) := by
+      (w ^ (2 : ℕ)) := by
   have hHn : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef :=
     xiShiftedMomentHankel_posDef_of_le (by omega) hH
@@ -203,7 +203,7 @@ coordinates. -/
 noncomputable def xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity
     (y : ℝ) (n : ℕ) : ℝ :=
   xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus (Real.sqrt y) n /
-    (2 * n + 1 : ℝ) ^ 2
+    (2 * n + 1 : ℝ) ^ (2 : ℕ)
 
 /-- Total normalized literal source action in mass coordinates. -/
 noncomputable def xiShiftedCanonicalAdmissionMassNormalizedAdaptiveMixedCompletedSourceAction
@@ -214,9 +214,9 @@ noncomputable def xiShiftedCanonicalAdmissionMassNormalizedAdaptiveMixedComplete
 /-- Square-mass specialization of normalized literal projective surplus. -/
 theorem xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity_sq
     {w : ℝ} (hw : 0 < w) (n : ℕ) :
-    xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity (w ^ 2) n =
+    xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity (w ^ (2 : ℕ)) n =
       xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus w n /
-        (2 * n + 1 : ℝ) ^ 2 := by
+        (2 * n + 1 : ℝ) ^ (2 : ℕ) := by
   rw [xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity,
     Real.sqrt_sq_eq_abs, abs_of_pos hw]
 
@@ -224,9 +224,9 @@ theorem xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity_sq
 theorem xiShiftedCanonicalAdmissionMassNormalizedSourceAction_eq_flux_sq_add_surplus
     {y : ℝ} (hy : 0 ≤ y) (n : ℕ) :
     xiShiftedCanonicalAdmissionMassNormalizedAdaptiveMixedCompletedSourceAction y n =
-      xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ 2 +
+      xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ (2 : ℕ) +
         xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity y n := by
-  have hsq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy
   have h :=
     xiShiftedCanonicalAdmissionSourceAction_div_degreeWeight_eq_renormalizedFlux_sq_add_surplus
       (Real.sqrt y) n
@@ -243,13 +243,13 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionRenormalizedJacobiFlux_eq_neg_mass
       (fun v => xiShiftedCanonicalAdmissionRenormalizedJacobiFlux v n)
       (-xiShiftedCanonicalAdmissionMassNormalizedAdaptiveMixedCompletedSourceAction y n) y := by
   have hy0 : 0 ≤ y := le_trans (by norm_num) hy.le
-  have hsq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy0
   have hsqrt0 : 0 ≤ Real.sqrt y := Real.sqrt_nonneg y
   have hw : 1 / 2 < Real.sqrt y := by nlinarith
   have hHsqrt : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (Real.sqrt y)) (n + 2)).PosDef := by
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ 2) k).re)
+      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ (2 : ℕ)) k).re)
         (n + 2)).PosDef
     simpa only [hsq] using hH
   have h :=
@@ -272,13 +272,13 @@ theorem xiShiftedCanonicalAdmissionMassNormalizedAdaptiveMixedCompletedSourceAct
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     0 < xiShiftedCanonicalAdmissionMassNormalizedAdaptiveMixedCompletedSourceAction y n := by
   have hy0 : 0 ≤ y := le_trans (by norm_num) hy.le
-  have hsq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy0
   have hsqrt0 : 0 ≤ Real.sqrt y := Real.sqrt_nonneg y
   have hw : 1 / 2 < Real.sqrt y := by nlinarith
   have hHsqrt : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (Real.sqrt y)) (n + 2)).PosDef := by
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ 2) k).re)
+      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ (2 : ℕ)) k).re)
         (n + 2)).PosDef
     simpa only [hsq] using hH
   exact div_pos
@@ -292,13 +292,13 @@ theorem xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity_pos
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     0 < xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity y n := by
   have hy0 : 0 ≤ y := le_trans (by norm_num) hy.le
-  have hsq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy0
   have hsqrt0 : 0 ≤ Real.sqrt y := Real.sqrt_nonneg y
   have hw : 1 / 2 < Real.sqrt y := by nlinarith
   have hHsqrt : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (Real.sqrt y)) (n + 2)).PosDef := by
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ 2) k).re)
+      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ (2 : ℕ)) k).re)
         (n + 2)).PosDef
     simpa only [hsq] using hH
   apply div_pos

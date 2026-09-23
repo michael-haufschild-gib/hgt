@@ -28,33 +28,33 @@ theorem firstAtomEvenTailBalancedDet_lower_of_fifteen {u : ℝ}
       simpa only [abs_pow, one_pow] using pow_le_pow_left₀ (abs_nonneg z) hz n
     exact (abs_le.mp h).1
   have hid : 10000*firstAtomEvenTailReserveNumerator u-
-      (32 : ℝ)^12*firstAtomOddTailDenominator u^4 =
-    (354255354766547092947695828992/1171875 : ℝ)*z^0 +
-    (2508957298178177584104143323136/10546875 : ℝ)*z^1 +
-    (956695124815744944344110465024/10546875 : ℝ)*z^2 +
-    (226415409359974459457060995072/10546875 : ℝ)*z^3 +
-    (7294307573291460416864518144/2109375 : ℝ)*z^4 +
-    (4200607945192158422915612672/10546875 : ℝ)*z^5 +
-    (117325328497964755491749888/3515625 : ℝ)*z^6 +
-    (21414592093379284147634176/10546875 : ℝ)*z^7 +
-    (932874188172374759702528/10546875 : ℝ)*z^8 +
-    (628590543391900565504/234375 : ℝ)*z^9 +
-    (114229676951335862272/2109375 : ℝ)*z^10 +
-    (1436413883089682432/2109375 : ℝ)*z^11 +
-    (10870313118072832/2109375 : ℝ)*z^12 +
-    (60009283059712/2109375 : ℝ)*z^13 +
-    (60129542144/703125 : ℝ)*z^14 := by
+      (32 : ℝ)^(12 : ℕ)*firstAtomOddTailDenominator u^(4 : ℕ) =
+    (354255354766547092947695828992/1171875 : ℝ)*z^(0 : ℕ) +
+    (2508957298178177584104143323136/10546875 : ℝ)*z^(1 : ℕ) +
+    (956695124815744944344110465024/10546875 : ℝ)*z^(2 : ℕ) +
+    (226415409359974459457060995072/10546875 : ℝ)*z^(3 : ℕ) +
+    (7294307573291460416864518144/2109375 : ℝ)*z^(4 : ℕ) +
+    (4200607945192158422915612672/10546875 : ℝ)*z^(5 : ℕ) +
+    (117325328497964755491749888/3515625 : ℝ)*z^(6 : ℕ) +
+    (21414592093379284147634176/10546875 : ℝ)*z^(7 : ℕ) +
+    (932874188172374759702528/10546875 : ℝ)*z^(8 : ℕ) +
+    (628590543391900565504/234375 : ℝ)*z^(9 : ℕ) +
+    (114229676951335862272/2109375 : ℝ)*z^(10 : ℕ) +
+    (1436413883089682432/2109375 : ℝ)*z^(11 : ℕ) +
+    (10870313118072832/2109375 : ℝ)*z^(12 : ℕ) +
+    (60009283059712/2109375 : ℝ)*z^(13 : ℕ) +
+    (60129542144/703125 : ℝ)*z^(14 : ℕ) := by
     dsimp only [z]
     unfold firstAtomEvenTailReserveNumerator firstAtomOddTailDenominator
     ring
   have hr : 0 ≤ 10000*firstAtomEvenTailReserveNumerator u-
-      (32 : ℝ)^12*firstAtomOddTailDenominator u^4 := by
+      (32 : ℝ)^(12 : ℕ)*firstAtomOddTailDenominator u^(4 : ℕ) := by
     rw [hid]
     nlinarith only [hp 1,hp 3,hp 5,hp 7,hp 9,hp 11,hp 13,
-      sq_nonneg z,sq_nonneg (z^2),sq_nonneg (z^3),sq_nonneg (z^4),
-      sq_nonneg (z^5),sq_nonneg (z^6),sq_nonneg (z^7)]
+      sq_nonneg z,sq_nonneg (z^(2 : ℕ)),sq_nonneg (z^(3 : ℕ)),sq_nonneg (z^(4 : ℕ)),
+      sq_nonneg (z^(5 : ℕ)),sq_nonneg (z^(6 : ℕ)),sq_nonneg (z^(7 : ℕ))]
   rw [firstAtomEvenTailBalancedDet_eq_ratio u hD.ne']
-  apply (le_div_iff₀ (by positivity : 0 < (32 : ℝ)^12*firstAtomOddTailDenominator u^4)).mpr
+  apply (le_div_iff₀ (by positivity : 0 < (32 : ℝ)^(12 : ℕ)*firstAtomOddTailDenominator u^(4 : ℕ))).mpr
   nlinarith only [hr]
 
 /-- The sixth profile remains bounded on the extended scale-twenty-one ray. -/
@@ -93,8 +93,8 @@ theorem firstAtomEvenTailBalanced_abs_le_of_twentyOne {u : ℝ} (hu0 : 0 ≤ u) 
   have h4 := firstAtomOddScaleSeven_profile4_bounds hu0 hu7
   have h5 := firstAtomOddScaleSeven_profile5_bounds hu0 hu7
   have h6 := firstAtomEvenTailProfile_six_abs_le_of_twentyOne hu0 hu1
-  have h6' : |firstAtomEvenTailProfile 6 u / (32 : ℝ)^6-100000000/(32 : ℝ)^6| ≤ 4 := by
-    have ht := abs_sub (firstAtomEvenTailProfile 6 u / (32 : ℝ)^6) (100000000/(32 : ℝ)^6)
+  have h6' : |firstAtomEvenTailProfile 6 u / (32 : ℝ)^(6 : ℕ)-100000000/(32 : ℝ)^(6 : ℕ)| ≤ 4 := by
+    have ht := abs_sub (firstAtomEvenTailProfile 6 u / (32 : ℝ)^(6 : ℕ)) (100000000/(32 : ℝ)^(6 : ℕ))
     norm_num [abs_div] at ht
     linarith
   fin_cases k

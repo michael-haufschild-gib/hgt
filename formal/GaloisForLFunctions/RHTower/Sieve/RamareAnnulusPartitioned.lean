@@ -27,7 +27,7 @@ theorem integral_normSq_ramareBilinear_annulus_partitioned_le {P : Finset ℕ} (
     {Q η w₀ W Dfct : ℝ} (hQ : 1 < Q) (hη : 0 ≤ η) (hW : 1 ≤ W) (hw₀ : 0 ≤ w₀) (hwW : w₀ ≤ W)
     {L : ℕ} (hL : 1 ≤ L)
     (hP : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * (1 + η) ^ L)
-    (hErr : (∫ w in Set.Icc (-W) W, ‖ramareLadderError P M Q η L w‖ ^ 2) ≤ Dfct)
+    (hErr : (∫ w in Set.Icc (-W) W, ‖ramareLadderError P M Q η L w‖ ^ (2 : ℕ)) ≤ Dfct)
     {T : Set ℝ} (hTm : MeasurableSet T) (hTs : T ⊆ Set.Icc (-W) W)
     (V U Vlow Us J : ℕ → ℝ) (hV : ∀ j, 0 ≤ V j) (hU : ∀ j, 0 ≤ U j) (hVlow : ∀ j, 0 ≤ Vlow j)
     (hann : ∀ j ∈ Finset.range L, ∀ w ∈ T \ Set.Icc (-w₀) w₀,
@@ -36,18 +36,18 @@ theorem integral_normSq_ramareBilinear_annulus_partitioned_le {P : Finset ℕ} (
       ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ≤ Us j)
     (hJ : ∀ j ∈ Finset.range L,
       (∫ w in (Set.Icc (-W) W \ T) \ Set.Icc (-w₀) w₀,
-        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2) ≤ J j)
+        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)) ≤ J j)
     (hlowP : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ≤ U j) :
-    (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       ≤ 2 * (L : ℝ) * ∑ j ∈ Finset.range L,
-            (V j ^ 2 * ((5 * Real.pi / 2 * W
+            (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * W
                   + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
                 * ((geomCofactorBlock M Q η j).card : ℝ))
-              + Us j ^ 2 * J j
-              + Vlow j ^ 2 * U j ^ 2 * (2 * w₀))
+              + Us j ^ (2 : ℕ) * J j
+              + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀))
         + 2 * Dfct := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_trans zero_lt_one hQ
@@ -55,13 +55,13 @@ theorem integral_normSq_ramareBilinear_annulus_partitioned_le {P : Finset ℕ} (
   have hsteps : ∑ j ∈ Finset.range L,
       (∫ w in Set.Icc (-W) W,
         ‖primeBlockPoly (geomBlock P Q (1 + η) j) w
-          * logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
+          * logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
       ≤ ∑ j ∈ Finset.range L,
-          (V j ^ 2 * ((5 * Real.pi / 2 * W
+          (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * W
                 + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
               * ((geomCofactorBlock M Q η j).card : ℝ))
-            + Us j ^ 2 * J j
-            + Vlow j ^ 2 * U j ^ 2 * (2 * w₀)) := by
+            + Us j ^ (2 : ℕ) * J j
+            + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)) := by
     refine Finset.sum_le_sum fun j hj => ?_
     have hbounds := geomCofactorBlockAt_bounds (A₀ := 1) (B₀ := M) (by norm_num) hQ0 hη j
     exact integral_normSq_blockProduct_partitioned_le (ramareCofactorCoeff P)

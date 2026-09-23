@@ -45,9 +45,9 @@ theorem continuedCutoffPower_wave (q : XiZeroCopy) (branch : Bool) (w a : ℂ)
   have he := continuedPrincipalDifference_equation q branch w a hw hwre i (hc i) t ht
   unfold separatedScalarWave
   rw [scalarLaplacian_eq _ z hz]
-  change (w^2*continuedPrincipalDifference q branch w a i t-
+  change (w^(2 : ℕ)*continuedPrincipalDifference q branch w a i t-
     deriv (deriv (continuedPrincipalDifference q branch w a i)) t)*cutoffPower (principalExponent q i) z-
-    (1-(radialUnit t:ℂ)^2)*continuedPrincipalDifference q branch w a i t*
+    (1-(radialUnit t:ℂ)^(2 : ℕ))*continuedPrincipalDifference q branch w a i t*
       hyperbolicLaplacian (cutoffPower (principalExponent q i)) z = _
   dsimp only [cutoffPower,continuedCutoffRadialCoefficient,cutoffCommutator]
   dsimp only [horizonCoordinate] at he ⊢

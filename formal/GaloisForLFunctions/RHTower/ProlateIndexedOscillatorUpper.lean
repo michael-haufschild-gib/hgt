@@ -36,7 +36,7 @@ theorem exists_canonical_signedIndex_of_even_joint_prolate
     (hprolate : ∀ x : ℝ,
       prolateSLAction (signedModeRadialBandwidth a) Phi x = eta * Phi x) :
     ∃ n : ℕ,
-      evenProlateSignedValue a n ^ 2 = lam ∧
+      evenProlateSignedValue a n ^ (2 : ℕ) = lam ∧
       eta = (signedModeRadialData a n).chi ∧
       ∃ r : ℝ, ∀ x : ℝ, Phi x = r * (signedModeRadialData a n).R x := by
   let f : RealIntervalL2 (-1 : ℝ) 1 := bandClass Phi hsm.continuous
@@ -151,12 +151,12 @@ theorem highProlateSpan_eq_span_highCanonicalBandClass
       exact one_ne_zero this
     have hDRBand : ∀ x : ℝ,
         bandTransform (signedModeRadialBandwidth a) (signedModeRadialData a k).R x =
-          evenProlateSignedValue a k ^ 2 * (signedModeRadialData a k).R x := by
+          evenProlateSignedValue a k ^ (2 : ℕ) * (signedModeRadialData a k).R x := by
       rw [hDRdef]
       exact bandTransform_endpointNormalize_eigen hDPhiBand
     rw [highCanonicalBandClass]
     exact bandClass_mem_highProlateSpan hDRsm.continuous
-      ⟨evenProlateSignedValue a k ^ 2, (signedModeRadialData a k).chi,
+      ⟨evenProlateSignedValue a k ^ (2 : ℕ), (signedModeRadialData a k).chi,
         pow_ne_zero 2 (evenProlateSignedValue_ne_zero ha k), by simpa [k] using i.property,
         hDRsm, hDRne, hDREven, hDRBand, hDRProlate⟩
 
@@ -193,7 +193,7 @@ theorem rank_highProlateSpan_le_of_chi_le
 theorem signedModeRadialData_chi_eq_neg_bandwidth_sq_mul_s
     {a : ℝ} (ha : 0 < a) (n : ℕ) :
     (signedModeRadialData a n).chi =
-      -(signedModeRadialBandwidth a) ^ 2 * (signedModeRadialData a n).s := by
+      -(signedModeRadialBandwidth a) ^ (2 : ℕ) * (signedModeRadialData a n).s := by
   have hs := (signedModeRadialData_isExact_of_pos ha n).2.2.2.2.2.2.2.2.2.2.1
   have hc : signedModeRadialBandwidth a ≠ 0 := by
     dsimp [signedModeRadialBandwidth]
@@ -221,7 +221,7 @@ theorem eventually_signedModeRadialBandwidth_mul_s_lt_evenOscillatorRung
     exact le_of_not_gt (by simpa [Λ, c] using hnot)
   have hcut : (signedModeRadialData a n).chi ≤ -(Λ * c) := by
     rw [signedModeRadialData_chi_eq_neg_bandwidth_sq_mul_s ha n]
-    change -(c ^ 2) * (signedModeRadialData a n).s ≤ -(Λ * c)
+    change -(c ^ (2 : ℕ)) * (signedModeRadialData a n).s ≤ -(Λ * c)
     nlinarith
   let hproj : (highProlateSpan c (Λ * c)).HasOrthogonalProjection := by
     exact highProlateSpan_hasOrthogonalProjection_of_chi_le ha n hcut

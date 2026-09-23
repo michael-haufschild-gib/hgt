@@ -37,7 +37,7 @@ def thetaCuspCofinalTiltedWardDerivative (a x : ℝ) : ℝ :=
 /-- Logarithmic-source normal form of the second derivative of the complete tilted Ward
 density. -/
 def thetaCuspCofinalTiltedWardSecondDerivative (a x : ℝ) : ℝ :=
-  (a - 1 / 2) ^ 2 * thetaCuspCofinalTiltedWardDensity a x +
+  (a - 1 / 2) ^ (2 : ℕ) * thetaCuspCofinalTiltedWardDensity a x +
     (1 / 2 - 2 * a - iteratedDeriv 1 thetaCuspLogSource x) *
       (Real.exp (a * x) * thetaCuspFullSource x / (2 * Real.pi))
 
@@ -358,7 +358,7 @@ theorem integrableOn_thetaCuspCofinalTiltedWardSecondDerivative
     integrableOn_exp_mul_iteratedDeriv_thetaCuspFullSource_of_lt_one 1 ha
   rw [show thetaCuspCofinalTiltedWardSecondDerivative a =
       fun x : ℝ =>
-        (a - 1 / 2) ^ 2 * thetaCuspCofinalTiltedWardDensity a x +
+        (a - 1 / 2) ^ (2 : ℕ) * thetaCuspCofinalTiltedWardDensity a x +
           (1 / 2 - 2 * a) *
             (Real.exp (a * x) * thetaCuspFullSource x / (2 * Real.pi)) -
           Real.exp (a * x) *
@@ -371,7 +371,7 @@ theorem integrableOn_thetaCuspCofinalTiltedWardSecondDerivative
     field_simp [hsource.ne'] at hlog
     rw [← hlog]
     ring]
-  have hraw := ((hF.const_mul ((a - 1 / 2) ^ 2)).add
+  have hraw := ((hF.const_mul ((a - 1 / 2) ^ (2 : ℕ))).add
     (hsource0.const_mul
       ((1 / 2 - 2 * a) * (2 * Real.pi)⁻¹))).sub
     (hsource1.const_mul ((2 * Real.pi)⁻¹))

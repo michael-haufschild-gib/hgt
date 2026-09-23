@@ -115,7 +115,7 @@ theorem multispeciesChargeStiffness_pos {n : ℕ}
 
 theorem multispeciesDebyeLength_sq {n : ℕ} (mediumLog : ℝ)
     (densityLog chargeLog : Fin (n + 1) → ℝ) :
-    multispeciesDebyeLength mediumLog densityLog chargeLog ^ 2 =
+    multispeciesDebyeLength mediumLog densityLog chargeLog ^ (2 : ℕ) =
       Real.exp mediumLog / multispeciesChargeStiffness densityLog chargeLog := by
   exact Real.sq_sqrt
     (div_nonneg (Real.exp_pos _).le (multispeciesChargeStiffness_pos _ _).le)
@@ -132,7 +132,7 @@ theorem multispeciesDebyeLength_eq_debyeLength {n : ℕ} (mediumLog : ℝ)
 
 /-- Squared Debye length is medium scale divided by charge-density stiffness. -/
 theorem debyeLength_sq (mediumLog chargeDensityLog : ℝ) :
-    debyeLength mediumLog chargeDensityLog ^ 2 =
+    debyeLength mediumLog chargeDensityLog ^ (2 : ℕ) =
       Real.exp (mediumLog - chargeDensityLog) := by
   exact Real.sq_sqrt (Real.exp_pos _).le
 
@@ -150,7 +150,7 @@ theorem debyeLength_mul_waveNumber (mediumLog chargeDensityLog : ℝ) :
 theorem bjerrum_debye_temperature_cancellation
     (coulombLog thermalLog chargeDensityLog : ℝ) :
     bjerrumLength coulombLog thermalLog *
-        debyeLength thermalLog chargeDensityLog ^ 2 =
+        debyeLength thermalLog chargeDensityLog ^ (2 : ℕ) =
       Real.exp (coulombLog - chargeDensityLog) := by
   rw [debyeLength_sq, bjerrumLength, ← Real.exp_add]
   exact congrArg Real.exp (by ring)

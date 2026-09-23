@@ -24,7 +24,7 @@ open GaloisForLFunctions
 
 /-! ## The descending-factorial coefficient formula -/
 
-theorem coeff_iterate_derivative {R : Type*} [CommSemiring R] (F : PowerSeries R) (j : ℕ) :
+theorem coeff_iterate_derivative_powerSeriesJetCoeff {R : Type*} [CommSemiring R] (F : PowerSeries R) (j : ℕ) :
     ∀ n : ℕ, PowerSeries.coeff n ((⇑(d⁄dX R))^[j] F)
       = PowerSeries.coeff (n + j) F * ((((n + j).descFactorial j : ℕ) : R)) := by
   induction j with
@@ -64,7 +64,7 @@ theorem coeff_formalJetsOver_succ {R : Type*} [CommSemiring R] (m : ℕ) (F : Po
     PowerSeries.coeff n (formalJetsOver m F j.succ)
       = PowerSeries.coeff (n + (j : ℕ)) F
         * ((((n + (j : ℕ)).descFactorial (j : ℕ) : ℕ) : R)) := by
-  rw [formalJetsOver_succ, coeff_iterate_derivative]
+  rw [formalJetsOver_succ, coeff_iterate_derivative_powerSeriesJetCoeff]
 
 /-- Away from degree one the zeroth slot contributes nothing. -/
 theorem coeff_formalJetsOver_zero_of_ne {R : Type*} [CommSemiring R] (m : ℕ) (F : PowerSeries R)

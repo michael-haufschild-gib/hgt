@@ -46,7 +46,7 @@ theorem xiRightSpectralPoint_ne_zero (q : XiRightZeroCopy) :
 /-- The reciprocal-square convergence of the full Xi divisor restricts to its strict-right
 half without an enumeration. -/
 theorem xiRightSpectralPoint_inv_sq_summable :
-    Summable (fun q : XiRightZeroCopy => 1 / ‖xiRightSpectralPoint q‖ ^ 2) := by
+    Summable (fun q : XiRightZeroCopy => 1 / ‖xiRightSpectralPoint q‖ ^ (2 : ℕ)) := by
   simpa only [xiRightSpectralPoint] using!
     xiSpectralPoint_inv_sq_summable.subtype
       (fun q : XiZeroCopy => 0 < (I * xiSpectralPoint q).re)
@@ -401,7 +401,7 @@ theorem xiAntiCausalWardBoundaryPairTerm_eq_pair
 theorem summable_xiAntiCausalWardBoundaryPairTerm :
     Summable xiAntiCausalWardBoundaryPairTerm := by
   have hbase : Summable (fun q : XiRightUpperZeroCopy =>
-      1 / ‖xiRightCenteredZero q.1‖ ^ 2) := by
+      1 / ‖xiRightCenteredZero q.1‖ ^ (2 : ℕ)) := by
     simpa only [xiRightCenteredZero, norm_mul, norm_I, one_mul,
       xiRightSpectralPoint] using!
       xiRightSpectralPoint_inv_sq_summable.subtype
@@ -430,21 +430,21 @@ theorem summable_xiAntiCausalWardBoundaryPairTerm :
     have htrans := abs_xiRightCenteredZero_re_lt_half q.1
     linarith
   have hinvnorm :
-      ‖lam⁻¹ + ((starRingEnd ℂ) lam)⁻¹‖ ≤ 1 / ‖lam‖ ^ 2 := by
+      ‖lam⁻¹ + ((starRingEnd ℂ) lam)⁻¹‖ ≤ 1 / ‖lam‖ ^ (2 : ℕ) := by
     rw [hinv, norm_div, norm_mul, Complex.norm_conj]
     calc
       ‖lam + (starRingEnd ℂ) lam‖ / (‖lam‖ * ‖lam‖) ≤
           1 / (‖lam‖ * ‖lam‖) :=
         div_le_div_of_nonneg_right hnum (by positivity)
-      _ = 1 / ‖lam‖ ^ 2 := by ring
+      _ = 1 / ‖lam‖ ^ (2 : ℕ) := by ring
   change ‖2 * (lam⁻¹ + ((starRingEnd ℂ) lam)⁻¹)‖ ≤
-    2 * (1 / ‖lam‖ ^ 2)
+    2 * (1 / ‖lam‖ ^ (2 : ℕ))
   calc
     ‖2 * (lam⁻¹ + ((starRingEnd ℂ) lam)⁻¹)‖ =
         2 * ‖lam⁻¹ + ((starRingEnd ℂ) lam)⁻¹‖ := by
       rw [norm_mul]
       norm_num
-    _ ≤ 2 * (1 / ‖lam‖ ^ 2) :=
+    _ ≤ 2 * (1 / ‖lam‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hinvnorm (by norm_num)
 
 /-- Centered genus-one response of one complete Schwarz pair. -/
@@ -1085,7 +1085,7 @@ continued anti-causal Ward column. -/
 theorem mobiusGammaFourUnitTangent_to_continuedXiAntiCausalWardColumn :
     Tendsto (fun sigma : ℝ =>
       if hsigma : 1 < sigma then
-        ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ 2
+        ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ (2 : ℕ)
       else 0)
         (nhdsWithin 1 (Set.Ioi 1)) (nhds 4) ∧
     (∀ ⦃sigma u : ℝ⦄ (hsigma : 1 < sigma) (hu : 0 ≤ u),

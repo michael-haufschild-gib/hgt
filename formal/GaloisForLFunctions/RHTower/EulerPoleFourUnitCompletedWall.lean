@@ -19,7 +19,7 @@ noncomputable section
 def EulerPoleCompletedWallNonexpansive : Prop :=
   ∀ N : ℕ,
     ‖GaloisForLFunctions.RHTower.suzukiUnitRieszCompletedCauchyWallSymbolComplex
-      (N + 2) (-I)‖ ^ 2 ≤ ‖eulerPoleBoundaryProfileL2‖ ^ 2
+      (N + 2) (-I)‖ ^ (2 : ℕ) ≤ ‖eulerPoleBoundaryProfileL2‖ ^ (2 : ℕ)
 
 /-- The literal completed wall is nonexpansive against the Euler-pole profile exactly under RH. -/
 theorem eulerPoleCompletedWallNonexpansive_iff_riemannHypothesis :
@@ -30,16 +30,16 @@ theorem eulerPoleCompletedWallNonexpansive_iff_riemannHypothesis :
 /-- Off RH, some literal completed source wall strictly exceeds the incoming pole budget. -/
 theorem exists_completedWall_gt_eulerPoleBoundaryBudget_iff_not_riemannHypothesis :
     (∃ N : ℕ,
-      ‖eulerPoleBoundaryProfileL2‖ ^ 2 <
+      ‖eulerPoleBoundaryProfileL2‖ ^ (2 : ℕ) <
         ‖GaloisForLFunctions.RHTower.suzukiUnitRieszCompletedCauchyWallSymbolComplex
-          (N + 2) (-I)‖ ^ 2) ↔ ¬ RiemannHypothesis := by
+          (N + 2) (-I)‖ ^ (2 : ℕ)) ↔ ¬ RiemannHypothesis := by
   rw [← not_congr eulerPoleCompletedWallNonexpansive_iff_riemannHypothesis]
   simp only [EulerPoleCompletedWallNonexpansive, not_forall, not_le]
 
 /-- Closed headline package: incoming norm is exactly four and its completed-wall
 nonexpansiveness is exactly RH. -/
 theorem eulerPoleFourUnitCompletedWallLaw :
-    ‖eulerPoleBoundaryProfileL2‖ ^ 2 = 4 ∧
+    ‖eulerPoleBoundaryProfileL2‖ ^ (2 : ℕ) = 4 ∧
       (EulerPoleCompletedWallNonexpansive ↔ RiemannHypothesis) :=
   ⟨norm_eulerPoleBoundaryProfileL2_sq,
     eulerPoleCompletedWallNonexpansive_iff_riemannHypothesis⟩

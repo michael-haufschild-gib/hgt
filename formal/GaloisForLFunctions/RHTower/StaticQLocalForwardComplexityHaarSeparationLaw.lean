@@ -41,7 +41,7 @@ theorem pauliBounded_forwardCircuitHardness_and_permanentHaarSeparation
               ((r.factorial : ℝ) *
                 (((((2 ^ n - 1) + 1 : ℕ)) : ℝ))⁻¹ ^ r) +
             min 1 (T * δ)⁻¹) <
-        (1 - epsilon ^ 2) ^ r)
+        (1 - epsilon ^ (2 : ℕ)) ^ r)
     (hsep :
       Fintype.card (FiniteQLocalPauliLabel (Fin n) q) * 3 ^ q <
         2 ^ n + 1) :
@@ -93,7 +93,7 @@ theorem pauliBounded_forwardWeightedCircuitHardness_and_permanentHaarSeparation
             min 1 (T * δ)⁻¹) +
           directAdaptiveChoiNearActionPartition target
             (pauliBoundedChoiEnergy p) r δ <
-        (1 - epsilon ^ 2) ^ r)
+        (1 - epsilon ^ (2 : ℕ)) ^ r)
     (hsep :
       Fintype.card (FiniteQLocalPauliLabel (Fin n) q) * 3 ^ q <
         2 ^ n + 1) :

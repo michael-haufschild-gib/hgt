@@ -43,10 +43,10 @@ theorem inner_sum_smul_sum_smul (s : Finset ι) (φ : ι → H) (c : ι → ℂ)
 /-- **Almost-orthogonality, bilinear form.**  Small Gram rows give a large sieve inequality. -/
 theorem norm_sum_smul_sq_le_of_schur (s : Finset ι) (φ : ι → H) {Δ : ℝ}
     (hrow : ∀ r ∈ s, ∑ t ∈ s, ‖⟪φ r, φ t⟫_ℂ‖ ≤ Δ) (c : ι → ℂ) :
-    ‖∑ r ∈ s, c r • φ r‖ ^ 2 ≤ Δ * ∑ r ∈ s, ‖c r‖ ^ 2 := by
+    ‖∑ r ∈ s, c r • φ r‖ ^ (2 : ℕ) ≤ Δ * ∑ r ∈ s, ‖c r‖ ^ (2 : ℕ) := by
   classical
   set v : H := ∑ r ∈ s, c r • φ r with hv
-  have hnormself : ‖v‖ ^ 2 = ‖⟪v, v⟫_ℂ‖ := by
+  have hnormself : ‖v‖ ^ (2 : ℕ) = ‖⟪v, v⟫_ℂ‖ := by
     rw [inner_self_eq_norm_sq_to_K]
     simp
   rw [hnormself, hv, inner_sum_smul_sum_smul]
@@ -61,40 +61,40 @@ theorem norm_sum_smul_sq_le_of_schur (s : Finset ι) (φ : ι → H) {Δ : ℝ}
   refine le_trans houter ?_
   have hamgm : ∑ r ∈ s, ∑ t ∈ s, ‖c r‖ * ‖c t‖ * ‖⟪φ r, φ t⟫_ℂ‖
       ≤ ∑ r ∈ s, ∑ t ∈ s,
-          ((‖c r‖ ^ 2 + ‖c t‖ ^ 2) / 2) * ‖⟪φ r, φ t⟫_ℂ‖ := by
+          ((‖c r‖ ^ (2 : ℕ) + ‖c t‖ ^ (2 : ℕ)) / 2) * ‖⟪φ r, φ t⟫_ℂ‖ := by
     refine Finset.sum_le_sum fun r _ => Finset.sum_le_sum fun t _ => ?_
     refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
     nlinarith [sq_nonneg (‖c r‖ - ‖c t‖)]
   refine le_trans hamgm ?_
-  have hsplit : ∑ r ∈ s, ∑ t ∈ s, ((‖c r‖ ^ 2 + ‖c t‖ ^ 2) / 2) * ‖⟪φ r, φ t⟫_ℂ‖
-      = (∑ r ∈ s, ∑ t ∈ s, (‖c r‖ ^ 2 / 2) * ‖⟪φ r, φ t⟫_ℂ‖)
-        + ∑ r ∈ s, ∑ t ∈ s, (‖c t‖ ^ 2 / 2) * ‖⟪φ r, φ t⟫_ℂ‖ := by
+  have hsplit : ∑ r ∈ s, ∑ t ∈ s, ((‖c r‖ ^ (2 : ℕ) + ‖c t‖ ^ (2 : ℕ)) / 2) * ‖⟪φ r, φ t⟫_ℂ‖
+      = (∑ r ∈ s, ∑ t ∈ s, (‖c r‖ ^ (2 : ℕ) / 2) * ‖⟪φ r, φ t⟫_ℂ‖)
+        + ∑ r ∈ s, ∑ t ∈ s, (‖c t‖ ^ (2 : ℕ) / 2) * ‖⟪φ r, φ t⟫_ℂ‖ := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun r _ => ?_
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun t _ => ?_
     ring
   rw [hsplit]
-  have hfirst : ∑ r ∈ s, ∑ t ∈ s, (‖c r‖ ^ 2 / 2) * ‖⟪φ r, φ t⟫_ℂ‖
-      ≤ Δ / 2 * ∑ r ∈ s, ‖c r‖ ^ 2 := by
-    have hstep : ∀ r ∈ s, ∑ t ∈ s, (‖c r‖ ^ 2 / 2) * ‖⟪φ r, φ t⟫_ℂ‖
-        ≤ (Δ / 2) * ‖c r‖ ^ 2 := by
+  have hfirst : ∑ r ∈ s, ∑ t ∈ s, (‖c r‖ ^ (2 : ℕ) / 2) * ‖⟪φ r, φ t⟫_ℂ‖
+      ≤ Δ / 2 * ∑ r ∈ s, ‖c r‖ ^ (2 : ℕ) := by
+    have hstep : ∀ r ∈ s, ∑ t ∈ s, (‖c r‖ ^ (2 : ℕ) / 2) * ‖⟪φ r, φ t⟫_ℂ‖
+        ≤ (Δ / 2) * ‖c r‖ ^ (2 : ℕ) := by
       intro r hr
       rw [← Finset.mul_sum]
-      have := mul_le_mul_of_nonneg_left (hrow r hr) (by positivity : (0 : ℝ) ≤ ‖c r‖ ^ 2 / 2)
+      have := mul_le_mul_of_nonneg_left (hrow r hr) (by positivity : (0 : ℝ) ≤ ‖c r‖ ^ (2 : ℕ) / 2)
       linarith [this]
     refine le_trans (Finset.sum_le_sum hstep) ?_
     rw [Finset.mul_sum]
-  have hsecond : ∑ r ∈ s, ∑ t ∈ s, (‖c t‖ ^ 2 / 2) * ‖⟪φ r, φ t⟫_ℂ‖
-      ≤ Δ / 2 * ∑ r ∈ s, ‖c r‖ ^ 2 := by
+  have hsecond : ∑ r ∈ s, ∑ t ∈ s, (‖c t‖ ^ (2 : ℕ) / 2) * ‖⟪φ r, φ t⟫_ℂ‖
+      ≤ Δ / 2 * ∑ r ∈ s, ‖c r‖ ^ (2 : ℕ) := by
     rw [Finset.sum_comm]
-    have hstep : ∀ t ∈ s, ∑ r ∈ s, (‖c t‖ ^ 2 / 2) * ‖⟪φ r, φ t⟫_ℂ‖
-        ≤ (Δ / 2) * ‖c t‖ ^ 2 := by
+    have hstep : ∀ t ∈ s, ∑ r ∈ s, (‖c t‖ ^ (2 : ℕ) / 2) * ‖⟪φ r, φ t⟫_ℂ‖
+        ≤ (Δ / 2) * ‖c t‖ ^ (2 : ℕ) := by
       intro t ht
       have hsymm : ∑ r ∈ s, ‖⟪φ r, φ t⟫_ℂ‖ = ∑ r ∈ s, ‖⟪φ t, φ r⟫_ℂ‖ :=
         Finset.sum_congr rfl fun r _ => norm_inner_symm _ _
       rw [← Finset.mul_sum, hsymm]
-      have := mul_le_mul_of_nonneg_left (hrow t ht) (by positivity : (0 : ℝ) ≤ ‖c t‖ ^ 2 / 2)
+      have := mul_le_mul_of_nonneg_left (hrow t ht) (by positivity : (0 : ℝ) ≤ ‖c t‖ ^ (2 : ℕ) / 2)
       linarith [this]
     refine le_trans (Finset.sum_le_sum hstep) ?_
     rw [Finset.mul_sum]
@@ -103,7 +103,7 @@ theorem norm_sum_smul_sq_le_of_schur (s : Finset ι) (φ : ι → H) {Δ : ℝ}
 /-- **Almost-orthogonality, Bessel form.**  Composing with the duality principle. -/
 theorem sum_norm_inner_sq_le_of_schur (s : Finset ι) (φ : ι → H) {Δ : ℝ} (hΔ : 0 ≤ Δ)
     (hrow : ∀ r ∈ s, ∑ t ∈ s, ‖⟪φ r, φ t⟫_ℂ‖ ≤ Δ) (a : H) :
-    ∑ r ∈ s, ‖⟪φ r, a⟫_ℂ‖ ^ 2 ≤ Δ * ‖a‖ ^ 2 :=
+    ∑ r ∈ s, ‖⟪φ r, a⟫_ℂ‖ ^ (2 : ℕ) ≤ Δ * ‖a‖ ^ (2 : ℕ) :=
   sum_norm_inner_sq_le_of_bilinear s φ hΔ (norm_sum_smul_sq_le_of_schur s φ hrow) a
 
 end RHTower.Sieve

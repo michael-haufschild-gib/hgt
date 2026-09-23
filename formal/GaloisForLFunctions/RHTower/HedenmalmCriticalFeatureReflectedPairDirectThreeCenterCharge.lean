@@ -59,7 +59,7 @@ theorem finite_offLine_card_mul_directThreeCenterCharge_le_offLineLatticeBudget
           (abs_xiSpectralPoint_im_lt_half q) (abs_sub_round _)
       have hoffeq (j : ℤ) :
           ((criticalFeatureCauchyKernelTest (j : ℝ)
-            (xiSpectralPoint q)) ^ 2).re =
+            (xiSpectralPoint q)) ^ (2 : ℕ)).re =
             offLineCriticalFeatureHolomorphicEnergy (j : ℝ) q := by
         rw [offLineCriticalFeatureHolomorphicEnergy, if_neg hqoff]
       have hcastm : (kq : ℝ) - 1 = ((kq - 1 : ℤ) : ℝ) := by

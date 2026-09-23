@@ -44,17 +44,17 @@ theorem integral_normSq_omegaWeighted_head_closed {z₀ z L : ℕ} {B₀ : ℕ} 
       ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₀ Q η j) w‖
         ≤ s * ((B₀ : ℝ) / (Q * (1 + η) ^ j))) :
     (∫ w in Set.Icc (-G) G,
-        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ 2)
+        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ (2 : ℕ))
       ≤ 2 * ((ρ * Real.sqrt (5 * Real.pi / 2 + 5 * Real.exp 1 / 2)
-              * ((L : ℝ) * (B₀ : ℝ) + Q * (((1 + η) ^ L - 1) / η))) ^ 2
+              * ((L : ℝ) * (B₀ : ℝ) + Q * (((1 + η) ^ L - 1) / η))) ^ (2 : ℕ)
             + (∑ j ∈ Finset.range L,
-                discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ 2)
+                discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ (2 : ℕ))
         + 2 * ((5 * Real.pi / 2 * G
               + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
             * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
               * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
                   * ((1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2))) := by
+                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)))) := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_trans zero_lt_one hQ1
   have hη0 : (0 : ℝ) ≤ η := hη.le
@@ -82,10 +82,10 @@ theorem integral_normSq_omegaWeighted_head_closed {z₀ z L : ℕ} {B₀ : ℕ} 
     primeStepMajorant_pos hQ0 hη0 hρ j
   have hdpos : ∀ j ∈ Finset.range L, 0 < d j := fun j _ =>
     discMajorant_pos hQ0 hη0 hs j
-  have hcT : ∀ j ∈ Finset.range L, V j ^ 2 * ladderStepMVT B₀ Q η G j ≤ c j ^ 2 := by
+  have hcT : ∀ j ∈ Finset.range L, V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j ≤ c j ^ (2 : ℕ) := by
     intro j hj
     exact primeStepMajorant_sq_ge hQ0 hη0 hG0.le j (hGle j hj) (hVpos j) le_rfl
-  have hdT : ∀ j ∈ Finset.range L, Vlow j ^ 2 * U j ^ 2 * (2 * w₀) ≤ d j ^ 2 := by
+  have hdT : ∀ j ∈ Finset.range L, Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀) ≤ d j ^ (2 : ℕ) := by
     intro j _
     exact discMajorant_sq_ge hQ0 hη0 hs hw₀ j (hUpos j) (hVlowpos j) le_rfl le_rfl
   have hlowP : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,

@@ -308,7 +308,7 @@ theorem tendsto_chirpTime_atTop {theta : ℝ} (h1 : theta < 1) :
     Tendsto (fun u : ℝ => chirpTime theta u) atTop atTop :=
   tendsto_rpow_atTop (by linarith)
 
-theorem norm_exp_neg_I_mul_ofReal (x y : ℝ) :
+theorem norm_exp_neg_I_mul_ofReal_finitePacketChirpSeparation (x y : ℝ) :
     ‖Complex.exp (-Complex.I * (x : ℝ) * ((y : ℝ) : ℂ))‖ = 1 := by
   rw [Complex.norm_exp]
   simp [Complex.mul_re, Complex.mul_im]
@@ -348,7 +348,7 @@ theorem tendsto_shiftedPacketTrace_sub (S : Finset ℂ) (m : ℂ → ℝ) {sigma
         refine squeeze_zero_norm'
           (a := fun u : ℝ => ‖(m alpha : ℂ)‖ * ‖chirpDefect sigma theta u alpha - 1‖) ?_ ?_
         · filter_upwards with u
-          rw [norm_mul, norm_mul, norm_exp_neg_I_mul_ofReal, mul_one]
+          rw [norm_mul, norm_mul, norm_exp_neg_I_mul_ofReal_finitePacketChirpSeparation, mul_one]
         · have hd : Tendsto (fun u : ℝ => ‖chirpDefect sigma theta u alpha - 1‖) atTop (𝓝 0) := by
             have := (hdef.sub_const 1).norm
             simpa using this
@@ -383,7 +383,7 @@ theorem tendsto_shiftedPacketTrace_sub (S : Finset ℂ) (m : ℂ → ℝ) {sigma
           * ‖chirpDefect sigma theta u alpha‖)) ?_ ?_
       · filter_upwards with u
         simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-          norm_exp_neg_I_mul_ofReal, mul_one]
+          norm_exp_neg_I_mul_ofReal_finitePacketChirpSeparation, mul_one]
         rw [abs_of_pos (Real.exp_pos _)]
       · have := (hdecay.mul hnormdef).const_mul ‖(m alpha : ℂ)‖
         simpa using this
@@ -403,9 +403,9 @@ def topCoeff (S : Finset ℂ) (m : ℂ → ℝ) (c om : ℝ) : ℂ :=
 theorem topLayer_sum_eq (S : Finset ℂ) (m : ℂ → ℝ) (c t : ℝ) :
     ∑ alpha ∈ topLayer S c, (m alpha : ℂ)
         * Complex.exp (-Complex.I * (chirpFreq alpha : ℝ) * ((t : ℝ) : ℂ))
-      = expSum ((topLayer S c).image chirpFreq) (topCoeff S m c) id t := by
+      = expSum_exponentialSumMeanSquareLower ((topLayer S c).image chirpFreq) (topCoeff S m c) id t := by
   classical
-  rw [expSum]
+  rw [expSum_exponentialSumMeanSquareLower]
   have hmaps : ∀ alpha ∈ topLayer S c, chirpFreq alpha ∈ (topLayer S c).image chirpFreq :=
     fun alpha ha => Finset.mem_image_of_mem _ ha
   rw [← Finset.sum_fiberwise_of_maps_to hmaps
@@ -511,10 +511,10 @@ theorem not_tendsto_packetMassTrace_of_offline (S : Finset ℂ) (m : ℂ → ℝ
   have hdlt : delta ^ 2 < Q := by
     rw [hdsq]
     linarith
-  have hfreq : ∃ᶠ t : ℝ in atTop, delta < ‖expSum F (topCoeff S m c) id t‖ :=
+  have hfreq : ∃ᶠ t : ℝ in atTop, delta < ‖expSum_exponentialSumMeanSquareLower F (topCoeff S m c) id t‖ :=
     frequently_lt_norm_expSum F (topCoeff S m c) id Function.injective_id.injOn hdlt
   have hfreq' : ∃ᶠ u : ℝ in atTop,
-      delta < ‖expSum F (topCoeff S m c) id (chirpTime theta u)‖ := by
+      delta < ‖expSum_exponentialSumMeanSquareLower F (topCoeff S m c) id (chirpTime theta u)‖ := by
     rw [Filter.frequently_atTop] at hfreq ⊢
     intro A
     obtain ⟨t, ht, hQt⟩ := hfreq (max A 1 ^ (1 - theta))
@@ -553,15 +553,15 @@ theorem not_tendsto_packetMassTrace_of_offline (S : Finset ℂ) (m : ℂ → ℝ
     rw [hnorm u]
   have hsub := tendsto_shiftedPacketTrace_sub S m hsigma h3 hth1 hle
   have hzero : Tendsto (fun u : ℝ =>
-      expSum F (topCoeff S m c) id (chirpTime theta u)) atTop (𝓝 0) := by
+      expSum_exponentialSumMeanSquareLower F (topCoeff S m c) id (chirpTime theta u)) atTop (𝓝 0) := by
     have hdiff := hshift.sub hsub
     rw [sub_zero] at hdiff
     refine hdiff.congr fun u => ?_
     rw [topLayer_sum_eq S m c (chirpTime theta u)]
     ring
   have heve : ∀ᶠ u : ℝ in atTop,
-      ‖expSum F (topCoeff S m c) id (chirpTime theta u)‖ < delta := by
-    have hn : Tendsto (fun u : ℝ => ‖expSum F (topCoeff S m c) id (chirpTime theta u)‖)
+      ‖expSum_exponentialSumMeanSquareLower F (topCoeff S m c) id (chirpTime theta u)‖ < delta := by
+    have hn : Tendsto (fun u : ℝ => ‖expSum_exponentialSumMeanSquareLower F (topCoeff S m c) id (chirpTime theta u)‖)
         atTop (𝓝 0) := by
       simpa using hzero.norm
     exact hn.eventually (gt_mem_nhds hdpos)

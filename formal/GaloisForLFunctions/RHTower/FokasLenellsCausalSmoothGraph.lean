@@ -8,7 +8,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalSmoothGraphInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- Infinite chains of genuine maximal-generator pairs, in the original countable product space. -/
 def causalSmoothGraph : Submodule ℂ (ℕ → hardyL2ᗮ) :=

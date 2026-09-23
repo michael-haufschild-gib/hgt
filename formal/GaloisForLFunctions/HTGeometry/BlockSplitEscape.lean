@@ -28,38 +28,38 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-theorem sqrtQuadratic_pos {d : ℝ} (hd : d ≠ 0) (u : ℝ) : 0 < d ^ 2 + u ^ 2 := by
-  have hd2 : 0 < d ^ 2 := pow_pos (abs_pos.mpr hd) 2 |>.trans_le (le_of_eq (by rw [sq_abs]))
+theorem sqrtQuadratic_pos {d : ℝ} (hd : d ≠ 0) (u : ℝ) : 0 < d ^ (2 : ℕ) + u ^ (2 : ℕ) := by
+  have hd2 : 0 < d ^ (2 : ℕ) := pow_pos (abs_pos.mpr hd) 2 |>.trans_le (le_of_eq (by rw [sq_abs]))
   positivity
 
 /-- Derivative of one block square-root branch. -/
 theorem hasDerivAt_sqrtQuadratic {d : ℝ} (hd : d ≠ 0) (u : ℝ) :
-    HasDerivAt (fun v : ℝ => Real.sqrt (d ^ 2 + v ^ 2))
-      (u / Real.sqrt (d ^ 2 + u ^ 2)) u := by
-  have hpos : 0 < d ^ 2 + u ^ 2 := sqrtQuadratic_pos hd u
-  have hinner : HasDerivAt (fun v : ℝ => d ^ 2 + v ^ 2) (2 * u) u := by
-    simpa using ((hasDerivAt_pow 2 u).const_add (d ^ 2))
+    HasDerivAt (fun v : ℝ => Real.sqrt (d ^ (2 : ℕ) + v ^ (2 : ℕ)))
+      (u / Real.sqrt (d ^ (2 : ℕ) + u ^ (2 : ℕ))) u := by
+  have hpos : 0 < d ^ (2 : ℕ) + u ^ (2 : ℕ) := sqrtQuadratic_pos hd u
+  have hinner : HasDerivAt (fun v : ℝ => d ^ (2 : ℕ) + v ^ (2 : ℕ)) (2 * u) u := by
+    simpa using ((hasDerivAt_pow 2 u).const_add (d ^ (2 : ℕ)))
   have hsqrt := hinner.sqrt (ne_of_gt hpos)
-  have hval : 2 * u / (2 * Real.sqrt (d ^ 2 + u ^ 2)) = u / Real.sqrt (d ^ 2 + u ^ 2) := by
+  have hval : 2 * u / (2 * Real.sqrt (d ^ (2 : ℕ) + u ^ (2 : ℕ))) = u / Real.sqrt (d ^ (2 : ℕ) + u ^ (2 : ℕ)) := by
     rw [mul_div_mul_left _ _ (two_ne_zero)]
   rwa [hval] at hsqrt
 
 /-- Derivative at the origin of the slope of a block square-root branch. -/
 theorem hasDerivAt_slope_sqrtQuadratic {d : ℝ} (hd : d ≠ 0) :
-    HasDerivAt (fun u : ℝ => u / Real.sqrt (d ^ 2 + u ^ 2)) (1 / |d|) 0 := by
-  have hpos : ∀ u : ℝ, 0 < d ^ 2 + u ^ 2 := sqrtQuadratic_pos hd
-  have hden : HasDerivAt (fun u : ℝ => Real.sqrt (d ^ 2 + u ^ 2)) 0 0 := by
+    HasDerivAt (fun u : ℝ => u / Real.sqrt (d ^ (2 : ℕ) + u ^ (2 : ℕ))) (1 / |d|) 0 := by
+  have hpos : ∀ u : ℝ, 0 < d ^ (2 : ℕ) + u ^ (2 : ℕ) := sqrtQuadratic_pos hd
+  have hden : HasDerivAt (fun u : ℝ => Real.sqrt (d ^ (2 : ℕ) + u ^ (2 : ℕ))) 0 0 := by
     have h := hasDerivAt_sqrtQuadratic hd 0
     simpa using h
   have hnum : HasDerivAt (fun u : ℝ => u) 1 0 := hasDerivAt_id 0
-  have hne : Real.sqrt (d ^ 2 + 0 ^ 2) ≠ 0 := by
+  have hne : Real.sqrt (d ^ (2 : ℕ) + 0 ^ (2 : ℕ)) ≠ 0 := by
     have := hpos 0
     positivity
   have hdiv := HasDerivAt.div hnum hden hne
-  have hval : (1 * Real.sqrt (d ^ 2 + 0 ^ 2) - 0 * 0) / Real.sqrt (d ^ 2 + 0 ^ 2) ^ 2
+  have hval : (1 * Real.sqrt (d ^ (2 : ℕ) + 0 ^ (2 : ℕ)) - 0 * 0) / Real.sqrt (d ^ (2 : ℕ) + 0 ^ (2 : ℕ)) ^ (2 : ℕ)
       = 1 / |d| := by
-    have hsq : Real.sqrt (d ^ 2 + 0 ^ 2) = |d| := by
-      rw [show d ^ 2 + 0 ^ 2 = d ^ 2 by ring, Real.sqrt_sq_eq_abs]
+    have hsq : Real.sqrt (d ^ (2 : ℕ) + 0 ^ (2 : ℕ)) = |d| := by
+      rw [show d ^ (2 : ℕ) + 0 ^ (2 : ℕ) = d ^ (2 : ℕ) by ring, Real.sqrt_sq_eq_abs]
     rw [hsq]
     have habs : |d| ≠ 0 := abs_ne_zero.mpr hd
     field_simp
@@ -69,23 +69,23 @@ theorem hasDerivAt_slope_sqrtQuadratic {d : ℝ} (hd : d ≠ 0) :
 
 /-- The block-split spectral relation of an integer character. -/
 def blockSplitRelation {ι : Type*} [Fintype ι] (c : ℝ) (β d : ι → ℝ) (u : ℝ) : ℝ :=
-  c + ∑ z, β z * Real.sqrt (d z ^ 2 + u ^ 2)
+  c + ∑ z, β z * Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ))
 
 theorem hasDerivAt_blockSplitRelation {ι : Type*} [Fintype ι] (c : ℝ) (β d : ι → ℝ)
     (hd : ∀ z, d z ≠ 0) (u : ℝ) :
     HasDerivAt (blockSplitRelation c β d)
-      (∑ z, β z * (u / Real.sqrt (d z ^ 2 + u ^ 2))) u := by
-  have hsum : HasDerivAt (fun v : ℝ => ∑ z, β z * Real.sqrt (d z ^ 2 + v ^ 2))
-      (∑ z, β z * (u / Real.sqrt (d z ^ 2 + u ^ 2))) u := by
+      (∑ z, β z * (u / Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ)))) u := by
+  have hsum : HasDerivAt (fun v : ℝ => ∑ z, β z * Real.sqrt (d z ^ (2 : ℕ) + v ^ (2 : ℕ)))
+      (∑ z, β z * (u / Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ)))) u := by
     refine HasDerivAt.fun_sum fun z _ => ?_
     exact HasDerivAt.const_mul (β z) (hasDerivAt_sqrtQuadratic (hd z) u)
-  show HasDerivAt (fun x : ℝ => c + ∑ z, β z * Real.sqrt (d z ^ 2 + x ^ 2)) _ u
+  show HasDerivAt (fun x : ℝ => c + ∑ z, β z * Real.sqrt (d z ^ (2 : ℕ) + x ^ (2 : ℕ))) _ u
   exact HasDerivAt.const_add c hsum
 
 theorem deriv_blockSplitRelation {ι : Type*} [Fintype ι] (c : ℝ) (β d : ι → ℝ)
     (hd : ∀ z, d z ≠ 0) :
     deriv (blockSplitRelation c β d)
-      = fun u => ∑ z, β z * (u / Real.sqrt (d z ^ 2 + u ^ 2)) := by
+      = fun u => ∑ z, β z * (u / Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ))) := by
   funext u
   exact (hasDerivAt_blockSplitRelation c β d hd u).deriv
 

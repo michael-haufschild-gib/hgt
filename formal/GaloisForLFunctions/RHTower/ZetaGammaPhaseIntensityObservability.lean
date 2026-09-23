@@ -15,7 +15,7 @@ The centered archimedean Gamma clock is
 `R(w) = Gamma(1/4-w) / Gamma(1/4+w)`.
 
 Frequency reflection gives `R(-w)=R(w)^{-1}` at the meromorphic level.  Consequently its
-intensity channel is exactly one, whereas the phase channel is `R(w)^2`.  The general
+intensity channel is exactly one, whereas the phase channel is `R(w)^(2 : ℕ)`.  The general
 opposite-orientation phase theorem proves that this square remains hypertranscendental.
 
 The capstone is an exact blindness theorem: rational clocks and the complete unit intensity,
@@ -171,7 +171,7 @@ theorem centeredZetaGammaPhaseObservationMero_eq_ratio :
 centered zeta Gamma reflection clock. -/
 theorem centeredZetaGammaPhaseObservationMero_eq_square :
     centeredZetaGammaPhaseObservationMero =
-      centeredZetaGammaReflectionMero ^ 2 := by
+      centeredZetaGammaReflectionMero ^ (2 : ℕ) := by
   rw [centeredZetaGammaPhaseObservationMero_eq_ratio,
     centeredZetaGammaReflectionMero_eq_inv_reflectedFrequency]
   field_simp [centeredZetaGammaReflectedFrequencyMero_ne_zero]
@@ -336,7 +336,7 @@ hypertranscendental over rational clocks. -/
 theorem centeredZetaGamma_phaseIntensityCurrent_observabilityProfile :
     centeredZetaGammaIntensityObservationMero = 1 ∧
       centeredZetaGammaPhaseObservationMero =
-        centeredZetaGammaReflectionMero ^ 2 ∧
+        centeredZetaGammaReflectionMero ^ (2 : ℕ) ∧
       Differential.logDeriv centeredZetaGammaPhaseObservationMero =
         2 * centeredZetaGammaWignerSmithLogClockMero ∧
       HypertranscendentalOver (RatFunc ℂ)

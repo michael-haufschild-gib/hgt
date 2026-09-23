@@ -46,7 +46,7 @@ noncomputable def wind (g : X → ℂ) (hg : Continuous g) (hgne : ∀ x, g x �
 theorem powLoop_apply (k : ℕ) (q : Path one_cs one_cs) (t : I) :
     ((powLoop k q) t : ℂ) = (q t : ℂ) ^ k := by
   induction k with
-  | zero => show ((Path.refl one_cs) t : ℂ) = (q t : ℂ) ^ 0; rw [pow_zero]; rfl
+  | zero => show ((Path.refl one_cs) t : ℂ) = (q t : ℂ) ^ (0 : ℕ); rw [pow_zero]; rfl
   | succ k ih =>
     show ((mulLoop q (powLoop k q)) t : ℂ) = (q t : ℂ) ^ (k + 1)
     show (q t : ℂ) * ((powLoop k q) t : ℂ) = (q t : ℂ) ^ (k + 1)
@@ -163,55 +163,55 @@ theorem wind_zero_of_slitPlane (g : X → ℂ) (hg : Continuous g) (hgne : ∀ x
 the corrector `1 + c/g²` stays near `1`), the winding doubles: `wind(g²+c) = 2·wind(g)`. This is
 "`f = z²+c` is degree 2" expressed as a winding identity. -/
 theorem wind_quadratic (c : ℂ) (g : X → ℂ) (hg : Continuous g)
-    (hgbig : ∀ x, ‖c‖ < ‖g x‖ ^ 2) {x₀ : X} (p : Path x₀ x₀) :
-    wind (fun x => g x ^ 2 + c) (by fun_prop)
+    (hgbig : ∀ x, ‖c‖ < ‖g x‖ ^ (2 : ℕ)) {x₀ : X} (p : Path x₀ x₀) :
+    wind (fun x => g x ^ (2 : ℕ) + c) (by fun_prop)
         (fun x => by
-          show g x ^ 2 + c ≠ 0
+          show g x ^ (2 : ℕ) + c ≠ 0
           have h := hgbig x
-          have hpos : (0 : ℝ) < ‖g x ^ 2 + c‖ := by
-            have hle : ‖g x‖ ^ 2 - ‖c‖ ≤ ‖g x ^ 2 + c‖ := by
-              have := norm_sub_norm_le (g x ^ 2) (-c)
+          have hpos : (0 : ℝ) < ‖g x ^ (2 : ℕ) + c‖ := by
+            have hle : ‖g x‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖g x ^ (2 : ℕ) + c‖ := by
+              have := norm_sub_norm_le (g x ^ (2 : ℕ)) (-c)
               simpa [norm_pow, norm_neg, sub_neg_eq_add] using this
             linarith
           intro hz; rw [hz, norm_zero] at hpos; exact lt_irrefl 0 hpos) p
       = 2 * wind g hg (fun x => by
           have h := hgbig x
-          have hp : (0 : ℝ) < ‖g x‖ ^ 2 := lt_of_le_of_lt (norm_nonneg c) h
+          have hp : (0 : ℝ) < ‖g x‖ ^ (2 : ℕ) := lt_of_le_of_lt (norm_nonneg c) h
           intro hgx; rw [hgx, norm_zero] at hp; norm_num at hp) p := by
   have gne : ∀ x, g x ≠ 0 := fun x => by
     have h := hgbig x
-    have hp : (0 : ℝ) < ‖g x‖ ^ 2 := lt_of_le_of_lt (norm_nonneg c) h
+    have hp : (0 : ℝ) < ‖g x‖ ^ (2 : ℕ) := lt_of_le_of_lt (norm_nonneg c) h
     intro hgx; rw [hgx, norm_zero] at hp; norm_num at hp
   -- corrector `B x = 1 + c / g x²`
-  set B : X → ℂ := fun x => 1 + c / g x ^ 2 with hB
-  have hg2ne : ∀ x, g x ^ 2 ≠ 0 := fun x => pow_ne_zero 2 (gne x)
+  set B : X → ℂ := fun x => 1 + c / g x ^ (2 : ℕ) with hB
+  have hg2ne : ∀ x, g x ^ (2 : ℕ) ≠ 0 := fun x => pow_ne_zero 2 (gne x)
   -- `B x` stays near `1`: `‖c / g x²‖ < 1`
-  have hBsmall : ∀ x, ‖c / g x ^ 2‖ < 1 := fun x => by
-    have hpos : (0 : ℝ) < ‖g x‖ ^ 2 := lt_of_le_of_lt (norm_nonneg c) (hgbig x)
+  have hBsmall : ∀ x, ‖c / g x ^ (2 : ℕ)‖ < 1 := fun x => by
+    have hpos : (0 : ℝ) < ‖g x‖ ^ (2 : ℕ) := lt_of_le_of_lt (norm_nonneg c) (hgbig x)
     rw [norm_div, norm_pow, div_lt_one hpos]
     exact hgbig x
   have hBne : ∀ x, B x ≠ 0 := fun x => by
     have hb := hBsmall x
     intro h0
-    have hcg : c / g x ^ 2 = -1 := by
-      have h1 : (1 : ℂ) + c / g x ^ 2 = 0 := h0
+    have hcg : c / g x ^ (2 : ℕ) = -1 := by
+      have h1 : (1 : ℂ) + c / g x ^ (2 : ℕ) = 0 := h0
       linear_combination h1
     rw [hcg] at hb; simp at hb
   have hBcont : Continuous B := by fun_prop (disch := exact hg2ne _)
   -- factorisation `g² + c = g² · B`
-  have hfun : (fun x => g x ^ 2 + c) = (fun x => g x ^ 2 * B x) := by
+  have hfun : (fun x => g x ^ (2 : ℕ) + c) = (fun x => g x ^ (2 : ℕ) * B x) := by
     funext x
-    show g x ^ 2 + c = g x ^ 2 * (1 + c / g x ^ 2)
+    show g x ^ (2 : ℕ) + c = g x ^ (2 : ℕ) * (1 + c / g x ^ (2 : ℕ))
     rw [mul_add, mul_one, mul_div_cancel₀ c (hg2ne x)]
   rw [wind_congr hfun (by fun_prop) _ (by fun_prop (disch := exact hg2ne _)) _ p]
-  · rw [wind_mul (fun x => g x ^ 2) B (by fun_prop) hBcont hg2ne hBne p]
+  · rw [wind_mul (fun x => g x ^ (2 : ℕ)) B (by fun_prop) hBcont hg2ne hBne p]
     rw [wind_pow g hg gne 2 p]
     -- corrector is windingless: `Re (B (p t)) > 0`
     have hBslit : ∀ t : I, B (p t) ∈ Complex.slitPlane := fun t => by
       refine Or.inl ?_
-      show 0 < (1 + c / g (p t) ^ 2).re
+      show 0 < (1 + c / g (p t) ^ (2 : ℕ)).re
       have hb := hBsmall (p t)
-      have habs : |(c / g (p t) ^ 2).re| < 1 :=
+      have habs : |(c / g (p t) ^ (2 : ℕ)).re| < 1 :=
         lt_of_le_of_lt (Complex.abs_re_le_norm _) hb
       have hlow := (abs_lt.mp habs).1
       simp only [Complex.add_re, Complex.one_re]

@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAMiddleRadiusCorrection (w φ : ℝ) : ℝ :=
   egbFixedChargeACriticalRadius w φ *
-    (35 + 8 * egbFixedChargeACriticalCouplingWeight φ - 252 * egbFixedChargeACriticalCouplingWeight φ ^ 2) /
+    (35 + 8 * egbFixedChargeACriticalCouplingWeight φ - 252 * egbFixedChargeACriticalCouplingWeight φ ^ (2 : ℕ)) /
     (60 * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ))
 
 theorem egbFixedChargeAMiddleRadiusCorrection_pos (w φ : ℝ) : 0 < egbFixedChargeAMiddleRadiusCorrection w φ := by
@@ -24,7 +24,7 @@ theorem egbFixedChargeAMiddleRadiusCorrection_pos (w φ : ℝ) : 0 < egbFixedCha
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
   have hb6 := egbFixedChargeACriticalCouplingWeight_lt_sixth φ
   have h2 : 0 < 1 - 2 * egbFixedChargeACriticalCouplingWeight φ := by linarith
-  have hn : 0 < 35 + 8 * egbFixedChargeACriticalCouplingWeight φ - 252 * egbFixedChargeACriticalCouplingWeight φ ^ 2 := by
+  have hn : 0 < 35 + 8 * egbFixedChargeACriticalCouplingWeight φ - 252 * egbFixedChargeACriticalCouplingWeight φ ^ (2 : ℕ) := by
     nlinarith [mul_nonneg hb (show 0 ≤ 1 / 6 - egbFixedChargeACriticalCouplingWeight φ by linarith)]
   unfold egbFixedChargeAMiddleRadiusCorrection
   positivity
@@ -41,7 +41,7 @@ theorem egbFixedChargeAMiddleRadiusCorrection_formula (w φ : ℝ) :
 
 theorem egbFixedChargeAMiddleRadius_amplitude_limit (w φ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAMiddleRadius w φ τ - egbFixedChargeACriticalRadius w φ) /
-      egbCoexistenceASymmetricRatio τ ^ 2) atBot (𝓝 (egbFixedChargeAMiddleRadiusCorrection w φ)) := by
+      egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) atBot (𝓝 (egbFixedChargeAMiddleRadiusCorrection w φ)) := by
   have h := egbFixedChargeAMiddleRadius_critical_quadratic_limit w φ
   rwa [egbFixedChargeAMiddleRadiusCorrection_formula] at h
 
@@ -51,7 +51,7 @@ theorem egbFixedChargeAMiddleRadius_eventually_above_critical (w φ : ℝ) :
     (egbFixedChargeAMiddleRadiusCorrection_pos w φ)
   filter_upwards [h] with τ hτ
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hd2 : 0 < egbCoexistenceASymmetricRatio τ ^ 2 := by positivity
+  have hd2 : 0 < egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by positivity
   have hcross := (lt_div_iff₀ hd2).1 hτ
   linarith
 

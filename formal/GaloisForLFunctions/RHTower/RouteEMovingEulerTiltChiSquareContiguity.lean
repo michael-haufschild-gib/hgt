@@ -209,7 +209,7 @@ theorem bernoulliExp_sub_sq_le_chiSquare_mul_secondMoment
 
 /-- Relative chi-square transfer for a normalized finite observable.  The reference numerator and
 both reference second moments are dominated by the reference denominator.  If chi-square is at
-most `eta^2` times that denominator, both normalized ratios differ by at most
+most `eta^(2 : ℕ)` times that denominator, both normalized ratios differ by at most
 `2 * eta / (1 - eta)`. -/
 theorem bernoulliNormalizedRatio_sub_abs_le
     (q r : ι → ℝ) (hr0 : ∀ p, 0 < r p) (hr1 : ∀ p, r p < 1)

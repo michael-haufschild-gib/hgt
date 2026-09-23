@@ -10,9 +10,9 @@ Center the scale generator `D = t d/dt` at the fixed point of functional-equatio
 
 `Q_a = C + a J`
 
-has the Clifford square `Q_a^2 = C^2 + a^2`.  This file proves the anticommutation and square on
+has the Clifford square `Q_a^(2 : ℕ) = C^(2 : ℕ) + a^(2 : ℕ)`.  This file proves the anticommutation and square on
 smooth real scale profiles without referring to Xi zeros.  It also records the Mellin symbol
-`a^2 + (w-1/2)^2`; reality of this symbol at every Xi zero is exactly the existing quadratic-scale
+`a^(2 : ℕ) + (w-1/2)^(2 : ℕ)`; reality of this symbol at every Xi zero is exactly the existing quadratic-scale
 RH criterion.
 
 The closed positive-ray realization, exact transported `H¹/H²` domains, physical inversion
@@ -77,14 +77,14 @@ theorem weightOneInversion_const_mul (a : ℝ) (f : ℝ → ℝ) (t : ℝ) :
   unfold weightOneInversion
   ring
 
-/-- **The explicit source Dirac square.**  The mixed terms in `(C+aJ)^2` cancel pointwise on
-smooth scale profiles, leaving `C^2+a^2`. -/
+/-- **The explicit source Dirac square.**  The mixed terms in `(C+aJ)^(2 : ℕ)` cancel pointwise on
+smooth scale profiles, leaving `C^(2 : ℕ)+a^(2 : ℕ)`. -/
 theorem weightOneCliffordDirac_sq
     (a : ℝ) (f : ℝ → ℝ) {t : ℝ} (ht : t ≠ 0)
     (hf : Differentiable ℝ f)
     (hDf : Differentiable ℝ (multiplicativeDeriv f)) :
     weightOneCliffordDirac a (weightOneCliffordDirac a f) t =
-      centeredScaleGenerator (centeredScaleGenerator f) t + a ^ 2 * f t := by
+      centeredScaleGenerator (centeredScaleGenerator f) t + a ^ (2 : ℕ) * f t := by
   have hCf : DifferentiableAt ℝ (centeredScaleGenerator f) t := by
     unfold centeredScaleGenerator
     fun_prop
@@ -102,12 +102,12 @@ theorem weightOneCliffordDirac_sq
 
 /-- The Mellin-symbol energy of the weight-one Clifford square. -/
 def weightOneCliffordEnergy (a : ℝ) (w : ℂ) : ℂ :=
-  (a : ℂ) ^ 2 + (w - 1 / 2) ^ 2
+  (a : ℂ) ^ (2 : ℕ) + (w - 1 / 2) ^ (2 : ℕ)
 
 /-- The Clifford energy is a real affine transform of the Berry--Keating coordinate. -/
 theorem weightOneCliffordEnergy_eq_berryKeatingU (a : ℝ) (w : ℂ) :
     weightOneCliffordEnergy a w =
-      ((a ^ 2 + 1 / 4 : ℝ) : ℂ) - berryKeatingU w := by
+      ((a ^ (2 : ℕ) + 1 / 4 : ℝ) : ℂ) - berryKeatingU w := by
   rw [weightOneCliffordEnergy, berryKeatingU_eq_centered]
   push_cast
   ring

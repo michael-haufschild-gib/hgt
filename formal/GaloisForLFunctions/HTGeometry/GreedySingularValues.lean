@@ -192,11 +192,11 @@ theorem svVal_tendsto_zero {S : H →L[ℂ] H} (hcpt : IsCompactOperator S)
     have hcne : ∀ n, svVal S n ≠ 0 := fun n => ne_of_gt (lt_of_lt_of_le hc (hc_le n))
     have hstep : ∀ n, IsGreedyStep S (svVec S) n (svVec S n) := fun n =>
       isGreedyStep_svVec hcpt hsym hpos n (hcne n)
-    have hnorm_smul : ∀ n, ‖(svVal S n : ℂ) • svVec S n‖ ^ 2 = svVal S n ^ 2 := by
+    have hnorm_smul : ∀ n, ‖(svVal S n : ℂ) • svVec S n‖ ^ (2 : ℕ) = svVal S n ^ (2 : ℕ) := by
       intro n
       rw [norm_smul, Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (svVal_nonneg S n), (hstep n).1, mul_one]
-    have hsep : ∀ m n, m ≠ n → 2 * c ^ 2 ≤ ‖S (svVec S m) - S (svVec S n)‖ ^ 2 := by
+    have hsep : ∀ m n, m ≠ n → 2 * c ^ (2 : ℕ) ≤ ‖S (svVec S m) - S (svVec S n)‖ ^ (2 : ℕ) := by
       intro m n hmn
       rw [apply_svVec, apply_svVec]
       have hinner : RCLike.re
@@ -204,10 +204,10 @@ theorem svVal_tendsto_zero {S : H →L[ℂ] H} (hcpt : IsCompactOperator S)
         rw [inner_smul_left, inner_smul_right, inner_svVec_svVec_of_ne S hmn]
         simp
       rw [norm_sub_sq (𝕜 := ℂ), hinner, hnorm_smul m, hnorm_smul n]
-      have h1 : c ^ 2 ≤ svVal S m ^ 2 := by
+      have h1 : c ^ (2 : ℕ) ≤ svVal S m ^ (2 : ℕ) := by
         have := hc_le m
         nlinarith [svVal_nonneg S m, le_of_lt hc]
-      have h2 : c ^ 2 ≤ svVal S n ^ 2 := by
+      have h2 : c ^ (2 : ℕ) ≤ svVal S n ^ (2 : ℕ) := by
         have := hc_le n
         nlinarith [svVal_nonneg S n, le_of_lt hc]
       nlinarith

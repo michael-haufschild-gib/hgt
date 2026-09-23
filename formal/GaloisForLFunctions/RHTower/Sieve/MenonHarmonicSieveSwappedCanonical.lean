@@ -37,12 +37,12 @@ theorem integral_Icc_normSq_dyadicPrimePoly_mul_harmonicCofactor_le_canonical
     (hP₁ : 2 ≤ P₁) (hP₁h : P₁ ≤ h) (hh1 : 1 ≤ h) :
     (∫ w in Set.Icc (-W) W,
         ‖logPoly (fun n => ((1 : ℂ) / (n : ℂ))) (bigPrimeSet R (2 * R)) w
-          * logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ 2)
-      ≤ harmonicPrimeMass D ^ 2 *
-          ((5 / (4 * sieveSwappedDelta W)) * (1 / (R : ℝ) ^ 2)
+          * logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ (2 : ℕ))
+      ≤ harmonicPrimeMass D ^ (2 : ℕ) *
+          ((5 / (4 * sieveSwappedDelta W)) * (1 / (R : ℝ) ^ (2 : ℕ))
             * (((bigPrimeSet R (2 * R)).card : ℝ)
               + 2 * (2 * Real.exp 1 * ((sieveSwappedBudget R W : ℕ) : ℝ) * (2 * (R : ℝ))
-                      / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+                      / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
                     + ((sieveSwappedBudget R W : ℕ) : ℝ) *
                         ∑ e ∈ (rangePrimorial P₁ h).divisors,
                         (if ((e : ℕ) : ℝ) ≤ sieveSwappedLevel P₁ h

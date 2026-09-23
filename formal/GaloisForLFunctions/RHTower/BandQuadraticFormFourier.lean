@@ -8,7 +8,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.Set
 The smoothed sinc kernel is an average of cosines over the band,
 
 ```text
-sinc_c(x - y) = (c/(2 pi)) ∫_(-1)^1 cos(c t (x - y)) dt,
+sinc_c(x - y) = (c/(2 pi)) ∫_(-1)^(1 : ℕ) cos(c t (x - y)) dt,
 ```
 
 and the cosine factorisation turns each cosine double integral into the squared modulus of a
@@ -16,7 +16,7 @@ finite-Fourier transform.  Averaging in `t` therefore expresses the band quadrat
 continuous test function as an energy,
 
 ```text
-∫∫ sinc_c(x-y) psi(x) psi(y) dx dy = (c/(2 pi)) ∫_(-1)^1 ‖F_(c t) psi‖² dt,
+∫∫ sinc_c(x-y) psi(x) psi(y) dx dy = (c/(2 pi)) ∫_(-1)^(1 : ℕ) ‖F_(c t) psi‖² dt,
 ```
 
 which in particular is nonnegative: the band form is positive semidefinite.  The identity is the
@@ -36,7 +36,7 @@ open MeasureTheory Set intervalIntegral
 
 open _root_.RHTower
 
-/-- `∫_(-1)^1 cos (a t) dt` in closed form. -/
+/-- `∫_(-1)^(1 : ℕ) cos (a t) dt` in closed form. -/
 theorem integral_cos_mul_unit (a : ℝ) (ha : a ≠ 0) :
     (∫ t in (-1 : ℝ)..1, Real.cos (a * t)) = 2 * Real.sin a / a := by
   have halg : (a : ℝ)⁻¹ * (Real.sin a + Real.sin a) = 2 * Real.sin a / a := by
@@ -117,7 +117,7 @@ theorem integrable_cos_box (c t : ℝ) {ψ : ℝ → ℝ} (hψ : Continuous ψ) 
 /-- The inner double integral of the cosine form, evaluated by the cosine factorisation. -/
 theorem double_integral_cos_scaled (c t : ℝ) {ψ : ℝ → ℝ} (hψ : Continuous ψ) :
     (∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, Real.cos (c * (x - y) * t) * (ψ x * ψ y))
-      = ‖bandFourier (c * t) ψ‖ ^ 2 := by
+      = ‖bandFourier (c * t) ψ‖ ^ (2 : ℕ) := by
   have hcongr : (∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1,
       Real.cos (c * (x - y) * t) * (ψ x * ψ y))
       = ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, ψ x * ψ y * Real.cos (c * t * (x - y)) := by
@@ -152,7 +152,7 @@ theorem swap_interval_integral {F : ℝ → ℝ → ℝ}
 turns the sinc double integral into an average of squared finite-Fourier moduli. -/
 theorem double_integral_sincKernel_eq_energy (c : ℝ) {ψ : ℝ → ℝ} (hψ : Continuous ψ) :
     (∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, sincKernelSmooth c x y * (ψ x * ψ y))
-      = (c / (2 * Real.pi)) * ∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ 2 := by
+      = (c / (2 * Real.pi)) * ∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ (2 : ℕ) := by
   have hle : (-1 : ℝ) ≤ 1 := by norm_num
   have hinner : ∀ x y : ℝ, sincKernelSmooth c x y * (ψ x * ψ y)
       = (c / (2 * Real.pi)) * ∫ t in (-1 : ℝ)..1, Real.cos (c * (x - y) * t) * (ψ x * ψ y) := by
@@ -195,7 +195,7 @@ theorem double_integral_sincKernel_eq_energy (c : ℝ) {ψ : ℝ → ℝ} (hψ :
                 Real.cos (c * (z.1 - y) * z.2) * (ψ z.1 * ψ y)) (x, t) := fun x t => hIcc x t
         simp only [hrewrite]
         exact swap_interval_integral hcontH hle hle
-    _ = (c / (2 * Real.pi)) * ∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ 2 := by
+    _ = (c / (2 * Real.pi)) * ∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ (2 : ℕ) := by
         congr 1
         refine intervalIntegral.integral_congr fun t _ => ?_
         exact double_integral_cos_scaled c t hψ
@@ -205,7 +205,7 @@ theorem double_integral_sincKernel_nonneg {c : ℝ} (hc : 0 ≤ c) {ψ : ℝ →
     0 ≤ ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, sincKernelSmooth c x y * (ψ x * ψ y) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rw [double_integral_sincKernel_eq_energy c hψ]
-  have hnonneg : 0 ≤ ∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ 2 := by
+  have hnonneg : 0 ≤ ∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_of_le (by norm_num : (-1 : ℝ) ≤ 1)]
     refine MeasureTheory.setIntegral_nonneg measurableSet_Ioc fun t _ => ?_
     positivity

@@ -290,16 +290,16 @@ theorem endpoint_orientation_no_go {ρ : ℂ} {r₀ R : ℝ}
     {N : ℕ} {H₁ H₂ : ℂ → ℂ}
     (hH₁ : AnalyticOnNhd ℂ H₁ (chartRA ρ r₀ R))
     (hH₂ : AnalyticOnNhd ℂ H₂ (chartLA ρ r₀ R))
-    (hpH₁ : ∀ z ∈ chartRA ρ r₀ R, H₁ z ^ 2 = completedSEM N z)
-    (hpH₂ : ∀ z ∈ chartLA ρ r₀ R, H₂ z ^ 2 = completedSEM N z)
+    (hpH₁ : ∀ z ∈ chartRA ρ r₀ R, H₁ z ^ (2 : ℕ) = completedSEM N z)
+    (hpH₂ : ∀ z ∈ chartLA ρ r₀ R, H₂ z ^ (2 : ℕ) = completedSEM N z)
     (hzp : completedSEM N (ρ + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hzm : completedSEM N (ρ - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0) :
     ∃ (P₁ P₂ : Finset ℕ) (G₁ G₂ G₁' G₂' : ℂ → ℂ),
       (∀ p ∈ P₁, Nat.Prime p) ∧ (∀ p ∈ P₂, Nat.Prime p) ∧
-      (∀ z ∈ chartRA ρ r₀ R, G₁ z ^ 2 = anchoredSEM P₁ N z) ∧
-      (∀ z ∈ chartLA ρ r₀ R, G₂ z ^ 2 = anchoredSEM P₁ N z) ∧
-      (∀ z ∈ chartRA ρ r₀ R, G₁' z ^ 2 = anchoredSEM P₂ N z) ∧
-      (∀ z ∈ chartLA ρ r₀ R, G₂' z ^ 2 = anchoredSEM P₂ N z) ∧
+      (∀ z ∈ chartRA ρ r₀ R, G₁ z ^ (2 : ℕ) = anchoredSEM P₁ N z) ∧
+      (∀ z ∈ chartLA ρ r₀ R, G₂ z ^ (2 : ℕ) = anchoredSEM P₁ N z) ∧
+      (∀ z ∈ chartRA ρ r₀ R, G₁' z ^ (2 : ℕ) = anchoredSEM P₂ N z) ∧
+      (∀ z ∈ chartLA ρ r₀ R, G₂' z ^ (2 : ℕ) = anchoredSEM P₂ N z) ∧
       deckClass G₁ G₂ (ρ + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
           (ρ - (((r₀ + R) / 2 : ℝ) : ℂ) * I)
         = deckClass G₁' G₂' (ρ + (((r₀ + R) / 2 : ℝ) : ℂ) * I)

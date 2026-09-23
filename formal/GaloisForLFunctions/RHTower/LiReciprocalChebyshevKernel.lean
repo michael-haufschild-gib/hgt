@@ -58,17 +58,17 @@ theorem two_mul_chebyshevT_eval_half_add_inv (n : ℕ) {z : ℂ} (hz : z ≠ 0) 
 contribution of an FE zero pair is `2 − 2·T_n((4−y)/(4+y))`. -/
 theorem liPairKernel_eq_chebyshev (n : ℕ) {w : ℂ} (h0 : w ≠ 0) (h1 : w ≠ 1 / 2)
     (h2 : w ≠ -(1 / 2)) :
-    liPairKernel n w = liChebyshevKernel n (-(w ^ 2)⁻¹) := by
+    liPairKernel n w = liChebyshevKernel n (-(w ^ (2 : ℕ))⁻¹) := by
   have hA : (1 / 2 + w) ≠ 0 := fun h => h2 (by linear_combination h)
   have hB : (1 / 2 - w) ≠ 0 := fun h => h1 (by linear_combination -h)
   have hwm : (w - 1 / 2) ≠ 0 := fun h => h1 (by linear_combination h)
   have hwp : (w + 1 / 2) ≠ 0 := fun h => h2 (by linear_combination h)
-  have hw2 : (w : ℂ) ^ 2 ≠ 0 := pow_ne_zero 2 h0
+  have hw2 : (w : ℂ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 h0
   have hA2 : (1 : ℂ) + w * 2 ≠ 0 := fun h => hA (by linear_combination h / 2)
   have hB2 : (1 : ℂ) - w * 2 ≠ 0 := fun h => hB (by linear_combination h / 2)
   have hm2 : (w : ℂ) * 2 - 1 ≠ 0 := fun h => hwm (by linear_combination h / 2)
   have hp2 : (w : ℂ) * 2 + 1 ≠ 0 := fun h => hwp (by linear_combination h / 2)
-  have h4 : (4 : ℂ) * w ^ 2 - 1 ≠ 0 := by
+  have h4 : (4 : ℂ) * w ^ (2 : ℕ) - 1 ≠ 0 := by
     intro h
     have hfac : (2 * w - 1) * (2 * w + 1) = 0 := by linear_combination h
     rcases mul_eq_zero.mp hfac with h' | h'
@@ -78,27 +78,27 @@ theorem liPairKernel_eq_chebyshev (n : ℕ) {w : ℂ} (h0 : w ≠ 0) (h1 : w ≠
   have hq0 : q ≠ 0 := div_ne_zero hwm hwp
   have hAinv : (1 / 2 + w) * (1 / 2 + w)⁻¹ = 1 := mul_inv_cancel₀ hA
   have hBinv : (1 / 2 - w) * (1 / 2 - w)⁻¹ = 1 := mul_inv_cancel₀ hB
-  have hinv2 : (w : ℂ) ^ 2 * (w ^ 2)⁻¹ = 1 := mul_inv_cancel₀ hw2
+  have hinv2 : (w : ℂ) ^ (2 : ℕ) * (w ^ (2 : ℕ))⁻¹ = 1 := mul_inv_cancel₀ hw2
   have e1 : 1 - (1 / 2 + w)⁻¹ = q := by
     rw [hq, eq_div_iff hwp]
     linear_combination -hAinv
   have e2 : 1 - (1 / 2 - w)⁻¹ = q⁻¹ := by
     rw [hq, inv_div, eq_div_iff hwm]
     linear_combination hBinv
-  have hnumeq : (4 : ℂ) - -(w ^ 2)⁻¹ = (4 * w ^ 2 + 1) / w ^ 2 := by
+  have hnumeq : (4 : ℂ) - -(w ^ (2 : ℕ))⁻¹ = (4 * w ^ (2 : ℕ) + 1) / w ^ (2 : ℕ) := by
     rw [eq_div_iff hw2]
     linear_combination hinv2
-  have hdeneq : (4 : ℂ) + -(w ^ 2)⁻¹ = (4 * w ^ 2 - 1) / w ^ 2 := by
+  have hdeneq : (4 : ℂ) + -(w ^ (2 : ℕ))⁻¹ = (4 * w ^ (2 : ℕ) - 1) / w ^ (2 : ℕ) := by
     rw [eq_div_iff hw2]
     linear_combination -hinv2
-  have hL : (4 - -(w ^ 2)⁻¹) / (4 + -(w ^ 2)⁻¹) = (4 * w ^ 2 + 1) / (4 * w ^ 2 - 1) := by
+  have hL : (4 - -(w ^ (2 : ℕ))⁻¹) / (4 + -(w ^ (2 : ℕ))⁻¹) = (4 * w ^ (2 : ℕ) + 1) / (4 * w ^ (2 : ℕ) - 1) := by
     rw [hnumeq, hdeneq]
     field_simp
-  have hR : (q + q⁻¹) / 2 = (4 * w ^ 2 + 1) / (4 * w ^ 2 - 1) := by
+  have hR : (q + q⁻¹) / 2 = (4 * w ^ (2 : ℕ) + 1) / (4 * w ^ (2 : ℕ) - 1) := by
     rw [hq, inv_div, div_add_div _ _ hwp hwm, div_div,
       div_eq_div_iff (mul_ne_zero (mul_ne_zero hwp hwm) two_ne_zero) h4]
     ring
-  have hy : (4 - -(w ^ 2)⁻¹) / (4 + -(w ^ 2)⁻¹) = (q + q⁻¹) / 2 := by rw [hL, hR]
+  have hy : (4 - -(w ^ (2 : ℕ))⁻¹) / (4 + -(w ^ (2 : ℕ))⁻¹) = (q + q⁻¹) / 2 := by rw [hL, hR]
   rw [liPairKernel, liChebyshevKernel, e1, e2, hy,
     two_mul_chebyshevT_eval_half_add_inv n hq0]
   ring

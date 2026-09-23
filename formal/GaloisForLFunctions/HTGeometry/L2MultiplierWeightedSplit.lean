@@ -23,44 +23,44 @@ theorem norm_lpBoundedMulCLM_sq_split {φ : ℝ → ℂ} (hφ : Measurable φ) {
     (hC : ∀ x, ‖φ x‖ ≤ C) {S : Set ℝ} (hS : MeasurableSet S) {B : ℝ → ℝ}
     (hB : ∀ x ∈ S, ‖φ x‖ ≤ B x)
     (g : Lp (α := ℝ) (μ := (volume : Measure ℝ)) ℂ 2)
-    (hint : IntegrableOn (fun x => (B x) ^ 2 * ‖(g : ℝ → ℂ) x‖ ^ 2) S) :
-    ‖lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ)) hφ hC0 hC g‖ ^ 2
-      ≤ (∫ x in S, (B x) ^ 2 * ‖(g : ℝ → ℂ) x‖ ^ 2)
-        + C ^ 2 * ∫ x in Sᶜ, ‖(g : ℝ → ℂ) x‖ ^ 2 := by
-  have hgint : Integrable (fun x : ℝ => ‖(g : ℝ → ℂ) x‖ ^ 2) :=
+    (hint : IntegrableOn (fun x => (B x) ^ (2 : ℕ) * ‖(g : ℝ → ℂ) x‖ ^ (2 : ℕ)) S) :
+    ‖lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ)) hφ hC0 hC g‖ ^ (2 : ℕ)
+      ≤ (∫ x in S, (B x) ^ (2 : ℕ) * ‖(g : ℝ → ℂ) x‖ ^ (2 : ℕ))
+        + C ^ (2 : ℕ) * ∫ x in Sᶜ, ‖(g : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
+  have hgint : Integrable (fun x : ℝ => ‖(g : ℝ → ℂ) x‖ ^ (2 : ℕ)) :=
     (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable g)).1 (Lp.memLp g)
-  have hmeas : AEStronglyMeasurable (fun x : ℝ => ‖φ x * (g : ℝ → ℂ) x‖ ^ 2)
+  have hmeas : AEStronglyMeasurable (fun x : ℝ => ‖φ x * (g : ℝ → ℂ) x‖ ^ (2 : ℕ))
       (volume : Measure ℝ) :=
     ((hφ.aestronglyMeasurable.mul (Lp.aestronglyMeasurable g)).norm.pow 2)
-  have hpointwise : ∀ x : ℝ, ‖φ x * (g : ℝ → ℂ) x‖ ^ 2 ≤ C ^ 2 * ‖(g : ℝ → ℂ) x‖ ^ 2 := by
+  have hpointwise : ∀ x : ℝ, ‖φ x * (g : ℝ → ℂ) x‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) * ‖(g : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
     intro x
     rw [norm_mul, mul_pow]
     exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) (hC x) 2) (by positivity)
-  have hprodint : Integrable (fun x : ℝ => ‖φ x * (g : ℝ → ℂ) x‖ ^ 2) := by
-    refine Integrable.mono (hgint.const_mul (C ^ 2)) hmeas ?_
+  have hprodint : Integrable (fun x : ℝ => ‖φ x * (g : ℝ → ℂ) x‖ ^ (2 : ℕ)) := by
+    refine Integrable.mono (hgint.const_mul (C ^ (2 : ℕ))) hmeas ?_
     filter_upwards with x
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (by positivity),
       abs_of_nonneg (by positivity)]
     exact hpointwise x
-  have hval : ‖lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ)) hφ hC0 hC g‖ ^ 2
-      = ∫ x : ℝ, ‖φ x * (g : ℝ → ℂ) x‖ ^ 2 := by
+  have hval : ‖lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ)) hφ hC0 hC g‖ ^ (2 : ℕ)
+      = ∫ x : ℝ, ‖φ x * (g : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
     rw [norm_lpTwo_sq (μ := (volume : Measure ℝ))]
     refine integral_congr_ae ?_
     filter_upwards [lpBoundedMulCLM_coeFn (p := 2) (μ := (volume : Measure ℝ)) hφ hC0 hC g]
       with x hx
     rw [hx]
   rw [hval, ← integral_add_compl hS hprodint]
-  have hband : ∫ x in S, ‖φ x * (g : ℝ → ℂ) x‖ ^ 2
-      ≤ ∫ x in S, (B x) ^ 2 * ‖(g : ℝ → ℂ) x‖ ^ 2 := by
+  have hband : ∫ x in S, ‖φ x * (g : ℝ → ℂ) x‖ ^ (2 : ℕ)
+      ≤ ∫ x in S, (B x) ^ (2 : ℕ) * ‖(g : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
     refine setIntegral_mono_on hprodint.integrableOn hint hS ?_
     intro x hx
     rw [norm_mul, mul_pow]
     exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) (hB x hx) 2) (by positivity)
-  have htail : ∫ x in Sᶜ, ‖φ x * (g : ℝ → ℂ) x‖ ^ 2
-      ≤ C ^ 2 * ∫ x in Sᶜ, ‖(g : ℝ → ℂ) x‖ ^ 2 := by
+  have htail : ∫ x in Sᶜ, ‖φ x * (g : ℝ → ℂ) x‖ ^ (2 : ℕ)
+      ≤ C ^ (2 : ℕ) * ∫ x in Sᶜ, ‖(g : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
     rw [← integral_const_mul]
     refine setIntegral_mono_on hprodint.integrableOn
-      ((hgint.const_mul (C ^ 2)).integrableOn) hS.compl ?_
+      ((hgint.const_mul (C ^ (2 : ℕ))).integrableOn) hS.compl ?_
     intro x _
     exact hpointwise x
   linarith [hband, htail]

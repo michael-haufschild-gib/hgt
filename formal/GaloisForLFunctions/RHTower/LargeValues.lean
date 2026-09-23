@@ -23,9 +23,9 @@ namespace RHTower
 
 /-- The derivative of `t ↦ ‖f t‖²` is `2⟪f x, f' x⟫_ℝ`. -/
 theorem sqNorm_hasDerivAt {f : ℝ → ℂ} {f' : ℂ} {x : ℝ} (h : HasDerivAt f f' x) :
-    HasDerivAt (fun t => ‖f t‖ ^ 2) (2 * inner ℝ (f x) f') x := by
+    HasDerivAt (fun t => ‖f t‖ ^ (2 : ℕ)) (2 * inner ℝ (f x) f') x := by
   have hi := HasDerivAt.inner ℝ h h
-  have heq : (fun t => inner ℝ (f t) (f t)) = (fun t => ‖f t‖ ^ 2) := by
+  have heq : (fun t => inner ℝ (f t) (f t)) = (fun t => ‖f t‖ ^ (2 : ℕ)) := by
     funext t; exact real_inner_self_eq_norm_sq (f t)
   rw [heq] at hi
   have hsymm : inner ℝ (f x) f' + inner ℝ f' (f x) = 2 * inner ℝ (f x) f' := by
@@ -41,7 +41,7 @@ theorem abs_sqNorm_deriv_le {f : ℝ → ℂ} {f' : ℂ} (x : ℝ) :
 /-- **AM–GM split.**  For `η > 0` and `a, b ≥ 0`, `2ab ≤ a²/η + η b²` (equivalently
 `0 ≤ (a − ηb)²/η`).  This absorbs the Sobolev cross term into the two `L²` masses. -/
 theorem two_mul_le_div_add_mul {a b η : ℝ} (hη : 0 < η) :
-    2 * (a * b) ≤ a ^ 2 / η + η * b ^ 2 := by
+    2 * (a * b) ≤ a ^ (2 : ℕ) / η + η * b ^ (2 : ℕ) := by
   rw [div_add' _ _ _ (ne_of_gt hη), le_div_iff₀ hη]
   nlinarith [sq_nonneg (a - η * b)]
 
@@ -53,14 +53,14 @@ cross term: `‖f t‖² ≤ δ^{-1}∫_c^{c+δ}‖f‖² + ∫_c^{c+δ} 2‖f�
 theorem sobolev_pointwise {f f' : ℝ → ℂ} {c δ : ℝ} (hδ : 0 < δ)
     (hf : ∀ y ∈ Set.uIcc c (c + δ), HasDerivAt f (f' y) y)
     (hg'int : IntervalIntegrable (fun y => 2 * inner ℝ (f y) (f' y)) volume c (c + δ))
-    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ 2) volume c (c + δ))
+    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ (2 : ℕ)) volume c (c + δ))
     (hcrossint : IntervalIntegrable (fun y => 2 * (‖f y‖ * ‖f' y‖)) volume c (c + δ))
     {t : ℝ} (ht : t ∈ Set.Icc c (c + δ)) :
-    ‖f t‖ ^ 2 ≤ (1 / δ) * (∫ u in c..c + δ, ‖f u‖ ^ 2)
+    ‖f t‖ ^ (2 : ℕ) ≤ (1 / δ) * (∫ u in c..c + δ, ‖f u‖ ^ (2 : ℕ))
       + ∫ u in c..c + δ, 2 * (‖f u‖ * ‖f' u‖) := by
   have hcd : c ≤ c + δ := by linarith
   have huIcc_eq : Set.uIcc c (c + δ) = Set.Icc c (c + δ) := Set.uIcc_of_le hcd
-  set g : ℝ → ℝ := fun y => ‖f y‖ ^ 2 with hg
+  set g : ℝ → ℝ := fun y => ‖f y‖ ^ (2 : ℕ) with hg
   set g' : ℝ → ℝ := fun y => 2 * inner ℝ (f y) (f' y) with hg'
   have hgderiv : ∀ y ∈ Set.uIcc c (c + δ), HasDerivAt g (g' y) y :=
     fun y hy => sqNorm_hasDerivAt (hf y hy)
@@ -108,9 +108,9 @@ theorem sobolev_pointwise {f f' : ℝ → ℂ} {c δ : ℝ} (hδ : 0 < δ)
         = ((∫ u in c..c + δ, g u) + δ * ∫ y in c..c + δ, |g' y|) / δ := by field_simp
     rw [hrw, le_div_iff₀ hδ]
     linarith [hIntmono]
-  calc ‖f t‖ ^ 2 = g t := rfl
+  calc ‖f t‖ ^ (2 : ℕ) = g t := rfl
     _ ≤ (1 / δ) * (∫ u in c..c + δ, g u) + ∫ y in c..c + δ, |g' y| := hg_t
-    _ ≤ (1 / δ) * (∫ u in c..c + δ, ‖f u‖ ^ 2) + ∫ u in c..c + δ, 2 * (‖f u‖ * ‖f' u‖) :=
+    _ ≤ (1 / δ) * (∫ u in c..c + δ, ‖f u‖ ^ (2 : ℕ)) + ∫ u in c..c + δ, 2 * (‖f u‖ * ‖f' u‖) :=
         add_le_add (le_refl _) habs_le
 
 /-- **The Gallagher grid sum.**  Summing the Sobolev bound over the `R` cells of the uniform grid
@@ -125,10 +125,10 @@ controlled by a mean value (second moment) plus a derivative mean value. -/
 theorem gallagher_grid {f f' : ℝ → ℂ} {A δ : ℝ} (hδ : 0 < δ) (R : ℕ)
     (hf : ∀ y ∈ Set.Icc A (A + R * δ), HasDerivAt f (f' y) y)
     (hg'int : IntervalIntegrable (fun y => 2 * inner ℝ (f y) (f' y)) volume A (A + R * δ))
-    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ 2) volume A (A + R * δ))
+    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ (2 : ℕ)) volume A (A + R * δ))
     (hcrossint : IntervalIntegrable (fun y => 2 * (‖f y‖ * ‖f' y‖)) volume A (A + R * δ)) :
-    ∑ r ∈ Finset.range R, ‖f (A + r * δ)‖ ^ 2
-      ≤ (1 / δ) * (∫ u in A..A + R * δ, ‖f u‖ ^ 2)
+    ∑ r ∈ Finset.range R, ‖f (A + r * δ)‖ ^ (2 : ℕ)
+      ≤ (1 / δ) * (∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ))
         + ∫ u in A..A + R * δ, 2 * (‖f u‖ * ‖f' u‖) := by
   set a : ℕ → ℝ := fun k => A + k * δ with ha
   have hcell : ∀ k, k < R → Set.uIcc (a k) (a k + δ) ⊆ Set.Icc A (A + R * δ) := by
@@ -141,8 +141,8 @@ theorem gallagher_grid {f f' : ℝ → ℂ} {A δ : ℝ} (hδ : 0 < δ) (R : ℕ
     exact Set.Icc_subset_Icc h1 h2
   have hAle : A ≤ A + R * δ := le_add_of_nonneg_right (by positivity)
   -- per-cell Sobolev bound at the left endpoint
-  have hper : ∀ k ∈ Finset.range R, ‖f (a k)‖ ^ 2
-      ≤ (1 / δ) * (∫ u in a k..a k + δ, ‖f u‖ ^ 2)
+  have hper : ∀ k ∈ Finset.range R, ‖f (a k)‖ ^ (2 : ℕ)
+      ≤ (1 / δ) * (∫ u in a k..a k + δ, ‖f u‖ ^ (2 : ℕ))
         + ∫ u in a k..a k + δ, 2 * (‖f u‖ * ‖f' u‖) := by
     intro k hk
     rw [Finset.mem_range] at hk
@@ -161,21 +161,21 @@ theorem gallagher_grid {f f' : ℝ → ℂ} {A δ : ℝ} (hδ : 0 < δ) (R : ℕ
     exact hh.mono_set (by
       rw [Set.uIcc_of_le (by linarith : A ≤ A + R * δ)]
       exact hcell k hk)
-  have hsum1 : ∑ k ∈ Finset.range R, ∫ u in a k..a (k + 1), ‖f u‖ ^ 2
-      = ∫ u in A..A + R * δ, ‖f u‖ ^ 2 := by
+  have hsum1 : ∑ k ∈ Finset.range R, ∫ u in a k..a (k + 1), ‖f u‖ ^ (2 : ℕ)
+      = ∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ) := by
     rw [sum_integral_adjacent_intervals (hadj _ hgint)]; norm_num [ha]
   have hsum2 : ∑ k ∈ Finset.range R, ∫ u in a k..a (k + 1), 2 * (‖f u‖ * ‖f' u‖)
       = ∫ u in A..A + R * δ, 2 * (‖f u‖ * ‖f' u‖) := by
     rw [sum_integral_adjacent_intervals (hadj _ hcrossint)]; norm_num [ha]
   have hcelleq : ∀ k, a k + δ = a (k + 1) := fun k => by rw [ha]; push_cast; ring
-  calc ∑ r ∈ Finset.range R, ‖f (a r)‖ ^ 2
-      ≤ ∑ r ∈ Finset.range R, ((1 / δ) * (∫ u in a r..a r + δ, ‖f u‖ ^ 2)
+  calc ∑ r ∈ Finset.range R, ‖f (a r)‖ ^ (2 : ℕ)
+      ≤ ∑ r ∈ Finset.range R, ((1 / δ) * (∫ u in a r..a r + δ, ‖f u‖ ^ (2 : ℕ))
           + ∫ u in a r..a r + δ, 2 * (‖f u‖ * ‖f' u‖)) := Finset.sum_le_sum hper
-    _ = (1 / δ) * (∑ r ∈ Finset.range R, ∫ u in a r..a (r + 1), ‖f u‖ ^ 2)
+    _ = (1 / δ) * (∑ r ∈ Finset.range R, ∫ u in a r..a (r + 1), ‖f u‖ ^ (2 : ℕ))
           + ∑ r ∈ Finset.range R, ∫ u in a r..a (r + 1), 2 * (‖f u‖ * ‖f' u‖) := by
         rw [Finset.sum_add_distrib, ← Finset.mul_sum]
         simp_rw [hcelleq]
-    _ = (1 / δ) * (∫ u in A..A + R * δ, ‖f u‖ ^ 2)
+    _ = (1 / δ) * (∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ))
           + ∫ u in A..A + R * δ, 2 * (‖f u‖ * ‖f' u‖) := by rw [hsum1, hsum2]
 
 /-- **The large-values inequality.**  If `R` uniform grid points `A + rδ` (`r < R`) all have
@@ -190,31 +190,31 @@ that (through a mollifier) yields Carlson's sublinear zero density. -/
 theorem large_values_count {f f' : ℝ → ℂ} {A δ V η : ℝ} (hδ : 0 < δ) (hη : 0 < η) (hV0 : 0 ≤ V)
     (R : ℕ) (hf : ∀ y ∈ Set.Icc A (A + R * δ), HasDerivAt f (f' y) y)
     (hg'int : IntervalIntegrable (fun y => 2 * inner ℝ (f y) (f' y)) volume A (A + R * δ))
-    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ 2) volume A (A + R * δ))
-    (hsqf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ 2) volume A (A + R * δ))
+    (hgint : IntervalIntegrable (fun y => ‖f y‖ ^ (2 : ℕ)) volume A (A + R * δ))
+    (hsqf'int : IntervalIntegrable (fun y => ‖f' y‖ ^ (2 : ℕ)) volume A (A + R * δ))
     (hcrossint : IntervalIntegrable (fun y => 2 * (‖f y‖ * ‖f' y‖)) volume A (A + R * δ))
     (hV : ∀ r, r < R → V ≤ ‖f (A + r * δ)‖) :
-    (R : ℝ) * V ^ 2 ≤ (1 / δ + 1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ 2)
-      + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ 2) := by
+    (R : ℝ) * V ^ (2 : ℕ) ≤ (1 / δ + 1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ))
+      + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ (2 : ℕ)) := by
   -- lower bound: R·V² ≤ ∑‖f(A+rδ)‖²
-  have hlow : (R : ℝ) * V ^ 2 ≤ ∑ r ∈ Finset.range R, ‖f (A + r * δ)‖ ^ 2 := by
-    calc (R : ℝ) * V ^ 2 = ∑ _r ∈ Finset.range R, V ^ 2 := by
+  have hlow : (R : ℝ) * V ^ (2 : ℕ) ≤ ∑ r ∈ Finset.range R, ‖f (A + r * δ)‖ ^ (2 : ℕ) := by
+    calc (R : ℝ) * V ^ (2 : ℕ) = ∑ _r ∈ Finset.range R, V ^ (2 : ℕ) := by
           rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-      _ ≤ ∑ r ∈ Finset.range R, ‖f (A + r * δ)‖ ^ 2 :=
+      _ ≤ ∑ r ∈ Finset.range R, ‖f (A + r * δ)‖ ^ (2 : ℕ) :=
           Finset.sum_le_sum (fun r hr =>
             pow_le_pow_left₀ hV0 (hV r (Finset.mem_range.mp hr)) 2)
   -- cross term AM–GM: ∫2‖f‖‖f'‖ ≤ (1/η)∫‖f‖² + η∫‖f'‖²
   have hcross : (∫ u in A..A + R * δ, 2 * (‖f u‖ * ‖f' u‖))
-      ≤ (1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ 2)
-        + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ 2) := by
+      ≤ (1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ))
+        + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ (2 : ℕ)) := by
     have hAle : A ≤ A + R * δ := le_add_of_nonneg_right (by positivity)
-    have hRHS : (∫ u in A..A + R * δ, (1 / η) * ‖f u‖ ^ 2 + η * ‖f' u‖ ^ 2)
-        = (1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ 2)
-          + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ 2) := by
+    have hRHS : (∫ u in A..A + R * δ, (1 / η) * ‖f u‖ ^ (2 : ℕ) + η * ‖f' u‖ ^ (2 : ℕ))
+        = (1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ))
+          + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ (2 : ℕ)) := by
       rw [intervalIntegral.integral_add (hgint.const_mul (1 / η)) (hsqf'int.const_mul η),
         intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
     have hmaj : (∫ u in A..A + R * δ, 2 * (‖f u‖ * ‖f' u‖))
-        ≤ ∫ u in A..A + R * δ, (1 / η) * ‖f u‖ ^ 2 + η * ‖f' u‖ ^ 2 := by
+        ≤ ∫ u in A..A + R * δ, (1 / η) * ‖f u‖ ^ (2 : ℕ) + η * ‖f' u‖ ^ (2 : ℕ) := by
       apply integral_mono_on hAle hcrossint
         ((hgint.const_mul (1 / η)).add (hsqf'int.const_mul η))
       intro y _
@@ -225,13 +225,13 @@ theorem large_values_count {f f' : ℝ → ℂ} {A δ V η : ℝ} (hδ : 0 < δ)
     exact hmaj
   -- assemble
   have hgall := gallagher_grid hδ R hf hg'int hgint hcrossint
-  calc (R : ℝ) * V ^ 2 ≤ ∑ r ∈ Finset.range R, ‖f (A + r * δ)‖ ^ 2 := hlow
-    _ ≤ (1 / δ) * (∫ u in A..A + R * δ, ‖f u‖ ^ 2)
+  calc (R : ℝ) * V ^ (2 : ℕ) ≤ ∑ r ∈ Finset.range R, ‖f (A + r * δ)‖ ^ (2 : ℕ) := hlow
+    _ ≤ (1 / δ) * (∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ))
           + ∫ u in A..A + R * δ, 2 * (‖f u‖ * ‖f' u‖) := hgall
-    _ ≤ (1 / δ) * (∫ u in A..A + R * δ, ‖f u‖ ^ 2)
-          + ((1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ 2)
-            + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ 2)) := by linarith [hcross]
-    _ = (1 / δ + 1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ 2)
-          + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ 2) := by ring
+    _ ≤ (1 / δ) * (∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ))
+          + ((1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ))
+            + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ (2 : ℕ))) := by linarith [hcross]
+    _ = (1 / δ + 1 / η) * (∫ u in A..A + R * δ, ‖f u‖ ^ (2 : ℕ))
+          + η * (∫ u in A..A + R * δ, ‖f' u‖ ^ (2 : ℕ)) := by ring
 
 end RHTower

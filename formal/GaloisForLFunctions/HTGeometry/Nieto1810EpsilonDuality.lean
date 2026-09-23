@@ -58,7 +58,7 @@ theorem epsilonTensorDual_sub {n : ℕ} (ψ φ : Quantum.NQubitVec n) :
   funext i
   simp [qubitComplement]
 
-@[simp] theorem epsilonBitSign_sq (a : Fin 2) : epsilonBitSign a ^ 2 = 1 := by
+@[simp] theorem epsilonBitSign_sq (a : Fin 2) : epsilonBitSign a ^ (2 : ℕ) = 1 := by
   fin_cases a <;> norm_num [epsilonBitSign]
 
 @[simp] theorem epsilonBitSign_rev (a : Fin 2) :
@@ -66,7 +66,7 @@ theorem epsilonTensorDual_sub {n : ℕ} (ψ φ : Quantum.NQubitVec n) :
   fin_cases a <;> norm_num [epsilonBitSign, Fin.rev]
 
 @[simp] theorem epsilonTensorSign_sq {n : ℕ} (a : Quantum.NQubitBasis n) :
-    epsilonTensorSign a ^ 2 = 1 := by
+    epsilonTensorSign a ^ (2 : ℕ) = 1 := by
   rw [epsilonTensorSign, ← Finset.prod_pow]
   simp
 
@@ -83,7 +83,7 @@ theorem epsilonTensorDual_squared {n : ℕ} (ψ : Quantum.NQubitVec n) :
     qubitComplement_involutive, epsilonTensorSign_complement]
   calc
     epsilonTensorSign a * ((-1 : ℂ) ^ n * epsilonTensorSign a * ψ a) =
-        (-1 : ℂ) ^ n * epsilonTensorSign a ^ 2 * ψ a := by ring
+        (-1 : ℂ) ^ n * epsilonTensorSign a ^ (2 : ℕ) * ψ a := by ring
     _ = (-1 : ℂ) ^ n * ψ a := by rw [epsilonTensorSign_sq, mul_one]
 
 theorem epsilonTensorDual_squared_one (ψ : Quantum.NQubitVec 1) :
@@ -219,8 +219,8 @@ theorem weylEpsilon_not_involutive :
   have h00 := congrFun (congrFun h (0 : Fin 2)) (0 : Fin 2)
   norm_num at h00
 
-theorem weylEpsilon_fourth_power : HTGeometry.hlsWeylEpsilon ^ 4 = 1 := by
-  rw [show HTGeometry.hlsWeylEpsilon ^ 4 =
+theorem weylEpsilon_fourth_power : HTGeometry.hlsWeylEpsilon ^ (4 : ℕ) = 1 := by
+  rw [show HTGeometry.hlsWeylEpsilon ^ (4 : ℕ) =
     (HTGeometry.hlsWeylEpsilon * HTGeometry.hlsWeylEpsilon) *
       (HTGeometry.hlsWeylEpsilon * HTGeometry.hlsWeylEpsilon) by noncomm_ring]
   rw [HTGeometry.hlsWeylEpsilon_squared]

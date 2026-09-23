@@ -99,14 +99,14 @@ def levinsonCriticalDetectorFullLongEnergy
     (lam : ℝ) (L M : ℕ) : ℝ :=
   ∑ r ∈ (Finset.univ : Finset (Fin (L * M))).filter
       (fun r : Fin (L * M) => L < (r : ℕ) + 1),
-    ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M ((r : ℕ) + 1)‖ ^ 2
+    ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M ((r : ℕ) + 1)‖ ^ (2 : ℕ)
 
 /-- Energy of the exact head divisors omitted on long product indices. -/
 def levinsonCriticalDetectorOmittedLongEnergy
     (lam : ℝ) (L M : ℕ) : ℝ :=
   ∑ r ∈ (Finset.univ : Finset (Fin (L * M))).filter
       (fun r : Fin (L * M) => L < (r : ℕ) + 1),
-    ‖levinsonCriticalDetectorOmittedHeadCoeff lam L M ((r : ℕ) + 1)‖ ^ 2
+    ‖levinsonCriticalDetectorOmittedHeadCoeff lam L M ((r : ℕ) + 1)‖ ^ (2 : ℕ)
 
 theorem levinsonCriticalDetectorFullLongEnergy_nonneg
     (lam : ℝ) (L M : ℕ) :
@@ -146,18 +146,18 @@ theorem levinsonCriticalDetectorFullLongEnergy_eq_sum_Ioc
     (lam : ℝ) (L M : ℕ) :
     levinsonCriticalDetectorFullLongEnergy lam L M =
       ∑ k ∈ Finset.Ioc L (L * M),
-        ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2 := by
+        ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ) := by
   exact Sieve.sum_fin_filter_succ_gt_eq_sum_Ioc (L * M) L
-    (fun k => ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ 2)
+    (fun k => ‖Sieve.levinsonLinearMollifiedCriticalDetectorCoeff lam M k‖ ^ (2 : ℕ))
 
 /-- The omitted-head long energy in standard positive-natural interval form. -/
 theorem levinsonCriticalDetectorOmittedLongEnergy_eq_sum_Ioc
     (lam : ℝ) (L M : ℕ) :
     levinsonCriticalDetectorOmittedLongEnergy lam L M =
       ∑ k ∈ Finset.Ioc L (L * M),
-        ‖levinsonCriticalDetectorOmittedHeadCoeff lam L M k‖ ^ 2 := by
+        ‖levinsonCriticalDetectorOmittedHeadCoeff lam L M k‖ ^ (2 : ℕ) := by
   exact Sieve.sum_fin_filter_succ_gt_eq_sum_Ioc (L * M) L
-    (fun k => ‖levinsonCriticalDetectorOmittedHeadCoeff lam L M k‖ ^ 2)
+    (fun k => ‖levinsonCriticalDetectorOmittedHeadCoeff lam L M k‖ ^ (2 : ℕ))
 
 /-- Arithmetic quadratic-form normal form of the full differentiated Barban--Vehov long energy. -/
 theorem levinsonCriticalDetectorFullLongEnergy_eq_arithmetic
@@ -166,7 +166,7 @@ theorem levinsonCriticalDetectorFullLongEnergy_eq_arithmetic
       ∑ k ∈ Finset.Ioc L (L * M),
         (((1 - lam * Real.log k) * Sieve.barbanVehovCoeff M k +
               lam * Sieve.barbanVehovLogMomentCoeff M k) /
-            Real.log M * (1 / Real.sqrt k)) ^ 2 := by
+            Real.log M * (1 / Real.sqrt k)) ^ (2 : ℕ) := by
   rw [levinsonCriticalDetectorFullLongEnergy_eq_sum_Ioc]
   apply Finset.sum_congr rfl
   intro k hk

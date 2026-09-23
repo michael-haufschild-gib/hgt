@@ -398,7 +398,7 @@ theorem analyticOnNhd_suzukiChebyshevLogAverageComplexLaplaceTransform :
 /-- The explicit zeta-logarithmic-derivative response to the complex arithmetic Laplace
 transform.  Its displayed denominators are nonzero throughout `Re z > 1/2`. -/
 def suzukiChebyshevLogAverageComplexZetaResponse (z : ℂ) : ℂ :=
-  logDeriv riemannZeta (z + 1 / 2) / z ^ 2 + 4 / (z - 1 / 2)
+  logDeriv riemannZeta (z + 1 / 2) / z ^ (2 : ℕ) + 4 / (z - 1 / 2)
 
 /-- Translation by `1/2` maps the complex Laplace half-plane into the Euler-product
 half-plane for zeta. -/
@@ -425,11 +425,11 @@ theorem analyticOnNhd_suzukiChebyshevLogAverageComplexZetaResponse :
       suzukiChebyshevLogAverageComplexLaplaceDomain :=
     analyticOnNhd_logDeriv_riemannZeta_re_gt_one.comp hshift
       mapsTo_add_half_suzukiChebyshevLogAverageComplexLaplaceDomain
-  have hsq : AnalyticOnNhd ℂ (fun z : ℂ => z ^ 2)
+  have hsq : AnalyticOnNhd ℂ (fun z : ℂ => z ^ (2 : ℕ))
       suzukiChebyshevLogAverageComplexLaplaceDomain :=
     analyticOnNhd_id.pow 2
   have hfirst : AnalyticOnNhd ℂ
-      (fun z : ℂ => logDeriv riemannZeta (z + 1 / 2) / z ^ 2)
+      (fun z : ℂ => logDeriv riemannZeta (z + 1 / 2) / z ^ (2 : ℕ))
       suzukiChebyshevLogAverageComplexLaplaceDomain :=
     hlog.div hsq fun z hz => by
       apply pow_ne_zero
@@ -563,7 +563,7 @@ correction term explicit. -/
 theorem xiSpectralNegativeLogDerivative_neg_I_mul_eq_complexLaplaceTransform_of_mem
     {z : ℂ} (hz : z ∈ suzukiChebyshevLogAverageComplexLaplaceDomain) :
     xiSpectralNegativeLogDerivative (-Complex.I * z) =
-      -(z ^ 2) *
+      -(z ^ (2 : ℕ)) *
           (suzukiChebyshevLogAverageComplexLaplaceTransform z -
             4 / (z - 1 / 2)) -
         suzukiChebyshevMellinCompletedCorrection (z + 1 / 2) := by
@@ -573,7 +573,7 @@ theorem xiSpectralNegativeLogDerivative_neg_I_mul_eq_complexLaplaceTransform_of_
     intro hzero
     subst z
     norm_num [suzukiChebyshevLogAverageComplexLaplaceDomain] at hz
-  have hD : z ^ 2 ≠ 0 := pow_ne_zero 2 hz0
+  have hD : z ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hz0
   rw [suzukiChebyshevLogAverageComplexLaplaceTransform_eq_zetaResponse hz]
   unfold suzukiChebyshevLogAverageComplexZetaResponse
   rw [logDeriv_riemannZeta_eq_logDeriv_riemannXi_sub_mellinCompletedCorrection hs]
@@ -581,7 +581,7 @@ theorem xiSpectralNegativeLogDerivative_neg_I_mul_eq_complexLaplaceTransform_of_
       -xiSpectralNegativeLogDerivative (-Complex.I * z) by
     rw [xiSpectralNegativeLogDerivative_neg_I_mul_complexLaplaceParameter]
     ring]
-  let D : ℂ := z ^ 2
+  let D : ℂ := z ^ (2 : ℕ)
   let X : ℂ := xiSpectralNegativeLogDerivative (-Complex.I * z)
   let C : ℂ := suzukiChebyshevMellinCompletedCorrection (z + 1 / 2)
   let P : ℂ := 4 / (z - 1 / 2)
@@ -598,7 +598,7 @@ theorem xiSpectralNegativeLogDerivative_neg_I_mul_eq_complexLaplaceTransform_of_
 theorem xiSpectralNegativeLogDerivative_neg_I_mul_eq_complexLaplaceTransform
     {lambda : ℝ} (hlambda : 1 / 2 < lambda) :
     xiSpectralNegativeLogDerivative (-Complex.I * (lambda : ℂ)) =
-      -((lambda ^ 2 : ℝ) : ℂ) *
+      -((lambda ^ (2 : ℕ) : ℝ) : ℂ) *
           (suzukiChebyshevLogAverageComplexLaplaceTransform (lambda : ℂ) -
             ((4 / (lambda - 1 / 2) : ℝ) : ℂ)) -
         suzukiChebyshevMellinCompletedCorrection

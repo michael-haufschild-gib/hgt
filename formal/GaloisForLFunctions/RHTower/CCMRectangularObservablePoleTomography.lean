@@ -67,7 +67,7 @@ theorem norm_xiRectangularWeilRemainderCoefficient_le
     (n : ℕ) :
     ‖xiRectangularWeilRemainderCoefficient L N n‖ ≤
       rectangularTwoEdgeRemainderBound L *
-        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   by_cases hn : N ≤ n
   · obtain ⟨hn1, hLa⟩ := hN n hn
     have hrem := norm_xiWeilPolarization_rectangular_sub_dominant_le hLa
@@ -96,7 +96,7 @@ theorem xiRectangularWeilRemainderCoefficient_LSeriesSummable
     LSeriesSummable (xiRectangularWeilRemainderCoefficient L N) s := by
   apply LSeriesSummable_of_bounded_of_one_lt_re
     (m := rectangularTwoEdgeRemainderBound L *
-      ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2) _ hs
+      ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) _ hs
   intro n hn
   exact norm_xiRectangularWeilRemainderCoefficient_le hN n
 

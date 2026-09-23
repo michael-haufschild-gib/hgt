@@ -169,7 +169,7 @@ def xiWeilSchwarzLp (v : lp (fun _ : XiZeroCopy => ℂ) 2) :
   refine ⟨fun q ↦ (starRingEnd ℂ) (v (xiZeroCopyConjEquiv q)), ?_⟩
   apply HilbertSchmidt.memℓp_of_sq
   have hbase : Summable (fun q : XiZeroCopy ↦
-      ‖(starRingEnd ℂ) (v q)‖ ^ 2) :=
+      ‖(starRingEnd ℂ) (v q)‖ ^ (2 : ℕ)) :=
     (HilbertSchmidt.summable_coe_sq v).congr fun q ↦ by
       rw [Complex.norm_conj]
   simpa only [Function.comp_apply] using!
@@ -183,10 +183,10 @@ def xiWeilSchwarzLp (v : lp (fun _ : XiZeroCopy => ℂ) 2) :
 /-- Schwarz conjugation preserves the `ell²` norm. -/
 theorem norm_xiWeilSchwarzLp (v : lp (fun _ : XiZeroCopy => ℂ) 2) :
     ‖xiWeilSchwarzLp v‖ = ‖v‖ := by
-  have hsq : ‖xiWeilSchwarzLp v‖ ^ 2 = ‖v‖ ^ 2 := by
+  have hsq : ‖xiWeilSchwarzLp v‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) := by
     rw [HilbertSchmidt.lp_norm_sq_eq, HilbertSchmidt.lp_norm_sq_eq]
     simpa only [xiWeilSchwarzLp_apply, Complex.norm_conj] using
-      xiZeroCopyConjEquiv.tsum_eq (fun q ↦ ‖v q‖ ^ 2)
+      xiZeroCopyConjEquiv.tsum_eq (fun q ↦ ‖v q‖ ^ (2 : ℕ))
   nlinarith [norm_nonneg (xiWeilSchwarzLp v), norm_nonneg v]
 
 theorem xiWeilSchwarzLp_add

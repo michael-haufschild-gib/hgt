@@ -24,7 +24,7 @@ def cubicDefectHilbert : Type := lp cubicGradedDefect 2
 theorem cubicDefectHilbert_complete : CompleteSpace cubicDefectHilbert := inferInstance
 
 theorem cubicDefectHilbert_inner (x y : cubicDefectHilbert) :
-    inner ℝ x y = ∑' k, (cubicGradedRecoveryGap k)^2 *
+    inner ℝ x y = ∑' k, (cubicGradedRecoveryGap k)^(2 : ℕ) *
       cubicGradedDefectCoordinate k (x k) * cubicGradedDefectCoordinate k (y k) := by
   rw [lp.inner_eq_tsum]
   congr 1
@@ -32,8 +32,8 @@ theorem cubicDefectHilbert_inner (x y : cubicDefectHilbert) :
   exact cubicGradedLine_inner k (x k) (y k)
 
 theorem cubicDefectHilbert_norm_sq (x : cubicDefectHilbert) :
-    ‖x‖^2=∑' k, (cubicGradedRecoveryGap k)^2 *
-      (cubicGradedDefectCoordinate k (x k))^2 := by
+    ‖x‖^(2 : ℕ)=∑' k, (cubicGradedRecoveryGap k)^(2 : ℕ) *
+      (cubicGradedDefectCoordinate k (x k))^(2 : ℕ) := by
   rw [norm_sq_eq_re_inner (𝕜 := ℝ)]
   change inner ℝ x x = _
   rw [cubicDefectHilbert_inner]

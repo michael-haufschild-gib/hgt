@@ -67,7 +67,7 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le
     (s : ℂ) (N : ℕ) :
     ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
       ‖xiHeatCassiniOrderedPrimeLaplacePhase (N + 1) s‖ *
-        ‖s * (xiHeatCassiniOrderedPrimeLogGap N : ℂ)‖ ^ 2 *
+        ‖s * (xiHeatCassiniOrderedPrimeLogGap N : ℂ)‖ ^ (2 : ℕ) *
           Real.exp ‖s * (xiHeatCassiniOrderedPrimeLogGap N : ℂ)‖ := by
   rw [xiHeatCassiniLogMeshLaplaceScaledDefect_eq_expRemainder, norm_mul, mul_assoc]
   apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
@@ -109,8 +109,8 @@ mean-square consecutive-prime-gap majorant, with a locally bounded spectral fact
 theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_primeGapSq
     {s : ℂ} (hs : s.re = -1 / 2) (N : ℕ) :
     ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
-      (2 * ‖s‖ ^ 2 * Real.exp ‖s‖) *
-        (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ 2 *
+      (2 * ‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖) *
+        (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ (2 : ℕ) *
           Real.sqrt (nthPrimeSubtype N : ℝ) := by
   let delta : ℝ := xiHeatCassiniOrderedPrimeLogGap N
   have hdelta : 0 ≤ delta := xiHeatCassiniOrderedPrimeLogGap_nonneg N
@@ -121,19 +121,19 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_primeGapSq
   calc
     ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
         ‖xiHeatCassiniOrderedPrimeLaplacePhase (N + 1) s‖ *
-          ‖s * (delta : ℂ)‖ ^ 2 * Real.exp ‖s * (delta : ℂ)‖ := by
+          ‖s * (delta : ℂ)‖ ^ (2 : ℕ) * Real.exp ‖s * (delta : ℂ)‖ := by
       simpa only [delta] using
         norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le s N
-    _ = ‖s‖ ^ 2 * Real.exp (‖s‖ * delta) *
-          (delta ^ 2 * Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2)) := by
+    _ = ‖s‖ ^ (2 : ℕ) * Real.exp (‖s‖ * delta) *
+          (delta ^ (2 : ℕ) * Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2)) := by
       rw [norm_xiHeatCassiniOrderedPrimeLaplacePhase_of_re_eq_neg_half hs,
         norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hdelta]
       ring
-    _ ≤ ‖s‖ ^ 2 * Real.exp ‖s‖ *
-          (delta ^ 2 * Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2)) := by
+    _ ≤ ‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖ *
+          (delta ^ (2 : ℕ) * Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2)) := by
       gcongr
-    _ ≤ ‖s‖ ^ 2 * Real.exp ‖s‖ *
-          (2 * (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ 2 *
+    _ ≤ ‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖ *
+          (2 * (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ (2 : ℕ) *
             Real.sqrt (nthPrimeSubtype N : ℝ)) := by
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       simpa only [delta] using primeLogGap_sq_mul_criticalHalfDensity_le_primeGapSq N

@@ -15,7 +15,7 @@ CLG/TTF or Weil polarization positivity → RH`.
 
 The adaptive support-gap reserve cannot close the fixed-action seam gate.  Its division-free
 margin vanishes through order four, while its fifth seam jet is
-`600 * κ^2 * (F₃ + 2*A*F₂)`.  Existing strict likelihood cooling makes the final factor negative.
+`600 * κ^(2 : ℕ) * (F₃ + 2*A*F₂)`.  Existing strict likelihood cooling makes the final factor negative.
 Consequently the literal completed adaptive-reserved compensation margin is negative throughout
 a punctured right neighbourhood of every positive seam centre.
 
@@ -258,7 +258,7 @@ private theorem c5SingleAtomScaleMixedJetTwo_zero_eq_profile
     {A : ℝ} (hA : 3 < A) :
     c5SingleAtomScaleMixedJetTwo A 0 =
       2 * ((2 * (A - 3 / 2) + 3) *
-        (4 - 6 / (A - 3 / 2) ^ 2 - 18 / (A - 3 / 2) ^ 3)) := by
+        (4 - 6 / (A - 3 / 2) ^ (2 : ℕ) - 18 / (A - 3 / 2) ^ (3 : ℕ))) := by
   let q := A - 3 / 2
   have hq : q ≠ 0 := ne_of_gt (by dsimp only [q]; linarith)
   have hAq : A = q + 3 / 2 := by dsimp only [q]; ring
@@ -413,7 +413,7 @@ theorem thetaCuspC5AdaptiveReservedClearedSeamGerm_seamJetClassification
     (∀ k < 5,
       iteratedDeriv k (thetaCuspC5AdaptiveReservedClearedSeamGerm u) 0 = 0) ∧
       iteratedDeriv 5 (thetaCuspC5AdaptiveReservedClearedSeamGerm u) 0 =
-        600 * κ ^ 2 *
+        600 * κ ^ (2 : ℕ) *
           (thetaCuspLikelihoodSourceLogPartitionJetThree u +
             2 * thetaCuspSingleAtomReflectionScale 1 u *
               thetaCuspLikelihoodSourceLogPartitionJetTwo u) := by
@@ -462,7 +462,7 @@ theorem iteratedDeriv_five_thetaCuspC5AdaptiveReservedClearedSeamGerm
     {u : ℝ} (hu : 0 < u) :
     let κ := thetaCuspReflectedLogJetTwo u 0
     iteratedDeriv 5 (thetaCuspC5AdaptiveReservedClearedSeamGerm u) 0 =
-      600 * κ ^ 2 *
+      600 * κ ^ (2 : ℕ) *
         (thetaCuspLikelihoodSourceLogPartitionJetThree u +
           2 * thetaCuspSingleAtomReflectionScale 1 u *
             thetaCuspLikelihoodSourceLogPartitionJetTwo u) :=

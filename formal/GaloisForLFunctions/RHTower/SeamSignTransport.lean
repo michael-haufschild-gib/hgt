@@ -110,7 +110,7 @@ theorem deckClass_eq_sign_product_of_realFE {f g₁ g₂ : ℂ → ℂ} {U : Set
     (hsym : ∀ s ∈ lineReflect ⁻¹' U, f (lineReflect s) = (starRingEnd ℂ) (f s))
     (hU : IsOpen U) (hUc : IsPreconnected U)
     (hg₁ : AnalyticOnNhd ℂ g₁ U) (hg₂ : AnalyticOnNhd ℂ g₂ (lineReflect ⁻¹' U))
-    (hp₁ : ∀ s ∈ U, g₁ s ^ 2 = f s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ 2 = f s)
+    (hp₁ : ∀ s ∈ U, g₁ s ^ (2 : ℕ) = f s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ (2 : ℕ) = f s)
     {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
     (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2)
     (hxP : f pP ≠ 0) (hxM : f pM ≠ 0) :
@@ -135,7 +135,7 @@ theorem deckClass_eq_sign_product_of_realFE {f g₁ g₂ : ℂ → ℂ} {U : Set
     rw [Set.mem_preimage, hfixM]; exact hpM
   have hmg : AnalyticOnNhd ℂ (mirrorRoot g₁) (lineReflect ⁻¹' U) :=
     mirrorRoot_analyticOnNhd hU hg₁
-  have hmp : ∀ s ∈ lineReflect ⁻¹' U, mirrorRoot g₁ s ^ 2 = f s :=
+  have hmp : ∀ s ∈ lineReflect ⁻¹' U, mirrorRoot g₁ s ^ (2 : ℕ) = f s :=
     mirrorRoot_pow_of_mem hsym hp₁
   have htrans := deckClass_root_indep (f := f) (by norm_num : (0 : ℕ) < 2)
     hU hUc hVopen hVc hg₁ hg₁ hmg hg₂ hp₁ hp₁ hmp hp₂
@@ -187,9 +187,9 @@ theorem anneal_seam_L_transport {N : ℕ} {g₁ g₂ G₁ G₂ : ℂ → ℂ} {U
     (hUstrip : ∀ z ∈ U, 0 < z.re ∧ z.re < 1)
     (hg₁ : AnalyticOnNhd ℂ g₁ U) (hg₂ : AnalyticOnNhd ℂ g₂ (lineReflect ⁻¹' U))
     (hG₁ : AnalyticOnNhd ℂ G₁ U) (hG₂ : AnalyticOnNhd ℂ G₂ (lineReflect ⁻¹' U))
-    (hp₁ : ∀ s ∈ U, g₁ s ^ 2 = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ 2 = xi s)
-    (hP₁ : ∀ s ∈ U, G₁ s ^ 2 = completedGN N s)
-    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ 2 = completedGN N s)
+    (hp₁ : ∀ s ∈ U, g₁ s ^ (2 : ℕ) = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ (2 : ℕ) = xi s)
+    (hP₁ : ∀ s ∈ U, G₁ s ^ (2 : ℕ) = completedGN N s)
+    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ (2 : ℕ) = completedGN N s)
     {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
     (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2)
     (hdomP : ‖xi pP - completedGN N pP‖ < ‖completedGN N pP‖)

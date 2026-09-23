@@ -19,7 +19,7 @@ variable {s : ℕ → ℝ}
 
 /-- The kernel sum at a point. -/
 noncomputable def kernelSum (s : ℕ → ℝ) (w : ℂ) : ℝ :=
-  ∑' k, ‖monicOrthoC s k w‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k)
+  ∑' k, ‖monicOrthoC s k w‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k)
 
 theorem kernelSum_nonneg (h : PositiveMomentForm s) (w : ℂ) : 0 ≤ kernelSum s w :=
   tsum_nonneg fun k => div_nonneg (sq_nonneg _) (monicOrtho_inner_self_pos h k).le
@@ -27,11 +27,11 @@ theorem kernelSum_nonneg (h : PositiveMomentForm s) (w : ℂ) : 0 ≤ kernelSum 
 /-- A uniform bound on the kernel roots bounds the kernel sum. -/
 theorem kernelSum_le_of_bound (h : PositiveMomentForm s) {w : ℂ} {C : ℝ}
     (hC : ∀ N, kernelRoot s (fun j => monicOrthoC s j w) N ≤ C) :
-    kernelSum s w ≤ C ^ 2 := by
+    kernelSum s w ≤ C ^ (2 : ℕ) := by
   have hnn : ∀ k : ℕ,
-      0 ≤ ‖monicOrthoC s k w‖ ^ 2 / momentInner s (monicOrtho s k) (monicOrtho s k) :=
+      0 ≤ ‖monicOrthoC s k w‖ ^ (2 : ℕ) / momentInner s (monicOrtho s k) (monicOrtho s k) :=
     fun k => div_nonneg (sq_nonneg _) (monicOrtho_inner_self_pos h k).le
-  have hsum : Summable fun k => ‖monicOrthoC s k w‖ ^ 2 /
+  have hsum : Summable fun k => ‖monicOrthoC s k w‖ ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k) := by
     have hs := summable_of_kernelRoot_le h w hC
     rwa [summable_normSq_eq_norm s w] at hs
@@ -60,10 +60,10 @@ theorem continuousAt_kernelSum (h : PositiveMomentForm s) (h0b : BoundedKernel s
     fun w hw N => kernelRoot_le_ballBoundR h hS hP hw N
   rw [Metric.continuousAt_iff]
   intro δ hδ
-  set e : ℝ := δ / (2 * (Sb ^ 2 + 1)) with hedef
+  set e : ℝ := δ / (2 * (Sb ^ (2 : ℕ) + 1)) with hedef
   have hepos : 0 < e := div_pos hδ (by positivity)
   have hinv : 0 < e⁻¹ := inv_pos.mpr hepos
-  set C : ℝ := 4 * (1 + e⁻¹) * h0v ^ 2 * Sb ^ 2 * Sb ^ 2 * Pb ^ 2 with hCdef
+  set C : ℝ := 4 * (1 + e⁻¹) * h0v ^ (2 : ℕ) * Sb ^ (2 : ℕ) * Sb ^ (2 : ℕ) * Pb ^ (2 : ℕ) with hCdef
   have hCnn : 0 ≤ C := by
     rw [hCdef]
     refine mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg ?_ ?_) ?_) ?_) ?_) ?_
@@ -86,27 +86,27 @@ theorem continuousAt_kernelSum (h : PositiveMomentForm s) (h0b : BoundedKernel s
     rw [hrdef]
     linarith
   -- the two tunable bounds
-  have hA : kernelSum s w ≤ (1 + e) * kernelSum s z₀ + C * ‖w - z₀‖ ^ 2 := by
+  have hA : kernelSum s w ≤ (1 + e) * kernelSum s z₀ + C * ‖w - z₀‖ ^ (2 : ℕ) := by
     have := tsum_kernel_le_tunable h z₀ w hepos (hQb w hwr) (hQb z₀ hz₀r) (hPbb z₀ hz₀r)
     rw [kernelSum, kernelSum]
     refine le_trans this (le_of_eq ?_)
     rw [hCdef]
     ring
-  have hB : kernelSum s z₀ ≤ (1 + e) * kernelSum s w + C * ‖w - z₀‖ ^ 2 := by
+  have hB : kernelSum s z₀ ≤ (1 + e) * kernelSum s w + C * ‖w - z₀‖ ^ (2 : ℕ) := by
     have hb := tsum_kernel_le_tunable h w z₀ hepos (hQb z₀ hz₀r) (hQb w hwr) (hPbb w hwr)
     rw [norm_sub_rev z₀ w] at hb
     rw [kernelSum, kernelSum]
     refine le_trans hb (le_of_eq ?_)
     rw [hCdef]
     ring
-  have hKw : kernelSum s w ≤ Sb ^ 2 := kernelSum_le_of_bound h (hQb w hwr)
-  have hKz : kernelSum s z₀ ≤ Sb ^ 2 := kernelSum_le_of_bound h (hQb z₀ hz₀r)
-  have heSb : e * Sb ^ 2 < δ / 2 := by
+  have hKw : kernelSum s w ≤ Sb ^ (2 : ℕ) := kernelSum_le_of_bound h (hQb w hwr)
+  have hKz : kernelSum s z₀ ≤ Sb ^ (2 : ℕ) := kernelSum_le_of_bound h (hQb z₀ hz₀r)
+  have heSb : e * Sb ^ (2 : ℕ) < δ / 2 := by
     rw [hedef, div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [sq_nonneg Sb]
-  have hCterm : C * ‖w - z₀‖ ^ 2 < δ / 2 := by
-    have hsq : ‖w - z₀‖ ^ 2 ≤ ‖w - z₀‖ := by nlinarith [norm_nonneg (w - z₀)]
-    have h1 : C * ‖w - z₀‖ ^ 2 ≤ C * ‖w - z₀‖ := mul_le_mul_of_nonneg_left hsq hCnn
+  have hCterm : C * ‖w - z₀‖ ^ (2 : ℕ) < δ / 2 := by
+    have hsq : ‖w - z₀‖ ^ (2 : ℕ) ≤ ‖w - z₀‖ := by nlinarith [norm_nonneg (w - z₀)]
+    have h1 : C * ‖w - z₀‖ ^ (2 : ℕ) ≤ C * ‖w - z₀‖ := mul_le_mul_of_nonneg_left hsq hCnn
     have h2 : C * ‖w - z₀‖ ≤ C * (δ / (2 * (C + 1))) :=
       mul_le_mul_of_nonneg_left hd2.le hCnn
     have h3 : C * (δ / (2 * (C + 1))) < δ / 2 := by
@@ -125,7 +125,7 @@ theorem continuous_kernelSum (h : PositiveMomentForm s) (h0b : BoundedKernel s 0
 /-- Along the real axis the kernel sum is the real Christoffel series. -/
 theorem kernelSum_ofReal (s : ℕ → ℝ) (x : ℝ) :
     kernelSum s ((x : ℝ) : ℂ)
-      = ∑' k, ((monicOrtho s k).eval x) ^ 2 /
+      = ∑' k, ((monicOrtho s k).eval x) ^ (2 : ℕ) /
           momentInner s (monicOrtho s k) (monicOrtho s k) := by
   rw [kernelSum]
   refine tsum_congr fun k => ?_
@@ -134,14 +134,14 @@ theorem kernelSum_ofReal (s : ℕ → ℝ) (x : ℝ) :
 /-- The kernel sum is bounded below by its first term, hence strictly positive. -/
 theorem kernelSum_pos (h : PositiveMomentForm s) {w : ℂ} {C : ℝ}
     (hC : ∀ N, kernelRoot s (fun j => monicOrthoC s j w) N ≤ C) : 0 < kernelSum s w := by
-  have hsum : Summable fun k => ‖monicOrthoC s k w‖ ^ 2 /
+  have hsum : Summable fun k => ‖monicOrthoC s k w‖ ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k) := by
     have hs := summable_of_kernelRoot_le h w hC
     rwa [summable_normSq_eq_norm s w] at hs
   have hzero : monicOrthoC s 0 w = 1 := by
     rw [monicOrthoC, monicOrtho_zero]
     simp
-  have hfirst : 0 < ‖monicOrthoC s 0 w‖ ^ 2 /
+  have hfirst : 0 < ‖monicOrthoC s 0 w‖ ^ (2 : ℕ) /
       momentInner s (monicOrtho s 0) (monicOrtho s 0) := by
     rw [hzero, norm_one, one_pow]
     exact div_pos one_pos (monicOrtho_inner_self_pos h 0)
@@ -159,12 +159,12 @@ theorem continuous_christoffelLimit (h : PositiveMomentForm s) (h0b : BoundedKer
     fun x N => kernelRoot_le_ballBoundQ h hS hP le_rfl N
   have heq : christoffelLimit s = fun x : ℝ => (kernelSum s ((x : ℝ) : ℂ))⁻¹ := by
     funext x
-    have hsum : Summable fun k => ((monicOrtho s k).eval x) ^ 2 /
+    have hsum : Summable fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
         momentInner s (monicOrtho s k) (monicOrtho s k) := by
       have hs := summable_of_kernelRoot_le h ((x : ℝ) : ℂ) (hbound x)
       have hcast : (fun k => Complex.normSq (monicOrthoC s k ((x : ℝ) : ℂ)) /
           momentInner s (monicOrtho s k) (monicOrtho s k))
-          = fun k => ((monicOrtho s k).eval x) ^ 2 /
+          = fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
             momentInner s (monicOrtho s k) (monicOrtho s k) := by
         funext k
         rw [normSq_monicOrthoC_ofReal]

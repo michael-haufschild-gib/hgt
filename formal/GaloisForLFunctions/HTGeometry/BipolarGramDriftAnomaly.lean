@@ -10,7 +10,7 @@ the source Gram metric only when its commutator with that Gram vanishes.
 
 This file proves the exact local anomaly and its Hilbert--Schmidt energy.  For the projective
 prime producer/reporter pair, `r = -1 / p`, so every nonzero reflected drift has local energy
-`8 * a^2 / p^2`.
+`8 * a^(2 : ℕ) / p^(2 : ℕ)`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -60,7 +60,7 @@ theorem bipolarGramDriftAnomaly_eq_zero_iff
 theorem matrixHilbertSchmidtEnergy_bipolarGramDriftAnomaly
     (a r : ℝ) :
     matrixHilbertSchmidtEnergy (bipolarGramDriftAnomaly a r) =
-      8 * a ^ 2 * r ^ 2 := by
+      8 * a ^ (2 : ℕ) * r ^ (2 : ℕ) := by
   rw [bipolarGramDriftAnomaly_eq]
   simp [matrixHilbertSchmidtEnergy, Fin.sum_univ_two]
   ring
@@ -70,7 +70,7 @@ theorem matrixHilbertSchmidtEnergy_projectivePrimeBipolarGramDriftAnomaly
     (a p : ℝ) (hp : p ≠ 0) :
     matrixHilbertSchmidtEnergy
         (bipolarGramDriftAnomaly a (-1 / p)) =
-      8 * a ^ 2 / p ^ 2 := by
+      8 * a ^ (2 : ℕ) / p ^ (2 : ℕ) := by
   rw [matrixHilbertSchmidtEnergy_bipolarGramDriftAnomaly]
   field_simp
 

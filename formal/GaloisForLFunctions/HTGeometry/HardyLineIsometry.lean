@@ -52,10 +52,10 @@ theorem memLp_two_vertical {F : ℂ → ℂ} {σ : ℝ}
 
 /-- **The `2π` of the arclength normalisation.** -/
 theorem integral_norm_sq_vertical_eq (F : ℂ → ℂ) (σ : ℝ) :
-    (∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ 2)
-      = 2 * Real.pi * ∫ ξ : ℝ, ‖F (rayLine σ ξ)‖ ^ 2 := by
-  have hcomp : (∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ 2)
-      = ∫ y : ℝ, ‖F (rayLine σ ((2 * Real.pi)⁻¹ * y))‖ ^ 2 := by
+    (∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ (2 : ℕ))
+      = 2 * Real.pi * ∫ ξ : ℝ, ‖F (rayLine σ ξ)‖ ^ (2 : ℕ) := by
+  have hcomp : (∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ (2 : ℕ))
+      = ∫ y : ℝ, ‖F (rayLine σ ((2 * Real.pi)⁻¹ * y))‖ ^ (2 : ℕ) := by
     refine integral_congr_ae ?_
     filter_upwards with y
     rw [rayLine_eq_hardyVerticalLine]
@@ -66,17 +66,17 @@ theorem integral_norm_sq_vertical_eq (F : ℂ → ℂ) (σ : ℝ) :
 /-- **Plancherel on the vertical line, arclength normalisation.** -/
 theorem integral_norm_sq_laplaceRay_vertical {φ : ℝ → ℂ}
     (hφ : MemLp φ 2 (volume.restrict (Ioi (0 : ℝ)))) {σ : ℝ} (hσ : 0 < σ) :
-    (∫ y : ℝ, ‖laplaceRay φ (hardyVerticalLine σ y)‖ ^ 2)
-      = 2 * Real.pi * ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ 2 := by
+    (∫ y : ℝ, ‖laplaceRay φ (hardyVerticalLine σ y)‖ ^ (2 : ℕ))
+      = 2 * Real.pi * ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ (2 : ℕ) := by
   rw [integral_norm_sq_vertical_eq, integral_norm_sq_laplaceRay_line hφ hσ]
 
 /-- **The boundary limit of the mass.**  The exact Paley--Wiener isometry constant is `2π`. -/
 theorem tendsto_integral_norm_sq_laplaceRay_vertical {φ : ℝ → ℂ}
     (hφ : MemLp φ 2 (volume.restrict (Ioi (0 : ℝ)))) :
-    Tendsto (fun σ : ℝ => ∫ y : ℝ, ‖laplaceRay φ (hardyVerticalLine σ y)‖ ^ 2) (𝓝[>] (0 : ℝ))
-      (𝓝 (2 * Real.pi * ∫ x in Ioi (0 : ℝ), ‖φ x‖ ^ 2)) := by
-  have hev : (fun σ : ℝ => 2 * Real.pi * ∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ 2)
-      =ᶠ[𝓝[>] (0 : ℝ)] fun σ : ℝ => ∫ y : ℝ, ‖laplaceRay φ (hardyVerticalLine σ y)‖ ^ 2 := by
+    Tendsto (fun σ : ℝ => ∫ y : ℝ, ‖laplaceRay φ (hardyVerticalLine σ y)‖ ^ (2 : ℕ)) (𝓝[>] (0 : ℝ))
+      (𝓝 (2 * Real.pi * ∫ x in Ioi (0 : ℝ), ‖φ x‖ ^ (2 : ℕ))) := by
+  have hev : (fun σ : ℝ => 2 * Real.pi * ∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ (2 : ℕ))
+      =ᶠ[𝓝[>] (0 : ℝ)] fun σ : ℝ => ∫ y : ℝ, ‖laplaceRay φ (hardyVerticalLine σ y)‖ ^ (2 : ℕ) := by
     filter_upwards with σ
     exact (integral_norm_sq_vertical_eq (laplaceRay φ) σ).symm
   refine Tendsto.congr' hev ?_
@@ -86,11 +86,11 @@ theorem tendsto_integral_norm_sq_laplaceRay_vertical {φ : ℝ → ℂ}
 with arclength, is `2π` times the exponentially damped mass of its datum. -/
 theorem isHalfPlaneHardy_integral_norm_sq_vertical_eq {F : ℂ → ℂ} {M : ℝ}
     (hF : IsHalfPlaneHardy F M) {σ : ℝ} (hσ : 0 < σ) :
-    (∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ 2)
+    (∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ (2 : ℕ))
       = 2 * Real.pi * ∫ x in Ioi (0 : ℝ),
-          Real.exp (-(2 * σ * x)) * ‖hardyDatum F hF x‖ ^ 2 := by
-  have hcongr : (∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ 2)
-      = ∫ y : ℝ, ‖laplaceRay (hardyDatum F hF) (hardyVerticalLine σ y)‖ ^ 2 := by
+          Real.exp (-(2 * σ * x)) * ‖hardyDatum F hF x‖ ^ (2 : ℕ) := by
+  have hcongr : (∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ (2 : ℕ))
+      = ∫ y : ℝ, ‖laplaceRay (hardyDatum F hF) (hardyVerticalLine σ y)‖ ^ (2 : ℕ) := by
     refine integral_congr_ae ?_
     filter_upwards with y
     rw [isHalfPlaneHardy_eq_laplaceRay hF (w := hardyVerticalLine σ y) (by simpa using hσ)]
@@ -100,10 +100,10 @@ theorem isHalfPlaneHardy_integral_norm_sq_vertical_eq {F : ℂ → ℂ} {M : ℝ
 function increases to `2π` times the mass of its datum. -/
 theorem tendsto_isHalfPlaneHardy_integral_norm_sq_vertical {F : ℂ → ℂ} {M : ℝ}
     (hF : IsHalfPlaneHardy F M) :
-    Tendsto (fun σ : ℝ => ∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ 2) (𝓝[>] (0 : ℝ))
-      (𝓝 (2 * Real.pi * ∫ x in Ioi (0 : ℝ), ‖hardyDatum F hF x‖ ^ 2)) := by
-  have hev : (fun σ : ℝ => ∫ y : ℝ, ‖laplaceRay (hardyDatum F hF) (hardyVerticalLine σ y)‖ ^ 2)
-      =ᶠ[𝓝[>] (0 : ℝ)] fun σ : ℝ => ∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ 2 := by
+    Tendsto (fun σ : ℝ => ∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ (2 : ℕ)) (𝓝[>] (0 : ℝ))
+      (𝓝 (2 * Real.pi * ∫ x in Ioi (0 : ℝ), ‖hardyDatum F hF x‖ ^ (2 : ℕ))) := by
+  have hev : (fun σ : ℝ => ∫ y : ℝ, ‖laplaceRay (hardyDatum F hF) (hardyVerticalLine σ y)‖ ^ (2 : ℕ))
+      =ᶠ[𝓝[>] (0 : ℝ)] fun σ : ℝ => ∫ y : ℝ, ‖F (hardyVerticalLine σ y)‖ ^ (2 : ℕ) := by
     filter_upwards [self_mem_nhdsWithin] with σ hσ
     refine integral_congr_ae ?_
     filter_upwards with y

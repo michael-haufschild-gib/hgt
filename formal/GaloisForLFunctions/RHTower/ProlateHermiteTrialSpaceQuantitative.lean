@@ -41,12 +41,12 @@ theorem exists_threshold_hermiteTrial_rayleigh_gt
               prolateSLAction c (hermiteTrialVector ν a c) x * hermiteTrialVector ν a c x := by
   classical
   set δ : ℝ := Finset.univ.inf' Finset.univ_nonempty
-    (fun i : Fin (j + 1) => ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ 2) with hδdef
+    (fun i : Fin (j + 1) => ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ (2 : ℕ)) with hδdef
   have hδpos : 0 < δ := by
     rw [hδdef, Finset.lt_inf'_iff]
     intro i _
     exact integral_hermiteFun_sq_pos (ν i) (by norm_num)
-  have hδle : ∀ i, δ ≤ ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ 2 := fun i =>
+  have hδle : ∀ i, δ ≤ ∫ x in (-1 : ℝ)..1, hermiteFun (ν i) x ^ (2 : ℕ) := fun i =>
     Finset.inf'_le _ (Finset.mem_univ i)
   have hΛ1 : (1 : ℝ) ≤ Λ := by
     have h := hΛ 0
@@ -76,7 +76,7 @@ theorem exists_threshold_hermiteTrial_rayleigh_gt
     linarith
   have hcT : T ≤ c := by nlinarith
   have hc1 : (1 : ℝ) ≤ c := le_trans hT1 hcT
-  have hεcsq : T ≤ ε * c ^ 2 := by nlinarith
+  have hεcsq : T ≤ ε * c ^ (2 : ℕ) := by nlinarith
   -- the weights
   set w : Fin (j + 1) → ℝ := fun i => (Λ + ε) - (2 * (ν i : ℝ) + 1) with hwdef
   have hwge : ∀ i, ε ≤ w i := by
@@ -107,12 +107,12 @@ theorem exists_threshold_hermiteTrial_rayleigh_gt
     field_simp
     norm_num
   -- the off-diagonal weighted Gram entries are below the margin
-  have hMG : M * G ≤ θ * c ^ 2 := by
+  have hMG : M * G ≤ θ * c ^ (2 : ℕ) := by
     have h2 : 2 * M * G * ((j : ℝ) + 1) ≤ δ * T := by
       rw [div_le_iff₀ hδpos] at hTA
       linarith
-    have h3 : δ * T ≤ δ * (ε * c ^ 2) := mul_le_mul_of_nonneg_left hεcsq hδpos.le
-    have h4 : θ * c ^ 2 = δ * (ε * c ^ 2) / (2 * ((j : ℝ) + 1)) := by
+    have h3 : δ * T ≤ δ * (ε * c ^ (2 : ℕ)) := mul_le_mul_of_nonneg_left hεcsq hδpos.le
+    have h4 : θ * c ^ (2 : ℕ) = δ * (ε * c ^ (2 : ℕ)) / (2 * ((j : ℝ) + 1)) := by
       rw [hθdef, hedef]
       field_simp
     rw [h4, le_div_iff₀ (by positivity)]
@@ -120,11 +120,11 @@ theorem exists_threshold_hermiteTrial_rayleigh_gt
   have hAoff : ∀ i k : Fin (j + 1), i ≠ k → |w i * hermiteTrialGram ν c i k| ≤ θ := by
     intro i k hik
     have hGik := hG c hc1 i k hik
-    have hc2 : (0 : ℝ) < c ^ 2 := by positivity
+    have hc2 : (0 : ℝ) < c ^ (2 : ℕ) := by positivity
     rw [abs_mul]
-    calc |w i| * |hermiteTrialGram ν c i k| ≤ M * (G / c ^ 2) :=
+    calc |w i| * |hermiteTrialGram ν c i k| ≤ M * (G / c ^ (2 : ℕ)) :=
           mul_le_mul (hM i) hGik (abs_nonneg _) hMpos.le
-      _ = M * G / c ^ 2 := by ring
+      _ = M * G / c ^ (2 : ℕ) := by ring
       _ ≤ θ := by rw [div_le_iff₀ hc2]; linarith
   -- the correction mass is beaten by the bandwidth
   have hcbig : C * ((j : ℝ) + 1) < c * (e / 2) := by

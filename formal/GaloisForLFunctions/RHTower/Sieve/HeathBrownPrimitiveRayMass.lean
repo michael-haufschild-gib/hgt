@@ -86,7 +86,7 @@ theorem sum_natDiv_eq_sum_card_mul_le_bounded
 
 /-- A uniform bound for the finite inverse-square mass beginning at one. -/
 theorem sum_inv_sq_Icc_one_le {K : ℕ} (hK : 1 ≤ K) :
-    ∑ k ∈ Finset.Icc 1 K, (1 : ℝ) / (k : ℝ) ^ 2 ≤ 7 / 4 := by
+    ∑ k ∈ Finset.Icc 1 K, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) ≤ 7 / 4 := by
   rcases hK.eq_or_lt with rfl | hK'
   · norm_num
   · have hK2 : 2 ≤ K := by omega
@@ -99,7 +99,7 @@ theorem sum_inv_sq_Icc_one_le {K : ℕ} (hK : 1 ≤ K) :
     have hnonneg : (0 : ℝ) ≤ ((K : ℝ)⁻¹) := by positivity
     norm_num only [Nat.cast_one, one_pow, div_one]
     calc
-      1 + ∑ k ∈ Finset.Icc 2 K, (1 : ℝ) / (k : ℝ) ^ 2 ≤
+      1 + ∑ k ∈ Finset.Icc 2 K, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) ≤
           1 + (3 / 4 - 1 / (K : ℝ)) := by linarith
       _ ≤ 7 / 4 := by
         rw [one_div]
@@ -210,7 +210,7 @@ theorem card_filter_mul_height_le_primitiveLogWindow_le
     (hdelta0 : 0 < delta) (hdelta1 : delta ≤ 1) :
     (((heathBrownPrimitiveLogWindow N m1 m2 delta).filter fun p =>
         k * heathBrownDirectionHeight p ≤ N).card : ℝ) ≤
-      4 * delta * ((N / k : ℕ) : ℝ) ^ 2 + 1 := by
+      4 * delta * ((N / k : ℕ) : ℝ) ^ (2 : ℕ) + 1 := by
   have hsub : (heathBrownPrimitiveLogWindow N m1 m2 delta).filter
       (fun p => k * heathBrownDirectionHeight p ≤ N) ⊆
         heathBrownPrimitiveLogWindow (N / k) m1 m2 delta := by
@@ -240,7 +240,7 @@ theorem cast_sum_high_primitiveLogWindow_natDiv_le
     ((∑ p ∈ (heathBrownPrimitiveLogWindow N m1 m2 delta).filter
         (fun p => N0 < heathBrownDirectionHeight p),
         N / heathBrownDirectionHeight p : ℕ) : ℝ) ≤
-      7 * delta * (N : ℝ) ^ 2 + (N / N0 : ℕ) := by
+      7 * delta * (N : ℝ) ^ (2 : ℕ) + (N / N0 : ℕ) := by
   let S := (heathBrownPrimitiveLogWindow N m1 m2 delta).filter
     (fun p => N0 < heathBrownDirectionHeight p)
   let K := N / N0
@@ -268,7 +268,7 @@ theorem cast_sum_high_primitiveLogWindow_natDiv_le
     ∑ k ∈ Finset.Icc 1 K,
         ((S.filter fun p => k * heathBrownDirectionHeight p ≤ N).card : ℝ) ≤
       ∑ k ∈ Finset.Icc 1 K,
-        (4 * delta * ((N / k : ℕ) : ℝ) ^ 2 + 1) := by
+        (4 * delta * ((N / k : ℕ) : ℝ) ^ (2 : ℕ) + 1) := by
       apply Finset.sum_le_sum
       intro k hk
       have hk' := Finset.mem_Icc.mp hk
@@ -291,28 +291,28 @@ theorem cast_sum_high_primitiveLogWindow_natDiv_le
         (card_filter_mul_height_le_primitiveLogWindow_le hk'.1
           (hk'.2.trans hKN) hm1 hm2 hm hdelta0 hdelta1)
     _ ≤ ∑ k ∈ Finset.Icc 1 K,
-        (4 * delta * ((N : ℝ) ^ 2 * (1 / (k : ℝ) ^ 2)) + 1) := by
+        (4 * delta * ((N : ℝ) ^ (2 : ℕ) * (1 / (k : ℝ) ^ (2 : ℕ))) + 1) := by
       apply Finset.sum_le_sum
       intro k hk
       have hkpos : 0 < k := (Finset.mem_Icc.mp hk).1
       have hfloor := (cast_div_bounds (n := N) hkpos).1
       have hfloor0 : (0 : ℝ) ≤ ((N / k : ℕ) : ℝ) := by positivity
       have hdiv0 : (0 : ℝ) ≤ (N : ℝ) / (k : ℝ) := by positivity
-      have hsq : ((N / k : ℕ) : ℝ) ^ 2 ≤
-          ((N : ℝ) / (k : ℝ)) ^ 2 := by nlinarith
+      have hsq : ((N / k : ℕ) : ℝ) ^ (2 : ℕ) ≤
+          ((N : ℝ) / (k : ℝ)) ^ (2 : ℕ) := by nlinarith
       calc
-        4 * delta * ((N / k : ℕ) : ℝ) ^ 2 + 1 ≤
-            4 * delta * ((N : ℝ) / (k : ℝ)) ^ 2 + 1 := by
+        4 * delta * ((N / k : ℕ) : ℝ) ^ (2 : ℕ) + 1 ≤
+            4 * delta * ((N : ℝ) / (k : ℝ)) ^ (2 : ℕ) + 1 := by
           gcongr
-        _ = 4 * delta * ((N : ℝ) ^ 2 * (1 / (k : ℝ) ^ 2)) + 1 := by
+        _ = 4 * delta * ((N : ℝ) ^ (2 : ℕ) * (1 / (k : ℝ) ^ (2 : ℕ))) + 1 := by
           ring
-    _ = 4 * delta * (N : ℝ) ^ 2 *
-          (∑ k ∈ Finset.Icc 1 K, (1 : ℝ) / (k : ℝ) ^ 2) + (K : ℝ) := by
+    _ = 4 * delta * (N : ℝ) ^ (2 : ℕ) *
+          (∑ k ∈ Finset.Icc 1 K, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ)) + (K : ℝ) := by
       have hweighted :
           ∑ k ∈ Finset.Icc 1 K,
-              4 * delta * ((N : ℝ) ^ 2 * (1 / (k : ℝ) ^ 2)) =
-            4 * delta * (N : ℝ) ^ 2 *
-              ∑ k ∈ Finset.Icc 1 K, (1 : ℝ) / (k : ℝ) ^ 2 := by
+              4 * delta * ((N : ℝ) ^ (2 : ℕ) * (1 / (k : ℝ) ^ (2 : ℕ))) =
+            4 * delta * (N : ℝ) ^ (2 : ℕ) *
+              ∑ k ∈ Finset.Icc 1 K, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) := by
         rw [Finset.mul_sum]
         apply Finset.sum_congr rfl
         intro k hk
@@ -322,12 +322,12 @@ theorem cast_sum_high_primitiveLogWindow_natDiv_le
         simp
       rw [Finset.sum_add_distrib]
       rw [hweighted, hones]
-    _ ≤ 4 * delta * (N : ℝ) ^ 2 * (7 / 4) + (K : ℝ) := by
+    _ ≤ 4 * delta * (N : ℝ) ^ (2 : ℕ) * (7 / 4) + (K : ℝ) := by
       exact add_le_add
         (mul_le_mul_of_nonneg_left (sum_inv_sq_Icc_one_le hK)
-          (show 0 ≤ 4 * delta * (N : ℝ) ^ 2 by positivity))
+          (show 0 ≤ 4 * delta * (N : ℝ) ^ (2 : ℕ) by positivity))
         (le_refl (K : ℝ))
-    _ = 7 * delta * (N : ℝ) ^ 2 + (N / N0 : ℕ) := by
+    _ = 7 * delta * (N : ℝ) ^ (2 : ℕ) + (N / N0 : ℕ) := by
       dsimp [K]
       ring
 
@@ -339,7 +339,7 @@ theorem cast_heathBrownPrimitiveLogRayMass_le_twoScale
     {m1 m2 delta : ℝ} (hm1 : 0 < m1) (hm2 : 0 < m2) (hm : m2 ≤ m1)
     (hdelta0 : 0 < delta) (hdelta1 : delta ≤ 1) :
     (heathBrownPrimitiveLogRayMass N m1 m2 delta : ℝ) ≤
-      15 * delta * (N : ℝ) ^ 2 +
+      15 * delta * (N : ℝ) ^ (2 : ℕ) +
         ((N / N0 + 1 : ℕ) : ℝ) *
           (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
         ((2 * (N / N0) + 1 : ℕ) : ℝ) := by
@@ -383,18 +383,18 @@ theorem cast_heathBrownPrimitiveLogRayMass_le_twoScale
       (K + 1) * N0 = K * N0 + N0 := by ring
       _ ≤ N + N := Nat.add_le_add hKmul hN0N
       _ = 2 * N := by ring
-  have hscaleNat : (K + 1) * N0 ^ 2 ≤ 2 * N ^ 2 := by
+  have hscaleNat : (K + 1) * N0 ^ (2 : ℕ) ≤ 2 * N ^ (2 : ℕ) := by
     calc
-      (K + 1) * N0 ^ 2 = ((K + 1) * N0) * N0 := by ring
+      (K + 1) * N0 ^ (2 : ℕ) = ((K + 1) * N0) * N0 := by ring
       _ ≤ (2 * N) * N := Nat.mul_le_mul hKN0 hN0N
-      _ = 2 * N ^ 2 := by ring
-  have hscale : ((K + 1 : ℕ) : ℝ) * (N0 : ℝ) ^ 2 ≤
-      2 * (N : ℝ) ^ 2 := by exact_mod_cast hscaleNat
+      _ = 2 * N ^ (2 : ℕ) := by ring
+  have hscale : ((K + 1 : ℕ) : ℝ) * (N0 : ℝ) ^ (2 : ℕ) ≤
+      2 * (N : ℝ) ^ (2 : ℕ) := by exact_mod_cast hscaleNat
   have hlow :
       ((∑ p ∈ low, N / heathBrownDirectionHeight p : ℕ) : ℝ) ≤
         ((K + 1 : ℕ) : ℝ) *
             (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
-          8 * delta * (N : ℝ) ^ 2 + ((K + 1 : ℕ) : ℝ) := by
+          8 * delta * (N : ℝ) ^ (2 : ℕ) + ((K + 1 : ℕ) : ℝ) := by
     calc
       ((∑ p ∈ low, N / heathBrownDirectionHeight p : ℕ) : ℝ) ≤
           ((K + 1 : ℕ) : ℝ) *
@@ -402,22 +402,22 @@ theorem cast_heathBrownPrimitiveLogRayMass_le_twoScale
               ((heathBrownPrimitiveLogWindow N0 m1 m2 delta).card : ℝ)) := hlowCast
       _ ≤ ((K + 1 : ℕ) : ℝ) *
             ((heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
-              (4 * delta * (N0 : ℝ) ^ 2 + 1)) := by
+              (4 * delta * (N0 : ℝ) ^ (2 : ℕ) + 1)) := by
         gcongr
       _ = ((K + 1 : ℕ) : ℝ) *
             (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
-          4 * delta * (((K + 1 : ℕ) : ℝ) * (N0 : ℝ) ^ 2) +
+          4 * delta * (((K + 1 : ℕ) : ℝ) * (N0 : ℝ) ^ (2 : ℕ)) +
             ((K + 1 : ℕ) : ℝ) := by ring
       _ ≤ ((K + 1 : ℕ) : ℝ) *
             (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
-          4 * delta * (2 * (N : ℝ) ^ 2) + ((K + 1 : ℕ) : ℝ) := by
+          4 * delta * (2 * (N : ℝ) ^ (2 : ℕ)) + ((K + 1 : ℕ) : ℝ) := by
         gcongr
       _ = ((K + 1 : ℕ) : ℝ) *
             (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
-          8 * delta * (N : ℝ) ^ 2 + ((K + 1 : ℕ) : ℝ) := by ring
+          8 * delta * (N : ℝ) ^ (2 : ℕ) + ((K + 1 : ℕ) : ℝ) := by ring
   have hhigh :
       ((∑ p ∈ high, N / heathBrownDirectionHeight p : ℕ) : ℝ) ≤
-        7 * delta * (N : ℝ) ^ 2 + (K : ℝ) := by
+        7 * delta * (N : ℝ) ^ (2 : ℕ) + (K : ℝ) := by
     dsimp [high, D, K]
     exact cast_sum_high_primitiveLogWindow_natDiv_le hN0 hN0N
       hm1 hm2 hm hdelta0 hdelta1
@@ -428,9 +428,9 @@ theorem cast_heathBrownPrimitiveLogRayMass_le_twoScale
         ((∑ p ∈ high, N / heathBrownDirectionHeight p : ℕ) : ℝ) ≤
       (((K + 1 : ℕ) : ℝ) *
           (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
-        8 * delta * (N : ℝ) ^ 2 + ((K + 1 : ℕ) : ℝ)) +
-        (7 * delta * (N : ℝ) ^ 2 + (K : ℝ)) := add_le_add hlow hhigh
-    _ = 15 * delta * (N : ℝ) ^ 2 +
+        8 * delta * (N : ℝ) ^ (2 : ℕ) + ((K + 1 : ℕ) : ℝ)) +
+        (7 * delta * (N : ℝ) ^ (2 : ℕ) + (K : ℝ)) := add_le_add hlow hhigh
+    _ = 15 * delta * (N : ℝ) ^ (2 : ℕ) +
         ((N / N0 + 1 : ℕ) : ℝ) *
           (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
         ((2 * (N / N0) + 1 : ℕ) : ℝ) := by

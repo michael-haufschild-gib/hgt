@@ -101,7 +101,7 @@ theorem criticalFeatureEnergy_add_lineEnergy_le_two_re_sq
     (t : ℝ) (q : XiZeroCopy) :
     Complex.normSq (criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) +
         criticalLineCriticalFeatureEnergy t q ≤
-      2 * ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ 2).re := by
+      2 * ((criticalFeatureCauchyKernelTest t (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
   by_cases hq : (q.1 : ℂ).re = 1 / 2
   · rw [criticalLineCriticalFeatureEnergy, if_pos hq]
     have hspim : (xiSpectralPoint q).im = 0 := by
@@ -140,15 +140,15 @@ theorem criticalFeatureHermitian_add_line_le_two_sourceDiagonal (t : ℝ) :
         criticalLineCriticalFeatureEnergy t q) :=
     hnorm.add (criticalLineCriticalFeatureEnergy_summable t)
   have hsquareNorm : Summable (fun q : XiZeroCopy =>
-      ‖(F (xiSpectralPoint q)) ^ 2‖) := by
+      ‖(F (xiSpectralPoint q)) ^ (2 : ℕ)‖) := by
     simpa only [norm_pow, Complex.normSq_eq_norm_sq] using hnorm
   have hsquare : Summable (fun q : XiZeroCopy =>
-      (F (xiSpectralPoint q)) ^ 2) := summable_norm_iff.mp hsquareNorm
+      (F (xiSpectralPoint q)) ^ (2 : ℕ)) := summable_norm_iff.mp hsquareNorm
   have hre : Summable (fun q : XiZeroCopy =>
-      ((F (xiSpectralPoint q)) ^ 2).re) := by
+      ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re) := by
     exact hsquare.map Complex.reCLM Complex.reCLM.continuous
   have hright : Summable (fun q : XiZeroCopy =>
-      2 * ((F (xiSpectralPoint q)) ^ 2).re) := hre.mul_left 2
+      2 * ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re) := hre.mul_left 2
   have hsum := hleft.tsum_le_tsum
     (fun q => by simpa only [F] using
       criticalFeatureEnergy_add_lineEnergy_le_two_re_sq t q) hright
@@ -163,10 +163,10 @@ theorem criticalFeatureHermitian_add_line_le_two_sourceDiagonal (t : ℝ) :
       change (∑' q : XiZeroCopy, Complex.normSq (F (xiSpectralPoint q))) +
           (∑' q : XiZeroCopy, criticalLineCriticalFeatureEnergy t q) = _
       rw [← hnorm.tsum_add (criticalLineCriticalFeatureEnergy_summable t)]
-    _ ≤ ∑' q : XiZeroCopy, 2 * ((F (xiSpectralPoint q)) ^ 2).re := hsum
-    _ = 2 * (∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ 2).re) := by
+    _ ≤ ∑' q : XiZeroCopy, 2 * ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re := hsum
+    _ = 2 * (∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re) := by
       rw [tsum_mul_left]
-    _ = 2 * (∑' q : XiZeroCopy, (F (xiSpectralPoint q)) ^ 2).re := by
+    _ = 2 * (∑' q : XiZeroCopy, (F (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
       rw [Complex.re_tsum hsquare]
     _ = 2 * (xiWeilPolarization F F).re := by
       unfold xiWeilPolarization
@@ -196,15 +196,15 @@ theorem re_criticalFeaturePrimeGammaSourceDiagonal_le_hermitianEnergyTrace (t : 
       Complex.normSq (F (xiSpectralPoint q))) := by
     simpa only [F] using criticalFeatureHermitianEnergy_summable t
   have hsquareNorm : Summable (fun q : XiZeroCopy =>
-      ‖(F (xiSpectralPoint q)) ^ 2‖) := by
+      ‖(F (xiSpectralPoint q)) ^ (2 : ℕ)‖) := by
     simpa only [norm_pow, Complex.normSq_eq_norm_sq] using hnorm
   have hsquare : Summable (fun q : XiZeroCopy =>
-      (F (xiSpectralPoint q)) ^ 2) := summable_norm_iff.mp hsquareNorm
+      (F (xiSpectralPoint q)) ^ (2 : ℕ)) := summable_norm_iff.mp hsquareNorm
   have hre : Summable (fun q : XiZeroCopy =>
-      ((F (xiSpectralPoint q)) ^ 2).re) := by
+      ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re) := by
     exact hsquare.map Complex.reCLM Complex.reCLM.continuous
   have hpoint (q : XiZeroCopy) :
-      ((F (xiSpectralPoint q)) ^ 2).re ≤
+      ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re ≤
         Complex.normSq (F (xiSpectralPoint q)) := by
     rw [Complex.normSq_apply]
     simp only [pow_two, Complex.mul_re]
@@ -217,14 +217,14 @@ theorem re_criticalFeaturePrimeGammaSourceDiagonal_le_hermitianEnergyTrace (t : 
           criticalFeaturePrimeGammaSourceDiagonal t by
         simpa only [F] using
           xiWeilPolarization_criticalFeatureCauchyKernelTest_eq_sourceDiagonal t]
-    _ = (∑' q : XiZeroCopy, (F (xiSpectralPoint q)) ^ 2).re := by
+    _ = (∑' q : XiZeroCopy, (F (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
       unfold xiWeilPolarization
       rw [show xiWeilSharp F = F by
         simpa only [F] using xiWeilSharp_criticalFeatureCauchyKernelTest t]
       congr 2
       funext q
       ring
-    _ = ∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ 2).re := by
+    _ = ∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
       rw [Complex.re_tsum hsquare]
     _ ≤ ∑' q : XiZeroCopy,
         Complex.normSq (F (xiSpectralPoint q)) := hsum

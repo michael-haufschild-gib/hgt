@@ -39,41 +39,41 @@ namespace RHTower
 
 /-- **Evenness kills the linear term.**  A quadratic that is even has zero linear coefficient. -/
 theorem even_quadratic_no_linear {a b c : ℝ}
-    (heven : ∀ z : ℝ, a + b * z + c * z ^ 2 = a + b * (-z) + c * (-z) ^ 2) : b = 0 := by
+    (heven : ∀ z : ℝ, a + b * z + c * z ^ (2 : ℕ) = a + b * (-z) + c * (-z) ^ (2 : ℕ)) : b = 0 := by
   have h1 := heven 1
   simp at h1
   linarith
 
 /-- **The flow weight is a one-parameter group.** -/
 theorem flow_group_law (t s u : ℝ) :
-    Real.exp (t * u ^ 2) * Real.exp (s * u ^ 2) = Real.exp ((t + s) * u ^ 2) := by
+    Real.exp (t * u ^ (2 : ℕ)) * Real.exp (s * u ^ (2 : ℕ)) = Real.exp ((t + s) * u ^ (2 : ℕ)) := by
   rw [← Real.exp_add]
   ring_nf
 
 /-- The identity element is the untilted measure. -/
-theorem flow_identity (u : ℝ) : Real.exp ((0 : ℝ) * u ^ 2) = 1 := by simp
+theorem flow_identity (u : ℝ) : Real.exp ((0 : ℝ) * u ^ (2 : ℕ)) = 1 := by simp
 
 /-- **Positivity is preserved along the whole orbit**, forward and backward. -/
 theorem flow_preserves_positivity {Φ : ℝ → ℝ} {u : ℝ} (hΦ : 0 < Φ u) (t : ℝ) :
-    0 < Real.exp (t * u ^ 2) * Φ u :=
+    0 < Real.exp (t * u ^ (2 : ℕ)) * Φ u :=
   mul_pos (Real.exp_pos _) hΦ
 
 /-- **The double-exponential decay beats every Gaussian weight.**  `e^{2u}/u²  → ∞`, so
 `t u² - π e^{2u} → -∞` for every `t`. -/
 theorem doubly_exponential_dominates :
-    Tendsto (fun x : ℝ => Real.exp x / x ^ 2) atTop atTop :=
+    Tendsto (fun x : ℝ => Real.exp x / x ^ (2 : ℕ)) atTop atTop :=
   tendsto_exp_div_pow_atTop 2
 
 /-- Consequently every member of the orbit is integrable: once the doubly exponential term dominates,
 the exponent is below `-x²` whatever the tilt. -/
-theorem orbit_exponent_negative {t π₀ x E : ℝ} (hE : (|t| + 1) * x ^ 2 ≤ π₀ * E) :
-    t * x ^ 2 - π₀ * E ≤ -x ^ 2 := by
+theorem orbit_exponent_negative {t π₀ x E : ℝ} (hE : (|t| + 1) * x ^ (2 : ℕ) ≤ π₀ * E) :
+    t * x ^ (2 : ℕ) - π₀ * E ≤ -x ^ (2 : ℕ) := by
   nlinarith [le_abs_self t, sq_nonneg x]
 
 /-- **The orbit is one-dimensional.**  Composing two tilts gives a tilt, and the parameter adds, so
 the family is parametrised by a single real number. -/
 theorem orbit_is_one_parameter (t s : ℝ) :
-    ∃ r : ℝ, ∀ u : ℝ, Real.exp (t * u ^ 2) * Real.exp (s * u ^ 2) = Real.exp (r * u ^ 2) :=
+    ∃ r : ℝ, ∀ u : ℝ, Real.exp (t * u ^ (2 : ℕ)) * Real.exp (s * u ^ (2 : ℕ)) = Real.exp (r * u ^ (2 : ℕ)) :=
   ⟨t + s, fun u => flow_group_law t s u⟩
 
 end RHTower

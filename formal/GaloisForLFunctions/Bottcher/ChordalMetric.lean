@@ -26,7 +26,7 @@ namespace Bottcher
 /-- **Chordal (spherical) metric** on `ℂ`: `χ(z,w) = ‖z-w‖ / (√(1+‖z‖²)·√(1+‖w‖²))`, the Riemann-sphere
 distance, in which Marty's normality criterion is stated. -/
 noncomputable def chordalDist (z w : ℂ) : ℝ :=
-  ‖z - w‖ / (Real.sqrt (1 + ‖z‖ ^ 2) * Real.sqrt (1 + ‖w‖ ^ 2))
+  ‖z - w‖ / (Real.sqrt (1 + ‖z‖ ^ (2 : ℕ)) * Real.sqrt (1 + ‖w‖ ^ (2 : ℕ)))
 
 theorem chordalDist_nonneg (z w : ℂ) : 0 ≤ chordalDist z w := by
   unfold chordalDist; positivity
@@ -39,7 +39,7 @@ theorem chordalDist_self (z : ℂ) : chordalDist z z = 0 := by
 
 /-- The squared chordal distance: `χ(z,w)² = ‖z-w‖² / ((1+‖z‖²)(1+‖w‖²))`. -/
 theorem chordalDist_sq (z w : ℂ) :
-    chordalDist z w ^ 2 = ‖z - w‖ ^ 2 / ((1 + ‖z‖ ^ 2) * (1 + ‖w‖ ^ 2)) := by
+    chordalDist z w ^ (2 : ℕ) = ‖z - w‖ ^ (2 : ℕ) / ((1 + ‖z‖ ^ (2 : ℕ)) * (1 + ‖w‖ ^ (2 : ℕ))) := by
   unfold chordalDist
   rw [div_pow, mul_pow, Real.sq_sqrt (by positivity), Real.sq_sqrt (by positivity)]
 
@@ -47,13 +47,13 @@ theorem chordalDist_sq (z w : ℂ) :
 theorem chordalDist_le_norm (z w : ℂ) : chordalDist z w ≤ ‖z - w‖ := by
   unfold chordalDist
   apply div_le_self (norm_nonneg _)
-  have h1 : (1 : ℝ) ≤ Real.sqrt (1 + ‖z‖ ^ 2) := by
-    nlinarith [Real.sqrt_nonneg (1 + ‖z‖ ^ 2),
-      Real.sq_sqrt (show (0 : ℝ) ≤ 1 + ‖z‖ ^ 2 by positivity), sq_nonneg ‖z‖]
-  have h2 : (1 : ℝ) ≤ Real.sqrt (1 + ‖w‖ ^ 2) := by
-    nlinarith [Real.sqrt_nonneg (1 + ‖w‖ ^ 2),
-      Real.sq_sqrt (show (0 : ℝ) ≤ 1 + ‖w‖ ^ 2 by positivity), sq_nonneg ‖w‖]
-  nlinarith [h1, h2, Real.sqrt_nonneg (1 + ‖z‖ ^ 2), Real.sqrt_nonneg (1 + ‖w‖ ^ 2)]
+  have h1 : (1 : ℝ) ≤ Real.sqrt (1 + ‖z‖ ^ (2 : ℕ)) := by
+    nlinarith [Real.sqrt_nonneg (1 + ‖z‖ ^ (2 : ℕ)),
+      Real.sq_sqrt (show (0 : ℝ) ≤ 1 + ‖z‖ ^ (2 : ℕ) by positivity), sq_nonneg ‖z‖]
+  have h2 : (1 : ℝ) ≤ Real.sqrt (1 + ‖w‖ ^ (2 : ℕ)) := by
+    nlinarith [Real.sqrt_nonneg (1 + ‖w‖ ^ (2 : ℕ)),
+      Real.sq_sqrt (show (0 : ℝ) ≤ 1 + ‖w‖ ^ (2 : ℕ) by positivity), sq_nonneg ‖w‖]
+  nlinarith [h1, h2, Real.sqrt_nonneg (1 + ‖z‖ ^ (2 : ℕ)), Real.sqrt_nonneg (1 + ‖w‖ ^ (2 : ℕ))]
 
 /-- **Stereographic chordal identity** — the crux for Marty's estimate. With the stereographic
 embedding `Φz = (2x, 2y, ‖z‖²-1)/(1+‖z‖²)` of `ℂ` onto the unit sphere (`z = x + iy`), the squared
@@ -62,18 +62,18 @@ Euclidean chord equals `4·χ(z,w)²`:
 This realises the chordal metric as a genuine sphere chord, so the Marty equicontinuity bound becomes
 the Euclidean mean-value inequality applied to the lifted path `Φ ∘ f`. -/
 theorem chordal_stereo_identity (a b c d : ℝ) :
-    (2 * a / (1 + a ^ 2 + b ^ 2) - 2 * c / (1 + c ^ 2 + d ^ 2)) ^ 2
-      + (2 * b / (1 + a ^ 2 + b ^ 2) - 2 * d / (1 + c ^ 2 + d ^ 2)) ^ 2
-      + ((a ^ 2 + b ^ 2 - 1) / (1 + a ^ 2 + b ^ 2) - (c ^ 2 + d ^ 2 - 1) / (1 + c ^ 2 + d ^ 2)) ^ 2
-      = 4 * ((a - c) ^ 2 + (b - d) ^ 2) / ((1 + a ^ 2 + b ^ 2) * (1 + c ^ 2 + d ^ 2)) := by
-  have h1 : (1 : ℝ) + a ^ 2 + b ^ 2 ≠ 0 := by positivity
-  have h2 : (1 : ℝ) + c ^ 2 + d ^ 2 ≠ 0 := by positivity
+    (2 * a / (1 + a ^ (2 : ℕ) + b ^ (2 : ℕ)) - 2 * c / (1 + c ^ (2 : ℕ) + d ^ (2 : ℕ))) ^ (2 : ℕ)
+      + (2 * b / (1 + a ^ (2 : ℕ) + b ^ (2 : ℕ)) - 2 * d / (1 + c ^ (2 : ℕ) + d ^ (2 : ℕ))) ^ (2 : ℕ)
+      + ((a ^ (2 : ℕ) + b ^ (2 : ℕ) - 1) / (1 + a ^ (2 : ℕ) + b ^ (2 : ℕ)) - (c ^ (2 : ℕ) + d ^ (2 : ℕ) - 1) / (1 + c ^ (2 : ℕ) + d ^ (2 : ℕ))) ^ (2 : ℕ)
+      = 4 * ((a - c) ^ (2 : ℕ) + (b - d) ^ (2 : ℕ)) / ((1 + a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (1 + c ^ (2 : ℕ) + d ^ (2 : ℕ))) := by
+  have h1 : (1 : ℝ) + a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0 := by positivity
+  have h2 : (1 : ℝ) + c ^ (2 : ℕ) + d ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp
   ring
 
 /-- **Stereographic embedding** `ℂ → S² ⊂ ℝ³`, `z = x+iy ↦ (2x, 2y, ‖z‖²-1)/(1+‖z‖²)`. -/
 noncomputable def stereo (z : ℂ) : EuclideanSpace ℝ (Fin 3) :=
-  !₂[2 * z.re / (1 + ‖z‖ ^ 2), 2 * z.im / (1 + ‖z‖ ^ 2), (‖z‖ ^ 2 - 1) / (1 + ‖z‖ ^ 2)]
+  !₂[2 * z.re / (1 + ‖z‖ ^ (2 : ℕ)), 2 * z.im / (1 + ‖z‖ ^ (2 : ℕ)), (‖z‖ ^ (2 : ℕ) - 1) / (1 + ‖z‖ ^ (2 : ℕ))]
 
 /-- **The chordal metric IS a Euclidean chord**: `‖Φz - Φw‖_{ℝ³} = 2·χ(z,w)`. This is the bridge
 that makes the Marty equicontinuity bound a consequence of the Euclidean mean-value inequality —
@@ -81,11 +81,11 @@ that makes the Marty equicontinuity bound a consequence of the Euclidean mean-va
 stereographic chordal identity. -/
 theorem norm_stereo_sub (z w : ℂ) : ‖stereo z - stereo w‖ = 2 * chordalDist z w := by
   have hnn : 0 ≤ 2 * chordalDist z w := by have := chordalDist_nonneg z w; linarith
-  have hsq : ‖stereo z - stereo w‖ ^ 2 = (2 * chordalDist z w) ^ 2 := by
+  have hsq : ‖stereo z - stereo w‖ ^ (2 : ℕ) = (2 * chordalDist z w) ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity), Fin.sum_univ_three]
     simp only [stereo, PiLp.sub_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val,
       Fin.isValue, Real.norm_eq_abs, sq_abs]
-    rw [show (2 * chordalDist z w) ^ 2 = 4 * chordalDist z w ^ 2 by ring, chordalDist_sq]
+    rw [show (2 * chordalDist z w) ^ (2 : ℕ) = 4 * chordalDist z w ^ (2 : ℕ) by ring, chordalDist_sq]
     simp only [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
     have h1 : (1 : ℝ) + (z.re * z.re + z.im * z.im) ≠ 0 :=
       (show (0 : ℝ) < 1 + (z.re * z.re + z.im * z.im) by
@@ -103,14 +103,14 @@ orthogonal and have equal norm `2/D`. Hence `DΦ` is a similarity with factor `2
 `‖D(Φ∘f)‖ = ‖f'‖·2/(1+‖f‖²) = 2·sphericalDeriv f` — the round-metric speed feeding Marty's
 equicontinuity `χ(fa,fb) ≤ M‖a-b‖`. Banked here as the real-algebra identities (`field_simp; ring`). -/
 theorem stereo_conformal_identities (x y : ℝ) :
-    let D := 1 + x ^ 2 + y ^ 2
-    ((2 * (1 - x ^ 2 + y ^ 2) / D ^ 2) ^ 2 + (-4 * x * y / D ^ 2) ^ 2 + (4 * x / D ^ 2) ^ 2
-        = (2 / D) ^ 2)
-      ∧ ((-4 * x * y / D ^ 2) ^ 2 + (2 * (1 + x ^ 2 - y ^ 2) / D ^ 2) ^ 2 + (4 * y / D ^ 2) ^ 2
-        = (2 / D) ^ 2)
-      ∧ ((2 * (1 - x ^ 2 + y ^ 2) / D ^ 2) * (-4 * x * y / D ^ 2)
-          + (-4 * x * y / D ^ 2) * (2 * (1 + x ^ 2 - y ^ 2) / D ^ 2)
-          + (4 * x / D ^ 2) * (4 * y / D ^ 2) = 0) := by
+    let D := 1 + x ^ (2 : ℕ) + y ^ (2 : ℕ)
+    ((2 * (1 - x ^ (2 : ℕ) + y ^ (2 : ℕ)) / D ^ (2 : ℕ)) ^ (2 : ℕ) + (-4 * x * y / D ^ (2 : ℕ)) ^ (2 : ℕ) + (4 * x / D ^ (2 : ℕ)) ^ (2 : ℕ)
+        = (2 / D) ^ (2 : ℕ))
+      ∧ ((-4 * x * y / D ^ (2 : ℕ)) ^ (2 : ℕ) + (2 * (1 + x ^ (2 : ℕ) - y ^ (2 : ℕ)) / D ^ (2 : ℕ)) ^ (2 : ℕ) + (4 * y / D ^ (2 : ℕ)) ^ (2 : ℕ)
+        = (2 / D) ^ (2 : ℕ))
+      ∧ ((2 * (1 - x ^ (2 : ℕ) + y ^ (2 : ℕ)) / D ^ (2 : ℕ)) * (-4 * x * y / D ^ (2 : ℕ))
+          + (-4 * x * y / D ^ (2 : ℕ)) * (2 * (1 + x ^ (2 : ℕ) - y ^ (2 : ℕ)) / D ^ (2 : ℕ))
+          + (4 * x / D ^ (2 : ℕ)) * (4 * y / D ^ (2 : ℕ)) = 0) := by
   intro D
   have hD : D ≠ 0 := by simp only [D]; positivity
   refine ⟨?_, ?_, ?_⟩ <;> (field_simp [D]; ring)
@@ -122,11 +122,11 @@ path `t ↦ stereo(u,v)` has squared norm `(2/D)²·(u'² + v'²)` (`D = 1+u²+v
 mean-value inequality integrates into `χ(fa,fb) ≤ M‖a-b‖`. (`Dp = D' = 2uu'+2vv'`; the three terms
 are the component velocities `∂ₜ(2u/D), ∂ₜ(2v/D), ∂ₜ((u²+v²-1)/D)`.) -/
 theorem stereo_speed_identity (u v u' v' : ℝ) :
-    let D := 1 + u ^ 2 + v ^ 2
+    let D := 1 + u ^ (2 : ℕ) + v ^ (2 : ℕ)
     let Dp := 2 * u * u' + 2 * v * v'
-    ((2 * u' * D - 2 * u * Dp) / D ^ 2) ^ 2 + ((2 * v' * D - 2 * v * Dp) / D ^ 2) ^ 2
-        + (Dp * 2 / D ^ 2) ^ 2
-      = (2 / D) ^ 2 * (u' ^ 2 + v' ^ 2) := by
+    ((2 * u' * D - 2 * u * Dp) / D ^ (2 : ℕ)) ^ (2 : ℕ) + ((2 * v' * D - 2 * v * Dp) / D ^ (2 : ℕ)) ^ (2 : ℕ)
+        + (Dp * 2 / D ^ (2 : ℕ)) ^ (2 : ℕ)
+      = (2 / D) ^ (2 : ℕ) * (u' ^ (2 : ℕ) + v' ^ (2 : ℕ)) := by
   intro D Dp
   have hD : D ≠ 0 := by simp only [D]; positivity
   field_simp [D, Dp]
@@ -134,7 +134,7 @@ theorem stereo_speed_identity (u v u' v' : ℝ) :
 
 /-- Norm of a 3-vector in `EuclideanSpace ℝ (Fin 3)`: `‖!₂[a,b,c]‖ = √(a²+b²+c²)`. -/
 theorem norm_euclidean3 (a b c : ℝ) :
-    ‖(!₂[a, b, c] : EuclideanSpace ℝ (Fin 3))‖ = Real.sqrt (a ^ 2 + b ^ 2 + c ^ 2) := by
+    ‖(!₂[a, b, c] : EuclideanSpace ℝ (Fin 3))‖ = Real.sqrt (a ^ (2 : ℕ) + b ^ (2 : ℕ) + c ^ (2 : ℕ)) := by
   rw [EuclideanSpace.norm_eq, Fin.sum_univ_three]
   simp [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, sq_abs]
 

@@ -44,11 +44,11 @@ noncomputable def modeFirstMoment (a lam t : ℝ) : ℝ :=
 
 /-- Second response of a geometric mode. -/
 noncomputable def modeSecondResponse (a lam t : ℝ) : ℝ :=
-  lam ^ 2 * (modeRatio a lam t / (1 - modeRatio a lam t) ^ 2)
+  lam ^ (2 : ℕ) * (modeRatio a lam t / (1 - modeRatio a lam t) ^ (2 : ℕ))
 
 /-- Third response of a geometric mode. -/
 noncomputable def modeThirdCumulant (a lam t : ℝ) : ℝ :=
-  lam ^ 3 * (modeRatio a lam t * (1 + modeRatio a lam t) / (1 - modeRatio a lam t) ^ 3)
+  lam ^ (3 : ℕ) * (modeRatio a lam t * (1 + modeRatio a lam t) / (1 - modeRatio a lam t) ^ (3 : ℕ))
 
 theorem hasDerivAt_modeRatio (a lam t : ℝ) :
     HasDerivAt (modeRatio a lam) (-(lam * modeRatio a lam t)) t := by
@@ -82,20 +82,20 @@ theorem hasDerivAt_modeFirstMoment (h1 : modeRatio a lam t < 1) :
 theorem hasDerivAt_modeSecondResponse (h1 : modeRatio a lam t < 1) :
     HasDerivAt (modeSecondResponse a lam) (-(modeThirdCumulant a lam t)) t := by
   have hne : 1 - modeRatio a lam t ≠ 0 := by linarith
-  have hne2 : (1 - modeRatio a lam t) ^ 2 ≠ 0 := pow_ne_zero 2 hne
+  have hne2 : (1 - modeRatio a lam t) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hne
   have hsub := hasDerivAt_one_sub_modeRatio a lam t
-  have hsq : HasDerivAt (fun x : ℝ => (1 - modeRatio a lam x) ^ 2)
+  have hsq : HasDerivAt (fun x : ℝ => (1 - modeRatio a lam x) ^ (2 : ℕ))
       (2 * (1 - modeRatio a lam t) * (lam * modeRatio a lam t)) t := by
     have h := hsub.mul hsub
     rw [Pi.mul_def] at h
     have hfun : (fun x : ℝ => (1 - modeRatio a lam x) * (1 - modeRatio a lam x))
-        = fun x : ℝ => (1 - modeRatio a lam x) ^ 2 := by
+        = fun x : ℝ => (1 - modeRatio a lam x) ^ (2 : ℕ) := by
       funext x; ring
     rw [hfun] at h
     exact HasDerivAt.congr_deriv h (by ring)
   have hdiv := (hasDerivAt_modeRatio a lam t).div hsq hne2
   rw [Pi.div_def] at hdiv
-  refine HasDerivAt.congr_deriv (hdiv.const_mul (lam ^ 2)) ?_
+  refine HasDerivAt.congr_deriv (hdiv.const_mul (lam ^ (2 : ℕ))) ?_
   simp only [modeThirdCumulant]
   field_simp
   ring
@@ -103,7 +103,7 @@ theorem hasDerivAt_modeSecondResponse (h1 : modeRatio a lam t < 1) :
 theorem modeSecondResponse_pos (hlam : 0 < lam)
     (h0 : 0 < modeRatio a lam t) (h1 : modeRatio a lam t < 1) :
     0 < modeSecondResponse a lam t := by
-  have hden : 0 < (1 - modeRatio a lam t) ^ 2 := by positivity
+  have hden : 0 < (1 - modeRatio a lam t) ^ (2 : ℕ) := by positivity
   simp only [modeSecondResponse]
   positivity
 
@@ -112,7 +112,7 @@ positive. -/
 theorem modeThirdCumulant_pos (hlam : 0 < lam)
     (h0 : 0 < modeRatio a lam t) (h1 : modeRatio a lam t < 1) :
     0 < modeThirdCumulant a lam t := by
-  have hden : 0 < (1 - modeRatio a lam t) ^ 3 := by positivity
+  have hden : 0 < (1 - modeRatio a lam t) ^ (3 : ℕ) := by positivity
   have hnum : 0 < modeRatio a lam t * (1 + modeRatio a lam t) := by nlinarith
   simp only [modeThirdCumulant]
   positivity

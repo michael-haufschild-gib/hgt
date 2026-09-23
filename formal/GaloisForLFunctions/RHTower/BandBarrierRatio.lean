@@ -42,11 +42,11 @@ variable {s c α y₀ : ℝ} {Φ : ℝ → ℝ}
 
 /-- **The phase is additive.**  Its increment is the WKB profile integral. -/
 theorem bandEndpointPhase_sub_eq_integral {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) (hb : b < 1)
-    (hsa : s ≤ a ^ 2) :
+    (hsa : s ≤ a ^ (2 : ℕ)) :
     bandEndpointPhase s a - bandEndpointPhase s b = ∫ t in a..b, prolateWKBProfile s t := by
   have hsub : uIcc a b ⊆ Icc a b := by
     rw [uIcc_of_le hab]
-  have hmem : ∀ t ∈ uIcc a b, -1 < t ∧ t < 1 ∧ s ≤ t ^ 2 := by
+  have hmem : ∀ t ∈ uIcc a b, -1 < t ∧ t < 1 ∧ s ≤ t ^ (2 : ℕ) := by
     intro t ht
     have ht' := hsub ht
     have h1 : a ≤ t := ht'.1
@@ -79,8 +79,8 @@ theorem exp_div_le_prolateBand_collar (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 
     (hα : 1 / 2 < α) (hα1 : α < 1) (hcollar : 600 * (1 - α) ≤ 1 / 4)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (hode : ∀ x ∈ Ioo α 1,
-      (1 - x ^ 2) * deriv (deriv Φ) x - 2 * x * deriv Φ x
-        + (s * c ^ 2 - c ^ 2 * x ^ 2) * Φ x = 0)
+      (1 - x ^ (2 : ℕ)) * deriv (deriv Φ) x - 2 * x * deriv Φ x
+        + (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φ x = 0)
     (hΦ1 : Φ 1 = 1)
     (hz : 1 ≤ c * bandEndpointPhase s α) :
     Real.exp (c * bandEndpointPhase s α)
@@ -123,16 +123,16 @@ Riccati transport contributes `Ξ_s(y₀) - Ξ_s(α)`; the two exponents concate
 theorem prolateBand_barrier_ratio_lower (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 0 < c)
     (hα : 1 / 2 < α) (hα1 : α < 1) (hcollar : 600 * (1 - α) ≤ 1 / 4)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1)
-    (hy0 : 0 ≤ y₀) (hy0α : y₀ ≤ α) (hsy0 : s < y₀ ^ 2)
+    (hy0 : 0 ≤ y₀) (hy0α : y₀ ≤ α) (hsy0 : s < y₀ ^ (2 : ℕ))
     (hpos : ∀ t ∈ Icc y₀ 1, 0 < Φ t)
     (hz : 1 ≤ c * bandEndpointPhase s α) :
     Real.exp (c * bandEndpointPhase s y₀ + 6 * (Real.log (1 - α) - Real.log (1 - y₀)))
         / (6 * Real.pi * Real.sqrt (c * bandEndpointPhase s α)) ≤ Φ y₀ := by
   have hode : ∀ x ∈ Ioo α 1,
-      (1 - x ^ 2) * deriv (deriv Φ) x - 2 * x * deriv Φ x
-        + (s * c ^ 2 - c ^ 2 * x ^ 2) * Φ x = 0 := by
+      (1 - x ^ (2 : ℕ)) * deriv (deriv Φ) x - 2 * x * deriv Φ x
+        + (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φ x = 0 := by
     intro x hx
     have hmem : x ∈ Icc (-1 : ℝ) 1 := ⟨by linarith [hx.1, hα], hx.2.le⟩
     have h := heig x hmem
@@ -140,39 +140,39 @@ theorem prolateBand_barrier_ratio_lower (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc 
     linarith [h]
   have hcollarBound := exp_div_le_prolateBand_collar hs0 hs1 hc hα hα1 hcollar hsm hode hΦ1 hz
   -- the Riccati transport below the collar
-  have hcχ : 0 ≤ c ^ 2 + -(s * c ^ 2) := by nlinarith [sq_nonneg c, hs1, hs0]
-  have hturn : ∀ t ∈ Icc y₀ 1, 0 ≤ -(s * c ^ 2) + c ^ 2 * t ^ 2 := by
+  have hcχ : 0 ≤ c ^ (2 : ℕ) + -(s * c ^ (2 : ℕ)) := by nlinarith [sq_nonneg c, hs1, hs0]
+  have hturn : ∀ t ∈ Icc y₀ 1, 0 ≤ -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * t ^ (2 : ℕ) := by
     intro t ht
     have h1 : y₀ ≤ t := ht.1
-    have hsq : y₀ ^ 2 ≤ t ^ 2 := by nlinarith [hy0, h1]
-    nlinarith [mul_nonneg (sq_nonneg c) (by linarith : (0:ℝ) ≤ t ^ 2 - s)]
-  have hQ0 : 0 < -(s * c ^ 2) + c ^ 2 * y₀ ^ 2 := by
+    have hsq : y₀ ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by nlinarith [hy0, h1]
+    nlinarith [mul_nonneg (sq_nonneg c) (by linarith : (0:ℝ) ≤ t ^ (2 : ℕ) - s)]
+  have hQ0 : 0 < -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * y₀ ^ (2 : ℕ) := by
     nlinarith [mul_pos (pow_pos hc 2) (sub_pos.2 hsy0)]
-  have hstep := prolate_endpoint_le_log (Φ := Φ) (c := c) (χ := -(s * c ^ 2)) hsm heig hcχ
+  have hstep := prolate_endpoint_le_log (Φ := Φ) (c := c) (χ := -(s * c ^ (2 : ℕ))) hsm heig hcχ
     hy0 hy0α hα1 hpos hturn hQ0
   -- identify the two integrals
-  have hprof : (∫ t in y₀..α, prolateWKB c (-(s * c ^ 2)) t)
+  have hprof : (∫ t in y₀..α, prolateWKB c (-(s * c ^ (2 : ℕ))) t)
       = c * (bandEndpointPhase s y₀ - bandEndpointPhase s α) := by
-    have hfun : (∫ t in y₀..α, prolateWKB c (-(s * c ^ 2)) t)
+    have hfun : (∫ t in y₀..α, prolateWKB c (-(s * c ^ (2 : ℕ))) t)
         = ∫ t in y₀..α, c * prolateWKBProfile s t := by
       refine intervalIntegral.integral_congr fun t _ => ?_
       exact prolateWKB_eq_mul_profile hc.le
     rw [hfun, intervalIntegral.integral_const_mul,
       bandEndpointPhase_sub_eq_integral hy0 hy0α hα1 hsy0.le]
   have hlog := integral_six_div_one_sub (a := y₀) (b := α) hy0α hα1
-  have hsplit : (∫ t in y₀..α, (prolateWKB c (-(s * c ^ 2)) t - 6 / (1 - t)))
-      = (∫ t in y₀..α, prolateWKB c (-(s * c ^ 2)) t) - ∫ t in y₀..α, 6 / (1 - t) := by
+  have hsplit : (∫ t in y₀..α, (prolateWKB c (-(s * c ^ (2 : ℕ))) t - 6 / (1 - t)))
+      = (∫ t in y₀..α, prolateWKB c (-(s * c ^ (2 : ℕ))) t) - ∫ t in y₀..α, 6 / (1 - t) := by
     refine intervalIntegral.integral_sub ?_ ?_
     · refine ContinuousOn.intervalIntegrable ?_
-      have hfun : prolateWKB c (-(s * c ^ 2))
-          = fun t : ℝ => Real.sqrt ((-(s * c ^ 2) + c ^ 2 * t ^ 2) / (1 - t ^ 2)) := by
+      have hfun : prolateWKB c (-(s * c ^ (2 : ℕ)))
+          = fun t : ℝ => Real.sqrt ((-(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * t ^ (2 : ℕ)) / (1 - t ^ (2 : ℕ))) := by
         funext t
         rw [prolateWKB]
       rw [hfun]
       refine Real.continuous_sqrt.comp_continuousOn
         (ContinuousOn.div (by fun_prop) (by fun_prop) fun t ht => ?_)
       have ht' : t ∈ Icc y₀ α := by rwa [uIcc_of_le hy0α] at ht
-      have h1 : (0:ℝ) < 1 - t ^ 2 := by nlinarith [ht'.1, ht'.2, hy0, hα1]
+      have h1 : (0:ℝ) < 1 - t ^ (2 : ℕ) := by nlinarith [ht'.1, ht'.2, hy0, hα1]
       exact h1.ne'
     · refine ContinuousOn.intervalIntegrable ?_
       refine ContinuousOn.div continuousOn_const (by fun_prop) fun t ht => ?_
@@ -181,7 +181,7 @@ theorem prolateBand_barrier_ratio_lower (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc 
       exact this.ne'
   -- assemble
   have hΦαpos : 0 < Φ α := hpos α ⟨hy0α, hα1.le⟩
-  have hexp : Real.exp (-∫ t in y₀..α, (prolateWKB c (-(s * c ^ 2)) t - 6 / (1 - t)))
+  have hexp : Real.exp (-∫ t in y₀..α, (prolateWKB c (-(s * c ^ (2 : ℕ))) t - 6 / (1 - t)))
       = Real.exp (-(c * (bandEndpointPhase s y₀ - bandEndpointPhase s α))
         + 6 * (Real.log (1 - y₀) - Real.log (1 - α))) := by
     rw [hsplit, hprof, hlog]

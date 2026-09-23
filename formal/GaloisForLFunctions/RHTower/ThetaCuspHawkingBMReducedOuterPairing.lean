@@ -71,7 +71,7 @@ theorem tortoiseNormalizable_outer_uniform_bound (w chi : ℂ) {T : ℝ} (hT : T
   exact (by dsimp [b]; linarith [Real.exp_pos (2*T)] : b ≤ Real.exp (2*T)).trans (het.trans hzt)
 
 /-- Spatial continuity of the explicit numerator persists at both cleared denominator zeros. -/
-theorem clearedReducedGreen_continuousAt (w chi s a : ℂ) (hw : w.im ≠ 0)
+theorem clearedReducedGreen_continuousAt_thetaCuspHawkingBMReducedOuterPairing (w chi s a : ℂ) (hw : w.im ≠ 0)
     (hwr : -2 < w.re) (t : ℝ) (ht : t < 0) :
     ContinuousAt (clearedReducedGreen w chi s a) t := by
   let K := reducedGreenGradient chi s 1
@@ -113,7 +113,7 @@ theorem clearedReducedOuterPairing_analyticAt (w chi s a : ℂ) (hw : w.im ≠ 0
     have hn := ((normalizable_derivatives_continued (w := u) (chi := chi)
       (horizonCoordinate_interior t ht.2)).1.continuousAt).comp_of_eq
         (horizonCoordinate_hasDerivAt t).continuousAt rfl
-    exact ((clearedReducedGreen_continuousAt u chi s a (huf u hu).1 (huf u hu).2 t ht.2).mul hn).continuousWithinAt
+    exact ((clearedReducedGreen_continuousAt_thetaCuspHawkingBMReducedOuterPairing u chi s a (huf u hu).1 (huf u hu).2 t ht.2).mul hn).continuousWithinAt
   have hmeas (u : ℂ) (hu : u ∈ ball w R) : AEStronglyMeasurable (G u) volume :=
     (aestronglyMeasurable_indicator_iff measurableSet_Ioo).mpr
       ((hcont u hu).aestronglyMeasurable measurableSet_Ioo)
@@ -162,7 +162,7 @@ theorem clearedReducedOuterPairing_integrable (w chi s a : ℂ) (hw : w.im ≠ 0
     have hn := ((normalizable_derivatives_continued (w := w) (chi := chi)
       (horizonCoordinate_interior t ht.2)).1.continuousAt).comp_of_eq
         (horizonCoordinate_hasDerivAt t).continuousAt rfl
-    exact ((clearedReducedGreen_continuousAt w chi s a hw hwr t ht.2).mul hn).continuousWithinAt
+    exact ((clearedReducedGreen_continuousAt_thetaCuspHawkingBMReducedOuterPairing w chi s a hw hwr t ht.2).mul hn).continuousWithinAt
   have hi : Integrable (fun _ : ℝ => C*N) (volume.restrict (Ioo T (0:ℝ))) := integrable_const _
   apply hi.mono' (hc.aestronglyMeasurable measurableSet_Ioo)
   filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
@@ -194,7 +194,7 @@ theorem physicalClearedReducedOuterPairing_value (q : XiZeroCopy) (branch side :
     let chi := physicalRadialFrequency q
     clearedReducedOuterPairing chi s a T w =
       (fundamentalSourceMoment w s a*clearedOnset s w)*
-        ∫ t in Ioo T (0:ℝ), (normalizable w chi (horizonCoordinate t))^2 := by
+        ∫ t in Ioo T (0:ℝ), (normalizable w chi (horizonCoordinate t))^(2 : ℕ) := by
   dsimp only
   let w := physicalFundamentalFrequency q side
   let s := physicalRate q branch
@@ -221,7 +221,7 @@ theorem physicalReducedOuterPairing_residue (q : XiZeroCopy) (branch side : Bool
     let chi := physicalRadialFrequency q
     Tendsto (fun u => (u-w)*continuedReducedOuterPairing chi s a T u) (𝓝[≠] w)
       (𝓝 ((fundamentalSourceMoment w s a*clearedOnset s w)*
-        (∫ t in Ioo T (0:ℝ), (normalizable w chi (horizonCoordinate t))^2)/
+        (∫ t in Ioo T (0:ℝ), (normalizable w chi (horizonCoordinate t))^(2 : ℕ))/
           physicalFundamentalDenominatorSlope q branch side)) := by
   dsimp only
   let w := physicalFundamentalFrequency q side

@@ -27,7 +27,7 @@ theorem norm_digamma_conductor_increment_le
           (((3 / 4 : ℝ) : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I) -
         Complex.digamma
           (((1 / 4 : ℝ) : ℂ) + ((tau / 2 : ℝ) : ℂ) * I)‖ ≤
-      (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+      (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
   let z0 : ℂ := ((1 / 4 : ℝ) : ℂ) + ((tau / 2 : ℝ) : ℂ) * I
   let z1 : ℂ := ((3 / 4 : ℝ) : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I
   have htau0 : 0 < tau := by linarith
@@ -52,7 +52,7 @@ theorem norm_digamma_conductor_increment_le
     norm_num
     nlinarith [hr.1]
   have hbound : ∀ z ∈ segment ℝ z0 z1,
-      ‖deriv Complex.digamma z‖ ≤ 16 / tau ^ 2 + 2 * Real.pi / tau := by
+      ‖deriv Complex.digamma z‖ ≤ 16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau := by
     intro z hz
     rw [segment_eq_image_lineMap] at hz
     rcases hz with ⟨r, hr, rfl⟩
@@ -70,11 +70,11 @@ theorem norm_digamma_conductor_increment_le
     rw [hline]
     refine (norm_deriv_digamma_vertical_le hsigma htpos).trans ?_
     have htau4 : 0 < tau / 4 := by positivity
-    have hsquare : 1 / ((tau - r * v) / 2) ^ 2 ≤ 16 / tau ^ 2 := by
-      have hsq : (tau / 4) ^ 2 ≤ ((tau - r * v) / 2) ^ 2 :=
+    have hsquare : 1 / ((tau - r * v) / 2) ^ (2 : ℕ) ≤ 16 / tau ^ (2 : ℕ) := by
+      have hsq : (tau / 4) ^ (2 : ℕ) ≤ ((tau - r * v) / 2) ^ (2 : ℕ) :=
         (sq_le_sq₀ htau4.le htpos.le).2 ht
       have hi := one_div_le_one_div_of_le (sq_pos_of_pos htau4) hsq
-      have heq : 1 / (tau / 4) ^ 2 = 16 / tau ^ 2 := by
+      have heq : 1 / (tau / 4) ^ (2 : ℕ) = 16 / tau ^ (2 : ℕ) := by
         field_simp
         norm_num
       exact hi.trans_eq heq
@@ -115,7 +115,7 @@ theorem norm_digamma_conductor_increment_neg_le
           (((3 / 4 : ℝ) : ℂ) - (((tau - v) / 2 : ℝ) : ℂ) * I) -
         Complex.digamma
           (((1 / 4 : ℝ) : ℂ) - ((tau / 2 : ℝ) : ℂ) * I)‖ ≤
-      (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+      (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
   let a : ℂ := ((3 / 4 : ℝ) : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I
   let b : ℂ := ((1 / 4 : ℝ) : ℂ) + ((tau / 2 : ℝ) : ℂ) * I
   have ha : (starRingEnd ℂ) a =
@@ -136,7 +136,7 @@ theorem norm_digamma_shifted_increment_le
           (((-1 / 4 : ℝ) : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I) -
         Complex.digamma
           (((1 / 4 : ℝ) : ℂ) + ((tau / 2 : ℝ) : ℂ) * I)‖ ≤
-      (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) + 4 / tau := by
+      (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) + 4 / tau := by
   let a : ℂ := ((-1 / 4 : ℝ) : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I
   let b : ℂ := ((1 / 4 : ℝ) : ℂ) + ((tau / 2 : ℝ) : ℂ) * I
   have htau0 : 0 < tau := by linarith
@@ -194,13 +194,13 @@ theorem norm_logDeriv_zetaChi_shift_sub_line_le
     ‖logDeriv zetaChi
           (linePt tau - (((1 : ℝ) : ℂ) + (v : ℂ) * I)) -
         logDeriv zetaChi (linePt tau)‖ ≤
-      (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) + 2 / tau := by
+      (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) + 2 / tau := by
   rw [logDeriv_zetaChi_shift_sub_line_eq_digamma_increments]
   have hfirst :
       ‖Complex.digamma
           ((linePt tau - (((1 : ℝ) : ℂ) + (v : ℂ) * I)) / 2) -
         Complex.digamma (linePt tau / 2)‖ ≤
-        (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) + 4 / tau := by
+        (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) + 4 / tau := by
     have hz : (linePt tau - (((1 : ℝ) : ℂ) + (v : ℂ) * I)) / 2 =
         ((-1 / 4 : ℝ) : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I := by
       apply Complex.ext
@@ -219,7 +219,7 @@ theorem norm_logDeriv_zetaChi_shift_sub_line_le
       ‖Complex.digamma
           ((1 - (linePt tau - (((1 : ℝ) : ℂ) + (v : ℂ) * I))) / 2) -
         Complex.digamma ((1 - linePt tau) / 2)‖ ≤
-        (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+        (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
     have hz : (1 - (linePt tau - (((1 : ℝ) : ℂ) + (v : ℂ) * I))) / 2 =
         ((3 / 4 : ℝ) : ℂ) - (((tau - v) / 2 : ℝ) : ℂ) * I := by
       apply Complex.ext
@@ -249,13 +249,13 @@ theorem norm_logDeriv_zetaChi_shift_sub_line_le
         ‖(Complex.digamma
           ((1 - (linePt tau - (((1 : ℝ) : ℂ) + (v : ℂ) * I))) / 2) -
           Complex.digamma ((1 - linePt tau) / 2)) / 2‖ := norm_sub_le _ _
-    _ ≤ ((16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) + 4 / tau) / 2 +
-        ((16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|)) / 2 := by
+    _ ≤ ((16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) + 4 / tau) / 2 +
+        ((16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|)) / 2 := by
       rw [norm_div, norm_neg, norm_div]
       norm_num
       exact add_le_add (div_le_div_of_nonneg_right hfirst (by norm_num))
         (div_le_div_of_nonneg_right hsecond (by norm_num))
-    _ = (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) + 2 / tau := by ring
+    _ = (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) + 2 / tau := by ring
 
 /-- Coarse but integration-friendly slow-variation bound. -/
 theorem norm_logDeriv_zetaChi_shift_sub_line_le_coarse
@@ -267,12 +267,12 @@ theorem norm_logDeriv_zetaChi_shift_sub_line_le_coarse
   have h := norm_logDeriv_zetaChi_shift_sub_line_le htau hv
   have htau0 : 0 < tau := by linarith
   have hv0 : 0 ≤ |v| := abs_nonneg v
-  have hpow : 16 / tau ^ 2 ≤ 4 / tau := by
+  have hpow : 16 / tau ^ (2 : ℕ) ≤ 4 / tau := by
     rw [div_le_div_iff₀ (sq_pos_of_pos htau0) htau0]
     nlinarith
   refine h.trans ?_
   calc
-    (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) + 2 / tau
+    (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) + 2 / tau
         ≤ (4 / tau + 2 * Real.pi / tau) * (1 + |v|) + 2 / tau := by
           gcongr
     _ ≤ (4 / tau + 2 * Real.pi / tau) * (1 + |v|) +
@@ -310,10 +310,10 @@ theorem norm_smoothAFEZetaChiShiftRatio_sub_le_dyadic
           (-(((1 : ℝ) : ℂ) + (v : ℂ) * I)) -
         smoothAFEZetaChiShiftRatio (linePt u)
           (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))‖ ≤
-      ((1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ 2 / T) * |tau - u| := by
+      ((1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ (2 : ℕ) / T) * |tau - u| := by
   let f : ℝ → ℂ := fun y => smoothAFEZetaChiShiftRatio (linePt y)
     (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))
-  let C : ℝ := (1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ 2 / T
+  let C : ℝ := (1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ (2 : ℕ) / T
   have hdiff : ∀ y ∈ Set.Icc T (2 * T), DifferentiableAt ℝ f y := by
     intro y hy
     exact (hasDerivAt_smoothAFEZetaChiShiftRatio_neg_right_one_line y v).differentiableAt
@@ -344,7 +344,7 @@ theorem norm_smoothAFEZetaChiShiftRatio_sub_le_dyadic
             ((6 + 2 * Real.pi) * (1 + |v|) / T) := by
               gcongr
               exact hy.1
-      _ = (1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ 2 / T := by ring
+      _ = (1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ (2 : ℕ) / T := by ring
   have hmvt := (convex_Icc T (2 * T)).norm_image_sub_le_of_norm_deriv_le
     hdiff hbound hu htau
   dsimp only [f, C] at hmvt ⊢

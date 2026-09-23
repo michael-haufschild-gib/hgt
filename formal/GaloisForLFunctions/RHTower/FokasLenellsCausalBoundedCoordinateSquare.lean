@@ -27,9 +27,9 @@ private theorem unit_rate_conj (b ω : ℝ) :
     one_pow, inv_one, Complex.ofReal_one, mul_one]
 
 private theorem unit_hilbert_difference (x y : hardyL2ᗮ) (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) :
-    ‖x - y‖^2 = 2 - 2 * (inner ℂ x y).re := by
+    ‖x - y‖^(2 : ℕ) = 2 - 2 * (inner ℂ x y).re := by
   rw [norm_sub_sq (𝕜 := ℂ), hx, hy]
-  change (1 : ℝ)^2 - 2 * (inner ℂ x y).re + 1^2 = _
+  change (1 : ℝ)^(2 : ℕ) - 2 * (inner ℂ x y).re + 1^(2 : ℕ) = _
   ring
 
 private theorem tendsto_real_part {f : ℕ → ℂ} {z : ℂ}
@@ -39,7 +39,7 @@ private theorem tendsto_real_part {f : ℕ → ℂ} {z : ℂ}
 
 private theorem coordinate_square_identity (b ω η : ℝ) (j : ℕ) :
     ‖causalBoundedChainCoordinate j
-      (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)‖^2 =
+      (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)‖^(2 : ℕ) =
       2 - 2 * (((((causalUnitBoundaryRate b ω).val)⁻¹ *
         (causalUnitBoundaryRate b η).val)^j) *
           inner ℂ (causalUnitBoundaryEigenvector b ω).val
@@ -53,7 +53,7 @@ private theorem coordinate_square_identity (b ω η : ℝ) (j : ℕ) :
     rw [unit_coordinate, unit_coordinate, inner_smul_left, inner_smul_right,
       map_pow, unit_rate_conj, mul_pow]
     ring
-  have hd := congrArg (fun v : hardyL2ᗮ => ‖v‖^2)
+  have hd := congrArg (fun v : hardyL2ᗮ => ‖v‖^(2 : ℕ))
     ((causalBoundedChainCoordinate j).map_sub
       (causalBoundedUnitEigenchain b ω) (causalBoundedUnitEigenchain b η))
   exact hd.trans ((unit_hilbert_difference
@@ -67,16 +67,16 @@ private theorem coordinate_square_identity (b ω η : ℝ) (j : ℕ) :
 def causalBoundedCoordinateSquareMean (b ω η : ℝ) (N : ℕ) : ℝ :=
   (N : ℝ)⁻¹ * ∑ j ∈ Finset.range N,
     ‖causalBoundedChainCoordinate j
-      (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)‖^2
+      (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)‖^(2 : ℕ)
 
 /-- Every finite coordinate square mean is bounded by the genuine squared chain distance. -/
 theorem causalBoundedCoordinateSquareMean_le (b ω η : ℝ) (N : ℕ) :
     causalBoundedCoordinateSquareMean b ω η N ≤
-      ‖causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η‖^2 := by
+      ‖causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η‖^(2 : ℕ) := by
   have hs (j : ℕ) :
       ‖causalBoundedChainCoordinate j
-        (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)‖^2 ≤
-        ‖causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η‖^2 := by
+        (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)‖^(2 : ℕ) ≤
+        ‖causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η‖^(2 : ℕ) := by
     have h := causalBoundedChainCoordinate_norm_le j
       (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)
     nlinarith [norm_nonneg (causalBoundedChainCoordinate j
@@ -84,7 +84,7 @@ theorem causalBoundedCoordinateSquareMean_le (b ω η : ℝ) (N : ℕ) :
       norm_nonneg (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)]
   calc
     _ ≤ (N : ℝ)⁻¹ * ∑ _j ∈ Finset.range N,
-        ‖causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η‖^2 :=
+        ‖causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η‖^(2 : ℕ) :=
       mul_le_mul_of_nonneg_left (Finset.sum_le_sum (fun j _ => hs j))
         (inv_nonneg.mpr (Nat.cast_nonneg N))
     _ ≤ _ := by
@@ -110,7 +110,7 @@ private theorem square_mean_character (b ω η : ℝ) (N : ℕ) :
   rw [causalBoundedCoordinateSquareMean, real_cesaro_character]
   have hs : (∑ j ∈ Finset.range N,
       ‖causalBoundedChainCoordinate j
-        (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)‖^2) =
+        (causalBoundedUnitEigenchain b ω - causalBoundedUnitEigenchain b η)‖^(2 : ℕ)) =
       (N : ℝ) * 2 - 2 * ∑ j ∈ Finset.range N,
         (((((causalUnitBoundaryRate b ω).val)⁻¹ * (causalUnitBoundaryRate b η).val)^j) *
           inner ℂ (causalUnitBoundaryEigenvector b ω).val
@@ -172,7 +172,7 @@ theorem causalBoundedCoordinateSquareMean_tendsto (b ω η : ℝ) :
 /-- Genuine unit-frequency chains are separated by at least the square root of two in chain norm. -/
 theorem causalBoundedUnitEigenchain_pairwise_square_separated (b : ℝ) :
     Pairwise (fun ω η : ℝ => 2 ≤
-      (dist (causalBoundedUnitEigenchain b ω) (causalBoundedUnitEigenchain b η))^2) := by
+      (dist (causalBoundedUnitEigenchain b ω) (causalBoundedUnitEigenchain b η))^(2 : ℕ)) := by
   intro ω η h
   have ht := causalBoundedCoordinateSquareMean_tendsto b ω η
   rw [if_neg h] at ht

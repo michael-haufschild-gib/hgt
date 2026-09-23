@@ -72,11 +72,11 @@ theorem hedenmalmBorelRelativeAdmissionSpectrum_ne_eulerPrimitive (x : ℝ) :
 def deningerCalderonWittGlobalRelativeAdmissionSpectrum
     {P : Type*}
     (S : Submodule ℂ deningerCalderonWittGlobalMilnorIncidence)
-    (w : P → ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) : Set P :=
+    (w : P → ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) : Set P :=
   relativeAdmissionSpectrum
     (R := ℂ)
     (A0 := deningerCalderonWittGlobalMilnorIncidence)
-    (A1 := ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (A1 := ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     S
     deningerCalderonWittGlobalMilnorIncidence.subtype
     deningerCalderonWittGlobalMilnorGreenRetraction w
@@ -86,7 +86,7 @@ primitive in the admitted incidence sector. -/
 theorem mem_deningerCalderonWittGlobalRelativeAdmissionSpectrum_iff
     {P : Type*}
     (S : Submodule ℂ deningerCalderonWittGlobalMilnorIncidence)
-    (w : P → ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : P → ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (hcocycle : ∀ p, deningerCalderonWittAlgebraicGlobalExteriorCup (w p) = 0)
     (p : P) :
     p ∈ deningerCalderonWittGlobalRelativeAdmissionSpectrum S w ↔

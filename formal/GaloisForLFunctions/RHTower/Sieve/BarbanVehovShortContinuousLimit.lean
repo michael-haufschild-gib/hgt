@@ -41,7 +41,7 @@ private theorem tendsto_div_log_pow_add_two_zero
 /-- The base continuous polynomial has leading coefficient `τ + 5/2`. -/
 theorem tendsto_barbanVehovShortBaseContinuousPolynomial_div_log_sq (τ : ℝ) :
     Tendsto (fun M : ℕ =>
-      barbanVehovShortBaseContinuousPolynomial τ M / Real.log M ^ 2)
+      barbanVehovShortBaseContinuousPolynomial τ M / Real.log M ^ (2 : ℕ))
       atTop (𝓝 (τ + 5 / 2)) := by
   have h11 := tendsto_selbergOriginalLogMonomial_div_log_pow
     (i := 1) (j := 1) (by norm_num) (by norm_num)
@@ -58,10 +58,10 @@ theorem tendsto_barbanVehovShortBaseContinuousPolynomial_div_log_sq (τ : ℝ) :
   have hcomb' : Tendsto (fun M : ℕ =>
       τ * (selbergOriginalLogMonomial 1 1 M / Real.log M) +
         harmonicLogMomentTotalConstant 0 *
-          (selbergOriginalLogMonomial 1 1 M / Real.log M ^ 2) +
-        selbergOriginalLogMonomial 2 1 M / Real.log M ^ 2 +
-        selbergOriginalLogMonomial 1 2 M / Real.log M ^ 2 +
-        selbergOriginalGcdLogMonomial 1 1 M / Real.log M ^ 2)
+          (selbergOriginalLogMonomial 1 1 M / Real.log M ^ (2 : ℕ)) +
+        selbergOriginalLogMonomial 2 1 M / Real.log M ^ (2 : ℕ) +
+        selbergOriginalLogMonomial 1 2 M / Real.log M ^ (2 : ℕ) +
+        selbergOriginalGcdLogMonomial 1 1 M / Real.log M ^ (2 : ℕ))
       atTop (𝓝 (τ + 5 / 2)) := by
     convert hcomb using 1 <;> ring
   refine hcomb'.congr' ?_
@@ -73,8 +73,8 @@ theorem tendsto_barbanVehovShortBaseContinuousPolynomial_div_log_sq (τ : ℝ) :
 /-- The cross continuous polynomial has leading coefficient `-(2 + 2τ + τ²/2)`. -/
 theorem tendsto_barbanVehovShortCrossContinuousPolynomial_div_log_cube (τ : ℝ) :
     Tendsto (fun M : ℕ =>
-      barbanVehovShortCrossContinuousPolynomial τ M / Real.log M ^ 3)
-      atTop (𝓝 (-(2 + 2 * τ + τ ^ 2 / 2))) := by
+      barbanVehovShortCrossContinuousPolynomial τ M / Real.log M ^ (3 : ℕ))
+      atTop (𝓝 (-(2 + 2 * τ + τ ^ (2 : ℕ) / 2))) := by
   have h11 := tendsto_selbergOriginalLogMonomial_div_log_pow
     (i := 1) (j := 1) (by norm_num) (by norm_num)
   have h21 := tendsto_selbergOriginalLogMonomial_div_log_pow
@@ -95,7 +95,7 @@ theorem tendsto_barbanVehovShortCrossContinuousPolynomial_div_log_cube (τ : ℝ
   have h21z := tendsto_div_log_pow_succ_zero h21
   have hg11z := tendsto_div_log_pow_succ_zero hg11
   norm_num at h11 h21 h12 h31 h13 hg11 hg21 hg2 h11z h11zz h21z hg11z
-  have hmain := (((((((h11.const_mul (-(τ + τ ^ 2 / 2))).add
+  have hmain := (((((((h11.const_mul (-(τ + τ ^ (2 : ℕ) / 2))).add
     (h21.const_mul (-1))).add (hg11.const_mul (-1))).add
       (h12.const_mul (-(1 + τ)))).add (h31.const_mul (1 / 2 : ℝ))).add hg21).add
         (hg2.const_mul (1 / 2 : ℝ))).add (h13.const_mul (-1 / 2 : ℝ))
@@ -104,23 +104,23 @@ theorem tendsto_barbanVehovShortCrossContinuousPolynomial_div_log_cube (τ : ℝ
   have hconst1 := h11zz.const_mul (-(harmonicLogMomentTotalConstant 1))
   have hcomb := (hmain.add hconst0).add hconst1
   have hcomb' : Tendsto (fun M : ℕ =>
-      -(τ + τ ^ 2 / 2) *
+      -(τ + τ ^ (2 : ℕ) / 2) *
           (selbergOriginalLogMonomial 1 1 M / Real.log M) -
-        selbergOriginalLogMonomial 2 1 M / Real.log M ^ 2 -
-        selbergOriginalGcdLogMonomial 1 1 M / Real.log M ^ 2 -
-        (1 + τ) * (selbergOriginalLogMonomial 1 2 M / Real.log M ^ 2) +
-        (1 / 2 : ℝ) * (selbergOriginalLogMonomial 3 1 M / Real.log M ^ 3) +
-        selbergOriginalGcdLogMonomial 2 1 M / Real.log M ^ 3 +
+        selbergOriginalLogMonomial 2 1 M / Real.log M ^ (2 : ℕ) -
+        selbergOriginalGcdLogMonomial 1 1 M / Real.log M ^ (2 : ℕ) -
+        (1 + τ) * (selbergOriginalLogMonomial 1 2 M / Real.log M ^ (2 : ℕ)) +
+        (1 / 2 : ℝ) * (selbergOriginalLogMonomial 3 1 M / Real.log M ^ (3 : ℕ)) +
+        selbergOriginalGcdLogMonomial 2 1 M / Real.log M ^ (3 : ℕ) +
         (1 / 2 : ℝ) *
-          (selbergOriginalGcdLogPowerMonomial 2 M / Real.log M ^ 3) -
-        (1 / 2 : ℝ) * (selbergOriginalLogMonomial 1 3 M / Real.log M ^ 3) -
+          (selbergOriginalGcdLogPowerMonomial 2 M / Real.log M ^ (3 : ℕ)) -
+        (1 / 2 : ℝ) * (selbergOriginalLogMonomial 1 3 M / Real.log M ^ (3 : ℕ)) -
         harmonicLogMomentTotalConstant 0 *
-          (selbergOriginalLogMonomial 1 1 M / Real.log M ^ 2 -
-            selbergOriginalLogMonomial 2 1 M / Real.log M ^ 3 -
-            selbergOriginalGcdLogMonomial 1 1 M / Real.log M ^ 3) -
+          (selbergOriginalLogMonomial 1 1 M / Real.log M ^ (2 : ℕ) -
+            selbergOriginalLogMonomial 2 1 M / Real.log M ^ (3 : ℕ) -
+            selbergOriginalGcdLogMonomial 1 1 M / Real.log M ^ (3 : ℕ)) -
         harmonicLogMomentTotalConstant 1 *
-          (selbergOriginalLogMonomial 1 1 M / Real.log M ^ 3))
-      atTop (𝓝 (-(2 + 2 * τ + τ ^ 2 / 2))) := by
+          (selbergOriginalLogMonomial 1 1 M / Real.log M ^ (3 : ℕ)))
+      atTop (𝓝 (-(2 + 2 * τ + τ ^ (2 : ℕ) / 2))) := by
     convert hcomb using 1
     · funext M
       ring
@@ -135,8 +135,8 @@ theorem tendsto_barbanVehovShortCrossContinuousPolynomial_div_log_cube (τ : ℝ
 coefficient. -/
 theorem tendsto_barbanVehovShortDerivativeContinuousPolynomial_div_log_four (τ : ℝ) :
     Tendsto (fun M : ℕ =>
-      barbanVehovShortDerivativeContinuousPolynomial τ M / Real.log M ^ 4)
-      atTop (𝓝 (13 / 4 + 13 * τ / 3 + 2 * τ ^ 2 + τ ^ 3 / 3)) := by
+      barbanVehovShortDerivativeContinuousPolynomial τ M / Real.log M ^ (4 : ℕ))
+      atTop (𝓝 (13 / 4 + 13 * τ / 3 + 2 * τ ^ (2 : ℕ) + τ ^ (3 : ℕ) / 3)) := by
   have h11 := tendsto_selbergOriginalLogMonomial_div_log_pow
     (i := 1) (j := 1) (by norm_num) (by norm_num)
   have h21 := tendsto_selbergOriginalLogMonomial_div_log_pow
@@ -181,8 +181,8 @@ theorem tendsto_barbanVehovShortDerivativeContinuousPolynomial_div_log_four (τ 
   norm_num at h11 h21 h12 h22 h32 h23 h41 h14 hg11 hg21 hg12 hg22 hg2 hg3
   norm_num at hsq21 hsq12 h11z h11zz h11zzz h21z h21zz h12z h12zz h22z hg11z
   norm_num at hg11zz hg21z hg12z hg2z
-  have hmain0 := (h11.const_mul (τ + τ ^ 2 + τ ^ 3 / 3)).add
-    ((h21.add h12).const_mul (1 + τ + τ ^ 2 / 2))
+  have hmain0 := (h11.const_mul (τ + τ ^ (2 : ℕ) + τ ^ (3 : ℕ) / 3)).add
+    ((h21.add h12).const_mul (1 + τ + τ ^ (2 : ℕ) / 2))
   have hmain1 := (hmain0.add hg11).add (h22.const_mul τ)
   have hmain2 := ((hmain1.sub hg21).sub hg12).sub hg2
   have hmain3 := hmain2.add ((h32.add h23).const_mul (1 / 2 : ℝ))
@@ -209,16 +209,16 @@ theorem tendsto_barbanVehovShortDerivativeContinuousPolynomial_div_log_four (τ 
 /-- Limiting continuous short-energy constant at logarithmic separation `τ` and reciprocal
 derivative tuning `ρ`. -/
 def barbanVehovShortContinuousLimitConstant (τ ρ : ℝ) : ℝ :=
-  τ + 5 / 2 - 2 * ρ * (2 + 2 * τ + τ ^ 2 / 2) +
-    ρ ^ 2 * (13 / 4 + 13 * τ / 3 + 2 * τ ^ 2 + τ ^ 3 / 3)
+  τ + 5 / 2 - 2 * ρ * (2 + 2 * τ + τ ^ (2 : ℕ) / 2) +
+    ρ ^ (2 : ℕ) * (13 / 4 + 13 * τ / 3 + 2 * τ ^ (2 : ℕ) + τ ^ (3 : ℕ) / 3)
 
 /-- Exact polynomial version of the normalized continuous short energy. -/
 def barbanVehovShortContinuousPolynomialEnergy (τ ρ : ℝ) (M : ℕ) : ℝ :=
   (barbanVehovShortBaseContinuousPolynomial τ M +
       2 * (ρ / Real.log M) * barbanVehovShortCrossContinuousPolynomial τ M +
-      (ρ / Real.log M) ^ 2 *
+      (ρ / Real.log M) ^ (2 : ℕ) *
         barbanVehovShortDerivativeContinuousPolynomial τ M) /
-    Real.log M ^ 2
+    Real.log M ^ (2 : ℕ)
 
 theorem tendsto_barbanVehovShortContinuousPolynomialEnergy (τ ρ : ℝ) :
     Tendsto (barbanVehovShortContinuousPolynomialEnergy τ ρ)
@@ -226,13 +226,13 @@ theorem tendsto_barbanVehovShortContinuousPolynomialEnergy (τ ρ : ℝ) :
   have hb := tendsto_barbanVehovShortBaseContinuousPolynomial_div_log_sq τ
   have hc := tendsto_barbanVehovShortCrossContinuousPolynomial_div_log_cube τ
   have hd := tendsto_barbanVehovShortDerivativeContinuousPolynomial_div_log_four τ
-  have hcomb := (hb.add (hc.const_mul (2 * ρ))).add (hd.const_mul (ρ ^ 2))
+  have hcomb := (hb.add (hc.const_mul (2 * ρ))).add (hd.const_mul (ρ ^ (2 : ℕ)))
   have hcomb' : Tendsto (fun M : ℕ =>
-      barbanVehovShortBaseContinuousPolynomial τ M / Real.log M ^ 2 +
+      barbanVehovShortBaseContinuousPolynomial τ M / Real.log M ^ (2 : ℕ) +
         2 * ρ *
-          (barbanVehovShortCrossContinuousPolynomial τ M / Real.log M ^ 3) +
-        ρ ^ 2 *
-          (barbanVehovShortDerivativeContinuousPolynomial τ M / Real.log M ^ 4))
+          (barbanVehovShortCrossContinuousPolynomial τ M / Real.log M ^ (3 : ℕ)) +
+        ρ ^ (2 : ℕ) *
+          (barbanVehovShortDerivativeContinuousPolynomial τ M / Real.log M ^ (4 : ℕ)))
       atTop (𝓝 (barbanVehovShortContinuousLimitConstant τ ρ)) := by
     convert hcomb using 1
     rw [barbanVehovShortContinuousLimitConstant]
@@ -255,7 +255,7 @@ theorem barbanVehovShortEnergyContinuous_eq_polynomialEnergy
     barbanVehovShortDerivativeContinuous_eq_polynomial hX hM hlog]
 
 private theorem tendsto_nat_pow_fortyNine_atTop :
-    Tendsto (fun N : ℕ => N ^ 49) atTop atTop := by
+    Tendsto (fun N : ℕ => N ^ (49 : ℕ)) atTop atTop := by
   rw [tendsto_atTop]
   intro B
   filter_upwards [eventually_ge_atTop (max B 1)] with N hN
@@ -263,13 +263,13 @@ private theorem tendsto_nat_pow_fortyNine_atTop :
   have hN1 : 1 ≤ N := (Nat.le_max_right B 1).trans hN
   exact hBN.trans (by
     calc
-      N ≤ N * N ^ 48 := Nat.le_mul_of_pos_right N (pow_pos hN1 48)
-      _ = N ^ 49 := by ring)
+      N ≤ N * N ^ (48 : ℕ) := Nat.le_mul_of_pos_right N (pow_pos hN1 48)
+      _ = N ^ (49 : ℕ) := by ring)
 
 private theorem log_hundred_eq_two_add_twoOverFortyNine_mul_log_fortyNine
     (N : ℕ) :
-    Real.log (((N ^ 100 : ℕ) : ℝ)) =
-      (2 + (2 / 49 : ℝ)) * Real.log (((N ^ 49 : ℕ) : ℝ)) := by
+    Real.log (((N ^ (100 : ℕ) : ℕ) : ℝ)) =
+      (2 + (2 / 49 : ℝ)) * Real.log (((N ^ (49 : ℕ) : ℕ) : ℝ)) := by
   norm_num [Nat.cast_pow, Real.log_pow]
   ring
 
@@ -279,11 +279,11 @@ theorem barbanVehovShortContinuousLimitConstant_twoOverFortyNine_fortyNineOverHu
   rw [barbanVehovShortContinuousLimitConstant]
   norm_num
 
-/-- Continuous short detector at the exact `X=N^100`, `M=N^49` reciprocal schedule. -/
+/-- Continuous short detector at the exact `X=N^(100 : ℕ)`, `M=N^(49 : ℕ)` reciprocal schedule. -/
 theorem tendsto_barbanVehovShortEnergyContinuous_fortyNine_reciprocal :
     Tendsto (fun N : ℕ =>
       barbanVehovShortEnergyContinuous
-        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49))
+        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)))
       atTop (𝓝 (7782751 / 5880000 : ℝ)) := by
   have hpoly := tendsto_barbanVehovShortContinuousPolynomialEnergy
     (2 / 49 : ℝ) (49 / 100 : ℝ)
@@ -293,12 +293,12 @@ theorem tendsto_barbanVehovShortEnergyContinuous_fortyNine_reciprocal :
   refine hcomp.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with N hN
   have hNpos : 0 < N := by omega
-  have hMpos : 0 < N ^ 49 := pow_pos hNpos 49
-  have hXpos : 0 < N ^ 100 := pow_pos hNpos 100
+  have hMpos : 0 < N ^ (49 : ℕ) := pow_pos hNpos 49
+  have hXpos : 0 < N ^ (100 : ℕ) := pow_pos hNpos 100
   have hlam :
       (49 / 100 : ℝ) / (49 * Real.log N) =
-        (49 / 100 : ℝ) / Real.log (N ^ 49 : ℕ) := by
-    rw [show (((N ^ 49 : ℕ) : ℝ)) = (N : ℝ) ^ 49 by norm_num,
+        (49 / 100 : ℝ) / Real.log (N ^ (49 : ℕ) : ℕ) := by
+    rw [show (((N ^ (49 : ℕ) : ℕ) : ℝ)) = (N : ℝ) ^ (49 : ℕ) by norm_num,
       Real.log_pow]
     norm_num
   rw [hlam]

@@ -157,7 +157,7 @@ theorem norm_xiPhysicalPrimeLogWindowFlux_le_sum_norm
 
 theorem integrable_sq_xiPhysicalPrimeLogWindowFlux
     (P : Finset Nat.Primes) (m k : ℝ) :
-    Integrable (fun u => xiPhysicalPrimeLogWindowFlux P m k u ^ 2) := by
+    Integrable (fun u => xiPhysicalPrimeLogWindowFlux P m k u ^ (2 : ℕ)) := by
   have hflux := integrable_xiPhysicalPrimeLogWindowFlux P m k
   have hmul : Integrable (fun u =>
       xiPhysicalPrimeLogWindowFlux P m k u *
@@ -298,20 +298,20 @@ theorem intervalIntegrable_xiPhysicalPrimeLogThetaAbelResponse
 theorem intervalIntegrable_sq_xiPhysicalPrimeLogThetaAbelResponse
     {A : ℝ} (hA : 0 < A) {m k : ℝ} (hmk : m ≤ k) :
     IntervalIntegrable
-      (fun u => xiPhysicalPrimeLogThetaAbelResponse m k u ^ 2)
+      (fun u => xiPhysicalPrimeLogThetaAbelResponse m k u ^ (2 : ℕ))
       volume 0 A := by
   let P := xiPhysicalPrimeLogWindowPacket (m - A) k
   let c := k - m
   have hflux : IntervalIntegrable (xiPhysicalPrimeLogWindowFlux P m k) volume 0 A :=
     (integrable_xiPhysicalPrimeLogWindowFlux P m k).intervalIntegrable
   have hfluxSq : IntervalIntegrable
-      (fun u => xiPhysicalPrimeLogWindowFlux P m k u ^ 2) volume 0 A :=
+      (fun u => xiPhysicalPrimeLogWindowFlux P m k u ^ (2 : ℕ)) volume 0 A :=
     (integrable_sq_xiPhysicalPrimeLogWindowFlux P m k).intervalIntegrable
   have hbase : IntervalIntegrable
-      (fun u => (xiPhysicalPrimeLogWindowFlux P m k u - c) ^ 2) volume 0 A := by
+      (fun u => (xiPhysicalPrimeLogWindowFlux P m k u - c) ^ (2 : ℕ)) volume 0 A := by
     refine IntervalIntegrable.congr ?_
       ((hfluxSq.sub (hflux.const_mul (2 * c))).add
-        (show IntervalIntegrable (fun _ : ℝ => c ^ 2) volume 0 A from
+        (show IntervalIntegrable (fun _ : ℝ => c ^ (2 : ℕ)) volume 0 A from
           intervalIntegrable_const))
     intro u hu
     ring
@@ -320,7 +320,7 @@ theorem intervalIntegrable_sq_xiPhysicalPrimeLogThetaAbelResponse
   rw [Set.uIoc_of_le hA.le] at hu
   have hfluxEq := xiPhysicalPrimeLogWindowFlux_supportPacket_eq_width_add_thetaAbelResponse
     A hmk ⟨hu.1.le, hu.2⟩
-  change (xiPhysicalPrimeLogWindowFlux P m k u - c) ^ 2 = _
+  change (xiPhysicalPrimeLogWindowFlux P m k u - c) ^ (2 : ℕ) = _
   dsimp only [P, c]
   rw [hfluxEq]
   ring
@@ -367,14 +367,14 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_eq_thetaAbelVarianc
       ∫ u : ℝ in 0..A,
         (xiPhysicalPrimeLogThetaAbelResponse m k u -
           (xiPhysicalPrimeLogApertureWeightedLengthMass
-              (xiPhysicalPrimeLogWindowPacket (m - A) k) A m k / A - (k - m))) ^ 2 := by
+              (xiPhysicalPrimeLogWindowPacket (m - A) k) A m k / A - (k - m))) ^ (2 : ℕ) := by
   rw [← intervalIntegral_sq_xiPhysicalPrimeLogCenteredWindowFlux_eq_energy
     (xiPhysicalPrimeLogWindowPacket (m - A) k) hA m k]
   apply intervalIntegral.integral_congr
   intro u hu
   rw [Set.uIcc_of_le hA.le] at hu
   change xiPhysicalPrimeLogCenteredWindowFlux
-      (xiPhysicalPrimeLogWindowPacket (m - A) k) A m k u ^ 2 = _
+      (xiPhysicalPrimeLogWindowPacket (m - A) k) A m k u ^ (2 : ℕ) = _
   rw [xiPhysicalPrimeLogCenteredWindowFlux,
     xiPhysicalPrimeLogWindowFlux_supportPacket_eq_width_add_thetaAbelResponse A hmk hu]
   ring
@@ -385,9 +385,9 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_eq_thetaAbelRaw_sub
     {A : ℝ} (hA : 0 < A) {m k : ℝ} (hmk : m ≤ k) :
     xiPhysicalPrimeLogApertureFusionEnergy
         (xiPhysicalPrimeLogWindowPacket (m - A) k) A m k =
-      (∫ u : ℝ in 0..A, xiPhysicalPrimeLogThetaAbelResponse m k u ^ 2) -
+      (∫ u : ℝ in 0..A, xiPhysicalPrimeLogThetaAbelResponse m k u ^ (2 : ℕ)) -
         (1 / A) *
-          (∫ u : ℝ in 0..A, xiPhysicalPrimeLogThetaAbelResponse m k u) ^ 2 := by
+          (∫ u : ℝ in 0..A, xiPhysicalPrimeLogThetaAbelResponse m k u) ^ (2 : ℕ) := by
   rw [xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_eq_thetaAbelVariance hA hmk,
     xiPhysicalPrimeLogApertureWeightedLengthMass_div_sub_width_eq_mean_thetaAbelResponse
       hA hmk]
@@ -396,40 +396,40 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_eq_thetaAbelRaw_sub
   let μ := (1 / A) * I
   have hR : IntervalIntegrable R volume 0 A :=
     intervalIntegrable_xiPhysicalPrimeLogThetaAbelResponse hA hmk
-  have hR2 : IntervalIntegrable (fun u => R u ^ 2) volume 0 A :=
+  have hR2 : IntervalIntegrable (fun u => R u ^ (2 : ℕ)) volume 0 A :=
     intervalIntegrable_sq_xiPhysicalPrimeLogThetaAbelResponse hA hmk
   have hlin : IntervalIntegrable (fun u => 2 * μ * R u) volume 0 A :=
     hR.const_mul (2 * μ)
-  have hconst : IntervalIntegrable (fun _ : ℝ => μ ^ 2) volume 0 A :=
+  have hconst : IntervalIntegrable (fun _ : ℝ => μ ^ (2 : ℕ)) volume 0 A :=
     intervalIntegrable_const
-  change (∫ u : ℝ in 0..A, (R u - μ) ^ 2) =
-    (∫ u : ℝ in 0..A, R u ^ 2) - (1 / A) * I ^ 2
+  change (∫ u : ℝ in 0..A, (R u - μ) ^ (2 : ℕ)) =
+    (∫ u : ℝ in 0..A, R u ^ (2 : ℕ)) - (1 / A) * I ^ (2 : ℕ)
   calc
-    (∫ u : ℝ in 0..A, (R u - μ) ^ 2) =
-        (∫ u : ℝ in 0..A, R u ^ 2) -
+    (∫ u : ℝ in 0..A, (R u - μ) ^ (2 : ℕ)) =
+        (∫ u : ℝ in 0..A, R u ^ (2 : ℕ)) -
           (∫ u : ℝ in 0..A, 2 * μ * R u) +
-            ∫ _u : ℝ in 0..A, μ ^ 2 := by
+            ∫ _u : ℝ in 0..A, μ ^ (2 : ℕ) := by
       have hpoint : ∀ u ∈ Set.uIcc (0 : ℝ) A,
-          (R u - μ) ^ 2 = R u ^ 2 - 2 * μ * R u + μ ^ 2 := by
+          (R u - μ) ^ (2 : ℕ) = R u ^ (2 : ℕ) - 2 * μ * R u + μ ^ (2 : ℕ) := by
         intro u hu
         ring
       rw [intervalIntegral.integral_congr hpoint,
         intervalIntegral.integral_add (hR2.sub hlin) hconst,
         intervalIntegral.integral_sub hR2 hlin]
-    _ = (∫ u : ℝ in 0..A, R u ^ 2) - (1 / A) * I ^ 2 := by
+    _ = (∫ u : ℝ in 0..A, R u ^ (2 : ℕ)) - (1 / A) * I ^ (2 : ℕ) := by
       rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const]
       simp only [sub_zero, smul_eq_mul]
       rw [show (∫ u : ℝ in 0..A, R u) = I from rfl]
-      change (∫ u : ℝ in 0..A, R u ^ 2) - 2 * μ * I + A * μ ^ 2 =
-        (∫ u : ℝ in 0..A, R u ^ 2) - (1 / A) * I ^ 2
+      change (∫ u : ℝ in 0..A, R u ^ (2 : ℕ)) - 2 * μ * I + A * μ ^ (2 : ℕ) =
+        (∫ u : ℝ in 0..A, R u ^ (2 : ℕ)) - (1 / A) * I ^ (2 : ℕ)
       have hmuA : μ * A = I := by
         dsimp only [μ]
         field_simp [hA.ne']
-      have hmuI : μ * I = (1 / A) * I ^ 2 := by
+      have hmuI : μ * I = (1 / A) * I ^ (2 : ℕ) := by
         dsimp only [μ]
         ring
-      rw [show A * μ ^ 2 = μ * I by calc
-        A * μ ^ 2 = μ * (μ * A) := by ring
+      rw [show A * μ ^ (2 : ℕ) = μ * I by calc
+        A * μ ^ (2 : ℕ) = μ * (μ * A) := by ring
         _ = μ * I := by rw [hmuA], hmuI]
       ring
 
@@ -438,7 +438,7 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_le_thetaAbelRaw
     {A : ℝ} (hA : 0 < A) {m k : ℝ} (hmk : m ≤ k) :
     xiPhysicalPrimeLogApertureFusionEnergy
         (xiPhysicalPrimeLogWindowPacket (m - A) k) A m k ≤
-      ∫ u : ℝ in 0..A, xiPhysicalPrimeLogThetaAbelResponse m k u ^ 2 := by
+      ∫ u : ℝ in 0..A, xiPhysicalPrimeLogThetaAbelResponse m k u ^ (2 : ℕ) := by
   rw [xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_eq_thetaAbelRaw_sub_meanSq
     hA hmk]
   exact sub_le_self _ (mul_nonneg (by positivity) (sq_nonneg _))
@@ -450,12 +450,12 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_le_mul_sq_of_respon
     (hresponse : ∀ u ∈ Icc (0 : ℝ) A,
       |xiPhysicalPrimeLogThetaAbelResponse m k u| ≤ B) :
     xiPhysicalPrimeLogApertureFusionEnergy
-        (xiPhysicalPrimeLogWindowPacket (m - A) k) A m k ≤ A * B ^ 2 := by
+        (xiPhysicalPrimeLogWindowPacket (m - A) k) A m k ≤ A * B ^ (2 : ℕ) := by
   refine (xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_le_thetaAbelRaw
     hA hmk).trans ?_
   calc
-    (∫ u : ℝ in 0..A, xiPhysicalPrimeLogThetaAbelResponse m k u ^ 2) ≤
-        ∫ _u : ℝ in 0..A, B ^ 2 := by
+    (∫ u : ℝ in 0..A, xiPhysicalPrimeLogThetaAbelResponse m k u ^ (2 : ℕ)) ≤
+        ∫ _u : ℝ in 0..A, B ^ (2 : ℕ) := by
       apply intervalIntegral.integral_mono_on hA.le
         (intervalIntegrable_sq_xiPhysicalPrimeLogThetaAbelResponse hA hmk)
         intervalIntegrable_const
@@ -464,7 +464,7 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_le_mul_sq_of_respon
       nlinarith [abs_nonneg (xiPhysicalPrimeLogThetaAbelResponse m k u),
         sq_abs (xiPhysicalPrimeLogThetaAbelResponse m k u),
         sq_nonneg (B - |xiPhysicalPrimeLogThetaAbelResponse m k u|)]
-    _ = A * B ^ 2 := by
+    _ = A * B ^ (2 : ℕ) := by
       rw [intervalIntegral.integral_const]
       simp
 
@@ -478,7 +478,7 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_logScale_supportPacket_eq_thetaAb
         (xiPhysicalPrimeLogThetaAbelResponse (Real.log X) (Real.log X + c) u -
           (xiPhysicalPrimeLogApertureWeightedLengthMass
               (xiPhysicalPrimeLogWindowPacket (Real.log X - A) (Real.log X + c))
-              A (Real.log X) (Real.log X + c) / A - c)) ^ 2 := by
+              A (Real.log X) (Real.log X + c) / A - c)) ^ (2 : ℕ) := by
   simpa only [add_sub_cancel_left] using
     xiPhysicalPrimeLogApertureFusionEnergy_supportPacket_eq_thetaAbelVariance
       hA (m := Real.log X) (k := Real.log X + c) (by linarith)

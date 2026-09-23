@@ -19,7 +19,7 @@ theorem sphericalPrincipalE_single_complementary_energy (s : ℝ) (hs : |s| < 1)
     (sphericalComplementaryHermitianForm s
       (sphericalPrincipalE (s : ℂ) (Finsupp.single m 1))
       (sphericalPrincipalE (s : ℂ) (Finsupp.single m 1))).re =
-        ((((2 : ℤ) * m + 1 : ℤ) : ℝ)^2 - s^2) / 4 * complementaryKTypeWeight s m := by
+        ((((2 : ℤ) * m + 1 : ℤ) : ℝ)^(2 : ℕ) - s^(2 : ℕ)) / 4 * complementaryKTypeWeight s m := by
   rw [sphericalPrincipalE_single]
   unfold sphericalComplementaryHermitianForm
   rw [diagonalKTypeHermitianForm_single]
@@ -36,7 +36,7 @@ theorem sphericalPrincipalF_single_complementary_energy (s : ℝ) (hs : |s| < 1)
     (sphericalComplementaryHermitianForm s
       (sphericalPrincipalF (s : ℂ) (Finsupp.single m 1))
       (sphericalPrincipalF (s : ℂ) (Finsupp.single m 1))).re =
-        ((((2 : ℤ) * m - 1 : ℤ) : ℝ)^2 - s^2) / 4 * complementaryKTypeWeight s m := by
+        ((((2 : ℤ) * m - 1 : ℤ) : ℝ)^(2 : ℕ) - s^(2 : ℕ)) / 4 * complementaryKTypeWeight s m := by
   rw [sphericalPrincipalF_single]
   unfold sphericalComplementaryHermitianForm
   rw [diagonalKTypeHermitianForm_single]
@@ -60,12 +60,12 @@ theorem sphericalPrincipalE_complementary_energy_eq_casimir (s : ℝ) (hs : |s| 
       (1 / 4 : ℂ) * sphericalComplementaryHermitianForm s v
         (((sphericalPrincipalH + LinearMap.id).comp
           (sphericalPrincipalH + LinearMap.id)) v) -
-        ((s ^ 2 / 4 : ℝ) : ℂ) * sphericalComplementaryHermitianForm s v v := by
+        ((s ^ (2 : ℕ) / 4 : ℝ) : ℂ) * sphericalComplementaryHermitianForm s v v := by
   have hinv := sphericalComplementaryHermitianForm_invariant s hs v
     (sphericalPrincipalE (s : ℂ) v)
   have hcas := LinearMap.congr_fun (sphericalPrincipalCasimir_eq_smul_id (s : ℂ)) v
   have hfe : sphericalPrincipalF (s : ℂ) (sphericalPrincipalE (s : ℂ) v) =
-      ((s ^ 2 / 4 : ℝ) : ℂ) • v - (1 / 4 : ℂ) •
+      ((s ^ (2 : ℕ) / 4 : ℝ) : ℂ) • v - (1 / 4 : ℂ) •
         ((sphericalPrincipalH + LinearMap.id).comp
           (sphericalPrincipalH + LinearMap.id)) v := by
     dsimp [sphericalPrincipalCasimir] at hcas
@@ -102,7 +102,7 @@ theorem sphericalPrincipalH_add_id_sq_apply (v : SphericalKFiniteModel) (m : ℤ
     (((sphericalPrincipalH +
       (LinearMap.id : SphericalKFiniteModel →ₗ[ℂ] SphericalKFiniteModel)).comp
       (sphericalPrincipalH + LinearMap.id)) v) m =
-      ((((2 : ℤ) * m + 1 : ℤ) : ℂ) ^ 2) * v m := by
+      ((((2 : ℤ) * m + 1 : ℤ) : ℂ) ^ (2 : ℕ)) * v m := by
   rw [LinearMap.comp_apply, sphericalPrincipalH_add_id_apply,
     sphericalPrincipalH_add_id_apply]
   ring
@@ -116,7 +116,7 @@ theorem sphericalPrincipalH_add_id_sq_complementary_pairing_re (s : ℝ)
         (LinearMap.id : SphericalKFiniteModel →ₗ[ℂ] SphericalKFiniteModel)).comp
         (sphericalPrincipalH + LinearMap.id)) v)).re =
       ∑ m ∈ v.support,
-        ((((2 : ℤ) * m + 1 : ℤ) : ℝ) ^ 2) * Complex.normSq (v m) *
+        ((((2 : ℤ) * m + 1 : ℤ) : ℝ) ^ (2 : ℕ)) * Complex.normSq (v m) *
           complementaryKTypeWeight s m := by
   rw [sphericalComplementaryHermitianForm, diagonalKTypeHermitianForm_apply]
   simp only [Finsupp.sum]
@@ -132,18 +132,18 @@ theorem sphericalPrincipalH_add_id_sq_complementary_pairing_re (s : ℝ)
     rw [← Complex.normSq_eq_conj_mul_self]
   calc
     (star (v m) * (complementaryKTypeWeight s m : ℂ) *
-        ((((2 : ℤ) * m + 1 : ℤ) : ℂ) ^ 2 * v m)).re =
-      ((complementaryKTypeWeight s m : ℂ) * (a : ℂ) ^ 2 *
+        ((((2 : ℤ) * m + 1 : ℤ) : ℂ) ^ (2 : ℕ) * v m)).re =
+      ((complementaryKTypeWeight s m : ℂ) * (a : ℂ) ^ (2 : ℕ) *
           (star (v m) * v m)).re := by
           rw [ha]
           ring_nf
-    _ = ((complementaryKTypeWeight s m : ℂ) * ((a ^ 2 : ℝ) : ℂ) *
+    _ = ((complementaryKTypeWeight s m : ℂ) * ((a ^ (2 : ℕ) : ℝ) : ℂ) *
           (star (v m) * v m)).re := by
           push_cast
           rfl
-    _ = ((complementaryKTypeWeight s m : ℂ) * ((a ^ 2 : ℝ) : ℂ) *
+    _ = ((complementaryKTypeWeight s m : ℂ) * ((a ^ (2 : ℕ) : ℝ) : ℂ) *
           (Complex.normSq (v m) : ℂ)).re := by rw [hnorm]
-    _ = (((a ^ 2 * Complex.normSq (v m) * complementaryKTypeWeight s m : ℝ) : ℂ)).re := by
+    _ = (((a ^ (2 : ℕ) * Complex.normSq (v m) * complementaryKTypeWeight s m : ℝ) : ℂ)).re := by
           push_cast
           ring_nf
     _ = _ := by dsimp [a]
@@ -156,20 +156,20 @@ theorem sphericalPrincipalH_add_id_sq_complementary_pairing_re_le_of_support (s 
       (((sphericalPrincipalH +
         (LinearMap.id : SphericalKFiniteModel →ₗ[ℂ] SphericalKFiniteModel)).comp
         (sphericalPrincipalH + LinearMap.id)) v)).re ≤
-      (2 * r + 1) ^ 2 * (sphericalComplementaryHermitianForm s v v).re := by
+      (2 * r + 1) ^ (2 : ℕ) * (sphericalComplementaryHermitianForm s v v).re := by
   rw [sphericalPrincipalH_add_id_sq_complementary_pairing_re]
-  change _ ≤ (2 * r + 1) ^ 2 *
+  change _ ≤ (2 * r + 1) ^ (2 : ℕ) *
     (diagonalKTypeHermitianForm (complementaryKTypeWeight s) v v).re
   rw [diagonalKTypeHermitianForm_self_re]
   calc
     ∑ m ∈ v.support,
-        ((((2 : ℤ) * m + 1 : ℤ) : ℝ) ^ 2) * Complex.normSq (v m) *
+        ((((2 : ℤ) * m + 1 : ℤ) : ℝ) ^ (2 : ℕ)) * Complex.normSq (v m) *
           complementaryKTypeWeight s m ≤
       ∑ m ∈ v.support,
-        (2 * r + 1) ^ 2 * (Complex.normSq (v m) * complementaryKTypeWeight s m) := by
+        (2 * r + 1) ^ (2 : ℕ) * (Complex.normSq (v m) * complementaryKTypeWeight s m) := by
       apply Finset.sum_le_sum
       intro m hm
-      have hcoeff : ((((2 : ℤ) * m + 1 : ℤ) : ℝ) ^ 2) ≤ (2 * r + 1) ^ 2 := by
+      have hcoeff : ((((2 : ℤ) * m + 1 : ℤ) : ℝ) ^ (2 : ℕ)) ≤ (2 * r + 1) ^ (2 : ℕ) := by
         apply (sq_le_sq).2
         push_cast
         have hright : 0 ≤ 2 * r + 1 := by linarith
@@ -181,16 +181,16 @@ theorem sphericalPrincipalH_add_id_sq_complementary_pairing_re_le_of_support (s 
             norm_num
           _ ≤ 2 * r + 1 := by linarith [hsupp m hm]
       calc
-        ((((2 : ℤ) * m + 1 : ℤ) : ℝ) ^ 2) * Complex.normSq (v m) *
+        ((((2 : ℤ) * m + 1 : ℤ) : ℝ) ^ (2 : ℕ)) * Complex.normSq (v m) *
             complementaryKTypeWeight s m ≤
-          ((2 * r + 1) ^ 2 * Complex.normSq (v m)) *
+          ((2 * r + 1) ^ (2 : ℕ) * Complex.normSq (v m)) *
             complementaryKTypeWeight s m := by
               exact mul_le_mul_of_nonneg_right
                 (mul_le_mul_of_nonneg_right hcoeff (Complex.normSq_nonneg _))
                 (le_of_lt (complementaryKTypeWeight_pos s hs m))
-        _ = (2 * r + 1) ^ 2 *
+        _ = (2 * r + 1) ^ (2 : ℕ) *
             (Complex.normSq (v m) * complementaryKTypeWeight s m) := by ring
-    _ = (2 * r + 1) ^ 2 * ∑ m ∈ v.support,
+    _ = (2 * r + 1) ^ (2 : ℕ) * ∑ m ∈ v.support,
         Complex.normSq (v m) * complementaryKTypeWeight s m := by
       rw [Finset.mul_sum]
 /-- Raising shifts finite `K`-coordinates by one with its exact principal coefficient. -/
@@ -276,21 +276,21 @@ theorem sphericalPrincipalE_complementary_energy_re_le_of_support (s r : ℝ) (h
     (hsupp : ∀ m ∈ v.support, |(m : ℝ)| ≤ r) :
     (sphericalComplementaryHermitianForm s
       (sphericalPrincipalE (s : ℂ) v) (sphericalPrincipalE (s : ℂ) v)).re ≤
-      ((2 * r + 1) ^ 2 / 4) * (sphericalComplementaryHermitianForm s v v).re := by
+      ((2 * r + 1) ^ (2 : ℕ) / 4) * (sphericalComplementaryHermitianForm s v v).re := by
   have hcas' :
       (sphericalComplementaryHermitianForm s
         (sphericalPrincipalE (s : ℂ) v) (sphericalPrincipalE (s : ℂ) v)).re =
         (1 / 4 : ℝ) * (sphericalComplementaryHermitianForm s v
           (((sphericalPrincipalH + LinearMap.id).comp
             (sphericalPrincipalH + LinearMap.id)) v)).re -
-          (s ^ 2 / 4) * (sphericalComplementaryHermitianForm s v v).re := by
+          (s ^ (2 : ℕ) / 4) * (sphericalComplementaryHermitianForm s v v).re := by
     rw [sphericalPrincipalE_complementary_energy_eq_casimir s hs v]
-    have hsquare_re : ((s : ℂ) ^ 2).re = s ^ 2 := by
-      rw [show (s : ℂ) ^ 2 = (s : ℂ) * s by ring, Complex.mul_re]
+    have hsquare_re : ((s : ℂ) ^ (2 : ℕ)).re = s ^ (2 : ℕ) := by
+      rw [show (s : ℂ) ^ (2 : ℕ) = (s : ℂ) * s by ring, Complex.mul_re]
       norm_num
       ring
-    have hsquare_im : ((s : ℂ) ^ 2).im = 0 := by
-      rw [show (s : ℂ) ^ 2 = (s : ℂ) * s by ring, Complex.mul_im]
+    have hsquare_im : ((s : ℂ) ^ (2 : ℕ)).im = 0 := by
+      rw [show (s : ℂ) ^ (2 : ℕ) = (s : ℂ) * s by ring, Complex.mul_im]
       norm_num
     rw [Complex.sub_re, Complex.mul_re, Complex.mul_re]
     norm_num [Complex.ofReal_re, Complex.ofReal_im]
@@ -393,7 +393,7 @@ theorem sphericalPrincipalF_complementary_energy_re_le_of_support (s r : ℝ)
     (hsupp : ∀ m ∈ v.support, |(m : ℝ)| ≤ r) :
     (sphericalComplementaryHermitianForm s
       (sphericalPrincipalF (s : ℂ) v) (sphericalPrincipalF (s : ℂ) v)).re ≤
-      ((2 * r + 1) ^ 2 / 4) * (sphericalComplementaryHermitianForm s v v).re := by
+      ((2 * r + 1) ^ (2 : ℕ) / 4) * (sphericalComplementaryHermitianForm s v v).re := by
   have hRsupp : ∀ m ∈ (sphericalKReflection v).support, |(m : ℝ)| ≤ r := by
     intro m hm
     have hnonzero : sphericalKReflection v m ≠ 0 := Finsupp.mem_support_iff.mp hm
@@ -422,10 +422,10 @@ theorem sphericalPrincipalF_complementary_energy_re_le_of_support (s r : ℝ)
         (sphericalPrincipalE (s : ℂ) (sphericalKReflection v))
         (sphericalPrincipalE (s : ℂ) (sphericalKReflection v))).re := by
           rw [hF, sphericalKReflection_complementary_form]
-    _ ≤ ((2 * r + 1) ^ 2 / 4) *
+    _ ≤ ((2 * r + 1) ^ (2 : ℕ) / 4) *
         (sphericalComplementaryHermitianForm s
           (sphericalKReflection v) (sphericalKReflection v)).re := hE
-    _ = ((2 * r + 1) ^ 2 / 4) * (sphericalComplementaryHermitianForm s v v).re := by
+    _ = ((2 * r + 1) ^ (2 : ℕ) / 4) * (sphericalComplementaryHermitianForm s v v).re := by
       rw [sphericalKReflection_complementary_form]
 end
 

@@ -10,7 +10,7 @@ normalized-coordinate curve.  For normalized simple-pole coordinates
 `g_q(x) = C_q + x^(q+1) R_q(x)`,
 
 the complete boundary has three terms: the `X₀` partial times `R₀'(0)`, the `X₁` partial times
-`R₁(0)`, and half the `X₀,X₀` Hessian times `R₀(0)^2`.  The first term cannot be discarded when
+`R₁(0)`, and half the `X₀,X₀` Hessian times `R₀(0)^(2 : ℕ)`.  The first term cannot be discarded when
 first-boundary cancellation occurs only because `R₀(0)=0`.
 
 The module first proves the general polynomial second-chain rule and twice-divided quotient limit,
@@ -97,7 +97,7 @@ theorem tendsto_inv_sq_mul_mvPolynomial_eval_curve
       MvPolynomial.eval (fun q => g q 0) (MvPolynomial.pderiv i P) *
         deriv (g i) 0) = 0) :
     Tendsto
-      (fun z : ℂ => z⁻¹ ^ 2 * MvPolynomial.eval (fun i => g i z) P)
+      (fun z : ℂ => z⁻¹ ^ (2 : ℕ) * MvPolynomial.eval (fun i => g i z) P)
       (𝓝[≠] 0)
       (𝓝 (((∑ i,
           MvPolynomial.eval (fun q => g q 0) (MvPolynomial.pderiv i P) *
@@ -125,7 +125,7 @@ theorem tendsto_inv_sq_mul_mvPolynomial_eval_curve
     simpa using GaloisForLFunctions.iteratedDeriv_dslope_zero_eq hF 1
   rw [hdsderiv] at ht
   have hev :
-      (fun z : ℂ => z⁻¹ ^ 2 * MvPolynomial.eval (fun i => g i z) P) =ᶠ[𝓝[≠] 0]
+      (fun z : ℂ => z⁻¹ ^ (2 : ℕ) * MvPolynomial.eval (fun i => g i z) P) =ᶠ[𝓝[≠] 0]
         fun z => z⁻¹ * (dslope F 0 z - dslope F 0 0) := by
     filter_upwards [self_mem_nhdsWithin] with z hz
     have hz0 : z ≠ 0 := by simpa using hz
@@ -199,7 +199,7 @@ theorem mvPolynomial_secondBoundary_of_sparseJets
       MvPolynomial.eval C (MvPolynomial.pderiv (1 : Fin (n + 2)) P) * c +
       (2 : ℂ)⁻¹ * MvPolynomial.eval C
         (MvPolynomial.pderiv (0 : Fin (n + 2))
-          (MvPolynomial.pderiv (0 : Fin (n + 2)) P)) * a ^ 2 := by
+          (MvPolynomial.pderiv (0 : Fin (n + 2)) P)) * a ^ (2 : ℕ) := by
   have hsum_two (A B : Fin (n + 2) → ℂ) :
       (∑ q, if q = (0 : Fin (n + 2)) then A q
         else if q = (1 : Fin (n + 2)) then B q else 0) = A 0 + B 1 := by
@@ -247,7 +247,7 @@ theorem tendsto_pow_sub_two_mul_weightedJetEval_of_normalizedExtension
     P g hg hcancel hfirst
   have hev :
       (fun x : ℂ => x ^ (W - 2) * MvPolynomial.eval (fun q => a q x) P) =ᶠ[𝓝[≠] 0]
-      (fun x => x⁻¹ ^ 2 * MvPolynomial.eval (fun q => g q x) P) := by
+      (fun x => x⁻¹ ^ (2 : ℕ) * MvPolynomial.eval (fun q => g q x) P) := by
     filter_upwards [Filter.eventually_all.2 hcoord, self_mem_nhdsWithin]
       with x hx hxp
     have hx0 : x ≠ 0 := by simpa using hxp
@@ -257,20 +257,20 @@ theorem tendsto_pow_sub_two_mul_weightedJetEval_of_normalizedExtension
       exact hx q
     have hscale := isWeightedHomogeneous_eval₂_scale hP (RingHom.id ℂ)
       (fun q : Fin n => a q x) x
-    have hxpow : x⁻¹ ^ 2 * x ^ W = x ^ (W - 2) := by
+    have hxpow : x⁻¹ ^ (2 : ℕ) * x ^ W = x ^ (W - 2) := by
       rw [show W = (W - 2) + 2 by omega, pow_add]
       calc
-        x⁻¹ ^ 2 * (x ^ (W - 2) * x ^ 2) =
-            x ^ (W - 2) * (x⁻¹ * x) ^ 2 := by ring
+        x⁻¹ ^ (2 : ℕ) * (x ^ (W - 2) * x ^ (2 : ℕ)) =
+            x ^ (W - 2) * (x⁻¹ * x) ^ (2 : ℕ) := by ring
         _ = x ^ (W - 2) := by rw [inv_mul_cancel₀ hx0, one_pow, mul_one]
     rw [← hxpow]
     calc
-      x⁻¹ ^ 2 * x ^ W * MvPolynomial.eval (fun q => a q x) P =
-          x⁻¹ ^ 2 * (x ^ W * MvPolynomial.eval (fun q => a q x) P) := by ring
-      _ = x⁻¹ ^ 2 * MvPolynomial.eval₂ (RingHom.id ℂ)
+      x⁻¹ ^ (2 : ℕ) * x ^ W * MvPolynomial.eval (fun q => a q x) P =
+          x⁻¹ ^ (2 : ℕ) * (x ^ W * MvPolynomial.eval (fun q => a q x) P) := by ring
+      _ = x⁻¹ ^ (2 : ℕ) * MvPolynomial.eval₂ (RingHom.id ℂ)
           (fun q : Fin n => x ^ bellJetWeight n q * a q x) P :=
-        congrArg (fun y => x⁻¹ ^ 2 * y) hscale.symm
-      _ = x⁻¹ ^ 2 * MvPolynomial.eval (fun q => g q x) P := by
+        congrArg (fun y => x⁻¹ ^ (2 : ℕ) * y) hscale.symm
+      _ = x⁻¹ ^ (2 : ℕ) * MvPolynomial.eval (fun q => g q x) P := by
         rw [hframe, MvPolynomial.eval₂_id]
   exact hcurve.congr' (hev.mono fun _ hx => hx.symm)
 
@@ -289,7 +289,7 @@ def simplePoleSecondSubprincipalBoundary
       (fun q : Fin (n + 2) => simplePoleJetPrincipalCoefficient U (q : ℕ))
       (MvPolynomial.pderiv (0 : Fin (n + 2))
         (MvPolynomial.pderiv (0 : Fin (n + 2)) P)) *
-      simplePoleJetRegularRemainder U 0 0 ^ 2
+      simplePoleJetRegularRemainder U 0 0 ^ (2 : ℕ)
 
 /-- Twice-normalized polynomial evaluation on the analytic simple-pole coordinate extensions tends
 to the complete second-subprincipal boundary. -/
@@ -303,7 +303,7 @@ theorem tendsto_inv_sq_mul_simplePoleNormalizedEval
         (MvPolynomial.pderiv (0 : Fin (n + 2)) P) *
       simplePoleJetRegularRemainder U 0 0 = 0) :
     Tendsto
-      (fun x : ℂ => x⁻¹ ^ 2 * MvPolynomial.eval
+      (fun x : ℂ => x⁻¹ ^ (2 : ℕ) * MvPolynomial.eval
         (fun q : Fin (n + 2) => simplePoleJetNormalizedExtension U (q : ℕ) x) P)
       (𝓝[≠] 0)
       (𝓝 (simplePoleSecondSubprincipalBoundary U n P)) := by
@@ -398,7 +398,7 @@ theorem tendsto_pow_sub_two_mul_simplePoleWeightedJetEval
   have hev :
       (fun x : ℂ => x ^ (W - 2) * MvPolynomial.eval
         (fun q : Fin (n + 2) => simplePoleCovariantJetValue U (q : ℕ) x) P) =ᶠ[𝓝[≠] 0]
-      (fun x => x⁻¹ ^ 2 * MvPolynomial.eval (fun q => g q x) P) := by
+      (fun x => x⁻¹ ^ (2 : ℕ) * MvPolynomial.eval (fun q => g q x) P) := by
     have hcoord : ∀ q : Fin (n + 2),
         (fun x : ℂ => x ^ bellJetWeight (n + 2) q *
           simplePoleCovariantJetValue U (q : ℕ) x) =ᶠ[𝓝[≠] 0] g q := by
@@ -418,23 +418,23 @@ theorem tendsto_pow_sub_two_mul_simplePoleWeightedJetEval
       exact hx q
     have hscale := isWeightedHomogeneous_eval₂_scale hP (RingHom.id ℂ)
       (fun q : Fin (n + 2) => simplePoleCovariantJetValue U (q : ℕ) x) x
-    have hxpow : x⁻¹ ^ 2 * x ^ W = x ^ (W - 2) := by
+    have hxpow : x⁻¹ ^ (2 : ℕ) * x ^ W = x ^ (W - 2) := by
       rw [show W = (W - 2) + 2 by omega, pow_add]
       calc
-        x⁻¹ ^ 2 * (x ^ (W - 2) * x ^ 2) =
-            x ^ (W - 2) * (x⁻¹ * x) ^ 2 := by ring
+        x⁻¹ ^ (2 : ℕ) * (x ^ (W - 2) * x ^ (2 : ℕ)) =
+            x ^ (W - 2) * (x⁻¹ * x) ^ (2 : ℕ) := by ring
         _ = x ^ (W - 2) := by rw [inv_mul_cancel₀ hx0, one_pow, mul_one]
     rw [← hxpow]
     calc
-      x⁻¹ ^ 2 * x ^ W * MvPolynomial.eval
+      x⁻¹ ^ (2 : ℕ) * x ^ W * MvPolynomial.eval
           (fun q : Fin (n + 2) => simplePoleCovariantJetValue U (q : ℕ) x) P =
-          x⁻¹ ^ 2 * (x ^ W * MvPolynomial.eval
+          x⁻¹ ^ (2 : ℕ) * (x ^ W * MvPolynomial.eval
             (fun q : Fin (n + 2) => simplePoleCovariantJetValue U (q : ℕ) x) P) := by ring
-      _ = x⁻¹ ^ 2 * MvPolynomial.eval₂ (RingHom.id ℂ)
+      _ = x⁻¹ ^ (2 : ℕ) * MvPolynomial.eval₂ (RingHom.id ℂ)
           (fun q : Fin (n + 2) => x ^ bellJetWeight (n + 2) q *
             simplePoleCovariantJetValue U (q : ℕ) x) P :=
-        congrArg (fun y => x⁻¹ ^ 2 * y) hscale.symm
-      _ = x⁻¹ ^ 2 * MvPolynomial.eval (fun q => g q x) P := by
+        congrArg (fun y => x⁻¹ ^ (2 : ℕ) * y) hscale.symm
+      _ = x⁻¹ ^ (2 : ℕ) * MvPolynomial.eval (fun q => g q x) P := by
         rw [hframe, MvPolynomial.eval₂_id]
   exact hcurve.congr' (hev.mono fun _ hx => hx.symm)
 
@@ -497,7 +497,7 @@ def gammaPoleSecondSubprincipalBoundary
       (fun q : Fin (n + 2) => gammaPoleJetPrincipalCoefficient branch (q : ℕ))
       (MvPolynomial.pderiv (0 : Fin (n + 2))
         (MvPolynomial.pderiv (0 : Fin (n + 2)) P)) *
-      gammaPoleJetRegularRemainder branch 0 0 ^ 2
+      gammaPoleJetRegularRemainder branch 0 0 ^ (2 : ℕ)
 
 /-- Exact second-subprincipal reflection for a weighted Gamma covariant packet. -/
 theorem tendsto_pow_sub_two_mul_gammaPoleWeightedJetEval

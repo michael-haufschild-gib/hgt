@@ -36,11 +36,11 @@ theorem sq_pow_ratio_intermediate {G : ℝ} (hG : 0 < G) (m : ℕ) :
 
 /-- **One step of the iteration lands exactly on the next bound.** -/
 theorem ovsyannikov_step_identity {K G x y : ℝ} (hG : 0 < G) (m : ℕ) :
-    K * ((m : ℝ) + 1) ^ 2 / G ^ 2
-        * (K ^ m * ((m : ℝ) + 1) ^ (2 * m) / ((m.factorial : ℝ) ^ 2 * G ^ (2 * m)))
-        * (x ^ (m + 1) * y ^ (m + 1) / ((m : ℝ) + 1) ^ 2)
+    K * ((m : ℝ) + 1) ^ (2 : ℕ) / G ^ (2 : ℕ)
+        * (K ^ m * ((m : ℝ) + 1) ^ (2 * m) / ((m.factorial : ℝ) ^ (2 : ℕ) * G ^ (2 * m)))
+        * (x ^ (m + 1) * y ^ (m + 1) / ((m : ℝ) + 1) ^ (2 : ℕ))
       = K ^ (m + 1) * ((m : ℝ) + 1) ^ (2 * (m + 1)) * (x ^ (m + 1) * y ^ (m + 1))
-          / (((m + 1).factorial : ℝ) ^ 2 * G ^ (2 * (m + 1))) := by
+          / (((m + 1).factorial : ℝ) ^ (2 : ℕ) * G ^ (2 * (m + 1))) := by
   have hGne : G ≠ 0 := hG.ne'
   have h1 : ((m : ℝ) + 1) ≠ 0 := by positivity
   have hfac : (0 : ℝ) < (m.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos m
@@ -57,23 +57,23 @@ theorem ovsyannikov_step_identity {K G x y : ℝ} (hG : 0 < G) (m : ℕ) :
 /-- **The bound carried by the induction is geometric.** Rewriting `m^{2m}/(m!)²` as `(m^m/m!)²`
 turns the `m`-th bound into the term controlled by the exponential estimate. -/
 theorem ovsyannikov_bound_le {K G T : ℝ} (hK : 0 ≤ K) (hG : 0 < G) (m : ℕ) :
-    K ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m) / ((m.factorial : ℝ) ^ 2 * G ^ (2 * m))
-      ≤ (K * T ^ 2 * Real.exp 2 / G ^ 2) ^ m := by
+    K ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m) / ((m.factorial : ℝ) ^ (2 : ℕ) * G ^ (2 * m))
+      ≤ (K * T ^ (2 : ℕ) * Real.exp 2 / G ^ (2 : ℕ)) ^ m := by
   have hfac : (0 : ℝ) < (m.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos m
   have hGne : G ≠ 0 := hG.ne'
-  have hm2 : (m : ℝ) ^ (2 * m) = ((m : ℝ) ^ m) ^ 2 := by rw [mul_comm, pow_mul]
-  have hT2 : T ^ m * T ^ m = (T ^ m) ^ 2 := by rw [sq]
-  have hG2 : G ^ (2 * m) = (G ^ 2) ^ m := by rw [pow_mul]
-  have hTm : (T ^ 2) ^ m = (T ^ m) ^ 2 := by rw [← pow_mul, mul_comm, pow_mul]
-  have hG2ne : (G : ℝ) ^ 2 ≠ 0 := by positivity
+  have hm2 : (m : ℝ) ^ (2 * m) = ((m : ℝ) ^ m) ^ (2 : ℕ) := by rw [mul_comm, pow_mul]
+  have hT2 : T ^ m * T ^ m = (T ^ m) ^ (2 : ℕ) := by rw [sq]
+  have hG2 : G ^ (2 * m) = (G ^ (2 : ℕ)) ^ m := by rw [pow_mul]
+  have hTm : (T ^ (2 : ℕ)) ^ m = (T ^ m) ^ (2 : ℕ) := by rw [← pow_mul, mul_comm, pow_mul]
+  have hG2ne : (G : ℝ) ^ (2 : ℕ) ≠ 0 := by positivity
   have hrw : K ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-        / ((m.factorial : ℝ) ^ 2 * G ^ (2 * m))
-      = (K * T ^ 2 / G ^ 2) ^ m * ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ 2 := by
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * G ^ (2 * m))
+      = (K * T ^ (2 : ℕ) / G ^ (2 : ℕ)) ^ m * ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ (2 : ℕ) := by
     rw [hm2, hT2, hG2]
     simp only [div_pow, mul_pow]
     rw [hTm]
     field_simp
-  have hA : (0 : ℝ) ≤ K * T ^ 2 / G ^ 2 := by positivity
+  have hA : (0 : ℝ) ≤ K * T ^ (2 : ℕ) / G ^ (2 : ℕ) := by positivity
   have hterm := ovsyannikov_term_le hA m
   rw [hrw]
   refine hterm.trans (le_of_eq ?_)
@@ -83,12 +83,12 @@ theorem ovsyannikov_bound_le {K G T : ℝ} (hK : 0 ≤ K) (hG : 0 < G) (m : ℕ)
 /-- **The iteration converges when the rectangle is small compared with the radius of
 analyticity.** -/
 theorem summable_ovsyannikov_bound {K G T : ℝ} (hK : 0 ≤ K) (hG : 0 < G) (hT : 0 ≤ T)
-    (hsmall : K * T ^ 2 * Real.exp 2 / G ^ 2 < 1) :
+    (hsmall : K * T ^ (2 : ℕ) * Real.exp 2 / G ^ (2 : ℕ) < 1) :
     Summable fun m : ℕ =>
       K ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-        / ((m.factorial : ℝ) ^ 2 * G ^ (2 * m)) := by
-  have hpos : (0 : ℝ) ≤ K * T ^ 2 * Real.exp 2 / G ^ 2 := by positivity
-  have hgeo : Summable fun m : ℕ => (K * T ^ 2 * Real.exp 2 / G ^ 2) ^ m :=
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * G ^ (2 * m)) := by
+  have hpos : (0 : ℝ) ≤ K * T ^ (2 : ℕ) * Real.exp 2 / G ^ (2 : ℕ) := by positivity
+  have hgeo : Summable fun m : ℕ => (K * T ^ (2 : ℕ) * Real.exp 2 / G ^ (2 : ℕ)) ^ m :=
     summable_geometric_of_lt_one hpos hsmall
   refine hgeo.of_nonneg_of_le (fun m => ?_) (fun m => ovsyannikov_bound_le hK hG m)
   positivity
@@ -96,15 +96,15 @@ theorem summable_ovsyannikov_bound {K G T : ℝ} (hK : 0 ≤ K) (hG : 0 < G) (hT
 /-- **Halving the gap in the smallness condition.** The condition at the half gap is four times as
 strong as the condition at the full gap. -/
 theorem ovsyannikov_smallness_of_half_const {K G T : ℝ} (hK : 0 ≤ K) (hG : 0 < G)
-    (hsmall : K * T ^ 2 * Real.exp 2 / (G / 2) ^ 2 < 1) :
-    K * T ^ 2 * Real.exp 2 / G ^ 2 < 1 := by
+    (hsmall : K * T ^ (2 : ℕ) * Real.exp 2 / (G / 2) ^ (2 : ℕ) < 1) :
+    K * T ^ (2 : ℕ) * Real.exp 2 / G ^ (2 : ℕ) < 1 := by
   have hne : G ≠ 0 := ne_of_gt hG
-  have key : K * T ^ 2 * Real.exp 2 / (G / 2) ^ 2
-      = 4 * (K * T ^ 2 * Real.exp 2 / G ^ 2) := by
+  have key : K * T ^ (2 : ℕ) * Real.exp 2 / (G / 2) ^ (2 : ℕ)
+      = 4 * (K * T ^ (2 : ℕ) * Real.exp 2 / G ^ (2 : ℕ)) := by
     field_simp
     ring
   rw [key] at hsmall
-  have hnn : (0 : ℝ) ≤ K * T ^ 2 * Real.exp 2 / G ^ 2 := by positivity
+  have hnn : (0 : ℝ) ≤ K * T ^ (2 : ℕ) * Real.exp 2 / G ^ (2 : ℕ) := by positivity
   linarith
 
 end GaloisForLFunctions.HTGeometry

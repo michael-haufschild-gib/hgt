@@ -23,7 +23,7 @@ def gaussianMetricRankOneExtensionGram {n d : ℕ}
     (y : Fin n → Fin d → ℝ) (a : Fin n → ℝ) (t : ℝ) :
     Matrix (Fin n) (Fin n) ℝ :=
   fun i j => Real.exp
-    (-(∑ k, (y i k - y j k) ^ 2 + t * (a i - a j) ^ 2))
+    (-(∑ k, (y i k - y j k) ^ (2 : ℕ) + t * (a i - a j) ^ (2 : ℕ)))
 
 /-- Appending one metric feature is literally Schur multiplication of the background Gaussian
 Gram by the one-dimensional Gaussian semigroup. -/
@@ -47,7 +47,7 @@ theorem finiteGaussianDistanceGram_one_posDef_of_injective {n d : ℕ}
   let B : Matrix (Fin n) (Fin n) ℝ :=
     Matrix.diagonal (finiteGaussianGauge z 1)
   have hsqrt : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.2 (by norm_num)).ne'
-  have hsquare : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hsquare : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hz : Function.Injective z := by
     intro i j hij
     apply hy
@@ -60,8 +60,8 @@ theorem finiteGaussianDistanceGram_one_posDef_of_injective {n d : ℕ}
       one_div, z]
     congr 1
     rw [Finset.sum_congr rfl (fun k _ => show
-      (Real.sqrt 2 * y i k - Real.sqrt 2 * y j k) ^ 2 =
-        2 * (y i k - y j k) ^ 2 by
+      (Real.sqrt 2 * y i k - Real.sqrt 2 * y j k) ^ (2 : ℕ) =
+        2 * (y i k - y j k) ^ (2 : ℕ) by
           rw [show Real.sqrt 2 * y i k - Real.sqrt 2 * y j k =
             Real.sqrt 2 * (y i k - y j k) by ring]
           rw [mul_pow, hsquare])]
@@ -94,7 +94,7 @@ theorem finiteGaussianDistanceGram_posDef_of_injective_of_pos {n d : ℕ}
     (finiteGaussianDistanceGram y t).PosDef := by
   let z : Fin n → Fin d → ℝ := fun i k => Real.sqrt t * y i k
   have hsqrt : Real.sqrt t ≠ 0 := (Real.sqrt_pos.2 ht).ne'
-  have hsquare : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht.le
+  have hsquare : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht.le
   have hz : Function.Injective z := by
     intro i j hij
     apply hy
@@ -106,8 +106,8 @@ theorem finiteGaussianDistanceGram_posDef_of_injective_of_pos {n d : ℕ}
     simp only [finiteGaussianDistanceGram, z]
     congr 1
     rw [Finset.sum_congr rfl (fun k _ => show
-      (Real.sqrt t * y i k - Real.sqrt t * y j k) ^ 2 =
-        t * (y i k - y j k) ^ 2 by
+      (Real.sqrt t * y i k - Real.sqrt t * y j k) ^ (2 : ℕ) =
+        t * (y i k - y j k) ^ (2 : ℕ) by
           rw [show Real.sqrt t * y i k - Real.sqrt t * y j k =
             Real.sqrt t * (y i k - y j k) by ring]
           rw [mul_pow, hsquare])]

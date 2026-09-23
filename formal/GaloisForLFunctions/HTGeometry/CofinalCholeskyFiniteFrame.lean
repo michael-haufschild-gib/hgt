@@ -515,7 +515,7 @@ theorem canonicalInverseCholesky_det_pos
   exact ⟨Finset.prod_pos fun i _ => (h.2.2 i).2, trivial⟩
 
 /-- For the canonical normalization, the determinant identity is exactly
-`det G * (det C)^2 = 1`. -/
+`det G * (det C)^(2 : ℕ) = 1`. -/
 theorem canonicalInverseCholesky_det_square_mul
     {N : ℕ} (C G : Matrix (Fin N) (Fin N) ℂ)
     (h : IsCanonicalInverseCholeskyFrame C G) :

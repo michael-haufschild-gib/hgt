@@ -24,11 +24,11 @@ private theorem projectiveGramTangentEnergy_unitaryReferenceFrame
     HTGeometry.projectiveGramTangentEnergy (𝕜 := 𝕜) (V v) (V w) =
       HTGeometry.projectiveGramTangentEnergy (𝕜 := 𝕜) v w := by
   have hvSq :
-      ‖V v‖ ^ 2 = ‖v‖ ^ 2 := by
+      ‖V v‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) := by
     simpa using
       (HTGeometry.norm_pow_apply_sq_eq_of_adjoint_mul_self V 1 hleft v)
   have hwSq :
-      ‖V w‖ ^ 2 = ‖w‖ ^ 2 := by
+      ‖V w‖ ^ (2 : ℕ) = ‖w‖ ^ (2 : ℕ) := by
     simpa using
       (HTGeometry.norm_pow_apply_sq_eq_of_adjoint_mul_self V 1 hleft w)
   have hinner :

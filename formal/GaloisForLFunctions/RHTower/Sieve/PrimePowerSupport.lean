@@ -111,11 +111,11 @@ noncomputable def powFibreOn (N ℓ : ℕ) (S : Finset (Fin N)) (j : Fin (N ^ �
     (fun p => ∀ i : Fin ℓ, p i ∈ S)
 
 /-- **The `ℓ²` mass of the `ℓ`-fold convolution, through a support.** -/
-theorem sum_normSq_convPow_le_of_support (N ℓ : ℕ) (a : Fin N → ℂ) (S : Finset (Fin N))
+theorem sum_normSq_convPow_le_of_support_primePowerSupport (N ℓ : ℕ) (a : Fin N → ℂ) (S : Finset (Fin N))
     (hsupp : ∀ n : Fin N, a n ≠ 0 → n ∈ S) {D : ℝ}
     (hD : ∀ j : Fin (N ^ ℓ), ((powFibreOn N ℓ S j).card : ℝ) ≤ D) (hD0 : 0 ≤ D) :
-    ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ 2
-      ≤ D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ := by
+    ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ (2 : ℕ)
+      ≤ D * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ ℓ := by
   classical
   set g : (Fin ℓ → Fin N) → ℝ := fun p => ‖∏ i : Fin ℓ, a (p i)‖ with hg
   have hconv : ∀ j : Fin (N ^ ℓ),
@@ -126,24 +126,24 @@ theorem sum_normSq_convPow_le_of_support (N ℓ : ℕ) (a : Fin N → ℂ) (S : 
     intro p _ hne i
     exact hsupp _ ((Finset.prod_ne_zero_iff.mp hne) i (Finset.mem_univ i))
   have hfibre : ∀ j : Fin (N ^ ℓ),
-      ‖convPow N ℓ a j‖ ^ 2 ≤ D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ 2 := by
+      ‖convPow N ℓ a j‖ ^ (2 : ℕ) ≤ D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ (2 : ℕ) := by
     intro j
     have hnorm : ‖convPow N ℓ a j‖ ≤ ∑ p ∈ powFibreOn N ℓ S j, g p := by
       rw [hconv j]
       exact norm_sum_le _ _
-    have hsq : ‖convPow N ℓ a j‖ ^ 2 ≤ (∑ p ∈ powFibreOn N ℓ S j, g p) ^ 2 :=
+    have hsq : ‖convPow N ℓ a j‖ ^ (2 : ℕ) ≤ (∑ p ∈ powFibreOn N ℓ S j, g p) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hnorm 2
-    have hcs : (∑ p ∈ powFibreOn N ℓ S j, g p) ^ 2
-        ≤ ((powFibreOn N ℓ S j).card : ℝ) * ∑ p ∈ powFibreOn N ℓ S j, g p ^ 2 :=
+    have hcs : (∑ p ∈ powFibreOn N ℓ S j, g p) ^ (2 : ℕ)
+        ≤ ((powFibreOn N ℓ S j).card : ℝ) * ∑ p ∈ powFibreOn N ℓ S j, g p ^ (2 : ℕ) :=
       sq_sum_le_card_mul_sum_sq
-    have hsum0 : (0 : ℝ) ≤ ∑ p ∈ powFibreOn N ℓ S j, g p ^ 2 :=
+    have hsum0 : (0 : ℝ) ≤ ∑ p ∈ powFibreOn N ℓ S j, g p ^ (2 : ℕ) :=
       Finset.sum_nonneg fun p _ => sq_nonneg _
-    have hmul : ((powFibreOn N ℓ S j).card : ℝ) * ∑ p ∈ powFibreOn N ℓ S j, g p ^ 2
-        ≤ D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ 2 :=
+    have hmul : ((powFibreOn N ℓ S j).card : ℝ) * ∑ p ∈ powFibreOn N ℓ S j, g p ^ (2 : ℕ)
+        ≤ D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right (hD j) hsum0
     linarith
-  have hsum : ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ 2
-      ≤ ∑ j : Fin (N ^ ℓ), D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ 2 :=
+  have hsum : ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ (2 : ℕ)
+      ≤ ∑ j : Fin (N ^ ℓ), D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ (2 : ℕ) :=
     Finset.sum_le_sum fun j _ => hfibre j
   set sSet : Finset (Fin ℓ → Fin N) :=
     (Finset.univ : Finset (Fin ℓ → Fin N)).filter (fun p => ∀ i : Fin ℓ, p i ∈ S)
@@ -155,32 +155,32 @@ theorem sum_normSq_convPow_le_of_support (N ℓ : ℕ) (a : Fin N → ℂ) (S : 
     exact Finset.filter_comm _ _ _
   have hfib := Finset.sum_fiberwise_of_maps_to
     (s := sSet) (t := (Finset.univ : Finset (Fin (N ^ ℓ)))) (g := fun p => powIdx p)
-    (f := fun p : Fin ℓ → Fin N => g p ^ 2)
+    (f := fun p : Fin ℓ → Fin N => g p ^ (2 : ℕ))
     (fun p _ => Finset.mem_univ _)
-  have hcollect : ∑ j : Fin (N ^ ℓ), D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ 2
-      = D * ∑ p ∈ sSet, g p ^ 2 := by
+  have hcollect : ∑ j : Fin (N ^ ℓ), D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ (2 : ℕ)
+      = D * ∑ p ∈ sSet, g p ^ (2 : ℕ) := by
     simp only [hfibreOn]
     rw [← Finset.mul_sum, hfib]
-  have hmono : ∑ p ∈ sSet, g p ^ 2 ≤ ∑ p : Fin ℓ → Fin N, g p ^ 2 :=
+  have hmono : ∑ p ∈ sSet, g p ^ (2 : ℕ) ≤ ∑ p : Fin ℓ → Fin N, g p ^ (2 : ℕ) :=
     Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
       (fun p _ _ => sq_nonneg _)
-  have hprod : ∑ p : Fin ℓ → Fin N, g p ^ 2
-      = (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ := by
-    have hpt : ∀ p : Fin ℓ → Fin N, g p ^ 2 = ∏ i : Fin ℓ, ‖a (p i)‖ ^ 2 := by
+  have hprod : ∑ p : Fin ℓ → Fin N, g p ^ (2 : ℕ)
+      = (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ ℓ := by
+    have hpt : ∀ p : Fin ℓ → Fin N, g p ^ (2 : ℕ) = ∏ i : Fin ℓ, ‖a (p i)‖ ^ (2 : ℕ) := by
       intro p
       simp only [hg]
       rw [norm_prod, ← Finset.prod_pow]
     simp only [hpt]
-    have hconst : (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ
-        = ∏ _i : Fin ℓ, ∑ n : Fin N, ‖a n‖ ^ 2 := by
+    have hconst : (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ ℓ
+        = ∏ _i : Fin ℓ, ∑ n : Fin N, ‖a n‖ ^ (2 : ℕ) := by
       rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
     rw [hconst, Finset.prod_univ_sum, Fintype.piFinset_univ]
-  calc ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ 2
-      ≤ ∑ j : Fin (N ^ ℓ), D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ 2 := hsum
-    _ = D * ∑ p ∈ sSet, g p ^ 2 := hcollect
-    _ ≤ D * ∑ p : Fin ℓ → Fin N, g p ^ 2 :=
+  calc ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ (2 : ℕ)
+      ≤ ∑ j : Fin (N ^ ℓ), D * ∑ p ∈ powFibreOn N ℓ S j, g p ^ (2 : ℕ) := hsum
+    _ = D * ∑ p ∈ sSet, g p ^ (2 : ℕ) := hcollect
+    _ ≤ D * ∑ p : Fin ℓ → Fin N, g p ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hmono hD0
-    _ = D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ := by rw [hprod]
+    _ = D * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ ℓ := by rw [hprod]
 
 /-- **A prime-supported power fibre has at most `ℓ^ℓ` points.**  Every coordinate of a fibre
 tuple lies among the at most `ℓ` prime factors of the anchored product. -/
@@ -238,16 +238,16 @@ private theorem powFibreOn_primeSupport_card_le (N ℓ : ℕ) (j : Fin (N ^ ℓ)
 /-- **The `ℓ²` mass of the `ℓ`-th power of a prime-supported vector.** -/
 theorem primePowerSupportSum_normSq_convPow_le_of_prime_support (N ℓ : ℕ) (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin N, a n ≠ 0 → Nat.Prime ((n : ℕ) + 1)) :
-    ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ 2
-      ≤ (ℓ : ℝ) ^ ℓ * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ :=
-  sum_normSq_convPow_le_of_support N ℓ a (primeSupport N)
+    ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ (2 : ℕ)
+      ≤ (ℓ : ℝ) ^ ℓ * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ ℓ :=
+  sum_normSq_convPow_le_of_support_primePowerSupport N ℓ a (primeSupport N)
     (fun n hn => by
       rw [primeSupport, Finset.mem_filter]
       exact ⟨Finset.mem_univ _, hsupp n hn⟩)
     (fun j => powFibreOn_primeSupport_card_le N ℓ j) (by positivity)
 
 /-- The level sets of `F` and of `F^ℓ` coincide at the powered threshold. -/
-theorem largeValues_pow_setOf (N ℓ : ℕ) (hℓ : ℓ ≠ 0) (a : Fin N → ℂ) (S : Set ℝ)
+theorem largeValues_pow_setOf_primePowerSupport (N ℓ : ℕ) (hℓ : ℓ ≠ 0) (a : Fin N → ℂ) (S : Set ℝ)
     {V : ℝ} (hV : 0 ≤ V) :
     {t ∈ S | V ^ ℓ ≤ ‖dirPoly (N ^ ℓ) (convPow N ℓ a) t‖}
       = {t ∈ S | V ≤ ‖dirPoly N a t‖} := by
@@ -270,11 +270,11 @@ private theorem volume_largeValues_pow_symm_le_of_prime_support (N ℓ : ℕ) (h
     {T V : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V) :
     V ^ (2 * ℓ) * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N a t‖}
       ≤ 2 * ((T + 4 * ((N ^ ℓ : ℕ) : ℝ) * (1 + Real.log ((N ^ ℓ : ℕ) : ℝ)))
-          * ((ℓ : ℝ) ^ ℓ * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ℓ)) := by
+          * ((ℓ : ℝ) ^ ℓ * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ ℓ)) := by
   have hVl : (0 : ℝ) ≤ V ^ ℓ := by positivity
   have hbase := volume_largeValues_symm_le (N ^ ℓ) (convPow N ℓ a) hT hVl
-  rw [largeValues_pow_setOf N ℓ hℓ a (Set.Icc (-T) T) hV] at hbase
-  have hpow : (V ^ ℓ) ^ 2 = V ^ (2 * ℓ) := by
+  rw [largeValues_pow_setOf_primePowerSupport N ℓ hℓ a (Set.Icc (-T) T) hV] at hbase
+  have hpow : (V ^ ℓ) ^ (2 : ℕ) = V ^ (2 * ℓ) := by
     rw [← pow_mul, mul_comm]
   rw [hpow] at hbase
   refine le_trans hbase ?_

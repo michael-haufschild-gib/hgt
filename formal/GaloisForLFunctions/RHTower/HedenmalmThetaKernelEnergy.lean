@@ -40,11 +40,11 @@ theorem thetaEnvelope_pos (x : ℝ) : 0 < thetaEnvelope x := by
   unfold thetaEnvelope
   positivity
 
-theorem exp_sq (x : ℝ) : Real.exp x ^ 2 = Real.exp (2 * x) := by
+theorem exp_sq (x : ℝ) : Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) := by
   rw [← Real.exp_nat_mul]
   norm_num
 
-theorem exp_four (x : ℝ) : Real.exp x ^ 4 = Real.exp (4 * x) := by
+theorem exp_four (x : ℝ) : Real.exp x ^ (4 : ℕ) = Real.exp (4 * x) := by
   rw [← Real.exp_nat_mul]
   norm_num
 
@@ -65,18 +65,18 @@ theorem thetaCuspSourceTerm_one_eq (x : ℝ) :
   ring
 
 theorem thetaCuspSourceTerm_one_le (x : ℝ) :
-    thetaCuspSourceTerm x 1 ≤ 4 * Real.pi ^ 2 * thetaEnvelope x := by
+    thetaCuspSourceTerm x 1 ≤ 4 * Real.pi ^ (2 : ℕ) * thetaEnvelope x := by
   have hpos : (0 : ℝ) ≤ Real.exp (x / 2) * Real.exp (-Real.pi * Real.exp (2 * x)) := by positivity
   have hmul : 2 * Real.pi * (2 * Real.pi * Real.exp (4 * x) - 3 * Real.exp (2 * x))
-      ≤ 4 * Real.pi ^ 2 * Real.exp (4 * x) := by
+      ≤ 4 * Real.pi ^ (2 : ℕ) * Real.exp (4 * x) := by
     nlinarith [Real.pi_pos, Real.exp_pos (2 * x)]
   rw [thetaCuspSourceTerm_one_eq, thetaEnvelope]
   calc 2 * Real.pi * (2 * Real.pi * Real.exp (4 * x) - 3 * Real.exp (2 * x))
         * (Real.exp (x / 2) * Real.exp (-Real.pi * Real.exp (2 * x)))
-      ≤ (4 * Real.pi ^ 2 * Real.exp (4 * x))
+      ≤ (4 * Real.pi ^ (2 : ℕ) * Real.exp (4 * x))
         * (Real.exp (x / 2) * Real.exp (-Real.pi * Real.exp (2 * x))) :=
         mul_le_mul_of_nonneg_right hmul hpos
-    _ = 4 * Real.pi ^ 2 * (Real.exp (9 * x / 2) * Real.exp (-Real.pi * Real.exp (2 * x))) := by
+    _ = 4 * Real.pi ^ (2 : ℕ) * (Real.exp (9 * x / 2) * Real.exp (-Real.pi * Real.exp (2 * x))) := by
         rw [← exp_half_add_four]
         ring
 
@@ -99,7 +99,7 @@ theorem thetaCuspSourceTerm_one_ge {x : ℝ} (hx : 0 ≤ x) :
         mul_le_mul_of_nonneg_right hmul hpos
 
 /-- The upper envelope constant. -/
-def thetaEnvelopeUpper : ℝ := (1 + thetaCuspHigherAtomDominationWeight) * (4 * Real.pi ^ 2)
+def thetaEnvelopeUpper : ℝ := (1 + thetaCuspHigherAtomDominationWeight) * (4 * Real.pi ^ (2 : ℕ))
 
 /-- The lower envelope constant. -/
 def thetaEnvelopeLower : ℝ := 2 * Real.pi * (2 * Real.pi - 3)
@@ -127,11 +127,11 @@ theorem thetaCuspFullSource_le_envelope {x : ℝ} (hx : 0 ≤ x) :
     rw [e]
     linarith
   have h2 : (1 + thetaCuspHigherAtomDominationWeight) * thetaCuspSourceTerm x 1
-      ≤ (1 + thetaCuspHigherAtomDominationWeight) * (4 * Real.pi ^ 2 * thetaEnvelope x) :=
+      ≤ (1 + thetaCuspHigherAtomDominationWeight) * (4 * Real.pi ^ (2 : ℕ) * thetaEnvelope x) :=
     mul_le_mul_of_nonneg_left h1 (by linarith)
   calc thetaCuspFullSource x
       ≤ (1 + thetaCuspHigherAtomDominationWeight) * thetaCuspSourceTerm x 1 := h3
-    _ ≤ (1 + thetaCuspHigherAtomDominationWeight) * (4 * Real.pi ^ 2 * thetaEnvelope x) := h2
+    _ ≤ (1 + thetaCuspHigherAtomDominationWeight) * (4 * Real.pi ^ (2 : ℕ) * thetaEnvelope x) := h2
     _ = thetaEnvelopeUpper * thetaEnvelope x := by
         rw [thetaEnvelopeUpper]
         ring
@@ -377,7 +377,7 @@ theorem integrableOn_tailEnergyDensity_tail {s : Set ℝ} (hs : MeasurableSet s)
     (hsub : ∀ x ∈ s, 1 ≤ |x|) :
     IntegrableOn (tailEnergyDensity thetaSource) s volume := by
   refine Integrable.mono'
-    (((integrable_exp_neg_mul_abs (by norm_num : (0:ℝ) < 2)).const_mul
+    (((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (by norm_num : (0:ℝ) < 2)).const_mul
       thetaTailConstant).integrableOn) ?_ ?_
   · exact (continuous_tailEnergyDensity thetaSource).aestronglyMeasurable
   · filter_upwards [ae_restrict_mem hs] with x hx
@@ -408,16 +408,16 @@ theorem integrable_tailEnergyDensity_thetaSource :
 /-- **The kernel field of the Riemann source is square integrable.** -/
 theorem hasFiniteKernelEnergy_thetaSource : HasFiniteKernelEnergy thetaSource := by
   have hmeas : AEStronglyMeasurable
-      (fun x : ℝ => (thetaSource.mass / thetaSource.k x) ^ 2
+      (fun x : ℝ => (thetaSource.mass / thetaSource.k x) ^ (2 : ℕ)
         * (thetaSource.cdfFun x * (1 - thetaSource.cdfFun x))) (volume : Measure ℝ) := by
     refine (((continuous_const.div thetaSource.continuous_k
       fun x => (thetaSource.pos_k x).ne').pow 2).mul ?_).aestronglyMeasurable
     exact thetaSource.continuous_cdfFun.mul (continuous_const.sub thetaSource.continuous_cdfFun)
   have hiff := thetaSource.integrableOn_comp_quantileFun_iff (g := fun x : ℝ =>
-      (thetaSource.mass / thetaSource.k x) ^ 2
+      (thetaSource.mass / thetaSource.k x) ^ (2 : ℕ)
         * (thetaSource.cdfFun x * (1 - thetaSource.cdfFun x))) hmeas
   have hright : Integrable (fun x : ℝ => thetaSource.normalized x •
-      ((thetaSource.mass / thetaSource.k x) ^ 2
+      ((thetaSource.mass / thetaSource.k x) ^ (2 : ℕ)
         * (thetaSource.cdfFun x * (1 - thetaSource.cdfFun x)))) (volume : Measure ℝ) := by
     refine (integrable_tailEnergyDensity_thetaSource.const_mul thetaSource.mass).congr ?_
     filter_upwards with x
@@ -425,22 +425,22 @@ theorem hasFiniteKernelEnergy_thetaSource : HasFiniteKernelEnergy thetaSource :=
     have hM : thetaSource.mass ≠ 0 := thetaSource.mass_ne_zero
     show thetaSource.mass * tailEnergyDensity thetaSource x
       = thetaSource.normalized x •
-        ((thetaSource.mass / thetaSource.k x) ^ 2
+        ((thetaSource.mass / thetaSource.k x) ^ (2 : ℕ)
           * (thetaSource.cdfFun x * (1 - thetaSource.cdfFun x)))
     show thetaSource.mass
         * (thetaSource.cdfFun x * (1 - thetaSource.cdfFun x) / thetaSource.k x)
       = (thetaSource.k x / thetaSource.mass) *
-        ((thetaSource.mass / thetaSource.k x) ^ 2
+        ((thetaSource.mass / thetaSource.k x) ^ (2 : ℕ)
           * (thetaSource.cdfFun x * (1 - thetaSource.cdfFun x)))
     field_simp
   have hleft := hiff.mpr hright
   have hcongr : IntegrableOn
-      (fun t : ℝ => quantileSpeed thetaSource t ^ 2 * (t * (1 - t))) (Ioo (0 : ℝ) 1) volume := by
+      (fun t : ℝ => quantileSpeed thetaSource t ^ (2 : ℕ) * (t * (1 - t))) (Ioo (0 : ℝ) 1) volume := by
     refine MeasureTheory.IntegrableOn.congr_fun hleft (fun t ht => ?_) measurableSet_Ioo
-    show (thetaSource.mass / thetaSource.k (thetaSource.quantileFun t)) ^ 2
+    show (thetaSource.mass / thetaSource.k (thetaSource.quantileFun t)) ^ (2 : ℕ)
         * (thetaSource.cdfFun (thetaSource.quantileFun t)
           * (1 - thetaSource.cdfFun (thetaSource.quantileFun t)))
-      = quantileSpeed thetaSource t ^ 2 * (t * (1 - t))
+      = quantileSpeed thetaSource t ^ (2 : ℕ) * (t * (1 - t))
     rw [thetaSource.cdfFun_quantile ht, quantileSpeed]
   have hres : unitIntervalMeasure = (volume : Measure ℝ).restrict (Ioo 0 1) := by
     rw [unitIntervalMeasure, restrict_Ioo_eq_restrict_Icc]

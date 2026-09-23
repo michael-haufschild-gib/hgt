@@ -5,10 +5,10 @@ import GaloisForLFunctions.RHTower.XiHeatShellMinimum
 # Poisson shells of the Xi divisor
 
 A Poisson shell is a level set of the height `Re (xiPoissonPoint q) = |g|`.  Shells are finite,
-because the squared coordinate's shell `(xiSpectralPoint q ^ 2).re <= R ^ 2` already is and the
+because the squared coordinate's shell `(xiSpectralPoint q ^ (2 : ℕ)).re <= R ^ (2 : ℕ)` already is and the
 critical strip makes the two comparable:
 
-`(xiSpectralPoint q ^ 2).re = g ^ 2 - delta ^ 2 <= g ^ 2 = (Re (xiPoissonPoint q)) ^ 2`.
+`(xiSpectralPoint q ^ (2 : ℕ)).re = g ^ (2 : ℕ) - delta ^ (2 : ℕ) <= g ^ (2 : ℕ) = (Re (xiPoissonPoint q)) ^ (2 : ℕ)`.
 
 Finiteness gives a lowest shell, which is where the peeling induction of the vertical criterion
 starts.
@@ -24,11 +24,11 @@ noncomputable section
 /-- A Poisson shell of the Xi divisor is finite. -/
 theorem finite_xiPoissonShell (R : ℝ) :
     {q : XiZeroCopy | (xiPoissonPoint q).re ≤ R}.Finite := by
-  refine Set.Finite.subset (finite_xiHeatShell (R ^ 2)) ?_
+  refine Set.Finite.subset (finite_xiHeatShell (R ^ (2 : ℕ))) ?_
   intro q hq
   simp only [Set.mem_setOf_eq] at hq ⊢
   have hnn : 0 ≤ (xiPoissonPoint q).re := xiPoissonPoint_re_nonneg q
-  have hsq : (xiSpectralPoint q ^ 2).re =
+  have hsq : (xiSpectralPoint q ^ (2 : ℕ)).re =
       (xiSpectralPoint q).re * (xiSpectralPoint q).re -
         (xiSpectralPoint q).im * (xiSpectralPoint q).im := by
     rw [pow_two, Complex.mul_re]

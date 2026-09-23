@@ -26,13 +26,13 @@ open Complex
 theorem eulerSecondDeriv_eq
     {f : ℂ → ℂ} {z : ℂ} (hf : DifferentiableAt ℂ f z)
     (hdf : DifferentiableAt ℂ (deriv f) z) (hfz : f z ≠ 0) :
-    z ^ 2 * deriv (deriv f) z =
-      f z * (eulerLogDerivSecond f z + (eulerLogDeriv f z) ^ 2 - eulerLogDeriv f z) := by
+    z ^ (2 : ℕ) * deriv (deriv f) z =
+      f z * (eulerLogDerivSecond f z + (eulerLogDeriv f z) ^ (2 : ℕ) - eulerLogDeriv f z) := by
   have hnum := (hasDerivAt_id z).mul hdf.hasDerivAt
   have hu := hnum.div hf.hasDerivAt hfz
   have hdu : deriv (eulerLogDeriv f) z =
       ((deriv f z + z * deriv (deriv f) z) * f z -
-        (z * deriv f z) * deriv f z) / f z ^ 2 := by
+        (z * deriv f z) * deriv f z) / f z ^ (2 : ℕ) := by
     change deriv (fun x => x * deriv f x / f x) z = _
     convert hu.deriv using 1 <;> first | rfl | simp [id_eq]
   rw [eulerLogDerivSecond, eulerLogDeriv, hdu]
@@ -89,7 +89,7 @@ def strelitzShift : MvPolynomial (Fin 3) (Polynomial ℂ) →+*
   MvPolynomial.eval₂Hom MvPolynomial.C ![
     MvPolynomial.X 0,
     MvPolynomial.X 1,
-    MvPolynomial.X 2 + MvPolynomial.X 1 ^ 2 - MvPolynomial.X 1]
+    MvPolynomial.X 2 + MvPolynomial.X 1 ^ (2 : ℕ) - MvPolynomial.X 1]
 
 /-- Explicit inverse triangular replacement. -/
 def strelitzUnshift : MvPolynomial (Fin 3) (Polynomial ℂ) →+*
@@ -97,7 +97,7 @@ def strelitzUnshift : MvPolynomial (Fin 3) (Polynomial ℂ) →+*
   MvPolynomial.eval₂Hom MvPolynomial.C ![
     MvPolynomial.X 0,
     MvPolynomial.X 1,
-    MvPolynomial.X 2 - (MvPolynomial.X 1 ^ 2 - MvPolynomial.X 1)]
+    MvPolynomial.X 2 - (MvPolynomial.X 1 ^ (2 : ℕ) - MvPolynomial.X 1)]
 
 theorem strelitzUnshift_shift (P : MvPolynomial (Fin 3) (Polynomial ℂ)) :
     strelitzUnshift (strelitzShift P) = P := by
@@ -135,11 +135,11 @@ theorem strelitzLogJetPolynomial_ne_zero
 theorem eval₂_strelitzShift (P : MvPolynomial (Fin 3) (Polynomial ℂ))
     (z F U V : ℂ) :
     MvPolynomial.eval₂ (Polynomial.evalRingHom z) ![F, U, V] (strelitzShift P) =
-      MvPolynomial.eval₂ (Polynomial.evalRingHom z) ![F, U, V + U ^ 2 - U] P := by
+      MvPolynomial.eval₂ (Polynomial.evalRingHom z) ![F, U, V + U ^ (2 : ℕ) - U] P := by
   have hhom :
       (MvPolynomial.eval₂Hom (Polynomial.evalRingHom z) ![F, U, V]).comp
           strelitzShift =
-        MvPolynomial.eval₂Hom (Polynomial.evalRingHom z) ![F, U, V + U ^ 2 - U] := by
+        MvPolynomial.eval₂Hom (Polynomial.evalRingHom z) ![F, U, V + U ^ (2 : ℕ) - U] := by
     apply MvPolynomial.ringHom_ext
     · intro a
       simp [strelitzShift]
@@ -180,7 +180,7 @@ theorem eval₂_strelitzLogJetPolynomial
         (strelitzLogJetPolynomial S A d) =
       ∑ p ∈ S, (A p).eval z * z ^ (2 * d - (p.first + 2 * p.second)) *
         F ^ (p.value + p.first + p.second) * U ^ p.first *
-          (V + U ^ 2 - U) ^ p.second := by
+          (V + U ^ (2 : ℕ) - U) ^ p.second := by
   rw [strelitzLogJetPolynomial, eval₂_strelitzShift,
     eval₂_strelitzRawPolynomial]
 
@@ -188,7 +188,7 @@ theorem eval₂_strelitzLogJetPolynomial
 theorem scale_secondOrder_monomial
     (A z F W₁ W₂ U Q : ℂ) (a b c d : ℕ)
     (hdeg : b + 2 * c ≤ 2 * d)
-    (h₁ : z * W₁ = F * U) (h₂ : z ^ 2 * W₂ = F * Q) :
+    (h₁ : z * W₁ = F * U) (h₂ : z ^ (2 : ℕ) * W₂ = F * Q) :
     z ^ (2 * d) * (A * F ^ a * W₁ ^ b * W₂ ^ c) =
       A * z ^ (2 * d - (b + 2 * c)) * F ^ (a + b + c) * U ^ b * Q ^ c := by
   have hp₁ := congrArg (fun x : ℂ => x ^ b) h₁
@@ -219,7 +219,7 @@ theorem eval₂_strelitzLogJetPolynomial_eq_scaled_relation
     (z F W₁ W₂ U V : ℂ)
     (hdeg : ∀ p ∈ S, p.value + p.first + p.second ≤ d)
     (h₁ : z * W₁ = F * U)
-    (h₂ : z ^ 2 * W₂ = F * (V + U ^ 2 - U)) :
+    (h₂ : z ^ (2 : ℕ) * W₂ = F * (V + U ^ (2 : ℕ) - U)) :
     MvPolynomial.eval₂ (Polynomial.evalRingHom z) ![F, U, V]
         (strelitzLogJetPolynomial S A d) =
       z ^ (2 * d) *
@@ -231,7 +231,7 @@ theorem eval₂_strelitzLogJetPolynomial_eq_scaled_relation
     have htotal := hdeg p hp
     omega
   exact (scale_secondOrder_monomial ((A p).eval z) z F W₁ W₂ U
-    (V + U ^ 2 - U) p.value p.first p.second d hweighted h₁ h₂).symm
+    (V + U ^ (2 : ℕ) - U) p.value p.first p.second d hweighted h₁ h₂).symm
 
 /-- Analytic specialization of the exact scaling identity. -/
 theorem eval₂_strelitzLogJetPolynomial_at_eulerLogDeriv

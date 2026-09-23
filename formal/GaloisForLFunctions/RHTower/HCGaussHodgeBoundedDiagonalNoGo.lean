@@ -27,8 +27,8 @@ noncomputable section
 
 /-- Positive linear escape coefficient of one off-line Gauss--Hodge copy. -/
 def gaussHodgePrimeLinearEscapeConstant (m : ℕ) (q : XiZeroCopy) : ℝ :=
-  Real.log 2 * primeDepthBVWoldXiCenteredRate q.1 ^ 2 *
-    ((1 / 2 : ℝ) ^ (2 * m) / (8 * (m : ℝ) ^ 2))
+  Real.log 2 * primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) *
+    ((1 / 2 : ℝ) ^ (2 * m) / (8 * (m : ℝ) ^ (2 : ℕ)))
 
 theorem gaussHodgePrimeLinearEscapeConstant_pos
     {m : ℕ} (hm : 1 ≤ m) (q : XiZeroCopy)
@@ -42,7 +42,7 @@ theorem gaussHodgePrimeLinearEscapeConstant_pos
 /-- The exact Gauss residue/Fisher coefficient grows at least linearly in the prime label. -/
 theorem gaussResidueFisherLog_linear_lower
     {m : ℕ} (hm : 1 ≤ m) (p : Nat.Primes) :
-    ((1 / 2 : ℝ) ^ (2 * m) / (8 * (m : ℝ) ^ 2)) * (p : ℝ) ≤
+    ((1 / 2 : ℝ) ^ (2 * m) / (8 * (m : ℝ) ^ (2 : ℕ))) * (p : ℝ) ≤
       gaussChannelResidueCurrent m p *
         primeActivationOccupancyFisherDensity p * Real.log (p : ℝ) := by
   let P : ℝ := p
@@ -66,24 +66,24 @@ theorem gaussResidueFisherLog_linear_lower
     exact_mod_cast hpowNat
   have hgap : P / 2 ≤ P ^ m - 1 := by linarith
   have hgap0 : 0 ≤ P / 2 := by positivity
-  have hgapSq : (P / 2) ^ 2 ≤ (P ^ m - 1) ^ 2 :=
+  have hgapSq : (P / 2) ^ (2 : ℕ) ≤ (P ^ m - 1) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hgap0 hgap 2
   have hfisher := (primeActivationOccupancyFisherDensity_bounds p).1
   have hcurrent := gaussChannelResidueCurrent_mul_log hm p
-  have hcoef : 0 ≤ 2 / M ^ 2 := by positivity
+  have hcoef : 0 ≤ 2 / M ^ (2 : ℕ) := by positivity
   have hlocal0 : 0 ≤ gaussLocalFactorWeight m p := by
     exact le_trans (by positivity) hlocal
-  have hgapSq0 : 0 ≤ (P ^ m - 1) ^ 2 := sq_nonneg _
+  have hgapSq0 : 0 ≤ (P ^ m - 1) ^ (2 : ℕ) := sq_nonneg _
   have hmain :
-      (2 / M ^ 2) * (1 / 2 : ℝ) ^ (2 * m) * (P / 2) ^ 2 ≤
-        (2 / M ^ 2) * gaussLocalFactorWeight m p * (P ^ m - 1) ^ 2 := by
+      (2 / M ^ (2 : ℕ)) * (1 / 2 : ℝ) ^ (2 * m) * (P / 2) ^ (2 : ℕ) ≤
+        (2 / M ^ (2 : ℕ)) * gaussLocalFactorWeight m p * (P ^ m - 1) ^ (2 : ℕ) := by
     gcongr
   have hbase :
-      (2 / M ^ 2) * (1 / 2 : ℝ) ^ (2 * m) * (P / 2) ^ 2 * (1 / (4 * P)) ≤
+      (2 / M ^ (2 : ℕ)) * (1 / 2 : ℝ) ^ (2 * m) * (P / 2) ^ (2 : ℕ) * (1 / (4 * P)) ≤
         (gaussChannelResidueCurrent m p * Real.log P) *
           primeActivationOccupancyFisherDensity p := by
     calc
-      _ ≤ ((2 / M ^ 2) * gaussLocalFactorWeight m p * (P ^ m - 1) ^ 2) *
+      _ ≤ ((2 / M ^ (2 : ℕ)) * gaussLocalFactorWeight m p * (P ^ m - 1) ^ (2 : ℕ)) *
           primeActivationOccupancyFisherDensity p := by
             apply mul_le_mul hmain
             · simpa [P] using hfisher
@@ -91,8 +91,8 @@ theorem gaussResidueFisherLog_linear_lower
             · positivity
       _ = _ := by rw [hcurrent]
   calc
-    ((1 / 2 : ℝ) ^ (2 * m) / (8 * (m : ℝ) ^ 2)) * (p : ℝ) =
-        (2 / M ^ 2) * (1 / 2 : ℝ) ^ (2 * m) * (P / 2) ^ 2 *
+    ((1 / 2 : ℝ) ^ (2 * m) / (8 * (m : ℝ) ^ (2 : ℕ))) * (p : ℝ) =
+        (2 / M ^ (2 : ℕ)) * (1 / 2 : ℝ) ^ (2 * m) * (P / 2) ^ (2 : ℕ) *
           (1 / (4 * P)) := by
             dsimp [M, P]
             field_simp [hp0.ne']
@@ -111,7 +111,7 @@ theorem gaussHodgePrimeLinearEscapeConstant_mul_prime_le
       gaussHodgeMassCurrent m q p := by
   have hbase := gaussResidueFisherLog_linear_lower hm p
   have hscale :
-      0 ≤ Real.log 2 * primeDepthBVWoldXiCenteredRate q.1 ^ 2 := by positivity
+      0 ≤ Real.log 2 * primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) := by positivity
   have hscaled := mul_le_mul_of_nonneg_left hbase hscale
   have hvirial := gaussHodgeMassCurrent_virial_lower hm q p
   rw [gaussHodgePrimeLinearEscapeConstant]

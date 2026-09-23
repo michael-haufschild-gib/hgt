@@ -748,7 +748,7 @@ abbrev twoQubitCircuitArchitectureIndex (n s : ℕ) :=
 /-- Complete continuous two-qubit circuit-image Hilbert law. All exact
 `s`-gate architectures and all continuous two-qubit gate choices together
 occupy order-`r` replica rank at most
-`(n^2)^s * (r*s+1)^(16s)`. No net, word count, or gate discretization occurs. -/
+`(n^(2 : ℕ))^s * (r*s+1)^(16s)`. No net, word count, or gate discretization occurs. -/
 theorem finrank_replicaTargetSpan_twoQubitCircuit_complete_le
     {C : Type*} {n s : ℕ}
     (pos : C → twoQubitCircuitArchitectureIndex n s)
@@ -790,7 +790,7 @@ theorem finrank_replicaTargetSpan_twoQubitCircuit_complete_le
 /-- Complete continuous two-qubit Choi-image Hilbert law.  The normalized
 Choi vectors of all exact `s`-gate architectures and all continuous gate
 choices occupy order-`r` replica rank at most
-`(n^2)^s * (r*s+1)^(16s)`.  Continuous gate cardinality and Hilbert-space
+`(n^(2 : ℕ))^s * (r*s+1)^(16s)`.  Continuous gate cardinality and Hilbert-space
 dimension do not enter. -/
 theorem finrank_replicaTargetSpan_twoQubitCircuitChoi_complete_le
     {C : Type*} {n s : ℕ}

@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardHuxleySchedule
 The weighted Huxley block mass contains `D^(-2 sigma)`.  If every block begins above the
 raised lower edge `Y` and the selected value threshold is `Y^(1-sigma)`, this weight cancels
 the entire sigma-dependence of the absorption inequality.  What remains is the scale condition
-`2 Q^2 G B <= Y^2`, uniformly up to `sigma = 1`.
+`2 Q^(2 : ℕ) G B <= Y^(2 : ℕ)`, uniformly up to `sigma = 1`.
 -/
 
 noncomputable section

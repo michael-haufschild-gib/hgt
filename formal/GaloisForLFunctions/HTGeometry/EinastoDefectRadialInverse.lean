@@ -15,9 +15,9 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def einastoDefectCorrectionFactor (d l a σ r : ℝ) : ℝ :=
-  8 * Real.pi * ∫ u in (0 : ℝ)..1, u ^ 2 * einastoShapeSourceDefect d l a σ (r * u)
+  8 * Real.pi * ∫ u in (0 : ℝ)..1, u ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ (r * u)
 
-def einastoDefectCorrection (d l a σ r : ℝ) : ℝ := r ^ 2 * einastoDefectCorrectionFactor d l a σ r
+def einastoDefectCorrection (d l a σ r : ℝ) : ℝ := r ^ (2 : ℕ) * einastoDefectCorrectionFactor d l a σ r
 
 def einastoDefectCorrectionCoefficient (d l a σ : ℝ) : ℝ := 8 * Real.pi * einastoShapeSourceDefect d l a σ 0 / 3
 
@@ -38,7 +38,7 @@ theorem einastoDefectCorrectionFactor_core (d l a σ : ℝ) :
 /-- The finite quadratic coefficient is extracted from the actual source. -/
 theorem einastoDefectCorrectionCoefficient_eq (d l a σ : ℝ) :
     einastoDefectCorrectionCoefficient d l a σ =
-      (512 / 3 : ℝ) * Real.pi ^ 2 * (σ - 1) * exp d ^ 2 := by
+      (512 / 3 : ℝ) * Real.pi ^ (2 : ℕ) * (σ - 1) * exp d ^ (2 : ℕ) := by
   rw [einastoDefectCorrectionCoefficient, einastoShapeSourceDefect_core]
   ring
 
@@ -50,21 +50,21 @@ theorem einastoDefectCorrection_center (d l a σ : ℝ) : einastoDefectCorrectio
   ring
 
 theorem einastoDefectCorrection_primitive (d l a σ r : ℝ) :
-    r * einastoDefectCorrection d l a σ r = ∫ s in 0..r, 8 * Real.pi * s ^ 2 * einastoShapeSourceDefect d l a σ s := by
+    r * einastoDefectCorrection d l a σ r = ∫ s in 0..r, 8 * Real.pi * s ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ s := by
   have h := intervalIntegral.smul_integral_comp_mul_left
-    (fun s : ℝ => s ^ 2 * einastoShapeSourceDefect d l a σ s) r (a := 0) (b := 1)
+    (fun s : ℝ => s ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ s) r (a := 0) (b := 1)
   simp only [smul_eq_mul, mul_zero, mul_one, mul_pow] at h
-  rw [show (fun u : ℝ => r ^ 2 * u ^ 2 * einastoShapeSourceDefect d l a σ (r * u)) =
-    (fun u : ℝ => r ^ 2 * (u ^ 2 * einastoShapeSourceDefect d l a σ (r * u))) by funext u; ring,
+  rw [show (fun u : ℝ => r ^ (2 : ℕ) * u ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ (r * u)) =
+    (fun u : ℝ => r ^ (2 : ℕ) * (u ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ (r * u))) by funext u; ring,
     intervalIntegral.integral_const_mul] at h
-  rw [show (fun s : ℝ => 8 * Real.pi * s ^ 2 * einastoShapeSourceDefect d l a σ s) =
-    (fun s : ℝ => (8 * Real.pi) * (s ^ 2 * einastoShapeSourceDefect d l a σ s)) by funext s; ring,
+  rw [show (fun s : ℝ => 8 * Real.pi * s ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ s) =
+    (fun s : ℝ => (8 * Real.pi) * (s ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ s)) by funext s; ring,
     intervalIntegral.integral_const_mul, ← h]
   unfold einastoDefectCorrection einastoDefectCorrectionFactor
   ring
 
 theorem einastoDefectCorrection_integral (d l a σ r : ℝ) :
-    einastoDefectCorrection d l a σ r = (∫ s in 0..r, 8 * Real.pi * s ^ 2 * einastoShapeSourceDefect d l a σ s) / r := by
+    einastoDefectCorrection d l a σ r = (∫ s in 0..r, 8 * Real.pi * s ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ s) / r := by
   by_cases hr : r = 0
   · subst r
     simp only [einastoDefectCorrection_center, intervalIntegral.integral_same, zero_div]
@@ -73,11 +73,11 @@ theorem einastoDefectCorrection_integral (d l a σ r : ℝ) :
 
 theorem einastoDefectCorrection_primitive_hasDerivAt (d l a σ r : ℝ) :
     HasDerivAt (fun s => s * einastoDefectCorrection d l a σ s)
-      (8 * Real.pi * r ^ 2 * einastoShapeSourceDefect d l a σ r) r := by
-  have hc : Continuous (fun s : ℝ => 8 * Real.pi * s ^ 2 * einastoShapeSourceDefect d l a σ s) :=
+      (8 * Real.pi * r ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ r) r := by
+  have hc : Continuous (fun s : ℝ => 8 * Real.pi * s ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ s) :=
     (continuous_const.mul (continuous_id.pow 2)).mul (einastoShapeSourceDefect_continuous d l a σ)
   have he : (fun s => s * einastoDefectCorrection d l a σ s) =
-      (fun s => ∫ u in 0..s, 8 * Real.pi * u ^ 2 * einastoShapeSourceDefect d l a σ u) := by
+      (fun s => ∫ u in 0..s, 8 * Real.pi * u ^ (2 : ℕ) * einastoShapeSourceDefect d l a σ u) := by
     funext s
     exact einastoDefectCorrection_primitive d l a σ s
   rw [he]
@@ -107,7 +107,7 @@ theorem einastoDefectCorrectionFactor_hasDerivAt (d l a σ t : ℝ) :
   have h := (einastoDefectCorrection_hasDerivAt d l a σ t).div
     ((hasDerivAt_id (exp t)).pow 2) (pow_ne_zero 2 (exp_ne_zero t))
   simp only [Pi.div_def, Pi.pow_apply, id_eq] at h
-  have hd : HasDerivAt (fun r => einastoDefectCorrection d l a σ r / r ^ 2)
+  have hd : HasDerivAt (fun r => einastoDefectCorrection d l a σ r / r ^ (2 : ℕ))
       ((8 * Real.pi * einastoShapeSourceDefect d l a σ (exp t) - 3 * einastoDefectCorrectionFactor d l a σ (exp t)) / exp t) (exp t) := by
     apply h.congr_deriv
     unfold einastoDefectCorrection
@@ -140,9 +140,9 @@ theorem einastoDefectCorrection_second_hasDerivAt (d l a σ t : ℝ) :
 
 /-- The algebraic defect always contributes a finite quadratic metric coefficient. -/
 theorem einastoDefectCorrection_quadratic_limit (d l a σ : ℝ) :
-    Tendsto (fun t => einastoDefectCorrection d l a σ (exp t) / exp t ^ 2) atBot
+    Tendsto (fun t => einastoDefectCorrection d l a σ (exp t) / exp t ^ (2 : ℕ)) atBot
       (𝓝 (einastoDefectCorrectionCoefficient d l a σ)) := by
-  have he : (fun t => einastoDefectCorrection d l a σ (exp t) / exp t ^ 2) =
+  have he : (fun t => einastoDefectCorrection d l a σ (exp t) / exp t ^ (2 : ℕ)) =
       (fun t => einastoDefectCorrectionFactor d l a σ (exp t)) := by
     funext t
     unfold einastoDefectCorrection

@@ -27,11 +27,11 @@ theorem egbFixedChargeAQuadraticB_critical_limit (φ : ℝ) :
 theorem egbFixedChargeADiscriminant_critical_limit (φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeADiscriminant τ φ) atBot (𝓝 (egbFixedChargeACriticalDiscriminant φ)) := by
   have h : Tendsto (fun τ => egbFixedChargeADiscriminant τ φ) atBot
-      (𝓝 (egbFixedChargeACriticalB φ ^ 2 + 4 * 24 * egbFixedChargeAFraction φ * 2)) :=
+      (𝓝 (egbFixedChargeACriticalB φ ^ (2 : ℕ) + 4 * 24 * egbFixedChargeAFraction φ * 2)) :=
     ((egbFixedChargeAQuadraticB_critical_limit φ).pow 2).add
       (((tendsto_const_nhds.mul egbCoexistenceAQuadraticA_critical_limit).mul tendsto_const_nhds).mul
         egbCoexistenceAQuadraticC_critical_limit)
-  have he : egbFixedChargeACriticalB φ ^ 2 + 4 * 24 * egbFixedChargeAFraction φ * 2 =
+  have he : egbFixedChargeACriticalB φ ^ (2 : ℕ) + 4 * 24 * egbFixedChargeAFraction φ * 2 =
       egbFixedChargeACriticalDiscriminant φ := by unfold egbFixedChargeACriticalDiscriminant; ring
   rwa [he] at h
 
@@ -73,14 +73,14 @@ theorem egbFixedChargeAPressureWeight_critical_limit (φ : ℝ) :
   have hz := thermalRatio_tendsto_atBot_one
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
   have h : Tendsto (fun τ => egbFixedChargeAPressureWeight τ φ) atBot
-      (𝓝 ((3 * ((1 : ℝ) ^ 2 + 1) + 4 * egbFixedChargeACriticalCouplingWeight φ * (2 - 3)) /
-        ((6 + 12 * egbFixedChargeACriticalCouplingWeight φ) * (1 ^ 2 + 1)))) :=
+      (𝓝 ((3 * ((1 : ℝ) ^ (2 : ℕ) + 1) + 4 * egbFixedChargeACriticalCouplingWeight φ * (2 - 3)) /
+        ((6 + 12 * egbFixedChargeACriticalCouplingWeight φ) * (1 ^ (2 : ℕ) + 1)))) :=
     ((tendsto_const_nhds.mul ((hz.pow 2).add tendsto_const_nhds)).add
       ((tendsto_const_nhds.mul (egbFixedChargeACouplingWeight_critical_limit φ)).mul
         (tendsto_const_nhds.sub egbCoexistenceALogKernel_tendsto_critical))).div
           ((egbFixedChargeADenominator_critical_limit φ).mul ((hz.pow 2).add tendsto_const_nhds)) (by positivity)
-  have he : (3 * ((1 : ℝ) ^ 2 + 1) + 4 * egbFixedChargeACriticalCouplingWeight φ * (2 - 3)) /
-      ((6 + 12 * egbFixedChargeACriticalCouplingWeight φ) * (1 ^ 2 + 1)) =
+  have he : (3 * ((1 : ℝ) ^ (2 : ℕ) + 1) + 4 * egbFixedChargeACriticalCouplingWeight φ * (2 - 3)) /
+      ((6 + 12 * egbFixedChargeACriticalCouplingWeight φ) * (1 ^ (2 : ℕ) + 1)) =
     (3 - 2 * egbFixedChargeACriticalCouplingWeight φ) / (6 + 12 * egbFixedChargeACriticalCouplingWeight φ) := by
     field_simp <;> ring
   rwa [he] at h
@@ -120,11 +120,11 @@ theorem egbFixedChargeAPressure_critical_limit (w φ : ℝ) :
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
   have h : Tendsto (egbFixedChargeAPressure w φ) atBot
       (𝓝 (((3 - 2 * egbFixedChargeACriticalCouplingWeight φ) / (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) /
-        (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2))) :=
+        (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ)))) :=
     (egbFixedChargeAPressureWeight_critical_limit φ).div
       (tendsto_const_nhds.mul ((egbFixedChargeALargeRadius_critical_limit w φ).pow 2)) (by positivity)
   have he : ((3 - 2 * egbFixedChargeACriticalCouplingWeight φ) / (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) /
-      (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2) = egbFixedChargeACriticalPressure w φ := by
+      (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ)) = egbFixedChargeACriticalPressure w φ := by
     unfold egbFixedChargeACriticalPressure
     field_simp <;> ring
   rwa [he] at h

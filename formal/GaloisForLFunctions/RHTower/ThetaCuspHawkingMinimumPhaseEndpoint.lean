@@ -17,7 +17,7 @@ On physical frequency `p=-i x`, its modulus is one, so multiplication by `B_alph
 Hawking particle-number intensity.  Its logarithmic phase slope is nevertheless the strictly
 positive Lorentzian
 
-`2 Im(alpha) / (Im(alpha)^2 + (x-Re(alpha))^2)`.
+`2 Im(alpha) / (Im(alpha)^(2 : ℕ) + (x-Re(alpha))^(2 : ℕ))`.
 
 At zero frequency the bare normalized theta-Born form factor has zero phase slope, by evenness of
 `XiC`, while the all-pass-dressed form factor has slope
@@ -137,7 +137,7 @@ theorem thetaCuspHawkingCausalAllPassClock_eq
     (r : ThetaCuspHawkingBackreactionResonantMode)
     (hr : 0 < r.1.im) (x : ℝ) :
     thetaCuspHawkingCausalAllPassClock r x =
-      2 * r.1.im / (r.1.im ^ 2 + (x - r.1.re) ^ 2) := by
+      2 * r.1.im / (r.1.im ^ (2 : ℕ) + (x - r.1.re) ^ (2 : ℕ)) := by
   rw [thetaCuspHawkingCausalAllPassClock,
     (GaloisForLFunctions.HTGeometry.hasDerivAt_polePhase r.1.re hr x).deriv]
   ring

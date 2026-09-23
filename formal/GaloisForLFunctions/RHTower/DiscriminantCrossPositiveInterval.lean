@@ -8,14 +8,14 @@ import Mathlib.Tactic
 For a reciprocal atom `y = u + i v` with `u > 0` and `v ≠ 0` and a positive real bulk atom `x`, the
 degree-one cross term is
 
-`C_y(x) = Re (y (y - x) ^ 2) = u x ^ 2 + 2 (a ^ 2 - u ^ 2) x + u (u ^ 2 - 3 a ^ 2)`,  `a = |v|`.
+`C_y(x) = Re (y (y - x) ^ (2 : ℕ)) = u x ^ (2 : ℕ) + 2 (a ^ (2 : ℕ) - u ^ (2 : ℕ)) x + u (u ^ (2 : ℕ) - 3 a ^ (2 : ℕ))`,  `a = |v|`.
 
 It factors as `u (x - x₋) (x - x₊)` with
 
-`x∓ = (u ^ 2 - a ^ 2 ∓ a r) / u`,  `r = ‖y‖`,
+`x∓ = (u ^ (2 : ℕ) - a ^ (2 : ℕ) ∓ a r) / u`,  `r = ‖y‖`,
 
 so `x₊ > 0` always, `x₋ > 0` exactly when `u > √3 a`, and the sign of `C_y` on the positive axis is
-determined by the explicit interval `(x₋, x₊)`.  Moreover `x₊ ≤ C * r` with `C ^ 2 = 6√3 - 9`, so
+determined by the explicit interval `(x₋, x₊)`.  Moreover `x₊ ≤ C * r` with `C ^ (2 : ℕ) = 6√3 - 9`, so
 `x ≥ 1.18 ‖y‖` already forces `C_y(x) > 0`.
 -/
 
@@ -26,22 +26,22 @@ namespace RHTower
 open Complex
 
 /-- The degree-one discriminant cross term. -/
-private def discriminantCross (y : ℂ) (x : ℝ) : ℝ := (y * (y - (x : ℂ)) ^ 2).re
+private def discriminantCross (y : ℂ) (x : ℝ) : ℝ := (y * (y - (x : ℂ)) ^ (2 : ℕ)).re
 
 /-- Lower root of the cross term. -/
-def crossRootLow (y : ℂ) : ℝ := (y.re ^ 2 - y.im ^ 2 - |y.im| * ‖y‖) / y.re
+def crossRootLow (y : ℂ) : ℝ := (y.re ^ (2 : ℕ) - y.im ^ (2 : ℕ) - |y.im| * ‖y‖) / y.re
 
 /-- Upper root of the cross term. -/
-def crossRootHigh (y : ℂ) : ℝ := (y.re ^ 2 - y.im ^ 2 + |y.im| * ‖y‖) / y.re
+def crossRootHigh (y : ℂ) : ℝ := (y.re ^ (2 : ℕ) - y.im ^ (2 : ℕ) + |y.im| * ‖y‖) / y.re
 
-theorem norm_sq_eq (y : ℂ) : ‖y‖ ^ 2 = y.re ^ 2 + y.im ^ 2 := by
+theorem norm_sq_eq (y : ℂ) : ‖y‖ ^ (2 : ℕ) = y.re ^ (2 : ℕ) + y.im ^ (2 : ℕ) := by
   rw [Complex.sq_norm, Complex.normSq_apply]
   ring
 
 /-- Expanded real quadratic form of the cross term. -/
 private theorem discriminantCross_eq (y : ℂ) (x : ℝ) :
     discriminantCross y x =
-      y.re * x ^ 2 + 2 * (y.im ^ 2 - y.re ^ 2) * x + y.re * (y.re ^ 2 - 3 * y.im ^ 2) := by
+      y.re * x ^ (2 : ℕ) + 2 * (y.im ^ (2 : ℕ) - y.re ^ (2 : ℕ)) * x + y.re * (y.re ^ (2 : ℕ) - 3 * y.im ^ (2 : ℕ)) := by
   simp only [discriminantCross, pow_two, Complex.mul_re, Complex.mul_im, Complex.sub_re,
     Complex.sub_im, Complex.ofReal_re, Complex.ofReal_im]
   ring
@@ -50,8 +50,8 @@ private theorem discriminantCross_eq (y : ℂ) (x : ℝ) :
 theorem discriminantCross_factor {y : ℂ} (hu : 0 < y.re) (x : ℝ) :
     discriminantCross y x = y.re * (x - crossRootLow y) * (x - crossRootHigh y) := by
   have hune : y.re ≠ 0 := ne_of_gt hu
-  have hr2 : ‖y‖ ^ 2 = y.re ^ 2 + y.im ^ 2 := norm_sq_eq y
-  have habs : |y.im| ^ 2 = y.im ^ 2 := sq_abs _
+  have hr2 : ‖y‖ ^ (2 : ℕ) = y.re ^ (2 : ℕ) + y.im ^ (2 : ℕ) := norm_sq_eq y
+  have habs : |y.im| ^ (2 : ℕ) = y.im ^ (2 : ℕ) := sq_abs _
   rw [discriminantCross_eq, crossRootLow, crossRootHigh]
   field_simp
   nlinarith [hr2, habs, sq_nonneg (|y.im| * ‖y‖)]
@@ -59,24 +59,24 @@ theorem discriminantCross_factor {y : ℂ} (hu : 0 < y.re) (x : ℝ) :
 /-- The upper root is strictly positive. -/
 theorem crossRootHigh_pos {y : ℂ} (hu : 0 < y.re) (hv : y.im ≠ 0) : 0 < crossRootHigh y := by
   have habs : 0 < |y.im| := abs_pos.mpr hv
-  have hr2 : ‖y‖ ^ 2 = y.re ^ 2 + y.im ^ 2 := norm_sq_eq y
+  have hr2 : ‖y‖ ^ (2 : ℕ) = y.re ^ (2 : ℕ) + y.im ^ (2 : ℕ) := norm_sq_eq y
   have hrpos : 0 < ‖y‖ := by
     have : y ≠ 0 := by
       intro h
       rw [h] at hu
       simp at hu
     exact norm_pos_iff.mpr this
-  have habs2 : |y.im| ^ 2 = y.im ^ 2 := sq_abs _
-  have hnum : 0 < y.re ^ 2 - y.im ^ 2 + |y.im| * ‖y‖ := by
-    rcases le_or_gt (y.im ^ 2) (y.re ^ 2) with h | h
+  have habs2 : |y.im| ^ (2 : ℕ) = y.im ^ (2 : ℕ) := sq_abs _
+  have hnum : 0 < y.re ^ (2 : ℕ) - y.im ^ (2 : ℕ) + |y.im| * ‖y‖ := by
+    rcases le_or_gt (y.im ^ (2 : ℕ)) (y.re ^ (2 : ℕ)) with h | h
     · have hprod : 0 < |y.im| * ‖y‖ := mul_pos habs hrpos
       linarith
-    · have hexp : (|y.im| * ‖y‖) ^ 2 = y.im ^ 2 * (y.re ^ 2 + y.im ^ 2) := by
+    · have hexp : (|y.im| * ‖y‖) ^ (2 : ℕ) = y.im ^ (2 : ℕ) * (y.re ^ (2 : ℕ) + y.im ^ (2 : ℕ)) := by
         rw [mul_pow, habs2, hr2]
-      have hsq : (y.im ^ 2 - y.re ^ 2) ^ 2 < (|y.im| * ‖y‖) ^ 2 := by
+      have hsq : (y.im ^ (2 : ℕ) - y.re ^ (2 : ℕ)) ^ (2 : ℕ) < (|y.im| * ‖y‖) ^ (2 : ℕ) := by
         rw [hexp]
-        have hu2 : 0 < y.re ^ 2 := pow_pos hu 2
-        have h3 : 0 < 3 * y.im ^ 2 - y.re ^ 2 := by nlinarith
+        have hu2 : 0 < y.re ^ (2 : ℕ) := pow_pos hu 2
+        have h3 : 0 < 3 * y.im ^ (2 : ℕ) - y.re ^ (2 : ℕ) := by nlinarith
         nlinarith [mul_pos hu2 h3]
       have hprod : 0 < |y.im| * ‖y‖ := mul_pos habs hrpos
       nlinarith [hsq, hprod]
@@ -93,33 +93,33 @@ theorem crossRootLow_le_crossRootHigh {y : ℂ} (hu : 0 < y.re) :
 theorem crossRootLow_pos_iff {y : ℂ} (hu : 0 < y.re) (hv : y.im ≠ 0) :
     0 < crossRootLow y ↔ Real.sqrt 3 * |y.im| < y.re := by
   have habs : 0 < |y.im| := abs_pos.mpr hv
-  have habs2 : |y.im| ^ 2 = y.im ^ 2 := sq_abs _
-  have hr2 : ‖y‖ ^ 2 = y.re ^ 2 + y.im ^ 2 := norm_sq_eq y
+  have habs2 : |y.im| ^ (2 : ℕ) = y.im ^ (2 : ℕ) := sq_abs _
+  have hr2 : ‖y‖ ^ (2 : ℕ) = y.re ^ (2 : ℕ) + y.im ^ (2 : ℕ) := norm_sq_eq y
   have hrpos : 0 < ‖y‖ := by
     nlinarith [hr2, habs2, habs, norm_nonneg y]
-  have hsqrt3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+  have hsqrt3 : Real.sqrt 3 ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   have hsqrt3pos : 0 < Real.sqrt 3 := Real.sqrt_pos.mpr (by norm_num)
-  have hexp : (|y.im| * ‖y‖) ^ 2 = y.im ^ 2 * (y.re ^ 2 + y.im ^ 2) := by
+  have hexp : (|y.im| * ‖y‖) ^ (2 : ℕ) = y.im ^ (2 : ℕ) * (y.re ^ (2 : ℕ) + y.im ^ (2 : ℕ)) := by
     rw [mul_pow, habs2, hr2]
   have hnn : 0 ≤ |y.im| * ‖y‖ := mul_nonneg (abs_nonneg _) (norm_nonneg _)
-  have hkey : (0 < y.re ^ 2 - y.im ^ 2 - |y.im| * ‖y‖) ↔ 3 * y.im ^ 2 < y.re ^ 2 := by
+  have hkey : (0 < y.re ^ (2 : ℕ) - y.im ^ (2 : ℕ) - |y.im| * ‖y‖) ↔ 3 * y.im ^ (2 : ℕ) < y.re ^ (2 : ℕ) := by
     constructor
     · intro hpos
-      have h2 : (|y.im| * ‖y‖) ^ 2 < (y.re ^ 2 - y.im ^ 2) ^ 2 := by nlinarith [hnn, hpos]
+      have h2 : (|y.im| * ‖y‖) ^ (2 : ℕ) < (y.re ^ (2 : ℕ) - y.im ^ (2 : ℕ)) ^ (2 : ℕ) := by nlinarith [hnn, hpos]
       rw [hexp] at h2
-      have hu2 : 0 < y.re ^ 2 := pow_pos hu 2
-      rcases lt_or_ge (3 * y.im ^ 2) (y.re ^ 2) with hlt | hge
+      have hu2 : 0 < y.re ^ (2 : ℕ) := pow_pos hu 2
+      rcases lt_or_ge (3 * y.im ^ (2 : ℕ)) (y.re ^ (2 : ℕ)) with hlt | hge
       · exact hlt
       · exfalso
         nlinarith [mul_nonneg hu2.le (sub_nonneg.mpr hge), h2]
     · intro h3
-      have hgt : 0 < y.re ^ 2 - y.im ^ 2 := by nlinarith [sq_nonneg y.im]
-      have h2 : (|y.im| * ‖y‖) ^ 2 < (y.re ^ 2 - y.im ^ 2) ^ 2 := by
+      have hgt : 0 < y.re ^ (2 : ℕ) - y.im ^ (2 : ℕ) := by nlinarith [sq_nonneg y.im]
+      have h2 : (|y.im| * ‖y‖) ^ (2 : ℕ) < (y.re ^ (2 : ℕ) - y.im ^ (2 : ℕ)) ^ (2 : ℕ) := by
         rw [hexp]
-        have hu2 : 0 < y.re ^ 2 := pow_pos hu 2
+        have hu2 : 0 < y.re ^ (2 : ℕ) := pow_pos hu 2
         nlinarith [mul_pos hu2 (sub_pos.mpr h3)]
       nlinarith [h2, hnn, hgt]
-  have hsq3 : Real.sqrt 3 * |y.im| < y.re ↔ 3 * y.im ^ 2 < y.re ^ 2 := by
+  have hsq3 : Real.sqrt 3 * |y.im| < y.re ↔ 3 * y.im ^ (2 : ℕ) < y.re ^ (2 : ℕ) := by
     constructor
     · intro h
       have hnn3 : 0 ≤ Real.sqrt 3 * |y.im| := mul_nonneg (le_of_lt hsqrt3pos) (abs_nonneg _)
@@ -166,11 +166,11 @@ theorem discriminantCross_pos_of_lt {y : ℂ} (hu : 0 < y.re) {x : ℝ} (hx : x 
   have h2 : x - crossRootHigh y < 0 := by linarith
   exact mul_pos_of_neg_of_neg (mul_neg_of_pos_of_neg hu h1) h2
 
-/-- The universal scale constant `C` with `C ^ 2 = 6√3 - 9`. -/
+/-- The universal scale constant `C` with `C ^ (2 : ℕ) = 6√3 - 9`. -/
 def crossScaleConstant : ℝ := Real.sqrt (6 * Real.sqrt 3 - 9)
 
-theorem crossScaleConstant_sq : crossScaleConstant ^ 2 = 6 * Real.sqrt 3 - 9 := by
-  have hsqrt3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+theorem crossScaleConstant_sq : crossScaleConstant ^ (2 : ℕ) = 6 * Real.sqrt 3 - 9 := by
+  have hsqrt3 : Real.sqrt 3 ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   have hlow : (1.7 : ℝ) < Real.sqrt 3 := by
     nlinarith [hsqrt3, Real.sqrt_nonneg 3]
   exact Real.sq_sqrt (by nlinarith)
@@ -178,23 +178,23 @@ theorem crossScaleConstant_sq : crossScaleConstant ^ 2 = 6 * Real.sqrt 3 - 9 := 
 theorem crossScaleConstant_nonneg : 0 ≤ crossScaleConstant := Real.sqrt_nonneg _
 
 theorem crossScaleConstant_lt : crossScaleConstant < 1.18 := by
-  have hsqrt3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+  have hsqrt3 : Real.sqrt 3 ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   have hup : Real.sqrt 3 < 1.7320509 := by
     nlinarith [hsqrt3, Real.sqrt_nonneg 3]
   have hsq := crossScaleConstant_sq
   nlinarith [crossScaleConstant_nonneg, hsq, hup]
 
-/-- Polynomial core of the universal scale bound: with `S ^ 2 = 3` and `C ^ 2 = 6 S - 9`, the
+/-- Polynomial core of the universal scale bound: with `S ^ (2 : ℕ) = 3` and `C ^ (2 : ℕ) = 6 S - 9`, the
 squared upper root never exceeds the squared scale bound. -/
 theorem scaleBound_aux {R A S C : ℝ} (hA : 0 ≤ A) (hAR : A ≤ R)
-    (hS : S ^ 2 = 3) (hS1 : 1 ≤ S) (hC : C ^ 2 = 6 * S - 9) :
-    (R ^ 2 - 2 * A ^ 2 + A * R) ^ 2 ≤ C ^ 2 * R ^ 2 * (R ^ 2 - A ^ 2) := by
-  have hident : C ^ 2 * R ^ 2 * (R ^ 2 - A ^ 2) - (R ^ 2 - 2 * A ^ 2 + A * R) ^ 2 =
-      4 * (R - A) * (A - (S - 1) / 2 * R) ^ 2 * (A + (S - 1) * R) := by
+    (hS : S ^ (2 : ℕ) = 3) (hS1 : 1 ≤ S) (hC : C ^ (2 : ℕ) = 6 * S - 9) :
+    (R ^ (2 : ℕ) - 2 * A ^ (2 : ℕ) + A * R) ^ (2 : ℕ) ≤ C ^ (2 : ℕ) * R ^ (2 : ℕ) * (R ^ (2 : ℕ) - A ^ (2 : ℕ)) := by
+  have hident : C ^ (2 : ℕ) * R ^ (2 : ℕ) * (R ^ (2 : ℕ) - A ^ (2 : ℕ)) - (R ^ (2 : ℕ) - 2 * A ^ (2 : ℕ) + A * R) ^ (2 : ℕ) =
+      4 * (R - A) * (A - (S - 1) / 2 * R) ^ (2 : ℕ) * (A + (S - 1) * R) := by
     rw [hC]
-    linear_combination (-(R - A) * (R ^ 3 * (S - 3) - 3 * A * R ^ 2)) * hS
+    linear_combination (-(R - A) * (R ^ (3 : ℕ) * (S - 3) - 3 * A * R ^ (2 : ℕ))) * hS
   have h2 : 0 ≤ A + (S - 1) * R := by nlinarith
-  have hnonneg : 0 ≤ 4 * (R - A) * (A - (S - 1) / 2 * R) ^ 2 * (A + (S - 1) * R) :=
+  have hnonneg : 0 ≤ 4 * (R - A) * (A - (S - 1) / 2 * R) ^ (2 : ℕ) * (A + (S - 1) * R) :=
     mul_nonneg (mul_nonneg (by linarith) (sq_nonneg _)) h2
   linarith [hident, hnonneg]
 
@@ -202,23 +202,23 @@ theorem scaleBound_aux {R A S C : ℝ} (hA : 0 ≤ A) (hAR : A ≤ R)
 theorem crossRootHigh_le_scale {y : ℂ} (hu : 0 < y.re) (hv : y.im ≠ 0) :
     crossRootHigh y ≤ crossScaleConstant * ‖y‖ := by
   have habs : 0 < |y.im| := abs_pos.mpr hv
-  have habs2 : |y.im| ^ 2 = y.im ^ 2 := sq_abs _
-  have hr2 : ‖y‖ ^ 2 = y.re ^ 2 + y.im ^ 2 := norm_sq_eq y
+  have habs2 : |y.im| ^ (2 : ℕ) = y.im ^ (2 : ℕ) := sq_abs _
+  have hr2 : ‖y‖ ^ (2 : ℕ) = y.re ^ (2 : ℕ) + y.im ^ (2 : ℕ) := norm_sq_eq y
   have hrnn : 0 ≤ ‖y‖ := norm_nonneg y
-  have hsqrt3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+  have hsqrt3 : Real.sqrt 3 ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   have hsqrt3nn : 0 ≤ Real.sqrt 3 := Real.sqrt_nonneg 3
   have hsqrt3one : (1 : ℝ) ≤ Real.sqrt 3 := by nlinarith [hsqrt3, hsqrt3nn]
-  have hC : crossScaleConstant ^ 2 = 6 * Real.sqrt 3 - 9 := crossScaleConstant_sq
+  have hC : crossScaleConstant ^ (2 : ℕ) = 6 * Real.sqrt 3 - 9 := crossScaleConstant_sq
   have hAR : |y.im| ≤ ‖y‖ := by nlinarith [hr2, habs2, sq_nonneg y.re, hrnn, abs_nonneg y.im]
   have haux := scaleBound_aux (R := ‖y‖) (A := |y.im|) (S := Real.sqrt 3)
     (C := crossScaleConstant) (abs_nonneg _) hAR hsqrt3 hsqrt3one hC
-  have hU2 : y.re ^ 2 = ‖y‖ ^ 2 - |y.im| ^ 2 := by rw [habs2, hr2]; ring
-  have hlhs : y.re ^ 2 - y.im ^ 2 + |y.im| * ‖y‖ =
-      ‖y‖ ^ 2 - 2 * |y.im| ^ 2 + |y.im| * ‖y‖ := by rw [hU2, habs2]; ring
-  have hrhs : (crossScaleConstant * ‖y‖ * y.re) ^ 2 =
-      crossScaleConstant ^ 2 * ‖y‖ ^ 2 * (‖y‖ ^ 2 - |y.im| ^ 2) := by rw [← hU2]; ring
-  have hsq : (y.re ^ 2 - y.im ^ 2 + |y.im| * ‖y‖) ^ 2 ≤
-      (crossScaleConstant * ‖y‖ * y.re) ^ 2 := by
+  have hU2 : y.re ^ (2 : ℕ) = ‖y‖ ^ (2 : ℕ) - |y.im| ^ (2 : ℕ) := by rw [habs2, hr2]; ring
+  have hlhs : y.re ^ (2 : ℕ) - y.im ^ (2 : ℕ) + |y.im| * ‖y‖ =
+      ‖y‖ ^ (2 : ℕ) - 2 * |y.im| ^ (2 : ℕ) + |y.im| * ‖y‖ := by rw [hU2, habs2]; ring
+  have hrhs : (crossScaleConstant * ‖y‖ * y.re) ^ (2 : ℕ) =
+      crossScaleConstant ^ (2 : ℕ) * ‖y‖ ^ (2 : ℕ) * (‖y‖ ^ (2 : ℕ) - |y.im| ^ (2 : ℕ)) := by rw [← hU2]; ring
+  have hsq : (y.re ^ (2 : ℕ) - y.im ^ (2 : ℕ) + |y.im| * ‖y‖) ^ (2 : ℕ) ≤
+      (crossScaleConstant * ‖y‖ * y.re) ^ (2 : ℕ) := by
     rw [hlhs, hrhs]
     exact haux
   have hrhsnn : 0 ≤ crossScaleConstant * ‖y‖ * y.re := by

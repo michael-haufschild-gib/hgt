@@ -39,7 +39,7 @@ theorem egbOffShellGibbsA_coupling_derivative (P T Q a l x : ℝ) :
   ring
 
 theorem egbOffShellGibbsA_reference_derivative (P T Q a l x : ℝ) :
-    HasDerivAt (fun c => egbOffShellGibbsA P T Q a c (exp x)) (4 * Real.pi * a ^ 2 * T) l := by
+    HasDerivAt (fun c => egbOffShellGibbsA P T Q a c (exp x)) (4 * Real.pi * a ^ (2 : ℕ) * T) l := by
   have h := ((egbEntropyA_reference_derivative a l x).const_mul T).const_sub (egbMass P Q a (exp x))
   apply h.congr_deriv
   ring
@@ -47,7 +47,7 @@ theorem egbOffShellGibbsA_reference_derivative (P T Q a l x : ℝ) :
 /-- Equilibria are exactly the stationary points of the genuine radial free energy. -/
 theorem egbOffShellGibbsA_radius_derivative (P T Q a l x : ℝ) :
     HasDerivAt (egbOffShellGibbsA P T Q a l)
-      ((egbTemperatureA P Q a (exp x) - T) * (2 * Real.pi * exp x + 4 * Real.pi * a ^ 2 / exp x)) (exp x) := by
+      ((egbTemperatureA P Q a (exp x) - T) * (2 * Real.pi * exp x + 4 * Real.pi * a ^ (2 : ℕ) / exp x)) (exp x) := by
   have h := (egbMass_derivative P Q a x).sub ((egbEntropyA_derivative a l x).const_mul T)
   apply h.congr_deriv
   have hf := (egb_firstLaw_both_prescriptions P Q a l x).1
@@ -62,18 +62,18 @@ theorem egbEntropyA_radial_slope_pos (a l x : ℝ) :
 
 theorem egbOffShellGibbsA_stationary_iff (P T Q a l x : ℝ) :
     deriv (egbOffShellGibbsA P T Q a l) (exp x) = 0 ↔ egbTemperatureA P Q a (exp x) = T := by
-  have hs : 2 * Real.pi * exp x + 4 * Real.pi * a ^ 2 / exp x ≠ 0 := by positivity
+  have hs : 2 * Real.pi * exp x + 4 * Real.pi * a ^ (2 : ℕ) / exp x ≠ 0 := by positivity
   rw [(egbOffShellGibbsA_radius_derivative P T Q a l x).deriv, mul_eq_zero]
   simp [hs, sub_eq_zero]
 
 theorem egbOffShellGibbsA_increasing_iff (P T Q a l x : ℝ) :
     0 < deriv (egbOffShellGibbsA P T Q a l) (exp x) ↔ T < egbTemperatureA P Q a (exp x) := by
-  have hs : 0 < 2 * Real.pi * exp x + 4 * Real.pi * a ^ 2 / exp x := by positivity
+  have hs : 0 < 2 * Real.pi * exp x + 4 * Real.pi * a ^ (2 : ℕ) / exp x := by positivity
   rw [(egbOffShellGibbsA_radius_derivative P T Q a l x).deriv, mul_pos_iff_of_pos_right hs, sub_pos]
 
 theorem egbOffShellGibbsA_reference_shift (P T Q a l c x : ℝ) :
     egbOffShellGibbsA P T Q a (l + c) (exp x) =
-      egbOffShellGibbsA P T Q a l (exp x) + 4 * Real.pi * a ^ 2 * T * c := by
+      egbOffShellGibbsA P T Q a l (exp x) + 4 * Real.pi * a ^ (2 : ℕ) * T * c := by
   unfold egbOffShellGibbsA
   rw [egbEntropyA_scale_shift]
   ring

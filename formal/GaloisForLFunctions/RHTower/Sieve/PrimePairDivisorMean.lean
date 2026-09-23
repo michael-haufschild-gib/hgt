@@ -97,7 +97,7 @@ def primeSquareDivisorCount (S : Finset ℕ) (n : ℕ) : ℝ :=
 theorem sum_primeSquareDivisorCount_le
     (S : Finset ℕ) (Y : ℕ) (hS : ∀ p ∈ S, 0 < p) :
     ∑ n ∈ Finset.Icc 1 Y, primeSquareDivisorCount S n ≤
-      (Y : ℝ) * ∑ p ∈ S, (1 / (p : ℝ)) ^ 2 := by
+      (Y : ℝ) * ∑ p ∈ S, (1 / (p : ℝ)) ^ (2 : ℕ) := by
   calc
     ∑ n ∈ Finset.Icc 1 Y, primeSquareDivisorCount S n =
         ∑ p ∈ S, ∑ n ∈ Finset.Icc 1 Y,
@@ -115,7 +115,7 @@ theorem sum_primeSquareDivisorCount_le
         Nat.cast_div_le
       push_cast at hcast
       exact hcast
-    _ = (Y : ℝ) * ∑ p ∈ S, (1 / (p : ℝ)) ^ 2 := by
+    _ = (Y : ℝ) * ∑ p ∈ S, (1 / (p : ℝ)) ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro p hp
@@ -130,7 +130,7 @@ theorem sum_primeSquareDivisorCount_le_of_recip
       (Y : ℝ) * η * ∑ p ∈ S, 1 / (p : ℝ) := by
   calc
     ∑ n ∈ Finset.Icc 1 Y, primeSquareDivisorCount S n ≤
-        (Y : ℝ) * ∑ p ∈ S, (1 / (p : ℝ)) ^ 2 :=
+        (Y : ℝ) * ∑ p ∈ S, (1 / (p : ℝ)) ^ (2 : ℕ) :=
       sum_primeSquareDivisorCount_le S Y hS
     _ ≤ (Y : ℝ) * ∑ p ∈ S, η * (1 / (p : ℝ)) := by
       gcongr with p hp

@@ -78,7 +78,7 @@ theorem momentumResidual_viscosityRescaledJet {d : ℕ} {ν : ℝ} (hν : 0 < ν
   have hs : Real.sqrt ν ≠ 0 := (Real.sqrt_pos.2 hν).ne'
   have hratio : ν * (Real.sqrt ν)⁻¹ = Real.sqrt ν := by
     calc
-      ν * (Real.sqrt ν)⁻¹ = (Real.sqrt ν) ^ 2 * (Real.sqrt ν)⁻¹ := by
+      ν * (Real.sqrt ν)⁻¹ = (Real.sqrt ν) ^ (2 : ℕ) * (Real.sqrt ν)⁻¹ := by
         rw [Real.sq_sqrt hν.le]
       _ = Real.sqrt ν := by field_simp
   rw [momentumResidual, advection_viscosityRescaledJet, momentumResidual]
@@ -98,7 +98,7 @@ theorem solvesAt_viscosityRescaledJet {d : ℕ} {ν : ℝ} (hν : 0 < ν)
 
 /-- Pointwise kinetic-energy density. -/
 def kineticDensity {d : ℕ} (J : NavierStokesPointJet d) : ℝ :=
-  (1 / 2 : ℝ) * ∑ i, J.velocity i ^ 2
+  (1 / 2 : ℝ) * ∑ i, J.velocity i ^ (2 : ℕ)
 
 /-- Velocity amplitude scaling multiplies kinetic-energy density by `ν`. -/
 theorem kineticDensity_viscosityRescaledJet {d : ℕ} {ν : ℝ} (hν : 0 ≤ ν)
@@ -106,15 +106,15 @@ theorem kineticDensity_viscosityRescaledJet {d : ℕ} {ν : ℝ} (hν : 0 ≤ ν
     kineticDensity (viscosityRescaledJet ν J) = ν * kineticDensity J := by
   unfold kineticDensity
   simp only [viscosityRescaledJet]
-  have hsqrt : (Real.sqrt ν) ^ 2 = ν := Real.sq_sqrt hν
+  have hsqrt : (Real.sqrt ν) ^ (2 : ℕ) = ν := Real.sq_sqrt hν
   calc
-    (1 / 2 : ℝ) * ∑ i, (Real.sqrt ν * J.velocity i) ^ 2 =
-        (1 / 2 : ℝ) * ∑ i, ν * J.velocity i ^ 2 := by
+    (1 / 2 : ℝ) * ∑ i, (Real.sqrt ν * J.velocity i) ^ (2 : ℕ) =
+        (1 / 2 : ℝ) * ∑ i, ν * J.velocity i ^ (2 : ℕ) := by
       congr 1
       apply sum_congr rfl
       intro i hi
       rw [mul_pow, hsqrt]
-    _ = ν * ((1 / 2 : ℝ) * ∑ i, J.velocity i ^ 2) := by
+    _ = ν * ((1 / 2 : ℝ) * ∑ i, J.velocity i ^ (2 : ℕ)) := by
       rw [← Finset.mul_sum]
       ring
 
@@ -124,31 +124,31 @@ scale `scale²`, and force has scale `scale³`. -/
 def parabolicRescaledJet {d : ℕ} (scale : ℝ) (J : NavierStokesPointJet d) :
     NavierStokesPointJet d where
   velocity i := scale * J.velocity i
-  timeDerivative i := scale ^ 3 * J.timeDerivative i
-  spatialDerivative i k := scale ^ 2 * J.spatialDerivative i k
-  laplacian i := scale ^ 3 * J.laplacian i
-  pressureGradient i := scale ^ 3 * J.pressureGradient i
-  force i := scale ^ 3 * J.force i
+  timeDerivative i := scale ^ (3 : ℕ) * J.timeDerivative i
+  spatialDerivative i k := scale ^ (2 : ℕ) * J.spatialDerivative i k
+  laplacian i := scale ^ (3 : ℕ) * J.laplacian i
+  pressureGradient i := scale ^ (3 : ℕ) * J.pressureGradient i
+  force i := scale ^ (3 : ℕ) * J.force i
 
 /-- Parabolic rescaling multiplies advection by `scale³`. -/
 theorem advection_parabolicRescaledJet {d : ℕ} (scale : ℝ)
     (J : NavierStokesPointJet d) (i : Fin d) :
-    advection (parabolicRescaledJet scale J) i = scale ^ 3 * advection J i := by
+    advection (parabolicRescaledJet scale J) i = scale ^ (3 : ℕ) * advection J i := by
   unfold advection
   simp only [parabolicRescaledJet]
   calc
-    ∑ k, (scale * J.velocity k) * (scale ^ 2 * J.spatialDerivative i k) =
-        ∑ k, scale ^ 3 * (J.velocity k * J.spatialDerivative i k) := by
+    ∑ k, (scale * J.velocity k) * (scale ^ (2 : ℕ) * J.spatialDerivative i k) =
+        ∑ k, scale ^ (3 : ℕ) * (J.velocity k * J.spatialDerivative i k) := by
       apply sum_congr rfl
       intro k hk
       ring
-    _ = scale ^ 3 * ∑ k, J.velocity k * J.spatialDerivative i k := by
+    _ = scale ^ (3 : ℕ) * ∑ k, J.velocity k * J.spatialDerivative i k := by
       rw [Finset.mul_sum]
 
 /-- Parabolic rescaling multiplies divergence by `scale²`. -/
 theorem divergence_parabolicRescaledJet {d : ℕ} (scale : ℝ)
     (J : NavierStokesPointJet d) :
-    divergence (parabolicRescaledJet scale J) = scale ^ 2 * divergence J := by
+    divergence (parabolicRescaledJet scale J) = scale ^ (2 : ℕ) * divergence J := by
   unfold divergence
   simp only [parabolicRescaledJet]
   rw [Finset.mul_sum]
@@ -158,7 +158,7 @@ three. -/
 theorem momentumResidual_parabolicRescaledJet {d : ℕ} (ν scale : ℝ)
     (J : NavierStokesPointJet d) (i : Fin d) :
     momentumResidual ν (parabolicRescaledJet scale J) i =
-      scale ^ 3 * momentumResidual ν J i := by
+      scale ^ (3 : ℕ) * momentumResidual ν J i := by
   rw [momentumResidual, advection_parabolicRescaledJet, momentumResidual]
   simp only [parabolicRescaledJet]
   ring
@@ -175,17 +175,17 @@ theorem solvesAt_parabolicRescaledJet {d : ℕ} {ν scale : ℝ}
 /-- Parabolic velocity scaling multiplies pointwise kinetic density by `scale²`. -/
 theorem kineticDensity_parabolicRescaledJet {d : ℕ} (scale : ℝ)
     (J : NavierStokesPointJet d) :
-    kineticDensity (parabolicRescaledJet scale J) = scale ^ 2 * kineticDensity J := by
+    kineticDensity (parabolicRescaledJet scale J) = scale ^ (2 : ℕ) * kineticDensity J := by
   unfold kineticDensity
   simp only [parabolicRescaledJet]
   calc
-    (1 / 2 : ℝ) * ∑ i, (scale * J.velocity i) ^ 2 =
-        (1 / 2 : ℝ) * ∑ i, scale ^ 2 * J.velocity i ^ 2 := by
+    (1 / 2 : ℝ) * ∑ i, (scale * J.velocity i) ^ (2 : ℕ) =
+        (1 / 2 : ℝ) * ∑ i, scale ^ (2 : ℕ) * J.velocity i ^ (2 : ℕ) := by
       congr 1
       apply sum_congr rfl
       intro i hi
       rw [mul_pow]
-    _ = scale ^ 2 * ((1 / 2 : ℝ) * ∑ i, J.velocity i ^ 2) := by
+    _ = scale ^ (2 : ℕ) * ((1 / 2 : ℝ) * ∑ i, J.velocity i ^ (2 : ℕ)) := by
       rw [← Finset.mul_sum]
       ring
 

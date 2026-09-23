@@ -34,11 +34,11 @@ theorem halaszMontgomery_blockPoly_real_finset_sigma
     (hspread : ∀ x ∈ S, ∀ y ∈ S, |x - y| ≤ T)
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N T ≤ 1) :
-    ∑ t ∈ S, ‖blockPoly N c sigma t‖ ^ 2 ≤
+    ∑ t ∈ S, ‖blockPoly N c sigma t‖ ^ (2 : ℕ) ≤
       ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log S.card)
           + (S.card : ℝ) *
             (1 + 214 * Real.sqrt T + 1536 * ((N : ℝ) / Real.sqrt U))) *
-        ‖blockCoeff N c sigma‖ ^ 2 := by
+        ‖blockCoeff N c sigma‖ ^ (2 : ℕ) := by
   let P := matomakiTeravainenFiniteSeparatedOrdinates S delta hdelta hsep
   have hdiam : ∀ r ∈ Finset.range S.card, ∀ s ∈ Finset.range S.card,
       |RHTower.cglFiniteSeparatedOrdinatesTimeline P s -
@@ -54,7 +54,7 @@ theorem halaszMontgomery_blockPoly_real_finset_sigma
     hnear hlamT
   rw [sum_finset_eq_sum_matomakiTeravainenFiniteSeparatedOrdinates_timeline
     S delta hdelta hsep
-    (fun t => ‖blockPoly N c sigma t‖ ^ 2)]
+    (fun t => ‖blockPoly N c sigma t‖ ^ (2 : ℕ))]
   simpa only [inner_dyadicDirRow_blockCoeff] using hbase
 
 /-- **Halász--Montgomery for a `logPoly` supported in a dyadic range**, over a one-spaced family of
@@ -67,12 +67,12 @@ theorem halaszMontgomery_logPoly_finset
     (hspread : ∀ x ∈ P, ∀ y ∈ P, |x - y| ≤ 2 * G)
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N (4 * Real.pi * G) ≤ 1) :
-    ∑ w ∈ P, ‖logPoly a s w‖ ^ 2 ≤
+    ∑ w ∈ P, ‖logPoly a s w‖ ^ (2 : ℕ) ≤
       ((N : ℝ) + (12 * Real.pi * (N : ℝ) / (2 * Real.pi)) * (1 + Real.log P.card)
           + (P.card : ℝ) *
             (1 + 214 * Real.sqrt (4 * Real.pi * G)
               + 1536 * ((N : ℝ) / Real.sqrt U))) *
-        ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ 2 := by
+        ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ (2 : ℕ) := by
   classical
   set S : Finset ℝ := P.image (fun x => -(2 * Real.pi * x)) with hS
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
@@ -107,8 +107,8 @@ theorem halaszMontgomery_logPoly_finset
   have hbase := halaszMontgomery_blockPoly_real_finset_sigma N hN (blockRestrictCoeff a s) 0
     hpi hU hT hSsep hSspread hnear hlamT
   rw [hcard] at hbase
-  have hrw : ∑ w ∈ P, ‖logPoly a s w‖ ^ 2
-      = ∑ t ∈ S, ‖blockPoly N (blockRestrictCoeff a s) 0 t‖ ^ 2 := by
+  have hrw : ∑ w ∈ P, ‖logPoly a s w‖ ^ (2 : ℕ)
+      = ∑ t ∈ S, ‖blockPoly N (blockRestrictCoeff a s) 0 t‖ ^ (2 : ℕ) := by
     rw [hS, Finset.sum_image (fun x hx y hy h => hinj hx hy h)]
     refine Finset.sum_congr rfl fun w _ => ?_
     rw [logPoly_eq_blockPoly_of_subset hs]
@@ -124,14 +124,14 @@ theorem sum_normSq_logPoly_Icc_le_halaszMontgomery
     (hspread : ∀ x ∈ P, ∀ y ∈ P, |x - y| ≤ 2 * G)
     (hnear : ∀ i : ℕ, 3 * U ≤ 4 * Real.pi * ((2 ^ i : ℕ) : ℝ))
     (hlam : ∀ i : ℕ, logDyadicLambda (2 ^ i) (4 * Real.pi * G) ≤ 1) :
-    ∑ w ∈ P, ‖logPoly a (Finset.Icc 1 M) w‖ ^ 2
+    ∑ w ∈ P, ‖logPoly a (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
       ≤ ((Nat.log 2 M + 1 : ℕ) : ℝ) *
           ∑ i ∈ Finset.range (Nat.log 2 M + 1),
             ((((2 ^ i : ℕ) : ℝ)
                 + (12 * Real.pi * ((2 ^ i : ℕ) : ℝ) / (2 * Real.pi)) * (1 + Real.log P.card)
                 + (P.card : ℝ) * (1 + 214 * Real.sqrt (4 * Real.pi * G)
                     + 1536 * (((2 ^ i : ℕ) : ℝ) / Real.sqrt U)))
-              * ‖blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0‖ ^ 2) := by
+              * ‖blockCoeff (2 ^ i) (dyadicSegmentCoeff a M i) 0‖ ^ (2 : ℕ)) := by
   classical
   refine (sum_normSq_logPoly_Icc_le_card_mul_sum_blocks a M P).trans ?_
   refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun i _ => ?_) (by positivity)

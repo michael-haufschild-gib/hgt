@@ -128,9 +128,9 @@ def routeUExplicitPolynomialGaussianFiniteHankelQuadratic
 /-- The existential finite-lattice witness upgrades to the explicit linear truncation. -/
 theorem routeUExplicitFiniteHankelQuadratic_eq_sampleDivisorSum
     (n k : ℕ) (g : SchwartzMap ℝ ℝ) :
-    routeUHardEdgeMass (k : ℝ) ^ 2 *
+    routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) *
         xiShiftedReciprocalHankelQuadratic
-          (routeUHardEdgeMass (k : ℝ) ^ 2)
+          (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
           (xiHardEdgeLiftCoefficients (routeUHardEdgeMass (k : ℝ))
             (routeUExplicitFiniteChebyshevPacket n k g)) =
       (∑' q : XiZeroCopy,
@@ -146,15 +146,15 @@ horizon. -/
 theorem routeUHardEdgeMass_sq_lt_parabolic_size_sq_of_explicitQuadratic_neg
     (P : Polynomial ℝ) (t : {τ : ℝ // 0 < τ}) (n k : ℕ)
     (hneg : routeUExplicitPolynomialGaussianFiniteHankelQuadratic P t n k < 0) :
-    routeUHardEdgeMass (k : ℝ) ^ 2 <
+    routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) <
       routeUParabolicDegreeHorizon *
-        (routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) : ℝ) ^ 2 := by
+        (routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) : ℝ) ^ (2 : ℕ) := by
   let g : SchwartzMap ℝ ℝ := routeUXiHeatPhysicalReal P t
   let packet : Polynomial ℝ := routeUExplicitFiniteChebyshevPacket n k g
   let a : ℝ := routeUHardEdgeMass (k : ℝ)
   let d : ℕ := (xiHardEdgeReciprocalPolynomial a packet).natDegree
   let c : Fin (d + 1) → ℝ := xiHardEdgeLiftCoefficients a packet
-  have hquad : xiShiftedReciprocalHankelQuadratic (a ^ 2) c < 0 := by
+  have hquad : xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ)) c < 0 := by
     simpa only [routeUExplicitPolynomialGaussianFiniteHankelQuadratic,
       routeUPolynomialGaussianFiniteHankelQuadratic, g, packet, a, d, c,
       routeUExplicitFiniteChebyshevPacket, routeUExplicitFiniteHankelSize,
@@ -167,7 +167,7 @@ theorem routeUHardEdgeMass_sq_lt_parabolic_size_sq_of_explicitQuadratic_neg
         Finset.sum_const_zero] using hquad
     exact (lt_irrefl 0) hfalse
   by_contra hnot
-  have hy : routeUParabolicDegreeHorizon * (((d + 1 : ℕ) : ℝ)) ^ 2 ≤ a ^ 2 := by
+  have hy : routeUParabolicDegreeHorizon * (((d + 1 : ℕ) : ℝ)) ^ (2 : ℕ) ≤ a ^ (2 : ℕ) := by
     simpa only [g, packet, a, d, routeUExplicitFiniteHankelSize,
       xiHardEdgeLiftSize] using le_of_not_gt hnot
   have hpos := xiShiftedReciprocalHankelQuadratic_pos_of_parabolic d c hc hy
@@ -179,9 +179,9 @@ def XiShiftedHardEdgeCofinalLinearNegativePhase : Prop :=
   ∃ (P : Polynomial ℝ) (t : {τ : ℝ // 0 < τ}) (n K : ℕ),
     ∀ k : ℕ, K ≤ k →
       routeUExplicitPolynomialGaussianFiniteHankelQuadratic P t n k < 0 ∧
-      routeUHardEdgeMass (k : ℝ) ^ 2 <
+      routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) <
         routeUParabolicDegreeHorizon *
-          (routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) : ℝ) ^ 2 ∧
+          (routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) : ℝ) ^ (2 : ℕ) ∧
       routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) ≤
         (n + 1) * (k + 1) + 2
 
@@ -203,7 +203,7 @@ theorem xiShiftedHardEdgeCofinalLinearNegativePhase_of_not_rh
   have hcutRe : Tendsto (fun n : ℕ =>
       (∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n
-          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2).re)
+          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)).re)
       atTop (nhds (xiPolynomialGaussianHeatTraceReal P τ)) := by
     have h := (Complex.reCLM.continuous.tendsto
       (xiPolynomialGaussianHeatTrace P τ)).comp hcutLim
@@ -211,11 +211,11 @@ theorem xiShiftedHardEdgeCofinalLinearNegativePhase_of_not_rh
         ((Complex.reCLM : ℂ → ℝ) ∘ fun n : ℕ =>
           ∑' q : XiZeroCopy,
             routeUComplexPositiveFourierExtension n
-              (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2) =
+              (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)) =
         fun n : ℕ =>
           (∑' q : XiZeroCopy,
             routeUComplexPositiveFourierExtension n
-              (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2).re := by
+              (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)).re := by
       funext n
       exact Complex.reCLM_apply _
     rw [hfun] at h
@@ -227,7 +227,7 @@ theorem xiShiftedHardEdgeCofinalLinearNegativePhase_of_not_rh
   have hcutEventually : ∀ᶠ n : ℕ in atTop,
       (∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n
-          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2).re < 0 :=
+          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)).re < 0 :=
     hcutRe.eventually (Iio_mem_nhds htraceNeg)
   obtain ⟨n, hn⟩ := Filter.eventually_atTop.1 hcutEventually
   have hcutNeg := hn n le_rfl
@@ -238,10 +238,10 @@ theorem xiShiftedHardEdgeCofinalLinearNegativePhase_of_not_rh
   have htarget :
       (∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n (routeURealEvenAmplitude g)
-          (xiSpectralPoint q) ^ 2) =
+          (xiSpectralPoint q) ^ (2 : ℕ)) =
       ∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n
-          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2 := by
+          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ) := by
     rw [show routeURealEvenAmplitude g = routeUXiHeatPhysicalComplex P t by
       exact routeURealEvenAmplitude_heatPhysical_eq P t]
   have hhardRe : Tendsto (fun k : ℕ =>
@@ -251,7 +251,7 @@ theorem xiShiftedHardEdgeCofinalLinearNegativePhase_of_not_rh
       atTop
       (nhds ((∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n
-          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2).re)) := by
+          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)).re)) := by
     rw [← htarget]
     have h := (Complex.reCLM.continuous.tendsto _).comp hhardLim
     have hfun :
@@ -276,12 +276,12 @@ theorem xiShiftedHardEdgeCofinalLinearNegativePhase_of_not_rh
   refine ⟨P, t, n, K, fun k hk => ?_⟩
   have hsampleNeg := hK k hk
   have hquadEq := routeUExplicitFiniteHankelQuadratic_eq_sampleDivisorSum n k g
-  have hmass : 0 < routeUHardEdgeMass (k : ℝ) ^ 2 :=
+  have hmass : 0 < routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) :=
     sq_pos_of_pos (routeUHardEdgeMass_pos (k : ℝ))
   have hquadNeg :
       routeUExplicitPolynomialGaussianFiniteHankelQuadratic P t n k < 0 := by
     change xiShiftedReciprocalHankelQuadratic
-      (routeUHardEdgeMass (k : ℝ) ^ 2)
+      (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
       (xiHardEdgeLiftCoefficients (routeUHardEdgeMass (k : ℝ))
         (routeUFiniteChebyshevPacketPolynomial n
           (routeUXiHeatPhysicalReal P t) (k : ℝ)

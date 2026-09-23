@@ -28,7 +28,7 @@ namespace GaloisForLFunctions
 /-- The falling-factorial dependence in class `(4, 4)`. -/
 theorem descPochhammer_class44_dependence :
     descPochhammer ℚ 3 * descPochhammer ℚ 1
-      - 2 * (descPochhammer ℚ 2) ^ 2 + descPochhammer ℚ 2 * (descPochhammer ℚ 1) ^ 2 = 0 := by
+      - 2 * (descPochhammer ℚ 2) ^ (2 : ℕ) + descPochhammer ℚ 2 * (descPochhammer ℚ 1) ^ (2 : ℕ) = 0 := by
   simp only [show (3 : ℕ) = 2 + 1 from rfl, show (2 : ℕ) = 1 + 1 from rfl,
     descPochhammer_succ_right, descPochhammer_zero]
   ring
@@ -42,10 +42,10 @@ theorem weightPolynomial_class44_dependence :
   have e1 : weightPolynomial (![3, 1, 0, 0] : Fin 4 → ℕ)
       = descPochhammer ℚ 3 * descPochhammer ℚ 1 := by
     simp [weightPolynomial, Fin.prod_univ_four, descPochhammer_zero]
-  have e2 : weightPolynomial (![2, 2, 0, 0] : Fin 4 → ℕ) = (descPochhammer ℚ 2) ^ 2 := by
+  have e2 : weightPolynomial (![2, 2, 0, 0] : Fin 4 → ℕ) = (descPochhammer ℚ 2) ^ (2 : ℕ) := by
     simp [weightPolynomial, Fin.prod_univ_four, descPochhammer_zero]; ring
   have e3 : weightPolynomial (![2, 1, 1, 0] : Fin 4 → ℕ)
-      = descPochhammer ℚ 2 * (descPochhammer ℚ 1) ^ 2 := by
+      = descPochhammer ℚ 2 * (descPochhammer ℚ 1) ^ (2 : ℕ) := by
     simp [weightPolynomial, Fin.prod_univ_four, descPochhammer_zero]; ring
   rw [e1, e2, e3]
   exact descPochhammer_class44_dependence

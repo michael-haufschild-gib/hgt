@@ -28,7 +28,7 @@ theorem movingEvenCanonicalProduct_eq_tprod
     (θ : BoundedRealSequence) (z : ℂ) :
     movingEvenCanonicalProduct θ z =
       ∏' n : ℕ, (1 -
-        z ^ 2 / (movingCanonicalZero θ n : ℂ) ^ 2) := by
+        z ^ (2 : ℕ) / (movingCanonicalZero θ n : ℂ) ^ (2 : ℕ)) := by
   have hmulPos : Multipliable (fun n =>
       RHTower.weierstrassE1
         (z / (movingCanonicalZero θ n : ℂ))) :=
@@ -72,8 +72,8 @@ theorem movingEvenCanonicalProduct_eq_tprod
     _ = (1 - x) * (1 + x) := by
       rw [← Complex.exp_add]
       simp
-    _ = 1 - z ^ 2 /
-        (movingCanonicalZero θ n : ℂ) ^ 2 := by
+    _ = 1 - z ^ (2 : ℕ) /
+        (movingCanonicalZero θ n : ℂ) ^ (2 : ℕ) := by
       simp only [x]
       field_simp [ha]
       ring_nf

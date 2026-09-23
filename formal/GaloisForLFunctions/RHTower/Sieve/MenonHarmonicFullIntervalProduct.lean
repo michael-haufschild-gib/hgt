@@ -23,8 +23,8 @@ def menonHarmonicFullIntervalProductCost
     ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊
   let N : ℕ := ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊
   let D : Finset ℕ := geomCofactorBlockAt A₀ B₀ Q eta j
-  V ^ 2 * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ)) *
-    (D.card : ℝ) * (1 / (L₀ : ℝ)) ^ 2)
+  V ^ (2 : ℕ) * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ)) *
+    (D.card : ℝ) * (1 / (L₀ : ℝ)) ^ (2 : ℕ))
 
 /-- A prime supremum on any measurable subset of `[-W,W]`, with the cofactor paid on the full
 interval by its actual reciprocal coefficient energy. -/
@@ -39,7 +39,7 @@ theorem setIntegral_normSq_harmonicProduct_geom_le_fullInterval
     (∫ w in E,
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w *
         logPoly (harmonicRamareCofactorCoeff P)
-          (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ 2) ≤
+          (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ (2 : ℕ)) ≤
       menonHarmonicFullIntervalProductCost P A₀ B₀ Q eta W V j := by
   let L₀ : ℕ := ⌈(A₀ : ℝ) /
     ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊
@@ -64,14 +64,14 @@ theorem setIntegral_normSq_harmonicProduct_geom_le_fullInterval
     positivity
   have hmean' :
       (∫ w in Set.Icc (-W) W,
-        ‖logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ 2) ≤
+        ‖logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ (2 : ℕ)) ≤
         (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ)) *
-          ((D.card : ℝ) * (1 / (L₀ : ℝ)) ^ 2) :=
+          ((D.card : ℝ) * (1 / (L₀ : ℝ)) ^ (2 : ℕ)) :=
     hmean.trans (mul_le_mul_of_nonneg_left henergy hcoef)
   have hrestricted :
-      (∫ w in E, ‖logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ 2) ≤
+      (∫ w in E, ‖logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ (2 : ℕ)) ≤
         (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ)) *
-          ((D.card : ℝ) * (1 / (L₀ : ℝ)) ^ 2) := by
+          ((D.card : ℝ) * (1 / (L₀ : ℝ)) ^ (2 : ℕ)) := by
     refine (MeasureTheory.setIntegral_mono_set
       ((continuous_logPoly (harmonicRamareCofactorCoeff P) D).norm.pow 2).integrableOn_Icc
       (Filter.Eventually.of_forall fun w => sq_nonneg
@@ -91,7 +91,7 @@ theorem menonFinalRangeFullIntervalProductCost_le
     (hQjTop : Q * (1 + eta) ^ j ≤ 3 * x) :
     menonHarmonicFullIntervalProductCost P ⌈x⌉₊ (menonFinalRangeTopNat x)
         Q eta W V j ≤
-      600 * V ^ 2 * (1 + W * (Q * (1 + eta) ^ j) / x) := by
+      600 * V ^ (2 : ℕ) * (1 + W * (Q * (1 + eta) ^ j) / x) := by
   let q : ℝ := Q * (1 + eta) ^ j
   let L₀ : ℕ := ⌈(⌈x⌉₊ : ℝ) / (q * (1 + eta))⌉₊
   let N : ℕ := ⌊(menonFinalRangeTopNat x : ℝ) / q⌋₊
@@ -99,11 +99,11 @@ theorem menonFinalRangeFullIntervalProductCost_le
   have hx0 : 0 < x := zero_lt_one.trans_le hx
   have hq0 : 0 < q := by dsimp only [q]; positivity
   have hfactor :
-      (D.card : ℝ) * (1 / (L₀ : ℝ)) ^ 2 ≤ 24 * q / x := by
+      (D.card : ℝ) * (1 / (L₀ : ℝ)) ^ (2 : ℕ) ≤ 24 * q / x := by
     have h := finalRangeCofactorReciprocalCardFactor_le
       hx hQ heta heta1 j hQjTop
     simpa only [D, L₀, q, mul_comm] using h
-  have hfactor0 : 0 ≤ (D.card : ℝ) * (1 / (L₀ : ℝ)) ^ 2 := by positivity
+  have hfactor0 : 0 ≤ (D.card : ℝ) * (1 / (L₀ : ℝ)) ^ (2 : ℕ) := by positivity
   have hfactorUpper0 : 0 ≤ 24 * q / x := by positivity
   have htop : ((menonFinalRangeTopNat x : ℕ) : ℝ) ≤ 3 * x := by
     rw [menonFinalRangeTopNat]
@@ -142,15 +142,15 @@ theorem menonFinalRangeFullIntervalProductCost_le
       _ ≤ 600 * (1 + W * q / x) := by nlinarith
   rw [menonHarmonicFullIntervalProductCost]
   calc
-    V ^ 2 *
+    V ^ (2 : ℕ) *
         ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ)) *
-          (D.card : ℝ) * (1 / (L₀ : ℝ)) ^ 2) =
-      V ^ 2 * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ)) *
-        ((D.card : ℝ) * (1 / (L₀ : ℝ)) ^ 2)) := by ring
-    _ ≤ V ^ 2 * ((10 * W + 8 * (N : ℝ)) * (24 * q / x)) := by
+          (D.card : ℝ) * (1 / (L₀ : ℝ)) ^ (2 : ℕ)) =
+      V ^ (2 : ℕ) * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ)) *
+        ((D.card : ℝ) * (1 / (L₀ : ℝ)) ^ (2 : ℕ))) := by ring
+    _ ≤ V ^ (2 : ℕ) * ((10 * W + 8 * (N : ℝ)) * (24 * q / x)) := by
       gcongr
-    _ ≤ V ^ 2 * (600 * (1 + W * q / x)) := by gcongr
-    _ = 600 * V ^ 2 * (1 + W * (Q * (1 + eta) ^ j) / x) := by
+    _ ≤ V ^ (2 : ℕ) * (600 * (1 + W * q / x)) := by gcongr
+    _ = 600 * V ^ (2 : ℕ) * (1 + W * (Q * (1 + eta) ^ j) / x) := by
       dsimp only [q]
       ring
 
@@ -166,13 +166,13 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_ordinary_allSmall_fullInter
     let E := allBlocksSmall P Q eta L
       (fun j => ((geomBlock P Q (1 + eta) j).card : ℝ) * theta) W
     (∫ w in E,
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) ≤
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤
       2 * (L : ℝ) * ∑ j ∈ Finset.range L,
         menonHarmonicFullIntervalProductCost P A₀ B₀ Q eta W
           (((geomBlock P Q (1 + eta) j).card : ℝ) * (theta + eta) /
             (Q * (1 + eta) ^ j)) j +
         2 * ∫ w in E,
-          ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2 := by
+          ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ) := by
   classical
   let E := allBlocksSmall P Q eta L
     (fun j => ((geomBlock P Q (1 + eta) j).card : ℝ) * theta) W

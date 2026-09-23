@@ -61,7 +61,7 @@ lemma ccmActualHeadMatchedQuantileLorentzEdgeResistance_nonneg {m n : ℕ} (hmn 
     exact ccmActualHeadMatchedQuantileCentroidPair_comonotone m n
   have hw : 0 ≤ w := by
     dsimp only [w]
-    exact mul_nonneg (criticalMellinAtomWeight_nonneg _) (criticalMellinAtomWeight_nonneg _)
+    exact mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _) (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _)
   have hratio : 0 ≤ (c + q) / c := by
     rw [show (c + q) / c = (c * c + c * q) / (c * c) by field_simp [hc]]
     exact div_nonneg (add_nonneg (mul_self_nonneg c) hcomono) (mul_self_nonneg c)
@@ -71,7 +71,7 @@ lemma ccmActualHeadMatchedQuantileLorentzEdgeResistance_nonneg {m n : ℕ} (hmn 
 product of its original singular graph dissipation and explicit resistance. -/
 lemma ccmActualHeadMatchedQuantileLorentzEdgeCurrent_sq_eq_dissipation_mul_resistance
     {m n : ℕ} (hmn : m ≠ n) :
-    ccmActualHeadMatchedQuantileLorentzEdgeCurrent m n ^ 2 =
+    ccmActualHeadMatchedQuantileLorentzEdgeCurrent m n ^ (2 : ℕ) =
       ccmActualHeadMatchedQuantileLorentzEdgeDissipation m n *
         ccmActualHeadMatchedQuantileLorentzEdgeResistance m n := by
   let c := ccmActualHeadMatchedPolarCentroid (n + 2) -
@@ -169,7 +169,7 @@ exposes, rather than estimates away, the resistance whose cofinal arithmetic con
 the open issue. -/
 theorem ccmActualHeadMatchedQuantileParabolicLorentzGraphWall (K : ℕ) :
     (ccmParabolicPairing (ccmActualHeadMatchedQuantileParabolicCodiagonal K)
-      (ccmActualHeadMatchedQuantileParabolicSourceBoundary K)) ^ 2 ≤
+      (ccmActualHeadMatchedQuantileParabolicSourceBoundary K)) ^ (2 : ℕ) ≤
       ccmActualHeadMatchedQuantileParabolicLorentzGraphDissipation K *
         ccmActualHeadMatchedQuantileParabolicLorentzGraphResistance K := by
   have hCauchy := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul
@@ -188,7 +188,7 @@ theorem ccmActualHeadMatchedQuantileParabolicLorentzGraphWall (K : ℕ) :
         (Ne.symm (Finset.mem_erase.mp hmem.2).1))
     (by
       rintro ⟨m, n⟩ hmem
-      change ccmActualHeadMatchedQuantileLorentzEdgeCurrent m n ^ 2 ≤
+      change ccmActualHeadMatchedQuantileLorentzEdgeCurrent m n ^ (2 : ℕ) ≤
         ccmActualHeadMatchedQuantileLorentzEdgeDissipation m n *
           ccmActualHeadMatchedQuantileLorentzEdgeResistance m n
       simp only [ccmActualHeadMatchedQuantileLorentzEdgeSet, Finset.mem_sigma] at hmem

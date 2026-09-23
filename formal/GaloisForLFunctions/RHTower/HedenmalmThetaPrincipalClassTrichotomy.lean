@@ -109,7 +109,7 @@ theorem not_summable_thetaPrimeFixedPrincipalCorrection_of_ne_zero_of_ne_neg_one
 the desired individual Route P positivity selector. -/
 theorem thetaXiReciprocalEigenvalue_sq_positiveReal_iff_summable_unrenormalizedGap_add
     (q : XiZeroCopy) (r : Nat.Primes → ℝ) (hr : Summable r) :
-    (∃ x : ℝ, 0 < x ∧ thetaXiReciprocalEigenvalue q ^ 2 = (x : ℂ)) ↔
+    (∃ x : ℝ, 0 < x ∧ thetaXiReciprocalEigenvalue q ^ (2 : ℕ) = (x : ℂ)) ↔
       Summable (thetaPrimeFixedPrincipalCorrection 0
         (primeDepthBVWoldXiCenteredRate q.1) r) := by
   rw [summable_thetaPrimeUnrenormalizedGap_add_iff _ r hr,

@@ -15,7 +15,7 @@ namespace RHTower.Sieve
 
 open Real
 
-/-- The zero-free constant is at most `1/2`.  In fact it is `(e^{-11/2}/128)^4`, but the crude
+/-- The zero-free constant is at most `1/2`.  In fact it is `(e^{-11/2}/128)^(4 : ℕ)`, but the crude
 bound is what the comparisons need. -/
 theorem zeroFreeConst_le_half : zeroFreeConst ≤ 1 / 2 := by
   rw [zeroFreeConst]

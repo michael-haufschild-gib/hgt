@@ -125,24 +125,24 @@ theorem mobiusDivisorSelectionEnergy_insert_interpolation {p : ℕ} (hp : p.Prim
     intro h
     have := (mem_powerset.mp hR) h
     simp at this
-  have hz : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre M (insert p P) (insert p R))^2)=0 := by
+  have hz : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre M (insert p P) (insert p R))^(2 : ℕ))=0 := by
     apply sum_eq_zero
     intro R hR
     rw [mobiusDivisorSelectionFibre_insert]
     simp
-  have ha : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre M (insert p P) R)^2) =
+  have ha : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre M (insert p P) R)^(2 : ℕ)) =
       ∑ R ∈ (U.erase p).powerset,
-        (mobiusDivisorSelectionFibre M P R-Real.sqrt p*mobiusDivisorInterpolatedFibre M p P R)^2 := by
+        (mobiusDivisorSelectionFibre M P R-Real.sqrt p*mobiusDivisorInterpolatedFibre M p P R)^(2 : ℕ) := by
     apply sum_congr rfl
     intro R hR
     rw [mobiusDivisorSelectionFibre_insert_interpolation hp M P R hpP (hpR R hR)]
-  have hc : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre M P (insert p R))^2) =
-      ∑ R ∈ (U.erase p).powerset,(-Real.sqrt p*mobiusDivisorInterpolatedFibre M p P R)^2 := by
+  have hc : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ)) =
+      ∑ R ∈ (U.erase p).powerset,(-Real.sqrt p*mobiusDivisorInterpolatedFibre M p P R)^(2 : ℕ) := by
     apply sum_congr rfl
     intro R hR
     rw [mobiusDivisorSelectionFibre_prime_interpolation hp M P R hpP (hpR R hR)]
-  change (∑ R ∈ U.powerset,(mobiusDivisorSelectionFibre M (insert p P) R)^2)-
-    (∑ R ∈ U.powerset,(mobiusDivisorSelectionFibre M P R)^2)=_
+  change (∑ R ∈ U.powerset,(mobiusDivisorSelectionFibre M (insert p P) R)^(2 : ℕ))-
+    (∑ R ∈ U.powerset,(mobiusDivisorSelectionFibre M P R)^(2 : ℕ))=_
   rw [hsplit,hsplit,hz,add_zero,ha,hc,← sum_add_distrib,← sum_sub_distrib,mul_sum]
   apply sum_congr rfl
   intro R hR
@@ -166,10 +166,10 @@ private theorem fibre_zero_outside (N : ℕ) (P R : Finset ℕ)
 /-- Any finite family of retained labels carries at most the complete retained source energy. -/
 theorem sum_mobiusDivisorSelectionFibre_sq_le_energy (N : ℕ) (P : Finset ℕ)
     (T : Finset (Finset ℕ)) :
-    (∑ R ∈ T,(mobiusDivisorSelectionFibre N P R)^2) ≤ mobiusDivisorSelectionEnergy N P := by
+    (∑ R ∈ T,(mobiusDivisorSelectionFibre N P R)^(2 : ℕ)) ≤ mobiusDivisorSelectionEnergy N P := by
   let U := (mobiusDivisorSelectionPrimes N).powerset
-  have he : (∑ R ∈ T ∩ U,(mobiusDivisorSelectionFibre N P R)^2) =
-      ∑ R ∈ T,(mobiusDivisorSelectionFibre N P R)^2 := by
+  have he : (∑ R ∈ T ∩ U,(mobiusDivisorSelectionFibre N P R)^(2 : ℕ)) =
+      ∑ R ∈ T,(mobiusDivisorSelectionFibre N P R)^(2 : ℕ) := by
     apply sum_subset inter_subset_left
     intro R hRT hn
     have hnU : R ∉ U := fun hRU => hn (mem_inter.mpr ⟨hRT,hRU⟩)
@@ -181,11 +181,11 @@ theorem sum_mobiusDivisorSelectionFibre_sq_le_energy (N : ℕ) (P : Finset ℕ)
 /-- Exact interpolation energy, including the nonnegative squared increment defect. -/
 theorem sum_mobiusDivisorInterpolatedFibre_sq (M p : ℕ) (P : Finset ℕ)
     (T : Finset (Finset ℕ)) :
-    (∑ R ∈ T,(mobiusDivisorInterpolatedFibre M p P R)^2) =
-      (1-divisorPrimeClipWeight M p)*(∑ R ∈ T,(mobiusDivisorSelectionFibre (M/p) P R)^2)+
-      divisorPrimeClipWeight M p*(∑ R ∈ T,(mobiusDivisorSelectionFibre (M/p+1) P R)^2)-
+    (∑ R ∈ T,(mobiusDivisorInterpolatedFibre M p P R)^(2 : ℕ)) =
+      (1-divisorPrimeClipWeight M p)*(∑ R ∈ T,(mobiusDivisorSelectionFibre (M/p) P R)^(2 : ℕ))+
+      divisorPrimeClipWeight M p*(∑ R ∈ T,(mobiusDivisorSelectionFibre (M/p+1) P R)^(2 : ℕ))-
       divisorPrimeClipWeight M p*(1-divisorPrimeClipWeight M p)*
-        ∑ R ∈ T,(mobiusDivisorSelectionFibre (M/p+1) P R-mobiusDivisorSelectionFibre (M/p) P R)^2 := by
+        ∑ R ∈ T,(mobiusDivisorSelectionFibre (M/p+1) P R-mobiusDivisorSelectionFibre (M/p) P R)^(2 : ℕ) := by
   rw [mul_sum,mul_sum,mul_sum,← sum_add_distrib,← sum_sub_distrib]
   apply sum_congr rfl
   intro R hR
@@ -195,7 +195,7 @@ theorem sum_mobiusDivisorInterpolatedFibre_sq (M p : ℕ) (P : Finset ℕ)
 /-- The interpolated packet energy is bounded by the convex combination of both smaller energies. -/
 theorem sum_mobiusDivisorInterpolatedFibre_sq_le (M p : ℕ) (hp : 0<p) (P : Finset ℕ)
     (T : Finset (Finset ℕ)) :
-    (∑ R ∈ T,(mobiusDivisorInterpolatedFibre M p P R)^2) ≤
+    (∑ R ∈ T,(mobiusDivisorInterpolatedFibre M p P R)^(2 : ℕ)) ≤
       (1-divisorPrimeClipWeight M p)*mobiusDivisorSelectionEnergy (M/p) P+
         divisorPrimeClipWeight M p*mobiusDivisorSelectionEnergy (M/p+1) P := by
   have hw0 := divisorPrimeClipWeight_nonneg M p hp
@@ -213,8 +213,8 @@ theorem sum_mobiusDivisorInterpolatedFibre_sq_le (M p : ℕ) (hp : 0<p) (P : Fin
 /-- Exact prime-containing packet energy is p times the interpolated smaller packet energy. -/
 theorem sum_mobiusDivisorPrimeFibre_sq_eq {p : ℕ} (hp : p.Prime) (M : ℕ) (P : Finset ℕ)
     (hpP : p ∉ P) (T : Finset (Finset ℕ)) (hT : ∀ R ∈ T,p ∉ R) :
-    (∑ R ∈ T,(mobiusDivisorSelectionFibre M P (insert p R))^2) =
-      (p : ℝ)*∑ R ∈ T,(mobiusDivisorInterpolatedFibre M p P R)^2 := by
+    (∑ R ∈ T,(mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ)) =
+      (p : ℝ)*∑ R ∈ T,(mobiusDivisorInterpolatedFibre M p P R)^(2 : ℕ) := by
   rw [mul_sum]
   apply sum_congr rfl
   intro R hR
@@ -224,7 +224,7 @@ theorem sum_mobiusDivisorPrimeFibre_sq_eq {p : ℕ} (hp : p.Prime) (M : ℕ) (P 
 /-- All unprocessed prime-containing source energy has an unconditional adjacent-cutoff budget. -/
 theorem sum_mobiusDivisorPrimeFibre_sq_le {p : ℕ} (hp : p.Prime) (M : ℕ) (P : Finset ℕ)
     (hpP : p ∉ P) (T : Finset (Finset ℕ)) (hT : ∀ R ∈ T,p ∉ R) :
-    (∑ R ∈ T,(mobiusDivisorSelectionFibre M P (insert p R))^2) ≤
+    (∑ R ∈ T,(mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ)) ≤
       (p : ℝ)*((1-divisorPrimeClipWeight M p)*mobiusDivisorSelectionEnergy (M/p) P+
         divisorPrimeClipWeight M p*mobiusDivisorSelectionEnergy (M/p+1) P) := by
   rw [sum_mobiusDivisorPrimeFibre_sq_eq hp M P hpP T hT]

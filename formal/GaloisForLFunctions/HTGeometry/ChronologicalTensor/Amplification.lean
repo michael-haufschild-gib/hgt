@@ -21,7 +21,7 @@ def normalizedTerm (n : ℕ) (choice : Fin n → Bool) (a b c d e : Fin n → �
   (n : ℝ)^(3*n) * ∏ i, chosenResponse (choice i) (a i) (b i) (c i) (d i) (e i)
 
 theorem chosenResponse_bound (choice : Bool) (a b c d e : ℝ) :
-    |chosenResponse choice a b c d e| ≤ sixCost a b c d e ^ 3 := by
+    |chosenResponse choice a b c d e| ≤ sixCost a b c d e ^ (3 : ℕ) := by
   cases choice
   · exact rainbow_bound a b c d e
   · exact normalized_separated_bound a b c d e
@@ -41,16 +41,16 @@ theorem normalizedTerm_bound (n : ℕ) (choice : Fin n → Bool) (a b c d e : Fi
   calc
     _ = (n : ℝ)^(3*n) * ∏ i, |chosenResponse (choice i) (a i) (b i) (c i) (d i) (e i)| := by
       rw [normalizedTerm, abs_mul, abs_of_nonneg (by positivity), Finset.abs_prod]
-    _ ≤ (n : ℝ)^(3*n) * ∏ i, sixCost (a i) (b i) (c i) (d i) (e i)^3 :=
+    _ ≤ (n : ℝ)^(3*n) * ∏ i, sixCost (a i) (b i) (c i) (d i) (e i)^(3 : ℕ) :=
       mul_le_mul_of_nonneg_left hp (by positivity)
-    _ = ((n : ℝ)^n * ∏ i, sixCost (a i) (b i) (c i) (d i) (e i))^3 := by
+    _ = ((n : ℝ)^n * ∏ i, sixCost (a i) (b i) (c i) (d i) (e i))^(3 : ℕ) := by
       rw [prod_pow, mul_pow, ← pow_mul, Nat.mul_comm n 3]
-    _ ≤ ((∑ i, sixCost (a i) (b i) (c i) (d i) (e i))^n)^3 := hm3
+    _ ≤ ((∑ i, sixCost (a i) (b i) (c i) (d i) (e i))^n)^(3 : ℕ) := hm3
     _ = _ := by rw [← pow_mul, Nat.mul_comm n 3]; rfl
 
 theorem chosenResponse_scale (choice : Bool) (t a b c d e : ℝ) :
     chosenResponse choice (t*a) (t*b) (t*c) (t*d) (t*e) =
-      t^3 * chosenResponse choice a b c d e := by
+      t^(3 : ℕ) * chosenResponse choice a b c d e := by
   cases choice <;> simp only [chosenResponse, Bool.false_eq_true, if_false, if_true,
     separatedThree, rainbowThree] <;> ring
 
@@ -74,7 +74,7 @@ theorem normalizedTerm_attained (n : ℕ) (choice : Fin (n+1) → Bool) :
   have hcost (i : Fin (n+1)) : sixCost (a i) 0 (c i) 0 (a i) = t := by
     have h := sixCost_scale t (chosenA (choice i)) 0 (chosenC (choice i)) 0 (chosenA (choice i))
     simpa only [mul_zero, (chosen_witness (choice i)).1, abs_of_nonneg ht, mul_one] using h
-  have hval (i : Fin (n+1)) : chosenResponse (choice i) (a i) 0 (c i) 0 (a i) = t^3 := by
+  have hval (i : Fin (n+1)) : chosenResponse (choice i) (a i) 0 (c i) 0 (a i) = t^(3 : ℕ) := by
     have h := chosenResponse_scale (choice i) t (chosenA (choice i)) 0 (chosenC (choice i)) 0 (chosenA (choice i))
     simpa only [mul_zero, (chosen_witness (choice i)).2, mul_one] using h
   refine ⟨a, fun _ => 0, c, fun _ => 0, a, ?_, ?_⟩

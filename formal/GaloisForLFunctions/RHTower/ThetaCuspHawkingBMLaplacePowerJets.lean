@@ -12,7 +12,7 @@ attribute [-instance] RCLike.toInnerProductSpaceReal
 attribute [-instance] NormedSpace.complexToReal
 
 def powerFirst (a : ℂ) (z : ℝ) : ℂ := a*power a z/(z:ℂ)
-def powerSecond (a : ℂ) (z : ℝ) : ℂ := a*(a-1)*power a z/(z:ℂ)^2
+def powerSecond (a : ℂ) (z : ℝ) : ℂ := a*(a-1)*power a z/(z:ℂ)^(2 : ℕ)
 
 /-- The actual first and second derivatives of the original positive-radius
 power, with no restriction on its complex exponent. -/

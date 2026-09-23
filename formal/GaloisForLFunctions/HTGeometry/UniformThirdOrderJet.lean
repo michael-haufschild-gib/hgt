@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.UniformSecondOrderJet
 Uniform third-order endpoint jets.
 
 The literal source-pole strip reaches `Re w > -4`.  Its finite source action needs
-three retained endpoint coefficients and an `O(z^3)` remainder, so the existing
+three retained endpoint coefficients and an `O(z^(3 : ℕ))` remainder, so the existing
 second-order horizon interface is insufficient.
 -/
 
@@ -17,7 +17,7 @@ set_option autoImplicit false
 def HasUniformJet3 (S : Set ℂ) (b : ℝ) (F : ℂ → ℝ → ℂ)
     (c₀ c₁ c₂ : ℂ → ℂ) (C : ℝ) : Prop :=
   ∀ u ∈ S, ∀ z ∈ Ioc (0 : ℝ) b,
-    ‖F u z - c₀ u - c₁ u * z - c₂ u * z ^ 2‖ ≤ C * z ^ 3
+    ‖F u z - c₀ u - c₁ u * z - c₂ u * z ^ (2 : ℕ)‖ ≤ C * z ^ (3 : ℕ)
 
 theorem HasUniformJet3.mono {S T : Set ℂ} {b : ℝ} {F : ℂ → ℝ → ℂ}
     {c₀ c₁ c₂ : ℂ → ℂ} {C : ℝ}
@@ -47,7 +47,7 @@ theorem hasUniformJet3_of_deriv3_bound {S : Set ℂ} {b : ℝ} (hb : 0 ≤ b)
     ((hsmooth u hu).of_le (by norm_num)) hz' (hbound u hu)
   have htay : taylorWithinEval (F u) 2 (Icc 0 b) 0 z =
       F u 0 + derivWithin (F u) (Icc 0 b) 0 * z +
-        (iteratedDerivWithin 2 (F u) (Icc 0 b) 0 / 2) * z ^ 2 := by
+        (iteratedDerivWithin 2 (F u) (Icc 0 b) 0 / 2) * z ^ (2 : ℕ) := by
     rw [taylor_within_apply]
     simp [Finset.sum_range_succ, iteratedDerivWithin_zero, iteratedDerivWithin_one]
     ring

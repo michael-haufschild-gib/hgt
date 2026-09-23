@@ -173,7 +173,7 @@ theorem continuous_unitRieszCoherentCompletedShiftCodiagonalProfile (N : ℕ) (h
 theorem leakDensity_unitRieszCoherentCompletedShiftCodiagonalProfile (N : ℕ) (h u : ℝ) :
     leakDensity (unitRieszCoherentCompletedShiftCodiagonalProfile N h) u =
       (unitRieszCoherentCompletedKernelResponseClosed N (u + h) -
-        unitRieszCoherentCompletedKernelResponseClosed N u) ^ 2 := by
+        unitRieszCoherentCompletedKernelResponseClosed N u) ^ (2 : ℕ) := by
   rw [leakDensity, unitRieszCoherentCompletedShiftCodiagonalProfile, Complex.norm_real,
     Real.norm_eq_abs, sq_abs]
 
@@ -212,7 +212,7 @@ theorem leakProfile_unitRieszCoherentCompletedShiftCodiagonalProfile
           (continuous_id.add continuous_const)).sub
             (continuous_unitRieszCoherentCompletedKernelResponseClosed N)
       have hcF : Continuous F := by
-        have heq : F = fun u => (1 + u) * D u ^ 2 := by
+        have heq : F = fun u => (1 + u) * D u ^ (2 : ℕ) := by
           funext u
           dsimp only [F]
           rw [leakDensity_unitRieszCoherentCompletedShiftCodiagonalProfile]
@@ -244,20 +244,20 @@ theorem leakProfile_unitRieszCoherentCompletedShiftCodiagonalProfile
       (integrableOn_one_add_mul_exp_neg (b := 2) (by norm_num)).mono_set
         (Ioi_subset_Ioi hlog)
     have htailBase : IntegrableOn (fun u : ℝ =>
-        A ^ 2 * ((1 + u) * Real.exp (-1 * u)) +
+        A ^ (2 : ℕ) * ((1 + u) * Real.exp (-1 * u)) +
           (2 * A * B) * ((1 + u) * Real.exp (-(3 / 2) * u)) +
-          B ^ 2 * ((1 + u) * Real.exp (-2 * u))) (Ioi (Real.log N)) :=
+          B ^ (2 : ℕ) * ((1 + u) * Real.exp (-2 * u))) (Ioi (Real.log N)) :=
       ((hbase1.const_mul _).add (hbase3.const_mul _)).add (hbase2.const_mul _)
     have htail : IntegrableOn F (Ioi (Real.log N)) := by
       refine htailBase.congr_fun ?_ measurableSet_Ioi
       intro u hu
       dsimp only [F]
       rw [leakDensity_unitRieszCoherentCompletedShiftCodiagonalProfile]
-      change A ^ 2 * ((1 + u) * Real.exp (-1 * u)) +
+      change A ^ (2 : ℕ) * ((1 + u) * Real.exp (-1 * u)) +
           (2 * A * B) * ((1 + u) * Real.exp (-(3 / 2) * u)) +
-          B ^ 2 * ((1 + u) * Real.exp (-2 * u)) = (1 + u) * D u ^ 2
+          B ^ (2 : ℕ) * ((1 + u) * Real.exp (-2 * u)) = (1 + u) * D u ^ (2 : ℕ)
       rw [htailEq u hu]
-      have e1 : Real.exp (-u / 2) ^ 2 = Real.exp (-1 * u) := by
+      have e1 : Real.exp (-u / 2) ^ (2 : ℕ) = Real.exp (-1 * u) := by
         rw [pow_two, ← Real.exp_add]
         congr 1
         ring
@@ -266,7 +266,7 @@ theorem leakProfile_unitRieszCoherentCompletedShiftCodiagonalProfile
         rw [← Real.exp_add]
         congr 1
         ring
-      have e2 : Real.exp (-u) ^ 2 = Real.exp (-2 * u) := by
+      have e2 : Real.exp (-u) ^ (2 : ℕ) = Real.exp (-2 * u) := by
         rw [pow_two, ← Real.exp_add]
         congr 1
         ring

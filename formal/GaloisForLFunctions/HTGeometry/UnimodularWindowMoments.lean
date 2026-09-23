@@ -42,8 +42,8 @@ theorem mulVec_atomicHankel_apply {N J : ℕ} (w x : Fin N → ℝ) (c : Fin J �
 theorem exists_unimodular_window_moments {N J : ℕ} (hJ : 0 < J) {lam : ℝ} (hlam : 0 < lam)
     (x w : Fin N → ℝ) (hx : ∀ r, x r ∈ Set.Icc (0:ℝ) 1) {C : ℝ} (hC : ∀ r, |w r| ≤ C)
     (hC0 : 0 ≤ C)
-    (hquad : ∀ a : Fin J → ℝ, lam * (∑ i, a i ^ 2) ≤ a ⬝ᵥ (atomicHankel w x J).mulVec a)
-    (ξ : Fin J → ℝ) (hξ : (J : ℝ) * (∑ k, ξ k ^ 2) ≤ lam ^ 2) :
+    (hquad : ∀ a : Fin J → ℝ, lam * (∑ i, a i ^ (2 : ℕ)) ≤ a ⬝ᵥ (atomicHankel w x J).mulVec a)
+    (ξ : Fin J → ℝ) (hξ : (J : ℝ) * (∑ k, ξ k ^ (2 : ℕ)) ≤ lam ^ (2 : ℕ)) :
     ∃ b : Fin N → ℂ, (∀ r, ‖b r‖ = 1) ∧
       ∀ j : Fin J, ‖(∑ r : Fin N, b r * ((w r * x r ^ (j : ℕ) : ℝ) : ℂ)) - (ξ j : ℂ)‖
         ≤ (J : ℝ) * C := by
@@ -95,31 +95,31 @@ rounding lemma then replaces by a unimodular one. -/
 theorem exists_unimodular_window_moments_complex {N J : ℕ} (hJ : 0 < J) {lam : ℝ} (hlam : 0 < lam)
     (x w : Fin N → ℝ) (hx : ∀ r, x r ∈ Set.Icc (0:ℝ) 1) {C : ℝ} (hC : ∀ r, |w r| ≤ C)
     (hC0 : 0 ≤ C)
-    (hquad : ∀ a : Fin J → ℝ, lam * (∑ i, a i ^ 2) ≤ a ⬝ᵥ (atomicHankel w x J).mulVec a)
-    (ζ : Fin J → ℂ) (hζ : (J : ℝ) * (∑ k, ‖2 * ζ k‖ ^ 2) ≤ lam ^ 2) :
+    (hquad : ∀ a : Fin J → ℝ, lam * (∑ i, a i ^ (2 : ℕ)) ≤ a ⬝ᵥ (atomicHankel w x J).mulVec a)
+    (ζ : Fin J → ℂ) (hζ : (J : ℝ) * (∑ k, ‖2 * ζ k‖ ^ (2 : ℕ)) ≤ lam ^ (2 : ℕ)) :
     ∃ b : Fin N → ℂ, (∀ r, ‖b r‖ = 1) ∧
       ∀ j : Fin J, ‖(∑ r : Fin N, b r * ((w r * x r ^ (j : ℕ) : ℝ) : ℂ)) - ζ j‖
         ≤ (J : ℝ) * C := by
   classical
-  have hre : (J : ℝ) * (∑ k, (2 * (ζ k).re) ^ 2) ≤ lam ^ 2 := by
+  have hre : (J : ℝ) * (∑ k, (2 * (ζ k).re) ^ (2 : ℕ)) ≤ lam ^ (2 : ℕ) := by
     refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun k _ => ?_)
       (by positivity : (0:ℝ) ≤ (J : ℝ))) hζ
     have h1 : |2 * (ζ k).re| ≤ ‖2 * ζ k‖ := by
       have : (2 * ζ k).re = 2 * (ζ k).re := by simp
       rw [← this]
       exact Complex.abs_re_le_norm _
-    calc (2 * (ζ k).re) ^ 2 = |2 * (ζ k).re| ^ 2 := (sq_abs _).symm
-      _ ≤ ‖2 * ζ k‖ ^ 2 := by
+    calc (2 * (ζ k).re) ^ (2 : ℕ) = |2 * (ζ k).re| ^ (2 : ℕ) := (sq_abs _).symm
+      _ ≤ ‖2 * ζ k‖ ^ (2 : ℕ) := by
           exact pow_le_pow_left₀ (abs_nonneg _) h1 2
-  have him : (J : ℝ) * (∑ k, (2 * (ζ k).im) ^ 2) ≤ lam ^ 2 := by
+  have him : (J : ℝ) * (∑ k, (2 * (ζ k).im) ^ (2 : ℕ)) ≤ lam ^ (2 : ℕ) := by
     refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun k _ => ?_)
       (by positivity : (0:ℝ) ≤ (J : ℝ))) hζ
     have h1 : |2 * (ζ k).im| ≤ ‖2 * ζ k‖ := by
       have : (2 * ζ k).im = 2 * (ζ k).im := by simp
       rw [← this]
       exact Complex.abs_im_le_norm _
-    calc (2 * (ζ k).im) ^ 2 = |2 * (ζ k).im| ^ 2 := (sq_abs _).symm
-      _ ≤ ‖2 * ζ k‖ ^ 2 := by
+    calc (2 * (ζ k).im) ^ (2 : ℕ) = |2 * (ζ k).im| ^ (2 : ℕ) := (sq_abs _).symm
+      _ ≤ ‖2 * ζ k‖ ^ (2 : ℕ) := by
           exact pow_le_pow_left₀ (abs_nonneg _) h1 2
   obtain ⟨cr, hcr, hcrb⟩ :=
     exists_unit_polynomial_solution hJ hlam x w hquad (fun k => 2 * (ζ k).re) hre

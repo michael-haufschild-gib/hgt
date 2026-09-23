@@ -57,7 +57,7 @@ def ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedCrossingFo
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedCrossingForm_eq
     (xi : ℝ) (n : ℕ) :
     ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedCrossingForm xi n =
-      2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         Complex.normSq (ccmActualHeadMatchedOrientedPhaseSymbol n xi) := by
   simp [ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedCrossingForm,
     ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedShear,
@@ -83,7 +83,7 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedCrossi
       (xiGammaEulerValuationNat (p, e)) hw.ne'
   have hfactor :
       0 < 2 * ccmActualHeadMatchedPhaseProjectiveGauge
-        (xiGammaEulerValuationNat (p, e)) ^ 2 := by positivity
+        (xiGammaEulerValuationNat (p, e)) ^ (2 : ℕ) := by positivity
   rw [mul_pos_iff_of_pos_left hfactor]
   rw [Complex.normSq_pos]
   exact ccmActualHeadMatchedOrientedPhaseSymbol_primePower_ne_zero_iff p e xi
@@ -154,7 +154,7 @@ theorem det_ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedCr
 
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedDeterminantKreinReciprocity
     (xi : ℝ) (n : ℕ) (t : ℝ) :
-    ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+    ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         (ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedCrossingFamily
           xi n t).det.re =
       -t * ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceSelfPolarizedCrossingForm xi n := by

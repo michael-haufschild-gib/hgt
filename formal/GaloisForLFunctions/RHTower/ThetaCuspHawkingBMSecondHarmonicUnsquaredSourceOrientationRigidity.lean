@@ -44,8 +44,8 @@ theorem d4BMXiPlusPlusComplementaryExponent_eq_xi
 /-- Quartic obstruction left after cancelling the nonzero unsquared angular source phase. -/
 def d4BMXiSecondHarmonicUnsquaredSourceOrientationPolynomial
     (n : ℕ) (q : XiZeroCopy) : ℂ :=
-  let u := (2 * (q.1 : ℂ) - 1) ^ 2
-  u ^ 2 + (56 * (n : ℂ) + 46) * u + (40 * (n : ℂ) + 25)
+  let u := (2 * (q.1 : ℂ) - 1) ^ (2 : ℕ)
+  u ^ (2 : ℕ) + (56 * (n : ℂ) + 46) * u + (40 * (n : ℂ) + 25)
 
 /-- Every Xi zero of the unsquared source-orientation polynomial lies on the critical wall. -/
 theorem d4BMXiSecondHarmonicUnsquaredSourceOrientationPolynomial_eq_zero_implies
@@ -53,8 +53,8 @@ theorem d4BMXiSecondHarmonicUnsquaredSourceOrientationPolynomial_eq_zero_implies
     (hpoly : d4BMXiSecondHarmonicUnsquaredSourceOrientationPolynomial n q = 0) :
     (q.1 : ℂ).re = 1 / 2 := by
   let t : ℂ := 2 * (q.1 : ℂ) - 1
-  let u : ℂ := t ^ 2
-  change u ^ 2 + (56 * (n : ℂ) + 46) * u + (40 * (n : ℂ) + 25) = 0 at hpoly
+  let u : ℂ := t ^ (2 : ℕ)
+  change u ^ (2 : ℕ) + (56 * (n : ℂ) + 46) * u + (40 * (n : ℂ) + 25) = 0 at hpoly
   have hre := congrArg Complex.re hpoly
   have him := congrArg Complex.im hpoly
   norm_num [pow_two, Complex.mul_re, Complex.mul_im] at hre him

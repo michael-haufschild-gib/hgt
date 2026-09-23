@@ -9,7 +9,7 @@ Mellin kernel. The existing equal-charge computation does not determine that ker
 For beta exponents `a,b`, charges `h,k`, and curvature `c`, exact Gamma normalization reduces the
 full curvature-corrected convolution to
 
-`1/2 * ((a*k-b*h)^2 + a*k^2 + b*h^2 - c*(h-k)*(a+b+1)*(a*k-b*h))`.
+`1/2 * ((a*k-b*h)^(2 : ℕ) + a*k^(2 : ℕ) + b*h^(2 : ℕ) - c*(h-k)*(a+b+1)*(a*k-b*h))`.
 
 This evaluates the universal Plebanski Mellin kernel. It does not identify the exact BM `++`
 hypergeometric Green response with a single Mellin monomial, does not extend the chiral Plebanski
@@ -34,7 +34,7 @@ def ads4SelfDualMixedMellinPolynomialMoment (a b : ℂ) : ℂ :=
 theorem ads4SelfDualMixedMellinPolynomialMoment_eq
     {a b : ℂ} (ha : 0 < a.re) (hb : 0 < b.re) :
     ads4SelfDualMixedMellinPolynomialMoment a b =
-      (((a - b) ^ 2 + a + b) / ((a + b) * (a + b + 1))) *
+      (((a - b) ^ (2 : ℕ) + a + b) / ((a + b) * (a + b + 1))) *
         Complex.betaIntegral a b := by
   have ha1 : 0 < (a + 1).re := by
     simp only [Complex.add_re, Complex.one_re]
@@ -60,14 +60,14 @@ theorem ads4SelfDualMixedMellinPolynomialMoment_eq
 /-- Gamma-normalized unequal-exponent Plebanski source coefficient. -/
 def ads4SelfDualNormalizedMixedMellinSourceCoefficient
     (a b h : ℂ) : ℂ :=
-  (h ^ 2 / 2) * ads4SelfDualMixedMellinPolynomialMoment a b *
+  (h ^ (2 : ℕ) / 2) * ads4SelfDualMixedMellinPolynomialMoment a b *
     Complex.Gamma (a + b + 2) /
       (Complex.Gamma a * Complex.Gamma b)
 
 theorem ads4SelfDualNormalizedMixedMellinSourceCoefficient_eq
     {a b h : ℂ} (ha : 0 < a.re) (hb : 0 < b.re) :
     ads4SelfDualNormalizedMixedMellinSourceCoefficient a b h =
-      (h ^ 2 / 2) * ((a - b) ^ 2 + a + b) := by
+      (h ^ (2 : ℕ) / 2) * ((a - b) ^ (2 : ℕ) + a + b) := by
   have habpos : 0 < (a + b).re := by
     simp only [Complex.add_re]
     linarith
@@ -93,32 +93,32 @@ theorem ads4SelfDualNormalizedMixedMellinSourceCoefficient_eq
     Complex.Gamma_add_one (a + b) hab0]
   field_simp [hga, hgb, hgab, hab0, hab10]
   rw [show
-    h ^ 2 * ((a - b) ^ 2 + a + b) * Complex.Gamma a * Complex.Gamma b =
-      (h ^ 2 * ((a - b) ^ 2 + a + b)) *
+    h ^ (2 : ℕ) * ((a - b) ^ (2 : ℕ) + a + b) * Complex.Gamma a * Complex.Gamma b =
+      (h ^ (2 : ℕ) * ((a - b) ^ (2 : ℕ) + a + b)) *
         (Complex.Gamma a * Complex.Gamma b) by ring,
     hbeta]
   ring
 
 theorem ads4SelfDualNormalizedMixedMellinSourceCoefficient_self
     {a h : ℂ} (ha : 0 < a.re) :
-    ads4SelfDualNormalizedMixedMellinSourceCoefficient a a h = a * h ^ 2 := by
+    ads4SelfDualNormalizedMixedMellinSourceCoefficient a a h = a * h ^ (2 : ℕ) := by
   rw [ads4SelfDualNormalizedMixedMellinSourceCoefficient_eq ha ha]
   ring
 
 /-- Closed numerator of the unequal-charge, curvature-corrected Plebanski Mellin vertex. -/
 def ads4SelfDualGeneralMellinVertexNumerator
     (curvature a b h k : ℂ) : ℂ :=
-  (a * k - b * h) ^ 2 + a * k ^ 2 + b * h ^ 2 -
+  (a * k - b * h) ^ (2 : ℕ) + a * k ^ (2 : ℕ) + b * h ^ (2 : ℕ) -
     curvature * (h - k) * (a + b + 1) * (a * k - b * h)
 
 /-- Unequal-exponent, unequal-charge Mellin convolution of the full AdS Plebanski vertex. -/
 def ads4SelfDualGeneralMellinVertexMoment
     (curvature a b h k : ℂ) : ℂ :=
   (1 / 2 : ℂ) *
-    ((h + k) ^ 2 * Complex.betaIntegral (a + 2) b +
+    ((h + k) ^ (2 : ℕ) * Complex.betaIntegral (a + 2) b +
       (-2 * h * (h + k) - curvature * (h - k) * (h + k)) *
         Complex.betaIntegral (a + 1) b +
-      (h ^ 2 + curvature * (h - k) * h) * Complex.betaIntegral a b)
+      (h ^ (2 : ℕ) + curvature * (h - k) * h) * Complex.betaIntegral a b)
 
 theorem ads4SelfDualGeneralMellinVertexMoment_eq
     {curvature a b h k : ℂ} (ha : 0 < a.re) (hb : 0 < b.re) :
@@ -196,7 +196,7 @@ theorem ads4SelfDualNormalizedGeneralMellinVertexCoefficient_eq
 theorem ads4SelfDualNormalizedGeneralMellinVertexCoefficient_sameCharge
     {curvature a b h : ℂ} (ha : 0 < a.re) (hb : 0 < b.re) :
     ads4SelfDualNormalizedGeneralMellinVertexCoefficient curvature a b h h =
-      (h ^ 2 / 2) * ((a - b) ^ 2 + a + b) := by
+      (h ^ (2 : ℕ) / 2) * ((a - b) ^ (2 : ℕ) + a + b) := by
   rw [ads4SelfDualNormalizedGeneralMellinVertexCoefficient_eq ha hb]
   unfold ads4SelfDualGeneralMellinVertexNumerator
   ring

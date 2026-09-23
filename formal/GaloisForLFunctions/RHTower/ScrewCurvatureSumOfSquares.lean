@@ -59,11 +59,11 @@ by the constant `2cosh 2v − 2`, is a perfect square. -/
 theorem cosh_window_eq_sq (u v : ℂ) :
     Complex.cosh (2 * u + 2 * v) + Complex.cosh (2 * u - 2 * v)
         - 2 * Complex.cosh (2 * u) + 2 * Complex.cosh (2 * v) - 2
-      = 8 * Complex.sinh v ^ 2 * Complex.cosh u ^ 2 := by
+      = 8 * Complex.sinh v ^ (2 : ℕ) * Complex.cosh u ^ (2 : ℕ) := by
   simp only [Complex.cosh_add, Complex.cosh_sub, Complex.cosh_two_mul, Complex.sinh_two_mul]
   linear_combination
-    (-2 * Complex.sinh v ^ 2 - 2 * Complex.cosh v ^ 2 + 2) * (Complex.cosh_sq_sub_sinh_sq u)
-      + (4 * Complex.cosh u ^ 2) * (Complex.cosh_sq_sub_sinh_sq v)
+    (-2 * Complex.sinh v ^ (2 : ℕ) - 2 * Complex.cosh v ^ (2 : ℕ) + 2) * (Complex.cosh_sq_sub_sinh_sq u)
+      + (4 * Complex.cosh u ^ (2 : ℕ)) * (Complex.cosh_sq_sub_sinh_sq v)
 
 /-- The square root of one window summand: `sinh(Lw/2)·cosh((x−L)w/2)/w`. -/
 def screwSquareRoot (L x : ℝ) (q : XiZeroCopy) : ℂ :=
@@ -71,7 +71,7 @@ def screwSquareRoot (L x : ℝ) (q : XiZeroCopy) : ℂ :=
       Complex.cosh (((x : ℂ) - (L : ℂ)) * screwVariable q / 2) / screwVariable q
 
 /-- One window summand of the curvature, before the outer factor. -/
-def screwSquareTerm (L x : ℝ) (q : XiZeroCopy) : ℂ := screwSquareRoot L x q ^ 2
+def screwSquareTerm (L x : ℝ) (q : XiZeroCopy) : ℂ := screwSquareRoot L x q ^ (2 : ℕ)
 
 /-- **The pointwise factorization.**  The window combination of screw summands at one zero is
 eight times a perfect square. -/
@@ -91,8 +91,8 @@ theorem screwDivisorTerm_window_eq (L x : ℝ) (q : XiZeroCopy) :
   have h4 : ((L : ℝ) : ℂ) * w = 2 * v := by rw [hv]; ring
   have hkey := cosh_window_eq_sq u v
   rw [h1, h2, h3, h4]
-  have hexp : (8 : ℂ) * (Complex.sinh v * Complex.cosh u / w) ^ 2
-      = (8 * Complex.sinh v ^ 2 * Complex.cosh u ^ 2) / w ^ 2 := by
+  have hexp : (8 : ℂ) * (Complex.sinh v * Complex.cosh u / w) ^ (2 : ℕ)
+      = (8 * Complex.sinh v ^ (2 : ℕ) * Complex.cosh u ^ (2 : ℕ)) / w ^ (2 : ℕ) := by
     field_simp
   rw [hexp, ← hkey]
   field_simp
@@ -203,10 +203,10 @@ coefficients.  Positivity is therefore exactly dominance of the first sum over t
 the critical line the domination is term-by-term because the cosine factor lies in `[−1,1]`. -/
 theorem screwSquareTerm_eq_amplitude_split (L x : ℝ) (q : XiZeroCopy) :
     screwSquareTerm L x q
-      = screwAmplitude L q ^ 2 * (1 + Complex.cosh (((x : ℂ) - (L : ℂ)) * screwVariable q)) / 2 := by
+      = screwAmplitude L q ^ (2 : ℕ) * (1 + Complex.cosh (((x : ℂ) - (L : ℂ)) * screwVariable q)) / 2 := by
   have hw : screwVariable q ≠ 0 := screwVariable_ne_zero q
   have hdouble : Complex.cosh (((x : ℂ) - (L : ℂ)) * screwVariable q)
-      = 2 * Complex.cosh (((x : ℂ) - (L : ℂ)) * screwVariable q / 2) ^ 2 - 1 := by
+      = 2 * Complex.cosh (((x : ℂ) - (L : ℂ)) * screwVariable q / 2) ^ (2 : ℕ) - 1 := by
     set z : ℂ := ((x : ℂ) - (L : ℂ)) * screwVariable q / 2 with hz
     have harg : ((x : ℂ) - (L : ℂ)) * screwVariable q = 2 * z := by rw [hz]; ring
     rw [harg, Complex.cosh_two_mul]
@@ -219,13 +219,13 @@ theorem screwSquareTerm_eq_amplitude_split (L x : ℝ) (q : XiZeroCopy) :
 /-- At the diagonal center `x = L` the oscillating factor is `1`, so the square root is exactly the
 amplitude. -/
 theorem screwSquareTerm_diagonal (L : ℝ) (q : XiZeroCopy) :
-    screwSquareTerm L L q = screwAmplitude L q ^ 2 := by
+    screwSquareTerm L L q = screwAmplitude L q ^ (2 : ℕ) := by
   rw [screwSquareTerm, screwSquareRoot, screwAmplitude]
   norm_num
 
 /-- The squared amplitudes are summable. -/
 theorem screwAmplitude_sq_summable (L : ℝ) :
-    Summable fun q : XiZeroCopy => screwAmplitude L q ^ 2 := by
+    Summable fun q : XiZeroCopy => screwAmplitude L q ^ (2 : ℕ) := by
   refine (screwSquareTerm_summable L L).congr fun q => ?_
   exact screwSquareTerm_diagonal L q
 
@@ -233,19 +233,19 @@ theorem screwAmplitude_sq_summable (L : ℝ) :
 amplitudes — the unconditional maximum of the window over its center, since the oscillating factor
 attains its largest value there on the critical line. -/
 theorem xiScrewWindowCurvature_diagonal (L : ℝ) :
-    xiScrewWindowCurvature L L = 16 * ∑' q : XiZeroCopy, screwAmplitude L q ^ 2 := by
+    xiScrewWindowCurvature L L = 16 * ∑' q : XiZeroCopy, screwAmplitude L q ^ (2 : ℕ) := by
   rw [xiScrewWindowCurvature_eq_tsum_sq L L]
   congr 1
   exact tsum_congr fun q => screwSquareTerm_diagonal L q
 
 /-- The oscillating summand: amplitude squared times `cosh((x−L)w)`. -/
 def screwOscillationTerm (L x : ℝ) (q : XiZeroCopy) : ℂ :=
-  screwAmplitude L q ^ 2 * Complex.cosh (((x : ℂ) - (L : ℂ)) * screwVariable q)
+  screwAmplitude L q ^ (2 : ℕ) * Complex.cosh (((x : ℂ) - (L : ℂ)) * screwVariable q)
 
 theorem screwOscillationTerm_summable (L x : ℝ) :
     Summable (screwOscillationTerm L x) := by
   have h : ∀ q : XiZeroCopy, screwOscillationTerm L x q
-      = 2 * screwSquareTerm L x q - screwAmplitude L q ^ 2 := by
+      = 2 * screwSquareTerm L x q - screwAmplitude L q ^ (2 : ℕ) := by
     intro q
     rw [screwOscillationTerm, screwSquareTerm_eq_amplitude_split]
     ring
@@ -259,11 +259,11 @@ because each `cosh((x−L)w)` is then a cosine.  Off the line the corresponding 
 bound in `x`, which is why no bounded correction can repair a misplaced zero. -/
 theorem xiScrewWindowCurvature_eq_const_add_oscillation (L x : ℝ) :
     xiScrewWindowCurvature L x
-      = 8 * (∑' q : XiZeroCopy, screwAmplitude L q ^ 2)
+      = 8 * (∑' q : XiZeroCopy, screwAmplitude L q ^ (2 : ℕ))
         + 8 * ∑' q : XiZeroCopy, screwOscillationTerm L x q := by
   rw [xiScrewWindowCurvature_eq_tsum_sq]
   have hsplit : ∀ q : XiZeroCopy, screwSquareTerm L x q
-      = 2⁻¹ * screwAmplitude L q ^ 2 + 2⁻¹ * screwOscillationTerm L x q := by
+      = 2⁻¹ * screwAmplitude L q ^ (2 : ℕ) + 2⁻¹ * screwOscillationTerm L x q := by
     intro q
     rw [screwSquareTerm_eq_amplitude_split, screwOscillationTerm]
     ring
@@ -294,21 +294,21 @@ This is the exact unconditional form of the classical statement that the Weil fu
 precisely twice the imaginary energy. -/
 
 /-- The total spectral energy of the window: `∑_ρ ‖g_ρ‖²`. -/
-def screwTotalEnergy (L x : ℝ) : ℝ := ∑' q : XiZeroCopy, ‖screwSquareRoot L x q‖ ^ 2
+def screwTotalEnergy (L x : ℝ) : ℝ := ∑' q : XiZeroCopy, ‖screwSquareRoot L x q‖ ^ (2 : ℕ)
 
 /-- The imaginary energy of the window: `∑_ρ (Im g_ρ)²`.  It vanishes exactly when every square
 root is real. -/
-def screwImaginaryEnergy (L x : ℝ) : ℝ := ∑' q : XiZeroCopy, (screwSquareRoot L x q).im ^ 2
+def screwImaginaryEnergy (L x : ℝ) : ℝ := ∑' q : XiZeroCopy, (screwSquareRoot L x q).im ^ (2 : ℕ)
 
 theorem screwNormSq_summable (L x : ℝ) :
-    Summable fun q : XiZeroCopy => ‖screwSquareRoot L x q‖ ^ 2 := by
+    Summable fun q : XiZeroCopy => ‖screwSquareRoot L x q‖ ^ (2 : ℕ) := by
   have h : Summable fun q : XiZeroCopy => ‖screwSquareTerm L x q‖ :=
     summable_norm_iff.mpr (screwSquareTerm_summable L x)
   refine h.congr fun q => ?_
   rw [screwSquareTerm, norm_pow]
 
 theorem screwImSq_summable (L x : ℝ) :
-    Summable fun q : XiZeroCopy => (screwSquareRoot L x q).im ^ 2 :=
+    Summable fun q : XiZeroCopy => (screwSquareRoot L x q).im ^ (2 : ℕ) :=
   Summable.of_nonneg_of_le (fun _ => sq_nonneg _)
     (fun q => by
       have := Complex.abs_im_le_norm (screwSquareRoot L x q)
@@ -329,7 +329,7 @@ theorem xiScrewWindowCurvature_re_eq_energy_difference (L x : ℝ) :
     (xiScrewWindowCurvature L x).re
       = 16 * (screwTotalEnergy L x - 2 * screwImaginaryEnergy L x) := by
   have hterm : ∀ q : XiZeroCopy, (screwSquareTerm L x q).re
-      = ‖screwSquareRoot L x q‖ ^ 2 - 2 * (screwSquareRoot L x q).im ^ 2 := by
+      = ‖screwSquareRoot L x q‖ ^ (2 : ℕ) - 2 * (screwSquareRoot L x q).im ^ (2 : ℕ) := by
     intro q
     rw [screwSquareTerm, sq, Complex.mul_re, ← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
     ring
@@ -368,7 +368,7 @@ theorem screwImaginaryEnergy_eq_zero_of_spectrum_isReal (L x : ℝ)
     screwImaginaryEnergy L x = 0 := by
   rw [screwImaginaryEnergy, tsum_congr (fun q : XiZeroCopy => by
     rw [screwSquareRoot_isReal L x q (hreal q)]
-    norm_num : ∀ q : XiZeroCopy, (screwSquareRoot L x q).im ^ 2 = 0)]
+    norm_num : ∀ q : XiZeroCopy, (screwSquareRoot L x q).im ^ (2 : ℕ) = 0)]
   exact tsum_zero
 
 

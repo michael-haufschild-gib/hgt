@@ -67,7 +67,7 @@ theorem routePProjectiveFullEulerPairWeight_eq_mass
       (starRingEnd ℂ) (eulerPositiveStateWeight sigma n) =
       (eulerPositiveProbability sigma n : ℂ) := by
     calc
-      _ = ((‖eulerPositiveStateWeight sigma n‖ : ℂ) ^ 2) :=
+      _ = ((‖eulerPositiveStateWeight sigma n‖ : ℂ) ^ (2 : ℕ)) :=
         RCLike.mul_conj (eulerPositiveStateWeight sigma n)
       _ = _ := by
         rw [← Complex.ofReal_pow,
@@ -111,7 +111,7 @@ def routePProjectiveFullEulerLogStateWeight
 private theorem summable_norm_sq_routePProjectiveFullEulerLogStateWeight
     {sigma R a : ℝ} (hsigma : 1 < sigma) (hR : 0 < R) (ha : 0 < a) :
     Summable (fun n : ℕ+ =>
-      ‖routePProjectiveFullEulerLogStateWeight sigma R a n‖ ^ 2) := by
+      ‖routePProjectiveFullEulerLogStateWeight sigma R a n‖ ^ (2 : ℕ)) := by
   let tau := routePProjectiveFullEulerPairExponent sigma R a a
   have htau : 1 < tau :=
     one_lt_routePProjectiveFullEulerPairExponent hsigma hR ha ha
@@ -163,7 +163,7 @@ theorem inner_routePProjectiveFullEulerLogStateLp_eq_moment
       ∑' n : ℕ+,
         ((eulerPositiveTotal tau / eulerPositiveTotal sigma : ℝ) : ℂ) *
           ((eulerPositiveProbability tau n *
-            Real.log (n : ℕ) ^ 2 : ℝ) : ℂ) by
+            Real.log (n : ℕ) ^ (2 : ℕ) : ℝ) : ℂ) by
     apply tsum_congr
     intro n
     rw [routePProjectiveFullEulerLogStateWeight,
@@ -286,7 +286,7 @@ theorem hasDerivAt_routePProjectiveFullEulerHalfWeightedStateWeight
 def routePProjectiveFullEulerLogMomentGramTerm
     (R a b sigma : ℝ) : ℂ :=
   routePProjectiveFullEulerZetaOverlap R a b sigma *
-    (((R * (sigma - 1)) ^ 2 *
+    (((R * (sigma - 1)) ^ (2 : ℕ) *
       eulerPositiveLogMoment 2
         (routePProjectiveFullEulerPairExponent sigma R a b) : ℝ) : ℂ)
 
@@ -295,7 +295,7 @@ columns. -/
 theorem routePProjectiveFullEulerLogMomentGramTerm_eq_scaled_inner
     {sigma R a b : ℝ} (hsigma : 1 < sigma) (hR : 0 < R)
     (ha : 0 < a) (hb : 0 < b) :
-    ((((Real.sqrt R * (R * (sigma - 1))) ^ 2 : ℝ) : ℂ) *
+    ((((Real.sqrt R * (R * (sigma - 1))) ^ (2 : ℕ) : ℝ) : ℂ) *
       inner ℂ
         (routePProjectiveFullEulerLogStateLp sigma R a hsigma hR ha)
         (routePProjectiveFullEulerLogStateLp sigma R b hsigma hR hb)) =
@@ -377,11 +377,11 @@ theorem tendsto_routePProjectiveFullEuler_scaledSecondLogMoment
     {R a b : ℝ} (hR : 0 < R) (ha : 0 < a) (hb : 0 < b) :
     Tendsto
       (fun sigma : ℝ =>
-        (R * (sigma - 1)) ^ 2 *
+        (R * (sigma - 1)) ^ (2 : ℕ) *
           eulerPositiveLogMoment 2
             (routePProjectiveFullEulerPairExponent sigma R a b))
       (nhdsWithin 1 (Ioi 1))
-      (nhds (2 / (a + b) ^ 2)) := by
+      (nhds (2 / (a + b) ^ (2 : ℕ))) := by
   let param : ℝ → ℝ := fun sigma =>
     routePProjectiveFullEulerPairExponent sigma R a b
   have hab : 0 < a + b := add_pos ha hb
@@ -401,7 +401,7 @@ theorem tendsto_routePProjectiveFullEuler_scaledSecondLogMoment
     tendsto_nhdsWithin_iff.mpr ⟨hparamNhds, hparamMem⟩
   have hbase := tendsto_sub_one_sq_mul_eulerPositiveLogMoment_two.comp
     hparamWithin
-  have hscaled := hbase.div_const ((a + b) ^ 2)
+  have hscaled := hbase.div_const ((a + b) ^ (2 : ℕ))
   apply hscaled.congr'
   filter_upwards with sigma
   have hparamEq : param sigma - 1 =
@@ -409,9 +409,9 @@ theorem tendsto_routePProjectiveFullEuler_scaledSecondLogMoment
     unfold param routePProjectiveFullEulerPairExponent
     ring
   change
-    ((param sigma - 1) ^ 2 * eulerPositiveLogMoment 2 (param sigma)) /
-        (a + b) ^ 2 =
-      (R * (sigma - 1)) ^ 2 * eulerPositiveLogMoment 2 (param sigma)
+    ((param sigma - 1) ^ (2 : ℕ) * eulerPositiveLogMoment 2 (param sigma)) /
+        (a + b) ^ (2 : ℕ) =
+      (R * (sigma - 1)) ^ (2 : ℕ) * eulerPositiveLogMoment 2 (param sigma)
   rw [hparamEq]
   field_simp [hab.ne']
 
@@ -420,17 +420,17 @@ theorem tendsto_routePProjectiveFullEulerLogMomentGramTerm
     {R a b : ℝ} (hR : 0 < R) (ha : 0 < a) (hb : 0 < b) :
     Tendsto (routePProjectiveFullEulerLogMomentGramTerm R a b)
       (nhdsWithin 1 (Ioi 1))
-      (nhds (((2 / (a + b) ^ 3 : ℝ) : ℂ))) := by
+      (nhds (((2 / (a + b) ^ (3 : ℕ) : ℝ) : ℂ))) := by
   have hoverlap := tendsto_routePProjectiveFullEulerZetaOverlap hR ha hb
   have hmomentReal :=
     tendsto_routePProjectiveFullEuler_scaledSecondLogMoment hR ha hb
   have hmoment : Tendsto
       (fun sigma : ℝ =>
-        (((R * (sigma - 1)) ^ 2 *
+        (((R * (sigma - 1)) ^ (2 : ℕ) *
           eulerPositiveLogMoment 2
             (routePProjectiveFullEulerPairExponent sigma R a b) : ℝ) : ℂ))
       (nhdsWithin 1 (Ioi 1))
-      (nhds (((2 / (a + b) ^ 2 : ℝ) : ℂ))) :=
+      (nhds (((2 / (a + b) ^ (2 : ℕ) : ℝ) : ℂ))) :=
     Complex.continuous_ofReal.continuousAt.tendsto.comp hmomentReal
   have hprod := hoverlap.mul hmoment
   have hab : a + b ≠ 0 := (add_pos ha hb).ne'
@@ -456,12 +456,12 @@ theorem tendsto_routePProjectiveFullEulerCubicTangentGram
   have h := ((h1.sub h2).sub h3).add h4
   rw [cubicLogMomentHellingerHorizontalKernel_eq_laplace ha hb]
   have hlimit :
-      ((2 / (a + b) ^ 3 : ℝ) : ℂ) -
-          ((2 / (a + 2 * b) ^ 3 : ℝ) : ℂ) -
-          ((2 / (2 * a + b) ^ 3 : ℝ) : ℂ) +
-          ((2 / (2 * a + 2 * b) ^ 3 : ℝ) : ℂ) =
-        ((2 / (a + b) ^ 3 - 2 / (a + 2 * b) ^ 3 -
-          2 / (2 * a + b) ^ 3 + 2 / (2 * a + 2 * b) ^ 3 : ℝ) : ℂ) := by
+      ((2 / (a + b) ^ (3 : ℕ) : ℝ) : ℂ) -
+          ((2 / (a + 2 * b) ^ (3 : ℕ) : ℝ) : ℂ) -
+          ((2 / (2 * a + b) ^ (3 : ℕ) : ℝ) : ℂ) +
+          ((2 / (2 * a + 2 * b) ^ (3 : ℕ) : ℝ) : ℂ) =
+        ((2 / (a + b) ^ (3 : ℕ) - 2 / (a + 2 * b) ^ (3 : ℕ) -
+          2 / (2 * a + b) ^ (3 : ℕ) + 2 / (2 * a + 2 * b) ^ (3 : ℕ) : ℝ) : ℂ) := by
     push_cast
     rfl
   rw [hlimit] at h

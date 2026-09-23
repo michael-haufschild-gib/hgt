@@ -38,8 +38,8 @@ theorem conj_ofReal_pow (θ : ℝ) (k : ℕ) :
 theorem leadSq_expand (s : ℂ) {θ : ℝ} (hne : θ ≠ 0) :
     (jonquiereLeadAt s θ * ((|θ| : ℝ) : ℂ) ^ (s - 1))
         * (starRingEnd ℂ) (jonquiereLeadAt s θ * ((|θ| : ℝ) : ℂ) ^ (s - 1))
-      = (if 0 < θ then ((‖jonquiereLead s‖ ^ 2 : ℝ) : ℂ)
-          else ((‖jonquiereLeadNeg s‖ ^ 2 : ℝ) : ℂ))
+      = (if 0 < θ then ((‖jonquiereLead s‖ ^ (2 : ℕ) : ℝ) : ℂ)
+          else ((‖jonquiereLeadNeg s‖ ^ (2 : ℕ) : ℝ) : ℂ))
         * ((|θ| : ℝ) : ℂ) ^ (((2 * s.re - 2 : ℝ)) : ℂ) := by
   have hpos : (0 : ℝ) < |θ| := abs_pos.mpr hne
   have hsq := cpow_mul_conj_cpow hpos (s - 1)
@@ -47,7 +47,7 @@ theorem leadSq_expand (s : ℂ) {θ : ℝ} (hne : θ ≠ 0) :
     simp [Complex.sub_re]
     ring
   rw [hre] at hsq
-  have habs : ∀ z : ℂ, z * (starRingEnd ℂ) z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+  have habs : ∀ z : ℂ, z * (starRingEnd ℂ) z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro z
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [map_mul, jonquiereLeadAt]
@@ -140,8 +140,8 @@ theorem regSq_expand (s : ℂ) (K : ℕ) {θ : ℝ} (hne : θ ≠ 0) :
 /-- **The full all-order expansion of the squared principal part.** -/
 theorem germPrincipalOrder_mul_conj (s : ℂ) (K : ℕ) {θ : ℝ} (hne : θ ≠ 0) :
     germPrincipalOrder s K θ * (starRingEnd ℂ) (germPrincipalOrder s K θ)
-      = (if 0 < θ then ((‖jonquiereLead s‖ ^ 2 : ℝ) : ℂ)
-            else ((‖jonquiereLeadNeg s‖ ^ 2 : ℝ) : ℂ))
+      = (if 0 < θ then ((‖jonquiereLead s‖ ^ (2 : ℕ) : ℝ) : ℂ)
+            else ((‖jonquiereLeadNeg s‖ ^ (2 : ℕ) : ℝ) : ℂ))
           * ((|θ| : ℝ) : ℂ) ^ (((2 * s.re - 2 : ℝ)) : ℂ)
         + (∑ k ∈ Finset.range (K + 1),
             (if 0 < θ then jonquiereLead s * (starRingEnd ℂ) (jonquiereRegCoeff s k)

@@ -61,7 +61,7 @@ def schwarzschildParikhWilczekCountableMatrixResidualEnergy (M : ℕ → ℕ →
 
 /-- Quadratic spectral polynomial carried by the three countable matrix moments. -/
 def schwarzschildParikhWilczekCountableMatrixResidualPolynomial (M : ℕ → ℕ → ℝ) (s : ℂ) : ℝ :=
-  schwarzschildParikhWilczekCountableMatrixMomentZero M * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2 +
+  schwarzschildParikhWilczekCountableMatrixMomentZero M * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ (2 : ℕ) +
   schwarzschildParikhWilczekCountableMatrixMomentOne M * schwarzschildParikhWilczekBorelSpectralCoordinate s +
   schwarzschildParikhWilczekCountableMatrixMomentTwo M
 
@@ -74,7 +74,7 @@ theorem summable_schwarzschildParikhWilczekCountableMatrixResidualEnergy
         schwarzschildParikhWilczekBorelGradeResidual s ij.2) := by
   rcases hM with ⟨h0, h1, h2⟩
   have h0x : Summable (fun ij : ℕ × ℕ =>
-      M ij.1 ij.2 * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2) :=
+      M ij.1 ij.2 * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ (2 : ℕ)) :=
     h0.mul_right _
   have h1x : Summable (fun ij : ℕ × ℕ =>
       M ij.1 ij.2 *
@@ -94,7 +94,7 @@ theorem schwarzschildParikhWilczekCountableMatrixResidualEnergy_three_moment
     schwarzschildParikhWilczekCountableMatrixResidualEnergy M s = schwarzschildParikhWilczekCountableMatrixResidualPolynomial M s := by
   rcases hM with ⟨h0, h1, h2⟩
   have h0x : Summable (fun ij : ℕ × ℕ =>
-      M ij.1 ij.2 * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2) :=
+      M ij.1 ij.2 * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ (2 : ℕ)) :=
     h0.mul_right _
   have h1x : Summable (fun ij : ℕ × ℕ =>
       M ij.1 ij.2 *
@@ -111,7 +111,7 @@ theorem schwarzschildParikhWilczekCountableMatrixResidualEnergy_three_moment
         (schwarzschildParikhWilczekBorelSpectralCoordinate s +
           schwarzschildParikhWilczekBorelGradeShift ij.2)) =
       ∑' ij : ℕ × ℕ,
-        ((M ij.1 ij.2 * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2 +
+        ((M ij.1 ij.2 * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ (2 : ℕ) +
           M ij.1 ij.2 *
             (schwarzschildParikhWilczekBorelGradeShift ij.1 +
               schwarzschildParikhWilczekBorelGradeShift ij.2) *
@@ -122,7 +122,7 @@ theorem schwarzschildParikhWilczekCountableMatrixResidualEnergy_three_moment
               intro ij
               ring
     _ = (∑' ij : ℕ × ℕ,
-          M ij.1 ij.2 * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2) +
+          M ij.1 ij.2 * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ (2 : ℕ)) +
         (∑' ij : ℕ × ℕ,
           M ij.1 ij.2 *
             (schwarzschildParikhWilczekBorelGradeShift ij.1 +
@@ -146,7 +146,7 @@ def schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy (M : ℕ → ℕ �
 theorem schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy_factorization
     (M : ℕ → ℕ → ℝ) (s : ℂ) :
     schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy M s =
-      schwarzschildParikhWilczekBorelWallFactor s ^ 2 * schwarzschildParikhWilczekCountableMatrixResidualEnergy M s := by
+      schwarzschildParikhWilczekBorelWallFactor s ^ (2 : ℕ) * schwarzschildParikhWilczekCountableMatrixResidualEnergy M s := by
   rw [schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy, schwarzschildParikhWilczekCountableMatrixResidualEnergy]
   simp_rw [schwarzschildParikhWilczekBorelRecoilHolonomy_im_factorization]
   calc
@@ -155,7 +155,7 @@ theorem schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy_factorization
           schwarzschildParikhWilczekBorelGradeResidual s ij.1) *
         (schwarzschildParikhWilczekBorelWallFactor s *
           schwarzschildParikhWilczekBorelGradeResidual s ij.2)) =
-      ∑' ij : ℕ × ℕ, schwarzschildParikhWilczekBorelWallFactor s ^ 2 *
+      ∑' ij : ℕ × ℕ, schwarzschildParikhWilczekBorelWallFactor s ^ (2 : ℕ) *
         (M ij.1 ij.2 * schwarzschildParikhWilczekBorelGradeResidual s ij.1 *
           schwarzschildParikhWilczekBorelGradeResidual s ij.2) := by
             apply tsum_congr
@@ -167,7 +167,7 @@ theorem schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy_factorization
 theorem schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy_three_moment
     {M : ℕ → ℕ → ℝ} (hM : schwarzschildParikhWilczekCountableMatrixMomentAdmissible M) (s : ℂ) :
     schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy M s =
-      schwarzschildParikhWilczekBorelWallFactor s ^ 2 * schwarzschildParikhWilczekCountableMatrixResidualPolynomial M s := by
+      schwarzschildParikhWilczekBorelWallFactor s ^ (2 : ℕ) * schwarzschildParikhWilczekCountableMatrixResidualPolynomial M s := by
   rw [schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy_factorization, schwarzschildParikhWilczekCountableMatrixResidualEnergy_three_moment hM]
 
 /-- Countable residual polynomial is identically zero exactly on the three-moment kernel. -/
@@ -195,7 +195,7 @@ def schwarzschildParikhWilczekCountableSignedMatrixReceiverCone (M : ℕ → ℕ
 theorem schwarzschildParikhWilczekCountableSignedMatrixReceiverCone_iff
     (M : ℕ → ℕ → ℝ) :
     schwarzschildParikhWilczekCountableSignedMatrixReceiverCone M ↔ ∀ x : ℝ, 1 < x →
-      0 < schwarzschildParikhWilczekCountableMatrixMomentZero M * x ^ 2 + schwarzschildParikhWilczekCountableMatrixMomentOne M * x + schwarzschildParikhWilczekCountableMatrixMomentTwo M := by
+      0 < schwarzschildParikhWilczekCountableMatrixMomentZero M * x ^ (2 : ℕ) + schwarzschildParikhWilczekCountableMatrixMomentOne M * x + schwarzschildParikhWilczekCountableMatrixMomentTwo M := by
   exact (quadratic_pos_on_one_iff _ _ _).symm
 
 /-- A countable receiver-cone kernel has positive residual at every Xi divisor. -/
@@ -364,8 +364,8 @@ theorem schwarzschildParikhWilczekInfiniteGradeDarkWeight_shift_hasSum :
     have hraw := (hsq.mul_left 4).add (hlin.mul_left 4)
     have hraw' : HasSum (fun n : ℕ => (1 / 2 : ℝ) ^ n *
         schwarzschildParikhWilczekBorelGradeShift n)
-        (4 * ((1 / 2 : ℝ) * (1 + 1 / 2) / (1 - 1 / 2) ^ 3) +
-          4 * ((1 / 2 : ℝ) / (1 - 1 / 2) ^ 2)) := by
+        (4 * ((1 / 2 : ℝ) * (1 + 1 / 2) / (1 - 1 / 2) ^ (3 : ℕ)) +
+          4 * ((1 / 2 : ℝ) / (1 - 1 / 2) ^ (2 : ℕ))) := by
       apply hraw.congr_fun
       intro n
       rw [schwarzschildParikhWilczekBorelGradeShift]
@@ -560,7 +560,7 @@ theorem schwarzschildParikhWilczekInfiniteGradeDarkMatrix_finiteQuadraticForm_no
       v i * schwarzschildParikhWilczekInfiniteGradeDarkMatrix (i : ℕ) (j : ℕ) * v j := by
   rw [show (∑ i : Fin N, ∑ j : Fin N,
       v i * schwarzschildParikhWilczekInfiniteGradeDarkMatrix (i : ℕ) (j : ℕ) * v j) =
-      (∑ i, v i * schwarzschildParikhWilczekInfiniteGradeDarkWeight (i : ℕ)) ^ 2 by
+      (∑ i, v i * schwarzschildParikhWilczekInfiniteGradeDarkWeight (i : ℕ)) ^ (2 : ℕ) by
         simpa only [schwarzschildParikhWilczekInfiniteGradeDarkMatrix] using
           finite_rankOneQuadraticForm_eq_sq
             (fun i : Fin N => schwarzschildParikhWilczekInfiniteGradeDarkWeight (i : ℕ)) v]

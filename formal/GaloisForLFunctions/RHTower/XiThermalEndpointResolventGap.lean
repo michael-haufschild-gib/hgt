@@ -10,7 +10,7 @@ positive thermal comparison.  For a reciprocal-square Xi coordinate `z = x + iy`
 `x = xiThermalNode q > 0`, the exact pointwise identity is
 
 `re (z / (1 + z / 4)) - x / (1 + x / 4)
-  = y^2 / (4 * (1 + x / 4) * normSq (1 + z / 4))`.
+  = y^(2 : ℕ) / (4 * (1 + x / 4) * normSq (1 + z / 4))`.
 
 Summing gives the endpoint curvature as the thermal value of the bounded rational observable
 `x |-> x / (1 + x / 4)` plus a nonnegative orientation defect.  The defect vanishes exactly
@@ -41,7 +41,7 @@ def xiThermalEndpointResolventTruncation (N : ℕ) : ℝ :=
 /-- The positive atomwise gap between the holomorphic endpoint resolvent and its real thermal
 compression. -/
 def xiThermalEndpointResolventDefectTerm (q : XiZeroCopy) : ℝ :=
-  (xiZeroCopyReciprocalSquare q).im ^ 2 /
+  (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) /
     (4 * (1 + xiThermalNode q / 4) *
       Complex.normSq (1 + xiZeroCopyReciprocalSquare q / 4))
 
@@ -78,7 +78,7 @@ theorem norm_quarterResolventScatteringPhase {z : ℂ} (hz : 0 < z.re) :
 theorem normSq_one_sub_quarterResolventScatteringPhase
     {z : ℂ} (hz : 0 < z.re) :
     Complex.normSq (1 - quarterResolventScatteringPhase z) =
-      z.im ^ 2 / (4 * Complex.normSq (1 + z / 4)) := by
+      z.im ^ (2 : ℕ) / (4 * Complex.normSq (1 + z / 4)) := by
   let w : ℂ := 1 + z / 4
   have hw : w ≠ 0 := one_add_quarter_ne_zero hz
   have hone : 1 - (starRingEnd ℂ) w / w =
@@ -91,7 +91,7 @@ theorem normSq_one_sub_quarterResolventScatteringPhase
     simp [w]
   have hwim : w.im = z.im / 4 := by
     simp [w]
-  have hnum : Complex.normSq (w - (starRingEnd ℂ) w) = z.im ^ 2 / 4 := by
+  have hnum : Complex.normSq (w - (starRingEnd ℂ) w) = z.im ^ (2 : ℕ) / 4 := by
     rw [Complex.normSq_apply]
     simp [hwre, hwim]
     ring_nf
@@ -164,7 +164,7 @@ real part loses exactly one positively weighted transverse square. -/
 lemma re_quarterResolvent_sub_realQuarterResolvent
     (z : ℂ) (hz : 0 < z.re) :
     (z / (1 + z / 4)).re - z.re / (1 + z.re / 4) =
-      z.im ^ 2 /
+      z.im ^ (2 : ℕ) /
         (4 * (1 + z.re / 4) * Complex.normSq (1 + z / 4)) := by
   have ha : 0 < 1 + z.re / 4 := by linarith
   have hre : (1 + z / 4 : ℂ).re = 1 + z.re / 4 := by
@@ -176,7 +176,7 @@ lemma re_quarterResolvent_sub_realQuarterResolvent
     norm_num [Complex.normSq_apply]
     ring
   have hnormSq : Complex.normSq (1 + z / 4) =
-      (1 + z.re / 4) ^ 2 + (z.im / 4) ^ 2 := by
+      (1 + z.re / 4) ^ (2 : ℕ) + (z.im / 4) ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, hre, him]
     ring
   have hden : (1 + z / 4 : ℂ) ≠ 0 := by
@@ -270,7 +270,7 @@ theorem summable_xiCenteredQuarterResolvent :
   apply (summable_xiReciprocalSquareResolventTerm XiC_I_half_ne).congr
   intro q
   rw [xiReciprocalSquareResolventTerm]
-  have hsq : (I / 2 : ℂ) ^ 2 = -1 / 4 := by
+  have hsq : (I / 2 : ℂ) ^ (2 : ℕ) = -1 / 4 := by
     field_simp
     rw [Complex.I_sq]
     ring
@@ -290,7 +290,7 @@ theorem xiEndpointCompletedCurvature_eq_tsum_centeredQuarterResolvent_re :
   apply tsum_congr
   intro q
   rw [← endpoint_term_eq q, xiReciprocalSquareResolventTerm]
-  have hsq : (I / 2 : ℂ) ^ 2 = -1 / 4 := by
+  have hsq : (I / 2 : ℂ) ^ (2 : ℕ) = -1 / 4 := by
     field_simp
     rw [Complex.I_sq]
     ring
@@ -337,7 +337,7 @@ energy.  Thus the resolvent observable is a contractive detector of the same RH 
 theorem xiThermalEndpointResolventDefectTerm_le_quarter_orientationTerm
     (q : XiZeroCopy) :
     xiThermalEndpointResolventDefectTerm q ≤
-      (xiZeroCopyReciprocalSquare q).im ^ 2 / 4 := by
+      (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) / 4 := by
   let z := xiZeroCopyReciprocalSquare q
   have hx : 1 ≤ 1 + z.re / 4 := by
     have hzre : 0 < z.re := by
@@ -356,8 +356,8 @@ theorem xiThermalEndpointResolventDefectTerm_le_quarter_orientationTerm
       4 * (1 + z.re / 4) * Complex.normSq (1 + z / 4) := by
     nlinarith
   rw [xiThermalEndpointResolventDefectTerm]
-  change z.im ^ 2 /
-      (4 * (1 + z.re / 4) * Complex.normSq (1 + z / 4)) ≤ z.im ^ 2 / 4
+  change z.im ^ (2 : ℕ) /
+      (4 * (1 + z.re / 4) * Complex.normSq (1 + z / 4)) ≤ z.im ^ (2 : ℕ) / 4
   exact div_le_div_of_nonneg_left (sq_nonneg z.im) (by norm_num) hden
 
 /-- Global quantitative transfer from the bounded resolvent gap to the quadratic thermal/source
@@ -373,7 +373,7 @@ theorem xiThermalEndpointResolventDefect_le_quarter_orientationEnergy :
 theorem xiThermalEndpointResolventDefect_le_endpointRadius_cube :
     xiThermalEndpointResolventDefect ≤
       (xiEndpointCompletedCurvature /
-        (4 - xiEndpointCompletedCurvature)) ^ 3 := by
+        (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) := by
   calc
     xiThermalEndpointResolventDefect ≤ xiThermalOrientationEnergy / 4 :=
       xiThermalEndpointResolventDefect_le_quarter_orientationEnergy
@@ -381,7 +381,7 @@ theorem xiThermalEndpointResolventDefect_le_endpointRadius_cube :
       (div_le_div_iff_of_pos_right (by norm_num : (0 : ℝ) < 4)).2
         xiThermalOrientationEnergy_le_exactCubicEndpointBudget
     _ = (xiEndpointCompletedCurvature /
-        (4 - xiEndpointCompletedCurvature)) ^ 3 := by
+        (4 - xiEndpointCompletedCurvature)) ^ (3 : ℕ) := by
       rw [xiThermalExactCubicEndpointBudget]
       ring
 
@@ -420,7 +420,7 @@ theorem xiThermalEndpointResolventDefect_eq_zero_iff_rh :
   · intro hzero
     apply xiThermalOrientationEnergy_eq_zero_iff_rh.mp
     rw [xiThermalOrientationEnergy]
-    rw [show (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ 2) = 0 by
+    rw [show (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ)) = 0 by
       funext q
       have hterm := summable_xiThermalEndpointResolventDefect.le_tsum q
         (fun j _ => xiThermalEndpointResolventDefectTerm_nonneg j)
@@ -466,7 +466,7 @@ theorem forall_xiThermalEndpointScatteringPhase_eq_one_iff_rh :
   · intro hphase
     apply xiThermalOrientationEnergy_eq_zero_iff_rh.mp
     rw [xiThermalOrientationEnergy]
-    rw [show (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ 2) = 0 by
+    rw [show (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ)) = 0 by
       funext q
       rw [(xiThermalEndpointScatteringPhase_eq_one_iff_im_eq_zero q).mp
         (hphase q)]

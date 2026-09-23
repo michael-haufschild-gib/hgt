@@ -24,7 +24,7 @@ theorem pos_mul_of_pos_of_pos_mul {c d G : ℝ} (hA : 0 < c * G) (hB : 0 < d * c
     intro h
     rw [h] at hA
     simp at hA
-  have h2 : 0 < c ^ 2 := by positivity
+  have h2 : 0 < c ^ (2 : ℕ) := by positivity
   nlinarith [mul_pos hB hA]
 
 theorem neg_mul_of_pos_of_neg_mul {c d G : ℝ} (hA : 0 < c * G) (hB : d * c < 0) :
@@ -33,7 +33,7 @@ theorem neg_mul_of_pos_of_neg_mul {c d G : ℝ} (hA : 0 < c * G) (hB : d * c < 0
     intro h
     rw [h] at hA
     simp at hA
-  have h2 : 0 < c ^ 2 := by positivity
+  have h2 : 0 < c ^ (2 : ℕ) := by positivity
   nlinarith [mul_pos_of_neg_of_neg hB (neg_neg_iff_pos.mpr hA)]
 
 theorem step_mono {x : ℕ → ℝ} {L : ℕ} (hx : ∀ i < L, x i < x (i + 1)) :

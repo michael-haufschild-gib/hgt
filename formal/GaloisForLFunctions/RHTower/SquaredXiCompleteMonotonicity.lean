@@ -19,12 +19,12 @@ Write
 Pairing every centered Xi zero with its functional-equation reflection turns the Hadamard
 logarithmic derivative into the absolutely convergent shifted reciprocal-square sum
 
-`g y = (1/2) * sum_q (y + alpha_q ^ 2)⁻¹`,
+`g y = (1/2) * sum_q (y + alpha_q ^ (2 : ℕ))⁻¹`,
 
 where `alpha_q` is the centered spectral coordinate of one Xi multiplicity copy.  In the zero
-coordinates `u = (Re rho - 1/2) ^ 2`, `v = (Im rho) ^ 2` each summand is `(A - B i)⁻¹` with
+coordinates `u = (Re rho - 1/2) ^ (2 : ℕ)`, `v = (Im rho) ^ (2 : ℕ)` each summand is `(A - B i)⁻¹` with
 
-`A = y + v - u > 0`,   `B = 2 (Re rho - 1/2) (Im rho)`,   `84 * B ^ 2 < A ^ 2`,
+`A = y + v - u > 0`,   `B = 2 (Re rho - 1/2) (Im rho)`,   `84 * B ^ (2 : ℕ) < A ^ (2 : ℕ)`,
 
 the sector bound coming from the open critical strip and the off-line quartet height gap
 `85 < v`.  A sector of tangent `1/9` therefore carries fourteen powers, since `14 / 9 < pi / 2`.
@@ -48,10 +48,10 @@ noncomputable section
 /-! ### The squared centered spectral coordinate -/
 
 /-- The squared centered spectral coordinate of one Xi multiplicity copy. -/
-def xiSquaredNode (q : XiZeroCopy) : ℂ := xiSpectralPoint q ^ 2
+def xiSquaredNode (q : XiZeroCopy) : ℂ := xiSpectralPoint q ^ (2 : ℕ)
 
 theorem xiSquaredNode_re (q : XiZeroCopy) :
-    (xiSquaredNode q).re = (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
+    (xiSquaredNode q).re = (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) := by
   rw [xiSquaredNode, pow_two, Complex.mul_re, xiSpectralPoint_re_eq, xiSpectralPoint_im_eq]
   ring
 
@@ -114,25 +114,25 @@ transverse square of a centered node is below one eighty-fourth of the shifted l
 square.  On-line copies are transversally trivial; off-line copies use the open critical strip
 `u < 1/4` together with the four-copy endpoint height gap `85 < v`. -/
 theorem eightyFour_mul_xiSquaredNode_im_sq_lt {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    84 * (xiSquaredNode q).im ^ 2 < (y + (xiSquaredNode q).re) ^ 2 := by
+    84 * (xiSquaredNode q).im ^ (2 : ℕ) < (y + (xiSquaredNode q).re) ^ (2 : ℕ) := by
   have hnodere : (xiSquaredNode q).re =
-      (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 := xiSquaredNode_re q
-  have hnodeim2 : (xiSquaredNode q).im ^ 2 =
-      4 * ((q.1 : ℂ).re - 1 / 2) ^ 2 * (q.1 : ℂ).im ^ 2 := by
+      (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) := xiSquaredNode_re q
+  have hnodeim2 : (xiSquaredNode q).im ^ (2 : ℕ) =
+      4 * ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) * (q.1 : ℂ).im ^ (2 : ℕ) := by
     rw [xiSquaredNode_im]; ring
   have hpos : 0 < (xiSquaredNode q).re := xiSquaredNode_re_pos q
   by_cases hon : (q.1 : ℂ).re = 1 / 2
-  · have hzero : (xiSquaredNode q).im ^ 2 = 0 := by
+  · have hzero : (xiSquaredNode q).im ^ (2 : ℕ) = 0 := by
       rw [hnodeim2, hon]; ring
     rw [hzero]
     nlinarith
-  · set u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2 with hu
-    set v : ℝ := (q.1 : ℂ).im ^ 2 with hv
+  · set u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) with hu
+    set v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ) with hv
     have hu0 : 0 ≤ u := by rw [hu]; positivity
     have hu4 : u < 1 / 4 := xi_divisor_support_centered_re_sq_lt_quarter q.1
     have hv85 : 85 < v := xiZeroCopy_offLine_eightyFive_lt_im_sq q hon
     have h340 : 340 * u < v := by linarith
-    have hcore : 336 * u * v ≤ (v - u) ^ 2 := by nlinarith [mul_nonneg hu0 (by linarith : (0:ℝ) ≤ v)]
+    have hcore : 336 * u * v ≤ (v - u) ^ (2 : ℕ) := by nlinarith [mul_nonneg hu0 (by linarith : (0:ℝ) ≤ v)]
     rw [hnodeim2, hnodere]
     rw [hnodere] at hpos
     nlinarith [hcore, hpos]
@@ -160,10 +160,10 @@ theorem re_xiShiftedReciprocalSquare_pow_pos {y : ℝ} (hy : 0 < y) (q : XiZeroC
 /-! ### Higher sector orders through the corner exclusions -/
 
 /-- The shifted reciprocal-square atom in the real zero coordinates
-`A = y + im^2 - (re - 1/2)^2`, `B = 2 (re - 1/2) im`. -/
+`A = y + im^(2 : ℕ) - (re - 1/2)^(2 : ℕ)`, `B = 2 (re - 1/2) im`. -/
 theorem xiShiftedReciprocalSquare_eq_coordinate {y : ℝ} (hy : 0 ≤ y) (q : XiZeroCopy) :
     xiShiftedReciprocalSquare y q =
-      ((((y + ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) : ℝ) : ℂ) -
+      ((((y + ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) : ℝ) : ℂ) -
         ((2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im : ℝ) : ℂ) * I)⁻¹) := by
   rw [xiShiftedReciprocalSquare_eq_inv hy]
   congr 1
@@ -180,12 +180,12 @@ coordinate only grows, so a power positivity criterion valid at the unshifted ra
 every positive squared base point. -/
 theorem re_xiShiftedReciprocalSquare_pow_pos_of_sector
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) {n : ℕ} {N : ℝ}
-    (hcrit : ∀ A B : ℝ, 0 < A → N * B ^ 2 < A ^ 2 →
+    (hcrit : ∀ A B : ℝ, 0 < A → N * B ^ (2 : ℕ) < A ^ (2 : ℕ) →
       0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
-    (hsector : N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2) :
+    (hsector : N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ)) :
     0 < ((xiShiftedReciprocalSquare y q) ^ n).re := by
-  have ht : 0 < (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
+  have ht : 0 < (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) := by
     have h := xiSquaredNode_re_pos q
     rwa [xiSquaredNode_re] at h
   rw [xiShiftedReciprocalSquare_eq_coordinate hy.le]
@@ -196,12 +196,12 @@ line the transverse coordinate vanishes and the ratio is trivial; off it a failu
 zero in the excluded window. -/
 theorem xiCenteredSectorRatio_of_window_empty {N : ℝ} {W : Prop} (q : XiZeroCopy)
     (hcorner : (q.1 : ℂ).re ≠ 1 / 2 →
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
-        N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 → W)
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+        N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) → W)
     (hempty : ¬ W) :
-    N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
-  have ht : 0 < (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
+    N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
+  have ht : 0 < (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) := by
     have h := xiSquaredNode_re_pos q
     rwa [xiSquaredNode_re] at h
   by_cases hon : (q.1 : ℂ).re = 1 / 2
@@ -212,7 +212,7 @@ theorem xiCenteredSectorRatio_of_window_empty {N : ℝ} {W : Prop} (q : XiZeroCo
     exact hempty (hcorner hon (not_lt.mp hnot))
 
 theorem re_xiShiftedReciprocalSquare_pow_fifteen_pos {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    0 < ((xiShiftedReciprocalSquare y q) ^ 15).re :=
+    0 < ((xiShiftedReciprocalSquare y q) ^ (15 : ℕ)).re :=
   re_xiShiftedReciprocalSquare_pow_pos_of_sector hy q
     (fun _ _ hA h => orderFifteenReciprocalPower_re_pos_of_sectorRatio hA h)
     (xiCenteredSectorRatio_of_window_empty q
@@ -220,7 +220,7 @@ theorem re_xiShiftedReciprocalSquare_pow_fifteen_pos {y : ℝ} (hy : 0 < y) (q :
       (fun hc => not_exists_xiZeroCopy_mem_centeredOrderFourteen_edgeCorner ⟨q, hc⟩))
 
 theorem re_xiShiftedReciprocalSquare_pow_sixteen_pos {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    0 < ((xiShiftedReciprocalSquare y q) ^ 16).re :=
+    0 < ((xiShiftedReciprocalSquare y q) ^ (16 : ℕ)).re :=
   re_xiShiftedReciprocalSquare_pow_pos_of_sector hy q
     (fun _ _ hA h => orderSixteenReciprocalPower_re_pos_of_sectorRatio hA h)
     (xiCenteredSectorRatio_of_window_empty q
@@ -229,7 +229,7 @@ theorem re_xiShiftedReciprocalSquare_pow_sixteen_pos {y : ℝ} (hy : 0 < y) (q :
         ⟨q, hc.1, hc.2.1, hc.2.2.1, hc.2.2.2.trans (by norm_num)⟩))
 
 theorem re_xiShiftedReciprocalSquare_pow_seventeen_pos {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    0 < ((xiShiftedReciprocalSquare y q) ^ 17).re :=
+    0 < ((xiShiftedReciprocalSquare y q) ^ (17 : ℕ)).re :=
   re_xiShiftedReciprocalSquare_pow_pos_of_sector hy q
     (fun _ _ hA h => orderSeventeenReciprocalPower_re_pos_of_sectorRatio hA h)
     (xiCenteredSectorRatio_of_window_empty q
@@ -237,7 +237,7 @@ theorem re_xiShiftedReciprocalSquare_pow_seventeen_pos {y : ℝ} (hy : 0 < y) (q
       (fun hc => not_exists_xiZeroCopy_mem_centeredOrderSeventeen_sourceCorner ⟨q, hc⟩))
 
 theorem re_xiShiftedReciprocalSquare_pow_eighteen_pos {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    0 < ((xiShiftedReciprocalSquare y q) ^ 18).re :=
+    0 < ((xiShiftedReciprocalSquare y q) ^ (18 : ℕ)).re :=
   re_xiShiftedReciprocalSquare_pow_pos_of_sector hy q
     (fun _ _ hA h => orderEighteenReciprocalPower_re_pos_of_sectorRatio hA h)
     (xiCenteredSectorRatio_of_window_empty q
@@ -246,7 +246,7 @@ theorem re_xiShiftedReciprocalSquare_pow_eighteen_pos {y : ℝ} (hy : 0 < y) (q 
         ⟨q, by linarith [hc.1], hc.2.1, hc.2.2.1, hc.2.2.2.trans (by norm_num)⟩))
 
 theorem re_xiShiftedReciprocalSquare_pow_nineteen_pos {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    0 < ((xiShiftedReciprocalSquare y q) ^ 19).re :=
+    0 < ((xiShiftedReciprocalSquare y q) ^ (19 : ℕ)).re :=
   re_xiShiftedReciprocalSquare_pow_pos_of_sector hy q
     (fun _ _ hA h => orderNineteenReciprocalPower_re_pos_of_sectorRatio hA h)
     (xiCenteredSectorRatio_of_window_empty q
@@ -317,9 +317,9 @@ theorem hasDerivAt_xiShiftedReciprocalSquare_pow {v : ℝ} (hv : 0 < v) (q : XiZ
     have hpow := hinv.pow (m + 1)
     have hval : -((m : ℂ) + 1) * (((v : ℂ) + xiSquaredNode q)⁻¹) ^ (m + 2)
         = ((m + 1 : ℕ) : ℂ) * (((v : ℂ) + xiSquaredNode q)⁻¹) ^ (m + 1 - 1) *
-          (-1 / ((v : ℂ) + xiSquaredNode q) ^ 2) := by
-      have hX : (-1 : ℂ) / ((v : ℂ) + xiSquaredNode q) ^ 2
-          = -((((v : ℂ) + xiSquaredNode q)⁻¹) ^ 2) := by
+          (-1 / ((v : ℂ) + xiSquaredNode q) ^ (2 : ℕ)) := by
+      have hX : (-1 : ℂ) / ((v : ℂ) + xiSquaredNode q) ^ (2 : ℕ)
+          = -((((v : ℂ) + xiSquaredNode q)⁻¹) ^ (2 : ℕ)) := by
         rw [inv_pow, neg_div, one_div]
       rw [hX]
       simp only [Nat.add_sub_cancel]
@@ -448,7 +448,7 @@ RH-compatible strict sign at every positive squared base point, with no far-righ
 theorem alternating_iteratedDeriv_squaredXiRadialField_pos_orderFourteen {y : ℝ} (hy : 0 < y) :
     0 < iteratedDeriv 14 squaredXiRadialField y := by
   have h := alternating_iteratedDeriv_squaredXiRadialField_pos hy (n := 14) (by norm_num)
-  rw [show ((-1 : ℝ) ^ 14) = 1 by norm_num, one_mul] at h
+  rw [show ((-1 : ℝ) ^ (14 : ℕ)) = 1 by norm_num, one_mul] at h
   exact h
 
 /-! ### Identification with the Xi logarithmic derivative -/
@@ -468,7 +468,7 @@ theorem xi_ofReal_shift_ne_zero (w : ℝ) : xi (1 / 2 + (w : ℂ)) ≠ 0 := by
 /-- **Exact Hadamard identity in the squared coordinate.**  On the positive real ray the shifted
 reciprocal-square moment of order zero is exactly the radial logarithmic derivative of `xi`. -/
 theorem xiShiftedReciprocalMoment_zero_eq {w : ℝ} (hw : 0 < w) :
-    xiShiftedReciprocalMoment (w ^ 2) 0 =
+    xiShiftedReciprocalMoment (w ^ (2 : ℕ)) 0 =
       deriv xi (1 / 2 + (w : ℂ)) / ((w : ℂ) * xi (1 / 2 + (w : ℂ))) := by
   have hII : (-I) * I = (1 : ℂ) := by rw [neg_mul, Complex.I_mul_I]; ring
   have hmul : (1 : ℂ) / 2 + ((w : ℂ) * (-I)) * I = 1 / 2 + (w : ℂ) := by
@@ -479,18 +479,18 @@ theorem xiShiftedReciprocalMoment_zero_eq {w : ℝ} (hw : 0 < w) :
     XiC_ne_zero_of_abs_re_le_nine_halves (by rw [hre]; norm_num)
   have hxine : xi (1 / 2 + (w : ℂ)) ≠ 0 := xi_ofReal_shift_ne_zero w
   have hwne : (w : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hw.ne'
-  have hz2 : ((w : ℂ) * (-I)) ^ 2 = -((w : ℂ) ^ 2) := by
+  have hz2 : ((w : ℂ) * (-I)) ^ (2 : ℕ) = -((w : ℂ) ^ (2 : ℕ)) := by
     rw [mul_pow, neg_sq, Complex.I_sq]; ring
   have hterm : ∀ q : XiZeroCopy,
       xiReciprocalSquareResolventTerm ((w : ℂ) * (-I)) q =
-        xiShiftedReciprocalSquare (w ^ 2) q := by
+        xiShiftedReciprocalSquare (w ^ (2 : ℕ)) q := by
     intro q
     rw [xiReciprocalSquareResolventTerm, xiShiftedReciprocalSquare, hz2]
     congr 2
     push_cast
     ring
   have htrace : logDeriv XiC ((w : ℂ) * (-I)) =
-      (w : ℂ) * I * xiShiftedReciprocalMoment (w ^ 2) 0 := by
+      (w : ℂ) * I * xiShiftedReciprocalMoment (w ^ (2 : ℕ)) 0 := by
     rw [logDeriv_XiC_eq_relativeResolventTrace hXi,
       xiRelativeResolventTrace_eq_reciprocalSquareResolvent hXi]
     rw [tsum_congr hterm, xiShiftedReciprocalMoment]
@@ -511,7 +511,7 @@ theorem xiShiftedReciprocalMoment_zero_eq {w : ℝ} (hw : 0 < w) :
   rw [hlog, div_eq_iff hxine] at htrace
   have hI : (I : ℂ) ≠ 0 := Complex.I_ne_zero
   have h2 : deriv xi (1 / 2 + (w : ℂ)) =
-      (w : ℂ) * xiShiftedReciprocalMoment (w ^ 2) 0 * xi (1 / 2 + (w : ℂ)) := by
+      (w : ℂ) * xiShiftedReciprocalMoment (w ^ (2 : ℕ)) 0 * xi (1 / 2 + (w : ℂ)) := by
     refine mul_right_cancel₀ hI ?_
     linear_combination htrace
   rw [eq_div_iff (mul_ne_zero hwne hxine)]
@@ -524,7 +524,7 @@ theorem squaredXiRadialField_eq {y : ℝ} (hy : 0 < y) :
       deriv xi (1 / 2 + (Real.sqrt y : ℂ)) /
         (2 * (Real.sqrt y : ℂ) * xi (1 / 2 + (Real.sqrt y : ℂ))) := by
   have hw : 0 < Real.sqrt y := Real.sqrt_pos.mpr hy
-  have hsq : Real.sqrt y ^ 2 = y := Real.sq_sqrt hy.le
+  have hsq : Real.sqrt y ^ (2 : ℕ) = y := Real.sq_sqrt hy.le
   have hmom := xiShiftedReciprocalMoment_zero_eq hw
   rw [hsq] at hmom
   have him : (xiShiftedReciprocalMoment y 0).im = 0 :=
@@ -561,13 +561,13 @@ theorem hasDerivAt_xiRealLogDeriv (w : ℝ) :
 
 /-- On the positive ray the squared radial field is the halved radial logarithmic derivative. -/
 theorem squaredXiRadialField_sq_eq {w : ℝ} (hw : 0 < w) :
-    squaredXiRadialField (w ^ 2) = xiRealLogDeriv w / (2 * w) := by
-  have hy : (0 : ℝ) < w ^ 2 := by positivity
+    squaredXiRadialField (w ^ (2 : ℕ)) = xiRealLogDeriv w / (2 * w) := by
+  have hy : (0 : ℝ) < w ^ (2 : ℕ) := by positivity
   have h := squaredXiRadialField_eq hy
   rw [Real.sqrt_sq hw.le] at h
   have hxi : xi (1 / 2 + (w : ℂ)) ≠ 0 := xi_ofReal_shift_ne_zero w
   have hwne : ((w : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hw.ne'
-  have hmul : ((squaredXiRadialField (w ^ 2) * (2 * w) : ℝ) : ℂ) =
+  have hmul : ((squaredXiRadialField (w ^ (2 : ℕ)) * (2 * w) : ℝ) : ℂ) =
       logDeriv xi (1 / 2 + (w : ℂ)) := by
     push_cast
     rw [h, logDeriv_apply]
@@ -590,13 +590,13 @@ theorem hasDerivAt_squaredXiRadialField {y : ℝ} (hy : 0 < y) :
 
 theorem xiRealLogDeriv_radial_gap_neg {w : ℝ} (hw : 0 < w) :
     w * deriv xiRealLogDeriv w - xiRealLogDeriv w < 0 := by
-  have hy : (0 : ℝ) < w ^ 2 := by positivity
+  have hy : (0 : ℝ) < w ^ (2 : ℕ) := by positivity
   have hS := hasDerivAt_squaredXiRadialField hy
-  have hpow : HasDerivAt (fun v : ℝ => v ^ 2) (2 * w) w := by
+  have hpow : HasDerivAt (fun v : ℝ => v ^ (2 : ℕ)) (2 * w) w := by
     simpa using hasDerivAt_pow 2 w
-  have hG1 : HasDerivAt (fun v : ℝ => squaredXiRadialField (v ^ 2))
-      (-(xiShiftedReciprocalMoment (w ^ 2) 1).re / 2 * (2 * w)) w :=
-    HasDerivAt.comp (h := fun v : ℝ => v ^ 2) w hS hpow
+  have hG1 : HasDerivAt (fun v : ℝ => squaredXiRadialField (v ^ (2 : ℕ)))
+      (-(xiShiftedReciprocalMoment (w ^ (2 : ℕ)) 1).re / 2 * (2 * w)) w :=
+    HasDerivAt.comp (h := fun v : ℝ => v ^ (2 : ℕ)) w hS hpow
   have hnum : HasDerivAt xiRealLogDeriv
       ((deriv (logDeriv xi) (1 / 2 + (w : ℂ))).re) w := hasDerivAt_xiRealLogDeriv w
   have hden : HasDerivAt (fun v : ℝ => 2 * v) 2 w := by
@@ -606,13 +606,13 @@ theorem xiRealLogDeriv_radial_gap_neg {w : ℝ} (hw : 0 < w) :
   have hdenne : (2 : ℝ) * w ≠ 0 := by positivity
   have hG2 := hnum.div hden hdenne
   have heq : (fun v : ℝ => xiRealLogDeriv v / (2 * v))
-      =ᶠ[nhds w] (fun v : ℝ => squaredXiRadialField (v ^ 2)) := by
+      =ᶠ[nhds w] (fun v : ℝ => squaredXiRadialField (v ^ (2 : ℕ))) := by
     filter_upwards [Ioi_mem_nhds hw] with v hv
     exact (squaredXiRadialField_sq_eq hv).symm
   have hu := HasDerivAt.unique (hG1.congr_of_eventuallyEq heq) hG2
-  have hsq : (0 : ℝ) < (xiShiftedReciprocalMoment (w ^ 2) 1).re :=
+  have hsq : (0 : ℝ) < (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) 1).re :=
     re_xiShiftedReciprocalMoment_pos hy (by norm_num)
-  have hdenpow : ((2 : ℝ) * w) ^ 2 ≠ 0 := pow_ne_zero 2 hdenne
+  have hdenpow : ((2 : ℝ) * w) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hdenne
   rw [eq_div_iff hdenpow] at hu
   norm_num at hu
   rw [hnum.deriv]

@@ -8,15 +8,15 @@ import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 Write the two shifts as `alpha = m - d`, `beta = m + d`.  The complete marked affine-secant
 pair then has exact midpoint form
 
-`Q = U*V - d^2*x*y + m*F`, `P = V^2 - d^2*y^2`,
+`Q = U*V - d^(2 : ℕ)*x*y + m*F`, `P = V^(2 : ℕ) - d^(2 : ℕ)*y^(2 : ℕ)`,
 
 where `U = X+c-m*x`, `V = Y-m*y`, and `F = (X+c)*y-x*Y`.  Thus its symmetric coefficient form
-has one Lorentzian debt, exactly `d^2`; adding `kappa` in the rooted diagonal is nonnegative for
-all real source coordinates iff `d^2 <= kappa`.  At equality it collapses to one square.
+has one Lorentzian debt, exactly `d^(2 : ℕ)`; adding `kappa` in the rooted diagonal is nonnegative for
+all real source coordinates iff `d^(2 : ℕ) <= kappa`.  At equality it collapses to one square.
 
 The global-local compound numerator splits into three forced channels: midpoint determinant,
 halfgap-squared rooted debt, and centered Pluecker flux.  On an actual two-resolvent orbit, the
-same `d^2` appears inside the relative Volterra phase observation as a literal Neumann midpoint
+same `d^(2 : ℕ)` appears inside the relative Volterra phase observation as a literal Neumann midpoint
 source.  This identifies the exact source term that a prime--Gamma Green identity must pay.
 
 No RH premise, positivity hypothesis, Xi-divisor data, estimate, or computation is used.
@@ -35,7 +35,7 @@ product, one halfgap-squared rooted debt, and one centered alternating flux. -/
 theorem suzukiProjectiveAffineSecantTensor_midpoint_halfGap
     {F : Type*} [CommRing F] (m d x X y Y c : F) :
     suzukiProjectiveAffineSecantTensor (m - d) (m + d) x X y Y c =
-      ((X + c) - m * x) * (Y - m * y) - d ^ 2 * x * y +
+      ((X + c) - m * x) * (Y - m * y) - d ^ (2 : ℕ) * x * y +
         m * ((X + c) * y - x * Y) := by
   simp only [suzukiProjectiveAffineSecantTensor]
   ring
@@ -44,7 +44,7 @@ theorem suzukiProjectiveAffineSecantTensor_midpoint_halfGap
 theorem suzukiProjectiveAffineSecantDenominator_midpoint_halfGap
     {F : Type*} [CommRing F] (m d y Y : F) :
     suzukiProjectiveAffineSecantDenominator (m - d) (m + d) y Y =
-      (Y - m * y) ^ 2 - d ^ 2 * y ^ 2 := by
+      (Y - m * y) ^ (2 : ℕ) - d ^ (2 : ℕ) * y ^ (2 : ℕ) := by
   simp only [suzukiProjectiveAffineSecantDenominator]
   ring
 
@@ -52,7 +52,7 @@ theorem suzukiProjectiveAffineSecantDenominator_midpoint_halfGap
 def suzukiMarkedSecantSymmetricForm
     {F : Type*} [CommRing F]
     (m d r s R S : F) : F :=
-  r * R - m * (r * S + s * R) + (m ^ 2 - d ^ 2) * s * S
+  r * R - m * (r * S + s * R) + (m ^ (2 : ℕ) - d ^ (2 : ℕ)) * s * S
 
 /-- Alternating, centered Pluecker part of the marked coefficient form. -/
 def suzukiMarkedSecantAlternatingForm
@@ -70,11 +70,11 @@ theorem suzukiProjectiveAffineSecantTensor_eq_symmetric_add_alternating
     suzukiMarkedSecantSymmetricForm, suzukiMarkedSecantAlternatingForm]
   ring
 
-/-- The diagonal symmetric form is a Lorentz square with exact negative coefficient `d^2`. -/
+/-- The diagonal symmetric form is a Lorentz square with exact negative coefficient `d^(2 : ℕ)`. -/
 theorem suzukiMarkedSecantSymmetricForm_self_eq
     {F : Type*} [CommRing F] (m d r s : F) :
     suzukiMarkedSecantSymmetricForm m d r s r s =
-      (r - m * s) ^ 2 - d ^ 2 * s ^ 2 := by
+      (r - m * s) ^ (2 : ℕ) - d ^ (2 : ℕ) * s ^ (2 : ℕ) := by
   simp only [suzukiMarkedSecantSymmetricForm]
   ring
 
@@ -83,8 +83,8 @@ theorem suzukiMarkedSecantSymmetricForm_self_eq
 /-- Exact square completion after adding a rooted diagonal source with rate `kappa`. -/
 theorem suzukiMarkedSecantSymmetricForm_add_rootedCompletion
     (m d kappa r s : ℝ) :
-    suzukiMarkedSecantSymmetricForm m d r s r s + kappa * s ^ 2 =
-      (r - m * s) ^ 2 + (kappa - d ^ 2) * s ^ 2 := by
+    suzukiMarkedSecantSymmetricForm m d r s r s + kappa * s ^ (2 : ℕ) =
+      (r - m * s) ^ (2 : ℕ) + (kappa - d ^ (2 : ℕ)) * s ^ (2 : ℕ) := by
   simp only [suzukiMarkedSecantSymmetricForm]
   ring
 
@@ -93,8 +93,8 @@ rate is at least the square of the shift halfgap. -/
 theorem suzukiMarkedSecant_rootedCompletion_nonneg_iff
     (m d kappa : ℝ) :
     (∀ r s : ℝ,
-      0 ≤ suzukiMarkedSecantSymmetricForm m d r s r s + kappa * s ^ 2) ↔
-        d ^ 2 ≤ kappa := by
+      0 ≤ suzukiMarkedSecantSymmetricForm m d r s r s + kappa * s ^ (2 : ℕ)) ↔
+        d ^ (2 : ℕ) ≤ kappa := by
   constructor
   · intro h
     have hm := h m 1
@@ -108,8 +108,8 @@ theorem suzukiMarkedSecant_rootedCompletion_nonneg_iff
 /-- At the unique minimal rate, the completed symmetric block is one rank-one square. -/
 theorem suzukiMarkedSecant_minimalRootedCompletion_eq_square
     (m d r s : ℝ) :
-    suzukiMarkedSecantSymmetricForm m d r s r s + d ^ 2 * s ^ 2 =
-      (r - m * s) ^ 2 := by
+    suzukiMarkedSecantSymmetricForm m d r s r s + d ^ (2 : ℕ) * s ^ (2 : ℕ) =
+      (r - m * s) ^ (2 : ℕ) := by
   rw [suzukiMarkedSecantSymmetricForm_add_rootedCompletion]
   ring
 
@@ -129,13 +129,13 @@ theorem suzukiMarkedSecantSymmetricForm_has_positive_and_negative_directions
 merely one admissible rate. -/
 theorem suzukiMarkedSecant_rootedCompletion_isLeast (m d : ℝ) :
     IsLeast {kappa : ℝ | ∀ r s : ℝ,
-      0 ≤ suzukiMarkedSecantSymmetricForm m d r s r s + kappa * s ^ 2} (d ^ 2) :=
-  ⟨(suzukiMarkedSecant_rootedCompletion_nonneg_iff m d (d ^ 2)).mpr le_rfl,
+      0 ≤ suzukiMarkedSecantSymmetricForm m d r s r s + kappa * s ^ (2 : ℕ)} (d ^ (2 : ℕ)) :=
+  ⟨(suzukiMarkedSecant_rootedCompletion_nonneg_iff m d (d ^ (2 : ℕ))).mpr le_rfl,
     fun _ hk => (suzukiMarkedSecant_rootedCompletion_nonneg_iff m d _).mp hk⟩
 
 /-- Coefficient matrix of the marked symmetric form in source coordinates `(r, s)`. -/
 def suzukiMarkedSecantFormMatrix (m d : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
-  !![1, -m; -m, m ^ 2 - d ^ 2]
+  !![1, -m; -m, m ^ (2 : ℕ) - d ^ (2 : ℕ)]
 
 /-- The matrix represents the marked symmetric form. -/
 theorem suzukiMarkedSecantFormMatrix_quadraticForm (m d r s : ℝ) :
@@ -147,7 +147,7 @@ theorem suzukiMarkedSecantFormMatrix_quadraticForm (m d r s : ℝ) :
 
 /-- The determinant of the coefficient matrix is exactly minus the squared halfgap. -/
 theorem det_suzukiMarkedSecantFormMatrix (m d : ℝ) :
-    (suzukiMarkedSecantFormMatrix m d).det = -d ^ 2 := by
+    (suzukiMarkedSecantFormMatrix m d).det = -d ^ (2 : ℕ) := by
   rw [suzukiMarkedSecantFormMatrix, Matrix.det_fin_two_of]
   ring
 
@@ -173,20 +173,20 @@ theorem suzukiMarkedSecantFormMatrix_congr_diag (m d : ℝ) :
   fin_cases i <;> fin_cases j <;>
     (simp [Matrix.mul_apply, Fin.sum_univ_two]; try ring)
 
-/-- Dyadic Suzuki shifts have sharp missing rooted rate `L^2/4`. -/
+/-- Dyadic Suzuki shifts have sharp missing rooted rate `L^(2 : ℕ)/4`. -/
 theorem suzukiMarkedSecant_dyadic_rootedCompletion_nonneg_iff
     (L kappa : ℝ) :
     (∀ r s : ℝ,
-      0 ≤ r ^ 2 + 3 * L * r * s + 2 * L ^ 2 * s ^ 2 + kappa * s ^ 2) ↔
-        L ^ 2 / 4 ≤ kappa := by
+      0 ≤ r ^ (2 : ℕ) + 3 * L * r * s + 2 * L ^ (2 : ℕ) * s ^ (2 : ℕ) + kappa * s ^ (2 : ℕ)) ↔
+        L ^ (2 : ℕ) / 4 ≤ kappa := by
   constructor
   · intro h
     have hm := h (-3 * L / 2) 1
     norm_num at hm
     nlinarith
   · intro hk r s
-    have hsq : 0 ≤ (r + 3 * L * s / 2) ^ 2 := sq_nonneg _
-    have hroot : 0 ≤ (kappa - L ^ 2 / 4) * s ^ 2 :=
+    have hsq : 0 ≤ (r + 3 * L * s / 2) ^ (2 : ℕ) := sq_nonneg _
+    have hroot : 0 ≤ (kappa - L ^ (2 : ℕ) / 4) * s ^ (2 : ℕ) :=
       mul_nonneg (sub_nonneg.mpr hk) (sq_nonneg s)
     nlinarith
 
@@ -202,7 +202,7 @@ theorem suzukiGlobalLocalCompoundNumerator_marked_midpoint_halfGap
         (suzukiProjectiveAffineSecantDenominator (m - d) (m + d) y Y)
         S T =
       (Y - m * y) * (((X + c) - m * x) * T - S * (Y - m * y)) +
-        d ^ 2 * y * (S * y - x * T) +
+        d ^ (2 : ℕ) * y * (S * y - x * T) +
         m * ((X + c) * y - x * Y) * T := by
   simp only [suzukiGlobalLocalCompoundNumerator,
     suzukiProjectiveAffineSecantTensor,
@@ -214,7 +214,7 @@ theorem suzukiGlobalLocalCompoundDenominator_marked_midpoint_halfGap
     {F : Type*} [CommRing F] (m d y Y T : F) :
     suzukiGlobalLocalCompoundDenominator
         (suzukiProjectiveAffineSecantDenominator (m - d) (m + d) y Y) T =
-      ((Y - m * y) ^ 2 - d ^ 2 * y ^ 2) * T := by
+      ((Y - m * y) ^ (2 : ℕ) - d ^ (2 : ℕ) * y ^ (2 : ℕ)) * T := by
   simp only [suzukiGlobalLocalCompoundDenominator,
     suzukiProjectiveAffineSecantDenominator]
   ring
@@ -238,7 +238,7 @@ theorem suzukiMarkedSecantMidpoint_flux_affineGauge_invariant
 variable {V : Type*} [AddCommGroup V] [Module ℂ V]
 
 /-- Product of resolvents at `m-d` and `m+d` obeys centered second-order forcing with exact
-halfgap debt `d^2`. -/
+halfgap debt `d^(2 : ℕ)`. -/
 theorem suzukiTwoResolvent_midpoint_forcing
     (A RMinus RPlus : V →ₗ[ℂ] V) (m d : ℂ) (e : V)
     (hMinusInv : ∀ u, A (RMinus u) - (m - d) • RMinus u = u)
@@ -246,7 +246,7 @@ theorem suzukiTwoResolvent_midpoint_forcing
     (hcomm : RMinus (RPlus e) = RPlus (RMinus e)) :
     let v := RMinus (RPlus e)
     let uMid := A v - m • v
-    e = A uMid - m • uMid - d ^ 2 • v := by
+    e = A uMid - m • uMid - d ^ (2 : ℕ) • v := by
   dsimp only
   have hPlusState :
       RMinus e =
@@ -260,14 +260,14 @@ theorem suzukiTwoResolvent_midpoint_forcing
     module)
 
 /-- Relative Volterra phase reads centered forcing as shifted phase plus a literal
-`-d^2 * phaseNeumann(v)` rooted source. -/
+`-d^(2 : ℕ) * phaseNeumann(v)` rooted source. -/
 theorem suzukiRelativeVolterraPhaseObservation_midpoint_forcing
     (A : V →ₗ[ℂ] V) (phaseEuler phaseNeumann : V →ₗ[ℂ] ℂ)
     (m d : ℂ) (e v uMid : V)
-    (hforcing : e = A uMid - m • uMid - d ^ 2 • v) :
+    (hforcing : e = A uMid - m • uMid - d ^ (2 : ℕ) • v) :
     suzukiRelativeVolterraPhaseObservation A phaseEuler phaseNeumann uMid +
         phaseNeumann e =
-      phaseEuler uMid - m * phaseNeumann uMid - d ^ 2 * phaseNeumann v := by
+      phaseEuler uMid - m * phaseNeumann uMid - d ^ (2 : ℕ) * phaseNeumann v := by
   rw [suzukiRelativeVolterraPhaseObservation]
   simp only [LinearMap.sub_apply, LinearMap.comp_apply]
   rw [hforcing]
@@ -287,7 +287,7 @@ theorem suzukiTwoResolvent_relativeVolterraPhase_midpoint_debt
     let uMid := A v - m • v
     suzukiRelativeVolterraPhaseObservation A phaseEuler phaseNeumann uMid +
         phaseNeumann e =
-      phaseEuler uMid - m * phaseNeumann uMid - d ^ 2 * phaseNeumann v := by
+      phaseEuler uMid - m * phaseNeumann uMid - d ^ (2 : ℕ) * phaseNeumann v := by
   dsimp only
   exact suzukiRelativeVolterraPhaseObservation_midpoint_forcing
     A phaseEuler phaseNeumann m d e
@@ -306,7 +306,7 @@ theorem suzukiMarkedXiCompoundNumerator_midpoint_halfGap
       (Y z - m * y z) *
           (((X z + c z) - m * x z) * suzukiXiDerivativePairDenominator z -
             suzukiXiDerivativePairNumerator z * (Y z - m * y z)) +
-        d ^ 2 * y z *
+        d ^ (2 : ℕ) * y z *
           (suzukiXiDerivativePairNumerator z * y z -
             x z * suzukiXiDerivativePairDenominator z) +
         m * ((X z + c z) * y z - x z * Y z) *
@@ -325,7 +325,7 @@ theorem suzukiMarkedXiCompoundNumerator_midpoint_halfGap
 theorem suzukiMarkedXiCompoundDenominator_midpoint_halfGap
     (m d : ℂ) (y Y : ℂ → ℂ) (z : ℂ) :
     suzukiMarkedXiCompoundDenominator (m - d) (m + d) y Y z =
-      ((Y z - m * y z) ^ 2 - d ^ 2 * (y z) ^ 2) *
+      ((Y z - m * y z) ^ (2 : ℕ) - d ^ (2 : ℕ) * (y z) ^ (2 : ℕ)) *
         suzukiXiDerivativePairDenominator z := by
   simp only [suzukiMarkedXiCompoundDenominator,
     suzukiXiGlobalLocalCompoundDenominator,

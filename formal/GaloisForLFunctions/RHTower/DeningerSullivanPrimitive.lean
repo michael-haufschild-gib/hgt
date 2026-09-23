@@ -41,13 +41,13 @@ private theorem deningerUnitsSmul {F M N : Type*} [AddCommGroup M] [AddCommGroup
 /-! ## The primitive of a decomposable -/
 
 /-- The new generator of the first Sullivan layer attached to the wedge of two vectors. -/
-def deningerSullivanPairGenerator (a b : V) : ExteriorAlgebra k (V × (⋀[k]^2 V)) :=
-  ι k ((0, ⟨ι k a * ι k b, deningerExteriorTwo_mem a b⟩) : V × (⋀[k]^2 V))
+def deningerSullivanPairGenerator (a b : V) : ExteriorAlgebra k (V × (⋀[k]^(2 : ℕ) V)) :=
+  ι k ((0, ⟨ι k a * ι k b, deningerExteriorTwo_mem a b⟩) : V × (⋀[k]^(2 : ℕ) V))
 
 @[simp]
 theorem deningerSullivanFirstLayerDifferential_pairGenerator (a b : V) :
     deningerSullivanFirstLayerDifferential k V (deningerSullivanPairGenerator a b) =
-      deningerSullivanInclusion k V (⋀[k]^2 V) (ι k a * ι k b) :=
+      deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V) (ι k a * ι k b) :=
   deningerSullivanFirstLayerDifferential_new _
 
 /-- Multiplying the new generator of a wedge of two vectors by an old element and differentiating
@@ -56,8 +56,8 @@ rule has only one surviving term. -/
 theorem deningerSullivanFirstLayerDifferential_pairGenerator_mul (a b : V)
     (Y : ExteriorAlgebra k V) :
     deningerSullivanFirstLayerDifferential k V
-        (deningerSullivanPairGenerator a b * deningerSullivanInclusion k V (⋀[k]^2 V) Y) =
-      deningerSullivanInclusion k V (⋀[k]^2 V) (ι k a * ι k b * Y) := by
+        (deningerSullivanPairGenerator a b * deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V) Y) =
+      deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V) (ι k a * ι k b * Y) := by
   rw [deningerSullivanFirstLayerDifferential_leibniz,
     deningerSullivanFirstLayerDifferential_inl,
     deningerSullivanFirstLayerDifferential_pairGenerator, mul_zero, zero_add, ← map_mul]
@@ -65,21 +65,21 @@ theorem deningerSullivanFirstLayerDifferential_pairGenerator_mul (a b : V)
 /-- **The canonical primitive of a wedge monomial**: the signed average, over all ordered pairs of
 letters, of the new generator of that pair times the remaining letters. -/
 def deningerSullivanPairPrimitive {r : ℕ} (v : Fin (r + 2) → V) :
-    ExteriorAlgebra k (V × (⋀[k]^2 V)) :=
+    ExteriorAlgebra k (V × (⋀[k]^(2 : ℕ) V)) :=
   ∑ p ∈ deningerPairIndex (r + 2),
     Equiv.Perm.sign (deningerPairPerm p.1 p.2) •
       (deningerSullivanPairGenerator (k := k) (v p.1) (v p.2) *
-        deningerSullivanInclusion k V (⋀[k]^2 V)
+        deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V)
           (List.ofFn fun t : Fin r =>
             ι k (v (deningerPairPerm p.1 p.2 t.succ.succ))).prod)
 
 /-- **The differential of the canonical primitive is the monomial, times the number of pairs.** -/
 theorem deningerSullivanPairPrimitive_differential {r : ℕ} (v : Fin (r + 2) → V) :
     deningerSullivanFirstLayerDifferential k V (deningerSullivanPairPrimitive v) =
-      ((r + 2).choose 2) • deningerSullivanInclusion k V (⋀[k]^2 V)
+      ((r + 2).choose 2) • deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V)
         (ExteriorAlgebra.ιMulti k (r + 2) v) := by
   have hstep : deningerSullivanFirstLayerDifferential k V (deningerSullivanPairPrimitive v) =
-      deningerSullivanInclusion k V (⋀[k]^2 V)
+      deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V)
         (∑ p ∈ deningerPairIndex (r + 2),
           Equiv.Perm.sign (deningerPairPerm p.1 p.2) •
             (ι k (v p.1) * (ι k (v p.2) *
@@ -96,7 +96,7 @@ primitive into an honest primitive of the wedge monomial. -/
 theorem deningerSullivanPairPrimitive_normalized [CharZero k] {r : ℕ} (v : Fin (r + 2) → V) :
     deningerSullivanFirstLayerDifferential k V
         ((((r + 2).choose 2 : ℕ) : k)⁻¹ • deningerSullivanPairPrimitive v) =
-      deningerSullivanInclusion k V (⋀[k]^2 V) (ExteriorAlgebra.ιMulti k (r + 2) v) := by
+      deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V) (ExteriorAlgebra.ιMulti k (r + 2) v) := by
   have hpos : 0 < (r + 2).choose 2 := Nat.choose_pos (by omega)
   have hne : (((r + 2).choose 2 : ℕ) : k) ≠ 0 := Nat.cast_ne_zero.mpr hpos.ne'
   rw [map_smul, deningerSullivanPairPrimitive_differential,
@@ -110,7 +110,7 @@ products with the old algebra, which consists of cocycles. -/
 theorem deningerSullivanFirstLayer_milnorIdeal_isCoboundary {z : ExteriorAlgebra k V}
     (hz : z ∈ deningerMilnorIdeal k V) :
     ∃ y, deningerSullivanFirstLayerDifferential k V y =
-      deningerSullivanInclusion k V (⋀[k]^2 V) z := by
+      deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V) z := by
   rw [deningerMilnorIdeal] at hz
   refine Submodule.span_induction ?_ ?_ ?_ ?_ hz
   · intro x hx
@@ -119,7 +119,7 @@ theorem deningerSullivanFirstLayer_milnorIdeal_isCoboundary {z : ExteriorAlgebra
   · rintro p q _ _ ⟨yp, hyp⟩ ⟨yq, hyq⟩
     exact ⟨yp + yq, by rw [map_add, hyp, hyq, map_add]⟩
   · rintro c p _ ⟨y, hy⟩
-    refine ⟨deningerSullivanInclusion k V (⋀[k]^2 V)
+    refine ⟨deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V)
       (deningerExteriorInvolute k V c) * y, ?_⟩
     rw [deningerSullivanFirstLayerDifferential_leibniz, hy,
       deningerSullivanFirstLayerDifferential_inl,
@@ -135,12 +135,12 @@ def deningerMilnorSubspace : Submodule k (ExteriorAlgebra k V) :=
   Submodule.restrictScalars k (deningerMilnorIdeal k V)
 
 /-- The image of the Milnor ideal in the first Sullivan layer. -/
-def deningerSullivanPrimitiveTarget : Submodule k (ExteriorAlgebra k (V × (⋀[k]^2 V))) :=
-  Submodule.map (deningerSullivanInclusion k V (⋀[k]^2 V)).toLinearMap
+def deningerSullivanPrimitiveTarget : Submodule k (ExteriorAlgebra k (V × (⋀[k]^(2 : ℕ) V))) :=
+  Submodule.map (deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V)).toLinearMap
     (deningerMilnorSubspace k V)
 
 /-- The elements of the first layer whose differential is the inclusion of a Milnor class. -/
-def deningerSullivanPrimitiveDomain : Submodule k (ExteriorAlgebra k (V × (⋀[k]^2 V))) :=
+def deningerSullivanPrimitiveDomain : Submodule k (ExteriorAlgebra k (V × (⋀[k]^(2 : ℕ) V))) :=
   Submodule.comap (deningerSullivanFirstLayerDifferential k V)
     (deningerSullivanPrimitiveTarget k V)
 
@@ -165,14 +165,14 @@ theorem deningerSullivanPrimitiveRestrict_range :
 onto the image of the Milnor ideal, and over a field every surjection of vector spaces splits, so
 the primitive can be chosen linearly in the class. -/
 theorem deningerSullivanPrimitive_exists :
-    ∃ h : deningerMilnorSubspace k V →ₗ[k] ExteriorAlgebra k (V × (⋀[k]^2 V)),
+    ∃ h : deningerMilnorSubspace k V →ₗ[k] ExteriorAlgebra k (V × (⋀[k]^(2 : ℕ) V)),
       ∀ x : deningerMilnorSubspace k V,
         deningerSullivanFirstLayerDifferential k V (h x) =
-          deningerSullivanInclusion k V (⋀[k]^2 V) (x : ExteriorAlgebra k V) := by
+          deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V) (x : ExteriorAlgebra k V) := by
   obtain ⟨s, hs⟩ := LinearMap.exists_rightInverse_of_surjective
     (deningerSullivanPrimitiveRestrict k V) (deningerSullivanPrimitiveRestrict_range k V)
   have hinj : Function.Injective
-      ((deningerSullivanInclusion k V (⋀[k]^2 V)).toLinearMap) :=
+      ((deningerSullivanInclusion k V (⋀[k]^(2 : ℕ) V)).toLinearMap) :=
     deningerSullivanInclusion_injective
   refine ⟨(deningerSullivanPrimitiveDomain k V).subtype.comp
     (s.comp (Submodule.equivMapOfInjective _ hinj (deningerMilnorSubspace k V)).toLinearMap),

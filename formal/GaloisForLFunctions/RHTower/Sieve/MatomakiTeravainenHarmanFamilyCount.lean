@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenMainLayerPaperCount
 
 Active pair and triple rectangles cost only the square or cube of the active aligned-block count.
 After multiplying by every recursion depth and active block chain, both families remain inside the
-literal `exp((log log X)^5)` budget.
+literal `exp((log log X)^(5 : ℕ))` budget.
 -/
 
 namespace RHTower.Sieve
@@ -32,7 +32,7 @@ theorem eventually_pairCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_fif
                 (mtAdjacentPrimeBlock
                   (mtPaperAlignedEndpoint (mtLowerCutoffNat X) z₁ (mtPaperWidth A X)))
                 depth j).card : ℕ) : ℝ) ≤
-            Real.exp ((Real.log (Real.log X)) ^ 5) := by
+            Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ)) := by
   filter_upwards [eventually_cast_card_mtPaperAlignedActiveBlockIndices_le_six_mul_log_pow A,
     eventually_outer_mul_sum_card_mtActiveBlockChains_paperAligned_le_exp_log_log_fifth
       A (2 * (10 * A + 1)) 36 (by norm_num)] with X hactiveX htotalX
@@ -44,7 +44,7 @@ theorem eventually_pairCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_fif
     (t := z₁ - mtLowerCutoffNat X) endpoint E
   have hcell : ((mtHarmanActiveGoodPairCells
       (t := z₁ - mtLowerCutoffNat X) endpoint E).card : ℝ) ≤
-      ((mtActiveBlockIndices block).card : ℝ) ^ 2 := by
+      ((mtActiveBlockIndices block).card : ℝ) ^ (2 : ℕ) := by
     exact_mod_cast hcellNat
   have hactive : ((mtActiveBlockIndices block).card : ℝ) ≤
       6 * (Real.log X) ^ (10 * A + 1) := by
@@ -52,8 +52,8 @@ theorem eventually_pairCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_fif
     rw [mtActiveBlockIndices_paperAligned]
     exact hactiveX z₁ hz hzX
   have hactiveNonneg : 0 ≤ ((mtActiveBlockIndices block).card : ℝ) := Nat.cast_nonneg _
-  have hactivePow : ((mtActiveBlockIndices block).card : ℝ) ^ 2 ≤
-      (6 * (Real.log X) ^ (10 * A + 1)) ^ 2 :=
+  have hactivePow : ((mtActiveBlockIndices block).card : ℝ) ^ (2 : ℕ) ≤
+      (6 * (Real.log X) ^ (10 * A + 1)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hactiveNonneg hactive 2
   calc
     ((mtHarmanActiveGoodPairCells
@@ -62,7 +62,7 @@ theorem eventually_pairCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_fif
             (Nat.floor (Real.log (Y : ℝ) /
               Real.log (mtLowerCutoffNat X : ℝ)) + 1),
             (mtActiveBlockChains block depth j).card : ℕ) : ℝ) ≤
-      (6 * (Real.log X) ^ (10 * A + 1)) ^ 2 *
+      (6 * (Real.log X) ^ (10 * A + 1)) ^ (2 : ℕ) *
         ((∑ depth ∈ Finset.range
             (Nat.floor (Real.log (Y : ℝ) /
               Real.log (mtLowerCutoffNat X : ℝ)) + 1),
@@ -76,7 +76,7 @@ theorem eventually_pairCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_fif
       rw [mul_pow, ← pow_mul]
       rw [Nat.mul_comm (10 * A + 1) 2]
       norm_num
-    _ ≤ Real.exp ((Real.log (Real.log X)) ^ 5) := by
+    _ ≤ Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ)) := by
       simpa only [endpoint, block] using htotalX Y z₁ hY hYX hz hzX j
 
 /-- Triple rectangles times every repaired main-layer chain fit the exact Proposition 2.2 budget. -/
@@ -96,7 +96,7 @@ theorem eventually_tripleCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_f
                 (mtAdjacentPrimeBlock
                   (mtPaperAlignedEndpoint (mtLowerCutoffNat X) z₁ (mtPaperWidth A X)))
                 depth j).card : ℕ) : ℝ) ≤
-            Real.exp ((Real.log (Real.log X)) ^ 5) := by
+            Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ)) := by
   filter_upwards [eventually_cast_card_mtPaperAlignedActiveBlockIndices_le_six_mul_log_pow A,
     eventually_outer_mul_sum_card_mtActiveBlockChains_paperAligned_le_exp_log_log_fifth
       A (3 * (10 * A + 1)) 216 (by norm_num)] with X hactiveX htotalX
@@ -108,7 +108,7 @@ theorem eventually_tripleCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_f
     (t := z₁ - mtLowerCutoffNat X) endpoint E
   have hcell : ((mtHarmanActiveGoodTripleCells
       (t := z₁ - mtLowerCutoffNat X) endpoint E).card : ℝ) ≤
-      ((mtActiveBlockIndices block).card : ℝ) ^ 3 := by
+      ((mtActiveBlockIndices block).card : ℝ) ^ (3 : ℕ) := by
     exact_mod_cast hcellNat
   have hactive : ((mtActiveBlockIndices block).card : ℝ) ≤
       6 * (Real.log X) ^ (10 * A + 1) := by
@@ -116,8 +116,8 @@ theorem eventually_tripleCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_f
     rw [mtActiveBlockIndices_paperAligned]
     exact hactiveX z₁ hz hzX
   have hactiveNonneg : 0 ≤ ((mtActiveBlockIndices block).card : ℝ) := Nat.cast_nonneg _
-  have hactivePow : ((mtActiveBlockIndices block).card : ℝ) ^ 3 ≤
-      (6 * (Real.log X) ^ (10 * A + 1)) ^ 3 :=
+  have hactivePow : ((mtActiveBlockIndices block).card : ℝ) ^ (3 : ℕ) ≤
+      (6 * (Real.log X) ^ (10 * A + 1)) ^ (3 : ℕ) :=
     pow_le_pow_left₀ hactiveNonneg hactive 3
   calc
     ((mtHarmanActiveGoodTripleCells
@@ -126,7 +126,7 @@ theorem eventually_tripleCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_f
             (Nat.floor (Real.log (Y : ℝ) /
               Real.log (mtLowerCutoffNat X : ℝ)) + 1),
             (mtActiveBlockChains block depth j).card : ℕ) : ℝ) ≤
-      (6 * (Real.log X) ^ (10 * A + 1)) ^ 3 *
+      (6 * (Real.log X) ^ (10 * A + 1)) ^ (3 : ℕ) *
         ((∑ depth ∈ Finset.range
             (Nat.floor (Real.log (Y : ℝ) /
               Real.log (mtLowerCutoffNat X : ℝ)) + 1),
@@ -140,7 +140,7 @@ theorem eventually_tripleCells_mul_sum_card_mtActiveBlockChains_le_exp_log_log_f
       rw [mul_pow, ← pow_mul]
       rw [Nat.mul_comm (10 * A + 1) 3]
       norm_num
-    _ ≤ Real.exp ((Real.log (Real.log X)) ^ 5) := by
+    _ ≤ Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ)) := by
       simpa only [endpoint, block] using htotalX Y z₁ hY hYX hz hzX j
 
 end

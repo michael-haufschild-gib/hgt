@@ -51,31 +51,31 @@ theorem prolateLeakageCollar_pos : 0 < prolateLeakageCollar := by
 /-- The half-line exterior mass of the canonical radial datum. -/
 theorem integral_Ioi_sq_signedModeRadialData {a : ℝ} (ha : 0 < a) (n : ℕ)
     (hvalue : evenProlateSignedValue a n ≠ 0) :
-    (∫ x in Ioi (1 : ℝ), (signedModeRadialData a n).R x ^ 2)
-      = (∫ x in (-1 : ℝ)..1, (signedModeRadialData a n).R x ^ 2)
-        * (evenProlateSignedLeakage a n / 2) / evenProlateSignedValue a n ^ 2 := by
+    (∫ x in Ioi (1 : ℝ), (signedModeRadialData a n).R x ^ (2 : ℕ))
+      = (∫ x in (-1 : ℝ)..1, (signedModeRadialData a n).R x ^ (2 : ℕ))
+        * (evenProlateSignedLeakage a n / 2) / evenProlateSignedValue a n ^ (2 : ℕ) := by
   have hD := signedModeRadialData_isExact ha n hvalue
   have hEven : Function.Even (signedModeRadialData a n).R := hD.2.2.2.2.2.2.1
-  have hint : Integrable (fun x : ℝ => (signedModeRadialData a n).R x ^ 2) :=
+  have hint : Integrable (fun x : ℝ => (signedModeRadialData a n).R x ^ (2 : ℕ)) :=
     integrable_sq_signedModeRadialData ha n hvalue
   have hcompl : (Icc (-1 : ℝ) 1)ᶜ = Iio (-1) ∪ Ioi 1 := by
     ext x
     simp only [mem_compl_iff, mem_Icc, not_and_or, not_le, mem_union, mem_Iio, mem_Ioi]
-  have hrefl : (∫ x in Iio (-1 : ℝ), (signedModeRadialData a n).R x ^ 2)
-      = ∫ x in Ioi (1 : ℝ), (signedModeRadialData a n).R x ^ 2 := by
-    have h := integral_comp_neg_Ioi (1 : ℝ) fun x : ℝ => (signedModeRadialData a n).R x ^ 2
-    have hfun : (fun x : ℝ => (signedModeRadialData a n).R (-x) ^ 2)
-        = fun x : ℝ => (signedModeRadialData a n).R x ^ 2 := by
+  have hrefl : (∫ x in Iio (-1 : ℝ), (signedModeRadialData a n).R x ^ (2 : ℕ))
+      = ∫ x in Ioi (1 : ℝ), (signedModeRadialData a n).R x ^ (2 : ℕ) := by
+    have h := integral_comp_neg_Ioi (1 : ℝ) fun x : ℝ => (signedModeRadialData a n).R x ^ (2 : ℕ)
+    have hfun : (fun x : ℝ => (signedModeRadialData a n).R (-x) ^ (2 : ℕ))
+        = fun x : ℝ => (signedModeRadialData a n).R x ^ (2 : ℕ) := by
       funext x
       rw [hEven x]
     rw [hfun] at h
-    have hIic : (∫ x in Iic (-1 : ℝ), (signedModeRadialData a n).R x ^ 2)
-        = ∫ x in Iio (-1 : ℝ), (signedModeRadialData a n).R x ^ 2 := by
+    have hIic : (∫ x in Iic (-1 : ℝ), (signedModeRadialData a n).R x ^ (2 : ℕ))
+        = ∫ x in Iio (-1 : ℝ), (signedModeRadialData a n).R x ^ (2 : ℕ) := by
       rw [← MeasureTheory.integral_Iic_eq_integral_Iio]
     rw [hIic] at h
     exact h.symm
-  have hsplit : (∫ x in (Icc (-1 : ℝ) 1)ᶜ, (signedModeRadialData a n).R x ^ 2)
-      = 2 * ∫ x in Ioi (1 : ℝ), (signedModeRadialData a n).R x ^ 2 := by
+  have hsplit : (∫ x in (Icc (-1 : ℝ) 1)ᶜ, (signedModeRadialData a n).R x ^ (2 : ℕ))
+      = 2 * ∫ x in Ioi (1 : ℝ), (signedModeRadialData a n).R x ^ (2 : ℕ) := by
     rw [hcompl, setIntegral_union (by
         rw [Set.disjoint_left]
         intro x hx hx'
@@ -84,7 +84,7 @@ theorem integral_Ioi_sq_signedModeRadialData {a : ℝ} (ha : 0 < a) (n : ℕ)
     ring
   have hmass := integral_outside_sq_signedModeRadialData_eq_leakage_ratio ha n hvalue
   rw [hsplit] at hmass
-  have hσ : evenProlateSignedValue a n ^ 2 ≠ 0 := pow_ne_zero 2 hvalue
+  have hσ : evenProlateSignedValue a n ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hvalue
   field_simp at hmass ⊢
   linarith [hmass]
 
@@ -93,12 +93,12 @@ theorem integral_Ioi_sq_signedModeRadialData {a : ℝ} (ha : 0 < a) (n : ℕ)
 /-- The lower leakage bound of the two-sided estimate at the fixed collar. -/
 def prolateLeakageLower (c s : ℝ) : ℝ :=
   besselEnergyFloor / 864 / c
-    / (2 * (2 * (3 * (1 + (1 - prolateLeakageCollar ^ 2)
-          * (prolateRadialBarrier c s prolateLeakageCollar + 6 / (1 - prolateLeakageCollar)) ^ 2
-          / (c ^ 2 * (prolateLeakageCollar ^ 2 - s))) + 1)
+    / (2 * (2 * (3 * (1 + (1 - prolateLeakageCollar ^ (2 : ℕ))
+          * (prolateRadialBarrier c s prolateLeakageCollar + 6 / (1 - prolateLeakageCollar)) ^ (2 : ℕ)
+          / (c ^ (2 : ℕ) * (prolateLeakageCollar ^ (2 : ℕ) - s))) + 1)
       * Real.exp (2 * c * (1 + s / 4 * Real.log s)
-          + ((Real.log (prolateLeakageCollar ^ 2 - s) - Real.log (3 * s))
-            + (Real.log (1 - 4 * s) - Real.log (1 - prolateLeakageCollar ^ 2)))
+          + ((Real.log (prolateLeakageCollar ^ (2 : ℕ) - s) - Real.log (3 * s))
+            + (Real.log (1 - 4 * s) - Real.log (1 - prolateLeakageCollar ^ (2 : ℕ))))
           + 10 * (c * s))))
 
 /-- The cut of the two-sided estimate: one inverse bandwidth above the turning scale.  The
@@ -109,9 +109,9 @@ def prolateLeakageCut (c s : ℝ) : ℝ := 2 * Real.sqrt s + 1 / c
 /-- The upper leakage bound of the two-sided estimate at the fixed collar and the cut above. -/
 def prolateLeakageUpper (c s : ℝ) : ℝ :=
   radialProlateExteriorMassConstant / c
-    * ((6 * Real.pi * Real.sqrt (c * bandEndpointPhase s prolateLeakageCollar)) ^ 2
+    * ((6 * Real.pi * Real.sqrt (c * bandEndpointPhase s prolateLeakageCollar)) ^ (2 : ℕ)
         * Real.exp (2 * ((c * prolateLeakageCut c s + 12)
-            * (prolateLeakageCut c s - 2 * Real.sqrt s) / (1 - prolateLeakageCut c s ^ 2)))
+            * (prolateLeakageCut c s - 2 * Real.sqrt s) / (1 - prolateLeakageCut c s ^ (2 : ℕ))))
         / (prolateLeakageCut c s - 2 * Real.sqrt s))
     * Real.exp (-(2 * (c * bandEndpointPhase s (2 * Real.sqrt s)
         + 6 * (Real.log (1 - prolateLeakageCollar) - Real.log (1 - 2 * Real.sqrt s)))))
@@ -130,10 +130,10 @@ theorem eventually_signedLeakage_two_sided (n : ℕ) (hn : 1 ≤ n) :
   have hαhalf : (1 : ℝ) / 2 < α := prolateLeakageCollar_gt_half
   have hαcollar : 600 * (1 - α) ≤ 1 / 4 := prolateLeakageCollar_collar
   have hα0 : 0 < α := prolateLeakageCollar_pos
-  have hαsq : (1 : ℝ) / 64 < α ^ 2 := by
+  have hαsq : (1 : ℝ) / 64 < α ^ (2 : ℕ) := by
     rw [hα, prolateLeakageCollar]
     norm_num
-  set κ : ℝ := Real.sqrt (α ^ 2 - 1 / 64) * Real.arccos α with hκ
+  set κ : ℝ := Real.sqrt (α ^ (2 : ℕ) - 1 / 64) * Real.arccos α with hκ
   have hκpos : 0 < κ := by
     refine mul_pos (Real.sqrt_pos.2 (by linarith)) ?_
     exact Real.arccos_pos.2 hα1
@@ -153,7 +153,7 @@ theorem eventually_signedLeakage_two_sided (n : ℕ) (hn : 1 ≤ n) :
   have hcbig : ∀ᶠ a : ℝ in atTop, C₀ ≤ signedModeRadialBandwidth a :=
     tendsto_signedModeRadialBandwidth_atTop.eventually_ge_atTop C₀
   have hσlim := evenProlateSignedValue_sq_tendsto_one n
-  have hσ : ∀ᶠ a : ℝ in atTop, 1 / 2 < evenProlateSignedValue a n ^ 2 :=
+  have hσ : ∀ᶠ a : ℝ in atTop, 1 / 2 < evenProlateSignedValue a n ^ (2 : ℕ) :=
     hσlim.eventually (eventually_gt_nhds (by norm_num))
   filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_signedModeRadialData_isExact n,
     eventually_evenProlateSignedValue_ne_zero n, hcs_lo, hcs_hi, hcbig, hσ]
@@ -180,7 +180,7 @@ theorem eventually_signedLeakage_two_sided (n : ℕ) (hn : 1 ≤ n) :
   have hsqs : Real.sqrt s ≤ 1 / 8 := by
     have h := Real.sqrt_le_sqrt hs64
     have h8 : Real.sqrt ((1 : ℝ) / 64) = 1 / 8 := by
-      rw [show (1 : ℝ) / 64 = (1 / 8) ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]
+      rw [show (1 : ℝ) / 64 = (1 / 8) ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]
     rwa [h8] at h
   have hsqs0 : 0 < Real.sqrt s := Real.sqrt_pos.2 hs0
   have h2sα : 2 * Real.sqrt s ≤ α := by
@@ -197,12 +197,12 @@ theorem eventually_signedLeakage_two_sided (n : ℕ) (hn : 1 ≤ n) :
     hex.2.2.2.2.2.2.2.2.2.1
   have hsratio : s = radialSeparationRatio c (signedModeRadialData a n).chi :=
     hex.2.2.2.2.2.2.2.2.2.2.1
-  have hode : ∀ x : ℝ, (x ^ 2 - 1) * deriv (deriv R) x + 2 * x * deriv R x
-      - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0 := hex.2.2.2.2.2.2.2.2.2.2.2.2.2
-  have hchi : (signedModeRadialData a n).chi = -(s * c ^ 2) := by
+  have hode : ∀ x : ℝ, (x ^ (2 : ℕ) - 1) * deriv (deriv R) x + 2 * x * deriv R x
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x = 0 := hex.2.2.2.2.2.2.2.2.2.2.2.2.2
+  have hchi : (signedModeRadialData a n).chi = -(s * c ^ (2 : ℕ)) := by
     rw [hsratio, radialSeparationRatio]
     field_simp
-  have heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c R y = -(s * c ^ 2) * R y := by
+  have heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c R y = -(s * c ^ (2 : ℕ)) * R y := by
     intro y _
     rw [heigchi y, hchi]
   have hdiff : Differentiable ℝ R := (contDiff_infty_iff_deriv.mp hsm).1
@@ -215,10 +215,10 @@ theorem eventually_signedLeakage_two_sided (n : ℕ) (hn : 1 ≤ n) :
   have hposΦ : ∀ t ∈ Icc (2 * Real.sqrt s) 1, 0 < R t := by
     intro t ht
     exact hpos t ⟨le_trans (by linarith) ht.1, ht.2⟩
-  have hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ 2) * deriv R u)
-      (-(c ^ 2 * (s - t ^ 2) * R t)) t := by
+  have hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * deriv R u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * R t)) t := by
     intro t _
-    have h1 : HasDerivAt (fun u : ℝ => 1 - u ^ 2) (-(2 * t)) t := by
+    have h1 : HasDerivAt (fun u : ℝ => 1 - u ^ (2 : ℕ)) (-(2 * t)) t := by
       have h0 := (hasDerivAt_pow 2 t).const_sub 1
       refine h0.congr_deriv ?_
       push_cast
@@ -227,29 +227,29 @@ theorem eventually_signedLeakage_two_sided (n : ℕ) (hn : 1 ≤ n) :
     refine h.congr_deriv ?_
     have ho := hode t
     linear_combination -ho
-  have hIntR : IntegrableOn (fun x => R x ^ 2) (Ioi (1 : ℝ)) :=
+  have hIntR : IntegrableOn (fun x => R x ^ (2 : ℕ)) (Ioi (1 : ℝ)) :=
     (integrable_sq_signedModeRadialData hapos n hvne).integrableOn
-  have hleak0 : 0 ≤ 1 - evenProlateSignedValue a n ^ 2 :=
+  have hleak0 : 0 ≤ 1 - evenProlateSignedValue a n ^ (2 : ℕ) :=
     one_sub_evenProlateSignedValue_sq_nonneg a n
-  have hvalue : 1 / 2 ≤ evenProlateSignedValue a n ^ 2 := le_of_lt hsig
-  have hv2 : evenProlateSignedValue a n ^ 2 ≤ 1 := by linarith
+  have hvalue : 1 / 2 ≤ evenProlateSignedValue a n ^ (2 : ℕ) := le_of_lt hsig
+  have hv2 : evenProlateSignedValue a n ^ (2 : ℕ) ≤ 1 := by linarith
   have hleak : 0 ≤ evenProlateSignedLeakage a n / 2 := by
     rw [evenProlateSignedLeakage]
     linarith
-  have hmass : (∫ x in Ioi (1 : ℝ), R x ^ 2)
-      = (∫ y in (-1 : ℝ)..1, R y ^ 2) * (evenProlateSignedLeakage a n / 2)
-        / evenProlateSignedValue a n ^ 2 :=
+  have hmass : (∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ))
+      = (∫ y in (-1 : ℝ)..1, R y ^ (2 : ℕ)) * (evenProlateSignedLeakage a n / 2)
+        / evenProlateSignedValue a n ^ (2 : ℕ) :=
     integral_Ioi_sq_signedModeRadialData hapos n hvne
-  have hα2 : (1 : ℝ) / 64 ≤ 2 * α ^ 2 - 1 := by
+  have hα2 : (1 : ℝ) / 64 ≤ 2 * α ^ (2 : ℕ) - 1 := by
     rw [hα, prolateLeakageCollar]
     norm_num
-  have houter : ∀ t ∈ Icc α 1, c ^ 2 * (1 - 2 * t ^ 2) ≤ -(s * c ^ 2) := by
+  have houter : ∀ t ∈ Icc α 1, c ^ (2 : ℕ) * (1 - 2 * t ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)) := by
     intro t ht
-    have htsq : α ^ 2 ≤ t ^ 2 := by nlinarith [ht.1, hα0]
+    have htsq : α ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by nlinarith [ht.1, hα0]
     nlinarith [hα2, hs64, htsq, sq_nonneg c, hc0]
   have hz : 1 ≤ c * bandEndpointPhase s α := by
     have hlow := sqrt_mul_arccos_le_bandEndpointPhase (s := s) (y := α) hα0.le hα1.le
-    have hmono : Real.sqrt (α ^ 2 - 1 / 64) ≤ Real.sqrt (α ^ 2 - s) :=
+    have hmono : Real.sqrt (α ^ (2 : ℕ) - 1 / 64) ≤ Real.sqrt (α ^ (2 : ℕ) - s) :=
       Real.sqrt_le_sqrt (by linarith)
     have hκle : κ ≤ bandEndpointPhase s α := by
       refine le_trans ?_ hlow

@@ -19,7 +19,7 @@ theorem rectIntegral_smoothAFEZetaSquareMellinIntegrand
     rectIntegral (smoothAFEZetaSquareMellinIntegrand (linePt tau) x)
         (Complex.mk (-1) (-T)) (Complex.mk 1 T) =
       2 * Real.pi * I *
-        (riemannZeta (linePt tau) ^ 2 +
+        (riemannZeta (linePt tau) ^ (2 : ℕ) +
           confluentResidueCoeff
             (smoothAFEZetaSquarePoleNumerator (linePt tau) x)
             (1 - linePt tau)) := by
@@ -27,7 +27,7 @@ theorem rectIntegral_smoothAFEZetaSquareMellinIntegrand
   apply rectIntegral_eq_confluent_two_pole_residues_of_analyticOnNhd
     (U := Set.univ)
     (p := 0) (q := 1 - linePt tau)
-    (rp := riemannZeta (linePt tau) ^ 2)
+    (rp := riemannZeta (linePt tau) ^ (2 : ℕ))
     (dq := confluentDoubleCoeff
       (smoothAFEZetaSquarePoleNumerator (linePt tau) x)
       (1 - linePt tau))

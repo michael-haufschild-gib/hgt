@@ -30,7 +30,7 @@ theorem ccmFirstClockEulerDepthZeroCayleyExteriorEnergy_eq_source
     (m : ℕ) (τ : ℝ) :
     ccmFirstClockEulerDepthZeroCayleyExteriorEnergy m τ =
       sourceCayleyExteriorHermitianEnergy
-        (suzukiMangoldtFivePrimeBlock (m ^ 4))
+        (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
         ccmFirstClockEulerDepthZeroExteriorAmplitude
         ccmFirstClockEulerDepthZeroExteriorHeight τ := by
   rfl
@@ -40,7 +40,7 @@ theorem ccmFirstClockEulerDepthZeroCayleyExteriorEnergy_re_eq
     (m : ℕ) (τ : ℝ) :
     (ccmFirstClockEulerDepthZeroCayleyExteriorEnergy m τ).re =
       sourceCayleyExteriorScalarEnergy
-        (suzukiMangoldtFivePrimeBlock (m ^ 4))
+        (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
         ccmFirstClockEulerDepthZeroExteriorAmplitude
         ccmFirstClockEulerDepthZeroExteriorHeight τ := by
   rw [ccmFirstClockEulerDepthZeroCayleyExteriorEnergy_eq_source]
@@ -58,9 +58,9 @@ theorem ccmFirstClockEulerDepthZeroCayleyExteriorEnergy_re_nonneg
 first-clock bad-mass square beyond the explicit symbolic threshold. -/
 theorem not_ccmFirstClock_badMass_sq_le_CayleyExteriorEnergy_re
     {m : ℕ} (hmLarge : Real.exp 7201 < (m : ℝ)) (τ : ℝ) :
-    ¬ (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    ¬ (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 ≤
+          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) ≤
       (ccmFirstClockEulerDepthZeroCayleyExteriorEnergy m τ).re := by
   exact
     not_ccmFirstClock_badMass_sq_le_EulerDepthZeroBoundedExteriorEnergy_re
@@ -75,9 +75,9 @@ theorem ccmFirstClock_CayleyOrientationCapacity_dichotomy
     {m : ℕ} (hmLarge : Real.exp 7201 < (m : ℝ))
     {τ : ℝ} (hτ : 0 ≤ τ) :
     0 ≤ (ccmFirstClockEulerDepthZeroCayleyExteriorEnergy m τ).re ∧
-      ¬ (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      ¬ (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           ccmFirstClockReducedBadNatTerm
-            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 ≤
+            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) ≤
         (ccmFirstClockEulerDepthZeroCayleyExteriorEnergy m τ).re :=
   ⟨ccmFirstClockEulerDepthZeroCayleyExteriorEnergy_re_nonneg m hτ,
     not_ccmFirstClock_badMass_sq_le_CayleyExteriorEnergy_re hmLarge τ⟩

@@ -21,7 +21,7 @@ namespace RHTower
 completed zeta trace, together with its exact constant term. -/
 theorem XiC_ofReal_eq_completedRiemannZeta₀ (t : ℝ) :
     XiC (t : ℂ) =
-      (1 / 2 : ℂ) - (((t : ℂ) ^ 2 + 1 / 4) / 2) *
+      (1 / 2 : ℂ) - (((t : ℂ) ^ (2 : ℕ) + 1 / 4) / 2) *
         completedRiemannZeta₀ ((1 : ℂ) / 2 + (t : ℂ) * I) := by
   rw [XiC, xi]
   ring_nf
@@ -80,7 +80,7 @@ theorem sin_mul_thetaCuspTailDerivative_tendsto_atTop_zero (m : ℕ) (t : ℝ) :
 constant boundary term and the quadratic spectral multiplier. -/
 theorem integral_Ioi_thetaCuspFullSource_mul_cos (t : ℝ) :
     ∫ x : ℝ in Ioi 0, thetaCuspFullSource x * Real.cos (t * x) =
-      1 / 4 - (t ^ 2 + 1 / 4) *
+      1 / 4 - (t ^ (2 : ℕ) + 1 / 4) *
         ∫ x : ℝ in Ioi 0, thetaCuspTailDerivative 0 x * Real.cos (t * x) := by
   have hsinDeriv (x : ℝ) :
       HasDerivAt (fun y : ℝ => Real.sin (t * y)) (t * Real.cos (t * x)) x := by
@@ -150,7 +150,7 @@ theorem integral_Ioi_thetaCuspFullSource_mul_cos (t : ℝ) :
     hcosZero (cos_mul_thetaCuspTailDerivative_tendsto_atTop_zero 1 t)
   have hcosIdentity :
       (∫ x : ℝ in Ioi 0, Real.cos (t * x) * thetaCuspTailDerivative 2 x) =
-        1 / 4 - t ^ 2 * ∫ x : ℝ in Ioi 0,
+        1 / 4 - t ^ (2 : ℕ) * ∫ x : ℝ in Ioi 0,
           Real.cos (t * x) * thetaCuspTailDerivative 0 x := by
     have hshape : (fun x : ℝ => (-t * Real.sin (t * x)) *
         thetaCuspTailDerivative 1 x) =

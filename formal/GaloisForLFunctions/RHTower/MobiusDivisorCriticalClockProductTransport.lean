@@ -30,7 +30,7 @@ namespace RHTower
 
 private def finitePair (P : Finset ℕ) (Y X : ℝ) : ℝ :=
   ∫ x in Ioc (0 : ℝ) X,
-    mobiusDivisorContinuousHead P (Y*x)*mobiusDivisorContinuousHead P x/x^3
+    mobiusDivisorContinuousHead P (Y*x)*mobiusDivisorContinuousHead P x/x^(3 : ℕ)
 
 /-- The actual processed head with its original pointwise linear normalization,
 written in logarithmic time. -/
@@ -42,20 +42,20 @@ measure `dx/x`. Both the lag and the upper boundary are logarithmic times. -/
 def mobiusDivisorCriticalClockPairing (P : Finset ℕ) (lag cutoff : ℝ) : ℝ :=
   (∫ x in Ioc (0 : ℝ) (Real.exp cutoff),
     mobiusDivisorContinuousHead P (Real.exp lag*x)*
-      mobiusDivisorContinuousHead P x/x^3)/Real.exp lag
+      mobiusDivisorContinuousHead P x/x^(3 : ℕ))/Real.exp lag
 
 private lemma pair_zero_integrable (P : Finset ℕ) {Y : ℝ} (hY : 0<Y) :
     IntegrableOn (fun x : ℝ => mobiusDivisorContinuousHead P (Y*x)*
-      mobiusDivisorContinuousHead P x/x^3) (Ioi 0) := by
+      mobiusDivisorContinuousHead P x/x^(3 : ℕ)) (Ioi 0) := by
   apply (integrable_mobiusDivisorDilationMean_kernel P hY).of_forall_sdiff_eq_zero
     measurableSet_Ioi
   intro x hx
   simp [mobiusDivisorContinuousHead_eq_zero P (le_of_not_gt hx.2)]
 
 private lemma pair_scale (P : Finset ℕ) {A B : ℝ} (hB : 0<B) (x : ℝ) :
-    mobiusDivisorContinuousHead P (A*x)*mobiusDivisorContinuousHead P (B*x)/x^3 =
-      B^3*(mobiusDivisorContinuousHead P ((A/B)*(B*x))*
-        mobiusDivisorContinuousHead P (B*x)/(B*x)^3) := by
+    mobiusDivisorContinuousHead P (A*x)*mobiusDivisorContinuousHead P (B*x)/x^(3 : ℕ) =
+      B^(3 : ℕ)*(mobiusDivisorContinuousHead P ((A/B)*(B*x))*
+        mobiusDivisorContinuousHead P (B*x)/(B*x)^(3 : ℕ)) := by
   rw [show A/B*(B*x)=A*x by field_simp]
   by_cases hx : x=0
   · simp [hx]
@@ -64,12 +64,12 @@ private lemma pair_scale (P : Finset ℕ) {A B : ℝ} (hB : 0<B) (x : ℝ) :
 private lemma pair_integrable (P : Finset ℕ) {A B : ℝ}
     (hA : 0<A) (hB : 0<B) (X : ℝ) :
     IntegrableOn (fun x : ℝ => mobiusDivisorContinuousHead P (A*x)*
-      mobiusDivisorContinuousHead P (B*x)/x^3) (Ioc 0 X) := by
+      mobiusDivisorContinuousHead P (B*x)/x^(3 : ℕ)) (Ioc 0 X) := by
   have hi := (integrableOn_Ioi_comp_mul_left_iff _ 0 hB).mpr
     (by simpa using pair_zero_integrable P (div_pos hA hB))
   have hj : IntegrableOn (fun x : ℝ => mobiusDivisorContinuousHead P (A*x)*
-      mobiusDivisorContinuousHead P (B*x)/x^3) (Ioi 0) := by
-    apply IntegrableOn.congr_fun (hi.const_mul (B^3)) _ measurableSet_Ioi
+      mobiusDivisorContinuousHead P (B*x)/x^(3 : ℕ)) (Ioi 0) := by
+    apply IntegrableOn.congr_fun (hi.const_mul (B^(3 : ℕ))) _ measurableSet_Ioi
     intro x _
     exact (pair_scale P hB x).symm
   exact hj.mono_set Ioc_subset_Ioi_self
@@ -77,24 +77,24 @@ private lemma pair_integrable (P : Finset ℕ) {A B : ℝ}
 private lemma pair_integral (P : Finset ℕ) {A B X : ℝ}
     (hB : 0<B) (hX : 0≤X) :
     (∫x in Ioc (0:ℝ) X, mobiusDivisorContinuousHead P (A*x)*
-      mobiusDivisorContinuousHead P (B*x)/x^3)=B^2*finitePair P (A/B) (B*X) := by
+      mobiusDivisorContinuousHead P (B*x)/x^(3 : ℕ))=B^(2 : ℕ)*finitePair P (A/B) (B*X) := by
   rw [← intervalIntegral.integral_of_le hX]
   simp_rw [pair_scale P hB]
   rw [intervalIntegral.integral_const_mul,
     intervalIntegral.integral_comp_mul_left
       (fun u : ℝ => mobiusDivisorContinuousHead P ((A/B)*u)*
-        mobiusDivisorContinuousHead P u/u^3) hB.ne', mul_zero,
+        mobiusDivisorContinuousHead P u/u^(3 : ℕ)) hB.ne', mul_zero,
     smul_eq_mul, intervalIntegral.integral_of_le (mul_nonneg hB.le hX)]
   unfold finitePair
   field_simp
 
 private lemma finitePair_reciprocal (P : Finset ℕ) {Y X : ℝ}
     (hY : 0<Y) (hX : 0≤X) :
-    finitePair P Y X=Y^2*finitePair P (1/Y) (Y*X) := by
+    finitePair P Y X=Y^(2 : ℕ)*finitePair P (1/Y) (Y*X) := by
   have h := pair_integral P (A := 1) hY hX
   calc
     _ = ∫x in Ioc (0:ℝ) X, mobiusDivisorContinuousHead P x*
-        mobiusDivisorContinuousHead P (Y*x)/x^3 := by
+        mobiusDivisorContinuousHead P (Y*x)/x^(3 : ℕ) := by
       unfold finitePair
       apply integral_congr_ae
       filter_upwards with x
@@ -105,11 +105,11 @@ private lemma finitePair_joint (P : Finset ℕ) (hP : ∀q∈P,q.Prime)
     {p : ℕ} (hp : p.Prime) (hpP : p∉P) {Y X : ℝ} (hY : 0<Y) (hX : 0≤X) :
     finitePair (insert p P) Y ((p:ℝ)*X) =
       finitePair P Y ((p:ℝ)*X)+finitePair P Y X/(p:ℝ)-
-        Real.sqrt p/(p:ℝ)^2*finitePair P ((p:ℝ)*Y) X-
+        Real.sqrt p/(p:ℝ)^(2 : ℕ)*finitePair P ((p:ℝ)*Y) X-
         Real.sqrt p*finitePair P (Y/p) ((p:ℝ)*X) := by
   have hpR : (0:ℝ)<p := by exact_mod_cast hp.pos
   let K : ℝ→ℝ→ℝ→ℝ := fun A B x =>
-    mobiusDivisorContinuousHead P (A*x)*mobiusDivisorContinuousHead P (B*x)/x^3
+    mobiusDivisorContinuousHead P (A*x)*mobiusDivisorContinuousHead P (B*x)/x^(3 : ℕ)
   have hi₀ : IntegrableOn (K Y 1) (Ioc 0 ((p:ℝ)*X)) :=
     pair_integrable P hY zero_lt_one _
   have hi₁ : IntegrableOn (K Y (p:ℝ)⁻¹) (Ioc 0 ((p:ℝ)*X)) :=
@@ -120,14 +120,14 @@ private lemma finitePair_joint (P : Finset ℕ) (hP : ∀q∈P,q.Prime)
     pair_integrable P (div_pos hY hpR) (inv_pos.mpr hpR) _
   have he (x : ℝ) :
       mobiusDivisorContinuousHead (insert p P) (Y*x)*
-        mobiusDivisorContinuousHead (insert p P) x/x^3 =
+        mobiusDivisorContinuousHead (insert p P) x/x^(3 : ℕ) =
       K Y 1 x-Real.sqrt p*K Y (p:ℝ)⁻¹ x-
         Real.sqrt p*K (Y/p) 1 x+(p:ℝ)*K (Y/p) (p:ℝ)⁻¹ x := by
     simp only [mobiusDivisorContinuousHead_insert P hP hp hpP,K,one_mul]
     rw [show Y*x/(p:ℝ)=(Y/p)*x by ring,show x/(p:ℝ)=(p:ℝ)⁻¹*x by ring]
     have hs := Real.sq_sqrt hpR.le
     linear_combination (mobiusDivisorContinuousHead P (Y/p*x)*
-      mobiusDivisorContinuousHead P ((p:ℝ)⁻¹*x)/x^3)*hs
+      mobiusDivisorContinuousHead P ((p:ℝ)⁻¹*x)/x^(3 : ℕ))*hs
   unfold finitePair at ⊢
   simp_rw [he]
   change (∫x in Ioc (0:ℝ) ((p:ℝ)*X),
@@ -323,7 +323,7 @@ private lemma clock_kernel_integrable (P : Finset ℕ) (lag cutoff : ℝ) :
     IntegrableOn (fun t => mobiusDivisorCriticalClockHead P (t+lag)*
       mobiusDivisorCriticalClockHead P t) (Iic cutoff) := by
   let f : ℝ→ℝ := fun x =>
-    (mobiusDivisorContinuousHead P (Real.exp lag*x)*mobiusDivisorContinuousHead P x/x^3)/
+    (mobiusDivisorContinuousHead P (Real.exp lag*x)*mobiusDivisorContinuousHead P x/x^(3 : ℕ))/
       Real.exp lag
   have hi : IntegrableOn f (Ioc 0 (Real.exp cutoff)) := by
     simpa only [IntegrableOn,f,one_mul] using
@@ -431,7 +431,7 @@ private lemma age_joint (P : Finset Nat.Primes) (p : Nat.Primes) (lag cutoff : �
   let K : ℝ→ℝ→ℝ→ℝ := fun A B t =>
     (T-t)*mobiusDivisorCriticalClockHead Q (t+A)*mobiusDivisorCriticalClockHead Q (t+B)
   have hpR : (0:ℝ)<(p:ℕ) := by exact_mod_cast p.property.pos
-  have hr : r^2=1/(p:ℝ) := by
+  have hr : r^(2 : ℕ)=1/(p:ℝ) := by
     dsimp [r]
     rw [div_pow,one_pow,Real.sq_sqrt hpR.le]
   have hi₀ : IntegrableOn (K lag 0) (Iic T) := age_pair_integrable Q lag 0 T

@@ -37,7 +37,7 @@ theorem closureQ_negative_transform (m : NegativeModulus) :
     ne_of_gt (completeEllipticK_classical_pos (extendedToClassical m))
   rw [closureQ, classicalClosureCore, completeEllipticK_negative_transform_raw,
     completeEllipticE_negative_transform_raw, transformedComplement]
-  have hs2 : Real.sqrt (1 - (m : ℝ)) ^ 2 = 1 - (m : ℝ) :=
+  have hs2 : Real.sqrt (1 - (m : ℝ)) ^ (2 : ℕ) = 1 - (m : ℝ) :=
     Real.sq_sqrt (by linarith [hm0])
   field_simp [hs, hK, ne_of_gt (show 0 < 1 - (m : ℝ) by linarith [hm0])]
   rw [hs2]

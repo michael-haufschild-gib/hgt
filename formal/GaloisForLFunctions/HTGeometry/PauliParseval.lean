@@ -58,15 +58,15 @@ theorem trace_star_pauli_mul (A : Matrix (FiniteQubitConfiguration σ)
 /-- **Pauli–Parseval.** -/
 theorem sum_normSq_trace_star_pauli_mul (A : Matrix (FiniteQubitConfiguration σ)
     (FiniteQubitConfiguration σ) ℂ) :
-    (∑ P : σ → Option (Fin 3), ‖Matrix.trace (star (finitePauliMatrix P) * A)‖ ^ 2) =
+    (∑ P : σ → Option (Fin 3), ‖Matrix.trace (star (finitePauliMatrix P) * A)‖ ^ (2 : ℕ)) =
       2 ^ Fintype.card σ * frobSq A := by
   classical
-  have hfrob : frobSq A = 2 ^ Fintype.card σ * ∑ P, ‖pauliCoeff A P‖ ^ 2 := by
+  have hfrob : frobSq A = 2 ^ Fintype.card σ * ∑ P, ‖pauliCoeff A P‖ ^ (2 : ℕ) := by
     conv_lhs => rw [← sum_pauliCoeff_smul A]
     exact frobSq_pauliCombination (pauliCoeff A)
   have hterm : ∀ P : σ → Option (Fin 3),
-      ‖Matrix.trace (star (finitePauliMatrix P) * A)‖ ^ 2 =
-        (2 : ℝ) ^ Fintype.card σ * ((2 : ℝ) ^ Fintype.card σ * ‖pauliCoeff A P‖ ^ 2) := by
+      ‖Matrix.trace (star (finitePauliMatrix P) * A)‖ ^ (2 : ℕ) =
+        (2 : ℝ) ^ Fintype.card σ * ((2 : ℝ) ^ Fintype.card σ * ‖pauliCoeff A P‖ ^ (2 : ℕ)) := by
     intro P
     rw [trace_star_pauli_mul, norm_mul, mul_pow]
     have hnorm : ‖(2 : ℂ) ^ Fintype.card σ‖ = (2 : ℝ) ^ Fintype.card σ := by

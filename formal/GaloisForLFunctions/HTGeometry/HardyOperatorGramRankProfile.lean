@@ -65,8 +65,8 @@ theorem hardyOperatorNegativeGramRealization_kernel_eq
 
 theorem hardyOperatorNegativeGramOperator_quadratic
     (T : HardyDisk →L[ℂ] K) (x : HardyDisk) :
-    (inner ℂ x (hardyOperatorNegativeGramOperator T x)).re = -‖T x‖ ^ 2 := by
-  change (inner ℂ x (-(T.adjoint (T x)))).re = -‖T x‖ ^ 2
+    (inner ℂ x (hardyOperatorNegativeGramOperator T x)).re = -‖T x‖ ^ (2 : ℕ) := by
+  change (inner ℂ x (-(T.adjoint (T x)))).re = -‖T x‖ ^ (2 : ℕ)
   rw [inner_neg_right, ContinuousLinearMap.adjoint_inner_right, Complex.neg_re]
   exact congrArg Neg.neg
     (InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ) (T x)).symm

@@ -21,7 +21,7 @@ namespace RHTower.SelbergScatteringEntireTransform
 noncomputable section
 
 /-- The unique candidate real native energy paired with a critical scattering ordinate. -/
-def nativePartner (t : ℝ) : ℝ := 1 / 4 + t ^ 2 / 4
+def nativePartner (t : ℝ) : ℝ := 1 / 4 + t ^ (2 : ℕ) / 4
 
 /-- Every nonzero critical ordinate gives a partner strictly above the quarter. -/
 theorem nativePartner_gt_quarter (t : ℝ) (ht : t ≠ 0) :
@@ -32,7 +32,7 @@ theorem nativePartner_gt_quarter (t : ℝ) (ht : t ≠ 0) :
 /-- Constructive equality of transformed critical scattering energy and its real native partner. -/
 theorem casimirTransform_nativePartner (t : ℝ) :
     casimirTransform (nativePartner t) = casimirTransform (criticalCasimir t) := by
-  have harg : (nativePartner t : ℂ) = 1 / 4 + ((t : ℂ) / 2) ^ 2 := by
+  have harg : (nativePartner t : ℂ) = 1 / 4 + ((t : ℂ) / 2) ^ (2 : ℕ) := by
     simp only [nativePartner]
     push_cast
     ring
@@ -62,9 +62,9 @@ theorem real_native_preimage_iff (z : ℂ) (hre : z.re ≠ 0)
     have heq := Complex.ofReal_injective hval
     have habs : |8 * Real.pi * Real.sqrt (lam - 1 / 4)| = |4 * Real.pi * z.re| :=
       le_antisymm (Real.cosh_le_cosh.mp heq.le) (Real.cosh_le_cosh.mp heq.ge)
-    have hs := congrArg (fun x : ℝ => x ^ 2) habs
+    have hs := congrArg (fun x : ℝ => x ^ (2 : ℕ)) habs
     simp only [sq_abs, mul_pow, Real.sq_sqrt (sub_nonneg.mpr hlam.le)] at hs
-    have he : (16 * Real.pi ^ 2) * (4 * (lam - 1 / 4) - z.re ^ 2) = 0 := by
+    have he : (16 * Real.pi ^ (2 : ℕ)) * (4 * (lam - 1 / 4) - z.re ^ (2 : ℕ)) = 0 := by
       nlinarith [hs]
     have hd := (mul_eq_zero.mp he).resolve_left (by positivity)
     refine ⟨hz, ?_⟩
@@ -78,7 +78,7 @@ theorem real_native_preimage_iff (z : ℂ) (hre : z.re ≠ 0)
 /-- In the original exponent coordinate, the entire Casimir transform is an explicit cosine. -/
 theorem casimirTransform_casimir (s : ℂ) :
     casimirTransform (s * (1 - s)) = Complex.cos (8 * Real.pi * (s - 1 / 2)) := by
-  have ha : s * (1 - s) = 1 / 4 + ((s - 1 / 2) * I) ^ 2 := by
+  have ha : s * (1 - s) = 1 / 4 + ((s - 1 / 2) * I) ^ (2 : ℕ) := by
     ring_nf
     rw [I_sq]
     ring

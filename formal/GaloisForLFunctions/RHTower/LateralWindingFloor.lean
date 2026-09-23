@@ -117,7 +117,7 @@ theorem stripWinding_eq {σ τ : ℝ} (hσ : 0 < σ) (hτ : τ ≠ 0) :
 by `(σ−1)/τ²`: the `1/s` piece is nonnegative and the `1/(s−1)` piece loses at most
 `(1−σ)/τ²`. -/
 theorem strip_rational_re_ge {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ : 0 < τ) :
-    (σ - 1) / τ ^ 2 ≤ ((2 * stripPt σ τ - 1) / (stripPt σ τ * (stripPt σ τ - 1))).re := by
+    (σ - 1) / τ ^ (2 : ℕ) ≤ ((2 * stripPt σ τ - 1) / (stripPt σ τ * (stripPt σ τ - 1))).re := by
   have hs0 : stripPt σ τ ≠ 0 := stripPt_ne_zero (ne_of_gt hτ)
   have hs1 : stripPt σ τ - 1 ≠ 0 := sub_ne_zero.mpr (stripPt_ne_one (ne_of_gt hτ))
   have hsplit : (2 * stripPt σ τ - 1) / (stripPt σ τ * (stripPt σ τ - 1))
@@ -128,16 +128,16 @@ theorem strip_rational_re_ge {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ
     unfold stripPt
     push_cast
     ring
-  have hn1 : Complex.normSq (stripPt σ τ) = σ ^ 2 + τ ^ 2 := by
+  have hn1 : Complex.normSq (stripPt σ τ) = σ ^ (2 : ℕ) + τ ^ (2 : ℕ) := by
     unfold stripPt
     exact Complex.normSq_add_mul_I σ τ
-  have hn2 : Complex.normSq (stripPt σ τ - 1) = (σ - 1) ^ 2 + τ ^ 2 := by
+  have hn2 : Complex.normSq (stripPt σ τ - 1) = (σ - 1) ^ (2 : ℕ) + τ ^ (2 : ℕ) := by
     rw [hsub]
     exact Complex.normSq_add_mul_I (σ - 1) τ
   have hre2 : (stripPt σ τ - 1).re = σ - 1 := by rw [hsub]; simp
   rw [hsplit, Complex.add_re, Complex.inv_re, Complex.inv_re, hn1, hn2, stripPt_re, hre2]
-  have h1 : (0 : ℝ) ≤ σ / (σ ^ 2 + τ ^ 2) := by positivity
-  have h2 : (σ - 1) / τ ^ 2 ≤ (σ - 1) / ((σ - 1) ^ 2 + τ ^ 2) := by
+  have h1 : (0 : ℝ) ≤ σ / (σ ^ (2 : ℕ) + τ ^ (2 : ℕ)) := by positivity
+  have h2 : (σ - 1) / τ ^ (2 : ℕ) ≤ (σ - 1) / ((σ - 1) ^ (2 : ℕ) + τ ^ (2 : ℕ)) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [mul_nonneg (sq_nonneg (σ - 1)) (sub_nonneg.mpr hσ1)]
   linarith
@@ -146,7 +146,7 @@ theorem strip_rational_re_ge {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ
 at most `σ/τ²`: the `1/(s−1)` piece is nonpositive and the `1/s` piece gains at most
 `σ/τ²`. -/
 theorem strip_rational_re_le {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ : 0 < τ) :
-    ((2 * stripPt σ τ - 1) / (stripPt σ τ * (stripPt σ τ - 1))).re ≤ σ / τ ^ 2 := by
+    ((2 * stripPt σ τ - 1) / (stripPt σ τ * (stripPt σ τ - 1))).re ≤ σ / τ ^ (2 : ℕ) := by
   have hs0 : stripPt σ τ ≠ 0 := stripPt_ne_zero (ne_of_gt hτ)
   have hs1 : stripPt σ τ - 1 ≠ 0 := sub_ne_zero.mpr (stripPt_ne_one (ne_of_gt hτ))
   have hsplit : (2 * stripPt σ τ - 1) / (stripPt σ τ * (stripPt σ τ - 1))
@@ -157,17 +157,17 @@ theorem strip_rational_re_le {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ
     unfold stripPt
     push_cast
     ring
-  have hn1 : Complex.normSq (stripPt σ τ) = σ ^ 2 + τ ^ 2 := by
+  have hn1 : Complex.normSq (stripPt σ τ) = σ ^ (2 : ℕ) + τ ^ (2 : ℕ) := by
     unfold stripPt
     exact Complex.normSq_add_mul_I σ τ
-  have hn2 : Complex.normSq (stripPt σ τ - 1) = (σ - 1) ^ 2 + τ ^ 2 := by
+  have hn2 : Complex.normSq (stripPt σ τ - 1) = (σ - 1) ^ (2 : ℕ) + τ ^ (2 : ℕ) := by
     rw [hsub]
     exact Complex.normSq_add_mul_I (σ - 1) τ
   have hre2 : (stripPt σ τ - 1).re = σ - 1 := by rw [hsub]; simp
   rw [hsplit, Complex.add_re, Complex.inv_re, Complex.inv_re, hn1, hn2, stripPt_re, hre2]
-  have h1 : σ / (σ ^ 2 + τ ^ 2) ≤ σ / τ ^ 2 :=
+  have h1 : σ / (σ ^ (2 : ℕ) + τ ^ (2 : ℕ)) ≤ σ / τ ^ (2 : ℕ) :=
     div_le_div₀ hσ.le le_rfl (by positivity) (by nlinarith [sq_nonneg σ])
-  have h2 : (σ - 1) / ((σ - 1) ^ 2 + τ ^ 2) ≤ 0 :=
+  have h2 : (σ - 1) / ((σ - 1) ^ (2 : ℕ) + τ ^ (2 : ℕ)) ≤ 0 :=
     div_nonpos_of_nonpos_of_nonneg (by linarith) (by positivity)
   linarith
 
@@ -186,16 +186,16 @@ theorem strip_rational_re_nonneg {σ τ : ℝ} (hσ1 : 1 ≤ σ) (hτ : 0 < τ) 
     unfold stripPt
     push_cast
     ring
-  have hn1 : Complex.normSq (stripPt σ τ) = σ ^ 2 + τ ^ 2 := by
+  have hn1 : Complex.normSq (stripPt σ τ) = σ ^ (2 : ℕ) + τ ^ (2 : ℕ) := by
     unfold stripPt
     exact Complex.normSq_add_mul_I σ τ
-  have hn2 : Complex.normSq (stripPt σ τ - 1) = (σ - 1) ^ 2 + τ ^ 2 := by
+  have hn2 : Complex.normSq (stripPt σ τ - 1) = (σ - 1) ^ (2 : ℕ) + τ ^ (2 : ℕ) := by
     rw [hsub]
     exact Complex.normSq_add_mul_I (σ - 1) τ
   have hre2 : (stripPt σ τ - 1).re = σ - 1 := by rw [hsub]; simp
   rw [hsplit, Complex.add_re, Complex.inv_re, Complex.inv_re, hn1, hn2, stripPt_re, hre2]
-  have h1 : (0 : ℝ) ≤ σ / (σ ^ 2 + τ ^ 2) := by positivity
-  have h2 : (0 : ℝ) ≤ (σ - 1) / ((σ - 1) ^ 2 + τ ^ 2) :=
+  have h1 : (0 : ℝ) ≤ σ / (σ ^ (2 : ℕ) + τ ^ (2 : ℕ)) := by positivity
+  have h2 : (0 : ℝ) ≤ (σ - 1) / ((σ - 1) ^ (2 : ℕ) + τ ^ (2 : ℕ)) :=
     div_nonneg (by linarith) (by positivity)
   linarith
 
@@ -205,13 +205,13 @@ theorem strip_rational_re_nonneg {σ τ : ℝ} (hσ1 : 1 ≤ σ) (hτ : 0 < τ) 
 `(log(τ/2π) − 4/τ² − π/τ)/2` conceded by `(1−σ)/τ²` for the real part the rational term
 acquires off the line. -/
 noncomputable def stripFloor (σ τ : ℝ) : ℝ :=
-  (Real.log (τ / (2 * Real.pi)) - (4 / τ ^ 2 + Real.pi / τ)) / 2 - (1 - σ) / τ ^ 2
+  (Real.log (τ / (2 * Real.pi)) - (4 / τ ^ (2 : ℕ) + Real.pi / τ)) / 2 - (1 - σ) / τ ^ (2 : ℕ)
 
 /-- In the strip the off-line floor concedes to the critical-line floor expression. -/
 theorem stripFloor_le_line_floor {σ τ : ℝ} (hσ1 : σ ≤ 1) (hτ : 0 < τ) :
-    stripFloor σ τ ≤ (Real.log (τ / (2 * Real.pi)) - (4 / τ ^ 2 + Real.pi / τ)) / 2 := by
+    stripFloor σ τ ≤ (Real.log (τ / (2 * Real.pi)) - (4 / τ ^ (2 : ℕ) + Real.pi / τ)) / 2 := by
   unfold stripFloor
-  have h : (0 : ℝ) ≤ (1 - σ) / τ ^ 2 := by
+  have h : (0 : ℝ) ≤ (1 - σ) / τ ^ (2 : ℕ) := by
     apply div_nonneg (by linarith) (by positivity)
   linarith
 
@@ -231,8 +231,8 @@ theorem stripWindingRate_ge {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ 
     ring
   have h := re_digamma_ge (x := σ / 2) (y := τ / 2) (by positivity) (by positivity)
   rw [← harg] at h
-  have e1 : 1 / ((τ / 2) ^ 2) = 4 / τ ^ 2 := by
-    rw [show ((τ : ℝ) / 2) ^ 2 = τ ^ 2 / 4 from by ring, one_div_div]
+  have e1 : 1 / ((τ / 2) ^ (2 : ℕ)) = 4 / τ ^ (2 : ℕ) := by
+    rw [show ((τ : ℝ) / 2) ^ (2 : ℕ) = τ ^ (2 : ℕ) / 4 from by ring, one_div_div]
   have e2 : 2 * (τ / 2) = τ := by ring
   rw [e1, e2] at h
   have hΨre : ((Complex.digamma ((stripPt σ τ) / 2) / 2 - (Real.log Real.pi : ℂ) / 2)).re
@@ -242,7 +242,7 @@ theorem stripWindingRate_ge {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ 
   have hlog : Real.log (τ / (2 * Real.pi)) = Real.log (τ / 2) - Real.log Real.pi := by
     rw [show τ / (2 * Real.pi) = (τ / 2) / Real.pi from by ring,
       Real.log_div (by positivity : (0 : ℝ) < τ / 2).ne' (ne_of_gt Real.pi_pos)]
-  have hneg : (σ - 1) / τ ^ 2 = -((1 - σ) / τ ^ 2) := by ring
+  have hneg : (σ - 1) / τ ^ (2 : ℕ) = -((1 - σ) / τ ^ (2 : ℕ)) := by ring
   unfold stripFloor
   rw [hlog]
   linarith [hneg ▸ hrat]
@@ -251,7 +251,7 @@ theorem stripWindingRate_ge {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ 
 with no concession**: the rational part's real part is nonnegative there, so only the
 digamma bound speaks. -/
 theorem stripWindingRate_ge_of_one_le {σ τ : ℝ} (hσ1 : 1 ≤ σ) (hτ : 0 < τ) :
-    (Real.log (τ / (2 * Real.pi)) - (4 / τ ^ 2 + Real.pi / τ)) / 2 ≤ stripWindingRate σ τ := by
+    (Real.log (τ / (2 * Real.pi)) - (4 / τ ^ (2 : ℕ) + Real.pi / τ)) / 2 ≤ stripWindingRate σ τ := by
   have hσ : (0 : ℝ) < σ := lt_of_lt_of_le one_pos hσ1
   have hrat := strip_rational_re_nonneg hσ1 hτ
   unfold stripWindingRate
@@ -262,8 +262,8 @@ theorem stripWindingRate_ge_of_one_le {σ τ : ℝ} (hσ1 : 1 ≤ σ) (hτ : 0 <
     ring
   have h := re_digamma_ge (x := σ / 2) (y := τ / 2) (by positivity) (by positivity)
   rw [← harg] at h
-  have e1 : 1 / ((τ / 2) ^ 2) = 4 / τ ^ 2 := by
-    rw [show ((τ : ℝ) / 2) ^ 2 = τ ^ 2 / 4 from by ring, one_div_div]
+  have e1 : 1 / ((τ / 2) ^ (2 : ℕ)) = 4 / τ ^ (2 : ℕ) := by
+    rw [show ((τ : ℝ) / 2) ^ (2 : ℕ) = τ ^ (2 : ℕ) / 4 from by ring, one_div_div]
   have e2 : 2 * (τ / 2) = τ := by ring
   rw [e1, e2] at h
   have hΨre : ((Complex.digamma ((stripPt σ τ) / 2) / 2 - (Real.log Real.pi : ℂ) / 2)).re
@@ -281,8 +281,8 @@ budget cap the rate by the logarithm of the distance to the origin plus explicit
 corrections — the winding datum is bounded on both sides off the line. -/
 theorem stripWindingRate_le {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ : 0 < τ) :
     stripWindingRate σ τ ≤
-      (Real.log ((σ ^ 2 + τ ^ 2) / 4) / 2 - Real.log Real.pi) / 2
-        + (4 / τ ^ 2 + Real.pi / τ) / 2 + σ / τ ^ 2 := by
+      (Real.log ((σ ^ (2 : ℕ) + τ ^ (2 : ℕ)) / 4) / 2 - Real.log Real.pi) / 2
+        + (4 / τ ^ (2 : ℕ) + Real.pi / τ) / 2 + σ / τ ^ (2 : ℕ) := by
   have hrat := strip_rational_re_le hσ hσ1 hτ
   unfold stripWindingRate
   rw [stripWinding_eq hσ (ne_of_gt hτ), Complex.add_re]
@@ -294,9 +294,9 @@ theorem stripWindingRate_le {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ 
     (by positivity) (by positivity)
   rw [← harg] at hb
   have habs := abs_le.mp hb
-  have e0 : (σ / 2) ^ 2 + (τ / 2) ^ 2 = (σ ^ 2 + τ ^ 2) / 4 := by ring
-  have e1 : 1 / ((τ / 2) ^ 2) = 4 / τ ^ 2 := by
-    rw [show ((τ : ℝ) / 2) ^ 2 = τ ^ 2 / 4 from by ring, one_div_div]
+  have e0 : (σ / 2) ^ (2 : ℕ) + (τ / 2) ^ (2 : ℕ) = (σ ^ (2 : ℕ) + τ ^ (2 : ℕ)) / 4 := by ring
+  have e1 : 1 / ((τ / 2) ^ (2 : ℕ)) = 4 / τ ^ (2 : ℕ) := by
+    rw [show ((τ : ℝ) / 2) ^ (2 : ℕ) = τ ^ (2 : ℕ) / 4 from by ring, one_div_div]
   have e2 : 2 * (τ / 2) = τ := by ring
   rw [e0, e1, e2] at habs
   have hΨre : ((Complex.digamma ((stripPt σ τ) / 2) / 2 - (Real.log Real.pi : ℂ) / 2)).re
@@ -311,11 +311,11 @@ theorem stripFloor_mono_height {σ τ τ' : ℝ} (hσ1 : σ ≤ 1) (h0 : 0 < τ)
   have h0' : 0 < τ' := lt_of_lt_of_le h0 hττ'
   have hlog : Real.log (τ / (2 * Real.pi)) ≤ Real.log (τ' / (2 * Real.pi)) :=
     Real.log_le_log (by positivity) (div_le_div₀ h0'.le hττ' (by positivity) le_rfl)
-  have h4 : 4 / τ' ^ 2 ≤ 4 / τ ^ 2 :=
+  have h4 : 4 / τ' ^ (2 : ℕ) ≤ 4 / τ ^ (2 : ℕ) :=
     div_le_div₀ (by norm_num) le_rfl (by positivity) (by nlinarith)
   have hπ : Real.pi / τ' ≤ Real.pi / τ :=
     div_le_div₀ Real.pi_pos.le le_rfl h0 hττ'
-  have hσ' : (1 - σ) / τ' ^ 2 ≤ (1 - σ) / τ ^ 2 :=
+  have hσ' : (1 - σ) / τ' ^ (2 : ℕ) ≤ (1 - σ) / τ ^ (2 : ℕ) :=
     div_le_div₀ (by linarith) le_rfl (by positivity) (by nlinarith)
   unfold stripFloor
   linarith
@@ -324,7 +324,7 @@ theorem stripFloor_mono_height {σ τ τ' : ℝ} (hσ1 : σ ≤ 1) (h0 : 0 < τ)
 approaches the `σ = 1` boundary. -/
 theorem stripFloor_mono_sigma {σ σ' τ : ℝ} (hσσ' : σ ≤ σ') (hτ : 0 < τ) :
     stripFloor σ τ ≤ stripFloor σ' τ := by
-  have h : (1 - σ') / τ ^ 2 ≤ (1 - σ) / τ ^ 2 :=
+  have h : (1 - σ') / τ ^ (2 : ℕ) ≤ (1 - σ) / τ ^ (2 : ℕ) :=
     (div_le_div_iff_of_pos_right (by positivity)).mpr (by linarith)
   unfold stripFloor
   linarith
@@ -344,8 +344,8 @@ theorem stripFloor_pos {σ τ : ℝ} (hσ : 0 ≤ σ) (hτ : 12 ≤ τ) : 0 < st
       have h := Real.log_le_sub_one_of_pos (show (0 : ℝ) < Real.pi / 6 by positivity)
       linarith
     unfold stripFloor
-    have e4 : (4 : ℝ) / 12 ^ 2 = 1 / 36 := by norm_num
-    have e1 : (1 - 0 : ℝ) / 12 ^ 2 = 1 / 144 := by norm_num
+    have e4 : (4 : ℝ) / 12 ^ (2 : ℕ) = 1 / 36 := by norm_num
+    have e1 : (1 - 0 : ℝ) / 12 ^ (2 : ℕ) = 1 / 144 := by norm_num
     rw [e4, e1]
     nlinarith
   calc (0 : ℝ) < stripFloor 0 12 := hbase

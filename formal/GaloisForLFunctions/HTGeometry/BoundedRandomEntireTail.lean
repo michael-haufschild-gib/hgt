@@ -28,7 +28,7 @@ theorem norm_randomTailCoeff_le (N : ℕ) (y : ℕ → ℂ) (n : ℕ) :
   nlinarith [norm_nonneg (clampComplexSquare (y n))]
 
 theorem randomTailCoeff_orderTwo (N : ℕ) (y : ℕ → ℂ) :
-    ∀ R : ℝ, 0 < R → ∀ n, ‖randomTailCoeff N y n‖ ≤ Real.exp (R ^ 2 * 2 / 2) / R ^ n :=
+    ∀ R : ℝ, 0 < R → ∀ n, ‖randomTailCoeff N y n‖ ≤ Real.exp (R ^ (2 : ℕ) * 2 / 2) / R ^ n :=
   orderTwo_bound_of_factorial_bound (norm_randomTailCoeff_le N y)
 
 theorem boundedRandomEntireTail_eq (N : ℕ) (y : ℕ → ℂ) (z : ℂ) :

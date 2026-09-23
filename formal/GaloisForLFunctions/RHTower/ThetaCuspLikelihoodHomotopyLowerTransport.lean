@@ -43,8 +43,8 @@ theorem fiveHalves_mul_variance_lt_thirdCumulant
     simpa only [e2, e3] using
       three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 2
   unfold thetaCuspLikelihoodVariance thetaCuspLikelihoodThirdCumulant
-  change (5 / 2 : ℝ) * (e2 - m ^ 2) <
-    e3 - 3 * m * e2 + 2 * m ^ 3
+  change (5 / 2 : ℝ) * (e2 - m ^ (2 : ℕ)) <
+    e3 - 3 * m * e2 + 2 * m ^ (3 : ℕ)
   nlinarith [mul_pos (by linarith : 0 < 1 / 2 - 3 * m) he2,
     sq_nonneg m, mul_nonneg (sq_nonneg m) hm.le]
 
@@ -69,7 +69,7 @@ theorem four_mul_scale_mul_jetTwo_lt_neg_jetThree
   have hk : (5 / 2 : ℝ) * v < k := by
     simpa only [v, k, B] using
       fiveHalves_mul_variance_lt_thirdCumulant hx
-  have htail : 0 ≤ 4 * A ^ 2 * (A - 6) * v := by positivity
+  have htail : 0 ≤ 4 * A ^ (2 : ℕ) * (A - 6) * v := by positivity
   unfold thetaCuspLikelihoodSourceLogPartitionJetTwo
     thetaCuspLikelihoodSourceLogPartitionJetThree
   dsimp only [A, B, m, v, k] at hscale hA hm hv hk htail ⊢
@@ -77,14 +77,14 @@ theorem four_mul_scale_mul_jetTwo_lt_neg_jetThree
 
 /-- Positive magnitude of the ordinary third source score. -/
 def thetaLikelihoodThirdScore (z : ℝ) : ℝ :=
-  z ^ 3 - 3 * z ^ 2 + z
+  z ^ (3 : ℕ) - 3 * z ^ (2 : ℕ) + z
 
 theorem thetaLikelihoodThirdScore_pos
     {z : ℝ} (hz : 18 ≤ z) :
     0 < thetaLikelihoodThirdScore z := by
   dsimp [thetaLikelihoodThirdScore]
   have hz0 : 0 < z := by linarith
-  have hquad : 0 < z ^ 2 - 3 * z + 1 := by nlinarith [sq_nonneg (z - 3)]
+  have hquad : 0 < z ^ (2 : ℕ) - 3 * z + 1 := by nlinarith [sq_nonneg (z - 3)]
   nlinarith
 
 theorem four_mul_z_mul_thirdScore_le_five_mul_fourthScore
@@ -93,9 +93,9 @@ theorem four_mul_z_mul_thirdScore_le_five_mul_fourthScore
       5 * thetaLikelihoodFourthScore z := by
   let y := z - 18
   have hy : 0 ≤ y := by dsimp only [y]; linarith
-  have hy2 : 0 ≤ y ^ 2 := sq_nonneg y
-  have hy3 : 0 ≤ y ^ 3 := by positivity
-  have hy4 : 0 ≤ y ^ 4 := by positivity
+  have hy2 : 0 ≤ y ^ (2 : ℕ) := sq_nonneg y
+  have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+  have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
   rw [show z = 18 + y by dsimp only [y]; ring]
   dsimp [thetaLikelihoodThirdScore, thetaLikelihoodFourthScore]
   ring_nf
@@ -105,21 +105,21 @@ theorem four_mul_z_mul_thirdScore_le_five_mul_fourthScore
 def thetaCuspLikelihoodSourceOrdinaryNegativeJetThree (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  8 * (A ^ 3 * thetaCuspLikelihoodNormalizedMoment B 3 -
-    3 * A ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 +
+  8 * (A ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 -
+    3 * A ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 +
     A * thetaCuspLikelihoodMean B)
 
 private theorem integrable_thirdScore_tilted
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     Integrable (fun t : ℝ => thetaLikelihoodThirdScore (A * t))
       (thetaCuspHigherLikelihoodTiltedMeasure B) := by
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (3 * A ^ 2)
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (3 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
   rw [show (fun t : ℝ => thetaLikelihoodThirdScore (A * t)) =
-      ((fun t : ℝ => A ^ 3 * t ^ 3) -
-        (fun t : ℝ => (3 * A ^ 2) * t ^ 2)) +
-        (fun t : ℝ => A * t ^ 1) by
+      ((fun t : ℝ => A ^ (3 : ℕ) * t ^ (3 : ℕ)) -
+        (fun t : ℝ => (3 * A ^ (2 : ℕ)) * t ^ (2 : ℕ))) +
+        (fun t : ℝ => A * t ^ (1 : ℕ)) by
     funext t
     dsimp [thetaLikelihoodThirdScore]
     ring]
@@ -129,16 +129,16 @@ private theorem integral_thirdScore_tilted_eq
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     (∫ t : ℝ, thetaLikelihoodThirdScore (A * t)
       ∂thetaCuspHigherLikelihoodTiltedMeasure B) =
-      A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 -
-        3 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 +
+      A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 -
+        3 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 +
         A * thetaCuspHigherLikelihoodSpectralMoment B 1 := by
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (3 * A ^ 2)
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (3 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
   rw [show (fun t : ℝ => thetaLikelihoodThirdScore (A * t)) =
-      ((fun t : ℝ => A ^ 3 * t ^ 3) -
-        (fun t : ℝ => (3 * A ^ 2) * t ^ 2)) +
-        (fun t : ℝ => A * t ^ 1) by
+      ((fun t : ℝ => A ^ (3 : ℕ) * t ^ (3 : ℕ)) -
+        (fun t : ℝ => (3 * A ^ (2 : ℕ)) * t ^ (2 : ℕ))) +
+        (fun t : ℝ => A * t ^ (1 : ℕ)) by
     funext t
     dsimp [thetaLikelihoodThirdScore]
     ring]
@@ -150,15 +150,15 @@ private theorem integrable_fourthScore_tilted
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     Integrable (fun t : ℝ => thetaLikelihoodFourthScore (A * t))
       (thetaCuspHigherLikelihoodTiltedMeasure B) := by
-  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ 4)
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ 2)
+  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ (4 : ℕ))
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
   rw [show (fun t : ℝ => thetaLikelihoodFourthScore (A * t)) =
-      (((fun t : ℝ => A ^ 4 * t ^ 4) -
-        (fun t : ℝ => (6 * A ^ 3) * t ^ 3)) +
-        (fun t : ℝ => (7 * A ^ 2) * t ^ 2)) -
-        (fun t : ℝ => A * t ^ 1) by
+      (((fun t : ℝ => A ^ (4 : ℕ) * t ^ (4 : ℕ)) -
+        (fun t : ℝ => (6 * A ^ (3 : ℕ)) * t ^ (3 : ℕ))) +
+        (fun t : ℝ => (7 * A ^ (2 : ℕ)) * t ^ (2 : ℕ))) -
+        (fun t : ℝ => A * t ^ (1 : ℕ)) by
     funext t
     dsimp [thetaLikelihoodFourthScore]
     ring]
@@ -168,19 +168,19 @@ private theorem integral_fourthScore_tilted_eq
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     (∫ t : ℝ, thetaLikelihoodFourthScore (A * t)
       ∂thetaCuspHigherLikelihoodTiltedMeasure B) =
-      A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-        6 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-        7 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+      A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+        6 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+        7 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
         A * thetaCuspHigherLikelihoodSpectralMoment B 1 := by
-  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ 4)
-  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ 3)
-  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ 2)
+  have h4 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 4 hB).const_mul (A ^ (4 : ℕ))
+  have h3 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB).const_mul (6 * A ^ (3 : ℕ))
+  have h2 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB).const_mul (7 * A ^ (2 : ℕ))
   have h1 := (integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB).const_mul A
   rw [show (fun t : ℝ => thetaLikelihoodFourthScore (A * t)) =
-      (((fun t : ℝ => A ^ 4 * t ^ 4) -
-        (fun t : ℝ => (6 * A ^ 3) * t ^ 3)) +
-        (fun t : ℝ => (7 * A ^ 2) * t ^ 2)) -
-        (fun t : ℝ => A * t ^ 1) by
+      (((fun t : ℝ => A ^ (4 : ℕ) * t ^ (4 : ℕ)) -
+        (fun t : ℝ => (6 * A ^ (3 : ℕ)) * t ^ (3 : ℕ))) +
+        (fun t : ℝ => (7 * A ^ (2 : ℕ)) * t ^ (2 : ℕ))) -
+        (fun t : ℝ => A * t ^ (1 : ℕ)) by
     funext t
     dsimp [thetaLikelihoodFourthScore]
     ring]
@@ -233,8 +233,8 @@ theorem four_mul_scale_mul_ordinaryNegJetThree_le_fiveSixths_ordinaryJetFour
     4 * thetaCuspSingleAtomReflectionScale 1 x *
           thetaCuspLikelihoodSourceOrdinaryNegativeJetThree x =
         (16 / P) * (2 * A *
-          (A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 -
-            3 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 +
+          (A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 -
+            3 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 +
             A * thetaCuspHigherLikelihoodSpectralMoment B 1)) := by
       dsimp only [thetaCuspLikelihoodSourceOrdinaryNegativeJetThree, A, B]
       unfold thetaCuspLikelihoodNormalizedMoment thetaCuspLikelihoodMean
@@ -242,9 +242,9 @@ theorem four_mul_scale_mul_ordinaryNegJetThree_le_fiveSixths_ordinaryJetFour
       field_simp [hP.ne']
       ring
     _ ≤ (16 / P) * ((5 / 6 : ℝ) *
-          (A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-            6 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-            7 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+          (A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+            6 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+            7 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
             A * thetaCuspHigherLikelihoodSpectralMoment B 1)) := hscaled
     _ = (5 / 6 : ℝ) * thetaCuspLikelihoodSourceOrdinaryJetFour x := by
       dsimp only [thetaCuspLikelihoodSourceOrdinaryJetFour, A, B]
@@ -269,24 +269,24 @@ theorem neg_jetThree_lt_ordinaryNegativeJetThree
     simpa only [m, B] using thetaCuspLikelihoodMean_pos
       (thetaCuspLikelihoodCoordinate_pos hx)
   have hF2 := thetaCuspLikelihoodSourceLogPartitionJetTwo_pos hx
-  have hgap : 0 < A * e2 - A * m ^ 2 - m := by
+  have hgap : 0 < A * e2 - A * m ^ (2 : ℕ) - m := by
     unfold thetaCuspLikelihoodSourceLogPartitionJetTwo at hF2
     unfold thetaCuspLikelihoodVariance at hF2
-    change 0 < 4 * A ^ 2 * (e2 - m ^ 2) - 4 * A * m at hF2
-    rw [show 4 * A ^ 2 * (e2 - m ^ 2) - 4 * A * m =
-      (4 * A) * (A * e2 - A * m ^ 2 - m) by ring] at hF2
+    change 0 < 4 * A ^ (2 : ℕ) * (e2 - m ^ (2 : ℕ)) - 4 * A * m at hF2
+    rw [show 4 * A ^ (2 : ℕ) * (e2 - m ^ (2 : ℕ)) - 4 * A * m =
+      (4 * A) * (A * e2 - A * m ^ (2 : ℕ) - m) by ring] at hF2
     rcases (mul_pos_iff.mp hF2) with h | h
     · exact h.2
     · exact False.elim ((not_lt_of_ge (mul_nonneg (by norm_num) hA.le)) h.1)
-  have hbracket : 0 < 3 * A * e2 - 2 * A * m ^ 2 - 3 * m := by
+  have hbracket : 0 < 3 * A * e2 - 2 * A * m ^ (2 : ℕ) - 3 * m := by
     nlinarith [mul_nonneg hA.le (sq_nonneg m)]
   unfold thetaCuspLikelihoodSourceLogPartitionJetThree
     thetaCuspLikelihoodThirdCumulant thetaCuspLikelihoodVariance
   dsimp only [thetaCuspLikelihoodSourceOrdinaryNegativeJetThree,
     A, B, m, e2, e3]
-  change -(-8 * A ^ 3 * (e3 - 3 * m * e2 + 2 * m ^ 3) +
-      24 * A ^ 2 * (e2 - m ^ 2) - 8 * A * m) <
-    8 * (A ^ 3 * e3 - 3 * A ^ 2 * e2 + A * m)
+  change -(-8 * A ^ (3 : ℕ) * (e3 - 3 * m * e2 + 2 * m ^ (3 : ℕ)) +
+      24 * A ^ (2 : ℕ) * (e2 - m ^ (2 : ℕ)) - 8 * A * m) <
+    8 * (A ^ (3 : ℕ) * e3 - 3 * A ^ (2 : ℕ) * e2 + A * m)
   nlinarith [mul_pos (mul_pos (pow_pos hA 2) hm) hbracket]
 
 theorem four_mul_scale_mul_neg_jetThree_lt_jetFour
@@ -321,10 +321,10 @@ theorem four_mul_scale_mul_neg_jetThree_lt_jetFour
 
 /-- Next projective derivative selected by the reflected lower transport. -/
 def thetaCuspLikelihoodProjectiveTransportInvariant (x : ℝ) : ℝ :=
-  thetaCuspLikelihoodSourceLogPartitionJetThree x ^ 2 *
+  thetaCuspLikelihoodSourceLogPartitionJetThree x ^ (2 : ℕ) *
       thetaCuspLikelihoodSourceLogPartitionJetFour x +
     2 * thetaCuspLikelihoodSourceLogPartitionJetTwo x *
-      thetaCuspLikelihoodSourceLogPartitionJetFour x ^ 2 -
+      thetaCuspLikelihoodSourceLogPartitionJetFour x ^ (2 : ℕ) -
     2 * thetaCuspLikelihoodSourceLogPartitionJetTwo x *
       thetaCuspLikelihoodSourceLogPartitionJetThree x *
       thetaCuspLikelihoodSourceLogPartitionJetFive x
@@ -359,13 +359,13 @@ theorem projectiveTransportInvariant_pos
     simpa only [A, C, γ] using
       neg_thetaCuspLikelihoodSourceLogPartitionJetFive_lt_six_mul_scale_mul_jetFour
         hx hscale
-  have hmulLow : 8 * A * h * α * C < 2 * h * C ^ 2 := by
+  have hmulLow : 8 * A * h * α * C < 2 * h * C ^ (2 : ℕ) := by
     nlinarith [mul_lt_mul_of_pos_left hlowFour
       (mul_pos (mul_pos (show 0 < (2 : ℝ) by norm_num) hh) hC)]
   have hmulUpp : 2 * h * α * γ < 12 * A * h * α * C := by
     nlinarith [mul_lt_mul_of_pos_left huppFive
       (mul_pos (mul_pos (show 0 < (2 : ℝ) by norm_num) hh) hα)]
-  have hcore : 0 < α ^ 2 * C - 4 * A * h * α * C := by
+  have hcore : 0 < α ^ (2 : ℕ) * C - 4 * A * h * α * C := by
     have hmul := mul_lt_mul_of_pos_right hlowTwo (mul_pos hα hC)
     nlinarith
   dsimp only [thetaCuspLikelihoodProjectiveTransportInvariant,
@@ -374,8 +374,8 @@ theorem projectiveTransportInvariant_pos
 
 /-- Squared projective curvature ratio whose drift is the new invariant. -/
 def thetaCuspLikelihoodFourthThirdRootRatio (x : ℝ) : ℝ :=
-  thetaCuspLikelihoodSourceLogPartitionJetFour x ^ 2 /
-    ((-thetaCuspLikelihoodSourceLogPartitionJetThree x) ^ 2 *
+  thetaCuspLikelihoodSourceLogPartitionJetFour x ^ (2 : ℕ) /
+    ((-thetaCuspLikelihoodSourceLogPartitionJetThree x) ^ (2 : ℕ) *
       thetaCuspLikelihoodSourceLogPartitionJetTwo x)
 
 theorem hasDerivAt_fourthThirdRootRatio
@@ -384,8 +384,8 @@ theorem hasDerivAt_fourthThirdRootRatio
       ((thetaCuspLikelihoodSourceLogPartitionJetFour x *
           (-thetaCuspLikelihoodSourceLogPartitionJetThree x) *
           thetaCuspLikelihoodProjectiveTransportInvariant x) /
-        (((-thetaCuspLikelihoodSourceLogPartitionJetThree x) ^ 2 *
-          thetaCuspLikelihoodSourceLogPartitionJetTwo x) ^ 2)) x := by
+        (((-thetaCuspLikelihoodSourceLogPartitionJetThree x) ^ (2 : ℕ) *
+          thetaCuspLikelihoodSourceLogPartitionJetTwo x) ^ (2 : ℕ))) x := by
   let h := thetaCuspLikelihoodSourceLogPartitionJetTwo
   let α : ℝ → ℝ := fun y => -thetaCuspLikelihoodSourceLogPartitionJetThree y
   let C := thetaCuspLikelihoodSourceLogPartitionJetFour
@@ -407,10 +407,10 @@ theorem hasDerivAt_fourthThirdRootRatio
   have hαPos : 0 < α x := by
     simpa only [α] using neg_pos.mpr
       (thetaCuspLikelihoodSourceLogPartitionJetThree_neg hx)
-  have hden : α x ^ 2 * h x ≠ 0 :=
+  have hden : α x ^ (2 : ℕ) * h x ≠ 0 :=
     mul_ne_zero (pow_ne_zero 2 hαPos.ne') hhPos.ne'
   have hquot := (hC.pow 2).div ((hα.pow 2).mul hh) hden
-  change HasDerivAt (C ^ 2 / (α ^ 2 * h)) _ x
+  change HasDerivAt (C ^ (2 : ℕ) / (α ^ (2 : ℕ) * h)) _ x
   refine hquot.congr_deriv ?_
   simp only [Pi.pow_apply, Pi.mul_apply]
   dsimp only [h, α, C, thetaCuspLikelihoodProjectiveTransportInvariant]
@@ -484,7 +484,7 @@ theorem hasDerivAt_inverseRoot
   simp only [Function.comp_apply]
   change -(1 / (2 * Real.sqrt (h x)) *
       thetaCuspLikelihoodSourceLogPartitionJetThree x) /
-        Real.sqrt (h x) ^ 2 =
+        Real.sqrt (h x) ^ (2 : ℕ) =
     (-thetaCuspLikelihoodSourceLogPartitionJetThree x) /
       (2 * h x * Real.sqrt (h x))
   rw [Real.sq_sqrt hhPos.le]
@@ -494,7 +494,7 @@ theorem hasDerivAt_inverseRootSlope
     {x : ℝ} (hx : 0 ≤ x) :
     HasDerivAt thetaCuspLikelihoodInverseRootSlope
       (thetaCuspLikelihoodHomotopyCurvatureEnergy x /
-        (4 * thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ 2 *
+        (4 * thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ (2 : ℕ) *
           Real.sqrt (thetaCuspLikelihoodSourceLogPartitionJetTwo x))) x := by
   let h := thetaCuspLikelihoodSourceLogPartitionJetTwo
   let α : ℝ → ℝ := fun y => -thetaCuspLikelihoodSourceLogPartitionJetThree y
@@ -538,7 +538,7 @@ theorem hasDerivAt_inverseRootSlope
   rw [hfun]
   refine hquot.congr_deriv ?_
   have hrhsne :
-      4 * h x ^ 2 * Real.sqrt (h x) ≠ 0 := by
+      4 * h x ^ (2 : ℕ) * Real.sqrt (h x) ≠ 0 := by
     exact mul_ne_zero (mul_ne_zero (by norm_num) (pow_ne_zero 2 hhPos.ne'))
       (Real.sqrt_pos.mpr hhPos).ne'
   rw [div_eq_div_iff (pow_ne_zero 2 hdne) hrhsne]
@@ -578,9 +578,9 @@ private theorem projective_endpoint_bridge
     (ha : 0 < a) (hb : 0 < b) (hα : 0 < α) (hβ : 0 < β)
     (hC : 0 < C) (hD : 0 < D) (hr : 0 < r)
     (hq : 0 < q)
-    (hbrel : b = a * r ^ 2) (hαrel : α = q * β)
+    (hbrel : b = a * r ^ (2 : ℕ)) (hαrel : α = q * β)
     (htrel : t * β = z * b)
-    (hshape : q * r ^ 3 < 1)
+    (hshape : q * r ^ (3 : ℕ) < 1)
     (hsec : 1 - r < z)
     (hprojective : C * r < D * q) :
     C * (b - t * β) < D * (a + t * α) := by
@@ -590,41 +590,41 @@ private theorem projective_endpoint_bridge
     have hsecMul := mul_lt_mul_of_pos_left hsec
       (mul_pos (mul_pos hq hr) (by positivity : 0 < 1 + r))
     have hsecNorm :
-        q * r - q * r ^ 3 < q * z * r + q * z * r ^ 2 := by
+        q * r - q * r ^ (3 : ℕ) < q * z * r + q * z * r ^ (2 : ℕ) := by
       calc
-        q * r - q * r ^ 3 = q * r * (1 + r) * (1 - r) := by ring
+        q * r - q * r ^ (3 : ℕ) = q * r * (1 + r) * (1 - r) := by ring
         _ < q * r * (1 + r) * z := hsecMul
-        _ = q * z * r + q * z * r ^ 2 := by ring
-    have hnormalized : q * r * (1 - z) < 1 + q * z * r ^ 2 := by
+        _ = q * z * r + q * z * r ^ (2 : ℕ) := by ring
+    have hnormalized : q * r * (1 - z) < 1 + q * z * r ^ (2 : ℕ) := by
       linarith
     have hnormMul := mul_lt_mul_of_pos_left hnormalized (mul_pos hD ha)
     have hprojNorm :
-        C * a * r ^ 2 * (1 - z) < D * q * a * r * (1 - z) := by
+        C * a * r ^ (2 : ℕ) * (1 - z) < D * q * a * r * (1 - z) := by
       calc
-        C * a * r ^ 2 * (1 - z) =
+        C * a * r ^ (2 : ℕ) * (1 - z) =
             C * r * (a * r * (1 - z)) := by ring
         _ < D * q * (a * r * (1 - z)) := hprojMul
         _ = D * q * a * r * (1 - z) := by ring
     have hnormalizedMul :
         D * q * a * r * (1 - z) <
-          D * a * (1 + q * z * r ^ 2) := by
+          D * a * (1 + q * z * r ^ (2 : ℕ)) := by
       calc
         D * q * a * r * (1 - z) =
             D * a * (q * r * (1 - z)) := by ring
-        _ < D * a * (1 + q * z * r ^ 2) := hnormMul
+        _ < D * a * (1 + q * z * r ^ (2 : ℕ)) := hnormMul
     calc
-      C * (b - t * β) = C * a * r ^ 2 * (1 - z) := by
+      C * (b - t * β) = C * a * r ^ (2 : ℕ) * (1 - z) := by
         rw [htrel, hbrel]
         ring
       _ < D * q * a * r * (1 - z) := hprojNorm
-      _ < D * a * (1 + q * z * r ^ 2) := hnormalizedMul
+      _ < D * a * (1 + q * z * r ^ (2 : ℕ)) := hnormalizedMul
       _ = D * (a + t * α) := by
         rw [hαrel, show t * (q * β) = q * (t * β) by ring, htrel, hbrel]
         ring
   · have hz : 1 ≤ z := le_of_not_gt hz1
     have hleft : C * (b - t * β) ≤ 0 := by
       rw [htrel, hbrel]
-      have hzMul : 1 * (a * r ^ 2) ≤ z * (a * r ^ 2) :=
+      have hzMul : 1 * (a * r ^ (2 : ℕ)) ≤ z * (a * r ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_right hz (by positivity)
       exact mul_nonpos_of_nonneg_of_nonpos hC.le (sub_nonpos.mpr (by
         simpa only [one_mul] using hzMul))
@@ -680,7 +680,7 @@ theorem thetaCuspLikelihood_projectiveEndpointTransport
   have hsa : 0 < Real.sqrt a := Real.sqrt_pos.mpr ha
   have hsb : 0 < Real.sqrt b := Real.sqrt_pos.mpr hb
   have hr : 0 < r := by dsimp only [r]; positivity
-  have hbrel : b = a * r ^ 2 := by
+  have hbrel : b = a * r ^ (2 : ℕ) := by
     dsimp only [r]
     field_simp [hsa.ne']
     rw [Real.sq_sqrt ha.le, Real.sq_sqrt hb.le]
@@ -711,13 +711,13 @@ theorem thetaCuspLikelihood_projectiveEndpointTransport
       α * (2 * b * Real.sqrt b) <
         β * (2 * a * Real.sqrt a) :=
     (div_lt_div_iff₀ hdenA hdenB).mp hslopeRaw
-  have hshape : q * r ^ 3 < 1 := by
+  have hshape : q * r ^ (3 : ℕ) < 1 := by
     have hcommon : 0 < β * (2 * a * Real.sqrt a) := by positivity
     have hmul :
-        β * (2 * a * Real.sqrt a) * (q * r ^ 3) <
+        β * (2 * a * Real.sqrt a) * (q * r ^ (3 : ℕ)) <
           β * (2 * a * Real.sqrt a) * 1 := by
       calc
-        β * (2 * a * Real.sqrt a) * (q * r ^ 3) =
+        β * (2 * a * Real.sqrt a) * (q * r ^ (3 : ℕ)) =
             α * (2 * b * Real.sqrt b) := by
           rw [hαrel, hsqrtRel, hbrel]
           ring
@@ -730,26 +730,26 @@ theorem thetaCuspLikelihood_projectiveEndpointTransport
     (show l ∈ Set.Ici l by exact Set.mem_Ici.mpr le_rfl)
     (show r₀ ∈ Set.Ici l by exact hlr.le) hlr
   have hratioRaw :
-      C ^ 2 / (α ^ 2 * a) < D ^ 2 / (β ^ 2 * b) := by
+      C ^ (2 : ℕ) / (α ^ (2 : ℕ) * a) < D ^ (2 : ℕ) / (β ^ (2 : ℕ) * b) := by
     simpa only [thetaCuspLikelihoodFourthThirdRootRatio,
       l, r₀, a, b, h, α, β, C, D] using hratio
-  have hratioDenA : 0 < α ^ 2 * a := mul_pos (sq_pos_of_pos hα) ha
-  have hratioDenB : 0 < β ^ 2 * b := mul_pos (sq_pos_of_pos hβ) hb
+  have hratioDenA : 0 < α ^ (2 : ℕ) * a := mul_pos (sq_pos_of_pos hα) ha
+  have hratioDenB : 0 < β ^ (2 : ℕ) * b := mul_pos (sq_pos_of_pos hβ) hb
   have hratioCross :
-      C ^ 2 * (β ^ 2 * b) < D ^ 2 * (α ^ 2 * a) :=
+      C ^ (2 : ℕ) * (β ^ (2 : ℕ) * b) < D ^ (2 : ℕ) * (α ^ (2 : ℕ) * a) :=
     (div_lt_div_iff₀ hratioDenA hratioDenB).mp hratioRaw
   have hprojective : C * r < D * q := by
-    have hcommon : 0 < β ^ 2 * a := mul_pos (sq_pos_of_pos hβ) ha
-    have hsquares : (C * r) ^ 2 < (D * q) ^ 2 := by
+    have hcommon : 0 < β ^ (2 : ℕ) * a := mul_pos (sq_pos_of_pos hβ) ha
+    have hsquares : (C * r) ^ (2 : ℕ) < (D * q) ^ (2 : ℕ) := by
       have hmul :
-          β ^ 2 * a * (C * r) ^ 2 <
-            β ^ 2 * a * (D * q) ^ 2 := by
+          β ^ (2 : ℕ) * a * (C * r) ^ (2 : ℕ) <
+            β ^ (2 : ℕ) * a * (D * q) ^ (2 : ℕ) := by
         calc
-          β ^ 2 * a * (C * r) ^ 2 = C ^ 2 * (β ^ 2 * b) := by
+          β ^ (2 : ℕ) * a * (C * r) ^ (2 : ℕ) = C ^ (2 : ℕ) * (β ^ (2 : ℕ) * b) := by
             rw [hbrel]
             ring
-          _ < D ^ 2 * (α ^ 2 * a) := hratioCross
-          _ = β ^ 2 * a * (D * q) ^ 2 := by
+          _ < D ^ (2 : ℕ) * (α ^ (2 : ℕ) * a) := hratioCross
+          _ = β ^ (2 : ℕ) * a * (D * q) ^ (2 : ℕ) := by
             rw [hαrel]
             ring
       exact lt_of_mul_lt_mul_left hmul hcommon.le
@@ -841,7 +841,7 @@ theorem thetaCuspLikelihood_secondTransportNumerator_neg
     strictAntiOn_thetaCuspLikelihoodHomotopyCurvatureEnergy_of_scale hl0 hscale
       (show l ∈ Set.Ici l by exact Set.mem_Ici.mpr le_rfl)
       (show r ∈ Set.Ici l by exact Set.mem_Ici.mpr hlr.le) hlr
-  have henergyRaw : 2 * (a * C - b * D) < 3 * (α ^ 2 - β ^ 2) := by
+  have henergyRaw : 2 * (a * C - b * D) < 3 * (α ^ (2 : ℕ) - β ^ (2 : ℕ)) := by
     have henergy' := henergy
     dsimp only [thetaCuspLikelihoodHomotopyCurvatureEnergy,
       a, b, α, β, C, D, l, r] at henergy' ⊢
@@ -866,7 +866,7 @@ theorem thetaCuspLikelihood_secondTransportNumerator_neg
   calc
     (C - D) * (2 * (a + b) + t * (α - β)) -
         (α + β) * (3 * (α - β) + t * (C + D)) =
-      2 * (a + b) * (C - D) - 3 * (α ^ 2 - β ^ 2) -
+      2 * (a + b) * (C - D) - 3 * (α ^ (2 : ℕ) - β ^ (2 : ℕ)) -
         2 * t * (C * β + D * α) := by ring
     _ < 2 * (a + b) * (C - D) - 2 * (a * C - b * D) -
         2 * t * (C * β + D * α) := by linarith
@@ -892,7 +892,7 @@ theorem hasDerivAt_secondTransportRatio
     HasDerivAt (thetaCuspLikelihoodSecondTransportRatio u)
       (((C - D) * (2 * (a + b) + t * (α - β)) -
           (α + β) * (3 * (α - β) + t * (C + D))) /
-        (2 * (a + b) + t * (α - β)) ^ 2) t := by
+        (2 * (a + b) + t * (α - β)) ^ (2 : ℕ)) t := by
   dsimp only
   let h := thetaCuspLikelihoodSourceLogPartitionJetTwo
   let αf : ℝ → ℝ := fun x => -thetaCuspLikelihoodSourceLogPartitionJetThree x

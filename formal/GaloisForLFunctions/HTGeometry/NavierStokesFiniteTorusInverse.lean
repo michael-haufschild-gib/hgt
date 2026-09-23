@@ -36,7 +36,7 @@ def inverseAmplitude (velocity : d → ℝ) (amplitude : (d → ℤ) → ℂ)
 
 /-- Squared coefficient norm of a finite Fourier packet. -/
 def packetEnergy (packet : Finset (d → ℤ)) (amplitude : (d → ℤ) → ℂ) : ℝ :=
-  ∑ frequency ∈ packet, ‖amplitude frequency‖ ^ 2
+  ∑ frequency ∈ packet, ‖amplitude frequency‖ ^ (2 : ℕ)
 
 omit [DecidableEq d] in
 theorem transportDetuning_zero (velocity : d → ℝ) :
@@ -173,7 +173,7 @@ theorem packetEnergy_inverse_le (packet : Finset (d → ℤ))
     (hgap : ∀ frequency ∈ packet,
       δ ≤ |transportDetuning velocity frequency|) :
     packetEnergy packet (inverseAmplitude velocity amplitude) ≤
-      (2 * Real.pi * δ)⁻¹ ^ 2 * packetEnergy packet amplitude := by
+      (2 * Real.pi * δ)⁻¹ ^ (2 : ℕ) * packetEnergy packet amplitude := by
   have hscale : 0 < 2 * Real.pi * δ := mul_pos (mul_pos (by norm_num) Real.pi_pos) hδ
   unfold packetEnergy
   rw [Finset.mul_sum]

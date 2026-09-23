@@ -29,12 +29,12 @@ theorem sum_sq_eigenvalues_of_orthonormal {P : Fin N → Matrix (Fin D) (Fin D) 
     (hP : ∀ a, (P a).IsHermitian) {c : ℝ}
     (hON : ∀ a b, (P a * P b).trace = if a = b then ((c : ℝ) : ℂ) else 0)
     (θ : Fin N → ℝ) :
-    ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ).eigenvalues i) ^ 2 = c * ∑ a, (θ a) ^ 2 := by
+    ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ).eigenvalues i) ^ (2 : ℕ) = c * ∑ a, (θ a) ^ (2 : ℕ) := by
   classical
   rw [sum_sq_eigenvalues_eq_trace_sq_re, trace_sq_spectralEnsembleMatrix]
   have hinner : ∀ a : Fin N,
       (∑ b, ((θ a : ℂ) * (θ b : ℂ)) * (P a * P b).trace)
-        = ((((θ a) ^ 2 * c : ℝ)) : ℂ) := by
+        = ((((θ a) ^ (2 : ℕ) * c : ℝ)) : ℂ) := by
     intro a
     rw [Finset.sum_eq_single a]
     · rw [hON a a, if_pos rfl]
@@ -53,13 +53,13 @@ theorem exists_witness_of_energy_witness {P : Fin N → Matrix (Fin D) (Fin D) �
     (hP : ∀ a, (P a).IsHermitian) (k : Fin D → ℝ) {c : ℝ} (hc : 0 < c)
     (hON : ∀ a b, (P a * P b).trace = if a = b then ((c : ℝ) : ℂ) else 0)
     (hwit : ∀ κ : ℝ, ∃ θ₀ : Fin N → ℝ, ∀ π : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
-        ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues i) ^ 2)
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ (2 : ℕ)
+        ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues i) ^ (2 : ℕ))
     (b : ℝ) :
     ∃ θ₀ : Fin N → ℝ, ∀ π : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
-        ≠ b ^ 2 * (∑ a, (θ₀ a) ^ 2) := by
-  obtain ⟨θ₀, hθ₀⟩ := hwit (b ^ 2 / c)
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ (2 : ℕ)
+        ≠ b ^ (2 : ℕ) * (∑ a, (θ₀ a) ^ (2 : ℕ)) := by
+  obtain ⟨θ₀, hθ₀⟩ := hwit (b ^ (2 : ℕ) / c)
   refine ⟨θ₀, fun π hπ => hθ₀ π ?_⟩
   rw [sum_sq_eigenvalues_of_orthonormal hP hON θ₀, hπ]
   field_simp
@@ -74,8 +74,8 @@ theorem tendsto_integral_exp_sortedSpectralAction_zero_of_energy_witness
     (hDisc : spectralDiscriminantPoly P ≠ 0) (k : Fin D → ℝ) {c : ℝ} (hc : 0 < c)
     (hON : ∀ a b, (P a * P b).trace = if a = b then ((c : ℝ) : ℂ) else 0)
     (hwit : ∀ κ : ℝ, ∃ θ₀ : Fin m → ℝ, ∀ π : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
-        ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues i) ^ 2)
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ (2 : ℕ)
+        ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues i) ^ (2 : ℕ))
     (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 → ℂ) (hg : Measurable g)
     {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖g x‖ ≤ C) :
     Filter.Tendsto (fun t : ℝ => ∫ x, g x *

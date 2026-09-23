@@ -102,14 +102,14 @@ uniformly on horizontal segments as the truncation height `Y → ∞`. -/
 theorem tendsto_deriv_modularLambda_atImInfty :
     Tendsto (deriv modularLambda) (comap Complex.im atTop) (𝓝 0) := by
   have hev : (deriv modularLambda) =ᶠ[comap Complex.im atTop]
-      (fun τ => (π : ℂ) * I * thetaTwo τ ^ 4 * thetaFour τ ^ 4 / thetaThree τ ^ 4) := by
+      (fun τ => (π : ℂ) * I * thetaTwo τ ^ (4 : ℕ) * thetaFour τ ^ (4 : ℕ) / thetaThree τ ^ (4 : ℕ)) := by
     filter_upwards [(eventually_gt_atTop (0:ℝ)).comap Complex.im] with τ hτ
     exact deriv_modularLambda_eq' hτ
   rw [tendsto_congr' hev]
-  have hnum : Tendsto (fun τ => (π : ℂ) * I * thetaTwo τ ^ 4 * thetaFour τ ^ 4)
-      (comap Complex.im atTop) (𝓝 ((π : ℂ) * I * 0 ^ 4 * 1 ^ 4)) :=
+  have hnum : Tendsto (fun τ => (π : ℂ) * I * thetaTwo τ ^ (4 : ℕ) * thetaFour τ ^ (4 : ℕ))
+      (comap Complex.im atTop) (𝓝 ((π : ℂ) * I * 0 ^ (4 : ℕ) * 1 ^ (4 : ℕ))) :=
     (tendsto_const_nhds.mul (tendsto_thetaTwo_atImInfty.pow 4)).mul (tendsto_thetaFour_atImInfty.pow 4)
-  have hden : Tendsto (fun τ => thetaThree τ ^ 4) (comap Complex.im atTop) (𝓝 ((1 : ℂ) ^ 4)) :=
+  have hden : Tendsto (fun τ => thetaThree τ ^ (4 : ℕ)) (comap Complex.im atTop) (𝓝 ((1 : ℂ) ^ (4 : ℕ))) :=
     tendsto_thetaThree_atImInfty.pow 4
   have h := hnum.div hden (by norm_num)
   simpa using! h

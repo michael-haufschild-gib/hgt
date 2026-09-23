@@ -3,14 +3,14 @@ import GaloisForLFunctions.RHTower.Sieve.GallagherSobolev
 /-!
 # Orthogonality of the characters on the unit interval
 
-`∫_0^1 e(kt) dt = 1` if `k = 0` and `0` otherwise, for integral `k`.
+`∫_0^(1 : ℕ) e(kt) dt = 1` if `k = 0` and `0` otherwise, for integral `k`.
 
 For `k ≠ 0` the integrand has the explicit antiderivative `e(kt)/(2πik)`, which is one-periodic, so
 the two endpoint values cancel.  Nothing beyond the fundamental theorem of calculus is used; in
 particular this avoids the measure-space subtleties of the additive circle, working throughout on
 the interval `[0,1]` with Lebesgue measure.
 
-This is the orthogonality that turns `∫_0^1 |S|²` into `∑_n |a_n|²` for a trigonometric polynomial,
+This is the orthogonality that turns `∫_0^(1 : ℕ) |S|²` into `∑_n |a_n|²` for a trigonometric polynomial,
 the last analytic input Gallagher's route to the sharp large sieve needs.
 -/
 

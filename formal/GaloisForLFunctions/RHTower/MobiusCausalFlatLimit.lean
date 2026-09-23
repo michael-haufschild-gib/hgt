@@ -43,7 +43,7 @@ theorem tendsto_one_add_two_mul_ne :
 
 /-- The derivative residue in the critical parameter. -/
 theorem tendsto_sq_mul_deriv_riemannZeta_one_add_two_mul :
-    Tendsto (fun ω : ℝ => (2 * (ω : ℂ)) ^ 2 * deriv riemannZeta (1 + 2 * (ω : ℂ)))
+    Tendsto (fun ω : ℝ => (2 * (ω : ℂ)) ^ (2 : ℕ) * deriv riemannZeta (1 + 2 * (ω : ℂ)))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (-1)) := by
   have h := tendsto_sub_one_sq_mul_deriv_riemannZeta.comp tendsto_one_add_two_mul_ne
   refine h.congr fun ω => ?_
@@ -54,7 +54,7 @@ theorem tendsto_sq_mul_deriv_riemannZeta_one_add_two_mul :
 theorem tendsto_mobiusCausalPoleFactor :
     Tendsto (fun ω : ℝ => (riemannZeta (1 + 2 * (ω : ℂ)) +
         2 * (1 + (ω : ℂ)) * deriv riemannZeta (1 + 2 * (ω : ℂ))) /
-      ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2)
+      ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (-2)) := by
   have hP := tendsto_two_mul_riemannZeta_one_add_two_mul
   have hQ := tendsto_sq_mul_deriv_riemannZeta_one_add_two_mul
@@ -68,7 +68,7 @@ theorem tendsto_mobiusCausalPoleFactor :
     have := (tendsto_const_nhds (x := (1 : ℂ)) (f := nhdsWithin (0 : ℝ) (Set.Ioi 0))).add hω
     simpa using this
   have hnum : Tendsto (fun ω : ℝ => (2 * (ω : ℂ)) * ((2 * (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ)))
-      + 2 * (1 + (ω : ℂ)) * ((2 * (ω : ℂ)) ^ 2 * deriv riemannZeta (1 + 2 * (ω : ℂ))))
+      + 2 * (1 + (ω : ℂ)) * ((2 * (ω : ℂ)) ^ (2 : ℕ) * deriv riemannZeta (1 + 2 * (ω : ℂ))))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (-2)) := by
     have h2ω : Tendsto (fun ω : ℝ => 2 * ((ω : ℝ) : ℂ)) (nhdsWithin (0 : ℝ) (Set.Ioi 0))
         (nhds 0) := by simpa using hω.const_mul (2 : ℂ)
@@ -77,8 +77,8 @@ theorem tendsto_mobiusCausalPoleFactor :
       (f := nhdsWithin (0 : ℝ) (Set.Ioi 0))).mul hlin).mul hQ
     have := ha.add hb
     simpa using this
-  have hden : Tendsto (fun ω : ℝ => (1 + (ω : ℂ)) ^ 2 *
-      ((2 * (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2)
+  have hden : Tendsto (fun ω : ℝ => (1 + (ω : ℂ)) ^ (2 : ℕ) *
+      ((2 * (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 1) := by
     have := (hlin.pow 2).mul (hP.pow 2)
     simpa using this
@@ -101,7 +101,7 @@ theorem tendsto_mobiusCausalPoleFactor :
 
 /-- The card's `(4)`: the flat (critical) parameter derivative. -/
 def mobiusCausalFlatDeriv (z : ℂ) : ℂ :=
-  -(1 / (1 + z) ^ 2) - 2 * deriv riemannZeta (1 + z) / ((1 + z) * riemannZeta (1 + z)) - 2 / z
+  -(1 / (1 + z) ^ (2 : ℕ)) - 2 * deriv riemannZeta (1 + z) / ((1 + z) * riemannZeta (1 + z)) - 2 / z
 
 theorem one_add_ne_one {z : ℂ} (hz0 : z ≠ 0) : (1 : ℂ) + z ≠ 1 := by
   intro h
@@ -168,7 +168,7 @@ theorem tendsto_mobiusCausalMultiplierDeriv {z : ℂ} (hz : 0 ≤ z.re) (hz0 : z
         ((tendsto_const_nhds.mul hζ's).div hζs hζ0))
   have hB : Tendsto (fun ω : ℝ => 1 / z * ((riemannZeta (1 + 2 * (ω : ℂ)) +
         2 * (1 + (ω : ℂ)) * deriv riemannZeta (1 + 2 * (ω : ℂ))) /
-      ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ 2))
+      ((1 + (ω : ℂ)) * riemannZeta (1 + 2 * (ω : ℂ))) ^ (2 : ℕ)))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (1 / z * (-2))) :=
     tendsto_const_nhds.mul tendsto_mobiusCausalPoleFactor
   have hsum := hA.add hB

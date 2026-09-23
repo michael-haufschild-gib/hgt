@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.TraceHankelConverse
 # Gaussian heat trace on the multiplicity-exact Xi divisor
 
 For positive heat time `t`, the Gaussian multiplier
-`exp (-t * xiSpectralPoint q ^ 2)` is absolutely summable over every Xi zero with its exact
+`exp (-t * xiSpectralPoint q ^ (2 : ℕ))` is absolutely summable over every Xi zero with its exact
 analytic multiplicity.  The proof is unconditional: the open critical strip and the existing
 completed-source height gap make the real part of every squared centered spectral coordinate a
 fixed positive fraction of its norm square, while reciprocal-square summability controls the
@@ -28,8 +28,8 @@ constant `1 / 2` is enough to dominate the Gaussian heat multiplier by the alrea
 reciprocal-square divisor. -/
 theorem xiSpectralPoint_normSq_lt_two_mul_sq_re (q : XiZeroCopy) :
     Complex.normSq (xiSpectralPoint q) <
-      2 * (xiSpectralPoint q ^ 2).re := by
-  have hhorizontal : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 :=
+      2 * (xiSpectralPoint q ^ (2 : ℕ)).re := by
+  have hhorizontal : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 :=
     xi_divisor_support_centered_re_sq_lt_quarter q.1
   have hheight := xiZeroCopy_two_lt_im_sq q
   have hre : (xiSpectralPoint q).re = (q.1 : ℂ).im := by
@@ -43,7 +43,7 @@ theorem xiSpectralPoint_normSq_lt_two_mul_sq_re (q : XiZeroCopy) :
 
 /-- One Gaussian heat multiplier on the centered, multiplicity-exact Xi divisor. -/
 def xiGaussianHeatTerm (t : ℝ) (q : XiZeroCopy) : ℂ :=
-  Complex.exp (-(t : ℂ) * xiSpectralPoint q ^ 2)
+  Complex.exp (-(t : ℂ) * xiSpectralPoint q ^ (2 : ℕ))
 
 /-- At every positive time, the Gaussian heat multiplier is absolutely summable over the entire
 Xi divisor with analytic multiplicity. -/
@@ -52,7 +52,7 @@ theorem summable_xiGaussianHeatTerm {t : ℝ} (ht : 0 < t) :
   apply Summable.of_norm_bounded
     (xiSpectralPoint_inv_sq_summable.mul_left (2 / t))
   intro q
-  let A : ℝ := (xiSpectralPoint q ^ 2).re
+  let A : ℝ := (xiSpectralPoint q ^ (2 : ℕ)).re
   let N : ℝ := Complex.normSq (xiSpectralPoint q)
   have hgap : N < 2 * A := by
     simpa only [N, A] using xiSpectralPoint_normSq_lt_two_mul_sq_re q
@@ -77,7 +77,7 @@ theorem summable_xiGaussianHeatTerm {t : ℝ} (ht : 0 < t) :
       simp [A, Complex.mul_re]
     _ ≤ (t * A)⁻¹ := hexp
     _ ≤ (2 / t) * (1 / N) := hinv
-    _ = (2 / t) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+    _ = (2 / t) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       rw [Complex.sq_norm]
 
 /-- The Gaussian heat trace of the full centered Xi divisor. -/
@@ -179,14 +179,14 @@ private theorem pow_mul_exp_neg_le_factorial_div_pow
 theorem summable_xiGaussianHeatMonomialTerm
     {t : ℝ} (ht : 0 < t) (j : ℕ) :
     Summable (fun q : XiZeroCopy =>
-      (xiSpectralPoint q ^ 2) ^ j * xiGaussianHeatTerm t q) := by
+      (xiSpectralPoint q ^ (2 : ℕ)) ^ j * xiGaussianHeatTerm t q) := by
   let c : ℝ := t / 2
   let C : ℝ := ((j + 1).factorial : ℝ) / c ^ (j + 1)
   have hc : 0 < c := by dsimp [c]; linarith
   apply Summable.of_norm_bounded
     (xiSpectralPoint_inv_sq_summable.mul_left C)
   intro q
-  let A : ℝ := (xiSpectralPoint q ^ 2).re
+  let A : ℝ := (xiSpectralPoint q ^ (2 : ℕ)).re
   let N : ℝ := Complex.normSq (xiSpectralPoint q)
   have hgap : N < 2 * A := by
     simpa only [N, A] using xiSpectralPoint_normSq_lt_two_mul_sq_re q
@@ -208,7 +208,7 @@ theorem summable_xiGaussianHeatMonomialTerm
         ring
       _ ≤ C := by simpa only [C] using hpoly
   calc
-    ‖(xiSpectralPoint q ^ 2) ^ j * xiGaussianHeatTerm t q‖ =
+    ‖(xiSpectralPoint q ^ (2 : ℕ)) ^ j * xiGaussianHeatTerm t q‖ =
         N ^ j * Real.exp (-(t * A)) := by
       rw [norm_mul, norm_pow, norm_pow, xiGaussianHeatTerm,
         Complex.norm_exp, Complex.sq_norm]
@@ -216,7 +216,7 @@ theorem summable_xiGaussianHeatMonomialTerm
     _ ≤ N ^ j * Real.exp (-(c * N)) :=
       mul_le_mul_of_nonneg_left hdecay (pow_nonneg hN.le j)
     _ ≤ C * (1 / N) := hweighted
-    _ = C * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+    _ = C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       rw [Complex.sq_norm]
 
 private theorem evalRealPolynomial_eq_sum (Q : Polynomial ℝ) (z : ℂ) :
@@ -232,12 +232,12 @@ summable over the Xi divisor. -/
 theorem summable_xiGaussianHeatPolynomialTerm
     {t : ℝ} (ht : 0 < t) (Q : Polynomial ℝ) :
     Summable (fun q : XiZeroCopy =>
-      evalRealPolynomial Q (xiSpectralPoint q ^ 2) *
+      evalRealPolynomial Q (xiSpectralPoint q ^ (2 : ℕ)) *
         xiGaussianHeatTerm t q) := by
   have hsum : Summable (fun q : XiZeroCopy =>
       ∑ k ∈ Finset.range (Q.natDegree + 1),
         (Q.coeff k : ℂ) *
-          ((xiSpectralPoint q ^ 2) ^ k * xiGaussianHeatTerm t q)) := by
+          ((xiSpectralPoint q ^ (2 : ℕ)) ^ k * xiGaussianHeatTerm t q)) := by
     apply summable_sum
     intro k hk
     exact (summable_xiGaussianHeatMonomialTerm ht k).mul_left
@@ -252,7 +252,7 @@ theorem summable_xiGaussianHeatPolynomialTerm
 /-- Polynomial-square Gaussian filter on one multiplicity copy of the squared Xi divisor. -/
 def xiPolynomialGaussianHeatTerm
     (P : Polynomial ℝ) (t : ℝ) (q : XiZeroCopy) : ℂ :=
-  evalRealPolynomial P (xiSpectralPoint q ^ 2) ^ 2 *
+  evalRealPolynomial P (xiSpectralPoint q ^ (2 : ℕ)) ^ (2 : ℕ) *
     xiGaussianHeatTerm t q
 
 theorem summable_xiPolynomialGaussianHeatTerm
@@ -313,7 +313,7 @@ theorem xiPolynomialGaussianHeatTraceReal_nonneg_of_riemannHypothesis
   intro q
   obtain ⟨x, hcoord⟩ := xiSpectralPoint_real_of_rh hRH q
   rw [xiPolynomialGaussianHeatTerm, xiGaussianHeatTerm, hcoord]
-  have hsq : (x : ℂ) ^ 2 = ((x ^ 2 : ℝ) : ℂ) := by push_cast; rfl
+  have hsq : (x : ℂ) ^ (2 : ℕ) = ((x ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; rfl
   rw [hsq, evalRealPolynomial_ofReal]
   simpa [Complex.exp_re, pow_two, Complex.mul_re, Complex.mul_im] using
     mul_nonneg (sq_nonneg (Polynomial.eval (x * x) P))

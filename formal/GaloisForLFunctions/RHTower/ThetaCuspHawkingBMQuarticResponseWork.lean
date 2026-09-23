@@ -30,8 +30,8 @@ def sourceWorkWeights (q : XiZeroCopy) : Fin 3 → ℂ :=
   let t := physicalRate q false
   let ds := s*(s-1)/4
   let dt := t*(t-1)/4
-  ![-2*s*dt*((t+1)^2-s*t)+(s*t/3)*(2*t+1)*(2*t+2),
-    2*t*ds*((s+1)^2-s*t)-(s*t/3)*(2*s+1)*(2*s+2),
+  ![-2*s*dt*((t+1)^(2 : ℕ)-s*t)+(s*t/3)*(2*t+1)*(2*t+2),
+    2*t*ds*((s+1)^(2 : ℕ)-s*t)-(s*t/3)*(2*s+1)*(2*s+2),
     2*ds*dt*(s-t)*(1-s*t)]
 
 private def gradientCurrent (q : XiZeroCopy) (a b c : ℂ) (j : Fin 2) (w : Point) : ℂ :=
@@ -40,8 +40,8 @@ private def gradientCurrent (q : XiZeroCopy) (a b c : ℂ) (j : Fin 2) (w : Poin
 
 private theorem gradientCurrent_divergence (q : XiZeroCopy) (a b c : ℂ) (z : UpperHalfPlane) :
     let w := coordinates z
-    (w 1:ℂ)^2*(∑ j : Fin 2,coordDeriv j (gradientCurrent q a b c j) w)=
-      (w 1:ℂ)^2*(∑ j : Fin 2,(a*fullAngularCovector q true j w+
+    (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,coordDeriv j (gradientCurrent q a b c j) w)=
+      (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,(a*fullAngularCovector q true j w+
         b*fullAngularCovector q false j w+c*fullSquareCovector q j w)*fullSquareCovector q j w)+
       fullSquarePotential q w*(a*parameter q true*(fullAngularField q true w+fullSquarePotential q w)+
         b*parameter q false*(fullAngularField q false w+fullSquarePotential q w)+
@@ -69,13 +69,13 @@ private theorem gradientCurrent_divergence (q : XiZeroCopy) (a b c : ℂ) (z : U
     change HasFDerivAt (gradientCurrent q a b c j) _ w at hh
     simp only [coordDeriv,hh.fderiv,add_apply,smul_apply,Pi.add_apply,smul_eq_mul]
     ring
-  have hA : (w 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 H) w+coordDeriv 1 (coordDeriv 1 H) w)=
+  have hA : (w 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 H) w+coordDeriv 1 (coordDeriv 1 H) w)=
       parameter q true*(H w+Q w) := by
     have he := fullAngularField_equation q true w z.im_pos
     rw [scalarLaplacian_eq _ w z.im_pos] at he
     dsimp only [H,Q,fullSquarePotential]
     linear_combination he
-  have hB : (w 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 K) w+coordDeriv 1 (coordDeriv 1 K) w)=
+  have hB : (w 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 K) w+coordDeriv 1 (coordDeriv 1 K) w)=
       parameter q false*(K w+Q w) := by
     have he := fullAngularField_equation q false w z.im_pos
     rw [scalarLaplacian_eq _ w z.im_pos] at he
@@ -83,13 +83,13 @@ private theorem gradientCurrent_divergence (q : XiZeroCopy) (a b c : ℂ) (z : U
     linear_combination he
   have hS := fullSquarePotential_laplacian q true w z.im_pos
   rw [scalarLaplacian_eq _ w z.im_pos] at hS
-  change (w 1:ℂ)^2*(∑ j : Fin 2,coordDeriv j (gradientCurrent q a b c j) w)=_
+  change (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,coordDeriv j (gradientCurrent q a b c j) w)=_
   simp only [hd,← fullSquarePotential_coexact q (coordinates z) z.im_pos]
-  change (w 1:ℂ)^2*(∑ j : Fin 2,
+  change (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,
       (coordDeriv j Q w*(a*coordDeriv j H w+b*coordDeriv j K w+c*coordDeriv j Q w)+
       Q w*(a*coordDeriv j (coordDeriv j H) w+b*coordDeriv j (coordDeriv j K) w+
         c*coordDeriv j (coordDeriv j Q) w)))=
-    (w 1:ℂ)^2*(∑ j : Fin 2,(a*coexact H j w+b*coexact K j w+c*coexact Q j w)*coexact Q j w)+
+    (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,(a*coexact H j w+b*coexact K j w+c*coexact Q j w)*coexact Q j w)+
       Q w*(a*parameter q true*(H w+Q w)+b*parameter q false*(K w+Q w)+
         c*(2*(physicalRate q true+1)*(physicalRate q true+2)*Q w+fullGradientEnergy q w))
   simp only [Fin.sum_univ_two,coexact,Matrix.cons_val_zero,Matrix.cons_val_one]
@@ -97,7 +97,7 @@ private theorem gradientCurrent_divergence (q : XiZeroCopy) (a b c : ℂ) (z : U
   linear_combination (a*Q w)*hA+(b*Q w)*hB+(c*Q w)*hS
 
 private theorem square_gradient (q : XiZeroCopy) (w : Point) :
-    (w 1:ℂ)^2*(∑ j : Fin 2,fullSquareCovector q j w*fullSquareCovector q j w)=
+    (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,fullSquareCovector q j w*fullSquareCovector q j w)=
       2*fullSquarePotential q w*fullGradientEnergy q w := by
   simp only [Fin.sum_univ_two,fullSquareCovector,coexact,Matrix.cons_val_zero,Matrix.cons_val_one,
     fullSquarePotential,fullGradientEnergy]
@@ -116,15 +116,15 @@ def squareWorkCoefficient (q : XiZeroCopy) : ℂ :=
 def reducedSourceWork (q : XiZeroCopy) (w : Point) : ℂ :=
   sourceWorkWeights q 0*parameter q true*fullSquarePotential q w*fullAngularField q true w+
   sourceWorkWeights q 1*parameter q false*fullSquarePotential q w*fullAngularField q false w+
-  squareWorkCoefficient q*fullSquarePotential q w^2
+  squareWorkCoefficient q*fullSquarePotential q w^(2 : ℕ)
 
 /-- Exact original radial clock-mass balance with both angular fluxes and full response work. -/
 theorem incoming_radial_mass_reduced_source_work (q : XiZeroCopy) (a b : ℂ) (z : UpperHalfPlane) :
     let w := coordinates z
-    (w 1:ℂ)^2*clockCoefficients q a b w 1 0=
-      4*(a^2*b^2/64)*(-(physicalRate q true*physicalRate q false/3)*(w 1:ℂ)^2*
+    (w 1:ℂ)^(2 : ℕ)*clockCoefficients q a b w 1 0=
+      4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*(-(physicalRate q true*physicalRate q false/3)*(w 1:ℂ)^(2 : ℕ)*
         (∑ j : Fin 2,coordDeriv j (angularResponseGreen q j) w)+
-        (w 1:ℂ)^2*(∑ j : Fin 2,coordDeriv j (reducedSourceCurrent q j) w)-
+        (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,coordDeriv j (reducedSourceCurrent q j) w)-
         reducedSourceWork q w) := by
   dsimp only
   have he := incoming_radial_mass_angular_exchange q a b z
@@ -133,28 +133,28 @@ theorem incoming_radial_mass_reduced_source_work (q : XiZeroCopy) (a b : ℂ) (z
   have hd := gradientCurrent_divergence q (sourceWorkWeights q 0) (sourceWorkWeights q 1)
     (2*sourceWorkWeights q 2/3) z
   have hs := square_gradient q (coordinates z)
-  change clockCoefficients q a b (coordinates z) 1 0=4*(a^2*b^2/64)*
+  change clockCoefficients q a b (coordinates z) 1 0=4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
     (-(physicalRate q true*physicalRate q false/3)*
       (∑ j : Fin 2,coordDeriv j (angularResponseGreen q j) (coordinates z))+
       sourceWorkWeights q 0*(∑ j : Fin 2,fullAngularCovector q true j (coordinates z)*fullSquareCovector q j (coordinates z))+
       sourceWorkWeights q 1*(∑ j : Fin 2,fullAngularCovector q false j (coordinates z)*fullSquareCovector q j (coordinates z))+
       sourceWorkWeights q 2*(∑ j : Fin 2,fullSquareCovector q j (coordinates z)*fullSquareCovector q j (coordinates z))) at he
-  change _=4*(a^2*b^2/64)*(_+_ -reducedSourceWork q (coordinates z))
+  change _=4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*(_+_ -reducedSourceWork q (coordinates z))
   dsimp only [reducedSourceCurrent,reducedSourceWork,squareWorkCoefficient]
   dsimp only at hd
   simp only [Fin.sum_univ_two] at he hd hs ⊢
-  linear_combination (coordinates z 1:ℂ)^2*he-4*(a^2*b^2/64)*hd+
-    4*(a^2*b^2/64)*(sourceWorkWeights q 2/3)*hs
+  linear_combination (coordinates z 1:ℂ)^(2 : ℕ)*he-4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*hd+
+    4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*(sourceWorkWeights q 2/3)*hs
 
 /-- The original finite-clock translation moment retains the full radial source work. -/
 theorem incoming_radial_horizon_clockMoment_source_work (q : XiZeroCopy) (a b : ℂ)
     (z : UpperHalfPlane) (h : NNReal) :
     let w := coordinates z
-    (w 1:ℂ)^2*clockMoment (-6) h (fun u => incomingCurrent q a b 1 u w 1)=
-      (h:ℂ)*Complex.exp (-6*(h:ℂ))*4*(a^2*b^2/64)*
-        (-(physicalRate q true*physicalRate q false/3)*(w 1:ℂ)^2*
+    (w 1:ℂ)^(2 : ℕ)*clockMoment (-6) h (fun u => incomingCurrent q a b 1 u w 1)=
+      (h:ℂ)*Complex.exp (-6*(h:ℂ))*4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
+        (-(physicalRate q true*physicalRate q false/3)*(w 1:ℂ)^(2 : ℕ)*
           (∑ j : Fin 2,coordDeriv j (angularResponseGreen q j) w)+
-          (w 1:ℂ)^2*(∑ j : Fin 2,coordDeriv j (reducedSourceCurrent q j) w)-
+          (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,coordDeriv j (reducedSourceCurrent q j) w)-
           reducedSourceWork q w) := by
   dsimp only
   rw [incomingCurrent_horizon_clockMoment]
@@ -165,13 +165,13 @@ theorem incoming_radial_horizon_clockMoment_source_work (q : XiZeroCopy) (a b : 
 theorem incoming_radial_horizon_finite_source_work (q : XiZeroCopy) (a b : ℂ)
     (V : ℝ) (z : UpperHalfPlane) :
     let w := coordinates z
-    (w 1:ℂ)^2*(∫ v in (0:ℝ)..V, incomingCurrent q a b 1 v w 1)=
-      clockMass V*4*(a^2*b^2/64)*
-        (-(physicalRate q true*physicalRate q false/3)*(w 1:ℂ)^2*
+    (w 1:ℂ)^(2 : ℕ)*(∫ v in (0:ℝ)..V, incomingCurrent q a b 1 v w 1)=
+      clockMass V*4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
+        (-(physicalRate q true*physicalRate q false/3)*(w 1:ℂ)^(2 : ℕ)*
           (∑ j : Fin 2,coordDeriv j (angularResponseGreen q j) w)+
-          (w 1:ℂ)^2*(∑ j : Fin 2,coordDeriv j (reducedSourceCurrent q j) w)-
+          (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,coordDeriv j (reducedSourceCurrent q j) w)-
           reducedSourceWork q w)+
-        (w 1:ℂ)^2*(clockCoefficients q a b w 1 1*(3*clockMass V+onsetSquare V/2)+
+        (w 1:ℂ)^(2 : ℕ)*(clockCoefficients q a b w 1 1*(3*clockMass V+onsetSquare V/2)+
           clockCoefficients q a b w 1 2*clockEnergy V) := by
   dsimp only
   simp only [incoming_current_horizon_value]
@@ -183,25 +183,25 @@ theorem squareWorkCoefficient_factor (q : XiZeroCopy) :
     let s := physicalRate q true
     let t := physicalRate q false
     let p := s*t
-    squareWorkCoefficient q=p*(s-t)*(p^3+25*p^2-28*p+20)/6 := by
+    squareWorkCoefficient q=p*(s-t)*(p^(3 : ℕ)+25*p^(2 : ℕ)-28*p+20)/6 := by
   dsimp only
   norm_num [squareWorkCoefficient,sourceWorkWeights,parameter,physicalRate,
     D4BMQuadraticMixedSource.resolventParameter,D4BMQuadraticMixedSource.branchParameter,Matrix.cons_val_two]
   ring
 
 private theorem stable_cubic_ne_zero (z : ℂ) (hz : 0 ≤ z.re) :
-    z^3+31*z^2+84*z+72 ≠ 0 := by
+    z^(3 : ℕ)+31*z^(2 : ℕ)+84*z+72 ≠ 0 := by
   intro h
   have hR := congrArg Complex.re h
   have hI := congrArg Complex.im h
   norm_num [pow_succ,Complex.mul_re,Complex.mul_im] at hR hI
-  have hy : z.im*(3*z.re^2+62*z.re+84-z.im^2)=0 := by
+  have hy : z.im*(3*z.re^(2 : ℕ)+62*z.re+84-z.im^(2 : ℕ))=0 := by
     linear_combination hI
-  have hx3 : 0 ≤ z.re^3 := pow_nonneg hz 3
+  have hx3 : 0 ≤ z.re^(3 : ℕ) := pow_nonneg hz 3
   rcases mul_eq_zero.mp hy with hy|hy
   · rw [hy] at hR
     nlinarith [sq_nonneg z.re]
-  · have hn : -8*z.re^3-248*z.re^2-2090*z.re-2532=0 := by
+  · have hn : -8*z.re^(3 : ℕ)-248*z.re^(2 : ℕ)-2090*z.re-2532=0 := by
       linear_combination hR-(3*z.re+31)*hy
     nlinarith [sq_nonneg z.re]
 
@@ -224,9 +224,9 @@ theorem squareWorkCoefficient_ne_zero (q : XiZeroCopy) : squareWorkCoefficient q
     have hq := xi_divisor_support_im_ne_zero q.1
     norm_num [physicalRate,Complex.sub_im] at hi
     exact hq hi
-  have hP : p^3+25*p^2-28*p+20 ≠ 0 := by
+  have hP : p^(3 : ℕ)+25*p^(2 : ℕ)-28*p+20 ≠ 0 := by
     have hz : 0 ≤ (p-2).re := by norm_num [Complex.sub_re]; linarith
-    have he : (p-2)^3+31*(p-2)^2+84*(p-2)+72=p^3+25*p^2-28*p+20 := by ring
+    have he : (p-2)^(3 : ℕ)+31*(p-2)^(2 : ℕ)+84*(p-2)+72=p^(3 : ℕ)+25*p^(2 : ℕ)-28*p+20 := by ring
     exact he ▸ stable_cubic_ne_zero (p-2) hz
   rw [squareWorkCoefficient_factor]
   exact div_ne_zero (mul_ne_zero (mul_ne_zero hp0 hs) hP) (by norm_num)

@@ -22,7 +22,7 @@ noncomputable def mtTypeIPrimeHeathBrownPowerBlockMomentBound
   ((ell : ℝ) / V) * Real.sqrt
       (mtTypeIPrimeRaisedHeathBrownPowerMomentCoefficient N B T eta *
         (∑ m ∈ Finset.Ioc B (2 * B),
-          ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ 2)) *
+          ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ (2 : ℕ))) *
     Real.sqrt
       (generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
           (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +
@@ -43,7 +43,7 @@ theorem mtTypeIPrimeHeathBrownAbsorbedBlockMomentBound_le_power
   have hcoeff := mtTypeIPrimeRaisedHeathBrownAbsorbedMomentCoefficient_le_power
     (N' := N') (B := B) T' hN hN'le hNT hT heta
   have henergy : 0 ≤ ∑ m ∈ Finset.Ioc B (2 * B),
-      ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ 2 :=
+      ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun m _ => sq_nonneg _
   have hinside := mul_le_mul_of_nonneg_right hcoeff henergy
   have hsqrt := Real.sqrt_le_sqrt hinside
@@ -63,8 +63,8 @@ theorem eventually_setIntegral_mtTypeI_primeAmplifier_heathBrown_power_sourceSca
       let P := mtTypeIPrimeScale X alpha
       let ell := mtTypeIPrimeDegree P T
       (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V,
-          ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-            ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+          ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+            ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
         ∑ r : Fin ell,
           mtTypeIPrimeHeathBrownPowerBlockMomentBound
             eta a A P ell N T V r := by
@@ -94,7 +94,7 @@ noncomputable def mtTypeIPrimeHeathBrownEpsilonBlockMomentBound
   ((ell : ℝ) / V) * Real.sqrt
       (mtTypeIPrimeRaisedHeathBrownEpsilonMomentCoefficient N B T epsilon *
         (∑ m ∈ Finset.Ioc B (2 * B),
-          ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ 2)) *
+          ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ (2 : ℕ))) *
     Real.sqrt
       (generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
           (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +
@@ -123,8 +123,8 @@ theorem eventually_setIntegral_mtTypeI_primeAmplifier_heathBrown_epsilon_sourceS
       let P := mtTypeIPrimeScale X alpha
       let ell := mtTypeIPrimeDegree P T
       (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V,
-          ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-            ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+          ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+            ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
         ∑ r : Fin ell,
           mtTypeIPrimeHeathBrownEpsilonBlockMomentBound
             epsilon a A P ell N T V r := by

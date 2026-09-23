@@ -67,7 +67,7 @@ theorem deningerCalderonWittPrimeIndexedPhysicalOrientationReporter_prime
 prime-orientation cochains. -/
 def deningerCalderonWittTwoPrimeOrientationGreenBoundaryWitness
     (p q : Nat.Primes) :
-    ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne :=
+    ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne :=
   deningerCalderonWittGlobalOrientedTopGreenLift
     (deningerCalderonWittGlobalPrimeOrientationCochain p -
       deningerCalderonWittGlobalPrimeOrientationCochain q)

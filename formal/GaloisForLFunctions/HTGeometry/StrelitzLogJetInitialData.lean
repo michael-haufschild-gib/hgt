@@ -36,7 +36,7 @@ theorem exists_strelitzLogJetInitialData_of_order_two_isMaximumOnCircle
             (centralIndex a (Real.exp (x n)) : ℂ)‖
           ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
         ∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2 := by
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ) := by
   obtain ⟨n₀, -, hn₀⟩ := htrans 0
   obtain ⟨Q, hQ, hrel⟩ :=
     exists_strelitzLogJetRelation_of_differentiallyAlgebraicOfOrder_two
@@ -46,7 +46,7 @@ theorem exists_strelitzLogJetInitialData_of_order_two_isMaximumOnCircle
       ‖eulerLogDeriv (coeffFun a) w - (centralIndex a (Real.exp y) : ℂ)‖
         ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp y) : ℝ) ∧
       ‖eulerLogDerivSecond (coeffFun a) w‖
-        ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp y) : ℝ) ^ 2 ∧
+        ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp y) : ℝ) ^ (2 : ℕ) ∧
       ∀ v : ℂ, ‖v‖ = ‖w‖ → ‖coeffFun a v‖ ≤ ‖coeffFun a w‖ := by
     intro n
     exact exists_radius_point_eulerLogDerivSecond_small_isMaximumOnCircle ha hn₀ htrans
@@ -75,7 +75,7 @@ theorem exists_strelitzLogJetInitialData_of_order_two
             (centralIndex a (Real.exp (x n)) : ℂ)‖
           ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
         ∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2 := by
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ) := by
   obtain ⟨Q, hQ, x, z, hx, hz, hfloor, hfz, _, hrel, hu, hv⟩ :=
     exists_strelitzLogJetInitialData_of_order_two_isMaximumOnCircle ha htrans hDA
   exact ⟨Q, hQ, x, z, hx, hz, hfloor, hfz, hrel, hu, hv⟩

@@ -57,7 +57,7 @@ theorem liouvilleC_mul (a b : ℕ) : liouvilleC (a * b) = liouvilleC a * liouvil
 range: the corpus's estimate at the sequence which is `−1` on the primes. -/
 theorem exists_liouvilleC_mulDistSqPair_ge_uniform :
     ∃ C : ℝ, ∀ (z : ℕ) (T t : ℝ), 3 ≤ z → 9 ≤ T → |t| ≤ T →
-      1 / Real.log z ≤ zetaLowerA / Real.log T ^ 9 →
+      1 / Real.log z ≤ zetaLowerA / Real.log T ^ (9 : ℕ) →
       logLog z - 7 * Real.log (Real.log T) - C
         ≤ mulDistSqPair liouvilleC (charFn t) (Nat.primesLE z) := by
   obtain ⟨C, hC⟩ := exists_mulDistSqPair_ge_uniform
@@ -76,7 +76,7 @@ uniform distance by the zero-free strip, the analytic side by the sharp Perron f
 Selberg-sieve mean squares.  Only the parameters remain free. -/
 theorem exists_norm_sum_Icc_liouvilleC_mul_log_le :
     ∃ C : ℝ, ∀ (N z K zA YA zB YB : ℕ) (σ t₀ : ℝ), 2 ≤ N → 3 ≤ z → 1 < σ → 1 ≤ t₀ →
-      9 ≤ t₀ * 2 ^ K → 1 / Real.log z ≤ zetaLowerA / Real.log (t₀ * 2 ^ K) ^ 9 →
+      9 ≤ t₀ * 2 ^ K → 1 / Real.log z ≤ zetaLowerA / Real.log (t₀ * 2 ^ K) ^ (9 : ℕ) →
       1 ≤ YA → YA ≤ zA → 2 ≤ zA → 0 < Real.log YA →
       1 ≤ YB → YB ≤ zB → 2 ≤ zB → 0 < Real.log YB →
       ‖∑ n ∈ Finset.Icc 1 N, liouvilleC n‖ * Real.log (N : ℝ)
@@ -86,7 +86,7 @@ theorem exists_norm_sum_Icc_liouvilleC_mul_log_le :
                     * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
                           / Real.log 2)
                         * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
-          + (2 * ((N : ℝ) + 1) * ((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+          + (2 * ((N : ℝ) + 1) * ((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
                   * (((N : ℝ) + 1 / 2)) ^ σ
                   * (1 + Real.log ((N * (N * N) : ℕ) : ℝ)) / (Real.pi * (t₀ * 2 ^ K))
               + (1 / (2 * Real.pi))
@@ -121,7 +121,7 @@ truncation error freed of its factor `N`: the only place the length of the sum n
 logarithmically, so the height is free to be chosen against the distance rather than against `N`. -/
 theorem exists_norm_sum_Icc_liouvilleC_mul_log_near_le :
     ∃ C : ℝ, ∀ (N z K zA YA zB YB : ℕ) (σ t₀ : ℝ), 2 ≤ N → 3 ≤ z → 1 < σ → 1 ≤ t₀ →
-      9 ≤ t₀ * 2 ^ K → 1 / Real.log z ≤ zetaLowerA / Real.log (t₀ * 2 ^ K) ^ 9 →
+      9 ≤ t₀ * 2 ^ K → 1 / Real.log z ≤ zetaLowerA / Real.log (t₀ * 2 ^ K) ^ (9 : ℕ) →
       1 ≤ YA → YA ≤ zA → 2 ≤ zA → 0 < Real.log YA →
       1 ≤ YB → YB ≤ zB → 2 ≤ zB → 0 < Real.log YB →
       ‖∑ n ∈ Finset.Icc 1 N, liouvilleC n‖ * Real.log (N : ℝ)
@@ -131,7 +131,7 @@ theorem exists_norm_sum_Icc_liouvilleC_mul_log_near_le :
                     * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
                           / Real.log 2)
                         * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
-          + (((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+          + (((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
                   * (((N : ℝ) + 1 / 2)) ^ σ
                   * (5 * (1 + Real.log ((N * (N * N) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
                   / (Real.pi * (t₀ * 2 ^ K))
@@ -168,7 +168,7 @@ truncation error depends on the length of the sum only logarithmically, and the 
 zero-free strip. -/
 theorem exists_norm_sum_Icc_liouvilleC_mul_log_block_near_le :
     ∃ C : ℝ, ∀ (N z K : ℕ) (ZA YlA ZB YlB : ℕ → ℕ) (σ t₀ : ℝ), 2 ≤ N → 3 ≤ z → 1 < σ → 1 ≤ t₀ →
-      9 ≤ t₀ * 2 ^ K → 1 / Real.log z ≤ zetaLowerA / Real.log (t₀ * 2 ^ K) ^ 9 →
+      9 ≤ t₀ * 2 ^ K → 1 / Real.log z ≤ zetaLowerA / Real.log (t₀ * 2 ^ K) ^ (9 : ℕ) →
       (∀ j, 1 ≤ YlA j) → (∀ j, YlA j ≤ ZA j) → (∀ j, 2 ≤ ZA j) →
       (∀ j, 0 < Real.log (YlA j)) →
       (∀ j, 1 ≤ YlB j) → (∀ j, YlB j ≤ ZB j) → (∀ j, 2 ≤ ZB j) →
@@ -180,7 +180,7 @@ theorem exists_norm_sum_Icc_liouvilleC_mul_log_block_near_le :
                     * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
                           / Real.log 2)
                         * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
-          + (((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+          + (((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
                   * (((N : ℝ) + 1 / 2)) ^ σ
                   * (5 * (1 + Real.log ((N * (N * N) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
                   / (Real.pi * (t₀ * 2 ^ K))

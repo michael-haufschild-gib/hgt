@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.CriticalDivisorAffineMeanSquare
 
 Splitting at the conductor and applying cumulative divisor-square bounds before pointwise
 subpower absorption sharpens the plain coefficient mass from `N^(-399/200)` to
-`(1 + log N)^4 / N^2`.  The corresponding affine mean square retains the exact logarithms.
+`(1 + log N)^(4 : ℕ) / N^(2 : ℕ)`.  The corresponding affine mean square retains the exact logarithms.
 -/
 
 noncomputable section

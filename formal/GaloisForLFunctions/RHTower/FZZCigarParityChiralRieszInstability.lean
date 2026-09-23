@@ -9,9 +9,9 @@ chiral form through the indefinite two-scale FZZ metric and adds an arbitrary re
 canonical source-Krein generator.
 
 The interaction preserves formal Krein self-adjointness, but cannot restore spectral reality.  If
-`E=Q(beta)^2-P(beta)R(beta)>0`, its exact instability discriminant is
+`E=Q(beta)^(2 : ℕ)-P(beta)R(beta)>0`, its exact instability discriminant is
 
-`Delta_gamma = Delta_0 + gamma^2/E`.
+`Delta_gamma = Delta_0 + gamma^(2 : ℕ)/E`.
 
 Thus every real coupling retains an explicit nonreal neutral eigenpair, and every nonzero coupling
 strictly increases its positive imaginary eigenvalue.  This closes the most direct source-native
@@ -26,7 +26,7 @@ namespace RHTower
 noncomputable section
 
 def fzzCigarParityDilatedTwoScaleKreinGap (beta : ℝ) : ℝ :=
-  fzzKreinQAt beta ^ 2 - fzzKreinPAt beta * fzzKreinRAt beta
+  fzzKreinQAt beta ^ (2 : ℕ) - fzzKreinPAt beta * fzzKreinRAt beta
 
 theorem fzzCigarParityDilatedTwoScaleKreinGap_pos
     {beta : ℝ} (hbeta : 0 < beta) :
@@ -87,7 +87,7 @@ theorem fzzCigarParityDilatedChiralRieszOperator_represents
     exact_mod_cast hE
   have hgapC :
       (fzzCigarParityDilatedTwoScaleKreinGap beta : ℂ) =
-        (fzzKreinQAt beta : ℂ) ^ 2 -
+        (fzzKreinQAt beta : ℂ) ^ (2 : ℕ) -
           (fzzKreinPAt beta : ℂ) * (fzzKreinRAt beta : ℂ) := by
     rw [fzzCigarParityDilatedTwoScaleKreinGap]
     push_cast
@@ -146,7 +146,7 @@ theorem fzzCigarParityDilatedChiralPerturbedKreinOperator_formallySelfAdjoint
   have hRC : (fzzKreinRAt beta : ℂ) ≠ 0 := by exact_mod_cast hR
   have hgapC :
       (fzzCigarParityDilatedTwoScaleKreinGap beta : ℂ) =
-        (fzzKreinQAt beta : ℂ) ^ 2 -
+        (fzzKreinQAt beta : ℂ) ^ (2 : ℕ) -
           (fzzKreinPAt beta : ℂ) * (fzzKreinRAt beta : ℂ) := by
     rw [fzzCigarParityDilatedTwoScaleKreinGap]
     push_cast
@@ -199,7 +199,7 @@ theorem fzzCigarParityDilatedChiralPerturbedKreinOperator_matrix
 def fzzCigarParityDilatedChiralPerturbedDiscriminant
     (beta gamma : ℝ) : ℝ :=
   fzzCigarParityDilatedTwoScaleKreinDiscriminant beta +
-    gamma ^ 2 / fzzCigarParityDilatedTwoScaleKreinGap beta
+    gamma ^ (2 : ℕ) / fzzCigarParityDilatedTwoScaleKreinGap beta
 
 /-- Zero coupling recovers the original positive instability discriminant. -/
 theorem fzzCigarParityDilatedChiralPerturbedDiscriminant_zero (beta : ℝ) :
@@ -213,13 +213,13 @@ theorem fzzCigarParityDilatedChiralPerturbedDiscriminant_pos
   rw [fzzCigarParityDilatedChiralPerturbedDiscriminant]
   have hD := fzzCigarParityDilatedTwoScaleKreinDiscriminant_pos hbeta
   have hE := fzzCigarParityDilatedTwoScaleKreinGap_pos hbeta
-  have hnonneg : 0 ≤ gamma ^ 2 / fzzCigarParityDilatedTwoScaleKreinGap beta :=
+  have hnonneg : 0 ≤ gamma ^ (2 : ℕ) / fzzCigarParityDilatedTwoScaleKreinGap beta :=
     div_nonneg (sq_nonneg gamma) hE.le
   linarith
 
 theorem fzzCigarParityDilatedChiralPerturbed_characteristic
     {beta : ℝ} (hbeta : 0 < beta) (gamma : ℝ) :
-    fzzCigarParityDilatedChiralPerturbedDiag beta gamma ^ 2 +
+    fzzCigarParityDilatedChiralPerturbedDiag beta gamma ^ (2 : ℕ) +
         fzzCigarParityDilatedChiralPerturbedUpper beta gamma *
           fzzCigarParityDilatedChiralPerturbedLower beta gamma =
       -(fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma : ℂ) := by
@@ -231,7 +231,7 @@ theorem fzzCigarParityDilatedChiralPerturbed_characteristic
   have hRC : (fzzKreinRAt beta : ℂ) ≠ 0 := by exact_mod_cast hR
   have hgapC :
       (fzzCigarParityDilatedTwoScaleKreinGap beta : ℂ) =
-        (fzzKreinQAt beta : ℂ) ^ 2 -
+        (fzzKreinQAt beta : ℂ) ^ (2 : ℕ) -
           (fzzKreinPAt beta : ℂ) * (fzzKreinRAt beta : ℂ) := by
     rw [fzzCigarParityDilatedTwoScaleKreinGap]
     push_cast
@@ -269,16 +269,16 @@ def fzzCigarParityDilatedChiralPerturbedEigenvector
 
 theorem fzzCigarParityDilatedChiralPerturbedEigenvalue_sq
     {beta : ℝ} (hbeta : 0 < beta) (gamma : ℝ) :
-    fzzCigarParityDilatedChiralPerturbedEigenvalue beta gamma ^ 2 =
+    fzzCigarParityDilatedChiralPerturbedEigenvalue beta gamma ^ (2 : ℕ) =
       -(fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma : ℂ) := by
   rw [fzzCigarParityDilatedChiralPerturbedEigenvalue]
   have hsqrt :
-      Real.sqrt (fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma) ^ 2 =
+      Real.sqrt (fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma) ^ (2 : ℕ) =
         fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma :=
     Real.sq_sqrt
       (fzzCigarParityDilatedChiralPerturbedDiscriminant_pos hbeta gamma).le
   have hcast :
-      ((Real.sqrt (fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma) : ℝ) : ℂ) ^ 2 =
+      ((Real.sqrt (fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma) : ℝ) : ℂ) ^ (2 : ℕ) =
         (fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma : ℂ) := by
     exact_mod_cast hsqrt
   rw [mul_pow, Complex.I_sq, hcast]
@@ -322,7 +322,7 @@ theorem fzzCigarParityDilatedChiralPerturbedEigenpair
           fzzCigarParityDilatedChiralPerturbedDiag beta gamma *
             (fzzCigarParityDilatedChiralPerturbedEigenvalue beta gamma -
               fzzCigarParityDilatedChiralPerturbedDiag beta gamma) =
-          (fzzCigarParityDilatedChiralPerturbedDiag beta gamma ^ 2 +
+          (fzzCigarParityDilatedChiralPerturbedDiag beta gamma ^ (2 : ℕ) +
               fzzCigarParityDilatedChiralPerturbedUpper beta gamma *
                 fzzCigarParityDilatedChiralPerturbedLower beta gamma) -
             fzzCigarParityDilatedChiralPerturbedDiag beta gamma *
@@ -330,7 +330,7 @@ theorem fzzCigarParityDilatedChiralPerturbedEigenpair
       _ = -(fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma : ℂ) -
             fzzCigarParityDilatedChiralPerturbedDiag beta gamma *
               fzzCigarParityDilatedChiralPerturbedEigenvalue beta gamma := by rw [hchar]
-      _ = fzzCigarParityDilatedChiralPerturbedEigenvalue beta gamma ^ 2 -
+      _ = fzzCigarParityDilatedChiralPerturbedEigenvalue beta gamma ^ (2 : ℕ) -
             fzzCigarParityDilatedChiralPerturbedDiag beta gamma *
               fzzCigarParityDilatedChiralPerturbedEigenvalue beta gamma := by rw [hsq]
       _ = fzzCigarParityDilatedChiralPerturbedEigenvalue beta gamma *
@@ -425,9 +425,9 @@ theorem fzzCigarParityDilatedChiralPerturbedDiscriminant_gt
     fzzCigarParityDilatedTwoScaleKreinDiscriminant beta <
       fzzCigarParityDilatedChiralPerturbedDiscriminant beta gamma := by
   rw [fzzCigarParityDilatedChiralPerturbedDiscriminant]
-  have hsq : 0 < gamma ^ 2 := sq_pos_of_ne_zero hgamma
+  have hsq : 0 < gamma ^ (2 : ℕ) := sq_pos_of_ne_zero hgamma
   have hE := fzzCigarParityDilatedTwoScaleKreinGap_pos hbeta
-  have hquot : 0 < gamma ^ 2 / fzzCigarParityDilatedTwoScaleKreinGap beta :=
+  have hquot : 0 < gamma ^ (2 : ℕ) / fzzCigarParityDilatedTwoScaleKreinGap beta :=
     div_pos hsq hE
   linarith
 

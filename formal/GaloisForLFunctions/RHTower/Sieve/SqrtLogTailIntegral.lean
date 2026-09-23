@@ -21,7 +21,7 @@ open Filter Topology Asymptotics MeasureTheory Set
 
 /-- The antiderivative of `−exp(−c√(log t))/t`. -/
 noncomputable def sqrtLogTail (c t : ℝ) : ℝ :=
-  2 / c ^ 2 * ((1 + c * Real.sqrt (Real.log t)) * Real.exp (-c * Real.sqrt (Real.log t)))
+  2 / c ^ (2 : ℕ) * ((1 + c * Real.sqrt (Real.log t)) * Real.exp (-c * Real.sqrt (Real.log t)))
 
 theorem sqrtLogTail_nonneg {c t : ℝ} (hc : 0 < c) : 0 ≤ sqrtLogTail c t := by
   have hs : (0 : ℝ) ≤ Real.sqrt (Real.log t) := Real.sqrt_nonneg _
@@ -46,12 +46,12 @@ theorem hasDerivAt_neg_sqrtLogTail {c t : ℝ} (hc : 0 < c) (ht : 1 < t) :
         (-c * (1 / (2 * Real.sqrt (Real.log t)) * t⁻¹))) t := (hu.const_mul (-c)).exp
   have hlin : HasDerivAt (fun x : ℝ => 1 + c * Real.sqrt (Real.log x))
       (c * (1 / (2 * Real.sqrt (Real.log t)) * t⁻¹)) t := (hu.const_mul c).const_add 1
-  have hG := ((hlin.mul hexp).const_mul (2 / c ^ 2)).neg
+  have hG := ((hlin.mul hexp).const_mul (2 / c ^ (2 : ℕ))).neg
   have hsne : Real.sqrt (Real.log t) ≠ 0 := ne_of_gt hs
   have htne : t ≠ 0 := ne_of_gt ht0
   have hcne : c ≠ 0 := ne_of_gt hc
   have hval : Real.exp (-c * Real.sqrt (Real.log t)) / t
-      = -(2 / c ^ 2 * (c * (1 / (2 * Real.sqrt (Real.log t)) * t⁻¹)
+      = -(2 / c ^ (2 : ℕ) * (c * (1 / (2 * Real.sqrt (Real.log t)) * t⁻¹)
             * Real.exp (-c * Real.sqrt (Real.log t))
           + (1 + c * Real.sqrt (Real.log t))
             * (Real.exp (-c * Real.sqrt (Real.log t))
@@ -75,7 +75,7 @@ theorem tendsto_sqrtLogTail {c : ℝ} (hc : 0 < c) :
   have harg : Tendsto (fun t : ℝ => c * Real.sqrt (Real.log t)) atTop atTop :=
     Filter.Tendsto.const_mul_atTop hc (Real.tendsto_sqrt_atTop.comp Real.tendsto_log_atTop)
   have hcomp := hbase.comp harg
-  have := hcomp.const_mul (2 / c ^ 2)
+  have := hcomp.const_mul (2 / c ^ (2 : ℕ))
   rw [mul_zero] at this
   refine this.congr fun t => ?_
   simp only [sqrtLogTail, Function.comp_apply, neg_mul]
@@ -87,7 +87,7 @@ theorem one_add_le_two_mul_exp_half (y : ℝ) : 1 + y ≤ 2 * Real.exp (y / 2) :
 
 /-- **The tail is below the halved shape.** -/
 theorem sqrtLogTail_le {c t : ℝ} (hc : 0 < c) :
-    sqrtLogTail c t ≤ 4 / c ^ 2 * Real.exp (-(c / 2) * Real.sqrt (Real.log t)) := by
+    sqrtLogTail c t ≤ 4 / c ^ (2 : ℕ) * Real.exp (-(c / 2) * Real.sqrt (Real.log t)) := by
   have hs : (0 : ℝ) ≤ Real.sqrt (Real.log t) := Real.sqrt_nonneg _
   have hy : (0 : ℝ) ≤ c * Real.sqrt (Real.log t) := by positivity
   have hlin := one_add_le_two_mul_exp_half (c * Real.sqrt (Real.log t))
@@ -106,10 +106,10 @@ theorem sqrtLogTail_le {c t : ℝ} (hc : 0 < c) :
           mul_le_mul_of_nonneg_right hlin hE.le
       _ = 2 * Real.exp (-(c / 2) * Real.sqrt (Real.log t)) := by
           rw [mul_assoc, hsplit]
-  have hc2 : (0 : ℝ) < 2 / c ^ 2 := by positivity
+  have hc2 : (0 : ℝ) < 2 / c ^ (2 : ℕ) := by positivity
   have := mul_le_mul_of_nonneg_left hstep hc2.le
-  calc sqrtLogTail c t ≤ 2 / c ^ 2 * (2 * Real.exp (-(c / 2) * Real.sqrt (Real.log t))) := this
-    _ = 4 / c ^ 2 * Real.exp (-(c / 2) * Real.sqrt (Real.log t)) := by ring
+  calc sqrtLogTail c t ≤ 2 / c ^ (2 : ℕ) * (2 * Real.exp (-(c / 2) * Real.sqrt (Real.log t))) := this
+    _ = 4 / c ^ (2 : ℕ) * Real.exp (-(c / 2) * Real.sqrt (Real.log t)) := by ring
 
 /-- The weight is integrable on every `(a,∞)` with `a > 1`. -/
 theorem integrableOn_expSqrtLog_div_Ioi {c a : ℝ} (hc : 0 < c) (ha : 1 < a) :

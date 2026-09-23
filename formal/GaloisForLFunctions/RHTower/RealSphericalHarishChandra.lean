@@ -125,7 +125,7 @@ def sphericalPrincipalCasimir (s : ℂ) :
 
 /-- The Casimir acts by the scalar `s²/4`. -/
 theorem sphericalPrincipalCasimir_eq_smul_id (s : ℂ) :
-    sphericalPrincipalCasimir s = (s ^ 2 / 4) • LinearMap.id := by
+    sphericalPrincipalCasimir s = (s ^ (2 : ℕ) / 4) • LinearMap.id := by
   apply Finsupp.lhom_ext
   intro m z
   ext j
@@ -139,7 +139,7 @@ def sphericalPrincipalLaplacian (s : ℂ) :
 
 /-- The shifted Casimir acts by the scalar `(1-s²)/4`. -/
 theorem sphericalPrincipalLaplacian_eq_smul_id (s : ℂ) :
-    sphericalPrincipalLaplacian s = ((1 - s ^ 2) / 4) • LinearMap.id := by
+    sphericalPrincipalLaplacian s = ((1 - s ^ (2 : ℕ)) / 4) • LinearMap.id := by
   rw [sphericalPrincipalLaplacian, sphericalPrincipalCasimir_eq_smul_id]
   ext v m
   by_cases h : v = m
@@ -150,7 +150,7 @@ theorem sphericalPrincipalLaplacian_eq_smul_id (s : ℂ) :
 
 /-- Raising-norm coefficient at even weight `2m` for real parameter `s`. -/
 def sphericalRaisingNormCoefficient (s : ℝ) (m : ℤ) : ℝ :=
-  (((2 * m + 1 : ℤ) : ℝ) ^ 2 - s ^ 2) / 4
+  (((2 * m + 1 : ℤ) : ℝ) ^ (2 : ℕ) - s ^ (2 : ℕ)) / 4
 
 /-- At spherical weight zero and `s=2ν`, the raising-norm coefficient is the Selberg eigenvalue. -/
 theorem sphericalRaisingNormCoefficient_zero_two_mul (ν : ℝ) :

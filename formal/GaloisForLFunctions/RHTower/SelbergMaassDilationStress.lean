@@ -73,13 +73,13 @@ private theorem sub_dir {F G : ℂ → ℝ} {z : ℂ}
   exact congrArg (fun D => D v) (hf.hasFDerivAt.sub hg.hasFDerivAt).fderiv
 
 /-- The original inverse-square spectral potential as a real chart function. -/
-def potential (lam : ℝ) (w : ℂ) : ℝ := lam/w.im^2
+def potential (lam : ℝ) (w : ℂ) : ℝ := lam/w.im^(2 : ℕ)
 
 private theorem potential_hasFDerivAt (lam : ℝ) (z : ℍ) :
-    HasFDerivAt (potential lam) ((-2*lam/z.im^3) • Complex.imCLM) (z : ℂ) := by
+    HasFDerivAt (potential lam) ((-2*lam/z.im^(3 : ℕ)) • Complex.imCLM) (z : ℂ) := by
   have h := (hasDerivAt_const z.im lam).div ((hasDerivAt_id z.im).pow 2)
     (pow_ne_zero 2 z.im_pos.ne')
-  have hd : HasDerivAt (fun y : ℝ => lam/y^2) (-2*lam/z.im^3) z.im := by
+  have hd : HasDerivAt (fun y : ℝ => lam/y^(2 : ℕ)) (-2*lam/z.im^(3 : ℕ)) z.im := by
     apply h.congr_deriv
     simp only [Pi.pow_apply,id_eq,zero_mul,zero_sub,Nat.cast_ofNat,mul_one]
     field_simp
@@ -88,7 +88,7 @@ private theorem potential_hasFDerivAt (lam : ℝ) (z : ℍ) :
 
 /-- Exact derivative of the original spectral potential, with its physical height factor. -/
 theorem potential_dir (v : ℂ) (z : ℍ) :
-    dir v (potential lam) (z : ℂ) = (-2*lam/z.im^3)*v.im := by
+    dir v (potential lam) (z : ℂ) = (-2*lam/z.im^(3 : ℕ))*v.im := by
   rw [dir,(potential_hasFDerivAt lam z).fderiv]
   rfl
 
@@ -111,15 +111,15 @@ private theorem potentialMass_diff (z : ℍ) : DifferentiableAt ℝ (potentialMa
 /-- Differentiating the actual spectral mass keeps both potential forcing and source current. -/
 theorem potentialMass_dir (v : ℂ) (z : ℍ) :
     dir v (potentialMass N f L) (z : ℂ) =
-      (-2*lam/z.im^3)*v.im*normSq (observedField N f L (z : ℂ))+
-        (lam/z.im^2)*2*(dir v (observedField N f L) (z : ℂ)*
+      (-2*lam/z.im^(3 : ℕ))*v.im*normSq (observedField N f L (z : ℂ))+
+        (lam/z.im^(2 : ℕ))*2*(dir v (observedField N f L) (z : ℂ)*
           (starRingEnd ℂ) (observedField N f L (z : ℂ))).re := by
   unfold potentialMass
   rw [mul_dir (potential_hasFDerivAt lam z).differentiableAt (mass_diff N f L z),
     potential_dir,normSq_dir ((observed_smooth N f L z).differentiableAt (by norm_num))]
   unfold potential
-  change (-2*lam/z.im^3)*v.im*normSq (observedField N f L (z : ℂ))+
-    (lam/z.im^2)*(2*(dir v (observedField N f L) (z : ℂ)*(starRingEnd ℂ) (observedField N f L (z : ℂ))).re) = _
+  change (-2*lam/z.im^(3 : ℕ))*v.im*normSq (observedField N f L (z : ℂ))+
+    (lam/z.im^(2 : ℕ))*(2*(dir v (observedField N f L) (z : ℂ)*(starRingEnd ℂ) (observedField N f L (z : ℂ))).re) = _
   ring
 
 /-- Horizontal diagonal of the physical stress tensor of an actual source observation. -/
@@ -200,7 +200,7 @@ private theorem stressXY_dir (v : ℂ) (z : ℍ) :
 private theorem observed_laplacian (z : ℍ) :
     dir 1 (dir 1 (observedField N f L)) (z : ℂ)+
       dir Complex.I (dir Complex.I (observedField N f L)) (z : ℂ) =
-        ((-(lam/z.im^2) : ℝ) : ℂ)*observedField N f L (z : ℂ) := by
+        ((-(lam/z.im^(2 : ℕ)) : ℝ) : ℂ)*observedField N f L (z : ℂ) := by
   unfold observedField
   simpa only [ofComplex_apply] using source_readout_laplacian N f L z
 
@@ -218,7 +218,7 @@ theorem stress_horizontal_conservation (z : ℍ) :
 /-- The original vertical stress retains exactly the inverse-square potential forcing. -/
 theorem stress_vertical_forcing (z : ℍ) :
     dir 1 (stressXY N f L) (z : ℂ)+dir Complex.I (stressYY N f L) (z : ℂ)=
-      (-2*lam/z.im^3)*normSq (observedField N f L (z : ℂ)) := by
+      (-2*lam/z.im^(3 : ℕ))*normSq (observedField N f L (z : ℂ)) := by
   have hm := mixed_dir (observed_smooth N f L z) 1 Complex.I
   have he := eq_sub_of_add_eq (observed_laplacian N f L z)
   rw [stressXY_dir,stressYY_dir,potentialMass_dir,hm,he]
@@ -268,8 +268,8 @@ theorem dilation_conservation (z : ℍ) :
   have ht := stress_trace N f L (z : ℂ)
   unfold potentialMass potential at ht
   rw [UpperHalfPlane.coe_im] at ht
-  have hc : 2*(lam/z.im^2)*normSq (observedField N f L (z : ℂ))+
-      z.im*((-2*lam/z.im^3)*normSq (observedField N f L (z : ℂ)))=0 := by
+  have hc : 2*(lam/z.im^(2 : ℕ))*normSq (observedField N f L (z : ℂ))+
+      z.im*((-2*lam/z.im^(3 : ℕ))*normSq (observedField N f L (z : ℂ)))=0 := by
     field_simp
     ring
   linear_combination z.re*hx+z.im*hy+ht+hc
@@ -299,11 +299,11 @@ def circleStressFlux (x y : ℝ) : ℝ :=
   (-x/y)*dilationX N f L (SelbergMaassMean.point x y)-dilationY N f L (SelbergMaassMean.point x y)
 
 /-- The physical circle flux retains angular energy, radial energy, and the original spectral mass. -/
-theorem circleStressFlux_eq_energies {x y : ℝ} (hy : 0 < y) (hxy : x^2+y^2=1) :
+theorem circleStressFlux_eq_energies {x y : ℝ} (hy : 0 < y) (hxy : x^(2 : ℕ)+y^(2 : ℕ)=1) :
     circleStressFlux N f L x y =
       -(normSq (dir (SelbergMaassMean.point x y) (observedField N f L) (SelbergMaassMean.point x y))-
         normSq (dir (Complex.I*SelbergMaassMean.point x y) (observedField N f L) (SelbergMaassMean.point x y))+
-        (lam/y^2)*normSq (observedField N f L (SelbergMaassMean.point x y)))/y := by
+        (lam/y^(2 : ℕ))*normSq (observedField N f L (SelbergMaassMean.point x y)))/y := by
   have hr := radial_stress_identity N f L (SelbergMaassMean.point x y)
   have hx' : (SelbergMaassMean.point x y).re=x := by simp [SelbergMaassMean.point]
   have hy' : (SelbergMaassMean.point x y).im=y := by simp [SelbergMaassMean.point]
@@ -312,7 +312,7 @@ theorem circleStressFlux_eq_energies {x y : ℝ} (hy : 0 < y) (hxy : x^2+y^2=1) 
     nlinarith [hxy]
   rw [hx',hy',hn,one_mul] at hr
   have hm : potentialMass N f L (SelbergMaassMean.point x y)=
-      (lam/y^2)*normSq (observedField N f L (SelbergMaassMean.point x y)) := by
+      (lam/y^(2 : ℕ))*normSq (observedField N f L (SelbergMaassMean.point x y)) := by
     unfold potentialMass potential
     rw [hy']
   rw [hm] at hr

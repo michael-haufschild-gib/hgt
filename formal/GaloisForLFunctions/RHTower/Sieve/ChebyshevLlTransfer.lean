@@ -39,10 +39,10 @@ theorem sqrt_quad_shift_le {c N : ℝ} (hc0 : 0 ≤ c) (hN3 : 3 ≤ N) (hlogN : 
   have hN0 : (0 : ℝ) < N := by linarith
   have hH0 : (0 : ℝ) ≤ chebWidthLl c N := chebWidthLl_nonneg hN0.le
   have hHN : chebWidthLl c N ≤ N := chebWidthLl_le hN0.le
-  have hZN2 : N + chebWidthLl c N + 1 ≤ N ^ 2 := by nlinarith [hHN, hN3]
+  have hZN2 : N + chebWidthLl c N + 1 ≤ N ^ (2 : ℕ) := by nlinarith [hHN, hN3]
   have hZ0 : (0 : ℝ) < N + chebWidthLl c N + 1 := by linarith
   have hlogZ2 : Real.log (N + chebWidthLl c N + 1) ≤ 2 * Real.log N := by
-    have h1 : Real.log (N + chebWidthLl c N + 1) ≤ Real.log (N ^ 2) :=
+    have h1 : Real.log (N + chebWidthLl c N + 1) ≤ Real.log (N ^ (2 : ℕ)) :=
       Real.log_le_log hZ0 hZN2
     rw [Real.log_pow] at h1
     push_cast at h1
@@ -70,7 +70,7 @@ theorem sqrt_quad_shift_le {c N : ℝ} (hc0 : 0 ≤ c) (hN3 : 3 ≤ N) (hlogN : 
   have hroot : Real.sqrt (chebQuadLl c (N + chebWidthLl c N + 1))
       ≤ Real.sqrt (4 * chebQuadLl c N) := Real.sqrt_le_sqrt hQ
   have hsplit : Real.sqrt (4 * chebQuadLl c N) = 2 * Real.sqrt (chebQuadLl c N) := by
-    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_mul (by positivity),
+    rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_mul (by positivity),
       Real.sqrt_sq (by norm_num)]
   linarith [hroot, hsplit.le, hsplit.ge]
 

@@ -68,7 +68,7 @@ noncomputable def cglCharacterPacketHermitianMass (q R : ℕ)
 theorem cglCharacterPacketHermitianMass_eq_normSq (q R : ℕ)
     (w : Fin R → CGLCharacterDyadicRowData (q + 1)) (τ : ℝ) :
     cglCharacterPacketHermitianMass q R w τ =
-      ∑ a : ZMod (q + 1), ((‖cglCharacterPacket q R w τ a‖ ^ 2 : ℝ) : ℂ) := by
+      ∑ a : ZMod (q + 1), ((‖cglCharacterPacket q R w τ a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold cglCharacterPacketHermitianMass
   apply Finset.sum_congr rfl
   intro a ha

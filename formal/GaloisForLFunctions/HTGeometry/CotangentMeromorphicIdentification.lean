@@ -120,7 +120,7 @@ theorem physicalExponentialMero_def (lam : ℂ) :
 theorem cot_cylinder_pointwise (a z : ℂ) :
     Complex.I * (Complex.exp (2 * Complex.I * a * z) + 1) * Complex.sin (a * z)
       = Complex.cos (a * z) * (Complex.exp (2 * Complex.I * a * z) - 1) := by
-  have hp : Complex.exp (2 * Complex.I * a * z) = Complex.exp (a * z * Complex.I) ^ 2 := by
+  have hp : Complex.exp (2 * Complex.I * a * z) = Complex.exp (a * z * Complex.I) ^ (2 : ℕ) := by
     rw [← Complex.exp_nat_mul]
     exact congrArg Complex.exp (by push_cast; ring)
   have hneg : Complex.exp (-(a * z) * Complex.I) = (Complex.exp (a * z * Complex.I))⁻¹ := by

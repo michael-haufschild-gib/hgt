@@ -26,7 +26,7 @@ def d4BMXiMixedHorizonAngularCausalOpticalDensity (q : XiZeroCopy) : ℝ :=
 theorem d4BMXiMixedHorizonAngularCausalOpticalDensity_eq_tilt
     (q : XiZeroCopy) :
     d4BMXiMixedHorizonAngularCausalOpticalDensity q =
-      (q.1 : ℂ).im ^ 2 * (1 - 2 * (q.1 : ℂ).re) ^ 2 := by
+      (q.1 : ℂ).im ^ (2 : ℕ) * (1 - 2 * (q.1 : ℂ).re) ^ (2 : ℕ) := by
   exact normSq_d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient_eq_tilt q
 
 theorem d4BMXiMixedHorizonAngularCausalOpticalDensity_eq_zero_iff
@@ -76,10 +76,10 @@ theorem d4BMXiMixedHorizonCausalOpticalSection_eq_monodromy_mul_angularDensity_m
 optical density. -/
 def d4BMXiAIMEHorizonGainSquareToAngularOpticalSusceptibility
     (n : ℕ) (q : XiZeroCopy) : ℝ :=
-  (xiSpectralPoint q).re ^ 2 *
+  (xiSpectralPoint q).re ^ (2 : ℕ) *
       (Complex.normSq (d4AIMEHorizonDenominatorPlus n (xiSpectralPoint q)) *
-        Complex.normSq (d4AIMEHorizonDenominatorMinus n (xiSpectralPoint q))) ^ 2 /
-    (64 * thetaCuspHawkingTopologicalBlackHoleConformalDecay n ^ 2)
+        Complex.normSq (d4AIMEHorizonDenominatorMinus n (xiSpectralPoint q))) ^ (2 : ℕ) /
+    (64 * thetaCuspHawkingTopologicalBlackHoleConformalDecay n ^ (2 : ℕ))
 
 theorem d4BMXiAIMEHorizonGainSquareToAngularOpticalSusceptibility_pos
     (n : ℕ) (q : XiZeroCopy) :
@@ -101,7 +101,7 @@ theorem d4BMXiMixedHorizonAngularCausalOpticalDensity_eq_susceptibility_mul_gain
     (n : ℕ) (q : XiZeroCopy) :
     d4BMXiMixedHorizonAngularCausalOpticalDensity q =
       d4BMXiAIMEHorizonGainSquareToAngularOpticalSusceptibility n q *
-        d4BMXiAIMEHorizonGainDefect n q ^ 2 := by
+        d4BMXiAIMEHorizonGainDefect n q ^ (2 : ℕ) := by
   rw [d4BMXiMixedHorizonAngularCausalOpticalDensity_eq_tilt]
   unfold d4BMXiAIMEHorizonGainSquareToAngularOpticalSusceptibility
     d4BMXiAIMEHorizonGainDefect
@@ -128,7 +128,7 @@ theorem d4BMXiMixedHorizonCausalOpticalSection_eq_monodromy_mul_gainSquare_respo
         n k amplitude orthogonalMixing q =
       d4BMXiMixedHorizonComplexMonodromyJump n k q *
         (((d4BMXiAIMEHorizonGainSquareToAngularOpticalSusceptibility n q *
-          d4BMXiAIMEHorizonGainDefect n q ^ 2) *
+          d4BMXiAIMEHorizonGainDefect n q ^ (2 : ℕ)) *
           Complex.normSq
             ((d4ThetaFullEinsteinGaugeFixedSecondHarmonicRadiation
               amplitude orthogonalMixing q) 0) : ℝ) : ℂ) := by

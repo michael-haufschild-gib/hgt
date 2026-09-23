@@ -22,15 +22,15 @@ def egbFixedChargeATemperatureGapCoefficient (w φ : ℝ) : ℝ :=
     (2 * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ))
 
 theorem egbFixedChargeAMeanDenominator_normalized_difference (τ φ : ℝ) :
-    (egbFixedChargeAMeanDenominator τ φ - (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ 2 =
-      -2 + 4 * (((egbFixedChargeAMeanCoupling τ φ - egbFixedChargeACriticalCouplingWeight φ) / egbCoexistenceASymmetricRatio τ ^ 2) * egbCoexistenceALogKernel τ +
-        egbFixedChargeACriticalCouplingWeight φ * ((egbCoexistenceALogKernel τ - 3) / egbCoexistenceASymmetricRatio τ ^ 2)) := by
+    (egbFixedChargeAMeanDenominator τ φ - (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) =
+      -2 + 4 * (((egbFixedChargeAMeanCoupling τ φ - egbFixedChargeACriticalCouplingWeight φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) * egbCoexistenceALogKernel τ +
+        egbFixedChargeACriticalCouplingWeight φ * ((egbCoexistenceALogKernel τ - 3) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   unfold egbFixedChargeAMeanDenominator
   field_simp <;> ring
 
 theorem egbFixedChargeAMeanDenominator_quadratic_critical_limit (φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAMeanDenominator τ φ - (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeAMeanDenominator τ φ - (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeAMeanThermalCorrection φ)) := by
   simp only [egbFixedChargeAMeanDenominator_normalized_difference]
   have h1 := (egbFixedChargeAMeanCoupling_quadratic_critical_limit φ).mul egbCoexistenceALogKernel_tendsto_critical
@@ -60,7 +60,7 @@ theorem egbFixedChargeACritical_temperature_mean (w φ : ℝ) :
 theorem egbFixedChargeATemperatureGapCoefficient_formula (w φ : ℝ) :
     2 * (egbFixedChargeACriticalRadius w φ * egbFixedChargeAMeanThermalCorrection φ +
       egbFixedChargeAMeanRadiusCorrection w φ * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) /
-      (Real.pi * (egbFixedChargeACriticalRadius w φ * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) ^ 2) =
+      (Real.pi * (egbFixedChargeACriticalRadius w φ * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) ^ (2 : ℕ)) =
     egbFixedChargeATemperatureGapCoefficient w φ := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
@@ -82,7 +82,7 @@ theorem egbFixedChargeATemperatureGapCoefficient_pos (w φ : ℝ) : 0 < egbFixed
 
 theorem egbFixedChargeA_mean_thermal_product_limit (w φ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAMeanRadius w φ τ * egbFixedChargeAMeanDenominator τ φ -
-      egbFixedChargeACriticalRadius w φ * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ 2)
+      egbFixedChargeACriticalRadius w φ * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeACriticalRadius w φ * egbFixedChargeAMeanThermalCorrection φ +
         egbFixedChargeAMeanRadiusCorrection w φ * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ))) := by
   have h := ((egbFixedChargeAMeanRadius_critical_limit w φ).mul (egbFixedChargeAMeanDenominator_quadratic_critical_limit φ)).add
@@ -92,9 +92,9 @@ theorem egbFixedChargeA_mean_thermal_product_limit (w φ : ℝ) :
   ring
 
 theorem egbFixedChargeATemperatureGap_normalized_formula (w φ τ : ℝ) :
-    (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2 =
+    (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) =
       2 * ((egbFixedChargeAMeanRadius w φ τ * egbFixedChargeAMeanDenominator τ φ -
-        egbFixedChargeACriticalRadius w φ * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ 2) /
+        egbFixedChargeACriticalRadius w φ * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) /
       (Real.pi * (egbFixedChargeACriticalRadius w φ * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ)) *
         (egbFixedChargeAMeanRadius w φ τ * egbFixedChargeAMeanDenominator τ φ)) := by
   have hm := egbFixedChargeAMeanRadius_pos w φ τ
@@ -107,7 +107,7 @@ theorem egbFixedChargeATemperatureGap_normalized_formula (w φ τ : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeATemperatureGap_quadratic_critical_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeATemperatureGapCoefficient w φ)) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1

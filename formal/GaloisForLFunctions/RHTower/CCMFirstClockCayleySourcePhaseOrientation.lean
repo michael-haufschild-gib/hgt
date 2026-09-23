@@ -26,7 +26,7 @@ namespace RHTower
 /-- Positive reciprocal normalization of the Cayley height phase. -/
 def sourceCayleyPhaseScale
     {ι : Type*} (τ : ℝ) (height : ι → ℝ) (i : ι) : ℝ :=
-  (Real.sqrt (1 + (τ * height i) ^ 2))⁻¹
+  (Real.sqrt (1 + (τ * height i) ^ (2 : ℕ)))⁻¹
 
 theorem sourceCayleyPhaseScale_pos
     {ι : Type*} (τ : ℝ) (height : ι → ℝ) (i : ι) :
@@ -43,10 +43,10 @@ def sourceCayleyPhase
 
 private theorem sourceCayleyPhaseScale_sq_mul
     {ι : Type*} (τ : ℝ) (height : ι → ℝ) (i : ι) :
-    sourceCayleyPhaseScale τ height i ^ 2 *
-        (1 + (τ * height i) ^ 2) = 1 := by
+    sourceCayleyPhaseScale τ height i ^ (2 : ℕ) *
+        (1 + (τ * height i) ^ (2 : ℕ)) = 1 := by
   unfold sourceCayleyPhaseScale
-  rw [inv_pow, Real.sq_sqrt (by positivity : 0 ≤ 1 + (τ * height i) ^ 2)]
+  rw [inv_pow, Real.sq_sqrt (by positivity : 0 ≤ 1 + (τ * height i) ^ (2 : ℕ))]
   field_simp
 
 /-- The Cayley height phase has unit norm at every height and every scale. -/
@@ -76,7 +76,7 @@ def sourceCayleyExteriorHermitianEnergy
 def sourceCayleyExteriorScalarEnergy
     {ι : Type*} (packet : Finset ι) (amplitude height : ι → ℝ) (τ : ℝ) : ℝ :=
   ∑ i ∈ packet, ∑ j ∈ packet,
-    amplitude i * amplitude j * τ * (height i - height j) ^ 2 *
+    amplitude i * amplitude j * τ * (height i - height j) ^ (2 : ℕ) *
       sourceCayleyPhaseScale τ height i *
       sourceCayleyPhaseScale τ height j
 
@@ -88,7 +88,7 @@ theorem sourceCayleyExteriorPair_re_eq
         (Complex.I *
           (amplitude i * amplitude j * (height i - height j) : ℝ)) *
         sourceCayleyPhase τ height j).re =
-      amplitude i * amplitude j * τ * (height i - height j) ^ 2 *
+      amplitude i * amplitude j * τ * (height i - height j) ^ (2 : ℕ) *
         sourceCayleyPhaseScale τ height i *
         sourceCayleyPhaseScale τ height j := by
   simp only [sourceCayleyPhase, Complex.star_def, map_add, map_mul,
@@ -139,7 +139,7 @@ theorem sourceCayleyExteriorScalarEnergy_pos
     (hheight : height i ≠ height j) :
     0 < sourceCayleyExteriorScalarEnergy packet amplitude height τ := by
   let term := fun i j =>
-    amplitude i * amplitude j * τ * (height i - height j) ^ 2 *
+    amplitude i * amplitude j * τ * (height i - height j) ^ (2 : ℕ) *
       sourceCayleyPhaseScale τ height i *
       sourceCayleyPhaseScale τ height j
   have htermNonneg :
@@ -155,7 +155,7 @@ theorem sourceCayleyExteriorScalarEnergy_pos
     dsimp only [term]
     have hai := hamp i hi
     have haj := hamp j hj
-    have hd : 0 < (height i - height j) ^ 2 :=
+    have hd : 0 < (height i - height j) ^ (2 : ℕ) :=
       sq_pos_of_ne_zero (sub_ne_zero.mpr hheight)
     have hsi := sourceCayleyPhaseScale_pos τ height i
     have hsj := sourceCayleyPhaseScale_pos τ height j
@@ -170,7 +170,7 @@ theorem sourceCayleyExteriorScalarEnergy_pos
       (fun k hk => Finset.sum_nonneg fun l hl => htermNonneg k hk l hl) hi
   change 0 <
     ∑ k ∈ packet, ∑ l ∈ packet,
-      amplitude k * amplitude l * τ * (height k - height l) ^ 2 *
+      amplitude k * amplitude l * τ * (height k - height l) ^ (2 : ℕ) *
         sourceCayleyPhaseScale τ height k *
         sourceCayleyPhaseScale τ height l
   simpa only [term] using htermPos.trans_le (hinner.trans houter)

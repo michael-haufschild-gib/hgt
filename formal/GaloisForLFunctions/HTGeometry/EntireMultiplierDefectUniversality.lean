@@ -321,7 +321,7 @@ theorem nonempty_positiveInvariantForm_iff {ι : Type*} [Fintype ι] [DecidableE
       have hcalc : star x ⬝ᵥ ((1 : Matrix ι ι ℂ) *ᵥ x) = ∑ k, (starRingEnd ℂ) (x k) * x k := by
         simp [dotProduct]
       rw [hcalc]
-      have hre : (∑ k, (starRingEnd ℂ) (x k) * x k).re = ∑ k, ‖x k‖ ^ 2 := by
+      have hre : (∑ k, (starRingEnd ℂ) (x k) * x k).re = ∑ k, ‖x k‖ ^ (2 : ℕ) := by
         rw [Complex.re_sum]
         refine Finset.sum_congr rfl (fun k _ => ?_)
         rw [mul_comm, Complex.mul_conj]
@@ -353,7 +353,7 @@ theorem exists_realEntire_nonreal_zero :
     ∃ F : ℂ → ℂ, Differentiable ℂ F ∧
       (∀ z : ℂ, (starRingEnd ℂ) (F ((starRingEnd ℂ) z)) = F z) ∧
       (∃ z₀, F z₀ ≠ 0) ∧ (∃ ρ, F ρ = 0 ∧ ρ.im ≠ 0) := by
-  refine ⟨fun z => z ^ 2 + 1, (differentiable_id.pow 2).add_const 1, ?_, ⟨0, by norm_num⟩,
+  refine ⟨fun z => z ^ (2 : ℕ) + 1, (differentiable_id.pow 2).add_const 1, ?_, ⟨0, by norm_num⟩,
     ⟨Complex.I, by simp [Complex.I_sq], by simp⟩⟩
   intro z
   simp [map_add, map_pow]

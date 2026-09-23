@@ -34,8 +34,8 @@ def projectiveImmittanceChart
 theorem projectiveImmittanceConjugateInversion_det
     {F : Type*} [CommRing F] (a b c d : F) :
     (b * d - a * c) * (a * c - b * d) -
-        (a ^ 2 - b ^ 2) * (d ^ 2 - c ^ 2) =
-      -(a * d - b * c) ^ 2 := by
+        (a ^ (2 : ℕ) - b ^ (2 : ℕ)) * (d ^ (2 : ℕ) - c ^ (2 : ℕ)) =
+      -(a * d - b * c) ^ (2 : ℕ) := by
   ring
 
 /-- A nondegenerate projective observation of an HT scalar is HT.  The source is recovered by
@@ -81,13 +81,13 @@ theorem projectiveImmittanceChart_inv_eq_conjugate
     (a b c d : F) (hdet : a * d - b * c ≠ 0) :
     projectiveImmittanceChart a b c d x⁻¹ =
       projectiveImmittanceChart
-        (b * d - a * c) (a ^ 2 - b ^ 2)
-        (d ^ 2 - c ^ 2) (a * c - b * d)
+        (b * d - a * c) (a ^ (2 : ℕ) - b ^ (2 : ℕ))
+        (d ^ (2 : ℕ) - c ^ (2 : ℕ)) (a * c - b * d)
         (projectiveImmittanceChart a b c d x) := by
   let y : E := projectiveImmittanceChart a b c d x
   let A : F := b * d - a * c
-  let B : F := a ^ 2 - b ^ 2
-  let C : F := d ^ 2 - c ^ 2
+  let B : F := a ^ (2 : ℕ) - b ^ (2 : ℕ)
+  let C : F := d ^ (2 : ℕ) - c ^ (2 : ℕ)
   let D : F := a * c - b * d
   have hxInv : HypertranscendentalOver F x⁻¹ :=
     HTGeometry.hypertranscendentalOver_inv_iff.mpr hx
@@ -97,7 +97,7 @@ theorem projectiveImmittanceChart_inv_eq_conjugate
   have hy : HypertranscendentalOver F y := by
     exact hypertranscendentalOver_projectiveImmittanceChart x hx a b c d hdet
   have hdetQ : A * D - B * C ≠ 0 := by
-    have hEq : A * D - B * C = -(a * d - b * c) ^ 2 := by
+    have hEq : A * D - B * C = -(a * d - b * c) ^ (2 : ℕ) := by
       exact projectiveImmittanceConjugateInversion_det a b c d
     rw [hEq]
     exact neg_ne_zero.mpr (pow_ne_zero 2 hdet)
@@ -146,15 +146,15 @@ theorem projectiveImmittanceChart_inv_eq_conjugate
 private theorem projectiveImmittanceConjugate_stabilizer_iff
     {F : Type*} [Field F] [Differential F]
     (a b c d : F) (hdet : a * d - b * c ≠ 0) :
-    d ^ 2 - c ^ 2 = 0 ∧
+    d ^ (2 : ℕ) - c ^ (2 : ℕ) = 0 ∧
         (((b * d - a * c) / (a * c - b * d))′) = 0 ↔
-      d ^ 2 = c ^ 2 := by
+      d ^ (2 : ℕ) = c ^ (2 : ℕ) := by
   let A : F := b * d - a * c
-  let B : F := a ^ 2 - b ^ 2
-  let C : F := d ^ 2 - c ^ 2
+  let B : F := a ^ (2 : ℕ) - b ^ (2 : ℕ)
+  let C : F := d ^ (2 : ℕ) - c ^ (2 : ℕ)
   let D : F := a * c - b * d
   have hdetQ : A * D - B * C ≠ 0 := by
-    have hEq : A * D - B * C = -(a * d - b * c) ^ 2 := by
+    have hEq : A * D - B * C = -(a * d - b * c) ^ (2 : ℕ) := by
       exact projectiveImmittanceConjugateInversion_det a b c d
     rw [hEq]
     exact neg_ne_zero.mpr (pow_ne_zero 2 hdet)
@@ -188,16 +188,16 @@ theorem projectiveImmittanceChart_inv_jetTailField_one_eq_iff
     (a b c d : F) (hdet : a * d - b * c ≠ 0) :
     jetTailField F (projectiveImmittanceChart a b c d x⁻¹) 1 =
         jetTailField F (projectiveImmittanceChart a b c d x) 1 ↔
-      d ^ 2 = c ^ 2 := by
+      d ^ (2 : ℕ) = c ^ (2 : ℕ) := by
   let y : E := projectiveImmittanceChart a b c d x
   let A : F := b * d - a * c
-  let B : F := a ^ 2 - b ^ 2
-  let C : F := d ^ 2 - c ^ 2
+  let B : F := a ^ (2 : ℕ) - b ^ (2 : ℕ)
+  let C : F := d ^ (2 : ℕ) - c ^ (2 : ℕ)
   let D : F := a * c - b * d
   have hy : HypertranscendentalOver F y :=
     hypertranscendentalOver_projectiveImmittanceChart x hx a b c d hdet
   have hdetQ : A * D - B * C ≠ 0 := by
-    have hEq : A * D - B * C = -(a * d - b * c) ^ 2 := by
+    have hEq : A * D - B * C = -(a * d - b * c) ^ (2 : ℕ) := by
       exact projectiveImmittanceConjugateInversion_det a b c d
     rw [hEq]
     exact neg_ne_zero.mpr (pow_ne_zero 2 hdet)
@@ -205,7 +205,7 @@ theorem projectiveImmittanceChart_inv_jetTailField_one_eq_iff
   change (jetTailField F
       ((algebraMap F E A * y + algebraMap F E B) /
         (algebraMap F E C * y + algebraMap F E D)) 1 =
-      jetTailField F y 1) ↔ d ^ 2 = c ^ 2
+      jetTailField F y 1) ↔ d ^ (2 : ℕ) = c ^ (2 : ℕ)
   rw [mobius_jetTailField_one_eq_iff y hy A B C D hdetQ]
   exact projectiveImmittanceConjugate_stabilizer_iff a b c d hdet
 
@@ -218,16 +218,16 @@ theorem projectiveImmittanceChart_inv_all_jetTailField_eq_iff
     (∀ n : ℕ,
       jetTailField F (projectiveImmittanceChart a b c d x⁻¹) n =
         jetTailField F (projectiveImmittanceChart a b c d x) n) ↔
-      d ^ 2 = c ^ 2 := by
+      d ^ (2 : ℕ) = c ^ (2 : ℕ) := by
   let y : E := projectiveImmittanceChart a b c d x
   let A : F := b * d - a * c
-  let B : F := a ^ 2 - b ^ 2
-  let C : F := d ^ 2 - c ^ 2
+  let B : F := a ^ (2 : ℕ) - b ^ (2 : ℕ)
+  let C : F := d ^ (2 : ℕ) - c ^ (2 : ℕ)
   let D : F := a * c - b * d
   have hy : HypertranscendentalOver F y :=
     hypertranscendentalOver_projectiveImmittanceChart x hx a b c d hdet
   have hdetQ : A * D - B * C ≠ 0 := by
-    have hEq : A * D - B * C = -(a * d - b * c) ^ 2 := by
+    have hEq : A * D - B * C = -(a * d - b * c) ^ (2 : ℕ) := by
       exact projectiveImmittanceConjugateInversion_det a b c d
     rw [hEq]
     exact neg_ne_zero.mpr (pow_ne_zero 2 hdet)
@@ -236,7 +236,7 @@ theorem projectiveImmittanceChart_inv_all_jetTailField_eq_iff
       jetTailField F
           ((algebraMap F E A * y + algebraMap F E B) /
             (algebraMap F E C * y + algebraMap F E D)) n =
-        jetTailField F y n) ↔ d ^ 2 = c ^ 2
+        jetTailField F y n) ↔ d ^ (2 : ℕ) = c ^ (2 : ℕ)
   rw [mobius_all_jetTailField_eq_iff y hy A B C D hdetQ]
   exact projectiveImmittanceConjugate_stabilizer_iff a b c d hdet
 

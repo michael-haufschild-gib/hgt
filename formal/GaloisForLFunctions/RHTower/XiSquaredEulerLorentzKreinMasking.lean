@@ -75,31 +75,31 @@ theorem squaredEulerOrbitReversedLoewnerJetMatrix_complexification_eq_lorentzHer
 /-- **Orbit mass-shell law.**  Lorentz mass squared is exactly negative transverse charge. -/
 theorem squaredEulerOrbit_lorentzMassSq_eq_neg_charge
     {t c X : ℝ} (hch : SquaredEulerOrbitChamber t c) (hX : 0 ≤ X) :
-    squaredEulerOrbitLorentzTime t c X ^ 2 -
-        squaredEulerOrbitLorentzSpace t c X ^ 2 -
-        squaredEulerOrbitLorentzAxis t c X ^ 2 =
-      -c / (((t + X) ^ 2 + c) ^ 4) := by
+    squaredEulerOrbitLorentzTime t c X ^ (2 : ℕ) -
+        squaredEulerOrbitLorentzSpace t c X ^ (2 : ℕ) -
+        squaredEulerOrbitLorentzAxis t c X ^ (2 : ℕ) =
+      -c / (((t + X) ^ (2 : ℕ) + c) ^ (4 : ℕ)) := by
   calc
-    squaredEulerOrbitLorentzTime t c X ^ 2 -
-          squaredEulerOrbitLorentzSpace t c X ^ 2 -
-          squaredEulerOrbitLorentzAxis t c X ^ 2 =
+    squaredEulerOrbitLorentzTime t c X ^ (2 : ℕ) -
+          squaredEulerOrbitLorentzSpace t c X ^ (2 : ℕ) -
+          squaredEulerOrbitLorentzAxis t c X ^ (2 : ℕ) =
         squaredEulerOrbitReversedLoewnerMoment0 t c X *
             squaredEulerOrbitReversedLoewnerMoment2 t c X -
-          squaredEulerOrbitReversedLoewnerMoment1 t c X ^ 2 := by
+          squaredEulerOrbitReversedLoewnerMoment1 t c X ^ (2 : ℕ) := by
             unfold squaredEulerOrbitLorentzTime squaredEulerOrbitLorentzSpace
               squaredEulerOrbitLorentzAxis
             ring
-    _ = -c / (((t + X) ^ 2 + c) ^ 4) :=
+    _ = -c / (((t + X) ^ (2 : ℕ) + c) ^ (4 : ℕ)) :=
       squaredEulerOrbit_reversedLoewnerJet_det_eq hch hX
 
 /-- Every genuinely transverse orbit jet is spacelike in the Lorentz determinant geometry. -/
 theorem squaredEulerOrbit_lorentzMassSq_neg
     {t c X : ℝ} (hch : SquaredEulerOrbitChamber t c) (hc : 0 < c) (hX : 0 ≤ X) :
-    squaredEulerOrbitLorentzTime t c X ^ 2 -
-        squaredEulerOrbitLorentzSpace t c X ^ 2 -
-        squaredEulerOrbitLorentzAxis t c X ^ 2 < 0 := by
+    squaredEulerOrbitLorentzTime t c X ^ (2 : ℕ) -
+        squaredEulerOrbitLorentzSpace t c X ^ (2 : ℕ) -
+        squaredEulerOrbitLorentzAxis t c X ^ (2 : ℕ) < 0 := by
   rw [squaredEulerOrbit_lorentzMassSq_eq_neg_charge hch hX]
-  have hden : 0 < (t + X) ^ 2 + c := by
+  have hden : 0 < (t + X) ^ (2 : ℕ) + c := by
     have htx : 0 < t + X := by linarith [hch.1]
     nlinarith [sq_pos_of_pos htx, hch.2.1]
   exact div_neg_of_neg_of_pos (neg_neg_of_pos hc) (pow_pos hden 4)
@@ -142,9 +142,9 @@ def squaredEulerPacketReversedLoewnerJetMatrix
 theorem squaredEulerPacketReversedLoewnerJetDet_eq_lorentzMassSq
     {ι : Type*} (S : Finset ι) (t c : ι → ℝ) (X : ℝ) :
     squaredEulerPacketReversedLoewnerJetDet S t c X =
-      squaredEulerPacketLorentzTime S t c X ^ 2 -
-        squaredEulerPacketLorentzSpace S t c X ^ 2 -
-        squaredEulerPacketLorentzAxis S t c X ^ 2 := by
+      squaredEulerPacketLorentzTime S t c X ^ (2 : ℕ) -
+        squaredEulerPacketLorentzSpace S t c X ^ (2 : ℕ) -
+        squaredEulerPacketLorentzAxis S t c X ^ (2 : ℕ) := by
   unfold squaredEulerPacketReversedLoewnerJetDet squaredEulerPacketLorentzTime
     squaredEulerPacketLorentzSpace squaredEulerPacketLorentzAxis
     squaredEulerOrbitLorentzTime squaredEulerOrbitLorentzSpace
@@ -158,11 +158,11 @@ theorem squaredEulerOrbitReversedLoewnerMoment0_pos
     {t c X : ℝ} (hch : SquaredEulerOrbitChamber t c) (hX : 0 ≤ X) :
     0 < squaredEulerOrbitReversedLoewnerMoment0 t c X := by
   have htx : 0 < t + X := by linarith [hch.1]
-  have hnum : 0 < (t + X) ^ 2 - c := by
-    have htxsq : t ^ 2 ≤ (t + X) ^ 2 := by
+  have hnum : 0 < (t + X) ^ (2 : ℕ) - c := by
+    have htxsq : t ^ (2 : ℕ) ≤ (t + X) ^ (2 : ℕ) := by
       nlinarith [mul_nonneg hch.1.le hX, sq_nonneg X]
     linarith [hch.2.2]
-  have hden : 0 < (t + X) ^ 2 + c := by
+  have hden : 0 < (t + X) ^ (2 : ℕ) + c := by
     nlinarith [sq_pos_of_pos htx, hch.2.1]
   exact div_pos hnum (sq_pos_of_pos hden)
 
@@ -182,9 +182,9 @@ theorem squaredEulerPacketReversedLoewnerJetMatrix_posSemidef_iff_lorentzMassSq_
     (hch : ∀ i ∈ S, SquaredEulerOrbitChamber (t i) (c i))
     (hX : 0 ≤ X) :
     (squaredEulerPacketReversedLoewnerJetMatrix S t c X).PosSemidef ↔
-      0 ≤ squaredEulerPacketLorentzTime S t c X ^ 2 -
-        squaredEulerPacketLorentzSpace S t c X ^ 2 -
-        squaredEulerPacketLorentzAxis S t c X ^ 2 := by
+      0 ≤ squaredEulerPacketLorentzTime S t c X ^ (2 : ℕ) -
+        squaredEulerPacketLorentzSpace S t c X ^ (2 : ℕ) -
+        squaredEulerPacketLorentzAxis S t c X ^ (2 : ℕ) := by
   rw [squaredEulerPacketReversedLoewnerJetMatrix,
     symmetricTwoByTwo_posSemidef_iff_det_nonneg_of_pos_left
       (squaredEulerPacketReversedLoewnerMoment0_sum_pos hS t c hch hX),

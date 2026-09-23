@@ -53,7 +53,7 @@ theorem continuous_hillDrivenDensitySecond_time (a : HillSpeed)
     (b : WienerFamily (EuclideanSpace ℝ (Fin d)) N) (G₀ : EuclideanSpace ℝ (Fin d) →ᵇ ℂ)
     (ξ : EuclideanSpace ℝ (Fin d)) :
     Continuous fun t : ℝ => hillDrivenDensitySecond a b G₀ t ξ := by
-  have hfreq : Continuous fun t : ℝ => ((a.freq ξ t ^ 2 : ℝ) : ℂ) :=
+  have hfreq : Continuous fun t : ℝ => ((a.freq ξ t ^ (2 : ℕ) : ℝ) : ℂ) :=
     Complex.continuous_ofReal.comp ((a.continuous_freq ξ).pow 2)
   have heval : Continuous fun t : ℝ => hillPotentialFlow a b G₀ t ξ :=
     (BoundedContinuousFunction.evalCLM (𝕜 := ℝ) ξ).continuous.comp

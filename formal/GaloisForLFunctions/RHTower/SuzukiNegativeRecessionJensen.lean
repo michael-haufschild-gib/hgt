@@ -27,13 +27,13 @@ namespace GaloisForLFunctions.RHTower
 
 /-- The supporting line of the convex reciprocal, with its exact square defect. -/
 theorem tangentLine_inv_le {x m r : ℝ} (hx : 0 < x + r) (hm : 0 < m + r) :
-    1 / (m + r) - (x - m) / (m + r) ^ 2 ≤ 1 / (x + r) := by
-  have hkey : 1 / (x + r) - (1 / (m + r) - (x - m) / (m + r) ^ 2)
-      = (x - m) ^ 2 / ((x + r) * (m + r) ^ 2) := by
+    1 / (m + r) - (x - m) / (m + r) ^ (2 : ℕ) ≤ 1 / (x + r) := by
+  have hkey : 1 / (x + r) - (1 / (m + r) - (x - m) / (m + r) ^ (2 : ℕ))
+      = (x - m) ^ (2 : ℕ) / ((x + r) * (m + r) ^ (2 : ℕ)) := by
     field_simp
     ring
   nlinarith [hkey, div_nonneg (sq_nonneg (x - m))
-    (le_of_lt (by positivity : (0 : ℝ) < (x + r) * (m + r) ^ 2))]
+    (le_of_lt (by positivity : (0 : ℝ) < (x + r) * (m + r) ^ (2 : ℕ)))]
 
 /-- **`(295)`, upper half: the resolvent mean is at most the reciprocal of the shift.** -/
 theorem integral_inv_shift_le {ν : Measure ℝ} [IsProbabilityMeasure ν] {r : ℝ} (hr : 0 < r)
@@ -59,16 +59,16 @@ theorem inv_shift_mean_le_integral {ν : Measure ℝ} [IsProbabilityMeasure ν] 
     rw [hm]
     exact integral_nonneg_of_ae hsupp
   have hmr : (0 : ℝ) < m + r := by linarith
-  have hlow : ∫ x, (1 / (m + r) - (x - m) / (m + r) ^ 2) ∂ν ≤ ∫ x, 1 / (x + r) ∂ν := by
+  have hlow : ∫ x, (1 / (m + r) - (x - m) / (m + r) ^ (2 : ℕ)) ∂ν ≤ ∫ x, 1 / (x + r) ∂ν := by
     refine integral_mono_ae ?_ hint ?_
     · exact (integrable_const _).sub (((hid.sub (integrable_const m))).div_const _)
     · filter_upwards [hsupp] with x hx
       have h1 : (0 : ℝ) < x + r := by linarith
       exact tangentLine_inv_le h1 hmr
-  have hval : ∫ x, (1 / (m + r) - (x - m) / (m + r) ^ 2) ∂ν = 1 / (m + r) := by
-    have hf : Integrable (fun x : ℝ => (x - m) / (m + r) ^ 2) ν :=
+  have hval : ∫ x, (1 / (m + r) - (x - m) / (m + r) ^ (2 : ℕ)) ∂ν = 1 / (m + r) := by
+    have hf : Integrable (fun x : ℝ => (x - m) / (m + r) ^ (2 : ℕ)) ν :=
       (hid.sub (integrable_const m)).div_const _
-    have hz : ∫ x : ℝ, (x - m) / (m + r) ^ 2 ∂ν = 0 := by
+    have hz : ∫ x : ℝ, (x - m) / (m + r) ^ (2 : ℕ) ∂ν = 0 := by
       rw [integral_div, integral_sub hid (integrable_const m), integral_const]
       simp [hm]
     rw [integral_sub (integrable_const _) hf, hz, integral_const]

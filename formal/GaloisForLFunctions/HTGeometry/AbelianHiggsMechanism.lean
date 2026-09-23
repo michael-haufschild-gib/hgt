@@ -22,7 +22,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Mexican-hat potential at unit radius for one complex scalar. -/
 def complexAbelianHiggsPotential (z : ℂ) : ℝ :=
-  (Complex.normSq z - 1) ^ 2
+  (Complex.normSq z - 1) ^ (2 : ℕ)
 
 /-- Complex scalar potential is invariant under `U(1)`. -/
 theorem complexAbelianHiggsPotential_gaugeInvariant (u : Circle) (z : ℂ) :
@@ -99,7 +99,7 @@ def abelianHiggsSpinorNormSq (H : Fin 2 → ℂ) : ℝ :=
 
 /-- Radial Mexican-hat potential on the existing Higgs-spinor carrier. -/
 def abelianHiggsSpinorPotential (H : Fin 2 → ℂ) : ℝ :=
-  (abelianHiggsSpinorNormSq H - 1) ^ 2
+  (abelianHiggsSpinorNormSq H - 1) ^ (2 : ℕ)
 
 /-- North-pole Higgs-spinor vacuum. -/
 def abelianHiggsSpinorVacuum : Fin 2 → ℂ :=

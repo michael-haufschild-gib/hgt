@@ -77,12 +77,12 @@ theorem slack_le {Ae Ao Δe Δo q r : ℝ} (hAo : 0 < Ao)
 
 /-- **`(246)`, second form: the slack is the excess over the sharp threshold.** -/
 theorem slack_eq {q r : ℝ} (hq : 0 < q) (hr : |r| < 1) :
-    1 / (1 - r) - q / (1 + r) = (1 + q) * (r - (q - 1) / (q + 1)) / (1 - r ^ 2) := by
+    1 / (1 - r) - q / (1 + r) = (1 + q) * (r - (q - 1) / (q + 1)) / (1 - r ^ (2 : ℕ)) := by
   rcases abs_lt.mp hr with ⟨hr1, hr2⟩
   have h1 : (0 : ℝ) < 1 - r := by linarith
   have h2 : (0 : ℝ) < 1 + r := by linarith
   have h3 : (0 : ℝ) < q + 1 := by linarith
-  have h4 : (1 : ℝ) - r ^ 2 = (1 - r) * (1 + r) := by ring
+  have h4 : (1 : ℝ) - r ^ (2 : ℕ) = (1 - r) * (1 + r) := by ring
   rw [h4]
   field_simp
   ring
@@ -122,11 +122,11 @@ theorem edge_le_even_weight {r t : ℝ} (hr1 : r < 1) (ht1 : -r ≤ t) (ht2 : t 
 
 /-- The odd bottom-edge weight dominates the edge distance up to `(1+r)²`. -/
 theorem edge_le_odd_weight {r t : ℝ} (hr0 : 0 ≤ r) (ht1 : -r ≤ t) (ht2 : t < 1) :
-    t + r ≤ (1 + r) ^ 2 * ((t + r) / ((1 - t) * (1 + r))) := by
+    t + r ≤ (1 + r) ^ (2 : ℕ) * ((t + r) / ((1 - t) * (1 + r))) := by
   have h1r : (0 : ℝ) < 1 + r := by linarith
   have h1t : (0 : ℝ) < 1 - t := by linarith
   have htr : (0 : ℝ) ≤ t + r := by linarith
-  have hval : (1 + r) ^ 2 * ((t + r) / ((1 - t) * (1 + r)))
+  have hval : (1 + r) ^ (2 : ℕ) * ((t + r) / ((1 - t) * (1 + r)))
       = (1 + r) * (t + r) / (1 - t) := by
     field_simp
   rw [hval, le_div_iff₀ h1t]
@@ -148,14 +148,14 @@ theorem even_weight_ge {r t δ : ℝ} (hr1 : r < 1) (hδ : 0 < δ)
 /-- Away from the edge the odd weight is bounded below. -/
 theorem odd_weight_ge {r t δ : ℝ} (hr0 : 0 ≤ r) (hδ : 0 < δ)
     (ht1 : -r + δ ≤ t) (ht2 : t < 1) :
-    δ / ((1 + r) ^ 2) ≤ (t + r) / ((1 - t) * (1 + r)) := by
+    δ / ((1 + r) ^ (2 : ℕ)) ≤ (t + r) / ((1 - t) * (1 + r)) := by
   have h1r : (0 : ℝ) < 1 + r := by linarith
   have h1t : (0 : ℝ) < 1 - t := by linarith
   have h1t2 : (1 : ℝ) - t ≤ 1 + r := by linarith
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   have ha : δ * ((1 - t) * (1 + r)) ≤ δ * ((1 + r) * (1 + r)) := by
     nlinarith [mul_nonneg (mul_nonneg hδ.le h1r.le) (by linarith : (0 : ℝ) ≤ (1 + r) - (1 - t))]
-  have hb : δ * ((1 + r) * (1 + r)) ≤ (t + r) * ((1 + r) ^ 2) := by nlinarith
+  have hb : δ * ((1 + r) * (1 + r)) ≤ (t + r) * ((1 + r) ^ (2 : ℕ)) := by nlinarith
   linarith
 
 /-! ## Markov's bound for the off-edge mass -/

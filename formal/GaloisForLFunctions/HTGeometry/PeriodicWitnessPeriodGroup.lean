@@ -99,8 +99,8 @@ theorem periodSubgroup_periodicWitness :
   refine le_antisymm ?_ ?_
   · intro c hc
     have hmem := mem_zmultiples_of_periodic_comp_exp contDiff_dyadicLayerEntireFunction
-      deriv_dyadicLayerEntireFunction_zero_ne_zero twoPiI_ne_zero hc
-    rwa [div_self twoPiI_ne_zero] at hmem
+      deriv_dyadicLayerEntireFunction_zero_ne_zero twoPiI_ne_zero_periodicHypertranscendentalWitness hc
+    rwa [div_self twoPiI_ne_zero_periodicHypertranscendentalWitness] at hmem
   · rw [AddSubgroup.zmultiples_le]
     exact periodic_periodicWitness
 

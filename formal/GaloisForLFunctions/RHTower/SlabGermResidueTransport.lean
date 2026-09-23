@@ -274,7 +274,7 @@ theorem tendsto_slabContourMoment_heightFiberMoment {γ c h₁ : ℝ} (hc : 0 < 
 
 /-- The slab contour Gram expression `p₀p₂ − p₁²` of the three boundary moments. -/
 def slabContourGram (γ h c : ℝ) : ℂ :=
-  slabContourMoment 0 γ h c * slabContourMoment 2 γ h c - slabContourMoment 1 γ h c ^ 2
+  slabContourMoment 0 γ h c * slabContourMoment 2 γ h c - slabContourMoment 1 γ h c ^ (2 : ℕ)
 
 /-- The height-fiber packet Gram expression with multiplicity masses. -/
 def heightFiberGram (γ c : ℝ) : ℂ :=

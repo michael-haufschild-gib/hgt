@@ -25,8 +25,8 @@ variable (N : ℕ) {lam : ℝ}
 
 private theorem complex_density_laplacian (z : ℍ) :
     positiveHyperbolicLaplacian (fun w : ℍ => (density N f w : ℂ)) z =
-      (-(z.im ^ 2 * realLaplacian (density N f ∘ ofComplex) (z : ℂ)) : ℝ) := by
-  change -(z.im : ℂ) ^ 2 * GaloisForLFunctions.HTGeometry.ComplexC2Laplacian.laplacian
+      (-(z.im ^ (2 : ℕ) * realLaplacian (density N f ∘ ofComplex) (z : ℂ)) : ℝ) := by
+  change -(z.im : ℂ) ^ (2 : ℕ) * GaloisForLFunctions.HTGeometry.ComplexC2Laplacian.laplacian
     (fun w : ℂ => (density N f (ofComplex w) : ℂ)) (z : ℂ) = _
   have he := laplacian_ofReal ((density_contDiffOn N f).contDiffAt
     (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos))
@@ -36,8 +36,8 @@ private theorem complex_density_laplacian (z : ℍ) :
 
 /-- The hyperbolic Laplacian of the literal congruence trace is modular invariant. -/
 theorem density_laplacian_invariant (A : SL2Z) (z : ℍ) :
-    (A • z : ℍ).im ^ 2 * realLaplacian (density N f ∘ ofComplex) (A • z : ℍ) =
-      z.im ^ 2 * realLaplacian (density N f ∘ ofComplex) (z : ℂ) := by
+    (A • z : ℍ).im ^ (2 : ℕ) * realLaplacian (density N f ∘ ofComplex) (A • z : ℍ) =
+      z.im ^ (2 : ℕ) * realLaplacian (density N f ∘ ofComplex) (z : ℂ) := by
   have hs : IsRealSmoothUpperHalfPlane (fun w : ℍ => (density N f w : ℂ)) :=
     Complex.ofRealCLM.contDiff.fun_comp_contDiffOn (density_contDiffOn N f)
   have h := positive_laplacian_pullback A (fun w : ℍ => (density N f w : ℂ)) hs z
@@ -49,12 +49,12 @@ theorem density_laplacian_invariant (A : SL2Z) (z : ℍ) :
   exact neg_injective (Complex.ofReal_injective h.symm)
 
 /-- Actual full gradient energy density relative to hyperbolic volume. -/
-def hyperbolicGradient (z : ℍ) : ℝ := z.im ^ 2 * gradientDensity N f (z : ℂ)
+def hyperbolicGradient (z : ℍ) : ℝ := z.im ^ (2 : ℕ) * gradientDensity N f (z : ℂ)
 
 /-- The original trace equation expresses energy through its actual Laplacian and mass. -/
 theorem hyperbolicGradient_eq (z : ℍ) :
     hyperbolicGradient N f z =
-      (1 / 2) * z.im ^ 2 * realLaplacian (density N f ∘ ofComplex) (z : ℂ) +
+      (1 / 2) * z.im ^ (2 : ℕ) * realLaplacian (density N f ∘ ofComplex) (z : ℂ) +
         lam * density N f z := by
   rw [hyperbolicGradient, trace_laplacian]
   field_simp [z.im_pos.ne']
@@ -87,7 +87,7 @@ theorem planarGradient_eq {p : ℝ × ℝ} (hp : 0 < p.2) :
   dsimp only [planarGradient, massDensity]
   rw [hc]
   change gradientDensity N f (z : ℂ) =
-    (1 / 2) * realLaplacian (density N f ∘ ofComplex) (z : ℂ) + lam * (density N f z / p.2 ^ 2)
+    (1 / 2) * realLaplacian (density N f ∘ ofComplex) (z : ℂ) + lam * (density N f z / p.2 ^ (2 : ℕ))
   rw [h]
   ring
 

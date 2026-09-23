@@ -26,7 +26,7 @@ namespace RHTower
 noncomputable section
 
 /-- The propagation radius as a function of a complex height. -/
-def xiMassHeightRadius (τ w : ℂ) : ℂ := HTGeometry.csqrt (τ ^ 2 + w ^ 2)
+def xiMassHeightRadius (τ w : ℂ) : ℂ := HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
 
 /-- The order-zero Bessel carrier along the height. -/
 def xiMassHeightK0 (a : ℝ) (τ w : ℂ) : ℂ :=
@@ -36,34 +36,34 @@ def xiMassHeightK0 (a : ℝ) (τ w : ℂ) : ℂ :=
 def xiMassHeightK1 (a : ℝ) (τ w : ℂ) : ℂ :=
   HTGeometry.besselK1C ((a : ℂ) * xiMassHeightRadius τ w)
 
-theorem xiMassHeightRadius_ne_zero {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+theorem xiMassHeightRadius_ne_zero {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     xiMassHeightRadius τ w ≠ 0 :=
   HTGeometry.csqrt_ne_zero hw
 
 theorem re_mul_xiMassHeightRadius_pos {a : ℝ} {τ w : ℂ} (ha : 0 < a)
-    (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+    (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     0 < ((a : ℂ) * xiMassHeightRadius τ w).re := by
   have hval : ((a : ℂ) * xiMassHeightRadius τ w).re
-      = a * HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) := by
+      = a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) := by
     rw [xiMassHeightRadius, Complex.mul_re, HTGeometry.csqrt_re]
     simp
   rw [hval]
   exact mul_pos ha (HTGeometry.csqrtRe_pos hw)
 
 /-- The height derivative of the propagation radius. -/
-theorem hasDerivAt_xiMassHeightRadius {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+theorem hasDerivAt_xiMassHeightRadius {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     HasDerivAt (xiMassHeightRadius τ) (w / xiMassHeightRadius τ w) w := by
-  have hzne : HTGeometry.csqrt (τ ^ 2 + w ^ 2) ≠ 0 := HTGeometry.csqrt_ne_zero hw
-  have hq : HasDerivAt (fun v : ℂ => τ ^ 2 + v ^ 2) (2 * w) w := by
-    have h1 := (hasDerivAt_pow 2 w).const_add (τ ^ 2)
+  have hzne : HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) ≠ 0 := HTGeometry.csqrt_ne_zero hw
+  have hq : HasDerivAt (fun v : ℂ => τ ^ (2 : ℕ) + v ^ (2 : ℕ)) (2 * w) w := by
+    have h1 := (hasDerivAt_pow 2 w).const_add (τ ^ (2 : ℕ))
     simpa using h1
-  have hz : HasDerivAt (fun v : ℂ => HTGeometry.csqrt (τ ^ 2 + v ^ 2))
-      ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)) w := by
-    have h1 : HasDerivAt (HTGeometry.csqrt ∘ fun v : ℂ => τ ^ 2 + v ^ 2)
-        ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)) w :=
+  have hz : HasDerivAt (fun v : ℂ => HTGeometry.csqrt (τ ^ (2 : ℕ) + v ^ (2 : ℕ)))
+      ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)) w := by
+    have h1 : HasDerivAt (HTGeometry.csqrt ∘ fun v : ℂ => τ ^ (2 : ℕ) + v ^ (2 : ℕ))
+        ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)) w :=
       (HTGeometry.hasStrictDerivAt_csqrt hw).hasDerivAt.comp w hq
     exact h1
-  have heq : (2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)
+  have heq : (2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)
       = w / xiMassHeightRadius τ w := by
     rw [xiMassHeightRadius]
     field_simp
@@ -72,7 +72,7 @@ theorem hasDerivAt_xiMassHeightRadius {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re
 
 /-- **The order-zero half of the height system.** -/
 theorem hasDerivAt_xiMassHeightK0 {a : ℝ} {τ w : ℂ} (ha : 0 < a)
-    (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+    (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     HasDerivAt (xiMassHeightK0 a τ)
       (-((a : ℂ) * (w / xiMassHeightRadius τ w)) * xiMassHeightK1 a τ w) w := by
   have hre := re_mul_xiMassHeightRadius_pos ha hw
@@ -89,10 +89,10 @@ theorem hasDerivAt_xiMassHeightK0 {a : ℝ} {τ w : ℂ} (ha : 0 < a)
 
 /-- **The order-one half of the height system.** -/
 theorem hasDerivAt_xiMassHeightK1 {a : ℝ} {τ w : ℂ} (ha : 0 < a)
-    (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+    (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     HasDerivAt (xiMassHeightK1 a τ)
       (-((a : ℂ) * (w / xiMassHeightRadius τ w)) * xiMassHeightK0 a τ w
-        - (w / xiMassHeightRadius τ w ^ 2) * xiMassHeightK1 a τ w) w := by
+        - (w / xiMassHeightRadius τ w ^ (2 : ℕ)) * xiMassHeightK1 a τ w) w := by
   have ha0 : (a : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt ha
   have hre := re_mul_xiMassHeightRadius_pos ha hw
   have hzne : xiMassHeightRadius τ w ≠ 0 := xiMassHeightRadius_ne_zero hw

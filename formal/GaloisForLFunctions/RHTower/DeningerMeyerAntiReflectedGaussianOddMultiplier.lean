@@ -85,7 +85,7 @@ theorem deningerMeyerAntiReflectedGaussianCountertransport_mellin
         (deningerMeyerAntiReflectedGaussianCountertransport c) s =
       (Complex.exp ((c : ℂ) * (s - 1 / 2)) -
         Complex.exp (-(c : ℂ) * (s - 1 / 2))) *
-        Complex.exp ((s - 1 / 2) ^ 2 / (4 * π)) := by
+        Complex.exp ((s - 1 / 2) ^ (2 : ℕ) / (4 * π)) := by
   change (deningerMeyerStrongLogMellinLM s)
       (deningerMeyerStrongLogCenteredFlow c
           deningerMeyerReflectedLogGaussianSource -
@@ -149,7 +149,7 @@ theorem deningerMeyerAntiReflectedGaussianCountertransportClass_evaluation
         (deningerMeyerAntiReflectedGaussianCountertransportClass c) =
       (Complex.exp ((c : ℂ) * ((rho : ℂ) - 1 / 2)) -
         Complex.exp (-(c : ℂ) * ((rho : ℂ) - 1 / 2))) *
-        Complex.exp (((rho : ℂ) - 1 / 2) ^ 2 / (4 * π)) := by
+        Complex.exp (((rho : ℂ) - 1 / 2) ^ (2 : ℕ) / (4 * π)) := by
   rw [deningerMeyerAntiReflectedGaussianCountertransportClass,
     deningerMeyerXiSupportJetEvaluationLM_mk]
   simpa [deningerMeyerStrongLogMellin,

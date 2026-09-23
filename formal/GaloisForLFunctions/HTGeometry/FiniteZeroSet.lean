@@ -67,7 +67,7 @@ theorem finite_zeros_expPoly {S : Finset ℂ} {C : ℂ → ℂ} {a b : ℝ} {y�
 `0` at a local maximum, so it cannot touch zero from below. -/
 theorem not_isLocalMax_of_sturm_pos {f fd fdd h : ℝ → ℝ} {γ t₀ : ℝ}
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hh : ∀ t, h t = fdd t + γ ^ 2 * f t) (hpos : 0 < h t₀) (hz : f t₀ = 0) :
+    (hh : ∀ t, h t = fdd t + γ ^ (2 : ℕ) * f t) (hpos : 0 < h t₀) (hz : f t₀ = 0) :
     ¬ IsLocalMax f t₀ := by
   intro hmax
   -- the first derivative vanishes and the second is positive

@@ -13,7 +13,7 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 
 theorem JacobiEllipticSystem.sn_sq_le_one
     {m : ℝ} (J : JacobiEllipticSystem m) (v : ℝ) :
-    J.sn v ^ 2 ≤ 1 := by
+    J.sn v ^ (2 : ℕ) ≤ 1 := by
   nlinarith [J.sn_sq_add_cn_sq v, sq_nonneg (J.cn v)]
 
 theorem physicalRegionI_jacobiSquaredCurvature_pos
@@ -46,8 +46,8 @@ theorem correctedJacobiAmplitude_pos
 
 theorem correctedJacobiAmplitude_sq
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
-    correctedJacobiAmplitude P J v ^ 2 =
-      1 - P.val.modulus / (P.val.q₀ : ℝ) * J.sn v ^ 2 := by
+    correctedJacobiAmplitude P J v ^ (2 : ℕ) =
+      1 - P.val.modulus / (P.val.q₀ : ℝ) * J.sn v ^ (2 : ℕ) := by
   rw [correctedJacobiAmplitude,
     Real.sq_sqrt (le_of_lt (physicalRegionI_jacobiCurvatureRatio_pos P J v)),
     jacobiSquaredCurvature]
@@ -64,9 +64,9 @@ theorem correctedJacobiAmplitude_zero
 /-- Difference between correct squared amplitude and printed `dn²`. -/
 theorem correctedJacobiAmplitude_sq_sub_dnSq
     (P : PhysicalRegionI) (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
-    correctedJacobiAmplitude P J v ^ 2 - J.dn v ^ 2 =
+    correctedJacobiAmplitude P J v ^ (2 : ℕ) - J.dn v ^ (2 : ℕ) =
       P.val.modulus * ((P.val.q₀ : ℝ) - 1) /
-        (P.val.q₀ : ℝ) * J.sn v ^ 2 := by
+        (P.val.q₀ : ℝ) * J.sn v ^ (2 : ℕ) := by
   rw [correctedJacobiAmplitude_sq]
   have hdn := J.dn_sq_add_m_sn_sq v
   have hq : (P.val.q₀ : ℝ) ≠ 0 := P.val.q₀.ne_zero
@@ -88,9 +88,9 @@ theorem correctedJacobiCurvature_pos
 theorem correctedJacobiCurvature_sq
     (k₀ : PositiveCurvatureScale) (P : PhysicalRegionI)
     (J : JacobiEllipticSystem P.val.modulus) (v : ℝ) :
-    correctedJacobiCurvature k₀ P J v ^ 2 =
-      (k₀ : ℝ) ^ 2 *
-        (1 - P.val.modulus / (P.val.q₀ : ℝ) * J.sn v ^ 2) := by
+    correctedJacobiCurvature k₀ P J v ^ (2 : ℕ) =
+      (k₀ : ℝ) ^ (2 : ℕ) *
+        (1 - P.val.modulus / (P.val.q₀ : ℝ) * J.sn v ^ (2 : ℕ)) := by
   rw [correctedJacobiCurvature, mul_pow, correctedJacobiAmplitude_sq]
 
 end GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica

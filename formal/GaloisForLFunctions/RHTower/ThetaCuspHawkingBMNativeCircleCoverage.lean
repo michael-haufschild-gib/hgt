@@ -18,16 +18,16 @@ attribute [-instance] instInnerProductSpaceRealComplex
 attribute [-instance] RCLike.toInnerProductSpaceReal
 attribute [-instance] NormedSpace.complexToReal
 
-private theorem exists_angle_of_sq_add_sq_eq_one {u v : ℝ} (h : u ^ 2 + v ^ 2 = 1) :
+private theorem exists_angle_of_sq_add_sq_eq_one {u v : ℝ} (h : u ^ (2 : ℕ) + v ^ (2 : ℕ) = 1) :
     ∃ theta : ℝ, Real.sin theta = u ∧ Real.cos theta = v := by
   let z : Circle := ⟨(v : ℂ) + (u : ℂ) * Complex.I, by
-    have hn : ‖(v : ℂ) + (u : ℂ) * Complex.I‖ ^ 2 = 1 := by
+    have hn : ‖(v : ℂ) + (u : ℂ) * Complex.I‖ ^ (2 : ℕ) = 1 := by
       rw [Complex.sq_norm]
       simp only [Complex.normSq_apply, Complex.add_re, Complex.ofReal_re,
         Complex.mul_re, Complex.ofReal_im, Complex.I_im, mul_one, Complex.I_re,
         mul_zero, sub_zero, Complex.add_im, Complex.mul_im, add_zero]
       nlinarith
-    have hsq : ‖(v : ℂ) + (u : ℂ) * Complex.I‖ ^ 2 = (1 : ℝ) ^ 2 := by
+    have hsq : ‖(v : ℂ) + (u : ℂ) * Complex.I‖ ^ (2 : ℕ) = (1 : ℝ) ^ (2 : ℕ) := by
       simpa using hn
     rcases (sq_eq_sq_iff_eq_or_eq_neg).mp hsq with hnorm | hnorm
     · exact mem_sphere_zero_iff_norm.mpr hnorm
@@ -50,7 +50,7 @@ private theorem exists_angle_of_sq_add_sq_eq_one {u v : ℝ} (h : u ^ 2 + v ^ 2 
 /-- Every positive-height coordinate pair is reached by the literal circle chart based at `I`. -/
 theorem circle_coverage (x y : ℝ) (hy : 0 < y) :
     ∃ d theta : ℝ, 0 ≤ d ∧ circle d theta ![0, 1] = ![x, y] := by
-  let R : ℝ := (x ^ 2 + y ^ 2 + 1) / (2 * y)
+  let R : ℝ := (x ^ (2 : ℕ) + y ^ (2 : ℕ) + 1) / (2 * y)
   have hR : 1 ≤ R := by
     dsimp [R]
     rw [le_div_iff₀ (by positivity)]
@@ -62,28 +62,28 @@ theorem circle_coverage (x y : ℝ) (hy : 0 < y) :
     fin_cases i <;> norm_num [circle, offset, height, denominator]
   have hR_ne : R ≠ 1 := by
     intro heq
-    have heq' : (x ^ 2 + y ^ 2 + 1) / (2 * y) = 1 := by simpa [R] using heq
+    have heq' : (x ^ (2 : ℕ) + y ^ (2 : ℕ) + 1) / (2 * y) = 1 := by simpa [R] using heq
     have hxy : x = 0 ∧ y = 1 := by
       rw [div_eq_iff (by positivity : (2 * y) ≠ 0)] at heq'
       constructor <;> nlinarith [sq_nonneg x, sq_nonneg (y - 1)]
     exact hbase hxy
   have hR_gt : 1 < R := lt_of_le_of_ne hR (Ne.symm hR_ne)
-  let D : ℝ := √(R ^ 2 - 1)
-  have hDsq_pos : 0 < R ^ 2 - 1 := by nlinarith
+  let D : ℝ := √(R ^ (2 : ℕ) - 1)
+  have hDsq_pos : 0 < R ^ (2 : ℕ) - 1 := by nlinarith
   have hDpos : 0 < D := Real.sqrt_pos.2 hDsq_pos
   have hDne : D ≠ 0 := hDpos.ne'
-  have hDsq : D ^ 2 = R ^ 2 - 1 := Real.sq_sqrt (le_of_lt hDsq_pos)
+  have hDsq : D ^ (2 : ℕ) = R ^ (2 : ℕ) - 1 := Real.sq_sqrt (le_of_lt hDsq_pos)
   let u : ℝ := (x / y) / D
   let v : ℝ := (R - y⁻¹) / D
-  have hcircle : (x / y) ^ 2 + (R - y⁻¹) ^ 2 = R ^ 2 - 1 := by
+  have hcircle : (x / y) ^ (2 : ℕ) + (R - y⁻¹) ^ (2 : ℕ) = R ^ (2 : ℕ) - 1 := by
     dsimp [R]
     field_simp [hy.ne']
     ring
-  have hcircleMul : x ^ 2 + (R * y - 1) ^ 2 = D ^ 2 * y ^ 2 := by
+  have hcircleMul : x ^ (2 : ℕ) + (R * y - 1) ^ (2 : ℕ) = D ^ (2 : ℕ) * y ^ (2 : ℕ) := by
     have h := hcircle
     field_simp [hy.ne'] at h
     nlinarith [h, hDsq]
-  have huvsq : u ^ 2 + v ^ 2 = 1 := by
+  have huvsq : u ^ (2 : ℕ) + v ^ (2 : ℕ) = 1 := by
     dsimp [u, v]
     field_simp [hDne, hy.ne']
     nlinarith [hcircleMul]

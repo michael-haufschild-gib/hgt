@@ -164,7 +164,7 @@ theorem sum_readoutFlux_eq_topCurrent (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
 theorem readout_hyperbolicMass_tail_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1/4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N+1))) (lam : ℝ))
     (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ) {Y : ℝ} (hY : 0 < Y) :
-    IntegrableOn (fun y => readoutMass N f L y/y^2) (Ioi Y) := by
+    IntegrableOn (fun y => readoutMass N f L y/y^(2 : ℕ)) (Ioi Y) := by
   rcases readout_zero_or_maass N f L with h0 | ⟨g,hg⟩
   · have hz : readoutMass N f L = 0 := by
       funext y
@@ -179,14 +179,14 @@ theorem readout_hyperbolicMass_tail_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1
 
 /-- Literal hyperbolic mass of one actual character on the complete unit-width cusp. -/
 def tailMass (r : ZMod (N+1)) (Y : ℝ) : ℝ :=
-  ∫ y in Ioi Y, (∫ x in (0 : ℝ)..1, characterMass N f (upperBlock N) r (point x y))/y^2
+  ∫ y in Ioi Y, (∫ x in (0 : ℝ)..1, characterMass N f (upperBlock N) r (point x y))/y^(2 : ℕ)
 
 /-- The character's original unit-strip mass is integrable over every positive cusp tail. -/
 theorem character_tail_mass_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1/4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N+1))) (lam : ℝ))
     (r : ZMod (N+1)) {Y : ℝ} (hY : 0 < Y) :
     IntegrableOn (fun y =>
-      (∫ x in (0 : ℝ)..1, characterMass N f (upperBlock N) r (point x y))/y^2) (Ioi Y) := by
+      (∫ x in (0 : ℝ)..1, characterMass N f (upperBlock N) r (point x y))/y^(2 : ℕ)) (Ioi Y) := by
   apply (integrable_finsetSum Finset.univ
     (fun q _ => readout_hyperbolicMass_tail_integrable N lam f (upperReadout N r q) hY)).congr
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
@@ -196,7 +196,7 @@ theorem character_tail_mass_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1/4))
 theorem tailMass_eq_sum (N : ℕ) (lam : Ioo (0 : ℝ) (1/4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N+1))) (lam : ℝ))
     (r : ZMod (N+1)) {Y : ℝ} (hY : 0 < Y) :
-    tailMass N f r Y = ∑ q : Deck N, ∫ y in Ioi Y, readoutMass N f (upperReadout N r q) y/y^2 := by
+    tailMass N f r Y = ∑ q : Deck N, ∫ y in Ioi Y, readoutMass N f (upperReadout N r q) y/y^(2 : ℕ) := by
   unfold tailMass
   rw [← integral_finsetSum Finset.univ (fun q _ =>
     readout_hyperbolicMass_tail_integrable N lam f (upperReadout N r q) hY)]
@@ -246,7 +246,7 @@ theorem core_cusp_quarter_identity (N : ℕ) (lam : Ioo (0 : ℝ) (1/4))
 /-- Complete observed cusp forms equal the literal projected Fourier-vector boundary form. -/
 theorem boundarySum_eq_projected_fourier (r : ZMod (N+1)) (T : ℝ) :
     boundarySum N f r T = ∑' n : ℤ, SelbergBesselModes.seam (Real.log (N+1 : ℕ)) T n *
-      ‖characterProjection N (upperBlock N) r (coefficientVector N f n (Real.exp T))‖^2 := by
+      ‖characterProjection N (upperBlock N) r (coefficientVector N f n (Real.exp T))‖^(2 : ℕ) := by
   unfold boundarySum
   rw [← Summable.tsum_finsetSum (fun q _ => readout_seam_summable N f (upperReadout N r q) T)]
   apply tsum_congr
@@ -260,7 +260,7 @@ theorem boundarySum_eq_projected_fourier (r : ZMod (N+1)) (T : ℝ) :
 theorem boundarySum_eq_residue_fourier (r : ZMod (N+1)) (T : ℝ) :
     boundarySum N f r T = ∑' n : ℤ, if (n : ZMod (N+1))=r then
       SelbergBesselModes.seam (Real.log (N+1 : ℕ)) T n *
-        ‖coefficientVector N f n (Real.exp T)‖^2 else 0 := by
+        ‖coefficientVector N f n (Real.exp T)‖^(2 : ℕ) else 0 := by
   rw [boundarySum_eq_projected_fourier]
   apply tsum_congr
   intro n
@@ -286,8 +286,8 @@ theorem core_cusp_quarter_identity_one (N : ℕ) (lam : Ioo (0 : ℝ) (1/4))
 
 /-- Actual inversion-transfer loss times the original full physical gradient on the circular seam. -/
 def arcLossGradient (r : ZMod (N+1)) (x : ℝ) : ℝ :=
-  (‖sourceVector N f (ofComplex (point x (SelbergMaassTraceStokes.arcHeight x)))‖^2-
-    ‖inversionTransfer N r r (sourceVector N f (ofComplex (point x (SelbergMaassTraceStokes.arcHeight x))))‖^2)*
+  (‖sourceVector N f (ofComplex (point x (SelbergMaassTraceStokes.arcHeight x)))‖^(2 : ℕ)-
+    ‖inversionTransfer N r r (sourceVector N f (ofComplex (point x (SelbergMaassTraceStokes.arcHeight x))))‖^(2 : ℕ))*
       gradientDensity N f (point x (SelbergMaassTraceStokes.arcHeight x))
 
 /-- Original smoothness makes the arithmetic loss–gradient density continuous on the entire modular arc. -/
@@ -308,8 +308,8 @@ theorem arcLossGradient_continuousOn (r : ZMod (N+1)) :
 
 /-- Completing the square of the literal seam current retains the exact half-interval constant. -/
 theorem pairedArc_integral_sq_le (r : ZMod (N+1)) :
-    (∫ x in (0 : ℝ)..(1/2), pairedArcCurrent N f r x)^2 ≤
-      (1/2)*(∫ x in (0 : ℝ)..(1/2), (pairedArcCurrent N f r x)^2) := by
+    (∫ x in (0 : ℝ)..(1/2), pairedArcCurrent N f r x)^(2 : ℕ) ≤
+      (1/2)*(∫ x in (0 : ℝ)..(1/2), (pairedArcCurrent N f r x)^(2 : ℕ)) := by
   let J := pairedArcCurrent N f r
   let A := ∫ x in (0 : ℝ)..(1/2), J x
   have hsub : uIcc (0 : ℝ) (1/2) ⊆ Icc (-(1/2 : ℝ)) (1/2) := by
@@ -318,35 +318,35 @@ theorem pairedArc_integral_sq_le (r : ZMod (N+1)) :
     exact ⟨by linarith [h.1],h.2⟩
   have hj : IntervalIntegrable J volume 0 (1/2) :=
     ((pairedArcCurrent_continuousOn N f r).mono hsub).intervalIntegrable
-  have hj2 : IntervalIntegrable (fun x => J x^2) volume 0 (1/2) :=
+  have hj2 : IntervalIntegrable (fun x => J x^(2 : ℕ)) volume 0 (1/2) :=
     (((pairedArcCurrent_continuousOn N f r).mono hsub).pow 2).intervalIntegrable
   have hn := intervalIntegral.integral_nonneg_of_forall (μ := volume)
     (by norm_num : (0 : ℝ) ≤ 1/2) (fun x => sq_nonneg (J x-2*A))
-  have he : (∫ x in (0 : ℝ)..(1/2), (J x-2*A)^2) =
-      (∫ x in (0 : ℝ)..(1/2), J x^2)-2*A^2 := by
+  have he : (∫ x in (0 : ℝ)..(1/2), (J x-2*A)^(2 : ℕ)) =
+      (∫ x in (0 : ℝ)..(1/2), J x^(2 : ℕ))-2*A^(2 : ℕ) := by
     calc
-      _ = ∫ x in (0 : ℝ)..(1/2), (J x^2-(4*A)*J x)+4*A^2 :=
+      _ = ∫ x in (0 : ℝ)..(1/2), (J x^(2 : ℕ)-(4*A)*J x)+4*A^(2 : ℕ) :=
         intervalIntegral.integral_congr (fun _ _ => by ring)
       _ = _ := by
         rw [intervalIntegral.integral_add (hj2.sub (hj.const_mul (4*A))) intervalIntegrable_const,
           intervalIntegral.integral_sub hj2 (hj.const_mul (4*A)),
           intervalIntegral.integral_const_mul,intervalIntegral.integral_const]
-        change (∫ x in (0 : ℝ)..(1/2), J x^2)-(4*A)*A+((1/2 : ℝ)-0) • (4*A^2) = _
+        change (∫ x in (0 : ℝ)..(1/2), J x^(2 : ℕ))-(4*A)*A+((1/2 : ℝ)-0) • (4*A^(2 : ℕ)) = _
         rw [smul_eq_mul]
         ring
   rw [he] at hn
-  change A^2 ≤ _
+  change A^(2 : ℕ) ≤ _
   linarith
 
 /-- The exact integrated seam response is bounded by original arithmetic loss and full gradient. -/
 theorem half_pairedArc_integral_sq_le (r : ZMod (N+1)) :
-    ((1/2)*(∫ x in (0 : ℝ)..(1/2), pairedArcCurrent N f r x))^2 ≤
+    ((1/2)*(∫ x in (0 : ℝ)..(1/2), pairedArcCurrent N f r x))^(2 : ℕ) ≤
       (2/3)*(∫ x in (0 : ℝ)..(1/2), arcLossGradient N f r x) := by
   have hsub : uIcc (0 : ℝ) (1/2) ⊆ Icc (-(1/2 : ℝ)) (1/2) := by
     intro x hx
     have h : x ∈ Icc (0 : ℝ) (1/2) := by simpa using hx
     exact ⟨by linarith [h.1],h.2⟩
-  have hj : IntervalIntegrable (fun x => (pairedArcCurrent N f r x)^2) volume 0 (1/2) :=
+  have hj : IntervalIntegrable (fun x => (pairedArcCurrent N f r x)^(2 : ℕ)) volume 0 (1/2) :=
     (((pairedArcCurrent_continuousOn N f r).mono hsub).pow 2).intervalIntegrable
   have hg : IntervalIntegrable (arcLossGradient N f r) volume 0 (1/2) :=
     ((arcLossGradient_continuousOn N f r).mono hsub).intervalIntegrable
@@ -363,7 +363,7 @@ theorem core_cusp_balance_sq_le (N : ℕ) (lam : Ioo (0 : ℝ) (1/4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N+1))) (lam : ℝ))
     (r : ZMod (N+1)) :
     (SelbergMaassCharacterCoreGreen.coreQuarter N f r 1+boundarySum N f r 0+squareSum N f r 0-
-      ((lam : ℝ)-1/4)*(SelbergMaassCharacterCoreGreen.coreMass N f r 1+tailMass N f r 1))^2 ≤
+      ((lam : ℝ)-1/4)*(SelbergMaassCharacterCoreGreen.coreMass N f r 1+tailMass N f r 1))^(2 : ℕ) ≤
         (2/3)*(∫ x in (0 : ℝ)..(1/2), arcLossGradient N f r x) := by
   rw [core_cusp_quarter_identity_one,add_sub_cancel_right]
   exact half_pairedArc_integral_sq_le N f r

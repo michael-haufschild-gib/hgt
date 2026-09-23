@@ -31,7 +31,7 @@ theorem greedyBump_eulerCenteredTangent_profile_bridge :
       (eulerCenteredTangent 1 (by norm_num : (1 : ℝ) < 2))
       (greedyBumpDisplacement greedyBumpSignalTwo
         (eulerCenteredTangent 1 (by norm_num : (1 : ℝ) < 2))) =
-      ‖eulerCenteredTangent 1 (by norm_num : (1 : ℝ) < 2)‖ ^ 2 / 4 := by
+      ‖eulerCenteredTangent 1 (by norm_num : (1 : ℝ) < 2)‖ ^ (2 : ℕ) / 4 := by
   constructor
   · exact inner_eulerPointedState_eulerCenteredTangent 1 (by norm_num)
   · rw [greedyBumpProfile_at_displacement]
@@ -45,7 +45,7 @@ theorem greedyBump_squarefreeCenteredTangent_profile_bridge :
       (squarefreeCenteredTangent 1 (by norm_num : (1 : ℝ) < 2))
       (greedyBumpDisplacement greedyBumpSignalTwo
         (squarefreeCenteredTangent 1 (by norm_num : (1 : ℝ) < 2))) =
-      ‖squarefreeCenteredTangent 1 (by norm_num : (1 : ℝ) < 2)‖ ^ 2 / 4 := by
+      ‖squarefreeCenteredTangent 1 (by norm_num : (1 : ℝ) < 2)‖ ^ (2 : ℕ) / 4 := by
   constructor
   · exact inner_squarefreePointedState_squarefreeCenteredTangent 1 (by norm_num)
   · rw [greedyBumpProfile_at_displacement]
@@ -61,7 +61,7 @@ theorem greedyBump_mobiusCriticalTangent_profile_bridge :
       (greedyBumpDisplacement greedyBumpSignalTwo
         (infiniteMobiusCriticalFisherTangentLp 2 (by norm_num : (1 : ℝ) < 2))) =
       ‖infiniteMobiusCriticalFisherTangentLp 2
-        (by norm_num : (1 : ℝ) < 2)‖ ^ 2 / 4 := by
+        (by norm_num : (1 : ℝ) < 2)‖ ^ (2 : ℕ) / 4 := by
   constructor
   · exact inner_infiniteMobiusSignedWeightLp_fisherTangent_eq_zero (by norm_num)
   · rw [greedyBumpProfile_at_displacement]

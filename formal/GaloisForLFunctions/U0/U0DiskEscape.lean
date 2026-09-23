@@ -48,22 +48,22 @@ theorem escape_disk {b c : ℂ} {r : ℝ} (hb : 2 < ‖b‖) (h : xStar ‖b‖ 
 and contains `f(D(c,r))` — containment certified by a norm bound `N ≥ ‖c‖` and a drift bound
 `E ≥ ‖c² + b − c'‖` with `E + r(2N + r) ≤ r'` — then `D(c,r)` escapes. -/
 theorem escape_disk_step {b c c' : ℂ} {r r' E N : ℝ}
-    (hN : ‖c‖ ≤ N) (hE : ‖c ^ 2 + b - c'‖ ≤ E) (hr : E + r * (2 * N + r) ≤ r')
+    (hN : ‖c‖ ≤ N) (hE : ‖c ^ (2 : ℕ) + b - c'‖ ≤ E) (hr : E + r * (2 * N + r) ≤ r')
     (hnext : ∀ z : ℂ, ‖z - c'‖ ≤ r' → z ∉ filledJulia b) :
     ∀ z : ℂ, ‖z - c‖ ≤ r → z ∉ filledJulia b := by
   intro z hz hmem
   have hr0 : (0 : ℝ) ≤ r := le_trans (norm_nonneg _) hz
-  have himg : ‖(z ^ 2 + b) - c'‖ ≤ r' := by
+  have himg : ‖(z ^ (2 : ℕ) + b) - c'‖ ≤ r' := by
     have hzc : ‖z + c‖ ≤ 2 * N + r := by
       calc ‖z + c‖ = ‖(z - c) + 2 * c‖ := by ring_nf
         _ ≤ ‖z - c‖ + ‖(2 : ℂ) * c‖ := norm_add_le _ _
         _ = ‖z - c‖ + 2 * ‖c‖ := by rw [norm_mul, Complex.norm_ofNat]
         _ ≤ 2 * N + r := by linarith
-    have h1 : ‖z ^ 2 - c ^ 2‖ ≤ r * (2 * N + r) := by
-      rw [show z ^ 2 - c ^ 2 = (z - c) * (z + c) by ring, norm_mul]
+    have h1 : ‖z ^ (2 : ℕ) - c ^ (2 : ℕ)‖ ≤ r * (2 * N + r) := by
+      rw [show z ^ (2 : ℕ) - c ^ (2 : ℕ) = (z - c) * (z + c) by ring, norm_mul]
       exact mul_le_mul hz hzc (norm_nonneg _) hr0
-    calc ‖(z ^ 2 + b) - c'‖ = ‖(c ^ 2 + b - c') + (z ^ 2 - c ^ 2)‖ := by ring_nf
-      _ ≤ ‖c ^ 2 + b - c'‖ + ‖z ^ 2 - c ^ 2‖ := norm_add_le _ _
+    calc ‖(z ^ (2 : ℕ) + b) - c'‖ = ‖(c ^ (2 : ℕ) + b - c') + (z ^ (2 : ℕ) - c ^ (2 : ℕ))‖ := by ring_nf
+      _ ≤ ‖c ^ (2 : ℕ) + b - c'‖ + ‖z ^ (2 : ℕ) - c ^ (2 : ℕ)‖ := norm_add_le _ _
       _ ≤ E + r * (2 * N + r) := add_le_add hE h1
       _ ≤ r' := hr
   have hfz : quadratic b z ∉ filledJulia b := hnext _ (by simpa [quadratic_apply] using himg)
@@ -84,7 +84,7 @@ theorem interval_split {t c h : ℝ} (ht : |t - c| ≤ h) :
 theorem square_subset_disk {c z : ℂ} {h : ℝ} (hh : 0 ≤ h)
     (hre : |z.re - c.re| ≤ h) (him : |z.im - c.im| ≤ h) :
     ‖z - c‖ ≤ 283 / 200 * h := by
-  have hsq : ‖z - c‖ ^ 2 = (z.re - c.re) ^ 2 + (z.im - c.im) ^ 2 := by
+  have hsq : ‖z - c‖ ^ (2 : ℕ) = (z.re - c.re) ^ (2 : ℕ) + (z.im - c.im) ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
     ring
   have h1 := abs_le.mp hre
@@ -126,7 +126,7 @@ theorem square_outside_unit_im {cy h : ℝ} (hfar : 1 + h < |cy|) :
 /-- Pruning, corner form: both coordinate strips are separated from the unit disk. -/
 theorem square_outside_unit_corner {cx cy h dx dy : ℝ}
     (hdx : 0 ≤ dx) (hdy : 0 ≤ dy) (hx : dx + h ≤ |cx|) (hy : dy + h ≤ |cy|)
-    (hfar : 1 < dx ^ 2 + dy ^ 2) :
+    (hfar : 1 < dx ^ (2 : ℕ) + dy ^ (2 : ℕ)) :
     ∀ z : ℂ, |z.re - cx| ≤ h → |z.im - cy| ≤ h → ¬(‖z‖ ≤ 1) := by
   intro z hre him hz
   have hre' : dx ≤ |z.re| := by
@@ -151,10 +151,10 @@ theorem square_outside_unit_corner {cx cy h dx dy : ℝ}
       calc dy = -(-dy) := by ring
         _ ≤ -z.im := by linarith
         _ ≤ |z.im| := neg_le_abs _
-  have hsq : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+  have hsq : ‖z‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
     ring
-  have h1 : ‖z‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg z]
+  have h1 : ‖z‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg z]
   nlinarith [sq_abs z.re, sq_abs z.im, abs_nonneg z.re, abs_nonneg z.im, hre', him']
 
 /-! ## Closed forms -/
@@ -176,11 +176,11 @@ theorem viable_of_one_chain {b : ℂ} (hb2 : 2 < ‖b‖)
   intro z hz
   refine escape_disk_step (c := 0) (c' := b) (N := 0) (E := 0) (r := 1) (r' := 1)
     (by simp) (by simp) (by norm_num) ?_ z (by simpa using hz)
-  refine escape_disk_step (c := b) (c' := b ^ 2 + b) (N := ‖b‖) (E := 0) (r := 1)
+  refine escape_disk_step (c := b) (c' := b ^ (2 : ℕ) + b) (N := ‖b‖) (E := 0) (r := 1)
     (r' := 2 * ‖b‖ + 1) (le_refl _) (by simp) (by nlinarith [norm_nonneg b]) ?_
   refine escape_disk hb2 ?_
-  have hval : ‖b ^ 2 + b‖ = ‖b‖ * ‖b + 1‖ := by
-    rw [show b ^ 2 + b = b * (b + 1) by ring, norm_mul]
+  have hval : ‖b ^ (2 : ℕ) + b‖ = ‖b‖ * ‖b + 1‖ := by
+    rw [show b ^ (2 : ℕ) + b = b * (b + 1) by ring, norm_mul]
   linarith [hval.ge, hval.le]
 
 /-- Cross-check: `K_3` avoids the closed unit disk via the two-step closed form (re-deriving
@@ -195,7 +195,7 @@ example : ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia (3 : ℂ) := by
   have hS : S ≤ 4 := by
     rw [hSdef]
     have h16 : Real.sqrt (1 + 4 * 3 : ℝ) ≤ Real.sqrt 16 := Real.sqrt_le_sqrt (by norm_num)
-    rwa [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 4)] at h16
+    rwa [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 4)] at h16
   linarith
 
 end U0DiskEscape
@@ -205,22 +205,22 @@ namespace U0DiskEscape
 /-! ## Coordinate forms — every certificate condition as a rational inequality -/
 
 /-- Upper norm bound from squared coordinates. -/
-theorem norm_le_of_sq {w : ℂ} {N : ℝ} (hN : 0 ≤ N) (h : w.re ^ 2 + w.im ^ 2 ≤ N ^ 2) :
+theorem norm_le_of_sq {w : ℂ} {N : ℝ} (hN : 0 ≤ N) (h : w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ) ≤ N ^ (2 : ℕ)) :
     ‖w‖ ≤ N := by
-  have hsq : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
+  have hsq : ‖w‖ ^ (2 : ℕ) = w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; ring
   nlinarith [norm_nonneg w]
 
 /-- Lower norm bound from squared coordinates. -/
-theorem le_norm_of_sq {w : ℂ} {M : ℝ} (_hM : 0 ≤ M) (h : M ^ 2 ≤ w.re ^ 2 + w.im ^ 2) :
+theorem le_norm_of_sq {w : ℂ} {M : ℝ} (_hM : 0 ≤ M) (h : M ^ (2 : ℕ) ≤ w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ)) :
     M ≤ ‖w‖ := by
-  have hsq : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
+  have hsq : ‖w‖ ^ (2 : ℕ) = w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; ring
   nlinarith [norm_nonneg w]
 
 /-- Escape-parameter bound from squared coordinates. -/
-theorem two_lt_norm_of_sq {b : ℂ} (h : 4 < b.re ^ 2 + b.im ^ 2) : 2 < ‖b‖ := by
-  have hsq : ‖b‖ ^ 2 = b.re ^ 2 + b.im ^ 2 := by
+theorem two_lt_norm_of_sq {b : ℂ} (h : 4 < b.re ^ (2 : ℕ) + b.im ^ (2 : ℕ)) : 2 < ‖b‖ := by
+  have hsq : ‖b‖ ^ (2 : ℕ) = b.re ^ (2 : ℕ) + b.im ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; ring
   by_contra hcon
   push Not at hcon
@@ -228,11 +228,11 @@ theorem two_lt_norm_of_sq {b : ℂ} (h : 4 < b.re ^ 2 + b.im ^ 2) : 2 < ‖b‖ 
 
 /-- `xStar ‖b‖ ≤ X` from rational data: `Nb ≥ ‖b‖` (squared), `S² ≥ 1+4Nb`, `X ≥ (1+S)/2`. -/
 theorem xStar_le_of_bounds {b : ℂ} {Nb S X : ℝ} (hNb0 : 0 ≤ Nb)
-    (hNb : b.re ^ 2 + b.im ^ 2 ≤ Nb ^ 2) (hS0 : 0 ≤ S) (hS : 1 + 4 * Nb ≤ S ^ 2)
+    (hNb : b.re ^ (2 : ℕ) + b.im ^ (2 : ℕ) ≤ Nb ^ (2 : ℕ)) (hS0 : 0 ≤ S) (hS : 1 + 4 * Nb ≤ S ^ (2 : ℕ))
     (hX : (1 + S) / 2 ≤ X) : xStar ‖b‖ ≤ X := by
   have hb : ‖b‖ ≤ Nb := norm_le_of_sq hNb0 hNb
   have h1 : Real.sqrt (1 + 4 * ‖b‖) ≤ S := by
-    have h2 : Real.sqrt (1 + 4 * ‖b‖) ≤ Real.sqrt (S ^ 2) :=
+    have h2 : Real.sqrt (1 + 4 * ‖b‖) ≤ Real.sqrt (S ^ (2 : ℕ)) :=
       Real.sqrt_le_sqrt (by linarith)
     rwa [Real.sqrt_sq hS0] at h2
   rw [xStar]
@@ -240,22 +240,22 @@ theorem xStar_le_of_bounds {b : ℂ} {Nb S X : ℝ} (hNb0 : 0 ≤ Nb)
 
 /-- Coordinate-form chain step: rational data `(N, E, r, r')` certifies one backward step. -/
 theorem escape_step_coords {bx bi cx ci c'x c'i r r' E N : ℝ}
-    (hN0 : 0 ≤ N) (hN : cx ^ 2 + ci ^ 2 ≤ N ^ 2)
+    (hN0 : 0 ≤ N) (hN : cx ^ (2 : ℕ) + ci ^ (2 : ℕ) ≤ N ^ (2 : ℕ))
     (hE0 : 0 ≤ E)
-    (hE : (cx ^ 2 - ci ^ 2 + bx - c'x) ^ 2 + (2 * cx * ci + bi - c'i) ^ 2 ≤ E ^ 2)
+    (hE : (cx ^ (2 : ℕ) - ci ^ (2 : ℕ) + bx - c'x) ^ (2 : ℕ) + (2 * cx * ci + bi - c'i) ^ (2 : ℕ) ≤ E ^ (2 : ℕ))
     (hr : E + r * (2 * N + r) ≤ r')
     (hnext : ∀ z : ℂ, ‖z - (⟨c'x, c'i⟩ : ℂ)‖ ≤ r' → z ∉ filledJulia (⟨bx, bi⟩ : ℂ)) :
     ∀ z : ℂ, ‖z - (⟨cx, ci⟩ : ℂ)‖ ≤ r → z ∉ filledJulia (⟨bx, bi⟩ : ℂ) := by
   refine escape_disk_step (c := ⟨cx, ci⟩) (c' := ⟨c'x, c'i⟩) (N := N) (E := E)
     (norm_le_of_sq hN0 hN) ?_ hr hnext
   refine norm_le_of_sq hE0 ?_
-  have hw : ((⟨cx, ci⟩ : ℂ) ^ 2 + (⟨bx, bi⟩ : ℂ) - (⟨c'x, c'i⟩ : ℂ))
-      = (⟨cx ^ 2 - ci ^ 2 + bx - c'x, 2 * cx * ci + bi - c'i⟩ : ℂ) := by
+  have hw : ((⟨cx, ci⟩ : ℂ) ^ (2 : ℕ) + (⟨bx, bi⟩ : ℂ) - (⟨c'x, c'i⟩ : ℂ))
+      = (⟨cx ^ (2 : ℕ) - ci ^ (2 : ℕ) + bx - c'x, 2 * cx * ci + bi - c'i⟩ : ℂ) := by
     rw [Complex.ext_iff]
     constructor
-    · show ((⟨cx, ci⟩ : ℂ) ^ 2 + (⟨bx, bi⟩ : ℂ) - (⟨c'x, c'i⟩ : ℂ)).re = _
+    · show ((⟨cx, ci⟩ : ℂ) ^ (2 : ℕ) + (⟨bx, bi⟩ : ℂ) - (⟨c'x, c'i⟩ : ℂ)).re = _
       simp [pow_two, Complex.mul_re, Complex.add_re, Complex.sub_re]
-    · show ((⟨cx, ci⟩ : ℂ) ^ 2 + (⟨bx, bi⟩ : ℂ) - (⟨c'x, c'i⟩ : ℂ)).im = _
+    · show ((⟨cx, ci⟩ : ℂ) ^ (2 : ℕ) + (⟨bx, bi⟩ : ℂ) - (⟨c'x, c'i⟩ : ℂ)).im = _
       simp [pow_two, Complex.mul_im, Complex.add_im, Complex.sub_im]
       ring
   rw [hw]
@@ -263,10 +263,10 @@ theorem escape_step_coords {bx bi cx ci c'x c'i r r' E N : ℝ}
 
 /-- Coordinate-form terminal disk: rational data `(M, Nb, S)` certifies escape past `xStar`. -/
 theorem escape_terminal_coords {bx bi cx ci r M Nb S : ℝ}
-    (hb2 : 4 < bx ^ 2 + bi ^ 2)
-    (hNb0 : 0 ≤ Nb) (hNb : bx ^ 2 + bi ^ 2 ≤ Nb ^ 2)
-    (hS0 : 0 ≤ S) (hS : 1 + 4 * Nb ≤ S ^ 2)
-    (hM0 : 0 ≤ M) (hM : M ^ 2 ≤ cx ^ 2 + ci ^ 2)
+    (hb2 : 4 < bx ^ (2 : ℕ) + bi ^ (2 : ℕ))
+    (hNb0 : 0 ≤ Nb) (hNb : bx ^ (2 : ℕ) + bi ^ (2 : ℕ) ≤ Nb ^ (2 : ℕ))
+    (hS0 : 0 ≤ S) (hS : 1 + 4 * Nb ≤ S ^ (2 : ℕ))
+    (hM0 : 0 ≤ M) (hM : M ^ (2 : ℕ) ≤ cx ^ (2 : ℕ) + ci ^ (2 : ℕ))
     (hgap : (1 + S) / 2 + r < M) :
     ∀ z : ℂ, ‖z - (⟨cx, ci⟩ : ℂ)‖ ≤ r → z ∉ filledJulia (⟨bx, bi⟩ : ℂ) := by
   have hb2' : 2 < ‖(⟨bx, bi⟩ : ℂ)‖ := two_lt_norm_of_sq hb2

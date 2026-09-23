@@ -37,7 +37,7 @@ theorem invSinAntideriv_pi_div_two : invSinAntideriv (Real.pi / 2) = 0 := by
 theorem hasDerivAt_invSinAntideriv {θ : ℝ} (h0 : 0 < θ) (h1 : θ < Real.pi) :
     HasDerivAt invSinAntideriv (-(1 / Real.sin θ)) θ := by
   have hs : 0 < Real.sin θ := Real.sin_pos_of_pos_of_lt_pi h0 h1
-  have hcsq : Real.cos θ ^ 2 < 1 := by nlinarith [Real.sin_sq_add_cos_sq θ, hs]
+  have hcsq : Real.cos θ ^ (2 : ℕ) < 1 := by nlinarith [Real.sin_sq_add_cos_sq θ, hs]
   have hc1 : Real.cos θ < 1 := by nlinarith [hcsq]
   have hcm1 : -1 < Real.cos θ := by nlinarith [hcsq]
   have hA : (0 : ℝ) < 1 + Real.cos θ := by linarith
@@ -55,7 +55,7 @@ theorem hasDerivAt_invSinAntideriv {θ : ℝ} (h0 : 0 < θ) (h1 : θ < Real.pi) 
     simpa using hd.log (ne_of_gt hB)
   have h := (h1'.sub h2').div_const 2
   refine h.congr_deriv ?_
-  have hsq : Real.sin θ ^ 2 = (1 + Real.cos θ) * (1 - Real.cos θ) := by
+  have hsq : Real.sin θ ^ (2 : ℕ) = (1 + Real.cos θ) * (1 - Real.cos θ) := by
     have := Real.sin_sq_add_cos_sq θ
     nlinarith [this]
   field_simp
@@ -107,15 +107,15 @@ theorem integral_inv_sin_le {θ₀ : ℝ} (h0 : 0 < θ₀) (h1 : θ₀ ≤ Real.
     nlinarith [Real.sin_sq_add_cos_sq θ₀, hs, Real.neg_one_le_cos θ₀]
   have hA : (0 : ℝ) < 1 + Real.cos θ₀ := by linarith
   have hB : (0 : ℝ) < 1 - Real.cos θ₀ := by linarith
-  have hsq : Real.sin θ₀ ^ 2 = (1 + Real.cos θ₀) * (1 - Real.cos θ₀) := by
+  have hsq : Real.sin θ₀ ^ (2 : ℕ) = (1 + Real.cos θ₀) * (1 - Real.cos θ₀) := by
     nlinarith [Real.sin_sq_add_cos_sq θ₀]
   have hle : (1 : ℝ) + Real.cos θ₀ ≤ 2 := by linarith [Real.cos_le_one θ₀]
   have hkey : Real.log (1 + Real.cos θ₀) - Real.log (1 - Real.cos θ₀)
       ≤ 2 * (Real.log 2 - Real.log (Real.sin θ₀)) := by
-    have hlogsq : Real.log (Real.sin θ₀ ^ 2)
+    have hlogsq : Real.log (Real.sin θ₀ ^ (2 : ℕ))
         = Real.log (1 + Real.cos θ₀) + Real.log (1 - Real.cos θ₀) := by
       rw [hsq, Real.log_mul (ne_of_gt hA) (ne_of_gt hB)]
-    have hlogsq' : Real.log (Real.sin θ₀ ^ 2) = 2 * Real.log (Real.sin θ₀) := by
+    have hlogsq' : Real.log (Real.sin θ₀ ^ (2 : ℕ)) = 2 * Real.log (Real.sin θ₀) := by
       rw [Real.log_pow]
       push_cast
       ring
@@ -130,55 +130,55 @@ theorem integral_inv_sin_le {θ₀ : ℝ} (h0 : 0 < θ₀) (h1 : θ₀ ≤ Real.
 /-- **The phase defect above the split height.**  Where `sin θ ≥ K√s` the square root is within a
 factor `√(1 − K⁻²)` of `sin θ`, so the defect is at most `s/(2√(1−K⁻²)·sin θ)`. -/
 theorem sin_sub_sqrt_le {s K u : ℝ} (hs : 0 < s) (hK : 2 ≤ K) (hu : K * Real.sqrt s ≤ u) :
-    u - Real.sqrt (u ^ 2 - s) ≤ s / (2 * Real.sqrt (1 - 1 / K ^ 2) * u) := by
+    u - Real.sqrt (u ^ (2 : ℕ) - s) ≤ s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ)) * u) := by
   have hK0 : (0 : ℝ) < K := by linarith
   have hsq0 : 0 < Real.sqrt s := Real.sqrt_pos.2 hs
   have hu0 : 0 < u := lt_of_lt_of_le (by positivity) hu
-  have hKu : K ^ 2 * s ≤ u ^ 2 := by
+  have hKu : K ^ (2 : ℕ) * s ≤ u ^ (2 : ℕ) := by
     have h := mul_le_mul_of_nonneg_left hu (le_of_lt (by positivity : (0:ℝ) < K * Real.sqrt s))
     have hsqs : Real.sqrt s * Real.sqrt s = s := Real.mul_self_sqrt hs.le
     nlinarith [hu, hsq0, hK0, hsqs]
-  have hfrac : (1 : ℝ) - 1 / K ^ 2 ≥ 0 := by
-    have : (1 : ℝ) ≤ K ^ 2 := by nlinarith
-    have hK2 : (0 : ℝ) < K ^ 2 := by positivity
+  have hfrac : (1 : ℝ) - 1 / K ^ (2 : ℕ) ≥ 0 := by
+    have : (1 : ℝ) ≤ K ^ (2 : ℕ) := by nlinarith
+    have hK2 : (0 : ℝ) < K ^ (2 : ℕ) := by positivity
     rw [ge_iff_le, sub_nonneg, div_le_one hK2]
     exact this
-  have hfracpos : (0 : ℝ) < 1 - 1 / K ^ 2 := by
-    have hK2 : (4 : ℝ) ≤ K ^ 2 := by nlinarith
-    have hK2p : (0 : ℝ) < K ^ 2 := by positivity
+  have hfracpos : (0 : ℝ) < 1 - 1 / K ^ (2 : ℕ) := by
+    have hK2 : (4 : ℝ) ≤ K ^ (2 : ℕ) := by nlinarith
+    have hK2p : (0 : ℝ) < K ^ (2 : ℕ) := by positivity
     rw [sub_pos, div_lt_one hK2p]
     linarith
-  have hrt : 0 < Real.sqrt (1 - 1 / K ^ 2) := Real.sqrt_pos.2 hfracpos
-  have hrt1 : Real.sqrt (1 - 1 / K ^ 2) ≤ 1 := by
-    have hinvpos : (0 : ℝ) ≤ 1 / K ^ 2 := by positivity
-    have h := Real.sqrt_le_sqrt (show (1 : ℝ) - 1 / K ^ 2 ≤ 1 by linarith)
+  have hrt : 0 < Real.sqrt (1 - 1 / K ^ (2 : ℕ)) := Real.sqrt_pos.2 hfracpos
+  have hrt1 : Real.sqrt (1 - 1 / K ^ (2 : ℕ)) ≤ 1 := by
+    have hinvpos : (0 : ℝ) ≤ 1 / K ^ (2 : ℕ) := by positivity
+    have h := Real.sqrt_le_sqrt (show (1 : ℝ) - 1 / K ^ (2 : ℕ) ≤ 1 by linarith)
     rwa [Real.sqrt_one] at h
-  have hnn : 0 ≤ u ^ 2 - s := by
-    have hK2 : (4 : ℝ) ≤ K ^ 2 := by nlinarith
+  have hnn : 0 ≤ u ^ (2 : ℕ) - s := by
+    have hK2 : (4 : ℝ) ≤ K ^ (2 : ℕ) := by nlinarith
     nlinarith [hKu]
-  set v : ℝ := Real.sqrt (u ^ 2 - s) with hvdef
+  set v : ℝ := Real.sqrt (u ^ (2 : ℕ) - s) with hvdef
   have hv0 : 0 ≤ v := Real.sqrt_nonneg _
-  have hvsq : v ^ 2 = u ^ 2 - s := Real.sq_sqrt hnn
-  have hvu : u * Real.sqrt (1 - 1 / K ^ 2) ≤ v := by
-    have hkey : (u * Real.sqrt (1 - 1 / K ^ 2)) ^ 2 ≤ u ^ 2 - s := by
-      have hsqsq : Real.sqrt (1 - 1 / K ^ 2) ^ 2 = 1 - 1 / K ^ 2 := Real.sq_sqrt hfrac
-      have hK2p : (0 : ℝ) < K ^ 2 := by positivity
-      have : u ^ 2 * (1 - 1 / K ^ 2) ≤ u ^ 2 - s := by
+  have hvsq : v ^ (2 : ℕ) = u ^ (2 : ℕ) - s := Real.sq_sqrt hnn
+  have hvu : u * Real.sqrt (1 - 1 / K ^ (2 : ℕ)) ≤ v := by
+    have hkey : (u * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) ^ (2 : ℕ) ≤ u ^ (2 : ℕ) - s := by
+      have hsqsq : Real.sqrt (1 - 1 / K ^ (2 : ℕ)) ^ (2 : ℕ) = 1 - 1 / K ^ (2 : ℕ) := Real.sq_sqrt hfrac
+      have hK2p : (0 : ℝ) < K ^ (2 : ℕ) := by positivity
+      have : u ^ (2 : ℕ) * (1 - 1 / K ^ (2 : ℕ)) ≤ u ^ (2 : ℕ) - s := by
         rw [mul_sub, mul_one]
-        have : s ≤ u ^ 2 / K ^ 2 := by
+        have : s ≤ u ^ (2 : ℕ) / K ^ (2 : ℕ) := by
           rw [le_div_iff₀ hK2p]
           linarith [hKu]
-        have heq : u ^ 2 * (1 / K ^ 2) = u ^ 2 / K ^ 2 := by ring
+        have heq : u ^ (2 : ℕ) * (1 / K ^ (2 : ℕ)) = u ^ (2 : ℕ) / K ^ (2 : ℕ) := by ring
         linarith [heq]
-      calc (u * Real.sqrt (1 - 1 / K ^ 2)) ^ 2 = u ^ 2 * (1 - 1 / K ^ 2) := by
+      calc (u * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) ^ (2 : ℕ) = u ^ (2 : ℕ) * (1 - 1 / K ^ (2 : ℕ)) := by
             rw [mul_pow, hsqsq]
-        _ ≤ u ^ 2 - s := this
+        _ ≤ u ^ (2 : ℕ) - s := this
     nlinarith [hkey, hv0, hvsq, mul_nonneg hu0.le hrt.le]
   have hvle : v ≤ u := by nlinarith [hvsq, hv0, hu0, hs]
-  have hden : 2 * Real.sqrt (1 - 1 / K ^ 2) * u ≤ u + v := by
+  have hden : 2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ)) * u ≤ u + v := by
     nlinarith [hvu, hrt1, hu0, hrt]
   have hprod : (u - v) * (u + v) = s := by nlinarith [hvsq]
-  have hdenpos : 0 < 2 * Real.sqrt (1 - 1 / K ^ 2) * u := by positivity
+  have hdenpos : 0 < 2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ)) * u := by positivity
   rw [le_div_iff₀ hdenpos]
   nlinarith [hden, hprod, hvle, sub_nonneg.2 hvle]
 
@@ -186,7 +186,7 @@ theorem sin_sub_sqrt_le {s K u : ℝ} (hs : 0 < s) (hK : 2 ≤ K) (hu : K * Real
 
 theorem one_sub_sqrt_le {x : ℝ} (h0 : 0 ≤ x) (h1 : x ≤ 1) : 1 - Real.sqrt (1 - x) ≤ x := by
   have hx : (0 : ℝ) ≤ 1 - x := by linarith
-  have hsq : (1 - x) ^ 2 ≤ 1 - x := by nlinarith
+  have hsq : (1 - x) ^ (2 : ℕ) ≤ 1 - x := by nlinarith
   have h := Real.sqrt_le_sqrt hsq
   rw [Real.sqrt_sq hx] at h
   linarith
@@ -196,8 +196,8 @@ logarithmic part carries the coefficient `1/(2√(1−K⁻²))`, which approache
 theorem one_sub_bandEndpointPhase_turning_le {s K : ℝ} (hs : 0 < s) (hK : 2 ≤ K)
     (hKs : K * Real.sqrt s ≤ 1 / 2) :
     1 - bandEndpointPhase s (2 * Real.sqrt s)
-      ≤ 4 * s + K ^ 2 * s
-        + s / (2 * Real.sqrt (1 - 1 / K ^ 2))
+      ≤ 4 * s + K ^ (2 : ℕ) * s
+        + s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ)))
           * (Real.log 2 - Real.log (K * Real.sqrt s)) := by
   have hK0 : (0 : ℝ) < K := by linarith
   have hsq0 : 0 < Real.sqrt s := Real.sqrt_pos.2 hs
@@ -210,10 +210,10 @@ theorem one_sub_bandEndpointPhase_turning_le {s K : ℝ} (hs : 0 < s) (hK : 2 �
     nlinarith [hsq0]
   have hz1 : z ≤ 1 / 2 := hKs
   have hy1 : y ≤ 1 := by linarith
-  have hzsq : z ^ 2 = K ^ 2 * s := by
+  have hzsq : z ^ (2 : ℕ) = K ^ (2 : ℕ) * s := by
     rw [hz]
     nlinarith [hsqs]
-  have hysq : y ^ 2 = 4 * s := by
+  have hysq : y ^ (2 : ℕ) = 4 * s := by
     rw [hy]
     nlinarith [hsqs]
   set θy : ℝ := Real.arcsin y with hθy
@@ -224,10 +224,10 @@ theorem one_sub_bandEndpointPhase_turning_le {s K : ℝ} (hs : 0 < s) (hK : 2 �
   have hθy2 : θy ≤ Real.pi / 2 := le_trans hθyz hθz2
   have hsinθy : Real.sin θy = y := Real.sin_arcsin (by linarith) hy1
   have hsinθz : Real.sin θz = z := Real.sin_arcsin (by linarith) (by linarith)
-  have hcosθy : Real.cos θy = Real.sqrt (1 - y ^ 2) := Real.cos_arcsin y
-  have hcosθz : Real.cos θz = Real.sqrt (1 - z ^ 2) := Real.cos_arcsin z
+  have hcosθy : Real.cos θy = Real.sqrt (1 - y ^ (2 : ℕ)) := Real.cos_arcsin y
+  have hcosθz : Real.cos θz = Real.sqrt (1 - z ^ (2 : ℕ)) := Real.cos_arcsin z
   -- continuity data
-  have hcs : Continuous fun θ : ℝ => Real.sqrt (Real.sin θ ^ 2 - s) :=
+  have hcs : Continuous fun θ : ℝ => Real.sqrt (Real.sin θ ^ (2 : ℕ) - s) :=
     Real.continuous_sqrt.comp ((Real.continuous_sin.pow 2).sub continuous_const)
   have hcsin : Continuous Real.sin := Real.continuous_sin
   -- the total mass
@@ -239,15 +239,15 @@ theorem one_sub_bandEndpointPhase_turning_le {s K : ℝ} (hs : 0 < s) (hK : 2 �
     intervalIntegral.integral_add_adjacent_intervals
       (hcsin.intervalIntegrable _ _) (hcsin.intervalIntegrable _ _)
   have hphase : bandEndpointPhase s y = ∫ θ in θy..(Real.pi / 2),
-      Real.sqrt (Real.sin θ ^ 2 - s) := rfl
+      Real.sqrt (Real.sin θ ^ (2 : ℕ) - s) := rfl
   have hdiff : (∫ θ in θy..(Real.pi / 2), Real.sin θ)
-      - ∫ θ in θy..(Real.pi / 2), Real.sqrt (Real.sin θ ^ 2 - s)
-      = ∫ θ in θy..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ 2 - s)) :=
+      - ∫ θ in θy..(Real.pi / 2), Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)
+      = ∫ θ in θy..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)) :=
     (intervalIntegral.integral_sub (hcsin.intervalIntegrable _ _)
       (hcs.intervalIntegrable _ _)).symm
   have hdecomp : 1 - bandEndpointPhase s y
       = (∫ θ in (0 : ℝ)..θy, Real.sin θ)
-        + ∫ θ in θy..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ 2 - s)) := by
+        + ∫ θ in θy..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)) := by
     rw [hphase, ← hdiff, hone, ← hadj]
     ring
   -- the head
@@ -258,43 +258,43 @@ theorem one_sub_bandEndpointPhase_turning_le {s K : ℝ} (hs : 0 < s) (hK : 2 �
     have := one_sub_sqrt_le h4 h41
     linarith
   -- split the tail
-  have hsplit : (∫ θ in θy..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ 2 - s)))
-      = (∫ θ in θy..θz, (Real.sin θ - Real.sqrt (Real.sin θ ^ 2 - s)))
-        + ∫ θ in θz..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ 2 - s)) :=
+  have hsplit : (∫ θ in θy..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)))
+      = (∫ θ in θy..θz, (Real.sin θ - Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)))
+        + ∫ θ in θz..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)) :=
     (intervalIntegral.integral_add_adjacent_intervals
       ((hcsin.sub hcs).intervalIntegrable _ _) ((hcsin.sub hcs).intervalIntegrable _ _)).symm
   -- the middle piece
-  have hmid : (∫ θ in θy..θz, (Real.sin θ - Real.sqrt (Real.sin θ ^ 2 - s))) ≤ K ^ 2 * s := by
-    have hmono : (∫ θ in θy..θz, (Real.sin θ - Real.sqrt (Real.sin θ ^ 2 - s)))
+  have hmid : (∫ θ in θy..θz, (Real.sin θ - Real.sqrt (Real.sin θ ^ (2 : ℕ) - s))) ≤ K ^ (2 : ℕ) * s := by
+    have hmono : (∫ θ in θy..θz, (Real.sin θ - Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)))
         ≤ ∫ θ in θy..θz, Real.sin θ := by
       refine intervalIntegral.integral_mono_on hθyz ((hcsin.sub hcs).intervalIntegrable _ _)
         (hcsin.intervalIntegrable _ _) fun θ _ => ?_
-      have := Real.sqrt_nonneg (Real.sin θ ^ 2 - s)
+      have := Real.sqrt_nonneg (Real.sin θ ^ (2 : ℕ) - s)
       linarith
-    have hval : (∫ θ in θy..θz, Real.sin θ) = Real.sqrt (1 - y ^ 2) - Real.sqrt (1 - z ^ 2) := by
+    have hval : (∫ θ in θy..θz, Real.sin θ) = Real.sqrt (1 - y ^ (2 : ℕ)) - Real.sqrt (1 - z ^ (2 : ℕ)) := by
       rw [integral_sin, hcosθy, hcosθz]
-    have hz2 : (0 : ℝ) ≤ z ^ 2 := sq_nonneg z
-    have hz21 : z ^ 2 ≤ 1 := by nlinarith [hz1, hy0, hyz]
-    have hb1 : Real.sqrt (1 - y ^ 2) ≤ 1 := by
-      have h := Real.sqrt_le_sqrt (show (1 : ℝ) - y ^ 2 ≤ 1 by nlinarith [sq_nonneg y])
+    have hz2 : (0 : ℝ) ≤ z ^ (2 : ℕ) := sq_nonneg z
+    have hz21 : z ^ (2 : ℕ) ≤ 1 := by nlinarith [hz1, hy0, hyz]
+    have hb1 : Real.sqrt (1 - y ^ (2 : ℕ)) ≤ 1 := by
+      have h := Real.sqrt_le_sqrt (show (1 : ℝ) - y ^ (2 : ℕ) ≤ 1 by nlinarith [sq_nonneg y])
       rwa [Real.sqrt_one] at h
     have hb2 := one_sub_sqrt_le hz2 hz21
     rw [hval] at hmono
     rw [← hzsq]
     linarith
   -- the tail piece
-  have hconst : (0 : ℝ) < 2 * Real.sqrt (1 - 1 / K ^ 2) := by
-    have hK2 : (4 : ℝ) ≤ K ^ 2 := by nlinarith
-    have hK2p : (0 : ℝ) < K ^ 2 := by positivity
-    have : (0 : ℝ) < 1 - 1 / K ^ 2 := by
+  have hconst : (0 : ℝ) < 2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ)) := by
+    have hK2 : (4 : ℝ) ≤ K ^ (2 : ℕ) := by nlinarith
+    have hK2p : (0 : ℝ) < K ^ (2 : ℕ) := by positivity
+    have : (0 : ℝ) < 1 - 1 / K ^ (2 : ℕ) := by
       rw [sub_pos, div_lt_one hK2p]
       linarith
     positivity
-  have htail : (∫ θ in θz..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ 2 - s)))
-      ≤ s / (2 * Real.sqrt (1 - 1 / K ^ 2)) * (Real.log 2 - Real.log z) := by
+  have htail : (∫ θ in θz..(Real.pi / 2), (Real.sin θ - Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)))
+      ≤ s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) * (Real.log 2 - Real.log z) := by
     have hptw : ∀ θ ∈ Icc θz (Real.pi / 2),
-        Real.sin θ - Real.sqrt (Real.sin θ ^ 2 - s)
-          ≤ s / (2 * Real.sqrt (1 - 1 / K ^ 2)) * (1 / Real.sin θ) := by
+        Real.sin θ - Real.sqrt (Real.sin θ ^ (2 : ℕ) - s)
+          ≤ s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) * (1 / Real.sin θ) := by
       intro θ hθ
       have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
       have hθzpos : 0 < θz := lt_of_lt_of_le hθy0 hθyz
@@ -310,29 +310,29 @@ theorem one_sub_bandEndpointPhase_turning_le {s K : ℝ} (hs : 0 < s) (hK : 2 �
         exact hsinle
       have h := sin_sub_sqrt_le hs hK hu
       have hsinpos : 0 < Real.sin θ := lt_of_lt_of_le (by rw [hz]; positivity) hsinle
-      have heq : s / (2 * Real.sqrt (1 - 1 / K ^ 2) * Real.sin θ)
-          = s / (2 * Real.sqrt (1 - 1 / K ^ 2)) * (1 / Real.sin θ) := by
+      have heq : s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ)) * Real.sin θ)
+          = s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) * (1 / Real.sin θ) := by
         field_simp
       rw [← heq]
       exact h
     have hcont : ContinuousOn (fun θ : ℝ =>
-        s / (2 * Real.sqrt (1 - 1 / K ^ 2)) * (1 / Real.sin θ))
+        s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) * (1 / Real.sin θ))
         (uIcc θz (Real.pi / 2)) := continuousOn_const.mul (continuousOn_inv_sin
           (lt_of_lt_of_le hθy0 hθyz) hθz2)
     have hcontint : IntervalIntegrable (fun θ : ℝ =>
-        s / (2 * Real.sqrt (1 - 1 / K ^ 2)) * (1 / Real.sin θ)) MeasureTheory.volume
+        s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) * (1 / Real.sin θ)) MeasureTheory.volume
         θz (Real.pi / 2) := hcont.intervalIntegrable
     have hmono := intervalIntegral.integral_mono_on hθz2
       ((hcsin.sub hcs).intervalIntegrable _ _) hcontint hptw
     have hpull : (∫ θ in θz..(Real.pi / 2),
-        s / (2 * Real.sqrt (1 - 1 / K ^ 2)) * (1 / Real.sin θ))
-        = s / (2 * Real.sqrt (1 - 1 / K ^ 2)) * ∫ θ in θz..(Real.pi / 2), 1 / Real.sin θ :=
+        s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) * (1 / Real.sin θ))
+        = s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) * ∫ θ in θz..(Real.pi / 2), 1 / Real.sin θ :=
       intervalIntegral.integral_const_mul _ _
     rw [hpull] at hmono
     refine le_trans hmono ?_
     have hle := integral_inv_sin_le (lt_of_lt_of_le hθy0 hθyz) hθz2
     rw [hsinθz] at hle
-    have hnn : (0 : ℝ) ≤ s / (2 * Real.sqrt (1 - 1 / K ^ 2)) := by positivity
+    have hnn : (0 : ℝ) ≤ s / (2 * Real.sqrt (1 - 1 / K ^ (2 : ℕ))) := by positivity
     exact mul_le_mul_of_nonneg_left hle hnn
   rw [hdecomp, hsplit]
   linarith

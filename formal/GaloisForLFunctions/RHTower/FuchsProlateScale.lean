@@ -14,7 +14,7 @@ constant `A_n`.  Two unconditional layers of that law are formalized here.
 
 * **Rate calculus.**  The model rate `fuchsRate A n λ = A·λ^(2n+1)·e^(−4πλ²)` has an
   index-independent exponential factor, so every fixed-`λ` ratio of two rates is an exact pure
-  power of `λ` (`fuchsRate_ratio`; the radial index step `4` gives the `λ^8` scale separation
+  power of `λ` (`fuchsRate_ratio`; the radial index step `4` gives the `λ^(8 : ℕ)` scale separation
   `fuchsRate_radial_ratio`).  Successive rates separate rigidly in the limit
   (`fuchsRate_div_tendsto_atTop`, `fuchsRate_div_tendsto_zero`), and each rate — even after a
   square root — beats every power of `λ` (`pow_mul_fuchsRate_tendsto_zero`,
@@ -73,7 +73,7 @@ theorem fuchsRate_ratio (A A' : ℝ) (hA' : A' ≠ 0) {lam : ℝ} (hlam : lam �
   field_simp
 
 /-- Radial instance: one step `j → j+1` of the radial prolate family advances the Fuchs index by
-`4`, so successive radial leakages are separated by the exact factor `(A/A')·λ^8`. -/
+`4`, so successive radial leakages are separated by the exact factor `(A/A')·λ^(8 : ℕ)`. -/
 theorem fuchsRate_radial_ratio (A A' : ℝ) (hA' : A' ≠ 0) {lam : ℝ} (hlam : lam ≠ 0) (j : ℕ) :
     fuchsRate A (4 * (j + 1)) lam / fuchsRate A' (4 * j) lam = A / A' * lam ^ 8 := by
   rw [show 4 * (j + 1) = 4 * j + 4 by ring, fuchsRate_ratio A A' hA' hlam (4 * j) 4]

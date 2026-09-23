@@ -77,7 +77,7 @@ normalization interface. -/
 theorem gammaSewnFourRateCanonicalPluckerSewingMass_eq_three_halves_correctedFisher_of_nondegenerate
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     gammaSewnFourRateCanonicalPluckerSewingMass a rate cell =
       (3 / 2 : ℝ) * gammaSewnFourRateSchurCorrectedFisher a rate cell := by
   exact
@@ -121,7 +121,7 @@ Pluecker--Jordan curvature law. -/
 theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPluckerJordan
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
       -(4 / 3 : ℝ) * gammaSewnFourRateCanonicalPluckerSewingMass a rate cell -
       2 * normalizedFinitePairDispersion
@@ -137,7 +137,7 @@ sewing mass exactly at the source-computable Rees scale `sqrt(F / D)`. -/
 theorem gammaSewnFourRatePluckerJordan_curvature_transition_iff
     {a : ℝ} {rate : Fin 4 → ℝ} {prime : Fin 4 → Nat.Primes} (e : ℕ)
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0)
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0)
     (hprime : Function.Injective prime) :
     gammaSewnFourRateSchurBoundaryLogCurvature a rate
           (gammaSewnFourRateCommonDepthCell prime e) <

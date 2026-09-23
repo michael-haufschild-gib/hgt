@@ -19,7 +19,7 @@ theorem integral_dpoly_mul_conj_complex (a : ℕ → ℂ) (s : Finset ℕ)
     (hs : ∀ n ∈ s, n ≠ 0) :
     ∫ omega, (∑ n ∈ s, a n * X n omega) *
         (starRingEnd ℂ) (∑ n ∈ s, a n * X n omega) ∂steinhausMeasure =
-      ((∑ n ∈ s, ‖a n‖ ^ 2 : ℝ) : ℂ) := by
+      ((∑ n ∈ s, ‖a n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
   have hexp : ∀ omega : Omega, (∑ n ∈ s, a n * X n omega) *
       (starRingEnd ℂ) (∑ n ∈ s, a n * X n omega) =
@@ -67,12 +67,12 @@ theorem integral_dpoly_mul_conj_complex (a : ℕ → ℂ) (s : Finset ℕ)
 /-- Norm-squared form of complex-coefficient Steinhaus Parseval. -/
 theorem integral_normSq_dpoly_complex (a : ℕ → ℂ) (s : Finset ℕ)
     (hs : ∀ n ∈ s, n ≠ 0) :
-    ∫ omega, ‖∑ n ∈ s, a n * X n omega‖ ^ 2 ∂steinhausMeasure =
-      ∑ n ∈ s, ‖a n‖ ^ 2 := by
+    ∫ omega, ‖∑ n ∈ s, a n * X n omega‖ ^ (2 : ℕ) ∂steinhausMeasure =
+      ∑ n ∈ s, ‖a n‖ ^ (2 : ℕ) := by
   have h := integral_dpoly_mul_conj_complex a s hs
   have hpoint : ∀ omega : Omega, (∑ n ∈ s, a n * X n omega) *
       (starRingEnd ℂ) (∑ n ∈ s, a n * X n omega) =
-        ((‖∑ n ∈ s, a n * X n omega‖ ^ 2 : ℝ) : ℂ) := by
+        ((‖∑ n ∈ s, a n * X n omega‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro omega
     rw [Complex.mul_conj']
     push_cast

@@ -82,16 +82,16 @@ theorem satake_eq_of_norm_add_eq_two {α₁ α₂ : ℂ} (h₁ : ‖α₁‖ ≤
 /-- **The determinant is the square of the trace, corrected by the Satake gap.**  Exactly, with no
 error term: `α₁α₂ = (α₁+α₂)²/4 − (α₁−α₂)²/4`. -/
 theorem satake_det_eq (α₁ α₂ : ℂ) :
-    α₁ * α₂ = (α₁ + α₂) ^ 2 / 4 - (α₁ - α₂) ^ 2 / 4 := by ring
+    α₁ * α₂ = (α₁ + α₂) ^ (2 : ℕ) / 4 - (α₁ - α₂) ^ (2 : ℕ) / 4 := by ring
 
 /-- **The Satake gap is controlled by the energy defect.**  With both parameters of modulus at most
 one, `‖α₁−α₂‖² ≤ 4 − ‖α₁+α₂‖²`.  So a local trace close to its maximum forces the two parameters
 together, quantitatively and with no exceptional set. -/
 theorem norm_sub_sq_le_four_sub {α₁ α₂ : ℂ} (h₁ : ‖α₁‖ ≤ 1) (h₂ : ‖α₂‖ ≤ 1) :
-    ‖α₁ - α₂‖ ^ 2 ≤ 4 - ‖α₁ + α₂‖ ^ 2 := by
+    ‖α₁ - α₂‖ ^ (2 : ℕ) ≤ 4 - ‖α₁ + α₂‖ ^ (2 : ℕ) := by
   have hpar := parallelogram_law_with_norm ℝ α₁ α₂
-  have hs₁ : ‖α₁‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg α₁]
-  have hs₂ : ‖α₂‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg α₂]
+  have hs₁ : ‖α₁‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg α₁]
+  have hs₂ : ‖α₂‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg α₂]
   nlinarith [hpar]
 
 /-- **Extremal energy forces a vanishing defect.**  If a bounded nonnegative quantity attains, up to
@@ -111,10 +111,10 @@ theorem weighted_defect_le {ι : Type*} (s : Finset ι) (f w : ι → ℝ) (M ε
 weighted square sum is at most `D²` times the weight total. -/
 theorem weighted_sq_le {ι : Type*} (s : Finset ι) (a : ι → ℂ) (w : ι → ℝ) (D : ℝ)
     (hD : 0 ≤ D) (hw : ∀ i ∈ s, 0 ≤ w i) (ha : ∀ i ∈ s, ‖a i‖ ≤ D) :
-    ∑ i ∈ s, ‖a i‖ ^ 2 * w i ≤ D ^ 2 * ∑ i ∈ s, w i := by
+    ∑ i ∈ s, ‖a i‖ ^ (2 : ℕ) * w i ≤ D ^ (2 : ℕ) * ∑ i ∈ s, w i := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun i hi => ?_
-  have h1 : ‖a i‖ ^ 2 ≤ D ^ 2 := by
+  have h1 : ‖a i‖ ^ (2 : ℕ) ≤ D ^ (2 : ℕ) := by
     have := ha i hi
     nlinarith [norm_nonneg (a i), hD]
   exact mul_le_mul_of_nonneg_right h1 (hw i hi)

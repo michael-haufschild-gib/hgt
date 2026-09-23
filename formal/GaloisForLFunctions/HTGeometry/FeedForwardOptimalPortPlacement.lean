@@ -59,17 +59,17 @@ theorem feedForwardBalancedIntervals_le_longest {m : ℕ} (k : ℕ) (r : Fin (m 
 /-- Attainable worst-site coverages over all port placements with the prescribed total length. -/
 def feedForwardPortPlacementCoverage {m : ℕ} (a : ℝ) (k : ℕ) (r : Fin (m + 1)) : Set ℝ :=
   {t | ∃ n : Fin (m + 1) → ℕ, (∑ i, n i) = (m + 1) * k + r.val ∧
-    ∀ j (i : Fin (n j + 1)), t ≤ feedForwardRetention (1 + a ^ 2) (n j) i}
+    ∀ j (i : Fin (n j + 1)), t ≤ feedForwardRetention (1 + a ^ (2 : ℕ)) (n j) i}
 
 /-- Theorem S5: balanced port intervals attain the globally optimal worst-site coverage. -/
 theorem feedForwardBalancedPlacement_isGreatest {m : ℕ} (a : ℝ) (k : ℕ)
     (r : Fin (m + 1)) :
     IsGreatest (feedForwardPortPlacementCoverage a k r)
-      (feedForwardRetention (1 + a ^ 2) (feedForwardBalancedLongest k r) 0) := by
+      (feedForwardRetention (1 + a ^ (2 : ℕ)) (feedForwardBalancedLongest k r) 0) := by
   constructor
   · refine ⟨feedForwardBalancedIntervals k r, sum_feedForwardBalancedIntervals k r, ?_⟩
     intro j i
-    exact (feedForwardUpstreamRetention_antitone (1 + a ^ 2)
+    exact (feedForwardUpstreamRetention_antitone (1 + a ^ (2 : ℕ))
       (feedForwardBalancedIntervals_le_longest k r j)).trans
         (upstreamRetention_le_directedRetention a _ i)
   · rintro t ⟨n, hn, ht⟩
@@ -91,7 +91,7 @@ theorem feedForwardBalancedPlacement_isGreatest {m : ℕ} (a : ℝ) (k : ℕ)
         simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul] at hs
         omega
     obtain ⟨j, hj⟩ := hex
-    exact (ht j 0).trans (feedForwardUpstreamRetention_antitone (1 + a ^ 2) hj)
+    exact (ht j 0).trans (feedForwardUpstreamRetention_antitone (1 + a ^ (2 : ℕ)) hj)
 
 
 /-- Euclidean division constructs an optimal layout for every feasible finite chain length. -/

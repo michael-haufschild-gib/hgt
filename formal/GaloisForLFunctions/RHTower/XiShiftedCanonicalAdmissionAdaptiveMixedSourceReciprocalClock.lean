@@ -32,7 +32,7 @@ noncomputable section
 noncomputable def xiShiftedCanonicalAdmissionAdaptiveMixedSourceReciprocalClockDensity
     (y : ℝ) (n : ℕ) : ℝ :=
   xiShiftedCanonicalAdmissionMassNormalizedAdaptiveMixedCompletedSourceAction y n /
-    xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ 2
+    xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ (2 : ℕ)
 
 /-- Reciprocal source density splits into universal unit clock plus strict projective arithmetic
 surplus.  This is the nonlinear source law; no fixed linear reporter appears. -/
@@ -41,7 +41,7 @@ theorem adaptiveMixedSourceReciprocalClockDensity_eq_one_add_surplus
     (hU : xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ≠ 0) :
     xiShiftedCanonicalAdmissionAdaptiveMixedSourceReciprocalClockDensity y n =
       1 + xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity y n /
-        xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ 2 := by
+        xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ (2 : ℕ) := by
   rw [xiShiftedCanonicalAdmissionAdaptiveMixedSourceReciprocalClockDensity,
     xiShiftedCanonicalAdmissionMassNormalizedSourceAction_eq_flux_sq_add_surplus hy]
   field_simp [hU]
@@ -84,10 +84,10 @@ theorem one_lt_adaptiveMixedSourceReciprocalClockDensity_of_terminalChamber
     (le_trans (by norm_num) hyquarter.le) hUpos.ne']
   have hsurplus := xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity_pos
     hyquarter hn (hchamber y hy)
-  have hsq : 0 < xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ 2 :=
+  have hsq : 0 < xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ (2 : ℕ) :=
     sq_pos_of_pos hUpos
   have hquot : 0 < xiShiftedCanonicalAdmissionNormalizedProjectiveSurplusDensity y n /
-      xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ 2 :=
+      xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ (2 : ℕ) :=
     div_pos hsurplus hsq
   linarith
 
@@ -365,8 +365,8 @@ theorem adaptiveMixedSourceReciprocalClockDensity_sq_eq_one_add_dimensionlessWor
     {w : ℝ} (hw : 1 < w) {n : ℕ} (hn : 0 < n)
     (hA : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 4)).PosDef)
-    (hF : xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n ≠ 0) :
-    xiShiftedCanonicalAdmissionAdaptiveMixedSourceReciprocalClockDensity (w ^ 2) n =
+    (hF : xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n ≠ 0) :
+    xiShiftedCanonicalAdmissionAdaptiveMixedSourceReciprocalClockDensity (w ^ (2 : ℕ)) n =
       1 + dimensionlessProjectiveArithmeticWorkRate w n := by
   have hN0 := xiShiftedFarRightNormalizedHankelMatrix_posDef_of_actual hw (n + 4) hA
   have hN : (HTGeometry.momentHankelMatrix
@@ -387,10 +387,10 @@ theorem adaptiveMixedSourceReciprocalClockDensity_sq_eq_one_add_dimensionlessWor
   have hPiDim := dimensionlessProjectiveArithmeticSurplus_eq_cauchyGap
     hw hn hNsmall
   have hPiScale : dimensionlessProjectiveArithmeticSurplus w n =
-      w ^ 4 * xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus w n := by
+      w ^ (4 : ℕ) * xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus w n := by
     rw [hPiDim, hPiActual, hD, hFscale]
     ring
-  have hU : xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ 2) n ≠ 0 := by
+  have hU : xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ (2 : ℕ)) n ≠ 0 := by
     rw [xiShiftedCanonicalAdmissionRenormalizedJacobiFlux]
     exact div_ne_zero hF (by positivity)
   rw [adaptiveMixedSourceReciprocalClockDensity_eq_one_add_surplus
@@ -408,7 +408,7 @@ theorem tendsto_adaptiveMixedSourceReciprocalClockDensity_squareParam_two
     {n : ℕ} (hn : 0 < n) :
     Tendsto
       (fun w : ℝ =>
-        xiShiftedCanonicalAdmissionAdaptiveMixedSourceReciprocalClockDensity (w ^ 2) n)
+        xiShiftedCanonicalAdmissionAdaptiveMixedSourceReciprocalClockDensity (w ^ (2 : ℕ)) n)
       atTop (nhds 2) := by
   have hwork := tendsto_dimensionlessProjectiveArithmeticWorkRate_one hn.ne'
   have htarget : Tendsto
@@ -423,13 +423,13 @@ theorem tendsto_adaptiveMixedSourceReciprocalClockDensity_squareParam_two
     eventually_gt_atTop (max 1 (Real.sqrt A))] with w hblock hw
   have hw1 : 1 < w := lt_of_le_of_lt (le_max_left _ _) hw
   have hsqrtw : Real.sqrt A < w := lt_of_le_of_lt (le_max_right _ _) hw
-  have hAw : A < w ^ 2 := by
-    have hsqrtSq : (Real.sqrt A) ^ 2 = A := Real.sq_sqrt hA
+  have hAw : A < w ^ (2 : ℕ) := by
+    have hsqrtSq : (Real.sqrt A) ^ (2 : ℕ) = A := Real.sq_sqrt hA
     have hw0 : 0 < w := lt_trans zero_lt_one hw1
     nlinarith [Real.sqrt_nonneg A]
   have hUpos := xiShiftedCanonicalAdmissionRenormalizedJacobiFlux_pos_of_terminalChamber
     hA hAw hn hchamber
-  have hF : xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n ≠ 0 := by
+  have hF : xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n ≠ 0 := by
     intro hzero
     rw [xiShiftedCanonicalAdmissionRenormalizedJacobiFlux, hzero, zero_div] at hUpos
     exact (lt_irrefl 0) hUpos
@@ -442,7 +442,7 @@ theorem tendsto_vacuumRenormalizedSourceReciprocalClockDensity_squareParam_zero
     Tendsto
       (fun w : ℝ =>
         xiShiftedCanonicalAdmissionVacuumRenormalizedSourceReciprocalClockDensity
-          (w ^ 2) n)
+          (w ^ (2 : ℕ)) n)
       atTop (nhds 0) := by
   have hconst : Tendsto (fun _w : ℝ => (2 : ℝ)) atTop (nhds 2) :=
     tendsto_const_nhds

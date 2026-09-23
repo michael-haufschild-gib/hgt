@@ -17,7 +17,7 @@ von-Mangoldt source splits into three terms:
 
 For every mass greater than one half, the polar partial source converges to evaluation of the
 analytic mass test at the archimedean pole, with height-independent norm
-2 pi exp(-sigma sqrt(a^2 - 1/4)). The terminal completed-error flux tends to zero
+2 pi exp(-sigma sqrt(a^(2 : ℕ) - 1/4)). The terminal completed-error flux tends to zero
 unconditionally. Its proof uses the corpus bound for half-weighted von-Mangoldt mass and an
 interior strip shift, not a numerical estimate or an RH-strength remainder.
 
@@ -62,7 +62,7 @@ theorem hasDerivAt_xiMassRealFourierProfile
       simpa using ha
     exact ((hasDerivAt_xiMassAnalyticTest ha _ hmem).comp x hz).continuousAt
   have hFint : Integrable (F w) := by
-    apply Integrable.mono' (integrable_exp_neg_mul_abs hσ)
+    apply Integrable.mono' (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ)
     · exact (hgcont.mul
         (Complex.continuous_exp.comp (by fun_prop))).aestronglyMeasurable
     · refine ae_of_all _ fun x => ?_
@@ -77,7 +77,7 @@ theorem hasDerivAt_xiMassRealFourierProfile
       rw [hphase, Real.exp_zero, mul_one]
       simpa [g] using hg
   have hdom : Integrable (fun x : ℝ => |x| * Real.exp (-(σ * |x|))) :=
-    integrable_abs_mul_exp_neg_mul_abs hσ
+    integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ
   have h := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (F := F) (F' := F')
     (bound := fun x : ℝ => |x| * Real.exp (-(σ * |x|)))
@@ -499,7 +499,7 @@ theorem norm_stripFourier_xiMass_deepShift_le
   have hshift := integral_horizontal_shift_neg_of_decay hd0 hσ hdiff hrough
   have hmajor : Integrable (fun x : ℝ =>
       Real.exp (|u| * d - w * d) * Real.exp (-(σ * |x|))) :=
-    (integrable_exp_neg_mul_abs hσ).const_mul _
+    (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ).const_mul _
   have hright : (∫ x : ℝ, Q (x : ℂ)) =
       stripFourier (xiMassAnalyticTest a τ) (w : ℂ) := rfl
   rw [hright] at hshift
@@ -569,7 +569,7 @@ theorem integrable_xiMassHalfWeightedFourier
     exact (Complex.continuous_ofReal.comp
       (Real.continuous_exp.comp (continuous_id.div_const 2))).mul hFcont
   apply Integrable.mono'
-    ((integrable_exp_neg_mul_abs hr).const_mul C)
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hr).const_mul C)
     hWcont.aestronglyMeasurable
   refine ae_of_all _ fun w => ?_
   by_cases hw : 0 ≤ w
@@ -649,7 +649,7 @@ theorem integral_xiMassHalfWeightedFourier_eq_pointValue
     exact ((hasDerivAt_xiMassAnalyticTest ha ((σ : ℂ) + u * I) hmem).comp x hz).continuousAt
   have hφint : Integrable φ := by
     apply Integrable.mono'
-      ((integrable_exp_neg_mul_abs hσ).const_mul (Real.exp (|u| / 2)))
+      ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ).const_mul (Real.exp (|u| / 2)))
       hφcont.aestronglyMeasurable
     refine ae_of_all _ fun x => ?_
     have hmem : ((x : ℂ) - (((1 / 2 : ℝ) : ℂ)) * I) ∈ xiMassStrip a := by
@@ -977,8 +977,8 @@ theorem norm_xiMassFourierDerivative_deepShift_le
   have hshift := integral_horizontal_shift_neg_of_decay hd0 (by positivity : 0 < σ / 2)
     hdiff hrough
   have hB : Integrable (fun x : ℝ => (|x| + d) * Real.exp (-(σ * |x|))) := by
-    have h1 := integrable_abs_mul_exp_neg_mul_abs hσ
-    have h2 := (integrable_exp_neg_mul_abs hσ).const_mul d
+    have h1 := integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ
+    have h2 := (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ).const_mul d
     rw [show (fun x : ℝ => (|x| + d) * Real.exp (-(σ * |x|))) =
         fun x : ℝ => |x| * Real.exp (-(σ * |x|)) +
           d * Real.exp (-(σ * |x|)) by

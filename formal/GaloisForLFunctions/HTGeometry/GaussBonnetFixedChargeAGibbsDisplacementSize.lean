@@ -48,16 +48,16 @@ theorem egbFixedChargeAGibbsDisplacementSize_eventually_half (n : ℕ) (β : ℝ
 /-- The common bound controls the total cubic error by the squared displacement mass. -/
 theorem egbFixedChargeAGibbsDisplacementSize_cubic_bound (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
-    (∑ i, |egbFixedChargeAGibbsDisplacement n m β E i| ^ 3) ≤
+    (∑ i, |egbFixedChargeAGibbsDisplacement n m β E i| ^ (3 : ℕ)) ≤
       egbFixedChargeAGibbsDisplacementSize n m β E *
-        ∑ i, egbFixedChargeAGibbsDisplacement n m β E i ^ 2 := by
+        ∑ i, egbFixedChargeAGibbsDisplacement n m β E i ^ (2 : ℕ) := by
   rw [Finset.mul_sum]
   apply Finset.sum_le_sum
   intro i _
   have h := mul_le_mul_of_nonneg_right (egbFixedChargeAGibbsDisplacementSize_coordinate n m β E i)
     (sq_nonneg (egbFixedChargeAGibbsDisplacement n m β E i))
-  have he : |egbFixedChargeAGibbsDisplacement n m β E i| ^ 3 =
-      |egbFixedChargeAGibbsDisplacement n m β E i| * egbFixedChargeAGibbsDisplacement n m β E i ^ 2 := by
+  have he : |egbFixedChargeAGibbsDisplacement n m β E i| ^ (3 : ℕ) =
+      |egbFixedChargeAGibbsDisplacement n m β E i| * egbFixedChargeAGibbsDisplacement n m β E i ^ (2 : ℕ) := by
     rw [pow_succ _ 2, sq_abs]
     ring
   rw [he]

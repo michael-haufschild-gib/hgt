@@ -37,10 +37,10 @@ def thetaCuspLikelihoodFourthCumulant (B : ℝ) : ℝ :=
   thetaCuspLikelihoodNormalizedMoment B 4 -
     4 * thetaCuspLikelihoodMean B *
       thetaCuspLikelihoodNormalizedMoment B 3 -
-    3 * thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 +
-    12 * thetaCuspLikelihoodMean B ^ 2 *
+    3 * thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) +
+    12 * thetaCuspLikelihoodMean B ^ (2 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B 2 -
-    6 * thetaCuspLikelihoodMean B ^ 4
+    6 * thetaCuspLikelihoodMean B ^ (4 : ℕ)
 
 /-- The sharp support edge `3` gives a one-step recurrence for every tilted moment. -/
 theorem three_mul_thetaCuspHigherLikelihoodSpectralMoment_le_succ
@@ -106,7 +106,7 @@ theorem thetaCuspLikelihoodNormalizedMoment_four_pos
 Cauchy--Schwarz moment inequality needed for the fourth cumulant. -/
 theorem sq_thetaCuspHigherLikelihoodSpectralMoment_two_lt_zero_mul_four
     {B : ℝ} (hB : 0 < B) :
-    thetaCuspHigherLikelihoodSpectralMoment B 2 ^ 2 <
+    thetaCuspHigherLikelihoodSpectralMoment B 2 ^ (2 : ℕ) <
       thetaCuspHigherLikelihoodSpectralMoment B 0 *
         thetaCuspHigherLikelihoodSpectralMoment B 4 := by
   let e : Fin 2 → Fin 3 := fun i => ⟨2 * i.1, by omega⟩
@@ -123,7 +123,7 @@ theorem sq_thetaCuspHigherLikelihoodSpectralMoment_two_lt_zero_mul_four
 /-- Normalized Cauchy--Schwarz: `e₂² < p e₄`. -/
 theorem sq_thetaCuspLikelihoodNormalizedMoment_two_lt_tailProbability_mul_four
     {B : ℝ} (hB : 0 < B) :
-    thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 <
+    thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) <
       thetaCuspLikelihoodTailProbability B *
         thetaCuspLikelihoodNormalizedMoment B 4 := by
   have hraw :=
@@ -131,7 +131,7 @@ theorem sq_thetaCuspLikelihoodNormalizedMoment_two_lt_tailProbability_mul_four
   have hpart := thetaCuspLikelihoodPartition_pos hB
   change
     (thetaCuspHigherLikelihoodSpectralMoment B 2 /
-        thetaCuspLikelihoodPartition B) ^ 2 <
+        thetaCuspLikelihoodPartition B) ^ (2 : ℕ) <
       (thetaCuspHigherLikelihoodSpectralMoment B 0 /
           thetaCuspLikelihoodPartition B) *
         (thetaCuspHigherLikelihoodSpectralMoment B 4 /
@@ -144,7 +144,7 @@ theorem sq_thetaCuspLikelihoodNormalizedMoment_two_lt_tailProbability_mul_four
           thetaCuspLikelihoodPartition B) =
       (thetaCuspHigherLikelihoodSpectralMoment B 0 *
           thetaCuspHigherLikelihoodSpectralMoment B 4) /
-        thetaCuspLikelihoodPartition B ^ 2 by ring]
+        thetaCuspLikelihoodPartition B ^ (2 : ℕ) by ring]
   exact (div_lt_div_iff_of_pos_right (sq_pos_of_pos hpart)).2 hraw
 
 /-- The exact first-atom boundary slope is strictly below one half, using only `π > 3`. -/
@@ -203,7 +203,7 @@ theorem two_mul_thetaCuspLikelihoodMean_lt_variance_coordinate
     have hrec :=
       three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 1
     simpa only [thetaCuspLikelihoodNormalizedMoment_one_eq_mean, m, e2] using hrec
-  change 2 * m < e2 - m ^ 2
+  change 2 * m < e2 - m ^ (2 : ℕ)
   nlinarith [sq_pos_of_pos hm]
 
 /-- The third cumulant dominates twice the normalized second raw moment. -/
@@ -231,8 +231,8 @@ theorem two_mul_thetaCuspLikelihoodNormalizedMoment_two_lt_thirdCumulant_coordin
       three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 2
   have hcoef : 0 < 1 - 3 * m := by linarith
   have hprod : 0 < (1 - 3 * m) * e2 := mul_pos hcoef he2
-  have hm3 : 0 < m ^ 3 := pow_pos hm 3
-  change 2 * e2 < e3 - 3 * m * e2 + 2 * m ^ 3
+  have hm3 : 0 < m ^ (3 : ℕ) := pow_pos hm 3
+  change 2 * e2 < e3 - 3 * m * e2 + 2 * m ^ (3 : ℕ)
   nlinarith
 
 /-- In particular, the third cumulant dominates twice the variance. -/
@@ -254,7 +254,7 @@ theorem two_mul_thetaCuspLikelihoodVariance_lt_thirdCumulant_coordinate
   have hm : 0 < m := by
     simpa only [m] using
     thetaCuspLikelihoodMean_pos (thetaCuspLikelihoodCoordinate_pos hx)
-  have hvEq : v = e2 - m ^ 2 := by
+  have hvEq : v = e2 - m ^ (2 : ℕ) := by
     rfl
   change 2 * v < k3
   rw [hvEq]
@@ -293,7 +293,7 @@ theorem thetaCuspLikelihoodVariance_eq_normalizedMoment_two_sub_mean_sq
     (B : ℝ) :
     thetaCuspLikelihoodVariance B =
       thetaCuspLikelihoodNormalizedMoment B 2 -
-        thetaCuspLikelihoodMean B ^ 2 := by
+        thetaCuspLikelihoodMean B ^ (2 : ℕ) := by
   rfl
 
 /-- The fourth cumulant is the negative derivative of the third cumulant. -/
@@ -355,10 +355,10 @@ theorem two_mul_thetaCuspLikelihoodThirdCumulant_lt_fourthCumulant_coordinate
       three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 3
     dsimp [e3, e4] at hrec
     linarith
-  have he2sq : e2 ^ 2 < p * e4 := by
+  have he2sq : e2 ^ (2 : ℕ) < p * e4 := by
     simpa only [B, p, e2, e4] using
       sq_thetaCuspLikelihoodNormalizedMoment_two_lt_tailProbability_mul_four hB
-  have hcross : 3 * e2 ^ 2 < m * e4 := by
+  have hcross : 3 * e2 ^ (2 : ℕ) < m * e4 := by
     have hpMul : 3 * p * e4 ≤ m * e4 :=
       mul_le_mul_of_nonneg_right hp he4.le
     nlinarith [mul_lt_mul_of_pos_left he2sq (by norm_num : (0 : ℝ) < 3)]
@@ -370,34 +370,34 @@ theorem two_mul_thetaCuspLikelihoodThirdCumulant_lt_fourthCumulant_coordinate
   have hcoefMul : 0 < ((1 - 7 * m) / 3) * e4 :=
     mul_pos hcoef he4
   have hfirst :
-      0 < e4 - (4 * m + 2) * e3 - 3 * e2 ^ 2 := by
+      0 < e4 - (4 * m + 2) * e3 - 3 * e2 ^ (2 : ℕ) := by
     nlinarith
-  have hrestCoeff : 0 < 12 * m ^ 2 + 6 * m := by positivity
+  have hrestCoeff : 0 < 12 * m ^ (2 : ℕ) + 6 * m := by positivity
   have hrestScaled :
-      (12 * m ^ 2 + 6 * m) * (3 * m) ≤
-        (12 * m ^ 2 + 6 * m) * e2 :=
+      (12 * m ^ (2 : ℕ) + 6 * m) * (3 * m) ≤
+        (12 * m ^ (2 : ℕ) + 6 * m) * e2 :=
     mul_le_mul_of_nonneg_left he2lower hrestCoeff.le
-  have hpoly : 0 < 9 + 16 * m - 3 * m ^ 2 := by nlinarith [sq_nonneg m]
-  have hrestPositive : 0 < 2 * m ^ 2 * (9 + 16 * m - 3 * m ^ 2) := by
+  have hpoly : 0 < 9 + 16 * m - 3 * m ^ (2 : ℕ) := by nlinarith [sq_nonneg m]
+  have hrestPositive : 0 < 2 * m ^ (2 : ℕ) * (9 + 16 * m - 3 * m ^ (2 : ℕ)) := by
     positivity
   have hrest :
       0 <
-        (12 * m ^ 2 + 6 * m) * e2 -
-          6 * m ^ 4 - 4 * m ^ 3 := by
+        (12 * m ^ (2 : ℕ) + 6 * m) * e2 -
+          6 * m ^ (4 : ℕ) - 4 * m ^ (3 : ℕ) := by
     nlinarith
   change
-    2 * (e3 - 3 * m * e2 + 2 * m ^ 3) <
-      e4 - 4 * m * e3 - 3 * e2 ^ 2 +
-        12 * m ^ 2 * e2 - 6 * m ^ 4
+    2 * (e3 - 3 * m * e2 + 2 * m ^ (3 : ℕ)) <
+      e4 - 4 * m * e3 - 3 * e2 ^ (2 : ℕ) +
+        12 * m ^ (2 : ℕ) * e2 - 6 * m ^ (4 : ℕ)
   nlinarith
 
 /-- Fourth source-coordinate jet of the logarithmic likelihood partition. -/
 def thetaCuspLikelihoodSourceLogPartitionJetFour (x : ℝ) : ℝ :=
-  16 * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+  16 * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
       thetaCuspLikelihoodFourthCumulant (thetaCuspLikelihoodCoordinate x) -
-    96 * thetaCuspSingleAtomReflectionScale 1 x ^ 3 *
+    96 * thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) *
       thetaCuspLikelihoodThirdCumulant (thetaCuspLikelihoodCoordinate x) +
-    112 * thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+    112 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
       thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate x) -
     16 * thetaCuspSingleAtomReflectionScale 1 x *
       thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate x)
@@ -484,9 +484,9 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetThree_neg
     have h2 : 6 * v < 2 * A * v := by
       nlinarith [mul_pos (sub_pos.mpr hA) hv]
     linarith
-  have hA2k : 3 * A * v < A ^ 2 * k3 := by
+  have hA2k : 3 * A * v < A ^ (2 : ℕ) * k3 := by
     nlinarith [mul_pos (by linarith : 0 < A) (sub_pos.mpr hAk)]
-  have hbracket : 0 < A ^ 2 * k3 - 3 * A * v + m := by linarith
+  have hbracket : 0 < A ^ (2 : ℕ) * k3 - 3 * A * v + m := by linarith
   dsimp [A, m, v, k3] at *
   unfold thetaCuspLikelihoodSourceLogPartitionJetThree
   nlinarith [mul_pos (by linarith : 0 <
@@ -522,7 +522,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFour_pos
     have h2 : 6 * k3 < 2 * A * k3 := by
       nlinarith [mul_pos (sub_pos.mpr hA) hk3]
     linarith
-  have hfirst : 0 < A ^ 2 * (A * k4 - 6 * k3) := by positivity
+  have hfirst : 0 < A ^ (2 : ℕ) * (A * k4 - 6 * k3) := by positivity
   have hsecond : 0 < 7 * A * v - m := by
     have hAv : 6 * m < A * v := by
       have h1 : 2 * A * m < A * v := by
@@ -533,7 +533,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFour_pos
       linarith
     nlinarith
   have hbracket :
-      0 < A ^ 3 * k4 - 6 * A ^ 2 * k3 + 7 * A * v - m := by
+      0 < A ^ (3 : ℕ) * k4 - 6 * A ^ (2 : ℕ) * k3 + 7 * A * v - m := by
     nlinarith [hfirst]
   dsimp [A, m, v, k3, k4] at *
   unfold thetaCuspLikelihoodSourceLogPartitionJetFour

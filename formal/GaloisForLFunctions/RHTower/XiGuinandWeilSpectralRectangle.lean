@@ -137,10 +137,10 @@ theorem exists_admissible_rectIntegral_rectangularSource_eq_xiZeroCopy_sum_conta
     ∃ z₁ z₂ : ℂ,
       z₁.re < z₂.re ∧ z₁.im < z₂.im ∧
       (∀ q ∈ t, q ∈ xiZeroCopyClosedRectangle z₁ z₂) ∧
-      rectIntegral (fun z => xiRectangularTwoEdgeTransform L a z ^ 2 *
+      rectIntegral (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) *
           continuedPrimeArchSourceRelativeTrace z) z₁ z₂ =
         2 * Real.pi * I * ∑ q ∈ xiZeroCopyClosedRectangle z₁ z₂,
-          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 :=
+          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ) :=
   exists_admissible_rectIntegral_source_eq_xiZeroCopy_sum_containing t
     (xiRectangularTwoEdgeTransform_sq_analyticOnNhd L a)
 
@@ -153,12 +153,12 @@ theorem exists_admissible_rectangularSource_normalizedContour_approximates_weil
     ∃ z₁ z₂ : ℂ,
       z₁.re < z₂.re ∧ z₁.im < z₂.im ∧
       dist ((2 * Real.pi * I)⁻¹ *
-          rectIntegral (fun z => xiRectangularTwoEdgeTransform L a z ^ 2 *
+          rectIntegral (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) *
             continuedPrimeArchSourceRelativeTrace z) z₁ z₂)
         (xiWeilPolarization (xiRectangularTwoEdgeTransform L a)
           (xiRectangularTwoEdgeTransform L a)) < epsilon := by
   let f : XiZeroCopy → ℂ := fun q =>
-    xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2
+    xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ)
   have hsum : Summable f := xiRectangularTwoEdgeTransform_sq_summable L a
   have hball : Metric.ball (∑' q, f q) epsilon ∈ nhds (∑' q, f q) :=
     Metric.ball_mem_nhds _ hepsilon

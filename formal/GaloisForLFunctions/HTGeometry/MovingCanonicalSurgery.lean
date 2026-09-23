@@ -369,7 +369,7 @@ theorem movingCanonicalSurgeryCarrier_exact_negativeSquares
 theorem neg_logDeriv_canonicalProductE1Indexed_eq
     {ι : Type*} (a : ι → ℂ)
     (ha : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2))
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ)))
     {z : ℂ} (hz : ∀ i, z ≠ a i)
     (hcarrier : Summable (fun i =>
       (a i - z)⁻¹ - (a i)⁻¹)) :
@@ -486,7 +486,7 @@ theorem neg_logDeriv_movingCanonicalComplementProduct_eq
       (ne_of_gt (movingCanonicalZero_pos θ n.1))
   have hsum : Summable
       (fun n : {n // n ∉ S} =>
-        1 / ‖a n‖ ^ 2) :=
+        1 / ‖a n‖ ^ (2 : ℕ)) :=
     RHTower.canonicalProductE1IndexedComplement_inv_sq_summable
       (fun n => (movingCanonicalZero θ n : ℂ))
       (fun n => n ∈ S)
@@ -1705,14 +1705,14 @@ theorem movingCanonicalComplementProduct_orderOneEnvelope
     min
       (2 * ‖z‖ /
         ‖(movingCanonicalZero θ n : ℂ)‖)
-      (2 * ‖z‖ ^ 2 /
-        ‖(movingCanonicalZero θ n : ℂ)‖ ^ 2)
+      (2 * ‖z‖ ^ (2 : ℕ) /
+        ‖(movingCanonicalZero θ n : ℂ)‖ ^ (2 : ℕ))
   have hquad : Summable (fun n : ℕ =>
-      2 * ‖z‖ ^ 2 /
-        ‖(movingCanonicalZero θ n : ℂ)‖ ^ 2) := by
+      2 * ‖z‖ ^ (2 : ℕ) /
+        ‖(movingCanonicalZero θ n : ℂ)‖ ^ (2 : ℕ)) := by
     refine
       (summable_movingCanonicalZero_inv_sq θ).mul_left
-          (2 * ‖z‖ ^ 2) |>.congr
+          (2 * ‖z‖ ^ (2 : ℕ)) |>.congr
         (fun n => ?_)
     ring
   have hu : Summable u :=

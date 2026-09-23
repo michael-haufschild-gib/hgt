@@ -181,7 +181,7 @@ def nullValue (nu s amp : ℂ) (p r : ℝ) : ℂ :=
 /-- Its original characteristic forcing, with the potential term retained. -/
 def nullDensity (nu s amp : ℂ) (p r : ℝ) : ℂ :=
   (1/4:ℂ)*oddSource s amp ((p+r)/2) ((p-r)/2)+
-    nu*(nu+1)/(4*(Real.cosh ((p-r)/2):ℂ)^2)*nullValue nu s amp p r
+    nu*(nu+1)/(4*(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ))*nullValue nu s amp p r
 
 private theorem odd_continuous (s amp : ℂ) : Continuous (fun z : ℝ × ℝ => oddSource s amp z.1 z.2) := by
   have h1 := (timeReducedCoefficient_joint_continuous s amp).comp
@@ -197,7 +197,7 @@ private theorem nullValue_continuous (nu s amp : ℂ) : Continuous (fun z : ℝ 
 
 private theorem nullDensity_continuous (nu s amp : ℂ) : Continuous (fun z : ℝ × ℝ => nullDensity nu s amp z.1 z.2) := by
   have hs := (odd_continuous s amp).comp (show Continuous (fun z : ℝ × ℝ => ((z.1+z.2)/2,(z.1-z.2)/2)) by fun_prop)
-  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^2)) := by
+  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^(2 : ℕ))) := by
     apply Continuous.div continuous_const (by fun_prop)
     intro z
     exact mul_ne_zero (by norm_num) (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.cosh_pos _).ne'))
@@ -207,14 +207,14 @@ private theorem original_null_primitive (nu s amp : ℂ) {p r : ℝ} (hp : 0 ≤
     nullValue nu s amp p r=∫ a in (0:ℝ)..p,∫ b in (0:ℝ)..r, nullDensity nu s amp a b := by
   rw [nullValue,radialResponse_goursat nu s amp hp hr]
   have hs := (odd_continuous s amp).comp (show Continuous (fun z : ℝ × ℝ => ((z.1+z.2)/2,(z.1-z.2)/2)) by fun_prop)
-  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^2)*nullValue nu s amp z.1 z.2) := by
+  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^(2 : ℕ))*nullValue nu s amp z.1 z.2) := by
     apply Continuous.mul _ (nullValue_continuous nu s amp)
     apply Continuous.div continuous_const (by fun_prop)
     intro z
     exact mul_ne_zero (by norm_num) (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.cosh_pos _).ne'))
   have hi (a : ℝ) : (∫ b in (0:ℝ)..r, nullDensity nu s amp a b)=
       (1/4:ℂ)*(∫ b in (0:ℝ)..r, oddSource s amp ((a+b)/2) ((a-b)/2))+
-      ∫ b in (0:ℝ)..r,nu*(nu+1)/(4*(Real.cosh ((a-b)/2):ℂ)^2)*nullValue nu s amp a b := by
+      ∫ b in (0:ℝ)..r,nu*(nu+1)/(4*(Real.cosh ((a-b)/2):ℂ)^(2 : ℕ))*nullValue nu s amp a b := by
     unfold nullDensity
     rw [intervalIntegral.integral_add,intervalIntegral.integral_const_mul]
     · exact (continuous_const.mul (hs.comp (continuous_const.prodMk continuous_id))).intervalIntegrable 0 r
@@ -223,7 +223,7 @@ private theorem original_null_primitive (nu s amp : ℂ) {p r : ℝ} (hp : 0 ≤
   rw [intervalIntegral.integral_add,intervalIntegral.integral_const_mul]
   · rfl
   · exact (show Continuous (fun a => (1/4:ℂ)*(∫ b in (0:ℝ)..r, oddSource s amp ((a+b)/2) ((a-b)/2))) by fun_prop).intervalIntegrable 0 p
-  · exact (show Continuous (fun a => ∫ b in (0:ℝ)..r, nu*(nu+1)/(4*(Real.cosh ((a-b)/2):ℂ)^2)*nullValue nu s amp a b) by fun_prop).intervalIntegrable 0 p
+  · exact (show Continuous (fun a => ∫ b in (0:ℝ)..r, nu*(nu+1)/(4*(Real.cosh ((a-b)/2):ℂ)^(2 : ℕ))*nullValue nu s amp a b) by fun_prop).intervalIntegrable 0 p
 
 private theorem rectangle_swap (f : ℝ → ℝ → ℂ)
     (hf : Continuous (Function.uncurry f)) (p r : ℝ) :
@@ -265,10 +265,10 @@ theorem original_null_second (nu s amp : ℂ) {p r : ℝ} (hp : 0 ≤ p) (hr : 0
     (rectangle_swap (nullDensity nu s amp) (nullDensity_continuous nu s amp) p b)
 
 private theorem characteristic_potential_bound (x : ℝ) :
-    1/(4*Real.cosh x^2) ≤ Real.exp (2*x) := by
+    1/(4*Real.cosh x^(2 : ℕ)) ≤ Real.exp (2*x) := by
   have he := exp_le_twice_cosh (-x)
   rw [Real.cosh_neg] at he
-  have hs : Real.exp (-(2*x)) ≤ 4*Real.cosh x^2 := by
+  have hs : Real.exp (-(2*x)) ≤ 4*Real.cosh x^(2 : ℕ) := by
     rw [show -(2*x)=-x+-x by ring,Real.exp_add]
     nlinarith [sq_nonneg (2*Real.cosh x-Real.exp (-x)),Real.exp_pos (-x)]
   have hi := one_div_le_one_div_of_le (Real.exp_pos (-(2*x))) hs
@@ -310,9 +310,9 @@ theorem physical_nullDensity_horizon_bound (q : XiZeroCopy) (branch : Bool) (amp
   unfold nullDensity
   calc
     _ ≤ ‖(1/4:ℂ)*oddSource (physicalRate q branch) amp ((p+r)/2) ((p-r)/2)‖+
-      ‖(-m)*(-m+1)/(4*(Real.cosh ((p-r)/2):ℂ)^2)*nullValue (-m) (physicalRate q branch) amp p r‖ := norm_add_le _ _
+      ‖(-m)*(-m+1)/(4*(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ))*nullValue (-m) (physicalRate q branch) amp p r‖ := norm_add_le _ _
     _ = (1/4:ℝ)*‖oddSource (physicalRate q branch) amp ((p+r)/2) ((p-r)/2)‖+
-      ‖(-m)*(-m+1)‖*(1/(4*Real.cosh ((p-r)/2)^2))*‖nullValue (-m) (physicalRate q branch) amp p r‖ := by
+      ‖(-m)*(-m+1)‖*(1/(4*Real.cosh ((p-r)/2)^(2 : ℕ)))*‖nullValue (-m) (physicalRate q branch) amp p r‖ := by
       simp only [norm_mul,norm_div,norm_one,Complex.norm_ofNat,norm_pow,Complex.norm_real,
         Real.norm_eq_abs,abs_of_pos hc]
       ring
@@ -537,7 +537,7 @@ private theorem null_unit_horizon (p : ℝ) :
 
 /-- The unchanged onset lift has this explicit horizon coefficient. -/
 def liftHorizon (s amp : ℂ) : ℂ :=
-  (-s*(s-1)/4)*(D4BMLaplaceRadial.power (2*s) 2*amp^2)
+  (-s*(s-1)/4)*(D4BMLaplaceRadial.power (2*s) 2*amp^(2 : ℕ))
 
 private theorem original_lift_horizon (s amp : ℂ) (p : ℝ) :
     Tendsto (fun r => D4BMOriginalCausalPotential.nullLift s amp p r) atTop
@@ -552,8 +552,8 @@ private theorem original_lift_horizon (s amp : ℂ) (p : ℝ) :
       convert! hu.const_add 1 using 1; norm_num
     exact ((D4BMLaplaceRadial.power_derivatives (2*s) (by norm_num : (0:ℝ)<2)).1.continuousAt.tendsto).comp ht
   have hA : Tendsto (fun r => sourceAmplitude s 0 amp 1 ((p-r)/2)) atTop
-      (𝓝 (D4BMLaplaceRadial.power (2*s) 2*amp^2)) := by
-    simpa only [sourceAmplitude,zero_mul,Complex.exp_zero,one_mul,mul_one] using hP.mul_const (amp^2)
+      (𝓝 (D4BMLaplaceRadial.power (2*s) 2*amp^(2 : ℕ))) := by
+    simpa only [sourceAmplitude,zero_mul,Complex.exp_zero,one_mul,mul_one] using hP.mul_const (amp^(2 : ℕ))
   have hL : Tendsto (fun r => radialLift s 0 amp 1 ((p-r)/2)) atTop (𝓝 (liftHorizon s amp)) := by
     simpa only [radialLift,liftHorizon,Complex.ofReal_one,one_pow,mul_one] using
       (hA.mul (hu.ofReal.pow 3)).const_mul (-s*(s-1)/4)

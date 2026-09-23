@@ -214,7 +214,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCrossKernel (m n : ℕ) :
           ccmActualHeadMatchedParabolicMoment m 1 *
             ccmActualHeadMatchedParabolicMoment n 0) -
       (ccmActualHeadMatchedQuantilePolarDisplacement n -
-          ccmActualHeadMatchedQuantilePolarDisplacement m) ^ 2 / 2 *
+          ccmActualHeadMatchedQuantilePolarDisplacement m) ^ (2 : ℕ) / 2 *
         (criticalMellinAtomWeight m * criticalMellinAtomWeight n) := by
   rw [ccmActualHeadQuantileParabolicPairing_transport]
   ring
@@ -234,7 +234,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCodiagonal_pairing_sourceBoundary_e
             ccmActualHeadMatchedParabolicMoment (m + 2) 1 *
               ccmActualHeadMatchedParabolicMoment (n + 2) 0) -
         (ccmActualHeadMatchedQuantilePolarDisplacement (n + 2) -
-            ccmActualHeadMatchedQuantilePolarDisplacement (m + 2)) ^ 2 / 2 *
+            ccmActualHeadMatchedQuantilePolarDisplacement (m + 2)) ^ (2 : ℕ) / 2 *
           (criticalMellinAtomWeight (m + 2) * criticalMellinAtomWeight (n + 2))) := by
   rw [ccmActualHeadMatchedQuantileParabolicCodiagonal_pairing_sourceBoundary_eq_strictCross]
   apply Finset.sum_congr rfl

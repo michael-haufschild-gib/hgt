@@ -32,13 +32,13 @@ def so4Label : Fin 6 → (Fin 2 → Fin 4) :=
   ![so4A.t 0, so4A.t 1, so4A.t 2, so4B.t 0, so4B.t 1, so4B.t 2]
 
 /-- The normalized Hermitian matrices associated with the six `so(4)` labels. -/
-noncomputable def so4B6 (i : Fin 6) : Matrix (Fin (2 ^ 2)) (Fin (2 ^ 2)) ℂ :=
+noncomputable def so4B6 (i : Fin 6) : Matrix (Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ))) ℂ :=
   rtNinv 2 • pauliMat (so4Label i)
 
 theorem so4Label_inj : Function.Injective so4Label := by decide
 
 /-- The concrete generator set given by the range of the six normalized matrices. -/
-noncomputable def so4FullGens : Set (Matrix (Fin (2 ^ 2)) (Fin (2 ^ 2)) ℂ) :=
+noncomputable def so4FullGens : Set (Matrix (Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ))) ℂ) :=
   Set.range so4B6
 
 theorem so4B6_mem_span (i : Fin 6) :
@@ -84,7 +84,7 @@ open scoped Kronecker
 attribute [local instance 100] LieRing.ofAssociativeRing
 
 /-- The Lie subalgebra spanned by the concrete six-element `so(4)` family. -/
-noncomputable def so4FullLie : LieSubalgebra ℂ (Matrix (Fin (2 ^ 2)) (Fin (2 ^ 2)) ℂ) where
+noncomputable def so4FullLie : LieSubalgebra ℂ (Matrix (Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ))) ℂ) where
   toSubmodule := Submodule.span ℂ (Set.range so4B6)
   lie_mem' := by
     intro x y hx hy
@@ -126,7 +126,7 @@ noncomputable def so4HermBasis : DLAHermBasis so4FullGens where
       exact LieSubalgebra.subset_lieSpan ⟨i, rfl⟩
     · intro x hx
       exact dynamicalLieAlgebra_minimal so4FullGens
-        (show so4FullGens ⊆ (so4FullLie : Set (Matrix (Fin (2 ^ 2)) (Fin (2 ^ 2)) ℂ)) from by
+        (show so4FullGens ⊆ (so4FullLie : Set (Matrix (Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ))) ℂ)) from by
           rintro _ ⟨i, rfl⟩
           change so4B6 i ∈ Submodule.span ℂ (Set.range so4B6)
           exact Submodule.subset_span ⟨i, rfl⟩) hx
@@ -158,11 +158,11 @@ theorem soB_two_range_so4B6 :
 /-- The concrete six-element `so(4)` Pauli basis spans Mathlib's `so(4, ℂ)`. -/
 theorem so4B6_span_orthogonalSo :
     Submodule.span ℂ (Set.range so4B6) =
-      (LieAlgebra.Orthogonal.so (Fin (2 ^ 2)) ℂ).toSubmodule := by
+      (LieAlgebra.Orthogonal.so (Fin (2 ^ (2 : ℕ))) ℂ).toSubmodule := by
   rw [← soB_two_range_so4B6, soB_span_orthogonal_so]
 
 /-- The normalized `A ⊕ B` triangle basis as one nondependent six-element family. -/
-noncomputable def so4ABB (p : Fin 2 × Fin 3) : Matrix (Fin (2 ^ 2)) (Fin (2 ^ 2)) ℂ :=
+noncomputable def so4ABB (p : Fin 2 × Fin 3) : Matrix (Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ))) ℂ :=
   if p.1 = 0 then so4A.basis.B p.2 else so4B.basis.B p.2
 
 /-- The normalized `A ⊕ B` triangle basis has the same range as `so4B6`. -/
@@ -191,7 +191,7 @@ theorem so4ABB_range_so4B6 :
 /-- The `A ⊕ B` triangle basis spans Mathlib's `so(4, ℂ)`. -/
 theorem so4AB_span_orthogonalSo :
     Submodule.span ℂ (Set.range so4ABB) =
-      (LieAlgebra.Orthogonal.so (Fin (2 ^ 2)) ℂ).toSubmodule := by
+      (LieAlgebra.Orthogonal.so (Fin (2 ^ (2 : ℕ))) ℂ).toSubmodule := by
   rw [so4ABB_range_so4B6, so4B6_span_orthogonalSo]
 
 theorem gTensorG_eq_of_B_range_eq {N : ℕ}
@@ -274,7 +274,7 @@ theorem adMatrix_so4_apply (k a i : Fin 6) :
       = rtNinv 2 * rtNinv 2 * rtNinv 2 *
           (pauliPhase (so4Label k) (so4Label i)
             - pauliPhase (so4Label i) (so4Label k)) *
-          (if so4Label a = pauliXor (so4Label k) (so4Label i) then (2 ^ 2 : ℂ) else 0) := by
+          (if so4Label a = pauliXor (so4Label k) (so4Label i) then (2 ^ (2 : ℕ) : ℂ) else 0) := by
   rw [adMatrix, Matrix.of_apply]
   change hsInner (so4B6 a) ⁅so4B6 k, so4B6 i⁆ = _
   rw [so4B6, so4B6, so4B6, smul_lie, lie_smul, pauliMat_bracket_closed,
@@ -395,7 +395,7 @@ theorem so4Mu6_sep {a a' : Fin 6} (ha : a ≠ a') : ∃ k, so4Mu6 k a ≠ so4Mu6
     exact hmu
 
 private theorem coeffMatrix_diag_eq_of_so4_ad_ne_zero
-    {X : Matrix (Fin (2 ^ 2) × Fin (2 ^ 2)) (Fin (2 ^ 2) × Fin (2 ^ 2)) ℂ}
+    {X : Matrix (Fin (2 ^ (2 : ℕ)) × Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ)) × Fin (2 ^ (2 : ℕ))) ℂ}
     (hX : X ∈ gTensorGInvariant so4HermBasis)
     (hoff : ∀ a a' : Fin so4HermBasis.dim, a ≠ a' → coeffMatrix so4HermBasis X a a' = 0)
     {x y : Fin so4HermBasis.dim} (hxy : ∃ k, adMatrix so4HermBasis k x y ≠ 0) :
@@ -438,17 +438,17 @@ private theorem so4_ad_ne_zero_345 :
 
 /-- The quadratic Casimir of the `A` ideal in the concrete six-element basis. -/
 noncomputable def so4ACasimir :
-    Matrix (Fin (2 ^ 2) × Fin (2 ^ 2)) (Fin (2 ^ 2) × Fin (2 ^ 2)) ℂ :=
+    Matrix (Fin (2 ^ (2 : ℕ)) × Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ)) × Fin (2 ^ (2 : ℕ))) ℂ :=
   so4B6 0 ⊗ₖ so4B6 0 + so4B6 1 ⊗ₖ so4B6 1 + so4B6 2 ⊗ₖ so4B6 2
 
 /-- The quadratic Casimir of the `B` ideal in the concrete six-element basis. -/
 noncomputable def so4BCasimir :
-    Matrix (Fin (2 ^ 2) × Fin (2 ^ 2)) (Fin (2 ^ 2) × Fin (2 ^ 2)) ℂ :=
+    Matrix (Fin (2 ^ (2 : ℕ)) × Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ)) × Fin (2 ^ (2 : ℕ))) ℂ :=
   so4B6 3 ⊗ₖ so4B6 3 + so4B6 4 ⊗ₖ so4B6 4 + so4B6 5 ⊗ₖ so4B6 5
 
 /-- The two-element family containing the `A`- and `B`-ideal Casimirs. -/
 noncomputable def so4IdealCasimir :
-    Fin 2 → Matrix (Fin (2 ^ 2) × Fin (2 ^ 2)) (Fin (2 ^ 2) × Fin (2 ^ 2)) ℂ :=
+    Fin 2 → Matrix (Fin (2 ^ (2 : ℕ)) × Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ)) × Fin (2 ^ (2 : ℕ))) ℂ :=
   ![so4ACasimir, so4BCasimir]
 
 set_option maxHeartbeats 800000 in

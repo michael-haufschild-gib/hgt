@@ -55,7 +55,7 @@ theorem criticalFeatureRaw_memLp {z : ℂ} (hz : |z.im| < 1 / 2) :
     ((measurable_sqrtWeight measurable_criticalWeight).aestronglyMeasurable.mul
       (continuous_criticalFeatureRaw z).aestronglyMeasurable)).2
   have hc : 0 < 1 - 2 * |z.im| := by linarith
-  refine Integrable.mono' (integrable_exp_neg_mul_abs hc) ?_ ?_
+  refine Integrable.mono' (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hc) ?_ ?_
   · have hsw : Continuous (sqrtWeight criticalWeight) := by
       unfold sqrtWeight criticalWeight
       fun_prop
@@ -150,7 +150,7 @@ theorem integerAnomaly_memLp_critical
   apply (memLp_two_iff_integrable_sq_norm
     (hsw.mul hanomaly).aestronglyMeasurable).2
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs (by norm_num : (0 : ℝ) < 1)).const_mul
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (by norm_num : (0 : ℝ) < 1)).const_mul
       ((criticalAnomalyBoundConstant n) ^ 2))
     ((hsw.mul hanomaly).norm.pow 2).aestronglyMeasurable ?_
   filter_upwards with x
@@ -429,7 +429,7 @@ theorem integrable_radialRiggingDetectorEnergy
     {a : ℝ} {z : ℂ} (hz : 2 * |z.im| < a) :
     Integrable (radialRiggingDetectorEnergy a z) := by
   have hc : 0 < a - 2 * |z.im| := by linarith
-  refine Integrable.mono' (integrable_exp_neg_mul_abs hc)
+  refine Integrable.mono' (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hc)
     (by unfold radialRiggingDetectorEnergy; fun_prop) ?_
   filter_upwards with x
   rw [radialRiggingDetectorEnergy, Real.norm_of_nonneg (Real.exp_nonneg _)]

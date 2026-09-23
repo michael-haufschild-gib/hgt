@@ -10,7 +10,7 @@ namespace RHTower
 noncomputable section
 
 private def secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ) (t : ℝ) : ℂ :=
-  (w ^ k / ((k.factorial : ℂ) ^ 2)) *
+  (w ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))) *
     ((t ^ k * Real.exp (-t) : ℝ) : ℂ)
 
 private theorem integral_ofReal_eq
@@ -30,7 +30,7 @@ private theorem integrableOn_secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ)
     congr 2
     ring
   apply MeasureTheory.IntegrableOn.congr_fun
-    (hreal'.ofReal.const_mul (w ^ k / ((k.factorial : ℂ) ^ 2)))
+    (hreal'.ofReal.const_mul (w ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))))
   intro t ht
   rfl
   exact measurableSet_Ioi
@@ -45,7 +45,7 @@ private theorem integral_secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ) :
     congr 2
     ring
   change (∫ t : ℝ in Ioi 0,
-    (w ^ k / ((k.factorial : ℂ) ^ 2)) *
+    (w ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))) *
       ((t ^ k * Real.exp (-t) : ℝ) : ℂ)) = _
   rw [integral_const_mul]
   rw [show (∫ t : ℝ in Ioi 0, ((t ^ k * Real.exp (-t) : ℝ) : ℂ)) =
@@ -65,18 +65,18 @@ private theorem integral_norm_secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ
   calc
     (∫ t : ℝ in Ioi 0, ‖secondFactorialBorelLaplaceTerm w k t‖) =
         ∫ t : ℝ in Ioi 0,
-          (‖w‖ ^ k / (k.factorial : ℝ) ^ 2) *
+          (‖w‖ ^ k / (k.factorial : ℝ) ^ (2 : ℕ)) *
             (t ^ k * Real.exp (-t)) := by
       apply setIntegral_congr_fun measurableSet_Ioi
       intro t ht
       have ht0 : 0 ≤ t := le_of_lt ht
-      change ‖(w ^ k / ((k.factorial : ℂ) ^ 2)) *
+      change ‖(w ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))) *
         ((t ^ k * Real.exp (-t) : ℝ) : ℂ)‖ = _
       rw [norm_mul, norm_div, norm_pow,
         norm_pow, Complex.norm_natCast, Complex.norm_real]
       simp only [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (pow_nonneg ht0 k)
         (Real.exp_pos _).le)]
-    _ = (‖w‖ ^ k / (k.factorial : ℝ) ^ 2) *
+    _ = (‖w‖ ^ k / (k.factorial : ℝ) ^ (2 : ℕ)) *
           (∫ t : ℝ in Ioi 0, t ^ k * Real.exp (-t)) := by
       rw [integral_const_mul]
     _ = ‖w‖ ^ k / (k.factorial : ℝ) := by

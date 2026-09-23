@@ -153,7 +153,7 @@ def finitePrimeSquarefreeAmplitude (S : Finset Nat.Primes) (sigma : ℝ)
 
 theorem norm_finitePrimeSquarefreeAmplitude_sq
     (S : Finset Nat.Primes) (sigma : ℝ) (T : ↥S.powerset) :
-    ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ 2 =
+    ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ (2 : ℕ) =
       finitePrimeSquarefreeProbability S sigma T.1 := by
   have hP := finitePrimeSquarefreeProbability_nonneg S sigma T.1
   rw [finitePrimeSquarefreeAmplitude, Complex.norm_real, Real.norm_eq_abs,
@@ -162,7 +162,7 @@ theorem norm_finitePrimeSquarefreeAmplitude_sq
 
 theorem finitePrimeSquarefreeAmplitude_unit
     (S : Finset Nat.Primes) (sigma : ℝ) :
-    ∑ T : ↥S.powerset, ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ 2 = 1 := by
+    ∑ T : ↥S.powerset, ‖finitePrimeSquarefreeAmplitude S sigma T‖ ^ (2 : ℕ) = 1 := by
   classical
   simp_rw [norm_finitePrimeSquarefreeAmplitude_sq]
   rw [Finset.univ_eq_attach, Finset.sum_attach]

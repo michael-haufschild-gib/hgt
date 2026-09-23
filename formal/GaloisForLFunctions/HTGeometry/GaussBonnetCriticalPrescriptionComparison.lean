@@ -14,10 +14,10 @@ open Real
 namespace GaloisForLFunctions.HTGeometry
 
 def egbMatchedCriticalBRadius (x θ : ℝ) : ℝ :=
-  sqrt (6 * (egbCriticalACharge x θ ^ 2 + egbCriticalACouplingRoot x θ ^ 2))
+  sqrt (6 * (egbCriticalACharge x θ ^ (2 : ℕ) + egbCriticalACouplingRoot x θ ^ (2 : ℕ)))
 def egbMatchedCriticalBTemperature (x θ : ℝ) : ℝ := 1 / (3 * Real.pi * egbMatchedCriticalBRadius x θ)
 def egbMatchedCriticalBPressure (x θ : ℝ) : ℝ :=
-  1 / (96 * Real.pi * (egbCriticalACharge x θ ^ 2 + egbCriticalACouplingRoot x θ ^ 2))
+  1 / (96 * Real.pi * (egbCriticalACharge x θ ^ (2 : ℕ) + egbCriticalACouplingRoot x θ ^ (2 : ℕ)))
 def egbCriticalBRadiusRatio (θ : ℝ) : ℝ :=
   sqrt ((1 - 6 * egbCriticalAShape θ) / (1 + 2 * egbCriticalAShape θ))
 
@@ -27,7 +27,7 @@ theorem egbMatchedCriticalBRadius_pos (x θ : ℝ) : 0 < egbMatchedCriticalBRadi
   positivity
 
 theorem egbMatchedCriticalBRadius_square (x θ : ℝ) :
-    egbMatchedCriticalBRadius x θ ^ 2 = 6 * (egbCriticalACharge x θ ^ 2 + egbCriticalACouplingRoot x θ ^ 2) := by
+    egbMatchedCriticalBRadius x θ ^ (2 : ℕ) = 6 * (egbCriticalACharge x θ ^ (2 : ℕ) + egbCriticalACouplingRoot x θ ^ (2 : ℕ)) := by
   unfold egbMatchedCriticalBRadius
   apply sq_sqrt
   have h := egbCriticalA_effective_charge_pos x θ
@@ -50,7 +50,7 @@ theorem egbCriticalBRadiusRatio_pos (θ : ℝ) : 0 < egbCriticalBRadiusRatio θ 
   positivity
 
 theorem egbCriticalBRadiusRatio_square (θ : ℝ) :
-    egbCriticalBRadiusRatio θ ^ 2 = (1 - 6 * egbCriticalAShape θ) / (1 + 2 * egbCriticalAShape θ) := by
+    egbCriticalBRadiusRatio θ ^ (2 : ℕ) = (1 - 6 * egbCriticalAShape θ) / (1 + 2 * egbCriticalAShape θ) := by
   unfold egbCriticalBRadiusRatio
   apply sq_sqrt
   have hb := (egbCriticalAShape_bounds θ).1
@@ -96,7 +96,7 @@ theorem egbCriticalBRadiusRatio_lt_one_iff (θ : ℝ) :
 /-- The paper's square-root radius equals a simple factor times the model-A radius. -/
 theorem egbMatchedCriticalBRadius_formula (x θ : ℝ) :
     egbMatchedCriticalBRadius x θ = exp x * egbCriticalBRadiusRatio θ := by
-  have hs : egbMatchedCriticalBRadius x θ ^ 2 = (exp x * egbCriticalBRadiusRatio θ) ^ 2 := by
+  have hs : egbMatchedCriticalBRadius x θ ^ (2 : ℕ) = (exp x * egbCriticalBRadiusRatio θ) ^ (2 : ℕ) := by
     rw [egbMatchedCriticalBRadius_square, egbCriticalA_effective_charge, mul_pow, egbCriticalBRadiusRatio_square]
     have hb := (egbCriticalAShape_bounds θ).1
     field_simp
@@ -106,7 +106,7 @@ theorem egbMatchedCriticalBRadius_formula (x θ : ℝ) :
 
 theorem egbMatchedCriticalBPressure_formula (x θ : ℝ) :
     egbMatchedCriticalBPressure x θ =
-      (1 + 2 * egbCriticalAShape θ) / (16 * Real.pi * exp x ^ 2 * (1 - 6 * egbCriticalAShape θ)) := by
+      (1 + 2 * egbCriticalAShape θ) / (16 * Real.pi * exp x ^ (2 : ℕ) * (1 - 6 * egbCriticalAShape θ)) := by
   unfold egbMatchedCriticalBPressure
   rw [egbCriticalA_effective_charge]
   have hb := (egbCriticalAShape_bounds θ).1
@@ -126,7 +126,7 @@ theorem egbCriticalA_to_B_temperature_ratio (x θ : ℝ) :
 theorem egbCriticalA_to_B_pressure_ratio (x θ : ℝ) :
     egbCriticalAPressure x θ / egbMatchedCriticalBPressure x θ =
       (3 - 2 * egbCriticalAShape θ) * (1 - 6 * egbCriticalAShape θ) /
-        (3 * (1 + 2 * egbCriticalAShape θ) ^ 2) := by
+        (3 * (1 + 2 * egbCriticalAShape θ) ^ (2 : ℕ)) := by
   rw [egbMatchedCriticalBPressure_formula]
   unfold egbCriticalAPressure
   have hb := (egbCriticalAShape_bounds θ).1
@@ -148,7 +148,7 @@ theorem egbCriticalA_temperature_le_B (x θ : ℝ) : egbCriticalATemperature x �
 theorem egbCriticalA_pressure_le_B (x θ : ℝ) : egbCriticalAPressure x θ ≤ egbMatchedCriticalBPressure x θ := by
   rw [← div_le_one (egbMatchedCriticalBPressure_pos x θ), egbCriticalA_to_B_pressure_ratio]
   have hb := (egbCriticalAShape_bounds θ).1
-  rw [div_le_one (by positivity : 0 < 3 * (1 + 2 * egbCriticalAShape θ) ^ 2)]
+  rw [div_le_one (by positivity : 0 < 3 * (1 + 2 * egbCriticalAShape θ) ^ (2 : ℕ))]
   nlinarith
 
 theorem egbCriticalA_radius_gt_B_iff (x θ : ℝ) :
@@ -175,12 +175,12 @@ theorem egbCriticalA_pressure_lt_B_iff (x θ : ℝ) :
     egbCriticalAPressure x θ < egbMatchedCriticalBPressure x θ ↔ 0 < egbCriticalAShape θ := by
   rw [← div_lt_one (egbMatchedCriticalBPressure_pos x θ), egbCriticalA_to_B_pressure_ratio]
   have hb := (egbCriticalAShape_bounds θ).1
-  rw [div_lt_one (by positivity : 0 < 3 * (1 + 2 * egbCriticalAShape θ) ^ 2)]
+  rw [div_lt_one (by positivity : 0 < 3 * (1 + 2 * egbCriticalAShape θ) ^ (2 : ℕ))]
   constructor <;> intro h <;> nlinarith
 
 theorem egbCriticalA_shape_pos_iff_coupling_nonzero (x θ : ℝ) :
     0 < egbCriticalAShape θ ↔ egbCriticalACouplingRoot x θ ≠ 0 := by
-  rw [← sq_pos_iff, egbCriticalA_coupling_square, mul_pos_iff_of_pos_left (by positivity : 0 < exp x ^ 2)]
+  rw [← sq_pos_iff, egbCriticalA_coupling_square, mul_pos_iff_of_pos_left (by positivity : 0 < exp x ^ (2 : ℕ))]
 
 /-- All three prescription shifts are strict exactly when the actual coupling is nonzero. -/
 theorem egbCritical_prescriptions_strict_iff (x θ : ℝ) :
@@ -195,7 +195,7 @@ theorem egbCritical_prescriptions_strict_iff (x θ : ℝ) :
 theorem egbMatchedCriticalB_pressure_value (x θ : ℝ) :
     egbPressureB (egbMatchedCriticalBTemperature x θ) (egbCriticalACharge x θ) (egbCriticalACouplingRoot x θ)
       (egbMatchedCriticalBRadius x θ) = egbMatchedCriticalBPressure x θ := by
-  have he : egbCriticalACharge x θ ^ 2 + egbCriticalACouplingRoot x θ ^ 2 = egbMatchedCriticalBRadius x θ ^ 2 / 6 := by
+  have he : egbCriticalACharge x θ ^ (2 : ℕ) + egbCriticalACouplingRoot x θ ^ (2 : ℕ) = egbMatchedCriticalBRadius x θ ^ (2 : ℕ) / 6 := by
     rw [egbMatchedCriticalBRadius_square]
     ring
   unfold egbPressureB egbMatchedCriticalBTemperature egbMatchedCriticalBPressure

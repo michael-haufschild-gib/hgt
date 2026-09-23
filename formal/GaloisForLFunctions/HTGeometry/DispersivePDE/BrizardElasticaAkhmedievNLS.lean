@@ -21,7 +21,7 @@ noncomputable def akhmedievDenominatorX (φ : BreatherAngle) (ξ : ℝ) : ℝ :=
     Real.sin (akhmedievWaveNumber φ * ξ)
 
 noncomputable def akhmedievDenominatorXX (φ : BreatherAngle) (ξ : ℝ) : ℝ :=
-  Real.cos (φ : ℝ) * akhmedievWaveNumber φ ^ 2 *
+  Real.cos (φ : ℝ) * akhmedievWaveNumber φ ^ (2 : ℕ) *
     Real.cos (akhmedievWaveNumber φ * ξ)
 
 noncomputable def akhmedievNumeratorT (φ : BreatherAngle) (τ : ℝ) : ℂ :=
@@ -40,22 +40,22 @@ noncomputable def akhmedievNumeratorXX (φ : BreatherAngle) (ξ : ℝ) : ℂ :=
 noncomputable def akhmedievCoreT (φ : BreatherAngle) (ξ τ : ℝ) : ℂ :=
   -((akhmedievNumeratorT φ τ * (akhmedievDenominator φ ξ τ : ℂ) -
       akhmedievNumerator φ ξ τ * (akhmedievDenominatorT φ τ : ℂ)) /
-    (akhmedievDenominator φ ξ τ : ℂ) ^ 2)
+    (akhmedievDenominator φ ξ τ : ℂ) ^ (2 : ℕ))
 
 noncomputable def akhmedievCoreX (φ : BreatherAngle) (ξ τ : ℝ) : ℂ :=
   -((akhmedievNumeratorX φ ξ * (akhmedievDenominator φ ξ τ : ℂ) -
       akhmedievNumerator φ ξ τ * (akhmedievDenominatorX φ ξ : ℂ)) /
-    (akhmedievDenominator φ ξ τ : ℂ) ^ 2)
+    (akhmedievDenominator φ ξ τ : ℂ) ^ (2 : ℕ))
 
 noncomputable def akhmedievCoreXX (φ : BreatherAngle) (ξ τ : ℝ) : ℂ :=
   -(((akhmedievNumeratorXX φ ξ * (akhmedievDenominator φ ξ τ : ℂ) -
         akhmedievNumerator φ ξ τ * (akhmedievDenominatorXX φ ξ : ℂ)) *
-        (akhmedievDenominator φ ξ τ : ℂ) ^ 2 -
+        (akhmedievDenominator φ ξ τ : ℂ) ^ (2 : ℕ) -
       (akhmedievNumeratorX φ ξ * (akhmedievDenominator φ ξ τ : ℂ) -
         akhmedievNumerator φ ξ τ * (akhmedievDenominatorX φ ξ : ℂ)) *
         (2 * (akhmedievDenominator φ ξ τ : ℂ) *
           (akhmedievDenominatorX φ ξ : ℂ))) /
-    ((akhmedievDenominator φ ξ τ : ℂ) ^ 2) ^ 2)
+    ((akhmedievDenominator φ ξ τ : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ))
 
 theorem hasDerivAt_akhmedievDenominator_time (φ : BreatherAngle) (ξ τ : ℝ) :
     HasDerivAt (fun r => akhmedievDenominator φ ξ r) (akhmedievDenominatorT φ τ) τ := by
@@ -156,7 +156,7 @@ theorem hasDerivAt_akhmedievCore_space_one (φ : BreatherAngle) (ξ τ : ℝ) :
   have hquot' : HasDerivAt
       (fun y => -((akhmedievNumeratorX φ y * (akhmedievDenominator φ y τ : ℂ) -
           akhmedievNumerator φ y τ * (akhmedievDenominatorX φ y : ℂ)) /
-        (akhmedievDenominator φ y τ : ℂ) ^ 2))
+        (akhmedievDenominator φ y τ : ℂ) ^ (2 : ℕ)))
       (akhmedievCoreXX φ ξ τ) ξ := by
     apply hquot.neg.congr_deriv
     simp only [akhmedievCoreXX, Pi.mul_apply, Pi.sub_apply, Pi.pow_apply,
@@ -216,7 +216,7 @@ theorem akhmedievCore_nls_residual (φ : BreatherAngle) (ξ τ : ℝ) :
     Complex.I * akhmedievCoreT φ ξ τ - akhmedievCore φ ξ τ +
         akhmedievCoreXX φ ξ τ +
         ((akhmedievNumeratorSq φ ξ τ /
-          akhmedievDenominator φ ξ τ ^ 2 : ℝ) : ℂ) *
+          akhmedievDenominator φ ξ τ ^ (2 : ℕ) : ℝ) : ℂ) *
           akhmedievCore φ ξ τ = 0 := by
   let d : ℂ := (akhmedievDenominator φ ξ τ : ℂ)
   let n : ℂ := akhmedievNumerator φ ξ τ
@@ -230,10 +230,10 @@ theorem akhmedievCore_nls_residual (φ : BreatherAngle) (ξ τ : ℝ) :
   have hd : d ≠ 0 := by
     exact Complex.ofReal_ne_zero.mpr (ne_of_gt (akhmedievDenominator_pos φ ξ τ))
   have halgebra :
-      Complex.I * (-((nt * d - n * dt) / d ^ 2)) - (-n / d) +
-          (-(((nxx * d - n * dxx) * d ^ 2 -
-            (nx * d - n * dx) * (2 * d * dx)) / (d ^ 2) ^ 2)) +
-          (nsq / d ^ 2) * (-n / d) = 0 := by
+      Complex.I * (-((nt * d - n * dt) / d ^ (2 : ℕ))) - (-n / d) +
+          (-(((nxx * d - n * dxx) * d ^ (2 : ℕ) -
+            (nx * d - n * dx) * (2 * d * dx)) / (d ^ (2 : ℕ)) ^ (2 : ℕ))) +
+          (nsq / d ^ (2 : ℕ)) * (-n / d) = 0 := by
     field_simp [hd]
     dsimp [d, n, nt, dt, nx, nxx, dx, dxx, nsq]
     rw [akhmedievNumeratorT, akhmedievNumeratorX, akhmedievNumeratorXX,
@@ -245,44 +245,44 @@ theorem akhmedievCore_nls_residual (φ : BreatherAngle) (ξ τ : ℝ) :
     ring_nf
     simp only [Complex.I_sq]
     have hsinh : Complex.sinh
-        (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ 2 =
+        (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ (2 : ℕ) =
         Complex.cosh
-          (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ 2 - 1 := by
+          (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ (2 : ℕ) - 1 := by
       linear_combination -(Complex.cosh_sq_sub_sinh_sq
         (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2))
-    have hsin : Complex.sin ((φ : ℝ) : ℂ) ^ 2 =
-        1 - Complex.cos ((φ : ℝ) : ℂ) ^ 2 := by
+    have hsin : Complex.sin ((φ : ℝ) : ℂ) ^ (2 : ℕ) =
+        1 - Complex.cos ((φ : ℝ) : ℂ) ^ (2 : ℕ) := by
       linear_combination Complex.sin_sq_add_cos_sq (((φ : ℝ) : ℂ))
-    have hsqrt : (((Real.sqrt 2 : ℝ) : ℂ)) ^ 2 = 2 := by
+    have hsqrt : (((Real.sqrt 2 : ℝ) : ℂ)) ^ (2 : ℕ) = 2 := by
       exact_mod_cast Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)
     have hspace :
         Complex.sin
-            (Complex.sin ((φ : ℝ) : ℂ) * ((Real.sqrt 2 : ℝ) : ℂ) * (ξ : ℂ)) ^ 2 =
+            (Complex.sin ((φ : ℝ) : ℂ) * ((Real.sqrt 2 : ℝ) : ℂ) * (ξ : ℂ)) ^ (2 : ℕ) =
           1 - Complex.cos
-            (Complex.sin ((φ : ℝ) : ℂ) * ((Real.sqrt 2 : ℝ) : ℂ) * (ξ : ℂ)) ^ 2 := by
+            (Complex.sin ((φ : ℝ) : ℂ) * ((Real.sqrt 2 : ℝ) : ℂ) * (ξ : ℂ)) ^ (2 : ℕ) := by
       linear_combination Complex.sin_sq_add_cos_sq
         (Complex.sin ((φ : ℝ) : ℂ) * ((Real.sqrt 2 : ℝ) : ℂ) * (ξ : ℂ))
-    have hsinCube : Complex.sin ((φ : ℝ) : ℂ) ^ 3 =
+    have hsinCube : Complex.sin ((φ : ℝ) : ℂ) ^ (3 : ℕ) =
         Complex.sin ((φ : ℝ) : ℂ) *
-          (1 - Complex.cos ((φ : ℝ) : ℂ) ^ 2) := by
+          (1 - Complex.cos ((φ : ℝ) : ℂ) ^ (2 : ℕ)) := by
       calc
-        Complex.sin ((φ : ℝ) : ℂ) ^ 3 =
+        Complex.sin ((φ : ℝ) : ℂ) ^ (3 : ℕ) =
             Complex.sin ((φ : ℝ) : ℂ) *
-              Complex.sin ((φ : ℝ) : ℂ) ^ 2 := by ring
+              Complex.sin ((φ : ℝ) : ℂ) ^ (2 : ℕ) := by ring
         _ = _ := by rw [hsin]
     have hsinhCube : Complex.sinh
-          (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ 3 =
+          (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ (3 : ℕ) =
         Complex.sinh
             (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) *
           (Complex.cosh
-              (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ 2 - 1) := by
+              (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ (2 : ℕ) - 1) := by
       calc
         Complex.sinh
-            (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ 3 =
+            (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ (3 : ℕ) =
           Complex.sinh
               (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) *
             Complex.sinh
-              (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ 2 := by ring
+              (Complex.sin ((φ : ℝ) : ℂ) * Complex.cos ((φ : ℝ) : ℂ) * (τ : ℂ) * 2) ^ (2 : ℕ) := by ring
         _ = _ := by rw [hsinh]
     rw [hspace, hsqrt, hsin, hsinh, hsinCube, hsinhCube]
     ring
@@ -299,7 +299,7 @@ theorem akhmedievBreather_solves (φ : BreatherAngle) :
   have hcore := akhmedievCore_nls_residual φ ξ τ
   let P := linearPhase 1 0 τ ξ
   let a : ℂ := ((akhmedievNumeratorSq φ ξ τ /
-    akhmedievDenominator φ ξ τ ^ 2 : ℝ) : ℂ)
+    akhmedievDenominator φ ξ τ ^ (2 : ℕ) : ℝ) : ℂ)
   have hcarrier :
       Complex.I * (akhmedievCoreT φ ξ τ * P +
           akhmedievCore φ ξ τ * (P * Complex.I)) +
@@ -320,7 +320,7 @@ theorem akhmedievBreather_solves (φ : BreatherAngle) :
           akhmedievCore φ ξ τ * (P * Complex.I)) / (Real.sqrt 2 : ℂ)) +
       akhmedievCoreXX φ ξ τ * P / (Real.sqrt 2 : ℂ) +
       (((2 * (akhmedievNumeratorSq φ ξ τ /
-        (2 * akhmedievDenominator φ ξ τ ^ 2)) : ℝ) : ℂ) *
+        (2 * akhmedievDenominator φ ξ τ ^ (2 : ℕ))) : ℝ) : ℂ) *
         (akhmedievCore φ ξ τ * P / (Real.sqrt 2 : ℂ))) = 0
   calc
     _ = (Complex.I * (akhmedievCoreT φ ξ τ * P +

@@ -32,7 +32,7 @@ open GaloisForLFunctions
 /-- Normalized fourth likelihood source jet selected by the first nonzero C5 homotopy seam. -/
 def thetaCuspLikelihoodFourthSecondSquaredRatio (x : ℝ) : ℝ :=
   thetaCuspLikelihoodSourceLogPartitionJetFour x /
-    thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ 2
+    thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ (2 : ℕ)
 
 /-- Exact strict source invariant in the first nonzero C5 likelihood-homotopy seam coefficient. -/
 theorem thetaCuspLikelihoodHomotopyC5SeamInvariant_pos
@@ -74,7 +74,7 @@ theorem hasDerivAt_thetaCuspLikelihoodFourthSecondSquaredRatio
             thetaCuspLikelihoodSourceLogPartitionJetFive x -
           2 * thetaCuspLikelihoodSourceLogPartitionJetThree x *
             thetaCuspLikelihoodSourceLogPartitionJetFour x) /
-        thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ 3) x := by
+        thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ (3 : ℕ)) x := by
   let F₂ := thetaCuspLikelihoodSourceLogPartitionJetTwo
   let F₄ := thetaCuspLikelihoodSourceLogPartitionJetFour
   have hB : 0 < thetaCuspLikelihoodCoordinate x :=
@@ -93,26 +93,26 @@ theorem hasDerivAt_thetaCuspLikelihoodFourthSecondSquaredRatio
     exact (thetaCuspLikelihoodSourceLogPartitionJetTwo_pos hx).ne'
   have hquot := hF₄.div (hF₂.pow 2) (pow_ne_zero 2 hF₂pos.ne')
   have hcoeff :
-      (thetaCuspLikelihoodSourceLogPartitionJetFive x * (F₂ ^ 2) x -
+      (thetaCuspLikelihoodSourceLogPartitionJetFive x * (F₂ ^ (2 : ℕ)) x -
           F₄ x * ((2 : ℝ) * F₂ x ^ (2 - 1) *
             thetaCuspLikelihoodSourceLogPartitionJetThree x)) /
-          (F₂ ^ 2) x ^ 2 =
+          (F₂ ^ (2 : ℕ)) x ^ (2 : ℕ) =
         (thetaCuspLikelihoodSourceLogPartitionJetTwo x *
               thetaCuspLikelihoodSourceLogPartitionJetFive x -
             2 * thetaCuspLikelihoodSourceLogPartitionJetThree x *
               thetaCuspLikelihoodSourceLogPartitionJetFour x) /
-          thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ 3 := by
+          thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ (3 : ℕ) := by
     simp only [Pi.pow_apply, F₂, F₄]
     apply (div_eq_div_iff
       (pow_ne_zero 2 (pow_ne_zero 2 hF₂ne))
       (pow_ne_zero 3 hF₂ne)).2
     ring
-  change HasDerivAt (F₄ / F₂ ^ 2)
+  change HasDerivAt (F₄ / F₂ ^ (2 : ℕ))
     ((thetaCuspLikelihoodSourceLogPartitionJetTwo x *
           thetaCuspLikelihoodSourceLogPartitionJetFive x -
         2 * thetaCuspLikelihoodSourceLogPartitionJetThree x *
           thetaCuspLikelihoodSourceLogPartitionJetFour x) /
-      thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ 3) x
+      thetaCuspLikelihoodSourceLogPartitionJetTwo x ^ (3 : ℕ)) x
   rw [← hcoeff]
   exact hquot
 

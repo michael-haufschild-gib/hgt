@@ -80,7 +80,7 @@ theorem CoreField.exists_planar_periodization (f : CoreField) :
   obtain ⟨chi,W,_,hKW,hchi,hchic,hchis,hchi1⟩ :=
     HTGeometry.exists_smooth_cutoff (hK.image UpperHalfPlane.continuous_coe)
       isOpen_upperHalfPlaneSet hKU
-  let b : ℂ → ℂ := fun z => (chi z : ℂ)^2
+  let b : ℂ → ℂ := fun z => (chi z : ℂ)^(2 : ℕ)
   have hb : ContDiff ℝ ∞ b := (Complex.ofRealCLM.contDiff.comp hchi).pow 2
   have hsupp : Function.support b ⊆ Function.support chi := by
     intro z hz he
@@ -92,7 +92,7 @@ theorem CoreField.exists_planar_periodization (f : CoreField) :
   let p : UpperHalfPlane → ℂ := periodize t.field
   have ht : ∀ z : UpperHalfPlane, 0 ≤ (t.field z).re := by
     intro z
-    change 0 ≤ ((chi (z:ℂ) : ℂ)^2).re
+    change 0 ≤ ((chi (z:ℂ) : ℂ)^(2 : ℕ)).re
     norm_cast
     positivity
   have hp : ∀ z, 0 ≤ (p z).re := by
@@ -110,7 +110,7 @@ theorem CoreField.exists_planar_periodization (f : CoreField) :
       by_contra hn
       exact hz (hi.symm.trans (hfK (A • z) hA hn))
     have ht1 : t.field (A • z) = 1 := by
-      change (chi ((A • z : UpperHalfPlane):ℂ) : ℂ)^2 = 1
+      change (chi ((A • z : UpperHalfPlane):ℂ) : ℂ)^(2 : ℕ) = 1
       rw [hchi1 _ (hKW ⟨A • z,hAK,rfl⟩)]
       norm_num
     have h := self_re_le_periodize t ht (A • z)
@@ -206,7 +206,7 @@ private theorem chartLaplacian_finite_sum {ι : Type*} (s : Finset ι)
     rw [he.fderiv_eq,fderiv_fun_sum (fun i hi =>
       ((((hf i hi) z).fderiv_right (m := ∞) (by simp)).clm_apply contDiffAt_const).differentiableAt
         (by simp)),sum_apply]
-  change (z.im:ℂ)^2 * (∑ j : Fin 2,
+  change (z.im:ℂ)^(2 : ℕ) * (∑ j : Fin 2,
     fderiv ℝ (fun w => fderiv ℝ (fun v => ∑ i ∈ s, f i (ofComplex v)) w (direction j))
       (z:ℂ) (direction j)) = _
   simp_rw [hd]
@@ -252,7 +252,7 @@ private theorem PlanarChartTest.chartLaplacian_field (g : PlanarChartTest) (z : 
     filter_upwards [isOpen_upperHalfPlaneSet.mem_nhds z.im_pos] with w hw
     simp only [Function.comp_apply,PlanarChartTest.toChartTest,CompactChartTest.ofPlanar,
       ofComplex_apply_of_im_pos hw]
-  change (z.im:ℂ)^2 * D4BMModularCore.planarLaplacian (g.toChartTest.field ∘ ofComplex) (z:ℂ) =
+  change (z.im:ℂ)^(2 : ℕ) * D4BMModularCore.planarLaplacian (g.toChartTest.field ∘ ofComplex) (z:ℂ) =
     g.laplaceTest.field (z:ℂ)
   rw [g.laplaceTest_field]
   congr 1

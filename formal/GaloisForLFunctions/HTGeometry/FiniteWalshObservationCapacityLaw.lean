@@ -114,9 +114,9 @@ theorem sum_conj_mul_inverseWalshCoefficient
 theorem sum_norm_sq_inverseWalshCoefficient
     {I : Type*} [Fintype I]
     (f : (I → Bool) → ℂ) :
-    (∑ B : Finset I, ‖inverseWalshCoefficient f B‖ ^ 2) =
+    (∑ B : Finset I, ‖inverseWalshCoefficient f B‖ ^ (2 : ℕ)) =
       ((2 : ℝ) ^ Fintype.card I)⁻¹ *
-        ∑ x : I → Bool, ‖f x‖ ^ 2 := by
+        ∑ x : I → Bool, ‖f x‖ ^ (2 : ℕ) := by
   have hC :
       (∑ B : Finset I,
           (Complex.normSq (inverseWalshCoefficient f B) : ℂ)) =
@@ -145,34 +145,34 @@ noncomputable def walshThresholdCount
 theorem sq_mul_walshThresholdCount_le_meanSquare
     {I : Type*} [Fintype I]
     (f : (I → Bool) → ℂ) {η : ℝ} (hη : 0 ≤ η) :
-    η ^ 2 * (walshThresholdCount f η : ℝ) ≤
+    η ^ (2 : ℕ) * (walshThresholdCount f η : ℝ) ≤
       ((2 : ℝ) ^ Fintype.card I)⁻¹ *
-        ∑ x : I → Bool, ‖f x‖ ^ 2 := by
+        ∑ x : I → Bool, ‖f x‖ ^ (2 : ℕ) := by
   classical
   let active :=
     Finset.univ.filter fun B : Finset I =>
       η ≤ ‖inverseWalshCoefficient f B‖
   have hterm :
       ∀ B ∈ active,
-        η ^ 2 ≤ ‖inverseWalshCoefficient f B‖ ^ 2 := by
+        η ^ (2 : ℕ) ≤ ‖inverseWalshCoefficient f B‖ ^ (2 : ℕ) := by
     intro B hB
     have hle : η ≤ ‖inverseWalshCoefficient f B‖ :=
       Finset.mem_filter.mp hB |>.2
     nlinarith [norm_nonneg (inverseWalshCoefficient f B)]
   calc
-    η ^ 2 * (walshThresholdCount f η : ℝ) =
-        ∑ B ∈ active, η ^ 2 := by
+    η ^ (2 : ℕ) * (walshThresholdCount f η : ℝ) =
+        ∑ B ∈ active, η ^ (2 : ℕ) := by
           simp [walshThresholdCount, active, nsmul_eq_mul, mul_comm]
     _ ≤ ∑ B ∈ active,
-        ‖inverseWalshCoefficient f B‖ ^ 2 :=
+        ‖inverseWalshCoefficient f B‖ ^ (2 : ℕ) :=
       Finset.sum_le_sum fun B hB => hterm B hB
     _ ≤ ∑ B : Finset I,
-        ‖inverseWalshCoefficient f B‖ ^ 2 := by
+        ‖inverseWalshCoefficient f B‖ ^ (2 : ℕ) := by
       exact Finset.sum_le_sum_of_subset_of_nonneg
         (Finset.filter_subset _ _)
         (fun B _ _ => sq_nonneg ‖inverseWalshCoefficient f B‖)
     _ = ((2 : ℝ) ^ Fintype.card I)⁻¹ *
-        ∑ x : I → Bool, ‖f x‖ ^ 2 :=
+        ∑ x : I → Bool, ‖f x‖ ^ (2 : ℕ) :=
       sum_norm_sq_inverseWalshCoefficient f
 
 /-- A uniform response bound controls operational Walsh dimension. -/
@@ -181,21 +181,21 @@ theorem sq_mul_walshThresholdCount_le_bound_sq
     (f : (I → Bool) → ℂ) {η B : ℝ}
     (hη : 0 ≤ η)
     (hf : ∀ x, ‖f x‖ ≤ B) :
-    η ^ 2 * (walshThresholdCount f η : ℝ) ≤ B ^ 2 := by
+    η ^ (2 : ℕ) * (walshThresholdCount f η : ℝ) ≤ B ^ (2 : ℕ) := by
   have hcard :
       Fintype.card (I → Bool) = 2 ^ Fintype.card I := by
     rw [Fintype.card_eq_nat_card, Nat.card_fun]
     norm_num [Nat.card_eq_fintype_card]
   calc
-    η ^ 2 * (walshThresholdCount f η : ℝ) ≤
+    η ^ (2 : ℕ) * (walshThresholdCount f η : ℝ) ≤
         ((2 : ℝ) ^ Fintype.card I)⁻¹ *
-          ∑ x : I → Bool, ‖f x‖ ^ 2 :=
+          ∑ x : I → Bool, ‖f x‖ ^ (2 : ℕ) :=
       sq_mul_walshThresholdCount_le_meanSquare f hη
     _ ≤ ((2 : ℝ) ^ Fintype.card I)⁻¹ *
-          ∑ _x : I → Bool, B ^ 2 := by
+          ∑ _x : I → Bool, B ^ (2 : ℕ) := by
       gcongr with x
       exact hf x
-    _ = B ^ 2 := by
+    _ = B ^ (2 : ℕ) := by
       simp only [Finset.sum_const, Finset.card_univ,
         hcard, nsmul_eq_mul]
       have htwo : (2 : ℝ) ^ Fintype.card I ≠ 0 := by positivity

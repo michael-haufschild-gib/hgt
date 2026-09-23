@@ -30,7 +30,7 @@ theorem sequenceTraceHankelNonnegative_of_reflectionPositiveGram
     SequenceTraceHankelNonnegative m := by
   intro p
   have heq : sequenceTraceHankel m p =
-      HTGeometry.momentFunctional m (p ^ 2) := by
+      HTGeometry.momentFunctional m (p ^ (2 : ℕ)) := by
     rw [sequenceTraceHankel, HTGeometry.momentFunctional_eq_support_sum, pow_two]
   rw [heq]
   exact HTGeometry.momentFunctional_pow_two_nonneg_of_reflectionPositiveGram
@@ -45,7 +45,7 @@ theorem sequenceTraceHankelNonnegative_of_complexReflectionPositiveGram
     SequenceTraceHankelNonnegative m := by
   intro p
   have heq : sequenceTraceHankel m p =
-      HTGeometry.momentFunctional m (p ^ 2) := by
+      HTGeometry.momentFunctional m (p ^ (2 : ℕ)) := by
     rw [sequenceTraceHankel, HTGeometry.momentFunctional_eq_support_sum, pow_two]
   rw [heq]
   exact HTGeometry.momentFunctional_pow_two_nonneg_of_complexReflectionPositiveGram

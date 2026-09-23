@@ -20,7 +20,7 @@ open scoped InnerProduct InnerProductSpace
 namespace RHTower
 
 /-- The squared `ℓ²` norm is the series of squared coordinates. -/
-theorem lp_two_norm_sq (p : lp (fun _ : ℕ => ℝ) 2) : ‖p‖ ^ 2 = ∑' j : ℕ, p j ^ 2 := by
+theorem lp_two_norm_sq (p : lp (fun _ : ℕ => ℝ) 2) : ‖p‖ ^ (2 : ℕ) = ∑' j : ℕ, p j ^ (2 : ℕ) := by
   have h : (inner ℝ p p : ℝ) = ∑' j : ℕ, p j * p j := lp_inner_eq_tsum_mul p p
   rw [real_inner_self_eq_norm_sq] at h
   rw [h]
@@ -33,14 +33,14 @@ theorem norm_sub_eq_of_hasSum_lp {a : ℝ} (ha : 0 < a) {σ : ℕ → ℕ} (hσ 
     (hg : HasSum (fun j : ℕ => ((q j : ℝ) : ℂ) • sectorMode a σ j) g) :
     ‖f - g‖ = ‖p - q‖ := by
   have h := hasSum_norm_sub_sq_of_hasSum ha hσ hf hg
-  have hterm : ∀ j : ℕ, ‖((p j : ℝ) : ℂ) - ((q j : ℝ) : ℂ)‖ ^ 2 = (p - q) j ^ 2 := by
+  have hterm : ∀ j : ℕ, ‖((p j : ℝ) : ℂ) - ((q j : ℝ) : ℂ)‖ ^ (2 : ℕ) = (p - q) j ^ (2 : ℕ) := by
     intro j
     rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs, sq_abs, lp.coeFn_sub]
     rfl
-  have hfun : (fun j : ℕ => ‖((p j : ℝ) : ℂ) - ((q j : ℝ) : ℂ)‖ ^ 2)
-      = fun j : ℕ => (p - q) j ^ 2 := funext hterm
+  have hfun : (fun j : ℕ => ‖((p j : ℝ) : ℂ) - ((q j : ℝ) : ℂ)‖ ^ (2 : ℕ))
+      = fun j : ℕ => (p - q) j ^ (2 : ℕ) := funext hterm
   rw [hfun] at h
-  have h3 : ‖p - q‖ ^ 2 = ‖f - g‖ ^ 2 := by
+  have h3 : ‖p - q‖ ^ (2 : ℕ) = ‖f - g‖ ^ (2 : ℕ) := by
     rw [lp_two_norm_sq]
     exact h.tsum_eq
   have hnn1 : (0 : ℝ) ≤ ‖f - g‖ := norm_nonneg _
@@ -109,7 +109,7 @@ theorem constrainedProlateEven_operator_ground_distance_isBigO :
           • sectorMode lam positiveSectorIndex j) f →
         HasSum (fun j : ℕ => ((sectorSeedUnit lam positiveSectorIndex j : ℝ) : ℂ)
           • sectorMode lam positiveSectorIndex j) g →
-        min ‖f - g‖ ‖f + g‖ ≤ C * (lam ^ 7)⁻¹ := by
+        min ‖f - g‖ ‖f + g‖ ≤ C * (lam ^ (7 : ℕ))⁻¹ := by
   obtain ⟨K, hK, hO⟩ := constrainedProlateEven_ground_distance_isBigO
   obtain ⟨C, hC⟩ := hO.bound
   refine ⟨C, ?_⟩
@@ -124,7 +124,7 @@ theorem constrainedProlateEven_operator_ground_distance_isBigO :
     (tendsto_norm_evenProlateConstraintCoord_atTop 1).eventually_ne hne1,
     eventually_gt_atTop (0 : ℝ)] with lam hbd hs h0 h1 hlam f g hf hg
   have hσ : Function.Injective positiveSectorIndex := positiveSectorIndex_injective
-  have hsumL : Summable fun j : ℕ => sectorCoord lam positiveSectorIndex j ^ 2 := summable_sectorCoord_sq lam hσ
+  have hsumL : Summable fun j : ℕ => sectorCoord lam positiveSectorIndex j ^ (2 : ℕ) := summable_sectorCoord_sq lam hσ
   have hmem : Memℓp (secularVector (sectorLeakage lam positiveSectorIndex) (sectorCoord lam positiveSectorIndex)
       (infiniteSecularRoot (sectorLeakage lam positiveSectorIndex) (sectorCoord lam positiveSectorIndex))) 2 :=
     memℓp_secularVector hs.1.2.1 hs.1.2.2 hs.2 hsumL h0 h1
@@ -147,10 +147,10 @@ theorem constrainedProlateEven_operator_ground_distance_isBigO :
   rw [hQfun] at hg
   have hsub : ‖f - g‖ = ‖P - Q‖ := norm_sub_eq_of_hasSum_lp hlam hσ P Q hf hg
   have hadd : ‖f + g‖ = ‖P + Q‖ := norm_add_eq_of_hasSum_lp hlam hσ P Q hf hg
-  have hbd' : min ‖P - Q‖ ‖P + Q‖ ≤ C * (lam ^ 7)⁻¹ := by
+  have hbd' : min ‖P - Q‖ ‖P + Q‖ ≤ C * (lam ^ (7 : ℕ))⁻¹ := by
     have hmin : (0 : ℝ) ≤ min ‖P - Q‖ ‖P + Q‖ := le_min (norm_nonneg _) (norm_nonneg _)
-    have hpow : (0 : ℝ) < (lam ^ 7)⁻¹ := by positivity
-    have hb : ‖min ‖P - Q‖ ‖P + Q‖‖ ≤ C * ‖(lam ^ 7)⁻¹‖ := hbd
+    have hpow : (0 : ℝ) < (lam ^ (7 : ℕ))⁻¹ := by positivity
+    have hb : ‖min ‖P - Q‖ ‖P + Q‖‖ ≤ C * ‖(lam ^ (7 : ℕ))⁻¹‖ := hbd
     rwa [Real.norm_eq_abs, abs_of_nonneg hmin, Real.norm_eq_abs, abs_of_pos hpow] at hb
   rw [hsub, hadd]
   exact hbd'

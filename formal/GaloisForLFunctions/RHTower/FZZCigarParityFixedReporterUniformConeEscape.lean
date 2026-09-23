@@ -17,10 +17,10 @@ noncomputable section
 /-- First coefficient of an arbitrary Hermitian reporter pulled back along stabilized flow. -/
 def fzzCigarParityDilatedStabilizedFlowHermitianA
     (beta t a b d : ℝ) : ℝ :=
-  Real.exp (fzzKreinPAt beta * t) ^ 2 * a -
+  Real.exp (fzzKreinPAt beta * t) ^ (2 : ℕ) * a -
     2 * Real.exp (fzzKreinPAt beta * t) *
       fzzCigarParityDilatedSecondDiagonalFlowShear beta t * b +
-    fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ 2 * d
+    fzzCigarParityDilatedSecondDiagonalFlowShear beta t ^ (2 : ℕ) * d
 
 /-- Real off-diagonal coefficient after pullback. -/
 def fzzCigarParityDilatedStabilizedFlowHermitianB
@@ -38,7 +38,7 @@ private theorem fzzCigarParityHermitianQuadraticObservable_realTriangular_pullba
     fzzCigarParityHermitianQuadraticObservable a b c d
         (((e : ℝ) : ℂ) * u.1, u.2 - (k : ℂ) * u.1) =
       fzzCigarParityHermitianQuadraticObservable
-        (e ^ 2 * a - 2 * e * k * b + k ^ 2 * d)
+        (e ^ (2 : ℕ) * a - 2 * e * k * b + k ^ (2 : ℕ) * d)
         (e * b - k * d) (e * c) d u := by
   rcases u with ⟨u₁, u₂⟩
   simp [fzzCigarParityHermitianQuadraticObservable,
@@ -181,7 +181,7 @@ theorem fzzCigarParityDilatedFixedReporter_uniform_escape
         (fzzCigarParityDilatedFixedReporterEscapeTime beta) b d)
       (fzzCigarParityDilatedStabilizedFlowHermitianC beta
         (fzzCigarParityDilatedFixedReporterEscapeTime beta) c) d).mp hlate
-  have hb0sq : b ^ 2 ≤ d ^ 2 := by
+  have hb0sq : b ^ (2 : ℕ) ≤ d ^ (2 : ℕ) := by
     nlinarith [sq_nonneg c]
   have hb0 : |b| ≤ |d| := sq_le_sq.mp hb0sq
   let E := fzzCigarParityDilatedFixedReporterEscapeMultiplier beta
@@ -194,17 +194,17 @@ theorem fzzCigarParityDilatedFixedReporter_uniform_escape
           (fzzKreinPAt beta *
             fzzCigarParityDilatedFixedReporterEscapeTime beta) = E :=
     fzzCigarParityDilatedFixedReporterEscapeTime_exp hbeta
-  have hbEsq : (E * b - α * (E - 1) * d) ^ 2 ≤ d ^ 2 := by
+  have hbEsq : (E * b - α * (E - 1) * d) ^ (2 : ℕ) ≤ d ^ (2 : ℕ) := by
     have hbc := hconeLate.2
     have hCnonneg :
         0 ≤
           fzzCigarParityDilatedStabilizedFlowHermitianC beta
-            (fzzCigarParityDilatedFixedReporterEscapeTime beta) c ^ 2 :=
+            (fzzCigarParityDilatedFixedReporterEscapeTime beta) c ^ (2 : ℕ) :=
       sq_nonneg _
     have hBsq :
         fzzCigarParityDilatedStabilizedFlowHermitianB beta
-            (fzzCigarParityDilatedFixedReporterEscapeTime beta) b d ^ 2 ≤
-          d ^ 2 := by
+            (fzzCigarParityDilatedFixedReporterEscapeTime beta) b d ^ (2 : ℕ) ≤
+          d ^ (2 : ℕ) := by
       nlinarith
     rw [fzzCigarParityDilatedStabilizedFlowHermitianB,
       fzzCigarParityDilatedSecondDiagonalFlowShear,

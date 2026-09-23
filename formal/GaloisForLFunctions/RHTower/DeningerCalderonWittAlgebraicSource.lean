@@ -14,7 +14,7 @@ algebraic packet.  The Calderón cross-effect and its alternating
 polarization land in that center.  Thus this module constructs the
 actual two-step source before Hilbert completion:
 
-`A_p^1 = Q_p ⊕ P_p^alg`, `A_p^2 = T_p(P_p^alg)`.
+`A_p^(1 : ℕ) = Q_p ⊕ P_p^alg`, `A_p^(2 : ℕ) = T_p(P_p^alg)`.
 
 The local and all-prime vector-valued cup radicals are zero.  No zeta
 zero, divisor sector, positivity premise, or completion enters.

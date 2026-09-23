@@ -66,7 +66,7 @@ theorem xiCompleteDivisorOrientation_sq :
 
 theorem norm_xiCompleteDivisorOrientation (a : XiDivisorL2) :
     ‖xiCompleteDivisorOrientation a‖ = ‖a‖ := by
-  have hsq : ‖xiCompleteDivisorOrientation a‖ ^ 2 = ‖a‖ ^ 2 := by
+  have hsq : ‖xiCompleteDivisorOrientation a‖ ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) := by
     rw [HilbertSchmidt.lp_norm_sq_eq, HilbertSchmidt.lp_norm_sq_eq]
     apply tsum_congr
     intro q

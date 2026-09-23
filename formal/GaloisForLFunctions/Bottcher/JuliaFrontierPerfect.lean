@@ -528,7 +528,7 @@ theorem filledJulia_nontrivial (c : ℂ) :
     · norm_num
   · have hnegK : -z ∈ filledJulia c := by
       apply (mem_filledJulia_iff_quadratic_mem c (-z)).mpr
-      have hzsq : z ^ 2 + c = z := by simpa [quadratic_apply] using hzfix
+      have hzsq : z ^ (2 : ℕ) + c = z := by simpa [quadratic_apply] using hzfix
       simpa [quadratic_apply, hzsq] using hzK
     refine ⟨z, hzK, -z, hnegK, ?_⟩
     intro h

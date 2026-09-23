@@ -135,12 +135,12 @@ theorem serreQ8JBase_topRadicand : serreQ8JBase serreQ8TopRadicand =
   unfold serreQ8TopRadicand
   rw [map_mul, serreQ8JBase_topR, serreQ8JBase_topS]
 
-theorem serreQ8TopX_sq : serreQ8TopX ^ 2 = 5 := by
+theorem serreQ8TopX_sq : serreQ8TopX ^ (2 : ℕ) = 5 := by
   unfold serreQ8TopX
   rw [← map_pow]
   change AdjoinRoot.of serreQ8ThirdQuadraticPolynomial
     ((AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial
-      deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ 2) = 5
+      deningerQ8RootNumberNegOneFirstQuadraticRoot) ^ (2 : ℕ)) = 5
   rw [← map_pow]
   rw [deningerQ8RootNumberNegOneFirstQuadraticRoot_sq]
   rw [show AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial
@@ -149,13 +149,13 @@ theorem serreQ8TopX_sq : serreQ8TopX ^ 2 = 5 := by
       (AdjoinRoot.of deningerQ8RootNumberNegOneSecondQuadraticPolynomial) 5).symm]
   exact (map_natCast (AdjoinRoot.of serreQ8ThirdQuadraticPolynomial) 5).symm
 
-theorem serreQ8TopY_sq : serreQ8TopY ^ 2 = 41 := by
+theorem serreQ8TopY_sq : serreQ8TopY ^ (2 : ℕ) = 41 := by
   unfold serreQ8TopY
   rw [← map_pow, deningerQ8RootNumberNegOneSecondQuadraticRoot_sq]
   exact (map_natCast (AdjoinRoot.of serreQ8ThirdQuadraticPolynomial) 41).symm
 
 theorem serreQ8TopRoot_relation :
-    serreQ8TopRoot ^ 2 = (5 + serreQ8TopX) * (41 + serreQ8TopX * serreQ8TopY) := by
+    serreQ8TopRoot ^ (2 : ℕ) = (5 + serreQ8TopX) * (41 + serreQ8TopX * serreQ8TopY) := by
   rw [serreQ8TopRoot_sq]
   change AdjoinRoot.of serreQ8ThirdQuadraticPolynomial
     ((serreQ8TopR : K2) * serreQ8TopS) = _
@@ -202,7 +202,7 @@ theorem serreQ8_topSInField_mul_conj :
   unfold serreQ8TopSInField serreQ8TopSConjInField
   calc
     (41 + serreQ8TopX * serreQ8TopY) * (41 - serreQ8TopX * serreQ8TopY) =
-        41 ^ 2 - serreQ8TopX ^ 2 * serreQ8TopY ^ 2 := by ring
+        41 ^ (2 : ℕ) - serreQ8TopX ^ (2 : ℕ) * serreQ8TopY ^ (2 : ℕ) := by ring
     _ = 1476 := by rw [serreQ8TopX_sq, serreQ8TopY_sq]; norm_num
 
 theorem serreQ8TopSInField_ne_zero : serreQ8TopSInField ≠ 0 := by
@@ -226,33 +226,33 @@ theorem serreQ8TopRoot_ne_zero : serreQ8TopRoot ≠ 0 := by
   · exact serreQ8TopSInField_ne_zero hs
 
 theorem serreQ8_iCandidate_sq :
-    serreQ8ITopCandidate ^ 2 =
+    serreQ8ITopCandidate ^ (2 : ℕ) =
       (5 - serreQ8TopX) * (41 - serreQ8TopX * serreQ8TopY) := by
   unfold serreQ8ITopCandidate
   letI : CharZero K3 :=
     charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
   field_simp [serreQ8TopRoot_ne_zero]
   rw [serreQ8TopRoot_relation]
-  have hx4 : serreQ8TopX ^ 4 = 25 := by
-    calc serreQ8TopX ^ 4 = (serreQ8TopX ^ 2) ^ 2 := by ring
+  have hx4 : serreQ8TopX ^ (4 : ℕ) = 25 := by
+    calc serreQ8TopX ^ (4 : ℕ) = (serreQ8TopX ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
       _ = 25 := by rw [serreQ8TopX_sq]; norm_num
   ring_nf
   simp only [hx4, serreQ8TopX_sq, serreQ8TopY_sq]
   ring
 
 theorem serreQ8_jCandidate_sq :
-    serreQ8JTopCandidate ^ 2 =
+    serreQ8JTopCandidate ^ (2 : ℕ) =
       (5 + serreQ8TopX) * (41 - serreQ8TopX * serreQ8TopY) := by
   unfold serreQ8JTopCandidate
   letI : CharZero K3 :=
     charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
   field_simp [serreQ8TopRoot_ne_zero]
   rw [serreQ8TopRoot_relation]
-  have hx3 : serreQ8TopX ^ 3 = 5 * serreQ8TopX := by
-    calc serreQ8TopX ^ 3 = serreQ8TopX * serreQ8TopX ^ 2 := by ring
+  have hx3 : serreQ8TopX ^ (3 : ℕ) = 5 * serreQ8TopX := by
+    calc serreQ8TopX ^ (3 : ℕ) = serreQ8TopX * serreQ8TopX ^ (2 : ℕ) := by ring
       _ = 5 * serreQ8TopX := by rw [serreQ8TopX_sq]; ring
-  have hx4 : serreQ8TopX ^ 4 = 25 := by
-    calc serreQ8TopX ^ 4 = (serreQ8TopX ^ 2) ^ 2 := by ring
+  have hx4 : serreQ8TopX ^ (4 : ℕ) = 25 := by
+    calc serreQ8TopX ^ (4 : ℕ) = (serreQ8TopX ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
       _ = 25 := by rw [serreQ8TopX_sq]; norm_num
   ring_nf
   simp only [hx4, hx3, serreQ8TopX_sq, serreQ8TopY_sq]
@@ -260,17 +260,17 @@ theorem serreQ8_jCandidate_sq :
 
 def serreQ8I : K3 →+* K3 :=
   AdjoinRoot.lift serreQ8IBase serreQ8ITopCandidate (by
-    change (X ^ 2 - C serreQ8TopRadicand).eval₂ serreQ8IBase serreQ8ITopCandidate = 0
+    change (X ^ (2 : ℕ) - C serreQ8TopRadicand).eval₂ serreQ8IBase serreQ8ITopCandidate = 0
     rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C]
-    change serreQ8ITopCandidate ^ 2 - serreQ8IBase serreQ8TopRadicand = 0
+    change serreQ8ITopCandidate ^ (2 : ℕ) - serreQ8IBase serreQ8TopRadicand = 0
     rw [serreQ8_iCandidate_sq, serreQ8IBase_topRadicand]
     ring)
 
 def serreQ8J : K3 →+* K3 :=
   AdjoinRoot.lift serreQ8JBase serreQ8JTopCandidate (by
-    change (X ^ 2 - C serreQ8TopRadicand).eval₂ serreQ8JBase serreQ8JTopCandidate = 0
+    change (X ^ (2 : ℕ) - C serreQ8TopRadicand).eval₂ serreQ8JBase serreQ8JTopCandidate = 0
     rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C]
-    change serreQ8JTopCandidate ^ 2 - serreQ8JBase serreQ8TopRadicand = 0
+    change serreQ8JTopCandidate ^ (2 : ℕ) - serreQ8JBase serreQ8TopRadicand = 0
     rw [serreQ8_jCandidate_sq, serreQ8JBase_topRadicand]
     ring)
 
@@ -379,7 +379,7 @@ theorem serreQ8End_eq_of_base_root (f g : K3 →+* K3)
 
 def serreQ8C : K3 →+* K3 :=
   AdjoinRoot.lift (AdjoinRoot.of serreQ8ThirdQuadraticPolynomial) (-serreQ8TopRoot) (by
-    change (X ^ 2 - C serreQ8TopRadicand).eval₂
+    change (X ^ (2 : ℕ) - C serreQ8TopRadicand).eval₂
       (AdjoinRoot.of serreQ8ThirdQuadraticPolynomial) (-serreQ8TopRoot) = 0
     rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C, neg_sq, serreQ8TopRoot_sq]
     ring)
@@ -548,9 +548,9 @@ theorem serreQ8_composite_root_relation :
   field_simp [serreQ8TopX_ne_zero, serreQ8TopY_ne_zero, serreQ8TopRInField_ne_zero,
     serreQ8TopRoot_ne_zero, hR]
   calc
-    6 ^ 2 * (5 - serreQ8TopX) * (5 + serreQ8TopX) =
-        36 * (25 - serreQ8TopX ^ 2) := by ring
-    _ = serreQ8TopX ^ 2 * 12 ^ 2 := by
+    6 ^ (2 : ℕ) * (5 - serreQ8TopX) * (5 + serreQ8TopX) =
+        36 * (25 - serreQ8TopX ^ (2 : ℕ)) := by ring
+    _ = serreQ8TopX ^ (2 : ℕ) * 12 ^ (2 : ℕ) := by
       rw [serreQ8TopX_sq]
       norm_num
 

@@ -28,7 +28,7 @@ theorem radiationFisherClock_speed (tau : ℝ) :
     Real.sqrt (radiationNumberFisher tau) =
       Real.exp tau * coherentRadius tau / (1 - thermalRatio tau) := by
   have he : radiationNumberFisher tau =
-      (Real.exp tau * coherentRadius tau / (1 - thermalRatio tau)) ^ 2 := by
+      (Real.exp tau * coherentRadius tau / (1 - thermalRatio tau)) ^ (2 : ℕ) := by
     rw [radiationNumberFisher_formula, radiationNumberVariance_formula]
     rw [div_pow, mul_pow, coherentRadius_sq]
     ring
@@ -46,7 +46,7 @@ theorem radiationFisherClock_hasDerivAt (tau : ℝ) :
   apply h.congr_deriv
   rw [radiationFisherClock_speed, ← coherentRadius_sq tau]
   dsimp
-  have hq : 1 - coherentRadius tau ^ 2 ≠ 0 := by
+  have hq : 1 - coherentRadius tau ^ (2 : ℕ) ≠ 0 := by
     rw [coherentRadius_sq]
     exact (sub_pos.mpr (thermalRatio_lt_one tau)).ne'
   field_simp
@@ -97,7 +97,7 @@ theorem radiationFisherClock_recovers_radius (tau : ℝ) :
 
 theorem coherentRadius_exp (tau : ℝ) :
     coherentRadius tau = Real.exp (-Real.exp tau / 2) := by
-  have he : thermalRatio tau = Real.exp (-Real.exp tau / 2) ^ 2 := by
+  have he : thermalRatio tau = Real.exp (-Real.exp tau / 2) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     unfold thermalRatio
     congr 1

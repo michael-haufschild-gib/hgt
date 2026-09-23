@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.PrimeClockShaleDiagonal
 The clock tangent of the formal prime coherent displacement `p ^ (-sigma - I*t)` has squared
 one-particle norm
 
-`sum_p (log p)^2 * p^(-2*sigma)`.
+`sum_p (log p)^(2 : ℕ) * p^(-2*sigma)`.
 
 This file proves that the series is summable exactly for `sigma > 1/2`.  Consequently both
 functional-equation-reflected clock perspectives have singular metric exactly at `sigma = 1/2`,

@@ -162,7 +162,7 @@ omit [DecidableEq ι] in
 theorem cesaro_shell_pairs_pos (s : Finset ι) (B : ι → ℝ) (sigma : ι → ι)
     (hsig : ∀ j ∈ s, sigma j ∈ s) (hB : ∀ j ∈ s, B (sigma j) = -B j)
     {j₀ : ι} (hj₀ : j₀ ∈ s) (hne : B j₀ ≠ 0) :
-    0 < ∑ p ∈ (s ×ˢ s).filter (fun p => B p.1 + B p.2 = 0), (B p.1 - B p.2) ^ 2 := by
+    0 < ∑ p ∈ (s ×ˢ s).filter (fun p => B p.1 + B p.2 = 0), (B p.1 - B p.2) ^ (2 : ℕ) := by
   classical
   refine Finset.sum_pos' (fun p _ => sq_nonneg _) ⟨(j₀, sigma j₀), ?_, ?_⟩
   · rw [Finset.mem_filter, Finset.mem_product]

@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.RiemannGaussian.SymmetricTwoNodePick
 
 This file composes the checked pole-energy threshold with the complete finite
 two-node Pick estimate.  The result is the closed bound
-`m / sqrt (m^2 + a^2)` for the finite residual inner value at the candidate
+`m / sqrt (m^(2 : ℕ) + a^(2 : ℕ))` for the finite residual inner value at the candidate
 pole.  No metric-pencil identification is asserted here.
 -/
 
@@ -17,7 +17,7 @@ noncomputable section
 increasing pair in the closed unit interval. -/
 theorem two_mul_div_one_add_sq_lt
     {b r : ℝ} (hb : 0 ≤ b) (hbr : b < r) (hr : r ≤ 1) :
-    2 * b / (1 + b ^ 2) < 2 * r / (1 + r ^ 2) := by
+    2 * b / (1 + b ^ (2 : ℕ)) < 2 * r / (1 + r ^ (2 : ℕ)) := by
   have hr0 : 0 < r := hb.trans_lt hbr
   have hbrMul : b * r < 1 := by
     have hlt : b * r < r * r :=
@@ -25,16 +25,16 @@ theorem two_mul_div_one_add_sq_lt
     have hle : r * r ≤ 1 := by
       nlinarith
     exact hlt.trans_le hle
-  rw [div_lt_div_iff₀ (by positivity : 0 < 1 + b ^ 2)
-    (by positivity : 0 < 1 + r ^ 2)]
+  rw [div_lt_div_iff₀ (by positivity : 0 < 1 + b ^ (2 : ℕ))
+    (by positivity : 0 < 1 + r ^ (2 : ℕ))]
   nlinarith [mul_pos (sub_pos.mpr hbr) (sub_pos.mpr hbrMul)]
 
 /-- Strict version of the checked terminal threshold conversion. -/
 theorem norm_lt_closed_quartet_bound_of_pick_bound
     {m a b s : ℝ} (hm : 0 < m) (ha : 0 < a)
     (hb : 0 ≤ b) (hbThreshold : b < pairHyperbolicThreshold m a)
-    (hs : s ≤ 2 * b / (1 + b ^ 2)) :
-    s < m / Real.sqrt (m ^ 2 + a ^ 2) := by
+    (hs : s ≤ 2 * b / (1 + b ^ (2 : ℕ))) :
+    s < m / Real.sqrt (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hthresholdOne : pairHyperbolicThreshold m a ≤ 1 :=
     (pairHyperbolicThreshold_lt_one hm ha).le
   exact hs.trans_lt <|
@@ -60,7 +60,7 @@ theorem norm_lowerRootInnerValue_at_pole_lt_closed_quartet_bound
       lowerRootInnerValue p (symmetricPickAlphaMinus tau a) =
         -symmetricPickBlaschke x v (symmetricPickAlphaMinus tau a)) :
     ‖lowerRootInnerValue p (symmetricPickPole x v)‖ <
-      m / Real.sqrt (m ^ 2 + a ^ 2) := by
+      m / Real.sqrt (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   let b :=
     ‖symmetricPickBlaschke x v (symmetricPickAlphaPlus tau a)‖
   have hb : 0 ≤ b := norm_nonneg _
@@ -69,7 +69,7 @@ theorem norm_lowerRootInnerValue_at_pole_lt_closed_quartet_bound
       (norm_symmetricTwoPointBlaschke_lt_threshold_of_pole
         hm ha hv hupperPlus hupperMinus hbackground hpole)
   have hPick : ‖lowerRootInnerValue p (symmetricPickPole x v)‖ ≤
-      2 * b / (1 + b ^ 2) := by
+      2 * b / (1 + b ^ (2 : ℕ)) := by
     simpa [b] using
       (norm_lowerRootInnerValue_at_pole_le_symmetricPickBound
         p htau ha hv hinterpPlus hinterpMinus)
@@ -99,28 +99,28 @@ theorem norm_lowerRootInnerValue_pole_product_lt_closed_quartet_bound_sq
           (lowerRootInnerValue p (symmetricPickPole x v))) :
     ‖lowerRootInnerValue p (symmetricPickPole x v) *
         lowerRootInnerValue p (symmetricPickPole (-x) v)‖ <
-      m ^ 2 / (m ^ 2 + a ^ 2) := by
+      m ^ (2 : ℕ) / (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hsingle :=
     norm_lowerRootInnerValue_at_pole_lt_closed_quartet_bound
       p hm htau ha hv hupperPlus hupperMinus hbackground hpole
       hinterpPlus hinterpMinus
-  have hsqrt : 0 < Real.sqrt (m ^ 2 + a ^ 2) := by positivity
-  have hden : 0 < m ^ 2 + a ^ 2 := by positivity
+  have hsqrt : 0 < Real.sqrt (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by positivity
+  have hden : 0 < m ^ (2 : ℕ) + a ^ (2 : ℕ) := by positivity
   rw [hreflect, norm_mul, Complex.norm_conj]
   have hnorm : 0 ≤ ‖lowerRootInnerValue p (symmetricPickPole x v)‖ :=
     norm_nonneg _
-  have hbound : 0 < m / Real.sqrt (m ^ 2 + a ^ 2) :=
+  have hbound : 0 < m / Real.sqrt (m ^ (2 : ℕ) + a ^ (2 : ℕ)) :=
     div_pos hm hsqrt
   calc
     ‖lowerRootInnerValue p (symmetricPickPole x v)‖ *
           ‖lowerRootInnerValue p (symmetricPickPole x v)‖ <
-        (m / Real.sqrt (m ^ 2 + a ^ 2)) *
-          (m / Real.sqrt (m ^ 2 + a ^ 2)) :=
+        (m / Real.sqrt (m ^ (2 : ℕ) + a ^ (2 : ℕ))) *
+          (m / Real.sqrt (m ^ (2 : ℕ) + a ^ (2 : ℕ))) :=
       mul_self_lt_mul_self hnorm hsingle
-    _ = m ^ 2 / (m ^ 2 + a ^ 2) := by
+    _ = m ^ (2 : ℕ) / (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
       rw [div_mul_div_comm]
-      rw [show Real.sqrt (m ^ 2 + a ^ 2) *
-          Real.sqrt (m ^ 2 + a ^ 2) = m ^ 2 + a ^ 2 by
+      rw [show Real.sqrt (m ^ (2 : ℕ) + a ^ (2 : ℕ)) *
+          Real.sqrt (m ^ (2 : ℕ) + a ^ (2 : ℕ)) = m ^ (2 : ℕ) + a ^ (2 : ℕ) by
         simpa [pow_two] using Real.sq_sqrt hden.le]
       ring
 

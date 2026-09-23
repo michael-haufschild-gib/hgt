@@ -26,7 +26,7 @@ namespace Bottcher
 theorem q62_phiMero_linGap {c₁ c₂ : ℂ}
     (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc1000 : (1000:ℝ) ≤ ‖c₁‖)
     (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc₂2 : (2:ℝ) ≤ ‖c₂‖)
-    (hsgap : (Real.sqrt (2 * ‖c₂‖) + 1) ^ 2 ≤ ‖c₁‖ / 300) :
+    (hsgap : (Real.sqrt (2 * ‖c₂‖) + 1) ^ (2 : ℕ) ≤ ‖c₁‖ / 300) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne
@@ -112,7 +112,7 @@ theorem q62_phiMero_linGap {c₁ c₂ : ℂ}
 theorem q62_phiMero_linGap_swapped {c₁ c₂ : ℂ}
     (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc₁2 : (2:ℝ) ≤ ‖c₁‖)
     (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc1000 : (1000:ℝ) ≤ ‖c₂‖)
-    (hsgap : (Real.sqrt (2 * ‖c₁‖) + 1) ^ 2 ≤ ‖c₂‖ / 300) :
+    (hsgap : (Real.sqrt (2 * ‖c₁‖) + 1) ^ (2 : ℕ) ≤ ‖c₂‖ / 300) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne
@@ -136,10 +136,10 @@ theorem q62_phiMero_linGap_either {c₁ c₂ : ℂ}
     (hor :
       ((0:ℂ) ∉ filledJulia c₁ ∧ (1000:ℝ) ≤ ‖c₁‖ ∧
         (0:ℂ) ∉ filledJulia c₂ ∧ (2:ℝ) ≤ ‖c₂‖ ∧
-        (Real.sqrt (2 * ‖c₂‖) + 1) ^ 2 ≤ ‖c₁‖ / 300) ∨
+        (Real.sqrt (2 * ‖c₂‖) + 1) ^ (2 : ℕ) ≤ ‖c₁‖ / 300) ∨
       ((0:ℂ) ∉ filledJulia c₁ ∧ (2:ℝ) ≤ ‖c₁‖ ∧
         (0:ℂ) ∉ filledJulia c₂ ∧ (1000:ℝ) ≤ ‖c₂‖ ∧
-        (Real.sqrt (2 * ‖c₁‖) + 1) ^ 2 ≤ ‖c₂‖ / 300)) :
+        (Real.sqrt (2 * ‖c₁‖) + 1) ^ (2 : ℕ) ≤ ‖c₂‖ / 300)) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne

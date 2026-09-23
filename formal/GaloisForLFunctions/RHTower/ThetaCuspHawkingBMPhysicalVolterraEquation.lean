@@ -88,7 +88,7 @@ private theorem positiveTimeKernel_integrable {w : ℂ} (hw : 0 < w.re) :
   exact (positiveRayKernel_integrable hw).integrable_convolution _ (positiveRayKernel_integrable hw)
 
 private theorem positiveTimeKernel_integral {w : ℂ} (hw : 0 < w.re) :
-    (∫ t, positiveTimeKernel w t) = (w⁻¹)^2 := by
+    (∫ t, positiveTimeKernel w t) = (w⁻¹)^(2 : ℕ) := by
   rw [positiveTimeKernel_eq_convolution,
     integral_convolution _ (positiveRayKernel_integrable hw) (positiveRayKernel_integrable hw),
     positiveRayKernel_integral hw,ContinuousLinearMap.lsmul_apply,smul_eq_mul,pow_two]
@@ -122,7 +122,7 @@ private theorem weighted_primitive_integrable {w : ℂ} (hw : 0 < w.re) (f : ℝ
 private theorem weighted_primitive_laplace {w : ℂ} (hw : 0 < w.re) (f : ℝ → H)
     (hf : IntegrableOn (fun t => expRay w t • f t) (Ioi (0:ℝ))) :
     (∫ t in Ioi (0:ℝ), expRay w t • ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ) • f u) =
-      (w⁻¹)^2 • ∫ t in Ioi (0:ℝ), expRay w t • f t := by
+      (w⁻¹)^(2 : ℕ) • ∫ t in Ioi (0:ℝ), expRay w t • f t := by
   rw [← integral_indicator measurableSet_Ioi,weighted_primitive_convolution]
   rw [integral_convolution _ (positiveTimeKernel_integrable hw)
     ((integrable_indicator_iff measurableSet_Ioi).mpr hf),positiveTimeKernel_integral hw,
@@ -271,12 +271,12 @@ private theorem physical_defect_laplace (q : XiZeroCopy) (branch : Bool) (a w : 
     weighted_primitive_laplace hw0 U hU,weighted_primitive_laplace hw0 F hF]
   let V := ∫ t in Ioi (0:ℝ), expRay w t • U t
   let R := ∫ t in Ioi (0:ℝ), expRay w t • F t
-  let c : ℂ := (w⁻¹)^2
+  let c : ℂ := (w⁻¹)^(2 : ℕ)
   obtain ⟨hm,he⟩ := causalJointForcedResponse_operator q branch a w hw
   have hB := congrArg B he
   rw [map_add,map_smul,joint_covariance_inverse] at hB
-  change V+(w^2-1) • B V=B R at hB
-  have hc : c*(w^2-1)=1-c := by
+  change V+(w^(2 : ℕ)-1) • B V=B R at hB
+  have hc : c*(w^(2 : ℕ)-1)=1-c := by
     dsimp only [c]
     field_simp [hwn]
   have hscale := congrArg (fun z : SpatialSpace => c • z) hB

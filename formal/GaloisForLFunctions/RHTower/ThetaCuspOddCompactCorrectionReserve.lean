@@ -34,7 +34,7 @@ private theorem compactLowerSource_one_le {u a w : ℝ}
 /-- Actual complete-source correction dominates the compact polynomial comparison source. -/
 theorem thetaCuspCenterCompensationSource_compact_lower {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (137/2000)) :
-    Bottcher.completedThetaProfile x^2 *
+    Bottcher.completedThetaProfile x^(2 : ℕ) *
       HTGeometry.oddCompactLowerSource (-(thetaCuspModularDrift x).re)
         (thetaCuspModularGapAmplitude x) (thetaCuspModularTransverseShear x) ≤
       thetaCuspCenterCompensationSource x := by
@@ -51,14 +51,14 @@ theorem thetaCuspCenterCompensationSource_compact_lower {x : ℝ}
     nlinarith [sq_nonneg u]
   have hloss : 0 ≤ a*w/8+5*u/16 := by positivity
   have hfirst : -(a*w/8+5*u/16) ≤ HTGeometry.oddCompactSourceFirst u a w := by
-    have hp : 0 ≤ 5*u^3/144+7*u*a/96 := by positivity
+    have hp : 0 ≤ 5*u^(3 : ℕ)/144+7*u*a/96 := by positivity
     unfold HTGeometry.oddCompactSourceFirst
     linarith
   have hmul := mul_le_mul_of_nonneg_left hfirst
     (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hx.1) hQ)
   have hxmul := mul_le_mul_of_nonneg_right hx.2 (mul_nonneg hQ hloss)
   have hbound : HTGeometry.oddCompactLowerSource u a w ≤
-      3*(HTGeometry.oddCompactSourceZero u a)^2 +
+      3*(HTGeometry.oddCompactSourceZero u a)^(2 : ℕ) +
         2*x*HTGeometry.oddCompactSourceZero u a*HTGeometry.oddCompactSourceFirst u a w := by
     unfold HTGeometry.oddCompactLowerSource
     nlinarith only [hmul, hxmul]
@@ -66,21 +66,21 @@ theorem thetaCuspCenterCompensationSource_compact_lower {x : ℝ}
     (sq_nonneg (Bottcher.completedThetaProfile x))
   unfold thetaCuspCenterCompensationSource
   rw [thetaCuspFullSource_eq_compactSourceZero, deriv_thetaCuspFullSource_eq_compactSourceFirst]
-  change Bottcher.completedThetaProfile x^2 * HTGeometry.oddCompactLowerSource u a w ≤ _
+  change Bottcher.completedThetaProfile x^(2 : ℕ) * HTGeometry.oddCompactLowerSource u a w ≤ _
   nlinarith only [hscaled]
 
 /-- A fixed positive source reserve on the explicit compact center interval. -/
 theorem thetaCuspCenterCompensationSource_ge_mass_sq_on_compact {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (137/2000)) :
-    Bottcher.completedThetaProfile x^2 ≤ thetaCuspCenterCompensationSource x := by
+    Bottcher.completedThetaProfile x^(2 : ℕ) ≤ thetaCuspCenterCompensationSource x := by
   obtain ⟨hS0, hS1, hA0, hA1, hW0, _⟩ := thetaCuspModularLyapunovState_compact_box hx
   have hu0 : 0 ≤ -(thetaCuspModularDrift x).re := by linarith
   have hu1 : -(thetaCuspModularDrift x).re ≤ 1 := by linarith
   have hb := compactLowerSource_one_le hu0 hu1 hA0 hA1 hW0
     (thetaCuspModularTransverseShear_le_one_on_compact hx)
   have h := mul_le_mul_of_nonneg_left hb (sq_nonneg (Bottcher.completedThetaProfile x))
-  have hh : Bottcher.completedThetaProfile x^2 ≤
-      Bottcher.completedThetaProfile x^2 *
+  have hh : Bottcher.completedThetaProfile x^(2 : ℕ) ≤
+      Bottcher.completedThetaProfile x^(2 : ℕ) *
         HTGeometry.oddCompactLowerSource (-(thetaCuspModularDrift x).re)
           (thetaCuspModularGapAmplitude x) (thetaCuspModularTransverseShear x) := by
     simpa only [mul_one] using h

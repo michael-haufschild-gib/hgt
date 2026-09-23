@@ -32,7 +32,7 @@ namespace RHTower
 
 /-- The square of a summable nonnegative family is summable: each term is bounded by the total. -/
 theorem summable_sq_of_summable_nonneg {ι : Type*} {f : ι → ℝ} (hf0 : ∀ i, 0 ≤ f i)
-    (hf : Summable f) : Summable (fun i => f i ^ 2) := by
+    (hf : Summable f) : Summable (fun i => f i ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun i => sq_nonneg _) (fun i => ?_) (hf.mul_left (∑' j, f j))
   have hle : f i ≤ ∑' j, f j := hf.le_tsum i (fun j _ => hf0 j)
   nlinarith [hf0 i]
@@ -214,21 +214,21 @@ theorem hasSum_suzukiV0WeilTerm (hRH : RiemannHypothesis)
     {ψ : Lp ℂ 2 (volume : Measure ℝ)} (hψ : ψ ∈ suzukiV0) :
     HasSum (fun q : XiZeroCopy => suzukiV0Eval ψ (xiSpectralPoint q)
         * (starRingEnd ℂ) (suzukiV0Eval ψ ((starRingEnd ℂ) (xiSpectralPoint q))))
-      (((‖ψ‖ ^ 2 / Real.pi : ℝ)) : ℂ) := by
+      (((‖ψ‖ ^ (2 : ℕ) / Real.pi : ℝ)) : ℂ) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   set F : Lp ℂ 2 (volume : Measure ℝ) := (MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ) ψ with hFdef
   have hF : F ∈ suzukiModelSpace := mem_suzukiModelSpace_fourier_of_suzukiV0 hψ
   have hnorm : ‖F‖ = ‖ψ‖ := (MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ).norm_map ψ
   have hbase := hasSum_suzukiClarkWeight_normSq_restriction hRH hF
   have hdiv : HasSum (fun ρ : XiDivisorSupport =>
-      (xiSupportMult ρ : ℝ) * ‖suzukiRestriction hRH F ρ‖ ^ 2) (‖ψ‖ ^ 2 / Real.pi) := by
+      (xiSupportMult ρ : ℝ) * ‖suzukiRestriction hRH F ρ‖ ^ (2 : ℕ)) (‖ψ‖ ^ (2 : ℕ) / Real.pi) := by
     have h := hbase.div_const Real.pi
     rw [hnorm] at h
     refine h.congr fun ρ => ?_
     simp only [suzukiClarkWeight]
     field_simp
   have hreal := hasSum_xiZeroCopy_of_support
-    (g := fun ρ => ‖suzukiRestriction hRH F ρ‖ ^ 2) (fun ρ => sq_nonneg _) hdiv
+    (g := fun ρ => ‖suzukiRestriction hRH F ρ‖ ^ (2 : ℕ)) (fun ρ => sq_nonneg _) hdiv
   have hC := Complex.hasSum_ofReal.mpr hreal
   refine hC.congr_fun fun q => ?_
   rw [conj_xiSpectralPoint_of_rh hRH q, suzukiV0Eval_xiSpectralPoint hRH ψ q]
@@ -238,7 +238,7 @@ theorem hasSum_suzukiV0WeilTerm (hRH : RiemannHypothesis)
 Weil mass. -/
 theorem norm_sq_eq_pi_mul_suzukiV0WeilForm (hRH : RiemannHypothesis)
     {ψ : Lp ℂ 2 (volume : Measure ℝ)} (hψ : ψ ∈ suzukiV0) :
-    ((‖ψ‖ ^ 2 : ℝ) : ℂ) = (Real.pi : ℂ) * suzukiV0WeilForm ψ ψ := by
+    ((‖ψ‖ ^ (2 : ℕ) : ℝ) : ℂ) = (Real.pi : ℂ) * suzukiV0WeilForm ψ ψ := by
   have hpi : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
   have h := (hasSum_suzukiV0WeilTerm hRH hψ).tsum_eq
   rw [suzukiV0WeilForm, h]

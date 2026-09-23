@@ -24,7 +24,7 @@ theorem exists_periodic_point (c : ℂ) (p : ℕ) (hp : 1 ≤ p) :
     ∃ z : ℂ, (quadratic c)^[p] z = z := by
   have hXlt : (Polynomial.X : Polynomial ℂ).natDegree < (quadraticPolyIterate c p).natDegree := by
     rw [Polynomial.natDegree_X, quadraticPolyIterate_natDegree]
-    calc 1 < 2 ^ 1 := by norm_num
+    calc 1 < 2 ^ (1 : ℕ) := by norm_num
       _ ≤ 2 ^ p := Nat.pow_le_pow_right (by norm_num) hp
   have hdeg : (quadraticPolyIterate c p - Polynomial.X).natDegree = 2 ^ p := by
     rw [Polynomial.natDegree_sub_eq_left_of_natDegree_lt hXlt, quadraticPolyIterate_natDegree]
@@ -68,9 +68,9 @@ theorem exists_fixed_point_multiplier_ge_one (c : ℂ) :
   set zp : ℂ := (1 + s) / 2 with hzp
   set zm : ℂ := (1 - s) / 2 with hzm
   have hzp_fix : quadratic c zp = zp := by
-    show zp ^ 2 + c = zp; rw [hzp]; field_simp; linear_combination hs
+    show zp ^ (2 : ℕ) + c = zp; rw [hzp]; field_simp; linear_combination hs
   have hzm_fix : quadratic c zm = zm := by
-    show zm ^ 2 + c = zm; rw [hzm]; field_simp; linear_combination hs
+    show zm ^ (2 : ℕ) + c = zm; rw [hzm]; field_simp; linear_combination hs
   have hmul : (2 : ℂ) * zp + (2 : ℂ) * zm = 2 := by rw [hzp, hzm]; ring
   have hsum : (2 : ℝ) ≤ ‖(2 : ℂ) * zp‖ + ‖(2 : ℂ) * zm‖ := by
     calc (2 : ℝ) = ‖(2 : ℂ) * zp + (2 : ℂ) * zm‖ := by rw [hmul]; norm_num
@@ -97,12 +97,12 @@ theorem exists_repelling_fixed_point (c : ℂ) (hc : c ≠ 1 / 4) :
   set zp : ℂ := (1 + s) / 2 with hzp
   set zm : ℂ := (1 - s) / 2 with hzm
   have hzp_fix : quadratic c zp = zp := by
-    show zp ^ 2 + c = zp; rw [hzp]; field_simp; linear_combination hs
+    show zp ^ (2 : ℕ) + c = zp; rw [hzp]; field_simp; linear_combination hs
   have hzm_fix : quadratic c zm = zm := by
-    show zm ^ 2 + c = zm; rw [hzm]; field_simp; linear_combination hs
+    show zm ^ (2 : ℕ) + c = zm; rw [hzm]; field_simp; linear_combination hs
   have h2p : (2 : ℂ) * zp = 1 + s := by rw [hzp]; ring
   have h2m : (2 : ℂ) * zm = 1 - s := by rw [hzm]; ring
-  have hpar : ‖(1 : ℂ) + s‖ ^ 2 + ‖(1 : ℂ) - s‖ ^ 2 = 2 * (‖(1 : ℂ)‖ ^ 2 + ‖s‖ ^ 2) :=
+  have hpar : ‖(1 : ℂ) + s‖ ^ (2 : ℕ) + ‖(1 : ℂ) - s‖ ^ (2 : ℕ) = 2 * (‖(1 : ℂ)‖ ^ (2 : ℕ) + ‖s‖ ^ (2 : ℕ)) :=
     parallelogram_law_with_norm ℝ (1 : ℂ) s
   have hsnorm : 0 < ‖s‖ := norm_pos_iff.mpr hs0
   by_contra hcon
@@ -111,8 +111,8 @@ theorem exists_repelling_fixed_point (c : ℂ) (hc : c ≠ 1 / 4) :
     have := hcon zp hzp_fix (mem_filledJulia_of_fixed hzp_fix); rwa [h2p] at this
   have hmle : ‖(1 : ℂ) - s‖ ≤ 1 := by
     have := hcon zm hzm_fix (mem_filledJulia_of_fixed hzm_fix); rwa [h2m] at this
-  have hp2 : ‖(1 : ℂ) + s‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg ((1 : ℂ) + s), hple]
-  have hm2 : ‖(1 : ℂ) - s‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg ((1 : ℂ) - s), hmle]
+  have hp2 : ‖(1 : ℂ) + s‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg ((1 : ℂ) + s), hple]
+  have hm2 : ‖(1 : ℂ) - s‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg ((1 : ℂ) - s), hmle]
   have hone : ‖(1 : ℂ)‖ = 1 := by norm_num
   rw [hone] at hpar
   nlinarith [hpar, hp2, hm2, hsnorm]
@@ -128,8 +128,8 @@ theorem exists_two_distinct_fixed_points (c : ℂ) (hc : c ≠ 1 / 4) :
     have : (1 : ℂ) - 4 * c = 0 := by rw [← hs, h]; ring
     linear_combination -(1 / 4) * this
   refine ⟨(1 + s) / 2, (1 - s) / 2, ?_, ?_, ?_⟩
-  · show ((1 + s) / 2) ^ 2 + c = (1 + s) / 2; field_simp; linear_combination hs
-  · show ((1 - s) / 2) ^ 2 + c = (1 - s) / 2; field_simp; linear_combination hs
+  · show ((1 + s) / 2) ^ (2 : ℕ) + c = (1 + s) / 2; field_simp; linear_combination hs
+  · show ((1 - s) / 2) ^ (2 : ℕ) + c = (1 - s) / 2; field_simp; linear_combination hs
   · intro h
     apply hs0
     have : (1 + s) / 2 - (1 - s) / 2 = 0 := by rw [h]; ring

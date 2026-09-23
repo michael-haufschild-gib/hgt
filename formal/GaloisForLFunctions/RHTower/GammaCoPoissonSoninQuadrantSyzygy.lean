@@ -92,7 +92,7 @@ theorem norm_coPoissonQuotientForward_div_inverse_ladderKernel {hlo : 1 / 2 < w.
     ‖coPoissonQuotientForward a r ha hr j (coPoissonLadderKernel w hlo hhi a r ha hr (j + 1))‖ /
         ‖coPoissonQuotientInverse a r ha hr j
           (coPoissonLadderKernel w hlo hhi a r ha hr (j + 1))‖ =
-      ‖soninLadderCharacter w r‖ ^ 2 := by
+      ‖soninLadderCharacter w r‖ ^ (2 : ℕ) := by
   have hLpos : 0 < ‖soninLadderCharacter w r‖ := norm_soninLadderCharacter_pos hr w
   have hypos : 0 < ‖coPoissonLadderKernel w hlo hhi a r ha hr j‖ := norm_pos_iff.mpr hy
   rw [coPoissonQuotientForward_ladderKernel hr1 hann j,

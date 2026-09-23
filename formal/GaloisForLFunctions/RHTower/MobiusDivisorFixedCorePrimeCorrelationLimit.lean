@@ -19,7 +19,7 @@ private lemma mixed_prefix_limit (P : Finset ℕ) (hP : ∀ p∈P,p.Prime)
     Tendsto (fun N : ℕ => (∑ r ∈ fixedCoreSquarefreeIndices P ⌊t*(N : ℝ)⌋₊,
       (a+b*Real.sqrt ((r : ℝ)/N))*(c+d*Real.sqrt ((r : ℝ)/N)))/(N : ℝ)) atTop
       (𝓝 ((Sieve.squarefreeDensity * ∏ p∈P,(p : ℝ)/(p+1))*
-        (a*c*t+(2/3:ℝ)*(a*d+b*c)*t*Real.sqrt t+b*d*t^2/2))) := by
+        (a*c*t+(2/3:ℝ)*(a*d+b*c)*t*Real.sqrt t+b*d*t^(2 : ℕ)/2))) := by
   have h0 := (tendsto_fixedCoreSquarefree_scaled_count P hP ht).const_mul (a*c)
   have h1 := (tendsto_fixedCoreSquarefree_scaled_half_moments P hP 0 ht).const_mul (a*d+b*c)
   have h2 := (tendsto_fixedCoreSquarefree_scaled_half_moments P hP 1 ht).const_mul (b*d)
@@ -27,7 +27,7 @@ private lemma mixed_prefix_limit (P : Finset ℕ) (hP : ∀ p∈P,p.Prime)
   convert h using 1
   · ext N
     have he (r : ℕ) : (a+b*Real.sqrt ((r : ℝ)/N))*(c+d*Real.sqrt ((r : ℝ)/N)) =
-        a*c+(a*d+b*c)*Real.sqrt ((r : ℝ)/N)+b*d*(Real.sqrt ((r : ℝ)/N))^2 := by ring
+        a*c+(a*d+b*c)*Real.sqrt ((r : ℝ)/N)+b*d*(Real.sqrt ((r : ℝ)/N))^(2 : ℕ) := by ring
     simp_rw [he]
     simp only [sum_add_distrib, ← mul_sum, sum_const, nsmul_eq_mul,
       fixedCoreSquarefreeCount, Nat.zero_add, Nat.one_add, pow_one, add_div, mul_div_assoc]
@@ -79,7 +79,7 @@ def mobiusDivisorPrimeCorrelationPrimitive (P : Finset ℕ) (p n : ℕ) (t : ℝ
     (2/3:ℝ)*(mobiusDivisorHeadBlockSlope P n*
       (Real.sqrt p*mobiusDivisorHeadBlockIntercept P (n/p))+
         mobiusDivisorHeadBlockIntercept P n*mobiusDivisorHeadBlockSlope P (n/p))*t*Real.sqrt t+
-    mobiusDivisorHeadBlockIntercept P n*(Real.sqrt p*mobiusDivisorHeadBlockIntercept P (n/p))*t^2/2)
+    mobiusDivisorHeadBlockIntercept P n*(Real.sqrt p*mobiusDivisorHeadBlockIntercept P (n/p))*t^(2 : ℕ)/2)
 
 /-- The complete signed prime-release source on one literal quotient block. -/
 def mobiusDivisorPrimeCorrelationBlock (P : Finset ℕ) (p M n : ℕ) : ℝ :=
@@ -111,7 +111,7 @@ private lemma term_polynomial (P : Finset ℕ) {p M r n : ℕ}
         mobiusDivisorHeadBlockIntercept P n*Real.sqrt r)*
         (mobiusDivisorHeadBlockSlope P (n/p)*Real.sqrt M+
           mobiusDivisorHeadBlockIntercept P (n/p)*Real.sqrt (p*r : ℕ)) := by rw [h0,h1]
-    _ = (Real.sqrt (M : ℝ))^2*(2*correlationPolynomial P p n ((r : ℝ)/M)) := by
+    _ = (Real.sqrt (M : ℝ))^(2 : ℕ)*(2*correlationPolynomial P p n ((r : ℝ)/M)) := by
       rw [Nat.cast_mul,Real.sqrt_mul (Nat.cast_nonneg p),he]
       unfold correlationPolynomial
       ring
@@ -119,7 +119,7 @@ private lemma term_polynomial (P : Finset ℕ) {p M r n : ℕ}
 
 private lemma block_div_sq (P : Finset ℕ) {p M n : ℕ}
     (hp : 0<p) (hM : 0<M) (hn : 0<n) :
-    mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^2 =
+    mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^(2 : ℕ) =
       2*((∑ r ∈ fixedCoreSquarefreeIndices (insert p P) (M/n),
         correlationPolynomial P p n ((r : ℝ)/M))/(M : ℝ)-
       (∑ r ∈ fixedCoreSquarefreeIndices (insert p P) (M/(n+1)),
@@ -149,7 +149,7 @@ private lemma block_div_sq (P : Finset ℕ) {p M n : ℕ}
 quadratic-scale limit, keeping both adjacent head values at both scales. -/
 theorem tendsto_mobiusDivisorPrimeCorrelationBlock_div_sq
     (P : Finset ℕ) (hP : ∀ q∈P,q.Prime) {p n : ℕ} (hp : p.Prime) (hn : 0<n) :
-    Tendsto (fun M : ℕ => mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^2) atTop
+    Tendsto (fun M : ℕ => mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^(2 : ℕ)) atTop
       (𝓝 ((Sieve.squarefreeDensity * ∏ q∈insert p P,(q : ℝ)/(q+1))*
         (mobiusDivisorPrimeCorrelationPrimitive P p n (1/(n : ℝ))-
           mobiusDivisorPrimeCorrelationPrimitive P p n (1/((n : ℝ)+1))))) := by
@@ -192,7 +192,7 @@ def mobiusDivisorPrimeCorrelationMass (P : Finset ℕ) (p n : ℕ) : ℝ :=
 
 private lemma correlation_block_limit (P : Finset ℕ) (hP : ∀ q∈P,q.Prime)
     {p : ℕ} (hp : p.Prime) (n : ℕ) :
-    Tendsto (fun M : ℕ => mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^2) atTop
+    Tendsto (fun M : ℕ => mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^(2 : ℕ)) atTop
       (𝓝 (mobiusDivisorPrimeCorrelationMass P p n)) := by
   by_cases hn : n=0
   · have hz (M : ℕ) : mobiusDivisorPrimeCorrelationBlock P p M 0=0 := by
@@ -237,15 +237,15 @@ private lemma correlation_remainder (P : Finset ℕ) {p : ℕ}
 
 private lemma normalized_remainder_bound (P : Finset ℕ) (hP : ∀ q∈P,q.Prime)
     {p : ℕ} (hp : p.Prime) (hpP : p∉P) (M : ℕ) {T : ℕ} (hT : 0<T) :
-    |(mobiusDivisorSelectionEnergy M P-mobiusDivisorSelectionEnergy M (insert p P))/(M : ℝ)^2-
-      (∑ n∈range T,mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^2)| ≤
-        2*((3/5:ℝ)*2^(P.card-1))^2/(T : ℝ) := by
+    |(mobiusDivisorSelectionEnergy M P-mobiusDivisorSelectionEnergy M (insert p P))/(M : ℝ)^(2 : ℕ)-
+      (∑ n∈range T,mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^(2 : ℕ))| ≤
+        2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)/(T : ℝ) := by
   rw [← sum_div,← sub_div,correlation_remainder P hp hpP M T,
     abs_div,abs_of_nonneg (sq_nonneg (M : ℝ))]
   by_cases hM : M=0
   · simp only [hM,Nat.cast_zero,zero_pow (by omega : 2≠0),div_zero]
     positivity
-  · have hMR : 0<(M : ℝ)^2 := sq_pos_of_ne_zero (by exact_mod_cast hM)
+  · have hMR : 0<(M : ℝ)^(2 : ℕ) := sq_pos_of_ne_zero (by exact_mod_cast hM)
     apply (div_le_iff₀ hMR).mpr
     exact (abs_sum_le_sum_abs _ _).trans
       (mobiusDivisorPrimeCorrelation_absolute_tail_le P hP hp hpP M hT)
@@ -253,7 +253,7 @@ private lemma normalized_remainder_bound (P : Finset ℕ) (hP : ∀ q∈P,q.Prim
 private lemma absolute_source_bound (P : Finset ℕ) (hP : ∀ q∈P,q.Prime)
     {p : ℕ} (hp : p.Prime) (hpP : p∉P) (M : ℕ) :
     (∑ r∈fixedCoreSquarefreeIndices (insert p P) M, |mobiusDivisorPrimeCorrelationTerm P p M r|) ≤
-      (2*((3/5:ℝ)*2^(P.card-1))^2)*(M : ℝ)^2 := by
+      (2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ))*(M : ℝ)^(2 : ℕ) := by
   have he : (fixedCoreSquarefreeIndices (insert p P) M).filter (fun r => 1≤M/r) =
       fixedCoreSquarefreeIndices (insert p P) M := by
     apply filter_eq_self.mpr
@@ -265,14 +265,14 @@ private lemma absolute_source_bound (P : Finset ℕ) (hP : ∀ q∈P,q.Prime)
 
 private lemma absolute_block_prefix_bound (P : Finset ℕ) (hP : ∀ q∈P,q.Prime)
     {p : ℕ} (hp : p.Prime) (hpP : p∉P) (M T : ℕ) :
-    (∑ n∈range T,|mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^2|) ≤
-      2*((3/5:ℝ)*2^(P.card-1))^2 := by
+    (∑ n∈range T,|mobiusDivisorPrimeCorrelationBlock P p M n/(M : ℝ)^(2 : ℕ)|) ≤
+      2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ) := by
   simp_rw [abs_div,abs_of_nonneg (sq_nonneg (M : ℝ))]
   rw [← sum_div]
   by_cases hM : M=0
   · simp only [hM,Nat.cast_zero,zero_pow (by omega : 2≠0),div_zero]
     positivity
-  · have hMR : 0<(M : ℝ)^2 := sq_pos_of_ne_zero (by exact_mod_cast hM)
+  · have hMR : 0<(M : ℝ)^(2 : ℕ) := sq_pos_of_ne_zero (by exact_mod_cast hM)
     apply (div_le_iff₀ hMR).mpr
     calc
       _ ≤ ∑ n∈range T,∑ r∈(fixedCoreSquarefreeIndices (insert p P) M).filter (fun r => M/r=n),
@@ -307,7 +307,7 @@ theorem abs_mobiusDivisorPrimeReleaseCoefficient_sub_prefix_le
     |((∑' n,mobiusDivisorFixedCoreBlockMass P n)-
         ∑' n,mobiusDivisorFixedCoreBlockMass (insert p P) n)-
       ∑ n∈range T,mobiusDivisorPrimeCorrelationMass P p n| ≤
-        2*((3/5:ℝ)*2^(P.card-1))^2/(T : ℝ) := by
+        2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)/(T : ℝ) := by
   have hPp : ∀ q∈insert p P,q.Prime := by simpa using And.intro hp hP
   have hE := (tendsto_mobiusDivisorSelectionEnergy_div_sq P hP).sub
     (tendsto_mobiusDivisorSelectionEnergy_div_sq (insert p P) hPp)
@@ -326,10 +326,10 @@ theorem hasSum_mobiusDivisorPrimeCorrelationMass
         ∑' n,mobiusDivisorFixedCoreBlockMass (insert p P) n) := by
   have hs : Summable (mobiusDivisorPrimeCorrelationMass P p) :=
     (summable_abs_iff).mp (summable_abs_mobiusDivisorPrimeCorrelationMass P hP hp hpP)
-  have hsmall : Tendsto (fun T : ℕ => 2*((3/5:ℝ)*2^(P.card-1))^2/(T : ℝ)) atTop (𝓝 0) := by
+  have hsmall : Tendsto (fun T : ℕ => 2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)/(T : ℝ)) atTop (𝓝 0) := by
     have h := (tendsto_inv_atTop_zero.comp
       (tendsto_natCast_atTop_atTop : Tendsto (fun T : ℕ => (T : ℝ)) atTop atTop)).const_mul
-        (2*((3/5:ℝ)*2^(P.card-1))^2)
+        (2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ))
     simpa only [Function.comp_def,div_eq_mul_inv,mul_zero] using h
   have hle : |((∑' n,mobiusDivisorFixedCoreBlockMass P n)-
       ∑' n,mobiusDivisorFixedCoreBlockMass (insert p P) n)-

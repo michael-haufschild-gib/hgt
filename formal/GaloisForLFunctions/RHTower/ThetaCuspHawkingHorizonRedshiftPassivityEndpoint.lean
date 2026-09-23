@@ -353,7 +353,7 @@ def threePointCanonicalEnergyProbeMiddle
 /-- Last coefficient of the adjugate probe. -/
 def threePointCanonicalEnergyProbeRight
     (K : ℝ → ℝ → ℝ) (x y : ℝ) : ℝ :=
-  K x y ^ 2 - K x x * K y y
+  K x y ^ (2 : ℕ) - K x x * K y y
 
 /-- Adjugate identity: the canonical probe turns quadratic energy into leading minor times cubic
 determinant. -/
@@ -363,7 +363,7 @@ theorem symmetricThreePointLongEdgeEnergy_canonicalProbe_eq
         (threePointCanonicalEnergyProbeLeft K x y z)
         (threePointCanonicalEnergyProbeMiddle K x y z)
         (threePointCanonicalEnergyProbeRight K x y) =
-      (K x x * K y y - K x y ^ 2) *
+      (K x x * K y y - K x y ^ (2 : ℕ)) *
         symmetricThreePointDet K x y z := by
   unfold symmetricThreePointLongEdgeEnergy
     threePointCanonicalEnergyProbeLeft
@@ -385,7 +385,7 @@ theorem thetaCuspHawking_negativeCubic_forces_negativeCanonicalEnergy
       (threePointCanonicalEnergyProbeMiddle K x y z)
         (threePointCanonicalEnergyProbeRight K x y) < 0 := by
   let K := thetaCuspHawkingSelectiveModularGainKernel q rapidity
-  have hminor : 0 < K x x * K y y - K x y ^ 2 :=
+  have hminor : 0 < K x x * K y y - K x y ^ (2 : ℕ) :=
     thetaCuspHawkingSelectiveModularGainKernel_twoPoint_det_pos
       q rapidity hx hxy
   dsimp only

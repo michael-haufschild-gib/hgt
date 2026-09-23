@@ -34,24 +34,24 @@ index type and the filter are irrelevant; only eventual positivity of the bandwi
 theorem tendsto_sqrt_mul_shapeRatio_of_normalized' {ι : Type*} {L' : Filter ι}
     {Φ : ι → ℝ → ℝ} {c : ι → ℝ} {L : ℝ} (hL : L ≠ 0) (hc : ∀ᶠ i in L', 0 < c i)
     (h : Tendsto (fun i => (∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)),
-            normalizedProlateProfile (c i) (Φ i) xi) ^ 2
+            normalizedProlateProfile (c i) (Φ i) xi) ^ (2 : ℕ)
           / ∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)),
-            (normalizedProlateProfile (c i) (Φ i) xi) ^ 2) L' (𝓝 L)) :
+            (normalizedProlateProfile (c i) (Φ i) xi) ^ (2 : ℕ)) L' (𝓝 L)) :
     Tendsto (fun i => Real.sqrt (c i) *
-        ((∫ u in (-1 : ℝ)..1, Φ i u) ^ 2 / ∫ u in (-1 : ℝ)..1, (Φ i u) ^ 2)) L' (𝓝 L) := by
+        ((∫ u in (-1 : ℝ)..1, Φ i u) ^ (2 : ℕ) / ∫ u in (-1 : ℝ)..1, (Φ i u) ^ (2 : ℕ))) L' (𝓝 L) := by
   have hzero : ∀ i : ι, Φ i 0 = 0 →
-      ((∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)), normalizedProlateProfile (c i) (Φ i) xi) ^ 2
+      ((∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)), normalizedProlateProfile (c i) (Φ i) xi) ^ (2 : ℕ)
         / ∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)),
-          (normalizedProlateProfile (c i) (Φ i) xi) ^ 2) = 0 := by
+          (normalizedProlateProfile (c i) (Φ i) xi) ^ (2 : ℕ)) = 0 := by
     intro i hi
     have hprof : ∀ xi : ℝ, normalizedProlateProfile (c i) (Φ i) xi = 0 := by
       intro xi
       rw [normalizedProlateProfile, hi, div_zero]
     simp [hprof]
   have hratne : ∀ᶠ i in L',
-      ((∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)), normalizedProlateProfile (c i) (Φ i) xi) ^ 2
+      ((∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)), normalizedProlateProfile (c i) (Φ i) xi) ^ (2 : ℕ)
         / ∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)),
-          (normalizedProlateProfile (c i) (Φ i) xi) ^ 2) ≠ 0 :=
+          (normalizedProlateProfile (c i) (Φ i) xi) ^ (2 : ℕ)) ≠ 0 :=
     h.eventually_ne hL
   refine h.congr' ?_
   filter_upwards [hratne, hc] with i hine hipos
@@ -65,21 +65,21 @@ theorem tendsto_sqrt_mul_shapeRatio_of_normalized' {ι : Type*} {L' : Filter ι}
     (β := (Φ i 0)⁻¹) (ne_of_gt hsq) (inv_ne_zero hamp) 1
   rw [mul_one] at hdil
   calc ((∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)),
-        normalizedProlateProfile (c i) (Φ i) xi) ^ 2
+        normalizedProlateProfile (c i) (Φ i) xi) ^ (2 : ℕ)
         / ∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)),
-          (normalizedProlateProfile (c i) (Φ i) xi) ^ 2)
+          (normalizedProlateProfile (c i) (Φ i) xi) ^ (2 : ℕ))
       = ((∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)),
-            (Φ i 0)⁻¹ * Φ i (xi / Real.sqrt (c i))) ^ 2
+            (Φ i 0)⁻¹ * Φ i (xi / Real.sqrt (c i))) ^ (2 : ℕ)
           / ∫ xi in (-Real.sqrt (c i))..(Real.sqrt (c i)),
-            ((Φ i 0)⁻¹ * Φ i (xi / Real.sqrt (c i))) ^ 2) := by
+            ((Φ i 0)⁻¹ * Φ i (xi / Real.sqrt (c i))) ^ (2 : ℕ)) := by
         simp only [hprof]
-    _ = Real.sqrt (c i) * ((∫ u in (-1 : ℝ)..1, Φ i u) ^ 2
-          / ∫ u in (-1 : ℝ)..1, (Φ i u) ^ 2) := hdil
+    _ = Real.sqrt (c i) * ((∫ u in (-1 : ℝ)..1, Φ i u) ^ (2 : ℕ)
+          / ∫ u in (-1 : ℝ)..1, (Φ i u) ^ (2 : ℕ)) := hdil
 
 /-- The limiting shape ratio of an even Hermite rung is not zero. -/
 theorem hermiteShapeRatio_ne_zero (n : ℕ) :
-    (∫ x, hermiteFun (2 * n) x) ^ 2 / ∫ x, hermiteFun (2 * n) x ^ 2 ≠ 0 := by
-  have hnum : (∫ x, hermiteFun (2 * n) x) ^ 2 ≠ 0 :=
+    (∫ x, hermiteFun (2 * n) x) ^ (2 : ℕ) / ∫ x, hermiteFun (2 * n) x ^ (2 : ℕ) ≠ 0 := by
+  have hnum : (∫ x, hermiteFun (2 * n) x) ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (integral_hermiteFun_two_mul_ne_zero n)
   exact div_ne_zero hnum (integral_hermiteFun_sq_pos_line (2 * n)).ne'
 
@@ -88,9 +88,9 @@ variable, the normalized shape ratio of the `n`-th canonical even mode converges
 of the `2n`-th Hermite function, which is nonzero. -/
 theorem tendsto_indexedRung_coordinateLimit (n : ℕ) :
     Tendsto (fun a : ProlatePositiveAperture => Real.sqrt (indexedOscillatorBandwidth a) *
-        ((∫ u in (-1 : ℝ)..1, (signedModeRadialData (a : ℝ) n).R u) ^ 2
-          / ∫ u in (-1 : ℝ)..1, ((signedModeRadialData (a : ℝ) n).R u) ^ 2))
-      atTop (𝓝 ((∫ x, hermiteFun (2 * n) x) ^ 2 / ∫ x, hermiteFun (2 * n) x ^ 2)) := by
+        ((∫ u in (-1 : ℝ)..1, (signedModeRadialData (a : ℝ) n).R u) ^ (2 : ℕ)
+          / ∫ u in (-1 : ℝ)..1, ((signedModeRadialData (a : ℝ) n).R u) ^ (2 : ℕ)))
+      atTop (𝓝 ((∫ x, hermiteFun (2 * n) x) ^ (2 : ℕ) / ∫ x, hermiteFun (2 * n) x ^ (2 : ℕ))) := by
   refine tendsto_sqrt_mul_shapeRatio_of_normalized'
     (Φ := fun a : ProlatePositiveAperture => (signedModeRadialData (a : ℝ) n).R)
     (c := indexedOscillatorBandwidth) (hermiteShapeRatio_ne_zero n)

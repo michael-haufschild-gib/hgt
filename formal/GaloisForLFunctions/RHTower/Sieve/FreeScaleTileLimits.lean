@@ -25,13 +25,13 @@ theorem tendsto_tileM_cast (K₀ : ℕ) :
   tendsto_natCast_atTop_atTop.comp (tendsto_tileM K₀)
 
 /-- The scale of the base block is the square of the start modulus. -/
-theorem freeScale_zero (m : ℕ) : freeScale m 0 = ((m : ℕ) : ℝ) ^ 2 := by
+theorem freeScale_zero (m : ℕ) : freeScale m 0 = ((m : ℕ) : ℝ) ^ (2 : ℕ) := by
   rw [freeScale, freeStart_zero]
 
 theorem tendsto_tileScale (K₀ : ℕ) :
     Tendsto (fun u : ℕ => freeScale (tileM K₀ u) 0) atTop atTop := by
   have hmul := (tendsto_tileM_cast K₀).atTop_mul_atTop₀ (tendsto_tileM_cast K₀)
-  have h : Tendsto (fun u : ℕ => ((tileM K₀ u : ℕ) : ℝ) ^ 2) atTop atTop :=
+  have h : Tendsto (fun u : ℕ => ((tileM K₀ u : ℕ) : ℝ) ^ (2 : ℕ)) atTop atTop :=
     hmul.congr fun u => by ring
   exact h.congr fun u => (freeScale_zero _).symm
 
@@ -43,8 +43,8 @@ theorem freeScale_tile_div {K₀ u k : ℕ} (hk : k ≤ K₀ + 1) :
     rw [← pow_add]; congr 1; omega
   rw [hsplit]
   push_cast
-  have h4 : (4 : ℝ) ^ k = ((2 : ℝ) ^ k) ^ 2 := by
-    rw [← pow_mul, show (4 : ℝ) = 2 ^ 2 by norm_num, ← pow_mul]
+  have h4 : (4 : ℝ) ^ k = ((2 : ℝ) ^ k) ^ (2 : ℕ) := by
+    rw [← pow_mul, show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul]
     congr 1
     ring
   rw [h4]

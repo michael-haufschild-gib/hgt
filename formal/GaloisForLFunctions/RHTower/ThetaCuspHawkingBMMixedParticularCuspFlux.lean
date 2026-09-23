@@ -117,8 +117,8 @@ def sourcePower (q : XiZeroCopy) (i : Fin 3) : ℂ :=
   ![2*(q.1:ℂ),1,2-2*(q.1:ℂ)] i
 
 def sourceCoefficient (q : XiZeroCopy) (i : Fin 3) : ℂ :=
-  ![weylCoefficient q true^2,2*weylCoefficient q true*weylCoefficient q false,
-    weylCoefficient q false^2] i
+  ![weylCoefficient q true^(2 : ℕ),2*weylCoefficient q true*weylCoefficient q false,
+    weylCoefficient q false^(2 : ℕ)] i
 
 def readerPower (r : XiZeroCopy) : ℂ := 1-(r.1:ℂ)/2
 
@@ -156,7 +156,7 @@ private theorem principal_center (q : XiZeroCopy) (y : ℝ) :
 
 /-- Exact three-power identity for the original principal square. -/
 theorem principal_square (q : XiZeroCopy) (y : Ioi (0:ℝ)) :
-    D4BMGlobalAngularResponse.principal (center q) ![0,y.val] ^2=
+    D4BMGlobalAngularResponse.principal (center q) ![0,y.val] ^(2 : ℕ)=
       ∑ i : Fin 3, sourceCoefficient q i*(y.val:ℂ)^(sourcePower q i) := by
   rw [principal_center]
   simpa [Fin.sum_univ_three,sourceCoefficient,sourcePower] using
@@ -194,14 +194,14 @@ def powerFlux (q r : XiZeroCopy) (b : Bool) (y : ℝ) : ℂ :=
   ∑ i : Fin 3, fluxCoefficient q r b i*(y:ℂ)^(fluxExponent q r i)
 
 private theorem reader_eigenvalue (r : XiZeroCopy) :
-    physicalAngularParameter r^2-1/4=readerPower r*(readerPower r-1) := by
+    physicalAngularParameter r^(2 : ℕ)-1/4=readerPower r*(readerPower r-1) := by
   rw [physicalAngularParameter_eq]
   unfold readerPower
   ring
 
 /-- The source-derived coefficient identity keeps the complete resolvent denominator. -/
 theorem fluxCoefficient_identity (q r : XiZeroCopy) (b : Bool) (i : Fin 3) :
-    (physicalAngularParameter r^2-1/4)*readerCoefficient r*responseCoefficient q b i*sourcePower q i-
+    (physicalAngularParameter r^(2 : ℕ)-1/4)*readerCoefficient r*responseCoefficient q b i*sourcePower q i-
       parameter q b*(responseCoefficient q b i+sourceCoefficient q i/2)*readerCoefficient r*readerPower r=
         fluxCoefficient q r b i := by
   rw [reader_eigenvalue]
@@ -213,7 +213,7 @@ theorem fluxCoefficient_identity (q r : XiZeroCopy) (b : Bool) (i : Fin 3) :
 /-- The literal mixed Weyl power carries the same coefficient on both physical source branches. -/
 theorem fluxCoefficient_cross (q r : XiZeroCopy) (b : Bool) :
     fluxCoefficient q r b 1 =
-      -weylCoefficient q true*weylCoefficient q false*readerCoefficient r*(physicalAngularParameter r^2-1/4) := by
+      -weylCoefficient q true*weylCoefficient q false*readerCoefficient r*(physicalAngularParameter r^(2 : ℕ)-1/4) := by
   have hm : parameter q b ≠ 0 := by
     have h := denominator_ne_zero q b 1
     simpa [denominator,sourcePower] using h
@@ -259,14 +259,14 @@ def forcingTail (q r : XiZeroCopy) (y : ℝ) : ℂ :=
 
 private theorem remainder_slice (q : XiZeroCopy) (y : Ioi (0:ℝ)) :
     Continuous (fun x : ℝ => squareRemainder (center q) ![x,y.val]) := by
-  change Continuous (fun x : ℝ => scalar (center q) ![x,y.val] ^2-principal (center q) ![0,y.val] ^2)
+  change Continuous (fun x : ℝ => scalar (center q) ![x,y.val] ^(2 : ℕ)-principal (center q) ![0,y.val] ^(2 : ℕ))
   exact ((scalar_slice q y).pow 2).sub continuous_const
 
 private theorem particularGreenFlux_means (q r : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
     particularGreenFlux q r b y=
-      (physicalAngularParameter r^2-1/4)*(readerCoefficient r*(y.val:ℂ)^(readerPower r))*
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*(readerCoefficient r*(y.val:ℂ)^(readerPower r))*
         deriv (fun t : ℝ => cuspResponse q b ![0,t]) y-
-      parameter q b*(cuspResponse q b ![0,y.val]+principal (center q) ![0,y.val] ^2/2)*
+      parameter q b*(cuspResponse q b ![0,y.val]+principal (center q) ![0,y.val] ^(2 : ℕ)/2)*
         (readerCoefficient r*readerPower r*(y.val:ℂ)^(readerPower r-1))-
       (parameter q b/2)*forcingTail q r y := by
   have hR : (∫ x in Ioc (-1/2:ℝ) (1/2), physicalTest r (point x y))=
@@ -286,10 +286,10 @@ private theorem particularGreenFlux_means (q r : XiZeroCopy) (b : Bool) (y : Ioi
     (physicalTest_smooth r).continuousOn y.2
   have cRv := GaloisForLFunctions.RHTower.SelbergMaassMean.slice_continuous
     (directional_smooth (physicalTest_smooth r) Complex.I).continuousOn y.2
-  let A : ℝ → ℂ := fun x => (physicalAngularParameter r^2-1/4)*physicalTest r (point x y)*
+  let A : ℝ → ℂ := fun x => (physicalAngularParameter r^(2 : ℕ)-1/4)*physicalTest r (point x y)*
     deriv (fun t : ℝ => cuspResponse q b ![0,t]) y
   let B : ℝ → ℂ := fun x => parameter q b*
-    (cuspResponse q b ![0,y.val]+principal (center q) ![0,y.val] ^2/2)*
+    (cuspResponse q b ![0,y.val]+principal (center q) ![0,y.val] ^(2 : ℕ)/2)*
     directional Complex.I (physicalTest r) (point x y)
   let T : ℝ → ℂ := fun x => (parameter q b/2)*
     (squareRemainder (center q) ![x,y.val]*directional Complex.I (physicalTest r) (point x y))
@@ -300,9 +300,9 @@ private theorem particularGreenFlux_means (q r : XiZeroCopy) (b : Bool) (y : Ioi
     apply setIntegral_congr_fun measurableSet_Ioc
     intro x _
     dsimp only [A,B,T,squareRemainder]
-    change (physicalAngularParameter r^2-1/4)*physicalTest r (point x y)*
+    change (physicalAngularParameter r^(2 : ℕ)-1/4)*physicalTest r (point x y)*
       deriv (fun t : ℝ => cuspResponse q b ![0,t]) y-
-      parameter q b*(cuspResponse q b ![0,y.val]+scalar (center q) ![x,y.val] ^2/2)*
+      parameter q b*(cuspResponse q b ![0,y.val]+scalar (center q) ![x,y.val] ^(2 : ℕ)/2)*
         directional Complex.I (physicalTest r) (point x y)=_
     have hp : principal (center q) ![x,y.val]=principal (center q) ![0,y.val] := rfl
     rw [hp]
@@ -318,7 +318,7 @@ private theorem particularGreenFlux_means (q r : XiZeroCopy) (b : Bool) (y : Ioi
   rfl
 
 private theorem individual_power (q r : XiZeroCopy) (b : Bool) (i : Fin 3) (y : Ioi (0:ℝ)) :
-    (physicalAngularParameter r^2-1/4)*(readerCoefficient r*(y.val:ℂ)^(readerPower r))*
+    (physicalAngularParameter r^(2 : ℕ)-1/4)*(readerCoefficient r*(y.val:ℂ)^(readerPower r))*
       (responseCoefficient q b i*(sourcePower q i*(y.val:ℂ)^(sourcePower q i-1)))-
     parameter q b*(responseCoefficient q b i*(y.val:ℂ)^(sourcePower q i)+
       sourceCoefficient q i*(y.val:ℂ)^(sourcePower q i)/2)*
@@ -338,7 +338,7 @@ private theorem individual_power (q r : XiZeroCopy) (b : Bool) (i : Fin 3) (y : 
     dsimp only [readerPower,fluxExponent]
     ring
   calc
-    _ = ((physicalAngularParameter r^2-1/4)*readerCoefficient r*responseCoefficient q b i*sourcePower q i)*
+    _ = ((physicalAngularParameter r^(2 : ℕ)-1/4)*readerCoefficient r*responseCoefficient q b i*sourcePower q i)*
           ((y.val:ℂ)^(readerPower r)*(y.val:ℂ)^(sourcePower q i-1))-
         (parameter q b*(responseCoefficient q b i+sourceCoefficient q i/2)*readerCoefficient r*readerPower r)*
           ((y.val:ℂ)^(sourcePower q i)*(y.val:ℂ)^(readerPower r-1)) := by ring

@@ -6,15 +6,15 @@ import GaloisForLFunctions.HTGeometry.CubicMomentLogConvexRatio
 
 The first nonconstant prime--Gamma source Hankel condition is equivalent to nonnegativity of the
 source cubic in the raw even moments `m_j = thetaCuspRawEvenMoment j`.  Written in the variable
-`y = x^2`, where the moments become `m_j = ∫₀^∞ y^(j-1/2) H(y) dy`, the natural normalization is
+`y = x^(2 : ℕ)`, where the moments become `m_j = ∫₀^∞ y^(j-1/2) H(y) dy`, the natural normalization is
 `L_j = m_j / Γ(j+1/2)` and the cubic becomes a second difference of the ratios
 `r_j = L_j / L_(j-1) = μ_j / (j - 1/2)`.  Log-convexity of that ratio sequence therefore suffices,
 and log-convexity is the single monomial inequality
 
-`5 * m_0 * m_2^3 ≤ 9 * m_1^3 * m_3`.
+`5 * m_0 * m_2^(3 : ℕ) ≤ 9 * m_1^(3 : ℕ) * m_3`.
 
 This replaces the two separate sufficient ratio bounds by one.  It is an exact equality for the
-Gaussian weight `Φ = e^(-x^2)` — the model at which the cubic itself is tight — and it fails for the
+Gaussian weight `Φ = e^(-x^(2 : ℕ))` — the model at which the cubic itself is tight — and it fails for the
 two-sided exponential, so it is strictly stronger than the cubic and strictly sharper at the relevant
 model.
 -/

@@ -41,7 +41,7 @@ theorem integrableOn_thetaCuspPolynomialAtom_Ioi_of_pos
     (P : ℝ[X]) {n : ℕ} (hn : 0 < n) :
     IntegrableOn (thetaCuspPolynomialAtom P n) (Ioi 0) := by
   let C : ℝ := thetaCuspGaussianConstant P *
-    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)
+    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))
   have hC : 0 ≤ C := by
     dsimp [C]
     positivity [thetaCuspGaussianConstant_nonneg P]
@@ -69,7 +69,7 @@ theorem thetaCuspPolynomialAtom_tendsto_atTop_zero_of_pos
     Tendsto (thetaCuspPolynomialAtom P n) atTop (𝓝 0) := by
   rw [tendsto_zero_iff_norm_tendsto_zero]
   let C : ℝ := thetaCuspGaussianConstant P *
-    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)
+    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))
   have hle : ∀ᶠ x : ℝ in atTop,
       ‖thetaCuspPolynomialAtom P n x‖ ≤ C * Real.exp (-x) := by
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
@@ -90,8 +90,8 @@ theorem thetaCuspPolynomialAtom_tendsto_atTop_zero_of_pos
 /-- Exact mass of every positive-index atom of `4 T''`. -/
 theorem integral_thetaCuspTailSecondDensityAtom (n : ℕ) (hn : 0 < n) :
     (∫ x : ℝ in Ioi 0, thetaCuspTailSecondDensityAtom n x) =
-      (8 * Real.pi * (n : ℝ) ^ 2 - 2) *
-        Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+      (8 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 2) *
+        Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   have hstep : thetaCuspLogDerivativeStep
       (thetaCuspTailDerivativePolynomial 1) =
       thetaCuspTailDerivativePolynomial 2 := rfl
@@ -163,35 +163,35 @@ theorem integral_thetaCuspTailSecondDensityAtom_one :
 by its quartic leading scale. -/
 theorem thetaCuspTailDerivativePolynomial_two_lower
     {u : ℝ} (hu : 1 ≤ u) :
-    Real.pi ^ 2 * u ^ 4 ≤
+    Real.pi ^ (2 : ℕ) * u ^ (4 : ℕ) ≤
       eval u (thetaCuspTailDerivativePolynomial 2) := by
   rw [thetaCuspTailDerivativePolynomial_two]
   simp only [eval_add, eval_sub, eval_mul, eval_C, eval_pow, eval_X]
   have hpi : 3 < Real.pi := Real.pi_gt_three
-  have hu2 : 1 ≤ u ^ 2 := by nlinarith [sq_nonneg u]
-  have hv : 3 < Real.pi * u ^ 2 := by nlinarith [Real.pi_pos]
-  nlinarith [sq_nonneg (Real.pi * u ^ 2 - 1)]
+  have hu2 : 1 ≤ u ^ (2 : ℕ) := by nlinarith [sq_nonneg u]
+  have hv : 3 < Real.pi * u ^ (2 : ℕ) := by nlinarith [Real.pi_pos]
+  nlinarith [sq_nonneg (Real.pi * u ^ (2 : ℕ) - 1)]
 
 /-- A matching elementary quartic upper bound for the second-derivative atom polynomial. -/
 theorem thetaCuspTailDerivativePolynomial_two_upper
     {u : ℝ} (hu : 1 ≤ u) :
     eval u (thetaCuspTailDerivativePolynomial 2) ≤
-      5 * Real.pi ^ 2 * u ^ 4 := by
+      5 * Real.pi ^ (2 : ℕ) * u ^ (4 : ℕ) := by
   rw [thetaCuspTailDerivativePolynomial_two]
   simp only [eval_add, eval_sub, eval_mul, eval_C, eval_pow, eval_X]
   have hpi : 3 < Real.pi := Real.pi_gt_three
-  have hu2 : 1 ≤ u ^ 2 := by nlinarith [sq_nonneg u]
-  have hpi2 : 9 < Real.pi ^ 2 := by
+  have hu2 : 1 ≤ u ^ (2 : ℕ) := by nlinarith [sq_nonneg u]
+  have hpi2 : 9 < Real.pi ^ (2 : ℕ) := by
     have hp : 0 < (Real.pi - 3) * (Real.pi + 3) := by positivity
     nlinarith
-  have hu4 : 1 ≤ u ^ 4 := by
-    rw [show u ^ 4 = (u ^ 2) ^ 2 by ring]
-    nlinarith [sq_nonneg (u ^ 2 - 1)]
-  have hpi2u4 : 1 / 4 < Real.pi ^ 2 * u ^ 4 := by
-    have hprod : 9 ≤ Real.pi ^ 2 * u ^ 4 := by
+  have hu4 : 1 ≤ u ^ (4 : ℕ) := by
+    rw [show u ^ (4 : ℕ) = (u ^ (2 : ℕ)) ^ (2 : ℕ) by ring]
+    nlinarith [sq_nonneg (u ^ (2 : ℕ) - 1)]
+  have hpi2u4 : 1 / 4 < Real.pi ^ (2 : ℕ) * u ^ (4 : ℕ) := by
+    have hprod : 9 ≤ Real.pi ^ (2 : ℕ) * u ^ (4 : ℕ) := by
       calc
         9 = 9 * 1 := by ring
-        _ ≤ Real.pi ^ 2 * u ^ 4 :=
+        _ ≤ Real.pi ^ (2 : ℕ) * u ^ (4 : ℕ) :=
           mul_le_mul hpi2.le hu4 (by norm_num) (by positivity)
     linarith
   nlinarith [mul_nonneg Real.pi_pos.le (sq_nonneg u)]
@@ -202,8 +202,8 @@ Gaussian weight.  This is the source-specific domination estimate needed to boun
 theorem thetaCuspTailSecondDensityAtom_le_first
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspTailSecondDensityAtom n x ≤
-      (5 * (n : ℝ) ^ 4 *
-        Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) *
+      (5 * (n : ℝ) ^ (4 : ℕ) *
+        Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))) *
           thetaCuspTailSecondDensityAtom 1 x := by
   let u : ℝ := Real.exp x
   have hu : 1 ≤ u := by
@@ -214,29 +214,29 @@ theorem thetaCuspTailSecondDensityAtom_le_first
     nlinarith [Real.exp_pos x]
   have hpolyLower := thetaCuspTailDerivativePolynomial_two_lower hu
   have hpolyUpper := thetaCuspTailDerivativePolynomial_two_upper hnu
-  have hnSq : 1 ≤ (n : ℝ) ^ 2 := by nlinarith
-  have huSq : 1 ≤ u ^ 2 := by nlinarith [sq_nonneg u]
-  have hprod : 0 ≤ ((n : ℝ) ^ 2 - 1) * (u ^ 2 - 1) :=
+  have hnSq : 1 ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith
+  have huSq : 1 ≤ u ^ (2 : ℕ) := by nlinarith [sq_nonneg u]
+  have hprod : 0 ≤ ((n : ℝ) ^ (2 : ℕ) - 1) * (u ^ (2 : ℕ) - 1) :=
     mul_nonneg (sub_nonneg.mpr hnSq) (sub_nonneg.mpr huSq)
   have hexponent :
-      -Real.pi * ((n : ℝ) * u) ^ 2 ≤
-        -Real.pi * ((n : ℝ) ^ 2 - 1) + (-Real.pi * u ^ 2) := by
+      -Real.pi * ((n : ℝ) * u) ^ (2 : ℕ) ≤
+        -Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) + (-Real.pi * u ^ (2 : ℕ)) := by
     have hpi : 0 < Real.pi := Real.pi_pos
     nlinarith
   have hgauss :
-      Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2) ≤
-        Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) *
-          Real.exp (-Real.pi * u ^ 2) := by
+      Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ)) ≤
+        Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) *
+          Real.exp (-Real.pi * u ^ (2 : ℕ)) := by
     rw [← Real.exp_add]
     exact Real.exp_le_exp.mpr hexponent
   have hfront : 0 ≤ 4 * Real.exp (x / 2) := by positivity
   have hpolyUpper' :
       eval ((n : ℝ) * u) (thetaCuspTailDerivativePolynomial 2) ≤
-        5 * Real.pi ^ 2 * (n : ℝ) ^ 4 * u ^ 4 := by
+        5 * Real.pi ^ (2 : ℕ) * (n : ℝ) ^ (4 : ℕ) * u ^ (4 : ℕ) := by
     calc
       eval ((n : ℝ) * u) (thetaCuspTailDerivativePolynomial 2) ≤
-          5 * Real.pi ^ 2 * ((n : ℝ) * u) ^ 4 := hpolyUpper
-      _ = 5 * Real.pi ^ 2 * (n : ℝ) ^ 4 * u ^ 4 := by ring
+          5 * Real.pi ^ (2 : ℕ) * ((n : ℝ) * u) ^ (4 : ℕ) := hpolyUpper
+      _ = 5 * Real.pi ^ (2 : ℕ) * (n : ℝ) ^ (4 : ℕ) * u ^ (4 : ℕ) := by ring
   have hpolyNonneg :
       0 ≤ eval ((n : ℝ) * u) (thetaCuspTailDerivativePolynomial 2) :=
     (thetaCuspTailDerivativePolynomial_two_eval_pos hnu).le
@@ -244,34 +244,34 @@ theorem thetaCuspTailSecondDensityAtom_le_first
   simp only [Nat.cast_one, one_mul]
   change 4 * (Real.exp (x / 2) *
       eval ((n : ℝ) * u) (thetaCuspTailDerivativePolynomial 2) *
-        Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2)) ≤ _
-  change _ ≤ (5 * (n : ℝ) ^ 4 *
-      Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) *
+        Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ))) ≤ _
+  change _ ≤ (5 * (n : ℝ) ^ (4 : ℕ) *
+      Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))) *
     (4 * (Real.exp (x / 2) *
       eval u (thetaCuspTailDerivativePolynomial 2) *
-        Real.exp (-Real.pi * u ^ 2)))
+        Real.exp (-Real.pi * u ^ (2 : ℕ))))
   calc
     4 * (Real.exp (x / 2) *
         eval ((n : ℝ) * u) (thetaCuspTailDerivativePolynomial 2) *
-          Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2)) ≤
+          Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ))) ≤
       4 * (Real.exp (x / 2) *
-        (5 * Real.pi ^ 2 * (n : ℝ) ^ 4 * u ^ 4) *
-          Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2)) := by
+        (5 * Real.pi ^ (2 : ℕ) * (n : ℝ) ^ (4 : ℕ) * u ^ (4 : ℕ)) *
+          Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ))) := by
             gcongr
     _ ≤ 4 * (Real.exp (x / 2) *
-        (5 * Real.pi ^ 2 * (n : ℝ) ^ 4 * u ^ 4) *
-          (Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) *
-            Real.exp (-Real.pi * u ^ 2))) := by
+        (5 * Real.pi ^ (2 : ℕ) * (n : ℝ) ^ (4 : ℕ) * u ^ (4 : ℕ)) *
+          (Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) *
+            Real.exp (-Real.pi * u ^ (2 : ℕ)))) := by
               gcongr
-    _ = (5 * (n : ℝ) ^ 4 *
-        Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) *
-      (4 * (Real.exp (x / 2) * (Real.pi ^ 2 * u ^ 4) *
-        Real.exp (-Real.pi * u ^ 2))) := by ring
-    _ ≤ (5 * (n : ℝ) ^ 4 *
-        Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) *
+    _ = (5 * (n : ℝ) ^ (4 : ℕ) *
+        Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))) *
+      (4 * (Real.exp (x / 2) * (Real.pi ^ (2 : ℕ) * u ^ (4 : ℕ)) *
+        Real.exp (-Real.pi * u ^ (2 : ℕ)))) := by ring
+    _ ≤ (5 * (n : ℝ) ^ (4 : ℕ) *
+        Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))) *
       (4 * (Real.exp (x / 2) *
         eval u (thetaCuspTailDerivativePolynomial 2) *
-          Real.exp (-Real.pi * u ^ 2))) := by
+          Real.exp (-Real.pi * u ^ (2 : ℕ)))) := by
             gcongr
 
 /-- The raw `m`th moment of one differentiated density atom. -/
@@ -331,11 +331,11 @@ theorem thetaCuspTailSecondDensityAtomMoment_nonneg
 theorem thetaCuspTailSecondDensityAtomMoment_le_first
     {n : ℕ} (hn : 0 < n) (m : ℕ) :
     thetaCuspTailSecondDensityAtomMoment n m ≤
-      (5 * (n : ℝ) ^ 4 *
-        Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) *
+      (5 * (n : ℝ) ^ (4 : ℕ) *
+        Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))) *
           thetaCuspTailSecondDensityAtomMoment 1 m := by
-  let q : ℝ := 5 * (n : ℝ) ^ 4 *
-    Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))
+  let q : ℝ := 5 * (n : ℝ) ^ (4 : ℕ) *
+    Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))
   have hq : 0 ≤ q := by
     dsimp [q]
     positivity
@@ -354,14 +354,14 @@ theorem thetaCuspTailSecondDensityAtomMoment_le_first
     dsimp [q]
     calc
       x ^ m * thetaCuspTailSecondDensityAtom n x ≤
-          x ^ m * ((5 * (n : ℝ) ^ 4 *
-            Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) *
+          x ^ m * ((5 * (n : ℝ) ^ (4 : ℕ) *
+            Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))) *
               thetaCuspTailSecondDensityAtom 1 x) := by
         exact mul_le_mul_of_nonneg_left
           (thetaCuspTailSecondDensityAtom_le_first hn hx.le)
           (pow_nonneg hx.le _)
-      _ = (5 * (n : ℝ) ^ 4 *
-            Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) *
+      _ = (5 * (n : ℝ) ^ (4 : ℕ) *
+            Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))) *
           (x ^ m * thetaCuspTailSecondDensityAtom 1 x) := by ring
 
 end

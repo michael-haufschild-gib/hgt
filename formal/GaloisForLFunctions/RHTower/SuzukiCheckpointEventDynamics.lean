@@ -176,7 +176,7 @@ theorem suzukiCheckpointReservoirDeriv_curvature_pos_of_log_two_le {t : ℝ}
   have htwo : (2 : ℝ) ≤ Real.exp t := by
     rw [← Real.exp_log (by norm_num : (0 : ℝ) < 2)]
     exact Real.exp_le_exp.mpr ht
-  have hpoly : 0 ≤ (Real.exp t - 2) * (Real.exp t ^ 2 + 2 * Real.exp t + 3) := by
+  have hpoly : 0 ≤ (Real.exp t - 2) * (Real.exp t ^ (2 : ℕ) + 2 * Real.exp t + 3) := by
     exact mul_nonneg (by linarith) (by positivity)
   nlinarith [hpoly]
 

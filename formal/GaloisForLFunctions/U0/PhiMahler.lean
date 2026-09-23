@@ -50,7 +50,7 @@ the dynamical conjugacy `φ_c ∘ f_c = (·)² ∘ φ_c`. -/
 theorem relation_propagate {c : ℂ} (P : Polynomial (Polynomial ℂ))
     (hrel : ∀ z ∈ escapeOpen c, P.eval₂ (evalRingHom z) (bottcherCoord c z) = 0)
     {z : ℂ} (hz : z ∈ escapeOpen c) :
-    P.eval₂ (evalRingHom (quadratic c z)) ((bottcherCoord c z) ^ 2) = 0 := by
+    P.eval₂ (evalRingHom (quadratic c z)) ((bottcherCoord c z) ^ (2 : ℕ)) = 0 := by
   obtain ⟨hc, h2⟩ := mem_escapeOpen_regime hz
   have hq := hrel (quadratic c z) (quadratic_mem_escapeOpen hz)
   rwa [bottcherCoord_quadratic hc h2] at hq

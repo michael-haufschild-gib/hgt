@@ -21,8 +21,8 @@ variable {n : Type*} [Fintype n]
 
 /-- **Unit total variation.**  The spectral overlap coefficients of two unit vectors sum in modulus
 to at most one. -/
-theorem sum_norm_mul_le_one (z χ : n → ℂ) (hz : ∑ j, ‖z j‖ ^ 2 = 1)
-    (hχ : ∑ j, ‖χ j‖ ^ 2 = 1) :
+theorem sum_norm_mul_le_one (z χ : n → ℂ) (hz : ∑ j, ‖z j‖ ^ (2 : ℕ) = 1)
+    (hχ : ∑ j, ‖χ j‖ ^ (2 : ℕ) = 1) :
     ∑ j, ‖z j‖ * ‖χ j‖ ≤ 1 := by
   have hcs := sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset n) (fun j => ‖z j‖) fun j => ‖χ j‖
   rw [hz, hχ, mul_one] at hcs
@@ -38,8 +38,8 @@ theorem pow_le_one_of_variation {v : ℝ} (hv0 : 0 ≤ v) (hv1 : v ≤ 1) (k : �
   pow_le_one₀ hv0 hv1
 
 /-- **`(9)`**: the total variation of the paired replica coefficients is at most one. -/
-theorem replica_variation_le_one (z χ : n → ℂ) (hz : ∑ j, ‖z j‖ ^ 2 = 1)
-    (hχ : ∑ j, ‖χ j‖ ^ 2 = 1) (r : ℕ) :
+theorem replica_variation_le_one (z χ : n → ℂ) (hz : ∑ j, ‖z j‖ ^ (2 : ℕ) = 1)
+    (hχ : ∑ j, ‖χ j‖ ^ (2 : ℕ) = 1) (r : ℕ) :
     (∑ j, ‖z j‖ * ‖χ j‖) ^ (2 * r) ≤ 1 := by
   refine pow_le_one_of_variation ?_ (sum_norm_mul_le_one z χ hz hχ) _
   exact Finset.sum_nonneg fun j _ => by positivity

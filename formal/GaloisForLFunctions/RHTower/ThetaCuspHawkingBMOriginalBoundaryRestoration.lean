@@ -112,9 +112,9 @@ private theorem boundary_difference (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (
 and its actual leading horizon trace, in the original radial measure. -/
 def physicalRestoredBoundary (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (a b L k : ℝ) : ℂ :=
   let R := tortoiseRadius (-L/2)
-  (((R:ℂ)^2-1)*((∫ p in a..b,
+  (((R:ℂ)^(2 : ℕ)-1)*((∫ p in a..b,
       (D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 0 p R (Real.exp k)-
-        D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 1 p R (Real.exp k)/((R:ℂ)^2-1))/(R:ℂ)^2)-
+        D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 1 p R (Real.exp k)/((R:ℂ)^(2 : ℕ)-1))/(R:ℂ)^(2 : ℕ))-
       ∑ i : Fin 3,compactBoundaryCoefficient q q br true amp w a b R i*
         Complex.exp (fluxExponent q q i*(k:ℂ)))-horizonBoundary q br amp w a b k)
 

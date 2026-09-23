@@ -72,8 +72,8 @@ theorem normalizedPrimeArchMoment_two_le_firstAtomTailEnvelope :
       thetaCuspFirstAtomNormalizedEvenMoment 3 / 120 -
         thetaCuspFirstAtomNormalizedEvenMoment 1 *
             thetaCuspFirstAtomNormalizedEvenMoment 2 /
-          (8 * (3005 / 2997 : ℝ) ^ 2) +
-        thetaCuspFirstAtomNormalizedEvenMoment 1 ^ 3 / 4 := by
+          (8 * (3005 / 2997 : ℝ) ^ (2 : ℕ)) +
+        thetaCuspFirstAtomNormalizedEvenMoment 1 ^ (3 : ℕ) / 4 := by
   let c : ℝ := 3005 / 2997
   let u1 : ℝ := thetaCuspNormalizedEvenMoment 1
   let u2 : ℝ := thetaCuspNormalizedEvenMoment 2
@@ -110,23 +110,23 @@ theorem normalizedPrimeArchMoment_two_le_firstAtomTailEnvelope :
   have h3hi : u3 ≤ a3 := by
     simpa only [u3, a3] using
       thetaCuspNormalizedEvenMoment_le_firstAtomNormalizedEvenMoment 3
-  have hprod : a1 * a2 / c ^ 2 ≤ u1 * u2 := by
+  have hprod : a1 * a2 / c ^ (2 : ℕ) ≤ u1 * u2 := by
     have hmul := mul_le_mul h1lo h2lo
       (div_nonneg ha2 hc.le) hu1
     calc
-      a1 * a2 / c ^ 2 = (a1 / c) * (a2 / c) := by
+      a1 * a2 / c ^ (2 : ℕ) = (a1 / c) * (a2 / c) := by
         field_simp [hc.ne']
       _ ≤ u1 * u2 := hmul
-  have hcub : u1 ^ 3 ≤ a1 ^ 3 := by gcongr
+  have hcub : u1 ^ (3 : ℕ) ≤ a1 ^ (3 : ℕ) := by gcongr
   rw [normalizedPrimeArchMoment_two_eq_thetaCuspNormalizedEvenMoment]
   have hthird : u3 / 120 ≤ a3 / 120 := by
     exact div_le_div_of_nonneg_right h3hi (by norm_num)
-  have hnegative : -(u1 * u2 / 8) ≤ -(a1 * a2 / (8 * c ^ 2)) := by
+  have hnegative : -(u1 * u2 / 8) ≤ -(a1 * a2 / (8 * c ^ (2 : ℕ))) := by
     rw [neg_le_neg_iff]
     calc
-      a1 * a2 / (8 * c ^ 2) = (a1 * a2 / c ^ 2) / 8 := by ring
+      a1 * a2 / (8 * c ^ (2 : ℕ)) = (a1 * a2 / c ^ (2 : ℕ)) / 8 := by ring
       _ ≤ (u1 * u2) / 8 := div_le_div_of_nonneg_right hprod (by norm_num)
-  have hcubic : u1 ^ 3 / 4 ≤ a1 ^ 3 / 4 := by
+  have hcubic : u1 ^ (3 : ℕ) / 4 ≤ a1 ^ (3 : ℕ) / 4 := by
     exact div_le_div_of_nonneg_right hcub (by norm_num)
   dsimp only [u1, u2, u3, a1, a2, a3, c] at *
   linarith

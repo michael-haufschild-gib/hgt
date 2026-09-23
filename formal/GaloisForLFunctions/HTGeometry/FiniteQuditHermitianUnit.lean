@@ -9,7 +9,7 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 /-!
 # A Hermitian unit basis of the local qudit operator algebra
 
-For local dimension `D` the `D^2` matrices
+For local dimension `D` the `D^(2 : ℕ)` matrices
 
 * `1` (label `(0,0)`),
 * `E_{kk} - E_{00}` (label `(k,k)`, `k ≠ 0`),
@@ -19,7 +19,7 @@ For local dimension `D` the `D^2` matrices
 are Hermitian, and every one of them except the identity is traceless.  This file
 constructs them, proves Hermiticity and the trace dichotomy, and inverts the
 change of basis: every matrix unit `E_{ab}` is an explicit complex combination of
-them.  Together with the `D^2 = D^2` count this exhibits the family as a basis of
+them.  Together with the `D^(2 : ℕ) = D^(2 : ℕ)` count this exhibits the family as a basis of
 the local operator algebra; the string layer built on top of it inherits the
 basis property by a product expansion.
 -/

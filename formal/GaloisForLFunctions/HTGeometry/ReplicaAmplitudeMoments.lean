@@ -329,9 +329,9 @@ theorem replicaAmplitudeMoment_energy {weight : I → ℝ} (hw : ∑ i, weight i
 /-- **The second moment of the replica energy.** -/
 theorem replicaAmplitudeMoment_energy_sq {weight : I → ℝ} (hw : ∑ i, weight i = 1)
     (energy : I → ℝ) (r : ℕ) :
-    replicaAmplitudeMoment weight r (fun p => replicaMultiplicityEnergy energy p ^ 2)
-      = r * (∑ i, weight i * energy i ^ 2)
-        + (r : ℝ) * ((r : ℝ) - 1) * (∑ i, weight i * energy i) ^ 2 := by
+    replicaAmplitudeMoment weight r (fun p => replicaMultiplicityEnergy energy p ^ (2 : ℕ))
+      = r * (∑ i, weight i * energy i ^ (2 : ℕ))
+        + (r : ℝ) * ((r : ℝ) - 1) * (∑ i, weight i * energy i) ^ (2 : ℕ) := by
   induction r with
   | zero =>
       rw [replicaAmplitudeMoment_zero]
@@ -342,17 +342,17 @@ theorem replicaAmplitudeMoment_energy_sq {weight : I → ℝ} (hw : ∑ i, weigh
       have hstep : ∀ i : I,
           replicaAmplitudeMoment weight r
               (fun p => replicaMultiplicityEnergy energy
-                (Function.update p i (p i + 1)) ^ 2)
-            = ((r : ℝ) * (∑ j, weight j * energy j ^ 2)
-                + (r : ℝ) * ((r : ℝ) - 1) * (∑ j, weight j * energy j) ^ 2)
+                (Function.update p i (p i + 1)) ^ (2 : ℕ))
+            = ((r : ℝ) * (∑ j, weight j * energy j ^ (2 : ℕ))
+                + (r : ℝ) * ((r : ℝ) - 1) * (∑ j, weight j * energy j) ^ (2 : ℕ))
               + 2 * energy i * ((r : ℝ) * ∑ j, weight j * energy j)
-              + energy i ^ 2 := by
+              + energy i ^ (2 : ℕ) := by
         intro i
         have hrw : (fun p : I → ℕ =>
-            replicaMultiplicityEnergy energy (Function.update p i (p i + 1)) ^ 2)
-            = fun p => (replicaMultiplicityEnergy energy p ^ 2
+            replicaMultiplicityEnergy energy (Function.update p i (p i + 1)) ^ (2 : ℕ))
+            = fun p => (replicaMultiplicityEnergy energy p ^ (2 : ℕ)
                 + (2 * energy i) * replicaMultiplicityEnergy energy p)
-              + (energy i ^ 2) * 1 := by
+              + (energy i ^ (2 : ℕ)) * 1 := by
           funext p
           rw [replicaMultiplicityEnergy_update_succ]
           ring
@@ -360,12 +360,12 @@ theorem replicaAmplitudeMoment_energy_sq {weight : I → ℝ} (hw : ∑ i, weigh
           replicaAmplitudeMoment_const_mul, replicaAmplitudeMoment_const_mul,
           replicaAmplitudeMoment_one hw, replicaAmplitudeMoment_energy hw, ih]
         ring
-      have hexp : ∀ A B : ℝ, ∑ i, weight i * (A + 2 * energy i * B + energy i ^ 2)
+      have hexp : ∀ A B : ℝ, ∑ i, weight i * (A + 2 * energy i * B + energy i ^ (2 : ℕ))
           = (∑ i, weight i) * A + 2 * B * (∑ i, weight i * energy i)
-            + ∑ i, weight i * energy i ^ 2 := by
+            + ∑ i, weight i * energy i ^ (2 : ℕ) := by
         intro A B
-        have hterm : ∀ i : I, weight i * (A + 2 * energy i * B + energy i ^ 2)
-            = weight i * A + (2 * B) * (weight i * energy i) + weight i * energy i ^ 2 :=
+        have hterm : ∀ i : I, weight i * (A + 2 * energy i * B + energy i ^ (2 : ℕ))
+            = weight i * A + (2 * B) * (weight i * energy i) + weight i * energy i ^ (2 : ℕ) :=
           fun i => by ring
         rw [Finset.sum_congr rfl fun i _ => hterm i, Finset.sum_add_distrib,
           Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.mul_sum]
@@ -381,22 +381,22 @@ theorem replicaAmplitudeMoment_energy_variance {weight : I → ℝ} (hw : ∑ i,
     (energy : I → ℝ) (r : ℕ) :
     replicaAmplitudeMoment weight r
         (fun p => (replicaMultiplicityEnergy energy p
-          - r * ∑ i, weight i * energy i) ^ 2)
-      = r * ∑ i, weight i * (energy i - ∑ j, weight j * energy j) ^ 2 := by
-  have hmean : ∑ i, weight i * (energy i - ∑ j, weight j * energy j) ^ 2
-      = (∑ i, weight i * energy i ^ 2) - (∑ i, weight i * energy i) ^ 2 := by
-    have hexpand : ∀ i : I, weight i * (energy i - ∑ j, weight j * energy j) ^ 2
-        = weight i * energy i ^ 2
+          - r * ∑ i, weight i * energy i) ^ (2 : ℕ))
+      = r * ∑ i, weight i * (energy i - ∑ j, weight j * energy j) ^ (2 : ℕ) := by
+  have hmean : ∑ i, weight i * (energy i - ∑ j, weight j * energy j) ^ (2 : ℕ)
+      = (∑ i, weight i * energy i ^ (2 : ℕ)) - (∑ i, weight i * energy i) ^ (2 : ℕ) := by
+    have hexpand : ∀ i : I, weight i * (energy i - ∑ j, weight j * energy j) ^ (2 : ℕ)
+        = weight i * energy i ^ (2 : ℕ)
           - 2 * (∑ j, weight j * energy j) * (weight i * energy i)
-          + (∑ j, weight j * energy j) ^ 2 * weight i := fun i => by ring
+          + (∑ j, weight j * energy j) ^ (2 : ℕ) * weight i := fun i => by ring
     rw [Finset.sum_congr rfl fun i _ => hexpand i]
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum, hw]
     ring
   have hrw : (fun p : I → ℕ =>
-      (replicaMultiplicityEnergy energy p - r * ∑ i, weight i * energy i) ^ 2)
-      = fun p => (replicaMultiplicityEnergy energy p ^ 2
+      (replicaMultiplicityEnergy energy p - r * ∑ i, weight i * energy i) ^ (2 : ℕ))
+      = fun p => (replicaMultiplicityEnergy energy p ^ (2 : ℕ)
           + (-2 * ((r : ℝ) * ∑ i, weight i * energy i)) * replicaMultiplicityEnergy energy p)
-        + (((r : ℝ) * ∑ i, weight i * energy i) ^ 2) * 1 := by
+        + (((r : ℝ) * ∑ i, weight i * energy i) ^ (2 : ℕ)) * 1 := by
     funext p
     ring
   rw [hrw, replicaAmplitudeMoment_add, replicaAmplitudeMoment_add,

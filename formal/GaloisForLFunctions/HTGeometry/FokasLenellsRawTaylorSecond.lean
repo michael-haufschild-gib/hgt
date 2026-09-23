@@ -63,11 +63,11 @@ theorem rawDividedDerivative_second_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (
   rw [rawInteractionSolution_zero_frequency]
   calc
     _ = rawDividedOperator q 0 x (rawInteractionSolution q k v x)+
-        (k : ℂ)^2 • rawCubicOperator q k x (rawInteractionSolution q k v x) := by
+        (k : ℂ)^(2 : ℕ) • rawCubicOperator q k x (rawInteractionSolution q k v x) := by
       rw [rawDividedOperator_cubic_factor]
       rfl
     _ = rawDividedOperator q 0 x (v+(k : ℂ) • rawSolutionSlope q k v x)+
-        (k : ℂ)^2 • rawCubicOperator q k x (rawInteractionSolution q k v x) := by
+        (k : ℂ)^(2 : ℕ) • rawCubicOperator q k x (rawInteractionSolution q k v x) := by
       congr 1
       rw [rawInteractionSolution_first_factor]
     _ = _ := by
@@ -96,13 +96,13 @@ theorem rawSolutionSlope_second_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : 
 
 theorem rawInteractionSolution_second_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) (x : ℝ) :
     rawInteractionSolution q k v x =
-      v+(k : ℂ) • rawLinearCoefficient q v x+(k : ℂ)^2 • rawSecondSlope q k v x := by
+      v+(k : ℂ) • rawLinearCoefficient q v x+(k : ℂ)^(2 : ℕ) • rawSecondSlope q k v x := by
   rw [rawInteractionSolution_first_factor,rawSolutionSlope_second_factor]
   simp only [smul_add,smul_smul,pow_two,add_assoc]
 
 theorem rawSecondSlope_bound (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) (x : ℝ) :
     ‖rawSecondSlope q k v x‖ ≤
-      (‖v‖*Real.exp (|k| * rawInteractionMass q))*(rawInteractionMass q^2+|k| * rawCubicMass q) := by
+      (‖v‖*Real.exp (|k| * rawInteractionMass q))*(rawInteractionMass q^(2 : ℕ)+|k| * rawCubicMass q) := by
   have h1 : ‖rawSecondSlope q k v x‖ ≤ ∫ s : ℝ, ‖rawSecondIntegrand q k v s‖ :=
     intervalIntegral.norm_integral_le_integral_norm_uIoc.trans
       (setIntegral_le_integral (rawSecondIntegrand_integrable q k v).norm
@@ -110,7 +110,7 @@ theorem rawSecondSlope_bound (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVe
   have h2 := integral_mono (rawSecondIntegrand_integrable q k v).norm
     ((rawSecondDensity_integrable q k).const_mul (‖v‖*Real.exp (|k| * rawInteractionMass q)))
     (rawSecondIntegrand_bound q k v)
-  have he : (∫ s : ℝ, rawSecondDensity q k s) = rawInteractionMass q^2+|k| * rawCubicMass q := by
+  have he : (∫ s : ℝ, rawSecondDensity q k s) = rawInteractionMass q^(2 : ℕ)+|k| * rawCubicMass q := by
     rw [show (fun s => rawSecondDensity q k s) = fun s =>
       rawInteractionMass q*rawInteractionDensity q s+|k| * rawCubicDensity q s from rfl]
     rw [integral_add ((rawInteractionDensity_integrable q).const_mul _)

@@ -81,7 +81,7 @@ theorem rootBasis_apply {ζ : ℂ} {Q : ℕ} (hQ : 0 < Q) (hζ : IsPrimitiveRoot
 /-- **Exact discrete Parseval.** -/
 theorem sum_norm_inner_expRow_root {ζ : ℂ} {Q : ℕ} (hQ : 0 < Q) (hζ : IsPrimitiveRoot ζ Q)
     (x : EuclideanSpace ℂ (Fin Q)) :
-    ∑ j : Fin Q, ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2 = (Q : ℝ) * ‖x‖ ^ 2 := by
+    ∑ j : Fin Q, ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ) = (Q : ℝ) * ‖x‖ ^ (2 : ℕ) := by
   classical
   have hQR : (0 : ℝ) < (Q : ℝ) := by exact_mod_cast hQ
   have hsq : Real.sqrt Q * Real.sqrt Q = (Q : ℝ) := Real.mul_self_sqrt hQR.le
@@ -89,23 +89,23 @@ theorem sum_norm_inner_expRow_root {ζ : ℂ} {Q : ℕ} (hQ : 0 < Q) (hζ : IsPr
   set b := rootBasis hQ hζ with hb
   have hbcoe : ∀ j : Fin Q, b j = unitRow Q ζ j := fun j => rootBasis_apply hQ hζ j
   have hpar := b.sum_inner_mul_inner x x
-  have hterm : ∀ j : Fin Q, ⟪x, b j⟫_ℂ * ⟪b j, x⟫_ℂ = ((‖⟪b j, x⟫_ℂ‖ ^ 2 : ℝ) : ℂ) := by
+  have hterm : ∀ j : Fin Q, ⟪x, b j⟫_ℂ * ⟪b j, x⟫_ℂ = ((‖⟪b j, x⟫_ℂ‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro j
     rw [← inner_conj_symm x (b j), conj_mul_self]
   rw [Finset.sum_congr rfl (fun j _ => hterm j), inner_self_eq_norm_sq_to_K] at hpar
-  have hreal : ∑ j : Fin Q, ‖⟪b j, x⟫_ℂ‖ ^ 2 = ‖x‖ ^ 2 := by
-    have hcast : ((∑ j : Fin Q, ‖⟪b j, x⟫_ℂ‖ ^ 2 : ℝ) : ℂ) = ((‖x‖ ^ 2 : ℝ) : ℂ) := by
+  have hreal : ∑ j : Fin Q, ‖⟪b j, x⟫_ℂ‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
+    have hcast : ((∑ j : Fin Q, ‖⟪b j, x⟫_ℂ‖ ^ (2 : ℕ) : ℝ) : ℂ) = ((‖x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [Complex.ofReal_sum, hpar]
       norm_cast
     exact_mod_cast hcast
   have hscale : ∀ j : Fin Q,
-      ‖⟪b j, x⟫_ℂ‖ ^ 2 = (1 / (Q : ℝ)) * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2 := by
+      ‖⟪b j, x⟫_ℂ‖ ^ (2 : ℕ) = (1 / (Q : ℝ)) * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ) := by
     intro j
     rw [hbcoe j, unitRow, inner_smul_left, Complex.conj_ofReal, norm_mul]
     have hnr : ‖(((Real.sqrt Q)⁻¹ : ℝ) : ℂ)‖ = (Real.sqrt Q)⁻¹ := by
       simp
     rw [hnr, mul_pow]
-    have hinv : ((Real.sqrt Q)⁻¹) ^ 2 = 1 / (Q : ℝ) := by
+    have hinv : ((Real.sqrt Q)⁻¹) ^ (2 : ℕ) = 1 / (Q : ℝ) := by
       rw [inv_pow, Real.sq_sqrt hQR.le, one_div]
     rw [hinv]
   rw [Finset.sum_congr rfl (fun j _ => hscale j), ← Finset.mul_sum] at hreal

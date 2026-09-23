@@ -25,10 +25,10 @@ theorem integrableOn_thetaCuspTailSecondDensityAtom_mul_phase
       (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) *
         spectralTranslationPhase x z) (Ioi 0) := by
   have hbase : IntegrableOn (fun x : ℝ =>
-      (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) * (x : ℂ) ^ 0) (Ioi 0) :=
+      (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) * (x : ℂ) ^ (0 : ℕ)) (Ioi 0) :=
     integrableOn_thetaCuspTailSecondDensityAtom_mul_complexPower n 0
   change Integrable (fun x : ℝ =>
-    (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) * (x : ℂ) ^ 0)
+    (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) * (x : ℂ) ^ (0 : ℕ))
       (volume.restrict (Ioi 0)) at hbase
   change Integrable (fun x : ℝ =>
     (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) *
@@ -54,7 +54,7 @@ theorem integrableOn_thetaCuspTailSecondDensityAtom_mul_phaseDerivative
   have hbase :=
     integrableOn_thetaCuspTailSecondDensityAtom_mul_complexPower n 1
   change Integrable (fun x : ℝ =>
-    (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) * (x : ℂ) ^ 1)
+    (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) * (x : ℂ) ^ (1 : ℕ))
       (volume.restrict (Ioi 0)) at hbase
   change Integrable (fun x : ℝ =>
     (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) *
@@ -72,7 +72,7 @@ theorem integrableOn_thetaCuspTailSecondDensityAtom_mul_phaseDerivative
     have hphase := norm_spectralTranslationPhase_le_one hx.le hz
     simp only [norm_mul, norm_I, mul_one]
     have hxpow : ‖(x : ℂ)‖ * ‖spectralTranslationPhase x z‖ ≤
-        ‖(x : ℂ) ^ 1‖ := by
+        ‖(x : ℂ) ^ (1 : ℕ)‖ := by
       simpa only [pow_one] using
         mul_le_of_le_one_right (norm_nonneg (x : ℂ)) hphase
     exact mul_le_mul_of_nonneg_left

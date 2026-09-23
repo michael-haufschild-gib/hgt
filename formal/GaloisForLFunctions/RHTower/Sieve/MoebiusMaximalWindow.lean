@@ -56,7 +56,7 @@ theorem maxWindowSq_le_mul_maxWindowAbs {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤
     have : (m : ℝ) ≤ (H : ℝ) := by exact_mod_cast hmH
     linarith
   have hmax := abs_le_maxWindowAbs (f := f) (H := H) (y := y) hmH
-  have habs : |∑ b ∈ Finset.Icc y (y + m), f b| ^ 2 = (∑ b ∈ Finset.Icc y (y + m), f b) ^ 2 :=
+  have habs : |∑ b ∈ Finset.Icc y (y + m), f b| ^ (2 : ℕ) = (∑ b ∈ Finset.Icc y (y + m), f b) ^ (2 : ℕ) :=
     sq_abs _
   nlinarith [abs_nonneg (∑ b ∈ Finset.Icc y (y + m), f b)]
 
@@ -77,7 +77,7 @@ theorem maximalWindowMeanSquare_of_firstMoment {f : ℕ → ℝ} {hh : ℝ → �
   filter_upwards [eventually_ge_atTop (4 : ℝ), hgrow.eventually_ge_atTop 2] with x hx hhx
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
   have hh0 : (0 : ℝ) < hh x := by linarith
-  have hden : (0 : ℝ) < hh x ^ 2 * Real.sqrt x := by positivity
+  have hden : (0 : ℝ) < hh x ^ (2 : ℕ) * Real.sqrt x := by positivity
   have hHup : ((⌈hh x⌉₊ : ℕ) : ℝ) + 1 ≤ 2 * hh x := by
     have := (Nat.ceil_lt_add_one hh0.le).le
     linarith
@@ -206,7 +206,7 @@ theorem maximalWindowFirstMoment_moebius_of_rate {hh : ℝ → ℝ}
   have hs4 : (4 : ℝ) ≤ Real.sqrt x := by
     have : Real.sqrt 16 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
     rwa [show Real.sqrt 16 = 4 by
-      rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at this
+      rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at this
   have hs0 : (0 : ℝ) < Real.sqrt x := by linarith
   set A : ℕ := ⌈Real.sqrt x / 2⌉₊ with hA
   set B : ℕ := ⌈Real.sqrt x⌉₊ with hB

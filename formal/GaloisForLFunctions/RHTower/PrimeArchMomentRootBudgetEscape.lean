@@ -130,7 +130,7 @@ theorem tendsto_mixingCost_of_fixed_nuclear_half_primeArch_moment_landing
 
 namespace HedenmalmThetaSource
 
-local instance : ContinuousFunctionalCalculus ℝ
+local instance primeArchMomentRootBudgetEscapeInst1 : ContinuousFunctionalCalculus ℝ
     (GammaSewnCriticalPhysicalPluckerHilbert →L[ℂ] GammaSewnCriticalPhysicalPluckerHilbert)
       IsSelfAdjoint := IsSelfAdjoint.instContinuousFunctionalCalculus
 

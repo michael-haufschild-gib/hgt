@@ -390,11 +390,12 @@ will not establish that missing estimate.
   Choose kappa=eta/4 and tau>=4*(log(2)+mertensIntervalConst+1)/eta.
   This contradicts the necessary reciprocal mass for half repayment.
   Finite intersection of the full clock limits gives the common tail.
-- Whole-route implication: arbitrarily deep, dense helper batches confined
-  to this delayed window still cannot pay the inherited debt. A successful
-  construction must retain older active helpers or cross the required
-  logarithmic span while controlling their complete mixed source terms.
-  This does not retire paid exhaustive continuation or settle RH.
+- Quantifier scope: the common finite-clock tail is obtained AFTER fixing
+  tau. Its onset can depend on tau. This excludes eventual repayment in
+  each fixed window; it does not by itself exclude a coupled schedule
+  tau=tau(M) using transient finite-clock cancellation. The prior claim
+  that every successful schedule must use older helpers or wider spans
+  was stronger than this theorem. Paid exhaustive continuation remains open.
 
 - Four deep/source-method searches completed with partial retrieval coverage.
   Fixed-core cluster products, reciprocal-cost and cardinality results were
@@ -407,7 +408,55 @@ will not establish that missing estimate.
   Its constructed Hamiltonian sectors have no established identification
   with these arithmetic helper products; no paper result enters this proof.
 
+## Finite-clock feedback attack: no continuation proof
+
+- Put `A_P(b,T)=T*mobiusDivisorCriticalClockTriangularPairing P b T`,
+  `a=log r`, and retain the literal density `rho(P)`. Specializing the
+  joint source law at lag a gives the finite-clock feedback identity
+
+  `rho(P)*A_P(a,T+a) - rho(P)*r/(r+1)*A_(P+r)(a,T+a)`
+
+  `= rho(P)/(r+1) * (A_P(a,T+a)-A_P(a,T)`
+  `  + sqrt(r)*(A_P(2*a,T)+A_P(0,T+a)))`.
+
+- The known infinite-clock self-correlation drop does not remove the
+  displayed finite lag-boundary difference. Nor may its equal full-clock
+  Gram diagonals be substituted for the different finite endpoints here.
+  No cumulative sign bound on these actual source terms was established.
+  This equation is a diagnostic specialization, not a payment producer;
+  no additional carrier module is being promoted.
+- The local quantitative helper theorem has a core-dependent ratio
+  aperture, helper threshold and counting onset. Its quantifiers allow
+  choosing a tail after fixing a core; they do not supply one paid tail
+  while that core grows. Waiting alone does not address the old-wall
+  completed source square. These are failures of the attempted iteration,
+  not a disproof of paid exhaustive continuation.
+- Two renewed deep searches reported complete retrieval (`partial=false`);
+  the multiple-debt query reported partial retrieval and mostly unrelated
+  quadratic-residue hits. Indexed source/compiler coverage remains mixed.
+  Actual finite-clock, common-reserve, prescribed-prime and quantitative
+  payment declarations were checked. No new cumulative payment theorem
+  was found or proved. Search status is not mathematical evidence against
+  the target.
+- Broad 2026 hysteresis/balayage searches located
+  [Yadav--Green--Das](https://arxiv.org/abs/2607.24163).
+  Its externally driven reaction law has no established correspondence to
+  arithmetic prime insertion. No result from that paper enters the proof.
+- Whole-route change required: work directly with the cumulative finite
+  counting mixed terms and old-wall completion, rather than repeat a
+  fixed-core coefficient-limit iteration. The frozen target remains
+  paid exhaustive continuation -> bounded critical action -> RH.
+
 ## Audit facts
+
+- Finite-clock feedback diagnostic: `lake env lean
+  /tmp/hgt-finite-clock-feedback.lean` passed; axiom audit contained only
+  `propext`, `Classical.choice`, `Quot.sound`. One earlier owned check
+  was terminated and collected before replacement; failed elaborations
+  were corrected before the successful check. This diagnostic introduces
+  no production module and asserts no payment sign. The scratch was
+  removed; `/tmp/hgt-finite-clock-feedback.log` retains the final audit.
+  All three renewed searches and all owned Lean processes exited.
 
 - Delayed clock span: `lake env lean /tmp/hgt-clock-span.lean` passed
   without warnings. The public theorem's axiom audit contains only
@@ -479,7 +528,7 @@ will not establish that missing estimate.
   pre-existing umbrella reachability errors: `ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`, and
-  `XiHeatCassiniWoldJointDepthMöbiusSourceTransport`. No error concerns this leaf.
+  `XiHeatCassiniWoldJointDepthMobiusSourceTransport`. No error concerns this leaf.
 - All owned Lean, build, search, index, and lint processes exited. Scratch
   proof/name-probe files were removed after their verified proof was promoted;
   audit logs remain under `/tmp/hgt-exhaustive-checkpoints*`.
@@ -491,3 +540,44 @@ will not establish that missing estimate.
   [Beuria--Shukla](https://arxiv.org/abs/2608.04028). Its freely designed decay
   spectrum supplies no law for the fixed arithmetic source; no result from
   that paper is used.
+
+## Uniform debt while helper windows and cutoffs move
+
+- `exists_mobiusDivisorUniformMovingHelperDebt` produces an actual omitted
+  prime r>N, delta>0, eta>0, B>0 and ONE cutoff M0 for each nonempty even
+  finite prime core P. Its source gap is K(P+r)=K(P)+2*delta. At EVERY
+  M>=M0, EVERY actual helper set S with p>=B and sum_S(1/p)<=eta leaves
+  W(P+r+S,M)-W(P,M)>=delta*M^2*(1+log M). M0 precedes S; cardinality,
+  overlap, child depth and helper positions may change with M.
+- `exists_mobiusDivisorMovingClockSpanDebt` produces r,delta,kappa,T,M0
+  with the same gap, and the finite-clock lower bound holds for all
+  M>=M0, all tau>=T and all helper subsets of
+  tau<log p<=(1+kappa)*tau. Unlike the earlier fixed-window theorem, this
+  covers coupled tau(M) and S(M), including transient cutoff choices.
+- Exact mechanism: old squarefree cofactor r survives unchanged if
+  r>M/B and no helper divides it. All other old samples lie in a set of
+  cardinality at most floor(M/B)+sum_S floor(M/p). Each old weighted
+  sample is <=C(P)*M*(1+log M), with C(P)=((3/5)*2^(card(P)-1))^2.
+  New squares are nonnegative. Consequently the full possible payment is
+  <=C(P)*M^2*(1+log M)*(1/B+sum_S 1/p), uniformly before any limit.
+  The actual omitted-prime coefficient gap then produces the stated
+  finite-clock witnesses. Interval Mertens supplies the moving-span bound.
+- Whole-route implication: a moving short window cannot escape these
+  debts by outrunning a window-dependent convergence threshold. The
+  retained-cofactor count closes that specific quantifier gap. This is
+  a derived bridge, not paid exhaustive continuation. Broad reciprocal
+  helper mass, older active helpers, cumulative mixed cancellation and
+  completion of every original action cutoff remain uncontrolled.
+- Scratch proof of both producers passed with only propext,
+  Classical.choice and Quot.sound. No numerical computation or
+  additional axiom was used. Named audit status is recorded on the card.
+
+- The named final build of `MobiusDivisorMovingClockDebt` passed without
+  new-leaf warnings; cached dependency warnings were replayed. It is wired
+  into `RHTower.lean`. No full or umbrella build ran. Lint reports only
+  the four unrelated reachability errors documented on the
+  [formalized card](../3-formalized/rh-moving-helper-clock-debt.md).
+
+- Corpus index refresh passed. All owned Lean/build/search/lint/index
+  processes exited. Scratch proof and fragments were removed after
+  promotion; audit logs remain under `/tmp/hgt-moving-clock*`.

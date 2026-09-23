@@ -71,7 +71,7 @@ theorem measureReal_shortExceptional_le_relative {B : Finset ℕ} {NA k : ℕ}
     volume.real (shortExceptional B W ((B.card : ℝ) * θ))
       ≤ (2 * Real.pi)⁻¹
         * (2 * (2 * Real.pi * W + 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ)))
-          * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k) := by
+          * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k) := by
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   rw [shortExceptional_eq_preimage hB W ((B.card : ℝ) * θ), volume_real_preimage_mul_left hpi]
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
@@ -80,7 +80,7 @@ theorem measureReal_shortExceptional_le_relative {B : Finset ℕ} {NA k : ℕ}
 /-- **The moment ratio at a maximum threshold, with no lower bound on the block.** -/
 theorem moment_ratio_max_le {Bc θ B₀ kk : ℝ} (hBc : 0 ≤ Bc) (hθ : 0 < θ) (hB₀ : 0 < B₀)
     (hk : 0 ≤ kk) :
-    kk * Bc / max (θ * Bc) B₀ ^ 2 ≤ kk / (θ * B₀) := by
+    kk * Bc / max (θ * Bc) B₀ ^ (2 : ℕ) ≤ kk / (θ * B₀) := by
   have hV0 : (0 : ℝ) < max (θ * Bc) B₀ := lt_of_lt_of_le hB₀ (le_max_right _ _)
   rcases eq_or_lt_of_le hBc with hzero | hpos
   · rw [← hzero]
@@ -88,7 +88,7 @@ theorem moment_ratio_max_le {Bc θ B₀ kk : ℝ} (hBc : 0 ≤ Bc) (hθ : 0 < θ
     positivity
   · have h1 : θ * Bc ≤ max (θ * Bc) B₀ := le_max_left _ _
     have h2 : B₀ ≤ max (θ * Bc) B₀ := le_max_right _ _
-    have hsq : θ * Bc * B₀ ≤ max (θ * Bc) B₀ ^ 2 := by nlinarith [hB₀, h1, h2, hθ, hpos]
+    have hsq : θ * Bc * B₀ ≤ max (θ * Bc) B₀ ^ (2 : ℕ) := by nlinarith [hB₀, h1, h2, hθ, hpos]
     have hnum : (0 : ℝ) ≤ kk * Bc := mul_nonneg hk hBc
     have hden : (0 : ℝ) < θ * Bc * B₀ := by positivity
     refine (div_le_div_of_nonneg_left hnum hden hsq).trans (le_of_eq ?_)
@@ -108,12 +108,12 @@ theorem measureReal_shortExceptional_max_le {B : Finset ℕ} {NA k : ℕ}
   refine (measureReal_shortExceptional_le hBprime hB hk hW hV0).trans ?_
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
   have hpow : ((k : ℝ) ^ k * (B.card : ℝ) ^ k) / max (θ * (B.card : ℝ)) B₀ ^ (2 * k)
-      = ((k : ℝ) * (B.card : ℝ) / max (θ * (B.card : ℝ)) B₀ ^ 2) ^ k := by
+      = ((k : ℝ) * (B.card : ℝ) / max (θ * (B.card : ℝ)) B₀ ^ (2 : ℕ)) ^ k := by
     rw [div_pow, mul_pow, pow_mul]
   have hratio := moment_ratio_max_le (Bc := (B.card : ℝ)) (θ := θ) (B₀ := B₀) (kk := (k : ℝ))
     (Nat.cast_nonneg _) hθ hB₀ (Nat.cast_nonneg _)
-  have hr0 : (0 : ℝ) ≤ (k : ℝ) * (B.card : ℝ) / max (θ * (B.card : ℝ)) B₀ ^ 2 := by positivity
-  have hstep : ((k : ℝ) * (B.card : ℝ) / max (θ * (B.card : ℝ)) B₀ ^ 2) ^ k
+  have hr0 : (0 : ℝ) ≤ (k : ℝ) * (B.card : ℝ) / max (θ * (B.card : ℝ)) B₀ ^ (2 : ℕ) := by positivity
+  have hstep : ((k : ℝ) * (B.card : ℝ) / max (θ * (B.card : ℝ)) B₀ ^ (2 : ℕ)) ^ k
       ≤ ((k : ℝ) / (θ * B₀)) ^ k := pow_le_pow_left₀ hr0 hratio k
   have hX0 : (0 : ℝ) ≤ 2 * Real.pi * W
       + 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ)) := by
@@ -136,7 +136,7 @@ theorem measureReal_shortExceptional_max_le {B : Finset ℕ} {NA k : ℕ}
           * (((k : ℝ) ^ k * (B.card : ℝ) ^ k) / max (θ * (B.card : ℝ)) B₀ ^ (2 * k)) := by
         ring
     _ = 2 * (2 * Real.pi * W + 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ)))
-          * (((k : ℝ) * (B.card : ℝ) / max (θ * (B.card : ℝ)) B₀ ^ 2) ^ k) := by rw [hpow]
+          * (((k : ℝ) * (B.card : ℝ) / max (θ * (B.card : ℝ)) B₀ ^ (2 : ℕ)) ^ k) := by rw [hpow]
     _ ≤ 2 * (2 * Real.pi * W + 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ)))
           * ((k : ℝ) / (θ * B₀)) ^ k :=
         mul_le_mul_of_nonneg_left hstep (by linarith)

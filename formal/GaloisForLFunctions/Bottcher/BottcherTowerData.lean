@@ -32,11 +32,11 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
     {σ : ℕ → ℂ → ℂ}
     (hσ0 : σ 0 = S.T)
     (hσ : ∀ j, ScaffoldProps c S.T (arcAnnulus ra RW α β) j (σ j))
-    (hσsq : ∀ j, ∀ v ∈ arcAnnulus ra RW α β, σ (j+1) v ^ 2 = σ j v - c) :
+    (hσsq : ∀ j, ∀ v ∈ arcAnnulus ra RW α β, σ (j+1) v ^ (2 : ℕ) = σ j v - c) :
     ∃ SL : ℕ → ℂ → ℂ,
       SL 0 = S.T ∧
       (∀ j, ScaffoldProps c S.T (annulusSet ra rb) j (SL j)) ∧
-      (∀ j, ∀ v ∈ annulusSet ra rb, SL (j+1) v ^ 2 = SL j v - c) ∧
+      (∀ j, ∀ v ∈ annulusSet ra rb, SL (j+1) v ^ (2 : ℕ) = SL j v - c) ∧
       (∀ j, ∀ v ∈ arcAnnulus ra rb α β, SL j v = σ j v) ∧
       (∀ j, ∀ v ∈ annulusSet ra rb, SL j v ≠ 0) := by
   classical
@@ -89,7 +89,7 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
   have hstep : ∀ j : ℕ, ∀ SLj : ℂ → ℂ,
       ScaffoldProps c S.T B j SLj → (∀ v ∈ C, SLj v = σ j v) →
       ∃ SLj1 : ℂ → ℂ, ScaffoldProps c S.T B (j+1) SLj1 ∧
-        (∀ v ∈ B, SLj1 v ^ 2 = SLj v - c) ∧
+        (∀ v ∈ B, SLj1 v ^ (2 : ℕ) = SLj v - c) ∧
         (∀ v ∈ C, SLj1 v = σ (j+1) v) ∧
         (∀ v ∈ B, SLj1 v ≠ 0) := by
     intro j SLj hP hmatch
@@ -121,7 +121,7 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
         exact hrb2h
     have hgwind : (∫ θ in (0:ℝ)..(2 * Real.pi),
         logDeriv (fun v => SLj v - c) (circleMap 0 ρ θ) * (circleMap 0 ρ θ * Complex.I))
-        = ((2 ^ 1 * 0 : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
+        = ((2 ^ (1 : ℕ) * 0 : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
       have hcongr : ∀ θ : ℝ,
           logDeriv (fun v => SLj v - c) (circleMap 0 ρ θ) * (circleMap 0 ρ θ * Complex.I)
           = (ℓj.γ θ - c)⁻¹ * ℓj.γ' θ := by
@@ -144,12 +144,12 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
       ring
     obtain ⟨s, hs_an, hs_sq, hs_ne⟩ :=
       exists_pow_root_on_annulus hrapos hρ1 hρ2 hg_an hg_ne 1 0 hgwind
-    have hs_sq' : ∀ v ∈ B, s v ^ 2 = SLj v - c := by
+    have hs_sq' : ∀ v ∈ B, s v ^ (2 : ℕ) = SLj v - c := by
       intro v hv
       have := hs_sq v hv
       rwa [pow_one 2] at this
     -- the full ScaffoldProps package for the root
-    have hProps : ∀ t : ℂ → ℂ, (∀ v ∈ B, t v ^ 2 = SLj v - c) →
+    have hProps : ∀ t : ℂ → ℂ, (∀ v ∈ B, t v ^ (2 : ℕ) = SLj v - c) →
         AnalyticOnNhd ℂ t B → ScaffoldProps c S.T B (j+1) t := by
       intro t ht_sq ht_an
       have ht_ne : ∀ v ∈ B, t v ≠ 0 := by
@@ -177,7 +177,7 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
         exact hinj h₁ h₂ h3
       · intro v hv
         have ht_d : HasDerivAt t (deriv t v) v := (ht_an v hv).differentiableAt.hasDerivAt
-        have hLd : HasDerivAt (fun x => t x ^ 2) (2 * t v * deriv t v) v := by
+        have hLd : HasDerivAt (fun x => t x ^ (2 : ℕ)) (2 * t v * deriv t v) v := by
           have h4 := ht_d.pow 2
           have h5 : (2:ℕ) * t v ^ (2 - 1) * deriv t v = 2 * t v * deriv t v := by
             push_cast
@@ -185,7 +185,7 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
           rwa [h5] at h4
         have hRd : HasDerivAt (fun x => SLj x - c) (deriv SLj v) v :=
           ((han v hv).differentiableAt.hasDerivAt).sub_const c
-        have hEqF : (fun x => t x ^ 2) =ᶠ[nhds v] (fun x => SLj x - c) := by
+        have hEqF : (fun x => t x ^ (2 : ℕ)) =ᶠ[nhds v] (fun x => SLj x - c) := by
           filter_upwards [(isOpen_annulusSet ra rb).mem_nhds hv] with z hz
           exact ht_sq z hz
         have h7 : HasDerivAt (fun x => SLj x - c) (2 * t v * deriv t v) v :=
@@ -204,10 +204,10 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
     -- the sign against σ (j+1) on C
     have hdich : ∀ v ∈ C, s v = σ (j+1) v ∨ s v = -σ (j+1) v := by
       intro v hv
-      have h1 : s v ^ 2 = SLj v - c := hs_sq' v (hCB hv)
-      have h2 : σ (j+1) v ^ 2 = σ j v - c := hσsq j v (hCA hv)
+      have h1 : s v ^ (2 : ℕ) = SLj v - c := hs_sq' v (hCB hv)
+      have h2 : σ (j+1) v ^ (2 : ℕ) = σ j v - c := hσsq j v (hCA hv)
       have h3 : SLj v = σ j v := hmatch v hv
-      have h4 : s v ^ 2 = σ (j+1) v ^ 2 := by rw [h1, h3, ← h2]
+      have h4 : s v ^ (2 : ℕ) = σ (j+1) v ^ (2 : ℕ) := by rw [h1, h3, ← h2]
       have h5 : (s v - σ (j+1) v) * (s v + σ (j+1) v) = 0 := by linear_combination h4
       rcases mul_eq_zero.mp h5 with h6 | h6
       · exact Or.inl (sub_eq_zero.mp h6)
@@ -232,12 +232,12 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
     · refine ⟨fun v => -s v, hProps _ ?_ hs_an.neg, ?_, ?_, ?_⟩
       · intro v hv
         have := hs_sq' v hv
-        show (-s v) ^ 2 = SLj v - c
+        show (-s v) ^ (2 : ℕ) = SLj v - c
         rw [neg_pow]
         simpa using this
       · intro v hv
         have := hs_sq' v hv
-        show (-s v) ^ 2 = SLj v - c
+        show (-s v) ^ (2 : ℕ) = SLj v - c
         rw [neg_pow]
         simpa using this
       · intro v hv
@@ -276,7 +276,7 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
         obtain ⟨hP, hmatch⟩ := ih
         obtain ⟨hP', hsq', hmatch', hne'⟩ := hnextfn n (SL n) hP hmatch
         exact ⟨hP', hmatch'⟩
-  have hSLsq : ∀ j : ℕ, ∀ v ∈ B, SL (j+1) v ^ 2 = SL j v - c := by
+  have hSLsq : ∀ j : ℕ, ∀ v ∈ B, SL (j+1) v ^ (2 : ℕ) = SL j v - c := by
     intro j
     obtain ⟨hP, hmatch⟩ := hSLprops j
     obtain ⟨_, hsq', _, _⟩ := hnextfn j (SL j) hP hmatch
@@ -303,7 +303,7 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
     (hlow : greenFunctionDyn c 0 < Real.log rlo)
     {ra rb RW : ℝ} (hra : rlo < ra) (hrb : ra < rb) (hrbRW : rb < RW) (hRWR : RW < R₀)
     (hrb2h : Real.log rb < 2 * greenFunctionDyn c 0)
-    (hraRW : ra ^ 2 < RW)
+    (hraRW : ra ^ (2 : ℕ) < RW)
     (hRW4h : Real.log RW < 4 * greenFunctionDyn c 0)
     (k : ℕ) :
     ∃ (Ext : Set ℂ) (SL : ℂ → ℂ),
@@ -351,7 +351,7 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
     hBconn.image _ ((hSLP j).1.continuousOn)
   -- the doubling window is nonempty
   have hrasqrt : ra < Real.sqrt RW := by
-    have h1 : Real.sqrt (ra ^ 2) < Real.sqrt RW :=
+    have h1 : Real.sqrt (ra ^ (2 : ℕ)) < Real.sqrt RW :=
       Real.sqrt_lt_sqrt (by positivity) hraRW
     rwa [Real.sqrt_sq (le_of_lt hrapos)] at h1
   have hWne : (arcAnnulus ra (Real.sqrt RW) J₁ J₂).Nonempty :=
@@ -360,12 +360,12 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
     intro w hw
     have h1 : arcAnnulus ra (Real.sqrt RW) J₁ J₂ ⊆ arcAnnulus ra RW J₁ J₂ :=
       arcAnnulus_mono_radius (Real.sqrt_pos.mpr (by linarith)) (by
-        have h2 : Real.sqrt RW < Real.sqrt (RW ^ 2) :=
+        have h2 : Real.sqrt RW < Real.sqrt (RW ^ (2 : ℕ)) :=
           Real.sqrt_lt_sqrt (by linarith) (by nlinarith)
         rw [Real.sqrt_sq (by linarith : (0:ℝ) ≤ RW)] at h2
         linarith)
     exact arcAnnulus_mono hαJ₁ hJ₂β (h1 hw)
-  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ 2 ∈ A := by
+  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ (2 : ℕ) ∈ A := by
     intro w hw
     apply sq_mem_arcAnnulus (r' := ra) (R' := Real.sqrt RW) _ _ hJ₁dbl hJ₂dbl hw
     · linarith [Real.log_pos (show (1:ℝ) < ra from by nlinarith)]
@@ -378,19 +378,19 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
   -- pairwise overlaps
   have hover0 : (P0 ∩ Pσ 1).Nonempty := by
     obtain ⟨w, hw⟩ := hWne
-    refine ⟨σ 1 (w ^ 2), ?_, ?_⟩
+    refine ⟨σ 1 (w ^ (2 : ℕ)), ?_, ?_⟩
     · have h1 := hσdbl 0 w hw
       rw [h1, hσ0]
       exact ⟨w, hAsubS w (hWsubA hw), rfl⟩
-    · exact ⟨w ^ 2, hWsq w hw, rfl⟩
+    · exact ⟨w ^ (2 : ℕ), hWsq w hw, rfl⟩
   have hoverσ : ∀ j : ℕ, (Pσ j ∩ Pσ (j+1)).Nonempty := by
     intro j
     obtain ⟨w, hw⟩ := hWne
-    refine ⟨σ (j+1) (w ^ 2), ?_, ?_⟩
+    refine ⟨σ (j+1) (w ^ (2 : ℕ)), ?_, ?_⟩
     · have h1 := hσdbl j w hw
       rw [h1]
       exact ⟨w, hWsubA hw, rfl⟩
-    · exact ⟨w ^ 2, hWsq w hw, rfl⟩
+    · exact ⟨w ^ (2 : ℕ), hWsq w hw, rfl⟩
   have hCne : (arcAnnulus ra rb α β).Nonempty :=
     (isConnected_arcAnnulus hrapos hrb hαβ).nonempty
   have hCsubB : arcAnnulus ra rb α β ⊆ B := arcAnnulus_subset _ _ hrapos hrb
@@ -522,7 +522,7 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
               exact Real.log_lt_log (lt_trans hrapos
                 (arcAnnulus_subset _ _ hrapos hraRW' hv).1) h2
             have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
-              calc (2:ℝ) = 2 ^ 1 := by norm_num
+              calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
                 _ ≤ 2 ^ (n+1) := by
                   apply pow_le_pow_right₀ (by norm_num)
                   omega
@@ -536,7 +536,7 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
             have h1 : Real.log ‖v‖ < Real.log rb :=
               Real.log_lt_log (lt_trans hrapos hv.1) hv.2
             have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
-              calc (2:ℝ) = 2 ^ 1 := by norm_num
+              calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
                 _ ≤ 2 ^ (n+1) := by
                   apply pow_le_pow_right₀ (by norm_num)
                   omega
@@ -648,7 +648,7 @@ theorem TowerSection.inv_map_quadratic {c : ℂ} {rlo rhi : ℝ} (S : TowerSecti
     (hrlo : 0 < rlo)
     {y : ℂ} (hy : y ∈ S.T '' annulusSet rlo rhi)
     (hfy : quadratic c y ∈ S.T '' annulusSet rlo rhi) :
-    S.inv (quadratic c y) = (S.inv y) ^ 2 := by
+    S.inv (quadratic c y) = (S.inv y) ^ (2 : ℕ) := by
   obtain ⟨w, hw, rfl⟩ := hy
   rw [S.inv_left hw]
   obtain ⟨w', hw', hw'eq⟩ := hfy
@@ -656,23 +656,23 @@ theorem TowerSection.inv_map_quadratic {c : ℂ} {rlo rhi : ℝ} (S : TowerSecti
     rw [greenFunctionDyn_quadratic, S.level w hw]
   have hlev' : Real.log ‖w'‖ = 2 * Real.log ‖w‖ := by
     rw [← S.level w' hw', hw'eq, hlev]
-  have hnorm : ‖w ^ 2‖ = ‖w'‖ := by
+  have hnorm : ‖w ^ (2 : ℕ)‖ = ‖w'‖ := by
     rw [norm_pow]
-    have h1 : Real.log (‖w‖ ^ 2) = Real.log ‖w'‖ := by
+    have h1 : Real.log (‖w‖ ^ (2 : ℕ)) = Real.log ‖w'‖ := by
       rw [Real.log_pow, hlev']
       push_cast
       ring
-    have h2 : (0:ℝ) < ‖w‖ ^ 2 := by
+    have h2 : (0:ℝ) < ‖w‖ ^ (2 : ℕ) := by
       have := lt_trans hrlo hw.1
       positivity
     have h3 : (0:ℝ) < ‖w'‖ := lt_trans hrlo hw'.1
-    calc ‖w‖ ^ 2 = Real.exp (Real.log (‖w‖ ^ 2)) := (Real.exp_log h2).symm
+    calc ‖w‖ ^ (2 : ℕ) = Real.exp (Real.log (‖w‖ ^ (2 : ℕ))) := (Real.exp_log h2).symm
       _ = Real.exp (Real.log ‖w'‖) := by rw [h1]
       _ = ‖w'‖ := Real.exp_log h3
-  have hsqmem : w ^ 2 ∈ annulusSet rlo rhi := by
+  have hsqmem : w ^ (2 : ℕ) ∈ annulusSet rlo rhi := by
     rw [annulusSet, mem_setOf_eq, hnorm]
     exact hw'
-  have hfe : quadratic c (S.T w) = S.T (w ^ 2) := by
+  have hfe : quadratic c (S.T w) = S.T (w ^ (2 : ℕ)) := by
     unfold quadratic
     rw [S.fe w hw hsqmem]
   rw [hfe, S.inv_left hsqmem]
@@ -996,7 +996,7 @@ theorem bottcher_towerDataG (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
   have hrb2h : Real.log rb < 2 * h := by
     rw [hrbdef, Real.log_exp]
     linarith
-  have hraRW : ra ^ 2 < RW := by
+  have hraRW : ra ^ (2 : ℕ) < RW := by
     rw [hradef, hRWdef, ← Real.exp_nat_mul]
     apply Real.exp_lt_exp.mpr
     push_cast
@@ -1281,7 +1281,7 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
   have hrb2h : Real.log rb < 2 * h := by
     rw [hrbdef, Real.log_exp]
     linarith
-  have hraRW : ra ^ 2 < RW := by
+  have hraRW : ra ^ (2 : ℕ) < RW := by
     rw [hradef, hRWdef, ← Real.exp_nat_mul]
     apply Real.exp_lt_exp.mpr
     push_cast

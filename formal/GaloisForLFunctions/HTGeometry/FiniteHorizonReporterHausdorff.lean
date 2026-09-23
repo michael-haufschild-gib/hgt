@@ -39,7 +39,7 @@ def reporterFamily (lam : N → ℝ) (B : N → A) : PiLp 2 fun _ : N => A :=
 
 /-- The scale `𝓑 = (∑ λ_a ‖B_a‖²)^{1/2}` of a reporter family. -/
 theorem norm_reporterFamily (lam : N → ℝ) (hlam : ∀ a, 0 ≤ lam a) (B : N → A) :
-    ‖reporterFamily lam B‖ = Real.sqrt (∑ a, lam a * ‖B a‖ ^ 2) := by
+    ‖reporterFamily lam B‖ = Real.sqrt (∑ a, lam a * ‖B a‖ ^ (2 : ℕ)) := by
   rw [reporterFamily, PiLp.norm_eq_of_L2]
   congr 1
   refine Finset.sum_congr rfl fun a _ => ?_
@@ -80,8 +80,8 @@ theorem norm_reporterOrbit_sub_le (lam : N → ℝ) (hlam : ∀ a, 0 ≤ lam a) 
       _ = 2 * |t| * ‖H - K‖ * (Real.sqrt (lam a) * ‖B a‖) := by ring
   have hC : (0 : ℝ) ≤ 2 * |t| * ‖H - K‖ := by positivity
   rw [PiLp.norm_eq_of_L2, norm_reporterFamily lam hlam B]
-  rw [show 2 * |t| * ‖H - K‖ * Real.sqrt (∑ a, lam a * ‖B a‖ ^ 2) =
-      Real.sqrt ((2 * |t| * ‖H - K‖) ^ 2 * ∑ a, lam a * ‖B a‖ ^ 2) by
+  rw [show 2 * |t| * ‖H - K‖ * Real.sqrt (∑ a, lam a * ‖B a‖ ^ (2 : ℕ)) =
+      Real.sqrt ((2 * |t| * ‖H - K‖) ^ (2 : ℕ) * ∑ a, lam a * ‖B a‖ ^ (2 : ℕ)) by
     rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hC]]
   apply Real.sqrt_le_sqrt
   rw [Finset.mul_sum]
@@ -89,10 +89,10 @@ theorem norm_reporterOrbit_sub_le (lam : N → ℝ) (hlam : ∀ a, 0 ≤ lam a) 
   have hsq := hpoint a
   have hnn : (0 : ℝ) ≤ ‖(reporterOrbit lam B H t - reporterOrbit lam B K t).ofLp a‖ :=
     norm_nonneg _
-  calc ‖(reporterOrbit lam B H t - reporterOrbit lam B K t).ofLp a‖ ^ 2
-      ≤ (2 * |t| * ‖H - K‖ * (Real.sqrt (lam a) * ‖B a‖)) ^ 2 := by
+  calc ‖(reporterOrbit lam B H t - reporterOrbit lam B K t).ofLp a‖ ^ (2 : ℕ)
+      ≤ (2 * |t| * ‖H - K‖ * (Real.sqrt (lam a) * ‖B a‖)) ^ (2 : ℕ) := by
         apply pow_le_pow_left₀ hnn hsq
-    _ = (2 * |t| * ‖H - K‖) ^ 2 * (lam a * ‖B a‖ ^ 2) := by
+    _ = (2 * |t| * ‖H - K‖) ^ (2 : ℕ) * (lam a * ‖B a‖ ^ (2 : ℕ)) := by
         rw [mul_pow]
         congr 1
         rw [mul_pow, Real.sq_sqrt (hlam a)]

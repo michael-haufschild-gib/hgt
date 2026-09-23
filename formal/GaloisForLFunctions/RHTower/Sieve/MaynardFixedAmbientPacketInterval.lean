@@ -77,7 +77,7 @@ theorem exists_integral_norm_fixedSource_mul_adjacentKernel_tail_le :
               routeTNormalizedSmoothWindowMellin N H
                 ((1 : ℂ) + (y : ℝ) * Complex.I))‖ ≤
           heathBrownWindowRelevantFixedPolylogBound L X k M 1 *
-            (130 * C * (N / R) ^ 2 / U) := by
+            (130 * C * (N / R) ^ (2 : ℕ) / U) := by
   obtain ⟨C, hC, htail⟩ :=
     exists_integral_routeTAdjacentNormalizedKernel_one_general_tail_le
   refine ⟨C, hC, ?_⟩
@@ -129,7 +129,7 @@ theorem exists_integral_norm_fixedSource_mul_adjacentKernel_tail_le :
         ∫ y in tail, ‖A y * K y‖ := by rfl
     _ ≤ ∫ y in tail, P * ‖K y‖ := hmono
     _ = P * ∫ y in tail, ‖K y‖ := hscale
-    _ ≤ P * (130 * C * (N / R) ^ 2 / U) :=
+    _ ≤ P * (130 * C * (N / R) ^ (2 : ℕ) / U) :=
       mul_le_mul_of_nonneg_left (by simpa [tail, K] using hktail) hP
     _ = _ := by rfl
 
@@ -164,7 +164,7 @@ theorem exists_large_range_fixedAmbientPhysicalDefectPacket_of_full_defect :
         1 ≤ X → 0 < M → 0 < lambda → 0 < N → 0 < H → 0 < R →
         H ≤ R → R ≤ 2 * H → R ≤ N → 0 < B → 0 < K →
         heathBrownWindowRelevantFixedPolylogBound L X k M 1 *
-            (130 * C * ((lambda * N) / (lambda * R)) ^ 2 / (K : ℝ)) ≤ B / 2 →
+            (130 * C * ((lambda * N) / (lambda * R)) ^ (2 : ℕ) / (K : ℝ)) ≤ B / 2 →
         B ≤ ‖∫ y : ℝ,
           heathBrownWindowRelevantEligibleDyadicAggregate L X k T0 t M
                 ((1 : ℂ) + (y : ℝ) * Complex.I) *

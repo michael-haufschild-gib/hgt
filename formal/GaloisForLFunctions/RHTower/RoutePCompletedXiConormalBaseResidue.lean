@@ -12,7 +12,7 @@ Xi zero its multiplicity-normalized residue is exactly the base radial feature, 
 on strict-right zeros is exactly P-G181's target matrix.
 
 The raw logarithmic residue carries analytic multiplicity `m`, so its squared energy carries
-`m^2`, whereas the multiplicity-exact divisor trace carries only `m`.  Raw residue Gram therefore
+`m^(2 : ℕ)`, whereas the multiplicity-exact divisor trace carries only `m`.  Raw residue Gram therefore
 matches the divisor only at simple zeros.  The unique positive correction is the inverse
 square-root multiplicity half-density.  The remaining producer is consequently a bounded
 half-density conormal landing, not an unnormalized logarithmic-residue map.
@@ -110,13 +110,13 @@ theorem integral_star_routePXiBaseConormalResidueFeature_mul
     calc
       (r : ℂ) * Complex.exp (-(star (rho - 1 / 2)) * (r : ℂ)) *
           ((r : ℂ) * Complex.exp (-((tau - 1 / 2) * (r : ℂ)))) =
-          (r : ℂ) ^ 2 *
+          (r : ℂ) ^ (2 : ℕ) *
             (Complex.exp (-(star (rho - 1 / 2)) * (r : ℂ)) *
               Complex.exp (-((tau - 1 / 2) * (r : ℂ)))) := by ring
-      _ = (r : ℂ) ^ 2 * Complex.exp
+      _ = (r : ℂ) ^ (2 : ℕ) * Complex.exp
           (-(star (rho - 1 / 2)) * (r : ℂ) +
             -((tau - 1 / 2) * (r : ℂ))) := by rw [Complex.exp_add]
-      _ = (r : ℂ) ^ 2 * Complex.exp (-(w * (r : ℂ))) := by
+      _ = (r : ℂ) ^ (2 : ℕ) * Complex.exp (-(w * (r : ℂ))) := by
         congr 2
         dsimp [w]
         ring
@@ -173,11 +173,11 @@ theorem routePStrictRightZeroConormalResidueGramMatrix_eq
 
 /-- A raw logarithmic residue has quadratic multiplicity energy. -/
 def routePRawXiConormalResidueCharge (m : ℕ) (a : ℝ) : ℝ :=
-  (m : ℝ) ^ 2 * (1 / (4 * a ^ 3))
+  (m : ℝ) ^ (2 : ℕ) * (1 / (4 * a ^ (3 : ℕ)))
 
 /-- Multiplicity-exact divisor trace has linear multiplicity energy. -/
 def routePXiDivisorMultiplicityCharge (m : ℕ) (a : ℝ) : ℝ :=
-  (m : ℝ) * (1 / (4 * a ^ 3))
+  (m : ℝ) * (1 / (4 * a ^ (3 : ℕ)))
 
 /-- Raw residue Gram matches divisor multiplicity only for a simple zero. -/
 theorem routePRawXiConormalResidueCharge_eq_divisor_iff
@@ -185,11 +185,11 @@ theorem routePRawXiConormalResidueCharge_eq_divisor_iff
     routePRawXiConormalResidueCharge m a =
         routePXiDivisorMultiplicityCharge m a ↔ m = 1 := by
   rw [routePRawXiConormalResidueCharge, routePXiDivisorMultiplicityCharge]
-  have hcharge : 0 < 1 / (4 * a ^ 3) := by positivity
+  have hcharge : 0 < 1 / (4 * a ^ (3 : ℕ)) := by positivity
   constructor
   · intro h
     have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
-    have : (m : ℝ) ^ 2 = (m : ℝ) := by
+    have : (m : ℝ) ^ (2 : ℕ) = (m : ℝ) := by
       exact (mul_right_cancel₀ hcharge.ne' (by simpa [mul_assoc] using h))
     have hmOne : (m : ℝ) = 1 := by nlinarith
     exact_mod_cast hmOne
@@ -200,7 +200,7 @@ theorem routePRawXiConormalResidueCharge_eq_divisor_iff
 the inverse square-root half-density. -/
 theorem routePXiConormalMultiplicityHalfDensity_unique
     {m : ℕ} (hm : 0 < m) {c : ℝ} (hc : 0 < c)
-    (henergy : (c * (m : ℝ)) ^ 2 = (m : ℝ)) :
+    (henergy : (c * (m : ℝ)) ^ (2 : ℕ) = (m : ℝ)) :
     c = (Real.sqrt m)⁻¹ := by
   have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
   have hsqrt : 0 < Real.sqrt (m : ℝ) := Real.sqrt_pos.2 hmR
@@ -210,7 +210,7 @@ theorem routePXiConormalMultiplicityHalfDensity_unique
     rw [henergy, Real.sq_sqrt hmR.le]
   calc
     c = Real.sqrt (m : ℝ) / (m : ℝ) := (eq_div_iff hmR.ne').2 hroot
-    _ = Real.sqrt (m : ℝ) / (Real.sqrt (m : ℝ)) ^ 2 := by
+    _ = Real.sqrt (m : ℝ) / (Real.sqrt (m : ℝ)) ^ (2 : ℕ) := by
       rw [Real.sq_sqrt hmR.le]
     _ = (Real.sqrt (m : ℝ))⁻¹ := by field_simp [hsqrt.ne']
 

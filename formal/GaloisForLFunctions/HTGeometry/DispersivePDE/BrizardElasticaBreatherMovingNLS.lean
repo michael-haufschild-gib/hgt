@@ -107,10 +107,10 @@ noncomputable def galileanFocusingSolution (v : ℝ)
     rw [norm_mul, norm_linearPhase, mul_one]
     push_cast at h ⊢
     calc
-      _ = linearPhase (-v ^ 2) v t x *
+      _ = linearPhase (-v ^ (2 : ℕ)) v t x *
           (Complex.I * S.val.ut t (x - 2 * v * t) +
             S.val.uxx t (x - 2 * v * t) +
-            (2 : ℂ) * (‖S.val.u t (x - 2 * v * t)‖ : ℂ) ^ 2 *
+            (2 : ℂ) * (‖S.val.u t (x - 2 * v * t)‖ : ℂ) ^ (2 : ℕ) *
               S.val.u t (x - 2 * v * t)) := by ring_nf
       _ = 0 := by
         apply mul_eq_zero_of_right

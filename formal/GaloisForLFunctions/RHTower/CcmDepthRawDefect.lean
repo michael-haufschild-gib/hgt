@@ -28,8 +28,8 @@ theorem ccm_tendsto_depth_raw_defect_div_zero
     {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) {C : ℝ} (hC : 1 ≤ C) (k : ℕ)
     (hgrow : ∀ j, A (k + 2) ≤ C ^ j * A (j + (k + 2)))
     {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j)))
     {m : ℕ} (hmk : m ≤ k) :

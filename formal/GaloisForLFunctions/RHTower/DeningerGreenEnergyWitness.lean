@@ -36,7 +36,7 @@ variable {V : Type*}
 
 /-- Edgewise Dirichlet energy of `u` for the conductance `c`. -/
 def conductanceEnergy (c : V → V → ℝ) (u : V → ℝ) (e : V × V) : ℝ :=
-  c e.1 e.2 * (u e.1 - u e.2) ^ 2
+  c e.1 e.2 * (u e.1 - u e.2) ^ (2 : ℕ)
 
 theorem conductanceEnergy_nonneg {c : V → V → ℝ} (hc : ∀ a b, 0 ≤ c a b) (u : V → ℝ) (e : V × V) :
     0 ≤ conductanceEnergy c u e :=
@@ -50,7 +50,7 @@ theorem conductanceEnergy_eq_zero_iff {c : V → V → ℝ} (hc : ∀ a b, 0 ≤
   · intro h a b hab
     have he := h (a, b)
     rw [conductanceEnergy] at he
-    have : (u a - u b) ^ 2 = 0 := by
+    have : (u a - u b) ^ (2 : ℕ) = 0 := by
       rcases mul_eq_zero.mp he with h1 | h2
       · exact absurd h1 hab.ne'
       · exact h2
@@ -106,7 +106,7 @@ def witnessBoundaries : Submodule ℝ (EuclideanSpace ℝ (Fin n)) :=
 
 /-- Unit-conductance edge energy on the Euclidean model. -/
 def witnessLocalEnergy (e : Fin n × Fin n) (u : EuclideanSpace ℝ (Fin n)) : ℝ :=
-  (u e.1 - u e.2) ^ 2
+  (u e.1 - u e.2) ^ (2 : ℕ)
 
 theorem witnessLocalEnergy_nonneg (e : Fin n × Fin n) (u : EuclideanSpace ℝ (Fin n)) :
     0 ≤ witnessLocalEnergy n e u :=

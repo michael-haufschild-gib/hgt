@@ -313,12 +313,12 @@ theorem isSymmFamily_diagOp : IsSymmFamily (diagOp ι) := by
 symbol. -/
 theorem norm_diagOp_apply_le (a b : EuclideanSpace ℝ ι) :
     ‖diagOp ι a b‖ ≤ ‖a‖ * ‖b‖ := by
-  have hcoord : ∀ i : ι, (a i) ^ 2 ≤ ‖a‖ ^ 2 := by
+  have hcoord : ∀ i : ι, (a i) ^ (2 : ℕ) ≤ ‖a‖ ^ (2 : ℕ) := by
     intro i
     rw [EuclideanSpace.real_norm_sq_eq]
-    exact Finset.single_le_sum (f := fun j => (a j) ^ 2) (fun j _ => sq_nonneg _)
+    exact Finset.single_le_sum (f := fun j => (a j) ^ (2 : ℕ)) (fun j _ => sq_nonneg _)
       (Finset.mem_univ i)
-  have hsq : ‖diagOp ι a b‖ ^ 2 ≤ (‖a‖ * ‖b‖) ^ 2 := by
+  have hsq : ‖diagOp ι a b‖ ^ (2 : ℕ) ≤ (‖a‖ * ‖b‖) ^ (2 : ℕ) := by
     rw [EuclideanSpace.real_norm_sq_eq, mul_pow, EuclideanSpace.real_norm_sq_eq b,
       Finset.mul_sum]
     refine Finset.sum_le_sum fun i _ => ?_

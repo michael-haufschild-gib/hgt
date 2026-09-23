@@ -243,7 +243,7 @@ theorem genPoly_meanValue_error_of_gap (a : ℕ → ℂ) (lam : ℕ → ℝ) (s 
     (hg : 0 < g) (hgap : ∀ n ∈ s, ∀ m ∈ s, m ≠ n → g ≤ |lam m - lam n|) :
     ‖(∫ t in T..(T + U), genPoly a lam s t * (starRingEnd ℂ) (genPoly a lam s t))
         - (U : ℂ) * (∑ n ∈ s, a n * (starRingEnd ℂ) (a n))‖
-      ≤ (2 / g) * (∑ n ∈ s, ‖a n‖) ^ 2 := by
+      ≤ (2 / g) * (∑ n ∈ s, ‖a n‖) ^ (2 : ℕ) := by
   have hne : ∀ n ∈ s, ∀ m ∈ s, m ≠ n → lam m - lam n ≠ 0 := by
     intro n hn m hm hmn h0
     have := hgap n hn m hm hmn
@@ -271,7 +271,7 @@ theorem genPoly_meanValue_error_of_gap (a : ℕ → ℂ) (lam : ℕ → ℝ) (s 
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun m _ => by ring
   have h2 : ∑ n ∈ s, ∑ m ∈ s, ‖a m‖ * ‖a n‖ * (2 / g)
-      = (2 / g) * (∑ n ∈ s, ‖a n‖) ^ 2 := by
+      = (2 / g) * (∑ n ∈ s, ‖a n‖) ^ (2 : ℕ) := by
     simp only [h1, ← Finset.sum_mul]
     rw [sq]
     ring

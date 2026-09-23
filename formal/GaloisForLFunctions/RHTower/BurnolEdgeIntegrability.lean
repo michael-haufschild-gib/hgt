@@ -95,7 +95,7 @@ theorem continuous_cauchyKernel_line {Z : ℂ} {σ : ℝ} (hZ : Z.re < σ) :
 
 /-- The pointwise Cauchy--Schwarz bound behind the integrability of the edge integrand. -/
 theorem norm_mul_mul_le_two_mul_sq_add_sq {A B C : ℂ} (hB : ‖B‖ ≤ 4) :
-    ‖A * B * C‖ ≤ 2 * (‖A‖ ^ 2 + ‖C‖ ^ 2) := by
+    ‖A * B * C‖ ≤ 2 * (‖A‖ ^ (2 : ℕ) + ‖C‖ ^ (2 : ℕ)) := by
   rw [norm_mul, norm_mul]
   nlinarith [norm_nonneg A, norm_nonneg B, norm_nonneg C, sq_nonneg (‖A‖ - ‖C‖),
     mul_nonneg (norm_nonneg A) (norm_nonneg C)]
@@ -127,10 +127,10 @@ theorem integrable_burnolEdgeIntegrand_right (ha : 1 ≤ a) (hev : f ∈ evenSub
     have h2 := continuous_riemannZeta_inv_line hσ1 hζne
     have h3 := continuous_cauchyKernel_line (Z := Z) hZ
     exact (h1.mul h2).mul h3
-  have hKsq : Integrable (fun t : ℝ => ‖(Z - ((σ : ℂ) + (t : ℂ) * I))⁻¹‖ ^ 2) volume :=
+  have hKsq : Integrable (fun t : ℝ => ‖(Z - ((σ : ℂ) + (t : ℂ) * I))⁻¹‖ ^ (2 : ℕ)) volume :=
     integrable_norm_sq_cauchyKernel_line hZ
   have hmaj : Integrable (fun t : ℝ => 2 * (‖extendedMellinContinuation a c d f
-      ((σ : ℂ) + (t : ℂ) * I)‖ ^ 2 + ‖(Z - ((σ : ℂ) + (t : ℂ) * I))⁻¹‖ ^ 2)) volume := by
+      ((σ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ) + ‖(Z - ((σ : ℂ) + (t : ℂ) * I))⁻¹‖ ^ (2 : ℕ))) volume := by
     simpa using (hGint.add hKsq).const_mul 2
   refine Integrable.mono' hmaj hcont.aestronglyMeasurable ?_
   filter_upwards with t

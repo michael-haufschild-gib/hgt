@@ -41,7 +41,7 @@ theorem generator_congruence (A : E →L[𝕜] E) (B : E →L[𝕜] G) (C : F �
 
 /-- Compressed dynamics dissipate the energy of the original observation of the lifted force. -/
 theorem compressed_power (A : E →L[𝕜] E) (B : E →L[𝕜] G) (C : F →L[𝕜] E) (x : F) :
-    RCLike.re ⟪x, (C.adjoint ∘L generator A B ∘L C) x⟫_𝕜 = -‖B (C x)‖ ^ 2 := by
+    RCLike.re ⟪x, (C.adjoint ∘L generator A B ∘L C) x⟫_𝕜 = -‖B (C x)‖ ^ (2 : ℕ) := by
   rw [← generator_congruence]
   exact generator_power _ _ _
 
@@ -58,7 +58,7 @@ theorem compressed_lossless_iff (A : E →L[𝕜] E) (B : E →L[𝕜] G) (C : F
 
 /-- The rank-one observer removes precisely its squared overlap with the force. -/
 theorem rankOne_observer_power (A : E →L[𝕜] E) (psi x : E) :
-    RCLike.re ⟪x, generator A (innerSL 𝕜 psi) x⟫_𝕜 = -‖⟪psi, x⟫_𝕜‖ ^ 2 :=
+    RCLike.re ⟪x, generator A (innerSL 𝕜 psi) x⟫_𝕜 = -‖⟪psi, x⟫_𝕜‖ ^ (2 : ℕ) :=
   generator_power A (innerSL 𝕜 psi) x
 
 /-- Its lossless sector is exactly the orthogonal complement of the observed line. -/

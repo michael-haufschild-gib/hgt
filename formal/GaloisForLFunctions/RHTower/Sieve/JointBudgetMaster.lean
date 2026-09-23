@@ -27,14 +27,14 @@ theorem jointOmegaBudget_le {x h : ℝ} {P Q : Finset ℕ}
     {δ Wc T₀ β₀ : ℝ} (hδ : δ = fibreWidth x h) (hδ0 : 0 < δ)
     (hWc : 1 ≤ Wc) (hT₀ : 0 < T₀) (hδWc : δ * Wc ≤ 1)
     (hbound : (∫ w in Set.Icc (-T₀) T₀,
-        ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ 2) ≤ β₀) :
+        ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ (2 : ℕ)) ≤ β₀) :
     jointOmegaBudget x h P Q
       ≤ 16 * Real.sqrt x
           * (3 * ((5 * Real.pi / 2
                 + 5 * Real.exp 1 / 2 * ((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ) / T₀)
-              * ∑ n ∈ fibreIndex x h, ‖jointOmegaCoeff P Q n‖ ^ 2) / Wc
-            + 3 * β₀ / Wc ^ 2)
-        + 204 * (((P.card : ℝ) + 1) * ((Q.card : ℝ) + 1)) ^ 2 * (Real.sqrt x + 1)
+              * ∑ n ∈ fibreIndex x h, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ)) / Wc
+            + 3 * β₀ / Wc ^ (2 : ℕ))
+        + 204 * (((P.card : ℝ) + 1) * ((Q.card : ℝ) + 1)) ^ (2 : ℕ) * (Real.sqrt x + 1)
         + 2 * (h + 1) * (2 * h + 1)
             * (((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ) * (Joint.mass P * Joint.mass Q)
                   * (Joint.mass P + Joint.mass Q + 1)
@@ -42,7 +42,7 @@ theorem jointOmegaBudget_le {x h : ℝ} {P Q : Finset ℕ}
   classical
   have hidx : fibreIndex x h = Finset.Icc 1 ⌊Real.sqrt x + h⌋₊ := rfl
   have hbound' : (∫ w in Set.Icc (-T₀) T₀,
-      ‖jointOmegaPoly P Q (Finset.Icc 1 ⌊Real.sqrt x + h⌋₊) w‖ ^ 2) ≤ β₀ := by
+      ‖jointOmegaPoly P Q (Finset.Icc 1 ⌊Real.sqrt x + h⌋₊) w‖ ^ (2 : ℕ)) ≤ β₀ := by
     rw [← hidx]; exact hbound
   have hspec := integral_kernel_normSq_jointOmega_le' (P := P) (Q := Q) (A₀ := 1)
     (B₀ := ⌊Real.sqrt x + h⌋₊) (by omega) (δ := δ) hδ0 hWc hT₀ hδWc hbound'

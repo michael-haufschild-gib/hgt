@@ -24,7 +24,7 @@ variable [NormedAddCommGroup U] [NormedSpace 𝕜 U]
 and fixed carrier `J`. -/
 def positiveFacePencilEnergy (B D : H →L[𝕜] U) (J : Y →L[𝕜] H)
     (t : ℝ) (y : Y) : ℝ :=
-  t * ‖B (J y)‖ ^ 2 + ‖D (J y)‖ ^ 2
+  t * ‖B (J y)‖ ^ (2 : ℕ) + ‖D (J y)‖ ^ (2 : ℕ)
 
 /-- Pointwise finiteness of every nonnegative ray of the compressed positive pencil. -/
 def PositiveFacePencilPointwiseBounded (B D : H →L[𝕜] U) (J : Y →L[𝕜] H) : Prop :=
@@ -41,18 +41,18 @@ theorem positiveFacePencil_pointwiseBounded_iff_comp_eq_zero
     intro y
     simp only [ContinuousLinearMap.comp_apply, zero_apply]
     by_contra hne
-    have ha : 0 < ‖B (J y)‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hne)
+    have ha : 0 < ‖B (J y)‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hne)
     obtain ⟨M, hM⟩ := h y
-    let t : ℝ := (|M| + 1) / ‖B (J y)‖ ^ 2
+    let t : ℝ := (|M| + 1) / ‖B (J y)‖ ^ (2 : ℕ)
     have ht : 0 ≤ t := div_nonneg (by positivity) ha.le
-    have hta : t * ‖B (J y)‖ ^ 2 = |M| + 1 := by
+    have hta : t * ‖B (J y)‖ ^ (2 : ℕ) = |M| + 1 := by
       dsimp [t]
       field_simp [ne_of_gt ha]
     have hb := hM t ht
     rw [positiveFacePencilEnergy, hta] at hb
     nlinarith [le_abs_self M, sq_nonneg ‖D (J y)‖]
   · intro hcomp y
-    refine ⟨‖D (J y)‖ ^ 2, ?_⟩
+    refine ⟨‖D (J y)‖ ^ (2 : ℕ), ?_⟩
     intro t ht
     have hzero : B (J y) = 0 := by
       change (B.comp J) y = 0
@@ -64,7 +64,7 @@ theorem positiveFacePencil_pointwiseBounded_iff_comp_eq_zero
 theorem positiveFacePencilEnergy_eq_subleading_of_comp_eq_zero
     (B D : H →L[𝕜] U) (J : Y →L[𝕜] H)
     (h : B.comp J = 0) (t : ℝ) (y : Y) :
-    positiveFacePencilEnergy B D J t y = ‖D (J y)‖ ^ 2 := by
+    positiveFacePencilEnergy B D J t y = ‖D (J y)‖ ^ (2 : ℕ) := by
   have hzero : B (J y) = 0 := by
     change (B.comp J) y = 0
     rw [h]
@@ -141,11 +141,11 @@ theorem positiveFacePencil_injective_leading_forces_zero_carrier
 
 /-- The concrete diagonal positive pencil used to falsify the three-branch regularization law. -/
 def diagonalPositivePencilEnergy (t : ℝ) (x : ℝ × ℝ) : ℝ :=
-  t * x.1 ^ 2 + x.2 ^ 2
+  t * x.1 ^ (2 : ℕ) + x.2 ^ (2 : ℕ)
 
 /-- Compression to the second coordinate retains its full subleading energy at every scale. -/
 theorem diagonalPositivePencil_secondFace (t y : ℝ) :
-    diagonalPositivePencilEnergy t (0, y) = y ^ 2 := by
+    diagonalPositivePencilEnergy t (0, y) = y ^ (2 : ℕ) := by
   simp [diagonalPositivePencilEnergy]
 
 /-- The same positive pencil diverges along its leading first-coordinate ray. -/
@@ -233,7 +233,7 @@ theorem positiveFacePencil_heterogeneous_family_energy_eq_subleading
     (h : LinearMap.range (J : Y →ₗ[𝕜] H) ≤
       LinearMap.ker (positiveFaceAnalysisMapL2 B : H →ₗ[𝕜] PiLp 2 U))
     (i : I) (t : ℝ) (y : Y) :
-    positiveFacePencilEnergy (B i) (D i) J t y = ‖D i (J y)‖ ^ 2 := by
+    positiveFacePencilEnergy (B i) (D i) J t y = ‖D i (J y)‖ ^ (2 : ℕ) := by
   apply positiveFacePencilEnergy_eq_subleading_of_comp_eq_zero
   rw [positiveFacePencil_comp_eq_zero_iff_range_le_ker]
   intro x hx

@@ -27,7 +27,7 @@ theorem tendsto_prolateWindowMass {ι : Type*} {L : Filter ι}
     (hK : 0 < K) (hB : 0 ≤ B)
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (heu : ∀ i, Function.Even (u i))
-    (hev : ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+    (hev : ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' i x = rescaledProlateP (c i) (mu i) x * u i x
         + rescaledProlateQ (c i) x * u' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u i x| |u' i x| ≤ B) ∧ u i 0 = 1 ∧ u' i 0 = 0)
@@ -67,11 +67,11 @@ theorem tendsto_prolateWindowPairing {ι : Type*} {L : Filter ι}
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (hv : ∀ i x, HasDerivAt (v i) (v' i x) x) (hv' : ∀ i x, HasDerivAt (v' i) (v'' i x) x)
     (heu : ∀ i, Function.Even (u i)) (hevn : ∀ i, Function.Even (v i))
-    (hevu : ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+    (hevu : ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' i x = rescaledProlateP (c i) (mu i) x * u i x
         + rescaledProlateQ (c i) x * u' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u i x| |u' i x| ≤ B) ∧ u i 0 = 1 ∧ u' i 0 = 0)
-    (hevv : ∀ᶠ i in L, 2 * K ^ 2 ≤ c i ∧
+    (hevv : ∀ᶠ i in L, 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, v'' i x = rescaledProlateP (c i) (nu i) x * v i x
         + rescaledProlateQ (c i) x * v' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |v i x| |v' i x| ≤ B) ∧ v i 0 = 1 ∧ v' i 0 = 0)
@@ -130,7 +130,7 @@ theorem exists_evenRung_of_prolate_family {ι : Type*} {L : Filter ι} [L.NeBot]
     (hB : 0 ≤ B)
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (heu : ∀ i, Function.Even (u i))
-    (hev : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+    (hev : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' i x = rescaledProlateP (c i) (mu i) x * u i x
         + rescaledProlateQ (c i) x * u' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u i x| |u' i x| ≤ B) ∧ u i 0 = 1 ∧ u' i 0 = 0)
@@ -153,16 +153,16 @@ theorem prolateFamily_limit_ne {ι : Type*} {L : Filter ι} [L.NeBot]
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (hv : ∀ i x, HasDerivAt (v i) (v' i x) x) (hv' : ∀ i x, HasDerivAt (v' i) (v'' i x) x)
     (heu : ∀ i, Function.Even (u i)) (hevn : ∀ i, Function.Even (v i))
-    (hevu : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+    (hevu : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' i x = rescaledProlateP (c i) (mu i) x * u i x
         + rescaledProlateQ (c i) x * u' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u i x| |u' i x| ≤ B) ∧ u i 0 = 1 ∧ u' i 0 = 0)
-    (hevv : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 2 * K ^ 2 ≤ c i ∧
+    (hevv : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, v'' i x = rescaledProlateP (c i) (nu i) x * v i x
         + rescaledProlateQ (c i) x * v' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |v i x| |v' i x| ≤ B) ∧ v i 0 = 1 ∧ v' i 0 = 0)
     (hpair : ∀ K : ℝ, 0 < K → ∀ᶠ i in L,
-      |∫ x in (-K)..K, u i x * v i x| ≤ C / K ^ 2)
+      |∫ x in (-K)..K, u i x * v i x| ≤ C / K ^ (2 : ℕ))
     (hmu : Tendsto mu L (𝓝 m)) (hnu : Tendsto nu L (𝓝 m')) (hc : Tendsto c L atTop) :
     m ≠ m' := by
   intro heq
@@ -184,7 +184,7 @@ theorem false_of_prolateFamily_below {j : ℕ} {ι : Type*} {L : Filter ι} [L.N
     (hu : ∀ k i x, HasDerivAt (u k i) (u' k i x) x)
     (hu' : ∀ k i x, HasDerivAt (u' k i) (u'' k i x) x)
     (heu : ∀ k i, Function.Even (u k i))
-    (hev : ∀ (k : Fin (j + 1)) (K : ℝ), 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+    (hev : ∀ (k : Fin (j + 1)) (K : ℝ), 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' k i x = rescaledProlateP (c i) (mu k i) x * u k i x
         + rescaledProlateQ (c i) x * u' k i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u k i x| |u' k i x| ≤ B) ∧ u k i 0 = 1 ∧ u' k i 0 = 0)
@@ -209,14 +209,14 @@ theorem false_of_orthogonal_prolateFamily_below {j : ℕ} {ι : Type*} {L : Filt
     (hu : ∀ k i x, HasDerivAt (u k i) (u' k i x) x)
     (hu' : ∀ k i x, HasDerivAt (u' k i) (u'' k i x) x)
     (heu : ∀ k i, Function.Even (u k i))
-    (hev : ∀ (k : Fin (j + 1)) (K : ℝ), 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+    (hev : ∀ (k : Fin (j + 1)) (K : ℝ), 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' k i x = rescaledProlateP (c i) (mu k i) x * u k i x
         + rescaledProlateQ (c i) x * u' k i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u k i x| |u' k i x| ≤ B) ∧ u k i 0 = 1 ∧ u' k i 0 = 0)
     (hmass : ∀ (k : Fin (j + 1)) (K : ℝ), 0 < K → ∀ᶠ i in L,
       (∫ x in (-K)..K, u k i x * u k i x) ≤ N)
     (hpair : ∀ k l : Fin (j + 1), k ≠ l → ∀ K : ℝ, 0 < K → ∀ᶠ i in L,
-      |∫ x in (-K)..K, u k i x * u l i x| ≤ C / K ^ 2)
+      |∫ x in (-K)..K, u k i x * u l i x| ≤ C / K ^ (2 : ℕ))
     (hmu : ∀ k, Tendsto (mu k) L (𝓝 (m k))) (hc : Tendsto c L atTop)
     (hbelow : ∀ k, m k < 4 * (j : ℝ) + 1) :
     False := by

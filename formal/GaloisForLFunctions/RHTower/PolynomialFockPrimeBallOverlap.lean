@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.PrimeLogPowZetaAbelPole
 
 The exact tangent radius is dominated by the classical polynomial critical radius. Uniform
 prime-log window asymptotics then give bounded quartic overlap and vanishing superquartic tail
-overlap for the literal weights `(log p)^2 / p`. The capstone is a uniform finite-sum bound valid at
+overlap for the literal weights `(log p)^(2 : ℕ) / p`. The capstone is a uniform finite-sum bound valid at
 every complex point, including the bounded real head.
 -/
 

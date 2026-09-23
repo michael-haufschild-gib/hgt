@@ -14,7 +14,7 @@ private abbrev mu (q : XiZeroCopy) := D4BMLeftModeRadialEquation.eigenvalue q
 
 /-- The unchanged finite metric density in its actual collar radial measure. -/
 def metricDifference (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (a b L k : ℝ) : ℂ :=
-  ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^2-1)*
+  ((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*
     (metricTimeCut q br true amp w a b (D4BMJointWave.tortoiseRadius (-L/2)) (Real.exp k)-
       restoredMetricTime q br true amp w a b (D4BMJointWave.tortoiseRadius (-L/2)))
 

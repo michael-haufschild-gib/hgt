@@ -25,31 +25,31 @@ same unit-prefactor Gaussian with any positive clock gain. -/
 theorem eventually_const_mul_pow_mul_exp_neg_lt_exp_clock_gain
     (C β : ℝ) (m : ℕ) {δ : ℝ} (hδ : 0 < δ) :
     ∀ᶠ a : ℝ in atTop,
-      C * a ^ m * Real.exp (-(β * a ^ 2)) <
-        Real.exp (-((β - δ) * a ^ 2)) := by
+      C * a ^ m * Real.exp (-(β * a ^ (2 : ℕ))) <
+        Real.exp (-((β - δ) * a ^ (2 : ℕ))) := by
   have hzero :=
     (tendsto_pow_mul_exp_neg_mul_sq_atTop_nhds_zero m hδ).const_mul C
   rw [mul_zero] at hzero
   have hsmall : ∀ᶠ a : ℝ in atTop,
-      C * (a ^ m * Real.exp (-(δ * a ^ 2))) < 1 :=
+      C * (a ^ m * Real.exp (-(δ * a ^ (2 : ℕ)))) < 1 :=
     hzero.eventually (eventually_lt_nhds zero_lt_one)
   filter_upwards [hsmall] with a ha
   have hfactor :
-      C * a ^ m * Real.exp (-(β * a ^ 2)) =
-        (C * (a ^ m * Real.exp (-(δ * a ^ 2)))) *
-          Real.exp (-((β - δ) * a ^ 2)) := by
+      C * a ^ m * Real.exp (-(β * a ^ (2 : ℕ))) =
+        (C * (a ^ m * Real.exp (-(δ * a ^ (2 : ℕ))))) *
+          Real.exp (-((β - δ) * a ^ (2 : ℕ))) := by
     calc
-      C * a ^ m * Real.exp (-(β * a ^ 2)) =
+      C * a ^ m * Real.exp (-(β * a ^ (2 : ℕ))) =
           C * a ^ m *
-            (Real.exp (-(δ * a ^ 2)) * Real.exp (-((β - δ) * a ^ 2))) := by
+            (Real.exp (-(δ * a ^ (2 : ℕ))) * Real.exp (-((β - δ) * a ^ (2 : ℕ)))) := by
               rw [← Real.exp_add]
               congr 2
               ring
-      _ = (C * (a ^ m * Real.exp (-(δ * a ^ 2)))) *
-          Real.exp (-((β - δ) * a ^ 2)) := by ring
+      _ = (C * (a ^ m * Real.exp (-(δ * a ^ (2 : ℕ))))) *
+          Real.exp (-((β - δ) * a ^ (2 : ℕ))) := by ring
   rw [hfactor]
   simpa only [one_mul] using
-    (mul_lt_mul_of_pos_right ha (Real.exp_pos (-((β - δ) * a ^ 2))))
+    (mul_lt_mul_of_pos_right ha (Real.exp_pos (-((β - δ) * a ^ (2 : ℕ)))))
 
 /-- **Tunneling separation principle.**  Let `d(a)` be a nonnegative mode leakage and `s(a)` its
 normalized separation ratio.  Suppose
@@ -65,10 +65,10 @@ theorem tendsto_separation_zero_of_gaussian_upper_of_tunneling_lower
     {d s : ℝ → ℝ} {C β : ℝ} {m : ℕ}
     (hs_nonneg : ∀ᶠ a : ℝ in atTop, 0 ≤ s a)
     (hd_upper : ∀ᶠ a : ℝ in atTop,
-      d a ≤ C * a ^ m * Real.exp (-(β * a ^ 2)))
+      d a ≤ C * a ^ m * Real.exp (-(β * a ^ (2 : ℕ))))
     (hd_lower : ∀ ε : ℝ, 0 < ε →
       ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ a : ℝ in atTop,
-        ε ≤ s a → Real.exp (-((β - δ) * a ^ 2)) ≤ d a) :
+        ε ≤ s a → Real.exp (-((β - δ) * a ^ (2 : ℕ))) ≤ d a) :
     Tendsto s atTop (nhds 0) := by
   rw [tendsto_order]
   constructor
@@ -83,7 +83,7 @@ theorem tendsto_separation_zero_of_gaussian_upper_of_tunneling_lower
     by_contra hnot
     have hεs : ε ≤ s a := le_of_not_gt hnot
     have hlowera := hlower hεs
-    have hstrict : d a < Real.exp (-((β - δ) * a ^ 2)) :=
+    have hstrict : d a < Real.exp (-((β - δ) * a ^ (2 : ℕ))) :=
       hupper.trans_lt hclocka
     exact (not_lt_of_ge hlowera) hstrict
 
@@ -96,10 +96,10 @@ theorem tendsto_separation_zero_of_arbitrarily_sharp_gaussian_upper_of_tunneling
     (hs_nonneg : ∀ᶠ a : ℝ in atTop, 0 ≤ s a)
     (hd_upper : ∀ η : ℝ, 0 < η → η < β →
       ∀ᶠ a : ℝ in atTop,
-        d a ≤ Real.exp (-((β - η) * a ^ 2)))
+        d a ≤ Real.exp (-((β - η) * a ^ (2 : ℕ))))
     (hd_lower : ∀ ε : ℝ, 0 < ε →
       ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ a : ℝ in atTop,
-        ε ≤ s a → Real.exp (-((β - δ) * a ^ 2)) ≤ d a) :
+        ε ≤ s a → Real.exp (-((β - δ) * a ^ (2 : ℕ))) ≤ d a) :
     Tendsto s atTop (nhds 0) := by
   rw [tendsto_order]
   constructor
@@ -125,10 +125,10 @@ theorem tendsto_separation_zero_of_arbitrarily_sharp_gaussian_upper_of_tunneling
     have hεs : ε ≤ s a := le_of_not_gt hnot
     have hlo := hl hεs
     have hclock :
-        Real.exp (-((β - η) * a ^ 2)) <
-          Real.exp (-((β - δ) * a ^ 2)) := by
+        Real.exp (-((β - η) * a ^ (2 : ℕ))) <
+          Real.exp (-((β - δ) * a ^ (2 : ℕ))) := by
       rw [Real.exp_lt_exp]
-      have ha2 : 0 < a ^ 2 := sq_pos_of_pos ha
+      have ha2 : 0 < a ^ (2 : ℕ) := sq_pos_of_pos ha
       nlinarith
     exact (not_lt_of_ge hlo) (hu.trans_lt hclock)
 

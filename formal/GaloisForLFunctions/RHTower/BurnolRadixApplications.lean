@@ -976,7 +976,7 @@ theorem firstMomentSeries_recurrence {D : Type*} [Fintype D]
 
 theorem secondMomentSeries_recurrence {D : Type*} [Fintype D]
     (b : ℕ) (hb : 2 ≤ b) (digit : D → Fin b) :
-    ((b : PowerSeries ℚ) ^ 2 -
+    ((b : PowerSeries ℚ) ^ (2 : ℕ) -
         PowerSeries.X * (Fintype.card D : PowerSeries ℚ)) *
         wordMomentSeries b digit 2 =
       PowerSeries.X *
@@ -1024,7 +1024,7 @@ theorem secondMomentSeries_closed_shifted {D : Type*} [Fintype D]
     (1 - PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
         (PowerSeries.C (((b + 2 : ℕ) : ℚ)) -
           PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
-        (PowerSeries.C (((b + 2 : ℕ) : ℚ) ^ 2) -
+        (PowerSeries.C (((b + 2 : ℕ) : ℚ) ^ (2 : ℕ)) -
           PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
         wordMomentSeries (b + 2) digit 2 =
       PowerSeries.X *
@@ -1034,8 +1034,8 @@ theorem secondMomentSeries_closed_shifted {D : Type*} [Fintype D]
             (PowerSeries.C (((b + 2 : ℕ) : ℚ)) -
               PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ))) := by
   have hsecond := secondMomentSeries_recurrence (b + 2) (by omega) digit
-  have hpow : PowerSeries.C (((b + 2 : ℕ) : ℚ) ^ 2) =
-      ((b + 2 : ℕ) : PowerSeries ℚ) ^ 2 := by
+  have hpow : PowerSeries.C (((b + 2 : ℕ) : ℚ) ^ (2 : ℕ)) =
+      ((b + 2 : ℕ) : PowerSeries ℚ) ^ (2 : ℕ) := by
     rw [map_pow, map_natCast]
   have hcard : PowerSeries.C (Fintype.card D : ℚ) =
       (Fintype.card D : PowerSeries ℚ) := by
@@ -1046,13 +1046,13 @@ theorem secondMomentSeries_closed_shifted {D : Type*} [Fintype D]
     (1 - PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
         (PowerSeries.C (((b + 2 : ℕ) : ℚ)) -
           PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
-        (PowerSeries.C (((b + 2 : ℕ) : ℚ) ^ 2) -
+        (PowerSeries.C (((b + 2 : ℕ) : ℚ) ^ (2 : ℕ)) -
           PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
         wordMomentSeries (b + 2) digit 2 =
       (1 - PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
         (PowerSeries.C (((b + 2 : ℕ) : ℚ)) -
           PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
-        ((PowerSeries.C (((b + 2 : ℕ) : ℚ) ^ 2) -
+        ((PowerSeries.C (((b + 2 : ℕ) : ℚ) ^ (2 : ℕ)) -
           PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
             wordMomentSeries (b + 2) digit 2) := by ring
     _ = (1 - PowerSeries.X * PowerSeries.C (Fintype.card D : ℚ)) *
@@ -1140,7 +1140,7 @@ theorem kempnerFirstMomentSeries_closed
           PowerSeries.X * PowerSeries.C (b + 1 : ℚ)) *
         kempnerWordMomentSeries b d 1 =
       PowerSeries.X *
-        PowerSeries.C (digitPowerSum (b + 2) 1 - (d : ℚ) ^ 1) := by
+        PowerSeries.C (digitPowerSum (b + 2) 1 - (d : ℚ) ^ (1 : ℕ)) := by
   have h := firstMomentSeries_closed_shifted b (excludedDigitEmbedding d)
   simp only [kempnerWordMomentSeries, card_excludedDigit,
     alphabetPowerSum_excludedDigit] at h ⊢
@@ -1153,14 +1153,14 @@ theorem kempnerSecondMomentSeries_closed
     (1 - PowerSeries.X * PowerSeries.C (b + 1 : ℚ)) *
         (PowerSeries.C (b + 2 : ℚ) -
           PowerSeries.X * PowerSeries.C (b + 1 : ℚ)) *
-        (PowerSeries.C ((b + 2 : ℚ) ^ 2) -
+        (PowerSeries.C ((b + 2 : ℚ) ^ (2 : ℕ)) -
           PowerSeries.X * PowerSeries.C (b + 1 : ℚ)) *
         kempnerWordMomentSeries b d 2 =
       PowerSeries.X *
-        (2 * PowerSeries.C (digitPowerSum (b + 2) 1 - (d : ℚ) ^ 1) *
+        (2 * PowerSeries.C (digitPowerSum (b + 2) 1 - (d : ℚ) ^ (1 : ℕ)) *
             PowerSeries.X *
-              PowerSeries.C (digitPowerSum (b + 2) 1 - (d : ℚ) ^ 1) +
-          PowerSeries.C (digitPowerSum (b + 2) 2 - (d : ℚ) ^ 2) *
+              PowerSeries.C (digitPowerSum (b + 2) 1 - (d : ℚ) ^ (1 : ℕ)) +
+          PowerSeries.C (digitPowerSum (b + 2) 2 - (d : ℚ) ^ (2 : ℕ)) *
             (PowerSeries.C (b + 2 : ℚ) -
               PowerSeries.X * PowerSeries.C (b + 1 : ℚ))) := by
   have h := secondMomentSeries_closed_shifted b (excludedDigitEmbedding d)

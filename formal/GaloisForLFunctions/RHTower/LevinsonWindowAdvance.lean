@@ -9,7 +9,7 @@ Combining
 
 * the polar form of Hardy's `Z` produced by the detector `G = ζ + λζ'`,
 * the identification of its phase advance with `θ(T₂)-θ(T₁)` plus the argument variation of the
-  entire detector `G♯ = (s-1)^2 G` along the critical segment, and
+  entire detector `G♯ = (s-1)^(2 : ℕ) G` along the critical segment, and
 * the rectangle argument principle, which turns that argument variation into the variation along
   the other three edges minus `2π` times the number of zeros of `G♯` in `[½,d]×[T₁,T₂]`,
 

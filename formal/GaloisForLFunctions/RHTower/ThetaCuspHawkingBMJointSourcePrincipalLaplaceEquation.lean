@@ -11,7 +11,7 @@ set_option backward.isDefEq.respectTransparency false
 /-- Every spatial Schwartz probe sees the original frequency equation of the actual transform. -/
 theorem principalTimeLaplace_probe_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (ψ : 𝓢(ℝ,ℂ)) (w : ℂ) (hw : principalResponseGrowth q i < w.re) :
-    w^2*l2SchwartzProbe ψ (principalTimeLaplace q branch a i w)-
+    w^(2 : ℕ)*l2SchwartzProbe ψ (principalTimeLaplace q branch a i w)-
       l2SchwartzProbe (Δ ψ) (principalTimeLaplace q branch a i w) =
         l2SchwartzProbe ψ (∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • principalTimeForcing q branch a i t)+
           l2SchwartzProbe ψ (principalRadialPotentialOp q i (principalTimeLaplace q branch a i w)) := by
@@ -41,18 +41,18 @@ theorem principalTimeLaplace_probe_equation (q : XiZeroCopy) (branch : Bool) (a 
         rw [he,mul_add]
       _ = _ := by rw [integral_add hiQ hiP,hQ,hP]; rfl
   rw [principalTimeAcceleration_laplace_probe q branch a i ψ w hw] at h
-  change w^2*P (principalTimeLaplace q branch a i w) =
+  change w^(2 : ℕ)*P (principalTimeLaplace q branch a i w) =
     l2SchwartzProbe (Δ ψ) (principalTimeLaplace q branch a i w)+
       P (principalRadialPotentialOp q i (principalTimeLaplace q branch a i w))+
         P (∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • F t) at h
-  change w^2*P (principalTimeLaplace q branch a i w)-
+  change w^(2 : ℕ)*P (principalTimeLaplace q branch a i w)-
     l2SchwartzProbe (Δ ψ) (principalTimeLaplace q branch a i w) = _
   linear_combination h
 
 /-- The actual Bochner transform solves the original radial frequency equation as a distribution. -/
 theorem principalTimeLaplace_distribution_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalResponseGrowth q i < w.re) :
-    w^2 • ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ))-
+    w^(2 : ℕ) • ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ))-
       Δ ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ)) =
         (((∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • principalTimeForcing q branch a i t) : FourierRealL2) : 𝓢'(ℝ,ℂ))+
           ((principalRadialPotentialOp q i (principalTimeLaplace q branch a i w) : FourierRealL2) : 𝓢'(ℝ,ℂ)) := by
@@ -63,7 +63,7 @@ theorem principalTimeLaplace_distribution_equation (q : XiZeroCopy) (branch : Bo
 /-- The forcing in the transformed equation is the literal source with its original onset transform. -/
 theorem principalTimeLaplace_original_source_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalResponseGrowth q i < w.re) (hw' : -2 < w.re) :
-    w^2 • ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ))-
+    w^(2 : ℕ) • ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ))-
       Δ ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ)) =
         ((principalAmplitude q i • negativeOddExtension (radialSourceLaplaceVector q branch a w hw') : FourierRealL2) : 𝓢'(ℝ,ℂ))+
           ((principalRadialPotentialOp q i (principalTimeLaplace q branch a i w) : FourierRealL2) : 𝓢'(ℝ,ℂ)) := by

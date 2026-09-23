@@ -52,7 +52,7 @@ namespace RHTower
 
 /-- **The factorial identity.**  `(n+3)(n+4)·((n+2)!)² = (n+1)(n+2)·n!·(n+4)!`. -/
 theorem window_factorial (n : ℕ) :
-    (n + 3) * (n + 4) * ((n + 2).factorial) ^ 2
+    (n + 3) * (n + 4) * ((n + 2).factorial) ^ (2 : ℕ)
       = (n + 1) * (n + 2) * n.factorial * (n + 4).factorial := by
   simp only [Nat.factorial_succ]
   ring
@@ -131,7 +131,7 @@ theorem windowRatio_tendsto_one : Tendsto windowRatio atTop (𝓝 1) := by
 Cauchy–Schwarz applied to `u^{j/2}` against `u^{(j+2)/2}` in the weighted space. -/
 theorem moment_logConvex {ι : Type*} (s : Finset ι) (w u : ι → ℝ)
     (hw : ∀ i ∈ s, 0 ≤ w i) (hu : ∀ i ∈ s, 0 ≤ u i) (j : ℕ) :
-    (∑ i ∈ s, w i * u i ^ (j + 1)) ^ 2
+    (∑ i ∈ s, w i * u i ^ (j + 1)) ^ (2 : ℕ)
       ≤ (∑ i ∈ s, w i * u i ^ j) * (∑ i ∈ s, w i * u i ^ (j + 2)) := by
   have key := Finset.sum_mul_sq_le_sq_mul_sq s
       (fun i => Real.sqrt (w i * u i ^ j)) (fun i => Real.sqrt (w i * u i ^ (j + 2)))
@@ -141,12 +141,12 @@ theorem moment_logConvex {ι : Type*} (s : Finset ι) (w u : ι → ℝ)
     have hwi := hw i hi
     have hui := hu i hi
     rw [← Real.sqrt_mul (by positivity)]
-    have : w i * u i ^ j * (w i * u i ^ (j + 2)) = (w i * u i ^ (j + 1)) ^ 2 := by ring
+    have : w i * u i ^ j * (w i * u i ^ (j + 2)) = (w i * u i ^ (j + 1)) ^ (2 : ℕ) := by ring
     rw [this, Real.sqrt_sq (by positivity)]
-  have hsq1 : ∀ i ∈ s, Real.sqrt (w i * u i ^ j) ^ 2 = w i * u i ^ j := by
+  have hsq1 : ∀ i ∈ s, Real.sqrt (w i * u i ^ j) ^ (2 : ℕ) = w i * u i ^ j := by
     intro i hi
     exact Real.sq_sqrt (by have := hw i hi; have := hu i hi; positivity)
-  have hsq2 : ∀ i ∈ s, Real.sqrt (w i * u i ^ (j + 2)) ^ 2 = w i * u i ^ (j + 2) := by
+  have hsq2 : ∀ i ∈ s, Real.sqrt (w i * u i ^ (j + 2)) ^ (2 : ℕ) = w i * u i ^ (j + 2) := by
     intro i hi
     exact Real.sq_sqrt (by have := hw i hi; have := hu i hi; positivity)
   rw [Finset.sum_congr rfl hcross, Finset.sum_congr rfl hsq1,

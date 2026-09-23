@@ -23,7 +23,7 @@ namespace GaloisForLFunctions.RHTower
 
 private abbrev Base := CCMRationalClassSpaceSection
 private abbrev Fiber := CCMRationalMoritaTraceNormL1Unitization
-private abbrev Field := CCMRationalContinuousTraceNormField
+private abbrev Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity := CCMRationalContinuousTraceNormField
 private abbrev StrongClass := CCMRationalStrongClassSpace
 
 /-- Conjugate-linear bundle on one exact trace-norm fibre. -/
@@ -47,7 +47,7 @@ def ccmRationalMoritaTraceNormL1KRealAlgebra :
 
 /-- Evaluation of a continuous trace-norm field as an algebra homomorphism. -/
 def ccmRationalContinuousTraceNormFieldEvaluationAlgHom (b : Base) :
-    Field →ₐ[ℂ] Fiber where
+    Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity →ₐ[ℂ] Fiber where
   toFun := fun F => F b
   map_one' := rfl
   map_mul' _ _ := rfl
@@ -55,9 +55,9 @@ def ccmRationalContinuousTraceNormFieldEvaluationAlgHom (b : Base) :
   map_add' _ _ := rfl
   commutes' _ := rfl
 
-/-- Field evaluation is Real-equivariant at algebra level. -/
+/-- Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity evaluation is Real-equivariant at algebra level. -/
 theorem ccmRationalContinuousTraceNormFieldEvaluationAlgHom_real
-    (b : Base) (F : Field) :
+    (b : Base) (F : Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity) :
     ccmRationalMoritaTraceNormL1KRealAlgebra.sigma
         (ccmRationalContinuousTraceNormFieldEvaluationAlgHom b F) =
       ccmRationalContinuousTraceNormFieldEvaluationAlgHom b
@@ -68,7 +68,7 @@ theorem ccmRationalContinuousTraceNormFieldEvaluationAlgHom_real
 actions in every cyclic degree. -/
 theorem ccmRationalContinuousTraceNormFieldDegreeEvaluation_real
     {n : ℕ} (base : Fin (n + 1) → Base)
-    (x : CyclicBarTensor ℂ Field n) :
+    (x : CyclicBarTensor ℂ Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity n) :
     ccmRationalContinuousTraceNormFieldDegreeEvaluation base
         ((cyclicBarDegreeKReal
           ccmRationalContinuousTraceNormFieldKRealAlgebra n).sigma x) =
@@ -119,18 +119,18 @@ def ccmRationalMoritaTraceNormL1DegreeRealIsometry (n : ℕ) :
 /-- Ambient continuous-field Real action is continuous for the exact
 independent-evaluation projective topology. -/
 theorem ccmRationalContinuousTraceNormFieldDegreeReal_continuous (n : ℕ) :
-    @Continuous (CyclicBarTensor ℂ Field n) (CyclicBarTensor ℂ Field n)
+    @Continuous (CyclicBarTensor ℂ Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity n) (CyclicBarTensor ℂ Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity n)
       (ccmRationalContinuousTraceNormFieldProjectiveTopology n)
       (ccmRationalContinuousTraceNormFieldProjectiveTopology n)
       (cyclicBarDegreeKReal
         ccmRationalContinuousTraceNormFieldKRealAlgebra n).sigma := by
-  letI : TopologicalSpace (CyclicBarTensor ℂ Field n) :=
+  letI : TopologicalSpace (CyclicBarTensor ℂ Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity n) :=
     ccmRationalContinuousTraceNormFieldProjectiveTopology n
   rw [continuous_induced_rng]
   apply continuous_pi
   intro base
   have hEval :
-      @Continuous (CyclicBarTensor ℂ Field n)
+      @Continuous (CyclicBarTensor ℂ Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity n)
         (CyclicBarTensor ℂ Fiber n)
         (ccmRationalContinuousTraceNormFieldProjectiveTopology n)
         inferInstance
@@ -139,7 +139,7 @@ theorem ccmRationalContinuousTraceNormFieldDegreeReal_continuous (n : ℕ) :
         ((Fin (n + 1) → Base) → CyclicBarTensor ℂ Fiber n) => z base) :=
       continuous_apply base
     have hAll :
-        @Continuous (CyclicBarTensor ℂ Field n)
+        @Continuous (CyclicBarTensor ℂ Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity n)
           ((Fin (n + 1) → Base) → CyclicBarTensor ℂ Fiber n)
           (ccmRationalContinuousTraceNormFieldProjectiveTopology n)
           inferInstance
@@ -188,7 +188,7 @@ theorem ccmRationalStrongCyclicDegreeReal_continuous (n : ℕ) :
   letI : TopologicalSpace
       (CCMRationalStrongCyclicTarget.simplicial.degree n) :=
     ccmRationalStrongCyclicDegreeTopology n
-  letI : TopologicalSpace (CyclicBarTensor ℂ Field n) :=
+  letI : TopologicalSpace (CyclicBarTensor ℂ Field_cCMRationalContinuousTraceNormFieldCyclicContinuity_cCMRationalStrongCyclicRealContinuity n) :=
     ccmRationalContinuousTraceNormFieldProjectiveTopology n
   letI : TopologicalSpace StrongClass :=
     ccmRationalStrongClassSpaceLFTopology

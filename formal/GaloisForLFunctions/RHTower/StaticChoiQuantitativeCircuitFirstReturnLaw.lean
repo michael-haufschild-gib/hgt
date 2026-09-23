@@ -114,7 +114,7 @@ theorem pureChoiCircuitTarget_quantitativeConsecutiveVisitGap
           (zeroAnchoredPhase d (projectivePhysicalPhaseFlow energy t)))
         (target w))
     (Q : ℕ)
-    (hQ : 2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 ≤ eps ^ 2) :
+    (hQ : 2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) ≤ eps ^ (2 : ℕ)) :
     ∃ tExit tReturn : ℝ,
       tExit ∈ Icc 0 u ∧
       tReturn ∈ Icc (u + W)
@@ -165,8 +165,8 @@ theorem pureChoiCircuitTarget_quantitativeConsecutiveVisitGap
     rw [_root_.HTGeometry.pureStateTraceDistance_comm]
     have hsq : pureStateTraceDistance
           (staticSpectralChoiVector (d + 1) 0 energy)
-          (staticSpectralChoiVector (d + 1) (-(n : ℝ)) energy) ^ 2 ≤
-        eps ^ 2 := by
+          (staticSpectralChoiVector (d + 1) (-(n : ℝ)) energy) ^ (2 : ℕ) ≤
+        eps ^ (2 : ℕ) := by
       simpa [Nat.succ_eq_add_one] using hnRec.trans hQ
     exact (sq_le_sq₀ (pureStateTraceDistance_nonneg _ _) heps).mp hsq
   have hnProjective : pureStateTraceDistance (orbit n)

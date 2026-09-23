@@ -38,8 +38,8 @@ hypertranscendental over the rational coordinate field. -/
 theorem hypertranscendentalOver_thermalDeSitterZetaQuarter_crossCenterGammaRatio
     (ell : ℕ) :
     HypertranscendentalOver (RatFunc ℂ)
-      (gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ 2 /
-        gammaShiftMero (1 / 4) ^ 4) := by
+      (gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ (2 : ℕ) /
+        gammaShiftMero (1 / 4) ^ (4 : ℕ)) := by
   let shifts : Fin 2 → ℂ := ![(((ell + 1 : ℕ) : ℂ)), (1 / 4 : ℂ)]
   let charges : Fin 2 → ℤ := ![2, -4]
   have hproduct : HypertranscendentalOver (RatFunc ℂ)
@@ -59,7 +59,7 @@ def thermalDeSitterCenteredZetaPositiveCrossRatioMero
   (thermalCFTFrequencyResponseMero (((ell + 1 : ℕ) : ℂ)) lambda *
       deSitterTypeIStaticBogoliubovGammaCarrierMero
         (coulombDeSitterZeroModeBranchMass ell) 0) /
-    (centeredZetaGammaIntensityCoreMero ^ 2 /
+    (centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
       centeredZetaGammaPhaseObservationMero)
 
 theorem hypertranscendentalOver_thermalDeSitterCenteredZetaPositiveCrossRatioMero
@@ -72,8 +72,8 @@ theorem hypertranscendentalOver_thermalDeSitterCenteredZetaPositiveCrossRatioMer
   have hgamma :=
     hypertranscendentalOver_thermalDeSitterZetaQuarter_crossCenterGammaRatio ell
   have hgauged : HypertranscendentalOver (RatFunc ℂ)
-      ((gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ 2 /
-          gammaShiftMero (1 / 4) ^ 4) * physicalExponentialMero lambda) :=
+      ((gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ (2 : ℕ) /
+          gammaShiftMero (1 / 4) ^ (4 : ℕ)) * physicalExponentialMero lambda) :=
     (HTGeometry.hypertranscendentalOver_mul_differentialAlgebraic_iff
       (differentialAlgebraicOver_physicalExponentialMero lambda)
       (physicalExponentialMero_ne_zero lambda)).2 hgamma
@@ -88,12 +88,12 @@ theorem thermalDeSitterReconstruction_ne_da_mul_centeredZetaPositiveReconstructi
     thermalCFTFrequencyResponseMero (((ell + 1 : ℕ) : ℂ)) lambda *
         deSitterTypeIStaticBogoliubovGammaCarrierMero
           (coulombDeSitterZeroModeBranchMass ell) 0 ≠
-      g * (centeredZetaGammaIntensityCoreMero ^ 2 /
+      g * (centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
         centeredZetaGammaPhaseObservationMero) := by
   intro heq
   apply hypertranscendentalOver_thermalDeSitterCenteredZetaPositiveCrossRatioMero ell lambda
   rw [thermalDeSitterCenteredZetaPositiveCrossRatioMero, heq]
-  have hden : centeredZetaGammaIntensityCoreMero ^ 2 /
+  have hden : centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
       centeredZetaGammaPhaseObservationMero ≠ 0 := by
     rw [centeredZetaGammaIntensity_sq_div_phase_eq_positiveFourth]
     exact pow_ne_zero 4 (gammaShiftMero_ne_zero (1 / 4))
@@ -107,11 +107,11 @@ theorem thermalDeSitter_centeredZetaQuarter_crossCenterGammaSeparationUniversali
     thermalCFTFrequencyResponseMero (((ell + 1 : ℕ) : ℂ)) lambda *
           deSitterTypeIStaticBogoliubovGammaCarrierMero
             (coulombDeSitterZeroModeBranchMass ell) 0 =
-        gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ 2 *
+        gammaShiftMero (((ell + 1 : ℕ) : ℂ)) ^ (2 : ℕ) *
           physicalExponentialMero lambda ∧
-      centeredZetaGammaIntensityCoreMero ^ 2 /
+      centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
           centeredZetaGammaPhaseObservationMero =
-        gammaShiftMero (1 / 4) ^ 4 ∧
+        gammaShiftMero (1 / 4) ^ (4 : ℕ) ∧
       HypertranscendentalOver (RatFunc ℂ)
         (thermalDeSitterCenteredZetaPositiveCrossRatioMero ell lambda) ∧
       ∀ g : meroField Set.univ,
@@ -119,7 +119,7 @@ theorem thermalDeSitter_centeredZetaQuarter_crossCenterGammaSeparationUniversali
           thermalCFTFrequencyResponseMero (((ell + 1 : ℕ) : ℂ)) lambda *
               deSitterTypeIStaticBogoliubovGammaCarrierMero
                 (coulombDeSitterZeroModeBranchMass ell) 0 ≠
-            g * (centeredZetaGammaIntensityCoreMero ^ 2 /
+            g * (centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
               centeredZetaGammaPhaseObservationMero) := by
   exact ⟨thermalCFTResponse_mul_deSitterZeroModeCarrier_eq_orientedGammaSquare ell lambda,
     centeredZetaGammaIntensity_sq_div_phase_eq_positiveFourth,

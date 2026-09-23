@@ -10,8 +10,8 @@ namespace RHTower.Sieve
 
 /-- Harmonic hyperbola mass of the pointwise von Mangoldt square. -/
 def vonMangoldtSquareHyperbolaMass (N : ℕ) : ℝ :=
-  ∑ d ∈ Finset.Icc 1 N, (Λ d) ^ 2 / (d : ℝ) *
-    ∑ m ∈ Finset.Icc 1 (N / d), (Λ m) ^ 2 / (m : ℝ)
+  ∑ d ∈ Finset.Icc 1 N, (Λ d) ^ (2 : ℕ) / (d : ℝ) *
+    ∑ m ∈ Finset.Icc 1 (N / d), (Λ m) ^ (2 : ℕ) / (m : ℝ)
 
 /-- Harmonic partial sum of the Dirichlet self-convolution of the pointwise square. -/
 def vonMangoldtSquareConvHarmonicSum (N : ℕ) : ℝ :=
@@ -20,7 +20,7 @@ def vonMangoldtSquareConvHarmonicSum (N : ℕ) : ℝ :=
 
 theorem vonMangoldtSquareHyperbolaMass_eq_convHarmonicSum (N : ℕ) :
     vonMangoldtSquareHyperbolaMass N = vonMangoldtSquareConvHarmonicSum N := by
-  let g : ℕ → ℝ := fun d => (Λ d) ^ 2 / (d : ℝ)
+  let g : ℕ → ℝ := fun d => (Λ d) ^ (2 : ℕ) / (d : ℝ)
   have hregroup := RHTower.hyperbola_bilinear_regroup g g (fun _ => 1) N
   have hleft :
       ∑ d ∈ Finset.Icc 1 N, g d *
@@ -71,7 +71,7 @@ theorem vonMangoldtSquareHyperbolaMass_eq_convHarmonicSum (N : ℕ) :
 main term. -/
 def vonMangoldtSelfConvSquareCorrection (N : ℕ) : ℝ :=
   ∑ k ∈ Finset.Icc 2 N,
-    (((Λ * Λ) k) ^ 2 -
+    (((Λ * Λ) k) ^ (2 : ℕ) -
       2 * (vonMangoldtSquare * vonMangoldtSquare) k) / (k : ℝ)
 
 theorem vonMangoldtSelfConvHarmonicSquareSum_eq_hyperbola_add_correction
@@ -105,7 +105,7 @@ theorem vonMangoldtSelfConvHarmonicSquareSum_eq_hyperbola_add_correction
   ring
 
 def primePowerLogFourthHarmonicSum (N : ℕ) : ℝ :=
-  ∑ k ∈ {k ∈ Finset.Icc 2 N | IsPrimePow k}, Real.log k ^ 4 / (k : ℝ)
+  ∑ k ∈ {k ∈ Finset.Icc 2 N | IsPrimePow k}, Real.log k ^ (4 : ℕ) / (k : ℝ)
 
 theorem abs_vonMangoldtSelfConvSquareCorrection_le (N : ℕ) :
     |vonMangoldtSelfConvSquareCorrection N| ≤
@@ -113,14 +113,14 @@ theorem abs_vonMangoldtSelfConvSquareCorrection_le (N : ℕ) :
   rw [vonMangoldtSelfConvSquareCorrection]
   calc
     |∑ k ∈ Finset.Icc 2 N,
-        (((Λ * Λ) k) ^ 2 -
+        (((Λ * Λ) k) ^ (2 : ℕ) -
           2 * (vonMangoldtSquare * vonMangoldtSquare) k) / (k : ℝ)| ≤
         ∑ k ∈ Finset.Icc 2 N,
-          |(((Λ * Λ) k) ^ 2 -
+          |(((Λ * Λ) k) ^ (2 : ℕ) -
             2 * (vonMangoldtSquare * vonMangoldtSquare) k) / (k : ℝ)| :=
       Finset.abs_sum_le_sum_abs _ _
     _ = ∑ k ∈ {k ∈ Finset.Icc 2 N | IsPrimePow k},
-          |(((Λ * Λ) k) ^ 2 -
+          |(((Λ * Λ) k) ^ (2 : ℕ) -
             2 * (vonMangoldtSquare * vonMangoldtSquare) k) / (k : ℝ)| := by
       symm
       apply Finset.sum_subset (Finset.filter_subset IsPrimePow (Finset.Icc 2 N))
@@ -131,7 +131,7 @@ theorem abs_vonMangoldtSelfConvSquareCorrection_le (N : ℕ) :
         exact hknot (Finset.mem_filter.mpr ⟨hk, hprimepow⟩)
       have heq := vonMangoldtSelfConv_sq_eq_two_mul_squareConv_of_not_isPrimePow
         k (by omega) hpp
-      have hnum : ((Λ * Λ) k) ^ 2 -
+      have hnum : ((Λ * Λ) k) ^ (2 : ℕ) -
           2 * (vonMangoldtSquare * vonMangoldtSquare) k = 0 := sub_eq_zero.mpr heq
       rw [hnum, zero_div, abs_zero]
     _ ≤ primePowerLogFourthHarmonicSum N := by

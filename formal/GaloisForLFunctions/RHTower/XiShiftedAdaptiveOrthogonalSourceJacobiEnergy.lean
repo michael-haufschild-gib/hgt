@@ -19,7 +19,7 @@ noncomputable section
 
 /-- Shifted-Xi real moment sequence at square-root mass `w`. -/
 def xiShiftedRealMomentSequence (w : ℝ) : ℕ → ℝ :=
-  fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re
+  fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re
 
 theorem xiShiftedBoundaryAdaptiveShearPolynomial_monicOrtho
     (w : ℝ) (n : ℕ) :
@@ -39,7 +39,7 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_monicOrtho_eq_jacobiEner
       2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
         HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n := by
   let P := HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n
-  have hsquare : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
+  have hsquare : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith : 0 < w)
   have haggregate := xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_arithmeticSource hw P
   have hshear := xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_two_shear hsquare P
   have hsource :=
@@ -74,7 +74,7 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_monicOrtho_eq_jacobiEner
         HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n := by
   let P := HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
-  have hsquare : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
+  have hsquare : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith : 0 < w)
   have haggregate := xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_arithmeticSource hw P
   have hshear := xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_two_shear hsquare P
   have hsource :=

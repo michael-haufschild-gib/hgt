@@ -47,8 +47,8 @@ theorem exists_scale_sequence_of_schedule (N₀ : ℕ) (hN₀ : 1 ≤ N₀)
   have hall : ∀ i : ℕ, (∃ hr : 1 < soninShellCutScale b c (Nstart + i) κ, 0 < Nstart + i ∧
       (((Nstart + i : ℕ) : ℝ) - ∑ k : Fin 3, hsNormSq (soninCouplingIdealErrors a b
           (soninShellCutScale b c (Nstart + i) κ)⁻¹
-          (inv_pos.mpr (zero_lt_one.trans hr)) k) / ((1 : ℝ) / 2 / 6) ^ 2) *
-        (1 - (1 : ℝ) / 2) ^ 2 ≤
+          (inv_pos.mpr (zero_lt_one.trans hr)) k) / ((1 : ℝ) / 2 / 6) ^ (2 : ℕ)) *
+        (1 - (1 : ℝ) / 2) ^ (2 : ℕ) ≤
         hsNormSq (evenSoninApertureSuccessiveLayerTransition a b c
           (soninShellCutScale b c (Nstart + i) κ) hr)) ∧
       c < soninShellCutScale b c (Nstart + i) κ * a := fun i =>
@@ -59,12 +59,12 @@ theorem exists_scale_sequence_of_schedule (N₀ : ℕ) (hN₀ : 1 ≤ N₀)
   have hinv : (0 : ℝ) < (soninShellCutScale b c (Nstart + i) κ)⁻¹ := inv_pos.mpr hrpos
   have hsum : ∑ k : Fin 3, hsNormSq (soninCouplingIdealErrors a b
       (soninShellCutScale b c (Nstart + i) κ)⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)) k) /
-      ((1 : ℝ) / 2 / 6) ^ 2 = Dis / ((1 : ℝ) / 2 / 6) ^ 2 := by
+      ((1 : ℝ) / 2 / 6) ^ (2 : ℕ) = Dis / ((1 : ℝ) / 2 / 6) ^ (2 : ℕ) := by
     rw [← Finset.sum_div, hDis,
       sum_hsNormSq_soninCouplingIdealErrors a b
         (soninShellCutScale b c (Nstart + i) κ)⁻¹ ha hb hinv]
   rw [hsum] at hbound
-  have harith : (((Nstart + i : ℕ) : ℝ) - Dis / ((1 : ℝ) / 2 / 6) ^ 2) * (1 - (1 : ℝ) / 2) ^ 2 =
+  have harith : (((Nstart + i : ℕ) : ℝ) - Dis / ((1 : ℝ) / 2 / 6) ^ (2 : ℕ)) * (1 - (1 : ℝ) / 2) ^ (2 : ℕ) =
       ((Nstart + i : ℕ) : ℝ) / 4 - 36 * Dis := by
     norm_num
     ring

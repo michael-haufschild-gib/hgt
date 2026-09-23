@@ -15,19 +15,19 @@ namespace GaloisForLFunctions.HTGeometry.FokasLenells
 noncomputable section
 
 private theorem fifth_denominator_nonzero :
-    ∀ᶠ k : ℝ in 𝓝[≠] 0, (k : ℂ)^5 ≠ 0 := by
+    ∀ᶠ k : ℝ in 𝓝[≠] 0, (k : ℂ)^(5 : ℕ) ≠ 0 := by
   filter_upwards [self_mem_nhdsWithin] with k hk
   exact pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hk)
 
 private theorem fifth_power_littleo_cubic :
-    (fun k : ℝ => (k : ℂ)^5) =o[𝓝[≠] 0] fun k => (k : ℂ)^3 := by
+    (fun k : ℝ => (k : ℂ)^(5 : ℕ)) =o[𝓝[≠] 0] fun k => (k : ℂ)^(3 : ℕ) := by
   have hc : Tendsto (fun k : ℝ => (k : ℂ)) (𝓝[≠] 0) (𝓝 0) :=
     (Complex.continuous_ofReal.tendsto 0).mono_left nhdsWithin_le_nhds
   exact (isLittleO_pow_pow (𝕜 := ℂ) (by omega : 3 < 5)).comp_tendsto hc
 
 /-- Removing the exact cubic obstruction gives a convergent genuine fifth quotient. -/
 theorem rawReflection_sub_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ) :
-    Tendsto (fun k : ℝ => (rawScatteringMatrix q k 1 0-(k : ℂ)^3*(2*compatibilityMoment q))/(k : ℂ)^5)
+    Tendsto (fun k : ℝ => (rawScatteringMatrix q k 1 0-(k : ℂ)^(3 : ℕ)*(2*compatibilityMoment q))/(k : ℂ)^(5 : ℕ))
       (𝓝[≠] 0) (𝓝 (rawScatteringFifthCoefficient q 1 0)) := by
   have hc : Continuous (fun M : Matrix (Fin 2) (Fin 2) ℂ => M 1 0) := by fun_prop
   have hr : Tendsto (rawScatteringFifthRemainder q) (𝓝[≠] (0 : ℝ)) (𝓝 (rawScatteringFifthCoefficient q)) :=
@@ -41,15 +41,15 @@ theorem rawReflection_sub_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ) :
 
 /-- The cubic-subtracted reflection always has fifth-order spatial decay. -/
 theorem rawReflection_sub_cubic_isBigO_fifth (q : SchwartzMap ℝ ℂ) :
-    (fun k : ℝ => rawScatteringMatrix q k 1 0-(k : ℂ)^3*(2*compatibilityMoment q))
-      =O[𝓝[≠] 0] fun k => (k : ℂ)^5 := by
+    (fun k : ℝ => rawScatteringMatrix q k 1 0-(k : ℂ)^(3 : ℕ)*(2*compatibilityMoment q))
+      =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ) := by
   refine isBigO_of_div_tendsto_nhds ?_ _ (rawReflection_sub_cubic_quotient_tendsto q)
   filter_upwards [fifth_denominator_nonzero] with k hk
   exact fun h => (hk h).elim
 
 /-- The fifth-order claim is exactly equivalent to the additional compatibility condition. -/
 theorem rawReflection_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
-    ((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ↔
+    ((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ↔
       compatibilityMoment q = 0 := by
   constructor
   · intro h
@@ -59,7 +59,7 @@ theorem rawReflection_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
 
 /-- Removing the exact cubic obstruction gives a convergent genuine fifth quotient. -/
 theorem rawReverseReflection_sub_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ) :
-    Tendsto (fun k : ℝ => (rawScatteringMatrix q k 0 1-(k : ℂ)^3*(-2*compatibilityMoment q))/(k : ℂ)^5)
+    Tendsto (fun k : ℝ => (rawScatteringMatrix q k 0 1-(k : ℂ)^(3 : ℕ)*(-2*compatibilityMoment q))/(k : ℂ)^(5 : ℕ))
       (𝓝[≠] 0) (𝓝 (rawScatteringFifthCoefficient q 0 1)) := by
   have hc : Continuous (fun M : Matrix (Fin 2) (Fin 2) ℂ => M 0 1) := by fun_prop
   have hr : Tendsto (rawScatteringFifthRemainder q) (𝓝[≠] (0 : ℝ)) (𝓝 (rawScatteringFifthCoefficient q)) :=
@@ -73,15 +73,15 @@ theorem rawReverseReflection_sub_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ
 
 /-- The cubic-subtracted reflection always has fifth-order spatial decay. -/
 theorem rawReverseReflection_sub_cubic_isBigO_fifth (q : SchwartzMap ℝ ℂ) :
-    (fun k : ℝ => rawScatteringMatrix q k 0 1-(k : ℂ)^3*(-2*compatibilityMoment q))
-      =O[𝓝[≠] 0] fun k => (k : ℂ)^5 := by
+    (fun k : ℝ => rawScatteringMatrix q k 0 1-(k : ℂ)^(3 : ℕ)*(-2*compatibilityMoment q))
+      =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ) := by
   refine isBigO_of_div_tendsto_nhds ?_ _ (rawReverseReflection_sub_cubic_quotient_tendsto q)
   filter_upwards [fifth_denominator_nonzero] with k hk
   exact fun h => (hk h).elim
 
 /-- The fifth-order claim is exactly equivalent to the additional compatibility condition. -/
 theorem rawReverseReflection_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
-    ((fun k : ℝ => rawScatteringMatrix q k 0 1) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ↔
+    ((fun k : ℝ => rawScatteringMatrix q k 0 1) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ↔
       compatibilityMoment q = 0 := by
   constructor
   · intro h
@@ -91,23 +91,23 @@ theorem rawReverseReflection_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
 
 /-- Odd projected initial data satisfy both fifth-order reflection estimates unconditionally. -/
 theorem rawReflections_oddInitialPart_isBigO_fifth (q : SchwartzMap ℝ ℂ) :
-    ((fun k : ℝ => rawScatteringMatrix (oddInitialPart q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ∧
-    ((fun k : ℝ => rawScatteringMatrix (oddInitialPart q) k 0 1) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) :=
+    ((fun k : ℝ => rawScatteringMatrix (oddInitialPart q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ∧
+    ((fun k : ℝ => rawScatteringMatrix (oddInitialPart q) k 0 1) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) :=
   ⟨(rawReflection_isBigO_fifth_iff _).mpr (compatibilityMoment_oddInitialPart q),
    (rawReverseReflection_isBigO_fifth_iff _).mpr (compatibilityMoment_oddInitialPart q)⟩
 
 /-- For even projected data, the sharp condition is precisely zero total mass. -/
 theorem rawReflection_evenInitialPart_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
-    ((fun k : ℝ => rawScatteringMatrix (evenInitialPart q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ↔
+    ((fun k : ℝ => rawScatteringMatrix (evenInitialPart q) k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ↔
       (∫ x : ℝ, q x) = 0 := by
   rw [rawReflection_isBigO_fifth_iff,compatibilityMoment_evenInitialPart]
 
 /-- An explicit full family of even compatible potentials comes from the existing Schwartz derivative operator. -/
 theorem rawReflections_evenDerivative_isBigO_fifth (q : SchwartzMap ℝ ℂ) :
     ((fun k : ℝ => rawScatteringMatrix (evenInitialPart (SchwartzMap.derivCLM ℂ ℂ q)) k 1 0)
-      =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ∧
+      =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ∧
     ((fun k : ℝ => rawScatteringMatrix (evenInitialPart (SchwartzMap.derivCLM ℂ ℂ q)) k 0 1)
-      =O[𝓝[≠] 0] fun k => (k : ℂ)^5) := by
+      =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) := by
   have hm : compatibilityMoment (evenInitialPart (SchwartzMap.derivCLM ℂ ℂ q)) = 0 := by
     rw [compatibilityMoment_evenInitialPart]
     simpa only [SchwartzMap.derivCLM_apply] using RHTower.integral_deriv_schwartz_eq_zero q
@@ -115,7 +115,7 @@ theorem rawReflections_evenDerivative_isBigO_fifth (q : SchwartzMap ℝ ℂ) :
 
 /-- General data balance their mass against the previously formalized even/odd interaction. -/
 theorem rawReflection_isBigO_fifth_iff_parity_balance (q : SchwartzMap ℝ ℂ) :
-    ((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^5) ↔
+    ((fun k : ℝ => rawScatteringMatrix q k 1 0) =O[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ↔
       (∫ x : ℝ, q x) = I*parityCoupling q := by
   rw [rawReflection_isBigO_fifth_iff,compatibilityMoment_zero_iff_parity_balance]
 
@@ -125,7 +125,7 @@ private theorem exp_tendsto_punctured_zero : Tendsto Real.exp atBot (𝓝[≠] (
 
 /-- The exact same characterization holds for the original logarithmic-frequency scattering amplitude. -/
 theorem reflectionAmplitude_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
-    ((fun κ : ℝ => reflectionAmplitude q κ) =O[atBot] fun κ => (Real.exp κ : ℂ)^5) ↔
+    ((fun κ : ℝ => reflectionAmplitude q κ) =O[atBot] fun κ => (Real.exp κ : ℂ)^(5 : ℕ)) ↔
       compatibilityMoment q = 0 := by
   constructor
   · intro h
@@ -141,7 +141,7 @@ theorem reflectionAmplitude_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
 
 /-- The exact same characterization holds for the original logarithmic-frequency scattering amplitude. -/
 theorem reverseReflectionAmplitude_isBigO_fifth_iff (q : SchwartzMap ℝ ℂ) :
-    ((fun κ : ℝ => reverseReflectionAmplitude q κ) =O[atBot] fun κ => (Real.exp κ : ℂ)^5) ↔
+    ((fun κ : ℝ => reverseReflectionAmplitude q κ) =O[atBot] fun κ => (Real.exp κ : ℂ)^(5 : ℕ)) ↔
       compatibilityMoment q = 0 := by
   constructor
   · intro h

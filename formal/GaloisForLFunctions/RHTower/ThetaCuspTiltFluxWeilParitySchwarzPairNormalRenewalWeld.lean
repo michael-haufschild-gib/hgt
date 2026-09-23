@@ -117,13 +117,13 @@ theorem xiSchwarzPair_offLine_finiteDegree_nonlinearRenewal
         Complex.normSq (xiSpectralPoint q) *
           xiSchwarzPairSourceNormalCoefficient q := by
   have hev : ∀ᶠ w : ℝ in atTop,
-      (xiShiftedMomentHankelMatrix (w ^ 2) (n + 3)).PosDef ∧ 1 < w :=
+      (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 3)).PosDef ∧ 1 < w :=
     (xiShiftedMomentHankelMatrix_squareParam_posDef_eventually (n + 3)).and
       (eventually_gt_atTop 1)
   obtain ⟨w, hHw, hw⟩ := hev.exists
   have hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 3)).PosDef := by
-    have heq : xiShiftedMomentHankelMatrix (w ^ 2) (n + 3) =
+    have heq : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 3) =
         HTGeometry.momentHankelMatrix
           (xiShiftedRealMomentSequence w) (n + 3) := by
       ext i j

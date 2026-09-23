@@ -28,7 +28,7 @@ theorem physicalCuspProfile_mul_gapProduct (q r : XiZeroCopy) (branch : Bool) (w
   have hf (x : ℝ) (hx : x < 0) : HasDerivAt f (g x) x :=
     ((hP x hx).1.const_mul D).sub (hR x hx).1
   have hg (x : ℝ) (hx : x < 0) :
-      HasDerivAt g ((w^2+(horizonCoordinate x:ℂ)*(1/4+physicalRadialFrequency r^2))*f x) x := by
+      HasDerivAt g ((w^(2 : ℕ)+(horizonCoordinate x:ℂ)*(1/4+physicalRadialFrequency r^(2 : ℕ)))*f x) x := by
     apply (((hP x hx).2.const_mul D).sub (hR x hx).2).congr_deriv
     have he := clearedPhysicalGreen_equation q r branch w a hd hwi x hx
     dsimp only [f,g,P,D,R,physicalCuspSecond]

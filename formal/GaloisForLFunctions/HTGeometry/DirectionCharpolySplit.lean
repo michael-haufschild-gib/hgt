@@ -76,7 +76,7 @@ theorem charpoly_singleDirectionHam_eq_prod_powerSeries (h2 : (2 : A) ≠ 0)
     (hρ : ∀ z, ρ z * ρ z
       = PowerSeries.C ((cubeSide d i true z - cubeSide d i false z)
           * (cubeSide d i true z - cubeSide d i false z))
-        + PowerSeries.C (4 : A) * PowerSeries.X ^ 2) :
+        + PowerSeries.C (4 : A) * PowerSeries.X ^ (2 : ℕ)) :
     (singleDirectionHam (fun x => PowerSeries.C (d x)) PowerSeries.X i).charpoly
       = ∏ x : Fin (m + 1) → Bool,
           (X - C (psDirectionRoot (fun z => cubeSide d i false z + cubeSide d i true z) ρ i x)) := by
@@ -111,7 +111,7 @@ theorem charpoly_singleDirectionHam_eq_prod_powerSeries (h2 : (2 : A) ≠ 0)
     rw [hcs, hcs, ← map_mul, hρ z]
     have key : (PowerSeries.C ((cubeSide d i true z - cubeSide d i false z)
           * (cubeSide d i true z - cubeSide d i false z))
-        + PowerSeries.C (4 : A) * PowerSeries.X ^ 2)
+        + PowerSeries.C (4 : A) * PowerSeries.X ^ (2 : ℕ))
         = (PowerSeries.C (cubeSide d i false z) + PowerSeries.C (cubeSide d i true z))
             * (PowerSeries.C (cubeSide d i false z) + PowerSeries.C (cubeSide d i true z))
           - 4 * (PowerSeries.C (cubeSide d i false z) * PowerSeries.C (cubeSide d i true z)

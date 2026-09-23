@@ -23,15 +23,15 @@ theorem rectIntegral_rectangularLogDeriv_symmetric_eq_xiZeroCopy_sum
     (L a R : ℝ) (hR : 0 < R)
     (havoid : ∀ q : XiZeroCopy, R ≠ (xiSpectralPoint q).re) :
     rectIntegral
-        (fun z => xiRectangularTwoEdgeTransform L a z ^ 2 * logDeriv XiC z)
+        (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) * logDeriv XiC z)
         (((-R : ℝ) : ℂ) - I) (((R : ℝ) : ℂ) + I) =
       2 * Real.pi * I *
         ∑ q ∈ xiZeroCopyClosedRectangle
           (((-R : ℝ) : ℂ) - I) (((R : ℝ) : ℂ) + I),
-          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 := by
+          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ) := by
   let z₁ : ℂ := (((-R : ℝ) : ℂ) - I)
   let z₂ : ℂ := (((R : ℝ) : ℂ) + I)
-  let g : ℂ → ℂ := fun z => xiRectangularTwoEdgeTransform L a z ^ 2
+  let g : ℂ → ℂ := fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ)
   obtain ⟨m, h, hhan, hm, hhK, hfact⟩ :=
     exists_xiC_closedRectangle_factorization z₁ z₂
   let U : Set ℂ := {z : ℂ | h z ≠ 0}
@@ -83,7 +83,7 @@ theorem rectIntegral_rectangularLogDeriv_symmetric_eq_xiZeroCopy_sum
     (fun _ hz => hz) (fun z _ => hfact z)
   calc
     rectIntegral
-        (fun z => xiRectangularTwoEdgeTransform L a z ^ 2 * logDeriv XiC z)
+        (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) * logDeriv XiC z)
         (((-R : ℝ) : ℂ) - I) (((R : ℝ) : ℂ) + I) =
       2 * Real.pi * I * ∑ w ∈ xiCClosedRectangleZeros z₁ z₂,
         (m w : ℂ) * g w := by
@@ -101,14 +101,14 @@ theorem rectIntegral_rectangularLogDeriv_symmetric_eq_xiZeroCopy_sum
     _ = 2 * Real.pi * I *
         ∑ q ∈ xiZeroCopyClosedRectangle
           (((-R : ℝ) : ℂ) - I) (((R : ℝ) : ℂ) + I),
-          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 := by
+          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ) := by
       rfl
 
 /-- Symmetric Xi contour normalized by the argument-principle factor. -/
 def normalizedRectangularSymmetricXiContour (L a R : ℝ) : ℂ :=
   (2 * Real.pi * I)⁻¹ *
     rectIntegral
-      (fun z => xiRectangularTwoEdgeTransform L a z ^ 2 * logDeriv XiC z)
+      (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) * logDeriv XiC z)
       (((-R : ℝ) : ℂ) - I) (((R : ℝ) : ℂ) + I)
 
 /-- Truncated version of the normalized literal Xi bottom edge. -/
@@ -124,7 +124,7 @@ theorem normalizedRectangularSymmetricXiContour_eq_xiZeroCopy_sum
     normalizedRectangularSymmetricXiContour L a R =
       ∑ q ∈ xiZeroCopyClosedRectangle
         (((-R : ℝ) : ℂ) - I) (((R : ℝ) : ℂ) + I),
-        xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 := by
+        xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ) := by
   have hc : (2 * Real.pi * I : ℂ) ≠ 0 := by
     apply mul_ne_zero
     · apply mul_ne_zero
@@ -142,7 +142,7 @@ theorem normalizedRectangularSymmetricXiContour_eq_truncatedBottom_add_vertical
       normalizedRectangularTruncatedBottomXiContribution L a R +
         (2 * Real.pi * I)⁻¹ * 2 * I *
           (∫ y in (-1 : ℝ)..1,
-            xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+            xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
               logDeriv XiC ((R : ℂ) + y * I)) := by
   have hfold := rectIntegral_rectangularLogDeriv_symmetric L a R 1
   norm_num at hfold
@@ -175,13 +175,13 @@ theorem tendsto_symmetric_xiZeroCopy_rectangular_sum_atTop (L a : ℝ) :
       (fun R : ℝ =>
         ∑ q ∈ xiZeroCopyClosedRectangle
           (((-R : ℝ) : ℂ) - I) (((R : ℝ) : ℂ) + I),
-          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2)
+          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ))
       atTop
       (𝓝 (xiWeilPolarization (xiRectangularTwoEdgeTransform L a)
         (xiRectangularTwoEdgeTransform L a))) := by
   rw [xiWeilPolarization_rectangular_eq_tsum_sq]
   let f : XiZeroCopy → ℂ := fun q =>
-    xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2
+    xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ)
   have hsum : Summable f := xiRectangularTwoEdgeTransform_sq_summable L a
   rw [Metric.tendsto_atTop]
   intro epsilon hepsilon
@@ -240,11 +240,11 @@ theorem xiWeilPolarization_rectangular_eq_normalizedBottomXiContribution
   let S : ℝ → ℂ := fun R =>
     ∑ q ∈ xiZeroCopyClosedRectangle
       (((-R : ℝ) : ℂ) - I) (((R : ℝ) : ℂ) + I),
-      xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2
+      xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ)
   let T : ℝ → ℂ := normalizedRectangularTruncatedBottomXiContribution L a
   let V : ℝ → ℂ := fun R =>
     ∫ y in (-1 : ℝ)..1,
-      xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+      xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
         logDeriv XiC ((R : ℂ) + y * I)
   let c : ℂ := (2 * Real.pi * I)⁻¹ * 2 * I
   change W = B
@@ -313,7 +313,7 @@ def rectangularCorrectedXiWeilValue (L a : ℝ) : ℝ :=
   (xiWeilPolarization (xiRectangularTwoEdgeTransform L a)
       (xiRectangularTwoEdgeTransform L a) -
     normalizedRectangularBottomArchContribution L a).re +
-      2 * rectangularEvenPolarFeature L a ^ 2
+      2 * rectangularEvenPolarFeature L a ^ (2 : ℕ)
 
 /-- The corrected full Xi spectral value is exactly the previously computed corrected bottom
 value, now with the contour limit eliminated. -/

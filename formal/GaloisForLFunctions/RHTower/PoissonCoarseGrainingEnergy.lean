@@ -31,10 +31,10 @@ variable {ι : Type*}
 /-! ### The Lorentzian kernel -/
 
 /-- The Lorentzian kernel at resolution `a` and separation `x`. -/
-noncomputable def lorentz (a x : ℝ) : ℝ := a ^ 2 / (a ^ 2 + x ^ 2)
+noncomputable def lorentz (a x : ℝ) : ℝ := a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ))
 
-lemma lorentz_denom_pos {a : ℝ} (ha : a ≠ 0) (x : ℝ) : 0 < a ^ 2 + x ^ 2 := by
-  have h : 0 < a ^ 2 := by positivity
+lemma lorentz_denom_pos {a : ℝ} (ha : a ≠ 0) (x : ℝ) : 0 < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by
+  have h : 0 < a ^ (2 : ℕ) := by positivity
   nlinarith [sq_nonneg x]
 
 lemma lorentz_nonneg {a : ℝ} (ha : a ≠ 0) (x : ℝ) : 0 ≤ lorentz a x := by
@@ -49,9 +49,9 @@ lemma lorentz_le_one {a : ℝ} (ha : a ≠ 0) (x : ℝ) : lorentz a x ≤ 1 := b
   nlinarith [sq_nonneg x]
 
 lemma lorentz_self {a : ℝ} (ha : a ≠ 0) : lorentz a 0 = 1 := by
-  have h : 0 < a ^ 2 := by positivity
+  have h : 0 < a ^ (2 : ℕ) := by positivity
   unfold lorentz
-  rw [show (0:ℝ) ^ 2 = 0 by ring, add_zero]
+  rw [show (0:ℝ) ^ (2 : ℕ) = 0 by ring, add_zero]
   exact div_self (ne_of_gt h)
 
 lemma lorentz_eq_one_iff {a : ℝ} (ha : a ≠ 0) (x : ℝ) : lorentz a x = 1 ↔ x = 0 := by
@@ -60,7 +60,7 @@ lemma lorentz_eq_one_iff {a : ℝ} (ha : a ≠ 0) (x : ℝ) : lorentz a x = 1 �
   · intro h
     unfold lorentz at h
     rw [div_eq_one_iff_eq (ne_of_gt hd)] at h
-    have hx : x ^ 2 = 0 := by linarith
+    have hx : x ^ (2 : ℕ) = 0 := by linarith
     exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hx
   · intro h
     rw [h]
@@ -75,13 +75,13 @@ lemma lorentz_mono {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (x : ℝ) :
   have hda := lorentz_denom_pos ha' x
   have hdb := lorentz_denom_pos hb' x
   have key : lorentz b x - lorentz a x
-      = (x ^ 2 * (b ^ 2 - a ^ 2)) / ((b ^ 2 + x ^ 2) * (a ^ 2 + x ^ 2)) := by
+      = (x ^ (2 : ℕ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ))) / ((b ^ (2 : ℕ) + x ^ (2 : ℕ)) * (a ^ (2 : ℕ) + x ^ (2 : ℕ))) := by
     unfold lorentz
     field_simp
     ring
-  have hba : a ^ 2 ≤ b ^ 2 := by nlinarith
-  have hnum : 0 ≤ x ^ 2 * (b ^ 2 - a ^ 2) := mul_nonneg (sq_nonneg x) (by linarith)
-  have hden : 0 < (b ^ 2 + x ^ 2) * (a ^ 2 + x ^ 2) := mul_pos hdb hda
+  have hba : a ^ (2 : ℕ) ≤ b ^ (2 : ℕ) := by nlinarith
+  have hnum : 0 ≤ x ^ (2 : ℕ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) := mul_nonneg (sq_nonneg x) (by linarith)
+  have hden : 0 < (b ^ (2 : ℕ) + x ^ (2 : ℕ)) * (a ^ (2 : ℕ) + x ^ (2 : ℕ)) := mul_pos hdb hda
   have : 0 ≤ lorentz b x - lorentz a x := by
     rw [key]
     exact div_nonneg hnum hden.le
@@ -97,8 +97,8 @@ noncomputable def poissonEnergy (s : Finset ι) (m d : ι → ℝ) (a : ℝ) : �
 /-- **Upper bound: the energy never exceeds the squared fiber mass.** -/
 theorem poissonEnergy_le_sq_sum (s : Finset ι) (m d : ι → ℝ) {a : ℝ} (ha : a ≠ 0)
     (hm : ∀ j ∈ s, 0 ≤ m j) :
-    poissonEnergy s m d a ≤ (∑ j ∈ s, m j) ^ 2 := by
-  have hexp : (∑ j ∈ s, m j) ^ 2 = ∑ j ∈ s, ∑ k ∈ s, m j * m k := by
+    poissonEnergy s m d a ≤ (∑ j ∈ s, m j) ^ (2 : ℕ) := by
+  have hexp : (∑ j ∈ s, m j) ^ (2 : ℕ) = ∑ j ∈ s, ∑ k ∈ s, m j * m k := by
     rw [sq, Finset.sum_mul_sum]
   rw [hexp, poissonEnergy]
   refine Finset.sum_le_sum ?_
@@ -114,8 +114,8 @@ theorem poissonEnergy_le_sq_sum (s : Finset ι) (m d : ι → ℝ) {a : ℝ} (ha
 one resolution iff every displacement coincides — no `h → 0` germ is required. -/
 theorem poissonEnergy_eq_sq_sum_iff (s : Finset ι) (m d : ι → ℝ) {a : ℝ} (ha : a ≠ 0)
     (hm : ∀ j ∈ s, 0 < m j) :
-    poissonEnergy s m d a = (∑ j ∈ s, m j) ^ 2 ↔ ∀ j ∈ s, ∀ k ∈ s, d j = d k := by
-  have hexp : (∑ j ∈ s, m j) ^ 2 = ∑ j ∈ s, ∑ k ∈ s, m j * m k := by
+    poissonEnergy s m d a = (∑ j ∈ s, m j) ^ (2 : ℕ) ↔ ∀ j ∈ s, ∀ k ∈ s, d j = d k := by
+  have hexp : (∑ j ∈ s, m j) ^ (2 : ℕ) = ∑ j ∈ s, ∑ k ∈ s, m j * m k := by
     rw [sq, Finset.sum_mul_sum]
   rw [poissonEnergy]
   constructor
@@ -158,17 +158,17 @@ theorem poissonEnergy_eq_sq_sum_iff (s : Finset ι) (m d : ι → ℝ) {a : ℝ}
 /-- **Lower bound: the energy dominates the multiplicity second moment.** -/
 theorem sum_sq_le_poissonEnergy (s : Finset ι) (m d : ι → ℝ) {a : ℝ} (ha : a ≠ 0)
     (hm : ∀ j ∈ s, 0 ≤ m j) :
-    ∑ j ∈ s, (m j) ^ 2 ≤ poissonEnergy s m d a := by
+    ∑ j ∈ s, (m j) ^ (2 : ℕ) ≤ poissonEnergy s m d a := by
   rw [poissonEnergy]
   refine Finset.sum_le_sum ?_
   intro j hj
-  have hdiag : m j * m j * lorentz a (d j - d j) = (m j) ^ 2 := by
+  have hdiag : m j * m j * lorentz a (d j - d j) = (m j) ^ (2 : ℕ) := by
     rw [show d j - d j = 0 by ring, lorentz_self ha]
     ring
   have hnn : ∀ k ∈ s, 0 ≤ m j * m k * lorentz a (d j - d k) := by
     intro k hk
     exact mul_nonneg (mul_nonneg (hm j hj) (hm k hk)) (lorentz_nonneg ha _)
-  calc (m j) ^ 2 = m j * m j * lorentz a (d j - d j) := hdiag.symm
+  calc (m j) ^ (2 : ℕ) = m j * m j * lorentz a (d j - d j) := hdiag.symm
     _ ≤ ∑ k ∈ s, m j * m k * lorentz a (d j - d k) := Finset.single_le_sum hnn hj
 
 /-- **The coarse-graining flow is monotone in the resolution.** -/
@@ -212,7 +212,7 @@ lemma lorentz_neg {a : ℝ} (x : ℝ) : lorentz a (-x) = lorentz a x := by
 /-- The energy of two equal masses `m` at `±d`. -/
 theorem poissonEnergy_mirror_pair (m d : ℝ) {a : ℝ} (ha : a ≠ 0) :
     poissonEnergy (Finset.univ : Finset (Fin 2)) (fun _ => m) (![d, -d]) a
-      = 2 * m ^ 2 * (1 + lorentz a (2 * d)) := by
+      = 2 * m ^ (2 : ℕ) * (1 + lorentz a (2 * d)) := by
   simp only [poissonEnergy, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]
   rw [show d - d = 0 by ring, show -d - -d = 0 by ring, show d - -d = 2 * d by ring,
     show -d - d = -(2 * d) by ring, lorentz_self ha, lorentz_neg]
@@ -221,7 +221,7 @@ theorem poissonEnergy_mirror_pair (m d : ℝ) {a : ℝ} (ha : a ≠ 0) :
 /-- The energy of the merged configuration: a single mass `2 m`. -/
 theorem poissonEnergy_merged (m : ℝ) {a : ℝ} (ha : a ≠ 0) :
     poissonEnergy (Finset.univ : Finset (Fin 1)) (fun _ => 2 * m) (fun _ => 0) a
-      = (2 * m) ^ 2 := by
+      = (2 * m) ^ (2 : ℕ) := by
   simp only [poissonEnergy, Fin.sum_univ_one]
   rw [show (0:ℝ) - 0 = 0 by ring, lorentz_self ha]
   ring
@@ -229,12 +229,12 @@ theorem poissonEnergy_merged (m : ℝ) {a : ℝ} (ha : a ≠ 0) :
 /-- **The exact detection gap.**  Merging a mirror pair at `±d` raises the coarse-grained energy by
 exactly `8 m² d² / (a² + 4 d²)`. -/
 theorem poissonEnergy_mirror_pair_gap (m d : ℝ) {a : ℝ} (ha : a ≠ 0) :
-    (2 * m) ^ 2 - 2 * m ^ 2 * (1 + lorentz a (2 * d))
-      = 8 * m ^ 2 * d ^ 2 / (a ^ 2 + 4 * d ^ 2) := by
-  have hd : (0:ℝ) < a ^ 2 + (2 * d) ^ 2 := lorentz_denom_pos ha (2 * d)
-  have hd' : a ^ 2 + 4 * d ^ 2 ≠ 0 := by
+    (2 * m) ^ (2 : ℕ) - 2 * m ^ (2 : ℕ) * (1 + lorentz a (2 * d))
+      = 8 * m ^ (2 : ℕ) * d ^ (2 : ℕ) / (a ^ (2 : ℕ) + 4 * d ^ (2 : ℕ)) := by
+  have hd : (0:ℝ) < a ^ (2 : ℕ) + (2 * d) ^ (2 : ℕ) := lorentz_denom_pos ha (2 * d)
+  have hd' : a ^ (2 : ℕ) + 4 * d ^ (2 : ℕ) ≠ 0 := by
     intro h
-    rw [show a ^ 2 + (2 * d) ^ 2 = a ^ 2 + 4 * d ^ 2 by ring] at hd
+    rw [show a ^ (2 : ℕ) + (2 * d) ^ (2 : ℕ) = a ^ (2 : ℕ) + 4 * d ^ (2 : ℕ) by ring] at hd
     exact absurd h (ne_of_gt hd)
   unfold lorentz
   field_simp
@@ -244,11 +244,11 @@ theorem poissonEnergy_mirror_pair_gap (m d : ℝ) {a : ℝ} (ha : a ≠ 0) :
 resolution `a` exactly when `a ≤ 2 d`: a splitting of size `d` cannot be detected at any coarser
 resolution. -/
 theorem poissonEnergy_gap_ge_iff (m d : ℝ) {a : ℝ} (ha : a ≠ 0) (hm : m ≠ 0) (_hd : d ≠ 0) :
-    m ^ 2 ≤ 8 * m ^ 2 * d ^ 2 / (a ^ 2 + 4 * d ^ 2) ↔ a ^ 2 ≤ 4 * d ^ 2 := by
-  have hpos : (0:ℝ) < a ^ 2 + 4 * d ^ 2 := by
-    have h1 : 0 < a ^ 2 := by positivity
+    m ^ (2 : ℕ) ≤ 8 * m ^ (2 : ℕ) * d ^ (2 : ℕ) / (a ^ (2 : ℕ) + 4 * d ^ (2 : ℕ)) ↔ a ^ (2 : ℕ) ≤ 4 * d ^ (2 : ℕ) := by
+  have hpos : (0:ℝ) < a ^ (2 : ℕ) + 4 * d ^ (2 : ℕ) := by
+    have h1 : 0 < a ^ (2 : ℕ) := by positivity
     nlinarith [sq_nonneg d]
-  have hm2 : 0 < m ^ 2 := by positivity
+  have hm2 : 0 < m ^ (2 : ℕ) := by positivity
   rw [le_div_iff₀ hpos]
   constructor
   · intro h

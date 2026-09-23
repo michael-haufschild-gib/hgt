@@ -145,7 +145,7 @@ theorem liEvenCrossCriticalAtomAmplitude_oneFourth_eq_sin_half_frequency
     liEvenCrossCriticalAtomAmplitude (1 / 4) q =
       Real.sin (liEvenCrossCriticalAtomFrequency (1 / 4) q / 2) := by
   set gamma : ℝ := (q.1.1 : ℂ).im with hgamma
-  set den : ℝ := gamma ^ 2 + 1 / 4 with hden
+  set den : ℝ := gamma ^ (2 : ℕ) + 1 / 4 with hden
   have hgammaPos : 0 < gamma := by simpa [hgamma] using him
   have hdenPos : 0 < den := by dsimp [den]; positivity
   have hmass : liEvenCrossCriticalAtomMass (1 / 4) q = 1 / den := by
@@ -157,7 +157,7 @@ theorem liEvenCrossCriticalAtomAmplitude_oneFourth_eq_sin_half_frequency
   have hcos := liEvenCrossCriticalAtomAngle_cos
     (v := 1 / 4) (by norm_num) (by norm_num) q
   have hcos' : Real.cos (liEvenCrossCriticalAtomAngle (1 / 4) q) =
-      (1 / 4 - gamma ^ 2) / den := by
+      (1 / 4 - gamma ^ (2 : ℕ)) / den := by
     rw [hcos, hnode]
     dsimp [den]
     field_simp
@@ -169,8 +169,8 @@ theorem liEvenCrossCriticalAtomAmplitude_oneFourth_eq_sin_half_frequency
   have htrig := Real.sin_sq_add_cos_sq
     (liEvenCrossCriticalAtomAngle (1 / 4) q)
   have hsinSq :
-      Real.sin (liEvenCrossCriticalAtomAngle (1 / 4) q) ^ 2 =
-        (gamma / den) ^ 2 := by
+      Real.sin (liEvenCrossCriticalAtomAngle (1 / 4) q) ^ (2 : ℕ) =
+        (gamma / den) ^ (2 : ℕ) := by
     rw [hcos'] at htrig
     field_simp [hdenPos.ne'] at htrig ⊢
     nlinarith
@@ -271,7 +271,7 @@ theorem liEvenCrossFullCriticalNormalizedTail_dyadic_term_lower
     (hj : j ∈ Finset.Ico L (2 * L)) :
     (4 / Real.pi) *
         (64 * liEvenCrossOrderedEndpointAmplitude L)⁻¹ *
-        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ 2 ≤
+        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ (2 : ℕ) ≤
       liEvenCrossCriticalAtomAmplitude (1 / 4) (q j) *
         Real.sin ((liEvenCrossOrderedEndpointResonantMode L : ℝ) *
           liEvenCrossCriticalAtomFrequency (1 / 4) (q j)) := by
@@ -370,16 +370,16 @@ theorem liEvenCrossFullCriticalNormalizedTail_dyadic_term_lower
       inv_le_two_mul_liEvenCrossOrderedEndpointAmplitude j
   have haLower : gamma2⁻¹ / 2 ≤ aj := by
     nlinarith [hinv2Le.trans hinvGammajAmp]
-  have haLowerSq : (gamma2⁻¹ / 2) ^ 2 ≤ aj ^ 2 := by
+  have haLowerSq : (gamma2⁻¹ / 2) ^ (2 : ℕ) ≤ aj ^ (2 : ℕ) := by
     have hleft : 0 ≤ gamma2⁻¹ / 2 := by positivity
     nlinarith [mul_nonneg (sub_nonneg.mpr haLower) (add_nonneg hajPos.le hleft)]
   calc
     (4 / Real.pi) *
         (64 * liEvenCrossOrderedEndpointAmplitude L)⁻¹ *
-        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ 2 =
-        (4 / Real.pi) * x * (gamma2⁻¹ / 2) ^ 2 := by
+        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ (2 : ℕ) =
+        (4 / Real.pi) * x * (gamma2⁻¹ / 2) ^ (2 : ℕ) := by
       simp only [x, aL, gamma2]
-    _ ≤ (4 / Real.pi) * x * aj ^ 2 := by gcongr
+    _ ≤ (4 / Real.pi) * x * aj ^ (2 : ℕ) := by gcongr
     _ = aj * ((4 / Real.pi) * x * aj) := by ring
     _ ≤ aj * Real.sin (k * omega) :=
       mul_le_mul_of_nonneg_left hsinLower hajPos.le
@@ -395,18 +395,18 @@ theorem liEvenCrossFullCriticalNormalizedTail_dyadic_lower
     {L : ℕ} (hgamma : 64 ≤ xiOrderedPositiveOrdinate L) :
     (L : ℝ) * ((4 / Real.pi) *
         (64 * liEvenCrossOrderedEndpointAmplitude L)⁻¹ *
-        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ 2) ≤
+        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ (2 : ℕ)) ≤
       liEvenCrossFullCriticalNormalizedTail q L (2 * L)
         (liEvenCrossOrderedEndpointResonantMode L) := by
   rw [liEvenCrossFullCriticalNormalizedTail]
   calc
     (L : ℝ) * ((4 / Real.pi) *
         (64 * liEvenCrossOrderedEndpointAmplitude L)⁻¹ *
-        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ 2) =
+        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ (2 : ℕ)) =
       ∑ _j ∈ Finset.Ico L (2 * L),
         ((4 / Real.pi) *
           (64 * liEvenCrossOrderedEndpointAmplitude L)⁻¹ *
-          ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ 2) := by
+          ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ (2 : ℕ)) := by
       simp only [Finset.sum_const, nsmul_eq_mul]
       congr 1
       norm_cast
@@ -428,7 +428,7 @@ theorem liEvenCrossFullCriticalNormalizedTail_dyadic_scalar_lower
     1 / (8192 * Real.pi * C) ≤
       (L : ℝ) * ((4 / Real.pi) *
         (64 * liEvenCrossOrderedEndpointAmplitude L)⁻¹ *
-        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ 2) := by
+        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ (2 : ℕ)) := by
   set g := xiOrderedPositiveOrdinate L with hg
   set g2 := xiOrderedPositiveOrdinate (2 * L) with hg2
   set a := liEvenCrossOrderedEndpointAmplitude L with ha
@@ -474,14 +474,14 @@ theorem liEvenCrossFullCriticalNormalizedTail_dyadic_scalar_lower
       field_simp [hC.ne', Real.pi_ne_zero]
       norm_num
     _ ≤ ((L : ℝ) / g) / (4096 * Real.pi) := by gcongr
-    _ = (L : ℝ) * (4 / Real.pi) * (g / 64) * ((16 * g)⁻¹) ^ 2 := by
+    _ = (L : ℝ) * (4 / Real.pi) * (g / 64) * ((16 * g)⁻¹) ^ (2 : ℕ) := by
       field_simp [hgPos.ne', Real.pi_ne_zero]
       ring
-    _ ≤ (L : ℝ) * (4 / Real.pi) * (64 * a)⁻¹ * (g2⁻¹ / 2) ^ 2 := by
+    _ ≤ (L : ℝ) * (4 / Real.pi) * (64 * a)⁻¹ * (g2⁻¹ / 2) ^ (2 : ℕ) := by
       gcongr
     _ = (L : ℝ) * ((4 / Real.pi) *
         (64 * liEvenCrossOrderedEndpointAmplitude L)⁻¹ *
-        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ 2) := by
+        ((xiOrderedPositiveOrdinate (2 * L))⁻¹ / 2) ^ (2 : ℕ)) := by
       simp only [a, g2]
       ring
 

@@ -81,10 +81,10 @@ theorem norm_soninSemilocalGeometricTraceResponse_le
   have hPR : hsNormSq (ContinuousLinearMap.adjoint P * R) ≤ 16 * hsNormSq R := by
     calc
       hsNormSq (ContinuousLinearMap.adjoint P * R)
-          ≤ ‖ContinuousLinearMap.adjoint P‖ ^ 2 * hsNormSq R := by
+          ≤ ‖ContinuousLinearMap.adjoint P‖ ^ (2 : ℕ) * hsNormSq R := by
             simpa only [ContinuousLinearMap.mul_def] using
               hsNormSq_comp_left_le hR (ContinuousLinearMap.adjoint P)
-      _ = ‖P‖ ^ 2 * hsNormSq R := by
+      _ = ‖P‖ ^ (2 : ℕ) * hsNormSq R := by
         rw [(ContinuousLinearMap.adjoint :
           (SoninL2 →L[ℂ] SoninL2) ≃ₗᵢ⋆[ℂ]
             (SoninL2 →L[ℂ] SoninL2)).norm_map]
@@ -94,10 +94,10 @@ theorem norm_soninSemilocalGeometricTraceResponse_le
   have hRP : hsNormSq (ContinuousLinearMap.adjoint R * P) ≤ 16 * hsNormSq R := by
     calc
       hsNormSq (ContinuousLinearMap.adjoint R * P)
-          ≤ ‖P‖ ^ 2 * hsNormSq (ContinuousLinearMap.adjoint R) := by
+          ≤ ‖P‖ ^ (2 : ℕ) * hsNormSq (ContinuousLinearMap.adjoint R) := by
             simpa only [ContinuousLinearMap.mul_def] using
               hsNormSq_comp_right_le hR.adjoint P
-      _ = ‖P‖ ^ 2 * hsNormSq R := by rw [hR.hsNormSq_adjoint]
+      _ = ‖P‖ ^ (2 : ℕ) * hsNormSq R := by rw [hR.hsNormSq_adjoint]
       _ ≤ 16 * hsNormSq R := by
         apply mul_le_mul_of_nonneg_right _ (hsNormSq_nonneg R)
         nlinarith [norm_nonneg P]
@@ -188,7 +188,7 @@ operator energy remains on the right-hand side. -/
 theorem norm_soninSemilocalGeometricTraceResponse_le_area
     (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
     ‖soninSemilocalGeometricTraceResponse a pk‖ ≤
-      Real.sqrt (8 * a ^ 2) * Real.sqrt (8192 * a ^ 2) := by
+      Real.sqrt (8 * a ^ (2 : ℕ)) * Real.sqrt (8192 * a ^ (2 : ℕ)) := by
   have h := norm_soninSemilocalGeometricTraceResponse_le a ha pk
   rw [hsNormSq_centralSoninProjectionCorrection_eq_eight_mul_sq a ha] at h
   convert h using 1 ; ring

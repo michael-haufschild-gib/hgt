@@ -41,7 +41,7 @@ variable [TopologicalSpace O]
 /-- Full graph action `‖x‖² + ⟨Lx,x⟩` from equation (11) of the paper. -/
 def compactGeneratorGraphAction
     (x : positiveObserverCompactGenerator.domain) : ℝ :=
-  ‖(x : PositiveObserverHiddenL2)‖ ^ 2 +
+  ‖(x : PositiveObserverHiddenL2)‖ ^ (2 : ℕ) +
     positiveObserverCompactGeneratorAction x
 
 /-- Exact graph-action value `1 + λ_n` on the normalized eigenmode with `λ_n = n + 1`. -/
@@ -49,7 +49,7 @@ theorem compactGeneratorGraphAction_eigenvector (n : ℕ) :
     compactGeneratorGraphAction (positiveObserverCompactGeneratorEigenvector n) = n + 2 := by
   rw [compactGeneratorGraphAction,
     positiveObserverCompactGeneratorAction_eigenvector]
-  change ‖positiveObserverHiddenMode n‖ ^ 2 + ((n : ℝ) + 1) = (n : ℝ) + 2
+  change ‖positiveObserverHiddenMode n‖ ^ (2 : ℕ) + ((n : ℝ) + 1) = (n : ℝ) + 2
   rw [positiveObserverHiddenMode_norm]
   ring
 
@@ -60,7 +60,7 @@ theorem compactGeneratorGraphAction_phase_invariant
   rw [compactGeneratorGraphAction, compactGeneratorGraphAction,
     positiveObserverCompactGeneratorAction_phase_invariant x z hz]
   congr 1
-  change ‖z • (x : PositiveObserverHiddenL2)‖ ^ 2 = ‖(x : PositiveObserverHiddenL2)‖ ^ 2
+  change ‖z • (x : PositiveObserverHiddenL2)‖ ^ (2 : ℕ) = ‖(x : PositiveObserverHiddenL2)‖ ^ (2 : ℕ)
   rw [norm_smul, hz, one_mul]
 
 /-- Graph action of the hidden eigenmodes escapes to infinity. -/

@@ -10,10 +10,10 @@ on the critical line, so all edge resolvent values collapse to the single real a
 file performs the resulting **deflation step**.  Substituting `R k = m r^(k+1) + R' k` (with `m`
 the edge multiplicity and `R'` the sub-edge moments) into the minor gives the exact identity
 
-`R n R (n+2) - R (n+1)^2 = m r^(n+1) D n + (R' n R' (n+2) - R' (n+1)^2)`,
+`R n R (n+2) - R (n+1)^(2 : ℕ) = m r^(n+1) D n + (R' n R' (n+2) - R' (n+1)^(2 : ℕ))`,
 
-`D n = sum_q u_q^(n+1) (u_q - r)^2` — a **weighted** moment sequence over the sub-edge divisor
-with the conjugation-symmetric, class-constant, nonvanishing weights `(u_q - r)^2`, the edge
+`D n = sum_q u_q^(n+1) (u_q - r)^(2 : ℕ)` — a **weighted** moment sequence over the sub-edge divisor
+with the conjugation-symmetric, class-constant, nonvanishing weights `(u_q - r)^(2 : ℕ)`, the edge
 terms vanishing identically.  The deflated minor is geometrically smaller than the leading
 scale, so minor positivity descends to a decaying floor for the weighted power sums of the
 **second modulus level**; the weighted oscillation theorem then forces a real point there.
@@ -34,7 +34,7 @@ noncomputable section
 theorem xiResolventPoint_im_eq_zero_of_spectral {X : ℝ} {q : XiZeroCopy}
     (h : (xiSpectralPoint q).im = 0) : (xiResolventPoint X q).im = 0 := by
   rw [xiResolventPoint, Complex.inv_im]
-  have him : (xiSpectralPoint q ^ 2 + (X : ℂ)).im = 0 := by
+  have him : (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).im = 0 := by
     rw [Complex.add_im, Complex.ofReal_im, add_zero, sq, Complex.mul_im, h]
     ring
   rw [him]
@@ -45,7 +45,7 @@ theorem xiResolventPoint_eq_ofReal_of_im_eq_zero {X : ℝ} (hX : 0 ≤ X) {q : X
     {t : ℝ} (ht : 0 < t) (him : (xiResolventPoint X q).im = 0)
     (hnrm : ‖xiResolventPoint X q‖ = t) : xiResolventPoint X q = ((t : ℝ) : ℂ) := by
   have hre : 0 < (xiResolventPoint X q).re := xiResolventPoint_re_pos hX q
-  have h1 : t ^ 2 = (xiResolventPoint X q).re ^ 2 := by
+  have h1 : t ^ (2 : ℕ) = (xiResolventPoint X q).re ^ (2 : ℕ) := by
     rw [← hnrm, Complex.sq_norm, Complex.normSq_apply, him]
     ring
   have h2 : ((xiResolventPoint X q).re - t) * ((xiResolventPoint X q).re + t) = 0 := by
@@ -63,7 +63,7 @@ shift is nonnegative, then among the divisor copies of maximal resolvent modulus
 the edge — the second level of lowest zeros — at least one lies on the critical line. -/
 theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ} (hX : 0 ≤ X)
     (hminor : ∀ n : ℕ, 0 ≤ (xiResolventMoment n X * xiResolventMoment (n + 2) X -
-      xiResolventMoment (n + 1) X ^ 2).re) :
+      xiResolventMoment (n + 1) X ^ (2 : ℕ)).re) :
     ∃ q : XiZeroCopy, (xiSpectralPoint q).im = 0 ∧
       (∃ q₀, ‖xiResolventPoint X q‖ < ‖xiResolventPoint X q₀‖) ∧
       ∀ q', (∃ q₀', ‖xiResolventPoint X q'‖ < ‖xiResolventPoint X q₀'‖) →
@@ -191,14 +191,14 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
   -- weighted second-level system
   set c : ℂ := ((r : ℝ) : ℂ) with hc
   set u : XiZeroCopy → ℂ := fun q => xiResolventPoint X q with hu
-  set W : XiZeroCopy → ℂ := fun q => (u q - c) ^ 2 with hW
+  set W : XiZeroCopy → ℂ := fun q => (u q - c) ^ (2 : ℕ) with hW
   set v : XiZeroCopy → ℂ := fun q => u q / ((ρ : ℝ) : ℂ) with hv
   have hρC : (((ρ : ℝ)) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hρpos.ne'
   -- summability of the weighted full sums
   have hwsum : ∀ n : ℕ, Summable (fun q : XiZeroCopy => u q ^ (n + 1) * W q) := by
     intro n
     refine Summable.of_norm_bounded
-      ((summable_norm_xiResolventPoint hX).mul_right ((2 * r) ^ 2)) fun q => ?_
+      ((summable_norm_xiResolventPoint hX).mul_right ((2 * r) ^ (2 : ℕ))) fun q => ?_
     rw [norm_mul]
     simp only [hW]
     have h1 : ‖u q ^ (n + 1)‖ ≤ ‖u q‖ := by
@@ -206,7 +206,7 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
       have hle1 : ‖u q‖ ^ n ≤ 1 :=
         pow_le_one₀ (norm_nonneg _) (norm_xiResolventPoint_le_one hX q)
       nlinarith [norm_nonneg (u q), pow_nonneg (norm_nonneg (u q)) n]
-    have h2 : ‖(u q - c) ^ 2‖ ≤ (2 * r) ^ 2 := by
+    have h2 : ‖(u q - c) ^ (2 : ℕ)‖ ≤ (2 * r) ^ (2 : ℕ) := by
       rw [norm_pow]
       refine pow_le_pow_left₀ (norm_nonneg _) ?_ 2
       calc ‖u q - c‖ ≤ ‖u q‖ + ‖c‖ := norm_sub_le _ _
@@ -235,15 +235,15 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
     (summable_xiResolventPoint_pow hX k).subtype _
   -- the deflation identity
   have hdefl : ∀ n : ℕ, xiResolventMoment n X * xiResolventMoment (n + 2) X -
-      xiResolventMoment (n + 1) X ^ 2 =
+      xiResolventMoment (n + 1) X ^ (2 : ℕ) =
       (T.card : ℂ) * c ^ (n + 1) *
-        (R' (n + 2) - 2 * c * R' (n + 1) + c ^ 2 * R' n) +
-        (R' n * R' (n + 2) - R' (n + 1) ^ 2) := by
+        (R' (n + 2) - 2 * c * R' (n + 1) + c ^ (2 : ℕ) * R' n) +
+        (R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ)) := by
     intro n
     rw [hmomsplit n, hmomsplit (n + 1), hmomsplit (n + 2)]
     ring
   -- the weighted representation of the deflated diagonal
-  have hDrep : ∀ n : ℕ, R' (n + 2) - 2 * c * R' (n + 1) + c ^ 2 * R' n =
+  have hDrep : ∀ n : ℕ, R' (n + 2) - 2 * c * R' (n + 1) + c ^ (2 : ℕ) * R' n =
       ∑' q : XiZeroCopy, u q ^ (n + 1) * W q := by
     intro n
     have hfull : ∑' q : XiZeroCopy, u q ^ (n + 1) * W q =
@@ -258,18 +258,18 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
       ring
     have hcompl : ∑' qc : ↑(↑T : Set XiZeroCopy)ᶜ, u (↑qc : XiZeroCopy) ^ (n + 1) *
         W (↑qc : XiZeroCopy) =
-        R' (n + 2) - 2 * c * R' (n + 1) + c ^ 2 * R' n := by
+        R' (n + 2) - 2 * c * R' (n + 1) + c ^ (2 : ℕ) * R' n := by
       have hpt : ∀ qc : ↑(↑T : Set XiZeroCopy)ᶜ,
           u (↑qc : XiZeroCopy) ^ (n + 1) * W (↑qc : XiZeroCopy) =
           (u (↑qc : XiZeroCopy) ^ (n + 2 + 1) -
             2 * c * u (↑qc : XiZeroCopy) ^ (n + 1 + 1)) +
-            c ^ 2 * u (↑qc : XiZeroCopy) ^ (n + 1) := by
+            c ^ (2 : ℕ) * u (↑qc : XiZeroCopy) ^ (n + 1) := by
         intro qc
         simp only [hW]
         ring
       rw [tsum_congr hpt]
       rw [((hsubpow (n + 2)).sub ((hsubpow (n + 1)).mul_left (2 * c))).tsum_add
-        ((hsubpow n).mul_left (c ^ 2))]
+        ((hsubpow n).mul_left (c ^ (2 : ℕ)))]
       rw [(hsubpow (n + 2)).tsum_sub ((hsubpow (n + 1)).mul_left (2 * c))]
       rw [tsum_mul_left, tsum_mul_left, hR']
     rw [hfull, hTzero, zero_add, hcompl]
@@ -308,16 +308,16 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
       ‖u (↑qc : XiZeroCopy)‖) := (summable_norm_xiResolventPoint hX).subtype _
   have htailW : ∀ n : ℕ,
       ‖∑' qc : ↑(↑SF : Set XiZeroCopy)ᶜ, u (↑qc : XiZeroCopy) ^ (n + 1) *
-        W (↑qc : XiZeroCopy)‖ ≤ ρ₂ ^ n * ((2 * r) ^ 2 * P₁) := by
+        W (↑qc : XiZeroCopy)‖ ≤ ρ₂ ^ n * ((2 * r) ^ (2 : ℕ) * P₁) := by
     intro n
     calc ‖∑' qc : ↑(↑SF : Set XiZeroCopy)ᶜ, u (↑qc : XiZeroCopy) ^ (n + 1) *
           W (↑qc : XiZeroCopy)‖
         ≤ ∑' qc : ↑(↑SF : Set XiZeroCopy)ᶜ, ‖u (↑qc : XiZeroCopy) ^ (n + 1) *
             W (↑qc : XiZeroCopy)‖ := norm_tsum_le_tsum_norm ((hwsum n).norm.subtype _)
       _ ≤ ∑' qc : ↑(↑SF : Set XiZeroCopy)ᶜ,
-            ρ₂ ^ n * ((2 * r) ^ 2 * ‖u (↑qc : XiZeroCopy)‖) := by
+            ρ₂ ^ n * ((2 * r) ^ (2 : ℕ) * ‖u (↑qc : XiZeroCopy)‖) := by
           refine Summable.tsum_le_tsum (fun qc => ?_) ((hwsum n).norm.subtype _)
-            ((hsfnorm.mul_left ((2 * r) ^ 2)).mul_left (ρ₂ ^ n))
+            ((hsfnorm.mul_left ((2 * r) ^ (2 : ℕ))).mul_left (ρ₂ ^ n))
           have hqnSF : (↑qc : XiZeroCopy) ∉ SF := by
             have h := qc.2
             simp only [Set.mem_compl_iff, Finset.mem_coe] at h
@@ -338,7 +338,7 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
                     mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _)
                       (hρ₂bound _ hqT hqnSF) n) (norm_nonneg _)
                 _ = ρ₂ ^ n * ‖u (↑qc : XiZeroCopy)‖ := mul_comm _ _
-            have h2 : ‖W (↑qc : XiZeroCopy)‖ ≤ (2 * r) ^ 2 := by
+            have h2 : ‖W (↑qc : XiZeroCopy)‖ ≤ (2 * r) ^ (2 : ℕ) := by
               simp only [hW]
               rw [norm_pow]
               refine pow_le_pow_left₀ (norm_nonneg _) ?_ 2
@@ -349,10 +349,10 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
                     rw [hc, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hrpos]
                 _ = 2 * r := by ring
             calc ‖u (↑qc : XiZeroCopy) ^ (n + 1)‖ * ‖W (↑qc : XiZeroCopy)‖
-                ≤ (ρ₂ ^ n * ‖u (↑qc : XiZeroCopy)‖) * (2 * r) ^ 2 :=
+                ≤ (ρ₂ ^ n * ‖u (↑qc : XiZeroCopy)‖) * (2 * r) ^ (2 : ℕ) :=
                   mul_le_mul h1 h2 (norm_nonneg _) (by positivity)
-              _ = ρ₂ ^ n * ((2 * r) ^ 2 * ‖u (↑qc : XiZeroCopy)‖) := by ring
-      _ = ρ₂ ^ n * ((2 * r) ^ 2 * P₁) := by
+              _ = ρ₂ ^ n * ((2 * r) ^ (2 : ℕ) * ‖u (↑qc : XiZeroCopy)‖) := by ring
+      _ = ρ₂ ^ n * ((2 * r) ^ (2 : ℕ) * P₁) := by
           rw [tsum_mul_left, tsum_mul_left, hP₁]
   -- the decaying floor for the weighted second-level power sums
   have hκr : ρ / r < 1 := (div_lt_one hrpos).mpr hρlt
@@ -361,7 +361,7 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
   have hκ0 : (0 : ℝ) ≤ κ :=
     le_trans (div_nonneg hρpos.le hrpos.le) (le_max_left _ _)
   have hκ1 : κ < 1 := max_lt hκr hκ2
-  set C₀ : ℝ := 2 * S₀' ^ 2 + 4 * r ^ 2 * P₁ / ρ with hC₀
+  set C₀ : ℝ := 2 * S₀' ^ (2 : ℕ) + 4 * r ^ (2 : ℕ) * P₁ / ρ with hC₀
   have hC₀nn : 0 ≤ C₀ := by
     rw [hC₀]
     positivity
@@ -383,15 +383,15 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
       rw [huq, mul_pow, ← Complex.ofReal_pow]
       ring
     -- the sub-edge minor bound
-    have hminor' : ‖R' n * R' (n + 2) - R' (n + 1) ^ 2‖ ≤ 2 * S₀' ^ 2 * ρ ^ (2 * n + 2) := by
-      calc ‖R' n * R' (n + 2) - R' (n + 1) ^ 2‖
-          ≤ ‖R' n * R' (n + 2)‖ + ‖R' (n + 1) ^ 2‖ := norm_sub_le _ _
-        _ = ‖R' n‖ * ‖R' (n + 2)‖ + ‖R' (n + 1)‖ ^ 2 := by rw [norm_mul, norm_pow]
-        _ ≤ (ρ ^ n * S₀') * (ρ ^ (n + 2) * S₀') + (ρ ^ (n + 1) * S₀') ^ 2 := by
+    have hminor' : ‖R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ)‖ ≤ 2 * S₀' ^ (2 : ℕ) * ρ ^ (2 * n + 2) := by
+      calc ‖R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ)‖
+          ≤ ‖R' n * R' (n + 2)‖ + ‖R' (n + 1) ^ (2 : ℕ)‖ := norm_sub_le _ _
+        _ = ‖R' n‖ * ‖R' (n + 2)‖ + ‖R' (n + 1)‖ ^ (2 : ℕ) := by rw [norm_mul, norm_pow]
+        _ ≤ (ρ ^ n * S₀') * (ρ ^ (n + 2) * S₀') + (ρ ^ (n + 1) * S₀') ^ (2 : ℕ) := by
             refine add_le_add (mul_le_mul (hR'bound n) (hR'bound (n + 2))
               (norm_nonneg _) (by positivity)) ?_
             exact pow_le_pow_left₀ (norm_nonneg _) (hR'bound (n + 1)) 2
-        _ = 2 * S₀' ^ 2 * ρ ^ (2 * n + 2) := by ring
+        _ = 2 * S₀' ^ (2 : ℕ) * ρ ^ (2 * n + 2) := by ring
     -- minor positivity transfers to the weighted diagonal
     have hMc : (T.card : ℂ) * c ^ (n + 1) = (((T.card : ℝ) * r ^ (n + 1) : ℝ) : ℂ) := by
       rw [hc]
@@ -400,32 +400,32 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
     have hminre := hminor n
     have hkey : 0 ≤ (T.card : ℝ) * r ^ (n + 1) *
         (∑' q : XiZeroCopy, u q ^ (n + 1) * W q).re +
-        (R' n * R' (n + 2) - R' (n + 1) ^ 2).re := by
+        (R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ)).re := by
       have h1 := hdefl n
       rw [hDrep n] at h1
       have h2 := congrArg Complex.re h1
       rw [Complex.add_re, hMc, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
         zero_mul, sub_zero] at h2
       linarith
-    have hminre' : -(2 * S₀' ^ 2 * ρ ^ (2 * n + 2)) ≤
-        (R' n * R' (n + 2) - R' (n + 1) ^ 2).re := by
-      have h1 := Complex.abs_re_le_norm (R' n * R' (n + 2) - R' (n + 1) ^ 2)
-      have h2 := neg_abs_le (R' n * R' (n + 2) - R' (n + 1) ^ 2).re
+    have hminre' : -(2 * S₀' ^ (2 : ℕ) * ρ ^ (2 * n + 2)) ≤
+        (R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ)).re := by
+      have h1 := Complex.abs_re_le_norm (R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ))
+      have h2 := neg_abs_le (R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ)).re
       linarith [hminor']
     -- assemble the floor
     have hcard : (1 : ℝ) ≤ (T.card : ℝ) := hm1
     have hrn : (0 : ℝ) < r ^ (n + 1) := pow_pos hrpos _
     have hρn : (0 : ℝ) < ρ ^ (n + 1) := pow_pos hρpos _
-    have hDre : -(2 * S₀' ^ 2 * ρ ^ (2 * n + 2) / r ^ (n + 1)) ≤
+    have hDre : -(2 * S₀' ^ (2 : ℕ) * ρ ^ (2 * n + 2) / r ^ (n + 1)) ≤
         (∑' q : XiZeroCopy, u q ^ (n + 1) * W q).re := by
       rw [← neg_div, div_le_iff₀ hrn]
       have hcardpos : (0 : ℝ) < (T.card : ℝ) := by linarith
-      have hminre2 : (R' n * R' (n + 2) - R' (n + 1) ^ 2).re ≤
-          2 * S₀' ^ 2 * ρ ^ (2 * n + 2) := by
-        have h1 := Complex.abs_re_le_norm (R' n * R' (n + 2) - R' (n + 1) ^ 2)
-        have h2 := le_abs_self (R' n * R' (n + 2) - R' (n + 1) ^ 2).re
+      have hminre2 : (R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ)).re ≤
+          2 * S₀' ^ (2 : ℕ) * ρ ^ (2 * n + 2) := by
+        have h1 := Complex.abs_re_le_norm (R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ))
+        have h2 := le_abs_self (R' n * R' (n + 2) - R' (n + 1) ^ (2 : ℕ)).re
         linarith [hminor']
-      have hDnn : -(2 * S₀' ^ 2 * ρ ^ (2 * n + 2)) ≤
+      have hDnn : -(2 * S₀' ^ (2 : ℕ) * ρ ^ (2 * n + 2)) ≤
           (T.card : ℝ) * r ^ (n + 1) * (∑' q : XiZeroCopy, u q ^ (n + 1) * W q).re := by
         linarith
       by_cases hsign : 0 ≤ (∑' q : XiZeroCopy, u q ^ (n + 1) * W q).re
@@ -450,7 +450,7 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
       rw [eq_div_iff (ne_of_gt hρn)]
       linarith
     rw [hAre]
-    have htre : -(ρ₂ ^ n * ((2 * r) ^ 2 * P₁)) ≤
+    have htre : -(ρ₂ ^ n * ((2 * r) ^ (2 : ℕ) * P₁)) ≤
         -(∑' qc : ↑(↑SF : Set XiZeroCopy)ᶜ, u (↑qc : XiZeroCopy) ^ (n + 1) *
           W (↑qc : XiZeroCopy)).re := by
       have h1 := htailW n
@@ -462,8 +462,8 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
           W (↑qc : XiZeroCopy)).re
       linarith
     rw [le_div_iff₀ hρn]
-    have hb1 : 2 * S₀' ^ 2 * ρ ^ (2 * n + 2) / r ^ (n + 1) ≤
-        2 * S₀' ^ 2 * κ ^ n * ρ ^ (n + 1) := by
+    have hb1 : 2 * S₀' ^ (2 : ℕ) * ρ ^ (2 * n + 2) / r ^ (n + 1) ≤
+        2 * S₀' ^ (2 : ℕ) * κ ^ n * ρ ^ (n + 1) := by
       rw [div_le_iff₀ hrn]
       have h1 : (ρ / r) ^ n ≤ κ ^ n :=
         pow_le_pow_left₀ (div_nonneg hρpos.le hrpos.le) (le_max_left _ _) n
@@ -480,9 +480,9 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
       have h4 : ρ ^ (2 * n + 2) = ρ ^ (n + 1) * ρ ^ (n + 1) := by ring
       rw [h4]
       nlinarith [mul_le_mul_of_nonneg_left hρn1
-        (mul_nonneg (by positivity : (0:ℝ) ≤ 2 * S₀' ^ 2) (pow_nonneg hρpos.le (n + 1)))]
-    have hb2 : ρ₂ ^ n * ((2 * r) ^ 2 * P₁) ≤
-        4 * r ^ 2 * P₁ / ρ * κ ^ n * ρ ^ (n + 1) := by
+        (mul_nonneg (by positivity : (0:ℝ) ≤ 2 * S₀' ^ (2 : ℕ)) (pow_nonneg hρpos.le (n + 1)))]
+    have hb2 : ρ₂ ^ n * ((2 * r) ^ (2 : ℕ) * P₁) ≤
+        4 * r ^ (2 : ℕ) * P₁ / ρ * κ ^ n * ρ ^ (n + 1) := by
       have h1 : (ρ₂ / ρ) ^ n ≤ κ ^ n :=
         pow_le_pow_left₀ (div_nonneg hρ₂0 hρpos.le) (le_max_right _ _) n
       have h3 : (ρ₂ / ρ) ^ n * ρ ^ n = ρ₂ ^ n := by
@@ -490,20 +490,20 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
         field_simp
       have h2 : ρ₂ ^ n ≤ κ ^ n * ρ ^ n := by
         nlinarith [mul_le_mul_of_nonneg_right h1 (pow_nonneg hρpos.le n)]
-      have h4 : 4 * r ^ 2 * P₁ / ρ * κ ^ n * ρ ^ (n + 1) =
-          4 * r ^ 2 * P₁ * (κ ^ n * ρ ^ n) := by
+      have h4 : 4 * r ^ (2 : ℕ) * P₁ / ρ * κ ^ n * ρ ^ (n + 1) =
+          4 * r ^ (2 : ℕ) * P₁ * (κ ^ n * ρ ^ n) := by
         field_simp
         ring
-      rw [h4, mul_comm (ρ₂ ^ n) ((2 * r) ^ 2 * P₁),
-        show ((2 * r) ^ 2 * P₁ : ℝ) = 4 * r ^ 2 * P₁ by ring]
+      rw [h4, mul_comm (ρ₂ ^ n) ((2 * r) ^ (2 : ℕ) * P₁),
+        show ((2 * r) ^ (2 : ℕ) * P₁ : ℝ) = 4 * r ^ (2 : ℕ) * P₁ by ring]
       exact mul_le_mul_of_nonneg_left h2 (by positivity)
     calc -(C₀ * κ ^ n) * ρ ^ (n + 1)
-        = -(2 * S₀' ^ 2 * κ ^ n * ρ ^ (n + 1) +
-            4 * r ^ 2 * P₁ / ρ * κ ^ n * ρ ^ (n + 1)) := by
+        = -(2 * S₀' ^ (2 : ℕ) * κ ^ n * ρ ^ (n + 1) +
+            4 * r ^ (2 : ℕ) * P₁ / ρ * κ ^ n * ρ ^ (n + 1)) := by
           rw [hC₀]
           ring
-      _ ≤ -(2 * S₀' ^ 2 * ρ ^ (2 * n + 2) / r ^ (n + 1) +
-            ρ₂ ^ n * ((2 * r) ^ 2 * P₁)) := by
+      _ ≤ -(2 * S₀' ^ (2 : ℕ) * ρ ^ (2 * n + 2) / r ^ (n + 1) +
+            ρ₂ ^ n * ((2 * r) ^ (2 : ℕ) * P₁)) := by
           linarith
       _ ≤ (∑' q : XiZeroCopy, u q ^ (n + 1) * W q).re -
             (∑' qc : ↑(↑SF : Set XiZeroCopy)ᶜ, u (↑qc : XiZeroCopy) ^ (n + 1) *

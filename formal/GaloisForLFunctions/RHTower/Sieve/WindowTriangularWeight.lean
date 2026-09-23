@@ -54,7 +54,7 @@ theorem windowOverlap_le_sub_dist (X L n m : ℕ) :
 
 /-- **The short-interval variance against the triangular weight.** -/
 theorem sum_normSq_window_le_triangular (a : ℕ → ℂ) (X L : ℕ) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
       ≤ ∑ n ∈ Finset.range (X + L + 1), ∑ m ∈ Finset.range (X + L + 1),
           ((L - Nat.dist n m : ℕ) : ℝ) * (‖a n‖ * ‖a m‖) := by
   classical

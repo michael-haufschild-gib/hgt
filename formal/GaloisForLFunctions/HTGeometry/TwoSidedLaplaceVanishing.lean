@@ -86,16 +86,16 @@ theorem coeFn_fourierTransform_toLp {f : ℝ → ℂ} (hf2 : MemLp f 2 (volume :
 theorem tendsto_integral_norm_sq_rayDamp_sub {ψ : ℝ → ℂ}
     (hψ : MemLp ψ 2 (volume.restrict (Ioi (0 : ℝ))))
     {σ : ℕ → ℝ} (hσ0 : ∀ n, 0 ≤ σ n) (hσ : Tendsto σ atTop (𝓝 0)) :
-    Tendsto (fun n : ℕ => ∫ x : ℝ, ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ 2) atTop (𝓝 0) := by
-  have hsq : Integrable (fun x : ℝ => ‖rayDamp ψ 0 x‖ ^ 2) volume := by
+    Tendsto (fun n : ℕ => ∫ x : ℝ, ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
+  have hsq : Integrable (fun x : ℝ => ‖rayDamp ψ 0 x‖ ^ (2 : ℕ)) volume := by
     have h := memLp_two_rayDamp hψ (le_refl (0 : ℝ))
     exact (memLp_two_iff_integrable_sq_norm h.1).1 h
   have hmeas : ∀ n : ℕ, AEStronglyMeasurable
-      (fun x : ℝ => ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ 2) volume := by
+      (fun x : ℝ => ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ (2 : ℕ)) volume := by
     intro n
     exact (((memLp_two_rayDamp hψ (hσ0 n)).sub (memLp_two_rayDamp hψ le_rfl)).1.norm.pow 2)
   have hbound : ∀ n : ℕ, ∀ᵐ x ∂(volume : Measure ℝ),
-      ‖‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ 2‖ ≤ 4 * ‖rayDamp ψ 0 x‖ ^ 2 := by
+      ‖‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ (2 : ℕ)‖ ≤ 4 * ‖rayDamp ψ 0 x‖ ^ (2 : ℕ) := by
     intro n
     filter_upwards with x
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
@@ -131,7 +131,7 @@ theorem tendsto_integral_norm_sq_rayDamp_sub {ψ : ℝ → ℂ}
         linarith
       nlinarith [norm_nonneg (rayDamp ψ (σ n) x - rayDamp ψ 0 x), norm_nonneg (rayDamp ψ 0 x)]
   have hlim : ∀ᵐ x ∂(volume : Measure ℝ),
-      Tendsto (fun n : ℕ => ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ 2) atTop (𝓝 0) := by
+      Tendsto (fun n : ℕ => ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     filter_upwards with x
     have hpt : Tendsto (fun n : ℕ => rayDamp ψ (σ n) x) atTop (𝓝 (rayDamp ψ 0 x)) := by
       simp only [rayDamp, Set.indicator_apply]
@@ -150,28 +150,28 @@ theorem tendsto_integral_norm_sq_rayDamp_sub {ψ : ℝ → ℂ}
     have hn := hsub.norm
     simpa using (hn.pow 2)
   have := tendsto_integral_of_dominated_convergence
-    (F := fun n : ℕ => fun x : ℝ => ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ 2)
-    (f := fun _ : ℝ => (0 : ℝ)) (bound := fun x : ℝ => 4 * ‖rayDamp ψ 0 x‖ ^ 2)
+    (F := fun n : ℕ => fun x : ℝ => ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ (2 : ℕ))
+    (f := fun _ : ℝ => (0 : ℝ)) (bound := fun x : ℝ => 4 * ‖rayDamp ψ 0 x‖ ^ (2 : ℕ))
     hmeas (hsq.const_mul 4) hbound hlim
   simpa using this
 
 /-- Convergence of the `L²` classes follows from convergence of the squared `L²` distances. -/
 theorem tendsto_toLp_of_integral_norm_sq {f : ℕ → ℝ → ℂ} {g : ℝ → ℂ}
     (hf : ∀ n, MemLp (f n) 2 (volume : Measure ℝ)) (hg : MemLp g 2 (volume : Measure ℝ))
-    (h : Tendsto (fun n : ℕ => ∫ x : ℝ, ‖f n x - g x‖ ^ 2) atTop (𝓝 0)) :
+    (h : Tendsto (fun n : ℕ => ∫ x : ℝ, ‖f n x - g x‖ ^ (2 : ℕ)) atTop (𝓝 0)) :
     Tendsto (fun n : ℕ => (hf n).toLp (f n)) atTop (𝓝 (hg.toLp g)) := by
   refine tendsto_iff_norm_sub_tendsto_zero.2 ?_
-  have hnorm : ∀ n : ℕ, ‖(hf n).toLp (f n) - hg.toLp g‖ ^ 2
-      = ∫ x : ℝ, ‖f n x - g x‖ ^ 2 := by
+  have hnorm : ∀ n : ℕ, ‖(hf n).toLp (f n) - hg.toLp g‖ ^ (2 : ℕ)
+      = ∫ x : ℝ, ‖f n x - g x‖ ^ (2 : ℕ) := by
     intro n
     rw [← MemLp.toLp_sub, _root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     refine integral_congr_ae ?_
     filter_upwards [MemLp.coeFn_toLp ((hf n).sub hg)] with x hx
     rw [hx]
     rfl
-  have hsq : Tendsto (fun n : ℕ => ‖(hf n).toLp (f n) - hg.toLp g‖ ^ 2) atTop (𝓝 0) :=
+  have hsq : Tendsto (fun n : ℕ => ‖(hf n).toLp (f n) - hg.toLp g‖ ^ (2 : ℕ)) atTop (𝓝 0) :=
     h.congr fun n => (hnorm n).symm
-  have hcomp : Tendsto (fun n : ℕ => Real.sqrt (‖(hf n).toLp (f n) - hg.toLp g‖ ^ 2)) atTop
+  have hcomp : Tendsto (fun n : ℕ => Real.sqrt (‖(hf n).toLp (f n) - hg.toLp g‖ ^ (2 : ℕ))) atTop
       (𝓝 (Real.sqrt 0)) := (Real.continuous_sqrt.tendsto 0).comp hsq
   simpa [Real.sqrt_sq (norm_nonneg _)] using hcomp
 
@@ -190,7 +190,7 @@ theorem tendsto_toLp_rayDampRefl {ψ : ℝ → ℂ} (hψ : MemLp ψ 2 (volume.re
     (memLp_two_rayDampRefl hψ le_rfl) ?_
   refine (tendsto_integral_norm_sq_rayDamp_sub hψ hσ0 hσ).congr fun n => ?_
   exact (integral_neg_eq_self
-    (fun x : ℝ => ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ 2) volume).symm
+    (fun x : ℝ => ‖rayDamp ψ (σ n) x - rayDamp ψ 0 x‖ ^ (2 : ℕ)) volume).symm
 
 /-! ## The vanishing theorem -/
 

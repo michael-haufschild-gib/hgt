@@ -164,11 +164,11 @@ theorem gammaPoleSymbolicToActual_movingCoefficient
           _ = gammaPoleScaleAndUnitDerivativeLaurentEval
               (gammaPoleRationalScaleDerivativeInclude
                   (gammaPoleCenterHasseRational p 0) *
-                gammaPoleSymbolicPhysicalScale ^ 0) :=
+                gammaPoleSymbolicPhysicalScale ^ (0 : ℕ)) :=
             congrArg gammaPoleScaleAndUnitDerivativeLaurentEval
               (gammaPoleSymbolicMovingCoefficientLaurent_coeff_neg p 0)
           _ = ratNatEval (gammaPoleCenterHasseRational p 0) *
-              gammaPolePhysicalScaleGerm ^ 0 := by simp
+              gammaPolePhysicalScaleGerm ^ (0 : ℕ) := by simp
           _ = (gammaPoleMovingCoefficientLaurent p).coeff (-(0 : ℤ)) :=
             (gammaPoleMovingCoefficientLaurent_coeff_neg p 0).symm
       · have hpos : (0 : ℤ) < Int.ofNat (b + 1) := by simp

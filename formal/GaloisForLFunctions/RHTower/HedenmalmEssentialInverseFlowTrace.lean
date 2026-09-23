@@ -284,7 +284,7 @@ theorem trace_thetaRootBlockFunctionalCalculus_sq
         (thetaRootBlockFunctionalCalculus a L mu ∘ₗ
           thetaRootBlockFunctionalCalculus a L mu) =
       (thetaSpectrumMultiplicity mu : ℂ) *
-        essentialFlowSymbol a L (mu : ℂ) ^ 2 := by
+        essentialFlowSymbol a L (mu : ℂ) ^ (2 : ℕ) := by
   exact trace_finiteRootBlockTaylorCalculus_sq
     (thetaRootBlockOperator mu) (mu : ℂ)
     (essentialFlowSymbol a L (mu : ℂ))
@@ -295,11 +295,11 @@ theorem trace_thetaRootBlockFunctionalCalculus_sq
 
 /-- One algebraic-multiplicity copy of the inverse-flow trace. -/
 def thetaEssentialTraceTerm (a L : ℝ) (q : ThetaSpectrumCopy) : ℂ :=
-  essentialFlowSymbol a L (q.1 : ℂ) ^ 2
+  essentialFlowSymbol a L (q.1 : ℂ) ^ (2 : ℕ)
 
 theorem thetaEssentialTraceTerm_xiZeroCopy (a L : ℝ) (q : XiZeroCopy) :
     thetaEssentialTraceTerm a L (xiZeroCopyEquivThetaSpectrumCopy q) =
-      xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 := by
+      xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ) := by
   rw [thetaEssentialTraceTerm, essentialFlowSymbol_xiZeroCopy]
 
 /-- Absolute summability of the complete multiplicity-exact source trace. -/
@@ -328,7 +328,7 @@ theorem thetaEssentialTrace_eq_xiWeilPolarization (a L : ℝ) :
     ∑' q : XiZeroCopy,
         thetaEssentialTraceTerm a L (xiZeroCopyEquivThetaSpectrumCopy q) =
         ∑' q : XiZeroCopy,
-          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2 := by
+          xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ (2 : ℕ) := by
       apply tsum_congr
       exact thetaEssentialTraceTerm_xiZeroCopy a L
     _ = xiWeilPolarization (xiRectangularTwoEdgeTransform L a)
@@ -372,13 +372,13 @@ theorem thetaEssentialCutoffTrace_eq_finrank_sum
     thetaEssentialCutoffTrace a L eps =
       ∑ mu ∈ (thetaNonzeroSpectrumCutoffSet_finite heps).toFinset,
         (thetaSpectrumMultiplicity mu : ℂ) *
-          essentialFlowSymbol a L (mu : ℂ) ^ 2 := by
+          essentialFlowSymbol a L (mu : ℂ) ^ (2 : ℕ) := by
   rw [thetaEssentialCutoffTrace, thetaSpectrumCutoffCopies, dif_pos heps,
     Finset.sum_sigma]
   apply Finset.sum_congr rfl
   intro mu hmu
   change (∑ _j : Fin (thetaSpectrumMultiplicity mu),
-      essentialFlowSymbol a L (mu : ℂ) ^ 2) = _
+      essentialFlowSymbol a L (mu : ℂ) ^ (2 : ℕ)) = _
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 
 /-- Finite direct sum of all Riesz root fibres above a positive modulus cutoff. -/

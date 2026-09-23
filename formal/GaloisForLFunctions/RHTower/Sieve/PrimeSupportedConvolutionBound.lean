@@ -97,7 +97,7 @@ theorem norm_convolution_triple_prime_support_le_const {a b c : ℕ → ℂ} {A 
     (hb : ∀ q : ℕ, b q ≠ 0 → Nat.Prime q) (hbB : ∀ q : ℕ, ‖b q‖ ≤ B * Real.log q)
     (hc : ∀ k : ℕ, ‖c k‖ ≤ 1) {n : ℕ} (hn : 1 ≤ n) :
     ‖(LSeries.convolution a (LSeries.convolution b c)) n‖
-      ≤ A * B * ((n.primeFactors.card : ℝ) ^ 2 * (Real.log n) ^ 2) := by
+      ≤ A * B * ((n.primeFactors.card : ℝ) ^ (2 : ℕ) * (Real.log n) ^ (2 : ℕ)) := by
   classical
   have hn0 : n ≠ 0 := by omega
   have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
@@ -174,7 +174,7 @@ theorem norm_convolution_triple_prime_support_le {a b c : ℕ → ℂ}
     (hb : ∀ q : ℕ, b q ≠ 0 → Nat.Prime q) (hbB : ∀ q : ℕ, ‖b q‖ ≤ Real.log q)
     (hc : ∀ k : ℕ, ‖c k‖ ≤ 1) {n : ℕ} (hn : 1 ≤ n) :
     ‖(LSeries.convolution a (LSeries.convolution b c)) n‖
-      ≤ (n.primeFactors.card : ℝ) ^ 2 * (Real.log n) ^ 2 := by
+      ≤ (n.primeFactors.card : ℝ) ^ (2 : ℕ) * (Real.log n) ^ (2 : ℕ) := by
   simpa using norm_convolution_triple_prime_support_le_const (A := 1) (B := 1)
     zero_le_one zero_le_one ha (by simpa using haB) hb (by simpa using hbB) hc hn
 
@@ -211,7 +211,7 @@ theorem norm_convolution_triple_le_log_pow_const {a b c : ℕ → ℂ} {A B : �
     (hb : ∀ q : ℕ, b q ≠ 0 → Nat.Prime q) (hbB : ∀ q : ℕ, ‖b q‖ ≤ B * Real.log q)
     (hc : ∀ k : ℕ, ‖c k‖ ≤ 1) {n : ℕ} (hn : 1 ≤ n) :
     ‖(LSeries.convolution a (LSeries.convolution b c)) n‖
-      ≤ A * B * ((Real.log n) ^ 4 / (Real.log 2) ^ 2) := by
+      ≤ A * B * ((Real.log n) ^ (4 : ℕ) / (Real.log 2) ^ (2 : ℕ)) := by
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hlogn : (0 : ℝ) ≤ Real.log n := Real.log_nonneg hnR
@@ -220,12 +220,12 @@ theorem norm_convolution_triple_le_log_pow_const {a b c : ℕ → ℂ} {A B : �
     exact card_primeFactors_mul_log_two_le_log hn
   refine (norm_convolution_triple_prime_support_le_const hA hB ha haB hb hbB hc hn).trans ?_
   refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hA hB)
-  have hsq : (n.primeFactors.card : ℝ) ^ 2 ≤ (Real.log n / Real.log 2) ^ 2 :=
+  have hsq : (n.primeFactors.card : ℝ) ^ (2 : ℕ) ≤ (Real.log n / Real.log 2) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (Nat.cast_nonneg _) hωle 2
-  calc (n.primeFactors.card : ℝ) ^ 2 * (Real.log n) ^ 2
-      ≤ (Real.log n / Real.log 2) ^ 2 * (Real.log n) ^ 2 :=
+  calc (n.primeFactors.card : ℝ) ^ (2 : ℕ) * (Real.log n) ^ (2 : ℕ)
+      ≤ (Real.log n / Real.log 2) ^ (2 : ℕ) * (Real.log n) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hsq (by positivity)
-    _ = (Real.log n) ^ 4 / (Real.log 2) ^ 2 := by
+    _ = (Real.log n) ^ (4 : ℕ) / (Real.log 2) ^ (2 : ℕ) := by
         field_simp
 
 /-- **The triple convolution's coefficients are polylogarithmic, explicitly.**  For prime-supported
@@ -237,7 +237,7 @@ theorem norm_convolution_triple_le_log_pow {a b c : ℕ → ℂ}
     (hb : ∀ q : ℕ, b q ≠ 0 → Nat.Prime q) (hbB : ∀ q : ℕ, ‖b q‖ ≤ Real.log q)
     (hc : ∀ k : ℕ, ‖c k‖ ≤ 1) {n : ℕ} (hn : 1 ≤ n) :
     ‖(LSeries.convolution a (LSeries.convolution b c)) n‖
-      ≤ (Real.log n) ^ 4 / (Real.log 2) ^ 2 := by
+      ≤ (Real.log n) ^ (4 : ℕ) / (Real.log 2) ^ (2 : ℕ) := by
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hlogn : (0 : ℝ) ≤ Real.log n := Real.log_nonneg hnR
@@ -247,13 +247,13 @@ theorem norm_convolution_triple_le_log_pow {a b c : ℕ → ℂ}
     exact hω
   have hbase := norm_convolution_triple_prime_support_le ha haB hb hbB hc hn
   refine hbase.trans ?_
-  have hsq : (n.primeFactors.card : ℝ) ^ 2 ≤ (Real.log n / Real.log 2) ^ 2 := by
+  have hsq : (n.primeFactors.card : ℝ) ^ (2 : ℕ) ≤ (Real.log n / Real.log 2) ^ (2 : ℕ) := by
     have hnn : (0 : ℝ) ≤ (n.primeFactors.card : ℝ) := Nat.cast_nonneg _
     exact pow_le_pow_left₀ hnn hωle 2
-  calc (n.primeFactors.card : ℝ) ^ 2 * (Real.log n) ^ 2
-      ≤ (Real.log n / Real.log 2) ^ 2 * (Real.log n) ^ 2 := by
+  calc (n.primeFactors.card : ℝ) ^ (2 : ℕ) * (Real.log n) ^ (2 : ℕ)
+      ≤ (Real.log n / Real.log 2) ^ (2 : ℕ) * (Real.log n) ^ (2 : ℕ) := by
         exact mul_le_mul_of_nonneg_right hsq (by positivity)
-    _ = (Real.log n) ^ 4 / (Real.log 2) ^ 2 := by
+    _ = (Real.log n) ^ (4 : ℕ) / (Real.log 2) ^ (2 : ℕ) := by
         field_simp
 
 end RHTower.Sieve

@@ -5,8 +5,8 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaHankelDegreeTail
 /-!
 # Two-channel Stein--Robertson certificate for the first radial theta atom
 
-The dilation field `x` and quadratic monomial field `x^2` form a two-channel
-quantum-bootstrap family.  The previously selected field `x-x^2/2` is one
+The dilation field `x` and quadratic monomial field `x^(2 : ℕ)` form a two-channel
+quantum-bootstrap family.  The previously selected field `x-x^(2 : ℕ)/2` is one
 member.  Allowing the coefficients to vary weakens the source certificate
 while preserving the exact first-radial and Hankel consumers.
 -/

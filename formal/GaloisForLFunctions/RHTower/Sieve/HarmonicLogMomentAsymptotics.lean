@@ -50,17 +50,17 @@ theorem tendsto_log_natDiv_add_one_div_log_one {c : ℕ} (hc : 0 < c) :
 theorem tendsto_harmonicLogWindowMoment_one_natDiv_div_log_sq_half
     {c : ℕ} (hc : 0 < c) :
     Tendsto (fun N : ℕ =>
-      harmonicLogWindowMoment 1 0 (N / c) / Real.log N ^ 2)
+      harmonicLogWindowMoment 1 0 (N / c) / Real.log N ^ (2 : ℕ))
       atTop (𝓝 (1 / 2 : ℝ)) := by
   have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hscale : Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ 2) atTop atTop :=
+  have hscale : Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ (2 : ℕ)) atTop atTop :=
     (tendsto_pow_atTop (n := 2) (by norm_num)).comp hlog
   have herr : Tendsto (fun N : ℕ =>
       (harmonicLogWindowMoment 1 0 (N / c) -
-        Real.log (N / c + 1 : ℕ) ^ 2 / 2) / Real.log N ^ 2)
+        Real.log (N / c + 1 : ℕ) ^ (2 : ℕ) / 2) / Real.log N ^ (2 : ℕ))
       atTop (𝓝 0) := by
-    have hmaj : Tendsto (fun N : ℕ => (100 : ℝ) / Real.log N ^ 2)
+    have hmaj : Tendsto (fun N : ℕ => (100 : ℝ) / Real.log N ^ (2 : ℕ))
         atTop (𝓝 0) := hscale.const_div_atTop 100
     refine squeeze_zero_norm' ?_ hmaj
     filter_upwards [eventually_ge_atTop 2] with N hN
@@ -71,7 +71,7 @@ theorem tendsto_harmonicLogWindowMoment_one_natDiv_div_log_sq_half
       (sq_nonneg _)
   have hratio := tendsto_log_natDiv_add_one_div_log_one hc
   have hmain : Tendsto (fun N : ℕ =>
-      (Real.log (N / c + 1 : ℕ) ^ 2 / 2) / Real.log N ^ 2)
+      (Real.log (N / c + 1 : ℕ) ^ (2 : ℕ) / 2) / Real.log N ^ (2 : ℕ))
       atTop (𝓝 (1 / 2 : ℝ)) := by
     have h := (hratio.pow 2).const_mul (1 / 2 : ℝ)
     simpa only [one_pow, mul_one] using h.congr' (by
@@ -92,17 +92,17 @@ theorem tendsto_harmonicLogWindowMoment_one_natDiv_div_log_sq_half
 theorem tendsto_harmonicLogWindowMoment_two_natDiv_div_log_cube_third
     {c : ℕ} (hc : 0 < c) :
     Tendsto (fun N : ℕ =>
-      harmonicLogWindowMoment 2 0 (N / c) / Real.log N ^ 3)
+      harmonicLogWindowMoment 2 0 (N / c) / Real.log N ^ (3 : ℕ))
       atTop (𝓝 (1 / 3 : ℝ)) := by
   have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hscale : Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ 3) atTop atTop :=
+  have hscale : Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ (3 : ℕ)) atTop atTop :=
     (tendsto_pow_atTop (n := 3) (by norm_num)).comp hlog
   have herr : Tendsto (fun N : ℕ =>
       (harmonicLogWindowMoment 2 0 (N / c) -
-        Real.log (N / c + 1 : ℕ) ^ 3 / 3) / Real.log N ^ 3)
+        Real.log (N / c + 1 : ℕ) ^ (3 : ℕ) / 3) / Real.log N ^ (3 : ℕ))
       atTop (𝓝 0) := by
-    have hmaj : Tendsto (fun N : ℕ => (1000 : ℝ) / Real.log N ^ 3)
+    have hmaj : Tendsto (fun N : ℕ => (1000 : ℝ) / Real.log N ^ (3 : ℕ))
         atTop (𝓝 0) := hscale.const_div_atTop 1000
     refine squeeze_zero_norm' ?_ hmaj
     filter_upwards [eventually_ge_atTop 2] with N hN
@@ -113,7 +113,7 @@ theorem tendsto_harmonicLogWindowMoment_two_natDiv_div_log_cube_third
       (pow_nonneg hlog.le 3)
   have hratio := tendsto_log_natDiv_add_one_div_log_one hc
   have hmain : Tendsto (fun N : ℕ =>
-      (Real.log (N / c + 1 : ℕ) ^ 3 / 3) / Real.log N ^ 3)
+      (Real.log (N / c + 1 : ℕ) ^ (3 : ℕ) / 3) / Real.log N ^ (3 : ℕ))
       atTop (𝓝 (1 / 3 : ℝ)) := by
     have h := (hratio.pow 3).const_mul (1 / 3 : ℝ)
     simpa only [one_pow, mul_one] using h.congr' (by

@@ -28,8 +28,8 @@ namespace RHTower
 
 /-- Second derivative of the sinc profile off the origin. -/
 noncomputable def sincScalarDD (c u : ℝ) : ℝ :=
-  (-(c ^ 2) * u ^ 2 * Real.sin (c * u) - 2 * (c * u * Real.cos (c * u) - Real.sin (c * u)))
-    / (Real.pi * u ^ 3)
+  (-(c ^ (2 : ℕ)) * u ^ (2 : ℕ) * Real.sin (c * u) - 2 * (c * u * Real.cos (c * u) - Real.sin (c * u)))
+    / (Real.pi * u ^ (3 : ℕ))
 
 theorem hasDerivAt_sincScalarD {c u : ℝ} (h : u ≠ 0) :
     HasDerivAt (sincScalarD c) (sincScalarDD c u) u := by
@@ -40,16 +40,16 @@ theorem hasDerivAt_sincScalarD {c u : ℝ} (h : u ≠ 0) :
   have hnum : HasDerivAt (fun v : ℝ => c * v * Real.cos (c * v) - Real.sin (c * v))
       (c * Real.cos (c * u) + c * u * (-Real.sin (c * u) * c) - Real.cos (c * u) * c) u :=
     hcv.sub hcu.sin
-  have hden : HasDerivAt (fun v : ℝ => Real.pi * v ^ 2) (Real.pi * (2 * u)) u := by
-    have h2 : HasDerivAt (fun v : ℝ => v ^ 2) (2 * u) u := by
+  have hden : HasDerivAt (fun v : ℝ => Real.pi * v ^ (2 : ℕ)) (Real.pi * (2 * u)) u := by
+    have h2 : HasDerivAt (fun v : ℝ => v ^ (2 : ℕ)) (2 * u) u := by
       simpa using hasDerivAt_pow 2 u
     simpa using h2.const_mul Real.pi
-  have hden0 : Real.pi * u ^ 2 ≠ 0 := mul_ne_zero Real.pi_ne_zero (pow_ne_zero 2 h)
+  have hden0 : Real.pi * u ^ (2 : ℕ) ≠ 0 := mul_ne_zero Real.pi_ne_zero (pow_ne_zero 2 h)
   have hdiv := hnum.div hden hden0
   have hval : ((c * Real.cos (c * u) + c * u * (-Real.sin (c * u) * c) - Real.cos (c * u) * c)
-          * (Real.pi * u ^ 2)
+          * (Real.pi * u ^ (2 : ℕ))
         - (c * u * Real.cos (c * u) - Real.sin (c * u)) * (Real.pi * (2 * u)))
-        / (Real.pi * u ^ 2) ^ 2 = sincScalarDD c u := by
+        / (Real.pi * u ^ (2 : ℕ)) ^ (2 : ℕ) = sincScalarDD c u := by
     unfold sincScalarDD
     field_simp
     ring

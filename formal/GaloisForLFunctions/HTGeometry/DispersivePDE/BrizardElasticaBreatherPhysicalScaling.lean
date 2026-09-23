@@ -23,14 +23,14 @@ noncomputable def physicalAkhmedievAmplitude
 
 noncomputable def physicalAkhmedievFrequency
     (P : BreatherPhysicalScales) (φ : BreatherAngle) : ℝ :=
-  (P.circulation : ℝ) * (P.waveNumber : ℝ) ^ 2 * akhmedievOmega φ /
-    akhmedievWaveNumber φ ^ 2
+  (P.circulation : ℝ) * (P.waveNumber : ℝ) ^ (2 : ℕ) * akhmedievOmega φ /
+    akhmedievWaveNumber φ ^ (2 : ℕ)
 
 noncomputable def physicalMaAmplitude (P : BreatherPhysicalScales) (φ : MaAngle) : ℝ :=
   2 * (P.waveNumber : ℝ) / maWaveNumber φ
 
 noncomputable def physicalMaFrequency (P : BreatherPhysicalScales) (φ : MaAngle) : ℝ :=
-  (P.circulation : ℝ) * (P.waveNumber : ℝ) ^ 2 * maOmega φ / maWaveNumber φ ^ 2
+  (P.circulation : ℝ) * (P.waveNumber : ℝ) ^ (2 : ℕ) * maOmega φ / maWaveNumber φ ^ (2 : ℕ)
 
 theorem physicalAkhmedievAmplitude_pos (P : BreatherPhysicalScales) (φ : BreatherAngle) :
     0 < physicalAkhmedievAmplitude P φ := by
@@ -62,8 +62,8 @@ theorem physicalAkhmedievAmplitude_scale (P : BreatherPhysicalScales) (φ : Brea
   field_simp [ne_of_gt (akhmedievWaveNumber_pos φ)]
 
 theorem physicalAkhmedievFrequency_scale (P : BreatherPhysicalScales) (φ : BreatherAngle) :
-    physicalAkhmedievFrequency P φ * akhmedievWaveNumber φ ^ 2 =
-      (P.circulation : ℝ) * (P.waveNumber : ℝ) ^ 2 * akhmedievOmega φ := by
+    physicalAkhmedievFrequency P φ * akhmedievWaveNumber φ ^ (2 : ℕ) =
+      (P.circulation : ℝ) * (P.waveNumber : ℝ) ^ (2 : ℕ) * akhmedievOmega φ := by
   rw [physicalAkhmedievFrequency]
   field_simp [ne_of_gt (akhmedievWaveNumber_pos φ)]
 
@@ -73,8 +73,8 @@ theorem physicalMaAmplitude_scale (P : BreatherPhysicalScales) (φ : MaAngle) :
   field_simp [ne_of_gt (maWaveNumber_pos φ)]
 
 theorem physicalMaFrequency_scale (P : BreatherPhysicalScales) (φ : MaAngle) :
-    physicalMaFrequency P φ * maWaveNumber φ ^ 2 =
-      (P.circulation : ℝ) * (P.waveNumber : ℝ) ^ 2 * maOmega φ := by
+    physicalMaFrequency P φ * maWaveNumber φ ^ (2 : ℕ) =
+      (P.circulation : ℝ) * (P.waveNumber : ℝ) ^ (2 : ℕ) * maOmega φ := by
   rw [physicalMaFrequency]
   field_simp [ne_of_gt (maWaveNumber_pos φ)]
 

@@ -31,8 +31,8 @@ theorem primeShiftMultiplier_prime (z : ℂ) (b : ℕ → ℂ) {p : ℕ} (hp : p
 
 theorem primeLogMass_congr_primes {b c : ℕ → ℝ}
     (h : ∀ p : ℕ, p.Prime → b p = c p) (X : ℕ) :
-    primeLogMass b X = primeLogMass c X := by
-  unfold primeLogMass
+    primeLogMass_weightedEulerCoefficientSpaces b X = primeLogMass_weightedEulerCoefficientSpaces c X := by
+  unfold primeLogMass_weightedEulerCoefficientSpaces
   apply Finset.sum_congr rfl
   intro p hp
   rw [Finset.mem_filter] at hp
@@ -69,9 +69,9 @@ theorem marcinkiewiczLogQuotient_primeShiftMultiplier_le
     marcinkiewiczLogQuotient (absField (primeShiftMultiplier z b)) X ≤
       (2 : ℝ) ^ (-(z.re - 1 / 2)) * marcinkiewiczLogQuotient (absField b) X := by
   have heps : 0 < z.re - 1 / 2 := sub_pos.mpr hz
-  have hmass : primeLogMass (absField (primeShiftMultiplier z b)) X ≤
-      (2 : ℝ) ^ (-(z.re - 1 / 2)) * primeLogMass (absField b) X := by
-    unfold primeLogMass
+  have hmass : primeLogMass_weightedEulerCoefficientSpaces (absField (primeShiftMultiplier z b)) X ≤
+      (2 : ℝ) ^ (-(z.re - 1 / 2)) * primeLogMass_weightedEulerCoefficientSpaces (absField b) X := by
+    unfold primeLogMass_weightedEulerCoefficientSpaces
     rw [Finset.mul_sum]
     apply Finset.sum_le_sum
     intro p hp
@@ -98,10 +98,10 @@ theorem marcinkiewiczLogQuotient_primeShiftMultiplier_le
   unfold marcinkiewiczLogQuotient
   rw [div_le_iff₀ (log_cutoff_pos hX)]
   calc
-    primeLogMass (absField (primeShiftMultiplier z b)) X ≤
-        (2 : ℝ) ^ (-(z.re - 1 / 2)) * primeLogMass (absField b) X := hmass
+    primeLogMass_weightedEulerCoefficientSpaces (absField (primeShiftMultiplier z b)) X ≤
+        (2 : ℝ) ^ (-(z.re - 1 / 2)) * primeLogMass_weightedEulerCoefficientSpaces (absField b) X := hmass
     _ = ((2 : ℝ) ^ (-(z.re - 1 / 2)) *
-        (primeLogMass (absField b) X / Real.log X)) * Real.log X := by
+        (primeLogMass_weightedEulerCoefficientSpaces (absField b) X / Real.log X)) * Real.log X := by
       field_simp [ne_of_gt (log_cutoff_pos hX)]
 
 /-- Any quotient-linear incidence annihilating `M₀` vanishes after every strict right shift. -/
@@ -193,9 +193,9 @@ theorem marcinkiewiczLogQuotient_absField_add_le
     marcinkiewiczLogQuotient (absField (b + c)) X ≤
       marcinkiewiczLogQuotient (absField b) X +
         marcinkiewiczLogQuotient (absField c) X := by
-  have hmass : primeLogMass (absField (b + c)) X ≤
-      primeLogMass (absField b) X + primeLogMass (absField c) X := by
-    unfold primeLogMass
+  have hmass : primeLogMass_weightedEulerCoefficientSpaces (absField (b + c)) X ≤
+      primeLogMass_weightedEulerCoefficientSpaces (absField b) X + primeLogMass_weightedEulerCoefficientSpaces (absField c) X := by
+    unfold primeLogMass_weightedEulerCoefficientSpaces
     rw [← Finset.sum_add_distrib]
     apply Finset.sum_le_sum
     intro n _
@@ -233,9 +233,9 @@ theorem marcinkiewiczLogQuotient_absField_smul
     (a : ℂ) (b : ℕ → ℂ) (X : ℕ) :
     marcinkiewiczLogQuotient (absField (a • b)) X =
       ‖a‖ * marcinkiewiczLogQuotient (absField b) X := by
-  have hmass : primeLogMass (absField (a • b)) X =
-      ‖a‖ * primeLogMass (absField b) X := by
-    unfold primeLogMass
+  have hmass : primeLogMass_weightedEulerCoefficientSpaces (absField (a • b)) X =
+      ‖a‖ * primeLogMass_weightedEulerCoefficientSpaces (absField b) X := by
+    unfold primeLogMass_weightedEulerCoefficientSpaces
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro n _
@@ -252,7 +252,7 @@ theorem tendstoMarcinkiewiczZero_smul (a : ℂ) {b : ℕ → (ℕ → ℂ)}
   · subst a
     intro ε hε
     refine ⟨0, fun n _ X hX => ?_⟩
-    simp [marcinkiewiczLogQuotient, primeLogMass, absField, hε.le]
+    simp [marcinkiewiczLogQuotient, primeLogMass_weightedEulerCoefficientSpaces, absField, hε.le]
   · have hnorm : 0 < ‖a‖ := norm_pos_iff.mpr ha
     intro ε hε
     obtain ⟨N, hN⟩ := hb (ε / ‖a‖) (div_pos hε hnorm)
@@ -266,7 +266,7 @@ theorem tendstoMarcinkiewiczZero_zero :
     TendstoMarcinkiewiczZero (fun _ : ℕ => (0 : ℕ → ℂ)) := by
   intro ε hε
   refine ⟨0, fun n _ X hX => ?_⟩
-  simp [marcinkiewiczLogQuotient, primeLogMass, absField, hε.le]
+  simp [marcinkiewiczLogQuotient, primeLogMass_weightedEulerCoefficientSpaces, absField, hε.le]
 
 /-- Scalar vertical fibre for the actual Marcinkiewicz-null sequential graph topology. -/
 def marcinkiewiczVerticalFibre

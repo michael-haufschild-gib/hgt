@@ -69,7 +69,7 @@ theorem abs_iteratedDeriv_finitePrimeThetaCuspRightScreen_neg_le
     |iteratedDeriv m (finitePrimeThetaCuspRightScreen j) (-x)| ≤
       ∑ r ∈ Finset.range (m + 1), thetaCuspScreenJetCoefficient m r *
         (|iteratedDeriv (m - r) thetaCuspFullSource x| +
-          Real.exp (-((j : ℝ) ^ 2))) := by
+          Real.exp (-((j : ℝ) ^ (2 : ℕ)))) := by
   let N := finitePrimeThetaCuspPositiveScreenIndex j
   by_cases hxj : ((j + 1 : ℕ) : ℝ) < x
   · have hlocal : finitePrimeThetaCuspRightScreen j =ᶠ[𝓝 (-x)]
@@ -98,7 +98,7 @@ theorem abs_iteratedDeriv_finitePrimeThetaCuspRightScreen_neg_le
         Finset.abs_sum_le_sum_abs _ _
       _ ≤ ∑ r ∈ Finset.range (m + 1), thetaCuspScreenJetCoefficient m r *
           (|iteratedDeriv (m - r) thetaCuspFullSource x| +
-            Real.exp (-((j : ℝ) ^ 2))) := by
+            Real.exp (-((j : ℝ) ^ (2 : ℕ)))) := by
         apply Finset.sum_le_sum
         intro r hr
         have hrm : r ≤ m := Nat.le_of_lt_succ (Finset.mem_range.mp hr)
@@ -110,7 +110,7 @@ theorem abs_iteratedDeriv_finitePrimeThetaCuspRightScreen_neg_le
         rw [congrFun (iteratedDeriv_finitePrimeThetaCuspSource (m - r) N) (-x)] at hacc
         have hfinite : |finitePrimeThetaCuspDerivative (m - r) N (-x)| <
             |iteratedDeriv (m - r) thetaCuspFullSource x| +
-              Real.exp (-((j : ℝ) ^ 2)) := by
+              Real.exp (-((j : ℝ) ^ (2 : ℕ))) := by
           have htri : |finitePrimeThetaCuspDerivative (m - r) N (-x)| ≤
               |finitePrimeThetaCuspDerivative (m - r) N (-x) -
                 iteratedDeriv (m - r) thetaCuspFullSource (-x)| +
@@ -134,13 +134,13 @@ theorem abs_iteratedDeriv_finitePrimeThetaCuspRightScreen_neg_le
             exact abs_iteratedDeriv_finitePrimeThetaCuspScreenCutoff_le r j (-x)
           _ ≤ (m.choose r : ℝ) * thetaCuspScreenCutoffDerivativeBound r *
               (|iteratedDeriv (m - r) thetaCuspFullSource x| +
-                Real.exp (-((j : ℝ) ^ 2))) := by
+                Real.exp (-((j : ℝ) ^ (2 : ℕ)))) := by
             exact mul_le_mul_of_nonneg_left hfinite.le
               (mul_nonneg (Nat.cast_nonneg _)
                 (thetaCuspScreenCutoffDerivativeBound_nonneg r))
           _ = thetaCuspScreenJetCoefficient m r *
               (|iteratedDeriv (m - r) thetaCuspFullSource x| +
-                Real.exp (-((j : ℝ) ^ 2))) := rfl
+                Real.exp (-((j : ℝ) ^ (2 : ℕ)))) := rfl
 
 /-- Exponentially weighted pointwise error of the actual `m`-th screen derivative. -/
 def finitePrimeThetaCuspWeightedScreenJetError
@@ -158,7 +158,7 @@ def finitePrimeThetaCuspWeightedScreenJetMajor
     ∑ r ∈ Finset.range (m + 1), thetaCuspScreenJetCoefficient m r *
       (Real.exp (|A| * |x|) *
           |iteratedDeriv (m - r) thetaCuspFullSource x| +
-        Real.exp (|A| ^ 2 + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ 2))
+        Real.exp (|A| ^ (2 : ℕ) + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ (2 : ℕ)))
 
 theorem integrable_finitePrimeThetaCuspWeightedScreenJetMajor
     (m : ℕ) (A : ℝ) (q : ℕ) (hA : |A| < (q + 1 : ℕ)) :
@@ -172,19 +172,19 @@ theorem integrable_finitePrimeThetaCuspWeightedScreenJetMajor
     simpa only [pow_zero, one_mul] using h
   have htarget := integrable_exp_abs_mul_abs_iteratedDeriv_thetaCuspFullSource m |A|
   have hgauss : Integrable (fun x : ℝ ↦
-      Real.exp (|A| ^ 2 + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ 2)) := by
+      Real.exp (|A| ^ (2 : ℕ) + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ (2 : ℕ))) := by
     simpa only [pow_zero, one_mul] using
       (integrable_abs_pow_mul_exp_neg_mul_sq
-        (by norm_num : (0 : ℝ) < 1 / 4) 0).const_mul (Real.exp (|A| ^ 2 + 1))
+        (by norm_num : (0 : ℝ) < 1 / 4) 0).const_mul (Real.exp (|A| ^ (2 : ℕ) + 1))
   have hsum : Integrable (fun x : ℝ ↦
       ∑ r ∈ Finset.range (m + 1), thetaCuspScreenJetCoefficient m r *
         (Real.exp (|A| * |x|) *
             |iteratedDeriv (m - r) thetaCuspFullSource x| +
-          Real.exp (|A| ^ 2 + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ 2))) := by
+          Real.exp (|A| ^ (2 : ℕ) + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ (2 : ℕ)))) := by
     let term : ℕ → ℝ → ℝ := fun r x ↦ thetaCuspScreenJetCoefficient m r *
       (Real.exp (|A| * |x|) *
           |iteratedDeriv (m - r) thetaCuspFullSource x| +
-        Real.exp (|A| ^ 2 + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ 2))
+        Real.exp (|A| ^ (2 : ℕ) + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ (2 : ℕ)))
     have hterm (r : ℕ) : Integrable (term r) :=
       ((integrable_exp_abs_mul_abs_iteratedDeriv_thetaCuspFullSource
         (m - r) |A|).add hgauss).const_mul _
@@ -205,7 +205,7 @@ theorem integrable_finitePrimeThetaCuspWeightedScreenJetMajor
       ∑ r ∈ Finset.range (m + 1), thetaCuspScreenJetCoefficient m r *
         (Real.exp (|A| * |x|) *
             |iteratedDeriv (m - r) thetaCuspFullSource x| +
-          Real.exp (|A| ^ 2 + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ 2)))
+          Real.exp (|A| ^ (2 : ℕ) + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ (2 : ℕ))))
   exact (htail.add htarget).add hsum
 
 theorem finitePrimeThetaCuspWeightedScreenJetError_le_major_of_pos
@@ -242,7 +242,7 @@ theorem finitePrimeThetaCuspWeightedScreenJetError_le_major_of_pos
       |iteratedDeriv m (finitePrimeThetaCuspRightScreen j) (-x)| ≤
       ∑ r ∈ Finset.range (m + 1), thetaCuspScreenJetCoefficient m r *
         (Real.exp (B * x) * |iteratedDeriv (m - r) thetaCuspFullSource x| +
-          Real.exp (B ^ 2 + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ 2)) := by
+          Real.exp (B ^ (2 : ℕ) + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ (2 : ℕ))) := by
     by_cases hxj : x ≤ ((j + 1 : ℕ) : ℝ)
     · calc
         Real.exp (B * x) *
@@ -250,15 +250,15 @@ theorem finitePrimeThetaCuspWeightedScreenJetError_le_major_of_pos
           Real.exp (B * x) *
             (∑ r ∈ Finset.range (m + 1), thetaCuspScreenJetCoefficient m r *
               (|iteratedDeriv (m - r) thetaCuspFullSource x| +
-                Real.exp (-((j : ℝ) ^ 2)))) :=
+                Real.exp (-((j : ℝ) ^ (2 : ℕ))))) :=
           mul_le_mul_of_nonneg_left hrefRaw (Real.exp_pos _).le
         _ = ∑ r ∈ Finset.range (m + 1), Real.exp (B * x) *
             (thetaCuspScreenJetCoefficient m r *
               (|iteratedDeriv (m - r) thetaCuspFullSource x| +
-                Real.exp (-((j : ℝ) ^ 2)))) := by rw [Finset.mul_sum]
+                Real.exp (-((j : ℝ) ^ (2 : ℕ))))) := by rw [Finset.mul_sum]
         _ ≤ ∑ r ∈ Finset.range (m + 1), thetaCuspScreenJetCoefficient m r *
             (Real.exp (B * x) * |iteratedDeriv (m - r) thetaCuspFullSource x| +
-              Real.exp (B ^ 2 + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ 2)) := by
+              Real.exp (B ^ (2 : ℕ) + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ (2 : ℕ))) := by
           apply Finset.sum_le_sum
           intro r hr
           have hgauss := exp_screenAccuracy_le_gaussianMajor A j hx0 hxj
@@ -266,13 +266,13 @@ theorem finitePrimeThetaCuspWeightedScreenJetError_le_major_of_pos
             Real.exp (B * x) *
                 (thetaCuspScreenJetCoefficient m r *
                   (|iteratedDeriv (m - r) thetaCuspFullSource x| +
-                    Real.exp (-((j : ℝ) ^ 2)))) =
+                    Real.exp (-((j : ℝ) ^ (2 : ℕ))))) =
               thetaCuspScreenJetCoefficient m r *
                 (Real.exp (B * x) * |iteratedDeriv (m - r) thetaCuspFullSource x| +
-                  Real.exp (B * x) * Real.exp (-((j : ℝ) ^ 2))) := by ring
+                  Real.exp (B * x) * Real.exp (-((j : ℝ) ^ (2 : ℕ)))) := by ring
             _ ≤ thetaCuspScreenJetCoefficient m r *
                 (Real.exp (B * x) * |iteratedDeriv (m - r) thetaCuspFullSource x| +
-                  Real.exp (B ^ 2 + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ 2)) := by
+                  Real.exp (B ^ (2 : ℕ) + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ (2 : ℕ))) := by
               exact mul_le_mul_of_nonneg_left (add_le_add_right hgauss _)
                 (thetaCuspScreenJetCoefficient_nonneg m r)
     · have hfar : ((j + 1 : ℕ) : ℝ) < x := lt_of_not_ge hxj
@@ -351,7 +351,7 @@ theorem finitePrimeThetaCuspWeightedScreenJetError_le_major_of_pos
     _ ≤ C * Real.exp (-(c * x)) +
         (∑ r ∈ Finset.range (m + 1), thetaCuspScreenJetCoefficient m r *
           (Real.exp (B * x) * |iteratedDeriv (m - r) thetaCuspFullSource x| +
-            Real.exp (B ^ 2 + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ 2))) +
+            Real.exp (B ^ (2 : ℕ) + 1) * Real.exp (-(1 / 4 : ℝ) * x ^ (2 : ℕ)))) +
         Real.exp (B * x) * |iteratedDeriv m thetaCuspFullSource x| := by
       gcongr
     _ = finitePrimeThetaCuspWeightedScreenJetMajor m A q x := by
@@ -392,7 +392,7 @@ theorem finitePrimeThetaCuspEvenScreenJet_sub_full_abs_lt_accuracy
     (m j : ℕ) (hm : m ≤ j) {x : ℝ} (hx : |x| < (j : ℝ)) :
     |iteratedDeriv m (finitePrimeThetaCuspEvenScreen j) x -
         iteratedDeriv m thetaCuspFullSource x| <
-      Real.exp (-((j : ℝ) ^ 2)) := by
+      Real.exp (-((j : ℝ) ^ (2 : ℕ))) := by
   let N := finitePrimeThetaCuspPositiveScreenIndex j
   let s : ℝ := (-1 : ℝ) ^ m
   have hmemx : x ∈ Icc (-((j + 1 : ℕ) : ℝ)) ((j + 1 : ℕ) : ℝ) := by
@@ -405,7 +405,7 @@ theorem finitePrimeThetaCuspEvenScreenJet_sub_full_abs_lt_accuracy
   rw [congrFun (iteratedDeriv_finitePrimeThetaCuspSource m N) (-x)] at haccneg
   have hpar := iteratedDeriv_thetaCuspFullSource_neg m x
   have hsq : s * s = 1 := by
-    rw [show s * s = s ^ 2 by ring]
+    rw [show s * s = s ^ (2 : ℕ) by ring]
     dsimp only [s]
     rw [← pow_mul]
     norm_num
@@ -458,7 +458,7 @@ theorem finitePrimeThetaCuspEvenScreenJet_sub_full_abs_lt_accuracy
                 iteratedDeriv m thetaCuspFullSource (-x))| := htri
           _ = _ := by rw [abs_mul, hsabs, one_mul]
       exact div_le_div_of_nonneg_right htri' (by norm_num)
-    _ < Real.exp (-((j : ℝ) ^ 2)) := by linarith
+    _ < Real.exp (-((j : ℝ) ^ (2 : ℕ))) := by linarith
 
 theorem tendsto_finitePrimeThetaCuspWeightedScreenJetError_pointwise
     (m : ℕ) (A x : ℝ) :
@@ -471,14 +471,14 @@ theorem tendsto_finitePrimeThetaCuspWeightedScreenJetError_pointwise
     fun j ↦ mul_nonneg (Real.exp_pos _).le (abs_nonneg _)
   have hupper : ∀ᶠ j : ℕ in atTop,
       finitePrimeThetaCuspWeightedScreenJetError m A j x ≤
-        Real.exp (A * |x|) * Real.exp (-((j : ℝ) ^ 2)) := by
+        Real.exp (A * |x|) * Real.exp (-((j : ℝ) ^ (2 : ℕ))) := by
     filter_upwards [hm, hxj] with j hmj hxj'
     unfold finitePrimeThetaCuspWeightedScreenJetError
     exact mul_le_mul_of_nonneg_left
       (finitePrimeThetaCuspEvenScreenJet_sub_full_abs_lt_accuracy m j hmj hxj').le
       (Real.exp_pos _).le
   have henv : Tendsto
-      (fun j : ℕ ↦ Real.exp (A * |x|) * Real.exp (-((j : ℝ) ^ 2)))
+      (fun j : ℕ ↦ Real.exp (A * |x|) * Real.exp (-((j : ℝ) ^ (2 : ℕ))))
       atTop (𝓝 0) := by
     simpa only [mul_zero] using tendsto_exp_neg_natCast_sq_zero.const_mul
       (Real.exp (A * |x|))

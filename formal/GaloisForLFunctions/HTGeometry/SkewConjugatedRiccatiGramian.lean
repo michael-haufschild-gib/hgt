@@ -243,7 +243,7 @@ theorem dotProduct_conj_eq (O M : Matrix (Fin n) (Fin n) ℝ) (x : Fin n → ℝ
 /-- A nonnegative multiple of a rank-one square is positive semidefinite. -/
 theorem dotProduct_smul_vecMulVec_nonneg {c : ℝ} (hc : 0 ≤ c) (w x : Fin n → ℝ) :
     0 ≤ x ⬝ᵥ ((c • Matrix.vecMulVec w w) *ᵥ x) := by
-  have h : x ⬝ᵥ ((c • Matrix.vecMulVec w w) *ᵥ x) = c * (x ⬝ᵥ w) ^ 2 := by
+  have h : x ⬝ᵥ ((c • Matrix.vecMulVec w w) *ᵥ x) = c * (x ⬝ᵥ w) ^ (2 : ℕ) := by
     simp [Matrix.mulVec, Matrix.vecMulVec_apply, dotProduct, Finset.mul_sum,
       mul_comm, mul_left_comm, sq]
   rw [h]

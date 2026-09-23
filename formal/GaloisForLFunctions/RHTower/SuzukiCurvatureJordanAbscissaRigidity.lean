@@ -188,7 +188,7 @@ theorem suzukiCheckpointSignedCurvaturePositiveMass_le_halfOrder
   have hindex : N = k - 1 := by omega
   have hIpos := abscissa_integral_checkpoint_pos (k := k) (by omega : 3 ≤ k)
   have hIupper := abscissa_integral_checkpoint_upper (k := k) (by omega : 3 ≤ k)
-  have hAtom0 : 0 ≤ criticalMellinAtomWeight k := criticalMellinAtomWeight_nonneg k
+  have hAtom0 : 0 ≤ criticalMellinAtomWeight k := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer k
   let a := Real.sqrt ((k - 1 : ℕ) : ℝ)
   let b := Real.sqrt (k : ℝ)
   obtain ⟨ha, hb, hab, hgap, _⟩ := abscissa_sqrt_endpoint_data hk
@@ -227,7 +227,7 @@ theorem suzukiCheckpointSignedCurvatureNegativeMass_le_atom
   have hk : 3 ≤ k := by dsimp [k]; omega
   have hindex : N = k - 1 := by omega
   have hIpos := abscissa_integral_checkpoint_pos (k := k) hk
-  have hAtom0 : 0 ≤ criticalMellinAtomWeight k := criticalMellinAtomWeight_nonneg k
+  have hAtom0 : 0 ≤ criticalMellinAtomWeight k := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer k
   rw [hindex]
   unfold suzukiCheckpointSignedCurvatureNegativeMass
   unfold suzukiCheckpointSignedCurvatureCell

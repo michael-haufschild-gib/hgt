@@ -22,7 +22,7 @@ noncomputable section
 
 /-! ## The telescoping tail -/
 
-theorem sum_inv_mul_pred_eq : ∀ N : ℕ, 1 ≤ N →
+theorem sum_inv_mul_pred_eq_mertensThird : ∀ N : ℕ, 1 ≤ N →
     ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / ((k : ℝ) * ((k : ℝ) - 1)) = 1 - 1 / (N : ℝ) := by
   intro N
   induction N with
@@ -51,7 +51,7 @@ theorem sum_inv_mul_pred_eq : ∀ N : ℕ, 1 ≤ N →
 
 theorem sum_inv_mul_pred_le_one {N : ℕ} (hN : 1 ≤ N) :
     ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / ((k : ℝ) * ((k : ℝ) - 1)) ≤ 1 := by
-  rw [sum_inv_mul_pred_eq N hN]
+  rw [sum_inv_mul_pred_eq_mertensThird N hN]
   have hN0 : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN
   have : (0 : ℝ) < 1 / (N : ℝ) := by positivity
   linarith

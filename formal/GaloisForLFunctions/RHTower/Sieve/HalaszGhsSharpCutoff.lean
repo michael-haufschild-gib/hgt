@@ -100,7 +100,7 @@ theorem norm_sum_Icc_mul_log_le_damped {f : ℕ → ℂ} (hf : ∀ a b : ℕ, f 
                   * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
                         / Real.log 2)
                       * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
-        + (2 * ((N : ℝ) + 1) * ((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+        + (2 * ((N : ℝ) + 1) * ((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
                 * (((N : ℝ) + 1 / 2)) ^ σ
                 * (1 + Real.log ((N * (N * N) : ℕ) : ℝ)) / (Real.pi * (t₀ * 2 ^ K))
             + (1 / (2 * Real.pi))
@@ -166,7 +166,7 @@ theorem norm_sum_Icc_mul_log_le_damped_near {f : ℕ → ℂ} (hf : ∀ a b : �
                   * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
                         / Real.log 2)
                       * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
-        + (((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+        + (((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
                 * (((N : ℝ) + 1 / 2)) ^ σ
                 * (5 * (1 + Real.log ((N * (N * N) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
                 / (Real.pi * (t₀ * 2 ^ K))
@@ -234,7 +234,7 @@ theorem norm_sum_Icc_mul_log_le_damped_block_near {f : ℕ → ℂ}
                   * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
                         / Real.log 2)
                       * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
-        + (((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+        + (((Real.log ((N * (N * N) : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
                 * (((N : ℝ) + 1 / 2)) ^ σ
                 * (5 * (1 + Real.log ((N * (N * N) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
                 / (Real.pi * (t₀ * 2 ^ K))

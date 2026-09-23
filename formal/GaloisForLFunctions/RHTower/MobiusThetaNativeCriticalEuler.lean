@@ -33,7 +33,7 @@ private theorem log_nonneg (n : ℕ) : 0 ≤ Real.log (n : ℝ) := by
 
 private theorem delta_integral_norm_le (h : DeningerExpSchwartz) {n : ℕ} (hn : 0 < n) :
     (∫ x in Set.Ioi (0 : ℝ), ‖H h (((n : ℝ) + 1) * x) - H h ((n : ℝ) * x)‖) ≤
-      weightedVariation h / (n : ℝ)^2 := by
+      weightedVariation h / (n : ℝ)^(2 : ℕ) := by
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn
   have hint := (deningerLogPull_dilation_integrable h.property
     (show 0 < (n : ℝ)+1 by positivity)).sub
@@ -51,7 +51,7 @@ private theorem delta_integral_norm_le (h : DeningerExpSchwartz) {n : ℕ} (hn :
       rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal
         (show 0 ≤ 1 / ((n : ℝ) * ((n : ℝ)+1)) by positivity)] at hr
       exact hr
-    _ ≤ weightedVariation h / (n : ℝ)^2 := by
+    _ ≤ weightedVariation h / (n : ℝ)^(2 : ℕ) := by
       rw [one_div, mul_comm, ← div_eq_mul_inv]
       apply div_le_div_of_nonneg_left ENNReal.toReal_nonneg (by positivity)
       nlinarith
@@ -84,8 +84,8 @@ private theorem atom_decomposition (h : DeningerExpSchwartz) (n : ℕ) (x : ℝ)
 
 private theorem atom_integral_norm_le (h : DeningerExpSchwartz) (n : ℕ) :
     (∫ x in Set.Ioi (0 : ℝ), ‖atom h n x‖) ≤
-      weightedVariation h * (|Sieve.mertensM n| * Real.log (n : ℝ) / (n : ℝ)^2) +
-      Pabs h * (|Sieve.mertensM n| / (n : ℝ)^2) := by
+      weightedVariation h * (|Sieve.mertensM n| * Real.log (n : ℝ) / (n : ℝ)^(2 : ℕ)) +
+      Pabs h * (|Sieve.mertensM n| / (n : ℝ)^(2 : ℕ)) := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [atom_zero]
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn
@@ -125,7 +125,7 @@ private theorem atom_integral_norm_le (h : DeningerExpSchwartz) (n : ℕ) :
       abs_of_nonneg hl, abs_of_nonneg hd0]
   calc
     _ ≤ _ := hb
-    _ ≤ (|Sieve.mertensM n| * Real.log (n : ℝ)) * (weightedVariation h / (n : ℝ)^2) +
+    _ ≤ (|Sieve.mertensM n| * Real.log (n : ℝ)) * (weightedVariation h / (n : ℝ)^(2 : ℕ)) +
         (|Sieve.mertensM n| * (1/(n : ℝ))) * (Pabs h / (n : ℝ)) := by
       gcongr
       · exact delta_integral_norm_le h hn
@@ -142,7 +142,7 @@ private theorem current_summable (h : DeningerExpSchwartz) {x : ℝ} (hx : 0 < x
     Summable (fun n : ℕ => ((-(((moebius n : ℤ) : ℝ) * Real.log (n : ℝ)) : ℝ) : ℂ) *
       H h ((n : ℝ) * x)) := by
   obtain ⟨C, hC0, hC⟩ := deningerLogPull_norm_le_inv_sq h.property
-  refine Summable.of_norm_bounded (Sieve.summable_log_div_sq.mul_left (C / x^2)) fun n => ?_
+  refine Summable.of_norm_bounded (Sieve.summable_log_div_sq.mul_left (C / x^(2 : ℕ))) fun n => ?_
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn
@@ -153,7 +153,7 @@ private theorem current_summable (h : DeningerExpSchwartz) {x : ℝ} (hx : 0 < x
   simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_neg,
     abs_mul, abs_of_nonneg hl]
   calc
-    _ ≤ 1 * Real.log (n : ℝ) * (C / ((n : ℝ)*x)^2) := by gcongr
+    _ ≤ 1 * Real.log (n : ℝ) * (C / ((n : ℝ)*x)^(2 : ℕ)) := by gcongr
     _ = _ := by rw [mul_pow]; ring
 
 
@@ -191,7 +191,7 @@ private theorem boundary_tendsto_zero (h : DeningerExpSchwartz) {x : ℝ} (hx : 
       (Sieve.mertensM n : ℂ)) atTop (𝓝 0) := by
   obtain ⟨C, hC, hbound⟩ := deningerLogPull_norm_le_inv_sq h.property
   have hm := ((pwGammaMertens_log_div_tendsto_zero.norm).mul
-    (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ))).const_mul (C / x^2)
+    (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ))).const_mul (C / x^(2 : ℕ))
   simp only [norm_zero, mul_zero] at hm
   refine squeeze_zero_norm' ?_ hm
   filter_upwards [eventually_gt_atTop 0] with n hn
@@ -201,8 +201,8 @@ private theorem boundary_tendsto_zero (h : DeningerExpSchwartz) {x : ℝ} (hx : 
   rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
     Real.norm_eq_abs, abs_of_nonneg hl]
   calc
-    _ ≤ Real.log (n : ℝ) * (C / ((n : ℝ)*x)^2) * |Sieve.mertensM n| := by gcongr
-    _ = (C / x^2) * (‖Sieve.mertensM n * Real.log (n : ℝ) / (n : ℝ)‖ * (1/(n : ℝ))) := by
+    _ ≤ Real.log (n : ℝ) * (C / ((n : ℝ)*x)^(2 : ℕ)) * |Sieve.mertensM n| := by gcongr
+    _ = (C / x^(2 : ℕ)) * (‖Sieve.mertensM n * Real.log (n : ℝ) / (n : ℝ)‖ * (1/(n : ℝ))) := by
       rw [Real.norm_eq_abs, abs_div, abs_mul, abs_of_nonneg hl, abs_of_pos hnr, mul_pow]
       ring
 
@@ -210,7 +210,7 @@ private theorem atom_summable (h : DeningerExpSchwartz) {x : ℝ} (hx : 0 < x) :
     Summable (fun n : ℕ => atom h n x) := by
   obtain ⟨C, hC, hbound⟩ := deningerLogPull_norm_le_inv_sq h.property
   have hm := ((pwGammaMertens_log_invSq_summable.mul_left 2).add
-    deningerMertensM_invSq_summable).mul_left (C/x^2)
+    deningerMertensM_invSq_summable).mul_left (C/x^(2 : ℕ))
   refine Summable.of_norm_bounded hm fun n => ?_
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [atom_zero h]
@@ -221,9 +221,9 @@ private theorem atom_summable (h : DeningerExpSchwartz) {x : ℝ} (hx : 0 < x) :
   have hd := log_natCast_succ_sub_log_natCast_le_inv n hn
   have hi : 1/(n : ℝ) ≤ 1 := (div_le_one hnr).mpr hnr1
   have hlb : Real.log ((n : ℝ)+1) ≤ Real.log (n : ℝ)+1 := by linarith
-  have hq0 : ‖H h ((n : ℝ)*x)‖ ≤ C/((n : ℝ)*x)^2 :=
+  have hq0 : ‖H h ((n : ℝ)*x)‖ ≤ C/((n : ℝ)*x)^(2 : ℕ) :=
     (hbound _ (mul_pos hnr hx)).2
-  have hq1 : ‖H h (((n : ℝ)+1)*x)‖ ≤ C/((n : ℝ)*x)^2 := by
+  have hq1 : ‖H h (((n : ℝ)+1)*x)‖ ≤ C/((n : ℝ)*x)^(2 : ℕ) := by
     refine ((hbound _ (show 0 < ((n : ℝ)+1)*x by positivity)).2).trans ?_
     apply div_le_div_of_nonneg_left hC (sq_pos_of_pos (mul_pos hnr hx))
     gcongr
@@ -239,7 +239,7 @@ private theorem atom_summable (h : DeningerExpSchwartz) {x : ℝ} (hx : 0 < x) :
           Real.log (n : ℝ)*‖H h ((n : ℝ)*x)‖) := by
       simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hl, abs_of_nonneg hl1]
     _ ≤ |Sieve.mertensM n| *
-        ((Real.log (n : ℝ)+1)*(C/((n : ℝ)*x)^2) + Real.log (n : ℝ)*(C/((n : ℝ)*x)^2)) := by gcongr
+        ((Real.log (n : ℝ)+1)*(C/((n : ℝ)*x)^(2 : ℕ)) + Real.log (n : ℝ)*(C/((n : ℝ)*x)^(2 : ℕ))) := by gcongr
     _ = _ := by rw [mul_pow]; ring
 
 private theorem atom_hasSum (h : DeningerExpSchwartz) {x : ℝ} (hx : 0 < x) :
@@ -421,7 +421,7 @@ private theorem testedEuler_integrable (h : DeningerExpSchwartz) (φ : SchwartzM
 private theorem testedEuler_norm_integral_le (h : DeningerExpSchwartz) (φ : SchwartzMap ℝ ℂ) (n : ℕ) :
     (∫ x in Ioi (0 : ℝ), ‖testedEuler h φ n x‖) ≤
       ((SchwartzMap.seminorm ℝ 0 1 φ) * deningerCausalMass (preimage h)) *
-        (vonMangoldt n / (n : ℝ)^2) := by
+        (vonMangoldt n / (n : ℝ)^(2 : ℕ)) := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [testedEuler]
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn

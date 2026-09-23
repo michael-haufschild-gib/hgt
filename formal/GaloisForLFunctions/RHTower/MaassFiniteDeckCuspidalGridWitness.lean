@@ -21,9 +21,9 @@ theorem exists_reciprocal_grid_cuspidal_witness_of_formNorm_le_one
     (hY : 1 ≤ Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)
     {ε : ℝ}
     (hbudget :
-      Real.sqrt (((Real.sqrt 3 / 2) ^ 2)⁻¹ * (16 * ((M : ℝ)⁻¹) ^ 2)) +
-        Real.sqrt ((((N + 1 : ℝ) / (2 * Real.pi)) ^ 2) *
-          (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ 2) < ε)
+      Real.sqrt (((Real.sqrt 3 / 2) ^ (2 : ℕ))⁻¹ * (16 * ((M : ℝ)⁻¹) ^ (2 : ℕ))) +
+        Real.sqrt ((((N + 1 : ℝ) / (2 * Real.pi)) ^ (2 : ℕ)) *
+          (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ (2 : ℕ)) < ε)
     (v : CuspidalFormDomain N) (hv : ‖(v : FormTriple N)‖ ≤ 1) :
     ∃ g : DeckL2 N,
       g ∈ deckFiniteCellSpan (N := N)
@@ -38,25 +38,25 @@ theorem exists_reciprocal_grid_cuspidal_witness_of_formNorm_le_one
         (-(1 : ℝ) / 2) (Real.sqrt 3 / 2) ((M : ℝ)⁻¹) ((M : ℝ)⁻¹))
       (measurableSet_upperChartGridCell (M := M) (K := K)
         (-(1 : ℝ) / 2) (Real.sqrt 3 / 2) ((M : ℝ)⁻¹) ((M : ℝ)⁻¹))
-  let A : ℝ := ((Real.sqrt 3 / 2) ^ 2)⁻¹ * (16 * ((M : ℝ)⁻¹) ^ 2)
-  let B : ℝ := (((N + 1 : ℝ) / (2 * Real.pi)) ^ 2) *
-    (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ 2
+  let A : ℝ := ((Real.sqrt 3 / 2) ^ (2 : ℕ))⁻¹ * (16 * ((M : ℝ)⁻¹) ^ (2 : ℕ))
+  let B : ℝ := (((N + 1 : ℝ) / (2 * Real.pi)) ^ (2 : ℕ)) *
+    (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ (2 : ℕ)
   have hA : 0 ≤ A := by
     dsimp [A]
     positivity
   have hB : 0 ≤ B := by
     dsimp [B]
     positivity
-  have hnormsq : ‖(v : FormTriple N)‖ ^ 2 ≤ 1 := by
+  have hnormsq : ‖(v : FormTriple N)‖ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [norm_nonneg (v : FormTriple N)]
-  have hAunit : A * ‖(v : FormTriple N)‖ ^ 2 ≤ A := by
+  have hAunit : A * ‖(v : FormTriple N)‖ ^ (2 : ℕ) ≤ A := by
     calc
-      A * ‖(v : FormTriple N)‖ ^ 2 ≤ A * 1 :=
+      A * ‖(v : FormTriple N)‖ ^ (2 : ℕ) ≤ A * 1 :=
         mul_le_mul_of_nonneg_left hnormsq hA
       _ = A := mul_one A
-  have hBunit : B * ‖(v : FormTriple N)‖ ^ 2 ≤ B := by
+  have hBunit : B * ‖(v : FormTriple N)‖ ^ (2 : ℕ) ≤ B := by
     calc
-      B * ‖(v : FormTriple N)‖ ^ 2 ≤ B * 1 :=
+      B * ‖(v : FormTriple N)‖ ^ (2 : ℕ) ≤ B * 1 :=
         mul_le_mul_of_nonneg_left hnormsq hB
       _ = B := mul_one B
   have hdist := cuspidalFormDomain_infDist_le_reciprocal_grid_formBudget hM hY v
@@ -64,8 +64,8 @@ theorem exists_reciprocal_grid_cuspidal_witness_of_formNorm_le_one
       Real.sqrt A + Real.sqrt B := by
     calc
       Metric.infDist (cuspidalFormInclusion N v) (V : Set (DeckL2 N)) ≤
-          Real.sqrt (A * ‖(v : FormTriple N)‖ ^ 2) +
-            Real.sqrt (B * ‖(v : FormTriple N)‖ ^ 2) := by
+          Real.sqrt (A * ‖(v : FormTriple N)‖ ^ (2 : ℕ)) +
+            Real.sqrt (B * ‖(v : FormTriple N)‖ ^ (2 : ℕ)) := by
         simpa [V, A, B] using hdist
       _ ≤ Real.sqrt A + Real.sqrt B :=
         add_le_add (Real.sqrt_le_sqrt hAunit) (Real.sqrt_le_sqrt hBunit)

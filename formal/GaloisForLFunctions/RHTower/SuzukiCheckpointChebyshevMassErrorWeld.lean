@@ -282,7 +282,7 @@ theorem suzukiTransitionCoreAlignedGammaCompletedEnergy_succ_eq_massErrorCesaro
     suzukiTransitionCoreAlignedGammaCompletedEnergy (N + 1) =
       suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) *
         (suzukiTransitionCoreChebyshevMassErrorCesaroSource N /
-          unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ 2 := by
+          unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ (2 : ℕ) := by
   rw [suzukiTransitionCoreAlignedGammaCompletedEnergy_succ_eq_affineSlopeCesaro hN hcharge,
     suzukiTransitionCoreAffineSlopeCesaroSource_eq_massErrorCesaro hN]
 
@@ -294,7 +294,7 @@ theorem suzukiTransitionCoreAlignedXiSharedOrientationShortEnergy_succ_eq_massEr
       2 * (xiSupportMultiplicity rho : ℝ) *
         suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) *
           (suzukiTransitionCoreChebyshevMassErrorCesaroSource N /
-            unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ 2 *
+            unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ (2 : ℕ) *
           Complex.normSq (routePXiBaseConormalResidueFeature (rho : ℂ) r) := by
   rw [suzukiTransitionCoreAlignedXiSharedOrientationShortEnergy_succ_eq_affineSlopeCesaro
       hN hcharge,

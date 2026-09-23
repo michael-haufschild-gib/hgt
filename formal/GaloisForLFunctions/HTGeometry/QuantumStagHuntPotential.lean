@@ -6,7 +6,7 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 Closed algebraic consequences of the symmetric binary-game potential map used in
 arXiv:2609.02957. Column shifts preserve both Ising parameters and the full potential,
 while potential differences reproduce unilateral payoff differences. The noiseless
-quantum Stag Hunt has constant interaction `3/4` and neutrality at `sin(Γ)^2 = 1/6`.
+quantum Stag Hunt has constant interaction `3/4` and neutrality at `sin(Γ)^(2 : ℕ) = 1/6`.
 -/
 
 set_option autoImplicit false
@@ -88,13 +88,13 @@ theorem binaryGamePotential_columnShift (m n r q a b s t : ℝ) :
   simp [binaryGamePotential, binaryGameInteraction_columnShift, binaryGameField_columnShift]
 
 /-- Noiseless quantum Stag Hunt interaction from payoff matrix
-`[[4, 3 sin(Γ)^2], [3 cos(Γ)^2, 2]]`. -/
+`[[4, 3 sin(Γ)^(2 : ℕ)], [3 cos(Γ)^(2 : ℕ), 2]]`. -/
 def quantumStagHuntNoiselessInteraction (Γ : ℝ) : ℝ :=
-  binaryGameInteraction 4 (3 * Real.sin Γ ^ 2) (3 * Real.cos Γ ^ 2) 2
+  binaryGameInteraction 4 (3 * Real.sin Γ ^ (2 : ℕ)) (3 * Real.cos Γ ^ (2 : ℕ)) 2
 
 /-- Noiseless quantum Stag Hunt field. -/
 def quantumStagHuntNoiselessField (Γ : ℝ) : ℝ :=
-  binaryGameField 4 (3 * Real.sin Γ ^ 2) (3 * Real.cos Γ ^ 2) 2
+  binaryGameField 4 (3 * Real.sin Γ ^ (2 : ℕ)) (3 * Real.cos Γ ^ (2 : ℕ)) 2
 
 theorem quantumStagHuntNoiselessInteraction_eq (Γ : ℝ) :
     quantumStagHuntNoiselessInteraction Γ = 3 / 4 := by
@@ -102,7 +102,7 @@ theorem quantumStagHuntNoiselessInteraction_eq (Γ : ℝ) :
   nlinarith [Real.sin_sq_add_cos_sq Γ]
 
 theorem quantumStagHuntNoiselessField_eq (Γ : ℝ) :
-    quantumStagHuntNoiselessField Γ = (-1 + 6 * Real.sin Γ ^ 2) / 4 := by
+    quantumStagHuntNoiselessField Γ = (-1 + 6 * Real.sin Γ ^ (2 : ℕ)) / 4 := by
   unfold quantumStagHuntNoiselessField binaryGameField
   nlinarith [Real.sin_sq_add_cos_sq Γ]
 
@@ -113,17 +113,17 @@ theorem quantumStagHuntNoiselessField_eq_cos_two_mul (Γ : ℝ) :
 
 /-- The quantum action is always a best reply to itself in this payoff family. -/
 theorem quantumStagHuntQQGain_nonnegative (Γ : ℝ) :
-    0 ≤ 4 - 3 * Real.cos Γ ^ 2 := by
+    0 ≤ 4 - 3 * Real.cos Γ ^ (2 : ℕ) := by
   nlinarith [sq_nonneg (Real.sin Γ), Real.sin_sq_add_cos_sq Γ]
 
 /-- Exact classical-action Nash boundary. -/
 theorem quantumStagHuntDDGain_nonnegative_iff (Γ : ℝ) :
-    0 ≤ 2 - 3 * Real.sin Γ ^ 2 ↔ Real.sin Γ ^ 2 ≤ 2 / 3 := by
+    0 ≤ 2 - 3 * Real.sin Γ ^ (2 : ℕ) ↔ Real.sin Γ ^ (2 : ℕ) ≤ 2 / 3 := by
   constructor <;> intro h <;> linarith
 
 /-- Exact noiseless coexistence line. -/
 theorem quantumStagHuntNoiselessField_zero_iff (Γ : ℝ) :
-    quantumStagHuntNoiselessField Γ = 0 ↔ Real.sin Γ ^ 2 = 1 / 6 := by
+    quantumStagHuntNoiselessField Γ = 0 ↔ Real.sin Γ ^ (2 : ℕ) = 1 / 6 := by
   rw [quantumStagHuntNoiselessField_eq]
   constructor <;> intro h <;> linarith
 

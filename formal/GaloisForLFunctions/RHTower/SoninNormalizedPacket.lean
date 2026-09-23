@@ -71,7 +71,7 @@ positive limit. -/
 theorem eventually_soninPacketEven_ne_zero (b c : ℝ) (hb : 0 < b) (hbc : b < c)
     (κ : ℕ → ℝ) (hκ : Tendsto κ atTop atTop) :
     ∀ᶠ n : ℕ in atTop, soninPacketEven b c hb hbc (κ n) ≠ 0 := by
-  set L : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) with hL
+  set L : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) with hL
   have hLpos : 0 < L := sqrt_half_energy_pos b c hb hbc
   have hnorm := tendsto_norm_soninPacketEven b c hb hbc κ hκ
   have hev : ∀ᶠ n : ℕ in atTop, L / 2 < ‖soninPacketEven b c hb hbc (κ n)‖ :=
@@ -107,7 +107,7 @@ theorem tendsto_norm_soninApertureCoupling_soninNormalizedPacket_sub
   have hraw := tendsto_norm_soninApertureCoupling_soninPacketEven_sub a b c ha hb hab hbc q
     haq hqb r hrpos hrgt hcr hr
   have hnorm := tendsto_norm_soninPacketEven b c hb hbc _ hfreq
-  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) ≠ 0 :=
+  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) ≠ 0 :=
     (sqrt_half_energy_pos b c hb hbc).ne'
   have hdiv := hraw.div hnorm hLne
   rw [zero_div] at hdiv
@@ -132,7 +132,7 @@ theorem tendsto_norm_soninApertureCoupling_apply_soninNormalizedPacket
   have hraw := tendsto_norm_soninApertureCoupling_apply_soninPacketEven a b c ha hb hab hbc q
     haq hqb r hrpos hrgt hcr hr
   have hnorm := tendsto_norm_soninPacketEven b c hb hbc _ hfreq
-  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) ≠ 0 :=
+  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) ≠ 0 :=
     (sqrt_half_energy_pos b c hb hbc).ne'
   have hdiv := hraw.div hnorm hLne
   rw [div_self hLne] at hdiv
@@ -146,7 +146,7 @@ theorem tendsto_norm_adjoint_soninApertureCoupling_soninNormalizedDilatedPacket_
     (a b c : ℝ) (ha : 0 < a) (hb : 0 < b) (hbc : b < c) (q : ℝ)
     (haq : a < q) (hqb : q < b)
     (r : ℕ → ℝ) (hrpos : ∀ n, 0 < r n) (hrgt : ∀ n, 1 < r n)
-    (hsq : ∀ n, 0 < r n ^ 2) (hr : Tendsto r atTop atTop) :
+    (hsq : ∀ n, 0 < r n ^ (2 : ℕ)) (hr : Tendsto r atTop atTop) :
     Tendsto (fun n : ℕ =>
         ‖ContinuousLinearMap.adjoint
             (evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n))
@@ -160,7 +160,7 @@ theorem tendsto_norm_adjoint_soninApertureCoupling_soninNormalizedDilatedPacket_
   have hraw := tendsto_norm_adjoint_soninApertureCoupling_soninDilatedPacket_sub a b c ha hb
     hbc q haq hqb r hrpos hrgt hsq hr
   have hnorm := tendsto_norm_soninPacketEven b c hb hbc _ hfreq
-  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) ≠ 0 :=
+  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) ≠ 0 :=
     (sqrt_half_energy_pos b c hb hbc).ne'
   have hdiv := hraw.div hnorm hLne
   rw [zero_div] at hdiv
@@ -174,7 +174,7 @@ theorem tendsto_norm_adjoint_mul_soninApertureCoupling_soninNormalizedPacket_sub
     (a b c : ℝ) (ha : 0 < a) (hb : 0 < b) (hab : a < b) (hbc : b < c) (q : ℝ)
     (haq : a < q) (hqb : q < b)
     (r : ℕ → ℝ) (hrpos : ∀ n, 0 < r n) (hrgt : ∀ n, 1 < r n)
-    (hsq : ∀ n, 0 < r n ^ 2) (hcr : ∀ n, c ≤ r n * a) (hr : Tendsto r atTop atTop) :
+    (hsq : ∀ n, 0 < r n ^ (2 : ℕ)) (hcr : ∀ n, c ≤ r n * a) (hr : Tendsto r atTop atTop) :
     Tendsto (fun n : ℕ =>
         ‖ContinuousLinearMap.adjoint
             (evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n))
@@ -188,7 +188,7 @@ theorem tendsto_norm_adjoint_mul_soninApertureCoupling_soninNormalizedPacket_sub
   have hraw := tendsto_norm_adjoint_mul_soninApertureCoupling_soninPacketEven_sub a b c ha hb
     hab hbc q haq hqb r hrpos hrgt hsq hcr hr
   have hnorm := tendsto_norm_soninPacketEven b c hb hbc _ hfreq
-  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) ≠ 0 :=
+  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) ≠ 0 :=
     (sqrt_half_energy_pos b c hb hbc).ne'
   have hdiv := hraw.div hnorm hLne
   rw [zero_div] at hdiv
@@ -202,7 +202,7 @@ theorem tendsto_norm_soninApertureCoupling_adjoint_soninNormalizedDilatedPacket_
     (a b c : ℝ) (ha : 0 < a) (hb : 0 < b) (hab : a < b) (hbc : b < c) (q : ℝ)
     (haq : a < q) (hqb : q < b)
     (r : ℕ → ℝ) (hrpos : ∀ n, 0 < r n) (hrgt : ∀ n, 1 < r n)
-    (hsq : ∀ n, 0 < r n ^ 2) (hcr : ∀ n, c ≤ r n * a) (hr : Tendsto r atTop atTop) :
+    (hsq : ∀ n, 0 < r n ^ (2 : ℕ)) (hcr : ∀ n, c ≤ r n * a) (hr : Tendsto r atTop atTop) :
     Tendsto (fun n : ℕ =>
         ‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n)
             (ContinuousLinearMap.adjoint
@@ -218,7 +218,7 @@ theorem tendsto_norm_soninApertureCoupling_adjoint_soninNormalizedDilatedPacket_
   have hraw := tendsto_norm_soninApertureCoupling_adjoint_soninDilatedPacket_sub a b c ha hb
     hab hbc q haq hqb r hrpos hrgt hsq hcr hr
   have hnorm := tendsto_norm_soninPacketEven b c hb hbc _ hfreq
-  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) ≠ 0 :=
+  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) ≠ 0 :=
     (sqrt_half_energy_pos b c hb hbc).ne'
   have hdiv := hraw.div hnorm hLne
   rw [zero_div] at hdiv
@@ -288,7 +288,7 @@ theorem tendsto_pow_mul_norm_soninNormalizedPacketMellin
     simpa [Function.comp_def] using
       (tendsto_pow_mul_norm_soninPacketMellin b c hb hbc s N).comp hw
   have hnorm := tendsto_norm_soninPacketEven b c hb hbc _ hfreq
-  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) ≠ 0 :=
+  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) ≠ 0 :=
     (sqrt_half_energy_pos b c hb hbc).ne'
   have hdiv := hraw.div hnorm hLne
   rw [zero_div] at hdiv

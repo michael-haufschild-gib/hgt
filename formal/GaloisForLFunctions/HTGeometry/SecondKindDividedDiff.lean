@@ -92,7 +92,7 @@ theorem momentFunctional_firstKindDividedDiff (h : PositiveMomentForm s) (n : �
         constructor
         · simp
         · rw [firstKindDividedDiff_one]
-          have h1 : (1 : Polynomial ℝ) = Polynomial.X ^ 0 := by simp
+          have h1 : (1 : Polynomial ℝ) = Polynomial.X ^ (0 : ℕ) := by simp
           rw [h1, momentFunctional_X_pow]
           simp
     | succ m ih =>

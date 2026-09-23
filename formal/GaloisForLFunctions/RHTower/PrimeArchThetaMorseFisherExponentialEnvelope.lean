@@ -29,7 +29,7 @@ def thetaCuspFirstAtomMorseFisherExponentialEnvelope (x : ℝ) : ℝ :=
 
 /-- The quadratic upper Taylor section used after the exact exponential decay extraction. -/
 def thetaCuspFirstAtomMorseFisherQuadraticEnvelope (x : ℝ) : ℝ :=
-  1 + thetaCuspFirstAtomMorseFisherDecayFactor * (1 - 2 * x + 2 * x ^ 2)
+  1 + thetaCuspFirstAtomMorseFisherDecayFactor * (1 - 2 * x + 2 * x ^ (2 : ℕ))
 
 /-- The first Morse weight retains the full `exp (2x)` growth of its endpoint gap. -/
 theorem thetaCuspFirstAtom_morseWeight_exponential_floor
@@ -150,7 +150,7 @@ theorem thetaCuspFirstAtom_morseScale_div_weight_le_quadratic
     thetaCuspMorseScale 1 x / thetaCuspBornWittenWeight 1 x ≤
         1 + thetaCuspFirstAtomMorseFisherDecayFactor * Real.exp (-2 * x) := hdecay
     _ ≤ 1 + thetaCuspFirstAtomMorseFisherDecayFactor *
-        (1 - 2 * x + (2 * x) ^ 2 / 2) := by
+        (1 - 2 * x + (2 * x) ^ (2 : ℕ) / 2) := by
           rw [show (-2 : ℝ) * x = -(2 * x) by ring]
           linarith [hfactor]
     _ = thetaCuspFirstAtomMorseFisherQuadraticEnvelope x := by
@@ -159,7 +159,7 @@ theorem thetaCuspFirstAtom_morseScale_div_weight_le_quadratic
 
 theorem thetaCuspFirstAtomMorseFisherQuadraticEnvelope_nonneg (x : ℝ) :
     0 ≤ thetaCuspFirstAtomMorseFisherQuadraticEnvelope x := by
-  have hpoly : 0 ≤ 1 - 2 * x + 2 * x ^ 2 := by
+  have hpoly : 0 ≤ 1 - 2 * x + 2 * x ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (2 * x - 1)]
   unfold thetaCuspFirstAtomMorseFisherQuadraticEnvelope
   exact add_nonneg zero_le_one
@@ -177,7 +177,7 @@ theorem integrableOn_thetaCuspFirstRadialQuadraticMorseFisherQuadraticEnvelope :
   have hb (m : ℕ) : IntegrableOn (b m) (Ioi 0) := by
     simpa only [b, thetaCuspLiouvilleGibbsAtom] using
       integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
-        m (X ^ 2) (by norm_num : 0 < (1 : ℕ))
+        m (X ^ (2 : ℕ)) (by norm_num : 0 < (1 : ℕ))
   have h := (((((hb 4).const_mul (1 + A)).add
       ((hb 5).const_mul (-1 - 3 * A))).add
         ((hb 6).const_mul (1 / 4 + (17 / 4) * A))).add
@@ -415,7 +415,7 @@ theorem integral_morseQuadraticEnvelopeUpperGibbs_eq_gibbsMoments :
   have hb (m : ℕ) : IntegrableOn (b m) (Ioi 0) := by
     simpa only [b, thetaCuspLiouvilleGibbsAtom] using
       integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
-        m (X ^ 2) (by norm_num : 0 < (1 : ℕ))
+        m (X ^ (2 : ℕ)) (by norm_num : 0 < (1 : ℕ))
   have hf3 : IntegrableOn f3 (Ioi 0) := (hb 3).const_mul 8
   have hf4 : IntegrableOn f4 (Ioi 0) := (hb 4).const_mul (1 + 6 * A)
   have hf5 : IntegrableOn f5 (Ioi 0) := (hb 5).const_mul (-(8 + 18 * A))
@@ -482,11 +482,11 @@ theorem thetaCuspFirstRadialQuadraticMorseQuadraticEnvelopeUpperEnergy_eq_finite
 
 /-- Source-specific scalar certificate after the exponential Morse decay has been retained. -/
 def ThetaCuspFirstRadialQuadraticMorseQuadraticEnvelopeCertificate : Prop :=
-  (14 * (3005 / 2997 : ℝ) ^ 2 - 9) *
-        thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 *
+  (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) *
+        thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ (2 : ℕ) *
           thetaCuspFirstRadialQuadraticMorseQuadraticEnvelopeUpperEnergy ≤
     9 * thetaCuspBornWittenRadialPowerMoment 0 1 1 *
-      thetaCuspFirstRadialQuadraticSteinCoupling ^ 2
+      thetaCuspFirstRadialQuadraticSteinCoupling ^ (2 : ℕ)
 
 theorem thetaCusp_quadraticVirialEnergyCertificate_of_morseQuadraticEnvelope
     (hcert : ThetaCuspFirstRadialQuadraticMorseQuadraticEnvelopeCertificate) :
@@ -494,26 +494,26 @@ theorem thetaCusp_quadraticVirialEnergyCertificate_of_morseQuadraticEnvelope
   rw [ThetaCuspFirstRadialQuadraticMorseQuadraticEnvelopeCertificate] at hcert
   rw [ThetaCuspFirstRadialQuadraticVirialEnergyCertificate]
   have hfactor : 0 ≤
-      (14 * (3005 / 2997 : ℝ) ^ 2 - 9) *
-        thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 := by
+      (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) *
+        thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ (2 : ℕ) := by
     positivity
   calc
-    (14 * (3005 / 2997 : ℝ) ^ 2 - 9) *
-          thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 *
+    (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) *
+          thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ (2 : ℕ) *
             thetaCuspFirstRadialQuadraticVirialEnergy ≤
-        (14 * (3005 / 2997 : ℝ) ^ 2 - 9) *
-          thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 *
+        (14 * (3005 / 2997 : ℝ) ^ (2 : ℕ) - 9) *
+          thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ (2 : ℕ) *
             thetaCuspFirstRadialQuadraticMorseQuadraticEnvelopeUpperEnergy :=
       mul_le_mul_of_nonneg_left
         thetaCuspFirstRadialQuadraticVirialEnergy_le_morseQuadraticEnvelopeUpperEnergy
         hfactor
     _ ≤ 9 * thetaCuspBornWittenRadialPowerMoment 0 1 1 *
-        thetaCuspFirstRadialQuadraticSteinCoupling ^ 2 := hcert
+        thetaCuspFirstRadialQuadraticSteinCoupling ^ (2 : ℕ) := hcert
 
 theorem thetaCusp_firstRadial_upper_of_morseQuadraticEnvelope
     (hcert : ThetaCuspFirstRadialQuadraticMorseQuadraticEnvelopeCertificate) :
     14 * ((3005 / 2997 : ℝ) *
-        thetaCuspBornWittenRadialRawMoment 1 1 1) ^ 2 ≤
+        thetaCuspBornWittenRadialRawMoment 1 1 1) ^ (2 : ℕ) ≤
       9 * thetaCuspBornWittenRadialRawMoment 0 1 1 *
         thetaCuspBornWittenRadialRawMoment 2 1 1 :=
   thetaCusp_firstRadial_upper_of_quadraticVirialEnergyCertificate
@@ -528,7 +528,7 @@ theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_morseQuadraticEnvelop
           thetaCuspBornWittenRadialRawMoment 0 0 1) *
           ((3005 / 2997 : ℝ) *
             thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) :
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) :
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re := by
   exact forall_primeArchSourceTraceHankel_linear_nonneg_of_radialBornWittenAmplitude
     (thetaCusp_firstRadial_upper_of_morseQuadraticEnvelope hcert) hrelaxed
@@ -554,7 +554,7 @@ def ThetaCuspFirstAtomMorseFisherExponentialEnvelopeMaster : Prop :=
       thetaCuspFirstRadialQuadraticMorseQuadraticEnvelopeFiniteMomentUpperValue ∧
     (ThetaCuspFirstRadialQuadraticMorseQuadraticEnvelopeCertificate →
       14 * ((3005 / 2997 : ℝ) *
-          thetaCuspBornWittenRadialRawMoment 1 1 1) ^ 2 ≤
+          thetaCuspBornWittenRadialRawMoment 1 1 1) ^ (2 : ℕ) ≤
         9 * thetaCuspBornWittenRadialRawMoment 0 1 1 *
           thetaCuspBornWittenRadialRawMoment 2 1 1)
 

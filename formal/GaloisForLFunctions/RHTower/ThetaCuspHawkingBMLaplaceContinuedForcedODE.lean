@@ -66,7 +66,7 @@ theorem continuedResponse_original_equation (s chi a J K w : ℂ) (hw : w.im ≠
   have hH := horizon_equation_continued (chi := chi) hw hb
   have hN := normalizable_equation_continued (w := w) (chi := chi) hb
   have hW := wronskian_eq_continued w chi hw hb
-  have hs : (Real.sqrt (1-b):ℂ)^2=1-(b:ℂ) := by
+  have hs : (Real.sqrt (1-b):ℂ)^(2 : ℕ)=1-(b:ℂ) := by
     exact_mod_cast Real.sq_sqrt (sub_nonneg.mpr hb.2.le)
   dsimp [wronskian,integratingFactor] at hW
   rw [power_half_eq_sqrt (sub_nonneg.mpr hb.2.le)] at hW

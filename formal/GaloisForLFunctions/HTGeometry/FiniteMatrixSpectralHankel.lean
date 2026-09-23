@@ -156,7 +156,7 @@ theorem finiteMatrixSpectralScalarizedMoment_eq_finiteSpectralMoment {d m : ℕ}
     finiteMatrixSpectralScalarizedMoment mass node coupling reporter k =
       finiteSpectralMoment
         (fun r => mass r *
-          finiteMatrixSpectralEffectiveCoupling coupling reporter r ^ 2)
+          finiteMatrixSpectralEffectiveCoupling coupling reporter r ^ (2 : ℕ))
         node k := by
   unfold finiteMatrixSpectralScalarizedMoment finiteMatrixSpectralMoment
     finiteMatrixSpectralEffectiveCoupling finiteSpectralMoment
@@ -164,14 +164,14 @@ theorem finiteMatrixSpectralScalarizedMoment_eq_finiteSpectralMoment {d m : ℕ}
   let F : Fin m → Fin m → Fin d → ℝ := fun a b r =>
     reporter a * (mass r * coupling r a * coupling r b * node r ^ k) * reporter b
   change (∑ a, ∑ b, ∑ r, F a b r) =
-    ∑ r, mass r * (∑ a, reporter a * coupling r a) ^ 2 * node r ^ k
+    ∑ r, mass r * (∑ a, reporter a * coupling r a) ^ (2 : ℕ) * node r ^ k
   calc
     (∑ a, ∑ b, ∑ r, F a b r) = ∑ a, ∑ r, ∑ b, F a b r := by
       apply Finset.sum_congr rfl
       intro a ha
       rw [Finset.sum_comm]
     _ = ∑ r, ∑ a, ∑ b, F a b r := by rw [Finset.sum_comm]
-    _ = ∑ r, mass r * (∑ a, reporter a * coupling r a) ^ 2 * node r ^ k := by
+    _ = ∑ r, mass r * (∑ a, reporter a * coupling r a) ^ (2 : ℕ) * node r ^ k := by
       apply Finset.sum_congr rfl
       intro r hr
       dsimp only [F]
@@ -193,7 +193,7 @@ theorem finiteMatrixSpectralScalarizedMoment_eq_finiteSpectralMoment {d m : ℕ}
             ((∑ a, reporter a * coupling r a) *
               ∑ b, reporter b * coupling r b) := by
           rw [Fintype.sum_mul_sum]
-        _ = mass r * (∑ a, reporter a * coupling r a) ^ 2 * node r ^ k := by
+        _ = mass r * (∑ a, reporter a * coupling r a) ^ (2 : ℕ) * node r ^ k := by
           ring
 
 /-- Every scalar channel contraction has spectral width at most the common line count. -/
@@ -203,7 +203,7 @@ theorem finiteMatrixSpectralScalarizedMoment_spectralWidthAtMost {d m : ℕ}
     SpectralWidthAtMost d
       (finiteMatrixSpectralScalarizedMoment mass node coupling reporter) := by
   refine ⟨fun r => mass r *
-      finiteMatrixSpectralEffectiveCoupling coupling reporter r ^ 2, node, ?_⟩
+      finiteMatrixSpectralEffectiveCoupling coupling reporter r ^ (2 : ℕ), node, ?_⟩
   funext k
   exact finiteMatrixSpectralScalarizedMoment_eq_finiteSpectralMoment
     mass node coupling reporter k
@@ -219,7 +219,7 @@ theorem det_momentHankelMatrix_finiteMatrixSpectralScalarizedMoment_succ_eq_zero
   rw [show finiteMatrixSpectralScalarizedMoment mass node coupling reporter =
       finiteSpectralMoment
         (fun r => mass r *
-          finiteMatrixSpectralEffectiveCoupling coupling reporter r ^ 2) node by
+          finiteMatrixSpectralEffectiveCoupling coupling reporter r ^ (2 : ℕ)) node by
     funext k
     exact finiteMatrixSpectralScalarizedMoment_eq_finiteSpectralMoment
       mass node coupling reporter k]

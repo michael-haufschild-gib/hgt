@@ -37,7 +37,7 @@ minor. -/
 theorem det_primeArchSourceMomentHankelMatrix_two :
     (primeArchSourceMomentHankelMatrix 2).det =
       normalizedPrimeArchMoment 0 * normalizedPrimeArchMoment 2 -
-        normalizedPrimeArchMoment 1 ^ 2 := by
+        normalizedPrimeArchMoment 1 ^ (2 : ℕ) := by
   rw [Matrix.det_fin_two]
   simp only [primeArchSourceMomentHankelMatrix_apply]
   norm_num

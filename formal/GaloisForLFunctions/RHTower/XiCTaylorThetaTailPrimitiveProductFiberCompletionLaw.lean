@@ -23,7 +23,7 @@ theorem tsum_xiCTaylorThetaTailCoreProductFiberCompletedTwoPhaseCurrent_eq_primi
     (d : ℕ) (z : ℂ) :
     (∑' k : ℕ,
       xiCTaylorThetaTailCoreProductFiberCompletedTwoPhaseCurrent d z k) =
-      4 * Complex.normSq z ^ 2 *
+      4 * Complex.normSq z ^ (2 : ℕ) *
           (∑' q : ThetaCuspPrimitiveDirection,
             ∫ r : ℝ in Ici
                 (thetaCuspPrimitiveRayRadialLog

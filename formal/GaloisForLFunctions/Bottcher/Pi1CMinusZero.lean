@@ -244,10 +244,10 @@ lifts through the universal cover as doubling — `sq (exp z) = exp (2z)` — so
 "single-valued square root ⟺ even winding": the squares in `π₁(ℂ*)` are exactly the even loops. -/
 
 /-- The continuous squaring map on `ℂ*`. -/
-def sqCs : Cs → Cs := fun w => ⟨(w : ℂ) ^ 2, pow_ne_zero 2 w.2⟩
+def sqCs : Cs → Cs := fun w => ⟨(w : ℂ) ^ (2 : ℕ), pow_ne_zero 2 w.2⟩
 
 theorem continuous_sqCs : Continuous sqCs :=
-  (by fun_prop : Continuous fun w : Cs => ((w : ℂ) ^ 2)).subtype_mk _
+  (by fun_prop : Continuous fun w : Cs => ((w : ℂ) ^ (2 : ℕ))).subtype_mk _
 
 @[simp] theorem sqCs_one : sqCs one_cs = one_cs := by
   apply Subtype.ext; simp [sqCs, one_cs]
@@ -255,7 +255,7 @@ theorem continuous_sqCs : Continuous sqCs :=
 /-- `exp` conjugates doubling to squaring: `exp (2z) = (exp z)²`. -/
 theorem pexp_two_mul (z : ℂ) : pexp (2 * z) = sqCs (pexp z) := by
   apply Subtype.ext
-  show Complex.exp (2 * z) = (Complex.exp z) ^ 2
+  show Complex.exp (2 * z) = (Complex.exp z) ^ (2 : ℕ)
   rw [two_mul, Complex.exp_add, sq]
 
 /-- The image of a loop class under `sq`, as a loop class based at `1` (`sq 1 = 1`). -/
@@ -524,7 +524,7 @@ theorem map_mulBase_sqLoop_eq_scaled_sq (e : Cs) (q : Path one_cs one_cs) :
   apply Path.ext
   funext t
   apply Subtype.ext
-  change (e : ℂ) ^ 2 * (q t : ℂ) ^ 2 = ((e : ℂ) * (q t : ℂ)) ^ 2
+  change (e : ℂ) ^ (2 : ℕ) * (q t : ℂ) ^ (2 : ℕ) = ((e : ℂ) * (q t : ℂ)) ^ (2 : ℕ)
   ring
 
 /-- **Even degree gives square-cover range.** If a loop class in `π₁(ℂ*,1)` has even integer degree,

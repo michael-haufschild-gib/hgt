@@ -27,7 +27,7 @@ theorem mobiusCriticalGlobalReporterDeterminantSynchronizationUniversality
     (hu : Tendsto u l (nhdsWithin 0 (Set.Ioi 0))) :
     Tendsto
         (fun v : ℝ => squarefreeMobiusCriticalFisherCutoffWardLimit v /
-          (2 * v / (1 + v) ^ 2))
+          (2 * v / (1 + v) ^ (2 : ℕ)))
         (nhdsWithin 0 (Set.Ioi 0)) (nhds 4) ∧
       Tendsto
         (fun a =>
@@ -54,12 +54,12 @@ theorem mobiusCriticalGlobalReporterDeterminantSynchronizationUniversality
           (ell : InfiniteMobiusShiftChannel →L[ℂ] ℂ),
         (¬ Tendsto
           (fun a =>
-            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
               mobiusCriticalPointedFisherDeterminantBoundarySignal (sigma a))
           l (nhds 0)) ∧
         (¬ Tendsto
           (fun a =>
-            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+            (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
               mobiusCriticalSoftHardDeterminantBoundarySignal (u a))
           l (nhds 0)) := by
   have hsoftHard := mobiusCriticalSoftHardReporterEscapeUniversality
@@ -77,7 +77,7 @@ theorem mobiusCriticalGlobalReporterDeterminantSynchronizationUniversality
         Tendsto (fun a => ell (mobiusCriticalShiftChannel (sigma a) f)) l (nhds 0) :=
       (mobiusCriticalShiftChannel_weakly_tendsto_zero f ell).comp hsigma
     have hsq :
-        Tendsto (fun a => (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2)
+        Tendsto (fun a => (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ))
           l (nhds 0) := by
       simpa using hweak.pow 2
     have hpointed :
@@ -100,7 +100,7 @@ theorem mobiusCriticalGlobalReporterDeterminantSynchronizationUniversality
       have height :
           Tendsto
             (fun a =>
-              (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+              (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
                 mobiusCriticalPointedFisherDeterminantBoundarySignal (sigma a))
             l (nhds (8 : ℂ)) := by
         simpa using hsq.sub hpointed
@@ -110,7 +110,7 @@ theorem mobiusCriticalGlobalReporterDeterminantSynchronizationUniversality
       have height :
           Tendsto
             (fun a =>
-              (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+              (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
                 mobiusCriticalSoftHardDeterminantBoundarySignal (u a))
             l (nhds (8 : ℂ)) := by
         simpa using hsq.sub hsoftHardPath

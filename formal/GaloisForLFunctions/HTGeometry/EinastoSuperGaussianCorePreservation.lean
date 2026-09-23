@@ -39,16 +39,16 @@ theorem einastoSuperGaussianCorrection_corrected_eventually_neg (d l k : ℝ) :
       exact hut
     have h := hT (log u) (hlu.trans ht)
     simpa only [exp_log hu] using h
-  have hc : Continuous (fun u : ℝ => -(8 * Real.pi * u ^ 2 * einastoSuperGaussianSource d l k 1 u)) :=
+  have hc : Continuous (fun u : ℝ => -(8 * Real.pi * u ^ (2 : ℕ) * einastoSuperGaussianSource d l k 1 u)) :=
     ((continuous_const.mul (continuous_id.pow 2)).mul (einastoSuperGaussianSource_continuous d l k 1)).neg
-  have hi : 0 < ∫ u in (0 : ℝ)..exp t, -(8 * Real.pi * u ^ 2 * einastoSuperGaussianSource d l k 1 u) := by
+  have hi : 0 < ∫ u in (0 : ℝ)..exp t, -(8 * Real.pi * u ^ (2 : ℕ) * einastoSuperGaussianSource d l k 1 u) := by
     apply intervalIntegral.integral_pos (exp_pos t) hc.continuousOn
     · intro u hu
       have hu0 : 0 < u := hu.1
-      have hp : 0 < 8 * Real.pi * u ^ 2 := by positivity
+      have hp : 0 < 8 * Real.pi * u ^ (2 : ℕ) := by positivity
       exact (neg_pos.mpr (mul_neg_of_pos_of_neg hp (hE u hu.1 hu.2))).le
     · refine ⟨exp t, ⟨(exp_pos t).le, le_rfl⟩, ?_⟩
-      have hp : 0 < 8 * Real.pi * exp t ^ 2 := by positivity
+      have hp : 0 < 8 * Real.pi * exp t ^ (2 : ℕ) := by positivity
       exact neg_pos.mpr (mul_neg_of_pos_of_neg hp (hE (exp t) (exp_pos t) le_rfl))
   rw [intervalIntegral.integral_neg] at hi
   rw [einastoSuperGaussianCorrection_integral]
@@ -75,7 +75,7 @@ theorem einastoSuperGaussian_nontrivial_core_preserver (d l k b : ℝ) :
     ∃ f : ℝ → ℝ, f ≠ einastoMetric d l (einastoSuperGaussianShape k) ∧ Continuous f ∧ f 0 = 1 ∧
       (∀ᶠ t in atBot, 0 < f (exp t)) ∧
       Tendsto (fun t => radialRicciScalar f (exp t)) atBot (𝓝 (-32 * Real.pi * exp d)) ∧
-      Tendsto (fun t => radialKretschmannScalar f (exp t)) atBot (𝓝 (512 * Real.pi ^ 2 * exp d ^ 2 / 3)) := by
+      Tendsto (fun t => radialKretschmannScalar f (exp t)) atBot (𝓝 (512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3)) := by
   exact ⟨einastoSuperGaussianPerturbedMetric d l k 1 (exp b),
     einastoSuperGaussian_corrected_metric_nontrivial d l k b,
     einastoSuperGaussianPerturbedMetric_continuous d l k 1 (exp b),

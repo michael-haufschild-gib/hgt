@@ -5,7 +5,7 @@ This module closes the finite packet version of the absorption step in
 Chen--Gupta--Li, Lemma 9.2.  Diagonal configurations force the literal
 additive-multiplicative energy to be at least the square of packet size.  At a
 certified smoothing scale dominating that size, fourth-order Fourier decay
-therefore absorbs the explicit far `R^4` configuration count into the energy
+therefore absorbs the explicit far `R^(4 : ℕ)` configuration count into the energy
 scale.
 
 No RH, GRH, smoothness, energy, large-value, or zero-density premise is used.
@@ -27,7 +27,7 @@ def CGLCharacterPacketAbsorptionScale (R : ℕ) :=
 literal additive-multiplicative energy. -/
 theorem cglCharacterPacketEnergy_lower_square {q R : ℕ}
     (w : Fin R → CGLCharacterDyadicRowData (q + 1)) :
-    R ^ 2 ≤ cglCharacterPacketEnergy w := by
+    R ^ (2 : ℕ) ≤ cglCharacterPacketEnergy w := by
   let f : CGLCharacterPacketPairIndex R →
       {pq // pq ∈ cglCharacterPacketEnergyIndexSet w} := fun p =>
     ⟨(p, p), by
@@ -44,50 +44,50 @@ is bounded by the CGL energy scale. -/
 theorem cglCharacterPacket_fourthTail_le_energyScale
     {q R : ℕ} (w : Fin R → CGLCharacterDyadicRowData (q + 1))
     (X : CGLCharacterPacketAbsorptionScale R) (C : ℝ) (hC : 0 ≤ C) :
-    ((q + 1).totient : ℝ) * (R ^ 4 : ℝ) *
-        ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ 4) ≤
+    ((q + 1).totient : ℝ) * (R ^ (4 : ℕ) : ℝ) *
+        ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ (4 : ℕ)) ≤
       ((q + 1).totient : ℝ) * (cglCharacterPacketEnergy w : ℝ) *
         ((X.1.1 : ℝ) * C) := by
   have hR0 : (0 : ℝ) ≤ R := by positivity
   have hX0 : (0 : ℝ) ≤ (X.1.1 : ℝ) := X.1.1.2
   have hRle : (R : ℝ) ≤ 1 + (X.1.1 : ℝ) := by linarith [X.2]
-  have hRsq : (R : ℝ) ^ 2 ≤ (1 + (X.1.1 : ℝ)) ^ 2 :=
+  have hRsq : (R : ℝ) ^ (2 : ℕ) ≤ (1 + (X.1.1 : ℝ)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hR0 hRle 2
-  have hb2 : 1 ≤ (1 + (X.1.1 : ℝ)) ^ 2 := by
+  have hb2 : 1 ≤ (1 + (X.1.1 : ℝ)) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (1 + (X.1.1 : ℝ))]
-  have hb4 : (1 + (X.1.1 : ℝ)) ^ 2 ≤ (1 + (X.1.1 : ℝ)) ^ 4 := by
+  have hb4 : (1 + (X.1.1 : ℝ)) ^ (2 : ℕ) ≤ (1 + (X.1.1 : ℝ)) ^ (4 : ℕ) := by
     calc
-      (1 + (X.1.1 : ℝ)) ^ 2 = 1 * (1 + (X.1.1 : ℝ)) ^ 2 := by ring
-      _ ≤ (1 + (X.1.1 : ℝ)) ^ 2 * (1 + (X.1.1 : ℝ)) ^ 2 :=
+      (1 + (X.1.1 : ℝ)) ^ (2 : ℕ) = 1 * (1 + (X.1.1 : ℝ)) ^ (2 : ℕ) := by ring
+      _ ≤ (1 + (X.1.1 : ℝ)) ^ (2 : ℕ) * (1 + (X.1.1 : ℝ)) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hb2 (sq_nonneg (1 + (X.1.1 : ℝ)))
-      _ = (1 + (X.1.1 : ℝ)) ^ 4 := by ring
-  have hRsqle : (R : ℝ) ^ 2 ≤ (1 + (X.1.1 : ℝ)) ^ 4 := hRsq.trans hb4
-  have hRfourth : (R : ℝ) ^ 4 ≤
-      (R : ℝ) ^ 2 * (1 + (X.1.1 : ℝ)) ^ 4 := by
+      _ = (1 + (X.1.1 : ℝ)) ^ (4 : ℕ) := by ring
+  have hRsqle : (R : ℝ) ^ (2 : ℕ) ≤ (1 + (X.1.1 : ℝ)) ^ (4 : ℕ) := hRsq.trans hb4
+  have hRfourth : (R : ℝ) ^ (4 : ℕ) ≤
+      (R : ℝ) ^ (2 : ℕ) * (1 + (X.1.1 : ℝ)) ^ (4 : ℕ) := by
     calc
-      (R : ℝ) ^ 4 = (R : ℝ) ^ 2 * (R : ℝ) ^ 2 := by ring
-      _ ≤ (R : ℝ) ^ 2 * (1 + (X.1.1 : ℝ)) ^ 4 :=
+      (R : ℝ) ^ (4 : ℕ) = (R : ℝ) ^ (2 : ℕ) * (R : ℝ) ^ (2 : ℕ) := by ring
+      _ ≤ (R : ℝ) ^ (2 : ℕ) * (1 + (X.1.1 : ℝ)) ^ (4 : ℕ) :=
         mul_le_mul_of_nonneg_left hRsqle (sq_nonneg (R : ℝ))
-  have hden : 0 < (1 + (X.1.1 : ℝ)) ^ 4 := by positivity
-  have htail : (R ^ 4 : ℝ) *
-      ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ 4) ≤
-      (R ^ 2 : ℝ) * ((X.1.1 : ℝ) * C) := by
-    rw [show (R : ℝ) ^ 4 * ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ 4) =
-      ((R : ℝ) ^ 4 * ((X.1.1 : ℝ) * C)) / (1 + (X.1.1 : ℝ)) ^ 4 by ring]
+  have hden : 0 < (1 + (X.1.1 : ℝ)) ^ (4 : ℕ) := by positivity
+  have htail : (R ^ (4 : ℕ) : ℝ) *
+      ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ (4 : ℕ)) ≤
+      (R ^ (2 : ℕ) : ℝ) * ((X.1.1 : ℝ) * C) := by
+    rw [show (R : ℝ) ^ (4 : ℕ) * ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ (4 : ℕ)) =
+      ((R : ℝ) ^ (4 : ℕ) * ((X.1.1 : ℝ) * C)) / (1 + (X.1.1 : ℝ)) ^ (4 : ℕ) by ring]
     apply (div_le_iff₀ hden).2
     calc
-      (R : ℝ) ^ 4 * ((X.1.1 : ℝ) * C) ≤
-          ((R : ℝ) ^ 2 * (1 + (X.1.1 : ℝ)) ^ 4) * ((X.1.1 : ℝ) * C) :=
+      (R : ℝ) ^ (4 : ℕ) * ((X.1.1 : ℝ) * C) ≤
+          ((R : ℝ) ^ (2 : ℕ) * (1 + (X.1.1 : ℝ)) ^ (4 : ℕ)) * ((X.1.1 : ℝ) * C) :=
         mul_le_mul_of_nonneg_right hRfourth (mul_nonneg hX0 hC)
-      _ = ((R : ℝ) ^ 2 * ((X.1.1 : ℝ) * C)) * (1 + (X.1.1 : ℝ)) ^ 4 := by ring
-  have henergy : (R ^ 2 : ℝ) ≤ (cglCharacterPacketEnergy w : ℝ) := by
+      _ = ((R : ℝ) ^ (2 : ℕ) * ((X.1.1 : ℝ) * C)) * (1 + (X.1.1 : ℝ)) ^ (4 : ℕ) := by ring
+  have henergy : (R ^ (2 : ℕ) : ℝ) ≤ (cglCharacterPacketEnergy w : ℝ) := by
     exact_mod_cast cglCharacterPacketEnergy_lower_square w
   calc
-    ((q + 1).totient : ℝ) * (R ^ 4 : ℝ) *
-        ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ 4) =
-      ((q + 1).totient : ℝ) * ((R ^ 4 : ℝ) *
-        ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ 4)) := by ring
-    _ ≤ ((q + 1).totient : ℝ) * ((R ^ 2 : ℝ) * ((X.1.1 : ℝ) * C)) :=
+    ((q + 1).totient : ℝ) * (R ^ (4 : ℕ) : ℝ) *
+        ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ (4 : ℕ)) =
+      ((q + 1).totient : ℝ) * ((R ^ (4 : ℕ) : ℝ) *
+        ((X.1.1 : ℝ) * C / (1 + (X.1.1 : ℝ)) ^ (4 : ℕ))) := by ring
+    _ ≤ ((q + 1).totient : ℝ) * ((R ^ (2 : ℕ) : ℝ) * ((X.1.1 : ℝ) * C)) :=
       mul_le_mul_of_nonneg_left htail (by positivity)
     _ ≤ ((q + 1).totient : ℝ) *
         ((cglCharacterPacketEnergy w : ℝ) * ((X.1.1 : ℝ) * C)) := by

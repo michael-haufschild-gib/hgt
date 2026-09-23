@@ -31,7 +31,7 @@ theorem exists_norm_xiCausticIterate_windowC_le {a sigma : ℝ} (ha : 1 / 2 < a)
     have := xiMassWindowRate_pos ha
     rw [hγdef]
     positivity
-  set K₀ : ℝ := C₀ + 2 * γ₀ * ((n : ℝ) + 1) + 8 * ((n : ℝ) + 1) ^ 2 with hKdef
+  set K₀ : ℝ := C₀ + 2 * γ₀ * ((n : ℝ) + 1) + 8 * ((n : ℝ) + 1) ^ (2 : ℕ) with hKdef
   have hK0 : (0 : ℝ) < K₀ := by rw [hKdef]; positivity
   refine ⟨M₀ * K₀ ^ n, max u₀ u₁, by positivity, le_trans hu₀ (le_max_left _ _), ?_⟩
   intro u hu w ht
@@ -88,27 +88,27 @@ theorem exists_norm_xiCausticIterate_windowC_le {a sigma : ℝ} (ha : 1 / 2 < a)
   have hiter := norm_xiCausticIterate_le (a := a) ha0 (τ := τ) (z₀ := z₀) (δ := δ)
     (M := M₀ / Real.sqrt u) (ε := C₀ / Real.sqrt u) (γ := γ₀) n hδ0 (by positivity)
     hsub hc₀ hc₁ hbase
-  have hsteple : C₀ / Real.sqrt u + γ₀ / δ + 2 / δ ^ 2 ≤ K₀ / Real.sqrt u := by
+  have hsteple : C₀ / Real.sqrt u + γ₀ / δ + 2 / δ ^ (2 : ℕ) ≤ K₀ / Real.sqrt u := by
     have hγval : γ₀ / δ = 2 * γ₀ * ((n : ℝ) + 1) / Real.sqrt u := by
       rw [hδdef]
       field_simp
-    have hδsq : (2 : ℝ) / δ ^ 2 = 8 * ((n : ℝ) + 1) ^ 2 / u := by
+    have hδsq : (2 : ℝ) / δ ^ (2 : ℕ) = 8 * ((n : ℝ) + 1) ^ (2 : ℕ) / u := by
       rw [hδdef, div_pow, Real.sq_sqrt hu0.le]
       field_simp
       ring
-    have hlast : 8 * ((n : ℝ) + 1) ^ 2 / u ≤ 8 * ((n : ℝ) + 1) ^ 2 / Real.sqrt u := by
+    have hlast : 8 * ((n : ℝ) + 1) ^ (2 : ℕ) / u ≤ 8 * ((n : ℝ) + 1) ^ (2 : ℕ) / Real.sqrt u := by
       refine div_le_div_of_nonneg_left (by positivity) hr0 ?_
       exact sqrt_le_self_of_one_le hu1
     have hsum : K₀ / Real.sqrt u
         = C₀ / Real.sqrt u + 2 * γ₀ * ((n : ℝ) + 1) / Real.sqrt u
-          + 8 * ((n : ℝ) + 1) ^ 2 / Real.sqrt u := by
+          + 8 * ((n : ℝ) + 1) ^ (2 : ℕ) / Real.sqrt u := by
       rw [hKdef]
       field_simp
     rw [hγval, hδsq, hsum]
     linarith [hlast]
-  have hpow : (C₀ / Real.sqrt u + γ₀ / δ + 2 / δ ^ 2) ^ n ≤ (K₀ / Real.sqrt u) ^ n :=
+  have hpow : (C₀ / Real.sqrt u + γ₀ / δ + 2 / δ ^ (2 : ℕ)) ^ n ≤ (K₀ / Real.sqrt u) ^ n :=
     pow_le_pow_left₀ (by positivity) hsteple n
-  have hfin : M₀ / Real.sqrt u * (C₀ / Real.sqrt u + γ₀ / δ + 2 / δ ^ 2) ^ n
+  have hfin : M₀ / Real.sqrt u * (C₀ / Real.sqrt u + γ₀ / δ + 2 / δ ^ (2 : ℕ)) ^ n
       ≤ M₀ / Real.sqrt u * (K₀ / Real.sqrt u) ^ n :=
     mul_le_mul_of_nonneg_left hpow (by positivity)
   refine le_trans hiter (le_trans hfin (le_of_eq ?_))

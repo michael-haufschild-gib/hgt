@@ -26,11 +26,11 @@ noncomputable section
 
 /-- Squared divisor-evaluation energy of the reflection-even part of a Weil test. -/
 def xiWeilEvenEnergy (F : ℂ → ℂ) : ℝ :=
-  ∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ 2
+  ∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ (2 : ℕ)
 
 /-- Squared divisor-evaluation energy of the reflection-odd part of a Weil test. -/
 def xiWeilOddEnergy (F : ℂ → ℂ) : ℝ :=
-  ∑' q : XiZeroCopy, ‖xiWeilOddPart F (xiSpectralPoint q)‖ ^ 2
+  ∑' q : XiZeroCopy, ‖xiWeilOddPart F (xiSpectralPoint q)‖ ^ (2 : ℕ)
 
 /-- The Weil diagonal is exactly reflection-even energy minus reflection-odd energy. -/
 theorem xiWeilPolarization_self_eq_evenEnergy_sub_oddEnergy

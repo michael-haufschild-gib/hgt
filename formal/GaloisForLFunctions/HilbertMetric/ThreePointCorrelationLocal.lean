@@ -28,7 +28,7 @@ def threePointCorrelationDeterminantPathSecondJet
     (f f' f'' : ℝ → ℝ) (y x : ℝ) : ℝ :=
   2 * (f'' x * f y * f (x + y) + 2 * f' x * f y * f' (x + y) +
     f x * f y * f'' (x + y)) -
-  2 * f 0 * (f' x ^ 2 + f x * f'' x + f' (x + y) ^ 2 +
+  2 * f 0 * (f' x ^ (2 : ℕ) + f x * f'' x + f' (x + y) ^ (2 : ℕ) +
     f (x + y) * f'' (x + y))
 
 theorem hasDerivAt_threePointCorrelationDeterminantPath
@@ -40,8 +40,8 @@ theorem hasDerivAt_threePointCorrelationDeterminantPath
     simpa only [Function.comp_def, id_eq, mul_one] using
       (hf (x + y)).comp x ((hasDerivAt_id x).add_const y)
   have hmain := (((hx.const_mul 2).mul_const (f y)).mul hxy)
-  have hsquares := ((hx.mul hx).add_const (f y ^ 2)).add (hxy.mul hxy)
-  have h := (hmain.sub (hsquares.const_mul (f 0))).add_const (f 0 ^ 3)
+  have hsquares := ((hx.mul hx).add_const (f y ^ (2 : ℕ))).add (hxy.mul hxy)
+  have h := (hmain.sub (hsquares.const_mul (f 0))).add_const (f 0 ^ (3 : ℕ))
   apply (h.congr_deriv (by
     unfold threePointCorrelationDeterminantPathFirstJet
     ring)).congr_of_eventuallyEq
@@ -157,7 +157,7 @@ theorem exists_threePointCorrelationDeterminantPath_pos_right
     (hf' : ∀ x, HasDerivAt f' (f'' x) x)
     (hf'' : Continuous f'')
     (hfirst_zero : f' 0 = 0) {y : ℝ}
-    (hwall : 0 < (-f'' 0) * (f 0 ^ 2 - f y ^ 2) - f 0 * f' y ^ 2) :
+    (hwall : 0 < (-f'' 0) * (f 0 ^ (2 : ℕ) - f y ^ (2 : ℕ)) - f 0 * f' y ^ (2 : ℕ)) :
     ∃ ε : ℝ, 0 < ε ∧ ∀ x, 0 < x → x < ε →
       0 < threePointCorrelationDeterminantPath f y x := by
   let D := threePointCorrelationDeterminantPath f y
@@ -175,7 +175,7 @@ theorem exists_threePointCorrelationDeterminantPath_pos_right
     change Continuous (fun x =>
       2 * (f'' x * f y * f (x + y) + 2 * f' x * f y * f' (x + y) +
         f x * f y * f'' (x + y)) -
-      2 * f 0 * (f' x ^ 2 + f x * f'' x + f' (x + y) ^ 2 +
+      2 * f 0 * (f' x ^ (2 : ℕ) + f x * f'' x + f' (x + y) ^ (2 : ℕ) +
         f (x + y) * f'' (x + y)))
     fun_prop
   have hDzero : D 0 = 0 := by
@@ -186,7 +186,7 @@ theorem exists_threePointCorrelationDeterminantPath_pos_right
     simp [D', threePointCorrelationDeterminantPathFirstJet, hfirst_zero]
     ring
   have hD''zero : D'' 0 =
-      2 * ((-f'' 0) * (f 0 ^ 2 - f y ^ 2) - f 0 * f' y ^ 2) := by
+      2 * ((-f'' 0) * (f 0 ^ (2 : ℕ) - f y ^ (2 : ℕ)) - f 0 * f' y ^ (2 : ℕ)) := by
     simp [D'', threePointCorrelationDeterminantPathSecondJet, hfirst_zero]
     ring
   apply exists_pos_right_of_secondJet_pos hD hD' hD'' hDzero hD'zero
@@ -232,7 +232,7 @@ theorem exists_uniform_threePointCorrelationDeterminantPath_pos_right_atTop
   have hlimRaw := hleft.sub hright
   have hlim : Tendsto (fun p : ℝ × ℝ =>
       threePointCorrelationDeterminantPathSecondJet f f' f'' p.1 p.2) l
-      (nhds (-2 * f 0 ^ 2 * f'' 0)) := by
+      (nhds (-2 * f 0 ^ (2 : ℕ) * f'' 0)) := by
     unfold threePointCorrelationDeterminantPathSecondJet
     convert hlimRaw using 1
     · funext p
@@ -240,8 +240,8 @@ theorem exists_uniform_threePointCorrelationDeterminantPath_pos_right_atTop
     · congr 1
       rw [hfirst_zero]
       ring
-  have hlimit_pos : 0 < -2 * f 0 ^ 2 * f'' 0 := by
-    have hsquare : 0 < f 0 ^ 2 := sq_pos_of_pos hcenter_pos
+  have hlimit_pos : 0 < -2 * f 0 ^ (2 : ℕ) * f'' 0 := by
+    have hsquare : 0 < f 0 ^ (2 : ℕ) := sq_pos_of_pos hcenter_pos
     exact mul_pos_of_neg_of_neg (mul_neg_of_neg_of_pos (by norm_num) hsquare)
       hcenter_second_neg
   have hpos : ∀ᶠ p : ℝ × ℝ in l,

@@ -222,7 +222,7 @@ noncomputable def tensorShiftHom :
               exact Subsingleton.elim _ _
             have hval : tensorDR P (shiftModule Q (k'' + 1)) n z ⟨(0, 0 + (k'' + 1)), hidx⟩
                 = 0 := by
-              show ((-1 : R)) ^ 0 • TensorProduct.map LinearMap.id
+              show ((-1 : R)) ^ (0 : ℕ) • TensorProduct.map LinearMap.id
                 ((shiftModule Q (k'' + 1)).dₗ (0 + k'')) (z ⟨(0, 0 + k''), hzi⟩) = 0
               rw [h0, map_zero, smul_zero]
             rw [hval, map_zero, add_zero]

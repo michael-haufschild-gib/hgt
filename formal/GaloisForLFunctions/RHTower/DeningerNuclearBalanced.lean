@@ -60,7 +60,7 @@ theorem DeningerIsNuclear.exists_balanced {T : X →L[𝕜] Y} (hT : DeningerIsN
       simp only [norm_smul, RCLike.norm_ofReal, ht, if_neg ha,
         abs_of_nonneg (Real.sqrt_nonneg _)]
       have hnn : 0 ≤ Real.sqrt (‖y a‖ / ‖φ a‖) * ‖φ a‖ := by positivity
-      have hsq : (Real.sqrt (‖y a‖ / ‖φ a‖) * ‖φ a‖) ^ 2
+      have hsq : (Real.sqrt (‖y a‖ / ‖φ a‖) * ‖φ a‖) ^ (2 : ℕ)
           = ‖φ a‖ * ‖y a‖ := by
         rw [mul_pow, Real.sq_sqrt (by positivity)]
         field_simp
@@ -79,7 +79,7 @@ theorem DeningerIsNuclear.exists_balanced {T : X →L[𝕜] Y} (hT : DeningerIsN
         abs_of_nonneg (le_of_lt (inv_pos.mpr (htpos a ha)))]
       rw [hts]
       have hnn : 0 ≤ (Real.sqrt (‖y a‖ / ‖φ a‖))⁻¹ * ‖y a‖ := by positivity
-      have hsq : ((Real.sqrt (‖y a‖ / ‖φ a‖))⁻¹ * ‖y a‖) ^ 2
+      have hsq : ((Real.sqrt (‖y a‖ / ‖φ a‖))⁻¹ * ‖y a‖) ^ (2 : ℕ)
           = ‖φ a‖ * ‖y a‖ := by
         rw [mul_pow, inv_pow, Real.sq_sqrt (by positivity)]
         field_simp
@@ -116,7 +116,7 @@ theorem DeningerIsNuclear.exists_balanced {T : X →L[𝕜] Y} (hT : DeningerIsN
 theorem DeningerIsNuclear.exists_balanced_summable_sq {T : X →L[𝕜] Y}
     (hT : DeningerIsNuclear T) :
     ∃ (ι : Type) (φ : ι → (X →L[𝕜] 𝕜)) (y : ι → Y),
-      (∀ a, ‖φ a‖ = ‖y a‖) ∧ (Summable fun a => ‖φ a‖ ^ 2) ∧
+      (∀ a, ‖φ a‖ = ‖y a‖) ∧ (Summable fun a => ‖φ a‖ ^ (2 : ℕ)) ∧
         ∀ x, HasSum (fun a => φ a x • y a) (T x) := by
   obtain ⟨ι, φ, y, hbal, hsum, happ⟩ := hT.exists_balanced
   refine ⟨ι, φ, y, hbal, ?_, happ⟩

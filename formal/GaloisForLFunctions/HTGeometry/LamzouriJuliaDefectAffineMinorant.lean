@@ -19,7 +19,7 @@ namespace HTGeometry
 Julia defect Gram energy. -/
 theorem juliaDefectAttenuationKernel_anchorCorrelation_affineMinorant
     {N : ℕ} (x w : Fin N → ℝ) (t : ℝ) :
-    2 * t * (∑ i, w i * juliaDefectAttenuationKernel (x i)) - t ^ 2 ≤
+    2 * t * (∑ i, w i * juliaDefectAttenuationKernel (x i)) - t ^ (2 : ℕ) ≤
       ∑ i, ∑ j,
         w i * juliaDefectAttenuationKernel (x j - x i) * w j := by
   have hquad :=

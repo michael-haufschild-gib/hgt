@@ -24,7 +24,7 @@ set_option linter.unusedSectionVars false
 variable {I R : Type*} [Fintype I] [DecidableEq I] [Fintype R] [DecidableEq R]
 
 /-- The gate scalar: the replica power of `1 + s²`. -/
-def replicaGateScalar (R : Type*) [Fintype R] (s : ℂ) : ℂ := (1 + s ^ 2) ^ Fintype.card R
+def replicaGateScalar (R : Type*) [Fintype R] (s : ℂ) : ℂ := (1 + s ^ (2 : ℕ)) ^ Fintype.card R
 
 theorem replicaGate_mul_neg_univ (v : I) (c : Fin 3) (s : ℂ) :
     replicaGate I R v c Finset.univ s * replicaGate I R v c Finset.univ (-s) =
@@ -236,7 +236,7 @@ theorem ringCommutator_siteLabel_mem_obstruction (G : SimpleGraph I) (v : I) (c 
   have hscalar : ∀ i : Fin n, replicaGateScalar R (pts i) ≠ 0 := by
     intro i
     refine pow_ne_zero _ ?_
-    have hcast : (1 : ℂ) + ((i : ℕ) : ℂ) ^ 2 = ((1 + (i : ℕ) ^ 2 : ℕ) : ℂ) := by
+    have hcast : (1 : ℂ) + ((i : ℕ) : ℂ) ^ (2 : ℕ) = ((1 + (i : ℕ) ^ (2 : ℕ) : ℕ) : ℂ) := by
       push_cast
       ring
     rw [hpts, hcast]

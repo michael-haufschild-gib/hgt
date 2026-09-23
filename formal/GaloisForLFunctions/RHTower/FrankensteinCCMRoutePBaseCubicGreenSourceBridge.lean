@@ -9,10 +9,10 @@ The Route-P base Cauchy budget and the CCM critical-Mellin source initially live
 different carriers.  This module identifies them before any Xi-zero expansion.  The continuous
 cubic Green test
 
-`exp(-h/2) / (4 * max(h, log 2)^3)`
+`exp(-h/2) / (4 * max(h, log 2)^(3 : ℕ))`
 
 converts the literal CCM atom `Lambda(n) / sqrt(n)` at `h = log n` into the undifferenced
-Route-P mass `Lambda(n) / (4 n log(n)^3)`.  The maximum only fills the prime-free interval
+Route-P mass `Lambda(n) / (4 n log(n)^(3 : ℕ))`.  The maximum only fills the prime-free interval
 `0 <= h < log 2`, making the test continuous on the compact CCM horizon without changing a
 single arithmetic atom.
 
@@ -35,7 +35,7 @@ noncomputable section
 /-- Continuous logarithmic Green profile.  The clamp changes only the prime-free interval below
 `log 2`. -/
 def ccmRoutePBaseCubicGreenLogProfile (h : ℝ) : ℝ :=
-  Real.exp (-h / 2) / (4 * (max h (Real.log 2)) ^ 3)
+  Real.exp (-h / 2) / (4 * (max h (Real.log 2)) ^ (3 : ℕ))
 
 /-- The cubic Green profile transported to the compact physical CCM horizon. -/
 def ccmRoutePBaseCubicGreenHorizonTest (a : ℝ) :
@@ -56,7 +56,7 @@ def ccmRoutePBaseCubicGreenHorizonTest (a : ℝ) :
 theorem ccmRoutePBaseCubicGreenLogProfile_log
     {n : ℕ} (hn : 2 ≤ n) :
     ccmRoutePBaseCubicGreenLogProfile (Real.log n) =
-      Real.exp (-Real.log n / 2) / (4 * Real.log n ^ 3) := by
+      Real.exp (-Real.log n / 2) / (4 * Real.log n ^ (3 : ℕ)) := by
   rw [ccmRoutePBaseCubicGreenLogProfile, max_eq_left]
   exact Real.strictMonoOn_log.monotoneOn
     (show (2 : ℝ) ∈ Set.Ioi 0 by norm_num)

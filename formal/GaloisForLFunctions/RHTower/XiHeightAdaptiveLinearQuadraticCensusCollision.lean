@@ -5,7 +5,7 @@ import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 # Height-adaptive linear--quadratic census collision
 
 In a bounded right-half Xi box, the difference between the quadratic multiplicity census
-`Q = sum m_z^2` and the linear census `M = sum m_z` is the nonnegative nonsimplicity excess
+`Q = sum m_z^(2 : ℕ)` and the linear census `M = sum m_z` is the nonnegative nonsimplicity excess
 `sum m_z(m_z-1)`.  Equality of the two censuses modulo one height-adapted modulus above the squared
 zero-count envelope forces all enclosed zeros to be simple.  The first RH ladder rung forces every
 right-half multiplicity to be even, so the two constraints together prove RH.
@@ -20,7 +20,7 @@ namespace RHTower
 noncomputable section
 
 def boxSquareOrderSum (T : ℝ) : ℕ :=
-  ∑ z ∈ boxFinset T, ((analyticOrderAt xi z).toNat) ^ 2
+  ∑ z ∈ boxFinset T, ((analyticOrderAt xi z).toNat) ^ (2 : ℕ)
 
 def quadraticDiscCensusH (k : ℕ) (T : ℝ) : ZMod (2 ^ k) :=
   (boxSquareOrderSum T : ZMod (2 ^ k))
@@ -39,7 +39,7 @@ theorem boxSquareOrderSum_eq_order_add_excess (T : ℝ) :
   have hm : (analyticOrderAt xi z).toNat =
       1 + ((analyticOrderAt xi z).toNat - 1) := by omega
   calc
-    (analyticOrderAt xi z).toNat ^ 2 =
+    (analyticOrderAt xi z).toNat ^ (2 : ℕ) =
         (analyticOrderAt xi z).toNat * (analyticOrderAt xi z).toNat := by ring
     _ = (analyticOrderAt xi z).toNat *
         (1 + ((analyticOrderAt xi z).toNat - 1)) := by rw [← hm]
@@ -52,7 +52,7 @@ theorem boxOrderSum_le_boxSquareOrderSum (T : ℝ) :
   omega
 
 theorem boxSquareOrderSum_le_sq_boxOrderSum (T : ℝ) :
-    boxSquareOrderSum T ≤ (boxOrderSum T) ^ 2 := by
+    boxSquareOrderSum T ≤ (boxOrderSum T) ^ (2 : ℕ) := by
   rw [boxSquareOrderSum, boxOrderSum]
   exact Finset.sum_sq_le_sq_sum_of_nonneg fun _ _ => Nat.zero_le _
 
@@ -83,7 +83,7 @@ theorem boxSquareOrderSum_eq_boxOrderSum_iff_all_simple (T : ℝ) :
 def XiNatHeightAdaptiveLinearQuadraticCensus (C : ℝ) : Prop :=
   ∀ n : ℕ, 1 ≤ n →
     ∃ k : ℕ,
-      (C * (1 + ((n : ℝ) + 2)) * Real.log (2 + ((n : ℝ) + 2))) ^ 2 <
+      (C * (1 + ((n : ℝ) + 2)) * Real.log (2 + ((n : ℝ) + 2))) ^ (2 : ℕ) <
         (2 ^ k : ℕ) ∧
       quadraticDiscCensusH k (n : ℝ) = discCensusH k (n : ℝ)
 
@@ -118,15 +118,15 @@ theorem riemannHypothesis_of_rhLadder_one_of_xiNatHeightAdaptiveLinearQuadraticC
           ((xiBallOrderSum (2 : ℂ) ((n : ℝ) + 2) : ℤ) : ℝ) := by
         exact_mod_cast hMInt
       exact hcast.trans (hcount _ hr1)
-    have hQnat : boxSquareOrderSum (n : ℝ) ≤ (boxOrderSum (n : ℝ)) ^ 2 :=
+    have hQnat : boxSquareOrderSum (n : ℝ) ≤ (boxOrderSum (n : ℝ)) ^ (2 : ℕ) :=
       boxSquareOrderSum_le_sq_boxOrderSum _
     have hQReal : (boxSquareOrderSum (n : ℝ) : ℝ) ≤
-        (boxOrderSum (n : ℝ) : ℝ) ^ 2 := by exact_mod_cast hQnat
+        (boxOrderSum (n : ℝ) : ℝ) ^ (2 : ℕ) := by exact_mod_cast hQnat
     have hE0 : 0 ≤ C * (1 + ((n : ℝ) + 2)) *
         Real.log (2 + ((n : ℝ) + 2)) :=
       (Nat.cast_nonneg (boxOrderSum (n : ℝ))).trans hMReal
-    have hMsq : (boxOrderSum (n : ℝ) : ℝ) ^ 2 ≤
-        (C * (1 + ((n : ℝ) + 2)) * Real.log (2 + ((n : ℝ) + 2))) ^ 2 := by
+    have hMsq : (boxOrderSum (n : ℝ) : ℝ) ^ (2 : ℕ) ≤
+        (C * (1 + ((n : ℝ) + 2)) * Real.log (2 + ((n : ℝ) + 2))) ^ (2 : ℕ) := by
       nlinarith [Nat.cast_nonneg (α := ℝ) (boxOrderSum (n : ℝ))]
     have hQltReal : (boxSquareOrderSum (n : ℝ) : ℝ) < ((2 ^ k : ℕ) : ℝ) :=
       lt_of_le_of_lt (hQReal.trans hMsq) hkLarge

@@ -53,7 +53,7 @@ theorem sectorRoot_mul_re_nonnegative
     Real.abs_sin_le_abs.trans hbabs
   have hcos : 1 / 2 ≤ Real.cos b := by
     have hc := Real.one_sub_sq_div_two_le_cos (x := b)
-    have hbsq : b ^ 2 ≤ (1 / 2 : ℝ) ^ 2 :=
+    have hbsq : b ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) :=
       sq_le_sq.mpr (by simpa using hbhalf)
     nlinarith
   have hrootre : (w ^ ((n : ℂ)⁻¹)).re = A * Real.cos b := by

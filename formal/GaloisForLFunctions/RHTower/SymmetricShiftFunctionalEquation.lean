@@ -25,7 +25,7 @@ def hasLineSchwarzFunctionalEquation (F : ℂ → ℂ) (epsilon : ℂ) : Prop :=
 
 /-- At zero shift the product is the square of the original carrier. -/
 theorem symmetricShiftProduct_zero_shift (F : ℂ → ℂ) (s : ℂ) :
-    symmetricShiftProduct F 0 s = F s ^ 2 := by
+    symmetricShiftProduct F 0 s = F s ^ (2 : ℕ) := by
   simp [symmetricShiftProduct, pow_two]
 
 /-- At zero shift the symmetric product has exactly the original zero set. -/
@@ -49,7 +49,7 @@ theorem lineReflect_sub_real (s : ℂ) (a : ℝ) :
 theorem hasLineSchwarzFunctionalEquation_symmetricShiftProduct
     {F : ℂ → ℂ} {epsilon : ℂ}
     (hF : hasLineSchwarzFunctionalEquation F epsilon) (a : ℝ) :
-    hasLineSchwarzFunctionalEquation (symmetricShiftProduct F a) (epsilon ^ 2) := by
+    hasLineSchwarzFunctionalEquation (symmetricShiftProduct F a) (epsilon ^ (2 : ℕ)) := by
   intro s
   rw [symmetricShiftProduct, ← lineReflect_sub_real s a, ← lineReflect_add_real s a,
     hF, hF]

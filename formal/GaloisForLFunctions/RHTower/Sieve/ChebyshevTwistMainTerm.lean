@@ -26,37 +26,37 @@ open Complex MeasureTheory
 
 /-- The real part of the pole kernel, integrated over an arbitrary interval. -/
 theorem integral_re_pole_interval {α a b : ℝ} (hα : α ≠ 0) :
-    (∫ u : ℝ in a..b, α / (α ^ 2 + u ^ 2))
+    (∫ u : ℝ in a..b, α / (α ^ (2 : ℕ) + u ^ (2 : ℕ)))
       = Real.arctan (b / α) - Real.arctan (a / α) := by
-  have hpt : ∀ u : ℝ, α / (α ^ 2 + u ^ 2) = α⁻¹ * (1 + (u / α) ^ 2)⁻¹ := by
+  have hpt : ∀ u : ℝ, α / (α ^ (2 : ℕ) + u ^ (2 : ℕ)) = α⁻¹ * (1 + (u / α) ^ (2 : ℕ))⁻¹ := by
     intro u
-    have hsq : (0 : ℝ) < α ^ 2 + u ^ 2 := by positivity
+    have hsq : (0 : ℝ) < α ^ (2 : ℕ) + u ^ (2 : ℕ) := by positivity
     field_simp
-  rw [intervalIntegral.integral_congr (g := fun u => α⁻¹ * (1 + (u / α) ^ 2)⁻¹)
+  rw [intervalIntegral.integral_congr (g := fun u => α⁻¹ * (1 + (u / α) ^ (2 : ℕ))⁻¹)
     (fun u _ => hpt u)]
   rw [intervalIntegral.integral_const_mul,
-    intervalIntegral.integral_comp_div (fun x : ℝ => (1 + x ^ 2)⁻¹) hα,
+    intervalIntegral.integral_comp_div (fun x : ℝ => (1 + x ^ (2 : ℕ))⁻¹) hα,
     integral_inv_one_add_sq, smul_eq_mul]
   field_simp
 
 /-- The imaginary part of the pole kernel, integrated over an arbitrary interval. -/
 theorem integral_im_pole_interval {α a b : ℝ} (hα : α ≠ 0) :
-    (∫ u : ℝ in a..b, u / (α ^ 2 + u ^ 2))
-      = (Real.log (α ^ 2 + b ^ 2) - Real.log (α ^ 2 + a ^ 2)) / 2 := by
-  have hpos : ∀ u : ℝ, (0 : ℝ) < α ^ 2 + u ^ 2 := fun u => by positivity
+    (∫ u : ℝ in a..b, u / (α ^ (2 : ℕ) + u ^ (2 : ℕ)))
+      = (Real.log (α ^ (2 : ℕ) + b ^ (2 : ℕ)) - Real.log (α ^ (2 : ℕ) + a ^ (2 : ℕ))) / 2 := by
+  have hpos : ∀ u : ℝ, (0 : ℝ) < α ^ (2 : ℕ) + u ^ (2 : ℕ) := fun u => by positivity
   have hderiv : ∀ u ∈ Set.uIcc a b,
-      HasDerivAt (fun u : ℝ => Real.log (α ^ 2 + u ^ 2) / 2) (u / (α ^ 2 + u ^ 2)) u := by
+      HasDerivAt (fun u : ℝ => Real.log (α ^ (2 : ℕ) + u ^ (2 : ℕ)) / 2) (u / (α ^ (2 : ℕ) + u ^ (2 : ℕ))) u := by
     intro u _
-    have h1 : HasDerivAt (fun u : ℝ => α ^ 2 + u ^ 2) (2 * u) u := by
-      simpa using (hasDerivAt_pow 2 u).const_add (α ^ 2)
+    have h1 : HasDerivAt (fun u : ℝ => α ^ (2 : ℕ) + u ^ (2 : ℕ)) (2 * u) u := by
+      simpa using (hasDerivAt_pow 2 u).const_add (α ^ (2 : ℕ))
     have h2 := (h1.log (ne_of_gt (hpos u))).div_const 2
-    have hval : 2 * u / (α ^ 2 + u ^ 2) / 2 = u / (α ^ 2 + u ^ 2) := by
+    have hval : 2 * u / (α ^ (2 : ℕ) + u ^ (2 : ℕ)) / 2 = u / (α ^ (2 : ℕ) + u ^ (2 : ℕ)) := by
       field_simp
     rw [hval] at h2
     exact h2
-  have hcont : Continuous fun u : ℝ => u / (α ^ 2 + u ^ 2) :=
+  have hcont : Continuous fun u : ℝ => u / (α ^ (2 : ℕ) + u ^ (2 : ℕ)) :=
     continuous_id.div (by fun_prop) (fun u => ne_of_gt (hpos u))
-  have hint : IntervalIntegrable (fun u : ℝ => u / (α ^ 2 + u ^ 2)) volume a b :=
+  have hint : IntervalIntegrable (fun u : ℝ => u / (α ^ (2 : ℕ) + u ^ (2 : ℕ))) volume a b :=
     hcont.intervalIntegrable a b
   have := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
   rw [this]
@@ -68,35 +68,35 @@ part, and the logarithm the imaginary one. -/
 theorem integral_vertical_pole_shift {α T τ : ℝ} (hα : α ≠ 0) :
     (∫ y : ℝ in (-T)..T, ((α : ℂ) + ((y + τ : ℝ)) * Complex.I)⁻¹)
       = ((Real.arctan ((T + τ) / α) - Real.arctan ((-T + τ) / α) : ℝ) : ℂ)
-        - (((Real.log (α ^ 2 + (T + τ) ^ 2)
-              - Real.log (α ^ 2 + (-T + τ) ^ 2)) / 2 : ℝ) : ℂ) * Complex.I := by
+        - (((Real.log (α ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ))
+              - Real.log (α ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ))) / 2 : ℝ) : ℂ) * Complex.I := by
   have hsplit : ∀ y : ℝ, ((α : ℂ) + ((y + τ : ℝ)) * Complex.I)⁻¹
-      = ((α / (α ^ 2 + (y + τ) ^ 2) : ℝ) : ℂ)
-        - (((y + τ) / (α ^ 2 + (y + τ) ^ 2) : ℝ) : ℂ) * Complex.I := fun y =>
+      = ((α / (α ^ (2 : ℕ) + (y + τ) ^ (2 : ℕ)) : ℝ) : ℂ)
+        - (((y + τ) / (α ^ (2 : ℕ) + (y + τ) ^ (2 : ℕ)) : ℝ) : ℂ) * Complex.I := fun y =>
     inv_add_mul_I_eq hα
   rw [intervalIntegral.integral_congr
-    (g := fun y : ℝ => ((α / (α ^ 2 + (y + τ) ^ 2) : ℝ) : ℂ)
-      - (((y + τ) / (α ^ 2 + (y + τ) ^ 2) : ℝ) : ℂ) * Complex.I) (fun y _ => hsplit y)]
-  have hreR : Continuous fun y : ℝ => (α / (α ^ 2 + (y + τ) ^ 2) : ℝ) := by
+    (g := fun y : ℝ => ((α / (α ^ (2 : ℕ) + (y + τ) ^ (2 : ℕ)) : ℝ) : ℂ)
+      - (((y + τ) / (α ^ (2 : ℕ) + (y + τ) ^ (2 : ℕ)) : ℝ) : ℂ) * Complex.I) (fun y _ => hsplit y)]
+  have hreR : Continuous fun y : ℝ => (α / (α ^ (2 : ℕ) + (y + τ) ^ (2 : ℕ)) : ℝ) := by
     refine Continuous.div continuous_const (by fun_prop) ?_
     intro y; positivity
-  have hre : Continuous fun y : ℝ => ((α / (α ^ 2 + (y + τ) ^ 2) : ℝ) : ℂ) :=
+  have hre : Continuous fun y : ℝ => ((α / (α ^ (2 : ℕ) + (y + τ) ^ (2 : ℕ)) : ℝ) : ℂ) :=
     Complex.continuous_ofReal.comp hreR
-  have himR : Continuous fun y : ℝ => ((y + τ) / (α ^ 2 + (y + τ) ^ 2) : ℝ) := by
+  have himR : Continuous fun y : ℝ => ((y + τ) / (α ^ (2 : ℕ) + (y + τ) ^ (2 : ℕ)) : ℝ) := by
     refine Continuous.div (by fun_prop) (by fun_prop) ?_
     intro y; positivity
   have him : Continuous fun y : ℝ =>
-      (((y + τ) / (α ^ 2 + (y + τ) ^ 2) : ℝ) : ℂ) * Complex.I :=
+      (((y + τ) / (α ^ (2 : ℕ) + (y + τ) ^ (2 : ℕ)) : ℝ) : ℂ) * Complex.I :=
     (Complex.continuous_ofReal.comp himR).mul continuous_const
   rw [intervalIntegral.integral_sub (hre.intervalIntegrable _ _) (him.intervalIntegrable _ _)]
   congr 1
   · rw [intervalIntegral.integral_ofReal]
     congr 1
-    rw [intervalIntegral.integral_comp_add_right (fun u : ℝ => α / (α ^ 2 + u ^ 2)) τ,
+    rw [intervalIntegral.integral_comp_add_right (fun u : ℝ => α / (α ^ (2 : ℕ) + u ^ (2 : ℕ))) τ,
       integral_re_pole_interval hα]
   · rw [intervalIntegral.integral_mul_const, intervalIntegral.integral_ofReal]
     congr 2
-    rw [intervalIntegral.integral_comp_add_right (fun u : ℝ => u / (α ^ 2 + u ^ 2)) τ,
+    rw [intervalIntegral.integral_comp_add_right (fun u : ℝ => u / (α ^ (2 : ℕ) + u ^ (2 : ℕ))) τ,
       integral_im_pole_interval hα]
 
 /-- **The twisted pole term on the truncated Perron line.**  The main term of the twisted Chebyshev
@@ -110,8 +110,8 @@ theorem integral_twist_pole_term_line {N H : ℝ} {d T τ : ℝ} (hd : 1 < d) :
             (twistPole τ)
           * ((((Real.arctan ((T + τ) / (d - 1))
                 - Real.arctan ((-T + τ) / (d - 1)) : ℝ)) : ℂ)
-            - ((((Real.log ((d - 1) ^ 2 + (T + τ) ^ 2)
-                  - Real.log ((d - 1) ^ 2 + (-T + τ) ^ 2)) / 2 : ℝ)) : ℂ) * Complex.I) := by
+            - ((((Real.log ((d - 1) ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ))
+                  - Real.log ((d - 1) ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ))) / 2 : ℝ)) : ℂ) * Complex.I) := by
   have hα : (d - 1 : ℝ) ≠ 0 := by
     intro h
     have : d = 1 := by linarith

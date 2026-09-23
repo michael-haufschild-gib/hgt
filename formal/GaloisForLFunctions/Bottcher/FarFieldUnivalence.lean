@@ -12,7 +12,7 @@ far field is the convex half-plane `{Re ζ > log R}` and `Φ(ζ) := ζ + S(exp �
 has `Re Φ' = 1 + Re(z·S'(z)) ≥ 1 − 16‖c‖/|z|² > 0`, so `Φ` is injective (Noshiro–Warschawski,
 `injOn_of_re_deriv_pos`); the `2πi`-periodicity of `Φ` then descends injectivity to `φ_c`. -/
 theorem bottcherCoord_injOn_far {c : ℂ} {R : ℝ}
-    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2) :
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ (2 : ℕ)) :
     Set.InjOn (bottcherCoord c) {z | R < ‖z‖} := by
   have hcnn : (0:ℝ) ≤ ‖c‖ := norm_nonneg c
   have hmaxpos : (0:ℝ) < max 2 ‖c‖ := lt_of_lt_of_le (by norm_num) (le_max_left _ _)
@@ -58,14 +58,14 @@ theorem bottcherCoord_injOn_far {c : ℂ} {R : ℝ}
     set z := Complex.exp ζ with hz
     have hznorm : R < ‖z‖ := hexpnormgt ζ hζ
     have hzpos : 0 < ‖z‖ := lt_trans hRpos hznorm
-    have hbd : ‖deriv S z‖ ≤ 16 * ‖c‖ / ‖z‖ ^ 3 :=
+    have hbd : ‖deriv S z‖ ≤ 16 * ‖c‖ / ‖z‖ ^ (3 : ℕ) :=
       norm_deriv_bottcherLogSum_le (by linarith [hexpnormgt ζ hζ] : 2 * max 2 ‖c‖ < ‖z‖)
     have hwbd : ‖z * deriv S z‖ < 1 := by
       rw [norm_mul]
-      have hz3 : (0:ℝ) < ‖z‖ ^ 3 := by positivity
-      have hbd' : ‖deriv S z‖ * ‖z‖ ^ 3 ≤ 16 * ‖c‖ := (le_div_iff₀ hz3).mp hbd
-      have hzsq : 16 * ‖c‖ < ‖z‖ ^ 2 := by nlinarith [hznorm, hRpos, hR2]
-      have hp : ‖z‖ ^ 3 = ‖z‖ ^ 2 * ‖z‖ := by ring
+      have hz3 : (0:ℝ) < ‖z‖ ^ (3 : ℕ) := by positivity
+      have hbd' : ‖deriv S z‖ * ‖z‖ ^ (3 : ℕ) ≤ 16 * ‖c‖ := (le_div_iff₀ hz3).mp hbd
+      have hzsq : 16 * ‖c‖ < ‖z‖ ^ (2 : ℕ) := by nlinarith [hznorm, hRpos, hR2]
+      have hp : ‖z‖ ^ (3 : ℕ) = ‖z‖ ^ (2 : ℕ) * ‖z‖ := by ring
       nlinarith [hbd', hzsq, hzpos, hp, mul_pos hzpos hzpos, norm_nonneg (deriv S z)]
     have hstrict : -1 < (z * deriv S z).re := by
       have hle := Complex.abs_re_le_norm (z * deriv S z)
@@ -130,7 +130,7 @@ left inverse `ψ = invFunOn φ_c A` (`A = {|z|>R}`) is analytic at every `φ_c z
 on `A`, and is a local right inverse. So `φ_c : A → φ_c(A)` is a biholomorphism — the far-field chart the
 dyadic-cover deck map is continued inward from. -/
 theorem exists_analytic_inverse_far {c : ℂ} {R : ℝ}
-    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2) :
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ (2 : ℕ)) :
     ∃ ψ : ℂ → ℂ,
       (∀ z, R < ‖z‖ → ψ (bottcherCoord c z) = z) ∧
       (∀ z, R < ‖z‖ → AnalyticAt ℂ ψ (bottcherCoord c z)) ∧

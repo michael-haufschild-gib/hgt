@@ -24,16 +24,16 @@ noncomputable section
 `im² < re²` costs nothing beyond one factor. -/
 theorem chargeDensity_div_mass_le_normSq {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
     xiShiftedTransverseChargeDensity y q / xiShiftedResponseMass y q
-      ≤ ‖xiShiftedReciprocalSquare y q‖ ^ 2 := by
+      ≤ ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ) := by
   set z := xiShiftedReciprocalSquare y q with hz
   have hre : 0 < z.re := by
     simpa only [hz, xiShiftedResponseMass] using xiShiftedResponseMass_pos hy q
-  have hsector : z.im ^ 2 < z.re ^ 2 := by
+  have hsector : z.im ^ (2 : ℕ) < z.re ^ (2 : ℕ) := by
     simpa only [hz] using xiShiftedReciprocalSquare_im_sq_lt_re_sq hy q
-  have hnorm : ‖z‖ ^ 2 = Complex.normSq z := by
+  have hnorm : ‖z‖ ^ (2 : ℕ) = Complex.normSq z := by
     rw [Complex.sq_norm]
   have hval : xiShiftedTransverseChargeDensity y q / xiShiftedResponseMass y q
-      = z.im ^ 2 * Complex.normSq z / z.re ^ 2 := by
+      = z.im ^ (2 : ℕ) * Complex.normSq z / z.re ^ (2 : ℕ) := by
     rw [xiShiftedTransverseChargeDensity, xiShiftedResponseMass, ← hz, div_div]
     ring_nf
   rw [hval, hnorm, div_le_iff₀ (by positivity)]
@@ -43,11 +43,11 @@ theorem chargeDensity_div_mass_le_normSq {y : ℝ} (hy : 0 < y) (q : XiZeroCopy)
 /-- **`(SR-64.10)`: one anchored pair pays one atom's charge.** -/
 theorem anchor_pair_pays_charge {y : ℝ} (hy : 0 < y) {r q : XiZeroCopy} {A : ℝ} (hA : 0 ≤ A)
     (hslope : xiShiftedResponseSlope y q < xiShiftedResponseSlope y r / 2)
-    (hsmall : A * ‖xiShiftedReciprocalSquare y q‖ ^ 2
-      < xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ 2 / 4) :
+    (hsmall : A * ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ)
+      < xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ (2 : ℕ) / 4) :
     A * xiShiftedTransverseChargeDensity y q
       < xiShiftedResponseMass y q * xiShiftedResponseMass y r
-        * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ 2 := by
+        * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ (2 : ℕ) := by
   have hmq : 0 < xiShiftedResponseMass y q := xiShiftedResponseMass_pos hy q
   have hmr : 0 < xiShiftedResponseMass y r := xiShiftedResponseMass_pos hy r
   have hsq : 0 < xiShiftedResponseSlope y q := xiShiftedResponseSlope_pos hy q
@@ -55,24 +55,24 @@ theorem anchor_pair_pays_charge {y : ℝ} (hy : 0 < y) {r q : XiZeroCopy} {A : �
   have hgap : xiShiftedResponseSlope y r / 2
       < xiShiftedResponseSlope y r - xiShiftedResponseSlope y q := by
     linarith
-  have hgapsq : xiShiftedResponseSlope y r ^ 2 / 4
-      < (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ 2 := by
+  have hgapsq : xiShiftedResponseSlope y r ^ (2 : ℕ) / 4
+      < (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ (2 : ℕ) := by
     nlinarith [hgap, hsr, hsq]
   have hratio : xiShiftedTransverseChargeDensity y q / xiShiftedResponseMass y q
-      ≤ ‖xiShiftedReciprocalSquare y q‖ ^ 2 := chargeDensity_div_mass_le_normSq hy q
+      ≤ ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ) := chargeDensity_div_mass_le_normSq hy q
   have hcharge : A * xiShiftedTransverseChargeDensity y q
-      ≤ A * ‖xiShiftedReciprocalSquare y q‖ ^ 2 * xiShiftedResponseMass y q := by
+      ≤ A * ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ) * xiShiftedResponseMass y q := by
     have hstep : xiShiftedTransverseChargeDensity y q
-        ≤ ‖xiShiftedReciprocalSquare y q‖ ^ 2 * xiShiftedResponseMass y q := by
+        ≤ ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ) * xiShiftedResponseMass y q := by
       rw [div_le_iff₀ hmq] at hratio
       exact hratio
     nlinarith [hstep, hA, hmq]
-  have hkey : A * ‖xiShiftedReciprocalSquare y q‖ ^ 2 * xiShiftedResponseMass y q
+  have hkey : A * ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ) * xiShiftedResponseMass y q
       < xiShiftedResponseMass y q * xiShiftedResponseMass y r
-        * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ 2 := by
-    have hstep : xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ 2 / 4
+        * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ (2 : ℕ) := by
+    have hstep : xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ (2 : ℕ) / 4
         < xiShiftedResponseMass y r
-          * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ 2 := by
+          * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ (2 : ℕ) := by
       nlinarith [hgapsq, hmr]
     nlinarith [hsmall, hstep, hmq]
   linarith
@@ -96,23 +96,23 @@ theorem exists_finset_anchor_payment {y : ℝ} (hy : 0 < y) (r : XiZeroCopy) :
   have hslope : ∀ᶠ q : XiZeroCopy in cofinite,
       xiShiftedResponseSlope y q < xiShiftedResponseSlope y r / 2 :=
     (tendsto_xiShiftedResponseSlope_cofinite_zero hy).eventually_lt_const (by linarith)
-  have hnormzero : Tendsto (fun q : XiZeroCopy => A * ‖xiShiftedReciprocalSquare y q‖ ^ 2)
+  have hnormzero : Tendsto (fun q : XiZeroCopy => A * ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ))
       cofinite (nhds 0) := by
     have hnorm : Tendsto (fun q : XiZeroCopy => ‖xiShiftedReciprocalSquare y q‖)
         cofinite (nhds 0) := by
       simpa using (summable_xiShiftedReciprocalSquare_pow hy.le 0).tendsto_cofinite_zero.norm
-    have hsq : Tendsto (fun q : XiZeroCopy => ‖xiShiftedReciprocalSquare y q‖ ^ 2)
+    have hsq : Tendsto (fun q : XiZeroCopy => ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ))
         cofinite (nhds 0) := by
       simpa using hnorm.pow 2
     have := hsq.const_mul A
     simpa using this
   have hsmall : ∀ᶠ q : XiZeroCopy in cofinite,
-      A * ‖xiShiftedReciprocalSquare y q‖ ^ 2
-        < xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ 2 / 4 :=
+      A * ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ)
+        < xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ (2 : ℕ) / 4 :=
     hnormzero.eventually_lt_const (by positivity)
   have hfin : {q : XiZeroCopy | ¬ (xiShiftedResponseSlope y q
-      < xiShiftedResponseSlope y r / 2 ∧ A * ‖xiShiftedReciprocalSquare y q‖ ^ 2
-        < xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ 2 / 4)}.Finite :=
+      < xiShiftedResponseSlope y r / 2 ∧ A * ‖xiShiftedReciprocalSquare y q‖ ^ (2 : ℕ)
+        < xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ (2 : ℕ) / 4)}.Finite :=
     Filter.eventually_cofinite.mp (hslope.and hsmall)
   refine ⟨insert r hfin.toFinset, Finset.mem_insert_self _ _, ?_⟩
   set F : Finset XiZeroCopy := insert r hfin.toFinset with hFdef
@@ -123,15 +123,15 @@ theorem exists_finset_anchor_payment {y : ℝ} (hy : 0 < y) (r : XiZeroCopy) :
   have hpay : ∀ q : S,
       A * xiShiftedTransverseChargeDensity y (q : XiZeroCopy)
         ≤ xiShiftedResponseMass y (q : XiZeroCopy) * xiShiftedResponseMass y r
-          * (xiShiftedResponseSlope y (q : XiZeroCopy) - xiShiftedResponseSlope y r) ^ 2 := by
+          * (xiShiftedResponseSlope y (q : XiZeroCopy) - xiShiftedResponseSlope y r) ^ (2 : ℕ) := by
     intro q
     have hq : (q : XiZeroCopy) ∉ F := q.2
     have hq0 : (q : XiZeroCopy) ∉ hfin.toFinset := fun h => hq (by
       rw [hFdef]
       exact Finset.mem_insert_of_mem h)
     have hmem : (q : XiZeroCopy) ∈ {x | xiShiftedResponseSlope y x
-        < xiShiftedResponseSlope y r / 2 ∧ A * ‖xiShiftedReciprocalSquare y x‖ ^ 2
-        < xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ 2 / 4} := by
+        < xiShiftedResponseSlope y r / 2 ∧ A * ‖xiShiftedReciprocalSquare y x‖ ^ (2 : ℕ)
+        < xiShiftedResponseMass y r * xiShiftedResponseSlope y r ^ (2 : ℕ) / 4} := by
       by_contra hcon
       exact hq0 (hfin.mem_toFinset.mpr hcon)
     exact le_of_lt (anchor_pair_pays_charge hy hA0 hmem.1 hmem.2)
@@ -141,18 +141,18 @@ theorem exists_finset_anchor_payment {y : ℝ} (hy : 0 < y) (r : XiZeroCopy) :
     ((summable_xiShiftedTransverseChargeDensity hy).subtype S).mul_left A
   have hsumpair : Summable fun q : S =>
       xiShiftedResponseMass y (q : XiZeroCopy) * xiShiftedResponseMass y r
-        * (xiShiftedResponseSlope y (q : XiZeroCopy) - xiShiftedResponseSlope y r) ^ 2 := by
+        * (xiShiftedResponseSlope y (q : XiZeroCopy) - xiShiftedResponseSlope y r) ^ (2 : ℕ) := by
     have hglobal : Summable fun q : XiZeroCopy =>
         xiShiftedResponseMass y q * xiShiftedResponseMass y r
-          * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ 2 := by
+          * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ (2 : ℕ) := by
       have hexp : ∀ q : XiZeroCopy,
           xiShiftedResponseMass y q * xiShiftedResponseMass y r
-            * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ 2
+            * (xiShiftedResponseSlope y q - xiShiftedResponseSlope y r) ^ (2 : ℕ)
             = xiShiftedResponseMass y r *
-              (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2
+              (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ)
                 - 2 * xiShiftedResponseSlope y r
                   * (xiShiftedResponseMass y q * xiShiftedResponseSlope y q)
-                + xiShiftedResponseSlope y r ^ 2 * xiShiftedResponseMass y q) := by
+                + xiShiftedResponseSlope y r ^ (2 : ℕ) * xiShiftedResponseMass y q) := by
         intro q
         ring
       refine (Summable.congr ?_ fun q => (hexp q).symm)
@@ -160,7 +160,7 @@ theorem exists_finset_anchor_payment {y : ℝ} (hy : 0 < y) (r : XiZeroCopy) :
         ((summable_xiShiftedResponseMass_mul_slope hy).mul_left
           (2 * xiShiftedResponseSlope y r))).add
         ((summable_xiShiftedResponseMass hy.le).mul_left
-          (xiShiftedResponseSlope y r ^ 2))).mul_left _
+          (xiShiftedResponseSlope y r ^ (2 : ℕ)))).mul_left _
     exact hglobal.subtype S
   have hcompare := Summable.tsum_le_tsum hpay hsumcharge hsumpair
   have hanchor := tsum_anchor_pairs_le (a := xiShiftedResponseMass y)
@@ -170,8 +170,8 @@ theorem exists_finset_anchor_payment {y : ℝ} (hy : 0 < y) (r : XiZeroCopy) :
     (fun i => (xiShiftedResponseMass_pos hy i).le) r hrS hsumpair
   have hH : xiShiftedResponseHilbertDispersion y
       = (∑' i : XiZeroCopy, xiShiftedResponseMass y i)
-          * (∑' i : XiZeroCopy, xiShiftedResponseMass y i * xiShiftedResponseSlope y i ^ 2)
-        - (∑' i : XiZeroCopy, xiShiftedResponseMass y i * xiShiftedResponseSlope y i) ^ 2 := by
+          * (∑' i : XiZeroCopy, xiShiftedResponseMass y i * xiShiftedResponseSlope y i ^ (2 : ℕ))
+        - (∑' i : XiZeroCopy, xiShiftedResponseMass y i * xiShiftedResponseSlope y i) ^ (2 : ℕ) := by
     rw [xiShiftedResponseHilbertDispersion, tsum_xiShiftedResponseMass_eq_moment_re hy.le,
       tsum_xiShiftedResponseMass_mul_slope_eq_moment_re hy]
   rw [hH]

@@ -199,12 +199,12 @@ theorem clearedTemporalExpression_norm_le (q : XiZeroCopy) (branch : Bool) (a : 
     (hBS : 0 ≤ BS) (hBK : 0 ≤ BK) :
     ‖clearedTemporalExpression q branch a zang u t‖ ≤
       ‖modeAngularSquare (physicalModeAngularJet q zang)‖ *
-        ((2 * M * ‖physicalAngularParameter q ^ 2 - 1 / 4 - 2‖ * BS + M * BK) * CH) := by
+        ((2 * M * ‖physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2‖ * BS + M * BK) * CH) := by
   have hM : 0 ≤ M := (norm_nonneg u).trans hu
   have h2 : ‖(-2:ℂ)‖ = 2 := by norm_num
-  have hinner : ‖-2 * u * (physicalAngularParameter q ^ 2 - 1 / 4 - 2) * selfExpression q branch a u t -
+  have hinner : ‖-2 * u * (physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2) * selfExpression q branch a u t -
       u * contactExpression q branch a u t‖ ≤
-      2 * M * ‖physicalAngularParameter q ^ 2 - 1 / 4 - 2‖ * BS + M * BK := by
+      2 * M * ‖physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2‖ * BS + M * BK := by
     refine (norm_sub_le _ _).trans (add_le_add ?_ ?_)
     · rw [norm_mul, norm_mul, norm_mul, h2]
       refine mul_le_mul (mul_le_mul (mul_le_mul_of_nonneg_left hu (by norm_num)) le_rfl
@@ -272,7 +272,7 @@ theorem clearedTemporalDensity_outer_uniform_bound (q : XiZeroCopy) (branch side
       Finset.sum_nonneg (fun i _ => norm_nonneg _)
     positivity
   refine ⟨r, ‖modeAngularSquare (physicalModeAngularJet q zang)‖ *
-    ((2 * M * ‖physicalAngularParameter q ^ 2 - 1 / 4 - 2‖ * BS + M * BK) * CH), hr,
+    ((2 * M * ‖physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2‖ * BS + M * BK) * CH), hr,
     by positivity, ?_⟩
   intro u hu t ht
   obtain ⟨huG, huH, hu0, hu1, hu2, huA, huF, hu1'⟩ := hall (mem_ball.mp hu)

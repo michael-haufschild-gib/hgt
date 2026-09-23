@@ -29,7 +29,7 @@ noncomputable section
 /-- The exponential zero-series summand of Suzuki's screw kernel. -/
 def suzukiScrewExpTerm (t u : ℝ) (q : XiZeroCopy) : ℂ :=
   (Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) *
-    (Complex.exp (-(I * xiSpectralPoint q * (u : ℂ))) - 1) / xiSpectralPoint q ^ 2
+    (Complex.exp (-(I * xiSpectralPoint q * (u : ℂ))) - 1) / xiSpectralPoint q ^ (2 : ℕ)
 
 theorem norm_exp_I_xiSpectralPoint_mul_le (t : ℝ) (q : XiZeroCopy) :
     ‖Complex.exp (I * xiSpectralPoint q * (t : ℂ))‖ ≤ Real.exp (|t| / 2) := by
@@ -47,7 +47,7 @@ theorem norm_exp_I_xiSpectralPoint_mul_le (t : ℝ) (q : XiZeroCopy) :
 theorem norm_suzukiScrewExpTerm_le (t u : ℝ) (q : XiZeroCopy) :
     ‖suzukiScrewExpTerm t u q‖ ≤
       ((Real.exp (|t| / 2) + 1) * (Real.exp (|u| / 2) + 1)) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   have h1 : ‖Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1‖ ≤ Real.exp (|t| / 2) + 1 := by
     refine le_trans (norm_sub_le _ _) ?_
     rw [norm_one]
@@ -73,10 +73,10 @@ theorem summable_suzukiScrewExpTerm (t u : ℝ) :
 
 /-- The exponential pair identity behind the reflection symmetrization. -/
 theorem screw_exp_pair_identity (w a b : ℂ) (hw : w ≠ 0) :
-    (Complex.exp (w * a) - 1) * (Complex.exp (-(w * b)) - 1) / (-w ^ 2)
-      + (Complex.exp (-(w * a)) - 1) * (Complex.exp (w * b) - 1) / (-w ^ 2)
-      = 2 * (-((Complex.cosh ((a - b) * w) - 1) / w ^ 2)
-          + (Complex.cosh (a * w) - 1) / w ^ 2 + (Complex.cosh (b * w) - 1) / w ^ 2) := by
+    (Complex.exp (w * a) - 1) * (Complex.exp (-(w * b)) - 1) / (-w ^ (2 : ℕ))
+      + (Complex.exp (-(w * a)) - 1) * (Complex.exp (w * b) - 1) / (-w ^ (2 : ℕ))
+      = 2 * (-((Complex.cosh ((a - b) * w) - 1) / w ^ (2 : ℕ))
+          + (Complex.cosh (a * w) - 1) / w ^ (2 : ℕ) + (Complex.cosh (b * w) - 1) / w ^ (2 : ℕ)) := by
   rw [Complex.cosh, Complex.cosh, Complex.cosh]
   rw [show ((a - b) * w) = w * a - w * b by ring, show (a * w) = w * a by ring,
       show (b * w) = w * b by ring]
@@ -95,11 +95,11 @@ theorem suzukiScrewExpTerm_add_reflect (t u : ℝ) (q : XiZeroCopy) :
   have hwne : I * xiSpectralPoint q ≠ 0 :=
     mul_ne_zero Complex.I_ne_zero (xiSpectralPoint_ne_zero q)
   have hkey := screw_exp_pair_identity (I * xiSpectralPoint q) (t : ℂ) (u : ℂ) hwne
-  have hsq : xiSpectralPoint q ^ 2 = -(I * xiSpectralPoint q) ^ 2 := by
+  have hsq : xiSpectralPoint q ^ (2 : ℕ) = -(I * xiSpectralPoint q) ^ (2 : ℕ) := by
     rw [mul_pow, Complex.I_sq]; ring
   have hcast : ((t - u : ℝ) : ℂ) = (t : ℂ) - (u : ℂ) := by push_cast; ring
   simp only [suzukiScrewExpTerm, xiScrewDivisorTerm, hsq, hrefl, hcast]
-  rw [show ((-xiSpectralPoint q : ℂ)) ^ 2 = -(I * xiSpectralPoint q) ^ 2 by
+  rw [show ((-xiSpectralPoint q : ℂ)) ^ (2 : ℕ) = -(I * xiSpectralPoint q) ^ (2 : ℕ) by
     rw [neg_pow, mul_pow, Complex.I_sq]; ring]
   rw [show I * -xiSpectralPoint q * (t : ℂ) = -(I * xiSpectralPoint q * (t : ℂ)) by ring,
     show -(I * -xiSpectralPoint q * (u : ℂ)) = I * xiSpectralPoint q * (u : ℂ) by ring]

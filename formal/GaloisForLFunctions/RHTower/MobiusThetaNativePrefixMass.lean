@@ -152,7 +152,7 @@ theorem mobiusThetaNativeCollarSource_pullMass (k : ℕ) (m : ℕ+) :
       dsimp [mobiusThetaNativeMassParameter]
       push_cast
       calc
-        _ = I ^ 2 * (1 / 2 - (m : ℂ)⁻¹) := by ring
+        _ = I ^ (2 : ℕ) * (1 / 2 - (m : ℂ)⁻¹) := by ring
         _ = _ := by rw [I_sq]; ring
     rw [mobiusThetaCenteredParameter, hiv]
     field_simp

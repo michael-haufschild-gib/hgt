@@ -265,7 +265,7 @@ theorem integrableOn_exp_mul_ccmFirstClockScrewKernel
   have htarget : IntegrableOn (fun L : ℝ =>
       (Complex.exp ((-s) * L) -
         (Complex.exp ((-s + I * z) * L) +
-          Complex.exp ((-s - I * z) * L)) / 2) / z ^ 2) (Ioi 0) :=
+          Complex.exp ((-s - I * z) * L)) / 2) / z ^ (2 : ℕ)) (Ioi 0) :=
     (hibase.sub ((hileft.add hiright).div_const 2)).div_const _
   refine htarget.congr_fun ?_ measurableSet_Ioi
   intro L _hL
@@ -297,7 +297,7 @@ theorem integral_exp_mul_ccmFirstClockScrewKernel
     (hzstrip : |z.im| < 1 / 2) (hsHalf : 1 / 2 < s.re) :
     (∫ L : ℝ in Ioi 0,
       Complex.exp (-s * (L : ℂ)) * ccmFirstClockScrewKernel L z) =
-        1 / (s * (s ^ 2 + z ^ 2)) := by
+        1 / (s * (s ^ (2 : ℕ) + z ^ (2 : ℕ))) := by
   have hminus : (-s + I * z).re < 0 := by
     simp only [add_re, neg_re, mul_re, I_re, zero_mul, I_im, one_mul,
       zero_sub]
@@ -329,8 +329,8 @@ theorem integral_exp_mul_ccmFirstClockScrewKernel
     intro h
     rw [h, zero_re] at hsHalf
     linarith
-  have hsq : s ^ 2 + z ^ 2 ≠ 0 := by
-    rw [show s ^ 2 + z ^ 2 = (s - I * z) * (s + I * z) by
+  have hsq : s ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0 := by
+    rw [show s ^ (2 : ℕ) + z ^ (2 : ℕ) = (s - I * z) * (s + I * z) by
       rw [mul_add, sub_mul]
       ring_nf
       rw [I_sq]
@@ -361,11 +361,11 @@ theorem integral_exp_mul_ccmFirstClockScrewKernel
   have hiright := integrableOn_exp_mul_complex_Ioi hplus 0
   have hfun : (fun L : ℝ =>
       Complex.exp (-s * (L : ℂ)) *
-        ((1 - Complex.cos ((L : ℂ) * z)) / z ^ 2)) =
+        ((1 - Complex.cos ((L : ℂ) * z)) / z ^ (2 : ℕ))) =
       fun L : ℝ =>
         (Complex.exp ((-s) * L) -
           (Complex.exp ((-s + I * z) * L) +
-            Complex.exp ((-s - I * z) * L)) / 2) / z ^ 2 := by
+            Complex.exp ((-s - I * z) * L)) / 2) / z ^ (2 : ℕ) := by
     funext L
     rw [Complex.cos]
     have hleftExp :
@@ -403,7 +403,7 @@ theorem integral_exp_mul_ccmFirstClockScrewKernel
   rw [integral_div]
   rw [hinner]
   field_simp [hz, hs0, hdenMinus, hdenPlus, hsq]
-  have hfactor : (s - I * z) * (s + I * z) = s ^ 2 + z ^ 2 := by
+  have hfactor : (s - I * z) * (s + I * z) = s ^ (2 : ℕ) + z ^ (2 : ℕ) := by
     rw [mul_add, sub_mul]
     ring_nf
     rw [I_sq]
@@ -420,8 +420,8 @@ filter. -/
 theorem tsum_screwLaplace_eq_logDeriv_XiC
     {s : ℂ} (hsHalf : 1 / 2 < s.re) :
     (∑' q : XiZeroCopy,
-      1 / (s * (s ^ 2 + xiSpectralPoint q ^ 2))) =
-        I / s ^ 2 * logDeriv XiC (I * s) := by
+      1 / (s * (s ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ)))) =
+        I / s ^ (2 : ℕ) * logDeriv XiC (I * s) := by
   have hs0 : s ≠ 0 := by
     intro hs
     rw [hs, zero_re] at hsHalf
@@ -434,11 +434,11 @@ theorem tsum_screwLaplace_eq_logDeriv_XiC
     linarith
   have hsum := summable_xiReciprocalSquareResolventTerm hXi
   have hterm (q : XiZeroCopy) :
-      1 / (s * (s ^ 2 + xiSpectralPoint q ^ 2)) =
+      1 / (s * (s ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ))) =
         (1 / s) * xiReciprocalSquareResolventTerm (I * s) q := by
     have hz0 := xiSpectralPoint_ne_zero q
     have hden :
-        s ^ 2 + xiSpectralPoint q ^ 2 ≠ 0 := by
+        s ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ) ≠ 0 := by
       intro hzero
       have hprod :
           (I * s - xiSpectralPoint q) *
@@ -446,7 +446,7 @@ theorem tsum_screwLaplace_eq_logDeriv_XiC
         calc
           (I * s - xiSpectralPoint q) *
               (I * s + xiSpectralPoint q) =
-              -(s ^ 2 + xiSpectralPoint q ^ 2) := by
+              -(s ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ)) := by
                 rw [mul_add, sub_mul]
                 ring_nf
                 rw [I_sq]
@@ -467,7 +467,7 @@ theorem tsum_screwLaplace_eq_logDeriv_XiC
     rw [← add_mul, mul_inv_cancel₀ hden]
   calc
     (∑' q : XiZeroCopy,
-        1 / (s * (s ^ 2 + xiSpectralPoint q ^ 2))) =
+        1 / (s * (s ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ)))) =
         ∑' q : XiZeroCopy,
           (1 / s) * xiReciprocalSquareResolventTerm (I * s) q := by
             apply tsum_congr
@@ -475,7 +475,7 @@ theorem tsum_screwLaplace_eq_logDeriv_XiC
     _ = (1 / s) *
         ∑' q : XiZeroCopy, xiReciprocalSquareResolventTerm (I * s) q := by
           rw [tsum_mul_left]
-    _ = I / s ^ 2 * logDeriv XiC (I * s) := by
+    _ = I / s ^ (2 : ℕ) * logDeriv XiC (I * s) := by
       have htrace := xiRelativeResolventTrace_eq_reciprocalSquareResolvent hXi
       have hlog := logDeriv_XiC_eq_relativeResolventTrace hXi
       field_simp [hs0]
@@ -493,7 +493,7 @@ theorem integral_exp_mul_xiScrewDivisor_eq_logDeriv_XiC
     {s : ℂ} (hsHalf : 1 / 2 < s.re) :
     (∫ L : ℝ in Ioi 0,
       Complex.exp (-s * (L : ℂ)) * xiScrewDivisor L) =
-        I / s ^ 2 * logDeriv XiC (I * s) := by
+        I / s ^ (2 : ℕ) * logDeriv XiC (I * s) := by
   let F : XiZeroCopy → ℝ → ℂ := fun q L =>
     Complex.exp (-s * (L : ℂ)) *
       ccmFirstClockScrewKernel L (xiSpectralPoint q)
@@ -512,13 +512,13 @@ theorem integral_exp_mul_xiScrewDivisor_eq_logDeriv_XiC
     exact integrableOn_exp_mul_ccmFirstClockScrewKernel
       (xiSpectralPoint_ne_zero q) hzstrip hsHalf
   have hpointBound (q : XiZeroCopy) (L : ℝ) (hL : L ∈ Ioi (0 : ℝ)) :
-      ‖F q L‖ ≤ g L * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+      ‖F q L‖ ≤ g L * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
     have hLpos : 0 < L := hL
     have hterm := norm_xiScrewDivisorTerm_le L q
     rw [abs_of_pos hLpos] at hterm
     change ‖Complex.exp (-s * (L : ℂ)) *
       ccmFirstClockScrewKernel L (xiSpectralPoint q)‖ ≤
-        g L * (1 / ‖xiSpectralPoint q‖ ^ 2)
+        g L * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))
     rw [← xiScrewDivisorTerm_eq_ccmFirstClockScrewKernel,
       norm_mul, Complex.norm_exp]
     have hexpRe :
@@ -528,9 +528,9 @@ theorem integral_exp_mul_xiScrewDivisor_eq_logDeriv_XiC
     calc
       Real.exp (-s.re * L) * ‖xiScrewDivisorTerm L q‖ ≤
           Real.exp (-s.re * L) *
-            ((Real.exp (L / 2) + 1) / ‖xiSpectralPoint q‖ ^ 2) :=
+            ((Real.exp (L / 2) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hterm (Real.exp_pos _).le
-      _ = g L * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+      _ = g L * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         dsimp only [g]
         rw [show (-s.re + 1 / 2) * L =
           -s.re * L + L / 2 by ring]
@@ -545,17 +545,17 @@ theorem integral_exp_mul_xiScrewDivisor_eq_logDeriv_XiC
         (∫ L : ℝ in Ioi 0, g L))
     have hmajorInt :
         IntegrableOn
-          (fun L : ℝ => g L * (1 / ‖xiSpectralPoint q‖ ^ 2)) (Ioi 0) :=
+          (fun L : ℝ => g L * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) (Ioi 0) :=
       hgint.mul_const _
     calc
       (∫ L : ℝ in Ioi 0, ‖F q L‖) ≤
           ∫ L : ℝ in Ioi 0,
-            g L * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+            g L * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         apply integral_mono_ae (hFint q).norm hmajorInt
         filter_upwards [ae_restrict_mem measurableSet_Ioi] with L hL
         exact hpointBound q L hL
       _ = (∫ L : ℝ in Ioi 0, g L) *
-          (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         rw [integral_mul_const]
   have hswap :
       (∫ L : ℝ in Ioi 0, ∑' q : XiZeroCopy, F q L) =
@@ -579,7 +579,7 @@ theorem integral_exp_mul_xiScrewDivisor_eq_logDeriv_XiC
       exact (hpoint L).symm
     _ = ∑' q : XiZeroCopy, ∫ L : ℝ in Ioi 0, F q L := hswap
     _ = ∑' q : XiZeroCopy,
-        1 / (s * (s ^ 2 + xiSpectralPoint q ^ 2)) := by
+        1 / (s * (s ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ))) := by
       apply tsum_congr
       intro q
       have hzstrip : |(xiSpectralPoint q).im| < 1 / 2 := by
@@ -587,7 +587,7 @@ theorem integral_exp_mul_xiScrewDivisor_eq_logDeriv_XiC
         constructor <;> linarith [xiSpectralPoint_im_mem_openHalf q]
       exact integral_exp_mul_ccmFirstClockScrewKernel
         (xiSpectralPoint_ne_zero q) hzstrip hsHalf
-    _ = I / s ^ 2 * logDeriv XiC (I * s) :=
+    _ = I / s ^ (2 : ℕ) * logDeriv XiC (I * s) :=
       tsum_screwLaplace_eq_logDeriv_XiC hsHalf
 
 /-- Every centered Xi zero is a simple pole of its logarithmic derivative, independently of
@@ -895,7 +895,7 @@ theorem analyticOnNhd_ccmXiScrewLaplace_rightHalf
 
 /-- The upper-half-plane continuation reconstructed directly from the CCM screw transform. -/
 def ccmXiLogDerivContinuation (w : ℂ) : ℂ :=
-  I * w ^ 2 * ccmXiScrewLaplace (-I * w)
+  I * w ^ (2 : ℕ) * ccmXiScrewLaplace (-I * w)
 
 theorem analyticOnNhd_ccmXiLogDerivContinuation_upperHalf
     (hMom : CCMXiScrewAllExponentialMoments) :

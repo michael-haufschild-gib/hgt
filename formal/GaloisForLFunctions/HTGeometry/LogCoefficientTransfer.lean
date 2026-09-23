@@ -152,7 +152,7 @@ Euler product converge: the tail at each prime is `O(p^{-2σ+})`, and `∑_p p^{
 `σ > 1/2`. -/
 theorem tail_geometric_bound {B : ℕ → ℂ} {M x : ℝ} (hM : 0 ≤ M) (hx : 0 ≤ x)
     (hMx : M * x < 1) (hB : ∀ n, 1 ≤ n → ‖B n‖ ≤ M ^ n) (N : ℕ) :
-    ∑ k ∈ Finset.Ico 2 N, ‖B k‖ * x ^ k ≤ (M * x) ^ 2 / (1 - M * x) := by
+    ∑ k ∈ Finset.Ico 2 N, ‖B k‖ * x ^ k ≤ (M * x) ^ (2 : ℕ) / (1 - M * x) := by
   have hMx0 : 0 ≤ M * x := mul_nonneg hM hx
   have hden : 0 < 1 - M * x := by linarith
   have hne : M * x - 1 ≠ 0 := by intro h; linarith
@@ -164,7 +164,7 @@ theorem tail_geometric_bound {B : ℕ → ℂ} {M x : ℝ} (hM : 0 ≤ M) (hx : 
       _ = (M * x) ^ k := by rw [mul_pow]
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [Finset.sum_Ico_eq_sum_range]
-  have hexp : ∀ i ∈ Finset.range (N - 2), (M * x) ^ (2 + i) = (M * x) ^ 2 * (M * x) ^ i :=
+  have hexp : ∀ i ∈ Finset.range (N - 2), (M * x) ^ (2 + i) = (M * x) ^ (2 : ℕ) * (M * x) ^ i :=
     fun i _ => by rw [pow_add]
   rw [Finset.sum_congr rfl hexp, ← Finset.mul_sum]
   have hgeom : ∑ i ∈ Finset.range (N - 2), (M * x) ^ i ≤ 1 / (1 - M * x) := by
@@ -177,15 +177,15 @@ theorem tail_geometric_bound {B : ℕ → ℂ} {M x : ℝ} (hM : 0 ≤ M) (hx : 
     have hnum : 1 - (M * x) ^ (N - 2) ≤ 1 := by
       nlinarith [pow_nonneg hMx0 (N - 2)]
     gcongr
-  calc (M * x) ^ 2 * ∑ i ∈ Finset.range (N - 2), (M * x) ^ i
-      ≤ (M * x) ^ 2 * (1 / (1 - M * x)) := mul_le_mul_of_nonneg_left hgeom (by positivity)
-    _ = (M * x) ^ 2 / (1 - M * x) := by ring
+  calc (M * x) ^ (2 : ℕ) * ∑ i ∈ Finset.range (N - 2), (M * x) ^ i
+      ≤ (M * x) ^ (2 : ℕ) * (1 / (1 - M * x)) := mul_le_mul_of_nonneg_left hgeom (by positivity)
+    _ = (M * x) ^ (2 : ℕ) / (1 - M * x) := by ring
 
 /-- **Newton's second identity in exponential form.**  If `A 0 = 1` and the coefficients satisfy the
 logarithmic-derivative recursion `n·Aₙ = ∑_{j<n}(n−j)·B_{n−j}·A_j`, then
 
 ```text
-A 1 ^ 2 = 2 * A 2 - 2 * B 2 .
+A 1 ^ (2 : ℕ) = 2 * A 2 - 2 * B 2 .
 ```
 
 For an Euler factor `F_p(X) = ∑ₖ a_F(p^k) X^k` with `log F_p(X) = ∑ₖ b_F(p^k) X^k` this reads
@@ -199,7 +199,7 @@ trivial nebentypus (`a(p²) = a² − 1`, `b(p²) = (a² − 2)/2`: `2(a²−1) 
 theorem newton_sq_identity {A B : ℕ → ℂ} (hA0 : A 0 = 1)
     (hrec : ∀ n : ℕ, 1 ≤ n →
       (n : ℂ) * A n = ∑ j ∈ Finset.range n, ((n - j : ℕ) : ℂ) * B (n - j) * A j) :
-    A 1 ^ 2 = 2 * A 2 - 2 * B 2 := by
+    A 1 ^ (2 : ℕ) = 2 * A 2 - 2 * B 2 := by
   have h1 := hrec 1 (le_refl 1)
   simp [hA0] at h1
   have h2 := hrec 2 (by norm_num)

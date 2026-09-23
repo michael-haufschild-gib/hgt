@@ -53,11 +53,11 @@ private theorem cuspPacketField_deriv (tau L : ℝ) :
 /-- The full packet residual retains both differentiated cutoff terms.
 Its oscillatory principal term cancels at the original cusp threshold. -/
 theorem cuspPacketField_residual (tau L t : ℝ) :
-    (5/4-((5/4:ℂ)+(tau:ℂ)^2))*cuspPacketField tau L t-
+    (5/4-((5/4:ℂ)+(tau:ℂ)^(2 : ℕ)))*cuspPacketField tau L t-
       deriv (deriv (cuspPacketField tau L)) t =
       -cuspPacketPhase tau t*(2*(tau:ℂ)*Complex.I/(L:ℂ)*
         ((deriv cuspWindow (cuspPacketCoordinate L t):ℝ):ℂ)+
-          (L:ℂ)⁻¹^2*((deriv (deriv cuspWindow) (cuspPacketCoordinate L t):ℝ):ℂ)) := by
+          (L:ℂ)⁻¹^(2 : ℕ)*((deriv (deriv cuspWindow) (cuspPacketCoordinate L t):ℝ):ℂ)) := by
   have hp := (cuspPacketPhase_hasDerivAt tau t).mul
     (((packetWindow_hasDerivAt 0 L t).const_mul ((tau:ℂ)*Complex.I)).add
       ((packetWindow_hasDerivAt 1 L t).const_mul (L:ℂ)⁻¹))
@@ -67,22 +67,22 @@ theorem cuspPacketField_residual (tau L t : ℝ) :
   rw [cuspPacketField_deriv,he]
   simp only [Pi.add_apply,packetWindow,cuspWindowDerivative,
     Function.iterate_succ_apply',Function.iterate_zero,Function.id_def,cuspPacketField]
-  linear_combination -(tau:ℂ)^2*cuspPacketPhase tau t*
+  linear_combination -(tau:ℂ)^(2 : ℕ)*cuspPacketPhase tau t*
     (cuspWindow (cuspPacketCoordinate L t):ℂ)*Complex.I_sq
 
 /-- Reality of the original cutoff derivatives makes the two residual terms
 orthogonal in the complex plane, giving an exact squared norm. -/
 theorem cuspPacketField_residual_norm_sq (tau L t : ℝ) :
-    ‖(5/4-((5/4:ℂ)+(tau:ℂ)^2))*cuspPacketField tau L t-
-      deriv (deriv (cuspPacketField tau L)) t‖^2 =
-      4*tau^2/L^2*(deriv cuspWindow (cuspPacketCoordinate L t))^2+
-        L⁻¹^4*(deriv (deriv cuspWindow) (cuspPacketCoordinate L t))^2 := by
+    ‖(5/4-((5/4:ℂ)+(tau:ℂ)^(2 : ℕ)))*cuspPacketField tau L t-
+      deriv (deriv (cuspPacketField tau L)) t‖^(2 : ℕ) =
+      4*tau^(2 : ℕ)/L^(2 : ℕ)*(deriv cuspWindow (cuspPacketCoordinate L t))^(2 : ℕ)+
+        L⁻¹^(4 : ℕ)*(deriv (deriv cuspWindow) (cuspPacketCoordinate L t))^(2 : ℕ) := by
   rw [cuspPacketField_residual,norm_mul,norm_neg,cuspPacketPhase_norm,one_mul,
     ← Complex.normSq_eq_norm_sq]
   have he : 2*(tau:ℂ)*Complex.I/(L:ℂ)*
       ((deriv cuspWindow (cuspPacketCoordinate L t):ℝ):ℂ)+
-        (L:ℂ)⁻¹^2*((deriv (deriv cuspWindow) (cuspPacketCoordinate L t):ℝ):ℂ) =
-      ((L⁻¹^2*deriv (deriv cuspWindow) (cuspPacketCoordinate L t):ℝ):ℂ)+
+        (L:ℂ)⁻¹^(2 : ℕ)*((deriv (deriv cuspWindow) (cuspPacketCoordinate L t):ℝ):ℂ) =
+      ((L⁻¹^(2 : ℕ)*deriv (deriv cuspWindow) (cuspPacketCoordinate L t):ℝ):ℂ)+
       ((2*tau/L*deriv cuspWindow (cuspPacketCoordinate L t):ℝ):ℂ)*Complex.I := by
     push_cast
     ring

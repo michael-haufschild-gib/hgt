@@ -40,8 +40,8 @@ still vanishes (`n / n² = 1/n → 0`).  Infinitely many off-line zeros, yet mea
 theorem measuredIndexZero_dust :
     ∃ Noff N : ℕ → ℝ,
       Tendsto Noff atTop atTop ∧ MeasuredIndexZero Noff N := by
-  refine ⟨fun n => (n : ℝ), fun n => (n : ℝ) ^ 2, tendsto_natCast_atTop_atTop, ?_⟩
-  have hev : ∀ᶠ n : ℕ in atTop, 1 / (n : ℝ) = (n : ℝ) / (n : ℝ) ^ 2 := by
+  refine ⟨fun n => (n : ℝ), fun n => (n : ℝ) ^ (2 : ℕ), tendsto_natCast_atTop_atTop, ?_⟩
+  have hev : ∀ᶠ n : ℕ in atTop, 1 / (n : ℝ) = (n : ℝ) / (n : ℝ) ^ (2 : ℕ) := by
     filter_upwards [eventually_gt_atTop 0] with n hn
     have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
     rw [pow_two, ← div_div, div_self hn0]

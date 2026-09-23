@@ -19,7 +19,7 @@ noncomputable section
 /-- Above the positivity barrier, the eighth score is bounded by its leading monomial. -/
 theorem thetaCuspLikelihoodEighthSourceScore_le_pow_eight
     {z : ℝ} (hz : 14 ≤ z) :
-    thetaCuspLikelihoodEighthSourceScore z ≤ z ^ 8 := by
+    thetaCuspLikelihoodEighthSourceScore z ≤ z ^ (8 : ℕ) := by
   let s := z - 14
   have hs : 0 ≤ s := by
     dsimp only [s]
@@ -35,7 +35,7 @@ set_option maxHeartbeats 4000000 in
 /-- On pair support, one exponential ray costs at most twice the leading monomial. -/
 theorem thetaCuspLikelihoodEighthSourceScoreRayTransform_le_two_mul_pow_eight
     {r z : ℝ} (hr0 : 0 ≤ r) (hr2 : r ≤ 2) (hz : 34 ≤ z) :
-    thetaCuspLikelihoodEighthSourceScoreRayTransform r z ≤ 2 * z ^ 8 := by
+    thetaCuspLikelihoodEighthSourceScoreRayTransform r z ≤ 2 * z ^ (8 : ℕ) := by
   let s := z - 34
   have hs : 0 ≤ s := by
     dsimp only [s]
@@ -84,7 +84,7 @@ set_option maxHeartbeats 4000000 in
 /-- On pair support, two exponential rays cost at most four leading monomials. -/
 theorem thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform_le_four_mul_pow_eight
     {r z : ℝ} (hr0 : 0 ≤ r) (hr2 : r ≤ 2) (hz : 34 ≤ z) :
-    thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform r z ≤ 4 * z ^ 8 := by
+    thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform r z ≤ 4 * z ^ (8 : ℕ) := by
   let s := z - 34
   have hs : 0 ≤ s := by
     dsimp only [s]
@@ -132,11 +132,11 @@ theorem thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform_le_four_mul_pow_e
 def thetaCuspLikelihoodAtomPairEighthScoreCore (n m : ℕ) (A B : ℝ) : ℝ :=
   let d := thetaCuspLikelihoodGap n
   let e := thetaCuspLikelihoodGap m
-  let un := (3 / 2 : ℝ) * (n : ℝ) ^ 2 * d / B
-  let um := (3 / 2 : ℝ) * (m : ℝ) ^ 2 * e / B
-  (n : ℝ) ^ 4 * (m : ℝ) ^ 4 *
+  let un := (3 / 2 : ℝ) * (n : ℝ) ^ (2 : ℕ) * d / B
+  let um := (3 / 2 : ℝ) * (m : ℝ) ^ (2 : ℕ) * e / B
+  (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) *
       thetaCuspLikelihoodEighthSourceScore (A * (d + e)) +
-    ((n : ℝ) ^ 4 * um + un * (m : ℝ) ^ 4) *
+    ((n : ℝ) ^ (4 : ℕ) * um + un * (m : ℝ) ^ (4 : ℕ)) *
       thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (A * (d + e)) +
     un * um *
       thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (A * (d + e))
@@ -172,35 +172,35 @@ theorem thirtyFour_le_mul_add_thetaCuspLikelihoodGap
 /-- The normalized ray coefficient is no larger than the point coefficient. -/
 theorem thetaCuspLikelihood_normalizedRayCoefficient_le_pow_four
     {n : ℕ} (hn : 2 ≤ n) {B : ℝ} (hB : (3 / 2 : ℝ) ≤ B) :
-    (3 / 2 : ℝ) * (n : ℝ) ^ 2 * thetaCuspLikelihoodGap n / B ≤
-      (n : ℝ) ^ 4 := by
+    (3 / 2 : ℝ) * (n : ℝ) ^ (2 : ℕ) * thetaCuspLikelihoodGap n / B ≤
+      (n : ℝ) ^ (4 : ℕ) := by
   have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
   have hB0 : 0 < B := by linarith
   have hgap0 : 0 ≤ thetaCuspLikelihoodGap n :=
     (thetaCuspLikelihoodGap_pos hn).le
-  have hnd : (n : ℝ) ^ 2 * thetaCuspLikelihoodGap n ≤ (n : ℝ) ^ 4 := by
+  have hnd : (n : ℝ) ^ (2 : ℕ) * thetaCuspLikelihoodGap n ≤ (n : ℝ) ^ (4 : ℕ) := by
     unfold thetaCuspLikelihoodGap
     nlinarith [sq_nonneg (n : ℝ)]
   calc
-    (3 / 2 : ℝ) * (n : ℝ) ^ 2 * thetaCuspLikelihoodGap n / B =
-        ((3 / 2 : ℝ) / B) * ((n : ℝ) ^ 2 * thetaCuspLikelihoodGap n) := by ring
-    _ ≤ 1 * (n : ℝ) ^ 4 := by
+    (3 / 2 : ℝ) * (n : ℝ) ^ (2 : ℕ) * thetaCuspLikelihoodGap n / B =
+        ((3 / 2 : ℝ) / B) * ((n : ℝ) ^ (2 : ℕ) * thetaCuspLikelihoodGap n) := by ring
+    _ ≤ 1 * (n : ℝ) ^ (4 : ℕ) := by
       gcongr
       exact (div_le_one hB0).2 hB
-    _ = (n : ℝ) ^ 4 := one_mul _
+    _ = (n : ℝ) ^ (4 : ℕ) := one_mul _
 
 /-- Uniform factor-nine core bound for every pair outside the dominant `(2,2)` chamber. -/
 theorem thetaCuspLikelihoodAtomPairEighthScoreCore_le
     {n m : ℕ} (hn : 2 ≤ n) (hm : 2 ≤ m) (hstable : 3 ≤ n ∨ 3 ≤ m)
     {A B : ℝ} (hA : Real.pi ≤ A) (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodAtomPairEighthScoreCore n m A B ≤
-      9 * (n : ℝ) ^ 4 * (m : ℝ) ^ 4 *
-        (A * (thetaCuspLikelihoodGap n + thetaCuspLikelihoodGap m)) ^ 8 := by
+      9 * (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) *
+        (A * (thetaCuspLikelihoodGap n + thetaCuspLikelihoodGap m)) ^ (8 : ℕ) := by
   let d := thetaCuspLikelihoodGap n
   let e := thetaCuspLikelihoodGap m
   let z := A * (d + e)
-  let un := (3 / 2 : ℝ) * (n : ℝ) ^ 2 * d / B
-  let um := (3 / 2 : ℝ) * (m : ℝ) ^ 2 * e / B
+  let un := (3 / 2 : ℝ) * (n : ℝ) ^ (2 : ℕ) * d / B
+  let um := (3 / 2 : ℝ) * (m : ℝ) ^ (2 : ℕ) * e / B
   have hApi : (157 / 50 : ℝ) ≤ A := by
     nlinarith [Real.pi_gt_d2]
   have hB : 0 < B := by
@@ -234,27 +234,27 @@ theorem thetaCuspLikelihoodAtomPairEighthScoreCore_le
     exact div_nonneg
       (mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg _))
         (thetaCuspLikelihoodGap_pos hm).le) hB.le
-  have hun : un ≤ (n : ℝ) ^ 4 := by
+  have hun : un ≤ (n : ℝ) ^ (4 : ℕ) := by
     dsimp only [un, d]
     exact thetaCuspLikelihood_normalizedRayCoefficient_le_pow_four hn hB32
-  have hum : um ≤ (m : ℝ) ^ 4 := by
+  have hum : um ≤ (m : ℝ) ^ (4 : ℕ) := by
     dsimp only [um, e]
     exact thetaCuspLikelihood_normalizedRayCoefficient_le_pow_four hm hB32
-  have hn4 : 0 ≤ (n : ℝ) ^ 4 := by positivity
-  have hm4 : 0 ≤ (m : ℝ) ^ 4 := by positivity
-  have hz8 : 0 ≤ z ^ 8 := by positivity
+  have hn4 : 0 ≤ (n : ℝ) ^ (4 : ℕ) := by positivity
+  have hm4 : 0 ≤ (m : ℝ) ^ (4 : ℕ) := by positivity
+  have hz8 : 0 ≤ z ^ (8 : ℕ) := by positivity
   change
-    (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * thetaCuspLikelihoodEighthSourceScore z +
-        ((n : ℝ) ^ 4 * um + un * (m : ℝ) ^ 4) *
+    (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodEighthSourceScore z +
+        ((n : ℝ) ^ (4 : ℕ) * um + un * (m : ℝ) ^ (4 : ℕ)) *
             thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) z +
           un * um * thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) z ≤
-      9 * (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * z ^ 8
+      9 * (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * z ^ (8 : ℕ)
   have hpoint' :
-      (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * thetaCuspLikelihoodEighthSourceScore z ≤
-        (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * z ^ 8 := by gcongr
+      (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodEighthSourceScore z ≤
+        (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * z ^ (8 : ℕ) := by gcongr
   have hmixCoeff :
-      (n : ℝ) ^ 4 * um + un * (m : ℝ) ^ 4 ≤
-        2 * ((n : ℝ) ^ 4 * (m : ℝ) ^ 4) := by nlinarith
+      (n : ℝ) ^ (4 : ℕ) * um + un * (m : ℝ) ^ (4 : ℕ) ≤
+        2 * ((n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ)) := by nlinarith
   have hray0 : 0 ≤ thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) z := by
     unfold thetaCuspLikelihoodEighthSourceScoreRayTransform
       thetaCuspLikelihoodEighthSourceScore
@@ -272,14 +272,14 @@ theorem thetaCuspLikelihoodAtomPairEighthScoreCore_le
     ring_nf
     positivity
   have hmix :
-      ((n : ℝ) ^ 4 * um + un * (m : ℝ) ^ 4) *
+      ((n : ℝ) ^ (4 : ℕ) * um + un * (m : ℝ) ^ (4 : ℕ)) *
           thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) z ≤
-        4 * ((n : ℝ) ^ 4 * (m : ℝ) ^ 4) * z ^ 8 := by
+        4 * ((n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ)) * z ^ (8 : ℕ) := by
     calc
-      _ ≤ (2 * ((n : ℝ) ^ 4 * (m : ℝ) ^ 4)) *
+      _ ≤ (2 * ((n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ))) *
           thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) z := by gcongr
-      _ ≤ (2 * ((n : ℝ) ^ 4 * (m : ℝ) ^ 4)) * (2 * z ^ 8) := by gcongr
-      _ = 4 * ((n : ℝ) ^ 4 * (m : ℝ) ^ 4) * z ^ 8 := by ring
+      _ ≤ (2 * ((n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ))) * (2 * z ^ (8 : ℕ)) := by gcongr
+      _ = 4 * ((n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ)) * z ^ (8 : ℕ) := by ring
   have hdouble0 :
       0 ≤ thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) z := by
     unfold thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform
@@ -297,15 +297,15 @@ theorem thetaCuspLikelihoodAtomPairEighthScoreCore_le
     rw [show z = 34 + s by dsimp only [s]; ring]
     ring_nf
     positivity
-  have hdoubleCoeff : un * um ≤ (n : ℝ) ^ 4 * (m : ℝ) ^ 4 := by gcongr
+  have hdoubleCoeff : un * um ≤ (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) := by gcongr
   have hdouble' :
       un * um * thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) z ≤
-        4 * ((n : ℝ) ^ 4 * (m : ℝ) ^ 4) * z ^ 8 := by
+        4 * ((n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ)) * z ^ (8 : ℕ) := by
     calc
-      _ ≤ ((n : ℝ) ^ 4 * (m : ℝ) ^ 4) *
+      _ ≤ ((n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ)) *
           thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) z := by gcongr
-      _ ≤ ((n : ℝ) ^ 4 * (m : ℝ) ^ 4) * (4 * z ^ 8) := by gcongr
-      _ = 4 * ((n : ℝ) ^ 4 * (m : ℝ) ^ 4) * z ^ 8 := by ring
+      _ ≤ ((n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ)) * (4 * z ^ (8 : ℕ)) := by gcongr
+      _ = 4 * ((n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ)) * z ^ (8 : ℕ) := by ring
   linarith
 
 /-- Calibrated mass form of the uniform factor-nine pair bound. -/
@@ -313,8 +313,8 @@ theorem thetaCuspLikelihoodAtomPairEighthScoreMass_le
     {n m : ℕ} (hn : 2 ≤ n) (hm : 2 ≤ m) (hstable : 3 ≤ n ∨ 3 ≤ m)
     {A B : ℝ} (hA : Real.pi ≤ A) (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodAtomPairEighthScoreMass n m A B ≤
-      9 * (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * A ^ 8 *
-        (thetaCuspLikelihoodGap n + thetaCuspLikelihoodGap m) ^ 8 *
+      9 * (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * A ^ (8 : ℕ) *
+        (thetaCuspLikelihoodGap n + thetaCuspLikelihoodGap m) ^ (8 : ℕ) *
         Real.exp (-(A * (thetaCuspLikelihoodGap n + thetaCuspLikelihoodGap m))) := by
   let d := thetaCuspLikelihoodGap n
   let e := thetaCuspLikelihoodGap m
@@ -330,9 +330,9 @@ theorem thetaCuspLikelihoodAtomPairEighthScoreMass_le
   calc
     Real.exp (-(A * (d + e))) * thetaCuspLikelihoodAtomPairEighthScoreCore n m A B ≤
         Real.exp (-(A * (d + e))) *
-          (9 * (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * (A * (d + e)) ^ 8) := by
+          (9 * (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * (A * (d + e)) ^ (8 : ℕ)) := by
       gcongr
-    _ = 9 * (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * A ^ 8 * (d + e) ^ 8 *
+    _ = 9 * (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * A ^ (8 : ℕ) * (d + e) ^ (8 : ℕ) *
         Real.exp (-(A * (d + e))) := by rw [mul_pow]; ring
 
 /-- The general pair mass specializes exactly to the previously compensated dominant pair. -/
@@ -357,7 +357,7 @@ theorem thetaCuspLikelihoodAtomPairEighthScoreMass_two_two_eq
   ring
 
 theorem thetaCusp_nat_add_three_pow_twenty_le (k : ℕ) :
-    (((k + 3 : ℕ) : ℝ) ^ 20) ≤ 3486784401 * (1048576 : ℝ) ^ k := by
+    (((k + 3 : ℕ) : ℝ) ^ (20 : ℕ)) ≤ 3486784401 * (1048576 : ℝ) ^ k := by
   have hnat : k + 3 ≤ 3 * 2 ^ k := by
     induction k with
     | zero => norm_num
@@ -367,28 +367,28 @@ theorem thetaCusp_nat_add_three_pow_twenty_le (k : ℕ) :
   have hcast : ((k + 3 : ℕ) : ℝ) ≤ (3 * 2 ^ k : ℕ) := by
     exact_mod_cast hnat
   calc
-    (((k + 3 : ℕ) : ℝ) ^ 20) ≤ (((3 * 2 ^ k : ℕ) : ℝ) ^ 20) := by gcongr
+    (((k + 3 : ℕ) : ℝ) ^ (20 : ℕ)) ≤ (((3 * 2 ^ k : ℕ) : ℝ) ^ (20 : ℕ)) := by gcongr
     _ = 3486784401 * (1048576 : ℝ) ^ k := by
       push_cast
       rw [mul_pow]
       norm_num
       calc
-        (((2 : ℝ) ^ k) ^ 20) = (2 : ℝ) ^ (k * 20) := by rw [pow_mul]
+        (((2 : ℝ) ^ k) ^ (20 : ℕ)) = (2 : ℝ) ^ (k * 20) := by rw [pow_mul]
         _ = (2 : ℝ) ^ (20 * k) := by rw [Nat.mul_comm]
-        _ = ((2 : ℝ) ^ 20) ^ k := by rw [pow_mul]
+        _ = ((2 : ℝ) ^ (20 : ℕ)) ^ k := by rw [pow_mul]
         _ = (1048576 : ℝ) ^ k := by norm_num
 
 theorem thetaCusp_tail_exponent_seven_add_three_le_eighth (k : ℕ) :
-    Real.exp (-Real.pi * (((k + 3 : ℕ) : ℝ) ^ 2 - 1)) ≤
+    Real.exp (-Real.pi * (((k + 3 : ℕ) : ℝ) ^ (2 : ℕ) - 1)) ≤
       Real.exp (-8 * Real.pi) * (Real.exp (-7 * Real.pi)) ^ k := by
   have hsquare :
-      (8 : ℝ) + 7 * k ≤ (((k + 3 : ℕ) : ℝ) ^ 2 - 1) := by
+      (8 : ℝ) + 7 * k ≤ (((k + 3 : ℕ) : ℝ) ^ (2 : ℕ) - 1) := by
     rcases k with _ | k
     · norm_num
     · push_cast
       nlinarith [sq_nonneg (k : ℝ)]
   have hexponent :
-      -Real.pi * (((k + 3 : ℕ) : ℝ) ^ 2 - 1) ≤
+      -Real.pi * (((k + 3 : ℕ) : ℝ) ^ (2 : ℕ) - 1) ≤
         -8 * Real.pi + (k : ℕ) * (-7 * Real.pi) := by
     nlinarith [Real.pi_pos]
   calc
@@ -409,17 +409,17 @@ theorem thetaCuspReflectionJetTailWeight_eight_tail_le_geometric (k : ℕ) :
     nlinarith [exp_neg_seven_pi_lt_one_div_oneHundredTwentyMillion]
   have hn : (3 : ℝ) ≤ n := by
     exact_mod_cast (by dsimp only [n]; omega : 3 ≤ n)
-  have hd : 0 ≤ (n : ℝ) ^ 2 - 1 := by nlinarith
-  have hdle : ((n : ℝ) ^ 2 - 1) ^ 8 ≤ ((n : ℝ) ^ 2) ^ 8 :=
+  have hd : 0 ≤ (n : ℝ) ^ (2 : ℕ) - 1 := by nlinarith
+  have hdle : ((n : ℝ) ^ (2 : ℕ) - 1) ^ (8 : ℕ) ≤ ((n : ℝ) ^ (2 : ℕ)) ^ (8 : ℕ) :=
     pow_le_pow_left₀ hd (by linarith) 8
   unfold thetaCuspReflectionJetTailWeight
   dsimp only [n]
   calc
-    (n : ℝ) ^ 4 * ((n : ℝ) ^ 2 - 1) ^ 8 *
-          Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) ≤
-        (n : ℝ) ^ 4 * ((n : ℝ) ^ 2) ^ 8 *
-          Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) := by gcongr
-    _ = (n : ℝ) ^ 20 * Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) := by
+    (n : ℝ) ^ (4 : ℕ) * ((n : ℝ) ^ (2 : ℕ) - 1) ^ (8 : ℕ) *
+          Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) ≤
+        (n : ℝ) ^ (4 : ℕ) * ((n : ℝ) ^ (2 : ℕ)) ^ (8 : ℕ) *
+          Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) := by gcongr
+    _ = (n : ℝ) ^ (20 : ℕ) * Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) := by
       rw [← pow_mul, ← pow_add]
     _ ≤ (3486784401 * (1048576 : ℝ) ^ k) *
         (Real.exp (-8 * Real.pi) * (Real.exp (-7 * Real.pi)) ^ k) := by gcongr
@@ -462,7 +462,7 @@ theorem exp_neg_five_pi_lt_one_div_oneMillionTwoHundredThousand :
     _ = (1 : ℝ) / 1200000 := by norm_num
 
 theorem thetaCusp_nat_add_three_pow_four_le (k : ℕ) :
-    (((k + 3 : ℕ) : ℝ) ^ 4) ≤ 81 * (16 : ℝ) ^ k := by
+    (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ)) ≤ 81 * (16 : ℝ) ^ k := by
   have hnat : k + 3 ≤ 3 * 2 ^ k := by
     induction k with
     | zero => norm_num
@@ -472,28 +472,28 @@ theorem thetaCusp_nat_add_three_pow_four_le (k : ℕ) :
   have hcast : ((k + 3 : ℕ) : ℝ) ≤ (3 * 2 ^ k : ℕ) := by
     exact_mod_cast hnat
   calc
-    (((k + 3 : ℕ) : ℝ) ^ 4) ≤ (((3 * 2 ^ k : ℕ) : ℝ) ^ 4) := by gcongr
+    (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ)) ≤ (((3 * 2 ^ k : ℕ) : ℝ) ^ (4 : ℕ)) := by gcongr
     _ = 81 * (16 : ℝ) ^ k := by
       push_cast
       rw [mul_pow]
       norm_num
       calc
-        (((2 : ℝ) ^ k) ^ 4) = (2 : ℝ) ^ (k * 4) := by rw [pow_mul]
+        (((2 : ℝ) ^ k) ^ (4 : ℕ)) = (2 : ℝ) ^ (k * 4) := by rw [pow_mul]
         _ = (2 : ℝ) ^ (4 * k) := by rw [Nat.mul_comm]
-        _ = ((2 : ℝ) ^ 4) ^ k := by rw [pow_mul]
+        _ = ((2 : ℝ) ^ (4 : ℕ)) ^ k := by rw [pow_mul]
         _ = (16 : ℝ) ^ k := by norm_num
 
 theorem thetaCusp_shifted_tail_exponent_seven_add_three_le (k : ℕ) :
-    Real.exp (-Real.pi * ((((k + 3 : ℕ) : ℝ) ^ 2 - 1) - 3)) ≤
+    Real.exp (-Real.pi * ((((k + 3 : ℕ) : ℝ) ^ (2 : ℕ) - 1) - 3)) ≤
       Real.exp (-5 * Real.pi) * (Real.exp (-7 * Real.pi)) ^ k := by
   have hsquare :
-      (5 : ℝ) + 7 * k ≤ (((k + 3 : ℕ) : ℝ) ^ 2 - 1) - 3 := by
+      (5 : ℝ) + 7 * k ≤ (((k + 3 : ℕ) : ℝ) ^ (2 : ℕ) - 1) - 3 := by
     rcases k with _ | k
     · norm_num
     · push_cast
       nlinarith [sq_nonneg (k : ℝ)]
   have hexponent :
-      -Real.pi * ((((k + 3 : ℕ) : ℝ) ^ 2 - 1) - 3) ≤
+      -Real.pi * ((((k + 3 : ℕ) : ℝ) ^ (2 : ℕ) - 1) - 3) ≤
         -5 * Real.pi + (k : ℕ) * (-7 * Real.pi) := by
     nlinarith [Real.pi_pos]
   calc
@@ -503,7 +503,7 @@ theorem thetaCusp_shifted_tail_exponent_seven_add_three_le (k : ℕ) :
 
 /-- Gap-shifted stable activity has a `1/1000` geometric envelope. -/
 theorem thetaCuspLikelihoodStableShiftedActivityTerm_le_geometric (k : ℕ) :
-    ((k + 3 : ℕ) : ℝ) ^ 4 *
+    ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
         Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3)) ≤
       (1 / 1000 : ℝ) * ((1 / 1000 : ℝ) ^ k) := by
   have hpow := thetaCusp_nat_add_three_pow_four_le k
@@ -514,8 +514,8 @@ theorem thetaCuspLikelihoodStableShiftedActivityTerm_le_geometric (k : ℕ) :
     nlinarith [exp_neg_seven_pi_lt_one_div_oneHundredTwentyMillion]
   unfold thetaCuspLikelihoodGap
   calc
-    ((k + 3 : ℕ) : ℝ) ^ 4 *
-          Real.exp (-Real.pi * ((((k + 3 : ℕ) : ℝ) ^ 2 - 1) - 3)) ≤
+    ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
+          Real.exp (-Real.pi * ((((k + 3 : ℕ) : ℝ) ^ (2 : ℕ) - 1) - 3)) ≤
         (81 * (16 : ℝ) ^ k) *
           (Real.exp (-5 * Real.pi) * (Real.exp (-7 * Real.pi)) ^ k) := by gcongr
     _ = 81 * Real.exp (-5 * Real.pi) *
@@ -527,21 +527,21 @@ theorem thetaCuspLikelihoodStableShiftedActivityTerm_le_geometric (k : ℕ) :
 
 /-- Complete gap-shifted stable activity at the physical edge is at most `1/999`. -/
 theorem tsum_thetaCuspLikelihoodStableShiftedActivity_pi_le :
-    (∑' k : ℕ, ((k + 3 : ℕ) : ℝ) ^ 4 *
+    (∑' k : ℕ, ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
         Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3))) ≤
       (1 / 999 : ℝ) := by
   have hgeo : Summable (fun k : ℕ =>
       (1 / 1000 : ℝ) * ((1 / 1000 : ℝ) ^ k)) :=
     (summable_geometric_of_norm_lt_one
       (by norm_num : ‖(1 / 1000 : ℝ)‖ < 1)).mul_left _
-  have hnonneg : ∀ k : ℕ, 0 ≤ ((k + 3 : ℕ) : ℝ) ^ 4 *
+  have hnonneg : ∀ k : ℕ, 0 ≤ ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
       Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3)) := by
     intro k
     positivity
   have hs := Summable.of_nonneg_of_le hnonneg
     thetaCuspLikelihoodStableShiftedActivityTerm_le_geometric hgeo
   calc
-    (∑' k : ℕ, ((k + 3 : ℕ) : ℝ) ^ 4 *
+    (∑' k : ℕ, ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
         Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3))) ≤
         ∑' k : ℕ, (1 / 1000 : ℝ) * ((1 / 1000 : ℝ) ^ k) :=
       Summable.tsum_le_tsum
@@ -552,17 +552,17 @@ theorem tsum_thetaCuspLikelihoodStableShiftedActivity_pi_le :
 
 /-- Order-eight Gaussian moment of the complete stable tower at scale `A`. -/
 def thetaCuspLikelihoodStableEighthTail (A : ℝ) : ℝ :=
-  ∑' k : ℕ, ((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+  ∑' k : ℕ, ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
     Real.exp (-(A * thetaCuspLikelihoodGap (k + 3)))
 
 /-- Stable activity after extracting the dominant exponential `exp (-3A)`. -/
 def thetaCuspLikelihoodStableShiftedActivity (A : ℝ) : ℝ :=
-  ∑' k : ℕ, ((k + 3 : ℕ) : ℝ) ^ 4 *
+  ∑' k : ℕ, ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
     Real.exp (-(A * (thetaCuspLikelihoodGap (k + 3) - 3)))
 
 theorem thetaCuspLikelihoodStableEighthTailTerm_le_pi
     {A : ℝ} (hA : Real.pi ≤ A) (k : ℕ) :
-    ((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+    ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
         Real.exp (-(A * thetaCuspLikelihoodGap (k + 3))) ≤
       thetaCuspReflectionJetTailWeight 8 (k + 1) := by
   have hgap : 0 ≤ thetaCuspLikelihoodGap (k + 3) :=
@@ -571,16 +571,16 @@ theorem thetaCuspLikelihoodStableEighthTailTerm_le_pi
       -(A * thetaCuspLikelihoodGap (k + 3)) ≤
         -Real.pi * thetaCuspLikelihoodGap (k + 3) := by
     nlinarith
-  have hcoef : 0 ≤ ((k + 3 : ℕ) : ℝ) ^ 4 *
-      thetaCuspLikelihoodGap (k + 3) ^ 8 := by positivity
+  have hcoef : 0 ≤ ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
+      thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) := by positivity
   have hmul := mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexponent) hcoef
   unfold thetaCuspReflectionJetTailWeight
   simpa only [show k + 1 + 2 = k + 3 by omega, thetaCuspLikelihoodGap] using hmul
 
 theorem summable_thetaCuspLikelihoodStableEighthTail
     {A : ℝ} (hA : Real.pi ≤ A) :
-    Summable (fun k : ℕ => ((k + 3 : ℕ) : ℝ) ^ 4 *
-      thetaCuspLikelihoodGap (k + 3) ^ 8 *
+    Summable (fun k : ℕ => ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
+      thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
       Real.exp (-(A * thetaCuspLikelihoodGap (k + 3)))) := by
   have hmajor : Summable (fun k : ℕ =>
       thetaCuspReflectionJetTailWeight 8 (k + 1)) :=
@@ -606,9 +606,9 @@ theorem thetaCuspLikelihoodStableEighthTail_le
 
 theorem thetaCuspLikelihoodStableShiftedActivityTerm_le_pi
     {A : ℝ} (hA : Real.pi ≤ A) (k : ℕ) :
-    ((k + 3 : ℕ) : ℝ) ^ 4 *
+    ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
         Real.exp (-(A * (thetaCuspLikelihoodGap (k + 3) - 3))) ≤
-      ((k + 3 : ℕ) : ℝ) ^ 4 *
+      ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
         Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3)) := by
   have hgap : 0 ≤ thetaCuspLikelihoodGap (k + 3) - 3 := by
     have hnR : (3 : ℝ) ≤ (k + 3 : ℕ) := by exact_mod_cast (by omega : 3 ≤ k + 3)
@@ -622,13 +622,13 @@ theorem thetaCuspLikelihoodStableShiftedActivityTerm_le_pi
 
 theorem summable_thetaCuspLikelihoodStableShiftedActivity
     {A : ℝ} (hA : Real.pi ≤ A) :
-    Summable (fun k : ℕ => ((k + 3 : ℕ) : ℝ) ^ 4 *
+    Summable (fun k : ℕ => ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
       Real.exp (-(A * (thetaCuspLikelihoodGap (k + 3) - 3)))) := by
   have hgeo : Summable (fun k : ℕ =>
       (1 / 1000 : ℝ) * ((1 / 1000 : ℝ) ^ k)) :=
     (summable_geometric_of_norm_lt_one
       (by norm_num : ‖(1 / 1000 : ℝ)‖ < 1)).mul_left _
-  have hpiNonneg : ∀ k : ℕ, 0 ≤ ((k + 3 : ℕ) : ℝ) ^ 4 *
+  have hpiNonneg : ∀ k : ℕ, 0 ≤ ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
       Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3)) := by
     intro k
     positivity
@@ -649,7 +649,7 @@ theorem thetaCuspLikelihoodStableShiftedActivity_le
       (1 / 1000 : ℝ) * ((1 / 1000 : ℝ) ^ k)) :=
     (summable_geometric_of_norm_lt_one
       (by norm_num : ‖(1 / 1000 : ℝ)‖ < 1)).mul_left _
-  have hpiNonneg : ∀ k : ℕ, 0 ≤ ((k + 3 : ℕ) : ℝ) ^ 4 *
+  have hpiNonneg : ∀ k : ℕ, 0 ≤ ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
       Real.exp (-Real.pi * (thetaCuspLikelihoodGap (k + 3) - 3)) := by
     intro k
     positivity
@@ -740,8 +740,8 @@ theorem thetaCuspLikelihoodAtomPairEighthScoreMass_comm
 /-- Adding dominant gap three costs at most thirteen copies of a stable eighth gap power. -/
 theorem add_three_pow_eight_le_thirteen_mul_gap_pow_eight
     {m : ℕ} (hm : 3 ≤ m) :
-    (3 + thetaCuspLikelihoodGap m) ^ 8 ≤
-      13 * thetaCuspLikelihoodGap m ^ 8 := by
+    (3 + thetaCuspLikelihoodGap m) ^ (8 : ℕ) ≤
+      13 * thetaCuspLikelihoodGap m ^ (8 : ℕ) := by
   let e := thetaCuspLikelihoodGap m
   have he : 8 ≤ e := by
     have hmR : (3 : ℝ) ≤ m := by exact_mod_cast hm
@@ -751,20 +751,20 @@ theorem add_three_pow_eight_le_thirteen_mul_gap_pow_eight
   have hbase : 3 + e ≤ (11 / 8 : ℝ) * e := by nlinarith
   have hpow := pow_le_pow_left₀ (by linarith : 0 ≤ 3 + e) hbase 8
   calc
-    (3 + thetaCuspLikelihoodGap m) ^ 8 = (3 + e) ^ 8 := rfl
-    _ ≤ ((11 / 8 : ℝ) * e) ^ 8 := hpow
-    _ = (11 / 8 : ℝ) ^ 8 * e ^ 8 := by ring
-    _ ≤ 13 * e ^ 8 := by
+    (3 + thetaCuspLikelihoodGap m) ^ (8 : ℕ) = (3 + e) ^ (8 : ℕ) := rfl
+    _ ≤ ((11 / 8 : ℝ) * e) ^ (8 : ℕ) := hpow
+    _ = (11 / 8 : ℝ) ^ (8 : ℕ) * e ^ (8 : ℕ) := by ring
+    _ ≤ 13 * e ^ (8 : ℕ) := by
       gcongr
       norm_num
-    _ = 13 * thetaCuspLikelihoodGap m ^ 8 := rfl
+    _ = 13 * thetaCuspLikelihoodGap m ^ (8 : ℕ) := rfl
 
 /-- One ordered dominant-stable pair is bounded by the stable order-eight Gaussian term. -/
 theorem thetaCuspLikelihoodDominantStablePairEighthScoreMass_le
     (k : ℕ) {A B : ℝ} (hA : Real.pi ≤ A) (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodAtomPairEighthScoreMass 2 (k + 3) A B ≤
-      1872 * A ^ 8 * Real.exp (-(3 * A)) *
-        (((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+      1872 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
+        (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
           Real.exp (-(A * thetaCuspLikelihoodGap (k + 3)))) := by
   let m : ℕ := k + 3
   let e := thetaCuspLikelihoodGap m
@@ -780,19 +780,19 @@ theorem thetaCuspLikelihoodDominantStablePairEighthScoreMass_le
     ring
   have hA0 : 0 ≤ A := le_trans Real.pi_pos.le hA
   have he0 : 0 ≤ e := (thetaCuspLikelihoodGap_pos (by dsimp only [m]; omega)).le
-  have hm4 : 0 ≤ (m : ℝ) ^ 4 := by positivity
-  have hscale : 0 ≤ 9 * (2 : ℝ) ^ 4 * (m : ℝ) ^ 4 * A ^ 8 := by positivity
+  have hm4 : 0 ≤ (m : ℝ) ^ (4 : ℕ) := by positivity
+  have hscale : 0 ≤ 9 * (2 : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * A ^ (8 : ℕ) := by positivity
   change thetaCuspLikelihoodAtomPairEighthScoreMass 2 m A B ≤ _
   calc
     thetaCuspLikelihoodAtomPairEighthScoreMass 2 m A B ≤
-        9 * (2 : ℝ) ^ 4 * (m : ℝ) ^ 4 * A ^ 8 * (3 + e) ^ 8 *
+        9 * (2 : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * A ^ (8 : ℕ) * (3 + e) ^ (8 : ℕ) *
           Real.exp (-(A * (3 + e))) := by
       simpa only [show thetaCuspLikelihoodGap 2 = 3 by
         norm_num [thetaCuspLikelihoodGap], e, Nat.cast_ofNat] using hpair
-    _ ≤ 9 * (2 : ℝ) ^ 4 * (m : ℝ) ^ 4 * A ^ 8 * (13 * e ^ 8) *
+    _ ≤ 9 * (2 : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * A ^ (8 : ℕ) * (13 * e ^ (8 : ℕ)) *
           Real.exp (-(A * (3 + e))) := by gcongr
-    _ = 1872 * A ^ 8 * Real.exp (-(3 * A)) *
-        ((m : ℝ) ^ 4 * e ^ 8 * Real.exp (-(A * e))) := by rw [hexp]; ring
+    _ = 1872 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
+        ((m : ℝ) ^ (4 : ℕ) * e ^ (8 : ℕ) * Real.exp (-(A * e))) := by rw [hexp]; ring
 
 /-- Complete ordered dominant-stable pair tail. -/
 def thetaCuspLikelihoodDominantStablePairEighthTail (A B : ℝ) : ℝ :=
@@ -803,7 +803,7 @@ theorem summable_thetaCuspLikelihoodDominantStablePairEighthScoreMass
     Summable (fun k : ℕ =>
       thetaCuspLikelihoodAtomPairEighthScoreMass 2 (k + 3) A B) := by
   have hs := (summable_thetaCuspLikelihoodStableEighthTail hA).mul_left
-    (1872 * A ^ 8 * Real.exp (-(3 * A)))
+    (1872 * A ^ (8 : ℕ) * Real.exp (-(3 * A)))
   apply Summable.of_nonneg_of_le
   · intro k
     exact thetaCuspLikelihoodAtomPairEighthScoreMass_nonneg
@@ -816,39 +816,39 @@ theorem summable_thetaCuspLikelihoodDominantStablePairEighthScoreMass
 theorem thetaCuspLikelihoodDominantStablePairEighthTail_le
     {A B : ℝ} (hA : Real.pi ≤ A) (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodDominantStablePairEighthTail A B ≤
-      (5200 / 11 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) := by
+      (5200 / 11 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by
   have hs := summable_thetaCuspLikelihoodDominantStablePairEighthScoreMass hA hBA
   have hw := (summable_thetaCuspLikelihoodStableEighthTail hA).mul_left
-    (1872 * A ^ 8 * Real.exp (-(3 * A)))
+    (1872 * A ^ (8 : ℕ) * Real.exp (-(3 * A)))
   have htail := thetaCuspLikelihoodStableEighthTail_le hA
   unfold thetaCuspLikelihoodDominantStablePairEighthTail
   calc
     (∑' k : ℕ, thetaCuspLikelihoodAtomPairEighthScoreMass 2 (k + 3) A B) ≤
-        ∑' k : ℕ, 1872 * A ^ 8 * Real.exp (-(3 * A)) *
-          (((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+        ∑' k : ℕ, 1872 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
+          (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
             Real.exp (-(A * thetaCuspLikelihoodGap (k + 3)))) :=
       Summable.tsum_le_tsum
         (fun k => thetaCuspLikelihoodDominantStablePairEighthScoreMass_le k hA hBA) hs hw
-    _ = (1872 * A ^ 8 * Real.exp (-(3 * A))) *
+    _ = (1872 * A ^ (8 : ℕ) * Real.exp (-(3 * A))) *
         thetaCuspLikelihoodStableEighthTail A := by
       unfold thetaCuspLikelihoodStableEighthTail
       rw [tsum_mul_left]
-    _ ≤ (1872 * A ^ 8 * Real.exp (-(3 * A))) * (25 / 99 : ℝ) := by
+    _ ≤ (1872 * A ^ (8 : ℕ) * Real.exp (-(3 * A))) * (25 / 99 : ℝ) := by
       gcongr
-    _ = (5200 / 11 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) := by ring
+    _ = (5200 / 11 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by ring
 
 /-- A stable-stable pair factors into the eighth stable moment and shifted activity. -/
 theorem thetaCuspLikelihoodStableStablePairEighthScoreMass_le
     (k l : ℕ) {A B : ℝ} (hA : Real.pi ≤ A) (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodAtomPairEighthScoreMass (k + 3) (l + 3) A B ≤
-      1152 * A ^ 8 * Real.exp (-(3 * A)) *
-        ((((k + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (k + 3) ^ 8 *
+      1152 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
+        ((((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
               Real.exp (-(A * thetaCuspLikelihoodGap (k + 3)))) *
-            (((l + 3 : ℕ) : ℝ) ^ 4 *
+            (((l + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
               Real.exp (-(A * (thetaCuspLikelihoodGap (l + 3) - 3)))) +
-          (((k + 3 : ℕ) : ℝ) ^ 4 *
+          (((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
               Real.exp (-(A * (thetaCuspLikelihoodGap (k + 3) - 3)))) *
-            (((l + 3 : ℕ) : ℝ) ^ 4 * thetaCuspLikelihoodGap (l + 3) ^ 8 *
+            (((l + 3 : ℕ) : ℝ) ^ (4 : ℕ) * thetaCuspLikelihoodGap (l + 3) ^ (8 : ℕ) *
               Real.exp (-(A * thetaCuspLikelihoodGap (l + 3))))) := by
   let n : ℕ := k + 3
   let m : ℕ := l + 3
@@ -876,19 +876,19 @@ theorem thetaCuspLikelihoodStableStablePairEighthScoreMass_le
   change thetaCuspLikelihoodAtomPairEighthScoreMass n m A B ≤ _
   calc
     thetaCuspLikelihoodAtomPairEighthScoreMass n m A B ≤
-        9 * (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * A ^ 8 * (d + e) ^ 8 *
+        9 * (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * A ^ (8 : ℕ) * (d + e) ^ (8 : ℕ) *
           Real.exp (-(A * (d + e))) := by
       simpa only [d, e] using hpair
-    _ ≤ 9 * (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * A ^ 8 *
-          (128 * (d ^ 8 + e ^ 8)) * Real.exp (-(A * (d + e))) := by gcongr
-    _ = 1152 * A ^ 8 * Real.exp (-(3 * A)) *
-        (((n : ℝ) ^ 4 * d ^ 8 * Real.exp (-(A * d))) *
-            ((m : ℝ) ^ 4 * Real.exp (-(A * (e - 3)))) +
-          ((n : ℝ) ^ 4 * Real.exp (-(A * (d - 3)))) *
-            ((m : ℝ) ^ 4 * e ^ 8 * Real.exp (-(A * e)))) := by
+    _ ≤ 9 * (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * A ^ (8 : ℕ) *
+          (128 * (d ^ (8 : ℕ) + e ^ (8 : ℕ))) * Real.exp (-(A * (d + e))) := by gcongr
+    _ = 1152 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
+        (((n : ℝ) ^ (4 : ℕ) * d ^ (8 : ℕ) * Real.exp (-(A * d))) *
+            ((m : ℝ) ^ (4 : ℕ) * Real.exp (-(A * (e - 3)))) +
+          ((n : ℝ) ^ (4 : ℕ) * Real.exp (-(A * (d - 3)))) *
+            ((m : ℝ) ^ (4 : ℕ) * e ^ (8 : ℕ) * Real.exp (-(A * e)))) := by
       linear_combination
-        -(1152 * A ^ 8 * (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * d ^ 8) * hfirst -
-        (1152 * A ^ 8 * (n : ℝ) ^ 4 * (m : ℝ) ^ 4 * e ^ 8) * hsecond
+        -(1152 * A ^ (8 : ℕ) * (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * d ^ (8 : ℕ)) * hfirst -
+        (1152 * A ^ (8 : ℕ) * (n : ℝ) ^ (4 : ℕ) * (m : ℝ) ^ (4 : ℕ) * e ^ (8 : ℕ)) * hsecond
 
 /-- Complete ordered stable-stable pair tail. -/
 def thetaCuspLikelihoodStableStablePairEighthTail (A B : ℝ) : ℝ :=
@@ -899,10 +899,10 @@ theorem summable_thetaCuspLikelihoodStableStablePairEighthScoreMass
     {A B : ℝ} (hA : Real.pi ≤ A) (hBA : B = A - 3 / 2) :
     Summable (fun p : ℕ × ℕ =>
       thetaCuspLikelihoodAtomPairEighthScoreMass (p.1 + 3) (p.2 + 3) A B) := by
-  let f8 : ℕ → ℝ := fun k => ((k + 3 : ℕ) : ℝ) ^ 4 *
-    thetaCuspLikelihoodGap (k + 3) ^ 8 *
+  let f8 : ℕ → ℝ := fun k => ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
+    thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
       Real.exp (-(A * thetaCuspLikelihoodGap (k + 3)))
-  let f0 : ℕ → ℝ := fun k => ((k + 3 : ℕ) : ℝ) ^ 4 *
+  let f0 : ℕ → ℝ := fun k => ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
     Real.exp (-(A * (thetaCuspLikelihoodGap (k + 3) - 3)))
   have h8 : Summable f8 := by
     simpa only [f8] using summable_thetaCuspLikelihoodStableEighthTail hA
@@ -915,7 +915,7 @@ theorem summable_thetaCuspLikelihoodStableStablePairEighthScoreMass
   have hp08 : Summable (fun p : ℕ × ℕ => f0 p.1 * f8 p.2) :=
     h0.mul_of_nonneg h8 hf0 hf8
   have hmajor := (hp80.add hp08).mul_left
-    (1152 * A ^ 8 * Real.exp (-(3 * A)))
+    (1152 * A ^ (8 : ℕ) * Real.exp (-(3 * A)))
   apply Summable.of_nonneg_of_le
   · intro p
     exact thetaCuspLikelihoodAtomPairEighthScoreMass_nonneg
@@ -929,11 +929,11 @@ theorem summable_thetaCuspLikelihoodStableStablePairEighthScoreMass
 theorem thetaCuspLikelihoodStableStablePairEighthTail_le
     {A B : ℝ} (hA : Real.pi ≤ A) (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodStableStablePairEighthTail A B ≤
-      A ^ 8 * Real.exp (-(3 * A)) := by
-  let f8 : ℕ → ℝ := fun k => ((k + 3 : ℕ) : ℝ) ^ 4 *
-    thetaCuspLikelihoodGap (k + 3) ^ 8 *
+      A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by
+  let f8 : ℕ → ℝ := fun k => ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
+    thetaCuspLikelihoodGap (k + 3) ^ (8 : ℕ) *
       Real.exp (-(A * thetaCuspLikelihoodGap (k + 3)))
-  let f0 : ℕ → ℝ := fun k => ((k + 3 : ℕ) : ℝ) ^ 4 *
+  let f0 : ℕ → ℝ := fun k => ((k + 3 : ℕ) : ℝ) ^ (4 : ℕ) *
     Real.exp (-(A * (thetaCuspLikelihoodGap (k + 3) - 3)))
   have h8 : Summable f8 := by
     simpa only [f8] using summable_thetaCuspLikelihoodStableEighthTail hA
@@ -946,7 +946,7 @@ theorem thetaCuspLikelihoodStableStablePairEighthTail_le
   have hp08 : Summable (fun p : ℕ × ℕ => f0 p.1 * f8 p.2) :=
     h0.mul_of_nonneg h8 hf0 hf8
   have hmajor := (hp80.add hp08).mul_left
-    (1152 * A ^ 8 * Real.exp (-(3 * A)))
+    (1152 * A ^ (8 : ℕ) * Real.exp (-(3 * A)))
   have hs := summable_thetaCuspLikelihoodStableStablePairEighthScoreMass hA hBA
   have h8le := thetaCuspLikelihoodStableEighthTail_le hA
   have h0le := thetaCuspLikelihoodStableShiftedActivity_le hA
@@ -960,13 +960,13 @@ theorem thetaCuspLikelihoodStableStablePairEighthTail_le
   calc
     (∑' p : ℕ × ℕ,
         thetaCuspLikelihoodAtomPairEighthScoreMass (p.1 + 3) (p.2 + 3) A B) ≤
-      ∑' p : ℕ × ℕ, 1152 * A ^ 8 * Real.exp (-(3 * A)) *
+      ∑' p : ℕ × ℕ, 1152 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
         (f8 p.1 * f0 p.2 + f0 p.1 * f8 p.2) :=
       Summable.tsum_le_tsum
         (fun p => by simpa only [f8, f0] using
           thetaCuspLikelihoodStableStablePairEighthScoreMass_le p.1 p.2 hA hBA)
         hs hmajor
-    _ = 2304 * A ^ 8 * Real.exp (-(3 * A)) *
+    _ = 2304 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
         (thetaCuspLikelihoodStableEighthTail A *
           thetaCuspLikelihoodStableShiftedActivity A) := by
       rw [tsum_mul_left, Summable.tsum_add hp80 hp08,
@@ -976,10 +976,10 @@ theorem thetaCuspLikelihoodStableStablePairEighthTail_le
         thetaCuspLikelihoodStableShiftedActivity
       dsimp only [f8, f0]
       ring
-    _ ≤ 2304 * A ^ 8 * Real.exp (-(3 * A)) *
+    _ ≤ 2304 * A ^ (8 : ℕ) * Real.exp (-(3 * A)) *
         ((25 / 99 : ℝ) * (1 / 999 : ℝ)) := by gcongr
-    _ ≤ A ^ 8 * Real.exp (-(3 * A)) := by
-      have hscale : 0 ≤ A ^ 8 * Real.exp (-(3 * A)) := by positivity
+    _ ≤ A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by
+      have hscale : 0 ≤ A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by positivity
       nlinarith [show (2304 : ℝ) * (25 / 99) * (1 / 999) ≤ 1 by norm_num]
 
 /-- All ordered non-dominant pairs: two mixed orientations plus the stable-stable square. -/
@@ -991,7 +991,7 @@ def thetaCuspLikelihoodNonDominantPairEighthTail (A B : ℝ) : ℝ :=
 theorem thetaCuspLikelihoodNonDominantPairEighthTail_le
     {A B : ℝ} (hA : Real.pi ≤ A) (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodNonDominantPairEighthTail A B ≤
-      (10411 / 11 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) := by
+      (10411 / 11 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by
   have hmixed := thetaCuspLikelihoodDominantStablePairEighthTail_le hA hBA
   have hstable := thetaCuspLikelihoodStableStablePairEighthTail_le hA hBA
   unfold thetaCuspLikelihoodNonDominantPairEighthTail
@@ -1000,14 +1000,14 @@ theorem thetaCuspLikelihoodNonDominantPairEighthTail_le
 /-- The dominant one-particle mass has an explicit exponential lower floor. -/
 theorem seventeenThousandFourHundredNinetySixFifths_mul_pow_eight_exp_lt_dominantSingleMass
     {A B : ℝ} (hA : Real.pi ≤ A) (hBA : B = A - 3 / 2) :
-    (17496 / 5 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) <
+    (17496 / 5 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) <
       thetaCuspLikelihoodEighthDominantSingleMass A := by
   have hAseam : (157 / 50 : ℝ) ≤ A := by nlinarith [Real.pi_gt_d2]
   have hB : 0 < B := by rw [hBA]; nlinarith [Real.pi_gt_three]
   have hretain :=
     one_thirtieth_mul_thetaCuspLikelihoodDominantAtomEighthMonomialMass_lt hAseam hBA
   have hmono :
-      16 * (3 * A) ^ 8 * Real.exp (-(3 * A)) ≤
+      16 * (3 * A) ^ (8 : ℕ) * Real.exp (-(3 * A)) ≤
         thetaCuspLikelihoodAtomEighthMonomialMass 2 A B := by
     rw [thetaCuspLikelihoodAtomEighthMonomialMass_eq 2 (by norm_num) A hB]
     norm_num [thetaCuspLikelihoodGap, thetaCuspLikelihoodAtomWeight,
@@ -1023,24 +1023,24 @@ theorem seventeenThousandFourHundredNinetySixFifths_mul_pow_eight_exp_lt_dominan
     have hray : 0 ≤ thetaCuspLikelihoodEighthMonomialRayTransform (A / B) (3 * A) := by
       unfold thetaCuspLikelihoodEighthMonomialRayTransform
       positivity
-    have hpoint : 16 * (3 * A) ^ 8 * Real.exp (-(3 * A)) =
+    have hpoint : 16 * (3 * A) ^ (8 : ℕ) * Real.exp (-(3 * A)) =
         Real.exp (-(9 / 2 : ℝ)) * 16 *
-          ((A * 3) ^ 8 * Real.exp (-(B * 3))) := by
-      linear_combination -(16 * (3 * A) ^ 8) * hexp
+          ((A * 3) ^ (8 : ℕ) * Real.exp (-(B * 3))) := by
+      linear_combination -(16 * (3 * A) ^ (8 : ℕ)) * hexp
     rw [hpoint]
     apply le_add_of_nonneg_right
     rw [show A * 3 = 3 * A by ring]
     positivity
   have hscaled :
-      (1 / 30 : ℝ) * (16 * (3 * A) ^ 8 * Real.exp (-(3 * A))) ≤
+      (1 / 30 : ℝ) * (16 * (3 * A) ^ (8 : ℕ) * Real.exp (-(3 * A))) ≤
         (1 / 30 : ℝ) * thetaCuspLikelihoodAtomEighthMonomialMass 2 A B := by
     gcongr
   have hscore :
-      (17496 / 5 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) <
+      (17496 / 5 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) <
         thetaCuspLikelihoodAtomEighthScoreMass 2 A B := by
     calc
-      (17496 / 5 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) =
-          (1 / 30 : ℝ) * (16 * (3 * A) ^ 8 * Real.exp (-(3 * A))) := by ring
+      (17496 / 5 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) =
+          (1 / 30 : ℝ) * (16 * (3 * A) ^ (8 : ℕ) * Real.exp (-(3 * A))) := by ring
       _ ≤ (1 / 30 : ℝ) * thetaCuspLikelihoodAtomEighthMonomialMass 2 A B := hscaled
       _ < thetaCuspLikelihoodAtomEighthScoreMass 2 A B := hretain
   rw [thetaCuspLikelihoodEighthDominantSingleMass_eq_atomScoreMass hAseam hBA]
@@ -1055,7 +1055,7 @@ theorem thetaCuspLikelihoodNonDominantPairEighthTail_lt_one_third_dominantSingle
   have hsingle :=
     seventeenThousandFourHundredNinetySixFifths_mul_pow_eight_exp_lt_dominantSingleMass
       hA hBA
-  have hscale : 0 < A ^ 8 * Real.exp (-(3 * A)) := by
+  have hscale : 0 < A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by
     have hA0 : 0 < A := Real.pi_pos.trans_le hA
     positivity
   nlinarith [show (10411 / 11 : ℝ) < (5832 / 5 : ℝ) by norm_num]

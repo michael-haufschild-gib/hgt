@@ -42,25 +42,25 @@ namespace RHTower
 /-- **Blindness of the `|ρ|²` weight.**  Moving a zero off the critical line changes the weight
 `1/|ρ|²` by a factor differing from `1` by at most `1/γ²`. -/
 theorem beta_blindness {g a : ℝ} (hg : 1 ≤ g) (ha : 0 < a) (ha2 : a ≤ 1 / 2) :
-    |(g ^ 2 + 1 / 4) / (g ^ 2 + (1 / 2 + a) ^ 2) - 1| ≤ 1 / g ^ 2 := by
+    |(g ^ (2 : ℕ) + 1 / 4) / (g ^ (2 : ℕ) + (1 / 2 + a) ^ (2 : ℕ)) - 1| ≤ 1 / g ^ (2 : ℕ) := by
   have hg0 : (0:ℝ) < g := by linarith
-  have hden : (0:ℝ) < g ^ 2 + (1 / 2 + a) ^ 2 := by positivity
-  have hg2 : (0:ℝ) < g ^ 2 := by positivity
-  have hdiff : (g ^ 2 + 1 / 4) / (g ^ 2 + (1 / 2 + a) ^ 2) - 1
-      = (1 / 4 - (1 / 2 + a) ^ 2) / (g ^ 2 + (1 / 2 + a) ^ 2) := by
+  have hden : (0:ℝ) < g ^ (2 : ℕ) + (1 / 2 + a) ^ (2 : ℕ) := by positivity
+  have hg2 : (0:ℝ) < g ^ (2 : ℕ) := by positivity
+  have hdiff : (g ^ (2 : ℕ) + 1 / 4) / (g ^ (2 : ℕ) + (1 / 2 + a) ^ (2 : ℕ)) - 1
+      = (1 / 4 - (1 / 2 + a) ^ (2 : ℕ)) / (g ^ (2 : ℕ) + (1 / 2 + a) ^ (2 : ℕ)) := by
     field_simp
     ring
   rw [hdiff, abs_div, abs_of_pos hden]
   rw [div_le_div_iff₀ hden hg2]
-  have hnum : |1 / 4 - (1 / 2 + a) ^ 2| ≤ 1 := by
+  have hnum : |1 / 4 - (1 / 2 + a) ^ (2 : ℕ)| ≤ 1 := by
     rw [abs_le]
     constructor <;> nlinarith [ha, ha2]
   nlinarith [hnum, hg2, hden, sq_nonneg ((1:ℝ) / 2 + a)]
 
 /-- The blindness improves with height: at large `γ` the weight cannot distinguish at all. -/
 theorem blindness_tendsto_zero :
-    Tendsto (fun g : ℝ => 1 / g ^ 2) atTop (nhds 0) := by
-  have heq : (fun g : ℝ => 1 / g ^ 2) = fun g : ℝ => (1 / g) * (1 / g) := by
+    Tendsto (fun g : ℝ => 1 / g ^ (2 : ℕ)) atTop (nhds 0) := by
+  have heq : (fun g : ℝ => 1 / g ^ (2 : ℕ)) = fun g : ℝ => (1 / g) * (1 / g) := by
     funext g; field_simp
   rw [heq]
   have h := Filter.Tendsto.div_atTop (tendsto_const_nhds (x := (1:ℝ))) tendsto_id

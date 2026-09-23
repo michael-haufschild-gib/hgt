@@ -93,7 +93,7 @@ theorem suzukiFiniteMorseInterpolant_eval_sq
     (hnode : Function.Injective resolventNode)
     (hnode0 : ∀ i, resolventNode i ≠ 0)
     (hdebt : ∀ i, 0 ≤ debt i) (i : ι) :
-    (suzukiFiniteMorseInterpolant resolventNode debt).eval (resolventNode i) ^ 2 =
+    (suzukiFiniteMorseInterpolant resolventNode debt).eval (resolventNode i) ^ (2 : ℕ) =
       debt i := by
   rw [suzukiFiniteMorseInterpolant_eval resolventNode debt hnode hnode0 i]
   exact Real.sq_sqrt (hdebt i)
@@ -107,7 +107,7 @@ theorem suzukiFiniteMorseKreinInterpolant_exact_negativeDebt
     (hbt : ∀ i, beta < t i) (htneg : ∀ i, t i < 0)
     (hrho : ∀ i, rho < t i) (ht : Function.Injective t) (i : ι) :
     (suzukiFiniteMorseKreinInterpolant alpha beta rho t).eval
-          (suzukiFiniteMorseResolventNode rho (t i)) ^ 2 =
+          (suzukiFiniteMorseResolventNode rho (t i)) ^ (2 : ℕ) =
       suzukiFiniteMorseKreinDebt alpha beta (t i) := by
   unfold suzukiFiniteMorseKreinInterpolant
   have hdebt : ∀ j, 0 ≤ suzukiFiniteMorseKreinDebt alpha beta (t j) := by
@@ -130,7 +130,7 @@ theorem suzukiFiniteMorseKreinInterpolant_cancels_negativeDefect
     (hrho : ∀ i, rho < t i) (ht : Function.Injective t) (i : ι) :
     suzukiAffineResolventKreinDefect alpha beta (t i) +
         (suzukiFiniteMorseKreinInterpolant alpha beta rho t).eval
-          (suzukiFiniteMorseResolventNode rho (t i)) ^ 2 = 0 := by
+          (suzukiFiniteMorseResolventNode rho (t i)) ^ (2 : ℕ) = 0 := by
   rw [suzukiFiniteMorseKreinInterpolant_exact_negativeDebt
     hab hb0 hbt htneg hrho ht i]
   simp [suzukiFiniteMorseKreinDebt]
@@ -140,9 +140,9 @@ that node's Krein debt. -/
 theorem suzukiPolynomialResolventSquare_completes_iff
     (alpha beta rho t : ℝ) (q : ℝ[X]) :
     0 ≤ suzukiAffineResolventKreinDefect alpha beta t +
-        q.eval (suzukiFiniteMorseResolventNode rho t) ^ 2 ↔
+        q.eval (suzukiFiniteMorseResolventNode rho t) ^ (2 : ℕ) ↔
       suzukiFiniteMorseKreinDebt alpha beta t ≤
-        q.eval (suzukiFiniteMorseResolventNode rho t) ^ 2 := by
+        q.eval (suzukiFiniteMorseResolventNode rho t) ^ (2 : ℕ) := by
   simp only [suzukiFiniteMorseKreinDebt]
   constructor <;> intro h <;> linarith
 
@@ -151,7 +151,7 @@ theorem suzukiPolynomialResolventSquare_preserves_positiveDefect
     {alpha beta rho t : ℝ} (q : ℝ[X])
     (hab : alpha < beta) (hb0 : beta < 0) (htpos : 0 < t) :
     0 ≤ suzukiAffineResolventKreinDefect alpha beta t +
-      q.eval (suzukiFiniteMorseResolventNode rho t) ^ 2 := by
+      q.eval (suzukiFiniteMorseResolventNode rho t) ^ (2 : ℕ) := by
   have hdefect : 0 < suzukiAffineResolventKreinDefect alpha beta t :=
     (suzukiAffineResolventKreinDefect_pos_iff hab hb0
       (lt_trans hb0 htpos) (ne_of_gt htpos)).2 htpos
@@ -173,17 +173,17 @@ theorem suzukiFiniteMorseKreinDiagonalForm_nonneg
     0 ≤
       (∑ i, (suzukiAffineResolventKreinDefect alpha beta (negativeLevel i) +
           (suzukiFiniteMorseKreinInterpolant alpha beta rho negativeLevel).eval
-            (suzukiFiniteMorseResolventNode rho (negativeLevel i)) ^ 2) *
-          negativeAmplitude i ^ 2) +
+            (suzukiFiniteMorseResolventNode rho (negativeLevel i)) ^ (2 : ℕ)) *
+          negativeAmplitude i ^ (2 : ℕ)) +
       ∑ j, (suzukiAffineResolventKreinDefect alpha beta (positiveLevel j) +
           (suzukiFiniteMorseKreinInterpolant alpha beta rho negativeLevel).eval
-            (suzukiFiniteMorseResolventNode rho (positiveLevel j)) ^ 2) *
-          positiveAmplitude j ^ 2 := by
+            (suzukiFiniteMorseResolventNode rho (positiveLevel j)) ^ (2 : ℕ)) *
+          positiveAmplitude j ^ (2 : ℕ) := by
   have hnegativeSum :
       (∑ i, (suzukiAffineResolventKreinDefect alpha beta (negativeLevel i) +
           (suzukiFiniteMorseKreinInterpolant alpha beta rho negativeLevel).eval
-            (suzukiFiniteMorseResolventNode rho (negativeLevel i)) ^ 2) *
-          negativeAmplitude i ^ 2) = 0 := by
+            (suzukiFiniteMorseResolventNode rho (negativeLevel i)) ^ (2 : ℕ)) *
+          negativeAmplitude i ^ (2 : ℕ)) = 0 := by
     apply Finset.sum_eq_zero
     intro i hi
     rw [suzukiFiniteMorseKreinInterpolant_cancels_negativeDefect
@@ -203,7 +203,7 @@ polynomial.  This is the algebraic obstruction to realizing an exact negative pr
 finite resolvent polynomial. -/
 theorem suzukiPolynomialSquare_zero_on_infiniteSet_forces_zero
     (q : ℝ[X]) {spectralNodes : Set ℝ} (hinfinite : spectralNodes.Infinite)
-    (hzero : ∀ x ∈ spectralNodes, q.eval x ^ 2 = 0) :
+    (hzero : ∀ x ∈ spectralNodes, q.eval x ^ (2 : ℕ) = 0) :
     q = 0 := by
   apply Polynomial.eq_zero_of_infinite_isRoot q
   apply hinfinite.mono
@@ -217,8 +217,8 @@ some positive spectral coordinates. -/
 theorem suzukiFiniteResolventPolynomial_exactProjector_impossible
     (q : ℝ[X]) {positiveResolventNodes : Set ℝ} {negativeResolventNode debt : ℝ}
     (hinfinite : positiveResolventNodes.Infinite)
-    (hpositiveTail : ∀ x ∈ positiveResolventNodes, q.eval x ^ 2 = 0)
-    (hdebt : 0 < debt) (hnegativeMatch : q.eval negativeResolventNode ^ 2 = debt) :
+    (hpositiveTail : ∀ x ∈ positiveResolventNodes, q.eval x ^ (2 : ℕ) = 0)
+    (hdebt : 0 < debt) (hnegativeMatch : q.eval negativeResolventNode ^ (2 : ℕ) = debt) :
     False := by
   have hq : q = 0 :=
     suzukiPolynomialSquare_zero_on_infiniteSet_forces_zero q hinfinite hpositiveTail

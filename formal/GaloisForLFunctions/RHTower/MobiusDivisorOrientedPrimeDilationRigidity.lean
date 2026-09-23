@@ -23,7 +23,7 @@ namespace RHTower
 /-- Finite positive-weighted energy of oriented residual source coordinates. -/
 def mobiusDivisorOrientedResidualEnergy
     (M : ℕ) (P : Finset ℕ) (T : Finset (Finset ℕ)) (w : Finset ℕ → ℝ) : ℝ :=
-  ∑ R ∈ T, w R * (mobiusDivisorOrientedFibre M P R) ^ 2
+  ∑ R ∈ T, w R * (mobiusDivisorOrientedFibre M P R) ^ (2 : ℕ)
 
 /-- The post-insertion residual energy is exactly the detector energy of the
 background-minus-copy coordinates. -/
@@ -34,7 +34,7 @@ theorem mobiusDivisorOrientedResidualEnergy_insert_mul_prime_eq_sum_sq
     mobiusDivisorOrientedResidualEnergy (p * N) (insert p P) T w =
       ∑ R ∈ T, w R *
         (mobiusDivisorOrientedFibre (p * N) P R -
-          Real.sqrt p * mobiusDivisorOrientedFibre N P R) ^ 2 := by
+          Real.sqrt p * mobiusDivisorOrientedFibre N P R) ^ (2 : ℕ) := by
   unfold mobiusDivisorOrientedResidualEnergy
   apply Finset.sum_congr rfl
   intro R hR
@@ -53,11 +53,11 @@ theorem mobiusDivisorOrientedResidualEnergy_insert_mul_prime_eq_zero_rigid
       mobiusDivisorOrientedFibre (p * N) P R =
         Real.sqrt p * mobiusDivisorOrientedFibre N P R := by
   have hnonneg : ∀ R ∈ T,
-      0 ≤ w R * (mobiusDivisorOrientedFibre (p * N) (insert p P) R) ^ 2 := by
+      0 ≤ w R * (mobiusDivisorOrientedFibre (p * N) (insert p P) R) ^ (2 : ℕ) := by
     intro R hR
     exact mul_nonneg (le_of_lt (hw R hR)) (sq_nonneg _)
   have hsum : ∀ R ∈ T,
-      w R * (mobiusDivisorOrientedFibre (p * N) (insert p P) R) ^ 2 = 0 := by
+      w R * (mobiusDivisorOrientedFibre (p * N) (insert p P) R) ^ (2 : ℕ) = 0 := by
     apply (Finset.sum_eq_zero_iff_of_nonneg hnonneg).mp
     simpa only [mobiusDivisorOrientedResidualEnergy] using hzero
   intro R hR

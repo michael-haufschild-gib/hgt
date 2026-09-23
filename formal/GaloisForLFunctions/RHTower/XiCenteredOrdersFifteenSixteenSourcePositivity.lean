@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.XiOrderSixteenCornerSourceExclusion
 
 The centered order-sixteen and order-seventeen sector failures lie inside
 
-`1/6 < (Re rho - 1/2)^2 < 1/4`, `85 < (Im rho)^2 < 119`.
+`1/6 < (Re rho - 1/2)^(2 : ℕ) < 1/4`, `85 < (Im rho)^(2 : ℕ) < 119`.
 
 Throughout this corner, one fourth reciprocal-trace atom exceeds `1/20000`.  Four distinct
 FE--Schwarz copies would therefore exceed the unconditional complete-source upper bound.
@@ -26,10 +26,10 @@ noncomputable section
 nonnegative fourth reciprocal trace. -/
 theorem four_mul_xiFourthReciprocalTraceAtom_le_source_of_offLine
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    4 * (xiZeroCopyReciprocalSquare q ^ 2).re ≤
+    4 * (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re ≤
       normalizedPrimeArchMoment 1 := by
   have hsum : Summable
-      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 2).re) :=
+      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ (2 : ℕ)).re) :=
     (summable_xiZeroCopyReciprocalSquare_pow 1).mapL Complex.reCLM
   have hle := four_mul_le_tsum_of_quartet_invariant
     xiFourthReciprocalTraceAtom_nonneg hsum
@@ -41,13 +41,13 @@ theorem four_mul_xiFourthReciprocalTraceAtom_le_source_of_offLine
 atom exceeds `1/20000`. -/
 theorem one_over_twentyThousand_lt_xiFourthReciprocalTraceAtom_of_centered_orderSeventeenRange
     (q : XiZeroCopy)
-    (huLower : (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 119) :
-    (1 / 20000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+    (huLower : (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 119) :
+    (1 / 20000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   let w : ℝ := u + v
   let W : ℝ := 477 / 4
   have hu0 : 0 < u := by
@@ -60,9 +60,9 @@ theorem one_over_twentyThousand_lt_xiFourthReciprocalTraceAtom_of_centered_order
   have hwLower : 85 < w := by dsimp only [w]; linarith
   have hwUpper : w < W := by dsimp only [w, W]; linarith
   have hW0 : 0 < W := by dsimp only [W]; norm_num
-  have hw2Lower : (85 : ℝ) ^ 2 < w ^ 2 :=
+  have hw2Lower : (85 : ℝ) ^ (2 : ℕ) < w ^ (2 : ℕ) :=
     pow_lt_pow_left₀ hwLower (by norm_num) (by norm_num)
-  have hw2Upper : w ^ 2 < W ^ 2 :=
+  have hw2Upper : w ^ (2 : ℕ) < W ^ (2 : ℕ) :=
     pow_lt_pow_left₀ hwUpper hw0.le (by norm_num)
   have huv : u * v < 119 / 4 := by
     calc
@@ -71,45 +71,45 @@ theorem one_over_twentyThousand_lt_xiFourthReciprocalTraceAtom_of_centered_order
       _ < (1 / 4 : ℝ) * 119 :=
         mul_lt_mul_of_pos_left (by simpa only [v] using hvUpper) (by norm_num)
       _ = 119 / 4 := by ring
-  have hshape : (4760000 : ℝ) < 20000 * w ^ 2 - w ^ 4 := by
-    by_cases hmid : w ^ 2 ≤ 10000
-    · have hfactor : 0 < 12775 - w ^ 2 := by nlinarith
-      have hprod : 0 < (w ^ 2 - 7225) * (12775 - w ^ 2) :=
+  have hshape : (4760000 : ℝ) < 20000 * w ^ (2 : ℕ) - w ^ (4 : ℕ) := by
+    by_cases hmid : w ^ (2 : ℕ) ≤ 10000
+    · have hfactor : 0 < 12775 - w ^ (2 : ℕ) := by nlinarith
+      have hprod : 0 < (w ^ (2 : ℕ) - 7225) * (12775 - w ^ (2 : ℕ)) :=
         mul_pos (sub_pos.mpr (by
           norm_num at hw2Lower ⊢
           exact hw2Lower)) hfactor
       have hid :
-          (20000 * w ^ 2 - w ^ 4) -
-              (20000 * 7225 - 7225 ^ 2) =
-            (w ^ 2 - 7225) * (12775 - w ^ 2) := by
+          (20000 * w ^ (2 : ℕ) - w ^ (4 : ℕ)) -
+              (20000 * 7225 - 7225 ^ (2 : ℕ)) =
+            (w ^ (2 : ℕ) - 7225) * (12775 - w ^ (2 : ℕ)) := by
         ring
       norm_num at hid ⊢
       nlinarith
-    · have hmid' : 10000 < w ^ 2 := lt_of_not_ge hmid
-      have hfactor : 0 < w ^ 2 + W ^ 2 - 20000 := by
+    · have hmid' : 10000 < w ^ (2 : ℕ) := lt_of_not_ge hmid
+      have hfactor : 0 < w ^ (2 : ℕ) + W ^ (2 : ℕ) - 20000 := by
         dsimp only [W]
         nlinarith
-      have hprod : 0 < (W ^ 2 - w ^ 2) * (w ^ 2 + W ^ 2 - 20000) :=
+      have hprod : 0 < (W ^ (2 : ℕ) - w ^ (2 : ℕ)) * (w ^ (2 : ℕ) + W ^ (2 : ℕ) - 20000) :=
         mul_pos (sub_pos.mpr hw2Upper) hfactor
       have hid :
-          (20000 * w ^ 2 - w ^ 4) -
-              (20000 * W ^ 2 - W ^ 4) =
-            (W ^ 2 - w ^ 2) * (w ^ 2 + W ^ 2 - 20000) := by
+          (20000 * w ^ (2 : ℕ) - w ^ (4 : ℕ)) -
+              (20000 * W ^ (2 : ℕ) - W ^ (4 : ℕ)) =
+            (W ^ (2 : ℕ) - w ^ (2 : ℕ)) * (w ^ (2 : ℕ) + W ^ (2 : ℕ) - 20000) := by
         ring
       have hend : (4760000 : ℝ) <
-          20000 * W ^ 2 - W ^ 4 := by
+          20000 * W ^ (2 : ℕ) - W ^ (4 : ℕ) := by
         norm_num [W]
       nlinarith
   have hG :
-      0 < 20000 * (v ^ 2 - 6 * u * v + u ^ 2) - w ^ 4 := by
-    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
+      0 < 20000 * (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) - w ^ (4 : ℕ) := by
+    have hN : v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ) = w ^ (2 : ℕ) - 8 * u * v := by
       dsimp only [w]
       ring
     rw [hN]
     nlinarith
   have hformula :
-      (xiZeroCopyReciprocalSquare q ^ 2).re =
-        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
+        (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) / w ^ (4 : ℕ) := by
     simp only [u, v, w]
     exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]
@@ -119,10 +119,10 @@ theorem one_over_twentyThousand_lt_xiFourthReciprocalTraceAtom_of_centered_order
 /-- The complete centered order-seventeen source corner is empty. -/
 theorem not_exists_xiZeroCopy_mem_centeredOrderSeventeen_sourceCorner :
     ¬ ∃ q : XiZeroCopy,
-      (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-      85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 119 := by
+      (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ (2 : ℕ) ∧
+      (q.1 : ℂ).im ^ (2 : ℕ) < 119 := by
   rintro ⟨q, huLower, huUpper, hvLower, hvUpper⟩
   have hoff : (q.1 : ℂ).re ≠ 1 / 2 :=
     re_ne_half_of_pos_centered_sq (by linarith)
@@ -137,18 +137,18 @@ theorem not_exists_xiZeroCopy_mem_centeredOrderSeventeen_sourceCorner :
 
 theorem xiCenteredOrderSixteenSectorRatio_of_offLine_inner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
-    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (1 / 6 : ℝ)) :
-    104 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ≤ (1 / 6 : ℝ)) :
+    104 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   simpa only [add_zero] using
     GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 104) (u₀ := 1 / 6)
       (v₀ := 85) (y₀ := 0) (y := 0) (by norm_num) le_rfl hinner
       (xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff).le (by norm_num) (by norm_num)
 
 theorem xiCenteredOrderSixteenSectorRatio_of_oneHundredFive_le_im_sq
-    (q : XiZeroCopy) (hhigh : 105 ≤ (q.1 : ℂ).im ^ 2) :
-    104 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
+    (q : XiZeroCopy) (hhigh : 105 ≤ (q.1 : ℂ).im ^ (2 : ℕ)) :
+    104 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   simpa only [add_zero] using
     GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 104) (u₀ := 1 / 4)
       (v₀ := 105) (y₀ := 0) (y := 0) (by norm_num) le_rfl
@@ -157,19 +157,19 @@ theorem xiCenteredOrderSixteenSectorRatio_of_oneHundredFive_le_im_sq
 theorem xiCenteredOrderSixteenSectorFailure_mem_edgeCorner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
     (hfail :
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
-        104 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2) :
-    (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-      85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 105 :=
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+        104 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ)) :
+    (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ (2 : ℕ) ∧
+      (q.1 : ℂ).im ^ (2 : ℕ) < 105 :=
   xiZeroCopy_sectorFailure_mem_edgeCorner q hoff
     (fun h => xiCenteredOrderSixteenSectorRatio_of_offLine_inner q hoff h)
     (fun h => xiCenteredOrderSixteenSectorRatio_of_oneHundredFive_le_im_sq q h) hfail
 
 /-- Every centered reciprocal-square Xi atom has positive sixteenth-power real part. -/
 theorem xiZeroCopyReciprocalSquare_pow_sixteen_re_pos (q : XiZeroCopy) :
-    0 < (xiZeroCopyReciprocalSquare q ^ 16).re :=
+    0 < (xiZeroCopyReciprocalSquare q ^ (16 : ℕ)).re :=
   xiZeroCopyReciprocalSquare_pow_re_pos_of_window_empty q
     (fun _ _ hA h => orderSixteenReciprocalPower_re_pos_of_sectorRatio hA h)
     (fun hoff hfail => xiCenteredOrderSixteenSectorFailure_mem_edgeCorner q hoff hfail)
@@ -180,18 +180,18 @@ theorem xiZeroCopyReciprocalSquare_pow_sixteen_re_pos (q : XiZeroCopy) :
 
 theorem xiCenteredOrderSeventeenSectorRatio_of_offLine_inner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
-    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (1 / 6 : ℝ)) :
-    118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ≤ (1 / 6 : ℝ)) :
+    118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   simpa only [add_zero] using
     GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 118) (u₀ := 1 / 6)
       (v₀ := 85) (y₀ := 0) (y := 0) (by norm_num) le_rfl hinner
       (xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff).le (by norm_num) (by norm_num)
 
 theorem xiCenteredOrderSeventeenSectorRatio_of_oneHundredNineteen_le_im_sq
-    (q : XiZeroCopy) (hhigh : 119 ≤ (q.1 : ℂ).im ^ 2) :
-    118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
+    (q : XiZeroCopy) (hhigh : 119 ≤ (q.1 : ℂ).im ^ (2 : ℕ)) :
+    118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   simpa only [add_zero] using
     GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 118) (u₀ := 1 / 4)
       (v₀ := 119) (y₀ := 0) (y := 0) (by norm_num) le_rfl
@@ -200,19 +200,19 @@ theorem xiCenteredOrderSeventeenSectorRatio_of_oneHundredNineteen_le_im_sq
 theorem xiCenteredOrderSeventeenSectorFailure_mem_edgeCorner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
     (hfail :
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
-        118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2) :
-    (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-      85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 119 :=
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+        118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ)) :
+    (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ (2 : ℕ) ∧
+      (q.1 : ℂ).im ^ (2 : ℕ) < 119 :=
   xiZeroCopy_sectorFailure_mem_edgeCorner q hoff
     (fun h => xiCenteredOrderSeventeenSectorRatio_of_offLine_inner q hoff h)
     (fun h => xiCenteredOrderSeventeenSectorRatio_of_oneHundredNineteen_le_im_sq q h) hfail
 
 /-- Every centered reciprocal-square Xi atom has positive seventeenth-power real part. -/
 theorem xiZeroCopyReciprocalSquare_pow_seventeen_re_pos (q : XiZeroCopy) :
-    0 < (xiZeroCopyReciprocalSquare q ^ 17).re :=
+    0 < (xiZeroCopyReciprocalSquare q ^ (17 : ℕ)).re :=
   xiZeroCopyReciprocalSquare_pow_re_pos_of_window_empty q
     (fun _ _ hA h => orderSeventeenReciprocalPower_re_pos_of_sectorRatio hA h)
     (fun hoff hfail => xiCenteredOrderSeventeenSectorFailure_mem_edgeCorner q hoff hfail)

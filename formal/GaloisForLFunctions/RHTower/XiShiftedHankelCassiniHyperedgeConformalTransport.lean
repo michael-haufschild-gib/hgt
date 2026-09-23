@@ -33,7 +33,7 @@ open GaloisForLFunctions.HTGeometry
 def cassiniMobiusShift (h z : ℂ) : ℂ := z / (1 + h * z)
 
 def cassiniHyperedgeEnergy {d : ℕ} (z : Fin d → ℂ) : ℂ :=
-  (∏ i, z i) * vandermondeProd z ^ 2
+  (∏ i, z i) * vandermondeProd z ^ (2 : ℕ)
 
 private theorem prod_prod_Ioi_pair_eq_pow
     {d : ℕ} (a : Fin d → ℂ) (ha : ∀ i, a i ≠ 0) :

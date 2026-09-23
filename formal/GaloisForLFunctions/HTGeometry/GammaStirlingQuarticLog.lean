@@ -28,7 +28,7 @@ noncomputable section
 /-! ## The quartic Taylor bound -/
 
 theorem norm_log_one_add_sub_taylor_three_le {u : ℂ} (hu : ‖u‖ ≤ 1 / 2) :
-    ‖Complex.log (1 + u) - (u - u ^ 2 / 2 + u ^ 3 / 3)‖ ≤ ‖u‖ ^ 4 := by
+    ‖Complex.log (1 + u) - (u - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3)‖ ≤ ‖u‖ ^ (4 : ℕ) := by
   have hu0 : (0 : ℝ) ≤ ‖u‖ := norm_nonneg u
   have hu1 : ‖u‖ < 1 := lt_of_le_of_lt hu (by norm_num)
   have hsum := Complex.hasSum_taylorSeries_log hu1
@@ -37,17 +37,17 @@ theorem norm_log_one_add_sub_taylor_three_le {u : ℂ} (hu : ‖u‖ ≤ 1 / 2) 
   have hlog : Complex.log (1 + u) = ∑' n : ℕ, (-1 : ℂ) ^ (n + 1) * u ^ n / (n : ℂ) :=
     hsum.tsum_eq.symm
   have hfirst : ∑ n ∈ Finset.range 4, (-1 : ℂ) ^ (n + 1) * u ^ n / (n : ℂ)
-      = u - u ^ 2 / 2 + u ^ 3 / 3 := by
+      = u - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3 := by
     rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
       Finset.sum_range_one]
     norm_num
     ring
-  have htail : Complex.log (1 + u) - (u - u ^ 2 / 2 + u ^ 3 / 3)
+  have htail : Complex.log (1 + u) - (u - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3)
       = ∑' n : ℕ, (-1 : ℂ) ^ (n + 4 + 1) * u ^ (n + 4) / ((n + 4 : ℕ) : ℂ) := by
     rw [hlog, ← hsplit, hfirst]
     ring
   have hbound : ∀ n : ℕ, ‖(-1 : ℂ) ^ (n + 4 + 1) * u ^ (n + 4) / ((n + 4 : ℕ) : ℂ)‖
-      ≤ (‖u‖ ^ 4 / 4) * ‖u‖ ^ n := by
+      ≤ (‖u‖ ^ (4 : ℕ) / 4) * ‖u‖ ^ n := by
     intro n
     rw [norm_div, norm_mul, norm_pow, norm_pow, norm_neg, norm_one, one_pow, one_mul,
       Complex.norm_natCast]
@@ -56,13 +56,13 @@ theorem norm_log_one_add_sub_taylor_three_le {u : ℂ} (hu : ‖u‖ ≤ 1 / 2) 
     have hden : (4 : ℝ) ≤ (n : ℝ) + 4 := by
       have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
       linarith
-    have hnum : ‖u‖ ^ (n + 4) = ‖u‖ ^ 4 * ‖u‖ ^ n := by
+    have hnum : ‖u‖ ^ (n + 4) = ‖u‖ ^ (4 : ℕ) * ‖u‖ ^ n := by
       rw [pow_add]
       ring
     rw [hnum, div_le_iff₀ (by linarith : (0 : ℝ) < (n : ℝ) + 4)]
-    have hpos : (0 : ℝ) ≤ ‖u‖ ^ 4 * ‖u‖ ^ n := by positivity
+    have hpos : (0 : ℝ) ≤ ‖u‖ ^ (4 : ℕ) * ‖u‖ ^ n := by positivity
     nlinarith [hpos, hden]
-  have hgeo : Summable (fun n : ℕ => (‖u‖ ^ 4 / 4) * ‖u‖ ^ n) :=
+  have hgeo : Summable (fun n : ℕ => (‖u‖ ^ (4 : ℕ) / 4) * ‖u‖ ^ n) :=
     (summable_geometric_of_lt_one hu0 hu1).mul_left _
   have hnormsummable : Summable (fun n : ℕ =>
       ‖(-1 : ℂ) ^ (n + 4 + 1) * u ^ (n + 4) / ((n + 4 : ℕ) : ℂ)‖) :=
@@ -82,12 +82,12 @@ theorem norm_log_one_add_sub_taylor_three_le {u : ℂ} (hu : ‖u‖ ≤ 1 / 2) 
 
 /-- The second-rung Stirling defect: `ψ(z) − log z + 1/(2z) + 1/(12 z²)`. -/
 def digammaStirlingDefectTwo (z : ℂ) : ℂ :=
-  Complex.digamma z - Complex.log z + 1 / (2 * z) + 1 / (12 * z ^ 2)
+  Complex.digamma z - Complex.log z + 1 / (2 * z) + 1 / (12 * z ^ (2 : ℕ))
 
 theorem digammaStirlingDefectTwo_step {z : ℂ} (hz : 0 < z.re) :
     digammaStirlingDefectTwo (z + 1) - digammaStirlingDefectTwo z
       = (1 / z - Complex.log (1 + 1 / z) - 1 / (2 * z * (z + 1)))
-        + (1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2)) := by
+        + (1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ))) := by
   have hstep := digammaStirlingDefect_step hz
   rw [digammaStirlingDefectTwo, digammaStirlingDefectTwo]
   rw [digammaStirlingDefect, digammaStirlingDefect] at hstep
@@ -97,7 +97,7 @@ set_option maxHeartbeats 1000000 in
 /-- **The second-rung gain.**  The coefficient `1/12` cancels the cubic term exactly, so the
 one-step difference of `g₂` is one further order smaller. -/
 theorem norm_digammaStirlingDefectTwo_step_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖) :
-    ‖digammaStirlingDefectTwo (z + 1) - digammaStirlingDefectTwo z‖ ≤ 4 / ‖z‖ ^ 4 := by
+    ‖digammaStirlingDefectTwo (z + 1) - digammaStirlingDefectTwo z‖ ≤ 4 / ‖z‖ ^ (4 : ℕ) := by
   have hzpos : (0 : ℝ) < ‖z‖ := by linarith
   have hz0 : z ≠ 0 := by
     intro h
@@ -126,17 +126,17 @@ theorem norm_digammaStirlingDefectTwo_step_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 
     have hb := norm_sub_le ((1 : ℂ) + u) u
     rw [add_sub_cancel_right, norm_one] at hb
     linarith [huhalf]
-  have hu4 : ‖u‖ ^ 4 = 1 / ‖z‖ ^ 4 := by rw [hunorm, div_pow, one_pow]
+  have hu4 : ‖u‖ ^ (4 : ℕ) = 1 / ‖z‖ ^ (4 : ℕ) := by rw [hunorm, div_pow, one_pow]
   -- the three pieces
-  have hE1 : ‖u - Complex.log (1 + u) - u ^ 2 / 2 + u ^ 3 / 3‖ ≤ ‖u‖ ^ 4 := by
+  have hE1 : ‖u - Complex.log (1 + u) - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3‖ ≤ ‖u‖ ^ (4 : ℕ) := by
     have hbase := norm_log_one_add_sub_taylor_three_le huhalf
-    have hid : u - Complex.log (1 + u) - u ^ 2 / 2 + u ^ 3 / 3
-        = -(Complex.log (1 + u) - (u - u ^ 2 / 2 + u ^ 3 / 3)) := by ring
+    have hid : u - Complex.log (1 + u) - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3
+        = -(Complex.log (1 + u) - (u - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3)) := by ring
     rw [hid, norm_neg]
     exact hbase
-  have hE2 : ‖-(1 / (2 * z * (z + 1))) + u ^ 2 / 2 - u ^ 3 / 2‖ ≤ ‖u‖ ^ 4 := by
-    have hid : -(1 / (2 * z * (z + 1))) + u ^ 2 / 2 - u ^ 3 / 2
-        = -(u ^ 4 / (2 * (1 + u))) := by
+  have hE2 : ‖-(1 / (2 * z * (z + 1))) + u ^ (2 : ℕ) / 2 - u ^ (3 : ℕ) / 2‖ ≤ ‖u‖ ^ (4 : ℕ) := by
+    have hid : -(1 / (2 * z * (z + 1))) + u ^ (2 : ℕ) / 2 - u ^ (3 : ℕ) / 2
+        = -(u ^ (4 : ℕ) / (2 * (1 + u))) := by
       rw [hudef]
       field_simp
       ring
@@ -145,9 +145,9 @@ theorem norm_digammaStirlingDefectTwo_step_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 
     rw [h2n]
     rw [div_le_iff₀ (by positivity)]
     nlinarith [hulow, pow_nonneg (norm_nonneg u) 4]
-  have hE3 : ‖(1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2)) + u ^ 3 / 6‖ ≤ 2 * ‖u‖ ^ 4 := by
-    have hid : (1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2)) + u ^ 3 / 6
-        = (u ^ 4 * (3 + 2 * u)) / (12 * (1 + u) ^ 2) := by
+  have hE3 : ‖(1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ))) + u ^ (3 : ℕ) / 6‖ ≤ 2 * ‖u‖ ^ (4 : ℕ) := by
+    have hid : (1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ))) + u ^ (3 : ℕ) / 6
+        = (u ^ (4 : ℕ) * (3 + 2 * u)) / (12 * (1 + u) ^ (2 : ℕ)) := by
       rw [hudef]
       field_simp
       ring
@@ -161,24 +161,24 @@ theorem norm_digammaStirlingDefectTwo_step_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 
       have h2' : ‖(2 : ℂ)‖ = 2 := by norm_num
       rw [h3, h2']
       linarith [huhalf]
-    have hden : (3 : ℝ) ≤ 12 * ‖(1 : ℂ) + u‖ ^ 2 := by
+    have hden : (3 : ℝ) ≤ 12 * ‖(1 : ℂ) + u‖ ^ (2 : ℕ) := by
       nlinarith [hulow, norm_nonneg ((1 : ℂ) + u)]
     rw [div_le_iff₀ (by positivity)]
     nlinarith [hnum, hden, pow_nonneg (norm_nonneg u) 4, norm_nonneg ((3 : ℂ) + 2 * u)]
   -- assemble
   rw [digammaStirlingDefectTwo_step hz]
   have hsplit : (1 / z - Complex.log (1 + 1 / z) - 1 / (2 * z * (z + 1)))
-      + (1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2))
-      = (u - Complex.log (1 + u) - u ^ 2 / 2 + u ^ 3 / 3)
-        + (-(1 / (2 * z * (z + 1))) + u ^ 2 / 2 - u ^ 3 / 2)
-        + ((1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2)) + u ^ 3 / 6) := by
+      + (1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ)))
+      = (u - Complex.log (1 + u) - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3)
+        + (-(1 / (2 * z * (z + 1))) + u ^ (2 : ℕ) / 2 - u ^ (3 : ℕ) / 2)
+        + ((1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ))) + u ^ (3 : ℕ) / 6) := by
     rw [hudef]
     ring
   rw [hsplit]
-  have htotal : ‖(u - Complex.log (1 + u) - u ^ 2 / 2 + u ^ 3 / 3)
-      + (-(1 / (2 * z * (z + 1))) + u ^ 2 / 2 - u ^ 3 / 2)
-      + ((1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2)) + u ^ 3 / 6)‖
-      ≤ ‖u‖ ^ 4 + ‖u‖ ^ 4 + 2 * ‖u‖ ^ 4 := by
+  have htotal : ‖(u - Complex.log (1 + u) - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3)
+      + (-(1 / (2 * z * (z + 1))) + u ^ (2 : ℕ) / 2 - u ^ (3 : ℕ) / 2)
+      + ((1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ))) + u ^ (3 : ℕ) / 6)‖
+      ≤ ‖u‖ ^ (4 : ℕ) + ‖u‖ ^ (4 : ℕ) + 2 * ‖u‖ ^ (4 : ℕ) := by
     refine le_trans (norm_add_le _ _) ?_
     refine add_le_add (le_trans (norm_add_le _ _) (add_le_add hE1 hE2)) hE3
   refine le_trans htotal (le_of_eq ?_)

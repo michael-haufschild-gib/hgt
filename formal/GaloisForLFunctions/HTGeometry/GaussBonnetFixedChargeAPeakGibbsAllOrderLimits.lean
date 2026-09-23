@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.GaussBonnetFixedChargeAAlignedAngularJetLi
 # All-order uniform aligned Gibbs asymptotics
 
 For each natural derivative order, the actual normalized Gibbs profile
-has a uniformly vanishing first correction to cos(psi)^4. The result
+has a uniformly vanishing first correction to cos(psi)^(4 : ℕ). The result
 holds over all real angles and along arbitrary moving angle choices.
 Uniformity is asserted for each fixed order, without claiming one
 bound simultaneously uniform in unbounded derivative order.
@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_uniform_first_zero_limit (w φ l₁ l₂ : ℝ) (n : ℕ) :
     TendstoUniformly (fun τ ψ => (iteratedDeriv n (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ -
-      iteratedDeriv n (fun x : ℝ => cos x ^ 4) ψ) / egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot := by
+      iteratedDeriv n (fun x : ℝ => cos x ^ (4 : ℕ)) ψ) / egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot := by
   cases n with
   | zero => simpa only [iteratedDeriv_zero] using egbFixedChargeAPeakNormalizedGibbs_uniform_first_zero_limit w φ l₁ l₂
   | succ n =>
@@ -26,7 +26,7 @@ theorem egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_uniform_first_zero_limi
 
 theorem egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_uniform_limit (w φ l₁ l₂ : ℝ) (n : ℕ) :
     TendstoUniformly (fun τ ψ => iteratedDeriv n (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ)
-      (iteratedDeriv n (fun x : ℝ => cos x ^ 4)) atBot := by
+      (iteratedDeriv n (fun x : ℝ => cos x ^ (4 : ℕ))) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
   have he := (Metric.tendstoUniformly_iff.mp
@@ -43,7 +43,7 @@ theorem egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_uniform_limit (w φ l�
 
 theorem egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_moving_first_zero_limit (w φ l₁ l₂ : ℝ) (n : ℕ) (ψ : ℝ → ℝ) :
     Tendsto (fun τ => (iteratedDeriv n (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) -
-      iteratedDeriv n (fun x : ℝ => cos x ^ 4) (ψ τ)) / egbCoexistenceASymmetricRatio τ) atBot (𝓝 (0 : ℝ)) := by
+      iteratedDeriv n (fun x : ℝ => cos x ^ (4 : ℕ)) (ψ τ)) / egbCoexistenceASymmetricRatio τ) atBot (𝓝 (0 : ℝ)) := by
   apply Metric.tendsto_nhds.mpr
   intro ε hε
   have h := (Metric.tendstoUniformly_iff.mp
@@ -53,7 +53,7 @@ theorem egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_moving_first_zero_limit
 
 theorem egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_moving_peak_zero_limit (w φ l₁ l₂ : ℝ) (n : ℕ) (ψ : ℝ → ℝ) :
     Tendsto (fun τ => (iteratedDeriv n (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) -
-      iteratedDeriv n (fun x : ℝ => cos x ^ 4) (ψ τ)) / egbFixedChargeAMiddleGapCoordinate τ φ) atBot (𝓝 (0 : ℝ)) := by
+      iteratedDeriv n (fun x : ℝ => cos x ^ (4 : ℕ)) (ψ τ)) / egbFixedChargeAMiddleGapCoordinate τ φ) atBot (𝓝 (0 : ℝ)) := by
   have hc := egbFixedChargeAMiddleMeanCorrection_neg φ
   have h := (egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_moving_first_zero_limit w φ l₁ l₂ n ψ).div
     (egbFixedChargeAMiddleGapCoordinate_linear_limit φ) hc.ne

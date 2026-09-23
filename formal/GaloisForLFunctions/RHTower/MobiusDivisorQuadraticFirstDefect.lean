@@ -42,7 +42,7 @@ theorem divisorUnsignedDilationChannel_two_clipped_reversal
   let w : ℝ := Real.sqrt M-Real.sqrt (d*7:ℕ)
   have hw0 : 0≤w := sub_nonneg.mpr (Real.sqrt_le_sqrt (by exact_mod_cast (show d*7≤M by omega)))
   have hs0 : 0<Real.sqrt (d:ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast hd)
-  have hs : (Real.sqrt (d:ℝ))^2=d := Real.sq_sqrt (Nat.cast_nonneg d)
+  have hs : (Real.sqrt (d:ℝ))^(2 : ℕ)=d := Real.sq_sqrt (Nat.cast_nonneg d)
   have hsM := Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) M)
   have hs7 := Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) (d*7))
   have hclock : w*(Real.sqrt M+Real.sqrt (d*7:ℕ))=(t:ℝ) := by
@@ -74,18 +74,18 @@ theorem divisorUnsignedDilationChannel_two_clipped_reversal
 
 private lemma odd_squarefree_narrow_window {N : ℕ} (hN : 20480000000000≤N) :
     let L := N/100000
-    (L:ℝ)/8 ≤ ∑ d ∈ Ioc (N-L) N, if 2∣d then 0 else (((μ d : ℤ):ℝ))^2 := by
+    (L:ℝ)/8 ≤ ∑ d ∈ Ioc (N-L) N, if 2∣d then 0 else (((μ d : ℤ):ℝ))^(2 : ℕ) := by
   let L := N/100000
   let R := L/32+1
   have hL : 204800000≤L := by dsimp [L]; omega
   have hLN : L≤N := Nat.div_le_self _ _
   have hNR : N≤6400000*R := by dsimp [L,R] at *; omega
   have hR : 6400000≤R := by dsimp [R]; omega
-  have hNsq : N≤R^2 := by
+  have hNsq : N≤R^(2 : ℕ) := by
     calc
       N ≤ 6400000*R := hNR
       _ ≤ R*R := Nat.mul_le_mul_right R hR
-      _ = R^2 := by ring
+      _ = R^(2 : ℕ) := by ring
   have hcount := Sieve.abs_window_coprime_squarefree_sub_le
     (p:=2) (t:=N-L) (L:=L) (R:=R) (by norm_num) (by omega) (by omega)
   rw [Nat.sub_add_cancel hLN] at hcount
@@ -106,9 +106,9 @@ private lemma odd_squarefree_narrow_window {N : ℕ} (hN : 20480000000000≤N) :
     norm_num only [Nat.cast_ofNat] at heq
     norm_num only [show (1:ℝ)-1/2=1/2 by norm_num]
     rw [heq, Sieve.squarefreeDensity_eq]
-    have hpi : 0<Real.pi^2 := sq_pos_of_pos Real.pi_pos
-    have hpi16 : Real.pi^2≤16 := by nlinarith only [Real.pi_pos, Real.pi_lt_four]
-    have h : (1/4:ℝ)≤4/Real.pi^2 := (le_div_iff₀ hpi).mpr (by nlinarith only [hpi16])
+    have hpi : 0<Real.pi^(2 : ℕ) := sq_pos_of_pos Real.pi_pos
+    have hpi16 : Real.pi^(2 : ℕ)≤16 := by nlinarith only [Real.pi_pos, Real.pi_lt_four]
+    have h : (1/4:ℝ)≤4/Real.pi^(2 : ℕ) := (le_div_iff₀ hpi).mpr (by nlinarith only [hpi16])
     convert h using 1
     ring
   have hmass := mul_le_mul_of_nonneg_left hdensity (Nat.cast_nonneg (α:=ℝ) L)
@@ -120,7 +120,7 @@ private lemma odd_squarefree_narrow_window {N : ℕ} (hN : 20480000000000≤N) :
 private lemma prime_two_defect_at_squarefree_label {M d : ℕ}
     (hds : Squarefree d) (hodd : ¬2∣d) (hd : 0<d)
     (hbase : 7*d≤M) (hclip : 10000*(M-7*d)≤d) :
-    (d:ℝ)/10000 ≤ (max (-mobiusDivisorOrientedFibre M {2} d.primeFactors) 0)^2 := by
+    (d:ℝ)/10000 ≤ (max (-mobiusDivisorOrientedFibre M {2} d.primeFactors) 0)^(2 : ℕ) := by
   have hnot : 2 ∉ d.primeFactors := fun h => hodd (Nat.mem_primeFactors.mp h).2.1
   have hpr : ∀ p ∈ d.primeFactors, Nat.Prime p := fun _ h => (Nat.mem_primeFactors.mp h).1
   have hfield : mobiusDivisorOrientedFibre M {2} d.primeFactors =
@@ -148,7 +148,7 @@ private lemma prime_two_defect_window_lower {M : ℕ} (hM : 143360000000000≤M)
   let N := M/7
   let L := N/100000
   let W := (Ioc (N-L) N).filter (fun d => Squarefree d ∧ ¬2∣d)
-  let f := fun R => (max (-mobiusDivisorOrientedFibre M {2} R) 0)^2
+  let f := fun R => (max (-mobiusDivisorOrientedFibre M {2} R) 0)^(2 : ℕ)
   have hN : 20480000000000≤N := by dsimp [N]; omega
   have hL : 204800000≤L := by dsimp [L]; omega
   have hwindow (d : ℕ) (hd : d ∈ W) :
@@ -156,10 +156,10 @@ private lemma prime_two_defect_window_lower {M : ℕ} (hM : 143360000000000≤M)
     obtain ⟨hdI,hs,ho⟩ := mem_filter.mp hd
     obtain ⟨hdlo,hdhi⟩ := mem_Ioc.mp hdI
     refine ⟨hs,ho,?_,?_,?_,?_,?_⟩ <;> dsimp [N,L] at * <;> omega
-  have hterm (d : ℕ) : (if 2∣d then (0:ℝ) else (((μ d:ℤ):ℝ))^2) =
+  have hterm (d : ℕ) : (if 2∣d then (0:ℝ) else (((μ d:ℤ):ℝ))^(2 : ℕ)) =
       if Squarefree d ∧ ¬2∣d then 1 else 0 := by
     by_cases hs : Squarefree d
-    · have hm : (((μ d:ℤ):ℝ))^2=1 := by
+    · have hm : (((μ d:ℤ):ℝ))^(2 : ℕ)=1 := by
         exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree hs
       by_cases ho : 2∣d
       · rw [if_pos ho, if_neg (fun h => h.2 ho)]
@@ -208,8 +208,8 @@ The lower bound uses an interval of odd squarefree cofactors on which the
 cutoff-seven reversal persists; the upper bound is the complete original diagonal. -/
 theorem mobiusDivisorParityDefectEnergy_two_quadratic_bounds
     (M : ℕ) (hM : 143360000000000≤M) :
-    (M:ℝ)^2/2048000000000 ≤ mobiusDivisorParityDefectEnergy M {2} ∧
-    mobiusDivisorParityDefectEnergy M {2} ≤ 722*(M:ℝ)^2 := by
+    (M:ℝ)^(2 : ℕ)/2048000000000 ≤ mobiusDivisorParityDefectEnergy M {2} ∧
+    mobiusDivisorParityDefectEnergy M {2} ≤ 722*(M:ℝ)^(2 : ℕ) := by
   constructor
   · let N := M/7
     let L := N/100000

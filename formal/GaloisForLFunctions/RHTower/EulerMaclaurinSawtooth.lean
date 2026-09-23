@@ -32,19 +32,19 @@ namespace GaloisForLFunctions.RHTower
 open MeasureTheory intervalIntegral Set
 
 /-- The local second Bernoulli half on the cell starting at `m`. -/
-def bernoulliHalf (m : ℤ) (x : ℝ) : ℝ := ((x - (m : ℝ)) ^ 2 - (x - (m : ℝ))) / 2
+def bernoulliHalf (m : ℤ) (x : ℝ) : ℝ := ((x - (m : ℝ)) ^ (2 : ℕ) - (x - (m : ℝ))) / 2
 
 theorem hasDerivAt_bernoulliHalf (m : ℤ) (x : ℝ) :
     HasDerivAt (bernoulliHalf m) (x - (m : ℝ) - 1 / 2) x := by
   have h1 : HasDerivAt (fun y : ℝ => y - (m : ℝ)) 1 x := by
     simpa using (hasDerivAt_id x).sub_const (m : ℝ)
-  have h2 : HasDerivAt (fun y : ℝ => (y - (m : ℝ)) ^ 2) (2 * (x - (m : ℝ)) ^ 1 * 1) x :=
+  have h2 : HasDerivAt (fun y : ℝ => (y - (m : ℝ)) ^ (2 : ℕ)) (2 * (x - (m : ℝ)) ^ (1 : ℕ) * 1) x :=
     h1.pow 2
-  have h3 : HasDerivAt (fun y : ℝ => (y - (m : ℝ)) ^ 2 - (y - (m : ℝ)))
-      (2 * (x - (m : ℝ)) ^ 1 * 1 - 1) x := h2.fun_sub h1
+  have h3 : HasDerivAt (fun y : ℝ => (y - (m : ℝ)) ^ (2 : ℕ) - (y - (m : ℝ)))
+      (2 * (x - (m : ℝ)) ^ (1 : ℕ) * 1 - 1) x := h2.fun_sub h1
   have h4 := h3.div_const 2
-  have hval : (2 * (x - (m : ℝ)) ^ 1 * 1 - 1) / 2 = x - (m : ℝ) - 1 / 2 := by ring
-  show HasDerivAt (fun y : ℝ => ((y - (m : ℝ)) ^ 2 - (y - (m : ℝ))) / 2) (x - (m : ℝ) - 1 / 2) x
+  have hval : (2 * (x - (m : ℝ)) ^ (1 : ℕ) * 1 - 1) / 2 = x - (m : ℝ) - 1 / 2 := by ring
+  show HasDerivAt (fun y : ℝ => ((y - (m : ℝ)) ^ (2 : ℕ) - (y - (m : ℝ))) / 2) (x - (m : ℝ) - 1 / 2) x
   rw [← hval]
   exact h4
 

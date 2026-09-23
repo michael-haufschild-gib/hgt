@@ -8,11 +8,11 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingTopologicalDarbouxStarobinsky
 At fixed radius `u = 1`, the exact Birmingham--Mokhtari scalar/vector parity gap depends on the
 shifted virtual angular parameter `A = Q + 2` through
 
-`G(A,x) = 6x ((2+3x)A + 6x + 6x^2) / (A+3x)^2`.
+`G(A,x) = 6x ((2+3x)A + 6x + 6x^(2 : ℕ)) / (A+3x)^(2 : ℕ)`.
 
 For positive `A`, `B`, and mass coordinate `x`, its exact secant difference is
 
-`G(A,x)-G(B,x) = 6x(B-A)H(A,B,x) / ((A+3x)^2(B+3x)^2)`,
+`G(A,x)-G(B,x) = 6x(B-A)H(A,B,x) / ((A+3x)^(2 : ℕ)(B+3x)^(2 : ℕ))`,
 
 where `H` is strictly positive.  This is an off-shell fixed-radius response: the finite-mass event
 horizon satisfies `u = 1 + x`.  On that moving horizon the gap reduces to the Stieltjes atom
@@ -39,12 +39,12 @@ noncomputable section
 
 /-- Fixed-unit-radius parity gap as a function of shifted angular parameter `A = Q + 2`. -/
 def d4FixedUnitRadiusFiniteMassParityProfile (A x : ℝ) : ℝ :=
-  6 * x * ((2 + 3 * x) * A + 6 * x + 6 * x ^ 2) / (A + 3 * x) ^ 2
+  6 * x * ((2 + 3 * x) * A + 6 * x + 6 * x ^ (2 : ℕ)) / (A + 3 * x) ^ (2 : ℕ)
 
 /-- Positive cross-numerator in exact secant difference of fixed-unit-radius profile. -/
 def d4FixedUnitRadiusFiniteMassParityCrossNumerator (A B x : ℝ) : ℝ :=
   (2 + 3 * x) * A * B +
-    6 * x * (1 + x) * (A + B) + 18 * x ^ 2 + 9 * x ^ 3
+    6 * x * (1 + x) * (A + B) + 18 * x ^ (2 : ℕ) + 9 * x ^ (3 : ℕ)
 
 /-- Exact finite-mass secant factorization of fixed-unit-radius parity profile. -/
 theorem d4FixedUnitRadiusFiniteMassParityProfile_sub_eq
@@ -52,35 +52,35 @@ theorem d4FixedUnitRadiusFiniteMassParityProfile_sub_eq
     d4FixedUnitRadiusFiniteMassParityProfile A x -
         d4FixedUnitRadiusFiniteMassParityProfile B x =
       6 * x * (B - A) * d4FixedUnitRadiusFiniteMassParityCrossNumerator A B x /
-        ((A + 3 * x) ^ 2 * (B + 3 * x) ^ 2) := by
-  have hA2 : (A + 3 * x) ^ 2 ≠ 0 := pow_ne_zero 2 hA
-  have hB2 : (B + 3 * x) ^ 2 ≠ 0 := pow_ne_zero 2 hB
-  have hden : (A + 3 * x) ^ 2 * (B + 3 * x) ^ 2 ≠ 0 :=
+        ((A + 3 * x) ^ (2 : ℕ) * (B + 3 * x) ^ (2 : ℕ)) := by
+  have hA2 : (A + 3 * x) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hA
+  have hB2 : (B + 3 * x) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hB
+  have hden : (A + 3 * x) ^ (2 : ℕ) * (B + 3 * x) ^ (2 : ℕ) ≠ 0 :=
     mul_ne_zero hA2 hB2
   have hprofileA :
-      d4FixedUnitRadiusFiniteMassParityProfile A x * (A + 3 * x) ^ 2 =
-        6 * x * ((2 + 3 * x) * A + 6 * x + 6 * x ^ 2) := by
+      d4FixedUnitRadiusFiniteMassParityProfile A x * (A + 3 * x) ^ (2 : ℕ) =
+        6 * x * ((2 + 3 * x) * A + 6 * x + 6 * x ^ (2 : ℕ)) := by
     unfold d4FixedUnitRadiusFiniteMassParityProfile
     exact div_mul_cancel₀ _ hA2
   have hprofileB :
-      d4FixedUnitRadiusFiniteMassParityProfile B x * (B + 3 * x) ^ 2 =
-        6 * x * ((2 + 3 * x) * B + 6 * x + 6 * x ^ 2) := by
+      d4FixedUnitRadiusFiniteMassParityProfile B x * (B + 3 * x) ^ (2 : ℕ) =
+        6 * x * ((2 + 3 * x) * B + 6 * x + 6 * x ^ (2 : ℕ)) := by
     unfold d4FixedUnitRadiusFiniteMassParityProfile
     exact div_mul_cancel₀ _ hB2
   apply (eq_div_iff hden).2
   calc
     (d4FixedUnitRadiusFiniteMassParityProfile A x -
           d4FixedUnitRadiusFiniteMassParityProfile B x) *
-          ((A + 3 * x) ^ 2 * (B + 3 * x) ^ 2) =
-        (d4FixedUnitRadiusFiniteMassParityProfile A x * (A + 3 * x) ^ 2) *
-            (B + 3 * x) ^ 2 -
-          (d4FixedUnitRadiusFiniteMassParityProfile B x * (B + 3 * x) ^ 2) *
-            (A + 3 * x) ^ 2 := by ring
+          ((A + 3 * x) ^ (2 : ℕ) * (B + 3 * x) ^ (2 : ℕ)) =
+        (d4FixedUnitRadiusFiniteMassParityProfile A x * (A + 3 * x) ^ (2 : ℕ)) *
+            (B + 3 * x) ^ (2 : ℕ) -
+          (d4FixedUnitRadiusFiniteMassParityProfile B x * (B + 3 * x) ^ (2 : ℕ)) *
+            (A + 3 * x) ^ (2 : ℕ) := by ring
     _ =
-        (6 * x * ((2 + 3 * x) * A + 6 * x + 6 * x ^ 2)) *
-            (B + 3 * x) ^ 2 -
-          (6 * x * ((2 + 3 * x) * B + 6 * x + 6 * x ^ 2)) *
-            (A + 3 * x) ^ 2 := by rw [hprofileA, hprofileB]
+        (6 * x * ((2 + 3 * x) * A + 6 * x + 6 * x ^ (2 : ℕ))) *
+            (B + 3 * x) ^ (2 : ℕ) -
+          (6 * x * ((2 + 3 * x) * B + 6 * x + 6 * x ^ (2 : ℕ))) *
+            (A + 3 * x) ^ (2 : ℕ) := by rw [hprofileA, hprofileB]
     _ = 6 * x * (B - A) *
         d4FixedUnitRadiusFiniteMassParityCrossNumerator A B x := by
       unfold d4FixedUnitRadiusFiniteMassParityCrossNumerator
@@ -102,7 +102,7 @@ theorem d4FixedUnitRadiusFiniteMassParityProfile_eq_iff
   rw [← sub_eq_zero,
     d4FixedUnitRadiusFiniteMassParityProfile_sub_eq A B x hAden hBden]
   have hcross := d4FixedUnitRadiusFiniteMassParityCrossNumerator_pos hA hB hx
-  have hden : (A + 3 * x) ^ 2 * (B + 3 * x) ^ 2 ≠ 0 := by positivity
+  have hden : (A + 3 * x) ^ (2 : ℕ) * (B + 3 * x) ^ (2 : ℕ) ≠ 0 := by positivity
   constructor
   · intro h
     rcases div_eq_zero_iff.mp h with hnum | hdenzero
@@ -166,7 +166,7 @@ def d4BMXiFixedUnitRadiusFiniteMassReflectionSusceptibility
   let A := d4BMXiHorizonAngularShift q
   let B := d4BMXiHorizonAngularShift (xiZeroCopyReflectEquiv q)
   12 * x * d4FixedUnitRadiusFiniteMassParityCrossNumerator A B x /
-    ((A + 3 * x) ^ 2 * (B + 3 * x) ^ 2)
+    ((A + 3 * x) ^ (2 : ℕ) * (B + 3 * x) ^ (2 : ℕ))
 
 theorem d4BMXiFixedUnitRadiusFiniteMassReflectionSusceptibility_pos
     (q : XiZeroCopy) {x : ℝ} (hx : 0 < x) :
@@ -247,7 +247,7 @@ theorem d4BMXiFixedUnitRadiusFiniteMassParityDefect_mul_first_pos_of_tilt
           d4BMXiFixedUnitRadiusFiniteMassReflectionSusceptibility q x) *
         (24 * (1 - 2 * a) / (a * (1 - a) * (3 - a) * (2 + a))) =
       (24 * d4BMXiFixedUnitRadiusFiniteMassReflectionSusceptibility q x *
-        (1 - 2 * a) ^ 2) /
+        (1 - 2 * a) ^ (2 : ℕ)) /
           (a * (1 - a) * (3 - a) * (2 + a)) by ring]
   exact div_pos (mul_pos (mul_pos (by norm_num) hs) (sq_pos_of_ne_zero htilt)) hD
 
@@ -255,7 +255,7 @@ theorem d4BMXiFixedUnitRadiusFiniteMassParityDefect_mul_first_pos_of_tilt
 def d4TopologicalEventHorizonU (x : ℝ) : ℝ := 1 + x
 
 /-- Scale coordinate `s=u x²` on the moving event horizon. -/
-def d4TopologicalEventHorizonScale (x : ℝ) : ℝ := x ^ 2 + x ^ 3
+def d4TopologicalEventHorizonScale (x : ℝ) : ℝ := x ^ (2 : ℕ) + x ^ (3 : ℕ)
 
 theorem d4TopologicalDarbouxRadialPolynomial_eventHorizon
     (x : ℝ) :
@@ -303,14 +303,14 @@ theorem d4EventHorizonFiniteMassParityGap_eq_profile
       d4EventHorizonFiniteMassParityProfile (Q + 2) x := by
   unfold d4EventHorizonFiniteMassParityGap d4TopologicalEventHorizonU
   rw [d4ParitySplit_eq_finiteMassFactor Q x (1 + x) hden]
-  rw [show 2 * (Q + 2) + 3 * (Q + (1 + x) + 3) * x + 6 * x ^ 2 =
+  rw [show 2 * (Q + 2) + 3 * (Q + (1 + x) + 3) * x + 6 * x ^ (2 : ℕ) =
       (2 + 3 * x) * (Q + 2 + 3 * x) by ring]
   unfold d4EventHorizonFiniteMassParityProfile
   rw [pow_two]
   field_simp [hden]
 
 def d4TopologicalEventHorizonShapeVelocity (x : ℝ) : ℝ :=
-  2 * x + 3 * x ^ 2
+  2 * x + 3 * x ^ (2 : ℕ)
 
 def d4TopologicalDarbouxScaleNormalDerivative (Q x : ℝ) : ℝ :=
   3 / (Q + 2 + 3 * x)
@@ -335,7 +335,7 @@ theorem hasDerivAt_d4TopologicalDarbouxReducedSuperpotential_fixedScale_eventHor
       (d4TopologicalDarbouxReducedSuperpotential Q
         (d4TopologicalEventHorizonScale x))
       (-d4EventHorizonFiniteMassParityGap Q x / 2) x := by
-  have hscale : d4TopologicalEventHorizonScale x / x ^ 2 = 1 + x := by
+  have hscale : d4TopologicalEventHorizonScale x / x ^ (2 : ℕ) = 1 + x := by
     unfold d4TopologicalEventHorizonScale
     field_simp [hx]
   have h := hasDerivAt_d4TopologicalDarbouxReducedSuperpotential
@@ -489,14 +489,14 @@ theorem d4BMXiEventHorizonFiniteMassParityDefect_eq_zero_iff
 
 /-- Continuous cubic remainder after removing first two moving-horizon mass coefficients. -/
 def d4EventHorizonParityThirdJetCompletion (Q x : ℝ) : ℝ :=
-  -54 * Q / ((Q + 2) ^ 2 * (Q + 2 + 3 * x))
+  -54 * Q / ((Q + 2) ^ (2 : ℕ) * (Q + 2 + 3 * x))
 
 theorem d4EventHorizonParityGap_sub_twoJets_eq_thirdJet
     (Q x : ℝ) (hQ2 : Q + 2 ≠ 0) (hden : Q + 2 + 3 * x ≠ 0) :
     d4EventHorizonFiniteMassParityGap Q x -
           (12 / (Q + 2)) * x -
-        (18 * Q / (Q + 2) ^ 2) * x ^ 2 =
-      x ^ 3 * d4EventHorizonParityThirdJetCompletion Q x := by
+        (18 * Q / (Q + 2) ^ (2 : ℕ)) * x ^ (2 : ℕ) =
+      x ^ (3 : ℕ) * d4EventHorizonParityThirdJetCompletion Q x := by
   rw [d4EventHorizonFiniteMassParityGap_eq_profile Q x hden]
   unfold d4EventHorizonFiniteMassParityProfile
     d4EventHorizonParityThirdJetCompletion
@@ -505,22 +505,22 @@ theorem d4EventHorizonParityGap_sub_twoJets_eq_thirdJet
   have hA : A ≠ 0 := by simpa [A] using hQ2
   have hd : d ≠ 0 := by simpa [d, A] using hden
   change 6 * x * (2 + 3 * x) / d -
-        (12 / A) * x - (18 * Q / A ^ 2) * x ^ 2 =
-      x ^ 3 * (-54 * Q / (A ^ 2 * d))
+        (12 / A) * x - (18 * Q / A ^ (2 : ℕ)) * x ^ (2 : ℕ) =
+      x ^ (3 : ℕ) * (-54 * Q / (A ^ (2 : ℕ) * d))
   field_simp [hA, hd]
   ring
 
 theorem d4EventHorizonParityThirdJetCompletion_zero
     (Q : ℝ) (hQ2 : Q + 2 ≠ 0) :
     d4EventHorizonParityThirdJetCompletion Q 0 =
-      -54 * Q / (Q + 2) ^ 3 := by
+      -54 * Q / (Q + 2) ^ (3 : ℕ) := by
   unfold d4EventHorizonParityThirdJetCompletion
   field_simp [hQ2]
   ring
 
 /-- Third shape derivative along moving event horizon `u=1+x`. -/
 def d4EventHorizonThirdMassParityJet (Q : ℝ) : ℝ :=
-  -324 * Q / (Q + 2) ^ 3
+  -324 * Q / (Q + 2) ^ (3 : ℕ)
 
 theorem d4EventHorizonThirdMassParityJet_eq_six_mul_completion
     (Q : ℝ) (hQ2 : Q + 2 ≠ 0) :
@@ -530,11 +530,11 @@ theorem d4EventHorizonThirdMassParityJet_eq_six_mul_completion
   unfold d4EventHorizonThirdMassParityJet
   ring
 
-/-- Horizon motion contributes `108/(Q+2)^2` beyond fixed-radius partial derivative. -/
+/-- Horizon motion contributes `108/(Q+2)^(2 : ℕ)` beyond fixed-radius partial derivative. -/
 theorem d4EventHorizonThirdMassParityJet_eq_fixedRadius_add_motion
     (Q : ℝ) (hQ2 : Q + 2 ≠ 0) :
     d4EventHorizonThirdMassParityJet Q =
-      d4ThirdMassParityJet Q 1 + 108 / (Q + 2) ^ 2 := by
+      d4ThirdMassParityJet Q 1 + 108 / (Q + 2) ^ (2 : ℕ) := by
   unfold d4EventHorizonThirdMassParityJet d4ThirdMassParityJet
   field_simp [hQ2]
   ring
@@ -542,7 +542,7 @@ theorem d4EventHorizonThirdMassParityJet_eq_fixedRadius_add_motion
 theorem d4EventHorizonThirdMassParityJet_neg_physical (xi : ℝ) :
     d4EventHorizonThirdMassParityJet (d4ThetaPhysicalAngularQ xi) < 0 := by
   unfold d4EventHorizonThirdMassParityJet d4ThetaPhysicalAngularQ
-  have hQ : 0 < (1 / 4 : ℝ) + xi ^ 2 := by positivity
+  have hQ : 0 < (1 / 4 : ℝ) + xi ^ (2 : ℕ) := by positivity
   exact div_neg_of_neg_of_pos (mul_neg_of_neg_of_pos (by norm_num) hQ) (by positivity)
 
 theorem d4EventHorizonThirdMassParityJet_pos_virtual
@@ -553,7 +553,7 @@ theorem d4EventHorizonThirdMassParityJet_pos_virtual
   exact div_pos (mul_pos_of_neg_of_neg (by norm_num) hQ.2) (by positivity)
 
 def d4EventHorizonThirdMassParityProfile (A : ℝ) : ℝ :=
-  324 * (2 - A) / A ^ 3
+  324 * (2 - A) / A ^ (3 : ℕ)
 
 theorem d4EventHorizonThirdMassParityJet_eq_profile
     (Q : ℝ) :
@@ -563,14 +563,14 @@ theorem d4EventHorizonThirdMassParityJet_eq_profile
   ring
 
 def d4EventHorizonThirdMassParityCrossNumerator (A B : ℝ) : ℝ :=
-  A ^ 2 * (2 - B) + B ^ 2 * (2 - A) + 2 * A * B
+  A ^ (2 : ℕ) * (2 - B) + B ^ (2 : ℕ) * (2 - A) + 2 * A * B
 
 theorem d4EventHorizonThirdMassParityProfile_sub_eq
     (A B : ℝ) (hA : A ≠ 0) (hB : B ≠ 0) :
     d4EventHorizonThirdMassParityProfile A -
         d4EventHorizonThirdMassParityProfile B =
       324 * (B - A) * d4EventHorizonThirdMassParityCrossNumerator A B /
-        (A ^ 3 * B ^ 3) := by
+        (A ^ (3 : ℕ) * B ^ (3 : ℕ)) := by
   unfold d4EventHorizonThirdMassParityProfile
     d4EventHorizonThirdMassParityCrossNumerator
   field_simp [hA, hB]
@@ -593,7 +593,7 @@ def d4BMXiEventHorizonThirdMassParityJetDefect (q : XiZeroCopy) : ℝ :=
 def d4BMXiEventHorizonThirdMassReflectionSusceptibility (q : XiZeroCopy) : ℝ :=
   let A := d4BMXiHorizonAngularShift q
   let B := d4BMXiHorizonAngularShift (xiZeroCopyReflectEquiv q)
-  648 * d4EventHorizonThirdMassParityCrossNumerator A B / (A ^ 3 * B ^ 3)
+  648 * d4EventHorizonThirdMassParityCrossNumerator A B / (A ^ (3 : ℕ) * B ^ (3 : ℕ))
 
 theorem d4BMXiEventHorizonThirdMassReflectionSusceptibility_pos
     (q : XiZeroCopy) :
@@ -670,7 +670,7 @@ theorem d4BMXiEventHorizonThirdMassParityJetDefect_mul_first_pos_of_tilt
           d4BMXiEventHorizonThirdMassReflectionSusceptibility q) *
         (24 * (1 - 2 * a) / (a * (1 - a) * (3 - a) * (2 + a))) =
       (24 * d4BMXiEventHorizonThirdMassReflectionSusceptibility q *
-        (1 - 2 * a) ^ 2) /
+        (1 - 2 * a) ^ (2 : ℕ)) /
           (a * (1 - a) * (3 - a) * (2 + a)) by ring]
   exact div_pos (mul_pos (mul_pos (by norm_num) hs) (sq_pos_of_ne_zero htilt)) hD
 

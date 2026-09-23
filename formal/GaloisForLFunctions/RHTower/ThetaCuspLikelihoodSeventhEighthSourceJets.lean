@@ -16,36 +16,36 @@ noncomputable section
 
 /-- Seventh source-coordinate jet of the logarithmic higher-likelihood partition. -/
 def thetaCuspLikelihoodSourceLogPartitionJetSeven (x : ℝ) : ℝ :=
-  -128 * thetaCuspSingleAtomReflectionScale 1 x ^ 7 *
+  -128 * thetaCuspSingleAtomReflectionScale 1 x ^ (7 : ℕ) *
       thetaCuspLikelihoodSeventhCumulant (thetaCuspLikelihoodCoordinate x) +
-    2688 * thetaCuspSingleAtomReflectionScale 1 x ^ 6 *
+    2688 * thetaCuspSingleAtomReflectionScale 1 x ^ (6 : ℕ) *
       thetaCuspLikelihoodSixthCumulant (thetaCuspLikelihoodCoordinate x) -
-    17920 * thetaCuspSingleAtomReflectionScale 1 x ^ 5 *
+    17920 * thetaCuspSingleAtomReflectionScale 1 x ^ (5 : ℕ) *
       thetaCuspLikelihoodFifthCumulant (thetaCuspLikelihoodCoordinate x) +
-    44800 * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+    44800 * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
       thetaCuspLikelihoodFourthCumulant (thetaCuspLikelihoodCoordinate x) -
-    38528 * thetaCuspSingleAtomReflectionScale 1 x ^ 3 *
+    38528 * thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) *
       thetaCuspLikelihoodThirdCumulant (thetaCuspLikelihoodCoordinate x) +
-    8064 * thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+    8064 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
       thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate x) -
     128 * thetaCuspSingleAtomReflectionScale 1 x *
       thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate x)
 
 /-- Eighth source-coordinate jet of the logarithmic higher-likelihood partition. -/
 def thetaCuspLikelihoodSourceLogPartitionJetEight (x : ℝ) : ℝ :=
-  256 * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+  256 * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
       thetaCuspLikelihoodEighthCumulant (thetaCuspLikelihoodCoordinate x) -
-    7168 * thetaCuspSingleAtomReflectionScale 1 x ^ 7 *
+    7168 * thetaCuspSingleAtomReflectionScale 1 x ^ (7 : ℕ) *
       thetaCuspLikelihoodSeventhCumulant (thetaCuspLikelihoodCoordinate x) +
-    68096 * thetaCuspSingleAtomReflectionScale 1 x ^ 6 *
+    68096 * thetaCuspSingleAtomReflectionScale 1 x ^ (6 : ℕ) *
       thetaCuspLikelihoodSixthCumulant (thetaCuspLikelihoodCoordinate x) -
-    268800 * thetaCuspSingleAtomReflectionScale 1 x ^ 5 *
+    268800 * thetaCuspSingleAtomReflectionScale 1 x ^ (5 : ℕ) *
       thetaCuspLikelihoodFifthCumulant (thetaCuspLikelihoodCoordinate x) +
-    435456 * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+    435456 * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
       thetaCuspLikelihoodFourthCumulant (thetaCuspLikelihoodCoordinate x) -
-    247296 * thetaCuspSingleAtomReflectionScale 1 x ^ 3 *
+    247296 * thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) *
       thetaCuspLikelihoodThirdCumulant (thetaCuspLikelihoodCoordinate x) +
-    32512 * thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+    32512 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
       thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate x) -
     256 * thetaCuspSingleAtomReflectionScale 1 x *
       thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate x)
@@ -113,8 +113,8 @@ theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetSeven
 
 /-- Order-eight ordinary likelihood score in the scaled spectral coordinate `z = A t`. -/
 def thetaCuspLikelihoodEighthSourceScore (z : ℝ) : ℝ :=
-  z ^ 8 - 28 * z ^ 7 + 266 * z ^ 6 - 1050 * z ^ 5 +
-    1701 * z ^ 4 - 966 * z ^ 3 + 127 * z ^ 2 - z
+  z ^ (8 : ℕ) - 28 * z ^ (7 : ℕ) + 266 * z ^ (6 : ℕ) - 1050 * z ^ (5 : ℕ) +
+    1701 * z ^ (4 : ℕ) - 966 * z ^ (3 : ℕ) + 127 * z ^ (2 : ℕ) - z
 
 /-- The order-eight score is negative at the proved order-six support margin. -/
 theorem thetaCuspLikelihoodEighthSourceScore_supportMargin_neg :

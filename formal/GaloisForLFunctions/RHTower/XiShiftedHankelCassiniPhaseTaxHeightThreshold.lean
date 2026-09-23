@@ -6,19 +6,19 @@ import GaloisForLFunctions.RHTower.XiShiftedHankelCassiniOneOrbitContactOrientat
 The sharp one-orbit contact law says that a positive real reciprocal atom stabilizes an
 off-critical conjugate pair exactly when it lies above the pair's intrinsic velocity
 
-`Re(lambda^2) / Re(lambda)`.
+`Re(lambda^(2 : ℕ)) / Re(lambda)`.
 
 For a shifted squared-Xi denominator `A+iB`, this velocity is
 
-`(A^2-B^2)/(A(A^2+B^2))`.
+`(A^(2 : ℕ)-B^(2 : ℕ))/(A(A^(2 : ℕ)+B^(2 : ℕ)))`.
 
-A critical-line atom at height `eta` is `1/(y+eta^2)`.  Comparing the two gives the exact height
+A critical-line atom at height `eta` is `1/(y+eta^(2 : ℕ))`.  Comparing the two gives the exact height
 threshold
 
-`eta^2 > (A-y) + 2 A B^2/(A^2-B^2)`.
+`eta^(2 : ℕ) > (A-y) + 2 A B^(2 : ℕ)/(A^(2 : ℕ)-B^(2 : ℕ))`.
 
 For an off-critical Xi zero with centered horizontal displacement `delta` and ordinate `gamma`,
-`A-y=gamma^2-delta^2` and `B^2=4 delta^2 gamma^2`.  The second summand is a strictly positive
+`A-y=gamma^(2 : ℕ)-delta^(2 : ℕ)` and `B^(2 : ℕ)=4 delta^(2 : ℕ) gamma^(2 : ℕ)`.  The second summand is a strictly positive
 phase tax.  Thus sector bounds alone lose the decisive order information: critical zeros below
 the taxed height stabilize contact, while those above it drive the adverse orientation.
 -/
@@ -31,18 +31,18 @@ noncomputable section
 
 /-- Intrinsic radial velocity of a complex reciprocal pair. -/
 def cassiniPairIntrinsicVelocity (lam : ℂ) : ℝ :=
-  (lam ^ 2).re / lam.re
+  (lam ^ (2 : ℕ)).re / lam.re
 
 /-- Positive reciprocal atom attached to a critical-line height at mass shift `y`. -/
 def cassiniCriticalHeightAtom (y eta : ℝ) : ℝ :=
-  (y + eta ^ 2)⁻¹
+  (y + eta ^ (2 : ℕ))⁻¹
 
 /-- Intrinsic velocity of the inverse of a denominator `A+iB`. -/
 theorem cassiniPairIntrinsicVelocity_inv_cartesian
     {A B : ℝ} (hA : 0 < A) :
     cassiniPairIntrinsicVelocity (((A : ℂ) + (B : ℂ) * I)⁻¹) =
-      (A ^ 2 - B ^ 2) / (A * (A ^ 2 + B ^ 2)) := by
-  have hden : 0 < A ^ 2 + B ^ 2 := by
+      (A ^ (2 : ℕ) - B ^ (2 : ℕ)) / (A * (A ^ (2 : ℕ) + B ^ (2 : ℕ))) := by
+  have hden : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg B]
   rw [cassiniPairIntrinsicVelocity, pow_two, Complex.mul_re,
     Complex.inv_re, Complex.inv_im, Complex.normSq_apply]
@@ -53,28 +53,28 @@ theorem cassiniPairIntrinsicVelocity_inv_cartesian
 
 /-- Exact conversion from reciprocal radial order to the phase-tax height order. -/
 theorem cassiniCriticalHeightAtom_lt_intrinsicVelocity_iff_phaseTax
-    {y eta A B : ℝ} (hy : 0 < y) (hA : 0 < A) (hsector : B ^ 2 < A ^ 2) :
+    {y eta A B : ℝ} (hy : 0 < y) (hA : 0 < A) (hsector : B ^ (2 : ℕ) < A ^ (2 : ℕ)) :
     cassiniCriticalHeightAtom y eta <
-        (A ^ 2 - B ^ 2) / (A * (A ^ 2 + B ^ 2)) ↔
-      A - y + 2 * A * B ^ 2 / (A ^ 2 - B ^ 2) < eta ^ 2 := by
-  have hyeta : 0 < y + eta ^ 2 := by nlinarith [sq_nonneg eta]
-  have hgap : 0 < A ^ 2 - B ^ 2 := sub_pos.mpr hsector
-  have hnorm : 0 < A ^ 2 + B ^ 2 := by
+        (A ^ (2 : ℕ) - B ^ (2 : ℕ)) / (A * (A ^ (2 : ℕ) + B ^ (2 : ℕ))) ↔
+      A - y + 2 * A * B ^ (2 : ℕ) / (A ^ (2 : ℕ) - B ^ (2 : ℕ)) < eta ^ (2 : ℕ) := by
+  have hyeta : 0 < y + eta ^ (2 : ℕ) := by nlinarith [sq_nonneg eta]
+  have hgap : 0 < A ^ (2 : ℕ) - B ^ (2 : ℕ) := sub_pos.mpr hsector
+  have hnorm : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg B]
   rw [cassiniCriticalHeightAtom, inv_eq_one_div,
     div_lt_div_iff₀ hyeta (mul_pos hA hnorm)]
   constructor
   · intro h
     have hmul :
-        2 * A * B ^ 2 < (A ^ 2 - B ^ 2) * (eta ^ 2 - A + y) := by
+        2 * A * B ^ (2 : ℕ) < (A ^ (2 : ℕ) - B ^ (2 : ℕ)) * (eta ^ (2 : ℕ) - A + y) := by
       nlinarith
     have hdiv :
-        2 * A * B ^ 2 / (A ^ 2 - B ^ 2) < eta ^ 2 - A + y :=
+        2 * A * B ^ (2 : ℕ) / (A ^ (2 : ℕ) - B ^ (2 : ℕ)) < eta ^ (2 : ℕ) - A + y :=
       (div_lt_iff₀ hgap).2 (by simpa [mul_comm] using hmul)
     linarith
   · intro h
     have hdiv :
-        2 * A * B ^ 2 / (A ^ 2 - B ^ 2) < eta ^ 2 - A + y := by
+        2 * A * B ^ (2 : ℕ) / (A ^ (2 : ℕ) - B ^ (2 : ℕ)) < eta ^ (2 : ℕ) - A + y := by
       linarith
     have hmul := (div_lt_iff₀ hgap).1 hdiv
     nlinarith
@@ -88,41 +88,41 @@ orbit. -/
 def xiShiftedPairPhaseTaxHeightSq (y : ℝ) (q : XiZeroCopy) : ℝ :=
   let delta := (q.1 : ℂ).re - 1 / 2
   let gamma := (q.1 : ℂ).im
-  let A := y + gamma ^ 2 - delta ^ 2
-  gamma ^ 2 - delta ^ 2 +
-    8 * A * delta ^ 2 * gamma ^ 2 /
-      (A ^ 2 - 4 * delta ^ 2 * gamma ^ 2)
+  let A := y + gamma ^ (2 : ℕ) - delta ^ (2 : ℕ)
+  gamma ^ (2 : ℕ) - delta ^ (2 : ℕ) +
+    8 * A * delta ^ (2 : ℕ) * gamma ^ (2 : ℕ) /
+      (A ^ (2 : ℕ) - 4 * delta ^ (2 : ℕ) * gamma ^ (2 : ℕ))
 
 /-- The actual Xi denominator lies in the strict velocity sector at every positive shift. -/
 theorem xiShiftedPair_denominator_phase_sector
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
     let delta := (q.1 : ℂ).re - 1 / 2
     let gamma := (q.1 : ℂ).im
-    let A := y + gamma ^ 2 - delta ^ 2
+    let A := y + gamma ^ (2 : ℕ) - delta ^ (2 : ℕ)
     let B := -(2 * delta * gamma)
-    0 < A ∧ B ^ 2 < A ^ 2 := by
+    0 < A ∧ B ^ (2 : ℕ) < A ^ (2 : ℕ) := by
   dsimp only
   let delta : ℝ := (q.1 : ℂ).re - 1 / 2
   let gamma : ℝ := (q.1 : ℂ).im
-  let A : ℝ := y + gamma ^ 2 - delta ^ 2
+  let A : ℝ := y + gamma ^ (2 : ℕ) - delta ^ (2 : ℕ)
   let B : ℝ := -(2 * delta * gamma)
-  have hdelta : delta ^ 2 < 1 / 4 := by
+  have hdelta : delta ^ (2 : ℕ) < 1 / 4 := by
     simpa only [delta] using xi_divisor_support_centered_re_sq_lt_quarter q.1
-  have hgamma : 41 / 2 < gamma ^ 2 := by
+  have hgamma : 41 / 2 < gamma ^ (2 : ℕ) := by
     simpa only [gamma] using xiZeroCopy_fortyOne_div_two_lt_im_sq q
-  have hgamma0 : 0 < gamma ^ 2 := by linarith
+  have hgamma0 : 0 < gamma ^ (2 : ℕ) := by linarith
   have hA : 0 < A := by
     dsimp only [A]
     linarith
-  have hB : B ^ 2 < gamma ^ 2 := by
+  have hB : B ^ (2 : ℕ) < gamma ^ (2 : ℕ) := by
     dsimp only [B]
-    have hfour : 4 * delta ^ 2 < 1 := by linarith
+    have hfour : 4 * delta ^ (2 : ℕ) < 1 := by linarith
     nlinarith
-  have hgammaA : gamma ^ 2 < A ^ 2 := by
+  have hgammaA : gamma ^ (2 : ℕ) < A ^ (2 : ℕ) := by
     have hAlarge : 20 < A := by
       dsimp only [A]
       linarith
-    have hgamma_lt : gamma ^ 2 < A + 1 / 4 := by
+    have hgamma_lt : gamma ^ (2 : ℕ) < A + 1 / 4 := by
       dsimp only [A]
       linarith
     nlinarith
@@ -133,10 +133,10 @@ precisely when its squared height exceeds the off-critical orbit's taxed height.
 theorem cassiniCriticalHeightAtom_lt_xiShiftedPairIntrinsicVelocity_iff
     {y eta : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
     cassiniCriticalHeightAtom y eta < xiShiftedPairIntrinsicVelocity y q ↔
-      xiShiftedPairPhaseTaxHeightSq y q < eta ^ 2 := by
+      xiShiftedPairPhaseTaxHeightSq y q < eta ^ (2 : ℕ) := by
   let A : ℝ := y + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
-  have hsector : 0 < A ∧ B ^ 2 < A ^ 2 := by
+  have hsector : 0 < A ∧ B ^ (2 : ℕ) < A ^ (2 : ℕ) := by
     rcases xiShiftedPair_denominator_phase_sector hy q with ⟨hA, hB⟩
     constructor
     · dsimp only [A]
@@ -150,7 +150,7 @@ theorem cassiniCriticalHeightAtom_lt_xiShiftedPairIntrinsicVelocity_iff
     apply Complex.ext <;> simp [A, B]
   have hvelocity :
       xiShiftedPairIntrinsicVelocity y q =
-        (A ^ 2 - B ^ 2) / (A * (A ^ 2 + B ^ 2)) := by
+        (A ^ (2 : ℕ) - B ^ (2 : ℕ)) / (A * (A ^ (2 : ℕ) + B ^ (2 : ℕ))) := by
     rw [xiShiftedPairIntrinsicVelocity, xiShiftedReciprocalSquare_eq_inv hy.le,
       hcoord]
     exact cassiniPairIntrinsicVelocity_inv_cartesian hsector.1
@@ -167,23 +167,23 @@ theorem xiShiftedPair_phaseTax_pos_of_offCritical
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy)
     (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
     0 < xiShiftedPairPhaseTaxHeightSq y q -
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) := by
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) := by
   let delta : ℝ := (q.1 : ℂ).re - 1 / 2
   let gamma : ℝ := (q.1 : ℂ).im
-  let A : ℝ := y + gamma ^ 2 - delta ^ 2
+  let A : ℝ := y + gamma ^ (2 : ℕ) - delta ^ (2 : ℕ)
   let B : ℝ := -(2 * delta * gamma)
   have hsector := xiShiftedPair_denominator_phase_sector hy q
-  change 0 < A ∧ B ^ 2 < A ^ 2 at hsector
+  change 0 < A ∧ B ^ (2 : ℕ) < A ^ (2 : ℕ) at hsector
   have hdelta : delta ≠ 0 := sub_ne_zero.mpr hoff
-  have hgamma : 0 < gamma ^ 2 := by
+  have hgamma : 0 < gamma ^ (2 : ℕ) := by
     simpa only [gamma] using
       (lt_trans (by norm_num : (0 : ℝ) < 41 / 2)
         (xiZeroCopy_fortyOne_div_two_lt_im_sq q))
-  have hnum : 0 < 8 * A * delta ^ 2 * gamma ^ 2 := by
+  have hnum : 0 < 8 * A * delta ^ (2 : ℕ) * gamma ^ (2 : ℕ) := by
     exact mul_pos
       (mul_pos (mul_pos (by norm_num) hsector.1) (sq_pos_of_ne_zero hdelta)) hgamma
-  have hden : 0 < A ^ 2 - 4 * delta ^ 2 * gamma ^ 2 := by
-    have hBsq : B ^ 2 = 4 * delta ^ 2 * gamma ^ 2 := by
+  have hden : 0 < A ^ (2 : ℕ) - 4 * delta ^ (2 : ℕ) * gamma ^ (2 : ℕ) := by
+    have hBsq : B ^ (2 : ℕ) = 4 * delta ^ (2 : ℕ) * gamma ^ (2 : ℕ) := by
       dsimp only [B]
       ring
     rw [← hBsq]

@@ -102,12 +102,12 @@ def FiniteGaussianHermitianPencil.commutatorActivation
     (U : Matrix.unitaryGroup ι ℂ) : ℝ :=
   (gaussianIntervalActivationMass / 2) *
     ∑ i : Fin (Module.finrank ℝ E),
-      (P.commutatorMap U).singularValues i ^ 2
+      (P.commutatorMap U).singularValues i ^ (2 : ℕ)
 
 theorem finiteMatrixHilbertSchmidtEnergy_eq_hsNorm_sq
     {κ : Type*} [Fintype κ] [DecidableEq κ]
     (A : Matrix κ κ ℂ) :
-    finiteMatrixHilbertSchmidtEnergy A = hsNorm A ^ 2 := by
+    finiteMatrixHilbertSchmidtEnergy A = hsNorm A ^ (2 : ℕ) := by
   rw [finiteMatrixHilbertSchmidtEnergy_eq_sum_normSq, hsNorm_sq,
     Finset.sum_comm]
   apply Finset.sum_congr rfl
@@ -147,7 +147,7 @@ theorem FiniteGaussianHermitianPencil.reindexedCommutatorEnergy
           (finiteGaussianHermitianPencilReindexedEndpoint U :
               Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ) *
             P.reindexedHamiltonian x) =
-      ‖P.commutatorMap U x‖ ^ 2 := by
+      ‖P.commutatorMap U x‖ ^ (2 : ℕ) := by
   have hmatrix :
       P.reindexedHamiltonian x *
             (finiteGaussianHermitianPencilReindexedEndpoint U :
@@ -173,7 +173,7 @@ theorem FiniteGaussianHermitianPencil.mem_halfActivationTube_iff
     (U : Matrix.unitaryGroup ι ℂ) :
     x ∈ gaussianHalfActivationTube
         (n := Module.finrank ℝ E) (P.commutatorMap U) ↔
-      ‖P.commutatorMap U x‖ ^ 2 ≤ P.commutatorActivation U := by
+      ‖P.commutatorMap U x‖ ^ (2 : ℕ) ≤ P.commutatorActivation U := by
   rfl
 
 /-- **Universal same-draw pointwise action--carrier law.** -/
@@ -198,7 +198,7 @@ theorem FiniteGaussianHermitianPencil.nearAction_le_adaptive_add_carrier
       (finiteGaussianHermitianPencilReindexedEndpoint U) r δ
       (P.commutatorActivation U)
   rw [P.reindexedCommutatorEnergy x U] at h
-  by_cases hc : ‖P.commutatorMap U x‖ ^ 2 ≤ P.commutatorActivation U
+  by_cases hc : ‖P.commutatorMap U x‖ ^ (2 : ℕ) ≤ P.commutatorActivation U
   · rw [if_pos hc] at h
     rw [if_pos]
     · simpa [FiniteGaussianHermitianPencil.spectralEndpoint,
@@ -264,11 +264,11 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_weightedNearAction_gap
                 Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ))
             (P.spectralEnergy x) r δ} ≤
       (∑ c, w c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           ((∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 2) ^ 2 /
+              (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ) /
             ∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 4))) / κ := by
+              (P.commutatorMap (U c)).singularValues i ^ (4 : ℕ)))) / κ := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_measure_weightedHalfActivationTubeMass_ge_le
       (n := Module.finrank ℝ E) (fun c => P.commutatorMap (U c))
@@ -336,11 +336,11 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_optimalDesignNearActio
                   Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ))
               (P.spectralEnergy x) r δ} ≤
       (∑ c, finiteUnitaryChoiOptimalDesignWeight r U c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           ((∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 2) ^ 2 /
+              (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ) /
             ∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 4))) / κ := by
+              (P.commutatorMap (U c)).singularValues i ^ (4 : ℕ)))) / κ := by
   exact P.stdGaussian_measure_weightedNearAction_gap_le U
     (finiteUnitaryChoiOptimalDesignWeight r U)
     (finiteUnitaryChoiOptimalDesignWeight_mem_stdSimplex r U) r δ hκ

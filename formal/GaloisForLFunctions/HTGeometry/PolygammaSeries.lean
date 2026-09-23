@@ -31,16 +31,16 @@ theorem summable_one_div_shift_pow {σ : ℝ} (hσ : 0 < σ) (k : ℕ) (hk : 2 �
   have hle : σ ≤ σ + (n : ℝ) := by
     have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
     linarith
-  have hsplit : (σ + n) ^ k = (σ + n) ^ (k - 2) * (σ + n) ^ 2 := by
+  have hsplit : (σ + n) ^ k = (σ + n) ^ (k - 2) * (σ + n) ^ (2 : ℕ) := by
     rw [← pow_add]
     congr 1
     omega
-  have hstep : 1 / (σ + n) ^ k ≤ 1 / (σ ^ (k - 2) * (σ + n) ^ 2) := by
+  have hstep : 1 / (σ + n) ^ k ≤ 1 / (σ ^ (k - 2) * (σ + n) ^ (2 : ℕ)) := by
     refine one_div_le_one_div_of_le (by positivity) ?_
     rw [hsplit]
     exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hσ.le hle _) (by positivity)
-  have hsq : 1 / (σ + n) ^ 2 ≤ (1 + 1 / σ) * (1 / ((σ + n) * (σ + n + 1))) := by
-    have hstep2 : 1 / ((σ + n) ^ 2) = (1 / ((σ + n) * (σ + n + 1))) * ((σ + n + 1) / (σ + n)) := by
+  have hsq : 1 / (σ + n) ^ (2 : ℕ) ≤ (1 + 1 / σ) * (1 / ((σ + n) * (σ + n + 1))) := by
+    have hstep2 : 1 / ((σ + n) ^ (2 : ℕ)) = (1 / ((σ + n) * (σ + n + 1))) * ((σ + n + 1) / (σ + n)) := by
       field_simp
     have hfrac : (σ + n + 1) / (σ + n) ≤ 1 + 1 / σ := by
       rw [div_le_iff₀ h1]
@@ -54,10 +54,10 @@ theorem summable_one_div_shift_pow {σ : ℝ} (hσ : 0 < σ) (k : ℕ) (hk : 2 �
     calc (1 / ((σ + n) * (σ + n + 1))) * ((σ + n + 1) / (σ + n))
         ≤ (1 / ((σ + n) * (σ + n + 1))) * (1 + 1 / σ) := mul_le_mul_of_nonneg_left hfrac hnn
       _ = (1 + 1 / σ) * (1 / ((σ + n) * (σ + n + 1))) := by ring
-  have hinvsplit : 1 / (σ ^ (k - 2) * (σ + n) ^ 2) = (1 / σ ^ (k - 2)) * (1 / (σ + n) ^ 2) := by
+  have hinvsplit : 1 / (σ ^ (k - 2) * (σ + n) ^ (2 : ℕ)) = (1 / σ ^ (k - 2)) * (1 / (σ + n) ^ (2 : ℕ)) := by
     field_simp
-  calc 1 / (σ + n) ^ k ≤ 1 / (σ ^ (k - 2) * (σ + n) ^ 2) := hstep
-    _ = (1 / σ ^ (k - 2)) * (1 / (σ + n) ^ 2) := hinvsplit
+  calc 1 / (σ + n) ^ k ≤ 1 / (σ ^ (k - 2) * (σ + n) ^ (2 : ℕ)) := hstep
+    _ = (1 / σ ^ (k - 2)) * (1 / (σ + n) ^ (2 : ℕ)) := hinvsplit
     _ ≤ (1 / σ ^ (k - 2)) * ((1 + 1 / σ) * (1 / ((σ + n) * (σ + n + 1)))) := by
         have hnn : (0 : ℝ) ≤ 1 / σ ^ (k - 2) := by positivity
         exact mul_le_mul_of_nonneg_left hsq hnn

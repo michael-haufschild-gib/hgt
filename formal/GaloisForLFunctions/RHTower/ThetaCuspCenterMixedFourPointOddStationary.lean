@@ -60,14 +60,14 @@ theorem thetaCuspCenterMixedOddParityWall_neg_forces_middleDrop_gt_firstDrop
         mul_nonneg (show (0 : ℝ) ≤ 3 by norm_num) ht.le)
       (by linarith : t ≤ 3 * t)
     linarith
-  have hwall : B ^ 2 > A * T := by
+  have hwall : B ^ (2 : ℕ) > A * T := by
     dsimp [A, B, T, f]
     unfold thetaCuspCenterMixedOddParityWall toeplitzFourOddParityWall at hneg
     nlinarith
   by_contra hnot
   have hBA : B ≤ A := le_of_not_gt hnot
-  have hsq : B ^ 2 ≤ A ^ 2 := (sq_le_sq₀ hB hA.le).2 hBA
-  have hprod : A ^ 2 ≤ A * T := by nlinarith
+  have hsq : B ^ (2 : ℕ) ≤ A ^ (2 : ℕ) := (sq_le_sq₀ hB hA.le).2 hBA
+  have hprod : A ^ (2 : ℕ) ≤ A * T := by nlinarith
   exact (not_lt_of_ge hsq) (lt_of_le_of_lt hprod hwall)
 
 /-- Negativity of the odd wall forces a strict three-drop concentration law: the squared middle
@@ -79,7 +79,7 @@ theorem thetaCuspCenterMixedOddParityWall_neg_forces_twoStepDrop_product_lt_midd
         (thetaCuspCenterMixedDensity a 0 -
           thetaCuspCenterMixedDensity a (2 * t)) <
       (thetaCuspCenterMixedDensity a t -
-        thetaCuspCenterMixedDensity a (2 * t)) ^ 2 := by
+        thetaCuspCenterMixedDensity a (2 * t)) ^ (2 : ℕ) := by
   let f : ℝ → ℝ := thetaCuspCenterMixedDensity a
   let A : ℝ := f 0 - f t
   let B : ℝ := f t - f (2 * t)
@@ -87,7 +87,7 @@ theorem thetaCuspCenterMixedOddParityWall_neg_forces_twoStepDrop_product_lt_midd
   have hA : 0 < A := by
     dsimp [A, f]
     exact sub_pos.mpr (thetaCuspCenterMixedDensity_lt_zero ha0 ha ht)
-  have hwall : B ^ 2 > A * T := by
+  have hwall : B ^ (2 : ℕ) > A * T := by
     dsimp [A, B, T, f]
     unfold thetaCuspCenterMixedOddParityWall toeplitzFourOddParityWall at hneg
     nlinarith
@@ -101,7 +101,7 @@ theorem thetaCuspCenterMixedOddParityWall_neg_forces_twoStepDrop_product_lt_midd
     linarith
   have hproduct : A * (A + B) < A * T :=
     mul_lt_mul_of_pos_left htwo hA
-  change A * (f 0 - f (2 * t)) < B ^ 2
+  change A * (f 0 - f (2 * t)) < B ^ (2 : ℕ)
   rw [show f 0 - f (2 * t) = A + B by dsimp [A, B]; ring]
   exact hproduct.trans hwall
 
@@ -119,14 +119,14 @@ theorem exists_thetaCuspCenterMixedOddStationary_obstruction_of_not_posSemidef
           (thetaCuspCenterMixedDensity a 0 -
             thetaCuspCenterMixedDensity a (2 * t)) <
         (thetaCuspCenterMixedDensity a t -
-          thetaCuspCenterMixedDensity a (2 * t)) ^ 2 ∧
+          thetaCuspCenterMixedDensity a (2 * t)) ^ (2 : ℕ) ∧
       0 < thetaCuspCenterMixedDensityFirstJet a t -
         2 * thetaCuspCenterMixedDensityFirstJet a (2 * t) ∧
       0 ≤ (-thetaCuspCenterMixedDensitySecondJet a 0) *
-          (thetaCuspCenterMixedDensity a 0 ^ 2 -
-            thetaCuspCenterMixedDensity a t ^ 2) -
+          (thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ) -
+            thetaCuspCenterMixedDensity a t ^ (2 : ℕ)) -
         thetaCuspCenterMixedDensity a 0 *
-          thetaCuspCenterMixedDensityFirstJet a t ^ 2 ∧
+          thetaCuspCenterMixedDensityFirstJet a t ^ (2 : ℕ) ∧
       -3 * thetaCuspCenterMixedDensityFirstJet a (3 * t) *
           (thetaCuspCenterMixedDensity a 0 - thetaCuspCenterMixedDensity a t) -
         thetaCuspCenterMixedDensityFirstJet a t *

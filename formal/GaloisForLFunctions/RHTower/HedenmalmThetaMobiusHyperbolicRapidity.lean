@@ -52,7 +52,7 @@ theorem mobiusCriticalTwoSidedCayleyDiscrepancy_eq_tanh_rapidity_sub
           (Real.sqrt (1 + 2 * u) / Real.sqrt (1 + 2 * v))⁻¹ ≠ 0 :=
     (add_pos hratio (inv_pos.mpr hratio)).ne'
   have hsqsum :
-      Real.sqrt (1 + 2 * u) ^ 2 + Real.sqrt (1 + 2 * v) ^ 2 ≠ 0 := by
+      Real.sqrt (1 + 2 * u) ^ (2 : ℕ) + Real.sqrt (1 + 2 * v) ^ (2 : ℕ) ≠ 0 := by
     positivity
   rw [mobiusCriticalTwoSidedRapidity, mobiusCriticalTwoSidedRapidity,
     Real.tanh_eq, Real.exp_sub, Real.exp_neg, Real.exp_sub,
@@ -64,8 +64,8 @@ theorem mobiusCriticalTwoSidedCayleyDiscrepancy_eq_tanh_rapidity_sub
           (Real.sqrt (1 + 2 * u) / Real.sqrt (1 + 2 * v))⁻¹) /
         (Real.sqrt (1 + 2 * u) / Real.sqrt (1 + 2 * v) +
           (Real.sqrt (1 + 2 * u) / Real.sqrt (1 + 2 * v))⁻¹) =
-      (Real.sqrt (1 + 2 * u) ^ 2 - Real.sqrt (1 + 2 * v) ^ 2) /
-        (Real.sqrt (1 + 2 * u) ^ 2 + Real.sqrt (1 + 2 * v) ^ 2) := by
+      (Real.sqrt (1 + 2 * u) ^ (2 : ℕ) - Real.sqrt (1 + 2 * v) ^ (2 : ℕ)) /
+        (Real.sqrt (1 + 2 * u) ^ (2 : ℕ) + Real.sqrt (1 + 2 * v) ^ (2 : ℕ)) := by
     field_simp [hsu0, hsv0, hsum, hsqsum]
   rw [hratioFormula, hsuSq, hsvSq]
   rw [mobiusCriticalTwoSidedCayleyDiscrepancy]
@@ -108,7 +108,7 @@ theorem mobiusCriticalTwoSidedRapidity_eq_iff
       mobiusCriticalTwoSidedRapidity,
       Real.exp_log (Real.sqrt_pos.2 hxu),
       Real.exp_log (Real.sqrt_pos.2 hxv)] at hexp
-    have hsquares := congrArg (fun x : ℝ => x ^ 2) hexp
+    have hsquares := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hexp
     rw [Real.sq_sqrt hxu.le, Real.sq_sqrt hxv.le] at hsquares
     linarith
   · exact congrArg mobiusCriticalTwoSidedRapidity

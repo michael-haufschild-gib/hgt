@@ -25,7 +25,7 @@ def normalizedCentralBinom (n : ℕ) : ℝ :=
 
 /-- Exact Wallis identity for the squared normalized central-binomial coefficient. -/
 theorem wallis_mul_normalizedCentralBinom_sq (n : ℕ) :
-    Real.Wallis.W n * normalizedCentralBinom n ^ 2 = 1 / (2 * n + 1 : ℝ) := by
+    Real.Wallis.W n * normalizedCentralBinom n ^ (2 : ℕ) = 1 / (2 * n + 1 : ℝ) := by
   rw [Real.Wallis.W_eq_factorial_ratio, normalizedCentralBinom,
     Nat.centralBinom_eq_two_mul_choose,
     Nat.cast_choose ℝ (show n ≤ 2 * n by omega)]
@@ -37,14 +37,14 @@ theorem wallis_mul_normalizedCentralBinom_sq (n : ℕ) :
   have hodd : (2 * (n : ℝ) + 1) ≠ 0 := by positivity
   field_simp [hnfac, h2nfac, h4pow, hodd]
   ring_nf
-  rw [show (4 : ℝ) = 2 ^ 2 by norm_num, ← pow_mul]
+  rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul]
   congr 1
   omega
 
 /-- The square of the half-order normalized central-binomial coefficient tends to `1 / pi`. -/
 theorem tendsto_sqrtNat_mul_normalizedCentralBinom_sq :
     Tendsto
-      (fun n : ℕ => (Real.sqrt n * normalizedCentralBinom n) ^ 2)
+      (fun n : ℕ => (Real.sqrt n * normalizedCentralBinom n) ^ (2 : ℕ))
       atTop (nhds (1 / Real.pi)) := by
   have hratio : Tendsto (fun n : ℕ => (n : ℝ) / (2 * n + 1))
       atTop (nhds (1 / 2)) := Stirling.tendsto_self_div_two_mul_self_add_one
@@ -54,15 +54,15 @@ theorem tendsto_sqrtNat_mul_normalizedCentralBinom_sq :
   convert hquot using 1
   · funext n
     have hW : 0 < Real.Wallis.W n := Real.Wallis.W_pos n
-    have hsqrt : Real.sqrt (n : ℝ) ^ 2 = n := Real.sq_sqrt (Nat.cast_nonneg n)
+    have hsqrt : Real.sqrt (n : ℝ) ^ (2 : ℕ) = n := Real.sq_sqrt (Nat.cast_nonneg n)
     rw [mul_pow, hsqrt]
     have hid := wallis_mul_normalizedCentralBinom_sq n
-    change (n : ℝ) * normalizedCentralBinom n ^ 2 =
+    change (n : ℝ) * normalizedCentralBinom n ^ (2 : ℕ) =
       ((n : ℝ) / (2 * n + 1)) / Real.Wallis.W n
     rw [eq_div_iff hW.ne']
     calc
-      (n : ℝ) * normalizedCentralBinom n ^ 2 * Real.Wallis.W n =
-          (n : ℝ) * (Real.Wallis.W n * normalizedCentralBinom n ^ 2) := by ring
+      (n : ℝ) * normalizedCentralBinom n ^ (2 : ℕ) * Real.Wallis.W n =
+          (n : ℝ) * (Real.Wallis.W n * normalizedCentralBinom n ^ (2 : ℕ)) := by ring
       _ = (n : ℝ) * (1 / (2 * n + 1 : ℝ)) := by rw [hid]
       _ = (n : ℝ) / (2 * n + 1) := by ring
   · congr 1

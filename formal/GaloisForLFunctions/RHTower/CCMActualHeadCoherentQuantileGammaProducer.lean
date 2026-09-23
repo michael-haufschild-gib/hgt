@@ -16,7 +16,7 @@ For the canonical actual Γ-head `f`, the completed signed current is exactly
 Weighted Cauchy--Schwarz and completion of the higher-Γ square then give the unconditional
 source-relative producer
 
-`(2 * gammaHardyPhaseRate 0 + 4) * ‖f‖^2 - 2 * coherentChiSquare(f) ≤ source(a,u)`.
+`(2 * gammaHardyPhaseRate 0 + 4) * ‖f‖^(2 : ℕ) - 2 * coherentChiSquare(f) ≤ source(a,u)`.
 
 Unlike the scalar chi-square predecessor, `coherentChiSquare` retains all cross-prime and
 prime--terminal autocorrelations. No RH premise, computation, absolute completed-error split,

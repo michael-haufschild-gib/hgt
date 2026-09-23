@@ -30,7 +30,7 @@ noncomputable section
 private theorem finiteMatrixHilbertSchmidtEnergy_eq_hsNorm_sq_direct
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (A : Matrix ι ι ℂ) :
-    finiteMatrixHilbertSchmidtEnergy A = hsNorm A ^ 2 := by
+    finiteMatrixHilbertSchmidtEnergy A = hsNorm A ^ (2 : ℕ) := by
   rw [finiteMatrixHilbertSchmidtEnergy_eq_sum_normSq, hsNorm_sq,
     Finset.sum_comm]
   apply Finset.sum_congr rfl
@@ -62,7 +62,7 @@ theorem hsNorm_unitaryMulLeft_eq
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (A : Matrix ι ι ℂ) (U : Matrix.unitaryGroup ι ℂ) :
     hsNorm ((U : Matrix ι ι ℂ) * A) = hsNorm A := by
-  have hsq : hsNorm ((U : Matrix ι ι ℂ) * A) ^ 2 = hsNorm A ^ 2 := by
+  have hsq : hsNorm ((U : Matrix ι ι ℂ) * A) ^ (2 : ℕ) = hsNorm A ^ (2 : ℕ) := by
     rw [← finiteMatrixHilbertSchmidtEnergy_eq_hsNorm_sq_direct,
       ← finiteMatrixHilbertSchmidtEnergy_eq_hsNorm_sq_direct]
     exact finiteMatrixHilbertSchmidtEnergy_unitaryMulLeft_direct A U
@@ -92,16 +92,16 @@ four times the source Hilbert--Schmidt energy at every unitary target. -/
 theorem hsNorm_commutator_add_anticommutator_sq
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (H : Matrix ι ι ℂ) (U : Matrix.unitaryGroup ι ℂ) :
-    hsNorm (H * (U : Matrix ι ι ℂ) - (U : Matrix ι ι ℂ) * H) ^ 2 +
-        hsNorm (H * (U : Matrix ι ι ℂ) + (U : Matrix ι ι ℂ) * H) ^ 2 =
-      4 * hsNorm H ^ 2 := by
+    hsNorm (H * (U : Matrix ι ι ℂ) - (U : Matrix ι ι ℂ) * H) ^ (2 : ℕ) +
+        hsNorm (H * (U : Matrix ι ι ℂ) + (U : Matrix ι ι ℂ) * H) ^ (2 : ℕ) =
+      4 * hsNorm H ^ (2 : ℕ) := by
   let A := matVec (H * (U : Matrix ι ι ℂ))
   let B := matVec ((U : Matrix ι ι ℂ) * H)
   have hpara := parallelogram_law_with_norm ℂ A B
-  change hsNorm (H * (U : Matrix ι ι ℂ) + (U : Matrix ι ι ℂ) * H) ^ 2 +
-      hsNorm (H * (U : Matrix ι ι ℂ) - (U : Matrix ι ι ℂ) * H) ^ 2 =
-        2 * (hsNorm (H * (U : Matrix ι ι ℂ)) ^ 2 +
-          hsNorm ((U : Matrix ι ι ℂ) * H) ^ 2) at hpara
+  change hsNorm (H * (U : Matrix ι ι ℂ) + (U : Matrix ι ι ℂ) * H) ^ (2 : ℕ) +
+      hsNorm (H * (U : Matrix ι ι ℂ) - (U : Matrix ι ι ℂ) * H) ^ (2 : ℕ) =
+        2 * (hsNorm (H * (U : Matrix ι ι ℂ)) ^ (2 : ℕ) +
+          hsNorm ((U : Matrix ι ι ℂ) * H) ^ (2 : ℕ)) at hpara
   rw [add_comm]
   rw [hpara, hsNorm_unitaryMulRight_eq H U,
     hsNorm_unitaryMulLeft_eq H U]
@@ -145,7 +145,7 @@ theorem norm_twoLocalPauliUnitaryAnticommutatorMap_sq
     {n : ℕ}
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ)
     (x : TwoLocalPauliCoefficientSpace n) :
-    ‖twoLocalPauliUnitaryAnticommutatorMap U x‖ ^ 2 =
+    ‖twoLocalPauliUnitaryAnticommutatorMap U x‖ ^ (2 : ℕ) =
       frobSq
         (realActivePauliHamiltonian x *
             (U : Matrix (FiniteQubitConfiguration (Fin n))
@@ -159,7 +159,7 @@ theorem norm_twoLocalPauliUnitaryAnticommutatorMap_sq
             (FiniteQubitConfiguration (Fin n)) ℂ) +
         (U : Matrix (FiniteQubitConfiguration (Fin n))
             (FiniteQubitConfiguration (Fin n)) ℂ) *
-          realActivePauliHamiltonian x) ^ 2 = _
+          realActivePauliHamiltonian x) ^ (2 : ℕ) = _
   rw [hsNorm_sq]
   rfl
 
@@ -192,15 +192,15 @@ theorem norm_twoLocalPauliUnitaryCompleteObserverMap_sq_split
     {n : ℕ}
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ)
     (x : TwoLocalPauliCoefficientSpace n) :
-    ‖twoLocalPauliUnitaryCompleteObserverMap U x‖ ^ 2 =
-      ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ 2 +
-        ‖twoLocalPauliUnitaryAnticommutatorMap U x‖ ^ 2 := by
+    ‖twoLocalPauliUnitaryCompleteObserverMap U x‖ ^ (2 : ℕ) =
+      ‖twoLocalPauliUnitaryCommutatorMap U x‖ ^ (2 : ℕ) +
+        ‖twoLocalPauliUnitaryAnticommutatorMap U x‖ ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_sq_eq]
   change (
     ∑ p : Bool ×
         (FiniteQubitConfiguration (Fin n) × FiniteQubitConfiguration (Fin n)),
       ‖if p.1 then twoLocalPauliUnitaryCommutatorMap U x p.2
-        else twoLocalPauliUnitaryAnticommutatorMap U x p.2‖ ^ 2) = _
+        else twoLocalPauliUnitaryAnticommutatorMap U x p.2‖ ^ (2 : ℕ)) = _
   rw [Fintype.sum_prod_type, Fintype.sum_bool]
   simp only [Bool.false_eq_true, if_true, if_false]
   rw [← EuclideanSpace.norm_sq_eq, ← EuclideanSpace.norm_sq_eq]
@@ -211,8 +211,8 @@ theorem norm_twoLocalPauliUnitaryCompleteObserverMap_sq
     {n : ℕ}
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ)
     (x : TwoLocalPauliCoefficientSpace n) :
-    ‖twoLocalPauliUnitaryCompleteObserverMap U x‖ ^ 2 =
-      (4 * (2 : ℝ) ^ n) * ‖x‖ ^ 2 := by
+    ‖twoLocalPauliUnitaryCompleteObserverMap U x‖ ^ (2 : ℕ) =
+      (4 * (2 : ℝ) ^ n) * ‖x‖ ^ (2 : ℕ) := by
   rw [norm_twoLocalPauliUnitaryCompleteObserverMap_sq_split,
     norm_twoLocalPauliUnitaryCommutatorMap_sq,
     norm_twoLocalPauliUnitaryAnticommutatorMap_sq,
@@ -235,7 +235,7 @@ theorem twoLocalPauliUnitaryCompleteObserverMap_injective
     have henergy := norm_twoLocalPauliUnitaryCompleteObserverMap_sq U x
     rw [hzero, norm_zero, zero_pow (by omega : (2 : ℕ) ≠ 0)] at henergy
     have hscale : 0 < 4 * (2 : ℝ) ^ n := by positivity
-    have hxnormsq : ‖x‖ ^ 2 = 0 :=
+    have hxnormsq : ‖x‖ ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp henergy.symm).resolve_left (ne_of_gt hscale)
     have hxnorm : ‖x‖ = 0 := by nlinarith [norm_nonneg x]
     simpa using norm_eq_zero.mp hxnorm
@@ -276,8 +276,8 @@ theorem norm_twoLocalPauliUnitaryAnticommutatorMap_autonomous_sq
     ‖twoLocalPauliUnitaryAnticommutatorMap
         ⟨unitaryEvolution (realActivePauliHamiltonian x) t,
           unitaryEvolution_mem_unitary
-            (isSelfAdjoint_realActivePauliHamiltonian x) t⟩ x‖ ^ 2 =
-      (4 * (2 : ℝ) ^ n) * ‖x‖ ^ 2 := by
+            (isSelfAdjoint_realActivePauliHamiltonian x) t⟩ x‖ ^ (2 : ℕ) =
+      (4 * (2 : ℝ) ^ n) * ‖x‖ ^ (2 : ℕ) := by
   let U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ :=
     ⟨unitaryEvolution (realActivePauliHamiltonian x) t,
       unitaryEvolution_mem_unitary

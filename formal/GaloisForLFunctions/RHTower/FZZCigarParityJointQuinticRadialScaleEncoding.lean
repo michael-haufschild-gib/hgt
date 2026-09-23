@@ -9,7 +9,7 @@ present in the literal FZZ source.
 
 The exact algebraic Fermi profile
 
-`g(a) = (a^2+1)^2 / ((a+1)(a^4+1))`
+`g(a) = (a^(2 : ℕ)+1)^(2 : ℕ) / ((a+1)(a^(4 : ℕ)+1))`
 
 has strictly negative derivative for `a>1`. Consequently the squared and unsquared negative-real
 coordinates of the balanced source eigenline are strictly decreasing for positive scale. Every
@@ -32,18 +32,18 @@ noncomputable section
 
 def fzzCigarParityKreinEigenlineAlgebraicRadialSqDerivativeNumerator
     (a : ℝ) : ℝ :=
-  -a ^ 6 - 5 * a ^ 4 - 4 * a ^ 3 + 3 * a ^ 2 + 4 * a - 1
+  -a ^ (6 : ℕ) - 5 * a ^ (4 : ℕ) - 4 * a ^ (3 : ℕ) + 3 * a ^ (2 : ℕ) + 4 * a - 1
 
 theorem fzzCigarParityKreinEigenlineAlgebraicRadialSqDerivativeNumerator_neg
     {a : ℝ} (ha : 1 ≤ a) :
     fzzCigarParityKreinEigenlineAlgebraicRadialSqDerivativeNumerator a < 0 := by
   have ha0 : 0 ≤ a := by linarith
-  have ha2 : 1 ≤ a ^ 2 := by nlinarith
-  have h2le4 : a ^ 2 ≤ a ^ 4 := by
+  have ha2 : 1 ≤ a ^ (2 : ℕ) := by nlinarith
+  have h2le4 : a ^ (2 : ℕ) ≤ a ^ (4 : ℕ) := by
     nlinarith [mul_nonneg (sq_nonneg a) (sub_nonneg.mpr ha2)]
-  have h4le6 : a ^ 4 ≤ a ^ 6 := by
-    nlinarith [mul_nonneg (sq_nonneg (a ^ 2)) (sub_nonneg.mpr ha2)]
-  have h1le3 : a ≤ a ^ 3 := by
+  have h4le6 : a ^ (4 : ℕ) ≤ a ^ (6 : ℕ) := by
+    nlinarith [mul_nonneg (sq_nonneg (a ^ (2 : ℕ))) (sub_nonneg.mpr ha2)]
+  have h1le3 : a ≤ a ^ (3 : ℕ) := by
     nlinarith [mul_nonneg (mul_nonneg ha0 (sub_nonneg.mpr ha)) (by linarith : 0 ≤ a + 1)]
   simp only [fzzCigarParityKreinEigenlineAlgebraicRadialSqDerivativeNumerator]
   nlinarith
@@ -51,10 +51,10 @@ theorem fzzCigarParityKreinEigenlineAlgebraicRadialSqDerivativeNumerator_neg
 theorem hasDerivAt_fzzCigarParityKreinEigenlineAlgebraicRadialSq
     {a : ℝ} (ha : 1 ≤ a) :
     HasDerivAt fzzCigarParityKreinEigenlineAlgebraicRadialSq
-      (((a ^ 2 + 1) *
+      (((a ^ (2 : ℕ) + 1) *
           fzzCigarParityKreinEigenlineAlgebraicRadialSqDerivativeNumerator a) /
-        (((a + 1) * (a ^ 4 + 1)) ^ 2)) a := by
-  have hden : (a + 1) * (a ^ 4 + 1) ≠ 0 := by positivity
+        (((a + 1) * (a ^ (4 : ℕ) + 1)) ^ (2 : ℕ))) a := by
+  have hden : (a + 1) * (a ^ (4 : ℕ) + 1) ≠ 0 := by positivity
   unfold fzzCigarParityKreinEigenlineAlgebraicRadialSq
   convert
     ((((hasDerivAt_id a).pow 2).add_const 1).pow 2).div
@@ -71,8 +71,8 @@ theorem deriv_fzzCigarParityKreinEigenlineAlgebraicRadialSq_neg
   rw [(hasDerivAt_fzzCigarParityKreinEigenlineAlgebraicRadialSq ha.le).deriv]
   have hnum :=
     fzzCigarParityKreinEigenlineAlgebraicRadialSqDerivativeNumerator_neg ha.le
-  have hleft : 0 < a ^ 2 + 1 := by positivity
-  have hden : 0 < ((a + 1) * (a ^ 4 + 1)) ^ 2 := by positivity
+  have hleft : 0 < a ^ (2 : ℕ) + 1 := by positivity
+  have hden : 0 < ((a + 1) * (a ^ (4 : ℕ) + 1)) ^ (2 : ℕ) := by positivity
   exact div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg hleft hnum) hden
 
 theorem strictAntiOn_fzzCigarParityKreinEigenlineAlgebraicRadialSq :
@@ -86,7 +86,7 @@ theorem strictAntiOn_fzzCigarParityKreinEigenlineAlgebraicRadialSq :
 
 theorem fzzCigarParityDilatedKreinEigenline_neg_re_sq_eq_algebraic
     {beta : ℝ} (hbeta : 0 < beta) :
-    (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta).re) ^ 2 =
+    (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta).re) ^ (2 : ℕ) =
       fzzCigarParityKreinEigenlineAlgebraicRadialSq (Real.exp beta) := by
   rw [fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_neg_re_sq hbeta]
   have hratio := fzzCigarParityKreinFermiRatio_log_eq_algebraic
@@ -96,12 +96,12 @@ theorem fzzCigarParityDilatedKreinEigenline_neg_re_sq_eq_algebraic
 theorem strictAntiOn_fzzCigarParityDilatedKreinEigenline_neg_re_sq :
     StrictAntiOn
       (fun beta : ℝ =>
-        (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta).re) ^ 2)
+        (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta).re) ^ (2 : ℕ))
       (Set.Ioi 0) := by
   intro beta hbeta gamma hgamma hbg
   change
-    (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate gamma).re) ^ 2 <
-      (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta).re) ^ 2
+    (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate gamma).re) ^ (2 : ℕ) <
+      (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta).re) ^ (2 : ℕ)
   rw [fzzCigarParityDilatedKreinEigenline_neg_re_sq_eq_algebraic hbeta,
     fzzCigarParityDilatedKreinEigenline_neg_re_sq_eq_algebraic hgamma]
   exact strictAntiOn_fzzCigarParityKreinEigenlineAlgebraicRadialSq

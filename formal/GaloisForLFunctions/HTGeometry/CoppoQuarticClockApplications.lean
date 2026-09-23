@@ -28,26 +28,26 @@ theorem coppoCollectivePotential_sourcePair_moments (alpha beta k a b : ℝ) :
 /-- The same identity holds on the literal matrix power traces of the corpus source block. -/
 theorem coppoCollectivePotential_sourcePair_matrix (alpha beta k a b : ℝ) :
     _root_.HTGeometry.coppoCollectivePotential alpha beta a (k * b) =
-      -alpha / 4 * ((sourcePairSymmetricRealEvenBlock k a b ^ 2).trace).re +
-        beta / 8 * ((sourcePairSymmetricRealEvenBlock k a b ^ 4).trace).re := by
+      -alpha / 4 * ((sourcePairSymmetricRealEvenBlock k a b ^ (2 : ℕ)).trace).re +
+        beta / 8 * ((sourcePairSymmetricRealEvenBlock k a b ^ (4 : ℕ)).trace).re := by
   rw [sourcePairSymmetricRealEvenBlock_trace_pow, sourcePairSymmetricRealEvenBlock_trace_pow]
   exact coppoCollectivePotential_sourcePair_moments alpha beta k a b
 
 /-- The source block's quartic-minus-quadratic energy has the critical collective minimum bound. -/
 theorem coppoSourcePair_quartic_energy_lower (g k a b : ℝ) :
-    -g ^ 4 ≤ -g ^ 2 * (sourcePairSymmetricRealEvenMoment 2 k a b).re +
+    -g ^ (4 : ℕ) ≤ -g ^ (2 : ℕ) * (sourcePairSymmetricRealEvenMoment 2 k a b).re +
       (sourcePairSymmetricRealEvenMoment 4 k a b).re / 2 := by
   have h := _root_.HTGeometry.coppoKerrEnergy_density_global_min g (Real.sqrt 2) a (k * b)
-  have hs : Real.sqrt 2 ^ 2 = (2 : ℝ) := Real.sq_sqrt (by positivity)
+  have hs : Real.sqrt 2 ^ (2 : ℕ) = (2 : ℝ) := Real.sq_sqrt (by positivity)
   rw [hs] at h
-  have heq : _root_.HTGeometry.coppoKerrEnergy (g ^ 2) (1 + 2) a (k * b) =
-      -g ^ 2 * (sourcePairSymmetricRealEvenMoment 2 k a b).re +
+  have heq : _root_.HTGeometry.coppoKerrEnergy (g ^ (2 : ℕ)) (1 + 2) a (k * b) =
+      -g ^ (2 : ℕ) * (sourcePairSymmetricRealEvenMoment 2 k a b).re +
         (sourcePairSymmetricRealEvenMoment 4 k a b).re / 2 := by
     simp only [sourcePairSymmetricRealEvenMoment, ← Complex.ofReal_pow, ← Complex.ofReal_add,
       Complex.ofReal_re, _root_.HTGeometry.coppoKerrEnergy]
     ring
   rw [heq] at h
-  have hmin : _root_.HTGeometry.coppoKerrEnergy (g ^ 2) (1 + 2) g 0 = -g ^ 4 := by
+  have hmin : _root_.HTGeometry.coppoKerrEnergy (g ^ (2 : ℕ)) (1 + 2) g 0 = -g ^ (4 : ℕ) := by
     dsimp [_root_.HTGeometry.coppoKerrEnergy]; ring
   rwa [hmin] at h
 

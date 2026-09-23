@@ -68,7 +68,7 @@ def twoValueWeightedGramPencilMiddle
 theorem twoValueWeightedGramPencil_det
     (A D : ℝ) (C s₀ s₁ μ : ℂ) :
     Matrix.det (twoValueWeightedGramPencil A D C s₀ s₁ μ) =
-      (twoHermitianDet A D C : ℂ) * μ ^ 2 +
+      (twoHermitianDet A D C : ℂ) * μ ^ (2 : ℕ) +
         twoValueWeightedGramPencilMiddle A D C s₀ s₁ * μ +
         (twoHermitianDet A D C : ℂ) *
           (Complex.normSq (s₀ * s₁) : ℂ) := by
@@ -83,22 +83,22 @@ theorem twoValueWeightedGramPencil_det
 
 theorem product_of_two_distinct_quadratic_roots
     {d e n μ₀ μ₁ : ℂ} (hd : d ≠ 0) (hne : μ₀ ≠ μ₁)
-    (h₀ : d * μ₀ ^ 2 + e * μ₀ + d * n = 0)
-    (h₁ : d * μ₁ ^ 2 + e * μ₁ + d * n = 0) :
+    (h₀ : d * μ₀ ^ (2 : ℕ) + e * μ₀ + d * n = 0)
+    (h₁ : d * μ₁ ^ (2 : ℕ) + e * μ₁ + d * n = 0) :
     μ₀ * μ₁ = n := by
   have hfactor :
       (μ₀ - μ₁) * (d * (μ₀ + μ₁) + e) = 0 := by
     calc
       (μ₀ - μ₁) * (d * (μ₀ + μ₁) + e) =
-          (d * μ₀ ^ 2 + e * μ₀ + d * n) -
-            (d * μ₁ ^ 2 + e * μ₁ + d * n) := by ring
+          (d * μ₀ ^ (2 : ℕ) + e * μ₀ + d * n) -
+            (d * μ₁ ^ (2 : ℕ) + e * μ₁ + d * n) := by ring
       _ = 0 := by rw [h₀, h₁]; ring
   have hsum : d * (μ₀ + μ₁) + e = 0 :=
     (mul_eq_zero.mp hfactor).resolve_left (sub_ne_zero.mpr hne)
   have hproduct : d * (n - μ₀ * μ₁) = 0 := by
     calc
       d * (n - μ₀ * μ₁) =
-          (d * μ₀ ^ 2 + e * μ₀ + d * n) -
+          (d * μ₀ ^ (2 : ℕ) + e * μ₀ + d * n) -
             μ₀ * (d * (μ₀ + μ₁) + e) := by ring
       _ = 0 := by rw [h₀, hsum]; ring
   have := (mul_eq_zero.mp hproduct).resolve_left hd
@@ -128,20 +128,20 @@ modulus. -/
 theorem twoValueWeightedGramPencil_magnitude_product
     {A D σ₀ σ₁ : ℝ} {C s₀ s₁ : ℂ}
     (hdet : twoHermitianDet A D C ≠ 0)
-    (hσ₀ : 0 ≤ σ₀) (hσ₁ : 0 ≤ σ₁) (hne : σ₀ ^ 2 ≠ σ₁ ^ 2)
+    (hσ₀ : 0 ≤ σ₀) (hσ₁ : 0 ≤ σ₁) (hne : σ₀ ^ (2 : ℕ) ≠ σ₁ ^ (2 : ℕ))
     (hroot₀ : Matrix.det
-      (twoValueWeightedGramPencil A D C s₀ s₁ (σ₀ ^ 2 : ℂ)) = 0)
+      (twoValueWeightedGramPencil A D C s₀ s₁ (σ₀ ^ (2 : ℕ) : ℂ)) = 0)
     (hroot₁ : Matrix.det
-      (twoValueWeightedGramPencil A D C s₀ s₁ (σ₁ ^ 2 : ℂ)) = 0) :
+      (twoValueWeightedGramPencil A D C s₀ s₁ (σ₁ ^ (2 : ℕ) : ℂ)) = 0) :
     σ₀ * σ₁ = ‖s₀ * s₁‖ := by
-  have hneC : (σ₀ ^ 2 : ℂ) ≠ (σ₁ ^ 2 : ℂ) := by
+  have hneC : (σ₀ ^ (2 : ℕ) : ℂ) ≠ (σ₁ ^ (2 : ℕ) : ℂ) := by
     exact_mod_cast hne
   have hproductC := twoValueWeightedGramPencil_root_product
     hdet hneC hroot₀ hroot₁
-  have hproduct : σ₀ ^ 2 * σ₁ ^ 2 =
+  have hproduct : σ₀ ^ (2 : ℕ) * σ₁ ^ (2 : ℕ) =
       Complex.normSq (s₀ * s₁) := by
     exact_mod_cast hproductC
-  have hnormSq : ‖s₀ * s₁‖ ^ 2 =
+  have hnormSq : ‖s₀ * s₁‖ ^ (2 : ℕ) =
       Complex.normSq (s₀ * s₁) := Complex.sq_norm _
   have hnonneg : 0 ≤ σ₀ * σ₁ := mul_nonneg hσ₀ hσ₁
   have hnormNonneg : 0 ≤ ‖s₀ * s₁‖ := norm_nonneg _

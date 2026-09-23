@@ -139,12 +139,12 @@ private theorem hlsGammaFive_chiral_product_reverse (a b : ℂ) :
 private theorem complex_chiral_denominator (ell ellFive : ℝ) :
     (ell : ℂ) * (ell : ℂ) -
         (Complex.I * (ellFive : ℂ)) * (Complex.I * (ellFive : ℂ)) =
-      ((ell ^ 2 + ellFive ^ 2 : ℝ) : ℂ) := by
+      ((ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ) : ℝ) : ℂ) := by
   calc
     (ell : ℂ) * (ell : ℂ) -
         (Complex.I * (ellFive : ℂ)) * (Complex.I * (ellFive : ℂ)) =
-      (ell : ℂ) ^ 2 - Complex.I ^ 2 * (ellFive : ℂ) ^ 2 := by ring
-    _ = ((ell ^ 2 + ellFive ^ 2 : ℝ) : ℂ) := by
+      (ell : ℂ) ^ (2 : ℕ) - Complex.I ^ (2 : ℕ) * (ellFive : ℂ) ^ (2 : ℕ) := by ring
+    _ = ((ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [Complex.I_sq]
       push_cast
       ring
@@ -153,7 +153,7 @@ private theorem complex_chiral_denominator (ell ellFive : ℝ) :
 theorem hlsDiracChiralCoefficient_mul_conjugate (ell ellFive : ℝ) :
     hlsDiracChiralCoefficient ell ellFive *
         hlsDiracChiralConjugate ell ellFive =
-      ((ell ^ 2 + ellFive ^ 2 : ℝ) : ℂ) • 1 := by
+      ((ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ) : ℝ) : ℂ) • 1 := by
   rw [hlsDiracChiralCoefficient, hlsDiracChiralConjugate,
     hlsGammaFive_chiral_product,
     complex_chiral_denominator]
@@ -161,14 +161,14 @@ theorem hlsDiracChiralCoefficient_mul_conjugate (ell ellFive : ℝ) :
 theorem hlsDiracChiralConjugate_mul_coefficient (ell ellFive : ℝ) :
     hlsDiracChiralConjugate ell ellFive *
         hlsDiracChiralCoefficient ell ellFive =
-      ((ell ^ 2 + ellFive ^ 2 : ℝ) : ℂ) • 1 := by
+      ((ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ) : ℝ) : ℂ) • 1 := by
   rw [hlsDiracChiralCoefficient, hlsDiracChiralConjugate,
     hlsGammaFive_chiral_product_reverse,
     complex_chiral_denominator]
 
 /-- The real denominator vanishes at exactly one coupling pair. -/
 theorem hlsDiracChiralDenominator_eq_zero_iff (ell ellFive : ℝ) :
-    ell ^ 2 + ellFive ^ 2 = 0 ↔ ell = 0 ∧ ellFive = 0 := by
+    ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ) = 0 ↔ ell = 0 ∧ ellFive = 0 := by
   constructor
   · intro h
     constructor <;> nlinarith [sq_nonneg ell, sq_nonneg ellFive]
@@ -179,7 +179,7 @@ theorem hlsDiracChiralDenominator_eq_zero_iff (ell ellFive : ℝ) :
 and is zero at that pair. -/
 def hlsDiracChiralInverse (ell ellFive : ℝ) :
     Matrix HLSDiracSpinor HLSDiracSpinor ℂ :=
-  (((ell ^ 2 + ellFive ^ 2)⁻¹ : ℝ) : ℂ) •
+  (((ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) •
     hlsDiracChiralConjugate ell ellFive
 
 theorem hlsDiracChiralCoefficient_mul_inverse (ell ellFive : ℝ) :
@@ -190,13 +190,13 @@ theorem hlsDiracChiralCoefficient_mul_inverse (ell ellFive : ℝ) :
   · rcases h with ⟨rfl, rfl⟩
     simp [hlsDiracChiralCoefficient, hlsDiracChiralInverse,
       hlsDiracChiralConjugate]
-  · have hden : ell ^ 2 + ellFive ^ 2 ≠ 0 := by
+  · have hden : ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ) ≠ 0 := by
       intro hzero
       exact h ((hlsDiracChiralDenominator_eq_zero_iff ell ellFive).mp hzero)
     have hinv :
-        (((ell ^ 2 + ellFive ^ 2)⁻¹ : ℝ) : ℂ) *
-          ((ell ^ 2 + ellFive ^ 2 : ℝ) : ℂ) = 1 := by
-      have hdenC : (ell : ℂ) ^ 2 + (ellFive : ℂ) ^ 2 ≠ 0 := by
+        (((ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) *
+          ((ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ) : ℝ) : ℂ) = 1 := by
+      have hdenC : (ell : ℂ) ^ (2 : ℕ) + (ellFive : ℂ) ^ (2 : ℕ) ≠ 0 := by
         exact_mod_cast hden
       push_cast
       exact inv_mul_cancel₀ hdenC
@@ -212,13 +212,13 @@ theorem hlsDiracChiralInverse_mul_coefficient (ell ellFive : ℝ) :
   · rcases h with ⟨rfl, rfl⟩
     simp [hlsDiracChiralCoefficient, hlsDiracChiralInverse,
       hlsDiracChiralConjugate]
-  · have hden : ell ^ 2 + ellFive ^ 2 ≠ 0 := by
+  · have hden : ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ) ≠ 0 := by
       intro hzero
       exact h ((hlsDiracChiralDenominator_eq_zero_iff ell ellFive).mp hzero)
     have hinv :
-        (((ell ^ 2 + ellFive ^ 2)⁻¹ : ℝ) : ℂ) *
-          ((ell ^ 2 + ellFive ^ 2 : ℝ) : ℂ) = 1 := by
-      have hdenC : (ell : ℂ) ^ 2 + (ellFive : ℂ) ^ 2 ≠ 0 := by
+        (((ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) *
+          ((ell ^ (2 : ℕ) + ellFive ^ (2 : ℕ) : ℝ) : ℂ) = 1 := by
+      have hdenC : (ell : ℂ) ^ (2 : ℕ) + (ellFive : ℂ) ^ (2 : ℕ) ≠ 0 := by
         exact_mod_cast hden
       push_cast
       exact inv_mul_cancel₀ hdenC

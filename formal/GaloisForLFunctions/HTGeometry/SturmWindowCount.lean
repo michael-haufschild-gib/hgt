@@ -27,7 +27,7 @@ namespace GaloisForLFunctions.HTGeometry
 spans at least `π/γ`. -/
 theorem sturm_window_dichotomy {g gd gdd h : ℝ → ℝ} {γ p m q : ℝ} (hγ : 0 < γ)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
-    (hh : ∀ t, h t = gdd t + γ ^ 2 * g t) (hhcont : Continuous h)
+    (hh : ∀ t, h t = gdd t + γ ^ (2 : ℕ) * g t) (hhcont : Continuous h)
     (hpm : p < m) (hmq : m < q)
     (hgp : g p = 0) (hgm : g m = 0) (hgq : g q = 0)
     (hpos : ∀ t ∈ Ioo p m, 0 < g t) (hneg : ∀ t ∈ Ioo m q, g t < 0) :
@@ -45,7 +45,7 @@ theorem sturm_window_dichotomy {g gd gdd h : ℝ → ℝ} {γ p m q : ℝ} (hγ 
 interval free of zeros of `g'' + γ² g` number at most `(b-a)γ/π`. -/
 theorem card_windows_le {g gd gdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
-    (hh : ∀ t, h t = gdd t + γ ^ 2 * g t) (hhcont : Continuous h)
+    (hh : ∀ t, h t = gdd t + γ ^ (2 : ℕ) * g t) (hhcont : Continuous h)
     (hnoh : ∀ t ∈ Ioo a b, h t ≠ 0)
     {k : ℕ} (p mid q : Fin k → ℝ)
     (hpa : ∀ i, a ≤ p i) (hqb : ∀ i, q i ≤ b)

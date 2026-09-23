@@ -129,7 +129,7 @@ theorem maximallyProjective_pureChoiCircuitTarget_consecutiveVisitGaps
     ∃ mesh B : ℝ, 0 < mesh ∧ 0 ≤ B ∧ ∀ {W : ℝ}, 0 ≤ W →
       (Fintype.card gate : ℝ) ^ (s + 1) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
               ((d + 1 : ℕ) - 1)) < mesh / (W + mesh) →
       ∀ A0 : ℝ, 0 ≤ A0 → ∃ u tExit tReturn : ℝ,
         A0 ≤ u ∧ tExit ∈ Icc (u - B) u ∧
@@ -205,7 +205,7 @@ theorem maximallyProjective_pureChoiCircuitTarget_explicit_consecutiveVisitGap
     (hpack :
       (Fintype.card gate : ℝ) ^ (s + 1) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
               ((d + 1 : ℕ) - 1)) <
         ((epsw - epsn) / projectiveChoiSpeed energy) /
           (W + (epsw - epsn) / projectiveChoiSpeed energy)) :

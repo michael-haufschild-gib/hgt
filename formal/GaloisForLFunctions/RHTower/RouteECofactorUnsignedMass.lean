@@ -211,7 +211,7 @@ theorem sum_inv_sqrt_parityClass_ge {B : Finset ℕ} (hB : ∀ p ∈ B, p.Prime)
     rw [hcast, Real.sqrt_mul (by norm_num)]
     have h2 : Real.sqrt 2 ≤ 2 := by
       have : Real.sqrt 2 ≤ Real.sqrt 4 := Real.sqrt_le_sqrt (by norm_num)
-      rwa [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)] at this
+      rwa [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)] at this
     rw [ge_iff_le]
     have h2pos : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
     have hle : Real.sqrt 2 * Real.sqrt (s : ℝ) ≤ 2 * Real.sqrt (s : ℝ) :=

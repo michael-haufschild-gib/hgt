@@ -113,7 +113,7 @@ theorem near_evolvedState_implies_near_transportGroundEnergy
   have hVψ : ‖V ψ‖ ≤ 1 := by
     have hisom : ‖V ψ‖ = ‖ψ‖ := by
       rw [← sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)]
-      change ‖V ψ‖ ^ 2 = ‖ψ‖ ^ 2
+      change ‖V ψ‖ ^ (2 : ℕ) = ‖ψ‖ ^ (2 : ℕ)
       rw [norm_sq_eq_re_inner (𝕜 := ℂ),
         norm_sq_eq_re_inner (𝕜 := ℂ)]
       rw [← V.adjoint_inner_left]

@@ -35,8 +35,8 @@ theorem stdSimplex_nonempty (C : Type*) [Fintype C] [Nonempty C] [DecidableEq C]
 theorem exists_optimalDesign_coord {m : ℕ} (hm : 0 < m) (T : C → Fin m → ℂ)
     (hspanT : Submodule.span ℂ (Set.range T) = ⊤) :
     ∃ w ∈ stdSimplex ℝ C, ∀ (u : Fin m → ℂ) (c : C),
-      ‖finiteComplexInner u (T c)‖ ^ 2 ≤
-        (m : ℝ) * ∑ j, w j * ‖finiteComplexInner u (T j)‖ ^ 2 := by
+      ‖finiteComplexInner u (T c)‖ ^ (2 : ℕ) ≤
+        (m : ℝ) * ∑ j, w j * ‖finiteComplexInner u (T j)‖ ^ (2 : ℕ) := by
   rcases m with _ | m
   · exact absurd hm (lt_irrefl 0)
   · simpa using exists_finiteOptimalDesign_pointwise T hspanT
@@ -49,8 +49,8 @@ space. -/
 theorem exists_optimalDesign_of_span_top (v : C → E)
     (hspan : Submodule.span ℂ (Set.range v) = ⊤) :
     ∃ w ∈ stdSimplex ℝ C, ∀ (u : E) (c : C),
-      ‖(inner ℂ u (v c) : ℂ)‖ ^ 2 ≤
-        (Module.finrank ℂ E : ℝ) * ∑ j, w j * ‖(inner ℂ u (v j) : ℂ)‖ ^ 2 := by
+      ‖(inner ℂ u (v c) : ℂ)‖ ^ (2 : ℕ) ≤
+        (Module.finrank ℂ E : ℝ) * ∑ j, w j * ‖(inner ℂ u (v j) : ℂ)‖ ^ (2 : ℕ) := by
   classical
   rcases Nat.eq_zero_or_pos (Module.finrank ℂ E) with hn | hn
   · obtain ⟨w, hw⟩ := stdSimplex_nonempty C
@@ -64,7 +64,7 @@ theorem exists_optimalDesign_of_span_top (v : C → E)
       rw [htop] at hmem
       exact hmem
     rw [hv, inner_zero_right, norm_zero]
-    have hnn : (0 : ℝ) ≤ (Module.finrank ℂ E : ℝ) * ∑ j, w j * ‖(inner ℂ u (v j) : ℂ)‖ ^ 2 := by
+    have hnn : (0 : ℝ) ≤ (Module.finrank ℂ E : ℝ) * ∑ j, w j * ‖(inner ℂ u (v j) : ℂ)‖ ^ (2 : ℕ) := by
       refine mul_nonneg (Nat.cast_nonneg _) (Finset.sum_nonneg fun j _ => ?_)
       exact mul_nonneg (hw.1 j) (sq_nonneg _)
     simpa using hnn
@@ -119,8 +119,8 @@ ambient probes. -/
 theorem exists_optimalDesign_of_span_eq {U : Submodule ℂ H} (v : C → H) (hv : ∀ c, v c ∈ U)
     (hspan : Submodule.span ℂ (Set.range v) = U) :
     ∃ w ∈ stdSimplex ℝ C, ∀ (u : H) (c : C),
-      ‖(inner ℂ u (v c) : ℂ)‖ ^ 2 ≤
-        (Module.finrank ℂ U : ℝ) * ∑ j, w j * ‖(inner ℂ u (v j) : ℂ)‖ ^ 2 := by
+      ‖(inner ℂ u (v c) : ℂ)‖ ^ (2 : ℕ) ≤
+        (Module.finrank ℂ U : ℝ) * ∑ j, w j * ‖(inner ℂ u (v j) : ℂ)‖ ^ (2 : ℕ) := by
   classical
   set v' : C → U := fun c => ⟨v c, hv c⟩ with hv'
   have hrange : U.subtype '' (Set.range v') = Set.range v := by

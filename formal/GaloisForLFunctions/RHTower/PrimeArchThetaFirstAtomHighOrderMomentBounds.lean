@@ -630,17 +630,17 @@ theorem thetaCuspFirstAtom_tail_density_le_exp_majorant
           ← Real.exp_add]
         congr 1
         ring
-  have hpiCoeff : 8 * Real.pi ^ 2 ≤ (79 : ℝ) := by
+  have hpiCoeff : 8 * Real.pi ^ (2 : ℕ) ≤ (79 : ℝ) := by
     nlinarith [Real.pi_pos, Real.pi_lt_d20]
   have hsource := HedenmalmThetaSource.thetaCuspSourceTerm_one_le x
   have henv0 := (HedenmalmThetaSource.thetaEnvelope_pos x).le
   calc
     2 * (x ^ (2 * r) * thetaCuspSourceTerm x 1) ≤
         2 * (x ^ (2 * r) *
-          (4 * Real.pi ^ 2 * HedenmalmThetaSource.thetaEnvelope x)) := by
+          (4 * Real.pi ^ (2 : ℕ) * HedenmalmThetaSource.thetaEnvelope x)) := by
       exact mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left hsource (pow_nonneg hx0 _)) (by norm_num)
-    _ = 8 * Real.pi ^ 2 * (x ^ (2 * r) *
+    _ = 8 * Real.pi ^ (2 : ℕ) * (x ^ (2 * r) *
           HedenmalmThetaSource.thetaEnvelope x) := by ring
     _ ≤ 79 * (x ^ (2 * r) * HedenmalmThetaSource.thetaEnvelope x) := by
       exact mul_le_mul_of_nonneg_right hpiCoeff
@@ -670,16 +670,16 @@ theorem ninetyMillion_lt_exp_thirtySeven_div_two :
     have h := Real.sum_le_exp_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2) 4
     norm_num [Finset.sum_range_succ] at h ⊢
     exact h
-  have hePow : (685 / 252 : ℝ) ^ 18 ≤ Real.exp 1 ^ 18 :=
+  have hePow : (685 / 252 : ℝ) ^ (18 : ℕ) ≤ Real.exp 1 ^ (18 : ℕ) :=
     pow_le_pow_left₀ (by norm_num) heOne 18
-  have hprod : (685 / 252 : ℝ) ^ 18 * (79 / 48) ≤
-      Real.exp 1 ^ 18 * Real.exp (1 / 2) := by
+  have hprod : (685 / 252 : ℝ) ^ (18 : ℕ) * (79 / 48) ≤
+      Real.exp 1 ^ (18 : ℕ) * Real.exp (1 / 2) := by
     exact mul_le_mul hePow heHalf (by positivity) (by positivity)
-  have hrat : (90000000 : ℝ) < (685 / 252 : ℝ) ^ 18 * (79 / 48) := by
+  have hrat : (90000000 : ℝ) < (685 / 252 : ℝ) ^ (18 : ℕ) * (79 / 48) := by
     norm_num
   calc
-    (90000000 : ℝ) < (685 / 252 : ℝ) ^ 18 * (79 / 48) := hrat
-    _ ≤ Real.exp 1 ^ 18 * Real.exp (1 / 2) := hprod
+    (90000000 : ℝ) < (685 / 252 : ℝ) ^ (18 : ℕ) * (79 / 48) := hrat
+    _ ≤ Real.exp 1 ^ (18 : ℕ) * Real.exp (1 / 2) := hprod
     _ = Real.exp (37 / 2) := by
       rw [← Real.exp_nat_mul, ← Real.exp_add]
       congr 1

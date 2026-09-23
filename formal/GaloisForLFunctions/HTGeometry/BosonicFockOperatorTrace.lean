@@ -25,15 +25,15 @@ variable {ι : Type*} [DecidableEq ι]
 /-- Square-summability of the one-particle contraction gives square-summability of the whole
 occupation spectrum. -/
 theorem summable_norm_bosonicEigenvalue_sq (p : ι → ℂ) (hp_lt : ∀ a, ‖p a‖ < 1)
-    (hsum : Summable (fun a => ‖p a‖ ^ 2)) :
-    Summable (fun ν : ι →₀ ℕ => ‖bosonicEigenvalue p ν‖ ^ 2) :=
+    (hsum : Summable (fun a => ‖p a‖ ^ (2 : ℕ))) :
+    Summable (fun ν : ι →₀ ℕ => ‖bosonicEigenvalue p ν‖ ^ (2 : ℕ)) :=
   (isHilbertSchmidt_ellTwoDiagonal_iff _ _).mp
     ((isHilbertSchmidt_bosonicSecondQuantization_iff p hp_lt).mpr hsum)
 
 /-- In the square-summable regime the second quantization is the Hilbert–Schmidt diagonal of its
 eigenvalue family. -/
 theorem bosonicSecondQuantization_eq_diagOp (p : ι → ℂ) (hp_lt : ∀ a, ‖p a‖ < 1)
-    (hsum : Summable (fun a => ‖p a‖ ^ 2)) :
+    (hsum : Summable (fun a => ‖p a‖ ^ (2 : ℕ))) :
     bosonicSecondQuantization p hp_lt
       = HilbertSchmidt.diagOp (bosonicEigenvalue p)
           (summable_norm_bosonicEigenvalue_sq p hp_lt hsum) := by
@@ -45,7 +45,7 @@ theorem bosonicSecondQuantization_eq_diagOp (p : ι → ℂ) (hp_lt : ∀ a, ‖
 power onward the operator trace converges and equals the sum of that power of the occupation
 monomials. -/
 theorem opTrace_bosonicSecondQuantization_pow (p : ι → ℂ) (hp_lt : ∀ a, ‖p a‖ < 1)
-    (hsum : Summable (fun a => ‖p a‖ ^ 2)) (m : ℕ) :
+    (hsum : Summable (fun a => ‖p a‖ ^ (2 : ℕ))) (m : ℕ) :
     ContinuousLinearMap.opTrace ((bosonicSecondQuantization p hp_lt) ^ (m + 2))
       = ∑' ν : ι →₀ ℕ, bosonicEigenvalue p ν ^ (m + 2) := by
   rw [bosonicSecondQuantization_eq_diagOp p hp_lt hsum]
@@ -56,7 +56,7 @@ least one, and for a square-summable one-particle contraction, the logarithm of 
 regularized determinant of `I - x Γ` is the series of operator traces of the powers of `Γ`, starting
 at the determinant order. -/
 theorem regularizedFredholmDet_eq_exp_neg_opTrace_series (k : ℕ) (p : ι → ℂ)
-    (hp_lt : ∀ a, ‖p a‖ < 1) (hsum : Summable (fun a => ‖p a‖ ^ 2)) {x : ℂ} (hx : ‖x‖ < 1) :
+    (hp_lt : ∀ a, ‖p a‖ < 1) (hsum : Summable (fun a => ‖p a‖ ^ (2 : ℕ))) {x : ℂ} (hx : ‖x‖ < 1) :
     regularizedFredholmDet (k + 1) p x
       = Complex.exp (-∑' m : ℕ, x ^ (m + (k + 1 + 1)) / ((m + (k + 1 + 1) : ℕ) : ℂ) *
           ContinuousLinearMap.opTrace

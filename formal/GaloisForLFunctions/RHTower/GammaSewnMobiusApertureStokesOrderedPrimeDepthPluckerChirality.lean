@@ -30,10 +30,10 @@ theorem gammaSewnOrderedPrimeDepthPlucker_lowerConsecutiveRawWeight_eq {a : ℝ}
     (halt : a < ((e : ℝ) + 1 / 2) * Real.log (p : ℝ)) :
     RHTower.gammaSewnFourRateBoundaryPairRawWeight a
         (gammaSewnOrderedPrimeDepthPlucker_rate e p q) (gammaSewnOrderedPrimeDepthPlucker_cell e p q) 0 =
-      4 * a ^ 2 /
-        ((((p : ℝ) + 1) ^ 4 * Real.log (p : ℝ) ^ 2 *
-          (((e : ℝ) + 1 / 2) ^ 2 - (a / Real.log (p : ℝ)) ^ 2) ^ 2) *
-          (((e : ℝ) + 3 / 2) ^ 2 - (a / Real.log (p : ℝ)) ^ 2) ^ 2) := by
+      4 * a ^ (2 : ℕ) /
+        ((((p : ℝ) + 1) ^ (4 : ℕ) * Real.log (p : ℝ) ^ (2 : ℕ) *
+          (((e : ℝ) + 1 / 2) ^ (2 : ℕ) - (a / Real.log (p : ℝ)) ^ (2 : ℕ)) ^ (2 : ℕ)) *
+          (((e : ℝ) + 3 / 2) ^ (2 : ℕ) - (a / Real.log (p : ℝ)) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   let L := Real.log (p : ℝ)
   let c := (e : ℝ) + 1 / 2
   let d := (e : ℝ) + 3 / 2
@@ -43,9 +43,9 @@ theorem gammaSewnOrderedPrimeDepthPlucker_lowerConsecutiveRawWeight_eq {a : ℝ}
   have hcd : c < d := by dsimp [c, d]; linarith
   have hu : a / L < c := (div_lt_iff₀ hL).2 (by simpa [L, c] using halt)
   have hu0 : 0 < a / L := div_pos ha hL
-  have hA : 0 < c ^ 2 - (a / L) ^ 2 :=
+  have hA : 0 < c ^ (2 : ℕ) - (a / L) ^ (2 : ℕ) :=
     sub_pos.mpr ((sq_lt_sq₀ hu0.le hc.le).2 hu)
-  have hB : 0 < d ^ 2 - (a / L) ^ 2 := by
+  have hB : 0 < d ^ (2 : ℕ) - (a / L) ^ (2 : ℕ) := by
     apply sub_pos.mpr
     exact (sq_lt_sq₀ hu0.le (hc.trans hcd).le).2 (lt_trans hu hcd)
   simp [RHTower.gammaSewnFourRateBoundaryPairRawWeight,
@@ -63,10 +63,10 @@ theorem gammaSewnOrderedPrimeDepthPlucker_upperConsecutiveRawWeight_eq {a : ℝ}
     (halt : a < ((e : ℝ) + 1 / 2) * Real.log (q : ℝ)) :
     RHTower.gammaSewnFourRateBoundaryPairRawWeight a
         (gammaSewnOrderedPrimeDepthPlucker_rate e p q) (gammaSewnOrderedPrimeDepthPlucker_cell e p q) 5 =
-      4 * a ^ 2 /
-        ((((q : ℝ) + 1) ^ 4 * Real.log (q : ℝ) ^ 2 *
-          (((e : ℝ) + 1 / 2) ^ 2 - (a / Real.log (q : ℝ)) ^ 2) ^ 2) *
-          (((e : ℝ) + 3 / 2) ^ 2 - (a / Real.log (q : ℝ)) ^ 2) ^ 2) := by
+      4 * a ^ (2 : ℕ) /
+        ((((q : ℝ) + 1) ^ (4 : ℕ) * Real.log (q : ℝ) ^ (2 : ℕ) *
+          (((e : ℝ) + 1 / 2) ^ (2 : ℕ) - (a / Real.log (q : ℝ)) ^ (2 : ℕ)) ^ (2 : ℕ)) *
+          (((e : ℝ) + 3 / 2) ^ (2 : ℕ) - (a / Real.log (q : ℝ)) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   let L := Real.log (q : ℝ)
   let c := (e : ℝ) + 1 / 2
   let d := (e : ℝ) + 3 / 2
@@ -76,9 +76,9 @@ theorem gammaSewnOrderedPrimeDepthPlucker_upperConsecutiveRawWeight_eq {a : ℝ}
   have hcd : c < d := by dsimp [c, d]; linarith
   have hu : a / L < c := (div_lt_iff₀ hL).2 (by simpa [L, c] using halt)
   have hu0 : 0 < a / L := div_pos ha hL
-  have hA : 0 < c ^ 2 - (a / L) ^ 2 :=
+  have hA : 0 < c ^ (2 : ℕ) - (a / L) ^ (2 : ℕ) :=
     sub_pos.mpr ((sq_lt_sq₀ hu0.le hc.le).2 hu)
-  have hB : 0 < d ^ 2 - (a / L) ^ 2 := by
+  have hB : 0 < d ^ (2 : ℕ) - (a / L) ^ (2 : ℕ) := by
     apply sub_pos.mpr
     exact (sq_lt_sq₀ hu0.le (hc.trans hcd).le).2 (lt_trans hu hcd)
   simp [RHTower.gammaSewnFourRateBoundaryPairRawWeight,
@@ -106,10 +106,10 @@ theorem gammaSewnOrderedPrimeDepthPlucker_rawWeight_strictAnti {a : ℝ} {e : �
   let d := (e : ℝ) + 3 / 2
   let up := a / Lp
   let uq := a / Lq
-  let Ap := c ^ 2 - up ^ 2
-  let Aq := c ^ 2 - uq ^ 2
-  let Bp := d ^ 2 - up ^ 2
-  let Bq := d ^ 2 - uq ^ 2
+  let Ap := c ^ (2 : ℕ) - up ^ (2 : ℕ)
+  let Aq := c ^ (2 : ℕ) - uq ^ (2 : ℕ)
+  let Bp := d ^ (2 : ℕ) - up ^ (2 : ℕ)
+  let Bq := d ^ (2 : ℕ) - uq ^ (2 : ℕ)
   have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.one_lt
   have hq1 : (1 : ℝ) < (q : ℝ) := by exact_mod_cast q.2.one_lt
   have hLp : 0 < Lp := Real.log_pos hp1
@@ -134,7 +134,7 @@ theorem gammaSewnOrderedPrimeDepthPlucker_rawWeight_strictAnti {a : ℝ} {e : �
     apply (div_lt_iff₀ hLp).2
     change a < c * Lp at halt
     exact halt
-  have huqsq_upsq : uq ^ 2 < up ^ 2 :=
+  have huqsq_upsq : uq ^ (2 : ℕ) < up ^ (2 : ℕ) :=
     (sq_lt_sq₀ huq.le hup.le).2 huqup
   have hAp : 0 < Ap := by
     dsimp [Ap]
@@ -146,29 +146,29 @@ theorem gammaSewnOrderedPrimeDepthPlucker_rawWeight_strictAnti {a : ℝ} {e : �
     exact sub_pos.mpr ((sq_lt_sq₀ hup.le (hc.trans hcd).le).2 (hupc.trans hcd))
   have hBq : 0 < Bq := by dsimp [Bq]; nlinarith
   have hBpq : Bp < Bq := by dsimp [Bp, Bq]; linarith
-  have hApqsq : Ap ^ 2 < Aq ^ 2 := (sq_lt_sq₀ hAp.le hAq.le).2 hApq
-  have hBpqsq : Bp ^ 2 < Bq ^ 2 := (sq_lt_sq₀ hBp.le hBq.le).2 hBpq
-  have hLpqsq : Lp ^ 2 < Lq ^ 2 := (sq_lt_sq₀ hLp.le hLq.le).2 hLpq
-  have hPpq4 : Pp ^ 4 < Pq ^ 4 := pow_lt_pow_left₀ hPpq hPp.le (by norm_num)
-  have hbase : Pp ^ 4 * Lp ^ 2 < Pq ^ 4 * Lq ^ 2 :=
+  have hApqsq : Ap ^ (2 : ℕ) < Aq ^ (2 : ℕ) := (sq_lt_sq₀ hAp.le hAq.le).2 hApq
+  have hBpqsq : Bp ^ (2 : ℕ) < Bq ^ (2 : ℕ) := (sq_lt_sq₀ hBp.le hBq.le).2 hBpq
+  have hLpqsq : Lp ^ (2 : ℕ) < Lq ^ (2 : ℕ) := (sq_lt_sq₀ hLp.le hLq.le).2 hLpq
+  have hPpq4 : Pp ^ (4 : ℕ) < Pq ^ (4 : ℕ) := pow_lt_pow_left₀ hPpq hPp.le (by norm_num)
+  have hbase : Pp ^ (4 : ℕ) * Lp ^ (2 : ℕ) < Pq ^ (4 : ℕ) * Lq ^ (2 : ℕ) :=
     mul_lt_mul hPpq4 hLpqsq.le (sq_pos_of_pos hLp) (pow_nonneg hPq.le 4)
-  have hbaseq : 0 < Pq ^ 4 * Lq ^ 2 := mul_pos (pow_pos hPq _) (sq_pos_of_pos hLq)
-  have hbaseA : (Pp ^ 4 * Lp ^ 2) * Ap ^ 2 < (Pq ^ 4 * Lq ^ 2) * Aq ^ 2 :=
+  have hbaseq : 0 < Pq ^ (4 : ℕ) * Lq ^ (2 : ℕ) := mul_pos (pow_pos hPq _) (sq_pos_of_pos hLq)
+  have hbaseA : (Pp ^ (4 : ℕ) * Lp ^ (2 : ℕ)) * Ap ^ (2 : ℕ) < (Pq ^ (4 : ℕ) * Lq ^ (2 : ℕ)) * Aq ^ (2 : ℕ) :=
     mul_lt_mul hbase hApqsq.le (sq_pos_of_pos hAp) hbaseq.le
   have hden :
-      ((Pp ^ 4 * Lp ^ 2) * Ap ^ 2) * Bp ^ 2 <
-        ((Pq ^ 4 * Lq ^ 2) * Aq ^ 2) * Bq ^ 2 :=
+      ((Pp ^ (4 : ℕ) * Lp ^ (2 : ℕ)) * Ap ^ (2 : ℕ)) * Bp ^ (2 : ℕ) <
+        ((Pq ^ (4 : ℕ) * Lq ^ (2 : ℕ)) * Aq ^ (2 : ℕ)) * Bq ^ (2 : ℕ) :=
     mul_lt_mul hbaseA hBpqsq.le (sq_pos_of_pos hBp)
       (mul_nonneg hbaseq.le (sq_nonneg Aq))
-  have hdenp : 0 < ((Pp ^ 4 * Lp ^ 2) * Ap ^ 2) * Bp ^ 2 := by positivity
-  have hdenq : 0 < ((Pq ^ 4 * Lq ^ 2) * Aq ^ 2) * Bq ^ 2 := by positivity
+  have hdenp : 0 < ((Pp ^ (4 : ℕ) * Lp ^ (2 : ℕ)) * Ap ^ (2 : ℕ)) * Bp ^ (2 : ℕ) := by positivity
+  have hdenq : 0 < ((Pq ^ (4 : ℕ) * Lq ^ (2 : ℕ)) * Aq ^ (2 : ℕ)) * Bq ^ (2 : ℕ) := by positivity
   have haltq : a < ((e : ℝ) + 1 / 2) * Real.log (q : ℝ) := by
     change a < c * Lp at halt
     change a < c * Lq
     exact halt.trans (mul_lt_mul_of_pos_left hLpq hc)
   rw [gammaSewnOrderedPrimeDepthPlucker_lowerConsecutiveRawWeight_eq e p q ha halt, gammaSewnOrderedPrimeDepthPlucker_upperConsecutiveRawWeight_eq e p q ha haltq]
-  change 4 * a ^ 2 / (((Pq ^ 4 * Lq ^ 2) * Aq ^ 2) * Bq ^ 2) <
-    4 * a ^ 2 / (((Pp ^ 4 * Lp ^ 2) * Ap ^ 2) * Bp ^ 2)
+  change 4 * a ^ (2 : ℕ) / (((Pq ^ (4 : ℕ) * Lq ^ (2 : ℕ)) * Aq ^ (2 : ℕ)) * Bq ^ (2 : ℕ)) <
+    4 * a ^ (2 : ℕ) / (((Pp ^ (4 : ℕ) * Lp ^ (2 : ℕ)) * Ap ^ (2 : ℕ)) * Bp ^ (2 : ℕ))
   apply (div_lt_div_iff₀ hdenq hdenp).2
   exact mul_lt_mul_of_pos_left hden (mul_pos (by norm_num) (sq_pos_of_pos ha))
 

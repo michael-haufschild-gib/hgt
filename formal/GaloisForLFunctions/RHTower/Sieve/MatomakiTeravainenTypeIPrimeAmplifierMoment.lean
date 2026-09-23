@@ -26,12 +26,12 @@ noncomputable def mtTypeIPrimeBlockMomentBound
   let b := mtTypeIPrimeRaisedCoeff P ell
   ((ell : ℝ) / V) * Real.sqrt
       (C * T ^ ε *
-        (((T + (B : ℝ) ^ 2 * Real.sqrt T +
+        (((T + (B : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                 (B : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-              ((N : ℝ) ^ 2 * (B : ℝ)) +
-            (T + (B : ℝ)) / (T ^ 4 * (B : ℝ))) *
+              ((N : ℝ) ^ (2 : ℕ) * (B : ℝ)) +
+            (T + (B : ℝ)) / (T ^ (4 : ℕ) * (B : ℝ))) *
           (1 / (B : ℝ)) *
-          (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ 2))) *
+          (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ (2 : ℕ)))) *
       Real.sqrt
         (generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
             (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +
@@ -54,15 +54,15 @@ theorem exists_setIntegral_mtTypeI_primeAmplifier_coveredRange
               ((mtTypeIPrimeBlockLength P ell r : ℕ) : ℝ) ^ (5 / 4 : ℝ) *
                 T ^ (3 / 4 : ℝ)))) →
       (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V,
-          ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-            ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+          ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+            ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
         ∑ r : Fin ell,
           mtTypeIPrimeBlockMomentBound C ε a A P ell N T V r := by
   obtain ⟨C, hC, hrestricted⟩ := exists_setIntegral_mtTypeI_amplified_coveredRange hε
   refine ⟨C, hC, ?_⟩
   intro a A P ell N N' T V hA hP hell hN hNN' hN' hT hV hcovered
   let f : ℝ → ℝ := fun t =>
-    ‖mtWattCoefficientBlock a A t‖ ^ 2 * ‖mtWattUnitBlock N N' t‖ ^ 2
+    ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) * ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)
   have hunion : (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V, f t) ≤
       ∑ r : Fin ell,
         ∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r, f t :=

@@ -34,7 +34,7 @@ theorem dalembert_conformalRescale_conjugation {sigma u : (Fin d → ℝ) → �
             * sigma y) * u y) x =
       M.dalembert u x +
         (-ExponentialSecondOrderClockCalculus.conformalDimensionWeight d * M.dalembert sigma x -
-          ExponentialSecondOrderClockCalculus.conformalDimensionWeight d ^ 2 *
+          ExponentialSecondOrderClockCalculus.conformalDimensionWeight d ^ (2 : ℕ) *
             M.gradPair sigma sigma x) * u x := by
   set S : ↥(smoothScalarAlgebra d) := ⟨sigma, hsigma⟩ with hS
   set U : ↥(smoothScalarAlgebra d) := ⟨u, hu⟩ with hU
@@ -72,7 +72,7 @@ d'Alembertian and the single geometric defect `w⁻¹□w`. -/
 theorem dalembert_conformalRescale_conjugation_four (M : SmoothMetricChart 4)
     {sigma u : (Fin 4 → ℝ) → ℝ} (hsigma : ContDiff ℝ ∞ sigma) (hu : ContDiff ℝ ∞ u)
     (x : Fin 4 → ℝ) :
-    Real.exp (sigma x) ^ 3 *
+    Real.exp (sigma x) ^ (3 : ℕ) *
         (M.conformalRescale sigma hsigma).dalembert
           (fun y => (Real.exp (sigma y))⁻¹ * u y) x =
       M.dalembert u x -
@@ -82,7 +82,7 @@ theorem dalembert_conformalRescale_conjugation_four (M : SmoothMetricChart 4)
   have hweight : ∀ y : Fin 4 → ℝ, Real.exp (-1 * sigma y) = (Real.exp (sigma y))⁻¹ := by
     intro y
     rw [neg_mul, one_mul, Real.exp_neg]
-  have hcube : Real.exp ((1 + 2) * sigma x) = Real.exp (sigma x) ^ 3 := by
+  have hcube : Real.exp ((1 + 2) * sigma x) = Real.exp (sigma x) ^ (3 : ℕ) := by
     rw [show ((1 : ℝ) + 2) * sigma x = sigma x + (sigma x + sigma x) by ring, Real.exp_add,
       Real.exp_add]
     ring
@@ -98,14 +98,14 @@ theorem dalembert_conformalRescale_conjugation_four (M : SmoothMetricChart 4)
 scale, minus the common geometric defect. -/
 noncomputable def conformalClockPotential (sigma : (Fin d → ℝ) → ℝ) (massSq : ℝ)
     (x : Fin d → ℝ) : ℝ :=
-  massSq * Real.exp (sigma x) ^ 2 -
+  massSq * Real.exp (sigma x) ^ (2 : ℕ) -
     (Real.exp (sigma x))⁻¹ * M.dalembert (fun y => Real.exp (sigma y)) x
 
 /-- **The massive four-dimensional conformal clock law at the metric d'Alembertian.** -/
 theorem dalembert_conformalKleinGordon_four (M : SmoothMetricChart 4)
     {sigma u : (Fin 4 → ℝ) → ℝ} (hsigma : ContDiff ℝ ∞ sigma) (hu : ContDiff ℝ ∞ u)
     (massSq : ℝ) (x : Fin 4 → ℝ) :
-    Real.exp (sigma x) ^ 3 *
+    Real.exp (sigma x) ^ (3 : ℕ) *
         ((M.conformalRescale sigma hsigma).dalembert
             (fun y => (Real.exp (sigma y))⁻¹ * u y) x +
           massSq * ((Real.exp (sigma x))⁻¹ * u x)) =
@@ -121,7 +121,7 @@ calibrated squared masses, is exactly the conformal scale. -/
 theorem twoSpecies_scale_of_conformalClockPotential (sigma : (Fin d → ℝ) → ℝ)
     {massSq₁ massSq₂ : ℝ} (hmass : massSq₁ ≠ massSq₂) (x : Fin d → ℝ) :
     (M.conformalClockPotential sigma massSq₁ x - M.conformalClockPotential sigma massSq₂ x) /
-        (massSq₁ - massSq₂) = Real.exp (sigma x) ^ 2 := by
+        (massSq₁ - massSq₂) = Real.exp (sigma x) ^ (2 : ℕ) := by
   have hne : massSq₁ - massSq₂ ≠ 0 := sub_ne_zero.mpr hmass
   rw [conformalClockPotential, conformalClockPotential]
   field_simp
@@ -141,9 +141,9 @@ conformal scale. -/
 theorem conformalKleinGordonSigma_potential_difference (C : ExponentialSecondOrderClockCalculus A)
     (a massSq₁ massSq₂ : ℝ) (sigma : A) :
     (massSq₁ • C.expSmul 2 sigma + (-a) • C.toSecondOrder.laplacian sigma -
-        a ^ 2 • C.toSecondOrder.gamma sigma sigma) -
+        a ^ (2 : ℕ) • C.toSecondOrder.gamma sigma sigma) -
       (massSq₂ • C.expSmul 2 sigma + (-a) • C.toSecondOrder.laplacian sigma -
-        a ^ 2 • C.toSecondOrder.gamma sigma sigma) =
+        a ^ (2 : ℕ) • C.toSecondOrder.gamma sigma sigma) =
       (massSq₁ - massSq₂) • C.expSmul 2 sigma := by
   rw [sub_smul]
   abel

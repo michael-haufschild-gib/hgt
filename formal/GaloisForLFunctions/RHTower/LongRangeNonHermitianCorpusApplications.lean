@@ -199,7 +199,7 @@ theorem longRangeSqueezed_Wilson_orientation_contrast (α J κ : ℝ) :
       directionalWilsonPlaquetteTrace
         (rabiHatanoNelsonPlaquetteLink J (longRangeSqueezedExponent α κ)) 0 1 2 3 =
       -8 * (J : ℂ) * longRangeSqueezedExponent α κ *
-        (J ^ 2 + longRangeSqueezedExponent α κ ^ 2) :=
+        (J ^ (2 : ℕ) + longRangeSqueezedExponent α κ ^ (2 : ℕ)) :=
   rabiHatanoNelson_Wilson_orientation_contrast J
     (longRangeSqueezedExponent α κ)
 

@@ -22,7 +22,7 @@ noncomputable section
 
 variable {iota : Type*} [Fintype iota] [DecidableEq iota]
 
-noncomputable local instance : CStarAlgebra (Matrix iota iota ℂ) :=
+noncomputable local instance finiteSpecialUnitaryLocalLogNullhomotopyInst1 : CStarAlgebra (Matrix iota iota ℂ) :=
   CStarAlgebra.mk
 
 def localSpecialUnitaryToUnitary

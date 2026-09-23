@@ -33,7 +33,7 @@ variable (Q v : ℕ → Polynomial ℂ)
 on the coordinate. -/
 theorem derivation_logFactor (D : Derivation ℂ CascadeField CascadeField) (p : Polynomial ℂ)
     (k : ℕ) :
-    D (logFactor p k) = fact (scaledLogWronskian p 1) k * D (fx k) / fact p k ^ 2 := by
+    D (logFactor p k) = fact (scaledLogWronskian p 1) k * D (fx k) / fact p k ^ (2 : ℕ) := by
   rcases eq_or_ne p 0 with rfl | hp
   · have h0 : fact (0 : Polynomial ℂ) k = 0 := by
       rw [fact, univFactor]
@@ -49,7 +49,7 @@ theorem derivation_logFactor (D : Derivation ℂ CascadeField CascadeField) (p :
 
 /-- The coordinate derivative of its own logarithmic factor. -/
 theorem fpderiv_logFactor_self (p : Polynomial ℂ) (k : ℕ) :
-    fpderiv k (logFactor p k) = fact (scaledLogWronskian p 1) k / fact p k ^ 2 := by
+    fpderiv k (logFactor p k) = fact (scaledLogWronskian p 1) k / fact p k ^ (2 : ℕ) := by
   rw [derivation_logFactor, fpderiv_fx_self, mul_one]
 
 /-- A logarithmic factor at another coordinate is invisible. -/

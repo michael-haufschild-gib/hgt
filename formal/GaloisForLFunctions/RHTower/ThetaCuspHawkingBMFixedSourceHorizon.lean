@@ -248,7 +248,7 @@ combined source weight. No field or horizon arm is discarded. -/
 theorem combinedCap_eq_fixed (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (tau x X k : ℝ) :
     D4BMFutureSeedHorizon.seedCapField q branch amp tau x X k-
       parameter q branch*D4BMFutureHorizon.capBoundaryField q branch amp tau x X k=
-    parameter q branch*D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amp^2*
+    parameter q branch*D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amp^(2 : ℕ)*
       ((fixedSeedArm q branch tau x X k-fixedSeedArm q branch tau (-x) X k)-
        (physicalRate q branch*(physicalRate q branch-1)/4)*
          (fixedSquareArm q branch tau x X k-fixedSquareArm q branch tau (-x) X k)) := by

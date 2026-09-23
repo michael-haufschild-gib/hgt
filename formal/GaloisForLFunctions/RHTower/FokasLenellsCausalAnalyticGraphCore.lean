@@ -18,8 +18,8 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalGeneratorGraph := isClosed_causalGeneratorGraph.completeSpace_coe
+local instance fokasLenellsCausalAnalyticGraphCoreInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalAnalyticGraphCoreInst2 : CompleteSpace causalGeneratorGraph := isClosed_causalGeneratorGraph.completeSpace_coe
 
 /-- The actual encoded analytic input and its actual first derivative, in the maximal graph. -/
 def causalAnalyticGraphMap : rawComplexEntireCore →ₗ[ℂ] causalGeneratorGraph where

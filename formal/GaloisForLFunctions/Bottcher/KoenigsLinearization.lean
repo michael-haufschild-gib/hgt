@@ -21,22 +21,22 @@ noncomputable def koenigsApprox (c β : ℂ) (n : ℕ) (w : ℂ) : ℂ :=
   (quadratic c)^[n] (β + w / (2 * β) ^ n)
 
 /-- **The exact conjugation identity** for the quadratic at a fixed point. -/
-theorem quadratic_fixed_expansion {c β : ℂ} (hβ : β ^ 2 + c = β) (u : ℂ) :
-    quadratic c (β + u) = β + (2 * β) * u + u ^ 2 := by
+theorem quadratic_fixed_expansion {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (u : ℂ) :
+    quadratic c (β + u) = β + (2 * β) * u + u ^ (2 : ℕ) := by
   unfold quadratic
-  have h1 : (β + u) ^ 2 + c = β ^ 2 + c + 2 * β * u + u ^ 2 := by ring
+  have h1 : (β + u) ^ (2 : ℕ) + c = β ^ (2 : ℕ) + c + 2 * β * u + u ^ (2 : ℕ) := by ring
   rw [h1, hβ]
 
 /-- **The exact telescope recursion**: `g_{n+1}(w) = g_n(w + w²/λ^{n+2})`. -/
-theorem koenigsApprox_succ {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam : (2 * β) ≠ 0)
+theorem koenigsApprox_succ {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam : (2 * β) ≠ 0)
     (n : ℕ) (w : ℂ) :
     koenigsApprox c β (n + 1) w
-      = koenigsApprox c β n (w + w ^ 2 / (2 * β) ^ (n + 2)) := by
+      = koenigsApprox c β n (w + w ^ (2 : ℕ) / (2 * β) ^ (n + 2)) := by
   unfold koenigsApprox
   rw [Function.iterate_succ_apply]
   congr 1
   have h1 : quadratic c (β + w / (2 * β) ^ (n + 1))
-      = β + (2 * β) * (w / (2 * β) ^ (n + 1)) + (w / (2 * β) ^ (n + 1)) ^ 2 :=
+      = β + (2 * β) * (w / (2 * β) ^ (n + 1)) + (w / (2 * β) ^ (n + 1)) ^ (2 : ℕ) :=
     quadratic_fixed_expansion hβ _
   rw [h1]
   have hβ0 : β ≠ 0 := by
@@ -51,25 +51,25 @@ theorem koenigsApprox_succ {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam : (2 * β)
 /-- **Orbit-drift bound with product error**: as long as the accumulated drifts stay below `‖λ‖/2`,
 the orbit of `β + v` stays within `‖v‖·‖λ‖^k·(product error)` of `β`.  Stated as the exact
 recursive inequality for one step. -/
-theorem orbit_drift_step {c β : ℂ} (hβ : β ^ 2 + c = β) {x : ℂ} :
+theorem orbit_drift_step {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) {x : ℂ} :
     ‖quadratic c x - β‖ ≤ ‖x - β‖ * (‖2 * β‖ + ‖x - β‖) := by
-  have h1 : quadratic c x = β + (2 * β) * (x - β) + (x - β) ^ 2 := by
+  have h1 : quadratic c x = β + (2 * β) * (x - β) + (x - β) ^ (2 : ℕ) := by
     have := quadratic_fixed_expansion hβ (x - β)
     rw [show β + (x - β) = x by ring] at this
     exact this
   rw [h1]
-  have h2 : β + 2 * β * (x - β) + (x - β) ^ 2 - β = 2 * β * (x - β) + (x - β) ^ 2 := by ring
+  have h2 : β + 2 * β * (x - β) + (x - β) ^ (2 : ℕ) - β = 2 * β * (x - β) + (x - β) ^ (2 : ℕ) := by ring
   rw [h2]
-  calc ‖2 * β * (x - β) + (x - β) ^ 2‖
-      ≤ ‖2 * β * (x - β)‖ + ‖(x - β) ^ 2‖ := norm_add_le _ _
-    _ = ‖2 * β‖ * ‖x - β‖ + ‖x - β‖ ^ 2 := by rw [norm_mul, norm_pow]
+  calc ‖2 * β * (x - β) + (x - β) ^ (2 : ℕ)‖
+      ≤ ‖2 * β * (x - β)‖ + ‖(x - β) ^ (2 : ℕ)‖ := norm_add_le _ _
+    _ = ‖2 * β‖ * ‖x - β‖ + ‖x - β‖ ^ (2 : ℕ) := by rw [norm_mul, norm_pow]
     _ = ‖x - β‖ * (‖2 * β‖ + ‖x - β‖) := by ring
 
 /-- **Geometric orbit-drift bound.**  If `‖λ‖ ≥ 2` and the seed satisfies
 `‖v‖·‖λ‖ⁿ ≤ 1/8`, then for all `k ≤ n` the orbit drift obeys
 `‖f^[k](β+v) − β‖ ≤ 2‖v‖‖λ‖^k`.  The sharp invariant carried by the induction is
 `d_k · 2^(n+2) ≤ ‖v‖·‖λ‖^k·(2^(n+2) + 2^k)`. -/
-theorem orbit_drift_invariant {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem orbit_drift_invariant {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {v : ℂ} {n : ℕ} (hv : ‖v‖ * ‖2 * β‖ ^ n ≤ 1 / 8) :
     ∀ k : ℕ, k ≤ n → ‖(quadratic c)^[k] (β + v) - β‖ * 2 ^ (n + 2)
       ≤ ‖v‖ * ‖2 * β‖ ^ k * (2 ^ (n + 2) + 2 ^ k) := by
@@ -86,7 +86,7 @@ theorem orbit_drift_invariant {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 �
         simp [hadef]
       rw [h1]
       have h2 : (0:ℝ) < 2 ^ (n + 2) := by positivity
-      have h3 : a * L ^ 0 * (2 ^ (n + 2) + 2 ^ 0) = a * (2 ^ (n + 2) + 1) := by
+      have h3 : a * L ^ (0 : ℕ) * (2 ^ (n + 2) + 2 ^ (0 : ℕ)) = a * (2 ^ (n + 2) + 1) := by
         norm_num
       rw [h3]
       nlinarith
@@ -181,7 +181,7 @@ theorem orbit_drift_invariant {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 �
         _ ≤ a * L ^ (m + 1) * (2 ^ (n + 2) + 2 ^ (m + 1)) := hgoal
 
 /-- **Geometric orbit-drift bound, clean form**: `‖f^[k](β+v) − β‖ ≤ 2‖v‖‖λ‖^k` for `k ≤ n`. -/
-theorem orbit_drift_bound {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem orbit_drift_bound {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {v : ℂ} {n : ℕ} (hv : ‖v‖ * ‖2 * β‖ ^ n ≤ 1 / 8) :
     ∀ k : ℕ, k ≤ n → ‖(quadratic c)^[k] (β + v) - β‖ ≤ 2 * ‖v‖ * ‖2 * β‖ ^ k := by
   intro k hkn
@@ -222,7 +222,7 @@ theorem orbit_compare_step {c β : ℂ} (x y : ℂ) :
 /-- **Two-orbit Lipschitz invariant**: under the halved seed bounds `‖v‖L^n, ‖v'‖L^n ≤ 1/16`,
 the difference orbit obeys the same sharp invariant, giving the derivative-free Lipschitz bound
 for the Koenigs approximants. -/
-theorem orbit_compare_invariant {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem orbit_compare_invariant {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {v v' : ℂ} {n : ℕ} (hv : ‖v‖ * ‖2 * β‖ ^ n ≤ 1 / 16) (hv' : ‖v'‖ * ‖2 * β‖ ^ n ≤ 1 / 16) :
     ∀ k : ℕ, k ≤ n → ‖(quadratic c)^[k] (β + v) - (quadratic c)^[k] (β + v')‖ * 2 ^ (n + 2)
       ≤ ‖v - v'‖ * ‖2 * β‖ ^ k * (2 ^ (n + 2) + 2 ^ k) := by
@@ -243,7 +243,7 @@ theorem orbit_compare_invariant {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 
         simp [he₀def]
       rw [h1]
       have h2 : (0:ℝ) < 2 ^ (n + 2) := by positivity
-      have h3 : e₀ * L ^ 0 * (2 ^ (n + 2) + 2 ^ 0) = e₀ * (2 ^ (n + 2) + 1) := by norm_num
+      have h3 : e₀ * L ^ (0 : ℕ) * (2 ^ (n + 2) + 2 ^ (0 : ℕ)) = e₀ * (2 ^ (n + 2) + 1) := by norm_num
       rw [h3]
       nlinarith
   | succ m ih =>
@@ -348,7 +348,7 @@ theorem orbit_compare_invariant {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 
 
 /-- **Koenigs-approximant Lipschitz bound (derivative-free)**: on the seed scale, the `n`-th
 approximant is `2`-Lipschitz after the geometric normalization. -/
-theorem orbit_compare_bound {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem orbit_compare_bound {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {v v' : ℂ} {n : ℕ} (hv : ‖v‖ * ‖2 * β‖ ^ n ≤ 1 / 16) (hv' : ‖v'‖ * ‖2 * β‖ ^ n ≤ 1 / 16) :
     ‖(quadratic c)^[n] (β + v) - (quadratic c)^[n] (β + v')‖
       ≤ 2 * ‖v - v'‖ * ‖2 * β‖ ^ n := by
@@ -370,10 +370,10 @@ namespace Bottcher
 
 /-- **The Cauchy telescope step**: on the disk `‖w‖ ≤ 1/32`, consecutive Koenigs approximants
 differ by at most `2‖w‖²/L^(n+2) ≤ ‖w‖²·2^{-n-1}`. -/
-theorem koenigsApprox_cauchy_step {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem koenigsApprox_cauchy_step {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) (n : ℕ) :
     ‖koenigsApprox c β (n + 1) w - koenigsApprox c β n w‖
-      ≤ 2 * ‖w‖ ^ 2 / ‖2 * β‖ ^ (n + 2) := by
+      ≤ 2 * ‖w‖ ^ (2 : ℕ) / ‖2 * β‖ ^ (n + 2) := by
   set L : ℝ := ‖2 * β‖ with hLdef
   have hL0 : (0:ℝ) < L := lt_of_lt_of_le (by norm_num) hlam2
   have hlam : (2 * β) ≠ 0 := by
@@ -386,9 +386,9 @@ theorem koenigsApprox_cauchy_step {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 
   -- rewrite via the exact recursion
   rw [koenigsApprox_succ hβ hlam n w]
   -- both sides are the n-th orbit of nearby seeds
-  set v : ℂ := (w + w ^ 2 / (2 * β) ^ (n + 2)) / (2 * β) ^ n with hvdef
+  set v : ℂ := (w + w ^ (2 : ℕ) / (2 * β) ^ (n + 2)) / (2 * β) ^ n with hvdef
   set v' : ℂ := w / (2 * β) ^ n with hv'def
-  have hgv : koenigsApprox c β n (w + w ^ 2 / (2 * β) ^ (n + 2))
+  have hgv : koenigsApprox c β n (w + w ^ (2 : ℕ) / (2 * β) ^ (n + 2))
       = (quadratic c)^[n] (β + v) := rfl
   have hgv' : koenigsApprox c β n w = (quadratic c)^[n] (β + v') := rfl
   rw [hgv, hgv']
@@ -399,22 +399,22 @@ theorem koenigsApprox_cauchy_step {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 
   have hv'norm : ‖v'‖ * L ^ n = ‖w‖ := by
     rw [hv'def, norm_div, hnormpow]
     field_simp
-  have hTw : ‖w + w ^ 2 / (2 * β) ^ (n + 2)‖ ≤ ‖w‖ + ‖w‖ ^ 2 / L ^ (n + 2) := by
-    calc ‖w + w ^ 2 / (2 * β) ^ (n + 2)‖
-        ≤ ‖w‖ + ‖w ^ 2 / (2 * β) ^ (n + 2)‖ := norm_add_le _ _
-      _ = ‖w‖ + ‖w‖ ^ 2 / L ^ (n + 2) := by
+  have hTw : ‖w + w ^ (2 : ℕ) / (2 * β) ^ (n + 2)‖ ≤ ‖w‖ + ‖w‖ ^ (2 : ℕ) / L ^ (n + 2) := by
+    calc ‖w + w ^ (2 : ℕ) / (2 * β) ^ (n + 2)‖
+        ≤ ‖w‖ + ‖w ^ (2 : ℕ) / (2 * β) ^ (n + 2)‖ := norm_add_le _ _
+      _ = ‖w‖ + ‖w‖ ^ (2 : ℕ) / L ^ (n + 2) := by
           rw [norm_div, norm_pow, hnormpow]
-  have hvnorm : ‖v‖ * L ^ n ≤ ‖w‖ + ‖w‖ ^ 2 / L ^ (n + 2) := by
+  have hvnorm : ‖v‖ * L ^ n ≤ ‖w‖ + ‖w‖ ^ (2 : ℕ) / L ^ (n + 2) := by
     rw [hvdef, norm_div, hnormpow]
     rw [div_mul_cancel₀ _ (ne_of_gt (hLn n))]
     exact hTw
   -- the perturbation is tiny: ‖w‖²/L^(n+2) ≤ (1/32)²/4 and totals stay ≤ 1/16
-  have hwsq : ‖w‖ ^ 2 / L ^ (n + 2) ≤ 1 / 32 := by
-    have h1 : ‖w‖ ^ 2 ≤ (1/32) * (1/32) := by
+  have hwsq : ‖w‖ ^ (2 : ℕ) / L ^ (n + 2) ≤ 1 / 32 := by
+    have h1 : ‖w‖ ^ (2 : ℕ) ≤ (1/32) * (1/32) := by
       have := norm_nonneg w
       nlinarith
     have h2 : (4:ℝ) ≤ L ^ (n + 2) := by
-      calc (4:ℝ) = 2 ^ 2 := by norm_num
+      calc (4:ℝ) = 2 ^ (2 : ℕ) := by norm_num
         _ ≤ 2 ^ (n + 2) := by
             apply pow_le_pow_right₀ (by norm_num)
             omega
@@ -425,13 +425,13 @@ theorem koenigsApprox_cauchy_step {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 
     rw [hv'norm]
     linarith
   have hseedv : ‖v‖ * L ^ n ≤ 1 / 16 := by
-    calc ‖v‖ * L ^ n ≤ ‖w‖ + ‖w‖ ^ 2 / L ^ (n + 2) := hvnorm
+    calc ‖v‖ * L ^ n ≤ ‖w‖ + ‖w‖ ^ (2 : ℕ) / L ^ (n + 2) := hvnorm
       _ ≤ 1 / 32 + 1 / 32 := by linarith
       _ = 1 / 16 := by norm_num
   -- apply the two-orbit comparison
   have hcmp := orbit_compare_bound hβ hlam2 hseedv hseedv'
-  have hdiff : ‖v - v'‖ = ‖w‖ ^ 2 / L ^ (2 * n + 2) := by
-    have h3 : v - v' = w ^ 2 / (2 * β) ^ (2 * n + 2) := by
+  have hdiff : ‖v - v'‖ = ‖w‖ ^ (2 : ℕ) / L ^ (2 * n + 2) := by
+    have h3 : v - v' = w ^ (2 : ℕ) / (2 * β) ^ (2 * n + 2) := by
       rw [hvdef, hv'def]
       have h4 : ((2 * β) ^ n : ℂ) ≠ 0 := pow_ne_zero n hlam
       have h5 : ((2 * β) ^ (n + 2) : ℂ) ≠ 0 := pow_ne_zero _ hlam
@@ -440,8 +440,8 @@ theorem koenigsApprox_cauchy_step {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 
     rw [h3, norm_div, norm_pow, hnormpow]
   calc ‖(quadratic c)^[n] (β + v) - (quadratic c)^[n] (β + v')‖
       ≤ 2 * ‖v - v'‖ * L ^ n := hcmp
-    _ = 2 * (‖w‖ ^ 2 / L ^ (2 * n + 2)) * L ^ n := by rw [hdiff]
-    _ = 2 * ‖w‖ ^ 2 / L ^ (n + 2) := by
+    _ = 2 * (‖w‖ ^ (2 : ℕ) / L ^ (2 * n + 2)) * L ^ n := by rw [hdiff]
+    _ = 2 * ‖w‖ ^ (2 : ℕ) / L ^ (n + 2) := by
         rw [show 2 * n + 2 = (n + 2) + n by omega, pow_add]
         field_simp
 
@@ -465,10 +465,10 @@ theorem koenigsApprox_differentiable (c β : ℂ) (n : ℕ) :
   exact h2.comp h3
 
 /-- The approximant sequence is geometrically Cauchy on the working disk. -/
-theorem koenigsApprox_cauchySeq {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem koenigsApprox_cauchySeq {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) :
     CauchySeq (fun n => koenigsApprox c β n w) := by
-  apply cauchySeq_of_le_geometric (r := 1/2) (C := ‖w‖ ^ 2 / 2) (by norm_num)
+  apply cauchySeq_of_le_geometric (r := 1/2) (C := ‖w‖ ^ (2 : ℕ) / 2) (by norm_num)
   intro n
   rw [dist_eq_norm]
   have h1 : ‖koenigsApprox c β n w - koenigsApprox c β (n+1) w‖
@@ -480,19 +480,19 @@ theorem koenigsApprox_cauchySeq {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 
   have h2pos : (0:ℝ) < 2 ^ (n + 2) := by positivity
   have hLpos : (0:ℝ) < ‖2 * β‖ ^ (n + 2) :=
     pow_pos (lt_of_lt_of_le (by norm_num) hlam2) _
-  have h3 : 2 * ‖w‖ ^ 2 / ‖2 * β‖ ^ (n + 2) ≤ 2 * ‖w‖ ^ 2 / 2 ^ (n + 2) := by
+  have h3 : 2 * ‖w‖ ^ (2 : ℕ) / ‖2 * β‖ ^ (n + 2) ≤ 2 * ‖w‖ ^ (2 : ℕ) / 2 ^ (n + 2) := by
     apply div_le_div_of_nonneg_left _ h2pos hL2
     positivity
-  have h4 : 2 * ‖w‖ ^ 2 / 2 ^ (n + 2) = ‖w‖ ^ 2 / 2 * (1/2) ^ n := by
+  have h4 : 2 * ‖w‖ ^ (2 : ℕ) / 2 ^ (n + 2) = ‖w‖ ^ (2 : ℕ) / 2 * (1/2) ^ n := by
     rw [div_pow, one_pow, pow_add]
     field_simp
   calc ‖koenigsApprox c β (n+1) w - koenigsApprox c β n w‖
-      ≤ 2 * ‖w‖ ^ 2 / ‖2 * β‖ ^ (n + 2) := h2
-    _ ≤ 2 * ‖w‖ ^ 2 / 2 ^ (n + 2) := h3
-    _ = ‖w‖ ^ 2 / 2 * (1/2) ^ n := h4
+      ≤ 2 * ‖w‖ ^ (2 : ℕ) / ‖2 * β‖ ^ (n + 2) := h2
+    _ ≤ 2 * ‖w‖ ^ (2 : ℕ) / 2 ^ (n + 2) := h3
+    _ = ‖w‖ ^ (2 : ℕ) / 2 * (1/2) ^ n := h4
 
 /-- The approximants converge to `koenigsFun` on the working disk. -/
-theorem koenigsApprox_tendsto {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem koenigsApprox_tendsto {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) :
     Filter.Tendsto (fun n => koenigsApprox c β n w) Filter.atTop
       (nhds (koenigsFun c β w)) := by
@@ -502,28 +502,28 @@ theorem koenigsApprox_tendsto {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 �
   exact hl
 
 /-- **Distance to the limit**: the tail of the geometric telescope. -/
-theorem koenigsFun_dist_approx {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem koenigsFun_dist_approx {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) (n : ℕ) :
-    dist (koenigsApprox c β n w) (koenigsFun c β w) ≤ ‖w‖ ^ 2 / 2 * (1/2) ^ n / (1 - 1/2) := by
+    dist (koenigsApprox c β n w) (koenigsFun c β w) ≤ ‖w‖ ^ (2 : ℕ) / 2 * (1/2) ^ n / (1 - 1/2) := by
   have hstep : ∀ m : ℕ, dist (koenigsApprox c β m w) (koenigsApprox c β (m+1) w)
-      ≤ ‖w‖ ^ 2 / 2 * (1/2) ^ m := by
+      ≤ ‖w‖ ^ (2 : ℕ) / 2 * (1/2) ^ m := by
     intro m
     rw [dist_eq_norm, norm_sub_rev]
     have h2 := koenigsApprox_cauchy_step hβ hlam2 hw m
     have hL2 : (2:ℝ) ^ (m + 2) ≤ ‖2 * β‖ ^ (m + 2) :=
       pow_le_pow_left₀ (by norm_num) hlam2 (m + 2)
     have h2pos : (0:ℝ) < 2 ^ (m + 2) := by positivity
-    have h3 : 2 * ‖w‖ ^ 2 / ‖2 * β‖ ^ (m + 2) ≤ 2 * ‖w‖ ^ 2 / 2 ^ (m + 2) := by
+    have h3 : 2 * ‖w‖ ^ (2 : ℕ) / ‖2 * β‖ ^ (m + 2) ≤ 2 * ‖w‖ ^ (2 : ℕ) / 2 ^ (m + 2) := by
       apply div_le_div_of_nonneg_left _ h2pos hL2
       positivity
-    have h4 : 2 * ‖w‖ ^ 2 / 2 ^ (m + 2) = ‖w‖ ^ 2 / 2 * (1/2) ^ m := by
+    have h4 : 2 * ‖w‖ ^ (2 : ℕ) / 2 ^ (m + 2) = ‖w‖ ^ (2 : ℕ) / 2 * (1/2) ^ m := by
       rw [div_pow, one_pow, pow_add]
       field_simp
     calc ‖koenigsApprox c β (m+1) w - koenigsApprox c β m w‖
-        ≤ 2 * ‖w‖ ^ 2 / ‖2 * β‖ ^ (m + 2) := h2
-      _ ≤ 2 * ‖w‖ ^ 2 / 2 ^ (m + 2) := h3
-      _ = ‖w‖ ^ 2 / 2 * (1/2) ^ m := h4
-  exact dist_le_of_le_geometric_of_tendsto (1/2) (‖w‖ ^ 2 / 2) (by norm_num) hstep
+        ≤ 2 * ‖w‖ ^ (2 : ℕ) / ‖2 * β‖ ^ (m + 2) := h2
+      _ ≤ 2 * ‖w‖ ^ (2 : ℕ) / 2 ^ (m + 2) := h3
+      _ = ‖w‖ ^ (2 : ℕ) / 2 * (1/2) ^ m := h4
+  exact dist_le_of_le_geometric_of_tendsto (1/2) (‖w‖ ^ (2 : ℕ) / 2) (by norm_num) hstep
     (koenigsApprox_tendsto hβ hlam2 hw) n
 
 end Bottcher
@@ -537,18 +537,18 @@ theorem koenigsApprox_zero_fun (c β : ℂ) (w : ℂ) : koenigsApprox c β 0 w =
 
 /-- **Quadratic normalization of the linearizer**: `‖ψ(w) − β − w‖ ≤ ‖w‖²` on the working disk.
 The tangency to the identity at the fixed point — derivative-free. -/
-theorem koenigsFun_normalization {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem koenigsFun_normalization {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) :
-    ‖koenigsFun c β w - (β + w)‖ ≤ ‖w‖ ^ 2 := by
+    ‖koenigsFun c β w - (β + w)‖ ≤ ‖w‖ ^ (2 : ℕ) := by
   have h1 := koenigsFun_dist_approx hβ hlam2 hw 0
   rw [koenigsApprox_zero_fun, dist_eq_norm, norm_sub_rev] at h1
-  have h2 : ‖w‖ ^ 2 / 2 * (1/2) ^ 0 / (1 - 1/2) = ‖w‖ ^ 2 := by
+  have h2 : ‖w‖ ^ (2 : ℕ) / 2 * (1/2) ^ (0 : ℕ) / (1 - 1/2) = ‖w‖ ^ (2 : ℕ) := by
     ring_nf
   rw [h2] at h1
   exact h1
 
 /-- The linearizer sends `0` to the fixed point. -/
-theorem koenigsFun_zero {c β : ℂ} (hβ : β ^ 2 + c = β) : koenigsFun c β 0 = β := by
+theorem koenigsFun_zero {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) : koenigsFun c β 0 = β := by
   have hfix : quadratic c β = β := by
     unfold quadratic
     exact hβ
@@ -565,7 +565,7 @@ theorem koenigsFun_zero {c β : ℂ} (hβ : β ^ 2 + c = β) : koenigsFun c β 0
   exact tendsto_const_nhds.limUnder_eq
 
 /-- **The Koenigs functional equation**: `ψ(λw) = f(ψ(w))` on the working disk. -/
-theorem koenigsFun_semiconj {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem koenigsFun_semiconj {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) (hw2 : ‖2 * β * w‖ ≤ 1 / 32) :
     koenigsFun c β (2 * β * w) = quadratic c (koenigsFun c β w) := by
   have hlam : (2 * β) ≠ 0 := by
@@ -609,20 +609,20 @@ end Bottcher
 namespace Bottcher
 
 /-- **The linearizer is analytic** on the working disk: locally uniform limit of entire maps. -/
-theorem koenigsFun_analyticOnNhd {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+theorem koenigsFun_analyticOnNhd {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
     AnalyticOnNhd ℂ (koenigsFun c β) (Metric.ball (0:ℂ) (1/32)) := by
   have huniform : TendstoUniformlyOn (fun n => koenigsApprox c β n) (koenigsFun c β)
       Filter.atTop (Metric.ball (0:ℂ) (1/32)) := by
     rw [Metric.tendstoUniformlyOn_iff]
     intro ε hε
     -- uniform tail: dist ≤ (1/32)²·(1/2)^n → 0
-    have htail : Filter.Tendsto (fun n : ℕ => ((1:ℝ)/32) ^ 2 * (1/2) ^ n)
+    have htail : Filter.Tendsto (fun n : ℕ => ((1:ℝ)/32) ^ (2 : ℕ) * (1/2) ^ n)
         Filter.atTop (nhds 0) := by
       have h1 : Filter.Tendsto (fun n : ℕ => ((1:ℝ)/2) ^ n) Filter.atTop (nhds 0) :=
         tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
-      have h2 := h1.const_mul (((1:ℝ)/32) ^ 2)
+      have h2 := h1.const_mul (((1:ℝ)/32) ^ (2 : ℕ))
       simpa using h2
-    have hev : ∀ᶠ n in Filter.atTop, ((1:ℝ)/32) ^ 2 * (1/2) ^ n < ε := by
+    have hev : ∀ᶠ n in Filter.atTop, ((1:ℝ)/32) ^ (2 : ℕ) * (1/2) ^ n < ε := by
       filter_upwards [htail.eventually_lt_const hε] with n hn
       exact hn
     filter_upwards [hev] with n hn w hw
@@ -630,17 +630,17 @@ theorem koenigsFun_analyticOnNhd {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2
       rw [Metric.mem_ball, dist_zero_right] at hw
       linarith
     have h3 := koenigsFun_dist_approx hβ hlam2 hw32 n
-    have h4 : ‖w‖ ^ 2 / 2 * (1/2) ^ n / (1 - 1/2) = ‖w‖ ^ 2 * (1/2) ^ n := by
+    have h4 : ‖w‖ ^ (2 : ℕ) / 2 * (1/2) ^ n / (1 - 1/2) = ‖w‖ ^ (2 : ℕ) * (1/2) ^ n := by
       ring_nf
     rw [h4] at h3
-    have h5 : ‖w‖ ^ 2 * (1/2) ^ n ≤ ((1:ℝ)/32) ^ 2 * (1/2) ^ n := by
+    have h5 : ‖w‖ ^ (2 : ℕ) * (1/2) ^ n ≤ ((1:ℝ)/32) ^ (2 : ℕ) * (1/2) ^ n := by
       apply mul_le_mul_of_nonneg_right _ (by positivity)
       have := norm_nonneg w
       nlinarith
     calc dist (koenigsFun c β w) (koenigsApprox c β n w)
         = dist (koenigsApprox c β n w) (koenigsFun c β w) := dist_comm _ _
-      _ ≤ ‖w‖ ^ 2 * (1/2) ^ n := h3
-      _ ≤ ((1:ℝ)/32) ^ 2 * (1/2) ^ n := h5
+      _ ≤ ‖w‖ ^ (2 : ℕ) * (1/2) ^ n := h3
+      _ ≤ ((1:ℝ)/32) ^ (2 : ℕ) * (1/2) ^ n := h5
       _ < ε := hn
   have hdiff : DifferentiableOn ℂ (koenigsFun c β) (Metric.ball (0:ℂ) (1/32)) := by
     apply TendstoLocallyUniformlyOn.differentiableOn
@@ -657,7 +657,7 @@ namespace Bottcher
 /-- **λ-self-similarity of the Julia pullback**: through the linearizer, membership of the filled
 Julia set is invariant under multiplication by the multiplier — the formal germ of the
 self-similar cone structure of `K` at the repelling fixed point. -/
-theorem koenigs_pullback_invariant {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+theorem koenigs_pullback_invariant {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
     {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) (hw2 : ‖2 * β * w‖ ≤ 1 / 32) :
     koenigsFun c β (2 * β * w) ∈ filledJulia c ↔ koenigsFun c β w ∈ filledJulia c := by
   rw [koenigsFun_semiconj hβ hlam2 hw hw2]
@@ -669,7 +669,7 @@ namespace Bottcher
 
 /-- **The linearizer is tangent to the identity**: `ψ'(0) = 1`, derivative-free from the
 quadratic normalization bound. -/
-theorem koenigsFun_hasDerivAt_zero {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+theorem koenigsFun_hasDerivAt_zero {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
     HasDerivAt (koenigsFun c β) 1 0 := by
   rw [hasDerivAt_iff_isLittleO]
   rw [Asymptotics.isLittleO_iff]
@@ -687,7 +687,7 @@ theorem koenigsFun_hasDerivAt_zero {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 :
     simp
     ring
   rw [h2]
-  calc ‖koenigsFun c β w - (β + w)‖ ≤ ‖w‖ ^ 2 := h1
+  calc ‖koenigsFun c β w - (β + w)‖ ≤ ‖w‖ ^ (2 : ℕ) := h1
     _ = ‖w‖ * ‖w‖ := sq ‖w‖
     _ ≤ ε * ‖w - 0‖ := by
         rw [sub_zero]
@@ -704,9 +704,9 @@ the filled Julia set lies in the parabolic region `{Re v ≤ ‖v‖²}` — bec
 theorem koenigs_pullback_re_le {c : ℝ} (hc0 : c ≤ 0)
     {v : ℂ} (hv : ‖v‖ ≤ 1 / 32)
     (hmem : koenigsFun (c:ℂ) ((betaFixed c : ℝ) : ℂ) v ∈ filledJulia (c:ℂ)) :
-    v.re ≤ ‖v‖ ^ 2 := by
+    v.re ≤ ‖v‖ ^ (2 : ℕ) := by
   set β : ℂ := ((betaFixed c : ℝ) : ℂ) with hβdef
-  have hβsq : β ^ 2 + (c:ℂ) = β := by
+  have hβsq : β ^ (2 : ℕ) + (c:ℂ) = β := by
     rw [hβdef]
     exact_mod_cast congrArg (fun t : ℝ => (t : ℂ)) (betaFixed_sq hc0)
   have hβ1 : 1 ≤ betaFixed c := one_le_betaFixed hc0
@@ -750,7 +750,7 @@ theorem sector_disjoint_pullback {c : ℝ} (hc0 : c ≤ 0)
     koenigsFun (c:ℂ) ((betaFixed c : ℝ) : ℂ) v ∉ filledJulia (c:ℂ) := by
   intro hmem
   have h1 := koenigs_pullback_re_le hc0 hv hmem
-  have h2 : ‖v‖ ^ 2 ≤ ‖v‖ / 32 := by
+  have h2 : ‖v‖ ^ (2 : ℕ) ≤ ‖v‖ / 32 := by
     have h3 := norm_nonneg v
     nlinarith
   have h4 : (0:ℝ) ≤ ‖v‖ := norm_nonneg v

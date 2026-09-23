@@ -1,13 +1,13 @@
 import Mathlib
 
 /-!
-# Antiderivative of `(log x / x)^2`
+# Antiderivative of `(log x / x)^(2 : ℕ)`
 
 The decreasing-tail estimate behind the prime-diagonal bound `(PFK11)`
-(`∑_{n≥N} (log n / n)^2 ≪ (log(N)^2 + 2 log N + 2)/N`, of
+(`∑_{n≥N} (log n / n)^(2 : ℕ) ≪ (log(N)^(2 : ℕ) + 2 log N + 2)/N`, of
 `xi-physical-prime-log-aperture-fusion-cross-kernel`) rests on the exact antiderivative
-`d/dx[-(log²x + 2 log x + 2)/x] = (log x / x)^2`.  This file formalizes that antiderivative, the
-analytic core from which the improper tail integral `∫_{x>N} (log x/x)^2 = (log²N+2logN+2)/N`
+`d/dx[-(log²x + 2 log x + 2)/x] = (log x / x)^(2 : ℕ)`.  This file formalizes that antiderivative, the
+analytic core from which the improper tail integral `∫_{x>N} (log x/x)^(2 : ℕ) = (log²N+2logN+2)/N`
 follows by the fundamental theorem of calculus.
 -/
 
@@ -15,8 +15,8 @@ open Real
 
 namespace GaloisForLFunctions.HTGeometry
 
-/-- **Antiderivative of `(log x / x)^2`.**  For `x > 0`,
-`d/dx[-(log²x + 2 log x + 2)/x] = (log x / x)^2`. -/
+/-- **Antiderivative of `(log x / x)^(2 : ℕ)`.**  For `x > 0`,
+`d/dx[-(log²x + 2 log x + 2)/x] = (log x / x)^(2 : ℕ)`. -/
 theorem hasDerivAt_neg_logSq_tail {x : ℝ} (hx : 0 < x) :
     HasDerivAt (fun x => -(Real.log x ^ 2 + 2 * Real.log x + 2) / x)
       ((Real.log x / x) ^ 2) x := by
@@ -58,7 +58,7 @@ theorem tendsto_neg_logSq_tail_atTop :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   field_simp
 
-/-- **Improper tail integral (core of PFK11).**  `∫_{x>N} (log x/x)^2 = (log²N + 2 log N + 2)/N`. -/
+/-- **Improper tail integral (core of PFK11).**  `∫_{x>N} (log x/x)^(2 : ℕ) = (log²N + 2 log N + 2)/N`. -/
 theorem integral_logSq_div_sq_Ioi {N : ℝ} (hN : 0 < N) :
     ∫ x in Set.Ioi N, (Real.log x / x) ^ 2 = (Real.log N ^ 2 + 2 * Real.log N + 2) / N := by
   have hcont : ContinuousWithinAt (fun x => -(Real.log x ^ 2 + 2 * Real.log x + 2) / x)
@@ -70,7 +70,7 @@ theorem integral_logSq_div_sq_Ioi {N : ℝ} (hN : 0 < N) :
   rw [integral_Ioi_of_hasDerivAt_of_nonneg hcont hderiv hpos tendsto_neg_logSq_tail_atTop]
   ring
 
-/-- `(log x / x)^2` is antitone on `[e, ∞)`: it is the square of the nonnegative antitone
+/-- `(log x / x)^(2 : ℕ)` is antitone on `[e, ∞)`: it is the square of the nonnegative antitone
 function `log x / x` (mathlib `log_div_self_antitoneOn`). -/
 theorem antitoneOn_logSq_div_sq :
     AntitoneOn (fun x : ℝ => (Real.log x / x) ^ 2) (Set.Ici (Real.exp 1)) := by
@@ -84,8 +84,8 @@ theorem antitoneOn_logSq_div_sq :
   exact pow_le_pow_left₀ h0 hle 2
 
 /-- Uniform tail-sum bound: for `N ≥ e`, every partial sum
-`∑_{i<a} (log(N+i+1)/(N+i+1))^2` is bounded by the closed form `(log²N + 2 log N + 2)/N`.
-Proof: `AntitoneOn.sum_le_integral` bounds the partial sum by `∫_N^{N+a} (log x/x)^2`, which the
+`∑_{i<a} (log(N+i+1)/(N+i+1))^(2 : ℕ)` is bounded by the closed form `(log²N + 2 log N + 2)/N`.
+Proof: `AntitoneOn.sum_le_integral` bounds the partial sum by `∫_N^{N+a} (log x/x)^(2 : ℕ)`, which the
 fundamental theorem of calculus (antiderivative `hasDerivAt_neg_logSq_tail`) evaluates to
 `F(N+a) - F(N)` with `F ≤ 0`, so `≤ -F(N)`. -/
 theorem sum_logSq_div_sq_le {N : ℝ} (hN : Real.exp 1 ≤ N) (a : ℕ) :
@@ -122,7 +122,7 @@ theorem sum_logSq_div_sq_le {N : ℝ} (hN : Real.exp 1 ≤ N) (a : ℕ) :
     _ ≤ 0 - (-(Real.log N ^ 2 + 2 * Real.log N + 2) / N) := by linarith [hfNa]
     _ = (Real.log N ^ 2 + 2 * Real.log N + 2) / N := by ring
 
-/-- Tail-series bound: `∑_{i} (log(N+i+1)/(N+i+1))^2 ≤ (log²N + 2 log N + 2)/N` for `N ≥ e`.
+/-- Tail-series bound: `∑_{i} (log(N+i+1)/(N+i+1))^(2 : ℕ) ≤ (log²N + 2 log N + 2)/N` for `N ≥ e`.
 The uniform partial-sum bound `sum_logSq_div_sq_le` bounds the series via `tsum_le_of_sum_range_le`. -/
 theorem tsum_logSq_div_sq_le {N : ℝ} (hN : Real.exp 1 ≤ N) :
     ∑' i : ℕ, (Real.log (N + (i + 1)) / (N + (i + 1))) ^ 2
@@ -132,7 +132,7 @@ theorem tsum_logSq_div_sq_le {N : ℝ} (hN : Real.exp 1 ≤ N) :
   exact sum_logSq_div_sq_le hN n
 
 open Asymptotics in
-/-- `(log n / n)^2` is summable over `ℕ`: it is `O(n^{-3/2})` since `(log x)^2 = o(x^{1/2})`
+/-- `(log n / n)^(2 : ℕ)` is summable over `ℕ`: it is `O(n^{-3/2})` since `(log x)^(2 : ℕ) = o(x^{1/2})`
 (`isLittleO_log_rpow_rpow_atTop`), and `∑ n^{-3/2}` converges. -/
 theorem summable_logSq_div_sq : Summable (fun n : ℕ => (Real.log n / n) ^ 2) := by
   apply summable_of_isBigO_nat (g := fun n : ℕ => 1 / (n : ℝ) ^ ((3 : ℝ) / 2))

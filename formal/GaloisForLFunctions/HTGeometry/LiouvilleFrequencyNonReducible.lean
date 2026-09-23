@@ -266,12 +266,12 @@ theorem exp_le_two_pow (n : ℕ) (hn : 2 ≤ n) :
   have h2 : Real.exp 1 ^ B ≤ (4 : ℝ) ^ B :=
     pow_le_pow_left₀ (Real.exp_pos 1).le (by linarith [Real.exp_one_lt_d9]) B
   have h3 : (4 : ℝ) ^ B = (2 : ℝ) ^ (2 * B) := by
-    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, ← pow_mul]
+    rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul]
   have h4 : 2 * B ≤ 16 ^ n := by
     have h16 : (16 : ℕ) ^ n = 4 ^ n * 4 ^ n := by
       rw [show (16 : ℕ) = 4 * 4 by norm_num, mul_pow]
     have h4n : (16 : ℕ) ≤ 4 ^ n := by
-      calc (16 : ℕ) = 4 ^ 2 := by norm_num
+      calc (16 : ℕ) = 4 ^ (2 : ℕ) := by norm_num
         _ ≤ 4 ^ n := Nat.pow_le_pow_right (by norm_num) hn
     rw [hB, h16]
     nlinarith
@@ -284,7 +284,7 @@ theorem exp_le_two_pow (n : ℕ) (hn : 2 ≤ n) :
 
 theorem abs_modeForm_liouvilleMode_le (K : ℕ) :
     |modeForm liouvilleFrequency (liouvilleMode K)|
-      ≤ Real.exp (-((modeNorm (liouvilleMode K) : ℝ)) ^ 2) := by
+      ≤ Real.exp (-((modeNorm (liouvilleMode K) : ℝ)) ^ (2 : ℕ)) := by
   set n : ℕ := gapExp K with hn
   have hn2 : 2 ≤ n := two_le_gapExp K
   have hpos : 0 < modeForm liouvilleFrequency (liouvilleMode K) := by
@@ -296,19 +296,19 @@ theorem abs_modeForm_liouvilleMode_le (K : ℕ) :
     rw [modeNorm_liouvilleMode]
     have := pNum_le_qDen K
     omega
-  have hMsq : (modeNorm (liouvilleMode K)) ^ 2 ≤ 4 * 4 ^ n := by
+  have hMsq : (modeNorm (liouvilleMode K)) ^ (2 : ℕ) ≤ 4 * 4 ^ n := by
     have hq : qDen K = 2 ^ n := rfl
-    have h2 : (2 * qDen K) ^ 2 = 4 * 4 ^ n := by
+    have h2 : (2 * qDen K) ^ (2 : ℕ) = 4 * 4 ^ n := by
       rw [hq, mul_pow, ← pow_mul]
       norm_num
       rw [show n * 2 = 2 * n by ring, pow_mul]
       norm_num
-    calc (modeNorm (liouvilleMode K)) ^ 2 ≤ (2 * qDen K) ^ 2 := Nat.pow_le_pow_left hM 2
+    calc (modeNorm (liouvilleMode K)) ^ (2 : ℕ) ≤ (2 * qDen K) ^ (2 : ℕ) := Nat.pow_le_pow_left hM 2
       _ = 4 * 4 ^ n := h2
   have hexp1 : Real.exp (-(((4 * 4 ^ n : ℕ)) : ℝ))
-      ≤ Real.exp (-((modeNorm (liouvilleMode K) : ℝ)) ^ 2) := by
+      ≤ Real.exp (-((modeNorm (liouvilleMode K) : ℝ)) ^ (2 : ℕ)) := by
     refine Real.exp_le_exp.mpr ?_
-    have hcast : ((modeNorm (liouvilleMode K) : ℝ)) ^ 2 ≤ (((4 * 4 ^ n : ℕ)) : ℝ) := by
+    have hcast : ((modeNorm (liouvilleMode K) : ℝ)) ^ (2 : ℕ) ≤ (((4 * 4 ^ n : ℕ)) : ℝ) := by
       exact_mod_cast hMsq
     linarith
   have hexp2 : (1 / 2 : ℝ) ^ (16 ^ n) ≤ Real.exp (-(((4 * 4 ^ n : ℕ)) : ℝ)) := by
@@ -348,7 +348,7 @@ size.  No fixed-exponent Diophantine condition can hold for it. -/
 theorem exists_liouville_frequency :
     ∃ ω : Fin 2 → ℝ, (∀ m : Fin 2 → ℤ, m ≠ 0 → modeForm ω m ≠ 0) ∧
       ∀ N : ℕ, ∃ m : Fin 2 → ℤ, m ≠ 0 ∧ N ≤ modeNorm m ∧
-        |modeForm ω m| ≤ Real.exp (-((modeNorm m : ℝ)) ^ 2) :=
+        |modeForm ω m| ≤ Real.exp (-((modeNorm m : ℝ)) ^ (2 : ℕ)) :=
   ⟨liouvilleFrequency, modeForm_liouvilleFrequency_ne_zero, fun N =>
     ⟨liouvilleMode N, liouvilleMode_ne_zero N, le_modeNorm_liouvilleMode N,
       abs_modeForm_liouvilleMode_le N⟩⟩
@@ -358,11 +358,11 @@ rate the divided series has unbounded terms, so the cohomological equation has n
 theorem not_summable_liouvilleDivisor {ρ : ℝ} (hρ : 0 < ρ) :
     ¬ Summable (fun m : {m : Fin 2 → ℤ // m ≠ 0} =>
         Real.exp (-(2 * ρ) * (modeNorm (m : Fin 2 → ℤ) : ℝ))
-          / (modeForm liouvilleFrequency (m : Fin 2 → ℤ)) ^ 2) := by
+          / (modeForm liouvilleFrequency (m : Fin 2 → ℤ)) ^ (2 : ℕ)) := by
   intro hsum
   set F : {m : Fin 2 → ℤ // m ≠ 0} → ℝ := fun m =>
     Real.exp (-(2 * ρ) * (modeNorm (m : Fin 2 → ℤ) : ℝ))
-      / (modeForm liouvilleFrequency (m : Fin 2 → ℤ)) ^ 2 with hF
+      / (modeForm liouvilleFrequency (m : Fin 2 → ℤ)) ^ (2 : ℕ) with hF
   have hFnn : ∀ m, 0 ≤ F m := fun m => by rw [hF]; positivity
   set S : ℝ := ∑' m, F m with hS
   set K : ℕ := ⌈ρ + 1⌉₊ + ⌈S⌉₊ + 1 with hK
@@ -375,24 +375,24 @@ theorem not_summable_liouvilleDivisor {ρ : ℝ} (hρ : 0 < ρ) :
   have habs := abs_modeForm_liouvilleMode_le K
   have hposf : 0 < modeForm liouvilleFrequency (liouvilleMode K) := by
     rw [modeForm_liouvilleMode]; exact approx_pos K
-  have hle : modeForm liouvilleFrequency (liouvilleMode K) ≤ Real.exp (-(M ^ 2)) := by
+  have hle : modeForm liouvilleFrequency (liouvilleMode K) ≤ Real.exp (-(M ^ (2 : ℕ))) := by
     rw [← abs_of_pos hposf]; exact habs
-  have hsq : (modeForm liouvilleFrequency (liouvilleMode K)) ^ 2 ≤ (Real.exp (-(M ^ 2))) ^ 2 :=
+  have hsq : (modeForm liouvilleFrequency (liouvilleMode K)) ^ (2 : ℕ) ≤ (Real.exp (-(M ^ (2 : ℕ)))) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hposf.le hle 2
-  have hden : (0 : ℝ) < (modeForm liouvilleFrequency (liouvilleMode K)) ^ 2 := by positivity
-  have hlow : Real.exp (2 * M ^ 2 - 2 * ρ * M) ≤ F m₀ := by
+  have hden : (0 : ℝ) < (modeForm liouvilleFrequency (liouvilleMode K)) ^ (2 : ℕ) := by positivity
+  have hlow : Real.exp (2 * M ^ (2 : ℕ) - 2 * ρ * M) ≤ F m₀ := by
     rw [hF]
     have hnum : Real.exp (-(2 * ρ) * M) > 0 := Real.exp_pos _
-    have hstep : Real.exp (-(2 * ρ) * M) / (Real.exp (-(M ^ 2))) ^ 2
-        ≤ Real.exp (-(2 * ρ) * M) / (modeForm liouvilleFrequency (liouvilleMode K)) ^ 2 := by
+    have hstep : Real.exp (-(2 * ρ) * M) / (Real.exp (-(M ^ (2 : ℕ)))) ^ (2 : ℕ)
+        ≤ Real.exp (-(2 * ρ) * M) / (modeForm liouvilleFrequency (liouvilleMode K)) ^ (2 : ℕ) := by
       gcongr
     refine le_trans (le_of_eq ?_) hstep
     rw [← Real.exp_nat_mul, ← Real.exp_sub]
     ring_nf
   have hbound : F m₀ ≤ S := hsum.le_tsum m₀ fun j _ => hFnn j
-  have hbig : M ≤ 2 * M ^ 2 - 2 * ρ * M := by nlinarith
+  have hbig : M ≤ 2 * M ^ (2 : ℕ) - 2 * ρ * M := by nlinarith
   have hexpM : M + 1 ≤ Real.exp M := Real.add_one_le_exp M
-  have : Real.exp M ≤ Real.exp (2 * M ^ 2 - 2 * ρ * M) := Real.exp_le_exp.mpr hbig
+  have : Real.exp M ≤ Real.exp (2 * M ^ (2 : ℕ) - 2 * ρ * M) := Real.exp_le_exp.mpr hbig
   linarith
 
 end GaloisForLFunctions.HTGeometry

@@ -29,7 +29,7 @@ unit length. -/
 structure UnitDirection (n : ℕ) (c : Fin (n + 2) → ℝ) : Prop where
   nullFst : c 0 = 0
   nullSnd : c 1 = 0
-  normOne : ∑ i, c i ^ 2 = 1
+  normOne : ∑ i, c i ^ (2 : ℕ) = 1
 
 /-- The two null coordinates and the transverse combination of an event. -/
 noncomputable def unitCLM (n : ℕ) (c : Fin (n + 2) → ℝ) :
@@ -228,7 +228,7 @@ theorem dalembert_unitTransLift {c : Fin (n + 2) → ℝ} (hc : UnitDirection n 
       coordPartial_unitTransLift_one' hc (hA.sub hB) hx]
   have htrans : ∀ j ∈ (Finset.univ \ {0, 1} : Finset (Fin (n + 2))),
       (slabEps n j)⁻¹ * coordPartial j (coordPartial j (unitTransLift u c)) x
-        = c j ^ 2 * Cc (x 0 + x 1) (x 0 - x 1) W := by
+        = c j ^ (2 : ℕ) * Cc (x 0 + x 1) (x 0 - x 1) W := by
     intro j hj
     have h0 : j ≠ 0 := by
       intro hc0
@@ -244,12 +244,12 @@ theorem dalembert_unitTransLift {c : Fin (n + 2) → ℝ} (hc : UnitDirection n 
     ring
   have hsplit : ∑ j, (slabEps n j)⁻¹ * coordPartial j (coordPartial j (unitTransLift u c)) x
       = (∑ j ∈ (Finset.univ \ {0, 1} : Finset (Fin (n + 2))),
-          c j ^ 2 * Cc (x 0 + x 1) (x 0 - x 1) W)
+          c j ^ (2 : ℕ) * Cc (x 0 + x 1) (x 0 - x 1) W)
         + ((slabEps n 0)⁻¹ * coordPartial 0 (coordPartial 0 (unitTransLift u c)) x
           + (slabEps n 1)⁻¹ * coordPartial 1 (coordPartial 1 (unitTransLift u c)) x) := by
     rw [← Finset.sum_sdiff (Finset.subset_univ ({0, 1} : Finset (Fin (n + 2))))]
     rw [Finset.sum_congr rfl htrans, Finset.sum_pair (slab_zero_ne_one n)]
-  have hnorm : (∑ j ∈ (Finset.univ \ {0, 1} : Finset (Fin (n + 2))), c j ^ 2) = 1 := by
+  have hnorm : (∑ j ∈ (Finset.univ \ {0, 1} : Finset (Fin (n + 2))), c j ^ (2 : ℕ)) = 1 := by
     rw [Finset.sum_sdiff_eq_sub (Finset.subset_univ ({0, 1} : Finset (Fin (n + 2)))),
       Finset.sum_pair (slab_zero_ne_one n), hc.nullFst, hc.nullSnd, hc.normOne]
     ring

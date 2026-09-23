@@ -45,8 +45,8 @@ open Complex
 `(s − 1/2)²` carries exactly the ξ-order at `s`.  (Only `rightHalf` was used in the analogous
 `analyticOrderAt_xiDescent_center_sq`, and only to get `s − 1/2 ≠ 0`.) -/
 theorem analyticOrderAt_xiDescent_sq_of_ne_center {s : ℂ} (hs : s ≠ (1 / 2 : ℂ)) :
-    analyticOrderAt xiDescent ((s - (1 / 2 : ℂ)) ^ 2) = analyticOrderAt xi s := by
-  let φ : ℂ → ℂ := fun z => (z - (1 / 2 : ℂ)) ^ 2
+    analyticOrderAt xiDescent ((s - (1 / 2 : ℂ)) ^ (2 : ℕ)) = analyticOrderAt xi s := by
+  let φ : ℂ → ℂ := fun z => (z - (1 / 2 : ℂ)) ^ (2 : ℕ)
   have hφ : AnalyticAt ℂ φ s := (analyticAt_id.sub analyticAt_const).pow 2
   have hsne : s - (1 / 2 : ℂ) ≠ 0 := sub_ne_zero.mpr hs
   have hbase : HasDerivAt (fun z : ℂ => z - (1 / 2 : ℂ)) 1 s :=
@@ -68,8 +68,8 @@ descended point `(ρ − 1/2)²` lies on the negative-real seam (`Im = 0`, `Re �
 `ord_ρ ξ` — no parity is forced there.  So a seam deposit landing at `u < 0` is order-compatible with
 ξ's genuine on-line divisor. -/
 theorem xiDescent_online_seam_order {ρ : ℂ} (hre : ρ.re = 1 / 2) (hne : ρ ≠ (1 / 2 : ℂ)) :
-    analyticOrderAt xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2) = analyticOrderAt xi ρ ∧
-      ((ρ - (1 / 2 : ℂ)) ^ 2).im = 0 ∧ ((ρ - (1 / 2 : ℂ)) ^ 2).re ≤ 0 := by
+    analyticOrderAt xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)) = analyticOrderAt xi ρ ∧
+      ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)).im = 0 ∧ ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)).re ≤ 0 := by
   have hreps : (ρ - (1 / 2 : ℂ)).re = 0 := by
     rw [Complex.sub_re, hre, show (1 / 2 : ℂ).re = (1 / 2 : ℝ) from by norm_num]; norm_num
   refine ⟨analyticOrderAt_xiDescent_sq_of_ne_center hne, ?_, ?_⟩
@@ -84,7 +84,7 @@ order.  The Phase-C central evenness is therefore automatic — it holds for *an
 center deposit of xiDescent-order `n` is a central ξ-zero of order `2n`, Phase-C-consistent. -/
 theorem xi_central_order_eq_two_mul :
     analyticOrderAt xi (1 / 2 : ℂ) = 2 * analyticOrderAt xiDescent 0 := by
-  set g : ℂ → ℂ := fun s => (s - 1 / 2) ^ 2 with hg
+  set g : ℂ → ℂ := fun s => (s - 1 / 2) ^ (2 : ℕ) with hg
   have hgan : AnalyticAt ℂ g (1 / 2) := by rw [hg]; exact (analyticAt_id.sub analyticAt_const).pow 2
   have hg0 : g (1 / 2 : ℂ) = 0 := by rw [hg]; norm_num
   have hxian : AnalyticAt ℂ xiDescent (g (1 / 2)) := by
@@ -101,7 +101,7 @@ theorem xi_central_order_eq_two_mul :
     have hid : (fun z : ℂ => (fun s => s - 1 / 2) z - (fun s : ℂ => s - 1 / 2) (1 / 2))
         = (fun s : ℂ => s - 1 / 2) := by funext z; simp
     rw [hid] at key
-    rw [show (fun s : ℂ => (s - 1 / 2) ^ 2) = (fun s : ℂ => s - 1 / 2) ^ 2 from by funext s; rfl,
+    rw [show (fun s : ℂ => (s - 1 / 2) ^ (2 : ℕ)) = (fun s : ℂ => s - 1 / 2) ^ (2 : ℕ) from by funext s; rfl,
       analyticOrderAt_pow hfan, key]
     rfl
   rw [analyticOrderAt_congr hev, hcomp, hgord2, hg0, mul_comm]

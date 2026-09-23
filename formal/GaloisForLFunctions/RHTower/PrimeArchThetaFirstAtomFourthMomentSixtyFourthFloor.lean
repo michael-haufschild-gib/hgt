@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomWardObstructionScaleQu
 # Sixty-fourth-mesh floor for the first theta atom's fourth moment
 
 Summing the existing 64-cell lower certificates through `7 / 8` sharpens the
-dominant theta atom's exact fourth-moment floor to `2951 / 10^6`.  Integral
+dominant theta atom's exact fourth-moment floor to `2951 / 10^(6 : ℕ)`.  Integral
 monotonicity then transports this rational certificate to the full positive
 half-line moment.  No zero data or numerical integration enters.
 -/
@@ -38,7 +38,7 @@ theorem sum_firstAtomFourthLowerMass64_le_thetaCuspAtomRawEvenMoment_two_one :
     (∑ j ∈ Finset.range 56,
         thetaCuspFirstAtomRawLowerIntervalMass64 2 j) ≤
       thetaCuspAtomRawEvenMoment 2 1 := by
-  let f : ℝ → ℝ := fun x => 2 * (x ^ 4 * thetaCuspSourceTerm x 1)
+  let f : ℝ → ℝ := fun x => 2 * (x ^ (4 : ℕ) * thetaCuspSourceTerm x 1)
   have hfcont : Continuous f := by
     dsimp only [f]
     unfold thetaCuspSourceTerm thetaCuspSeed

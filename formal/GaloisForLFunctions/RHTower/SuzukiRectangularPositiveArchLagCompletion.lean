@@ -313,7 +313,7 @@ theorem integrable_suzukiRectangularPolarLagKernel (L a : ℝ) :
 theorem integral_suzukiRectangularPolarLagKernel
     {L : ℝ} (hL : 0 ≤ L) (a : ℝ) :
     (∫ t : ℝ in Ioi 0, suzukiRectangularPolarLagKernel L a t) =
-      2 * rectangularEvenPolarFeature L a ^ 2 := by
+      2 * rectangularEvenPolarFeature L a ^ (2 : ℕ) := by
   let H : ℝ → ℂ := rectangularPolarHalfAutocorrelation L a
   have hH : Integrable H := integrable_rectangularPolarHalfAutocorrelation L a
   have hsplit : (∫ h : ℝ in Iic 0, H h) + (∫ h : ℝ in Ioi 0, H h) =
@@ -334,7 +334,7 @@ theorem integral_suzukiRectangularPolarLagKernel
     norm_num at hminus
     simpa only [div_eq_mul_inv, mul_comm, one_mul] using hminus
   have hpair : (∫ t : ℝ in Ioi 0,
-      H (t / 2) + H (-(t / 2))) = 2 * (rectangularEvenPolarFeature L a : ℂ) ^ 2 := by
+      H (t / 2) + H (-(t / 2))) = 2 * (rectangularEvenPolarFeature L a : ℂ) ^ (2 : ℕ) := by
     rw [integral_add (hH.comp_div (by norm_num : (2 : ℝ) ≠ 0)).integrableOn
       (by
         have hm : Integrable (fun t : ℝ => H (-(t / 2))) := by
@@ -345,7 +345,7 @@ theorem integral_suzukiRectangularPolarLagKernel
         exact hm.integrableOn), hplus', hminus', ← mul_add, add_comm, hsplit,
       integral_rectangularPolarHalfAutocorrelation hL]
   have hcast : (∫ t : ℝ in Ioi 0, (suzukiRectangularPolarLagKernel L a t : ℂ)) =
-      2 * (rectangularEvenPolarFeature L a : ℂ) ^ 2 := by
+      2 * (rectangularEvenPolarFeature L a : ℂ) ^ (2 : ℕ) := by
     rw [show (fun t : ℝ => (suzukiRectangularPolarLagKernel L a t : ℂ)) =
         fun t : ℝ => H (t / 2) + H (-(t / 2)) by
       funext t
@@ -364,7 +364,7 @@ theorem integrableOn_suzukiRectangularCompletedArchLagKernel
 theorem integral_suzukiRectangularCompletedArchLagKernel
     {L a : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) :
     (∫ t : ℝ in Ioi 0, suzukiRectangularCompletedArchLagKernel L a t) =
-      2 * rectangularEvenPolarFeature L a ^ 2 +
+      2 * rectangularEvenPolarFeature L a ^ (2 : ℕ) +
         ∫ t : ℝ in Ioi 0, rectangularGammaCancellationKernel L a t := by
   change (∫ t : ℝ in Ioi 0,
       suzukiRectangularPolarLagKernel L a t + rectangularGammaCancellationKernel L a t) = _

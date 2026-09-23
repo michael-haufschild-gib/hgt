@@ -29,20 +29,20 @@ namespace RHTower.HedenmalmThetaSource
 def gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight (a : ℝ) (p : Nat.Primes) : ℝ :=
   RHTower.twoBoundaryCauchyPairPluckerSq a
       (Real.log (p : ℝ) / 2) (3 * Real.log (p : ℝ) / 2) *
-    (RHTower.gammaSewnMobiusApertureBoundaryAmplitude p ^ 2) ^ 2
+    (RHTower.gammaSewnMobiusApertureBoundaryAmplitude p ^ (2 : ℕ)) ^ (2 : ℕ)
 
 theorem gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight_eq
     {a : ℝ} {p : Nat.Primes} (ha : 0 < a)
     (hap : a < Real.log (p : ℝ) / 2) :
     gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight a p =
-      4 * a ^ 2 /
-        (((p : ℝ) + 1) ^ 4 * Real.log (p : ℝ) ^ 2 *
-          ((1 / 4 : ℝ) - (a / Real.log (p : ℝ)) ^ 2) ^ 2 *
-          ((9 / 4 : ℝ) - (a / Real.log (p : ℝ)) ^ 2) ^ 2) := by
+      4 * a ^ (2 : ℕ) /
+        (((p : ℝ) + 1) ^ (4 : ℕ) * Real.log (p : ℝ) ^ (2 : ℕ) *
+          ((1 / 4 : ℝ) - (a / Real.log (p : ℝ)) ^ (2 : ℕ)) ^ (2 : ℕ) *
+          ((9 / 4 : ℝ) - (a / Real.log (p : ℝ)) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   let L := Real.log (p : ℝ)
   let u := a / L
-  let A := (1 / 4 : ℝ) - u ^ 2
-  let B := (9 / 4 : ℝ) - u ^ 2
+  let A := (1 / 4 : ℝ) - u ^ (2 : ℕ)
+  let B := (9 / 4 : ℝ) - u ^ (2 : ℕ)
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.one_lt
   have hL : 0 < L := Real.log_pos hp
   have hu : 0 < u := div_pos ha hL
@@ -73,9 +73,9 @@ theorem gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight_pos
   have huhalf : a / Real.log (p : ℝ) < 1 / 2 := by
     apply (div_lt_iff₀ hL).2
     simpa [div_eq_mul_inv, mul_comm] using hap
-  have hA : 0 < (1 / 4 : ℝ) - (a / Real.log (p : ℝ)) ^ 2 := by
+  have hA : 0 < (1 / 4 : ℝ) - (a / Real.log (p : ℝ)) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (a / Real.log (p : ℝ) - 1 / 2)]
-  have hB : 0 < (9 / 4 : ℝ) - (a / Real.log (p : ℝ)) ^ 2 := by
+  have hB : 0 < (9 / 4 : ℝ) - (a / Real.log (p : ℝ)) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (a / Real.log (p : ℝ))]
   positivity
 
@@ -87,10 +87,10 @@ theorem gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight_strictAnti
   let Lq := Real.log (q : ℝ)
   let up := a / Lp
   let uq := a / Lq
-  let Ap := (1 / 4 : ℝ) - up ^ 2
-  let Aq := (1 / 4 : ℝ) - uq ^ 2
-  let Bp := (9 / 4 : ℝ) - up ^ 2
-  let Bq := (9 / 4 : ℝ) - uq ^ 2
+  let Ap := (1 / 4 : ℝ) - up ^ (2 : ℕ)
+  let Aq := (1 / 4 : ℝ) - uq ^ (2 : ℕ)
+  let Bp := (9 / 4 : ℝ) - up ^ (2 : ℕ)
+  let Bq := (9 / 4 : ℝ) - uq ^ (2 : ℕ)
   have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.one_lt
   have hq1 : (1 : ℝ) < (q : ℝ) := by exact_mod_cast q.2.one_lt
   have hLp : 0 < Lp := Real.log_pos hp1
@@ -108,7 +108,7 @@ theorem gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight_strictAnti
   have hup_half : up < 1 / 2 := by
     apply (div_lt_iff₀ hLp).2
     simpa [Lp, div_eq_mul_inv, mul_comm] using hap
-  have huqsq_upsq : uq ^ 2 < up ^ 2 :=
+  have huqsq_upsq : uq ^ (2 : ℕ) < up ^ (2 : ℕ) :=
     (sq_lt_sq₀ huq.le hup.le).2 huq_up
   have hAp : 0 < Ap := by
     dsimp [Ap]
@@ -122,16 +122,16 @@ theorem gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight_strictAnti
   have hBpq : Bp < Bq := by dsimp [Bp, Bq]; linarith
   have hpqOne : (p : ℝ) + 1 < (q : ℝ) + 1 := by linarith
   have hpqOnePos : 0 < (p : ℝ) + 1 := by positivity
-  have hpqFour : ((p : ℝ) + 1) ^ 4 < ((q : ℝ) + 1) ^ 4 :=
+  have hpqFour : ((p : ℝ) + 1) ^ (4 : ℕ) < ((q : ℝ) + 1) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ hpqOne hpqOnePos.le (by norm_num)
-  have hLsq : Lp ^ 2 < Lq ^ 2 :=
+  have hLsq : Lp ^ (2 : ℕ) < Lq ^ (2 : ℕ) :=
     (sq_lt_sq₀ hLp.le hLq.le).2 hLpq
-  have hAsq : Ap ^ 2 < Aq ^ 2 :=
+  have hAsq : Ap ^ (2 : ℕ) < Aq ^ (2 : ℕ) :=
     (sq_lt_sq₀ hAp.le hAq.le).2 hApq
-  have hBsq : Bp ^ 2 < Bq ^ 2 :=
+  have hBsq : Bp ^ (2 : ℕ) < Bq ^ (2 : ℕ) :=
     (sq_lt_sq₀ hBp.le hBq.le).2 hBpq
-  let Dp := ((p : ℝ) + 1) ^ 4 * Lp ^ 2 * Ap ^ 2 * Bp ^ 2
-  let Dq := ((q : ℝ) + 1) ^ 4 * Lq ^ 2 * Aq ^ 2 * Bq ^ 2
+  let Dp := ((p : ℝ) + 1) ^ (4 : ℕ) * Lp ^ (2 : ℕ) * Ap ^ (2 : ℕ) * Bp ^ (2 : ℕ)
+  let Dq := ((q : ℝ) + 1) ^ (4 : ℕ) * Lq ^ (2 : ℕ) * Aq ^ (2 : ℕ) * Bq ^ (2 : ℕ)
   have hDp : 0 < Dp := by dsimp [Dp]; positivity
   have hDq : 0 < Dq := by dsimp [Dq]; positivity
   have hD : Dp < Dq := by
@@ -146,7 +146,7 @@ theorem gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight_strictAnti
   have haq : a < Lq / 2 := lt_trans hap (by nlinarith)
   rw [gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight_eq ha haq,
     gammaSewnCriticalOrderedPrimePlucker_consecutiveRawWeight_eq ha hap]
-  change 4 * a ^ 2 / Dq < 4 * a ^ 2 / Dp
+  change 4 * a ^ (2 : ℕ) / Dq < 4 * a ^ (2 : ℕ) / Dp
   exact (div_lt_div_iff₀ hDq hDp).2
     (mul_lt_mul_of_pos_left hD (mul_pos (by norm_num) (sq_pos_of_pos ha)))
 

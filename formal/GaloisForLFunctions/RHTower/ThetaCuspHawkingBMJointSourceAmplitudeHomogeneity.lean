@@ -16,7 +16,7 @@ set_option autoImplicit false
 /-- Every literal source leg is quadratic in its physical amplitude. -/
 theorem sourceAmplitude_amplitude_square (s w a T : ℂ) (t : ℝ) :
     sourceAmplitude s w a T t =
-      a ^ 2 * sourceAmplitude s w 1 T t := by
+      a ^ (2 : ℕ) * sourceAmplitude s w 1 T t := by
   unfold sourceAmplitude
   ring
 

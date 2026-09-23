@@ -20,20 +20,20 @@ namespace RHTower
 theorem sum_norm_sq_staticChoiTarget_diagonal_le_one_of_norm_le_one
     {d : ℕ} {target : EuclideanSpace ℂ (Fin d × Fin d)}
     (htarget : ‖target‖ ≤ 1) :
-    ∑ i : Fin d, ‖target (i, i)‖ ^ 2 ≤ 1 := by
+    ∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ) ≤ 1 := by
   let diag : Fin d → Fin d × Fin d := fun i => (i, i)
   have hdiag : Function.Injective diag := by
     intro i j h
     exact congrArg Prod.fst h
   calc
-    ∑ i : Fin d, ‖target (i, i)‖ ^ 2 =
-        ∑ i : Fin d, ‖target (diag i)‖ ^ 2 := rfl
-    _ = ∑ ij ∈ Finset.univ.image diag, ‖target ij‖ ^ 2 := by
+    ∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ) =
+        ∑ i : Fin d, ‖target (diag i)‖ ^ (2 : ℕ) := rfl
+    _ = ∑ ij ∈ Finset.univ.image diag, ‖target ij‖ ^ (2 : ℕ) := by
       rw [Finset.sum_image]
       exact hdiag.injOn
-    _ ≤ ∑ ij : Fin d × Fin d, ‖target ij‖ ^ 2 :=
+    _ ≤ ∑ ij : Fin d × Fin d, ‖target ij‖ ^ (2 : ℕ) :=
       Finset.sum_le_univ_sum_of_nonneg fun _ => sq_nonneg _
-    _ = ‖target‖ ^ 2 := (EuclideanSpace.norm_sq_eq target).symm
+    _ = ‖target‖ ^ (2 : ℕ) := (EuclideanSpace.norm_sq_eq target).symm
     _ ≤ 1 := by nlinarith [norm_nonneg target]
 
 theorem sum_directStaticChoiTargetWeight_le_one_of_norm_le_one
@@ -44,9 +44,9 @@ theorem sum_directStaticChoiTargetWeight_le_one_of_norm_le_one
   have hdR : 0 < (d : ℝ) := by exact_mod_cast hd
   have hsqrtPos : 0 < Real.sqrt (d : ℝ) := Real.sqrt_pos.2 hdR
   have hmass := sum_norm_sq_staticChoiTarget_diagonal_le_one_of_norm_le_one htarget
-  have hmassNonneg : 0 ≤ ∑ i : Fin d, ‖target (i, i)‖ ^ 2 :=
+  have hmassNonneg : 0 ≤ ∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun i _ => sq_nonneg _
-  have hrootMass : Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ 2) ≤ 1 := by
+  have hrootMass : Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ)) ≤ 1 := by
     rw [Real.sqrt_le_iff]
     exact ⟨by norm_num, by simpa using hmass⟩
   have hcs := Real.sum_mul_le_sqrt_mul_sqrt
@@ -58,7 +58,7 @@ theorem sum_directStaticChoiTargetWeight_le_one_of_norm_le_one
     calc
       ∑ i : Fin d, ‖target (i, i)‖ ≤
           Real.sqrt (d : ℝ) *
-            Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ 2) := hcs
+            Real.sqrt (∑ i : Fin d, ‖target (i, i)‖ ^ (2 : ℕ)) := hcs
       _ ≤ Real.sqrt (d : ℝ) * 1 :=
         mul_le_mul_of_nonneg_left hrootMass hsqrtPos.le
       _ = Real.sqrt (d : ℝ) := mul_one _
@@ -75,16 +75,16 @@ theorem sum_sq_directStaticChoiTargetWeight_le_inv_of_norm_le_one
     {d : ℕ} (hd : 0 < d)
     {target : EuclideanSpace ℂ (Fin d × Fin d)}
     (htarget : ‖target‖ ≤ 1) :
-    ∑ i, directStaticChoiTargetWeight d target i ^ 2 ≤ (d : ℝ)⁻¹ := by
+    ∑ i, directStaticChoiTargetWeight d target i ^ (2 : ℕ) ≤ (d : ℝ)⁻¹ := by
   have hdR : 0 < (d : ℝ) := by exact_mod_cast hd
   have hmass := sum_norm_sq_staticChoiTarget_diagonal_le_one_of_norm_le_one htarget
   calc
-    ∑ i, directStaticChoiTargetWeight d target i ^ 2 =
-        (Real.sqrt (d : ℝ))⁻¹ ^ 2 *
-          ∑ i, ‖target (i, i)‖ ^ 2 := by
+    ∑ i, directStaticChoiTargetWeight d target i ^ (2 : ℕ) =
+        (Real.sqrt (d : ℝ))⁻¹ ^ (2 : ℕ) *
+          ∑ i, ‖target (i, i)‖ ^ (2 : ℕ) := by
       unfold directStaticChoiTargetWeight
       simp_rw [mul_pow, ← Finset.mul_sum]
-    _ ≤ (Real.sqrt (d : ℝ))⁻¹ ^ 2 * 1 :=
+    _ ≤ (Real.sqrt (d : ℝ))⁻¹ ^ (2 : ℕ) * 1 :=
       mul_le_mul_of_nonneg_left hmass (sq_nonneg _)
     _ = (d : ℝ)⁻¹ := by
       rw [mul_one, inv_pow, Real.sq_sqrt hdR.le]
@@ -136,7 +136,7 @@ theorem integrable_staticChoi_fidelity_pow_of_norm_le_one
       _ = ‖target‖ := by rw [staticSpectralChoiVector_norm hd, mul_one]
       _ ≤ 1 := htarget
   have hsquare : ‖inner ℂ target
-      (staticSpectralChoiVector d (T * x) energy)‖ ^ 2 ≤ 1 := by
+      (staticSpectralChoiVector d (T * x) energy)‖ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [norm_nonneg (inner ℂ target
       (staticSpectralChoiVector d (T * x) energy))]
   simp only [finitePureStateFidelity_eq_norm_inner_sq, WithLp.toLp_ofLp]
@@ -153,7 +153,7 @@ theorem integral_gaussian_staticChoi_fidelity_pow_le_weightedCrowding_of_norm_le
       ∂gaussianReal 0 1) ≤
       (r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
         directStaticChoiTargetNearActionMass target energy r delta +
-        Real.exp (-((T * delta) ^ 2) / 2) := by
+        Real.exp (-((T * delta) ^ (2 : ℕ)) / 2) := by
   let weight := directStaticChoiTargetWeight d target
   let negEnergy : Fin d → ℝ := fun i => -energy i
   let twist := directStaticChoiTargetTwist target
@@ -192,14 +192,14 @@ theorem integral_gaussian_staticChoi_fidelity_pow_le_weightedCrowding_of_norm_le
       Complex.re_le_norm _
     _ ≤ fidelityReplicaCollisionMass weight negEnergy r +
         fidelityReplicaNearActionMass weight negEnergy r delta +
-        Real.exp (-((T * delta) ^ 2) / 2) :=
+        Real.exp (-((T * delta) ^ (2 : ℕ)) / 2) :=
       norm_twistedGaussianSpectralFidelityMean_le_collision_add_crowding
         (directStaticChoiTargetWeight_nonneg target)
         (sum_directStaticChoiTargetWeight_le_one_of_norm_le_one hd htarget)
         (norm_directStaticChoiTargetTwist target) r hT hdelta
     _ ≤ (r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
         fidelityReplicaNearActionMass weight negEnergy r delta +
-        Real.exp (-((T * delta) ^ 2) / 2) := by
+        Real.exp (-((T * delta) ^ (2 : ℕ)) / 2) := by
       gcongr
       exact directStaticChoiTarget_collision_le_factorial_inv_pow_of_norm_le_one
         hd hmax htarget r

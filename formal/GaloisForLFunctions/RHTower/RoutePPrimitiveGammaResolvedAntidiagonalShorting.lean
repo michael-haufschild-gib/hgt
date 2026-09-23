@@ -118,7 +118,7 @@ theorem routePPrimitiveGammaResolvedWoldAmplitude_pos
 
 theorem routePPrimitiveGammaResolvedWoldAmplitude_sq
     (i j : Nat.Primes × ℕ) :
-    routePPrimitiveGammaResolvedWoldAmplitude i j ^ 2 =
+    routePPrimitiveGammaResolvedWoldAmplitude i j ^ (2 : ℕ) =
       routePPrimitiveGammaSewnCriticalQuadraticGreenFlux i *
         routePPrimitiveGammaSewnCriticalQuadraticGreenFlux j := by
   rw [routePPrimitiveGammaResolvedWoldAmplitude, Real.sq_sqrt]
@@ -154,8 +154,8 @@ reporter. -/
 twice the pairwise quadratic-Green flux as Euclidean energy. -/
 theorem routePPrimitiveGammaResolvedWoldCurrent_energy
     (i j : Nat.Primes × ℕ) :
-    (routePPrimitiveGammaResolvedWoldCurrent i j).1 ^ 2 +
-        (routePPrimitiveGammaResolvedWoldCurrent i j).2 ^ 2 =
+    (routePPrimitiveGammaResolvedWoldCurrent i j).1 ^ (2 : ℕ) +
+        (routePPrimitiveGammaResolvedWoldCurrent i j).2 ^ (2 : ℕ) =
       2 * routePPrimitiveGammaSewnCriticalQuadraticGreenFlux i *
         routePPrimitiveGammaSewnCriticalQuadraticGreenFlux j := by
   rw [routePPrimitiveGammaResolvedWoldCurrent,
@@ -200,8 +200,8 @@ theorem routePPrimitiveGammaResolvedWoldCurrent_uncooriented_ne_zero
 theorem summable_routePPrimitiveGammaResolvedWoldCurrent_energy :
     Summable (fun ij :
         (Nat.Primes × ℕ) × (Nat.Primes × ℕ) =>
-      (routePPrimitiveGammaResolvedWoldCurrent ij.1 ij.2).1 ^ 2 +
-        (routePPrimitiveGammaResolvedWoldCurrent ij.1 ij.2).2 ^ 2) := by
+      (routePPrimitiveGammaResolvedWoldCurrent ij.1 ij.2).1 ^ (2 : ℕ) +
+        (routePPrimitiveGammaResolvedWoldCurrent ij.1 ij.2).2 ^ (2 : ℕ)) := by
   have hsum : Summable
       (fun ij : (Nat.Primes × ℕ) × (Nat.Primes × ℕ) =>
       2 * routePPrimitiveGammaSewnCriticalQuadraticGreenFlux ij.1 *

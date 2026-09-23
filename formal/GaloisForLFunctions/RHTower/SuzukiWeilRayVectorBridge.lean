@@ -41,7 +41,7 @@ theorem memℓp_suzukiRayVectorFun {φ : ℝ → ℂ} (hφ : Integrable φ) {T :
     exact mul_nonneg (by positivity) (integral_nonneg fun t => norm_nonneg _)
   refine HilbertSchmidt.memℓp_of_sq ?_
   refine Summable.of_nonneg_of_le (fun q => by positivity) (fun q => ?_)
-    (xiSpectralPoint_inv_sq_summable.mul_left (M ^ 2))
+    (xiSpectralPoint_inv_sq_summable.mul_left (M ^ (2 : ℕ)))
   have hnum := norm_raySeriesNumerator_le hφ hsupp q
   have hγpos : (0 : ℝ) < ‖xiSpectralPoint q‖ :=
     norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
@@ -52,13 +52,13 @@ theorem memℓp_suzukiRayVectorFun {φ : ℝ → ℂ} (hφ : Integrable φ) {T :
   rw [hu, div_pow]
   rw [div_le_iff₀ (by positivity)]
   have hsq : ‖∫ t : ℝ, (Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1)
-      * (starRingEnd ℂ) (φ t)‖ ^ 2 ≤ M ^ 2 := by
+      * (starRingEnd ℂ) (φ t)‖ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ ‖∫ t : ℝ, (Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1)
         * (starRingEnd ℂ) (φ t)‖ := norm_nonneg _
     nlinarith [hnum, h0, hM0]
   calc ‖∫ t : ℝ, (Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1)
-        * (starRingEnd ℂ) (φ t)‖ ^ 2 ≤ M ^ 2 := hsq
-    _ = M ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) * ‖xiSpectralPoint q‖ ^ 2 := by
+        * (starRingEnd ℂ) (φ t)‖ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := hsq
+    _ = M ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         field_simp
 
 theorem xiCauchyTransform_suzukiRayVector {φ : ℝ → ℂ} (hφ : Integrable φ) {T : ℝ}

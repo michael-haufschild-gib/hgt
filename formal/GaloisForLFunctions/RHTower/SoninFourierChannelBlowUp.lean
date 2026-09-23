@@ -41,8 +41,8 @@ theorem tendsto_norm_evenFourierLogShellChannel_soninPacketEven_atTop
     (logShellRadius a₀ r₀ 0) A (fun i => logShellRadius a₀ r₀ (m i))
     (fun i => logShellRadius a₀ r₀ (n i)) hA hAabs hinner houter
   have hLnn : ∀ᶠ i in atTop, 0 ≤ L i := hclimb.eventually_ge_atTop 0
-  have hkey : ∀ᶠ i in atTop, L i ^ 2 * c₀ ≤
-      ‖evenFourierLogShellChannel a₀ r₀ (n i) (w i)‖ ^ 2 := by
+  have hkey : ∀ᶠ i in atTop, L i ^ (2 : ℕ) * c₀ ≤
+      ‖evenFourierLogShellChannel a₀ r₀ (n i) (w i)‖ ^ (2 : ℕ) := by
     filter_upwards [hfloor, hLnn] with i hi hL0
     have hcoeff : ∀ k, m i ≤ k → k < n i → L i ≤ |Real.log (logShellRadius a₀ r₀ k)| := by
       intro k hmk _
@@ -53,23 +53,23 @@ theorem tendsto_norm_evenFourierLogShellChannel_soninPacketEven_atTop
       exact hlog.trans (le_abs_self _)
     have hbound := sq_le_norm_sq_evenFourierLogShellChannel_apply a₀ r₀ ha₀ hr₀ (n i) (m i)
       (hmn i) (w i) (L i) hL0 hcoeff
-    have hmul : L i ^ 2 * c₀ ≤ L i ^ 2 *
+    have hmul : L i ^ (2 : ℕ) * c₀ ≤ L i ^ (2 : ℕ) *
         (‖evenFourierCutoff (logShellRadius a₀ r₀ (n i)) (w i) -
-            evenFourierCutoff (logShellRadius a₀ r₀ 0) (w i)‖ ^ 2 -
+            evenFourierCutoff (logShellRadius a₀ r₀ 0) (w i)‖ ^ (2 : ℕ) -
           ‖evenFourierCutoff (logShellRadius a₀ r₀ (m i)) (w i) -
-            evenFourierCutoff (logShellRadius a₀ r₀ 0) (w i)‖ ^ 2) :=
+            evenFourierCutoff (logShellRadius a₀ r₀ 0) (w i)‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hi (by positivity)
     exact hmul.trans hbound
-  have hdiv : Tendsto (fun i => L i ^ 2 * c₀) atTop atTop := by
-    have hsq : Tendsto (fun i => L i ^ 2) atTop atTop := by
+  have hdiv : Tendsto (fun i => L i ^ (2 : ℕ) * c₀) atTop atTop := by
+    have hsq : Tendsto (fun i => L i ^ (2 : ℕ)) atTop atTop := by
       have h := hclimb.atTop_mul_atTop₀ hclimb
       refine h.congr fun i => ?_
       rw [sq]
     exact hsq.atTop_mul_const hc₀
-  have hsq : Tendsto (fun i => ‖evenFourierLogShellChannel a₀ r₀ (n i) (w i)‖ ^ 2)
+  have hsq : Tendsto (fun i => ‖evenFourierLogShellChannel a₀ r₀ (n i) (w i)‖ ^ (2 : ℕ))
       atTop atTop := tendsto_atTop_mono' atTop hkey hdiv
   refine tendsto_atTop.mpr fun M => ?_
-  filter_upwards [hsq.eventually_ge_atTop (max M 0 ^ 2)] with i hi
+  filter_upwards [hsq.eventually_ge_atTop (max M 0 ^ (2 : ℕ))] with i hi
   have hnn : 0 ≤ ‖evenFourierLogShellChannel a₀ r₀ (n i) (w i)‖ := norm_nonneg _
   have hmax : (0 : ℝ) ≤ max M 0 := le_max_right _ _
   have hle : max M 0 ≤ ‖evenFourierLogShellChannel a₀ r₀ (n i) (w i)‖ := by nlinarith

@@ -62,7 +62,7 @@ def d4BMPoincareSeedRadialFirstJet
 
 structure D4BMUnitSemicircleCoordinate where
   point : D4BMUpperHalfPlaneCoordinate
-  unit_circle : point.x ^ 2 + point.y ^ 2 = 1
+  unit_circle : point.x ^ (2 : ℕ) + point.y ^ (2 : ℕ) = 1
 
 theorem d4BM_poincareSeedRadialFirstJet_invert_unitCircle
     (z : D4BMUnitSemicircleCoordinate) (s : ℂ)
@@ -81,20 +81,20 @@ theorem d4BM_poincareSeedRadialFirstJet_invert_unitCircle
       (d4BMEisensteinRotatePrimitivePair p).pair
       (d4BMEisensteinRotatePrimitivePair p).pair_ne_zero).ne'
   have hQformula : Q =
-      (d * (z.point.y : ℂ)) ^ 2 +
-        (d * (z.point.x : ℂ) - c) ^ 2 := by
+      (d * (z.point.y : ℂ)) ^ (2 : ℕ) +
+        (d * (z.point.x : ℂ) - c) ^ (2 : ℕ) := by
     unfold Q d4BMPoincareQuadratic d4BMEisensteinRotatePrimitivePair c d
     push_cast
     ring
   have hQdenom :
-      ((p.pair.2 : ℂ) * (z.point.y : ℂ)) ^ 2 +
-        ((p.pair.2 : ℂ) * (z.point.x : ℂ) + -(p.pair.1 : ℂ)) ^ 2 = Q := by
+      ((p.pair.2 : ℂ) * (z.point.y : ℂ)) ^ (2 : ℕ) +
+        ((p.pair.2 : ℂ) * (z.point.x : ℂ) + -(p.pair.1 : ℂ)) ^ (2 : ℕ) = Q := by
     dsimp only [c, d] at hQformula
     simpa only [sub_eq_add_neg] using hQformula.symm
-  have hR : z.point.x ^ 2 + z.point.y ^ 2 ≠ 0 := by
+  have hR : z.point.x ^ (2 : ℕ) + z.point.y ^ (2 : ℕ) ≠ 0 := by
     rw [z.unit_circle]
     norm_num
-  have hRC : (z.point.x : ℂ) ^ 2 + (z.point.y : ℂ) ^ 2 = 1 := by
+  have hRC : (z.point.x : ℂ) ^ (2 : ℕ) + (z.point.y : ℂ) ^ (2 : ℕ) = 1 := by
     exact_mod_cast z.unit_circle
   have hy : (z.point.y : ℂ) ≠ 0 := by
     exact_mod_cast z.point.y_pos.ne'
@@ -106,7 +106,7 @@ theorem d4BM_poincareSeedRadialFirstJet_invert_unitCircle
         d4BMPoincareQuadratic (d4BMEisensteinInvertCoordinate z.point) p.pair =
           d4BMPoincareQuadratic z.point
             (d4BMEisensteinRotatePrimitivePair p).pair /
-              (z.point.x ^ 2 + z.point.y ^ 2) := by
+              (z.point.x ^ (2 : ℕ) + z.point.y ^ (2 : ℕ)) := by
       unfold d4BMEisensteinInvertCoordinate d4BMPoincareQuadratic
         d4BMEisensteinRotatePrimitivePair
       field_simp [hR]
@@ -134,7 +134,7 @@ theorem d4BM_poincareSeedRadialFirstJet_invert_unitCircle
     rw [Int.gcd_neg, Int.gcd_comm]
     exact p.primitive
   linear_combination
-    -(2 * s * d4BMPoincareSeed z.point s q * (p.pair.1 : ℂ) ^ 2) * hRC
+    -(2 * s * d4BMPoincareSeed z.point s q * (p.pair.1 : ℂ) ^ (2 : ℕ)) * hRC
 
 theorem summable_d4BMPoincareSeedHorizontalFirstJet
     (z : D4BMUpperHalfPlaneCoordinate)
@@ -326,7 +326,7 @@ theorem d4BM_completedPoincareRadialGreenCurrent_invert_unitCircle
 theorem d4BM_completedPoincare_GreenLagrange_interior_identity
     (z : D4BMUpperHalfPlaneCoordinate)
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) :
-    (z.y : ℂ) ^ 2 *
+    (z.y : ℂ) ^ (2 : ℕ) *
         (d4BMCompletedEisensteinPoincareSeries z P *
             (d4BMCompletedPoincareHorizontalSecondJet z Q +
               d4BMCompletedPoincareVerticalSecondJet z Q) -
@@ -352,7 +352,7 @@ structure D4BMEqualEigenvaluePoincarePair where
 theorem d4BM_completedPoincare_equalEigenvalue_GreenLagrange_interior_zero
     (z : D4BMUpperHalfPlaneCoordinate)
     (E : D4BMEqualEigenvaluePoincarePair) :
-    (z.y : ℂ) ^ 2 *
+    (z.y : ℂ) ^ (2 : ℕ) *
         (d4BMCompletedEisensteinPoincareSeries z E.left *
             (d4BMCompletedPoincareHorizontalSecondJet z E.right +
               d4BMCompletedPoincareVerticalSecondJet z E.right) -

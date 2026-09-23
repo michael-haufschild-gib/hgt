@@ -88,7 +88,7 @@ theorem sum_normSq_overlap_coeff_le {ι : Type*} [DecidableEq ι] (I : Finset ι
     (S : ι → Finset ℕ) (N : ℕ) {K : ℝ}
     (ha : ∀ i n, ‖a i n‖ ≤ 1) (hK0 : 0 ≤ K)
     (hK : ∀ n ∈ Finset.Icc 1 N, ((I.filter (fun i => n ∈ S i)).card : ℝ) ≤ K) :
-    ∑ n ∈ Finset.Icc 1 N, ‖∑ i ∈ I, (if n ∈ S i then a i n else 0)‖ ^ 2
+    ∑ n ∈ Finset.Icc 1 N, ‖∑ i ∈ I, (if n ∈ S i then a i n else 0)‖ ^ (2 : ℕ)
       ≤ K * ∑ i ∈ I, ((S i ∩ Finset.Icc 1 N).card : ℝ) := by
   classical
   have hcount : ∀ n : ℕ, ‖∑ i ∈ I, (if n ∈ S i then a i n else 0)‖
@@ -105,7 +105,7 @@ theorem sum_normSq_overlap_coeff_le {ι : Type*} [DecidableEq ι] (I : Finset ι
     refine le_trans (Finset.sum_le_sum hterm) ?_
     rw [← Finset.sum_filter]
     rw [Finset.sum_const, nsmul_eq_mul, mul_one]
-  have hsq : ∀ n ∈ Finset.Icc 1 N, ‖∑ i ∈ I, (if n ∈ S i then a i n else 0)‖ ^ 2
+  have hsq : ∀ n ∈ Finset.Icc 1 N, ‖∑ i ∈ I, (if n ∈ S i then a i n else 0)‖ ^ (2 : ℕ)
       ≤ K * ((I.filter (fun i => n ∈ S i)).card : ℝ) := by
     intro n hn
     have h0 : (0 : ℝ) ≤ ‖∑ i ∈ I, (if n ∈ S i then a i n else 0)‖ := norm_nonneg _
@@ -135,7 +135,7 @@ theorem integral_Icc_normSq_sum_logPoly_le {ι : Type*} [DecidableEq ι] (I : Fi
     (a : ι → ℕ → ℂ) (S : ι → Finset ℕ) {N : ℕ} (hSN : ∀ i ∈ I, S i ⊆ Finset.Icc 1 N)
     (ha : ∀ i n, ‖a i n‖ ≤ 1) {K W : ℝ} (hK0 : 0 ≤ K)
     (hK : ∀ n ∈ Finset.Icc 1 N, ((I.filter (fun i => n ∈ S i)).card : ℝ) ≤ K) (hW : 1 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ))
           * (K * ∑ i ∈ I, ((S i ∩ Finset.Icc 1 N).card : ℝ)) := by
   classical
@@ -147,8 +147,8 @@ theorem integral_Icc_normSq_sum_logPoly_le {ι : Type*} [DecidableEq ι] (I : Fi
       intro i hi
       exact logPoly_restrict (a i) (hSN i hi) w
     rw [Finset.sum_congr rfl hstep, sum_logPoly_eq]
-  have hcongr : (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ 2)
-      = ∫ w in Set.Icc (-W) W, ‖logPoly A (Finset.Icc 1 N) w‖ ^ 2 := by
+  have hcongr : (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, logPoly (a i) (S i) w‖ ^ (2 : ℕ))
+      = ∫ w in Set.Icc (-W) W, ‖logPoly A (Finset.Icc 1 N) w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [hrep w]
   rw [hcongr]
@@ -178,7 +178,7 @@ theorem integral_Icc_normSq_primeShift_family_le {ι : Type*} [DecidableEq ι] (
     (hK : ∀ n ∈ Finset.Icc 1 N,
       ((I.filter (fun i => n ∈ (D i).image (fun m => p i * m))).card : ℝ) ≤ K)
     (hW : 1 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (N : ℝ))
           * (K * ∑ i ∈ I, ((D i).card : ℝ)) := by
   classical
@@ -188,10 +188,10 @@ theorem integral_Icc_normSq_primeShift_family_le {ι : Type*} [DecidableEq ι] (
     refine Finset.sum_congr rfl fun i hi => ?_
     exact moebiusPhase_mul_logPoly (hp i hi) c (hD i hi) w
   have hcongr : (∫ w in Set.Icc (-W) W,
-        ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ 2)
+        ‖∑ i ∈ I, moebiusPhase w (p i) * logPoly c (D i) w‖ ^ (2 : ℕ))
       = ∫ w in Set.Icc (-W) W,
         ‖∑ i ∈ I, logPoly (primeShiftCoeff (p i) c)
-          ((D i).image (fun m => p i * m)) w‖ ^ 2 := by
+          ((D i).image (fun m => p i * m)) w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [hrep w]
   rw [hcongr]

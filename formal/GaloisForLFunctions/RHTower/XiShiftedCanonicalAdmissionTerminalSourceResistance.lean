@@ -8,7 +8,7 @@ The literal current/adjacent vacuum-free completed `P^sharp` producer carries an
 capacity at each nonzero current Gauss root.  Multiplying its terminal source product by the
 canonical Gauss resistance share removes both Christoffel weight and root derivative:
 
-`share * (Padé residue * source capacity) = y * x^4 * preceding norm`.
+`share * (Padé residue * source capacity) = y * x^(4 : ℕ) * preceding norm`.
 
 Across all current roots the shares form a probability law.  Thus terminal-source loss is exactly
 loss of tightness of an admission-dependent probability, not failure of source formation and not a
@@ -36,7 +36,7 @@ theorem gaussTerminalSourceResistance_mul_hardEdgeTerminalMass_eq
     HTGeometry.gaussTerminalSourceResistance s m x *
         xiShiftedHardEdgeGaussTerminalMass y s (m + 1)
           (HTGeometry.monicOrtho s (m + 1)) x =
-      y * x ^ 4 * HTGeometry.monicOrthoNormSq s m := by
+      y * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m := by
   have hcd := HTGeometry.christoffel_mul_derivative_mul_prev_eq_normSq_below
     h hmN hroot
   have hnorm : HTGeometry.monicOrthoNormSq s m ≠ 0 :=
@@ -44,18 +44,18 @@ theorem gaussTerminalSourceResistance_mul_hardEdgeTerminalMass_eq
   simp only [HTGeometry.gaussTerminalSourceResistance,
     xiShiftedHardEdgeGaussTerminalMass, Nat.add_sub_cancel]
   calc
-    (HTGeometry.christoffel s m x * (HTGeometry.monicOrtho s m).eval x ^ 2 /
+    (HTGeometry.christoffel s m x * (HTGeometry.monicOrtho s m).eval x ^ (2 : ℕ) /
           HTGeometry.monicOrthoNormSq s m) *
-        (y * x ^ 4 * HTGeometry.christoffel s m x *
-          (HTGeometry.monicOrtho s (m + 1)).derivative.eval x ^ 2) =
-      y * x ^ 4 *
+        (y * x ^ (4 : ℕ) * HTGeometry.christoffel s m x *
+          (HTGeometry.monicOrtho s (m + 1)).derivative.eval x ^ (2 : ℕ)) =
+      y * x ^ (4 : ℕ) *
         (HTGeometry.christoffel s m x *
           (HTGeometry.monicOrtho s (m + 1)).derivative.eval x *
-          (HTGeometry.monicOrtho s m).eval x) ^ 2 /
+          (HTGeometry.monicOrtho s m).eval x) ^ (2 : ℕ) /
         HTGeometry.monicOrthoNormSq s m := by ring
-    _ = y * x ^ 4 * HTGeometry.monicOrthoNormSq s m ^ 2 /
+    _ = y * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m ^ (2 : ℕ) /
         HTGeometry.monicOrthoNormSq s m := by rw [hcd]
-    _ = y * x ^ 4 * HTGeometry.monicOrthoNormSq s m := by
+    _ = y * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m := by
       field_simp
 
 /-- **Reciprocal terminal-source conservation.** If the mass parameter and every current Gauss
@@ -66,7 +66,7 @@ theorem sum_normalized_hardEdgeTerminalMass_eq_one
     (hmN : m + 1 < N) {y : ℝ} (hy : y ≠ 0)
     (hnodes : ∀ x ∈ HTGeometry.gaussNodes s m, x ≠ 0) :
     ∑ x ∈ HTGeometry.gaussNodes s m,
-        (y * x ^ 4 * HTGeometry.monicOrthoNormSq s m) /
+        (y * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m) /
           xiShiftedHardEdgeGaussTerminalMass y s (m + 1)
             (HTGeometry.monicOrtho s (m + 1)) x = 1 := by
   calc
@@ -80,7 +80,7 @@ theorem sum_normalized_hardEdgeTerminalMass_eq_one
         h hmN y hroot
       have hnorm : HTGeometry.monicOrthoNormSq s m ≠ 0 :=
         ne_of_gt (HTGeometry.monicOrthoNorm_pos_below h (by omega))
-      have hrhs : y * x ^ 4 * HTGeometry.monicOrthoNormSq s m ≠ 0 :=
+      have hrhs : y * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m ≠ 0 :=
         mul_ne_zero (mul_ne_zero hy (pow_ne_zero 4 (hnodes x hx))) hnorm
       have hmass :
           xiShiftedHardEdgeGaussTerminalMass y s (m + 1)
@@ -140,7 +140,7 @@ theorem xiShiftedCanonicalAdmissionTerminalSourceResistance_mul_residue_mul_vacu
         (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n x *
           xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
             w n x) =
-      w ^ 2 * x ^ 4 *
+      w ^ (2 : ℕ) * x ^ (4 : ℕ) *
         HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) (n - 1) := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
   let s := xiShiftedRealMomentSequence w
@@ -156,12 +156,12 @@ theorem xiShiftedCanonicalAdmissionTerminalSourceResistance_mul_residue_mul_vacu
       (w := w) (n := m + 1) hx hroot
   rw [hsource]
   change HTGeometry.gaussTerminalSourceResistance s m x *
-      xiShiftedHardEdgeGaussTerminalMass (w ^ 2) s (m + 1)
+      xiShiftedHardEdgeGaussTerminalMass (w ^ (2 : ℕ)) s (m + 1)
         (HTGeometry.monicMomentAdmissionPolynomial s (m + 1)) x =
-    w ^ 2 * x ^ 4 * HTGeometry.monicOrthoNormSq s m
+    w ^ (2 : ℕ) * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m
   rw [hP]
   exact gaussTerminalSourceResistance_mul_hardEdgeTerminalMass_eq
-    hbelow (by omega) (w ^ 2) hroot'
+    hbelow (by omega) (w ^ (2 : ℕ)) hroot'
 
 /-- **Literal nonlinear arithmetic source aggregate.** Away from the zero hard node, reciprocal
 normalization of actual Padé-residue/completed-capacity products is exactly one.  The denominator
@@ -173,7 +173,7 @@ theorem sum_xiShiftedCanonicalAdmission_normalizedResidueMulVacuumFreeCapacity_e
     (hnodes : ∀ x ∈ HTGeometry.gaussNodes
       (xiShiftedRealMomentSequence w) (n - 1), x ≠ 0) :
     ∑ x ∈ HTGeometry.gaussNodes (xiShiftedRealMomentSequence w) (n - 1),
-        (w ^ 2 * x ^ 4 *
+        (w ^ (2 : ℕ) * x ^ (4 : ℕ) *
           HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) (n - 1)) /
           (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n x *
             xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
@@ -187,8 +187,8 @@ theorem sum_xiShiftedCanonicalAdmission_normalizedResidueMulVacuumFreeCapacity_e
     xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho hH
   calc
     _ = ∑ x ∈ HTGeometry.gaussNodes s m,
-        (w ^ 2 * x ^ 4 * HTGeometry.monicOrthoNormSq s m) /
-          xiShiftedHardEdgeGaussTerminalMass (w ^ 2) s (m + 1)
+        (w ^ (2 : ℕ) * x ^ (4 : ℕ) * HTGeometry.monicOrthoNormSq s m) /
+          xiShiftedHardEdgeGaussTerminalMass (w ^ (2 : ℕ)) s (m + 1)
             (HTGeometry.monicOrtho s (m + 1)) x := by
       apply Finset.sum_congr rfl
       intro x hx
@@ -257,7 +257,7 @@ theorem xiShiftedCanonicalAdmission_vacuumFreeTerminalSourceResistanceLaw
             (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue w n x *
               xiShiftedCanonicalAdmissionUnitRenormalizedNondegenerateHardEdgeEffectiveSourceCapacity
                 w n x) =
-          w ^ 2 * x ^ 4 *
+          w ^ (2 : ℕ) * x ^ (4 : ℕ) *
             HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) (n - 1)) := by
   refine ⟨sum_xiShiftedCanonicalAdmissionHardEdgeTerminalSourceResistance_eq_one hn hH,
     ?_, ?_⟩

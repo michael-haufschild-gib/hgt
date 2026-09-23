@@ -23,7 +23,7 @@ variable {N D : ℕ}
 ring. -/
 def jointCriticalitySquareSum (M : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) (k : Fin D → ℝ)
     (π : Equiv.Perm (Fin D)) : MvPolynomial (Fin D ⊕ Fin N) ℝ :=
-  ∑ i : Fin N, (jointCriticality M c k π i) ^ 2
+  ∑ i : Fin N, (jointCriticality M c k π i) ^ (2 : ℕ)
 
 theorem isHomogeneous_jointCriticalitySquareSum (M : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ)
     (hc : ∀ n, (c n).IsHomogeneous (M - n)) (k : Fin D → ℝ) (π : Equiv.Perm (Fin D)) :

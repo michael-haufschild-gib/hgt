@@ -55,7 +55,7 @@ theorem differentiableOn_normalizedBlaschkeFactor
     (blaschke_denom_ne_zero (by nlinarith [norm_nonneg a, norm_nonneg z])))
 
 private theorem conj_mul_eq_norm_cast_sq (a : ℂ) :
-    (starRingEnd ℂ) a * a = (‖a‖ : ℂ) ^ 2 := by
+    (starRingEnd ℂ) a * a = (‖a‖ : ℂ) ^ (2 : ℕ) := by
   rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   norm_cast
 
@@ -67,7 +67,7 @@ theorem normalizedBlaschkeFactor_sub_one
           (1 - (starRingEnd ℂ) a * z) := by
   rw [normalizedBlaschkeFactor, if_neg ha0, blaschkeFactor]
   have hsq := conj_mul_eq_norm_cast_sq a
-  have hconj : (starRingEnd ℂ) a = (‖a‖ : ℂ) ^ 2 / a :=
+  have hconj : (starRingEnd ℂ) a = (‖a‖ : ℂ) ^ (2 : ℕ) / a :=
     (eq_div_iff ha0).2 hsq
   let d : ℂ := 1 - (starRingEnd ℂ) a * z
   have hd : d ≠ 0 := hden

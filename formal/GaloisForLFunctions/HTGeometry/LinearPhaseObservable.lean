@@ -84,7 +84,7 @@ theorem phaseJet_linearObservable (omega : d → ℝ) (a : d → ℂ) (k : ℕ) 
       = linearObservable fun j => (Complex.I * (omega j : ℂ)) ^ k * a j := by
   induction k with
   | zero =>
-      have hfun : (fun j => (Complex.I * (omega j : ℂ)) ^ 0 * a j) = a := by
+      have hfun : (fun j => (Complex.I * (omega j : ℂ)) ^ (0 : ℕ) * a j) = a := by
         funext j
         rw [pow_zero, one_mul]
       rw [hfun]

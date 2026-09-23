@@ -45,7 +45,7 @@ theorem thetaCuspPoleStrippedMellinResponse_eq_GammaR
 theorem gammaReal_shift_six
     {s : ℂ} (hs0 : s ≠ 0) (hs2 : s + 2 ≠ 0) (hs4 : s + 4 ≠ 0) :
     Complex.Gammaℝ (s + 6) =
-      (s * (s + 2) * (s + 4) / (8 * (Real.pi : ℂ) ^ 3)) *
+      (s * (s + 2) * (s + 4) / (8 * (Real.pi : ℂ) ^ (3 : ℕ))) *
         Complex.Gammaℝ s := by
   calc
     Complex.Gammaℝ (s + 6) = Complex.Gammaℝ ((s + 4) + 2) := by
@@ -61,7 +61,7 @@ theorem gammaReal_shift_six
         (((s + 2) / (2 * (Real.pi : ℂ))) *
           ((s / (2 * (Real.pi : ℂ))) * Complex.Gammaℝ s)) := by
       rw [GaloisForLFunctions.gammaReal_shift_two hs0]
-    _ = (s * (s + 2) * (s + 4) / (8 * (Real.pi : ℂ) ^ 3)) *
+    _ = (s * (s + 2) * (s + 4) / (8 * (Real.pi : ℂ) ^ (3 : ℕ))) *
         Complex.Gammaℝ s := by
       have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
       field_simp [hpi]
@@ -72,7 +72,7 @@ theorem gammaReal_div_shift_six
     {s : ℂ} (hs0 : s ≠ 0) (hs2 : s + 2 ≠ 0) (hs4 : s + 4 ≠ 0)
     (hG : Complex.Gammaℝ s ≠ 0) :
     Complex.Gammaℝ s / Complex.Gammaℝ (s + 6) =
-      8 * (Real.pi : ℂ) ^ 3 / (s * (s + 2) * (s + 4)) := by
+      8 * (Real.pi : ℂ) ^ (3 : ℕ) / (s * (s + 2) * (s + 4)) := by
   rw [gammaReal_shift_six hs0 hs2 hs4]
   have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   field_simp [hs0, hs2, hs4, hG, hpi]
@@ -116,7 +116,7 @@ theorem thetaCuspMellinSixHolonomy_eq_primeHodgeHistory_m (n : ℕ) :
   have hn' :
       Complex.Gammaℝ ((2 * n + 3 : ℕ) : ℂ) /
           Complex.Gammaℝ ((2 * n + 9 : ℕ) : ℂ) =
-        8 * (Real.pi : ℂ) ^ 3 /
+        8 * (Real.pi : ℂ) ^ (3 : ℕ) /
           (((2 * n + 3 : ℕ) : ℂ) * ((2 * n + 5 : ℕ) : ℂ) *
             ((2 * n + 7 : ℕ) : ℂ)) := by
     convert hn using 1 <;> push_cast <;> ring
@@ -125,7 +125,7 @@ theorem thetaCuspMellinSixHolonomy_eq_primeHodgeHistory_m (n : ℕ) :
     (Complex.Gammaℝ_ne_zero_of_re_pos (by norm_num))
   have hbase' :
       Complex.Gammaℝ 3 / Complex.Gammaℝ 9 =
-        8 * (Real.pi : ℂ) ^ 3 / (3 * 5 * 7) := by
+        8 * (Real.pi : ℂ) ^ (3 : ℕ) / (3 * 5 * 7) := by
     convert hbase using 1 <;> norm_num
   rw [hn', hbase', PrimeHodgeHistory.m]
   have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero

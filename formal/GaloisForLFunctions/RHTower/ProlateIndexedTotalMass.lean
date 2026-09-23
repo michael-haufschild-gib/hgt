@@ -33,8 +33,8 @@ open _root_.RHTower
 
 /-- A difference of squares of bounded quantities is the distance times twice the bound. -/
 theorem abs_sq_sub_sq_le {u v B : ℝ} (hu : |u| ≤ B) (hv : |v| ≤ B) :
-    |u ^ 2 - v ^ 2| ≤ 2 * B * |u - v| := by
-  have hfac : u ^ 2 - v ^ 2 = (u - v) * (u + v) := by ring
+    |u ^ (2 : ℕ) - v ^ (2 : ℕ)| ≤ 2 * B * |u - v| := by
+  have hfac : u ^ (2 : ℕ) - v ^ (2 : ℕ) = (u - v) * (u + v) := by ring
   have hsum : |u + v| ≤ 2 * B := by
     refine le_trans (abs_add_le u v) ?_
     linarith
@@ -130,8 +130,8 @@ theorem eventually_indexedRung_windowDist (n : ℕ) {K : ℝ} (hK : 0 < K) :
 /-- **The window mass converges to the Hermite window mass.** -/
 theorem tendsto_indexedRung_windowMass (n : ℕ) {K : ℝ} (hK : 0 < K) :
     Tendsto (fun a : ProlatePositiveAperture =>
-        ∫ x in (-K)..K, (indexedRungAmplitude n * indexedOscillatorProfile n a x) ^ 2)
-      atTop (𝓝 (∫ x in (-K)..K, hermiteFun (2 * n) x ^ 2)) := by
+        ∫ x in (-K)..K, (indexedRungAmplitude n * indexedOscillatorProfile n a x) ^ (2 : ℕ))
+      atTop (𝓝 (∫ x in (-K)..K, hermiteFun (2 * n) x ^ (2 : ℕ))) := by
   set κ : ℝ := indexedRungAmplitude n with hκ
   obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ x ∈ Icc (-K) K, |hermiteFun (2 * n) x| ≤ C := by
     obtain ⟨C, hC⟩ := (isCompact_Icc (a := -K) (b := K)).exists_bound_of_continuousOn
@@ -145,8 +145,8 @@ theorem tendsto_indexedRung_windowMass (n : ℕ) {K : ℝ} (hK : 0 < K) :
     tendsto_indexedOscillatorBandwidth_atTop hK
   have heven : Even (2 * n) := ⟨n, by ring⟩
   have hbnd : ∀ᶠ a in (atTop : Filter ProlatePositiveAperture),
-      ‖(∫ x in (-K)..K, (κ * indexedOscillatorProfile n a x) ^ 2)
-        - ∫ x in (-K)..K, hermiteFun (2 * n) x ^ 2‖
+      ‖(∫ x in (-K)..K, (κ * indexedOscillatorProfile n a x) ^ (2 : ℕ))
+        - ∫ x in (-K)..K, hermiteFun (2 * n) x ^ (2 : ℕ)‖
         ≤ (2 * Bmax * indexedRungEnvelope n K a) * (2 * K) := by
     filter_upwards [hgood, eventually_indexedRung_windowDist n hK] with a ha hdist
     have hAmp : ∀ x ∈ Icc (-K) K, |κ * indexedOscillatorProfile n a x| ≤ Bmax := by
@@ -166,17 +166,17 @@ theorem tendsto_indexedRung_windowMass (n : ℕ) {K : ℝ} (hK : 0 < K) :
         have hP := indexedOscillatorProfile_even n a x
         have h := hpos (-x) hneg
         rwa [hP] at h
-    have hsub : (∫ x in (-K)..K, (κ * indexedOscillatorProfile n a x) ^ 2)
-        - (∫ x in (-K)..K, hermiteFun (2 * n) x ^ 2)
-        = ∫ x in (-K)..K, ((κ * indexedOscillatorProfile n a x) ^ 2
-            - hermiteFun (2 * n) x ^ 2) := by
+    have hsub : (∫ x in (-K)..K, (κ * indexedOscillatorProfile n a x) ^ (2 : ℕ))
+        - (∫ x in (-K)..K, hermiteFun (2 * n) x ^ (2 : ℕ))
+        = ∫ x in (-K)..K, ((κ * indexedOscillatorProfile n a x) ^ (2 : ℕ)
+            - hermiteFun (2 * n) x ^ (2 : ℕ)) := by
       rw [← intervalIntegral.integral_sub]
       · exact ((continuous_const.mul (continuous_indexedOscillatorProfile n a)).pow
           2).intervalIntegrable _ _
       · exact ((continuous_hermiteFun (2 * n)).pow 2).intervalIntegrable _ _
     rw [hsub]
     have hptwise : ∀ x ∈ uIoc (-K) K,
-        ‖(κ * indexedOscillatorProfile n a x) ^ 2 - hermiteFun (2 * n) x ^ 2‖
+        ‖(κ * indexedOscillatorProfile n a x) ^ (2 : ℕ) - hermiteFun (2 * n) x ^ (2 : ℕ)‖
           ≤ 2 * Bmax * indexedRungEnvelope n K a := by
       intro x hx
       have hxIcc : x ∈ Icc (-K) K := by
@@ -198,15 +198,15 @@ theorem tendsto_indexedRung_windowMass (n : ℕ) {K : ℝ} (hK : 0 < K) :
     have h := ((tendsto_indexedRungEnvelope n K).const_mul (2 * Bmax)).mul_const (2 * K)
     simpa using h
   have hzero := squeeze_zero_norm' hbnd henv
-  have hadd := hzero.add_const (∫ x in (-K)..K, hermiteFun (2 * n) x ^ 2)
+  have hadd := hzero.add_const (∫ x in (-K)..K, hermiteFun (2 * n) x ^ (2 : ℕ))
   simpa using hadd
 
 /-- **The total mass of the canonical indexed profile.**  The window–total squeeze identifies the
 mass over the natural window with the whole-line mass of the Hermite rung. -/
 theorem tendsto_indexedRung_totalMass (n : ℕ) :
     Tendsto (fun a : ProlatePositiveAperture =>
-        indexedRungAmplitude n ^ 2 * indexedOscillatorTotalMass n a)
-      atTop (𝓝 (∫ x, hermiteFun (2 * n) x ^ 2)) := by
+        indexedRungAmplitude n ^ (2 : ℕ) * indexedOscillatorTotalMass n a)
+      atTop (𝓝 (∫ x, hermiteFun (2 * n) x ^ (2 : ℕ))) := by
   set κ : ℝ := indexedRungAmplitude n with hκ
   set M : ℝ := 4 * (n : ℝ) + 2 with hM
   have hMpos : 0 < M := by rw [hM]; positivity
@@ -214,8 +214,8 @@ theorem tendsto_indexedRung_totalMass (n : ℕ) :
       ∀ᶠ a in (atTop : Filter ProlatePositiveAperture),
         K ≤ Real.sqrt (indexedOscillatorBandwidth a) := by
     intro K hK
-    filter_upwards [tendsto_indexedOscillatorBandwidth_atTop.eventually_ge_atTop (K ^ 2)] with a ha
-    calc K = Real.sqrt (K ^ 2) := (Real.sqrt_sq hK.le).symm
+    filter_upwards [tendsto_indexedOscillatorBandwidth_atTop.eventually_ge_atTop (K ^ (2 : ℕ))] with a ha
+    calc K = Real.sqrt (K ^ (2 : ℕ)) := (Real.sqrt_sq hK.le).symm
       _ ≤ Real.sqrt (indexedOscillatorBandwidth a) := Real.sqrt_le_sqrt ha
   have hmuM : ∀ᶠ a in (atTop : Filter ProlatePositiveAperture),
       indexedOscillatorSeparation n a ≤ M := by
@@ -223,16 +223,16 @@ theorem tendsto_indexedRung_totalMass (n : ℕ) :
       (eventually_lt_nhds (by rw [hM]; linarith : 4 * (n : ℝ) + 1 < M))] with a ha
     exact ha.le
   refine tendsto_total_of_window (M := M)
-    (N := fun a => κ ^ 2 * indexedOscillatorTotalMass n a)
-    (W := fun K a => ∫ x in (-K)..K, (κ * indexedOscillatorProfile n a x) ^ 2)
-    (G := fun K => ∫ x in (-K)..K, hermiteFun (2 * n) x ^ 2)
+    (N := fun a => κ ^ (2 : ℕ) * indexedOscillatorTotalMass n a)
+    (W := fun K a => ∫ x in (-K)..K, (κ * indexedOscillatorProfile n a x) ^ (2 : ℕ))
+    (G := fun K => ∫ x in (-K)..K, hermiteFun (2 * n) x ^ (2 : ℕ))
     hMpos ?_ ?_ ?_ ?_
   · intro K hK _
     filter_upwards [hsqrt K hK] with a hKa
     have hbase := window_le_total (f := indexedOscillatorProfile n a) hKa
       (continuous_indexedOscillatorProfile n a)
-    have hrw : ∀ R : ℝ, (∫ x in (-R)..R, (κ * indexedOscillatorProfile n a x) ^ 2)
-        = κ ^ 2 * ∫ x in (-R)..R, (indexedOscillatorProfile n a x) ^ 2 := by
+    have hrw : ∀ R : ℝ, (∫ x in (-R)..R, (κ * indexedOscillatorProfile n a x) ^ (2 : ℕ))
+        = κ ^ (2 : ℕ) * ∫ x in (-R)..R, (indexedOscillatorProfile n a x) ^ (2 : ℕ) := by
       intro R
       rw [← intervalIntegral.integral_const_mul]
       exact intervalIntegral.integral_congr fun x _ => by ring
@@ -245,25 +245,25 @@ theorem tendsto_indexedRung_totalMass (n : ℕ) :
       (continuous_indexedOscillatorProfile n a)
     have hmom := indexedOscillatorSecondMoment_le n a
     have hTM := indexedOscillatorTotalMass_nonneg n a
-    have hK2 : (0 : ℝ) < K ^ 2 := by positivity
-    have hbase : indexedOscillatorTotalMass n a * (1 - M / K ^ 2)
-        ≤ ∫ x in (-K)..K, (indexedOscillatorProfile n a x) ^ 2 := by
+    have hK2 : (0 : ℝ) < K ^ (2 : ℕ) := by positivity
+    have hbase : indexedOscillatorTotalMass n a * (1 - M / K ^ (2 : ℕ))
+        ≤ ∫ x in (-K)..K, (indexedOscillatorProfile n a x) ^ (2 : ℕ) := by
       have h1 : indexedOscillatorTotalMass n a
-          - (∫ x in (-K)..K, (indexedOscillatorProfile n a x) ^ 2)
-          ≤ (1 / K ^ 2) * indexedOscillatorSecondMoment n a := by
+          - (∫ x in (-K)..K, (indexedOscillatorProfile n a x) ^ (2 : ℕ))
+          ≤ (1 / K ^ (2 : ℕ)) * indexedOscillatorSecondMoment n a := by
         rw [indexedOscillatorTotalMass, indexedOscillatorSecondMoment]
         exact htail
       have h2 : indexedOscillatorSecondMoment n a ≤ M * indexedOscillatorTotalMass n a :=
         le_trans hmom (mul_le_mul_of_nonneg_right hmu hTM)
-      have h3 : (1 / K ^ 2) * indexedOscillatorSecondMoment n a
-          ≤ (1 / K ^ 2) * (M * indexedOscillatorTotalMass n a) :=
+      have h3 : (1 / K ^ (2 : ℕ)) * indexedOscillatorSecondMoment n a
+          ≤ (1 / K ^ (2 : ℕ)) * (M * indexedOscillatorTotalMass n a) :=
         mul_le_mul_of_nonneg_left h2 (by positivity)
-      have hdiv : (1 / K ^ 2) * (M * indexedOscillatorTotalMass n a)
-          = (M / K ^ 2) * indexedOscillatorTotalMass n a := by field_simp
+      have hdiv : (1 / K ^ (2 : ℕ)) * (M * indexedOscillatorTotalMass n a)
+          = (M / K ^ (2 : ℕ)) * indexedOscillatorTotalMass n a := by field_simp
       rw [hdiv] at h3
       nlinarith [h1, h3]
-    have hrw : (∫ x in (-K)..K, (κ * indexedOscillatorProfile n a x) ^ 2)
-        = κ ^ 2 * ∫ x in (-K)..K, (indexedOscillatorProfile n a x) ^ 2 := by
+    have hrw : (∫ x in (-K)..K, (κ * indexedOscillatorProfile n a x) ^ (2 : ℕ))
+        = κ ^ (2 : ℕ) * ∫ x in (-K)..K, (indexedOscillatorProfile n a x) ^ (2 : ℕ) := by
       rw [← intervalIntegral.integral_const_mul]
       exact intervalIntegral.integral_congr fun x _ => by ring
     rw [hrw]

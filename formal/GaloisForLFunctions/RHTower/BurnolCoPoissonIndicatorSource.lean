@@ -19,10 +19,10 @@ namespace RHTower
 private theorem norm_burnolCoPoissonRightSum_indicator_le_global
     {b : ℝ} (hb : 0 < b) (hb1 : b ≤ 1) (t : ℝ) :
     ‖burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t‖ ≤
-      2 * (4 * b + 4 / b) + (2 / b ^ 2 + 2 * Real.log b⁻¹) * (1 + 2 / b) := by
+      2 * (4 * b + 4 / b) + (2 / b ^ (2 : ℕ) + 2 * Real.log b⁻¹) * (1 + 2 / b) := by
   have hprofile := norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le_profile hb hb1 t
   have hC : 0 ≤
-      2 * (4 * b + 4 / b) + (2 / b ^ 2 + 2 * Real.log b⁻¹) * (1 + 2 / b) := by
+      2 * (4 * b + 4 / b) + (2 / b ^ (2 : ℕ) + 2 * Real.log b⁻¹) * (1 + 2 / b) := by
     have hlog := two_log_inv_nonneg hb hb1
     positivity
   have hinv : (1 + |t|)⁻¹ ≤ 1 := by

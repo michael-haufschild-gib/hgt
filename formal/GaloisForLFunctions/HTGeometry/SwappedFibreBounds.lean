@@ -26,7 +26,7 @@ variable {K : Type*} [Field K] {m n : ℕ}
 /-- **At reciprocal depth one the fibre has at most the critical binomial multiplicity of
 points.** -/
 theorem nat_card_criticalFibre_snd_one_le_of_tail (hm : 0 < m) {U V : K[X]}
-    (hU : (X : K[X]) ^ m ∣ U) (hV : (X : K[X]) ^ 1 ∣ V)
+    (hU : (X : K[X]) ^ m ∣ U) (hV : (X : K[X]) ^ (1 : ℕ) ∣ V)
     (hU0 : U.coeff 0 = 0) (hV0 : V.coeff 0 = 0) (hUm : U.coeff m ≠ 0) :
     Nat.card (criticalFibre K m 1 U V) ≤ criticalHorizonMultiplicity m 1 := by
   rw [Nat.card_congr (criticalFibreSwap m 1 U V), criticalHorizonMultiplicity_comm]
@@ -36,7 +36,7 @@ theorem nat_card_criticalFibre_snd_one_le_of_tail (hm : 0 < m) {U V : K[X]}
 
 /-- **At reciprocal depth two the fibre is finite, with an explicit bound.** -/
 theorem nat_card_criticalFibre_snd_depth_two_le (hm : 0 < m) {U V : K[X]}
-    (hU : (X : K[X]) ^ m ∣ U) (hV : (X : K[X]) ^ 2 ∣ V)
+    (hU : (X : K[X]) ^ m ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (hU0 : U.coeff 0 = 0) (hV0 : V.coeff 0 = 0)
     (hgen : ∀ p q : criticalFibre K 2 m V U, p ≠ q →
       Polynomial.resultant (hankelCurve (p.1.1 + V) V m) (hankelCurve (q.1.1 + V) V m) m m ≠ 0 ∧
@@ -50,7 +50,7 @@ theorem nat_card_criticalFibre_snd_depth_two_le (hm : 0 < m) {U V : K[X]}
 the unconditional depth-two bound: the hypothesis moves from the reciprocal packet to the jet
 packet. -/
 theorem nat_card_criticalFibre_two_two_le_of_critical_fst {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V) (hu₂ : U.coeff 2 ≠ 0) :
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V) (hu₂ : U.coeff 2 ≠ 0) :
     Nat.card (criticalFibre K 2 2 U V) ≤ 12 := by
   rw [Nat.card_congr (criticalFibreSwap 2 2 U V)]
   exact nat_card_criticalFibre_two_two_le_of_critical hV hU hu₂

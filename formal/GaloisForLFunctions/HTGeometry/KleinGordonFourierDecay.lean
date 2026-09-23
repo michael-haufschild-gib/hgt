@@ -30,20 +30,20 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDim
 
 /-- The Klein–Gordon operator on Schwartz functions, as a multiplier. -/
 noncomputable def kgSchwartzOp (f : 𝓢(E, ℂ)) : 𝓢(E, ℂ) :=
-  fourierMultiplierCLM ℂ (fun ξ : E => ((kgFreq ξ ^ 2 : ℝ) : ℂ)) f
+  fourierMultiplierCLM ℂ (fun ξ : E => ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ)) f
 
 theorem kgSchwartzOp_eq (f : 𝓢(E, ℂ)) :
-    kgSchwartzOp f = f - (((2 * Real.pi) ^ 2 : ℝ))⁻¹ • Δ f := by
+    kgSchwartzOp f = f - (((2 * Real.pi) ^ (2 : ℕ) : ℝ))⁻¹ • Δ f := by
   rw [kgSchwartzOp, ← fourierMultiplierCLM_kgFreqSq (F := ℂ) f]
   exact fourierMultiplierCLM_ofReal ℂ ((hasTemperateGrowth_kgFreq E).pow 2) f
 
 /-- **The multiplier multiplies the transform by the symbol.** -/
 theorem fourier_kgSchwartzOp (f : 𝓢(E, ℂ)) (η : E) :
-    (𝓕 (kgSchwartzOp f)) η = ((kgFreq η ^ 2 : ℝ) : ℂ) * (𝓕 f) η := by
-  have hgrow : Function.HasTemperateGrowth fun ξ : E => ((kgFreq ξ ^ 2 : ℝ) : ℂ) :=
+    (𝓕 (kgSchwartzOp f)) η = ((kgFreq η ^ (2 : ℕ) : ℝ) : ℂ) * (𝓕 f) η := by
+  have hgrow : Function.HasTemperateGrowth fun ξ : E => ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) :=
     Complex.hasTemperateGrowth_ofReal.comp ((hasTemperateGrowth_kgFreq E).pow 2)
   have hval : 𝓕 (kgSchwartzOp f)
-      = smulLeftCLM ℂ (fun ξ : E => ((kgFreq ξ ^ 2 : ℝ) : ℂ)) (𝓕 f) := by
+      = smulLeftCLM ℂ (fun ξ : E => ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ)) (𝓕 f) := by
     rw [kgSchwartzOp, fourierMultiplierCLM_apply]
     exact FourierInvPair.fourier_fourierInv_eq _
   rw [hval, smulLeftCLM_apply_apply hgrow (𝓕 f) η, smul_eq_mul]

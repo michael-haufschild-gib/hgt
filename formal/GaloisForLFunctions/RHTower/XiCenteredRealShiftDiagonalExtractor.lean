@@ -170,13 +170,13 @@ theorem tendsto_finitePrimeArchRealShiftDiagonalSquareBudget
     (s : Finset ℂ) (him : ∀ x ∈ s, |x.im| < 1 / 2) :
     Tendsto (finitePrimeArchRealShiftDiagonalSquareBudget s) atTop
       (nhds (∑ x ∈ s,
-        ((((analyticOrderAt XiC x).toNat : ℕ) : ℂ)) ^ 2)) := by
+        ((((analyticOrderAt XiC x).toNat : ℕ) : ℂ)) ^ (2 : ℕ))) := by
   change Tendsto
     (fun n : ℕ => ∑ x ∈ s,
       (((analyticOrderAt XiC x).toNat : ℕ) : ℂ) *
         centeredPrimeArchRealShiftDiagonalExtractor x n)
     atTop (nhds (∑ x ∈ s,
-      ((((analyticOrderAt XiC x).toNat : ℕ) : ℂ)) ^ 2))
+      ((((analyticOrderAt XiC x).toNat : ℕ) : ℂ)) ^ (2 : ℕ)))
   apply tendsto_finsetSum s
   intro x hx
   have hconst : Tendsto

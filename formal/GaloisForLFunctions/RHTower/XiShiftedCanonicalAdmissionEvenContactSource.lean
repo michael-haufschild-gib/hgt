@@ -81,11 +81,11 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_firstEvenContact_eq_even
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hm : 0 < m)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + 2 * m,
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0) :
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     xiShiftedAdaptiveMixedCompletedArithmeticSource w (P * X ^ (m - 1)) =
       2 * ((n + m : ℕ) : ℝ) *
-        xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + 2 * m) := by
+        xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + 2 * m) := by
   dsimp only
   have hsource :=
     xiShiftedCompletedMomentAggregate_firstEvenContact_eq_evenPadeDefect
@@ -130,19 +130,19 @@ theorem xiShiftedMomentHankelMatrix_succ_not_posSemidef_of_first_even_contact
       (momentInner_liftedNullPair_eq_zero_of_odd_contact
         (y := y) (n := n) (m := m - 1) (i := m - 1) (j := m - 1)
         c hlast hzero' (by omega))
-  have hpoly : U * V = (P * X ^ m) ^ 2 := by
+  have hpoly : U * V = (P * X ^ m) ^ (2 : ℕ) := by
     dsimp only [U, V]
     calc
       (P * X ^ (m - 1)) * (P * X ^ (m + 1)) =
-          P ^ 2 * (X ^ (m - 1) * X ^ (m + 1)) := by ring
-      _ = P ^ 2 * X ^ ((m - 1) + (m + 1)) := by
+          P ^ (2 : ℕ) * (X ^ (m - 1) * X ^ (m + 1)) := by ring
+      _ = P ^ (2 : ℕ) * X ^ ((m - 1) + (m + 1)) := by
         congr 1
         exact (pow_add X (m - 1) (m + 1)).symm
-      _ = P ^ 2 * X ^ (2 * m) := by
+      _ = P ^ (2 : ℕ) * X ^ (2 * m) := by
         rw [show (m - 1) + (m + 1) = 2 * m by omega]
-      _ = P ^ 2 * (X ^ m * X ^ m) := by
+      _ = P ^ (2 : ℕ) * (X ^ m * X ^ m) := by
         rw [show 2 * m = m + m by omega, pow_add]
-      _ = (P * X ^ m) ^ 2 := by ring
+      _ = (P * X ^ m) ^ (2 : ℕ) := by ring
   have hUV : HTGeometry.momentInner
       (fun k => (xiShiftedReciprocalMoment y k).re) U V =
         xiShiftedHankelBoundaryPadeDefect y c (2 * n + 2 * m) := by
@@ -162,13 +162,13 @@ law without a posterior normalization choice. -/
 theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_canonicalAdmission_firstEvenContact
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hm : 0 < m)
     (hzero : ∀ k < 2 * n + 2 * m,
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2)
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ))
         (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) k = 0) :
     xiShiftedAdaptiveMixedCompletedArithmeticSource w
         (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n *
           X ^ (m - 1)) =
       2 * ((n + m : ℕ) : ℝ) *
-        xiShiftedHankelBoundaryPadeDefect (w ^ 2)
+        xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ))
           (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n)
           (2 * n + 2 * m) := by
   let c := HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n
@@ -184,20 +184,20 @@ defect is a strictly positive literal arithmetic source, fills exactly one PSD r
 exhausted by failure of the following principal block. -/
 theorem xiShiftedCanonicalAdmission_firstEvenContact_source_pos_rankFill_then_escape
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hm : 0 < m)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ
       HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0)
     (hzero : ∀ k < 2 * n + 2 * m,
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2)
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ))
         (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) k = 0)
-    (hfirst : 0 < xiShiftedHankelBoundaryPadeDefect (w ^ 2)
+    (hfirst : 0 < xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ))
       (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n)
       (2 * n + 2 * m)) :
     0 < xiShiftedAdaptiveMixedCompletedArithmeticSource w
         (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n *
           X ^ (m - 1)) ∧
-      (xiShiftedMomentHankelMatrix (w ^ 2) (n + m + 1)).PosSemidef ∧
-      ¬ (xiShiftedMomentHankelMatrix (w ^ 2) (n + m + 2)).PosSemidef := by
+      (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + m + 1)).PosSemidef ∧
+      ¬ (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + m + 2)).PosSemidef := by
   let c := HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n
   have hlast : c (Fin.last n) ≠ 0 := by simp [c]
   have hsource :=

@@ -51,7 +51,7 @@ def ccmOutgoingPrimeQuantileBoundary (N : ℕ) : ℝ :=
 theorem ccmOutgoingPrimeCumulative_nonneg (N : ℕ) :
     0 ≤ ccmOutgoingPrimeCumulative N := by
   unfold ccmOutgoingPrimeCumulative
-  exact Finset.sum_nonneg fun n hn => criticalMellinAtomWeight_nonneg n
+  exact Finset.sum_nonneg fun n hn => criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
 
 theorem ccmOutgoingPrimeCumulative_succ (N : ℕ) :
     ccmOutgoingPrimeCumulative (N + 1) =
@@ -76,7 +76,7 @@ theorem ccmOutgoingPrimeQuantileBoundary_mono_step (N : ℕ) :
     ccmOutgoingPrimeQuantileBoundary N ≤
       ccmOutgoingPrimeQuantileBoundary (N + 1) := by
   have hP := ccmOutgoingPrimeCumulative_nonneg N
-  have hw := criticalMellinAtomWeight_nonneg N
+  have hw := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer N
   unfold ccmOutgoingPrimeQuantileBoundary
   rw [ccmOutgoingPrimeCumulative_succ]
   gcongr

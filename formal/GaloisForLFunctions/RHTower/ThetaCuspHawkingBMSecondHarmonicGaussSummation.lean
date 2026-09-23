@@ -142,7 +142,7 @@ theorem exists_nat_norm_add_lt_add_of_re_lt (a : ℂ) (r : ℝ)
     (h : a.re < r) :
     ∃ p : ℕ, ‖a + (p : ℂ)‖ < r + p := by
   let d : ℝ := r - a.re
-  let M : ℝ := max (-r) ((a.im ^ 2 + a.re ^ 2 - r ^ 2) / (2 * d))
+  let M : ℝ := max (-r) ((a.im ^ (2 : ℕ) + a.re ^ (2 : ℕ) - r ^ (2 : ℕ)) / (2 * d))
   obtain ⟨p, hp⟩ := exists_nat_gt M
   refine ⟨p, ?_⟩
   have hd : 0 < d := by
@@ -153,8 +153,8 @@ theorem exists_nat_norm_add_lt_add_of_re_lt (a : ℂ) (r : ℝ)
     linarith
   rw [← sq_lt_sq₀ (norm_nonneg _) (le_of_lt hrp), Complex.sq_norm,
     Complex.normSq_apply]
-  have hquot : (a.im ^ 2 + a.re ^ 2 - r ^ 2) / (2 * d) < p := by
-    have hM : (a.im ^ 2 + a.re ^ 2 - r ^ 2) / (2 * d) ≤ M := le_max_right _ _
+  have hquot : (a.im ^ (2 : ℕ) + a.re ^ (2 : ℕ) - r ^ (2 : ℕ)) / (2 * d) < p := by
+    have hM : (a.im ^ (2 : ℕ) + a.re ^ (2 : ℕ) - r ^ (2 : ℕ)) / (2 * d) ≤ M := le_max_right _ _
     linarith
   norm_num [Complex.add_re, Complex.add_im]
   have h2d : 0 < 2 * d := by positivity

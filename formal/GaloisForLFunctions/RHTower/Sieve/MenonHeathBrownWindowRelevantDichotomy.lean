@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.MenonHeathBrownSixFactorDichotomy
 # Degree-three window relevance to Menon's factor dichotomy
 
 For `k = 3`, window relevance places the literal core above `a / 64`.  Once
-`64^8 ≤ a`, this is at least `a^(7/8)`, exactly the support threshold required by Menon's
+`64^(8 : ℕ) ≤ a`, this is at least `a^(7/8)`, exactly the support threshold required by Menon's
 six-factor medium/long classification.
 -/
 

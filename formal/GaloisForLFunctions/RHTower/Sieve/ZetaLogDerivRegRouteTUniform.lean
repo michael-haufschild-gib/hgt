@@ -59,7 +59,7 @@ theorem routeTZeroFreeWidth_le_one_sixtieth (A γ : ℝ) :
 existential, so the width in the conclusion is the width of that same region. -/
 theorem exists_logDeriv_zeta_bound_routeT_of_region {A : ℝ}
     (hA : ∀ β γ : ℝ, 100000 ≤ |γ| →
-      routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight |γ| → β ≤ 1 →
+      routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight |γ| → β ≤ 1 →
       1 - routeTZeroFreeWidth A |γ| < β →
       riemannZeta ((β : ℂ) + (γ : ℂ) * Complex.I) ≠ 0) :
     ∃ C : ℝ, 0 < C ∧

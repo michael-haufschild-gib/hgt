@@ -16,8 +16,8 @@ summand and the Schur short is the full positive corner `4 * normSq c`.  Thus th
 no longer erase the landed coordinate.
 
 The source-horizontal Wold residual supplies the independent cubic normalization.  On a
-strict-right copy with centered rate `2a`, its limiting response is `-(2/3)(2a)^3`, while the
-Route-P conormal diagonal is `1/(4a^3)`.  Their product is exactly `-4/3`; after the four-orientation
+strict-right copy with centered rate `2a`, its limiting response is `-(2/3)(2a)^(3 : ℕ)`, while the
+Route-P conormal diagonal is `1/(4a^(3 : ℕ))`.  Their product is exactly `-4/3`; after the four-orientation
 orbit the positive quantum is `16/3 * normSq c`, independent of the zero's distance from the
 critical line.  The correspondingly normalized primitive Euler source budget is strictly smaller
 for every nonzero coefficient.
@@ -111,7 +111,7 @@ theorem routePPrimitiveGammaJuliaXiCopySharedOrientationBlock_short_ne_zero
 def sourceZeroHorizontalWoldRegularizedRoutePConormalResponse
     (q : XiRightZeroCopy) (N : ℕ) : ℝ :=
   -sourceZeroHorizontalWoldPrimeClockCubicResponse q.1 N *
-    (1 / (4 * (xiRightCenteredZero q).re ^ 3))
+    (1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ)))
 
 /-- Exact cancellation of the horizontal cubic scale: every retained copy has limiting quantum
 `4/3`, independently of its distance from the critical line and of its ordinate. -/
@@ -120,7 +120,7 @@ theorem tendsto_sourceZeroHorizontalWoldRegularizedRoutePConormalResponse
     Tendsto (sourceZeroHorizontalWoldRegularizedRoutePConormalResponse q)
       atTop (nhds (4 / 3 : ℝ)) := by
   have h := (tendsto_sourceZeroHorizontalWoldPrimeClockCubicResponse q.1).neg.mul_const
-    (1 / (4 * (xiRightCenteredZero q).re ^ 3))
+    (1 / (4 * (xiRightCenteredZero q).re ^ (3 : ℕ)))
   convert h using 1
   · rfl
   · rw [HedenmalmThetaSource.primeDepthBVWoldXiCenteredRate_right_eq_two_mul_re]

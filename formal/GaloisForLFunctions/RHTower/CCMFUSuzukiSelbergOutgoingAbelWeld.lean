@@ -116,7 +116,7 @@ theorem coherentCompletedOutgoing_mul_eq_abel_add_latticeDefect
         coherentSquareRootPolarLatticeDefect M := by
   have hMR : (0 : ℝ) < M := by positivity
   have hsqrt : Real.sqrt (M : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hMR).ne'
-  have hsqrtSq : Real.sqrt (M : ℝ) ^ 2 = (M : ℝ) := Real.sq_sqrt hMR.le
+  have hsqrtSq : Real.sqrt (M : ℝ) ^ (2 : ℕ) = (M : ℝ) := Real.sq_sqrt hMR.le
   rw [unitRieszCoherentCompletedOutgoingCharge,
     unitRieszCoherentPolarOutgoingCharge_eq,
     unitRieszCoherentPrimeOutgoingCharge_eq_dilation_normalForm]
@@ -136,7 +136,7 @@ theorem coherentCompletedOutgoing_mul_eq_abel_add_latticeDefect
       ArithmeticFunction.vonMangoldt k *
             ((M : ℝ) - Real.sqrt M * Real.sqrt k) =
           ArithmeticFunction.vonMangoldt k *
-            (Real.sqrt M ^ 2 - Real.sqrt M * Real.sqrt k) := by
+            (Real.sqrt M ^ (2 : ℕ) - Real.sqrt M * Real.sqrt k) := by
               rw [hsqrtSq]
       _ = ArithmeticFunction.vonMangoldt k * Real.sqrt M *
             (Real.sqrt M - Real.sqrt k) := by ring
@@ -283,7 +283,7 @@ theorem riemannHypothesis_iff_coherentSelbergSquareRootAbelBounded :
     refine ⟨B / 2 + 1, by positivity, ?_⟩
     intro M hM
     have hMR : (0 : ℝ) < M := by positivity
-    have hsqrtSq : Real.sqrt (M : ℝ) ^ 2 = (M : ℝ) :=
+    have hsqrtSq : Real.sqrt (M : ℝ) ^ (2 : ℕ) = (M : ℝ) :=
       Real.sq_sqrt hMR.le
     have hMone : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast (by omega : 1 ≤ M)
     have hsqrtLe : Real.sqrt (M : ℝ) ≤ (M : ℝ) := by
@@ -315,7 +315,7 @@ theorem riemannHypothesis_iff_coherentSelbergSquareRootAbelBounded :
     refine ⟨2 * (B + 1), by positivity, ?_⟩
     intro M hM
     have hMR : (0 : ℝ) < M := by positivity
-    have hsqrtSq : Real.sqrt (M : ℝ) ^ 2 = (M : ℝ) :=
+    have hsqrtSq : Real.sqrt (M : ℝ) ^ (2 : ℕ) = (M : ℝ) :=
       Real.sq_sqrt hMR.le
     have hMone : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast (by omega : 1 ≤ M)
     have hsqrtLe : Real.sqrt (M : ℝ) ≤ (M : ℝ) := by

@@ -36,7 +36,7 @@ theorem primeArchEndpointBernsteinAbelSusceptibilityFinite_of_riemannHypothesis
     summable_geometric_of_lt_one ht0 ht1
   refine Summable.of_nonneg_of_le
     (fun n => mul_nonneg (bernsteinCoefficientPurity_nonneg _ n) (pow_nonneg ht0 n))
-    (fun n => ?_) (hgeo.mul_left (normalizedPrimeArchMoment 0 ^ 2))
+    (fun n => ?_) (hgeo.mul_left (normalizedPrimeArchMoment 0 ^ (2 : ℕ)))
   exact mul_le_mul_of_nonneg_right
     (primeArchEndpointBernsteinPurity_le_mass_sq_of_riemannHypothesis hRH n)
     (pow_nonneg ht0 n)
@@ -44,9 +44,9 @@ theorem primeArchEndpointBernsteinAbelSusceptibilityFinite_of_riemannHypothesis
 /-- The narrow-sector divisor estimate gives an unconditional Abel chamber. -/
 theorem primeArchEndpointBernsteinAbelSusceptibilityFinite_of_sector_contraction
     {t : ℝ} (ht0 : 0 ≤ t)
-    (ht1 : xiSectorConfinedBernsteinAmplitudeBase ^ 2 * t < 1) :
+    (ht1 : xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) * t < 1) :
     PrimeArchEndpointBernsteinAbelSusceptibilityFinite t := by
-  let q := xiSectorConfinedBernsteinAmplitudeBase ^ 2 * t
+  let q := xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) * t
   have hq0 : 0 ≤ q := by
     dsimp only [q]
     exact mul_nonneg (sq_nonneg _) ht0
@@ -54,14 +54,14 @@ theorem primeArchEndpointBernsteinAbelSusceptibilityFinite_of_sector_contraction
     summable_geometric_of_lt_one hq0 ht1
   refine Summable.of_nonneg_of_le
     (fun n => mul_nonneg (bernsteinCoefficientPurity_nonneg _ n) (pow_nonneg ht0 n))
-    (fun n => ?_) (hgeo.mul_left (xiReciprocalSquareAbsoluteMass ^ 2))
+    (fun n => ?_) (hgeo.mul_left (xiReciprocalSquareAbsoluteMass ^ (2 : ℕ)))
   calc
     primeArchEndpointBernsteinPurity n * t ^ n ≤
         (xiReciprocalSquareAbsoluteMass *
-          xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ 2 * t ^ n :=
+          xiSectorConfinedBernsteinAmplitudeBase ^ n) ^ (2 : ℕ) * t ^ n :=
       mul_le_mul_of_nonneg_right
         (primeArchEndpointBernsteinPurity_le_sectorConfined n) (pow_nonneg ht0 n)
-    _ = xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n := by
+    _ = xiReciprocalSquareAbsoluteMass ^ (2 : ℕ) * q ^ n := by
       dsimp only [q]
       simp only [mul_pow]
       ring
@@ -167,12 +167,12 @@ theorem primeArchEndpointBernsteinAbelCriticalRadius_one_of_riemannHypothesis
   · intro t ht
     have ht0 : 0 ≤ t := (zero_lt_one.trans ht).le
     have hbound : ∀ n : ℕ,
-        normalizedPrimeArchMoment 0 ^ 2 * t ^ n / (n + 1 : ℝ) ≤
+        normalizedPrimeArchMoment 0 ^ (2 : ℕ) * t ^ n / (n + 1 : ℝ) ≤
           primeArchEndpointBernsteinPurity n * t ^ n := by
       intro n
       apply (div_le_iff₀ (by positivity : (0 : ℝ) < n + 1)).2
       calc
-        normalizedPrimeArchMoment 0 ^ 2 * t ^ n ≤
+        normalizedPrimeArchMoment 0 ^ (2 : ℕ) * t ^ n ≤
             ((n + 1 : ℝ) * primeArchEndpointBernsteinPurity n) * t ^ n :=
           mul_le_mul_of_nonneg_right
             (mass_sq_le_card_mul_primeArchEndpointBernsteinPurity n)
@@ -191,18 +191,18 @@ theorem exists_attained_primeArchEndpointBernsteinAbelCriticalRadius_of_not_rh
     (hRH : ¬ RiemannHypothesis) :
     ∃ B : ℝ,
       PrimeArchEndpointBernsteinAttainedExactThreshold B ∧
-      PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ 2) := by
+      PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ (2 : ℕ)) := by
   obtain ⟨B, η, hB, hBsector, hη, hattained, hmax, hupper,
       hlower, habove, hbelow⟩ :=
     exists_primeArchEndpointBernstein_exactExponentialThreshold_of_not_rh hRH
   have hBpos : 0 < B := lt_trans zero_lt_one hB
-  have hBsqpos : 0 < B ^ 2 := sq_pos_of_pos hBpos
+  have hBsqpos : 0 < B ^ (2 : ℕ) := sq_pos_of_pos hBpos
   have hthreshold : PrimeArchEndpointBernsteinAttainedExactThreshold B :=
     ⟨hB, hBsector, hattained, hmax,
       ⟨hBsqpos, habove, hbelow⟩⟩
   refine ⟨B, hthreshold, one_div_pos.mpr hBsqpos, ?_, ?_⟩
   · intro t ht0 htR
-    let q : ℝ := B ^ 2 * t
+    let q : ℝ := B ^ (2 : ℕ) * t
     have hq0 : 0 ≤ q := by
       dsimp only [q]
       exact mul_nonneg hBsqpos.le ht0
@@ -214,18 +214,18 @@ theorem exists_attained_primeArchEndpointBernsteinAbelCriticalRadius_of_not_rh
       summable_geometric_of_lt_one hq0 hq1
     refine Summable.of_nonneg_of_le
       (fun n => mul_nonneg (bernsteinCoefficientPurity_nonneg _ n) (pow_nonneg ht0 n))
-      (fun n => ?_) (hgeo.mul_left (xiReciprocalSquareAbsoluteMass ^ 2))
+      (fun n => ?_) (hgeo.mul_left (xiReciprocalSquareAbsoluteMass ^ (2 : ℕ)))
     calc
       primeArchEndpointBernsteinPurity n * t ^ n ≤
-          (xiReciprocalSquareAbsoluteMass * B ^ n) ^ 2 * t ^ n :=
+          (xiReciprocalSquareAbsoluteMass * B ^ n) ^ (2 : ℕ) * t ^ n :=
         mul_le_mul_of_nonneg_right (hupper n) (pow_nonneg ht0 n)
-      _ = xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n := by
+      _ = xiReciprocalSquareAbsoluteMass ^ (2 : ℕ) * q ^ n := by
         dsimp only [q]
         simp only [mul_pow]
         ring
   · intro t hRt
     have htpos : 0 < t := lt_trans (one_div_pos.mpr hBsqpos) hRt
-    have hinvB : 1 / t < B ^ 2 := by
+    have hinvB : 1 / t < B ^ (2 : ℕ) := by
       apply (div_lt_iff₀ htpos).2
       have := (div_lt_iff₀ hBsqpos).mp hRt
       nlinarith
@@ -282,19 +282,19 @@ theorem existsUnique_primeArchEndpointBernsteinAbelCriticalRadius :
   · obtain ⟨B, hB, hR⟩ :=
       exists_attained_primeArchEndpointBernsteinAbelCriticalRadius_of_not_rh hRH
     have hBpos : 0 < B := lt_trans zero_lt_one hB.1
-    have hBsqpos : 0 < B ^ 2 := sq_pos_of_pos hBpos
+    have hBsqpos : 0 < B ^ (2 : ℕ) := sq_pos_of_pos hBpos
     have hBsector' : B < (501 / 500 : ℝ) := by
       simpa only [xiSectorConfinedBernsteinAmplitudeBase] using hB.2.1
-    have hBsqsector : B ^ 2 < (501 / 500 : ℝ) ^ 2 := by
+    have hBsqsector : B ^ (2 : ℕ) < (501 / 500 : ℝ) ^ (2 : ℕ) := by
       nlinarith [mul_pos (sub_pos.mpr hBsector')
         (add_pos hBpos (by norm_num : (0 : ℝ) < 501 / 500))]
-    have hRlower : (250000 / 251001 : ℝ) < 1 / B ^ 2 := by
+    have hRlower : (250000 / 251001 : ℝ) < 1 / B ^ (2 : ℕ) := by
       apply (lt_div_iff₀ hBsqpos).2
       norm_num at hBsqsector ⊢
       linarith
-    have hRlt : 1 / B ^ 2 < (1 : ℝ) :=
+    have hRlt : 1 / B ^ (2 : ℕ) < (1 : ℝ) :=
       (div_lt_one hBsqpos).2 (by nlinarith [hB.1])
-    refine ⟨1 / B ^ 2, ⟨hRlower, hRlt.le, hR, ?_⟩, ?_⟩
+    refine ⟨1 / B ^ (2 : ℕ), ⟨hRlower, hRlt.le, hR, ?_⟩, ?_⟩
     · constructor
       · exact fun h => (hRH h).elim
       · intro hEq
@@ -317,7 +317,7 @@ theorem primeArchEndpointBernsteinAbelRadius_mul_exactExponent_eq_one
     norm_num
   · obtain ⟨B, hB, hRB⟩ :=
       exists_attained_primeArchEndpointBernsteinAbelCriticalRadius_of_not_rh hRH
-    have hEB : PrimeArchEndpointBernsteinExactExponentialExponent (B ^ 2) := hB.2.2.2.2
+    have hEB : PrimeArchEndpointBernsteinExactExponentialExponent (B ^ (2 : ℕ)) := hB.2.2.2.2
     rw [primeArchEndpointBernsteinAbelCriticalRadius_unique hR hRB,
       primeArchEndpointBernsteinExactExponentialExponent_unique hE hEB]
     have hBne : B ≠ 0 := (lt_trans zero_lt_one hB.1).ne'

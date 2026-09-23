@@ -28,11 +28,11 @@ def coppoMorseJosephsonCurvature (a : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
 
 /-- Lower partner potential for the periodically deformed Morse family. -/
 def coppoMorseJosephsonPotentialMinus (A a : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  coppoMorseJosephsonSuperpotential A a n x ^ 2 - coppoMorseJosephsonCurvature a n x
+  coppoMorseJosephsonSuperpotential A a n x ^ (2 : ℕ) - coppoMorseJosephsonCurvature a n x
 
 /-- Upper partner potential for the same exact factorization. -/
 def coppoMorseJosephsonPotentialPlus (A a : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  coppoMorseJosephsonSuperpotential A a n x ^ 2 + coppoMorseJosephsonCurvature a n x
+  coppoMorseJosephsonSuperpotential A a n x ^ (2 : ℕ) + coppoMorseJosephsonCurvature a n x
 
 /-- The periodic deformation preserves strict positivity for every positive theta atom. -/
 theorem coppoMorseJosephsonAmplitude_pos (A a : ℝ) (n : ℕ) (x : ℝ) :
@@ -108,9 +108,9 @@ theorem coppoMorseJosephson_schrodinger_zero (A a : ℝ) (n : ℕ) (x : ℝ) :
 
 /-- The original theta Gibbs atom receives exactly a positive periodic density tilt. -/
 theorem coppoMorseJosephsonAmplitude_theta_density (a : ℝ) (n : ℕ) (x : ℝ) :
-    coppoMorseJosephsonAmplitude (5 / 4) a n x ^ 2 =
+    coppoMorseJosephsonAmplitude (5 / 4) a n x ^ (2 : ℕ) =
       thetaCuspLiouvilleGibbsAtom n x * coppoJosephsonGroundState (2 * a) x := by
-  change (thetaCuspMorseGroundState n x * coppoJosephsonGroundState a x) ^ 2 = _
+  change (thetaCuspMorseGroundState n x * coppoJosephsonGroundState a x) ^ (2 : ℕ) = _
   rw [mul_pow, thetaCuspMorseGroundState_sq, coppoJosephsonGroundState_sq]
 
 /-- The periodic deformation preserves the original Morse Robin boundary coefficient. -/
@@ -122,8 +122,8 @@ theorem coppoMorseJosephson_robin (A a : ℝ) (n : ℕ) :
 
 /-- The boundary density acquires a known, strictly positive scalar factor. -/
 theorem coppoMorseJosephson_boundary_density (A a : ℝ) (n : ℕ) :
-    coppoMorseJosephsonAmplitude A a n 0 ^ 2 =
-      (n : ℝ) ^ 2 * Real.exp (-Real.pi * (n : ℝ) ^ 2 + 2 * a) := by
+    coppoMorseJosephsonAmplitude A a n 0 ^ (2 : ℕ) =
+      (n : ℝ) ^ (2 : ℕ) * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ) + 2 * a) := by
   simp only [coppoMorseJosephsonAmplitude, thetaCuspMorseZeroMode, thetaCuspMorseScale,
     coppoJosephsonGroundState, Real.cos_zero, mul_zero, Real.exp_zero, mul_one]
   rw [mul_pow, mul_pow, ← Real.exp_nat_mul, ← Real.exp_nat_mul, mul_assoc, ← Real.exp_add]

@@ -17,7 +17,7 @@ It is exactly left channel action on P-G105F completed matrix, so no incidence i
 each nonnegative eigenvalue `lambda` of `H`, its determinant factor is
 
 ```text
-1 + lambda z/64 - lambda w - lambda^2 z w.
+1 + lambda z/64 - lambda w - lambda^(2 : ℕ) z w.
 ```
 
 If `lambda>0` and this factor vanished, then
@@ -26,7 +26,7 @@ If `lambda>0` and this factor vanished, then
 w = (1 + lambda z/64) / (lambda (1 + lambda z)).
 ```
 
-This real Möbius map has negative orientation determinant `-63 lambda^2/64`, hence sends upper
+This real Möbius map has negative orientation determinant `-63 lambda^(2 : ℕ)/64`, hence sends upper
 half-plane to lower half-plane.  The zero eigenvalue factor is one.  Unitary diagonalization is
 used only in proof: original pencil retains all off-diagonal prime/depth/ordinate incidence.
 
@@ -48,7 +48,7 @@ def routePPrimitiveGammaJuliaSignedChannelDiagonal (z w : ℂ) :
 
 /-- Universal eigenchannel factor of the signed Julia--Krein pencil. -/
 def routePPrimitiveGammaJuliaSignedBivariateFactor (lam : ℝ) (z w : ℂ) : ℂ :=
-  1 + (lam / 64 : ℂ) * z - (lam : ℂ) * w - (lam ^ 2 : ℂ) * z * w
+  1 + (lam / 64 : ℂ) * z - (lam : ℂ) * w - (lam ^ (2 : ℕ) : ℂ) * z * w
 
 /-- Full signed bivariate pencil over an arbitrary finite source matrix. -/
 def routePPrimitiveGammaJuliaSignedBivariatePencil {N : ℕ}
@@ -65,14 +65,14 @@ theorem routePPrimitiveGammaJuliaSignedBivariateFactor_det
         routePPrimitiveBurnolJuliaKreinBlock)).det =
       routePPrimitiveGammaJuliaSignedBivariateFactor lam z w := by
   rw [Matrix.det_fin_two]
-  have hr : routeEPCubicFourthDepthJuliaDefect ^ 2 = (63 / 64 : ℝ) := by
+  have hr : routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) = (63 / 64 : ℝ) := by
     have h := routeEPCubicFourthDepthJulia_pythagoras
     norm_num [routeEPCubicFourthDepthNormalizedContraction] at h
     nlinarith
-  have hd : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 = 63 / 64 := by
+  have hd : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) = 63 / 64 := by
     calc
-      (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 =
-          ((routeEPCubicFourthDepthJuliaDefect ^ 2 : ℝ) : ℂ) :=
+      (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) =
+          ((routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) : ℝ) : ℂ) :=
         (Complex.ofReal_pow _ _).symm
       _ = ((63 / 64 : ℝ) : ℂ) := congrArg (fun x : ℝ => (x : ℂ)) hr
       _ = 63 / 64 := Complex.ofReal_div _ _
@@ -103,7 +103,7 @@ theorem routePPrimitiveGammaJuliaSignedMobius_im_neg
           ((lam : ℂ) * ((1 : ℂ) + (lam : ℂ) * z)).re -
         ((1 : ℂ) + (lam / 64 : ℂ) * z).re *
           ((lam : ℂ) * ((1 : ℂ) + (lam : ℂ) * z)).im) =
-        -(63 / 64 : ℝ) * lam ^ 2 * z.im := by
+        -(63 / 64 : ℝ) * lam ^ (2 : ℕ) * z.im := by
     norm_num [Complex.add_im, Complex.one_im, Complex.mul_im, Complex.ofReal_re,
       Complex.ofReal_im, zero_mul, add_zero, Complex.add_re, Complex.one_re,
       Complex.mul_re, sub_zero, zero_add]

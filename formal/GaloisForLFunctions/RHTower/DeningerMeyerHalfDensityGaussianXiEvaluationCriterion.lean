@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianCountertranspor
 The source-derived reflected Gaussian horizon is used to weight all zeroth Xi
 evaluations of literal Meyer cohomology.  Under RH, critical-line
 contractivity and square summability of the horizon give a bounded linear map
-from the half-density completion to the multiplicity-exact Xi `ell^2`
+from the half-density completion to the multiplicity-exact Xi `ell^(2 : ℕ)`
 carrier.
 
 Conversely, existence of any continuous map agreeing with those weighted

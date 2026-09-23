@@ -272,7 +272,7 @@ theorem tendsto_routeRCofinalSieveHarmonicReporter_zero_of_summable
     (tendsto_sum_nat_add (fun n : ℕ => ‖a (e n)‖))
 
 /-- A prime field has harmonic coefficient `c` when subtracting `c / p`
-leaves an `ell^1` field. -/
+leaves an `ell^(1 : ℕ)` field. -/
 def RouteRPrimeHarmonicAsymptotic
     (a : Nat.Primes → ℂ) (c : ℂ) : Prop :=
   Summable (fun p => a p - c * routeRPrimeHarmonicField p)

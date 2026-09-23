@@ -125,7 +125,7 @@ theorem inner_suzukiFGammaFamily_suzukiPHat (hRH : RiemannHypothesis) {a : ℝ} 
       * Real.sqrt (Real.pi * (xiSupportMult ρ : ℝ)) = (xiSupportMult ρ : ℝ) := by
     rw [← Real.sqrt_mul (by positivity)]
     rw [show (xiSupportMult ρ : ℝ) / Real.pi * (Real.pi * (xiSupportMult ρ : ℝ))
-        = (xiSupportMult ρ : ℝ) ^ 2 by field_simp]
+        = (xiSupportMult ρ : ℝ) ^ (2 : ℕ) by field_simp]
     exact Real.sqrt_sq (le_of_lt hm)
   have hs1 : (0 : ℝ) < Real.sqrt ((xiSupportMult ρ : ℝ) / Real.pi) :=
     Real.sqrt_pos.mpr (by positivity)

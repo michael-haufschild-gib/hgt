@@ -24,7 +24,7 @@ theorem norm_fejer_integral_sub_main_le (N : ℕ) (hN : 0 < N) (a : Fin N → �
         + (∫ t in (0 : ℝ)..T, dirPoly N a (-t) * ((1 - t / T : ℝ) : ℂ))
         - a ⟨0, hN⟩ * (T : ℂ)‖
       ≤ ∑ n ∈ (Finset.univ : Finset (Fin N)).erase ⟨0, hN⟩,
-          ‖a n‖ * (4 / (T * (Real.log (((n : ℕ) : ℝ) + 1)) ^ 2)) := by
+          ‖a n‖ * (4 / (T * (Real.log (((n : ℕ) : ℝ) + 1)) ^ (2 : ℕ))) := by
   rw [integral_fejer_pair_eq N a T]
   exact norm_fejer_dirPoly_sub_main_le N hN a hT
 

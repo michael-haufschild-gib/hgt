@@ -8,27 +8,27 @@ namespace RHTower
 
 private theorem normSq_natCoefficient_le_weighted
     (T r center : ℝ) (k : ℕ) :
-    ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center k‖ ^ 2 ≤
+    ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center k‖ ^ (2 : ℕ) ≤
       (k : ℝ) *
-        ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center k‖ ^ 2 := by
+        ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center k‖ ^ (2 : ℕ) := by
   cases k with
   | zero => simp
   | succ k =>
       calc
-        ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center (k + 1)‖ ^ 2 =
-            1 * ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center (k + 1)‖ ^ 2 := by
+        ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center (k + 1)‖ ^ (2 : ℕ) =
+            1 * ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center (k + 1)‖ ^ (2 : ℕ) := by
               ring
         _ ≤ ((k + 1 : ℕ) : ℝ) *
-            ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center (k + 1)‖ ^ 2 :=
+            ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center (k + 1)‖ ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right (by norm_num) (sq_nonneg _)
 
 theorem tsum_norm_smoothAFEZetaSquareDualDerivativeNatCoefficient_sq_le_weighted
     {T r center : ℝ} (hr : 4 ≤ r) (hT : 0 < T) :
     (∑' k : ℕ,
-      ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center k‖ ^ 2) ≤
+      ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center k‖ ^ (2 : ℕ)) ≤
       ∑' k : ℕ,
         (k : ℝ) *
-          ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center k‖ ^ 2 := by
+          ‖smoothAFEZetaSquareDualDerivativeNatCoefficient T r center k‖ ^ (2 : ℕ) := by
   obtain ⟨_, hplain, hweighted⟩ :=
     summable_smoothAFEZetaSquareDualDerivativeNatCoefficient_affine_masses
       (center := center) hr hT
@@ -36,7 +36,7 @@ theorem tsum_norm_smoothAFEZetaSquareDualDerivativeNatCoefficient_sq_le_weighted
     (normSq_natCoefficient_le_weighted T r center) hweighted
 
 /-- On every dyadic block, the phase-faithful square-dual height derivative has
-unit-cell affine mean square `O(log^3 N / N)`. -/
+unit-cell affine mean square `O(log^(3 : ℕ) N / N)`. -/
 theorem exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeLSeries_le_logCube :
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ {N : ℕ} {r center : ℝ}, 4 ≤ N →
@@ -44,8 +44,8 @@ theorem exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeLSeries
         (∫ y in Set.Icc (-1 : ℝ) 1,
           ‖LSeries
             (smoothAFEZetaSquareDualDerivativeNatCoefficient (N : ℝ) r center)
-            ((y : ℝ) * I)‖ ^ 2) ≤
-          K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ) := by
+            ((y : ℝ) * I)‖ ^ (2 : ℕ)) ≤
+          K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ) := by
   obtain ⟨K₀, hK₀, hmass⟩ :=
     exists_tsum_weighted_norm_smoothAFEZetaSquareDualDerivativeCoefficient_sq_le_logCube
   let K := (5 * Real.pi * Real.exp 1 + 5 * Real.pi / 2) * K₀
@@ -67,21 +67,21 @@ theorem exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeLSeries
       (∫ y in Set.Icc (-1 : ℝ) 1,
         ‖LSeries
           (smoothAFEZetaSquareDualDerivativeNatCoefficient (N : ℝ) r center)
-          ((y : ℝ) * I)‖ ^ 2) ≤
+          ((y : ℝ) * I)‖ ^ (2 : ℕ)) ≤
         5 * Real.pi * Real.exp 1 *
             (∑' k : ℕ, (k : ℝ) *
               ‖smoothAFEZetaSquareDualDerivativeNatCoefficient
-                (N : ℝ) r center k‖ ^ 2) +
+                (N : ℝ) r center k‖ ^ (2 : ℕ)) +
           (5 * Real.pi / 2) *
             (∑' k : ℕ,
               ‖smoothAFEZetaSquareDualDerivativeNatCoefficient
-                (N : ℝ) r center k‖ ^ 2) := by
+                (N : ℝ) r center k‖ ^ (2 : ℕ)) := by
     simpa using hmv
   have hweightedMass :
       (∑' k : ℕ, (k : ℝ) *
         ‖smoothAFEZetaSquareDualDerivativeNatCoefficient
-          (N : ℝ) r center k‖ ^ 2) ≤
-        K₀ * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ) := by
+          (N : ℝ) r center k‖ ^ (2 : ℕ)) ≤
+        K₀ * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ) := by
     rw [tsum_weighted_norm_smoothAFEZetaSquareDualDerivativeNatCoefficient_sq_eq
       (center := center) hr4 hN0]
     exact hmass (center := center) hN hr
@@ -92,35 +92,35 @@ theorem exists_integral_unitCell_normSq_smoothAFEZetaSquareDualDerivativeLSeries
     (∫ y in Set.Icc (-1 : ℝ) 1,
         ‖LSeries
           (smoothAFEZetaSquareDualDerivativeNatCoefficient (N : ℝ) r center)
-          ((y : ℝ) * I)‖ ^ 2)
+          ((y : ℝ) * I)‖ ^ (2 : ℕ))
         ≤ 5 * Real.pi * Real.exp 1 *
             (∑' k : ℕ, (k : ℝ) *
               ‖smoothAFEZetaSquareDualDerivativeNatCoefficient
-                (N : ℝ) r center k‖ ^ 2) +
+                (N : ℝ) r center k‖ ^ (2 : ℕ)) +
           (5 * Real.pi / 2) *
             (∑' k : ℕ,
               ‖smoothAFEZetaSquareDualDerivativeNatCoefficient
-                (N : ℝ) r center k‖ ^ 2) := hmv'
+                (N : ℝ) r center k‖ ^ (2 : ℕ)) := hmv'
     _ ≤ (5 * Real.pi * Real.exp 1 + 5 * Real.pi / 2) *
           (∑' k : ℕ, (k : ℝ) *
             ‖smoothAFEZetaSquareDualDerivativeNatCoefficient
-              (N : ℝ) r center k‖ ^ 2) := by
+              (N : ℝ) r center k‖ ^ (2 : ℕ)) := by
       calc
         _ ≤ 5 * Real.pi * Real.exp 1 *
               (∑' k : ℕ, (k : ℝ) *
                 ‖smoothAFEZetaSquareDualDerivativeNatCoefficient
-                  (N : ℝ) r center k‖ ^ 2) +
+                  (N : ℝ) r center k‖ ^ (2 : ℕ)) +
             (5 * Real.pi / 2) *
               (∑' k : ℕ, (k : ℝ) *
                 ‖smoothAFEZetaSquareDualDerivativeNatCoefficient
-                  (N : ℝ) r center k‖ ^ 2) := by
+                  (N : ℝ) r center k‖ ^ (2 : ℕ)) := by
             exact add_le_add le_rfl
               (mul_le_mul_of_nonneg_left hplainWeighted (by positivity))
         _ = _ := by ring
     _ ≤ (5 * Real.pi * Real.exp 1 + 5 * Real.pi / 2) *
-          (K₀ * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ)) :=
+          (K₀ * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ)) :=
       mul_le_mul_of_nonneg_left hweightedMass (by positivity)
-    _ = K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ) := by
+    _ = K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ) := by
       dsimp only [K]
       ring
 

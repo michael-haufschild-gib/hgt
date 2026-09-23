@@ -42,7 +42,7 @@ theorem complexRealPartMonotoneMultiplier_iff (w : ℂ) :
     exact mul_le_mul_of_nonneg_left huv hwre
 
 theorem complexRealPartMonotoneMultiplier_sq_iff (w : ℂ) :
-    ComplexRealPartMonotoneMultiplier (w ^ 2) ↔ w.im = 0 := by
+    ComplexRealPartMonotoneMultiplier (w ^ (2 : ℕ)) ↔ w.im = 0 := by
   rw [complexRealPartMonotoneMultiplier_iff]
   constructor
   · rintro ⟨hsqim, hsqre⟩
@@ -113,7 +113,7 @@ theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_im_eq_zero_of_axis
 theorem physicalTwoEdgeSquare_realPartMonotone_of_axis
     (L A c a : ℝ) {z : ℂ} (hz : z.im = 0 ∨ z.re = 0) :
     ComplexRealPartMonotoneMultiplier
-      (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2) := by
+      (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ)) := by
   rw [complexRealPartMonotoneMultiplier_sq_iff]
   exact xiPhysicalThetaAbelEnergyTwoEdgeTransform_im_eq_zero_of_axis L A c a hz
 
@@ -121,7 +121,7 @@ theorem physicalTwoEdgeSquare_realPartMonotone_of_axis
 theorem physicalTwoEdgeSquare_realPartMonotone_iff_realPhase
     (L A c a : ℝ) (z : ℂ) :
     ComplexRealPartMonotoneMultiplier
-        (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2) ↔
+        (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ)) ↔
       (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z).im = 0 := by
   exact complexRealPartMonotoneMultiplier_sq_iff _
 
@@ -156,7 +156,7 @@ theorem gaussianRat_primeFluxContourCoordinate_off_axes
 theorem exists_even_schwarzReal_entireMode_nonreal_at_off_axes
     {z : ℂ} (hre : z.re ≠ 0) (him : z.im ≠ 0) :
     ∃ f : ℂ → ℂ, EvenSchwarzRealEntireMode f ∧ (f z).im ≠ 0 := by
-  refine ⟨fun s => s ^ 2, ⟨?_, ?_, ?_⟩, ?_⟩
+  refine ⟨fun s => s ^ (2 : ℕ), ⟨?_, ?_, ?_⟩, ?_⟩
   · fun_prop
   · intro s
     ring
@@ -218,7 +218,7 @@ theorem physicalTwoEdge_weighted_primeArchLogHeightComplexDefect_floor
         (primeFluxContourCoordinate s)).im = 0)
     (hK : K ≤ primeArchLogHeightDefect s) :
     let w := xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-      (primeFluxContourCoordinate s) ^ 2
+      (primeFluxContourCoordinate s) ^ (2 : ℕ)
     (w * (K : ℂ)).re ≤ (w * primeArchLogHeightComplexDefect s).re := by
   dsimp only
   exact weighted_primeArchLogHeightComplexDefect_floor

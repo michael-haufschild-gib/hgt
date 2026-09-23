@@ -26,7 +26,7 @@ theorem finitePolynomialVelocity_xiShiftedCanonicalAdmission_eq_characteristicTr
     (hH : (HTGeometry.momentHankelMatrix
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     finitePolynomialVelocity (xiShiftedCanonicalAdmissionVelocity y n) =
-      X ^ 2 * (HTGeometry.monicOrtho
+      X ^ (2 : ℕ) * (HTGeometry.monicOrtho
         (fun k => (xiShiftedReciprocalMoment y k).re) n).derivative -
       (n : ℝ) • (X * HTGeometry.monicOrtho
         (fun k => (xiShiftedReciprocalMoment y k).re) n) +
@@ -81,7 +81,7 @@ theorem finitePolynomialVelocity_xiShiftedCanonicalAdmission_eq_forwardCharacter
     (hH : (HTGeometry.momentHankelMatrix
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     finitePolynomialVelocity (xiShiftedCanonicalAdmissionVelocity y n) =
-      X ^ 2 * (HTGeometry.monicOrtho
+      X ^ (2 : ℕ) * (HTGeometry.monicOrtho
         (fun k => (xiShiftedReciprocalMoment y k).re) n).derivative +
       (n : ℝ) • (X * HTGeometry.monicOrtho
         (fun k => (xiShiftedReciprocalMoment y k).re) n) +
@@ -117,7 +117,7 @@ theorem finitePolynomialVelocity_xiShiftedCanonicalAdmission_eq_forwardCharacter
       _ = X * HTGeometry.monicOrtho s n - HTGeometry.monicOrtho s (n + 1) -
             HTGeometry.monicOrthoAlpha s n • HTGeometry.monicOrtho s n := by
               rw [← hrec]
-  change X ^ 2 * (HTGeometry.monicOrtho s n).derivative -
+  change X ^ (2 : ℕ) * (HTGeometry.monicOrtho s n).derivative -
       (n : ℝ) • (X * HTGeometry.monicOrtho s n) +
       HTGeometry.monicOrthoFirstCoeff s n • HTGeometry.monicOrtho s n +
       (2 * (n : ℝ) * HTGeometry.monicOrthoBeta s n) •
@@ -143,7 +143,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionApexValue_raw
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionApexValue v n)
       ((finitePolynomialVelocity
           (xiShiftedCanonicalAdmissionVelocity y n)).eval y⁻¹ -
-        (y ^ 2)⁻¹ *
+        (y ^ (2 : ℕ))⁻¹ *
           (HTGeometry.monicMomentAdmissionPolynomial
             (fun k => (xiShiftedReciprocalMoment y k).re) n).derivative.eval y⁻¹) y := by
   have hdet := xiShiftedMomentHankel_det_ne_zero_of_add_two_posDef hH
@@ -151,7 +151,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionApexValue_raw
       HasDerivAt (xiShiftedCanonicalAdmissionCurve n i)
         (xiShiftedCanonicalAdmissionVelocity y n i) y :=
     hasDerivAt_xiShiftedCanonicalAdmissionCurve hy n hdet
-  have hapex : HasDerivAt (fun v : ℝ => v⁻¹) (-(y ^ 2)⁻¹) y :=
+  have hapex : HasDerivAt (fun v : ℝ => v⁻¹) (-(y ^ (2 : ℕ))⁻¹) y :=
     hasDerivAt_inv (ne_of_gt hy)
   have hchain := hasDerivAt_finitePolynomialCurve_eval hcoeff hapex
   have hfun :

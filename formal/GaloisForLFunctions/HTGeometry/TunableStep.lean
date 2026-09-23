@@ -23,7 +23,7 @@ theorem kernelRoot_bounds_propagate_tunable (h : PositiveMomentForm s) (z w : �
     (hS : ∀ N, kernelRoot s (fun j => monicOrthoC s j z) N ≤ S)
     (hP : ∀ N, kernelRoot s (fun j => secondKindC s j z) N ≤ P)
     (hsmall : 4 * (1 + e⁻¹) *
-      (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ 2 * S ^ 2 * P ^ 2 ≤ delta) :
+      (‖w - z‖ * momentInner s (monicOrtho s 0) (monicOrtho s 0)) ^ (2 : ℕ) * S ^ (2 : ℕ) * P ^ (2 : ℕ) ≤ delta) :
     (∀ N, kernelRoot s (fun j => monicOrthoC s j w) N
         ≤ Real.sqrt ((1 + e) / (1 - delta)) * S)
       ∧ (∀ N, kernelRoot s (fun j => secondKindC s j w) N
@@ -32,32 +32,32 @@ theorem kernelRoot_bounds_propagate_tunable (h : PositiveMomentForm s) (z w : �
   have hPn : 0 ≤ P := le_trans (kernelRoot_nonneg _ _ 0) (hP 0)
   have hdpos : 0 < 1 - delta := by linarith
   have hratio : 0 ≤ (1 + e) / (1 - delta) := by positivity
-  have hcsq : Real.sqrt ((1 + e) / (1 - delta)) ^ 2 = (1 + e) / (1 - delta) :=
+  have hcsq : Real.sqrt ((1 + e) / (1 - delta)) ^ (2 : ℕ) = (1 + e) / (1 - delta) :=
     Real.sq_sqrt hratio
   have hc0 : 0 ≤ Real.sqrt ((1 + e) / (1 - delta)) := Real.sqrt_nonneg _
   constructor
   · intro N
     have h1 := kernelRootQ_sq_le_tunable h z w he hS hP hsmall N
-    have h2 : kernelRoot s (fun j => monicOrthoC s j w) N ^ 2
-        ≤ (Real.sqrt ((1 + e) / (1 - delta)) * S) ^ 2 := by
+    have h2 : kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ)
+        ≤ (Real.sqrt ((1 + e) / (1 - delta)) * S) ^ (2 : ℕ) := by
       rw [mul_pow, hcsq, div_mul_eq_mul_div, le_div_iff₀ hdpos]
       linarith [h1]
     calc kernelRoot s (fun j => monicOrthoC s j w) N
-        = Real.sqrt (kernelRoot s (fun j => monicOrthoC s j w) N ^ 2) :=
+        = Real.sqrt (kernelRoot s (fun j => monicOrthoC s j w) N ^ (2 : ℕ)) :=
           (Real.sqrt_sq (kernelRoot_nonneg _ _ _)).symm
-      _ ≤ Real.sqrt ((Real.sqrt ((1 + e) / (1 - delta)) * S) ^ 2) := Real.sqrt_le_sqrt h2
+      _ ≤ Real.sqrt ((Real.sqrt ((1 + e) / (1 - delta)) * S) ^ (2 : ℕ)) := Real.sqrt_le_sqrt h2
       _ = Real.sqrt ((1 + e) / (1 - delta)) * S :=
           Real.sqrt_sq (mul_nonneg hc0 hSn)
   · intro N
     have h1 := kernelRootR_sq_le_tunable h z w he hS hP hsmall N
-    have h2 : kernelRoot s (fun j => secondKindC s j w) N ^ 2
-        ≤ (Real.sqrt ((1 + e) / (1 - delta)) * P) ^ 2 := by
+    have h2 : kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ)
+        ≤ (Real.sqrt ((1 + e) / (1 - delta)) * P) ^ (2 : ℕ) := by
       rw [mul_pow, hcsq, div_mul_eq_mul_div, le_div_iff₀ hdpos]
       linarith [h1]
     calc kernelRoot s (fun j => secondKindC s j w) N
-        = Real.sqrt (kernelRoot s (fun j => secondKindC s j w) N ^ 2) :=
+        = Real.sqrt (kernelRoot s (fun j => secondKindC s j w) N ^ (2 : ℕ)) :=
           (Real.sqrt_sq (kernelRoot_nonneg _ _ _)).symm
-      _ ≤ Real.sqrt ((Real.sqrt ((1 + e) / (1 - delta)) * P) ^ 2) := Real.sqrt_le_sqrt h2
+      _ ≤ Real.sqrt ((Real.sqrt ((1 + e) / (1 - delta)) * P) ^ (2 : ℕ)) := Real.sqrt_le_sqrt h2
       _ = Real.sqrt ((1 + e) / (1 - delta)) * P :=
           Real.sqrt_sq (mul_nonneg hc0 hPn)
 

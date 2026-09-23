@@ -38,8 +38,8 @@ theorem thetaCuspTailEvenCoefficient_eq_second_integral (n : ℕ) :
 
 theorem thetaCuspTailDerivativePolynomial_two :
     thetaCuspTailDerivativePolynomial 2 =
-      C (1 / 4) - C (6 * Real.pi) * X ^ 2 +
-        C (4 * Real.pi ^ 2) * X ^ 4 := by
+      C (1 / 4) - C (6 * Real.pi) * X ^ (2 : ℕ) +
+        C (4 * Real.pi ^ (2 : ℕ)) * X ^ (4 : ℕ) := by
   apply Polynomial.funext
   intro u
   simp [thetaCuspTailDerivativePolynomial, thetaCuspLogDerivativeStep]
@@ -52,11 +52,11 @@ theorem thetaCuspTailDerivativePolynomial_two_eval_pos
   simp only [eval_add, eval_sub, eval_mul, eval_C, eval_pow, eval_X]
   have hpi : 3 < Real.pi := Real.pi_gt_three
   have hu0 : 0 ≤ u := zero_le_one.trans hu
-  have hv : 3 < Real.pi * u ^ 2 := by
-    have huSq : 1 ≤ u ^ 2 := by nlinarith
+  have hv : 3 < Real.pi * u ^ (2 : ℕ) := by
+    have huSq : 1 ≤ u ^ (2 : ℕ) := by nlinarith
     nlinarith [Real.pi_pos]
-  have hv0 : 0 < Real.pi * u ^ 2 := lt_trans (by norm_num) hv
-  nlinarith [sq_nonneg (Real.pi * u ^ 2)]
+  have hv0 : 0 < Real.pi * u ^ (2 : ℕ) := lt_trans (by norm_num) hv
+  nlinarith [sq_nonneg (Real.pi * u ^ (2 : ℕ))]
 
 theorem thetaCuspTailDerivative_two_atom_pos
     {q : ℕ} (hq : 0 < q) {x : ℝ} (hx : 0 ≤ x) :
@@ -209,7 +209,7 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_section
 
 theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_second_integral
     (d : ℕ) (z : ℂ) :
-    (thetaCuspTailEvenPolynomial d).eval₂ (algebraMap ℝ ℂ) (-z ^ 2) =
+    (thetaCuspTailEvenPolynomial d).eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)) =
       (1 / 2 : ℂ) * ∫ x : ℝ in Ioi 0,
         (thetaCuspTailSecondDensity x : ℂ) *
           thetaCuspTailSecondSection d z x := by
@@ -226,13 +226,13 @@ theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_second_integral
     funext x
     rw [Finset.mul_sum]]
   rw [MeasureTheory.integral_finsetSum]
-  · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+  · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
         (∑ k ∈ Finset.range (d + 1),
           C (thetaCuspTailEvenCoefficient k) * X ^ k) =
         ∑ k ∈ Finset.range (d + 1),
-          eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+          eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
             (C (thetaCuspTailEvenCoefficient k) * X ^ k) by
-      change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ 2))
+      change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)))
           (∑ k ∈ Finset.range (d + 1),
             C (thetaCuspTailEvenCoefficient k) * X ^ k) = _
       rw [map_sum]
@@ -241,21 +241,21 @@ theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_second_integral
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro k _
-    change (thetaCuspTailEvenCoefficient k : ℂ) * (-z ^ 2) ^ k = _
+    change (thetaCuspTailEvenCoefficient k : ℂ) * (-z ^ (2 : ℕ)) ^ k = _
     rw [thetaCuspTailEvenCoefficient_eq_second_complex_integral]
     calc
       ((1 / 2 : ℂ) * ∫ x : ℝ in Ioi 0,
           (thetaCuspTailSecondDensity x : ℂ) *
             ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) *
-            (-z ^ 2) ^ k =
+            (-z ^ (2 : ℕ)) ^ k =
           (1 / 2 : ℂ) * ((∫ x : ℝ in Ioi 0,
             (thetaCuspTailSecondDensity x : ℂ) *
               ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) *
-                (-z ^ 2) ^ k) := by ring
+                (-z ^ (2 : ℕ)) ^ k) := by ring
       _ = (1 / 2 : ℂ) * ∫ x : ℝ in Ioi 0,
           ((thetaCuspTailSecondDensity x : ℂ) *
             ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)) *
-              (-z ^ 2) ^ k := by
+              (-z ^ (2 : ℕ)) ^ k := by
         rw [MeasureTheory.integral_mul_const]
       _ = (1 / 2 : ℂ) * ∫ x : ℝ in Ioi 0,
           (thetaCuspTailSecondDensity x : ℂ) *
@@ -282,7 +282,7 @@ theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_second_integral
     ring
 
 def thetaCuspTailSecondCoreAtom (d : ℕ) (z : ℂ) (x : ℝ) : ℂ :=
-  1 - (z ^ 2 + 1 / 4) * thetaCuspTailSecondSection d z x
+  1 - (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondSection d z x
 
 theorem xiCTaylorThetaTailCorePolynomial_eval_eq_second_integral
     (d : ℕ) (z : ℂ) :
@@ -300,49 +300,49 @@ theorem xiCTaylorThetaTailCorePolynomial_eval_eq_second_integral
       (∫ x : ℝ in Ioi 0,
         (thetaCuspTailSecondDensity x : ℂ) *
           thetaCuspTailSecondCoreAtom d z x) =
-      1 - (z ^ 2 + 1 / 4) *
+      1 - (z ^ (2 : ℕ) + 1 / 4) *
         ∫ x : ℝ in Ioi 0,
           (thetaCuspTailSecondDensity x : ℂ) *
             thetaCuspTailSecondSection d z x := by
     unfold thetaCuspTailSecondCoreAtom
     rw [show (fun x : ℝ => (thetaCuspTailSecondDensity x : ℂ) *
-        (1 - (z ^ 2 + 1 / 4) * thetaCuspTailSecondSection d z x)) =
+        (1 - (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondSection d z x)) =
         fun x : ℝ => (thetaCuspTailSecondDensity x : ℂ) -
-          (z ^ 2 + 1 / 4) *
+          (z ^ (2 : ℕ) + 1 / 4) *
             ((thetaCuspTailSecondDensity x : ℂ) *
               thetaCuspTailSecondSection d z x) by
       funext x
       ring]
-    rw [integral_sub hmass (hsection.const_mul (z ^ 2 + 1 / 4)),
+    rw [integral_sub hmass (hsection.const_mul (z ^ (2 : ℕ) + 1 / 4)),
       integral_const_mul, integral_thetaCuspTailSecondDensity_complex]
   rw [hcore]
   push_cast
   ring
 
 theorem thetaCuspTailSecondSection_zero (z : ℂ) (x : ℝ) :
-    thetaCuspTailSecondSection 0 z x = (x : ℂ) ^ 2 / 2 := by
+    thetaCuspTailSecondSection 0 z x = (x : ℂ) ^ (2 : ℕ) / 2 := by
   simp [thetaCuspTailSecondSection]
 
 /-- Probability positivity does not orient the convex-core atoms pointwise: at degree zero an
 explicit atom has strictly positive upper-half-plane current. -/
 theorem exists_thetaCuspTailSecondCoreAtom_zero_current_pos :
     ∃ x y : ℝ, 0 < y ∧
-      0 < ((-((x : ℂ) ^ 2) * ((y : ℂ) * I)) *
+      0 < ((-((x : ℂ) ^ (2 : ℕ)) * ((y : ℂ) * I)) *
         (starRingEnd ℂ)
           (thetaCuspTailSecondCoreAtom 0 ((y : ℂ) * I) x)).im := by
   refine ⟨4, 1 / 4, by norm_num, ?_⟩
   rw [show thetaCuspTailSecondCoreAtom 0
       ((((1 / 4 : ℝ) : ℂ)) * I) 4 = -(1 / 2 : ℂ) by
     rw [thetaCuspTailSecondCoreAtom, thetaCuspTailSecondSection_zero]
-    rw [show ((4 : ℝ) : ℂ) ^ 2 = (16 : ℂ) by norm_num]
-    rw [show ((((1 / 4 : ℝ) : ℂ)) * I) ^ 2 = (-1 / 16 : ℂ) by
+    rw [show ((4 : ℝ) : ℂ) ^ (2 : ℕ) = (16 : ℂ) by norm_num]
+    rw [show ((((1 / 4 : ℝ) : ℂ)) * I) ^ (2 : ℕ) = (-1 / 16 : ℂ) by
       rw [mul_pow, Complex.I_sq]
       push_cast
       ring]
     norm_num]
   rw [show (starRingEnd ℂ) (-(1 / 2 : ℂ)) = -(1 / 2 : ℂ) by
     rw [map_neg, map_div₀, map_one, map_ofNat]]
-  rw [show ((4 : ℝ) : ℂ) ^ 2 = (16 : ℂ) by norm_num]
+  rw [show ((4 : ℝ) : ℂ) ^ (2 : ℕ) = (16 : ℂ) by norm_num]
   norm_num
 
 end

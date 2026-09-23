@@ -19,13 +19,13 @@ noncomputable section
 /-- The block bound is increasing in the right endpoint. -/
 theorem ndBlockBound_mono {T r : ℝ} {A : ℕ} {J B : ℕ} (hJB : J ≤ B) :
     2500 * Real.sqrt (T * r / (36 * Real.pi * A))
-        + 22 * Real.sqrt (36 * Real.pi / (T * r)) * Real.sqrt (((J : ℝ)) ^ 3)
+        + 22 * Real.sqrt (36 * Real.pi / (T * r)) * Real.sqrt (((J : ℝ)) ^ (3 : ℕ))
       ≤ 2500 * Real.sqrt (T * r / (36 * Real.pi * A))
-        + 22 * Real.sqrt (36 * Real.pi / (T * r)) * Real.sqrt (((B : ℝ)) ^ 3) := by
-  have hJ : ((J : ℝ)) ^ 3 ≤ ((B : ℝ)) ^ 3 := by
+        + 22 * Real.sqrt (36 * Real.pi / (T * r)) * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := by
+  have hJ : ((J : ℝ)) ^ (3 : ℕ) ≤ ((B : ℝ)) ^ (3 : ℕ) := by
     have hcast : (J : ℝ) ≤ (B : ℝ) := by exact_mod_cast hJB
     exact pow_le_pow_left₀ (Nat.cast_nonneg J) hcast 3
-  have hmono : Real.sqrt (((J : ℝ)) ^ 3) ≤ Real.sqrt (((B : ℝ)) ^ 3) := Real.sqrt_le_sqrt hJ
+  have hmono : Real.sqrt (((J : ℝ)) ^ (3 : ℕ)) ≤ Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := Real.sqrt_le_sqrt hJ
   have hcoef : (0 : ℝ) ≤ 22 * Real.sqrt (36 * Real.pi / (T * r)) := by positivity
   nlinarith [mul_le_mul_of_nonneg_left hmono hcoef]
 
@@ -35,7 +35,7 @@ theorem norm_sum_log_ndExp_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {d : ℕ} (h
     (hlam : nearDiagonalLambda T (r / d) (A : ℝ) ≤ 1) :
     ‖∑ k ∈ Finset.Ico A B, ((Real.log k : ℝ) : ℂ) * ndExp T r k d‖
       ≤ 2 * (2500 * Real.sqrt (T * (r / d) / (36 * Real.pi * A))
-              + 22 * Real.sqrt (36 * Real.pi / (T * (r / d))) * Real.sqrt (((B : ℝ)) ^ 3))
+              + 22 * Real.sqrt (36 * Real.pi / (T * (r / d))) * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)))
           * Real.log ((B - 1 : ℕ) : ℝ) := by
   have hA1 : (1 : ℝ) ≤ (A : ℝ) := by exact_mod_cast hA
   refine norm_sum_Ico_mul_le_of_bounded_partial_mono hAB (fun k => Real.log k)

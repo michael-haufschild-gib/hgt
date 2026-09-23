@@ -130,13 +130,13 @@ theorem exists_sqrt_pullback_of_lift (c : ℂ) (n : ℕ)
     (gSub : C(escapeLevel c (n + 1), {w : ℂ // w ≠ 0}))
     (hgSub : ∀ a : escapeLevel c (n + 1), (gSub a : ℂ) = βlevn (quadratic c a))
     {a₀ : escapeLevel c (n + 1)} {e₀ : {w : ℂ // w ≠ 0}}
-    (he : (⟨(e₀ : ℂ) ^ 2, pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
+    (he : (⟨(e₀ : ℂ) ^ (2 : ℕ), pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
     (hlift : (FundamentalGroup.map gSub a₀).range ≤
       (FundamentalGroup.mapOfEq
-        ⟨fun x : {w : ℂ // w ≠ 0} => (⟨(x : ℂ) ^ 2, pow_ne_zero 2 x.2⟩ : {w : ℂ // w ≠ 0}),
+        ⟨fun x : {w : ℂ // w ≠ 0} => (⟨(x : ℂ) ^ (2 : ℕ), pow_ne_zero 2 x.2⟩ : {w : ℂ // w ≠ 0}),
           by fun_prop⟩ he).range) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
-      ∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z) := by
+      ∀ z ∈ escapeLevel c (n + 1), (s z) ^ (2 : ℕ) = βlevn (quadratic c z) := by
   have hmaps : Set.MapsTo (quadratic c) (escapeLevel c (n + 1)) (escapeLevel c n) :=
     quadratic_mapsTo_escapeLevel c n
   -- the pullback `g = βlev n ∘ f`, analytic and nowhere-zero on the escape level
@@ -157,12 +157,12 @@ theorem exists_sqrt_pullback_of_even_winding (c : ℂ) (n : ℕ)
     (gSub : C(escapeLevel c (n + 1), {w : ℂ // w ≠ 0}))
     (hgSub : ∀ a : escapeLevel c (n + 1), (gSub a : ℂ) = βlevn (quadratic c a))
     {a₀ : escapeLevel c (n + 1)} {e₀ : {w : ℂ // w ≠ 0}}
-    (he : (⟨(e₀ : ℂ) ^ 2, pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
+    (he : (⟨(e₀ : ℂ) ^ (2 : ℕ), pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
     (hwind : ∀ p : Path a₀ a₀,
       Even (Pi1CMinusZero.degZ ⟦transLoop (fun a : escapeLevel c (n + 1) => (gSub a : ℂ))
         (continuous_subtype_val.comp gSub.continuous) (fun a => (gSub a).2) p⟧)) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
-      ∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z) := by
+      ∀ z ∈ escapeLevel c (n + 1), (s z) ^ (2 : ℕ) = βlevn (quadratic c z) := by
   have hmaps : Set.MapsTo (quadratic c) (escapeLevel c (n + 1)) (escapeLevel c n) :=
     quadratic_mapsTo_escapeLevel c n
   have hgan : AnalyticOnNhd ℂ (fun z => βlevn (quadratic c z)) (escapeLevel c (n + 1)) := fun z hz =>
@@ -187,13 +187,13 @@ theorem exists_sqrt_pullback_of_iterate_winding (c : ℂ) (n : ℕ)
     (hHSub : ∀ a : escapeLevel c (n + 1),
       (HSub a : ℂ) = bottcherCoord c ((quadratic c)^[n + 1] (a : ℂ)))
     {a₀ : escapeLevel c (n + 1)} {e₀ : {w : ℂ // w ≠ 0}}
-    (he : (⟨(e₀ : ℂ) ^ 2, pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
+    (he : (⟨(e₀ : ℂ) ^ (2 : ℕ), pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
     (hwindH : ∀ p : Path a₀ a₀, ∃ m : ℤ,
       wind (fun a : escapeLevel c (n + 1) => (HSub a : ℂ))
         (continuous_subtype_val.comp HSub.continuous) (fun a => (HSub a).2) p =
         2 ^ (n + 1) * m) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
-      ∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z) := by
+      ∀ z ∈ escapeLevel c (n + 1), (s z) ^ (2 : ℕ) = βlevn (quadratic c z) := by
   refine exists_sqrt_pullback_of_even_winding c n βlevn hβan gSub hgSub he ?_
   intro p
   obtain ⟨m, hm⟩ := hwindH p
@@ -274,13 +274,13 @@ theorem exists_sqrt_pullback_of_iterate_image_winding (c : ℂ) (n : ℕ)
     (HSub : C(escapeLevel c (n + 1), {w : ℂ // w ≠ 0}))
     (hHSubF : ∀ a : escapeLevel c (n + 1), (HSub a : ℂ) = bottcherCoord c (FSub a : ℂ))
     {a₀ : escapeLevel c (n + 1)} {e₀ : {w : ℂ // w ≠ 0}}
-    (he : (⟨(e₀ : ℂ) ^ 2, pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
+    (he : (⟨(e₀ : ℂ) ^ (2 : ℕ), pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
     (hwindF : ∀ p : Path a₀ a₀, ∃ m : ℤ,
       wind (fun a : escapeLevel c (n + 1) => (FSub a : ℂ))
         (continuous_subtype_val.comp FSub.continuous) (fun a => escapeOpen_coe_ne_zero c (FSub a)) p =
         2 ^ (n + 1) * m) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
-      ∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z) := by
+      ∀ z ∈ escapeLevel c (n + 1), (s z) ^ (2 : ℕ) = βlevn (quadratic c z) := by
   refine exists_sqrt_pullback_of_iterate_winding c n βlevn hβan hβpow gSub hgSub HSub ?_ he ?_
   · intro a
     rw [hHSubF a, hFSub a]
@@ -292,12 +292,12 @@ square root on `escapeLevel c 1`. The only winding input is
 `escapeLevel_one_image_winding_even`, the closed-lift parity for `z ↦ z²+c`. -/
 theorem exists_level_one_sqrt_pullback (c : ℂ) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c 1) ∧
-      ∀ z ∈ escapeLevel c 1, (s z) ^ 2 = bottcherCoord c (quadratic c z) := by
+      ∀ z ∈ escapeLevel c 1, (s z) ^ (2 : ℕ) = bottcherCoord c (quadratic c z) := by
   classical
   have hβan : AnalyticOnNhd ℂ (bottcherCoord c) (escapeLevel c 0) := by
     simpa [escapeLevel_zero] using analyticOnNhd_bottcherCoord_full c
   have hβpow : ∀ z ∈ escapeLevel c 0,
-      (bottcherCoord c z) ^ (2 ^ 0) = bottcherCoord c ((quadratic c)^[0] z) := by
+      (bottcherCoord c z) ^ (2 ^ (0 : ℕ)) = bottcherCoord c ((quadratic c)^[0] z) := by
     intro z hz
     simp
   have hesc : ∀ a : escapeLevel c 1, quadratic c (a : ℂ) ∈ escapeOpen c := by
@@ -324,7 +324,7 @@ theorem exists_level_one_sqrt_pullback (c : ℂ) :
       norm_num
     exact (HSub a₀).2 hzero
   let e₀ : {w : ℂ // w ≠ 0} := ⟨e, hene⟩
-  have he : (⟨(e₀ : ℂ) ^ 2, pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = HSub a₀ := by
+  have he : (⟨(e₀ : ℂ) ^ (2 : ℕ), pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = HSub a₀ := by
     apply Subtype.ext
     exact hepow
   refine exists_sqrt_pullback_of_iterate_image_winding c 0 (bottcherCoord c) hβan hβpow

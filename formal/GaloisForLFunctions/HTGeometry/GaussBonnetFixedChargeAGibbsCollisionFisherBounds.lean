@@ -25,11 +25,11 @@ private theorem active_collision_pos (n m : ℕ) (β : ℝ)
 
 private theorem spectral_balance_square (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
-    (25 / 144 : ℝ) * egbFixedChargeAGibbsCollisionExcess n (m + 1) β E ^ 2 -
+    (25 / 144 : ℝ) * egbFixedChargeAGibbsCollisionExcess n (m + 1) β E ^ (2 : ℕ) -
       4 * egbFixedChargeAGibbsCollisionHankelDefect n m β E =
       (25 / 144 : ℝ) *
         ((4 / 9 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E -
-          (1 / 36 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ 2 := by
+          (1 / 36 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ (2 : ℕ) := by
   rw [egbFixedChargeAGibbsCollisionExcess_two_rate, egbFixedChargeAGibbsCollisionHankelDefect_formula,
     show (1 / 81 : ℝ) = (4 / 9 : ℝ) * (1 / 36 : ℝ) by norm_num, mul_pow]
   ring
@@ -68,7 +68,7 @@ theorem egbFixedChargeAGibbsCollisionFisherValue_upper_eq_iff (n m : ℕ) (β : 
     constructor
     · intro he
       have hs : ((4 / 9 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E -
-          (1 / 36 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ 2 = 0 := by
+          (1 / 36 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ (2 : ℕ) = 0 := by
         nlinarith [h]
       exact sub_eq_zero.mp ((pow_eq_zero_iff (by norm_num : (2 : ℕ) ≠ 0)).mp hs)
     · intro he

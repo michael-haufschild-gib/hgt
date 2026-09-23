@@ -72,7 +72,7 @@ theorem bracket_toral (μ : U) (Z : Matrix (Fin 2) (Fin 2) U) :
 theorem bracket_toral_sq (μ : U) (Z : Matrix (Fin 2) (Fin 2) U) :
     (μ • sl2H U) * ((μ • sl2H U) * Z - Z * (μ • sl2H U))
         - ((μ • sl2H U) * Z - Z * (μ • sl2H U)) * (μ • sl2H U)
-      = (4 * μ ^ 2 * Z 0 1) • sl2E U + (4 * μ ^ 2 * Z 1 0) • sl2F U := by
+      = (4 * μ ^ (2 : ℕ) * Z 0 1) • sl2E U + (4 * μ ^ (2 : ℕ) * Z 1 0) • sl2F U := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp only [Matrix.sub_apply, Matrix.add_apply, Matrix.mul_apply, Fin.sum_univ_two,
@@ -131,7 +131,7 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
   set ΦU : Matrix (Fin 2) (Fin 2) U →ₗ[U] Matrix (Fin 2) (Fin 2) U :=
     (adMap U X).comp (adMap U X) with hΦUdef
   have hΦval : ∀ Z : Matrix (Fin 2) (Fin 2) U,
-      Φ Z = (4 * μ ^ 2 * Z 0 1) • sl2E U + (4 * μ ^ 2 * Z 1 0) • sl2F U := by
+      Φ Z = (4 * μ ^ (2 : ℕ) * Z 0 1) • sl2E U + (4 * μ ^ (2 : ℕ) * Z 1 0) • sl2F U := by
     intro Z
     show X * (X * Z - Z * X) - (X * Z - Z * X) * X = _
     rw [hXdef]
@@ -159,11 +159,11 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
     have hE01 : (sl2E U + sl2F U) 0 1 = 1 := by simp [sl2E, sl2F]
     have hE10 : (sl2E U + sl2F U) 1 0 = 1 := by simp [sl2E, sl2F]
     rw [hΦval, hE01, hE10]
-    have hval : ((4 * μ ^ 2 * 1 : U) • sl2E U + (4 * μ ^ 2 * 1 : U) • sl2F U).det
-        = -((4 * μ ^ 2) * (4 * μ ^ 2)) := by
+    have hval : ((4 * μ ^ (2 : ℕ) * 1 : U) • sl2E U + (4 * μ ^ (2 : ℕ) * 1 : U) • sl2F U).det
+        = -((4 * μ ^ (2 : ℕ)) * (4 * μ ^ (2 : ℕ))) := by
       simp [Matrix.det_fin_two, sl2E, sl2F]
     rw [hval]
-    have h4 : (4 * μ ^ 2 : U) ≠ 0 := mul_ne_zero (by norm_num) (pow_ne_zero 2 hμ)
+    have h4 : (4 * μ ^ (2 : ℕ) : U) ≠ 0 := mul_ne_zero (by norm_num) (pow_ne_zero 2 hμ)
     exact neg_ne_zero.mpr (mul_ne_zero h4 h4)
   obtain ⟨A₂, hA₂map, hA₂det⟩ := exists_det_ne_zero_of_mem_span (L.map Φ) hspan hdetΦef
   obtain ⟨Z₀, hZ₀L, hZ₀⟩ := hA₂map
@@ -197,20 +197,20 @@ theorem cassidy_sl2_of_toral [IsAlgClosed C] [CharZero U]
       ring
     rwa [hconv] at hbrk
   obtain ⟨t, ht⟩ := hline X hXmem hXdet (-(4 * b * c)) hbcX
-  have hA₃X : (X * A₂ - A₂ * X) * X - X * (X * A₂ - A₂ * X) = (-(4 * μ ^ 2) : U) • A₂ := by
+  have hA₃X : (X * A₂ - A₂ * X) * X - X * (X * A₂ - A₂ * X) = (-(4 * μ ^ (2 : ℕ)) : U) • A₂ := by
     rw [hA₃eq, hA₂eq, hXdef]
     ext i j
     fin_cases i <;> fin_cases j <;>
       simp only [Matrix.sub_apply, Matrix.add_apply, Matrix.mul_apply, Fin.sum_univ_two,
         Matrix.smul_apply, smul_eq_mul] <;>
       simp [sl2H, sl2E, sl2F] <;> ring
-  have hμ2mem : (-(4 * μ ^ 2) : U) • A₂ ∈ L := by
+  have hμ2mem : (-(4 * μ ^ (2 : ℕ)) : U) • A₂ ∈ L := by
     rw [← hA₃X]
     exact hbr _ hA₃L _ hXmem
   obtain ⟨s, hs⟩ := hline A₂ hA₂L hA₂det _ hμ2mem
   obtain ⟨ν, hν⟩ : ∃ ν : C, μ = algebraMap C U ν := by
     obtain ⟨ν₀, hν₀⟩ := IsAlgClosed.exists_pow_nat_eq (-(s / 4)) (n := 2) (by norm_num)
-    have hsq : (algebraMap C U ν₀) ^ 2 = μ ^ 2 := by
+    have hsq : (algebraMap C U ν₀) ^ (2 : ℕ) = μ ^ (2 : ℕ) := by
       rw [← map_pow, hν₀, map_neg, map_div₀, map_ofNat]
       linear_combination hs / 4
     have hfac : (μ - algebraMap C U ν₀) * (μ + algebraMap C U ν₀) = 0 := by

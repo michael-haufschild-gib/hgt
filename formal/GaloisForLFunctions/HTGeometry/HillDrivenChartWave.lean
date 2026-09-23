@@ -68,9 +68,9 @@ theorem hillDrivenChartSpaceSecond_eq (a : HillSpeed)
     (b : WienerFamily (EuclideanSpace ℝ (Fin d)) (K + 2)) (G₀ : EuclideanSpace ℝ (Fin d) →ᵇ ℂ)
     (i : Fin d) (y : Fin (d + 1) → ℝ) :
     hillDrivenChartSpaceSecond a b G₀ i i.succ y
-      = ((((2 * Real.pi)⁻¹ : ℝ) ^ 2) *
+      = ((((2 * Real.pi)⁻¹ : ℝ) ^ (2 : ℕ)) *
         (∫ ξ, (2 * Real.pi * Complex.I *
-            ((⟪ξ, EuclideanSpace.basisFun (Fin d) ℝ i⟫ : ℝ) : ℂ)) ^ 2 *
+            ((⟪ξ, EuclideanSpace.basisFun (Fin d) ℝ i⟫ : ℝ) : ℂ)) ^ (2 : ℕ) *
           kgChar (kgSpatial d y) ξ * hillDrivenDensity a b G₀ (y 0) ξ).re) := by
   rw [hillDrivenChartSpaceSecond_succ]
   show (kgSynthesis (kgDirDensity ((2 * Real.pi)⁻¹ • kgDir d i)
@@ -84,10 +84,10 @@ theorem hillDrivenChartField_wave_identity
     (b : WienerFamily (EuclideanSpace ℝ (Fin d)) (K + 2)) (G₀ : EuclideanSpace ℝ (Fin d) →ᵇ ℂ)
     (hreal : IsRealFamily b) (y : Fin (d + 1) → ℝ) :
     coordPartial 0 (coordPartial 0 (hillDrivenChartField a b G₀)) y
-      = a.speed (y 0) ^ 2 *
+      = a.speed (y 0) ^ (2 : ℕ) *
           (∑ i : Fin d,
             coordPartial i.succ (coordPartial i.succ (hillDrivenChartField a b G₀)) y) -
-        a.mass ^ 2 * hillDrivenChartField a b G₀ y +
+        a.mass ^ (2 : ℕ) * hillDrivenChartField a b G₀ y +
         hillDrivenChartPotential b y * hillDrivenChartField a b G₀ y := by
   have hN : (Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) : ℝ) + 2 < (K + 2 : ℕ) := by
     push_cast
@@ -104,9 +104,9 @@ theorem hillDrivenChartField_wave_identity
     rfl
   have hspace : ∀ i : Fin d,
       coordPartial i.succ (coordPartial i.succ (hillDrivenChartField a b G₀)) y
-        = (((2 * Real.pi)⁻¹ : ℝ) ^ 2) *
+        = (((2 * Real.pi)⁻¹ : ℝ) ^ (2 : ℕ)) *
           (∫ ξ, (2 * Real.pi * Complex.I *
-              ((⟪ξ, EuclideanSpace.basisFun (Fin d) ℝ i⟫ : ℝ) : ℂ)) ^ 2 *
+              ((⟪ξ, EuclideanSpace.basisFun (Fin d) ℝ i⟫ : ℝ) : ℂ)) ^ (2 : ℕ) *
             kgChar X ξ * hillDrivenDensity a b G₀ (y 0) ξ).re := by
     intro i
     rw [coordPartial_coordPartial_hillDrivenChartField_succ hK a b G₀ y i,
@@ -119,17 +119,17 @@ theorem hillDrivenChartField_wave_identity
     rw [Complex.mul_re, him, hillDrivenChartPotential, hfield]
     ring
   rw [hpot, hfield]
-  have hpi : ((2 * Real.pi) ^ 2 : ℝ) ≠ 0 := by
+  have hpi : ((2 * Real.pi) ^ (2 : ℕ) : ℝ) ≠ 0 := by
     have := Real.pi_pos
     positivity
-  have hsum : a.speed (y 0) ^ 2 *
-      (∑ i : Fin d, ((2 * Real.pi)⁻¹ : ℝ) ^ 2 *
+  have hsum : a.speed (y 0) ^ (2 : ℕ) *
+      (∑ i : Fin d, ((2 * Real.pi)⁻¹ : ℝ) ^ (2 : ℕ) *
         (∫ ξ, (2 * Real.pi * Complex.I *
-            ((⟪ξ, EuclideanSpace.basisFun (Fin d) ℝ i⟫ : ℝ) : ℂ)) ^ 2 *
+            ((⟪ξ, EuclideanSpace.basisFun (Fin d) ℝ i⟫ : ℝ) : ℂ)) ^ (2 : ℕ) *
           kgChar X ξ * hillDrivenDensity a b G₀ (y 0) ξ).re)
-      = a.speed (y 0) ^ 2 / (2 * Real.pi) ^ 2 *
+      = a.speed (y 0) ^ (2 : ℕ) / (2 * Real.pi) ^ (2 : ℕ) *
         ∑ i : Fin d, (∫ ξ, (2 * Real.pi * Complex.I *
-            ((⟪ξ, EuclideanSpace.basisFun (Fin d) ℝ i⟫ : ℝ) : ℂ)) ^ 2 *
+            ((⟪ξ, EuclideanSpace.basisFun (Fin d) ℝ i⟫ : ℝ) : ℂ)) ^ (2 : ℕ) *
           kgChar X ξ * hillDrivenDensity a b G₀ (y 0) ξ).re := by
     rw [Finset.mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -144,11 +144,11 @@ theorem solvesPotentialWave_hillDrivenChartField
     (b : WienerFamily (EuclideanSpace ℝ (Fin d)) (K + 2)) (G₀ : EuclideanSpace ℝ (Fin d) →ᵇ ℂ)
     (hreal : IsRealFamily b) :
     SolvesPotentialWave (hillWaveOp d a.speed)
-      (fun y => hillDrivenChartPotential b y - a.mass ^ 2) (hillDrivenChartField a b G₀) := by
+      (fun y => hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) (hillDrivenChartField a b G₀) := by
   intro y
   have hwave := hillDrivenChartField_wave_identity hK a b G₀ hreal y
   show hillWaveOp d a.speed (hillDrivenChartField a b G₀) y +
-    (hillDrivenChartPotential b y - a.mass ^ 2) * hillDrivenChartField a b G₀ y = 0
+    (hillDrivenChartPotential b y - a.mass ^ (2 : ℕ)) * hillDrivenChartField a b G₀ y = 0
   rw [hillWaveOp, hwave]
   ring
 

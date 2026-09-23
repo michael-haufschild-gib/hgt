@@ -61,11 +61,11 @@ theorem normalizedImaginaryUnit_sq (x : RealOctonion)
   have hnormpos : 0 < normSq u :=
     lt_of_le_of_ne (normSq_nonneg u) (Ne.symm hnormne)
   have ht : t ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hnormpos)
-  have hsq : t ^ 2 = normSq u := Real.sq_sqrt (normSq_nonneg u)
+  have hsq : t ^ (2 : ℕ) = normSq u := Real.sq_sqrt (normSq_nonneg u)
   have hcoeff : t⁻¹ * t⁻¹ * normSq u = 1 := by
     rw [← hsq]
     calc
-      t⁻¹ * t⁻¹ * (t ^ 2) = t⁻¹ * (t⁻¹ * (t * t)) := by
+      t⁻¹ * t⁻¹ * (t ^ (2 : ℕ)) = t⁻¹ * (t⁻¹ * (t * t)) := by
         rw [pow_two, mul_assoc]
       _ = t⁻¹ * ((t⁻¹ * t) * t) := by rw [mul_assoc]
       _ = t⁻¹ * (1 * t) := by rw [inv_mul_cancel₀ ht]

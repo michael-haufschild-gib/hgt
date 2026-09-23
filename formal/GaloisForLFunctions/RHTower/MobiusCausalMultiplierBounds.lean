@@ -36,7 +36,7 @@ theorem mobiusCausalQ_eq_div (ω : ℝ) (z : ℂ) :
 theorem hasDerivAt_poleMDen (ω : ℝ) (z : ℂ) :
     HasDerivAt (fun w : ℂ => poleMDen ω w) (poleMDenDeriv ω z) z := by
   have hZ := hasDerivAt_zetaPoleUnit_comp ω z
-  have ha : HasDerivAt (fun w : ℂ => 1 + (ω : ℂ) + w) 1 z := hasDerivAt_shift (1 + (ω : ℂ)) z
+  have ha : HasDerivAt (fun w : ℂ => 1 + (ω : ℂ) + w) 1 z := hasDerivAt_shift_mobiusCausalNearOriginBound (1 + (ω : ℂ)) z
   have h := ha.mul hZ
   refine h.congr_deriv ?_
   rw [poleMDenDeriv]
@@ -49,7 +49,7 @@ theorem exists_near_origin_multiplier_bound :
         ‖mobiusCausalMultiplier ω z‖ ≤ C := by
   obtain ⟨ρ, Cb, hρpos, hρ8, hCb1, hbd⟩ := exists_poleUnit_ball_bounds
   have hCb0 : (0 : ℝ) < Cb := by linarith
-  refine ⟨ρ / 4, ρ / 8, Cb * (2 * (2 * Cb) * (3 * Cb) / (1 / 4 : ℝ) ^ 2) + Cb,
+  refine ⟨ρ / 4, ρ / 8, Cb * (2 * (2 * Cb) * (3 * Cb) / (1 / 4 : ℝ) ^ (2 : ℕ)) + Cb,
     by linarith, by linarith, by positivity, ?_⟩
   intro ω hω hωle z hzre hz0 hzδ
   have hznorm : (0 : ℝ) < ‖z‖ := by
@@ -159,7 +159,7 @@ theorem exists_near_origin_multiplier_bound :
     simpa [zetaPoleUnit_one] using h
   -- the quotient difference
   have hq : ‖mobiusCausalQ ω z - mobiusCausalQ ω 0‖
-      ≤ 2 * (2 * Cb) * (3 * Cb * ‖z‖) / (1 / 4 : ℝ) ^ 2 := by
+      ≤ 2 * (2 * Cb) * (3 * Cb * ‖z‖) / (1 / 4 : ℝ) ^ (2 : ℕ) := by
     rw [mobiusCausalQ_eq_div, mobiusCausalQ_eq_div]
     refine HTGeometry.norm_div_sub_div_le (by norm_num)
       (hdenlb z hzδ) (hdenlb 0 (by simpa using le_of_lt (by linarith : (0 : ℝ) < ρ / 4)))
@@ -192,18 +192,18 @@ theorem exists_near_origin_multiplier_bound :
   rw [mobiusCausalMultiplier_eq_numerator_div hω hzre hz0, norm_div, hsplit]
   have hnorm : ‖zetaPoleUnit (1 + z) * (mobiusCausalQ ω z - mobiusCausalQ ω 0) +
       (zetaPoleUnit (1 + z) - 1) * mobiusCausalQ ω 0‖
-      ≤ Cb * (2 * (2 * Cb) * (3 * Cb * ‖z‖) / (1 / 4 : ℝ) ^ 2) + Cb * ‖z‖ * 1 := by
+      ≤ Cb * (2 * (2 * Cb) * (3 * Cb * ‖z‖) / (1 / 4 : ℝ) ^ (2 : ℕ)) + Cb * ‖z‖ * 1 := by
     refine le_trans (norm_add_le _ _) ?_
     rw [norm_mul, norm_mul]
     have h1 : ‖zetaPoleUnit (1 + z)‖ * ‖mobiusCausalQ ω z - mobiusCausalQ ω 0‖
-        ≤ Cb * (2 * (2 * Cb) * (3 * Cb * ‖z‖) / (1 / 4 : ℝ) ^ 2) :=
+        ≤ Cb * (2 * (2 * Cb) * (3 * Cb * ‖z‖) / (1 / 4 : ℝ) ^ (2 : ℕ)) :=
       mul_le_mul hZub hq (norm_nonneg _) (by positivity)
     have h2 : ‖zetaPoleUnit (1 + z) - 1‖ * ‖mobiusCausalQ ω 0‖ ≤ Cb * ‖z‖ * 1 :=
       mul_le_mul hmvZ hq0 (norm_nonneg _) (by positivity)
     linarith
   rw [div_le_iff₀ hznorm]
-  have hfin : Cb * (2 * (2 * Cb) * (3 * Cb * ‖z‖) / (1 / 4 : ℝ) ^ 2) + Cb * ‖z‖ * 1
-      = (Cb * (2 * (2 * Cb) * (3 * Cb) / (1 / 4 : ℝ) ^ 2) + Cb) * ‖z‖ := by
+  have hfin : Cb * (2 * (2 * Cb) * (3 * Cb * ‖z‖) / (1 / 4 : ℝ) ^ (2 : ℕ)) + Cb * ‖z‖ * 1
+      = (Cb * (2 * (2 * Cb) * (3 * Cb) / (1 / 4 : ℝ) ^ (2 : ℕ)) + Cb) * ‖z‖ := by
     ring
   rw [← hfin]
   exact hnorm
@@ -348,7 +348,7 @@ theorem exists_mid_range_multiplier_bound {ω₀ δ : ℝ} (hω₀ : 0 < ω₀) 
 theorem norm_mobiusCausalMultiplier_far_le {ω : ℝ} (hω : 0 < ω) (hω1 : 2 * ω ≤ 1)
     (hζinv : ‖(riemannZeta (1 + 2 * (ω : ℂ)))⁻¹‖ ≤ 1) {τ : ℝ} (hτ : 9 ≤ |τ|) :
     ‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I)‖
-      ≤ farFieldConstant * Real.log |τ| ^ 26 / |τ| := by
+      ≤ farFieldConstant * Real.log |τ| ^ (26 : ℕ) / |τ| := by
   have hA0 : (0 : ℝ) < zetaLowerA := zetaLowerA_pos
   have hA1 : zetaLowerA ≤ 1 := zetaLowerA_le_one
   have hL2 : 2 < Real.log |τ| := two_lt_log_abs hτ
@@ -382,9 +382,9 @@ theorem norm_mobiusCausalMultiplier_far_le {ω : ℝ} (hω : 0 < ω) (hω1 : 2 *
       (by rw [him]; linarith)
     rwa [him] at h
   have hinv : ‖(riemannZeta (1 + 2 * (ω : ℂ) + z))⁻¹‖
-      ≤ 26 / zetaLowerA * Real.log |τ| ^ 7 := norm_inv_riemannZeta_shift_le hω hω1 hτ
+      ≤ 26 / zetaLowerA * Real.log |τ| ^ (7 : ℕ) := norm_inv_riemannZeta_shift_le hω hω1 hτ
   have hfirst : ‖riemannZeta (1 + z) / ((1 + (ω : ℂ) + z) * riemannZeta (1 + 2 * (ω : ℂ) + z))‖
-      ≤ (Real.log |τ| + 5) * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ 7) := by
+      ≤ (Real.log |τ| + 5) * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ (7 : ℕ)) := by
     have hsplit : ‖riemannZeta (1 + z) / ((1 + (ω : ℂ) + z) * riemannZeta (1 + 2 * (ω : ℂ) + z))‖
         = ‖riemannZeta (1 + z)‖ * ‖1 + (ω : ℂ) + z‖⁻¹ *
           ‖(riemannZeta (1 + 2 * (ω : ℂ) + z))⁻¹‖ := by
@@ -413,52 +413,52 @@ theorem norm_mobiusCausalMultiplier_far_le {ω : ℝ} (hω : 0 < ω) (hω1 : 2 *
         ≤ (1 * |τ|⁻¹) * 1 := h4
       _ = |τ|⁻¹ := by rw [one_mul, mul_one]
   have hmain : ‖mobiusCausalMultiplier ω z‖
-      ≤ (Real.log |τ| + 5) * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ 7) + |τ|⁻¹ := by
+      ≤ (Real.log |τ| + 5) * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ (7 : ℕ)) + |τ|⁻¹ := by
     rw [mobiusCausalMultiplier]
     refine le_trans (norm_sub_le _ _) ?_
     linarith
   -- closing arithmetic
-  have hL26 : (1 : ℝ) ≤ Real.log |τ| ^ 26 := one_le_pow₀ hL1
+  have hL26 : (1 : ℝ) ≤ Real.log |τ| ^ (26 : ℕ) := one_le_pow₀ hL1
   have hstep1 : Real.log |τ| + 5 ≤ 4 * Real.log |τ| := by linarith
-  have hbound : (Real.log |τ| + 5) * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ 7) + |τ|⁻¹
-      ≤ farFieldConstant * Real.log |τ| ^ 26 / |τ| := by
+  have hbound : (Real.log |τ| + 5) * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ (7 : ℕ)) + |τ|⁻¹
+      ≤ farFieldConstant * Real.log |τ| ^ (26 : ℕ) / |τ| := by
     have hτinv : (0 : ℝ) < |τ|⁻¹ := by positivity
-    have hfac1 : (Real.log |τ| + 5) * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ 7)
-        ≤ 4 * Real.log |τ| * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ 7) := by
-      have hnn : (0 : ℝ) ≤ |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ 7) := by positivity
+    have hfac1 : (Real.log |τ| + 5) * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ (7 : ℕ))
+        ≤ 4 * Real.log |τ| * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ (7 : ℕ)) := by
+      have hnn : (0 : ℝ) ≤ |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ (7 : ℕ)) := by positivity
       nlinarith
-    have hid : 4 * Real.log |τ| * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ 7)
-        = (104 / zetaLowerA) * Real.log |τ| ^ 8 * |τ|⁻¹ := by ring
-    have hpow : Real.log |τ| ^ 8 ≤ Real.log |τ| ^ 26 :=
+    have hid : 4 * Real.log |τ| * |τ|⁻¹ * (26 / zetaLowerA * Real.log |τ| ^ (7 : ℕ))
+        = (104 / zetaLowerA) * Real.log |τ| ^ (8 : ℕ) * |τ|⁻¹ := by ring
+    have hpow : Real.log |τ| ^ (8 : ℕ) ≤ Real.log |τ| ^ (26 : ℕ) :=
       pow_le_pow_right₀ hL1 (by norm_num)
-    have hstep2 : (104 / zetaLowerA) * Real.log |τ| ^ 8 * |τ|⁻¹
-        ≤ (104 / zetaLowerA) * Real.log |τ| ^ 26 * |τ|⁻¹ := by
+    have hstep2 : (104 / zetaLowerA) * Real.log |τ| ^ (8 : ℕ) * |τ|⁻¹
+        ≤ (104 / zetaLowerA) * Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹ := by
       have hnn : (0 : ℝ) ≤ (104 / zetaLowerA) := by positivity
-      have h1 : (104 / zetaLowerA) * Real.log |τ| ^ 8 ≤ (104 / zetaLowerA) * Real.log |τ| ^ 26 :=
+      have h1 : (104 / zetaLowerA) * Real.log |τ| ^ (8 : ℕ) ≤ (104 / zetaLowerA) * Real.log |τ| ^ (26 : ℕ) :=
         mul_le_mul_of_nonneg_left hpow hnn
       exact mul_le_mul_of_nonneg_right h1 (le_of_lt hτinv)
-    have hlast : |τ|⁻¹ ≤ 3 * Real.log |τ| ^ 26 * |τ|⁻¹ := by
-      have h1 : (1 : ℝ) ≤ 3 * Real.log |τ| ^ 26 := by linarith
+    have hlast : |τ|⁻¹ ≤ 3 * Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹ := by
+      have h1 : (1 : ℝ) ≤ 3 * Real.log |τ| ^ (26 : ℕ) := by linarith
       nlinarith [hτinv]
-    have hsum : farFieldConstant * Real.log |τ| ^ 26 / |τ|
-        = (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ 2)) * Real.log |τ| ^ 26 * |τ|⁻¹ +
-          3 * Real.log |τ| ^ 26 * |τ|⁻¹ := by
+    have hsum : farFieldConstant * Real.log |τ| ^ (26 : ℕ) / |τ|
+        = (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ (2 : ℕ))) * Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹ +
+          3 * Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹ := by
       rw [farFieldConstant, div_eq_mul_inv]
       ring
-    have hmid : (104 / zetaLowerA) * Real.log |τ| ^ 26 * |τ|⁻¹
-        ≤ (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ 2)) * Real.log |τ| ^ 26 * |τ|⁻¹ := by
-      have hextra : (1 : ℝ) ≤ 1 + 4496 / zetaLowerA ^ 2 := by
-        have hp : (0 : ℝ) < 4496 / zetaLowerA ^ 2 := by positivity
+    have hmid : (104 / zetaLowerA) * Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹
+        ≤ (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ (2 : ℕ))) * Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹ := by
+      have hextra : (1 : ℝ) ≤ 1 + 4496 / zetaLowerA ^ (2 : ℕ) := by
+        have hp : (0 : ℝ) < 4496 / zetaLowerA ^ (2 : ℕ) := by positivity
         linarith
-      have hnn : (0 : ℝ) ≤ Real.log |τ| ^ 26 * |τ|⁻¹ := by positivity
+      have hnn : (0 : ℝ) ≤ Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹ := by positivity
       have h104 : (0 : ℝ) < 104 / zetaLowerA := by positivity
-      have hcoef : (104 / zetaLowerA) ≤ (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ 2)) := by
+      have hcoef : (104 / zetaLowerA) ≤ (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ (2 : ℕ))) := by
         nlinarith
-      calc (104 / zetaLowerA) * Real.log |τ| ^ 26 * |τ|⁻¹
-          = (104 / zetaLowerA) * (Real.log |τ| ^ 26 * |τ|⁻¹) := by ring
-        _ ≤ (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ 2)) * (Real.log |τ| ^ 26 * |τ|⁻¹) :=
+      calc (104 / zetaLowerA) * Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹
+          = (104 / zetaLowerA) * (Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹) := by ring
+        _ ≤ (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ (2 : ℕ))) * (Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹) :=
             mul_le_mul_of_nonneg_right hcoef hnn
-        _ = (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ 2)) * Real.log |τ| ^ 26 * |τ|⁻¹ := by
+        _ = (104 / zetaLowerA * (1 + 4496 / zetaLowerA ^ (2 : ℕ))) * Real.log |τ| ^ (26 : ℕ) * |τ|⁻¹ := by
             ring
     rw [hsum]
     linarith [hid ▸ hfac1]
@@ -621,7 +621,7 @@ theorem continuousOn_mobiusCausalMultiplier_line {ω : ℝ} (hω : 0 < ω) :
 `1/(1+z)` in the boundary `L²` (i.e. `H²`) norm. -/
 theorem tendsto_boundary_multiplier_energy :
     Tendsto (fun ω : ℝ => ∫ τ : ℝ, ‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I) -
-        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ 2)
+        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
   obtain ⟨ω₀, K, hω₀, hK, hbound⟩ := exists_uniform_multiplier_bound
   have hev : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), 0 < ω ∧ ω ≤ ω₀ := by
@@ -650,7 +650,7 @@ theorem tendsto_boundary_multiplier_energy :
   have hmeas : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
       AEStronglyMeasurable (fun τ : ℝ =>
         ‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I) -
-          1 / (1 + (τ : ℂ) * Complex.I)‖ ^ 2) volume := by
+          1 / (1 + (τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)) volume := by
     filter_upwards [hev] with ω hω
     have h1 := aestronglyMeasurable_of_continuousOn_ne_zero
       (continuousOn_mobiusCausalMultiplier_line hω.1)
@@ -659,7 +659,7 @@ theorem tendsto_boundary_multiplier_energy :
     exact ((h1.sub h2).norm.pow 2)
   have hdom : ∀ᶠ ω : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0), ∀ᵐ τ : ℝ,
       ‖‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I) -
-        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ 2‖ ≤ boundaryBound K τ := by
+        1 / (1 + (τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)‖ ≤ boundaryBound K τ := by
     filter_upwards [hev] with ω hω
     filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
     have hτ : τ ≠ 0 := hτmem
@@ -673,11 +673,11 @@ theorem tendsto_boundary_multiplier_energy :
         1 / (1 + (τ : ℂ) * Complex.I)‖ := norm_nonneg _
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), boundaryBound_eq K τ]
     calc ‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I) -
-          1 / (1 + (τ : ℂ) * Complex.I)‖ ^ 2
-        ≤ (2 * boundaryMajorant K τ) ^ 2 := pow_le_pow_left₀ h4 h3 2
-      _ = 4 * boundaryMajorant K τ ^ 2 := by ring
+          1 / (1 + (τ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+        ≤ (2 * boundaryMajorant K τ) ^ (2 : ℕ) := pow_le_pow_left₀ h4 h3 2
+      _ = 4 * boundaryMajorant K τ ^ (2 : ℕ) := by ring
   have hlim : ∀ᵐ τ : ℝ, Tendsto (fun ω : ℝ =>
-      ‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I) - 1 / (1 + (τ : ℂ) * Complex.I)‖ ^ 2)
+      ‖mobiusCausalMultiplier ω ((τ : ℂ) * Complex.I) - 1 / (1 + (τ : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
     filter_upwards [compl_mem_ae_iff.2 Real.volume_singleton] with τ hτmem
     have hτ : τ ≠ 0 := hτmem

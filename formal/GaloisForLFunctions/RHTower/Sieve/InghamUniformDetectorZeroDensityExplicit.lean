@@ -24,7 +24,7 @@ theorem exists_eventually_zetaLittlewoodZeroCountAbove_le_uniformGabrielExplicit
               (X : ℝ) ^ inghamUniformGabrielConservativeExponent sigma *
               (1 + Real.log (X : ℝ)) ^
                 (2 * inghamUniformGabrielCriticalShare sigma) +
-            (1 + Real.log (X : ℝ)) ^ 2) := by
+            (1 + Real.log (X : ℝ)) ^ (2 : ℕ)) := by
   obtain ⟨K₀, hK₀, hmass⟩ :=
     exists_eventually_zetaZeroMass_le_uniformGabrielExplicit
   let K : ℝ := K₀ * 1000 / (2 * Real.pi)
@@ -62,7 +62,7 @@ theorem exists_eventually_zetaLittlewoodZeroCountAbove_le_uniformGabrielExplicit
         (X : ℝ) ^ inghamUniformGabrielConservativeExponent sigma *
         (1 + Real.log (X : ℝ)) ^
           (2 * inghamUniformGabrielCriticalShare sigma) +
-      (1 + Real.log (X : ℝ)) ^ 2
+      (1 + Real.log (X : ℝ)) ^ (2 : ℕ)
   have hscaled :
       q * zetaLittlewoodZeroCountAbove (inghamUniformGabrielCenter sigma) 4
           ((X : ℝ) - 2) sigma ≤ K₀ * R := by
@@ -95,7 +95,7 @@ theorem exists_eventually_zetaLittlewoodZeroCountAbove_le_uniformGabrielExplicit
               (X : ℝ) ^ inghamUniformGabrielConservativeExponent sigma *
               (1 + Real.log (X : ℝ)) ^
                 (2 * inghamUniformGabrielCriticalShare sigma) +
-            (1 + Real.log (X : ℝ)) ^ 2)) := by rfl
+            (1 + Real.log (X : ℝ)) ^ (2 : ℕ))) := by rfl
 
 end
 

@@ -33,7 +33,7 @@ variable {ι : Type*}
 def transportedField (y : ℝ) (β : ι → ℝ) (s : Finset ι) : ℝ := ∑ k ∈ s, (y - β k)⁻¹
 
 /-- The reversed energy `ℰ̂(y) = Σ_k (y − β_k)⁻²` (doc 26 §0). -/
-def reversedEnergy (y : ℝ) (β : ι → ℝ) (s : Finset ι) : ℝ := ∑ k ∈ s, ((y - β k)⁻¹) ^ 2
+def reversedEnergy (y : ℝ) (β : ι → ℝ) (s : Finset ι) : ℝ := ∑ k ∈ s, ((y - β k)⁻¹) ^ (2 : ℕ)
 
 /-- The scale-invariant pole weight `ξ_k = y/(y − β_k)` (doc 26 §3). -/
 def poleWeight (y β : ℝ) : ℝ := y / (y - β)
@@ -42,7 +42,7 @@ def poleWeight (y β : ℝ) : ℝ := y / (y - β)
 def weightSum (y : ℝ) (β : ι → ℝ) (s : Finset ι) : ℝ := ∑ k ∈ s, poleWeight y (β k)
 
 /-- `S = Σ_k ξ_k²` (`= y² ℰ̂`), the doc 26 §3 localization functional. -/
-def weightSqSum (y : ℝ) (β : ι → ℝ) (s : Finset ι) : ℝ := ∑ k ∈ s, (poleWeight y (β k)) ^ 2
+def weightSqSum (y : ℝ) (β : ι → ℝ) (s : Finset ι) : ℝ := ∑ k ∈ s, (poleWeight y (β k)) ^ (2 : ℕ)
 
 /-- **`Σξ = y·F̂`** — factor the coordinate out of the weight sum. -/
 theorem weightSum_eq (y : ℝ) (β : ι → ℝ) (s : Finset ι) :
@@ -53,7 +53,7 @@ theorem weightSum_eq (y : ℝ) (β : ι → ℝ) (s : Finset ι) :
 
 /-- **`S = y²·ℰ̂`** — the doc 26 §3 identity `S = y² ℰ̂(y)`. -/
 theorem weightSqSum_eq (y : ℝ) (β : ι → ℝ) (s : Finset ι) :
-    weightSqSum y β s = y ^ 2 * reversedEnergy y β s := by
+    weightSqSum y β s = y ^ (2 : ℕ) * reversedEnergy y β s := by
   unfold weightSqSum reversedEnergy poleWeight
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
@@ -70,10 +70,10 @@ theorem xiSum_eq_of_equilibrium {y d : ℝ} (β : ι → ℝ) (s : Finset ι) (h
 `S` up. The participation-ratio reading of the copy→flip transition (doc 26 §3). -/
 theorem participation_floor {y d : ℝ} (β : ι → ℝ) (s : Finset ι) (hy : y ≠ 0)
     (heq : transportedField y β s = d / y) :
-    d ^ 2 ≤ (s.card : ℝ) * weightSqSum y β s := by
+    d ^ (2 : ℕ) ≤ (s.card : ℝ) * weightSqSum y β s := by
   have hsum : weightSum y β s = d := xiSum_eq_of_equilibrium β s hy heq
-  have hcs : (∑ k ∈ s, poleWeight y (β k)) ^ 2
-      ≤ (s.card : ℝ) * ∑ k ∈ s, (poleWeight y (β k)) ^ 2 :=
+  have hcs : (∑ k ∈ s, poleWeight y (β k)) ^ (2 : ℕ)
+      ≤ (s.card : ℝ) * ∑ k ∈ s, (poleWeight y (β k)) ^ (2 : ℕ) :=
     sq_sum_le_card_mul_sum_sq
   rw [← weightSum, hsum] at hcs
   exact hcs
@@ -82,7 +82,7 @@ theorem participation_floor {y d : ℝ} (β : ι → ℝ) (s : Finset ι) (hy : 
 term `(c − α)⁻¹` equals `y − y²/(y − β)` — the algebra that turns `Σ(c−α)⁻¹ = 0` into
 `F̂(y) = d/y`. -/
 theorem revTerm_eq {y β : ℝ} (hy : y ≠ 0) (hβ : β ≠ 0) (hyβ : y ≠ β) :
-    (1 / y - 1 / β)⁻¹ = y - y ^ 2 / (y - β) := by
+    (1 / y - 1 / β)⁻¹ = y - y ^ (2 : ℕ) / (y - β) := by
   have hyβ' : y - β ≠ 0 := sub_ne_zero.mpr hyβ
   field_simp
   ring
@@ -90,7 +90,7 @@ theorem revTerm_eq {y β : ℝ} (hy : y ≠ 0) (hβ : β ≠ 0) (hyβ : y ≠ β
 /-- **Per-term energy identity (doc 26 §1.2)**: `β²/(β − y)² = 1 + 2y/(β − y) + y²/(β − y)²`,
 the expansion summed (with the equilibrium) to `c⁴ℰ(c) = ℰ̂(y) − d/y²`. -/
 theorem revEnergyTerm_eq {y β : ℝ} (hβy : β ≠ y) :
-    β ^ 2 / (β - y) ^ 2 = 1 + 2 * y / (β - y) + y ^ 2 / (β - y) ^ 2 := by
+    β ^ (2 : ℕ) / (β - y) ^ (2 : ℕ) = 1 + 2 * y / (β - y) + y ^ (2 : ℕ) / (β - y) ^ (2 : ℕ) := by
   have : β - y ≠ 0 := sub_ne_zero.mpr hβy
   field_simp
   ring
@@ -103,14 +103,14 @@ energy monotonicity in the reversed coordinate. No ODE is assumed; the oscillato
 comparison object. -/
 theorem oscEnergy_hasDerivAt {V V' : ℝ → ℝ} {y v'' b : ℝ}
     (hV' : HasDerivAt V' v'' y) (hVd : ∀ z, HasDerivAt V (V' z) z) :
-    HasDerivAt (fun z => b ^ 2 * V z ^ 2 + V' z ^ 2)
-      (2 * V' y * (v'' + b ^ 2 * V y)) y := by
-  have h1 : HasDerivAt (fun z => b ^ 2 * V z ^ 2) (b ^ 2 * (2 * V y * V' y)) y := by
+    HasDerivAt (fun z => b ^ (2 : ℕ) * V z ^ (2 : ℕ) + V' z ^ (2 : ℕ))
+      (2 * V' y * (v'' + b ^ (2 : ℕ) * V y)) y := by
+  have h1 : HasDerivAt (fun z => b ^ (2 : ℕ) * V z ^ (2 : ℕ)) (b ^ (2 : ℕ) * (2 * V y * V' y)) y := by
     have := (hVd y).pow 2
-    simpa using this.const_mul (b ^ 2)
-  have h2 : HasDerivAt (fun z => V' z ^ 2) (2 * V' y * v'') y := by
+    simpa using this.const_mul (b ^ (2 : ℕ))
+  have h2 : HasDerivAt (fun z => V' z ^ (2 : ℕ)) (2 * V' y * v'') y := by
     have hraw := hV'.pow 2
-    have hfun : (fun z => V' z ^ 2) = V' ^ 2 := by
+    have hfun : (fun z => V' z ^ (2 : ℕ)) = V' ^ (2 : ℕ) := by
       funext z
       rfl
     rw [hfun]
@@ -118,8 +118,8 @@ theorem oscEnergy_hasDerivAt {V V' : ℝ → ℝ} {y v'' b : ℝ}
     norm_num
   have hraw := h1.add h2
   have hfun :
-      (fun z => b ^ 2 * V z ^ 2 + V' z ^ 2) =
-        (fun z => b ^ 2 * V z ^ 2) + fun z => V' z ^ 2 := by
+      (fun z => b ^ (2 : ℕ) * V z ^ (2 : ℕ) + V' z ^ (2 : ℕ)) =
+        (fun z => b ^ (2 : ℕ) * V z ^ (2 : ℕ)) + fun z => V' z ^ (2 : ℕ) := by
     funext z
     rfl
   rw [hfun]

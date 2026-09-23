@@ -21,7 +21,7 @@ open SelbergMaassTraceStokes
 noncomputable section
 
 def arcFloor : ℝ := arcHeight (1 / 2)
-def sideRadius (y : ℝ) : ℝ := Real.sqrt (1 - y ^ 2)
+def sideRadius (y : ℝ) : ℝ := Real.sqrt (1 - y ^ (2 : ℕ))
 def cell (Y : ℝ) : Set (ℝ × ℝ) := Icc (-(1 / 2 : ℝ)) (1 / 2) ×ˢ Icc (1 / 2 : ℝ) Y
 
 theorem continuous_arcHeight : Continuous arcHeight := by unfold arcHeight; fun_prop
@@ -41,7 +41,7 @@ theorem arcFloor_pos : 0 < arcFloor := arcHeight_pos ⟨by norm_num, le_rfl⟩
 
 theorem arcFloor_gt_half : (1 / 2 : ℝ) < arcFloor := by
   have h := arcHeight_sq (x := (1 / 2 : ℝ)) ⟨by norm_num, le_rfl⟩
-  change arcFloor ^ 2 = _ at h
+  change arcFloor ^ (2 : ℕ) = _ at h
   nlinarith [arcFloor_pos]
 
 def domain (Y : ℝ) : Set (ℝ × ℝ) :=
@@ -246,10 +246,10 @@ theorem setIntegral_eq_horizontal
     horizontal_iterated_indicator_eq_setSlices f Y]
 
 theorem arcFloor_sq :
-    arcFloor ^ 2 = (3 / 4 : ℝ) := by
+    arcFloor ^ (2 : ℕ) = (3 / 4 : ℝ) := by
   have h := arcHeight_sq
     (x := (1 / 2 : ℝ)) (by constructor <;> norm_num)
-  change arcHeight (1 / 2 : ℝ) ^ 2 = 3 / 4
+  change arcHeight (1 / 2 : ℝ) ^ (2 : ℕ) = 3 / 4
   convert h using 1
   norm_num
 
@@ -257,18 +257,18 @@ theorem arcFloor_le_arcHeight
     {x : ℝ} (hx : x ∈ Set.Icc (-(1 / 2 : ℝ)) (1 / 2)) :
     arcFloor ≤ arcHeight x := by
   have harcSq := arcHeight_sq hx
-  have hxSq : x ^ 2 ≤ (1 / 4 : ℝ) := by
+  have hxSq : x ^ (2 : ℕ) ≤ (1 / 4 : ℝ) := by
     nlinarith [hx.1, hx.2, sq_nonneg (x + 1 / 2), sq_nonneg (1 / 2 - x)]
   apply (sq_le_sq₀ (le_of_lt arcFloor_pos)
     (Real.sqrt_nonneg _)).1
   calc
-    arcFloor ^ 2 = 3 / 4 := arcFloor_sq
-    _ ≤ 1 - x ^ 2 := by nlinarith
-    _ = arcHeight x ^ 2 := harcSq.symm
+    arcFloor ^ (2 : ℕ) = 3 / 4 := arcFloor_sq
+    _ ≤ 1 - x ^ (2 : ℕ) := by nlinarith
+    _ = arcHeight x ^ (2 : ℕ) := harcSq.symm
 
 theorem sideRadius_sq_of_lowerHeight
     {y : ℝ} (hy : y ∈ Set.Icc arcFloor 1) :
-    sideRadius y ^ 2 = 1 - y ^ 2 := by
+    sideRadius y ^ (2 : ℕ) = 1 - y ^ (2 : ℕ) := by
   unfold sideRadius
   apply Real.sq_sqrt
   have hy0 : 0 ≤ y := (le_of_lt arcFloor_pos).trans hy.1
@@ -279,13 +279,13 @@ theorem sideRadius_le_half
     sideRadius y ≤ (1 / 2 : ℝ) := by
   have hfloor0 : 0 ≤ arcFloor := le_of_lt arcFloor_pos
   have hy0 : 0 ≤ y := hfloor0.trans hy.1
-  have hfloorYsq : arcFloor ^ 2 ≤ y ^ 2 :=
+  have hfloorYsq : arcFloor ^ (2 : ℕ) ≤ y ^ (2 : ℕ) :=
     (sq_le_sq₀ hfloor0 hy0).2 hy.1
   have hrSq := sideRadius_sq_of_lowerHeight hy
   apply (sq_le_sq₀ (Real.sqrt_nonneg _) (by norm_num : (0 : ℝ) ≤ 1 / 2)).1
   calc
-    sideRadius y ^ 2 = 1 - y ^ 2 := hrSq
-    _ ≤ (1 / 2 : ℝ) ^ 2 := by
+    sideRadius y ^ (2 : ℕ) = 1 - y ^ (2 : ℕ) := hrSq
+    _ ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := by
       rw [arcFloor_sq] at hfloorYsq
       nlinarith
 
@@ -303,12 +303,12 @@ theorem arcHeight_le_iff_side
   have hrSq := sideRadius_sq_of_lowerHeight hy
   constructor
   · intro h
-    have hsquare : arcHeight x ^ 2 ≤ y ^ 2 :=
+    have hsquare : arcHeight x ^ (2 : ℕ) ≤ y ^ (2 : ℕ) :=
       (sq_le_sq₀ harc0 hy0).2 h
-    have hrx : sideRadius y ^ 2 ≤ x ^ 2 := by
+    have hrx : sideRadius y ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by
       calc
-        sideRadius y ^ 2 = 1 - y ^ 2 := hrSq
-        _ ≤ x ^ 2 := by rw [harcSq] at hsquare; nlinarith
+        sideRadius y ^ (2 : ℕ) = 1 - y ^ (2 : ℕ) := hrSq
+        _ ≤ x ^ (2 : ℕ) := by rw [harcSq] at hsquare; nlinarith
     have habs0 : |sideRadius y| ≤ |x| := (sq_le_sq).1 hrx
     have habs : sideRadius y ≤ |x| := by
       simpa [abs_of_nonneg hr0] using habs0
@@ -324,13 +324,13 @@ theorem arcHeight_le_iff_side
         linarith
       · have hx0 : 0 ≤ x := hr0.trans hright
         simpa [abs_of_nonneg hx0] using hright
-    have hrx : sideRadius y ^ 2 ≤ x ^ 2 := by
+    have hrx : sideRadius y ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by
       apply (sq_le_sq).2
       simpa [abs_of_nonneg hr0] using habs
-    have hsquare : arcHeight x ^ 2 ≤ y ^ 2 := by
+    have hsquare : arcHeight x ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := by
       calc
-        arcHeight x ^ 2 = 1 - x ^ 2 := harcSq
-        _ ≤ y ^ 2 := by rw [hrSq] at hrx; nlinarith
+        arcHeight x ^ (2 : ℕ) = 1 - x ^ (2 : ℕ) := harcSq
+        _ ≤ y ^ (2 : ℕ) := by rw [hrSq] at hrx; nlinarith
     exact (sq_le_sq₀ harc0 hy0).1 hsquare
 
 theorem horizontalSlice_eq_full

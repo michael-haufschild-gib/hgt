@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions
 
 /-- `log⁺` is dominated by the logarithm of the shifted argument. -/
-theorem posLog_le_log_one_add {t : ℝ} (ht : 0 ≤ t) : Real.posLog t ≤ Real.log (1 + t) := by
+theorem posLog_le_log_one_add_firstEdgeSeparation {t : ℝ} (ht : 0 ≤ t) : Real.posLog t ≤ Real.log (1 + t) := by
   rw [Real.posLog_apply]
   refine max_le (Real.log_nonneg (by linarith)) ?_
   rcases eq_or_lt_of_le ht with h | h
@@ -106,7 +106,7 @@ theorem stepSeparation_first_edge {Y : ℕ → ℂ → ℂ} (hY0 : ∀ z : ℂ, 
       have := Real.log_le_log hK0 h2
       linarith [h1]
     have hPlog : Real.posLog ‖z‖ ≤ Real.log (1 + ‖z‖) :=
-      posLog_le_log_one_add (norm_nonneg z)
+      posLog_le_log_one_add_firstEdgeSeparation (norm_nonneg z)
     have hfinal : Real.log ‖Y 1 z‖ ≤ Real.posLog ‖Y 1 z‖ := by
       rw [Real.posLog_apply]
       exact le_max_right _ _

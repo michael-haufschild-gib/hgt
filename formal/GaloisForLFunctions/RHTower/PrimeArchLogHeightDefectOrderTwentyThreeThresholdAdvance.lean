@@ -24,15 +24,15 @@ noncomputable section
 /-- Order-23 fourth-trace source budget excludes every off-line copy below squared height
 `431/2`. -/
 theorem xiZeroCopy_re_eq_half_of_im_sq_lt_fourHundredThirtyOne_halves
-    (q : XiZeroCopy) (hheight : (q.1 : ℂ).im ^ 2 < 431 / 2) :
+    (q : XiZeroCopy) (hheight : (q.1 : ℂ).im ^ (2 : ℕ) < 431 / 2) :
     (q.1 : ℂ).re = 1 / 2 := by
   by_contra hoff
-  by_cases hlow : (q.1 : ℂ).im ^ 2 < 2365 / 16
+  by_cases hlow : (q.1 : ℂ).im ^ (2 : ℕ) < 2365 / 16
   · exact hoff (xiZeroCopy_re_eq_half_of_im_sq_lt_2365_over_16 q hlow)
-  · have hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ 2 := le_of_not_gt hlow
-    have huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 :=
+  · have hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ (2 : ℕ) := le_of_not_gt hlow
+    have huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) :=
       sq_pos_of_ne_zero (sub_ne_zero.mpr hoff)
-    have huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 :=
+    have huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 :=
       xi_divisor_support_centered_re_sq_lt_quarter q.1
     have hatom :=
       seventeen_over_eightHundredThousand_lt_xiFourthReciprocalTraceAtom_orderTwentyThree
@@ -44,13 +44,13 @@ theorem xiZeroCopy_re_eq_half_of_im_sq_lt_fourHundredThirtyOne_halves
 /-- Equivalent positive height gap for every off-line Xi copy. -/
 theorem fourHundredThirtyOne_halves_le_im_sq_of_xiZeroCopy_offLine
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    431 / 2 ≤ (q.1 : ℂ).im ^ 2 := by
+    431 / 2 ≤ (q.1 : ℂ).im ^ (2 : ℕ) := by
   exact le_of_not_gt fun hheight =>
     hoff (xiZeroCopy_re_eq_half_of_im_sq_lt_fourHundredThirtyOne_halves q hheight)
 
 /-- Order-23 height exclusion exposed as a verified-height certificate. -/
 theorem rhVerifiedThrough_of_sq_lt_fourHundredThirtyOne_halves
-    (H : ℝ) (hHsq : H ^ 2 < 431 / 2) :
+    (H : ℝ) (hHsq : H ^ (2 : ℕ) < 431 / 2) :
     RHVerifiedThrough H := by
   intro rho hzero _hre0 _hre1 him0 himUpper
   let rhoSupport : XiDivisorSupport :=
@@ -61,8 +61,8 @@ theorem rhVerifiedThrough_of_sq_lt_fourHundredThirtyOne_halves
         ((MeromorphicOn.divisor xi Set.univ) (rhoSupport : ℂ)) := by
       omega
     exact ⟨rhoSupport, ⟨0, hn⟩⟩
-  have hsq : (q.1 : ℂ).im ^ 2 < 431 / 2 := by
-    change rho.im ^ 2 < 431 / 2
+  have hsq : (q.1 : ℂ).im ^ (2 : ℕ) < 431 / 2 := by
+    change rho.im ^ (2 : ℕ) < 431 / 2
     nlinarith
   have hline :=
     xiZeroCopy_re_eq_half_of_im_sq_lt_fourHundredThirtyOne_halves q hsq

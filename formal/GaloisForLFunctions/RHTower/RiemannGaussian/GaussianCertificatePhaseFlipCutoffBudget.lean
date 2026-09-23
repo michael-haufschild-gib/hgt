@@ -7,7 +7,7 @@ The phase-flip law forces a compact certificate to pay an elementary peak.
 The preceding module bounds its digamma payment.  Here the remaining finite
 prime slope mass is bounded using only the pointwise unconditional estimate
 `Λ(n) ≤ log n`.  Thus the certificate's cutoff itself has a fully explicit
-budget: `cutoff * log(cutoff)^2`.
+budget: `cutoff * log(cutoff)^(2 : ℕ)`.
 -/
 
 open Filter Set
@@ -20,12 +20,12 @@ is bounded by its deterministic cutoff budget. -/
 theorem gaussianPrimePhaseSlopeMass_range_le_cutoff_log_sq
     (cutoff : ℕ) :
     gaussianPrimePhaseSlopeMass (Finset.range cutoff) ≤
-      (cutoff : ℝ) * Real.log cutoff ^ 2 := by
+      (cutoff : ℝ) * Real.log cutoff ^ (2 : ℕ) := by
   unfold gaussianPrimePhaseSlopeMass
   calc
     ∑ n ∈ Finset.range cutoff,
         ArithmeticFunction.vonMangoldt n / Real.sqrt n * |Real.log n| ≤
-      ∑ _n ∈ Finset.range cutoff, Real.log cutoff ^ 2 := by
+      ∑ _n ∈ Finset.range cutoff, Real.log cutoff ^ (2 : ℕ) := by
         apply Finset.sum_le_sum
         intro n hn
         rw [Finset.mem_range] at hn
@@ -60,8 +60,8 @@ theorem gaussianPrimePhaseSlopeMass_range_le_cutoff_log_sq
                 ArithmeticFunction.vonMangoldt n * Real.log n := hfirst
             _ ≤ Real.log n * Real.log n := by
                 exact mul_le_mul_of_nonneg_right ArithmeticFunction.vonMangoldt_le_log hlogn
-            _ ≤ Real.log cutoff ^ 2 := by nlinarith
-    _ = (cutoff : ℝ) * Real.log cutoff ^ 2 := by simp
+            _ ≤ Real.log cutoff ^ (2 : ℕ) := by nlinarith
+    _ = (cutoff : ℝ) * Real.log cutoff ^ (2 : ℕ) := by simp
 
 
 /-- A compact phase-flip Gaussian certificate must fund its elementary
@@ -70,15 +70,15 @@ theorem GaussianArithmeticWidthCertificate.phaseFlipPeak_sub_explicitDigamma_le_
     {ε : ℝ} (certificate : GaussianArithmeticWidthCertificate ε)
     (hphaseRadius : Real.pi / ε ≤ certificate.compactRadius) :
     4 * Real.exp (ε / 4) +
-        4 * Real.exp (ε / 4 - Real.pi ^ 2 / ε) -
+        4 * Real.exp (ε / 4 - Real.pi ^ (2 : ℕ) / ε) -
       2 / Real.sqrt (Real.pi * ε) *
         ((3 / 2 : ℝ) * |Real.pi / ε| +
           (2 / (1 - Real.exp (-2))) * (2 * Real.exp (-(1 / 2 : ℝ)))) ≤
       2 * Real.pi / (ε * Real.sqrt (Real.pi * ε)) *
-        ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ 2) := by
+        ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ (2 : ℕ)) := by
   calc
     4 * Real.exp (ε / 4) +
-          4 * Real.exp (ε / 4 - Real.pi ^ 2 / ε) -
+          4 * Real.exp (ε / 4 - Real.pi ^ (2 : ℕ) / ε) -
         2 / Real.sqrt (Real.pi * ε) *
           ((3 / 2 : ℝ) * |Real.pi / ε| +
             (2 / (1 - Real.exp (-2))) * (2 * Real.exp (-(1 / 2 : ℝ)))) ≤
@@ -86,7 +86,7 @@ theorem GaussianArithmeticWidthCertificate.phaseFlipPeak_sub_explicitDigamma_le_
           gaussianPrimePhaseSlopeMass (Finset.range certificate.cutoff) :=
       certificate.phaseFlipPeak_sub_explicitDigamma_le_slopeMass hphaseRadius
     _ ≤ 2 * Real.pi / (ε * Real.sqrt (Real.pi * ε)) *
-        ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ 2) := by
+        ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ (2 : ℕ)) := by
       apply mul_le_mul_of_nonneg_left
       · exact gaussianPrimePhaseSlopeMass_range_le_cutoff_log_sq certificate.cutoff
       · have hden : 0 < ε * Real.sqrt (Real.pi * ε) := by
@@ -102,11 +102,11 @@ theorem GaussianArithmeticWidthCertificate.phaseFlip_cutoff_log_budget_lower
     (hphaseRadius : Real.pi / ε ≤ certificate.compactRadius) :
     (ε * Real.sqrt (Real.pi * ε) / (2 * Real.pi)) *
         (4 * Real.exp (ε / 4) +
-          4 * Real.exp (ε / 4 - Real.pi ^ 2 / ε) -
+          4 * Real.exp (ε / 4 - Real.pi ^ (2 : ℕ) / ε) -
           2 / Real.sqrt (Real.pi * ε) *
             ((3 / 2 : ℝ) * |Real.pi / ε| +
               (2 / (1 - Real.exp (-2))) * (2 * Real.exp (-(1 / 2 : ℝ))))) ≤
-      (certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ 2 := by
+      (certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ (2 : ℕ) := by
   have hbudget := certificate.phaseFlipPeak_sub_explicitDigamma_le_cutoff_log_budget
     hphaseRadius
   have hscale : 0 ≤ ε * Real.sqrt (Real.pi * ε) / (2 * Real.pi) := by
@@ -117,14 +117,14 @@ theorem GaussianArithmeticWidthCertificate.phaseFlip_cutoff_log_budget_lower
   calc
     (ε * Real.sqrt (Real.pi * ε) / (2 * Real.pi)) *
         (4 * Real.exp (ε / 4) +
-          4 * Real.exp (ε / 4 - Real.pi ^ 2 / ε) -
+          4 * Real.exp (ε / 4 - Real.pi ^ (2 : ℕ) / ε) -
           2 / Real.sqrt (Real.pi * ε) *
             ((3 / 2 : ℝ) * |Real.pi / ε| +
               (2 / (1 - Real.exp (-2))) * (2 * Real.exp (-(1 / 2 : ℝ))))) ≤
         (ε * Real.sqrt (Real.pi * ε) / (2 * Real.pi)) *
           (2 * Real.pi / (ε * Real.sqrt (Real.pi * ε)) *
-            ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ 2)) := hmul
-    _ = (certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ 2 := by
+            ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ (2 : ℕ))) := hmul
+    _ = (certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ (2 : ℕ) := by
       have hden : ε * Real.sqrt (Real.pi * ε) ≠ 0 := by
         apply ne_of_gt
         apply mul_pos certificate.width_pos
@@ -143,11 +143,11 @@ theorem GaussianArithmeticWidthCertificate.phaseFlip_cutoff_log_budget_lower
       calc
         ε * Real.sqrt (Real.pi * ε) / (2 * Real.pi) *
             (2 * Real.pi / (ε * Real.sqrt (Real.pi * ε)) *
-              ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ 2)) =
+              ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ (2 : ℕ))) =
             (ε * Real.sqrt (Real.pi * ε) / (2 * Real.pi) *
               (2 * Real.pi / (ε * Real.sqrt (Real.pi * ε)))) *
-                ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ 2) := by ring
-        _ = (certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ 2 := by
+                ((certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ (2 : ℕ)) := by ring
+        _ = (certificate.cutoff : ℝ) * Real.log certificate.cutoff ^ (2 : ℕ) := by
           rw [hcancel, one_mul]
 
 end

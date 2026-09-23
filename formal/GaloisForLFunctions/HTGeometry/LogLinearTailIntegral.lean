@@ -1,21 +1,21 @@
 import Mathlib
 
 /-!
-# Decreasing-tail estimate for `log x / x^2`
+# Decreasing-tail estimate for `log x / x^(2 : ℕ)`
 
 The prime-power completion bound `(PFK14)` of
 `xi-physical-prime-log-aperture-fusion-cross-kernel` reduces (in the dominant `r = 2` band) to the
-integral-test tail of `∑ log(n)/n^2`.  This file formalizes that tail through the exact antiderivative
-`d/dx[-(log x + 1)/x] = log x / x^2`, giving the improper integral
-`∫_{x>N} log x/x^2 = (log N + 1)/N` and the decreasing-tail sum bound
-`∑_{n>N} log n/n^2 ≤ (log N + 1)/N` for `N ≥ e`.
+integral-test tail of `∑ log(n)/n^(2 : ℕ)`.  This file formalizes that tail through the exact antiderivative
+`d/dx[-(log x + 1)/x] = log x / x^(2 : ℕ)`, giving the improper integral
+`∫_{x>N} log x/x^(2 : ℕ) = (log N + 1)/N` and the decreasing-tail sum bound
+`∑_{n>N} log n/n^(2 : ℕ) ≤ (log N + 1)/N` for `N ≥ e`.
 -/
 
 open Real
 
 namespace GaloisForLFunctions.HTGeometry
 
-/-- **Antiderivative of `log x / x^2`.**  For `x > 0`, `d/dx[-(log x + 1)/x] = log x / x^2`. -/
+/-- **Antiderivative of `log x / x^(2 : ℕ)`.**  For `x > 0`, `d/dx[-(log x + 1)/x] = log x / x^(2 : ℕ)`. -/
 theorem hasDerivAt_neg_logLin_tail {x : ℝ} (hx : 0 < x) :
     HasDerivAt (fun x => -(Real.log x + 1) / x) (Real.log x / x ^ 2) x := by
   have hx0 : x ≠ 0 := ne_of_gt hx
@@ -45,7 +45,7 @@ theorem tendsto_neg_logLin_tail_atTop :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   field_simp
 
-/-- **Improper tail integral.**  `∫_{x>N} log x/x^2 = (log N + 1)/N` for `N ≥ 1`, by the
+/-- **Improper tail integral.**  `∫_{x>N} log x/x^(2 : ℕ) = (log N + 1)/N` for `N ≥ 1`, by the
 fundamental theorem of calculus on `[N,∞)` with the antiderivative `hasDerivAt_neg_logLin_tail`. -/
 theorem integral_logLin_div_sq_Ioi {N : ℝ} (hN : 1 ≤ N) :
     ∫ x in Set.Ioi N, Real.log x / x ^ 2 = (Real.log N + 1) / N := by
@@ -62,7 +62,7 @@ theorem integral_logLin_div_sq_Ioi {N : ℝ} (hN : 1 ≤ N) :
   rw [integral_Ioi_of_hasDerivAt_of_nonneg hcont hderiv hpos tendsto_neg_logLin_tail_atTop]
   ring
 
-/-- `log x / x^2` is antitone on `[e, ∞)`: it is the product of the nonnegative antitone functions
+/-- `log x / x^(2 : ℕ)` is antitone on `[e, ∞)`: it is the product of the nonnegative antitone functions
 `log x / x` (`log_div_self_antitoneOn`) and `1/x`. -/
 theorem antitoneOn_logLin_div_sq :
     AntitoneOn (fun x : ℝ => Real.log x / x ^ 2) (Set.Ici (Real.exp 1)) := by
@@ -80,7 +80,7 @@ theorem antitoneOn_logLin_div_sq :
   have eb : Real.log b / b ^ 2 = (Real.log b / b) * (1 / b) := by rw [sq]; ring
   rw [ea, eb]; exact key
 
-/-- Uniform tail-sum bound: for `N ≥ e`, every partial sum `∑_{i<a} log(N+i+1)/(N+i+1)^2` is at
+/-- Uniform tail-sum bound: for `N ≥ e`, every partial sum `∑_{i<a} log(N+i+1)/(N+i+1)^(2 : ℕ)` is at
 most `(log N + 1)/N`, via `AntitoneOn.sum_le_integral` and the fundamental theorem of calculus
 (antiderivative `≤ 0` at the upper endpoint). -/
 theorem sum_logLin_div_sq_le {N : ℝ} (hN : Real.exp 1 ≤ N) (a : ℕ) :
@@ -118,7 +118,7 @@ theorem sum_logLin_div_sq_le {N : ℝ} (hN : Real.exp 1 ≤ N) (a : ℕ) :
     _ ≤ 0 - (-(Real.log N + 1) / N) := by linarith [hfNa]
     _ = (Real.log N + 1) / N := by ring
 
-/-- Tail-series bound: `∑_{n>N} log n/n^2 ≤ (log N + 1)/N` for `N ≥ e`, from the uniform
+/-- Tail-series bound: `∑_{n>N} log n/n^(2 : ℕ) ≤ (log N + 1)/N` for `N ≥ e`, from the uniform
 partial-sum bound via `tsum_le_of_sum_range_le`. -/
 theorem tsum_logLin_div_sq_le {N : ℝ} (hN : Real.exp 1 ≤ N) :
     ∑' i : ℕ, Real.log (N + (i + 1)) / (N + (i + 1)) ^ 2 ≤ (Real.log N + 1) / N := by
@@ -135,7 +135,7 @@ theorem tsum_logLin_div_sq_le {N : ℝ} (hN : Real.exp 1 ≤ N) :
     exact sum_logLin_div_sq_le hN n
 
 open Asymptotics in
-/-- `log n / n^2` is summable over `ℕ`: it is `O(n^{-3/2})` since `log x = o(x^{1/2})`. -/
+/-- `log n / n^(2 : ℕ)` is summable over `ℕ`: it is `O(n^{-3/2})` since `log x = o(x^{1/2})`. -/
 theorem summable_logLin_div_sq : Summable (fun n : ℕ => Real.log n / n ^ 2) := by
   apply summable_of_isBigO_nat (g := fun n : ℕ => 1 / (n : ℝ) ^ ((3 : ℝ) / 2))
   · rw [Real.summable_one_div_nat_rpow]; norm_num

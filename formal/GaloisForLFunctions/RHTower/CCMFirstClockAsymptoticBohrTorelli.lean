@@ -126,7 +126,7 @@ theorem bohrCoefficient_ccmFirstClockAsymptoticBohrModel_eq_fiberMass
     bohrCoefficient (fun L => (P L : ℂ)) lam =
       ∑' q : XiZeroCopy,
         if xiRealSpectralPoint q = lam ∨ -xiRealSpectralPoint q = lam
-        then -((1 / lam ^ 2 : ℝ) : ℂ) else 0 := by
+        then -((1 / lam ^ (2 : ℕ) : ℝ) : ℂ) else 0 := by
   classical
   have hRH : RiemannHypothesis :=
     riemannHypothesis_of_ccmFirstClockScaledSourceAsymptoticallyBohrAlmostPeriodic
@@ -168,7 +168,7 @@ theorem bohrCoefficient_ccmFirstClockAsymptoticBohrModel_eq_multiplicity
     bohrCoefficient (fun L => (P L : ℂ)) lam =
       -(xiAbsoluteOrdinateMultiplicity
           (riemannHypothesis_of_ccmFirstClockScaledSourceAsymptoticallyBohrAlmostPeriodic
-          ⟨P, hPc, hPa, hP⟩) lam : ℂ) / (lam : ℂ) ^ 2 := by
+          ⟨P, hPc, hPa, hP⟩) lam : ℂ) / (lam : ℂ) ^ (2 : ℕ) := by
   classical
   let hRH : RiemannHypothesis :=
     riemannHypothesis_of_ccmFirstClockScaledSourceAsymptoticallyBohrAlmostPeriodic
@@ -181,15 +181,15 @@ theorem bohrCoefficient_ccmFirstClockAsymptoticBohrModel_eq_multiplicity
   · calc
       ∑ q ∈ S, (if xiRealSpectralPoint q = lam ∨
           -xiRealSpectralPoint q = lam
-          then -((1 / lam ^ 2 : ℝ) : ℂ) else 0) =
-          ∑ _q ∈ S, -((1 / lam ^ 2 : ℝ) : ℂ) := by
+          then -((1 / lam ^ (2 : ℕ) : ℝ) : ℂ) else 0) =
+          ∑ _q ∈ S, -((1 / lam ^ (2 : ℕ) : ℝ) : ℂ) := by
             apply Finset.sum_congr rfl
             intro q hq
             rw [if_pos]
             have hmem : q ∈ xiAbsoluteOrdinateFiber lam := by
               simpa only [S, Set.Finite.mem_toFinset] using hq
             simpa only [xiAbsoluteOrdinateFiber, Set.mem_setOf_eq] using hmem
-      _ = -(xiAbsoluteOrdinateMultiplicity hRH lam : ℂ) / (lam : ℂ) ^ 2 := by
+      _ = -(xiAbsoluteOrdinateMultiplicity hRH lam : ℂ) / (lam : ℂ) ^ (2 : ℕ) := by
         unfold xiAbsoluteOrdinateMultiplicity
         dsimp only [S]
         push_cast
@@ -211,7 +211,7 @@ theorem ccmFirstClockAsymptoticBohrModel_recovers_absoluteMultiplicity
     (hP : Tendsto
       (fun L => ccmFirstClockScaledPublishedSource L - P L) atTop (nhds 0))
     {lam : ℝ} (hlam : lam ≠ 0) :
-    -((lam : ℂ) ^ 2) * bohrCoefficient (fun L => (P L : ℂ)) lam =
+    -((lam : ℂ) ^ (2 : ℕ)) * bohrCoefficient (fun L => (P L : ℂ)) lam =
       (xiAbsoluteOrdinateMultiplicity
         (riemannHypothesis_of_ccmFirstClockScaledSourceAsymptoticallyBohrAlmostPeriodic
           ⟨P, hPc, hPa, hP⟩) lam : ℂ) := by

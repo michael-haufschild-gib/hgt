@@ -127,7 +127,7 @@ theorem norm_sq_boundaryComplexCoordinates_sub_orientation
     (alpha beta : ℂ) :
     ‖alpha • xiHurwitzOrientationBoundaryPlus +
         beta • xiHurwitzOrientationBoundaryMinus -
-        xiHurwitzOrientationVector‖ ^ 2 =
+        xiHurwitzOrientationVector‖ ^ (2 : ℕ) =
       (Complex.normSq (alpha - 1) + Complex.normSq (beta - 1)) *
         xiHurwitzOrientationEnergy / 2 := by
   have hdiff :
@@ -151,9 +151,9 @@ theorem norm_sq_boundaryComplexCoordinates_sub_orientation
   rw [mul_pow, mul_pow, Complex.sq_norm, Complex.sq_norm]
   have hp := two_mul_norm_sq_xiHurwitzOrientationBoundaryPlus
   have hm := two_mul_norm_sq_xiHurwitzOrientationBoundaryMinus
-  have hp' : ‖xiHurwitzOrientationBoundaryPlus‖ ^ 2 =
+  have hp' : ‖xiHurwitzOrientationBoundaryPlus‖ ^ (2 : ℕ) =
       xiHurwitzOrientationEnergy / 2 := by linarith
-  have hm' : ‖xiHurwitzOrientationBoundaryMinus‖ ^ 2 =
+  have hm' : ‖xiHurwitzOrientationBoundaryMinus‖ ^ (2 : ℕ) =
       xiHurwitzOrientationEnergy / 2 := by linarith
   rw [hp', hm']
   ring
@@ -168,7 +168,7 @@ theorem orientationEnergy_div_two_le_norm_sq_boundaryComplexCoordinates_sub_orie
     xiHurwitzOrientationEnergy / 2 ≤
       ‖alpha • xiHurwitzOrientationBoundaryPlus +
         beta • xiHurwitzOrientationBoundaryMinus -
-        xiHurwitzOrientationVector‖ ^ 2 := by
+        xiHurwitzOrientationVector‖ ^ (2 : ℕ) := by
   rw [norm_sq_boundaryComplexCoordinates_sub_orientation]
   have hEpos : 0 < xiHurwitzOrientationEnergy :=
     xiHurwitzOrientationEnergy_pos_iff_not_riemannHypothesis.2 hnot

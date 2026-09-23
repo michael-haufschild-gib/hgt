@@ -28,9 +28,9 @@ theorem causalNeumannCenter_distance (z : {z : ℂ // 0 < z.re}) :
   have hc : 2 * causalNeumannCenter z * z.val.re = 2*z.val.re + Complex.normSq z.val := by
     unfold causalNeumannCenter
     field_simp
-  have hd : ‖z.val-(causalNeumannCenter z : ℂ)‖^2 =
+  have hd : ‖z.val-(causalNeumannCenter z : ℂ)‖^(2 : ℕ) =
       Complex.normSq z.val - 2 * causalNeumannCenter z * z.val.re +
-        (causalNeumannCenter z)^2 := by
+        (causalNeumannCenter z)^(2 : ℕ) := by
     rw [Complex.sq_norm]
     simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
       Complex.ofReal_re, Complex.ofReal_im, sub_zero]

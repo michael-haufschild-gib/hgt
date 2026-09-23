@@ -18,10 +18,10 @@ noncomputable section
 /-- The inverse-square correction converts the actual derivative into a monotone function. -/
 theorem corrected_derivative_monotone {v a2 : ℝ → ℝ} {A C : ℝ} (hA : 0 < A)
     (hv : ∀ y ∈ Ici A, HasDerivAt v (a2 y) y)
-    (ha2 : ∀ y ∈ Ici A, -C / y ^ 2 ≤ a2 y) :
+    (ha2 : ∀ y ∈ Ici A, -C / y ^ (2 : ℕ) ≤ a2 y) :
     MonotoneOn (fun y => v y - C / y) (Ici A) := by
   have hd (y : ℝ) (hy : y ∈ Ici A) :
-      HasDerivAt (fun t => v t - C / t) (a2 y + C / y ^ 2) y := by
+      HasDerivAt (fun t => v t - C / t) (a2 y + C / y ^ (2 : ℕ)) y := by
     have h := (hv y hy).sub ((hasDerivAt_const y C).div (hasDerivAt_id y) (hA.trans_le hy).ne')
     apply h.congr_deriv
     simp only [id_eq, zero_mul, mul_one, zero_sub]
@@ -39,7 +39,7 @@ theorem corrected_derivative_monotone {v a2 : ℝ → ℝ} {A C : ℝ} (hA : 0 <
 theorem derivative_tendsto_zero {u v a2 : ℝ → ℝ} {A C L : ℝ} (hA : 0 < A) (hC : 0 ≤ C)
     (hu : ∀ y ∈ Ici A, HasDerivAt u (v y) y)
     (hv : ∀ y ∈ Ici A, HasDerivAt v (a2 y) y)
-    (ha2 : ∀ y ∈ Ici A, -C / y ^ 2 ≤ a2 y)
+    (ha2 : ∀ y ∈ Ici A, -C / y ^ (2 : ℕ) ≤ a2 y)
     (hlim : Tendsto u atTop (𝓝 L)) : Tendsto v atTop (𝓝 0) := by
   have hmono := corrected_derivative_monotone hA hv ha2
   have hupper : ∀ᶠ y : ℝ in atTop, v y ≤ u (y + 1) - u y + C / y := by

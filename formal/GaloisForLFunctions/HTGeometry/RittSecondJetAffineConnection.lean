@@ -48,7 +48,7 @@ theorem sigma_jetRatio {τ : L} {q : K} (hτ : τ ≠ 0) (hdτ : Fr.d τ ≠ 0) 
 theorem sigma_second_jet {τ : L} {q : K} (hqconst : Fr.dK q = 0)
     (hshift : Fr.σ τ = algebraMap K L q * τ) :
     Fr.σ (Fr.d (Fr.d τ))
-      = algebraMap K L (q / Fr.ρ ^ 2) * Fr.d (Fr.d τ)
+      = algebraMap K L (q / Fr.ρ ^ (2 : ℕ)) * Fr.d (Fr.d τ)
         + algebraMap K L (Fr.dK (q / Fr.ρ) / Fr.ρ) * Fr.d τ := by
   have hρ0 : Fr.ρ ≠ 0 := Fr.ρ_ne
   have hρL : algebraMap K L Fr.ρ ≠ 0 :=
@@ -56,7 +56,7 @@ theorem sigma_second_jet {τ : L} {q : K} (hqconst : Fr.dK q = 0)
   have hd := Fr.sigma_d_eq_of_shift hqconst hshift
   have hchain := Fr.chain (Fr.d τ)
   rw [hd, Fr.d_mul, Fr.d_base] at hchain
-  have hpow : algebraMap K L (q / Fr.ρ ^ 2) * algebraMap K L Fr.ρ
+  have hpow : algebraMap K L (q / Fr.ρ ^ (2 : ℕ)) * algebraMap K L Fr.ρ
       = algebraMap K L (q / Fr.ρ) := by
     rw [← map_mul]
     congr 1
@@ -68,15 +68,15 @@ theorem sigma_second_jet {τ : L} {q : K} (hqconst : Fr.dK q = 0)
     field_simp
   refine mul_left_cancel₀ hρL ?_
   rw [mul_add, ← mul_assoc, ← mul_assoc, mul_comm (algebraMap K L Fr.ρ)
-    (algebraMap K L (q / Fr.ρ ^ 2)), mul_comm (algebraMap K L Fr.ρ)
+    (algebraMap K L (q / Fr.ρ ^ (2 : ℕ))), mul_comm (algebraMap K L Fr.ρ)
     (algebraMap K L (Fr.dK (q / Fr.ρ) / Fr.ρ)), hpow, hdiv]
   linear_combination -hchain
 
 /-- The normalised second jet solves an inhomogeneous shift equation over the jet ratio. -/
 theorem sigma_normalizedSecondJet {τ : L} {q : K} (hτ : τ ≠ 0) (hdτ : Fr.d τ ≠ 0) (hq : q ≠ 0)
     (hqconst : Fr.dK q = 0) (hshift : Fr.σ τ = algebraMap K L q * τ) :
-    Fr.σ (Fr.d (Fr.d τ) * τ / (Fr.d τ) ^ 2)
-      = Fr.d (Fr.d τ) * τ / (Fr.d τ) ^ 2
+    Fr.σ (Fr.d (Fr.d τ) * τ / (Fr.d τ) ^ (2 : ℕ))
+      = Fr.d (Fr.d τ) * τ / (Fr.d τ) ^ (2 : ℕ)
         + algebraMap K L (Fr.ρ * Fr.dK (q / Fr.ρ) / q) * (τ / Fr.d τ) := by
   have hρ0 : Fr.ρ ≠ 0 := Fr.ρ_ne
   have hρL : algebraMap K L Fr.ρ ≠ 0 :=
@@ -85,7 +85,7 @@ theorem sigma_normalizedSecondJet {τ : L} {q : K} (hτ : τ ≠ 0) (hdτ : Fr.d
   have hd := Fr.sigma_d_eq_of_shift hqconst hshift
   have h2 := Fr.sigma_second_jet hqconst hshift
   rw [map_div₀, map_mul, map_pow, h2, hd, hshift]
-  rw [show algebraMap K L (q / Fr.ρ ^ 2) = algebraMap K L q / algebraMap K L Fr.ρ ^ 2 by
+  rw [show algebraMap K L (q / Fr.ρ ^ (2 : ℕ)) = algebraMap K L q / algebraMap K L Fr.ρ ^ (2 : ℕ) by
     rw [map_div₀, map_pow]]
   rw [show algebraMap K L (Fr.dK (q / Fr.ρ) / Fr.ρ)
       = algebraMap K L (Fr.dK (q / Fr.ρ)) / algebraMap K L Fr.ρ by rw [map_div₀]]
@@ -114,7 +114,7 @@ theorem dK_mul (a b : K) : Fr.dK (a * b) = Fr.dK a * b + a * Fr.dK b := by
 
 /-- The quotient rule for the base derivation. -/
 theorem dK_div {a b : K} (hb : b ≠ 0) :
-    Fr.dK (a / b) = (Fr.dK a * b - a * Fr.dK b) / b ^ 2 := by
+    Fr.dK (a / b) = (Fr.dK a * b - a * Fr.dK b) / b ^ (2 : ℕ) := by
   have hab : a / b * b = a := by field_simp
   have h := Fr.dK_mul (a / b) b
   rw [hab] at h
@@ -178,7 +178,7 @@ theorem exists_affineConnection_of_secondJet_mem
     rw [hdτs, div_eq_mul_inv]
     exact this
   -- the normalised second jet lies in the simple extension by the jet ratio
-  set W : L := Fr.d (Fr.d τ) * τ / (Fr.d τ) ^ 2 with hW
+  set W : L := Fr.d (Fr.d τ) * τ / (Fr.d τ) ^ (2 : ℕ) with hW
   have hsmem : s ∈ IntermediateField.adjoin ↥E₀ ({s} : Set L) :=
     IntermediateField.subset_adjoin _ _ (by simp)
   have hτmem : τ ∈ IntermediateField.adjoin ↥E₀ ({s} : Set L) := by

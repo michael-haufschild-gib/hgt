@@ -130,7 +130,7 @@ theorem deningerTiltComparison_surjective [IsAdicComplete (Ideal.span {(p : A)})
   refine ⟨⟨L, fun n => hpow n⟩, ?_⟩
   refine Subtype.ext (funext fun n => ?_)
   show Ideal.Quotient.mk (Ideal.span {(p : A)}) (L n) = yb.1 n
-  have h1 : (p : A) ^ 1 ∣ g n 1 - L n := hLdvd n 1
+  have h1 : (p : A) ^ (1 : ℕ) ∣ g n 1 - L n := hLdvd n 1
   have h2 : Ideal.Quotient.mk (Ideal.span {(p : A)}) (g n 1)
       = Ideal.Quotient.mk (Ideal.span {(p : A)}) (L n) := by
     rw [← sub_eq_zero, ← map_sub, ← hdvd_iff]

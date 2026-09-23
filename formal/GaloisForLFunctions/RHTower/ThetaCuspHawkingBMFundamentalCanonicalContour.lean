@@ -208,7 +208,7 @@ It keeps both source parameters independent before the physical specialization. 
 theorem fundamentalJacobiTortoiseMoment_monodromy (n : ℕ) (w s : ℂ)
     (hw : -2 < w.re) (hw1 : w+1 ≠ 0)
     (hE : Complex.exp (2*Real.pi*I*w)-1 ≠ 0) :
-    (Complex.exp (2*Real.pi*I*w)-1)^2*fundamentalJacobiTortoiseMoment n w s =
+    (Complex.exp (2*Real.pi*I*w)-1)^(2 : ℕ)*fundamentalJacobiTortoiseMoment n w s =
       (Complex.exp (2*Real.pi*I*w)-1)*fundamentalJacobiTortoiseContour n w s-
         Real.pi*I*Complex.exp (2*Real.pi*I*w)*fundamentalJacobiContour n w s := by
   let E : ℂ → ℂ := fun u => Complex.exp (2*Real.pi*I*(w+u/2))-1
@@ -302,7 +302,7 @@ theorem clearedOnset_source_gap (s w : ℂ) (hgap : w-2*s ≠ 0) :
 
 /-- The cleared frequency derivative differentiates the gap at fixed source rate. -/
 theorem clearedOnset_source_gap_derivative (s w : ℂ) (hgap : w-2*s ≠ 0) :
-    (w-2*s)^2*deriv (continuedOnset s) w=
+    (w-2*s)^(2 : ℕ)*deriv (continuedOnset s) w=
       (w-2*s)*deriv (clearedOnset 0) (w-2*s)-clearedOnset 0 (w-2*s) := by
   have hF := ((clearedOnset_entire 0) (w-2*s)).hasDerivAt.comp w
     ((hasDerivAt_id w).sub_const (2*s))
@@ -318,12 +318,12 @@ theorem clearedOnset_source_gap_derivative (s w : ℂ) (hgap : w-2*s ≠ 0) :
 
 /-- The complete scalar Jacobi source, including its degree-four coefficient. -/
 def fundamentalSourceContour (w s a : ℂ) : ℂ :=
-  2*a^2*(fundamentalMomentConstant s*fundamentalJacobiContour 2 w s+
+  2*a^(2 : ℕ)*(fundamentalMomentConstant s*fundamentalJacobiContour 2 w s+
     fundamentalMomentQuadratic w s*fundamentalJacobiContour 4 w s)
 
 /-- The logarithmic source contour keeps the polynomial coefficients fixed. -/
 def fundamentalSourceTortoiseContour (w s a : ℂ) : ℂ :=
-  2*a^2*(fundamentalMomentConstant s*fundamentalJacobiTortoiseContour 2 w s+
+  2*a^(2 : ℕ)*(fundamentalMomentConstant s*fundamentalJacobiTortoiseContour 2 w s+
     fundamentalMomentQuadratic w s*fundamentalJacobiTortoiseContour 4 w s)
 
 /-- The forcing combination after boundary-preserving integration by parts. -/
@@ -332,7 +332,7 @@ def fundamentalJacobiForcingContour (n : ℕ) (w s : ℂ) : ℂ :=
     (2*s-1)*fundamentalJacobiContour n w (s-1)
 
 def fundamentalSourceForcingContour (w s a : ℂ) : ℂ :=
-  2*a^2*(fundamentalMomentConstant s*fundamentalJacobiForcingContour 2 w s+
+  2*a^(2 : ℕ)*(fundamentalMomentConstant s*fundamentalJacobiForcingContour 2 w s+
     fundamentalMomentQuadratic w s*fundamentalJacobiForcingContour 4 w s)
 
 /-- The candidate numerator of the complete unit-source action on the true/true
@@ -359,7 +359,7 @@ theorem fundamentalSourceContour_neg_one :
 /-- The full candidate numerator has a nonzero anchor determined by the actual source and onset.
 The onset derivative and forcing terms are retained in the numerator definition. -/
 theorem fundamentalCanonicalContourNumerator_neg_one :
-    fundamentalCanonicalContourNumerator (-1)=27*(Real.pi:ℂ)^2/4*continuedOnset (-2) (-1) := by
+    fundamentalCanonicalContourNumerator (-1)=27*(Real.pi:ℂ)^(2 : ℕ)/4*continuedOnset (-2) (-1) := by
   have hp : Complex.exp (2*Real.pi*I*(-1))=1 := by
     rw [show (2*Real.pi*I*(-1):ℂ)=-(2*Real.pi*I) by ring,
       Complex.exp_neg,Complex.exp_two_pi_mul_I,inv_one]
@@ -564,11 +564,11 @@ theorem fundamentalCanonicalContourNumerator_entire :
     have h2 := hJ 2 0
     have h4 := hJ 4 0
     simp only [sub_zero] at h2 h4
-    exact (((hA.mul h2).add (hB.mul h4))).const_mul (2*(1:ℂ)^2)
+    exact (((hA.mul h2).add (hB.mul h4))).const_mul (2*(1:ℂ)^(2 : ℕ))
   have hMX : Differentiable ℂ (fun w => fundamentalSourceTortoiseContour w (S w) 1) := by
     have h2 := hX 2
     have h4 := hX 4
-    exact (((hA.mul h2).add (hB.mul h4))).const_mul (2*(1:ℂ)^2)
+    exact (((hA.mul h2).add (hB.mul h4))).const_mul (2*(1:ℂ)^(2 : ℕ))
   have hY (n : ℕ) : Differentiable ℂ (fun w => fundamentalJacobiForcingContour n w (S w)) := by
     have h1 := hJ (n-1) (1/2)
     have h2 := hJ n 1
@@ -576,7 +576,7 @@ theorem fundamentalCanonicalContourNumerator_entire :
   have hMY : Differentiable ℂ (fun w => fundamentalSourceForcingContour w (S w) 1) := by
     have h2 := hY 2
     have h4 := hY 4
-    exact (((hA.mul h2).add (hB.mul h4))).const_mul (2*(1:ℂ)^2)
+    exact (((hA.mul h2).add (hB.mul h4))).const_mul (2*(1:ℂ)^(2 : ℕ))
   have hF := clearedOnset_entire 0
   have hD := hF.deriv
   have hg : Differentiable ℂ (fun w : ℂ => 5*w+8) := (differentiable_id.const_mul 5).add_const 8

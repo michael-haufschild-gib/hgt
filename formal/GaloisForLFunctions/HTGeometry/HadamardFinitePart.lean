@@ -94,11 +94,11 @@ closed form `log (a² − x²) − 2 log ε`. -/
 theorem integral_punctured_inv_dist {a x ε : ℝ} (hxa : -a < x) (hax : x < a) (hε : 0 < ε)
     (hleft : -a ≤ x - ε) (hright : x + ε ≤ a) :
     ((∫ y in (-a)..(x - ε), (x - y)⁻¹) + ∫ y in (x + ε)..a, (y - x)⁻¹) =
-      Real.log (a ^ 2 - x ^ 2) - 2 * Real.log ε := by
+      Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) - 2 * Real.log ε := by
   rw [integral_left_inv_sub hε hleft, integral_right_inv_sub hε hright]
   have hxa' : 0 < x + a := by linarith
   have hax' : 0 < a - x := by linarith
-  have hfac : a ^ 2 - x ^ 2 = (x + a) * (a - x) := by ring
+  have hfac : a ^ (2 : ℕ) - x ^ (2 : ℕ) = (x + a) * (a - x) := by ring
   rw [hfac, Real.log_mul hxa'.ne' hax'.ne']
   ring
 
@@ -138,7 +138,7 @@ integral plus the *cutoff-independent* logarithmic term `v(x) log (a² − x²)`
 theorem cutoffFinitePart_eq {a x ε : ℝ} (v : ℝ → ℝ) (hv : Continuous v)
     (hxa : -a < x) (hax : x < a) (hε : 0 < ε) (hleft : -a ≤ x - ε) (hright : x + ε ≤ a) :
     cutoffFinitePart a x ε v =
-      cutoffDividedDifference a x ε v + v x * Real.log (a ^ 2 - x ^ 2) := by
+      cutoffDividedDifference a x ε v + v x * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) := by
   have hL := intervalIntegrable_left v hv hε hleft
   have hR := intervalIntegrable_right v hv hε hright
   have hcL : IntervalIntegrable (fun y : ℝ => v x * (x - y)⁻¹) volume (-a) (x - ε) :=

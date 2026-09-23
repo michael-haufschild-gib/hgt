@@ -26,11 +26,11 @@ theorem expSum_eq_sum (N : ℕ) (c : Fin N → ℂ) (t : ℝ) :
 
 /-- **The squared modulus expanded.** -/
 theorem normSq_expSum_eq (N : ℕ) (c : Fin N → ℂ) (t : ℝ) :
-    ((‖expSum N c t‖ ^ 2 : ℝ) : ℂ)
+    ((‖expSum N c t‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ m : Fin N, ∑ n : Fin N,
           (c m * (starRingEnd ℂ) (c n))
             * circleFreq (((m : ℕ) : ℝ) * t - ((n : ℕ) : ℝ) * t) := by
-  have hz : ((‖expSum N c t‖ ^ 2 : ℝ) : ℂ)
+  have hz : ((‖expSum N c t‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = expSum N c t * (starRingEnd ℂ) (expSum N c t) := by
     rw [mul_comm, conj_mul_self]
   rw [hz, expSum_eq_sum, map_sum]

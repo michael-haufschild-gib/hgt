@@ -23,7 +23,7 @@ open scoped ComplexConjugate
 namespace GaloisForLFunctions.HTGeometry
 
 theorem normSq_sub_I_mul_real (A : ℂ) (u : ℝ) :
-    Complex.normSq (A - Complex.I * (u : ℂ)) = A.re ^ 2 + (u - A.im) ^ 2 := by
+    Complex.normSq (A - Complex.I * (u : ℂ)) = A.re ^ (2 : ℕ) + (u - A.im) ^ (2 : ℕ) := by
   have hre : (A - Complex.I * (u : ℂ)).re = A.re := by
     simp
   have him : (A - Complex.I * (u : ℂ)).im = A.im - u := by
@@ -37,7 +37,7 @@ theorem re_inv_sub_I_mul_real (A : ℂ) (u : ℝ) :
     simp
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
   rw [Complex.inv_re, hre, normSq_sub_I_mul_real, halfPlanePoisson]
-  rcases eq_or_ne (A.re ^ 2 + (u - A.im) ^ 2) 0 with h0 | h0
+  rcases eq_or_ne (A.re ^ (2 : ℕ) + (u - A.im) ^ (2 : ℕ)) 0 with h0 | h0
   · rw [h0]
     simp
   · field_simp
@@ -48,7 +48,7 @@ theorem im_inv_sub_I_mul_real (A : ℂ) (u : ℝ) :
     simp
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
   rw [Complex.inv_im, him, normSq_sub_I_mul_real, conjugatePoisson]
-  rcases eq_or_ne (A.re ^ 2 + (u - A.im) ^ 2) 0 with h0 | h0
+  rcases eq_or_ne (A.re ^ (2 : ℕ) + (u - A.im) ^ (2 : ℕ)) 0 with h0 | h0
   · rw [h0]
     simp
   · field_simp
@@ -132,9 +132,9 @@ theorem integral_poisson_cauchy {c : ℝ} (hc : 0 < c) {A : ℂ} (hA : 0 < A.re)
         (1 / (2 * Real.pi * A.re))).mono' hcont.aestronglyMeasurable ?_
       filter_upwards with u
       have h1 := halfPlanePoisson_pos hc (0 - u)
-      have h2 : (0 : ℝ) < A.re ^ 2 + (u - A.im) ^ 2 := by positivity
+      have h2 : (0 : ℝ) < A.re ^ (2 : ℕ) + (u - A.im) ^ (2 : ℕ) := by positivity
       have h2p : (0 : ℝ) < 2 * Real.pi * A.re := by positivity
-      have hposden : (0 : ℝ) < Real.pi * (A.re ^ 2 + (u - A.im) ^ 2) := by positivity
+      have hposden : (0 : ℝ) < Real.pi * (A.re ^ (2 : ℕ) + (u - A.im) ^ (2 : ℕ)) := by positivity
       have hQ : |conjugatePoisson A.re (u - A.im)| ≤ 1 / (2 * Real.pi * A.re) := by
         rw [conjugatePoisson, abs_div, abs_of_pos hposden,
           div_le_div_iff₀ hposden h2p]
@@ -156,7 +156,7 @@ theorem integral_poisson_cauchy {c : ℝ} (hc : 0 < c) {A : ℂ} (hA : 0 < A.re)
     integral_poisson_shift_product hc hA 0 A.im, conjugatePoisson_convolution hc hA 0 A.im]
   have hs : (0 : ℝ) - A.im = -A.im := by ring
   rw [hs]
-  have hden : ((c + A.re) ^ 2 + A.im ^ 2) ≠ 0 := by positivity
+  have hden : ((c + A.re) ^ (2 : ℕ) + A.im ^ (2 : ℕ)) ≠ 0 := by positivity
   have hpip : (0 : ℝ) < Real.pi := Real.pi_pos
   apply Complex.ext
   · rw [halfPlanePoisson, conjugatePoisson, Complex.inv_re, Complex.normSq_apply]

@@ -213,7 +213,7 @@ theorem shiftLaurent_coordS (h : ℂ) :
 /-- **The substitution `X ↦ X/(1+hX)` satisfies `X² a′ = a²`**, the identity that makes the
 translation commute with the derivation `d/ds = -X² d/dX`. -/
 theorem sq_mul_derivative_shiftSubst (h : ℂ) :
-    PowerSeries.X ^ 2 * (d⁄dX ℂ) (laurentShiftSubst h) = (laurentShiftSubst h) ^ 2 := by
+    PowerSeries.X ^ (2 : ℕ) * (d⁄dX ℂ) (laurentShiftSubst h) = (laurentShiftSubst h) ^ (2 : ℕ) := by
   set a : PowerSeries ℂ := laurentShiftSubst h with ha
   set u : PowerSeries ℂ := 1 + PowerSeries.C h * PowerSeries.X with hu
   have hau : a * u = PowerSeries.X := laurentShiftSubst_mul h
@@ -226,18 +226,18 @@ theorem sq_mul_derivative_shiftSubst (h : ℂ) :
     have h2 : a * PowerSeries.C h + u * (d⁄dX ℂ) a = 1 := by
       simpa [smul_eq_mul, mul_comm] using this
     linear_combination h2
-  have hstep : (d⁄dX ℂ) a * u ^ 2 = 1 := by
-    have hexp : (d⁄dX ℂ) a * u ^ 2 = ((d⁄dX ℂ) a * u + a * PowerSeries.C h) * u
+  have hstep : (d⁄dX ℂ) a * u ^ (2 : ℕ) = 1 := by
+    have hexp : (d⁄dX ℂ) a * u ^ (2 : ℕ) = ((d⁄dX ℂ) a * u + a * PowerSeries.C h) * u
         - PowerSeries.C h * (a * u) := by ring
     rw [hexp, hd, hau, one_mul, hu]
     ring
-  have hkey : PowerSeries.X ^ 2 * (d⁄dX ℂ) a * u ^ 2 = a ^ 2 * u ^ 2 := by
-    calc PowerSeries.X ^ 2 * (d⁄dX ℂ) a * u ^ 2
-        = PowerSeries.X ^ 2 * ((d⁄dX ℂ) a * u ^ 2) := by ring
-      _ = PowerSeries.X ^ 2 := by rw [hstep, mul_one]
-      _ = (a * u) ^ 2 := by rw [hau]
-      _ = a ^ 2 * u ^ 2 := by ring
-  have hune : u ^ 2 ≠ 0 := by
+  have hkey : PowerSeries.X ^ (2 : ℕ) * (d⁄dX ℂ) a * u ^ (2 : ℕ) = a ^ (2 : ℕ) * u ^ (2 : ℕ) := by
+    calc PowerSeries.X ^ (2 : ℕ) * (d⁄dX ℂ) a * u ^ (2 : ℕ)
+        = PowerSeries.X ^ (2 : ℕ) * ((d⁄dX ℂ) a * u ^ (2 : ℕ)) := by ring
+      _ = PowerSeries.X ^ (2 : ℕ) := by rw [hstep, mul_one]
+      _ = (a * u) ^ (2 : ℕ) := by rw [hau]
+      _ = a ^ (2 : ℕ) * u ^ (2 : ℕ) := by ring
+  have hune : u ^ (2 : ℕ) ≠ 0 := by
     intro hc
     have hcc := congrArg (PowerSeries.constantCoeff) hc
     rw [map_pow, hu, constantCoeff_one_add] at hcc
@@ -247,7 +247,7 @@ theorem sq_mul_derivative_shiftSubst (h : ℂ) :
 /-! ### The derivation `d/ds` and its commutation with the translation -/
 
 /-- The derivation `d/ds = -X² d/dX` on power series in `X = s⁻¹`. -/
-def coordDerivPS (F : PowerSeries ℂ) : PowerSeries ℂ := -(PowerSeries.X ^ 2) * (d⁄dX ℂ) F
+def coordDerivPS (F : PowerSeries ℂ) : PowerSeries ℂ := -(PowerSeries.X ^ (2 : ℕ)) * (d⁄dX ℂ) F
 
 /-- **The translation commutes with `d/ds` on power series.** -/
 theorem shiftPS_coordDerivPS (h : ℂ) (F : PowerSeries ℂ) :
@@ -256,10 +256,10 @@ theorem shiftPS_coordDerivPS (h : ℂ) (F : PowerSeries ℂ) :
   have hkey := sq_mul_derivative_shiftSubst h
   rw [coordDerivPS, coordDerivPS, map_mul, map_neg, map_pow, shiftPS_X, shiftPS_apply,
     shiftPS_apply, hchain]
-  calc -(laurentShiftSubst h) ^ 2 * PowerSeries.subst (laurentShiftSubst h) ((d⁄dX ℂ) F)
-      = -(PowerSeries.X ^ 2 * (d⁄dX ℂ) (laurentShiftSubst h))
+  calc -(laurentShiftSubst h) ^ (2 : ℕ) * PowerSeries.subst (laurentShiftSubst h) ((d⁄dX ℂ) F)
+      = -(PowerSeries.X ^ (2 : ℕ) * (d⁄dX ℂ) (laurentShiftSubst h))
         * PowerSeries.subst (laurentShiftSubst h) ((d⁄dX ℂ) F) := by rw [hkey]
-    _ = -PowerSeries.X ^ 2 *
+    _ = -PowerSeries.X ^ (2 : ℕ) *
         (PowerSeries.subst (laurentShiftSubst h) ((d⁄dX ℂ) F) * (d⁄dX ℂ) (laurentShiftSubst h)) := by ring
 
 end

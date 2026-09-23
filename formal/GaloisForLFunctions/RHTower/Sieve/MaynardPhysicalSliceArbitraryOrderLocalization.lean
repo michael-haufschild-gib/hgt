@@ -221,7 +221,7 @@ theorem exists_integral_norm_physicalSlice_mul_adjacentKernel_natOrder_tail_le
     _ = _ := by rfl
 
 /-- Arbitrary-order physical localization.  Order `j+1` changes the far-tail cost from
-`(N/R)^2 / V` to `(N/R)^(j+1) V^(-j)`, so a fixed loss is reached at ordinate exponent
+`(N/R)^(2 : ℕ) / V` to `(N/R)^(j+1) V^(-j)`, so a fixed loss is reached at ordinate exponent
 `1 + 1/j` rather than `2`. -/
 theorem exists_positive_interval_norm_ge_quarter_of_physicalSlice_natOrder_annulus
     (j : ℕ) (hj : 1 ≤ j) :

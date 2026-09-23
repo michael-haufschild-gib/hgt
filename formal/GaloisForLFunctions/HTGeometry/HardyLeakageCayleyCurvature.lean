@@ -63,9 +63,9 @@ theorem scaled_cayleyLeakage_apply {a omega : ℝ} (h0 : 0 < omega) (h1 : omega 
 
 theorem cayleyLeakage_norm_sq {a omega : ℝ} (h0 : 0 < omega) (h1 : omega < a)
     (f : HardyDisk) :
-    ‖cayleyLeakage a omega (sub_pos.mpr h1) f‖ ^ 2 =
-      (omega / a) ^ 2 *
-        ‖(modelSpace (norm_cayleyPoint_lt_one (sub_pos.mpr h1))).starProjection f‖ ^ 2 := by
+    ‖cayleyLeakage a omega (sub_pos.mpr h1) f‖ ^ (2 : ℕ) =
+      (omega / a) ^ (2 : ℕ) *
+        ‖(modelSpace (norm_cayleyPoint_lt_one (sub_pos.mpr h1))).starProjection f‖ ^ (2 : ℕ) := by
   rw [cayleyLeakage_apply h0 h1, norm_smul, Complex.norm_real,
     Real.norm_eq_abs, abs_neg, abs_of_pos (div_pos h0 (lt_trans h0 h1))]
   ring
@@ -73,13 +73,13 @@ theorem cayleyLeakage_norm_sq {a omega : ℝ} (h0 : 0 < omega) (h1 : omega < a)
 /-- Exact second-order Schur defect for one displaced half-plane zero. -/
 theorem scaled_hardyLeakage_cayley_curvature {a omega : ℝ}
     (h0 : 0 < omega) (h1 : omega < a) (f : HardyDisk) :
-    (‖f‖ ^ 2 -
+    (‖f‖ ^ (2 : ℕ) -
         ‖(ContinuousLinearMap.adjoint
           (blaschkeMul (norm_cayleyPoint_lt_one (sub_pos.mpr h1))))
-          (blaschkeMul (norm_cayleyPoint_lt_one (by linarith : 0 < a + omega)) f)‖ ^ 2) /
-        omega ^ 2 =
-      (a⁻¹) ^ 2 *
-        ‖(modelSpace (norm_cayleyPoint_lt_one (sub_pos.mpr h1))).starProjection f‖ ^ 2 := by
+          (blaschkeMul (norm_cayleyPoint_lt_one (by linarith : 0 < a + omega)) f)‖ ^ (2 : ℕ)) /
+        omega ^ (2 : ℕ) =
+      (a⁻¹) ^ (2 : ℕ) *
+        ‖(modelSpace (norm_cayleyPoint_lt_one (sub_pos.mpr h1))).starProjection f‖ ^ (2 : ℕ) := by
   rw [hardyLeakage_sq, norm_blaschkeFactor_cayley h0 h1]
   have ha : a ≠ 0 := ne_of_gt (lt_trans h0 h1)
   field_simp

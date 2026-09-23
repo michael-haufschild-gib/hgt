@@ -10,7 +10,7 @@ cannot be interchanged when interpreting Möbius coefficients as a grading.
 Paper proof: for 0<p<=q and x>0,
 0 <= exp(-px)-exp(-qx) <= (q-p)x exp(-px).
 Its weighted square integral is at most
-(q-p)^2 Gamma(r+2)/(2p)^(r+2). At a prime p and a multiple
+(q-p)^(2 : ℕ) Gamma(r+2)/(2p)^(r+2). At a prime p and a multiple
 of four q in (p,p+4], multiplication by mu sends this difference
 to -exp(-px), whose energy is Gamma(r)/(2p)^r. Their ratio
 exceeds any fixed constant as p grows.
@@ -50,8 +50,8 @@ theorem finiteRealLaplacePencil_dipole {i j N : ℕ}
 
 private theorem laplace_dipole_pointwise {p q x : ℝ}
     (hpq : p ≤ q) (hx : 0 ≤ x) :
-    (Real.exp (-p*x) - Real.exp (-q*x))^2 ≤
-      (q-p)^2*x^2*Real.exp (-(2*p)*x) := by
+    (Real.exp (-p*x) - Real.exp (-q*x))^(2 : ℕ) ≤
+      (q-p)^(2 : ℕ)*x^(2 : ℕ)*Real.exp (-(2*p)*x) := by
   have he : Real.exp (-q*x) = Real.exp (-p*x)*Real.exp (-(q-p)*x) := by
     rw [← Real.exp_add]
     congr 1
@@ -64,16 +64,16 @@ private theorem laplace_dipole_pointwise {p q x : ℝ}
   have hhi : 1-Real.exp (-(q-p)*x) ≤ (q-p)*x := by
     have h := Real.add_one_le_exp (-(q-p)*x)
     linarith
-  have hsq : (1-Real.exp (-(q-p)*x))^2 ≤ ((q-p)*x)^2 :=
+  have hsq : (1-Real.exp (-(q-p)*x))^(2 : ℕ) ≤ ((q-p)*x)^(2 : ℕ) :=
     (sq_le_sq₀ hlo hz).mpr hhi
-  have he2 : Real.exp (-p*x)^2 = Real.exp (-(2*p)*x) := by
+  have he2 : Real.exp (-p*x)^(2 : ℕ) = Real.exp (-(2*p)*x) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
   rw [he]
   calc
-    _ = Real.exp (-p*x)^2 * (1-Real.exp (-(q-p)*x))^2 := by ring
-    _ ≤ Real.exp (-p*x)^2 * ((q-p)*x)^2 :=
+    _ = Real.exp (-p*x)^(2 : ℕ) * (1-Real.exp (-(q-p)*x))^(2 : ℕ) := by ring
+    _ ≤ Real.exp (-p*x)^(2 : ℕ) * ((q-p)*x)^(2 : ℕ) :=
       mul_le_mul_of_nonneg_left hsq (sq_nonneg _)
     _ = _ := by rw [he2]; ring
 
@@ -81,7 +81,7 @@ private theorem laplace_dipole_pointwise {p q x : ℝ}
 theorem gammaHankelDipole_energy_le {i j N : ℕ}
     (hi : i < N) (hj : j < N) (hij : i ≤ j) {r : ℝ} (hr : 0 < r) :
     finiteGammaHankelEnergy (gammaHankelDipole i j) N r ≤
-      (((j+1:ℕ):ℝ)-((i+1:ℕ):ℝ))^2 * Real.Gamma (r+2) /
+      (((j+1:ℕ):ℝ)-((i+1:ℕ):ℝ))^(2 : ℕ) * Real.Gamma (r+2) /
         (2*((i+1:ℕ):ℝ))^(r+2) := by
   let p : ℝ := i+1
   let q : ℝ := j+1
@@ -101,28 +101,28 @@ theorem gammaHankelDipole_energy_le {i j N : ℕ}
     simpa [div_eq_mul_inv, mul_comm] using h
   rw [← integral_finiteRealLaplacePencil_sq _ _ hr]
   calc
-    _ ≤ ∫ x : ℝ in Ioi 0, (q-p)^2*(x^(r+1)*Real.exp (-(2*p)*x)) := by
+    _ ≤ ∫ x : ℝ in Ioi 0, (q-p)^(2 : ℕ)*(x^(r+1)*Real.exp (-(2*p)*x)) := by
       apply setIntegral_mono_on (integrableOn_finiteRealLaplacePencil_sq _ _ hr)
         (hint.const_mul _) measurableSet_Ioi
       intro x hx
       rw [finiteRealLaplacePencil_dipole hi hj]
       simp only [Nat.cast_add, Nat.cast_one]
-      change x^(r-1)*(Real.exp (-p*x)-Real.exp (-q*x))^2 ≤
-        (q-p)^2*(x^(r+1)*Real.exp (-(2*p)*x))
+      change x^(r-1)*(Real.exp (-p*x)-Real.exp (-q*x))^(2 : ℕ) ≤
+        (q-p)^(2 : ℕ)*(x^(r+1)*Real.exp (-(2*p)*x))
       have hbound := mul_le_mul_of_nonneg_left (laplace_dipole_pointwise hpq hx.le)
         (Real.rpow_nonneg hx.le (r-1))
-      have hpow : x^(r-1)*x^2 = x^(r+1) := by
+      have hpow : x^(r-1)*x^(2 : ℕ) = x^(r+1) := by
         rw [← Real.rpow_natCast x 2, ← Real.rpow_add hx]
         congr 1
         ring
       calc
-        _ ≤ x^(r-1)*((q-p)^2*x^2*Real.exp (-(2*p)*x)) := hbound
+        _ ≤ x^(r-1)*((q-p)^(2 : ℕ)*x^(2 : ℕ)*Real.exp (-(2*p)*x)) := hbound
         _ = _ := by rw [← hpow]; ring
     _ = _ := by rw [integral_const_mul, heval]; dsimp [p,q]; push_cast; ring
 
 private theorem finiteGammaHankelEnergy_single {i N : ℕ} (hi : i < N) (a r : ℝ) :
     finiteGammaHankelEnergy (fun n => if n=i then a else 0) N r =
-      Real.Gamma r*a^2/(2*((i+1:ℕ):ℝ))^r := by
+      Real.Gamma r*a^(2 : ℕ)/(2*((i+1:ℕ):ℝ))^r := by
   classical
   simp [finiteGammaHankelEnergy, ite_mul, mul_ite, ite_div, hi]
   ring
@@ -159,7 +159,7 @@ theorem not_mobius_gammaHankel_multiplier_bounded {r : ℝ} (hr : 0 < r) :
   have hdiff4 : (q:ℝ)-(p:ℝ) ≤ 4 := by
     apply (sub_le_iff_le_add).mpr
     exact_mod_cast (show q ≤ 4+p by omega)
-  have hdiffsq : ((q:ℝ)-(p:ℝ))^2 ≤ 16 := by nlinarith
+  have hdiffsq : ((q:ℝ)-(p:ℝ))^(2 : ℕ) ≤ 16 := by nlinarith
   have hi : p-1 < q := by omega
   have hj : q-1 < q := by omega
   have hij : p-1 ≤ q-1 := by omega
@@ -195,14 +195,14 @@ theorem not_mobius_gammaHankel_multiplier_bounded {r : ℝ} (hr : 0 < r) :
       _ ≤ C*finiteGammaHankelEnergy (gammaHankelDipole (p-1) (q-1)) q r := hbound
       _ ≤ B*finiteGammaHankelEnergy (gammaHankelDipole (p-1) (q-1)) q r :=
         mul_le_mul_of_nonneg_right hCB (finiteGammaHankelEnergy_nonneg _ _ hr)
-      _ ≤ B*(((q:ℝ)-(p:ℝ))^2*Real.Gamma (r+2)/(2*(p:ℝ))^(r+2)) :=
+      _ ≤ B*(((q:ℝ)-(p:ℝ))^(2 : ℕ)*Real.Gamma (r+2)/(2*(p:ℝ))^(r+2)) :=
         mul_le_mul_of_nonneg_left hein hB
       _ ≤ _ := by gcongr
-  have hpow : (2*(p:ℝ))^(r+2) = (2*(p:ℝ))^r*(2*(p:ℝ))^2 := by
+  have hpow : (2*(p:ℝ))^(r+2) = (2*(p:ℝ))^r*(2*(p:ℝ))^(2 : ℕ) := by
     simpa only [Real.rpow_two] using Real.rpow_add (by positivity : 0 < 2*(p:ℝ)) r 2
   rw [hpow] at hbound'
-  have hp2 : 0 < (2*(p:ℝ))^2 := sq_pos_of_pos (by positivity)
-  have hcancel : Real.Gamma r*(2*(p:ℝ))^2 ≤ 16*B*Real.Gamma (r+2) := by
+  have hp2 : 0 < (2*(p:ℝ))^(2 : ℕ) := sq_pos_of_pos (by positivity)
+  have hcancel : Real.Gamma r*(2*(p:ℝ))^(2 : ℕ) ≤ 16*B*Real.Gamma (r+2) := by
     rw [← mul_div_assoc] at hbound'
     have hc := (div_le_div_iff₀ hd (mul_pos hd hp2)).mp hbound'
     apply (mul_le_mul_iff_right₀ hd).mp
@@ -213,7 +213,7 @@ theorem not_mobius_gammaHankel_multiplier_bounded {r : ℝ} (hr : 0 < r) :
     have hh : 4*B*Real.Gamma (r+2)/Real.Gamma r < (p:ℝ) := by linarith
     have hh' := (div_lt_iff₀ hg).mp hh
     nlinarith
-  have hpp : (p:ℝ) ≤ (p:ℝ)^2 := by nlinarith
+  have hpp : (p:ℝ) ≤ (p:ℝ)^(2 : ℕ) := by nlinarith
   have hppg := mul_le_mul_of_nonneg_left hpp hg.le
   nlinarith
 
@@ -231,7 +231,7 @@ theorem memLp_gammaLaplaceFeature {r : ℝ} (hr : 0 < r) (n : ℕ) :
       unfold gammaLaplaceFeature; fun_prop).aestronglyMeasurable)).mpr
   apply hint.congr
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-  have hpow : (x^((r-1)/2))^2 = x^(r-1) := by
+  have hpow : (x^((r-1)/2))^(2 : ℕ) = x^(r-1) := by
     rw [← Real.rpow_natCast (x^((r-1)/2)) 2, ← Real.rpow_mul hx.le]
     congr 1
     ring
@@ -272,12 +272,12 @@ theorem inner_gammaLaplaceAtom (r : Ioi (0:ℝ)) (m n : ℕ) :
   rw [hm,hn,RCLike.inner_apply]
   simp only [gammaLaplaceFeature, Complex.conj_ofReal, ← Complex.ofReal_mul]
   congr 1
-  have hpow : (x^(((r:ℝ)-1)/2))^2 = x^((r:ℝ)-1) := by
+  have hpow : (x^(((r:ℝ)-1)/2))^(2 : ℕ) = x^((r:ℝ)-1) := by
     rw [← Real.rpow_natCast (x^(((r:ℝ)-1)/2)) 2, ← Real.rpow_mul hx.le]
     congr 1
     ring
   calc
-    _ = (x^(((r:ℝ)-1)/2))^2 *
+    _ = (x^(((r:ℝ)-1)/2))^(2 : ℕ) *
         (Real.exp (-((m+1:ℕ):ℝ)*x)*Real.exp (-((n+1:ℕ):ℝ)*x)) := by ring
     _ = _ := by
       rw [hpow, ← Real.exp_add]
@@ -287,7 +287,7 @@ theorem inner_gammaLaplaceAtom (r : Ioi (0:ℝ)) (m n : ℕ) :
 
 /-- The finite source norm is exactly the existing energy, with all cross terms retained. -/
 theorem norm_sum_gammaLaplaceAtom_sq (r : Ioi (0:ℝ)) (a : ℕ → ℝ) (N : ℕ) :
-    ‖∑ n ∈ Finset.range N, (a n : ℂ) • gammaLaplaceAtom r n‖^2 =
+    ‖∑ n ∈ Finset.range N, (a n : ℂ) • gammaLaplaceAtom r n‖^(2 : ℕ) =
       finiteGammaHankelEnergy a N r := by
   have hinner : inner ℂ (∑ n ∈ Finset.range N, (a n : ℂ) • gammaLaplaceAtom r n)
       (∑ n ∈ Finset.range N, (a n : ℂ) • gammaLaplaceAtom r n) =

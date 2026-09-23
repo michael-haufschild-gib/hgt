@@ -40,7 +40,7 @@ theorem card_mtTypeIPrimeCoeffSupport_le_prime_Ioc (P : ℕ) :
 theorem card_mtTypeIPrimeCoeffSupport_le_bt
     (P : ℕ) {z : ℝ} (hz : 1 < z) :
     ((mtTypeIPrimeCoeffSupport P).card : ℝ) ≤
-      2 * (P : ℝ) / Real.log z + 6 * z * (1 + Real.log z) ^ 3 + 1 := by
+      2 * (P : ℝ) / Real.log z + 6 * z * (1 + Real.log z) ^ (3 : ℕ) + 1 := by
   have hcard := card_mtTypeIPrimeCoeffSupport_le_prime_Ioc P
   have hcast : ((mtTypeIPrimeCoeffSupport P).card : ℝ) ≤
       (#{p ∈ Finset.Ioc P (2 * P) | p.Prime} : ℝ) := by
@@ -50,8 +50,8 @@ theorem card_mtTypeIPrimeCoeffSupport_le_bt
     ((mtTypeIPrimeCoeffSupport P).card : ℝ) ≤
         (#{p ∈ Finset.Ioc P (2 * P) | p.Prime} : ℝ) := hcast
     _ ≤ 2 * (((2 * P : ℕ) : ℝ) - (P : ℝ)) / Real.log z +
-        6 * z * (1 + Real.log z) ^ 3 + 1 := hbt
-    _ = 2 * (P : ℝ) / Real.log z + 6 * z * (1 + Real.log z) ^ 3 + 1 := by
+        6 * z * (1 + Real.log z) ^ (3 : ℕ) + 1 := hbt
+    _ = 2 * (P : ℝ) / Real.log z + 6 * z * (1 + Real.log z) ^ (3 : ℕ) + 1 := by
       push_cast
       ring
 
@@ -80,8 +80,8 @@ theorem factorial_mul_card_mtTypeIPrimeRaisedSupport_le
 theorem factorial_mul_card_mtTypeIPrimeRaisedSupport_le_bt
     (P ell : ℕ) {z : ℝ} (hz : 1 < z) :
     ((ell.factorial * (mtTypeIPrimeRaisedSupport P ell).card : ℕ) : ℝ) ≤
-      (2 * (P : ℝ) / Real.log z + 6 * z * (1 + Real.log z) ^ 3 + 1 + ell) ^ ell := by
-  let Q : ℝ := 2 * (P : ℝ) / Real.log z + 6 * z * (1 + Real.log z) ^ 3 + 1
+      (2 * (P : ℝ) / Real.log z + 6 * z * (1 + Real.log z) ^ (3 : ℕ) + 1 + ell) ^ ell := by
+  let Q : ℝ := 2 * (P : ℝ) / Real.log z + 6 * z * (1 + Real.log z) ^ (3 : ℕ) + 1
   have hnat := factorial_mul_card_mtTypeIPrimeRaisedSupport_le P ell
   have hcast : ((ell.factorial * (mtTypeIPrimeRaisedSupport P ell).card : ℕ) : ℝ) ≤
       (((mtTypeIPrimeCoeffSupport P).card + ell : ℕ) : ℝ) ^ ell := by

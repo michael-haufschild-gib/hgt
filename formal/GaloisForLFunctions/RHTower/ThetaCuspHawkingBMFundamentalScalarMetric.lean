@@ -16,11 +16,11 @@ def envelope (s a : ℂ) (x : Fin 4 → ℝ) : ℂ :=
 
 /-- Explicit radial matrix obtained from the original scalar KI reconstruction. -/
 def radialMatrix (s r y : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  let f := r^2-1
-  let tt := s*(s-3)/2+s*(s+1)/(2*r^2)
-  let tr := -s*(r^2-s)/(r*f)
-  let aa := (-r^2-s*(s+1)/2)*y⁻¹^2
-  !![tt,tr,0,0; tr,tt/f^2,0,0; 0,0,aa,0; 0,0,0,aa]
+  let f := r^(2 : ℕ)-1
+  let tt := s*(s-3)/2+s*(s+1)/(2*r^(2 : ℕ))
+  let tr := -s*(r^(2 : ℕ)-s)/(r*f)
+  let aa := (-r^(2 : ℕ)-s*(s+1)/2)*y⁻¹^(2 : ℕ)
+  !![tt,tr,0,0; tr,tt/f^(2 : ℕ),0,0; 0,0,aa,0; 0,0,0,aa]
 
 /-- A closed separated expression for the actual scalar perturbation. -/
 def field (s a : ℂ) (S : (Fin 2 → ℝ) → ℂ) (x : Fin 4 → ℝ) :
@@ -37,8 +37,8 @@ theorem reconstruction_eq (s a : ℂ) (S : (Fin 2 → ℝ) → ℂ)
       field s a S p.val := by
   have hrR : 0 < p.val 1 := lt_trans zero_lt_one p.property.1
   have hr : (p.val 1 : ℂ) ≠ 0 := by exact_mod_cast hrR.ne'
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   have hd := (master_hasDerivAt (Complex.I*s) (bmCoordinate p.val)
     (exterior_coordinate_domain p).1 (exterior_coordinate_domain p).2).deriv
@@ -87,8 +87,8 @@ private theorem radialMatrix_contDiffAt (s : ℂ) (p : D4BMBackground.ExteriorPo
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (lt_trans zero_lt_one p.property.1))
   have hy : (p.val 3 : ℂ) ≠ 0 := by exact_mod_cast p.property.2.ne'
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   have hR := (coordinate_contDiff 1 m).contDiffAt (x := p.val)
   have hY := (coordinate_contDiff 3 m).contDiffAt (x := p.val)
@@ -158,7 +158,7 @@ private theorem radialCoordinate_jet (p : D4BMBackground.ExteriorPoint) :
   rfl
 
 private theorem log_second (z : ℂ) (hz : z ∈ Complex.slitPlane) :
-    deriv (deriv Complex.log) z = -(z⁻¹ ^ 2) := by
+    deriv (deriv Complex.log) z = -(z⁻¹ ^ (2 : ℕ)) := by
   have he : deriv Complex.log =ᶠ[nhds z] fun w => w⁻¹ := by
     filter_upwards [Complex.isOpen_slitPlane.mem_nhds hz] with w hw
     exact Complex.deriv_log hw
@@ -169,7 +169,7 @@ private theorem ofField_log {g : (Fin 4 → ℝ) → ℂ} {x : Fin 4 → ℝ}
     (hg : ContDiffAt ℝ 2 g x) (hz : g x ∈ Complex.slitPlane) :
     ScalarTwoJet.ofField (fun y => Complex.log (g y)) x =
       ScalarTwoJet.compose (ScalarTwoJet.ofField g x) (Complex.log (g x))
-        (g x)⁻¹ (-((g x)⁻¹ ^ 2)) := by
+        (g x)⁻¹ (-((g x)⁻¹ ^ (2 : ℕ))) := by
   rw [ScalarTwoJet.ofField_comp (Complex.contDiffAt_log hz) hg,
     Complex.deriv_log hz, log_second (g x) hz]
 
@@ -187,9 +187,9 @@ theorem envelope_eq_exp (s a : ℂ) (x : Fin 4 → ℝ) :
 /-- Full temporal/radial jet, retaining its mixed derivative and radial rate derivative. -/
 def envelopeJet (s r B : ℂ) : ScalarTwoJet (Fin 4) ℂ where
   value := B
-  first := ![s*B, s*B/(r*(r^2-1)), 0, 0]
-  second := !![s^2*B, s^2*B/(r*(r^2-1)), 0, 0;
-    s^2*B/(r*(r^2-1)), B*(s^2-s*(3*r^2-1))/(r^2*(r^2-1)^2), 0, 0;
+  first := ![s*B, s*B/(r*(r^(2 : ℕ)-1)), 0, 0]
+  second := !![s^(2 : ℕ)*B, s^(2 : ℕ)*B/(r*(r^(2 : ℕ)-1)), 0, 0;
+    s^(2 : ℕ)*B/(r*(r^(2 : ℕ)-1)), B*(s^(2 : ℕ)-s*(3*r^(2 : ℕ)-1))/(r^(2 : ℕ)*(r^(2 : ℕ)-1)^(2 : ℕ)), 0, 0;
     0, 0, 0, 0; 0, 0, 0, 0]
 
 set_option maxRecDepth 2048 in
@@ -200,15 +200,15 @@ theorem envelope_jet (s a : ℂ) (p : D4BMBackground.ExteriorPoint) :
       envelopeJet s (p.val 1) (envelope s a p.val) := by
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (lt_trans zero_lt_one p.property.1))
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   have hR := (coordinate_contDiff 1 2).contDiffAt (x := p.val)
   have hT := (coordinate_contDiff 0 2).contDiffAt (x := p.val)
   have hz : ContDiffAt ℝ 2 bmCoordinate p.val :=
     contDiffAt_const.sub ((hR.inv hr).pow 2)
   have hcut := (exterior_coordinate_domain p).1
-  have hz0 : 1 - (p.val 1 : ℂ)⁻¹ ^ 2 ≠ 0 := Complex.slitPlane_ne_zero hcut
+  have hz0 : 1 - (p.val 1 : ℂ)⁻¹ ^ (2 : ℕ) ≠ 0 := Complex.slitPlane_ne_zero hcut
   have hlog : ContDiffAt ℝ 2 (fun x => Complex.log (bmCoordinate x)) p.val :=
     ((Complex.contDiffAt_log hcut).restrict_scalars ℝ).comp p.val hz
   let Q : (Fin 4 → ℝ) → ℂ := fun x => s*(x 0 : ℂ)+(s/2)*Complex.log (bmCoordinate x)
@@ -226,7 +226,7 @@ theorem envelope_jet (s a : ℂ) (p : D4BMBackground.ExteriorPoint) :
         ((ScalarTwoJet.constant (s/2)).mul
           (ScalarTwoJet.compose (radialCoordinateJet (p.val 1))
             (Complex.log (bmCoordinate p.val)) (bmCoordinate p.val)⁻¹
-              (-((bmCoordinate p.val)⁻¹ ^ 2)))) := by
+              (-((bmCoordinate p.val)⁻¹ ^ (2 : ℕ))))) := by
     rw [show Q = fun x => s*(x 0 : ℂ)+(s/2)*Complex.log (bmCoordinate x) from rfl,
       ScalarTwoJet.ofField_add (contDiffAt_const.mul hT) (contDiffAt_const.mul hlog),
       ScalarTwoJet.ofField_mul contDiffAt_const hT,

@@ -76,7 +76,7 @@ theorem sum_norm_mtBaseOuterAlpha_le_zeta
     (n : ℕ) :
     ∑ i ∈ (Finset.univ : Finset (Fin 1)),
         ‖mtCoefficientAF (mtBaseOuterAlpha i) n‖ ≤
-      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 1) n : ℕ) : ℝ) := by
+      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (1 : ℕ)) n : ℕ) : ℝ) := by
   rcases n.eq_zero_or_pos with rfl | hn
   · simp [mtCoefficientAF]
   · simpa [mtBaseOuterAlpha, mtCoefficientAF_apply_of_pos _ hn, hn.ne'] using
@@ -88,10 +88,10 @@ theorem sum_norm_mtOnePrimeOuterAlpha_le_zeta
     (n : ℕ) :
     ∑ i ∈ (Finset.univ : Finset (Fin u)),
         ‖mtCoefficientAF (mtOnePrimeOuterAlpha endpoint P i) n‖ ≤
-      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 1) n : ℕ) : ℝ) := by
+      ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (1 : ℕ)) n : ℕ) : ℝ) := by
   rcases n.eq_zero_or_pos with rfl | hn
   · simp [mtCoefficientAF]
-  · rw [show ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 1) n : ℕ) : ℝ) = 1 by
+  · rw [show ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (1 : ℕ)) n : ℕ) : ℝ) = 1 by
       simp [hn.ne']]
     let fibre := (Finset.univ : Finset (Fin u)).filter fun i =>
       n ∈ mtHarmanSourceBlock endpoint P i
@@ -137,11 +137,11 @@ theorem sum_normSq_mtBaseBoxFamily_productBoundary_le_collar_zeta_sq
       (mtOuterSeparatedBoxIndexSet (Finset.univ : Finset (Fin 1))
         data maxDepth j eMax kMax)
       (mtOuterSeparatedBoxAF mtBaseOuterAlpha data z₀ D delta)
-      (mtOuterSeparatedBoxScale (mtBaseOuterScale delta) delta recStart) Y n‖ ^ 2 ≤
+      (mtOuterSeparatedBoxScale (mtBaseOuterScale delta) delta recStart) Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 4) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (4 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 4) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (4 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   simpa using sum_normSq_mtOuterSeparatedBoxFamily_productBoundary_le_collar_zeta_sq
     A (Finset.univ : Finset (Fin 1)) mtBaseOuterAlpha (mtBaseOuterScale delta)
       z₀ D recStart hdelta hz₀ hroot data hblocks
@@ -174,11 +174,11 @@ theorem sum_normSq_mtOnePrimeBoxFamily_productBoundary_le_collar_zeta_sq
       (mtOuterSeparatedBoxIndexSet (Finset.univ : Finset (Fin u))
         data maxDepth j eMax kMax)
       (mtOuterSeparatedBoxAF (mtOnePrimeOuterAlpha endpoint P) data z₀ D delta)
-      (mtOuterSeparatedBoxScale (mtOnePrimeOuterScale endpoint) delta recStart) Y n‖ ^ 2 ≤
+      (mtOuterSeparatedBoxScale (mtOnePrimeOuterScale endpoint) delta recStart) Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 4) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (4 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 4) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (4 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   simpa using sum_normSq_mtOuterSeparatedBoxFamily_productBoundary_le_collar_zeta_sq
     A (Finset.univ : Finset (Fin u)) (mtOnePrimeOuterAlpha endpoint P)
       (mtOnePrimeOuterScale endpoint) z₀ D recStart hdelta hz₀ hroot data hblocks

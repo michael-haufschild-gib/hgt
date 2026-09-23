@@ -18,7 +18,7 @@ theorem integrable_first_moment_density (q : SchwartzMap ℝ ℂ) :
   simpa only [mulXCLM_apply] using hh
 
 theorem integrable_quartic_derivative (q : SchwartzMap ℝ ℂ) :
-    Integrable (fun x : ℝ => q x^4*deriv q x) := by
+    Integrable (fun x : ℝ => q x^(4 : ℕ)*deriv q x) := by
   have hh := (mulS (mulS (mulS q q) (mulS q q)) (SchwartzMap.derivCLM ℂ ℂ q)).integrable (μ := volume)
   convert! hh using 1
   funext x
@@ -27,13 +27,13 @@ theorem integrable_quartic_derivative (q : SchwartzMap ℝ ℂ) :
 
 /-- The nonlinear density in the symmetrized fifth coefficient has zero total integral. -/
 theorem integral_quartic_derivative (q : SchwartzMap ℝ ℂ) :
-    (∫ x : ℝ, q x^4*deriv q x) = 0 := by
+    (∫ x : ℝ, q x^(4 : ℕ)*deriv q x) = 0 := by
   let g := mulS (mulS (mulS q q) (mulS q q)) q
-  have he : (g : ℝ → ℂ) = fun x : ℝ => q x^5 := by
+  have he : (g : ℝ → ℂ) = fun x : ℝ => q x^(5 : ℕ) := by
     funext x
     simp only [g,mulS_apply]
     ring
-  have hd (x : ℝ) : deriv g x = (5 : ℂ)*(q x^4*deriv q x) := by
+  have hd (x : ℝ) : deriv g x = (5 : ℂ)*(q x^(4 : ℕ)*deriv q x) := by
     rw [he]
     convert! ((q.hasDerivAt x).pow 5).deriv using 1
     ring
@@ -42,7 +42,7 @@ theorem integral_quartic_derivative (q : SchwartzMap ℝ ℂ) :
   exact (mul_eq_zero.mp hz).resolve_left (by norm_num)
 
 theorem integrable_coordinate_sq_derivative (q : SchwartzMap ℝ ℂ) :
-    Integrable (fun x : ℝ => (x : ℂ)^2*deriv q x) := by
+    Integrable (fun x : ℝ => (x : ℂ)^(2 : ℕ)*deriv q x) := by
   have hh := (mulXCLM (mulXCLM (derivSCLM q))).integrable (μ := volume)
   convert! hh using 1
   funext x
@@ -51,9 +51,9 @@ theorem integrable_coordinate_sq_derivative (q : SchwartzMap ℝ ℂ) :
 
 /-- The second coordinate commutator evaluates the remaining fifth-order spatial density. -/
 theorem integral_coordinate_sq_derivative (q : SchwartzMap ℝ ℂ) :
-    (∫ x : ℝ, (x : ℂ)^2*deriv q x) = -2*∫ x : ℝ, (x : ℂ)*q x := by
+    (∫ x : ℝ, (x : ℂ)^(2 : ℕ)*deriv q x) = -2*∫ x : ℝ, (x : ℂ)*q x := by
   have he : (fun x : ℝ => (x : ℂ)*deriv (mulXCLM q) x) =
-      fun x : ℝ => (x : ℂ)*q x+(x : ℂ)^2*deriv q x := by
+      fun x : ℝ => (x : ℂ)*q x+(x : ℂ)^(2 : ℕ)*deriv q x := by
     funext x
     have hh := congrArg (fun f : SchwartzMap ℝ ℂ => f x) (derivSCLM_mulXCLM q)
     simp only [derivSCLM_apply,_root_.add_apply,mulXCLM_apply] at hh

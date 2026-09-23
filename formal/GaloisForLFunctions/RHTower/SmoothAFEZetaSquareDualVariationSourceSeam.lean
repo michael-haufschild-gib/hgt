@@ -36,26 +36,26 @@ theorem smoothAFEZetaSquareDualSourceField_diagonal_eq_frozen_add_variation
 
 theorem smoothAFEZetaSquareDual_tsum_eq_chiSq_mul_sourceField
     (T r t : ℝ) :
-    (∑' n : ℕ, zetaChi (linePt t) ^ 2 *
+    (∑' n : ℕ, zetaChi (linePt t) ^ (2 : ℕ) *
       ((n + 1).divisors.card : ℂ) *
       (n + 1 : ℂ) ^ (linePt t - 1) *
       smoothAFEZetaSquareDualWeight r ((n + 1 : ℝ) * T)) =
-      zetaChi (linePt t) ^ 2 *
+      zetaChi (linePt t) ^ (2 : ℕ) *
         smoothAFEZetaSquareDualSourceField T r t := by
   rw [smoothAFEZetaSquareDualSourceField]
   calc
-    (∑' n : ℕ, zetaChi (linePt t) ^ 2 *
+    (∑' n : ℕ, zetaChi (linePt t) ^ (2 : ℕ) *
       ((n + 1).divisors.card : ℂ) *
       (n + 1 : ℂ) ^ (linePt t - 1) *
       smoothAFEZetaSquareDualWeight r ((n + 1 : ℝ) * T)) =
-        ∑' n : ℕ, zetaChi (linePt t) ^ 2 *
+        ∑' n : ℕ, zetaChi (linePt t) ^ (2 : ℕ) *
           (((n + 1).divisors.card : ℂ) *
           (n + 1 : ℂ) ^ (linePt t - 1) *
           smoothAFEZetaSquareDualWeight r ((n + 1 : ℝ) * T)) := by
             apply tsum_congr
             intro n
             ring
-    _ = zetaChi (linePt t) ^ 2 *
+    _ = zetaChi (linePt t) ^ (2 : ℕ) *
         ∑' n : ℕ, ((n + 1).divisors.card : ℂ) *
           (n + 1 : ℂ) ^ (linePt t - 1) *
           smoothAFEZetaSquareDualWeight r ((n + 1 : ℝ) * T) := by
@@ -64,11 +64,11 @@ theorem smoothAFEZetaSquareDual_tsum_eq_chiSq_mul_sourceField
 theorem smoothAFEZetaSquareDual_tsum_diagonal_eq_frozen_add_variation
     {N : ℕ} (hN : 4 ≤ N) {t : ℝ}
     (ht : t ∈ Set.Icc (N : ℝ) (2 * N : ℝ)) :
-    (∑' n : ℕ, zetaChi (linePt t) ^ 2 *
+    (∑' n : ℕ, zetaChi (linePt t) ^ (2 : ℕ) *
       ((n + 1).divisors.card : ℂ) *
       (n + 1 : ℂ) ^ (linePt t - 1) *
       smoothAFEZetaSquareDualWeight t ((n + 1 : ℝ) * (N : ℝ))) =
-      zetaChi (linePt t) ^ 2 *
+      zetaChi (linePt t) ^ (2 : ℕ) *
         (smoothAFEZetaSquareDualSourceField (N : ℝ) (N : ℝ) t +
           smoothAFEZetaSquareDualVariationSourceField
             (N : ℝ) (N : ℝ) t t) := by

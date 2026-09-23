@@ -31,19 +31,19 @@ def rawScatteringFifthRemainder (q : SchwartzMap ℝ ℂ) (k : ℝ) : Matrix (Fi
   let KL := (rawQuinticEndpointMatrix q k true).adjugate
   KR+KL+D*HL-HR*D+QR*TL+TR*QL+
     (k : ℂ) • (D*KL-KR*D+QR*HL+HR*QL+TR*TL)+
-    (k : ℂ)^2 • (QR*KL+KR*QL+TR*HL+HR*TL)+
-    (k : ℂ)^3 • (TR*KL+KR*TL+HR*HL)+
-    (k : ℂ)^4 • (HR*KL+KR*HL)+
-    (k : ℂ)^5 • (KR*KL)
+    (k : ℂ)^(2 : ℕ) • (QR*KL+KR*QL+TR*HL+HR*TL)+
+    (k : ℂ)^(3 : ℕ) • (TR*KL+KR*TL+HR*HL)+
+    (k : ℂ)^(4 : ℕ) • (HR*KL+KR*HL)+
+    (k : ℂ)^(5 : ℕ) • (KR*KL)
 
 def rawScatteringFifthCoefficient (q : SchwartzMap ℝ ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   rawScatteringFifthRemainder q 0
 
 /-- The genuine scattering matrix has five exact orders, without a formal-series premise. -/
 theorem rawScatteringMatrix_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) :
-    rawScatteringMatrix q k = 1+(k : ℂ)^2 • rawScatteringQuadraticCoefficient q+
-      (k : ℂ)^3 • rawScatteringCubicCoefficient q+(k : ℂ)^4 • rawScatteringFourthCoefficient q+
-      (k : ℂ)^5 • rawScatteringFifthRemainder q k := by
+    rawScatteringMatrix q k = 1+(k : ℂ)^(2 : ℕ) • rawScatteringQuadraticCoefficient q+
+      (k : ℂ)^(3 : ℕ) • rawScatteringCubicCoefficient q+(k : ℂ)^(4 : ℕ) • rawScatteringFourthCoefficient q+
+      (k : ℂ)^(5 : ℕ) • rawScatteringFifthRemainder q k := by
   rw [rawScatteringMatrix,rawAsymptoticMatrix_fifth_factor,rawAsymptoticMatrix_inverse_fifth_factor]
   unfold rawScatteringQuadraticCoefficient rawScatteringCubicCoefficient
     rawScatteringFourthCoefficient rawScatteringFifthRemainder
@@ -66,18 +66,18 @@ theorem rawScatteringFifthRemainder_tendsto_zero (q : SchwartzMap ℝ ℂ) :
 
 /-- The fifth quotient after subtracting the true preceding coefficients has an actual limit. -/
 theorem rawScatteringMatrix_fifth_quotient_tendsto (q : SchwartzMap ℝ ℂ) :
-    Tendsto (fun k : ℝ => ((k : ℂ)^5)⁻¹ •
-      (rawScatteringMatrix q k-1-(k : ℂ)^2 • rawScatteringQuadraticCoefficient q-
-        (k : ℂ)^3 • rawScatteringCubicCoefficient q-(k : ℂ)^4 • rawScatteringFourthCoefficient q))
+    Tendsto (fun k : ℝ => ((k : ℂ)^(5 : ℕ))⁻¹ •
+      (rawScatteringMatrix q k-1-(k : ℂ)^(2 : ℕ) • rawScatteringQuadraticCoefficient q-
+        (k : ℂ)^(3 : ℕ) • rawScatteringCubicCoefficient q-(k : ℂ)^(4 : ℕ) • rawScatteringFourthCoefficient q))
       (𝓝[≠] 0) (𝓝 (rawScatteringFifthCoefficient q)) := by
   have hh : Tendsto (rawScatteringFifthRemainder q) (𝓝[≠] (0 : ℝ)) (𝓝 (rawScatteringFifthCoefficient q)) :=
     (rawScatteringFifthRemainder_tendsto_zero q).mono_left nhdsWithin_le_nhds
   apply hh.congr'
   filter_upwards [self_mem_nhdsWithin] with k hk
-  have hkc : (k : ℂ)^5 ≠ 0 := pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hk)
-  have he : rawScatteringMatrix q k-1-(k : ℂ)^2 • rawScatteringQuadraticCoefficient q-
-      (k : ℂ)^3 • rawScatteringCubicCoefficient q-(k : ℂ)^4 • rawScatteringFourthCoefficient q =
-        (k : ℂ)^5 • rawScatteringFifthRemainder q k := by
+  have hkc : (k : ℂ)^(5 : ℕ) ≠ 0 := pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hk)
+  have he : rawScatteringMatrix q k-1-(k : ℂ)^(2 : ℕ) • rawScatteringQuadraticCoefficient q-
+      (k : ℂ)^(3 : ℕ) • rawScatteringCubicCoefficient q-(k : ℂ)^(4 : ℕ) • rawScatteringFourthCoefficient q =
+        (k : ℂ)^(5 : ℕ) • rawScatteringFifthRemainder q k := by
     rw [rawScatteringMatrix_fifth_factor]
     abel
   rw [he,smul_smul,inv_mul_cancel₀ hkc,one_smul]

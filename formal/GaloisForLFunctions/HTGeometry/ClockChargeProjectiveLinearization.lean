@@ -32,8 +32,8 @@ to vanish. -/
 theorem mobius_scaling_coeffs {K : Type*} [Field K]
     {a b c d μ : K} (hμ0 : μ ≠ 0) (hμ1 : μ ≠ 1) (hμm1 : μ ≠ -1)
     (hinv : a * d - b * c ≠ 0)
-    (hq2 : a * c * μ = a * c * μ ^ 2)
-    (hq1 : a * d * μ + b * c = a * d * μ + b * c * μ ^ 2)
+    (hq2 : a * c * μ = a * c * μ ^ (2 : ℕ))
+    (hq1 : a * d * μ + b * c = a * d * μ + b * c * μ ^ (2 : ℕ))
     (hq0 : b * d = b * d * μ) :
     c = 0 ∧ b = 0 := by
   have hμ1' : (1 : K) - μ ≠ 0 := sub_ne_zero.mpr (Ne.symm hμ1)
@@ -76,7 +76,7 @@ theorem mobius_commuting_scaling_forces_diagonal
     (hμ0 : μ ≠ 0) (hμ1 : μ ≠ 1) (hμm1 : μ ≠ -1)
     (hinv : a * d - b * c ≠ 0)
     (hlin : ∀ x y z : K, algebraMap K F x + algebraMap K F y * q
-        + algebraMap K F z * q ^ 2 = 0 → x = 0 ∧ y = 0 ∧ z = 0)
+        + algebraMap K F z * q ^ (2 : ℕ) = 0 → x = 0 ∧ y = 0 ∧ z = 0)
     (hcomm : (algebraMap K F a * (algebraMap K F μ * q) + algebraMap K F b)
           * (algebraMap K F c * q + algebraMap K F d)
         = algebraMap K F μ * (algebraMap K F a * q + algebraMap K F b)
@@ -85,9 +85,9 @@ theorem mobius_commuting_scaling_forces_diagonal
     c = 0 ∧ b = 0 := by
   -- extract the three coefficient relations from the transcendence of `q`
   have hcoeff : algebraMap K F (b * d - b * d * μ)
-      + algebraMap K F (a * d * μ + b * c - (a * d * μ + b * c * μ ^ 2))
+      + algebraMap K F (a * d * μ + b * c - (a * d * μ + b * c * μ ^ (2 : ℕ)))
         * q
-      + algebraMap K F (a * c * μ - a * c * μ ^ 2) * q ^ 2 = 0 := by
+      + algebraMap K F (a * c * μ - a * c * μ ^ (2 : ℕ)) * q ^ (2 : ℕ) = 0 := by
     simp only [map_sub, map_mul, map_add, map_pow]
     linear_combination hcomm
   obtain ⟨h0, h1, h2⟩ := hlin _ _ _ hcoeff
@@ -125,7 +125,7 @@ theorem charged_clock_forces_multiplicative
     (hμ0 : μ ≠ 0) (hμ1 : μ ≠ 1) (hμm1 : μ ≠ -1)
     (hinv : a * d - b * c ≠ 0)
     (hlin : ∀ x y z : C, algebraMap C E x + algebraMap C E y * q
-        + algebraMap C E z * q ^ 2 = 0 → x = 0 ∧ y = 0 ∧ z = 0)
+        + algebraMap C E z * q ^ (2 : ℕ) = 0 → x = 0 ∧ y = 0 ∧ z = 0)
     (hρq : ρ q = algebraMap C E μ * q)
     (hΦq : Φ q * (algebraMap C E c * q + algebraMap C E d)
         = algebraMap C E a * q + algebraMap C E b)

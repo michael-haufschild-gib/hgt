@@ -41,7 +41,7 @@ theorem eval_modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial
 theorem eval_modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial_zero_eq :
     MvPolynomial.eval c5ZeroSeamState
         modularThetaSourcePositiveC5ExactCompletedSeamSlopePolynomial =
-      (-3 / 8 : ℂ) ^ 6 * modularThetaC5FixedActionSeamPolynomial 0 := by
+      (-3 / 8 : ℂ) ^ (6 : ℕ) * modularThetaC5FixedActionSeamPolynomial 0 := by
   rw [← modularThetaSourcePositiveChart_c5ExactCompletedSeamSlopePolynomial]
   have hchart := eval_modularThetaSourcePositiveChartPullback_seam (0 : ℝ)
     modularThetaLyapunovC5ExactCompletedSeamSlopePolynomial
@@ -66,7 +66,7 @@ theorem eval_modularThetaSourcePositiveLie_c5ExactCompletedSeamOrientation_zero_
     MvPolynomial.eval c5ZeroSeamState
         (modularThetaSourcePositiveLie
           modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial) =
-      (-3 / 8 : ℂ) ^ 5 * modularThetaC5FixedActionSeamPolynomial 0 := by
+      (-3 / 8 : ℂ) ^ (5 : ℕ) * modularThetaC5FixedActionSeamPolynomial 0 := by
   have horientation :=
     eval_modularThetaSourcePositiveC5ExactCompletedSeamOrientationPolynomial_zero_eq_zero
   have hslope :=

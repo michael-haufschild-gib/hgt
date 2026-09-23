@@ -32,12 +32,12 @@ theorem one_sub_comp_adjoint_isPositive_of_norm_le_one
             ContinuousLinearMap.adjoint C x⟫_ℂ := by
       change ⟪C (ContinuousLinearMap.adjoint C x), x⟫_ℂ = _
       exact (ContinuousLinearMap.adjoint_inner_right C _ _).symm
-    have hxinner : (⟪x, x⟫_ℂ).re = ‖x‖ ^ 2 :=
+    have hxinner : (⟪x, x⟫_ℂ).re = ‖x‖ ^ (2 : ℕ) :=
       inner_self_eq_norm_sq (𝕜 := ℂ) x
     have hadjinner :
         (⟪ContinuousLinearMap.adjoint C x,
           ContinuousLinearMap.adjoint C x⟫_ℂ).re =
-            ‖ContinuousLinearMap.adjoint C x‖ ^ 2 :=
+            ‖ContinuousLinearMap.adjoint C x‖ ^ (2 : ℕ) :=
       inner_self_eq_norm_sq (𝕜 := ℂ) _
     change 0 ≤ (⟪(1 - C * ContinuousLinearMap.adjoint C) x, x⟫_ℂ).re
     rw [sub_apply, one_apply_eq_self, inner_sub_left, hinner, Complex.sub_re,

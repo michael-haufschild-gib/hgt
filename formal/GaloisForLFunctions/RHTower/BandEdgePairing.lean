@@ -14,7 +14,7 @@ namespace RHTower
 /-- A finite event set with a pairing involution that has no fixed event. -/
 structure FixedPointFreePairing (Event : Type*) [Fintype Event] where
   pair : Equiv.Perm Event
-  pair_sq : pair ^ 2 = 1
+  pair_sq : pair ^ (2 : ℕ) = 1
   no_fixed : ∀ e : Event, pair e ≠ e
 
 /-- A band-edge pairing is a fixed-point-free pairing of the finite crossing events. -/

@@ -109,7 +109,7 @@ theorem py_twoE (u v : ℝ) :
 theorem px_P_eq (u v : ℝ) :
     px M.P (u, v)
       = (px (px M.G) (u, v) * (2 * M.area (u, v)) - px M.G (u, v) * (2 * px M.area (u, v)))
-        / (2 * M.area (u, v)) ^ 2 := by
+        / (2 * M.area (u, v)) ^ (2 : ℕ) := by
   have h := px_div (A := px M.G) (B := fun q => 2 * M.area q) M.smooth_px_G
     (contDiff_const.mul M.smooth_area) M.twoArea_ne u v
   rw [show M.P = fun q => px M.G q / (2 * M.area q) from rfl, h, M.px_twoArea u v]
@@ -117,7 +117,7 @@ theorem px_P_eq (u v : ℝ) :
 theorem py_Q_eq (u v : ℝ) :
     py M.Q (u, v)
       = (py (py M.E) (u, v) * (2 * M.area (u, v)) - py M.E (u, v) * (2 * py M.area (u, v)))
-        / (2 * M.area (u, v)) ^ 2 := by
+        / (2 * M.area (u, v)) ^ (2 : ℕ) := by
   have h := py_div (A := py M.E) (B := fun q => 2 * M.area q) M.smooth_py_E
     (contDiff_const.mul M.smooth_area) M.twoArea_ne u v
   rw [show M.Q = fun q => py M.E q / (2 * M.area q) from rfl, h, M.py_twoArea u v]
@@ -125,7 +125,7 @@ theorem py_Q_eq (u v : ℝ) :
 theorem px_chr122_eq (u v : ℝ) :
     px M.chr122 (u, v)
       = (-px (px M.G) (u, v) * (2 * M.E (u, v)) - -px M.G (u, v) * (2 * px M.E (u, v)))
-        / (2 * M.E (u, v)) ^ 2 := by
+        / (2 * M.E (u, v)) ^ (2 : ℕ) := by
   have h := px_div (A := fun q => -px M.G q) (B := fun q => 2 * M.E q) M.smooth_px_G.neg
     (contDiff_const.mul M.smoothE) M.twoE_ne u v
   rw [show M.chr122 = fun q => -px M.G q / (2 * M.E q) from rfl, h, M.px_twoE u v,
@@ -134,7 +134,7 @@ theorem px_chr122_eq (u v : ℝ) :
 theorem py_chr112_eq (u v : ℝ) :
     py M.chr112 (u, v)
       = (py (py M.E) (u, v) * (2 * M.E (u, v)) - py M.E (u, v) * (2 * py M.E (u, v)))
-        / (2 * M.E (u, v)) ^ 2 := by
+        / (2 * M.E (u, v)) ^ (2 : ℕ) := by
   have h := py_div (A := py M.E) (B := fun q => 2 * M.E q) M.smooth_py_E
     (contDiff_const.mul M.smoothE) M.twoE_ne u v
   rw [show M.chr112 = fun q => py M.E q / (2 * M.E q) from rfl, h, M.py_twoE u v]
@@ -158,8 +158,8 @@ theorem sectionalCurvature_eq_gaussCurvature (u v : ℝ) :
     M.sectionalCurvature (u, v) = M.gaussCurvature (u, v) := by
   have hs : M.uSpeed (u, v) ≠ 0 := (M.uSpeed_pos (u, v)).ne'
   have ht : M.vSpeed (u, v) ≠ 0 := (M.vSpeed_pos (u, v)).ne'
-  have hE : M.E (u, v) = M.uSpeed (u, v) ^ 2 := (M.uSpeed_sq (u, v)).symm
-  have hG : M.G (u, v) = M.vSpeed (u, v) ^ 2 := (M.vSpeed_sq (u, v)).symm
+  have hE : M.E (u, v) = M.uSpeed (u, v) ^ (2 : ℕ) := (M.uSpeed_sq (u, v)).symm
+  have hG : M.G (u, v) = M.vSpeed (u, v) ^ (2 : ℕ) := (M.vSpeed_sq (u, v)).symm
   have hA : M.area (u, v) = M.uSpeed (u, v) * M.vSpeed (u, v) := rfl
   unfold sectionalCurvature riemannUpper gaussCurvature
   rw [M.px_chr122_eq u v, M.py_chr112_eq u v, M.px_P_eq u v, M.py_Q_eq u v,

@@ -139,7 +139,7 @@ private theorem iteratedDeriv_two_reflect (F : ℂ → ℂ) (c : ℂ) :
     funext t; exact congrArg F (by ring)
   have h4 := iteratedDeriv_comp_neg 2 (fun z : ℂ => F (z + c)) 0
   have h5 : iteratedDeriv 2 (fun t : ℂ => F (-t + c)) 0
-      = ((-1 : ℂ)) ^ 2 • iteratedDeriv 2 (fun z : ℂ => F (z + c)) 0 := by
+      = ((-1 : ℂ)) ^ (2 : ℕ) • iteratedDeriv 2 (fun z : ℂ => F (z + c)) 0 := by
     simpa using h4
   rw [h1, h5]
   have h6 := congrFun (iteratedDeriv_comp_add_const 2 F c) 0
@@ -356,7 +356,7 @@ private theorem iteratedDeriv_two_sub_const (Φ : ℂ → ℂ) (c : ℂ) :
   rw [h1]
 
 private theorem iteratedDeriv_two_scaled (Φ : ℂ → ℂ) (hA : AnalyticAt ℂ Φ 0) (c : ℂ) :
-    iteratedDeriv 2 (fun τ : ℂ => Φ (c * τ)) 0 = c ^ 2 * iteratedDeriv 2 Φ 0 := by
+    iteratedDeriv 2 (fun τ : ℂ => Φ (c * τ)) 0 = c ^ (2 : ℕ) * iteratedDeriv 2 Φ 0 := by
   have hmul : Filter.Tendsto (fun τ : ℂ => c * τ) (nhds 0) (nhds 0) := by
     have hc : Continuous (fun τ : ℂ => c * τ) := by fun_prop
     simpa using hc.tendsto 0
@@ -398,7 +398,7 @@ theorem iteratedDeriv_two_multiSplitting {ι : Type*} (s : Finset ι) (F : ℂ �
     (hplus : ∀ j ∈ s, AnalyticAt ℂ F (1 / 2 + gam j * I))
     (hminus : ∀ j ∈ s, AnalyticAt ℂ F (1 / 2 - gam j * I)) :
     iteratedDeriv 2 (fun τ : ℂ => ∑ j ∈ s, relativeQuadrupleValue F (gam j) (t j * τ)) 0
-      = ∑ j ∈ s, (t j) ^ 2 * iteratedDeriv 2 (criticalQuadrupleSum F (gam j)) 0 := by
+      = ∑ j ∈ s, (t j) ^ (2 : ℕ) * iteratedDeriv 2 (criticalQuadrupleSum F (gam j)) 0 := by
   classical
   have hterm : ∀ j ∈ s, ContDiffAt ℂ 2
       (fun τ : ℂ => relativeQuadrupleValue F (gam j) (t j * τ)) 0 := by

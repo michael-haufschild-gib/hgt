@@ -69,11 +69,11 @@ theorem rectangular_neg_def_of_orthogonal {N kp kn : ℕ}
   rw [rectangularKreinForm, Matrix.sub_mulVec, dotProduct_sub,
     Matrix.sum_mulVec, Matrix.sum_mulVec, dotProduct_sum, dotProduct_sum]
   simp_rw [rankOne_quadForm]
-  rw [show (∑ i, ((‖star (w i) ⬝ᵥ x‖ ^ 2 : ℝ) : ℂ)) = 0 from
+  rw [show (∑ i, ((‖star (w i) ⬝ᵥ x‖ ^ (2 : ℕ) : ℝ) : ℂ)) = 0 from
     Finset.sum_eq_zero (fun i _ => by rw [hw i]; simp)]
   rw [zero_sub, ← Complex.ofReal_sum]
   obtain ⟨i0, hi0⟩ := hu
-  have hpos : 0 < ∑ i, ‖star (u i) ⬝ᵥ x‖ ^ 2 :=
+  have hpos : 0 < ∑ i, ‖star (u i) ⬝ᵥ x‖ ^ (2 : ℕ) :=
     Finset.sum_pos' (fun i _ => sq_nonneg _)
       ⟨i0, Finset.mem_univ _, sq_pos_of_ne_zero (norm_ne_zero_iff.mpr hi0)⟩
   simp only [Complex.neg_re, Complex.ofReal_re]

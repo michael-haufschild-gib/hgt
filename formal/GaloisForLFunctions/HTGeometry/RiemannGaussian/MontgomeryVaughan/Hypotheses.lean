@@ -35,8 +35,8 @@ def MVHilbert (C : ℝ) : Prop :=
       (∀ r s, r ≠ s → δ r ≤ |freq r - freq s|) →
     ‖∑ r, ∑ s, if r = s then (0 : ℂ)
         else x r * conj (z s) / ((freq r - freq s : ℝ) : ℂ)‖
-      ≤ C * Real.sqrt (∑ r, ‖x r‖ ^ 2 / δ r) *
-          Real.sqrt (∑ r, ‖z r‖ ^ 2 / δ r)
+      ≤ C * Real.sqrt (∑ r, ‖x r‖ ^ (2 : ℕ) / δ r) *
+          Real.sqrt (∑ r, ‖z r‖ ^ (2 : ℕ) / δ r)
 
 end RiemannGaussian
 

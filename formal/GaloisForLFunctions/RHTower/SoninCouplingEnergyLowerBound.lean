@@ -36,7 +36,7 @@ theorem eventually_le_hsNormSq_soninApertureCoupling
     have h1 : Tendsto (fun n : ℕ => r n * q) atTop atTop :=
       Filter.Tendsto.atTop_mul_const hq hr
     exact Filter.Tendsto.const_mul_atTop (by positivity : (0 : ℝ) < 2 * Real.pi) h1
-  set L : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) with hL
+  set L : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) with hL
   have hLpos : 0 < L := sqrt_half_energy_pos b c hb hbc
   have hpacket : Tendsto (fun n : ℕ =>
       ‖soninPacketEven b c hb hbc (2 * Real.pi * (r n * q))‖) atTop (𝓝 L) :=
@@ -64,7 +64,7 @@ theorem eventually_le_hsNormSq_soninApertureCoupling
     field_simp
   have hHS := evenSoninApertureSuccessiveLayerTransition_isHilbertSchmidt ha hab hbc
     (hrgt n) (hcr n)
-  have hdom : ‖Z (t • w)‖ ^ 2 ≤ hsNormSq Z :=
+  have hdom : ‖Z (t • w)‖ ^ (2 : ℕ) ≤ hsNormSq Z :=
     norm_sq_apply_le_hsNormSq (by simpa [hZ] using hHS) hunit
   rw [himg] at hdom
   have hge : (2 : ℝ)⁻¹ ≤ ‖Z w‖ / ‖w‖ := le_of_lt hn

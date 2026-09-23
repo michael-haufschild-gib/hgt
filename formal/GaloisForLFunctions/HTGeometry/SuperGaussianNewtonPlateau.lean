@@ -32,7 +32,7 @@ open Filter
 
 /-- **Super-Gaussian Taylor decay** `(SG)`: the coefficients decay faster than every Gaussian. -/
 def SuperGaussianCoeffs (a : ℕ → ℂ) : Prop :=
-  ∀ A : ℝ, 0 < A → ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, ‖a n‖ ≤ C * Real.exp (-(A * (n : ℝ) ^ 2))
+  ∀ A : ℝ, 0 < A → ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, ‖a n‖ ≤ C * Real.exp (-(A * (n : ℝ) ^ (2 : ℕ)))
 
 variable {a : ℕ → ℂ}
 
@@ -62,10 +62,10 @@ theorem entireCoeffs_of_superGaussian (hSG : SuperGaussianCoeffs a) : EntireCoef
     have : (1 : ℕ) ≤ n := le_trans (Nat.le_add_left 1 _) hn
     exact_mod_cast this
   calc ‖a n‖ * r ^ n
-      ≤ (C * Real.exp (-(1 * (n : ℝ) ^ 2))) * Real.exp ((n : ℝ) * Real.log r) := by
+      ≤ (C * Real.exp (-(1 * (n : ℝ) ^ (2 : ℕ)))) * Real.exp ((n : ℝ) * Real.log r) := by
         rw [pow_eq_exp_mul_log hr n]
         exact mul_le_mul_of_nonneg_right (hbound n) (Real.exp_pos _).le
-    _ = C * Real.exp (-((n : ℝ) ^ 2) + (n : ℝ) * Real.log r) := by
+    _ = C * Real.exp (-((n : ℝ) ^ (2 : ℕ)) + (n : ℝ) * Real.log r) := by
         rw [mul_assoc, ← Real.exp_add]; ring_nf
     _ ≤ C * Real.exp (-(n : ℝ)) := by
         refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hC.le
@@ -74,21 +74,21 @@ theorem entireCoeffs_of_superGaussian (hSG : SuperGaussianCoeffs a) : EntireCoef
 /-- **The quadratic maximum-term bound.**  Gaussian decay at rate `A` caps the maximum term by
 `C·exp((log r)²/(4A))`: completing the square in `n·log r − A n²`. -/
 theorem maxTerm_le_of_superGaussian {A : ℝ} (hA : 0 < A)
-    {C : ℝ} (hC : 0 < C) (hbound : ∀ n : ℕ, ‖a n‖ ≤ C * Real.exp (-(A * (n : ℝ) ^ 2)))
+    {C : ℝ} (hC : 0 < C) (hbound : ∀ n : ℕ, ‖a n‖ ≤ C * Real.exp (-(A * (n : ℝ) ^ (2 : ℕ))))
     {r : ℝ} (hr : 0 < r) :
-    maxTerm a r ≤ C * Real.exp (Real.log r ^ 2 / (4 * A)) := by
+    maxTerm a r ≤ C * Real.exp (Real.log r ^ (2 : ℕ) / (4 * A)) := by
   refine ciSup_le fun n => ?_
-  have hsq : -(A * (n : ℝ) ^ 2) + (n : ℝ) * Real.log r ≤ Real.log r ^ 2 / (4 * A) := by
-    have hkey : (0 : ℝ) ≤ (2 * A * (n : ℝ) - Real.log r) ^ 2 := sq_nonneg _
+  have hsq : -(A * (n : ℝ) ^ (2 : ℕ)) + (n : ℝ) * Real.log r ≤ Real.log r ^ (2 : ℕ) / (4 * A) := by
+    have hkey : (0 : ℝ) ≤ (2 * A * (n : ℝ) - Real.log r) ^ (2 : ℕ) := sq_nonneg _
     rw [le_div_iff₀ (by linarith)]
     nlinarith [hkey]
   calc ‖a n‖ * r ^ n
-      ≤ (C * Real.exp (-(A * (n : ℝ) ^ 2))) * Real.exp ((n : ℝ) * Real.log r) := by
+      ≤ (C * Real.exp (-(A * (n : ℝ) ^ (2 : ℕ)))) * Real.exp ((n : ℝ) * Real.log r) := by
         rw [pow_eq_exp_mul_log hr n]
         exact mul_le_mul_of_nonneg_right (hbound n) (Real.exp_pos _).le
-    _ = C * Real.exp (-(A * (n : ℝ) ^ 2) + (n : ℝ) * Real.log r) := by
+    _ = C * Real.exp (-(A * (n : ℝ) ^ (2 : ℕ)) + (n : ℝ) * Real.log r) := by
         rw [mul_assoc, ← Real.exp_add]
-    _ ≤ C * Real.exp (Real.log r ^ 2 / (4 * A)) :=
+    _ ≤ C * Real.exp (Real.log r ^ (2 : ℕ) / (4 * A)) :=
         mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hsq) hC.le
 
 /-- The maximum term dominates every single term, in logarithmic form. -/
@@ -111,20 +111,20 @@ theorem centralIndex_le_of_superGaussian (hSG : SuperGaussianCoeffs a)
   refine ⟨Real.log C - Real.log ‖a n₀‖, fun T hT => ?_⟩
   set r : ℝ := Real.exp T with hrdef
   have hr : 0 < r := Real.exp_pos T
-  have hr2 : 0 < r ^ 2 := by positivity
-  have hrle : r ≤ r ^ 2 := by
+  have hr2 : 0 < r ^ (2 : ℕ) := by positivity
+  have hrle : r ≤ r ^ (2 : ℕ) := by
     have h1 : (1 : ℝ) ≤ r := Real.one_le_exp hT.le
     nlinarith
   have hlogr : Real.log r = T := Real.log_exp T
-  have hlogr2 : Real.log (r ^ 2) = 2 * T := by
+  have hlogr2 : Real.log (r ^ (2 : ℕ)) = 2 * T := by
     rw [Real.log_pow, hlogr]; push_cast; ring
   -- lower growth law with `s = r²`
   have hgrow := centralIndex_mul_log_le_log_maxTerm_sub ha hr hrle hn₀
-  have hdiv : Real.log (r ^ 2 / r) = T := by
-    rw [show r ^ 2 / r = r by field_simp, hlogr]
+  have hdiv : Real.log (r ^ (2 : ℕ) / r) = T := by
+    rw [show r ^ (2 : ℕ) / r = r by field_simp, hlogr]
   rw [hdiv] at hgrow
   -- upper bound for `log μ(r²)`
-  have hup : Real.log (maxTerm a (r ^ 2)) ≤ Real.log C + (2 * T) ^ 2 / (4 * A) := by
+  have hup : Real.log (maxTerm a (r ^ (2 : ℕ))) ≤ Real.log C + (2 * T) ^ (2 : ℕ) / (4 * A) := by
     obtain ⟨_, _, hpos⟩ := exists_maxTerm_eq ha hr2 hn₀
     have h := maxTerm_le_of_superGaussian hA hC hbound hr2
     have := Real.log_le_log hpos h
@@ -135,15 +135,15 @@ theorem centralIndex_le_of_superGaussian (hSG : SuperGaussianCoeffs a)
     rwa [hlogr] at this
   have hn₀nonneg : (0 : ℝ) ≤ (n₀ : ℝ) * T := by positivity
   have hstep : (centralIndex a r : ℝ) * T
-      ≤ (Real.log C - Real.log ‖a n₀‖) + (2 * T) ^ 2 / (4 * A) := by
+      ≤ (Real.log C - Real.log ‖a n₀‖) + (2 * T) ^ (2 : ℕ) / (4 * A) := by
     linarith
   have hTne : T ≠ 0 := ne_of_gt hT
   have hAne : A ≠ 0 := ne_of_gt hA
-  have h4 : (2 * T) ^ 2 / (4 * A) = T ^ 2 / A := by
-    have h : (2 * T) ^ 2 = 4 * T ^ 2 := by ring
+  have h4 : (2 * T) ^ (2 : ℕ) / (4 * A) = T ^ (2 : ℕ) / A := by
+    have h : (2 * T) ^ (2 : ℕ) = 4 * T ^ (2 : ℕ) := by ring
     rw [h, mul_div_mul_left _ _ (by norm_num : (4:ℝ) ≠ 0)]
   rw [h4] at hstep
-  have hexp : (Real.log C - Real.log ‖a n₀‖ + T ^ 2 / A) / T
+  have hexp : (Real.log C - Real.log ‖a n₀‖ + T ^ (2 : ℕ) / A) / T
       = (Real.log C - Real.log ‖a n₀‖) / T + T / A := by
     rw [add_div]; congr 1; field_simp
   rw [← hexp, le_div_iff₀ hT]

@@ -2,7 +2,7 @@
 # Explicit finite grid cover for Bourgain phase space
 
 An explicit product grid covers a large sup-norm cube by translated cubes.
-The grid has exactly `(m + 1)^4` centers, so local moment estimates sum with
+The grid has exactly `(m + 1)^(4 : ℕ)` centers, so local moment estimates sum with
 that precise combinatorial loss.
 -/
 import GaloisForLFunctions.RHTower.BourgainFiniteCubeCover

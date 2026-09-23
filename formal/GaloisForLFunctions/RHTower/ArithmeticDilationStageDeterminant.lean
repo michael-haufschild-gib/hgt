@@ -52,7 +52,7 @@ theorem approxNumber_le_abs_sgVal {S : H →L[ℂ] H}
   have hFx : F x = S P := by
     rw [hF, sum_apply, hP, map_sum]
     exact Finset.sum_congr rfl fun m _ => by rw [smulRight_apply, innerSL_apply_apply, map_smul]
-  have hunit_sq : ∀ m, (inner ℂ (e m) x) * ((‖e m‖ : ℂ)) ^ 2 = inner ℂ (e m) x := by
+  have hunit_sq : ∀ m, (inner ℂ (e m) x) * ((‖e m‖ : ℂ)) ^ (2 : ℕ) = inner ℂ (e m) x := by
     intro m
     rcases norm_sgVec_zero_or_one S m with h0 | h1
     · rw [he, h0]
@@ -134,13 +134,13 @@ theorem abs_sgVal_le_singVal {S : H →L[ℂ] H}
         rw [← hc, map_sum]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [map_smul, apply_sgVec, smul_smul]
-      have hnormx : ‖x‖ ^ 2 = ∑ i : Fin (n + 1), ‖c i‖ ^ 2 := by
+      have hnormx : ‖x‖ ^ (2 : ℕ) = ∑ i : Fin (n + 1), ‖c i‖ ^ (2 : ℕ) := by
         rw [← inner_self_eq_norm_sq (𝕜 := ℂ), ← hc,
           horth.inner_sum c c Finset.univ, map_sum]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [RCLike.conj_mul, ← RCLike.ofReal_pow, RCLike.ofReal_re]
-      have hnormS : ‖S x‖ ^ 2 =
-          ∑ i : Fin (n + 1), ‖c i‖ ^ 2 * (sgVal S i) ^ 2 := by
+      have hnormS : ‖S x‖ ^ (2 : ℕ) =
+          ∑ i : Fin (n + 1), ‖c i‖ ^ (2 : ℕ) * (sgVal S i) ^ (2 : ℕ) := by
         rw [hSx, ← inner_self_eq_norm_sq (𝕜 := ℂ),
           horth.inner_sum (fun i => c i * (sgVal S i : ℂ))
             (fun i => c i * (sgVal S i : ℂ)) Finset.univ, map_sum]
@@ -148,19 +148,19 @@ theorem abs_sgVal_le_singVal {S : H →L[ℂ] H}
         norm_num [norm_mul, sq_abs, mul_pow]
         rw [Complex.sq_norm, Complex.normSq_apply]
         ring
-      have hlowerSq : |sgVal S n| ^ 2 * ‖x‖ ^ 2 ≤ ‖S x‖ ^ 2 := by
+      have hlowerSq : |sgVal S n| ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) ≤ ‖S x‖ ^ (2 : ℕ) := by
         rw [hnormx, hnormS, Finset.mul_sum]
         refine Finset.sum_le_sum fun i _ => ?_
         have hmono : orthSup S (sgVec S) n ≤ orthSup S (sgVec S) i :=
           orthSup_antitone S (sgVec S) (Nat.lt_succ_iff.mp i.2)
         rw [← abs_sgVal hcpt hsym n, ← abs_sgVal hcpt hsym i] at hmono
-        have hsq : |sgVal S n| ^ 2 ≤ |sgVal S i| ^ 2 :=
+        have hsq : |sgVal S n| ^ (2 : ℕ) ≤ |sgVal S i| ^ (2 : ℕ) :=
           pow_le_pow_left₀ (abs_nonneg _) hmono 2
         calc
-          |sgVal S n| ^ 2 * ‖c i‖ ^ 2
-              ≤ |sgVal S i| ^ 2 * ‖c i‖ ^ 2 :=
+          |sgVal S n| ^ (2 : ℕ) * ‖c i‖ ^ (2 : ℕ)
+              ≤ |sgVal S i| ^ (2 : ℕ) * ‖c i‖ ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
-          _ = ‖c i‖ ^ 2 * sgVal S i ^ 2 := by rw [sq_abs]; ring
+          _ = ‖c i‖ ^ (2 : ℕ) * sgVal S i ^ (2 : ℕ) := by rw [sq_abs]; ring
       have hnonneg : 0 ≤ |sgVal S n| * ‖x‖ := mul_nonneg (abs_nonneg _) (norm_nonneg _)
       nlinarith [norm_nonneg (S x)]
     have htrial : |sgVal S n| ≤ orthSup S (svVec (energyOp S)) n := by

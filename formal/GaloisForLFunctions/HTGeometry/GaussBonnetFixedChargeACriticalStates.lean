@@ -107,7 +107,7 @@ theorem egbFixedChargeACritical_strict_gap (w φ l u : ℝ) :
 
 def egbFixedChargeACriticalQuarticCoefficient (w φ : ℝ) : ℝ :=
   (1 - 2 * egbFixedChargeACriticalCouplingWeight φ) /
-    (12 * egbFixedChargeACriticalRadius w φ ^ 3 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ))
+    (12 * egbFixedChargeACriticalRadius w φ ^ (3 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ))
 
 theorem egbFixedChargeACritical_quartic_coefficient_transfer (w φ : ℝ) :
     egbCriticalARadialQuarticCoefficient (egbFixedChargeACriticalLogScale w φ) (egbFixedChargeACriticalAngle φ) = egbFixedChargeACriticalQuarticCoefficient w φ := by
@@ -123,7 +123,7 @@ theorem egbFixedChargeACritical_radial_quartic_limit (w φ l : ℝ) :
     Tendsto (fun r => (egbOffShellGibbsA (egbFixedChargeACriticalPressure w φ) (egbFixedChargeACriticalTemperature w φ)
       (exp w * cos φ) (exp w * sin φ) l r -
       egbOffShellGibbsA (egbFixedChargeACriticalPressure w φ) (egbFixedChargeACriticalTemperature w φ)
-      (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeACriticalRadius w φ)) / (r - egbFixedChargeACriticalRadius w φ) ^ 4)
+      (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeACriticalRadius w φ)) / (r - egbFixedChargeACriticalRadius w φ) ^ (4 : ℕ))
       (𝓝[≠] (egbFixedChargeACriticalRadius w φ)) (𝓝 (egbFixedChargeACriticalQuarticCoefficient w φ)) := by
   have h := egbCriticalA_radial_quartic_limit (egbFixedChargeACriticalLogScale w φ) (egbFixedChargeACriticalAngle φ) l
   rw [egbFixedChargeACritical_gibbs_function, egbFixedChargeACriticalLogScale_exp,

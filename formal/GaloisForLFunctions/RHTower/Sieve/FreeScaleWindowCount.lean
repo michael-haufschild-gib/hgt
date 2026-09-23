@@ -83,7 +83,7 @@ theorem free_sum_inv_goodMarkers_ge {β : ℝ} {X m K₀ K : ℕ} {Pi b : ℝ}
     (hpair : ∑ d ∈ Finset.Icc 1 K,
         ((((freeRange X m K₀).filter (fun p => p + d ∈ freeRange X m K₀)).card : ℕ) : ℝ) ≤ Pi)
     (hbthr : (((freeBadStartUnion β m K₀).card : ℕ) : ℝ)
-      * ((((freeRange X m K₀).card : ℕ) : ℝ) + 2 * Pi) ≤ b ^ 2) (hb0 : 0 ≤ b) :
+      * ((((freeRange X m K₀).card : ℕ) : ℝ) + 2 * Pi) ≤ b ^ (2 : ℕ)) (hb0 : 0 ≤ b) :
     (∑ p ∈ freeRange X m K₀, 1 / (p : ℝ)) - b / ((X / freeStart m 0 : ℕ) : ℝ)
       ≤ ∑ p ∈ freeGoodMarkers β X m K₀, 1 / (p : ℝ) := by
   classical
@@ -128,7 +128,7 @@ theorem free_card_sign_window_ge_device {β : ℝ} {X m K₀ H K : ℕ} {σ : �
     (hpair : ∑ d ∈ Finset.Icc 1 K,
         ((((freeRange X m K₀).filter (fun p => p + d ∈ freeRange X m K₀)).card : ℕ) : ℝ) ≤ Pi)
     (hbthr : (((freeBadStartUnion β m K₀).card : ℕ) : ℝ)
-      * ((((freeRange X m K₀).card : ℕ) : ℝ) + 2 * Pi) ≤ b ^ 2) (hb0 : 0 ≤ b)
+      * ((((freeRange X m K₀).card : ℕ) : ℝ) + 2 * Pi) ≤ b ^ (2 : ℕ)) (hb0 : 0 ≤ b)
     (hS : S ≤ (∑ p ∈ freeRange X m K₀, 1 / (p : ℝ)) - b / ((X / freeStart m 0 : ℕ) : ℝ))
     (hB : (((freeRange X m K₀).card : ℕ) : ℝ) ≤ B) :
     rho * ((H : ℝ) * S - B)
@@ -144,9 +144,9 @@ exceptional starts, the marker count and the pair budget, and a `b` beating thei
 theorem free_device_threshold {β : ℝ} {X m K₀ : ℕ} {E N P Pi b : ℝ}
     (hE : (((freeBadStartUnion β m K₀).card : ℕ) : ℝ) ≤ E)
     (hN : (((freeRange X m K₀).card : ℕ) : ℝ) ≤ N) (hP : Pi ≤ P) (hE0 : 0 ≤ E)
-    (hPi0 : 0 ≤ Pi) (hthr : E * (N + 2 * P) ≤ b ^ 2) :
+    (hPi0 : 0 ≤ Pi) (hthr : E * (N + 2 * P) ≤ b ^ (2 : ℕ)) :
     (((freeBadStartUnion β m K₀).card : ℕ) : ℝ)
-      * ((((freeRange X m K₀).card : ℕ) : ℝ) + 2 * Pi) ≤ b ^ 2 := by
+      * ((((freeRange X m K₀).card : ℕ) : ℝ) + 2 * Pi) ≤ b ^ (2 : ℕ) := by
   have hnn : (0 : ℝ) ≤ (((freeRange X m K₀).card : ℕ) : ℝ) + 2 * Pi := by
     have : (0 : ℝ) ≤ (((freeRange X m K₀).card : ℕ) : ℝ) := Nat.cast_nonneg _
     linarith
@@ -170,7 +170,7 @@ theorem free_card_sign_window_ge_bounds {β : ℝ} {X m K₀ H K : ℕ} {σ : �
         ((((freeRange X m K₀).filter (fun p => p + d ∈ freeRange X m K₀)).card : ℕ) : ℝ) ≤ Pi)
     (hE : (((freeBadStartUnion β m K₀).card : ℕ) : ℝ) ≤ E)
     (hN : (((freeRange X m K₀).card : ℕ) : ℝ) ≤ N) (hP : Pi ≤ P) (hE0 : 0 ≤ E)
-    (hthr : E * (N + 2 * P) ≤ b ^ 2) (hb0 : 0 ≤ b)
+    (hthr : E * (N + 2 * P) ≤ b ^ (2 : ℕ)) (hb0 : 0 ≤ b)
     (hS : S ≤ (∑ p ∈ freeRange X m K₀, 1 / (p : ℝ)) - b / ((X / freeStart m 0 : ℕ) : ℝ))
     (hB : (((freeRange X m K₀).card : ℕ) : ℝ) ≤ B) :
     rho * ((H : ℝ) * S - B)

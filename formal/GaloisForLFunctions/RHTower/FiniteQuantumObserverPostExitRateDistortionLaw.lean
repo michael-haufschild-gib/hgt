@@ -93,7 +93,7 @@ theorem exists_finiteQuantumObserver_postExit_graph_rateDistortion
     (hexitTimeNonneg : 0 ≤ exitTime)
     (hexitBeforeTick : exitTime < tick)
     (hexitCertificate :
-      exitRadius ^ 2 ≤
+      exitRadius ^ (2 : ℕ) ≤
         finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase exitTime energy) block) :
     ∃ n : ℕ, 0 < n ∧
@@ -105,14 +105,14 @@ theorem exists_finiteQuantumObserver_postExit_graph_rateDistortion
         tick *
           (((Q + 1) ^
             (d - Nat.card G.ConnectedComponent) : ℕ) : ℝ) ∧
-      exitRadius ^ 2 ≤
+      exitRadius ^ (2 : ℕ) ≤
         finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase exitTime energy) block ∧
       finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase
             ((n : ℝ) * tick) energy) block ≤
         4 * finiteObserverOmittedDirectedWeightMass G lam block +
-          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
             finiteObserverSelectedDirectedWeightMass G lam block := by
   obtain ⟨n, hn0, hnQ, hdist⟩ :=
     exists_finiteQuantumObserver_graph_rateDistortion
@@ -149,7 +149,7 @@ theorem exists_finiteQuantumObserver_postExit_fullCoherence_rateDistortion
     (hexitTimeNonneg : 0 ≤ exitTime)
     (hexitBeforeTick : exitTime < tick)
     (hexitCertificate :
-      exitRadius ^ 2 ≤
+      exitRadius ^ (2 : ℕ) ≤
         finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase exitTime energy) block) :
     ∃ n : ℕ, 0 < n ∧
@@ -164,13 +164,13 @@ theorem exists_finiteQuantumObserver_postExit_fullCoherence_rateDistortion
             (d - Nat.card
               (finiteObserverCoherenceGraph
                 lam block).ConnectedComponent) : ℕ) : ℝ) ∧
-      exitRadius ^ 2 ≤
+      exitRadius ^ (2 : ℕ) ≤
         finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase exitTime energy) block ∧
       finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase
             ((n : ℝ) * tick) energy) block ≤
-        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
           finiteObserverSelectedDirectedWeightMass
             (finiteObserverCoherenceGraph lam block) lam block := by
   obtain ⟨n, hn0, hnQ, hexit0, hnAfter, hnDeadline,
@@ -195,7 +195,7 @@ theorem exists_finiteQuantumObserver_postExit_thresholdGraph_rateDistortion
     (hexitTimeNonneg : 0 ≤ exitTime)
     (hexitBeforeTick : exitTime < tick)
     (hexitCertificate :
-      exitRadius ^ 2 ≤
+      exitRadius ^ (2 : ℕ) ≤
         finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase exitTime energy) block) :
     ∃ n : ℕ, 0 < n ∧
@@ -211,7 +211,7 @@ theorem exists_finiteQuantumObserver_postExit_thresholdGraph_rateDistortion
             (d - Nat.card
               (finiteObserverThresholdCoherenceGraph
                 τ lam block).ConnectedComponent) : ℕ) : ℝ) ∧
-      exitRadius ^ 2 ≤
+      exitRadius ^ (2 : ℕ) ≤
         finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase exitTime energy) block ∧
       finiteQuantumObserverDistanceSq lam
@@ -220,7 +220,7 @@ theorem exists_finiteQuantumObserver_postExit_thresholdGraph_rateDistortion
         4 * finiteObserverOmittedDirectedWeightMass
             (finiteObserverThresholdCoherenceGraph τ lam block)
             lam block +
-          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
             finiteObserverSelectedDirectedWeightMass
               (finiteObserverThresholdCoherenceGraph τ lam block)
               lam block :=

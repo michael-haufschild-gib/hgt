@@ -112,7 +112,7 @@ lemma one_sub_star_ccmPrimePolePoint_mul {Lp Lq : ℝ} (hp : 0 < Lp) (hq : 0 < L
       (((4 * Real.pi * (n : ℝ) : ℝ) : ℂ) + 3 * Complex.I * Lp)))
   push_cast
   ring_nf
-  rw [show Complex.I ^ 2 = (-1 : ℂ) by norm_num]
+  rw [show Complex.I ^ (2 : ℕ) = (-1 : ℂ) by norm_num]
   ring
 
 lemma star_ccmPrimePoleCoefficient_mul {Lp Lq : ℝ} (n r : ℤ) :
@@ -134,7 +134,7 @@ lemma star_ccmPrimePoleCoefficient_mul {Lp Lq : ℝ} (n r : ℤ) :
   norm_cast
   calc
     2 * Real.sqrt 2 * Real.sqrt Lq * (2 * Real.sqrt 2 * Real.sqrt Lp) =
-        4 * (Real.sqrt 2) ^ 2 * (Real.sqrt Lq * Real.sqrt Lp) := by ring
+        4 * (Real.sqrt 2) ^ (2 : ℕ) * (Real.sqrt Lq * Real.sqrt Lp) := by ring
     _ = 8 * (Real.sqrt Lq * Real.sqrt Lp) := by
       rw [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
       ring

@@ -71,13 +71,13 @@ theorem completeTargetCapture_subset_projectedReplicaBuresCapture
   rw [finiteComplexInner_finiteReplicaReindexedPower, norm_pow]
   calc
     (Real.sqrt a - eta) ^ (2 * r) =
-        ((Real.sqrt a - eta) ^ 2) ^ r := by rw [pow_mul]
+        ((Real.sqrt a - eta) ^ (2 : ℕ)) ^ r := by rw [pow_mul]
     _ ≤ (‖finiteComplexInner
           (fun i => S.starProjection (WithLp.toLp 2 (state x)) i)
-          (projectedReplicaTarget S target c)‖ ^ 2) ^ r := hpow
+          (projectedReplicaTarget S target c)‖ ^ (2 : ℕ)) ^ r := hpow
     _ = (‖finiteComplexInner
           (fun i => S.starProjection (WithLp.toLp 2 (state x)) i)
-          (projectedReplicaTarget S target c)‖ ^ r) ^ 2 := by
+          (projectedReplicaTarget S target c)‖ ^ r) ^ (2 : ℕ) := by
       rw [← pow_mul, ← pow_mul, Nat.mul_comm]
 
 /-- **Fixed-carrier projected Bures incidence (`K-BIM`).**  Source sheets
@@ -111,7 +111,7 @@ theorem projectedBures_capture_le_return_add_capacity
               (fun i => S.starProjection (WithLp.toLp 2 (state x)) i)))
           (finiteBuresOccupiedTargetBody
             (Set.range fun c => finiteReplicaReindexedPower r
-              (projectedReplicaTarget S target c))) ^ 2 /
+              (projectedReplicaTarget S target c))) ^ (2 : ℕ) /
           (Real.sqrt a - eta) ^ (2 * r) := by
   let delta : ℝ := Real.sqrt a - eta
   let targetR : C → Fin (d ^ r) → ℂ := fun c =>
@@ -172,7 +172,7 @@ theorem boundedHamiltonian_capture_le_return_add_projectedBuresCapacity
           (finiteBuresOccupiedTargetBody
             (Set.range fun c => finiteReplicaReindexedPower r
               (projectedReplicaTarget
-                (boundedHamiltonianKrylovSubspace H psi K) target c))) ^ 2 /
+                (boundedHamiltonianKrylovSubspace H psi K) target c))) ^ (2 : ℕ) /
           (Real.sqrt a - krylovFactorialBoundary B T K) ^ (2 * r) := by
   let state : X → Fin d → ℂ := fun x i =>
     boundedHamiltonianOrbit H psi (time x) i

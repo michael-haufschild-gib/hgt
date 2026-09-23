@@ -31,7 +31,7 @@ theorem norm_integral_xiMassPolyCenteredArchIntegrand_le_baseNorm (P : Polynomia
 /-- Explicit height-independent bound for the whole filtered archimedean channel. -/
 def xiMassPolyBottomArchUniformBound (P : Polynomial ℝ) (a σ : ℝ) : ℝ :=
   (∫ x : ℝ, ‖xiMassPolyCenteredArchIntegrand P a (σ : ℂ) x‖) +
-    2 * Real.pi * (‖evalRealPolynomial P (xiMassArchPole ^ 2) ^ 2‖ *
+    2 * Real.pi * (‖evalRealPolynomial P (xiMassArchPole ^ (2 : ℕ)) ^ (2 : ℕ)‖ *
       Real.exp (-σ * xiMassArchPoleFrequency a))
 
 theorem xiMassPolyBottomArchUniformBound_nonneg (P : Polynomial ℝ) {a σ : ℝ} :
@@ -54,7 +54,7 @@ theorem norm_integral_xiMassPolyBottomArchIntegrand_le_uniform (P : Polynomial �
   rw [integral_xiMassPolyBottomArch_eq_centered_add_residue P hhalf hca hτ]
   have hres : ‖2 * (Real.pi : ℂ) *
       xiMassPolyAnalyticTest P a ((σ : ℂ) + u * I) xiMassArchPole‖
-      = 2 * Real.pi * (‖evalRealPolynomial P (xiMassArchPole ^ 2) ^ 2‖ *
+      = 2 * Real.pi * (‖evalRealPolynomial P (xiMassArchPole ^ (2 : ℕ)) ^ (2 : ℕ)‖ *
         Real.exp (-σ * xiMassArchPoleFrequency a)) := by
     rw [xiMassPolyAnalyticTest, norm_mul, norm_mul, norm_mul,
       norm_xiMassAnalyticTest_archPole_eq hahalf, Complex.norm_real, Real.norm_eq_abs,
@@ -69,7 +69,7 @@ theorem norm_integral_xiMassPolyBottomArchIntegrand_le_uniform (P : Polynomial �
 
 /-- Von-Mangoldt part of the filtered mass bottom edge. -/
 def xiMassPolyBottomPrimeIntegrand (P : Polynomial ℝ) (a c : ℝ) (τ : ℂ) (x : ℝ) : ℂ :=
-  evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2 * xiMassBottomPrimeIntegrand a c τ x
+  evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ) * xiMassBottomPrimeIntegrand a c τ x
 
 theorem xiMassPolyBottomSourceIntegrand_split (P : Polynomial ℝ) (a c : ℝ) (τ : ℂ) (x : ℝ) :
     xiMassPolyBottomSourceIntegrand P a c τ x =

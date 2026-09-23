@@ -42,7 +42,7 @@ theorem compensationDiffBoundE_mono {t a' b' c' s' m' n' da' db' dc' ds' dm' dn'
       compensationDiffBoundE t a'' b'' c'' s'' m'' n'' da'' db'' dc'' ds'' dm'' dn'' dq'' eq' := by
   unfold compensationDiffBoundE slopeDiffBound centerZeroBound centerDiffBound boseZeroBoundE
     boseDiffBoundE
-  have ht2 : 0 ≤ t ^ 2 := by positivity
+  have ht2 : 0 ≤ t ^ (2 : ℕ) := by positivity
   have ha2 : 0 ≤ a'' := le_trans ha ha'
   have hb2 : 0 ≤ b'' := le_trans hb hb'
   have hc2 : 0 ≤ c'' := le_trans hc hc'
@@ -116,15 +116,15 @@ theorem exp_mul_bounds {x y lx ux ly uy : ℝ} (hx : lx ≤ Real.exp x ∧ Real.
 `z = cosh 2t − 1`, `zp = 2 sinh 2t`, `t`, the scale `ε` and `eq ≥ e^{-q}`. -/
 noncomputable def keyLHS (ε w winv z zp t eq : ℝ) : ℝ :=
   C5LikelihoodAffineData.compensationDiffBoundE t ((12 * w + 2 * winv) * zp)
-    (4 * (2 * winv) ^ 2 * z * (z + 2) + 4 * (12 * w + 2 * winv) * (z + 1))
-    (zp * (8 * (2 * winv) ^ 3 * z * (z + 2) + 12 * (2 * winv) ^ 2 * (z + 1) + 4 * (12 * w + 2 * winv)))
+    (4 * (2 * winv) ^ (2 : ℕ) * z * (z + 2) + 4 * (12 * w + 2 * winv) * (z + 1))
+    (zp * (8 * (2 * winv) ^ (3 : ℕ) * z * (z + 2) + 12 * (2 * winv) ^ (2 : ℕ) * (z + 1) + 4 * (12 * w + 2 * winv)))
     (24 * w * z + 6 * z * winv) ((24 * w + 12 * winv) * zp)
-    (4 * (48 * winv ^ 2 * z * (z + 2) + (24 * w + 12 * winv) * (z + 1)))
+    (4 * (48 * winv ^ (2 : ℕ) * z * (z + 2) + (24 * w + 12 * winv) * (z + 1)))
     (72 * ε) (2736 * ε) (112752 * ε) (144 * ε) (2736 * ε) (112752 * ε) (4 * ε) eq
 
 /-- Right side of the key at scale `ρ = 1`. -/
 noncomputable def keyRHS (w t : ℝ) : ℝ :=
-  (288 * w ^ 2 - 72) * (6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11)
+  (288 * w ^ (2 : ℕ) - 72) * (6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ))
 
 /-- Monotonicity of `keyLHS` in all arguments. -/
 theorem keyLHS_mono {ε w winv z zp t eq εb wb winvb zb zpb tb eqb : ℝ}
@@ -141,17 +141,17 @@ theorem keyLHS_mono {ε w winv z zp t eq εb wb winvb zb zpb tb eqb : ℝ}
   -- the bound is monotone in `t` as well, through `compensationDiffBoundE`'s explicit `t`
   -- dependence; we separate the two monotonicities.
   have step1 := C5LikelihoodAffineData.compensationDiffBoundE_mono (t := t)
-    (a' := (12 * w + 2 * winv) * zp) (b' := 4 * (2 * winv) ^ 2 * z * (z + 2) + 4 * (12 * w + 2 * winv) * (z + 1))
-    (c' := zp * (8 * (2 * winv) ^ 3 * z * (z + 2) + 12 * (2 * winv) ^ 2 * (z + 1) + 4 * (12 * w + 2 * winv)))
+    (a' := (12 * w + 2 * winv) * zp) (b' := 4 * (2 * winv) ^ (2 : ℕ) * z * (z + 2) + 4 * (12 * w + 2 * winv) * (z + 1))
+    (c' := zp * (8 * (2 * winv) ^ (3 : ℕ) * z * (z + 2) + 12 * (2 * winv) ^ (2 : ℕ) * (z + 1) + 4 * (12 * w + 2 * winv)))
     (s' := 24 * w * z + 6 * z * winv) (m' := (24 * w + 12 * winv) * zp)
-    (n' := 4 * (48 * winv ^ 2 * z * (z + 2) + (24 * w + 12 * winv) * (z + 1)))
+    (n' := 4 * (48 * winv ^ (2 : ℕ) * z * (z + 2) + (24 * w + 12 * winv) * (z + 1)))
     (da' := 72 * ε) (db' := 2736 * ε) (dc' := 112752 * ε) (ds' := 144 * ε) (dm' := 2736 * ε)
     (dn' := 112752 * ε) (dq' := 4 * ε) (eq := eq)
     (a'' := (12 * wb + 2 * winvb) * zpb)
-    (b'' := 4 * (2 * winvb) ^ 2 * zb * (zb + 2) + 4 * (12 * wb + 2 * winvb) * (zb + 1))
-    (c'' := zpb * (8 * (2 * winvb) ^ 3 * zb * (zb + 2) + 12 * (2 * winvb) ^ 2 * (zb + 1) + 4 * (12 * wb + 2 * winvb)))
+    (b'' := 4 * (2 * winvb) ^ (2 : ℕ) * zb * (zb + 2) + 4 * (12 * wb + 2 * winvb) * (zb + 1))
+    (c'' := zpb * (8 * (2 * winvb) ^ (3 : ℕ) * zb * (zb + 2) + 12 * (2 * winvb) ^ (2 : ℕ) * (zb + 1) + 4 * (12 * wb + 2 * winvb)))
     (s'' := 24 * wb * zb + 6 * zb * winvb) (m'' := (24 * wb + 12 * winvb) * zpb)
-    (n'' := 4 * (48 * winvb ^ 2 * zb * (zb + 2) + (24 * wb + 12 * winvb) * (zb + 1)))
+    (n'' := 4 * (48 * winvb ^ (2 : ℕ) * zb * (zb + 2) + (24 * wb + 12 * winvb) * (zb + 1)))
     (da'' := 72 * εb) (db'' := 2736 * εb) (dc'' := 112752 * εb) (ds'' := 144 * εb) (dm'' := 2736 * εb)
     (dn'' := 112752 * εb) (dq'' := 4 * εb) (eq' := eqb)
     ht0 (by positivity) (by positivity) (by positivity) (by positivity) (by positivity) (by positivity)
@@ -161,16 +161,16 @@ theorem keyLHS_mono {ε w winv z zp t eq εb wb winvb zb zpb tb eqb : ℝ}
     (by gcongr) (by gcongr) (by gcongr) (by gcongr) (by gcongr) (by gcongr) (by gcongr) heq
   -- monotonicity in `t`
   have step2 : C5LikelihoodAffineData.compensationDiffBoundE t ((12 * wb + 2 * winvb) * zpb)
-      (4 * (2 * winvb) ^ 2 * zb * (zb + 2) + 4 * (12 * wb + 2 * winvb) * (zb + 1))
-      (zpb * (8 * (2 * winvb) ^ 3 * zb * (zb + 2) + 12 * (2 * winvb) ^ 2 * (zb + 1) + 4 * (12 * wb + 2 * winvb)))
+      (4 * (2 * winvb) ^ (2 : ℕ) * zb * (zb + 2) + 4 * (12 * wb + 2 * winvb) * (zb + 1))
+      (zpb * (8 * (2 * winvb) ^ (3 : ℕ) * zb * (zb + 2) + 12 * (2 * winvb) ^ (2 : ℕ) * (zb + 1) + 4 * (12 * wb + 2 * winvb)))
       (24 * wb * zb + 6 * zb * winvb) ((24 * wb + 12 * winvb) * zpb)
-      (4 * (48 * winvb ^ 2 * zb * (zb + 2) + (24 * wb + 12 * winvb) * (zb + 1)))
+      (4 * (48 * winvb ^ (2 : ℕ) * zb * (zb + 2) + (24 * wb + 12 * winvb) * (zb + 1)))
       (72 * εb) (2736 * εb) (112752 * εb) (144 * εb) (2736 * εb) (112752 * εb) (4 * εb) eqb ≤
       C5LikelihoodAffineData.compensationDiffBoundE tb ((12 * wb + 2 * winvb) * zpb)
-      (4 * (2 * winvb) ^ 2 * zb * (zb + 2) + 4 * (12 * wb + 2 * winvb) * (zb + 1))
-      (zpb * (8 * (2 * winvb) ^ 3 * zb * (zb + 2) + 12 * (2 * winvb) ^ 2 * (zb + 1) + 4 * (12 * wb + 2 * winvb)))
+      (4 * (2 * winvb) ^ (2 : ℕ) * zb * (zb + 2) + 4 * (12 * wb + 2 * winvb) * (zb + 1))
+      (zpb * (8 * (2 * winvb) ^ (3 : ℕ) * zb * (zb + 2) + 12 * (2 * winvb) ^ (2 : ℕ) * (zb + 1) + 4 * (12 * wb + 2 * winvb)))
       (24 * wb * zb + 6 * zb * winvb) ((24 * wb + 12 * winvb) * zpb)
-      (4 * (48 * winvb ^ 2 * zb * (zb + 2) + (24 * wb + 12 * winvb) * (zb + 1)))
+      (4 * (48 * winvb ^ (2 : ℕ) * zb * (zb + 2) + (24 * wb + 12 * winvb) * (zb + 1)))
       (72 * εb) (2736 * εb) (112752 * εb) (144 * εb) (2736 * εb) (112752 * εb) (4 * εb) eqb := by
     unfold C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
       C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
@@ -185,11 +185,11 @@ theorem keyRHS_mono {w t wa ta : ℝ} (hwa1 : 1 ≤ wa) (hw : wa ≤ w) (hta0 : 
     keyRHS wa ta ≤ keyRHS w t := by
   unfold keyRHS
   have hw0 : 0 ≤ wa := by linarith
-  have hpoly : 6656 / 9 * ta ^ 7 + 615872 / 945 * ta ^ 9 + 50560 / 189 * ta ^ 11 ≤
-      6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11 := by gcongr
-  have hsq : wa ^ 2 ≤ w ^ 2 := pow_le_pow_left₀ hw0 hw 2
-  have hfac : 288 * wa ^ 2 - 72 ≤ 288 * w ^ 2 - 72 := by linarith
-  have h1 : 0 ≤ 288 * wa ^ 2 - 72 := by nlinarith
+  have hpoly : 6656 / 9 * ta ^ (7 : ℕ) + 615872 / 945 * ta ^ (9 : ℕ) + 50560 / 189 * ta ^ (11 : ℕ) ≤
+      6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ) := by gcongr
+  have hsq : wa ^ (2 : ℕ) ≤ w ^ (2 : ℕ) := pow_le_pow_left₀ hw0 hw 2
+  have hfac : 288 * wa ^ (2 : ℕ) - 72 ≤ 288 * w ^ (2 : ℕ) - 72 := by linarith
+  have h1 : 0 ≤ 288 * wa ^ (2 : ℕ) - 72 := by nlinarith
   exact mul_le_mul hfac hpoly (by positivity) (by linarith)
 
 /-- Chamber transfer: if the corner values satisfy the strict inequality, so do all interior
@@ -224,28 +224,28 @@ namespace C5LikelihoodAffineData
 theorem slopeDiffBound_scale {ρ t a' b' c' s' m' n' da' db' dc' ds' dm' dn' : ℝ} (hρ : 1 ≤ ρ)
     (ht : 0 ≤ t) (ha : 0 ≤ a') (hb : 0 ≤ b') (hc : 0 ≤ c') (hs : 0 ≤ s') (hm : 0 ≤ m') (hn : 0 ≤ n')
     (hda : 0 ≤ da') (hdb : 0 ≤ db') (hdc : 0 ≤ dc') (hds : 0 ≤ ds') (hdm : 0 ≤ dm') (hdn : 0 ≤ dn') :
-    slopeDiffBound t (ρ ^ 3 * a') (ρ ^ 3 * b') (ρ ^ 3 * c') (ρ ^ 3 * s') (ρ ^ 3 * m') (ρ ^ 3 * n')
-      (da' / ρ ^ 9) (db' / ρ ^ 9) (dc' / ρ ^ 9) (ds' / ρ ^ 9) (dm' / ρ ^ 9) (dn' / ρ ^ 9) ≤
+    slopeDiffBound t (ρ ^ (3 : ℕ) * a') (ρ ^ (3 : ℕ) * b') (ρ ^ (3 : ℕ) * c') (ρ ^ (3 : ℕ) * s') (ρ ^ (3 : ℕ) * m') (ρ ^ (3 : ℕ) * n')
+      (da' / ρ ^ (9 : ℕ)) (db' / ρ ^ (9 : ℕ)) (dc' / ρ ^ (9 : ℕ)) (ds' / ρ ^ (9 : ℕ)) (dm' / ρ ^ (9 : ℕ)) (dn' / ρ ^ (9 : ℕ)) ≤
     slopeDiffBound t a' b' c' s' m' n' da' db' dc' ds' dm' dn' := by
   have hρ0 : 0 < ρ := by linarith
-  have hρ6 : (1 : ℝ) ≤ ρ ^ 6 := one_le_pow₀ hρ
-  have hρ18 : (1 : ℝ) ≤ ρ ^ 18 := one_le_pow₀ hρ
+  have hρ6 : (1 : ℝ) ≤ ρ ^ (6 : ℕ) := one_le_pow₀ hρ
+  have hρ18 : (1 : ℝ) ≤ ρ ^ (18 : ℕ) := one_le_pow₀ hρ
   unfold slopeDiffBound
-  have e : da' / ρ ^ 9 * (t * (ρ ^ 3 * m') + t ^ 2 * (ρ ^ 3 * n')) +
-      ρ ^ 3 * a' * (t * (dm' / ρ ^ 9) + t ^ 2 * (dn' / ρ ^ 9)) +
-      (da' / ρ ^ 9 + 3 * t * (db' / ρ ^ 9) + t ^ 2 * (dc' / ρ ^ 9)) * (ρ ^ 3 * s') +
-      (ρ ^ 3 * a' + 3 * t * (ρ ^ 3 * b') + t ^ 2 * (ρ ^ 3 * c')) * (ds' / ρ ^ 9) +
-      (da' / ρ ^ 9 * (t * (dm' / ρ ^ 9) + t ^ 2 * (dn' / ρ ^ 9)) +
-        (da' / ρ ^ 9 + 3 * t * (db' / ρ ^ 9) + t ^ 2 * (dc' / ρ ^ 9)) * (ds' / ρ ^ 9)) =
-      (da' * (t * m' + t ^ 2 * n') + a' * (t * dm' + t ^ 2 * dn') +
-        (da' + 3 * t * db' + t ^ 2 * dc') * s' + (a' + 3 * t * b' + t ^ 2 * c') * ds') / ρ ^ 6 +
-      (da' * (t * dm' + t ^ 2 * dn') + (da' + 3 * t * db' + t ^ 2 * dc') * ds') / ρ ^ 18 := by
+  have e : da' / ρ ^ (9 : ℕ) * (t * (ρ ^ (3 : ℕ) * m') + t ^ (2 : ℕ) * (ρ ^ (3 : ℕ) * n')) +
+      ρ ^ (3 : ℕ) * a' * (t * (dm' / ρ ^ (9 : ℕ)) + t ^ (2 : ℕ) * (dn' / ρ ^ (9 : ℕ))) +
+      (da' / ρ ^ (9 : ℕ) + 3 * t * (db' / ρ ^ (9 : ℕ)) + t ^ (2 : ℕ) * (dc' / ρ ^ (9 : ℕ))) * (ρ ^ (3 : ℕ) * s') +
+      (ρ ^ (3 : ℕ) * a' + 3 * t * (ρ ^ (3 : ℕ) * b') + t ^ (2 : ℕ) * (ρ ^ (3 : ℕ) * c')) * (ds' / ρ ^ (9 : ℕ)) +
+      (da' / ρ ^ (9 : ℕ) * (t * (dm' / ρ ^ (9 : ℕ)) + t ^ (2 : ℕ) * (dn' / ρ ^ (9 : ℕ))) +
+        (da' / ρ ^ (9 : ℕ) + 3 * t * (db' / ρ ^ (9 : ℕ)) + t ^ (2 : ℕ) * (dc' / ρ ^ (9 : ℕ))) * (ds' / ρ ^ (9 : ℕ))) =
+      (da' * (t * m' + t ^ (2 : ℕ) * n') + a' * (t * dm' + t ^ (2 : ℕ) * dn') +
+        (da' + 3 * t * db' + t ^ (2 : ℕ) * dc') * s' + (a' + 3 * t * b' + t ^ (2 : ℕ) * c') * ds') / ρ ^ (6 : ℕ) +
+      (da' * (t * dm' + t ^ (2 : ℕ) * dn') + (da' + 3 * t * db' + t ^ (2 : ℕ) * dc') * ds') / ρ ^ (18 : ℕ) := by
     field_simp
     try ring
   rw [e]
-  have h1 : 0 ≤ da' * (t * m' + t ^ 2 * n') + a' * (t * dm' + t ^ 2 * dn') +
-      (da' + 3 * t * db' + t ^ 2 * dc') * s' + (a' + 3 * t * b' + t ^ 2 * c') * ds' := by positivity
-  have h2 : 0 ≤ da' * (t * dm' + t ^ 2 * dn') + (da' + 3 * t * db' + t ^ 2 * dc') * ds' := by positivity
+  have h1 : 0 ≤ da' * (t * m' + t ^ (2 : ℕ) * n') + a' * (t * dm' + t ^ (2 : ℕ) * dn') +
+      (da' + 3 * t * db' + t ^ (2 : ℕ) * dc') * s' + (a' + 3 * t * b' + t ^ (2 : ℕ) * c') * ds' := by positivity
+  have h2 : 0 ≤ da' * (t * dm' + t ^ (2 : ℕ) * dn') + (da' + 3 * t * db' + t ^ (2 : ℕ) * dc') * ds' := by positivity
   have := div_le_self h1 hρ6
   have := div_le_self h2 hρ18
   linarith
@@ -253,53 +253,53 @@ theorem slopeDiffBound_scale {ρ t a' b' c' s' m' n' da' db' dc' ds' dm' dn' : �
 theorem centerDiffBound_scale {ρ t a' b' s' m' da' db' ds' dm' : ℝ} (hρ : 1 ≤ ρ)
     (ht : 0 ≤ t) (ha : 0 ≤ a') (hb : 0 ≤ b') (hs : 0 ≤ s') (hm : 0 ≤ m')
     (hda : 0 ≤ da') (hdb : 0 ≤ db') (hds : 0 ≤ ds') (hdm : 0 ≤ dm') :
-    centerDiffBound t (ρ ^ 3 * a') (ρ ^ 3 * b') (ρ ^ 3 * s') (ρ ^ 3 * m')
-      (da' / ρ ^ 9) (db' / ρ ^ 9) (ds' / ρ ^ 9) (dm' / ρ ^ 9) ≤
-    centerDiffBound t a' b' s' m' da' db' ds' dm' / ρ ^ 6 := by
+    centerDiffBound t (ρ ^ (3 : ℕ) * a') (ρ ^ (3 : ℕ) * b') (ρ ^ (3 : ℕ) * s') (ρ ^ (3 : ℕ) * m')
+      (da' / ρ ^ (9 : ℕ)) (db' / ρ ^ (9 : ℕ)) (ds' / ρ ^ (9 : ℕ)) (dm' / ρ ^ (9 : ℕ)) ≤
+    centerDiffBound t a' b' s' m' da' db' ds' dm' / ρ ^ (6 : ℕ) := by
   have hρ0 : 0 < ρ := by linarith
-  have hρ6 : 0 < ρ ^ 6 := by positivity
-  have hρ12 : (1 : ℝ) ≤ ρ ^ 12 := one_le_pow₀ hρ
+  have hρ6 : 0 < ρ ^ (6 : ℕ) := by positivity
+  have hρ12 : (1 : ℝ) ≤ ρ ^ (12 : ℕ) := one_le_pow₀ hρ
   unfold centerDiffBound
-  have e : da' / ρ ^ 9 * (t * (ρ ^ 3 * m')) + ρ ^ 3 * a' * (t * (dm' / ρ ^ 9)) +
-      (da' / ρ ^ 9 + t * (db' / ρ ^ 9)) * (ρ ^ 3 * s') + (ρ ^ 3 * a' + t * (ρ ^ 3 * b')) * (ds' / ρ ^ 9) +
-      (da' / ρ ^ 9 * (t * (dm' / ρ ^ 9)) + (da' / ρ ^ 9 + t * (db' / ρ ^ 9)) * (ds' / ρ ^ 9)) =
-      (da' * (t * m') + a' * (t * dm') + (da' + t * db') * s' + (a' + t * b') * ds') / ρ ^ 6 +
-      (da' * (t * dm') + (da' + t * db') * ds') / ρ ^ 6 / ρ ^ 12 := by
+  have e : da' / ρ ^ (9 : ℕ) * (t * (ρ ^ (3 : ℕ) * m')) + ρ ^ (3 : ℕ) * a' * (t * (dm' / ρ ^ (9 : ℕ))) +
+      (da' / ρ ^ (9 : ℕ) + t * (db' / ρ ^ (9 : ℕ))) * (ρ ^ (3 : ℕ) * s') + (ρ ^ (3 : ℕ) * a' + t * (ρ ^ (3 : ℕ) * b')) * (ds' / ρ ^ (9 : ℕ)) +
+      (da' / ρ ^ (9 : ℕ) * (t * (dm' / ρ ^ (9 : ℕ))) + (da' / ρ ^ (9 : ℕ) + t * (db' / ρ ^ (9 : ℕ))) * (ds' / ρ ^ (9 : ℕ))) =
+      (da' * (t * m') + a' * (t * dm') + (da' + t * db') * s' + (a' + t * b') * ds') / ρ ^ (6 : ℕ) +
+      (da' * (t * dm') + (da' + t * db') * ds') / ρ ^ (6 : ℕ) / ρ ^ (12 : ℕ) := by
     field_simp
     try ring
   rw [e]
-  have h2' : 0 ≤ (da' * (t * dm') + (da' + t * db') * ds') / ρ ^ 6 := by positivity
+  have h2' : 0 ≤ (da' * (t * dm') + (da' + t * db') * ds') / ρ ^ (6 : ℕ) := by positivity
   have hd := div_le_self h2' hρ12
   have hsum := add_div (da' * (t * m') + a' * (t * dm') + (da' + t * db') * s' + (a' + t * b') * ds')
-    (da' * (t * dm') + (da' + t * db') * ds') (ρ ^ 6)
+    (da' * (t * dm') + (da' + t * db') * ds') (ρ ^ (6 : ℕ))
   linarith
 
 theorem centerZeroBound_scale (ρ t a' b' s' m' : ℝ) :
-    centerZeroBound t (ρ ^ 3 * a') (ρ ^ 3 * b') (ρ ^ 3 * s') (ρ ^ 3 * m') =
-      ρ ^ 6 * centerZeroBound t a' b' s' m' := by
+    centerZeroBound t (ρ ^ (3 : ℕ) * a') (ρ ^ (3 : ℕ) * b') (ρ ^ (3 : ℕ) * s') (ρ ^ (3 : ℕ) * m') =
+      ρ ^ (6 : ℕ) * centerZeroBound t a' b' s' m' := by
   unfold centerZeroBound
   ring
 
 theorem boseZeroBoundE_scale {ρ t a' eq : ℝ} (hρ : 1 ≤ ρ) (ht : 0 ≤ t) (ha : 0 ≤ a') (heq : 0 ≤ eq) :
-    boseZeroBoundE t (ρ ^ 3 * a') eq ≤ ρ ^ 3 * boseZeroBoundE t a' eq := by
+    boseZeroBoundE t (ρ ^ (3 : ℕ) * a') eq ≤ ρ ^ (3 : ℕ) * boseZeroBoundE t a' eq := by
   unfold boseZeroBoundE
-  have hρ3 : (1 : ℝ) ≤ ρ ^ 3 := one_le_pow₀ hρ
+  have hρ3 : (1 : ℝ) ≤ ρ ^ (3 : ℕ) := one_le_pow₀ hρ
   nlinarith [mul_nonneg ht ha, mul_nonneg (mul_nonneg ht ha) heq]
 
 theorem boseDiffBoundE_scale {ρ t a' da' dq' eq : ℝ} (hρ : 1 ≤ ρ) (ht : 0 ≤ t) (ha : 0 ≤ a')
     (hda : 0 ≤ da') (hdq : 0 ≤ dq') (heq : 0 ≤ eq) :
-    boseDiffBoundE t (ρ ^ 3 * a') (da' / ρ ^ 9) (dq' / ρ ^ 9) eq ≤ boseDiffBoundE t a' da' dq' eq / ρ ^ 6 := by
+    boseDiffBoundE t (ρ ^ (3 : ℕ) * a') (da' / ρ ^ (9 : ℕ)) (dq' / ρ ^ (9 : ℕ)) eq ≤ boseDiffBoundE t a' da' dq' eq / ρ ^ (6 : ℕ) := by
   have hρ0 : 0 < ρ := by linarith
-  have hρ3 : (1 : ℝ) ≤ ρ ^ 3 := one_le_pow₀ hρ
+  have hρ3 : (1 : ℝ) ≤ ρ ^ (3 : ℕ) := one_le_pow₀ hρ
   unfold boseDiffBoundE
-  have e : 10 * t * (da' / ρ ^ 9) + 48 * t * (da' / ρ ^ 9) * eq + 192 * t * (ρ ^ 3 * a') * (dq' / ρ ^ 9) * eq =
-      (10 * t * da' + 48 * t * da' * eq) / ρ ^ 6 / ρ ^ 3 + 192 * t * a' * dq' * eq / ρ ^ 6 := by
+  have e : 10 * t * (da' / ρ ^ (9 : ℕ)) + 48 * t * (da' / ρ ^ (9 : ℕ)) * eq + 192 * t * (ρ ^ (3 : ℕ) * a') * (dq' / ρ ^ (9 : ℕ)) * eq =
+      (10 * t * da' + 48 * t * da' * eq) / ρ ^ (6 : ℕ) / ρ ^ (3 : ℕ) + 192 * t * a' * dq' * eq / ρ ^ (6 : ℕ) := by
     field_simp
     try ring
   rw [e]
-  have h1 : 0 ≤ (10 * t * da' + 48 * t * da' * eq) / ρ ^ 6 := by positivity
+  have h1 : 0 ≤ (10 * t * da' + 48 * t * da' * eq) / ρ ^ (6 : ℕ) := by positivity
   have hd := div_le_self h1 hρ3
-  have hsum := add_div (10 * t * da' + 48 * t * da' * eq) (192 * t * a' * dq' * eq) (ρ ^ 6)
+  have hsum := add_div (10 * t * da' + 48 * t * da' * eq) (192 * t * a' * dq' * eq) (ρ ^ (6 : ℕ))
   linarith
 
 /-- **Scaling lemma.** -/
@@ -307,13 +307,13 @@ theorem compensationDiffBoundE_scale {ρ t a' b' c' s' m' n' da' db' dc' ds' dm'
     (hρ : 1 ≤ ρ) (ht : 0 ≤ t) (ha : 0 ≤ a') (hb : 0 ≤ b') (hc : 0 ≤ c') (hs : 0 ≤ s') (hm : 0 ≤ m')
     (hn : 0 ≤ n') (hda : 0 ≤ da') (hdb : 0 ≤ db') (hdc : 0 ≤ dc') (hds : 0 ≤ ds') (hdm : 0 ≤ dm')
     (hdn : 0 ≤ dn') (hdq : 0 ≤ dq') (heq : 0 ≤ eq) :
-    compensationDiffBoundE t (ρ ^ 3 * a') (ρ ^ 3 * b') (ρ ^ 3 * c') (ρ ^ 3 * s') (ρ ^ 3 * m') (ρ ^ 3 * n')
-      (da' / ρ ^ 9) (db' / ρ ^ 9) (dc' / ρ ^ 9) (ds' / ρ ^ 9) (dm' / ρ ^ 9) (dn' / ρ ^ 9) (dq' / ρ ^ 9) eq ≤
+    compensationDiffBoundE t (ρ ^ (3 : ℕ) * a') (ρ ^ (3 : ℕ) * b') (ρ ^ (3 : ℕ) * c') (ρ ^ (3 : ℕ) * s') (ρ ^ (3 : ℕ) * m') (ρ ^ (3 : ℕ) * n')
+      (da' / ρ ^ (9 : ℕ)) (db' / ρ ^ (9 : ℕ)) (dc' / ρ ^ (9 : ℕ)) (ds' / ρ ^ (9 : ℕ)) (dm' / ρ ^ (9 : ℕ)) (dn' / ρ ^ (9 : ℕ)) (dq' / ρ ^ (9 : ℕ)) eq ≤
     compensationDiffBoundE t a' b' c' s' m' n' da' db' dc' ds' dm' dn' dq' eq := by
   have hρ0 : 0 < ρ := by linarith
-  have hρ3 : (1 : ℝ) ≤ ρ ^ 3 := one_le_pow₀ hρ
-  have hρ6 : (1 : ℝ) ≤ ρ ^ 6 := one_le_pow₀ hρ
-  have hρ12 : (1 : ℝ) ≤ ρ ^ 12 := one_le_pow₀ hρ
+  have hρ3 : (1 : ℝ) ≤ ρ ^ (3 : ℕ) := one_le_pow₀ hρ
+  have hρ6 : (1 : ℝ) ≤ ρ ^ (6 : ℕ) := one_le_pow₀ hρ
+  have hρ12 : (1 : ℝ) ≤ ρ ^ (12 : ℕ) := one_le_pow₀ hρ
   unfold compensationDiffBoundE
   have hS := slopeDiffBound_scale hρ ht ha hb hc hs hm hn hda hdb hdc hds hdm hdn
   have hC := centerDiffBound_scale hρ ht ha hb hs hm hda hdb hds hdm
@@ -321,46 +321,46 @@ theorem compensationDiffBoundE_scale {ρ t a' b' c' s' m' n' da' db' dc' ds' dm'
   have hW0 := boseZeroBoundE_scale hρ ht ha heq
   have hWd := boseDiffBoundE_scale hρ ht ha hda hdq heq
   -- nonnegativity of the pieces
-  have hC0 : 0 ≤ centerDiffBound t (ρ ^ 3 * a') (ρ ^ 3 * b') (ρ ^ 3 * s') (ρ ^ 3 * m')
-      (da' / ρ ^ 9) (db' / ρ ^ 9) (ds' / ρ ^ 9) (dm' / ρ ^ 9) := by
+  have hC0 : 0 ≤ centerDiffBound t (ρ ^ (3 : ℕ) * a') (ρ ^ (3 : ℕ) * b') (ρ ^ (3 : ℕ) * s') (ρ ^ (3 : ℕ) * m')
+      (da' / ρ ^ (9 : ℕ)) (db' / ρ ^ (9 : ℕ)) (ds' / ρ ^ (9 : ℕ)) (dm' / ρ ^ (9 : ℕ)) := by
     unfold centerDiffBound; positivity
   have hCu : 0 ≤ centerDiffBound t a' b' s' m' da' db' ds' dm' := by
     unfold centerDiffBound; positivity
   have hZu : 0 ≤ centerZeroBound t a' b' s' m' := by
     unfold centerZeroBound; positivity
-  have hWd0 : 0 ≤ boseDiffBoundE t (ρ ^ 3 * a') (da' / ρ ^ 9) (dq' / ρ ^ 9) eq := by
+  have hWd0 : 0 ≤ boseDiffBoundE t (ρ ^ (3 : ℕ) * a') (da' / ρ ^ (9 : ℕ)) (dq' / ρ ^ (9 : ℕ)) eq := by
     unfold boseDiffBoundE; positivity
   have hWdu : 0 ≤ boseDiffBoundE t a' da' dq' eq := by
     unfold boseDiffBoundE; positivity
   have hW0u : 0 ≤ boseZeroBoundE t a' eq := by
     unfold boseZeroBoundE; positivity
-  have hW00 : 0 ≤ boseZeroBoundE t (ρ ^ 3 * a') eq := by
+  have hW00 : 0 ≤ boseZeroBoundE t (ρ ^ (3 : ℕ) * a') eq := by
     unfold boseZeroBoundE; positivity
-  set Cs := centerDiffBound t (ρ ^ 3 * a') (ρ ^ 3 * b') (ρ ^ 3 * s') (ρ ^ 3 * m')
-      (da' / ρ ^ 9) (db' / ρ ^ 9) (ds' / ρ ^ 9) (dm' / ρ ^ 9)
+  set Cs := centerDiffBound t (ρ ^ (3 : ℕ) * a') (ρ ^ (3 : ℕ) * b') (ρ ^ (3 : ℕ) * s') (ρ ^ (3 : ℕ) * m')
+      (da' / ρ ^ (9 : ℕ)) (db' / ρ ^ (9 : ℕ)) (ds' / ρ ^ (9 : ℕ)) (dm' / ρ ^ (9 : ℕ))
   set Cu := centerDiffBound t a' b' s' m' da' db' ds' dm'
   set Zu := centerZeroBound t a' b' s' m'
-  set Wds := boseDiffBoundE t (ρ ^ 3 * a') (da' / ρ ^ 9) (dq' / ρ ^ 9) eq
+  set Wds := boseDiffBoundE t (ρ ^ (3 : ℕ) * a') (da' / ρ ^ (9 : ℕ)) (dq' / ρ ^ (9 : ℕ)) eq
   set Wdu := boseDiffBoundE t a' da' dq' eq
-  set W0s := boseZeroBoundE t (ρ ^ 3 * a') eq
+  set W0s := boseZeroBoundE t (ρ ^ (3 : ℕ) * a') eq
   set W0u := boseZeroBoundE t a' eq
   rw [hZ]
   -- second term: `Wds (ρ⁶ Zu + Cs) ≤ (Wdu/ρ⁶)(ρ⁶ Zu + Cu/ρ⁶) = Wdu Zu + Wdu Cu/ρ¹²`
-  have t2 : Wds * (ρ ^ 6 * Zu + Cs) ≤ Wdu * Zu + Wdu * Cu / ρ ^ 12 := by
-    have h := mul_le_mul hWd (add_le_add_left hC (ρ ^ 6 * Zu)) (by positivity) (by positivity)
-    have e : Wdu / ρ ^ 6 * (ρ ^ 6 * Zu + Cu / ρ ^ 6) = Wdu * Zu + Wdu * Cu / ρ ^ 12 := by
+  have t2 : Wds * (ρ ^ (6 : ℕ) * Zu + Cs) ≤ Wdu * Zu + Wdu * Cu / ρ ^ (12 : ℕ) := by
+    have h := mul_le_mul hWd (add_le_add_left hC (ρ ^ (6 : ℕ) * Zu)) (by positivity) (by positivity)
+    have e : Wdu / ρ ^ (6 : ℕ) * (ρ ^ (6 : ℕ) * Zu + Cu / ρ ^ (6 : ℕ)) = Wdu * Zu + Wdu * Cu / ρ ^ (12 : ℕ) := by
       field_simp
       try ring
     linarith
   -- third term: `W0s Cs ≤ ρ³ W0u Cu/ρ⁶ = W0u Cu / ρ³`
-  have t3 : W0s * Cs ≤ W0u * Cu / ρ ^ 3 := by
+  have t3 : W0s * Cs ≤ W0u * Cu / ρ ^ (3 : ℕ) := by
     have h := mul_le_mul hW0 hC hC0 (by positivity)
-    have e : ρ ^ 3 * W0u * (Cu / ρ ^ 6) = W0u * Cu / ρ ^ 3 := by
+    have e : ρ ^ (3 : ℕ) * W0u * (Cu / ρ ^ (6 : ℕ)) = W0u * Cu / ρ ^ (3 : ℕ) := by
       field_simp
       try ring
     linarith
-  have d1 : Wdu * Cu / ρ ^ 12 ≤ Wdu * Cu := div_le_self (by positivity) hρ12
-  have d2 : W0u * Cu / ρ ^ 3 ≤ W0u * Cu := div_le_self (by positivity) hρ3
+  have d1 : Wdu * Cu / ρ ^ (12 : ℕ) ≤ Wdu * Cu := div_le_self (by positivity) hρ12
+  have d2 : W0u * Cu / ρ ^ (3 : ℕ) ≤ W0u * Cu := div_le_self (by positivity) hρ3
   linarith
 
 end C5LikelihoodAffineData
@@ -561,10 +561,10 @@ theorem key_chamber_12 :
 
 /-- Right side with the exponential shape `32 sinh 2t cosh² 2t`. -/
 noncomputable def keyRHSexp (w t : ℝ) : ℝ :=
-  (288 * w ^ 2 - 72) * (32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2)
+  (288 * w ^ (2 : ℕ) - 72) * (32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ (2 : ℕ))
 
 theorem keyRHSexp_ge {w t : ℝ} (hw : w = Real.exp (2 * t)) (hw403 : 403 ≤ w) :
-    552 * w ^ 5 ≤ keyRHSexp w t := by
+    552 * w ^ (5 : ℕ) ≤ keyRHSexp w t := by
   unfold keyRHSexp
   have hw0 : 0 < w := by linarith
   have hsinh : Real.sinh (2 * t) = (w - 1 / w) / 2 := by
@@ -575,59 +575,59 @@ theorem keyRHSexp_ge {w t : ℝ} (hw : w = Real.exp (2 * t)) (hw403 : 403 ≤ w)
   have hinv0 : 0 ≤ 1 / w := by positivity
   have hs : w / 4 ≤ Real.sinh (2 * t) := by rw [hsinh]; linarith
   have hc : w / 2 ≤ Real.cosh (2 * t) := by rw [hcosh]; linarith
-  have hc2 : (w / 2) ^ 2 ≤ Real.cosh (2 * t) ^ 2 := pow_le_pow_left₀ (by positivity) hc 2
-  have hsc : (w / 4) * (w / 2) ^ 2 ≤ Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2 :=
+  have hc2 : (w / 2) ^ (2 : ℕ) ≤ Real.cosh (2 * t) ^ (2 : ℕ) := pow_le_pow_left₀ (by positivity) hc 2
+  have hsc : (w / 4) * (w / 2) ^ (2 : ℕ) ≤ Real.sinh (2 * t) * Real.cosh (2 * t) ^ (2 : ℕ) :=
     mul_le_mul hs hc2 (by positivity) (by linarith)
-  have hsq : 403 ^ 2 ≤ w ^ 2 := pow_le_pow_left₀ (by norm_num) hw403 2
-  have hfac : 287 * w ^ 2 ≤ 288 * w ^ 2 - 72 := by linarith
-  have e : 287 * w ^ 2 * (32 * ((w / 4) * (w / 2) ^ 2)) = 574 * w ^ 5 := by ring
-  have h5 : 0 < w ^ 5 := by positivity
-  calc 552 * w ^ 5 ≤ 287 * w ^ 2 * (32 * ((w / 4) * (w / 2) ^ 2)) := by rw [e]; linarith
-    _ ≤ (288 * w ^ 2 - 72) * (32 * (Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2)) :=
+  have hsq : 403 ^ (2 : ℕ) ≤ w ^ (2 : ℕ) := pow_le_pow_left₀ (by norm_num) hw403 2
+  have hfac : 287 * w ^ (2 : ℕ) ≤ 288 * w ^ (2 : ℕ) - 72 := by linarith
+  have e : 287 * w ^ (2 : ℕ) * (32 * ((w / 4) * (w / 2) ^ (2 : ℕ))) = 574 * w ^ (5 : ℕ) := by ring
+  have h5 : 0 < w ^ (5 : ℕ) := by positivity
+  calc 552 * w ^ (5 : ℕ) ≤ 287 * w ^ (2 : ℕ) * (32 * ((w / 4) * (w / 2) ^ (2 : ℕ))) := by rw [e]; linarith
+    _ ≤ (288 * w ^ (2 : ℕ) - 72) * (32 * (Real.sinh (2 * t) * Real.cosh (2 * t) ^ (2 : ℕ))) :=
         mul_le_mul hfac (by linarith) (by positivity) (by linarith)
     _ = _ := by ring
 
 /-- The crude large-`t` left side as an explicit polynomial. -/
 theorem keyLHS_largeT_eq (w t : ℝ) (hw0 : w ≠ 0) :
-    keyLHS (49 / 100000000) w 1 (w / 2) w t (1 / (3 * w ^ 2)) =
-      ((75411 / 3125000 * w ^ 4 + 58653 / 12500000 * w ^ 3 + 3695139 / 78125000000000 * w ^ 2) +
-        (164052 / 390625 * w ^ 6 + 158319 / 781250 * w ^ 5 + 20298914426427 / 19531250000000 * w ^ 4 +
-          29648127132519 / 78125000000000 * w ^ 3 + 10935361398702257853 / 488281250000000000000 * w ^ 2 +
+    keyLHS (49 / 100000000) w 1 (w / 2) w t (1 / (3 * w ^ (2 : ℕ))) =
+      ((75411 / 3125000 * w ^ (4 : ℕ) + 58653 / 12500000 * w ^ (3 : ℕ) + 3695139 / 78125000000000 * w ^ (2 : ℕ)) +
+        (164052 / 390625 * w ^ (6 : ℕ) + 158319 / 781250 * w ^ (5 : ℕ) + 20298914426427 / 19531250000000 * w ^ (4 : ℕ) +
+          29648127132519 / 78125000000000 * w ^ (3 : ℕ) + 10935361398702257853 / 488281250000000000000 * w ^ (2 : ℕ) +
           2532314217069 / 15258789062500000000 * w + 85766121 / 61035156250000000000) * t +
-        (2093427 / 390625 * w ^ 6 + 6753327 / 1562500 * w ^ 5 + 102237463826547 / 9765625000000 * w ^ 4 +
-          26141457617499 / 7812500000000 * w ^ 3 + 176154704575741197621 / 488281250000000000000 * w ^ 2 +
-          298721716340060433 / 15258789062500000000 * w + 19452988668897 / 61035156250000000000) * t ^ 2) /
-        w ^ 2 := by
+        (2093427 / 390625 * w ^ (6 : ℕ) + 6753327 / 1562500 * w ^ (5 : ℕ) + 102237463826547 / 9765625000000 * w ^ (4 : ℕ) +
+          26141457617499 / 7812500000000 * w ^ (3 : ℕ) + 176154704575741197621 / 488281250000000000000 * w ^ (2 : ℕ) +
+          298721716340060433 / 15258789062500000000 * w + 19452988668897 / 61035156250000000000) * t ^ (2 : ℕ)) /
+        w ^ (2 : ℕ) := by
   unfold keyLHS C5LikelihoodAffineData.compensationDiffBoundE C5LikelihoodAffineData.slopeDiffBound
     C5LikelihoodAffineData.centerZeroBound C5LikelihoodAffineData.centerDiffBound
     C5LikelihoodAffineData.boseZeroBoundE C5LikelihoodAffineData.boseDiffBoundE
   field_simp
   ring
 
-theorem keyLHS_largeT_le {w t : ℝ} (hw : 403 ≤ w) (ht1 : 1 ≤ t) (htw : t ^ 2 ≤ w) :
-    keyLHS (49 / 100000000) w 1 (w / 2) w t (1 / (3 * w ^ 2)) ≤ 6 * w ^ 5 := by
+theorem keyLHS_largeT_le {w t : ℝ} (hw : 403 ≤ w) (ht1 : 1 ≤ t) (htw : t ^ (2 : ℕ) ≤ w) :
+    keyLHS (49 / 100000000) w 1 (w / 2) w t (1 / (3 * w ^ (2 : ℕ))) ≤ 6 * w ^ (5 : ℕ) := by
   have hw0 : 0 < w := by linarith
   have hw1 : 1 ≤ w := by linarith
   rw [keyLHS_largeT_eq w t hw0.ne', div_le_iff₀ (by positivity)]
   have ht2 : t ≤ w := by nlinarith
-  have hβ : 0 ≤ 164052 / 390625 * w ^ 6 + 158319 / 781250 * w ^ 5 + 20298914426427 / 19531250000000 * w ^ 4 +
-      29648127132519 / 78125000000000 * w ^ 3 + 10935361398702257853 / 488281250000000000000 * w ^ 2 +
+  have hβ : 0 ≤ 164052 / 390625 * w ^ (6 : ℕ) + 158319 / 781250 * w ^ (5 : ℕ) + 20298914426427 / 19531250000000 * w ^ (4 : ℕ) +
+      29648127132519 / 78125000000000 * w ^ (3 : ℕ) + 10935361398702257853 / 488281250000000000000 * w ^ (2 : ℕ) +
       2532314217069 / 15258789062500000000 * w + 85766121 / 61035156250000000000 := by positivity
-  have hγ : 0 ≤ 2093427 / 390625 * w ^ 6 + 6753327 / 1562500 * w ^ 5 + 102237463826547 / 9765625000000 * w ^ 4 +
-      26141457617499 / 7812500000000 * w ^ 3 + 176154704575741197621 / 488281250000000000000 * w ^ 2 +
+  have hγ : 0 ≤ 2093427 / 390625 * w ^ (6 : ℕ) + 6753327 / 1562500 * w ^ (5 : ℕ) + 102237463826547 / 9765625000000 * w ^ (4 : ℕ) +
+      26141457617499 / 7812500000000 * w ^ (3 : ℕ) + 176154704575741197621 / 488281250000000000000 * w ^ (2 : ℕ) +
       298721716340060433 / 15258789062500000000 * w + 19452988668897 / 61035156250000000000 := by positivity
   have h1 := mul_le_mul_of_nonneg_left ht2 hβ
   have h2 := mul_le_mul_of_nonneg_left htw hγ
-  have p1 : w ≤ w ^ 6 := by simpa using pow_le_pow_right₀ hw1 (show 1 ≤ 6 by norm_num)
-  have p2 : w ^ 2 ≤ w ^ 6 := pow_le_pow_right₀ hw1 (by norm_num)
-  have p3 : w ^ 3 ≤ w ^ 6 := pow_le_pow_right₀ hw1 (by norm_num)
-  have p4 : w ^ 4 ≤ w ^ 6 := pow_le_pow_right₀ hw1 (by norm_num)
-  have p5 : w ^ 5 ≤ w ^ 6 := pow_le_pow_right₀ hw1 (by norm_num)
-  have p0 : (1 : ℝ) ≤ w ^ 6 := one_le_pow₀ hw1
-  have p7 : 403 * w ^ 6 ≤ w ^ 7 := by
-    have : w ^ 7 = w ^ 6 * w := by ring
+  have p1 : w ≤ w ^ (6 : ℕ) := by simpa using pow_le_pow_right₀ hw1 (show 1 ≤ 6 by norm_num)
+  have p2 : w ^ (2 : ℕ) ≤ w ^ (6 : ℕ) := pow_le_pow_right₀ hw1 (by norm_num)
+  have p3 : w ^ (3 : ℕ) ≤ w ^ (6 : ℕ) := pow_le_pow_right₀ hw1 (by norm_num)
+  have p4 : w ^ (4 : ℕ) ≤ w ^ (6 : ℕ) := pow_le_pow_right₀ hw1 (by norm_num)
+  have p5 : w ^ (5 : ℕ) ≤ w ^ (6 : ℕ) := pow_le_pow_right₀ hw1 (by norm_num)
+  have p0 : (1 : ℝ) ≤ w ^ (6 : ℕ) := one_le_pow₀ hw1
+  have p7 : 403 * w ^ (6 : ℕ) ≤ w ^ (7 : ℕ) := by
+    have : w ^ (7 : ℕ) = w ^ (6 : ℕ) * w := by ring
     rw [this]; nlinarith [pow_pos hw0 6]
-  have e5 : 6 * w ^ 5 * w ^ 2 = 6 * w ^ 7 := by ring
+  have e5 : 6 * w ^ (5 : ℕ) * w ^ (2 : ℕ) = 6 * w ^ (7 : ℕ) := by ring
   rw [e5]
   nlinarith
 
@@ -647,7 +647,7 @@ theorem key_largeT {ε w z zp t eq : ℝ} (ht : 3 ≤ t) (hw : w = Real.exp (2 *
   have hinv0 : 0 ≤ 1 / w := by positivity
   have hcosh : Real.cosh (2 * t) = (w + 1 / w) / 2 := by
     rw [Real.cosh_eq, Real.exp_neg, ← hw]; ring
-  have htw : t ^ 2 ≤ w := by
+  have htw : t ^ (2 : ℕ) ≤ w := by
     have h1 := one_add_sq_div_two_le_cosh' (2 * t)
     rw [hcosh] at h1
     nlinarith
@@ -656,16 +656,16 @@ theorem key_largeT {ε w z zp t eq : ℝ} (ht : 3 ≤ t) (hw : w = Real.exp (2 *
   have hzp0 : 0 ≤ zp := by rw [hzp]; linarith
   have hzpw : zp ≤ w := by rw [hzp]; linarith
   have hzlow : w / 2 - 1 ≤ z := by rw [hz]; linarith
-  have heq' : eq ≤ 1 / (3 * w ^ 2) := by
+  have heq' : eq ≤ 1 / (3 * w ^ (2 : ℕ)) := by
     refine le_trans heq (one_div_le_one_div_of_le (by positivity) ?_)
     have : 12 * w * (w / 2 - 1) ≤ 12 * w * z := mul_le_mul_of_nonneg_left hzlow (by positivity)
     nlinarith
-  have h5 : 0 < w ^ 5 := by positivity
+  have h5 : 0 < w ^ (5 : ℕ) := by positivity
   calc keyLHS ε w (1 / w) z zp t eq
-      ≤ keyLHS (49 / 100000000) w 1 (w / 2) w t (1 / (3 * w ^ 2)) :=
+      ≤ keyLHS (49 / 100000000) w 1 (w / 2) w t (1 / (3 * w ^ (2 : ℕ))) :=
         keyLHS_mono hε0 hw0.le hinv0 hz0 hzp0 (by linarith) heq0 hε le_rfl hinv1 hzw hzpw le_rfl heq'
-    _ ≤ 6 * w ^ 5 := keyLHS_largeT_le hw403 (by linarith) htw
-    _ < 552 * w ^ 5 := by linarith
+    _ ≤ 6 * w ^ (5 : ℕ) := keyLHS_largeT_le hw403 (by linarith) htw
+    _ < 552 * w ^ (5 : ℕ) := by linarith
     _ ≤ keyRHSexp w t := keyRHSexp_ge hw hw403
 
 /-! ## Absorbing the scale `A(u−t) = 6ρ` -/
@@ -714,11 +714,11 @@ theorem regimeOne_dInputs_le {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflection
     let Am := thetaCuspSingleAtomReflectionScale 1 x
     let ε := regimeOneLikelihoodScale x
     let ρ := Am / 6
-    12 * Am * ε ≤ 72 * (49 / 100000000) / ρ ^ 9 ∧
-    76 * Am ^ 2 * ε ≤ 2736 * (49 / 100000000) / ρ ^ 9 ∧
-    522 * Am ^ 3 * ε ≤ 112752 * (49 / 100000000) / ρ ^ 9 ∧
-    24 * Am * ε ≤ 144 * (49 / 100000000) / ρ ^ 9 ∧
-    4 * ε ≤ 4 * (49 / 100000000) / ρ ^ 9 := by
+    12 * Am * ε ≤ 72 * (49 / 100000000) / ρ ^ (9 : ℕ) ∧
+    76 * Am ^ (2 : ℕ) * ε ≤ 2736 * (49 / 100000000) / ρ ^ (9 : ℕ) ∧
+    522 * Am ^ (3 : ℕ) * ε ≤ 112752 * (49 / 100000000) / ρ ^ (9 : ℕ) ∧
+    24 * Am * ε ≤ 144 * (49 / 100000000) / ρ ^ (9 : ℕ) ∧
+    4 * ε ≤ 4 * (49 / 100000000) / ρ ^ (9 : ℕ) := by
   intro Am ε ρ
   have hε0 : 0 < ε := regimeOneLikelihoodScale_pos x
   have hρ : 1 ≤ ρ := by show 1 ≤ Am / 6; rw [le_div_iff₀ (by norm_num)]; linarith
@@ -728,58 +728,58 @@ theorem regimeOne_dInputs_le {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflection
   have h10 := regimeOne_scale_pow_le (k := 10) (by norm_num) hA
   have h11 := regimeOne_scale_pow_le (k := 11) (by norm_num) hA
   have h12 := regimeOne_scale_pow_le (k := 12) (by norm_num) hA
-  change Am ^ 9 * ε ≤ _ at h9
-  change Am ^ 10 * ε ≤ _ at h10
-  change Am ^ 11 * ε ≤ _ at h11
-  change Am ^ 12 * ε ≤ _ at h12
+  change Am ^ (9 : ℕ) * ε ≤ _ at h9
+  change Am ^ (10 : ℕ) * ε ≤ _ at h10
+  change Am ^ (11 : ℕ) * ε ≤ _ at h11
+  change Am ^ (12 : ℕ) * ε ≤ _ at h12
   rw [hAm] at h9 h10 h11 h12 ⊢
-  have r9 : ρ ^ 9 * ε ≤ 49 / 100000000 := by
+  have r9 : ρ ^ (9 : ℕ) * ε ≤ 49 / 100000000 := by
     rw [mul_pow] at h9; nlinarith
-  have r10 : ρ ^ 10 * ε ≤ 49 / 100000000 := by
+  have r10 : ρ ^ (10 : ℕ) * ε ≤ 49 / 100000000 := by
     rw [mul_pow] at h10; nlinarith
-  have r11 : ρ ^ 11 * ε ≤ 49 / 100000000 := by
+  have r11 : ρ ^ (11 : ℕ) * ε ≤ 49 / 100000000 := by
     rw [mul_pow] at h11; nlinarith
-  have r12 : ρ ^ 12 * ε ≤ 49 / 100000000 := by
+  have r12 : ρ ^ (12 : ℕ) * ε ≤ 49 / 100000000 := by
     rw [mul_pow] at h12; nlinarith
-  have hρ9 : 0 < ρ ^ 9 := by positivity
+  have hρ9 : 0 < ρ ^ (9 : ℕ) := by positivity
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · rw [le_div_iff₀ hρ9]
-    have : 12 * (6 * ρ) * ε * ρ ^ 9 = 72 * (ρ ^ 10 * ε) := by ring
+    have : 12 * (6 * ρ) * ε * ρ ^ (9 : ℕ) = 72 * (ρ ^ (10 : ℕ) * ε) := by ring
     rw [this]; linarith
   · rw [le_div_iff₀ hρ9]
-    have : 76 * (6 * ρ) ^ 2 * ε * ρ ^ 9 = 2736 * (ρ ^ 11 * ε) := by ring
+    have : 76 * (6 * ρ) ^ (2 : ℕ) * ε * ρ ^ (9 : ℕ) = 2736 * (ρ ^ (11 : ℕ) * ε) := by ring
     rw [this]; linarith
   · rw [le_div_iff₀ hρ9]
-    have : 522 * (6 * ρ) ^ 3 * ε * ρ ^ 9 = 112752 * (ρ ^ 12 * ε) := by ring
+    have : 522 * (6 * ρ) ^ (3 : ℕ) * ε * ρ ^ (9 : ℕ) = 112752 * (ρ ^ (12 : ℕ) * ε) := by ring
     rw [this]; linarith
   · rw [le_div_iff₀ hρ9]
-    have : 24 * (6 * ρ) * ε * ρ ^ 9 = 144 * (ρ ^ 10 * ε) := by ring
+    have : 24 * (6 * ρ) * ε * ρ ^ (9 : ℕ) = 144 * (ρ ^ (10 : ℕ) * ε) := by ring
     rw [this]; linarith
   · rw [le_div_iff₀ hρ9]
-    have : 4 * ε * ρ ^ 9 = 4 * (ρ ^ 9 * ε) := by ring
+    have : 4 * ε * ρ ^ (9 : ℕ) = 4 * (ρ ^ (9 : ℕ) * ε) := by ring
     rw [this]; linarith
 
 /-- The single-atom inputs are bounded by `ρ³` times their `ρ = 1` values. -/
 theorem regimeOne_hat_inputs_le {A ρ w z z' : ℝ} (hρ : 1 ≤ ρ) (hw : 1 ≤ w) (hz : 0 ≤ z)
     (hz' : 0 ≤ z') (hAeq : A = 6 * ρ * w) :
-    (2 * A + 12 / A) * z' ≤ ρ ^ 3 * ((12 * w + 2 * (1 / w)) * z') ∧
-    4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1) ≤
-      ρ ^ 3 * (4 * (2 * (1 / w)) ^ 2 * z * (z + 2) + 4 * (12 * w + 2 * (1 / w)) * (z + 1)) ∧
-    z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)) ≤
-      ρ ^ 3 * (z' * (8 * (2 * (1 / w)) ^ 3 * z * (z + 2) + 12 * (2 * (1 / w)) ^ 2 * (z + 1) +
+    (2 * A + 12 / A) * z' ≤ ρ ^ (3 : ℕ) * ((12 * w + 2 * (1 / w)) * z') ∧
+    4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1) ≤
+      ρ ^ (3 : ℕ) * (4 * (2 * (1 / w)) ^ (2 : ℕ) * z * (z + 2) + 4 * (12 * w + 2 * (1 / w)) * (z + 1)) ∧
+    z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)) ≤
+      ρ ^ (3 : ℕ) * (z' * (8 * (2 * (1 / w)) ^ (3 : ℕ) * z * (z + 2) + 12 * (2 * (1 / w)) ^ (2 : ℕ) * (z + 1) +
         4 * (12 * w + 2 * (1 / w)))) ∧
-    4 * A * z + 36 / A * z ≤ ρ ^ 3 * (24 * w * z + 6 * z * (1 / w)) ∧
-    (4 * A + 72 / A) * z' ≤ ρ ^ 3 * ((24 * w + 12 * (1 / w)) * z') ∧
-    4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)) ≤
-      ρ ^ 3 * (4 * (48 * (1 / w) ^ 2 * z * (z + 2) + (24 * w + 12 * (1 / w)) * (z + 1))) := by
+    4 * A * z + 36 / A * z ≤ ρ ^ (3 : ℕ) * (24 * w * z + 6 * z * (1 / w)) ∧
+    (4 * A + 72 / A) * z' ≤ ρ ^ (3 : ℕ) * ((24 * w + 12 * (1 / w)) * z') ∧
+    4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)) ≤
+      ρ ^ (3 : ℕ) * (4 * (48 * (1 / w) ^ (2 : ℕ) * z * (z + 2) + (24 * w + 12 * (1 / w)) * (z + 1))) := by
   have hρ0 : 0 < ρ := by linarith
   have hw0 : 0 < w := by linarith
   have hA0 : 0 < A := by rw [hAeq]; positivity
-  have hρ3 : 1 ≤ ρ ^ 3 := one_le_pow₀ hρ
-  have hρρ : ρ ≤ ρ ^ 3 := by
-    have := mul_le_mul_of_nonneg_left (one_le_pow₀ hρ : (1:ℝ) ≤ ρ ^ 2) hρ0.le
+  have hρ3 : 1 ≤ ρ ^ (3 : ℕ) := one_le_pow₀ hρ
+  have hρρ : ρ ≤ ρ ^ (3 : ℕ) := by
+    have := mul_le_mul_of_nonneg_left (one_le_pow₀ hρ : (1:ℝ) ≤ ρ ^ (2 : ℕ)) hρ0.le
     linarith
-  have hX : 2 * A ≤ ρ ^ 3 * (12 * w) := by
+  have hX : 2 * A ≤ ρ ^ (3 : ℕ) * (12 * w) := by
     rw [hAeq]
     have := mul_le_mul_of_nonneg_right hρρ (by positivity : (0:ℝ) ≤ 12 * w)
     linarith
@@ -789,10 +789,10 @@ theorem regimeOne_hat_inputs_le {A ρ w z z' : ℝ} (hρ : 1 ≤ ρ) (hw : 1 ≤
     field_simp
     nlinarith
   have hYn : 0 ≤ 12 / A := by positivity
-  have hYY : 12 / A ≤ ρ ^ 3 * (2 * (1 / w)) := hY.trans (le_mul_of_one_le_left hY0 hρ3)
-  have hY2 : (12 / A) ^ 2 ≤ ρ ^ 3 * (2 * (1 / w)) ^ 2 :=
+  have hYY : 12 / A ≤ ρ ^ (3 : ℕ) * (2 * (1 / w)) := hY.trans (le_mul_of_one_le_left hY0 hρ3)
+  have hY2 : (12 / A) ^ (2 : ℕ) ≤ ρ ^ (3 : ℕ) * (2 * (1 / w)) ^ (2 : ℕ) :=
     (pow_le_pow_left₀ hYn hY 2).trans (le_mul_of_one_le_left (by positivity) hρ3)
-  have hY3 : (12 / A) ^ 3 ≤ ρ ^ 3 * (2 * (1 / w)) ^ 3 :=
+  have hY3 : (12 / A) ^ (3 : ℕ) ≤ ρ ^ (3 : ℕ) * (2 * (1 / w)) ^ (3 : ℕ) :=
     (pow_le_pow_left₀ hYn hY 3).trans (le_mul_of_one_le_left (by positivity) hρ3)
   have hz1 : 0 ≤ z + 1 := by linarith
   have hzz : 0 ≤ z * (z + 2) := by positivity
@@ -807,10 +807,10 @@ theorem regimeOne_hat_inputs_le {A ρ w z z' : ℝ} (hρ : 1 ≤ ρ) (hw : 1 ≤
   have P7 := mul_le_mul_of_nonneg_right hY2 hzz
   have P8 := mul_le_mul_of_nonneg_right hY3 hz'zz
   have P9 := mul_le_mul_of_nonneg_right hY2 hz'z1
-  have e1728 : 1728 / A ^ 2 = 12 * (12 / A) ^ 2 := by field_simp; ring
+  have e1728 : 1728 / A ^ (2 : ℕ) = 12 * (12 / A) ^ (2 : ℕ) := by field_simp; ring
   have e36 : 36 / A = 3 * (12 / A) := by ring
   have e72 : 72 / A = 6 * (12 / A) := by ring
-  have e48 : 48 * (1 / w) ^ 2 = 12 * (2 * (1 / w)) ^ 2 := by ring
+  have e48 : 48 * (1 / w) ^ (2 : ℕ) = 12 * (2 * (1 / w)) ^ (2 : ℕ) := by ring
   have e6 : 6 * z * (1 / w) = 3 * z * (2 * (1 / w)) := by ring
   have e12 : 12 * (1 / w) = 6 * (2 * (1 / w)) := by ring
   rw [e1728, e36, e72, e48, e6, e12]
@@ -859,12 +859,12 @@ theorem key_scaled {u t : ℝ} (ht : 1 / 4 ≤ t) (htu : t ≤ u)
     let w := Real.exp (2 * t)
     C5LikelihoodAffineData.compensationDiffBound t
         ((2 * A + 12 / A) * z')
-        (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
-        (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+        (4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+        (z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)))
         (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
-        (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
-        (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
-        (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) ≤
+        (4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+        (12 * Am * ε) (76 * Am ^ (2 : ℕ) * ε) (522 * Am ^ (3 : ℕ) * ε) (24 * Am * ε) (76 * Am ^ (2 : ℕ) * ε)
+        (522 * Am ^ (3 : ℕ) * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) ≤
       keyLHS (49 / 100000000) w (1 / w) z z' t (1 / (1 + 12 * w * z)) := by
   intro A Am ε z z' w
   have ht0 : 0 < t := by linarith
@@ -905,34 +905,34 @@ theorem key_scaled {u t : ℝ} (ht : 1 / 4 ≤ t) (htu : t ≤ u)
   have hinv0 : 0 ≤ 1 / w := by positivity
   have step1 := C5LikelihoodAffineData.compensationDiffBoundE_mono (t := t)
     (a' := (2 * A + 12 / A) * z')
-    (b' := 4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
-    (c' := z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+    (b' := 4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+    (c' := z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)))
     (s' := 4 * A * z + 36 / A * z) (m' := (4 * A + 72 / A) * z')
-    (n' := 4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
-    (da' := 12 * Am * ε) (db' := 76 * Am ^ 2 * ε) (dc' := 522 * Am ^ 3 * ε) (ds' := 24 * Am * ε)
-    (dm' := 76 * Am ^ 2 * ε) (dn' := 522 * Am ^ 3 * ε) (dq' := 4 * ε)
+    (n' := 4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+    (da' := 12 * Am * ε) (db' := 76 * Am ^ (2 : ℕ) * ε) (dc' := 522 * Am ^ (3 : ℕ) * ε) (ds' := 24 * Am * ε)
+    (dm' := 76 * Am ^ (2 : ℕ) * ε) (dn' := 522 * Am ^ (3 : ℕ) * ε) (dq' := 4 * ε)
     (eq := Real.exp (-thetaCuspSingleAtomReflectedAction A t))
-    (a'' := ρ ^ 3 * ((12 * w + 2 * (1 / w)) * z'))
-    (b'' := ρ ^ 3 * (4 * (2 * (1 / w)) ^ 2 * z * (z + 2) + 4 * (12 * w + 2 * (1 / w)) * (z + 1)))
-    (c'' := ρ ^ 3 * (z' * (8 * (2 * (1 / w)) ^ 3 * z * (z + 2) + 12 * (2 * (1 / w)) ^ 2 * (z + 1) +
+    (a'' := ρ ^ (3 : ℕ) * ((12 * w + 2 * (1 / w)) * z'))
+    (b'' := ρ ^ (3 : ℕ) * (4 * (2 * (1 / w)) ^ (2 : ℕ) * z * (z + 2) + 4 * (12 * w + 2 * (1 / w)) * (z + 1)))
+    (c'' := ρ ^ (3 : ℕ) * (z' * (8 * (2 * (1 / w)) ^ (3 : ℕ) * z * (z + 2) + 12 * (2 * (1 / w)) ^ (2 : ℕ) * (z + 1) +
         4 * (12 * w + 2 * (1 / w)))))
-    (s'' := ρ ^ 3 * (24 * w * z + 6 * z * (1 / w))) (m'' := ρ ^ 3 * ((24 * w + 12 * (1 / w)) * z'))
-    (n'' := ρ ^ 3 * (4 * (48 * (1 / w) ^ 2 * z * (z + 2) + (24 * w + 12 * (1 / w)) * (z + 1))))
-    (da'' := 72 * (49 / 100000000) / ρ ^ 9) (db'' := 2736 * (49 / 100000000) / ρ ^ 9)
-    (dc'' := 112752 * (49 / 100000000) / ρ ^ 9) (ds'' := 144 * (49 / 100000000) / ρ ^ 9)
-    (dm'' := 2736 * (49 / 100000000) / ρ ^ 9) (dn'' := 112752 * (49 / 100000000) / ρ ^ 9)
-    (dq'' := 4 * (49 / 100000000) / ρ ^ 9) (eq' := 1 / (1 + 12 * w * z))
+    (s'' := ρ ^ (3 : ℕ) * (24 * w * z + 6 * z * (1 / w))) (m'' := ρ ^ (3 : ℕ) * ((24 * w + 12 * (1 / w)) * z'))
+    (n'' := ρ ^ (3 : ℕ) * (4 * (48 * (1 / w) ^ (2 : ℕ) * z * (z + 2) + (24 * w + 12 * (1 / w)) * (z + 1))))
+    (da'' := 72 * (49 / 100000000) / ρ ^ (9 : ℕ)) (db'' := 2736 * (49 / 100000000) / ρ ^ (9 : ℕ))
+    (dc'' := 112752 * (49 / 100000000) / ρ ^ (9 : ℕ)) (ds'' := 144 * (49 / 100000000) / ρ ^ (9 : ℕ))
+    (dm'' := 2736 * (49 / 100000000) / ρ ^ (9 : ℕ)) (dn'' := 112752 * (49 / 100000000) / ρ ^ (9 : ℕ))
+    (dq'' := 4 * (49 / 100000000) / ρ ^ (9 : ℕ)) (eq' := 1 / (1 + 12 * w * z))
     ht0.le (by positivity) (by positivity) (by positivity) (by positivity) (by positivity)
     (by positivity) (by positivity) (by positivity) (by positivity) (by positivity) (by positivity)
     (by positivity) (by positivity) heq0
     ha hb hc hs hm hn hda hdb hdc hds hdb hdc hdq heq
   have step2 := C5LikelihoodAffineData.compensationDiffBoundE_scale (ρ := ρ) (t := t)
     (a' := (12 * w + 2 * (1 / w)) * z')
-    (b' := 4 * (2 * (1 / w)) ^ 2 * z * (z + 2) + 4 * (12 * w + 2 * (1 / w)) * (z + 1))
-    (c' := z' * (8 * (2 * (1 / w)) ^ 3 * z * (z + 2) + 12 * (2 * (1 / w)) ^ 2 * (z + 1) +
+    (b' := 4 * (2 * (1 / w)) ^ (2 : ℕ) * z * (z + 2) + 4 * (12 * w + 2 * (1 / w)) * (z + 1))
+    (c' := z' * (8 * (2 * (1 / w)) ^ (3 : ℕ) * z * (z + 2) + 12 * (2 * (1 / w)) ^ (2 : ℕ) * (z + 1) +
         4 * (12 * w + 2 * (1 / w))))
     (s' := 24 * w * z + 6 * z * (1 / w)) (m' := (24 * w + 12 * (1 / w)) * z')
-    (n' := 4 * (48 * (1 / w) ^ 2 * z * (z + 2) + (24 * w + 12 * (1 / w)) * (z + 1)))
+    (n' := 4 * (48 * (1 / w) ^ (2 : ℕ) * z * (z + 2) + (24 * w + 12 * (1 / w)) * (z + 1)))
     (da' := 72 * (49 / 100000000)) (db' := 2736 * (49 / 100000000)) (dc' := 112752 * (49 / 100000000))
     (ds' := 144 * (49 / 100000000)) (dm' := 2736 * (49 / 100000000)) (dn' := 112752 * (49 / 100000000))
     (dq' := 4 * (49 / 100000000)) (eq := 1 / (1 + 12 * w * z))
@@ -967,12 +967,12 @@ theorem key_in_chamber {t ta tb wa wb : ℝ} (hta : ta ≤ t) (htb : t ≤ tb) (
   have hwne : w ≠ 0 := hw0.ne'
   have hwane : wa ≠ 0 := hwa0.ne'
   have hz0 : 0 ≤ (w + 1 / w) / 2 - 1 := by
-    have e : (w + 1 / w) / 2 - 1 = (w - 1) ^ 2 / (2 * w) := by field_simp; ring
+    have e : (w + 1 / w) / 2 - 1 = (w - 1) ^ (2 : ℕ) / (2 * w) := by field_simp; ring
     rw [e]; positivity
   have hzp0 : 0 ≤ w - 1 / w := by
     rw [sub_nonneg, div_le_iff₀ hw0]; nlinarith
   have hza0 : 0 ≤ (wa + 1 / wa) / 2 - 1 := by
-    have e : (wa + 1 / wa) / 2 - 1 = (wa - 1) ^ 2 / (2 * wa) := by field_simp; ring
+    have e : (wa + 1 / wa) / 2 - 1 = (wa - 1) ^ (2 : ℕ) / (2 * wa) := by field_simp; ring
     rw [e]; positivity
   have heq : 1 / (1 + 12 * w * ((w + 1 / w) / 2 - 1)) ≤
       1 / (1 + 12 * wa * ((wa + 1 / wa) / 2 - 1)) := by
@@ -993,12 +993,12 @@ theorem regimeOne_key_holds {u t : ℝ} (ht : 1 / 4 ≤ t) (htu : t ≤ u)
       let z' := 2 * Real.sinh (2 * t)
       C5LikelihoodAffineData.compensationDiffBound t
         ((2 * A + 12 / A) * z')
-        (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
-        (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+        (4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+        (z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)))
         (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
-        (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
-        (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
-        (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) <
+        (4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+        (12 * Am * ε) (76 * Am ^ (2 : ℕ) * ε) (522 * Am ^ (3 : ℕ) * ε) (24 * Am * ε) (76 * Am ^ (2 : ℕ) * ε)
+        (522 * Am ^ (3 : ℕ) * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) <
       2 * A * (4 * A - 36 / A) * sh) := by
   have hks := key_scaled ht htu hA
   simp only at hks ⊢
@@ -1020,14 +1020,14 @@ theorem regimeOne_key_holds {u t : ℝ} (ht : 1 / 4 ≤ t) (htu : t ≤ u)
   have hAw : 6 * w ≤ A := by
     rw [hAeq]; exact mul_le_mul_of_nonneg_right hA hw0.le
   have hA0 : 0 < A := by linarith
-  have hfac : 288 * w ^ 2 - 72 ≤ 2 * A * (4 * A - 36 / A) := by
-    have e : 2 * A * (4 * A - 36 / A) = 8 * A ^ 2 - 72 := by field_simp; ring
+  have hfac : 288 * w ^ (2 : ℕ) - 72 ≤ 2 * A * (4 * A - 36 / A) := by
+    have e : 2 * A * (4 * A - 36 / A) = 8 * A ^ (2 : ℕ) - 72 := by field_simp; ring
     rw [e]
     have := pow_le_pow_left₀ (by positivity) hAw 2
     nlinarith
   rcases le_or_gt t 3 with ht3 | ht3
   · -- chambers
-    refine ⟨6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11, by positivity,
+    refine ⟨6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ), by positivity,
       c5HyperbolicGaussianBaseShape_ge ht0.le, ?_⟩
     have hcase : keyLHS (49 / 100000000) w (1 / w) z (2 * Real.sinh (2 * t)) t
         (1 / (1 + 12 * w * z)) < keyRHS w t := by
@@ -1055,14 +1055,14 @@ theorem regimeOne_key_holds {u t : ℝ} (ht : 1 / 4 ≤ t) (htu : t ≤ u)
       rcases le_or_gt t (5/2) with h11 | h11
       · exact key_in_chamber h10.le h11 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (2) = 4 by norm_num]; exact exp_four_bounds.1) (by rw [show (2 : ℝ) * (5/2) = 5 by norm_num]; exact exp_five_bounds.2) key_chamber_11
       exact key_in_chamber h11.le ht3 (by norm_num) (by norm_num) (by rw [show (2 : ℝ) * (5/2) = 5 by norm_num]; exact exp_five_bounds.1) (by rw [show (2 : ℝ) * (3) = 6 by norm_num]; exact exp_six_bounds.2) key_chamber_12
-    have hpoly : 0 ≤ 6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11 := by positivity
+    have hpoly : 0 ≤ 6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ) := by positivity
     have hR : keyRHS w t ≤ 2 * A * (4 * A - 36 / A) *
-        (6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11) := by
+        (6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ)) := by
       unfold keyRHS
       exact mul_le_mul_of_nonneg_right hfac hpoly
     exact lt_of_le_of_lt hks (lt_of_lt_of_le hcase hR)
   · -- large `t`
-    refine ⟨32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2, ?_,
+    refine ⟨32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ (2 : ℕ), ?_,
       c5HyperbolicGaussianBaseShape_ge_exp (by linarith), ?_⟩
     · have := Real.sinh_nonneg_iff.mpr (by linarith : (0:ℝ) ≤ 2 * t)
       positivity
@@ -1075,11 +1075,11 @@ theorem regimeOne_key_holds {u t : ℝ} (ht : 1 / 4 ≤ t) (htu : t ≤ u)
     have hcase : keyLHS (49 / 100000000) w (1 / w) z (2 * Real.sinh (2 * t)) t
         (1 / (1 + 12 * w * z)) < keyRHSexp w t :=
       key_largeT ht3.le hwdef (by norm_num) le_rfl hz hzp (by positivity) le_rfl
-    have hsh0 : 0 ≤ 32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2 := by
+    have hsh0 : 0 ≤ 32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ (2 : ℕ) := by
       have := Real.sinh_nonneg_iff.mpr (by linarith : (0:ℝ) ≤ 2 * t)
       positivity
     have hR : keyRHSexp w t ≤ 2 * A * (4 * A - 36 / A) *
-        (32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2) := by
+        (32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ (2 : ℕ)) := by
       unfold keyRHSexp
       exact mul_le_mul_of_nonneg_right hfac hsh0
     exact lt_of_le_of_lt hks (lt_of_lt_of_le hcase hR)

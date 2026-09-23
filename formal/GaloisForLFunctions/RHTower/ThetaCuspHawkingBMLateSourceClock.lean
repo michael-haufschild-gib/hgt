@@ -179,8 +179,8 @@ private theorem late_jets (q : XiZeroCopy) (branch : Bool) (u w V : ℝ)
       (memoryCoefficient q branch w*(2*physicalRate q branch)*Complex.exp (2*physicalRate q branch*(h.val:ℂ))-
         terminalCoefficient q branch V*(2*physicalRate q branch+6)*Complex.exp ((2*physicalRate q branch+6)*(h.val:ℂ))) h.val ∧
     HasDerivAt (deriv (clockDensity q branch u w V))
-      (memoryCoefficient q branch w*(2*physicalRate q branch)^2*Complex.exp (2*physicalRate q branch*(h.val:ℂ))-
-        terminalCoefficient q branch V*(2*physicalRate q branch+6)^2*Complex.exp ((2*physicalRate q branch+6)*(h.val:ℂ))) h.val := by
+      (memoryCoefficient q branch w*(2*physicalRate q branch)^(2 : ℕ)*Complex.exp (2*physicalRate q branch*(h.val:ℂ))-
+        terminalCoefficient q branch V*(2*physicalRate q branch+6)^(2 : ℕ)*Complex.exp ((2*physicalRate q branch+6)*(h.val:ℂ))) h.val := by
   let s := 2*physicalRate q branch
   let a := memoryCoefficient q branch w
   let b := terminalCoefficient q branch V
@@ -191,7 +191,7 @@ private theorem late_jets (q : XiZeroCopy) (branch : Bool) (u w V : ℝ)
     dsimp [g]
     ring
   have hg : HasDerivAt g
-      (a*s^2*Complex.exp (s*(h.val:ℂ))-b*(s+6)^2*Complex.exp ((s+6)*(h.val:ℂ))) h.val := by
+      (a*s^(2 : ℕ)*Complex.exp (s*(h.val:ℂ))-b*(s+6)^(2 : ℕ)*Complex.exp ((s+6)*(h.val:ℂ))) h.val := by
     apply (((exp_derivative s h.val).const_mul (a*s)).sub
       ((exp_derivative (s+6) h.val).const_mul (b*(s+6)))).congr_deriv
     ring
@@ -210,8 +210,8 @@ theorem clockDensity_late_derivatives (q : XiZeroCopy) (branch : Bool) (u w V : 
       memoryCoefficient q branch w*(2*physicalRate q branch)*Complex.exp (2*physicalRate q branch*(h.val:ℂ))-
         terminalCoefficient q branch V*(2*physicalRate q branch+6)*Complex.exp ((2*physicalRate q branch+6)*(h.val:ℂ)) ∧
     deriv (deriv (clockDensity q branch u w V)) h.val =
-      memoryCoefficient q branch w*(2*physicalRate q branch)^2*Complex.exp (2*physicalRate q branch*(h.val:ℂ))-
-        terminalCoefficient q branch V*(2*physicalRate q branch+6)^2*Complex.exp ((2*physicalRate q branch+6)*(h.val:ℂ)) :=
+      memoryCoefficient q branch w*(2*physicalRate q branch)^(2 : ℕ)*Complex.exp (2*physicalRate q branch*(h.val:ℂ))-
+        terminalCoefficient q branch V*(2*physicalRate q branch+6)^(2 : ℕ)*Complex.exp ((2*physicalRate q branch+6)*(h.val:ℂ)) :=
   ⟨(late_jets q branch u w V h).1.deriv,(late_jets q branch u w V h).2.deriv⟩
 
 /-- The original source terminal cap has a nonzero coefficient at every Xi occurrence. -/
@@ -247,7 +247,7 @@ theorem clockDensity_late_terminal_law (q : XiZeroCopy) (branch : Bool) (u w V :
 def delayRateCoefficient (r : ℂ) (image : Bool) (x y h : ℝ) : ℂ :=
   let A : ℂ := delaySlope image x y h
   let B : ℂ := D4BMCausalKernel.invariantTimeSecond (h-x+y) x (if image then -y else y)
-  r^2/A^2-3*B*r/A^3+(3*B^2-A^2)/A^4
+  r^(2 : ℕ)/A^(2 : ℕ)-3*B*r/A^(3 : ℕ)+(3*B^(2 : ℕ)-A^(2 : ℕ))/A^(4 : ℕ)
 
 /-- The already constructed native spin-two bulk, with both original clock terms evaluated.
 The full angular primitive and both choices of causal image are unchanged. -/
@@ -264,12 +264,12 @@ theorem delayBulk_late (q : XiZeroCopy) (branch image : Bool) (x y : Iic (0:ℝ)
   obtain ⟨h1,h2⟩ := clockDensity_late_derivatives q branch (radialUnit x) (radialUnit y) V hlate
   unfold delayBulk
   change primitive q X k (delayArgument image x y h.val)*
-    (deriv (deriv (clockDensity q branch (radialUnit x) (radialUnit y) V)) h.val/(delaySlope image x y h.val:ℂ)^2-
+    (deriv (deriv (clockDensity q branch (radialUnit x) (radialUnit y) V)) h.val/(delaySlope image x y h.val:ℂ)^(2 : ℕ)-
       3*(D4BMCausalKernel.invariantTimeSecond (h.val-x+y) x (if image then -y else y):ℂ)*
-        deriv (clockDensity q branch (radialUnit x) (radialUnit y) V) h.val/(delaySlope image x y h.val:ℂ)^3+
-      (3*(D4BMCausalKernel.invariantTimeSecond (h.val-x+y) x (if image then -y else y):ℂ)^2-
-        (delaySlope image x y h.val:ℂ)^2)*clockDensity q branch (radialUnit x) (radialUnit y) V h.val/
-          (delaySlope image x y h.val:ℂ)^4)=_
+        deriv (clockDensity q branch (radialUnit x) (radialUnit y) V) h.val/(delaySlope image x y h.val:ℂ)^(3 : ℕ)+
+      (3*(D4BMCausalKernel.invariantTimeSecond (h.val-x+y) x (if image then -y else y):ℂ)^(2 : ℕ)-
+        (delaySlope image x y h.val:ℂ)^(2 : ℕ))*clockDensity q branch (radialUnit x) (radialUnit y) V h.val/
+          (delaySlope image x y h.val:ℂ)^(4 : ℕ))=_
   rw [h1,h2,clockDensity_late q branch (radialUnit x) (radialUnit y) V hlate]
   dsimp only [delayRateCoefficient]
   ring

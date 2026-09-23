@@ -43,7 +43,7 @@ def jetDimension (n : ℕ) : ℕ :=
 
 /-- Moreau Appendix A: `D_k = 3k² - 6k + 2`, with `k = n + 3`. -/
 theorem jetDimension_eq (n : ℕ) :
-    jetDimension n = 3 * n ^ 2 + 12 * n + 11 := by
+    jetDimension n = 3 * n ^ (2 : ℕ) + 12 * n + 11 := by
   induction n with
   | zero => norm_num [jetDimension, harmonicJetSectorDimension, Finset.sum_range_succ]
   | succ n ih =>
@@ -59,9 +59,9 @@ def rawResistanceParameterCount (n : ℕ) : ℕ :=
 /-- Moreau's quartic raw-dimension formula, shifted to `k = n + 3`. -/
 theorem rawResistanceParameterCount_eq (n : ℕ) :
     rawResistanceParameterCount n =
-      (9 * n ^ 4 + 72 * n ^ 3 + 213 * n ^ 2 + 276 * n + 132) / 2 := by
+      (9 * n ^ (4 : ℕ) + 72 * n ^ (3 : ℕ) + 213 * n ^ (2 : ℕ) + 276 * n + 132) / 2 := by
   rw [rawResistanceParameterCount, Nat.choose_two_right, jetDimension_eq]
-  rw [show 3 * n ^ 2 + 12 * n + 11 + 1 - 1 = 3 * n ^ 2 + 12 * n + 11 by omega]
+  rw [show 3 * n ^ (2 : ℕ) + 12 * n + 11 + 1 - 1 = 3 * n ^ (2 : ℕ) + 12 * n + 11 by omega]
   congr 1
   ring
 

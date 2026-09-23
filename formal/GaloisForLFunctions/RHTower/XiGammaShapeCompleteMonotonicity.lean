@@ -63,7 +63,7 @@ theorem xiGammaShapeRealTrace_hankel_nonneg {n : ℕ} (θ c : Fin n → ℝ)
 theorem exp_hankel_nonneg {n : ℕ} (θ c : Fin n → ℝ) :
     0 ≤ ∑ i, ∑ j, c i * Real.exp (θ i + θ j) * c j := by
   have hkey : ∑ i, ∑ j, c i * Real.exp (θ i + θ j) * c j =
-      (∑ i, c i * Real.exp (θ i)) ^ 2 := by
+      (∑ i, c i * Real.exp (θ i)) ^ (2 : ℕ) := by
     rw [sq, Finset.sum_mul_sum]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     rw [Real.exp_add]
@@ -74,7 +74,7 @@ theorem exp_hankel_nonneg {n : ℕ} (θ c : Fin n → ℝ) :
 /-- The exponential is not completely monotone: its first alternating derivative is negative.
 Positive semidefiniteness of the Hankel kernel therefore does not imply complete monotonicity. -/
 theorem exp_not_completelyMonotone (θ : ℝ) :
-    (-1 : ℝ) ^ 1 * iteratedDeriv 1 Real.exp θ < 0 := by
+    (-1 : ℝ) ^ (1 : ℕ) * iteratedDeriv 1 Real.exp θ < 0 := by
   have hderiv : iteratedDeriv 1 Real.exp θ = Real.exp θ := by
     rw [iteratedDeriv_one, Real.deriv_exp]
   rw [hderiv]

@@ -28,14 +28,14 @@ theorem exists_norm_tsum_damped_smoothWeight_le_ratio_factored {P : Finset ℕ}
           * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
         ≤ dampedCorrBound P (leftAbscissa K)
           * (2 * (invZetaRightBound K
-                * (C * (L + 2) ^ 2 * (N + H + 1) ^ rightAbscissa K)) / truncHeight K
+                * (C * (L + 2) ^ (2 : ℕ) * (N + H + 1) ^ rightAbscissa K)) / truncHeight K
             + invZetaEdgeBound K * (C' * (L + 2) * (N + H + 1) ^ rightAbscissa K)
                 / (truncHeight K) ^ (0 + 1) * (rightAbscissa K - leftAbscissa K)
             + invZetaEdgeBound K * (C' * (L + 2) * (N + H + 1) ^ rightAbscissa K)
                 / (truncHeight K) ^ (0 + 1) * (rightAbscissa K - leftAbscissa K)
             + max M₀ (invZetaEdgeBound K)
                 * (2 * ((N + H) ^ leftAbscissa K / leftAbscissa K)
-                    + 2 * (C * (L + 2) ^ 2 * (N + H + 1) ^ leftAbscissa K))) := by
+                    + 2 * (C * (L + 2) ^ (2 : ℕ) * (N + H + 1) ^ leftAbscissa K))) := by
   obtain ⟨C, C', M₀, K₀, hC, hC', hM₀, hmain⟩ :=
     exists_norm_tsum_damped_smoothWeight_le_ratio hPprime ht0 ht1
   refine ⟨C, C', M₀, K₀, hC, hC', hM₀, fun N H L hN hH1 hL K hKle => ?_⟩

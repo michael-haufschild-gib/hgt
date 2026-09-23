@@ -122,10 +122,10 @@ theorem energyBil_symm (a : ℝ) (f g : S → ℝ) : C.energyBil a f g = C.energ
   rw [energyBil, energyBil, inner_killed_symm, inner_comm]
 
 /-- The gate-gradient form. -/
-def gradSq (f : S → ℝ) : ℝ := ∑ x, ∑ y, C.stat x * C.kernel x y * (f x - f y) ^ 2
+def gradSq (f : S → ℝ) : ℝ := ∑ x, ∑ y, C.stat x * C.kernel x y * (f x - f y) ^ (2 : ℕ)
 
 /-- The gate-sum form. -/
-def sumSq (f : S → ℝ) : ℝ := ∑ x, ∑ y, C.stat x * C.kernel x y * (f x + f y) ^ 2
+def sumSq (f : S → ℝ) : ℝ := ∑ x, ∑ y, C.stat x * C.kernel x y * (f x + f y) ^ (2 : ℕ)
 
 theorem gradSq_nonneg (f : S → ℝ) : 0 ≤ C.gradSq f :=
   Finset.sum_nonneg fun x _ => Finset.sum_nonneg fun y _ =>
@@ -160,7 +160,7 @@ theorem inner_step_eq_double_sum (f : S → ℝ) :
 /-- The gate-gradient identity of a reversible chain. -/
 theorem inner_sub_step_eq (f : S → ℝ) :
     C.inner f f - C.inner f (C.step f) = C.gradSq f / 2 := by
-  have hsq : ∀ x y : S, C.stat x * C.kernel x y * (f x - f y) ^ 2 =
+  have hsq : ∀ x y : S, C.stat x * C.kernel x y * (f x - f y) ^ (2 : ℕ) =
       C.stat x * C.kernel x y * (f x * f x) + C.stat x * C.kernel x y * (f y * f y) -
         2 * (C.stat x * C.kernel x y * (f x * f y)) := by
     intro x y; ring
@@ -181,7 +181,7 @@ theorem inner_sub_step_eq (f : S → ℝ) :
 /-- The gate-sum identity of a reversible chain. -/
 theorem inner_add_step_eq (f : S → ℝ) :
     C.inner f f + C.inner f (C.step f) = C.sumSq f / 2 := by
-  have hsq : ∀ x y : S, C.stat x * C.kernel x y * (f x + f y) ^ 2 =
+  have hsq : ∀ x y : S, C.stat x * C.kernel x y * (f x + f y) ^ (2 : ℕ) =
       C.stat x * C.kernel x y * (f x * f x) + C.stat x * C.kernel x y * (f y * f y) +
         2 * (C.stat x * C.kernel x y * (f x * f y)) := by
     intro x y; ring
@@ -263,7 +263,7 @@ theorem energyBil_smul_left (a c : ℝ) (f g : S → ℝ) :
 
 theorem energy_add_smul (a t : ℝ) (f g : S → ℝ) :
     C.energy a (f + t • g) =
-      C.energy a f + 2 * t * C.energyBil a f g + t ^ 2 * C.energy a g := by
+      C.energy a f + 2 * t * C.energyBil a f g + t ^ (2 : ℕ) * C.energy a g := by
   rw [energy, energyBil_add_left, energyBil_add_right, energyBil_add_right,
     energyBil_smul_left, energyBil_smul_right, energyBil_smul_right, energyBil_smul_left,
     energyBil_symm C a g f, energy, energy]
@@ -271,7 +271,7 @@ theorem energy_add_smul (a t : ℝ) (f g : S → ℝ) :
 
 /-- **Cauchy--Schwarz for the killed Dirichlet form.** -/
 theorem energyBil_sq_le {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a ≤ 1) (f g : S → ℝ) :
-    (C.energyBil a f g) ^ 2 ≤ C.energy a f * C.energy a g := by
+    (C.energyBil a f g) ^ (2 : ℕ) ≤ C.energy a f * C.energy a g := by
   have hquad : ∀ t : ℝ,
       0 ≤ C.energy a g * (t * t) + 2 * C.energyBil a f g * t + C.energy a f := by
     intro t
@@ -330,7 +330,7 @@ theorem inner_eq_energyBil_killedInv {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (g 
 /-- **Dual capacity bound.**  The pairing of a signed density with a function is controlled by the
 killed energy of the function and the dual negative-energy square of the density. -/
 theorem inner_sq_le_energy_mul_negEnergySq {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (g h : S → ℝ) :
-    (C.inner g h) ^ 2 ≤ C.negEnergySq a g * C.energy a h := by
+    (C.inner g h) ^ (2 : ℕ) ≤ C.negEnergySq a g * C.energy a h := by
   rw [C.inner_eq_energyBil_killedInv ha0 ha1]
   refine le_trans (C.energyBil_sq_le ha0 ha1.le _ h) (le_of_eq ?_)
   rw [C.energy_killedInv ha0 ha1]

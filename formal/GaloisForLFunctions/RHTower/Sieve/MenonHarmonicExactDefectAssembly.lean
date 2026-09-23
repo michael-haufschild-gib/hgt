@@ -31,14 +31,14 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_external_thresholds_exactDe
     (hlargeVolume : ∀ j ∈ Finset.range L,
       volume.real (menonHarmonicPrimeBlockLargeOn E
         (geomBlock P Q (1 + eta) j) (V j)) ≤ M j) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) ≤
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤
       2 * (L : ℝ) * ∑ j ∈ Finset.range L,
         (menonHarmonicProductCostVolume P A₀ B₀ Q eta W
             (V j) (volume.real E) j +
           menonHarmonicProductCostVolume P A₀ B₀ Q eta W
             (harmonicPrimeMass (geomBlock P Q (1 + eta) j)) (M j) j) +
         2 * ∫ w in E,
-          ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2 := by
+          ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ) := by
   have hbase := setIntegral_normSq_harmonicRamareBilinear_le_ladder_error
     (P := P) A₀ B₀ (lt_trans zero_lt_one hQ) heta hL hPprime hPrange hEm hEs
   refine hbase.trans (add_le_add ?_ le_rfl)
@@ -63,7 +63,7 @@ theorem setIntegral_normSq_menonFinalRangeShell_le_external_thresholds_exactDefe
       volume.real (menonHarmonicPrimeBlockLargeOn E
         (geomBlock (menonFinalRangePrimes x) Q (1 + eta) j) (V j)) ≤ M j) :
     (∫ w in E,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2) ≤
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ)) ≤
       2 * (2 * (L : ℝ) * ∑ j ∈ Finset.range L,
         (menonHarmonicProductCostVolume (menonFinalRangePrimes x) ⌈x⌉₊
             (menonFinalRangeTopNat x) Q eta x (V j) (volume.real E) j +
@@ -73,9 +73,9 @@ theorem setIntegral_normSq_menonFinalRangeShell_le_external_thresholds_exactDefe
               (geomBlock (menonFinalRangePrimes x) Q (1 + eta) j)) (M j) j) +
         2 * ∫ w in E,
           ‖harmonicLadderProductDefect (menonFinalRangePrimes x) ⌈x⌉₊
-            (menonFinalRangeTopNat x) Q eta L w‖ ^ 2) +
+            (menonFinalRangeTopNat x) Q eta L w‖ ^ (2 : ℕ)) +
       2 * ∫ w in E,
-        ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 := by
+        ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ) := by
   have hbil :=
     setIntegral_normSq_harmonicRamareBilinear_le_external_thresholds_exactDefect
       (P := menonFinalRangePrimes x) (A₀ := ⌈x⌉₊)
@@ -93,12 +93,12 @@ theorem setIntegral_normSq_menonFinalRangeShell_le_external_thresholds_exactDefe
     (continuous_logPoly _ _) hEm hEs
   calc
     (∫ w in E,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2) ≤
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ)) ≤
         2 * (∫ w in E,
           ‖harmonicRamareBilinear (menonFinalRangePrimes x)
-            (menonFinalRangeShell x) w‖ ^ 2) +
+            (menonFinalRangeShell x) w‖ ^ (2 : ℕ)) +
         2 * ∫ w in E,
-          ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 := by
+          ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ) := by
             simpa only [logPoly_harmonicMoebius_eq_menonFinalRange_ramare_add_rough,
               menonFinalRangeHarmonicRoughSet] using hsplit
     _ ≤ _ := add_le_add (mul_le_mul_of_nonneg_left hbil (by norm_num)) le_rfl
@@ -117,13 +117,13 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_ordinary_allSmall_exactDefe
     let E := allBlocksSmall P Q eta L
       (fun j => ((geomBlock P Q (1 + eta) j).card : ℝ) * theta) W
     (∫ w in E,
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) ≤
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤
       2 * (L : ℝ) * ∑ j ∈ Finset.range L,
         menonHarmonicProductCostVolume P A₀ B₀ Q eta W
           (((geomBlock P Q (1 + eta) j).card : ℝ) * (theta + eta) /
             (Q * (1 + eta) ^ j)) (volume.real E) j +
         2 * ∫ w in E,
-          ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2 := by
+          ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ) := by
   classical
   let E := allBlocksSmall P Q eta L
     (fun j => ((geomBlock P Q (1 + eta) j).card : ℝ) * theta) W

@@ -41,7 +41,7 @@ For `k≥2`, this is exactly
 `(k²-2)√(k²-1)/(π k⁵)`; at `k=1` the expression vanishes. -/
 def constrainedProlateWeilToeplitzAdjacentTerm (n : ℕ) : ℝ :=
   let x : ℝ := 1 / ((n : ℝ) + 1)
-  x ^ 2 * (1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2) / Real.pi
+  x ^ (2 : ℕ) * (1 - 2 * x ^ (2 : ℕ)) * Real.sqrt (1 - x ^ (2 : ℕ)) / Real.pi
 
 theorem constrainedProlateWeilToeplitzZeroTerm_eq_archTerm_div_pi (n : ℕ) :
     constrainedProlateWeilToeplitzZeroTerm n =
@@ -71,9 +71,9 @@ theorem constrainedProlateWeilToeplitzAdjacentTerm_nonneg (n : ℕ) :
       dsimp [x]
       rw [div_le_iff₀ (by positivity : (0 : ℝ) < (((n + 1 : ℕ) : ℝ) + 1))]
       nlinarith
-    have hfactor : 0 ≤ 1 - 2 * x ^ 2 := by
+    have hfactor : 0 ≤ 1 - 2 * x ^ (2 : ℕ) := by
       nlinarith [sq_nonneg x]
-    change 0 ≤ x ^ 2 * (1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2) / Real.pi
+    change 0 ≤ x ^ (2 : ℕ) * (1 - 2 * x ^ (2 : ℕ)) * Real.sqrt (1 - x ^ (2 : ℕ)) / Real.pi
     positivity
 
 /-- The adjacent cross moment is dominated by the diagonal moment term by term. -/
@@ -95,36 +95,36 @@ theorem constrainedProlateWeilToeplitzAdjacentTerm_le_zeroTerm (n : ℕ) :
       rw [div_le_iff₀ (by positivity : (0 : ℝ) < (((n + 1 : ℕ) : ℝ) + 1))]
       nlinarith
     have hx1 : x ≤ 1 := hxhalf.trans (by norm_num)
-    have hxSq : x ^ 2 ≤ 1 := by nlinarith [sq_nonneg x]
-    have hinside0 : 0 ≤ 1 - x ^ 2 := by linarith
-    have ha0 : 0 ≤ 1 - 2 * x ^ 2 := by nlinarith [sq_nonneg x]
-    have ha1 : 1 - 2 * x ^ 2 ≤ 1 := by nlinarith [sq_nonneg x]
-    have hb0 : 0 ≤ Real.sqrt (1 - x ^ 2) := Real.sqrt_nonneg _
-    have hb1 : Real.sqrt (1 - x ^ 2) ≤ 1 := by
+    have hxSq : x ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg x]
+    have hinside0 : 0 ≤ 1 - x ^ (2 : ℕ) := by linarith
+    have ha0 : 0 ≤ 1 - 2 * x ^ (2 : ℕ) := by nlinarith [sq_nonneg x]
+    have ha1 : 1 - 2 * x ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg x]
+    have hb0 : 0 ≤ Real.sqrt (1 - x ^ (2 : ℕ)) := Real.sqrt_nonneg _
+    have hb1 : Real.sqrt (1 - x ^ (2 : ℕ)) ≤ 1 := by
       rw [Real.sqrt_le_one]
       nlinarith [sq_nonneg x]
-    have hab : (1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2) ≤ 1 := by
+    have hab : (1 - 2 * x ^ (2 : ℕ)) * Real.sqrt (1 - x ^ (2 : ℕ)) ≤ 1 := by
       calc
-        (1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2)
-            ≤ 1 * Real.sqrt (1 - x ^ 2) :=
+        (1 - 2 * x ^ (2 : ℕ)) * Real.sqrt (1 - x ^ (2 : ℕ))
+            ≤ 1 * Real.sqrt (1 - x ^ (2 : ℕ)) :=
               mul_le_mul_of_nonneg_right ha1 hb0
         _ ≤ 1 := by simpa using hb1
     have hprod :
-        x ^ 2 * (1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2) ≤ x ^ 2 := by
+        x ^ (2 : ℕ) * (1 - 2 * x ^ (2 : ℕ)) * Real.sqrt (1 - x ^ (2 : ℕ)) ≤ x ^ (2 : ℕ) := by
       calc
-        x ^ 2 * (1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2) =
-            x ^ 2 * ((1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2)) := by ring
-        _ ≤ x ^ 2 * 1 := mul_le_mul_of_nonneg_left hab (sq_nonneg x)
-        _ = x ^ 2 := by ring
+        x ^ (2 : ℕ) * (1 - 2 * x ^ (2 : ℕ)) * Real.sqrt (1 - x ^ (2 : ℕ)) =
+            x ^ (2 : ℕ) * ((1 - 2 * x ^ (2 : ℕ)) * Real.sqrt (1 - x ^ (2 : ℕ))) := by ring
+        _ ≤ x ^ (2 : ℕ) * 1 := mul_le_mul_of_nonneg_left hab (sq_nonneg x)
+        _ = x ^ (2 : ℕ) := by ring
     have harc0 : 0 ≤ Real.arcsin x := Real.arcsin_nonneg.mpr hx0
     have hxarc : x ≤ Real.arcsin x := by
       have hsin := Real.sin_le harc0
       rw [Real.sin_arcsin (by linarith) hx1] at hsin
       exact hsin
-    have hdiag : x ^ 2 ≤ x * Real.arcsin x := by
+    have hdiag : x ^ (2 : ℕ) ≤ x * Real.arcsin x := by
       nlinarith
     change
-      x ^ 2 * (1 - 2 * x ^ 2) * Real.sqrt (1 - x ^ 2) / Real.pi ≤
+      x ^ (2 : ℕ) * (1 - 2 * x ^ (2 : ℕ)) * Real.sqrt (1 - x ^ (2 : ℕ)) / Real.pi ≤
         x * Real.arcsin x / Real.pi
     exact div_le_div_of_nonneg_right (hprod.trans hdiag) Real.pi_pos.le
 
@@ -191,12 +191,12 @@ half of the leading diagonal coefficient. -/
 theorem constrainedProlateWeilToeplitzSchurCoefficient_gt_half :
     (1 : ℝ) / 2 <
       constrainedProlateWeilToeplitzD0 -
-        constrainedProlateWeilToeplitzD1 ^ 2 / constrainedProlateWeilToeplitzD0 := by
+        constrainedProlateWeilToeplitzD1 ^ (2 : ℕ) / constrainedProlateWeilToeplitzD0 := by
   have hD0 := constrainedProlateWeilToeplitzD0_pos
   have hD1 := constrainedProlateWeilToeplitzD1_pos
   have hlt := constrainedProlateWeilToeplitzD1_lt_D0
   have hdiv :
-      constrainedProlateWeilToeplitzD1 ^ 2 / constrainedProlateWeilToeplitzD0 <
+      constrainedProlateWeilToeplitzD1 ^ (2 : ℕ) / constrainedProlateWeilToeplitzD0 <
         constrainedProlateWeilToeplitzD1 := by
     rw [div_lt_iff₀ hD0]
     nlinarith
@@ -205,7 +205,7 @@ theorem constrainedProlateWeilToeplitzSchurCoefficient_gt_half :
 /-- The leading two-channel regular-Weil quadratic form in source amplitudes `a₀,a₁`. -/
 def constrainedProlateWeilTwoModeLeadingForm
     (D0 D1 a0 a1 x y : ℝ) : ℝ :=
-  D0 * (a0 * x) ^ 2 + 2 * D1 * (a0 * x) * (a1 * y) + D0 * (a1 * y) ^ 2
+  D0 * (a0 * x) ^ (2 : ℕ) + 2 * D1 * (a0 * x) * (a1 * y) + D0 * (a1 * y) ^ (2 : ℕ)
 
 /-- The unique adjacent-channel coefficient that cancels the second coordinate of the leading
 Toeplitz block. -/
@@ -215,7 +215,7 @@ def constrainedProlateWeilTwoModeSchurCorrection
 
 theorem constrainedProlateWeilTwoModeSchurCorrection_cancels
     {D0 D1 a0 a1 : ℝ} (hD0 : D0 ≠ 0) (_ha1 : a1 ≠ 0) :
-    D1 * a0 * a1 + D0 * a1 ^ 2 *
+    D1 * a0 * a1 + D0 * a1 ^ (2 : ℕ) *
       constrainedProlateWeilTwoModeSchurCorrection D0 D1 a0 a1 = 0 := by
   unfold constrainedProlateWeilTwoModeSchurCorrection
   field_simp
@@ -226,7 +226,7 @@ theorem constrainedProlateWeilTwoModeLeadingForm_schurCorrection
     {D0 D1 a0 a1 : ℝ} (hD0 : D0 ≠ 0) (ha1 : a1 ≠ 0) :
     constrainedProlateWeilTwoModeLeadingForm D0 D1 a0 a1 1
         (constrainedProlateWeilTwoModeSchurCorrection D0 D1 a0 a1) =
-      a0 ^ 2 * (D0 - D1 ^ 2 / D0) := by
+      a0 ^ (2 : ℕ) * (D0 - D1 ^ (2 : ℕ) / D0) := by
   unfold constrainedProlateWeilTwoModeLeadingForm
     constrainedProlateWeilTwoModeSchurCorrection
   field_simp
@@ -247,12 +247,12 @@ theorem constrainedProlateWeilConcreteTwoModeSchurSurvivor
         a0 a1 1
         (constrainedProlateWeilTwoModeSchurCorrection
           constrainedProlateWeilToeplitzD0 constrainedProlateWeilToeplitzD1 a0 a1) =
-      a0 ^ 2 *
+      a0 ^ (2 : ℕ) *
         (constrainedProlateWeilToeplitzD0 -
-          constrainedProlateWeilToeplitzD1 ^ 2 / constrainedProlateWeilToeplitzD0) ∧
+          constrainedProlateWeilToeplitzD1 ^ (2 : ℕ) / constrainedProlateWeilToeplitzD0) ∧
       (1 : ℝ) / 2 <
         constrainedProlateWeilToeplitzD0 -
-          constrainedProlateWeilToeplitzD1 ^ 2 / constrainedProlateWeilToeplitzD0 := by
+          constrainedProlateWeilToeplitzD1 ^ (2 : ℕ) / constrainedProlateWeilToeplitzD0 := by
   exact ⟨constrainedProlateWeilTwoModeLeadingForm_schurCorrection
       constrainedProlateWeilToeplitzD0_pos.ne' ha1,
     constrainedProlateWeilToeplitzSchurCoefficient_gt_half⟩

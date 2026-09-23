@@ -94,8 +94,8 @@ theorem d4EinsteinBMCriticalNonAIMEProjectionTriple_total
 theorem norm_d4FundamentalQNMCrossBranchAIMENumerator
     (amplitude z : ℂ) :
     ‖d4FundamentalQNMCrossBranchAIMENumerator amplitude z‖ =
-      ‖amplitude‖ ^ 3 * ‖d4FundamentalQNMCrossBranchChiralMassJetNumerator z‖ := by
-  have hnormSq : ‖(Complex.normSq amplitude : ℂ)‖ = ‖amplitude‖ ^ 2 := by
+      ‖amplitude‖ ^ (3 : ℕ) * ‖d4FundamentalQNMCrossBranchChiralMassJetNumerator z‖ := by
+  have hnormSq : ‖(Complex.normSq amplitude : ℂ)‖ = ‖amplitude‖ ^ (2 : ℕ) := by
     rw [Complex.normSq_eq_norm_sq]
     simp
   rw [d4FundamentalQNMCrossBranchAIMENumerator, norm_mul, norm_mul, hnormSq]
@@ -144,7 +144,7 @@ theorem d4EinsteinBMCriticalNonAIMEProjectionTriple_orbitMinimax
         d4BMXiSecondHarmonicSourceScaledBoundaryConcomitant n 1 q) :
     (d4EinsteinBMCriticalNonAIMEProjectionTriple ell B C P
         hPlus hMinus hPlusPlus hPlusMinus).orbitMinimax =
-      ‖amplitude‖ ^ 3 *
+      ‖amplitude‖ ^ (3 : ℕ) *
         d4AIMEThirdOrderOrbitMinimaxKernel (xiSpectralPoint q) := by
   rw [D4ThirdOrderProjectionTriple.orbitMinimax,
     d4EinsteinBMCriticalNonAIMEProjectionTriple_total ell B C P
@@ -169,7 +169,7 @@ theorem d4EinsteinBMCriticalNonAIMEProjectionTriple_seedNormalizedOrbitMinimax
         d4BMXiSecondHarmonicSourceScaledBoundaryConcomitant n 1 q) :
     (d4EinsteinBMCriticalNonAIMEProjectionTriple ell B C P
           hPlus hMinus hPlusPlus hPlusMinus).orbitMinimax /
-        ‖amplitude‖ ^ 3 =
+        ‖amplitude‖ ^ (3 : ℕ) =
       d4AIMEThirdOrderOrbitMinimaxKernel (xiSpectralPoint q) := by
   rw [d4EinsteinBMCriticalNonAIMEProjectionTriple_orbitMinimax ell B C P
     hPlus hMinus hPlusPlus hPlusMinus n amplitude q hline hmatch]
@@ -214,14 +214,14 @@ theorem d4EinsteinBMCriticalNonAIMEProjectionTriple_sharpOrbitCoercivity
         d4BMXiSecondHarmonicSourceScaledBoundaryConcomitant n 1 q) :
     let x := d4EinsteinBMCriticalNonAIMEProjectionTriple ell B C P
       hPlus hMinus hPlusPlus hPlusMinus
-    let cost := ‖amplitude‖ ^ 3 *
+    let cost := ‖amplitude‖ ^ (3 : ℕ) *
       d4AIMEThirdOrderOrbitMinimaxKernel (xiSpectralPoint q)
     (∀ y : D4ThirdOrderProjectionTriple, y.total = x.total → cost ≤ y.peak) ∧
       ∃! y : D4ThirdOrderProjectionTriple, y.total = x.total ∧ y.peak = cost := by
   dsimp only
   let x := d4EinsteinBMCriticalNonAIMEProjectionTriple ell B C P
     hPlus hMinus hPlusPlus hPlusMinus
-  let cost := ‖amplitude‖ ^ 3 *
+  let cost := ‖amplitude‖ ^ (3 : ℕ) *
     d4AIMEThirdOrderOrbitMinimaxKernel (xiSpectralPoint q)
   change (∀ y : D4ThirdOrderProjectionTriple,
       y.total = x.total → cost ≤ y.peak) ∧

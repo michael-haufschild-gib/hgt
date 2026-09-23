@@ -17,7 +17,7 @@ noncomputable def planeWaveCompatibleJet (D a k : ℝ) : TransportCompatibleJet2
   hasDerivAt_transport := by
     intro c t x
     have h := (hasDerivAt_linearPhase_time
-      (D * (a ^ 2 / 2 - k ^ 2) - k * c) k t x).const_mul (a : ℂ)
+      (D * (a ^ (2 : ℕ) / 2 - k ^ (2 : ℕ)) - k * c) k t x).const_mul (a : ℂ)
     apply (h.congr_deriv ?_).congr_of_eventuallyEq
     · filter_upwards with s
       simp only [planeWaveJet, planeWave]

@@ -28,13 +28,13 @@ noncomputable section
 differentially algebraic over it. -/
 theorem differentialAlgebraicOver_of_deriv_quadratic {F K : Type*} [CommRing F] [Nontrivial F]
     [CommRing K] [Algebra F K] [Differential K] {y : K} {c₀ c₁ c₂ : F}
-    (h : y′ = algebraMap F K c₂ * y ^ 2 + algebraMap F K c₁ * y + algebraMap F K c₀) :
+    (h : y′ = algebraMap F K c₂ * y ^ (2 : ℕ) + algebraMap F K c₁ * y + algebraMap F K c₀) :
     DifferentialAlgebraicOver F y := by
   classical
   intro hindep
   set Q : MvPolynomial (Unit × ℕ) F :=
     MvPolynomial.X ((), 1)
-      - (MvPolynomial.C c₂ * MvPolynomial.X ((), 0) ^ 2
+      - (MvPolynomial.C c₂ * MvPolynomial.X ((), 0) ^ (2 : ℕ)
         + MvPolynomial.C c₁ * MvPolynomial.X ((), 0) + MvPolynomial.C c₀) with hQ
   have hval : (MvPolynomial.aeval fun p : Unit × ℕ => differentialJet p.2 y) Q = 0 := by
     rw [hQ]
@@ -57,7 +57,7 @@ theorem differentialAlgebraicOver_of_deriv_quadratic {F K : Type*} [CommRing F] 
       intro hEq
       have := congrArg (fun f => f ((), 1)) hEq
       simp at this
-    have hpow : (MvPolynomial.X (((), 0) : Unit × ℕ) : MvPolynomial (Unit × ℕ) F) ^ 2
+    have hpow : (MvPolynomial.X (((), 0) : Unit × ℕ) : MvPolynomial (Unit × ℕ) F) ^ (2 : ℕ)
         = MvPolynomial.monomial (Finsupp.single (((), 0) : Unit × ℕ) 2) 1 := by
       rw [MvPolynomial.X_pow_eq_monomial]
     rw [hQ, hpow]

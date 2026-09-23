@@ -197,7 +197,7 @@ private theorem pwGammaReflected_coefficient_bound {N n : ℕ} {z : ℂ}
 theorem pwGammaMobiusReflectedAtom_polynomial_bound {N : ℕ} {z : ℂ}
     (hz : ‖z‖ ≤ (N : ℝ)) (k n : ℕ) {x : ℝ} (hx : 0 < x) :
     ((n+2 : ℕ) : ℝ)^k*‖pwGammaMobiusReflectedAtom z (n+2) x‖ ≤
-      (2^(N+k+1)*((N+k+3).factorial : ℝ))*(1/((n : ℝ)+1)^2)*
+      (2^(N+k+1)*((N+k+3).factorial : ℝ))*(1/((n : ℝ)+1)^(2 : ℕ))*
         (x^(N+k+3)*‖pwGammaRaySource x‖) := by
   have hn : 0 < n+2 := by omega
   have hn1 : (1 : ℝ) ≤ ((n+2 : ℕ) : ℝ) := by exact_mod_cast (show 1 ≤ n+2 by omega)
@@ -247,7 +247,7 @@ theorem pwGammaMobiusReflectedAtom_integrable (z : ℂ) (n : ℕ) :
     rw [heq]
     exact pwGammaRaySource_integrable
   have hg := (pwGammaRaySource_integrable_polynomial_moment (N+0+3)).const_mul
-    ((2^(N+0+1)*((N+0+3).factorial : ℝ))*(1/((n : ℝ)+1)^2))
+    ((2^(N+0+1)*((N+0+3).factorial : ℝ))*(1/((n : ℝ)+1)^(2 : ℕ)))
   apply Integrable.mono' hg (pwGammaMobiusReflectedAtom_measurable z (n+2)).aestronglyMeasurable
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
   simpa only [pow_zero, one_mul] using pwGammaMobiusReflectedAtom_polynomial_bound hN 0 n hx
@@ -255,9 +255,9 @@ theorem pwGammaMobiusReflectedAtom_integrable (z : ℂ) (n : ℕ) :
 theorem pwGammaMobiusReflectedAtom_polynomial_norm_integrals_summable (z : ℂ) (k : ℕ) :
     Summable (fun n : ℕ => (n : ℝ)^k*(∫ x in Ioi (0 : ℝ), ‖pwGammaMobiusReflectedAtom z n x‖)) := by
   obtain ⟨N, hN⟩ := exists_nat_ge ‖z‖
-  have hsq : Summable (fun n : ℕ => 1/((n : ℝ)+1)^2) := by
+  have hsq : Summable (fun n : ℕ => 1/((n : ℝ)+1)^(2 : ℕ)) := by
     have ht := (Real.summable_one_div_nat_pow.mpr one_lt_two).comp_injective Nat.succ_injective
-    change Summable (fun n : ℕ => 1/((n+1 : ℕ) : ℝ)^2) at ht
+    change Summable (fun n : ℕ => 1/((n+1 : ℕ) : ℝ)^(2 : ℕ)) at ht
     simpa only [Nat.cast_add, Nat.cast_one] using ht
   have htail : Summable (fun n : ℕ => ((n+2 : ℕ) : ℝ)^k*
       (∫ x in Ioi (0 : ℝ), ‖pwGammaMobiusReflectedAtom z (n+2) x‖)) := by
@@ -267,7 +267,7 @@ theorem pwGammaMobiusReflectedAtom_polynomial_norm_integrals_summable (z : ℂ) 
     rw [← integral_const_mul]
     calc
       _ ≤ ∫ x in Ioi (0 : ℝ),
-          (2^(N+k+1)*((N+k+3).factorial : ℝ))*(1/((n : ℝ)+1)^2)*
+          (2^(N+k+1)*((N+k+3).factorial : ℝ))*(1/((n : ℝ)+1)^(2 : ℕ))*
             (x^(N+k+3)*‖pwGammaRaySource x‖) := by
         apply integral_mono_ae ((pwGammaMobiusReflectedAtom_integrable z (n+2)).norm.const_mul _)
           ((pwGammaRaySource_integrable_polynomial_moment (N+k+3)).const_mul _)

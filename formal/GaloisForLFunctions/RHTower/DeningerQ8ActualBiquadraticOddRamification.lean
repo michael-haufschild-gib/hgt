@@ -25,7 +25,7 @@ an unramified rational prime is a uniformizer, but a square has even additive va
 theorem prime_not_isUnramifiedAt_of_integral_square
     {K : Type*} [Field K] [NumberField K]
     (p : ℤ) (hp : Prime p) (z : 𝓞 K)
-    (hz : z ^ 2 = algebraMap ℤ (𝓞 K) p)
+    (hz : z ^ (2 : ℕ) = algebraMap ℤ (𝓞 K) p)
     (P : Ideal (𝓞 K)) [P.IsPrime]
     (hPover : P.LiesOver (Ideal.span {p})) :
     ¬ Algebra.IsUnramifiedAt ℤ P := by
@@ -62,10 +62,10 @@ theorem prime_not_isUnramifiedAt_of_integral_square
   have hpVal : addVal B (algebraMap ℤ B p) = 1 := by
     simpa using GaloisForLFunctions.HTGeometry.addVal_pow_uniformizer hpIrreducible 1
   let f : 𝓞 K →+* B := algebraMap (𝓞 K) B
-  have hzB : (f z) ^ 2 = algebraMap ℤ B p := by
-    change (algebraMap (𝓞 K) B z) ^ 2 = algebraMap ℤ B p
+  have hzB : (f z) ^ (2 : ℕ) = algebraMap ℤ B p := by
+    change (algebraMap (𝓞 K) B z) ^ (2 : ℕ) = algebraMap ℤ B p
     calc
-      (algebraMap (𝓞 K) B z) ^ 2 =
+      (algebraMap (𝓞 K) B z) ^ (2 : ℕ) =
           algebraMap (𝓞 K) B (algebraMap ℤ (𝓞 K) p) := by
         simpa only [map_pow] using congrArg (algebraMap (𝓞 K) B) hz
       _ = algebraMap ℤ B p :=
@@ -83,7 +83,7 @@ discriminant. This is the global corollary of the every-local-prime obstruction.
 theorem prime_dvd_numberField_discr_of_integral_square
     {K : Type*} [Field K] [NumberField K]
     (p : ℤ) (hp : Prime p) (z : 𝓞 K)
-    (hz : z ^ 2 = algebraMap ℤ (𝓞 K) p) :
+    (hz : z ^ (2 : ℕ) = algebraMap ℤ (𝓞 K) p) :
     p ∣ NumberField.discr K := by
   by_contra hpd
   have hunramified :
@@ -122,16 +122,16 @@ noncomputable def q8BiquadFiveRoot : 𝓞 K2 :=
         (isIntegral_natCast 1)⟩
 
 theorem q8BiquadFiveRoot_sq :
-    q8BiquadFiveRoot ^ 2 = algebraMap ℤ (𝓞 K2) 5 := by
+    q8BiquadFiveRoot ^ (2 : ℕ) = algebraMap ℤ (𝓞 K2) 5 := by
   apply Subtype.ext
-  change (2 * (algebraMap K1 K2) q8BiquadU - 1) ^ 2 = (5 : K2)
-  have hu : ((algebraMap K1 K2) q8BiquadU) ^ 2 =
+  change (2 * (algebraMap K1 K2) q8BiquadU - 1) ^ (2 : ℕ) = (5 : K2)
+  have hu : ((algebraMap K1 K2) q8BiquadU) ^ (2 : ℕ) =
       (algebraMap K1 K2) q8BiquadU + 1 := by
     simpa only [map_pow, map_add, map_one] using
       congrArg (algebraMap K1 K2) q8BiquadU_sq
   calc
-    (2 * (algebraMap K1 K2) q8BiquadU - 1) ^ 2 =
-        4 * ((algebraMap K1 K2) q8BiquadU) ^ 2 -
+    (2 * (algebraMap K1 K2) q8BiquadU - 1) ^ (2 : ℕ) =
+        4 * ((algebraMap K1 K2) q8BiquadU) ^ (2 : ℕ) -
           4 * (algebraMap K1 K2) q8BiquadU + 1 := by ring
     _ = 5 := by rw [hu]; ring
 
@@ -141,12 +141,12 @@ noncomputable def q8BiquadFortyOneRoot : 𝓞 K2 :=
     (isIntegral_natCast 2).mul q8BiquadV_isIntegral |>.sub (isIntegral_natCast 1)⟩
 
 theorem q8BiquadFortyOneRoot_sq :
-    q8BiquadFortyOneRoot ^ 2 = algebraMap ℤ (𝓞 K2) 41 := by
+    q8BiquadFortyOneRoot ^ (2 : ℕ) = algebraMap ℤ (𝓞 K2) 41 := by
   apply Subtype.ext
-  change (2 * q8BiquadV - 1) ^ 2 = (41 : K2)
+  change (2 * q8BiquadV - 1) ^ (2 : ℕ) = (41 : K2)
   calc
-    (2 * q8BiquadV - 1) ^ 2 =
-        4 * q8BiquadV ^ 2 - 4 * q8BiquadV + 1 := by ring
+    (2 * q8BiquadV - 1) ^ (2 : ℕ) =
+        4 * q8BiquadV ^ (2 : ℕ) - 4 * q8BiquadV + 1 := by ring
     _ = 41 := by rw [q8BiquadV_sq]; ring
 
 /-- Every prime of the actual maximal abelian subfield above `5` is ramified. -/

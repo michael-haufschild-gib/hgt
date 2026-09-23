@@ -14,7 +14,7 @@ The remaining geometric alternative is explicit: either the core is a
 singleton whose unique root is vertically aligned with the pinned root, or a
 stagewise strict estimate is available.  More importantly, every inside-core
 root lies above the fixed height `z.im`.  This gives all stages the same
-closed determinant bound `eta / sqrt (eta^2 + z.im^2) < 1`, including the
+closed determinant bound `eta / sqrt (eta^(2 : ℕ) + z.im^(2 : ℕ)) < 1`, including the
 aligned singleton case.  No root list, separability premise, root-persistence
 premise, or finite-stage uniform-gap premise remains to be supplied by a
 future limit argument.
@@ -45,12 +45,12 @@ structure CanonicalFiniteHardyFrontier
         Real.sqrt
             (LinearMap.det
               (finiteHardyCrossAngleComplementGramOperator A eta).toLinearMap).re <
-          eta / Real.sqrt (eta ^ 2 + a0 ^ 2)
+          eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ))
   uniformDetBound :
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A eta).toLinearMap).re ≤
-      eta / Real.sqrt (eta ^ 2 + z.im ^ 2)
+      eta / Real.sqrt (eta ^ (2 : ℕ) + z.im ^ (2 : ℕ))
   uniformDetLtOne :
     Real.sqrt
         (LinearMap.det

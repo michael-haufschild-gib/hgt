@@ -198,9 +198,9 @@ theorem gonshor_strict_day_bound_counterexample :
   norm_num [gonshorValue, gonshorFrom, gonshorSign]
 
 /-- No rational number squares to two. -/
-theorem rational_square_ne_two (q : ℚ) : q ^ 2 ≠ 2 := by
+theorem rational_square_ne_two (q : ℚ) : q ^ (2 : ℕ) ≠ 2 := by
   intro hq
-  have hr : (q : ℝ) ^ 2 = (Real.sqrt 2) ^ 2 := by
+  have hr : (q : ℝ) ^ (2 : ℕ) = (Real.sqrt 2) ^ (2 : ℕ) := by
     rw [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     exact_mod_cast hq
   rcases (sq_eq_sq_iff_eq_or_eq_neg).mp hr with h | h
@@ -210,7 +210,7 @@ theorem rational_square_ne_two (q : ℚ) : q ^ 2 ≠ 2 := by
 
 /-- Finite Gonshor values cannot yet supply the algebraic number `√2`. -/
 theorem gonshorValue_square_ne_two (xs : List (Fin 2)) :
-    gonshorValue xs ^ 2 ≠ 2 :=
+    gonshorValue xs ^ (2 : ℕ) ≠ 2 :=
   rational_square_ne_two _
 
 /-- Exactly `2^n` length-`n` sign strings occur on day `n`. -/

@@ -42,10 +42,10 @@ private theorem first_coordinates (q : XiZeroCopy) (branch : Bool) (p v : Point)
 
 private theorem second_coordinates (q : XiZeroCopy) (branch : Bool) (p v a : Point) (hp : 0 < p 1) :
     fieldSecond q branch p v a =
-      (v 0:ℂ)^2*coordDeriv 0 (coordDeriv 0 (fullAngularField q branch)) p+
+      (v 0:ℂ)^(2 : ℕ)*coordDeriv 0 (coordDeriv 0 (fullAngularField q branch)) p+
       (v 0:ℂ)*(v 1:ℂ)*(coordDeriv 0 (coordDeriv 1 (fullAngularField q branch)) p+
         coordDeriv 1 (coordDeriv 0 (fullAngularField q branch)) p)+
-      (v 1:ℂ)^2*coordDeriv 1 (coordDeriv 1 (fullAngularField q branch)) p+
+      (v 1:ℂ)^(2 : ℕ)*coordDeriv 1 (coordDeriv 1 (fullAngularField q branch)) p+
       (a 0:ℂ)*coordDeriv 0 (fullAngularField q branch) p+
       (a 1:ℂ)*coordDeriv 1 (fullAngularField q branch) p := by
   have hf := field_smooth q branch p hp 2
@@ -163,14 +163,14 @@ private theorem horizontal_angular (q : XiZeroCopy) (branch : Bool) (d theta x k
   simp only [Complex.ofReal_mul,ContinuousLinearMap.flip_apply]
 
 private theorem base_source (q : XiZeroCopy) (branch : Bool) (d theta x k : ℝ) :
-    (Real.exp k:ℂ)^2*horizontalSecond q branch d theta x k+logHeightSecond q branch d theta x k-
+    (Real.exp k:ℂ)^(2 : ℕ)*horizontalSecond q branch d theta x k+logHeightSecond q branch d theta x k-
       logHeightFirst q branch d theta x k-
       scalarLaplacian (fullAngularField q branch) (logCircle d theta x k)=
       -2*(Real.exp k:ℂ)*horizontalAngularDerivative q branch d theta x k := by
   have hp := logCircle_pos d theta x k
   have hf := field_smooth q branch _ hp 2
   obtain ⟨hx,hy⟩ := base_laplacian_coefficients d theta
-  have hxC : 1+(offset d theta:ℂ)^2-(height d theta:ℂ)^2 = -2*(offsetAngular d theta:ℂ) := by
+  have hxC : 1+(offset d theta:ℂ)^(2 : ℕ)-(height d theta:ℂ)^(2 : ℕ) = -2*(offsetAngular d theta:ℂ) := by
     exact_mod_cast hx
   have hyC : 2*(offset d theta:ℂ)*(height d theta:ℂ) = -2*(heightAngular d theta:ℂ) := by
     exact_mod_cast hy
@@ -184,13 +184,13 @@ private theorem base_source (q : XiZeroCopy) (branch : Bool) (d theta x k : ℝ)
     simp [logCircle,circle]
   rw [he]
   linear_combination
-    (Real.exp k:ℂ)^2*coordDeriv 0 (coordDeriv 0 (fullAngularField q branch)) (logCircle d theta x k)*hxC+
-    (Real.exp k:ℂ)^2*coordDeriv 1 (coordDeriv 0 (fullAngularField q branch)) (logCircle d theta x k)*hyC
+    (Real.exp k:ℂ)^(2 : ℕ)*coordDeriv 0 (coordDeriv 0 (fullAngularField q branch)) (logCircle d theta x k)*hxC+
+    (Real.exp k:ℂ)^(2 : ℕ)*coordDeriv 1 (coordDeriv 0 (fullAngularField q branch)) (logCircle d theta x k)*hyC
 
 /-- The actual base-point hyperbolic Laplacian differs from the transported source Laplacian
 by an explicit derivative around the original circle. -/
 private theorem source_base_laplacian_integrand (q : XiZeroCopy) (branch : Bool) (d theta x k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun t => source q branch d theta t k)) x+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun t => source q branch d theta t k)) x+
       deriv (deriv (fun t => source q branch d theta x t)) k-
       deriv (fun t => source q branch d theta x t) k-
       scalarLaplacian (fullAngularField q branch) (logCircle d theta x k)=
@@ -372,7 +372,7 @@ private theorem horizontal_theta_periodic (q : XiZeroCopy) (branch : Bool) (d x 
 
 /-- The actual base-point Laplacian commutes with averaging the full angular field. -/
 private theorem mean_laplacian_commutes (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun r => mean q branch d r k)) x+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => mean q branch d r k)) x+
       deriv (deriv (fun r => mean q branch d x r)) k-deriv (fun r => mean q branch d x r) k=
       D4BMNativeCircle.average (fun theta => scalarLaplacian (fullAngularField q branch) (logCircle d theta x k)) := by
   have hx := horizontal_family q branch d k
@@ -387,24 +387,24 @@ private theorem mean_laplacian_commutes (q : XiZeroCopy) (branch : Bool) (d x k 
       fun theta => deriv (fun r => source q branch d theta r k) x :=
     funext (fun theta => (source_horizontal_derivative q branch d theta x k).symm)
   have he (theta : ℝ) : scalarLaplacian (fullAngularField q branch) (logCircle d theta x k)=
-      (Real.exp k:ℂ)^2*deriv (deriv (fun r => source q branch d theta r k)) x+
+      (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => source q branch d theta r k)) x+
       deriv (deriv (fun r => source q branch d theta x r)) k-deriv (fun r => source q branch d theta x r) k+
       2*(Real.exp k:ℂ)*deriv (fun t => deriv (fun r => source q branch d t r k) x) theta := by
     have h := source_base_laplacian_integrand q branch d theta x k
     rw [hQ] at h
     linear_combination -h
   have h := congrArg D4BMNativeCircle.average (funext he)
-  erw [average_add (((hxx.const_mul ((Real.exp k:ℂ)^2)).add hkk).sub hk1)
+  erw [average_add (((hxx.const_mul ((Real.exp k:ℂ)^(2 : ℕ))).add hkk).sub hk1)
       (hgp.const_mul (2*(Real.exp k:ℂ))),
-    average_sub ((hxx.const_mul ((Real.exp k:ℂ)^2)).add hkk) hk1,
-    average_add (hxx.const_mul ((Real.exp k:ℂ)^2)) hkk,
+    average_sub ((hxx.const_mul ((Real.exp k:ℂ)^(2 : ℕ))).add hkk) hk1,
+    average_add (hxx.const_mul ((Real.exp k:ℂ)^(2 : ℕ))) hkk,
     average_const_mul,average_const_mul,hz,mul_zero,add_zero] at h
   rw [← average_second hx x,← average_second hk k,← average_derivative hk k] at h
   exact h.symm
 
 /-- The original base Laplacian commutes with the full angular circular mean. -/
 theorem angularMean_laplacian_commutes (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch d r k)) x+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch d r k)) x+
       deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch d x r)) k-
       deriv (fun r => D4BMFullAngularCircle.angularMean q branch d x r) k=
       D4BMNativeCircle.average (fun theta => scalarLaplacian (fullAngularField q branch) (logCircle d theta x k)) :=
@@ -425,7 +425,7 @@ private theorem theta_smooth (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :
 
 /-- The base action of the actual full angular mean retains the complete theta forcing. -/
 theorem angularMean_laplacian_equation (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch d r k)) x+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch d r k)) x+
       deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch d x r)) k-
       deriv (fun r => D4BMFullAngularCircle.angularMean q branch d x r) k=
       parameter q branch*(D4BMFullAngularCircle.angularMean q branch d x k+D4BMNativeCircle.mean q d x k) := by
@@ -450,9 +450,9 @@ theorem angularMean_laplacian_equation (q : XiZeroCopy) (branch : Bool) (d x k :
 
 /-- The constructed full angular field has the actual radial/base Darboux action. -/
 theorem angularMean_darboux (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch r x k)) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch r x k)) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => D4BMFullAngularCircle.angularMean q branch r x k) d=
-      (Real.sinh d:ℂ)^2*((Real.exp k:ℂ)^2*deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch d r k)) x+
+      (Real.sinh d:ℂ)^(2 : ℕ)*((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch d r k)) x+
         deriv (deriv (fun r => D4BMFullAngularCircle.angularMean q branch d x r)) k-
         deriv (fun r => D4BMFullAngularCircle.angularMean q branch d x r) k) := by
   rw [D4BMFullAngularCircle.angularMean_forced,angularMean_laplacian_equation]
@@ -471,11 +471,11 @@ private def angularKernel (q : XiZeroCopy) (branch : Bool) (z X k : ℝ) : ℂ :
 private def argumentFirst (q : XiZeroCopy) (branch : Bool) (z X k : ℝ) : ℂ :=
   deriv (fun r => mean q branch r X k) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)
 private def argumentSecond (q : XiZeroCopy) (branch : Bool) (z X k : ℝ) : ℂ :=
-  deriv (deriv (fun r => mean q branch r X k)) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)^2-
+  deriv (deriv (fun r => mean q branch r X k)) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)-
     (Real.cosh (Real.arcosh z):ℂ)*deriv (fun r => mean q branch r X k) (Real.arcosh z)/
-      (Real.sinh (Real.arcosh z):ℂ)^3
+      (Real.sinh (Real.arcosh z):ℂ)^(3 : ℕ)
 private def angularAction (q : XiZeroCopy) (branch : Bool) (z X k : ℝ) : ℂ :=
-  (Real.exp k:ℂ)^2*deriv (deriv (fun r => angularKernel q branch z r k)) X+
+  (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => angularKernel q branch z r k)) X+
     deriv (deriv (fun r => angularKernel q branch z X r)) k-deriv (fun r => angularKernel q branch z X r) k
 
 private theorem radius_derivative {z : ℝ} (hz : 1 < z) :
@@ -503,33 +503,33 @@ private theorem angular_derivatives (q : XiZeroCopy) (branch : Bool) (X k : ℝ)
     field_simp [hnC]
 
 private theorem angular_equation (q : XiZeroCopy) (branch : Bool) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    ((z:ℂ)^2-1)*argumentSecond q branch z X k+2*(z:ℂ)*argumentFirst q branch z X k=angularAction q branch z X k := by
+    ((z:ℂ)^(2 : ℕ)-1)*argumentSecond q branch z X k+2*(z:ℂ)*argumentFirst q branch z X k=angularAction q branch z X k := by
   have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have he : (z:ℂ)^2-1=(Real.sinh (Real.arcosh z):ℂ)^2 := by
+  have he : (z:ℂ)^(2 : ℕ)-1=(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ) := by
     have h := Real.cosh_sq_sub_sinh_sq (Real.arcosh z)
     rw [Real.cosh_arcosh hz.le] at h
-    exact_mod_cast (by linarith : z^2-1=Real.sinh (Real.arcosh z)^2)
+    exact_mod_cast (by linarith : z^(2 : ℕ)-1=Real.sinh (Real.arcosh z)^(2 : ℕ))
   have h := angularMean_darboux q branch (Real.arcosh z) X k
-  change _ = (Real.sinh (Real.arcosh z):ℂ)^2*angularAction q branch z X k at h
+  change _ = (Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)*angularAction q branch z X k at h
   rw [Real.cosh_arcosh hz.le] at h
   rw [he]
   dsimp [argumentSecond,argumentFirst]
   simp only [mean_eq]
   rw [Real.cosh_arcosh hz.le]
-  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^2
+  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)
 
 def fullAngularRiemannKernel (q : XiZeroCopy) (branch : Bool) (h x y X k : ℝ) : ℂ :=
   angularKernel q branch (invariant h x y) X k
 private def nativeTimeFirst (q : XiZeroCopy) (branch : Bool) (h x y X k : ℝ) : ℂ :=
   argumentFirst q branch (invariant h x y) X k*(invariantTimeFirst h x y:ℂ)
 private def nativeTimeSecond (q : XiZeroCopy) (branch : Bool) (h x y X k : ℝ) : ℂ :=
-  argumentSecond q branch (invariant h x y) X k*(invariantTimeFirst h x y:ℂ)^2+
+  argumentSecond q branch (invariant h x y) X k*(invariantTimeFirst h x y:ℂ)^(2 : ℕ)+
     argumentFirst q branch (invariant h x y) X k*(invariantTimeSecond h x y:ℂ)
 private def nativeSpaceFirst (q : XiZeroCopy) (branch : Bool) (h x y X k : ℝ) : ℂ :=
   argumentFirst q branch (invariant h x y) X k*(invariantSpaceFirst h x y:ℂ)
 private def nativeSpaceSecond (q : XiZeroCopy) (branch : Bool) (h x y X k : ℝ) : ℂ :=
-  argumentSecond q branch (invariant h x y) X k*(invariantSpaceFirst h x y:ℂ)^2+
+  argumentSecond q branch (invariant h x y) X k*(invariantSpaceFirst h x y:ℂ)^(2 : ℕ)+
     argumentFirst q branch (invariant h x y) X k*(invariantSpaceSecond h x y:ℂ)
 
 private theorem time_derivatives (q : XiZeroCopy) (branch : Bool) (h x y X k : ℝ) (hz : 1 < invariant h x y) :
@@ -563,10 +563,10 @@ with the actual hyperbolic Laplacian in horizontal and logarithmic-height coordi
 theorem fullAngularRiemannKernel_wave (q : XiZeroCopy) (branch : Bool) (p : InteriorPoint) (X k : ℝ) :
     deriv (deriv (fun h => fullAngularRiemannKernel q branch h p.val.target p.val.source X k)) p.val.time-
       deriv (deriv (fun x => fullAngularRiemannKernel q branch p.val.time x p.val.source X k)) p.val.target-
-      ((Real.exp k:ℂ)^2*deriv (deriv (fun a => fullAngularRiemannKernel q branch p.val.time p.val.target p.val.source a k)) X+
+      ((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun a => fullAngularRiemannKernel q branch p.val.time p.val.target p.val.source a k)) X+
         deriv (deriv (fun a => fullAngularRiemannKernel q branch p.val.time p.val.target p.val.source X a)) k-
         deriv (fun a => fullAngularRiemannKernel q branch p.val.time p.val.target p.val.source X a) k)/
-          (Real.cosh p.val.target:ℂ)^2=0 := by
+          (Real.cosh p.val.target:ℂ)^(2 : ℕ)=0 := by
   obtain ⟨ht,htt⟩ := time_derivatives q branch p.val.time p.val.target p.val.source X k p.property
   obtain ⟨hx,hxx⟩ := space_derivatives q branch p.val.time p.val.target p.val.source X k p.property
   have et : deriv (fun h => fullAngularRiemannKernel q branch h p.val.target p.val.source X k) =ᶠ[𝓝 p.val.time]
@@ -578,21 +578,21 @@ theorem fullAngularRiemannKernel_wave (q : XiZeroCopy) (branch : Bool) (p : Inte
     filter_upwards [(invariant_space_derivatives p.val.time p.val.target p.val.source).1.continuousAt.eventually_const_lt p.property] with x hh
     exact (space_derivatives q branch p.val.time x p.val.source X k hh).1.deriv
   rw [et.deriv_eq,ex.deriv_eq,htt.deriv,hxx.deriv]
-  have h1 : (invariantTimeFirst p.val.time p.val.target p.val.source:ℂ)^2-
-      (invariantSpaceFirst p.val.time p.val.target p.val.source:ℂ)^2=
-      ((invariant p.val.time p.val.target p.val.source:ℂ)^2-1)/(Real.cosh p.val.target:ℂ)^2 := by
+  have h1 : (invariantTimeFirst p.val.time p.val.target p.val.source:ℂ)^(2 : ℕ)-
+      (invariantSpaceFirst p.val.time p.val.target p.val.source:ℂ)^(2 : ℕ)=
+      ((invariant p.val.time p.val.target p.val.source:ℂ)^(2 : ℕ)-1)/(Real.cosh p.val.target:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry p.val.time p.val.target p.val.source).1
   have h2 : (invariantTimeSecond p.val.time p.val.target p.val.source:ℂ)-
       (invariantSpaceSecond p.val.time p.val.target p.val.source:ℂ)=
-      2*(invariant p.val.time p.val.target p.val.source:ℂ)/(Real.cosh p.val.target:ℂ)^2 := by
+      2*(invariant p.val.time p.val.target p.val.source:ℂ)/(Real.cosh p.val.target:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry p.val.time p.val.target p.val.source).2
   have h := angular_equation q branch X k p.property
-  change _-_ - angularAction q branch (invariant p.val.time p.val.target p.val.source) X k/(Real.cosh p.val.target:ℂ)^2=0
+  change _-_ - angularAction q branch (invariant p.val.time p.val.target p.val.source) X k/(Real.cosh p.val.target:ℂ)^(2 : ℕ)=0
   dsimp [nativeTimeSecond,nativeSpaceSecond]
   linear_combination
     argumentSecond q branch (invariant p.val.time p.val.target p.val.source) X k*h1+
     argumentFirst q branch (invariant p.val.time p.val.target p.val.source) X k*h2+
-    h/(Real.cosh p.val.target:ℂ)^2
+    h/(Real.cosh p.val.target:ℂ)^(2 : ℕ)
 
 /-- The characteristic value is the original constructed full angular field. -/
 theorem fullAngularRiemannKernel_characteristic (q : XiZeroCopy) (branch : Bool) (x y X k : ℝ) :

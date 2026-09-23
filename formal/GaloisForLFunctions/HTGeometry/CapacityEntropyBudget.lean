@@ -124,7 +124,7 @@ theorem measure_reachable_le_exp {p E Ma alpha beta D : ℝ} {s : ℕ}
 /-! ## `(11ab)`: the chi-square lower bound -/
 
 theorem piNormSq_accessAmp (a cap : ℝ) (pi h : X → ℝ) :
-    piNormSq pi (accessAmp a cap h) = ((1 - a) / cap) ^ 2 * piNormSq pi h := by
+    piNormSq pi (accessAmp a cap h) = ((1 - a) / cap) ^ (2 : ℕ) * piNormSq pi h := by
   rw [piNormSq, piNormSq, piInner, piInner, Finset.mul_sum]
   refine Finset.sum_congr rfl fun x _ => ?_
   rw [accessAmp]
@@ -135,11 +135,11 @@ theorem piNormSq_accessAmp (a cap : ℝ) (pi h : X → ℝ) :
 theorem le_piNormSq_accessAmp {a cap : ℝ} {pi h : X → ℝ} (A : Finset X) (hcap : 0 < cap)
     (ha1 : a < 1) (hpi : ∀ x, 0 ≤ pi x) (hA : ∀ x ∈ A, h x = 1)
     (hcapA : cap ≤ ∑ x ∈ A, pi x) :
-    (1 - a) ^ 2 / cap ≤ piNormSq pi (accessAmp a cap h) := by
+    (1 - a) ^ (2 : ℕ) / cap ≤ piNormSq pi (accessAmp a cap h) := by
   have hden : (0 : ℝ) < 1 - a := by linarith
   have hmass := measure_le_piNormSq pi h A hpi hA
   rw [piNormSq_accessAmp]
-  have hstep : ((1 - a) / cap) ^ 2 * cap ≤ ((1 - a) / cap) ^ 2 * piNormSq pi h :=
+  have hstep : ((1 - a) / cap) ^ (2 : ℕ) * cap ≤ ((1 - a) / cap) ^ (2 : ℕ) * piNormSq pi h :=
     mul_le_mul_of_nonneg_left (le_trans hcapA hmass) (by positivity)
   refine le_trans (le_of_eq ?_) hstep
   field_simp

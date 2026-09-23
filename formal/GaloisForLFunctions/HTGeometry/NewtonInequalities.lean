@@ -189,7 +189,7 @@ theorem newtonCoeff_reverse {p : ℝ[X]} (h0 : p.coeff 0 ≠ 0) {k : ℕ} (hk : 
 /-! ### Newton's inequalities -/
 
 theorem newton_quadratic {p : ℝ[X]} (hp : Hyperbolic p) (hd : p.natDegree = 2) :
-    newtonCoeff p 0 * newtonCoeff p 2 ≤ (newtonCoeff p 1) ^ 2 := by
+    newtonCoeff p 0 * newtonCoeff p 2 ≤ (newtonCoeff p 1) ^ (2 : ℕ) := by
   have hp0 : p ≠ 0 := fun h => by rw [h] at hd; simp at hd
   have hcard : Multiset.card p.roots = 2 := by rw [hp, hd]
   have hne : p.roots ≠ 0 := by
@@ -198,8 +198,8 @@ theorem newton_quadratic {p : ℝ[X]} (hp : Hyperbolic p) (hd : p.natDegree = 2)
     simp at hcard
   obtain ⟨r, hr⟩ := Multiset.exists_mem_of_ne_zero hne
   have hroot : p.eval r = 0 := (Polynomial.mem_roots hp0).mp hr
-  have hexp : p.coeff 2 * r ^ 2 + p.coeff 1 * r + p.coeff 0 = 0 := by
-    have hpeq : p = Polynomial.C (p.coeff 2) * X ^ 2 + Polynomial.C (p.coeff 1) * X
+  have hexp : p.coeff 2 * r ^ (2 : ℕ) + p.coeff 1 * r + p.coeff 0 = 0 := by
+    have hpeq : p = Polynomial.C (p.coeff 2) * X ^ (2 : ℕ) + Polynomial.C (p.coeff 1) * X
         + Polynomial.C (p.coeff 0) := by
       ext n
       match n with
@@ -209,7 +209,7 @@ theorem newton_quadratic {p : ℝ[X]} (hp : Hyperbolic p) (hd : p.natDegree = 2)
       | (j + 3) =>
           have : p.coeff (j + 3) = 0 := Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
           simp [this]
-    have heval : p.eval r = p.coeff 2 * r ^ 2 + p.coeff 1 * r + p.coeff 0 := by
+    have heval : p.eval r = p.coeff 2 * r ^ (2 : ℕ) + p.coeff 1 * r + p.coeff 0 := by
       conv_lhs => rw [hpeq]
       simp
     rw [heval] at hroot
@@ -217,10 +217,10 @@ theorem newton_quadratic {p : ℝ[X]} (hp : Hyperbolic p) (hd : p.natDegree = 2)
   have hlead : p.coeff 2 ≠ 0 := by
     have := Polynomial.leadingCoeff_ne_zero.mpr hp0
     rwa [Polynomial.leadingCoeff, hd] at this
-  have hdisc : 0 ≤ (p.coeff 1) ^ 2 - 4 * p.coeff 2 * p.coeff 0 := by
-    have hid : (p.coeff 1) ^ 2 - 4 * p.coeff 2 * p.coeff 0
-        = (p.coeff 1 + 2 * p.coeff 2 * r) ^ 2
-          - 4 * p.coeff 2 * (p.coeff 2 * r ^ 2 + p.coeff 1 * r + p.coeff 0) := by ring
+  have hdisc : 0 ≤ (p.coeff 1) ^ (2 : ℕ) - 4 * p.coeff 2 * p.coeff 0 := by
+    have hid : (p.coeff 1) ^ (2 : ℕ) - 4 * p.coeff 2 * p.coeff 0
+        = (p.coeff 1 + 2 * p.coeff 2 * r) ^ (2 : ℕ)
+          - 4 * p.coeff 2 * (p.coeff 2 * r ^ (2 : ℕ) + p.coeff 1 * r + p.coeff 0) := by ring
     rw [hid, hexp, mul_zero, sub_zero]
     exact sq_nonneg _
   rw [newtonCoeff, newtonCoeff, newtonCoeff, hd]
@@ -231,12 +231,12 @@ theorem newton_quadratic {p : ℝ[X]} (hp : Hyperbolic p) (hd : p.natDegree = 2)
 real polynomial of degree `d` are log-concave: `A_{k-1}·A_{k+1} ≤ A_k²`. -/
 theorem newton_inequality : ∀ (d : ℕ) (p : ℝ[X]), Hyperbolic p → p.natDegree = d →
     ∀ k, 1 ≤ k → k + 1 ≤ d →
-      newtonCoeff p (k - 1) * newtonCoeff p (k + 1) ≤ (newtonCoeff p k) ^ 2 := by
+      newtonCoeff p (k - 1) * newtonCoeff p (k + 1) ≤ (newtonCoeff p k) ^ (2 : ℕ) := by
   intro d
   induction d using Nat.strong_induction_on with
   | _ d ih =>
     have hlow : ∀ q : ℝ[X], Hyperbolic q → q.natDegree = d → ∀ k, 1 ≤ k → k + 2 ≤ d →
-        newtonCoeff q (k - 1) * newtonCoeff q (k + 1) ≤ (newtonCoeff q k) ^ 2 := by
+        newtonCoeff q (k - 1) * newtonCoeff q (k + 1) ≤ (newtonCoeff q k) ^ (2 : ℕ) := by
       intro q hq hqd k hk hkd
       have hq1 : 1 ≤ q.natDegree := by omega
       have hderdeg : (derivative q).natDegree = d - 1 := by
@@ -251,13 +251,13 @@ theorem newton_inequality : ∀ (d : ℕ) (p : ℝ[X]), Hyperbolic p → p.natDe
         newtonCoeff_derivative hq1 (by omega)
       rw [e1, e2, e3] at hIH
       have hDpos : (0 : ℝ) < (q.natDegree : ℝ) := by exact_mod_cast hq1
-      have hL : (q.natDegree : ℝ) ^ 2 * (newtonCoeff q (k - 1) * newtonCoeff q (k + 1))
+      have hL : (q.natDegree : ℝ) ^ (2 : ℕ) * (newtonCoeff q (k - 1) * newtonCoeff q (k + 1))
           = ((q.natDegree : ℝ) * newtonCoeff q (k - 1))
             * ((q.natDegree : ℝ) * newtonCoeff q (k + 1)) := by ring
-      have hR : (q.natDegree : ℝ) ^ 2 * (newtonCoeff q k) ^ 2
-          = ((q.natDegree : ℝ) * newtonCoeff q k) ^ 2 := by ring
-      have key : (q.natDegree : ℝ) ^ 2 * (newtonCoeff q (k - 1) * newtonCoeff q (k + 1))
-          ≤ (q.natDegree : ℝ) ^ 2 * (newtonCoeff q k) ^ 2 := by
+      have hR : (q.natDegree : ℝ) ^ (2 : ℕ) * (newtonCoeff q k) ^ (2 : ℕ)
+          = ((q.natDegree : ℝ) * newtonCoeff q k) ^ (2 : ℕ) := by ring
+      have key : (q.natDegree : ℝ) ^ (2 : ℕ) * (newtonCoeff q (k - 1) * newtonCoeff q (k + 1))
+          ≤ (q.natDegree : ℝ) ^ (2 : ℕ) * (newtonCoeff q k) ^ (2 : ℕ) := by
         rw [hL, hR]; exact hIH
       exact le_of_mul_le_mul_left key (pow_pos hDpos 2)
     intro p hp hpd k hk hkd

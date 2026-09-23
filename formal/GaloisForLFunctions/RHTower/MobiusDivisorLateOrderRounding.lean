@@ -103,9 +103,9 @@ theorem mobiusDivisorSelectionEnergy_late_mass_difference (M : ℕ) (P R L : Fin
     let d := (∑ p ∈ L,divisorUnsignedDilationChannel M p)-
       ∑ p ∈ R,divisorUnsignedDilationChannel M p
     mobiusDivisorSelectionEnergy M (P ∪ L)-mobiusDivisorSelectionEnergy M (P ∪ R) =
-      -2*mobiusDivisorSelectionFibre M (P ∪ R) ∅*d+d^2+
-        (∑ p ∈ R,(mobiusDivisorDilationChannel M p)^2)-
-        ∑ p ∈ L,(mobiusDivisorDilationChannel M p)^2 := by
+      -2*mobiusDivisorSelectionFibre M (P ∪ R) ∅*d+d^(2 : ℕ)+
+        (∑ p ∈ R,(mobiusDivisorDilationChannel M p)^(2 : ℕ))-
+        ∑ p ∈ L,(mobiusDivisorDilationChannel M p)^(2 : ℕ) := by
   dsimp only
   rw [mobiusDivisorSelectionEnergy_union_late_primes M P L hL hfL,
     mobiusDivisorSelectionEnergy_union_late_primes M P R hR hfR,
@@ -124,8 +124,8 @@ theorem mobiusDivisorSelectionEnergy_late_mass_rounding_le (M : ℕ) (P R L : Fi
       ∑ p ∈ R,divisorUnsignedDilationChannel M p)
     (hdD : (∑ p ∈ L,divisorUnsignedDilationChannel M p)-
       (∑ p ∈ R,divisorUnsignedDilationChannel M p) ≤ D) :
-    mobiusDivisorSelectionEnergy M (P ∪ L) ≤ B+2*Real.sqrt B*D+D^2+
-      ∑ p ∈ R,(mobiusDivisorDilationChannel M p)^2 := by
+    mobiusDivisorSelectionEnergy M (P ∪ L) ≤ B+2*Real.sqrt B*D+D^(2 : ℕ)+
+      ∑ p ∈ R,(mobiusDivisorDilationChannel M p)^(2 : ℕ) := by
   let d := (∑ p ∈ L,divisorUnsignedDilationChannel M p)-
     ∑ p ∈ R,divisorUnsignedDilationChannel M p
   have hd : 0 ≤ d := hd0
@@ -133,9 +133,9 @@ theorem mobiusDivisorSelectionEnergy_late_mass_rounding_le (M : ℕ) (P R L : Fi
   have hD : 0 ≤ D := hd.trans hDd
   have he := mobiusDivisorSelectionEnergy_late_mass_difference M P R L hR hL hfR hfL
   change mobiusDivisorSelectionEnergy M (P ∪ L)-mobiusDivisorSelectionEnergy M (P ∪ R) =
-    -2*mobiusDivisorSelectionFibre M (P ∪ R) ∅*d+d^2+
-      (∑ p ∈ R,(mobiusDivisorDilationChannel M p)^2)-
-      ∑ p ∈ L,(mobiusDivisorDilationChannel M p)^2 at he
+    -2*mobiusDivisorSelectionFibre M (P ∪ R) ∅*d+d^(2 : ℕ)+
+      (∑ p ∈ R,(mobiusDivisorDilationChannel M p)^(2 : ℕ))-
+      ∑ p ∈ L,(mobiusDivisorDilationChannel M p)^(2 : ℕ) at he
   have hhead := (abs_mobiusDivisorSelectionHead_le_sqrt_energy M (P ∪ R)).trans
     (Real.sqrt_le_sqrt hQ)
   have hf := (abs_le.mp hhead).1
@@ -150,14 +150,14 @@ theorem mobiusDivisorSelectionEnergy_late_rounding_quadratic (M : ℕ) (hM : 1 �
     (hR : ∀ p ∈ R,p.Prime ∧ p < M ∧ M ≤ 2*p)
     (hL : ∀ p ∈ L,p.Prime ∧ p < M ∧ M ≤ 2*p)
     (hfR : ∀ p ∈ R,p ∉ P) (hfL : ∀ p ∈ L,p ∉ P) (C : ℝ) (hC : 0 ≤ C)
-    (hQ : mobiusDivisorSelectionEnergy M (P ∪ R) ≤ C*(M:ℝ)^2)
+    (hQ : mobiusDivisorSelectionEnergy M (P ∪ R) ≤ C*(M:ℝ)^(2 : ℕ))
     (hd0 : 0 ≤ (∑ p ∈ L,divisorUnsignedDilationChannel M p)-
       ∑ p ∈ R,divisorUnsignedDilationChannel M p)
     (hdD : (∑ p ∈ L,divisorUnsignedDilationChannel M p)-
       (∑ p ∈ R,divisorUnsignedDilationChannel M p) ≤ Real.sqrt M) :
-    mobiusDivisorSelectionEnergy M (P ∪ L) ≤ (C+2*Real.sqrt C+723)*(M:ℝ)^2 := by
+    mobiusDivisorSelectionEnergy M (P ∪ L) ≤ (C+2*Real.sqrt C+723)*(M:ℝ)^(2 : ℕ) := by
   have h := mobiusDivisorSelectionEnergy_late_mass_rounding_le M P R L hR hL hfR hfL
-    (C*(M:ℝ)^2) (Real.sqrt M) hQ hd0 hdD
+    (C*(M:ℝ)^(2 : ℕ)) (Real.sqrt M) hQ hd0 hdD
   have hsub : R ⊆ Icc 1 M := by
     intro p hp
     exact mem_Icc.mpr ⟨(hR p hp).1.pos,(hR p hp).2.1.le⟩
@@ -217,18 +217,18 @@ theorem exists_mobiusDivisor_fixed_late_order_history (M n : ℕ) (hM : 1 ≤ M)
     (hR : ∀ k,R k ⊆ primeOrderPrefix e n)
     (hfree : ∀ k,∀ p ∈ primeOrderPrefix e n,p ∉ P k)
     (C : ℝ) (hC : 0 ≤ C)
-    (hQ : ∀ k,mobiusDivisorSelectionEnergy M (P k ∪ R k) ≤ C*(M:ℝ)^2) :
+    (hQ : ∀ k,mobiusDivisorSelectionEnergy M (P k ∪ R k) ≤ C*(M:ℝ)^(2 : ℕ)) :
     ∃ j : ℕ → ℕ,Monotone j ∧ (∀ k,j k ≤ n) ∧
       (∀ k,mobiusDivisorSelectionEnergy M (P k ∪ primeOrderPrefix e (j k)) ≤
-        (C+2*Real.sqrt C+723)*(M:ℝ)^2) ∧
+        (C+2*Real.sqrt C+723)*(M:ℝ)^(2 : ℕ)) ∧
       (∀ k l,(∑ p ∈ R k,divisorUnsignedDilationChannel M p)=
         (∑ p ∈ R l,divisorUnsignedDilationChannel M p) → j k=j l) ∧
       (∀ k l,P k=P l → ∀ r,j k ≤ r → r ≤ j l →
         mobiusDivisorSelectionEnergy M (P k ∪ primeOrderPrefix e r) ≤
-          (C+2*Real.sqrt C+723)*(M:ℝ)^2) ∧
+          (C+2*Real.sqrt C+723)*(M:ℝ)^(2 : ℕ)) ∧
       (∀ k,R k=primeOrderPrefix e n → ∀ r,j k ≤ r → r ≤ n →
         mobiusDivisorSelectionEnergy M (P k ∪ primeOrderPrefix e r) ≤
-          (C+2*Real.sqrt C+723)*(M:ℝ)^2) ∧
+          (C+2*Real.sqrt C+723)*(M:ℝ)^(2 : ℕ)) ∧
       (∀ k,R k=∅ → j k=0) := by
   let w : ℕ → ℝ := fun i => divisorUnsignedDilationChannel M (e i)
   let t : ℕ → ℝ := fun k => ∑ p ∈ R k,divisorUnsignedDilationChannel M p
@@ -263,13 +263,13 @@ theorem exists_mobiusDivisor_fixed_late_order_history (M n : ℕ) (hM : 1 ≤ M)
     constructor <;> linarith only [hlo,hhi]
   have hbound (k : ℕ) :
       mobiusDivisorSelectionEnergy M (P k ∪ primeOrderPrefix e (j k)) ≤
-        (C+2*Real.sqrt C+723)*(M:ℝ)^2 := by
+        (C+2*Real.sqrt C+723)*(M:ℝ)^(2 : ℕ) := by
     have hsub := primeOrderPrefix_mono e (hjn k)
     exact mobiusDivisorSelectionEnergy_late_rounding_quadratic M hM (P k) (R k)
       (primeOrderPrefix e (j k)) (fun p hp => hU p (hR k hp))
       (fun p hp => hU p (hsub hp)) (fun p hp => hfree k p (hR k hp))
       (fun p hp => hfree k p (hsub hp)) C hC (hQ k) (hmass k).1 (hmass k).2
-  have hCB : C*(M:ℝ)^2 ≤ (C+2*Real.sqrt C+723)*(M:ℝ)^2 := by
+  have hCB : C*(M:ℝ)^(2 : ℕ) ≤ (C+2*Real.sqrt C+723)*(M:ℝ)^(2 : ℕ) := by
     nlinarith [mul_nonneg (Real.sqrt_nonneg C) (sq_nonneg (M:ℝ)),sq_nonneg (M:ℝ)]
   refine ⟨j,hjmono,hjn,hbound,?_,?_,?_,?_⟩
   · intro k l h
@@ -301,11 +301,11 @@ theorem exists_mobiusDivisor_fixed_late_order_chain (M n : ℕ) (hM : 1 ≤ M)
     (hprime : ∀ i < n,(e i).Prime ∧ e i < M ∧ M ≤ 2*e i)
     (H : ℕ → Finset ℕ) (hHmono : Monotone H) (hH0 : H 0=∅)
     (C : ℝ) (hC : 0 ≤ C)
-    (hQ : ∀ k,mobiusDivisorSelectionEnergy M (H k) ≤ C*(M:ℝ)^2) :
+    (hQ : ∀ k,mobiusDivisorSelectionEnergy M (H k) ≤ C*(M:ℝ)^(2 : ℕ)) :
     ∃ j : ℕ → ℕ,Monotone j ∧ j 0=0 ∧ (∀ k,j k ≤ n) ∧
       (∀ k,mobiusDivisorSelectionEnergy M
         ((H k \ primeOrderPrefix e n) ∪ primeOrderPrefix e (j k)) ≤
-          (C+2*Real.sqrt C+723)*(M:ℝ)^2) ∧
+          (C+2*Real.sqrt C+723)*(M:ℝ)^(2 : ℕ)) ∧
       (∀ k q,H (k+1)=insert q (H k) → q ∉ primeOrderPrefix e n →
         j (k+1)=j k ∧
         ((H (k+1) \ primeOrderPrefix e n) ∪ primeOrderPrefix e (j (k+1))) =
@@ -314,11 +314,11 @@ theorem exists_mobiusDivisor_fixed_late_order_chain (M n : ℕ) (hM : 1 ≤ M)
         (H (k+1) \ primeOrderPrefix e n)=(H k \ primeOrderPrefix e n) ∧
         ∀ r,j k ≤ r → r ≤ j (k+1) → mobiusDivisorSelectionEnergy M
           ((H k \ primeOrderPrefix e n) ∪ primeOrderPrefix e r) ≤
-            (C+2*Real.sqrt C+723)*(M:ℝ)^2) ∧
+            (C+2*Real.sqrt C+723)*(M:ℝ)^(2 : ℕ)) ∧
       (∀ k,primeOrderPrefix e n ⊆ H k → ∀ r,j k ≤ r → r ≤ n →
         mobiusDivisorSelectionEnergy M
           ((H k \ primeOrderPrefix e n) ∪ primeOrderPrefix e r) ≤
-            (C+2*Real.sqrt C+723)*(M:ℝ)^2) := by
+            (C+2*Real.sqrt C+723)*(M:ℝ)^(2 : ℕ)) := by
   let U := primeOrderPrefix e n
   let P : ℕ → Finset ℕ := fun k => H k \ U
   let R : ℕ → Finset ℕ := fun k => H k ∩ U

@@ -25,21 +25,21 @@ def residueClassL1Mass (e M r : ℕ) (b : ℕ → ℂ) : ℝ :=
 /-- The squared `ℓ²` mass of coefficients from `[1,M]` in one literal residue class modulo
 `e + 1`. -/
 def residueClassL2Mass (e M r : ℕ) (b : ℕ → ℂ) : ℝ :=
-  ∑ k ∈ (Finset.Icc 1 M).filter (fun k => k % (e + 1) = r), ‖b k‖ ^ 2
+  ∑ k ∈ (Finset.Icc 1 M).filter (fun k => k % (e + 1) = r), ‖b k‖ ^ (2 : ℕ)
 
 /-- Cauchy's inequality in one finite residue class, with its class occupancy bounded by the
 elementary interval count. -/
 theorem residueClassL1Mass_sq_le (e M r : ℕ) (b : ℕ → ℂ) :
-    residueClassL1Mass e M r b ^ 2 ≤
+    residueClassL1Mass e M r b ^ (2 : ℕ) ≤
       ((M : ℝ) / ((e + 1 : ℕ) : ℝ) + 1) * residueClassL2Mass e M r b := by
   rw [residueClassL1Mass, residueClassL2Mass]
   calc
-    (∑ k ∈ (Finset.Icc 1 M).filter (fun k => k % (e + 1) = r), ‖b k‖) ^ 2
+    (∑ k ∈ (Finset.Icc 1 M).filter (fun k => k % (e + 1) = r), ‖b k‖) ^ (2 : ℕ)
         ≤ (((Finset.Icc 1 M).filter (fun k => k % (e + 1) = r)).card : ℝ) *
-          ∑ k ∈ (Finset.Icc 1 M).filter (fun k => k % (e + 1) = r), ‖b k‖ ^ 2 :=
+          ∑ k ∈ (Finset.Icc 1 M).filter (fun k => k % (e + 1) = r), ‖b k‖ ^ (2 : ℕ) :=
       sq_sum_le_card_mul_sum_sq
     _ ≤ ((M : ℝ) / ((e + 1 : ℕ) : ℝ) + 1) *
-          ∑ k ∈ (Finset.Icc 1 M).filter (fun k => k % (e + 1) = r), ‖b k‖ ^ 2 := by
+          ∑ k ∈ (Finset.Icc 1 M).filter (fun k => k % (e + 1) = r), ‖b k‖ ^ (2 : ℕ) := by
       apply mul_le_mul_of_nonneg_right
       · exact RHTower.Sieve.card_residue_class_le (by omega) M r
       · exact Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
@@ -47,11 +47,11 @@ theorem residueClassL1Mass_sq_le (e M r : ℕ) (b : ℕ → ℂ) :
 /-- Summing the residue-class Cauchy inequalities gives an exact finite second-moment bound.
 The only loss is the literal `M / (e + 1) + 1` occupancy of an interval residue class. -/
 theorem sum_residueClassL1Mass_sq_le (e M : ℕ) (b : ℕ → ℂ) :
-    ∑ r ∈ Finset.range (e + 1), residueClassL1Mass e M r b ^ 2 ≤
+    ∑ r ∈ Finset.range (e + 1), residueClassL1Mass e M r b ^ (2 : ℕ) ≤
       ((M : ℝ) / ((e + 1 : ℕ) : ℝ) + 1) *
-        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
   have hclass : ∀ r ∈ Finset.range (e + 1),
-      residueClassL1Mass e M r b ^ 2 ≤
+      residueClassL1Mass e M r b ^ (2 : ℕ) ≤
         ((M : ℝ) / ((e + 1 : ℕ) : ℝ) + 1) * residueClassL2Mass e M r b := by
     intro r hr
     exact residueClassL1Mass_sq_le e M r b
@@ -63,7 +63,7 @@ theorem sum_residueClassL1Mass_sq_le (e M : ℕ) (b : ℕ → ℂ) :
           ∑ r ∈ Finset.range (e + 1), residueClassL2Mass e M r b := by
       rw [Finset.mul_sum]
     _ = ((M : ℝ) / ((e + 1 : ℕ) : ℝ) + 1) *
-          ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+          ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
       congr 1
       simp only [residueClassL2Mass]
       simpa only [Finset.filter_filter] using
@@ -71,13 +71,13 @@ theorem sum_residueClassL1Mass_sq_le (e M : ℕ) (b : ℕ → ℂ) :
           (s := Finset.Icc 1 M) (t := Finset.range (e + 1))
           (g := fun k => k % (e + 1))
           (fun k hk => Finset.mem_range.mpr (Nat.mod_lt _ (by omega)))
-          (fun k => ‖b k‖ ^ 2))
+          (fun k => ‖b k‖ ^ (2 : ℕ)))
 
 /-- Exact decomposition of a pair sum by equal residue classes. -/
 theorem sum_same_residueClass_pair_mass (e M : ℕ) (b : ℕ → ℂ) :
     (∑ k ∈ Finset.Icc 1 M, ∑ l ∈ Finset.Icc 1 M,
       if k % (e + 1) = l % (e + 1) then ‖b k‖ * ‖b l‖ else 0) =
-      ∑ r ∈ Finset.range (e + 1), residueClassL1Mass e M r b ^ 2 := by
+      ∑ r ∈ Finset.range (e + 1), residueClassL1Mass e M r b ^ (2 : ℕ) := by
   classical
   simp only [residueClassL1Mass]
   simp_rw [pow_two, Finset.sum_mul_sum]
@@ -145,7 +145,7 @@ theorem gcd_succ_eq_sum_totient_residueClasses (q k l : ℕ) :
 gcd kernel.  Modulus `q + 1` keeps positivity internal to the statement. -/
 def divisorWeightedResidueClassL1Moment (q M : ℕ) (b : ℕ → ℂ) : ℝ :=
   ∑ e ∈ (q + 1).divisors, (Nat.totient e : ℝ) *
-    ∑ r ∈ Finset.range e, residueClassL1Mass (e - 1) M r b ^ 2
+    ∑ r ∈ Finset.range e, residueClassL1Mass (e - 1) M r b ^ (2 : ℕ)
 
 /-- The finite coefficient-side divisor/Cauchy estimate.  This is the exact bookkeeping layer
 used after a totient expansion of a square-free quadratic correlation; the remaining task is to
@@ -153,10 +153,10 @@ identify the character second moment with this positive divisor majorant. -/
 theorem divisorWeightedResidueClassL1Moment_le (q M : ℕ) (b : ℕ → ℂ) :
     divisorWeightedResidueClassL1Moment q M b ≤
       (∑ e ∈ (q + 1).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
   have hstep : ∀ e ∈ (q + 1).divisors,
-      ∑ r ∈ Finset.range e, residueClassL1Mass (e - 1) M r b ^ 2 ≤
-        ((M : ℝ) / (e : ℝ) + 1) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+      ∑ r ∈ Finset.range e, residueClassL1Mass (e - 1) M r b ^ (2 : ℕ) ≤
+        ((M : ℝ) / (e : ℝ) + 1) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
     intro e he
     have hepos : 0 < e := Nat.pos_of_dvd_of_pos (Nat.mem_divisors.mp he).1 (by omega)
     have heone : 1 ≤ e := hepos
@@ -165,12 +165,12 @@ theorem divisorWeightedResidueClassL1Moment_le (q M : ℕ) (b : ℕ → ℂ) :
   rw [divisorWeightedResidueClassL1Moment]
   calc
     _ ≤ ∑ e ∈ (q + 1).divisors, (Nat.totient e : ℝ) *
-        (((M : ℝ) / (e : ℝ) + 1) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
+        (((M : ℝ) / (e : ℝ) + 1) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro e he
       exact mul_le_mul_of_nonneg_left (hstep e he) (Nat.cast_nonneg _)
     _ = (∑ e ∈ (q + 1).divisors, (Nat.totient e : ℝ) *
-          ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+          ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
       rw [Finset.sum_mul]
       apply Finset.sum_congr rfl
       intro e he
@@ -249,14 +249,14 @@ theorem gcdKernelMoment_eq_divisorWeightedResidueClassL1Moment (q M : ℕ) (b : 
   have hsub : e - 1 + 1 = e := Nat.sub_add_cancel heone
   rw [← (show (∑ k ∈ Finset.Icc 1 M, ∑ l ∈ Finset.Icc 1 M,
       if k % e = l % e then ‖b k‖ * ‖b l‖ else 0) =
-      ∑ r ∈ Finset.range e, residueClassL1Mass (e - 1) M r b ^ 2 by
+      ∑ r ∈ Finset.range e, residueClassL1Mass (e - 1) M r b ^ (2 : ℕ) by
     simpa only [hsub] using sum_same_residueClass_pair_mass (e - 1) M b)]
 
 /-- Closed finite gcd-kernel estimate obtained from the literal divisor/Cauchy calculation. -/
 theorem gcdKernelMoment_le (q M : ℕ) (b : ℕ → ℂ) :
     gcdKernelMoment q M b ≤
       (∑ e ∈ (q + 1).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
   rw [gcdKernelMoment_eq_divisorWeightedResidueClassL1Moment]
   exact divisorWeightedResidueClassL1Moment_le q M b
 
@@ -382,7 +382,7 @@ theorem quadratic_intervalShiftSum_normSq_le_divisor [DecidableEq I] (P : OddPri
     (M : ℕ) (b : ℕ → ℂ) :
     ∑ x : ZMod P.modulus, Complex.normSq (quadraticIntervalShiftSum P M b x) ≤
       (∑ e ∈ P.modulus.divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
   have hmodpos : 0 < P.modulus := Nat.pos_of_ne_zero P.modulus_neZero.out
   have hmod : P.modulus - 1 + 1 = P.modulus := Nat.sub_add_cancel hmodpos
   have hmodR : ((P.modulus - 1 : ℕ) : ℝ) + 1 = (P.modulus : ℝ) := by
@@ -391,7 +391,7 @@ theorem quadratic_intervalShiftSum_normSq_le_divisor [DecidableEq I] (P : OddPri
     _ ≤ gcdKernelMoment (P.modulus - 1) M b :=
       quadratic_intervalShiftSum_normSq_le_gcdKernel P M b
     _ ≤ (∑ e ∈ (P.modulus - 1 + 1).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
       gcdKernelMoment_le (P.modulus - 1) M b
     _ = _ := by rw [hmod]
 
@@ -402,19 +402,19 @@ theorem quadratic_intervalShiftSum_normSq_le_divisorCount [DecidableEq I]
     (P : OddPrimeFamily I) (M : ℕ) (b : ℕ → ℂ) :
     ∑ x : ZMod P.modulus, Complex.normSq (quadraticIntervalShiftSum P M b x) ≤
       ((M : ℝ) * (P.modulus.divisors.card : ℝ) + (P.modulus : ℝ)) *
-        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
   have hmodpos : 0 < P.modulus := Nat.pos_of_ne_zero P.modulus_neZero.out
   have hmod : P.modulus - 1 + 1 = P.modulus := Nat.sub_add_cancel hmodpos
   have hmodR : ((P.modulus - 1 : ℕ) : ℝ) + 1 = (P.modulus : ℝ) := by
     exact_mod_cast hmod
-  have henergy_nonneg : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+  have henergy_nonneg : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
   calc
     _ ≤ (∑ e ∈ P.modulus.divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
       quadratic_intervalShiftSum_normSq_le_divisor P M b
     _ ≤ ((M : ℝ) * (P.modulus.divisors.card : ℝ) + (P.modulus : ℝ)) *
-        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
       apply mul_le_mul_of_nonneg_right
       simpa only [hmod, hmodR] using divisor_totient_coefficient_le (P.modulus - 1) M
       exact henergy_nonneg

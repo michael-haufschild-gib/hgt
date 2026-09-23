@@ -48,18 +48,18 @@ noncomputable section
 
 /-- The secular tail from index `m` on. -/
 def offsetSecularTail (d ℓ : ℕ → ℝ) (m : ℕ) (μ : ℝ) : ℝ :=
-  ∑' j : ℕ, ℓ (j + m) ^ 2 / (d (j + m) - μ)
+  ∑' j : ℕ, ℓ (j + m) ^ (2 : ℕ) / (d (j + m) - μ)
 
 variable {d ℓ : ℕ → ℝ} {m : ℕ} {B : ℝ}
 
 theorem offsetSecularTail_term_nonneg (hB : ∀ j, B ≤ d (j + m)) {μ : ℝ} (hμ : μ < B) (j : ℕ) :
-    0 ≤ ℓ (j + m) ^ 2 / (d (j + m) - μ) :=
+    0 ≤ ℓ (j + m) ^ (2 : ℕ) / (d (j + m) - μ) :=
   div_nonneg (sq_nonneg _) (by linarith [hB j])
 
 theorem summable_offsetSecularTail (hB : ∀ j, B ≤ d (j + m))
-    (hsum : Summable fun j => ℓ j ^ 2) {μ : ℝ} (hμ : μ < B) :
-    Summable fun j : ℕ => ℓ (j + m) ^ 2 / (d (j + m) - μ) := by
-  have hsum2 : Summable fun j : ℕ => ℓ (j + m) ^ 2 := (summable_nat_add_iff m).mpr hsum
+    (hsum : Summable fun j => ℓ j ^ (2 : ℕ)) {μ : ℝ} (hμ : μ < B) :
+    Summable fun j : ℕ => ℓ (j + m) ^ (2 : ℕ) / (d (j + m) - μ) := by
+  have hsum2 : Summable fun j : ℕ => ℓ (j + m) ^ (2 : ℕ) := (summable_nat_add_iff m).mpr hsum
   refine Summable.of_nonneg_of_le (offsetSecularTail_term_nonneg hB hμ) (fun j => ?_)
     (hsum2.div_const (B - μ))
   exact div_le_div_of_nonneg_left (sq_nonneg _) (by linarith) (by linarith [hB j])
@@ -69,7 +69,7 @@ theorem offsetSecularTail_nonneg (hB : ∀ j, B ≤ d (j + m)) {μ : ℝ} (hμ :
   tsum_nonneg (offsetSecularTail_term_nonneg hB hμ)
 
 theorem offsetSecularTail_mono (hB : ∀ j, B ≤ d (j + m))
-    (hsum : Summable fun j => ℓ j ^ 2) {μ μ' : ℝ} (hle : μ ≤ μ') (hμ' : μ' < B) :
+    (hsum : Summable fun j => ℓ j ^ (2 : ℕ)) {μ μ' : ℝ} (hle : μ ≤ μ') (hμ' : μ' < B) :
     offsetSecularTail d ℓ m μ ≤ offsetSecularTail d ℓ m μ' := by
   refine Summable.tsum_le_tsum (fun j => ?_)
     (summable_offsetSecularTail hB hsum (lt_of_le_of_lt hle hμ'))
@@ -77,12 +77,12 @@ theorem offsetSecularTail_mono (hB : ∀ j, B ≤ d (j + m))
   exact div_le_div_of_nonneg_left (sq_nonneg _) (by linarith [hB j]) (by linarith)
 
 theorem offsetSecularTail_continuousOn (hB : ∀ j, B ≤ d (j + m))
-    (hsum : Summable fun j => ℓ j ^ 2) {b : ℝ} (hb : b < B) :
+    (hsum : Summable fun j => ℓ j ^ (2 : ℕ)) {b : ℝ} (hb : b < B) :
     ContinuousOn (offsetSecularTail d ℓ m) (Set.Iic b) := by
-  have hsum2 : Summable fun j : ℕ => ℓ (j + m) ^ 2 := (summable_nat_add_iff m).mpr hsum
+  have hsum2 : Summable fun j : ℕ => ℓ (j + m) ^ (2 : ℕ) := (summable_nat_add_iff m).mpr hsum
   rw [continuousOn_iff_continuous_restrict]
   have hrestrict : (Set.Iic b).restrict (offsetSecularTail d ℓ m)
-      = fun x : Set.Iic b => ∑' j : ℕ, ℓ (j + m) ^ 2 / (d (j + m) - (x : ℝ)) := rfl
+      = fun x : Set.Iic b => ∑' j : ℕ, ℓ (j + m) ^ (2 : ℕ) / (d (j + m) - (x : ℝ)) := rfl
   rw [hrestrict]
   refine continuous_tsum (fun j => ?_) (hsum2.div_const (B - b)) (fun j x => ?_)
   · refine continuous_const.div (continuous_const.sub continuous_subtype_val) fun x => ?_
@@ -100,24 +100,24 @@ variable {k : ℕ}
 /-- The full constrained secular function split at depth `k`: head poles `0..k`, the shoulder
 pole `k+1`, and the tail from `k+2` on. -/
 def depthSecular (d ℓ : ℕ → ℝ) (k : ℕ) (μ : ℝ) : ℝ :=
-  (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2 / (d j - μ))
-    + ℓ (k + 1) ^ 2 / (d (k + 1) - μ) + offsetSecularTail d ℓ (k + 2) μ
+  (∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ) / (d j - μ))
+    + ℓ (k + 1) ^ (2 : ℕ) / (d (k + 1) - μ) + offsetSecularTail d ℓ (k + 2) μ
 
 theorem depthSecular_strictMonoOn (hk12 : d (k + 1) < d (k + 2))
     (hkfloor : ∀ j, d (k + 2) ≤ d (j + (k + 2)))
     (hhead : ∀ j, j ≤ k → d j ≤ d k)
-    (hsum : Summable fun j => ℓ j ^ 2) (hℓk1 : ℓ (k + 1) ≠ 0) :
+    (hsum : Summable fun j => ℓ j ^ (2 : ℕ)) (hℓk1 : ℓ (k + 1) ≠ 0) :
     StrictMonoOn (depthSecular d ℓ k) (Set.Ioo (d k) (d (k + 1))) := by
   intro μ hμ μ' hμ' hlt
-  have hc : (0 : ℝ) < ℓ (k + 1) ^ 2 :=
+  have hc : (0 : ℝ) < ℓ (k + 1) ^ (2 : ℕ) :=
     lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hℓk1))
-  have hheadsum : (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2 / (d j - μ))
-      ≤ ∑ j ∈ Finset.range (k + 1), ℓ j ^ 2 / (d j - μ') := by
+  have hheadsum : (∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ) / (d j - μ))
+      ≤ ∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ) / (d j - μ') := by
     refine Finset.sum_le_sum fun j hj => ?_
     have hjk : j ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
     exact div_le_div_of_neg_of_le (sq_nonneg _)
       (by linarith [hhead j hjk, hμ.1]) (by linarith)
-  have hsh : ℓ (k + 1) ^ 2 / (d (k + 1) - μ) < ℓ (k + 1) ^ 2 / (d (k + 1) - μ') :=
+  have hsh : ℓ (k + 1) ^ (2 : ℕ) / (d (k + 1) - μ) < ℓ (k + 1) ^ (2 : ℕ) / (d (k + 1) - μ') :=
     div_lt_div_of_pos_left hc (by linarith [hμ'.2]) (by linarith)
   have ht : offsetSecularTail d ℓ (k + 2) μ ≤ offsetSecularTail d ℓ (k + 2) μ' :=
     offsetSecularTail_mono hkfloor hsum hlt.le (by linarith [hμ'.2])
@@ -127,16 +127,16 @@ theorem depthSecular_strictMonoOn (hk12 : d (k + 1) < d (k + 2))
 theorem depthSecular_continuousOn (hk12 : d (k + 1) < d (k + 2))
     (hkfloor : ∀ j, d (k + 2) ≤ d (j + (k + 2)))
     (hhead : ∀ j, j ≤ k → d j ≤ d k)
-    (hsum : Summable fun j => ℓ j ^ 2) {a b : ℝ} (ha : d k < a) (hb : b < d (k + 1)) :
+    (hsum : Summable fun j => ℓ j ^ (2 : ℕ)) {a b : ℝ} (ha : d k < a) (hb : b < d (k + 1)) :
     ContinuousOn (depthSecular d ℓ k) (Set.Icc a b) := by
   have hheadc : ContinuousOn
-      (fun μ : ℝ => ∑ j ∈ Finset.range (k + 1), ℓ j ^ 2 / (d j - μ)) (Set.Icc a b) := by
+      (fun μ : ℝ => ∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ) / (d j - μ)) (Set.Icc a b) := by
     refine continuousOn_finsetSum _ fun j hj => ?_
     have hjk : j ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
     apply ContinuousOn.div continuousOn_const (continuousOn_const.sub continuousOn_id)
     intro x hx
     exact ne_of_lt (by linarith [hhead j hjk, hx.1] : d j - x < 0)
-  have hshc : ContinuousOn (fun μ : ℝ => ℓ (k + 1) ^ 2 / (d (k + 1) - μ)) (Set.Icc a b) := by
+  have hshc : ContinuousOn (fun μ : ℝ => ℓ (k + 1) ^ (2 : ℕ) / (d (k + 1) - μ)) (Set.Icc a b) := by
     apply ContinuousOn.div continuousOn_const (continuousOn_const.sub continuousOn_id)
     intro x hx
     exact ne_of_gt (by linarith [hx.2] : 0 < d (k + 1) - x)
@@ -148,7 +148,7 @@ theorem depthSecular_continuousOn (hk12 : d (k + 1) < d (k + 2))
 theorem depthSecular_root_unique (hk12 : d (k + 1) < d (k + 2))
     (hkfloor : ∀ j, d (k + 2) ≤ d (j + (k + 2)))
     (hhead : ∀ j, j ≤ k → d j ≤ d k)
-    (hsum : Summable fun j => ℓ j ^ 2) (hℓk1 : ℓ (k + 1) ≠ 0)
+    (hsum : Summable fun j => ℓ j ^ (2 : ℕ)) (hℓk1 : ℓ (k + 1) ≠ 0)
     {μ μ' : ℝ} (hμ : μ ∈ Set.Ioo (d k) (d (k + 1))) (hμ' : μ' ∈ Set.Ioo (d k) (d (k + 1)))
     (h : depthSecular d ℓ k μ = 0) (h' : depthSecular d ℓ k μ' = 0) : μ = μ' :=
   (depthSecular_strictMonoOn hk12 hkfloor hhead hsum hℓk1).injOn hμ hμ' (h.trans h'.symm)
@@ -163,7 +163,7 @@ def flattenedScales (d : ℕ → ℝ) (k : ℕ) (t : ℝ) : ℕ → ℝ
 
 /-- Coordinate family with the whole head aggregated into one mass. -/
 def flattenedCoords (ℓ : ℕ → ℝ) (k : ℕ) : ℕ → ℝ
-  | 0 => Real.sqrt (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2)
+  | 0 => Real.sqrt (∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ))
   | 1 => ℓ (k + 1)
   | j + 2 => ℓ (j + (k + 2))
 
@@ -179,40 +179,40 @@ theorem flattenedScales_add_two {t : ℝ} (j : ℕ) :
     flattenedScales d k t (j + 2) = d (j + (k + 2)) := rfl
 
 theorem flattenedCoords_zero_sq :
-    flattenedCoords ℓ k 0 ^ 2 = ∑ j ∈ Finset.range (k + 1), ℓ j ^ 2 :=
+    flattenedCoords ℓ k 0 ^ (2 : ℕ) = ∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ) :=
   Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _)
 
 /-- The flattened family's first-gap secular function in closed form. -/
 theorem infiniteSecular_flattened (t μ : ℝ) :
     infiniteSecular (flattenedScales d k t) (flattenedCoords ℓ k) μ
-      = (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2) / (t - μ)
-        + ℓ (k + 1) ^ 2 / (d (k + 1) - μ) + offsetSecularTail d ℓ (k + 2) μ := by
-  show flattenedCoords ℓ k 0 ^ 2 / (t - μ) + ℓ (k + 1) ^ 2 / (d (k + 1) - μ)
+      = (∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ)) / (t - μ)
+        + ℓ (k + 1) ^ (2 : ℕ) / (d (k + 1) - μ) + offsetSecularTail d ℓ (k + 2) μ := by
+  show flattenedCoords ℓ k 0 ^ (2 : ℕ) / (t - μ) + ℓ (k + 1) ^ (2 : ℕ) / (d (k + 1) - μ)
       + offsetSecularTail d ℓ (k + 2) μ = _
   rw [flattenedCoords_zero_sq]
 
-theorem summable_flattenedCoords_sq (hsum : Summable fun j => ℓ j ^ 2) :
-    Summable fun j => flattenedCoords ℓ k j ^ 2 := by
-  have htail : Summable fun j : ℕ => flattenedCoords ℓ k (j + 2) ^ 2 := by
-    have h := (summable_nat_add_iff (f := fun j => ℓ j ^ 2) (k + 2)).mpr hsum
+theorem summable_flattenedCoords_sq (hsum : Summable fun j => ℓ j ^ (2 : ℕ)) :
+    Summable fun j => flattenedCoords ℓ k j ^ (2 : ℕ) := by
+  have htail : Summable fun j : ℕ => flattenedCoords ℓ k (j + 2) ^ (2 : ℕ) := by
+    have h := (summable_nat_add_iff (f := fun j => ℓ j ^ (2 : ℕ)) (k + 2)).mpr hsum
     exact h.congr fun j => rfl
-  exact (summable_nat_add_iff (f := fun j => flattenedCoords ℓ k j ^ 2) 2).mp htail
+  exact (summable_nat_add_iff (f := fun j => flattenedCoords ℓ k j ^ (2 : ℕ)) 2).mp htail
 
 /-- Aggregation is mass-preserving: the flattened coordinate family carries exactly the total
 squared mass of the original one. -/
-theorem tsum_flattenedCoords_sq (hsum : Summable fun j => ℓ j ^ 2) :
-    (∑' j : ℕ, flattenedCoords ℓ k j ^ 2) = ∑' j : ℕ, ℓ j ^ 2 := by
+theorem tsum_flattenedCoords_sq (hsum : Summable fun j => ℓ j ^ (2 : ℕ)) :
+    (∑' j : ℕ, flattenedCoords ℓ k j ^ (2 : ℕ)) = ∑' j : ℕ, ℓ j ^ (2 : ℕ) := by
   have hflat := summable_flattenedCoords_sq (k := k) hsum
   have h1 := hflat.sum_add_tsum_nat_add 2
   have h2 := hsum.sum_add_tsum_nat_add (k + 2)
-  have hr2 : (∑ i ∈ Finset.range 2, flattenedCoords ℓ k i ^ 2)
-      = (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2) + ℓ (k + 1) ^ 2 := by
+  have hr2 : (∑ i ∈ Finset.range 2, flattenedCoords ℓ k i ^ (2 : ℕ))
+      = (∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ)) + ℓ (k + 1) ^ (2 : ℕ) := by
     rw [Finset.sum_range_succ, Finset.sum_range_one, flattenedCoords_zero_sq,
       flattenedCoords_one]
-  have hrk : (∑ i ∈ Finset.range (k + 2), ℓ i ^ 2)
-      = (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2) + ℓ (k + 1) ^ 2 := Finset.sum_range_succ _ _
-  have htaileq : (∑' i : ℕ, flattenedCoords ℓ k (i + 2) ^ 2)
-      = ∑' i : ℕ, ℓ (i + (k + 2)) ^ 2 := tsum_congr fun i => rfl
+  have hrk : (∑ i ∈ Finset.range (k + 2), ℓ i ^ (2 : ℕ))
+      = (∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ)) + ℓ (k + 1) ^ (2 : ℕ) := Finset.sum_range_succ _ _
+  have htaileq : (∑' i : ℕ, flattenedCoords ℓ k (i + 2) ^ (2 : ℕ))
+      = ∑' i : ℕ, ℓ (i + (k + 2)) ^ (2 : ℕ) := tsum_congr fun i => rfl
   linarith [h1, h2]
 
 /-! ## The pointwise sandwich -/
@@ -224,8 +224,8 @@ theorem depthSecular_le_flattened_zero
       ≤ infiniteSecular (flattenedScales d k 0) (flattenedCoords ℓ k) μ := by
   rw [infiniteSecular_flattened]
   unfold depthSecular
-  have hheadle : (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2 / (d j - μ))
-      ≤ (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2) / (0 - μ) := by
+  have hheadle : (∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ) / (d j - μ))
+      ≤ (∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ)) / (0 - μ) := by
     rw [Finset.sum_div]
     refine Finset.sum_le_sum fun j hj => ?_
     have hjk : j ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
@@ -240,8 +240,8 @@ theorem flattened_top_le_depthSecular
       ≤ depthSecular d ℓ k μ := by
   rw [infiniteSecular_flattened]
   unfold depthSecular
-  have hheadle : (∑ j ∈ Finset.range (k + 1), ℓ j ^ 2) / (d k - μ)
-      ≤ ∑ j ∈ Finset.range (k + 1), ℓ j ^ 2 / (d j - μ) := by
+  have hheadle : (∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ)) / (d k - μ)
+      ≤ ∑ j ∈ Finset.range (k + 1), ℓ j ^ (2 : ℕ) / (d j - μ) := by
     rw [Finset.sum_div]
     refine Finset.sum_le_sum fun j hj => ?_
     have hjk : j ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
@@ -263,7 +263,7 @@ theorem depthSecularRoot_bracket
     (hk01 : d k < d (k + 1)) (hk12 : d (k + 1) < d (k + 2))
     (hkfloor : ∀ j, d (k + 2) ≤ d (j + (k + 2)))
     (hhead : ∀ j, j ≤ k → 0 ≤ d j ∧ d j ≤ d k)
-    (hsum : Summable fun j => ℓ j ^ 2)
+    (hsum : Summable fun j => ℓ j ^ (2 : ℕ))
     (hS : flattenedCoords ℓ k 0 ≠ 0) (hℓk1 : ℓ (k + 1) ≠ 0)
     (hbr : d k < infiniteSecularRoot (flattenedScales d k 0) (flattenedCoords ℓ k)) :
     depthSecularRoot d ℓ k ∈ Set.Ioo (d k) (d (k + 1)) ∧
@@ -274,7 +274,7 @@ theorem depthSecularRoot_bracket
         ≤ infiniteSecularRoot (flattenedScales d k (d k)) (flattenedCoords ℓ k) := by
   have hd0k : 0 ≤ d k := (hhead k le_rfl).1
   have hheadle : ∀ j, j ≤ k → d j ≤ d k := fun j hj => (hhead j hj).2
-  have hsumflat : Summable fun j => flattenedCoords ℓ k j ^ 2 :=
+  have hsumflat : Summable fun j => flattenedCoords ℓ k j ^ (2 : ℕ) :=
     summable_flattenedCoords_sq hsum
   -- structure of the two flattened families
   have h12z : flattenedScales d k (0 : ℝ) 1 < flattenedScales d k 0 2 := by
@@ -348,24 +348,24 @@ and the whole multi-pole head are invisible, and
 ``` -/
 theorem depthSecularRoot_ratio_tendsto
     {d ℓ : ℝ → ℕ → ℝ} {k : ℕ} {a : ℕ → ℝ}
-    (haS : 0 < ∑ j ∈ Finset.range (k + 1), a j ^ 2) (hak1 : a (k + 1) ≠ 0)
+    (haS : 0 < ∑ j ∈ Finset.range (k + 1), a j ^ (2 : ℕ)) (hak1 : a (k + 1) ≠ 0)
     (hstruct : ∀ᶠ lam in atTop,
       ((∀ j, j ≤ k → 0 ≤ d lam j ∧ d lam j ≤ d lam k) ∧
         d lam k < d lam (k + 1) ∧ d lam (k + 1) < d lam (k + 2)) ∧
         ∀ j, d lam (k + 2) ≤ d lam (j + (k + 2)))
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hratio : Tendsto (fun lam => d lam k / d lam (k + 1)) atTop (nhds 0))
     (htail : Tendsto (fun lam =>
       lam * d lam (k + 1) / (d lam (k + 2) - d lam (k + 1))) atTop (nhds 0))
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop (nhds (a j))) :
     Tendsto (fun lam => depthSecularRoot (d lam) (ℓ lam) k / d lam (k + 1)) atTop
-      (nhds ((∑ j ∈ Finset.range (k + 1), a j ^ 2)
-        / ((∑ j ∈ Finset.range (k + 1), a j ^ 2) + a (k + 1) ^ 2))) := by
-  set S := ∑ j ∈ Finset.range (k + 1), a j ^ 2 with hSdef
+      (nhds ((∑ j ∈ Finset.range (k + 1), a j ^ (2 : ℕ))
+        / ((∑ j ∈ Finset.range (k + 1), a j ^ (2 : ℕ)) + a (k + 1) ^ (2 : ℕ)))) := by
+  set S := ∑ j ∈ Finset.range (k + 1), a j ^ (2 : ℕ) with hSdef
   have hA0 : Real.sqrt S ≠ 0 := (Real.sqrt_pos.2 haS).ne'
   -- coordinate limits of the flattened family
-  have hsumlim : Tendsto (fun lam => ∑ j ∈ Finset.range (k + 1), ℓ lam j ^ 2) atTop
+  have hsumlim : Tendsto (fun lam => ∑ j ∈ Finset.range (k + 1), ℓ lam j ^ (2 : ℕ)) atTop
       (nhds S) := by
     refine tendsto_finsetSum _ fun j hj => ?_
     have hjk : j ≤ k + 1 :=
@@ -378,11 +378,11 @@ theorem depthSecularRoot_ratio_tendsto
   have hl1D : Tendsto (fun lam => flattenedCoords (ℓ lam) k 1) atTop (nhds (a (k + 1))) :=
     hl (k + 1) le_rfl
   -- eventual hypotheses of the flattened families
-  have hsumD : ∀ᶠ lam in atTop, Summable fun j => flattenedCoords (ℓ lam) k j ^ 2 := by
+  have hsumD : ∀ᶠ lam in atTop, Summable fun j => flattenedCoords (ℓ lam) k j ^ (2 : ℕ) := by
     filter_upwards [hsum] with lam hsm
     exact summable_flattenedCoords_sq hsm
   have hbesselD : ∀ᶠ lam in atTop,
-      (∑' j : ℕ, flattenedCoords (ℓ lam) k j ^ 2) ≤ 2 * lam := by
+      (∑' j : ℕ, flattenedCoords (ℓ lam) k j ^ (2 : ℕ)) ≤ 2 * lam := by
     filter_upwards [hsum, hbessel] with lam hsm hbes
     rw [tsum_flattenedCoords_sq hsm]
     exact hbes
@@ -431,7 +431,7 @@ theorem depthSecularRoot_ratio_tendsto
     hA0 hak1 hstructT hsumD hbesselD hratio htailT hl0D hl1D
   rw [Real.sq_sqrt haS.le] at hcheck hhat
   -- the lower flattened root eventually clears `d_k`
-  have hw : 0 < S / (S + a (k + 1) ^ 2) :=
+  have hw : 0 < S / (S + a (k + 1) ^ (2 : ℕ)) :=
     div_pos haS (add_pos_of_pos_of_nonneg haS (sq_nonneg _))
   have hd1pos : ∀ᶠ lam in atTop, 0 < d lam (k + 1) := by
     filter_upwards [hstruct] with lam hst
@@ -475,8 +475,8 @@ theorem ccm_depthSecularRoot_ratio_tendsto
       ((∀ j, j ≤ k → 0 ≤ d lam j ∧ d lam j ≤ d lam k) ∧
         d lam k < d lam (k + 1) ∧ d lam (k + 1) < d lam (k + 2)) ∧
         ∀ j, d lam (k + 2) ≤ d lam (j + (k + 2)))
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hratio : Tendsto (fun lam => d lam k / d lam (k + 1)) atTop (nhds 0))
     (htail : Tendsto (fun lam =>
       lam * d lam (k + 1) / (d lam (k + 2) - d lam (k + 1))) atTop (nhds 0))
@@ -484,14 +484,14 @@ theorem ccm_depthSecularRoot_ratio_tendsto
       (nhds (constrainedProlateHermiteCoordinate j))) :
     Tendsto (fun lam => depthSecularRoot (d lam) (ℓ lam) k / d lam (k + 1)) atTop
       (nhds (constrainedProlateHermiteTheta k)) := by
-  have haS : 0 < ∑ j ∈ Finset.range (k + 1), constrainedProlateHermiteCoordinate j ^ 2 :=
+  have haS : 0 < ∑ j ∈ Finset.range (k + 1), constrainedProlateHermiteCoordinate j ^ (2 : ℕ) :=
     constrainedProlateHermiteSquareSum_pos k
   have hak1 : constrainedProlateHermiteCoordinate (k + 1) ≠ 0 :=
     constrainedProlateHermiteCoordinate_ne_zero (k + 1)
   have h := depthSecularRoot_ratio_tendsto haS hak1 hstruct hsum hbessel hratio htail hl
-  have hθ : (∑ j ∈ Finset.range (k + 1), constrainedProlateHermiteCoordinate j ^ 2)
-      / ((∑ j ∈ Finset.range (k + 1), constrainedProlateHermiteCoordinate j ^ 2)
-        + constrainedProlateHermiteCoordinate (k + 1) ^ 2)
+  have hθ : (∑ j ∈ Finset.range (k + 1), constrainedProlateHermiteCoordinate j ^ (2 : ℕ))
+      / ((∑ j ∈ Finset.range (k + 1), constrainedProlateHermiteCoordinate j ^ (2 : ℕ))
+        + constrainedProlateHermiteCoordinate (k + 1) ^ (2 : ℕ))
       = constrainedProlateHermiteTheta k := by
     have hsq := constrainedProlateHermiteTheta_eq_square_ratio k
     rwa [Real.sq_sqrt (constrainedProlateHermiteSquareSum_pos k).le] at hsq

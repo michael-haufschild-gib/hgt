@@ -69,8 +69,8 @@ theorem finiteBlaschkeGeneralizedSchurKernel_exactNegativeSquares_rank
         Submodule.starProjection_eq_self_iff.mpr hyK
       have hq : finiteBlaschkeGeneralizedSchurForm F B ((y : K) : HardyDisk) < 0 := by
         rw [finiteBlaschkeGeneralizedSchurForm, projectedAdjointDefectForm, hstar]
-        change ‖((y : K) : HardyDisk)‖ ^ 2 - ‖A (y : K)‖ ^ 2 -
-          ‖((y : K) : HardyDisk)‖ ^ 2 < 0
+        change ‖((y : K) : HardyDisk)‖ ^ (2 : ℕ) - ‖A (y : K)‖ ^ (2 : ℕ) -
+          ‖((y : K) : HardyDisk)‖ ^ (2 : ℕ) < 0
         nlinarith [norm_pos_iff.mpr hAy]
       change (inner ℂ
         (RHTower.AnalyticHermitianKernelRealization.sectionSynthesis v c)

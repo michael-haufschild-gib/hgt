@@ -96,11 +96,11 @@ theorem det_characterObserver (r : Fin n → C) :
   Matrix.det_vandermonde r
 
 /-- The framed discriminant of a split fibre: the squared oriented root product. -/
-def fibreDiscriminant (r : Fin n → C) : C := ∏ i : Fin n, ∏ j ∈ Finset.Ioi i, (r j - r i) ^ 2
+def fibreDiscriminant (r : Fin n → C) : C := ∏ i : Fin n, ∏ j ∈ Finset.Ioi i, (r j - r i) ^ (2 : ℕ)
 
 /-- **Card `(10)`.**  The square of the observer determinant is the discriminant. -/
 theorem sq_det_characterObserver (r : Fin n → C) :
-    (Matrix.vandermonde r).det ^ 2 = fibreDiscriminant r := by
+    (Matrix.vandermonde r).det ^ (2 : ℕ) = fibreDiscriminant r := by
   rw [det_characterObserver, fibreDiscriminant, ← Finset.prod_pow]
   exact Finset.prod_congr rfl fun i _ => (Finset.prod_pow _ _ _).symm
 
@@ -153,7 +153,7 @@ open Polynomial
 /-- **Card `(14)`.**  The quadratic mate law `f(T) = (T − 1)(T − δ)`. -/
 noncomputable def mateQuad (δ : ℂ) : ℂ[X] := (X - C 1) * (X - C δ)
 
-theorem mateQuad_eq_expand (δ : ℂ) : mateQuad δ = X ^ 2 - C (1 + δ) * X + C δ := by
+theorem mateQuad_eq_expand (δ : ℂ) : mateQuad δ = X ^ (2 : ℕ) - C (1 + δ) * X + C δ := by
   rw [mateQuad]
   ring_nf
   simp [map_add, map_one]
@@ -172,7 +172,7 @@ theorem eval_derivative_mateQuad_one (δ : ℂ) : (derivative (mateQuad δ)).eva
 
 /-- **Card `(14)`.**  The discriminant of the mate law is the square of the different. -/
 theorem discriminant_mateQuad (δ : ℂ) :
-    ((derivative (mateQuad δ)).eval δ) ^ 2 = (δ - 1) ^ 2 := by
+    ((derivative (mateQuad δ)).eval δ) ^ (2 : ℕ) = (δ - 1) ^ (2 : ℕ) := by
   rw [eval_derivative_mateQuad]
 
 /-- **Card `(14)`, the exact wall.**  The different — equivalently the discriminant — vanishes
@@ -182,7 +182,7 @@ theorem eval_derivative_mateQuad_eq_zero_iff (δ : ℂ) :
   rw [eval_derivative_mateQuad, sub_eq_zero]
 
 theorem discriminant_mateQuad_eq_zero_iff (δ : ℂ) :
-    ((derivative (mateQuad δ)).eval δ) ^ 2 = 0 ↔ δ = 1 := by
+    ((derivative (mateQuad δ)).eval δ) ^ (2 : ℕ) = 0 ↔ δ = 1 := by
   rw [discriminant_mateQuad, pow_eq_zero_iff (two_ne_zero), sub_eq_zero]
 
 end MateLaw

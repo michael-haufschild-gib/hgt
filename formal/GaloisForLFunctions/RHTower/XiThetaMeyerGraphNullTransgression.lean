@@ -30,7 +30,7 @@ theorem norm_deningerMeyerHalfDensityXiGraphNullSequence_eq_exp_normalizedThetaF
       Real.exp
           (-((n : ℝ) *
             (thetaXiRankTwoBoundaryFlux q /
-              (2 * (thetaSource.mass * thetaXiRootEnergy q))) ^ 2)) *
+              (2 * (thetaSource.mass * thetaXiRootEnergy q))) ^ (2 : ℕ))) *
         ‖deningerMeyerHalfDensityCompletionMk
           deningerMeyerLogGaussianCohomologyClass‖ := by
   rw [norm_deningerMeyerHalfDensityXiGraphNullSequence]

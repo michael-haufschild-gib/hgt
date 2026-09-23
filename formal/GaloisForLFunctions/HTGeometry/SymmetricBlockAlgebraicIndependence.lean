@@ -198,7 +198,7 @@ theorem exists_same_corank_different_trdeg :
         AlgebraicIndependent ℚ x ∧ ¬ AlgebraicIndependent ℚ y := by
   obtain ⟨x, hx⟩ := exists_algebraicIndependent_fin_real 2
   obtain ⟨t, ht⟩ := exists_transcendental_real
-  refine ⟨x, ![t, t ^ 2], linearIndependent_of_algebraicIndependent hx, ?_, hx, ?_⟩
+  refine ⟨x, ![t, t ^ (2 : ℕ)], linearIndependent_of_algebraicIndependent hx, ?_, hx, ?_⟩
   · exact linearIndependent_pair_sq_of_irrational ht.irrational
   · exact not_algebraicIndependent_pair_sq t
 

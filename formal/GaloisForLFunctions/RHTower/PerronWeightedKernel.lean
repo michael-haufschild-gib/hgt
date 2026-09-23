@@ -24,29 +24,29 @@ open MeasureTheory Set Filter
 `s = a + 2πiw`, `a > 0`. -/
 theorem perron_weighted_kernel {a : ℝ} (ha : 0 < a) (u : ℝ) :
     ∫ w : ℝ, Complex.exp (((a : ℂ) + 2 * Real.pi * w * Complex.I) * u)
-        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2
+        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ)
       = ((max u 0 : ℝ) : ℂ) := by
   have hsplit : ∀ w : ℝ,
       Complex.exp (((a : ℂ) + 2 * Real.pi * w * Complex.I) * u)
-        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2
+        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ)
       = Complex.exp (((a * u : ℝ) : ℂ))
         * (Complex.exp (((2 * Real.pi * (w * u) : ℝ) : ℂ) * Complex.I)
-          • (1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2)) := by
+          • (1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ))) := by
     intro w
     rw [smul_eq_mul, ← mul_assoc, ← Complex.exp_add, mul_one_div]
     congr 2
     push_cast
     ring
   calc ∫ w : ℝ, Complex.exp (((a : ℂ) + 2 * Real.pi * w * Complex.I) * u)
-        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2
+        / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ)
       = ∫ w : ℝ, Complex.exp (((a * u : ℝ) : ℂ))
           * (Complex.exp (((2 * Real.pi * (w * u) : ℝ) : ℂ) * Complex.I)
-            • (1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2)) :=
+            • (1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ))) :=
         integral_congr_ae (Filter.Eventually.of_forall hsplit)
     _ = Complex.exp (((a * u : ℝ) : ℂ))
           * ∫ w : ℝ, Complex.exp (((2 * Real.pi * (w * u) : ℝ) : ℂ)
               * Complex.I)
-            • (1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2) :=
+            • (1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ)) :=
         integral_const_mul _ _
     _ = Complex.exp (((a * u : ℝ) : ℂ)) * perronTent a u := by
         rw [perron_kernel_identity ha u]

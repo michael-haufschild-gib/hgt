@@ -59,7 +59,7 @@ product of the two single integrals is the double integral because each factor i
 variable. -/
 theorem double_integral_cos_eq_norm_sq (c : ℝ) {ψ : ℝ → ℝ} (hψ : Continuous ψ) :
     (∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, ψ x * ψ y * Real.cos (c * (x - y)))
-      = ‖bandFourier c ψ‖ ^ 2 := by
+      = ‖bandFourier c ψ‖ ^ (2 : ℕ) := by
   -- the product of the two transforms is the double integral of the complex kernel
   have hprod : bandFourier c ψ * (starRingEnd ℂ) (bandFourier c ψ)
       = ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1,
@@ -176,21 +176,21 @@ theorem endpointResponse_eq {c nup nu : ℝ} {μ : ℂ} {ψ : ℝ → ℝ} (hc :
     (hHF : nup = (1 / Real.pi)
       * ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, ψ x * ψ y * Real.cos (c * (x - y)))
     (hFF : bandFourier c ψ = μ * (ψ 1 : ℂ))
-    (hnu : nu = c / (2 * Real.pi) * ‖μ‖ ^ 2) :
-    nup = 2 * nu * ψ 1 ^ 2 / c := by
+    (hnu : nu = c / (2 * Real.pi) * ‖μ‖ ^ (2 : ℕ)) :
+    nup = 2 * nu * ψ 1 ^ (2 : ℕ) / c := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hfact := double_integral_cos_eq_norm_sq c hψ
-  have hnorm : ‖bandFourier c ψ‖ ^ 2 = ‖μ‖ ^ 2 * ψ 1 ^ 2 := by
+  have hnorm : ‖bandFourier c ψ‖ ^ (2 : ℕ) = ‖μ‖ ^ (2 : ℕ) * ψ 1 ^ (2 : ℕ) := by
     rw [hFF, norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs]
   rw [hHF, hfact, hnorm, hnu]
   field_simp
 
 /-- The gap `d(λ) = 1 - nu(2 pi λ²)` in the CCM normalisation, differentiated. -/
 theorem hasDerivAt_ccmGap {ν : ℝ → ℝ} {νp lam : ℝ}
-    (hν : HasDerivAt ν νp (2 * Real.pi * lam ^ 2)) :
-    HasDerivAt (fun t : ℝ => 1 - ν (2 * Real.pi * t ^ 2))
+    (hν : HasDerivAt ν νp (2 * Real.pi * lam ^ (2 : ℕ))) :
+    HasDerivAt (fun t : ℝ => 1 - ν (2 * Real.pi * t ^ (2 : ℕ)))
       (-(νp * (4 * Real.pi * lam))) lam := by
-  have hinner : HasDerivAt (fun t : ℝ => 2 * Real.pi * t ^ 2) (4 * Real.pi * lam) lam := by
+  have hinner : HasDerivAt (fun t : ℝ => 2 * Real.pi * t ^ (2 : ℕ)) (4 * Real.pi * lam) lam := by
     have h := (hasDerivAt_pow 2 lam).const_mul (2 * Real.pi)
     have hval : 2 * Real.pi * ((2 : ℕ) * lam ^ (2 - 1 : ℕ)) = 4 * Real.pi * lam := by
       norm_num
@@ -209,7 +209,7 @@ theorem hasDerivAt_ccmGap {ν : ℝ → ℝ} {νp lam : ℝ}
 
 The right-hand side is written out with `d'(λ) = -nup · 4 pi λ` from the chain rule and `1 - d = nu`. -/
 theorem endpointResponse_scaled {nu nup p lam : ℝ} (hlam : 0 < lam) (hnu : 0 < nu)
-    (h4 : nup = 2 * nu * p / (2 * Real.pi * lam ^ 2)) :
+    (h4 : nup = 2 * nu * p / (2 * Real.pi * lam ^ (2 : ℕ))) :
     p / lam = nup * (4 * Real.pi * lam) / (4 * nu) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rw [h4]
@@ -245,8 +245,8 @@ theorem endpointResponse_of_hellmannFeynman {E : Type*} [NormedAddCommGroup E]
     (hexp : (inner ℝ (Ψ c) w : ℝ) = (1 / Real.pi)
       * ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, ψ x * ψ y * Real.cos (c * (x - y)))
     (hFF : bandFourier c ψ = μ * (ψ 1 : ℂ))
-    (hnuval : ν c = c / (2 * Real.pi) * ‖μ‖ ^ 2) :
-    νp = 2 * ν c * ψ 1 ^ 2 / c := by
+    (hnuval : ν c = c / (2 * Real.pi) * ‖μ‖ ^ (2 : ℕ)) :
+    νp = 2 * ν c * ψ 1 ^ (2 : ℕ) / c := by
   have hHF := GaloisForLFunctions.HTGeometry.hellmann_feynman hnorm hsa hν hΨ hAΨ hrel
   have hderiv : νp = (1 / Real.pi)
       * ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, ψ x * ψ y * Real.cos (c * (x - y)) := by
@@ -294,7 +294,7 @@ cosine-kernel operator. -/
 inequality applied to `t ↦ sin(a+t) - sin a - t cos a`, whose derivative `cos(a+t) - cos a` is bounded by
 `|t|`. -/
 theorem abs_sin_add_sub_taylor_le (a b : ℝ) :
-    |Real.sin (a + b) - Real.sin a - b * Real.cos a| ≤ b ^ 2 := by
+    |Real.sin (a + b) - Real.sin a - b * Real.cos a| ≤ b ^ (2 : ℕ) := by
   set g : ℝ → ℝ := fun t => Real.sin (a + t) - Real.sin a - t * Real.cos a with hg
   have hderiv : ∀ t ∈ Set.uIcc (0 : ℝ) b,
       HasDerivWithinAt g (Real.cos (a + t) - Real.cos a) (Set.uIcc (0 : ℝ) b) t := by
@@ -331,7 +331,7 @@ theorem abs_sin_add_sub_taylor_le (a b : ℝ) :
   rw [hg0, sub_zero, Real.norm_eq_abs, Real.norm_eq_abs, sub_zero] at h
   calc |Real.sin (a + b) - Real.sin a - b * Real.cos a| = |g b| := by rw [hg]
     _ ≤ |b| * |b| := h
-    _ = b ^ 2 := by
+    _ = b ^ (2 : ℕ) := by
         rw [← abs_mul, ← sq, abs_sq]
 
 /-- **The sinc kernel is differentiable in the aperture, uniformly.**  The first-order Taylor error of
@@ -340,7 +340,7 @@ theorem abs_sin_add_sub_taylor_le (a b : ℝ) :
 theorem abs_sincSmooth_taylor_le (c h u : ℝ) :
     |_root_.RHTower.sincSmooth (c + h) u - _root_.RHTower.sincSmooth c u
         - h * (Real.cos (c * u) / Real.pi)|
-      ≤ h ^ 2 * |u| / Real.pi := by
+      ≤ h ^ (2 : ℕ) * |u| / Real.pi := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rcases eq_or_ne u 0 with hu | hu
   · subst hu
@@ -364,8 +364,8 @@ theorem abs_sincSmooth_taylor_le (c h u : ℝ) :
     rw [hval, abs_div, abs_mul, abs_of_pos hpi]
     rw [div_le_div_iff₀ (by positivity) hpi]
     have hstep : |Real.sin (c * u + h * u) - Real.sin (c * u) - h * u * Real.cos (c * u)|
-        ≤ (h * u) ^ 2 := hsin
-    have hexp : (h * u) ^ 2 = h ^ 2 * |u| * |u| := by
+        ≤ (h * u) ^ (2 : ℕ) := hsin
+    have hexp : (h * u) ^ (2 : ℕ) = h ^ (2 : ℕ) * |u| * |u| := by
       rw [mul_pow, mul_assoc, abs_mul_abs_self, ← sq]
     nlinarith [hstep, hexp, hupos, hpi]
 

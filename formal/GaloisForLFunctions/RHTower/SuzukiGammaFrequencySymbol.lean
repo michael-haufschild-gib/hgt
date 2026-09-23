@@ -32,7 +32,7 @@ def gammaJumpWeight (s : ℝ) : ℝ := 1 / (Real.exp s - 1)
 
 /-- The elementary Laplace transform of the cosine. -/
 theorem gammaSymbol_integral_Ioi_exp_neg_mul_cos {n : ℝ} (hn : 0 < n) (η : ℝ) :
-    (∫ s in Ioi (0:ℝ), Real.exp (-(n * s)) * Real.cos (η * s)) = n / (n ^ 2 + η ^ 2) := by
+    (∫ s in Ioi (0:ℝ), Real.exp (-(n * s)) * Real.cos (η * s)) = n / (n ^ (2 : ℕ) + η ^ (2 : ℕ)) := by
   have hc : ((n : ℂ) - η * Complex.I).re = n := by simp
   have hcpos : 0 < ((n : ℂ) - η * Complex.I).re := by rw [hc]; exact hn
   have hcomplex := GaloisForLFunctions.HTGeometry.integral_Ioi_cexp_neg hcpos
@@ -65,7 +65,7 @@ theorem gammaSymbol_integral_Ioi_exp_neg_mul_cos {n : ℝ} (hn : 0 < n) (η : �
   have hproj := (Complex.reCLM.integral_comp_comm hint)
   rw [hcomplex] at hproj
   simp only [Complex.reCLM_apply] at hproj
-  have hval : (1 / ((n : ℂ) - η * Complex.I)).re = n / (n ^ 2 + η ^ 2) := by
+  have hval : (1 / ((n : ℂ) - η * Complex.I)).re = n / (n ^ (2 : ℕ) + η ^ (2 : ℕ)) := by
     rw [one_div, Complex.inv_re]
     simp [Complex.normSq_apply, hc]
     ring
@@ -120,9 +120,9 @@ theorem one_le_cosh (u : ℝ) : 1 ≤ Real.cosh u := by
   have hinv : Real.exp (-u) = (Real.exp u)⁻¹ := Real.exp_neg u
   rw [hinv]
   rw [le_div_iff₀ (by norm_num : (0:ℝ) < 2)]
-  have hsq : 0 ≤ (Real.exp u - 1) ^ 2 := sq_nonneg _
+  have hsq : 0 ≤ (Real.exp u - 1) ^ (2 : ℕ) := sq_nonneg _
   have hne : Real.exp u ≠ 0 := ne_of_gt hpos
-  have hmul : Real.exp u * (Real.exp u + (Real.exp u)⁻¹) = Real.exp u ^ 2 + 1 := by
+  have hmul : Real.exp u * (Real.exp u + (Real.exp u)⁻¹) = Real.exp u ^ (2 : ℕ) + 1 := by
     field_simp
   nlinarith [hsq, hpos, hmul]
 

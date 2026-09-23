@@ -276,7 +276,7 @@ theorem physicalTwoEdgeSquare_cofinally_not_realPartMonotone_at_gaussianRatD2
     ∀ R : ℝ, ∃ a : ℝ, R ≤ a ∧
       ¬ ComplexRealPartMonotoneMultiplier
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-          (primeFluxContourCoordinate (gaussianRatPoint q)) ^ 2) := by
+          (primeFluxContourCoordinate (gaussianRatPoint q)) ^ (2 : ℕ)) := by
   intro R
   obtain ⟨a, haR, haim⟩ :=
     xiPhysicalThetaAbelEnergyTwoEdgeTransform_cofinally_nonreal_at_gaussianRatD2

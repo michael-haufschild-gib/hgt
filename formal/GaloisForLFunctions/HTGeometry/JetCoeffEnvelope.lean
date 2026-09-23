@@ -99,7 +99,7 @@ theorem exists_jet_coeff_envelope (hyp : FactorialSlope a α Λ Cc c) (j : ℕ) 
   refine ⟨B, K, hKnn, fun n => ?_⟩
   have hcoeff : PowerSeries.coeff n ((⇑(d⁄dX ℂ))^[j] (PowerSeries.mk a))
       = a (n + j) * ((((n + j).descFactorial j : ℕ)) : ℂ) := by
-    rw [coeff_iterate_derivative, PowerSeries.coeff_mk]
+    rw [coeff_iterate_derivative_powerSeriesJetCoeff, PowerSeries.coeff_mk]
   have hfacpos : 0 < facEnv α.re (slopeRatio α Λ) n := facEnv_pos (r := α.re) h𝔞 n
   have hbase : (1 : ℝ) ≤ (n : ℝ) + 1 := by
     have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n

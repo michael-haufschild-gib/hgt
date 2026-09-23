@@ -34,12 +34,12 @@ namespace GaloisForLFunctions.HTGeometry.AddComb
 variable {G : Type*} [CommGroup G] [DecidableEq G] [Fintype G]
 
 /-- The (unreduced) additive energy `∑_g r_{A,B}(g)²`. -/
-def energy (A B : Finset G) : ℕ := ∑ g : G, (rep A B g) ^ 2
+def energy (A B : Finset G) : ℕ := ∑ g : G, (rep A B g) ^ (2 : ℕ)
 
 /-- A linear-quadratic minorant of `min(r, t)` valid at every natural number `r`. -/
 theorem le_min_of_linear_quadratic {a b : ℝ} {t r : ℕ} (hb : 0 < b) (hab : a - b ≤ 1)
-    (hmax : a ^ 2 ≤ 4 * b * t) :
-    a * (r : ℝ) - b * (r : ℝ) ^ 2 ≤ ((min r t : ℕ) : ℝ) := by
+    (hmax : a ^ (2 : ℕ) ≤ 4 * b * t) :
+    a * (r : ℝ) - b * (r : ℝ) ^ (2 : ℕ) ≤ ((min r t : ℕ) : ℝ) := by
   rcases le_total t r with hr | hr
   · have hmin : (min r t : ℕ) = t := min_eq_right hr
     rw [hmin]
@@ -58,7 +58,7 @@ theorem le_min_of_linear_quadratic {a b : ℝ} {t r : ℕ} (hb : 0 < b) (hab : a
 /-- Summing the pointwise minorant: a lower bound for `∑_{i=1}^t #(A ·_i B)` in terms of the
 total mass `#A · #B` and the additive energy. -/
 theorem le_repSum_of_linear_quadratic {a b : ℝ} (A B : Finset G) (t : ℕ)
-    (hb : 0 < b) (hab : a - b ≤ 1) (hmax : a ^ 2 ≤ 4 * b * t) :
+    (hb : 0 < b) (hab : a - b ≤ 1) (hmax : a ^ (2 : ℕ) ≤ 4 * b * t) :
     a * ((A.card : ℝ) * B.card) - b * (energy A B : ℝ) ≤ (repSum A B t : ℝ) := by
   classical
   have hsum : (repSum A B t : ℝ) = ∑ g : G, ((min (rep A B g) t : ℕ) : ℝ) := by
@@ -69,7 +69,7 @@ theorem le_repSum_of_linear_quadratic {a b : ℝ} (A B : Finset G) (t : ℕ)
     rw [← Nat.cast_sum, sum_rep]
     push_cast
     ring
-  have hen : (energy A B : ℝ) = ∑ g : G, ((rep A B g : ℕ) : ℝ) ^ 2 := by
+  have hen : (energy A B : ℝ) = ∑ g : G, ((rep A B g : ℕ) : ℝ) ^ (2 : ℕ) := by
     rw [energy, Nat.cast_sum]
     push_cast
     rfl
@@ -88,14 +88,14 @@ energy and `s = √(t(t−1))`,
 theorem repSum_ge_min (A B : Finset G) (t : ℕ) (ht : 1 ≤ t) (hA : A.Nonempty) (hB : B.Nonempty) :
     min ((t : ℝ) * ((A.card : ℝ) * B.card)
           / ((t : ℝ) + Real.sqrt ((t : ℝ) * ((t : ℝ) - 1))))
-        ((t : ℝ) * ((A.card : ℝ) * B.card) ^ 2 / (energy A B : ℝ))
+        ((t : ℝ) * ((A.card : ℝ) * B.card) ^ (2 : ℕ) / (energy A B : ℝ))
       ≤ (repSum A B t : ℝ) := by
   set M : ℝ := (A.card : ℝ) * B.card with hMdef
   set Q : ℝ := (energy A B : ℝ) with hQdef
   set s : ℝ := Real.sqrt ((t : ℝ) * ((t : ℝ) - 1)) with hsdef
   have ht1 : (1 : ℝ) ≤ (t : ℝ) := by exact_mod_cast ht
   have hnn : (0 : ℝ) ≤ (t : ℝ) * ((t : ℝ) - 1) := by nlinarith
-  have hs2 : s ^ 2 = (t : ℝ) * ((t : ℝ) - 1) := Real.sq_sqrt hnn
+  have hs2 : s ^ (2 : ℕ) = (t : ℝ) * ((t : ℝ) - 1) := Real.sq_sqrt hnn
   have hs0 : (0 : ℝ) ≤ s := Real.sqrt_nonneg _
   have hst : s < (t : ℝ) := by nlinarith [hs2, hs0]
   have hts : (0 : ℝ) < (t : ℝ) + s := by linarith
@@ -128,28 +128,28 @@ theorem repSum_ge_min (A B : Finset G) (t : ℕ) (ht : 1 ≤ t) (hA : A.Nonempty
     linarith [hlq, this]
   · push Not at hcase
     refine le_trans (min_le_right _ _) ?_
-    have hfac : Q ^ 2 - 2 * (t : ℝ) * M * Q + (t : ℝ) * M ^ 2
+    have hfac : Q ^ (2 : ℕ) - 2 * (t : ℝ) * M * Q + (t : ℝ) * M ^ (2 : ℕ)
         = (Q - ((t : ℝ) + s) * M) * (Q - ((t : ℝ) - s) * M) := by nlinarith [hs2]
     have hpos1 : 0 < Q - ((t : ℝ) + s) * M := by linarith
     have hpos2 : 0 < Q - ((t : ℝ) - s) * M := by nlinarith [hs0, hMpos]
-    have hnonneg : (0 : ℝ) ≤ Q ^ 2 - 2 * (t : ℝ) * M * Q + (t : ℝ) * M ^ 2 := by
+    have hnonneg : (0 : ℝ) ≤ Q ^ (2 : ℕ) - 2 * (t : ℝ) * M * Q + (t : ℝ) * M ^ (2 : ℕ) := by
       rw [hfac]
       exact le_of_lt (mul_pos hpos1 hpos2)
-    have hmulQ : (0 : ℝ) ≤ Q * (Q ^ 2 - 2 * (t : ℝ) * M * Q + (t : ℝ) * M ^ 2) :=
+    have hmulQ : (0 : ℝ) ≤ Q * (Q ^ (2 : ℕ) - 2 * (t : ℝ) * M * Q + (t : ℝ) * M ^ (2 : ℕ)) :=
       mul_nonneg (le_of_lt hQpos) hnonneg
-    have hab : 2 * (t : ℝ) * M / Q - (t : ℝ) * M ^ 2 / Q ^ 2 ≤ 1 := by
+    have hab : 2 * (t : ℝ) * M / Q - (t : ℝ) * M ^ (2 : ℕ) / Q ^ (2 : ℕ) ≤ 1 := by
       rw [div_sub_div _ _ (ne_of_gt hQpos) (by positivity), div_le_one (by positivity)]
       nlinarith [hmulQ]
-    have hbpos2 : (0 : ℝ) < (t : ℝ) * M ^ 2 / Q ^ 2 := by positivity
-    have hmaxeq : (2 * (t : ℝ) * M / Q) ^ 2 = 4 * ((t : ℝ) * M ^ 2 / Q ^ 2) * (t : ℝ) := by
+    have hbpos2 : (0 : ℝ) < (t : ℝ) * M ^ (2 : ℕ) / Q ^ (2 : ℕ) := by positivity
+    have hmaxeq : (2 * (t : ℝ) * M / Q) ^ (2 : ℕ) = 4 * ((t : ℝ) * M ^ (2 : ℕ) / Q ^ (2 : ℕ)) * (t : ℝ) := by
       field_simp
       ring
-    have hmax : (2 * (t : ℝ) * M / Q) ^ 2 ≤ 4 * ((t : ℝ) * M ^ 2 / Q ^ 2) * (t : ℝ) :=
+    have hmax : (2 * (t : ℝ) * M / Q) ^ (2 : ℕ) ≤ 4 * ((t : ℝ) * M ^ (2 : ℕ) / Q ^ (2 : ℕ)) * (t : ℝ) :=
       le_of_eq hmaxeq
     have hlq := le_repSum_of_linear_quadratic (a := 2 * (t : ℝ) * M / Q)
-      (b := (t : ℝ) * M ^ 2 / Q ^ 2) A B t hbpos2 hab hmax
-    have hval : 2 * (t : ℝ) * M / Q * M - (t : ℝ) * M ^ 2 / Q ^ 2 * Q
-        = (t : ℝ) * M ^ 2 / Q := by
+      (b := (t : ℝ) * M ^ (2 : ℕ) / Q ^ (2 : ℕ)) A B t hbpos2 hab hmax
+    have hval : 2 * (t : ℝ) * M / Q * M - (t : ℝ) * M ^ (2 : ℕ) / Q ^ (2 : ℕ) * Q
+        = (t : ℝ) * M ^ (2 : ℕ) / Q := by
       field_simp
       ring
     linarith [hlq, hval.le, hval.ge]
@@ -227,13 +227,13 @@ theorem energy_le_of_rep_inv_le {A B T : Finset G} {k : ℕ}
     intro x
     have := rep_le_card_right A B⁻¹ x
     omega
-  have hsplit : ∑ x ∈ univ \ T, (rep A B⁻¹ x) ^ 2 + ∑ x ∈ T, (rep A B⁻¹ x) ^ 2
-      = ∑ x : G, (rep A B⁻¹ x) ^ 2 := Finset.sum_sdiff (Finset.subset_univ T)
-  have hout : ∑ x ∈ univ \ T, (rep A B⁻¹ x) ^ 2 ≤ ∑ x ∈ univ \ T, k * rep A B⁻¹ x := by
+  have hsplit : ∑ x ∈ univ \ T, (rep A B⁻¹ x) ^ (2 : ℕ) + ∑ x ∈ T, (rep A B⁻¹ x) ^ (2 : ℕ)
+      = ∑ x : G, (rep A B⁻¹ x) ^ (2 : ℕ) := Finset.sum_sdiff (Finset.subset_univ T)
+  have hout : ∑ x ∈ univ \ T, (rep A B⁻¹ x) ^ (2 : ℕ) ≤ ∑ x ∈ univ \ T, k * rep A B⁻¹ x := by
     refine Finset.sum_le_sum (fun x hx => ?_)
     rw [sq]
     exact Nat.mul_le_mul_right _ (hk x (Finset.mem_sdiff.1 hx).2)
-  have hin : ∑ x ∈ T, (rep A B⁻¹ x) ^ 2 ≤ ∑ x ∈ T, B.card * rep A B⁻¹ x := by
+  have hin : ∑ x ∈ T, (rep A B⁻¹ x) ^ (2 : ℕ) ≤ ∑ x ∈ T, B.card * rep A B⁻¹ x := by
     refine Finset.sum_le_sum (fun x _ => ?_)
     rw [sq]
     exact Nat.mul_le_mul_right _ (hbound x)
@@ -271,7 +271,7 @@ theorem repSum_ge_min_of_rep_inv_le {A B T : Finset G} {k t : ℕ}
     (hk : ∀ x : G, x ∉ T → rep A B⁻¹ x ≤ k) :
     min ((t : ℝ) * ((A.card : ℝ) * B.card)
           / ((t : ℝ) + Real.sqrt ((t : ℝ) * ((t : ℝ) - 1))))
-        ((t : ℝ) * (A.card : ℝ) ^ 2 * (B.card : ℝ)
+        ((t : ℝ) * (A.card : ℝ) ^ (2 : ℕ) * (B.card : ℝ)
           / ((k : ℝ) * A.card + (T.card : ℝ) * ((B.card : ℝ) - k)))
       ≤ (repSum A B t : ℝ) := by
   classical
@@ -308,12 +308,12 @@ theorem repSum_ge_min_of_rep_inv_le {A B T : Finset G} {k t : ℕ}
   refine le_trans ?_ (repSum_ge_min A B t ht hA hB)
   refine min_le_min (le_refl _) ?_
   rw [div_le_div_iff₀ hDpos hQpos]
-  have hMsq : (t : ℝ) * (A.card : ℝ) ^ 2 * (B.card : ℝ) * (energy A B : ℝ)
-      ≤ (t : ℝ) * (A.card : ℝ) ^ 2 * (B.card : ℝ) * ((B.card : ℝ) * D) := by
-    have hnn : (0 : ℝ) ≤ (t : ℝ) * (A.card : ℝ) ^ 2 * (B.card : ℝ) := by positivity
+  have hMsq : (t : ℝ) * (A.card : ℝ) ^ (2 : ℕ) * (B.card : ℝ) * (energy A B : ℝ)
+      ≤ (t : ℝ) * (A.card : ℝ) ^ (2 : ℕ) * (B.card : ℝ) * ((B.card : ℝ) * D) := by
+    have hnn : (0 : ℝ) ≤ (t : ℝ) * (A.card : ℝ) ^ (2 : ℕ) * (B.card : ℝ) := by positivity
     exact mul_le_mul_of_nonneg_left hQle hnn
-  have hgoal : (t : ℝ) * (A.card : ℝ) ^ 2 * (B.card : ℝ) * ((B.card : ℝ) * D)
-      = (t : ℝ) * ((A.card : ℝ) * B.card) ^ 2 * D := by ring
+  have hgoal : (t : ℝ) * (A.card : ℝ) ^ (2 : ℕ) * (B.card : ℝ) * ((B.card : ℝ) * D)
+      = (t : ℝ) * ((A.card : ℝ) * B.card) ^ (2 : ℕ) * D := by ring
   linarith [hMsq, hgoal.le, hgoal.ge]
 
 end GaloisForLFunctions.HTGeometry.AddComb

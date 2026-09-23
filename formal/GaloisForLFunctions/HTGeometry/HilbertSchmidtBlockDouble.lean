@@ -62,7 +62,7 @@ theorem isHS_blockDouble {K L : ι × ι → ℂ} (hK : IsHS K) (hL : IsHS L) :
     IsHS (blockDouble K L) := by
   rw [IsHS]
   refine (Equiv.summable_iff
-    (f := fun p : (ι ⊕ ι) × (ι ⊕ ι) => ‖blockDouble K L p‖ ^ 2)
+    (f := fun p : (ι ⊕ ι) × (ι ⊕ ι) => ‖blockDouble K L p‖ ^ (2 : ℕ))
     blockDoubleIndexEquiv.symm).mp ?_
   apply Summable.sum
   · simpa [IsHS, Function.comp_def, blockDouble, blockDoubleIndexEquiv] using hK

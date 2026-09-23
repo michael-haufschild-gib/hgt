@@ -23,12 +23,12 @@ noncomputable section
 /-- One centered clipped prime carrier has squared norm at most its clipped length. -/
 theorem norm_sq_xiPhysicalPrimeLogCenteredApertureCarrier_le_length
     {A : ℝ} (hA : 0 < A) (m k : ℝ) (p : Nat.Primes) :
-    ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ 2 ≤
+    ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ (2 : ℕ) ≤
       xiPhysicalPrimeLogApertureLength A m k p := by
   rw [← real_inner_self_eq_norm_sq,
     real_inner_xiPhysicalPrimeLogCenteredApertureCarrier hA,
     xiPhysicalPrimeLogApertureFusionKernel_diagonal]
-  have hsq : 0 ≤ xiPhysicalPrimeLogApertureLength A m k p ^ 2 / A := by
+  have hsq : 0 ≤ xiPhysicalPrimeLogApertureLength A m k p ^ (2 : ℕ) / A := by
     positivity
   linarith
 
@@ -36,7 +36,7 @@ theorem norm_sq_xiPhysicalPrimeLogCenteredApertureCarrier_le_length
 `‖P‖² ≤ W L`. -/
 theorem norm_sq_xiPhysicalPrimeLogAggregateApertureCarrier_le
     (P : Finset Nat.Primes) {A : ℝ} (hA : 0 < A) (m k : ℝ) :
-    ‖xiPhysicalPrimeLogAggregateApertureCarrier P A m k‖ ^ 2 ≤
+    ‖xiPhysicalPrimeLogAggregateApertureCarrier P A m k‖ ^ (2 : ℕ) ≤
       xiPhysicalPrimeLogEndpointTotalWeight P *
         xiPhysicalPrimeLogApertureWeightedLengthMass P A m k := by
   let w : Nat.Primes → ℝ := fun p => physicalPrimeEndpointWeight p
@@ -60,18 +60,18 @@ theorem norm_sq_xiPhysicalPrimeLogAggregateApertureCarrier_le
     exact Finset.sum_nonneg fun p hp => mul_nonneg (hw p hp) (norm_nonneg _)
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq P
     (fun p => Real.sqrt (w p)) (fun p => Real.sqrt (w p) * ‖v p‖)
-  have hcs' : S ^ 2 ≤
-      (∑ p ∈ P, w p) * ∑ p ∈ P, w p * ‖v p‖ ^ 2 := by
+  have hcs' : S ^ (2 : ℕ) ≤
+      (∑ p ∈ P, w p) * ∑ p ∈ P, w p * ‖v p‖ ^ (2 : ℕ) := by
     calc
-      S ^ 2 = (∑ p ∈ P,
-          Real.sqrt (w p) * (Real.sqrt (w p) * ‖v p‖)) ^ 2 := by
+      S ^ (2 : ℕ) = (∑ p ∈ P,
+          Real.sqrt (w p) * (Real.sqrt (w p) * ‖v p‖)) ^ (2 : ℕ) := by
             congr 1
             apply Finset.sum_congr rfl
             intro p hp
             rw [← mul_assoc, Real.mul_self_sqrt (hw p hp)]
-      _ ≤ (∑ p ∈ P, Real.sqrt (w p) ^ 2) *
-          ∑ p ∈ P, (Real.sqrt (w p) * ‖v p‖) ^ 2 := hcs
-      _ = (∑ p ∈ P, w p) * ∑ p ∈ P, w p * ‖v p‖ ^ 2 := by
+      _ ≤ (∑ p ∈ P, Real.sqrt (w p) ^ (2 : ℕ)) *
+          ∑ p ∈ P, (Real.sqrt (w p) * ‖v p‖) ^ (2 : ℕ) := hcs
+      _ = (∑ p ∈ P, w p) * ∑ p ∈ P, w p * ‖v p‖ ^ (2 : ℕ) := by
         congr 1
         · apply Finset.sum_congr rfl
           intro p hp
@@ -79,7 +79,7 @@ theorem norm_sq_xiPhysicalPrimeLogAggregateApertureCarrier_le
         · apply Finset.sum_congr rfl
           intro p hp
           rw [mul_pow, Real.sq_sqrt (hw p hp)]
-  have hweighted : ∑ p ∈ P, w p * ‖v p‖ ^ 2 ≤
+  have hweighted : ∑ p ∈ P, w p * ‖v p‖ ^ (2 : ℕ) ≤
       xiPhysicalPrimeLogApertureWeightedLengthMass P A m k := by
     rw [xiPhysicalPrimeLogApertureWeightedLengthMass]
     apply Finset.sum_le_sum
@@ -88,9 +88,9 @@ theorem norm_sq_xiPhysicalPrimeLogAggregateApertureCarrier_le
       (norm_sq_xiPhysicalPrimeLogCenteredApertureCarrier_le_length hA m k p)
       (hw p hp)
   calc
-    ‖xiPhysicalPrimeLogAggregateApertureCarrier P A m k‖ ^ 2 ≤ S ^ 2 := by
+    ‖xiPhysicalPrimeLogAggregateApertureCarrier P A m k‖ ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
       exact (sq_le_sq₀ (norm_nonneg _) hS).2 htri
-    _ ≤ (∑ p ∈ P, w p) * ∑ p ∈ P, w p * ‖v p‖ ^ 2 := hcs'
+    _ ≤ (∑ p ∈ P, w p) * ∑ p ∈ P, w p * ‖v p‖ ^ (2 : ℕ) := hcs'
     _ ≤ (∑ p ∈ P, w p) *
         xiPhysicalPrimeLogApertureWeightedLengthMass P A m k :=
       mul_le_mul_of_nonneg_left hweighted (Finset.sum_nonneg hw)
@@ -112,7 +112,7 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_le_width_mul_totalWeight_sq
     (P : Finset Nat.Primes) {A m k : ℝ} (hA : 0 < A)
     (hactive : ∀ p ∈ P, 0 < xiPhysicalPrimeLogApertureLength A m k p) :
     xiPhysicalPrimeLogApertureFusionEnergy P A m k ≤
-      (k - m) * xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 := by
+      (k - m) * xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) := by
   have hW := xiPhysicalPrimeLogEndpointTotalWeight_nonneg P
   have henergy :=
     xiPhysicalPrimeLogApertureFusionEnergy_le_weight_mul_weightedLength P hA m k
@@ -125,14 +125,14 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_le_width_mul_totalWeight_sq
     _ ≤ xiPhysicalPrimeLogEndpointTotalWeight P *
         ((k - m) * xiPhysicalPrimeLogEndpointTotalWeight P) :=
       mul_le_mul_of_nonneg_left hlength hW
-    _ = (k - m) * xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 := by ring
+    _ = (k - m) * xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) := by ring
 
 /-- Packet-free Mertens form of full physical source-energy control. -/
 theorem xiPhysicalPrimeLogApertureFusionEnergy_le_mertens_width
     (P : Finset Nat.Primes) {A m k : ℝ} (hA : 0 < A) (hmk : m ≤ k)
     (hactive : ∀ p ∈ P, 0 < xiPhysicalPrimeLogApertureLength A m k p) :
     xiPhysicalPrimeLogApertureFusionEnergy P A m k ≤
-      (k - m) * (k + Real.log 4) ^ 2 := by
+      (k - m) * (k + Real.log 4) ^ (2 : ℕ) := by
   by_cases hPempty : P = ∅
   · subst P
     simp [xiPhysicalPrimeLogApertureFusionEnergy]
@@ -142,14 +142,14 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_le_mertens_width
     P hP hactive
   have hW0 := xiPhysicalPrimeLogEndpointTotalWeight_nonneg P
   have hklog4 : 0 ≤ k + Real.log 4 := hW0.trans hW
-  have hsq : xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 ≤ (k + Real.log 4) ^ 2 :=
+  have hsq : xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) ≤ (k + Real.log 4) ^ (2 : ℕ) :=
     (sq_le_sq₀ hW0 hklog4).2 hW
   have hwidth : 0 ≤ k - m := sub_nonneg.mpr hmk
   calc
     xiPhysicalPrimeLogApertureFusionEnergy P A m k ≤
-        (k - m) * xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 :=
+        (k - m) * xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) :=
       xiPhysicalPrimeLogApertureFusionEnergy_le_width_mul_totalWeight_sq P hA hactive
-    _ ≤ (k - m) * (k + Real.log 4) ^ 2 :=
+    _ ≤ (k - m) * (k + Real.log 4) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hsq hwidth
 
 /-- Normalized coherent physical source strength is at most raw active-aperture width. -/
@@ -168,10 +168,10 @@ theorem xiPhysicalPrimeLogNormalizedApertureDispersion_le_width
     xiPhysicalPrimeLogApertureWeightedLengthMass_le_width_mul_totalWeight P hactive
   rw [xiPhysicalPrimeLogNormalizedApertureDispersion_eq_fusionEnergy_div hP hA]
   calc
-    xiPhysicalPrimeLogApertureFusionEnergy P A m k / W ^ 2
-        ≤ (W * xiPhysicalPrimeLogApertureWeightedLengthMass P A m k) / W ^ 2 :=
+    xiPhysicalPrimeLogApertureFusionEnergy P A m k / W ^ (2 : ℕ)
+        ≤ (W * xiPhysicalPrimeLogApertureWeightedLengthMass P A m k) / W ^ (2 : ℕ) :=
       div_le_div_of_nonneg_right henergy (sq_nonneg W)
-    _ ≤ (W * ((k - m) * W)) / W ^ 2 := by
+    _ ≤ (W * ((k - m) * W)) / W ^ (2 : ℕ) := by
       gcongr
     _ = k - m := by field_simp
 

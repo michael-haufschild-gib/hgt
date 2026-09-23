@@ -30,12 +30,12 @@ def xiMassBesselState (a : ℝ) (τ : ℂ) (Af Bf : ℂ → ℂ) (w : ℂ) : ℂ
 /-- **The height states are closed under differentiation.**  The coefficient pair transforms by the
 first-order system of the Bessel pair. -/
 theorem hasDerivAt_xiMassBesselState {a : ℝ} {τ w : ℂ} {A' B' : ℂ} {Af Bf : ℂ → ℂ}
-    (ha : 0 < a) (hw : 0 < (τ ^ 2 + w ^ 2).re)
+    (ha : 0 < a) (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re)
     (hA : HasDerivAt Af A' w) (hB : HasDerivAt Bf B' w) :
     HasDerivAt (xiMassBesselState a τ Af Bf)
       ((A' - (a : ℂ) * (w / xiMassHeightRadius τ w) * Bf w) * xiMassHeightK0 a τ w
         + (B' - (a : ℂ) * (w / xiMassHeightRadius τ w) * Af w
-            - w / xiMassHeightRadius τ w ^ 2 * Bf w) * xiMassHeightK1 a τ w) w := by
+            - w / xiMassHeightRadius τ w ^ (2 : ℕ) * Bf w) * xiMassHeightK1 a τ w) w := by
   have h0 := hA.mul (hasDerivAt_xiMassHeightK0 ha hw)
   have h1 := hB.mul (hasDerivAt_xiMassHeightK1 ha hw)
   have hsum := h0.add h1
@@ -44,7 +44,7 @@ theorem hasDerivAt_xiMassBesselState {a : ℝ} {τ w : ℂ} {A' B' : ℂ} {Af Bf
           + Af w * (-((a : ℂ) * (w / xiMassHeightRadius τ w)) * xiMassHeightK1 a τ w)
         + (B' * xiMassHeightK1 a τ w
           + Bf w * (-((a : ℂ) * (w / xiMassHeightRadius τ w)) * xiMassHeightK0 a τ w
-            - w / xiMassHeightRadius τ w ^ 2 * xiMassHeightK1 a τ w))) w := hsum
+            - w / xiMassHeightRadius τ w ^ (2 : ℕ) * xiMassHeightK1 a τ w))) w := hsum
   convert hgoal using 1
   ring
 

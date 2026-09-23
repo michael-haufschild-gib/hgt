@@ -164,9 +164,9 @@ theorem model_pow (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n)
 the iterated diagonal `∑ (powConv)²`, by applying the second-moment mean value to `Fᵏ`. -/
 theorem tendsto_evenMoment_average (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n) (k : ℕ) :
     Tendsto (fun U : ℝ => (∫ t in (0:ℝ)..U, ‖dpoly a s t‖ ^ (2 * k)) / U) atTop
-      (𝓝 (∑ j ∈ powSupport s k, powConv a s k j ^ 2)) := by
+      (𝓝 (∑ j ∈ powSupport s k, powConv a s k j ^ (2 : ℕ))) := by
   have hrw : ∀ t : ℝ,
-      ‖dpoly a s t‖ ^ (2 * k) = ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ 2 := by
+      ‖dpoly a s t‖ ^ (2 * k) = ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ (2 : ℕ) := by
     intro t
     rw [show 2 * k = k * 2 from by ring, pow_mul, ← norm_pow, dpoly_pow a s hs t k]
   simp_rw [hrw]
@@ -177,10 +177,10 @@ theorem tendsto_evenMoment_average (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ 
 /-- **`2k`-th moment model identity.** `E‖∑ aₙ Xₙ‖^{2k} = ∑ (powConv)²`. -/
 theorem integral_normPow_dpoly (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n) (k : ℕ) :
     ∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (2 * k) ∂steinhausMeasure
-      = ∑ j ∈ powSupport s k, powConv a s k j ^ 2 := by
+      = ∑ j ∈ powSupport s k, powConv a s k j ^ (2 : ℕ) := by
   have hrw : ∀ ω : Omega,
       ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ (2 * k)
-        = ‖∑ j ∈ powSupport s k, (powConv a s k j : ℂ) * X j ω‖ ^ 2 := by
+        = ‖∑ j ∈ powSupport s k, (powConv a s k j : ℂ) * X j ω‖ ^ (2 : ℕ) := by
     intro ω
     rw [show 2 * k = k * 2 from by ring, pow_mul, ← norm_pow, model_pow a s hs ω k]
   rw [integral_congr_ae (Filter.Eventually.of_forall hrw)]

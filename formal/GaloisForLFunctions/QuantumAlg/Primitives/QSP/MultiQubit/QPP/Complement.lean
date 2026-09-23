@@ -34,7 +34,7 @@ variable {U : Gate (Qubits n)}
 `n`-qubit system.  This is the block-matrix view used to prove that the same
 QPP circuit supplies both the projected-block correctness statement and the
 resource counters [WZYW23, arxiv_v3.tex:2446-2465]. -/
-noncomputable def QPP.ancillaBlock (a b : Fin (2 ^ 1))
+noncomputable def QPP.ancillaBlock (a b : Fin (2 ^ (1 : ℕ)))
     (V : Gate (Qubits (1 + n))) : HilbertOperator (Qubits n) :=
   fun i j => (V : HilbertOperator (Qubits (1 + n))) (prodEquiv (a, i)) (prodEquiv (b, j))
 
@@ -53,7 +53,7 @@ theorem QPP.projectedBlock_one_applyVec
         (projectedBlock 1 n (V : HilbertOperator (Qubits (1 + n)))) ψ =
       fun i => ((V : HilbertOperator (Qubits (1 + n))).applyVec
         (StateVector.tensor (ket0 : StateVector (Qubits 1)) ψ))
-          (prodEquiv ((0 : Fin (2 ^ 1)), i)) := by
+          (prodEquiv ((0 : Fin (2 ^ (1 : ℕ))), i)) := by
   ext i
   rw [HilbertOperator.applyVec_apply, HilbertOperator.applyVec_apply]
   rw [← Equiv.sum_comp (prodEquiv (m := 1) (n := n))]
@@ -63,16 +63,16 @@ theorem QPP.projectedBlock_one_applyVec
   simp
 
 /-- Ancilla blocks multiply as ordinary `2 × 2` block matrices. -/
-theorem QPP.ancillaBlock_mul (a c : Fin (2 ^ 1))
+theorem QPP.ancillaBlock_mul (a c : Fin (2 ^ (1 : ℕ)))
     (V W : Gate (Qubits (1 + n))) :
     QPP.ancillaBlock a c (V * W) =
-      ∑ b : Fin (2 ^ 1),
+      ∑ b : Fin (2 ^ (1 : ℕ)),
         QPP.ancillaBlock a b V * QPP.ancillaBlock b c W := by
   ext i j
   change
     (∑ z : Fin (2 ^ (1 + n)),
       V.op (prodEquiv (a, i)) z * W.op z (prodEquiv (c, j))) =
-    (∑ b : Fin (2 ^ 1), ∑ x : Fin (2 ^ n),
+    (∑ b : Fin (2 ^ (1 : ℕ)), ∑ x : Fin (2 ^ n),
       V.op (prodEquiv (a, i)) (prodEquiv (b, x)) *
         W.op (prodEquiv (b, x)) (prodEquiv (c, j)))
   rw [← Equiv.sum_comp (prodEquiv (m := 1) (n := n))]
@@ -80,7 +80,7 @@ theorem QPP.ancillaBlock_mul (a c : Fin (2 ^ 1))
 
 /-- Ancilla block of a one-qubit gate tensored with the system identity. -/
 theorem QPP.ancillaBlock_tensor_left (A : Gate (Qubits 1))
-    (a b : Fin (2 ^ 1)) :
+    (a b : Fin (2 ^ (1 : ℕ))) :
     QPP.ancillaBlock (n := n) a b
         (Gate.tensor A (1 : Gate (Qubits n))) =
       A a b • (1 : HilbertOperator (Qubits n)) := by
@@ -90,7 +90,7 @@ theorem QPP.ancillaBlock_tensor_left (A : Gate (Qubits 1))
 
 /-- Ancilla blocks of the controlled-`U` gate. -/
 theorem QPP.ancillaBlock_controlled (U : Gate (Qubits n))
-    (a b : Fin (2 ^ 1)) :
+    (a b : Fin (2 ^ (1 : ℕ))) :
     QPP.ancillaBlock a b (Gate.controlled U) =
       if a = b then
         if a = 0 then (1 : HilbertOperator (Qubits n)) else (U : HilbertOperator (Qubits n))
@@ -104,7 +104,7 @@ theorem QPP.ancillaBlock_controlled (U : Gate (Qubits n))
 
 /-- Ancilla blocks of the zero-branch controlled-`U` gate. -/
 theorem QPP.ancillaBlock_controlledOnZero (U : Gate (Qubits n))
-    (a b : Fin (2 ^ 1)) :
+    (a b : Fin (2 ^ (1 : ℕ))) :
     QPP.ancillaBlock a b (Gate.controlledOnZero U) =
       if a = b then
         if a = 0 then (U : HilbertOperator (Qubits n)) else (1 : HilbertOperator (Qubits n))
@@ -119,7 +119,7 @@ theorem QPP.ancillaBlock_controlledOnZero (U : Gate (Qubits n))
 /-- Ancilla blocks of the initial one-qubit processing gate in Wang's
 alternating QPP word. -/
 theorem QPP.ancillaBlock_qppAlternatingInitialGate
-    (a b : Fin (2 ^ 1)) (φ θ₀ φ₀ : ℝ) :
+    (a b : Fin (2 ^ (1 : ℕ))) (φ θ₀ φ₀ : ℝ) :
     QPP.ancillaBlock (n := n) a b (qppAlternatingInitialGate n φ θ₀ φ₀) =
       (rotZStd φ * (rotY θ₀ * rotZStd φ₀) : Gate (Qubits 1)) a b •
         (1 : HilbertOperator (Qubits n)) := by
@@ -132,9 +132,9 @@ keeps the controlled branch and the one-qubit processing block visible, which
 is the form needed for the operator-valued Laurent recurrence
 [WZYW23, arxiv_v3.tex:601-609,2446-2465]. -/
 theorem QPP.ancillaBlock_qppAlternatingStepGate
-    (U : Gate (Qubits n)) (j : ℕ) (p : ℝ × ℝ) (a b : Fin (2 ^ 1)) :
+    (U : Gate (Qubits n)) (j : ℕ) (p : ℝ × ℝ) (a b : Fin (2 ^ (1 : ℕ))) :
     QPP.ancillaBlock a b (qppAlternatingStepGate U j p) =
-      ∑ c : Fin (2 ^ 1),
+      ∑ c : Fin (2 ^ (1 : ℕ)),
         (if j % 2 = 0 then
             (if a = c then
               if a = 0 then (U.conjTranspose : Gate (Qubits n)) else (1 : Gate (Qubits n))
@@ -699,7 +699,7 @@ theorem QPP.projectedBlock_qppAlternatingControlledGate_apply_phaseBasis
       (n := n) (V := qppAlternatingControlledGate U φ θ₀ φ₀ ps)
       (ψ := decomp.basis j)
   have hcoord := congrArg
-    (fun v : StateVector (Qubits (1 + n)) => v (prodEquiv ((0 : Fin (2 ^ 1)), i)))
+    (fun v : StateVector (Qubits (1 + n)) => v (prodEquiv ((0 : Fin (2 ^ (1 : ℕ))), i)))
     hdecomp
   rw [hproj]
   calc

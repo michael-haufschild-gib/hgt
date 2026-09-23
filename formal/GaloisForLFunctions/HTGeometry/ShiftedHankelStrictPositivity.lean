@@ -62,7 +62,7 @@ theorem coeffPolyOf_natDegree_le {d : ℕ} (c : Fin (d + 1) → ℝ) :
 
 /-- Expanding the weighted square. -/
 theorem shiftedSquare_expand {d : ℕ} (c : Fin (d + 1) → ℝ) (r : ℕ) (x : ℝ) :
-    x ^ r * ((coeffPolyOf c).eval x) ^ 2 =
+    x ^ r * ((coeffPolyOf c).eval x) ^ (2 : ℕ) =
       ∑ i : Fin (d + 1), ∑ j : Fin (d + 1), c i * c j * x ^ ((i : ℕ) + (j : ℕ) + r) := by
   rw [coeffPolyOf_eval, pow_two, Finset.sum_mul_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -73,8 +73,8 @@ theorem shiftedSquare_expand {d : ℕ} (c : Fin (d + 1) → ℝ) (r : ℕ) (x : 
 
 theorem integrable_shiftedSquare {μ : Measure ℝ} {d : ℕ} (c : Fin (d + 1) → ℝ) (r : ℕ)
     (hint : ∀ n : ℕ, Integrable (fun x : ℝ => x ^ n) μ) :
-    Integrable (fun x : ℝ => x ^ r * ((coeffPolyOf c).eval x) ^ 2) μ := by
-  have hEq : (fun x : ℝ => x ^ r * ((coeffPolyOf c).eval x) ^ 2) =
+    Integrable (fun x : ℝ => x ^ r * ((coeffPolyOf c).eval x) ^ (2 : ℕ)) μ := by
+  have hEq : (fun x : ℝ => x ^ r * ((coeffPolyOf c).eval x) ^ (2 : ℕ)) =
       fun x : ℝ => ∑ i : Fin (d + 1), ∑ j : Fin (d + 1),
         c i * c j * x ^ ((i : ℕ) + (j : ℕ) + r) :=
     funext (fun x => shiftedSquare_expand c r x)
@@ -87,7 +87,7 @@ theorem quadForm_shiftedMomentOf (μ : Measure ℝ) (r d : ℕ) (c : Fin (d + 1)
     (hint : ∀ n : ℕ, Integrable (fun x : ℝ => x ^ n) μ) :
     ∑ i : Fin (d + 1), ∑ j : Fin (d + 1),
         c i * c j * shiftedMomentOf μ r ((i : ℕ) + (j : ℕ)) =
-      ∫ x, x ^ r * ((coeffPolyOf c).eval x) ^ 2 ∂μ := by
+      ∫ x, x ^ r * ((coeffPolyOf c).eval x) ^ (2 : ℕ) ∂μ := by
   have hIij : ∀ i j : Fin (d + 1),
       Integrable (fun x : ℝ => c i * c j * x ^ ((i : ℕ) + (j : ℕ) + r)) μ :=
     fun i j => (hint _).const_mul _
@@ -105,7 +105,7 @@ theorem quadForm_shiftedMomentOf (μ : Measure ℝ) (r d : ℕ) (c : Fin (d + 1)
           c i * c j * x ^ ((i : ℕ) + (j : ℕ) + r)) ∂μ := by
         rw [MeasureTheory.integral_finsetSum _ (fun i _ =>
           MeasureTheory.integrable_finsetSum _ (fun j _ => hIij i j))]
-    _ = ∫ x, x ^ r * ((coeffPolyOf c).eval x) ^ 2 ∂μ := by
+    _ = ∫ x, x ^ r * ((coeffPolyOf c).eval x) ^ (2 : ℕ) ∂μ := by
         refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
         exact (shiftedSquare_expand c r x).symm
 
@@ -136,25 +136,25 @@ theorem shiftedHankel_quadForm_pos {μ : Measure ℝ} {r d : ℕ} {c : Fin (d + 
     have hroots : (coeffPolyOf c).roots.toFinset.card ≤ (coeffPolyOf c).natDegree :=
       le_trans (Multiset.toFinset_card_le _) (Polynomial.card_roots' _)
     omega
-  have hfint : Integrable (fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ 2) μ :=
+  have hfint : Integrable (fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ (2 : ℕ)) μ :=
     integrable_shiftedSquare c r hint
-  have hfnonneg : 0 ≤ᵐ[μ] fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ 2 := by
+  have hfnonneg : 0 ≤ᵐ[μ] fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ (2 : ℕ) := by
     filter_upwards [hμ] with y hy
     exact mul_nonneg (pow_nonneg hy r) (sq_nonneg _)
-  have hfcont : Continuous fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ 2 :=
+  have hfcont : Continuous fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ (2 : ℕ) :=
     (continuous_pow r).mul ((coeffPolyOf c).continuous.pow 2)
-  have hfk : 0 < (x k) ^ r * ((coeffPolyOf c).eval (x k)) ^ 2 :=
+  have hfk : 0 < (x k) ^ r * ((coeffPolyOf c).eval (x k)) ^ (2 : ℕ) :=
     mul_pos (pow_pos (hxpos k) r) (sq_pos_of_ne_zero hk)
   obtain ⟨δ, hδ, hball⟩ : ∃ δ > 0, ∀ y ∈ Metric.ball (x k) δ,
-      0 < y ^ r * ((coeffPolyOf c).eval y) ^ 2 := by
-    have hopen : IsOpen {y : ℝ | 0 < y ^ r * ((coeffPolyOf c).eval y) ^ 2} :=
+      0 < y ^ r * ((coeffPolyOf c).eval y) ^ (2 : ℕ) := by
+    have hopen : IsOpen {y : ℝ | 0 < y ^ r * ((coeffPolyOf c).eval y) ^ (2 : ℕ)} :=
       isOpen_lt continuous_const hfcont
     obtain ⟨δ, hδ, hsub⟩ := Metric.isOpen_iff.mp hopen (x k) hfk
     exact ⟨δ, hδ, fun y hy => hsub hy⟩
   have hsuppsub : Metric.ball (x k) δ ⊆
-      Function.support fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ 2 :=
+      Function.support fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ (2 : ℕ) :=
     fun y hy => ne_of_gt (hball y hy)
-  have hmpos : 0 < μ (Function.support fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ 2) :=
+  have hmpos : 0 < μ (Function.support fun y : ℝ => y ^ r * ((coeffPolyOf c).eval y) ^ (2 : ℕ)) :=
     lt_of_lt_of_le (hsupp k δ hδ) (measure_mono hsuppsub)
   rw [quadForm_shiftedMomentOf μ r d c hint]
   exact (integral_pos_iff_support_of_nonneg_ae hfnonneg hfint).mpr hmpos

@@ -17,17 +17,17 @@ noncomputable section
 
 /-- The uniform majorant of the relative scaled envelope. -/
 def relScaledMajorant (Ctot D Lx Hmaj μ q t₀ xmin : ℝ) : ℝ :=
-  Ctot * D ^ 2 * (Lx ^ 2 / t₀ + Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ 2)) / (2 * Real.pi)
+  Ctot * D ^ (2 : ℕ) * (Lx ^ (2 : ℕ) / t₀ + Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ (2 : ℕ))) / (2 * Real.pi)
     + (Real.log 2 + Lx) / D + 2 * Lx / Real.sqrt xmin
 
 theorem relScaledMajorant_nonneg {Ctot D Lx Hmaj μ q t₀ xmin : ℝ} (hCtot : 0 ≤ Ctot)
     (hD : 0 < D) (hLx : 0 ≤ Lx) (hHmaj : 0 ≤ Hmaj) (ht0 : 0 < t₀) (hxmin : 0 < xmin) :
     0 ≤ relScaledMajorant Ctot D Lx Hmaj μ q t₀ xmin := by
-  have h1 : (0 : ℝ) ≤ Lx ^ 2 / t₀ := by positivity
-  have h2 : (0 : ℝ) ≤ Real.exp (-(μ * q)) + 1 / t₀ ^ 2 := by positivity
-  have h3 : (0 : ℝ) ≤ Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ 2) := mul_nonneg hHmaj h2
-  have hA : (0 : ℝ) ≤ Ctot * D ^ 2
-      * (Lx ^ 2 / t₀ + Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ 2)) / (2 * Real.pi) := by
+  have h1 : (0 : ℝ) ≤ Lx ^ (2 : ℕ) / t₀ := by positivity
+  have h2 : (0 : ℝ) ≤ Real.exp (-(μ * q)) + 1 / t₀ ^ (2 : ℕ) := by positivity
+  have h3 : (0 : ℝ) ≤ Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ (2 : ℕ)) := mul_nonneg hHmaj h2
+  have hA : (0 : ℝ) ≤ Ctot * D ^ (2 : ℕ)
+      * (Lx ^ (2 : ℕ) / t₀ + Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ (2 : ℕ))) / (2 * Real.pi) := by
     refine div_nonneg (mul_nonneg (mul_nonneg hCtot (by positivity)) (by linarith)) (by positivity)
   have hB : (0 : ℝ) ≤ (Real.log 2 + Lx) / D := by
     have : (0 : ℝ) ≤ Real.log 2 := Real.log_nonneg (by norm_num)
@@ -60,19 +60,19 @@ theorem relScaledEnvelope_le_uniform {A delta Ctot D τ x : ℝ}
   have hHm0 : (0 : ℝ) ≤ Hmaj := by
     have h0 := scaledHeightMajorant_nonneg (A := A) (τ := τ) hτ1
     linarith
-  have hA1 : Lx ^ 2 / |τ| ≤ Lx ^ 2 / t₀ :=
+  have hA1 : Lx ^ (2 : ℕ) / |τ| ≤ Lx ^ (2 : ℕ) / t₀ :=
     div_le_div_of_nonneg_left (by positivity) ht0 hlo
-  have hA2 : 1 / |τ| ^ 2 ≤ 1 / t₀ ^ 2 := by
+  have hA2 : 1 / |τ| ^ (2 : ℕ) ≤ 1 / t₀ ^ (2 : ℕ) := by
     refine one_div_le_one_div_of_le (by positivity) ?_
     nlinarith [hlo, ht0]
-  have hA3 : scaledHeightMajorant A τ * (Real.exp (-(μ * q)) + 1 / |τ| ^ 2)
-      ≤ Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ 2) := by
+  have hA3 : scaledHeightMajorant A τ * (Real.exp (-(μ * q)) + 1 / |τ| ^ (2 : ℕ))
+      ≤ Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ (2 : ℕ)) := by
     refine mul_le_mul hHm (by linarith) (by positivity)
       (by linarith [scaledHeightMajorant_nonneg (A := A) (τ := τ) hτ1])
-  have hAtot : Ctot * D ^ 2
-        * (Lx ^ 2 / |τ| + scaledHeightMajorant A τ * (Real.exp (-(μ * q)) + 1 / |τ| ^ 2))
+  have hAtot : Ctot * D ^ (2 : ℕ)
+        * (Lx ^ (2 : ℕ) / |τ| + scaledHeightMajorant A τ * (Real.exp (-(μ * q)) + 1 / |τ| ^ (2 : ℕ)))
         / (2 * Real.pi)
-      ≤ Ctot * D ^ 2 * (Lx ^ 2 / t₀ + Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ 2))
+      ≤ Ctot * D ^ (2 : ℕ) * (Lx ^ (2 : ℕ) / t₀ + Hmaj * (Real.exp (-(μ * q)) + 1 / t₀ ^ (2 : ℕ)))
         / (2 * Real.pi) := by
     refine div_le_div_of_nonneg_right ?_ (by positivity)
     exact mul_le_mul_of_nonneg_left (by linarith) (by positivity)

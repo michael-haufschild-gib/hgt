@@ -101,7 +101,7 @@ theorem ccmDeletedGroundEnergy_of_invisible (a : SuzukiPositiveAperture) {p : �
 /-- Rayleigh bound for the deleted ground energy: the source quadratic plus the removed block. -/
 theorem ccmDeletedGroundEnergy_mul_formNorm_sq_le (a : SuzukiPositiveAperture) (p : ℕ)
     (u : CCMArchimedeanFormDomain a) :
-    ccmDeletedGroundEnergy a p * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ≤
+    ccmDeletedGroundEnergy a p * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ≤
       ccmRestrictedWeilSourceQuadratic a u +
         (inner ℂ (ccmVisiblePrimeBlock a p (ccmArchimedeanFormToAperture a u))
           (ccmArchimedeanFormToAperture a u)).re := by
@@ -120,7 +120,7 @@ theorem ccmDeletedGroundEnergy_mul_formNorm_sq_le (a : SuzukiPositiveAperture) (
       (ccmArchimedeanFormToAperture a u)).re = _
     rw [inner_add_left, ← add_assoc, Complex.add_re]
     rfl
-  change ccmDeletedGroundEnergy a p * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ≤ _ at hfloor
+  change ccmDeletedGroundEnergy a p * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ≤ _ at hfloor
   rw [hsplit, ccmRestrictedWeilForm_self_re_eq_source] at hfloor
   exact hfloor
 
@@ -161,7 +161,7 @@ theorem re_inner_visiblePrimeBlock_twoBumpSource {p : ℕ} (hp : p.Prime) (n : �
     let u := twoBumpSource n (by linarith [sN_pos n] : 0 ≤ Real.log p) a ha
     (inner ℂ (ccmVisiblePrimeBlock a p (ccmArchimedeanFormToAperture a u.toCCMFormVector))
       (ccmArchimedeanFormToAperture a u.toCCMFormVector)).re =
-      Real.log p * (1 / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ 2) := by
+      Real.log p * (1 / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ (2 : ℕ)) := by
   intro u
   have hu0 : (0 : ℝ) ≤ Real.log p := by linarith [sN_pos n]
   set f := ccmArchimedeanFormToAperture a u.toCCMFormVector with hf
@@ -183,7 +183,7 @@ theorem exists_phiN_ne_zero (n : ℕ) : ∃ x : ℝ, phiN n x ≠ 0 := by
   have h' : ∀ x, phiN n x = 0 := fun x => by
     by_contra hx
     exact h ⟨x, hx⟩
-  have h0 : ∫ x, phiN n x ^ 2 = 0 := by
+  have h0 : ∫ x, phiN n x ^ (2 : ℕ) = 0 := by
     simp [h']
   have hle := integral_phiN_sq_ge n
   rw [h0] at hle
@@ -244,7 +244,7 @@ theorem ccmDeletedGroundEnergy_neg_of_large {p : ℕ} (hp : p.Prime) (hp18 : Rea
   have hu0 : 0 ≤ Real.log p := by linarith
   have hsqrt_pos : 0 < Real.sqrt p := Real.sqrt_pos.mpr hp0
   have hexp_half : Real.exp (Real.log p / 2) = Real.sqrt p := by
-    have hsq : Real.exp (Real.log p / 2) ^ 2 = p := by
+    have hsq : Real.exp (Real.log p / 2) ^ (2 : ℕ) = p := by
       rw [← Real.exp_nat_mul]
       push_cast
       rw [show (2 : ℝ) * (Real.log p / 2) = Real.log p by ring, Real.exp_log hp0]
@@ -280,7 +280,7 @@ theorem ccmDeletedGroundEnergy_neg_of_large {p : ℕ} (hp : p.Prime) (hp18 : Rea
     obtain ⟨x, hx⟩ := exists_twoBump_ne_zero n h2s
     exact ccmArchimedeanFormToAperture_toCCMFormVector_ne_zero_of_apply_ne_zero u
       (x := x) (by rw [twoBumpSource_apply]; exact Complex.ofReal_ne_zero.mpr hx)
-  have hvpos : 0 < ‖v‖ ^ 2 := by positivity
+  have hvpos : 0 < ‖v‖ ^ (2 : ℕ) := by positivity
   -- the Rayleigh bound
   have hray := ccmDeletedGroundEnergy_mul_formNorm_sq_le a p u.toCCMFormVector
   rw [← hv] at hray
@@ -295,13 +295,13 @@ theorem ccmDeletedGroundEnergy_neg_of_large {p : ℕ} (hp : p.Prime) (hp18 : Rea
   have hblock := re_inner_visiblePrimeBlock_twoBumpSource hp n h2s a ha hvis
   simp only at hblock
   rw [← hv] at hblock
-  have hint : 1 / (2 * sN n) ≤ ∫ x, phiN n x ^ 2 := integral_phiN_sq_ge n
-  have hint' : 1 / Real.log p ≤ ∫ x, phiN n x ^ 2 := by
+  have hint : 1 / (2 * sN n) ≤ ∫ x, phiN n x ^ (2 : ℕ) := integral_phiN_sq_ge n
+  have hint' : 1 / Real.log p ≤ ∫ x, phiN n x ^ (2 : ℕ) := by
     refine le_trans ?_ hint
     rw [div_le_div_iff₀ (by linarith) (by positivity)]
     linarith
-  have hprod : Real.log p * (1 / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ 2) ≤ -(2 / Real.sqrt p) := by
-    have h1 : Real.log p * (1 / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ 2) ≤
+  have hprod : Real.log p * (1 / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ (2 : ℕ)) ≤ -(2 / Real.sqrt p) := by
+    have h1 : Real.log p * (1 / Real.sqrt p) * (-2 * ∫ x, phiN n x ^ (2 : ℕ)) ≤
         Real.log p * (1 / Real.sqrt p) * (-2 * (1 / Real.log p)) := by
       apply mul_le_mul_of_nonneg_left _ (by positivity)
       linarith
@@ -319,7 +319,7 @@ theorem ccmDeletedGroundEnergy_neg_of_large {p : ℕ} (hp : p.Prime) (hp18 : Rea
       _ = (99 / 50) * ((p : ℝ) * X) := by rw [hsq]
       _ ≤ 99 / 50 := by linarith
       _ < 2 := by norm_num
-  have hneg : ccmDeletedGroundEnergy a p * ‖v‖ ^ 2 < 0 := by
+  have hneg : ccmDeletedGroundEnergy a p * ‖v‖ ^ (2 : ℕ) < 0 := by
     rw [hblock] at hray
     linarith
   rcases lt_or_ge (ccmDeletedGroundEnergy a p) 0 with hlt | hge

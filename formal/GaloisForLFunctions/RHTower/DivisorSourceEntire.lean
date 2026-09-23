@@ -21,7 +21,7 @@ namespace RHTower
 
 /-- Entire continuation of the literal log-minus-divisor coefficient source. -/
 def divisorSourceEntire (w : ℂ) : ℂ :=
-  -deriv zetaRegularized w - zetaRegularized w ^ 2 - 2 * dslope zetaRegularized 1 w +
+  -deriv zetaRegularized w - zetaRegularized w ^ (2 : ℕ) - 2 * dslope zetaRegularized 1 w +
     2 * (Real.eulerMascheroniConstant : ℂ) * zetaRegularized w
 
 /-- The two apparent Laurent poles of the literal source cancel completely. -/
@@ -35,7 +35,7 @@ theorem differentiable_divisorSourceEntire : Differentiable ℂ divisorSourceEnt
       (differentiable_zetaRegularized.const_mul (2 * (Real.eulerMascheroniConstant : ℂ)))
 
 private lemma regularized_deriv {w : ℂ} (hw : w≠1) :
-    deriv zetaRegularized w = deriv riemannZeta w + 1/(w-1)^2 := by
+    deriv zetaRegularized w = deriv riemannZeta w + 1/(w-1)^(2 : ℕ) := by
   have he : zetaRegularized =ᶠ[𝓝 w] (fun z => riemannZeta z-1/(z-1)) := by
     filter_upwards [isOpen_compl_singleton.mem_nhds hw] with z hz
     exact zetaRegularized_of_ne hz
@@ -47,7 +47,7 @@ private lemma regularized_deriv {w : ℂ} (hw : w≠1) :
 /-- Away from the filled pole this entire function is the literal zeta expression,
 with no inverse zeta factor and no zero-free-region premise. -/
 theorem divisorSourceEntire_eq {w : ℂ} (hw : w≠1) :
-    divisorSourceEntire w = -deriv riemannZeta w-riemannZeta w^2+
+    divisorSourceEntire w = -deriv riemannZeta w-riemannZeta w^(2 : ℕ)+
       2*(Real.eulerMascheroniConstant:ℂ)*riemannZeta w := by
   rw [divisorSourceEntire, regularized_deriv hw, dslope_of_ne _ hw,
     slope_def_field, zetaRegularized_of_ne hw]
@@ -118,9 +118,9 @@ theorem exists_bound_divisorSourceEntire_right :
 Re(w)=-1/2, including its zeta derivative contribution. -/
 theorem exists_bound_divisorSourceEntire_negative_half :
     ∃ C : ℝ, 0≤C ∧ ∀t : ℝ, 3≤|t| →
-      ‖divisorSourceEntire ((-1/2:ℂ)+(t:ℂ)*I)‖ ≤ C*(1+|t|)^2 := by
+      ‖divisorSourceEntire ((-1/2:ℂ)+(t:ℂ)*I)‖ ≤ C*(1+|t|)^(2 : ℕ) := by
   obtain ⟨K,hK,hchi⟩ := exists_norm_zetaChi_line_le (σ := -1/2) (by norm_num)
-  let C : ℝ := 160*Real.exp 4+(3*K)^2+6*|Real.eulerMascheroniConstant| *K
+  let C : ℝ := 160*Real.exp 4+(3*K)^(2 : ℕ)+6*|Real.eulerMascheroniConstant| *K
   have hC : 0≤C := by dsimp [C]; positivity
   refine ⟨C,hC,?_⟩
   intro t ht
@@ -140,25 +140,25 @@ theorem exists_bound_divisorSourceEntire_negative_half :
   have hd := Sieve.norm_deriv_riemannZeta_negative_half_le ht
   have hw1 : w≠1 := by intro h; have := congrArg Complex.re h; norm_num [w] at this
   rw [divisorSourceEntire_eq hw1]
-  have hnorm : ‖-deriv riemannZeta w-riemannZeta w^2+
+  have hnorm : ‖-deriv riemannZeta w-riemannZeta w^(2 : ℕ)+
       2*(Real.eulerMascheroniConstant:ℂ)*riemannZeta w‖ ≤
-      ‖deriv riemannZeta w‖+‖riemannZeta w‖^2+
+      ‖deriv riemannZeta w‖+‖riemannZeta w‖^(2 : ℕ)+
         2*|Real.eulerMascheroniConstant| *‖riemannZeta w‖ := by
     calc
-      _ ≤ ‖-deriv riemannZeta w-riemannZeta w^2‖+
+      _ ≤ ‖-deriv riemannZeta w-riemannZeta w^(2 : ℕ)‖+
           ‖2*(Real.eulerMascheroniConstant:ℂ)*riemannZeta w‖ := norm_add_le _ _
       _ ≤ _ := by
-        have h := norm_sub_le (-deriv riemannZeta w) (riemannZeta w^2)
+        have h := norm_sub_le (-deriv riemannZeta w) (riemannZeta w^(2 : ℕ))
         simp only [norm_neg,norm_pow] at h
         simp only [norm_mul, Complex.norm_ofNat,Complex.norm_real,Real.norm_eq_abs]
         linarith
   apply hnorm.trans
-  have hsq : ‖riemannZeta w‖^2≤(3*K*(1+|t|))^2 :=
+  have hsq : ‖riemannZeta w‖^(2 : ℕ)≤(3*K*(1+|t|))^(2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hz 2
   have hlin := mul_le_mul_of_nonneg_left hz (show 0≤2*|Real.eulerMascheroniConstant| by positivity)
   have ht1 : 1≤1+|t| := by linarith [abs_nonneg t]
   have hlast : 6*|Real.eulerMascheroniConstant| *K*(1+|t|) ≤
-      6*|Real.eulerMascheroniConstant| *K*(1+|t|)^2 := by
+      6*|Real.eulerMascheroniConstant| *K*(1+|t|)^(2 : ℕ) := by
     gcongr
     nlinarith
   dsimp [C]

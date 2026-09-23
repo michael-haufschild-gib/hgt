@@ -41,8 +41,8 @@ theorem normSq_sum_moebiusTwist_le (M : ℕ) {N B W C : ℝ} (hN : 0 < N)
       ‖∑ n ∈ Finset.range M, moebiusTwist τ n‖ / N ≤ B)
     (hW : 8 * Real.pi * W + 5 ≤ C) :
     ∀ w : ℝ, |w| ≤ W →
-      ‖∑ n ∈ (Finset.range M).erase 0, moebiusTwist (-(2 * Real.pi * w)) n‖ ^ 2
-        ≤ (B * N) ^ 2 := by
+      ‖∑ n ∈ (Finset.range M).erase 0, moebiusTwist (-(2 * Real.pi * w)) n‖ ^ (2 : ℕ)
+        ≤ (B * N) ^ (2 : ℕ) := by
   intro w hw
   rw [sum_moebiusTwist_erase]
   have hadm := admissible_of_abs_le hW hw

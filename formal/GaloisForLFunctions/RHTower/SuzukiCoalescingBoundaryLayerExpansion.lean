@@ -33,22 +33,22 @@ theorem tendsto_mul_sq_poleEnergy {O groundMass reduced : ℝ → ℝ} {B ρ Cre
     (hmass : Tendsto (fun c : ℝ => groundMass c / c ^ (2 * s)) (𝓝[>] (0 : ℝ)) (𝓝 B))
     (hred : Tendsto reduced (𝓝[>] (0 : ℝ)) (𝓝 Cred))
     (hO : ∀ c ∈ Ioi (0 : ℝ), O c = groundMass c / (ρ * c ^ (2 * s + 2)) + reduced c) :
-    Tendsto (fun c : ℝ => c ^ 2 * O c) (𝓝[>] (0 : ℝ)) (𝓝 (B / ρ)) := by
-  have hsq : Tendsto (fun c : ℝ => c ^ 2) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    have hcont : ContinuousAt (fun c : ℝ => c ^ 2) 0 := by fun_prop
+    Tendsto (fun c : ℝ => c ^ (2 : ℕ) * O c) (𝓝[>] (0 : ℝ)) (𝓝 (B / ρ)) := by
+  have hsq : Tendsto (fun c : ℝ => c ^ (2 : ℕ)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have hcont : ContinuousAt (fun c : ℝ => c ^ (2 : ℕ)) 0 := by fun_prop
     simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hlim : Tendsto
-      (fun c : ℝ => groundMass c / c ^ (2 * s) / ρ + c ^ 2 * reduced c)
+      (fun c : ℝ => groundMass c / c ^ (2 * s) / ρ + c ^ (2 : ℕ) * reduced c)
       (𝓝[>] (0 : ℝ)) (𝓝 (B / ρ)) := by
     have h1 : Tendsto (fun c : ℝ => groundMass c / c ^ (2 * s) / ρ)
         (𝓝[>] (0 : ℝ)) (𝓝 (B / ρ)) := hmass.div_const ρ
-    have h2 : Tendsto (fun c : ℝ => c ^ 2 * reduced c) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have h2 : Tendsto (fun c : ℝ => c ^ (2 : ℕ) * reduced c) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
       simpa using hsq.mul hred
     simpa using h1.add h2
   refine hlim.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with c hc
   have hcne : c ≠ 0 := ne_of_gt hc
-  have hpow : c ^ (2 * s + 2) = c ^ (2 * s) * c ^ 2 := by
+  have hpow : c ^ (2 * s + 2) = c ^ (2 * s) * c ^ (2 : ℕ) := by
     rw [← pow_add]
   rw [hO c hc, hpow]
   field_simp

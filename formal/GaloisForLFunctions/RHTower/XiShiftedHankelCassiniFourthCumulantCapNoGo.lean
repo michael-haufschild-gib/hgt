@@ -5,13 +5,13 @@ import GaloisForLFunctions.RHTower.XiShiftedHankelCassiniContactFourthCumulant
 
 The proposed degree-one arithmetic reserve
 
-`t^3 K4 <= 3 A (1-e)(1-2e^2)`
+`t^(3 : ℕ) K4 <= 3 A (1-e)(1-2e^(2 : ℕ))`
 
 does not weaken the Route-U terminal orientation problem.  On the actual contact locus it is
 equivalent to nonnegative contact flow, then to nonnegative terminal flux, and finally to the
 adjacent shifted Hankel minor
 
-`m_1 m_3 - m_2^2 >= 0`.
+`m_1 m_3 - m_2^(2 : ℕ) >= 0`.
 
 Thus a fourth-cumulant proof must produce this inequality before cumulant compression; assuming or
 re-proving the displayed cap as an abstract contact inequality is exactly the original sign goal.
@@ -25,7 +25,7 @@ noncomputable section
 def xiShiftedDegreeOneAdjacentHankelMinor (y : ℝ) : ℝ :=
   (xiShiftedReciprocalMoment y 1).re *
       (xiShiftedReciprocalMoment y 3).re -
-    (xiShiftedReciprocalMoment y 2).re ^ 2
+    (xiShiftedReciprocalMoment y 2).re ^ (2 : ℕ)
 
 /-- At a flat first face, multiplying terminal flux by the positive first shifted moment gives
 exactly the adjacent shifted Hankel minor. -/
@@ -40,13 +40,13 @@ theorem re_xiShiftedReciprocalMoment_one_mul_terminalFlux_eq_adjacentMinor_of_fl
   let m2 : ℝ := (xiShiftedReciprocalMoment y 2).re
   let m3 : ℝ := (xiShiftedReciprocalMoment y 3).re
   have hm0 : 0 < m0 := xiShiftedCassiniResponse_pos hy
-  have hcontact : m0 * m2 = m1 ^ 2 := by
+  have hcontact : m0 * m2 = m1 ^ (2 : ℕ) := by
     rw [xiShiftedDegreeOneHankelMinor] at hflat
     dsimp only [xiShiftedCassiniResponse, m0, m1, m2] at hflat
     linarith
   rw [xiShiftedDegreeOneTerminalFlux_eq_moments]
-  change m1 * (m3 - 2 * (m1 / m0) * m2 + (m1 / m0) ^ 2 * m1) =
-    m1 * m3 - m2 ^ 2
+  change m1 * (m3 - 2 * (m1 / m0) * m2 + (m1 / m0) ^ (2 : ℕ) * m1) =
+    m1 * m3 - m2 ^ (2 : ℕ)
   field_simp [hm0.ne']
   nlinarith [hcontact]
 
@@ -55,10 +55,10 @@ outgoing contact flow. -/
 theorem thetaCuspCassiniFourthCumulantCap_iff_contactFlow_nonneg_of_contact
     {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1)
     (hcontact : thetaCuspCassiniEulerContactNumerator t = 0) :
-    (t ^ 3 * thetaCuspCassiniEsscherFourthCumulant t ≤
+    (t ^ (3 : ℕ) * thetaCuspCassiniEsscherFourthCumulant t ≤
         3 * thetaCuspCassiniEsscherMean t *
           (1 - thetaCuspCassiniContactElasticity t) *
-          (1 - 2 * thetaCuspCassiniContactElasticity t ^ 2)) ↔
+          (1 - 2 * thetaCuspCassiniContactElasticity t ^ (2 : ℕ))) ↔
       0 ≤ thetaCuspCassiniEulerContactFlow t := by
   let A := thetaCuspCassiniEsscherMean t
   let e := thetaCuspCassiniContactElasticity t
@@ -69,12 +69,12 @@ theorem thetaCuspCassiniFourthCumulantCap_iff_contactFlow_nonneg_of_contact
     exact mul_pos ht0 (xiShiftedCassiniResponse_pos (sq_pos_of_pos ht0))
   rw [thetaCuspCassiniEulerContactFlow_eq_fourthCumulantWall_of_contact
     ht0 ht1 hcontact]
-  change (t ^ 3 * K4 ≤ 3 * A * (1 - e) * (1 - 2 * e ^ 2)) ↔
-    0 ≤ 3 * A ^ 2 / t * (1 - e) * (1 - 2 * e ^ 2) - t ^ 2 * A * K4
+  change (t ^ (3 : ℕ) * K4 ≤ 3 * A * (1 - e) * (1 - 2 * e ^ (2 : ℕ))) ↔
+    0 ≤ 3 * A ^ (2 : ℕ) / t * (1 - e) * (1 - 2 * e ^ (2 : ℕ)) - t ^ (2 : ℕ) * A * K4
   have heq :
-      3 * A ^ 2 / t * (1 - e) * (1 - 2 * e ^ 2) - t ^ 2 * A * K4 =
+      3 * A ^ (2 : ℕ) / t * (1 - e) * (1 - 2 * e ^ (2 : ℕ)) - t ^ (2 : ℕ) * A * K4 =
         (A / t) *
-          (3 * A * (1 - e) * (1 - 2 * e ^ 2) - t ^ 3 * K4) := by
+          (3 * A * (1 - e) * (1 - 2 * e ^ (2 : ℕ)) - t ^ (3 : ℕ) * K4) := by
     field_simp [ht0.ne']
   rw [heq]
   constructor
@@ -91,12 +91,12 @@ theorem thetaCuspCassiniContactFlow_nonneg_iff_terminalFlux_nonneg_of_contact
     {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1)
     (hcontact : thetaCuspCassiniEulerContactNumerator t = 0) :
     0 ≤ thetaCuspCassiniEulerContactFlow t ↔
-      0 ≤ xiShiftedDegreeOneTerminalFlux (t ^ 2) := by
-  have hflat : xiShiftedDegreeOneHankelMinor (t ^ 2) = 0 :=
+      0 ≤ xiShiftedDegreeOneTerminalFlux (t ^ (2 : ℕ)) := by
+  have hflat : xiShiftedDegreeOneHankelMinor (t ^ (2 : ℕ)) = 0 :=
     (thetaCuspCassiniEulerContactNumerator_eq_zero_iff_minor_eq_zero
       ht0 ht1).mp hcontact
   have hneg :
-      xiShiftedDegreeOneTerminalFlux (t ^ 2) < 0 ↔
+      xiShiftedDegreeOneTerminalFlux (t ^ (2 : ℕ)) < 0 ↔
         thetaCuspCassiniEulerContactFlow t < 0 := by
     constructor
     · intro hterminal
@@ -141,12 +141,12 @@ minor.  It is therefore the terminal sign in different coordinates, not an indep
 theorem thetaCuspCassiniFourthCumulantCap_iff_adjacentMinor_nonneg_of_contact
     {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1)
     (hcontact : thetaCuspCassiniEulerContactNumerator t = 0) :
-    (t ^ 3 * thetaCuspCassiniEsscherFourthCumulant t ≤
+    (t ^ (3 : ℕ) * thetaCuspCassiniEsscherFourthCumulant t ≤
         3 * thetaCuspCassiniEsscherMean t *
           (1 - thetaCuspCassiniContactElasticity t) *
-          (1 - 2 * thetaCuspCassiniContactElasticity t ^ 2)) ↔
-      0 ≤ xiShiftedDegreeOneAdjacentHankelMinor (t ^ 2) := by
-  have hflat : xiShiftedDegreeOneHankelMinor (t ^ 2) = 0 :=
+          (1 - 2 * thetaCuspCassiniContactElasticity t ^ (2 : ℕ))) ↔
+      0 ≤ xiShiftedDegreeOneAdjacentHankelMinor (t ^ (2 : ℕ)) := by
+  have hflat : xiShiftedDegreeOneHankelMinor (t ^ (2 : ℕ)) = 0 :=
     (thetaCuspCassiniEulerContactNumerator_eq_zero_iff_minor_eq_zero
       ht0 ht1).mp hcontact
   exact

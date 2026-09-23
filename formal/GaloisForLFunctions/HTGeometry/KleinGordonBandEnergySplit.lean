@@ -24,7 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
 section Orthogonality
 
 /-- The energy norm in components. -/
-theorem norm_kgEnergy_sq (v : KGEnergy E) : ‖v‖ ^ 2 = ‖v.fst‖ ^ 2 + ‖v.snd‖ ^ 2 := by
+theorem norm_kgEnergy_sq (v : KGEnergy E) : ‖v‖ ^ (2 : ℕ) = ‖v.fst‖ ^ (2 : ℕ) + ‖v.snd‖ ^ (2 : ℕ) := by
   have h := norm_kgPair_sq (E := E) v.fst v.snd
   rwa [kgPair_fst_snd] at h
 
@@ -61,17 +61,17 @@ set_option maxHeartbeats 1000000 in
 theorem norm_kgEnergy_add_sq
     (hsa : ∀ x y : Lp ℂ 2 (volume : Measure E), (inner ℂ (Λ x) y : ℂ) = inner ℂ x (Λ y))
     {v w : KGEnergy E} (hv : kgDiagOp Λ v = v) (hw : kgDiagOp Λ w = 0) :
-    ‖v + w‖ ^ 2 = ‖v‖ ^ 2 + ‖w‖ ^ 2 := by
+    ‖v + w‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) + ‖w‖ ^ (2 : ℕ) := by
   have h1 : (inner ℂ v.fst w.fst : ℂ) = 0 :=
     inner_eq_zero_of_proj hsa (kgDiagOp_fixed_fst hv) (kgDiagOp_zero_fst hw)
   have h2 : (inner ℂ v.snd w.snd : ℂ) = 0 :=
     inner_eq_zero_of_proj hsa (kgDiagOp_fixed_snd hv) (kgDiagOp_zero_snd hw)
   have p1 := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero v.fst w.fst h1
   have p2 := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero v.snd w.snd h2
-  have q1 : ‖v.fst + w.fst‖ ^ 2 = ‖v.fst‖ ^ 2 + ‖w.fst‖ ^ 2 := by
+  have q1 : ‖v.fst + w.fst‖ ^ (2 : ℕ) = ‖v.fst‖ ^ (2 : ℕ) + ‖w.fst‖ ^ (2 : ℕ) := by
     rw [pow_two, pow_two, pow_two]
     exact p1
-  have q2 : ‖v.snd + w.snd‖ ^ 2 = ‖v.snd‖ ^ 2 + ‖w.snd‖ ^ 2 := by
+  have q2 : ‖v.snd + w.snd‖ ^ (2 : ℕ) = ‖v.snd‖ ^ (2 : ℕ) + ‖w.snd‖ ^ (2 : ℕ) := by
     rw [pow_two, pow_two, pow_two]
     exact p2
   rw [norm_kgEnergy_sq, norm_kgEnergy_sq, norm_kgEnergy_sq, kgEnergy_fst_add, kgEnergy_snd_add,
@@ -91,11 +91,11 @@ theorem norm_kgFieldStateT_band_split (hw : ∀ r : ℝ, Measurable (w r)) (hb0 
     (hWs : ∀ x : Lp ℂ 2 (volume : Measure E),
       Continuous fun r : ℝ => (fourierMulCLM (hw r) hb0 (hwb r)) x)
     (R : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldStateT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ 2
+    ‖kgFieldStateT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ (2 : ℕ)
       = ‖kgFieldStateT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-            (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2
+            (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ)
         + ‖kgFieldStateT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-            (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2 := by
+            (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ) := by
   obtain ⟨hsum, hlow, hhigh⟩ := kgFieldStateT_band_decouple hw hb0 hwb hWs R g h t
   rw [hsum]
   exact norm_kgEnergy_add_sq (kgLowPassOp_inner R) hlow hhigh
@@ -108,16 +108,16 @@ theorem kgFieldEnergyT_band_split (hw : ∀ r : ℝ, Measurable (w r)) (hb0 : 0 
     (hWs : ∀ x : Lp ℂ 2 (volume : Measure E),
       Continuous fun r : ℝ => (fourierMulCLM (hw r) hb0 (hwb r)) x)
     (R : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ 2
-        + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ 2
+    ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ (2 : ℕ)
+        + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ (2 : ℕ)
       = (‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2
+              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ 2)
+              (kgLowPassOp R g) (kgLowPassOp R h) t‖ ^ (2 : ℕ))
         + (‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)
           + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ 2) := by
+              (g - kgLowPassOp R g) (h - kgLowPassOp R h) t‖ ^ (2 : ℕ)) := by
   rw [kgFieldEnergyT_eq_norm_sq, kgFieldEnergyT_eq_norm_sq, kgFieldEnergyT_eq_norm_sq]
   exact norm_kgFieldStateT_band_split hw hb0 hwb hWs R g h t
 

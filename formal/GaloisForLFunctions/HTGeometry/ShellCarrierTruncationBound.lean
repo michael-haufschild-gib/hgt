@@ -100,31 +100,31 @@ theorem natDegree_carrierProductPoly_lt (a x : ℝ) (n m : ℕ) :
   rw [carrierDegBound]
   omega
 
-theorem norm_ofReal_pow_two (x : ℝ) : ‖((x : ℝ) : ℂ) ^ 2‖ = x ^ 2 := by
+theorem norm_ofReal_pow_two (x : ℝ) : ‖((x : ℝ) : ℂ) ^ (2 : ℕ)‖ = x ^ (2 : ℕ) := by
   rw [← Complex.ofReal_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg x)]
 
-theorem shellMax_mul_le {x r c : ℝ} (hr1 : r ≤ 1) (hxc : x ^ 2 * r ≤ c) :
-    max 1 (x ^ 2) * r ≤ max 1 c := by
-  rcases le_total (x ^ 2) 1 with h | h
+theorem shellMax_mul_le {x r c : ℝ} (hr1 : r ≤ 1) (hxc : x ^ (2 : ℕ) * r ≤ c) :
+    max 1 (x ^ (2 : ℕ)) * r ≤ max 1 c := by
+  rcases le_total (x ^ (2 : ℕ)) 1 with h | h
   · rw [max_eq_left h, one_mul]
     exact le_trans hr1 (le_max_left _ _)
   · rw [max_eq_right h]
     exact le_trans hxc (le_max_right _ _)
 
 theorem norm_coeff_carrierProductPoly_le {a x r c : ℝ} (hr0 : 0 ≤ r) (hr1 : r ≤ 1)
-    (hxc : x ^ 2 * r ≤ c) (n m : ℕ) {j : ℕ} (hj : m ≤ j) :
+    (hxc : x ^ (2 : ℕ) * r ≤ c) (n m : ℕ) {j : ℕ} (hj : m ≤ j) :
     ‖(carrierProductPoly a x n m).coeff j‖ * r ^ (j - m)
-      ≤ poincareMassSum a n m * max 1 c ^ carrierDegBound a n m * max 1 (x ^ 2) ^ m := by
+      ≤ poincareMassSum a n m * max 1 c ^ carrierDegBound a n m * max 1 (x ^ (2 : ℕ)) ^ m := by
   classical
-  have hxr0 : (0 : ℝ) ≤ x ^ 2 * r := mul_nonneg (sq_nonneg x) hr0
+  have hxr0 : (0 : ℝ) ≤ x ^ (2 : ℕ) * r := mul_nonneg (sq_nonneg x) hr0
   have hc0 : (0 : ℝ) ≤ c := le_trans hxr0 hxc
-  have hmx1 : (1 : ℝ) ≤ max 1 (x ^ 2) := le_max_left _ _
+  have hmx1 : (1 : ℝ) ≤ max 1 (x ^ (2 : ℕ)) := le_max_left _ _
   have hmc1 : (1 : ℝ) ≤ max 1 c := le_max_left _ _
-  have hmxm : (1 : ℝ) ≤ max 1 (x ^ 2) ^ m := one_le_pow₀ hmx1
+  have hmxm : (1 : ℝ) ≤ max 1 (x ^ (2 : ℕ)) ^ m := one_le_pow₀ hmx1
   have hmass := poincareMassSum_nonneg a n m
   have hmcD : (0 : ℝ) ≤ max 1 c ^ carrierDegBound a n m := pow_nonneg (by linarith) _
   have hRHS : (0 : ℝ) ≤ poincareMassSum a n m * max 1 c ^ carrierDegBound a n m
-      * max 1 (x ^ 2) ^ m := by positivity
+      * max 1 (x ^ (2 : ℕ)) ^ m := by positivity
   rcases le_or_gt (carrierDegBound a n m) j with hjD | hjD
   · have hzero : (carrierProductPoly a x n m).coeff j = 0 :=
       Polynomial.coeff_eq_zero_of_natDegree_lt
@@ -133,33 +133,33 @@ theorem norm_coeff_carrierProductPoly_le {a x r c : ℝ} (hr0 : 0 ≤ r) (hr1 : 
     exact hRHS
   · have hcoeff := coeff_carrierProductPoly a x n m j
     have hdeg : (poincareCoeffPoly a n m j).natDegree ≤ j := natDegree_poincareCoeffPoly_le a n m j
-    have hbase := norm_eval_le_of_natDegree_le hdeg (((x : ℝ) : ℂ) ^ 2)
+    have hbase := norm_eval_le_of_natDegree_le hdeg (((x : ℝ) : ℂ) ^ (2 : ℕ))
     rw [norm_ofReal_pow_two] at hbase
     have hAj : polyAbsSum (poincareCoeffPoly a n m j) ≤ poincareMassSum a n m := by
       rw [poincareMassSum]
       exact Finset.single_le_sum (fun i _ => polyAbsSum_nonneg _) (Finset.mem_range.mpr hjD)
-    have hsplit : max 1 (x ^ 2) ^ j = max 1 (x ^ 2) ^ m * max 1 (x ^ 2) ^ (j - m) := by
+    have hsplit : max 1 (x ^ (2 : ℕ)) ^ j = max 1 (x ^ (2 : ℕ)) ^ m * max 1 (x ^ (2 : ℕ)) ^ (j - m) := by
       rw [← pow_add]
       congr 1
       omega
-    have htail : max 1 (x ^ 2) ^ (j - m) * r ^ (j - m) ≤ max 1 c ^ carrierDegBound a n m := by
+    have htail : max 1 (x ^ (2 : ℕ)) ^ (j - m) * r ^ (j - m) ≤ max 1 c ^ carrierDegBound a n m := by
       rw [← mul_pow]
       refine le_trans (pow_le_pow_left₀ (mul_nonneg (by linarith) hr0)
         (shellMax_mul_le hr1 hxc) (j - m)) ?_
       exact pow_le_pow_right₀ hmc1 (by omega)
     rw [hcoeff]
-    calc ‖(poincareCoeffPoly a n m j).eval (((x : ℝ) : ℂ) ^ 2)‖ * r ^ (j - m)
-        ≤ polyAbsSum (poincareCoeffPoly a n m j) * max 1 (x ^ 2) ^ j * r ^ (j - m) :=
+    calc ‖(poincareCoeffPoly a n m j).eval (((x : ℝ) : ℂ) ^ (2 : ℕ))‖ * r ^ (j - m)
+        ≤ polyAbsSum (poincareCoeffPoly a n m j) * max 1 (x ^ (2 : ℕ)) ^ j * r ^ (j - m) :=
           mul_le_mul_of_nonneg_right hbase (pow_nonneg hr0 _)
-      _ = polyAbsSum (poincareCoeffPoly a n m j) * max 1 (x ^ 2) ^ m
-            * (max 1 (x ^ 2) ^ (j - m) * r ^ (j - m)) := by rw [hsplit]; ring
-      _ ≤ polyAbsSum (poincareCoeffPoly a n m j) * max 1 (x ^ 2) ^ m
+      _ = polyAbsSum (poincareCoeffPoly a n m j) * max 1 (x ^ (2 : ℕ)) ^ m
+            * (max 1 (x ^ (2 : ℕ)) ^ (j - m) * r ^ (j - m)) := by rw [hsplit]; ring
+      _ ≤ polyAbsSum (poincareCoeffPoly a n m j) * max 1 (x ^ (2 : ℕ)) ^ m
             * max 1 c ^ carrierDegBound a n m := by
           refine mul_le_mul_of_nonneg_left htail ?_
           exact mul_nonneg (polyAbsSum_nonneg _) (by linarith)
-      _ ≤ poincareMassSum a n m * max 1 (x ^ 2) ^ m * max 1 c ^ carrierDegBound a n m := by
+      _ ≤ poincareMassSum a n m * max 1 (x ^ (2 : ℕ)) ^ m * max 1 c ^ carrierDegBound a n m := by
           refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hAj (by linarith)) hmcD
-      _ = poincareMassSum a n m * max 1 c ^ carrierDegBound a n m * max 1 (x ^ 2) ^ m := by ring
+      _ = poincareMassSum a n m * max 1 c ^ carrierDegBound a n m * max 1 (x ^ (2 : ℕ)) ^ m := by ring
 
 /-- The shell-free constant of the truncated carrier expansion. -/
 def carrierTruncConst (a c : ℝ) (n m : ℕ) : ℝ :=
@@ -191,47 +191,47 @@ theorem one_le_carrierShellConst {a c : ℝ} (hc : 0 ≤ c) (n m : ℕ) :
 
 /-- **The carrier profile against its genuine order-`m` partial sum, uniformly over the shell.** -/
 theorem norm_shellCarrierProfile_sub_trunc_le {a x r c : ℝ} (ha : 0 ≤ a) (hr0 : 0 ≤ r)
-    (hr1 : r ≤ 1) (hxr : x ^ 2 * r ^ 2 ≤ 1 / 2) (hxc : x ^ 2 * r ≤ c)
+    (hr1 : r ≤ 1) (hxr : x ^ (2 : ℕ) * r ^ (2 : ℕ) ≤ 1 / 2) (hxc : x ^ (2 : ℕ) * r ≤ c)
     (hdef : a * shellDefectRate x * r ≤ 1 / 2) (n m : ℕ) {w : ℂ} (hw : ‖w‖ ≤ r) :
     ‖shellCarrierProfile a x n w - (truncBelow m (carrierProductPoly a x n m)).eval w‖
-      ≤ carrierTruncConst a c n m * max 1 (x ^ 2) ^ m * ‖w‖ ^ m := by
-  have hxr0 : (0 : ℝ) ≤ x ^ 2 * r := mul_nonneg (sq_nonneg x) hr0
+      ≤ carrierTruncConst a c n m * max 1 (x ^ (2 : ℕ)) ^ m * ‖w‖ ^ m := by
+  have hxr0 : (0 : ℝ) ≤ x ^ (2 : ℕ) * r := mul_nonneg (sq_nonneg x) hr0
   have hc0 : (0 : ℝ) ≤ c := le_trans hxr0 hxc
   have hcb1 : (0 : ℝ) ≤ cbinomAbsCoeff ((1 : ℝ) / 2) 1 := cbinomAbsCoeff_nonneg _ _
-  have hmx1 : (1 : ℝ) ≤ max 1 (x ^ 2) := le_max_left _ _
-  have hmxm : (1 : ℝ) ≤ max 1 (x ^ 2) ^ m := one_le_pow₀ hmx1
+  have hmx1 : (1 : ℝ) ≤ max 1 (x ^ (2 : ℕ)) := le_max_left _ _
+  have hmxm : (1 : ℝ) ≤ max 1 (x ^ (2 : ℕ)) ^ m := one_le_pow₀ hmx1
   have hw0 : (0 : ℝ) ≤ ‖w‖ ^ m := pow_nonneg (norm_nonneg w) m
   have hone := one_le_carrierShellConst (a := a) hc0 n m
-  have hK : a * shellDefectRate x = a * cbinomAbsCoeff ((1 : ℝ) / 2) 1 * x ^ 2 := by
+  have hK : a * shellDefectRate x = a * cbinomAbsCoeff ((1 : ℝ) / 2) 1 * x ^ (2 : ℕ) := by
     rw [shellDefectRate, sq_abs]
     ring
   have hKle : (a * shellDefectRate x) ^ m
-      ≤ (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m * max 1 (x ^ 2) ^ m := by
+      ≤ (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m * max 1 (x ^ (2 : ℕ)) ^ m := by
     rw [hK, mul_pow]
     exact mul_le_mul_of_nonneg_left
-      (pow_le_pow_left₀ (sq_nonneg x) (le_max_right 1 (x ^ 2)) m)
+      (pow_le_pow_left₀ (sq_nonneg x) (le_max_right 1 (x ^ (2 : ℕ))) m)
       (pow_nonneg (mul_nonneg ha hcb1) m)
   have hstep1 : carrierShellConst a c n m * (1 + (a * shellDefectRate x) ^ m)
       ≤ carrierShellConst a c n m * (1 + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m)
-        * max 1 (x ^ 2) ^ m := by
+        * max 1 (x ^ (2 : ℕ)) ^ m := by
     have h1 : 1 + (a * shellDefectRate x) ^ m
-        ≤ (1 + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m) * max 1 (x ^ 2) ^ m := by
-      have hexp : (1 + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m) * max 1 (x ^ 2) ^ m
-          = max 1 (x ^ 2) ^ m
-            + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m * max 1 (x ^ 2) ^ m := by ring
+        ≤ (1 + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m) * max 1 (x ^ (2 : ℕ)) ^ m := by
+      have hexp : (1 + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m) * max 1 (x ^ (2 : ℕ)) ^ m
+          = max 1 (x ^ (2 : ℕ)) ^ m
+            + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m * max 1 (x ^ (2 : ℕ)) ^ m := by ring
       rw [hexp]
       linarith
     have := mul_le_mul_of_nonneg_left h1 (by linarith : (0 : ℝ) ≤ carrierShellConst a c n m)
     calc carrierShellConst a c n m * (1 + (a * shellDefectRate x) ^ m)
         ≤ carrierShellConst a c n m
-            * ((1 + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m) * max 1 (x ^ 2) ^ m) := this
+            * ((1 + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m) * max 1 (x ^ (2 : ℕ)) ^ m) := this
       _ = carrierShellConst a c n m * (1 + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m)
-            * max 1 (x ^ 2) ^ m := by ring
+            * max 1 (x ^ (2 : ℕ)) ^ m := by ring
   have hmain : ‖shellCarrierProfile a x n w - (carrierProductPoly a x n m).eval w‖
       ≤ carrierShellConst a c n m * (1 + (a * shellDefectRate x) ^ m) * ‖w‖ ^ m :=
     (bddExpS_shellCarrierProfile ha hr0 hr1 hxr hxc hdef n m).2.2 w hw
   have hB0 : (0 : ℝ) ≤ poincareMassSum a n m * max 1 c ^ carrierDegBound a n m
-      * max 1 (x ^ 2) ^ m :=
+      * max 1 (x ^ (2 : ℕ)) ^ m :=
     mul_nonneg (mul_nonneg (poincareMassSum_nonneg a n m)
       (pow_nonneg (le_trans zero_le_one (le_max_left _ _)) _)) (by linarith)
   have htail := norm_eval_sub_truncBelow_le_upTo (carrierProductPoly a x n m) m
@@ -247,12 +247,12 @@ theorem norm_shellCarrierProfile_sub_trunc_le {a x r c : ℝ} (ha : 0 ≤ a) (hr
             - (truncBelow m (carrierProductPoly a x n m)).eval w)
         simpa using h
     _ ≤ carrierShellConst a c n m * (1 + (a * cbinomAbsCoeff ((1 : ℝ) / 2) 1) ^ m)
-          * max 1 (x ^ 2) ^ m * ‖w‖ ^ m
+          * max 1 (x ^ (2 : ℕ)) ^ m * ‖w‖ ^ m
         + (carrierDegBound a n m : ℝ)
-          * (poincareMassSum a n m * max 1 c ^ carrierDegBound a n m * max 1 (x ^ 2) ^ m)
+          * (poincareMassSum a n m * max 1 c ^ carrierDegBound a n m * max 1 (x ^ (2 : ℕ)) ^ m)
           * ‖w‖ ^ m :=
         add_le_add (le_trans hmain (mul_le_mul_of_nonneg_right hstep1 hw0)) htail
-    _ = carrierTruncConst a c n m * max 1 (x ^ 2) ^ m * ‖w‖ ^ m := by
+    _ = carrierTruncConst a c n m * max 1 (x ^ (2 : ℕ)) ^ m * ‖w‖ ^ m := by
         rw [carrierTruncConst]
         ring
 

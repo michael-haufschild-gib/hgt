@@ -120,10 +120,10 @@ theorem frozenJet_bounds_four {c c₁ c₂ c₃ c₄ : ℝ → ℝ} {S₄ u t : 
     (hS : ∀ x ∈ Icc (u - t) (u + t), |c₄ x| ≤ S₄) :
     ∀ s ∈ Icc (-t) t,
       |c₃ (u + s) - c₃ u| ≤ S₄ * |s| ∧
-      |c₂ (u + s) - (c₂ u + c₃ u * s)| ≤ S₄ * |s| ^ 2 / 2 ∧
-      |c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ 2 / 2)| ≤ S₄ * |s| ^ 3 / 6 ∧
-      |c (u + s) - (c u + c₁ u * s + c₂ u * s ^ 2 / 2 + c₃ u * s ^ 3 / 6)| ≤
-        S₄ * |s| ^ 4 / 24 := by
+      |c₂ (u + s) - (c₂ u + c₃ u * s)| ≤ S₄ * |s| ^ (2 : ℕ) / 2 ∧
+      |c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ (2 : ℕ) / 2)| ≤ S₄ * |s| ^ (3 : ℕ) / 6 ∧
+      |c (u + s) - (c u + c₁ u * s + c₂ u * s ^ (2 : ℕ) / 2 + c₃ u * s ^ (3 : ℕ) / 6)| ≤
+        S₄ * |s| ^ (4 : ℕ) / 24 := by
   have h3 := abs_sub_le_of_abs_deriv_le ht hc₃ hS
   have h2 := abs_le_pow_div_of_abs_deriv_le_Icc (h := fun s => c₂ (u + s) - (c₂ u + c₃ u * s))
     (h' := fun s => c₃ (u + s) - c₃ u) (K := S₄) (k := 1) ht (by simp) ?_ ?_
@@ -135,11 +135,11 @@ theorem frozenJet_bounds_four {c c₁ c₂ c₃ c₄ : ℝ → ℝ} {S₄ u t : 
   · intro s hs
     simpa using h3 s hs
   have h1 := abs_le_pow_div_of_abs_deriv_le_Icc
-    (h := fun s => c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ 2 / 2))
+    (h := fun s => c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ (2 : ℕ) / 2))
     (h' := fun s => c₂ (u + s) - (c₂ u + c₃ u * s)) (K := S₄ / 2) (k := 2) ht (by simp) ?_ ?_
   rotate_left
   · intro s _
-    have hp : HasDerivAt (fun s : ℝ => c₁ u + c₂ u * s + c₃ u * s ^ 2 / 2) (c₂ u + c₃ u * s) s := by
+    have hp : HasDerivAt (fun s : ℝ => c₁ u + c₂ u * s + c₃ u * s ^ (2 : ℕ) / 2) (c₂ u + c₃ u * s) s := by
       have := (((hasDerivAt_id s).const_mul (c₂ u)).const_add (c₁ u)).add
         (((hasDerivAt_pow 2 s).const_mul (c₃ u)).div_const 2)
       convert this using 1 <;> first | rfl | (simp; ring) | simp
@@ -148,15 +148,15 @@ theorem frozenJet_bounds_four {c c₁ c₂ c₃ c₄ : ℝ → ℝ} {S₄ u t : 
   · intro s hs
     have := h2 s hs
     calc |c₂ (u + s) - (c₂ u + c₃ u * s)| ≤ S₄ * |s| ^ (1 + 1) / (((1 : ℕ) : ℝ) + 1) := this
-      _ = S₄ / 2 * |s| ^ 2 := by push_cast; ring
+      _ = S₄ / 2 * |s| ^ (2 : ℕ) := by push_cast; ring
   have h0 := abs_le_pow_div_of_abs_deriv_le_Icc
-    (h := fun s => c (u + s) - (c u + c₁ u * s + c₂ u * s ^ 2 / 2 + c₃ u * s ^ 3 / 6))
-    (h' := fun s => c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ 2 / 2)) (K := S₄ / 6) (k := 3)
+    (h := fun s => c (u + s) - (c u + c₁ u * s + c₂ u * s ^ (2 : ℕ) / 2 + c₃ u * s ^ (3 : ℕ) / 6))
+    (h' := fun s => c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ (2 : ℕ) / 2)) (K := S₄ / 6) (k := 3)
     ht (by simp) ?_ ?_
   rotate_left
   · intro s _
-    have hp : HasDerivAt (fun s : ℝ => c u + c₁ u * s + c₂ u * s ^ 2 / 2 + c₃ u * s ^ 3 / 6)
-        (c₁ u + c₂ u * s + c₃ u * s ^ 2 / 2) s := by
+    have hp : HasDerivAt (fun s : ℝ => c u + c₁ u * s + c₂ u * s ^ (2 : ℕ) / 2 + c₃ u * s ^ (3 : ℕ) / 6)
+        (c₁ u + c₂ u * s + c₃ u * s ^ (2 : ℕ) / 2) s := by
       have := ((((hasDerivAt_id s).const_mul (c₁ u)).const_add (c u)).add
         (((hasDerivAt_pow 2 s).const_mul (c₂ u)).div_const 2)).add
         (((hasDerivAt_pow 3 s).const_mul (c₃ u)).div_const 6)
@@ -165,19 +165,19 @@ theorem frozenJet_bounds_four {c c₁ c₂ c₃ c₄ : ℝ → ℝ} {S₄ u t : 
     convert this using 1 <;> first | rfl | simp
   · intro s hs
     have := h1 s hs
-    calc |c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ 2 / 2)| ≤
+    calc |c₁ (u + s) - (c₁ u + c₂ u * s + c₃ u * s ^ (2 : ℕ) / 2)| ≤
         S₄ / 2 * |s| ^ (2 + 1) / (((2 : ℕ) : ℝ) + 1) := this
-      _ = S₄ / 6 * |s| ^ 3 := by push_cast; ring
+      _ = S₄ / 6 * |s| ^ (3 : ℕ) := by push_cast; ring
   intro s hs
   refine ⟨h3 s hs, ?_, ?_, ?_⟩
   · have := h2 s hs
     calc _ ≤ S₄ * |s| ^ (1 + 1) / (((1 : ℕ) : ℝ) + 1) := this
-      _ = S₄ * |s| ^ 2 / 2 := by push_cast; ring
+      _ = S₄ * |s| ^ (2 : ℕ) / 2 := by push_cast; ring
   · have := h1 s hs
     calc _ ≤ S₄ / 2 * |s| ^ (2 + 1) / (((2 : ℕ) : ℝ) + 1) := this
-      _ = S₄ * |s| ^ 3 / 6 := by push_cast; ring
+      _ = S₄ * |s| ^ (3 : ℕ) / 6 := by push_cast; ring
   · have := h0 s hs
     calc _ ≤ S₄ / 6 * |s| ^ (3 + 1) / (((3 : ℕ) : ℝ) + 1) := this
-      _ = S₄ * |s| ^ 4 / 24 := by push_cast; ring
+      _ = S₄ * |s| ^ (4 : ℕ) / 24 := by push_cast; ring
 
 end RHTower

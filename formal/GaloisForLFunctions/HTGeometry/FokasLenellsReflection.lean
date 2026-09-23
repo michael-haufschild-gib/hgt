@@ -144,14 +144,14 @@ theorem scatteringMatrix_inverse_reflection (q : SchwartzMap ℝ ℂ) (κ : ℝ)
 
 /-- A nonlinear constraint on the three independent initial scattering amplitudes. -/
 theorem scattering_amplitude_quadric (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
-    transmission q κ*reverseTransmission q κ + reflectionAmplitude q κ^2 = 1 := by
+    transmission q κ*reverseTransmission q κ + reflectionAmplitude q κ^(2 : ℕ) = 1 := by
   have h := scattering_amplitude_determinant q κ
   rw [reverseReflectionAmplitude_eq_neg] at h
   linear_combination h
 
 /-- Multiplication by the component swap turns scattering into an involution. -/
 theorem scattering_swap_involution (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
-    (scatteringMatrix q κ*swapMatrix)^2 = 1 := by
+    (scatteringMatrix q κ*swapMatrix)^(2 : ℕ) = 1 := by
   rw [pow_two]
   conv_lhs => lhs; lhs; rw [scatteringMatrix_inverse_reflection]
   simp only [Matrix.mul_assoc]

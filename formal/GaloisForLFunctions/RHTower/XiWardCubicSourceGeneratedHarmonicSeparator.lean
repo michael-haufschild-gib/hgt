@@ -106,7 +106,7 @@ theorem cubic_mass_le_finiteSourceGeneratedCubicOrdinateFiberEnergy {ι : Type*}
       rw [Finset.mul_sum]
       apply Finset.sum_le_sum
       intro i hi
-      have hm : (m i : ℝ) ≤ (m i : ℝ) ^ 2 := by
+      have hm : (m i : ℝ) ≤ (m i : ℝ) ^ (2 : ℕ) := by
         by_cases hm0 : m i = 0
         · simp [hm0]
         · have hm1 : (1 : ℝ) ≤ m i := by
@@ -116,9 +116,9 @@ theorem cubic_mass_le_finiteSourceGeneratedCubicOrdinateFiberEnergy {ι : Type*}
       have hkernel := cubicLogMomentHellingerHorizontalKernel_self_ge
         (ha0 i hi) (ha i hi)
       calc
-        (115 / 108) * (m i : ℝ) ≤ (115 / 108) * (m i : ℝ) ^ 2 := by
+        (115 / 108) * (m i : ℝ) ≤ (115 / 108) * (m i : ℝ) ^ (2 : ℕ) := by
           exact mul_le_mul_of_nonneg_left hm (by norm_num)
-        _ ≤ (m i : ℝ) ^ 2 *
+        _ ≤ (m i : ℝ) ^ (2 : ℕ) *
             cubicLogMomentHellingerHorizontalKernel (a i) (a i) := by
           nlinarith [sq_nonneg (m i : ℝ)]
         _ = (m i : ℝ) * (m i : ℝ) *

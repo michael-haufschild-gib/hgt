@@ -34,19 +34,19 @@ def routeTInverseAnchor (A γ : ℝ) : ℂ :=
 
 /-- Fixed height beyond which the Route-T depth premise is automatic by construction. -/
 def routeTInverseBaseHeight : ℝ :=
-  ((2 ^ (routeTBandDepthRootThreshold ^ 10 + 1) : ℕ) : ℝ) + 100001
+  ((2 ^ (routeTBandDepthRootThreshold ^ (10 : ℕ) + 1) : ℕ) : ℝ) + 100001
 
 theorem routeTInverseBaseHeight_ge : 100001 ≤ routeTInverseBaseHeight := by
   unfold routeTInverseBaseHeight
   have hnonneg :
-      (0 : ℝ) ≤ ((2 ^ (routeTBandDepthRootThreshold ^ 10 + 1) : ℕ) : ℝ) :=
+      (0 : ℝ) ≤ ((2 ^ (routeTBandDepthRootThreshold ^ (10 : ℕ) + 1) : ℕ) : ℝ) :=
     Nat.cast_nonneg _
   linarith
 
 theorem routeTInverseBaseDepth :
-    routeTBandDepthRootThreshold ^ 10 ≤
+    routeTBandDepthRootThreshold ^ (10 : ℕ) ≤
       routeTBinaryHeight (routeTInverseBaseHeight - 1) := by
-  let K := routeTBandDepthRootThreshold ^ 10
+  let K := routeTBandDepthRootThreshold ^ (10 : ℕ)
   let P : ℕ := 2 ^ (K + 1)
   have hpow : 2 ^ K < P := by
     dsimp only [P]
@@ -128,7 +128,7 @@ theorem routeT_zero_free_inverse_ball
     (hA : ∀ σ : ℝ, 1 < σ → σ ≤ 2 →
       (-deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re ≤ 1 / (σ - 1) + A)
     (hγ : 100001 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight (γ - 1)) :
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight (γ - 1)) :
     ∀ w ∈ ball (routeTInverseAnchor A γ) (routeTInverseOuterRadius A γ),
       riemannZeta w ≠ 0 := by
   intro w hw
@@ -137,7 +137,7 @@ theorem routeT_zero_free_inverse_ball
   have hybase : 8 * Real.pi + 1 ≤ w.im := by
     have hpi := Real.pi_lt_d2
     linarith
-  have hlargeY : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight w.im :=
+  have hlargeY : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight w.im :=
     hlarge.trans (routeTBinaryHeight_mono (by linarith : γ - 1 ≤ w.im))
   have hwidth : routeTZeroFreeWidth A (γ + 1) ≤ routeTZeroFreeWidth A w.im := by
     exact routeTZeroFreeWidth_antitone hybase hyhi.le
@@ -166,8 +166,8 @@ private theorem routeTInverseOuterRadius_lt_stripWidth {A γ : ℝ}
   have hQ := routeTZeroFreeBudget_ge A H
   have hQ0 : 0 < Q := by simpa only [Q] using routeTZeroFreeBudget_pos A H
   have hR0 : 0 < R := by simpa only [R] using routeTLandauRadius_pos H
-  have hden : (10000 : ℝ) ≤ 10000 * Q ^ 2 := by nlinarith
-  have hden0 : 0 < 10000 * Q ^ 2 := by positivity
+  have hden : (10000 : ℝ) ≤ 10000 * Q ^ (2 : ℕ) := by nlinarith
+  have hden0 : 0 < 10000 * Q ^ (2 : ℕ) := by positivity
   have hδle : routeTInverseDelta A γ ≤ R / 10000 := by
     dsimp only [routeTInverseDelta, H, R, Q, routeTInverseHeight]
     unfold routeTZeroFreeDelta
@@ -187,11 +187,11 @@ private theorem routeTInverseOuterRadius_lt_stripWidth {A γ : ℝ}
 /-- Route-T growth on the full Harnack disc. -/
 theorem norm_riemannZeta_le_routeT_inverse_ball
     {A γ : ℝ} (hγ : 100001 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight (γ - 1))
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight (γ - 1))
     {w : ℂ} (hw : w ∈ ball (routeTInverseAnchor A γ) (routeTInverseOuterRadius A γ)) :
     ‖riemannZeta w‖ ≤ routeTBandGrowthBound γ := by
   obtain ⟨hylo, hyhi, hrelo, hrehi⟩ := routeT_inverse_ball_coordinates hw
-  have hlargeγ : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight γ :=
+  have hlargeγ : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight γ :=
     hlarge.trans (routeTBinaryHeight_mono (by linarith : γ - 1 ≤ γ))
   have hstrip := routeTInverseOuterRadius_lt_stripWidth (A := A) (by linarith : 0 ≤ γ)
   have hσlo : routeTStripAbscissa (routeTBandShell γ) ≤ w.re := by
@@ -214,8 +214,8 @@ theorem norm_riemannZeta_le_routeT_inverse_ball
 /-- Three-four-one supplies an explicit lower anchor on the right of the abscissa. -/
 theorem routeT_inverse_anchor_lower
     {A γ : ℝ} (hγ : 100001 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight (γ - 1)) :
-    Real.exp (-(2 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ 2)) ≤
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight (γ - 1)) :
+    Real.exp (-(2 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ (2 : ℕ))) ≤
       ‖riemannZeta (routeTInverseAnchor A γ)‖ := by
   let H := routeTInverseHeight γ
   let Q := routeTZeroFreeBudget A H
@@ -224,7 +224,7 @@ theorem routeT_inverse_anchor_lower
   have hbase : 8 * Real.pi + 1 ≤ γ := by
     have hpi := Real.pi_lt_d2
     linarith
-  have hlargeγ : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight γ :=
+  have hlargeγ : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight γ :=
     hlarge.trans (routeTBinaryHeight_mono (by linarith : γ - 1 ≤ γ))
   have hδ0 : 0 < δ := by simpa only [δ] using routeTInverseDelta_pos A γ
   have hδ16 : δ ≤ 1 / 16 := by
@@ -243,15 +243,15 @@ theorem routeT_inverse_anchor_lower
     exact hBγ.le.trans hPhiMono
   have hneg := neg_log_norm_riemannZeta_le_of
     (σ := 1 + δ) (t := γ) (Φ := routeTLandauPhi H) (by linarith) hB
-  have hlogPhi : Real.log (routeTLandauPhi H) ≤ Q ^ 2 := by
+  have hlogPhi : Real.log (routeTLandauPhi H) ≤ Q ^ (2 : ℕ) := by
     simpa only [Q] using routeT_log_phi_le_budget_sq A H
-  have hlogδ : Real.log (1 + 1 / δ) ≤ Q ^ 2 := by
+  have hlogδ : Real.log (1 + 1 / δ) ≤ Q ^ (2 : ℕ) := by
     simpa only [δ, routeTInverseDelta, H] using routeT_log_delta_le_budget_sq A H
   have hQ := routeTZeroFreeBudget_ge A H
-  have hQsq : (6 : ℝ) ≤ Q ^ 2 := by nlinarith
+  have hQsq : (6 : ℝ) ≤ Q ^ (2 : ℕ) := by nlinarith
   have hneg' :
       -Real.log ‖riemannZeta (((1 + δ : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ ≤
-        2 * Q ^ 2 := by
+        2 * Q ^ (2 : ℕ) := by
     have hδrw : (1 + δ : ℝ) - 1 = δ := by ring
     rw [hδrw] at hneg
     nlinarith
@@ -262,7 +262,7 @@ theorem routeT_inverse_anchor_lower
       0 < ‖riemannZeta (((1 + δ : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ :=
     norm_pos_iff.mpr hnonzero
   have hloglower :
-      -(2 * Q ^ 2) ≤
+      -(2 * Q ^ (2 : ℕ)) ≤
         Real.log ‖riemannZeta (((1 + δ : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ := by
     linarith
   have hexp := Real.exp_le_exp.mpr hloglower
@@ -276,10 +276,10 @@ theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
     (hA : ∀ x : ℝ, 1 < x → x ≤ 2 →
       (-deriv riemannZeta (x : ℂ) / riemannZeta (x : ℂ)).re ≤ 1 / (x - 1) + A)
     (hγ : 100001 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight (γ - 1))
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight (γ - 1))
     (hσlo : 1 - routeTInverseDelta A γ / 20 ≤ σ)
     (hσhi : σ ≤ 1 + routeTInverseDelta A γ) :
-    Real.exp (-(400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ 2)) ≤
+    Real.exp (-(400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ (2 : ℕ))) ≤
       ‖riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖ := by
   let H := routeTInverseHeight γ
   let Q := routeTZeroFreeBudget A H
@@ -288,7 +288,7 @@ theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
   let R := routeTInverseOuterRadius A γ
   let r := routeTInverseInnerRadius A γ
   let M := routeTBandGrowthBound γ
-  let m := Real.exp (-(2 * Q ^ 2))
+  let m := Real.exp (-(2 * Q ^ (2 : ℕ)))
   have hδ0 : 0 < δ := by simpa only [δ] using routeTInverseDelta_pos A γ
   have hR0 : 0 < R := by simpa only [R] using routeTInverseOuterRadius_pos A γ
   have hr0 : 0 ≤ r := by simpa only [r] using routeTInverseInnerRadius_nonneg A γ
@@ -337,31 +337,31 @@ theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
   have hMone : 1 ≤ M := by
     simpa only [M] using routeTBandGrowthBound_one_le γ
   have hMpos : 0 < M := by linarith
-  have hlogM : Real.log M ≤ Q ^ 2 := by
+  have hlogM : Real.log M ≤ Q ^ (2 : ℕ) := by
     have hlog := Real.log_le_log hMpos hMPhi
-    have hbudget : Real.log (routeTLandauPhi H) ≤ Q ^ 2 := by
+    have hbudget : Real.log (routeTLandauPhi H) ≤ Q ^ (2 : ℕ) := by
       simpa only [Q] using routeT_log_phi_le_budget_sq A H
     exact hlog.trans hbudget
-  have hlogm : Real.log m = -(2 * Q ^ 2) := by
+  have hlogm : Real.log m = -(2 * Q ^ (2 : ℕ)) := by
     dsimp only [m]
     rw [Real.log_exp]
-  have hlogRatio : Real.log (M / m) ≤ 3 * Q ^ 2 := by
+  have hlogRatio : Real.log (M / m) ≤ 3 * Q ^ (2 : ℕ) := by
     rw [Real.log_div (ne_of_gt hMpos) (ne_of_gt hm0), hlogm]
     linarith
   have hQ := routeTZeroFreeBudget_ge A H
-  have hQsq : (1 : ℝ) ≤ Q ^ 2 := by nlinarith
+  have hQsq : (1 : ℝ) ≤ Q ^ (2 : ℕ) := by nlinarith
   have hratio : r / (R - r) = 42 := by
     dsimp only [r, R, routeTInverseInnerRadius, routeTInverseOuterRadius, δ]
     have hδne : routeTInverseDelta A γ ≠ 0 := ne_of_gt (routeTInverseDelta_pos A γ)
     field_simp [hδne]
     ring
   have htransport :
-      2 * (Real.log (M / m) + 1) * r / (R - r) ≤ 336 * Q ^ 2 := by
+      2 * (Real.log (M / m) + 1) * r / (R - r) ≤ 336 * Q ^ (2 : ℕ) := by
     rw [show 2 * (Real.log (M / m) + 1) * r / (R - r) =
         2 * (Real.log (M / m) + 1) * (r / (R - r)) by ring, hratio]
     nlinarith
   have hfloor :
-      Real.exp (-(400 * Q ^ 2)) ≤
+      Real.exp (-(400 * Q ^ (2 : ℕ))) ≤
         m * Real.exp (-(2 * (Real.log (M / m) + 1) * r / (R - r))) := by
     dsimp only [m]
     rw [← Real.exp_add]
@@ -375,11 +375,11 @@ theorem norm_inv_riemannZeta_le_routeT
     (hA : ∀ x : ℝ, 1 < x → x ≤ 2 →
       (-deriv riemannZeta (x : ℂ) / riemannZeta (x : ℂ)).re ≤ 1 / (x - 1) + A)
     (hγ : 100001 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight (γ - 1))
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight (γ - 1))
     (hσlo : 1 - routeTInverseDelta A γ / 20 ≤ σ)
     (hσhi : σ ≤ 1 + routeTInverseDelta A γ) :
     ‖(riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I))⁻¹‖ ≤
-      Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ 2) := by
+      Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ (2 : ℕ)) := by
   have hlow := exp_neg_routeT_budget_sq_le_norm_riemannZeta
     hA hγ hlarge hσlo hσhi
   have hnonzero := routeT_zero_free_inverse_ball hA hγ hlarge
@@ -407,10 +407,10 @@ theorem norm_inv_riemannZeta_le_routeT
     norm_pos_iff.mpr hz
   rw [norm_inv, inv_eq_one_div, div_le_iff₀ hnormpos]
   have hmul := mul_le_mul_of_nonneg_left hlow
-    (Real.exp_nonneg (400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ 2))
+    (Real.exp_nonneg (400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ (2 : ℕ)))
   have hcancel :
-      Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ 2) *
-          Real.exp (-(400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ 2)) = 1 := by
+      Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ (2 : ℕ)) *
+          Real.exp (-(400 * routeTZeroFreeBudget A (routeTInverseHeight γ) ^ (2 : ℕ))) = 1 := by
     rw [← Real.exp_add]
     ring_nf
     exact Real.exp_zero
@@ -423,11 +423,11 @@ theorem norm_inv_riemannZeta_le_routeT_abs
     (hA : ∀ x : ℝ, 1 < x → x ≤ 2 →
       (-deriv riemannZeta (x : ℂ) / riemannZeta (x : ℂ)).re ≤ 1 / (x - 1) + A)
     (hγ : 100001 ≤ |γ|)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight (|γ| - 1))
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight (|γ| - 1))
     (hσlo : 1 - routeTInverseDelta A |γ| / 20 ≤ σ)
     (hσhi : σ ≤ 1 + routeTInverseDelta A |γ|) :
     ‖(riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I))⁻¹‖ ≤
-      Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight |γ|) ^ 2) := by
+      Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight |γ|) ^ (2 : ℕ)) := by
   rcases le_or_gt 0 γ with hγ0 | hγ0
   · have habs : |γ| = γ := abs_of_nonneg hγ0
     rw [habs] at hγ hlarge hσlo hσhi ⊢
@@ -447,11 +447,11 @@ theorem norm_inv_riemannZeta_le_routeT_abs
 theorem exists_norm_inv_riemannZeta_le_routeT_abs :
     ∃ A : ℝ, ∀ γ σ : ℝ,
       100001 ≤ |γ| →
-      routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight (|γ| - 1) →
+      routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight (|γ| - 1) →
       1 - routeTInverseDelta A |γ| / 20 ≤ σ →
       σ ≤ 1 + routeTInverseDelta A |γ| →
       ‖(riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I))⁻¹‖ ≤
-        Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight |γ|) ^ 2) := by
+        Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight |γ|) ^ (2 : ℕ)) := by
   obtain ⟨A, hA⟩ := exists_pole_bound
   exact ⟨A, fun _γ _σ hγ hlarge hσlo hσhi =>
     norm_inv_riemannZeta_le_routeT_abs hA hγ hlarge hσlo hσhi⟩

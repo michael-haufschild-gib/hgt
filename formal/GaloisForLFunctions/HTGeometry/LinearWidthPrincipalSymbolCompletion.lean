@@ -87,7 +87,7 @@ omit [CharZero K] [NeZero d] [Fact (1 < d)] in
 /-- Clock shifting does not alter the three-step nilpotence of the aggregate detector pencil. -/
 theorem linearCompletionDetectorSymbol_cube_zero
     (c : Fin n → K) :
-    (linearCompletionDetectorSymbol (K := K) (M := M) (d := d) c) ^ 3 = 0 := by
+    (linearCompletionDetectorSymbol (K := K) (M := M) (d := d) c) ^ (3 : ℕ) = 0 := by
   classical
   apply LinearMap.ext
   intro f
@@ -107,7 +107,7 @@ theorem linearCompletionDetectorSymbol_pow_degree_zero
   let D := linearCompletionDetectorSymbol (K := K) (M := M) (d := d) c
   calc
     D ^ d = D ^ (3 + (d - 3)) := by congr 1 ; omega
-    _ = D ^ 3 * D ^ (d - 3) := pow_add D 3 (d - 3)
+    _ = D ^ (3 : ℕ) * D ^ (d - 3) := pow_add D 3 (d - 3)
     _ = 0 := by rw [linearCompletionDetectorSymbol_cube_zero]; simp
 
 omit [CharZero K] in

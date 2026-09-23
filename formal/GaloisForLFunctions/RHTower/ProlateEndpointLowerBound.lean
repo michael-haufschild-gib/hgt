@@ -14,7 +14,7 @@ and the flux `(1-y²) psi'` vanishes at `y = 1` because the weight does.  Integr
 `y` to the endpoint therefore gives an exact representation of the flux,
 
 ```text
-(1-y²) psi'(y) = -∫_y^1 (chi + c² t²) psi(t) dt,
+(1-y²) psi'(y) = -∫_y^(1 : ℕ) (chi + c² t²) psi(t) dt,
 ```
 
 with two consequences beyond the turning point (where `chi + c² y² >= 0`) for a positive solution:

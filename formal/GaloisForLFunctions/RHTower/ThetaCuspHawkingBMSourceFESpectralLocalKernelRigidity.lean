@@ -69,7 +69,7 @@ theorem criticalLine_of_kernelWard_of_reflectionReal_of_spectralLocal_ne_zero
   rw [hreflect q r, ← hcocycle] at hW
   have hK : (starRingEnd ℂ) (K q r) ≠ 0 :=
     (map_ne_zero (starRingEnd ℂ)).mpr hqr
-  have hsquare : hbXiPeierlsUnitSourceFECocycle q ^ 2 = 1 := by
+  have hsquare : hbXiPeierlsUnitSourceFECocycle q ^ (2 : ℕ) = 1 := by
     apply mul_left_cancel₀ hK
     simpa only [pow_two, mul_one, mul_assoc] using hW
   exact (hbXiPeierlsUnitSourceFECocycle_sq_eq_one_iff q).mp hsquare

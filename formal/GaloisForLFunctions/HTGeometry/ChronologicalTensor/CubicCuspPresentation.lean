@@ -26,15 +26,15 @@ open Polynomial
 /-- Evaluation of `ℝ[U][V]` at `U ↦ u`, `V ↦ c²`. -/
 def cuspMidHom : Polynomial (Polynomial ℝ) →ₐ[ℝ] Polynomial (Polynomial ℝ) :=
   Polynomial.aevalTower (IsScalarTower.toAlgHom ℝ (Polynomial ℝ) (Polynomial (Polynomial ℝ)))
-    (Polynomial.X ^ 2)
+    (Polynomial.X ^ (2 : ℕ))
 
 theorem cuspMidHom_C (a : Polynomial ℝ) : cuspMidHom (Polynomial.C a) = Polynomial.C a := by
   have h := Polynomial.aevalTower_comp_C
-    (IsScalarTower.toAlgHom ℝ (Polynomial ℝ) (Polynomial (Polynomial ℝ))) (Polynomial.X ^ 2)
+    (IsScalarTower.toAlgHom ℝ (Polynomial ℝ) (Polynomial (Polynomial ℝ))) (Polynomial.X ^ (2 : ℕ))
   have h2 := RingHom.congr_fun h a
   simp [cuspMidHom, Polynomial.algebraMap_eq] at h2 ⊢
 
-theorem cuspMidHom_X : cuspMidHom Polynomial.X = Polynomial.X ^ 2 :=
+theorem cuspMidHom_X : cuspMidHom Polynomial.X = Polynomial.X ^ (2 : ℕ) :=
   Polynomial.aevalTower_X _ _
 
 theorem cuspMidHom_monomial (n : ℕ) (a : Polynomial ℝ) :
@@ -61,7 +61,7 @@ theorem cuspMidHom_coeff (a : Polynomial (Polynomial ℝ)) (n : ℕ) :
 
 /-- The even and odd `c`-parts of an image cannot cancel. -/
 theorem cuspMidHom_parity {a b : Polynomial (Polynomial ℝ)}
-    (h : cuspMidHom a + cuspMidHom b * Polynomial.X ^ 3 = 0) : a = 0 ∧ b = 0 := by
+    (h : cuspMidHom a + cuspMidHom b * Polynomial.X ^ (3 : ℕ) = 0) : a = 0 ∧ b = 0 := by
   constructor
   · refine Polynomial.ext fun n => ?_
     have hc := congrArg (fun p : Polynomial (Polynomial ℝ) => p.coeff (2*n)) h
@@ -85,14 +85,14 @@ theorem cuspMidHom_parity {a b : Polynomial (Polynomial ℝ)}
 
 /-- Evaluation of `ℝ[U][V][W]` at `U ↦ u`, `V ↦ c²`, `W ↦ c³`. -/
 def cuspEvalHom : Polynomial (Polynomial (Polynomial ℝ)) →ₐ[ℝ] Polynomial (Polynomial ℝ) :=
-  Polynomial.aevalTower cuspMidHom (Polynomial.X ^ 3)
+  Polynomial.aevalTower cuspMidHom (Polynomial.X ^ (3 : ℕ))
 
 theorem cuspEvalHom_C (a : Polynomial (Polynomial ℝ)) :
     cuspEvalHom (Polynomial.C a) = cuspMidHom a := by
-  have h := Polynomial.aevalTower_comp_C cuspMidHom (Polynomial.X ^ 3)
+  have h := Polynomial.aevalTower_comp_C cuspMidHom (Polynomial.X ^ (3 : ℕ))
   exact RingHom.congr_fun h a
 
-theorem cuspEvalHom_X : cuspEvalHom Polynomial.X = Polynomial.X ^ 3 :=
+theorem cuspEvalHom_X : cuspEvalHom Polynomial.X = Polynomial.X ^ (3 : ℕ) :=
   Polynomial.aevalTower_X _ _
 
 theorem cuspEvalHom_monomial (n : ℕ) (a : Polynomial (Polynomial ℝ)) :
@@ -102,7 +102,7 @@ theorem cuspEvalHom_monomial (n : ℕ) (a : Polynomial (Polynomial ℝ)) :
 
 /-- The cusp relation `W² − V³`. -/
 def cuspRelation : Polynomial (Polynomial (Polynomial ℝ)) :=
-  Polynomial.X ^ 2 - Polynomial.C (Polynomial.X ^ 3)
+  Polynomial.X ^ (2 : ℕ) - Polynomial.C (Polynomial.X ^ (3 : ℕ))
 
 theorem cuspRelation_monic : cuspRelation.Monic :=
   Polynomial.monic_X_pow_sub_C _ (by norm_num)
@@ -112,7 +112,7 @@ theorem cuspRelation_degree : cuspRelation.degree = 2 := by
   norm_cast
 
 theorem cuspEvalHom_relation : cuspEvalHom cuspRelation = 0 := by
-  have h : cuspMidHom (Polynomial.X ^ 3) = (Polynomial.X : Polynomial (Polynomial ℝ)) ^ 6 := by
+  have h : cuspMidHom (Polynomial.X ^ (3 : ℕ)) = (Polynomial.X : Polynomial (Polynomial ℝ)) ^ (6 : ℕ) := by
     rw [map_pow, cuspMidHom_X, ← pow_mul]
   unfold cuspRelation
   rw [map_sub cuspEvalHom, map_pow, cuspEvalHom_X, cuspEvalHom_C, h, ← pow_mul]

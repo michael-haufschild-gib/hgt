@@ -130,7 +130,7 @@ theorem abs_gammaSewnMobiusApertureStokesKotheFrequency_le_positiveChamber
     {s : ℝ} (hs : 0 < s) (m : DeningerPrimeLattice) :
     |gammaSewnMobiusApertureStokesKotheFrequency s m| ≤
       gammaSewnMobiusApertureStokesPositiveChamberConstant s *
-        deningerHeight m ^ 2 := by
+        deningerHeight m ^ (2 : ℕ) := by
   let K := gammaSewnMobiusApertureStokesPositiveChamberConstant s
   let H := deningerHeight m
   have hK : 0 < K :=
@@ -179,13 +179,13 @@ theorem abs_gammaSewnMobiusApertureStokesKotheFrequency_le_positiveChamber
           ring
     _ = K * H * Real.log H := by
       rw [hlog, Finsupp.sum, Finset.mul_sum]
-    _ ≤ K * H ^ 2 := by
+    _ ≤ K * H ^ (2 : ℕ) := by
       have hLH : Real.log H ≤ H := by
         simpa only [H] using log_deningerHeight_le_height m
       calc
         K * H * Real.log H ≤ K * H * H :=
           mul_le_mul_of_nonneg_left hLH (mul_nonneg hK.le hH.le)
-        _ = K * H ^ 2 := by ring
+        _ = K * H ^ (2 : ℕ) := by ring
 
 /-- Normalized full-positive-chamber multiplier. -/
 def gammaSewnMobiusApertureStokesPositiveChamberMultiplier
@@ -196,7 +196,7 @@ def gammaSewnMobiusApertureStokesPositiveChamberMultiplier
 theorem norm_gammaSewnMobiusApertureStokesPositiveChamberMultiplier_le
     {s : ℝ} (hs : 0 < s) (m : DeningerPrimeLattice) :
     ‖gammaSewnMobiusApertureStokesPositiveChamberMultiplier s m‖ ≤
-      deningerHeight m ^ 2 := by
+      deningerHeight m ^ (2 : ℕ) := by
   have hK := gammaSewnMobiusApertureStokesPositiveChamberConstant_pos hs
   have h :=
     abs_gammaSewnMobiusApertureStokesKotheFrequency_le_positiveChamber hs m

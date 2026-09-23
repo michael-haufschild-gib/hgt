@@ -35,19 +35,19 @@ def retainedPrimePowerSymmetricLogCorrelation
 one common sufficiently narrow wavepacket.  The statement is pointwise-support based and needs
 no limiting or spectral hypothesis. -/
 theorem retainedPrimePower_symmetricLogCorrelation_eq_zero
-    {lambda : ℝ} (hlambda : 1 < lambda) (hlambdaSq : lambda ^ 2 < 4)
+    {lambda : ℝ} (hlambda : 1 < lambda) (hlambdaSq : lambda ^ (2 : ℕ) < 4)
     {f : ℝ → ℂ}
     (hf : Function.support f ⊆ Set.Icc (-Real.log lambda) (Real.log lambda))
     (pk : Nat.Primes × ℕ) :
     retainedPrimePowerSymmetricLogCorrelation f pk = 0 := by
-  have hq : lambda ^ 2 < soninPrimePowerScale pk :=
+  have hq : lambda ^ (2 : ℕ) < soninPrimePowerScale pk :=
     hlambdaSq.trans_le (four_le_soninPrimePowerScale pk)
   have hlambdaPos : 0 < lambda := zero_lt_one.trans hlambda
-  have hlambdaSqPos : 0 < lambda ^ 2 := sq_pos_of_pos hlambdaPos
+  have hlambdaSqPos : 0 < lambda ^ (2 : ℕ) := sq_pos_of_pos hlambdaPos
   have hqPos : 0 < soninPrimePowerScale pk := hlambdaSqPos.trans hq
   have hlog : 2 * Real.log lambda < Real.log (soninPrimePowerScale pk) := by
     calc
-      2 * Real.log lambda = Real.log (lambda ^ 2) := by
+      2 * Real.log lambda = Real.log (lambda ^ (2 : ℕ)) := by
         rw [Real.log_pow]
         norm_num
       _ < Real.log (soninPrimePowerScale pk) := Real.strictMonoOn_log
@@ -71,7 +71,7 @@ theorem retainedPrimePower_symmetricLogCorrelation_eq_zero
 /-- A nonzero self-correlation is separated from every retained symmetric prime-power mode by
 the same compactly supported logarithmic wavepacket. -/
 theorem retainedPrimePower_symmetricLogCorrelation_ne_selfCorrelation
-    {lambda : ℝ} (hlambda : 1 < lambda) (hlambdaSq : lambda ^ 2 < 4)
+    {lambda : ℝ} (hlambda : 1 < lambda) (hlambdaSq : lambda ^ (2 : ℕ) < 4)
     {f : ℝ → ℂ}
     (hf : Function.support f ⊆ Set.Icc (-Real.log lambda) (Real.log lambda))
     (hself : (∫ x, (starRingEnd ℂ) (f x) * f x) ≠ 0)
@@ -86,7 +86,7 @@ theorem retainedPrimePower_symmetricLogCorrelation_ne_selfCorrelation
 converge to the identity coefficient on the separating wavepacket.  Any weak- or strong-operator
 identity approximation would imply precisely this forbidden scalar convergence. -/
 theorem not_tendsto_finite_retainedPrimePowerLogCorrelations_to_selfCorrelation
-    {lambda : ℝ} (hlambda : 1 < lambda) (hlambdaSq : lambda ^ 2 < 4)
+    {lambda : ℝ} (hlambda : 1 < lambda) (hlambdaSq : lambda ^ (2 : ℕ) < 4)
     {f : ℝ → ℂ}
     (hf : Function.support f ⊆ Set.Icc (-Real.log lambda) (Real.log lambda))
     (hself : (∫ x, (starRingEnd ℂ) (f x) * f x) ≠ 0)

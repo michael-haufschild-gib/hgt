@@ -39,9 +39,9 @@ def weight (α c : ℝ) : ℝ := c / (c - α)
 theorem weight_hasDerivAt {α c : ℝ} (hc : c ≠ 0) (hca : c ≠ α) :
     HasDerivAt (weight α) (-(weight α c) * (weight α c - 1) / c) c := by
   have hca' : c - α ≠ 0 := sub_ne_zero.mpr hca
-  have hd : HasDerivAt (fun c => c / (c - α)) ((1 * (c - α) - c * 1) / (c - α) ^ 2) c :=
+  have hd : HasDerivAt (fun c => c / (c - α)) ((1 * (c - α) - c * 1) / (c - α) ^ (2 : ℕ)) c :=
     (hasDerivAt_id c).div ((hasDerivAt_id c).sub_const α) hca'
-  have halg : (1 * (c - α) - c * 1) / (c - α) ^ 2
+  have halg : (1 * (c - α) - c * 1) / (c - α) ^ (2 : ℕ)
       = -(weight α c) * (weight α c - 1) / c := by
     unfold weight; field_simp; ring
   rw [← halg]; exact hd
@@ -97,10 +97,10 @@ def logWeight (tk t : ℝ) : ℝ := 1 / 2 + (1 / 2) * rcoth ((t - tk) / 2)
 /-- **Calogero kernel identity** `η(1 − η) = −¼ csch²((t − t_k)/2)` (doc 27 §1), from
 `coth² − 1 = csch²`. -/
 theorem logWeight_mul_one_sub {tk t : ℝ} (h : t ≠ tk) :
-    logWeight tk t * (1 - logWeight tk t) = -(1 / 4) * (rcsch ((t - tk) / 2)) ^ 2 := by
+    logWeight tk t * (1 - logWeight tk t) = -(1 / 4) * (rcsch ((t - tk) / 2)) ^ (2 : ℕ) := by
   have hu : (t - tk) / 2 ≠ 0 := div_ne_zero (sub_ne_zero.mpr h) two_ne_zero
   have hs : Real.sinh ((t - tk) / 2) ≠ 0 := Real.sinh_ne_zero.mpr hu
-  have hcothsq : (rcoth ((t - tk) / 2)) ^ 2 - (rcsch ((t - tk) / 2)) ^ 2 = 1 := by
+  have hcothsq : (rcoth ((t - tk) / 2)) ^ (2 : ℕ) - (rcsch ((t - tk) / 2)) ^ (2 : ℕ) = 1 := by
     unfold rcoth rcsch
     field_simp
     nlinarith [Real.cosh_sq_sub_sinh_sq ((t - tk) / 2)]
@@ -115,13 +115,13 @@ theorem logWeight_hasDerivAt {tk t : ℝ} (h : t ≠ tk) :
   have hinner : HasDerivAt (fun t => (t - tk) / 2) (1 / 2 : ℝ) t := by
     simpa using ((hasDerivAt_id t).sub_const tk).div_const 2
   have hcomp : HasDerivAt (fun t => rcoth ((t - tk) / 2))
-      (-(rcsch ((t - tk) / 2)) ^ 2 * (1 / 2)) t := by
+      (-(rcsch ((t - tk) / 2)) ^ (2 : ℕ) * (1 / 2)) t := by
     have hraw := (rcoth_hasDerivAt hu).comp t hinner
     refine hraw.congr_of_eventuallyEq ?_
     filter_upwards with u
     rfl
   have hL : HasDerivAt (logWeight tk)
-      ((1 / 2) * (-(rcsch ((t - tk) / 2)) ^ 2 * (1 / 2))) t :=
+      ((1 / 2) * (-(rcsch ((t - tk) / 2)) ^ (2 : ℕ) * (1 / 2))) t :=
     (hcomp.const_mul (1 / 2 : ℝ)).const_add (1 / 2 : ℝ)
   rw [logWeight_mul_one_sub h]
   apply hL.congr_deriv

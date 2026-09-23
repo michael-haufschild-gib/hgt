@@ -63,7 +63,7 @@ theorem logDeriv_zetaChi_negative_half :
   rw [h,hn,hq]
   have hl : Real.log (8*Real.pi)=3*Real.log 2+Real.log Real.pi := by
     rw [Real.log_mul (by norm_num) Real.pi_ne_zero,
-      show (8:ℝ)=2^3 by norm_num, Real.log_pow]
+      show (8:ℝ)=2^(3 : ℕ) by norm_num, Real.log_pow]
     norm_num
   rw [hl]
   push_cast
@@ -99,7 +99,7 @@ two real absolutely convergent Dirichlet series at 3/2. -/
 theorem divisorSourceEntire_negative_half_eq :
     divisorSourceEntire (-(1/2)) =
       (((eulerLogMass (3/2)+(Real.log (8*Real.pi)-Real.eulerMascheroniConstant-2-Real.pi/2)*
-        eulerMass (3/2)-(eulerMass (3/2))^2/(4*Real.pi))/(4*Real.pi):ℝ):ℂ) := by
+        eulerMass (3/2)-(eulerMass (3/2))^(2 : ℕ)/(4*Real.pi))/(4*Real.pi):ℝ):ℂ) := by
   have hc : deriv zetaChi (-(1/2)) = logDeriv zetaChi (-(1/2))*zetaChi (-(1/2)) := by
     rw [logDeriv_apply,div_mul_cancel₀]
     rw [zetaChi_negative_half]

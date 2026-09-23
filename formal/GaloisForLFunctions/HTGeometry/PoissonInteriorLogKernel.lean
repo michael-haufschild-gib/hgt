@@ -20,16 +20,16 @@ open Complex Metric Real InnerProductSpace
 
 /-- The Blaschke-type harmonic majorant attached to an interior point. -/
 noncomputable def innerLogKernel (c ρ : ℂ) (R : ℝ) (z : ℂ) : ℂ :=
-  ((R : ℂ) ^ 2 - (starRingEnd ℂ) (ρ - c) * (z - c)) / (R : ℂ)
+  ((R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) (ρ - c) * (z - c)) / (R : ℂ)
 
 theorem innerLogKernel_ne_zero {c ρ z : ℂ} {R : ℝ} (hR : 0 < R)
-    (h : ‖ρ - c‖ * ‖z - c‖ < R ^ 2) :
+    (h : ‖ρ - c‖ * ‖z - c‖ < R ^ (2 : ℕ)) :
     innerLogKernel c ρ R z ≠ 0 := by
   unfold innerLogKernel
   have hRne : (R : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hR.ne'
   refine div_ne_zero (fun hzero => ?_) hRne
-  have hEq : ((R : ℂ)) ^ 2 = (starRingEnd ℂ) (ρ - c) * (z - c) := by linear_combination hzero
-  have hnorm : ‖((R : ℂ)) ^ 2‖ = ‖(starRingEnd ℂ) (ρ - c)‖ * ‖z - c‖ := by
+  have hEq : ((R : ℂ)) ^ (2 : ℕ) = (starRingEnd ℂ) (ρ - c) * (z - c) := by linear_combination hzero
+  have hnorm : ‖((R : ℂ)) ^ (2 : ℕ)‖ = ‖(starRingEnd ℂ) (ρ - c)‖ * ‖z - c‖ := by
     rw [hEq, norm_mul]
   rw [norm_pow, Complex.norm_real, Real.norm_of_nonneg hR.le, RCLike.norm_conj] at hnorm
   linarith
@@ -40,13 +40,13 @@ theorem norm_innerLogKernel_sphere {c ρ : ℂ} {R : ℝ} (hR : 0 < R) {z : ℂ}
   have hzc : ‖z - c‖ = R := by
     rw [mem_sphere_iff_norm] at hz
     exact hz
-  have hsq : (z - c) * (starRingEnd ℂ) (z - c) = ((R : ℂ)) ^ 2 := by
-    have hns : Complex.normSq (z - c) = R ^ 2 := by
+  have hsq : (z - c) * (starRingEnd ℂ) (z - c) = ((R : ℂ)) ^ (2 : ℕ) := by
+    have hns : Complex.normSq (z - c) = R ^ (2 : ℕ) := by
       rw [Complex.normSq_eq_norm_sq, hzc]
     rw [Complex.mul_conj, hns]
     push_cast
     ring
-  have hfac : (R : ℂ) ^ 2 - (starRingEnd ℂ) (ρ - c) * (z - c)
+  have hfac : (R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) (ρ - c) * (z - c)
       = (z - c) * (starRingEnd ℂ) (z - ρ) := by
     have hexp : (starRingEnd ℂ) (z - ρ)
         = (starRingEnd ℂ) (z - c) - (starRingEnd ℂ) (ρ - c) := by
@@ -101,13 +101,13 @@ theorem norm_innerLogKernel_of_mem_sphere {c ρ w : ℂ} {R : ℝ} (hR : 0 < R)
   have hρc : ‖ρ - c‖ = R := by
     rw [mem_sphere_iff_norm] at hρ
     exact hρ
-  have hsq : (ρ - c) * (starRingEnd ℂ) (ρ - c) = ((R : ℂ)) ^ 2 := by
-    have hns : Complex.normSq (ρ - c) = R ^ 2 := by
+  have hsq : (ρ - c) * (starRingEnd ℂ) (ρ - c) = ((R : ℂ)) ^ (2 : ℕ) := by
+    have hns : Complex.normSq (ρ - c) = R ^ (2 : ℕ) := by
       rw [Complex.normSq_eq_norm_sq, hρc]
     rw [Complex.mul_conj, hns]
     push_cast
     ring
-  have hfac : (R : ℂ) ^ 2 - (starRingEnd ℂ) (ρ - c) * (w - c)
+  have hfac : (R : ℂ) ^ (2 : ℕ) - (starRingEnd ℂ) (ρ - c) * (w - c)
       = (starRingEnd ℂ) (ρ - c) * (ρ - w) := by
     linear_combination -hsq
   rw [innerLogKernel, hfac, norm_div, norm_mul, RCLike.norm_conj, hρc, Complex.norm_real,

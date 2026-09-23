@@ -147,20 +147,20 @@ theorem projectivePlane_incidenceWeightedComplex_linkGraph_empty_hasSpectralGap
   exact projectivePlane_incidenceGraph_hasSpectralGap (P := P) (L := L)
 
 theorem finiteField_projectivePlane_card {K : Type*} [Field K] [Fintype K] [DecidableEq K] :
-    Nat.card (ℙ K (Fin 3 → K)) = Nat.card K ^ 2 + Nat.card K + 1 := by
+    Nat.card (ℙ K (Fin 3 → K)) = Nat.card K ^ (2 : ℕ) + Nat.card K + 1 := by
   rw [Projectivization.card_of_finrank K (Fin 3 → K) (Module.finrank_fin_fun K)]
   norm_num [Finset.sum_range_succ]
   omega
 
-theorem nat_sq_add_injective {a b : ℕ} (h : a ^ 2 + a = b ^ 2 + b) : a = b := by
+theorem nat_sq_add_injective {a b : ℕ} (h : a ^ (2 : ℕ) + a = b ^ (2 : ℕ) + b) : a = b := by
   apply le_antisymm
   · by_contra hab
     have hba : b < a := Nat.lt_of_not_ge hab
-    have hsq : b ^ 2 < a ^ 2 := Nat.pow_lt_pow_left hba (by omega)
+    have hsq : b ^ (2 : ℕ) < a ^ (2 : ℕ) := Nat.pow_lt_pow_left hba (by omega)
     omega
   · by_contra hba
     have hab : a < b := Nat.lt_of_not_ge hba
-    have hsq : a ^ 2 < b ^ 2 := Nat.pow_lt_pow_left hab (by omega)
+    have hsq : a ^ (2 : ℕ) < b ^ (2 : ℕ) := Nat.pow_lt_pow_left hab (by omega)
     omega
 
 /-- The order of the projective plane over a finite field is its field cardinality. -/
@@ -204,8 +204,8 @@ theorem finiteField_projectivePlane_gap_gt_two_thirds
   have hq : (7 : ℝ) ≤ (Nat.card K : ℝ) := by exact_mod_cast hK
   have hq0 : 0 ≤ (Nat.card K : ℝ) := by linarith
   have hq1 : 0 < (Nat.card K : ℝ) + 1 := by linarith
-  have hsqrt : Real.sqrt (Nat.card K : ℝ) ^ 2 = (Nat.card K : ℝ) := Real.sq_sqrt hq0
-  have hsq : (3 * Real.sqrt (Nat.card K : ℝ)) ^ 2 < ((Nat.card K : ℝ) + 1) ^ 2 := by
+  have hsqrt : Real.sqrt (Nat.card K : ℝ) ^ (2 : ℕ) = (Nat.card K : ℝ) := Real.sq_sqrt hq0
+  have hsq : (3 * Real.sqrt (Nat.card K : ℝ)) ^ (2 : ℕ) < ((Nat.card K : ℝ) + 1) ^ (2 : ℕ) := by
     nlinarith
   have hroot : 3 * Real.sqrt (Nat.card K : ℝ) < (Nat.card K : ℝ) + 1 :=
     (sq_lt_sq₀ (by positivity) (by linarith)).mp hsq

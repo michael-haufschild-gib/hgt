@@ -450,10 +450,10 @@ theorem exists_xi_littlewoodZeroFreeCusp_extension_of_farHalf_root
       1 - c * Real.log (Real.log |t|) / Real.log |t| < β →
         riemannZeta ((β : ℂ) + (t : ℂ) * I) ≠ 0)
     (k : ℕ) (g₁ : ℂ → ℂ) (hg₁ : AnalyticOnNhd ℂ g₁ farHalf)
-    (hg₁pow : ∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) :
+    (hg₁pow : ∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) :
     ∃ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g (littlewoodZeroFreeCusp c) ∧
-        (∀ s ∈ littlewoodZeroFreeCusp c, g s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ littlewoodZeroFreeCusp c, g s ^ (2 : ℕ) ^ k = xi s) ∧
         EqOn g g₁ (littlewoodZeroFreeCusp c ∩ farHalf) := by
   obtain ⟨g, hg, hgpow⟩ := Bottcher.exists_analyticOnNhd_pow_eq
     (isSimplyConnected_littlewoodZeroFreeCusp c)
@@ -474,11 +474,11 @@ theorem exists_xi_littlewoodZeroFreeCusp_extension_of_farHalf_root
     rw [hzero, zero_pow (pow_ne_zero k two_ne_zero)] at hpow
     exact hxia hpow.symm
   let omega : ℂ := g₁ a / g a
-  have homegaPow : omega ^ 2 ^ k = 1 := by
-    change (g₁ a / g a) ^ 2 ^ k = 1
+  have homegaPow : omega ^ (2 : ℕ) ^ k = 1 := by
+    change (g₁ a / g a) ^ (2 : ℕ) ^ k = 1
     rw [div_pow, hg₁pow a haFar, hgpow a haCusp, div_self hxia]
   have hroot : ∀ s ∈ littlewoodZeroFreeCusp c,
-      (omega * g s) ^ 2 ^ k = xi s := by
+      (omega * g s) ^ (2 : ℕ) ^ k = xi s := by
     intro s hs
     rw [mul_pow, homegaPow, one_mul, hgpow s hs]
   have hmatch : omega * g a = g₁ a := by
@@ -505,10 +505,10 @@ theorem exists_xi_littlewoodZeroFreeLowerCusp_extension_of_farHalf_root
       1 - c * Real.log (Real.log |t|) / Real.log |t| < β →
         riemannZeta ((β : ℂ) + (t : ℂ) * I) ≠ 0)
     (k : ℕ) (g₁ : ℂ → ℂ) (hg₁ : AnalyticOnNhd ℂ g₁ farHalf)
-    (hg₁pow : ∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) :
+    (hg₁pow : ∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) :
     ∃ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g (littlewoodZeroFreeLowerCusp c) ∧
-        (∀ s ∈ littlewoodZeroFreeLowerCusp c, g s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ littlewoodZeroFreeLowerCusp c, g s ^ (2 : ℕ) ^ k = xi s) ∧
         EqOn g g₁ (littlewoodZeroFreeLowerCusp c ∩ farHalf) := by
   obtain ⟨g, hg, hgpow⟩ := Bottcher.exists_analyticOnNhd_pow_eq
     (isSimplyConnected_littlewoodZeroFreeLowerCusp c)
@@ -530,11 +530,11 @@ theorem exists_xi_littlewoodZeroFreeLowerCusp_extension_of_farHalf_root
     rw [hzero, zero_pow (pow_ne_zero k two_ne_zero)] at hpow
     exact hxia hpow.symm
   let omega : ℂ := g₁ a / g a
-  have homegaPow : omega ^ 2 ^ k = 1 := by
-    change (g₁ a / g a) ^ 2 ^ k = 1
+  have homegaPow : omega ^ (2 : ℕ) ^ k = 1 := by
+    change (g₁ a / g a) ^ (2 : ℕ) ^ k = 1
     rw [div_pow, hg₁pow a haFar, hgpow a haCusp, div_self hxia]
   have hroot : ∀ s ∈ littlewoodZeroFreeLowerCusp c,
-      (omega * g s) ^ 2 ^ k = xi s := by
+      (omega * g s) ^ (2 : ℕ) ^ k = xi s := by
     intro s hs
     rw [mul_pow, homegaPow, one_mul, hgpow s hs]
   have hmatch : omega * g a = g₁ a := by
@@ -558,10 +558,10 @@ theorem exists_xi_littlewoodZeroFreeLowerCusp_extension_of_farHalf_root
 theorem exists_xi_littlewoodSymmetricZeroFreeCusp_extension_of_farHalf_root_all_levels :
     ∃ c : ℝ, 0 < c ∧ ∀ (k : ℕ) (g₁ : ℂ → ℂ),
       AnalyticOnNhd ℂ g₁ farHalf →
-      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+      (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
       ∃ g : ℂ → ℂ,
         AnalyticOnNhd ℂ g (littlewoodSymmetricZeroFreeCusp c) ∧
-          (∀ s ∈ littlewoodSymmetricZeroFreeCusp c, g s ^ 2 ^ k = xi s) ∧
+          (∀ s ∈ littlewoodSymmetricZeroFreeCusp c, g s ^ (2 : ℕ) ^ k = xi s) ∧
           EqOn g g₁ farHalf := by
   obtain ⟨c, hc, hzf⟩ := Sieve.exists_littlewood_zero_free_region_from_nine
   refine ⟨c, hc, fun k g₁ hg₁ hg₁pow => ?_⟩
@@ -605,9 +605,9 @@ theorem exists_xi_littlewoodSymmetricZeroFreeCusp_extension_of_farHalf_root_all_
 theorem exists_xi_littlewoodSymmetricZeroFreeCusp_arithmetic_extensions_all_levels :
     ∃ c : ℝ, 0 < c ∧ ∀ k : ℕ, ∃ g₁ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g₁ farHalf ∧
-        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) ∧
         AnalyticOnNhd ℂ g (littlewoodSymmetricZeroFreeCusp c) ∧
-        (∀ s ∈ littlewoodSymmetricZeroFreeCusp c, g s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ littlewoodSymmetricZeroFreeCusp c, g s ^ (2 : ℕ) ^ k = xi s) ∧
         EqOn g g₁ farHalf := by
   obtain ⟨c, hc, hext⟩ :=
     exists_xi_littlewoodSymmetricZeroFreeCusp_extension_of_farHalf_root_all_levels

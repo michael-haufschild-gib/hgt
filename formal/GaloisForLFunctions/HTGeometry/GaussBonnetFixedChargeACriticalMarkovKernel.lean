@@ -15,13 +15,13 @@ noncomputable section
 def egbFixedChargeACriticalMarkovWeight (n : ℕ) (i j : Fin (2 ^ (n + 3))) : ℝ :=
   (8 / (3 * (2 : ℝ) ^ (n + 3))) *
     Real.cos (egbFixedChargeAFourierGrid (n + 3) i -
-      egbFixedChargeAFourierGrid (n + 3) j) ^ 4
+      egbFixedChargeAFourierGrid (n + 3) j) ^ (4 : ℕ)
 
 /-- Exact critical row mass before Markov normalization. -/
 theorem egbFixedChargeACriticalGram_real_row_sum
     (n : ℕ) (i : Fin (2 ^ (n + 3))) :
     ∑ j : Fin (2 ^ (n + 3)), Real.cos (egbFixedChargeAFourierGrid (n + 3) i -
-      egbFixedChargeAFourierGrid (n + 3) j) ^ 4 = (2 : ℝ) ^ (n + 3) * (3 / 8) := by
+      egbFixedChargeAFourierGrid (n + 3) j) ^ (4 : ℕ) = (2 : ℝ) ^ (n + 3) * (3 / 8) := by
   have h := egbFixedChargeAQFTMultiplier_row_sum (n + 3)
     (egbFixedChargeACriticalFourierSpectrum n) i
   rw [← egbFixedChargeACriticalGram_QFT_multiplier] at h
@@ -32,7 +32,7 @@ theorem egbFixedChargeACriticalGram_real_row_sum
   rw [hm] at h
   change (∑ j : Fin (2 ^ (n + 3)),
     (Real.cos (egbFixedChargeAFourierGrid (n + 3) i -
-      egbFixedChargeAFourierGrid (n + 3) j) ^ 4 : ℂ)) = _ at h
+      egbFixedChargeAFourierGrid (n + 3) j) ^ (4 : ℕ) : ℂ)) = _ at h
   apply Complex.ofReal_injective
   simpa only [Complex.ofReal_sum, Complex.ofReal_pow, Complex.ofReal_mul,
     Complex.ofReal_div, Complex.ofReal_ofNat] using h

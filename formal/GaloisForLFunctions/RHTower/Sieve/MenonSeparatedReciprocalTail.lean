@@ -36,7 +36,7 @@ theorem sum_inv_one_add_sq_le_of_oneSeparated_nonneg
     {S : Finset ℝ} {T0 : ℝ} (hT0 : 2 ≤ T0)
     (hsep : ∀ x ∈ S, ∀ y ∈ S, x ≠ y → (1 : ℝ) ≤ |x - y|)
     (hlower : ∀ t ∈ S, T0 ≤ t) :
-    ∑ t ∈ S, 1 / (1 + t) ^ 2 ≤ 2 / T0 := by
+    ∑ t ∈ S, 1 / (1 + t) ^ (2 : ℕ) ≤ 2 / T0 := by
   classical
   by_cases hS : S = ∅
   · simp [hS, div_nonneg (by norm_num : (0 : ℝ) ≤ 2) (by linarith : 0 ≤ T0)]
@@ -60,8 +60,8 @@ theorem sum_inv_one_add_sq_le_of_oneSeparated_nonneg
   have htimeline0 : T0 ≤ RHTower.cglFiniteSeparatedOrdinatesTimeline P 0 :=
     hlower _ hzeroMem
   have hterm : ∀ i ∈ Finset.range S.card,
-      1 / (1 + RHTower.cglFiniteSeparatedOrdinatesTimeline P i) ^ 2 ≤
-        1 / ((i : ℝ) + R + 1) ^ 2 := by
+      1 / (1 + RHTower.cglFiniteSeparatedOrdinatesTimeline P i) ^ (2 : ℕ) ≤
+        1 / ((i : ℝ) + R + 1) ^ (2 : ℕ) := by
     intro i hi
     have hlinear := cglFiniteSeparatedOrdinatesTimeline_lower_linear P i
     have hspacing : P.spacing = 1 := by rfl
@@ -77,8 +77,8 @@ theorem sum_inv_one_add_sq_le_of_oneSeparated_nonneg
     S 1 one_pos hsep]
   calc
     ∑ i ∈ Finset.range S.card,
-        1 / (1 + RHTower.cglFiniteSeparatedOrdinatesTimeline P i) ^ 2 ≤
-      ∑ i ∈ Finset.range S.card, 1 / ((i : ℝ) + R + 1) ^ 2 :=
+        1 / (1 + RHTower.cglFiniteSeparatedOrdinatesTimeline P i) ^ (2 : ℕ) ≤
+      ∑ i ∈ Finset.range S.card, 1 / ((i : ℝ) + R + 1) ^ (2 : ℕ) :=
         Finset.sum_le_sum hterm
     _ ≤ 1 / (R : ℝ) - 1 / ((S.card : ℝ) + R) :=
       sum_range_inv_sq_shift_le R S.card hR1
@@ -95,17 +95,17 @@ theorem sum_inv_one_add_abs_sq_le_of_oneSeparated
     {S : Finset ℝ} {T0 : ℝ} (hT0 : 2 ≤ T0)
     (hsep : ∀ x ∈ S, ∀ y ∈ S, x ≠ y → (1 : ℝ) ≤ |x - y|)
     (hlower : ∀ t ∈ S, T0 ≤ |t|) :
-    ∑ t ∈ S, 1 / (1 + |t|) ^ 2 ≤ 4 / T0 := by
+    ∑ t ∈ S, 1 / (1 + |t|) ^ (2 : ℕ) ≤ 4 / T0 := by
   classical
   let Spos := S.filter (fun t => 0 ≤ t)
   let Sneg := S.filter (fun t => ¬ 0 ≤ t)
   let Sneg' := Sneg.image (fun t : ℝ => -t)
-  have hsplit : ∑ t ∈ S, 1 / (1 + |t|) ^ 2 =
-      (∑ t ∈ Spos, 1 / (1 + t) ^ 2) +
-        ∑ t ∈ Sneg', 1 / (1 + t) ^ 2 := by
+  have hsplit : ∑ t ∈ S, 1 / (1 + |t|) ^ (2 : ℕ) =
+      (∑ t ∈ Spos, 1 / (1 + t) ^ (2 : ℕ)) +
+        ∑ t ∈ Sneg', 1 / (1 + t) ^ (2 : ℕ) := by
     dsimp only [Spos, Sneg, Sneg']
     rw [← Finset.sum_filter_add_sum_filter_not S (fun t => 0 ≤ t)
-      (fun t => 1 / (1 + |t|) ^ 2)]
+      (fun t => 1 / (1 + |t|) ^ (2 : ℕ))]
     congr 1
     · apply Finset.sum_congr rfl
       intro t ht
@@ -145,7 +145,7 @@ theorem sum_inv_one_add_abs_sq_le_of_oneSeparated
       hlower u (by dsimp only [Sneg] at hu; exact (Finset.mem_filter.mp hu).1)
   rw [hsplit]
   calc
-    (∑ t ∈ Spos, 1 / (1 + t) ^ 2) + ∑ t ∈ Sneg', 1 / (1 + t) ^ 2 ≤
+    (∑ t ∈ Spos, 1 / (1 + t) ^ (2 : ℕ)) + ∑ t ∈ Sneg', 1 / (1 + t) ^ (2 : ℕ) ≤
         2 / T0 + 2 / T0 := add_le_add
           (sum_inv_one_add_sq_le_of_oneSeparated_nonneg hT0 hposSep hposLower)
           (sum_inv_one_add_sq_le_of_oneSeparated_nonneg hT0 hnegSep hnegLower)
@@ -158,33 +158,33 @@ theorem sum_sq_le_of_pointwise_power_add_reciprocal
     (hsep : ∀ x ∈ S, ∀ y ∈ S, x ≠ y → (1 : ℝ) ≤ |x - y|)
     (hlower : ∀ t ∈ S, T0 ≤ |t|)
     (F : ℝ → ℝ) (hF : ∀ t ∈ S, 0 ≤ F t ∧ F t ≤ A + B / (1 + |t|)) :
-    ∑ t ∈ S, (F t) ^ 2 ≤ 2 * (S.card : ℝ) * A ^ 2 + 8 * B ^ 2 / T0 := by
-  have hpoint : ∀ t ∈ S, (F t) ^ 2 ≤
-      2 * A ^ 2 + 2 * B ^ 2 * (1 / (1 + |t|) ^ 2) := by
+    ∑ t ∈ S, (F t) ^ (2 : ℕ) ≤ 2 * (S.card : ℝ) * A ^ (2 : ℕ) + 8 * B ^ (2 : ℕ) / T0 := by
+  have hpoint : ∀ t ∈ S, (F t) ^ (2 : ℕ) ≤
+      2 * A ^ (2 : ℕ) + 2 * B ^ (2 : ℕ) * (1 / (1 + |t|) ^ (2 : ℕ)) := by
     intro t ht
     have hrecip : 0 ≤ B / (1 + |t|) := by positivity
     have hsq := pow_le_pow_left₀ (hF t ht).1 (hF t ht).2 2
     calc
-      (F t) ^ 2 ≤ (A + B / (1 + |t|)) ^ 2 := hsq
-      _ ≤ 2 * A ^ 2 + 2 * (B / (1 + |t|)) ^ 2 := by
+      (F t) ^ (2 : ℕ) ≤ (A + B / (1 + |t|)) ^ (2 : ℕ) := hsq
+      _ ≤ 2 * A ^ (2 : ℕ) + 2 * (B / (1 + |t|)) ^ (2 : ℕ) := by
         nlinarith [sq_nonneg (A - B / (1 + |t|))]
-      _ = 2 * A ^ 2 + 2 * B ^ 2 * (1 / (1 + |t|) ^ 2) := by
+      _ = 2 * A ^ (2 : ℕ) + 2 * B ^ (2 : ℕ) * (1 / (1 + |t|) ^ (2 : ℕ)) := by
         simp only [div_eq_mul_inv, mul_pow, inv_pow]
         ring
   calc
-    ∑ t ∈ S, (F t) ^ 2 ≤
-        ∑ t ∈ S, (2 * A ^ 2 + 2 * B ^ 2 * (1 / (1 + |t|) ^ 2)) :=
+    ∑ t ∈ S, (F t) ^ (2 : ℕ) ≤
+        ∑ t ∈ S, (2 * A ^ (2 : ℕ) + 2 * B ^ (2 : ℕ) * (1 / (1 + |t|) ^ (2 : ℕ))) :=
       Finset.sum_le_sum hpoint
-    _ = 2 * (S.card : ℝ) * A ^ 2 +
-        2 * B ^ 2 * (∑ t ∈ S, 1 / (1 + |t|) ^ 2) := by
+    _ = 2 * (S.card : ℝ) * A ^ (2 : ℕ) +
+        2 * B ^ (2 : ℕ) * (∑ t ∈ S, 1 / (1 + |t|) ^ (2 : ℕ)) := by
       rw [Finset.sum_add_distrib]
       simp only [Finset.sum_const, nsmul_eq_mul]
       rw [← Finset.mul_sum]
       ring
-    _ ≤ 2 * (S.card : ℝ) * A ^ 2 + 2 * B ^ 2 * (4 / T0) := by
+    _ ≤ 2 * (S.card : ℝ) * A ^ (2 : ℕ) + 2 * B ^ (2 : ℕ) * (4 / T0) := by
       gcongr
       exact sum_inv_one_add_abs_sq_le_of_oneSeparated hT0 hsep hlower
-    _ = 2 * (S.card : ℝ) * A ^ 2 + 8 * B ^ 2 / T0 := by ring
+    _ = 2 * (S.card : ℝ) * A ^ (2 : ℕ) + 8 * B ^ (2 : ℕ) / T0 := by ring
 
 end
 

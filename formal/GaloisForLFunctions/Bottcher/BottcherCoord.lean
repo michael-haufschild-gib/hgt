@@ -19,31 +19,31 @@ namespace Bottcher
 
 /-- The `k`-th term of the complex Böttcher log-series. -/
 noncomputable def bottcherLogTerm (c z : ℂ) (k : ℕ) : ℂ :=
-  (2 ^ (k + 1) : ℂ)⁻¹ * Complex.log (1 + c / ((quadratic c)^[k] z) ^ 2)
+  (2 ^ (k + 1) : ℂ)⁻¹ * Complex.log (1 + c / ((quadratic c)^[k] z) ^ (2 : ℕ))
 
 /-- **Term bound** `‖term_k‖ ≤ (‖c‖/‖z‖²)·(1/2)ᵏ` on the escape set. -/
 theorem norm_bottcherLogTerm_le {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) (k : ℕ) :
-    ‖bottcherLogTerm c z k‖ ≤ ‖c‖ / ‖z‖ ^ 2 * (1 / 2) ^ k := by
+    ‖bottcherLogTerm c z k‖ ≤ ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2) ^ k := by
   unfold bottcherLogTerm
   obtain ⟨hreg, hne⟩ := escape_regime_stable hc hz k
   set A := (quadratic c)^[k] z with hA
   have hApos : 0 < ‖A‖ := norm_pos_iff.mpr hne
-  have hA2 : (0 : ℝ) < ‖A‖ ^ 2 := by positivity
-  have hw : ‖c / A ^ 2‖ ≤ 1 / 2 := by
+  have hA2 : (0 : ℝ) < ‖A‖ ^ (2 : ℕ) := by positivity
+  have hw : ‖c / A ^ (2 : ℕ)‖ ≤ 1 / 2 := by
     rw [norm_div, norm_pow, div_le_iff₀ hA2]; nlinarith [hreg]
   have hlog := norm_clog_one_add_le hw
   have hnorm2 : ‖(2 ^ (k + 1) : ℂ)⁻¹‖ = (2 ^ (k + 1) : ℝ)⁻¹ := by
     rw [norm_inv, norm_pow, Complex.norm_ofNat]
   have hAz : ‖z‖ ≤ ‖A‖ := norm_le_orbit hc hz k
-  have hcA : ‖c / A ^ 2‖ = ‖c‖ / ‖A‖ ^ 2 := by rw [norm_div, norm_pow]
+  have hcA : ‖c / A ^ (2 : ℕ)‖ = ‖c‖ / ‖A‖ ^ (2 : ℕ) := by rw [norm_div, norm_pow]
   rw [norm_mul, hnorm2]
-  calc (2 ^ (k + 1) : ℝ)⁻¹ * ‖Complex.log (1 + c / A ^ 2)‖
-      ≤ (2 ^ (k + 1) : ℝ)⁻¹ * (2 * ‖c / A ^ 2‖) := by gcongr
-    _ = (2 ^ (k + 1) : ℝ)⁻¹ * (2 * (‖c‖ / ‖A‖ ^ 2)) := by rw [hcA]
-    _ ≤ (2 ^ (k + 1) : ℝ)⁻¹ * (2 * (‖c‖ / ‖z‖ ^ 2)) := by
-        have hz2 : (0 : ℝ) < ‖z‖ ^ 2 := pow_pos (by linarith) 2
+  calc (2 ^ (k + 1) : ℝ)⁻¹ * ‖Complex.log (1 + c / A ^ (2 : ℕ))‖
+      ≤ (2 ^ (k + 1) : ℝ)⁻¹ * (2 * ‖c / A ^ (2 : ℕ)‖) := by gcongr
+    _ = (2 ^ (k + 1) : ℝ)⁻¹ * (2 * (‖c‖ / ‖A‖ ^ (2 : ℕ))) := by rw [hcA]
+    _ ≤ (2 ^ (k + 1) : ℝ)⁻¹ * (2 * (‖c‖ / ‖z‖ ^ (2 : ℕ))) := by
+        have hz2 : (0 : ℝ) < ‖z‖ ^ (2 : ℕ) := pow_pos (by linarith) 2
         gcongr
-    _ = ‖c‖ / ‖z‖ ^ 2 * (1 / 2) ^ k := by rw [pow_succ, div_pow, one_pow]; field_simp
+    _ = ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2) ^ k := by rw [pow_succ, div_pow, one_pow]; field_simp
 
 /-- **The complex Böttcher log-series is summable** on the escape set. -/
 theorem bottcherLogTerm_summable {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
@@ -79,11 +79,11 @@ theorem bottcherLogTerm_re {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z
     (bottcherLogTerm c z k).re = greenApprox c z (k + 1) - greenApprox c z k := by
   obtain ⟨hreg, hne⟩ := escape_regime_stable hc hz k
   have hAne : (quadratic c)^[k] z ≠ 0 := hne
-  have hfkp1 : (quadratic c)^[k + 1] z = ((quadratic c)^[k] z) ^ 2 + c := by
+  have hfkp1 : (quadratic c)^[k + 1] z = ((quadratic c)^[k] z) ^ (2 : ℕ) + c := by
     rw [Function.iterate_succ', Function.comp_apply, quadratic_apply]
   have hfne : (quadratic c)^[k + 1] z ≠ 0 := (escape_regime_stable hc hz (k + 1)).2
-  have hfe : (1 : ℂ) + c / ((quadratic c)^[k] z) ^ 2
-      = (quadratic c)^[k + 1] z / ((quadratic c)^[k] z) ^ 2 := by
+  have hfe : (1 : ℂ) + c / ((quadratic c)^[k] z) ^ (2 : ℕ)
+      = (quadratic c)^[k + 1] z / ((quadratic c)^[k] z) ^ (2 : ℕ) := by
     rw [hfkp1]; field_simp
   unfold bottcherLogTerm greenApprox
   rw [hfe, show ((2 : ℂ) ^ (k + 1))⁻¹ = ((((2 : ℝ) ^ (k + 1))⁻¹ : ℝ) : ℂ) from by push_cast; ring,
@@ -141,14 +141,14 @@ theorem analyticAt_quadratic_iterate (c : ℂ) (k : ℕ) (z : ℂ) :
 /-- On the escape regime, `1 + c/(f_c^[k]z)²` lies in the slit plane (`Re ≥ 1/2`), so the
 principal `Complex.log` is analytic there — a prerequisite for `φ_c`'s analyticity. -/
 theorem one_add_mem_slitPlane {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) (k : ℕ) :
-    1 + c / ((quadratic c)^[k] z) ^ 2 ∈ slitPlane := by
+    1 + c / ((quadratic c)^[k] z) ^ (2 : ℕ) ∈ slitPlane := by
   obtain ⟨hreg, hne⟩ := escape_regime_stable hc hz k
   have hApos : 0 < ‖(quadratic c)^[k] z‖ := norm_pos_iff.mpr hne
   rw [mem_slitPlane_iff]; left
-  have hw : ‖c / ((quadratic c)^[k] z) ^ 2‖ ≤ 1 / 2 := by
+  have hw : ‖c / ((quadratic c)^[k] z) ^ (2 : ℕ)‖ ≤ 1 / 2 := by
     rw [norm_div, norm_pow, div_le_iff₀ (pow_pos hApos 2)]; linarith [hreg]
-  have hre : -(1 / 2 : ℝ) ≤ (c / ((quadratic c)^[k] z) ^ 2).re := by
-    have h := abs_re_le_norm (c / ((quadratic c)^[k] z) ^ 2)
+  have hre : -(1 / 2 : ℝ) ≤ (c / ((quadratic c)^[k] z) ^ (2 : ℕ)).re := by
+    have h := abs_re_le_norm (c / ((quadratic c)^[k] z) ^ (2 : ℕ))
     rw [abs_le] at h; linarith [h.1, hw]
   rw [Complex.add_re, Complex.one_re]; linarith [hre]
 
@@ -159,9 +159,9 @@ theorem analyticAt_bottcherLogTerm {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 
   obtain ⟨hreg, hne⟩ := escape_regime_stable hc hz k
   have horbit : AnalyticAt ℂ (fun w => (quadratic c)^[k] w) z :=
     analyticAt_quadratic_iterate c k z
-  have hdiv : AnalyticAt ℂ (fun w => c / ((quadratic c)^[k] w) ^ 2) z :=
+  have hdiv : AnalyticAt ℂ (fun w => c / ((quadratic c)^[k] w) ^ (2 : ℕ)) z :=
     analyticAt_const.div (horbit.pow 2) (pow_ne_zero 2 hne)
-  have hlog : AnalyticAt ℂ (fun w => Complex.log (1 + c / ((quadratic c)^[k] w) ^ 2)) z :=
+  have hlog : AnalyticAt ℂ (fun w => Complex.log (1 + c / ((quadratic c)^[k] w) ^ (2 : ℕ))) z :=
     (analyticAt_const.add hdiv).clog (one_add_mem_slitPlane hc hz k)
   exact analyticAt_const.mul hlog
 
@@ -170,7 +170,7 @@ each term analytic, uniformly bounded by a summable geometric series). -/
 theorem differentiableOn_bottcherLogSum (c : ℂ) :
     DifferentiableOn ℂ (fun z => ∑' k, bottcherLogTerm c z k) (escapeOpen c) := by
   apply Complex.differentiableOn_tsum_of_summable_norm
-    (u := fun k => ‖c‖ / (max 2 ‖c‖) ^ 2 * (1 / 2) ^ k)
+    (u := fun k => ‖c‖ / (max 2 ‖c‖) ^ (2 : ℕ) * (1 / 2) ^ k)
   · exact (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
   · intro k z hz
     obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
@@ -208,7 +208,7 @@ theorem hasSum_deriv_bottcherLogSum {c z : ℂ} (hz : z ∈ escapeOpen c) :
     HasSum (fun k => deriv (fun w => bottcherLogTerm c w k) z)
       (deriv (fun w => ∑' k, bottcherLogTerm c w k) z) := by
   apply Complex.hasSum_deriv_of_summable_norm
-    (u := fun k => ‖c‖ / (max 2 ‖c‖) ^ 2 * (1 / 2) ^ k)
+    (u := fun k => ‖c‖ / (max 2 ‖c‖) ^ (2 : ℕ) * (1 / 2) ^ k)
   · exact (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
   · intro k z' hz'
     obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz'
@@ -257,8 +257,8 @@ theorem continuousAt_greenLimit {c z : ℂ} (hz : z ∈ escapeOpen c ∩ slitPla
 /-- **Böttcher normalization** `‖log φ_c(z) − log z‖ ≤ 2‖c‖/‖z‖²` on the escape set, so
 `log φ_c(z) − log z → 0` and `φ_c(z)/z → 1` as `z → ∞` — the defining normalization. -/
 theorem norm_bottcherLog_sub_log_le {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
-    ‖bottcherLog c z - Complex.log z‖ ≤ 2 * ‖c‖ / ‖z‖ ^ 2 := by
-  have hgeom : Summable (fun k : ℕ => ‖c‖ / ‖z‖ ^ 2 * (1 / 2 : ℝ) ^ k) :=
+    ‖bottcherLog c z - Complex.log z‖ ≤ 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) := by
+  have hgeom : Summable (fun k : ℕ => ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2 : ℝ) ^ k) :=
     (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
   have hns : Summable (fun k => ‖bottcherLogTerm c z k‖) :=
     Summable.of_nonneg_of_le (fun k => norm_nonneg _)
@@ -267,9 +267,9 @@ theorem norm_bottcherLog_sub_log_le {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz :
   rw [add_sub_cancel_left]
   calc ‖∑' k, bottcherLogTerm c z k‖
       ≤ ∑' k, ‖bottcherLogTerm c z k‖ := norm_tsum_le_tsum_norm hns
-    _ ≤ ∑' k : ℕ, ‖c‖ / ‖z‖ ^ 2 * (1 / 2 : ℝ) ^ k :=
+    _ ≤ ∑' k : ℕ, ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2 : ℝ) ^ k :=
         Summable.tsum_mono hns hgeom (fun k => norm_bottcherLogTerm_le hc hz k)
-    _ = 2 * ‖c‖ / ‖z‖ ^ 2 := by
+    _ = 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) := by
         rw [tsum_mul_left, tsum_geometric_of_lt_one (by norm_num) (by norm_num)]; ring
 
 /-- **Sum part of the functional equation** (branch-free):
@@ -324,34 +324,34 @@ ambiguity `log(z²) − 2 log z ∈ 2πiℤ` is annihilated by `exp`, so the squ
 the engine of the dyadic monodromy: pulling a branch of `φ_c` back through `f_c` halves it,
 and the `2ⁿ` preimages of a base loop carry `2ⁿ`-th-root multipliers. -/
 theorem bottcherCoord_quadratic {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
-    bottcherCoord c (quadratic c z) = (bottcherCoord c z) ^ 2 := by
+    bottcherCoord c (quadratic c z) = (bottcherCoord c z) ^ (2 : ℕ) := by
   have hz0 : z ≠ 0 := by intro h; rw [h, norm_zero] at hz; linarith
-  have hzsq : z ^ 2 ≠ 0 := pow_ne_zero _ hz0
-  have hqc : z ^ 2 + c ≠ 0 := by
+  have hzsq : z ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ hz0
+  have hqc : z ^ (2 : ℕ) + c ≠ 0 := by
     intro h
-    have h1 : ‖z‖ ^ 2 = ‖c‖ := by
-      have h2 : z ^ 2 = -c := by linear_combination h
+    have h1 : ‖z‖ ^ (2 : ℕ) = ‖c‖ := by
+      have h2 : z ^ (2 : ℕ) = -c := by linear_combination h
       rw [← norm_pow, h2, norm_neg]
     nlinarith [hc, hz, norm_nonneg z, norm_nonneg c]
-  have hfrac : (1 : ℂ) + c / z ^ 2 = (z ^ 2 + c) / z ^ 2 := by
+  have hfrac : (1 : ℂ) + c / z ^ (2 : ℕ) = (z ^ (2 : ℕ) + c) / z ^ (2 : ℕ) := by
     rw [add_div, div_self hzsq]
-  have hone : (1 : ℂ) + c / z ^ 2 ≠ 0 := by rw [hfrac]; exact div_ne_zero hqc hzsq
-  have ht0 : bottcherLogTerm c z 0 = (2 : ℂ)⁻¹ * Complex.log (1 + c / z ^ 2) := by
+  have hone : (1 : ℂ) + c / z ^ (2 : ℕ) ≠ 0 := by rw [hfrac]; exact div_ne_zero hqc hzsq
+  have ht0 : bottcherLogTerm c z 0 = (2 : ℂ)⁻¹ * Complex.log (1 + c / z ^ (2 : ℕ)) := by
     unfold bottcherLogTerm; simp
-  have hexp2t0 : Complex.exp (2 * bottcherLogTerm c z 0) = 1 + c / z ^ 2 := by
-    rw [ht0, show (2 : ℂ) * ((2 : ℂ)⁻¹ * Complex.log (1 + c / z ^ 2))
-        = Complex.log (1 + c / z ^ 2) by ring]
+  have hexp2t0 : Complex.exp (2 * bottcherLogTerm c z 0) = 1 + c / z ^ (2 : ℕ) := by
+    rw [ht0, show (2 : ℂ) * ((2 : ℂ)⁻¹ * Complex.log (1 + c / z ^ (2 : ℕ)))
+        = Complex.log (1 + c / z ^ (2 : ℕ)) by ring]
     exact Complex.exp_log hone
   set S := ∑' k, bottcherLogTerm c z k with hS
   set T0 := bottcherLogTerm c z 0 with hT0
   have hLHS : bottcherCoord c (quadratic c z)
-      = (z ^ 2 + c) * Complex.exp (2 * S) * (Complex.exp (2 * T0))⁻¹ := by
+      = (z ^ (2 : ℕ) + c) * Complex.exp (2 * S) * (Complex.exp (2 * T0))⁻¹ := by
     unfold bottcherCoord bottcherLog
     rw [bottcherLog_sum_quadratic hc hz, quadratic_apply,
-        show Complex.log (z ^ 2 + c) + 2 * (S - T0)
-        = Complex.log (z ^ 2 + c) + 2 * S + (-(2 * T0)) by ring,
+        show Complex.log (z ^ (2 : ℕ) + c) + 2 * (S - T0)
+        = Complex.log (z ^ (2 : ℕ) + c) + 2 * S + (-(2 * T0)) by ring,
         Complex.exp_add, Complex.exp_add, Complex.exp_log hqc, Complex.exp_neg]
-  have hRHS : (bottcherCoord c z) ^ 2 = z ^ 2 * Complex.exp (2 * S) := by
+  have hRHS : (bottcherCoord c z) ^ (2 : ℕ) = z ^ (2 : ℕ) * Complex.exp (2 * S) := by
     unfold bottcherCoord bottcherLog
     rw [← Complex.exp_nat_mul,
         show ((2 : ℕ) : ℂ) * (Complex.log z + S) = 2 * Complex.log z + 2 * S by push_cast; ring,
@@ -360,8 +360,8 @@ theorem bottcherCoord_quadratic {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 <
     rw [show (2 : ℂ) * Complex.log z = Complex.log z + Complex.log z by ring,
         Complex.exp_add, Complex.exp_log hz0, sq]
   rw [hLHS, hexp2t0, hRHS, hfrac, inv_div, div_eq_mul_inv,
-      show (z ^ 2 + c) * Complex.exp (2 * S) * (z ^ 2 * (z ^ 2 + c)⁻¹)
-        = z ^ 2 * Complex.exp (2 * S) * ((z ^ 2 + c) * (z ^ 2 + c)⁻¹) by ring,
+      show (z ^ (2 : ℕ) + c) * Complex.exp (2 * S) * (z ^ (2 : ℕ) * (z ^ (2 : ℕ) + c)⁻¹)
+        = z ^ (2 : ℕ) * Complex.exp (2 * S) * ((z ^ (2 : ℕ) + c) * (z ^ (2 : ℕ) + c)⁻¹) by ring,
       mul_inv_cancel₀ hqc, mul_one]
 
 /-- **Orbit stays in the escape regime.** For `z` beyond radius `2` with `‖c‖ ≤ ‖z‖`, every

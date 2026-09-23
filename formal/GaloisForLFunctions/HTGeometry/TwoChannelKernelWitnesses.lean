@@ -21,12 +21,12 @@ nonnegative. -/
 theorem pairwiseNonnegativeKernel_of_diagonal_nonneg_of_sq_le
     {ι : Type*} {kernel : ι → ι → ℝ}
     (hdiag : ∀ i, 0 ≤ kernel i i)
-    (hmix : ∀ i j, kernel i j ^ 2 ≤ kernel i i * kernel j j) :
+    (hmix : ∀ i j, kernel i j ^ (2 : ℕ) ≤ kernel i i * kernel j j) :
     PairwiseNonnegativeKernel kernel := by
   intro i j x y
   rw [twoChannelLinearCurrent]
   rcases eq_or_lt_of_le (hdiag i) with h | h
-  · have hb : kernel i j ^ 2 ≤ 0 := by
+  · have hb : kernel i j ^ (2 : ℕ) ≤ 0 := by
       have := hmix i j
       rw [← h, zero_mul] at this
       exact this
@@ -46,7 +46,7 @@ theorem pairwiseNonnegativeKernel_gram {ι : Type*} (v : ι → ℝ) :
 /-- The current of a Gram kernel is an exact square. -/
 theorem twoChannelLinearCurrent_gram {ι : Type*} (v : ι → ℝ) (i j : ι) (x y : ℝ) :
     twoChannelLinearCurrent (v i * v i) (v i * v j) (v j * v j) x y =
-      (v i * x + v j * y) ^ 2 := by
+      (v i * x + v j * y) ^ (2 : ℕ) := by
   rw [twoChannelLinearCurrent]
   ring
 

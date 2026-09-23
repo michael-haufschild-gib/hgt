@@ -171,7 +171,7 @@ def boolHadamardMatrix : Matrix Bool Bool ℂ :=
 /-- The Boolean-basis Hadamard matrix is unitary. -/
 theorem boolHadamardMatrix_mem_unitary :
     boolHadamardMatrix ∈ Matrix.unitaryGroup Bool ℂ := by
-  have hsqrt : ((Real.sqrt 2 : ℂ) ^ 2) = 2 := by
+  have hsqrt : ((Real.sqrt 2 : ℂ) ^ (2 : ℕ)) = 2 := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
   rw [Matrix.mem_unitaryGroup_iff]
@@ -191,7 +191,7 @@ def boolHadamard : Matrix.unitaryGroup Bool ℂ :=
 theorem boolHadamard_conj_X :
     (boolHadamard : Matrix Bool Bool ℂ) * finiteQubitPauli 0 *
       Matrix.conjTranspose (boolHadamard : Matrix Bool Bool ℂ) = finiteQubitPauli 2 := by
-  have hsqrt : ((Real.sqrt 2 : ℂ) ^ 2) = 2 := by
+  have hsqrt : ((Real.sqrt 2 : ℂ) ^ (2 : ℕ)) = 2 := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
   ext i j

@@ -64,7 +64,7 @@ theorem pauliStaticPart_idempotent (P : σ → Option (Fin 3)) (X : M) :
   module
 
 def pauliCollapseEvolution (P : σ → Option (Fin 3)) (a : ℝ) (X : M) (t : ℝ) : M :=
-  pauliStaticPart P X + (Real.exp (-4*a^2*t) : ℂ) • (X - pauliStaticPart P X)
+  pauliStaticPart P X + (Real.exp (-4*a^(2 : ℕ)*t) : ℂ) • (X - pauliStaticPart P X)
 
 theorem pauliCollapseEvolution_zero (P : σ → Option (Fin 3)) (a : ℝ) (X : M) :
     pauliCollapseEvolution P a X 0 = X := by
@@ -82,7 +82,7 @@ theorem pauliCollapseEvolution_semigroup (P : σ → Option (Fin 3)) (a : ℝ)
       pauliCollapseEvolution P a X (s+t) := by
   unfold pauliCollapseEvolution at *
   rw [show pauliStaticPart P
-      (pauliStaticPart P X + (Real.exp (-4*a^2*s) : ℂ) • (X - pauliStaticPart P X)) =
+      (pauliStaticPart P X + (Real.exp (-4*a^(2 : ℕ)*s) : ℂ) • (X - pauliStaticPart P X)) =
       pauliStaticPart P X from pauliStaticPart_evolution P a X s]
   rw [mul_add, Real.exp_add, Complex.ofReal_mul]
   module
@@ -103,13 +103,13 @@ theorem pauli_doubleCommutator (P : σ → Option (Fin 3)) (X : M) :
 theorem hasDerivAt_pauliCollapseEvolution (P : σ → Option (Fin 3)) (a : ℝ)
     (X : M) (t : ℝ) :
     HasDerivAt (pauliCollapseEvolution P a X)
-      (-(a^2 : ℂ) •
+      (-(a^(2 : ℕ) : ℂ) •
         (finitePauliMatrix P *
             (finitePauliMatrix P * pauliCollapseEvolution P a X t -
               pauliCollapseEvolution P a X t * finitePauliMatrix P) -
           (finitePauliMatrix P * pauliCollapseEvolution P a X t -
             pauliCollapseEvolution P a X t * finitePauliMatrix P) * finitePauliMatrix P)) t := by
-  have he := (((hasDerivAt_id t).const_mul (-4*a^2)).exp).ofReal_comp
+  have he := (((hasDerivAt_id t).const_mul (-4*a^(2 : ℕ))).exp).ofReal_comp
   apply ((he.smul_const (X - pauliStaticPart P X)).const_add
     (pauliStaticPart P X)).congr_deriv
   rw [pauli_doubleCommutator, pauliStaticPart_evolution]
@@ -133,31 +133,31 @@ theorem pauliCollapseEvolution_trace (P : σ → Option (Fin 3)) (a : ℝ)
 theorem pauliCollapseEvolution_mixture (P : σ → Option (Fin 3)) (a : ℝ)
     (X : M) (t : ℝ) :
     pauliCollapseEvolution P a X t =
-      ((1 + (Real.exp (-4*a^2*t) : ℂ))/2) • X +
-      ((1 - (Real.exp (-4*a^2*t) : ℂ))/2) • pauliConjugate P X := by
+      ((1 + (Real.exp (-4*a^(2 : ℕ)*t) : ℂ))/2) • X +
+      ((1 - (Real.exp (-4*a^(2 : ℕ)*t) : ℂ))/2) • pauliConjugate P X := by
   unfold pauliCollapseEvolution pauliStaticPart
   module
 
 /-- The constructed positive matrix cone is preserved at every nonnegative square time. -/
 theorem pauliCollapseEvolution_positive (P : σ → Option (Fin 3)) (a t : ℝ) (B : M) :
-    (pauliCollapseEvolution P a (B*Bᴴ) (t^2)).PosSemidef := by
+    (pauliCollapseEvolution P a (B*Bᴴ) (t^(2 : ℕ))).PosSemidef := by
   rw [pauliCollapseEvolution_mixture]
   have hB := Matrix.posSemidef_self_mul_conjTranspose B
   have hC : (pauliConjugate P (B*Bᴴ)).PosSemidef := by
     simpa only [pauliConjugate, (finitePauliMatrix_isHermitian P).eq] using
       hB.mul_mul_conjTranspose_same (finitePauliMatrix P)
-  have he : Real.exp (-4*a^2*t^2) ≤ 1 := by
+  have he : Real.exp (-4*a^(2 : ℕ)*t^(2 : ℕ)) ≤ 1 := by
     apply Real.exp_le_one_iff.mpr
     nlinarith [mul_nonneg (sq_nonneg a) (sq_nonneg t)]
   apply Matrix.PosSemidef.add
   · apply hB.smul
     rw [← Complex.ofReal_one, ← Complex.ofReal_add, ← Complex.ofReal_ofNat 2,
       ← Complex.ofReal_div]
-    exact_mod_cast (show (0 : ℝ) ≤ (1 + Real.exp (-4*a^2*t^2))/2 by positivity)
+    exact_mod_cast (show (0 : ℝ) ≤ (1 + Real.exp (-4*a^(2 : ℕ)*t^(2 : ℕ)))/2 by positivity)
   · apply hC.smul
     rw [← Complex.ofReal_one, ← Complex.ofReal_sub, ← Complex.ofReal_ofNat 2,
       ← Complex.ofReal_div]
-    exact_mod_cast (show (0 : ℝ) ≤ (1 - Real.exp (-4*a^2*t^2))/2 by linarith)
+    exact_mod_cast (show (0 : ℝ) ≤ (1 - Real.exp (-4*a^(2 : ℕ)*t^(2 : ℕ)))/2 by linarith)
 
 end
 end GaloisForLFunctions.HTGeometry.TraceDynamics

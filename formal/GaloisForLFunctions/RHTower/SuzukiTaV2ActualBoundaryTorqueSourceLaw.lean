@@ -75,7 +75,7 @@ theorem suzukiTaV2BoundaryCoefficient_sub_eq
   have hs : Real.sinh a.1 ≠ 0 := (Real.sinh_pos_iff.mpr a.property).ne'
   have hc : Real.cosh a.1 ≠ 0 := (Real.cosh_pos a.1).ne'
   field_simp
-  have htrig : Real.sinh a.1 ^ 2 - Real.cosh a.1 ^ 2 = -1 := by
+  have htrig : Real.sinh a.1 ^ (2 : ℕ) - Real.cosh a.1 ^ (2 : ℕ) = -1 := by
     nlinarith [Real.cosh_sq_sub_sinh_sq a.1]
   rw [htrig]
   ring
@@ -103,7 +103,7 @@ def suzukiTaV2BoundaryTorqueAnomaly (a : SuzukiPositiveAperture) : ℂ :=
       ((suzukiTaV2EvenBoundaryCoefficient a : ℂ) -
         (suzukiTaV2OddBoundaryCoefficient a : ℂ))) /
     ((suzukiTaV2ActualEvenEnergy a : ℂ) +
-      (suzukiTaV2ActualOddEnergy a : ℂ)) ^ 2
+      (suzukiTaV2ActualOddEnergy a : ℂ)) ^ (2 : ℕ)
 
 def suzukiTaV2ActualBoundarySourceTorque (a : SuzukiPositiveAperture) : ℂ :=
   8 * (‖suzukiTaRawDeficiency a 1‖ : ℂ) *
@@ -112,7 +112,7 @@ def suzukiTaV2ActualBoundarySourceTorque (a : SuzukiPositiveAperture) : ℂ :=
       suzukiTaV2ActualOddBoundarySource a *
         (suzukiTaV2ActualEvenEnergy a : ℂ)) /
     ((suzukiTaV2ActualEvenEnergy a : ℂ) +
-      (suzukiTaV2ActualOddEnergy a : ℂ)) ^ 2
+      (suzukiTaV2ActualOddEnergy a : ℂ)) ^ (2 : ℕ)
 
 theorem suzukiTaV2ActualEvenEnergy_nonneg (a : SuzukiPositiveAperture) :
     0 ≤ suzukiTaV2ActualEvenEnergy a := by
@@ -146,7 +146,7 @@ theorem suzukiTaV2BoundaryTorqueAnomaly_eq
           suzukiTaV2ActualOddEnergy a /
           ((Real.sinh a.1 * Real.cosh a.1) *
             (suzukiTaV2ActualEvenEnergy a +
-              suzukiTaV2ActualOddEnergy a) ^ 2)) : ℝ) : ℂ) := by
+              suzukiTaV2ActualOddEnergy a) ^ (2 : ℕ))) : ℝ) : ℂ) := by
   rw [suzukiTaV2BoundaryTorqueAnomaly,
     ← Complex.ofReal_sub, suzukiTaV2BoundaryCoefficient_sub_eq]
   push_cast
@@ -169,7 +169,7 @@ theorem norm_suzukiTaV2BoundaryTorqueAnomaly_le
   have hden : 0 <
       (Real.sinh a.1 * Real.cosh a.1) *
         (suzukiTaV2ActualEvenEnergy a +
-          suzukiTaV2ActualOddEnergy a) ^ 2 :=
+          suzukiTaV2ActualOddEnergy a) ^ (2 : ℕ) :=
     mul_pos hp (sq_pos_of_pos hsum)
   have hnum : 0 ≤
       8 * a.1 * suzukiTaV2ActualEvenEnergy a *
@@ -181,13 +181,13 @@ theorem norm_suzukiTaV2BoundaryTorqueAnomaly_le
   have hamgm :
       4 * suzukiTaV2ActualEvenEnergy a * suzukiTaV2ActualOddEnergy a ≤
         (suzukiTaV2ActualEvenEnergy a +
-          suzukiTaV2ActualOddEnergy a) ^ 2 := by
+          suzukiTaV2ActualOddEnergy a) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg
       (suzukiTaV2ActualEvenEnergy a - suzukiTaV2ActualOddEnergy a)]
   have hscale : 0 ≤
       2 * a.1 * (Real.sinh a.1 * Real.cosh a.1) *
         ((suzukiTaV2ActualEvenEnergy a +
-            suzukiTaV2ActualOddEnergy a) ^ 2 -
+            suzukiTaV2ActualOddEnergy a) ^ (2 : ℕ) -
           4 * suzukiTaV2ActualEvenEnergy a *
             suzukiTaV2ActualOddEnergy a) :=
     mul_nonneg

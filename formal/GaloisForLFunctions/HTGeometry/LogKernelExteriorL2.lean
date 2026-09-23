@@ -103,7 +103,7 @@ theorem log_inv_le_rpow {r : ℝ} (hr : 0 < r) :
         rw [h2, h3]
         field_simp
 
-/-- **The collar is square integrable**: `∫_0^1 log((r+c)/r)² dr < ∞` for `c > 0`. -/
+/-- **The collar is square integrable**: `∫_0^(1 : ℕ) log((r+c)/r)² dr < ∞` for `c > 0`. -/
 theorem integrableOn_log_collar_sq {c : ℝ} (hc : 0 < c) :
     IntegrableOn (fun r => Real.log ((r + c) / r) ^ 2) (Ioo (0 : ℝ) 1) := by
   have hbound : ∀ r ∈ Ioo (0 : ℝ) 1, Real.log ((r + c) / r) ^ 2

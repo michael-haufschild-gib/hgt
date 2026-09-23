@@ -31,7 +31,7 @@ theorem norm_booleanPrimePhase_prime (ε : Nat.Primes → Bool) (p : ℕ)
   cases hε : ε ⟨p, hp⟩ <;> simp [booleanPrimePhase, hp, hε, primeDirichletSign]
 
 theorem sq_booleanPrimePhase_prime (ε : Nat.Primes → Bool) (p : ℕ)
-    (hp : Nat.Prime p) : booleanPrimePhase ε p ^ 2 = 1 := by
+    (hp : Nat.Prime p) : booleanPrimePhase ε p ^ (2 : ℕ) = 1 := by
   cases hε : ε ⟨p, hp⟩ <;> norm_num [booleanPrimePhase, hp, hε, primeDirichletSign]
 
 /-- Helson Dirichlet series of a Boolean prime orientation. -/

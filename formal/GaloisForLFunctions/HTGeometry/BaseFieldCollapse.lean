@@ -29,9 +29,9 @@ theorem exists_eq_algebraMap_of_isIntegral [IsAlgClosed C] {x : U} (hx : IsInteg
 
 /-- A square root over an algebraically closed base field descends. -/
 theorem exists_eq_algebraMap_of_sq [IsAlgClosed C] {x : U} {d : C}
-    (h : x ^ 2 = algebraMap C U d) : ∃ c : C, x = algebraMap C U c := by
+    (h : x ^ (2 : ℕ) = algebraMap C U d) : ∃ c : C, x = algebraMap C U c := by
   obtain ⟨r, hr⟩ := IsAlgClosed.exists_pow_nat_eq d (n := 2) (by norm_num)
-  have hsq : (algebraMap C U r) ^ 2 = x ^ 2 := by rw [← map_pow, hr, ← h]
+  have hsq : (algebraMap C U r) ^ (2 : ℕ) = x ^ (2 : ℕ) := by rw [← map_pow, hr, ← h]
   have hfac : (x - algebraMap C U r) * (x + algebraMap C U r) = 0 := by linear_combination -hsq
   rcases mul_eq_zero.mp hfac with hz | hz
   · exact ⟨r, by linear_combination hz⟩

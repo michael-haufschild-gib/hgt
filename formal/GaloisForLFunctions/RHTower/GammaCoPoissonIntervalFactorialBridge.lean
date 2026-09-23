@@ -108,7 +108,7 @@ For `L = log p`, its value is `p^(w-1/2) log p`. -/
     rw [gammaFactorialComplexCompression]
     calc
       (∑' n : ℕ, (0 : ℂ) ^ n / ((n + 1).factorial : ℂ)) =
-          (0 : ℂ) ^ 0 / ((0 + 1).factorial : ℂ) := by
+          (0 : ℂ) ^ (0 : ℕ) / ((0 + 1).factorial : ℂ) := by
         apply tsum_eq_single 0
         intro b hb
         simp [zero_pow hb]

@@ -33,7 +33,7 @@ theorem coeff_odd_shellBinomPoly (α : ℝ) (m : ℕ) (x : ℝ) {j : ℕ} (hj : 
 
 /-- The reciprocal-parameter form of the mass-shell root defect. -/
 def shellDefect (x : ℝ) (w : ℂ) : ℂ :=
-  ((1 + (x : ℂ) ^ 2 * w ^ 2) ^ (((1 : ℝ) / 2 : ℝ) : ℂ) - 1) / w
+  ((1 + (x : ℂ) ^ (2 : ℕ) * w ^ (2 : ℕ)) ^ (((1 : ℝ) / 2 : ℝ) : ℂ) - 1) / w
 
 /-- Its truncated expansion. -/
 def shellDefectPoly (m : ℕ) (x : ℝ) : Polynomial ℂ :=
@@ -67,7 +67,7 @@ theorem eval_shellDefectPoly_mul (m : ℕ) (x : ℝ) (w : ℂ) :
 
 /-- **The root defect as a truncated expansion of one order lower.** -/
 theorem hasPolyExpansion_shellDefect (m : ℕ) (x : ℝ) {r : ℝ}
-    (hxr : x ^ 2 * r ^ 2 ≤ 1 / 2) :
+    (hxr : x ^ (2 : ℕ) * r ^ (2 : ℕ) ≤ 1 / 2) :
     HasPolyExpansion r (2 * m + 1)
       (cbinomAbsCoeff ((1 : ℝ) / 2) (m + 1) * |x| ^ (2 * (m + 1)))
       (shellDefect x) (shellDefectPoly m x) := by
@@ -85,13 +85,13 @@ theorem hasPolyExpansion_shellDefect (m : ℕ) (x : ℝ) {r : ℝ}
     simp
   · have hnorm0 : (0 : ℝ) < ‖w‖ := norm_pos_iff.mpr hw0
     have hsplit : shellDefect x w - (shellDefectPoly m x).eval w
-        = ((1 + (x : ℂ) ^ 2 * w ^ 2) ^ (((1 : ℝ) / 2 : ℝ) : ℂ)
+        = ((1 + (x : ℂ) ^ (2 : ℕ) * w ^ (2 : ℕ)) ^ (((1 : ℝ) / 2 : ℝ) : ℂ)
             - (shellBinomPoly ((1 : ℝ) / 2) (m + 1) x).eval w) / w := by
       have hmul := eval_shellDefectPoly_mul m x w
       rw [shellDefect]
-      have hstep : ((1 + (x : ℂ) ^ 2 * w ^ 2) ^ (((1 : ℝ) / 2 : ℝ) : ℂ) - 1) / w
+      have hstep : ((1 + (x : ℂ) ^ (2 : ℕ) * w ^ (2 : ℕ)) ^ (((1 : ℝ) / 2 : ℝ) : ℂ) - 1) / w
             - (shellDefectPoly m x).eval w
-          = (((1 + (x : ℂ) ^ 2 * w ^ 2) ^ (((1 : ℝ) / 2 : ℝ) : ℂ) - 1)
+          = (((1 + (x : ℂ) ^ (2 : ℕ) * w ^ (2 : ℕ)) ^ (((1 : ℝ) / 2 : ℝ) : ℂ) - 1)
               - w * (shellDefectPoly m x).eval w) / w := by
         field_simp
       rw [hstep, hmul]

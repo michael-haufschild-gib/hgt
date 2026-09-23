@@ -74,7 +74,7 @@ theorem norm_taylorCoeff_le' {f : ℂ → ℂ} {R C : ℝ} (hR : 0 < R)
 /-- The coefficient bound of an entire function of order two makes every power series value
 absolutely convergent: at `z ≠ 0` the radius `R = 2‖z‖` turns the bound into a geometric series. -/
 theorem summable_of_orderTwo_bound {a : ℕ → ℂ} {c : ℝ}
-    (h : ∀ R : ℝ, 0 < R → ∀ n, ‖a n‖ ≤ Real.exp (R ^ 2 * c / 2) / R ^ n) (z : ℂ) :
+    (h : ∀ R : ℝ, 0 < R → ∀ n, ‖a n‖ ≤ Real.exp (R ^ (2 : ℕ) * c / 2) / R ^ n) (z : ℂ) :
     Summable (fun n => a n * z ^ n) := by
   rcases eq_or_ne z 0 with rfl | hz
   · refine summable_of_ne_finset_zero (s := {0}) fun n hn => ?_
@@ -83,31 +83,31 @@ theorem summable_of_orderTwo_bound {a : ℕ → ℂ} {c : ℝ}
   · have hz0 : 0 < ‖z‖ := norm_pos_iff.mpr hz
     set R : ℝ := 2 * ‖z‖ with hRdef
     have hR : 0 < R := by positivity
-    refine Summable.of_norm_bounded (g := fun n : ℕ => Real.exp (R ^ 2 * c / 2) * (1 / 2) ^ n) ?_ ?_
+    refine Summable.of_norm_bounded (g := fun n : ℕ => Real.exp (R ^ (2 : ℕ) * c / 2) * (1 / 2) ^ n) ?_ ?_
     · exact (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
     · intro n
       rw [norm_mul, norm_pow]
       have hbound := h R hR n
       have hzn : ‖z‖ ^ n ≠ 0 := by positivity
-      have hkey : (Real.exp (R ^ 2 * c / 2) / R ^ n) * ‖z‖ ^ n
-          = Real.exp (R ^ 2 * c / 2) * (1 / 2) ^ n := by
+      have hkey : (Real.exp (R ^ (2 : ℕ) * c / 2) / R ^ n) * ‖z‖ ^ n
+          = Real.exp (R ^ (2 : ℕ) * c / 2) * (1 / 2) ^ n := by
         have hRn : R ^ n = 2 ^ n * ‖z‖ ^ n := by rw [hRdef, mul_pow]
         rw [hRn, div_pow, one_pow]
         field_simp
-      calc ‖a n‖ * ‖z‖ ^ n ≤ (Real.exp (R ^ 2 * c / 2) / R ^ n) * ‖z‖ ^ n :=
+      calc ‖a n‖ * ‖z‖ ^ n ≤ (Real.exp (R ^ (2 : ℕ) * c / 2) / R ^ n) * ‖z‖ ^ n :=
             mul_le_mul_of_nonneg_right hbound (by positivity)
-        _ = Real.exp (R ^ 2 * c / 2) * (1 / 2) ^ n := hkey
+        _ = Real.exp (R ^ (2 : ℕ) * c / 2) * (1 / 2) ^ n := hkey
 
 /-- The entire function attached to a coefficient sequence. -/
 noncomputable def entireOfCoeffs (a : ℕ → ℂ) : ℂ → ℂ := fun z => ∑' n, a n * z ^ n
 
 theorem hasDerivAt_entireOfCoeffs {a : ℕ → ℂ} {c : ℝ}
-    (h : ∀ R : ℝ, 0 < R → ∀ n, ‖a n‖ ≤ Real.exp (R ^ 2 * c / 2) / R ^ n) (z : ℂ) :
+    (h : ∀ R : ℝ, 0 < R → ∀ n, ‖a n‖ ≤ Real.exp (R ^ (2 : ℕ) * c / 2) / R ^ n) (z : ℂ) :
     HasDerivAt (entireOfCoeffs a) (∑' n : ℕ, (n : ℂ) * a n * z ^ (n - 1)) z := by
   obtain ⟨r, hr, hzr⟩ : ∃ r : ℝ, 0 < r ∧ ‖z‖ < r := ⟨‖z‖ + 1, by positivity, by linarith⟩
   set R : ℝ := 2 * r with hRdef
   have hR : 0 < R := by positivity
-  set E : ℝ := R ^ 2 * c / 2 with hE
+  set E : ℝ := R ^ (2 : ℕ) * c / 2 with hE
   have hu : Summable (fun n : ℕ => Real.exp E / r * ((n : ℝ) * (1 / 2) ^ n)) := by
     refine Summable.mul_left _ ?_
     have := summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) 1 (r := (1 / 2 : ℝ))
@@ -148,7 +148,7 @@ theorem hasDerivAt_entireOfCoeffs {a : ℕ → ℂ} {c : ℝ}
     hterm hbound hz0 (summable_of_orderTwo_bound h z) hz0
 
 theorem differentiable_entireOfCoeffs {a : ℕ → ℂ} {c : ℝ}
-    (h : ∀ R : ℝ, 0 < R → ∀ n, ‖a n‖ ≤ Real.exp (R ^ 2 * c / 2) / R ^ n) :
+    (h : ∀ R : ℝ, 0 < R → ∀ n, ‖a n‖ ≤ Real.exp (R ^ (2 : ℕ) * c / 2) / R ^ n) :
     Differentiable ℂ (entireOfCoeffs a) :=
   fun z => (hasDerivAt_entireOfCoeffs h z).differentiableAt
 
@@ -159,7 +159,7 @@ variable {m : Type*} [Fintype m] [DecidableEq m]
 /-- **The Carleman coefficient bound.**  Every Taylor coefficient of `det₂(1 + zM)` obeys the
 order-two bound with constant the Hilbert–Schmidt energy of `M`, uniformly in the size of `M`. -/
 theorem norm_taylorCoeff_finiteDet2_le (M : Matrix m m ℂ) {R : ℝ} (hR : 0 < R) (k : ℕ) :
-    ‖taylorCoeff (finiteDet2 M) k‖ ≤ Real.exp (R ^ 2 * matHSNormSq M / 2) / R ^ k := by
+    ‖taylorCoeff (finiteDet2 M) k‖ ≤ Real.exp (R ^ (2 : ℕ) * matHSNormSq M / 2) / R ^ k := by
   refine norm_taylorCoeff_le (differentiable_finiteDet2 M) hR (fun z hz => ?_) k
   have := norm_finiteDet2_le M z
   rwa [hz] at this

@@ -101,13 +101,13 @@ theorem dilatonCharges_pair_adjoint (H : ℝ[X]) (f g : 𝓢(ℝ, ℂ)) :
 /-- Every polynomial dilaton potential has an exact nonnegative Schwartz energy. -/
 theorem dilatonHamiltonian_energy (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) :
     schwartzPair (SchwartzMap.conjSLM ψ) (dilatonHamiltonianCLM H ψ) =
-      ((‖(dilatonSuperchargeCLM H ψ).toLp 2 (volume : Measure ℝ)‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖(dilatonSuperchargeCLM H ψ).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [dilatonHamiltonianCLM, ContinuousLinearMap.comp_apply, dilatonCharges_pair_adjoint,
     ← dilatonSuperchargeCLM_conj, schwartzPair_conj_self]
 
 /-- No polynomial dilaton weight creates a neutral growing mode on this Schwartz domain. -/
 theorem dilatonHamiltonian_no_growing_mode (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (u s : ℝ) :
-    dilatonHamiltonianCLM H ψ = growingFrequency u s ^ 2 • ψ ↔ ψ = 0 := by
+    dilatonHamiltonianCLM H ψ = growingFrequency u s ^ (2 : ℕ) • ψ ↔ ψ = 0 := by
   constructor
   · intro h
     have hp := congrArg (fun f => schwartzPair (SchwartzMap.conjSLM ψ) f) h
@@ -125,7 +125,7 @@ theorem dilatonHamiltonian_no_growing_mode (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (u
 /-- Frequency exclusion transported back to the actual weighted radial equation. -/
 theorem dilaton_neutral_radial_no_growing_mode (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (u s : ℝ) :
     (∀ x, dilatonRadialOperator H (dilatonUndressed H ψ) x +
-      growingFrequency u s ^ 2 * dilatonUndressed H ψ x = 0) ↔ ψ = 0 := by
+      growingFrequency u s ^ (2 : ℕ) * dilatonUndressed H ψ x = 0) ↔ ψ = 0 := by
   constructor
   · intro h
     apply (dilatonHamiltonian_no_growing_mode H ψ u s).mp
@@ -133,12 +133,12 @@ theorem dilaton_neutral_radial_no_growing_mode (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)
     have hx := h x
     rw [dilatonRadialOperator_conjugation, dilatonUndressed] at hx
     have hn : dilatonGauge H x *
-        (-dilatonHamiltonianCLM H ψ x + growingFrequency u s ^ 2 * ψ x) = 0 := by
+        (-dilatonHamiltonianCLM H ψ x + growingFrequency u s ^ (2 : ℕ) * ψ x) = 0 := by
       rw [dilatonHamiltonianCLM_apply]
       convert hx using 1
       ring
     have hz := (mul_eq_zero.mp hn).resolve_left (dilatonGauge_ne_zero H x)
-    change dilatonHamiltonianCLM H ψ x = growingFrequency u s ^ 2 * ψ x
+    change dilatonHamiltonianCLM H ψ x = growingFrequency u s ^ (2 : ℕ) * ψ x
     linear_combination -hz
   · rintro rfl x
     rw [show dilatonUndressed H 0 = 0 by funext y; simp [dilatonUndressed]]

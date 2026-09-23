@@ -66,7 +66,7 @@ def thetaCuspHawkingSqueezeBeta (lambda : ℝ) (z : ℂ) : ℂ :=
 
 /-- Produced particle number of the balanced pair block. -/
 def thetaCuspHawkingSqueezeNumber (lambda : ℝ) (z : ℂ) : ℝ :=
-  ‖thetaCuspHawkingSqueezeBeta lambda z‖ ^ 2
+  ‖thetaCuspHawkingSqueezeBeta lambda z‖ ^ (2 : ℕ)
 
 /-- Minimal positive gain completing the pair block to a two-mode bosonic CCR fibre. -/
 def thetaCuspHawkingSqueezeGain (lambda : ℝ) (z : ℂ) : ℝ :=
@@ -74,7 +74,7 @@ def thetaCuspHawkingSqueezeGain (lambda : ℝ) (z : ℂ) : ℝ :=
 
 /-- Scalar signed-norm law for a two-mode bosonic Bogoliubov fibre. -/
 def IsTwoModeBosonicCCR (gain : ℝ) (pair : ℂ) : Prop :=
-  gain ^ 2 - ‖pair‖ ^ 2 = 1
+  gain ^ (2 : ℕ) - ‖pair‖ ^ (2 : ℕ) = 1
 
 /-- The produced number is nonnegative. -/
 theorem thetaCuspHawkingSqueezeNumber_nonneg (lambda : ℝ) (z : ℂ) :
@@ -83,7 +83,7 @@ theorem thetaCuspHawkingSqueezeNumber_nonneg (lambda : ℝ) (z : ℂ) :
 
 /-- Exact squared gain law. -/
 theorem thetaCuspHawkingSqueezeGain_sq (lambda : ℝ) (z : ℂ) :
-    thetaCuspHawkingSqueezeGain lambda z ^ 2 =
+    thetaCuspHawkingSqueezeGain lambda z ^ (2 : ℕ) =
       1 + thetaCuspHawkingSqueezeNumber lambda z := by
   rw [thetaCuspHawkingSqueezeGain, Real.sq_sqrt]
   exact add_nonneg zero_le_one (thetaCuspHawkingSqueezeNumber_nonneg lambda z)
@@ -132,9 +132,9 @@ theorem thetaCuspHawkingSqueeze_preserves_signedHermitian
   rw [thetaCuspHawkingSqueezeNumber] at hgain
   have hgainC := congrArg (fun r : ℝ => (r : ℂ)) hgain
   push_cast at hgainC
-  change (a : ℂ) ^ 2 = 1 + (‖b‖ : ℂ) ^ 2 at hgainC
-  have hnormC : (‖b‖ : ℂ) ^ 2 = conj b * b := by
-    rw [show (‖b‖ : ℂ) ^ 2 = ((‖b‖ ^ 2 : ℝ) : ℂ) by push_cast; rfl,
+  change (a : ℂ) ^ (2 : ℕ) = 1 + (‖b‖ : ℂ) ^ (2 : ℕ) at hgainC
+  have hnormC : (‖b‖ : ℂ) ^ (2 : ℕ) = conj b * b := by
+    rw [show (‖b‖ : ℂ) ^ (2 : ℕ) = ((‖b‖ ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; rfl,
       ← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
   rw [hnormC] at hgainC
   change conj ((a : ℂ) * x + b * y) * ((a : ℂ) * x + b * y) -
@@ -201,7 +201,7 @@ def thetaCuspHawkingSqueezeAnomalousCovariance (lambda : ℝ) (z : ℂ) : ℂ :=
 `N(N+1)` for every continued frequency. -/
 theorem norm_thetaCuspHawkingSqueezeAnomalousCovariance_sq
     (lambda : ℝ) (z : ℂ) :
-    ‖thetaCuspHawkingSqueezeAnomalousCovariance lambda z‖ ^ 2 =
+    ‖thetaCuspHawkingSqueezeAnomalousCovariance lambda z‖ ^ (2 : ℕ) =
       thetaCuspHawkingSqueezeNumber lambda z *
         (thetaCuspHawkingSqueezeNumber lambda z + 1) := by
   rw [thetaCuspHawkingSqueezeAnomalousCovariance, norm_mul,

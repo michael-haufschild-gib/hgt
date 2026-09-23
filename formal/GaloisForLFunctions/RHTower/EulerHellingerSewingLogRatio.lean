@@ -54,7 +54,7 @@ theorem logReflectedSewingBelow_le {c : ℝ} (hc0 : 0 < c) (hc : c < 1 / 2) (N :
         exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hmono hinv.le) hK.le
     _ = sewingGrowthConst c * (N : ℝ) ^ (2 * c) * ((p : ℝ))⁻¹ := by ring
 
-theorem primesBelow_subset {M N : ℕ} (h : M ≤ N) : Nat.primesBelow M ⊆ Nat.primesBelow N := by
+theorem primesBelow_subset_eulerHellingerSewingLogRatio {M N : ℕ} (h : M ≤ N) : Nat.primesBelow M ⊆ Nat.primesBelow N := by
   intro p hp
   rw [Nat.mem_primesBelow] at hp ⊢
   exact ⟨lt_of_lt_of_le hp.1 h, hp.2⟩
@@ -69,7 +69,7 @@ theorem logReflectedSewingBelow_ge {c : ℝ} (hc0 : 0 < c) (hc : c < 1 / 2) {θ 
     rw [abs_of_pos hc0]
     exact hc
   set M : ℕ := powerWindowIndex θ N with hMdef
-  have hsub : Nat.primesBelow M ⊆ Nat.primesBelow N := primesBelow_subset hMN
+  have hsub : Nat.primesBelow M ⊆ Nat.primesBelow N := primesBelow_subset_eulerHellingerSewingLogRatio hMN
   rw [logReflectedSewingBelow_eq_sum_localSewingLog habs N]
   have hdrop : ∑ p ∈ Nat.primesBelow N \ Nat.primesBelow M, localSewingLog p c ≤
       ∑ p ∈ Nat.primesBelow N, localSewingLog p c := by

@@ -26,7 +26,7 @@ constant of the reference profile. -/
 def soninShellCutSharpBandBoundAt (b c : ℝ) (N : ℕ) (w t : ℝ) : ℝ :=
   2 * t * (2 * soninShellCutWidth b c N *
       soninRefTailSup (soninShellCutWidth b c N * (w - t)) *
-    (1 + 2 * soninRefTailSup 0 / (∫ y : ℝ, soninUnitBumpData y))) ^ 2
+    (1 + 2 * soninRefTailSup 0 / (∫ y : ℝ, soninUnitBumpData y))) ^ (2 : ℕ)
 
 /-- **The sharp band estimate.**  The mean is a tail at the carrier, hence below the tail at the
 gap, so the whole bound is one tail at the gap times a profile constant. -/
@@ -34,7 +34,7 @@ theorem norm_sq_evenFourierCutoff_soninShellCutPacket_le_sharp
     (b c w : ℝ) (hbc : b < c) {N : ℕ} (hN : 0 < N) (t : ℝ) (ht : 0 ≤ t) (htw : t < w) (i : Fin N) :
     ‖evenFourierCutoff t
         (soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
-          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ 2 ≤
+          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ (2 : ℕ) ≤
       soninShellCutSharpBandBoundAt b c N w t := by
   have hδ := soninShellCutWidth_pos b c hbc hN
   have hJ₀ : (0 : ℝ) < ∫ y : ℝ, soninUnitBumpData y := integral_soninUnitBumpData_pos
@@ -72,8 +72,8 @@ theorem norm_sq_evenFourierCutoff_soninShellCutPacket_le_sharp
   rw [soninShellCutSharpBandBoundAt]
   refine le_trans hbase ?_
   have hnn : (0 : ℝ) ≤ 2 * δ * S₁ + μ * (2 * δ * S₀) := by positivity
-  have hsq : (2 * δ * S₁ + μ * (2 * δ * S₀)) ^ 2 ≤
-      (2 * δ * S₁ * (1 + 2 * S₀ / (∫ y : ℝ, soninUnitBumpData y))) ^ 2 := by
+  have hsq : (2 * δ * S₁ + μ * (2 * δ * S₀)) ^ (2 : ℕ) ≤
+      (2 * δ * S₁ * (1 + 2 * S₀ / (∫ y : ℝ, soninUnitBumpData y))) ^ (2 : ℕ) := by
     rw [pow_two, pow_two]
     exact mul_self_le_mul_self hnn hM
   exact mul_le_mul_of_nonneg_left hsq (by linarith : (0 : ℝ) ≤ 2 * t)

@@ -54,7 +54,7 @@ theorem continuous_preparedProbe (d : ℕ)
       (Complex.re ((star ((U * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
           Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) * A *
         ((U * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
-          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2 := by
+          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ (2 : ℕ) := by
   have hentry : ∀ a b : Fin 2 ⊕ Fin d,
       Continuous fun U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ =>
         ((U * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
@@ -98,7 +98,7 @@ theorem haar_sq_trace_pure_state_conjugation
     {ρ : Matrix κ κ ℂ} (hherm : ρ.IsHermitian) (hidem : ρ * ρ = ρ) (htr : ρ.trace = 1)
     {P : Matrix κ κ ℂ} (hP : P.IsHermitian) (hPtr : P.trace = 0) (hPinv : P * P = 1) :
     (∫ V : Matrix.unitaryGroup κ ℂ,
-        (Matrix.trace (ρ * (star (V : Matrix κ κ ℂ) * P * (V : Matrix κ κ ℂ)))).re ^ 2
+        (Matrix.trace (ρ * (star (V : Matrix κ κ ℂ) * P * (V : Matrix κ κ ℂ)))).re ^ (2 : ℕ)
         ∂finiteUnitaryHaar κ)
       = ((d : ℝ) + 3)⁻¹ := by
   classical
@@ -112,14 +112,14 @@ theorem haar_sq_trace_pure_state_conjugation
       (Complex.re ((star ((U * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
           Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) * A *
         ((U * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
-          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) (e j) (e j))) ^ 2) hfcont
+          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) (e j) (e j))) ^ (2 : ℕ)) hfcont
   have hpoint : ∀ V : Matrix.unitaryGroup κ ℂ,
       (Complex.re ((star (((unitaryGroupReindex e V) * W :
             Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
             Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) * A *
           (((unitaryGroupReindex e V) * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
-            Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) (e j) (e j))) ^ 2
-        = (Matrix.trace (ρ * (star (V : Matrix κ κ ℂ) * P * (V : Matrix κ κ ℂ)))).re ^ 2 := by
+            Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) (e j) (e j))) ^ (2 : ℕ)
+        = (Matrix.trace (ρ * (star (V : Matrix κ κ ℂ) * P * (V : Matrix κ κ ℂ)))).re ^ (2 : ℕ) := by
     intro V
     have hVW : (((unitaryGroupReindex e V) * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
         Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)
@@ -147,7 +147,7 @@ theorem haar_sq_trace_pure_state_conjugation
 
 theorem continuous_sq_trace_conj (ρ P : Matrix κ κ ℂ) :
     Continuous fun V : Matrix.unitaryGroup κ ℂ =>
-      (Matrix.trace (ρ * (star (V : Matrix κ κ ℂ) * P * (V : Matrix κ κ ℂ)))).re ^ 2 := by
+      (Matrix.trace (ρ * (star (V : Matrix κ κ ℂ) * P * (V : Matrix κ κ ℂ)))).re ^ (2 : ℕ) := by
   have htr : Continuous (Matrix.trace : Matrix κ κ ℂ → ℂ) :=
     continuous_finsetSum _ fun i _ => (continuous_apply i).comp (continuous_apply i)
   have hV : Continuous fun V : Matrix.unitaryGroup κ ℂ => (V : Matrix κ κ ℂ) :=
@@ -176,7 +176,7 @@ theorem haar_literalTwoQueryScore_eq
   have hcard : Fintype.card (FiniteQubitConfiguration (Fin n))
       = Fintype.card (Fin 2 ⊕ Fin (2 ^ n - 2)) := by
     have hpow : 2 ≤ 2 ^ n := by
-      calc 2 = 2 ^ 1 := by norm_num
+      calc 2 = 2 ^ (1 : ℕ) := by norm_num
         _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hn
     simp only [FiniteQubitConfiguration, Fintype.card_fun, Fintype.card_bool, Fintype.card_fin,
       Fintype.card_sum]
@@ -190,12 +190,12 @@ theorem haar_literalTwoQueryScore_eq
               (FiniteQubitConfiguration (Fin n)) ℂ) *
             finitePauliMatrix (label i) *
             (V : Matrix (FiniteQubitConfiguration (Fin n))
-              (FiniteQubitConfiguration (Fin n)) ℂ)))).re ^ 2
+              (FiniteQubitConfiguration (Fin n)) ℂ)))).re ^ (2 : ℕ)
         ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n)))
         = 1 / ((2 ^ n + 1 : ℕ) : ℝ) := by
     intro i smpl
     have hpow : 2 ≤ 2 ^ n := by
-      calc 2 = 2 ^ 1 := by norm_num
+      calc 2 = 2 ^ (1 : ℕ) := by norm_num
         _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hn
     rw [haar_sq_trace_pure_state_conjugation (2 ^ n - 2) e
       (productStabilizerDensity_isHermitian smpl)
@@ -216,7 +216,7 @@ theorem haar_literalTwoQueryScore_eq
               (FiniteQubitConfiguration (Fin n)) ℂ) *
             finitePauliMatrix (label i) *
             (V : Matrix (FiniteQubitConfiguration (Fin n))
-              (FiniteQubitConfiguration (Fin n)) ℂ)))).re ^ 2 :=
+              (FiniteQubitConfiguration (Fin n)) ℂ)))).re ^ (2 : ℕ) :=
     fun i smpl => continuous_sq_trace_conj _ _
   simp only [literalTwoQueryScore]
   rw [integral_div, integral_finsetSum _ (fun i _ => by
@@ -231,7 +231,7 @@ theorem haar_literalTwoQueryScore_eq
                 (FiniteQubitConfiguration (Fin n)) ℂ) *
               finitePauliMatrix (label i) *
               (V : Matrix (FiniteQubitConfiguration (Fin n))
-                (FiniteQubitConfiguration (Fin n)) ℂ)))).re ^ 2)
+                (FiniteQubitConfiguration (Fin n)) ℂ)))).re ^ (2 : ℕ))
           / ((6 : ℝ) ^ Fintype.card (Fin n))
         ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n)))
         = 1 / ((2 ^ n + 1 : ℕ) : ℝ) := by

@@ -19,7 +19,7 @@ The same integration by parts, applied to the damped kernel `e^{-εt} cos t / t`
 vanishes.  Combining this with the complex Frullani evaluation at rates `1` and `ε - i`, whose real
 part is `½ log(1+ε²)`, identifies the tail value and yields
 
-`∫_0^1 (e^{-t} - cos t)/t dt + ∫_1^∞ e^{-t}/t dt = cosTailValue`,
+`∫_0^(1 : ℕ) (e^{-t} - cos t)/t dt + ∫_1^∞ e^{-t}/t dt = cosTailValue`,
 
 which is the statement that the (improper) integral `∫_0^∞ (e^{-t} - cos t)/t dt` vanishes.
 -/
@@ -34,24 +34,24 @@ namespace RHTower
 /-! ## The absolutely convergent partner `sin t / t²` -/
 
 theorem integrableOn_sin_div_sq {R : ℝ} (hR : 0 < R) :
-    IntegrableOn (fun t : ℝ => Real.sin t / t ^ 2) (Ioi R) volume := by
-  have hmaj : IntegrableOn (fun t : ℝ => (1 : ℝ) / t ^ 2) (Ioi R) volume := by
+    IntegrableOn (fun t : ℝ => Real.sin t / t ^ (2 : ℕ)) (Ioi R) volume := by
+  have hmaj : IntegrableOn (fun t : ℝ => (1 : ℝ) / t ^ (2 : ℕ)) (Ioi R) volume := by
     have hcont : ContinuousWithinAt (fun v : ℝ => -v⁻¹) (Ici R) R :=
       (continuousAt_inv₀ (ne_of_gt hR)).neg.continuousWithinAt
-    have hderiv : ∀ t ∈ Ioi R, HasDerivAt (fun v : ℝ => -v⁻¹) ((1 : ℝ) / t ^ 2) t := by
+    have hderiv : ∀ t ∈ Ioi R, HasDerivAt (fun v : ℝ => -v⁻¹) ((1 : ℝ) / t ^ (2 : ℕ)) t := by
       intro t ht
       have ht0 : 0 < t := lt_trans hR ht
       have h := (hasDerivAt_inv (ne_of_gt ht0)).neg
       refine h.congr_deriv ?_
       field_simp
-    have hpos : ∀ t ∈ Ioi R, (0 : ℝ) ≤ (1 : ℝ) / t ^ 2 := by
+    have hpos : ∀ t ∈ Ioi R, (0 : ℝ) ≤ (1 : ℝ) / t ^ (2 : ℕ) := by
       intro t ht
       have ht0 : 0 < t := lt_trans hR ht
       positivity
     have htend : Tendsto (fun v : ℝ => -v⁻¹) atTop (nhds 0) := by
       simpa using (tendsto_inv_atTop_zero (𝕜 := ℝ)).neg
     exact MeasureTheory.integrableOn_Ioi_deriv_of_nonneg hcont hderiv hpos htend
-  have hmeas : AEStronglyMeasurable (fun t : ℝ => Real.sin t / t ^ 2)
+  have hmeas : AEStronglyMeasurable (fun t : ℝ => Real.sin t / t ^ (2 : ℕ))
       (volume.restrict (Ioi R)) := by
     refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
     intro t ht
@@ -61,7 +61,7 @@ theorem integrableOn_sin_div_sq {R : ℝ} (hR : 0 < R) :
   refine hmaj.mono' hmeas ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   have ht0 : 0 < t := lt_trans hR ht
-  rw [Real.norm_eq_abs, abs_div, abs_of_nonneg (by positivity : (0:ℝ) ≤ t ^ 2)]
+  rw [Real.norm_eq_abs, abs_div, abs_of_nonneg (by positivity : (0:ℝ) ≤ t ^ (2 : ℕ))]
   have hsin : |Real.sin t| ≤ 1 := Real.abs_sin_le_one t
   rw [div_le_div_iff_of_pos_right (by positivity)]
   exact hsin
@@ -69,21 +69,21 @@ theorem integrableOn_sin_div_sq {R : ℝ} (hR : 0 < R) :
 /-- The integration-by-parts identity for the oscillatory tail. -/
 theorem intervalIntegral_cos_div (y : ℝ) (hy : 1 ≤ y) :
     (∫ t in (1 : ℝ)..y, Real.cos t / t)
-      = Real.sin y / y - Real.sin 1 + ∫ t in (1 : ℝ)..y, Real.sin t / t ^ 2 := by
-  have hderiv_u : ∀ t ∈ Set.uIcc (1 : ℝ) y, HasDerivAt (fun v : ℝ => v⁻¹) (-(t ^ 2)⁻¹) t := by
+      = Real.sin y / y - Real.sin 1 + ∫ t in (1 : ℝ)..y, Real.sin t / t ^ (2 : ℕ) := by
+  have hderiv_u : ∀ t ∈ Set.uIcc (1 : ℝ) y, HasDerivAt (fun v : ℝ => v⁻¹) (-(t ^ (2 : ℕ))⁻¹) t := by
     intro t ht
     rw [Set.uIcc_of_le hy] at ht
     have ht0 : 0 < t := lt_of_lt_of_le zero_lt_one ht.1
     simpa using hasDerivAt_inv (ne_of_gt ht0)
   have hderiv_v : ∀ t ∈ Set.uIcc (1 : ℝ) y, HasDerivAt Real.sin (Real.cos t) t :=
     fun t _ => Real.hasDerivAt_sin t
-  have hint_u : IntervalIntegrable (fun t : ℝ => -(t ^ 2)⁻¹) volume 1 y := by
+  have hint_u : IntervalIntegrable (fun t : ℝ => -(t ^ (2 : ℕ))⁻¹) volume 1 y := by
     refine ContinuousOn.intervalIntegrable ?_
     rw [Set.uIcc_of_le hy]
     intro t ht
     have ht0 : 0 < t := lt_of_lt_of_le zero_lt_one ht.1
     exact ContinuousAt.continuousWithinAt (by
-      have : ContinuousAt (fun v : ℝ => (v ^ 2)⁻¹) t :=
+      have : ContinuousAt (fun v : ℝ => (v ^ (2 : ℕ))⁻¹) t :=
         (continuousAt_inv₀ (by positivity)).comp (by fun_prop)
       exact this.neg)
   have hint_v : IntervalIntegrable Real.cos volume 1 y :=
@@ -95,8 +95,8 @@ theorem intervalIntegral_cos_div (y : ℝ) (hy : 1 ≤ y) :
     intro t _
     dsimp only
     rw [div_eq_inv_mul]
-  have hright : (∫ t in (1 : ℝ)..y, -(t ^ 2)⁻¹ * Real.sin t)
-      = -∫ t in (1 : ℝ)..y, Real.sin t / t ^ 2 := by
+  have hright : (∫ t in (1 : ℝ)..y, -(t ^ (2 : ℕ))⁻¹ * Real.sin t)
+      = -∫ t in (1 : ℝ)..y, Real.sin t / t ^ (2 : ℕ) := by
     rw [← intervalIntegral.integral_neg]
     refine intervalIntegral.integral_congr ?_
     intro t _
@@ -110,14 +110,14 @@ theorem intervalIntegral_cos_div (y : ℝ) (hy : 1 ≤ y) :
   ring
 
 /-- The limiting value of the oscillatory tail. -/
-def cosTailValue : ℝ := -Real.sin 1 + ∫ t in Ioi (1 : ℝ), Real.sin t / t ^ 2
+def cosTailValue : ℝ := -Real.sin 1 + ∫ t in Ioi (1 : ℝ), Real.sin t / t ^ (2 : ℕ)
 
 theorem tendsto_intervalIntegral_cos_div :
     Tendsto (fun y : ℝ => ∫ t in (1 : ℝ)..y, Real.cos t / t) atTop (nhds cosTailValue) := by
-  have hsinq : Tendsto (fun y : ℝ => ∫ t in (1 : ℝ)..y, Real.sin t / t ^ 2) atTop
-      (nhds (∫ t in Ioi (1 : ℝ), Real.sin t / t ^ 2)) := by
+  have hsinq : Tendsto (fun y : ℝ => ∫ t in (1 : ℝ)..y, Real.sin t / t ^ (2 : ℕ)) atTop
+      (nhds (∫ t in Ioi (1 : ℝ), Real.sin t / t ^ (2 : ℕ))) := by
     have h := MeasureTheory.intervalIntegral_tendsto_integral_Ioi (a := (1 : ℝ))
-      (f := fun t : ℝ => Real.sin t / t ^ 2) (integrableOn_sin_div_sq zero_lt_one)
+      (f := fun t : ℝ => Real.sin t / t ^ (2 : ℕ)) (integrableOn_sin_div_sq zero_lt_one)
       (b := fun n : ℝ => n) tendsto_id
     exact h
   have hsy : Tendsto (fun y : ℝ => Real.sin y / y) atTop (nhds 0) := by
@@ -142,15 +142,15 @@ theorem tendsto_intervalIntegral_cos_div :
 /-- The damped oscillatory tail `∫_1^∞ e^{-εt} cos t / t dt`, after integration by parts. -/
 def dampedCosTail (ε : ℝ) : ℝ :=
   -(Real.exp (-ε) * Real.sin 1)
-    + ∫ t in Ioi (1 : ℝ), Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2))
+    + ∫ t in Ioi (1 : ℝ), Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ)))
 
 theorem intervalIntegral_damped_cos_div (ε : ℝ) {y : ℝ} (hy : 1 ≤ y) :
     (∫ t in (1 : ℝ)..y, Real.exp (-(ε * t)) * Real.cos t / t)
       = Real.exp (-(ε * y)) * Real.sin y / y - Real.exp (-ε) * Real.sin 1
-        + ∫ t in (1 : ℝ)..y, Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)) := by
+        + ∫ t in (1 : ℝ)..y, Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))) := by
   have hderiv_u : ∀ t ∈ Set.uIcc (1 : ℝ) y,
       HasDerivAt (fun v : ℝ => Real.exp (-(ε * v)) * v⁻¹)
-        (-(Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2))) t := by
+        (-(Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ)))) t := by
     intro t ht
     rw [Set.uIcc_of_le hy] at ht
     have ht0 : 0 < t := lt_of_lt_of_le zero_lt_one ht.1
@@ -160,7 +160,7 @@ theorem intervalIntegral_damped_cos_div (ε : ℝ) {y : ℝ} (hy : 1 ≤ y) :
           simpa using (hasDerivAt_id t).const_mul ε
         exact h0.neg.congr_deriv (by ring)
       simpa using hlin.exp
-    have hinv : HasDerivAt (fun v : ℝ => v⁻¹) (-(t ^ 2)⁻¹) t := by
+    have hinv : HasDerivAt (fun v : ℝ => v⁻¹) (-(t ^ (2 : ℕ))⁻¹) t := by
       simpa using hasDerivAt_inv (ne_of_gt ht0)
     refine (hexp.mul hinv).congr_deriv ?_
     field_simp
@@ -168,14 +168,14 @@ theorem intervalIntegral_damped_cos_div (ε : ℝ) {y : ℝ} (hy : 1 ≤ y) :
   have hderiv_v : ∀ t ∈ Set.uIcc (1 : ℝ) y, HasDerivAt Real.sin (Real.cos t) t :=
     fun t _ => Real.hasDerivAt_sin t
   have hint_u : IntervalIntegrable
-      (fun t : ℝ => -(Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2))) volume 1 y := by
+      (fun t : ℝ => -(Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ)))) volume 1 y := by
     refine ContinuousOn.intervalIntegrable ?_
     rw [Set.uIcc_of_le hy]
     intro t ht
     have ht0 : 0 < t := lt_of_lt_of_le zero_lt_one ht.1
     refine ContinuousAt.continuousWithinAt ?_
     have h1 : ContinuousAt (fun v : ℝ => Real.exp (-(ε * v))) t := by fun_prop
-    have h2 : ContinuousAt (fun v : ℝ => ε / v + 1 / v ^ 2) t := by
+    have h2 : ContinuousAt (fun v : ℝ => ε / v + 1 / v ^ (2 : ℕ)) t := by
       refine ContinuousAt.add ?_ ?_
       · exact ContinuousAt.div continuousAt_const continuousAt_id (ne_of_gt ht0)
       · exact ContinuousAt.div continuousAt_const (by fun_prop) (by positivity)
@@ -191,8 +191,8 @@ theorem intervalIntegral_damped_cos_div (ε : ℝ) {y : ℝ} (hy : 1 ≤ y) :
     dsimp only
     field_simp
   have hright : (∫ t in (1 : ℝ)..y,
-      -(Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)) * Real.sin t)
-      = -∫ t in (1 : ℝ)..y, Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)) := by
+      -(Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))) * Real.sin t)
+      = -∫ t in (1 : ℝ)..y, Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))) := by
     rw [← intervalIntegral.integral_neg]
     refine intervalIntegral.integral_congr ?_
     intro t _
@@ -365,19 +365,19 @@ theorem integrableOn_damped_cos_div {ε : ℝ} (hε : 0 < ε) :
   nlinarith
 
 theorem integrableOn_dampedIBPKernel {ε : ℝ} (hε : 0 < ε) :
-    IntegrableOn (fun t : ℝ => Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)))
+    IntegrableOn (fun t : ℝ => Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))))
       (Ioi (1 : ℝ)) volume := by
   have h1 : IntegrableOn (fun t : ℝ => ε * Real.exp (-(ε * t))) (Ioi (1 : ℝ)) volume :=
     (integrableOn_exp_neg_mul_Ioi hε 1).const_mul _
-  have h2 : IntegrableOn (fun t : ℝ => (1 : ℝ) / t ^ 2) (Ioi (1 : ℝ)) volume := by
+  have h2 : IntegrableOn (fun t : ℝ => (1 : ℝ) / t ^ (2 : ℕ)) (Ioi (1 : ℝ)) volume := by
     have hcont : ContinuousWithinAt (fun v : ℝ => -v⁻¹) (Ici (1 : ℝ)) 1 :=
       (continuousAt_inv₀ one_ne_zero).neg.continuousWithinAt
-    have hderiv : ∀ t ∈ Ioi (1 : ℝ), HasDerivAt (fun v : ℝ => -v⁻¹) ((1 : ℝ) / t ^ 2) t := by
+    have hderiv : ∀ t ∈ Ioi (1 : ℝ), HasDerivAt (fun v : ℝ => -v⁻¹) ((1 : ℝ) / t ^ (2 : ℕ)) t := by
       intro t ht
       have ht0 : 0 < t := lt_trans zero_lt_one ht
       refine ((hasDerivAt_inv (ne_of_gt ht0)).neg).congr_deriv ?_
       field_simp
-    have hpos : ∀ t ∈ Ioi (1 : ℝ), (0 : ℝ) ≤ (1 : ℝ) / t ^ 2 := by
+    have hpos : ∀ t ∈ Ioi (1 : ℝ), (0 : ℝ) ≤ (1 : ℝ) / t ^ (2 : ℕ) := by
       intro t ht
       have ht0 : 0 < t := lt_trans zero_lt_one ht
       positivity
@@ -385,7 +385,7 @@ theorem integrableOn_dampedIBPKernel {ε : ℝ} (hε : 0 < ε) :
       simpa using (tendsto_inv_atTop_zero (𝕜 := ℝ)).neg
     exact MeasureTheory.integrableOn_Ioi_deriv_of_nonneg hcont hderiv hpos htend
   have hmeas : AEStronglyMeasurable
-      (fun t : ℝ => Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)))
+      (fun t : ℝ => Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))))
       (volume.restrict (Ioi (1 : ℝ))) := by
     refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
     intro t ht
@@ -408,26 +408,26 @@ theorem integrableOn_dampedIBPKernel {ε : ℝ} (hε : 0 < ε) :
     rw [div_le_iff₀ ht0]
     nlinarith
   rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos hexppos]
-  have habs : |ε / t + 1 / t ^ 2| = ε / t + 1 / t ^ 2 := by
+  have habs : |ε / t + 1 / t ^ (2 : ℕ)| = ε / t + 1 / t ^ (2 : ℕ) := by
     apply abs_of_nonneg
     positivity
   rw [habs]
-  have hstep : Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)
-      ≤ ε * Real.exp (-(ε * t)) + 1 / t ^ 2 := by
+  have hstep : Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))
+      ≤ ε * Real.exp (-(ε * t)) + 1 / t ^ (2 : ℕ) := by
     have h1' : Real.exp (-(ε * t)) * (ε / t) ≤ ε * Real.exp (-(ε * t)) := by
       have := mul_le_mul_of_nonneg_left hεt (le_of_lt hexppos)
       linarith [this]
-    have h2' : Real.exp (-(ε * t)) * (1 / t ^ 2) ≤ 1 / t ^ 2 := by
-      have hnn : (0 : ℝ) ≤ 1 / t ^ 2 := by positivity
+    have h2' : Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ)) ≤ 1 / t ^ (2 : ℕ) := by
+      have hnn : (0 : ℝ) ≤ 1 / t ^ (2 : ℕ) := by positivity
       nlinarith
     nlinarith
   simp only [Pi.add_apply]
-  have hXnn : (0 : ℝ) ≤ Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2) := by positivity
-  calc |Real.sin t| * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2))
-      ≤ 1 * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)) :=
+  have hXnn : (0 : ℝ) ≤ Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ)) := by positivity
+  calc |Real.sin t| * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ)))
+      ≤ 1 * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_right hs hXnn
-    _ = Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2) := one_mul _
-    _ ≤ ε * Real.exp (-(ε * t)) + 1 / t ^ 2 := hstep
+    _ = Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ)) := one_mul _
+    _ ≤ ε * Real.exp (-(ε * t)) + 1 / t ^ (2 : ℕ) := hstep
 
 theorem integral_damped_cos_div_Ioi {ε : ℝ} (hε : 0 < ε) :
     (∫ t in Ioi (1 : ℝ), Real.exp (-(ε * t)) * Real.cos t / t) = dampedCosTail ε := by
@@ -436,9 +436,9 @@ theorem integral_damped_cos_div_Ioi {ε : ℝ} (hε : 0 < ε) :
     MeasureTheory.intervalIntegral_tendsto_integral_Ioi (a := (1 : ℝ))
       (integrableOn_damped_cos_div hε) tendsto_id
   have hK : Tendsto (fun y : ℝ =>
-      ∫ t in (1 : ℝ)..y, Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)))
+      ∫ t in (1 : ℝ)..y, Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))))
       atTop (nhds (∫ t in Ioi (1 : ℝ),
-        Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)))) :=
+        Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))))) :=
     MeasureTheory.intervalIntegral_tendsto_integral_Ioi (a := (1 : ℝ))
       (integrableOn_dampedIBPKernel hε) tendsto_id
   have hboundary : Tendsto (fun y : ℝ => Real.exp (-(ε * y)) * Real.sin y / y)
@@ -490,15 +490,15 @@ theorem tendsto_dampedCosTail :
     Filter.eventually_of_mem
       (mem_nhdsWithin_of_mem_nhds (Iic_mem_nhds (by norm_num))) (fun x hx => hx)
   -- the `1/t²` piece
-  have hbound2 : IntegrableOn (fun t : ℝ => (1 : ℝ) / t ^ 2) (Ioi (1 : ℝ)) volume := by
+  have hbound2 : IntegrableOn (fun t : ℝ => (1 : ℝ) / t ^ (2 : ℕ)) (Ioi (1 : ℝ)) volume := by
     have hcont : ContinuousWithinAt (fun v : ℝ => -v⁻¹) (Ici (1 : ℝ)) 1 :=
       (continuousAt_inv₀ one_ne_zero).neg.continuousWithinAt
-    have hderiv : ∀ t ∈ Ioi (1 : ℝ), HasDerivAt (fun v : ℝ => -v⁻¹) ((1 : ℝ) / t ^ 2) t := by
+    have hderiv : ∀ t ∈ Ioi (1 : ℝ), HasDerivAt (fun v : ℝ => -v⁻¹) ((1 : ℝ) / t ^ (2 : ℕ)) t := by
       intro t ht
       have ht0 : 0 < t := lt_trans zero_lt_one ht
       refine ((hasDerivAt_inv (ne_of_gt ht0)).neg).congr_deriv ?_
       field_simp
-    have hpos : ∀ t ∈ Ioi (1 : ℝ), (0 : ℝ) ≤ (1 : ℝ) / t ^ 2 := by
+    have hpos : ∀ t ∈ Ioi (1 : ℝ), (0 : ℝ) ≤ (1 : ℝ) / t ^ (2 : ℕ) := by
       intro t ht
       have ht0 : 0 < t := lt_trans zero_lt_one ht
       positivity
@@ -506,10 +506,10 @@ theorem tendsto_dampedCosTail :
       simpa using (tendsto_inv_atTop_zero (𝕜 := ℝ)).neg
     exact MeasureTheory.integrableOn_Ioi_deriv_of_nonneg hcont hderiv hpos htend
   have hDCT : Tendsto
-      (fun ε : ℝ => ∫ t in Ioi (1 : ℝ), Real.sin t * (Real.exp (-(ε * t)) * (1 / t ^ 2)))
-      (nhdsWithin 0 (Ioi 0)) (nhds (∫ t in Ioi (1 : ℝ), Real.sin t * (1 / t ^ 2))) := by
+      (fun ε : ℝ => ∫ t in Ioi (1 : ℝ), Real.sin t * (Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ))))
+      (nhdsWithin 0 (Ioi 0)) (nhds (∫ t in Ioi (1 : ℝ), Real.sin t * (1 / t ^ (2 : ℕ)))) := by
     refine MeasureTheory.tendsto_integral_filter_of_dominated_convergence
-      (fun t : ℝ => (1 : ℝ) / t ^ 2) ?_ ?_ hbound2 ?_
+      (fun t : ℝ => (1 : ℝ) / t ^ (2 : ℕ)) ?_ ?_ hbound2 ?_
     · filter_upwards [self_mem_nhdsWithin] with ε _
       refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
       intro t ht
@@ -529,14 +529,14 @@ theorem tendsto_dampedCosTail :
         nlinarith [hεpos.le]
       have hs : |Real.sin t| ≤ 1 := Real.abs_sin_le_one t
       rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos hexppos,
-        abs_of_nonneg (by positivity : (0:ℝ) ≤ (1:ℝ) / t ^ 2)]
-      have hnn : (0 : ℝ) ≤ (1 : ℝ) / t ^ 2 := by positivity
-      have hXnn : (0 : ℝ) ≤ Real.exp (-(ε * t)) * (1 / t ^ 2) := by positivity
-      calc |Real.sin t| * (Real.exp (-(ε * t)) * (1 / t ^ 2))
-          ≤ 1 * (Real.exp (-(ε * t)) * (1 / t ^ 2)) := mul_le_mul_of_nonneg_right hs hXnn
-        _ = Real.exp (-(ε * t)) * (1 / t ^ 2) := one_mul _
-        _ ≤ 1 * (1 / t ^ 2) := mul_le_mul_of_nonneg_right hexple hnn
-        _ = 1 / t ^ 2 := one_mul _
+        abs_of_nonneg (by positivity : (0:ℝ) ≤ (1:ℝ) / t ^ (2 : ℕ))]
+      have hnn : (0 : ℝ) ≤ (1 : ℝ) / t ^ (2 : ℕ) := by positivity
+      have hXnn : (0 : ℝ) ≤ Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ)) := by positivity
+      calc |Real.sin t| * (Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ)))
+          ≤ 1 * (Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ))) := mul_le_mul_of_nonneg_right hs hXnn
+        _ = Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ)) := one_mul _
+        _ ≤ 1 * (1 / t ^ (2 : ℕ)) := mul_le_mul_of_nonneg_right hexple hnn
+        _ = 1 / t ^ (2 : ℕ) := one_mul _
     · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
       have ht0 : (0 : ℝ) < t := lt_trans zero_lt_one ht
       have hexp : Tendsto (fun ε : ℝ => Real.exp (-(ε * t))) (nhdsWithin 0 (Ioi 0)) (nhds 1) := by
@@ -545,7 +545,7 @@ theorem tendsto_dampedCosTail :
             (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds (Real.exp (-(0 * t)))) :=
           hcont.tendsto.mono_left nhdsWithin_le_nhds
         simpa using h1
-      have := (hexp.const_mul (1 / t ^ 2)).const_mul (Real.sin t)
+      have := (hexp.const_mul (1 / t ^ (2 : ℕ))).const_mul (Real.sin t)
       simpa [mul_comm] using this
   -- the `ε/t` piece
   have hεpiece : Tendsto
@@ -604,8 +604,8 @@ theorem tendsto_dampedCosTail :
     simpa using h1
   have hsum := (hboundary.add hεpiece).add hDCT
   rw [add_zero] at hsum
-  have hval : (∫ t in Ioi (1 : ℝ), Real.sin t * (1 / t ^ 2))
-      = ∫ t in Ioi (1 : ℝ), Real.sin t / t ^ 2 := by
+  have hval : (∫ t in Ioi (1 : ℝ), Real.sin t * (1 / t ^ (2 : ℕ)))
+      = ∫ t in Ioi (1 : ℝ), Real.sin t / t ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
     intro t _
     dsimp only
@@ -615,9 +615,9 @@ theorem tendsto_dampedCosTail :
   refine hsum.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with ε hε
   have hsplit : (∫ t in Ioi (1 : ℝ),
-      Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ 2)))
+      Real.sin t * (Real.exp (-(ε * t)) * (ε / t + 1 / t ^ (2 : ℕ))))
       = (ε * ∫ t in Ioi (1 : ℝ), Real.sin t * (Real.exp (-(ε * t)) / t))
-        + ∫ t in Ioi (1 : ℝ), Real.sin t * (Real.exp (-(ε * t)) * (1 / t ^ 2)) := by
+        + ∫ t in Ioi (1 : ℝ), Real.sin t * (Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ))) := by
     have hA : IntegrableOn
         (fun t : ℝ => ε * (Real.sin t * (Real.exp (-(ε * t)) / t))) (Ioi (1 : ℝ)) volume := by
       have hmaj : IntegrableOn (fun t : ℝ => Real.exp (-(ε * t))) (Ioi (1 : ℝ)) volume :=
@@ -648,9 +648,9 @@ theorem tendsto_dampedCosTail :
       nlinarith [mul_le_mul_of_nonneg_right hs hXnn, hdiv, hεpos, hXnn,
         Real.exp_pos (-(ε * t))]
     have hB : IntegrableOn
-        (fun t : ℝ => Real.sin t * (Real.exp (-(ε * t)) * (1 / t ^ 2))) (Ioi (1 : ℝ)) volume := by
+        (fun t : ℝ => Real.sin t * (Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ)))) (Ioi (1 : ℝ)) volume := by
       have hmeas : AEStronglyMeasurable
-          (fun t : ℝ => Real.sin t * (Real.exp (-(ε * t)) * (1 / t ^ 2)))
+          (fun t : ℝ => Real.sin t * (Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ))))
           (volume.restrict (Ioi (1 : ℝ))) := by
         refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
         intro t ht
@@ -669,15 +669,15 @@ theorem tendsto_dampedCosTail :
         rw [Real.exp_le_one_iff]
         nlinarith [hεpos.le]
       rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos hexppos,
-        abs_of_nonneg (by positivity : (0:ℝ) ≤ (1:ℝ) / t ^ 2)]
+        abs_of_nonneg (by positivity : (0:ℝ) ≤ (1:ℝ) / t ^ (2 : ℕ))]
       have hs : |Real.sin t| ≤ 1 := Real.abs_sin_le_one t
-      have hnn : (0 : ℝ) ≤ (1 : ℝ) / t ^ 2 := by positivity
-      have hXnn : (0 : ℝ) ≤ Real.exp (-(ε * t)) * (1 / t ^ 2) := by positivity
-      calc |Real.sin t| * (Real.exp (-(ε * t)) * (1 / t ^ 2))
-          ≤ 1 * (Real.exp (-(ε * t)) * (1 / t ^ 2)) := mul_le_mul_of_nonneg_right hs hXnn
-        _ = Real.exp (-(ε * t)) * (1 / t ^ 2) := one_mul _
-        _ ≤ 1 * (1 / t ^ 2) := mul_le_mul_of_nonneg_right hexple hnn
-        _ = 1 / t ^ 2 := one_mul _
+      have hnn : (0 : ℝ) ≤ (1 : ℝ) / t ^ (2 : ℕ) := by positivity
+      have hXnn : (0 : ℝ) ≤ Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ)) := by positivity
+      calc |Real.sin t| * (Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ)))
+          ≤ 1 * (Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ))) := mul_le_mul_of_nonneg_right hs hXnn
+        _ = Real.exp (-(ε * t)) * (1 / t ^ (2 : ℕ)) := one_mul _
+        _ ≤ 1 * (1 / t ^ (2 : ℕ)) := mul_le_mul_of_nonneg_right hexple hnn
+        _ = 1 / t ^ (2 : ℕ) := one_mul _
     rw [← MeasureTheory.integral_const_mul]
     rw [← MeasureTheory.integral_add hA hB]
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
@@ -693,7 +693,7 @@ theorem tendsto_dampedCosTail :
 
 theorem integral_dampedFrullani {ε : ℝ} (hε : 0 < ε) :
     (∫ t in Ioi (0 : ℝ), (Real.exp (-t) - Real.exp (-(ε * t)) * Real.cos t) / t)
-      = Real.log (Real.sqrt (ε ^ 2 + 1)) := by
+      = Real.log (Real.sqrt (ε ^ (2 : ℕ) + 1)) := by
   have hare : (0 : ℝ) < (1 : ℂ).re := by simp
   have hbre : (0 : ℝ) < ((ε : ℂ) - Complex.I).re := by
     simp only [Complex.sub_re, Complex.ofReal_re, Complex.I_re, sub_zero]
@@ -721,7 +721,7 @@ theorem integral_dampedFrullani {ε : ℝ} (hε : 0 < ε) :
     have h2 : (Complex.exp (-(((ε : ℂ) - Complex.I) * (t : ℂ)))).re
         = Real.exp (-(ε * t)) * Real.cos t := by
       rw [Complex.exp_re, hr, him]
-    rw [div_ofReal_re, Complex.sub_re, h1, h2]
+    rw [div_ofReal_re_digammaIntegralRepresentation, Complex.sub_re, h1, h2]
   have hleft : (∫ t in Ioi (0 : ℝ),
       (Real.exp (-t) - Real.exp (-(ε * t)) * Real.cos t) / t)
       = (∫ t in Ioi (0 : ℝ),
@@ -737,7 +737,7 @@ theorem integral_dampedFrullani {ε : ℝ} (hε : 0 < ε) :
 
 /-! ## The head block and the vanishing identity -/
 
-/-- The head block `∫_0^1 (e^{-t} - cos t)/t dt`. -/
+/-- The head block `∫_0^(1 : ℕ) (e^{-t} - cos t)/t dt`. -/
 def gaussCosineHead : ℝ := ∫ t in Ioc (0 : ℝ) 1, (Real.exp (-t) - Real.cos t) / t
 
 theorem abs_exp_sub_cos_le {t : ℝ} (ht : 0 ≤ t) (ht1 : t ≤ 1) {ε : ℝ} (hε : 0 < ε)
@@ -763,7 +763,7 @@ theorem abs_exp_sub_cos_le {t : ℝ} (ht : 0 ≤ t) (ht1 : t ≤ 1) {ε : ℝ} (
     have hexp1 : Real.exp (-(ε * t)) ≤ 1 := by
       rw [Real.exp_le_one_iff]; nlinarith
     have hexppos : (0 : ℝ) < Real.exp (-(ε * t)) := Real.exp_pos _
-    have hcos : 1 - Real.cos t ≤ t ^ 2 / 2 := by
+    have hcos : 1 - Real.cos t ≤ t ^ (2 : ℕ) / 2 := by
       have := Real.one_sub_sq_div_two_le_cos (x := t)
       linarith
     have hcosnn : (0 : ℝ) ≤ 1 - Real.cos t := by
@@ -887,17 +887,17 @@ theorem gaussCosineIdentity : gaussCosineHead + frullaniTail = cosTailValue := b
         + frullaniTail - dampedCosTail ε)
       (nhdsWithin 0 (Ioi 0)) (nhds (gaussCosineHead + frullaniTail - cosTailValue)) :=
     (hheadDCT.add tendsto_const_nhds).sub tendsto_dampedCosTail
-  have hLHS : Tendsto (fun ε : ℝ => Real.log (Real.sqrt (ε ^ 2 + 1)))
+  have hLHS : Tendsto (fun ε : ℝ => Real.log (Real.sqrt (ε ^ (2 : ℕ) + 1)))
       (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
-    have hcont : ContinuousAt (fun ε : ℝ => Real.log (Real.sqrt (ε ^ 2 + 1))) 0 := by
+    have hcont : ContinuousAt (fun ε : ℝ => Real.log (Real.sqrt (ε ^ (2 : ℕ) + 1))) 0 := by
       refine ContinuousAt.log ?_ ?_
       · fun_prop
       · simp
-    have h1 : Tendsto (fun ε : ℝ => Real.log (Real.sqrt (ε ^ 2 + 1)))
-        (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds (Real.log (Real.sqrt ((0 : ℝ) ^ 2 + 1)))) :=
+    have h1 : Tendsto (fun ε : ℝ => Real.log (Real.sqrt (ε ^ (2 : ℕ) + 1)))
+        (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds (Real.log (Real.sqrt ((0 : ℝ) ^ (2 : ℕ) + 1)))) :=
       hcont.tendsto.mono_left nhdsWithin_le_nhds
     simpa using h1
-  have hEq : Tendsto (fun ε : ℝ => Real.log (Real.sqrt (ε ^ 2 + 1)))
+  have hEq : Tendsto (fun ε : ℝ => Real.log (Real.sqrt (ε ^ (2 : ℕ) + 1)))
       (nhdsWithin 0 (Ioi 0)) (nhds (gaussCosineHead + frullaniTail - cosTailValue)) := by
     refine hRHS.congr' ?_
     filter_upwards [self_mem_nhdsWithin, hsmall] with ε hε hε1
@@ -935,7 +935,7 @@ theorem abs_cosMinusOneProfile_le {t : ℝ} (ht : 0 ≤ t) : |cosMinusOneProfile
   · rw [cosMinusOneProfile_of_ne (ne_of_gt ht0), abs_div, abs_of_pos ht0,
       div_le_iff₀ ht0]
     have hupper : Real.cos t ≤ 1 := Real.cos_le_one t
-    have hlower : 1 - t ^ 2 / 2 ≤ Real.cos t := by
+    have hlower : 1 - t ^ (2 : ℕ) / 2 ≤ Real.cos t := by
       have := Real.one_sub_sq_div_two_le_cos (x := t)
       linarith
     rw [abs_of_nonpos (by linarith)]
@@ -968,7 +968,7 @@ theorem intervalIntegrable_cosMinusOneProfile {x : ℝ} (hx : 0 ≤ x) :
 /-- `∫_0^x (cos t - 1)/t dt`. -/
 def cinNeg (x : ℝ) : ℝ := ∫ t in (0 : ℝ)..x, cosMinusOneProfile t
 
-theorem abs_cinNeg_le {x : ℝ} (hx : 0 ≤ x) : |cinNeg x| ≤ x ^ 2 / 2 := by
+theorem abs_cinNeg_le {x : ℝ} (hx : 0 ≤ x) : |cinNeg x| ≤ x ^ (2 : ℕ) / 2 := by
   have hbound : ∀ t ∈ Set.uIoc (0 : ℝ) x, ‖cosMinusOneProfile t‖ ≤ x / 2 := by
     intro t ht
     rw [Set.uIoc_of_le hx] at ht
@@ -980,19 +980,19 @@ theorem abs_cinNeg_le {x : ℝ} (hx : 0 ≤ x) : |cinNeg x| ≤ x ^ 2 / 2 := by
   rw [cinNeg, Real.norm_eq_abs] at *
   rw [sub_zero, abs_of_nonneg hx] at h
   calc |∫ t in (0 : ℝ)..x, cosMinusOneProfile t| ≤ x / 2 * x := h
-    _ = x ^ 2 / 2 := by ring
+    _ = x ^ (2 : ℕ) / 2 := by ring
 
 theorem tendsto_cinNeg_nhdsWithin_zero {a : ℝ} (ha : 0 < a) :
     Tendsto (fun ε : ℝ => cinNeg (a * ε)) (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
-  refine squeeze_zero_norm' (a := fun ε : ℝ => (a * ε) ^ 2 / 2) ?_ ?_
+  refine squeeze_zero_norm' (a := fun ε : ℝ => (a * ε) ^ (2 : ℕ) / 2) ?_ ?_
   · filter_upwards [self_mem_nhdsWithin] with ε hε
     have hεpos : (0 : ℝ) < ε := hε
     rw [Real.norm_eq_abs]
     exact abs_cinNeg_le (by positivity)
   · have hid : Tendsto (fun ε : ℝ => ε) (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds 0) :=
       tendsto_id.mono_left nhdsWithin_le_nhds
-    have : Tendsto (fun ε : ℝ => (a * ε) ^ 2 / 2) (nhdsWithin (0 : ℝ) (Ioi 0))
-        (nhds ((a * 0) ^ 2 / 2)) := by
+    have : Tendsto (fun ε : ℝ => (a * ε) ^ (2 : ℕ) / 2) (nhdsWithin (0 : ℝ) (Ioi 0))
+        (nhds ((a * 0) ^ (2 : ℕ) / 2)) := by
       exact (((hid.const_mul a).pow 2).div_const 2)
     simpa using this
 

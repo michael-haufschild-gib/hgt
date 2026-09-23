@@ -6,10 +6,10 @@ import GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedExteriorSource
 The primitive-promoted modular exterior has the necessary cellwise amplitude, but that alone does
 not prove packet domination.  This module supplies an explicit source-only finite core.
 
-Take the first-clock block at scale `n` and a second block at the fixed dilation `2^32 n`.  Center
+Take the first-clock block at scale `n` and a second block at the fixed dilation `2^(32 : ℕ) n`.  Center
 the squared-height modular jet at `log n / 2` and phase it at scale `1/64`.  Every cross pair has a
 uniformly positive centered-height and sine gap.  Elementary Chebyshev mass bounds then give a
-linear lower bound for the cross energy.  On `n=m^4` it dominates the complete certified
+linear lower bound for the cross energy.  On `n=m^(4 : ℕ)` it dominates the complete certified
 first-clock bad-mass square.
 
 The large fixed dilation is deliberately crude: it isolates existence of source domination from
@@ -34,7 +34,7 @@ theorem radius_ge_inv_three_sqrt
   apply (sq_le_sq₀ hc hr).1
   rw [criticalPrimeTowerRadius_sq]
   have hcSq :
-      ((3 * Real.sqrt (n : ℝ))⁻¹) ^ 2 =
+      ((3 * Real.sqrt (n : ℝ))⁻¹) ^ (2 : ℕ) =
         (9 * (n : ℝ))⁻¹ := by
     rw [inv_pow, mul_pow, Real.sq_sqrt hnR.le]
     ring
@@ -53,7 +53,7 @@ theorem radius_le_inv_sqrt
   apply (sq_le_sq₀ hr hc).1
   rw [criticalPrimeTowerRadius_sq]
   have hcSq :
-      ((Real.sqrt (n : ℝ))⁻¹) ^ 2 = ((n : ℝ))⁻¹ := by
+      ((Real.sqrt (n : ℝ))⁻¹) ^ (2 : ℕ) = ((n : ℝ))⁻¹ := by
     rw [inv_pow, Real.sq_sqrt hnR.le]
   rw [hcSq]
   have hnp : (n : ℝ) ≤ p := by
@@ -164,13 +164,13 @@ theorem promotedMass_upper
 /-- Complete hard-block bad mass has a coarse linear squared upper bound. -/
 theorem badMass_sq_upper
     {m : ℕ} (hm : 25 ≤ m) :
-    (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
       ccmFirstClockReducedBadNatTerm
-        (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 ≤
-      100 * ((m ^ 4 : ℕ) : ℝ) := by
-  have hnPos : 0 < m ^ 4 := by positivity
+        (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) ≤
+      100 * ((m ^ (4 : ℕ) : ℕ) : ℝ) := by
+  have hnPos : 0 < m ^ (4 : ℕ) := by positivity
   have hbadNonneg :
-      0 ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      0 ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
           (ccmFirstClockJuliaSixthPowerAperture m) p := by
     apply Finset.sum_nonneg
@@ -179,25 +179,25 @@ theorem badMass_sq_upper
     rw [ccmFirstClockReducedBadNatTerm_of_prime _ hpPrime]
     exact (ccmFirstClockJuliaSixthPower_block_badTerm_pos hm hp).le
   have hsum :
-      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           ccmFirstClockReducedBadNatTerm
             (ccmFirstClockJuliaSixthPowerAperture m) p ≤
-        ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+        ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           xiGammaEulerPrimitiveDepthZeroAmplitude p := by
     apply Finset.sum_le_sum
     intro p hp
     exact (xiGammaEulerPrimitive_block_badTerm_sandwich hm hp).2
   have hamp := promotedMass_upper hnPos
-  have hten : 0 ≤ 10 * Real.sqrt (((m ^ 4 : ℕ) : ℝ)) := by
+  have hten : 0 ≤ 10 * Real.sqrt (((m ^ (4 : ℕ) : ℕ) : ℝ)) := by
     positivity
   have hsq := (sq_le_sq₀ hbadNonneg hten).2 (hsum.trans hamp)
   have hsqrt :
-      Real.sqrt (((m ^ 4 : ℕ) : ℝ)) ^ 2 =
-        ((m ^ 4 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+      Real.sqrt (((m ^ (4 : ℕ) : ℕ) : ℝ)) ^ (2 : ℕ) =
+        ((m ^ (4 : ℕ) : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
   nlinarith
 
 /-- Fixed source dilation separating two independently supplied Chebyshev blocks. -/
-def sourceDilation : ℕ := 2 ^ 32
+def sourceDilation : ℕ := 2 ^ (32 : ℕ)
 
 theorem sourceDilation_pos : 0 < sourceDilation := by
   norm_num [sourceDilation]
@@ -273,7 +273,7 @@ def twoScalePhase : ℝ := 1 / 64
 def anchoredCrossPair (n p q : ℕ) : ℝ :=
   xiGammaEulerPrimitiveDepthZeroAmplitude p *
     xiGammaEulerPrimitiveDepthZeroAmplitude q *
-      (relativeHeight n q ^ 2 - relativeHeight n p ^ 2) *
+      (relativeHeight n q ^ (2 : ℕ) - relativeHeight n p ^ (2 : ℕ)) *
         Real.sin (twoScalePhase *
           (relativeHeight n q - relativeHeight n p))
 
@@ -299,10 +299,10 @@ theorem anchoredCrossPair_lower
     dsimp only [d]
     linarith
   have hcenter :
-      60 ≤ relativeHeight n q ^ 2 - relativeHeight n p ^ 2 := by
-    have hpSq : relativeHeight n p ^ 2 ≤ 1 := by
+      60 ≤ relativeHeight n q ^ (2 : ℕ) - relativeHeight n p ^ (2 : ℕ) := by
+    have hpSq : relativeHeight n p ^ (2 : ℕ) ≤ 1 := by
       nlinarith [sq_nonneg (relativeHeight n p - 1)]
-    have hqSq : 64 ≤ relativeHeight n q ^ 2 := by
+    have hqSq : 64 ≤ relativeHeight n q ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (relativeHeight n q - 8)]
     linarith
   have hphase0 : 0 ≤ twoScalePhase * d := by
@@ -338,7 +338,7 @@ theorem anchoredCrossPair_lower
   unfold anchoredCrossPair
   dsimp only [d] at hsin
   have hkernel :
-      3 ≤ (relativeHeight n q ^ 2 - relativeHeight n p ^ 2) *
+      3 ≤ (relativeHeight n q ^ (2 : ℕ) - relativeHeight n p ^ (2 : ℕ)) *
         Real.sin (twoScalePhase *
           (relativeHeight n q - relativeHeight n p)) := by
     nlinarith
@@ -430,7 +430,7 @@ theorem sqrt_sourceDilation_mul
     (n : ℕ) :
     Real.sqrt (((sourceDilation * n : ℕ) : ℝ)) =
       65536 * Real.sqrt (n : ℝ) := by
-  have hKCast : (sourceDilation : ℝ) = (65536 : ℝ) ^ 2 := by
+  have hKCast : (sourceDilation : ℝ) = (65536 : ℝ) ^ (2 : ℕ) := by
     norm_num [sourceDilation]
   rw [Nat.cast_mul, Real.sqrt_mul (by positivity :
     (0 : ℝ) ≤ sourceDilation), hKCast,
@@ -484,11 +484,11 @@ theorem anchoredTwoScaleEnergy_linear_lower
 certified first-clock bad-mass square. -/
 theorem anchoredTwoScaleEnergy_dominates_badMass
     {m : ℕ} (hm : 25 ≤ m)
-    (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) :
-    (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) :
+    (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
       ccmFirstClockReducedBadNatTerm
-        (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 ≤
-      anchoredTwoScaleEnergy (m ^ 4) := by
+        (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) ≤
+      anchoredTwoScaleEnergy (m ^ (4 : ℕ)) := by
   exact (badMass_sq_upper hm).trans
     (anchoredTwoScaleEnergy_linear_lower hmCheb)
 

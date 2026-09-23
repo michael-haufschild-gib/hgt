@@ -22,19 +22,19 @@ open GaloisForLFunctions.RHTower
 /-- **The centre amplitude ratio at the sharp power.** -/
 theorem exists_bound_centre_sq_ratio_power (m n : ℕ) (hmn : m < n) :
     ∃ C : ℝ, 0 < C ∧ ∀ᶠ a : ℝ in atTop,
-      (signedModeRadialData a n).R 0 ^ 2
+      (signedModeRadialData a n).R 0 ^ (2 : ℕ)
         ≤ C / signedModeRadialBandwidth a ^ (2 * (n - m))
-          * (signedModeRadialData a m).R 0 ^ 2 := by
+          * (signedModeRadialData a m).R 0 ^ (2 : ℕ) := by
   obtain ⟨C₀, hC₀, hC₀e⟩ := exists_bound_prolateBand_sq_ratio_power m n hmn
   have hqn : pairAnchorHermiteQuotient m n n ≠ 0 :=
     pairAnchorHermiteQuotient_ne_zero m n n (Or.inr rfl)
   have hqm : pairAnchorHermiteQuotient m n m ≠ 0 :=
     pairAnchorHermiteQuotient_ne_zero m n m (Or.inl rfl)
-  have hqn2 : 0 < pairAnchorHermiteQuotient m n n ^ 2 :=
+  have hqn2 : 0 < pairAnchorHermiteQuotient m n n ^ (2 : ℕ) :=
     lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hqn))
-  have hqm2 : 0 < pairAnchorHermiteQuotient m n m ^ 2 :=
+  have hqm2 : 0 < pairAnchorHermiteQuotient m n m ^ (2 : ℕ) :=
     lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hqm))
-  refine ⟨16 * pairAnchorHermiteQuotient m n m ^ 2 / pairAnchorHermiteQuotient m n n ^ 2 * C₀,
+  refine ⟨16 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) / pairAnchorHermiteQuotient m n n ^ (2 : ℕ) * C₀,
     by positivity, ?_⟩
   filter_upwards [hC₀e, eventually_pairAnchor_quotient_bounds m n n (Or.inr rfl),
     eventually_pairAnchor_quotient_bounds m n m (Or.inl rfl),
@@ -65,58 +65,58 @@ theorem exists_bound_centre_sq_ratio_power (m n : ℕ) (hmn : m < n) :
   have hfm : (signedModeRadialData a m).R y₀ = ρm * (signedModeRadialData a m).R 0 := by
     rw [hρm]
     field_simp
-  have hnsq : pairAnchorHermiteQuotient m n n ^ 2 / 4 * (signedModeRadialData a n).R 0 ^ 2
-      ≤ (signedModeRadialData a n).R y₀ ^ 2 := by
+  have hnsq : pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 * (signedModeRadialData a n).R 0 ^ (2 : ℕ)
+      ≤ (signedModeRadialData a n).R y₀ ^ (2 : ℕ) := by
     have h1 : |pairAnchorHermiteQuotient m n n| / 2 ≤ |ρn| := hbn.1
-    have h2 : (|pairAnchorHermiteQuotient m n n| / 2) ^ 2 ≤ |ρn| ^ 2 :=
+    have h2 : (|pairAnchorHermiteQuotient m n n| / 2) ^ (2 : ℕ) ≤ |ρn| ^ (2 : ℕ) :=
       pow_le_pow_left₀ (by positivity) h1 2
-    have habs1 : |ρn| ^ 2 = ρn ^ 2 := sq_abs ρn
-    have habs2 : |pairAnchorHermiteQuotient m n n| ^ 2
-        = pairAnchorHermiteQuotient m n n ^ 2 := sq_abs _
-    have hkey : pairAnchorHermiteQuotient m n n ^ 2 / 4 ≤ ρn ^ 2 := by
+    have habs1 : |ρn| ^ (2 : ℕ) = ρn ^ (2 : ℕ) := sq_abs ρn
+    have habs2 : |pairAnchorHermiteQuotient m n n| ^ (2 : ℕ)
+        = pairAnchorHermiteQuotient m n n ^ (2 : ℕ) := sq_abs _
+    have hkey : pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 ≤ ρn ^ (2 : ℕ) := by
       rw [div_pow, habs1, habs2] at h2
       norm_num at h2
       linarith [h2]
     rw [hfn]
-    calc pairAnchorHermiteQuotient m n n ^ 2 / 4 * (signedModeRadialData a n).R 0 ^ 2
-        ≤ ρn ^ 2 * (signedModeRadialData a n).R 0 ^ 2 :=
+    calc pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 * (signedModeRadialData a n).R 0 ^ (2 : ℕ)
+        ≤ ρn ^ (2 : ℕ) * (signedModeRadialData a n).R 0 ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hkey (sq_nonneg _)
-      _ = (ρn * (signedModeRadialData a n).R 0) ^ 2 := by ring
-  have hmsq : (signedModeRadialData a m).R y₀ ^ 2
-      ≤ 4 * pairAnchorHermiteQuotient m n m ^ 2 * (signedModeRadialData a m).R 0 ^ 2 := by
+      _ = (ρn * (signedModeRadialData a n).R 0) ^ (2 : ℕ) := by ring
+  have hmsq : (signedModeRadialData a m).R y₀ ^ (2 : ℕ)
+      ≤ 4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) * (signedModeRadialData a m).R 0 ^ (2 : ℕ) := by
     have h1 : |ρm| ≤ 2 * |pairAnchorHermiteQuotient m n m| := hbm.2
-    have h2 : |ρm| ^ 2 ≤ (2 * |pairAnchorHermiteQuotient m n m|) ^ 2 :=
+    have h2 : |ρm| ^ (2 : ℕ) ≤ (2 * |pairAnchorHermiteQuotient m n m|) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (abs_nonneg _) h1 2
-    have habs1 : |ρm| ^ 2 = ρm ^ 2 := sq_abs ρm
-    have habs2 : |pairAnchorHermiteQuotient m n m| ^ 2
-        = pairAnchorHermiteQuotient m n m ^ 2 := sq_abs _
-    have hkey : ρm ^ 2 ≤ 4 * pairAnchorHermiteQuotient m n m ^ 2 := by
+    have habs1 : |ρm| ^ (2 : ℕ) = ρm ^ (2 : ℕ) := sq_abs ρm
+    have habs2 : |pairAnchorHermiteQuotient m n m| ^ (2 : ℕ)
+        = pairAnchorHermiteQuotient m n m ^ (2 : ℕ) := sq_abs _
+    have hkey : ρm ^ (2 : ℕ) ≤ 4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) := by
       rw [mul_pow, habs1, habs2] at h2
       norm_num at h2
       linarith [h2]
     rw [hfm]
-    calc (ρm * (signedModeRadialData a m).R 0) ^ 2
-        = ρm ^ 2 * (signedModeRadialData a m).R 0 ^ 2 := by ring
-      _ ≤ 4 * pairAnchorHermiteQuotient m n m ^ 2 * (signedModeRadialData a m).R 0 ^ 2 :=
+    calc (ρm * (signedModeRadialData a m).R 0) ^ (2 : ℕ)
+        = ρm ^ (2 : ℕ) * (signedModeRadialData a m).R 0 ^ (2 : ℕ) := by ring
+      _ ≤ 4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) * (signedModeRadialData a m).R 0 ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hkey (sq_nonneg _)
-  have hchain : pairAnchorHermiteQuotient m n n ^ 2 / 4 * (signedModeRadialData a n).R 0 ^ 2
-      ≤ C₀ / S * (4 * pairAnchorHermiteQuotient m n m ^ 2
-        * (signedModeRadialData a m).R 0 ^ 2) := by
+  have hchain : pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 * (signedModeRadialData a n).R 0 ^ (2 : ℕ)
+      ≤ C₀ / S * (4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ)
+        * (signedModeRadialData a m).R 0 ^ (2 : ℕ)) := by
     refine le_trans hnsq (le_trans hratio ?_)
     refine mul_le_mul_of_nonneg_left hmsq ?_
     positivity
   rw [div_mul_eq_mul_div, le_div_iff₀ hS]
-  have hfac : (0 : ℝ) < 4 * S / pairAnchorHermiteQuotient m n n ^ 2 := by positivity
+  have hfac : (0 : ℝ) < 4 * S / pairAnchorHermiteQuotient m n n ^ (2 : ℕ) := by positivity
   have hmul := mul_le_mul_of_nonneg_left hchain hfac.le
-  have hL : 4 * S / pairAnchorHermiteQuotient m n n ^ 2
-      * (pairAnchorHermiteQuotient m n n ^ 2 / 4 * (signedModeRadialData a n).R 0 ^ 2)
-      = (signedModeRadialData a n).R 0 ^ 2 * S := by
+  have hL : 4 * S / pairAnchorHermiteQuotient m n n ^ (2 : ℕ)
+      * (pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 * (signedModeRadialData a n).R 0 ^ (2 : ℕ))
+      = (signedModeRadialData a n).R 0 ^ (2 : ℕ) * S := by
     field_simp
-  have hR : 4 * S / pairAnchorHermiteQuotient m n n ^ 2
-      * (C₀ / S * (4 * pairAnchorHermiteQuotient m n m ^ 2
-        * (signedModeRadialData a m).R 0 ^ 2))
-      = 16 * pairAnchorHermiteQuotient m n m ^ 2 / pairAnchorHermiteQuotient m n n ^ 2 * C₀
-        * (signedModeRadialData a m).R 0 ^ 2 := by
+  have hR : 4 * S / pairAnchorHermiteQuotient m n n ^ (2 : ℕ)
+      * (C₀ / S * (4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ)
+        * (signedModeRadialData a m).R 0 ^ (2 : ℕ)))
+      = 16 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) / pairAnchorHermiteQuotient m n n ^ (2 : ℕ) * C₀
+        * (signedModeRadialData a m).R 0 ^ (2 : ℕ) := by
     field_simp
     ring
   rw [hL, hR] at hmul
@@ -151,29 +151,29 @@ theorem exists_bound_signedLeakage_ratio_power (m n : ℕ) (hmn : m < n) :
   have hS : 0 < S := by rw [hSdef]; positivity
   set Rm : ℝ := (signedModeRadialData a m).R 0 with hRm
   set Rn : ℝ := (signedModeRadialData a n).R 0 with hRn
-  have hRm2 : 0 < Rm ^ 2 := by positivity
-  have hRn2 : 0 < Rn ^ 2 := by positivity
+  have hRm2 : 0 < Rm ^ (2 : ℕ) := by positivity
+  have hRn2 : 0 < Rn ^ (2 : ℕ) := by positivity
   have hCnn : 0 ≤ C₁ := hC₁.le
   -- the centre comparison, in reciprocal form
-  have hrecip : 1 / Rm ^ 2 ≤ C₁ / S / Rn ^ 2 := by
+  have hrecip : 1 / Rm ^ (2 : ℕ) ≤ C₁ / S / Rn ^ (2 : ℕ) := by
     rcases eq_or_lt_of_le hCnn with hC0 | hCpos
     · exfalso
       rw [← hC0] at hcentre
       simp only [zero_div, zero_mul] at hcentre
       linarith [hRn2, hcentre]
     · rw [div_le_div_iff₀ hRm2 (by positivity)]
-      have hstep : Rn ^ 2 * 1 ≤ C₁ / S * Rm ^ 2 := by simpa using hcentre
+      have hstep : Rn ^ (2 : ℕ) * 1 ≤ C₁ / S * Rm ^ (2 : ℕ) := by simpa using hcentre
       nlinarith [hstep]
   -- the leakage of the higher rung, from below
-  have hinv : 1 / (sc * Rn ^ 2)
+  have hinv : 1 / (sc * Rn ^ (2 : ℕ))
       ≤ 1728 * sharpInteriorLimit n / besselEnergyFloor * evenProlateSignedLeakage a n := by
-    have hval : besselEnergyFloor / 1728 / sharpInteriorLimit n / (sc * Rn ^ 2)
-        = besselEnergyFloor / (1728 * sharpInteriorLimit n) * (1 / (sc * Rn ^ 2)) := by
+    have hval : besselEnergyFloor / 1728 / sharpInteriorLimit n / (sc * Rn ^ (2 : ℕ))
+        = besselEnergyFloor / (1728 * sharpInteriorLimit n) * (1 / (sc * Rn ^ (2 : ℕ))) := by
       field_simp
     rw [hval] at hnlow
     have hcoef : (0 : ℝ) < besselEnergyFloor / (1728 * sharpInteriorLimit n) := by positivity
     rw [← le_div_iff₀' hcoef] at hnlow
-    calc 1 / (sc * Rn ^ 2)
+    calc 1 / (sc * Rn ^ (2 : ℕ))
         ≤ evenProlateSignedLeakage a n / (besselEnergyFloor / (1728 * sharpInteriorLimit n)) :=
           hnlow
       _ = 1728 * sharpInteriorLimit n / besselEnergyFloor * evenProlateSignedLeakage a n := by
@@ -181,19 +181,19 @@ theorem exists_bound_signedLeakage_ratio_power (m n : ℕ) (hmn : m < n) :
   -- chain the three estimates
   have hmup' : evenProlateSignedLeakage a m
       ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m
-        * (1 / sc) * (1 / Rm ^ 2) := by
+        * (1 / sc) * (1 / Rm ^ (2 : ℕ)) := by
     refine le_trans hmup (le_of_eq ?_)
     field_simp
   have hcoefm : (0 : ℝ) ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m
       * (1 / sc) := by positivity
   have hstep1 : evenProlateSignedLeakage a m
       ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m * (1 / sc)
-        * (C₁ / S / Rn ^ 2) :=
+        * (C₁ / S / Rn ^ (2 : ℕ)) :=
     le_trans hmup' (mul_le_mul_of_nonneg_left hrecip hcoefm)
   have hstep2 : 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m * (1 / sc)
-        * (C₁ / S / Rn ^ 2)
+        * (C₁ / S / Rn ^ (2 : ℕ))
       = 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m * C₁
-        * (1 / S) * (1 / (sc * Rn ^ 2)) := by
+        * (1 / S) * (1 / (sc * Rn ^ (2 : ℕ))) := by
     field_simp
   have hcoef2 : (0 : ℝ) ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m
       * C₁ * (1 / S) := by positivity

@@ -23,7 +23,7 @@ noncomputable section
 /-- The real part of an envelope zero lies on one of the two displaced lines. -/
 theorem coshQuartetEnvelope_zero_re_sq {a : ℝ} {z : ℂ}
     (hz : coshQuartetEnvelope a z = 0) :
-    z.re ^ 2 = a ^ 2 := by
+    z.re ^ (2 : ℕ) = a ^ (2 : ℕ) := by
   rcases coshQuartetEnvelope_eq_zero_iff.mp hz with ⟨k, hk⟩ | ⟨k, hk⟩
   · have hre := congrArg Complex.re hk
     simp at hre
@@ -45,9 +45,9 @@ theorem coshQuartetEnvelope_three_zeros_quantize_period
   have hsq1 := coshQuartetEnvelope_zero_re_sq hz1
   have hsq2 := coshQuartetEnvelope_zero_re_sq hz2
   have hhRe : h.re = 0 := by
-    change (z.re + h.re) ^ 2 = a ^ 2 at hsq1
+    change (z.re + h.re) ^ (2 : ℕ) = a ^ (2 : ℕ) at hsq1
     have htwo : (2 * h).re = 2 * h.re := by norm_num [Complex.mul_re]
-    change (z.re + (2 * h).re) ^ 2 = a ^ 2 at hsq2
+    change (z.re + (2 * h).re) ^ (2 : ℕ) = a ^ (2 : ℕ) at hsq2
     rw [htwo] at hsq2
     nlinarith
   rcases coshQuartetEnvelope_eq_zero_iff.mp hz0 with ⟨k0, hk0⟩ | ⟨k0, hk0⟩ <;>

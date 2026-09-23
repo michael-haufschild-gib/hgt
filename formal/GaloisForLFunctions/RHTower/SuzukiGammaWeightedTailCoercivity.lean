@@ -74,20 +74,20 @@ mollification. -/
 theorem suzukiGammaWeightedTailEnergy_norm_le
     (κ τ L₀ c : ℝ) (u Mu Ru Tu v g : H)
     (hbudget : c ≤ 2 * L₀ - κ - τ)
-    (hM : 2 * L₀ * ‖u‖ ^ 2 ≤ inner ℝ u Mu)
-    (hR : -(κ * ‖u‖ ^ 2) ≤ inner ℝ u Ru)
-    (hT : inner ℝ u Tu ≤ τ * ‖u‖ ^ 2)
+    (hM : 2 * L₀ * ‖u‖ ^ (2 : ℕ) ≤ inner ℝ u Mu)
+    (hR : -(κ * ‖u‖ ^ (2 : ℕ)) ≤ inner ℝ u Ru)
+    (hT : inner ℝ u Tu ≤ τ * ‖u‖ ^ (2 : ℕ))
     (heq : Mu + Ru - Tu = g - v) :
     c * ‖u‖ ≤ ‖g - v‖ := by
   have hform :
-      (2 * L₀ - κ - τ) * ‖u‖ ^ 2 ≤ inner ℝ u (g - v) := by
+      (2 * L₀ - κ - τ) * ‖u‖ ^ (2 : ℕ) ≤ inner ℝ u (g - v) := by
     rw [← heq, inner_sub_right, inner_add_right]
     nlinarith
   have hinner :
       inner ℝ u (g - v) ≤ ‖u‖ * ‖g - v‖ :=
     le_trans (le_abs_self _) (abs_real_inner_le_norm u (g - v))
   have hscaled :
-      c * ‖u‖ ^ 2 ≤ (2 * L₀ - κ - τ) * ‖u‖ ^ 2 :=
+      c * ‖u‖ ^ (2 : ℕ) ≤ (2 * L₀ - κ - τ) * ‖u‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_right hbudget (sq_nonneg ‖u‖)
   by_cases hu : u = 0
   · simp [hu]

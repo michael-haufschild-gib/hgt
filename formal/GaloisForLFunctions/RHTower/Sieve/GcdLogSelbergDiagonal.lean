@@ -45,7 +45,7 @@ theorem sum_gcdLog_weight_eq_double_diagonal
         ((Nat.gcd p.1 p.2 : ℝ) * Real.log (Nat.gcd p.1 p.2)) * f p.1 * f p.2) =
       ∑ w ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         (Nat.totient w.1 : ℝ) * Λ w.2 *
-          (∑ d ∈ S.filter (fun d => Nat.lcm w.1 w.2 ∣ d), f d) ^ 2 := by
+          (∑ d ∈ S.filter (fun d => Nat.lcm w.1 w.2 ∣ d), f d) ^ (2 : ℕ) := by
   classical
   have hpair : ∀ p ∈ S ×ˢ S,
       ((Nat.gcd p.1 p.2 : ℝ) * Real.log (Nat.gcd p.1 p.2)) * f p.1 * f p.2 =

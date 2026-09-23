@@ -10,7 +10,7 @@ open-disk coordinate of the actual bosonic Bogoliubov block.
 
 For exact full-mirror pair amplitude `beta` and positive CCR gain
 
-`g = sqrt (1 + |beta|^2)`,
+`g = sqrt (1 + |beta|^(2 : ℕ))`,
 
 define the source-faithful disk coordinate
 
@@ -18,8 +18,8 @@ define the source-faithful disk coordinate
 
 Then `|chi| < 1`, and the Krein--Cayley transform of the off-diagonal Nambu generator is
 
-`S_chi = (1 - |chi|^2)^(-1) [[1 + |chi|^2, 2 chi],
-                              [2 conj chi, 1 + |chi|^2]]`.
+`S_chi = (1 - |chi|^(2 : ℕ))^(-1) [[1 + |chi|^(2 : ℕ), 2 chi],
+                              [2 conj chi, 1 + |chi|^(2 : ℕ)]]`.
 
 This file proves that `S_chi` is exactly the existing full theta-mirror Bogoliubov scattering
 matrix, not a postulated beam splitter.  The disk coordinate is the unique open-disk coordinate

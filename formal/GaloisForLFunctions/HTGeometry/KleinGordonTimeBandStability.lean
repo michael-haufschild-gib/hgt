@@ -43,26 +43,26 @@ theorem norm_kgFieldMildT_sub_data_le (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r
     (hWs : ∀ y : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W r y)
     (R : ℝ) (z : Lp ℂ 2 (volume : Measure E)) (s : ℝ) :
     ‖kgFieldMildT W (kgLowPassOp R z) 0 s - kgLowPassOp R z‖
-      ≤ ((1 + R ^ 2) / 2 + b * Real.exp (b * |s|)) * ‖z‖ * s ^ 2 := by
+      ≤ ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * |s|)) * ‖z‖ * s ^ (2 : ℕ) := by
   have hfree : kgFieldFree (kgLowPassOp (E := E) R z) 0 s = kgCosOp s (kgLowPassOp R z) := by
     rw [kgFieldFree, map_zero, add_zero]
   have h1 : ‖kgFieldMildT W (kgLowPassOp R z) 0 s - kgFieldFree (kgLowPassOp R z) 0 s‖
       ≤ b * ((‖kgLowPassOp (E := E) R z‖ + ‖(0 : Lp ℂ 2 (volume : Measure E))‖)
-          * Real.exp (b * |s|)) * s ^ 2 :=
+          * Real.exp (b * |s|)) * s ^ (2 : ℕ) :=
     norm_kgFieldMildT_sub_free_le_sq hb0 hWb hWs _ 0 s
   have hPz : ‖kgLowPassOp (E := E) R z‖ ≤ ‖z‖ := norm_kgLowPassOp_apply_le R z
   have h1' : ‖kgFieldMildT W (kgLowPassOp R z) 0 s - kgFieldFree (kgLowPassOp R z) 0 s‖
-      ≤ b * Real.exp (b * |s|) * ‖z‖ * s ^ 2 := by
+      ≤ b * Real.exp (b * |s|) * ‖z‖ * s ^ (2 : ℕ) := by
     refine h1.trans ?_
     have hexp : (0 : ℝ) < Real.exp (b * |s|) := Real.exp_pos _
-    have hsq : (0 : ℝ) ≤ s ^ 2 := sq_nonneg s
+    have hsq : (0 : ℝ) ≤ s ^ (2 : ℕ) := sq_nonneg s
     have hstep : (‖kgLowPassOp (E := E) R z‖ + ‖(0 : Lp ℂ 2 (volume : Measure E))‖)
         * Real.exp (b * |s|) ≤ ‖z‖ * Real.exp (b * |s|) := by
       rw [norm_zero, add_zero]
       exact mul_le_mul_of_nonneg_right hPz hexp.le
     nlinarith [mul_le_mul_of_nonneg_left hstep hb0]
   have h2 : ‖kgFieldFree (kgLowPassOp (E := E) R z) 0 s - kgLowPassOp R z‖
-      ≤ s ^ 2 * (1 + R ^ 2) / 2 * ‖z‖ := by
+      ≤ s ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)) / 2 * ‖z‖ := by
     rw [hfree]
     exact norm_kgCosOp_lowPass_sub_le s R z
   have hsplit : kgFieldMildT W (kgLowPassOp R z) 0 s - kgLowPassOp R z
@@ -70,8 +70,8 @@ theorem norm_kgFieldMildT_sub_data_le (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r
         + (kgFieldFree (kgLowPassOp R z) 0 s - kgLowPassOp R z) := by abel
   rw [hsplit]
   refine (norm_add_le _ _).trans ?_
-  have hfin : b * Real.exp (b * |s|) * ‖z‖ * s ^ 2 + s ^ 2 * (1 + R ^ 2) / 2 * ‖z‖
-      = ((1 + R ^ 2) / 2 + b * Real.exp (b * |s|)) * ‖z‖ * s ^ 2 := by ring
+  have hfin : b * Real.exp (b * |s|) * ‖z‖ * s ^ (2 : ℕ) + s ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)) / 2 * ‖z‖
+      = ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * |s|)) * ‖z‖ * s ^ (2 : ℕ) := by ring
   rw [← hfin]
   exact add_le_add h1' h2
 
@@ -111,15 +111,15 @@ theorem norm_kgSourceT_sub_smul_le (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ, ‖W�
     (z : Lp ℂ 2 (volume : Measure E)) {x : ℝ} (hx : 0 ≤ x) :
     ‖(∫ s in (0 : ℝ)..x, kgSinFreqOp (x - s)
           ((W₁ s - W₂ s) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s)))
-        - ((x ^ 2 / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z))‖
-      ≤ L * (‖z‖ * Real.exp (b * x)) * x ^ 3
-        + ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ 2) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ 4
-        + (1 + R ^ 2) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ 4 := by
+        - ((x ^ (2 : ℕ) / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z))‖
+      ≤ L * (‖z‖ * Real.exp (b * x)) * x ^ (3 : ℕ)
+        + ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ (4 : ℕ)
+        + (1 + R ^ (2 : ℕ)) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ (4 : ℕ) := by
   have hz0 : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
   have hAf0 : (0 : ℝ) ≤ ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ := norm_nonneg _
   have hA00 : (0 : ℝ) ≤ ‖W₁ 0 - W₂ 0‖ := norm_nonneg _
   have hPz : ‖kgLowPassOp (E := E) R z‖ ≤ ‖z‖ := norm_kgLowPassOp_apply_le R z
-  have hK0 : (0 : ℝ) ≤ ((1 + R ^ 2) / 2 + b * Real.exp (b * x)) * ‖z‖ := by positivity
+  have hK0 : (0 : ℝ) ≤ ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x)) * ‖z‖ := by positivity
   have hMx : (0 : ℝ) ≤ ‖z‖ * Real.exp (b * x) := by positivity
   have hint : Continuous fun s : ℝ => kgSinFreqOp (x - s)
       ((W₁ s - W₂ s) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s)) :=
@@ -133,9 +133,9 @@ theorem norm_kgSourceT_sub_smul_le (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ, ‖W�
   have hbd : ∀ s ∈ Set.uIoc (0 : ℝ) x,
       ‖kgSinFreqOp (x - s) ((W₁ s - W₂ s) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s))
           - ((x - s : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z))‖
-        ≤ L * (‖z‖ * Real.exp (b * x)) * x ^ 2
-          + ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ 2) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ 3
-          + (1 + R ^ 2) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ 3 := by
+        ≤ L * (‖z‖ * Real.exp (b * x)) * x ^ (2 : ℕ)
+          + ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ (3 : ℕ)
+          + (1 + R ^ (2 : ℕ)) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ (3 : ℕ) := by
     intro s hs
     have hts : |x - s| ≤ x := by
       have h := abs_sub_le_abs_of_mem_uIoc_zero hs
@@ -187,7 +187,7 @@ theorem norm_kgSourceT_sub_smul_le (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ, ‖W�
         _ ≤ x * (L * x * (‖z‖ * Real.exp (b * x))) := by
             refine mul_le_mul hts (h2.trans ?_) (norm_nonneg _) hx
             exact mul_le_mul h5 h4 (norm_nonneg _) (by positivity)
-        _ = L * (‖z‖ * Real.exp (b * x)) * x ^ 2 := by ring
+        _ = L * (‖z‖ * Real.exp (b * x)) * x ^ (2 : ℕ) := by ring
     · have h1 := norm_kgSinFreqOp_apply_le_abs (E := E) (x - s)
         ((W₁ 0 - W₂ 0) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s)
           - (W₁ 0 - W₂ 0) (kgLowPassOp R z))
@@ -197,48 +197,48 @@ theorem norm_kgSourceT_sub_smul_le (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ, ‖W�
         rw [← map_sub]
         exact (W₁ 0 - W₂ 0).le_opNorm _
       have h3 : ‖kgFieldMildT W₁ (kgLowPassOp R z) 0 s - kgLowPassOp R z‖
-          ≤ ((1 + R ^ 2) / 2 + b * Real.exp (b * |s|)) * ‖z‖ * s ^ 2 :=
+          ≤ ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * |s|)) * ‖z‖ * s ^ (2 : ℕ) :=
         norm_kgFieldMildT_sub_data_le hb0 hW₁b hW₁s R z s
       have hexp : Real.exp (b * |s|) ≤ Real.exp (b * x) :=
         Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left habs hb0)
-      have hs2x : s ^ 2 ≤ x ^ 2 := by
+      have hs2x : s ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by
         have hpw := pow_le_pow_left₀ (abs_nonneg s) habs 2
         rwa [sq_abs] at hpw
       have h4 : ‖kgFieldMildT W₁ (kgLowPassOp R z) 0 s - kgLowPassOp R z‖
-          ≤ ((1 + R ^ 2) / 2 + b * Real.exp (b * x)) * ‖z‖ * x ^ 2 := by
+          ≤ ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x)) * ‖z‖ * x ^ (2 : ℕ) := by
         refine h3.trans ?_
         have hbm : b * Real.exp (b * |s|) ≤ b * Real.exp (b * x) :=
           mul_le_mul_of_nonneg_left hexp hb0
-        have hco : (1 + R ^ 2) / 2 + b * Real.exp (b * |s|)
-            ≤ (1 + R ^ 2) / 2 + b * Real.exp (b * x) := by linarith
+        have hco : (1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * |s|)
+            ≤ (1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x) := by linarith
         exact mul_le_mul (mul_le_mul_of_nonneg_right hco hz0) hs2x (sq_nonneg s) hK0
       calc ‖kgSinFreqOp (x - s) ((W₁ 0 - W₂ 0) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s)
               - (W₁ 0 - W₂ 0) (kgLowPassOp R z))‖
           ≤ |x - s| * ‖(W₁ 0 - W₂ 0) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s)
               - (W₁ 0 - W₂ 0) (kgLowPassOp R z)‖ := h1
         _ ≤ x * (‖W₁ 0 - W₂ 0‖
-              * (((1 + R ^ 2) / 2 + b * Real.exp (b * x)) * ‖z‖ * x ^ 2)) := by
+              * (((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x)) * ‖z‖ * x ^ (2 : ℕ))) := by
             refine mul_le_mul hts (h2.trans (mul_le_mul_of_nonneg_left h4 hA00))
               (norm_nonneg _) hx
-        _ = ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ 2) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ 3 := by ring
+        _ = ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ (3 : ℕ) := by ring
     · have hAfP : (W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)
           = kgLowPassOp R ((W₁ 0 - W₂ 0) (kgLowPassOp R z)) := (hAran _).symm
       have hkey := norm_kgSinFreqOp_lowPass_sub_smul_le (E := E) (x - s) R
         ((W₁ 0 - W₂ 0) (kgLowPassOp R z))
       rw [← hAfP] at hkey
       refine hkey.trans ?_
-      have hcube : |x - s| ^ 3 ≤ x ^ 3 := pow_le_pow_left₀ (abs_nonneg _) hts 3
-      have hfac : (0 : ℝ) ≤ (1 + R ^ 2) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 := by
+      have hcube : |x - s| ^ (3 : ℕ) ≤ x ^ (3 : ℕ) := pow_le_pow_left₀ (abs_nonneg _) hts 3
+      have hfac : (0 : ℝ) ≤ (1 + R ^ (2 : ℕ)) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 := by
         positivity
-      calc |x - s| ^ 3 * (1 + R ^ 2) / 6
+      calc |x - s| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ)) / 6
             * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖
-          = (1 + R ^ 2) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * |x - s| ^ 3 := by
+          = (1 + R ^ (2 : ℕ)) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * |x - s| ^ (3 : ℕ) := by
             ring
-        _ ≤ (1 + R ^ 2) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ 3 :=
+        _ ≤ (1 + R ^ (2 : ℕ)) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ (3 : ℕ) :=
             mul_le_mul_of_nonneg_left hcube hfac
   have hsub : (∫ s in (0 : ℝ)..x, kgSinFreqOp (x - s)
           ((W₁ s - W₂ s) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s)))
-        - ((x ^ 2 / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z))
+        - ((x ^ (2 : ℕ) / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z))
       = ∫ s in (0 : ℝ)..x, (kgSinFreqOp (x - s)
           ((W₁ s - W₂ s) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s))
         - ((x - s : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z))) := by
@@ -267,26 +267,26 @@ theorem norm_sub_zero_le_of_lowPassT (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ, ‖W
     (hAran : ∀ v : Lp ℂ 2 (volume : Measure E),
       kgLowPassOp R ((W₁ 0 - W₂ 0) v) = (W₁ 0 - W₂ 0) v)
     {η T x : ℝ} (hη0 : 0 ≤ η) (hx0 : 0 < x) (hxT : x ≤ T)
-    (hxK : x ^ 2 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T)) ≤ 1 / 8)
+    (hxK : x ^ (2 : ℕ) * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) ≤ 1 / 8)
     (hobs : ∀ (g k : Lp ℂ 2 (volume : Measure E)) (t : ℝ), |t| ≤ T →
       ‖kgFieldMildT W₁ g k t - kgFieldMildT W₂ g k t‖ ≤ η * (‖g‖ + ‖k‖)) :
-    ‖W₁ 0 - W₂ 0‖ ≤ 8 * (η * (1 + b * T)) / x ^ 2 + 8 * (L * Real.exp (b * T)) * x := by
+    ‖W₁ 0 - W₂ 0‖ ≤ 8 * (η * (1 + b * T)) / x ^ (2 : ℕ) + 8 * (L * Real.exp (b * T)) * x := by
   have hT0 : 0 < T := lt_of_lt_of_le hx0 hxT
-  have hx2 : (0 : ℝ) < x ^ 2 := by positivity
+  have hx2 : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
   have hxabs : |x| = x := abs_of_nonneg hx0.le
   have hbT : (0 : ℝ) ≤ 1 + b * T := by positivity
   have hAnn : (0 : ℝ) ≤ ‖W₁ 0 - W₂ 0‖ := norm_nonneg _
-  have hR2 : (0 : ℝ) < 1 + R ^ 2 := by positivity
+  have hR2 : (0 : ℝ) < 1 + R ^ (2 : ℕ) := by positivity
   have hexpx : Real.exp (b * x) ≤ Real.exp (b * T) :=
     Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hxT hb0)
-  have hquad : x ^ 2 * (1 + R ^ 2) ≤ 1 / 4 := by
-    have hle : x ^ 2 * ((1 + R ^ 2) / 2) ≤ x ^ 2 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T)) := by
+  have hquad : x ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)) ≤ 1 / 4 := by
+    have hle : x ^ (2 : ℕ) * ((1 + R ^ (2 : ℕ)) / 2) ≤ x ^ (2 : ℕ) * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) := by
       have hnn : (0 : ℝ) ≤ b * Real.exp (b * T) := by positivity
       nlinarith
     linarith
   have hkey : ∀ z : Lp ℂ 2 (volume : Measure E),
       ‖(W₁ 0 - W₂ 0) z‖
-        ≤ (4 * (η * (1 + b * T)) / x ^ 2 + 4 * (L * Real.exp (b * T)) * x
+        ≤ (4 * (η * (1 + b * T)) / x ^ (2 : ℕ) + 4 * (L * Real.exp (b * T)) * x
             + ‖W₁ 0 - W₂ 0‖ / 2) * ‖z‖ := by
     intro z
     have hz0 : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
@@ -341,69 +341,69 @@ theorem norm_sub_zero_le_of_lowPassT (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ, ‖W
         mul_le_mul_of_nonneg_left hxT (by positivity)
       nlinarith [hΔx, hDuh]
     have hmain := norm_kgSourceT_sub_smul_le hb0 hW₁b hW₁s hW₂b hW₂s hL0 hLip hAran z hx0.le
-    have hsmulnorm : ‖((x ^ 2 / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z))‖
-        = x ^ 2 / 2 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ := by
+    have hsmulnorm : ‖((x ^ (2 : ℕ) / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z))‖
+        = x ^ (2 : ℕ) / 2 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ := by
       rw [norm_smul, Complex.norm_real, Real.norm_eq_abs,
-        abs_of_nonneg (by positivity : (0:ℝ) ≤ x ^ 2 / 2)]
-    have htri : x ^ 2 / 2 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖
+        abs_of_nonneg (by positivity : (0:ℝ) ≤ x ^ (2 : ℕ) / 2)]
+    have htri : x ^ (2 : ℕ) / 2 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖
         ≤ ‖∫ s in (0 : ℝ)..x, kgSinFreqOp (x - s)
             ((W₁ s - W₂ s) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s))‖
           + ‖(∫ s in (0 : ℝ)..x, kgSinFreqOp (x - s)
               ((W₁ s - W₂ s) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s)))
-            - ((x ^ 2 / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z))‖ := by
+            - ((x ^ (2 : ℕ) / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z))‖ := by
       rw [← hsmulnorm]
       have hh := norm_sub_le
         (∫ s in (0 : ℝ)..x, kgSinFreqOp (x - s)
           ((W₁ s - W₂ s) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s)))
         ((∫ s in (0 : ℝ)..x, kgSinFreqOp (x - s)
             ((W₁ s - W₂ s) (kgFieldMildT W₁ (kgLowPassOp R z) 0 s)))
-          - ((x ^ 2 / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z)))
+          - ((x ^ (2 : ℕ) / 2 : ℝ) : ℂ) • ((W₁ 0 - W₂ 0) (kgLowPassOp R z)))
       rwa [sub_sub_cancel] at hh
-    have hterm0 : L * (‖z‖ * Real.exp (b * x)) * x ^ 3
-        ≤ L * Real.exp (b * T) * x * (x ^ 2 * ‖z‖) := by
+    have hterm0 : L * (‖z‖ * Real.exp (b * x)) * x ^ (3 : ℕ)
+        ≤ L * Real.exp (b * T) * x * (x ^ (2 : ℕ) * ‖z‖) := by
       have hstep : ‖z‖ * Real.exp (b * x) ≤ ‖z‖ * Real.exp (b * T) :=
         mul_le_mul_of_nonneg_left hexpx hz0
       have hmul := mul_le_mul_of_nonneg_left hstep hL0
       nlinarith [pow_nonneg hx0.le 3]
-    have hterm1 : ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ 2) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ 4
-        ≤ x ^ 2 * ‖W₁ 0 - W₂ 0‖ * ‖z‖ / 8 := by
-      have hKle : ((1 + R ^ 2) / 2 + b * Real.exp (b * x)) * ‖z‖
-          ≤ ((1 + R ^ 2) / 2 + b * Real.exp (b * T)) * ‖z‖ := by
+    have hterm1 : ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ (4 : ℕ)
+        ≤ x ^ (2 : ℕ) * ‖W₁ 0 - W₂ 0‖ * ‖z‖ / 8 := by
+      have hKle : ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x)) * ‖z‖
+          ≤ ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) * ‖z‖ := by
         have hbm : b * Real.exp (b * x) ≤ b * Real.exp (b * T) :=
           mul_le_mul_of_nonneg_left hexpx hb0
         nlinarith
-      have h1 : ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ 2) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ 4
-          ≤ ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ 2) / 2 + b * Real.exp (b * T)) * ‖z‖) * x ^ 4 := by
-        have hx4 : (0 : ℝ) ≤ x ^ 4 := by positivity
+      have h1 : ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * x)) * ‖z‖) * x ^ (4 : ℕ)
+          ≤ ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) * ‖z‖) * x ^ (4 : ℕ) := by
+        have hx4 : (0 : ℝ) ≤ x ^ (4 : ℕ) := by positivity
         nlinarith [mul_le_mul_of_nonneg_left hKle hAnn]
-      have h2 : ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ 2) / 2 + b * Real.exp (b * T)) * ‖z‖) * x ^ 4
-          = (x ^ 2 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T)))
-            * (x ^ 2 * ‖W₁ 0 - W₂ 0‖ * ‖z‖) := by ring
-      have h3 : (x ^ 2 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T)))
-            * (x ^ 2 * ‖W₁ 0 - W₂ 0‖ * ‖z‖)
-          ≤ (1 / 8) * (x ^ 2 * ‖W₁ 0 - W₂ 0‖ * ‖z‖) := by
+      have h2 : ‖W₁ 0 - W₂ 0‖ * (((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) * ‖z‖) * x ^ (4 : ℕ)
+          = (x ^ (2 : ℕ) * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)))
+            * (x ^ (2 : ℕ) * ‖W₁ 0 - W₂ 0‖ * ‖z‖) := by ring
+      have h3 : (x ^ (2 : ℕ) * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)))
+            * (x ^ (2 : ℕ) * ‖W₁ 0 - W₂ 0‖ * ‖z‖)
+          ≤ (1 / 8) * (x ^ (2 : ℕ) * ‖W₁ 0 - W₂ 0‖ * ‖z‖) := by
         refine mul_le_mul_of_nonneg_right hxK ?_
         positivity
       linarith
-    have hterm2 : (1 + R ^ 2) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ 4
-        ≤ x ^ 2 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 24 := by
-      have h2 : (1 + R ^ 2) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ 4
-          = (x ^ 2 * (1 + R ^ 2))
-            * (x ^ 2 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6) := by ring
-      have h3 : (x ^ 2 * (1 + R ^ 2))
-            * (x ^ 2 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6)
-          ≤ (1 / 4) * (x ^ 2 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6) := by
+    have hterm2 : (1 + R ^ (2 : ℕ)) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ (4 : ℕ)
+        ≤ x ^ (2 : ℕ) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 24 := by
+      have h2 : (1 + R ^ (2 : ℕ)) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6 * x ^ (4 : ℕ)
+          = (x ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)))
+            * (x ^ (2 : ℕ) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6) := by ring
+      have h3 : (x ^ (2 : ℕ) * (1 + R ^ (2 : ℕ)))
+            * (x ^ (2 : ℕ) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6)
+          ≤ (1 / 4) * (x ^ (2 : ℕ) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ / 6) := by
         refine mul_le_mul_of_nonneg_right hquad ?_
         positivity
       linarith
-    have hfin : x ^ 2 / 4 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖
-        ≤ η * ‖z‖ * (1 + b * T) + L * Real.exp (b * T) * x * (x ^ 2 * ‖z‖)
-          + x ^ 2 * ‖W₁ 0 - W₂ 0‖ * ‖z‖ / 8 := by
-      have hm : (0 : ℝ) ≤ x ^ 2 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ := by positivity
+    have hfin : x ^ (2 : ℕ) / 4 * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖
+        ≤ η * ‖z‖ * (1 + b * T) + L * Real.exp (b * T) * x * (x ^ (2 : ℕ) * ‖z‖)
+          + x ^ (2 : ℕ) * ‖W₁ 0 - W₂ 0‖ * ‖z‖ / 8 := by
+      have hm : (0 : ℝ) ≤ x ^ (2 : ℕ) * ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖ := by positivity
       linarith [htri, hGle, hmain, hterm0, hterm1, hterm2]
     rw [hAz]
     have hdiv : ‖(W₁ 0 - W₂ 0) (kgLowPassOp (E := E) R z)‖
-        ≤ 4 * (η * ‖z‖ * (1 + b * T)) / x ^ 2 + 4 * (L * Real.exp (b * T)) * x * ‖z‖
+        ≤ 4 * (η * ‖z‖ * (1 + b * T)) / x ^ (2 : ℕ) + 4 * (L * Real.exp (b * T)) * x * ‖z‖
           + ‖W₁ 0 - W₂ 0‖ * ‖z‖ / 2 := by
       rw [div_add' _ _ _ hx2.ne', div_add' _ _ _ hx2.ne', le_div_iff₀ hx2]
       nlinarith [hfin]
@@ -411,11 +411,11 @@ theorem norm_sub_zero_le_of_lowPassT (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ, ‖W
     refine le_of_eq ?_
     field_simp
   have hop := ContinuousLinearMap.opNorm_le_bound (W₁ 0 - W₂ 0)
-    (by positivity : (0:ℝ) ≤ 4 * (η * (1 + b * T)) / x ^ 2 + 4 * (L * Real.exp (b * T)) * x
+    (by positivity : (0:ℝ) ≤ 4 * (η * (1 + b * T)) / x ^ (2 : ℕ) + 4 * (L * Real.exp (b * T)) * x
       + ‖W₁ 0 - W₂ 0‖ / 2) hkey
-  have hop2 : ‖W₁ 0 - W₂ 0‖ * x ^ 2
-      ≤ 4 * (η * (1 + b * T)) + 4 * (L * Real.exp (b * T)) * x * x ^ 2
-        + ‖W₁ 0 - W₂ 0‖ / 2 * x ^ 2 := by
+  have hop2 : ‖W₁ 0 - W₂ 0‖ * x ^ (2 : ℕ)
+      ≤ 4 * (η * (1 + b * T)) + 4 * (L * Real.exp (b * T)) * x * x ^ (2 : ℕ)
+        + ‖W₁ 0 - W₂ 0‖ / 2 * x ^ (2 : ℕ) := by
     have hmul := mul_le_mul_of_nonneg_right hop hx2.le
     rwa [add_mul, add_mul, div_mul_cancel₀ _ hx2.ne'] at hmul
   rw [div_add' _ _ _ hx2.ne', le_div_iff₀ hx2]

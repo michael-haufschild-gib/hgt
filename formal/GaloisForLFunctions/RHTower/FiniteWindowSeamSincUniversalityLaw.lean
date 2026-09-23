@@ -27,8 +27,8 @@ theorem mixedSteinhausSecondMoment_eq_convolutionDiagonal
     (hs : ∀ n ∈ s, 1 ≤ n) (ht : ∀ n ∈ t, 1 ≤ n) :
     ∫ ω,
         ‖(∑ n ∈ s, (a n : ℂ) * X n ω) *
-          (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2 ∂steinhausMeasure =
-      ∑ k ∈ prodSupport s t, dpolyConv a b s t k ^ 2 := by
+          (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ) ∂steinhausMeasure =
+      ∑ k ∈ prodSupport s t, dpolyConv a b s t k ^ (2 : ℕ) := by
   have hsne : ∀ n ∈ s, n ≠ 0 :=
     fun n hn => Nat.one_le_iff_ne_zero.mp (hs n hn)
   have htne : ∀ n ∈ t, n ≠ 0 :=
@@ -37,9 +37,9 @@ theorem mixedSteinhausSecondMoment_eq_convolutionDiagonal
     fun k hk => one_le_of_mem_prodSupport hs ht hk
   have hrw : ∀ ω : Omega,
       ‖(∑ n ∈ s, (a n : ℂ) * X n ω) *
-          (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2 =
+          (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ) =
         ‖∑ k ∈ prodSupport s t,
-          (dpolyConv a b s t k : ℂ) * X k ω‖ ^ 2 := by
+          (dpolyConv a b s t k : ℂ) * X k ω‖ ^ (2 : ℕ) := by
     intro ω
     rw [model_mul a b s t hsne htne ω]
   rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hrw)]
@@ -53,8 +53,8 @@ theorem mixedSecondMoment_window_kernel
     (a b : ℕ → ℝ) (s t : Finset ℕ)
     (hs : ∀ n ∈ s, 1 ≤ n) (ht : ∀ n ∈ t, 1 ≤ n)
     (A U : ℝ) (hU : 0 < U) :
-    (∫ τ in A..(A + U), ‖dpoly a s τ * dpoly b t τ‖ ^ 2) / U =
-      (∑ k ∈ prodSupport s t, dpolyConv a b s t k ^ 2) +
+    (∫ τ in A..(A + U), ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ)) / U =
+      (∑ k ∈ prodSupport s t, dpolyConv a b s t k ^ (2 : ℕ)) +
         ∑ m ∈ prodSupport s t, ∑ n ∈ (prodSupport s t).erase m,
           dpolyConv a b s t m * dpolyConv a b s t n *
             (cosInt (Real.log n - Real.log m) A U / U) := by
@@ -63,8 +63,8 @@ theorem mixedSecondMoment_window_kernel
   have htne : ∀ n ∈ t, n ≠ 0 :=
     fun n hn => Nat.one_le_iff_ne_zero.mp (ht n hn)
   have hrw : ∀ τ : ℝ,
-      ‖dpoly a s τ * dpoly b t τ‖ ^ 2 =
-        ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ 2 := by
+      ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ) =
+        ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ (2 : ℕ) := by
     intro τ
     rw [dpoly_mul a b s t hsne htne τ]
   rw [intervalIntegral.integral_congr (fun τ _ => hrw τ)]
@@ -79,10 +79,10 @@ theorem mixedSecondMoment_window_independence_error_le
     (a b : ℕ → ℝ) (s t : Finset ℕ)
     (hs : ∀ n ∈ s, 1 ≤ n) (ht : ∀ n ∈ t, 1 ≤ n)
     (A U : ℝ) (hU : 0 < U) :
-    |(∫ τ in A..(A + U), ‖dpoly a s τ * dpoly b t τ‖ ^ 2) / U -
+    |(∫ τ in A..(A + U), ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ)) / U -
         ∫ ω,
           ‖(∑ n ∈ s, (a n : ℂ) * X n ω) *
-            (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2 ∂steinhausMeasure| ≤
+            (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ) ∂steinhausMeasure| ≤
       dpolyWindowOffDiagonalEnergy
         (dpolyConv a b s t) (prodSupport s t) U := by
   have hsne : ∀ n ∈ s, n ≠ 0 :=
@@ -92,8 +92,8 @@ theorem mixedSecondMoment_window_independence_error_le
   have hsupport : ∀ k ∈ prodSupport s t, 1 ≤ k :=
     fun k hk => one_le_of_mem_prodSupport hs ht hk
   have hrw : ∀ τ : ℝ,
-      ‖dpoly a s τ * dpoly b t τ‖ ^ 2 =
-        ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ 2 := by
+      ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ) =
+        ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ (2 : ℕ) := by
     intro τ
     rw [dpoly_mul a b s t hsne htne τ]
   rw [mixedSteinhausSecondMoment_eq_convolutionDiagonal a b s t hs ht,
@@ -107,8 +107,8 @@ theorem mixedSecondMoment_symmetric_sinc
     (a b : ℕ → ℝ) (s t : Finset ℕ)
     (hs : ∀ n ∈ s, 1 ≤ n) (ht : ∀ n ∈ t, 1 ≤ n)
     (T : ℝ) (hT : 0 < T) :
-    (∫ τ in (-T)..T, ‖dpoly a s τ * dpoly b t τ‖ ^ 2) / (2 * T) =
-      (∑ k ∈ prodSupport s t, dpolyConv a b s t k ^ 2) +
+    (∫ τ in (-T)..T, ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ)) / (2 * T) =
+      (∑ k ∈ prodSupport s t, dpolyConv a b s t k ^ (2 : ℕ)) +
         ∑ m ∈ prodSupport s t, ∑ n ∈ (prodSupport s t).erase m,
           dpolyConv a b s t m * dpolyConv a b s t n *
             Real.sinc ((Real.log n - Real.log m) * T) := by
@@ -117,8 +117,8 @@ theorem mixedSecondMoment_symmetric_sinc
   have htne : ∀ n ∈ t, n ≠ 0 :=
     fun n hn => Nat.one_le_iff_ne_zero.mp (ht n hn)
   have hrw : ∀ τ : ℝ,
-      ‖dpoly a s τ * dpoly b t τ‖ ^ 2 =
-        ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ 2 := by
+      ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ) =
+        ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ (2 : ℕ) := by
     intro τ
     rw [dpoly_mul a b s t hsne htne τ]
   rw [intervalIntegral.integral_congr (fun τ _ => hrw τ)]
@@ -130,10 +130,10 @@ theorem mixedSecondMoment_symmetric_sinc_error_le
     (a b : ℕ → ℝ) (s t : Finset ℕ)
     (hs : ∀ n ∈ s, 1 ≤ n) (ht : ∀ n ∈ t, 1 ≤ n)
     (T : ℝ) (hT : 0 < T) :
-    |(∫ τ in (-T)..T, ‖dpoly a s τ * dpoly b t τ‖ ^ 2) / (2 * T) -
+    |(∫ τ in (-T)..T, ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ)) / (2 * T) -
         ∫ ω,
           ‖(∑ n ∈ s, (a n : ℂ) * X n ω) *
-            (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2 ∂steinhausMeasure| ≤
+            (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ) ∂steinhausMeasure| ≤
       dpolySincOffDiagonalEnergy
         (dpolyConv a b s t) (prodSupport s t) T := by
   have hsne : ∀ n ∈ s, n ≠ 0 :=
@@ -143,8 +143,8 @@ theorem mixedSecondMoment_symmetric_sinc_error_le
   have hsupport : ∀ k ∈ prodSupport s t, 1 ≤ k :=
     fun k hk => one_le_of_mem_prodSupport hs ht hk
   have hrw : ∀ τ : ℝ,
-      ‖dpoly a s τ * dpoly b t τ‖ ^ 2 =
-        ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ 2 := by
+      ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ) =
+        ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ (2 : ℕ) := by
     intro τ
     rw [dpoly_mul a b s t hsne htne τ]
   rw [mixedSteinhausSecondMoment_eq_convolutionDiagonal a b s t hs ht,
@@ -227,9 +227,9 @@ file plus the vanishing of its explicit error envelope; no separate limit argume
 theorem tendsto_mixedSecondMoment_window_steinhaus
     (a b : ℕ → ℝ) (s t : Finset ℕ)
     (hs : ∀ n ∈ s, 1 ≤ n) (ht : ∀ n ∈ t, 1 ≤ n) (A : ℝ) :
-    Tendsto (fun U : ℝ => (∫ τ in A..(A + U), ‖dpoly a s τ * dpoly b t τ‖ ^ 2) / U) atTop
+    Tendsto (fun U : ℝ => (∫ τ in A..(A + U), ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ)) / U) atTop
       (nhds (∫ ω, ‖(∑ n ∈ s, (a n : ℂ) * X n ω) *
-        (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2 ∂steinhausMeasure)) := by
+        (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ) ∂steinhausMeasure)) := by
   have hsupport : ∀ k ∈ prodSupport s t, 1 ≤ k :=
     fun k hk => one_le_of_mem_prodSupport hs ht hk
   rw [← tendsto_sub_nhds_zero_iff]
@@ -244,9 +244,9 @@ independent Steinhaus seam moment. -/
 theorem tendsto_mixedSecondMoment_symmetric_steinhaus
     (a b : ℕ → ℝ) (s t : Finset ℕ)
     (hs : ∀ n ∈ s, 1 ≤ n) (ht : ∀ n ∈ t, 1 ≤ n) :
-    Tendsto (fun T : ℝ => (∫ τ in (-T)..T, ‖dpoly a s τ * dpoly b t τ‖ ^ 2) / (2 * T)) atTop
+    Tendsto (fun T : ℝ => (∫ τ in (-T)..T, ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ)) / (2 * T)) atTop
       (nhds (∫ ω, ‖(∑ n ∈ s, (a n : ℂ) * X n ω) *
-        (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2 ∂steinhausMeasure)) := by
+        (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ) ∂steinhausMeasure)) := by
   have hsupport : ∀ k ∈ prodSupport s t, 1 ≤ k :=
     fun k hk => one_le_of_mem_prodSupport hs ht hk
   rw [← tendsto_sub_nhds_zero_iff]
@@ -261,9 +261,9 @@ theorem tendsto_mixedSecondMoment_symmetric_steinhaus
 theorem tendsto_mixedSecondMoment_average_steinhaus_of_window
     (a b : ℕ → ℝ) (s t : Finset ℕ)
     (hs : ∀ n ∈ s, 1 ≤ n) (ht : ∀ n ∈ t, 1 ≤ n) :
-    Tendsto (fun U : ℝ => (∫ τ in (0 : ℝ)..U, ‖dpoly a s τ * dpoly b t τ‖ ^ 2) / U) atTop
+    Tendsto (fun U : ℝ => (∫ τ in (0 : ℝ)..U, ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ)) / U) atTop
       (nhds (∫ ω, ‖(∑ n ∈ s, (a n : ℂ) * X n ω) *
-        (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2 ∂steinhausMeasure)) := by
+        (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ) ∂steinhausMeasure)) := by
   have h := tendsto_mixedSecondMoment_window_steinhaus a b s t hs ht 0
   simpa using h
 

@@ -34,13 +34,13 @@ namespace GaloisForLFunctions.RHTower
 open GaloisForLFunctions.HTGeometry
 
 /-- The normal-form weight of the band. -/
-def bandNfWeight (y : ℝ) : ℝ := Real.sqrt (1 - y ^ 2)
+def bandNfWeight (y : ℝ) : ℝ := Real.sqrt (1 - y ^ (2 : ℕ))
 
 /-- Its derivative. -/
-def bandNfWeightDeriv (y : ℝ) : ℝ := -(y / Real.sqrt (1 - y ^ 2))
+def bandNfWeightDeriv (y : ℝ) : ℝ := -(y / Real.sqrt (1 - y ^ (2 : ℕ)))
 
 /-- Its second derivative. -/
-def bandNfWeightSecondDeriv (y : ℝ) : ℝ := -(1 / ((1 - y ^ 2) * Real.sqrt (1 - y ^ 2)))
+def bandNfWeightSecondDeriv (y : ℝ) : ℝ := -(1 / ((1 - y ^ (2 : ℕ)) * Real.sqrt (1 - y ^ (2 : ℕ))))
 
 /-- The normal-form solution `u = sqrt(1-y²) Φ`. -/
 def bandNormalFormSol (Φ : ℝ → ℝ) (y : ℝ) : ℝ := bandNfWeight y * Φ y
@@ -55,27 +55,27 @@ def bandNormalFormSolSecondDeriv (Φ DΦ DDΦ : ℝ → ℝ) (y : ℝ) : ℝ :=
 
 /-- The normal-form potential of the band. -/
 def bandNormalFormPotential (s c : ℝ) (y : ℝ) : ℝ :=
-  1 / (1 - y ^ 2) ^ 2 - c ^ 2 * prolateWKBProfile s y ^ 2
+  1 / (1 - y ^ (2 : ℕ)) ^ (2 : ℕ) - c ^ (2 : ℕ) * prolateWKBProfile s y ^ (2 : ℕ)
 
 section
 
 variable {s c y : ℝ} {Φ DΦ DDΦ : ℝ → ℝ}
 
 /-- The derivative of the first-order coefficient. -/
-theorem hasDerivAt_bandFirstOrderCoeff (hy1 : 0 < y) (hy2 : y < 1) (hys : s < y ^ 2) :
+theorem hasDerivAt_bandFirstOrderCoeff (hy1 : 0 < y) (hy2 : y < 1) (hys : s < y ^ (2 : ℕ)) :
     HasDerivAt (bandFirstOrderCoeff s) (bandFirstOrderCoeffDeriv s y) y := by
-  have hy : (0 : ℝ) < 1 - y ^ 2 := by nlinarith
+  have hy : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by nlinarith
   have hP : 0 < prolateWKBProfile s y := prolateWKBProfile_pos hy hys
   have hXi : 0 < bandEndpointPhase s y := bandEndpointPhase_pos hy2 hys hy1
-  have hR : (y ^ 2 - s) / (1 - y ^ 2) ≠ 0 := by
-    have h1 : (0 : ℝ) < y ^ 2 - s := by linarith
+  have hR : (y ^ (2 : ℕ) - s) / (1 - y ^ (2 : ℕ)) ≠ 0 := by
+    have h1 : (0 : ℝ) < y ^ (2 : ℕ) - s := by linarith
     positivity
   have hXid : HasDerivAt (bandEndpointPhase s) (-(prolateWKBProfile s y)) y :=
     hasDerivAt_bandEndpointPhase (by linarith) hy2 hys.le
   have hPd : HasDerivAt (prolateWKBProfile s)
       (prolateWKBProfile s y * bandModelDrift s y) y := by
     have h := hasDerivAt_prolateWKBProfile hy.ne' hR
-    have hkey : 2 * y * (1 - s) / (1 - y ^ 2) ^ 2 / (2 * prolateWKBProfile s y)
+    have hkey : 2 * y * (1 - s) / (1 - y ^ (2 : ℕ)) ^ (2 : ℕ) / (2 * prolateWKBProfile s y)
         = prolateWKBProfile s y * bandModelDrift s y := by
       have hk := secondDeriv_div_deriv_bandEndpointPhase (s := s) (y := y) hy hys
       field_simp at hk ⊢
@@ -87,7 +87,7 @@ theorem hasDerivAt_bandFirstOrderCoeff (hy1 : 0 < y) (hy2 : y < 1) (hys : s < y 
   have h1 := (hPd.neg).fun_div hXid hXi.ne'
   have h := h1.sub hDd
   have hval : (-(prolateWKBProfile s y * bandModelDrift s y) * bandEndpointPhase s y
-        - -(prolateWKBProfile s y) * -(prolateWKBProfile s y)) / bandEndpointPhase s y ^ 2
+        - -(prolateWKBProfile s y) * -(prolateWKBProfile s y)) / bandEndpointPhase s y ^ (2 : ℕ)
         - bandModelDriftDeriv s y
       = bandFirstOrderCoeffDeriv s y := by
     rw [bandFirstOrderCoeffDeriv]
@@ -96,23 +96,23 @@ theorem hasDerivAt_bandFirstOrderCoeff (hy1 : 0 < y) (hy2 : y < 1) (hys : s < y 
 
 /-! ## The normal form -/
 
-theorem hasDerivAt_bandNfWeight (hy : (0 : ℝ) < 1 - y ^ 2) :
+theorem hasDerivAt_bandNfWeight (hy : (0 : ℝ) < 1 - y ^ (2 : ℕ)) :
     HasDerivAt bandNfWeight (bandNfWeightDeriv y) y := by
-  have hin : HasDerivAt (fun t : ℝ => 1 - t ^ 2) (-(2 * y)) y := by
+  have hin : HasDerivAt (fun t : ℝ => 1 - t ^ (2 : ℕ)) (-(2 * y)) y := by
     refine ((hasDerivAt_pow 2 y).const_sub 1).congr_deriv ?_
     ring
   have h := (Real.hasDerivAt_sqrt hy.ne').comp y hin
-  have hs : (0 : ℝ) < Real.sqrt (1 - y ^ 2) := Real.sqrt_pos.2 hy
+  have hs : (0 : ℝ) < Real.sqrt (1 - y ^ (2 : ℕ)) := Real.sqrt_pos.2 hy
   refine h.congr_deriv ?_
   rw [bandNfWeightDeriv]
   field_simp
 
-theorem hasDerivAt_bandNfWeightDeriv (hy : (0 : ℝ) < 1 - y ^ 2) :
+theorem hasDerivAt_bandNfWeightDeriv (hy : (0 : ℝ) < 1 - y ^ (2 : ℕ)) :
     HasDerivAt bandNfWeightDeriv (bandNfWeightSecondDeriv y) y := by
-  have hs : (0 : ℝ) < Real.sqrt (1 - y ^ 2) := Real.sqrt_pos.2 hy
-  have hsq : Real.sqrt (1 - y ^ 2) ^ 2 = 1 - y ^ 2 := Real.sq_sqrt hy.le
+  have hs : (0 : ℝ) < Real.sqrt (1 - y ^ (2 : ℕ)) := Real.sqrt_pos.2 hy
+  have hsq : Real.sqrt (1 - y ^ (2 : ℕ)) ^ (2 : ℕ) = 1 - y ^ (2 : ℕ) := Real.sq_sqrt hy.le
   have hw := hasDerivAt_bandNfWeight (y := y) hy
-  have hfun : bandNfWeight = fun t : ℝ => Real.sqrt (1 - t ^ 2) := by
+  have hfun : bandNfWeight = fun t : ℝ => Real.sqrt (1 - t ^ (2 : ℕ)) := by
     funext t
     rw [bandNfWeight]
   rw [hfun] at hw
@@ -124,12 +124,12 @@ theorem hasDerivAt_bandNfWeightDeriv (hy : (0 : ℝ) < 1 - y ^ 2) :
   rw [hsq]
   ring
 
-theorem hasDerivAt_bandNormalFormSol (hy : (0 : ℝ) < 1 - y ^ 2) (hΦ : HasDerivAt Φ (DΦ y) y) :
+theorem hasDerivAt_bandNormalFormSol (hy : (0 : ℝ) < 1 - y ^ (2 : ℕ)) (hΦ : HasDerivAt Φ (DΦ y) y) :
     HasDerivAt (bandNormalFormSol Φ) (bandNormalFormSolDeriv Φ DΦ y) y := by
   have hw := hasDerivAt_bandNfWeight (y := y) hy
   exact hw.fun_mul hΦ
 
-theorem hasDerivAt_bandNormalFormSolDeriv (hy : (0 : ℝ) < 1 - y ^ 2)
+theorem hasDerivAt_bandNormalFormSolDeriv (hy : (0 : ℝ) < 1 - y ^ (2 : ℕ))
     (hΦ : HasDerivAt Φ (DΦ y) y) (hDΦ : HasDerivAt DΦ (DDΦ y) y) :
     HasDerivAt (bandNormalFormSolDeriv Φ DΦ) (bandNormalFormSolSecondDeriv Φ DΦ DDΦ y) y := by
   have hw := hasDerivAt_bandNfWeight (y := y) hy
@@ -141,16 +141,16 @@ theorem hasDerivAt_bandNormalFormSolDeriv (hy : (0 : ℝ) < 1 - y ^ 2)
 
 /-- **The normal form of the band equation.**  The substitution removes the first-order term
 identically. -/
-theorem band_normalForm_ode (hy1 : 0 < y) (hy2 : y < 1) (hys : s < y ^ 2)
-    (hode : (1 - y ^ 2) * DDΦ y - 2 * y * DΦ y + (s * c ^ 2 - c ^ 2 * y ^ 2) * Φ y = 0) :
+theorem band_normalForm_ode (hy1 : 0 < y) (hy2 : y < 1) (hys : s < y ^ (2 : ℕ))
+    (hode : (1 - y ^ (2 : ℕ)) * DDΦ y - 2 * y * DΦ y + (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * y ^ (2 : ℕ)) * Φ y = 0) :
     bandNormalFormSolSecondDeriv Φ DΦ DDΦ y
       + bandNormalFormPotential s c y * bandNormalFormSol Φ y = 0 := by
-  have hy : (0 : ℝ) < 1 - y ^ 2 := by nlinarith
-  have hs : (0 : ℝ) < Real.sqrt (1 - y ^ 2) := Real.sqrt_pos.2 hy
-  have hsq : Real.sqrt (1 - y ^ 2) ^ 2 = 1 - y ^ 2 := Real.sq_sqrt hy.le
-  have hPsq : prolateWKBProfile s y ^ 2 = (y ^ 2 - s) / (1 - y ^ 2) :=
+  have hy : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by nlinarith
+  have hs : (0 : ℝ) < Real.sqrt (1 - y ^ (2 : ℕ)) := Real.sqrt_pos.2 hy
+  have hsq : Real.sqrt (1 - y ^ (2 : ℕ)) ^ (2 : ℕ) = 1 - y ^ (2 : ℕ) := Real.sq_sqrt hy.le
+  have hPsq : prolateWKBProfile s y ^ (2 : ℕ) = (y ^ (2 : ℕ) - s) / (1 - y ^ (2 : ℕ)) :=
     sq_prolateWKBProfile hys.le (by linarith)
-  have hDD : DDΦ y = (2 * y * DΦ y + c ^ 2 * (y ^ 2 - s) * Φ y) / (1 - y ^ 2) := by
+  have hDD : DDΦ y = (2 * y * DΦ y + c ^ (2 : ℕ) * (y ^ (2 : ℕ) - s) * Φ y) / (1 - y ^ (2 : ℕ)) := by
     field_simp
     nlinarith [hode]
   rw [bandNormalFormSolSecondDeriv, bandNormalFormPotential, bandNormalFormSol,
@@ -166,7 +166,7 @@ the Liouville amplitude, solves exactly the equation the modified-Bessel model s
 the comparison defect. -/
 theorem prolateBand_comparison (hs1 : s ≤ 1 / 8) (hy0 : 1 / 2 < y) (hy1 : y < 1)
     (hΦ : HasDerivAt Φ (DΦ y) y) (hDΦ : HasDerivAt DΦ (DDΦ y) y)
-    (hode : (1 - y ^ 2) * DDΦ y - 2 * y * DΦ y + (s * c ^ 2 - c ^ 2 * y ^ 2) * Φ y = 0) :
+    (hode : (1 - y ^ (2 : ℕ)) * DDΦ y - 2 * y * DΦ y + (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * y ^ (2 : ℕ)) * Φ y = 0) :
     HasDerivAt
         (comparisonQuotient (driftAmplitude (bandLiouvilleWeight s)) (bandNormalFormSol Φ))
         (comparisonQuotientDeriv (driftAmplitude (bandLiouvilleWeight s))
@@ -180,11 +180,11 @@ theorem prolateBand_comparison (hs1 : s ≤ 1 / 8) (hy0 : 1 / 2 < y) (hy1 : y < 
             comparisonQuotientDeriv (driftAmplitude (bandLiouvilleWeight s))
               (driftAmplitudeDeriv (bandLiouvilleWeight s) (bandFirstOrderCoeff s))
               (bandNormalFormSol Φ) (bandNormalFormSolDeriv Φ DΦ) y
-          - (-(c ^ 2 * prolateWKBProfile s y ^ 2) + bandComparisonDefect s y) *
+          - (-(c ^ (2 : ℕ) * prolateWKBProfile s y ^ (2 : ℕ)) + bandComparisonDefect s y) *
               comparisonQuotient (driftAmplitude (bandLiouvilleWeight s))
                 (bandNormalFormSol Φ) y) y := by
-  have hys : s < y ^ 2 := by nlinarith
-  have hy : (0 : ℝ) < 1 - y ^ 2 := by nlinarith
+  have hys : s < y ^ (2 : ℕ) := by nlinarith
+  have hy : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by nlinarith
   have hm := hasDerivAt_bandLiouvilleWeight (s := s) (by linarith) hy1 hys
   have hm0 : bandLiouvilleWeight s y ≠ 0 :=
     (bandLiouvilleWeight_pos (by linarith) hy1 hys).ne'
@@ -199,8 +199,8 @@ theorem prolateBand_comparison (hs1 : s ≤ 1 / 8) (hy0 : 1 / 2 < y) (hy1 : y < 
     (Q := bandNormalFormPotential s c) hm hm0 hB hu hDu hnf
   refine ⟨h.1, h.2.congr_deriv ?_⟩
   have hdef : bandNormalFormPotential s c y
-      + (bandFirstOrderCoeff s y ^ 2 / 4 + bandFirstOrderCoeffDeriv s y / 2)
-      = -(c ^ 2 * prolateWKBProfile s y ^ 2) + bandComparisonDefect s y := by
+      + (bandFirstOrderCoeff s y ^ (2 : ℕ) / 4 + bandFirstOrderCoeffDeriv s y / 2)
+      = -(c ^ (2 : ℕ) * prolateWKBProfile s y ^ (2 : ℕ)) + bandComparisonDefect s y := by
     rw [bandNormalFormPotential, bandComparisonDefect]
     ring
   rw [hdef]

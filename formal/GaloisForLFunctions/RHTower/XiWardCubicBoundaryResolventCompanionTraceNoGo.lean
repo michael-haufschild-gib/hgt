@@ -8,9 +8,9 @@ transfer.  This module audits whether those minimal dilations can be assembled c
 the literal cubic primitive Euler weight.
 
 They cannot.  Match each primitive ordinate clock to one strict-right zero.  The exact transfer
-power is then `(lambda^2 / a^2)^2`, where `lambda` is the primitive log frequency and `a` is the
+power is then `(lambda^(2 : ℕ) / a^(2 : ℕ))^(2 : ℕ)`, where `lambda` is the primitive log frequency and `a` is the
 centered horizontal zero depth.  Since `a < 1/2` and `lambda >= log 2 > 2/3`, the forced negative
-companion charge is at least `lambda^4`.  On the depth-zero prime slice, multiplication by the
+companion charge is at least `lambda^(4 : ℕ)`.  On the depth-zero prime slice, multiplication by the
 cubic source weight leaves at least `115 / (1944 p)`.  Euler's prime harmonic divergence therefore
 proves that the full direct-sum companion trace is not summable.
 
@@ -37,8 +37,8 @@ theorem normSq_phaseMatched_primitiveStrictRight_resonantTransfer
     Complex.normSq
       (xiWardCubicPrimitiveStrictRightResonantTransfer pe
         (xiWardCubicPhaseMatchedPrimitiveClock q) q) =
-      ((xiGammaEulerPrimitiveLogFrequency pe ^ 2 /
-        (xiRightCenteredZero q).re ^ 2) : ℝ) ^ 2 := by
+      ((xiGammaEulerPrimitiveLogFrequency pe ^ (2 : ℕ) /
+        (xiRightCenteredZero q).re ^ (2 : ℕ)) : ℝ) ^ (2 : ℕ) := by
   rw [xiWardCubicPrimitiveStrictRightResonantTransfer,
     normSq_xiWardCubicBoundaryResolventTransfer_targetResonance]
   simp only [xiWardCubicPhaseMatchedPrimitiveClock,
@@ -52,7 +52,7 @@ theorem normSq_phaseMatched_primitiveStrictRight_resonantTransfer
 theorem xiGammaEulerPrimitiveCubicLogMomentWeight_prime_zero
     (p : Nat.Primes) :
     xiGammaEulerPrimitiveCubicLogMomentWeight (p, 0) =
-      (115 / 864 : ℝ) / ((p : ℝ) * Real.log (p : ℝ) ^ 2) := by
+      (115 / 864 : ℝ) / ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) := by
   rw [xiGammaEulerPrimitiveCubicLogMomentWeight, invNatLogSq]
   norm_num
   ring
@@ -74,10 +74,10 @@ theorem two_thirds_lt_xiGammaEulerPrimitiveLogFrequency
 the fourth power of the primitive log frequency. -/
 theorem fourth_frequency_le_phaseMatched_kreinCompanion_sq
     (pe : Nat.Primes × ℕ) (q : XiRightZeroCopy) :
-    xiGammaEulerPrimitiveLogFrequency pe ^ 4 ≤
+    xiGammaEulerPrimitiveLogFrequency pe ^ (4 : ℕ) ≤
       xiWardCubicKreinCompanion
         (xiWardCubicPrimitiveStrictRightResonantTransfer pe
-          (xiWardCubicPhaseMatchedPrimitiveClock q) q) ^ 2 := by
+          (xiWardCubicPhaseMatchedPrimitiveClock q) q) ^ (2 : ℕ) := by
   let lambda := xiGammaEulerPrimitiveLogFrequency pe
   let a := (xiRightCenteredZero q).re
   have ha : 0 < a := by
@@ -86,19 +86,19 @@ theorem fourth_frequency_le_phaseMatched_kreinCompanion_sq
   have haHalf : a < 1 / 2 := by
     dsimp [a]
     exact (abs_lt.mp (abs_xiRightCenteredZero_re_lt_half q)).2
-  have ha2 : a ^ 2 ≤ 1 / 4 := by nlinarith [sq_nonneg (a - 1 / 2)]
+  have ha2 : a ^ (2 : ℕ) ≤ 1 / 4 := by nlinarith [sq_nonneg (a - 1 / 2)]
   have hlambda : 2 / 3 < lambda := by
     exact two_thirds_lt_xiGammaEulerPrimitiveLogFrequency pe
-  have hlambda0 : 0 ≤ lambda ^ 2 := sq_nonneg _
-  have hratio : 4 * lambda ^ 2 ≤ lambda ^ 2 / a ^ 2 := by
+  have hlambda0 : 0 ≤ lambda ^ (2 : ℕ) := sq_nonneg _
+  have hratio : 4 * lambda ^ (2 : ℕ) ≤ lambda ^ (2 : ℕ) / a ^ (2 : ℕ) := by
     rw [le_div_iff₀ (sq_pos_of_pos ha)]
     nlinarith
-  have hgain : 16 * lambda ^ 4 ≤ (lambda ^ 2 / a ^ 2) ^ 2 := by
-    nlinarith [sq_nonneg (lambda ^ 2 / a ^ 2 - 4 * lambda ^ 2)]
-  have hlarge : 1 < 15 * lambda ^ 4 := by
-    have hlambda2 : (2 / 3 : ℝ) ^ 2 < lambda ^ 2 := by nlinarith
-    have hlambda4 : ((2 / 3 : ℝ) ^ 2) ^ 2 < (lambda ^ 2) ^ 2 := by
-      nlinarith [sq_nonneg (lambda ^ 2 - (2 / 3 : ℝ) ^ 2)]
+  have hgain : 16 * lambda ^ (4 : ℕ) ≤ (lambda ^ (2 : ℕ) / a ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    nlinarith [sq_nonneg (lambda ^ (2 : ℕ) / a ^ (2 : ℕ) - 4 * lambda ^ (2 : ℕ))]
+  have hlarge : 1 < 15 * lambda ^ (4 : ℕ) := by
+    have hlambda2 : (2 / 3 : ℝ) ^ (2 : ℕ) < lambda ^ (2 : ℕ) := by nlinarith
+    have hlambda4 : ((2 / 3 : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) < (lambda ^ (2 : ℕ)) ^ (2 : ℕ) := by
+      nlinarith [sq_nonneg (lambda ^ (2 : ℕ) - (2 / 3 : ℝ) ^ (2 : ℕ))]
     nlinarith
   rw [primitive_to_strictRight_kreinCompanion_sq_eq_excess_gain,
     normSq_phaseMatched_primitiveStrictRight_resonantTransfer]
@@ -112,7 +112,7 @@ def xiWardCubicPhaseMatchedKreinCompanionTraceWeight
   xiGammaEulerPrimitiveCubicLogMomentWeight pe *
     xiWardCubicKreinCompanion
       (xiWardCubicPrimitiveStrictRightResonantTransfer pe
-        (xiWardCubicPhaseMatchedPrimitiveClock q) q) ^ 2
+        (xiWardCubicPhaseMatchedPrimitiveClock q) q) ^ (2 : ℕ)
 
 /-- **W-H205 harmonic minorant.** Each depth-zero prime pays at least a fixed positive multiple of
 `1/p` in mandatory negative companion trace. -/
@@ -132,22 +132,22 @@ theorem harmonic_minorant_phaseMatchedKreinCompanionTraceWeight
   rw [xiWardCubicPhaseMatchedKreinCompanionTraceWeight,
     xiGammaEulerPrimitiveCubicLogMomentWeight_prime_zero]
   have hweight : 0 ≤
-      (115 / 864 : ℝ) / ((p : ℝ) * Real.log (p : ℝ) ^ 2) := by positivity
+      (115 / 864 : ℝ) / ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) := by positivity
   calc
     (115 / 1944 : ℝ) * (1 / (p : ℝ)) =
         (115 / 864 : ℝ) * (4 / 9) / (p : ℝ) := by ring
-    _ ≤ (115 / 864 : ℝ) * Real.log (p : ℝ) ^ 2 / (p : ℝ) := by
+    _ ≤ (115 / 864 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) := by
       apply (div_le_div_iff_of_pos_right hp0).2
       nlinarith
     _ = (115 / 864 : ℝ) /
-          ((p : ℝ) * Real.log (p : ℝ) ^ 2) *
-            Real.log (p : ℝ) ^ 4 := by
+          ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) *
+            Real.log (p : ℝ) ^ (4 : ℕ) := by
       field_simp
     _ ≤ (115 / 864 : ℝ) /
-          ((p : ℝ) * Real.log (p : ℝ) ^ 2) *
+          ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) *
             xiWardCubicKreinCompanion
               (xiWardCubicPrimitiveStrictRightResonantTransfer (p, 0)
-                (xiWardCubicPhaseMatchedPrimitiveClock q) q) ^ 2 :=
+                (xiWardCubicPhaseMatchedPrimitiveClock q) q) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hcomp hweight
 
 /-- **W-H205 global trace no-go.** The direct sum of minimal phase-matched cellwise Krein

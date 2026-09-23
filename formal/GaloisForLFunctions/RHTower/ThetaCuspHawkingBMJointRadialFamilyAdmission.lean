@@ -84,7 +84,7 @@ theorem jointWaveSolution_radialEnergyFamily (w : ℂ) (F : SpatialSpace) (u : j
     inner ℂ (radialFamilySlot 0 h.radial) ((u : JointEnergySpace) 1) +
       inner ℂ (radialFamilySlot 1 h.weighted) ((u : JointEnergySpace) 2) +
       inner ℂ (radialFamilySlot 2 h.weighted) ((u : JointEnergySpace) 3) +
-      w^2*inner ℂ (radialFamilySlot 0 h.value) (jointEmbedding u) =
+      w^(2 : ℕ)*inner ℂ (radialFamilySlot 0 h.value) (jointEmbedding u) =
       inner ℂ (radialFamilySlot 0 h.value) F := by
   have he := (jointWaveSolution_gradient w F u).mp hu h.energyTest
   simpa only [RadialEnergyFamily.energyTest,RadialEnergyFamily.packet,familyPacketLift_apply,

@@ -168,7 +168,7 @@ def edgeVariance (θ : Parameters) : ℝ :=
   edgeSecondMoment θ - Complex.normSq (edgeMean θ)
 
 theorem edgeVariance_eq (θ : Parameters) :
-    edgeVariance θ = θ.connection - (θ.connection * (1 - θ.directionality)) ^ 2 := by
+    edgeVariance θ = θ.connection - (θ.connection * (1 - θ.directionality)) ^ (2 : ℕ) := by
   rw [edgeVariance, edgeSecondMoment_eq, edgeMean_eq]
   simp [Complex.normSq]
   ring
@@ -199,7 +199,7 @@ theorem radiusSquared_eq_four_mul_variance (N : ℕ) (θ : Parameters) :
 theorem radiusSquared_simplified (N : ℕ) (θ : Parameters) :
     radiusSquared N θ =
       4 * N * θ.connection *
-        (1 - (1 - θ.directionality) ^ 2 * θ.connection) := by
+        (1 - (1 - θ.directionality) ^ (2 : ℕ) * θ.connection) := by
   rw [radiusSquared_eq_four_mul_variance, edgeVariance_eq]
   ring
 
@@ -220,7 +220,7 @@ def directedParameters (connection : Set.Icc (0 : ℝ) 1) : Parameters where
   directionality_mem := by constructor <;> norm_num
 
 @[simp] theorem edgeVariance_undirectedParameters (connection : Set.Icc (0 : ℝ) 1) :
-    edgeVariance (undirectedParameters connection) = connection - connection ^ 2 := by
+    edgeVariance (undirectedParameters connection) = connection - connection ^ (2 : ℕ) := by
   rw [edgeVariance_eq]
   simp [undirectedParameters]
 
@@ -233,7 +233,7 @@ def directedParameters (connection : Set.Icc (0 : ℝ) 1) : Parameters where
 
 def pandeyMehtaMatrix {ι : Type*} (alpha : Set.Icc (0 : ℝ) 1)
     (H₁ H₂ : {M : Matrix ι ι ℂ // M.IsHermitian}) : Matrix ι ι ℂ :=
-  (Real.sqrt (1 - (alpha : ℝ) ^ 2) : ℂ) • H₁.val + (alpha : ℂ) • H₂.val
+  (Real.sqrt (1 - (alpha : ℝ) ^ (2 : ℕ)) : ℂ) • H₁.val + (alpha : ℂ) • H₂.val
 
 theorem pandeyMehtaMatrix_isHermitian {ι : Type*} (alpha : Set.Icc (0 : ℝ) 1)
     (H₁ H₂ : {M : Matrix ι ι ℂ // M.IsHermitian}) :
@@ -427,7 +427,7 @@ theorem correlationDistance_nonneg (c : CorrelationCoefficient) :
     0 ≤ correlationDistance c := Real.sqrt_nonneg _
 
 theorem correlationDistance_sq (c : CorrelationCoefficient) :
-    correlationDistance c ^ 2 = 2 * (1 - (c : ℝ)) := by
+    correlationDistance c ^ (2 : ℕ) = 2 * (1 - (c : ℝ)) := by
   rw [correlationDistance, Real.sq_sqrt]
   linarith [c.property.2]
 

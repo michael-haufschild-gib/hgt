@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Summable
 
 `mobius-prime-aperture-differential-order-profile.md`, equations `(4)` and `(5)`.
 
-The squarefree Dirichlet weight `mass_sigma(n) = mu(n)^2 n^(-sigma)` is multiplicative with
+The squarefree Dirichlet weight `mass_sigma(n) = mu(n)^(2 : ℕ) n^(-sigma)` is multiplicative with
 `sum_e mass(p^e) = 1 + p^(-sigma)`.  Euler's product over a finite prime aperture therefore computes
 exactly the channel mass carried by the `N`-smooth divisors:
 

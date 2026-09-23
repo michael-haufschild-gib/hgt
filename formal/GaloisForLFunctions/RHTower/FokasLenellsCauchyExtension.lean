@@ -114,11 +114,11 @@ private theorem integral_cauchy_eq_inner (u : SoninL2) {z : ℂ} (hz : z.im ≠ 
   rw [RCLike.inner_apply,hs,map_inv₀,map_sub,Complex.conj_ofReal,Complex.conj_conj,div_eq_mul_inv]
 
 private theorem norm_cauchy_kernel_sq {z : ℂ} (hz : z.im ≠ 0) :
-    ‖(memLp_cauchyKernel hz).toLp (fun s : ℝ => ((s:ℂ)-z)⁻¹)‖^2 = Real.pi/|z.im| := by
+    ‖(memLp_cauchyKernel hz).toLp (fun s : ℝ => ((s:ℂ)-z)⁻¹)‖^(2 : ℕ) = Real.pi/|z.im| := by
   rw [lpTwo_norm_sq_eq_integral]
   calc
-    (∫ s : ℝ, ‖((memLp_cauchyKernel hz).toLp (fun s : ℝ => ((s:ℂ)-z)⁻¹) : ℝ → ℂ) s‖^2) =
-        ∫ s : ℝ, (|z.im|^2+(s-z.re)^2)⁻¹ := by
+    (∫ s : ℝ, ‖((memLp_cauchyKernel hz).toLp (fun s : ℝ => ((s:ℂ)-z)⁻¹) : ℝ → ℂ) s‖^(2 : ℕ)) =
+        ∫ s : ℝ, (|z.im|^(2 : ℕ)+(s-z.re)^(2 : ℕ))⁻¹ := by
       apply integral_congr_ae
       filter_upwards [(memLp_cauchyKernel hz).coeFn_toLp] with s hs
       rw [hs,norm_sq_cauchyKernel,sq_abs,add_comm]

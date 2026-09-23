@@ -72,14 +72,14 @@ theorem firstJetTailNestedEquiv_value_zero (k : ℕ) :
   simp [firstJetTailNestedEquiv, hindex]
 
 def firstJetBoundaryScale (i : Fin k × Fin 2) : Polynomial ℂ :=
-  Fin.cases (Polynomial.X ^ 2) (fun _ => 1) i.2
+  Fin.cases (Polynomial.X ^ (2 : ℕ)) (fun _ => 1) i.2
 
 def firstJetBoundaryVariablePolynomial (k : ℕ)
     (o : Option (Fin k × Fin 2)) :
     MvPolynomial (GammaIterateFirstJetIndex k) ℂ := match o with
   | none => MvPolynomial.X (Sum.inl 0)
   | some i => Fin.cases
-      (MvPolynomial.X (Sum.inl 0) ^ 2 * MvPolynomial.X (Sum.inr i))
+      (MvPolynomial.X (Sum.inl 0) ^ (2 : ℕ) * MvPolynomial.X (Sum.inr i))
       (fun _ => MvPolynomial.X (Sum.inr i)) i.2
 
 def firstJetBoundarySourceEmbedding (k : ℕ) :
@@ -255,13 +255,13 @@ theorem eval_firstJetTailNestedEquiv
 theorem firstJetNestedEval_riccatiBoundary
     (r : Fin k × Fin 2 → ℂ) (w : ℂ)
     (P : Polynomial (Polynomial (MvPolynomial (Fin k × Fin 2) ℂ))) :
-    firstJetNestedEval r w (w ^ 2) P =
+    firstJetNestedEval r w (w ^ (2 : ℕ)) P =
       Polynomial.eval w
         (Polynomial.map (MvPolynomial.eval r) (riccatiBoundarySubstitution P)) := by
   let f := firstJetNestedCoefficientEval r w
-  have hX : f (Polynomial.X ^ 2) = w ^ 2 := by
+  have hX : f (Polynomial.X ^ (2 : ℕ)) = w ^ (2 : ℕ) := by
     simp [f, firstJetNestedCoefficientEval]
-  change Polynomial.eval₂ f (w ^ 2) P = _
+  change Polynomial.eval₂ f (w ^ (2 : ℕ)) P = _
   rw [← hX, Polynomial.eval₂_at_apply]
   simp [f, firstJetNestedCoefficientEval, riccatiBoundarySubstitution]
 
@@ -270,11 +270,11 @@ theorem firstJetNestedEval_riccatiNormalForm
     (P Q : Polynomial (Polynomial (MvPolynomial (Fin k × Fin 2) ℂ)))
     (m : ℕ) (hP : P = riccatiBoundaryFactor ^ m * Q) :
     firstJetNestedEval r w z P =
-      (z - w ^ 2) ^ m * firstJetNestedEval r w z Q := by
+      (z - w ^ (2 : ℕ)) ^ m * firstJetNestedEval r w z Q := by
   rw [hP]
   simp only [firstJetNestedEval, Polynomial.eval₂_mul, Polynomial.eval₂_pow]
   have hfactor : Polynomial.eval₂ (firstJetNestedCoefficientEval r w) z
-      riccatiBoundaryFactor = z - w ^ 2 := by
+      riccatiBoundaryFactor = z - w ^ (2 : ℕ) := by
     rw [riccatiBoundaryFactor, Polynomial.eval₂_sub, Polynomial.eval₂_X,
       Polynomial.eval₂_C]
     simp [firstJetNestedCoefficientEval]
@@ -294,7 +294,7 @@ theorem exists_firstJetBoundaryMultiplicity_normalForm
             (riccatiBoundarySubstitution Q) ∧
           B ≠ 0 ∧
           ∀ a : ℂ, firstJetNestedEval (gammaFirstJetBoundaryRestTuple k a)
-              a (a ^ 2) Q =
+              a (a ^ (2 : ℕ)) Q =
             MvPolynomial.eval (gammaIterateFirstJetTuple k a) B := by
   have hNested : firstJetTailNestedEquiv k P ≠ 0 := by
     intro hzero

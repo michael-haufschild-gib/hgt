@@ -16,9 +16,9 @@ open Complex Set
 open GaloisForLFunctions.HilbertMetric
 namespace RHTower.HedenmalmThetaSource
 open MeasureTheory HedenmalmQuantile HedenmalmClosedWeightedDerivative
-private abbrev ThetaH := Lp ℂ 2 unitIntervalMeasure
+private abbrev ThetaH_hedenmalmThetaEsscherCyclicity_hedenmalmThetaExteriorPseudospectralSeparation := Lp ℂ 2 unitIntervalMeasure
 
-def thetaExteriorQNMCorrection (tau : ℝ) : ThetaH →L[ℂ] ThetaH :=
+def thetaExteriorQNMCorrection (tau : ℝ) : ThetaH_hedenmalmThetaEsscherCyclicity_hedenmalmThetaExteriorPseudospectralSeparation →L[ℂ] ThetaH_hedenmalmThetaEsscherCyclicity_hedenmalmThetaExteriorPseudospectralSeparation :=
   qnmBackwardCorrection thetaKernelOperator.adjoint 1
     (starRingEnd ℂ (-(thetaEsscherResolventParameter (3 / 4) tau)⁻¹))
     (thetaExteriorPseudomode (3 / 4) tau)

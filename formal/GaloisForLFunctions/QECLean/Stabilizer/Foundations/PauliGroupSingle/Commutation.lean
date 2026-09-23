@@ -77,7 +77,7 @@ lemma commutes_iff_mulOp_phasePower (p q : PauliGroupElement) :
     · simp [mul, mul_eq, add_assoc, add_comm, h_mulOp_phase]
     · exact operator_mul_comm p q
 
-/-- The central element `-1` of the Pauli group, represented as `i^2 * I`. -/
+/-- The central element `-1` of the Pauli group, represented as `i^(2 : ℕ) * I`. -/
 def minusOne : PauliGroupElement := ⟨2, PauliOperator.I⟩
 
 /-- For Pauli operators, multiplication either commutes (same phase power) or anticommutes

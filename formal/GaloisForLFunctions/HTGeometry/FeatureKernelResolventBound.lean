@@ -28,11 +28,11 @@ theorem featureKernel_diag_nonneg (φ : ι → X → ℝ) (x : X) : 0 ≤ featur
 
 /-- **Reproducing-kernel Cauchy--Schwarz.** -/
 theorem sq_featureKernel_le (φ : ι → X → ℝ) (x y : X) :
-    featureKernel φ x y ^ 2 ≤ featureKernel φ x x * featureKernel φ y y := by
+    featureKernel φ x y ^ (2 : ℕ) ≤ featureKernel φ x x * featureKernel φ y y := by
   have hcs := sum_mul_sq_le_sq_mul_sq Finset.univ (fun j => φ j x) (fun j => φ j y)
-  have hx : featureKernel φ x x = ∑ j, φ j x ^ 2 :=
+  have hx : featureKernel φ x x = ∑ j, φ j x ^ (2 : ℕ) :=
     Finset.sum_congr rfl fun j _ => by ring
-  have hy : featureKernel φ y y = ∑ j, φ j y ^ 2 :=
+  have hy : featureKernel φ y y = ∑ j, φ j y ^ (2 : ℕ) :=
     Finset.sum_congr rfl fun j _ => by ring
   rw [featureKernel, hx, hy]
   exact hcs
@@ -41,10 +41,10 @@ theorem sq_featureKernel_le (φ : ι → X → ℝ) (x y : X) :
 theorem abs_featureKernel_le {φ : ι → X → ℝ} {L : ℝ} (hL : ∀ x, featureKernel φ x x ≤ L)
     (x y : X) : |featureKernel φ x y| ≤ L := by
   have hL0 : 0 ≤ L := le_trans (featureKernel_diag_nonneg φ x) (hL x)
-  have hsq : featureKernel φ x y ^ 2 ≤ L * L := by
+  have hsq : featureKernel φ x y ^ (2 : ℕ) ≤ L * L := by
     refine le_trans (sq_featureKernel_le φ x y) ?_
     exact mul_le_mul (hL x) (hL y) (featureKernel_diag_nonneg φ y) hL0
-  have habs : |featureKernel φ x y| ^ 2 ≤ L ^ 2 := by
+  have habs : |featureKernel φ x y| ^ (2 : ℕ) ≤ L ^ (2 : ℕ) := by
     rw [sq_abs]
     nlinarith [hsq]
   nlinarith [habs, abs_nonneg (featureKernel φ x y), hL0]

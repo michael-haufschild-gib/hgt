@@ -45,7 +45,7 @@ theorem infDist_realAxis_eq_im {z₀ : ℂ} (hz : 0 < z₀.im) :
       rw [Complex.dist_eq, Complex.norm_def, Complex.normSq_apply]
       simp only [Complex.sub_re, Complex.sub_im, Complex.ofReal_re, Complex.ofReal_im,
         sub_self, sub_zero]
-      rw [show (0 : ℝ) * 0 + z₀.im * z₀.im = z₀.im ^ 2 by ring,
+      rw [show (0 : ℝ) * 0 + z₀.im * z₀.im = z₀.im ^ (2 : ℕ) by ring,
         Real.sqrt_sq hz.le]
     rwa [hdist] at hle
   · refine (Metric.le_infDist realAxis_nonempty).mpr fun w hw => ?_

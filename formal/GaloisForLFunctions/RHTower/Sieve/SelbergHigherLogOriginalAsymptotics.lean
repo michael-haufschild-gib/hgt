@@ -11,7 +11,7 @@ noncomputable section
 def selbergOriginalLogOneTwo (N : ℕ) : ℝ :=
   ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
     selbergOriginalCoeff m n *
-      (Real.log ((N : ℝ) / (m : ℝ)) * Real.log ((N : ℝ) / (n : ℝ)) ^ 2)
+      (Real.log ((N : ℝ) / (m : ℝ)) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ))
 
 theorem selbergOriginalLogOneTwo_eq_correction_scaled (N : ℕ) :
     selbergOriginalLogOneTwo N =
@@ -21,12 +21,12 @@ theorem selbergOriginalLogOneTwo_eq_correction_scaled (N : ℕ) :
   calc
     (∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
       selbergOriginalCoeff m n *
-        (Real.log ((N : ℝ) / (m : ℝ)) * Real.log ((N : ℝ) / (n : ℝ)) ^ 2)) =
+        (Real.log ((N : ℝ) / (m : ℝ)) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ))) =
       ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
         bivariateDirichletConvolution selbergEulerCorrectionCoeff
           selbergPrincipalCoeff m n *
             (Real.log ((N : ℝ) / (m : ℝ)) *
-              Real.log ((N : ℝ) / (n : ℝ)) ^ 2) := by
+              Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro m hm
       apply Finset.sum_congr rfl
@@ -37,7 +37,7 @@ theorem selbergOriginalLogOneTwo_eq_correction_scaled (N : ℕ) :
           (∑ r ∈ Finset.Icc 1 (N / a), ∑ s ∈ Finset.Icc 1 (N / b),
             selbergPrincipalCoeff r s *
               (Real.log ((N : ℝ) / ((a * r : ℕ) : ℝ)) *
-                Real.log ((N : ℝ) / ((b * s : ℕ) : ℝ)) ^ 2)) :=
+                Real.log ((N : ℝ) / ((b * s : ℕ) : ℝ)) ^ (2 : ℕ))) :=
       sum_Icc_bivariateDirichletConvolution_mul _ _ _ N N
     _ = _ := by
       apply Finset.sum_congr rfl
@@ -49,7 +49,7 @@ theorem selbergOriginalLogOneTwo_eq_correction_scaled (N : ℕ) :
 
 theorem selbergOriginalLogOneTwo_div_log_sq_eq_tsum
     {N : ℕ} (hN : 2 ≤ N) :
-    selbergOriginalLogOneTwo N / Real.log N ^ 2 =
+    selbergOriginalLogOneTwo N / Real.log N ^ (2 : ℕ) =
       ∑' mn : ℕ × ℕ, selbergCorrectionScaledMixedTerm N mn := by
   rw [tsum_selbergCorrectionScaledMixedTerm,
     selbergOriginalLogOneTwo_eq_correction_scaled]
@@ -63,7 +63,7 @@ theorem selbergOriginalLogOneTwo_div_log_sq_eq_tsum
   field_simp [hlog]
 
 theorem tendsto_selbergOriginalLogOneTwo_div_log_sq_one :
-    Tendsto (fun N : ℕ => selbergOriginalLogOneTwo N / Real.log N ^ 2)
+    Tendsto (fun N : ℕ => selbergOriginalLogOneTwo N / Real.log N ^ (2 : ℕ))
       atTop (𝓝 1) := by
   refine tendsto_tsum_selbergCorrectionScaledMixedTerm_one.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with N hN
@@ -73,7 +73,7 @@ theorem tendsto_selbergOriginalLogOneTwo_div_log_sq_one :
 def selbergOriginalLogTwoTwo (N : ℕ) : ℝ :=
   ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
     selbergOriginalCoeff m n *
-      (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 * Real.log ((N : ℝ) / (n : ℝ)) ^ 2)
+      (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ))
 
 theorem selbergOriginalLogTwoTwo_eq_correction_scaled (N : ℕ) :
     selbergOriginalLogTwoTwo N =
@@ -84,13 +84,13 @@ theorem selbergOriginalLogTwoTwo_eq_correction_scaled (N : ℕ) :
   calc
     (∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
       selbergOriginalCoeff m n *
-        (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
-          Real.log ((N : ℝ) / (n : ℝ)) ^ 2)) =
+        (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
+          Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ))) =
       ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
         bivariateDirichletConvolution selbergEulerCorrectionCoeff
           selbergPrincipalCoeff m n *
-            (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
-              Real.log ((N : ℝ) / (n : ℝ)) ^ 2) := by
+            (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
+              Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro m hm
       apply Finset.sum_congr rfl
@@ -100,8 +100,8 @@ theorem selbergOriginalLogTwoTwo_eq_correction_scaled (N : ℕ) :
         selbergEulerCorrectionCoeff a b *
           (∑ r ∈ Finset.Icc 1 (N / a), ∑ s ∈ Finset.Icc 1 (N / b),
             selbergPrincipalCoeff r s *
-              (Real.log ((N : ℝ) / ((a * r : ℕ) : ℝ)) ^ 2 *
-                Real.log ((N : ℝ) / ((b * s : ℕ) : ℝ)) ^ 2)) :=
+              (Real.log ((N : ℝ) / ((a * r : ℕ) : ℝ)) ^ (2 : ℕ) *
+                Real.log ((N : ℝ) / ((b * s : ℕ) : ℝ)) ^ (2 : ℕ))) :=
       sum_Icc_bivariateDirichletConvolution_mul _ _ _ N N
     _ = _ := by
       apply Finset.sum_congr rfl
@@ -113,7 +113,7 @@ theorem selbergOriginalLogTwoTwo_eq_correction_scaled (N : ℕ) :
 
 theorem selbergOriginalLogTwoTwo_div_log_cube_eq_tsum
     {N : ℕ} (hN : 2 ≤ N) :
-    selbergOriginalLogTwoTwo N / Real.log N ^ 3 =
+    selbergOriginalLogTwoTwo N / Real.log N ^ (3 : ℕ) =
       ∑' mn : ℕ × ℕ, selbergCorrectionScaledQuadraticTerm N mn := by
   rw [tsum_selbergCorrectionScaledQuadraticTerm,
     selbergOriginalLogTwoTwo_eq_correction_scaled]
@@ -127,7 +127,7 @@ theorem selbergOriginalLogTwoTwo_div_log_cube_eq_tsum
   field_simp [hlog]
 
 theorem tendsto_selbergOriginalLogTwoTwo_div_log_cube_four_thirds :
-    Tendsto (fun N : ℕ => selbergOriginalLogTwoTwo N / Real.log N ^ 3)
+    Tendsto (fun N : ℕ => selbergOriginalLogTwoTwo N / Real.log N ^ (3 : ℕ))
       atTop (𝓝 (4 / 3 : ℝ)) := by
   refine tendsto_tsum_selbergCorrectionScaledQuadraticTerm_four_thirds.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with N hN

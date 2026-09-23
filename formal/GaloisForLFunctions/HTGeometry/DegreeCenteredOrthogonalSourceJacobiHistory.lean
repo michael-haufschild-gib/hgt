@@ -37,7 +37,7 @@ noncomputable def degreeCenteredOrthoSourcePolynomial
 /-- Causal Jacobi history retained after degree-centering cancels the current/future shell. -/
 noncomputable def degreeCenteredOrthoJacobiHistory
     (s : ℕ → ℝ) (n : ℕ) : ℝ :=
-  (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+  (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
     monicOrthoAlpha s n *
       (∑ j ∈ Finset.range n, monicOrthoAlpha s j) +
     2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j)
@@ -57,7 +57,7 @@ theorem degreeCenteredOrthoSourcePolynomial_eq_adaptive_sub_square
     (s : ℕ → ℝ) (n : ℕ) :
     degreeCenteredOrthoSourcePolynomial s n =
       adaptiveOrthoSourcePolynomial s n -
-        ((n : ℝ) + 1) • ((X * monicOrtho s n) ^ 2) := by
+        ((n : ℝ) + 1) • ((X * monicOrtho s n) ^ (2 : ℕ)) := by
   simp only [degreeCenteredOrthoSourcePolynomial, adaptiveOrthoSourcePolynomial,
     Polynomial.smul_eq_C_mul]
   rw [map_add, map_one]
@@ -75,9 +75,9 @@ theorem monicOrthoNormSq_mul_beta_succ
 /-- Exact Jacobi shell energy of the coordinate-multiplied admitted amplitude. -/
 theorem momentFunctional_X_mul_monicOrtho_sq_eq_jacobiShell
     {s : ℕ → ℝ} (h : PositiveMomentForm s) {n : ℕ} (hn : 0 < n) :
-    momentFunctional s ((X * monicOrtho s n) ^ 2) =
+    momentFunctional s ((X * monicOrtho s n) ^ (2 : ℕ)) =
       monicOrthoNormSq s n *
-        (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ 2 +
+        (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ (2 : ℕ) +
           monicOrthoBeta s n) := by
   have hnormne : monicOrthoNormSq s n ≠ 0 :=
     ne_of_gt (monicOrthoNormSq_pos h n)
@@ -101,7 +101,7 @@ theorem momentFunctional_X_mul_monicOrtho_sq_eq_jacobiShell
       momentInner_monicOrtho_succ_X_mul h k]
     rfl
   calc
-    momentFunctional s ((X * monicOrtho s n) ^ 2) =
+    momentFunctional s ((X * monicOrtho s n) ^ (2 : ℕ)) =
         momentInner s (X * monicOrtho s n) (X * monicOrtho s n) :=
       (momentInner_self s (X * monicOrtho s n)).symm
     _ = momentInner s
@@ -117,7 +117,7 @@ theorem momentFunctional_X_mul_monicOrtho_sq_eq_jacobiShell
       rw [momentInner_add_left, momentInner_add_left,
         momentInner_smul_left, momentInner_smul_left, hup, hdiag, hdown]
     _ = monicOrthoNormSq s n *
-          (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ 2 +
+          (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ (2 : ℕ) +
             monicOrthoBeta s n) := by
       rw [← monicOrthoNormSq_mul_beta_succ h]
       ring
@@ -128,16 +128,16 @@ theorem degreeCenteredOrthoJacobiHistory_eq_adaptive_sub_shell
     degreeCenteredOrthoJacobiHistory s n =
       adaptiveOrthoJacobiEnergy s n -
         (n + 1 : ℝ) *
-          (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ 2 +
+          (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ (2 : ℕ) +
             monicOrthoBeta s n) := by
   simp only [degreeCenteredOrthoJacobiHistory, adaptiveOrthoJacobiEnergy]
   have hsquares :
       (∑ j ∈ Finset.range n,
-          (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ 2) =
+          (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ (2 : ℕ)) =
         (∑ j ∈ Finset.range n,
-          (monicOrthoAlpha s j ^ 2 +
+          (monicOrthoAlpha s j ^ (2 : ℕ) +
             monicOrthoAlpha s n * monicOrthoAlpha s j +
-            monicOrthoAlpha s n ^ 2 / 4)) := by
+            monicOrthoAlpha s n ^ (2 : ℕ) / 4)) := by
     apply Finset.sum_congr rfl
     intro j _
     ring
@@ -152,7 +152,7 @@ theorem degreeCenteredOrthoJacobiHistory_eq_sum
     (s : ℕ → ℝ) (n : ℕ) :
     degreeCenteredOrthoJacobiHistory s n =
       ∑ j ∈ Finset.range n,
-        (monicOrthoAlpha s j ^ 2 +
+        (monicOrthoAlpha s j ^ (2 : ℕ) +
           monicOrthoAlpha s n * monicOrthoAlpha s j +
           2 * monicOrthoBeta s j) := by
   simp only [degreeCenteredOrthoJacobiHistory, Finset.sum_add_distrib]
@@ -164,7 +164,7 @@ theorem monicOrthoNormSq_mul_degreeCenteredOrthoJacobiHistory_eq_bulk_add_curren
     {s : ℕ → ℝ} (h : PositiveMomentForm s) (n : ℕ) :
     monicOrthoNormSq s n * degreeCenteredOrthoJacobiHistory s n =
       monicOrthoNormSq s n *
-          ((∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+          ((∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
             2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j)) +
         (∑ j ∈ Finset.range n, monicOrthoAlpha s j) *
           momentInner s (monicOrtho s n) (X * monicOrtho s n) := by
@@ -199,7 +199,7 @@ theorem momentFunctional_degreeCenteredOrthoSourcePolynomial_eq_bulk_add_current
     {s : ℕ → ℝ} (h : PositiveMomentForm s) {n : ℕ} (hn : 0 < n) :
     momentFunctional s (degreeCenteredOrthoSourcePolynomial s n) =
       monicOrthoNormSq s n *
-          ((∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+          ((∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
             2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j)) +
         (∑ j ∈ Finset.range n, monicOrthoAlpha s j) *
           momentInner s (monicOrtho s n) (X * monicOrtho s n) := by
@@ -213,36 +213,36 @@ degree `2n`, so it disappears on a flat degree-`n` null face while changing cham
 noncomputable def riccatiCompletedDegreeCenteredOrthoSourcePolynomial
     (s : ℕ → ℝ) (n : ℕ) : Polynomial ℝ :=
   degreeCenteredOrthoSourcePolynomial s n +
-    (2 * monicOrthoFirstCoeff s n ^ 2) • (monicOrtho s n) ^ 2
+    (2 * monicOrthoFirstCoeff s n ^ (2 : ℕ)) • (monicOrtho s n) ^ (2 : ℕ)
 
 /-- Jacobi history of the Riccati-completed centered source. -/
 noncomputable def riccatiCompletedDegreeCenteredOrthoJacobiHistory
     (s : ℕ → ℝ) (n : ℕ) : ℝ :=
-  degreeCenteredOrthoJacobiHistory s n + 2 * monicOrthoFirstCoeff s n ^ 2
+  degreeCenteredOrthoJacobiHistory s n + 2 * monicOrthoFirstCoeff s n ^ (2 : ℕ)
 
 /-- Nondegenerate null-flag completion.  The odd unit channel fixes the surviving top coefficient
-at one; the lower even channel completes its chamber contribution to `alpha^2 + 1`.  Both
+at one; the lower even channel completes its chamber contribution to `alpha^(2 : ℕ) + 1`.  Both
 corrections remain inside the adaptive polynomial before any moment functional is applied. -/
 noncomputable def nondegenerateNullFlagCompletedDegreeCenteredOrthoSourcePolynomial
     (s : ℕ → ℝ) (n : ℕ) : Polynomial ℝ :=
   riccatiCompletedDegreeCenteredOrthoSourcePolynomial s n +
-    (1 + monicOrthoFirstCoeff s n) • (X * (monicOrtho s n) ^ 2) +
-    (monicOrthoAlpha s n ^ 2 - monicOrthoAlpha s n + 1) •
-      (monicOrtho s n) ^ 2
+    (1 + monicOrthoFirstCoeff s n) • (X * (monicOrtho s n) ^ (2 : ℕ)) +
+    (monicOrthoAlpha s n ^ (2 : ℕ) - monicOrthoAlpha s n + 1) •
+      (monicOrtho s n) ^ (2 : ℕ)
 
 /-- Manifestly positive chamber history of the nondegenerate null-flag completion. -/
 noncomputable def nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory
     (s : ℕ → ℝ) (n : ℕ) : ℝ :=
-  (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+  (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
     2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) +
-    2 * monicOrthoFirstCoeff s n ^ 2 + monicOrthoAlpha s n ^ 2 + 1
+    2 * monicOrthoFirstCoeff s n ^ (2 : ℕ) + monicOrthoAlpha s n ^ (2 : ℕ) + 1
 
 /-- The completion converts the only indefinite cross term into admitted trace times cumulative
 Riccati flux. -/
 theorem riccatiCompletedDegreeCenteredOrthoJacobiHistory_eq_bulk_add_flux
     {s : ℕ → ℝ} (h : PositiveMomentForm s) (n : ℕ) :
     riccatiCompletedDegreeCenteredOrthoJacobiHistory s n =
-      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
         2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) +
         (-monicOrthoFirstCoeff s n) *
           (-2 * monicOrthoFirstCoeff s n + monicOrthoAlpha s n) := by
@@ -257,13 +257,13 @@ theorem momentFunctional_riccatiCompletedDegreeCenteredOrthoSourcePolynomial_eq_
       monicOrthoNormSq s n *
         riccatiCompletedDegreeCenteredOrthoJacobiHistory s n := by
   have hcorr := momentFunctional_smul s
-    (2 * monicOrthoFirstCoeff s n ^ 2) ((monicOrtho s n) ^ 2)
+    (2 * monicOrthoFirstCoeff s n ^ (2 : ℕ)) ((monicOrtho s n) ^ (2 : ℕ))
   rw [riccatiCompletedDegreeCenteredOrthoSourcePolynomial,
     momentFunctional_add, hcorr,
     momentFunctional_degreeCenteredOrthoSourcePolynomial_eq_jacobiHistory h hn,
     ← momentInner_self]
   change monicOrthoNormSq s n * degreeCenteredOrthoJacobiHistory s n +
-      2 * monicOrthoFirstCoeff s n ^ 2 * monicOrthoNormSq s n = _
+      2 * monicOrthoFirstCoeff s n ^ (2 : ℕ) * monicOrthoNormSq s n = _
   rw [riccatiCompletedDegreeCenteredOrthoJacobiHistory]
   ring
 
@@ -275,7 +275,7 @@ theorem riccatiCompletedDegreeCenteredOrthoJacobiHistory_pos
     (hflux : 0 < -2 * monicOrthoFirstCoeff s n + monicOrthoAlpha s n) :
     0 < riccatiCompletedDegreeCenteredOrthoJacobiHistory s n := by
   rw [riccatiCompletedDegreeCenteredOrthoJacobiHistory_eq_bulk_add_flux h]
-  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2 :=
+  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoBeta s j :=
     Finset.sum_nonneg fun j _ => monicOrthoBeta_nonneg h j
@@ -311,9 +311,9 @@ theorem monicOrthoNormSq_mul_beta_succ_below
 theorem momentFunctional_X_mul_monicOrtho_sq_eq_jacobiShell_below
     {s : ℕ → ℝ} {N n : ℕ} (h : PositiveMomentFormBelow s N)
     (hn : 0 < n) (hnN : n + 1 ≤ N) :
-    momentFunctional s ((X * monicOrtho s n) ^ 2) =
+    momentFunctional s ((X * monicOrtho s n) ^ (2 : ℕ)) =
       monicOrthoNormSq s n *
-        (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ 2 +
+        (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ (2 : ℕ) +
           monicOrthoBeta s n) := by
   have hnormne : monicOrthoNormSq s n ≠ 0 :=
     ne_of_gt (monicOrthoNorm_pos_below h (by omega))
@@ -337,7 +337,7 @@ theorem momentFunctional_X_mul_monicOrtho_sq_eq_jacobiShell_below
       momentInner_monicOrtho_succ_X_mul_below h (by omega)]
     rfl
   calc
-    momentFunctional s ((X * monicOrtho s n) ^ 2) =
+    momentFunctional s ((X * monicOrtho s n) ^ (2 : ℕ)) =
         momentInner s (X * monicOrtho s n) (X * monicOrtho s n) :=
       (momentInner_self s (X * monicOrtho s n)).symm
     _ = momentInner s
@@ -353,7 +353,7 @@ theorem momentFunctional_X_mul_monicOrtho_sq_eq_jacobiShell_below
       rw [momentInner_add_left, momentInner_add_left,
         momentInner_smul_left, momentInner_smul_left, hup, hdiag, hdown]
     _ = monicOrthoNormSq s n *
-          (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ 2 +
+          (monicOrthoBeta s (n + 1) + monicOrthoAlpha s n ^ (2 : ℕ) +
             monicOrthoBeta s n) := by
       rw [← monicOrthoNormSq_mul_beta_succ_below h hnN]
       ring
@@ -373,7 +373,7 @@ theorem momentFunctional_degreeCenteredOrthoSourcePolynomial_eq_jacobiHistory_be
 theorem riccatiCompletedDegreeCenteredOrthoJacobiHistory_eq_bulk_add_flux_below
     {s : ℕ → ℝ} {N n : ℕ} (h : PositiveMomentFormBelow s N) (hnN : n ≤ N) :
     riccatiCompletedDegreeCenteredOrthoJacobiHistory s n =
-      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
         2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) +
         (-monicOrthoFirstCoeff s n) *
           (-2 * monicOrthoFirstCoeff s n + monicOrthoAlpha s n) := by
@@ -389,7 +389,7 @@ theorem riccatiCompletedDegreeCenteredOrthoJacobiHistory_eq_bulk_add_adjacentTra
     {s : ℕ → ℝ} {N n : ℕ} (h : PositiveMomentFormBelow s N)
     (hnN : n + 1 ≤ N) :
     riccatiCompletedDegreeCenteredOrthoJacobiHistory s n =
-      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+      (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
         2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) +
         monicOrthoFirstCoeff s n *
           (monicOrthoFirstCoeff s n + monicOrthoFirstCoeff s (n + 1)) := by
@@ -408,7 +408,7 @@ theorem riccatiCompletedDegreeCenteredOrthoJacobiHistory_pos_of_adjacentTrace_ne
     (hnext : monicOrthoFirstCoeff s (n + 1) < 0) :
     0 < riccatiCompletedDegreeCenteredOrthoJacobiHistory s n := by
   rw [riccatiCompletedDegreeCenteredOrthoJacobiHistory_eq_bulk_add_adjacentTrace_below h hnN]
-  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2 :=
+  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoBeta s j := by
     apply Finset.sum_nonneg
@@ -432,13 +432,13 @@ theorem momentFunctional_riccatiCompletedDegreeCenteredOrthoSourcePolynomial_eq_
       monicOrthoNormSq s n *
         riccatiCompletedDegreeCenteredOrthoJacobiHistory s n := by
   have hcorr := momentFunctional_smul s
-    (2 * monicOrthoFirstCoeff s n ^ 2) ((monicOrtho s n) ^ 2)
+    (2 * monicOrthoFirstCoeff s n ^ (2 : ℕ)) ((monicOrtho s n) ^ (2 : ℕ))
   rw [riccatiCompletedDegreeCenteredOrthoSourcePolynomial,
     momentFunctional_add, hcorr,
     momentFunctional_degreeCenteredOrthoSourcePolynomial_eq_jacobiHistory_below h hn hnN,
     ← momentInner_self]
   change monicOrthoNormSq s n * degreeCenteredOrthoJacobiHistory s n +
-      2 * monicOrthoFirstCoeff s n ^ 2 * monicOrthoNormSq s n = _
+      2 * monicOrthoFirstCoeff s n ^ (2 : ℕ) * monicOrthoNormSq s n = _
   rw [riccatiCompletedDegreeCenteredOrthoJacobiHistory]
   ring
 
@@ -455,10 +455,10 @@ theorem momentFunctional_nondegenerateNullFlagCompletedDegreeCenteredOrthoSource
   have hnormne : monicOrthoNormSq s n ≠ 0 :=
     ne_of_gt (monicOrthoNorm_pos_below h (by omega))
   have hodd :
-      momentFunctional s (X * (monicOrtho s n) ^ 2) =
+      momentFunctional s (X * (monicOrtho s n) ^ (2 : ℕ)) =
         monicOrthoAlpha s n * monicOrthoNormSq s n := by
     calc
-      momentFunctional s (X * (monicOrtho s n) ^ 2) =
+      momentFunctional s (X * (monicOrtho s n) ^ (2 : ℕ)) =
           momentInner s (monicOrtho s n) (X * monicOrtho s n) := by
         rw [momentInner_def]
         congr 1
@@ -469,7 +469,7 @@ theorem momentFunctional_nondegenerateNullFlagCompletedDegreeCenteredOrthoSource
         rw [div_mul_cancel₀]
         exact hnormne
   have hsquare :
-      momentFunctional s ((monicOrtho s n) ^ 2) = monicOrthoNormSq s n := by
+      momentFunctional s ((monicOrtho s n) ^ (2 : ℕ)) = monicOrthoNormSq s n := by
     rw [← momentInner_self]
     rfl
   rw [nondegenerateNullFlagCompletedDegreeCenteredOrthoSourcePolynomial,
@@ -492,7 +492,7 @@ theorem momentFunctional_nondegenerateNullFlagCompletedDegreeCenteredOrthoSource
   rw [momentFunctional_nondegenerateNullFlagCompletedDegreeCenteredOrthoSourcePolynomial_eq_history_below
     h hn hnN]
   apply mul_pos (monicOrthoNorm_pos_below h (by omega))
-  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2 :=
+  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoBeta s j := by
     apply Finset.sum_nonneg
@@ -512,7 +512,7 @@ norm collapses while the odd current stays nonzero must make the completed sourc
 theorem sq_momentInner_monicOrtho_X_le_norm_mul_nondegenerateSource_below
     {s : ℕ → ℝ} {N n : ℕ} (h : PositiveMomentFormBelow s N)
     (hn : 0 < n) (hnN : n + 2 ≤ N) :
-    momentInner s (monicOrtho s n) (X * monicOrtho s n) ^ 2 ≤
+    momentInner s (monicOrtho s n) (X * monicOrtho s n) ^ (2 : ℕ) ≤
       monicOrthoNormSq s n *
         momentFunctional s
           (nondegenerateNullFlagCompletedDegreeCenteredOrthoSourcePolynomial s n) := by
@@ -526,9 +526,9 @@ theorem sq_momentInner_monicOrtho_X_le_norm_mul_nondegenerateSource_below
     rw [div_mul_cancel₀]
     exact ne_of_gt hnorm
   have hhistory :
-      monicOrthoAlpha s n ^ 2 ≤
+      monicOrthoAlpha s n ^ (2 : ℕ) ≤
         nondegenerateNullFlagCompletedDegreeCenteredOrthoJacobiHistory s n := by
-    have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2 :=
+    have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ) :=
       Finset.sum_nonneg fun _ _ => sq_nonneg _
     have hbetas : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoBeta s j := by
       apply Finset.sum_nonneg
@@ -557,11 +557,11 @@ theorem norm_mul_momentFunctional_nondegenerateSource_eq_odd_sq_add_regular_belo
     monicOrthoNormSq s n *
         momentFunctional s
           (nondegenerateNullFlagCompletedDegreeCenteredOrthoSourcePolynomial s n) =
-      momentInner s (monicOrtho s n) (X * monicOrtho s n) ^ 2 +
-        monicOrthoNormSq s n ^ 2 *
-          ((∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+      momentInner s (monicOrtho s n) (X * monicOrtho s n) ^ (2 : ℕ) +
+        monicOrthoNormSq s n ^ (2 : ℕ) *
+          ((∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
             2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) +
-            2 * monicOrthoFirstCoeff s n ^ 2 + 1) := by
+            2 * monicOrthoFirstCoeff s n ^ (2 : ℕ) + 1) := by
   have hnorm : 0 < monicOrthoNormSq s n :=
     monicOrthoNorm_pos_below h (by omega)
   have hdiag :
@@ -582,7 +582,7 @@ theorem riccatiCompletedDegreeCenteredOrthoJacobiHistory_pos_below
     (hflux : 0 < -2 * monicOrthoFirstCoeff s n + monicOrthoAlpha s n) :
     0 < riccatiCompletedDegreeCenteredOrthoJacobiHistory s n := by
   rw [riccatiCompletedDegreeCenteredOrthoJacobiHistory_eq_bulk_add_flux_below h hnN]
-  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2 :=
+  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoBeta s j := by
     apply Finset.sum_nonneg
@@ -632,15 +632,15 @@ theorem adjacentTraceDissipationGap_pos_below
     {s : ℕ → ℝ} {N n : ℕ} (h : PositiveMomentFormBelow s N)
     (hn : 0 < n) (hnN : n + 2 ≤ N) :
     0 <
-      (2 * (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
-          monicOrthoAlpha s n ^ 2 +
+      (2 * (∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
+          monicOrthoAlpha s n ^ (2 : ℕ) +
           4 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) +
           2 * (n + 1 : ℝ) *
             (monicOrthoBeta s n + monicOrthoBeta s (n + 1))) -
-        ((∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2) +
+        ((∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ)) +
           2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) +
           2 * (n : ℝ) * monicOrthoBeta s n) := by
-  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ 2 :=
+  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n, monicOrthoBeta s j := by
     apply Finset.sum_nonneg

@@ -88,7 +88,7 @@ theorem uniformizedSecondDecay_nonneg (f g h : SchwartzMap ℝ ℂ) (upper : Boo
 
 /-- Every genuine reflection numerator gains two spectral powers, without assumptions on the Schwartz profile. -/
 theorem uniformizedOffDiagonal_second_frequency_bound (f g h : SchwartzMap ℝ ℂ) (z : ℝ) (upper : Bool) :
-    |z|^2*‖uniformizedOffDiagonal f g h z upper‖ ≤ uniformizedSecondDecay f g h upper := by
+    |z|^(2 : ℕ)*‖uniformizedOffDiagonal f g h z upper‖ ≤ uniformizedSecondDecay f g h upper := by
   have he := congrArg norm (uniformizedOffDiagonal_corrected_eq f g h z upper)
   simp only [norm_mul,norm_neg,norm_I,one_mul,Complex.norm_real,Real.norm_eq_abs,offOrbitFrequency_abs] at he
   have h1 := correctedOffEndpoint_frequency_bound f g h z false upper
@@ -121,7 +121,7 @@ theorem uniformizedOffDiagonal_second_frequency_bound (f g h : SchwartzMap ℝ �
 theorem uniformizedOffDiagonal_quadratic_bound (f g h : SchwartzMap ℝ ℂ) (z : ℝ) (upper : Bool) :
     ‖uniformizedOffDiagonal f g h z upper‖ ≤
       (4*effectiveDisplacement f g h*(1+effectiveDisplacement f g h)+
-        uniformizedSecondDecay f g h upper)/(1+z^2) := by
+        uniformizedSecondDecay f g h upper)/(1+z^(2 : ℕ)) := by
   apply (le_div_iff₀ (by positivity)).mpr
   have h0 := uniformizedOffDiagonal_bound f g h z upper
   have h2 := uniformizedOffDiagonal_second_frequency_bound f g h z upper

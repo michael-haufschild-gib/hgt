@@ -21,16 +21,16 @@ variable (ι : Type*) [Fintype ι] [Nonempty ι]
 
 /-- Some coefficient carries at least the average coefficient energy. -/
 theorem exists_coefficient_totalEnergy_le_card_mul (d : ι → ℂ) :
-    ∃ i, (∑ j : ι, ‖d j‖ ^ 2) ≤ (Fintype.card ι : ℝ) * ‖d i‖ ^ 2 := by
+    ∃ i, (∑ j : ι, ‖d j‖ ^ (2 : ℕ)) ≤ (Fintype.card ι : ℝ) * ‖d i‖ ^ (2 : ℕ) := by
   rcases GaloisForLFunctions.HTGeometry.finiteFamilySum_empty_or_le_card_mul
-      (fun j : ι ↦ ‖d j‖ ^ 2) with hzero | hi
+      (fun j : ι ↦ ‖d j‖ ^ (2 : ℕ)) with hzero | hi
   · have hcard := card_pos ι
     omega
   · exact hi
 
 /-- Some coefficient is at least as large as the block average in squared norm. -/
 theorem exists_norm_average_sq_le_norm_sq (d : ι → ℂ) :
-    ∃ i, ‖average ι d‖ ^ 2 ≤ ‖d i‖ ^ 2 := by
+    ∃ i, ‖average ι d‖ ^ (2 : ℕ) ≤ ‖d i‖ ^ (2 : ℕ) := by
   obtain ⟨i, hi⟩ := exists_coefficient_totalEnergy_le_card_mul ι d
   have havg := card_mul_norm_average_sq_le_sum ι d
   have hcard : (0 : ℝ) < Fintype.card ι := by
@@ -40,10 +40,10 @@ theorem exists_norm_average_sq_le_norm_sq (d : ι → ℂ) :
 
 /-- Some coordinate deviation carries at least the average deviation energy. -/
 theorem exists_deviationEnergy_le_card_mul_coordinate (d : ι → ℂ) :
-    ∃ i, ‖deviation ι d‖ ^ 2 ≤
-      (Fintype.card ι : ℝ) * ‖d i - average ι d‖ ^ 2 := by
+    ∃ i, ‖deviation ι d‖ ^ (2 : ℕ) ≤
+      (Fintype.card ι : ℝ) * ‖d i - average ι d‖ ^ (2 : ℕ) := by
   rcases GaloisForLFunctions.HTGeometry.finiteFamilySum_empty_or_le_card_mul
-      (fun i : ι ↦ ‖d i - average ι d‖ ^ 2) with hzero | ⟨i, hi⟩
+      (fun i : ι ↦ ‖d i - average ι d‖ ^ (2 : ℕ)) with hzero | ⟨i, hi⟩
   · have hcard := card_pos ι
     omega
   · refine ⟨i, ?_⟩
@@ -53,14 +53,14 @@ theorem exists_deviationEnergy_le_card_mul_coordinate (d : ι → ℂ) :
 /-- One coefficient controls the whole simplex-block reconstruction energy, up to the explicit
 dimension factor. -/
 theorem exists_norm_solution_sq_le_twenty_card_mul_coordinate (d : ι → ℂ) :
-    ∃ i, ‖solution ι d‖ ^ 2 ≤
-      (20 * Fintype.card ι : ℝ) * ‖d i‖ ^ 2 := by
+    ∃ i, ‖solution ι d‖ ^ (2 : ℕ) ≤
+      (20 * Fintype.card ι : ℝ) * ‖d i‖ ^ (2 : ℕ) := by
   obtain ⟨i, hi⟩ := exists_coefficient_totalEnergy_le_card_mul ι d
   refine ⟨i, ?_⟩
   calc
-    ‖solution ι d‖ ^ 2 ≤ 20 * ∑ j : ι, ‖d j‖ ^ 2 := norm_solution_sq_le ι d
-    _ ≤ 20 * ((Fintype.card ι : ℝ) * ‖d i‖ ^ 2) :=
+    ‖solution ι d‖ ^ (2 : ℕ) ≤ 20 * ∑ j : ι, ‖d j‖ ^ (2 : ℕ) := norm_solution_sq_le ι d
+    _ ≤ 20 * ((Fintype.card ι : ℝ) * ‖d i‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hi (by norm_num)
-    _ = (20 * Fintype.card ι : ℝ) * ‖d i‖ ^ 2 := by ring
+    _ = (20 * Fintype.card ι : ℝ) * ‖d i‖ ^ (2 : ℕ) := by ring
 
 end GaloisForLFunctions.HTGeometry.FiniteMarkushevichSimplexBlock

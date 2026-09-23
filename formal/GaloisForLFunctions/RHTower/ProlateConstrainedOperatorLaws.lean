@@ -172,7 +172,7 @@ theorem positiveSectorDepthValue_adjacent_ratio_tendsto (k : ℕ) :
 /-- **Equations `(10)`--`(11)` of the ladder card, in the operator's own terms.**  Eventually the
 compressed leakage operator on the Fourier-even sector has a constrained eigenvector at
 `mu_k(lambda)` whose coefficients against the sector's orthonormal prolate family are exactly the
-depth-`k` secular coordinates; their oriented normalization converges in `ell^2` to the canonical
+depth-`k` secular coordinates; their oriented normalization converges in `ell^(2 : ℕ)` to the canonical
 Hermite contrast unit, and those limits form an orthonormal family. -/
 theorem positiveSectorDepthValue_eigenvector_laws (k : ℕ) :
     (∀ᶠ a : ℝ in atTop, ∃ f : evenSubspace,

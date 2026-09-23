@@ -35,7 +35,7 @@ noncomputable def signedPairSum (x h : ℝ) : ℝ :=
 /-- The squarefree balanced-pair count. -/
 noncomputable def squarefreePairCount (x h : ℝ) : ℝ :=
   ∑ q ∈ balancedPairs x h,
-    ((moebius q.1 : ℤ) : ℝ) ^ 2 * ((moebius q.2 : ℤ) : ℝ) ^ 2
+    ((moebius q.1 : ℤ) : ℝ) ^ (2 : ℕ) * ((moebius q.2 : ℤ) : ℝ) ^ (2 : ℕ)
 
 /-- The balanced pairs of a given product sign. -/
 noncomputable def signClass (x h : ℝ) (ε : ℤ) : Finset (ℕ × ℕ) :=
@@ -62,11 +62,11 @@ theorem moebius_pair_eq_sub (a b : ℕ) :
 
 /-- The squarefree weight is the sum of the two sign indicators. -/
 theorem moebius_pair_sq_eq_add (a b : ℕ) :
-    ((moebius a : ℤ) : ℝ) ^ 2 * ((moebius b : ℤ) : ℝ) ^ 2
+    ((moebius a : ℤ) : ℝ) ^ (2 : ℕ) * ((moebius b : ℤ) : ℝ) ^ (2 : ℕ)
       = (if moebius a * moebius b = 1 then (1 : ℝ) else 0)
         + (if moebius a * moebius b = -1 then (1 : ℝ) else 0) := by
-  have hsq : ((moebius a : ℤ) : ℝ) ^ 2 * ((moebius b : ℤ) : ℝ) ^ 2
-      = ((moebius a * moebius b : ℤ) : ℝ) ^ 2 := by push_cast; ring
+  have hsq : ((moebius a : ℤ) : ℝ) ^ (2 : ℕ) * ((moebius b : ℤ) : ℝ) ^ (2 : ℕ)
+      = ((moebius a * moebius b : ℤ) : ℝ) ^ (2 : ℕ) := by push_cast; ring
   rcases moebius_pair_trichotomy a b with h | h | h <;> rw [hsq, h] <;> norm_num
 
 /-- **The signed sum is the difference of the sign-class counts.** -/

@@ -7,16 +7,16 @@ import GaloisForLFunctions.HTGeometry.JacobiNodeBoundaryMonotonicity
 # The moving orthonormal frame of the shifted half-density connection
 
 A moment family whose derivative law is the shifted reciprocal Möbius law carries the half-density
-generator `K P = X^2 P' + (1/2) X P` as its unique metric-compatible connection, and the covariant
+generator `K P = X^(2 : ℕ) P' + (1/2) X P` as its unique metric-compatible connection, and the covariant
 derivative of the orthonormal polynomial frame is the skew nearest-neighbour ladder
 
 `nabla phi_k = -(k+1/2) a_(k+1) phi_(k+1) + (k-1/2) a_k phi_(k-1)`.
 
 Differentiating the three-term recurrence and cancelling the generator against the recurrence
-itself turns the covariant multiplication law `nabla(XP) = X nabla P - X^2 P` into a closed
+itself turns the covariant multiplication law `nabla(XP) = X nabla P - X^(2 : ℕ) P` into a closed
 first-order system for the two coefficient curves, namely the nonisospectral Toda system
 
-`b_n' = 2(n-1)a_n^2 - 2(n+1)a_(n+1)^2 - b_n^2`,
+`b_n' = 2(n-1)a_n^(2 : ℕ) - 2(n+1)a_(n+1)^(2 : ℕ) - b_n^(2 : ℕ)`,
 `a_(n+1)' = a_(n+1)((n-1/2) b_n - (n+3/2) b_(n+1))`.
 
 Equating coefficients is legitimate because the frame is a degree filtration: `phi_k` has degree

@@ -12,7 +12,7 @@ half-width `N`: Bessel bounds the window's mass by `sqrt(2N+1)` times the value,
 decay bounds the tails.  Feeding those into the profile form of the estimate gives
 
 `|z f'/f - nu| <= (sqrt(2N+1) + 2 G_0) |Lambda - nu|
-                  + sqrt(2 (N^2 sqrt(2N+1) + 2 G_2) (sqrt(2N+1) + 2 G_0))`,
+                  + sqrt(2 (N^(2 : ℕ) sqrt(2N+1) + 2 G_2) (sqrt(2N+1) + 2 G_0))`,
 
 where `G_0` and `G_2` bound the two shifted geometric tails at rate `N/(4L)`.
 
@@ -51,8 +51,8 @@ private theorem tsum_norm_normalisedCoeff_eq
 /-- The second moment of the normalised profile. -/
 private theorem tsum_sq_norm_normalisedCoeff_eq
     (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r) :
-    ∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ)) ^ 2 * ‖normalisedCoeff a r z n‖
-      = (∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ)) ^ 2 * (‖a n‖ * r ^ n)) / maxTerm a r := by
+    ∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ)) ^ (2 : ℕ) * ‖normalisedCoeff a r z n‖
+      = (∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n)) / maxTerm a r := by
   rw [← tsum_div_const]
   refine tsum_congr fun n => ?_
   rw [norm_normalisedCoeff_eq ha hr hn₀ hz n]
@@ -81,12 +81,12 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_window
       = ((‖∑' n : ℕ, normalisedCoeff a (Real.exp x) z n‖ : ℝ) : ℂ) * u)
     {G₀ G₂ : ℝ}
     (hG₀ : ∑' j : ℕ, Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1 + j) ≤ G₀)
-    (hG₂ : ∑' j : ℕ, ((N : ℝ) + 1 + j) ^ 2
+    (hG₂ : ∑' j : ℕ, ((N : ℝ) + 1 + j) ^ (2 : ℕ)
         * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1 + j) ≤ G₂) :
     ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a (Real.exp x) : ℂ)‖
       ≤ (Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₀)
           * |meanIndex a (Real.exp x) - (centralIndex a (Real.exp x) : ℝ)|
-        + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂)
+        + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₂)
             * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * G₀)) := by
   classical
   set r : ℝ := Real.exp x with hrdef
@@ -129,8 +129,8 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_window
     have := mul_le_mul_of_nonneg_left hG₀ (by positivity : (0 : ℝ) ≤ 2 * μ)
     linarith
   -- the second moment
-  have hsecond : ∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ 2 * (‖a n‖ * r ^ n)
-      ≤ (N : ℝ) ^ 2 * (S * ‖coeffFun a z‖) + 2 * μ * G₂ := by
+  have hsecond : ∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n)
+      ≤ (N : ℝ) ^ (2 : ℕ) * (S * ‖coeffFun a z‖) + 2 * μ * G₂ := by
     refine le_trans (tsum_index_sq_le_gaussian ha hn₀ hH hL hN0 hNK hNv hlipA hlipB hwin) ?_
     have := mul_le_mul_of_nonneg_left hG₂ (by positivity : (0 : ℝ) ≤ 2 * μ)
     linarith
@@ -141,12 +141,12 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_window
     rw [tsum_norm_normalisedCoeff_eq ha hr hn₀ hz, div_le_iff₀ hμpos]
     calc coeffSum a r ≤ S * ‖coeffFun a z‖ + 2 * μ * G₀ := hzeroth
       _ = (S * A + 2 * G₀) * μ := by rw [← hmulS]; ring
-  have hSig2 : ∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ 2 * ‖normalisedCoeff a r z n‖
-      ≤ (N : ℝ) ^ 2 * (S * A) + 2 * G₂ := by
+  have hSig2 : ∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) * ‖normalisedCoeff a r z n‖
+      ≤ (N : ℝ) ^ (2 : ℕ) * (S * A) + 2 * G₂ := by
     rw [tsum_sq_norm_normalisedCoeff_eq ha hr hn₀ hz, div_le_iff₀ hμpos]
-    calc ∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ 2 * (‖a n‖ * r ^ n)
-        ≤ (N : ℝ) ^ 2 * (S * ‖coeffFun a z‖) + 2 * μ * G₂ := hsecond
-      _ = ((N : ℝ) ^ 2 * (S * A) + 2 * G₂) * μ := by rw [← hmulS]; ring
+    calc ∑' n : ℕ, ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n)
+        ≤ (N : ℝ) ^ (2 : ℕ) * (S * ‖coeffFun a z‖) + 2 * μ * G₂ := hsecond
+      _ = ((N : ℝ) ^ (2 : ℕ) * (S * A) + 2 * G₂) * μ := by rw [← hmulS]; ring
   -- the alignment defect
   have hWnorm : ‖∑' n : ℕ, normalisedCoeff a r z n‖ = A := by
     have hCnorm : ‖a v * z ^ v‖ = μ := by
@@ -170,11 +170,11 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_window
     hSig2 hD
   refine le_trans hprofile ?_
   -- bound the two pieces
-  set S₂ : ℝ := (N : ℝ) ^ 2 * (S * A) + 2 * G₂ with hS₂def
+  set S₂ : ℝ := (N : ℝ) ^ (2 : ℕ) * (S * A) + 2 * G₂ with hS₂def
   set Dv : ℝ := S * A + 2 * G₀ - A with hDvdef
-  set C : ℝ := Real.sqrt (2 * ((N : ℝ) ^ 2 * S + 2 * G₂) * (S + 2 * G₀)) with hC
+  set C : ℝ := Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * S + 2 * G₂) * (S + 2 * G₀)) with hC
   have hCnn : (0 : ℝ) ≤ C := Real.sqrt_nonneg _
-  have hS₂A : S₂ ≤ A * ((N : ℝ) ^ 2 * S + 2 * G₂) := by
+  have hS₂A : S₂ ≤ A * ((N : ℝ) ^ (2 : ℕ) * S + 2 * G₂) := by
     rw [hS₂def]
     nlinarith [hA1, hG₂nn, hSnn, sq_nonneg ((N : ℝ))]
   have hDvA : Dv ≤ A * (S + 2 * G₀) := by
@@ -185,18 +185,18 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_window
   have hDvnn : (0 : ℝ) ≤ Dv := by
     refine le_trans (tsum_nonneg fun n => alignment_defect_nonneg _ hu) hD
   have hsqrtle : Real.sqrt (2 * S₂ * Dv) ≤ A * C := by
-    have hkey : 2 * S₂ * Dv ≤ (A * C) ^ 2 := by
-      have hCsq : C ^ 2 = 2 * ((N : ℝ) ^ 2 * S + 2 * G₂) * (S + 2 * G₀) := by
+    have hkey : 2 * S₂ * Dv ≤ (A * C) ^ (2 : ℕ) := by
+      have hCsq : C ^ (2 : ℕ) = 2 * ((N : ℝ) ^ (2 : ℕ) * S + 2 * G₂) * (S + 2 * G₀) := by
         rw [hC, Real.sq_sqrt (by positivity)]
-      have h1 : (0 : ℝ) ≤ (N : ℝ) ^ 2 * S + 2 * G₂ := by positivity
+      have h1 : (0 : ℝ) ≤ (N : ℝ) ^ (2 : ℕ) * S + 2 * G₂ := by positivity
       have h2 : (0 : ℝ) ≤ S + 2 * G₀ := by positivity
-      calc 2 * S₂ * Dv ≤ 2 * (A * ((N : ℝ) ^ 2 * S + 2 * G₂)) * (A * (S + 2 * G₀)) := by
-            have hstep : S₂ * Dv ≤ (A * ((N : ℝ) ^ 2 * S + 2 * G₂)) * (A * (S + 2 * G₀)) := by
-              have hAD : (0 : ℝ) ≤ A * ((N : ℝ) ^ 2 * S + 2 * G₂) := by positivity
+      calc 2 * S₂ * Dv ≤ 2 * (A * ((N : ℝ) ^ (2 : ℕ) * S + 2 * G₂)) * (A * (S + 2 * G₀)) := by
+            have hstep : S₂ * Dv ≤ (A * ((N : ℝ) ^ (2 : ℕ) * S + 2 * G₂)) * (A * (S + 2 * G₀)) := by
+              have hAD : (0 : ℝ) ≤ A * ((N : ℝ) ^ (2 : ℕ) * S + 2 * G₂) := by positivity
               nlinarith [hS₂A, hDvA, hS₂nn, hDvnn]
             linarith
-        _ = A ^ 2 * (2 * ((N : ℝ) ^ 2 * S + 2 * G₂) * (S + 2 * G₀)) := by ring
-        _ = (A * C) ^ 2 := by rw [mul_pow, hCsq]
+        _ = A ^ (2 : ℕ) * (2 * ((N : ℝ) ^ (2 : ℕ) * S + 2 * G₂) * (S + 2 * G₀)) := by ring
+        _ = (A * C) ^ (2 : ℕ) := by rw [mul_pow, hCsq]
     have hAC : (0 : ℝ) ≤ A * C := by positivity
     nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ 2 * S₂ * Dv by positivity),
       Real.sqrt_nonneg (2 * S₂ * Dv), hkey, hAC]
@@ -240,9 +240,9 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_explicit_window
           + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
               / (1 - Real.exp (-((N : ℝ) / (4 * L))))))
           * |meanIndex a (Real.exp x) - (centralIndex a (Real.exp x) : ℝ)|
-        + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-              + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-                  / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+        + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+              + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+                  / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
             * (Real.sqrt (2 * (N : ℝ) + 1)
               + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                   / (1 - Real.exp (-((N : ℝ) / (4 * L))))))) := by
@@ -280,9 +280,9 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_spread
           + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
               / (1 - Real.exp (-((N : ℝ) / (4 * L))))))
           * |meanIndex a (Real.exp x) - (centralIndex a (Real.exp x) : ℝ)|
-        + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-              + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-                  / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+        + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+              + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+                  / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
             * (Real.sqrt (2 * (N : ℝ) + 1)
               + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                   / (1 - Real.exp (-((N : ℝ) / (4 * L))))))) := by

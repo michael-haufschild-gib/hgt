@@ -16,16 +16,16 @@ theorem xiMassAnalyticTest_real_half_dilation
   rw [xiMassAnalyticTest, xiMassAnalyticTest,
     xiMassAnalyticSqrt_ofReal_eq ha,
     xiMassAnalyticSqrt_ofReal_eq ha2]
-  have hbig : 0 ≤ x ^ 2 + a ^ 2 := by positivity
-  have hsmall : 0 ≤ (x / 2) ^ 2 + (a / 2) ^ 2 := by positivity
-  have hscale : (x / 2) ^ 2 + (a / 2) ^ 2 =
-      (x ^ 2 + a ^ 2) / 4 := by ring
+  have hbig : 0 ≤ x ^ (2 : ℕ) + a ^ (2 : ℕ) := by positivity
+  have hsmall : 0 ≤ (x / 2) ^ (2 : ℕ) + (a / 2) ^ (2 : ℕ) := by positivity
+  have hscale : (x / 2) ^ (2 : ℕ) + (a / 2) ^ (2 : ℕ) =
+      (x ^ (2 : ℕ) + a ^ (2 : ℕ)) / 4 := by ring
   have hsqBig := Real.sq_sqrt hbig
   have hsqSmall := Real.sq_sqrt hsmall
-  have hsqrt : Real.sqrt ((x / 2) ^ 2 + (a / 2) ^ 2) =
-      Real.sqrt (x ^ 2 + a ^ 2) / 2 := by
-    nlinarith [Real.sqrt_nonneg (x ^ 2 + a ^ 2),
-      Real.sqrt_nonneg ((x / 2) ^ 2 + (a / 2) ^ 2)]
+  have hsqrt : Real.sqrt ((x / 2) ^ (2 : ℕ) + (a / 2) ^ (2 : ℕ)) =
+      Real.sqrt (x ^ (2 : ℕ) + a ^ (2 : ℕ)) / 2 := by
+    nlinarith [Real.sqrt_nonneg (x ^ (2 : ℕ) + a ^ (2 : ℕ)),
+      Real.sqrt_nonneg ((x / 2) ^ (2 : ℕ) + (a / 2) ^ (2 : ℕ))]
   rw [hsqrt]
   congr 1
   push_cast
@@ -61,7 +61,7 @@ theorem stripFourier_xiMassAnalyticTest_half_dilation
 
 def xiMassPrimeSqrtMask (p : Nat.Primes) : ℂ :=
   LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
-      (1 / 2 : ℂ) ((p : ℕ) ^ 2) /
+      (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) /
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       (1 / 2 : ℂ) (p : ℕ)
 
@@ -72,7 +72,7 @@ def xiMassPrimeSqrtMaskLayer (a : ℝ) (τ : ℂ) : ℂ :=
 def xiMassPrimeSqrtBoundaryLayer (a : ℝ) (τ : ℂ) : ℂ :=
   ∑' p : Nat.Primes,
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
-        (1 / 2 : ℂ) ((p : ℕ) ^ 2) *
+        (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) *
       stripFourier (xiMassAnalyticTest a τ) (Real.log (p : ℕ) : ℂ)
 
 theorem xiMassPrimeCriticalTerm_ne_zero (p : Nat.Primes) :
@@ -93,7 +93,7 @@ theorem xiMassPrimeSqrtMask_mul_centeredAtom_eq_boundaryTerm
     (a : ℝ) (τ : ℂ) (p : Nat.Primes) :
     xiMassPrimeSqrtMask p * xiMassCenteredPrimeAtom a τ (p : ℕ) =
       LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
-          (1 / 2 : ℂ) ((p : ℕ) ^ 2) *
+          (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) *
         stripFourier (xiMassAnalyticTest a τ) (Real.log (p : ℕ) : ℂ) := by
   unfold xiMassPrimeSqrtMask xiMassCenteredPrimeAtom
   exact div_mul_mul_eq_mul (xiMassPrimeCriticalTerm_ne_zero p)
@@ -106,34 +106,34 @@ theorem xiMassPrimeSqrtMaskLayer_eq_boundaryLayer (a : ℝ) (τ : ℂ) :
 theorem xiMassPrimeSqrtBoundaryTerm_eq_two_mul_squareAtom
     {a : ℝ} (ha : 0 < a) (τ : ℂ) (p : Nat.Primes) :
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
-        (1 / 2 : ℂ) ((p : ℕ) ^ 2) *
+        (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) *
       stripFourier (xiMassAnalyticTest a τ) (Real.log (p : ℕ) : ℂ) =
-      2 * xiMassCenteredPrimeAtom (a / 2) (2 * τ) ((p : ℕ) ^ 2) := by
+      2 * xiMassCenteredPrimeAtom (a / 2) (2 * τ) ((p : ℕ) ^ (2 : ℕ)) := by
   have hF := stripFourier_xiMassAnalyticTest_half_dilation
     ha τ (Real.log (p : ℕ) : ℂ)
-  have hlogpow : Real.log (((p : ℕ) ^ 2 : ℕ) : ℝ) =
+  have hlogpow : Real.log (((p : ℕ) ^ (2 : ℕ) : ℕ) : ℝ) =
       2 * Real.log (p : ℝ) := by
     rw [Nat.cast_pow, Real.log_pow]
     norm_num
   have hlogpowC :
-      (Real.log (((p : ℕ) ^ 2 : ℕ) : ℝ) : ℂ) =
+      (Real.log (((p : ℕ) ^ (2 : ℕ) : ℕ) : ℝ) : ℂ) =
         2 * (Real.log (p : ℝ) : ℂ) := by
     exact_mod_cast hlogpow
   unfold xiMassCenteredPrimeAtom
   calc
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
-          (1 / 2 : ℂ) ((p : ℕ) ^ 2) *
+          (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) *
         stripFourier (xiMassAnalyticTest a τ)
           (Real.log (p : ℕ) : ℂ) =
       LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
-          (1 / 2 : ℂ) ((p : ℕ) ^ 2) * (2 * stripFourier
+          (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) * (2 * stripFourier
         (xiMassAnalyticTest (a / 2) (2 * τ))
           (2 * (Real.log (p : ℕ) : ℂ))) := by rw [hF]
     _ = 2 * (LSeries.term
         (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
-          (1 / 2 : ℂ) ((p : ℕ) ^ 2) * stripFourier
+          (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) * stripFourier
         (xiMassAnalyticTest (a / 2) (2 * τ))
-          (Real.log ((((p : ℕ) ^ 2 : ℕ) : ℝ)) : ℂ)) := by
+          (Real.log ((((p : ℕ) ^ (2 : ℕ) : ℕ) : ℝ)) : ℂ)) := by
       rw [hlogpowC]
       ring
 

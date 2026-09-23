@@ -7,11 +7,11 @@ import GaloisForLFunctions.RHTower.XiCTaylorThetaTailPhaseAdaptedProuhetRankTwoC
 
 The interior primitive-ray multiplier was previously identified as
 
-`(s^2 + (1/2-a)^2)^2`.
+`(s^(2 : ℕ) + (1/2-a)^(2 : ℕ))^(2 : ℕ)`.
 
 The beta exponent and Fourier frequency forced by an upper-half-plane spectral point `z` are
 `a = 1/2-z.im` and `s = z.re`.  Therefore the complete multiplier is not merely nonnegative: it
-is exactly `normSq z ^ 2`, the squared modulus of the analytic completion monomial `z^2`.
+is exactly `normSq z ^ (2 : ℕ)`, the squared modulus of the analytic completion monomial `z^(2 : ℕ)`.
 
 This module also computes the untruncated symmetric phase current in arithmetic primitive-ray
 coordinates.  Its radial decay is `exp (-2*z.im*r)`, while its angular oscillation is the Fourier
@@ -27,11 +27,11 @@ namespace RHTower
 noncomputable section
 
 /-- **Anisotropic perfect-square specialization.**  In the open critical half-strip, the
-source-selected primitive-ray multiplier is exactly the squared modulus of `z^2`. -/
+source-selected primitive-ray multiplier is exactly the squared modulus of `z^(2 : ℕ)`. -/
 theorem thetaCuspPrimitiveRayInteriorSpectralMultiplier_anisotropic
     {z : ℂ} (hz : z.im < 1 / 2) :
     thetaCuspPrimitiveRayInteriorSpectralMultiplier
-        (1 / 2 - z.im) z.re = Complex.normSq z ^ 2 := by
+        (1 / 2 - z.im) z.re = Complex.normSq z ^ (2 : ℕ) := by
   rw [thetaCuspPrimitiveRayInteriorSpectralMultiplier_eq_square (by linarith)]
   rw [Complex.normSq_apply]
   ring
@@ -218,7 +218,7 @@ theorem thetaCuspPrimitiveRayArithmeticPolar_activeDomain_iff
 theorem thetaCuspPrimitiveRayCorePolarLowerEndpoint_neg_log_nat
     {a : ℕ} (ha : 0 < a) (r : ℝ) :
     thetaCuspPrimitiveRayCorePolarLowerEndpoint r (-Real.log (a : ℝ)) =
-      (a : ℝ) ^ 2 * Real.exp (-2 * r) := by
+      (a : ℝ) ^ (2 : ℕ) * Real.exp (-2 * r) := by
   have haR : (0 : ℝ) < (a : ℝ) := by exact_mod_cast ha
   unfold thetaCuspPrimitiveRayCorePolarLowerEndpoint
   rw [show -2 * (r + -Real.log (a : ℝ)) =
@@ -233,7 +233,7 @@ theorem thetaCuspPrimitiveRayCorePolarLowerEndpoint_neg_log_nat
 theorem thetaCuspPrimitiveRayCorePolarUpperEndpoint_neg_log_nat
     {b : ℕ} (hb : 0 < b) (r : ℝ) :
     thetaCuspPrimitiveRayCorePolarUpperEndpoint r (-Real.log (b : ℝ)) =
-      1 - (b : ℝ) ^ 2 * Real.exp (-2 * r) := by
+      1 - (b : ℝ) ^ (2 : ℕ) * Real.exp (-2 * r) := by
   have hbR : (0 : ℝ) < (b : ℝ) := by exact_mod_cast hb
   unfold thetaCuspPrimitiveRayCorePolarUpperEndpoint
   rw [show -2 * (r + -Real.log (b : ℝ)) =
@@ -247,7 +247,7 @@ theorem thetaCuspPrimitiveRayCorePolarUpperEndpoint_neg_log_nat
 /-- Radial birth height of a primitive direction at the corner of the positive quadrant. -/
 theorem thetaCuspPrimitiveRayRadialLog_zero_zero (a b : ℕ) :
     thetaCuspPrimitiveRayRadialLog a b 0 0 =
-      (1 / 2 : ℝ) * Real.log ((a : ℝ) ^ 2 + (b : ℝ) ^ 2) := by
+      (1 / 2 : ℝ) * Real.log ((a : ℝ) ^ (2 : ℕ) + (b : ℝ) ^ (2 : ℕ)) := by
   unfold thetaCuspPrimitiveRayRadialLog
   simp
 
@@ -262,13 +262,13 @@ theorem thetaCuspPrimitiveRayArithmeticPolar_activeWindow_iff_radialThreshold
   rw [thetaCuspPrimitiveRayCorePolarLowerEndpoint_neg_log_nat ha r,
     thetaCuspPrimitiveRayCorePolarUpperEndpoint_neg_log_nat hb r,
     thetaCuspPrimitiveRayRadialLog_zero_zero]
-  let S : ℝ := (a : ℝ) ^ 2 + (b : ℝ) ^ 2
+  let S : ℝ := (a : ℝ) ^ (2 : ℕ) + (b : ℝ) ^ (2 : ℕ)
   have hS : 0 < S := by
     dsimp only [S]
     positivity
   have halgebra :
-      (a : ℝ) ^ 2 * Real.exp (-2 * r) ≤
-          1 - (b : ℝ) ^ 2 * Real.exp (-2 * r) ↔
+      (a : ℝ) ^ (2 : ℕ) * Real.exp (-2 * r) ≤
+          1 - (b : ℝ) ^ (2 : ℕ) * Real.exp (-2 * r) ↔
         S * Real.exp (-2 * r) ≤ 1 := by
     dsimp only [S]
     constructor <;> intro h <;> linarith

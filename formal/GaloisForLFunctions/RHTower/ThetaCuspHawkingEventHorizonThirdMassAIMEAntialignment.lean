@@ -59,14 +59,14 @@ theorem d4BMXiEventHorizonThirdMassParityJetDefect_mul_AIME_neg_of_tilt
   have hk := d4BMXiEventHorizonThirdMassToAIMEChiralSusceptibility_pos q
   have hA : d4BMXiThetaMirrorAIMEChiralKernelDefect q ≠ 0 :=
     (d4BMXiThetaMirrorAIMEChiralKernelDefect_ne_zero_iff q).2 htilt
-  have hA2 : 0 < d4BMXiThetaMirrorAIMEChiralKernelDefect q ^ 2 :=
+  have hA2 : 0 < d4BMXiThetaMirrorAIMEChiralKernelDefect q ^ (2 : ℕ) :=
     sq_pos_of_ne_zero hA
   rw [show
       (-d4BMXiEventHorizonThirdMassToAIMEChiralSusceptibility q *
           d4BMXiThetaMirrorAIMEChiralKernelDefect q) *
           d4BMXiThetaMirrorAIMEChiralKernelDefect q =
         -d4BMXiEventHorizonThirdMassToAIMEChiralSusceptibility q *
-          d4BMXiThetaMirrorAIMEChiralKernelDefect q ^ 2 by ring]
+          d4BMXiThetaMirrorAIMEChiralKernelDefect q ^ (2 : ℕ) by ring]
   exact mul_neg_of_neg_of_pos (neg_lt_zero.mpr hk) hA2
 
 /-- Sharp coefficient classification: off line the preceding positive susceptibility is the

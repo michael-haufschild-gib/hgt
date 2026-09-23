@@ -21,22 +21,22 @@ noncomputable section
 right vertical edge. -/
 def xiRectangularVerticalRawTerm (L a R : ℝ) (q : XiZeroCopy) (y : ℝ) : ℂ :=
   let z : ℂ := (R : ℂ) + y * I
-  xiRectangularTwoEdgeTransform L a z ^ 2 *
+  xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) *
     (-z / (xiSpectralPoint q * (xiSpectralPoint q - z)))
 
 /-- Explicit numerator in the integrated per-copy vertical-resolvent estimate. -/
 def xiRectangularVerticalIntegratedNumerator (L a R : ℝ) : ℝ :=
-  ((rectangularTransformStripBound L a 1 ^ 2 / R ^ 2) * (|R| + 1)) *
+  ((rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R ^ (2 : ℕ)) * (|R| + 1)) *
       xiVerticalCauchyKernelBound +
-    2 * (((8 * rectangularTransformStripBound L a (3 / 2) ^ 2 / R ^ 2) *
-      (|R| + 1)) + rectangularTransformStripBound L a 1 ^ 2 / R ^ 2)
+    2 * (((8 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) / R ^ (2 : ℕ)) *
+      (|R| + 1)) + rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R ^ (2 : ℕ))
 
 theorem xiRectangularVerticalIntegratedNumerator_nonneg (L a R : ℝ) :
     0 ≤ xiRectangularVerticalIntegratedNumerator L a R := by
   unfold xiRectangularVerticalIntegratedNumerator
   have hC := xiVerticalCauchyKernelBound_nonneg
-  have hA : 0 ≤ rectangularTransformStripBound L a 1 ^ 2 / R ^ 2 := by positivity
-  have hB : 0 ≤ 8 * rectangularTransformStripBound L a (3 / 2) ^ 2 / R ^ 2 := by
+  have hA : 0 ≤ rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R ^ (2 : ℕ) := by positivity
+  have hB : 0 ≤ 8 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) / R ^ (2 : ℕ) := by
     positivity
   exact add_nonneg (mul_nonneg (mul_nonneg hA (by positivity)) hC)
     (mul_nonneg (by norm_num) (add_nonneg (mul_nonneg hB (by positivity)) hA))
@@ -57,11 +57,11 @@ theorem norm_integral_xiRectangularVerticalRawTerm_le
       xiRectangularVerticalIntegratedNumerator L a R / ‖xiSpectralPoint q‖ := by
   let p : ℂ := xiSpectralPoint q
   let z : ℝ → ℂ := fun y => (R : ℂ) + y * I
-  let g : ℂ → ℂ := fun w => xiRectangularTwoEdgeTransform L a w ^ 2
+  let g : ℂ → ℂ := fun w => xiRectangularTwoEdgeTransform L a w ^ (2 : ℕ)
   let h : ℝ → ℂ := fun y => g (z y) * z y / p
   let M : ℝ :=
-    (((8 * rectangularTransformStripBound L a (3 / 2) ^ 2 / R ^ 2) *
-      (|R| + 1)) + rectangularTransformStripBound L a 1 ^ 2 / R ^ 2) / ‖p‖
+    (((8 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) / R ^ (2 : ℕ)) *
+      (|R| + 1)) + rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R ^ (2 : ℕ)) / ‖p‖
   have hRpos : 0 < |R| := lt_of_lt_of_le (by norm_num) hR
   have hp0 : p ≠ 0 := xiSpectralPoint_ne_zero q
   have hpNorm : 0 < ‖p‖ := norm_pos_iff.mpr hp0
@@ -109,8 +109,8 @@ theorem norm_integral_xiRectangularVerticalRawTerm_le
             rw [norm_mul, norm_mul, norm_mul]
       _ = (‖deriv g (z y)‖ * ‖z y‖ + ‖g (z y)‖) / ‖p‖ := by
         rw [norm_I, mul_one, mul_one]
-      _ ≤ (((8 * rectangularTransformStripBound L a (3 / 2) ^ 2 / R ^ 2) *
-          (|R| + 1)) + rectangularTransformStripBound L a 1 ^ 2 / R ^ 2) /
+      _ ≤ (((8 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) / R ^ (2 : ℕ)) *
+          (|R| + 1)) + rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R ^ (2 : ℕ)) /
             ‖p‖ := by
         apply div_le_div_of_nonneg_right _ (norm_nonneg p)
         apply add_le_add
@@ -118,7 +118,7 @@ theorem norm_integral_xiRectangularVerticalRawTerm_le
         · simpa only [g, z] using hgValue
       _ = M := rfl
   have hhValue : ‖h p.im‖ ≤
-      ((rectangularTransformStripBound L a 1 ^ 2 / R ^ 2) * (|R| + 1)) / ‖p‖ := by
+      ((rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R ^ (2 : ℕ)) * (|R| + 1)) / ‖p‖ := by
     dsimp only [h]
     rw [norm_div, norm_mul]
     have hgValue := norm_xiRectangularTwoEdgeTransform_vertical_sq_le
@@ -153,7 +153,7 @@ theorem norm_integral_xiRectangularVerticalRawTerm_le
       intro y hy
       exact hrewrite y
     _ ≤ ‖h p.im‖ * xiVerticalCauchyKernelBound + 2 * M := hweighted
-    _ ≤ ((((rectangularTransformStripBound L a 1 ^ 2 / R ^ 2) * (|R| + 1)) /
+    _ ≤ ((((rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R ^ (2 : ℕ)) * (|R| + 1)) /
           ‖p‖) * xiVerticalCauchyKernelBound) + 2 * M := by
       exact add_le_add
         (mul_le_mul_of_nonneg_right hhValue xiVerticalCauchyKernelBound_nonneg) le_rfl
@@ -164,10 +164,10 @@ theorem norm_integral_xiRectangularVerticalRawTerm_le
 
 /-- `R`-independent constant in the integrated per-copy `1/(|R|*|p|)` estimate. -/
 def xiRectangularVerticalIntegratedConstant (L a : ℝ) : ℝ :=
-  (3 / 2) * rectangularTransformStripBound L a 1 ^ 2 *
+  (3 / 2) * rectangularTransformStripBound L a 1 ^ (2 : ℕ) *
       xiVerticalCauchyKernelBound +
-    24 * rectangularTransformStripBound L a (3 / 2) ^ 2 +
-    rectangularTransformStripBound L a 1 ^ 2
+    24 * rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ) +
+    rectangularTransformStripBound L a 1 ^ (2 : ℕ)
 
 theorem xiRectangularVerticalIntegratedConstant_nonneg (L a : ℝ) :
     0 ≤ xiRectangularVerticalIntegratedConstant L a := by
@@ -180,57 +180,57 @@ theorem xiRectangularVerticalIntegratedNumerator_le
     (L a R : ℝ) (hR : 2 ≤ |R|) :
     xiRectangularVerticalIntegratedNumerator L a R ≤
       xiRectangularVerticalIntegratedConstant L a / |R| := by
-  let A₁ : ℝ := rectangularTransformStripBound L a 1 ^ 2
-  let A₃ : ℝ := rectangularTransformStripBound L a (3 / 2) ^ 2
+  let A₁ : ℝ := rectangularTransformStripBound L a 1 ^ (2 : ℕ)
+  let A₃ : ℝ := rectangularTransformStripBound L a (3 / 2) ^ (2 : ℕ)
   have hRpos : 0 < |R| := lt_of_lt_of_le (by norm_num) hR
   have hA₁ : 0 ≤ A₁ := by dsimp [A₁]; positivity
   have hA₃ : 0 ≤ A₃ := by dsimp [A₃]; positivity
   have hplus : |R| + 1 ≤ (3 / 2 : ℝ) * |R| := by linarith
   have hbase (A : ℝ) (hA : 0 ≤ A) :
-      (A / R ^ 2) * (|R| + 1) ≤ ((3 / 2 : ℝ) * A) / |R| := by
+      (A / R ^ (2 : ℕ)) * (|R| + 1) ≤ ((3 / 2 : ℝ) * A) / |R| := by
     rw [← sq_abs]
     calc
-      A / |R| ^ 2 * (|R| + 1) = A * (|R| + 1) / |R| ^ 2 := by ring
-      _ ≤ A * ((3 / 2 : ℝ) * |R|) / |R| ^ 2 :=
+      A / |R| ^ (2 : ℕ) * (|R| + 1) = A * (|R| + 1) / |R| ^ (2 : ℕ) := by ring
+      _ ≤ A * ((3 / 2 : ℝ) * |R|) / |R| ^ (2 : ℕ) :=
         div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hplus hA) (sq_nonneg _)
       _ = ((3 / 2 : ℝ) * A) / |R| := by field_simp
   have hsmall (A : ℝ) (hA : 0 ≤ A) :
-      2 * (A / R ^ 2) ≤ A / |R| := by
+      2 * (A / R ^ (2 : ℕ)) ≤ A / |R| := by
     rw [← sq_abs]
     calc
-      2 * (A / |R| ^ 2) = A * (2 / |R| ^ 2) := by ring
-      _ ≤ A * (|R| / |R| ^ 2) := by
+      2 * (A / |R| ^ (2 : ℕ)) = A * (2 / |R| ^ (2 : ℕ)) := by ring
+      _ ≤ A * (|R| / |R| ^ (2 : ℕ)) := by
         gcongr
       _ = A / |R| := by field_simp
   have hfirst :
-      ((A₁ / R ^ 2) * (|R| + 1)) * xiVerticalCauchyKernelBound ≤
+      ((A₁ / R ^ (2 : ℕ)) * (|R| + 1)) * xiVerticalCauchyKernelBound ≤
         (((3 / 2 : ℝ) * A₁) * xiVerticalCauchyKernelBound) / |R| := by
     calc
-      ((A₁ / R ^ 2) * (|R| + 1)) * xiVerticalCauchyKernelBound ≤
+      ((A₁ / R ^ (2 : ℕ)) * (|R| + 1)) * xiVerticalCauchyKernelBound ≤
           (((3 / 2 : ℝ) * A₁) / |R|) * xiVerticalCauchyKernelBound :=
         mul_le_mul_of_nonneg_right (hbase A₁ hA₁) xiVerticalCauchyKernelBound_nonneg
       _ = (((3 / 2 : ℝ) * A₁) * xiVerticalCauchyKernelBound) / |R| := by ring
   have hmiddle :
-      2 * (((8 * A₃ / R ^ 2) * (|R| + 1))) ≤ 24 * A₃ / |R| := by
+      2 * (((8 * A₃ / R ^ (2 : ℕ)) * (|R| + 1))) ≤ 24 * A₃ / |R| := by
     have hb := hbase (8 * A₃) (mul_nonneg (by norm_num) hA₃)
     calc
-      2 * ((8 * A₃ / R ^ 2) * (|R| + 1)) ≤
+      2 * ((8 * A₃ / R ^ (2 : ℕ)) * (|R| + 1)) ≤
           2 * (((3 / 2 : ℝ) * (8 * A₃)) / |R|) :=
         mul_le_mul_of_nonneg_left hb (by norm_num)
       _ = 24 * A₃ / |R| := by ring
-  have hlast : 2 * (A₁ / R ^ 2) ≤ A₁ / |R| := hsmall A₁ hA₁
+  have hlast : 2 * (A₁ / R ^ (2 : ℕ)) ≤ A₁ / |R| := hsmall A₁ hA₁
   have hsecond :
-      2 * (((8 * A₃ / R ^ 2) * (|R| + 1)) + A₁ / R ^ 2) ≤
+      2 * (((8 * A₃ / R ^ (2 : ℕ)) * (|R| + 1)) + A₁ / R ^ (2 : ℕ)) ≤
         24 * A₃ / |R| + A₁ / |R| := by
     rw [mul_add]
     exact add_le_add hmiddle hlast
   unfold xiRectangularVerticalIntegratedNumerator
   unfold xiRectangularVerticalIntegratedConstant
-  change ((A₁ / R ^ 2) * (|R| + 1)) * xiVerticalCauchyKernelBound +
-      2 * (((8 * A₃ / R ^ 2) * (|R| + 1)) + A₁ / R ^ 2) ≤ _
+  change ((A₁ / R ^ (2 : ℕ)) * (|R| + 1)) * xiVerticalCauchyKernelBound +
+      2 * (((8 * A₃ / R ^ (2 : ℕ)) * (|R| + 1)) + A₁ / R ^ (2 : ℕ)) ≤ _
   calc
-    ((A₁ / R ^ 2) * (|R| + 1)) * xiVerticalCauchyKernelBound +
-        2 * (((8 * A₃ / R ^ 2) * (|R| + 1)) + A₁ / R ^ 2) ≤
+    ((A₁ / R ^ (2 : ℕ)) * (|R| + 1)) * xiVerticalCauchyKernelBound +
+        2 * (((8 * A₃ / R ^ (2 : ℕ)) * (|R| + 1)) + A₁ / R ^ (2 : ℕ)) ≤
       ((((3 / 2 : ℝ) * A₁) * xiVerticalCauchyKernelBound) / |R|) +
         (24 * A₃ / |R| + A₁ / |R|) := add_le_add hfirst hsecond
     _ = ((3 / 2) * A₁ * xiVerticalCauchyKernelBound + 24 * A₃ + A₁) / |R| := by
@@ -287,11 +287,11 @@ theorem norm_xiRectangularVerticalRawTerm_le_inv_sq
     (L a R : ℝ) (hR : 2 ≤ |R|) (q : XiZeroCopy)
     (hfar : 3 * |R| ≤ ‖xiSpectralPoint q‖) {y : ℝ} (hy : |y| ≤ 1) :
     ‖xiRectangularVerticalRawTerm L a R q y‖ ≤
-      3 * rectangularTransformStripBound L a 1 ^ 2 /
-        (|R| * ‖xiSpectralPoint q‖ ^ 2) := by
+      3 * rectangularTransformStripBound L a 1 ^ (2 : ℕ) /
+        (|R| * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   let p : ℂ := xiSpectralPoint q
   let z : ℂ := (R : ℂ) + y * I
-  let A : ℝ := rectangularTransformStripBound L a 1 ^ 2
+  let A : ℝ := rectangularTransformStripBound L a 1 ^ (2 : ℕ)
   have hRpos : 0 < |R| := lt_of_lt_of_le (by norm_num) hR
   have hp : 0 < ‖p‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hA : 0 ≤ A := by dsimp only [A]; positivity
@@ -303,13 +303,13 @@ theorem norm_xiRectangularVerticalRawTerm_le_inv_sq
   have hdiff : ‖p‖ / 2 ≤ ‖p - z‖ := by
     have hrev := norm_sub_norm_le p z
     linarith
-  have hg : ‖xiRectangularTwoEdgeTransform L a z ^ 2‖ ≤ A / |R| ^ 2 := by
+  have hg : ‖xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ)‖ ≤ A / |R| ^ (2 : ℕ) := by
     have hraw := norm_xiRectangularTwoEdgeTransform_vertical_sq_le
       L a R y hRpos hy
     simpa only [z, A, sq_abs] using hraw
   have hnum :
-      ‖xiRectangularTwoEdgeTransform L a z ^ 2‖ * ‖z‖ ≤
-        (A / |R| ^ 2) * ((3 / 2 : ℝ) * |R|) :=
+      ‖xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ)‖ * ‖z‖ ≤
+        (A / |R| ^ (2 : ℕ)) * ((3 / 2 : ℝ) * |R|) :=
     mul_le_mul hg hz' (norm_nonneg _) (by positivity)
   have hden : ‖p‖ * (‖p‖ / 2) ≤ ‖p‖ * ‖p - z‖ :=
     mul_le_mul_of_nonneg_left hdiff (norm_nonneg _)
@@ -318,17 +318,17 @@ theorem norm_xiRectangularVerticalRawTerm_le_inv_sq
   rw [norm_mul, norm_div, norm_neg, norm_mul]
   rw [← mul_div_assoc]
   calc
-    ‖xiRectangularTwoEdgeTransform L a z ^ 2‖ * ‖z‖ /
+    ‖xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ)‖ * ‖z‖ /
         (‖p‖ * ‖p - z‖) ≤
-      ((A / |R| ^ 2) * ((3 / 2 : ℝ) * |R|)) /
+      ((A / |R| ^ (2 : ℕ)) * ((3 / 2 : ℝ) * |R|)) /
         (‖p‖ * ‖p - z‖) :=
       div_le_div_of_nonneg_right hnum (by positivity)
-    _ ≤ ((A / |R| ^ 2) * ((3 / 2 : ℝ) * |R|)) /
+    _ ≤ ((A / |R| ^ (2 : ℕ)) * ((3 / 2 : ℝ) * |R|)) /
         (‖p‖ * (‖p‖ / 2)) :=
       div_le_div_of_nonneg_left (by positivity) (by positivity) hden
-    _ = 3 * (A / (|R| * ‖p‖ ^ 2)) := by field_simp
-    _ = 3 * rectangularTransformStripBound L a 1 ^ 2 /
-        (|R| * ‖xiSpectralPoint q‖ ^ 2) := by dsimp only [A, p]; ring
+    _ = 3 * (A / (|R| * ‖p‖ ^ (2 : ℕ))) := by field_simp
+    _ = 3 * rectangularTransformStripBound L a 1 ^ (2 : ℕ) /
+        (|R| * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by dsimp only [A, p]; ring
 
 /-- A vertical raw summand is continuous on the integration segment whenever the edge avoids its
 spectral real coordinate. -/
@@ -349,7 +349,7 @@ theorem continuousOn_xiRectangularVerticalRawTerm
       zero_mul, mul_zero, sub_zero, add_zero, zero_re] at hre
     exact havoid (sub_eq_zero.mp hre).symm
   have hg : ContinuousOn
-      (fun y : ℝ => xiRectangularTwoEdgeTransform L a (z y) ^ 2)
+      (fun y : ℝ => xiRectangularTwoEdgeTransform L a (z y) ^ (2 : ℕ))
       (Icc (-1 : ℝ) 1) :=
     (xiRectangularTwoEdgeTransform_sq_analyticOnNhd L a).continuousOn.comp
       hz.continuousOn (fun y hy => Set.mem_univ (z y))
@@ -368,8 +368,8 @@ theorem integral_norm_xiRectangularVerticalRawTerm_le_inv_sq
     (L a R : ℝ) (hR : 2 ≤ |R|) (q : XiZeroCopy)
     (hfar : 3 * |R| ≤ ‖xiSpectralPoint q‖) :
     (∫ y in (-1 : ℝ)..1, ‖xiRectangularVerticalRawTerm L a R q y‖) ≤
-      6 * rectangularTransformStripBound L a 1 ^ 2 /
-        (|R| * ‖xiSpectralPoint q‖ ^ 2) := by
+      6 * rectangularTransformStripBound L a 1 ^ (2 : ℕ) /
+        (|R| * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   have hRpos : 0 < |R| := lt_of_lt_of_le (by norm_num) hR
   have him := xiSpectralPoint_im_mem_openHalf q
   have himAbs : |(xiSpectralPoint q).im| < 1 / 2 := by
@@ -387,8 +387,8 @@ theorem integral_norm_xiRectangularVerticalRawTerm_le_inv_sq
         (uIcc (-1 : ℝ) 1) := by
       simpa only [uIcc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] using hcont
     exact hcontu.intervalIntegrable
-  let C : ℝ := 3 * rectangularTransformStripBound L a 1 ^ 2 /
-    (|R| * ‖xiSpectralPoint q‖ ^ 2)
+  let C : ℝ := 3 * rectangularTransformStripBound L a 1 ^ (2 : ℕ) /
+    (|R| * ‖xiSpectralPoint q‖ ^ (2 : ℕ))
   have hmono :
       (∫ y in (-1 : ℝ)..1, ‖xiRectangularVerticalRawTerm L a R q y‖) ≤
         ∫ _y in (-1 : ℝ)..1, C := by
@@ -400,8 +400,8 @@ theorem integral_norm_xiRectangularVerticalRawTerm_le_inv_sq
   calc
     (∫ y in (-1 : ℝ)..1, ‖xiRectangularVerticalRawTerm L a R q y‖) ≤
         ∫ _y in (-1 : ℝ)..1, C := hmono
-    _ = 6 * rectangularTransformStripBound L a 1 ^ 2 /
-        (|R| * ‖xiSpectralPoint q‖ ^ 2) := by
+    _ = 6 * rectangularTransformStripBound L a 1 ^ (2 : ℕ) /
+        (|R| * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       rw [intervalIntegral.integral_const]
       dsimp only [C]
       norm_num
@@ -436,15 +436,15 @@ theorem summable_integral_xiRectangularVerticalRawTerm_and_norm_tsum_le
         (xiRectangularVerticalIntegratedConstant L a * Real.sqrt (3 * |R|) / |R|) *
             (∑' q : XiZeroCopy,
               1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)) +
-          (6 * rectangularTransformStripBound L a 1 ^ 2 / |R|) *
-            (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          (6 * rectangularTransformStripBound L a 1 ^ (2 : ℕ) / |R|) *
+            (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   let T : XiZeroCopy → ℂ := fun q =>
     ∫ y in (-1 : ℝ)..1, xiRectangularVerticalRawTerm L a R q y
   let w₃ : XiZeroCopy → ℝ := fun q =>
     1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)
-  let w₂ : XiZeroCopy → ℝ := fun q => 1 / ‖xiSpectralPoint q‖ ^ 2
+  let w₂ : XiZeroCopy → ℝ := fun q => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   let K : ℝ := xiRectangularVerticalIntegratedConstant L a
-  let A : ℝ := rectangularTransformStripBound L a 1 ^ 2
+  let A : ℝ := rectangularTransformStripBound L a 1 ^ (2 : ℕ)
   let c₃ : ℝ := K * Real.sqrt (3 * |R|) / |R|
   let c₂ : ℝ := 6 * A / |R|
   have hRpos : 0 < |R| := lt_of_lt_of_le (by norm_num) hR
@@ -490,7 +490,7 @@ theorem summable_integral_xiRectangularVerticalRawTerm_and_norm_tsum_le
               (show (-1 : ℝ) ≤ 1 by norm_num) :
               ‖∫ y in (-1 : ℝ)..1, xiRectangularVerticalRawTerm L a R q y‖ ≤
                 ∫ y in (-1 : ℝ)..1, ‖xiRectangularVerticalRawTerm L a R q y‖)
-        _ ≤ 6 * A / (|R| * ‖xiSpectralPoint q‖ ^ 2) := by
+        _ ≤ 6 * A / (|R| * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
           simpa only [A] using
             integral_norm_xiRectangularVerticalRawTerm_le_inv_sq L a R hR q hfar
         _ = c₂ * w₂ q := by dsimp only [c₂, w₂]; ring
@@ -510,8 +510,8 @@ theorem summable_integral_xiRectangularVerticalRawTerm_and_norm_tsum_le
         (xiRectangularVerticalIntegratedConstant L a * Real.sqrt (3 * |R|) / |R|) *
             (∑' q : XiZeroCopy,
               1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)) +
-          (6 * rectangularTransformStripBound L a 1 ^ 2 / |R|) *
-            (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          (6 * rectangularTransformStripBound L a 1 ^ (2 : ℕ) / |R|) *
+            (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       rfl
 
 /-- The explicit mixed reciprocal-moment majorant for the integrated vertical edge tends to zero
@@ -522,14 +522,14 @@ theorem tendsto_xiRectangularVerticalIntegratedMajorant_atTop (L a : ℝ) :
         (xiRectangularVerticalIntegratedConstant L a * Real.sqrt (3 * R) / R) *
             (∑' q : XiZeroCopy,
               1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)) +
-          (6 * rectangularTransformStripBound L a 1 ^ 2 / R) *
-            (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2))
+          (6 * rectangularTransformStripBound L a 1 ^ (2 : ℕ) / R) *
+            (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))
       atTop (𝓝 0) := by
   let S₃ : ℝ := ∑' q : XiZeroCopy,
     1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)
-  let S₂ : ℝ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+  let S₂ : ℝ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   let K : ℝ := xiRectangularVerticalIntegratedConstant L a
-  let A : ℝ := rectangularTransformStripBound L a 1 ^ 2
+  let A : ℝ := rectangularTransformStripBound L a 1 ^ (2 : ℕ)
   have hsqrtInv : Tendsto (fun R : ℝ => (Real.sqrt R)⁻¹) atTop (𝓝 0) :=
     tendsto_inv_atTop_zero.comp Real.tendsto_sqrt_atTop
   have hsqrtRate : Tendsto (fun R : ℝ => Real.sqrt (3 * R) / R) atTop (𝓝 0) := by
@@ -627,9 +627,9 @@ theorem integral_tsum_xiRectangularVerticalRawTerm_eq_tsum_integral
         ∑' q : XiZeroCopy, xiRectangularVerticalRawTerm L a R q y) =
       ∑' q : XiZeroCopy,
         ∫ y in (-1 : ℝ)..1, xiRectangularVerticalRawTerm L a R q y := by
-  let A : ℝ := rectangularTransformStripBound L a 1 ^ 2
+  let A : ℝ := rectangularTransformStripBound L a 1 ^ (2 : ℕ)
   let b : XiZeroCopy → ℝ := fun q =>
-    6 * A / (|R| * ‖xiSpectralPoint q‖ ^ 2)
+    6 * A / (|R| * ‖xiSpectralPoint q‖ ^ (2 : ℕ))
   have hRpos : 0 < |R| := lt_of_lt_of_le (by norm_num) hR
   have hb : Summable b := by
     have hscaled := xiSpectralPoint_inv_sq_summable.mul_left (6 * A / |R|)
@@ -695,10 +695,10 @@ theorem tsum_xiRectangularVerticalRawTerm_eq_mul_relativeResolventTrace
     (L a R y : ℝ)
     (havoid : ∀ q : XiZeroCopy, R ≠ (xiSpectralPoint q).re) :
     (∑' q : XiZeroCopy, xiRectangularVerticalRawTerm L a R q y) =
-      xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+      xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
         xiRelativeResolventTrace ((R : ℂ) + y * I) := by
   let z : ℂ := (R : ℂ) + y * I
-  let g : ℂ := xiRectangularTwoEdgeTransform L a z ^ 2
+  let g : ℂ := xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ)
   let t : XiZeroCopy → ℂ := fun q =>
     -z / (xiSpectralPoint q * (xiSpectralPoint q - z))
   have hzq : ∀ q : XiZeroCopy, z ≠ xiSpectralPoint q := by
@@ -729,7 +729,7 @@ theorem tsum_xiRectangularVerticalRawTerm_eq_mul_relativeResolventTrace
       rfl
     _ = g * (∑' q : XiZeroCopy, t q) := tsum_mul_left
     _ = g * xiRelativeResolventTrace z := by rw [htrace]
-    _ = xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+    _ = xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
         xiRelativeResolventTrace ((R : ℂ) + y * I) := by rfl
 
 /-- Exact integrated vertical-edge identity for the full Xi relative trace. -/
@@ -737,13 +737,13 @@ theorem integral_mul_xiRelativeResolventTrace_eq_tsum_integral_rawTerm
     (L a R : ℝ) (hR : 2 ≤ |R|)
     (havoid : ∀ q : XiZeroCopy, R ≠ (xiSpectralPoint q).re) :
     (∫ y in (-1 : ℝ)..1,
-        xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+        xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
           xiRelativeResolventTrace ((R : ℂ) + y * I)) =
       ∑' q : XiZeroCopy,
         ∫ y in (-1 : ℝ)..1, xiRectangularVerticalRawTerm L a R q y := by
   calc
     (∫ y in (-1 : ℝ)..1,
-        xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+        xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
           xiRelativeResolventTrace ((R : ℂ) + y * I)) =
       ∫ y in (-1 : ℝ)..1,
         ∑' q : XiZeroCopy, xiRectangularVerticalRawTerm L a R q y := by
@@ -766,7 +766,7 @@ theorem exists_large_integral_rectangular_mul_xiRelativeResolventTrace_norm_lt
       2 ≤ R ∧
       (∀ q : XiZeroCopy, R ≠ (xiSpectralPoint q).re) ∧
       ‖∫ y in (-1 : ℝ)..1,
-          xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+          xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
             xiRelativeResolventTrace ((R : ℂ) + y * I)‖ < epsilon := by
   obtain ⟨R, hXR, hR, havoid, hsum, hsmall⟩ :=
     exists_large_integrated_xiRectangularVerticalRawTerm_tsum_lt
@@ -796,10 +796,10 @@ canonical relative-resolvent trace under the vertical integral. -/
 theorem integral_rectangular_mul_logDeriv_XiC_eq_relativeResolventTrace
     (L a R : ℝ) (havoid : ∀ q : XiZeroCopy, R ≠ (xiSpectralPoint q).re) :
     (∫ y in (-1 : ℝ)..1,
-        xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+        xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
           logDeriv XiC ((R : ℂ) + y * I)) =
       ∫ y in (-1 : ℝ)..1,
-        xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+        xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
           xiRelativeResolventTrace ((R : ℂ) + y * I) := by
   apply integral_congr
   intro y hy
@@ -817,7 +817,7 @@ theorem exists_large_integral_rectangular_mul_logDeriv_XiC_norm_lt
       2 ≤ R ∧
       (∀ q : XiZeroCopy, R ≠ (xiSpectralPoint q).re) ∧
       ‖∫ y in (-1 : ℝ)..1,
-          xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+          xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
             logDeriv XiC ((R : ℂ) + y * I)‖ < epsilon := by
   obtain ⟨R, hXR, hR, havoid, hsmall⟩ :=
     exists_large_integral_rectangular_mul_xiRelativeResolventTrace_norm_lt

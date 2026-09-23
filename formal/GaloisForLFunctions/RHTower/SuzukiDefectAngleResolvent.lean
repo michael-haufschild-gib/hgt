@@ -38,11 +38,11 @@ theorem continuousAt_suzukiDefectAngle_resolvent (a : H →L[ℝ] H) (u v : H) {
 /-- **The free endpoint of the defect angle.**  Far below the spectrum the angle is the projective
 polarization of the two squared norms of the source pair. -/
 theorem tendsto_suzukiDefectAngle_resolvent (a : H →L[ℝ] H) (u v : H)
-    (hne : ‖u‖ ^ 2 + ‖v‖ ^ 2 ≠ 0) :
+    (hne : ‖u‖ ^ (2 : ℕ) + ‖v‖ ^ (2 : ℕ) ≠ 0) :
     Tendsto (fun t : ℝ => GaloisForLFunctions.RHTower.suzukiDefectAngle
         (inner ℝ u ((resolvent a t) u)) (inner ℝ v ((resolvent a t) v)))
       (cobounded ℝ ⊓ 𝓟 (resolventSet ℝ a))
-      (𝓝 ((‖u‖ ^ 2 - ‖v‖ ^ 2) / (‖u‖ ^ 2 + ‖v‖ ^ 2))) := by
+      (𝓝 ((‖u‖ ^ (2 : ℕ) - ‖v‖ ^ (2 : ℕ)) / (‖u‖ ^ (2 : ℕ) + ‖v‖ ^ (2 : ℕ)))) := by
   simpa only [suzukiDefectAngle_resolvent] using tendsto_resolventPolarization a u v hne
 
 omit [CompleteSpace H] in

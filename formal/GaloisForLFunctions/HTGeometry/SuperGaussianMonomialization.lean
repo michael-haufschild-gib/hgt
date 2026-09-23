@@ -250,7 +250,7 @@ theorem summable_tailWeight_idxDist (j i₀ : ℕ) :
 /-! ## The jets of an entire function in Taylor form -/
 
 /-- Composing iterated derivatives adds the orders. -/
-theorem iteratedDeriv_iteratedDeriv (i j : ℕ) (f : ℂ → ℂ) :
+theorem iteratedDeriv_iteratedDeriv_superGaussianMonomialization (i j : ℕ) (f : ℂ → ℂ) :
     iteratedDeriv i (iteratedDeriv j f) = iteratedDeriv (i + j) f := by
   simp only [iteratedDeriv_eq_iterate]
   rw [Function.iterate_add_apply]
@@ -265,7 +265,7 @@ theorem hasSum_iteratedDeriv_taylor {f : ℂ → ℂ} (hf : Differentiable ℂ f
   have h := Complex.hasSum_taylorSeries_of_entire hfj 0 z
   refine h.congr_fun fun i => ?_
   have hstep : iteratedDeriv i (iteratedDeriv j f) 0 = ((Nat.factorial (i + j) : ℕ) : ℂ) * a (i + j) := by
-    rw [iteratedDeriv_iteratedDeriv, hcoeff]
+    rw [iteratedDeriv_iteratedDeriv_superGaussianMonomialization, hcoeff]
   have hfac : ((Nat.factorial i : ℕ) : ℂ) * (((i + j).descFactorial j : ℕ) : ℂ)
       = ((Nat.factorial (i + j) : ℕ) : ℂ) := by
     have hnat : Nat.factorial i * (i + j).descFactorial j = Nat.factorial (i + j) := by
@@ -575,7 +575,7 @@ theorem exists_monomialization_package
   obtain ⟨Dc, hDc⟩ := centralIndex_le_of_superGaussian hSG hn₀ (one_pos)
   set T₀ : ℝ := max (max 1 (8 / ρ)) (max |Dc|
       (max (Real.log (1 / (ρ * ‖a n₁‖))) (Real.log (1 / ‖a n₁‖)))) with hT₀def
-  set N : ℕ := max (2 * m + 1) (Nat.ceil (2 * (m : ℝ) ^ 2 / δ)) with hNdef
+  set N : ℕ := max (2 * m + 1) (Nat.ceil (2 * (m : ℝ) ^ (2 : ℕ) / δ)) with hNdef
   obtain ⟨n, T, hnN, hTT₀, hTpos, hcu, hcv⟩ :=
     exists_wide_plateau hSG htrans (by linarith : (0:ℝ) < B) N T₀
   have hT' : T₀ ≤ T + B / 2 := by linarith
@@ -604,10 +604,10 @@ theorem exists_monomialization_package
   have hmaxlb : ‖a n₁‖ * t ^ n₁ ≤ ‖a n‖ * t ^ n := by
     rw [hmax]; exact term_le_maxTerm ha htpos n₁
   have hn2m : 2 * m + 1 ≤ n := le_trans (le_max_left _ _) hnN
-  have hnδ : 2 * (m : ℝ) ^ 2 / δ ≤ (n : ℝ) := by
-    have h1 : Nat.ceil (2 * (m : ℝ) ^ 2 / δ) ≤ n := le_trans (le_max_right _ _) hnN
-    have h2 : (2 * (m : ℝ) ^ 2 / δ) ≤ (Nat.ceil (2 * (m : ℝ) ^ 2 / δ) : ℝ) := Nat.le_ceil _
-    have h3 : ((Nat.ceil (2 * (m : ℝ) ^ 2 / δ) : ℕ) : ℝ) ≤ (n : ℝ) := by exact_mod_cast h1
+  have hnδ : 2 * (m : ℝ) ^ (2 : ℕ) / δ ≤ (n : ℝ) := by
+    have h1 : Nat.ceil (2 * (m : ℝ) ^ (2 : ℕ) / δ) ≤ n := le_trans (le_max_right _ _) hnN
+    have h2 : (2 * (m : ℝ) ^ (2 : ℕ) / δ) ≤ (Nat.ceil (2 * (m : ℝ) ^ (2 : ℕ) / δ) : ℝ) := Nat.le_ceil _
+    have h3 : ((Nat.ceil (2 * (m : ℝ) ^ (2 : ℕ) / δ) : ℕ) : ℝ) ≤ (n : ℝ) := by exact_mod_cast h1
     linarith
   have hnpos : (0:ℝ) < (n:ℝ) := by
     have : (1:ℕ) ≤ n := by omega
@@ -615,7 +615,7 @@ theorem exists_monomialization_package
   -- the maximum term is at least one
   have hone : (1:ℝ) ≤ ‖a n‖ * t ^ n := by
     have hpow : t ≤ t ^ n₁ := by
-      calc t = t ^ 1 := (pow_one t).symm
+      calc t = t ^ (1 : ℕ) := (pow_one t).symm
         _ ≤ t ^ n₁ := pow_le_pow_right₀ ht1 (by omega)
     have hinv : 1 / ‖a n₁‖ ≤ t := by
       calc 1 / ‖a n₁‖ = Real.exp (Real.log (1 / ‖a n₁‖)) :=
@@ -658,18 +658,18 @@ theorem exists_monomialization_package
       have h1 : (T + B / 2) / 1 = T + B / 2 := by norm_num
       rw [h1] at hbound
       linarith
-    have hexpsq : (T + B / 2) ^ 2 / 4 ≤ t := by
+    have hexpsq : (T + B / 2) ^ (2 : ℕ) / 4 ≤ t := by
       have hhalf := Real.add_one_le_exp ((T + B / 2) / 2)
       have hsq : Real.exp ((T + B / 2) / 2) * Real.exp ((T + B / 2) / 2) = t := by
         rw [← Real.exp_add, htdef]; congr 1; ring
       have hpos : (0:ℝ) < Real.exp ((T + B / 2) / 2) := Real.exp_pos _
       nlinarith [hhalf, hsq, hpos, hT'1]
-    have hquad : |Dc| + (T + B / 2) ≤ ρ * ((T + B / 2) ^ 2 / 4) := by
+    have hquad : |Dc| + (T + B / 2) ≤ ρ * ((T + B / 2) ^ (2 : ℕ) / 4) := by
       have h8 : 8 ≤ ρ * (T + B / 2) := by
         rw [div_le_iff₀ hρ] at hT'ρ; linarith
       nlinarith [hT'D, hT'1, hρ, h8]
     calc (n : ℝ) ≤ |Dc| + (T + B / 2) := hlin
-      _ ≤ ρ * ((T + B / 2) ^ 2 / 4) := hquad
+      _ ≤ ρ * ((T + B / 2) ^ (2 : ℕ) / 4) := hquad
       _ ≤ ρ * t := mul_le_mul_of_nonneg_left hexpsq hρ.le
   refine ⟨n, t, ht1, by omega, hane, hone, hsmall, hQ, ?_⟩
   intro j hjm z hz
@@ -728,11 +728,11 @@ theorem exists_monomialization_package
     have hratio : (j : ℝ) * j / n ≤ δ / 2 := by
       have hjm' : (j : ℝ) ≤ (m : ℝ) := by exact_mod_cast hjm
       have hj0 : (0:ℝ) ≤ (j:ℝ) := Nat.cast_nonneg j
-      have hnum : (j : ℝ) * j ≤ (m : ℝ) ^ 2 := by
+      have hnum : (j : ℝ) * j ≤ (m : ℝ) ^ (2 : ℕ) := by
         have hmm := mul_le_mul hjm' hjm' hj0 (le_trans hj0 hjm')
         calc (j : ℝ) * j ≤ (m : ℝ) * (m : ℝ) := hmm
-          _ = (m : ℝ) ^ 2 := by ring
-      have hmain : 2 * (m : ℝ) ^ 2 ≤ (n : ℝ) * δ := (div_le_iff₀ hδ).mp hnδ
+          _ = (m : ℝ) ^ (2 : ℕ) := by ring
+      have hmain : 2 * (m : ℝ) ^ (2 : ℕ) ≤ (n : ℝ) * δ := (div_le_iff₀ hδ).mp hnδ
       rw [div_le_iff₀ hnpos]
       linarith [hnum, hmain]
     rw [hid, norm_mul, hnorm, norm_mul, norm_pow, hz]

@@ -22,27 +22,27 @@ def liCarrierCoordinate (gamma : ℝ) : ℂ :=
 
 /-- Squared-chord contribution of the critical-line pair `1/2 ± i gamma`. -/
 def liCarrierPairContribution (n : ℕ) (gamma : ℝ) : ℝ :=
-  ‖1 - (liCarrierCoordinate gamma) ^ n‖ ^ 2
+  ‖1 - (liCarrierCoordinate gamma) ^ n‖ ^ (2 : ℕ)
 
 /-- The critical-line Li coordinate has squared norm one. -/
 theorem normSq_liCarrierCoordinate {gamma : ℝ} (hgamma : gamma ≠ 0) :
     Complex.normSq (liCarrierCoordinate gamma) = 1 := by
   rw [liCarrierCoordinate,
     normSq_liMobiusCoordinate_realPart_height (beta := (1 / 2 : ℝ)) hgamma]
-  have hden : gamma ^ 2 + 1 / 4 ≠ 0 := by positivity
+  have hden : gamma ^ (2 : ℕ) + 1 / 4 ≠ 0 := by positivity
   field_simp [hden]
   ring
 
 /-- The critical-line Li coordinate lies on the unit circle. -/
 theorem norm_liCarrierCoordinate {gamma : ℝ} (hgamma : gamma ≠ 0) :
     ‖liCarrierCoordinate gamma‖ = 1 := by
-  have hsq : ‖liCarrierCoordinate gamma‖ ^ 2 = 1 := by
+  have hsq : ‖liCarrierCoordinate gamma‖ ^ (2 : ℕ) = 1 := by
     rw [Complex.sq_norm, normSq_liCarrierCoordinate hgamma]
   nlinarith [norm_nonneg (liCarrierCoordinate gamma)]
 
 /-- Exact reciprocal-height length of the first Li chord. -/
 theorem norm_one_sub_liCarrierCoordinate_sq {gamma : ℝ} (hgamma : gamma ≠ 0) :
-    ‖1 - liCarrierCoordinate gamma‖ ^ 2 = 1 / (gamma ^ 2 + 1 / 4) := by
+    ‖1 - liCarrierCoordinate gamma‖ ^ (2 : ℕ) = 1 / (gamma ^ (2 : ℕ) + 1 / 4) := by
   let rho : ℂ := ((1 / 2 : ℝ) : ℂ) + (gamma : ℂ) * Complex.I
   have hrho : rho ≠ 0 := by
     intro h
@@ -53,7 +53,7 @@ theorem norm_one_sub_liCarrierCoordinate_sq {gamma : ℝ} (hgamma : gamma ≠ 0)
     rw [liCarrierCoordinate, liMobiusCoordinate]
     simp [rho]
   rw [hsub, norm_inv, inv_pow]
-  have hnormsq : ‖rho‖ ^ 2 = gamma ^ 2 + 1 / 4 := by
+  have hnormsq : ‖rho‖ ^ (2 : ℕ) = gamma ^ (2 : ℕ) + 1 / 4 := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp [rho]
     ring
@@ -67,8 +67,8 @@ theorem liCarrierPairContribution_eq_two_sub_two_re {n : ℕ} {gamma : ℝ}
       2 - 2 * ((liCarrierCoordinate gamma) ^ n).re := by
   have hnorm : ‖(liCarrierCoordinate gamma) ^ n‖ = 1 := by
     rw [norm_pow, norm_liCarrierCoordinate hgamma, one_pow]
-  have hsq : ((liCarrierCoordinate gamma) ^ n).re ^ 2 +
-      ((liCarrierCoordinate gamma) ^ n).im ^ 2 = 1 := by
+  have hsq : ((liCarrierCoordinate gamma) ^ n).re ^ (2 : ℕ) +
+      ((liCarrierCoordinate gamma) ^ n).im ^ (2 : ℕ) = 1 := by
     have h := Complex.sq_norm ((liCarrierCoordinate gamma) ^ n)
     rw [hnorm, one_pow, Complex.normSq_apply] at h
     nlinarith
@@ -100,7 +100,7 @@ theorem liCarrierPairContribution_le_four {n : ℕ} {gamma : ℝ}
 theorem liCarrierPairContribution_le_quadratic {n : ℕ} {gamma : ℝ}
     (hgamma : gamma ≠ 0) :
     liCarrierPairContribution n gamma ≤
-      (n : ℝ) ^ 2 / (gamma ^ 2 + 1 / 4) := by
+      (n : ℝ) ^ (2 : ℕ) / (gamma ^ (2 : ℕ) + 1 / 4) := by
   have hpow := GaloisForLFunctions.norm_pow_sub_pow_le_of_norm_one
     (z := (1 : ℂ)) (w := liCarrierCoordinate gamma) (by simp)
     (norm_liCarrierCoordinate hgamma) n
@@ -110,9 +110,9 @@ theorem liCarrierPairContribution_le_quadratic {n : ℕ} {gamma : ℝ}
   have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
   have hnorm : 0 ≤ ‖(1 : ℂ) - (liCarrierCoordinate gamma) ^ n‖ := norm_nonneg _
   calc
-    ‖(1 : ℂ) - (liCarrierCoordinate gamma) ^ n‖ ^ 2
-        ≤ ((n : ℝ) * ‖(1 : ℂ) - liCarrierCoordinate gamma‖) ^ 2 := by nlinarith
-    _ = (n : ℝ) ^ 2 / (gamma ^ 2 + 1 / 4) := by
+    ‖(1 : ℂ) - (liCarrierCoordinate gamma) ^ n‖ ^ (2 : ℕ)
+        ≤ ((n : ℝ) * ‖(1 : ℂ) - liCarrierCoordinate gamma‖) ^ (2 : ℕ) := by nlinarith
+    _ = (n : ℝ) ^ (2 : ℕ) / (gamma ^ (2 : ℕ) + 1 / 4) := by
       rw [mul_pow, hbase]
       ring
 
@@ -120,7 +120,7 @@ theorem liCarrierPairContribution_le_quadratic {n : ℕ} {gamma : ℝ}
 theorem liCarrierPairContribution_le_min {n : ℕ} {gamma : ℝ}
     (hgamma : gamma ≠ 0) :
     liCarrierPairContribution n gamma ≤
-      min 4 ((n : ℝ) ^ 2 / (gamma ^ 2 + 1 / 4)) := by
+      min 4 ((n : ℝ) ^ (2 : ℕ) / (gamma ^ (2 : ℕ) + 1 / 4)) := by
   exact le_min (liCarrierPairContribution_le_four hgamma)
     (liCarrierPairContribution_le_quadratic hgamma)
 

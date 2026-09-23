@@ -19,28 +19,28 @@ noncomputable section
 open GaloisForLFunctions.HTGeometry
 
 theorem tendsto_norm_spectralPoint_div (σ : ℝ) :
-    Tendsto (fun X : ℝ => ‖apertureSpectralPoint σ (Real.log X ^ 4)‖ / Real.log X ^ 4)
+    Tendsto (fun X : ℝ => ‖apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))‖ / Real.log X ^ (4 : ℕ))
       atTop (𝓝 1) := by
-  have hinner : Tendsto (fun X : ℝ => σ ^ 2 / (Real.log X ^ 4) ^ 2 + 1) atTop (𝓝 1) := by
-    have hd : Tendsto (fun X : ℝ => (Real.log X ^ 4) ^ 2) atTop atTop := by
-      have h4 : Tendsto (fun X : ℝ => Real.log X ^ 4) atTop atTop :=
+  have hinner : Tendsto (fun X : ℝ => σ ^ (2 : ℕ) / (Real.log X ^ (4 : ℕ)) ^ (2 : ℕ) + 1) atTop (𝓝 1) := by
+    have hd : Tendsto (fun X : ℝ => (Real.log X ^ (4 : ℕ)) ^ (2 : ℕ)) atTop atTop := by
+      have h4 : Tendsto (fun X : ℝ => Real.log X ^ (4 : ℕ)) atTop atTop :=
         (tendsto_pow_atTop (by norm_num)).comp Real.tendsto_log_atTop
       exact (tendsto_pow_atTop (by norm_num)).comp h4
-    have hz : Tendsto (fun X : ℝ => σ ^ 2 / (Real.log X ^ 4) ^ 2) atTop (𝓝 0) :=
+    have hz : Tendsto (fun X : ℝ => σ ^ (2 : ℕ) / (Real.log X ^ (4 : ℕ)) ^ (2 : ℕ)) atTop (𝓝 0) :=
       Filter.Tendsto.div_atTop tendsto_const_nhds hd
     simpa using hz.add_const 1
   have hsqrt := (Real.continuous_sqrt.tendsto 1).comp hinner
   rw [Real.sqrt_one] at hsqrt
   refine hsqrt.congr' ?_
   filter_upwards [Real.tendsto_log_atTop.eventually_gt_atTop (1 : ℝ)] with X hL
-  have hu : (0 : ℝ) < Real.log X ^ 4 := by positivity
-  have hnorm : ‖apertureSpectralPoint σ (Real.log X ^ 4)‖
-      = Real.sqrt (σ ^ 2 + (Real.log X ^ 4) ^ 2) := by
-    rw [← Real.sqrt_sq (norm_nonneg (apertureSpectralPoint σ (Real.log X ^ 4))),
+  have hu : (0 : ℝ) < Real.log X ^ (4 : ℕ) := by positivity
+  have hnorm : ‖apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))‖
+      = Real.sqrt (σ ^ (2 : ℕ) + (Real.log X ^ (4 : ℕ)) ^ (2 : ℕ)) := by
+    rw [← Real.sqrt_sq (norm_nonneg (apertureSpectralPoint σ (Real.log X ^ (4 : ℕ)))),
       norm_spectralPoint_sq]
   rw [Function.comp_apply, hnorm]
-  rw [show σ ^ 2 / (Real.log X ^ 4) ^ 2 + 1
-      = (σ ^ 2 + (Real.log X ^ 4) ^ 2) / (Real.log X ^ 4) ^ 2 by field_simp]
+  rw [show σ ^ (2 : ℕ) / (Real.log X ^ (4 : ℕ)) ^ (2 : ℕ) + 1
+      = (σ ^ (2 : ℕ) + (Real.log X ^ (4 : ℕ)) ^ (2 : ℕ)) / (Real.log X ^ (4 : ℕ)) ^ (2 : ℕ) by field_simp]
   rw [Real.sqrt_div' _ (by positivity), Real.sqrt_sq hu.le]
 
 theorem eventually_massle : ∀ᶠ X : ℝ in atTop,
@@ -58,7 +58,7 @@ theorem eventually_massle : ∀ᶠ X : ℝ in atTop,
 logarithmic square. -/
 theorem exists_eventually_norm_radiationRemainder_succ_le (a σ : ℝ) (ha : 0 < a) (hσ : 0 < σ)
     (m : ℕ) : ∃ D : ℝ, 0 ≤ D ∧ ∀ᶠ X : ℝ in atTop,
-      ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ 4)‖
+      ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ (4 : ℕ))‖
         ≤ 2 * Real.sqrt X * (D / Real.log X ^ (2 * m + 4)) := by
   obtain ⟨D, hD0, hD⟩ := exists_shellBound_le a σ ha hσ m
   refine ⟨D, hD0, ?_⟩
@@ -67,10 +67,10 @@ theorem exists_eventually_norm_radiationRemainder_succ_le (a σ : ℝ) (ha : 0 <
   obtain ⟨hL3, hu1, hσu, hlogshell, h1, h2, hc, hdefu⟩ := hyp
   have hL1 : (1 : ℝ) ≤ Real.log X := by linarith
   have hbound := norm_massBesselDyadicRadiationRemainder_le (a := a) (σ := σ) (X := X)
-    (u := Real.log X ^ 4) (M := Real.log X + Real.log 2) (c := 1) ha hσ hu1 hσu hlogshell h1 h2 hc
+    (u := Real.log X ^ (4 : ℕ)) (M := Real.log X + Real.log 2) (c := 1) ha hσ hu1 hσu hlogshell h1 h2 hc
     hdefu m (m + 1)
   have hshell := hD (Real.log X) hL1
-  have hsb0 := radiationShellBound_nonneg (a := a) (σ := σ) (c := 1) (u := Real.log X ^ 4)
+  have hsb0 := radiationShellBound_nonneg (a := a) (σ := σ) (c := 1) (u := Real.log X ^ (4 : ℕ))
     (M := Real.log X + Real.log 2) ha zero_le_one (by positivity) m (m + 1)
   have hmass0 := dyadicSqrtVonMangoldtMass_nonneg X
   have hstep := mul_le_mul hmass hshell hsb0 (by positivity)
@@ -100,31 +100,31 @@ theorem tendsto_norm_dyadicPoincareMass (a : ℝ) (n' M m : ℕ) :
 /-- The scaled remainder differs from the scaled leading term by at most the scaled error. -/
 theorem abs_radiation_scale_sub_le (a σ : ℝ) (m : ℕ) {X : ℝ}
     (hL : 1 < Real.log X) (hX1 : 1 < X) :
-    |‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) m (Real.log X ^ 4)‖
+    |‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) m (Real.log X ^ (4 : ℕ))‖
         * Real.log X ^ (2 * m + 2) / Real.sqrt X
-      - ‖massBesselLeading a (apertureSpectralPoint σ (Real.log X ^ 4))‖ * Real.log X ^ 2
+      - ‖massBesselLeading a (apertureSpectralPoint σ (Real.log X ^ (4 : ℕ)))‖ * Real.log X ^ (2 : ℕ)
           * (‖dyadicPoincareMass a (m + 1) (m + 1) m X‖
             / (Real.sqrt X * Real.log X ^ (2 * m)))
-          * (Real.log X ^ 4 / ‖apertureSpectralPoint σ (Real.log X ^ 4)‖) ^ m|
-      ≤ ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ 4)‖
+          * (Real.log X ^ (4 : ℕ) / ‖apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))‖) ^ m|
+      ≤ ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ (4 : ℕ))‖
           * Real.log X ^ (2 * m + 2) / Real.sqrt X := by
-  obtain ⟨t, htdef⟩ : ∃ t : ℂ, apertureSpectralPoint σ (Real.log X ^ 4) = t := ⟨_, rfl⟩
+  obtain ⟨t, htdef⟩ : ∃ t : ℂ, apertureSpectralPoint σ (Real.log X ^ (4 : ℕ)) = t := ⟨_, rfl⟩
   have hL0 : (0 : ℝ) < Real.log X := by linarith
   have hLne : Real.log X ≠ 0 := ne_of_gt hL0
   have hXs : (0 : ℝ) < Real.sqrt X := Real.sqrt_pos.2 (by linarith)
-  have hnormt : Real.log X ^ 4 ≤ ‖t‖ := by rw [← htdef]; exact le_norm_spectralPoint σ _
+  have hnormt : Real.log X ^ (4 : ℕ) ≤ ‖t‖ := by rw [← htdef]; exact le_norm_spectralPoint σ _
   have htpos : (0 : ℝ) < ‖t‖ := by
-    have : (0 : ℝ) < Real.log X ^ 4 := by positivity
+    have : (0 : ℝ) < Real.log X ^ (4 : ℕ) := by positivity
     linarith
-  have hsucc := massBesselDyadicRadiationRemainder_succ a σ X (m + 1) (m + 1) m (Real.log X ^ 4)
+  have hsucc := massBesselDyadicRadiationRemainder_succ a σ X (m + 1) (m + 1) m (Real.log X ^ (4 : ℕ))
   rw [htdef] at hsucc
-  have hprodeq : ‖massBesselLeading a t‖ * Real.log X ^ 2
+  have hprodeq : ‖massBesselLeading a t‖ * Real.log X ^ (2 : ℕ)
         * (‖dyadicPoincareMass a (m + 1) (m + 1) m X‖ / (Real.sqrt X * Real.log X ^ (2 * m)))
-        * (Real.log X ^ 4 / ‖t‖) ^ m
+        * (Real.log X ^ (4 : ℕ) / ‖t‖) ^ m
       = ‖massBesselLeading a t * (dyadicPoincareMass a (m + 1) (m + 1) m X * (t⁻¹) ^ m)‖
         * Real.log X ^ (2 * m + 2) / Real.sqrt X := by
     rw [norm_mul, norm_mul, norm_pow, norm_inv, div_pow, ← pow_mul]
-    have hsplit : Real.log X ^ (2 * m + 2) = Real.log X ^ (2 * m) * Real.log X ^ 2 := by
+    have hsplit : Real.log X ^ (2 * m + 2) = Real.log X ^ (2 * m) * Real.log X ^ (2 : ℕ) := by
       rw [← pow_add]
     have hsplit2 : Real.log X ^ (4 * m) = Real.log X ^ (2 * m) * Real.log X ^ (2 * m) := by
       rw [← pow_add]
@@ -150,7 +150,7 @@ theorem abs_radiation_scale_sub_le (a σ : ℝ) (m : ℕ) {X : ℝ}
   rw [hsucc]
   have habs := abs_norm_sub_norm_le
     (massBesselLeading a t * (dyadicPoincareMass a (m + 1) (m + 1) m X * (t⁻¹) ^ m)
-      + massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ 4))
+      + massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ (4 : ℕ)))
     (massBesselLeading a t * (dyadicPoincareMass a (m + 1) (m + 1) m X * (t⁻¹) ^ m))
   simpa using habs
 
@@ -180,7 +180,7 @@ theorem radiationScaleConst_pos (a σ : ℝ) (ha : 0 < a) (m : ℕ) :
 theorem tendsto_norm_massBesselDyadicRadiationRemainder_scale (a σ : ℝ) (ha : 0 < a)
     (hσ : 0 < σ) (m : ℕ) :
     Tendsto (fun X : ℝ =>
-        ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) m (Real.log X ^ 4)‖
+        ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) m (Real.log X ^ (4 : ℕ))‖
           * Real.log X ^ (2 * m + 2) / Real.sqrt X)
       atTop (𝓝 (Real.sqrt (2 * Real.pi * a) * Real.exp (-(a * σ))
         * (‖(poincareCoeffPoly a (m + 1) (m + 1) m).coeff m‖ * (2 * (Real.sqrt 2 - 1))))) := by
@@ -191,33 +191,33 @@ theorem tendsto_norm_massBesselDyadicRadiationRemainder_scale (a σ : ℝ) (ha :
   rw [hAdef, hBdef]
   have hnt := tendsto_norm_spectralPoint_div σ
   have hlead : Tendsto (fun X : ℝ =>
-      ‖massBesselLeading a (apertureSpectralPoint σ (Real.log X ^ 4))‖ * Real.log X ^ 2)
+      ‖massBesselLeading a (apertureSpectralPoint σ (Real.log X ^ (4 : ℕ)))‖ * Real.log X ^ (2 : ℕ))
       atTop (𝓝 A) := by
     have hsq := (Real.continuous_sqrt.tendsto 1).comp hnt
     rw [Real.sqrt_one] at hsq
     have hdiv : Tendsto (fun X : ℝ => A / Real.sqrt
-        (‖apertureSpectralPoint σ (Real.log X ^ 4)‖ / Real.log X ^ 4)) atTop (𝓝 (A / 1)) :=
+        (‖apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))‖ / Real.log X ^ (4 : ℕ))) atTop (𝓝 (A / 1)) :=
       tendsto_const_nhds.div hsq one_ne_zero
     rw [div_one] at hdiv
     refine hdiv.congr' ?_
     filter_upwards [Real.tendsto_log_atTop.eventually_gt_atTop (1 : ℝ)] with X hL
     have hL0 : (0 : ℝ) < Real.log X := by linarith
-    have hu : (0 : ℝ) < Real.log X ^ 4 := by positivity
-    have hre : (apertureSpectralPoint σ (Real.log X ^ 4)).re = σ := spectralPoint_re σ _
-    have hrepos : 0 < (apertureSpectralPoint σ (Real.log X ^ 4)).re := by rw [hre]; exact hσ
-    have hnorm : (0 : ℝ) < ‖apertureSpectralPoint σ (Real.log X ^ 4)‖ := by
-      have := le_norm_spectralPoint σ (Real.log X ^ 4)
+    have hu : (0 : ℝ) < Real.log X ^ (4 : ℕ) := by positivity
+    have hre : (apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))).re = σ := spectralPoint_re σ _
+    have hrepos : 0 < (apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))).re := by rw [hre]; exact hσ
+    have hnorm : (0 : ℝ) < ‖apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))‖ := by
+      have := le_norm_spectralPoint σ (Real.log X ^ (4 : ℕ))
       linarith
     rw [Real.sqrt_div' _ (by positivity), sqrt_pow_four,
       norm_massBesselLeading a hrepos, hre, hAdef]
     field_simp
   have hratio : Tendsto (fun X : ℝ =>
-      (Real.log X ^ 4 / ‖apertureSpectralPoint σ (Real.log X ^ 4)‖) ^ m) atTop (𝓝 1) := by
+      (Real.log X ^ (4 : ℕ) / ‖apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))‖) ^ m) atTop (𝓝 1) := by
     have hinv : Tendsto (fun X : ℝ =>
-        (‖apertureSpectralPoint σ (Real.log X ^ 4)‖ / Real.log X ^ 4)⁻¹) atTop (𝓝 1) := by
+        (‖apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))‖ / Real.log X ^ (4 : ℕ))⁻¹) atTop (𝓝 1) := by
       simpa using hnt.inv₀ one_ne_zero
     have hcong : Tendsto (fun X : ℝ =>
-        Real.log X ^ 4 / ‖apertureSpectralPoint σ (Real.log X ^ 4)‖) atTop (𝓝 1) := by
+        Real.log X ^ (4 : ℕ) / ‖apertureSpectralPoint σ (Real.log X ^ (4 : ℕ))‖) atTop (𝓝 1) := by
       refine hinv.congr' ?_
       filter_upwards with X
       rw [inv_div]
@@ -227,10 +227,10 @@ theorem tendsto_norm_massBesselDyadicRadiationRemainder_scale (a σ : ℝ) (ha :
   have hprod := (hlead.mul hmassn).mul hratio
   rw [mul_one] at hprod
   have herr : Tendsto (fun X : ℝ =>
-      ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ 4)‖
+      ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ (4 : ℕ))‖
         * Real.log X ^ (2 * m + 2) / Real.sqrt X) atTop (𝓝 0) := by
-    have hmaj : Tendsto (fun X : ℝ => 2 * D / Real.log X ^ 2) atTop (𝓝 0) := by
-      have hpow : Tendsto (fun X : ℝ => Real.log X ^ 2) atTop atTop :=
+    have hmaj : Tendsto (fun X : ℝ => 2 * D / Real.log X ^ (2 : ℕ)) atTop (𝓝 0) := by
+      have hpow : Tendsto (fun X : ℝ => Real.log X ^ (2 : ℕ)) atTop atTop :=
         (tendsto_pow_atTop (by norm_num)).comp Real.tendsto_log_atTop
       exact Filter.Tendsto.div_atTop tendsto_const_nhds hpow
     refine squeeze_zero' ?_ ?_ hmaj
@@ -243,18 +243,18 @@ theorem tendsto_norm_massBesselDyadicRadiationRemainder_scale (a σ : ℝ) (ha :
       have hL0 : (0 : ℝ) < Real.log X := by linarith
       have hXs : (0 : ℝ) < Real.sqrt X := Real.sqrt_pos.2 (by linarith)
       have hsplit : Real.log X ^ (2 * m + 4)
-          = Real.log X ^ (2 * m + 2) * Real.log X ^ 2 := by rw [← pow_add]
+          = Real.log X ^ (2 * m + 2) * Real.log X ^ (2 : ℕ) := by rw [← pow_add]
       have hstep : 2 * Real.sqrt X * (D / Real.log X ^ (2 * m + 4))
-            * Real.log X ^ (2 * m + 2) / Real.sqrt X = 2 * D / Real.log X ^ 2 := by
+            * Real.log X ^ (2 * m + 2) / Real.sqrt X = 2 * D / Real.log X ^ (2 : ℕ) := by
         rw [hsplit]
         field_simp
-      calc ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ 4)‖
+      calc ‖massBesselDyadicRadiationRemainder a σ X (m + 1) (m + 1) (m + 1) (Real.log X ^ (4 : ℕ))‖
             * Real.log X ^ (2 * m + 2) / Real.sqrt X
           ≤ 2 * Real.sqrt X * (D / Real.log X ^ (2 * m + 4))
             * Real.log X ^ (2 * m + 2) / Real.sqrt X := by
             refine div_le_div_of_nonneg_right ?_ hXs.le
             exact mul_le_mul_of_nonneg_right hb (by positivity)
-        _ = 2 * D / Real.log X ^ 2 := hstep
+        _ = 2 * D / Real.log X ^ (2 : ℕ) := hstep
   have hlow := hprod.sub herr
   have hhigh := hprod.add herr
   rw [sub_zero] at hlow

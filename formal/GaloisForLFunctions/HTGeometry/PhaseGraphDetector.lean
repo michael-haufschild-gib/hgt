@@ -72,14 +72,14 @@ def diffFreq (pq : (d → ℤ) × (d → ℤ)) : d → ℤ := pq.1 - pq.2
 def pairBox (d : Type*) [Fintype d] [DecidableEq d] (N : ℕ) : Finset ((d → ℤ) × (d → ℤ)) :=
   freqBox d N ×ˢ freqBox d N
 
-theorem card_pairBox (N : ℕ) : (pairBox d N).card = ((N + 1) ^ Fintype.card d) ^ 2 := by
+theorem card_pairBox (N : ℕ) : (pairBox d N).card = ((N + 1) ^ Fintype.card d) ^ (2 : ℕ) := by
   rw [pairBox, Finset.card_product, card_freqBox, sq]
 
 /-- **Crude coincidence count.**  A difference frequency and three of the four box indices
 determine the fourth. -/
 theorem card_matching_pairs_le (N : ℕ) :
     (((pairBox d N ×ˢ pairBox d N).filter fun z => diffFreq z.1 = diffFreq z.2).card : ℝ) ≤
-      ((N + 1) ^ Fintype.card d) ^ 3 := by
+      ((N + 1) ^ Fintype.card d) ^ (3 : ℕ) := by
   classical
   have hcard : (((pairBox d N ×ˢ pairBox d N).filter fun z => diffFreq z.1 = diffFreq z.2).card) ≤
       ((freqBox d N ×ˢ freqBox d N) ×ˢ freqBox d N).card := by
@@ -104,13 +104,13 @@ theorem card_matching_pairs_le (N : ℕ) :
         rwa [sub_sub_cancel, sub_sub_cancel] at h6
       exact Prod.ext (Prod.ext h1 h2) (Prod.ext h3 h4)
   have hprod : (((freqBox d N ×ˢ freqBox d N) ×ˢ freqBox d N).card : ℝ) =
-      ((N + 1) ^ Fintype.card d) ^ 3 := by
+      ((N + 1) ^ Fintype.card d) ^ (3 : ℕ) := by
     rw [Finset.card_product, Finset.card_product, card_freqBox]
     push_cast
     ring
   calc (((pairBox d N ×ˢ pairBox d N).filter fun z => diffFreq z.1 = diffFreq z.2).card : ℝ)
       ≤ (((freqBox d N ×ˢ freqBox d N) ×ˢ freqBox d N).card : ℝ) := by exact_mod_cast hcard
-    _ = ((N + 1) ^ Fintype.card d) ^ 3 := hprod
+    _ = ((N + 1) ^ Fintype.card d) ^ (3 : ℕ) := hprod
 
 theorem card_diagonal_pairBox (N : ℕ) :
     ((pairBox d N).filter fun pq => diffFreq pq = 0).card = (N + 1) ^ Fintype.card d := by
@@ -140,10 +140,10 @@ theorem detectorScale_pos (N : ℕ) : 0 < detectorScale d N := by
 
 /-- The coefficients of the phase detector centred at a prescribed point. -/
 def detectorCoeff (N : ℕ) (a : d → ℝ) (pq : (d → ℤ) × (d → ℤ)) : ℂ :=
-  (((detectorScale d N) ^ 2 : ℝ) : ℂ)⁻¹ * charLift (diffFreq pq) (-a)
+  (((detectorScale d N) ^ (2 : ℕ) : ℝ) : ℂ)⁻¹ * charLift (diffFreq pq) (-a)
 
 theorem norm_detectorCoeff (N : ℕ) (a : d → ℝ) (pq : (d → ℤ) × (d → ℤ)) :
-    ‖detectorCoeff N a pq‖ = ((detectorScale d N) ^ 2)⁻¹ := by
+    ‖detectorCoeff N a pq‖ = ((detectorScale d N) ^ (2 : ℕ))⁻¹ := by
   rw [detectorCoeff, norm_mul, norm_charLift, mul_one, norm_inv, Complex.norm_real,
     Real.norm_of_nonneg (by positivity)]
 
@@ -178,9 +178,9 @@ theorem phaseGraphDirichletShift_self (N : ℕ) (a : d → ℝ) :
 /-- **The detector is the normalized squared modulus of the shifted Dirichlet sum.** -/
 theorem phaseDetector_eq (N : ℕ) (a x : d → ℝ) :
     phaseDetector N a x =
-      ((‖phaseGraphDirichletShift N a x‖ ^ 2 / (detectorScale d N) ^ 2 : ℝ) : ℂ) := by
+      ((‖phaseGraphDirichletShift N a x‖ ^ (2 : ℕ) / (detectorScale d N) ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
-  have hmulconj : ((‖phaseGraphDirichletShift N a x‖ ^ 2 : ℝ) : ℂ) =
+  have hmulconj : ((‖phaseGraphDirichletShift N a x‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       phaseGraphDirichletShift N a x * (starRingEnd ℂ) (phaseGraphDirichletShift N a x) := by
     rw [Complex.mul_conj]
     norm_cast
@@ -252,7 +252,7 @@ theorem integral_box_phaseDetector (N : ℕ) (a : d → ℝ) :
   classical
   rw [phaseDetector, integral_box_trigLift]
   have hterm : ∀ pq ∈ (pairBox d N).filter (fun pq => diffFreq pq = 0),
-      detectorCoeff N a pq = ((((detectorScale d N) ^ 2 : ℝ) : ℂ))⁻¹ := by
+      detectorCoeff N a pq = ((((detectorScale d N) ^ (2 : ℕ) : ℝ) : ℂ))⁻¹ := by
     intro pq hpq
     rw [Finset.mem_filter] at hpq
     rw [detectorCoeff, hpq.2, charLift_zero_index, mul_one]
@@ -278,7 +278,7 @@ theorem pderivList_phaseDetector (N : ℕ) (a : d → ℝ) (l : List d) :
 theorem norm_pderivCoeff_le (N : ℕ) (a : d → ℝ) (l : List d) {pq : (d → ℤ) × (d → ℤ)}
     (hpq : pq ∈ pairBox d N) :
     ‖(l.map fun i => (2 * Real.pi * I * ((diffFreq pq) i : ℂ))).prod * detectorCoeff N a pq‖ ≤
-      (2 * Real.pi * (N : ℝ)) ^ l.length * ((detectorScale d N) ^ 2)⁻¹ := by
+      (2 * Real.pi * (N : ℝ)) ^ l.length * ((detectorScale d N) ^ (2 : ℕ))⁻¹ := by
   rw [pairBox, Finset.mem_product] at hpq
   rw [norm_mul, norm_detectorCoeff, norm_list_prod_map]
   refine mul_le_mul_of_nonneg_right ?_ (by positivity)
@@ -292,39 +292,39 @@ theorem norm_pderivCoeff_le (N : ℕ) (a : d → ℝ) (l : List d) {pq : (d → 
 /-- **Sobolev decay of the detector.**  Every completed mean square of an iterated coordinate
 derivative decays like the reciprocal resolution power of the phase dimension. -/
 theorem integral_box_normSq_pderivList_phaseDetector_le (N : ℕ) (a : d → ℝ) (l : List d) :
-    (∫ x in torusBox d, ‖pderivList l (phaseDetector N a) x‖ ^ 2) ≤
-      ((2 * Real.pi * (N : ℝ)) ^ l.length) ^ 2 / ((N : ℝ) + 1) ^ Fintype.card d := by
+    (∫ x in torusBox d, ‖pderivList l (phaseDetector N a) x‖ ^ (2 : ℕ)) ≤
+      ((2 * Real.pi * (N : ℝ)) ^ l.length) ^ (2 : ℕ) / ((N : ℝ) + 1) ^ Fintype.card d := by
   classical
   rw [pderivList_phaseDetector]
   refine le_trans (integral_box_normSq_trigLift_le (pairBox d N) diffFreq _
-    (M := (2 * Real.pi * (N : ℝ)) ^ l.length * ((detectorScale d N) ^ 2)⁻¹)
+    (M := (2 * Real.pi * (N : ℝ)) ^ l.length * ((detectorScale d N) ^ (2 : ℕ))⁻¹)
     (by positivity) (fun pq hpq => norm_pderivCoeff_le N a l hpq)) ?_
   have hcount := card_matching_pairs_le (d := d) N
   have hscale : detectorScale d N = ((N : ℝ) + 1) ^ Fintype.card d := rfl
   have hpos : (0 : ℝ) < detectorScale d N := detectorScale_pos N
-  calc ((2 * Real.pi * (N : ℝ)) ^ l.length * ((detectorScale d N) ^ 2)⁻¹) ^ 2 *
+  calc ((2 * Real.pi * (N : ℝ)) ^ l.length * ((detectorScale d N) ^ (2 : ℕ))⁻¹) ^ (2 : ℕ) *
         ((((pairBox d N ×ˢ pairBox d N).filter fun z => diffFreq z.1 = diffFreq z.2).card : ℝ))
-      ≤ ((2 * Real.pi * (N : ℝ)) ^ l.length * ((detectorScale d N) ^ 2)⁻¹) ^ 2 *
-        ((N + 1) ^ Fintype.card d) ^ 3 := by
+      ≤ ((2 * Real.pi * (N : ℝ)) ^ l.length * ((detectorScale d N) ^ (2 : ℕ))⁻¹) ^ (2 : ℕ) *
+        ((N + 1) ^ Fintype.card d) ^ (3 : ℕ) := by
         refine mul_le_mul_of_nonneg_left hcount (by positivity)
-    _ = ((2 * Real.pi * (N : ℝ)) ^ l.length) ^ 2 / ((N : ℝ) + 1) ^ Fintype.card d := by
+    _ = ((2 * Real.pi * (N : ℝ)) ^ l.length) ^ (2 : ℕ) / ((N : ℝ) + 1) ^ Fintype.card d := by
         rw [← hscale]
         field_simp
 
 /-- **Translation invariance.**  The completed mean squares of the detector's derivatives do not
 depend on the centre. -/
 theorem integral_box_normSq_pderivList_phaseDetector_eq (N : ℕ) (a : d → ℝ) (l : List d) :
-    (∫ x in torusBox d, ‖pderivList l (phaseDetector N a) x‖ ^ 2) =
-      ∫ x in torusBox d, ‖pderivList l (phaseDetector N (0 : d → ℝ)) x‖ ^ 2 := by
+    (∫ x in torusBox d, ‖pderivList l (phaseDetector N a) x‖ ^ (2 : ℕ)) =
+      ∫ x in torusBox d, ‖pderivList l (phaseDetector N (0 : d → ℝ)) x‖ ^ (2 : ℕ) := by
   classical
   have key : ∀ b : d → ℝ,
-      ((∫ x in torusBox d, ‖pderivList l (phaseDetector N b) x‖ ^ 2 : ℝ) : ℂ) =
+      ((∫ x in torusBox d, ‖pderivList l (phaseDetector N b) x‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       ∑ p ∈ pairBox d N, ∑ q ∈ pairBox d N,
         if diffFreq p = diffFreq q then
           ((l.map fun i => (2 * Real.pi * I * ((diffFreq p) i : ℂ))).prod *
-            ((((detectorScale d N) ^ 2 : ℝ) : ℂ))⁻¹) *
+            ((((detectorScale d N) ^ (2 : ℕ) : ℝ) : ℂ))⁻¹) *
           (starRingEnd ℂ) ((l.map fun i => (2 * Real.pi * I * ((diffFreq q) i : ℂ))).prod *
-            ((((detectorScale d N) ^ 2 : ℝ) : ℂ))⁻¹)
+            ((((detectorScale d N) ^ (2 : ℕ) : ℝ) : ℂ))⁻¹)
         else 0 := by
     intro b
     rw [pderivList_phaseDetector, ofReal_integral_box_normSq_trigLift]
@@ -339,8 +339,8 @@ theorem integral_box_normSq_pderivList_phaseDetector_eq (N : ℕ) (a : d → ℝ
         norm_cast
         rw [← Complex.sq_norm, norm_charLift, one_pow]
       have hcoef : detectorCoeff N b q * (starRingEnd ℂ) (detectorCoeff N b q) =
-          ((((detectorScale d N) ^ 2 : ℝ) : ℂ))⁻¹ *
-            (starRingEnd ℂ) (((((detectorScale d N) ^ 2 : ℝ) : ℂ))⁻¹) := by
+          ((((detectorScale d N) ^ (2 : ℕ) : ℝ) : ℂ))⁻¹ *
+            (starRingEnd ℂ) (((((detectorScale d N) ^ (2 : ℕ) : ℝ) : ℂ))⁻¹) := by
         rw [detectorCoeff, map_mul, mul_mul_mul_comm, hconj, mul_one]
       rw [map_mul, map_mul, mul_mul_mul_comm, hcoef, ← mul_mul_mul_comm]
     · rw [if_neg h, if_neg h]

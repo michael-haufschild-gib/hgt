@@ -21,18 +21,18 @@ local instance instDecidableEqMTTripleSeparatedBoxIndexHarmanBoundary (u t : ℕ
 
 theorem sum_normSq_sub_add_sub_le_four
     (A : Finset ℕ) (e₀ e₁ e₂ e₃ : ArithmeticFunction ℂ) :
-    ∑ n ∈ A, ‖(e₀ - e₁ + e₂ - e₃) n‖ ^ 2 ≤
-      4 * (∑ n ∈ A, ‖e₀ n‖ ^ 2) +
-      4 * (∑ n ∈ A, ‖e₁ n‖ ^ 2) +
-      4 * (∑ n ∈ A, ‖e₂ n‖ ^ 2) +
-      4 * (∑ n ∈ A, ‖e₃ n‖ ^ 2) := by
+    ∑ n ∈ A, ‖(e₀ - e₁ + e₂ - e₃) n‖ ^ (2 : ℕ) ≤
+      4 * (∑ n ∈ A, ‖e₀ n‖ ^ (2 : ℕ)) +
+      4 * (∑ n ∈ A, ‖e₁ n‖ ^ (2 : ℕ)) +
+      4 * (∑ n ∈ A, ‖e₂ n‖ ^ (2 : ℕ)) +
+      4 * (∑ n ∈ A, ‖e₃ n‖ ^ (2 : ℕ)) := by
   calc
-    ∑ n ∈ A, ‖(e₀ - e₁ + e₂ - e₃) n‖ ^ 2 ≤
-        ∑ n ∈ A, (4 * ‖e₀ n‖ ^ 2 + 4 * ‖e₁ n‖ ^ 2 +
-          4 * ‖e₂ n‖ ^ 2 + 4 * ‖e₃ n‖ ^ 2) := by
+    ∑ n ∈ A, ‖(e₀ - e₁ + e₂ - e₃) n‖ ^ (2 : ℕ) ≤
+        ∑ n ∈ A, (4 * ‖e₀ n‖ ^ (2 : ℕ) + 4 * ‖e₁ n‖ ^ (2 : ℕ) +
+          4 * ‖e₂ n‖ ^ (2 : ℕ) + 4 * ‖e₃ n‖ ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro n hn
-      change ‖e₀ n - e₁ n + e₂ n - e₃ n‖ ^ 2 ≤ _
+      change ‖e₀ n - e₁ n + e₂ n - e₃ n‖ ^ (2 : ℕ) ≤ _
       have hnorm : ‖e₀ n - e₁ n + e₂ n - e₃ n‖ ≤
           ‖e₀ n‖ + ‖e₁ n‖ + ‖e₂ n‖ + ‖e₃ n‖ := by
         calc
@@ -48,18 +48,18 @@ theorem sum_normSq_sub_add_sub_le_four
             simpa only [sub_eq_add_neg, norm_neg] using norm_add_le (e₀ n) (-e₁ n)
       have hsq := pow_le_pow_left₀ (norm_nonneg _) hnorm 2
       calc
-        ‖e₀ n - e₁ n + e₂ n - e₃ n‖ ^ 2 ≤
-            (‖e₀ n‖ + ‖e₁ n‖ + ‖e₂ n‖ + ‖e₃ n‖) ^ 2 := hsq
-        _ ≤ 4 * ‖e₀ n‖ ^ 2 + 4 * ‖e₁ n‖ ^ 2 +
-            4 * ‖e₂ n‖ ^ 2 + 4 * ‖e₃ n‖ ^ 2 := by
+        ‖e₀ n - e₁ n + e₂ n - e₃ n‖ ^ (2 : ℕ) ≤
+            (‖e₀ n‖ + ‖e₁ n‖ + ‖e₂ n‖ + ‖e₃ n‖) ^ (2 : ℕ) := hsq
+        _ ≤ 4 * ‖e₀ n‖ ^ (2 : ℕ) + 4 * ‖e₁ n‖ ^ (2 : ℕ) +
+            4 * ‖e₂ n‖ ^ (2 : ℕ) + 4 * ‖e₃ n‖ ^ (2 : ℕ) := by
           nlinarith [sq_nonneg (‖e₀ n‖ - ‖e₁ n‖),
             sq_nonneg (‖e₀ n‖ - ‖e₂ n‖), sq_nonneg (‖e₀ n‖ - ‖e₃ n‖),
             sq_nonneg (‖e₁ n‖ - ‖e₂ n‖), sq_nonneg (‖e₁ n‖ - ‖e₃ n‖),
             sq_nonneg (‖e₂ n‖ - ‖e₃ n‖)]
-    _ = 4 * (∑ n ∈ A, ‖e₀ n‖ ^ 2) +
-        4 * (∑ n ∈ A, ‖e₁ n‖ ^ 2) +
-        4 * (∑ n ∈ A, ‖e₂ n‖ ^ 2) +
-        4 * (∑ n ∈ A, ‖e₃ n‖ ^ 2) := by
+    _ = 4 * (∑ n ∈ A, ‖e₀ n‖ ^ (2 : ℕ)) +
+        4 * (∑ n ∈ A, ‖e₁ n‖ ^ (2 : ℕ)) +
+        4 * (∑ n ∈ A, ‖e₂ n‖ ^ (2 : ℕ)) +
+        4 * (∑ n ∈ A, ‖e₃ n‖ ^ (2 : ℕ)) := by
       simp only [Finset.sum_add_distrib, Finset.mul_sum]
 
 set_option maxHeartbeats 600000 in
@@ -89,23 +89,23 @@ theorem sum_normSq_mtHarmanProductBoundaryErrorAF_le_collar_zeta_sq
     (hdilation : (1 + delta) ^ (maxDepth + 5) ≤ 1 + eta) :
     ∑ n ∈ A, ‖mtHarmanProductBoundaryErrorAF
       (outerQ := outerQ) (outerD := outerD) endpointQ endpointD z Q D E
-      data maxDepth j delta N recStart Y n‖ ^ 2 ≤
+      data maxDepth j delta N recStart Y n‖ ^ (2 : ℕ) ≤
       4 * ((∑ n ∈ mtLowerProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 4) n : ℝ) ^ 2)) +
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (4 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
         ∑ n ∈ mtUpperProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 4) n : ℝ) ^ 2)) +
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (4 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       4 * ((∑ n ∈ mtLowerProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 4) n : ℝ) ^ 2)) +
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (4 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
         ∑ n ∈ mtUpperProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 4) n : ℝ) ^ 2)) +
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (4 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       4 * ((∑ n ∈ mtLowerProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2)) +
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
         ∑ n ∈ mtUpperProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2)) +
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       4 * ((∑ n ∈ mtLowerProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2)) +
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
         ∑ n ∈ mtUpperProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2)) := by
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ))) := by
   unfold mtHarmanProductBoundaryErrorAF
   rw [hz0Data, hDData]
   let e₀ := mtProductScaleBoundaryErrorAF
@@ -152,7 +152,7 @@ theorem sum_normSq_mtHarmanProductBoundaryErrorAF_le_collar_zeta_sq
     z0 Dtrunc recStart hdelta hz0 hroot data hblocks maxDepth
     (mtUpperAdicIndex delta Dtrunc) (mtUpperAdicIndex delta N) j
     Y eta hY heta hdilation
-  change ∑ n ∈ A, ‖(e₀ - e₁ + e₂ - e₃) n‖ ^ 2 ≤ _
+  change ∑ n ∈ A, ‖(e₀ - e₁ + e₂ - e₃) n‖ ^ (2 : ℕ) ≤ _
   exact hsum.trans (add_le_add (add_le_add (add_le_add
     (mul_le_mul_of_nonneg_left h₀ (by norm_num))
     (mul_le_mul_of_nonneg_left h₁ (by norm_num)))

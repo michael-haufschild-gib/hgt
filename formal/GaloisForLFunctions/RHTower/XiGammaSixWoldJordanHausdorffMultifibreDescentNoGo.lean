@@ -80,21 +80,21 @@ theorem primeLabelledFaithfulT2EncodedWoldJordanDescent_iff_line
     (Y : Type u) [TopologicalSpace Y] [T2Space Y]
     (q : XiZeroCopy) (encode : ℝ → Y) (hencode : Function.Injective encode) :
     PrimeLabelledActualSourceContinuouslyDescendsTo Y (fun p =>
-      encode (thetaGammaSixWoldHorizontalCarrier p q ^ 2)) ↔
+      encode (thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ))) ↔
       (q.1 : ℂ).re = 1 / 2 := by
   constructor
   · intro hdescent
     obtain ⟨z, hz⟩ :=
       (primeLabelledActualSourceContinuouslyDescendsTo_iff Y
-        (fun p => encode (thetaGammaSixWoldHorizontalCarrier p q ^ 2))).1 hdescent
+        (fun p => encode (thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ)))).1 hdescent
     have hconstant : ∃ z : ℝ, ∀ a : ℕ,
-        thetaGammaSixWoldHorizontalCarrier (nthPrimeSubtype a) q ^ 2 = z := by
-      refine ⟨thetaGammaSixWoldHorizontalCarrier (nthPrimeSubtype 0) q ^ 2, ?_⟩
+        thetaGammaSixWoldHorizontalCarrier (nthPrimeSubtype a) q ^ (2 : ℕ) = z := by
+      refine ⟨thetaGammaSixWoldHorizontalCarrier (nthPrimeSubtype 0) q ^ (2 : ℕ), ?_⟩
       intro a
       apply hencode
       exact (hz a).trans (hz 0).symm
     let cR : Nat.Primes → ℝ := fun p =>
-      thetaGammaSixWoldHorizontalCarrier p q ^ 2
+      thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ)
     have hscalar : PrimeLabelledActualSourceContinuouslyDescends cR :=
       (primeLabelledActualSourceContinuouslyDescends_iff cR).2 hconstant
     rcases hscalar with ⟨reporter, hreporter⟩
@@ -109,7 +109,7 @@ theorem primeLabelledFaithfulT2EncodedWoldJordanDescent_iff_line
     have hrate : primeDepthBVWoldXiCenteredRate q.1 = 0 :=
       (primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).2 hline
     apply (primeLabelledActualSourceContinuouslyDescendsTo_iff Y
-      (fun p => encode (thetaGammaSixWoldHorizontalCarrier p q ^ 2))).2
+      (fun p => encode (thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ)))).2
     refine ⟨encode 0, ?_⟩
     intro a
     have hcarrier : thetaGammaSixWoldHorizontalCarrier (nthPrimeSubtype a) q = 0 :=
@@ -131,7 +131,7 @@ structure FaithfulT2EncodedWoldJordanDescent (q : XiZeroCopy) where
   agrees : ∀ a n : ℕ,
     reporter (deningerBigWittCrossPairFiniteOneLegGraphAdmission
       (deningerBigWittWoldFixedLeftRightEdgeNormalizedPacket a n)) =
-    encode (thetaGammaSixWoldHorizontalCarrier (nthPrimeSubtype a) q ^ 2)
+    encode (thetaGammaSixWoldHorizontalCarrier (nthPrimeSubtype a) q ^ (2 : ℕ))
 
 /-- Existence of any faithful Hausdorff multifibre descent at one Xi copy is exactly critical-line
 placement. -/
@@ -144,7 +144,7 @@ theorem nonempty_faithfulT2EncodedWoldJordanDescent_iff_line
     letI : TopologicalSpace W.Carrier := W.topology
     letI : T2Space W.Carrier := W.t2
     let c : Nat.Primes → W.Carrier := fun p =>
-      W.encode (thetaGammaSixWoldHorizontalCarrier p q ^ 2)
+      W.encode (thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ))
     have hdescent : PrimeLabelledActualSourceContinuouslyDescendsTo W.Carrier c := by
       refine ⟨⟨W.reporter, W.reporter_continuous⟩, ?_⟩
       intro a n

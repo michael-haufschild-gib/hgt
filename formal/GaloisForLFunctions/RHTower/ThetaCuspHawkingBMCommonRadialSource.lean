@@ -36,7 +36,7 @@ def radialGenerator (F : ℝ → ℂ) (x : ℝ) : ℂ :=
 
 /-- One source operator for both physical branches, with its actual angular Laplacian input. -/
 def commonSource (lam : ℂ) (F LF : ℝ → ℂ) (x : ℝ) : ℂ :=
-  (5*lam-6)/4*F x+(radialUnit x:ℂ)^2/8*
+  (5*lam-6)/4*F x+(radialUnit x:ℂ)^(2 : ℕ)/8*
     ((4*lam+1)*(lam+2)*F x-(lam+4)*LF x-
       (7*lam-2)*radialGenerator F x+2*radialGenerator LF x)
 
@@ -62,7 +62,7 @@ are retained; no source, clock, eigen-equation or cancellation premise is suppli
 theorem timeOriginalForcing_common_source (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (v : ℝ) (x : {x : ℝ // x < 0}) (z : UpperHalfPlane) :
     timeOriginalForcing q branch a (v-x.val) x.val (coordinates z) =
-      -2*(1-(radialUnit x.val:ℂ)^2)*(radialUnit x.val:ℂ)*
+      -2*(1-(radialUnit x.val:ℂ)^(2 : ℕ))*(radialUnit x.val:ℂ)*
         commonSource (scalarParameter q)
           (fun y => seed (physicalRate q branch) a v y (fullSquarePotential q (coordinates z)))
           (fun y => seed (physicalRate q branch) a v y
@@ -75,7 +75,7 @@ theorem timeOriginalForcing_common_source (q : XiZeroCopy) (branch : Bool) (a : 
 /-- The common producer in ordinary compact-radial derivative form. -/
 theorem commonSource_differential_form (lam : ℂ) (F LF : ℝ → ℂ) (x : {x : ℝ // x < 0}) :
     commonSource lam F LF x.val =
-      (5*lam-6)/4*F x.val+(radialUnit x.val:ℂ)^2/8*
+      (5*lam-6)/4*F x.val+(radialUnit x.val:ℂ)^(2 : ℕ)/8*
         ((lam-2)*(4*(lam-1)*F x.val-LF x.val)-
           ((7*lam-2)*deriv F x.val-2*deriv LF x.val)/((radialUnit x.val:ℂ)-1)) := by
   dsimp [commonSource,radialGenerator]

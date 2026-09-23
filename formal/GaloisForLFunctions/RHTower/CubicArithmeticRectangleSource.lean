@@ -383,7 +383,7 @@ theorem cubicArithmeticRectangleSource_winding (z₁ z₂ : ℂ)
 trace-class source corrections, and multiplicity-normalized ordinary trace. The constants precede
 the rectangle; neither the index nor the zeros are inputs to the source symbol. -/
 theorem exists_faithful_arithmetic_rectangle_cubic :
-    ∃ t b : ℝ, t^2+b^2=1 ∧ 6*(t*b)^2=1 ∧ t*b ≠ 0 ∧
+    ∃ t b : ℝ, t^(2 : ℕ)+b^(2 : ℕ)=1 ∧ 6*(t*b)^(2 : ℕ)=1 ∧ t*b ≠ 0 ∧
     ∀ (z₁ z₂ : ℂ) (_ : z₁.re < z₂.re) (_ : z₁.im < z₂.im)
       (hB : ∀ y ∈ uIcc z₁.re z₂.re, XiExplicitAdmissible ((y:ℂ)+z₁.im*I))
       (hT : ∀ y ∈ uIcc z₁.re z₂.re, XiExplicitAdmissible ((y:ℂ)+z₂.im*I))

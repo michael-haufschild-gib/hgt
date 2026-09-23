@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiCTaylorThetaTailArithmeticPhaseSeam
 
 The first differentiated Gaussian density atom is literally four times the second source
 derivative of the first raw theta atom.  Two integrations by parts therefore split every
-positive-half-line phase tail into its two endpoint jets and one `z^2`-weighted potential tail.
+positive-half-line phase tail into its two endpoint jets and one `z^(2 : ℕ)`-weighted potential tail.
 This retains the boundary data block by block, before any current polarization.
 -/
 
@@ -35,11 +35,11 @@ lemma hasDerivAt_spectralTranslationPhase_source (z : ℂ) (x : ℝ) :
 
 lemma hasDerivAt_spectralTranslationPhase_sourceDerivative (z : ℂ) (x : ℝ) :
     HasDerivAt (fun u : ℝ => I * z * spectralTranslationPhase u z)
-      (-(z ^ 2) * spectralTranslationPhase x z) x := by
+      (-(z ^ (2 : ℕ)) * spectralTranslationPhase x z) x := by
   have h := (hasDerivAt_spectralTranslationPhase_source z x).const_mul (I * z)
   apply h.congr_deriv
   rw [show I * z * (I * z * spectralTranslationPhase x z) =
-      I * I * z ^ 2 * spectralTranslationPhase x z by ring, I_mul_I]
+      I * I * z ^ (2 : ℕ) * spectralTranslationPhase x z by ring, I_mul_I]
   ring
 
 lemma integrableOn_four_thetaCuspTailDerivativeAtom_one_mul_phase
@@ -95,7 +95,7 @@ lemma tendsto_four_thetaCuspTailDerivativeAtom_one_mul_phase_atTop_zero
   nlinarith
 
 /-- Exact blockwise source identity.  The density phase tail is the endpoint first jet minus the
-endpoint zeroth jet, followed by the `z^2`-weighted raw potential tail. -/
+endpoint zeroth jet, followed by the `z^(2 : ℕ)`-weighted raw potential tail. -/
 theorem thetaCuspTailSecondDensityAtomOnePhaseTail_eq_boundary_sub_sq_potential
     {a : ℝ} (ha : 0 ≤ a) {z : ℂ} (hz : 0 ≤ z.im) :
     thetaCuspTailSecondDensityAtomOnePhaseTail a z =
@@ -103,7 +103,7 @@ theorem thetaCuspTailSecondDensityAtomOnePhaseTail_eq_boundary_sub_sq_potential
           ((4 * thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 1) 1 a : ℝ) : ℂ) +
         I * z * spectralTranslationPhase a z *
           ((4 * thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 0) 1 a : ℝ) : ℂ) -
-        z ^ 2 * thetaCuspTailPotentialAtomOnePhaseTail a z := by
+        z ^ (2 : ℕ) * thetaCuspTailPotentialAtomOnePhaseTail a z := by
   let f : ℝ → ℂ := fun u =>
     ((4 * thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 0) 1 u : ℝ) : ℂ)
   let f' : ℝ → ℂ := fun u =>
@@ -111,7 +111,7 @@ theorem thetaCuspTailSecondDensityAtomOnePhaseTail_eq_boundary_sub_sq_potential
   let f'' : ℝ → ℂ := fun u => (thetaCuspTailSecondDensityAtom 1 u : ℂ)
   let g : ℝ → ℂ := fun u => spectralTranslationPhase u z
   let g' : ℝ → ℂ := fun u => I * z * spectralTranslationPhase u z
-  let g'' : ℝ → ℂ := fun u => -(z ^ 2) * spectralTranslationPhase u z
+  let g'' : ℝ → ℂ := fun u => -(z ^ (2 : ℕ)) * spectralTranslationPhase u z
   have hf (u : ℝ) : HasDerivAt f (f' u) u := by
     dsimp [f, f']
     simpa only [thetaCuspTailDerivativePolynomial] using
@@ -148,13 +148,13 @@ theorem thetaCuspTailSecondDensityAtomOnePhaseTail_eq_boundary_sub_sq_potential
     have h := (integrableOn_four_thetaCuspTailDerivativeAtom_one_mul_phase 0 hz).mono_set
       (Ioi_subset_Ioi ha)
     rw [show g'' * f = fun u =>
-        (-(z ^ 2)) * (((4 * thetaCuspPolynomialAtom
+        (-(z ^ (2 : ℕ))) * (((4 * thetaCuspPolynomialAtom
           (thetaCuspTailDerivativePolynomial 0) 1 u : ℝ) : ℂ) *
             spectralTranslationPhase u z) by
       funext u
       dsimp [g'', f]
       ring]
-    exact h.const_mul (-(z ^ 2))
+    exact h.const_mul (-(z ^ (2 : ℕ)))
   have hzero1 : Tendsto (g * f') (𝓝[>] a) (nhds (g a * f' a)) := by
     exact ((hg a).continuousAt.mul (hf' a).continuousAt).tendsto.mono_left inf_le_left
   have hzero2 : Tendsto (g' * f) (𝓝[>] a) (nhds (g' a * f a)) := by
@@ -187,8 +187,8 @@ theorem thetaCuspTailSecondDensityAtomOnePhaseTail_eq_boundary_sub_sq_potential
     thetaCuspTailPotentialAtomOnePhaseTail] at h ⊢
   rw [show (fun x : ℝ =>
       ((4 * thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 0) 1 x : ℝ) : ℂ) *
-        (-(z ^ 2) * spectralTranslationPhase x z)) =
-      fun x : ℝ => (-(z ^ 2)) *
+        (-(z ^ (2 : ℕ)) * spectralTranslationPhase x z)) =
+      fun x : ℝ => (-(z ^ (2 : ℕ))) *
         (((4 * thetaCuspPolynomialAtom
           (thetaCuspTailDerivativePolynomial 0) 1 x : ℝ) : ℂ) *
             spectralTranslationPhase x z) by funext x; ring,
@@ -212,7 +212,7 @@ lemma exp_neg_half_mul_thetaCuspTailPotentialAtom_zero (a : ℝ) :
           (thetaCuspTailDerivativePolynomial 0) 1 a) =
       4 * Real.exp (-Real.pi * Real.exp (2 * a)) := by
   simp [thetaCuspPolynomialAtom, thetaCuspTailDerivativePolynomial]
-  rw [show Real.exp a ^ 2 = Real.exp (2 * a) by
+  rw [show Real.exp a ^ (2 : ℕ) = Real.exp (2 * a) by
     rw [pow_two, ← Real.exp_add]; congr 1; ring]
   rw [show Real.exp (-a / 2) *
       (4 * (Real.exp (a / 2) * Real.exp (-(Real.pi * Real.exp (2 * a))))) =
@@ -230,7 +230,7 @@ lemma exp_neg_half_mul_thetaCuspTailPotentialAtom_one (a : ℝ) :
         Real.exp (-Real.pi * Real.exp (2 * a)) := by
   simp [thetaCuspPolynomialAtom, thetaCuspTailDerivativePolynomial,
     thetaCuspLogDerivativeStep]
-  rw [show Real.exp a ^ 2 = Real.exp (2 * a) by
+  rw [show Real.exp a ^ (2 : ℕ) = Real.exp (2 * a) by
     rw [pow_two, ← Real.exp_add]; congr 1; ring]
   rw [show Real.exp (-a / 2) *
       (4 * (Real.exp (a / 2) * ((2 : ℝ)⁻¹ - 2 * Real.pi * Real.exp (2 * a)) *
@@ -245,7 +245,7 @@ lemma exp_neg_half_mul_thetaCuspTailPotentialAtom_one (a : ℝ) :
 
 /-- After critical normalization, both source endpoint jets collapse to one explicit affine
 spectral factor times the Gaussian `exp (-pi exp (2a))`.  All non-endpoint content carries the
-common factor `-z^2`. -/
+common factor `-z^(2 : ℕ)`. -/
 theorem criticalNormalized_densityPhaseTail_eq_endpoint_sub_sq_potential
     {a : ℝ} (ha : 0 ≤ a) {z : ℂ} (hz : 0 ≤ z.im) :
     (Real.exp (-a / 2) : ℂ) * spectralTranslationPhase (-a) z *
@@ -254,7 +254,7 @@ theorem criticalNormalized_densityPhaseTail_eq_endpoint_sub_sq_potential
           Real.exp (-Real.pi * Real.exp (2 * a)) : ℝ) : ℂ) +
         (4 : ℂ) * I * z *
           (Real.exp (-Real.pi * Real.exp (2 * a)) : ℂ) -
-        z ^ 2 * thetaCuspTailPotentialAtomNormalizedPhaseTail a z := by
+        z ^ (2 : ℕ) * thetaCuspTailPotentialAtomNormalizedPhaseTail a z := by
   rw [thetaCuspTailSecondDensityAtomOnePhaseTail_eq_boundary_sub_sq_potential ha hz]
   have hphase : spectralTranslationPhase (-a) z * spectralTranslationPhase a z = 1 := by
     have h := spectralTranslationPhase_sub a a z
@@ -266,7 +266,7 @@ theorem criticalNormalized_densityPhaseTail_eq_endpoint_sub_sq_potential
        I * z * spectralTranslationPhase a z *
         ((4 * thetaCuspPolynomialAtom
           (thetaCuspTailDerivativePolynomial 0) 1 a : ℝ) : ℂ) -
-       z ^ 2 * thetaCuspTailPotentialAtomOnePhaseTail a z) =
+       z ^ (2 : ℕ) * thetaCuspTailPotentialAtomOnePhaseTail a z) =
       -(spectralTranslationPhase (-a) z * spectralTranslationPhase a z) *
           ((Real.exp (-a / 2) : ℂ) *
             ((4 * thetaCuspPolynomialAtom
@@ -275,7 +275,7 @@ theorem criticalNormalized_densityPhaseTail_eq_endpoint_sub_sq_potential
           ((Real.exp (-a / 2) : ℂ) *
             ((4 * thetaCuspPolynomialAtom
               (thetaCuspTailDerivativePolynomial 0) 1 a : ℝ) : ℂ)) -
-        z ^ 2 * thetaCuspTailPotentialAtomNormalizedPhaseTail a z by
+        z ^ (2 : ℕ) * thetaCuspTailPotentialAtomNormalizedPhaseTail a z by
       unfold thetaCuspTailPotentialAtomNormalizedPhaseTail
       ring]
   rw [hphase]

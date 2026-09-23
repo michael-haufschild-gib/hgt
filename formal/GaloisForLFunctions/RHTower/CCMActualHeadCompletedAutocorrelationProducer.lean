@@ -7,7 +7,7 @@ For an actual aperture head `f`, let
 
 `C_f(h) = Re (<U_h f,f> + <U_{-h}f,f>)/2`.
 
-Then `E_f(h)=2||f||^2-2C_f(h)`.  Substitution into the completed-error
+Then `E_f(h)=2||f||^(2 : ℕ)-2C_f(h)`.  Substitution into the completed-error
 quadrature cancels every scalar polar and prime mass exactly.  The remaining current is
 
 `2 integral_[0,2a] 2 cosh(h/2) C_f(h) dh
@@ -16,7 +16,7 @@ quadrature cancels every scalar polar and prime mass exactly.  The remaining cur
 After the first Binet Gamma mode is cancelled against the decaying polar half, the same current
 has the outgoing normal form
 
-`4||f||^2 + 2 integral_[0,2a] exp(h/2) C_f(h) dh
+`4||f||^(2 : ℕ) + 2 integral_[0,2a] exp(h/2) C_f(h) dh
   - 2 sum Lambda(n)/sqrt(n) C_f(log n)`.
 
 The full and outgoing producers are unconditionally equal to the restricted-Weil source

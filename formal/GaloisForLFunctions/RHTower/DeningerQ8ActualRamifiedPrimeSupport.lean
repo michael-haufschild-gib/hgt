@@ -58,13 +58,13 @@ theorem q8LiteralTwoAdic_branchFactor_mul_conjugate :
   have hu : (q8LiteralTwoAdicU + 2) * (3 - q8LiteralTwoAdicU) = 5 := by
     calc
       (q8LiteralTwoAdicU + 2) * (3 - q8LiteralTwoAdicU) =
-          6 + q8LiteralTwoAdicU - q8LiteralTwoAdicU ^ 2 := by ring
+          6 + q8LiteralTwoAdicU - q8LiteralTwoAdicU ^ (2 : ℕ) := by ring
       _ = 5 := by rw [q8LiteralTwoAdicU_sq]; ring
   have hv : (35 + 12 * q8LiteralTwoAdicV) *
       (47 - 12 * q8LiteralTwoAdicV) = 205 := by
     calc
       (35 + 12 * q8LiteralTwoAdicV) * (47 - 12 * q8LiteralTwoAdicV) =
-          1645 + 144 * q8LiteralTwoAdicV - 144 * q8LiteralTwoAdicV ^ 2 := by ring
+          1645 + 144 * q8LiteralTwoAdicV - 144 * q8LiteralTwoAdicV ^ (2 : ℕ) := by ring
       _ = 205 := by rw [q8LiteralTwoAdicV_sq]; ring
   calc
     ((q8LiteralTwoAdicU + 2) * (35 + 12 * q8LiteralTwoAdicV)) *
@@ -81,7 +81,7 @@ theorem q8Literal_prime_dvd_1025_of_two_mul_topRoot_mem
     p ∣ 1025 := by
   have hz : q8LiteralTwoAdicZ ∈ P := by
     exact ((inferInstance : P.IsPrime).mem_or_mem hderiv).resolve_left h2
-  have hzsq : q8LiteralTwoAdicZ ^ 2 ∈ P := P.pow_mem_of_mem hz 2 (by norm_num)
+  have hzsq : q8LiteralTwoAdicZ ^ (2 : ℕ) ∈ P := P.pow_mem_of_mem hz 2 (by norm_num)
   rw [q8LiteralTwoAdicZ_sq] at hzsq
   have hb : (q8LiteralTwoAdicU + 2) * (35 + 12 * q8LiteralTwoAdicV) ∈ P := by
     have hzsq' : (2 : 𝓞 K3) *
@@ -111,7 +111,7 @@ theorem q8Literal_prime_eq_two_or_five_or_fortyOne_of_two_mul_topRoot_mem
     exact Or.inl ((Nat.dvd_prime Nat.prime_two).mp hp2 |>.resolve_left hp.ne_one)
   · have hpd : p ∣ 1025 :=
       q8Literal_prime_dvd_1025_of_two_mul_topRoot_mem p P hPover h2 hderiv
-    have hfactor : (1025 : ℕ) = 5 ^ 2 * 41 := by norm_num
+    have hfactor : (1025 : ℕ) = 5 ^ (2 : ℕ) * 41 := by norm_num
     rw [hfactor] at hpd
     rcases (hp.dvd_mul).mp hpd with h5 | h41
     · right; left
@@ -127,7 +127,7 @@ theorem q8Literal_prime_eq_two_or_five_or_fortyOne_of_two_mul_topRoot_mem
       exact (Nat.dvd_prime (by norm_num : Nat.Prime 41)).mp h41 |>.resolve_left hp.ne_one
 
 noncomputable def q8LiteralTopMinpolyCandidate : (𝓞 K2)[X] :=
-  Polynomial.X ^ 2 - Polynomial.C q8BiquadTwoAdicRadicand
+  Polynomial.X ^ (2 : ℕ) - Polynomial.C q8BiquadTwoAdicRadicand
 
 theorem q8LiteralTopMinpolyCandidate_monic : q8LiteralTopMinpolyCandidate.Monic := by
   exact Polynomial.monic_X_pow_sub_C q8BiquadTwoAdicRadicand (by norm_num : 2 ≠ 0)
@@ -165,7 +165,7 @@ theorem q8BiquadTwoAdicV_map_top :
 theorem q8LiteralTopMinpolyCandidate_aeval :
     Polynomial.aeval q8LiteralTwoAdicZ q8LiteralTopMinpolyCandidate = 0 := by
   rw [show Polynomial.aeval q8LiteralTwoAdicZ q8LiteralTopMinpolyCandidate =
-      q8LiteralTwoAdicZ ^ 2 -
+      q8LiteralTwoAdicZ ^ (2 : ℕ) -
         algebraMap (𝓞 K2) (𝓞 K3) q8BiquadTwoAdicRadicand by
       simp [q8LiteralTopMinpolyCandidate]]
   rw [q8LiteralTwoAdicZ_sq]

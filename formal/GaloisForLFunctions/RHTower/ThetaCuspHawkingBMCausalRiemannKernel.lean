@@ -39,11 +39,11 @@ private def legendreGaussSecond (nu : ℂ) (z : ℝ) : ℂ :=
 def legendreKernel (nu : ℂ) (z : ℝ) : ℂ := legendrePrefactor nu z*legendreGauss nu z
 /-- First derivative formula of the positive-chart Legendre kernel. -/
 def legendreKernelFirst (nu : ℂ) (z : ℝ) : ℂ :=
-  legendrePrefactor nu z*(nu*legendreGauss nu z/(z+1)+2*legendreGaussFirst nu z/(z+1)^2)
+  legendrePrefactor nu z*(nu*legendreGauss nu z/(z+1)+2*legendreGaussFirst nu z/(z+1)^(2 : ℕ))
 /-- Second derivative formula with every Gauss and prefactor term retained. -/
 def legendreKernelSecond (nu : ℂ) (z : ℝ) : ℂ :=
-  legendrePrefactor nu z*(nu*(nu-1)*legendreGauss nu z/(z+1)^2+
-    4*(nu-1)*legendreGaussFirst nu z/(z+1)^3+4*legendreGaussSecond nu z/(z+1)^4)
+  legendrePrefactor nu z*(nu*(nu-1)*legendreGauss nu z/(z+1)^(2 : ℕ)+
+    4*(nu-1)*legendreGaussFirst nu z/(z+1)^(3 : ℕ)+4*legendreGaussSecond nu z/(z+1)^(4 : ℕ))
 
 private theorem argument_disk {z : ℝ} (hz : 0 < z) : ‖(legendreArgument z : ℂ)‖ₑ < 1 := by
   have hp : 0 < z+1 := by linarith
@@ -60,7 +60,7 @@ private theorem argument_disk {z : ℝ} (hz : 0 < z) : ‖(legendreArgument z : 
   exact_mod_cast hn
 
 private theorem argument_hasDerivAt {z : ℝ} (hz : 0 < z) :
-    HasDerivAt legendreArgument (2/(z+1)^2) z := by
+    HasDerivAt legendreArgument (2/(z+1)^(2 : ℕ)) z := by
   have h := ((hasDerivAt_id z).sub_const 1).div ((hasDerivAt_id z).add_const 1)
     (by linarith : z+1 ≠ 0)
   apply h.congr_deriv
@@ -78,8 +78,8 @@ private theorem prefactor_hasDerivAt (nu : ℂ) {z : ℝ} (hz : 0 < z) :
   field_simp [show (z:ℂ)+1 ≠ 0 by exact_mod_cast (by linarith : z+1 ≠ 0)]
 
 private theorem gauss_derivatives (nu : ℂ) {z : ℝ} (hz : 0 < z) :
-    HasDerivAt (legendreGauss nu) (2*legendreGaussFirst nu z/(z+1)^2) z ∧
-    HasDerivAt (legendreGaussFirst nu) (2*legendreGaussSecond nu z/(z+1)^2) z := by
+    HasDerivAt (legendreGauss nu) (2*legendreGaussFirst nu z/(z+1)^(2 : ℕ)) z ∧
+    HasDerivAt (legendreGaussFirst nu) (2*legendreGaussSecond nu z/(z+1)^(2 : ℕ)) z := by
   let p := ordinaryHypergeometricSeries ℂ (-nu) (-nu) 1
   have hrad : ‖(legendreArgument z : ℂ)‖ₑ < p.radius :=
     (argument_disk hz).trans_le (hypergeometric_radius_one_le _ _ _)
@@ -115,7 +115,7 @@ theorem legendreKernel_derivatives (nu : ℂ) {z : ℝ} (hz : 0 < z) :
 
 /-- The constructed Legendre function solves its exact differential equation on the positive chart. -/
 theorem legendreKernel_equation (nu : ℂ) {z : ℝ} (hz : 0 < z) :
-    ((z:ℂ)^2-1)*legendreKernelSecond nu z+2*z*legendreKernelFirst nu z-
+    ((z:ℂ)^(2 : ℕ)-1)*legendreKernelSecond nu z+2*z*legendreKernelFirst nu z-
       nu*(nu+1)*legendreKernel nu z = 0 := by
   have hrad := (argument_disk hz).trans_le (hypergeometric_radius_one_le (-nu) (-nu) 1)
   have hc : ∀ j : ℕ, (j:ℂ) ≠ -(1:ℂ) := by
@@ -129,7 +129,7 @@ theorem legendreKernel_equation (nu : ℂ) {z : ℝ} (hz : 0 < z) :
     (1-(-nu+-nu+1)*(legendreArgument z:ℂ))*legendreGaussFirst nu z-
       (-nu)*(-nu)*legendreGauss nu z = 0 at h
   have hn : (z:ℂ)+1 ≠ 0 := by exact_mod_cast (by linarith : z+1 ≠ 0)
-  have he : ((z:ℂ)^2-1)*legendreKernelSecond nu z+2*z*legendreKernelFirst nu z-
+  have he : ((z:ℂ)^(2 : ℕ)-1)*legendreKernelSecond nu z+2*z*legendreKernelFirst nu z-
       nu*(nu+1)*legendreKernel nu z = 2*legendrePrefactor nu z/((z:ℂ)+1)*
         ((legendreArgument z:ℂ)*(1-(legendreArgument z:ℂ))*legendreGaussSecond nu z+
         (1-(-nu+-nu+1)*(legendreArgument z:ℂ))*legendreGaussFirst nu z-
@@ -157,7 +157,7 @@ def invariantTimeSecond (h x y : ℝ) : ℝ := Real.cosh h/(Real.cosh x*Real.cos
 def invariantSpaceFirst (h x y : ℝ) : ℝ := Real.tanh y-Real.tanh x*invariant h x y
 /-- Actual second derivative of the invariant in the target tortoise coordinate. -/
 def invariantSpaceSecond (h x y : ℝ) : ℝ :=
-  (2*Real.tanh x^2-1)*invariant h x y-Real.tanh x*Real.tanh y
+  (2*Real.tanh x^(2 : ℕ)-1)*invariant h x y-Real.tanh x*Real.tanh y
 
 /-- Both invariant time jets are obtained by differentiating the hyperbolic functions. -/
 theorem invariant_time_derivatives (h x y : ℝ) :
@@ -168,7 +168,7 @@ theorem invariant_time_derivatives (h x y : ℝ) :
   · exact (Real.hasDerivAt_sinh h).div_const _
 
 private theorem tanh_derivative (x : ℝ) :
-    HasDerivAt Real.tanh (1-Real.tanh x^2) x := by
+    HasDerivAt Real.tanh (1-Real.tanh x^(2 : ℕ)) x := by
   have hc := (Real.cosh_pos x).ne'
   have h := (Real.hasDerivAt_sinh x).div (Real.hasDerivAt_cosh x) hc
   rw [show Real.tanh = Real.sinh / Real.cosh by
@@ -197,16 +197,16 @@ theorem invariant_space_derivatives (h x y : ℝ) :
 
 /-- Exact chain-rule coefficients converting the Legendre equation into the BM wave equation. -/
 theorem invariant_wave_geometry (h x y : ℝ) :
-    invariantTimeFirst h x y^2-invariantSpaceFirst h x y^2 =
-      (invariant h x y^2-1)/Real.cosh x^2 ∧
+    invariantTimeFirst h x y^(2 : ℕ)-invariantSpaceFirst h x y^(2 : ℕ) =
+      (invariant h x y^(2 : ℕ)-1)/Real.cosh x^(2 : ℕ) ∧
     invariantTimeSecond h x y-invariantSpaceSecond h x y =
-      2*invariant h x y/Real.cosh x^2 := by
+      2*invariant h x y/Real.cosh x^(2 : ℕ) := by
   have hx := (Real.cosh_pos x).ne'
   have hy := (Real.cosh_pos y).ne'
-  have hs3 : Real.sinh x^3 = Real.sinh x*(Real.cosh x^2-1) := by
+  have hs3 : Real.sinh x^(3 : ℕ) = Real.sinh x*(Real.cosh x^(2 : ℕ)-1) := by
     rw [← Real.sinh_sq]
     ring
-  have hs4 : Real.sinh x^4 = (Real.cosh x^2-1)^2 := by
+  have hs4 : Real.sinh x^(4 : ℕ) = (Real.cosh x^(2 : ℕ)-1)^(2 : ℕ) := by
     rw [← Real.sinh_sq]
     ring
   constructor
@@ -255,14 +255,14 @@ def riemannTimeFirst (nu : ℂ) (h x y : ℝ) : ℂ :=
   legendreKernelFirst nu (invariant h x y)*(invariantTimeFirst h x y : ℂ)
 /-- Actual second time derivative, including the derivative of the invariant. -/
 def riemannTimeSecond (nu : ℂ) (h x y : ℝ) : ℂ :=
-  legendreKernelSecond nu (invariant h x y)*(invariantTimeFirst h x y : ℂ)^2+
+  legendreKernelSecond nu (invariant h x y)*(invariantTimeFirst h x y : ℂ)^(2 : ℕ)+
     legendreKernelFirst nu (invariant h x y)*(invariantTimeSecond h x y : ℂ)
 /-- Actual first target-coordinate derivative of the Riemann function. -/
 def riemannSpaceFirst (nu : ℂ) (h x y : ℝ) : ℂ :=
   legendreKernelFirst nu (invariant h x y)*(invariantSpaceFirst h x y : ℂ)
 /-- Actual second target-coordinate derivative, with both chain-rule terms. -/
 def riemannSpaceSecond (nu : ℂ) (h x y : ℝ) : ℂ :=
-  legendreKernelSecond nu (invariant h x y)*(invariantSpaceFirst h x y : ℂ)^2+
+  legendreKernelSecond nu (invariant h x y)*(invariantSpaceFirst h x y : ℂ)^(2 : ℕ)+
     legendreKernelFirst nu (invariant h x y)*(invariantSpaceSecond h x y : ℂ)
 
 private theorem kernel_time_derivatives (nu : ℂ) (h x y : ℝ) (hz : 0 < invariant h x y) :
@@ -293,7 +293,7 @@ private theorem kernel_space_derivatives (nu : ℂ) (h x y : ℝ) (hz : 0 < inva
 theorem riemannKernel_wave (nu : ℂ) (p : CausalPoint) :
     deriv (deriv (fun h => riemannKernel nu h p.target p.source)) p.time-
       deriv (deriv (fun x => riemannKernel nu p.time x p.source)) p.target-
-      nu*(nu+1)/(Real.cosh p.target : ℂ)^2*riemannKernel nu p.time p.target p.source = 0 := by
+      nu*(nu+1)/(Real.cosh p.target : ℂ)^(2 : ℕ)*riemannKernel nu p.time p.target p.source = 0 := by
   have hz : 0 < invariant p.time p.target p.source := lt_of_lt_of_le (by norm_num) (invariant_causal p)
   have ht := kernel_time_derivatives nu p.time p.target p.source hz
   have hx := kernel_space_derivatives nu p.time p.target p.source hz
@@ -306,19 +306,19 @@ theorem riemannKernel_wave (nu : ℂ) (p : CausalPoint) :
     filter_upwards [(invariant_space_derivatives p.time p.target p.source).1.continuousAt.eventually_const_lt hz] with x hh
     exact (kernel_space_derivatives nu p.time x p.source hh).1.deriv
   rw [et.deriv_eq,ex.deriv_eq,ht.2.deriv,hx.2.deriv]
-  have hg1 : (invariantTimeFirst p.time p.target p.source:ℂ)^2-
-      (invariantSpaceFirst p.time p.target p.source:ℂ)^2 =
-      ((invariant p.time p.target p.source:ℂ)^2-1)/(Real.cosh p.target:ℂ)^2 := by
+  have hg1 : (invariantTimeFirst p.time p.target p.source:ℂ)^(2 : ℕ)-
+      (invariantSpaceFirst p.time p.target p.source:ℂ)^(2 : ℕ) =
+      ((invariant p.time p.target p.source:ℂ)^(2 : ℕ)-1)/(Real.cosh p.target:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry p.time p.target p.source).1
   have hg2 : (invariantTimeSecond p.time p.target p.source:ℂ)-
       (invariantSpaceSecond p.time p.target p.source:ℂ) =
-      2*(invariant p.time p.target p.source:ℂ)/(Real.cosh p.target:ℂ)^2 := by
+      2*(invariant p.time p.target p.source:ℂ)/(Real.cosh p.target:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry p.time p.target p.source).2
   have he : riemannTimeSecond nu p.time p.target p.source-riemannSpaceSecond nu p.time p.target p.source-
-      nu*(nu+1)/(Real.cosh p.target:ℂ)^2*riemannKernel nu p.time p.target p.source =
-      (((invariant p.time p.target p.source:ℂ)^2-1)*legendreKernelSecond nu (invariant p.time p.target p.source)+
+      nu*(nu+1)/(Real.cosh p.target:ℂ)^(2 : ℕ)*riemannKernel nu p.time p.target p.source =
+      (((invariant p.time p.target p.source:ℂ)^(2 : ℕ)-1)*legendreKernelSecond nu (invariant p.time p.target p.source)+
       2*(invariant p.time p.target p.source:ℂ)*legendreKernelFirst nu (invariant p.time p.target p.source)-
-      nu*(nu+1)*legendreKernel nu (invariant p.time p.target p.source))/(Real.cosh p.target:ℂ)^2 := by
+      nu*(nu+1)*legendreKernel nu (invariant p.time p.target p.source))/(Real.cosh p.target:ℂ)^(2 : ℕ) := by
     dsimp only [riemannTimeSecond,riemannSpaceSecond,riemannKernel]
     linear_combination legendreKernelSecond nu (invariant p.time p.target p.source)*hg1+
       legendreKernelFirst nu (invariant p.time p.target p.source)*hg2
@@ -339,9 +339,9 @@ def bmRiemannKernel (chi : ℂ) (h x y : ℝ) : ℂ := riemannKernel (-1/2+Compl
 theorem bmRiemannKernel_wave (chi : ℂ) (p : CausalPoint) :
     deriv (deriv (fun h => bmRiemannKernel chi h p.target p.source)) p.time-
       deriv (deriv (fun x => bmRiemannKernel chi p.time x p.source)) p.target+
-      (1/4+chi^2)/(Real.cosh p.target:ℂ)^2*bmRiemannKernel chi p.time p.target p.source = 0 := by
+      (1/4+chi^(2 : ℕ))/(Real.cosh p.target:ℂ)^(2 : ℕ)*bmRiemannKernel chi p.time p.target p.source = 0 := by
   have h := riemannKernel_wave (-1/2+Complex.I*chi) p
-  have hc : -(-1/2+Complex.I*chi)*((-1/2+Complex.I*chi)+1) = 1/4+chi^2 := by
+  have hc : -(-1/2+Complex.I*chi)*((-1/2+Complex.I*chi)+1) = 1/4+chi^(2 : ℕ) := by
     ring_nf
     rw [Complex.I_sq]
     ring

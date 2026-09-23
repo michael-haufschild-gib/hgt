@@ -30,7 +30,7 @@ open GaloisForLFunctions.RHTower
 
 theorem sqrt_eq_exp_half_log {c : ℝ} (hc : 0 < c) :
     Real.sqrt c = Real.exp (Real.log c / 2) := by
-  have h2 : Real.exp (Real.log c / 2) ^ 2 = c := by
+  have h2 : Real.exp (Real.log c / 2) ^ (2 : ℕ) = c := by
     rw [sq, ← Real.exp_add]
     have hsum : Real.log c / 2 + Real.log c / 2 = Real.log c := by ring
     rw [hsum, Real.exp_log hc]
@@ -69,10 +69,10 @@ theorem exp_neg_three_quarter_log_eq {a : ℝ} (hc : 0 < signedModeRadialBandwid
 
 /-- The constant of the vanishing ratio. -/
 def ratioLimitConst (m n : ℕ) : ℝ :=
-  324 * Real.sqrt 2 * Real.pi ^ 3 * (1 + leakageBarrierConst)
+  324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ) * (1 + leakageBarrierConst)
     * Real.exp (7 / 2 * Real.log (prolatePairAnchor m n)
-        - Real.log (prolatePairAnchor m n ^ 2 / 2)
-        - Real.log (1 - prolateLeakageCollar ^ 2)
+        - Real.log (prolatePairAnchor m n ^ (2 : ℕ) / 2)
+        - Real.log (1 - prolateLeakageCollar ^ (2 : ℕ))
         - 12 * Real.log (1 - prolateLeakageCollar))
 
 theorem ratioLimitConst_nonneg (m n : ℕ) : 0 ≤ ratioLimitConst m n := by
@@ -84,17 +84,17 @@ theorem ratioLimitConst_nonneg (m n : ℕ) : 0 ≤ ratioLimitConst m n := by
 /-- **The squared amplitude of the higher rung is `O(c^{-1/2})` times that of the lower one.** -/
 theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
     ∀ᶠ a : ℝ in atTop,
-      (signedModeRadialData a n).R (pairAnchorPoint m n a) ^ 2
+      (signedModeRadialData a n).R (pairAnchorPoint m n a) ^ (2 : ℕ)
         ≤ ratioLimitConst m n / prolateRatioScale a
-          * (signedModeRadialData a m).R (pairAnchorPoint m n a) ^ 2 := by
+          * (signedModeRadialData a m).R (pairAnchorPoint m n a) ^ (2 : ℕ) := by
   have hn : 1 ≤ n := lt_of_le_of_lt (Nat.zero_le m) hmn
   set x₀ : ℝ := prolatePairAnchor m n with hx₀def
   have hx₀ : 0 < x₀ := prolatePairAnchor_pos m n
-  have hxn : 4 * (4 * (n : ℝ) + 1) < x₀ ^ 2 := prolatePairAnchor_sq_gt m n n (Or.inr rfl)
+  have hxn : 4 * (4 * (n : ℝ) + 1) < x₀ ^ (2 : ℕ) := prolatePairAnchor_sq_gt m n n (Or.inr rfl)
   have hα1 : prolateLeakageCollar < 1 := prolateLeakageCollar_lt_one
   have hαh : (1 : ℝ) / 2 < prolateLeakageCollar := prolateLeakageCollar_gt_half
   have hα0 : (0 : ℝ) < 1 - prolateLeakageCollar := by linarith
-  have hαsq : (0 : ℝ) < 1 - prolateLeakageCollar ^ 2 := by nlinarith
+  have hαsq : (0 : ℝ) < 1 - prolateLeakageCollar ^ (2 : ℕ) := by nlinarith
   have hcTop := tendsto_signedModeRadialBandwidth_atTop
   have hsn := tendsto_signedModeRadialBandwidth_mul_s_atTop n
   have hsm := tendsto_signedModeRadialBandwidth_mul_s_atTop m
@@ -102,7 +102,7 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
   -- eventual data
   have hc8 : ∀ᶠ a : ℝ in atTop, (8 : ℝ) ≤ signedModeRadialBandwidth a :=
     hcTop.eventually_ge_atTop 8
-  have hclog : ∀ᶠ a : ℝ in atTop, 2 * x₀ ^ 2 ≤ signedModeRadialBandwidth a :=
+  have hclog : ∀ᶠ a : ℝ in atTop, 2 * x₀ ^ (2 : ℕ) ≤ signedModeRadialBandwidth a :=
     hcTop.eventually_ge_atTop _
   have hgap : ∀ᶠ a : ℝ in atTop,
       7 / 2 < signedModeRadialBandwidth a * (signedModeRadialData a n).s
@@ -111,7 +111,7 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
     refine this.eventually (eventually_gt_nhds ?_)
     linarith
   have hhalf : ∀ᶠ a : ℝ in atTop,
-      signedModeRadialBandwidth a * (signedModeRadialData a n).s < x₀ ^ 2 / 2 := by
+      signedModeRadialBandwidth a * (signedModeRadialData a n).s < x₀ ^ (2 : ℕ) / 2 := by
     refine hsn.eventually (eventually_lt_nhds ?_)
     linarith
   have hs64 : ∀ᶠ a : ℝ in atTop, (signedModeRadialData a n).s ≤ 1 / 64 :=
@@ -124,11 +124,11 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
   have hc0 : (0 : ℝ) < c := by linarith
   set y₀ : ℝ := pairAnchorPoint m n a with hy₀def
   have hy₀0 : 0 < y₀ := pairAnchorPoint_pos hc0
-  have hy₀sq : y₀ ^ 2 = x₀ ^ 2 / c := pairAnchorPoint_sq hc0
-  have hsy0n : (signedModeRadialData a n).s < y₀ ^ 2 := by
+  have hy₀sq : y₀ ^ (2 : ℕ) = x₀ ^ (2 : ℕ) / c := pairAnchorPoint_sq hc0
+  have hsy0n : (signedModeRadialData a n).s < y₀ ^ (2 : ℕ) := by
     rw [hy₀sq, lt_div_iff₀ hc0]
     nlinarith [hhalfa, sq_nonneg x₀]
-  have hy₀half : y₀ ^ 2 ≤ 1 / 2 := by
+  have hy₀half : y₀ ^ (2 : ℕ) ≤ 1 / 2 := by
     rw [hy₀sq, div_le_iff₀ hc0]
     nlinarith [hcloga, hx₀]
   have hy₀1 : y₀ < 1 := by nlinarith [hy₀half, hy₀0]
@@ -137,7 +137,7 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
     rw [hy₀def, pairAnchorPoint, Real.log_div hx₀.ne' (Real.sqrt_pos.2 hc0).ne',
       Real.log_sqrt hc0.le]
   have hloghalf : 0 ≤ Real.log c / 2 - Real.log x₀ := by
-    have h1 : Real.log (x₀ ^ 2) ≤ Real.log c :=
+    have h1 : Real.log (x₀ ^ (2 : ℕ)) ≤ Real.log c :=
       Real.log_le_log (by positivity) (by nlinarith [hcloga, hx₀])
     rw [Real.log_pow] at h1
     push_cast at h1
@@ -147,7 +147,7 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
     by_contra hcon
     rw [not_le] at hcon
     nlinarith [hgapa, hc0, hcon]
-  have hsy0m : (signedModeRadialData a m).s < y₀ ^ 2 := lt_of_le_of_lt hsmn hsy0n
+  have hsy0m : (signedModeRadialData a m).s < y₀ ^ (2 : ℕ) := lt_of_le_of_lt hsmn hsy0n
   have hphase := bandEndpointPhase_sub_ge (sm := (signedModeRadialData a m).s)
     (sn := (signedModeRadialData a n).s) (y := y₀) hsm0 hsmn hsy0n hy₀0 hy₀1
   have hlog1y : Real.log (1 / y₀) = Real.log c / 2 - Real.log x₀ := by
@@ -160,8 +160,8 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
           - bandEndpointPhase (signedModeRadialData a m).s y₀)
       + prolateScaleLog (signedModeRadialData a n).s y₀ prolateLeakageCollar
       - 12 * (Real.log (1 - prolateLeakageCollar) - Real.log (1 - y₀))
-      ≤ (7 / 2 * Real.log x₀ - Real.log (x₀ ^ 2 / 2)
-          - Real.log (1 - prolateLeakageCollar ^ 2)
+      ≤ (7 / 2 * Real.log x₀ - Real.log (x₀ ^ (2 : ℕ) / 2)
+          - Real.log (1 - prolateLeakageCollar ^ (2 : ℕ))
           - 12 * Real.log (1 - prolateLeakageCollar)) - 3 * Real.log c / 4 := by
     -- the phase term
     have hphase' : 2 * c
@@ -176,27 +176,27 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
       nlinarith [hmul, hgapmul]
     -- the scale logarithm
     have hscale : prolateScaleLog (signedModeRadialData a n).s y₀ prolateLeakageCollar
-        ≤ Real.log c - Real.log (x₀ ^ 2 / 2) - Real.log (1 - prolateLeakageCollar ^ 2) := by
+        ≤ Real.log c - Real.log (x₀ ^ (2 : ℕ) / 2) - Real.log (1 - prolateLeakageCollar ^ (2 : ℕ)) := by
       rw [prolateScaleLog]
-      have h1 : Real.log (prolateLeakageCollar ^ 2 - (signedModeRadialData a n).s) ≤ 0 := by
+      have h1 : Real.log (prolateLeakageCollar ^ (2 : ℕ) - (signedModeRadialData a n).s) ≤ 0 := by
         refine Real.log_nonpos (by nlinarith [hsn0]) ?_
         nlinarith [hsn0]
-      have h2 : Real.log (x₀ ^ 2 / 2) - Real.log c
-          ≤ Real.log (y₀ ^ 2 - (signedModeRadialData a n).s) := by
-        have heq : Real.log (x₀ ^ 2 / 2) - Real.log c = Real.log (x₀ ^ 2 / 2 / c) := by
+      have h2 : Real.log (x₀ ^ (2 : ℕ) / 2) - Real.log c
+          ≤ Real.log (y₀ ^ (2 : ℕ) - (signedModeRadialData a n).s) := by
+        have heq : Real.log (x₀ ^ (2 : ℕ) / 2) - Real.log c = Real.log (x₀ ^ (2 : ℕ) / 2 / c) := by
           rw [Real.log_div (by positivity) hc0.ne']
-        have hstep : x₀ ^ 2 / 2 / c ≤ x₀ ^ 2 / c - (signedModeRadialData a n).s := by
-          have hid : x₀ ^ 2 / c - (signedModeRadialData a n).s - x₀ ^ 2 / 2 / c
-              = (x₀ ^ 2 / 2 - c * (signedModeRadialData a n).s) / c := by
+        have hstep : x₀ ^ (2 : ℕ) / 2 / c ≤ x₀ ^ (2 : ℕ) / c - (signedModeRadialData a n).s := by
+          have hid : x₀ ^ (2 : ℕ) / c - (signedModeRadialData a n).s - x₀ ^ (2 : ℕ) / 2 / c
+              = (x₀ ^ (2 : ℕ) / 2 - c * (signedModeRadialData a n).s) / c := by
             field_simp
             ring
-          have hnn : 0 ≤ (x₀ ^ 2 / 2 - c * (signedModeRadialData a n).s) / c := by
+          have hnn : 0 ≤ (x₀ ^ (2 : ℕ) / 2 - c * (signedModeRadialData a n).s) / c := by
             refine div_nonneg ?_ hc0.le
             linarith [hhalfa]
           linarith [hid, hnn]
         rw [heq, hy₀sq]
         exact Real.log_le_log (by positivity) hstep
-      have h3 : Real.log (1 - y₀ ^ 2) ≤ 0 :=
+      have h3 : Real.log (1 - y₀ ^ (2 : ℕ)) ≤ 0 :=
         Real.log_nonpos (by nlinarith [hy₀0, hy₀1]) (by nlinarith [hy₀0])
       linarith [h1, h2, h3]
     -- the collar logarithm
@@ -208,8 +208,8 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
   -- the barrier factor
   have hbar := barrierFactor_le (c := c) (s := (signedModeRadialData a n).s) hc8a hsn0 hs64a
   -- assemble
-  set Kexp : ℝ := 7 / 2 * Real.log x₀ - Real.log (x₀ ^ 2 / 2)
-      - Real.log (1 - prolateLeakageCollar ^ 2)
+  set Kexp : ℝ := 7 / 2 * Real.log x₀ - Real.log (x₀ ^ (2 : ℕ) / 2)
+      - Real.log (1 - prolateLeakageCollar ^ (2 : ℕ))
       - 12 * Real.log (1 - prolateLeakageCollar) with hKexp
   have hexple : Real.exp (2 * c
         * (bandEndpointPhase (signedModeRadialData a n).s y₀
@@ -222,52 +222,52 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
       exp_neg_three_quarter_log_eq (by rw [← hcdef]; exact hc0)] at h
     calc _ ≤ Real.exp Kexp * (1 / prolateRatioScale a) := h
       _ = Real.exp Kexp / prolateRatioScale a := by ring
-  have hCle : 1 + (1 - prolateLeakageCollar ^ 2)
+  have hCle : 1 + (1 - prolateLeakageCollar ^ (2 : ℕ))
       * (prolateRadialBarrier c (signedModeRadialData a n).s prolateLeakageCollar
-        + 6 / (1 - prolateLeakageCollar)) ^ 2
-      / (c ^ 2 * (prolateLeakageCollar ^ 2 - (signedModeRadialData a n).s))
+        + 6 / (1 - prolateLeakageCollar)) ^ (2 : ℕ)
+      / (c ^ (2 : ℕ) * (prolateLeakageCollar ^ (2 : ℕ) - (signedModeRadialData a n).s))
       ≤ 1 + leakageBarrierConst := by linarith [hbar]
-  have hCnn : (0 : ℝ) ≤ 1 + (1 - prolateLeakageCollar ^ 2)
+  have hCnn : (0 : ℝ) ≤ 1 + (1 - prolateLeakageCollar ^ (2 : ℕ))
       * (prolateRadialBarrier c (signedModeRadialData a n).s prolateLeakageCollar
-        + 6 / (1 - prolateLeakageCollar)) ^ 2
-      / (c ^ 2 * (prolateLeakageCollar ^ 2 - (signedModeRadialData a n).s)) := by
-    have h1 : (0 : ℝ) < prolateLeakageCollar ^ 2 - (signedModeRadialData a n).s := by
+        + 6 / (1 - prolateLeakageCollar)) ^ (2 : ℕ)
+      / (c ^ (2 : ℕ) * (prolateLeakageCollar ^ (2 : ℕ) - (signedModeRadialData a n).s)) := by
+    have h1 : (0 : ℝ) < prolateLeakageCollar ^ (2 : ℕ) - (signedModeRadialData a n).s := by
       nlinarith [hsn0, hs64a]
     positivity
-  have hRm : (0 : ℝ) ≤ (signedModeRadialData a m).R y₀ ^ 2 := sq_nonneg _
+  have hRm : (0 : ℝ) ≤ (signedModeRadialData a m).R y₀ ^ (2 : ℕ) := sq_nonneg _
   have hexpnn : (0 : ℝ) ≤ Real.exp (2 * c
         * (bandEndpointPhase (signedModeRadialData a n).s y₀
           - bandEndpointPhase (signedModeRadialData a m).s y₀)
       + prolateScaleLog (signedModeRadialData a n).s y₀ prolateLeakageCollar
       - 12 * (Real.log (1 - prolateLeakageCollar) - Real.log (1 - y₀))) := (Real.exp_pos _).le
-  have hbase : (0 : ℝ) ≤ 324 * Real.sqrt 2 * Real.pi ^ 3 := by
+  have hbase : (0 : ℝ) ≤ 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ) := by
     have := Real.pi_pos
     positivity
   refine le_trans hratio ?_
-  have hstep : 324 * Real.sqrt 2 * Real.pi ^ 3
-      * (1 + (1 - prolateLeakageCollar ^ 2)
+  have hstep : 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ)
+      * (1 + (1 - prolateLeakageCollar ^ (2 : ℕ))
         * (prolateRadialBarrier c (signedModeRadialData a n).s prolateLeakageCollar
-          + 6 / (1 - prolateLeakageCollar)) ^ 2
-        / (c ^ 2 * (prolateLeakageCollar ^ 2 - (signedModeRadialData a n).s)))
+          + 6 / (1 - prolateLeakageCollar)) ^ (2 : ℕ)
+        / (c ^ (2 : ℕ) * (prolateLeakageCollar ^ (2 : ℕ) - (signedModeRadialData a n).s)))
       * Real.exp (2 * c
           * (bandEndpointPhase (signedModeRadialData a n).s y₀
             - bandEndpointPhase (signedModeRadialData a m).s y₀)
         + prolateScaleLog (signedModeRadialData a n).s y₀ prolateLeakageCollar
         - 12 * (Real.log (1 - prolateLeakageCollar) - Real.log (1 - y₀)))
       ≤ ratioLimitConst m n / prolateRatioScale a := by
-    have h1 : 324 * Real.sqrt 2 * Real.pi ^ 3
-        * (1 + (1 - prolateLeakageCollar ^ 2)
+    have h1 : 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ)
+        * (1 + (1 - prolateLeakageCollar ^ (2 : ℕ))
           * (prolateRadialBarrier c (signedModeRadialData a n).s prolateLeakageCollar
-            + 6 / (1 - prolateLeakageCollar)) ^ 2
-          / (c ^ 2 * (prolateLeakageCollar ^ 2 - (signedModeRadialData a n).s)))
-        ≤ 324 * Real.sqrt 2 * Real.pi ^ 3 * (1 + leakageBarrierConst) :=
+            + 6 / (1 - prolateLeakageCollar)) ^ (2 : ℕ)
+          / (c ^ (2 : ℕ) * (prolateLeakageCollar ^ (2 : ℕ) - (signedModeRadialData a n).s)))
+        ≤ 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ) * (1 + leakageBarrierConst) :=
       mul_le_mul_of_nonneg_left hCle hbase
     have h2 := mul_le_mul h1 hexple hexpnn
       (by
         have := leakageBarrierConst_nonneg
         have := Real.pi_pos
         positivity)
-    calc _ ≤ 324 * Real.sqrt 2 * Real.pi ^ 3 * (1 + leakageBarrierConst)
+    calc _ ≤ 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ) * (1 + leakageBarrierConst)
         * (Real.exp Kexp / prolateRatioScale a) := h2
       _ = ratioLimitConst m n / prolateRatioScale a := by
           rw [ratioLimitConst, ← hx₀def, hKexp]

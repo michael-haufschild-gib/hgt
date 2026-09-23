@@ -377,9 +377,9 @@ theorem xiPreconditionedForm_nonneg_iff {g : ℂ → ℂ} {D : ℝ} (hD0 : 0 ≤
       have hfim : (g a * xiPolynomialTest q a).im = 0 := by
         rw [Complex.mul_im, hgim, hqim]; ring
       set w := g a * xiPolynomialTest q a with hw
-      have hsqre : (w ^ 2).re = w.re ^ 2 := by rw [pow_two, Complex.mul_re, hfim]; ring
-      have hsqim : (w ^ 2).im = 0 := by rw [pow_two, Complex.mul_im, hfim]; ring
-      have hmulre : (a * w ^ 2).re = a.re * w.re ^ 2 := by
+      have hsqre : (w ^ (2 : ℕ)).re = w.re ^ (2 : ℕ) := by rw [pow_two, Complex.mul_re, hfim]; ring
+      have hsqim : (w ^ (2 : ℕ)).im = 0 := by rw [pow_two, Complex.mul_im, hfim]; ring
+      have hmulre : (a * w ^ (2 : ℕ)).re = a.re * w.re ^ (2 : ℕ) := by
         rw [Complex.mul_re, hsqre, hsqim, ← him]
         ring
       rw [hmulre]
@@ -441,7 +441,7 @@ theorem xiQZero_polynomialTest_eq_hankel (p : Polynomial ℝ) :
       ∑ i ∈ Finset.range (p.natDegree + 1), ∑ j ∈ Finset.range (p.natDegree + 1),
         ((p.coeff i : ℂ) * (p.coeff j : ℂ)) * xiReciprocalMoment (i + j) := by
   have hterm : ∀ q : XiZeroCopy,
-      xiZeroCopyReciprocalSquare q * xiPolynomialTest p (xiZeroCopyReciprocalSquare q) ^ 2 =
+      xiZeroCopyReciprocalSquare q * xiPolynomialTest p (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ) =
         ∑ ij ∈ (Finset.range (p.natDegree + 1)) ×ˢ (Finset.range (p.natDegree + 1)),
           ((p.coeff ij.1 : ℂ) * (p.coeff ij.2 : ℂ)) *
             xiZeroCopyReciprocalSquare q ^ (ij.1 + ij.2 + 1) := by
@@ -488,24 +488,24 @@ theorem xiReciprocalAtomSet_notMem_firstTrivial :
   rintro ⟨q, hq⟩
   have hcast : ((-4 / 25 : ℝ) : ℂ) = -4 / 25 := by push_cast; ring
   rw [hcast, xiZeroCopyReciprocalSquare, inv_pow] at hq
-  have hsq : (xiSpectralPoint q) ^ 2 = -25 / 4 := by
+  have hsq : (xiSpectralPoint q) ^ (2 : ℕ) = -25 / 4 := by
     have hinv := congrArg (fun w : ℂ => w⁻¹) hq
     simp only [inv_inv] at hinv
     rw [hinv]
     norm_num
   set w : ℂ := ((q.1 : ℂ) - 1 / 2) with hwdef
   have hspw : xiSpectralPoint q = w * (-Complex.I) := rfl
-  have hI : ((-Complex.I) ^ 2 : ℂ) = -1 := by
+  have hI : ((-Complex.I) ^ (2 : ℕ) : ℂ) = -1 := by
     rw [neg_pow, Complex.I_sq]
     norm_num
-  have hw2 : w ^ 2 = 25 / 4 := by
+  have hw2 : w ^ (2 : ℕ) = 25 / 4 := by
     rw [hspw, mul_pow, hI] at hsq
     linear_combination -hsq
   have hfac : (w - 5 / 2) * (w + 5 / 2) = 0 := by linear_combination hw2
   have hwre : w.re = (q.1 : ℂ).re - 1 / 2 := by
     rw [hwdef]
     simp
-  have hcontra : ((q.1 : ℂ).re - 1 / 2) ^ 2 = 25 / 4 := by
+  have hcontra : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) = 25 / 4 := by
     rcases mul_eq_zero.mp hfac with h | h
     · have hval : w = 5 / 2 := by linear_combination h
       rw [← hwre, hval]
@@ -627,7 +627,7 @@ theorem riemannHypothesis_of_summableBoundaryMeasure {ι : Type*} (b : ι → �
     (hb : ∀ i, ((b i : ℝ) : ℂ) ∉ xiReciprocalAtomSet)
     (hbfin : ∀ r : ℝ, 0 < r → {i | r ≤ |b i|}.Finite)
     (hpos : ∀ p : Polynomial ℝ,
-      0 ≤ (xiQZero (xiPolynomialTest p)).re + ∑' i, β i * (p.eval (b i)) ^ 2) :
+      0 ≤ (xiQZero (xiPolynomialTest p)).re + ∑' i, β i * (p.eval (b i)) ^ (2 : ℕ)) :
     RiemannHypothesis := by
   classical
   set T : ℝ := ∑' i, |β i| with hT
@@ -681,19 +681,19 @@ theorem riemannHypothesis_of_summableBoundaryMeasure {ι : Type*} (b : ι → �
       simp
     rw [h2] at h1
     simpa [Complex.norm_real] using h1
-  have hsummable : Summable fun i => β i * (p.eval (b i)) ^ 2 := by
-    refine Summable.of_norm_bounded (hβ.mul_right (ε' ^ 2)) (fun i => ?_)
+  have hsummable : Summable fun i => β i * (p.eval (b i)) ^ (2 : ℕ) := by
+    refine Summable.of_norm_bounded (hβ.mul_right (ε' ^ (2 : ℕ))) (fun i => ?_)
     rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_pow]
     refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
     exact pow_le_pow_left₀ (abs_nonneg _) (hpB i) 2
-  have hbnd : ‖∑' i, β i * (p.eval (b i)) ^ 2‖ ≤ T * ε' ^ 2 := by
-    refine tsum_of_norm_bounded (g := fun i => |β i| * ε' ^ 2)
-      ((hβ.hasSum.mul_right (ε' ^ 2)).congr_fun (fun i => rfl)) (fun i => ?_)
+  have hbnd : ‖∑' i, β i * (p.eval (b i)) ^ (2 : ℕ)‖ ≤ T * ε' ^ (2 : ℕ) := by
+    refine tsum_of_norm_bounded (g := fun i => |β i| * ε' ^ (2 : ℕ))
+      ((hβ.hasSum.mul_right (ε' ^ (2 : ℕ))).congr_fun (fun i => rfl)) (fun i => ?_)
     rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_pow]
     refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
     exact pow_le_pow_left₀ (abs_nonneg _) (hpB i) 2
-  have hTε : T * ε' ^ 2 ≤ ε := by
-    have h1 : T * ε' ^ 2 ≤ T * (ε / (T + 1)) * ε' := by
+  have hTε : T * ε' ^ (2 : ℕ) ≤ ε := by
+    have h1 : T * ε' ^ (2 : ℕ) ≤ T * (ε / (T + 1)) * ε' := by
       rw [pow_two, ← mul_assoc]
       exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hε'T hT0) hε'pos.le
     have h2 : T * (ε / (T + 1)) ≤ ε := by
@@ -702,10 +702,10 @@ theorem riemannHypothesis_of_summableBoundaryMeasure {ι : Type*} (b : ι → �
     nlinarith [hε'pos.le, hε'one, hε.le]
   have hslack : -ε ≤ (xiQZero (xiPolynomialTest p)).re := by
     have h1 := hpos p
-    have h2 : -(T * ε' ^ 2) ≤ ∑' i, β i * (p.eval (b i)) ^ 2 := by
+    have h2 : -(T * ε' ^ (2 : ℕ)) ≤ ∑' i, β i * (p.eval (b i)) ^ (2 : ℕ) := by
       have := abs_le.mp (by simpa [Real.norm_eq_abs] using hbnd)
       linarith [this.1]
-    have h3 : ∑' i, β i * (p.eval (b i)) ^ 2 ≤ T * ε' ^ 2 := by
+    have h3 : ∑' i, β i * (p.eval (b i)) ^ (2 : ℕ) ≤ T * ε' ^ (2 : ℕ) := by
       have := abs_le.mp (by simpa [Real.norm_eq_abs] using hbnd)
       linarith [this.2]
     linarith
@@ -726,10 +726,10 @@ theorem riemannHypothesis_iff_finiteBoundaryChannel_nonneg {ι : Type*} [Fintype
 /-- **Summable exterior boundary measures: the converse for a nonnegative measure.** -/
 theorem summableBoundaryMeasure_nonneg_of_riemannHypothesis {ι : Type*} (b : ι → ℝ) (β : ι → ℝ)
     (hβ0 : ∀ i, 0 ≤ β i) (hRH : RiemannHypothesis) (p : Polynomial ℝ) :
-    0 ≤ (xiQZero (xiPolynomialTest p)).re + ∑' i, β i * (p.eval (b i)) ^ 2 := by
+    0 ≤ (xiQZero (xiPolynomialTest p)).re + ∑' i, β i * (p.eval (b i)) ^ (2 : ℕ) := by
   have h1 : 0 ≤ (xiQZero (xiPolynomialTest p)).re :=
     riemannHypothesis_iff_forall_polynomial_xiQZero_nonneg.mp hRH p
-  have h2 : 0 ≤ ∑' i, β i * (p.eval (b i)) ^ 2 :=
+  have h2 : 0 ≤ ∑' i, β i * (p.eval (b i)) ^ (2 : ℕ) :=
     tsum_nonneg (fun i => mul_nonneg (hβ0 i) (sq_nonneg _))
   linarith
 

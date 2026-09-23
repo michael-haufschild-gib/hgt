@@ -55,18 +55,18 @@ variable {ι : Type*} [Fintype ι]
 
 /-- A finite weighted quadratic defect energy. -/
 def defectEnergy (w d : ι → ℝ) : ℝ :=
-  ∑ i, w i * d i ^ 2
+  ∑ i, w i * d i ^ (2 : ℕ)
 
 /-- The unweighted positive selector: sum of squares vanishes iff every defect vanishes. -/
 @[aesop norm simp]
 theorem sum_sq_eq_zero_iff_all_zero (d : ι → ℝ) :
-    (∑ i, d i ^ 2 = 0) ↔ ∀ i, d i = 0 := by
+    (∑ i, d i ^ (2 : ℕ) = 0) ↔ ∀ i, d i = 0 := by
   constructor
   · intro h i
-    have hnonneg : ∀ j ∈ (Finset.univ : Finset ι), 0 ≤ d j ^ 2 := by
+    have hnonneg : ∀ j ∈ (Finset.univ : Finset ι), 0 ≤ d j ^ (2 : ℕ) := by
       intro j _hj
       exact sq_nonneg _
-    have hall : ∀ j ∈ (Finset.univ : Finset ι), d j ^ 2 = 0 :=
+    have hall : ∀ j ∈ (Finset.univ : Finset ι), d j ^ (2 : ℕ) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg hnonneg).1 h
     exact sq_eq_zero_iff.mp (hall i (Finset.mem_univ i))
   · intro h
@@ -83,14 +83,14 @@ theorem defectEnergy_eq_zero_iff_all_zero
   constructor
   · intro h i
     have hnonneg :
-        ∀ j ∈ (Finset.univ : Finset ι), 0 ≤ w j * d j ^ 2 := by
+        ∀ j ∈ (Finset.univ : Finset ι), 0 ≤ w j * d j ^ (2 : ℕ) := by
       intro j _hj
       exact mul_nonneg (le_of_lt (hw j)) (sq_nonneg _)
-    have hall : ∀ j ∈ (Finset.univ : Finset ι), w j * d j ^ 2 = 0 :=
+    have hall : ∀ j ∈ (Finset.univ : Finset ι), w j * d j ^ (2 : ℕ) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg hnonneg).1 h
-    have hi : w i * d i ^ 2 = 0 := hall i (Finset.mem_univ i)
+    have hi : w i * d i ^ (2 : ℕ) = 0 := hall i (Finset.mem_univ i)
     have hwi : w i ≠ 0 := ne_of_gt (hw i)
-    have hdi : d i ^ 2 = 0 := (mul_eq_zero.mp hi).resolve_left hwi
+    have hdi : d i ^ (2 : ℕ) = 0 := (mul_eq_zero.mp hi).resolve_left hwi
     exact sq_eq_zero_iff.mp hdi
   · intro h
     simp [defectEnergy, h]
@@ -115,7 +115,7 @@ def criticalLineEnergy (w : ι → ℝ) (z : ι → ℂ) : ℝ :=
 
 /-- Unweighted critical-line defect energy for a finite carrier. -/
 def unweightedCriticalLineEnergy (z : ι → ℂ) : ℝ :=
-  ∑ i, criticalLineDefect (z i) ^ 2
+  ∑ i, criticalLineDefect (z i) ^ (2 : ℕ)
 
 /-- Unweighted critical-line energy vanishes exactly when every point is on the line. -/
 @[aesop norm simp]
@@ -181,7 +181,7 @@ theorem criticalLineDefect_mirror (z : ℂ) :
 /-- Mirroring preserves squared distance from the critical line. -/
 @[aesop safe]
 theorem criticalLineDefect_sq_mirror (z : ℂ) :
-    criticalLineDefect (criticalMirror z) ^ 2 = criticalLineDefect z ^ 2 := by
+    criticalLineDefect (criticalMirror z) ^ (2 : ℕ) = criticalLineDefect z ^ (2 : ℕ) := by
   rw [criticalLineDefect_mirror]
   ring
 

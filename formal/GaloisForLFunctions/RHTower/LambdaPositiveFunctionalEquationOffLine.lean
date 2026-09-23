@@ -28,7 +28,7 @@ Adding it to the von Mangoldt measure keeps `Λ ≥ 0` and keeps the functional 
 creating four zeros off the critical line.  Its rational gauge
 
 ```text
-G(s) = (s-ρ)(s-ρ̄)(s-1+ρ)(s-1+ρ̄) / [(s-1/2-c)(s-1/2+c)]^4
+G(s) = (s-ρ)(s-ρ̄)(s-1+ρ)(s-1+ρ̄) / [(s-1/2-c)(s-1/2+c)]^(4 : ℕ)
 ```
 
 is reflection invariant, so `F = ζ·G` has the same completed functional equation as `ζ`.
@@ -51,10 +51,10 @@ namespace RHTower
 
 /-- `∫_0^∞ e^{-a u} cos(b u) du = a/(a²+b²)` for `a > 0`. -/
 theorem integral_Ioi_exp_neg_mul_cos {a b : ℝ} (ha : 0 < a) :
-    (∫ u in Ioi (0 : ℝ), Real.exp (-(a * u)) * Real.cos (b * u)) = a / (a ^ 2 + b ^ 2) := by
-  have hden : (0 : ℝ) < a ^ 2 + b ^ 2 := by positivity
+    (∫ u in Ioi (0 : ℝ), Real.exp (-(a * u)) * Real.cos (b * u)) = a / (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
+  have hden : (0 : ℝ) < a ^ (2 : ℕ) + b ^ (2 : ℕ) := by positivity
   set F : ℝ → ℝ := fun u =>
-    Real.exp (-(a * u)) * (b * Real.sin (b * u) - a * Real.cos (b * u)) / (a ^ 2 + b ^ 2) with hF
+    Real.exp (-(a * u)) * (b * Real.sin (b * u) - a * Real.cos (b * u)) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)) with hF
   have hderiv : ∀ u ∈ Ioi (0 : ℝ),
       HasDerivAt F (Real.exp (-(a * u)) * Real.cos (b * u)) u := by
     intro u _
@@ -76,7 +76,7 @@ theorem integral_Ioi_exp_neg_mul_cos {a b : ℝ} (ha : 0 < a) :
     have hmix : HasDerivAt (fun u : ℝ => b * Real.sin (b * u) - a * Real.cos (b * u))
         (b * (Real.cos (b * u) * b) - a * (-Real.sin (b * u) * b)) u :=
       (hsin.const_mul b).sub (hcos.const_mul a)
-    have hprod := (hexp.mul hmix).div_const (a ^ 2 + b ^ 2)
+    have hprod := (hexp.mul hmix).div_const (a ^ (2 : ℕ) + b ^ (2 : ℕ))
     rw [hF]
     apply hprod.congr_deriv
     field_simp [hden.ne']
@@ -99,7 +99,7 @@ theorem integral_Ioi_exp_neg_mul_cos {a b : ℝ} (ha : 0 < a) :
       rw [h2] at h1 ⊢
       simpa using h1
   have htop : Tendsto F atTop (𝓝 0) := by
-    have hbound : ∀ u : ℝ, |F u| ≤ Real.exp (-(a * u)) * ((|b| + |a|) / (a ^ 2 + b ^ 2)) := by
+    have hbound : ∀ u : ℝ, |F u| ≤ Real.exp (-(a * u)) * ((|b| + |a|) / (a ^ (2 : ℕ) + b ^ (2 : ℕ))) := by
       intro u
       rw [hF]
       simp only [abs_div, abs_mul]
@@ -119,7 +119,7 @@ theorem integral_Ioi_exp_neg_mul_cos {a b : ℝ} (ha : 0 < a) :
         linarith
       rw [div_le_iff₀ hden, mul_assoc, div_mul_cancel₀ _ (ne_of_gt hden)]
       exact mul_le_mul_of_nonneg_left hnum (le_of_lt (Real.exp_pos _))
-    have hexp0 : Tendsto (fun u : ℝ => Real.exp (-(a * u)) * ((|b| + |a|) / (a ^ 2 + b ^ 2)))
+    have hexp0 : Tendsto (fun u : ℝ => Real.exp (-(a * u)) * ((|b| + |a|) / (a ^ (2 : ℕ) + b ^ (2 : ℕ))))
         atTop (𝓝 0) := by
       have hlin : Tendsto (fun u : ℝ => -(a * u)) atTop atBot := by
         have h0 : Tendsto (fun u : ℝ => a * u) atTop atTop :=
@@ -127,7 +127,7 @@ theorem integral_Ioi_exp_neg_mul_cos {a b : ℝ} (ha : 0 < a) :
         exact tendsto_neg_atTop_atBot.comp h0
       have h : Tendsto (fun u : ℝ => Real.exp (-(a * u))) atTop (𝓝 0) :=
         Real.tendsto_exp_atBot.comp hlin
-      simpa using h.mul_const ((|b| + |a|) / (a ^ 2 + b ^ 2))
+      simpa using h.mul_const ((|b| + |a|) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)))
     exact squeeze_zero_norm (fun u => by simpa [Real.norm_eq_abs] using hbound u) hexp0
   have hmain := MeasureTheory.integral_Ioi_of_hasDerivAt_of_tendsto hcont hderiv hint htop
   rw [hmain, hF]
@@ -140,7 +140,7 @@ theorem integral_Ioi_exp_neg_mul {a : ℝ} (ha : 0 < a) :
   have h := integral_Ioi_exp_neg_mul_cos (a := a) (b := 0) ha
   simp only [zero_mul, Real.cos_zero, mul_one] at h
   rw [h]
-  have : a ^ 2 + (0 : ℝ) ^ 2 = a * a := by ring
+  have : a ^ (2 : ℕ) + (0 : ℝ) ^ (2 : ℕ) = a * a := by ring
   rw [this]
   field_simp
 
@@ -180,8 +180,8 @@ theorem feNeutralLogDensity_nonneg {beta gam c u : ℝ}
 /-- Real form of the transform of the correction. -/
 def feNeutralTransformReal (beta gam c : ℝ) (σ : ℝ) : ℝ :=
   4 * (1 / (σ - c - 1 / 2) + 1 / (σ - 1 / 2 + c)) -
-    2 * ((σ - beta) / ((σ - beta) ^ 2 + gam ^ 2) +
-      (σ - 1 + beta) / ((σ - 1 + beta) ^ 2 + gam ^ 2))
+    2 * ((σ - beta) / ((σ - beta) ^ (2 : ℕ) + gam ^ (2 : ℕ)) +
+      (σ - 1 + beta) / ((σ - 1 + beta) ^ (2 : ℕ) + gam ^ (2 : ℕ)))
 
 /-- **The transform of the nonnegative correction.**  Valid on the half plane of absolute
 convergence `σ > c + 1/2`, which contains `σ > 1` because `c < 1/2`. -/
@@ -204,7 +204,7 @@ theorem integral_feNeutralLogDensity {beta gam c σ : ℝ}
   have keycos : ∀ p : ℝ, 0 < σ - p →
       (∫ u in Ioi (0 : ℝ),
           Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp (p * u)))
-        = (σ - p) / ((σ - p) ^ 2 + gam ^ 2) := by
+        = (σ - p) / ((σ - p) ^ (2 : ℕ) + gam ^ (2 : ℕ)) := by
     intro p hp
     have hcongr : (fun u : ℝ => Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp (p * u)))
         = fun u : ℝ => Real.exp (-((σ - p) * u)) * Real.cos (gam * u) := by
@@ -336,15 +336,15 @@ theorem feNeutralTransform_antisymm (beta gam c : ℝ) (s : ℂ) :
   linear_combination (4 : ℂ) * hkey1 - hkey2 - hkey3
 
 /-- Conjugate pair of Cauchy kernels at a real point. -/
-theorem inv_add_inv_conjugate_pair {x y : ℝ} (h : 0 < x ^ 2 + y ^ 2) :
+theorem inv_add_inv_conjugate_pair {x y : ℝ} (h : 0 < x ^ (2 : ℕ) + y ^ (2 : ℕ)) :
     (((x : ℂ) - (y : ℂ) * I)⁻¹ + ((x : ℂ) + (y : ℂ) * I)⁻¹)
-      = ((2 * x / (x ^ 2 + y ^ 2) : ℝ) : ℂ) := by
-  have hprod : ((x : ℂ) - (y : ℂ) * I) * ((x : ℂ) + (y : ℂ) * I) = ((x ^ 2 + y ^ 2 : ℝ) : ℂ) := by
+      = ((2 * x / (x ^ (2 : ℕ) + y ^ (2 : ℕ)) : ℝ) : ℂ) := by
+  have hprod : ((x : ℂ) - (y : ℂ) * I) * ((x : ℂ) + (y : ℂ) * I) = ((x ^ (2 : ℕ) + y ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     rw [show ((x : ℂ) - (y : ℂ) * I) * ((x : ℂ) + (y : ℂ) * I)
-        = (x : ℂ) ^ 2 - (y : ℂ) ^ 2 * I ^ 2 from by ring, Complex.I_sq]
+        = (x : ℂ) ^ (2 : ℕ) - (y : ℂ) ^ (2 : ℕ) * I ^ (2 : ℕ) from by ring, Complex.I_sq]
     ring
-  have hnz : ((x ^ 2 + y ^ 2 : ℝ) : ℂ) ≠ 0 :=
+  have hnz : ((x ^ (2 : ℕ) + y ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (ne_of_gt h)
   have ha : ((x : ℂ) - (y : ℂ) * I) ≠ 0 := by
     intro hc
@@ -368,8 +368,8 @@ theorem feNeutralTransform_ofReal {beta gam c σ : ℝ}
   have h2 : (0 : ℝ) < σ - 1 / 2 + c := by linarith
   have h3 : (0 : ℝ) < σ - beta := by linarith
   have h4 : (0 : ℝ) < σ - 1 + beta := by linarith
-  have hq3 : (0 : ℝ) < (σ - beta) ^ 2 + gam ^ 2 := by positivity
-  have hq4 : (0 : ℝ) < (σ - 1 + beta) ^ 2 + gam ^ 2 := by positivity
+  have hq3 : (0 : ℝ) < (σ - beta) ^ (2 : ℕ) + gam ^ (2 : ℕ) := by positivity
+  have hq4 : (0 : ℝ) < (σ - 1 + beta) ^ (2 : ℕ) + gam ^ (2 : ℕ) := by positivity
   have e1 : (σ : ℂ) - ((1 : ℂ) / 2 + c) = ((σ - c - 1 / 2 : ℝ) : ℂ) := by push_cast; ring
   have e2 : (σ : ℂ) - ((1 : ℂ) / 2 - c) = ((σ - 1 / 2 + c : ℝ) : ℂ) := by push_cast; ring
   have e3 : (σ : ℂ) - ((beta : ℂ) + (gam : ℂ) * I)
@@ -402,7 +402,7 @@ theorem feNeutralTransform_ofReal {beta gam c σ : ℝ}
 def feGauge (beta gam c : ℝ) (s : ℂ) : ℂ :=
   ((s - ((beta : ℂ) + (gam : ℂ) * I)) * (s - ((beta : ℂ) - (gam : ℂ) * I)) *
       (s - (1 - ((beta : ℂ) + (gam : ℂ) * I))) * (s - (1 - ((beta : ℂ) - (gam : ℂ) * I)))) /
-    ((s - ((1 : ℂ) / 2 + c)) * (s - ((1 : ℂ) / 2 - c))) ^ 4
+    ((s - ((1 : ℂ) / 2 + c)) * (s - ((1 : ℂ) / 2 - c))) ^ (4 : ℕ)
 
 /-- **The gauge is invariant under `s ↦ 1-s`.**  Hence `π^{-s/2}Γ(s/2)·ζ(s)·G(s)` obeys exactly the
 Riemann functional equation. -/

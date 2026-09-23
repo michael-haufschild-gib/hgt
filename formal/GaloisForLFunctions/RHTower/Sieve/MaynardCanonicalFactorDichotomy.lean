@@ -115,15 +115,15 @@ already satisfies the exact finite Heath--Brown identity range. -/
 theorem exists_canonical_sixty_long_zeta_log_or_robust_group_of_large
     {T0 t e V : ℝ} (hT0 : 1 < T0) (ht : 0 < t) {X : ℕ}
     (hX : (X : ℝ) ≤ T0 ^ (120 * t)) (hV : 0 < V) (s : ℂ)
-    (haggregate : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+    (haggregate : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
       V ≤ ‖heathBrownEligibleDyadicAggregate L X 60 T0 t s‖)
-    (hreserve : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ 60 →
+    (hreserve : ∀ L : ℕ, 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
       ∀ c : HeathBrownBoxChoice L X 60,
         IsHeathBrownBoxEligible L X 60 T0 t c →
           heathBrownEligibleBoxCost L X 60 *
             (groupedDyadicLower
               (heathBrownBoxFactorExponent c.a c.b c.q) : ℝ) ^ e ≤ V) :
-    ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ 60 ∧
+    ∃ L : ℕ, 1 ≤ L ∧ X < (L + 1) ^ (60 : ℕ) ∧
       ∃ c : HeathBrownBoxChoice L X 60,
         IsHeathBrownBoxEligible L X 60 T0 t c ∧
           (groupedDyadicLower

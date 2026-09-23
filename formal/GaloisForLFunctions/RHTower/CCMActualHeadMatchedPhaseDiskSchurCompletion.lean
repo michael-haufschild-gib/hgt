@@ -8,13 +8,13 @@ The mass-matched cosine and sine profiles are not unrelated scalar errors.  They
 of an integrated positive-semidefinite `2 × 2` Gram density.  Its trace is exactly twice the
 critical Mellin atom, so the oriented profile lies in the closed disk
 
-`(C_n(xi) - w_n)^2 + S_n(xi)^2 <= w_n^2`.
+`(C_n(xi) - w_n)^(2 : ℕ) + S_n(xi)^(2 : ℕ) <= w_n^(2 : ℕ)`.
 
 Rotating this Gram matrix by the literal prime phase and taking its half-angle diagonal produces a
 pointwise nonnegative completion of the intact prime-minus-polar cell.  The required reserve is
 not an abstract majorant: on every actual head it is exactly
 
-`4 w_n ||f||^2 - w_n E_f(log n)`.
+`4 w_n ||f||^(2 : ℕ) - w_n E_f(log n)`.
 
 Thus the reflection-even covariant current from the preceding module has a coefficient-faithful
 Schur diagonal.  This is an unconditional local completion; global completed-source transport of
@@ -63,27 +63,27 @@ theorem ccmActualHeadMatchedPhaseGramKernel_posSemidef (n : ℕ) (xi r : ℝ) :
       have hsum : 0 ≤ 1 + c := by linarith
       exact mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hA.le) hch.le)
         hsum
-    have hdet : 0 ≤ a * d - b ^ 2 := by
+    have hdet : 0 ≤ a * d - b ^ (2 : ℕ) := by
       dsimp only [a, b, d, A, c, s, ch, sh]
       have htrig := Real.cos_sq_add_sin_sq (2 * Real.pi * r * xi)
       have hhyp := Real.cosh_sq_sub_sinh_sq (r / 2)
       calc
-        _ = (2 * Real.exp (Real.log n / 2)) ^ 2 *
-              (Real.cosh (r / 2) ^ 2 *
-                  (1 - Real.cos (2 * Real.pi * r * xi) ^ 2) -
-                Real.sinh (r / 2) ^ 2 *
-                  Real.sin (2 * Real.pi * r * xi) ^ 2) := by ring
-        _ = (2 * Real.exp (Real.log n / 2)) ^ 2 *
-              Real.sin (2 * Real.pi * r * xi) ^ 2 *
-                (Real.cosh (r / 2) ^ 2 - Real.sinh (r / 2) ^ 2) := by
-              have hsc : 1 - Real.cos (2 * Real.pi * r * xi) ^ 2 =
-                  Real.sin (2 * Real.pi * r * xi) ^ 2 := by nlinarith
+        _ = (2 * Real.exp (Real.log n / 2)) ^ (2 : ℕ) *
+              (Real.cosh (r / 2) ^ (2 : ℕ) *
+                  (1 - Real.cos (2 * Real.pi * r * xi) ^ (2 : ℕ)) -
+                Real.sinh (r / 2) ^ (2 : ℕ) *
+                  Real.sin (2 * Real.pi * r * xi) ^ (2 : ℕ)) := by ring
+        _ = (2 * Real.exp (Real.log n / 2)) ^ (2 : ℕ) *
+              Real.sin (2 * Real.pi * r * xi) ^ (2 : ℕ) *
+                (Real.cosh (r / 2) ^ (2 : ℕ) - Real.sinh (r / 2) ^ (2 : ℕ)) := by
+              have hsc : 1 - Real.cos (2 * Real.pi * r * xi) ^ (2 : ℕ) =
+                  Real.sin (2 * Real.pi * r * xi) ^ (2 : ℕ) := by nlinarith
               rw [hsc]
               ring
         _ = (2 * Real.exp (Real.log n / 2) *
-              Real.sin (2 * Real.pi * r * xi)) ^ 2 := by rw [hhyp]; ring
+              Real.sin (2 * Real.pi * r * xi)) ^ (2 : ℕ) := by rw [hhyp]; ring
         _ ≥ 0 := sq_nonneg _
-    have hq : 0 ≤ a * x 0 ^ 2 + 2 * b * x 0 * x 1 + d * x 1 ^ 2 := by
+    have hq : 0 ≤ a * x 0 ^ (2 : ℕ) + 2 * b * x 0 * x 1 + d * x 1 ^ (2 : ℕ) := by
       rcases ha.eq_or_lt with ha0 | ha0
       · have hb0 : b = 0 := by
           rw [← sq_eq_zero_iff]
@@ -91,7 +91,7 @@ theorem ccmActualHeadMatchedPhaseGramKernel_posSemidef (n : ℕ) (xi r : ℝ) :
         rw [ha0, hb0]
         nlinarith [mul_nonneg hd (sq_nonneg (x 1))]
       · have hscaled : 0 ≤ a *
-            (a * x 0 ^ 2 + 2 * b * x 0 * x 1 + d * x 1 ^ 2) := by
+            (a * x 0 ^ (2 : ℕ) + 2 * b * x 0 * x 1 + d * x 1 ^ (2 : ℕ)) := by
           nlinarith [sq_nonneg (a * x 0 + b * x 1),
             mul_nonneg hdet (sq_nonneg (x 1))]
         exact (mul_nonneg_iff_of_pos_left ha0).mp hscaled
@@ -219,7 +219,7 @@ theorem ccmActualHeadMatchedPhaseGramMatrix_posSemidef (n : ℕ) (xi : ℝ) :
 /-- Schur determinant inequality coupling the odd sine current to both even phase slacks. -/
 theorem ccmActualHeadMatchedSinePhaseProfile_sq_le_cosine_mul_complement
     (n : ℕ) (xi : ℝ) :
-    ccmActualHeadMatchedSinePhaseProfile n xi ^ 2 ≤
+    ccmActualHeadMatchedSinePhaseProfile n xi ^ (2 : ℕ) ≤
       ccmActualHeadMatchedCosinePhaseProfile n xi *
         ccmActualHeadMatchedComplementaryCosinePhaseProfile n xi := by
   have hdet := (ccmActualHeadMatchedPhaseGramMatrix_posSemidef n xi).det_nonneg
@@ -230,9 +230,9 @@ theorem ccmActualHeadMatchedSinePhaseProfile_sq_le_cosine_mul_complement
 /-- Exact closed-disk support of the two-channel matched phase profile. -/
 theorem ccmActualHeadMatchedPhaseProfile_mem_weightDisk (n : ℕ) (xi : ℝ) :
     (ccmActualHeadMatchedCosinePhaseProfile n xi -
-        criticalMellinAtomWeight n) ^ 2 +
-      ccmActualHeadMatchedSinePhaseProfile n xi ^ 2 ≤
-        criticalMellinAtomWeight n ^ 2 := by
+        criticalMellinAtomWeight n) ^ (2 : ℕ) +
+      ccmActualHeadMatchedSinePhaseProfile n xi ^ (2 : ℕ) ≤
+        criticalMellinAtomWeight n ^ (2 : ℕ) := by
   have hdet :=
     ccmActualHeadMatchedSinePhaseProfile_sq_le_cosine_mul_complement n xi
   have hsum := ccmActualHeadMatchedPhaseProfiles_add_complement_eq_two_weight n xi
@@ -292,8 +292,8 @@ theorem integrable_ccmActualHeadMatchedPhaseReserveProfile_mul_density
     Integrable (fun xi : ℝ =>
       criticalMellinAtomWeight n *
           (1 + Real.cos (2 * Real.pi * Real.log n * xi)) *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
-  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
+  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
   let B : ℝ → ℝ := fun xi =>
     criticalMellinAtomWeight n *
       (1 + Real.cos (2 * Real.pi * Real.log n * xi))
@@ -301,7 +301,7 @@ theorem integrable_ccmActualHeadMatchedPhaseReserveProfile_mul_density
   have hB : StronglyMeasurable B := (by fun_prop : Continuous B).stronglyMeasurable
   have hbound : ∀ xi, ‖B xi‖ ≤ 2 * criticalMellinAtomWeight n := by
     intro xi
-    have hw := criticalMellinAtomWeight_nonneg n
+    have hw := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
     have hc0 : 0 ≤ 1 + Real.cos (2 * Real.pi * Real.log n * xi) := by
       nlinarith [Real.neg_one_le_cos (2 * Real.pi * Real.log n * xi)]
     have hc2 : 1 + Real.cos (2 * Real.pi * Real.log n * xi) ≤ 2 := by
@@ -318,12 +318,12 @@ def ccmActualHeadMatchedPhaseSchurReserveProducer (n : ℕ) (f : SoninL2) : ℝ 
   2 * ∫ xi : ℝ,
     criticalMellinAtomWeight n *
         (1 + Real.cos (2 * Real.pi * Real.log n * xi)) *
-      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
 
 def ccmActualHeadMatchedPhaseSchurCompletionEnergy (n : ℕ) (f : SoninL2) : ℝ :=
   2 * ∫ xi : ℝ,
     ccmActualHeadMatchedPhaseSchurCompletionProfile n xi *
-      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
 
 theorem ccmActualHeadMatchedPhaseSchurCompletionEnergy_nonneg (n : ℕ) (f : SoninL2) :
     0 ≤ ccmActualHeadMatchedPhaseSchurCompletionEnergy n f := by
@@ -336,10 +336,10 @@ theorem ccmActualHeadMatchedPhaseSchurCompletionEnergy_nonneg (n : ℕ) (f : Son
 theorem ccmActualHeadMatchedPhaseSchurReserveProducer_eq_chordComplement
     (n : ℕ) (f : SoninL2) :
     ccmActualHeadMatchedPhaseSchurReserveProducer n f =
-      4 * criticalMellinAtomWeight n * ‖f‖ ^ 2 -
+      4 * criticalMellinAtomWeight n * ‖f‖ ^ (2 : ℕ) -
         criticalMellinAtomWeight n *
           ccmActualHeadTranslationDefect (Real.log n) f := by
-  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
   let Q : ℝ → ℝ := fun xi =>
     (2 - 2 * Real.cos (2 * Real.pi * Real.log n * xi)) * D xi
   have hD : Integrable D := integrable_norm_sq (fourierUnitary f)
@@ -357,7 +357,7 @@ theorem ccmActualHeadMatchedPhaseSchurReserveProducer_eq_chordComplement
       · nlinarith [Real.cos_le_one (2 * Real.pi * Real.log n * xi)]
     have h := Integrable.mul_bdd (c := 4) hD hcoeff.aestronglyMeasurable hbound
     exact h.congr (ae_of_all volume fun xi => by dsimp only [D, Q]; ring)
-  have hnorm : ‖f‖ ^ 2 = ∫ xi : ℝ, D xi := by
+  have hnorm : ‖f‖ ^ (2 : ℕ) = ∫ xi : ℝ, D xi := by
     rw [← fourierUnitary.norm_map]
     exact norm_sq_eq_integral (fourierUnitary f)
   have hdef : ccmActualHeadTranslationDefect (Real.log n) f =
@@ -407,7 +407,7 @@ theorem ccmActualHeadPrimePolarCell_add_phaseSchurReserve_eq_completion (n : ℕ
           ccmActualHeadMatchedCosinePhaseProfile n xi +
         Real.sin (2 * Real.pi * Real.log n * xi) *
           ccmActualHeadMatchedSinePhaseProfile n xi) *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
     simpa only [ccmActualHeadMatchedOrientedPhaseSymbol_re] using horiented
   calc
     (-2 * ∫ xi : ℝ,
@@ -415,30 +415,30 @@ theorem ccmActualHeadPrimePolarCell_add_phaseSchurReserve_eq_completion (n : ℕ
               ccmActualHeadMatchedCosinePhaseProfile n xi +
             Real.sin (2 * Real.pi * Real.log n * xi) *
               ccmActualHeadMatchedSinePhaseProfile n xi) *
-            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) +
+            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) +
         2 * ∫ xi : ℝ,
           criticalMellinAtomWeight n *
               (1 + Real.cos (2 * Real.pi * Real.log n * xi)) *
-            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 =
+            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) =
       2 * ((∫ xi : ℝ,
           criticalMellinAtomWeight n *
               (1 + Real.cos (2 * Real.pi * Real.log n * xi)) *
-            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) -
+            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) -
         ∫ xi : ℝ,
           (Real.cos (2 * Real.pi * Real.log n * xi) *
               ccmActualHeadMatchedCosinePhaseProfile n xi +
             Real.sin (2 * Real.pi * Real.log n * xi) *
               ccmActualHeadMatchedSinePhaseProfile n xi) *
-            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by ring
+            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by ring
     _ = 2 * ∫ xi : ℝ,
         (criticalMellinAtomWeight n *
               (1 + Real.cos (2 * Real.pi * Real.log n * xi)) *
-            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 -
+            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) -
           (Real.cos (2 * Real.pi * Real.log n * xi) *
               ccmActualHeadMatchedCosinePhaseProfile n xi +
             Real.sin (2 * Real.pi * Real.log n * xi) *
               ccmActualHeadMatchedSinePhaseProfile n xi) *
-            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
+            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
       rw [integral_sub hreserve horiented']
     _ = 2 * ∫ xi : ℝ,
         (criticalMellinAtomWeight n *
@@ -447,7 +447,7 @@ theorem ccmActualHeadPrimePolarCell_add_phaseSchurReserve_eq_completion (n : ℕ
               ccmActualHeadMatchedCosinePhaseProfile n xi +
             Real.sin (2 * Real.pi * Real.log n * xi) *
               ccmActualHeadMatchedSinePhaseProfile n xi)) *
-            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+            ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
       congr 1
       apply integral_congr_ae
       filter_upwards with xi

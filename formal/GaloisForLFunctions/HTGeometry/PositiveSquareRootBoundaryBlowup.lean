@@ -12,20 +12,20 @@ positive infinity along the interior radial filter. -/
 theorem tendsto_atTop_of_positive_sqrt_scaled_boundary
     {S : ℝ → ℝ} {B L : ℝ} (hB : 0 < B) (hL : 0 < L)
     (hboundary : Tendsto
-      (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) * S t)
-      (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2))) (nhds L)) :
+      (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) * S t)
+      (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ)))) (nhds L)) :
     Tendsto S
-      (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2))) atTop := by
-  let F := nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2))
-  let g : ℝ → ℝ := fun t => Real.sqrt (1 - B ^ 2 * t)
-  have hBsq : 0 < B ^ 2 := sq_pos_of_pos hB
+      (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ)))) atTop := by
+  let F := nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ)))
+  let g : ℝ → ℝ := fun t => Real.sqrt (1 - B ^ (2 : ℕ) * t)
+  have hBsq : 0 < B ^ (2 : ℕ) := sq_pos_of_pos hB
   have hg_nhds : Tendsto g F (nhds 0) := by
-    have hc : ContinuousAt g (1 / B ^ 2) := by
+    have hc : ContinuousAt g (1 / B ^ (2 : ℕ)) := by
       dsimp only [g]
       fun_prop
-    have hvalue : g (1 / B ^ 2) = 0 := by
+    have hvalue : g (1 / B ^ (2 : ℕ)) = 0 := by
       dsimp only [g]
-      rw [show B ^ 2 * (1 / B ^ 2) = 1 by field_simp [hBsq.ne']]
+      rw [show B ^ (2 : ℕ) * (1 / B ^ (2 : ℕ)) = 1 by field_simp [hBsq.ne']]
       simp
     rw [← hvalue]
     exact hc.mono_left inf_le_left

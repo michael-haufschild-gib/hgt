@@ -10,7 +10,7 @@ This module removes the fixed-base defect from the existing shared Ward bridge. 
 Euler base `sigma > 1`, use the literal critical slope `epsilon = sigma - 1`.  The corresponding
 Euler Ward curvature is
 
-`-2 * (sigma - 1)^2 * deriv infinitePrimeFlux sigma`.
+`-2 * (sigma - 1)^(2 : ℕ) * deriv infinitePrimeFlux sigma`.
 
 It is strictly positive throughout the Euler chamber and tends to the nonzero value `2` as the
 base reaches the critical wall.  The same unfrozen affine source lands in exactly the completed

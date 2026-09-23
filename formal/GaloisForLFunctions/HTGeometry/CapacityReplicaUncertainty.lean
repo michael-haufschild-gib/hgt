@@ -51,7 +51,7 @@ def piProjection {K : ℕ} (pi : X → ℝ) (phi : Fin K → X → ℝ) (f : X �
 
 theorem piNormSq_piProjection {K : ℕ} (pi : X → ℝ) (phi : Fin K → X → ℝ)
     (horth : IsPiOrthonormal pi phi) (f : X → ℝ) :
-    piNormSq pi (piProjection pi phi f) = ∑ j, (piInner pi f (phi j)) ^ 2 := by
+    piNormSq pi (piProjection pi phi f) = ∑ j, (piInner pi f (phi j)) ^ (2 : ℕ) := by
   classical
   set b : Fin K → ℝ := fun j => piInner pi f (phi j) with hb
   have hLHS : piNormSq pi (piProjection pi phi f)
@@ -67,7 +67,7 @@ theorem piNormSq_piProjection {K : ℕ} (pi : X → ℝ) (phi : Fin K → X → 
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.sum_comm]
   have hinner : ∀ j : Fin K, (∑ x : X, b i * b j * (pi x * (phi i x * phi j x)))
-      = if i = j then (b i) ^ 2 else 0 := by
+      = if i = j then (b i) ^ (2 : ℕ) else 0 := by
     intro j
     have hfold : (∑ x : X, b i * b j * (pi x * (phi i x * phi j x)))
         = b i * b j * piInner pi (phi i) (phi j) := by
@@ -78,7 +78,7 @@ theorem piNormSq_piProjection {K : ℕ} (pi : X → ℝ) (phi : Fin K → X → 
     · rw [if_pos hij, if_pos hij, mul_one, hij, sq]
     · rw [if_neg hij, if_neg hij, mul_zero]
   rw [Finset.sum_congr rfl fun j _ => hinner j,
-    Finset.sum_ite_eq Finset.univ i (fun _ => (b i) ^ 2)]
+    Finset.sum_ite_eq Finset.univ i (fun _ => (b i) ^ (2 : ℕ))]
   simp only [Finset.mem_univ, if_true, hb]
 
 end Weighted
@@ -91,11 +91,11 @@ variable {X : Type*} [Fintype X] [DecidableEq X]
 theorem sum_sq_source_pairing_le {K : ℕ} (phi : Fin K → X → ℝ) (rho : X → ℝ)
     (hrho : ∀ x, 0 ≤ rho x) (hrhosum : ∑ x, rho x = 1)
     (hker : ∀ x y, |∑ j, phi j x * phi j y| ≤ (K : ℝ)) :
-    (∑ j, (∑ x, rho x * phi j x) ^ 2) ≤ (K : ℝ) := by
+    (∑ j, (∑ x, rho x * phi j x) ^ (2 : ℕ)) ≤ (K : ℝ) := by
   classical
-  have hexp : (∑ j, (∑ x, rho x * phi j x) ^ 2)
+  have hexp : (∑ j, (∑ x, rho x * phi j x) ^ (2 : ℕ))
       = ∑ x, ∑ y, rho x * rho y * (∑ j, phi j x * phi j y) := by
-    have hstep : ∀ j : Fin K, (∑ x, rho x * phi j x) ^ 2
+    have hstep : ∀ j : Fin K, (∑ x, rho x * phi j x) ^ (2 : ℕ)
         = ∑ x, ∑ y, rho x * rho y * (phi j x * phi j y) := by
       intro j
       rw [sq, Finset.sum_mul_sum]
@@ -130,10 +130,10 @@ theorem sum_sq_source_pairing_le {K : ℕ} (phi : Fin K → X → ℝ) (rho : X 
 theorem sum_sq_transfer_le {K : ℕ} (cap a : ℝ) (ha : 0 ≤ a) (ha1 : a < 1)
     (coeff lam mu : Fin K → ℝ) (hlam : ∀ j, |lam j| ≤ 1)
     (hcoeff : ∀ j, coeff j = cap / (1 - a * lam j) * mu j)
-    (hmu : (∑ j, (mu j) ^ 2) ≤ (K : ℝ)) :
-    (∑ j, (coeff j) ^ 2) ≤ cap ^ 2 * (K : ℝ) / (1 - a) ^ 2 := by
+    (hmu : (∑ j, (mu j) ^ (2 : ℕ)) ≤ (K : ℝ)) :
+    (∑ j, (coeff j) ^ (2 : ℕ)) ≤ cap ^ (2 : ℕ) * (K : ℝ) / (1 - a) ^ (2 : ℕ) := by
   have hden : (0 : ℝ) < 1 - a := by linarith
-  have hstep : ∀ j : Fin K, (coeff j) ^ 2 ≤ cap ^ 2 / (1 - a) ^ 2 * (mu j) ^ 2 := by
+  have hstep : ∀ j : Fin K, (coeff j) ^ (2 : ℕ) ≤ cap ^ (2 : ℕ) / (1 - a) ^ (2 : ℕ) * (mu j) ^ (2 : ℕ) := by
     intro j
     have hlow : 1 - a ≤ 1 - a * lam j := by
       have h1 : a * lam j ≤ a := by
@@ -145,12 +145,12 @@ theorem sum_sq_transfer_le {K : ℕ} (cap a : ℝ) (ha : 0 ≤ a) (ha1 : a < 1)
     refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg (mu j))
     refine div_le_div_of_nonneg_left (sq_nonneg cap) (by positivity) ?_
     exact pow_le_pow_left₀ hden.le hlow 2
-  calc (∑ j, (coeff j) ^ 2) ≤ ∑ j, cap ^ 2 / (1 - a) ^ 2 * (mu j) ^ 2 :=
+  calc (∑ j, (coeff j) ^ (2 : ℕ)) ≤ ∑ j, cap ^ (2 : ℕ) / (1 - a) ^ (2 : ℕ) * (mu j) ^ (2 : ℕ) :=
         Finset.sum_le_sum fun j _ => hstep j
-    _ = cap ^ 2 / (1 - a) ^ 2 * ∑ j, (mu j) ^ 2 := by rw [Finset.mul_sum]
-    _ ≤ cap ^ 2 / (1 - a) ^ 2 * (K : ℝ) := by
+    _ = cap ^ (2 : ℕ) / (1 - a) ^ (2 : ℕ) * ∑ j, (mu j) ^ (2 : ℕ) := by rw [Finset.mul_sum]
+    _ ≤ cap ^ (2 : ℕ) / (1 - a) ^ (2 : ℕ) * (K : ℝ) := by
         refine mul_le_mul_of_nonneg_left hmu (by positivity)
-    _ = cap ^ 2 * (K : ℝ) / (1 - a) ^ 2 := by ring
+    _ = cap ^ (2 : ℕ) * (K : ℝ) / (1 - a) ^ (2 : ℕ) := by ring
 
 /-- **`(11h)`.**  The reporter's square mass is at least the target mass. -/
 theorem measure_le_piNormSq (pi h : X → ℝ) (A : Finset X) (hpi : ∀ x, 0 ≤ pi x)
@@ -204,7 +204,7 @@ theorem one_sub_le_relative_error {K : ℕ} (pi : X → ℝ) (phi : Fin K → X 
     rw [← Finset.mul_sum]
     rfl
   have hquad : (∑ x : X, ∑ i, ∑ j, c i * c j * (pi x * (phi i x * phi j x)))
-      = ∑ i, (c i) ^ 2 := by
+      = ∑ i, (c i) ^ (2 : ℕ) := by
     have hinner : ∀ i j : Fin K, (∑ x : X, c i * c j * (pi x * (phi i x * phi j x)))
         = c i * c j * piInner pi (phi i) (phi j) := by
       intro i j
@@ -214,35 +214,35 @@ theorem one_sub_le_relative_error {K : ℕ} (pi : X → ℝ) (phi : Fin K → X 
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.sum_comm]
     have hstep2 : ∀ j : Fin K, (∑ x : X, c i * c j * (pi x * (phi i x * phi j x)))
-        = if i = j then (c i) ^ 2 else 0 := by
+        = if i = j then (c i) ^ (2 : ℕ) else 0 := by
       intro j
       rw [hinner i j, horth i j]
       by_cases hij : i = j
       · rw [if_pos hij, if_pos hij, mul_one, hij, sq]
       · rw [if_neg hij, if_neg hij, mul_zero]
     rw [Finset.sum_congr rfl fun j _ => hstep2 j,
-      Finset.sum_ite_eq Finset.univ i (fun _ => (c i) ^ 2)]
+      Finset.sum_ite_eq Finset.univ i (fun _ => (c i) ^ (2 : ℕ))]
     simp
   have hkey : piNormSq pi (fun x => h x - ∑ j, c j * phi j x)
-      = piNormSq pi h - 2 * (∑ j, c j * piInner pi h (phi j)) + ∑ j, (c j) ^ 2 := by
+      = piNormSq pi h - 2 * (∑ j, c j * piInner pi h (phi j)) + ∑ j, (c j) ^ (2 : ℕ) := by
     have hLHS : piNormSq pi (fun x => h x - ∑ j, c j * phi j x)
         = ∑ x : X, pi x * ((h x - ∑ j, c j * phi j x) * (h x - ∑ j, c j * phi j x)) := rfl
     have hRHS1 : piNormSq pi h = ∑ x : X, pi x * (h x * h x) := rfl
     rw [hLHS, Finset.sum_congr rfl fun x _ => hstep x, Finset.sum_add_distrib,
       Finset.sum_sub_distrib, hlin, hquad, hRHS1]
-  have hproj : piNormSq pi (piProjection pi phi h) = ∑ j, (piInner pi h (phi j)) ^ 2 :=
+  have hproj : piNormSq pi (piProjection pi phi h) = ∑ j, (piInner pi h (phi j)) ^ (2 : ℕ) :=
     piNormSq_piProjection pi phi horth h
-  have hsq : (∑ j, (piInner pi h (phi j)) ^ 2) ≤ ratio * piNormSq pi h := by
+  have hsq : (∑ j, (piInner pi h (phi j)) ^ (2 : ℕ)) ≤ ratio * piNormSq pi h := by
     rw [← hproj]
     exact hcap
-  have hres : 0 ≤ ∑ j, (c j - piInner pi h (phi j)) ^ 2 :=
+  have hres : 0 ≤ ∑ j, (c j - piInner pi h (phi j)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun j _ => sq_nonneg _
-  have hsquare : piNormSq pi h - 2 * (∑ j, c j * piInner pi h (phi j)) + ∑ j, (c j) ^ 2
-      = (piNormSq pi h - ∑ j, (piInner pi h (phi j)) ^ 2)
-        + ∑ j, (c j - piInner pi h (phi j)) ^ 2 := by
-    have hsum : (∑ j, (c j - piInner pi h (phi j)) ^ 2)
-        = ∑ j, (c j) ^ 2 - 2 * (∑ j, c j * piInner pi h (phi j))
-          + ∑ j, (piInner pi h (phi j)) ^ 2 := by
+  have hsquare : piNormSq pi h - 2 * (∑ j, c j * piInner pi h (phi j)) + ∑ j, (c j) ^ (2 : ℕ)
+      = (piNormSq pi h - ∑ j, (piInner pi h (phi j)) ^ (2 : ℕ))
+        + ∑ j, (c j - piInner pi h (phi j)) ^ (2 : ℕ) := by
+    have hsum : (∑ j, (c j - piInner pi h (phi j)) ^ (2 : ℕ))
+        = ∑ j, (c j) ^ (2 : ℕ) - 2 * (∑ j, c j * piInner pi h (phi j))
+          + ∑ j, (piInner pi h (phi j)) ^ (2 : ℕ) := by
       rw [Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
       exact Finset.sum_congr rfl fun j _ => by ring
     rw [hsum]

@@ -783,7 +783,7 @@ theorem gammaJetAnnihilator_pair_riemannZeta_normalized_tendsto
             riemannZeta ((x : ℂ) + 1) +
           ((x : ℂ) + lambda1) * ((x : ℂ) + lambda2) *
             riemannZeta (x : ℂ)) /
-        (x : ℂ) ^ 2)
+        (x : ℂ) ^ (2 : ℕ))
       atTop (nhds (1 : ℂ)) := by
   have hlim := gammaJetAnnihilator_riemannZeta_normalized_tendsto
     (pairGammaShift lambda1 lambda2) pairGammaMult

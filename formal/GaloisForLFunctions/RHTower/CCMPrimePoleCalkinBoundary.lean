@@ -41,8 +41,8 @@ theorem exists_fin_ccmPrimePole_projection_common_weaklyNull_sequence
         ccmPrimePoleClosedSubspace Lref href ∧ ∀ i,
       ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection
           (ccmNormalizedPrimePoleVector Lref href n) -
-        ccmNormalizedPrimePoleVector Lref href n‖ ^ 2 ≤
-        2 * (2 * Real.pi * (((1 : ℝ) / (m + 1)) / L i)) ^ 2 := by
+        ccmNormalizedPrimePoleVector Lref href n‖ ^ (2 : ℕ) ≤
+        2 * (2 * Real.pi * (((1 : ℝ) / (m + 1)) / L i)) ^ (2 : ℕ) := by
     intro m
     exact exists_fin_ccmPrimePole_projection_cofinal_common_coherence
       href L hL (by positivity : (0 : ℝ) < 1 / (m + 1)) m
@@ -58,7 +58,7 @@ theorem exists_fin_ccmPrimePole_projection_common_weaklyNull_sequence
   have hdelta : Tendsto (fun m : ℕ => (1 : ℝ) / (m + 1)) atTop (𝓝 0) :=
     tendsto_one_div_add_atTop_nhds_zero_nat
   have hupper : Tendsto (fun m : ℕ =>
-      2 * (2 * Real.pi * (((1 : ℝ) / (m + 1)) / L i)) ^ 2)
+      2 * (2 * Real.pi * (((1 : ℝ) / (m + 1)) / L i)) ^ (2 : ℕ))
       atTop (𝓝 0) := by
     have h1 := (hdelta.div_const (L i)).const_mul (2 * Real.pi)
     have h2 := (h1.pow 2).const_mul 2
@@ -66,7 +66,7 @@ theorem exists_fin_ccmPrimePole_projection_common_weaklyNull_sequence
   have hsq : Tendsto (fun m =>
       ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection
           (ccmNormalizedPrimePoleVector Lref href (φ m : ℤ)) -
-        ccmNormalizedPrimePoleVector Lref href (φ m : ℤ)‖ ^ 2)
+        ccmNormalizedPrimePoleVector Lref href (φ m : ℤ)‖ ^ (2 : ℕ))
       atTop (𝓝 0) :=
     squeeze_zero (fun _ => sq_nonneg _) (fun m => hdef m i) hupper
   have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
@@ -103,17 +103,17 @@ theorem exists_fin_ccmPrimePole_projection_common_weaklyNull_born_survival_seque
   have hsq := hproj_i.pow 2
   norm_num at hsq
   have hsq' : Tendsto (fun m =>
-      ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ 2)
+      ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ (2 : ℕ))
       atTop (𝓝 0) := hsq
   have hone : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (𝓝 1) := tendsto_const_nhds
   have hsub' : Tendsto (fun m =>
       (1 : ℝ) -
-        ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ 2)
+        ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ (2 : ℕ))
       atTop (𝓝 (1 - 0)) := hone.sub hsq'
   norm_num at hsub'
   refine hsub'.congr' (Eventually.of_forall fun m => ?_)
   change (1 -
-      ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ 2) =
+      ‖(ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m‖ ^ (2 : ℕ)) =
     Complex.re (inner ℂ (f m)
       ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m)))
   exact (HTGeometry.bornSurvivalProbability_eq_one_sub_projectionDefectSq

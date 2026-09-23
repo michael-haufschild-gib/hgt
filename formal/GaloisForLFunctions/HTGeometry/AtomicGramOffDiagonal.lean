@@ -54,12 +54,12 @@ theorem norm_atomicGram_offdiag_le {d : ℕ} (a c : Fin d → ℝ)
       have hjb : a j ≠ a m := fun h => hjm (ha h)
       have h := norm_scaled_atomic_far_le (a := a l) (a' := a m) (b := a j) y hja hjb
         ((c j : ℂ))
-      have hsq : y ^ 2 ≤ |y| := sq_le_abs_of_abs_le_one hy1
+      have hsq : y ^ (2 : ℕ) ≤ |y| := sq_le_abs_of_abs_le_one hy1
       have hpos : (0 : ℝ) < |a j - a l| * |a j - a m| := by
         have h1 : (0 : ℝ) < |a j - a l| := abs_pos.2 (sub_ne_zero.2 hja)
         have h2 : (0 : ℝ) < |a j - a m| := abs_pos.2 (sub_ne_zero.2 hjb)
         positivity
-      calc _ ≤ y ^ 2 * ‖(c j : ℂ)‖ / (|a j - a l| * |a j - a m|) := h
+      calc _ ≤ y ^ (2 : ℕ) * ‖(c j : ℂ)‖ / (|a j - a l| * |a j - a m|) := h
         _ ≤ |y| * ‖(c j : ℂ)‖ / (|a j - a l| * |a j - a m|) := by
             gcongr
         _ = |y| * ‖(c j : ℂ)‖ * (1 / (|a j - a l| * |a j - a m|)) := by ring

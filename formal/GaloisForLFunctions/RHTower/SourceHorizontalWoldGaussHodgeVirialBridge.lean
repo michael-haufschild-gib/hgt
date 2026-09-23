@@ -151,16 +151,16 @@ theorem sourceHorizontalWoldEulerGreenProfile_mul_pos_iff (u : ℝ) :
 
 /-- Euler differentiation of the Wold Green profile is the Gauss hyperbolic virial shape. -/
 theorem sourceHorizontalWoldEulerGreenProfile_euler (u : ℝ) :
-    u ^ 2 * deriv sourceHorizontalWoldEulerGreenProfile u = u * Real.sinh u := by
+    u ^ (2 : ℕ) * deriv sourceHorizontalWoldEulerGreenProfile u = u * Real.sinh u := by
   have h := sourceHorizontalWoldEulerGreenProfile_mul_deriv u
   calc
-    u ^ 2 * deriv sourceHorizontalWoldEulerGreenProfile u =
+    u ^ (2 : ℕ) * deriv sourceHorizontalWoldEulerGreenProfile u =
         u * (u * deriv sourceHorizontalWoldEulerGreenProfile u) := by ring
     _ = u * Real.sinh u := by rw [h]
 
 /-- The completed Euler response has exactly the central radical. -/
 theorem sourceHorizontalWoldEulerGreenProfile_euler_eq_zero_iff (u : ℝ) :
-    u ^ 2 * deriv sourceHorizontalWoldEulerGreenProfile u = 0 ↔ u = 0 := by
+    u ^ (2 : ℕ) * deriv sourceHorizontalWoldEulerGreenProfile u = 0 ↔ u = 0 := by
   rw [sourceHorizontalWoldEulerGreenProfile_euler]
   simp
 
@@ -188,28 +188,28 @@ theorem gaussHodgeMassCurrent_eq_woldEulerGreenResponse
     (m : ℕ) (q : XiZeroCopy) (p : Nat.Primes) :
     gaussHodgeMassCurrent m q p =
       2 * gaussReciprocalCharacterWeight m p *
-        (Real.log (p : ℝ) * primeDepthBVWoldXiCenteredRate q.1) ^ 2 *
+        (Real.log (p : ℝ) * primeDepthBVWoldXiCenteredRate q.1) ^ (2 : ℕ) *
           deriv sourceHorizontalWoldEulerGreenProfile
             (Real.log (p : ℝ) * primeDepthBVWoldXiCenteredRate q.1) := by
   rw [gaussHodgeMassCurrent_eq_reciprocalCharacterVirial,
     reciprocalCharacterVirialCurrent]
   let u : ℝ := Real.log (p : ℝ) * primeDepthBVWoldXiCenteredRate q.1
   change 2 * gaussReciprocalCharacterWeight m p * u * Real.sinh u =
-    2 * gaussReciprocalCharacterWeight m p * u ^ 2 *
+    2 * gaussReciprocalCharacterWeight m p * u ^ (2 : ℕ) *
       deriv sourceHorizontalWoldEulerGreenProfile u
   calc
     2 * gaussReciprocalCharacterWeight m p * u * Real.sinh u =
         2 * gaussReciprocalCharacterWeight m p * (u * Real.sinh u) := by ring
     _ = 2 * gaussReciprocalCharacterWeight m p *
-        (u ^ 2 * deriv sourceHorizontalWoldEulerGreenProfile u) := by
+        (u ^ (2 : ℕ) * deriv sourceHorizontalWoldEulerGreenProfile u) := by
           rw [sourceHorizontalWoldEulerGreenProfile_euler]
-    _ = 2 * gaussReciprocalCharacterWeight m p * u ^ 2 *
+    _ = 2 * gaussReciprocalCharacterWeight m p * u ^ (2 : ℕ) *
         deriv sourceHorizontalWoldEulerGreenProfile u := by ring
 
 /-- Exact depth-one coefficient gauge between Gauss residue and Wold source packets. -/
 def gaussWoldDepthOneCoefficientGauge (p : Nat.Primes) : ℝ :=
-  Real.log 2 * ((p : ℝ) - 1) * (p : ℝ) ^ 3 /
-    (((p : ℝ) + 1) ^ 2 * Real.log (p : ℝ) ^ 2)
+  Real.log 2 * ((p : ℝ) - 1) * (p : ℝ) ^ (3 : ℕ) /
+    (((p : ℝ) + 1) ^ (2 : ℕ) * Real.log (p : ℝ) ^ (2 : ℕ))
 
 /-- The depth-one Gauss-to-Wold coefficient gauge is positive at every prime label. -/
 theorem gaussWoldDepthOneCoefficientGauge_pos (p : Nat.Primes) :
@@ -234,40 +234,40 @@ theorem gaussWoldDepthOneCoefficientGauge_linear_lower (p : Nat.Primes) :
   have hp1 : 1 < P := lt_of_lt_of_le one_lt_two hp2
   have hlog0 : 0 < Real.log P := Real.log_pos hp1
   have hsqrt0 : 0 ≤ Real.sqrt P := Real.sqrt_nonneg P
-  have hsqrtSq : (Real.sqrt P) ^ 2 = P := Real.sq_sqrt hp0.le
+  have hsqrtSq : (Real.sqrt P) ^ (2 : ℕ) = P := Real.sq_sqrt hp0.le
   have hs : Real.log (Real.sqrt P) ≤ Real.sqrt P - 1 :=
     Real.log_le_sub_one_of_pos (Real.sqrt_pos.mpr hp0)
   have hlog : Real.log P ≤ 2 * Real.sqrt P := by
     rw [Real.log_sqrt hp0.le] at hs
     linarith
-  have hlogsq : Real.log P ^ 2 ≤ 4 * P := by
+  have hlogsq : Real.log P ^ (2 : ℕ) ≤ 4 * P := by
     have hprod : 0 ≤ (2 * Real.sqrt P - Real.log P) *
         (2 * Real.sqrt P + Real.log P) :=
       mul_nonneg (by linarith) (by positivity)
     nlinarith
   have hplus : P + 1 ≤ 3 / 2 * P := by linarith
-  have hplusSq : (P + 1) ^ 2 ≤ (3 / 2 * P) ^ 2 :=
+  have hplusSq : (P + 1) ^ (2 : ℕ) ≤ (3 / 2 * P) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (by linarith) hplus 2
-  have hden : (P + 1) ^ 2 * Real.log P ^ 2 ≤ 9 * P ^ 3 := by
+  have hden : (P + 1) ^ (2 : ℕ) * Real.log P ^ (2 : ℕ) ≤ 9 * P ^ (3 : ℕ) := by
     calc
-      (P + 1) ^ 2 * Real.log P ^ 2 ≤ (3 / 2 * P) ^ 2 * (4 * P) :=
+      (P + 1) ^ (2 : ℕ) * Real.log P ^ (2 : ℕ) ≤ (3 / 2 * P) ^ (2 : ℕ) * (4 * P) :=
         mul_le_mul hplusSq hlogsq (sq_nonneg _) (by positivity)
-      _ = 9 * P ^ 3 := by ring
-  have hnum : P / 2 * P ^ 3 ≤ (P - 1) * P ^ 3 := by
+      _ = 9 * P ^ (3 : ℕ) := by ring
+  have hnum : P / 2 * P ^ (3 : ℕ) ≤ (P - 1) * P ^ (3 : ℕ) := by
     exact mul_le_mul_of_nonneg_right (by linarith) (pow_nonneg hp0.le 3)
-  have hden0 : 0 < (P + 1) ^ 2 * Real.log P ^ 2 := by positivity
+  have hden0 : 0 < (P + 1) ^ (2 : ℕ) * Real.log P ^ (2 : ℕ) := by positivity
   rw [gaussWoldDepthOneCoefficientGauge]
   change Real.log 2 / 18 * P ≤
-    Real.log 2 * (P - 1) * P ^ 3 / ((P + 1) ^ 2 * Real.log P ^ 2)
+    Real.log 2 * (P - 1) * P ^ (3 : ℕ) / ((P + 1) ^ (2 : ℕ) * Real.log P ^ (2 : ℕ))
   rw [le_div_iff₀ hden0]
   calc
-    Real.log 2 / 18 * P * ((P + 1) ^ 2 * Real.log P ^ 2) ≤
-        Real.log 2 / 18 * P * (9 * P ^ 3) :=
+    Real.log 2 / 18 * P * ((P + 1) ^ (2 : ℕ) * Real.log P ^ (2 : ℕ)) ≤
+        Real.log 2 / 18 * P * (9 * P ^ (3 : ℕ)) :=
       mul_le_mul_of_nonneg_left hden (by positivity)
-    _ = Real.log 2 * (P / 2 * P ^ 3) := by ring
-    _ ≤ Real.log 2 * ((P - 1) * P ^ 3) :=
+    _ = Real.log 2 * (P / 2 * P ^ (3 : ℕ)) := by ring
+    _ ≤ Real.log 2 * ((P - 1) * P ^ (3 : ℕ)) :=
       mul_le_mul_of_nonneg_left hnum (Real.log_pos one_lt_two).le
-    _ = Real.log 2 * (P - 1) * P ^ 3 := by ring
+    _ = Real.log 2 * (P - 1) * P ^ (3 : ℕ) := by ring
 
 /-- Along ordered primes the exact Gauss-to-Wold coefficient gauge diverges. -/
 theorem tendsto_gaussWoldDepthOneCoefficientGauge_nthPrime :
@@ -303,7 +303,7 @@ theorem gaussReciprocalCharacterWeight_one_eq_wold_gauge (p : Nat.Primes) :
 def gaussWoldFiniteSourceVirialResponse
     (N m : ℕ) (p : Nat.Primes) (t : ℝ) : ℝ :=
   2 * gaussReciprocalCharacterWeight m p *
-    (Real.log (p : ℝ) * t) ^ 2 *
+    (Real.log (p : ℝ) * t) ^ (2 : ℕ) *
       sourceHorizontalWoldPrimeClockCompletedFiniteResponse N
         (Real.log (p : ℝ) * t)
 
@@ -326,7 +326,7 @@ theorem gaussWoldFiniteSourceVirialResponse_one_eq_gaugedWold
     gaussWoldFiniteSourceVirialResponse N 1 p t =
       2 * gaussWoldDepthOneCoefficientGauge p *
         (woldCoeff 1 p / Real.log (p : ℝ)) *
-        (Real.log (p : ℝ) * t) ^ 2 *
+        (Real.log (p : ℝ) * t) ^ (2 : ℕ) *
           sourceHorizontalWoldPrimeClockCompletedFiniteResponse N
             (Real.log (p : ℝ) * t) := by
   rw [gaussWoldFiniteSourceVirialResponse,

@@ -346,7 +346,7 @@ theorem isDixmier_gaussChannelOperator (hm2 : 2 ≤ m) (k : Fin m) (p : Nat.Prim
 
 /-- **The Dixmier trace of the Gauss channel operator.**  The logarithmic mean of the singular
 values of `((p-1)/p)^{2m} · G_full^m` is the arithmetic residue
-`2 (p-1)^{2m} (p^m-1)^2 / (p^{2m} m^2 log p)`. -/
+`2 (p-1)^{2m} (p^m-1)^(2 : ℕ) / (p^{2m} m^(2 : ℕ) log p)`. -/
 theorem hasSchattenLogResidue_gaussChannelOperator (hm2 : 2 ≤ m) (k : Fin m) (p : Nat.Primes) :
     HasSchattenLogResidue 1 (gaussChannelOperator (le_trans one_le_two hm2) k p)
       (gaussChannelResidue m p) := by

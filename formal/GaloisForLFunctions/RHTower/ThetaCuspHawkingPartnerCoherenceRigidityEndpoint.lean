@@ -11,7 +11,7 @@ incoherent particle density and a coherent exterior/partner amplitude.  They are
 
 Equivalently, the Gram determinant of the constant shell mode and the emitted pair mode is
 
-`w * integral normSq(K) - normSq(integral K) = (1/45) * w^6 * Xi(w)^2`.
+`w * integral normSq(K) - normSq(integral K) = (1/45) * w^(6 : ℕ) * Xi(w)^(2 : ℕ)`.
 
 Thus every bright shell has the same normalized coherent fraction `5/6`; its remaining `1/6` is
 the exact continuum split-mode coherence defect.  This relation is invariant under arbitrary
@@ -31,7 +31,7 @@ coefficient-faithful theta source has the exact `5/6` coherent fraction, `1/45` 
 detector-universal dark divisor proved below.
 
 **[BRIDGE] [OPEN CORE]** The entire continuation of the Gram defect is
-`(1/45) z^6 XiC(z)^2`; hence RH is exactly confinement of its nonkinematic degeneracy resonances
+`(1/45) z^(6 : ℕ) XiC(z)^(2 : ℕ)`; hence RH is exactly confinement of its nonkinematic degeneracy resonances
 to the physical-frequency sheet.  Real-shell Gram positivity is automatic and therefore does not
 prove this confinement.  A producer must derive an independent complex-frequency positivity or
 backreaction stability law for this same Hawking covariance object.
@@ -96,13 +96,13 @@ def thetaCuspHawkingBornPairShellCoherenceDefect (w : ℝ) : ℝ :=
 
 /-- Entire continuation of the exact Hawking shell-coherence Gram defect. -/
 def thetaCuspHawkingAnalyticPairShellCoherenceDefect (z : ℂ) : ℂ :=
-  (1 / 45 : ℂ) * z ^ 6 * XiC z ^ 2
+  (1 / 45 : ℂ) * z ^ (6 : ℕ) * XiC z ^ (2 : ℕ)
 
 /-- Squared norm of the coherent anomalous shell amplitude. -/
 theorem normSq_thetaCuspHawkingBornAnomalousPairShellAmplitude (w : ℝ) :
     Complex.normSq (thetaCuspHawkingBornAnomalousPairShellAmplitude w) =
-      (1 / 9 : ℝ) * w ^ 6 * Xi w ^ 2 := by
-  have hpow : Complex.normSq ((w : ℂ) ^ 3) = w ^ 6 := by
+      (1 / 9 : ℝ) * w ^ (6 : ℕ) * Xi w ^ (2 : ℕ) := by
+  have hpow : Complex.normSq ((w : ℂ) ^ (3 : ℕ)) = w ^ (6 : ℕ) := by
     norm_num [Complex.normSq_apply, pow_succ]
     ring
   have hI : Complex.normSq (Complex.I / 3) = (1 / 9 : ℝ) := by
@@ -123,7 +123,7 @@ theorem thetaCuspHawkingBornPairShell_coherence_five_sixths (w : ℝ) :
 /-- **[PAPER-PROVED] [LEAN-PROVED] Exact shell Gram defect.** -/
 theorem thetaCuspHawkingBornPairShellCoherenceDefect_eq (w : ℝ) :
     thetaCuspHawkingBornPairShellCoherenceDefect w =
-      (1 / 45 : ℝ) * w ^ 6 * Xi w ^ 2 := by
+      (1 / 45 : ℝ) * w ^ (6 : ℕ) * Xi w ^ (2 : ℕ) := by
   rw [thetaCuspHawkingBornPairShellCoherenceDefect,
     thetaCuspHawkingBornPairEmissionDensity_eq,
     normSq_thetaCuspHawkingBornAnomalousPairShellAmplitude]
@@ -140,10 +140,10 @@ theorem thetaCuspHawkingBornPairShellCoherenceDefect_eq_zero_iff
     {w : ℝ} (hw : w ≠ 0) :
     thetaCuspHawkingBornPairShellCoherenceDefect w = 0 ↔ Xi w = 0 := by
   rw [thetaCuspHawkingBornPairShellCoherenceDefect_eq]
-  have hfac : (1 / 45 : ℝ) * w ^ 6 ≠ 0 := by positivity
+  have hfac : (1 / 45 : ℝ) * w ^ (6 : ℕ) ≠ 0 := by positivity
   constructor
   · intro h
-    have hs : Xi w ^ 2 = 0 := (mul_eq_zero.mp h).resolve_left hfac
+    have hs : Xi w ^ (2 : ℕ) = 0 := (mul_eq_zero.mp h).resolve_left hfac
     exact sq_eq_zero_iff.mp hs
   · intro h
     simp [h]

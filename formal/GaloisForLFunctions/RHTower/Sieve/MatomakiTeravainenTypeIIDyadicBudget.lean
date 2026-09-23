@@ -4,9 +4,9 @@ import GaloisForLFunctions.RHTower.Sieve.PolylogRpowDomination
 /-!
 # Canonical Type-II amplitude grid and loss budget
 
-The Type-II cell theorem saves `T^(eps^2/10)` before summing cells. This file proves that the
+The Type-II cell theorem saves `T^(eps^(2 : ℕ)/10)` before summing cells. This file proves that the
 literal dyadic grid and every fixed product-distortion loss are only polylogarithmic, so the full
-remaining `T^(eps^2/20)` saving survives. Real powers of the fixed polylogarithm are first
+remaining `T^(eps^(2 : ℕ)/20)` saving survives. Real powers of the fixed polylogarithm are first
 majorized by one fixed natural power; no positive height power is spent.
 -/
 

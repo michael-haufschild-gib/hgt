@@ -26,30 +26,30 @@ theorem radius_bounds_amplitude (e : Ioi (0 : ℝ)) (z : ℂ) :
     (e : ℝ) ≤ radius N f e z ∧ radius N f e z ≤ e + amplitude N f z := by
   have hd := density_nonneg N f (ofComplex z)
   constructor
-  · have h := Real.sqrt_le_sqrt (show (e : ℝ)^2 ≤ density N f (ofComplex z) + (e : ℝ)^2 by linarith)
+  · have h := Real.sqrt_le_sqrt (show (e : ℝ)^(2 : ℕ) ≤ density N f (ofComplex z) + (e : ℝ)^(2 : ℕ) by linarith)
     simpa only [Real.sqrt_sq e.2.le, radius] using h
   · simpa only [radius, amplitude, add_comm] using regularized_le_sqrt_add hd e.2.le
 
 /-- The forcing lower bound uses the original amplitude, independently of every positive regulator. -/
 theorem radius_laplacian_lower_amplitude (e : Ioi (0 : ℝ)) (z : ℍ) :
-    -|lam| * amplitude N f z / z.im ^ 2 ≤ realLaplacian (radius N f e) z := by
+    -|lam| * amplitude N f z / z.im ^ (2 : ℕ) ≤ realLaplacian (radius N f e) z := by
   have hr : density N f z / radius N f e (z : ℂ) ≤ amplitude N f z := by
     simpa only [radius, amplitude, ofComplex_apply] using
       weighted_sqrt_le (density_nonneg N f z) e.2
-  have hm : massWeight N f e (z : ℂ) ≤ amplitude N f z / z.im ^ 2 := by
+  have hm : massWeight N f e (z : ℂ) ≤ amplitude N f z / z.im ^ (2 : ℕ) := by
     calc
-      massWeight N f e (z : ℂ) = (density N f z / radius N f e (z : ℂ)) / z.im ^ 2 := by
+      massWeight N f e (z : ℂ) = (density N f z / radius N f e (z : ℂ)) / z.im ^ (2 : ℕ) := by
         simp only [massWeight, ofComplex_apply, UpperHalfPlane.coe_im]
         ring
       _ ≤ _ := div_le_div_of_nonneg_right hr (sq_nonneg _)
   have hn : 0 ≤ massWeight N f e (z : ℂ) :=
     div_nonneg (density_nonneg N f _) (mul_nonneg (sq_nonneg _) (radius_pos N f e _).le)
-  have hl : lam * massWeight N f e (z : ℂ) ≤ |lam| * (amplitude N f z / z.im ^ 2) :=
+  have hl : lam * massWeight N f e (z : ℂ) ≤ |lam| * (amplitude N f z / z.im ^ (2 : ℕ)) :=
     (mul_le_mul_of_nonneg_right (le_abs_self lam) hn).trans
       (mul_le_mul_of_nonneg_left hm (abs_nonneg lam))
   have hid := curvatureWeight_eq N f e z.im_pos
   have hp := curvatureWeight_nonneg N f e z
-  have h : -(|lam| * (amplitude N f z / z.im ^ 2)) ≤ realLaplacian (radius N f e) z := by linarith
+  have h : -(|lam| * (amplitude N f z / z.im ^ (2 : ℕ))) ≤ realLaplacian (radius N f e) z := by linarith
   convert h using 1
   ring
 
@@ -92,12 +92,12 @@ theorem average_radius_bounds (e : Ioi (0 : ℝ)) {A delta y : ℝ}
 /-- Uniform original-amplitude control gives the same inverse-square forcing constant for every regulator. -/
 theorem average_laplacian_uniform_lower (e : Ioi (0 : ℝ)) {A y : ℝ}
     (hA : 0 < A) (hb : ∀ z : ℍ, A ≤ z.im → amplitude N f z ≤ 1) (hy : A ≤ y) :
-    -|lam| / y ^ 2 ≤ average (realLaplacian (radius N f e)) y := by
+    -|lam| / y ^ (2 : ℕ) ≤ average (realLaplacian (radius N f e)) y := by
   have hy0 := hA.trans_le hy
   have hi : IntegrableOn (fun x : ℝ => realLaplacian (radius N f e) (point x y)) (Ioc (0 : ℝ) 1) :=
     ((slice_continuous (radius_laplacian_continuousOn N f e) hy0).integrableOn_Icc).mono_set
     (Ioc_subset_Icc_self : Ioc (0 : ℝ) 1 ⊆ Icc 0 1)
-  have h := setIntegral_mono_on (constant_integrable (-|lam| / y ^ 2)) hi measurableSet_Ioc (fun x _ => ?_)
+  have h := setIntegral_mono_on (constant_integrable (-|lam| / y ^ (2 : ℕ))) hi measurableSet_Ioc (fun x _ => ?_)
   · rw [integral_constant] at h
     exact h
   · have hp : 0 < (point x y).im := by simpa [point] using hy0
@@ -115,7 +115,7 @@ theorem average_laplacian_uniform_lower (e : Ioi (0 : ℝ)) {A y : ℝ}
 theorem exists_uniform_mean_bounds {delta : ℝ} (hd : 0 < delta) :
     ∃ A : ℝ, 0 < A ∧ ∀ e : Ioi (0 : ℝ), ∀ y : ℝ, A ≤ y →
       ((e : ℝ) ≤ average (radius N f e) y ∧ average (radius N f e) y ≤ e + delta) ∧
-      -|lam| / y ^ 2 ≤ average (realLaplacian (radius N f e)) y := by
+      -|lam| / y ^ (2 : ℕ) ≤ average (realLaplacian (radius N f e)) y := by
   obtain ⟨A, hA, hb⟩ := exists_amplitude_cusp_bound N f (lt_min hd zero_lt_one)
   refine ⟨A, hA, fun e y hy => ⟨?_, ?_⟩⟩
   · exact average_radius_bounds N f e hA (fun z hz => (hb z hz).trans (min_le_left _ _)) hy

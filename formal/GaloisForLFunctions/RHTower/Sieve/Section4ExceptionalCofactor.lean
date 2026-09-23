@@ -37,7 +37,7 @@ theorem setIntegral_normSq_logPoly_shortExceptional_le (a : ℕ → ℂ) {B D : 
     (hBprime : ∀ p ∈ B, p.Prime) (hB : B ⊆ Finset.Icc 1 NA) (hND : 1 ≤ ND)
     (hD : D ⊆ Finset.Icc 1 ND) (hk : 1 ≤ k) {W VP Ω : ℝ} (hW : 0 ≤ W) (hVP : 0 < VP)
     (hΩ : 0 ≤ Ω) (ha : ∀ n, ‖a n‖ ≤ Ω) :
-    (∫ w in shortExceptional B W VP, ‖logPoly a D w‖ ^ 2)
+    (∫ w in shortExceptional B W VP, ‖logPoly a D w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi)⁻¹
         * ((2 * (ND : ℝ)
             + (((Nat.log 2 ND : ℝ) + 1) * (214 * Real.sqrt (2 * (2 * Real.pi * W)))
@@ -45,7 +45,7 @@ theorem setIntegral_normSq_logPoly_shortExceptional_le (a : ℕ → ℂ) {B D : 
               * (2 * (((2 * Real.pi * W)
                     + 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ)))
                   * ((k : ℝ) ^ k * (B.card : ℝ) ^ k)) / VP ^ (2 * k)))
-          * (Ω ^ 2 * (D.card : ℝ))) := by
+          * (Ω ^ (2 : ℕ) * (D.card : ℝ))) := by
   classical
   have hT0 : (0 : ℝ) ≤ 2 * Real.pi * W := by positivity
   have hmeasS : MeasurableSet (blockExceptional B moebiusCoeff NA (2 * Real.pi * W) VP) :=
@@ -74,7 +74,7 @@ theorem setIntegral_normSq_logPoly_shortExceptionalOn_le (a : ℕ → ℂ) {B D 
     (hD : D ⊆ Finset.Icc 1 ND) (hk : 1 ≤ k) {W VP Ω : ℝ} (hW : 0 ≤ W) (hVP : 0 < VP)
     (hΩ : 0 ≤ Ω) (ha : ∀ n, ‖a n‖ ≤ Ω)
     {S : Set ℝ} (hSs : S ⊆ Set.Icc (-W) W) :
-    (∫ w in shortExceptionalOn S B VP, ‖logPoly a D w‖ ^ 2)
+    (∫ w in shortExceptionalOn S B VP, ‖logPoly a D w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi)⁻¹
         * ((2 * (ND : ℝ)
             + (((Nat.log 2 ND : ℝ) + 1) * (214 * Real.sqrt (2 * (2 * Real.pi * W)))
@@ -82,15 +82,15 @@ theorem setIntegral_normSq_logPoly_shortExceptionalOn_le (a : ℕ → ℂ) {B D 
               * (2 * (((2 * Real.pi * W)
                     + 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ)))
                   * ((k : ℝ) ^ k * (B.card : ℝ) ^ k)) / VP ^ (2 * k)))
-          * (Ω ^ 2 * (D.card : ℝ))) := by
+          * (Ω ^ (2 : ℕ) * (D.card : ℝ))) := by
   classical
   have hsub : shortExceptionalOn S B VP ⊆ shortExceptional B W VP := by
     intro w hw
     exact ⟨hSs hw.1, hw.2⟩
-  have hcont : Continuous fun w : ℝ => ‖logPoly a D w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖logPoly a D w‖ ^ (2 : ℕ) :=
     (((continuous_logPoly a D).norm).pow 2)
-  have hmono : (∫ w in shortExceptionalOn S B VP, ‖logPoly a D w‖ ^ 2)
-      ≤ ∫ w in shortExceptional B W VP, ‖logPoly a D w‖ ^ 2 := by
+  have hmono : (∫ w in shortExceptionalOn S B VP, ‖logPoly a D w‖ ^ (2 : ℕ))
+      ≤ ∫ w in shortExceptional B W VP, ‖logPoly a D w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_mono_set
       ((hcont.integrableOn_Icc (a := -W) (b := W)).mono_set
         (shortExceptional_subset B W VP)) ?_ (Filter.Eventually.of_forall hsub)

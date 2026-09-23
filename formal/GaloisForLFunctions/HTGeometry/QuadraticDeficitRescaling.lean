@@ -26,16 +26,16 @@ section Deficit
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [Nontrivial E] {Q : E → ℝ}
 
-theorem deficit_zero_of_homogeneous (hQhom : ∀ (t : ℝ) (z : E), Q (t • z) = t ^ 2 * Q z) : Q 0 = 0 := by
+theorem deficit_zero_of_homogeneous (hQhom : ∀ (t : ℝ) (z : E), Q (t • z) = t ^ (2 : ℕ) * Q z) : Q 0 = 0 := by
   have h := hQhom 0 0
   simpa using h
 
 /-- **The two-sided comparison.**  A continuous, degree-two homogeneous, positive-off-zero function
 is trapped between two positive multiples of the squared norm. -/
 theorem exists_deficit_two_sided_bounds (hQc : Continuous Q)
-    (hQhom : ∀ (t : ℝ) (z : E), Q (t • z) = t ^ 2 * Q z)
+    (hQhom : ∀ (t : ℝ) (z : E), Q (t • z) = t ^ (2 : ℕ) * Q z)
     (hQpos : ∀ z : E, z ≠ 0 → 0 < Q z) :
-    ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ z : E, c * ‖z‖ ^ 2 ≤ Q z ∧ Q z ≤ C * ‖z‖ ^ 2 := by
+    ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ z : E, c * ‖z‖ ^ (2 : ℕ) ≤ Q z ∧ Q z ≤ C * ‖z‖ ^ (2 : ℕ) := by
   classical
   have hcompact : IsCompact (sphere (0 : E) 1) := isCompact_sphere 0 1
   have hne : (sphere (0 : E) 1).Nonempty := NormedSpace.sphere_nonempty.mpr zero_le_one
@@ -58,27 +58,27 @@ theorem exists_deficit_two_sided_bounds (hQc : Continuous Q)
         inv_mul_cancel₀ (ne_of_gt hznorm)]
     have hzw : z = ‖z‖ • w := by
       rw [hw, smul_smul, mul_inv_cancel₀ (ne_of_gt hznorm), one_smul]
-    have hQz : Q z = ‖z‖ ^ 2 * Q w := by
+    have hQz : Q z = ‖z‖ ^ (2 : ℕ) * Q w := by
       conv_lhs => rw [hzw]
       exact hQhom _ _
     refine ⟨?_, ?_⟩
     · rw [hQz]
       have : Q u ≤ Q w := hmin hwmem
-      calc Q u * ‖z‖ ^ 2 = ‖z‖ ^ 2 * Q u := by ring
-        _ ≤ ‖z‖ ^ 2 * Q w := by
+      calc Q u * ‖z‖ ^ (2 : ℕ) = ‖z‖ ^ (2 : ℕ) * Q u := by ring
+        _ ≤ ‖z‖ ^ (2 : ℕ) * Q w := by
             exact mul_le_mul_of_nonneg_left this (by positivity)
     · rw [hQz]
       have : Q w ≤ Q v := hmax hwmem
-      calc ‖z‖ ^ 2 * Q w ≤ ‖z‖ ^ 2 * Q v := mul_le_mul_of_nonneg_left this (by positivity)
-        _ = Q v * ‖z‖ ^ 2 := by ring
+      calc ‖z‖ ^ (2 : ℕ) * Q w ≤ ‖z‖ ^ (2 : ℕ) * Q v := mul_le_mul_of_nonneg_left this (by positivity)
+        _ = Q v * ‖z‖ ^ (2 : ℕ) := by ring
 
 /-- A deficit threshold forces a distance threshold: the sublevel set lies in the ball of radius
 `√(ε/c)`. -/
-theorem norm_le_sqrt_of_deficit_le {c ε : ℝ} (hc : 0 < c) {z : E} (hlow : c * ‖z‖ ^ 2 ≤ Q z)
+theorem norm_le_sqrt_of_deficit_le {c ε : ℝ} (hc : 0 < c) {z : E} (hlow : c * ‖z‖ ^ (2 : ℕ) ≤ Q z)
     (h : Q z ≤ ε) : ‖z‖ ≤ Real.sqrt (ε / c) := by
-  have hsq : ‖z‖ ^ 2 ≤ ε / c := by
+  have hsq : ‖z‖ ^ (2 : ℕ) ≤ ε / c := by
     rw [le_div_iff₀ hc]
-    calc ‖z‖ ^ 2 * c = c * ‖z‖ ^ 2 := by ring
+    calc ‖z‖ ^ (2 : ℕ) * c = c * ‖z‖ ^ (2 : ℕ) := by ring
       _ ≤ Q z := hlow
       _ ≤ ε := h
   have := Real.sqrt_le_sqrt hsq
@@ -87,12 +87,12 @@ theorem norm_le_sqrt_of_deficit_le {c ε : ℝ} (hc : 0 < c) {z : E} (hlow : c *
 /-- Conversely, a distance threshold forces a deficit threshold: the ball of radius `√(ε/C)` lies
 in the sublevel set. -/
 theorem deficit_le_of_norm_le_sqrt {C ε : ℝ} (hC : 0 < C) (hε : 0 ≤ ε) {z : E}
-    (hup : Q z ≤ C * ‖z‖ ^ 2) (h : ‖z‖ ≤ Real.sqrt (ε / C)) : Q z ≤ ε := by
-  have hsq : ‖z‖ ^ 2 ≤ ε / C := by
-    have h2 : ‖z‖ ^ 2 ≤ Real.sqrt (ε / C) ^ 2 := by
+    (hup : Q z ≤ C * ‖z‖ ^ (2 : ℕ)) (h : ‖z‖ ≤ Real.sqrt (ε / C)) : Q z ≤ ε := by
+  have hsq : ‖z‖ ^ (2 : ℕ) ≤ ε / C := by
+    have h2 : ‖z‖ ^ (2 : ℕ) ≤ Real.sqrt (ε / C) ^ (2 : ℕ) := by
       exact pow_le_pow_left₀ (norm_nonneg z) h 2
     rwa [Real.sq_sqrt (by positivity)] at h2
-  calc Q z ≤ C * ‖z‖ ^ 2 := hup
+  calc Q z ≤ C * ‖z‖ ^ (2 : ℕ) := hup
     _ ≤ C * (ε / C) := mul_le_mul_of_nonneg_left hsq (le_of_lt hC)
     _ = ε := by field_simp
 

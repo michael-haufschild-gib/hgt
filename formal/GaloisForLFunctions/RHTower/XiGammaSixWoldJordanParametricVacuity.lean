@@ -9,7 +9,7 @@ normalized fixed-left rows is equivalent to `Re q = 1/2`, hence globally equival
 
 This module isolates *what that equivalence actually uses*.  The finite Wold--Jordan energy
 reporter is a `Finsupp.lsum` whose coefficient at an ordered edge `(p, r)` is
-`thetaGammaSixWoldHorizontalCarrier p q ^ 2 = A q / p` with `A q` the Gamma-six harmonic weight.
+`thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ) = A q / p` with `A q` the Gamma-six harmonic weight.
 So the reporter — and therefore the whole descent predicate — depends on the Xi copy `q` **only
 through the single real scalar** `A q`.  Nothing else in the construction (Big--Witt rows, one-leg
 trace, ambient admission, singular vector, Green--Stokes boundary calculus) sees `q` at all.
@@ -43,7 +43,7 @@ noncomputable section
 
 /-- The finite energy reporter attached to an arbitrary real coefficient function of the *left*
 prime label.  The literal Wold--Jordan reporter is the special case
-`c p = thetaGammaSixWoldHorizontalCarrier p q ^ 2`. -/
+`c p = thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ)`. -/
 def primeLabelledEnergyReporter (c : Nat.Primes → ℝ) :
     (DeningerCalderonWittCrossPrimePacketIndex →₀ ℂ) →ₗ[ℂ] ℂ :=
   Finsupp.lsum ℂ fun i => LinearMap.toSpanSingleton ℂ ℂ ((c i.1.1 : ℝ) : ℂ)
@@ -58,7 +58,7 @@ def primeLabelledEnergyReporter (c : Nat.Primes → ℝ) :
 theorem deningerBigWittCrossPairFiniteWoldJordanEnergyReporter_eq
     (q : XiZeroCopy) :
     deningerBigWittCrossPairFiniteWoldJordanEnergyReporter q =
-      primeLabelledEnergyReporter (fun p => thetaGammaSixWoldHorizontalCarrier p q ^ 2) := by
+      primeLabelledEnergyReporter (fun p => thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ)) := by
   classical
   refine Finsupp.lhom_ext ?_
   intro i z

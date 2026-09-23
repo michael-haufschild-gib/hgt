@@ -221,15 +221,15 @@ theorem pathDiagEnergy_smul (c : ℝ) (u : PathShell n)
 
 theorem sq_norm_nearUniformCarrier_mem {eps : ℝ} (heps : 0 ≤ eps)
     (hsmall : eps * 3 ^ (n + 2) ≤ 1) :
-    ((2 * n + 3 : ℕ) : ℝ) ≤ ‖nearUniformCarrier n eps‖ ^ 2 ∧
-      ‖nearUniformCarrier n eps‖ ^ 2 ≤ 4 * ((2 * n + 3 : ℕ) : ℝ) := by
+    ((2 * n + 3 : ℕ) : ℝ) ≤ ‖nearUniformCarrier n eps‖ ^ (2 : ℕ) ∧
+      ‖nearUniformCarrier n eps‖ ^ (2 : ℕ) ≤ 4 * ((2 * n + 3 : ℕ) : ℝ) := by
   classical
-  have hsq : ‖nearUniformCarrier n eps‖ ^ 2
-      = ∑ l : PathLabel n, (nearUniformCarrier n eps l) ^ 2 := by
+  have hsq : ‖nearUniformCarrier n eps‖ ^ (2 : ℕ)
+      = ∑ l : PathLabel n, (nearUniformCarrier n eps l) ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
     exact Finset.sum_congr rfl fun l _ => by rw [Real.norm_eq_abs, sq_abs]
-  have hfilter : ∑ l : PathLabel n, (nearUniformCarrier n eps l) ^ 2
-      = ∑ l ∈ Finset.univ.filter (IsDiagLabel (n := n)), (nearUniformCarrier n eps l) ^ 2 := by
+  have hfilter : ∑ l : PathLabel n, (nearUniformCarrier n eps l) ^ (2 : ℕ)
+      = ∑ l ∈ Finset.univ.filter (IsDiagLabel (n := n)), (nearUniformCarrier n eps l) ^ (2 : ℕ) := by
     refine (Finset.sum_subset (Finset.filter_subset _ _) fun l _ hl => ?_).symm
     have : ¬ IsDiagLabel l := by simpa using hl
     rw [nearUniformCarrier_offDiag eps l this]
@@ -239,7 +239,7 @@ theorem sq_norm_nearUniformCarrier_mem {eps : ℝ} (heps : 0 ≤ eps)
   constructor
   · rw [hsq, hfilter]
     have hterm : ∀ l ∈ Finset.univ.filter (IsDiagLabel (n := n)),
-        (1 : ℝ) ≤ (nearUniformCarrier n eps l) ^ 2 := by
+        (1 : ℝ) ≤ (nearUniformCarrier n eps l) ^ (2 : ℕ) := by
       intro l hl
       have hdiag : IsDiagLabel l := by simpa using hl
       obtain ⟨h1, -⟩ := nearUniformCarrier_coord_mem heps hsmall l hdiag
@@ -248,7 +248,7 @@ theorem sq_norm_nearUniformCarrier_mem {eps : ℝ} (heps : 0 ≤ eps)
     rw [hcard, nsmul_eq_mul, mul_one]
   · rw [hsq, hfilter]
     have hterm : ∀ l ∈ Finset.univ.filter (IsDiagLabel (n := n)),
-        (nearUniformCarrier n eps l) ^ 2 ≤ 4 := by
+        (nearUniformCarrier n eps l) ^ (2 : ℕ) ≤ 4 := by
       intro l hl
       have hdiag : IsDiagLabel l := by simpa using hl
       obtain ⟨h1, h2⟩ := nearUniformCarrier_coord_mem heps hsmall l hdiag

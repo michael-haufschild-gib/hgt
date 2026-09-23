@@ -39,7 +39,7 @@ theorem finiteAnderson_pureChoiComplexity_alternates_syndetically
       (Fintype.card gate : ℝ) ^ (s + 1) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
             Real.sqrt
-              (Real.pi * (2 * (Real.sqrt 2 * ε) ^ 2) / 2) ^
+              (Real.pi * (2 * (Real.sqrt 2 * ε) ^ (2 : ℕ)) / 2) ^
                 ((d + 1 : ℕ) - 1)) < 1) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ a : ℝ,
       ∃ tLow ∈ Set.Icc a (a + L),

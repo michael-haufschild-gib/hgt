@@ -30,8 +30,8 @@ def eulerTiltEscapeFrequency (σ Y : ℝ) : ℝ :=
 
 /-- The parity–energy Schur complement `D = π² (Var N - Cov(N,E)²/Var E)`. -/
 def eulerTiltSchurComplement (σ Y : ℝ) : ℝ :=
-  Real.pi ^ 2 * (eulerTiltMass σ Y
-    - eulerTiltCovariance σ Y ^ 2 / eulerTiltEnergyVariance σ Y)
+  Real.pi ^ (2 : ℕ) * (eulerTiltMass σ Y
+    - eulerTiltCovariance σ Y ^ (2 : ℕ) / eulerTiltEnergyVariance σ Y)
 
 open Classical in
 /-- The source-faithful saddle tilt at aperture parameter `L`. -/
@@ -42,9 +42,9 @@ def saddleTilt (L : ℝ) : ℝ :=
 theorem eventually_saddleTilt_spec :
     ∀ᶠ L in atTop, saddleTilt L ∈ Ioc (0 : ℝ) 1
       ∧ eulerTiltSaddleDefect (saddleTilt L) (cofinalAperture L) (Real.exp (-L)) = 0
-      ∧ |saddleTilt L - 2 * cofinalApertureWidth L / apertureLog L ^ 2|
-          ≤ 2 * (eulerTiltEnergyConst + 1) / apertureLog L ^ 2
-            + 16 * cofinalApertureWidth L ^ 2 / (3 * apertureLog L ^ 3) := by
+      ∧ |saddleTilt L - 2 * cofinalApertureWidth L / apertureLog L ^ (2 : ℕ)|
+          ≤ 2 * (eulerTiltEnergyConst + 1) / apertureLog L ^ (2 : ℕ)
+            + 16 * cofinalApertureWidth L ^ (2 : ℕ) / (3 * apertureLog L ^ (3 : ℕ)) := by
   filter_upwards [eventually_saddle_root_expansion] with L hL
   obtain ⟨huniq, hexp⟩ := hL
   obtain ⟨δ, ⟨hδmem, hδroot⟩, _⟩ := huniq
@@ -78,7 +78,7 @@ theorem tendsto_width_div_apertureLog :
   have hsq := tendsto_widthSq_div_logAperture
   have hA := tendsto_cofinalApertureWidth
   have hquot : Tendsto (fun L : ℝ =>
-      (cofinalApertureWidth L ^ 2 / apertureLog L) / cofinalApertureWidth L) atTop (nhds 0) :=
+      (cofinalApertureWidth L ^ (2 : ℕ) / apertureLog L) / cofinalApertureWidth L) atTop (nhds 0) :=
     hsq.div_atTop hA
   refine hquot.congr' ?_
   filter_upwards [hA.eventually_gt_atTop 0, eventually_gt_atTop (1 : ℝ)] with L hApos hL
@@ -97,7 +97,7 @@ theorem tendsto_saddleTilt_mul_apertureLog :
   have hmaj : Tendsto (fun L : ℝ =>
       2 * (cofinalApertureWidth L / apertureLog L)
         + 2 * (eulerTiltEnergyConst + 1) * (apertureLog L)⁻¹
-        + 16 / 3 * ((cofinalApertureWidth L ^ 2 / apertureLog L) * (apertureLog L)⁻¹))
+        + 16 / 3 * ((cofinalApertureWidth L ^ (2 : ℕ) / apertureLog L) * (apertureLog L)⁻¹))
       atTop (nhds 0) := by
     have h1 := hratio.const_mul (2 : ℝ)
     have h2 := hinv.const_mul (2 * (eulerTiltEnergyConst + 1))
@@ -112,27 +112,27 @@ theorem tendsto_saddleTilt_mul_apertureLog :
   have hℓ0 : 0 < apertureLog L := by linarith
   have hb := abs_le.mp hexp
   have hpos : 0 < saddleTilt L := hmem.1
-  have hupper : saddleTilt L ≤ 2 * cofinalApertureWidth L / apertureLog L ^ 2
-      + (2 * (eulerTiltEnergyConst + 1) / apertureLog L ^ 2
-        + 16 * cofinalApertureWidth L ^ 2 / (3 * apertureLog L ^ 3)) := by
+  have hupper : saddleTilt L ≤ 2 * cofinalApertureWidth L / apertureLog L ^ (2 : ℕ)
+      + (2 * (eulerTiltEnergyConst + 1) / apertureLog L ^ (2 : ℕ)
+        + 16 * cofinalApertureWidth L ^ (2 : ℕ) / (3 * apertureLog L ^ (3 : ℕ))) := by
     linarith [hb.2]
   have hstep := mul_le_mul_of_nonneg_right hupper hℓ0.le
-  have hval : (2 * cofinalApertureWidth L / apertureLog L ^ 2
-      + (2 * (eulerTiltEnergyConst + 1) / apertureLog L ^ 2
-        + 16 * cofinalApertureWidth L ^ 2 / (3 * apertureLog L ^ 3))) * apertureLog L
+  have hval : (2 * cofinalApertureWidth L / apertureLog L ^ (2 : ℕ)
+      + (2 * (eulerTiltEnergyConst + 1) / apertureLog L ^ (2 : ℕ)
+        + 16 * cofinalApertureWidth L ^ (2 : ℕ) / (3 * apertureLog L ^ (3 : ℕ)))) * apertureLog L
       = 2 * (cofinalApertureWidth L / apertureLog L)
         + 2 * (eulerTiltEnergyConst + 1) * (apertureLog L)⁻¹
-        + 16 / 3 * ((cofinalApertureWidth L ^ 2 / apertureLog L) * (apertureLog L)⁻¹) := by
+        + 16 / 3 * ((cofinalApertureWidth L ^ (2 : ℕ) / apertureLog L) * (apertureLog L)⁻¹) := by
     field_simp
     ring
   rw [Real.norm_eq_abs, abs_of_pos (by positivity : 0 < saddleTilt L * apertureLog L)]
   calc saddleTilt L * apertureLog L
-      ≤ (2 * cofinalApertureWidth L / apertureLog L ^ 2
-        + (2 * (eulerTiltEnergyConst + 1) / apertureLog L ^ 2
-          + 16 * cofinalApertureWidth L ^ 2 / (3 * apertureLog L ^ 3))) * apertureLog L := hstep
+      ≤ (2 * cofinalApertureWidth L / apertureLog L ^ (2 : ℕ)
+        + (2 * (eulerTiltEnergyConst + 1) / apertureLog L ^ (2 : ℕ)
+          + 16 * cofinalApertureWidth L ^ (2 : ℕ) / (3 * apertureLog L ^ (3 : ℕ)))) * apertureLog L := hstep
     _ = 2 * (cofinalApertureWidth L / apertureLog L)
         + 2 * (eulerTiltEnergyConst + 1) * (apertureLog L)⁻¹
-        + 16 / 3 * ((cofinalApertureWidth L ^ 2 / apertureLog L) * (apertureLog L)⁻¹) := hval
+        + 16 / 3 * ((cofinalApertureWidth L ^ (2 : ℕ) / apertureLog L) * (apertureLog L)⁻¹) := hval
 
 theorem tendsto_cofinalAperture : Tendsto cofinalAperture atTop atTop := by
   refine tendsto_atTop_mono' atTop ?_ (tendsto_id (α := ℝ))
@@ -178,7 +178,7 @@ theorem tendsto_eulerTiltCovariance_div :
       ((mertensPrimeWindowBound + 1) + 3 * logSquareTailConst) * (apertureLog L)⁻¹
         + saddleTilt L * apertureLog L / 2
         + saddleTilt L * (mertensLogSqConst * ((apertureLog L)⁻¹ + 1))
-        + saddleTilt L * (Real.log 2 ^ 2 / 2) * (apertureLog L)⁻¹) atTop (nhds 0) := by
+        + saddleTilt L * (Real.log 2 ^ (2 : ℕ) / 2) * (apertureLog L)⁻¹) atTop (nhds 0) := by
     have h1 := hinv.const_mul ((mertensPrimeWindowBound + 1) + 3 * logSquareTailConst)
     have h2 := hδℓ.div_const 2
     have h3 : Tendsto (fun L : ℝ =>
@@ -189,8 +189,8 @@ theorem tendsto_eulerTiltCovariance_div :
       have h := hδ0.mul hb
       rwa [zero_mul] at h
     have h4 : Tendsto (fun L : ℝ =>
-        saddleTilt L * (Real.log 2 ^ 2 / 2) * (apertureLog L)⁻¹) atTop (nhds 0) := by
-      have h := (hδ0.mul_const (Real.log 2 ^ 2 / 2)).mul hinv
+        saddleTilt L * (Real.log 2 ^ (2 : ℕ) / 2) * (apertureLog L)⁻¹) atTop (nhds 0) := by
+      have h := (hδ0.mul_const (Real.log 2 ^ (2 : ℕ) / 2)).mul hinv
       rwa [zero_mul, zero_mul] at h
     rw [mul_zero] at h1
     rw [zero_div] at h2
@@ -217,51 +217,51 @@ theorem tendsto_eulerTiltCovariance_div :
   have hexpand : (((mertensPrimeWindowBound + 1) + 3 * logSquareTailConst) * (apertureLog L)⁻¹
       + saddleTilt L * apertureLog L / 2
       + saddleTilt L * (mertensLogSqConst * ((apertureLog L)⁻¹ + 1))
-      + saddleTilt L * (Real.log 2 ^ 2 / 2) * (apertureLog L)⁻¹) * apertureLog L
+      + saddleTilt L * (Real.log 2 ^ (2 : ℕ) / 2) * (apertureLog L)⁻¹) * apertureLog L
       = ((mertensPrimeWindowBound + 1) + 3 * logSquareTailConst)
-        + saddleTilt L * (apertureLog L ^ 2 / 2
-          + mertensLogSqConst * (1 + apertureLog L) + Real.log 2 ^ 2 / 2) := by
+        + saddleTilt L * (apertureLog L ^ (2 : ℕ) / 2
+          + mertensLogSqConst * (1 + apertureLog L) + Real.log 2 ^ (2 : ℕ) / 2) := by
     field_simp
     ring
   rw [hexpand]
 
 theorem tendsto_eulerTiltEnergyVariance_div :
     Tendsto (fun L : ℝ =>
-      eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ 2) atTop
+      eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ (2 : ℕ)) atTop
       (nhds (1 / 2)) := by
   have hδ0 := tendsto_saddleTilt
   have hδℓ := tendsto_saddleTilt_mul_apertureLog
   have hinv := tendsto_inv_apertureLog
-  have hinv2 : Tendsto (fun L : ℝ => (apertureLog L ^ 2)⁻¹) atTop (nhds 0) := by
+  have hinv2 : Tendsto (fun L : ℝ => (apertureLog L ^ (2 : ℕ))⁻¹) atTop (nhds 0) := by
     have h := hinv.mul hinv
     rw [mul_zero] at h
     refine h.congr fun L => ?_
     rw [← mul_inv, ← sq]
   have hmaj : Tendsto (fun L : ℝ =>
-      mertensLogSqConst * ((apertureLog L ^ 2)⁻¹ + (apertureLog L)⁻¹)
-        + (Real.log 2 ^ 2 / 2 + 3 * logSqSquareTailConst) * (apertureLog L ^ 2)⁻¹
+      mertensLogSqConst * ((apertureLog L ^ (2 : ℕ))⁻¹ + (apertureLog L)⁻¹)
+        + (Real.log 2 ^ (2 : ℕ) / 2 + 3 * logSqSquareTailConst) * (apertureLog L ^ (2 : ℕ))⁻¹
         + saddleTilt L * apertureLog L
-          * (1 / 2 + mertensLogSqConst * ((apertureLog L ^ 2)⁻¹ + (apertureLog L)⁻¹)
-            + Real.log 2 ^ 2 / 2 * (apertureLog L ^ 2)⁻¹)) atTop (nhds 0) := by
+          * (1 / 2 + mertensLogSqConst * ((apertureLog L ^ (2 : ℕ))⁻¹ + (apertureLog L)⁻¹)
+            + Real.log 2 ^ (2 : ℕ) / 2 * (apertureLog L ^ (2 : ℕ))⁻¹)) atTop (nhds 0) := by
     have h1 : Tendsto (fun L : ℝ =>
-        mertensLogSqConst * ((apertureLog L ^ 2)⁻¹ + (apertureLog L)⁻¹)) atTop (nhds 0) := by
+        mertensLogSqConst * ((apertureLog L ^ (2 : ℕ))⁻¹ + (apertureLog L)⁻¹)) atTop (nhds 0) := by
       have h := (hinv2.add hinv).const_mul mertensLogSqConst
       rwa [add_zero, mul_zero] at h
     have h2 : Tendsto (fun L : ℝ =>
-        (Real.log 2 ^ 2 / 2 + 3 * logSqSquareTailConst) * (apertureLog L ^ 2)⁻¹) atTop
+        (Real.log 2 ^ (2 : ℕ) / 2 + 3 * logSqSquareTailConst) * (apertureLog L ^ (2 : ℕ))⁻¹) atTop
         (nhds 0) := by
-      have h := hinv2.const_mul (Real.log 2 ^ 2 / 2 + 3 * logSqSquareTailConst)
+      have h := hinv2.const_mul (Real.log 2 ^ (2 : ℕ) / 2 + 3 * logSqSquareTailConst)
       rwa [mul_zero] at h
     have h3 : Tendsto (fun L : ℝ =>
         saddleTilt L * apertureLog L
-          * (1 / 2 + mertensLogSqConst * ((apertureLog L ^ 2)⁻¹ + (apertureLog L)⁻¹)
-            + Real.log 2 ^ 2 / 2 * (apertureLog L ^ 2)⁻¹)) atTop (nhds 0) := by
+          * (1 / 2 + mertensLogSqConst * ((apertureLog L ^ (2 : ℕ))⁻¹ + (apertureLog L)⁻¹)
+            + Real.log 2 ^ (2 : ℕ) / 2 * (apertureLog L ^ (2 : ℕ))⁻¹)) atTop (nhds 0) := by
       have hfac : Tendsto (fun L : ℝ =>
-          1 / 2 + mertensLogSqConst * ((apertureLog L ^ 2)⁻¹ + (apertureLog L)⁻¹)
-            + Real.log 2 ^ 2 / 2 * (apertureLog L ^ 2)⁻¹) atTop (nhds (1 / 2)) := by
+          1 / 2 + mertensLogSqConst * ((apertureLog L ^ (2 : ℕ))⁻¹ + (apertureLog L)⁻¹)
+            + Real.log 2 ^ (2 : ℕ) / 2 * (apertureLog L ^ (2 : ℕ))⁻¹) atTop (nhds (1 / 2)) := by
         have hconst : Tendsto (fun _ : ℝ => (1 / 2 : ℝ)) atTop (nhds (1 / 2)) :=
           tendsto_const_nhds
-        have hb := (hconst.add h1).add (hinv2.const_mul (Real.log 2 ^ 2 / 2))
+        have hb := (hconst.add h1).add (hinv2.const_mul (Real.log 2 ^ (2 : ℕ) / 2))
         rw [add_zero, mul_zero, add_zero] at hb
         exact hb
       have h := hδℓ.mul hfac
@@ -279,13 +279,13 @@ theorem tendsto_eulerTiltEnergyVariance_div :
   have hbound := abs_eulerTiltEnergyVariance_sub_logSq_le (δ := saddleTilt L)
     (Y := cofinalAperture L) hδnn hY
   rw [← hlogY] at hbound
-  have hval : eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ 2
+  have hval : eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ (2 : ℕ)
       - 1 / 2
-      = (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) - apertureLog L ^ 2 / 2)
-        / apertureLog L ^ 2 := by
+      = (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) - apertureLog L ^ (2 : ℕ) / 2)
+        / apertureLog L ^ (2 : ℕ) := by
     field_simp
-  rw [Real.norm_eq_abs, hval, abs_div, abs_of_pos (by positivity : (0:ℝ) < apertureLog L ^ 2)]
-  rw [div_le_iff₀ (by positivity : (0:ℝ) < apertureLog L ^ 2)]
+  rw [Real.norm_eq_abs, hval, abs_div, abs_of_pos (by positivity : (0:ℝ) < apertureLog L ^ (2 : ℕ))]
+  rw [div_le_iff₀ (by positivity : (0:ℝ) < apertureLog L ^ (2 : ℕ))]
   refine le_trans hbound (le_of_eq ?_)
   field_simp
   ring
@@ -340,10 +340,10 @@ theorem eventually_energyVariance_pos :
   have hC := tendsto_eulerTiltEnergyVariance_div
   filter_upwards [hC.eventually (lt_mem_nhds (show (0 : ℝ) < 1 / 2 by norm_num)),
     tendsto_apertureLog.eventually_gt_atTop 1] with L hCpos hℓ
-  have hℓ0 : 0 < apertureLog L ^ 2 := by positivity
+  have hℓ0 : 0 < apertureLog L ^ (2 : ℕ) := by positivity
   have hval : eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L)
-      = (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ 2)
-        * apertureLog L ^ 2 := by
+      = (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ (2 : ℕ))
+        * apertureLog L ^ (2 : ℕ) := by
     field_simp
   rw [hval]
   exact mul_pos hCpos hℓ0
@@ -357,7 +357,7 @@ theorem tendsto_escapeFrequency_mul_apertureLog :
   have hC := tendsto_eulerTiltEnergyVariance_div
   have hquot : Tendsto (fun L : ℝ =>
       Real.pi * (eulerTiltCovariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L)
-        / (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ 2))
+        / (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ (2 : ℕ)))
       atTop (nhds (Real.pi * 1 / (1 / 2))) :=
     (hB.const_mul Real.pi).div hC (by norm_num)
   have hval : Real.pi * 1 / (1 / 2 : ℝ) = 2 * Real.pi := by ring
@@ -373,27 +373,27 @@ theorem tendsto_escapeFrequency_mul_apertureLog :
 theorem tendsto_schurComplement_div_logApertureLog :
     Tendsto (fun L : ℝ =>
       eulerTiltSchurComplement (1 + saddleTilt L) (cofinalAperture L)
-        / Real.log (apertureLog L)) atTop (nhds (Real.pi ^ 2)) := by
+        / Real.log (apertureLog L)) atTop (nhds (Real.pi ^ (2 : ℕ))) := by
   have hA := tendsto_eulerTiltMass_div
   have hB := tendsto_eulerTiltCovariance_div
   have hC := tendsto_eulerTiltEnergyVariance_div
   have hinvlog := tendsto_inv_logApertureLog
   have hratio : Tendsto (fun L : ℝ =>
-      (eulerTiltCovariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L) ^ 2
-        / (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ 2))
-      atTop (nhds ((1 : ℝ) ^ 2 / (1 / 2))) := (hB.pow 2).div hC (by norm_num)
+      (eulerTiltCovariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L) ^ (2 : ℕ)
+        / (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ (2 : ℕ)))
+      atTop (nhds ((1 : ℝ) ^ (2 : ℕ) / (1 / 2))) := (hB.pow 2).div hC (by norm_num)
   have hsecond : Tendsto (fun L : ℝ =>
-      ((eulerTiltCovariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L) ^ 2
-        / (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ 2))
+      ((eulerTiltCovariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L) ^ (2 : ℕ)
+        / (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ (2 : ℕ)))
         * (Real.log (apertureLog L))⁻¹) atTop (nhds 0) := by
     have h := hratio.mul hinvlog
     rwa [mul_zero] at h
   have hcomb : Tendsto (fun L : ℝ =>
-      Real.pi ^ 2 * ((eulerTiltMass (1 + saddleTilt L) (cofinalAperture L)
+      Real.pi ^ (2 : ℕ) * ((eulerTiltMass (1 + saddleTilt L) (cofinalAperture L)
           / Real.log (apertureLog L))
-        - ((eulerTiltCovariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L) ^ 2
-          / (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ 2))
-          * (Real.log (apertureLog L))⁻¹)) atTop (nhds (Real.pi ^ 2 * (1 - 0))) :=
+        - ((eulerTiltCovariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L) ^ (2 : ℕ)
+          / (eulerTiltEnergyVariance (1 + saddleTilt L) (cofinalAperture L) / apertureLog L ^ (2 : ℕ)))
+          * (Real.log (apertureLog L))⁻¹)) atTop (nhds (Real.pi ^ (2 : ℕ) * (1 - 0))) :=
     (hA.sub hsecond).const_mul _
   rw [sub_zero, mul_one] at hcomb
   refine hcomb.congr' ?_

@@ -38,7 +38,7 @@ theorem gammaOddJacobiTailBoundaryReadout_eq
   have hx : Real.tanh t ≠ 0 := (tanh_pos_of_pos ht).ne'
   rw [gammaOddJacobiTailBoundaryReadout, gammaOddJacobiCoefficient]
   field_simp
-  have hsign : ((-1 : ℝ) ^ K) ^ 2 = 1 := by
+  have hsign : ((-1 : ℝ) ^ K) ^ (2 : ℕ) = 1 := by
     rw [sq, ← pow_add, ← two_mul, pow_mul]
     norm_num
   rw [hsign]
@@ -64,7 +64,7 @@ def gammaOddJacobiTailProjectiveNode (K : ℕ) (t : ℝ) : ℝ :=
 /-- Every consecutive tail pair reads the same squared hyperbolic source node. -/
 theorem gammaOddJacobiTailProjectiveNode_eq
     (K : ℕ) {t : ℝ} (ht : 0 < t) :
-    gammaOddJacobiTailProjectiveNode K t = Real.tanh t ^ 2 := by
+    gammaOddJacobiTailProjectiveNode K t = Real.tanh t ^ (2 : ℕ) := by
   have hc0 := (semilocalArchimedeanJacobiNormalization_pos (2 * K + 1)).ne'
   have hc1 :=
     (semilocalArchimedeanJacobiNormalization_pos (2 * (K + 1) + 1)).ne'
@@ -144,7 +144,7 @@ def gammaOddJacobiPrimeResidualProjectiveNode
 theorem gammaOddJacobiPrimeResidualProjectiveNode_eq
     (p : Nat.Primes) {K : ℕ} (hK : gammaOddJacobiPrimeCapacity p ≤ K) :
     gammaOddJacobiPrimeResidualProjectiveNode p K =
-      Real.tanh (Real.log (p : ℝ)) ^ 2 := by
+      Real.tanh (Real.log (p : ℝ)) ^ (2 : ℕ) := by
   have hpLog : 0 < Real.log (p : ℝ) :=
     Real.log_pos (by exact_mod_cast p.prop.one_lt)
   rw [gammaOddJacobiPrimeResidualProjectiveNode]
@@ -156,7 +156,7 @@ theorem gammaOddJacobiPrimeResidualProjectiveNode_eq
 theorem gammaOddJacobiPrimeResidualProjectiveNode_eq_rational
     (p : Nat.Primes) {K : ℕ} (hK : gammaOddJacobiPrimeCapacity p ≤ K) :
     gammaOddJacobiPrimeResidualProjectiveNode p K =
-      (((p : ℝ) ^ 2 - 1) / ((p : ℝ) ^ 2 + 1)) ^ 2 := by
+      (((p : ℝ) ^ (2 : ℕ) - 1) / ((p : ℝ) ^ (2 : ℕ) + 1)) ^ (2 : ℕ) := by
   rw [gammaOddJacobiPrimeResidualProjectiveNode_eq p hK, tanh_log_prime]
 
 /-- **Cofinal projective faithfulness of `SR-38`.**  At every common absolute tail index, equality
@@ -201,7 +201,7 @@ theorem gammaOddJacobiHardyTailKernel_eq
     (K : ℕ) {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
     gammaOddJacobiHardyTailKernel K t u =
       (Real.tanh t * Real.tanh u) ^ (2 * K) /
-        (1 - (Real.tanh t * Real.tanh u) ^ 2) := by
+        (1 - (Real.tanh t * Real.tanh u) ^ (2 : ℕ)) := by
   let q : ℝ := Real.tanh t * Real.tanh u
   have hxt0 : 0 < Real.tanh t := tanh_pos_of_pos ht
   have hxu0 : 0 < Real.tanh u := tanh_pos_of_pos hu
@@ -210,7 +210,7 @@ theorem gammaOddJacobiHardyTailKernel_eq
     calc
       q < Real.tanh t * 1 := mul_lt_mul_of_pos_left (Real.tanh_lt_one u) hxt0
       _ < 1 := by simpa using Real.tanh_lt_one t
-  have hr : ‖q ^ 2‖ < 1 := by
+  have hr : ‖q ^ (2 : ℕ)‖ < 1 := by
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg q)]
     nlinarith
   have hgeom := (hasSum_geometric_of_norm_lt_one hr).mul_left (q ^ (2 * K))
@@ -219,7 +219,7 @@ theorem gammaOddJacobiHardyTailKernel_eq
     (∑' j : ℕ,
         gammaOddJacobiTailBoundaryReadout (K + j) t *
           gammaOddJacobiTailBoundaryReadout (K + j) u) =
-        ∑' j : ℕ, q ^ (2 * K) * (q ^ 2) ^ j := by
+        ∑' j : ℕ, q ^ (2 * K) * (q ^ (2 : ℕ)) ^ j := by
       apply tsum_congr
       intro j
       rw [gammaOddJacobiTailBoundaryReadout_eq _ ht,
@@ -228,9 +228,9 @@ theorem gammaOddJacobiHardyTailKernel_eq
       rw [show 2 * (K + j) = 2 * K + 2 * j by omega,
         pow_add, pow_add, ← pow_mul, mul_pow]
       ring
-    _ = q ^ (2 * K) * (1 - q ^ 2)⁻¹ := hgeom.tsum_eq
+    _ = q ^ (2 * K) * (1 - q ^ (2 : ℕ))⁻¹ := hgeom.tsum_eq
     _ = (Real.tanh t * Real.tanh u) ^ (2 * K) /
-        (1 - (Real.tanh t * Real.tanh u) ^ 2) := by
+        (1 - (Real.tanh t * Real.tanh u) ^ (2 : ℕ)) := by
       dsimp [q]
       rw [div_eq_mul_inv]
 
@@ -254,9 +254,9 @@ theorem gammaOddJacobiHardyTailKernel_sub_succ
     calc
       q < Real.tanh t * 1 := mul_lt_mul_of_pos_left (Real.tanh_lt_one u) hxt0
       _ < 1 := by simpa using Real.tanh_lt_one t
-  have hden : 1 - q ^ 2 ≠ 0 := by nlinarith [sq_nonneg q]
-  change q ^ (2 * K) / (1 - q ^ 2) -
-      q ^ (2 * (K + 1)) / (1 - q ^ 2) =
+  have hden : 1 - q ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_nonneg q]
+  change q ^ (2 * K) / (1 - q ^ (2 : ℕ)) -
+      q ^ (2 * (K + 1)) / (1 - q ^ (2 : ℕ)) =
         Real.tanh t ^ (2 * K) * Real.tanh u ^ (2 * K)
   rw [show 2 * (K + 1) = 2 * K + 2 by omega, pow_add, mul_pow]
   field_simp

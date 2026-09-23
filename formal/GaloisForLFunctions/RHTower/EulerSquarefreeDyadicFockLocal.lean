@@ -26,7 +26,7 @@ def dyadicSquarefreeParityProbability (q : ℝ) (e : Fin 2) : ℝ :=
 
 /-- The residual geometric law after removing the parity bit. -/
 def dyadicEulerResidualProbability (q : ℝ) (j : ℕ) : ℝ :=
-  dyadicEulerGeometricProbability (q ^ 2) j
+  dyadicEulerGeometricProbability (q ^ (2 : ℕ)) j
 
 theorem dyadicEulerGeometricProbability_nonneg
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q ≤ 1) (k : ℕ) :
@@ -81,7 +81,7 @@ theorem tsum_dyadicEulerGeometricProbability
 theorem tsum_dyadicEulerResidualProbability
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
     ∑' j : ℕ, dyadicEulerResidualProbability q j = 1 := by
-  have hq2 : q ^ 2 < 1 := by nlinarith [sq_nonneg q]
+  have hq2 : q ^ (2 : ℕ) < 1 := by nlinarith [sq_nonneg q]
   exact tsum_dyadicEulerGeometricProbability (sq_nonneg q) hq2
 
 /-- Positive amplitude of the geometric Euler state. -/
@@ -184,42 +184,42 @@ theorem dyadicEulerWignerSmithCharge_parity_split
 
 theorem dyadicEulerGeometricAmplitude_sq
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q ≤ 1) (k : ℕ) :
-    dyadicEulerGeometricAmplitude q k ^ 2 =
+    dyadicEulerGeometricAmplitude q k ^ (2 : ℕ) =
       dyadicEulerGeometricProbability q k := by
   exact Real.sq_sqrt (dyadicEulerGeometricProbability_nonneg hq0 hq1 k)
 
 theorem dyadicSquarefreeSignedParityAmplitude_sq
     {q : ℝ} (hq0 : 0 ≤ q) (e : Fin 2) :
-    dyadicSquarefreeSignedParityAmplitude q e ^ 2 =
+    dyadicSquarefreeSignedParityAmplitude q e ^ (2 : ℕ) =
       dyadicSquarefreeParityProbability q e := by
   rw [dyadicSquarefreeSignedParityAmplitude, mul_pow,
     Real.sq_sqrt (dyadicSquarefreeParityProbability_nonneg hq0 e)]
-  have hsign : ((-1 : ℝ) ^ (e : ℕ)) ^ 2 = 1 := by
+  have hsign : ((-1 : ℝ) ^ (e : ℕ)) ^ (2 : ℕ) = 1 := by
     rw [← pow_mul]
     norm_num
   rw [hsign, one_mul]
 
 theorem dyadicEulerResidualAmplitude_sq
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q ≤ 1) (j : ℕ) :
-    dyadicEulerResidualAmplitude q j ^ 2 =
+    dyadicEulerResidualAmplitude q j ^ (2 : ℕ) =
       dyadicEulerResidualProbability q j := by
   exact Real.sq_sqrt (dyadicEulerResidualProbability_nonneg hq0 hq1 j)
 
 theorem sum_dyadicSquarefreeSignedParityAmplitude_sq
     {q : ℝ} (hq0 : 0 ≤ q) :
-    ∑ e : Fin 2, dyadicSquarefreeSignedParityAmplitude q e ^ 2 = 1 := by
+    ∑ e : Fin 2, dyadicSquarefreeSignedParityAmplitude q e ^ (2 : ℕ) = 1 := by
   simp_rw [dyadicSquarefreeSignedParityAmplitude_sq hq0]
   exact sum_dyadicSquarefreeParityProbability hq0
 
 theorem tsum_dyadicEulerGeometricAmplitude_sq
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
-    ∑' k : ℕ, dyadicEulerGeometricAmplitude q k ^ 2 = 1 := by
+    ∑' k : ℕ, dyadicEulerGeometricAmplitude q k ^ (2 : ℕ) = 1 := by
   simp_rw [dyadicEulerGeometricAmplitude_sq hq0 hq1.le]
   exact tsum_dyadicEulerGeometricProbability hq0 hq1
 
 theorem tsum_dyadicEulerResidualAmplitude_sq
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
-    ∑' j : ℕ, dyadicEulerResidualAmplitude q j ^ 2 = 1 := by
+    ∑' j : ℕ, dyadicEulerResidualAmplitude q j ^ (2 : ℕ) = 1 := by
   simp_rw [dyadicEulerResidualAmplitude_sq hq0 hq1.le]
   exact tsum_dyadicEulerResidualProbability hq0 hq1
 
@@ -230,20 +230,20 @@ def dyadicEulerGeometricMean (q : ℝ) : ℝ := q / (1 - q)
 def dyadicSquarefreeParityMean (q : ℝ) : ℝ := q / (1 + q)
 
 /-- Closed form for the variance of one geometric Euler exponent. -/
-def dyadicEulerGeometricVariance (q : ℝ) : ℝ := q / (1 - q) ^ 2
+def dyadicEulerGeometricVariance (q : ℝ) : ℝ := q / (1 - q) ^ (2 : ℕ)
 
 /-- Closed form for the variance of the squarefree parity bit. -/
-def dyadicSquarefreeParityVariance (q : ℝ) : ℝ := q / (1 + q) ^ 2
+def dyadicSquarefreeParityVariance (q : ℝ) : ℝ := q / (1 + q) ^ (2 : ℕ)
 
 /-- Exact logarithmic-mean reconstruction `K = epsilon + 2J`. -/
 theorem dyadicEulerGeometricMean_split
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
     dyadicEulerGeometricMean q =
       dyadicSquarefreeParityMean q +
-        2 * dyadicEulerGeometricMean (q ^ 2) := by
+        2 * dyadicEulerGeometricMean (q ^ (2 : ℕ)) := by
   have hminus : 1 - q ≠ 0 := ne_of_gt (sub_pos.mpr hq1)
   have hplus : 1 + q ≠ 0 := ne_of_gt (by linarith)
-  have hsq : 1 - q ^ 2 ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg q])
+  have hsq : 1 - q ^ (2 : ℕ) ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg q])
   unfold dyadicEulerGeometricMean dyadicSquarefreeParityMean
   field_simp [hminus, hplus, hsq]
   ring
@@ -253,10 +253,10 @@ theorem dyadicEulerGeometricVariance_split
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
     dyadicEulerGeometricVariance q =
       dyadicSquarefreeParityVariance q +
-        4 * dyadicEulerGeometricVariance (q ^ 2) := by
+        4 * dyadicEulerGeometricVariance (q ^ (2 : ℕ)) := by
   have hminus : 1 - q ≠ 0 := ne_of_gt (sub_pos.mpr hq1)
   have hplus : 1 + q ≠ 0 := ne_of_gt (by linarith)
-  have hsq : 1 - q ^ 2 ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg q])
+  have hsq : 1 - q ^ (2 : ℕ) ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg q])
   unfold dyadicEulerGeometricVariance dyadicSquarefreeParityVariance
   field_simp [hminus, hplus, hsq]
   ring
@@ -264,9 +264,9 @@ theorem dyadicEulerGeometricVariance_split
 /-- The same variance split after applying an arbitrary tangent scale. -/
 theorem dyadicEulerScaledVariance_split
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (c : ℝ) :
-    c ^ 2 * dyadicEulerGeometricVariance q =
-      c ^ 2 * dyadicSquarefreeParityVariance q +
-        (2 * c) ^ 2 * dyadicEulerGeometricVariance (q ^ 2) := by
+    c ^ (2 : ℕ) * dyadicEulerGeometricVariance q =
+      c ^ (2 : ℕ) * dyadicSquarefreeParityVariance q +
+        (2 * c) ^ (2 : ℕ) * dyadicEulerGeometricVariance (q ^ (2 : ℕ)) := by
   rw [dyadicEulerGeometricVariance_split hq0 hq1]
   ring
 

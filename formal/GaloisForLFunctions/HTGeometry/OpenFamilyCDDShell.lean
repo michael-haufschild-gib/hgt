@@ -128,7 +128,7 @@ theorem cddShellOrbit_rapidity_crossing_mul (q C theta : ℂ) {a : ι → ℂ} (
 negative is. -/
 theorem norm_sub_lt_norm_add_of_pos_re {a : ℝ} (ha : 0 < a) {t : ℂ} (ht : 0 < t.re) :
     ‖(a : ℂ) - t‖ < ‖(a : ℂ) + t‖ := by
-  have hsq : ‖(a : ℂ) - t‖ ^ 2 < ‖(a : ℂ) + t‖ ^ 2 := by
+  have hsq : ‖(a : ℂ) - t‖ ^ (2 : ℕ) < ‖(a : ℂ) + t‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
       Complex.ofReal_re, Complex.ofReal_im]
@@ -138,7 +138,7 @@ theorem norm_sub_lt_norm_add_of_pos_re {a : ℝ} (ha : 0 < a) {t : ℂ} (ht : 0 
 /-- On the imaginary axis a positive real seed gives a unimodular factor. -/
 theorem norm_sub_eq_norm_add_of_re_eq_zero (a : ℝ) {t : ℂ} (ht : t.re = 0) :
     ‖(a : ℂ) - t‖ = ‖(a : ℂ) + t‖ := by
-  have hsq : ‖(a : ℂ) - t‖ ^ 2 = ‖(a : ℂ) + t‖ ^ 2 := by
+  have hsq : ‖(a : ℂ) - t‖ ^ (2 : ℕ) = ‖(a : ℂ) + t‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
       Complex.ofReal_re, Complex.ofReal_im, ht]
@@ -244,7 +244,7 @@ noncomputable def cddShellPhaseSlope (q C : ℝ) (a : ι → ℝ) (m : ι → �
     (theta : ℝ) (N : ℕ) : ℝ :=
   4 * ∑ j, (m j : ℝ) * ∑ k ∈ Finset.range N,
     (q ^ k * Real.cosh theta / C / a j) /
-      (1 + (q ^ k * Real.sinh theta / C / a j) ^ 2)
+      (1 + (q ^ k * Real.sinh theta / C / a j) ^ (2 : ℕ))
 
 /-- The displayed slope is the actual derivative of the unwrapped shell phase. -/
 theorem hasDerivAt_cddShellPhase (q C : ℝ) (a : ι → ℝ) (m : ι → ℕ)
@@ -255,7 +255,7 @@ theorem hasDerivAt_cddShellPhase (q C : ℝ) (a : ι → ℝ) (m : ι → ℕ)
   have hterm : ∀ j : ι, ∀ k ∈ Finset.range N,
       HasDerivAt (fun u : ℝ => Real.arctan (q ^ k * Real.sinh u / C / a j))
         ((q ^ k * Real.cosh theta / C / a j) /
-          (1 + (q ^ k * Real.sinh theta / C / a j) ^ 2)) theta := by
+          (1 + (q ^ k * Real.sinh theta / C / a j) ^ (2 : ℕ))) theta := by
     intro j k _
     convert ((((Real.hasDerivAt_sinh theta).const_mul (q ^ k)).div_const C).div_const
       (a j)).arctan using 1
@@ -265,7 +265,7 @@ theorem hasDerivAt_cddShellPhase (q C : ℝ) (a : ι → ℝ) (m : ι → ℕ)
           Real.arctan (q ^ k * Real.sinh u / C / a j))
         ((m j : ℝ) * ∑ k ∈ Finset.range N,
           (q ^ k * Real.cosh theta / C / a j) /
-            (1 + (q ^ k * Real.sinh theta / C / a j) ^ 2)) theta := by
+            (1 + (q ^ k * Real.sinh theta / C / a j) ^ (2 : ℕ))) theta := by
     intro j _
     have := (HasDerivAt.sum (hterm j)).const_mul (m j : ℝ)
     simpa only [Finset.sum_apply] using this

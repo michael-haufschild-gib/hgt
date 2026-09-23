@@ -15,11 +15,11 @@ theorem norm_blaschkeFactor_lt_one {a z : ℂ}
   have hden : 1 - (starRingEnd ℂ) a * z ≠ 0 :=
     blaschkeFactor_den_ne_zero ha hz.le
   rw [blaschkeFactor, norm_div, div_lt_one (norm_pos_iff.mpr hden)]
-  have ha' : 0 < 1 - (a.re ^ 2 + a.im ^ 2) := by
+  have ha' : 0 < 1 - (a.re ^ (2 : ℕ) + a.im ^ (2 : ℕ)) := by
     nlinarith [Complex.sq_norm a, Complex.normSq_apply a, norm_nonneg a]
-  have hz' : 0 < 1 - (z.re ^ 2 + z.im ^ 2) := by
+  have hz' : 0 < 1 - (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
     nlinarith [Complex.sq_norm z, Complex.normSq_apply z, norm_nonneg z]
-  have hsq : ‖z - a‖ ^ 2 < ‖1 - (starRingEnd ℂ) a * z‖ ^ 2 := by
+  have hsq : ‖z - a‖ ^ (2 : ℕ) < ‖1 - (starRingEnd ℂ) a * z‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
       Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im,
@@ -36,12 +36,12 @@ theorem norm_diskBlaschkeInverse_lt_one {a η : ℂ}
     ‖diskBlaschkeInverse a η‖ < 1 := by
   have hden := Bottcher.one_add_conj_mul_ne_zero_of_norm_lt_one ha hη
   have hid := Bottcher.one_sub_norm_sq_mobius (a := a) (η := η) hden
-  have hnum : 0 < (1 - ‖a‖ ^ 2) * (1 - ‖η‖ ^ 2) := by
+  have hnum : 0 < (1 - ‖a‖ ^ (2 : ℕ)) * (1 - ‖η‖ ^ (2 : ℕ)) := by
     apply mul_pos <;> nlinarith [norm_nonneg a, norm_nonneg η]
-  have hdenpos : 0 < ‖1 + (starRingEnd ℂ) a * η‖ ^ 2 :=
+  have hdenpos : 0 < ‖1 + (starRingEnd ℂ) a * η‖ ^ (2 : ℕ) :=
     pow_pos (norm_pos_iff.mpr hden) 2
-  have : 0 < 1 - ‖diskBlaschkeInverse a η‖ ^ 2 := by
-    change 0 < 1 - ‖(a + η) / (1 + (starRingEnd ℂ) a * η)‖ ^ 2
+  have : 0 < 1 - ‖diskBlaschkeInverse a η‖ ^ (2 : ℕ) := by
+    change 0 < 1 - ‖(a + η) / (1 + (starRingEnd ℂ) a * η)‖ ^ (2 : ℕ)
     rw [hid]
     exact div_pos hnum hdenpos
   nlinarith [norm_nonneg (diskBlaschkeInverse a η)]

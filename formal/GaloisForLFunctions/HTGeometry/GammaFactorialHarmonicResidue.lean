@@ -104,7 +104,7 @@ theorem iteratedDeriv_two_reciprocalGammaFactorialZoom_zero (n : ℕ) :
   rw [iteratedDeriv_two_reciprocalGammaEntire_neg_nat]
   have hcancel := reciprocalGammaFactorialScale_cancel n
   calc
-    reciprocalGammaFactorialScale n ^ 2 *
+    reciprocalGammaFactorialScale n ^ (2 : ℕ) *
         (-2 * ((-1 : ℂ) ^ n * (n.factorial : ℂ)) *
           Complex.digamma ((n : ℂ) + 1)) =
       -2 * (((-1 : ℂ) ^ n * (n.factorial : ℂ)) *
@@ -164,7 +164,7 @@ theorem gammaFactorialFirstJetDefect_eq_reciprocal
     (n : ℕ) (x : ℂ) (hx : reciprocalGammaFactorialZoom n x ≠ 0) :
     gammaFactorialFirstJetDefect n x =
       -(deriv (reciprocalGammaFactorialZoom n) x + 1) /
-        reciprocalGammaFactorialZoom n x ^ 2 := by
+        reciprocalGammaFactorialZoom n x ^ (2 : ℕ) := by
   rw [gammaFactorialFirstJetDefect, iteratedDeriv_one,
     factorialBlowUpZoom_Gamma_eq_inv_reciprocalGammaFactorialZoom]
   rw [deriv_fun_inv''
@@ -191,7 +191,7 @@ theorem tendsto_gammaFactorialFirstJetDefect_pole_residue (n : ℕ) :
   have heq : ∀ᶠ x : ℂ in 𝓝[≠] 0,
       x * gammaFactorialFirstJetDefect n x =
         (-((deriv (reciprocalGammaFactorialZoom n) x + 1) / x)) /
-          (reciprocalGammaFactorialZoom n x / x) ^ 2 := by
+          (reciprocalGammaFactorialZoom n x / x) ^ (2 : ℕ) := by
     filter_upwards [hquot_ne, hx_ne] with x hquot hx
     have hh : reciprocalGammaFactorialZoom n x ≠ 0 := by
       intro hzero

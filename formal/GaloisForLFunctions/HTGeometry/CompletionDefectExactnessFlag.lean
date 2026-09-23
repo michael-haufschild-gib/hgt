@@ -18,7 +18,7 @@ This file connects that topology to the algebraic completion defects already use
   framed-survival locus of the target flag.
 * `escapeFree_iff_no_boundary_survival` says a boundary migration is exact precisely when no source
   boundary survives as a target defect.
-* `derivedLimitExactnessFlag` turns the Roos presentation of `lim^1` into the same topological
+* `derivedLimitExactnessFlag` turns the Roos presentation of `lim^(1 : ℕ)` into the same topological
   object; a surviving vector is exactly a nonzero derived-limit class.
 
 No vanishing or exactness premise is introduced.  The constructions expose failures of completion

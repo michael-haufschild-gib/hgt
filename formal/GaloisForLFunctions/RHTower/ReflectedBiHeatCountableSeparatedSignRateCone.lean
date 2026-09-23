@@ -559,25 +559,25 @@ def reflectedBiHeatCountableSeparatedSignApertureGap
     (p lambda q mu : ℕ → ℝ)
     (x : ℝ) (rho : XiDivisorSupport) : ℝ :=
   -(∑' i, p i * x ^ (lambda i / 2) *
-      (reflectedBiHeatLeftLeadingJetNorm rho (x ^ lambda i) ^ 2 -
-        reflectedBiHeatRightLeadingJetNorm rho (x ^ lambda i) ^ 2)) +
+      (reflectedBiHeatLeftLeadingJetNorm rho (x ^ lambda i) ^ (2 : ℕ) -
+        reflectedBiHeatRightLeadingJetNorm rho (x ^ lambda i) ^ (2 : ℕ))) +
     ∑' j, q j * x ^ (mu j / 2) *
-      (reflectedBiHeatLeftLeadingJetNorm rho (x ^ mu j) ^ 2 -
-        reflectedBiHeatRightLeadingJetNorm rho (x ^ mu j) ^ 2)
+      (reflectedBiHeatLeftLeadingJetNorm rho (x ^ mu j) ^ (2 : ℕ) -
+        reflectedBiHeatRightLeadingJetNorm rho (x ^ mu j) ^ (2 : ℕ))
 
 theorem reflectedBiHeatCountableSeparatedSignApertureGap_eq_reporter
     (p lambda q mu : ℕ → ℝ)
     {x : ℝ} (hx : 0 < x) (rho : XiDivisorSupport) :
     reflectedBiHeatCountableSeparatedSignApertureGap p lambda q mu x rho =
-      2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ 2 *
+      2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ (2 : ℕ) *
         reflectedBiHeatCountableSeparatedSignReporter p lambda q mu
           (Real.log x * ((rho : ℂ).re - 1 / 2)) := by
-  let C : ℝ := 2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ 2
+  let C : ℝ := 2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ (2 : ℕ)
   let u : ℝ := Real.log x * ((rho : ℂ).re - 1 / 2)
   have hlow :
       (∑' i, p i * x ^ (lambda i / 2) *
-        (reflectedBiHeatLeftLeadingJetNorm rho (x ^ lambda i) ^ 2 -
-          reflectedBiHeatRightLeadingJetNorm rho (x ^ lambda i) ^ 2)) =
+        (reflectedBiHeatLeftLeadingJetNorm rho (x ^ lambda i) ^ (2 : ℕ) -
+          reflectedBiHeatRightLeadingJetNorm rho (x ^ lambda i) ^ (2 : ℕ))) =
       ∑' i, C * (p i * Real.sinh (lambda i * u)) := by
     apply tsum_congr
     intro i
@@ -586,19 +586,19 @@ theorem reflectedBiHeatCountableSeparatedSignApertureGap_eq_reporter
     dsimp only [C, u]
     calc
       p i * x ^ (lambda i / 2) *
-          (reflectedBiHeatLeftLeadingJetNorm rho (x ^ lambda i) ^ 2 -
-            reflectedBiHeatRightLeadingJetNorm rho (x ^ lambda i) ^ 2) =
+          (reflectedBiHeatLeftLeadingJetNorm rho (x ^ lambda i) ^ (2 : ℕ) -
+            reflectedBiHeatRightLeadingJetNorm rho (x ^ lambda i) ^ (2 : ℕ)) =
         p i * (x ^ (lambda i / 2) *
-          (reflectedBiHeatLeftLeadingJetNorm rho (x ^ lambda i) ^ 2 -
-            reflectedBiHeatRightLeadingJetNorm rho (x ^ lambda i) ^ 2)) := by ring
-      _ = p i * (2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ 2 *
+          (reflectedBiHeatLeftLeadingJetNorm rho (x ^ lambda i) ^ (2 : ℕ) -
+            reflectedBiHeatRightLeadingJetNorm rho (x ^ lambda i) ^ (2 : ℕ))) := by ring
+      _ = p i * (2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ (2 : ℕ) *
           Real.sinh (lambda i *
             (Real.log x * ((rho : ℂ).re - 1 / 2)))) := by rw [hi]
       _ = _ := by ring
   have hhighEq :
       (∑' j, q j * x ^ (mu j / 2) *
-        (reflectedBiHeatLeftLeadingJetNorm rho (x ^ mu j) ^ 2 -
-          reflectedBiHeatRightLeadingJetNorm rho (x ^ mu j) ^ 2)) =
+        (reflectedBiHeatLeftLeadingJetNorm rho (x ^ mu j) ^ (2 : ℕ) -
+          reflectedBiHeatRightLeadingJetNorm rho (x ^ mu j) ^ (2 : ℕ))) =
       ∑' j, C * (q j * Real.sinh (mu j * u)) := by
     apply tsum_congr
     intro j
@@ -607,12 +607,12 @@ theorem reflectedBiHeatCountableSeparatedSignApertureGap_eq_reporter
     dsimp only [C, u]
     calc
       q j * x ^ (mu j / 2) *
-          (reflectedBiHeatLeftLeadingJetNorm rho (x ^ mu j) ^ 2 -
-            reflectedBiHeatRightLeadingJetNorm rho (x ^ mu j) ^ 2) =
+          (reflectedBiHeatLeftLeadingJetNorm rho (x ^ mu j) ^ (2 : ℕ) -
+            reflectedBiHeatRightLeadingJetNorm rho (x ^ mu j) ^ (2 : ℕ)) =
         q j * (x ^ (mu j / 2) *
-          (reflectedBiHeatLeftLeadingJetNorm rho (x ^ mu j) ^ 2 -
-            reflectedBiHeatRightLeadingJetNorm rho (x ^ mu j) ^ 2)) := by ring
-      _ = q j * (2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ 2 *
+          (reflectedBiHeatLeftLeadingJetNorm rho (x ^ mu j) ^ (2 : ℕ) -
+            reflectedBiHeatRightLeadingJetNorm rho (x ^ mu j) ^ (2 : ℕ))) := by ring
+      _ = q j * (2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ (2 : ℕ) *
           Real.sinh (mu j *
             (Real.log x * ((rho : ℂ).re - 1 / 2)))) := by rw [hj]
       _ = _ := by ring
@@ -643,7 +643,7 @@ theorem reflectedBiHeatCountableSeparatedSignApertureGap_eq_zero_iff
   rw [reflectedBiHeatCountableSeparatedSignApertureGap_eq_reporter
     p lambda q mu (lt_trans zero_lt_one hx) rho]
   have hcoef :
-      2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ 2 ≠ 0 := by
+      2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ (2 : ℕ) ≠ 0 := by
     exact mul_ne_zero (by norm_num)
       (pow_ne_zero 2 (norm_ne_zero_iff.mpr
         (reflectedBiHeatMultiplicityLeadingCoefficient_ne_zero rho)))

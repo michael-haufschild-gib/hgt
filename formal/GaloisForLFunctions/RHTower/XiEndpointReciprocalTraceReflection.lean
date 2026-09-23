@@ -97,7 +97,7 @@ theorem summable_xiRawReciprocalTraceReflection_double (k : ℕ) (hk : 2 ≤ k) 
     summable_choose_mul_geometric_of_norm_lt_one (k - 1) hratio1
   have hmajor : Summable (fun p : ℕ × XiZeroCopy =>
       ((p.1 + (k - 1)).choose (k - 1) : ℝ) * ratio ^ p.1 *
-        ‖xiRawReciprocalCoordinate p.2‖ ^ 2) := by
+        ‖xiRawReciprocalCoordinate p.2‖ ^ (2 : ℕ)) := by
     rw [summable_prod_of_nonneg]
     · constructor
       · intro n
@@ -114,7 +114,7 @@ theorem summable_xiRawReciprocalTraceReflection_double (k : ℕ) (hk : 2 ≤ k) 
   change ‖(((n + (k - 1)).choose (k - 1) : ℂ) *
       xiRawReciprocalCoordinate q ^ (k + n))‖ ≤
         ((n + (k - 1)).choose (k - 1) : ℝ) * ratio ^ n *
-          ‖xiRawReciprocalCoordinate q‖ ^ 2
+          ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ)
   rw [norm_mul, Complex.norm_natCast, norm_pow]
   have hq0 : 0 ≤ ‖xiRawReciprocalCoordinate q‖ := norm_nonneg _
   have hq1 : ‖xiRawReciprocalCoordinate q‖ ≤ 1 :=
@@ -127,7 +127,7 @@ theorem summable_xiRawReciprocalTraceReflection_double (k : ℕ) (hk : 2 ≤ k) 
   have hsplit : k + n = (k - 2) + n + 2 := by omega
   rw [hsplit, pow_add, pow_add]
   have hcoeff0 : 0 ≤ ((n + (k - 1)).choose (k - 1) : ℝ) := by positivity
-  have hsq0 : 0 ≤ ‖xiRawReciprocalCoordinate q‖ ^ 2 := sq_nonneg _
+  have hsq0 : 0 ≤ ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ) := sq_nonneg _
   have hprod :
       ‖xiRawReciprocalCoordinate q‖ ^ (k - 2) *
           ‖xiRawReciprocalCoordinate q‖ ^ n ≤ ratio ^ n := by
@@ -140,17 +140,17 @@ theorem summable_xiRawReciprocalTraceReflection_double (k : ℕ) (hk : 2 ≤ k) 
     ((n + (k - 1)).choose (k - 1) : ℝ) *
           (‖xiRawReciprocalCoordinate q‖ ^ (k - 2) *
             ‖xiRawReciprocalCoordinate q‖ ^ n *
-              ‖xiRawReciprocalCoordinate q‖ ^ 2) =
+              ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ)) =
         ((n + (k - 1)).choose (k - 1) : ℝ) *
           ((‖xiRawReciprocalCoordinate q‖ ^ (k - 2) *
             ‖xiRawReciprocalCoordinate q‖ ^ n) *
-              ‖xiRawReciprocalCoordinate q‖ ^ 2) := by ring
+              ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ)) := by ring
     _ ≤ ((n + (k - 1)).choose (k - 1) : ℝ) *
-          (ratio ^ n * ‖xiRawReciprocalCoordinate q‖ ^ 2) := by
+          (ratio ^ n * ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ)) := by
       exact mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_right hprod hsq0) hcoeff0
     _ = ((n + (k - 1)).choose (k - 1) : ℝ) * ratio ^ n *
-          ‖xiRawReciprocalCoordinate q‖ ^ 2 := by ring
+          ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ) := by ring
 
 /-- The binomially weighted sequence of all-order reciprocal traces is summable. -/
 theorem summable_xiRawReciprocalPowerTrace_reflectionSeries (k : ℕ) (hk : 2 ≤ k) :

@@ -50,7 +50,7 @@ theorem bigPrimeSet_subset_primesLE (P Q : ℕ) : bigPrimeSet P Q ⊆ Nat.primes
 
 /-- The inverse-square weight of a prime window. -/
 theorem sum_inv_sq_bigPrimeSet_le {P : ℕ} (hP : 1 ≤ P) (Q : ℕ) :
-    ∑ p ∈ bigPrimeSet P Q, (1 : ℝ) / (p : ℝ) ^ 2 ≤ 1 / (P : ℝ) := by
+    ∑ p ∈ bigPrimeSet P Q, (1 : ℝ) / (p : ℝ) ^ (2 : ℕ) ≤ 1 / (P : ℝ) := by
   refine le_trans (Finset.sum_le_sum_of_subset_of_nonneg (bigPrimeSet_subset_Icc P Q) ?_) ?_
   · intro d _ _
     positivity
@@ -79,7 +79,7 @@ theorem sum_pair_tail_le {P : ℕ} (hP : 1 ≤ P) (Q : ℕ) {l₁ l₂ : ℝ} (h
   classical
   have hexpand : ∀ p ∈ bigPrimeSet P Q,
       (l₁ / (p : ℝ) + 1) * (l₂ / (p : ℝ) + 1)
-        = l₁ * l₂ * (1 / (p : ℝ) ^ 2) + l₁ * (1 / (p : ℝ)) + l₂ * (1 / (p : ℝ)) + 1 := by
+        = l₁ * l₂ * (1 / (p : ℝ) ^ (2 : ℕ)) + l₁ * (1 / (p : ℝ)) + l₂ * (1 / (p : ℝ)) + 1 := by
     intro p hp
     have hprime : p.Prime := prime_of_mem_bigPrimeSet hp
     have hpne : ((p : ℝ)) ≠ 0 := by
@@ -96,7 +96,7 @@ theorem sum_pair_tail_le {P : ℕ} (hP : 1 ≤ P) (Q : ℕ) {l₁ l₂ : ℝ} (h
   have hsq := sum_inv_sq_bigPrimeSet_le hP Q
   have hrec := sum_inv_bigPrimeSet_le P Q
   have hcard := card_bigPrimeSet_le P Q
-  have hprod : l₁ * l₂ * ∑ p ∈ bigPrimeSet P Q, (1 : ℝ) / (p : ℝ) ^ 2 ≤ l₁ * l₂ * (1 / (P : ℝ)) :=
+  have hprod : l₁ * l₂ * ∑ p ∈ bigPrimeSet P Q, (1 : ℝ) / (p : ℝ) ^ (2 : ℕ) ≤ l₁ * l₂ * (1 / (P : ℝ)) :=
     mul_le_mul_of_nonneg_left hsq (mul_nonneg h1 h2)
   have hr1 : l₁ * ∑ p ∈ bigPrimeSet P Q, (1 : ℝ) / (p : ℝ) ≤ l₁ * mertensS Q :=
     mul_le_mul_of_nonneg_left hrec h1

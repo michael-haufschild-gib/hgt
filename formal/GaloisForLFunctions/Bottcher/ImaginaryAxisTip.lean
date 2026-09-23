@@ -29,7 +29,7 @@ theorem imag_mem_filledJulia_iff {c t : ℝ} (hc2 : -2 ≤ c) (hc4 : c ≤ 1 / 4
     ((t : ℂ) * Complex.I) ∈ filledJulia (c : ℂ) ↔ |t| ≤ tipHeight c := by
   have hβ := betaFixed_sq' hc4
   have hβc := betaFixed_add_nonneg hc2 hc4
-  have hcast : quadratic (c : ℂ) ((t : ℂ) * Complex.I) = ((c - t ^ 2 : ℝ) : ℂ) := by
+  have hcast : quadratic (c : ℂ) ((t : ℂ) * Complex.I) = ((c - t ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [quadratic_apply, mul_pow, Complex.I_sq]
     push_cast
     ring
@@ -38,11 +38,11 @@ theorem imag_mem_filledJulia_iff {c t : ℝ} (hc2 : -2 ≤ c) (hc4 : c ≤ 1 / 4
   constructor
   · intro h
     obtain ⟨hlo, _⟩ := abs_le.mp h
-    have ht2 : t ^ 2 ≤ betaFixed c + c := by linarith
+    have ht2 : t ^ (2 : ℕ) ≤ betaFixed c + c := by linarith
     have hs := Real.sqrt_le_sqrt ht2
     rwa [Real.sqrt_sq_eq_abs] at hs
   · intro h
-    have ht2 : t ^ 2 ≤ betaFixed c + c := by
+    have ht2 : t ^ (2 : ℕ) ≤ betaFixed c + c := by
       have h2 := pow_le_pow_left₀ (abs_nonneg t) h 2
       rwa [sq_abs, Real.sq_sqrt hβc] at h2
     rw [abs_le]
@@ -80,8 +80,8 @@ increasing for `c ≤ 0` (where `√(1−4c) ≥ 1`).  This FAILS on `(0, 1/4]` 
 `c = 0` — which is why the tip-separation class is `(−2, 0]`. -/
 theorem betaFixed_add_lt {c₁ c₂ : ℝ} (_h1 : -2 ≤ c₁) (hlt : c₁ < c₂) (h4 : c₂ ≤ 0) :
     betaFixed c₁ + c₁ < betaFixed c₂ + c₂ := by
-  have hs₁ : Real.sqrt (1 - 4 * c₁) ^ 2 = 1 - 4 * c₁ := Real.sq_sqrt (by linarith)
-  have hs₂ : Real.sqrt (1 - 4 * c₂) ^ 2 = 1 - 4 * c₂ := Real.sq_sqrt (by linarith)
+  have hs₁ : Real.sqrt (1 - 4 * c₁) ^ (2 : ℕ) = 1 - 4 * c₁ := Real.sq_sqrt (by linarith)
+  have hs₂ : Real.sqrt (1 - 4 * c₂) ^ (2 : ℕ) = 1 - 4 * c₂ := Real.sq_sqrt (by linarith)
   have hgt : Real.sqrt (1 - 4 * c₂) < Real.sqrt (1 - 4 * c₁) :=
     Real.sqrt_lt_sqrt (by linarith) (by linarith)
   have hone : 1 ≤ Real.sqrt (1 - 4 * c₂) := by

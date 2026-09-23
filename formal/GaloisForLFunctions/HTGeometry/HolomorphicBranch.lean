@@ -104,20 +104,20 @@ function is one. -/
 theorem exists_differentiableOn_sq_eq {U : Set ℂ} (hUo : IsOpen U) (hUc : IsSimplyConnected U)
     {g : ℂ → ℂ} (hg : DifferentiableOn ℂ g U) (h0 : ∀ z ∈ U, g z ≠ 0)
     {z₀ : ℂ} (hz₀ : z₀ ∈ U) (hg1 : g z₀ = 1) :
-    ∃ f : ℂ → ℂ, DifferentiableOn ℂ f U ∧ (∀ z ∈ U, f z ^ 2 = g z) ∧ f z₀ = 1
+    ∃ f : ℂ → ℂ, DifferentiableOn ℂ f U ∧ (∀ z ∈ U, f z ^ (2 : ℕ) = g z) ∧ f z₀ = 1
       ∧ ∀ z ∈ U, f z ≠ 0 := by
   obtain ⟨L, hL, hLe⟩ := exists_differentiableOn_exp_eq hUo hUc hg h0
   set e : ℂ → ℂ := fun z => Complex.exp (L z / 2) with he
-  have hesq : ∀ z ∈ U, e z ^ 2 = g z := by
+  have hesq : ∀ z ∈ U, e z ^ (2 : ℕ) = g z := by
     intro z hz
     rw [he]
-    have : Complex.exp (L z / 2) ^ 2 = Complex.exp (L z / 2 + L z / 2) := by
+    have : Complex.exp (L z / 2) ^ (2 : ℕ) = Complex.exp (L z / 2 + L z / 2) := by
       rw [Complex.exp_add, sq]
     rw [this]
     have hhalf : L z / 2 + L z / 2 = L z := by ring
     rw [hhalf, hLe z hz]
   have hene : ∀ z, e z ≠ 0 := fun z => Complex.exp_ne_zero _
-  have he₀sq : e z₀ ^ 2 = 1 := by rw [hesq z₀ hz₀, hg1]
+  have he₀sq : e z₀ ^ (2 : ℕ) = 1 := by rw [hesq z₀ hz₀, hg1]
   refine ⟨fun z => e z / e z₀, ?_, ?_, ?_, ?_⟩
   · exact (fun z hz => (((hL.differentiableAt (hUo.mem_nhds hz)).div_const 2).cexp.div_const
       (e z₀)).differentiableWithinAt)

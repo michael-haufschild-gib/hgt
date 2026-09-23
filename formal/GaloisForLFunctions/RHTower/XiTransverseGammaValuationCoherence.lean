@@ -50,8 +50,8 @@ theorem xiTransversePrimeApertureDiskNode_one_injective :
 
 /-- The positive rational Gamma gauge which exposes the valuation Hardy coordinate. -/
 def gammaValuationHardyRenormalizer (p : Nat.Primes) : ℝ :=
-  (((p : ℝ) ^ 2 + 1) ^ 2) /
-    ((p : ℝ) ^ 2 * ((p : ℝ) + 1) ^ 2)
+  (((p : ℝ) ^ (2 : ℕ) + 1) ^ (2 : ℕ)) /
+    ((p : ℝ) ^ (2 : ℕ) * ((p : ℝ) + 1) ^ (2 : ℕ))
 
 theorem gammaValuationHardyRenormalizer_pos (p : Nat.Primes) :
     0 < gammaValuationHardyRenormalizer p := by
@@ -110,12 +110,12 @@ theorem gammaConductorPrimeNormalizedCross_neg (p : Nat.Primes) :
 /-- Squared form of the exact Gamma-to-valuation coordinate identity. -/
 theorem gammaValuationHardyCorrectedCross_sq (p : Nat.Primes) :
     (gammaValuationHardyRenormalizer p *
-        gammaConductorPrimeNormalizedCross p) ^ 2 =
+        gammaConductorPrimeNormalizedCross p) ^ (2 : ℕ) =
       (9 / 8 : ℝ) *
-        xiTransversePrimeHalfShiftedFirstValuationCoordinate p ^ 2 := by
+        xiTransversePrimeHalfShiftedFirstValuationCoordinate p ^ (2 : ℕ) := by
   have hp0 : 0 < (p : ℝ) := by exact_mod_cast p.2.pos
   have hplus : (p : ℝ) + 1 ≠ 0 := by positivity
-  have hquad : (p : ℝ) ^ 2 + 1 ≠ 0 := by positivity
+  have hquad : (p : ℝ) ^ (2 : ℕ) + 1 ≠ 0 := by positivity
   rw [mul_pow, gammaConductorPrimeNormalizedCross_sq,
     gammaConductorPrimeSchurCost_eq,
     xiTransversePrimeHalfShiftedFirstValuationCoordinate_eq,
@@ -135,15 +135,15 @@ theorem gammaValuationHardyCorrectedCross_eq (p : Nat.Primes) :
     gammaConductorPrimeNormalizedCross p
   let C := (3 * Real.sqrt 2 / 4) *
     xiTransversePrimeHalfShiftedFirstValuationCoordinate p
-  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ 2 = 9 / 8 := by
+  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ (2 : ℕ) = 9 / 8 := by
     rw [div_pow, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
-  have hsq : L ^ 2 = C ^ 2 := by
+  have hsq : L ^ (2 : ℕ) = C ^ (2 : ℕ) := by
     calc
-      L ^ 2 = (9 / 8 : ℝ) *
-          xiTransversePrimeHalfShiftedFirstValuationCoordinate p ^ 2 := by
+      L ^ (2 : ℕ) = (9 / 8 : ℝ) *
+          xiTransversePrimeHalfShiftedFirstValuationCoordinate p ^ (2 : ℕ) := by
         simpa [L] using gammaValuationHardyCorrectedCross_sq p
-      _ = C ^ 2 := by
+      _ = C ^ (2 : ℕ) := by
         dsimp only [C]
         rw [mul_pow, hconst]
   have hLneg : L < 0 := by
@@ -190,7 +190,7 @@ theorem xiTransverseGammaValuationSzegoKernel_schurResidual_eq_shift
     have : x * y < 1 :=
       mul_lt_one_of_nonneg_of_lt_one_left hx0 hx1 hy1.le
     linarith
-  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ 2 = 9 / 8 := by
+  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ (2 : ℕ) = 9 / 8 := by
     rw [div_pow, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
   rw [gammaValuationHardyCorrectedCross_eq,
@@ -274,7 +274,7 @@ theorem xiTransverseGammaValuationFiniteBlock_nonneg
       2 * v *
         (∑ i, gammaValuationHardyRenormalizer (p i) *
           gammaConductorPrimeNormalizedCross (p i) * u i) +
-      (9 / 8 : ℝ) * v ^ 2 := by
+      (9 / 8 : ℝ) * v ^ (2 : ℕ) := by
   let H : Fin N → I → ℝ := fun e i =>
     xiTransversePrimeHalfShiftedValuationFeature N (p i) e
   let S : Fin N → ℝ := fun e => ∑ i, H e i * u i
@@ -282,20 +282,20 @@ theorem xiTransverseGammaValuationFiniteBlock_nonneg
   have henergy :
       (∑ i, ∑ j,
         xiTransversePrimeHalfShiftedValuationKernel N (p i) (p j) * u i * u j) =
-        ∑ e, S e ^ 2 := by
+        ∑ e, S e ^ (2 : ℕ) := by
     unfold xiTransversePrimeHalfShiftedValuationKernel
     simp_rw [Finset.sum_mul]
     let F : I → I → Fin N → ℝ := fun i j e =>
       xiTransversePrimeHalfShiftedValuationFeature N (p i) e *
         xiTransversePrimeHalfShiftedValuationFeature N (p j) e * u i * u j
-    change (∑ i, ∑ j, ∑ e, F i j e) = ∑ e, S e ^ 2
+    change (∑ i, ∑ j, ∑ e, F i j e) = ∑ e, S e ^ (2 : ℕ)
     calc
       (∑ i, ∑ j, ∑ e, F i j e) = ∑ i, ∑ e, ∑ j, F i j e := by
         apply Finset.sum_congr rfl
         intro i hi
         rw [Finset.sum_comm]
       _ = ∑ e, ∑ i, ∑ j, F i j e := by rw [Finset.sum_comm]
-      _ = ∑ e, S e ^ 2 := by
+      _ = ∑ e, S e ^ (2 : ℕ) := by
         apply Finset.sum_congr rfl
         intro e he
         dsimp only [F, S, H]
@@ -325,9 +325,9 @@ theorem xiTransverseGammaValuationFiniteBlock_nonneg
           xiTransversePrimeHalfShiftedFirstValuationCoordinate,
           xiTransversePrimeHalfShiftedValuationCoordinate]
         ring
-  have hfirst : S e0 ^ 2 ≤ ∑ e, S e ^ 2 :=
+  have hfirst : S e0 ^ (2 : ℕ) ≤ ∑ e, S e ^ (2 : ℕ) :=
     Finset.single_le_sum (fun e _ => sq_nonneg (S e)) (Finset.mem_univ e0)
-  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ 2 = 9 / 8 := by
+  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ (2 : ℕ) = 9 / 8 := by
     rw [div_pow, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
   rw [henergy, hcross]

@@ -14,7 +14,7 @@ noncomputable section
 set_option maxHeartbeats 1000000
 /-- The complete-source slope budget fits strictly inside 240 normalized last-coordinate units. -/
 theorem middleCompensationBudget_pos {q : ℝ} (hq : 5 ≤ q) :
-    0 < 240*(8*q)^6+1000000000000*(101/100 : ℝ)^2*(1+(9/5)*q-(2/5)*q^2) := by
+    0 < 240*(8*q)^(6 : ℕ)+1000000000000*(101/100 : ℝ)^(2 : ℕ)*(1+(9/5)*q-(2/5)*q^(2 : ℕ)) := by
   by_cases hu : q ≤ 6
   · let u := 6-q
     let v := q-5
@@ -26,9 +26,9 @@ theorem middleCompensationBudget_pos {q : ℝ} (hq : 5 ≤ q) :
       · exact Or.inl h
       · exact Or.inr (by linarith)
     have hp : 0 <
-        240*(8*(5*u+6*v))^6+
-          1000000000000*(101/100 : ℝ)^2*
-            ((u+v)^2+(9/5)*(5*u+6*v)*(u+v)-(2/5)*(5*u+6*v)^2)*(u+v)^4 := by
+        240*(8*(5*u+6*v))^(6 : ℕ)+
+          1000000000000*(101/100 : ℝ)^(2 : ℕ)*
+            ((u+v)^(2 : ℕ)+(9/5)*(5*u+6*v)*(u+v)-(2/5)*(5*u+6*v)^(2 : ℕ))*(u+v)^(4 : ℕ) := by
       rcases huvpos with hpos | hpos
       all_goals ring_nf; positivity
     have he : 5*u+6*v = q := by dsimp [u,v]; ring
@@ -40,11 +40,11 @@ theorem middleCompensationBudget_pos {q : ℝ} (hq : 5 ≤ q) :
     have he : q = 6+v := by dsimp [v]; ring
     rw [he]
     have hp : 0 <
-        240*(8*(6+v))^6+1000000000000*(101/100 : ℝ)^2*
-          (1+(9/5)*(6+v)-(2/5)*(6+v)^2) := by
+        240*(8*(6+v))^(6 : ℕ)+1000000000000*(101/100 : ℝ)^(2 : ℕ)*
+          (1+(9/5)*(6+v)-(2/5)*(6+v)^(2 : ℕ)) := by
       have hcert : 0 <
-          240*(8*(6+v))^6+1000000000000*(101/100 : ℝ)^2*
-            (1+(9/5)*(6+v)-(2/5)*(6+v)^2)-700000000000*(v-1/10)^2 := by
+          240*(8*(6+v))^(6 : ℕ)+1000000000000*(101/100 : ℝ)^(2 : ℕ)*
+            (1+(9/5)*(6+v)-(2/5)*(6+v)^(2 : ℕ))-700000000000*(v-1/10)^(2 : ℕ) := by
         ring_nf
         positivity
       nlinarith only [hcert,sq_nonneg (v-1/10)]
@@ -52,8 +52,8 @@ theorem middleCompensationBudget_pos {q : ℝ} (hq : 5 ≤ q) :
 private theorem middleReserve_first_slope_eq (x : ℝ) :
     deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x =
       Real.exp (x/2-thetaCuspSingleAtomReflectionScale 1 x)*
-        (-8*thetaCuspSingleAtomReflectionScale 1 x^3+
-          30*thetaCuspSingleAtomReflectionScale 1 x^2-15*thetaCuspSingleAtomReflectionScale 1 x) := by
+        (-8*thetaCuspSingleAtomReflectionScale 1 x^(3 : ℕ)+
+          30*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ)-15*thetaCuspSingleAtomReflectionScale 1 x) := by
   have h := iteratedDeriv_firstAtom_eq_gaussianScaleJets 1 x
   rw [iteratedDeriv_one] at h
   rw [h]
@@ -67,8 +67,8 @@ private theorem middleReserve_first_slope_affine_lower {x : ℝ}
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hqp : 0 ≤ q := by dsimp [q]; linarith
   rw [middleReserve_first_slope_eq, thetaCuspSourceTerm_one_eq_scale_profile]
-  change (9/2-2*q)*(Real.exp (x/2-q)*(4*q^2-6*q)) ≤
-    Real.exp (x/2-q)*(-8*q^3+30*q^2-15*q)
+  change (9/2-2*q)*(Real.exp (x/2-q)*(4*q^(2 : ℕ)-6*q)) ≤
+    Real.exp (x/2-q)*(-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q)
   nlinarith only [mul_nonneg (Real.exp_pos (x/2-q)).le hqp]
 
 
@@ -122,7 +122,7 @@ theorem thetaCuspCenterCompensationSource_quadratic_lower_eight {x : ℝ}
     (hq : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hqu : thetaCuspSingleAtomReflectionScale 1 x ≤ 8) :
     (1+(9/5)*thetaCuspSingleAtomReflectionScale 1 x-
-      (2/5)*thetaCuspSingleAtomReflectionScale 1 x^2)*thetaCuspFullSource x^2 ≤
+      (2/5)*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ))*thetaCuspFullSource x^(2 : ℕ) ≤
       thetaCuspCenterCompensationSource x := by
   have hx := thetaCusp_pos_of_thirtySevenTenths_le hq
   have hF := thetaCuspFullSource_pos_all x
@@ -131,7 +131,7 @@ theorem thetaCuspCenterCompensationSource_quadratic_lower_eight {x : ℝ}
   have hc := ten_mul_center_add_five_halves_le_firstAtomScale hx.le
   have hr := mul_nonneg
     (show 0 ≤ thetaCuspSingleAtomReflectionScale 1 x-10*x-5/2 by linarith)
-    (show 0 ≤ (2*thetaCuspSingleAtomReflectionScale 1 x-4)*thetaCuspFullSource x^2 by
+    (show 0 ≤ (2*thetaCuspSingleAtomReflectionScale 1 x-4)*thetaCuspFullSource x^(2 : ℕ) by
       apply mul_nonneg (by linarith) (sq_nonneg _))
   unfold thetaCuspCenterCompensationSource
   nlinarith only [hd,hr]
@@ -140,12 +140,12 @@ theorem thetaCuspCenterCompensationSource_quadratic_lower_eight {x : ℝ}
 theorem thetaCuspFullCompensation_lower_middle_240 {x : ℝ}
     (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hqu : thetaCuspSingleAtomReflectionScale 1 x ≤ 8) :
-    -240*thetaCuspSourceTerm x 1^2*(8*thetaCuspSingleAtomReflectionScale 1 x)^6 <
+    -240*thetaCuspSourceTerm x 1^(2 : ℕ)*(8*thetaCuspSingleAtomReflectionScale 1 x)^(6 : ℕ) <
       1000000000000*thetaCuspCenterCompensationSource x := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let f := thetaCuspSourceTerm x 1
   let F := thetaCuspFullSource x
-  let B := 1+(9/5)*q-(2/5)*q^2
+  let B := 1+(9/5)*q-(2/5)*q^(2 : ℕ)
   have hql : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x := by linarith
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos (thetaCusp_pos_of_thirtySevenTenths_le hql)
     (by norm_num : 0 < (1 : ℕ))
@@ -155,27 +155,27 @@ theorem thetaCuspFullCompensation_lower_middle_240 {x : ℝ}
     rw [he]
     exact div_nonpos_of_nonpos_of_nonneg
       (mul_nonpos_of_nonpos_of_nonneg (by dsimp [q]; linarith) (by dsimp [q]; linarith)) (by norm_num)
-  have hm : F^2 ≤ ((101/100)*f)^2 :=
+  have hm : F^(2 : ℕ) ≤ ((101/100)*f)^(2 : ℕ) :=
     pow_le_pow_left₀ hF.le (thetaCuspFullSource_mass_bounds_middle hql).2 2
-  have hg : B*F^2 ≤ thetaCuspCenterCompensationSource x :=
+  have hg : B*F^(2 : ℕ) ≤ thetaCuspCenterCompensationSource x :=
     thetaCuspCenterCompensationSource_quadratic_lower_eight hql hqu
   have hb := mul_le_mul_of_nonpos_left hm hB
-  have hh : B*((101/100)*f)^2 ≤ thetaCuspCenterCompensationSource x := hb.trans hg
+  have hh : B*((101/100)*f)^(2 : ℕ) ≤ thetaCuspCenterCompensationSource x := hb.trans hg
   have hL := mul_le_mul_of_nonneg_left hh (by norm_num : (0 : ℝ) ≤ 1000000000000)
   have hp := mul_pos (middleCompensationBudget_pos hq) (sq_pos_of_pos hf)
-  change (0 : ℝ) < (240*(8*q)^6+1000000000000*(101/100 : ℝ)^2*B)*f^2 at hp
-  change -240*f^2*(8*q)^6 < _
+  change (0 : ℝ) < (240*(8*q)^(6 : ℕ)+1000000000000*(101/100 : ℝ)^(2 : ℕ)*B)*f^(2 : ℕ) at hp
+  change -240*f^(2 : ℕ)*(8*q)^(6 : ℕ) < _
   nlinarith only [hL,hp]
 /-- Four explicit coordinate reserves survive the complete compensation on the middle interval. -/
 theorem firstAtomEnergy_fullCompensation_middle_reserve {x : ℝ}
     (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hqu : thetaCuspSingleAtomReflectionScale 1 x ≤ 8) (c : Fin 4 → ℝ) :
     let q := thetaCuspSingleAtomReflectionScale 1 x
-    let h := 6/(2*q-3)^2
+    let h := 6/(2*q-3)^(2 : ℕ)
     let y := firstAtomCentralCoordinates ((2*q)⁻¹) (8*q) c
-    thetaCuspSourceTerm x 1^2*
-      ((y 0+h*y 1)^2+(7/8)*(y 1)^2+3*(y 2)^2+42*(y 3)^2) ≤
-      firstAtomEvenEnergy x c+1000000000000*thetaCuspCenterCompensationSource x*(c 3)^2 := by
+    thetaCuspSourceTerm x 1^(2 : ℕ)*
+      ((y 0+h*y 1)^(2 : ℕ)+(7/8)*(y 1)^(2 : ℕ)+3*(y 2)^(2 : ℕ)+42*(y 3)^(2 : ℕ)) ≤
+      firstAtomEvenEnergy x c+1000000000000*thetaCuspCenterCompensationSource x*(c 3)^(2 : ℕ) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hqp : 0 < q := by dsimp [q]; linarith
   have hd : 2*q-3 ≠ 0 := by dsimp [q]; linarith
@@ -184,23 +184,23 @@ theorem firstAtomEnergy_fullCompensation_middle_reserve {x : ℝ}
     apply (inv_le_iff_one_le_mul₀ (by positivity : 0 < 2*q)).mpr
     dsimp [q]
     linarith
-  have hrel : (6/(2*q-3)^2)*(1-3*(2*q)⁻¹)^2 = 6*((2*q)⁻¹)^2 := by
+  have hrel : (6/(2*q-3)^(2 : ℕ))*(1-3*(2*q)⁻¹)^(2 : ℕ) = 6*((2*q)⁻¹)^(2 : ℕ) := by
     field_simp [hqp.ne',hd]
   let y := firstAtomCentralCoordinates ((2*q)⁻¹) (8*q) c
   have hm := mul_le_mul_of_nonneg_left (centralHermiteQuadratic_lower hv hvU hrel y)
     (sq_nonneg (thetaCuspSourceTerm x 1))
   have hid := firstAtomEvenEnergy_eq_centralHermite
     (by linarith : 3/2 < thetaCuspSingleAtomReflectionScale 1 x) c
-  change firstAtomEvenEnergy x c = thetaCuspSourceTerm x 1^2*
-    centralHermiteQuadratic ((2*q)⁻¹) (6/(2*q-3)^2) y at hid
+  change firstAtomEvenEnergy x c = thetaCuspSourceTerm x 1^(2 : ℕ)*
+    centralHermiteQuadratic ((2*q)⁻¹) (6/(2*q-3)^(2 : ℕ)) y at hid
   rw [← hid] at hm
   have hc := mul_le_mul_of_nonneg_right (thetaCuspFullCompensation_lower_middle_240 hq hqu).le
     (sq_nonneg (c 3))
-  have hy3 : y 3 = (8*q)^3*c 3 := rfl
-  have he : thetaCuspSourceTerm x 1^2*(y 3)^2 =
-      thetaCuspSourceTerm x 1^2*(8*q)^6*(c 3)^2 := by rw [hy3]; ring
-  change thetaCuspSourceTerm x 1^2*
-    ((y 0+(6/(2*q-3)^2)*y 1)^2+(7/8)*(y 1)^2+3*(y 2)^2+42*(y 3)^2) ≤ _
+  have hy3 : y 3 = (8*q)^(3 : ℕ)*c 3 := rfl
+  have he : thetaCuspSourceTerm x 1^(2 : ℕ)*(y 3)^(2 : ℕ) =
+      thetaCuspSourceTerm x 1^(2 : ℕ)*(8*q)^(6 : ℕ)*(c 3)^(2 : ℕ) := by rw [hy3]; ring
+  change thetaCuspSourceTerm x 1^(2 : ℕ)*
+    ((y 0+(6/(2*q-3)^(2 : ℕ))*y 1)^(2 : ℕ)+(7/8)*(y 1)^(2 : ℕ)+3*(y 2)^(2 : ℕ)+42*(y 3)^(2 : ℕ)) ≤ _
   nlinarith only [hm,hc,he]
 end
 end RHTower

@@ -27,7 +27,7 @@ noncomputable def oscWronskian (u : ℝ → ℝ) (k : ℝ) : ℝ → ℝ :=
 
 /-- **The Wronskian is conserved.** -/
 theorem hasDerivAt_oscWronskian {u : ℝ → ℝ} (hu : ContDiff ℝ ∞ u) (k : ℝ)
-    (heq : ∀ x, secondDeriv u x = -(k ^ 2) * u x) (x : ℝ) :
+    (heq : ∀ x, secondDeriv u x = -(k ^ (2 : ℕ)) * u x) (x : ℝ) :
     HasDerivAt (oscWronskian u k) 0 x := by
   have hu1 : ∀ t : ℝ, HasDerivAt u (deriv u t) t := fun t =>
     (hu.differentiable (by simp) t).hasDerivAt
@@ -52,7 +52,7 @@ theorem hasDerivAt_oscWronskian {u : ℝ → ℝ} (hu : ContDiff ℝ ∞ u) (k :
   exact hsub
 
 theorem oscWronskian_const {u : ℝ → ℝ} (hu : ContDiff ℝ ∞ u) (k : ℝ)
-    (heq : ∀ x, secondDeriv u x = -(k ^ 2) * u x) (x y : ℝ) :
+    (heq : ∀ x, secondDeriv u x = -(k ^ (2 : ℕ)) * u x) (x y : ℝ) :
     oscWronskian u k x = oscWronskian u k y :=
   is_const_of_deriv_eq_zero
     (fun t => (hasDerivAt_oscWronskian hu k heq t).differentiableAt)
@@ -60,7 +60,7 @@ theorem oscWronskian_const {u : ℝ → ℝ} (hu : ContDiff ℝ ∞ u) (k : ℝ)
 
 /-- **Every solution changes sign over a half period.** -/
 theorem half_period_neg {u : ℝ → ℝ} (hu : ContDiff ℝ ∞ u) {k : ℝ} (hk : k ≠ 0)
-    (heq : ∀ x, secondDeriv u x = -(k ^ 2) * u x) :
+    (heq : ∀ x, secondDeriv u x = -(k ^ (2 : ℕ)) * u x) :
     u (Real.pi / k) = -u 0 := by
   have h := oscWronskian_const hu k heq 0 (Real.pi / k)
   have h0 : oscWronskian u k 0 = k * u 0 := by
@@ -76,11 +76,11 @@ theorem half_period_neg {u : ℝ → ℝ} (hu : ContDiff ℝ ∞ u) {k : ℝ} (h
 /-- **The oscillatory potential has no nowhere-vanishing probe.** -/
 theorem not_exists_nonvanishing_oscillatory_probe {k : ℝ} (hk : 0 < k) :
     ¬ ∃ u : ℝ → ℝ, ContDiff ℝ ∞ u ∧ (∀ x, u x ≠ 0) ∧
-        SolvesPotentialWave secondDeriv (fun _ => k ^ 2) u := by
+        SolvesPotentialWave secondDeriv (fun _ => k ^ (2 : ℕ)) u := by
   rintro ⟨u, hu, hu0, hsolve⟩
-  have heq : ∀ x, secondDeriv u x = -(k ^ 2) * u x := by
+  have heq : ∀ x, secondDeriv u x = -(k ^ (2 : ℕ)) * u x := by
     intro x
-    have h2 : secondDeriv u x + k ^ 2 * u x = 0 := hsolve x
+    have h2 : secondDeriv u x + k ^ (2 : ℕ) * u x = 0 := hsolve x
     linarith [h2]
   have hflip := half_period_neg hu (ne_of_gt hk) heq
   have hb : (0 : ℝ) ≤ Real.pi / k := le_of_lt (div_pos Real.pi_pos hk)
@@ -99,12 +99,12 @@ theorem not_exists_nonvanishing_oscillatory_probe {k : ℝ} (hk : 0 < k) :
 
 /-- **The oscillatory potential is not a Riccati potential.** -/
 theorem not_riccatiPotential_oscillatory {k : ℝ} (hk : 0 < k) :
-    ¬ ∃ w : ℝ → ℝ, ContDiff ℝ ∞ w ∧ riccatiPotential w = fun _ => k ^ 2 := by
+    ¬ ∃ w : ℝ → ℝ, ContDiff ℝ ∞ w ∧ riccatiPotential w = fun _ => k ^ (2 : ℕ) := by
   rintro ⟨w, hw, hEq⟩
   refine not_exists_nonvanishing_oscillatory_probe hk
     ⟨expProbe w, Real.contDiff_exp.comp hw, expProbe_ne_zero w, ?_⟩
   intro x
-  have hk2 : riccatiPotential w x = k ^ 2 := congrFun hEq x
+  have hk2 : riccatiPotential w x = k ^ (2 : ℕ) := congrFun hEq x
   have h := solvesPotentialWave_expProbe hw x
   rw [hk2] at h
   exact h
@@ -115,13 +115,13 @@ theorem exists_noCommonZero_without_nonvanishing_probe :
     ∃ V : ℝ → ℝ, NoCommonZero secondDeriv V ∧
       ¬ ∃ u : ℝ → ℝ, ContDiff ℝ ∞ u ∧ (∀ x, u x ≠ 0) ∧
           SolvesPotentialWave secondDeriv V u :=
-  ⟨fun _ => (1 : ℝ) ^ 2, noCommonZero_oscillatory 1,
+  ⟨fun _ => (1 : ℝ) ^ (2 : ℕ), noCommonZero_oscillatory 1,
     not_exists_nonvanishing_oscillatory_probe one_pos⟩
 
 /-- The same separation stated against the Riccati description of the nonvanishing-probe class. -/
 theorem exists_noCommonZero_not_riccatiPotential :
     ∃ V : ℝ → ℝ, NoCommonZero secondDeriv V ∧
       ¬ ∃ w : ℝ → ℝ, ContDiff ℝ ∞ w ∧ riccatiPotential w = V :=
-  ⟨fun _ => (1 : ℝ) ^ 2, noCommonZero_oscillatory 1, not_riccatiPotential_oscillatory one_pos⟩
+  ⟨fun _ => (1 : ℝ) ^ (2 : ℕ), noCommonZero_oscillatory 1, not_riccatiPotential_oscillatory one_pos⟩
 
 end GaloisForLFunctions.HTGeometry

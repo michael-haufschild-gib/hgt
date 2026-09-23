@@ -50,8 +50,8 @@ theorem fisherQubitClock_energy_mean (frequency phase t : ℝ) :
 
 /-- The Hamiltonian second moment, hence its variance, is exactly one quarter squared frequency. -/
 theorem fisherQubitClock_energy_variance (frequency phase t : ℝ) :
-    ‖fisherQubitHamiltonianAction frequency (fisherQubitClockState frequency phase t)‖ ^ 2 =
-      frequency ^ 2 / 4 := by
+    ‖fisherQubitHamiltonianAction frequency (fisherQubitClockState frequency phase t)‖ ^ (2 : ℕ) =
+      frequency ^ (2 : ℕ) / 4 := by
   rw [fisherQubitHamiltonian_tangent, norm_smul, Complex.norm_I, one_mul]
   unfold fisherQubitClockTangent
   rw [qgtQubitTangent_norm_sq]

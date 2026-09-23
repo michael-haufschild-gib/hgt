@@ -66,7 +66,7 @@ theorem inner_hodgeOp_nonneg (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2) (
 /-- **Theorem 1 on the phase space.**  The Hodge coercivity criterion, read on `V` itself. -/
 theorem exists_pos_coercive_hodgeOp (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2) (hdd : d1 ∘ₗ d0 = 0)
     (hharm : harmonic d0 d1 = ⊥) :
-    ∃ lam : ℝ, 0 < lam ∧ ∀ v : ↥(divFree d0), lam * ‖v‖ ^ 2 ≤ ⟪hodgeOp d0 d1 hdd v, v⟫_ℝ := by
+    ∃ lam : ℝ, 0 < lam ∧ ∀ v : ↥(divFree d0), lam * ‖v‖ ^ (2 : ℕ) ≤ ⟪hodgeOp d0 d1 hdd v, v⟫_ℝ := by
   obtain ⟨lam, hlam, hb⟩ := (hodge_coercive_iff_harmonic_eq_bot d0 d1).mp hharm
   refine ⟨lam, hlam, fun v => ?_⟩
   rw [inner_hodgeOp]
@@ -127,8 +127,8 @@ theorem hodge_absorbing_ball (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2) (
     {u h : ℝ → ↥(divFree d0)} {T : ℝ}
     (hsol : IsSolutionOn (hodgeOp d0 d1 hdd) B nu eta f g u h (Icc 0 T)) :
     ∃ lam : ℝ, 0 < lam ∧ ∀ R : ℝ,
-      Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam < R → energy u h 0 ≤ R ^ 2 →
-      ∀ t ∈ Icc (0 : ℝ) T, energy u h t ≤ R ^ 2 := by
+      Real.sqrt (‖f‖ ^ (2 : ℕ) + ‖g‖ ^ (2 : ℕ)) / decayRate nu eta lam < R → energy u h 0 ≤ R ^ (2 : ℕ) →
+      ∀ t ∈ Icc (0 : ℝ) T, energy u h t ≤ R ^ (2 : ℕ) := by
   obtain ⟨lam, hlam, hcoe⟩ := exists_pos_coercive_hodgeOp d0 d1 hdd hharm
   exact ⟨lam, hlam, fun R hR h0 =>
     absorbing_ball_positively_invariant hB hcoe hnu heta hlam hsol hR h0⟩
@@ -142,7 +142,7 @@ theorem hodge_compact_global_attractor (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[
     {B : ↥(divFree d0) →L[ℝ] ↥(divFree d0) →L[ℝ] ↥(divFree d0)} (hB : IsCancelling B)
     {nu eta : ℝ} (hnu : 0 < nu) (heta : 0 < eta) (f g : ↥(divFree d0)) :
     ∃ lam : ℝ, 0 < lam ∧ ∀ R : ℝ,
-      Real.sqrt (‖f‖ ^ 2 + ‖g‖ ^ 2) / decayRate nu eta lam < R →
+      Real.sqrt (‖f‖ ^ (2 : ℕ) + ‖g‖ ^ (2 : ℕ)) / decayRate nu eta lam < R →
       ((hodgeSystem d0 d1 hdd B hB hnu heta f g).attractor R).Nonempty ∧
         IsCompact ((hodgeSystem d0 d1 hdd B hB hnu heta f g).attractor R) ∧
         IsInvariant (hodgeSystem d0 d1 hdd B hB hnu heta f g).flow
@@ -155,8 +155,8 @@ theorem hodge_compact_global_attractor (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[
   obtain ⟨lam, hlam, hcoe⟩ := exists_pos_coercive_hodgeOp d0 d1 hdd hharm
   refine ⟨lam, hlam, fun R hR => ?_⟩
   set S := hodgeSystem d0 d1 hdd B hB hnu heta f g with hS
-  have hcoeS : ∀ v : ↥(divFree d0), lam * ‖v‖ ^ 2 ≤ ⟪S.A v, v⟫_ℝ := hcoe
-  have hRS : Real.sqrt (‖S.f‖ ^ 2 + ‖S.g‖ ^ 2) / decayRate S.nu S.eta lam < R := hR
+  have hcoeS : ∀ v : ↥(divFree d0), lam * ‖v‖ ^ (2 : ℕ) ≤ ⟪S.A v, v⟫_ℝ := hcoe
+  have hRS : Real.sqrt (‖S.f‖ ^ (2 : ℕ) + ‖S.g‖ ^ (2 : ℕ)) / decayRate S.nu S.eta lam < R := hR
   exact ⟨S.attractor_nonempty hcoeS hlam hRS, S.isCompact_attractor hcoeS hlam hRS,
     S.isInvariant_attractor R, S.attractor_subset hcoeS hlam hRS,
     fun t ht => S.energyBall_mapsTo hcoeS hlam hRS ht⟩
@@ -231,7 +231,7 @@ theorem compProj_hodgeOp (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2) (hdd 
 theorem exists_pos_coercive_compProj (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2)
     (hdd : d1 ∘ₗ d0 = 0) :
     ∃ lam : ℝ, 0 < lam ∧ ∀ v ∈ Set.range (compProj d0 d1 : ↥(divFree d0) → ↥(divFree d0)),
-      lam * ‖v‖ ^ 2 ≤ ⟪hodgeOp d0 d1 hdd v, v⟫_ℝ := by
+      lam * ‖v‖ ^ (2 : ℕ) ≤ ⟪hodgeOp d0 d1 hdd v, v⟫_ℝ := by
   obtain ⟨lam, hlam, hb⟩ := exists_pos_coercive_on_divFreeComplement d0 d1
   refine ⟨lam, hlam, ?_⟩
   rintro _ ⟨x, rfl⟩
@@ -260,8 +260,8 @@ theorem hodge_fibre_theorem (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2) (h
       (∀ t ∈ Icc (0 : ℝ) T, harmProj d0 d1 (u t) = harmProj d0 d1 (u 0)) ∧
       (∀ t ∈ Icc (0 : ℝ) T, harmProj d0 d1 (h t) = harmProj d0 d1 (h 0)) ∧
       ∀ t ∈ Icc (0 : ℝ) T,
-        ‖u t - harmProj d0 d1 (u 0)‖ ^ 2 + ‖h t - harmProj d0 d1 (h 0)‖ ^ 2
-          ≤ (‖u 0 - harmProj d0 d1 (u 0)‖ ^ 2 + ‖h 0 - harmProj d0 d1 (h 0)‖ ^ 2)
+        ‖u t - harmProj d0 d1 (u 0)‖ ^ (2 : ℕ) + ‖h t - harmProj d0 d1 (h 0)‖ ^ (2 : ℕ)
+          ≤ (‖u 0 - harmProj d0 d1 (u 0)‖ ^ (2 : ℕ) + ‖h 0 - harmProj d0 d1 (h 0)‖ ^ (2 : ℕ))
             * Real.exp (-(2 * betaPlus) * t) := by
   obtain ⟨lam, hlam, hcoe⟩ := exists_pos_coercive_compProj d0 d1 hdd
   have hconst := harmonic_component_const (Q := harmProj d0 d1)

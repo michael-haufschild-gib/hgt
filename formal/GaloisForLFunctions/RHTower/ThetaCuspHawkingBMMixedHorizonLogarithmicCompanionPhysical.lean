@@ -83,11 +83,11 @@ slit unit disk. -/
 theorem d4BMXiMixedHorizonLogarithmicCompanion_analyticEulerODE
     (n k : ℕ) (q : XiZeroCopy) (z : ℂ)
     (hz : ‖z‖ₑ < 1) (hzslit : z ∈ Complex.slitPlane) :
-    z ^ 2 * (1 - z) *
+    z ^ (2 : ℕ) * (1 - z) *
           d4BMXiMixedHorizonLogarithmicCompanionSecondDerivative n k q z +
         (-(d4BMMixedHorizonFrobeniusOrder n k : ℂ) * z -
           (d4BMMixedHorizonComplexA n k (d4BMXiMixedHorizonAngularMomentum q) +
-            d4BMMixedHorizonComplexB n k (d4BMXiMixedHorizonAngularMomentum q) + 1) * z ^ 2) *
+            d4BMMixedHorizonComplexB n k (d4BMXiMixedHorizonAngularMomentum q) + 1) * z ^ (2 : ℕ)) *
           d4BMXiMixedHorizonLogarithmicCompanionFirstDerivative n k q z -
       d4BMMixedHorizonComplexA n k (d4BMXiMixedHorizonAngularMomentum q) *
         d4BMMixedHorizonComplexB n k (d4BMXiMixedHorizonAngularMomentum q) * z *

@@ -76,7 +76,7 @@ private theorem gammaNegativeQuarterMero_ne_zero :
 square of the negative-frequency Gamma amplitude. -/
 theorem centeredZetaGammaReflection_mul_intensity_eq_negativeSquare :
     centeredZetaGammaReflectionMero * centeredZetaGammaIntensityCoreMero =
-      gammaNegativeShiftMero (1 / 4) ^ 2 := by
+      gammaNegativeShiftMero (1 / 4) ^ (2 : ℕ) := by
   rw [centeredZetaGammaReflectionMero, gammaReflectionRatioMero,
     centeredZetaGammaIntensityCoreMero, gammaReflectionProductMero]
   field_simp [gammaShiftMero_ne_zero (1 / 4), gammaNegativeQuarterMero_ne_zero]
@@ -121,32 +121,32 @@ theorem hypertranscendentalOver_centeredZetaGammaReflection_div_intensity :
 the shifted Gamma intensity recover the fourth power of the negative-frequency Gamma amplitude. -/
 theorem centeredZetaGammaPhase_mul_intensity_sq_eq_negativeFourth :
     centeredZetaGammaPhaseObservationMero *
-        centeredZetaGammaIntensityCoreMero ^ 2 =
-      gammaNegativeShiftMero (1 / 4) ^ 4 := by
+        centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) =
+      gammaNegativeShiftMero (1 / 4) ^ (4 : ℕ) := by
   rw [centeredZetaGammaPhaseObservationMero_eq_square]
   calc
-    centeredZetaGammaReflectionMero ^ 2 *
-          centeredZetaGammaIntensityCoreMero ^ 2 =
+    centeredZetaGammaReflectionMero ^ (2 : ℕ) *
+          centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) =
         (centeredZetaGammaReflectionMero *
-          centeredZetaGammaIntensityCoreMero) ^ 2 := by ring
-    _ = gammaNegativeShiftMero (1 / 4) ^ 4 := by
+          centeredZetaGammaIntensityCoreMero) ^ (2 : ℕ) := by ring
+    _ = gammaNegativeShiftMero (1 / 4) ^ (4 : ℕ) := by
       rw [centeredZetaGammaReflection_mul_intensity_eq_negativeSquare]
       ring
 
 /-- **Joint phase--intensity positive-amplitude recovery.**  Dividing the squared shifted
 intensity by phase recovers the fourth power of the positive-frequency Gamma amplitude. -/
 theorem centeredZetaGammaIntensity_sq_div_phase_eq_positiveFourth :
-    centeredZetaGammaIntensityCoreMero ^ 2 /
+    centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
         centeredZetaGammaPhaseObservationMero =
-      gammaShiftMero (1 / 4) ^ 4 := by
+      gammaShiftMero (1 / 4) ^ (4 : ℕ) := by
   rw [centeredZetaGammaPhaseObservationMero_eq_square]
   calc
-    centeredZetaGammaIntensityCoreMero ^ 2 /
-          centeredZetaGammaReflectionMero ^ 2 =
+    centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
+          centeredZetaGammaReflectionMero ^ (2 : ℕ) =
         (centeredZetaGammaIntensityCoreMero /
-          centeredZetaGammaReflectionMero) ^ 2 := by
+          centeredZetaGammaReflectionMero) ^ (2 : ℕ) := by
             field_simp [centeredZetaGammaReflectionMero_ne_zero]
-    _ = gammaShiftMero (1 / 4) ^ 4 := by
+    _ = gammaShiftMero (1 / 4) ^ (4 : ℕ) := by
       rw [centeredZetaGammaIntensity_div_reflection_eq_positiveSquare,
         gammaPositiveShiftPairMero]
       ring
@@ -156,7 +156,7 @@ hypertranscendental. -/
 theorem hypertranscendentalOver_centeredZetaGammaPhase_mul_intensity_sq :
     HypertranscendentalOver (RatFunc ℂ)
       (centeredZetaGammaPhaseObservationMero *
-        centeredZetaGammaIntensityCoreMero ^ 2) := by
+        centeredZetaGammaIntensityCoreMero ^ (2 : ℕ)) := by
   rw [centeredZetaGammaPhase_mul_intensity_sq_eq_negativeFourth]
   have h := hypertranscendentalOver_gammaFintypeNegativeOrbitProductMero_of_pos
     (fun _ : Fin 1 => (1 / 4 : ℂ)) (fun _ : Fin 1 => (4 : ℤ))
@@ -167,7 +167,7 @@ theorem hypertranscendentalOver_centeredZetaGammaPhase_mul_intensity_sq :
 hypertranscendental. -/
 theorem hypertranscendentalOver_centeredZetaGammaIntensity_sq_div_phase :
     HypertranscendentalOver (RatFunc ℂ)
-      (centeredZetaGammaIntensityCoreMero ^ 2 /
+      (centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
         centeredZetaGammaPhaseObservationMero) := by
   rw [centeredZetaGammaIntensity_sq_div_phase_eq_positiveFourth]
   have h := hypertranscendentalOver_gammaFintypeOrbitProductMero_of_pos
@@ -180,16 +180,16 @@ both oriented quarter-shifted Gamma amplitudes up to fourth power, and neither r
 becomes differentially algebraic. -/
 theorem centeredZetaGamma_phaseCoreIntensity_amplitudeTomographyProfile :
     centeredZetaGammaPhaseObservationMero *
-          centeredZetaGammaIntensityCoreMero ^ 2 =
-        gammaNegativeShiftMero (1 / 4) ^ 4 ∧
-      centeredZetaGammaIntensityCoreMero ^ 2 /
+          centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) =
+        gammaNegativeShiftMero (1 / 4) ^ (4 : ℕ) ∧
+      centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
           centeredZetaGammaPhaseObservationMero =
-        gammaShiftMero (1 / 4) ^ 4 ∧
+        gammaShiftMero (1 / 4) ^ (4 : ℕ) ∧
       HypertranscendentalOver (RatFunc ℂ)
         (centeredZetaGammaPhaseObservationMero *
-          centeredZetaGammaIntensityCoreMero ^ 2) ∧
+          centeredZetaGammaIntensityCoreMero ^ (2 : ℕ)) ∧
       HypertranscendentalOver (RatFunc ℂ)
-        (centeredZetaGammaIntensityCoreMero ^ 2 /
+        (centeredZetaGammaIntensityCoreMero ^ (2 : ℕ) /
           centeredZetaGammaPhaseObservationMero) := by
   exact ⟨centeredZetaGammaPhase_mul_intensity_sq_eq_negativeFourth,
     centeredZetaGammaIntensity_sq_div_phase_eq_positiveFourth,

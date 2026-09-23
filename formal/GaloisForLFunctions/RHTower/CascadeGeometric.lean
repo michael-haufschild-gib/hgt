@@ -39,13 +39,13 @@ theorem norm_latticeRatio (p : ℝ) : ‖latticeRatio p‖ = 1 :=
 /-- **The lattice collapse (doc 50 §1)**: the quadratic Gauss-lattice phase is
 a pure geometric progression, since m² ≡ m (mod 2). -/
 theorem lattice_collapse (p : ℝ) (m : ℕ) :
-    Complex.exp (((-(Real.pi * (4 * p * m + (m : ℝ) ^ 2)) : ℝ) : ℂ) * Complex.I)
+    Complex.exp (((-(Real.pi * (4 * p * m + (m : ℝ) ^ (2 : ℕ))) : ℝ) : ℂ) * Complex.I)
       = latticeRatio p ^ m := by
   rw [latticeRatio, ← Complex.exp_nat_mul]
   obtain ⟨k, hk⟩ := pi_msq_phase_alternates (m : ℤ)
-  have hk' : ((m : ℂ)) ^ 2 - (m : ℂ) = (k : ℂ) + (k : ℂ) := by
+  have hk' : ((m : ℂ)) ^ (2 : ℕ) - (m : ℂ) = (k : ℂ) + (k : ℂ) := by
     exact_mod_cast congrArg (fun z : ℤ => (z : ℂ)) hk
-  have hx : (((-(Real.pi * (4 * p * m + (m : ℝ) ^ 2)) : ℝ) : ℂ) * Complex.I)
+  have hx : (((-(Real.pi * (4 * p * m + (m : ℝ) ^ (2 : ℕ))) : ℝ) : ℂ) * Complex.I)
       = (m : ℂ) * (((-(Real.pi * (1 + 4 * p)) : ℝ) : ℂ) * Complex.I)
         + ((-k : ℤ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
     push_cast
@@ -61,15 +61,15 @@ theorem norm_one_sub_exp (θ : ℝ) :
     push_cast
     ring
   rw [h1, Complex.norm_add_mul_I]
-  have hcos : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ 2 := by
+  have hcos : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ (2 : ℕ) := by
     have hc2 := Real.cos_two_mul (θ / 2)
     have hs1 := Real.sin_sq_add_cos_sq (θ / 2)
     have hθ : 2 * (θ / 2) = θ := by ring
     rw [hθ] at hc2
     nlinarith [hc2, hs1]
-  have hpyth : (1 - Real.cos θ) ^ 2 + (-Real.sin θ) ^ 2
-      = (2 * |Real.sin (θ / 2)|) ^ 2 := by
-    have habs : |Real.sin (θ / 2)| ^ 2 = Real.sin (θ / 2) ^ 2 := sq_abs _
+  have hpyth : (1 - Real.cos θ) ^ (2 : ℕ) + (-Real.sin θ) ^ (2 : ℕ)
+      = (2 * |Real.sin (θ / 2)|) ^ (2 : ℕ) := by
+    have habs : |Real.sin (θ / 2)| ^ (2 : ℕ) = Real.sin (θ / 2) ^ (2 : ℕ) := sq_abs _
     have hs := Real.sin_sq_add_cos_sq θ
     nlinarith [hcos, hs, habs]
   rw [hpyth, Real.sqrt_sq_eq_abs, abs_of_nonneg (by positivity)]
@@ -167,11 +167,11 @@ nonnegative amplitudes is at most a₀/|cos 2πp| — bounded, not √M. -/
 theorem collective_push_le (p : ℝ) (hp : Real.cos (2 * Real.pi * p) ≠ 0)
     {a : ℕ → ℝ} (hmono : Antitone a) (hnn : ∀ n, 0 ≤ a n) (K : ℕ) :
     ‖∑ m ∈ Finset.range K, (a m : ℂ) *
-        Complex.exp (((-(Real.pi * (4 * p * m + (m : ℝ) ^ 2)) : ℝ) : ℂ) * Complex.I)‖
+        Complex.exp (((-(Real.pi * (4 * p * m + (m : ℝ) ^ (2 : ℕ))) : ℝ) : ℂ) * Complex.I)‖
       ≤ a 0 / |Real.cos (2 * Real.pi * p)| := by
   have hcol : ∀ m ∈ Finset.range K,
       (a m : ℂ) *
-          Complex.exp (((-(Real.pi * (4 * p * m + (m : ℝ) ^ 2)) : ℝ) : ℂ) * Complex.I)
+          Complex.exp (((-(Real.pi * (4 * p * m + (m : ℝ) ^ (2 : ℕ))) : ℝ) : ℂ) * Complex.I)
         = (a m : ℂ) * latticeRatio p ^ m := by
     intro m _
     rw [lattice_collapse]
@@ -224,7 +224,7 @@ decreasing on `(0, ∞)` and `f` is increasing, and nonnegative because `rphi > 
 theorem collective_push_rphi_le (p : ℝ) (hp : Real.cos (2 * Real.pi * p) ≠ 0)
     {f : ℕ → ℝ} (hpos : ∀ n, 0 < f n) (hmono : Monotone f) (K : ℕ) :
     ‖∑ m ∈ Finset.range K, (rphi (f m) : ℂ) *
-        Complex.exp (((-(Real.pi * (4 * p * m + (m : ℝ) ^ 2)) : ℝ) : ℂ) * Complex.I)‖
+        Complex.exp (((-(Real.pi * (4 * p * m + (m : ℝ) ^ (2 : ℕ))) : ℝ) : ℂ) * Complex.I)‖
       ≤ rphi (f 0) / |Real.cos (2 * Real.pi * p)| := by
   refine collective_push_le p hp ?_ ?_ K
   · intro m n hmn

@@ -56,7 +56,7 @@ theorem exists_riemannXiSpectral_taylor_fixedDisk_geometric_bound :
       ‖w‖ ≤ r →
       ‖((riemannXiSpectralRealTaylorPolynomial N).map
             Complex.ofRealHom).eval w - riemannXiSpectral w‖ ≤
-        2 * (Real.exp (A * (2 * r + 2) ^ 2) *
+        2 * (Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) *
           ((1 : ℝ) / 2) ^ N) := by
   obtain ⟨A, hA, htaylor⟩ :=
     exists_riemannXiSpectral_taylor_remainder_bound
@@ -77,18 +77,18 @@ theorem exists_riemannXiSpectral_taylor_fixedDisk_geometric_bound :
   calc
     ‖((riemannXiSpectralRealTaylorPolynomial N).map
           Complex.ofRealHom).eval w - riemannXiSpectral w‖ ≤
-        Real.exp (A * (2 * r + 2) ^ 2) * q ^ N /
+        Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) * q ^ N /
           (1 - q) := by
             simpa only [q] using hraw
-    _ ≤ (Real.exp (A * (2 * r + 2) ^ 2) * q ^ N) /
+    _ ≤ (Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) * q ^ N) /
           ((1 : ℝ) / 2) := by
             apply div_le_div_of_nonneg_left
             · positivity
             · norm_num
             · linarith
-    _ = 2 * (Real.exp (A * (2 * r + 2) ^ 2) * q ^ N) := by
+    _ = 2 * (Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) * q ^ N) := by
       ring
-    _ ≤ 2 * (Real.exp (A * (2 * r + 2) ^ 2) *
+    _ ≤ 2 * (Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) *
           ((1 : ℝ) / 2) ^ N) := by
       gcongr
 
@@ -98,11 +98,11 @@ theorem exists_riemannXiSpectral_taylor_value_derivative_geometric_bound :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ (z : ℂ) (N : ℕ),
       ‖((riemannXiSpectralRealTaylorPolynomial N).map
             Complex.ofRealHom).eval z - riemannXiSpectral z‖ ≤
-          2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ 2) *
+          2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ N) ∧
       ‖((riemannXiSpectralRealTaylorPolynomial N).derivative.map
             Complex.ofRealHom).eval z - deriv riemannXiSpectral z‖ ≤
-          2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ 2) *
+          2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ N) := by
   obtain ⟨A, hA, hfixed⟩ :=
     exists_riemannXiSpectral_taylor_fixedDisk_geometric_bound
@@ -113,7 +113,7 @@ theorem exists_riemannXiSpectral_taylor_value_derivative_geometric_bound :
         show 2 * (‖z‖ + 1) + 2 = 2 * ‖z‖ + 4 by ring] using
       hfixed (show 0 < ‖z‖ + 1 by positivity)
         (show ‖z‖ ≤ ‖z‖ + 1 by linarith)
-  · let C : ℝ := 2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ 2) *
+  · let C : ℝ := 2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ)) *
       ((1 : ℝ) / 2) ^ N)
     have herror : ∀ w ∈ sphere z (1 : ℝ),
         ‖((riemannXiSpectralRealTaylorPolynomial N).map
@@ -142,7 +142,7 @@ theorem exists_riemannXiSpectral_taylor_finiteE_geometric_bound :
       ‖(finiteEPolynomial (riemannXiSpectralRealTaylorPolynomial N) eta).eval z -
           analyticEValue riemannXiSpectral eta z‖ ≤
         (1 + |eta|) *
-          (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ 2) *
+          (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ N)) := by
   obtain ⟨A, hA, hboth⟩ :=
     exists_riemannXiSpectral_taylor_value_derivative_geometric_bound
@@ -154,7 +154,7 @@ theorem exists_riemannXiSpectral_taylor_finiteE_geometric_bound :
   let derivativeError : ℂ :=
     ((riemannXiSpectralRealTaylorPolynomial N).derivative.map
         Complex.ofRealHom).eval z - deriv riemannXiSpectral z
-  let C : ℝ := 2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ 2) *
+  let C : ℝ := 2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ)) *
     ((1 : ℝ) / 2) ^ N)
   have hvalue : ‖valueError‖ ≤ C := (hboth z N).1
   have hderivative : ‖derivativeError‖ ≤ C := (hboth z N).2
@@ -175,7 +175,7 @@ theorem exists_riemannXiSpectral_taylor_finiteE_geometric_bound :
     _ = ‖valueError‖ + |eta| * ‖derivativeError‖ := by simp
     _ ≤ C + |eta| * C := by gcongr
     _ = (1 + |eta|) *
-          (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ 2) *
+          (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ N)) := by
       simp only [C]
       ring
@@ -289,7 +289,7 @@ theorem riemannXiSpectral_taylor_pinning_preserves_expanding_sqrt
   obtain ⟨A, hA, hE⟩ :=
     exists_riemannXiSpectral_taylor_finiteE_geometric_bound
   let K : ℝ := (1 + |eta|) * 2 *
-    Real.exp (A * (2 * ‖z‖ + 4) ^ 2)
+    Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ))
   let D : ℝ := |z.im + eta|
   have hD : 0 < D := abs_pos.2 hden
   have hK : 0 ≤ K := by
@@ -306,7 +306,7 @@ theorem riemannXiSpectral_taylor_pinning_preserves_expanding_sqrt
             (riemannXiSpectralRealTaylorPolynomial n) eta).eval z -
           analyticEValue riemannXiSpectral eta z‖ := by rw [hroot, sub_zero]
       _ ≤ (1 + |eta|) *
-          (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ 2) *
+          (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ n)) := hE eta z n
       _ = K * ((1 : ℝ) / 2) ^ n := by
         simp only [K]

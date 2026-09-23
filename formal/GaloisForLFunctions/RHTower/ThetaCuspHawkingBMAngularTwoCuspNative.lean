@@ -33,10 +33,10 @@ def responseMass (q : XiZeroCopy) : ℝ := ∫ z : UpperHalfPlane, ‖D4BMAngula
 theorem periodized_height_test_bound (g : PlanarChartTest) (c : ℂ) (hc : 3 < c.im)
     (hs : tsupport g.field ⊆ closedBall c (1/4)) (C : ℝ) (hC : ∀ w, ‖g.field w‖ ≤ C)
     (z : UpperHalfPlane) (hz : z ∈ fd) :
-    ‖periodize (fun w : UpperHalfPlane => (w.im:ℂ)^2*g.field w) z‖ ≤
-      3*(c.im+1)^2*C := by
+    ‖periodize (fun w : UpperHalfPlane => (w.im:ℂ)^(2 : ℕ)*g.field w) z‖ ≤
+      3*(c.im+1)^(2 : ℕ)*C := by
   classical
-  let f : UpperHalfPlane → ℂ := fun w => (w.im:ℂ)^2*g.field w
+  let f : UpperHalfPlane → ℂ := fun w => (w.im:ℂ)^(2 : ℕ)*g.field w
   have hC0 : 0 ≤ C := (norm_nonneg (g.field c)).trans (hC c)
   have hsupport (w : UpperHalfPlane) (hw : g.field w ≠ 0) : ‖(w:ℂ)-c‖ ≤ 1/4 := by
     simpa only [mem_closedBall,dist_eq_norm] using hs (subset_tsupport g.field hw)
@@ -48,14 +48,14 @@ theorem periodized_height_test_bound (g : PlanarChartTest) (c : ℂ) (hc : 3 < c
       have hl := (abs_le.mp hi).1
       linarith
     simp only [f,hg,mul_zero]
-  have hbound (w : UpperHalfPlane) : ‖f w‖ ≤ (c.im+1)^2*C := by
+  have hbound (w : UpperHalfPlane) : ‖f w‖ ≤ (c.im+1)^(2 : ℕ)*C := by
     by_cases hg : g.field w = 0
     · simp only [f,hg,mul_zero,norm_zero]
       positivity
     · have hi := (Complex.abs_im_le_norm ((w:ℂ)-c)).trans (hsupport w hg)
       simp only [Complex.sub_im,UpperHalfPlane.coe_im] at hi
       have hu := (abs_le.mp hi).2
-      have hsquare : w.im^2 ≤ (c.im+1)^2 := by nlinarith [w.im_pos]
+      have hsquare : w.im^(2 : ℕ) ≤ (c.im+1)^(2 : ℕ) := by nlinarith [w.im_pos]
       simp only [f,norm_mul,norm_pow,Complex.norm_real,Real.norm_eq_abs,abs_of_pos w.im_pos]
       exact mul_le_mul hsquare (hC w) (norm_nonneg _) (sq_nonneg _)
   let m : ℤ := ⌊c.re⌋
@@ -87,15 +87,15 @@ theorem periodized_height_test_bound (g : PlanarChartTest) (c : ℂ) (hc : 3 < c
     simp only [s,Finset.card_insert_of_notMem h0,Finset.card_insert_of_notMem h1,Finset.card_singleton]
   calc
     ‖∑ n ∈ s, f (T^n • z)‖ ≤ ∑ n ∈ s, ‖f (T^n • z)‖ := norm_sum_le _ _
-    _ ≤ ∑ _n ∈ s, (c.im+1)^2*C := Finset.sum_le_sum (fun n _ => hbound (T^n • z))
+    _ ≤ ∑ _n ∈ s, (c.im+1)^(2 : ℕ)*C := Finset.sum_le_sum (fun n _ => hbound (T^n • z))
     _ = _ := by simp only [Finset.sum_const,hcard,nsmul_eq_mul]; ring
 
 /-- The exact flat chart pairing unfolds into the original native correction. -/
 theorem response_pairing_unfold (q : XiZeroCopy) (g : PlanarChartTest) :
     (∫ w : ℂ, g.field w*D4BMAngularTwo.globalResponse q (ofComplex w)) =
       ∫ z : UpperHalfPlane,
-        periodize (fun w : UpperHalfPlane => (w.im:ℂ)^2*g.field w) z*D4BMAngularTwo.globalResponse q z ∂measure := by
-  let a := g.mulSmooth (fun w : ℂ => (w.im:ℂ)^2)
+        periodize (fun w : UpperHalfPlane => (w.im:ℂ)^(2 : ℕ)*g.field w) z*D4BMAngularTwo.globalResponse q z ∂measure := by
+  let a := g.mulSmooth (fun w : ℂ => (w.im:ℂ)^(2 : ℕ))
     ((Complex.ofRealCLM.contDiff.comp Complex.imCLM.contDiff).pow 2)
   have hl : LocallyIntegrable (D4BMAngularTwo.globalResponse q) (volume : Measure UpperHalfPlane) :=
     (globalLift_locallyIntegrable (embedding (D4BMAngularTwo.weakResponse q))).congr (D4BMAngularTwo.globalResponse_ae_lift q).symm
@@ -110,7 +110,7 @@ theorem response_pairing_unfold (q : XiZeroCopy) (g : PlanarChartTest) :
     rw [image_eq_zero_of_notMem_tsupport hn,zero_mul]
   rw [hz] at hp
   calc
-    _ = ∫ z : UpperHalfPlane, (z.im:ℂ)^2*(g.field z*D4BMAngularTwo.globalResponse q (ofComplex z)) := hp.symm
+    _ = ∫ z : UpperHalfPlane, (z.im:ℂ)^(2 : ℕ)*(g.field z*D4BMAngularTwo.globalResponse q (ofComplex z)) := hp.symm
     _ = ∫ z : UpperHalfPlane, a.toChartTest.field z*D4BMAngularTwo.globalResponse q z := by
       apply integral_congr_ae
       filter_upwards [] with z
@@ -123,12 +123,12 @@ theorem response_pairing_unfold (q : XiZeroCopy) (g : PlanarChartTest) :
 theorem response_test_pairing_bound (q : XiZeroCopy) (g : PlanarChartTest) (c : ℂ) (hc : 3 < c.im)
     (hs : tsupport g.field ⊆ closedBall c (1/4)) (C : ℝ) (hC : ∀ w, ‖g.field w‖ ≤ C) :
     ‖∫ w : ℂ, g.field w*D4BMAngularTwo.globalResponse q (ofComplex w)‖ ≤
-      (3*(c.im+1)^2*C)*responseMass q := by
+      (3*(c.im+1)^(2 : ℕ)*C)*responseMass q := by
   rw [response_pairing_unfold]
-  have hb := norm_integral_le_of_norm_le ((response_integrable q).norm.const_mul (3*(c.im+1)^2*C))
+  have hb := norm_integral_le_of_norm_le ((response_integrable q).norm.const_mul (3*(c.im+1)^(2 : ℕ)*C))
     (show ∀ᵐ z ∂measure,
-      ‖periodize (fun w : UpperHalfPlane => (w.im:ℂ)^2*g.field w) z*D4BMAngularTwo.globalResponse q z‖ ≤
-        (3*(c.im+1)^2*C)*‖D4BMAngularTwo.globalResponse q z‖ from by
+      ‖periodize (fun w : UpperHalfPlane => (w.im:ℂ)^(2 : ℕ)*g.field w) z*D4BMAngularTwo.globalResponse q z‖ ≤
+        (3*(c.im+1)^(2 : ℕ)*C)*‖D4BMAngularTwo.globalResponse q z‖ from by
       filter_upwards [ae_restrict_mem isClosed_fd.measurableSet] with z hz
       rw [norm_mul]
       exact mul_le_mul_of_nonneg_right (periodized_height_test_bound g c hc hs C hC z hz)
@@ -166,7 +166,7 @@ private theorem first_field_eq (c : ℂ) (hc : 3 < c.im) (v : ℂ) :
 theorem exists_kernel_pairing_bound : ∃ C : ℝ, 0 ≤ C ∧
     ∀ (q : XiZeroCopy) (c : ℂ) (hc : 3 < c.im),
       ‖∫ z : ℂ, (highKernelTest c hc).field z*D4BMAngularTwo.globalResponse q (ofComplex z)‖ ≤
-        C*(c.im+1)^2*responseMass q := by
+        C*(c.im+1)^(2 : ℕ)*responseMass q := by
   obtain ⟨B,hB⟩ := kernel_compact.exists_bound_of_continuous kernel_smooth.continuous
   have hB0 : 0 ≤ B := (norm_nonneg (kernel 0)).trans (hB 0)
   refine ⟨3*B,by positivity,?_⟩
@@ -179,7 +179,7 @@ theorem exists_kernel_pairing_bound : ∃ C : ℝ, 0 ≤ C ∧
 theorem exists_kernel_first_pairing_bound (v : ℂ) : ∃ C : ℝ, 0 ≤ C ∧
     ∀ (q : XiZeroCopy) (c : ℂ) (hc : 3 < c.im),
       ‖∫ z : ℂ, ((highKernelTest c hc).derivative v).field z*
-        D4BMAngularTwo.globalResponse q (ofComplex z)‖ ≤ C*(c.im+1)^2*responseMass q := by
+        D4BMAngularTwo.globalResponse q (ofComplex z)‖ ≤ C*(c.im+1)^(2 : ℕ)*responseMass q := by
   obtain ⟨B,hB⟩ := (kernelDerivative_compact v).exists_bound_of_continuous
     (kernelDerivative_smooth v).continuous
   have hB0 : 0 ≤ B := (norm_nonneg (kernelDerivative v 0)).trans (hB 0)
@@ -197,7 +197,7 @@ theorem exists_kernel_first_pairing_bound (v : ℂ) : ∃ C : ℝ, 0 ≤ C ∧
 theorem exists_kernel_second_pairing_bound (v w : ℂ) : ∃ C : ℝ, 0 ≤ C ∧
     ∀ (q : XiZeroCopy) (c : ℂ) (hc : 3 < c.im),
       ‖∫ z : ℂ, (((highKernelTest c hc).derivative v).derivative w).field z*
-        D4BMAngularTwo.globalResponse q (ofComplex z)‖ ≤ C*(c.im+1)^2*responseMass q := by
+        D4BMAngularTwo.globalResponse q (ofComplex z)‖ ≤ C*(c.im+1)^(2 : ℕ)*responseMass q := by
   have hsm : ContDiff ℝ ∞ (fun z => fderiv ℝ (kernelDerivative v) z w) :=
     ((kernelDerivative_smooth v).fderiv_right (m := ∞) (by simp)).clm_apply contDiff_const
   have hcp := (kernelDerivative_compact v).fderiv_apply ℝ w
@@ -247,7 +247,7 @@ theorem exists_response_second_test_bound (v w : ℂ) : ∃ C : ℝ, 0 ≤ C ∧
     ∀ (q : XiZeroCopy) (c : ℂ) (hc : 3 < c.im),
       ‖∫ z : ℂ, (highKernelTest c hc).field z*
         fderiv ℝ (fun u => fderiv ℝ (D4BMAngularTwo.globalResponse q ∘ ofComplex) u w) z v‖ ≤
-          C*(c.im+1)^2*responseMass q := by
+          C*(c.im+1)^(2 : ℕ)*responseMass q := by
   obtain ⟨C,hC,hb⟩ := exists_kernel_second_pairing_bound v w
   refine ⟨C,hC,?_⟩
   intro q c hc
@@ -256,7 +256,7 @@ theorem exists_response_second_test_bound (v w : ℂ) : ∃ C : ℝ, 0 ≤ C ∧
   have hnorm := congrArg norm he
   have hb' : ‖∫ z : ℂ, (D4BMAngularTwo.globalResponse q ∘ ofComplex) z*
       (((highKernelTest c hc).derivative v).derivative w).field z‖ ≤
-      C*(c.im+1)^2*responseMass q := by
+      C*(c.im+1)^(2 : ℕ)*responseMass q := by
     simpa only [Function.comp_apply,mul_comm] using hb q c hc
   rw [hnorm] at hb'
   simpa only [mul_comm] using hb'
@@ -299,8 +299,8 @@ theorem divHeight_derivative_bound (g : PlanarChartTest) (c : ℂ) (hc : 3 < c.i
     change fderiv ℝ (fun w => g.field w*(w.im:ℂ)⁻¹) z = _ at hd
     have he : ((g.divHeight 1).derivative v).field z =
         (g.derivative v).field z*(z.im:ℂ)⁻¹ +
-          g.field z*(-(z.im:ℂ)⁻¹^2*(v.im:ℂ)) := by
-      change fderiv ℝ (fun w => g.field w/(w.im:ℂ)^1) z v = _
+          g.field z*(-(z.im:ℂ)⁻¹^(2 : ℕ)*(v.im:ℂ)) := by
+      change fderiv ℝ (fun w => g.field w/(w.im:ℂ)^(1 : ℕ)) z v = _
       simp only [pow_one,div_eq_mul_inv]
       rw [hd]
       simp only [add_apply,smul_apply,
@@ -313,10 +313,10 @@ theorem divHeight_derivative_bound (g : PlanarChartTest) (c : ℂ) (hc : 3 < c.i
     rw [he]
     calc
       _ ≤ ‖(g.derivative v).field z*(z.im:ℂ)⁻¹‖ +
-          ‖g.field z*(-(z.im:ℂ)⁻¹^2*(v.im:ℂ))‖ := norm_add_le _ _
+          ‖g.field z*(-(z.im:ℂ)⁻¹^(2 : ℕ)*(v.im:ℂ))‖ := norm_add_le _ _
       _ ≤ D+B*‖(v.im:ℂ)‖ := by
         simp only [norm_mul,norm_neg,norm_pow]
-        have hsq : ‖(z.im:ℂ)⁻¹‖^2 ≤ 1 := by nlinarith [norm_nonneg ((z.im:ℂ)⁻¹)]
+        have hsq : ‖(z.im:ℂ)⁻¹‖^(2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg ((z.im:ℂ)⁻¹)]
         have h0 := mul_le_mul (hD z) hInv (norm_nonneg _) hD0
         have h1 := mul_le_mul (hB z)
           (mul_le_mul_of_nonneg_right hsq (norm_nonneg (v.im:ℂ)))
@@ -332,7 +332,7 @@ theorem exists_response_connection_test_bound (v : ℂ) : ∃ C : ℝ, 0 ≤ C �
     ∀ (q : XiZeroCopy) (c : ℂ) (hc : 3 < c.im),
       ‖∫ z : ℂ, (highKernelTest c hc).field z/(z.im:ℂ)*
         fderiv ℝ (D4BMAngularTwo.globalResponse q ∘ ofComplex) z v‖ ≤
-          C*(c.im+1)^2*responseMass q := by
+          C*(c.im+1)^(2 : ℕ)*responseMass q := by
   obtain ⟨B,hB⟩ := kernel_compact.exists_bound_of_continuous kernel_smooth.continuous
   obtain ⟨D,hD⟩ := (kernelDerivative_compact v).exists_bound_of_continuous
     (kernelDerivative_smooth v).continuous
@@ -356,7 +356,7 @@ theorem exists_response_connection_test_bound (v : ℂ) : ∃ C : ℝ, 0 ≤ C �
   simp only [norm_neg,Function.comp_apply] at he
   have hb' : ‖∫ z : ℂ, D4BMAngularTwo.globalResponse q (ofComplex z)*
       ((g.divHeight 1).derivative v).field z‖ ≤
-        3*(c.im+1)^2*(D+B*‖(v.im:ℂ)‖)*responseMass q := by
+        3*(c.im+1)^(2 : ℕ)*(D+B*‖(v.im:ℂ)‖)*responseMass q := by
     simpa only [mul_comm] using hb
   rw [he] at hb'
   convert hb' using 1

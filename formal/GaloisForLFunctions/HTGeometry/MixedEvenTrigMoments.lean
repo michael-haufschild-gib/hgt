@@ -134,10 +134,10 @@ lemma mixedEvenTrigQuarterIntegral_succ (m n : ℕ) :
           Real.sin x ^ (2 * m) * Real.cos x ^ (2 * (n + 1))
       have htrig := Real.sin_sq_add_cos_sq x
       have hsin : Real.sin x ^ (2 * (m + 1)) =
-          Real.sin x ^ (2 * m) * Real.sin x ^ 2 := by
+          Real.sin x ^ (2 * m) * Real.sin x ^ (2 : ℕ) := by
         rw [show 2 * (m + 1) = 2 * m + 2 by omega, pow_add]
       have hcos : Real.cos x ^ (2 * (n + 1)) =
-          Real.cos x ^ (2 * n) * Real.cos x ^ 2 := by
+          Real.cos x ^ (2 * n) * Real.cos x ^ (2 : ℕ) := by
         rw [show 2 * (n + 1) = 2 * n + 2 by omega, pow_add]
       rw [hsin, hcos]
       linear_combination
@@ -185,19 +185,19 @@ theorem quarterIntegral_quadraticPow_eq_centralBinomialDiagonalKernelCoefficient
     (B D : ℝ) (n : ℕ) :
     (2 / Real.pi) *
         (∫ x in (0 : ℝ)..Real.pi / 2,
-          (D ^ 2 * Real.sin x ^ 2 + B ^ 2 * Real.cos x ^ 2) ^ n) =
+          (D ^ (2 : ℕ) * Real.sin x ^ (2 : ℕ) + B ^ (2 : ℕ) * Real.cos x ^ (2 : ℕ)) ^ n) =
       centralBinomialDiagonalKernelCoefficient B D n := by
   rw [centralBinomialDiagonalKernelCoefficient]
   have hsum :
       (∫ x in (0 : ℝ)..Real.pi / 2,
-          (D ^ 2 * Real.sin x ^ 2 + B ^ 2 * Real.cos x ^ 2) ^ n) =
+          (D ^ (2 : ℕ) * Real.sin x ^ (2 : ℕ) + B ^ (2 : ℕ) * Real.cos x ^ (2 : ℕ)) ^ n) =
         ∑ k ∈ Finset.range (n + 1),
-          (Nat.choose n k : ℝ) * (D ^ 2) ^ k * (B ^ 2) ^ (n - k) *
+          (Nat.choose n k : ℝ) * (D ^ (2 : ℕ)) ^ k * (B ^ (2 : ℕ)) ^ (n - k) *
             mixedEvenTrigQuarterIntegral k (n - k) := by
     rw [show (fun x : ℝ =>
-        (D ^ 2 * Real.sin x ^ 2 + B ^ 2 * Real.cos x ^ 2) ^ n) =
+        (D ^ (2 : ℕ) * Real.sin x ^ (2 : ℕ) + B ^ (2 : ℕ) * Real.cos x ^ (2 : ℕ)) ^ n) =
       fun x : ℝ => ∑ k ∈ Finset.range (n + 1),
-        (Nat.choose n k : ℝ) * (D ^ 2) ^ k * (B ^ 2) ^ (n - k) *
+        (Nat.choose n k : ℝ) * (D ^ (2 : ℕ)) ^ k * (B ^ (2 : ℕ)) ^ (n - k) *
           (Real.sin x ^ (2 * k) * Real.cos x ^ (2 * (n - k))) by
       funext x
       rw [add_pow]
@@ -209,10 +209,10 @@ theorem quarterIntegral_quadraticPow_eq_centralBinomialDiagonalKernelCoefficient
     apply Finset.sum_congr rfl
     intro k _
     rw [show (fun x : ℝ =>
-        (Nat.choose n k : ℝ) * (D ^ 2) ^ k * (B ^ 2) ^ (n - k) *
+        (Nat.choose n k : ℝ) * (D ^ (2 : ℕ)) ^ k * (B ^ (2 : ℕ)) ^ (n - k) *
           (Real.sin x ^ (2 * k) * Real.cos x ^ (2 * (n - k)))) =
       fun x : ℝ =>
-        ((Nat.choose n k : ℝ) * (D ^ 2) ^ k * (B ^ 2) ^ (n - k)) *
+        ((Nat.choose n k : ℝ) * (D ^ (2 : ℕ)) ^ k * (B ^ (2 : ℕ)) ^ (n - k)) *
           (Real.sin x ^ (2 * k) * Real.cos x ^ (2 * (n - k))) by
       funext x
       ring]
@@ -277,12 +277,12 @@ lemma integral_zero_two_pi_eq_four_mul_quarter
 
 /-- The real diagonal trigonometric kernel. -/
 def diagonalTrigKernel (B D : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  (D ^ 2 * Real.sin x ^ 2 + B ^ 2 * Real.cos x ^ 2) ^ n
+  (D ^ (2 : ℕ) * Real.sin x ^ (2 : ℕ) + B ^ (2 : ℕ) * Real.cos x ^ (2 : ℕ)) ^ n
 
 lemma continuous_diagonalTrigKernel (B D : ℝ) (n : ℕ) :
     Continuous (diagonalTrigKernel B D n) := by
   change Continuous (fun x : ℝ =>
-    (D ^ 2 * Real.sin x ^ 2 + B ^ 2 * Real.cos x ^ 2) ^ n)
+    (D ^ (2 : ℕ) * Real.sin x ^ (2 : ℕ) + B ^ (2 : ℕ) * Real.cos x ^ (2 : ℕ)) ^ n)
   fun_prop
 
 lemma periodic_diagonalTrigKernel (B D : ℝ) (n : ℕ) :

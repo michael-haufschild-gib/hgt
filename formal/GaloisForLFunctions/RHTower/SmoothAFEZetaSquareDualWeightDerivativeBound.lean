@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.SmoothAFEZetaSquareDualWeightHeightDerivative
 /-!
 # Conductor-scale variation of the exact square-dual weight
 
-The squared neutral chi carrier has derivative scale `O((1+tau)(1+|v|)^5)`.  Gaussian
+The squared neutral chi carrier has derivative scale `O((1+tau)(1+|v|)^(5 : ℕ))`.  Gaussian
 integration therefore gives `O((1+tau)/Y)` height variation for the exact square-dual weight.
 At the natural square-AFE scale `Y = n x`, `x` comparable to height, this becomes the summable
 coefficientwise gain `O(1/n)`.

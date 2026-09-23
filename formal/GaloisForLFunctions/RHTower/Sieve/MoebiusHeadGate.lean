@@ -28,7 +28,7 @@ def moebiusHeadSlope (x h T₀ : ℝ) : ℝ :=
     + 5 * Real.exp 1 / 2 * ((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ)
         * ((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ) / T₀
 
-theorem norm_moebius_complex_le_one (n : ℕ) :
+theorem norm_moebius_complex_le_one_moebiusHeadGate (n : ℕ) :
     ‖((ArithmeticFunction.moebius n : ℤ) : ℂ)‖ ≤ 1 := by
   rw [Complex.norm_intCast]
   have := ArithmeticFunction.abs_moebius_le_one (n := n)
@@ -51,11 +51,11 @@ theorem averagedMeanSquare_moebius_of_headBound {hh G T₀ B : ℝ → ℝ}
       1 ≤ G x ∧ G x ≤ T₀ x ∧ 0 ≤ B x
         ∧ (∫ w in Set.Icc (-(T₀ x)) (T₀ x),
             ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ))
-              (fibreIndex x (hh x)) w‖ ^ 2) ≤ B x)
+              (fibreIndex x (hh x)) w‖ ^ (2 : ℕ)) ≤ B x)
     (hlim : Filter.Tendsto (fun x : ℝ =>
-        (2 * fibreWidth x (hh x) ^ 2 * (moebiusHeadSlope x (hh x) (T₀ x) * G x + B x)
-          + (4 * moebiusHeadSlope x (hh x) (T₀ x) / (Real.pi ^ 2 * G x)
-            + 4 * B x / (3 * Real.pi ^ 2 * G x ^ 2))) / hh x ^ 2)
+        (2 * fibreWidth x (hh x) ^ (2 : ℕ) * (moebiusHeadSlope x (hh x) (T₀ x) * G x + B x)
+          + (4 * moebiusHeadSlope x (hh x) (T₀ x) / (Real.pi ^ (2 : ℕ) * G x)
+            + 4 * B x / (3 * Real.pi ^ (2 : ℕ) * G x ^ (2 : ℕ)))) / hh x ^ (2 : ℕ))
       Filter.atTop (nhds 0)) :
     AveragedMeanSquare (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) hh := by
   refine averagedMeanSquare_of_gallagherBudget (f := fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ))
@@ -66,16 +66,16 @@ theorem averagedMeanSquare_moebius_of_headBound {hh G T₀ B : ℝ → ℝ}
     intro T hT
     have hcongr : ∀ w : ℝ,
         ‖logPoly (fun n => (((ArithmeticFunction.moebius n : ℤ) : ℝ) : ℂ))
-            (fibreIndex x (hh x)) w‖ ^ 2
+            (fibreIndex x (hh x)) w‖ ^ (2 : ℕ)
           = ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ))
-              (fibreIndex x (hh x)) w‖ ^ 2 := by
+              (fibreIndex x (hh x)) w‖ ^ (2 : ℕ) := by
       intro w
       rw [logPoly_moebius_congr]
     rw [MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => hcongr w]
     have hsN : ∀ n ∈ fibreIndex x (hh x), n ≤ ⌊Real.sqrt x + hh x⌋₊ :=
       fun n hn => (mem_fibreIndex.1 hn).2
     have haff := integral_Icc_normSq_logPoly_affine_of_head
-      (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) norm_moebius_complex_le_one
+      (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) norm_moebius_complex_le_one_moebiusHeadGate
       (zero_not_mem_fibreIndex x (hh x)) hsN hx.1 hx.2.1 hx.2.2.1 hx.2.2.2 T hT
     refine haff.trans (le_of_eq ?_)
     rw [moebiusHeadSlope, card_fibreIndex]

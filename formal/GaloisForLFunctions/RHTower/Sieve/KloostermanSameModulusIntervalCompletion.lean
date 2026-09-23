@@ -152,17 +152,17 @@ theorem norm_kloostermanIntervalColumnRemainder_le
         (mul_nonneg (norm_nonneg _) (norm_nonneg _))).trans_eq (one_mul _)
     _ ≤ (q : ℝ) * Nat.totient q := by
       have hn : (∑ r ∈ Finset.range q,
-          ‖kloostermanSum q (r : ZMod q) n‖ ^ 2) =
+          ‖kloostermanSum q (r : ZMod q) n‖ ^ (2 : ℕ)) =
           (q : ℝ) * Nat.totient q := by
         rw [← sum_zmod_eq_sum_range_natCast q
-          (fun a : ZMod q => ‖kloostermanSum q a n‖ ^ 2)]
+          (fun a : ZMod q => ‖kloostermanSum q a n‖ ^ (2 : ℕ))]
         simp_rw [kloostermanSum_comm]
         exact sum_norm_kloostermanSum_sq q n
       have hk : (∑ r ∈ Finset.range q,
-          ‖kloostermanSum q (r : ZMod q) k‖ ^ 2) =
+          ‖kloostermanSum q (r : ZMod q) k‖ ^ (2 : ℕ)) =
           (q : ℝ) * Nat.totient q := by
         rw [← sum_zmod_eq_sum_range_natCast q
-          (fun a : ZMod q => ‖kloostermanSum q a k‖ ^ 2)]
+          (fun a : ZMod q => ‖kloostermanSum q a k‖ ^ (2 : ℕ))]
         simp_rw [kloostermanSum_comm]
         exact sum_norm_kloostermanSum_sq q k
       have hc := Finset.sum_mul_sq_le_sq_mul_sq (Finset.range q)

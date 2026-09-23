@@ -23,24 +23,24 @@ theorem integral_normSq_mul_normSq_le_amplified
     (hunit : Continuous unit) (hamp : Continuous amp)
     {T K : ℝ} (hT : 0 ≤ T) (hK : 0 ≤ K)
     (hlarge : ∀ t ∈ Set.Icc (T / 2) T, 1 ≤ K * ‖amp t‖) :
-    (∫ t in (T / 2)..T, ‖long t‖ ^ 2 * ‖unit t‖ ^ 2) ≤
+    (∫ t in (T / 2)..T, ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ)) ≤
       K * Real.sqrt (∫ t in (T / 2)..T,
-          ‖unit t‖ ^ 4 * ‖amp t‖ ^ 2) *
-        Real.sqrt (∫ t in (T / 2)..T, ‖long t‖ ^ 4) := by
+          ‖unit t‖ ^ (4 : ℕ) * ‖amp t‖ ^ (2 : ℕ)) *
+        Real.sqrt (∫ t in (T / 2)..T, ‖long t‖ ^ (4 : ℕ)) := by
   let A : ℝ → ℂ := fun t => unit t * unit t * amp t
   let B : ℝ → ℂ := fun t => long t * long t
   have hA : Continuous A := (hunit.mul hunit).mul hamp
   have hB : Continuous B := hlong.mul hlong
   have hpoint : ∀ t ∈ Set.Icc (T / 2) T,
-      ‖long t‖ ^ 2 * ‖unit t‖ ^ 2 ≤ K * (‖A t‖ * ‖B t‖) := by
+      ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ) ≤ K * (‖A t‖ * ‖B t‖) := by
     intro t ht
-    have hbase : 0 ≤ ‖long t‖ ^ 2 * ‖unit t‖ ^ 2 := by positivity
+    have hbase : 0 ≤ ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ) := by positivity
     have hmul := mul_le_mul_of_nonneg_left (hlarge t ht) hbase
     dsimp only [A, B]
     simp only [norm_mul]
     nlinarith
   have hmono := intervalIntegral.integral_mono_on (μ := volume)
-    (f := fun t : ℝ => ‖long t‖ ^ 2 * ‖unit t‖ ^ 2)
+    (f := fun t : ℝ => ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ))
     (g := fun t : ℝ => K * (‖A t‖ * ‖B t‖))
     (by linarith : T / 2 ≤ T)
     (((hlong.norm.pow 2).mul (hunit.norm.pow 2)).intervalIntegrable _ _)
@@ -50,29 +50,29 @@ theorem integral_normSq_mul_normSq_le_amplified
     GaloisForLFunctions.HTGeometry.integral_norm_mul_norm_le_sqrt_mul_sqrt
       hA hB (by linarith : T / 2 ≤ T)
   have hscaled := mul_le_mul_of_nonneg_left hcs hK
-  have hAint : (∫ t in (T / 2)..T, ‖A t‖ ^ 2) =
-      ∫ t in (T / 2)..T, ‖unit t‖ ^ 4 * ‖amp t‖ ^ 2 := by
+  have hAint : (∫ t in (T / 2)..T, ‖A t‖ ^ (2 : ℕ)) =
+      ∫ t in (T / 2)..T, ‖unit t‖ ^ (4 : ℕ) * ‖amp t‖ ^ (2 : ℕ) := by
     apply intervalIntegral.integral_congr
     intro t _
     dsimp only [A]
     simp only [norm_mul]
     ring
-  have hBint : (∫ t in (T / 2)..T, ‖B t‖ ^ 2) =
-      ∫ t in (T / 2)..T, ‖long t‖ ^ 4 := by
+  have hBint : (∫ t in (T / 2)..T, ‖B t‖ ^ (2 : ℕ)) =
+      ∫ t in (T / 2)..T, ‖long t‖ ^ (4 : ℕ) := by
     apply intervalIntegral.integral_congr
     intro t _
     dsimp only [B]
     simp only [norm_mul]
     ring
   calc
-    (∫ t in (T / 2)..T, ‖long t‖ ^ 2 * ‖unit t‖ ^ 2) ≤
+    (∫ t in (T / 2)..T, ‖long t‖ ^ (2 : ℕ) * ‖unit t‖ ^ (2 : ℕ)) ≤
         K * ∫ t in (T / 2)..T, ‖A t‖ * ‖B t‖ := hmono
     _ ≤ K *
-        (Real.sqrt (∫ t in (T / 2)..T, ‖A t‖ ^ 2) *
-          Real.sqrt (∫ t in (T / 2)..T, ‖B t‖ ^ 2)) := hscaled
+        (Real.sqrt (∫ t in (T / 2)..T, ‖A t‖ ^ (2 : ℕ)) *
+          Real.sqrt (∫ t in (T / 2)..T, ‖B t‖ ^ (2 : ℕ))) := hscaled
     _ = K * Real.sqrt (∫ t in (T / 2)..T,
-          ‖unit t‖ ^ 4 * ‖amp t‖ ^ 2) *
-        Real.sqrt (∫ t in (T / 2)..T, ‖long t‖ ^ 4) := by
+          ‖unit t‖ ^ (4 : ℕ) * ‖amp t‖ ^ (2 : ℕ)) *
+        Real.sqrt (∫ t in (T / 2)..T, ‖long t‖ ^ (4 : ℕ)) := by
       rw [hAint, hBint]
       ring
 
@@ -108,7 +108,7 @@ theorem perronPoly_mtTypeILongSquareAF
 /-- Ordinary affine mean square controls the fourth moment of a coefficient block. -/
 theorem integral_mtTypeILongBlock_fourth_le_productAffine
     (a : ℕ → ℂ) (A : ℕ) {T : ℝ} (hT : 1 ≤ T) :
-    (∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ 4) ≤
+    (∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ)) ≤
       generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
           (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +
         generalMeanSquareRate (fun n => mtTypeILongSquareAF a A n)
@@ -125,22 +125,22 @@ theorem integral_mtTypeILongBlock_fourth_le_productAffine
     exact perronPoly_eq_LSeries_of_support hsupp 1 t
   have hfullSet := integral_Icc_normSq_LSeries_le_general_affine
     (a := c) (s := Finset.Icc 1 M) (by simp) hsupp 1 hT
-  have hfull : (∫ t in (-T)..T, ‖perronPoly c M 1 t‖ ^ 2) ≤ B := by
+  have hfull : (∫ t in (-T)..T, ‖perronPoly c M 1 t‖ ^ (2 : ℕ)) ≤ B := by
     rw [intervalIntegral.integral_of_le (by linarith : -T ≤ T),
       ← MeasureTheory.integral_Icc_eq_integral_Ioc]
     simpa only [hpoly, B] using hfullSet
-  have hcont : Continuous (fun t : ℝ => ‖perronPoly c M 1 t‖ ^ 2) :=
+  have hcont : Continuous (fun t : ℝ => ‖perronPoly c M 1 t‖ ^ (2 : ℕ)) :=
     (continuous_perronPoly c M 1).norm.pow 2
   have hsplit := intervalIntegral.integral_add_adjacent_intervals
-    (f := fun t : ℝ => ‖perronPoly c M 1 t‖ ^ 2)
+    (f := fun t : ℝ => ‖perronPoly c M 1 t‖ ^ (2 : ℕ))
     (μ := volume) (a := -T) (b := T / 2) (c := T)
     (hcont.intervalIntegrable _ _) (hcont.intervalIntegrable _ _)
-  have hleft : 0 ≤ ∫ t in (-T)..(T / 2), ‖perronPoly c M 1 t‖ ^ 2 :=
+  have hleft : 0 ≤ ∫ t in (-T)..(T / 2), ‖perronPoly c M 1 t‖ ^ (2 : ℕ) :=
     intervalIntegral.integral_nonneg (by linarith) (fun _ _ => sq_nonneg _)
-  have hsub : (∫ t in (T / 2)..T, ‖perronPoly c M 1 t‖ ^ 2) ≤ B := by
+  have hsub : (∫ t in (T / 2)..T, ‖perronPoly c M 1 t‖ ^ (2 : ℕ)) ≤ B := by
     linarith [hsplit, hleft, hfull]
   have hpoint : ∀ t : ℝ,
-      ‖mtWattCoefficientBlock a A t‖ ^ 4 = ‖perronPoly c M 1 t‖ ^ 2 := by
+      ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ) = ‖perronPoly c M 1 t‖ ^ (2 : ℕ) := by
     intro t
     rw [show perronPoly c M 1 t =
       mtWattCoefficientBlock a A t * mtWattCoefficientBlock a A t by
@@ -167,16 +167,16 @@ theorem exists_integral_mtTypeI_amplified_coveredRange
       (∀ t ∈ Set.Icc (T / 2) T,
         1 ≤ K * ‖mtWattCoefficientBlock b B t‖) →
       (∫ t in (T / 2)..T,
-          ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-            ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+          ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+            ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
         K * Real.sqrt
           (C * T ^ ε *
-            (((T + (B : ℝ) ^ 2 * Real.sqrt T +
+            (((T + (B : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                     (B : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                  ((N : ℝ) ^ 2 * (B : ℝ)) +
-                (T + (B : ℝ)) / (T ^ 4 * (B : ℝ))) *
+                  ((N : ℝ) ^ (2 : ℕ) * (B : ℝ)) +
+                (T + (B : ℝ)) / (T ^ (4 : ℕ) * (B : ℝ))) *
               (1 / (B : ℝ)) *
-              (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ 2))) *
+              (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ (2 : ℕ)))) *
           Real.sqrt
             (generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
                 (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +

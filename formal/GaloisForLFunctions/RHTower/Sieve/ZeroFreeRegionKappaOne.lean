@@ -27,10 +27,10 @@ theorem log_le_two_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqrt x 
 
 /-- The quadratic threshold that rules the inequality out. -/
 theorem quad_pos {u K : ℝ} (hu : 202 ≤ u) (huK : K + 1 ≤ u) :
-    480 * u + K < 100 / 21 * u ^ 2 := by
+    480 * u + K < 100 / 21 * u ^ (2 : ℕ) := by
   have hu0 : (0 : ℝ) < u := by linarith
-  have h1 : 480 * u < 50 / 21 * u ^ 2 := by nlinarith
-  have h2 : K < 50 / 21 * u ^ 2 := by nlinarith
+  have h1 : 480 * u < 50 / 21 * u ^ (2 : ℕ) := by nlinarith
+  have h2 : K < 50 / 21 * u ^ (2 : ℕ) := by nlinarith
   nlinarith [h1, h2]
 
 /-- **A zero-free region of exponent one for `ζ`, with the constant exposed.**  Only the threshold
@@ -46,7 +46,7 @@ theorem exists_zero_free_region_explicit :
   have hu₀202 : (202 : ℝ) ≤ u₀ := le_max_left _ _
   have hu₀K : K + 1 ≤ u₀ := le_max_right _ _
   have hu₀0 : (0 : ℝ) < u₀ := by linarith
-  set L₀ : ℝ := u₀ ^ 2 with hL₀def
+  set L₀ : ℝ := u₀ ^ (2 : ℕ) with hL₀def
   refine ⟨max 3 (Real.exp L₀), le_max_left _ _, ?_⟩
   intro β γ hγT hβ1 hβc hzero
   have hγ3 : (3 : ℝ) ≤ |γ| := le_trans (le_max_left _ _) hγT
@@ -124,7 +124,7 @@ theorem exists_zero_free_region_explicit :
     have h1 : Real.sqrt L₀ ≤ Real.sqrt L := Real.sqrt_le_sqrt hL₀L
     rw [hL₀def, Real.sqrt_sq hu₀0.le] at h1
     exact h1
-  have hsq : Real.sqrt L ^ 2 = L := Real.sq_sqrt hLpos.le
+  have hsq : Real.sqrt L ^ (2 : ℕ) = L := Real.sq_sqrt hLpos.le
   have hquad := quad_pos (u := Real.sqrt L) (K := K) (by linarith) (by linarith)
   rw [hsq] at hquad
   linarith [hLHS, hdlvp, hRHS, hquad]

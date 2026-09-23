@@ -82,7 +82,7 @@ theorem hbTail_le {Ct : ℝ} (hCt : ∀ (d x τ : ℝ), 0 < d → d ≤ 1 / 4 �
       _ = a ^ ((100 : ℝ) + -((10149 : ℝ) / 100)) := by
           rw [div_one, ← Real.rpow_add ha0]
       _ ≤ a ^ (-(1 : ℝ)) := Real.rpow_le_rpow_of_exponent_le ha1 (by norm_num)
-  -- second term ≤ 3^201 (2π)^101 a^{-1}
+  -- second term ≤ 3^(201 : ℕ) (2π)^(101 : ℕ) a^{-1}
   have hT2 : (1 + |τ|) ^ (((200 : ℕ) : ℝ) + 1 / 2) * hbX a ^ (-(1 / 2 - d + 200)) *
       ((hbL a : ℝ) ^ (-((200 : ℕ) : ℝ)) / 200) ≤
       3 ^ (201 : ℕ) * (2 * Real.pi) ^ (101 : ℕ) * a ^ (-(1 : ℝ)) := by
@@ -155,7 +155,7 @@ theorem hbPole_le {d a τ : ℝ} (hd : 0 < d) (hd4 : d ≤ 1 / 4) (ha : 20 ≤ a
   have ha1 : 1 ≤ a := by linarith
   have hτ1 : 1 ≤ τ := by linarith
   have hx := hbX_pos ha0
-  refine (norm_smoothAFEZetaShiftedPoleResidue_displaced_le hd.le hd4 hx hτ1).trans ?_
+  refine (norm_smoothAFEZetaShiftedPoleResidue_displaced_le_highBlockFreezing hd.le hd4 hx hτ1).trans ?_
   have hxpow : hbX a ^ (1 / 2 + d) ≤ a := by
     calc hbX a ^ (1 / 2 + d) ≤ a ^ ((1 / 2 + d) / 2) := hbX_rpow_le ha0.le (by linarith)
       _ ≤ a ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le ha1 (by linarith)

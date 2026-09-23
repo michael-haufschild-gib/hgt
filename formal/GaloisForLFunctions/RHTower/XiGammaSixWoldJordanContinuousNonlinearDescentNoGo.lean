@@ -92,7 +92,7 @@ theorem deningerBigWittWoldJordanActualSourceContinuousEnergyDescends_iff_linear
     DeningerBigWittWoldJordanActualSourceContinuousEnergyDescends q ↔
       DeningerBigWittWoldJordanActualSourceEnergyDescends q := by
   let c : Nat.Primes → ℝ := fun p =>
-    thetaGammaSixWoldHorizontalCarrier p q ^ 2
+    thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ)
   have hrep :
       deningerBigWittCrossPairFiniteWoldJordanEnergyReporter q =
         primeLabelledEnergyReporter c := by

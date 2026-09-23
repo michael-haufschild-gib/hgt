@@ -17,10 +17,10 @@ abbrev AngularPhysicalParameters :=
   {P : Parameters // 0 ≤ gammaSq P ∧ 0 ≤ nuSq P}
 
 noncomputable def angularOmegaSq (P : AngularPhysicalParameters) : ℝ :=
-  4 * nuSq P.val / ((2 + gammaSq P.val) ^ 2 + 4 * nuSq P.val)
+  4 * nuSq P.val / ((2 + gammaSq P.val) ^ (2 : ℕ) + 4 * nuSq P.val)
 
 theorem angularOmegaSq_den_pos (P : AngularPhysicalParameters) :
-    0 < (2 + gammaSq P.val) ^ 2 + 4 * nuSq P.val := by
+    0 < (2 + gammaSq P.val) ^ (2 : ℕ) + 4 * nuSq P.val := by
   have hbase : 0 < 2 + gammaSq P.val := by linarith [P.property.1]
   nlinarith [sq_pos_of_pos hbase, P.property.2]
 
@@ -33,14 +33,14 @@ theorem angularOmegaSq_nonneg (P : AngularPhysicalParameters) :
 theorem angularOmegaSq_lt_one (P : AngularPhysicalParameters) :
     angularOmegaSq P < 1 := by
   rw [angularOmegaSq, div_lt_one (angularOmegaSq_den_pos P)]
-  have hbase : 0 < (2 + gammaSq P.val) ^ 2 :=
+  have hbase : 0 < (2 + gammaSq P.val) ^ (2 : ℕ) :=
     sq_pos_of_pos (by linarith [P.property.1])
   linarith
 
 theorem one_sub_angularOmegaSq (P : AngularPhysicalParameters) :
     1 - angularOmegaSq P =
-      (2 + gammaSq P.val) ^ 2 /
-        ((2 + gammaSq P.val) ^ 2 + 4 * nuSq P.val) := by
+      (2 + gammaSq P.val) ^ (2 : ℕ) /
+        ((2 + gammaSq P.val) ^ (2 : ℕ) + 4 * nuSq P.val) := by
   rw [angularOmegaSq]
   field_simp [ne_of_gt (angularOmegaSq_den_pos P)]
   ring
@@ -48,7 +48,7 @@ theorem one_sub_angularOmegaSq (P : AngularPhysicalParameters) :
 /-- Torsion relation quoted in the angular derivation. -/
 theorem angular_nuSq_relation (P : AngularPhysicalParameters) :
     nuSq P.val = angularOmegaSq P / (1 - angularOmegaSq P) *
-      (1 + gammaSq P.val / 2) ^ 2 := by
+      (1 + gammaSq P.val / 2) ^ (2 : ℕ) := by
   rw [div_mul_eq_mul_div]
   have hone : 1 - angularOmegaSq P ≠ 0 := by
     linarith [angularOmegaSq_lt_one P]
@@ -66,35 +66,35 @@ theorem e₃_eq_neg_one_sub_gammaSq_div_three (P : Parameters) :
 
 /-- Intermediate invariant identity used in the cubic expansion. -/
 theorem twelve_e₃_sq_sub_g₂ (P : Parameters) :
-    12 * e₃ P ^ 2 - g₂ P = 4 * P.modulus / (P.q₀ : ℝ) ^ 2 := by
+    12 * e₃ P ^ (2 : ℕ) - g₂ P = 4 * P.modulus / (P.q₀ : ℝ) ^ (2 : ℕ) := by
   rw [e₃, g₂]
   field_simp [P.q₀.ne_zero]
   ring
 
 theorem twelve_e₃_sq_sub_g₂_parameters (P : Parameters) :
-    12 * e₃ P ^ 2 - g₂ P = 8 + 4 * (gammaSq P - nuSq P) := by
+    12 * e₃ P ^ (2 : ℕ) - g₂ P = 8 + 4 * (gammaSq P - nuSq P) := by
   rw [twelve_e₃_sq_sub_g₂, gammaSq, nuSq]
   field_simp [P.q₀.ne_zero]
   ring
 
 /-- Cubic collapse driving the paper's angular quadrature. -/
 theorem angular_shifted_e₃_cubic (P : AngularPhysicalParameters) :
-    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ 3 -
+    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ (3 : ℕ) -
         g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val =
       -4 * angularOmegaSq P *
-        (angularOmegaSq P + gammaSq P.val / 2) ^ 2 := by
+        (angularOmegaSq P + gammaSq P.val / 2) ^ (2 : ℕ) := by
   calc
-    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ 3 -
+    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ (3 : ℕ) -
           g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val =
-        (4 * e₃ P.val ^ 3 - g₂ P.val * e₃ P.val - g₃ P.val) +
+        (4 * e₃ P.val ^ (3 : ℕ) - g₂ P.val * e₃ P.val - g₃ P.val) +
           (1 - angularOmegaSq P) *
-            (12 * e₃ P.val ^ 2 - g₂ P.val +
+            (12 * e₃ P.val ^ (2 : ℕ) - g₂ P.val +
               12 * e₃ P.val * (1 - angularOmegaSq P) +
-              4 * (1 - angularOmegaSq P) ^ 2) := by ring
+              4 * (1 - angularOmegaSq P) ^ (2 : ℕ)) := by ring
     _ = (1 - angularOmegaSq P) *
-          (12 * e₃ P.val ^ 2 - g₂ P.val +
+          (12 * e₃ P.val ^ (2 : ℕ) - g₂ P.val +
             12 * e₃ P.val * (1 - angularOmegaSq P) +
-            4 * (1 - angularOmegaSq P) ^ 2) := by
+            4 * (1 - angularOmegaSq P) ^ (2 : ℕ)) := by
       rw [e₃_root]
       ring
     _ = 4 * (1 - angularOmegaSq P) *
@@ -104,7 +104,7 @@ theorem angular_shifted_e₃_cubic (P : AngularPhysicalParameters) :
         e₃_eq_neg_one_sub_gammaSq_div_three]
       ring
     _ = -4 * angularOmegaSq P *
-          (angularOmegaSq P + gammaSq P.val / 2) ^ 2 := by
+          (angularOmegaSq P + gammaSq P.val / 2) ^ (2 : ℕ) := by
       rw [angular_nuSq_relation]
       have hne : 1 - angularOmegaSq P ≠ 0 := by
         linarith [angularOmegaSq_lt_one P]
@@ -112,14 +112,14 @@ theorem angular_shifted_e₃_cubic (P : AngularPhysicalParameters) :
       ring
 
 theorem angular_shifted_e₃_cubic_nonpos (P : AngularPhysicalParameters) :
-    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ 3 -
+    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ (3 : ℕ) -
         g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val ≤ 0 := by
   rw [angular_shifted_e₃_cubic]
   nlinarith [angularOmegaSq_nonneg P,
     sq_nonneg (angularOmegaSq P + gammaSq P.val / 2)]
 
 theorem angular_shifted_e₃_cubic_eq_zero_iff (P : AngularPhysicalParameters) :
-    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ 3 -
+    4 * (e₃ P.val + (1 - angularOmegaSq P)) ^ (3 : ℕ) -
         g₂ P.val * (e₃ P.val + (1 - angularOmegaSq P)) - g₃ P.val = 0 ↔
       nuSq P.val = 0 := by
   have hΩzero : angularOmegaSq P = 0 ↔ nuSq P.val = 0 := by
@@ -129,7 +129,7 @@ theorem angular_shifted_e₃_cubic_eq_zero_iff (P : AngularPhysicalParameters) :
   · rw [angular_shifted_e₃_cubic]
     intro h
     have hproduct : angularOmegaSq P *
-        (angularOmegaSq P + gammaSq P.val / 2) ^ 2 = 0 := by
+        (angularOmegaSq P + gammaSq P.val / 2) ^ (2 : ℕ) = 0 := by
       nlinarith
     rcases mul_eq_zero.mp hproduct with hΩ | hsum
     · exact hΩzero.mp hΩ

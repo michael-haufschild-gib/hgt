@@ -125,7 +125,7 @@ theorem finsum_apply_of_subsingleton_support [AddCommMonoid E] [AddCommMonoid F]
     simp [hzero, hQ]
 
 /-- A zero-at-the-origin binary operation commutes with two jointly one-active sums. -/
-theorem finsum_apply₂_of_subsingleton_joint_support
+theorem finsum_apply₂_of_subsingleton_joint
     [AddCommMonoid E] [AddCommMonoid F] [AddCommMonoid G]
     (Q : E → F → G) (hQ : Q 0 0 = 0) (a : d → E) (b : d → F)
     (hab : ∀ i j, (a i ≠ 0 ∨ b i ≠ 0) → (a j ≠ 0 ∨ b j ≠ 0) → i = j) :
@@ -169,7 +169,7 @@ theorem integerPeriodization_apply₂ [AddCommMonoid E] [AddCommMonoid F] [AddCo
     (Q : E → F → G) (hQ : Q 0 0 = 0) (x : d → ℝ) :
     integerPeriodization (fun y ↦ Q (f y) (g y)) x =
       Q (integerPeriodization f x) (integerPeriodization g x) := by
-  apply finsum_apply₂_of_subsingleton_joint_support Q hQ
+  apply finsum_apply₂_of_subsingleton_joint Q hQ
   intro k l hk hl
   let p : (d → ℝ) → E × F := fun y ↦ (f y, g y)
   have hp : SupportedInOpenFundamentalCube p := by

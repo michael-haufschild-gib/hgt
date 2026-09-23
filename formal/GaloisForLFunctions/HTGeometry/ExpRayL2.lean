@@ -70,20 +70,20 @@ theorem continuous_expRay (w : ℂ) : Continuous (expRay w) := by
   unfold expRay
   fun_prop
 
-theorem norm_sq_expRay (w : ℂ) (x : ℝ) : ‖expRay w x‖ ^ 2 = Real.exp (-(2 * w.re * x)) := by
+theorem norm_sq_expRay (w : ℂ) (x : ℝ) : ‖expRay w x‖ ^ (2 : ℕ) = Real.exp (-(2 * w.re * x)) := by
   rw [norm_expRay, ← Real.exp_nat_mul]
   congr 1
   ring
 
 theorem integrableOn_norm_sq_expRay {w : ℂ} (hw : 0 < w.re) (T : ℝ) :
-    IntegrableOn (fun x : ℝ => ‖expRay w x‖ ^ 2) (Ioi T) := by
+    IntegrableOn (fun x : ℝ => ‖expRay w x‖ ^ (2 : ℕ)) (Ioi T) := by
   have h2 : (0 : ℝ) < 2 * w.re := by linarith
   refine (integrableOn_exp_neg_mul_Ioi h2 T).congr_fun (fun x _ => ?_) measurableSet_Ioi
   rw [norm_sq_expRay]
 
 /-- The square mass of the exponential kernel on a ray. -/
 theorem integral_norm_sq_expRay {w : ℂ} (hw : 0 < w.re) (T : ℝ) :
-    (∫ x in Ioi T, ‖expRay w x‖ ^ 2) = Real.exp (-(2 * w.re * T)) / (2 * w.re) := by
+    (∫ x in Ioi T, ‖expRay w x‖ ^ (2 : ℕ)) = Real.exp (-(2 * w.re * T)) / (2 * w.re) := by
   have h2 : (0 : ℝ) < 2 * w.re := by linarith
   rw [← integral_exp_neg_mul_Ioi h2 T]
   refine setIntegral_congr_fun measurableSet_Ioi (fun x _ => ?_)
@@ -96,7 +96,7 @@ theorem memLp_two_expRay_restrict {w : ℂ} (hw : 0 < w.re) (T : ℝ) :
 
 /-- The `L²` mass of the exponential kernel on a ray, in root form. -/
 theorem sqrt_integral_norm_sq_expRay {w : ℂ} (hw : 0 < w.re) (T : ℝ) :
-    Real.sqrt (∫ x in Ioi T, ‖expRay w x‖ ^ 2)
+    Real.sqrt (∫ x in Ioi T, ‖expRay w x‖ ^ (2 : ℕ))
       = Real.exp (-(w.re * T)) / Real.sqrt (2 * w.re) := by
   have h2 : (0 : ℝ) < 2 * w.re := by linarith
   have hnum : Real.sqrt (Real.exp (-(2 * w.re * T))) = Real.exp (-(w.re * T)) := by

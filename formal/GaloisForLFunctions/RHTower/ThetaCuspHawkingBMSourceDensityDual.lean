@@ -21,7 +21,7 @@ attribute [-instance] NormedSpace.complexToReal
 
 /-- Radial density factor dictated by the original complex-bilinear source transpose.
 It is an auxiliary adjoint weight, not a redefinition of the literal source. -/
-def dualWeight (x : ℝ) : ℂ := (1+(radialUnit x:ℂ))^5/(radialUnit x:ℂ)^4
+def dualWeight (x : ℝ) : ℂ := (1+(radialUnit x:ℂ))^(5 : ℕ)/(radialUnit x:ℂ)^(4 : ℕ)
 
 /-- The original fixed-onset seed multiplied by the derived radial dual weight. -/
 def dualSeed (s a : ℂ) (v x : ℝ) (J : ℂ) : ℂ := dualWeight x*seed s a v x J
@@ -29,10 +29,10 @@ def dualSeed (s a : ℂ) (v x : ℝ) (J : ℂ) : ℂ := dualWeight x*seed s a v 
 /-- Separated profile of the formal transpose in the original radial measure.
 The angular input is retained independently, as in `commonSource`. -/
 def transposeProfile (lam : ℂ) (F LF : ℝ → ℂ) (x : ℝ) : ℂ :=
-  (5*lam-6)/4*F x+(radialUnit x:ℂ)^2/8*
+  (5*lam-6)/4*F x+(radialUnit x:ℂ)^(2 : ℕ)/8*
     ((4*lam+1)*(lam+2)*F x-(lam+4)*LF x)+
-  (4*(radialUnit x:ℂ)-(radialUnit x:ℂ)^2)/8*((7*lam-2)*F x-2*LF x)+
-  (radialUnit x:ℂ)^2/8*((7*lam-2)*radialGenerator F x-2*radialGenerator LF x)
+  (4*(radialUnit x:ℂ)-(radialUnit x:ℂ)^(2 : ℕ))/8*((7*lam-2)*F x-2*LF x)+
+  (radialUnit x:ℂ)^(2 : ℕ)/8*((7*lam-2)*radialGenerator F x-2*radialGenerator LF x)
 
 private theorem unit_ne_zero (x : Iio (0:ℝ)) : (radialUnit x.val:ℂ) ≠ 0 :=
   Complex.ofReal_ne_zero.mpr (radialUnit_bounds x.val x.property).1.ne'
@@ -43,7 +43,7 @@ private theorem unit_sub_one_ne_zero (x : Iio (0:ℝ)) : (radialUnit x.val:ℂ)-
 theorem dualWeight_hasDerivAt (x : Iio (0:ℝ)) :
     HasDerivAt dualWeight
       (((radialUnit x.val:ℂ)-1)*(1-4/(radialUnit x.val:ℂ))*dualWeight x.val) x.val := by
-  have hu : HasDerivAt (fun y => (radialUnit y:ℂ)) ((radialUnit x.val:ℂ)^2-1) x.val := by
+  have hu : HasDerivAt (fun y => (radialUnit y:ℂ)) ((radialUnit x.val:ℂ)^(2 : ℕ)-1) x.val := by
     simpa only [Complex.ofReal_sub,Complex.ofReal_pow,Complex.ofReal_one] using!
       (radialUnit_hasDerivAt x.val).ofReal_comp
   apply (((hu.const_add 1).pow 5).div (hu.pow 4) (pow_ne_zero _ (unit_ne_zero x))).congr_deriv
@@ -77,7 +77,7 @@ private theorem generator_dualSeed (s a : ℂ) (v : ℝ) (x : Iio (0:ℝ)) (J : 
   ring
 
 private def coefficient (lam delta u J LJ : ℂ) : ℂ :=
-  (5*lam-6)/4*J+u^2/8*((4*lam+1)*(lam+2)*J-(lam+4)*LJ-
+  (5*lam-6)/4*J+u^(2 : ℕ)/8*((4*lam+1)*(lam+2)*J-(lam+4)*LJ-
     (7*lam-2)*delta*J+2*delta*LJ)
 
 private theorem source_profile (lam s a : ℂ) (v : ℝ) (x : Iio (0:ℝ)) (J LJ : ℂ) :
@@ -110,7 +110,7 @@ theorem densityDual_originalForcing (q : XiZeroCopy) (branch : Bool) (a b : ℂ)
     let t := physicalRate q (!branch);
     let Q := fullSquarePotential q (coordinates z);
     let LQ := scalarLaplacian (fullSquarePotential q) (coordinates z);
-    -2*(1-(radialUnit x.val:ℂ)^2)*(radialUnit x.val:ℂ)*seed s a v x.val 1*
+    -2*(1-(radialUnit x.val:ℂ)^(2 : ℕ))*(radialUnit x.val:ℂ)*seed s a v x.val 1*
         transposeProfile (scalarParameter q) (fun y => dualSeed t b v y Q)
           (fun y => dualSeed t b v y LQ) x.val =
       dualSeed t b v x.val 1*timeOriginalForcing q branch a (v-x.val) x.val (coordinates z) := by
@@ -120,8 +120,8 @@ theorem densityDual_originalForcing (q : XiZeroCopy) (branch : Bool) (a b : ℂ)
 
 /-- Exact density factor; it does not make either endpoint current zero. -/
 theorem dualWeight_density (x : Iio (0:ℝ)) :
-    (radialUnit x.val:ℂ)^4*(1+(radialUnit x.val:ℂ))*dualWeight x.val=
-      (1+(radialUnit x.val:ℂ))^6 := by
+    (radialUnit x.val:ℂ)^(4 : ℕ)*(1+(radialUnit x.val:ℂ))*dualWeight x.val=
+      (1+(radialUnit x.val:ℂ))^(6 : ℕ) := by
   unfold dualWeight
   field_simp [unit_ne_zero x]
 
@@ -132,25 +132,25 @@ private theorem seed_continuous (s a : ℂ) (v : ℝ) (J : ℂ) :
 /-- The source-derived dual retains an exact fourth-order AdS boundary coefficient. -/
 theorem dualSeed_ads_residue (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (v : ℝ) (z : UpperHalfPlane) :
-    Tendsto (fun x : ℝ => (radialUnit x:ℂ)^4*
+    Tendsto (fun x : ℝ => (radialUnit x:ℂ)^(4 : ℕ)*
       dualSeed (physicalRate q branch) a v x (fullSquarePotential q (coordinates z)))
-      (𝓝[<] 0) (𝓝 (a^2*timeOnset (2*physicalRate q branch) v*
+      (𝓝[<] 0) (𝓝 (a^(2 : ℕ)*timeOnset (2*physicalRate q branch) v*
         fullSquarePotential q (coordinates z))) := by
   have hu : Continuous (fun x : ℝ => (radialUnit x:ℂ)) :=
     Complex.continuous_ofReal.comp
       (continuous_iff_continuousAt.mpr (fun x => (radialUnit_hasDerivAt x).continuousAt))
-  have hc : Continuous (fun x : ℝ => (1+(radialUnit x:ℂ))^5*
+  have hc : Continuous (fun x : ℝ => (1+(radialUnit x:ℂ))^(5 : ℕ)*
       seed (physicalRate q branch) a v x (fullSquarePotential q (coordinates z))) :=
     ((continuous_const.add hu).pow 5).mul
       (seed_continuous (physicalRate q branch) a v (fullSquarePotential q (coordinates z)))
-  have h0 : Tendsto (fun x : ℝ => (1+(radialUnit x:ℂ))^5*
+  have h0 : Tendsto (fun x : ℝ => (1+(radialUnit x:ℂ))^(5 : ℕ)*
       seed (physicalRate q branch) a v x (fullSquarePotential q (coordinates z)))
-      (𝓝[<] 0) (𝓝 ((1+(radialUnit 0:ℂ))^5*
+      (𝓝[<] 0) (𝓝 ((1+(radialUnit 0:ℂ))^(5 : ℕ)*
         seed (physicalRate q branch) a v 0 (fullSquarePotential q (coordinates z)))) :=
     hc.continuousAt.tendsto.mono_left inf_le_left
-  have he : (fun x : ℝ => (radialUnit x:ℂ)^4*
+  have he : (fun x : ℝ => (radialUnit x:ℂ)^(4 : ℕ)*
       dualSeed (physicalRate q branch) a v x (fullSquarePotential q (coordinates z)))
-      =ᶠ[𝓝[<] 0] (fun x => (1+(radialUnit x:ℂ))^5*
+      =ᶠ[𝓝[<] 0] (fun x => (1+(radialUnit x:ℂ))^(5 : ℕ)*
         seed (physicalRate q branch) a v x (fullSquarePotential q (coordinates z))) := by
     filter_upwards [self_mem_nhdsWithin] with x hx
     have hn := unit_ne_zero ⟨x,hx⟩
@@ -160,12 +160,12 @@ theorem dualSeed_ads_residue (q : XiZeroCopy) (branch : Bool) (a : ℂ)
 
 
 private theorem seed_pair (s a b : ℂ) (v x : ℝ) (J H : ℂ) :
-    (1+(radialUnit x:ℂ))^6*seed s a v x J*seed (-s-3) b v x H =
-      a^2*b^2*(Real.smoothTransition v:ℂ)^2*Complex.exp (-6*(v:ℂ))*J*H := by
+    (1+(radialUnit x:ℂ))^(6 : ℕ)*seed s a v x J*seed (-s-3) b v x H =
+      a^(2 : ℕ)*b^(2 : ℕ)*(Real.smoothTransition v:ℂ)^(2 : ℕ)*Complex.exp (-6*(v:ℂ))*J*H := by
   have hn : ((1+radialUnit x:ℝ):ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (radialUnit_add_one_pos x).ne'
   have hp : power (2*s) (1+radialUnit x)*power (2*(-s-3)) (1+radialUnit x)=
-      ((1+(radialUnit x:ℂ))^6)⁻¹ := by
+      ((1+(radialUnit x:ℂ))^(6 : ℕ))⁻¹ := by
     unfold power
     rw [← Complex.cpow_add _ _ hn,
       show 2*s+2*(-s-3)=-(6:ℂ) by ring, Complex.cpow_neg, Complex.cpow_ofNat]
@@ -178,9 +178,9 @@ private theorem seed_pair (s a b : ℂ) (v x : ℝ) (J H : ℂ) :
     ring
   simp only [seed,sourceAmplitude,timeOnset,zero_mul,Complex.exp_zero,one_mul,mul_one]
   calc
-    _ = (1+(radialUnit x:ℂ))^6*
+    _ = (1+(radialUnit x:ℂ))^(6 : ℕ)*
         (power (2*s) (1+radialUnit x)*power (2*(-s-3)) (1+radialUnit x))*
-        a^2*b^2*(Real.smoothTransition v:ℂ)^2*
+        a^(2 : ℕ)*b^(2 : ℕ)*(Real.smoothTransition v:ℂ)^(2 : ℕ)*
         (Complex.exp (2*s*(v:ℂ))*Complex.exp (2*(-s-3)*(v:ℂ)))*J*H := by ring
     _ = _ := by
       rw [hp,he,mul_inv_cancel₀ (pow_ne_zero 6 (by simpa only [Complex.ofReal_add,
@@ -200,23 +200,23 @@ def retainedSpinTwo (q : XiZeroCopy) (z : UpperHalfPlane) : ℂ :=
 This definition does not identify that auxiliary test with a physical left-QNM state. -/
 def dualRadialFlux (q : XiZeroCopy) (branch : Bool) (a b : ℂ)
     (v x : ℝ) (z : UpperHalfPlane) : ℂ :=
-  -(radialUnit x:ℂ)^4*(1+(radialUnit x:ℂ))*
+  -(radialUnit x:ℂ)^(4 : ℕ)*(1+(radialUnit x:ℂ))*
     seed (physicalRate q branch) a v x (sourceAngularK q z)*
-    dualSeed (physicalRate q (!branch)) b v x (retainedSpinTwo q z)/(z.im:ℂ)^2
+    dualSeed (physicalRate q (!branch)) b v x (retainedSpinTwo q z)/(z.im:ℂ)^(2 : ℕ)
 
 /-- The density-dual radial flux is radius-independent at the unchanged common clock.
 Its surviving endpoint value is explicit; conservation does not assert its vanishing. -/
 theorem dualRadialFlux_exact (q : XiZeroCopy) (branch : Bool) (a b : ℂ)
     (v : ℝ) (x : Iio (0:ℝ)) (z : UpperHalfPlane) :
     dualRadialFlux q branch a b v x.val z =
-      -a^2*b^2*(Real.smoothTransition v:ℂ)^2*Complex.exp (-6*(v:ℂ))*
-        sourceAngularK q z*retainedSpinTwo q z/(z.im:ℂ)^2 := by
+      -a^(2 : ℕ)*b^(2 : ℕ)*(Real.smoothTransition v:ℂ)^(2 : ℕ)*Complex.exp (-6*(v:ℂ))*
+        sourceAngularK q z*retainedSpinTwo q z/(z.im:ℂ)^(2 : ℕ) := by
   unfold dualRadialFlux dualSeed
   rw [opposite_rate]
   calc
-    _ = -((radialUnit x.val:ℂ)^4*(1+(radialUnit x.val:ℂ))*dualWeight x.val*
+    _ = -((radialUnit x.val:ℂ)^(4 : ℕ)*(1+(radialUnit x.val:ℂ))*dualWeight x.val*
         seed (physicalRate q branch) a v x.val (sourceAngularK q z)*
-        seed (-physicalRate q branch-3) b v x.val (retainedSpinTwo q z))/(z.im:ℂ)^2 := by ring
+        seed (-physicalRate q branch-3) b v x.val (retainedSpinTwo q z))/(z.im:ℂ)^(2 : ℕ) := by ring
     _ = _ := by rw [dualWeight_density,seed_pair]; ring
 
 
@@ -257,10 +257,10 @@ theorem physicalFundamentalMode_ads (q : XiZeroCopy) (side outer : Bool) :
 complete source-dual pole coefficient. The source and target Xi copies are independent. -/
 theorem densityDual_physicalMode_ads_residue (q r : XiZeroCopy) (branch side outer : Bool)
     (a c : ℂ) (v : ℝ) (z : UpperHalfPlane) :
-    Tendsto (fun x : ℝ => (radialUnit x:ℂ)^4*
+    Tendsto (fun x : ℝ => (radialUnit x:ℂ)^(4 : ℕ)*
       (dualSeed (physicalRate q branch) a v x (fullSquarePotential q (coordinates z))-
         c*tortoiseMode outer (physicalFundamentalFrequency r side) (physicalRadialFrequency r) x))
-      (𝓝[<] 0) (𝓝 (a^2*timeOnset (2*physicalRate q branch) v*
+      (𝓝[<] 0) (𝓝 (a^(2 : ℕ)*timeOnset (2*physicalRate q branch) v*
         fullSquarePotential q (coordinates z))) := by
   have hu : Tendsto (fun x : ℝ => (radialUnit x:ℂ)) (𝓝[<] (0:ℝ)) (𝓝 (0:ℂ)) := by
     have h := ((radialUnit_hasDerivAt 0).continuousAt.tendsto.ofReal).mono_left

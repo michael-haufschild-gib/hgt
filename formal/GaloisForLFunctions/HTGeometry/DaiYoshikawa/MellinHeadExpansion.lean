@@ -7,8 +7,8 @@ The last algebraic step in continuing a spectral zeta function past `Re s = 1` i
 small-time expansion from the head Mellin integral:
 
 ```text
-∫_0^1 (Θ(t) − h) t^{s−1} dt
-  = ∫_0^1 (Θ(t) − a₀/t − a₁) t^{s−1} dt + a₀/(s−1) + (a₁ − h)/s .
+∫_0^(1 : ℕ) (Θ(t) − h) t^{s−1} dt
+  = ∫_0^(1 : ℕ) (Θ(t) − a₀/t − a₁) t^{s−1} dt + a₀/(s−1) + (a₁ − h)/s .
 ```
 
 The two explicit terms carry the poles at `s = 1` and `s = 0`.  This file proves the additivity of
@@ -74,7 +74,7 @@ theorem integrableOn_head_one {s : ℂ} (hs : 0 < s.re) :
 
 /-- **The head expansion.**
 
-`∫_0^1 g(t) t^{s−1} dt = ∫_0^1 (g(t) − a₀ t^{-1} − a₁) t^{s−1} dt + a₀/(s−1) + a₁/s`
+`∫_0^(1 : ℕ) g(t) t^{s−1} dt = ∫_0^(1 : ℕ) (g(t) − a₀ t^{-1} − a₁) t^{s−1} dt + a₀/(s−1) + a₁/s`
 for `Re s > 1`. -/
 theorem mellinHead_eq_regularized_add {g : ℝ → ℂ} {a₀ a₁ : ℂ} {s : ℂ} (hs : 1 < s.re)
     (hreg : IntegrableOn

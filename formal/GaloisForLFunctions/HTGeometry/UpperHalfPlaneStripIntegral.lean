@@ -13,7 +13,7 @@ density `y⁻²`.  Through the chart `(y, x) ↦ x + iy` an integral over the st
 
 and integrability on the strip is equivalent to integrability of `y⁻² F(x + iy)` on the product.
 Fubini then turns the right-hand side into the iterated integral
-`∫_0^∞ y⁻² (∫_0^1 F(x + iy) dx) dy`.
+`∫_0^∞ y⁻² (∫_0^(1 : ℕ) F(x + iy) dx) dy`.
 -/
 
 open UpperHalfPlane MeasureTheory Set Filter
@@ -154,7 +154,7 @@ theorem integrableOn_modularStrip_iff (F : ℍ → ℂ) :
 
 /-! ## The iterated form -/
 
-/-- **Fubini on the strip**: `∫_{strip} F = ∫_0^∞ y⁻² (∫_0^1 F(x + iy) dx) dy`. -/
+/-- **Fubini on the strip**: `∫_{strip} F = ∫_0^∞ y⁻² (∫_0^(1 : ℕ) F(x + iy) dx) dy`. -/
 theorem setIntegral_modularStrip_eq_iterated (F : ℍ → ℂ) (hF : IntegrableOn F modularStrip volume) :
     ∫ z in modularStrip, F z
       = ∫ y in Ioi (0 : ℝ), (y ^ 2)⁻¹ • ∫ x in Ico (0 : ℝ) 1, F (ofComplex ⟨x, y⟩) := by
@@ -185,7 +185,7 @@ theorem ofComplex_mem_modularCuspStrip {Y x y : ℝ}
     exact hY
 
 /-- **Fubini on one cusp tail**:
-`∫_{0 ≤ x < 1, Y ≤ y} F dx dy/y² = ∫_{max(0,Y)}^∞ y⁻² ∫_0^1 F(x+iy) dx dy`.
+`∫_{0 ≤ x < 1, Y ≤ y} F dx dy/y² = ∫_{max(0,Y)}^∞ y⁻² ∫_0^(1 : ℕ) F(x+iy) dx dy`.
 Unlike `setIntegral_modularStrip_eq_iterated`, this theorem only requires integrability on the
 actual tail and cannot introduce an infinite modular unfolding. -/
 theorem setIntegral_modularCuspStrip_eq_iterated (Y : ℝ) (F : ℍ → ℂ)

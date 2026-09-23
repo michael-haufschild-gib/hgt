@@ -22,7 +22,7 @@ semilocally sign-sensitive, and individually identity-blind; moreover arbitrary 
 finite retained-mode combinations remain unable to converge weakly to the identity
 correlation. -/
 theorem soninPrimePower_threeChannelObservabilityUniversality
-    {lambda : ℝ} (hlambda : 1 < lambda) (hlambdaSq : lambda ^ 2 < 4)
+    {lambda : ℝ} (hlambda : 1 < lambda) (hlambdaSq : lambda ^ (2 : ℕ) < 4)
     {f : ℝ → ℂ}
     (hf : Function.support f ⊆ Set.Icc (-Real.log lambda) (Real.log lambda))
     (hself : (∫ x, (starRingEnd ℂ) (f x) * f x) ≠ 0) :

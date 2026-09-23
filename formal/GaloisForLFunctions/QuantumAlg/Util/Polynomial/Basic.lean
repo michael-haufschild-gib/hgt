@@ -502,11 +502,11 @@ theorem complexPolynomialEvenPart_normSq_le_of_normSq_le (P : ℂ[X])
     constructor <;> linarith [hx.1, hx.2]
   rw [complexPolynomialEvenPart_eval]
   have hxnorm : ‖P.eval (x : ℂ)‖ ≤ 1 := by
-    have hsq : ‖P.eval (x : ℂ)‖ ^ 2 ≤ 1 := by
+    have hsq : ‖P.eval (x : ℂ)‖ ^ (2 : ℕ) ≤ 1 := by
       simpa [Complex.normSq_eq_norm_sq] using hP x hx
     rwa [sq_le_one_iff₀ (norm_nonneg (P.eval (x : ℂ)))] at hsq
   have hnegnorm : ‖P.eval (-(x : ℂ))‖ ≤ 1 := by
-    have hsq : ‖P.eval (-(x : ℂ))‖ ^ 2 ≤ 1 := by
+    have hsq : ‖P.eval (-(x : ℂ))‖ ^ (2 : ℕ) ≤ 1 := by
       simpa [Complex.normSq_eq_norm_sq] using hP (-x) hneg
     rwa [sq_le_one_iff₀ (norm_nonneg (P.eval (-(x : ℂ))))] at hsq
   have htri : ‖P.eval (x : ℂ) + P.eval (-(x : ℂ))‖ ≤
@@ -536,11 +536,11 @@ theorem complexPolynomialOddPart_normSq_le_of_normSq_le (P : ℂ[X])
     constructor <;> linarith [hx.1, hx.2]
   rw [complexPolynomialOddPart_eval]
   have hxnorm : ‖P.eval (x : ℂ)‖ ≤ 1 := by
-    have hsq : ‖P.eval (x : ℂ)‖ ^ 2 ≤ 1 := by
+    have hsq : ‖P.eval (x : ℂ)‖ ^ (2 : ℕ) ≤ 1 := by
       simpa [Complex.normSq_eq_norm_sq] using hP x hx
     rwa [sq_le_one_iff₀ (norm_nonneg (P.eval (x : ℂ)))] at hsq
   have hnegnorm : ‖P.eval (-(x : ℂ))‖ ≤ 1 := by
-    have hsq : ‖P.eval (-(x : ℂ))‖ ^ 2 ≤ 1 := by
+    have hsq : ‖P.eval (-(x : ℂ))‖ ^ (2 : ℕ) ≤ 1 := by
       simpa [Complex.normSq_eq_norm_sq] using hP (-x) hneg
     rwa [sq_le_one_iff₀ (norm_nonneg (P.eval (-(x : ℂ))))] at hsq
   have htri : ‖P.eval (x : ℂ) - P.eval (-(x : ℂ))‖ ≤
@@ -605,7 +605,7 @@ theorem complexPolynomialRealPart_boundedByOne_of_normSq_le (P : ℂ[X])
     ∀ x : ℝ, x ∈ Set.Icc (-1 : ℝ) 1 → |(complexPolynomialRealPart P).eval x| ≤ 1 := by
   intro x hx
   rw [complexPolynomialRealPart_eval_ofReal]
-  have hsq : ‖P.eval (x : ℂ)‖ ^ 2 ≤ 1 := by
+  have hsq : ‖P.eval (x : ℂ)‖ ^ (2 : ℕ) ≤ 1 := by
     simpa [Complex.normSq_eq_norm_sq] using hP x hx
   have hnorm : ‖P.eval (x : ℂ)‖ ≤ 1 := by
     rwa [sq_le_one_iff₀ (norm_nonneg (P.eval (x : ℂ)))] at hsq
@@ -618,7 +618,7 @@ theorem complexPolynomialImagPart_boundedByOne_of_normSq_le (P : ℂ[X])
     ∀ x : ℝ, x ∈ Set.Icc (-1 : ℝ) 1 → |(complexPolynomialImagPart P).eval x| ≤ 1 := by
   intro x hx
   rw [complexPolynomialImagPart_eval_ofReal]
-  have hsq : ‖P.eval (x : ℂ)‖ ^ 2 ≤ 1 := by
+  have hsq : ‖P.eval (x : ℂ)‖ ^ (2 : ℕ) ≤ 1 := by
     simpa [Complex.normSq_eq_norm_sq] using hP x hx
   have hnorm : ‖P.eval (x : ℂ)‖ ≤ 1 := by
     rwa [sq_le_one_iff₀ (norm_nonneg (P.eval (x : ℂ)))] at hsq
@@ -635,7 +635,7 @@ theorem complexPolynomialRealPart_quarter_boundedByHalf_of_normSq_le (P : ℂ[X]
         ≤ (1 / 2 : ℝ) := by
   intro x hx
   rw [complexPolynomialRealPart_eval_ofReal]
-  have hsq : ‖P.eval (x : ℂ)‖ ^ 2 ≤ 1 := by
+  have hsq : ‖P.eval (x : ℂ)‖ ^ (2 : ℕ) ≤ 1 := by
     simpa [Complex.normSq_eq_norm_sq] using hP x hx
   have hnorm : ‖P.eval (x : ℂ)‖ ≤ 1 := by
     rwa [sq_le_one_iff₀ (norm_nonneg (P.eval (x : ℂ)))] at hsq
@@ -665,7 +665,7 @@ theorem complexPolynomialImagPart_quarter_boundedByHalf_of_normSq_le (P : ℂ[X]
         ≤ (1 / 2 : ℝ) := by
   intro x hx
   rw [complexPolynomialImagPart_eval_ofReal]
-  have hsq : ‖P.eval (x : ℂ)‖ ^ 2 ≤ 1 := by
+  have hsq : ‖P.eval (x : ℂ)‖ ^ (2 : ℕ) ≤ 1 := by
     simpa [Complex.normSq_eq_norm_sq] using hP x hx
   have hnorm : ‖P.eval (x : ℂ)‖ ≤ 1 := by
     rwa [sq_le_one_iff₀ (norm_nonneg (P.eval (x : ℂ)))] at hsq
@@ -781,12 +781,12 @@ theorem conjP_realPolynomialToComplex (P : ℝ[X]) :
 
 theorem realPolynomialToComplex_mul_conjP (P : ℝ[X]) :
     realPolynomialToComplex P * conjP (realPolynomialToComplex P) =
-      realPolynomialToComplex (P ^ 2) := by
+      realPolynomialToComplex (P ^ (2 : ℕ)) := by
   simp [pow_two]
 
 theorem conjP_realPolynomialToComplex_mul (P : ℝ[X]) :
     conjP (realPolynomialToComplex P) * realPolynomialToComplex P =
-      realPolynomialToComplex (P ^ 2) := by
+      realPolynomialToComplex (P ^ (2 : ℕ)) := by
   simp [pow_two]
 
 /-- Evaluating the coefficient-conjugate at a real point conjugates the value. -/
@@ -904,10 +904,10 @@ theorem coeff_X_mul' (P : ℂ[X]) (n : ℕ) :
   | zero => simp [Polynomial.mul_coeff_zero]
   | succ m => simp [Polynomial.coeff_X_mul]
 
-/-- Total coefficient formula for `X^2 * P`. -/
+/-- Total coefficient formula for `X^(2 : ℕ) * P`. -/
 theorem coeff_X_sq_mul (P : ℂ[X]) (n : ℕ) :
-    (X ^ 2 * P).coeff n = if n < 2 then 0 else P.coeff (n - 2) := by
-  have h : (X ^ 2 * P : ℂ[X]) = X * (X * P) := by ring
+    (X ^ (2 : ℕ) * P).coeff n = if n < 2 then 0 else P.coeff (n - 2) := by
+  have h : (X ^ (2 : ℕ) * P : ℂ[X]) = X * (X * P) := by ring
   rw [h, coeff_X_mul' (X * P) n]
   rcases n with - | m
   · simp
@@ -929,8 +929,8 @@ theorem HasParity.X_mul {P : ℂ[X]} {p : ℕ} (hP : HasParity P p) :
     omega
 
 theorem HasParity.one_sub_X_sq_mul {P : ℂ[X]} {p : ℕ} (hP : HasParity P p) :
-    HasParity ((1 - X ^ 2) * P) p := by
-  have h : ((1 - X ^ 2) * P : ℂ[X]) = P - X ^ 2 * P := by ring
+    HasParity ((1 - X ^ (2 : ℕ)) * P) p := by
+  have h : ((1 - X ^ (2 : ℕ)) * P : ℂ[X]) = P - X ^ (2 : ℕ) * P := by ring
   rw [h]
   refine hP.sub ?_
   intro k hk
@@ -944,7 +944,7 @@ theorem HasParity.one_sub_X_sq_mul {P : ℂ[X]} {p : ℕ} (hP : HasParity P p) :
 /-! ### Square-variable parity quotients -/
 
 /-- Even-degree coefficient quotient: `P(X)` is read as a polynomial in
-`X^2` by keeping the coefficients in degrees `2k`.
+`X^(2 : ℕ)` by keeping the coefficients in degrees `2k`.
 
 This is a quantum-free helper for QSP/QSVT parity arguments.  The source-facing
 QSVT notation `P^{(SV)}` separates even and odd polynomials in exactly this
@@ -976,7 +976,7 @@ theorem evenSquareQuotient_smul (c : ℂ) (P : ℂ[X]) :
   · intro i
     by_cases h : i % 2 = 0 <;> simp [h]
 
-/-- Odd-degree coefficient quotient: `P(X) = X * Q(X^2)` for the coefficients
+/-- Odd-degree coefficient quotient: `P(X) = X * Q(X^(2 : ℕ))` for the coefficients
 in degrees `2k+1`, when `P` has odd parity.  This is the odd counterpart of
 `evenSquareQuotient` for the source notation `P^{(SV)}` [GSLW19,
 BlockHam.tex:747-764]. -/
@@ -1005,24 +1005,24 @@ theorem oddSquareQuotient_smul (c : ℂ) (P : ℂ[X]) :
   · intro i
     by_cases h : i % 2 = 1 <;> simp [h]
 
-/-- Substituting `X^2` into the even square quotient recovers an even-parity
+/-- Substituting `X^(2 : ℕ)` into the even square quotient recovers an even-parity
 polynomial.  This is the coefficient-level calculation behind the even branch
 of `P^{(SV)}` in the QSVT singular-value transform [GSLW19,
 BlockHam.tex:747-764]. -/
 theorem evenSquareQuotient_eval_sq_of_hasParity {P : Polynomial Complex}
     {parity : Nat} (hpar : parity % 2 = 0) (hP : HasParity P parity)
     (x : Complex) :
-    (evenSquareQuotient P).eval (x ^ 2) = P.eval x := by
+    (evenSquareQuotient P).eval (x ^ (2 : ℕ)) = P.eval x := by
   rw [evenSquareQuotient, Polynomial.eval_sum, Polynomial.eval_eq_sum,
     Polynomial.sum_def, Polynomial.sum_def]
   refine Finset.sum_congr rfl ?_
   intro n ha
   by_cases hn : n % 2 = 0
   case pos =>
-    have hpow : (x ^ 2) ^ (n / 2) = x ^ n := by
+    have hpow : (x ^ (2 : ℕ)) ^ (n / 2) = x ^ n := by
       have hn2 : 2 * (n / 2) = n := by omega
       calc
-        (x ^ 2) ^ (n / 2) = x ^ (2 * (n / 2)) := by rw [pow_mul]
+        (x ^ (2 : ℕ)) ^ (n / 2) = x ^ (2 * (n / 2)) := by rw [pow_mul]
         _ = x ^ n := by rw [hn2]
     simp [hn, hpow]
   case neg =>
@@ -1035,24 +1035,24 @@ theorem evenSquareQuotient_eval_sq_of_hasParity {P : Polynomial Complex}
       simp [Polynomial.mem_support_iff, hcoeff_zero]
     exact False.elim (hn_not_mem ha)
 
-/-- Substituting `X^2` into the odd square quotient recovers an odd-parity
+/-- Substituting `X^(2 : ℕ)` into the odd square quotient recovers an odd-parity
 polynomial after the leading factor `X`.  This is the coefficient-level
 calculation behind the odd branch of `P^{(SV)}` [GSLW19,
 BlockHam.tex:747-764]. -/
 theorem oddSquareQuotient_eval_sq_of_hasParity {P : Polynomial Complex}
     {parity : Nat} (hpar : parity % 2 = 1) (hP : HasParity P parity)
     (x : Complex) :
-    x * (oddSquareQuotient P).eval (x ^ 2) = P.eval x := by
+    x * (oddSquareQuotient P).eval (x ^ (2 : ℕ)) = P.eval x := by
   rw [oddSquareQuotient, Polynomial.eval_sum, Polynomial.eval_eq_sum,
     Polynomial.sum_def, Polynomial.sum_def, Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro n ha
   by_cases hn : n % 2 = 1
   case pos =>
-    have hpow : x * (x ^ 2) ^ ((n - 1) / 2) = x ^ n := by
+    have hpow : x * (x ^ (2 : ℕ)) ^ ((n - 1) / 2) = x ^ n := by
       have hn2 : 2 * ((n - 1) / 2) + 1 = n := by omega
       calc
-        x * (x ^ 2) ^ ((n - 1) / 2)
+        x * (x ^ (2 : ℕ)) ^ ((n - 1) / 2)
             = x * x ^ (2 * ((n - 1) / 2)) := by rw [pow_mul]
         _ = x ^ (2 * ((n - 1) / 2) + 1) := by
           rw [pow_succ]
@@ -1062,8 +1062,8 @@ theorem oddSquareQuotient_eval_sq_of_hasParity {P : Polynomial Complex}
     simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow,
       Polynomial.eval_X]
     calc
-      x * (P.coeff n * (x ^ 2) ^ ((n - 1) / 2))
-          = P.coeff n * (x * (x ^ 2) ^ ((n - 1) / 2)) := by ring
+      x * (P.coeff n * (x ^ (2 : ℕ)) ^ ((n - 1) / 2))
+          = P.coeff n * (x * (x ^ (2 : ℕ)) ^ ((n - 1) / 2)) := by ring
       _ = P.coeff n * x ^ n := by rw [hpow]
   case neg =>
     have hcoeff_zero : P.coeff n = 0 := by
@@ -1076,24 +1076,24 @@ theorem oddSquareQuotient_eval_sq_of_hasParity {P : Polynomial Complex}
     exact False.elim (hn_not_mem ha)
 
 /-- Polynomial identity form of `evenSquareQuotient_eval_sq_of_hasParity`:
-an even-parity polynomial is obtained by substituting `X^2` into its quotient.
+an even-parity polynomial is obtained by substituting `X^(2 : ℕ)` into its quotient.
 This is the algebraic form used by Hermitian QSVT specialization
 [GSLW19, BlockHam.tex:747-764]. -/
 theorem evenSquareQuotient_comp_X_sq_of_hasParity {P : Polynomial Complex}
     {parity : Nat} (hpar : parity % 2 = 0) (hP : HasParity P parity) :
-    (evenSquareQuotient P).comp (Polynomial.X ^ 2) = P := by
+    (evenSquareQuotient P).comp (Polynomial.X ^ (2 : ℕ)) = P := by
   apply Polynomial.funext
   intro x
   rw [Polynomial.eval_comp, Polynomial.eval_pow, Polynomial.eval_X]
   exact evenSquareQuotient_eval_sq_of_hasParity hpar hP x
 
 /-- Polynomial identity form of `oddSquareQuotient_eval_sq_of_hasParity`:
-an odd-parity polynomial is `X` times a polynomial in `X^2`.
+an odd-parity polynomial is `X` times a polynomial in `X^(2 : ℕ)`.
 This is the algebraic form used by Hermitian QSVT specialization
 [GSLW19, BlockHam.tex:747-764]. -/
 theorem oddSquareQuotient_comp_X_sq_of_hasParity {P : Polynomial Complex}
     {parity : Nat} (hpar : parity % 2 = 1) (hP : HasParity P parity) :
-    Polynomial.X * (oddSquareQuotient P).comp (Polynomial.X ^ 2) = P := by
+    Polynomial.X * (oddSquareQuotient P).comp (Polynomial.X ^ (2 : ℕ)) = P := by
   apply Polynomial.funext
   intro x
   rw [Polynomial.eval_mul, Polynomial.eval_X, Polynomial.eval_comp,

@@ -10,12 +10,12 @@ theorem norm_midpoint_lt_one {ζ ζ' : ℂ} (hζ : ‖ζ‖ = 1) (hζ' : ‖ζ'�
   have hsub : 0 < ‖ζ - ζ'‖ := by
     rw [norm_pos_iff]; exact sub_ne_zero.mpr hne
   -- parallelogram law: ‖ζ+ζ'‖² + ‖ζ-ζ'‖² = 2‖ζ‖² + 2‖ζ'‖² = 4
-  have hpar : ‖ζ + ζ'‖ ^ 2 + ‖ζ - ζ'‖ ^ 2 = 2 * ‖ζ‖ ^ 2 + 2 * ‖ζ'‖ ^ 2 := by
+  have hpar : ‖ζ + ζ'‖ ^ (2 : ℕ) + ‖ζ - ζ'‖ ^ (2 : ℕ) = 2 * ‖ζ‖ ^ (2 : ℕ) + 2 * ‖ζ'‖ ^ (2 : ℕ) := by
     have := norm_add_sq_real ζ ζ'
     have h2 := norm_sub_sq_real ζ ζ'
     rw [this, h2]; ring
   rw [hζ, hζ'] at hpar
-  have hlt : ‖ζ + ζ'‖ ^ 2 < 4 := by nlinarith [hsub, sq_nonneg ‖ζ - ζ'‖]
+  have hlt : ‖ζ + ζ'‖ ^ (2 : ℕ) < 4 := by nlinarith [hsub, sq_nonneg ‖ζ - ζ'‖]
   have hnn : (0:ℝ) ≤ ‖ζ + ζ'‖ := norm_nonneg _
   have h4 : ‖ζ + ζ'‖ < 2 := by nlinarith [hlt, hnn]
   have h2ne : ‖(2 : ℂ)‖ = 2 := by norm_num
@@ -182,7 +182,7 @@ theorem holo_extend_of_continuesAcross_all {h : ℂ → ℂ}
 the disk and continues across a boundary point `ζ` (with `|ζ| = 1`), then it continues across every
 dyadic power `ζ^{2ⁿ}`. Immediate induction on `n` from `continuesAcross_sq`. -/
 theorem continuesAcross_pow_two_iter {h : ℂ → ℂ} {c : ℂ} {ζ : ℂ} (hζ : ‖ζ‖ = 1)
-    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hcont : ContinuesAcross h ζ) (n : ℕ) :
     ContinuesAcross h (ζ ^ (2 ^ n)) := by
   induction n with
@@ -190,7 +190,7 @@ theorem continuesAcross_pow_two_iter {h : ℂ → ℂ} {c : ℂ} {ζ : ℂ} (hζ
   | succ k ih =>
     have hnorm : ‖ζ ^ (2 ^ k)‖ = 1 := by rw [norm_pow, hζ, one_pow]
     have hstep := continuesAcross_sq hnorm hfe ih
-    have he : (ζ ^ (2 ^ k)) ^ 2 = ζ ^ (2 ^ (k + 1)) := by rw [← pow_mul, pow_succ]
+    have he : (ζ ^ (2 ^ k)) ^ (2 : ℕ) = ζ ^ (2 ^ (k + 1)) := by rw [← pow_mul, pow_succ]
     rwa [he] at hstep
 
 /-- **task02 §1, packaged.** If `h` is holomorphic on the unit disk, solves the Böttcher functional
@@ -202,7 +202,7 @@ positive-length arc's doubling orbit fills the circle — decoupled from all the
 `holo_extend_of_continuesAcross_all`). -/
 theorem holo_extend_of_continuesAcross_generating {h : ℂ → ℂ} {c : ℂ} {A : Set ℂ}
     (hhd : DifferentiableOn ℂ h (ball 0 1))
-    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hA : ∀ ζ ∈ A, ‖ζ‖ = 1 ∧ ContinuesAcross h ζ)
     (hgen : ∀ ζ : ℂ, ‖ζ‖ = 1 → ∃ ζ' ∈ A, ∃ n : ℕ, ζ = ζ' ^ (2 ^ n)) :
     ∃ ρ : ℝ, 1 < ρ ∧ ∃ H : ℂ → ℂ, DifferentiableOn ℂ H (ball 0 ρ) ∧ EqOn H h (ball 0 1) := by

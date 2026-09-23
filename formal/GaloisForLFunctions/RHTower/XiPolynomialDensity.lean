@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.XiCSchwartzRestriction
 import GaloisForLFunctions.RHTower.ThetaCuspComplexStrip
 
 /-!
-# Polynomial multiples of the centered xi function are dense in `L^2`
+# Polynomial multiples of the centered xi function are dense in `L^(2 : ℕ)`
 
 The real restriction of the centered xi function decays exponentially and vanishes only on a null
 set.  Hence a square-integrable function orthogonal to every polynomial multiple of it has all
@@ -36,7 +36,7 @@ theorem expWeightIntegrable_memLp_mul_XiC {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ4 : 2
           exact mul_le_mul_of_nonneg_left (hbound x) (norm_nonneg _)
       _ = C * (‖f x‖ * (Real.exp (-(δ * |x|)) * Real.exp (a * |x|))) := by ring
 
-/-- **The polynomial multiples of the centered xi function have dense span in `L^2`.**  Stated in
+/-- **The polynomial multiples of the centered xi function have dense span in `L^(2 : ℕ)`.**  Stated in
 the orthogonality form: a square-integrable function orthogonal to every polynomial multiple of the
 real restriction of `XiC` vanishes almost everywhere. -/
 theorem ae_eq_zero_of_orthogonal_polynomial_XiC {f : ℝ → ℂ} (hf : MemLp f 2 volume)

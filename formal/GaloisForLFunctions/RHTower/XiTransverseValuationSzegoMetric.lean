@@ -295,11 +295,11 @@ theorem xiTransversePrimeValuationSzegoMetric_self
       1 + q ≠ 0 := by nlinarith
   have hother :
       1 - q ≠ 0 := by linarith
-  have hsq : 1 - q ^ 2 ≠ 0 := by
+  have hsq : 1 - q ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_nonneg (q - 1)]
   simp only [xiTransversePrimeValuationSzegoMetric]
   rw [show xiTransversePrimeApertureDiskNode a p = q by rfl,
-    show q * q = q ^ 2 by ring]
+    show q * q = q ^ (2 : ℕ) by ring]
   field_simp [hden, hother, hsq]
   ring
 
@@ -308,7 +308,7 @@ def xiTransversePrimeValuationNormalizedCorrelationSq
     (a b : ℕ) (p : Nat.Primes) : ℝ :=
   let q := xiTransversePrimeApertureDiskNode a p
   let r := xiTransversePrimeApertureDiskNode b p
-  (1 - q ^ 2) * (1 - r ^ 2) / (1 - q * r) ^ 2
+  (1 - q ^ (2 : ℕ)) * (1 - r ^ (2 : ℕ)) / (1 - q * r) ^ (2 : ℕ)
 
 /-- The normalized Hilbert defect is exactly the disk pseudohyperbolic distance squared. -/
 theorem one_sub_xiTransversePrimeValuationNormalizedCorrelationSq
@@ -317,7 +317,7 @@ theorem one_sub_xiTransversePrimeValuationNormalizedCorrelationSq
       ((xiTransversePrimeApertureDiskNode a p -
           xiTransversePrimeApertureDiskNode b p) /
         (1 - xiTransversePrimeApertureDiskNode a p *
-          xiTransversePrimeApertureDiskNode b p)) ^ 2 := by
+          xiTransversePrimeApertureDiskNode b p)) ^ (2 : ℕ) := by
   let q := xiTransversePrimeApertureDiskNode a p
   let r := xiTransversePrimeApertureDiskNode b p
   have hq0 : 0 ≤ q := (xiTransversePrimeApertureDiskNode_pos a p).le
@@ -328,8 +328,8 @@ theorem one_sub_xiTransversePrimeValuationNormalizedCorrelationSq
     have : q * r < 1 :=
       mul_lt_one_of_nonneg_of_lt_one_left hq0 hq1 hr1.le
     linarith
-  change 1 - (1 - q ^ 2) * (1 - r ^ 2) / (1 - q * r) ^ 2 =
-    ((q - r) / (1 - q * r)) ^ 2
+  change 1 - (1 - q ^ (2 : ℕ)) * (1 - r ^ (2 : ℕ)) / (1 - q * r) ^ (2 : ℕ) =
+    ((q - r) / (1 - q * r)) ^ (2 : ℕ)
   field_simp [hden]
   ring
 

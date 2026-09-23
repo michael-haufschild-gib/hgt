@@ -31,20 +31,20 @@ private theorem norm_exp_real_mul_I_sub_one_le (θ : ℝ) :
   have him : (Complex.exp ((θ : ℂ) * Complex.I) - 1).im = Real.sin θ := by
     rw [Complex.exp_mul_I]
     simp [Complex.cos_ofReal_im, Complex.sin_ofReal_re]
-  have hsq : ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2 = 2 - 2 * Real.cos θ := by
+  have hsq : ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ (2 : ℕ) = 2 - 2 * Real.cos θ := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, hre, him]
     have := Real.sin_sq_add_cos_sq θ
     nlinarith
-  have hbound : ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2 ≤ θ ^ 2 := by
+  have hbound : ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ (2 : ℕ) ≤ θ ^ (2 : ℕ) := by
     rw [hsq]
     have := Real.one_sub_sq_div_two_le_cos (x := θ)
     nlinarith
   have h1 : ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖
-      = Real.sqrt (‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2) :=
+      = Real.sqrt (‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ (2 : ℕ)) :=
     (Real.sqrt_sq (norm_nonneg _)).symm
   rw [h1]
-  calc Real.sqrt (‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2)
-      ≤ Real.sqrt (θ ^ 2) := Real.sqrt_le_sqrt hbound
+  calc Real.sqrt (‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ (2 : ℕ))
+      ≤ Real.sqrt (θ ^ (2 : ℕ)) := Real.sqrt_le_sqrt hbound
     _ = |θ| := Real.sqrt_sq_eq_abs θ
 
 private theorem abs_re_le_norm' (z : ℂ) : |z.re| ≤ ‖z‖ := by
@@ -71,7 +71,7 @@ def xiRayLaplaceAbsMoment (b : ℝ) : ℝ :=
 
 /-- Second Laplace moment of the theta-cusp source. -/
 def xiRayLaplaceSecondMoment (b : ℝ) : ℝ :=
-  ∫ x : ℝ, x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)
+  ∫ x : ℝ, x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)
 
 theorem integrable_xiRayLaplaceAbsMoment (b : ℝ) :
     Integrable (fun x : ℝ => |x| * thetaCuspFullSource x * Real.exp (b * x)) := by
@@ -95,16 +95,16 @@ theorem integrable_xiRayLaplaceAbsMoment (b : ℝ) :
           mul_le_mul_of_nonneg_left he (mul_nonneg (abs_nonneg x) hΦ)
       _ = |x| * Real.exp (|b| * |x|) * thetaCuspFullSource x := by ring
 
-private theorem sq_le_four_mul_exp_abs (x : ℝ) : x ^ 2 ≤ 4 * Real.exp |x| := by
+private theorem sq_le_four_mul_exp_abs (x : ℝ) : x ^ (2 : ℕ) ≤ 4 * Real.exp |x| := by
   have h1 : |x| / 2 ≤ Real.exp (|x| / 2) := by
     have := Real.add_one_le_exp (|x| / 2)
     linarith
   have h2 : |x| ≤ 2 * Real.exp (|x| / 2) := by linarith
-  have h3 : x ^ 2 = |x| ^ 2 := (sq_abs x).symm
-  have h4 : |x| ^ 2 ≤ (2 * Real.exp (|x| / 2)) ^ 2 :=
+  have h3 : x ^ (2 : ℕ) = |x| ^ (2 : ℕ) := (sq_abs x).symm
+  have h4 : |x| ^ (2 : ℕ) ≤ (2 * Real.exp (|x| / 2)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (abs_nonneg x) h2 2
-  have h5 : (2 * Real.exp (|x| / 2)) ^ 2 = 4 * Real.exp |x| := by
-    have he : Real.exp (|x| / 2) ^ 2 = Real.exp |x| := by
+  have h5 : (2 * Real.exp (|x| / 2)) ^ (2 : ℕ) = 4 * Real.exp |x| := by
+    have he : Real.exp (|x| / 2) ^ (2 : ℕ) = Real.exp |x| := by
       rw [← Real.exp_nat_mul]
       norm_num
       ring_nf
@@ -113,7 +113,7 @@ private theorem sq_le_four_mul_exp_abs (x : ℝ) : x ^ 2 ≤ 4 * Real.exp |x| :=
   linarith [h3 ▸ h4, h5 ▸ h4]
 
 theorem integrable_xiRayLaplaceSecondMoment (b : ℝ) :
-    Integrable (fun x : ℝ => x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)) := by
+    Integrable (fun x : ℝ => x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)) := by
   have hmaj := (HedenmalmThetaSource.integrable_exp_abs_mul_thetaCuspFullSource
     (|b| + 1)).const_mul 4
   apply Integrable.mono hmaj
@@ -121,7 +121,7 @@ theorem integrable_xiRayLaplaceSecondMoment (b : ℝ) :
       (Real.continuous_exp.comp (continuous_const.mul continuous_id))).aestronglyMeasurable
   · filter_upwards with x
     have hΦ : 0 ≤ thetaCuspFullSource x := (thetaCuspFullSource_pos x).le
-    have hnn : 0 ≤ x ^ 2 * thetaCuspFullSource x * Real.exp (b * x) :=
+    have hnn : 0 ≤ x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x) :=
       mul_nonneg (mul_nonneg (sq_nonneg x) hΦ) (Real.exp_pos _).le
     have hmajnn : 0 ≤ 4 * (Real.exp ((|b| + 1) * |x|) * thetaCuspFullSource x) := by
       have := mul_nonneg (Real.exp_pos ((|b| + 1) * |x|)).le hΦ
@@ -132,7 +132,7 @@ theorem integrable_xiRayLaplaceSecondMoment (b : ℝ) :
       calc b * x ≤ |b * x| := le_abs_self _
         _ = |b| * |x| := abs_mul b x
     have hx2 := sq_le_four_mul_exp_abs x
-    calc x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)
+    calc x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)
         ≤ (4 * Real.exp |x|) * thetaCuspFullSource x * Real.exp (|b| * |x|) := by
           apply mul_le_mul
           · exact mul_le_mul_of_nonneg_right hx2 hΦ
@@ -268,7 +268,7 @@ open HedenmalmThetaSource
 
 set_option maxHeartbeats 400000 in
 theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
-    xiRayLaplaceSecondMoment b ≤ (Real.log b + 3) ^ 2 * xiRayLaplace b := by
+    xiRayLaplaceSecondMoment b ≤ (Real.log b + 3) ^ (2 : ℕ) * xiRayLaplace b := by
   have hR := xiRayPacketBase_ge
   have hγ1 := one_le_xiRayEnvelopeRatio
   have hγ0 := xiRayEnvelopeRatio_pos
@@ -286,73 +286,73 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
     rw [hXdef]
     exact Real.log_le_sub_one_of_pos hb0
   have hint := integrable_xiRayLaplaceSecondMoment b
-  have hsplit : (∫ x in Iic X, x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)) +
-      (∫ x in Ioi X, x ^ 2 * thetaCuspFullSource x * Real.exp (b * x))
+  have hsplit : (∫ x in Iic X, x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)) +
+      (∫ x in Ioi X, x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x))
       = xiRayLaplaceSecondMoment b := by
     have h := MeasureTheory.integral_add_compl (measurableSet_Iic (a := X)) hint
     rwa [compl_Iic] at h
-  have hsplit2 : (∫ x in Iic (-X), x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)) +
-      (∫ x in Ioc (-X) X, x ^ 2 * thetaCuspFullSource x * Real.exp (b * x))
-      = ∫ x in Iic X, x ^ 2 * thetaCuspFullSource x * Real.exp (b * x) := by
+  have hsplit2 : (∫ x in Iic (-X), x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)) +
+      (∫ x in Ioc (-X) X, x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x))
+      = ∫ x in Iic X, x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x) := by
     have hu : Iic (-X) ∪ Ioc (-X) X = Iic X := Iic_union_Ioc_eq_Iic (by linarith)
     rw [← hu, MeasureTheory.setIntegral_union (by
         rw [Set.disjoint_left]
         intro t ht ht'
         exact absurd ht'.1 (not_lt.mpr ht)) measurableSet_Ioc
       hint.integrableOn hint.integrableOn]
-  have hmid : (∫ x in Ioc (-X) X, x ^ 2 * thetaCuspFullSource x * Real.exp (b * x))
-      ≤ X ^ 2 * xiRayLaplace b := by
-    have hmono : (∫ x in Ioc (-X) X, x ^ 2 * thetaCuspFullSource x * Real.exp (b * x))
-        ≤ ∫ x in Ioc (-X) X, X ^ 2 * (thetaCuspFullSource x * Real.exp (b * x)) := by
+  have hmid : (∫ x in Ioc (-X) X, x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x))
+      ≤ X ^ (2 : ℕ) * xiRayLaplace b := by
+    have hmono : (∫ x in Ioc (-X) X, x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x))
+        ≤ ∫ x in Ioc (-X) X, X ^ (2 : ℕ) * (thetaCuspFullSource x * Real.exp (b * x)) := by
       apply MeasureTheory.setIntegral_mono_on
         hint.integrableOn
-        (((integrable_xiRayLaplace b).const_mul (X ^ 2)).integrableOn)
+        (((integrable_xiRayLaplace b).const_mul (X ^ (2 : ℕ))).integrableOn)
         measurableSet_Ioc
       intro x hx
-      have hx2 : x ^ 2 ≤ X ^ 2 := sq_le_sq' (by linarith [hx.1]) hx.2
+      have hx2 : x ^ (2 : ℕ) ≤ X ^ (2 : ℕ) := sq_le_sq' (by linarith [hx.1]) hx.2
       have h0 : 0 ≤ thetaCuspFullSource x * Real.exp (b * x) :=
         mul_nonneg (thetaCuspFullSource_pos x).le (Real.exp_pos _).le
-      calc x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)
-          = x ^ 2 * (thetaCuspFullSource x * Real.exp (b * x)) := by ring
-        _ ≤ X ^ 2 * (thetaCuspFullSource x * Real.exp (b * x)) :=
+      calc x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)
+          = x ^ (2 : ℕ) * (thetaCuspFullSource x * Real.exp (b * x)) := by ring
+        _ ≤ X ^ (2 : ℕ) * (thetaCuspFullSource x * Real.exp (b * x)) :=
             mul_le_mul_of_nonneg_right hx2 h0
-    have h2 : (∫ x in Ioc (-X) X, X ^ 2 * (thetaCuspFullSource x * Real.exp (b * x)))
-        = X ^ 2 * ∫ x in Ioc (-X) X, thetaCuspFullSource x * Real.exp (b * x) :=
+    have h2 : (∫ x in Ioc (-X) X, X ^ (2 : ℕ) * (thetaCuspFullSource x * Real.exp (b * x)))
+        = X ^ (2 : ℕ) * ∫ x in Ioc (-X) X, thetaCuspFullSource x * Real.exp (b * x) :=
       MeasureTheory.integral_const_mul _ _
     have h3 : (∫ x in Ioc (-X) X, thetaCuspFullSource x * Real.exp (b * x))
         ≤ xiRayLaplace b :=
       MeasureTheory.setIntegral_le_integral (integrable_xiRayLaplace b)
         (Filter.Eventually.of_forall fun x =>
           mul_nonneg (thetaCuspFullSource_pos x).le (Real.exp_pos _).le)
-    calc (∫ x in Ioc (-X) X, x ^ 2 * thetaCuspFullSource x * Real.exp (b * x))
-        ≤ X ^ 2 * ∫ x in Ioc (-X) X, thetaCuspFullSource x * Real.exp (b * x) := by
+    calc (∫ x in Ioc (-X) X, x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x))
+        ≤ X ^ (2 : ℕ) * ∫ x in Ioc (-X) X, thetaCuspFullSource x * Real.exp (b * x) := by
           rw [← h2]
           exact hmono
-      _ ≤ X ^ 2 * xiRayLaplace b := mul_le_mul_of_nonneg_left h3 (sq_nonneg X)
-  have hleft : (∫ x in Iic (-X), x ^ 2 * thetaCuspFullSource x * Real.exp (b * x))
+      _ ≤ X ^ (2 : ℕ) * xiRayLaplace b := mul_le_mul_of_nonneg_left h3 (sq_nonneg X)
+  have hleft : (∫ x in Iic (-X), x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x))
       ≤ 4 * xiRayLaplace b := by
-    have hreflect : (∫ x in Iic (-X), x ^ 2 * thetaCuspFullSource x * Real.exp (b * x))
-        = ∫ u in Ioi X, u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u)) := by
+    have hreflect : (∫ x in Iic (-X), x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x))
+        = ∫ u in Ioi X, u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u)) := by
       have h := integral_comp_neg_Iic (-X)
-        (fun u => u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u)))
-      have hL : (fun x : ℝ => (-x) ^ 2 * thetaCuspFullSource (-x) * Real.exp (-(b * -x)))
-          = fun x : ℝ => x ^ 2 * thetaCuspFullSource x * Real.exp (b * x) := by
+        (fun u => u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u)))
+      have hL : (fun x : ℝ => (-x) ^ (2 : ℕ) * thetaCuspFullSource (-x) * Real.exp (-(b * -x)))
+          = fun x : ℝ => x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x) := by
         funext x
         rw [thetaCuspFullSource_neg]
         ring_nf
       rw [neg_neg] at h
-      calc (∫ x in Iic (-X), x ^ 2 * thetaCuspFullSource x * Real.exp (b * x))
+      calc (∫ x in Iic (-X), x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x))
           = ∫ x in Iic (-X),
-              (-x) ^ 2 * thetaCuspFullSource (-x) * Real.exp (-(b * -x)) := by
+              (-x) ^ (2 : ℕ) * thetaCuspFullSource (-x) * Real.exp (-(b * -x)) := by
             rw [hL]
-        _ = ∫ u in Ioi X, u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u)) := h
+        _ = ∫ u in Ioi X, u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u)) := h
     have hintneg : Integrable (fun x : ℝ =>
-        x ^ 2 * thetaCuspFullSource x * Real.exp (-(b * x))) := by
+        x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (-(b * x))) := by
       apply (integrable_xiRayLaplaceSecondMoment (-b)).congr
       filter_upwards with x
       rw [neg_mul]
-    have hsub : (∫ u in Ioi X, u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u)))
-        ≤ ∫ u in Ioi (0 : ℝ), u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u)) := by
+    have hsub : (∫ u in Ioi X, u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u)))
+        ≤ ∫ u in Ioi (0 : ℝ), u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u)) := by
       apply MeasureTheory.setIntegral_mono_set hintneg.integrableOn
         (Filter.Eventually.of_forall fun u => mul_nonneg (mul_nonneg (sq_nonneg u)
           (thetaCuspFullSource_pos u).le) (Real.exp_pos _).le)
@@ -364,7 +364,7 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
       filter_upwards with x
       rw [neg_mul]
     have hpoint : ∀ u ∈ Ioi (0 : ℝ),
-        u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u))
+        u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u))
           ≤ 4 * (thetaCuspFullSource u * Real.exp (-((b - 1) * u))) := by
       intro u hu
       have hu0 : (0 : ℝ) < u := hu
@@ -374,13 +374,13 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
       have hexp : Real.exp u * Real.exp (-(b * u)) = Real.exp (-((b - 1) * u)) := by
         rw [← Real.exp_add]
         ring_nf
-      calc u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u))
+      calc u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u))
           ≤ (4 * Real.exp u) * thetaCuspFullSource u * Real.exp (-(b * u)) := by
             apply mul_le_mul_of_nonneg_right _ (Real.exp_pos _).le
             exact mul_le_mul_of_nonneg_right h2 hΦ0
         _ = 4 * (thetaCuspFullSource u * (Real.exp u * Real.exp (-(b * u)))) := by ring
         _ = 4 * (thetaCuspFullSource u * Real.exp (-((b - 1) * u))) := by rw [hexp]
-    have hint4 : (∫ u in Ioi (0 : ℝ), u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u)))
+    have hint4 : (∫ u in Ioi (0 : ℝ), u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u)))
         ≤ ∫ u in Ioi (0 : ℝ), 4 * (thetaCuspFullSource u * Real.exp (-((b - 1) * u))) :=
       MeasureTheory.setIntegral_mono_on hintneg.integrableOn
         ((hintmass.const_mul 4).integrableOn) measurableSet_Ioi hpoint
@@ -391,27 +391,27 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
         ≤ thetaEnvelopeUpper := mass_reflected_le hb1
     have hCuZ := thetaEnvelopeUpper_le_xiRayLaplace hb
     rw [hreflect]
-    calc (∫ u in Ioi X, u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u)))
-        ≤ ∫ u in Ioi (0 : ℝ), u ^ 2 * thetaCuspFullSource u * Real.exp (-(b * u)) := hsub
+    calc (∫ u in Ioi X, u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u)))
+        ≤ ∫ u in Ioi (0 : ℝ), u ^ (2 : ℕ) * thetaCuspFullSource u * Real.exp (-(b * u)) := hsub
       _ ≤ ∫ u in Ioi (0 : ℝ), 4 * (thetaCuspFullSource u * Real.exp (-((b - 1) * u))) := hint4
       _ = 4 * ∫ u in Ioi (0 : ℝ), thetaCuspFullSource u * Real.exp (-((b - 1) * u)) := hconst
       _ ≤ 4 * thetaEnvelopeUpper := by linarith [hmass]
       _ ≤ 4 * xiRayLaplace b := by linarith [hCuZ]
   -- right tail
-  have hb2 : Real.exp (2 * X) = b ^ 2 := by
+  have hb2 : Real.exp (2 * X) = b ^ (2 : ℕ) := by
     rw [hXdef, two_mul, Real.exp_add, Real.exp_log hb0]
     ring
-  have hrate : b + 9 / 2 + 3 ≤ 2 * Real.pi * b ^ 2 := by
+  have hrate : b + 9 / 2 + 3 ≤ 2 * Real.pi * b ^ (2 : ℕ) := by
     nlinarith [Real.pi_gt_three]
   have htailpoint : ∀ x ∈ Ioi X,
-      x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)
-        ≤ (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) ^ 2)
+      x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)
+        ≤ (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * (X + 1) ^ (2 : ℕ))
             * (Real.exp X * Real.exp (-x)) := by
     intro x hx
     have hxX : X < x := hx
     have hx0 : 0 < x := lt_trans hX0 hxX
     have hΦ := thetaCuspFullSource_le_envelope hx0.le
-    have hexp2x : b ^ 2 * (1 + 2 * (x - X)) ≤ Real.exp (2 * x) := by
+    have hexp2x : b ^ (2 : ℕ) * (1 + 2 * (x - X)) ≤ Real.exp (2 * x) := by
       have h1 : Real.exp (2 * x) = Real.exp (2 * X) * Real.exp (2 * (x - X)) := by
         rw [← Real.exp_add]
         ring_nf
@@ -421,49 +421,49 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
       rw [h1, hb2]
       exact mul_le_mul_of_nonneg_left h2 (sq_nonneg b)
     have hexponent : (b + 9 / 2) * x - Real.pi * Real.exp (2 * x)
-        ≤ (b + 9 / 2) * X - Real.pi * b ^ 2
-          - (2 * Real.pi * b ^ 2 - (b + 9 / 2)) * (x - X) := by
+        ≤ (b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)
+          - (2 * Real.pi * b ^ (2 : ℕ) - (b + 9 / 2)) * (x - X) := by
       have hπ := Real.pi_pos
       nlinarith [hexp2x]
-    have hlin : x ^ 2 * Real.exp (-((2 * Real.pi * b ^ 2 - (b + 9 / 2)) * (x - X)))
-        ≤ (X + 1) ^ 2 * Real.exp (-(x - X)) := by
+    have hlin : x ^ (2 : ℕ) * Real.exp (-((2 * Real.pi * b ^ (2 : ℕ) - (b + 9 / 2)) * (x - X)))
+        ≤ (X + 1) ^ (2 : ℕ) * Real.exp (-(x - X)) := by
       set u := x - X with hu
       have hu0 : 0 < u := by rw [hu]; linarith
-      set r := 2 * Real.pi * b ^ 2 - (b + 9 / 2) with hr
+      set r := 2 * Real.pi * b ^ (2 : ℕ) - (b + 9 / 2) with hr
       have hr3 : 3 ≤ r := by rw [hr]; linarith [hrate]
       have hx' : x = X + u := by rw [hu]; ring
-      have h1 : (X + u) ^ 2 ≤ (X + 1) ^ 2 * (1 + u) ^ 2 := by
+      have h1 : (X + u) ^ (2 : ℕ) ≤ (X + 1) ^ (2 : ℕ) * (1 + u) ^ (2 : ℕ) := by
         have hle : X + u ≤ (X + 1) * (1 + u) := by
           nlinarith [mul_nonneg hX0.le hu0.le]
         have h0 : (0 : ℝ) ≤ X + u := by linarith
-        calc (X + u) ^ 2 ≤ ((X + 1) * (1 + u)) ^ 2 := pow_le_pow_left₀ h0 hle 2
-          _ = (X + 1) ^ 2 * (1 + u) ^ 2 := by ring
-      have h2 : (1 + u) ^ 2 ≤ Real.exp (2 * u) := by
+        calc (X + u) ^ (2 : ℕ) ≤ ((X + 1) * (1 + u)) ^ (2 : ℕ) := pow_le_pow_left₀ h0 hle 2
+          _ = (X + 1) ^ (2 : ℕ) * (1 + u) ^ (2 : ℕ) := by ring
+      have h2 : (1 + u) ^ (2 : ℕ) ≤ Real.exp (2 * u) := by
         have ha := Real.add_one_le_exp u
-        have hc : Real.exp u ^ 2 = Real.exp (2 * u) := by
+        have hc : Real.exp u ^ (2 : ℕ) = Real.exp (2 * u) := by
           rw [pow_two, ← Real.exp_add, two_mul]
-        have hb' : (1 + u) ^ 2 ≤ Real.exp u ^ 2 :=
+        have hb' : (1 + u) ^ (2 : ℕ) ≤ Real.exp u ^ (2 : ℕ) :=
           pow_le_pow_left₀ (by linarith) (by linarith) 2
         linarith
       have h3 : Real.exp (2 * u) ≤ Real.exp ((r - 1) * u) :=
         Real.exp_le_exp.mpr (by nlinarith)
-      have h4 : (X + u) ^ 2 ≤ (X + 1) ^ 2 * Real.exp ((r - 1) * u) := by
-        calc (X + u) ^ 2 ≤ (X + 1) ^ 2 * (1 + u) ^ 2 := h1
-          _ ≤ (X + 1) ^ 2 * Real.exp (2 * u) :=
+      have h4 : (X + u) ^ (2 : ℕ) ≤ (X + 1) ^ (2 : ℕ) * Real.exp ((r - 1) * u) := by
+        calc (X + u) ^ (2 : ℕ) ≤ (X + 1) ^ (2 : ℕ) * (1 + u) ^ (2 : ℕ) := h1
+          _ ≤ (X + 1) ^ (2 : ℕ) * Real.exp (2 * u) :=
               mul_le_mul_of_nonneg_left h2 (by positivity)
-          _ ≤ (X + 1) ^ 2 * Real.exp ((r - 1) * u) :=
+          _ ≤ (X + 1) ^ (2 : ℕ) * Real.exp ((r - 1) * u) :=
               mul_le_mul_of_nonneg_left h3 (by positivity)
-      have h5 : (X + 1) ^ 2 * Real.exp ((r - 1) * u) * Real.exp (-(r * u))
-          = (X + 1) ^ 2 * Real.exp (-u) := by
+      have h5 : (X + 1) ^ (2 : ℕ) * Real.exp ((r - 1) * u) * Real.exp (-(r * u))
+          = (X + 1) ^ (2 : ℕ) * Real.exp (-u) := by
         rw [mul_assoc, ← Real.exp_add]
         ring_nf
-      calc x ^ 2 * Real.exp (-(r * u)) = (X + u) ^ 2 * Real.exp (-(r * u)) := by rw [hx']
-        _ ≤ (X + 1) ^ 2 * Real.exp ((r - 1) * u) * Real.exp (-(r * u)) :=
+      calc x ^ (2 : ℕ) * Real.exp (-(r * u)) = (X + u) ^ (2 : ℕ) * Real.exp (-(r * u)) := by rw [hx']
+        _ ≤ (X + 1) ^ (2 : ℕ) * Real.exp ((r - 1) * u) * Real.exp (-(r * u)) :=
             mul_le_mul_of_nonneg_right h4 (Real.exp_pos _).le
-        _ = (X + 1) ^ 2 * Real.exp (-u) := h5
-    have hΦe : x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)
+        _ = (X + 1) ^ (2 : ℕ) * Real.exp (-u) := h5
+    have hΦe : x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)
         ≤ thetaEnvelopeUpper *
-            (x ^ 2 * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))) := by
+            (x ^ (2 : ℕ) * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))) := by
       have hpack : thetaEnvelope x * Real.exp (b * x)
           = Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x)) := by
         unfold HedenmalmThetaSource.thetaEnvelope
@@ -473,62 +473,62 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
           ≤ thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x)) := by
         rw [← hpack, ← mul_assoc]
         exact mul_le_mul_of_nonneg_right hΦ (Real.exp_pos _).le
-      calc x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)
-          = x ^ 2 * (thetaCuspFullSource x * Real.exp (b * x)) := by ring
-        _ ≤ x ^ 2 *
+      calc x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)
+          = x ^ (2 : ℕ) * (thetaCuspFullSource x * Real.exp (b * x)) := by ring
+        _ ≤ x ^ (2 : ℕ) *
               (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))) :=
             mul_le_mul_of_nonneg_left h1 (sq_nonneg x)
         _ = thetaEnvelopeUpper *
-              (x ^ 2 * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))) := by ring
-    have hmid2 : x ^ 2 * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))
-        ≤ Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2)
-            * ((X + 1) ^ 2 * Real.exp (-(x - X))) := by
+              (x ^ (2 : ℕ) * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))) := by ring
+    have hmid2 : x ^ (2 : ℕ) * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))
+        ≤ Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ))
+            * ((X + 1) ^ (2 : ℕ) * Real.exp (-(x - X))) := by
       have h1 : Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))
-          ≤ Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2)
-              * Real.exp (-((2 * Real.pi * b ^ 2 - (b + 9 / 2)) * (x - X))) := by
+          ≤ Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ))
+              * Real.exp (-((2 * Real.pi * b ^ (2 : ℕ) - (b + 9 / 2)) * (x - X))) := by
         rw [← Real.exp_add]
         apply Real.exp_le_exp.mpr
         linarith [hexponent]
-      calc x ^ 2 * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))
-          ≤ x ^ 2 * (Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2)
-              * Real.exp (-((2 * Real.pi * b ^ 2 - (b + 9 / 2)) * (x - X)))) :=
+      calc x ^ (2 : ℕ) * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))
+          ≤ x ^ (2 : ℕ) * (Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ))
+              * Real.exp (-((2 * Real.pi * b ^ (2 : ℕ) - (b + 9 / 2)) * (x - X)))) :=
             mul_le_mul_of_nonneg_left h1 (sq_nonneg x)
-        _ = Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2)
-              * (x ^ 2 * Real.exp (-((2 * Real.pi * b ^ 2 - (b + 9 / 2)) * (x - X)))) := by
+        _ = Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ))
+              * (x ^ (2 : ℕ) * Real.exp (-((2 * Real.pi * b ^ (2 : ℕ) - (b + 9 / 2)) * (x - X)))) := by
             ring
-        _ ≤ Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2)
-              * ((X + 1) ^ 2 * Real.exp (-(x - X))) :=
+        _ ≤ Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ))
+              * ((X + 1) ^ (2 : ℕ) * Real.exp (-(x - X))) :=
             mul_le_mul_of_nonneg_left hlin (Real.exp_pos _).le
     have hExX : Real.exp (-(x - X)) = Real.exp X * Real.exp (-x) := by
       rw [← Real.exp_add]
       ring_nf
-    calc x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)
+    calc x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)
         ≤ thetaEnvelopeUpper *
-            (x ^ 2 * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))) := hΦe
-      _ ≤ thetaEnvelopeUpper * (Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2)
-            * ((X + 1) ^ 2 * Real.exp (-(x - X)))) :=
+            (x ^ (2 : ℕ) * Real.exp ((b + 9 / 2) * x - Real.pi * Real.exp (2 * x))) := hΦe
+      _ ≤ thetaEnvelopeUpper * (Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ))
+            * ((X + 1) ^ (2 : ℕ) * Real.exp (-(x - X)))) :=
           mul_le_mul_of_nonneg_left hmid2 thetaEnvelopeUpper_pos.le
-      _ = (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) ^ 2)
+      _ = (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * (X + 1) ^ (2 : ℕ))
             * (Real.exp X * Real.exp (-x)) := by
           rw [hExX]
           ring
   have hmajint : IntegrableOn
       (fun x : ℝ =>
-        (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) ^ 2)
+        (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * (X + 1) ^ (2 : ℕ))
           * (Real.exp X * Real.exp (-x))) (Ioi X) := by
     have h1 : IntegrableOn (fun x : ℝ => Real.exp (-x)) (Ioi X) := by
       have h0 := integrableOn_exp_mul_Ioi (a := (-1 : ℝ)) (by norm_num) X
       exact MeasureTheory.IntegrableOn.congr_fun h0
         (fun x _ => by simp only [neg_one_mul]) measurableSet_Ioi
     exact ((h1.const_mul _).const_mul _)
-  have htail : (∫ x in Ioi X, x ^ 2 * thetaCuspFullSource x * Real.exp (b * x))
-      ≤ thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) ^ 2 := by
+  have htail : (∫ x in Ioi X, x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x))
+      ≤ thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * (X + 1) ^ (2 : ℕ) := by
     have hTle := MeasureTheory.setIntegral_mono_on
       hint.integrableOn hmajint measurableSet_Ioi htailpoint
     have hval : (∫ x in Ioi X,
-        (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) ^ 2)
+        (thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * (X + 1) ^ (2 : ℕ))
           * (Real.exp X * Real.exp (-x)))
-        = thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) ^ 2 := by
+        = thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * (X + 1) ^ (2 : ℕ) := by
       rw [MeasureTheory.integral_const_mul]
       have h2 : (∫ x in Ioi X, Real.exp X * Real.exp (-x))
           = Real.exp X * ∫ x in Ioi X, Real.exp (-x) :=
@@ -537,7 +537,7 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
       simp
     rw [hval] at hTle
     exact hTle
-  have hTZ : thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) ^ 2
+  have hTZ : thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * (X + 1) ^ (2 : ℕ)
       ≤ xiRayLaplace b := by
     have hfloor := xiRayLaplace_ge hb0.le
     have hE2 : thetaEnvelope 2 = Real.exp (9 - Real.pi * Real.exp 4) := by
@@ -545,13 +545,13 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
       rw [← Real.exp_add]
       norm_num
       ring_nf
-    have hXe : (X + 1) ^ 2 ≤ Real.exp (2 * X) := by
+    have hXe : (X + 1) ^ (2 : ℕ) ≤ Real.exp (2 * X) := by
       have ha : X + 1 ≤ Real.exp X := by
         have := Real.add_one_le_exp X
         linarith
-      have hc : Real.exp X ^ 2 = Real.exp (2 * X) := by
+      have hc : Real.exp X ^ (2 : ℕ) = Real.exp (2 * X) := by
         rw [pow_two, ← Real.exp_add, two_mul]
-      have hb' : (X + 1) ^ 2 ≤ Real.exp X ^ 2 :=
+      have hb' : (X + 1) ^ (2 : ℕ) ≤ Real.exp X ^ (2 : ℕ) :=
         pow_le_pow_left₀ (by linarith) ha 2
       linarith
     have hCuγ : thetaEnvelopeUpper = xiRayEnvelopeRatio * thetaEnvelopeLower :=
@@ -561,7 +561,7 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
       have h2 : xiRayUpperBase = Real.pi * Real.exp 4 + Real.log xiRayEnvelopeRatio + 12 := rfl
       linarith
     have hexpineq : Real.log xiRayEnvelopeRatio
-        + ((b + 9 / 2) * X - Real.pi * b ^ 2 + 2 * X)
+        + ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ) + 2 * X)
         ≤ 9 - Real.pi * Real.exp 4 + b := by
       have h1 : (b + 9 / 2 + 2) * X ≤ 2 * b * (b - 1) := by
         have ha : b + 9 / 2 + 2 ≤ 2 * b := by linarith
@@ -570,55 +570,55 @@ theorem xiRayLaplaceSecondMoment_le {b : ℝ} (hb : xiRayPacketBase ≤ b) :
         have hcc : 2 * b * X ≤ 2 * b * (b - 1) :=
           mul_le_mul_of_nonneg_left hXb (by linarith)
         linarith
-      have h2 : 3 * b ^ 2 ≤ Real.pi * b ^ 2 := by
+      have h2 : 3 * b ^ (2 : ℕ) ≤ Real.pi * b ^ (2 : ℕ) := by
         nlinarith [Real.pi_gt_three, sq_nonneg b]
-      have h3 : b ≤ b ^ 2 := by nlinarith
+      have h3 : b ≤ b ^ (2 : ℕ) := by nlinarith
       linarith [h1, h2, h3, hbRu]
-    have hchain : thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2)
-        * (X + 1) ^ 2
+    have hchain : thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ))
+        * (X + 1) ^ (2 : ℕ)
         ≤ thetaEnvelopeLower * thetaEnvelope 2 * Real.exp b := by
-      have hLHS : thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2)
-          * (X + 1) ^ 2
+      have hLHS : thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ))
+          * (X + 1) ^ (2 : ℕ)
           ≤ thetaEnvelopeLower *
               (Real.exp (Real.log xiRayEnvelopeRatio)
-                * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * Real.exp (2 * X)) := by
+                * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * Real.exp (2 * X)) := by
         rw [hCuγ, Real.exp_log xiRayEnvelopeRatio_pos]
         calc xiRayEnvelopeRatio * thetaEnvelopeLower
-            * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) ^ 2
+            * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * (X + 1) ^ (2 : ℕ)
             ≤ xiRayEnvelopeRatio * thetaEnvelopeLower
-              * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * Real.exp (2 * X) := by
+              * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * Real.exp (2 * X) := by
               apply mul_le_mul_of_nonneg_left hXe
               have h0 : (0 : ℝ) ≤ xiRayEnvelopeRatio * thetaEnvelopeLower :=
                 mul_nonneg hγ0.le hCl.le
               exact mul_nonneg h0 (Real.exp_pos _).le
           _ = thetaEnvelopeLower * (xiRayEnvelopeRatio
-              * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * Real.exp (2 * X)) := by ring
+              * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * Real.exp (2 * X)) := by ring
       have hpack : Real.exp (Real.log xiRayEnvelopeRatio)
-          * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * Real.exp (2 * X)
+          * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * Real.exp (2 * X)
           = Real.exp (Real.log xiRayEnvelopeRatio
-              + ((b + 9 / 2) * X - Real.pi * b ^ 2 + 2 * X)) := by
+              + ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ) + 2 * X)) := by
         rw [← Real.exp_add, ← Real.exp_add]
         ring_nf
       have hRHS : Real.exp (Real.log xiRayEnvelopeRatio
-          + ((b + 9 / 2) * X - Real.pi * b ^ 2 + 2 * X))
+          + ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ) + 2 * X))
           ≤ Real.exp (9 - Real.pi * Real.exp 4 + b) :=
         Real.exp_le_exp.mpr hexpineq
       have hfin : thetaEnvelopeLower * thetaEnvelope 2 * Real.exp b
           = thetaEnvelopeLower * Real.exp (9 - Real.pi * Real.exp 4 + b) := by
         rw [hE2, mul_assoc]
         simp only [← Real.exp_add]
-      calc thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * (X + 1) ^ 2
+      calc thetaEnvelopeUpper * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * (X + 1) ^ (2 : ℕ)
           ≤ thetaEnvelopeLower *
               (Real.exp (Real.log xiRayEnvelopeRatio)
-                * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ 2) * Real.exp (2 * X)) := hLHS
+                * Real.exp ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ)) * Real.exp (2 * X)) := hLHS
         _ = thetaEnvelopeLower * Real.exp (Real.log xiRayEnvelopeRatio
-              + ((b + 9 / 2) * X - Real.pi * b ^ 2 + 2 * X)) := by rw [hpack]
+              + ((b + 9 / 2) * X - Real.pi * b ^ (2 : ℕ) + 2 * X)) := by rw [hpack]
         _ ≤ thetaEnvelopeLower * Real.exp (9 - Real.pi * Real.exp 4 + b) :=
             mul_le_mul_of_nonneg_left hRHS hCl.le
         _ = thetaEnvelopeLower * thetaEnvelope 2 * Real.exp b := hfin.symm
     linarith
   -- total
-  have hfin2 : (X ^ 2 + 5) * xiRayLaplace b ≤ (X + 3) ^ 2 * xiRayLaplace b := by
+  have hfin2 : (X ^ (2 : ℕ) + 5) * xiRayLaplace b ≤ (X + 3) ^ (2 : ℕ) * xiRayLaplace b := by
     apply mul_le_mul_of_nonneg_right _ hZpos.le
     nlinarith
   have := hXdef
@@ -736,7 +736,7 @@ theorem norm_thetaBilateralLaplaceMoment_tilt_sub_le (b t : ℝ) :
       ≤ ∫ x : ℝ, ‖((x * thetaCuspFullSource x * Real.exp (b * x) : ℝ) : ℂ)
           * (Complex.exp (((t * x : ℝ) : ℂ) * Complex.I) - 1)‖ :=
         MeasureTheory.norm_integral_le_integral_norm _
-    _ ≤ ∫ x : ℝ, |t| * (x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)) := by
+    _ ≤ ∫ x : ℝ, |t| * (x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)) := by
         apply MeasureTheory.integral_mono hintnorm
           ((integrable_xiRayLaplaceSecondMoment b).const_mul |t|)
         intro x
@@ -759,7 +759,7 @@ theorem norm_thetaBilateralLaplaceMoment_tilt_sub_le (b t : ℝ) :
           _ = |t| * (|x| * |x| * (thetaCuspFullSource x * Real.exp (b * x))) := by
               rw [abs_mul]
               ring
-          _ = |t| * (x ^ 2 * thetaCuspFullSource x * Real.exp (b * x)) := by
+          _ = |t| * (x ^ (2 : ℕ) * thetaCuspFullSource x * Real.exp (b * x)) := by
               rw [abs_mul_abs_self]
               ring
     _ = |t| * xiRayLaplaceSecondMoment b := by
@@ -843,10 +843,10 @@ private theorem logDeriv_tilted_re_norm {b t : ℝ} (hb : xiRayPacketBase ≤ b)
   have hbudN : |t| * xiRayLaplaceSecondMoment b
       ≤ (Real.log b + 3) * xiRayLaplace b / 32 := by
     have h1 : |t| * xiRayLaplaceSecondMoment b
-        ≤ (1 / (32 * (Real.log b + 3))) * ((Real.log b + 3) ^ 2 * xiRayLaplace b) := by
+        ≤ (1 / (32 * (Real.log b + 3))) * ((Real.log b + 3) ^ (2 : ℕ) * xiRayLaplace b) := by
       apply mul_le_mul ht' hsec hsec0
       positivity
-    have h2 : (1 / (32 * (Real.log b + 3))) * ((Real.log b + 3) ^ 2 * xiRayLaplace b)
+    have h2 : (1 / (32 * (Real.log b + 3))) * ((Real.log b + 3) ^ (2 : ℕ) * xiRayLaplace b)
         = (Real.log b + 3) * xiRayLaplace b / 32 := by
       field_simp
     linarith
@@ -911,23 +911,23 @@ private theorem logDeriv_tilted_re_norm {b t : ℝ} (hb : xiRayPacketBase ≤ b)
     linarith [hreNlo]
   -- normSq bounds
   have hnsq_hi : Complex.normSq (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I))
-      ≤ 1090 / 1024 * xiRayLaplace b ^ 2 := by
+      ≤ 1090 / 1024 * xiRayLaplace b ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
-    have h1 : (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).re ^ 2
-        ≤ (33 / 32 * xiRayLaplace b) ^ 2 := by
+    have h1 : (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).re ^ (2 : ℕ)
+        ≤ (33 / 32 * xiRayLaplace b) ^ (2 : ℕ) := by
       apply sq_le_sq' _ hreZhi
       have h0 : (0 : ℝ) ≤ 31 / 32 * xiRayLaplace b := by positivity
       linarith [hreZlo]
-    have h2 : (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).im ^ 2
-        ≤ (xiRayLaplace b / 32) ^ 2 := by
+    have h2 : (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).im ^ (2 : ℕ)
+        ≤ (xiRayLaplace b / 32) ^ (2 : ℕ) := by
       have := abs_le.mp himZ
       exact sq_le_sq' (by linarith [this.1]) this.2
     nlinarith [hZ.le]
-  have hnsq_lo : 961 / 1024 * xiRayLaplace b ^ 2
+  have hnsq_lo : 961 / 1024 * xiRayLaplace b ^ (2 : ℕ)
       ≤ Complex.normSq (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)) := by
     rw [Complex.normSq_apply]
-    have h1 : (31 / 32 * xiRayLaplace b) ^ 2
-        ≤ (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).re ^ 2 := by
+    have h1 : (31 / 32 * xiRayLaplace b) ^ (2 : ℕ)
+        ≤ (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).re ^ (2 : ℕ) := by
       apply pow_le_pow_left₀ (by positivity) hreZlo
     nlinarith [sq_nonneg (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).im]
   have hZcne : thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
@@ -942,7 +942,7 @@ private theorem logDeriv_tilted_re_norm {b t : ℝ} (hb : xiRayPacketBase ≤ b)
   constructor
   · -- real-part lower bound
     rw [hLid, Complex.div_re, ← add_div]
-    have hnum : (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ 2
+    have hnum : (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ (2 : ℕ)
         ≤ (thetaBilateralLaplaceMoment ((b : ℂ) + (t : ℂ) * Complex.I)).re
             * (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).re
           + (thetaBilateralLaplaceMoment ((b : ℂ) + (t : ℂ) * Complex.I)).im
@@ -966,25 +966,25 @@ private theorem logDeriv_tilted_re_norm {b t : ℝ} (hb : xiRayPacketBase ≤ b)
       nlinarith [hprod1, hprod2]
     have hden_pos : 0 < Complex.normSq (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)) := by
       nlinarith [hnsq_lo, hZ]
-    have hnum0 : 0 ≤ (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ 2 := by
+    have hnum0 : 0 ≤ (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ (2 : ℕ) := by
       apply mul_nonneg _ (sq_nonneg _)
       linarith
-    have hstep1 : (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ 2
-          / (1090 / 1024 * xiRayLaplace b ^ 2)
+    have hstep1 : (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ (2 : ℕ)
+          / (1090 / 1024 * xiRayLaplace b ^ (2 : ℕ))
         ≤ ((thetaBilateralLaplaceMoment ((b : ℂ) + (t : ℂ) * Complex.I)).re
             * (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).re
           + (thetaBilateralLaplaceMoment ((b : ℂ) + (t : ℂ) * Complex.I)).im
             * (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)).im)
           / Complex.normSq (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)) := by
-      calc (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ 2
-            / (1090 / 1024 * xiRayLaplace b ^ 2)
-          ≤ (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ 2
+      calc (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ (2 : ℕ)
+            / (1090 / 1024 * xiRayLaplace b ^ (2 : ℕ))
+          ≤ (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ (2 : ℕ)
               / Complex.normSq (thetaBilateralLaplace ((b : ℂ) + (t : ℂ) * Complex.I)) :=
             div_le_div_of_nonneg_left hnum0 hden_pos hnsq_hi
         _ ≤ _ := div_le_div_of_nonneg_right hnum hden_pos.le
-    have hval : (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ 2
-        / (1090 / 1024 * xiRayLaplace b ^ 2) = (92 * Real.log b - 96) / 1090 := by
-      rw [div_eq_div_iff (a := (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ 2)
+    have hval : (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ (2 : ℕ)
+        / (1090 / 1024 * xiRayLaplace b ^ (2 : ℕ)) = (92 * Real.log b - 96) / 1090 := by
+      rw [div_eq_div_iff (a := (92 * Real.log b - 96) / 1024 * xiRayLaplace b ^ (2 : ℕ))
         (ne_of_gt (by positivity)) (by norm_num : (1090 : ℝ) ≠ 0)]
       ring
     rw [hval] at hstep1

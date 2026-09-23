@@ -23,7 +23,7 @@ theorem exists_evenRung_of_prolate_family_windowBound
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x)
     (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (heu : ∀ i, Function.Even (u i))
-    (hev : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+    (hev : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' i x = rescaledProlateP (c i) (mu i) x * u i x
         + rescaledProlateQ (c i) x * u' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u i x| |u' i x| ≤ B K) ∧
@@ -51,18 +51,18 @@ theorem prolateFamily_limit_ne_windowBound
     (hv : ∀ i x, HasDerivAt (v i) (v' i x) x)
     (hv' : ∀ i x, HasDerivAt (v' i) (v'' i x) x)
     (heu : ∀ i, Function.Even (u i)) (hevn : ∀ i, Function.Even (v i))
-    (hevu : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+    (hevu : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' i x = rescaledProlateP (c i) (mu i) x * u i x
         + rescaledProlateQ (c i) x * u' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u i x| |u' i x| ≤ B K) ∧
       u i 0 = 1 ∧ u' i 0 = 0)
-    (hevv : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 2 * K ^ 2 ≤ c i ∧
+    (hevv : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, v'' i x = rescaledProlateP (c i) (nu i) x * v i x
         + rescaledProlateQ (c i) x * v' i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |v i x| |v' i x| ≤ B K) ∧
       v i 0 = 1 ∧ v' i 0 = 0)
     (hpair : ∀ K : ℝ, 0 < K → ∀ᶠ i in L,
-      |∫ x in (-K)..K, u i x * v i x| ≤ C / K ^ 2)
+      |∫ x in (-K)..K, u i x * v i x| ≤ C / K ^ (2 : ℕ))
     (hmu : Tendsto mu L (𝓝 m)) (hnu : Tendsto nu L (𝓝 m'))
     (hc : Tendsto c L atTop) : m ≠ m' := by
   intro heq
@@ -84,7 +84,7 @@ theorem false_of_orthogonal_prolateFamily_below_windowBound
     (hu' : ∀ k i x, HasDerivAt (u' k i) (u'' k i x) x)
     (heu : ∀ k i, Function.Even (u k i))
     (hev : ∀ (k : Fin (j + 1)) (K : ℝ), 0 < K → ∀ᶠ i in L,
-      0 < c i ∧ 2 * K ^ 2 ≤ c i ∧
+      0 < c i ∧ 2 * K ^ (2 : ℕ) ≤ c i ∧
       (∀ x ∈ Icc (0 : ℝ) K, u'' k i x = rescaledProlateP (c i) (mu k i) x * u k i x
         + rescaledProlateQ (c i) x * u' k i x) ∧
       (∀ x ∈ Icc (0 : ℝ) K, max |u k i x| |u' k i x| ≤ B K) ∧
@@ -92,7 +92,7 @@ theorem false_of_orthogonal_prolateFamily_below_windowBound
     (hmass : ∀ (k : Fin (j + 1)) (K : ℝ), 0 < K → ∀ᶠ i in L,
       (∫ x in (-K)..K, u k i x * u k i x) ≤ N)
     (hpair : ∀ k l : Fin (j + 1), k ≠ l → ∀ K : ℝ, 0 < K → ∀ᶠ i in L,
-      |∫ x in (-K)..K, u k i x * u l i x| ≤ C / K ^ 2)
+      |∫ x in (-K)..K, u k i x * u l i x| ≤ C / K ^ (2 : ℕ))
     (hmu : ∀ k, Tendsto (mu k) L (𝓝 (m k))) (hc : Tendsto c L atTop)
     (hbelow : ∀ k, m k < 4 * (j : ℝ) + 1) : False := by
   have hdistinct : Function.Injective m := by

@@ -136,7 +136,7 @@ def IsSequentiallyClosableForm (D : Submodule 𝕜 X) (Q : X → ℝ) : Prop :=
 /-- A null sequence is uniformly Cauchy in the squared ambient norm. -/
 theorem uniform_normSq_small_of_tendsto_zero {x : ℕ → X} (hx : Tendsto x atTop (𝓝 0))
     {C : ℝ} (hC : 0 ≤ C) {ε : ℝ} (hε : 0 < ε) :
-    ∃ N, ∀ m ≥ N, ∀ n ≥ N, C * ‖x n - x m‖ ^ 2 < ε := by
+    ∃ N, ∀ m ≥ N, ∀ n ≥ N, C * ‖x n - x m‖ ^ (2 : ℕ) < ε := by
   have hδ : (0 : ℝ) < Real.sqrt (ε / (C + 1)) / 2 := by positivity
   have hnorm : Tendsto (fun n => ‖x n‖) atTop (𝓝 0) := by
     simpa using (tendsto_zero_iff_norm_tendsto_zero.mp hx)
@@ -147,27 +147,27 @@ theorem uniform_normSq_small_of_tendsto_zero {x : ℕ → X} (hx : Tendsto x atT
       _ < Real.sqrt (ε / (C + 1)) / 2 + Real.sqrt (ε / (C + 1)) / 2 :=
         add_lt_add (hN n hn) (hN m hm)
       _ = Real.sqrt (ε / (C + 1)) := by ring
-  have hsq : ‖x n - x m‖ ^ 2 < ε / (C + 1) := by
+  have hsq : ‖x n - x m‖ ^ (2 : ℕ) < ε / (C + 1) := by
     have h0 : (0 : ℝ) ≤ ‖x n - x m‖ := norm_nonneg _
     have hpos : (0 : ℝ) < ε / (C + 1) := by positivity
-    calc ‖x n - x m‖ ^ 2 < Real.sqrt (ε / (C + 1)) ^ 2 := by nlinarith [Real.sqrt_nonneg (ε / (C+1))]
+    calc ‖x n - x m‖ ^ (2 : ℕ) < Real.sqrt (ε / (C + 1)) ^ (2 : ℕ) := by nlinarith [Real.sqrt_nonneg (ε / (C+1))]
       _ = ε / (C + 1) := Real.sq_sqrt hpos.le
   have hC1 : (0 : ℝ) < C + 1 := by linarith
-  calc C * ‖x n - x m‖ ^ 2 ≤ (C + 1) * ‖x n - x m‖ ^ 2 := by nlinarith [sq_nonneg ‖x n - x m‖]
+  calc C * ‖x n - x m‖ ^ (2 : ℕ) ≤ (C + 1) * ‖x n - x m‖ ^ (2 : ℕ) := by nlinarith [sq_nonneg ‖x n - x m‖]
     _ < (C + 1) * (ε / (C + 1)) := mul_lt_mul_of_pos_left hsq hC1
     _ = ε := by field_simp
 
 /-- **Bounded nonnegative form corrections preserve sequential closability.** -/
 theorem isSequentiallyClosableForm_add_iff (D : Submodule 𝕜 X) (Q B : X → ℝ)
     (hQ : ∀ x, 0 ≤ Q x) (hB : ∀ x, 0 ≤ B x) {C : ℝ} (hC : 0 ≤ C)
-    (hBb : ∀ x, B x ≤ C * ‖x‖ ^ 2) :
+    (hBb : ∀ x, B x ≤ C * ‖x‖ ^ (2 : ℕ)) :
     IsSequentiallyClosableForm D (fun x => Q x + B x) ↔ IsSequentiallyClosableForm D Q := by
   have hBnull : ∀ x : ℕ → X, Tendsto x atTop (𝓝 0) → Tendsto (fun n => B (x n)) atTop (𝓝 0) := by
     intro x hx
-    have hnorm : Tendsto (fun n => C * ‖x n‖ ^ 2) atTop (𝓝 (C * 0 ^ 2)) := by
+    have hnorm : Tendsto (fun n => C * ‖x n‖ ^ (2 : ℕ)) atTop (𝓝 (C * 0 ^ (2 : ℕ))) := by
       have h := (tendsto_zero_iff_norm_tendsto_zero.mp hx)
       exact ((h.pow 2).const_mul C)
-    rw [show C * (0 : ℝ) ^ 2 = 0 by ring] at hnorm
+    rw [show C * (0 : ℝ) ^ (2 : ℕ) = 0 by ring] at hnorm
     exact squeeze_zero (fun n => hB (x n)) (fun n => hBb (x n)) hnorm
   constructor
   · intro hQB x hxD hx0 hcauchy
@@ -178,7 +178,7 @@ theorem isSequentiallyClosableForm_add_iff (D : Submodule 𝕜 X) (Q B : X → �
       refine ⟨max N₁ N₂, fun m hm n hn => ?_⟩
       have h1 := hN₁ m (le_trans (le_max_left _ _) hm) n (le_trans (le_max_left _ _) hn)
       have h2 := hN₂ m (le_trans (le_max_right _ _) hm) n (le_trans (le_max_right _ _) hn)
-      have h3 : B (x n - x m) ≤ C * ‖x n - x m‖ ^ 2 := hBb _
+      have h3 : B (x n - x m) ≤ C * ‖x n - x m‖ ^ (2 : ℕ) := hBb _
       linarith
     have hsum := hQB x hxD hx0 hcauchy'
     exact squeeze_zero (fun n => hQ (x n)) (fun n => by linarith [hB (x n)]) hsum
@@ -200,7 +200,7 @@ closability of a nonnegative form. -/
 theorem isSequentiallyClosableForm_add_bounded_iff (D : Submodule 𝕜 X)
     (q b : X → X → 𝕜)
     (hq : ∀ x, 0 ≤ RCLike.re (q x x)) (hb : ∀ x, 0 ≤ RCLike.re (b x x))
-    {C : ℝ} (hC : 0 ≤ C) (hbC : ∀ x, RCLike.re (b x x) ≤ C * ‖x‖ ^ 2) :
+    {C : ℝ} (hC : 0 ≤ C) (hbC : ∀ x, RCLike.re (b x x) ≤ C * ‖x‖ ^ (2 : ℕ)) :
     IsSequentiallyClosableForm D (fun x => RCLike.re (q x x) + RCLike.re (b x x))
       ↔ IsSequentiallyClosableForm D (fun x => RCLike.re (q x x)) :=
   isSequentiallyClosableForm_add_iff D _ _ hq hb hC hbC

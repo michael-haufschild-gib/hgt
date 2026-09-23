@@ -93,7 +93,7 @@ theorem norm_invSqrtCard (n : ℕ) :
     Real.norm_of_nonneg (Real.sqrt_nonneg _)]
 
 theorem norm_sq_invSqrtCard (n : ℕ) :
-    ‖invSqrtCard n‖ ^ 2 = (((2 ^ n : ℕ) : ℝ)⁻¹) := by
+    ‖invSqrtCard n‖ ^ (2 : ℕ) = (((2 ^ n : ℕ) : ℝ)⁻¹) := by
   rw [norm_invSqrtCard, inv_pow, Real.sq_sqrt (by positivity : (0 : ℝ) ≤ ((2 ^ n : ℕ) : ℝ))]
 
 @[simp]
@@ -142,12 +142,12 @@ theorem norm_walshSign (x y : Fin (2 ^ n)) : ‖walshSign x y‖ = 1 := by
 
 /-- Flip bit `k` of a basis label. -/
 def flipBit (x : Fin (2 ^ n)) (k : Fin n) : Fin (2 ^ n) :=
-  ⟨x.val ^^^ 2 ^ k.val,
+  ⟨x.val ^^^ (2 : ℕ) ^ k.val,
     Nat.xor_lt_two_pow x.isLt (Nat.pow_lt_pow_right one_lt_two k.isLt)⟩
 
 theorem bit_flipBit (x : Fin (2 ^ n)) (k k' : Fin n) :
     bit (flipBit x k) k' = (bit x k' ^^ decide (k = k')) := by
-  change (x.val ^^^ 2 ^ k.val).testBit k'.val = (bit x k' ^^ decide (k = k'))
+  change (x.val ^^^ (2 : ℕ) ^ k.val).testBit k'.val = (bit x k' ^^ decide (k = k'))
   rw [Nat.testBit_xor, Nat.testBit_two_pow]
   congr 1
   rw [decide_eq_decide]
@@ -316,7 +316,7 @@ def uniformStateVec (n : ℕ) : StateVector (Qubits n) :=
 theorem norm_uniformStateVec (n : ℕ) : ‖uniformStateVec n‖ = 1 := by
   rw [uniformStateVec, EuclideanSpace.norm_eq]
   have hsum :
-      ∑ i : Fin (2 ^ n), ‖invSqrtCard n‖ ^ 2 = 1 := by
+      ∑ i : Fin (2 ^ n), ‖invSqrtCard n‖ ^ (2 : ℕ) = 1 := by
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
       norm_sq_invSqrtCard]
     norm_num
@@ -367,10 +367,10 @@ def afterPhaseQueryVec (f : Oracle n) : StateVector (Qubits n) :=
 theorem norm_afterPhaseQueryVec (f : Oracle n) : ‖afterPhaseQueryVec f‖ = 1 := by
   rw [afterPhaseQueryVec, EuclideanSpace.norm_eq]
   have hsum :
-      ∑ x : Fin (2 ^ n), ‖invSqrtCard n * phaseSign f x‖ ^ 2 = 1 := by
+      ∑ x : Fin (2 ^ n), ‖invSqrtCard n * phaseSign f x‖ ^ (2 : ℕ) = 1 := by
     calc
-      ∑ x : Fin (2 ^ n), ‖invSqrtCard n * phaseSign f x‖ ^ 2
-          = ∑ _x : Fin (2 ^ n), ‖invSqrtCard n‖ ^ 2 := by
+      ∑ x : Fin (2 ^ n), ‖invSqrtCard n * phaseSign f x‖ ^ (2 : ℕ)
+          = ∑ _x : Fin (2 ^ n), ‖invSqrtCard n‖ ^ (2 : ℕ) := by
               refine Finset.sum_congr rfl fun x _ => ?_
               rw [norm_mul, norm_phaseSign, mul_one]
       _ = 1 := by

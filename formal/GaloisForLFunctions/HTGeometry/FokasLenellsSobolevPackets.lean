@@ -31,14 +31,14 @@ def derivativeSeed (f : 𝓢(ℝ, ℂ)) (t : ℝ) : 𝓢(ℝ, ℂ) :=
   (2 : ℂ) • mulXCLM f + seed (derivSCLM f) + (I*(t:ℂ)/2) • f
 
 @[simp] theorem seed_apply (f : 𝓢(ℝ, ℂ)) (z : ℝ) :
-    seed f z = (z:ℂ)^2 * f z := by simp [seed]; ring
+    seed f z = (z:ℂ)^(2 : ℕ) * f z := by simp [seed]; ring
 
 theorem packet_memLp (f : 𝓢(ℝ, ℂ)) (t : ℝ) (p : ℝ≥0∞) :
     MemLp (packet f t) p volume :=
   (memLp_phase_iff t p _).mpr ((seed f).memLp p volume)
 
 theorem packet_inverse_square_ae (f : 𝓢(ℝ, ℂ)) (t : ℝ) :
-    (fun z : ℝ => packet f t z/(z:ℂ)^2) =ᵐ[volume]
+    (fun z : ℝ => packet f t z/(z:ℂ)^(2 : ℕ)) =ᵐ[volume]
       fun z => phase t z * f z := by
   filter_upwards [volume.ae_ne (0 : ℝ)] with z hz
   have hzc : (z:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz
@@ -46,7 +46,7 @@ theorem packet_inverse_square_ae (f : 𝓢(ℝ, ℂ)) (t : ℝ) :
   field_simp
 
 theorem packet_inverse_square_memLp (f : 𝓢(ℝ, ℂ)) (t : ℝ) (p : ℝ≥0∞) :
-    MemLp (fun z : ℝ => packet f t z/(z:ℂ)^2) p volume :=
+    MemLp (fun z : ℝ => packet f t z/(z:ℂ)^(2 : ℕ)) p volume :=
   ((memLp_phase_iff t p _).mpr (f.memLp p volume)).ae_eq
     (packet_inverse_square_ae f t).symm
 

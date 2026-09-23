@@ -54,8 +54,8 @@ theorem norm_infiniteMobiusCriticalComplexDampedSignedWeight
 
 theorem norm_infiniteMobiusCriticalComplexDampedSignedWeight_sq
     {sigma : ℝ} (u : ℂ) (hsigma : 1 < sigma) (n : ℕ) :
-    ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma u n‖ ^ 2 =
-      Real.exp (-(u.re * (sigma - 1) * Real.log n)) ^ 2 *
+    ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma u n‖ ^ (2 : ℕ) =
+      Real.exp (-(u.re * (sigma - 1) * Real.log n)) ^ (2 : ℕ) *
         squarefreeMobiusProbability sigma n := by
   rw [norm_infiniteMobiusCriticalComplexDampedSignedWeight,
     infiniteMobiusCriticalDampedSignedWeight, norm_mul, mul_pow,
@@ -65,7 +65,7 @@ theorem norm_infiniteMobiusCriticalComplexDampedSignedWeight_sq
 theorem summable_norm_sq_infiniteMobiusCriticalComplexDampedSignedWeight
     {sigma : ℝ} {u : ℂ} (hsigma : 1 < sigma) (hu : 0 ≤ u.re) :
     Summable (fun n : ℕ =>
-      ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma u n‖ ^ 2) := by
+      ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma u n‖ ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun n => sq_nonneg _) ?_
     (summable_squarefreeMobiusProbability hsigma)
   intro n
@@ -76,7 +76,7 @@ theorem summable_norm_sq_infiniteMobiusCriticalComplexDampedSignedWeight
     exact neg_nonpos.mpr
       (mul_nonneg (mul_nonneg hu (sub_nonneg.mpr hsigma.le)) hlog)
   have hexp0 := Real.exp_pos (-(u.re * (sigma - 1) * Real.log n))
-  have hsquare : Real.exp (-(u.re * (sigma - 1) * Real.log n)) ^ 2 ≤ 1 := by
+  have hsquare : Real.exp (-(u.re * (sigma - 1) * Real.log n)) ^ (2 : ℕ) ≤ 1 := by
     nlinarith
   exact mul_le_of_le_one_left
     (squarefreeMobiusProbability_nonneg hsigma n) hsquare
@@ -91,11 +91,11 @@ def infiniteMobiusCriticalComplexDampedSignedWeightLp
 
 theorem norm_infiniteMobiusCriticalComplexDampedSignedWeightLp_sq_le_one
     {sigma : ℝ} {u : ℂ} (hsigma : 1 < sigma) (hu : 0 ≤ u.re) :
-    ‖infiniteMobiusCriticalComplexDampedSignedWeightLp sigma u hsigma hu‖ ^ 2 ≤ 1 := by
+    ‖infiniteMobiusCriticalComplexDampedSignedWeightLp sigma u hsigma hu‖ ^ (2 : ℕ) ≤ 1 := by
   rw [HilbertSchmidt.lp_norm_sq_eq]
   calc
     (∑' n : ℕ,
-        ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma u n‖ ^ 2) ≤
+        ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma u n‖ ^ (2 : ℕ)) ≤
         ∑' n : ℕ, squarefreeMobiusProbability sigma n := by
       apply Summable.tsum_le_tsum
       · intro n
@@ -107,7 +107,7 @@ theorem norm_infiniteMobiusCriticalComplexDampedSignedWeightLp_sq_le_one
           exact neg_nonpos.mpr
             (mul_nonneg (mul_nonneg hu (sub_nonneg.mpr hsigma.le)) hlog)
         have hsquare :
-            Real.exp (-(u.re * (sigma - 1) * Real.log n)) ^ 2 ≤ 1 := by
+            Real.exp (-(u.re * (sigma - 1) * Real.log n)) ^ (2 : ℕ) ≤ 1 := by
           nlinarith [Real.exp_pos
             (-(u.re * (sigma - 1) * Real.log n))]
         exact mul_le_of_le_one_left
@@ -331,7 +331,7 @@ theorem inner_infiniteMobiusSignedWeight_complexDamped_eq_squarefreeBoundaryOver
         (starRingEnd ℂ) (infiniteMobiusSignedWeight sigma n) =
         (squarefreeMobiusProbability sigma n : ℂ) := by
       calc
-        _ = ((‖infiniteMobiusSignedWeight sigma n‖ : ℂ) ^ 2) :=
+        _ = ((‖infiniteMobiusSignedWeight sigma n‖ : ℂ) ^ (2 : ℕ)) :=
           RCLike.mul_conj (infiniteMobiusSignedWeight sigma n)
         _ = _ := by rw [← Complex.ofReal_pow,
           norm_infiniteMobiusSignedWeight_sq hsigma]
@@ -392,7 +392,7 @@ theorem inner_fisherTangent_complexDamped_eq_squarefreeFisherScore
         (starRingEnd ℂ) (infiniteMobiusSignedWeight sigma n) =
         (squarefreeMobiusProbability sigma n : ℂ) := by
       calc
-        _ = ((‖infiniteMobiusSignedWeight sigma n‖ : ℂ) ^ 2) :=
+        _ = ((‖infiniteMobiusSignedWeight sigma n‖ : ℂ) ^ (2 : ℕ)) :=
           RCLike.mul_conj (infiniteMobiusSignedWeight sigma n)
         _ = _ := by
           rw [← Complex.ofReal_pow,

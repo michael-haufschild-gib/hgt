@@ -28,11 +28,11 @@ variable {σ ι : Type*} [Fintype σ] [DecidableEq σ]
 /-- Entrywise domination aggregates to domination of the normalized squared matrix mean. -/
 theorem twoQueryLocalRetentionMean_le_of_entrywise
     {κ : Type*} [Fintype κ] [Nonempty κ]
-    (C E : Matrix κ κ ℝ) (h : ∀ i j, (C i j) ^ 2 ≤ E i j) :
+    (C E : Matrix κ κ ℝ) (h : ∀ i j, (C i j) ^ (2 : ℕ) ≤ E i j) :
     twoQueryLocalRetentionMean C ≤
-      (∑ i, ∑ j, E i j) / (Fintype.card κ : ℝ) ^ 2 := by
+      (∑ i, ∑ j, E i j) / (Fintype.card κ : ℝ) ^ (2 : ℕ) := by
   rw [twoQueryLocalRetentionMean]
-  have hden : 0 < (Fintype.card κ : ℝ) ^ 2 := by positivity
+  have hden : 0 < (Fintype.card κ : ℝ) ^ (2 : ℕ) := by positivity
   exact (div_le_div_iff_of_pos_right hden).2
     (Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => h i j)
 
@@ -164,7 +164,7 @@ theorem average_pauliEigenframeExpectation_eq_transfer
 
 /-- Every adapted eigenvalue sign has square one. -/
 theorem pauliEigenframeSign_sq (P : σ → Option (Fin 3)) (b : σ → Bool) :
-    (pauliEigenframeSign P b) ^ 2 = 1 := by
+    (pauliEigenframeSign P b) ^ (2 : ℕ) = 1 := by
   classical
   rw [pauliEigenframeSign, pow_two, ← Finset.prod_mul_distrib]
   apply Finset.prod_eq_one
@@ -180,13 +180,13 @@ expectation over the adapted product eigenframe. -/
 theorem pauliConjugationTransfer_sq_le_eigenframeMean
     (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ)
     (input output : σ → Option (Fin 3)) :
-    (pauliConjugationTransfer U output input) ^ 2 ≤
-      (∑ b : σ → Bool, (pauliEigenframeExpectation U input output b) ^ 2) /
+    (pauliConjugationTransfer U output input) ^ (2 : ℕ) ≤
+      (∑ b : σ → Bool, (pauliEigenframeExpectation U input output b) ^ (2 : ℕ)) /
         (Fintype.card (σ → Bool) : ℝ) := by
   classical
   let N : ℝ := Fintype.card (σ → Bool)
   have hN : 0 < N := by positivity
-  have hsign : (∑ b : σ → Bool, (pauliEigenframeSign output b) ^ 2) = N := by
+  have hsign : (∑ b : σ → Bool, (pauliEigenframeSign output b) ^ (2 : ℕ)) = N := by
     simp_rw [pauliEigenframeSign_sq]
     simp [N]
   have hCS := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ
@@ -201,9 +201,9 @@ theorem pauliConjugationTransfer_sq_le_eigenframeMean
   rw [div_pow]
   have hN0 : N ≠ 0 := ne_of_gt hN
   change
-    (∑ b, pauliEigenframeSign output b * pauliEigenframeExpectation U input output b) ^ 2 /
-        N ^ 2 ≤
-      (∑ b, pauliEigenframeExpectation U input output b ^ 2) / N
+    (∑ b, pauliEigenframeSign output b * pauliEigenframeExpectation U input output b) ^ (2 : ℕ) /
+        N ^ (2 : ℕ) ≤
+      (∑ b, pauliEigenframeExpectation U input output b ^ (2 : ℕ)) / N
   apply (div_le_div_iff₀ (sq_pos_of_pos hN) hN).2
   nlinarith [mul_nonneg hN.le (sub_nonneg.mpr hCS)]
 
@@ -214,7 +214,7 @@ def dictionaryEigenframeMean [Fintype ι]
     Matrix ι ι ℝ :=
   fun output input =>
     (∑ b : σ → Bool,
-        (pauliEigenframeExpectation U (label input) (label output) b) ^ 2) /
+        (pauliEigenframeExpectation U (label input) (label output) b) ^ (2 : ℕ)) /
       (Fintype.card (σ → Bool) : ℝ)
 
 /-- Literal adaptive product-eigenframe, two-query score. -/
@@ -222,7 +222,7 @@ def adaptiveEigenframeTwoQueryScore [Fintype ι]
     (label : ι → σ → Option (Fin 3))
     (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) : ℝ :=
   (∑ output : ι, ∑ input : ι, dictionaryEigenframeMean label U output input) /
-    (Fintype.card ι : ℝ) ^ 2
+    (Fintype.card ι : ℝ) ^ (2 : ℕ)
 
 /-- Every dictionary-eigenframe mean is nonnegative. -/
 theorem dictionaryEigenframeMean_nonneg [Fintype ι]
@@ -257,7 +257,7 @@ theorem dictionaryPauliTransfer_sq_le_eigenframeMean [Fintype ι]
     (label : ι → σ → Option (Fin 3))
     (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ)
     (input output : ι) :
-    (dictionaryPauliTransfer label U output input) ^ 2 ≤
+    (dictionaryPauliTransfer label U output input) ^ (2 : ℕ) ≤
       dictionaryEigenframeMean label U output input :=
   pauliConjugationTransfer_sq_le_eigenframeMean U (label input) (label output)
 
@@ -272,7 +272,7 @@ theorem twoQueryLocalRetentionMean_le_adaptiveEigenframeScore
   classical
   change twoQueryLocalRetentionMean (dictionaryPauliTransfer label U) ≤
     (∑ output, ∑ input, dictionaryEigenframeMean label U output input) /
-      (Fintype.card ι : ℝ) ^ 2
+      (Fintype.card ι : ℝ) ^ (2 : ℕ)
   exact twoQueryLocalRetentionMean_le_of_entrywise
     (dictionaryPauliTransfer label U) (dictionaryEigenframeMean label U)
     (fun output input => dictionaryPauliTransfer_sq_le_eigenframeMean label U input output)
@@ -285,7 +285,7 @@ theorem adaptiveEigenframeTwoQueryScore_ge_card_sq_inv
     (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ)
     (h : ι → ℝ) (hh : h ≠ 0)
     (hfix : dictionaryPauliTransfer label U *ᵥ h = h) :
-    1 / (Fintype.card ι : ℝ) ^ 2 ≤ adaptiveEigenframeTwoQueryScore label U := by
+    1 / (Fintype.card ι : ℝ) ^ (2 : ℕ) ≤ adaptiveEigenframeTwoQueryScore label U := by
   exact (twoQueryLocalRetentionMean_ge_card_sq_inv _ h hh hfix).trans
     (twoQueryLocalRetentionMean_le_adaptiveEigenframeScore label U)
 
@@ -346,7 +346,7 @@ theorem haar_sq_pauliEigenframeExpectation_eq
     (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
         (pauliEigenframeExpectation
           (V : Matrix (FiniteQubitConfiguration (Fin n))
-            (FiniteQubitConfiguration (Fin n)) ℂ) input output b) ^ 2
+            (FiniteQubitConfiguration (Fin n)) ℂ) input output b) ^ (2 : ℕ)
         ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) =
       1 / ((2 ^ n + 1 : ℕ) : ℝ) := by
   classical
@@ -354,7 +354,7 @@ theorem haar_sq_pauliEigenframeExpectation_eq
       Fintype.card (Fin 2 ⊕ Fin (2 ^ n - 2)) := by
     have hpow : 2 ≤ 2 ^ n := by
       calc
-        2 = 2 ^ 1 := by norm_num
+        2 = 2 ^ (1 : ℕ) := by norm_num
         _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hn
     simp only [FiniteQubitConfiguration, Fintype.card_fun, Fintype.card_bool,
       Fintype.card_fin, Fintype.card_sum]
@@ -368,7 +368,7 @@ theorem haar_sq_pauliEigenframeExpectation_eq
           (star (V : Matrix (FiniteQubitConfiguration (Fin n))
               (FiniteQubitConfiguration (Fin n)) ℂ) * finitePauliMatrix input *
             (V : Matrix (FiniteQubitConfiguration (Fin n))
-              (FiniteQubitConfiguration (Fin n)) ℂ)))).re ^ 2
+              (FiniteQubitConfiguration (Fin n)) ℂ)))).re ^ (2 : ℕ)
       ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) = _
   rw [haar_sq_trace_pure_state_conjugation (2 ^ n - 2) e
     (productStabilizerDensity_isHermitian (pauliEigenframeSample output b))
@@ -379,7 +379,7 @@ theorem haar_sq_pauliEigenframeExpectation_eq
     (finitePauliMatrix_mul_self input)]
   have hpow : 2 ≤ 2 ^ n := by
     calc
-      2 = 2 ^ 1 := by norm_num
+      2 = 2 ^ (1 : ℕ) := by norm_num
       _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hn
   have hd3 : ((2 ^ n - 2 : ℕ) : ℝ) + 3 = ((2 ^ n + 1 : ℕ) : ℝ) := by
     rw [Nat.cast_sub hpow]
@@ -405,7 +405,7 @@ theorem haar_dictionaryEigenframeMean_eq
         (pauliEigenframeExpectation
           (V : Matrix (FiniteQubitConfiguration (Fin n))
             (FiniteQubitConfiguration (Fin n)) ℂ)
-          (label input) (label output) b) ^ 2 := by
+          (label input) (label output) b) ^ (2 : ℕ) := by
     intro b
     simpa [pauliEigenframeExpectation] using
       (continuous_sq_trace_conj
@@ -417,7 +417,7 @@ theorem haar_dictionaryEigenframeMean_eq
         (pauliEigenframeExpectation
           (V : Matrix (FiniteQubitConfiguration (Fin n))
             (FiniteQubitConfiguration (Fin n)) ℂ)
-          (label input) (label output) b) ^ 2) /
+          (label input) (label output) b) ^ (2 : ℕ)) /
         (Fintype.card (Fin n → Bool) : ℝ)
       ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) = _
   rw [integral_div,
@@ -465,7 +465,7 @@ theorem haar_adaptiveEigenframeTwoQueryScore_eq
         dictionaryEigenframeMean label
           (V : Matrix (FiniteQubitConfiguration (Fin n))
             (FiniteQubitConfiguration (Fin n)) ℂ) output input) /
-        (Fintype.card ι : ℝ) ^ 2
+        (Fintype.card ι : ℝ) ^ (2 : ℕ)
       ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) = _
   rw [integral_div,
     integral_finsetSum _ (fun output _ =>
@@ -510,12 +510,12 @@ theorem haar_measureReal_adaptiveEigenframeScore_ge_card_inv_le
     (label : ι → Fin n → Option (Fin 3))
     (hlabel : ∀ i, label i ≠ pauliIdentityLabel n) :
     (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
-        {V | 1 / (Fintype.card ι : ℝ) ^ 2 ≤
+        {V | 1 / (Fintype.card ι : ℝ) ^ (2 : ℕ) ≤
           adaptiveEigenframeTwoQueryScore label
             (V : Matrix (FiniteQubitConfiguration (Fin n))
               (FiniteQubitConfiguration (Fin n)) ℂ)} ≤
-      (Fintype.card ι : ℝ) ^ 2 / ((2 ^ n + 1 : ℕ) : ℝ) := by
-  have hM : 0 < (Fintype.card ι : ℝ) ^ 2 := by positivity
+      (Fintype.card ι : ℝ) ^ (2 : ℕ) / ((2 ^ n + 1 : ℕ) : ℝ) := by
+  have hM : 0 < (Fintype.card ι : ℝ) ^ (2 : ℕ) := by positivity
   have h := haar_measureReal_adaptiveEigenframeScore_ge_le hn label hlabel
     (one_div_pos.mpr hM)
   convert h using 1 <;> field_simp
@@ -600,7 +600,7 @@ theorem autonomous_adaptiveEigenframeTwoQueryScore_ge
     (H : selfAdjoint
       (Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ))
     (hH : H ≠ 0) (hsupport : HasPauliDictionarySupport p H) (t : ℝ) :
-    1 / (Fintype.card {P // p P} : ℝ) ^ 2 ≤
+    1 / (Fintype.card {P // p P} : ℝ) ^ (2 : ℕ) ≤
       adaptiveEigenframeTwoQueryScore (fun P : {P // p P} => P.1)
         (exp (t • ((-Complex.I) •
           (H : Matrix (FiniteQubitConfiguration σ)
@@ -621,17 +621,17 @@ theorem autonomous_adaptiveEigenframeTwoQueryScore_gt_haar
       (Matrix (FiniteQubitConfiguration (Fin n))
         (FiniteQubitConfiguration (Fin n)) ℂ))
     (hH : H ≠ 0) (hsupport : HasPauliDictionarySupport p H) (t : ℝ)
-    (hsep : Fintype.card {P // p P} ^ 2 < 2 ^ n + 1) :
+    (hsep : Fintype.card {P // p P} ^ (2 : ℕ) < 2 ^ n + 1) :
     1 / ((2 ^ n + 1 : ℕ) : ℝ) <
       adaptiveEigenframeTwoQueryScore (fun P : {P // p P} => P.1)
         (exp (t • ((-Complex.I) •
           (H : Matrix (FiniteQubitConfiguration (Fin n))
             (FiniteQubitConfiguration (Fin n)) ℂ)))) := by
-  have hM : 0 < (Fintype.card {P // p P} : ℝ) ^ 2 := by positivity
-  have hsepR : (Fintype.card {P // p P} : ℝ) ^ 2 < ((2 ^ n + 1 : ℕ) : ℝ) := by
+  have hM : 0 < (Fintype.card {P // p P} : ℝ) ^ (2 : ℕ) := by positivity
+  have hsepR : (Fintype.card {P // p P} : ℝ) ^ (2 : ℕ) < ((2 ^ n + 1 : ℕ) : ℝ) := by
     exact_mod_cast hsep
   have hinv : 1 / ((2 ^ n + 1 : ℕ) : ℝ) <
-      1 / (Fintype.card {P // p P} : ℝ) ^ 2 :=
+      1 / (Fintype.card {P // p P} : ℝ) ^ (2 : ℕ) :=
     one_div_lt_one_div_of_lt hM hsepR
   exact hinv.trans_le
     (autonomous_adaptiveEigenframeTwoQueryScore_ge p H hH hsupport t)
@@ -938,7 +938,7 @@ theorem autonomous_majoranaQBody_adaptiveEigenframeScore_ge
         (FiniteQubitConfiguration (Fin n)) ℂ))
     (hH : H ≠ 0) (hsupport : HasPauliDictionarySupport (MajoranaQBodyDictionary n q) H)
     (t : ℝ) :
-    1 / (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+    1 / (Nat.choose (2 * n) q : ℝ) ^ (2 : ℕ) ≤
       adaptiveEigenframeTwoQueryScore
         (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
         (exp (t • ((-Complex.I) •
@@ -955,7 +955,7 @@ theorem autonomous_majoranaQBody_adaptiveEigenframeScore_ge
 theorem autonomous_majoranaQBodyHamiltonian_adaptiveEigenframeScore_ge
     {n q : ℕ} (hqle : q ≤ 2 * n) (c : MajoranaQBodyIndex n q → ℝ) (hc : c ≠ 0)
     (t : ℝ) :
-    1 / (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+    1 / (Nat.choose (2 * n) q : ℝ) ^ (2 : ℕ) ≤
       adaptiveEigenframeTwoQueryScore
         (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
         (exp (t • ((-Complex.I) •
@@ -974,7 +974,7 @@ theorem autonomous_majoranaQBody_adaptiveEigenframeScore_gt_haar
       (Matrix (FiniteQubitConfiguration (Fin n))
         (FiniteQubitConfiguration (Fin n)) ℂ))
     (hH : H ≠ 0) (hsupport : HasPauliDictionarySupport (MajoranaQBodyDictionary n q) H)
-    (t : ℝ) (hsep : Nat.choose (2 * n) q ^ 2 < 2 ^ n + 1) :
+    (t : ℝ) (hsep : Nat.choose (2 * n) q ^ (2 : ℕ) < 2 ^ n + 1) :
     1 / ((2 ^ n + 1 : ℕ) : ℝ) <
       adaptiveEigenframeTwoQueryScore
         (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
@@ -991,7 +991,7 @@ theorem autonomous_majoranaQBody_adaptiveEigenframeScore_gt_haar
 /-- Coefficient-level strict Haar separation for every nonzero fixed-`q` Majorana Hamiltonian. -/
 theorem autonomous_majoranaQBodyHamiltonian_adaptiveEigenframeScore_gt_haar
     {n q : ℕ} (hqle : q ≤ 2 * n) (c : MajoranaQBodyIndex n q → ℝ) (hc : c ≠ 0)
-    (t : ℝ) (hsep : Nat.choose (2 * n) q ^ 2 < 2 ^ n + 1) :
+    (t : ℝ) (hsep : Nat.choose (2 * n) q ^ (2 : ℕ) < 2 ^ n + 1) :
     1 / ((2 ^ n + 1 : ℕ) : ℝ) <
       adaptiveEigenframeTwoQueryScore
         (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
@@ -1006,7 +1006,7 @@ theorem autonomous_majoranaQBodyHamiltonian_adaptiveEigenframeScore_gt_haar
 /-- For every fixed body order, the squared Majorana dictionary is eventually smaller than Hilbert
 dimension.  This is an unconditional polynomial-versus-exponential theorem. -/
 theorem eventually_majoranaQBodyDictionary_sq_lt_two_pow (q : ℕ) :
-    ∀ᶠ n : ℕ in atTop, Nat.choose (2 * n) q ^ 2 < 2 ^ n := by
+    ∀ᶠ n : ℕ in atTop, Nat.choose (2 * n) q ^ (2 : ℕ) < 2 ^ n := by
   have hlim : Tendsto (fun n : ℕ => (n : ℝ) ^ (2 * q) / (2 : ℝ) ^ n)
       atTop (nhds 0) :=
     tendsto_pow_const_div_const_pow_of_one_lt (2 * q) (by norm_num)
@@ -1021,21 +1021,21 @@ theorem eventually_majoranaQBodyDictionary_sq_lt_two_pow (q : ℕ) :
     nlinarith
   have hchoose : Nat.choose (2 * n) q ≤ (2 * n) ^ q := Nat.choose_le_pow _ _
   calc
-    Nat.choose (2 * n) q ^ 2 ≤ ((2 * n) ^ q) ^ 2 := by gcongr
+    Nat.choose (2 * n) q ^ (2 : ℕ) ≤ ((2 * n) ^ q) ^ (2 : ℕ) := by gcongr
     _ = (2 * n) ^ (2 * q) := by rw [← pow_mul]; congr 1; omega
     _ < 2 ^ n := by exact_mod_cast hpolyR
 
 /-- Haar probability that a fixed-`q` Majorana dictionary reaches its conserved autonomous floor is
-at most `choose(2n,q)^2/(2^n+1)`. -/
+at most `choose(2n,q)^(2 : ℕ)/(2^n+1)`. -/
 theorem haar_measureReal_majoranaQBody_score_ge_floor_le
     {n q : ℕ} (hn : 1 ≤ n) (hqpos : 0 < q) (hqeven : Even q) (hqle : q ≤ 2 * n) :
     (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
-        {V | 1 / (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+        {V | 1 / (Nat.choose (2 * n) q : ℝ) ^ (2 : ℕ) ≤
           adaptiveEigenframeTwoQueryScore
             (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
             (V : Matrix (FiniteQubitConfiguration (Fin n))
               (FiniteQubitConfiguration (Fin n)) ℂ)} ≤
-      (Nat.choose (2 * n) q : ℝ) ^ 2 / ((2 ^ n + 1 : ℕ) : ℝ) := by
+      (Nat.choose (2 * n) q : ℝ) ^ (2 : ℕ) / ((2 ^ n + 1 : ℕ) : ℝ) := by
   classical
   letI : Nonempty {P // MajoranaQBodyDictionary n q P} :=
     majoranaQBodyDictionary_nonempty hqle
@@ -1052,7 +1052,7 @@ theorem haar_measureReal_majoranaQBody_score_ge_floor_le
 /-- The Haar high-score upper bound vanishes for every fixed body order. -/
 theorem tendsto_majoranaQBody_haarHighScoreBound_zero (q : ℕ) :
     Tendsto (fun n : ℕ =>
-      (Nat.choose (2 * n) q : ℝ) ^ 2 / ((2 ^ n + 1 : ℕ) : ℝ))
+      (Nat.choose (2 * n) q : ℝ) ^ (2 : ℕ) / ((2 ^ n + 1 : ℕ) : ℝ))
       atTop (nhds 0) := by
   have hbase : Tendsto (fun n : ℕ => (n : ℝ) ^ (2 * q) / (2 : ℝ) ^ n)
       atTop (nhds 0) :=
@@ -1065,17 +1065,17 @@ theorem tendsto_majoranaQBody_haarHighScoreBound_zero (q : ℕ) :
   apply squeeze_zero'
   · exact Filter.Eventually.of_forall fun n => by positivity
   · filter_upwards with n
-    have hchoose : Nat.choose (2 * n) q ^ 2 ≤ (2 * n) ^ (2 * q) := by
+    have hchoose : Nat.choose (2 * n) q ^ (2 : ℕ) ≤ (2 * n) ^ (2 * q) := by
       calc
-        Nat.choose (2 * n) q ^ 2 ≤ ((2 * n) ^ q) ^ 2 := by
+        Nat.choose (2 * n) q ^ (2 : ℕ) ≤ ((2 * n) ^ q) ^ (2 : ℕ) := by
           gcongr
           exact Nat.choose_le_pow _ _
         _ = (2 * n) ^ (2 * q) := by rw [← pow_mul]; congr 1; omega
-    have hchooseR : (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+    have hchooseR : (Nat.choose (2 * n) q : ℝ) ^ (2 : ℕ) ≤
         (((2 * n) ^ (2 * q) : ℕ) : ℝ) := by exact_mod_cast hchoose
     have hpowpos : (0 : ℝ) < ((2 ^ n : ℕ) : ℝ) := by positivity
     calc
-      (Nat.choose (2 * n) q : ℝ) ^ 2 / ((2 ^ n + 1 : ℕ) : ℝ) ≤
+      (Nat.choose (2 * n) q : ℝ) ^ (2 : ℕ) / ((2 ^ n + 1 : ℕ) : ℝ) ≤
           (((2 * n) ^ (2 * q) : ℕ) : ℝ) / ((2 ^ n + 1 : ℕ) : ℝ) := by
             exact div_le_div_of_nonneg_right hchooseR (by positivity)
       _ ≤ (((2 * n) ^ (2 * q) : ℕ) : ℝ) / ((2 ^ n : ℕ) : ℝ) := by
@@ -1088,7 +1088,7 @@ theorem eventually_haar_majoranaQBody_score_ge_floor_measure_lt
     (q : ℕ) (hqpos : 0 < q) (hqeven : Even q) {δ : ℝ} (hδ : 0 < δ) :
     ∀ᶠ n : ℕ in atTop,
       (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
-          {V | 1 / (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+          {V | 1 / (Nat.choose (2 * n) q : ℝ) ^ (2 : ℕ) ≤
             adaptiveEigenframeTwoQueryScore
               (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
               (V : Matrix (FiniteQubitConfiguration (Fin n))

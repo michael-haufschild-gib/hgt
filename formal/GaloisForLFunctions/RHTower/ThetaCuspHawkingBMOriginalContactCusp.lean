@@ -129,7 +129,7 @@ private theorem power_laplacian_sum {ι : Type*} (s : Finset ι) (F : ι → A �
   induction s using Finset.induction_on with
   | empty =>
     simp only [Finset.sum_empty]
-    change (z 1:ℂ)^2*(fderiv ℝ (fun x => fderiv ℝ (fun _ : A => (0:ℂ)) x (Pi.single 0 1)) z (Pi.single 0 1)+
+    change (z 1:ℂ)^(2 : ℕ)*(fderiv ℝ (fun x => fderiv ℝ (fun _ : A => (0:ℂ)) x (Pi.single 0 1)) z (Pi.single 0 1)+
       fderiv ℝ (fun x => fderiv ℝ (fun _ : A => (0:ℂ)) x (Pi.single 1 1)) z (Pi.single 1 1))=0
     simp
   | @insert i s hi ih =>
@@ -210,7 +210,7 @@ private theorem square_laplacian_expansion (q : XiZeroCopy) (X : ℝ → ℝ) (w
   filter_upwards [] with k
   rw [square_laplacian_decomposition q _ (Real.exp_pos k),principal_laplacian q _ (Real.exp_pos k)]
   simp only [Matrix.cons_val,exp_cpow,D4BMSquareCuspJets.coordinateJet]
-  have he : Complex.exp ((w+2)*(k:ℂ))=Complex.exp (w*(k:ℂ))*(Real.exp k:ℂ)^2 := by
+  have he : Complex.exp ((w+2)*(k:ℂ))=Complex.exp (w*(k:ℂ))*(Real.exp k:ℂ)^(2 : ℕ) := by
     rw [show (w+2)*(k:ℂ)=w*(k:ℂ)+2*(k:ℂ) by ring,Complex.exp_add,
       ← exp_cpow (2:ℂ) k,Complex.cpow_two]
   rw [he]
@@ -231,7 +231,7 @@ private theorem source_expansion (q : XiZeroCopy) (br : Bool) (amp : ℂ)
 /-- Principal coefficient of the complete original contact, including its forcing. -/
 def contactCoefficient (q : XiZeroCopy) (br : Bool) (amp : ℂ) (p R : ℝ) (i : Fin 3) : ℂ :=
   (principalExponent q i*(principalExponent q i-1)-2)*principalCoefficient q br amp p R i+
-    (R:ℂ)^3/((R:ℂ)^2-1)*(forcingValueCoefficient q br amp p R+
+    (R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1)*(forcingValueCoefficient q br amp p R+
       forcingLaplacianCoefficient q br amp p R*principalExponent q i*(principalExponent q i-1))*
         principalAmplitude q i
 
@@ -257,7 +257,7 @@ theorem original_contact_expansion (q : XiZeroCopy) (br : Bool) (amp : ℂ)
   have h := ((hl.const_mul (R:ℂ)).sub ((hs.const_mul (R:ℂ)).const_mul 2)).add
     (((hP.const_mul (forcingValueCoefficient q br amp p R)).add
       (hL.const_mul (forcingLaplacianCoefficient q br amp p R))).const_mul
-        ((R:ℂ)^3/((R:ℂ)^2-1)))
+        ((R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1)))
   simp only [mul_zero,sub_zero,zero_add] at h
   apply h.congr'
   filter_upwards [] with k
@@ -269,7 +269,7 @@ theorem original_contact_expansion (q : XiZeroCopy) (br : Bool) (amp : ℂ)
   change _=Complex.exp (w*(k:ℂ))*
     ((R:ℂ)*L (D4BMOriginalAngularGreen.source q br amp p v) ![X k,Real.exp k]-
       2*((R:ℂ)*D4BMOriginalAngularGreen.source q br amp p v ![X k,Real.exp k])+
-      (R:ℂ)^3/((R:ℂ)^2-1)*(forcingValueCoefficient q br amp p R*
+      (R:ℂ)^(3 : ℕ)/((R:ℂ)^(2 : ℕ)-1)*(forcingValueCoefficient q br amp p R*
         D4BMModularCore.fullSquarePotential q ![X k,Real.exp k]+
         forcingLaplacianCoefficient q br amp p R*L (D4BMModularCore.fullSquarePotential q) ![X k,Real.exp k])-
       ∑ i : Fin 3, contactCoefficient q br amp p R i*Complex.exp (principalExponent q i*(k:ℂ)))
@@ -319,7 +319,7 @@ theorem second_metric_cusp_expansion (q r : XiZeroCopy) (br side outer : Bool) (
 /-- The two original metric transfers retain their signed difference. -/
 def metricFluxCoefficient (q r : XiZeroCopy) (br side outer : Bool) (amp : ℂ)
     (j : Fin 2) (p R : ℝ) (i : Fin 3) : ℂ :=
-  (1/(R:ℂ)^2)*(firstFluxCoefficient q r br side outer amp j p R i-
+  (1/(R:ℂ)^(2 : ℕ))*(firstFluxCoefficient q r br side outer amp j p R i-
     secondFluxCoefficient q r br side outer amp j p R i)
 
 /-- Neither original diagonal/reflected transfer contributes a constant cusp term. -/
@@ -348,8 +348,8 @@ private theorem contact_smooth {U : P → ℂ} {x : P} (hU : ContDiffAt ℝ ∞ 
   have hr : ContDiffAt ℝ ∞ (fun z : P => (z 1:ℂ)) x :=
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ (1:Fin 4))).contDiffAt
   change ContDiffAt ℝ ∞ (fun z =>
-    -(z 1:ℂ)^2*((z 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 U) z-
-    (z 1:ℂ)^2*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
+    -(z 1:ℂ)^(2 : ℕ)*((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 U) z-
+    (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
     2*(z 1:ℂ)*coordDeriv 1 U z+2*(z 1:ℂ)*coordDeriv 0 U z) x
   exact ((((hr.pow 2).neg.mul ((hr.pow 2).sub contDiffAt_const)).mul
     (partial_smooth (partial_smooth hU 1) 1)).sub
@@ -393,7 +393,7 @@ private theorem transfer_subtraction (F G : P → ℂ) (p R Y : ℝ) (c : ℂ)
 /-- Both complete original metric top transfers have the prescribed finite cusp part. -/
 theorem complete_metric_top_cusp_limit (q r : XiZeroCopy) (br side outer : Bool) (amp : ℂ)
     (p R : ℝ) (hp : 0<p) (hr : 1<R) (j : Fin 2) :
-    Tendsto (fun k : ℝ => (1/(R:ℂ)^2)*
+    Tendsto (fun k : ℝ => (1/(R:ℂ)^(2 : ℕ))*
       (D4BMOriginalModularOrbit.topFlux (orbitDerivative (sourceScalar q br amp) j)
         (scalarContact (leftScalar r side outer)) p R (Real.exp k)-
       D4BMOriginalModularOrbit.topFlux (forcedContact q br amp)
@@ -403,7 +403,7 @@ theorem complete_metric_top_cusp_limit (q r : XiZeroCopy) (br side outer : Bool)
   have h1 := first_metric_cusp_expansion q r br side outer amp p R hp hr j 0
   have h2 := second_metric_cusp_expansion q r br side outer amp p R hp hr j 0
   simp only [zero_mul,Complex.exp_zero,one_mul] at h1 h2
-  have h := (h1.sub h2).const_mul (1/(R:ℂ)^2)
+  have h := (h1.sub h2).const_mul (1/(R:ℂ)^(2 : ℕ))
   simp only [sub_zero,mul_zero] at h
   apply h.congr'
   filter_upwards [] with k
@@ -497,19 +497,19 @@ private theorem original_green_cusp_expansion (q r : XiZeroCopy) (br side outer 
 def completeFluxCoefficient (q r : XiZeroCopy) (br side outer : Bool) (amp : ℂ)
     (j : Fin 2) (p R : ℝ) (i : Fin 3) : ℂ :=
   metricFluxCoefficient q r br side outer amp j p R i+
-    (D4BMLeftModeRadialEquation.eigenvalue r/(R:ℂ)^2)*
+    (D4BMLeftModeRadialEquation.eigenvalue r/(R:ℂ)^(2 : ℕ))*
       greenOrbitCoefficient q r br side outer amp j p R i
 
 /-- All three original transfers have their complete prescribed cusp subtraction. -/
 theorem complete_scalar_top_cusp_limit (q r : XiZeroCopy) (br side outer : Bool) (amp : ℂ)
     (p R : ℝ) (hp : 0<p) (hr : 1<R) (j : Fin 2) :
-    Tendsto (fun k : ℝ => (1/(R:ℂ)^2)*
+    Tendsto (fun k : ℝ => (1/(R:ℂ)^(2 : ℕ))*
       D4BMOriginalModularOrbit.completeTopFlux q r br side outer amp j p R (Real.exp k)-
       ∑ i : Fin 3, completeFluxCoefficient q r br side outer amp j p R i*
         Complex.exp (fluxExponent q r i*(k:ℂ))) atTop (𝓝 0) := by
   have hg := original_green_cusp_expansion q r br side outer amp p R hp hr j 0
   simp only [zero_mul,Complex.exp_zero,one_mul] at hg
-  have hc := hg.const_mul (D4BMLeftModeRadialEquation.eigenvalue r/(R:ℂ)^2)
+  have hc := hg.const_mul (D4BMLeftModeRadialEquation.eigenvalue r/(R:ℂ)^(2 : ℕ))
   simp only [mul_zero] at hc
   have h := (complete_metric_top_cusp_limit q r br side outer amp p R hp hr j).add hc
   simp only [add_zero] at h
@@ -562,7 +562,7 @@ theorem complete_scalar_cusp_constant (q r : XiZeroCopy) (br side outer : Bool) 
 /-- The finite part retains exactly the constant exponent for an independent reader. -/
 theorem complete_scalar_top_finitePart (q r : XiZeroCopy) (br side outer : Bool)
     (amp : ℂ) (p R : ℝ) (hp : 0<p) (hr : 1<R) (j : Fin 2) :
-    Tendsto (fun k : ℝ => (1/(R:ℂ)^2)*
+    Tendsto (fun k : ℝ => (1/(R:ℂ)^(2 : ℕ))*
       D4BMOriginalModularOrbit.completeTopFlux q r br side outer amp j p R (Real.exp k)-
       ∑ i : Fin 3, if fluxExponent q r i=0 then 0 else
         completeFluxCoefficient q r br side outer amp j p R i*
@@ -594,7 +594,7 @@ theorem original_static_cusp_transfer (q r : XiZeroCopy) (br side outer : Bool) 
     (p R : ℝ) (hp : 0<p) (hr : 1<R) :
     let U := sourceScalar q br amp
     let W := leftScalar r side outer
-    let f := (R:ℂ)^2-1
+    let f := (R:ℂ)^(2 : ℕ)-1
     let mu := D4BMLeftModeRadialEquation.eigenvalue r
     let w := D4BMLeftModeRadialEquation.frequency r side
     Tendsto (fun k : ℝ =>
@@ -602,17 +602,17 @@ theorem original_static_cusp_transfer (q r : XiZeroCopy) (br side outer : Bool) 
         metricDensity q r br side outer amp 0 (slice p R (GaloisForLFunctions.RHTower.SelbergMaassMean.point z.1 z.2)))-
       (∫ z in GaloisForLFunctions.RHTower.SelbergModularDomainSlices.domain (Real.exp k),
         metricDensity q r br side outer amp 1 (slice p R (GaloisForLFunctions.RHTower.SelbergMaassMean.point z.1 z.2)))/f-
-      (mu*(mu-2)/((R:ℂ)^2*f)*
+      (mu*(mu-2)/((R:ℂ)^(2 : ℕ)*f)*
         (scalarPeriod (coordDeriv 0 U) W p R (Real.exp k)+
           w*scalarPeriod U W p R (Real.exp k))+
-        mu*(R:ℂ)*w/f^2*scalarPeriod
+        mu*(R:ℂ)*w/f^(2 : ℕ)*scalarPeriod
           (D4BMOriginalSourceContact.originalForcing q br amp) W p R (Real.exp k))-
       ∑ i : Fin 3, (completeFluxCoefficient q r br side outer amp 0 p R i-
         completeFluxCoefficient q r br side outer amp 1 p R i/f)*
           Complex.exp (fluxExponent q r i*(k:ℂ))) atTop (𝓝 0) := by
   dsimp only
   have h := (complete_scalar_top_cusp_limit q r br side outer amp p R hp hr 0).sub
-    ((complete_scalar_top_cusp_limit q r br side outer amp p R hp hr 1).div_const ((R:ℂ)^2-1))
+    ((complete_scalar_top_cusp_limit q r br side outer amp p R hp hr 1).div_const ((R:ℂ)^(2 : ℕ)-1))
   simp only [zero_div,sub_zero] at h
   apply h.congr'
   filter_upwards [eventually_ge_atTop (0:ℝ)] with k hk

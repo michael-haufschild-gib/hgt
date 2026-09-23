@@ -110,7 +110,7 @@ theorem completedZetaQuartetTwist_one_sub (a0 gam : ℝ) (s : ℂ) :
 
 /-- The polynomial correction `(s² - s + c + c')/Q(0)`. -/
 def quartetTwistCorrection (a0 gam : ℝ) (s : ℂ) : ℂ :=
-  (s ^ 2 - s + (quartetC a0 gam + quartetC' a0 gam)) / offLineQuartet a0 gam 0
+  (s ^ (2 : ℕ) - s + (quartetC a0 gam + quartetC' a0 gam)) / offLineQuartet a0 gam 0
 
 /-- **The polar part times the normalized quartet minus one is a polynomial.**  For `s ≠ 0, 1`,
 `P(s)(Q(s)/Q(0) - 1) = (s² - s + c + c')/Q(0)`. -/
@@ -141,7 +141,7 @@ theorem differentiable_quartetTwistEntirePart (a0 gam : ℝ) :
       (fun s => completedRiemannZeta₀ s * (offLineQuartet a0 gam s / offLineQuartet a0 gam 0)) :=
     differentiable_completedZeta₀.mul (hQ.div_const _)
   have h2 : Differentiable ℂ
-      (fun s : ℂ => (s ^ 2 - s + (quartetC a0 gam + quartetC' a0 gam)) / offLineQuartet a0 gam 0) := by
+      (fun s : ℂ => (s ^ (2 : ℕ) - s + (quartetC a0 gam + quartetC' a0 gam)) / offLineQuartet a0 gam 0) := by
     fun_prop
   exact h1.add h2
 

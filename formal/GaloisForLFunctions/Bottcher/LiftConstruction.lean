@@ -24,10 +24,10 @@ namespace Bottcher
 
 /-- The forward orbit norm bound: the iterate of `t ↦ t² + ‖c‖` starting at `B`. If `‖z‖ ≤ B` then
 `‖f_c^[n] z‖ ≤ escapeBound c B n`. -/
-noncomputable def escapeBound (c : ℂ) (B : ℝ) : ℕ → ℝ := fun n => (fun t => t ^ 2 + ‖c‖)^[n] B
+noncomputable def escapeBound (c : ℂ) (B : ℝ) : ℕ → ℝ := fun n => (fun t => t ^ (2 : ℕ) + ‖c‖)^[n] B
 
 theorem escapeBound_succ (c : ℂ) (B : ℝ) (n : ℕ) :
-    escapeBound c B (n + 1) = (escapeBound c B n) ^ 2 + ‖c‖ := by
+    escapeBound c B (n + 1) = (escapeBound c B n) ^ (2 : ℕ) + ‖c‖ := by
   simp only [escapeBound, Function.iterate_succ_apply']
 
 theorem escapeBound_nonneg (c : ℂ) {B : ℝ} (hB : 0 ≤ B) (n : ℕ) : 0 ≤ escapeBound c B n := by
@@ -45,10 +45,10 @@ theorem norm_iterate_le_escapeBound {c z : ℂ} {B : ℝ} (hB : ‖z‖ ≤ B) (
   | zero => simpa [escapeBound] using hB
   | succ n ih =>
     rw [Function.iterate_succ_apply', quadratic_apply, escapeBound_succ]
-    calc ‖((quadratic c)^[n] z) ^ 2 + c‖
-        ≤ ‖((quadratic c)^[n] z) ^ 2‖ + ‖c‖ := norm_add_le _ _
-      _ = ‖(quadratic c)^[n] z‖ ^ 2 + ‖c‖ := by rw [norm_pow]
-      _ ≤ (escapeBound c B n) ^ 2 + ‖c‖ := by gcongr
+    calc ‖((quadratic c)^[n] z) ^ (2 : ℕ) + c‖
+        ≤ ‖((quadratic c)^[n] z) ^ (2 : ℕ)‖ + ‖c‖ := norm_add_le _ _
+      _ = ‖(quadratic c)^[n] z‖ ^ (2 : ℕ) + ‖c‖ := by rw [norm_pow]
+      _ ≤ (escapeBound c B n) ^ (2 : ℕ) + ‖c‖ := by gcongr
 
 /-- **Preimages of large circles escape.** For `R` larger than the forward bound `escapeBound c
 (max 2‖c‖) n`, every `z` with `f_c^[n] z ∈ C(0,R)` lies in `escapeOpen c`. So a lift of the base

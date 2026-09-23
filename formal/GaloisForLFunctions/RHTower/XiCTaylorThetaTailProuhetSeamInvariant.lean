@@ -71,18 +71,18 @@ private theorem integrableOn_exp_neg_half_mul_coreAtom
       thetaCuspTailSecondCoreAtom d z x) (Set.Ioi 0) := by
   rw [show (fun x : ℝ => (Real.exp (-x / 2) : ℂ) *
       thetaCuspTailSecondCoreAtom d z x) =
-    fun x : ℝ => (Real.exp (-x / 2) : ℂ) * (x : ℂ) ^ 0 -
-      (z ^ 2 + 1 / 4) * ((Real.exp (-x / 2) : ℂ) *
+    fun x : ℝ => (Real.exp (-x / 2) : ℂ) * (x : ℂ) ^ (0 : ℕ) -
+      (z ^ (2 : ℕ) + 1 / 4) * ((Real.exp (-x / 2) : ℂ) *
         thetaCuspTailSecondSection d z x) by
       funext x
       unfold thetaCuspTailSecondCoreAtom
       simp only [pow_zero, mul_one]
       ring]
   refine (integrableOn_exp_neg_half_mul_complexPower 0).sub ?_
-  rw [show (fun x : ℝ => (z ^ 2 + 1 / 4) *
+  rw [show (fun x : ℝ => (z ^ (2 : ℕ) + 1 / 4) *
       ((Real.exp (-x / 2) : ℂ) * thetaCuspTailSecondSection d z x)) =
     fun x : ℝ => ∑ r ∈ Finset.range (d + 1),
-      ((z ^ 2 + 1 / 4) * thetaCuspTailSecondSectionSourceCoefficient z r) *
+      ((z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondSectionSourceCoefficient z r) *
         ((Real.exp (-x / 2) : ℂ) * (x : ℂ) ^ (2 * r + 2)) by
       funext x
       rw [thetaCuspTailSecondSection_eq_sourcePowerPacket,

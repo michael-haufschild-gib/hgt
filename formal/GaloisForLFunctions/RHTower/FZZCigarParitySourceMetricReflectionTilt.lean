@@ -49,14 +49,14 @@ theorem fzzCigarParitySourceMetricReflectionScale_pos
 
 theorem fzzCigarParitySourceMetricReflectionScale_sq
     {beta : ℝ} (hbeta : 0 < beta) :
-    fzzCigarParitySourceMetricReflectionScale beta ^ 2 =
+    fzzCigarParitySourceMetricReflectionScale beta ^ (2 : ℕ) =
       fzzKreinRAt beta / fzzKreinPAt beta := by
   rw [fzzCigarParitySourceMetricReflectionScale, Real.sq_sqrt]
   exact (div_pos (fzzKreinRAt_pos hbeta) (fzzKreinPAt_pos hbeta)).le
 
 theorem fzzCigarParitySourceMetricReflectionScale_inv_sq
     {beta : ℝ} (hbeta : 0 < beta) :
-    (fzzCigarParitySourceMetricReflectionScale beta)⁻¹ ^ 2 =
+    (fzzCigarParitySourceMetricReflectionScale beta)⁻¹ ^ (2 : ℕ) =
       fzzKreinPAt beta / fzzKreinRAt beta := by
   have ha := fzzCigarParitySourceMetricReflectionScale_sq hbeta
   have hp := (fzzKreinPAt_pos hbeta).ne'
@@ -92,23 +92,23 @@ theorem fzzCigarParitySourceMetricReflection_pairing
   have hp := (fzzKreinPAt_pos hbeta).ne'
   have hr := (fzzKreinRAt_pos hbeta).ne'
   have hpa2 :
-      fzzKreinPAt beta * fzzCigarParitySourceMetricReflectionScale beta ^ 2 =
+      fzzKreinPAt beta * fzzCigarParitySourceMetricReflectionScale beta ^ (2 : ℕ) =
         fzzKreinRAt beta := by
     rw [ha2]
     field_simp
   have hrai2 :
-      fzzKreinRAt beta * (fzzCigarParitySourceMetricReflectionScale beta)⁻¹ ^ 2 =
+      fzzKreinRAt beta * (fzzCigarParitySourceMetricReflectionScale beta)⁻¹ ^ (2 : ℕ) =
         fzzKreinPAt beta := by
     rw [hai2]
     field_simp
   have hpa2c :
       (fzzKreinPAt beta : ℂ) *
-          (fzzCigarParitySourceMetricReflectionScale beta : ℂ) ^ 2 =
+          (fzzCigarParitySourceMetricReflectionScale beta : ℂ) ^ (2 : ℕ) =
         (fzzKreinRAt beta : ℂ) := by
     exact_mod_cast hpa2
   have hrai2c :
       (fzzKreinRAt beta : ℂ) *
-          ((fzzCigarParitySourceMetricReflectionScale beta)⁻¹ : ℂ) ^ 2 =
+          ((fzzCigarParitySourceMetricReflectionScale beta)⁻¹ : ℂ) ^ (2 : ℕ) =
         (fzzKreinPAt beta : ℂ) := by
     exact_mod_cast hrai2
   have haC : (fzzCigarParitySourceMetricReflectionScale beta : ℂ) ≠ 0 := by
@@ -139,13 +139,13 @@ theorem fzzCigarParitySourceMetricReflection_mellin_ratio
       (fzzCigarParityDyadicMellinCharacter_ne_zero rho)
   have ha2 := fzzCigarParitySourceMetricReflectionScale_sq hbeta
   have hpa2 :
-      fzzKreinPAt beta * fzzCigarParitySourceMetricReflectionScale beta ^ 2 =
+      fzzKreinPAt beta * fzzCigarParitySourceMetricReflectionScale beta ^ (2 : ℕ) =
         fzzKreinRAt beta := by
     rw [ha2]
     field_simp [(fzzKreinPAt_pos hbeta).ne']
   have hpa2c :
       (fzzKreinPAt beta : ℂ) *
-          (fzzCigarParitySourceMetricReflectionScale beta : ℂ) ^ 2 =
+          (fzzCigarParitySourceMetricReflectionScale beta : ℂ) ^ (2 : ℕ) =
         (fzzKreinRAt beta : ℂ) := by
     exact_mod_cast hpa2
   have hrC : (fzzKreinRAt beta : ℂ) ≠ 0 := by
@@ -240,9 +240,9 @@ theorem fzzCigarParitySourceMetricReflection_mellin_fixed_iff
     have hnorm := congrArg norm hfixed
     have hknorm : k * nr = n := by
       simpa [Real.norm_eq_abs, abs_of_pos hkpos, n, nr, z, zr] using hnorm
-    have hnsq : n ^ 2 = k := by
+    have hnsq : n ^ (2 : ℕ) = k := by
       calc
-        n ^ 2 = (k * nr) * n := by simp [pow_two, hknorm]
+        n ^ (2 : ℕ) = (k * nr) * n := by simp [pow_two, hknorm]
         _ = k * (nr * n) := by ring
         _ = k := by rw [hrefnorm, mul_one]
     have hexp :
@@ -269,10 +269,10 @@ theorem fzzCigarParitySourceMetricReflection_mellin_fixed_iff
         (1 / 2 + Real.log k / (2 * Real.log 2) - 1 / 2)) = Real.log k
       field_simp [hlog2.ne']
       ring
-    have hnsq : n ^ 2 = k := by
+    have hnsq : n ^ (2 : ℕ) = k := by
       dsimp only [n, z]
       rw [norm_fzzCigarParityDyadicMellinCharacter]
-      rw [show Real.exp (Real.log 2 * (rho.re - 1 / 2)) ^ 2 =
+      rw [show Real.exp (Real.log 2 * (rho.re - 1 / 2)) ^ (2 : ℕ) =
         Real.exp (2 * (Real.log 2 * (rho.re - 1 / 2))) by
           rw [pow_two, ← Real.exp_add]
           congr 1
@@ -286,10 +286,10 @@ theorem fzzCigarParitySourceMetricReflection_mellin_fixed_iff
     field_simp [hnC, hnrC] at hphase
     have hphaseMul : zr * (n : ℂ) = z * (nr : ℂ) := by
       simpa [mul_comm] using hphase
-    have hnsqC : (n : ℂ) ^ 2 = (k : ℂ) := by exact_mod_cast hnsq
+    have hnsqC : (n : ℂ) ^ (2 : ℕ) = (k : ℂ) := by exact_mod_cast hnsq
     have hrefnormC : (nr : ℂ) * (n : ℂ) = 1 := by exact_mod_cast hrefnorm
     calc
-      (k : ℂ) * zr = (n : ℂ) ^ 2 * zr := by rw [hnsqC]
+      (k : ℂ) * zr = (n : ℂ) ^ (2 : ℕ) * zr := by rw [hnsqC]
       _ = (n : ℂ) * (zr * (n : ℂ)) := by ring
       _ = (n : ℂ) * (z * (nr : ℂ)) := by rw [hphaseMul]
       _ = z * ((nr : ℂ) * (n : ℂ)) := by ring

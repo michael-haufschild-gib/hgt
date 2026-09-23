@@ -15,9 +15,9 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAGibbsBarrier_entropy_quartic_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l / egbFixedChargeAEntropyJump w φ τ ^ 4)
+    Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l / egbFixedChargeAEntropyJump w φ τ ^ (4 : ℕ))
       atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ /
-        (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ)) ^ 4)) := by
+        (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ)) ^ (4 : ℕ))) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
   have hp := Real.pi_pos
@@ -30,9 +30,9 @@ theorem egbFixedChargeAGibbsBarrier_entropy_quartic_limit (w φ l : ℝ) :
   field_simp
 
 theorem egbFixedChargeAGibbsBarrier_volume_quartic_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l / egbFixedChargeAVolumeJump w φ τ ^ 4)
+    Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l / egbFixedChargeAVolumeJump w φ τ ^ (4 : ℕ))
       atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ /
-        (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 3) ^ 4)) := by
+        (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (3 : ℕ)) ^ (4 : ℕ))) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hp := Real.pi_pos
   have h := (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l).div
@@ -45,8 +45,8 @@ theorem egbFixedChargeAGibbsBarrier_volume_quartic_limit (w φ l : ℝ) :
 
 theorem egbFixedChargeAGibbsBarrier_latent_heat_quartic_limit (w φ l : ℝ) :
     Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l /
-      (egbFixedChargeATemperature w φ τ * egbFixedChargeAEntropyJump w φ τ) ^ 4)
-      atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ / (4 * egbFixedChargeACriticalRadius w φ / 3) ^ 4)) := by
+      (egbFixedChargeATemperature w φ τ * egbFixedChargeAEntropyJump w φ τ) ^ (4 : ℕ))
+      atBot (𝓝 (egbFixedChargeAGibbsBarrierCoefficient w φ / (4 * egbFixedChargeACriticalRadius w φ / 3) ^ (4 : ℕ))) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have h := (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l).div
     ((egbFixedChargeA_latent_heat_asymmetry_critical_limit w φ).pow 4) (by positivity)
@@ -57,7 +57,7 @@ theorem egbFixedChargeAGibbsBarrier_latent_heat_quartic_limit (w φ l : ℝ) :
   field_simp
 
 def egbFixedChargeABarrierHeatCoupling (w φ : ℝ) : ℝ :=
-  Real.pi ^ 2 * egbFixedChargeACriticalRadius w φ ^ 5 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ 3 /
+  Real.pi ^ (2 : ℕ) * egbFixedChargeACriticalRadius w φ ^ (5 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ (3 : ℕ) /
     (3 * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ))
 
 theorem egbFixedChargeABarrierHeatCoupling_pos (w φ : ℝ) : 0 < egbFixedChargeABarrierHeatCoupling w φ := by
@@ -70,7 +70,7 @@ theorem egbFixedChargeABarrierHeatCoupling_pos (w φ : ℝ) : 0 < egbFixedCharge
   positivity
 
 theorem egbFixedChargeAGibbsBarrier_heat_amplitude_product (w φ : ℝ) :
-    egbFixedChargeAGibbsBarrierCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ 2 =
+    egbFixedChargeAGibbsBarrierCoefficient w φ * egbFixedChargeACriticalHeatAmplitude w φ ^ (2 : ℕ) =
       egbFixedChargeABarrierHeatCoupling w φ := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
@@ -83,7 +83,7 @@ theorem egbFixedChargeAGibbsBarrier_heat_amplitude_product (w φ : ℝ) :
 theorem egbFixedChargeAGibbsBarrier_small_heat_squared_limit (w φ l₁ l₂ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l₁ *
       egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l₂
-        (egbFixedChargeASmallRadius w φ τ) ^ 2)
+        (egbFixedChargeASmallRadius w φ τ) ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeABarrierHeatCoupling w φ)) := by
   have h := (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l₁).mul
     ((egbFixedChargeA_small_heat_capacity_amplitude w φ l₂).pow 2)
@@ -96,7 +96,7 @@ theorem egbFixedChargeAGibbsBarrier_small_heat_squared_limit (w φ l₁ l₂ : �
 theorem egbFixedChargeAGibbsBarrier_large_heat_squared_limit (w φ l₁ l₂ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAGibbsBarrier w φ τ l₁ *
       egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l₂
-        (egbFixedChargeALargeRadius w φ τ) ^ 2)
+        (egbFixedChargeALargeRadius w φ τ) ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeABarrierHeatCoupling w φ)) := by
   have h := (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l₁).mul
     ((egbFixedChargeA_large_heat_capacity_amplitude w φ l₂).pow 2)

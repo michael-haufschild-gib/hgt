@@ -22,7 +22,7 @@ theorem exists_lt_neg_cesaroSignThreshold_of_mean_zero_of_pos_mean_sq
       (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n)
       atTop (nhds 0))
     (hmeanSq : Tendsto
-      (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n ^ 2)
+      (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n ^ (2 : ℕ))
       atTop (nhds L))
     (hL : 0 < L) :
     ∃ n : ℕ, b n < -cesaroSignThreshold B L := by
@@ -34,8 +34,8 @@ theorem exists_lt_neg_cesaroSignThreshold_of_mean_zero_of_pos_mean_sq
   have hδle : δ ≤ 1 := by
     simpa [δ, cesaroSignThreshold] using
       (min_le_left (1 : ℝ) (L / (2 * (B + 1))))
-  have hδsmall : B * δ + δ ^ 2 < L := by
-    have hδsq : δ ^ 2 ≤ δ := by nlinarith
+  have hδsmall : B * δ + δ ^ (2 : ℕ) < L := by
+    have hδsq : δ ^ (2 : ℕ) ≤ δ := by nlinarith
     have hδfrac : δ ≤ L / (2 * (B + 1)) := by
       simpa [δ, cesaroSignThreshold] using
         (min_le_right (1 : ℝ) (L / (2 * (B + 1))))
@@ -47,35 +47,35 @@ theorem exists_lt_neg_cesaroSignThreshold_of_mean_zero_of_pos_mean_sq
     nlinarith
   by_contra hneg
   push Not at hneg
-  have hpoint (n : ℕ) : b n ^ 2 ≤ B * b n + (B * δ + δ ^ 2) := by
+  have hpoint (n : ℕ) : b n ^ (2 : ℕ) ≤ B * b n + (B * δ + δ ^ (2 : ℕ)) := by
     have habs := hB n
     have hlower : -δ ≤ b n := hneg n
     by_cases hn : 0 ≤ b n
     · have hupper : b n ≤ B := le_trans (le_abs_self (b n)) habs
-      have hsq : b n ^ 2 ≤ B * b n := by nlinarith
+      have hsq : b n ^ (2 : ℕ) ≤ B * b n := by nlinarith
       nlinarith [mul_nonneg hB0 hδ.le, sq_nonneg δ]
     · have hn' : b n < 0 := lt_of_not_ge hn
-      have hsq : b n ^ 2 ≤ δ ^ 2 := by nlinarith
+      have hsq : b n ^ (2 : ℕ) ≤ δ ^ (2 : ℕ) := by nlinarith
       have hrest : 0 ≤ B * b n + B * δ := by
         have := mul_nonneg hB0 (show 0 ≤ b n + δ by linarith)
         nlinarith
       nlinarith
   have hevent : ∀ᶠ N : ℕ in atTop,
-      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n ^ 2 ≤
+      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n ^ (2 : ℕ) ≤
         B * ((N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n) +
-          (B * δ + δ ^ 2) := by
+          (B * δ + δ ^ (2 : ℕ)) := by
     filter_upwards [eventually_atTop.2 ⟨1, fun _ hN => hN⟩] with N hN
     have hNpos : 0 < (N : ℝ) := by exact_mod_cast hN
-    have hsum : (∑ n ∈ Finset.range N, b n ^ 2) ≤
-        ∑ n ∈ Finset.range N, (B * b n + (B * δ + δ ^ 2)) := by
+    have hsum : (∑ n ∈ Finset.range N, b n ^ (2 : ℕ)) ≤
+        ∑ n ∈ Finset.range N, (B * b n + (B * δ + δ ^ (2 : ℕ))) := by
       exact Finset.sum_le_sum fun n hn => hpoint n
     calc
-      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n ^ 2 ≤
+      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n ^ (2 : ℕ) ≤
           (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-            (B * b n + (B * δ + δ ^ 2)) :=
+            (B * b n + (B * δ + δ ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_left hsum (inv_nonneg.mpr hNpos.le)
       _ = B * ((N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n) +
-          (B * δ + δ ^ 2) := by
+          (B * δ + δ ^ (2 : ℕ)) := by
         rw [Finset.sum_add_distrib]
         simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul,
           ← Finset.mul_sum]
@@ -83,9 +83,9 @@ theorem exists_lt_neg_cesaroSignThreshold_of_mean_zero_of_pos_mean_sq
         field_simp [hNne]
   have hrhs : Tendsto
       (fun N : ℕ => B * ((N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, b n) +
-        (B * δ + δ ^ 2)) atTop (nhds (B * δ + δ ^ 2)) := by
-    simpa using (tendsto_const_nhds.mul hmean).add_const (B * δ + δ ^ 2)
-  have hle : L ≤ B * δ + δ ^ 2 :=
+        (B * δ + δ ^ (2 : ℕ))) atTop (nhds (B * δ + δ ^ (2 : ℕ))) := by
+    simpa using (tendsto_const_nhds.mul hmean).add_const (B * δ + δ ^ (2 : ℕ))
+  have hle : L ≤ B * δ + δ ^ (2 : ℕ) :=
     le_of_tendsto_of_tendsto hmeanSq hrhs hevent
   exact (not_lt_of_ge hle) hδsmall
 
@@ -101,7 +101,7 @@ theorem exists_arbitrarily_late_finiteExponentialPencil_re_lt_neg
     ∃ δ : ℝ, 0 < δ ∧ ∀ N : ℕ, ∃ n : ℕ,
       N ≤ n ∧ (finiteExponentialPencil s c z n).re < -δ := by
   let B : ℝ := ∑ i ∈ s, ‖c i‖
-  let L : ℝ := ∑ i ∈ s, ‖c i‖ ^ 2
+  let L : ℝ := ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ)
   have hB0 : 0 ≤ B := Finset.sum_nonneg fun i hi => norm_nonneg _
   have hL : 0 < L := by
     dsimp only [L]
@@ -163,7 +163,7 @@ theorem exists_arbitrarily_late_finiteExponentialPencil_re_lt_neg
     · simp
   have hmeanSq0 := tendsto_finiteExponentialPencil_cesaro_norm_sq s cN z hz hinj
   have hmeanSq : Tendsto
-      (fun K : ℕ => (K : ℝ)⁻¹ * ∑ n ∈ Finset.range K, bN n ^ 2)
+      (fun K : ℕ => (K : ℝ)⁻¹ * ∑ n ∈ Finset.range K, bN n ^ (2 : ℕ))
       atTop (nhds L) := by
     convert hmeanSq0 using 1
     · funext K

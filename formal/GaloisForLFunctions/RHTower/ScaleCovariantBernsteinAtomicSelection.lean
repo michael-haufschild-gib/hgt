@@ -49,13 +49,13 @@ theorem im_ne_zero_of_one_lt_atomicBernsteinAmplitude
     exact hrele.trans_lt hunit
   have hnormu : ‖u‖ = u.re := by
     rw [Complex.norm_def, Complex.normSq_apply, him]
-    rw [show u.re * u.re + 0 * 0 = u.re ^ 2 by ring,
+    rw [show u.re * u.re + 0 * 0 = u.re ^ (2 : ℕ) by ring,
       Real.sqrt_sq_eq_abs, abs_of_nonneg hre0]
   have hnormsub : ‖1 - u‖ = 1 - u.re := by
     rw [Complex.norm_def, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im,
       him, sub_zero]
-    rw [show (1 - u.re) * (1 - u.re) + 0 * 0 = (1 - u.re) ^ 2 by ring,
+    rw [show (1 - u.re) * (1 - u.re) + 0 * 0 = (1 - u.re) ^ (2 : ℕ) by ring,
       Real.sqrt_sq_eq_abs, abs_of_nonneg (sub_nonneg.mpr hrelt.le)]
   rw [hnormu, hnormsub] at hA
   linarith
@@ -112,12 +112,12 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_neutral_amplitude
       (∀ i ∈ D, atomicBernsteinAmplitude u i = B) ∧
       (∀ i ∉ D, atomicBernsteinAmplitude u i ≤ beta) ∧
       L = ∑ v ∈ D.image u,
-        ‖finiteExponentialFiberCoefficient D c u v‖ ^ 2 *
+        ‖finiteExponentialFiberCoefficient D c u v‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant v ∧
       0 < L ∧
       Tendsto
         (fun n : ℕ => Real.sqrt n *
-          atomicBernsteinPacketSquareEnergy c u n / (B ^ 2) ^ n)
+          atomicBernsteinPacketSquareEnergy c u n / (B ^ (2 : ℕ)) ^ n)
         atTop (nhds L) := by
   classical
   let A : I → ℝ := atomicBernsteinAmplitude u
@@ -144,7 +144,7 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_neutral_amplitude
   let U : Finset ℂ := D.image u
   let C : ℂ → ℂ := finiteExponentialFiberCoefficient D c u
   let L : ℝ := ∑ v ∈ U,
-    ‖C v‖ ^ 2 * bernsteinAffineRowHalfOrderConstant v
+    ‖C v‖ ^ (2 : ℕ) * bernsteinAffineRowHalfOrderConstant v
   have hUne : U.Nonempty := hDne.image u
   have hamp : ∀ v ∈ U, ‖v‖ + ‖1 - v‖ = B := by
     intro v hv
@@ -164,7 +164,7 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_neutral_amplitude
     intro v hv hvone
     exact hvim v hv (by rw [hvone]; rfl)
   have hmixed : ∀ v ∈ U, ∀ w ∈ U, v ≠ w →
-      ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
+      ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ (2 : ℕ) ∧
         ∀ n : ℕ, ‖reflectedBernsteinCrossMoment v w n‖ ≤ gamma ^ n := by
     intro v hv w hw hvw
     exact exists_reflectedBernsteinCrossMoment_gap_of_distinct_equalAmplitude
@@ -180,7 +180,7 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_neutral_amplitude
     rw [finiteExponentialFiberCoefficient_eq_of_injective huinj hiD]
     exact hcne i
   have htermpos : ∀ v ∈ U,
-      0 < ‖C v‖ ^ 2 * bernsteinAffineRowHalfOrderConstant v := by
+      0 < ‖C v‖ ^ (2 : ℕ) * bernsteinAffineRowHalfOrderConstant v := by
     intro v hv
     exact mul_pos (sq_pos_of_pos (norm_pos_iff.mpr (hCne v hv)))
       (bernsteinAffineRowHalfOrderConstant_pos (hv0 v hv) (hv1 v hv))
@@ -212,12 +212,12 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_small_source
       (∀ i ∈ D, atomicBernsteinAmplitude u i = B) ∧
       (∀ i ∉ D, atomicBernsteinAmplitude u i ≤ beta) ∧
       L = ∑ v ∈ D.image u,
-        ‖finiteExponentialFiberCoefficient D c u v‖ ^ 2 *
+        ‖finiteExponentialFiberCoefficient D c u v‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant v ∧
       0 < L ∧
       Tendsto
         (fun n : ℕ => Real.sqrt n *
-          atomicBernsteinPacketSquareEnergy c u n / (B ^ 2) ^ n)
+          atomicBernsteinPacketSquareEnergy c u n / (B ^ (2 : ℕ)) ^ n)
         atTop (nhds L) := by
   exact exists_positive_halfOrder_atomicBernsteinPacket_of_neutral_amplitude
     c u hc (tendsto_atomicBernsteinAmplitude_cofinite_one hu0)

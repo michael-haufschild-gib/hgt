@@ -40,16 +40,16 @@ theorem integral_fejerHalf_split (L : ℝ) {T : ℝ} (hT : 0 < T) :
 theorem integral_fejerHalf (L : ℝ) (hL : L ≠ 0) {T : ℝ} (hT : 0 < T) :
     (∫ t in (0 : ℝ)..T, ((1 - t / T : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I))
       = Complex.I / (L : ℂ)
-        - (Complex.exp (((T * L : ℝ) : ℂ) * Complex.I) - 1) / ((T : ℂ) * (L : ℂ) ^ 2) := by
+        - (Complex.exp (((T * L : ℝ) : ℂ) * Complex.I) - 1) / ((T : ℂ) * (L : ℂ) ^ (2 : ℕ)) := by
   have hL' : (L : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hL
   have hT' : (T : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hT)
-  have hzero : linPhaseAnti L 0 = -(1 / ((L : ℂ) * Complex.I) ^ 2) := by
+  have hzero : linPhaseAnti L 0 = -(1 / ((L : ℂ) * Complex.I) ^ (2 : ℕ)) := by
     rw [linPhaseAnti]
     norm_num
   rw [integral_fejerHalf_split L hT, integral_exp_phase L hL T, integral_linPhase L hL 0 T,
     hzero, linPhaseAnti]
-  have hI : (Complex.I) ^ 2 = -1 := Complex.I_sq
-  have hI3 : (Complex.I) ^ 3 = -Complex.I := by
+  have hI : (Complex.I) ^ (2 : ℕ) = -1 := Complex.I_sq
+  have hI3 : (Complex.I) ^ (3 : ℕ) = -Complex.I := by
     rw [pow_succ, hI, neg_one_mul]
   push_cast
   field_simp

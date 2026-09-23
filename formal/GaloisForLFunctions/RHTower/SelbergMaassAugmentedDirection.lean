@@ -34,7 +34,7 @@ def unit (j : Option (Deck N)) (z : ℂ) : ℂ := source N f e j z / (radius N f
 
 /-- The augmented source has exactly the regularized squared radius. -/
 theorem source_normSq (z : ℂ) :
-    (∑ j : Option (Deck N), normSq (source N f e j z)) = radius N f e z ^ 2 := by
+    (∑ j : Option (Deck N), normSq (source N f e j z)) = radius N f e z ^ (2 : ℕ) := by
   rw [Fintype.sum_option, radius_sq]
   simp only [source, normSq_ofReal]
   change (e : ℝ) * (e : ℝ) + density N f (ofComplex z) = _
@@ -102,7 +102,7 @@ theorem radius_mul_unit_dir (j : Option (Deck N)) (v : ℂ) (z : ℍ) :
       unit N f e j (z : ℂ) * ((dir v (radius N f e) (z : ℂ) : ℝ) : ℂ) at hp
   rw [he, radius_dir N f e v z] at hp
   have hr0 : (radius N f e (z : ℂ) : ℂ) ≠ 0 := by exact_mod_cast (radius_pos N f e (z : ℂ)).ne'
-  have hs : (radius N f e (z : ℂ) : ℂ) ^ 2 = ((density N f z + (e : ℝ) ^ 2 : ℝ) : ℂ) := by
+  have hs : (radius N f e (z : ℂ) : ℂ) ^ (2 : ℕ) = ((density N f z + (e : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by
     exact_mod_cast (by simpa only [ofComplex_apply] using radius_sq N f e (z : ℂ))
   push_cast at hs
   have hrad : unit N f e j (z : ℂ) * (current N f v z / (2 * radius N f e (z : ℂ)) : ℝ) =
@@ -127,7 +127,7 @@ theorem residual_eq (v : ℂ) (z : ℍ) :
 
 /-- The retained remainder is the literal smooth augmented direction energy at every actual source point. -/
 theorem directionalRemainder_eq_energy (v : ℂ) (z : ℍ) :
-    directionalRemainder N f e v z = radius N f e (z : ℂ) ^ 2 *
+    directionalRemainder N f e v z = radius N f e (z : ℂ) ^ (2 : ℕ) *
       ∑ j : Option (Deck N), normSq (dir v (unit N f e j) (z : ℂ)) := by
   rw [← residual_eq, Finset.mul_sum]
   apply Finset.sum_congr rfl
@@ -136,7 +136,7 @@ theorem directionalRemainder_eq_energy (v : ℂ) (z : ℍ) :
 
 /-- The complete curvature remainder is the literal two-direction augmented energy. -/
 theorem remainder_eq_energy (z : ℍ) :
-    remainder N f e z = radius N f e (z : ℂ) ^ 2 *
+    remainder N f e z = radius N f e (z : ℂ) ^ (2 : ℕ) *
       ∑ j : Option (Deck N),
         (normSq (dir 1 (unit N f e j) (z : ℂ)) + normSq (dir Complex.I (unit N f e j) (z : ℂ))) := by
   rw [remainder, directionalRemainder_eq_energy, directionalRemainder_eq_energy,
@@ -148,9 +148,9 @@ def unitCorrelation (z w : ℍ) : ℝ :=
 
 /-- The constant coordinate contributes exactly its positive square to source correlation. -/
 theorem correlation_eq_radii_mul (z w : ℍ) :
-    correlation N f z w + (e : ℝ) ^ 2 = radius N f e (z : ℂ) * radius N f e (w : ℂ) *
+    correlation N f z w + (e : ℝ) ^ (2 : ℕ) = radius N f e (z : ℂ) * radius N f e (w : ℂ) *
       unitCorrelation N f e z w := by
-  have he : correlation N f z w + (e : ℝ) ^ 2 =
+  have he : correlation N f z w + (e : ℝ) ^ (2 : ℕ) =
       ∑ j : Option (Deck N), (source N f e j (w : ℂ) * (starRingEnd ℂ) (source N f e j (z : ℂ))).re := by
     rw [Fintype.sum_option]
     simp only [source, ofComplex_apply, Complex.conj_ofReal, ← Complex.ofReal_mul, Complex.ofReal_re]
@@ -184,7 +184,7 @@ theorem distanceSq_eq (z w : ℍ) : distanceSq N f e z w = 2 - 2 * unitCorrelati
 /-- Exact weighted chord formula retains the added-coordinate correlation correction. -/
 theorem radius_mul_distanceSq (z w : ℍ) :
     radius N f e (w : ℂ) * distanceSq N f e z w =
-      2 * radius N f e (w : ℂ) - 2 * (correlation N f z w + (e : ℝ) ^ 2) / radius N f e (z : ℂ) := by
+      2 * radius N f e (w : ℂ) - 2 * (correlation N f z w + (e : ℝ) ^ (2 : ℕ)) / radius N f e (z : ℂ) := by
   rw [distanceSq_eq, correlation_eq_radii_mul]
   field_simp [(radius_pos N f e (z : ℂ)).ne']
 
@@ -230,13 +230,13 @@ theorem weighted_distance_mean (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (∫ x in a..a + (N + 1 : ℕ), radius N f e (ofComplex (point x y) : ℂ) *
       distanceSq N f e z (ofComplex (point x y))) =
       2 * (∫ x in a..a + (N + 1 : ℕ), radius N f e (point x y)) -
-        2 * (e : ℝ) ^ 2 * (N + 1 : ℕ) / radius N f e (z : ℂ) := by
+        2 * (e : ℝ) ^ (2 : ℕ) * (N + 1 : ℕ) / radius N f e (z : ℂ) := by
   have hc : Continuous (fun x => correlation N f z (ofComplex (point x y))) :=
     continuous_finsetSum Finset.univ (fun q _ => Complex.continuous_re.comp
       ((slice_continuous (quotientForm N f q).2.2.1.1.continuousOn hy).mul continuous_const))
   have ha : IntervalIntegrable (fun x => 2 * radius N f e (point x y)) volume a (a + (N + 1 : ℕ)) :=
     (continuous_const.mul (radius_slice_continuous N f e hy)).intervalIntegrable a (a + (N + 1 : ℕ))
-  have hb : IntervalIntegrable (fun x => 2 * (correlation N f z (ofComplex (point x y)) + (e : ℝ) ^ 2) /
+  have hb : IntervalIntegrable (fun x => 2 * (correlation N f z (ofComplex (point x y)) + (e : ℝ) ^ (2 : ℕ)) /
       radius N f e (z : ℂ)) volume a (a + (N + 1 : ℕ)) :=
     ((continuous_const.mul (hc.add continuous_const)).div_const (radius N f e (z : ℂ))).intervalIntegrable a (a + (N + 1 : ℕ))
   simp_rw [radius_mul_distanceSq, radius_ofComplex]
@@ -249,7 +249,7 @@ theorem weighted_distance_mean (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
 
 /-- Augmented directions remain separated beyond a right angle precisely below the source correlation threshold. -/
 theorem distanceSq_gt_two_iff (z w : ℍ) :
-    2 < distanceSq N f e z w ↔ correlation N f z w + (e : ℝ) ^ 2 < 0 := by
+    2 < distanceSq N f e z w ↔ correlation N f z w + (e : ℝ) ^ (2 : ℕ) < 0 := by
   have h := correlation_eq_radii_mul N f e z w
   have hp := mul_pos (radius_pos N f e (z : ℂ)) (radius_pos N f e (w : ℂ))
   rw [distanceSq_eq]

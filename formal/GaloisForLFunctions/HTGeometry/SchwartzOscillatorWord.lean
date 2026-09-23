@@ -40,8 +40,8 @@ theorem norm_creationCLM_le_shifted (g : 𝓢(ℝ, ℂ)) :
     ‖(creationCLM g).toLp 2 (volume : Measure ℝ)‖
       ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ := by
   have h := norm_creationCLM_sq_le_shifted g
-  have hsq : ‖(creationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2
-      ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+  have hsq : ‖(creationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
+      ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ‖(creationCLM g).toLp 2 (volume : Measure ℝ)‖, one_le_four_pi]
   have hroot := Real.sqrt_le_sqrt hsq
   rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (norm_nonneg _)] at hroot
@@ -50,8 +50,8 @@ theorem norm_annihilationCLM_le_shifted (g : 𝓢(ℝ, ℂ)) :
     ‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖
       ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ := by
   have h := norm_annihilationCLM_sq_le_shifted g
-  have hsq : ‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2
-      ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+  have hsq : ‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
+      ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖, one_le_two_pi]
   have hroot := Real.sqrt_le_sqrt hsq
   rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (norm_nonneg _)] at hroot

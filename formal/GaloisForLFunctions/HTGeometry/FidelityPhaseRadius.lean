@@ -5,7 +5,7 @@ The Loschmidt return amplitude of a weighted spectral packet is the weighted ove
 evolved phases, so its fidelity deficit is one half of the weighted pairwise squared chord.  Each
 chord is bounded above by the residual phase difference and below, by Jordan's inequality, by four
 times the distance of that difference to the turn lattice.  Hence a phase return of radius `r`
-makes the deficit at most `8 pi^2 r^2`, and a deficit below `d` forces every anchored gap phase to
+makes the deficit at most `8 pi^(2 : ℕ) r^(2 : ℕ)`, and a deficit below `d` forces every anchored gap phase to
 within `sqrt d / (2 c)` of a whole turn, where `c` is a lower bound for the weights.
 
 Fidelity deficit is therefore locally equivalent to the squared projective phase radius, which is
@@ -41,13 +41,13 @@ theorem norm_expI_sub_one (c : ℝ) :
     simp [Complex.exp_ofReal_mul_I_re]
   have him : (Complex.exp ((c : ℂ) * Complex.I) - 1).im = Real.sin c := by
     simp [Complex.exp_ofReal_mul_I_im]
-  have hsq : ‖Complex.exp ((c : ℂ) * Complex.I) - 1‖ ^ 2 = (2 * |Real.sin (c / 2)|) ^ 2 := by
+  have hsq : ‖Complex.exp ((c : ℂ) * Complex.I) - 1‖ ^ (2 : ℕ) = (2 * |Real.sin (c / 2)|) ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply, hre, him]
-    have hcos : Real.cos c = 1 - 2 * Real.sin (c / 2) ^ 2 := by
+    have hcos : Real.cos c = 1 - 2 * Real.sin (c / 2) ^ (2 : ℕ) := by
       have := Real.cos_two_mul_eq_one_sub (c / 2)
       rw [show 2 * (c / 2) = c from by ring] at this
       exact this
-    have hpy : Real.sin c ^ 2 = 1 - Real.cos c ^ 2 := by
+    have hpy : Real.sin c ^ (2 : ℕ) = 1 - Real.cos c ^ (2 : ℕ) := by
       have := Real.sin_sq_add_cos_sq c
       linarith
     rw [mul_pow, sq_abs]
@@ -161,7 +161,7 @@ def spectralReturnAmplitude (E p : Fin D → ℝ) (t : ℝ) : ℂ :=
 
 /-- The fidelity deficit of the weighted spectral packet at time `t`. -/
 def spectralReturnDeficit (E p : Fin D → ℝ) (t : ℝ) : ℝ :=
-  1 - ‖spectralReturnAmplitude E p t‖ ^ 2
+  1 - ‖spectralReturnAmplitude E p t‖ ^ (2 : ℕ)
 
 theorem spectralReturnAmplitude_eq_finitePhaseOverlap (E p : Fin D → ℝ) (t : ℝ) :
     spectralReturnAmplitude E p t
@@ -174,7 +174,7 @@ theorem two_mul_spectralReturnDeficit_eq (E p : Fin D → ℝ) (hp1 : ∑ j, p j
     2 * spectralReturnDeficit E p t
       = ∑ j, ∑ k, p j * p k *
           ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-            - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2 := by
+            - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
   have h := _root_.HTGeometry.finitePhasePairwiseDispersion_eq_two_mul_fidelityDeficit
     p (fun j => Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)) hp1
     (fun j => Complex.norm_exp_ofReal_mul_I _)
@@ -191,10 +191,10 @@ theorem spectralReturnDeficit_nonneg (E p : Fin D → ℝ) (hp1 : ∑ j, p j = 1
 theorem spectralReturnDeficit_le_of_latticeClose (E p : Fin D → ℝ)
     (hp1 : ∑ j, p j = 1) (hpnn : ∀ j, 0 ≤ p j) (anchor : Fin D) {r t : ℝ} (hr : 0 ≤ r)
     (hret : ∀ j, latticeClose (t * (E j - E anchor) / (2 * π)) r) :
-    spectralReturnDeficit E p t ≤ 8 * π ^ 2 * r ^ 2 := by
+    spectralReturnDeficit E p t ≤ 8 * π ^ (2 : ℕ) * r ^ (2 : ℕ) := by
   have hpi : (0 : ℝ) < π := Real.pi_pos
   have hchord : ∀ j k, ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-        - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2 ≤ 16 * π ^ 2 * r ^ 2 := by
+        - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) ≤ 16 * π ^ (2 : ℕ) * r ^ (2 : ℕ) := by
     intro j k
     obtain ⟨mj, hmj⟩ := hret j
     obtain ⟨mk, hmk⟩ := hret k
@@ -226,33 +226,33 @@ theorem spectralReturnDeficit_le_of_latticeClose (E p : Fin D → ℝ)
     nlinarith [hfin, hnn, hr, hpi.le]
   have hsum : ∑ j, ∑ k, p j * p k *
         ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2
-      ≤ 16 * π ^ 2 * r ^ 2 := by
+          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+      ≤ 16 * π ^ (2 : ℕ) * r ^ (2 : ℕ) := by
     have hstep : ∀ j ∈ (Finset.univ : Finset (Fin D)),
         ∑ k, p j * p k *
             ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-              - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2
-          ≤ p j * (16 * π ^ 2 * r ^ 2) := by
+              - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+          ≤ p j * (16 * π ^ (2 : ℕ) * r ^ (2 : ℕ)) := by
       intro j _
       have hb : ∑ k, p j * p k *
             ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-              - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2
-          ≤ ∑ k, p j * (16 * π ^ 2 * r ^ 2) * p k := by
+              - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+          ≤ ∑ k, p j * (16 * π ^ (2 : ℕ) * r ^ (2 : ℕ)) * p k := by
         refine Finset.sum_le_sum fun k _ => ?_
         have hpp : (0 : ℝ) ≤ p j * p k := mul_nonneg (hpnn j) (hpnn k)
         calc p j * p k *
               ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-                - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2
-            ≤ p j * p k * (16 * π ^ 2 * r ^ 2) :=
+                - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+            ≤ p j * p k * (16 * π ^ (2 : ℕ) * r ^ (2 : ℕ)) :=
               mul_le_mul_of_nonneg_left (hchord j k) hpp
-          _ = p j * (16 * π ^ 2 * r ^ 2) * p k := by ring
-      calc _ ≤ ∑ k, p j * (16 * π ^ 2 * r ^ 2) * p k := hb
-        _ = p j * (16 * π ^ 2 * r ^ 2) := by rw [← Finset.mul_sum, hp1, mul_one]
+          _ = p j * (16 * π ^ (2 : ℕ) * r ^ (2 : ℕ)) * p k := by ring
+      calc _ ≤ ∑ k, p j * (16 * π ^ (2 : ℕ) * r ^ (2 : ℕ)) * p k := hb
+        _ = p j * (16 * π ^ (2 : ℕ) * r ^ (2 : ℕ)) := by rw [← Finset.mul_sum, hp1, mul_one]
     calc ∑ j, ∑ k, p j * p k *
           ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-            - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2
-        ≤ ∑ j, p j * (16 * π ^ 2 * r ^ 2) := Finset.sum_le_sum hstep
-      _ = 16 * π ^ 2 * r ^ 2 := by rw [← Finset.sum_mul, hp1, one_mul]
+            - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+        ≤ ∑ j, p j * (16 * π ^ (2 : ℕ) * r ^ (2 : ℕ)) := Finset.sum_le_sum hstep
+      _ = 16 * π ^ (2 : ℕ) * r ^ (2 : ℕ) := by rw [← Finset.sum_mul, hp1, one_mul]
   have hdisp := two_mul_spectralReturnDeficit_eq E p hp1 t
   linarith [hdisp ▸ hsum]
 
@@ -261,7 +261,7 @@ theorem sixteen_mul_sq_abs_sub_round_le (E p : Fin D → ℝ) (hp1 : ∑ j, p j 
     (hpnn : ∀ j, 0 ≤ p j) (anchor : Fin D) (t : ℝ) (j : Fin D) :
     16 * (p j * p anchor)
         * (t * (E j - E anchor) / (2 * π)
-            - (round (t * (E j - E anchor) / (2 * π)) : ℝ)) ^ 2
+            - (round (t * (E j - E anchor) / (2 * π)) : ℝ)) ^ (2 : ℕ)
       ≤ 2 * spectralReturnDeficit E p t := by
   have hpi : (0 : ℝ) < π := Real.pi_pos
   set x : ℝ := t * (E j - E anchor) / (2 * π) with hx
@@ -290,38 +290,38 @@ theorem sixteen_mul_sq_abs_sub_round_le (E p : Fin D → ℝ) (hp1 : ∑ j, p j 
   have hnn : ∀ y ∈ (Finset.univ : Finset (Fin D)),
       0 ≤ ∑ k, p y * p k *
         ‖Complex.exp (((-(t * E y) : ℝ) : ℂ) * Complex.I)
-          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2 := fun y _ =>
+          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) := fun y _ =>
     Finset.sum_nonneg fun k _ => mul_nonneg (mul_nonneg (hpnn y) (hpnn k)) (sq_nonneg _)
   have hrow : ∑ k, p j * p k *
         ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2
+          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ)
       ≤ ∑ y, ∑ k, p y * p k *
         ‖Complex.exp (((-(t * E y) : ℝ) : ℂ) * Complex.I)
-          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2 :=
+          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) :=
     Finset.single_le_sum hnn (Finset.mem_univ j)
   have hcell : p j * p anchor *
         ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-          - Complex.exp (((-(t * E anchor) : ℝ) : ℂ) * Complex.I)‖ ^ 2
+          - Complex.exp (((-(t * E anchor) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ)
       ≤ ∑ k, p j * p k *
         ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2 :=
+          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) :=
     Finset.single_le_sum
       (f := fun k => p j * p k *
         ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ 2)
+          - Complex.exp (((-(t * E k) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ))
       (fun k _ => mul_nonneg (mul_nonneg (hpnn j) (hpnn k)) (sq_nonneg _))
       (Finset.mem_univ anchor)
   have hdisp := two_mul_spectralReturnDeficit_eq E p hp1 t
-  have hsq : 16 * d ^ 2
+  have hsq : 16 * d ^ (2 : ℕ)
       ≤ ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-          - Complex.exp (((-(t * E anchor) : ℝ) : ℂ) * Complex.I)‖ ^ 2 := by
+          - Complex.exp (((-(t * E anchor) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ 4 * |d| := by positivity
     nlinarith [hkey, h0, sq_abs d]
   have hpp : (0 : ℝ) ≤ p j * p anchor := mul_nonneg (hpnn j) (hpnn anchor)
-  have hmul : p j * p anchor * (16 * d ^ 2)
+  have hmul : p j * p anchor * (16 * d ^ (2 : ℕ))
       ≤ p j * p anchor *
         ‖Complex.exp (((-(t * E j) : ℝ) : ℂ) * Complex.I)
-          - Complex.exp (((-(t * E anchor) : ℝ) : ℂ) * Complex.I)‖ ^ 2 :=
+          - Complex.exp (((-(t * E anchor) : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hsq hpp
   rw [hdisp]
   linarith [hmul, hcell, hrow]
@@ -340,12 +340,12 @@ theorem latticeClose_of_spectralReturnDeficit_lt (E p : Fin D → ℝ)
   have hmain := sixteen_mul_sq_abs_sub_round_le E p hp1 hpnn anchor t j
   have hcc : c * c ≤ p j * p anchor :=
     mul_le_mul (hcp j) (hcp anchor) hc.le (le_trans hc.le (hcp j))
-  have hbound : 16 * (c * c) * d ^ 2 ≤ 2 * δ := by
+  have hbound : 16 * (c * c) * d ^ (2 : ℕ) ≤ 2 * δ := by
     nlinarith [hmain, hdef, sq_nonneg d]
-  have hrhs : (Real.sqrt δ / (2 * c)) ^ 2 = δ / (4 * (c * c)) := by
+  have hrhs : (Real.sqrt δ / (2 * c)) ^ (2 : ℕ) = δ / (4 * (c * c)) := by
     rw [div_pow, Real.sq_sqrt hδ.le]
     ring_nf
-  have hsq : d ^ 2 < (Real.sqrt δ / (2 * c)) ^ 2 := by
+  have hsq : d ^ (2 : ℕ) < (Real.sqrt δ / (2 * c)) ^ (2 : ℕ) := by
     rw [hrhs, lt_div_iff₀ (by positivity)]
     nlinarith [hbound, hδ, sq_nonneg d, hc]
   have h0 : (0 : ℝ) < Real.sqrt δ / (2 * c) := by positivity

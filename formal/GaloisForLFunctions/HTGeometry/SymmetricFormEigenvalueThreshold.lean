@@ -28,7 +28,7 @@ with eigenvalue above `θ` has quadratic form at most `θ‖x‖²`. -/
 theorem inner_le_of_orthogonal_to_eigenvectors_above {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric)
     (θ : ℝ) (x : E)
     (hx : ∀ (μ : ℝ) (v : E), v ≠ 0 → T v = μ • v → θ < μ → (inner ℝ x v : ℝ) = 0) :
-    (inner ℝ (T x) x : ℝ) ≤ θ * ‖x‖ ^ 2 := by
+    (inner ℝ (T x) x : ℝ) ≤ θ * ‖x‖ ^ (2 : ℕ) := by
   classical
   set n : ℕ := Module.finrank ℝ E with hn
   have hrank : Module.finrank ℝ E = n := rfl
@@ -44,16 +44,16 @@ theorem inner_le_of_orthogonal_to_eigenvectors_above {T : E →ₗ[ℝ] E} (hT :
     have h := hx (lam i) (b i) (hbne i) (hTb i) hi
     rw [real_inner_comm] at h
     exact h
-  have hTx : (inner ℝ (T x) x : ℝ) = ∑ i, lam i * (inner ℝ (b i) x : ℝ) ^ 2 := by
+  have hTx : (inner ℝ (T x) x : ℝ) = ∑ i, lam i * (inner ℝ (b i) x : ℝ) ^ (2 : ℕ) := by
     have hpar := b.sum_inner_mul_inner (T x) x
     rw [← hpar]
     refine Finset.sum_congr rfl fun i _ => ?_
     have hmove : (inner ℝ (T x) (b i) : ℝ) = (inner ℝ x (T (b i)) : ℝ) := hT x (b i)
     rw [hmove, hTb i, real_inner_smul_right, real_inner_comm x (b i)]
     ring
-  have hnorm : ‖x‖ ^ 2 = ∑ i, (inner ℝ (b i) x : ℝ) ^ 2 := by
+  have hnorm : ‖x‖ ^ (2 : ℕ) = ∑ i, (inner ℝ (b i) x : ℝ) ^ (2 : ℕ) := by
     have hpar := b.sum_inner_mul_inner x x
-    have hself : (inner ℝ x x : ℝ) = ‖x‖ ^ 2 := real_inner_self_eq_norm_sq x
+    have hself : (inner ℝ x x : ℝ) = ‖x‖ ^ (2 : ℕ) := real_inner_self_eq_norm_sq x
     rw [hself] at hpar
     rw [← hpar]
     refine Finset.sum_congr rfl fun i _ => ?_

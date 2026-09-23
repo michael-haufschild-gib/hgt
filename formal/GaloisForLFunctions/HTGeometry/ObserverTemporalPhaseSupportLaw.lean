@@ -317,7 +317,7 @@ theorem phaseLawConstraint_iff_integral_eq_one
       character.continuous.integrable_of_hasCompactSupport
         (HasCompactSupport.of_compactSpace _)
     let defect : UnitAddTorus d → ℝ :=
-      fun x => ‖character x - 1‖ ^ 2
+      fun x => ‖character x - 1‖ ^ (2 : ℕ)
     have hdefectContinuous : Continuous defect := by
       dsimp [defect]
       fun_prop
@@ -331,12 +331,12 @@ theorem phaseLawConstraint_iff_integral_eq_one
       have hnorm : ‖character x‖ = 1 := by
         exact norm_mFourier_apply _ _
       have hsq :
-          (character x).re ^ 2 + (character x).im ^ 2 = 1 := by
+          (character x).re ^ (2 : ℕ) + (character x).im ^ (2 : ℕ) = 1 := by
         calc
-          (character x).re ^ 2 + (character x).im ^ 2 =
+          (character x).re ^ (2 : ℕ) + (character x).im ^ (2 : ℕ) =
               Complex.normSq (character x) := by
             simp [Complex.normSq_apply, pow_two]
-          _ = ‖character x‖ ^ 2 := Complex.normSq_eq_norm_sq _
+          _ = ‖character x‖ ^ (2 : ℕ) := Complex.normSq_eq_norm_sq _
           _ = 1 := by rw [hnorm]; norm_num
       dsimp [defect]
       rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]

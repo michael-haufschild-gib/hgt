@@ -36,7 +36,7 @@ def normalizedDriftDefect (x : ℝ) : ℝ := normalizedDefect x-u x/36
 
 /-- Forcing in the normalized drift comparison equation. -/
 def normalizedDriftForcing (x : ℝ) : ℝ :=
-  4/3-5*k x*t x/36+u x^2/27-u x*J x/18
+  4/3-5*k x*t x/36+u x^(2 : ℕ)/27-u x*J x/18
 
 private theorem dNormalizedDrift {x : ℝ} (hx : 0 ≤ x) :
     HasDerivAt normalizedDriftDefect
@@ -46,8 +46,8 @@ private theorem dNormalizedDrift {x : ℝ} (hx : 0 ≤ x) :
 
 private theorem dNormalizedForcing {x : ℝ} (hx : 0 ≤ x) :
     HasDerivAt normalizedDriftForcing
-      (u x*t x*(36*k x^2-1)/162+
-        (u x/3-J x)*(t x*(k x/3+5/54)+u x^2*(k x+2/3)/9)) x := by
+      (u x*t x*(36*k x^(2 : ℕ)-1)/162+
+        (u x/3-J x)*(t x*(k x/3+5/54)+u x^(2 : ℕ)*(k x+2/3)/9)) x := by
   have hk : k x ≠ 0 := ne_of_gt (lt_trans (by norm_num) (k_gt hx))
   convert (((((dk hx).mul (dt hx)).const_mul 5).div_const 36).const_sub (4/3 : ℝ)).add
     (((du hx).pow 2).div_const 27) |>.sub (((du hx).mul (dJ hx)).div_const 18) using 1
@@ -62,7 +62,7 @@ private theorem normalizedForcing_deriv_nonneg {x : ℝ} (hx : 0 ≤ x) :
   have ht := t_pos hx
   have hk := k_gt hx
   have hb := J_le_third_drift hx
-  have hs : 0 ≤ 36*k x^2-1 := by nlinarith only [hk, sq_nonneg (k x-5/4)]
+  have hs : 0 ≤ 36*k x^(2 : ℕ)-1 := by nlinarith only [hk, sq_nonneg (k x-5/4)]
   have hB : 0 ≤ u x/3-J x := sub_nonneg.mpr hb
   have hk1 : 0 ≤ k x/3+5/54 := by linarith only [hk]
   have hk2 : 0 ≤ k x+2/3 := by linarith only [hk]
@@ -201,11 +201,11 @@ theorem normalizedDefect_le_center {x : ℝ} (hx : 0 ≤ x) :
 private theorem gapBound {x : ℝ} (hx : 0 ≤ x) : t x*(k x+1/3) ≤ 72/5 := by
   have he := thetaCuspModularStrongEnergy_lt hx
   have hc := gap_eq_ratio_coordinates hx
-  change A x+(4/3 : ℝ)*u x^2 < 96/5 at he
+  change A x+(4/3 : ℝ)*u x^(2 : ℕ) < 96/5 at he
   nlinarith only [he, hc, sq_nonneg (u x)]
 
 private theorem barrierMass_center_upper {x : ℝ} (hx : 0 ≤ x) :
-    barrierMass x ≤ sourceAmplitude x^2*(t x*(k x+1/3))*x/3 := by
+    barrierMass x ≤ sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3))*x/3 := by
   have hk := k_gt hx
   have ht := t_pos hx
   have hd : 0 < t x*(k x+1/3) := by positivity
@@ -215,7 +215,7 @@ private theorem barrierMass_center_upper {x : ℝ} (hx : 0 ≤ x) :
   nlinarith only [hm]
 
 private theorem barrierMass_deriv_cost {x : ℝ} (hx : 0 ≤ x) :
-    deriv barrierMass x ≤ sourceAmplitude x^2*(t x*(k x+1/3))/12 := by
+    deriv barrierMass x ≤ sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3))/12 := by
   have hk := k_gt_fiveFourths hx
   have ht := t_pos hx
   have hu := thetaCuspModularMassDrift_nonneg hx
@@ -246,7 +246,7 @@ private theorem hyperbolicCost (y : ℝ) : y*Real.cosh y ≤ (1+y)*Real.sinh y :
 theorem barrierFlux_deriv_inner_cost {a x : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1/2)
     (hx : 0 ≤ x) (hxu : x ≤ 2/3) :
     deriv (barrierFlux a) x ≤
-      (504/169 : ℝ)*(4*x*Real.sinh (2*a*x))*thetaCuspFullSource x^2 := by
+      (504/169 : ℝ)*(4*x*Real.sinh (2*a*x))*thetaCuspFullSource x^(2 : ℕ) := by
   have hs := Real.sinh_nonneg_iff.mpr (show 0 ≤ 2*a*x by positivity)
   have hb := barrierMass_nonneg hx
   have hh := hyperbolicCost (2*a*x)
@@ -265,14 +265,14 @@ theorem barrierFlux_deriv_inner_cost {a x : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1/2
   have hscale : (3/16 : ℝ)+x/12 ≤ 35/144 := by linarith only [hxu]
   have hbound := mul_le_mul hT hscale (by positivity : 0 ≤ (3/16 : ℝ)+x/12)
     (by norm_num : (0 : ℝ) ≤ 72/5)
-  have hsource : (169/144 : ℝ)*sourceAmplitude x^2 ≤ thetaCuspFullSource x^2 := by
+  have hsource : (169/144 : ℝ)*sourceAmplitude x^(2 : ℕ) ≤ thetaCuspFullSource x^(2 : ℕ) := by
     rw [source_eq_ratio_coordinates hx]
-    have hv : (169/144 : ℝ) ≤ (k x-1/6)^2 := by
+    have hv : (169/144 : ℝ) ≤ (k x-1/6)^(2 : ℕ) := by
       nlinarith only [hk, sq_nonneg (k x-5/4)]
     have hh := mul_le_mul_of_nonneg_left hv (sq_nonneg (sourceAmplitude x))
     nlinarith only [hh]
-  have hbudget : sourceAmplitude x^2*(t x*(k x+1/3))*((3/16 : ℝ)+x/12) ≤
-      (504/169 : ℝ)*thetaCuspFullSource x^2 := by
+  have hbudget : sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3))*((3/16 : ℝ)+x/12) ≤
+      (504/169 : ℝ)*thetaCuspFullSource x^(2 : ℕ) := by
     have h := mul_le_mul_of_nonneg_left hbound (sq_nonneg (sourceAmplitude x))
     nlinarith only [h, hsource]
   have hfinal := mul_le_mul_of_nonneg_left hbudget
@@ -284,7 +284,7 @@ theorem barrierFlux_deriv_inner_cost {a x : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1/2
 theorem barrierFlux_deriv_global_cost {a x : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1/2)
     (hx : 0 ≤ x) :
     deriv (barrierFlux a) x ≤
-      (504/169 : ℝ)*(4*x*Real.sinh (2*a*x))*thetaCuspFullSource x^2 := by
+      (504/169 : ℝ)*(4*x*Real.sinh (2*a*x))*thetaCuspFullSource x^(2 : ℕ) := by
   rcases le_total x (2/3 : ℝ) with hi | ho
   · exact barrierFlux_deriv_inner_cost ha0 ha hx hi
   · have hd := barrierFlux_deriv_upper ha0 ha ho
@@ -298,7 +298,7 @@ theorem barrierFlux_deriv_global_cost {a x : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1/
 /-- Full-orbit flux cost in the same modular coordinates as the native determinant. -/
 theorem barrierFlux_deriv_polynomial_cost {a x : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1/2)
     (hx : 0 ≤ x) :
-    deriv (barrierFlux a) x ≤ 4*x*Real.sinh (2*a*x)*sourceAmplitude x^2*
+    deriv (barrierFlux a) x ≤ 4*x*Real.sinh (2*a*x)*sourceAmplitude x^(2 : ℕ)*
       (t x*(k x+1/3))*((6-3*k x+(u x*(k x-2/3)-J x)/4)/12) := by
   have hs := Real.sinh_nonneg_iff.mpr (show 0 ≤ 2*a*x by positivity)
   have hb := barrierMass_nonneg hx
@@ -316,7 +316,7 @@ theorem barrierFlux_deriv_polynomial_cost {a x : ℝ} (ha0 : 0 ≤ a) (ha : a �
   have hnegative : u x*(5/3-2*k x)*barrierDefect x ≤ 0 :=
     mul_nonpos_of_nonpos_of_nonneg
       (mul_nonpos_of_nonneg_of_nonpos hu (by linarith only [hk])) hB
-  have hd : deriv barrierMass x ≤ sourceAmplitude x^2*(t x*(k x+1/3))*(4/3-k x) := by
+  have hd : deriv barrierMass x ≤ sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3))*(4/3-k x) := by
     rw [(dBarrierMass hx).deriv]
     have h := mul_le_mul_of_nonneg_left
       (show t x*(k x+1/3)*(4/3-k x)+u x*(5/3-2*k x)*barrierDefect x ≤
@@ -329,10 +329,10 @@ theorem barrierFlux_deriv_polynomial_cost {a x : ℝ} (ha0 : 0 ≤ a) (ha : a �
   have ht := t_pos hx
   rw [(dBarrierFlux hx a).deriv]
   calc
-    _ ≤ (2+x)*Real.sinh (2*a*x)*(sourceAmplitude x^2*(t x*(k x+1/3))*x/3)+
-        x*Real.sinh (2*a*x)*(sourceAmplitude x^2*(t x*(k x+1/3))*(4/3-k x)) :=
+    _ ≤ (2+x)*Real.sinh (2*a*x)*(sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3))*x/3)+
+        x*Real.sinh (2*a*x)*(sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3))*(4/3-k x)) :=
       add_le_add (hc.trans hm0) hm1
-    _ = 4*x*Real.sinh (2*a*x)*sourceAmplitude x^2*(t x*(k x+1/3))*
+    _ = 4*x*Real.sinh (2*a*x)*sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3))*
         ((6+x-3*k x)/12) := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_left hcoord (by positivity)
 

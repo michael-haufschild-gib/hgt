@@ -147,7 +147,7 @@ theorem densityOf_trace_one (v : Fin r → ℂ) : (densityOf v).trace = 1 := by
 affine image of `Re⟨v,w⟩` (here in the raw form `c²·(D + 2·Re⟨v,w⟩)`, `c = 1/D`, `D = r+1`). -/
 theorem densityOf_mul_trace (v w : Fin r → ℂ) :
     (densityOf v * densityOf w).trace
-      = ((((r : ℝ) + 1)⁻¹ : ℂ)) ^ 2
+      = ((((r : ℝ) + 1)⁻¹ : ℂ)) ^ (2 : ℕ)
         * (((1 + r : ℕ) : ℂ) + 2 * (∑ k, starRingEnd ℂ (v k) * w k).re) := by
   have hT : ((1 + offDiagEmb v) * (1 + offDiagEmb w)).trace
       = ((1 + r : ℕ) : ℂ) + 2 * (∑ k, starRingEnd ℂ (v k) * w k).re := by
@@ -173,7 +173,7 @@ theorem eqk_realizes {ι : Type*} (φ : ι → (Fin r → ℂ))
     (∀ i, (densityOf (φ i)).IsHermitian ∧ (densityOf (φ i)).trace = 1
         ∧ (densityOf (φ i)).PosSemidef)
     ∧ ∀ i j, (densityOf (φ i) * densityOf (φ j)).trace
-        = ((((r : ℝ) + 1)⁻¹ : ℂ)) ^ 2
+        = ((((r : ℝ) + 1)⁻¹ : ℂ)) ^ (2 : ℕ)
           * (((1 + r : ℕ) : ℂ) + 2 * (∑ k, starRingEnd ℂ (φ i k) * φ j k).re) :=
   ⟨fun i => ⟨densityOf_isHermitian _ (hφ i), densityOf_trace_one _, densityOf_posSemidef _ (hφ i)⟩,
     fun _ _ => densityOf_mul_trace _ _⟩

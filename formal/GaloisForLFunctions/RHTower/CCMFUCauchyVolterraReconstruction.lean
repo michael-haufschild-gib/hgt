@@ -74,7 +74,7 @@ theorem cauchyVolterra_reconstruction_cauchy
     (hint : IntervalIntegrable f' volume x Y)
     (hint' : IntervalIntegrable f'' volume x Y) :
     f x = (-Y * f' Y) * (1 - x / Y) +
-      ∫ y in x..Y, (y ^ 2 * f'' y) * (1 / y - x / y ^ 2) := by
+      ∫ y in x..Y, (y ^ (2 : ℕ) * f'' y) * (1 / y - x / y ^ (2 : ℕ)) := by
   rw [cauchyVolterra_reconstruction hxy hY hterminal hderiv hderiv' hint hint']
   congr 1
   apply intervalIntegral.integral_congr
@@ -84,7 +84,7 @@ theorem cauchyVolterra_reconstruction_cauchy
   field_simp [hy0]
 
 /-- Cauchy kernel used to transport the completed finite source in the square-root coordinate. -/
-def cauchyVolterraKernel (x y : ℝ) : ℝ := 1 / y - x / y ^ 2
+def cauchyVolterraKernel (x y : ℝ) : ℝ := 1 / y - x / y ^ (2 : ℕ)
 
 /-- Finite Fubini transport preserves cancellation of arbitrary signed cells exactly.  In the
 CCM-FU application, `a` is the literal completed prime-minus-polar cell sequence; no term is

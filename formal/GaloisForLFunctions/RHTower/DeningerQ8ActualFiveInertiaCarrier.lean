@@ -77,9 +77,9 @@ theorem q8Actual_five_inertia_le_cyclicSource
     have hdiff : (1 - v) - v ∈ P := by
       rw [← hgv]
       exact hg v
-    have hsquare : ((1 - v) - v) ^ 2 = (41 : 𝓞 K3) := by
+    have hsquare : ((1 - v) - v) ^ (2 : ℕ) = (41 : 𝓞 K3) := by
       calc
-        ((1 - v) - v) ^ 2 = 1 - 4 * v + 4 * v ^ 2 := by ring
+        ((1 - v) - v) ^ (2 : ℕ) = 1 - 4 * v + 4 * v ^ (2 : ℕ) := by ring
         _ = 41 := by rw [q8LiteralTwoAdicV_sq]; ring
     have h41 : (41 : 𝓞 K3) ∈ P := by
       rw [← hsquare, pow_two]
@@ -155,7 +155,7 @@ theorem q8Actual_five_decomposition_le_cyclicSource
       dsimp [v]
       calc
         q8LiteralTwoAdicV * (1 - q8LiteralTwoAdicV) =
-            q8LiteralTwoAdicV - q8LiteralTwoAdicV ^ 2 := by ring
+            q8LiteralTwoAdicV - q8LiteralTwoAdicV ^ (2 : ℕ) := by ring
         _ = -10 := by rw [q8LiteralTwoAdicV_sq]; ring
     have hv_or : v ∈ P ∨ (1 - v) ∈ P :=
       (Ideal.IsPrime.mem_or_mem inferInstance) (hprod.symm ▸ hminusTen)

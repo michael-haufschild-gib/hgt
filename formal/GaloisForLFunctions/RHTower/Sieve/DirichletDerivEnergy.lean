@@ -28,8 +28,8 @@ theorem norm_dirDerivCoeff (N : ℕ) (a : Fin N → ℂ) (n : Fin N) :
 
 /-- **The derivative coefficients carry at most `(log N)²` times the energy.** -/
 theorem sum_normSq_dirDerivCoeff_le (N : ℕ) (a : Fin N → ℂ) :
-    ∑ n : Fin N, ‖dirDerivCoeff N a n‖ ^ 2
-      ≤ (Real.log N) ^ 2 * ∑ n : Fin N, ‖a n‖ ^ 2 := by
+    ∑ n : Fin N, ‖dirDerivCoeff N a n‖ ^ (2 : ℕ)
+      ≤ (Real.log N) ^ (2 : ℕ) * ∑ n : Fin N, ‖a n‖ ^ (2 : ℕ) := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun n _ => ?_
   have hpos : (0 : ℝ) < ((n : ℕ) : ℝ) + 1 := by positivity

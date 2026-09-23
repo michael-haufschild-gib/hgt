@@ -149,7 +149,7 @@ theorem norm_nomeMonomial_of_nonneg
 theorem norm_finiteOccupationHalfDensityWeight_sq
     {ι : Type*} [Fintype ι] (q : ι → ℝ)
     (hq : ∀ i, 0 ≤ q i) (ν : ι →₀ ℕ) :
-    ‖finiteOccupationHalfDensityWeight q ν‖ ^ 2 =
+    ‖finiteOccupationHalfDensityWeight q ν‖ ^ (2 : ℕ) =
       ν.prod fun i n => q i ^ n := by
   rw [finiteOccupationHalfDensityWeight,
     norm_nomeMonomial_of_nonneg
@@ -164,7 +164,7 @@ theorem summable_norm_sq_finiteOccupationHalfDensityWeight
     {ι : Type*} [Fintype ι] (q : ι → ℝ)
     (_hq0 : ∀ i, 0 ≤ q i) (hq1 : ∀ i, q i < 1) :
     Summable (fun ν : ι →₀ ℕ =>
-      ‖finiteOccupationHalfDensityWeight q ν‖ ^ 2) := by
+      ‖finiteOccupationHalfDensityWeight q ν‖ ^ (2 : ℕ)) := by
   apply (summable_nomeMonomial_pow_iff 1
     (fun i => (Real.sqrt (q i) : ℂ)) ?_).2
   · exact Summable.of_finite
@@ -185,12 +185,12 @@ def finiteOccupationRawHalfDensity
 theorem norm_finiteOccupationRawHalfDensity_sq
     {ι : Type*} [Fintype ι] (q : ι → ℝ)
     (hq0 : ∀ i, 0 ≤ q i) (hq1 : ∀ i, q i < 1) :
-    ‖finiteOccupationRawHalfDensity q hq0 hq1‖ ^ 2 =
+    ‖finiteOccupationRawHalfDensity q hq0 hq1‖ ^ (2 : ℕ) =
       ∏ i, (1 - q i)⁻¹ := by
   rw [HilbertSchmidt.lp_norm_sq_eq]
   simp only [finiteOccupationRawHalfDensity]
   rw [show (fun ν : ι →₀ ℕ =>
-      ‖finiteOccupationHalfDensityWeight q ν‖ ^ 2) =
+      ‖finiteOccupationHalfDensityWeight q ν‖ ^ (2 : ℕ)) =
       fun ν => ν.prod fun i n => q i ^ n by
         funext ν
         exact norm_finiteOccupationHalfDensityWeight_sq q hq0 ν]
@@ -263,7 +263,7 @@ def finiteOccupationVacuum
 theorem norm_finiteOccupationNormalizedHalfDensity_sq
     {ι : Type*} [Fintype ι] (q : ι → ℝ)
     (hq0 : ∀ i, 0 ≤ q i) (hq1 : ∀ i, q i < 1) :
-    ‖finiteOccupationNormalizedHalfDensity q hq0 hq1‖ ^ 2 = 1 := by
+    ‖finiteOccupationNormalizedHalfDensity q hq0 hq1‖ ^ (2 : ℕ) = 1 := by
   have hvol := finiteOccupationBoundaryVolume_pos q hq1
   rw [finiteOccupationNormalizedHalfDensity, norm_smul, mul_pow,
     Complex.norm_real, Real.norm_eq_abs,
@@ -295,7 +295,7 @@ theorem norm_inner_vacuum_normalized_sq
     {ι : Type*} [Fintype ι] (q : ι → ℝ)
     (hq0 : ∀ i, 0 ≤ q i) (hq1 : ∀ i, q i < 1) :
     ‖inner ℂ (finiteOccupationVacuum ι)
-        (finiteOccupationNormalizedHalfDensity q hq0 hq1)‖ ^ 2 =
+        (finiteOccupationNormalizedHalfDensity q hq0 hq1)‖ ^ (2 : ℕ) =
       finiteOccupationBoundaryVolume q := by
   rw [inner_vacuum_finiteOccupationNormalizedHalfDensity q hq0 hq1,
     Complex.norm_real, Real.norm_eq_abs,

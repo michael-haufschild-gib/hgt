@@ -120,8 +120,8 @@ private theorem coefficient_continuousAt (q : XiZeroCopy) (br : Bool) (amp w : �
 private theorem normalized_cut (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hw : w.im≠0)
     (p L x k : ℝ) (hp : 0<p) (hL : 0<L) (j : Fin 4) :
     transferCut q br amp w j p L x k=
-      ![(tortoiseRadius (-L/2):ℂ)^2,(tortoiseRadius (-L/2):ℂ)^2,
-        (tortoiseRadius (-L/2):ℂ)^2,(tortoiseRadius (-L/2):ℂ)] j*
+      ![(tortoiseRadius (-L/2):ℂ)^(2 : ℕ),(tortoiseRadius (-L/2):ℂ)^(2 : ℕ),
+        (tortoiseRadius (-L/2):ℂ)^(2 : ℕ),(tortoiseRadius (-L/2):ℂ)] j*
         normalizedTransfer q br amp w j p L x k := by
   have hs := physical_source_transfer_products q br amp w hw p L x k hp hL
   have hf := physical_forcing_transfer_product q br amp w hw p L x k hL
@@ -140,7 +140,7 @@ positive source time and horizontal position. -/
 theorem radial_transfer_joint_continuousAt (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
     (hw : w.im≠0) (k : ℝ) (j : Fin 4) (v : V) (hL : 0<v.1) (hp : 0<v.2.1) :
     ContinuousAt (fun t : V => radialTransfer q br amp w j t.2.1 t.1 t.2.2 k) v := by
-  let c : ℝ→Fin 4→ℂ := fun L => ![(radius L:ℂ)^2,(radius L:ℂ)^2,(radius L:ℂ)^2,
+  let c : ℝ→Fin 4→ℂ := fun L => ![(radius L:ℂ)^(2 : ℕ),(radius L:ℂ)^(2 : ℕ),(radius L:ℂ)^(2 : ℕ),
     (radius L:ℂ)*(horizonCoordinate (-L/2):ℂ)]
   have hR := (radius_continuousAt v.1 hL).comp continuous_fst.continuousAt
   have hZ := (horizonCoordinate_hasDerivAt (-v.1/2)).continuousAt.comp (f:=fun t : V => -t.1/2) (x:=v)

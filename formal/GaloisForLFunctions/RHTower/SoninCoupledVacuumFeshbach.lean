@@ -40,8 +40,8 @@ theorem sequenceTraceHankelNonnegative_iff_vacuumRobertson
     (m : ℕ → ℝ) (h0 : 0 < m 0) :
     SequenceTraceHankelNonnegative m ↔
       ∀ q : Polynomial ℝ, q.coeff 0 = 0 →
-        HTGeometry.momentFunctional m q ^ 2 ≤
-          m 0 * HTGeometry.momentFunctional m (q ^ 2) := by
+        HTGeometry.momentFunctional m q ^ (2 : ℕ) ≤
+          m 0 * HTGeometry.momentFunctional m (q ^ (2 : ℕ)) := by
   rw [sequenceTraceHankelNonnegative_iff_vacuumFeshbach m h0]
   constructor
   · intro h q hq
@@ -129,10 +129,10 @@ theorem primeArchVacuumFeshbachIntNonnegative_iff_sourceTraceHankelIntNonnegativ
 def PrimeArchVacuumRobertsonIntNonnegative : Prop :=
   ∀ q : Polynomial ℤ, q.coeff 0 = 0 →
     HTGeometry.momentFunctional normalizedPrimeArchMoment
-        (q.map (Int.castRingHom ℝ)) ^ 2 ≤
+        (q.map (Int.castRingHom ℝ)) ^ (2 : ℕ) ≤
       normalizedPrimeArchMoment 0 *
         HTGeometry.momentFunctional normalizedPrimeArchMoment
-          ((q.map (Int.castRingHom ℝ)) ^ 2)
+          ((q.map (Int.castRingHom ℝ)) ^ (2 : ℕ))
 
 /-- The quotient-free Robertson family and the vacuum Feshbach family are exactly equivalent. -/
 theorem primeArchVacuumRobertsonIntNonnegative_iff_feshbach :
@@ -169,7 +169,7 @@ def SoninCoupledPrimeArchVacuumFeshbachRayleighUpperBound : Prop :=
       ∃ a : SoninCoupledNondegenerateAperture,
         normalizedPrimeArchMoment 0 *
             ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-              (primeArchVacuumCenteredPolynomial q)‖ ^ 2 ≤
+              (primeArchVacuumCenteredPolynomial q)‖ ^ (2 : ℕ) ≤
           (HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + ε) *
             (soninAllPrimeCoupledTraceMoment a.1 0).re
@@ -211,9 +211,9 @@ theorem soninCoupledPrimeArchVacuumFeshbachRayleighUpperBound_of_realPerTestCoup
   have heq :
       normalizedPrimeArchMoment 0 /
             (soninAllPrimeCoupledTraceMoment a.1 0).re *
-          ‖soninAllPrimeCoupledPolynomialPowerVector a.1 p‖ ^ 2 =
+          ‖soninAllPrimeCoupledPolynomialPowerVector a.1 p‖ ^ (2 : ℕ) =
         (normalizedPrimeArchMoment 0 *
-          ‖soninAllPrimeCoupledPolynomialPowerVector a.1 p‖ ^ 2) /
+          ‖soninAllPrimeCoupledPolynomialPowerVector a.1 p‖ ^ (2 : ℕ)) /
             (soninAllPrimeCoupledTraceMoment a.1 0).re := by
     field_simp [hden.ne']
   rw [heq] at hjle
@@ -258,11 +258,11 @@ theorem primeArchVacuumFeshbachIntNonnegative_of_soninCoupledRayleigh
   have hleft :
       0 ≤ normalizedPrimeArchMoment 0 *
         ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-          (primeArchVacuumCenteredPolynomial q)‖ ^ 2 :=
+          (primeArchVacuumCenteredPolynomial q)‖ ^ (2 : ℕ) :=
     mul_nonneg normalizedPrimeArchMoment_zero_pos.le (sq_nonneg _)
   change normalizedPrimeArchMoment 0 *
       ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-        (primeArchVacuumCenteredPolynomial q)‖ ^ 2 ≤
+        (primeArchVacuumCenteredPolynomial q)‖ ^ (2 : ℕ) ≤
     (target + ε) * (soninAllPrimeCoupledTraceMoment a.1 0).re at ha
   linarith
 
@@ -275,7 +275,7 @@ def SoninCoupledPrimeArchVacuumVarianceRayleighUpperBound : Prop :=
       ∃ (a : SoninCoupledNondegenerateAperture) (c : ℝ),
         normalizedPrimeArchMoment 0 *
             ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-              (q.map (Int.castRingHom ℝ) - C c)‖ ^ 2 ≤
+              (q.map (Int.castRingHom ℝ) - C c)‖ ^ (2 : ℕ) ≤
           (HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + ε) *
             (soninAllPrimeCoupledTraceMoment a.1 0).re
@@ -287,9 +287,9 @@ def SoninCoupledPrimeArchVacuumRobertsonRayleighUpperBound : Prop :=
   ∀ (q : Polynomial ℤ), q.coeff 0 = 0 →
     ∀ ε : ℝ, 0 < ε →
       ∃ (a : SoninCoupledNondegenerateAperture) (c : ℝ),
-        normalizedPrimeArchMoment 0 ^ 2 *
+        normalizedPrimeArchMoment 0 ^ (2 : ℕ) *
             ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-              (q.map (Int.castRingHom ℝ) - C c)‖ ^ 2 ≤
+              (q.map (Int.castRingHom ℝ) - C c)‖ ^ (2 : ℕ) ≤
           (HTGeometry.momentVacuumRobertsonDeterminant normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + ε) *
             (soninAllPrimeCoupledTraceMoment a.1 0).re
@@ -310,7 +310,7 @@ theorem soninCoupledPrimeArchVacuumRobertsonRayleighUpperBound_iff_variance :
         normalizedPrimeArchMoment 0 *
             (normalizedPrimeArchMoment 0 *
               ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-                (q.map (Int.castRingHom ℝ) - C c)‖ ^ 2) ≤
+                (q.map (Int.castRingHom ℝ) - C c)‖ ^ (2 : ℕ)) ≤
           normalizedPrimeArchMoment 0 *
             ((HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
                 (q.map (Int.castRingHom ℝ)) + ε) *
@@ -319,10 +319,10 @@ theorem soninCoupledPrimeArchVacuumRobertsonRayleighUpperBound_iff_variance :
         normalizedPrimeArchMoment 0 *
             (normalizedPrimeArchMoment 0 *
               ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-                (q.map (Int.castRingHom ℝ) - C c)‖ ^ 2) =
-            normalizedPrimeArchMoment 0 ^ 2 *
+                (q.map (Int.castRingHom ℝ) - C c)‖ ^ (2 : ℕ)) =
+            normalizedPrimeArchMoment 0 ^ (2 : ℕ) *
               ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-                (q.map (Int.castRingHom ℝ) - C c)‖ ^ 2 := by ring
+                (q.map (Int.castRingHom ℝ) - C c)‖ ^ (2 : ℕ) := by ring
         _ ≤ (HTGeometry.momentVacuumRobertsonDeterminant normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + δ) *
             (soninAllPrimeCoupledTraceMoment a.1 0).re := ha
@@ -344,13 +344,13 @@ theorem soninCoupledPrimeArchVacuumRobertsonRayleighUpperBound_iff_variance :
     have hscaled := mul_le_mul_of_nonneg_left ha
       normalizedPrimeArchMoment_zero_pos.le
     calc
-      normalizedPrimeArchMoment 0 ^ 2 *
+      normalizedPrimeArchMoment 0 ^ (2 : ℕ) *
           ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-            (q.map (Int.castRingHom ℝ) - C c)‖ ^ 2 =
+            (q.map (Int.castRingHom ℝ) - C c)‖ ^ (2 : ℕ) =
         normalizedPrimeArchMoment 0 *
           (normalizedPrimeArchMoment 0 *
             ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-              (q.map (Int.castRingHom ℝ) - C c)‖ ^ 2) := by ring
+              (q.map (Int.castRingHom ℝ) - C c)‖ ^ (2 : ℕ)) := by ring
       _ ≤ normalizedPrimeArchMoment 0 *
           ((HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) +
@@ -405,11 +405,11 @@ theorem primeArchVacuumFeshbachIntNonnegative_of_soninCoupledVarianceRayleigh
   have hleft :
       0 ≤ normalizedPrimeArchMoment 0 *
         ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-          (q.map (Int.castRingHom ℝ) - C c)‖ ^ 2 :=
+          (q.map (Int.castRingHom ℝ) - C c)‖ ^ (2 : ℕ) :=
     mul_nonneg normalizedPrimeArchMoment_zero_pos.le (sq_nonneg _)
   change normalizedPrimeArchMoment 0 *
       ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-        (q.map (Int.castRingHom ℝ) - C c)‖ ^ 2 ≤
+        (q.map (Int.castRingHom ℝ) - C c)‖ ^ (2 : ℕ) ≤
     (target + ε) * (soninAllPrimeCoupledTraceMoment a.1 0).re at ha
   linarith
 

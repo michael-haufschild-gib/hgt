@@ -8,7 +8,7 @@ namespace RHTower
 
 /-- Real part of the Cauchy resolvent joining two right-half-plane zero modes. -/
 def transverseCauchyKernel (a b delta : ℝ) : ℝ :=
-  (a + b) / ((a + b) ^ 2 + delta ^ 2)
+  (a + b) / ((a + b) ^ (2 : ℕ) + delta ^ (2 : ℕ))
 
 theorem transverseCauchyKernel_eq_resolvent_re (a b delta : ℝ) :
     transverseCauchyKernel a b delta =
@@ -97,9 +97,9 @@ theorem finiteOfflineCauchyEnergy_ge_selfDiagonal
 theorem finiteOfflineCauchyEnergy_ge_two_mul_sum_sq_div
     {n : ℕ} {a gamma : Fin n → ℝ} (m : Fin n → ℕ)
     (ha : ∀ j, 0 < a j) :
-    2 * ∑ j, (m j : ℝ) ^ 2 / a j ≤ finiteOfflineCauchyEnergy a gamma m := by
+    2 * ∑ j, (m j : ℝ) ^ (2 : ℕ) / a j ≤ finiteOfflineCauchyEnergy a gamma m := by
   have hterm : ∀ j : Fin n,
-      2 * ((m j : ℝ) ^ 2 / a j) =
+      2 * ((m j : ℝ) ^ (2 : ℕ) / a j) =
         4 * ((m j : ℝ) * (m j : ℝ) *
           transverseCauchyKernel (a j) (a j) (gamma j - gamma j)) := by
     intro j
@@ -108,8 +108,8 @@ theorem finiteOfflineCauchyEnergy_ge_two_mul_sum_sq_div
     field_simp [haj0]
     ring
   calc
-    2 * ∑ j, (m j : ℝ) ^ 2 / a j =
-        ∑ j, 2 * ((m j : ℝ) ^ 2 / a j) := by rw [Finset.mul_sum]
+    2 * ∑ j, (m j : ℝ) ^ (2 : ℕ) / a j =
+        ∑ j, 2 * ((m j : ℝ) ^ (2 : ℕ) / a j) := by rw [Finset.mul_sum]
     _ = ∑ j, 4 * ((m j : ℝ) * (m j : ℝ) *
           transverseCauchyKernel (a j) (a j) (gamma j - gamma j)) := by
       apply Finset.sum_congr rfl

@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-! ## `L²` norms of representatives -/
 
 theorem norm_toLp_sq {f : ℝ → ℝ} (hf : MemLp f 2 (volume : Measure ℝ)) :
-    ‖hf.toLp f‖ ^ 2 = ∫ x : ℝ, f x ^ 2 := by
+    ‖hf.toLp f‖ ^ (2 : ℕ) = ∫ x : ℝ, f x ^ (2 : ℕ) := by
   have h := @real_inner_self_eq_norm_sq (Lp ℝ 2 (volume : Measure ℝ)) _ _ (hf.toLp f)
   rw [← h, MeasureTheory.L2.inner_def]
   refine integral_congr_ae ?_
@@ -31,7 +31,7 @@ theorem norm_toLp_sq {f : ℝ → ℝ} (hf : MemLp f 2 (volume : Measure ℝ)) :
 
 theorem norm_toLp_sub_sq {f g : ℝ → ℝ} (hf : MemLp f 2 (volume : Measure ℝ))
     (hg : MemLp g 2 (volume : Measure ℝ)) :
-    ‖hf.toLp f - hg.toLp g‖ ^ 2 = ∫ x : ℝ, (f x - g x) ^ 2 := by
+    ‖hf.toLp f - hg.toLp g‖ ^ (2 : ℕ) = ∫ x : ℝ, (f x - g x) ^ (2 : ℕ) := by
   have hsub : hf.toLp f - hg.toLp g = (hf.sub hg).toLp (fun x => f x - g x) :=
     (MemLp.toLp_sub hf hg).symm
   rw [hsub, norm_toLp_sq]
@@ -134,26 +134,26 @@ theorem totallyBounded_toLp_of_tight_deriv
     (hmem : ∀ i : ι, MemLp (f i) 2 (volume : Measure ℝ))
     (hderiv : ∀ (i : ι) (x : ℝ), HasDerivAt (f i) (f' i x) x)
     (hcont' : ∀ i : ι, Continuous (f' i))
-    (hbound : ∀ i : ι, ∫ x : ℝ, f i x ^ 2 ≤ Mb)
+    (hbound : ∀ i : ι, ∫ x : ℝ, f i x ^ (2 : ℕ) ≤ Mb)
     (hD : 0 ≤ D)
-    (hderivInt : ∀ i : ι, Integrable (fun x => f' i x ^ 2) volume)
-    (hderivBound : ∀ i : ι, ∫ x : ℝ, f' i x ^ 2 ≤ D)
+    (hderivInt : ∀ i : ι, Integrable (fun x => f' i x ^ (2 : ℕ)) volume)
+    (hderivBound : ∀ i : ι, ∫ x : ℝ, f' i x ^ (2 : ℕ) ≤ D)
     (htail : ∀ ε : ℝ, 0 < ε → ∃ R : ℝ, 0 < R ∧ ∀ i : ι,
-        (∫ x in {x : ℝ | R < |x|}, f i x ^ 2) ≤ ε) :
+        (∫ x in {x : ℝ | R < |x|}, f i x ^ (2 : ℕ)) ≤ ε) :
     TotallyBounded (Set.range fun i : ι => (hmem i).toLp (f i)) := by
   refine totallyBounded_of_finiteDimensional_approx (M := Real.sqrt Mb) ?_ ?_
   · rintro g ⟨i, rfl⟩
-    have h1 : ‖(hmem i).toLp (f i)‖ ^ 2 = ∫ x : ℝ, f i x ^ 2 := norm_toLp_sq _
-    have h2 : ‖(hmem i).toLp (f i)‖ ^ 2 ≤ Mb := by
+    have h1 : ‖(hmem i).toLp (f i)‖ ^ (2 : ℕ) = ∫ x : ℝ, f i x ^ (2 : ℕ) := norm_toLp_sq _
+    have h2 : ‖(hmem i).toLp (f i)‖ ^ (2 : ℕ) ≤ Mb := by
       rw [h1]
       exact hbound i
     have h3 : (0 : ℝ) ≤ ‖(hmem i).toLp (f i)‖ := norm_nonneg _
     have h4 := Real.sqrt_le_sqrt h2
     rwa [Real.sqrt_sq h3] at h4
   · intro ε hε
-    obtain ⟨R, hR, htailR⟩ := htail (ε ^ 2 / 2) (by positivity)
-    obtain ⟨Mc, hMc⟩ := exists_nat_gt (8 * R ^ 2 * (D + 1) / ε ^ 2)
-    have hK0 : (0 : ℝ) < 8 * R ^ 2 * (D + 1) / ε ^ 2 := by positivity
+    obtain ⟨R, hR, htailR⟩ := htail (ε ^ (2 : ℕ) / 2) (by positivity)
+    obtain ⟨Mc, hMc⟩ := exists_nat_gt (8 * R ^ (2 : ℕ) * (D + 1) / ε ^ (2 : ℕ))
+    have hK0 : (0 : ℝ) < 8 * R ^ (2 : ℕ) * (D + 1) / ε ^ (2 : ℕ) := by positivity
     have hMc0 : 0 < Mc := by
       rcases Nat.eq_zero_or_pos Mc with hz | hp
       · exfalso
@@ -177,55 +177,55 @@ theorem totallyBounded_toLp_of_tight_deriv
     -- the squared error splits into a grid part and a tail part
     have hmemStep : MemLp (gridStep (f i) (-R) h Mc) 2 (volume : Measure ℝ) :=
       memLp_gridStep _ _ _ _
-    have hnorm : ‖(hmem i).toLp (f i) - gridStepLp (f i) (-R) h Mc‖ ^ 2
-        = ∫ x : ℝ, (f i x - gridStep (f i) (-R) h Mc x) ^ 2 := by
+    have hnorm : ‖(hmem i).toLp (f i) - gridStepLp (f i) (-R) h Mc‖ ^ (2 : ℕ)
+        = ∫ x : ℝ, (f i x - gridStep (f i) (-R) h Mc x) ^ (2 : ℕ) := by
       rw [gridStepLp_eq_toLp]
       exact norm_toLp_sub_sq (hmem i) hmemStep
-    have hintErr : Integrable (fun x : ℝ => (f i x - gridStep (f i) (-R) h Mc x) ^ 2) volume := by
+    have hintErr : Integrable (fun x : ℝ => (f i x - gridStep (f i) (-R) h Mc x) ^ (2 : ℕ)) volume := by
       refine (memLp_two_iff_integrable_sq ?_).1 ((hmem i).sub hmemStep)
       exact ((hmem i).sub hmemStep).aestronglyMeasurable
     have hsplit := MeasureTheory.integral_add_compl
       (μ := (volume : Measure ℝ)) (s := Set.Ioc (-R) R) measurableSet_Ioc hintErr
-    have hgrid : (∫ x in Set.Ioc (-R) R, (f i x - gridStep (f i) (-R) h Mc x) ^ 2)
-        ≤ h ^ 2 * D := by
+    have hgrid : (∫ x in Set.Ioc (-R) R, (f i x - gridStep (f i) (-R) h Mc x) ^ (2 : ℕ))
+        ≤ h ^ (2 : ℕ) * D := by
       have hbase := integral_sub_gridStep_sq_le (f := f i) (f' := f' i) (a := -R) hh Mc
         (hderiv i) (hcont' i)
       rw [hend] at hbase
-      have hle : (∫ x in Set.Ioc (-R) R, f' i x ^ 2) ≤ D := by
+      have hle : (∫ x in Set.Ioc (-R) R, f' i x ^ (2 : ℕ)) ≤ D := by
         refine le_trans (MeasureTheory.setIntegral_le_integral (hderivInt i) ?_) (hderivBound i)
         filter_upwards with x
         exact sq_nonneg _
-      have hpos : (0 : ℝ) ≤ h ^ 2 := sq_nonneg h
-      calc (∫ x in Set.Ioc (-R) R, (f i x - gridStep (f i) (-R) h Mc x) ^ 2)
-          ≤ h ^ 2 * ∫ x in Set.Ioc (-R) R, f' i x ^ 2 := hbase
-        _ ≤ h ^ 2 * D := mul_le_mul_of_nonneg_left hle hpos
-    have htailErr : (∫ x in (Set.Ioc (-R) R)ᶜ, (f i x - gridStep (f i) (-R) h Mc x) ^ 2)
-        ≤ ε ^ 2 / 2 := by
+      have hpos : (0 : ℝ) ≤ h ^ (2 : ℕ) := sq_nonneg h
+      calc (∫ x in Set.Ioc (-R) R, (f i x - gridStep (f i) (-R) h Mc x) ^ (2 : ℕ))
+          ≤ h ^ (2 : ℕ) * ∫ x in Set.Ioc (-R) R, f' i x ^ (2 : ℕ) := hbase
+        _ ≤ h ^ (2 : ℕ) * D := mul_le_mul_of_nonneg_left hle hpos
+    have htailErr : (∫ x in (Set.Ioc (-R) R)ᶜ, (f i x - gridStep (f i) (-R) h Mc x) ^ (2 : ℕ))
+        ≤ ε ^ (2 : ℕ) / 2 := by
       have hzero : ∀ x ∈ (Set.Ioc (-R) R)ᶜ,
-          (f i x - gridStep (f i) (-R) h Mc x) ^ 2 = f i x ^ 2 := by
+          (f i x - gridStep (f i) (-R) h Mc x) ^ (2 : ℕ) = f i x ^ (2 : ℕ) := by
         intro x hx
         have := gridStep_eq_zero (f := f i) (a := -R) (h := h) hh.le (M := Mc) (x := x) (by
           rw [hend]
           exact hx)
         rw [this, sub_zero]
-      have heq : (∫ x in (Set.Ioc (-R) R)ᶜ, f i x ^ 2)
-          = ∫ x in {x : ℝ | R < |x|}, f i x ^ 2 :=
+      have heq : (∫ x in (Set.Ioc (-R) R)ᶜ, f i x ^ (2 : ℕ))
+          = ∫ x in {x : ℝ | R < |x|}, f i x ^ (2 : ℕ) :=
         MeasureTheory.setIntegral_congr_set (compl_Ioc_ae_eq_abs_gt R)
       rw [MeasureTheory.setIntegral_congr_fun (MeasurableSet.compl measurableSet_Ioc) hzero, heq]
       exact htailR i
-    have hmeshD : h ^ 2 * D ≤ ε ^ 2 / 2 := by
-      have hMcsq : 8 * R ^ 2 * (D + 1) / ε ^ 2 < (Mc : ℝ) ^ 2 := by
+    have hmeshD : h ^ (2 : ℕ) * D ≤ ε ^ (2 : ℕ) / 2 := by
+      have hMcsq : 8 * R ^ (2 : ℕ) * (D + 1) / ε ^ (2 : ℕ) < (Mc : ℝ) ^ (2 : ℕ) := by
         have h1 : (1 : ℝ) ≤ (Mc : ℝ) := by exact_mod_cast hMc0
         nlinarith
-      have hε2 : (0 : ℝ) < ε ^ 2 := by positivity
+      have hε2 : (0 : ℝ) < ε ^ (2 : ℕ) := by positivity
       rw [div_lt_iff₀ hε2] at hMcsq
       rw [hh_def]
-      have hexp : (2 * R / (Mc : ℝ)) ^ 2 * D = 4 * R ^ 2 * D / (Mc : ℝ) ^ 2 := by
+      have hexp : (2 * R / (Mc : ℝ)) ^ (2 : ℕ) * D = 4 * R ^ (2 : ℕ) * D / (Mc : ℝ) ^ (2 : ℕ) := by
         field_simp
         ring
       rw [hexp, div_le_iff₀ (by positivity)]
       nlinarith
-    have htotal : ‖(hmem i).toLp (f i) - gridStepLp (f i) (-R) h Mc‖ ^ 2 ≤ ε ^ 2 := by
+    have htotal : ‖(hmem i).toLp (f i) - gridStepLp (f i) (-R) h Mc‖ ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) := by
       rw [hnorm, ← hsplit]
       linarith
     have hnn : (0 : ℝ) ≤ ‖(hmem i).toLp (f i) - gridStepLp (f i) (-R) h Mc‖ := norm_nonneg _

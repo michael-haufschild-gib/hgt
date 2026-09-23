@@ -36,7 +36,7 @@ theorem monotone_vonMangoldtSquareDyadicProfile :
   exact Nat.pow_le_pow_right (by norm_num : 0 < 2) hMN
 
 /-- Quadratic coefficient of the dyadic cumulative profile. -/
-def vonMangoldtSquareDyadicQuadraticCoeff : ℝ := Real.log 2 ^ 2 / 2
+def vonMangoldtSquareDyadicQuadraticCoeff : ℝ := Real.log 2 ^ (2 : ℕ) / 2
 
 /-- Linear error coefficient inherited from the explicit harmonic square law. -/
 def vonMangoldtSquareDyadicLinearError : ℝ := 39 * Real.log 2 + 25
@@ -55,7 +55,7 @@ theorem vonMangoldtSquareDyadicLinearError_nonneg :
 /-- Uniform linear error around the exact dyadic quadratic profile. -/
 theorem abs_vonMangoldtSquareDyadicProfile_sub_le (M : ℕ) :
     |vonMangoldtSquareDyadicProfile M -
-        vonMangoldtSquareDyadicQuadraticCoeff * (M : ℝ) ^ 2| ≤
+        vonMangoldtSquareDyadicQuadraticCoeff * (M : ℝ) ^ (2 : ℕ)| ≤
       vonMangoldtSquareDyadicLinearError * ((M : ℝ) + 1) := by
   have hpow : 1 ≤ 2 ^ M := one_le_pow₀ (by norm_num : 1 ≤ 2)
   have h := abs_vonMangoldtHarmonicSquareSum_sub_le (2 ^ M) hpow
@@ -63,11 +63,11 @@ theorem abs_vonMangoldtSquareDyadicProfile_sub_le (M : ℕ) :
     rw [Nat.cast_pow, Real.log_pow]
     norm_num
   change |vonMangoldtSquareDyadicProfile M -
-      Real.log ((2 ^ M : ℕ) : ℝ) ^ 2 / 2| ≤
+      Real.log ((2 ^ M : ℕ) : ℝ) ^ (2 : ℕ) / 2| ≤
     39 * Real.log ((2 ^ M : ℕ) : ℝ) + 25 at h
   rw [hlog] at h
-  have hmain : ((M : ℝ) * Real.log 2) ^ 2 / 2 =
-      vonMangoldtSquareDyadicQuadraticCoeff * (M : ℝ) ^ 2 := by
+  have hmain : ((M : ℝ) * Real.log 2) ^ (2 : ℕ) / 2 =
+      vonMangoldtSquareDyadicQuadraticCoeff * (M : ℝ) ^ (2 : ℕ) := by
     rw [vonMangoldtSquareDyadicQuadraticCoeff]
     ring
   rw [hmain] at h
@@ -81,13 +81,13 @@ theorem abs_vonMangoldtSquareDyadicProfile_sub_le (M : ℕ) :
 theorem abs_quadraticIncrementConvolution_vonMangoldtSquareDyadicProfile_sub_le
     (M : ℕ) :
     |quadraticIncrementConvolution vonMangoldtSquareDyadicProfile M -
-        vonMangoldtSquareDyadicQuadraticCoeff ^ 2 *
+        vonMangoldtSquareDyadicQuadraticCoeff ^ (2 : ℕ) *
           ((M : ℝ) * ((M : ℝ) + 1) *
-            ((M : ℝ) ^ 2 + (M : ℝ) + 1) / 6)| ≤
+            ((M : ℝ) ^ (2 : ℕ) + (M : ℝ) + 1) / 6)| ≤
       5 * vonMangoldtSquareDyadicLinearError *
         (vonMangoldtSquareDyadicQuadraticCoeff +
           vonMangoldtSquareDyadicLinearError) *
-        ((M : ℝ) + 1) ^ 3 := by
+        ((M : ℝ) + 1) ^ (3 : ℕ) := by
   exact abs_quadraticIncrementConvolution_sub_le
     vonMangoldtSquareDyadicProfile_zero
     monotone_vonMangoldtSquareDyadicProfile

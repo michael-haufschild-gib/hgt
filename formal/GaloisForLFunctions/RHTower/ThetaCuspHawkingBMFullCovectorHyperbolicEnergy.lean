@@ -27,7 +27,7 @@ def covectorNormSq (V : Covector) (z : ℍ) : ℝ :=
 
 /-- The modularly intrinsic first-order covector energy in the upper-half-plane chart. -/
 def hyperbolicCovectorEnergy (V : Covector) (z : ℍ) : ℝ :=
-  z.im ^ 2 * covectorNormSq V z
+  z.im ^ (2 : ℕ) * covectorNormSq V z
 
 private theorem covector_rotation_scale_normSq (d u₀ u₁ : ℂ) :
     Complex.normSq (d.re * u₀ + d.im * u₁) +
@@ -42,9 +42,9 @@ private theorem covector_rotation_scale_normSq (d u₀ u₁ : ℂ) :
 rotation--scale norm law. -/
 theorem covectorNormSq_transport (V : Covector) (A : SL(2, ℤ)) (z : ℍ)
     (hV : ∀ v : ℂ, covectorAction V (coordinates (A • z))
-      ((1 / denom A z ^ 2) * v) = covectorAction V (coordinates z) v) :
-    covectorNormSq V z = Complex.normSq (1 / denom A z ^ 2) * covectorNormSq V (A • z) := by
-  let d : ℂ := 1 / denom A z ^ 2
+      ((1 / denom A z ^ (2 : ℕ)) * v) = covectorAction V (coordinates z) v) :
+    covectorNormSq V z = Complex.normSq (1 / denom A z ^ (2 : ℕ)) * covectorNormSq V (A • z) := by
+  let d : ℂ := 1 / denom A z ^ (2 : ℕ)
   have h0 : covectorAction V (coordinates (A • z)) (d * 1) =
       covectorAction V (coordinates z) 1 := by
     simpa only [d] using hV 1
@@ -67,14 +67,14 @@ theorem covectorNormSq_transport (V : Covector) (A : SL(2, ℤ)) (z : ℍ)
 modular pullback law. -/
 theorem hyperbolicCovectorEnergy_modular (V : Covector) (A : SL(2, ℤ)) (z : ℍ)
     (hV : ∀ v : ℂ, covectorAction V (coordinates (A • z))
-      ((1 / denom A z ^ 2) * v) = covectorAction V (coordinates z) v) :
+      ((1 / denom A z ^ (2 : ℕ)) * v) = covectorAction V (coordinates z) v) :
     hyperbolicCovectorEnergy V (A • z) = hyperbolicCovectorEnergy V z := by
   have hden : Complex.normSq (denom A z) ≠ 0 :=
     ne_of_gt (Complex.normSq_pos.mpr (UpperHalfPlane.denom_ne_zero A z))
   unfold hyperbolicCovectorEnergy
   rw [ModularGroup.im_smul_eq_div_normSq, covectorNormSq_transport V A z hV]
-  simp only [show Complex.normSq (1 / denom A z ^ 2) =
-      1 / Complex.normSq (denom A z) ^ 2 by simp [one_div]]
+  simp only [show Complex.normSq (1 / denom A z ^ (2 : ℕ)) =
+      1 / Complex.normSq (denom A z) ^ (2 : ℕ) by simp [one_div]]
   field_simp
 
 /-- The actual full angular covector has invariant hyperbolic energy. -/

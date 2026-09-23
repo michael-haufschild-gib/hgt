@@ -60,14 +60,14 @@ theorem norm_poincareTerm_appellHumbert_le_at (hHu : IsHermitianForm Hu)
     (hHl : IsHermitianForm Hl)
     (hχu : ∀ γ, ‖χu γ‖ = 1)
     (hpos : ∀ w : Fin d → ℂ, 0 ≤ (Hu w w - Hl w w).re)
-    {C : ℝ} (hC : 0 ≤ C) {z : Fin d → ℂ} (hz : (Hu z z - Hl z z).re ≤ C ^ 2)
+    {C : ℝ} (hC : 0 ≤ C) {z : Fin d → ℂ} (hz : (Hu z z - Hl z z).re ≤ C ^ (2 : ℕ))
     {Γ : AddSubgroup (Fin d → ℂ)}
     (hsemiu : IsSemicharacterOn Hu χu Γ)
     (seed : MultivariateEntire d) {M : ℝ} (hM : 0 ≤ M) (γ : Γ)
     (hseedz : ‖seed.1 (z + γ.1)‖
       ≤ M * Real.exp (Real.pi / 2 * (Hl (z + γ.1) (z + γ.1)).re)) :
     ‖poincareTerm (appellHumbertAutomorphicFactor hHu hχu hsemiu) seed γ z‖
-      ≤ M * Real.exp (Real.pi / 2 * (Hl z z).re) * Real.exp (Real.pi * C ^ 2)
+      ≤ M * Real.exp (Real.pi / 2 * (Hl z z).re) * Real.exp (Real.pi * C ^ (2 : ℕ))
           * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by
   have hD : IsHermitianForm fun x y => Hu x y - Hl x y := hHu.sub hHl
   set A : ℝ := -(Real.pi * (Hu z γ.1).re + Real.pi / 2 * (Hu γ.1 γ.1).re) with hAdef
@@ -96,7 +96,7 @@ theorem norm_poincareTerm_appellHumbert_le_at (hHu : IsHermitianForm Hu)
   have hR : ‖(appellHumbertFactor (fun x y => Hu x y - Hl x y) (fun _ => 1) γ.1 z)⁻¹‖
       = Real.exp Q := by
     rw [norm_inv, norm_appellHumbertFactor hD (fun _ => norm_one), ← Real.exp_neg, hQdef]
-  have hbound : Real.exp Q ≤ Real.exp (Real.pi * C ^ 2)
+  have hbound : Real.exp Q ≤ Real.exp (Real.pi * C ^ (2 : ℕ))
       * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by
     rw [← hR]
     have h := norm_inv_appellHumbertFactor_le hD hpos (χ := fun _ => 1)
@@ -106,24 +106,24 @@ theorem norm_poincareTerm_appellHumbert_le_at (hHu : IsHermitianForm Hu)
   rw [hsplit] at hstep
   refine le_trans hstep ?_
   calc M * Real.exp P * Real.exp Q
-      ≤ M * Real.exp P * (Real.exp (Real.pi * C ^ 2)
+      ≤ M * Real.exp P * (Real.exp (Real.pi * C ^ (2 : ℕ))
           * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re)) :=
         mul_le_mul_of_nonneg_left hbound hnn
-    _ = M * Real.exp P * Real.exp (Real.pi * C ^ 2)
+    _ = M * Real.exp P * Real.exp (Real.pi * C ^ (2 : ℕ))
           * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by ring
 
 /-- The same, from a global bound on the normalised modulus. -/
 theorem norm_poincareTerm_appellHumbert_le (hHu : IsHermitianForm Hu) (hHl : IsHermitianForm Hl)
     (hχu : ∀ γ, ‖χu γ‖ = 1)
     (hpos : ∀ w : Fin d → ℂ, 0 ≤ (Hu w w - Hl w w).re)
-    {C : ℝ} (hC : 0 ≤ C) {z : Fin d → ℂ} (hz : (Hu z z - Hl z z).re ≤ C ^ 2)
+    {C : ℝ} (hC : 0 ≤ C) {z : Fin d → ℂ} (hz : (Hu z z - Hl z z).re ≤ C ^ (2 : ℕ))
     {Γ : AddSubgroup (Fin d → ℂ)}
     (hsemiu : IsSemicharacterOn Hu χu Γ)
     (seed : MultivariateEntire d) {M : ℝ}
     (hseednorm : ∀ y : Fin d → ℂ, ‖seed.1 y‖ ≤ M * Real.exp (Real.pi / 2 * (Hl y y).re))
     (γ : Γ) :
     ‖poincareTerm (appellHumbertAutomorphicFactor hHu hχu hsemiu) seed γ z‖
-      ≤ M * Real.exp (Real.pi / 2 * (Hl z z).re) * Real.exp (Real.pi * C ^ 2)
+      ≤ M * Real.exp (Real.pi / 2 * (Hl z z).re) * Real.exp (Real.pi * C ^ (2 : ℕ))
           * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by
   have hM : 0 ≤ M := by
     have h := hseednorm z
@@ -142,13 +142,13 @@ theorem norm_multiIndexJetEvalCLM_poincareTerm_appellHumbert_le
     (hseednorm : ∀ y : Fin d → ℂ, ‖seed.1 y‖ ≤ M * Real.exp (Real.pi / 2 * (Hl y y).re))
     (p : Fin d → ℂ) (a : Fin d →₀ ℕ) {ρ L : ℝ} (hρ : 0 < ρ)
     (hzsup : ∀ y : Fin d → ℂ,
-      ‖y - p‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ → (Hu y y - Hl y y).re ≤ C ^ 2)
+      ‖y - p‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ → (Hu y y - Hl y y).re ≤ C ^ (2 : ℕ))
     (hLsup : ∀ y : Fin d → ℂ,
       ‖y - p‖ ≤ ((Fintype.card (MultiIndexSlot a) : ℕ) : ℝ) * ρ → (Hl y y).re ≤ L)
     (γ : Γ) :
     ‖multiIndexJetEvalCLM p a
         (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu) seed γ)‖
-      ≤ (M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C ^ 2)
+      ≤ (M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C ^ (2 : ℕ))
             / ρ ^ (Fintype.card (MultiIndexSlot a)))
           * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by
   have hM : 0 ≤ M := by
@@ -156,7 +156,7 @@ theorem norm_multiIndexJetEvalCLM_poincareTerm_appellHumbert_le
     have h0 : (0 : ℝ) ≤ ‖seed.1 p‖ := norm_nonneg _
     nlinarith [Real.exp_pos (Real.pi / 2 * (Hl p p).re), h, h0]
   set ψ := appellHumbertAutomorphicFactor hHu hχu hsemiu with hψ
-  set E : ℝ := Real.exp (Real.pi * C ^ 2)
+  set E : ℝ := Real.exp (Real.pi * C ^ (2 : ℕ))
       * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) with hE
   have hEnn : 0 ≤ E := by positivity
   have hstep : ∀ y : Fin d → ℂ,
@@ -173,7 +173,7 @@ theorem norm_multiIndexJetEvalCLM_poincareTerm_appellHumbert_le
         ≤ M * Real.exp (Real.pi / 2 * L) * E :=
       mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmono hM) hEnn
     calc ‖(poincareTermEntire ψ seed γ).1 y‖
-        ≤ M * Real.exp (Real.pi / 2 * (Hl y y).re) * Real.exp (Real.pi * C ^ 2)
+        ≤ M * Real.exp (Real.pi / 2 * (Hl y y).re) * Real.exp (Real.pi * C ^ (2 : ℕ))
             * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := h1
       _ = M * Real.exp (Real.pi / 2 * (Hl y y).re) * E := by rw [hE]; ring
       _ ≤ M * Real.exp (Real.pi / 2 * L) * E := hle

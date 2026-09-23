@@ -26,12 +26,12 @@ theorem sum_sq_card_fibre_roughSet_explicit {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 
         + Real.log 2 ≤ (k : ℝ))
     (hcorr : 0 < 1 - Real.log ⌊h⌋₊ / (Real.log P₁ * (P₁ : ℝ))) :
     ∑ a ∈ outerBlock x h,
-        ((((innerFibre x h a ∩ roughSet P₁ hN ⌊Y⌋₊).card : ℕ)) : ℝ) ^ 2
+        ((((innerFibre x h a ∩ roughSet P₁ hN ⌊Y⌋₊).card : ℕ)) : ℝ) ^ (2 : ℕ)
       ≤ (2 * h + 1) * (2 * ((Y / ((1 / 2) * Real.exp (mertensS hN - mertensS P₁))
             + ∑ e ∈ (rangePrimorial P₁ hN).divisors,
                 (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0))
           + ((⌊h⌋₊ : ℕ) : ℝ)
-              * (Y / ((1 / 2) * (Real.exp (mertensS hN - mertensS P₁) ^ 2
+              * (Y / ((1 / 2) * (Real.exp (mertensS hN - mertensS P₁) ^ (2 : ℕ)
                     * (1 - Real.log ⌊h⌋₊ / (Real.log P₁ * (P₁ : ℝ)))))
                 + ∑ e ∈ (rangePrimorial P₁ hN).divisors,
                     (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)))) := by

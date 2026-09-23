@@ -25,13 +25,13 @@ theorem substitutionShift_four (R : RatFunc C) :
       = 4 * JetField.pd ((), 0) (substitutionDeriv R)
           * (JetField.jet ((), 1) : JetField C Unit) * (JetField.jet ((), 3) : JetField C Unit)
         + 3 * JetField.pd ((), 0) (substitutionDeriv R)
-          * (JetField.jet ((), 2) : JetField C Unit) ^ 2
+          * (JetField.jet ((), 2) : JetField C Unit) ^ (2 : ℕ)
         + 6 * JetField.pd ((), 0) (JetField.pd ((), 0) (substitutionDeriv R))
-          * (JetField.jet ((), 1) : JetField C Unit) ^ 2
+          * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ)
           * (JetField.jet ((), 2) : JetField C Unit)
         + JetField.pd ((), 0)
             (JetField.pd ((), 0) (JetField.pd ((), 0) (substitutionDeriv R)))
-          * (JetField.jet ((), 1) : JetField C Unit) ^ 4 := by
+          * (JetField.jet ((), 1) : JetField C Unit) ^ (4 : ℕ) := by
   set ρ : JetField C Unit := substitutionDeriv R with hρdef
   set ρ₁ : JetField C Unit := JetField.pd ((), 0) ρ with hρ₁def
   set ρ₂ : JetField C Unit := JetField.pd ((), 0) ρ₁ with hρ₂def
@@ -43,7 +43,7 @@ theorem substitutionShift_four (R : RatFunc C) :
   have haff3 : substitutionJet R 3 = ρ * (JetField.jet ((), 3) : JetField C Unit)
       + (3 * ρ₁ * (JetField.jet ((), 1) : JetField C Unit)
           * (JetField.jet ((), 2) : JetField C Unit)
-        + ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ 3) := by
+        + ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ (3 : ℕ)) := by
     rw [substitutionJet_eq_affine R 3, substitutionShift_three, hρdef, hρ₁def, hρ₂def]
   have hδρ : δ ρ = (JetField.jet ((), 1) : JetField C Unit) * ρ₁ :=
     jetDerivation_of_order_zero (fun k hk => pd_substitutionDeriv_eq_zero R hk)
@@ -68,8 +68,8 @@ theorem substitutionShift_four (R : RatFunc C) :
     have h := δ.leibniz a b
     simp only [smul_eq_mul] at h
     rw [h]; ring
-  have hcube : δ ((JetField.jet ((), 1) : JetField C Unit) ^ 3)
-      = 3 * (JetField.jet ((), 1) : JetField C Unit) ^ 2 * (JetField.jet ((), 2)) := by
+  have hcube : δ ((JetField.jet ((), 1) : JetField C Unit) ^ (3 : ℕ))
+      = 3 * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ) * (JetField.jet ((), 2)) := by
     have h := δ.leibniz_pow (JetField.jet ((), 1) : JetField C Unit) 3
     simp only [smul_eq_mul, hδ1] at h
     rw [h]
@@ -93,8 +93,8 @@ variable {K : Type*} [Field K]
 
 omit [Field C] [CharZero C] in
 theorem eq_cubic_of_natDegree_le_three {u : Polynomial K} (hu : u.natDegree ≤ 3) :
-    u = Polynomial.C (u.coeff 3) * Polynomial.X ^ 3
-      + Polynomial.C (u.coeff 2) * Polynomial.X ^ 2
+    u = Polynomial.C (u.coeff 3) * Polynomial.X ^ (3 : ℕ)
+      + Polynomial.C (u.coeff 2) * Polynomial.X ^ (2 : ℕ)
       + Polynomial.C (u.coeff 1) * Polynomial.X + Polynomial.C (u.coeff 0) := by
   ext n
   rcases Nat.lt_or_ge n 4 with hn | hn
@@ -114,17 +114,17 @@ theorem coeff_eqs_of_twistComp_affine_deg_le_three (Φ : K →+* K) (ρ s c : K)
     {S : Polynomial K} {u : Polynomial K} (hu : u.natDegree ≤ 3)
     (hcu : twistComp Φ (Polynomial.C ρ * Polynomial.X + Polynomial.C s) u
       = Polynomial.C c * u - S) :
-    Φ (u.coeff 3) * ρ ^ 3 = c * u.coeff 3 - S.coeff 3
-      ∧ Φ (u.coeff 3) * (3 * ρ ^ 2 * s) + Φ (u.coeff 2) * ρ ^ 2
+    Φ (u.coeff 3) * ρ ^ (3 : ℕ) = c * u.coeff 3 - S.coeff 3
+      ∧ Φ (u.coeff 3) * (3 * ρ ^ (2 : ℕ) * s) + Φ (u.coeff 2) * ρ ^ (2 : ℕ)
           = c * u.coeff 2 - S.coeff 2
-      ∧ Φ (u.coeff 3) * (3 * ρ * s ^ 2) + Φ (u.coeff 2) * (2 * ρ * s)
+      ∧ Φ (u.coeff 3) * (3 * ρ * s ^ (2 : ℕ)) + Φ (u.coeff 2) * (2 * ρ * s)
             + Φ (u.coeff 1) * ρ
           = c * u.coeff 1 - S.coeff 1
-      ∧ Φ (u.coeff 3) * s ^ 3 + Φ (u.coeff 2) * s ^ 2 + Φ (u.coeff 1) * s + Φ (u.coeff 0)
+      ∧ Φ (u.coeff 3) * s ^ (3 : ℕ) + Φ (u.coeff 2) * s ^ (2 : ℕ) + Φ (u.coeff 1) * s + Φ (u.coeff 0)
           = c * u.coeff 0 - S.coeff 0 := by
   set T : Polynomial K := Polynomial.C ρ * Polynomial.X + Polynomial.C s with hTdef
   have hexp : twistComp Φ T u
-      = Polynomial.C (Φ (u.coeff 3)) * T ^ 3 + Polynomial.C (Φ (u.coeff 2)) * T ^ 2
+      = Polynomial.C (Φ (u.coeff 3)) * T ^ (3 : ℕ) + Polynomial.C (Φ (u.coeff 2)) * T ^ (2 : ℕ)
         + Polynomial.C (Φ (u.coeff 1)) * T + Polynomial.C (Φ (u.coeff 0)) := by
     conv_lhs => rw [eq_cubic_of_natDegree_le_three hu]
     rw [twistComp_add, twistComp_add, twistComp_add, twistComp_C_mul_X_pow,
@@ -132,17 +132,17 @@ theorem coeff_eqs_of_twistComp_affine_deg_le_three (Φ : K →+* K) (ρ s c : K)
     congr 1
     · congr 1
       have h1 : Polynomial.C (u.coeff 1) * Polynomial.X
-          = Polynomial.C (u.coeff 1) * Polynomial.X ^ 1 := by rw [pow_one]
+          = Polynomial.C (u.coeff 1) * Polynomial.X ^ (1 : ℕ) := by rw [pow_one]
       rw [h1, twistComp_C_mul_X_pow, pow_one]
     · exact twistComp_C Φ T (u.coeff 0)
-  have hTsq : T ^ 2 = Polynomial.C (ρ ^ 2) * Polynomial.X ^ 2
-      + Polynomial.C (2 * ρ * s) * Polynomial.X + Polynomial.C (s ^ 2) := by
+  have hTsq : T ^ (2 : ℕ) = Polynomial.C (ρ ^ (2 : ℕ)) * Polynomial.X ^ (2 : ℕ)
+      + Polynomial.C (2 * ρ * s) * Polynomial.X + Polynomial.C (s ^ (2 : ℕ)) := by
     rw [hTdef]
     simp only [map_pow, map_mul, map_ofNat]
     ring
-  have hTcube : T ^ 3 = Polynomial.C (ρ ^ 3) * Polynomial.X ^ 3
-      + Polynomial.C (3 * ρ ^ 2 * s) * Polynomial.X ^ 2
-      + Polynomial.C (3 * ρ * s ^ 2) * Polynomial.X + Polynomial.C (s ^ 3) := by
+  have hTcube : T ^ (3 : ℕ) = Polynomial.C (ρ ^ (3 : ℕ)) * Polynomial.X ^ (3 : ℕ)
+      + Polynomial.C (3 * ρ ^ (2 : ℕ) * s) * Polynomial.X ^ (2 : ℕ)
+      + Polynomial.C (3 * ρ * s ^ (2 : ℕ)) * Polynomial.X + Polynomial.C (s ^ (3 : ℕ)) := by
     rw [hTdef]
     simp only [map_pow, map_mul, map_ofNat]
     ring

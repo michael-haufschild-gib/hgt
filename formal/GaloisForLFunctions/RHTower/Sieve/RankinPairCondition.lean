@@ -111,7 +111,7 @@ theorem rankin_pairSum_le {P₁ h : ℕ} (hP₁ : 2 ≤ P₁) (hh2 : 2 ≤ h) (d
   have hcoef : (0 : ℝ) ≤ 6 * Real.exp 1 * α := by positivity
   exact mul_le_mul_of_nonneg_left (le_trans hmert hmertA) hcoef
 
-/-- **The Rankin condition at level `h^18`.** -/
+/-- **The Rankin condition at level `h^(18 : ℕ)`.** -/
 theorem rankin_pairSieve_condition {P₁ h : ℕ} (hP₁ : 2 ≤ P₁) (hh2 : 2 ≤ h)
     (hlog : 20 * mertensFirstConst ≤ Real.log h) (d : ℕ) :
     (∑ p ∈ rangePrimes P₁ h,

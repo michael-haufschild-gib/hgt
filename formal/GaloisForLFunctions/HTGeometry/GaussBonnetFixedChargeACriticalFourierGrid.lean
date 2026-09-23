@@ -49,11 +49,11 @@ theorem egbFixedChargeAFourierCharacter_pair
 /-- Squared characters recover the fourth angular harmonic. -/
 theorem egbFixedChargeAFourierCharacter_square_pair
     (n : ℕ) (i j : Fin (2 ^ n)) :
-    egbFixedChargeAFourierCharacter n i j ^ 2 +
-      star (egbFixedChargeAFourierCharacter n i j) ^ 2 =
+    egbFixedChargeAFourierCharacter n i j ^ (2 : ℕ) +
+      star (egbFixedChargeAFourierCharacter n i j) ^ (2 : ℕ) =
         2 * (Real.cos (4 * (egbFixedChargeAFourierGrid n i -
           egbFixedChargeAFourierGrid n j)) : ℂ) := by
-  have he : egbFixedChargeAFourierCharacter n i j ^ 2 =
+  have he : egbFixedChargeAFourierCharacter n i j ^ (2 : ℕ) =
       Complex.exp ((4 * (egbFixedChargeAFourierGrid n i -
         egbFixedChargeAFourierGrid n j) : ℝ) * Complex.I) := by
     rw [egbFixedChargeAFourierCharacter_exp, ← Complex.exp_nat_mul]
@@ -71,11 +71,11 @@ theorem egbFixedChargeACriticalGram_fourier_entry
       3 / 8 +
       (egbFixedChargeAFourierCharacter n i j +
         star (egbFixedChargeAFourierCharacter n i j)) / 4 +
-      (egbFixedChargeAFourierCharacter n i j ^ 2 +
-        star (egbFixedChargeAFourierCharacter n i j) ^ 2) / 16 := by
+      (egbFixedChargeAFourierCharacter n i j ^ (2 : ℕ) +
+        star (egbFixedChargeAFourierCharacter n i j) ^ (2 : ℕ)) / 16 := by
   rw [egbFixedChargeAFourierCharacter_pair, egbFixedChargeAFourierCharacter_square_pair]
   change (Real.cos (egbFixedChargeAFourierGrid n i -
-      egbFixedChargeAFourierGrid n j) ^ 4 : ℂ) = _
+      egbFixedChargeAFourierGrid n j) ^ (4 : ℕ) : ℂ) = _
   have h := congrArg (fun r : ℝ => (r : ℂ))
     (egbFixedChargeAQuarticProfile_harmonic_decomposition
       (egbFixedChargeAFourierGrid n i - egbFixedChargeAFourierGrid n j))

@@ -234,7 +234,7 @@ theorem integral_mul_shiftedGammaJump_comp_sub {g V : ℝ → ℝ} {K R σ : ℝ
     (hgc : Continuous g)
     (hgK : ∀ u v : ℝ, |g u - g v| ≤ K * |u - v|)
     (hgsupp : ∀ u : ℝ, R < |u| → g u = 0) (hR : 0 ≤ R)
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ)))
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (x : ℝ) :
     (∫ t, V t * shiftedGammaJump σ g (x - t))
       = shiftedGammaJump σ (lineConvolution g V) x := by
@@ -248,31 +248,31 @@ theorem integral_mul_shiftedGammaJump_comp_sub {g V : ℝ → ℝ} {K R σ : ℝ
       exact lt_of_lt_of_le (by linarith) (neg_le_abs u)
     · rw [not_le] at hu
       exact lt_of_lt_of_le hu (le_abs_self u)
-  have hg2 : Integrable (fun u => g u ^ 2) :=
+  have hg2 : Integrable (fun u => g u ^ (2 : ℕ)) :=
     (hgc.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hgcs)
-  have hgEnn : (0 : ℝ) ≤ ∫ u, g u ^ 2 := integral_nonneg fun u => sq_nonneg _
+  have hgEnn : (0 : ℝ) ≤ ∫ u, g u ^ (2 : ℕ) := integral_nonneg fun u => sq_nonneg _
   -- the translate modulus and energy constants
-  set C₁ : ℝ := Real.sqrt (K ^ 2 * (2 * R + 1)) + 1 with hC₁def
-  set C₂ : ℝ := Real.sqrt (∫ u, g u ^ 2) + 1 with hC₂def
+  set C₁ : ℝ := Real.sqrt (K ^ (2 : ℕ) * (2 * R + 1)) + 1 with hC₁def
+  set C₂ : ℝ := Real.sqrt (∫ u, g u ^ (2 : ℕ)) + 1 with hC₂def
   have hC₁ : 0 < C₁ := by
     rw [hC₁def]
     positivity
   have hC₂ : 0 < C₂ := by
     rw [hC₂def]
     positivity
-  have htrans : ∀ s : ℝ, 0 ≤ s → s ≤ 1 → (∫ u, (g (u + s) - g u) ^ 2) ≤ (C₁ * s) ^ 2 := by
+  have htrans : ∀ s : ℝ, 0 ≤ s → s ≤ 1 → (∫ u, (g (u + s) - g u) ^ (2 : ℕ)) ≤ (C₁ * s) ^ (2 : ℕ) := by
     intro s hs0 hs1
     have h := integral_sq_translate_sub_le_of_lipschitz hgK hgsupp hR hs0 hs1
-    have hbase : (0 : ℝ) ≤ K ^ 2 * (2 * R + 1) := by positivity
-    have hsq : K ^ 2 * (2 * R + 1) ≤ C₁ ^ 2 := by
+    have hbase : (0 : ℝ) ≤ K ^ (2 : ℕ) * (2 * R + 1) := by positivity
+    have hsq : K ^ (2 : ℕ) * (2 * R + 1) ≤ C₁ ^ (2 : ℕ) := by
       rw [hC₁def]
-      nlinarith [Real.sq_sqrt hbase, Real.sqrt_nonneg (K ^ 2 * (2 * R + 1))]
-    calc (∫ u, (g (u + s) - g u) ^ 2) ≤ K ^ 2 * (2 * R + 1) * s ^ 2 := h
-      _ ≤ C₁ ^ 2 * s ^ 2 := by nlinarith [sq_nonneg s]
-      _ = (C₁ * s) ^ 2 := by ring
-  have hE : (∫ u, g u ^ 2) ≤ C₂ ^ 2 := by
+      nlinarith [Real.sq_sqrt hbase, Real.sqrt_nonneg (K ^ (2 : ℕ) * (2 * R + 1))]
+    calc (∫ u, (g (u + s) - g u) ^ (2 : ℕ)) ≤ K ^ (2 : ℕ) * (2 * R + 1) * s ^ (2 : ℕ) := h
+      _ ≤ C₁ ^ (2 : ℕ) * s ^ (2 : ℕ) := by nlinarith [sq_nonneg s]
+      _ = (C₁ * s) ^ (2 : ℕ) := by ring
+  have hE : (∫ u, g u ^ (2 : ℕ)) ≤ C₂ ^ (2 : ℕ) := by
     rw [hC₂def]
-    nlinarith [Real.sq_sqrt hgEnn, Real.sqrt_nonneg (∫ u, g u ^ 2)]
+    nlinarith [Real.sq_sqrt hgEnn, Real.sqrt_nonneg (∫ u, g u ^ (2 : ℕ))]
   -- the joint integrand
   set μs : Measure ℝ := volume.restrict (Ioi 0) with hμs
   set H : ℝ × ℝ → ℝ := fun p =>
@@ -327,8 +327,8 @@ theorem integral_mul_shiftedGammaJump_comp_sub {g V : ℝ → ℝ} {K R σ : ℝ
     rw [hH]
     ring
   -- the scale-section mass bound
-  have hCV : (0 : ℝ) ≤ ∫ t, V t ^ 2 := integral_nonneg fun t => sq_nonneg _
-  set CV : ℝ := Real.sqrt (∫ t, V t ^ 2) with hCVdef
+  have hCV : (0 : ℝ) ≤ ∫ t, V t ^ (2 : ℕ) := integral_nonneg fun t => sq_nonneg _
+  set CV : ℝ := Real.sqrt (∫ t, V t ^ (2 : ℕ)) with hCVdef
   have hsection : ∀ s ∈ Ioi (0 : ℝ), (∫ t, ‖H (t, s)‖)
       ≤ CV * gammaJumpScaleWeight C₁ C₂ σ s := by
     intro s hs
@@ -350,17 +350,17 @@ theorem integral_mul_shiftedGammaJump_comp_sub {g V : ℝ → ℝ} {K R σ : ℝ
       have hDabsm : AEStronglyMeasurable
           (fun t => |shiftedSecondDifference σ g (x - t) s|) volume :=
         ((hDslice s).abs).aestronglyMeasurable
-      have hVabs2 : Integrable (fun t => |V t| ^ 2) := by
+      have hVabs2 : Integrable (fun t => |V t| ^ (2 : ℕ)) := by
         refine hV2.congr ?_
         filter_upwards with t
-        show V t ^ 2 = |V t| ^ 2
+        show V t ^ (2 : ℕ) = |V t| ^ (2 : ℕ)
         rw [sq_abs]
-      have hDabs2 : Integrable (fun t => |shiftedSecondDifference σ g (x - t) s| ^ 2) := by
+      have hDabs2 : Integrable (fun t => |shiftedSecondDifference σ g (x - t) s| ^ (2 : ℕ)) := by
         refine (((hDslice s).pow 2).integrable_of_hasCompactSupport
           (hasCompactSupport_sq (hDslice_supp s))).congr ?_
         filter_upwards with t
-        show shiftedSecondDifference σ g (x - t) s ^ 2
-            = |shiftedSecondDifference σ g (x - t) s| ^ 2
+        show shiftedSecondDifference σ g (x - t) s ^ (2 : ℕ)
+            = |shiftedSecondDifference σ g (x - t) s| ^ (2 : ℕ)
         rw [sq_abs]
       have hcs := sq_integral_mul_le (μ := (volume : Measure ℝ)) hVabsm hDabsm hVabs2 hDabs2
       have heqabs : (∫ t, |V t| * |shiftedSecondDifference σ g (x - t) s|)
@@ -369,20 +369,20 @@ theorem integral_mul_shiftedGammaJump_comp_sub {g V : ℝ → ℝ} {K R σ : ℝ
         show |V t| * |shiftedSecondDifference σ g (x - t) s|
             = |V t * shiftedSecondDifference σ g (x - t) s|
         rw [abs_mul]
-      have heqV : (∫ t, |V t| ^ 2) = ∫ t, V t ^ 2 := by
+      have heqV : (∫ t, |V t| ^ (2 : ℕ)) = ∫ t, V t ^ (2 : ℕ) := by
         refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-        show |V t| ^ 2 = V t ^ 2
+        show |V t| ^ (2 : ℕ) = V t ^ (2 : ℕ)
         rw [sq_abs]
-      have heqD : (∫ t, |shiftedSecondDifference σ g (x - t) s| ^ 2)
-          = ∫ y, shiftedSecondDifference σ g y s ^ 2 := by
-        have h1 : (∫ t, |shiftedSecondDifference σ g (x - t) s| ^ 2)
-            = ∫ t, shiftedSecondDifference σ g (x - t) s ^ 2 := by
+      have heqD : (∫ t, |shiftedSecondDifference σ g (x - t) s| ^ (2 : ℕ))
+          = ∫ y, shiftedSecondDifference σ g y s ^ (2 : ℕ) := by
+        have h1 : (∫ t, |shiftedSecondDifference σ g (x - t) s| ^ (2 : ℕ))
+            = ∫ t, shiftedSecondDifference σ g (x - t) s ^ (2 : ℕ) := by
           refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-          show |shiftedSecondDifference σ g (x - t) s| ^ 2
-              = shiftedSecondDifference σ g (x - t) s ^ 2
+          show |shiftedSecondDifference σ g (x - t) s| ^ (2 : ℕ)
+              = shiftedSecondDifference σ g (x - t) s ^ (2 : ℕ)
           rw [sq_abs]
         rw [h1]
-        exact integral_sub_left_eq_self (fun y => shiftedSecondDifference σ g y s ^ 2) volume x
+        exact integral_sub_left_eq_self (fun y => shiftedSecondDifference σ g y s ^ (2 : ℕ)) volume x
       rw [heqabs, heqV, heqD] at hcs
       have hDbound := integral_sq_shiftedSecondDifference_le
         hgc.aestronglyMeasurable hg2 htrans hE hC₁.le hC₂.le hσ0 hs
@@ -390,21 +390,21 @@ theorem integral_mul_shiftedGammaJump_comp_sub {g V : ℝ → ℝ} {K R σ : ℝ
         integral_nonneg fun t => abs_nonneg _
       have hν0 : 0 < gammaJumpL2Majorant C₁ C₂ σ s :=
         gammaJumpL2Majorant_pos hC₁ hC₂ hσ0 hs
-      have hfinal : (∫ t, |V t * shiftedSecondDifference σ g (x - t) s|) ^ 2
-          ≤ (CV * gammaJumpL2Majorant C₁ C₂ σ s) ^ 2 := by
-        calc (∫ t, |V t * shiftedSecondDifference σ g (x - t) s|) ^ 2
-            ≤ (∫ t, V t ^ 2) * ∫ y, shiftedSecondDifference σ g y s ^ 2 := hcs
-          _ ≤ (∫ t, V t ^ 2) * gammaJumpL2Majorant C₁ C₂ σ s ^ 2 :=
+      have hfinal : (∫ t, |V t * shiftedSecondDifference σ g (x - t) s|) ^ (2 : ℕ)
+          ≤ (CV * gammaJumpL2Majorant C₁ C₂ σ s) ^ (2 : ℕ) := by
+        calc (∫ t, |V t * shiftedSecondDifference σ g (x - t) s|) ^ (2 : ℕ)
+            ≤ (∫ t, V t ^ (2 : ℕ)) * ∫ y, shiftedSecondDifference σ g y s ^ (2 : ℕ) := hcs
+          _ ≤ (∫ t, V t ^ (2 : ℕ)) * gammaJumpL2Majorant C₁ C₂ σ s ^ (2 : ℕ) :=
               mul_le_mul_of_nonneg_left hDbound hCV
-          _ = (CV * gammaJumpL2Majorant C₁ C₂ σ s) ^ 2 := by
+          _ = (CV * gammaJumpL2Majorant C₁ C₂ σ s) ^ (2 : ℕ) := by
               rw [hCVdef, mul_pow, Real.sq_sqrt hCV]
       have hb : (0 : ℝ) ≤ CV * gammaJumpL2Majorant C₁ C₂ σ s := by
         rw [hCVdef]
         positivity
       calc (∫ t, |V t * shiftedSecondDifference σ g (x - t) s|)
-          = Real.sqrt ((∫ t, |V t * shiftedSecondDifference σ g (x - t) s|) ^ 2) :=
+          = Real.sqrt ((∫ t, |V t * shiftedSecondDifference σ g (x - t) s|) ^ (2 : ℕ)) :=
             (Real.sqrt_sq hnn).symm
-        _ ≤ Real.sqrt ((CV * gammaJumpL2Majorant C₁ C₂ σ s) ^ 2) :=
+        _ ≤ Real.sqrt ((CV * gammaJumpL2Majorant C₁ C₂ σ s) ^ (2 : ℕ)) :=
             Real.sqrt_le_sqrt hfinal
         _ = CV * gammaJumpL2Majorant C₁ C₂ σ s := Real.sqrt_sq hb
     calc (∫ t, ‖H (t, s)‖)
@@ -551,7 +551,7 @@ scaled mollifier and running the kernel algebra gives, at every base point `x`:
 `2x U_ε(x) − 2W_ε(x) + (R_σ U_ε)(x) − τ U_ε(x) + V_ε(x) = G_ε(x)`. -/
 theorem suzukiGamma_mollified_equation {σ τ ε : ℝ} {V G : ℝ → ℝ}
     (heq : SuzukiGammaTestedEquation σ τ V G)
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ)))
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hε : 0 < ε) (x : ℝ) :
     2 * x * suzukiMollifiedDeriv σ ε V x - 2 * suzukiMollifiedDefect σ ε V x
       + shiftedGammaJump σ (suzukiMollifiedDeriv σ ε V) x
@@ -588,7 +588,7 @@ theorem suzukiGamma_mollified_equation {σ τ ε : ℝ} {V G : ℝ → ℝ}
   have hkkdcs : HasCompactSupport kkd := hkkcs.deriv
   -- integrability instances
   have hsqI : ∀ (h : ℝ → ℝ), Continuous h → HasCompactSupport h →
-      Integrable fun u => h u ^ 2 := fun h hc hcs =>
+      Integrable fun u => h u ^ (2 : ℕ) := fun h hc hcs =>
     (hc.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hcs)
   have hI : ∀ (h : ℝ → ℝ), Continuous h → HasCompactSupport h → ∀ z : ℝ,
       Integrable fun t => V t * h (z - t) := fun h hc hcs z =>

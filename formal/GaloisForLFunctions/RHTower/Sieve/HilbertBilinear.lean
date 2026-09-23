@@ -41,7 +41,7 @@ theorem hilbert_bilinear_bound {Q : ℕ} (hQ : 0 < Q) (M : ℕ)
         * ∑ j : Fin Q, (hilbertSymbol Q M j : ℂ)
             * ((starRingEnd ℂ) (((rootOfUnity Q) ^ (j : ℕ)) ^ (m : ℕ))
                 * ((rootOfUnity Q) ^ (j : ℕ)) ^ (n : ℕ))‖
-      ≤ (1 + 3 * Real.pi) * ((Q : ℝ) * ‖x‖ ^ 2) :=
+      ≤ (1 + 3 * Real.pi) * ((Q : ℝ) * ‖x‖ ^ (2 : ℕ)) :=
   abs_sum_kernel_bilinear_le hQ (isPrimitiveRoot_rootOfUnity (by omega))
     (abs_hilbertSymbol_le hQ M) x
 

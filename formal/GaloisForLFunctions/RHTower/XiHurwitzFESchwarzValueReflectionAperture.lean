@@ -48,7 +48,7 @@ theorem continuedHurwitzFESchwarzPairDependent_iff_rationalHurwitzPowerLinearRef
     ContinuedHurwitzPairDifferentiallyDependent
         (1 - rho) ((starRingEnd ℂ) rho) ↔
       normalizedRationalHurwitzReflectionEnergy (n ^ k) rho =
-        (k : ℝ) ^ 2 * normalizedRationalHurwitzReflectionEnergy n rho :=
+        (k : ℝ) ^ (2 : ℕ) * normalizedRationalHurwitzReflectionEnergy n rho :=
   (continuedHurwitzFESchwarzPairDifferentiallyDependent_iff_re_eq_half hstrip).trans
     (normalizedRationalHurwitzReflectionEnergy_pow_eq_linear_iff
       hstrip n hn k hk).symm

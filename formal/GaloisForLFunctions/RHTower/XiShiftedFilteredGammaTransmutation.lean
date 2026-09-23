@@ -32,8 +32,8 @@ private lemma pow_mul_inv_pow_eq_pow_sub {a : ℂ} (ha : a ≠ 0)
   rw [← div_eq_mul_inv, div_eq_mul_inv, ← pow_sub₀ a ha hi]
 
 private lemma filtered_power_cancel {a v : ℂ} (ha : a ≠ 0) (M d : ℕ) :
-    (a ^ d * v) ^ 2 * (a⁻¹) ^ (2 * M + 2 * d + 1) =
-      a⁻¹ * ((a⁻¹) ^ M * v) ^ 2 := by
+    (a ^ d * v) ^ (2 : ℕ) * (a⁻¹) ^ (2 * M + 2 * d + 1) =
+      a⁻¹ * ((a⁻¹) ^ M * v) ^ (2 : ℕ) := by
   have hcancel : a ^ (2 * d) * (a⁻¹) ^ (2 * d) = 1 := by
     rw [← mul_pow, mul_inv_cancel₀ ha, one_pow]
   rw [show 2 * M + 2 * d + 1 = 2 * d + 2 * M + 1 by omega]
@@ -102,7 +102,7 @@ theorem eval_xiShiftedReversedPolynomial_eq
 def xiShiftedFilteredGammaAtom
     (y : ℝ) (M d : ℕ) (c : Fin (d + 1) → ℝ)
     (q : XiZeroCopy) (t : ℝ) : ℂ :=
-  evalRealPolynomial (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ 2 *
+  evalRealPolynomial (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ (2 : ℕ) *
     xiHeatResolventAtom y (2 * M + 2 * d) q t
 
 /-- Complex filtered Gamma kernel built from the literal polynomial-square Xi heat trace. -/
@@ -114,7 +114,7 @@ def xiShiftedFilteredGammaKernel
 private theorem xiShiftedFilteredGamma_term_cancel
     {y : ℝ} (hy : 0 ≤ y) (M d : ℕ)
     (c : Fin (d + 1) → ℝ) (q : XiZeroCopy) :
-    evalRealPolynomial (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ 2 *
+    evalRealPolynomial (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ (2 : ℕ) *
         xiShiftedReciprocalSquare y q ^ (2 * M + 2 * d + 1) =
       xiShiftedReciprocalTraceHankelTerm y
         (X ^ M * Polynomial.ofFn (d + 1) c) q := by
@@ -149,12 +149,12 @@ private theorem integral_xiShiftedFilteredGammaAtom
   rw [integral_const_mul,
     integral_pow_mul_exp_shiftedSquaredNode hy]
   calc
-    evalRealPolynomial (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ 2 *
+    evalRealPolynomial (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ (2 : ℕ) *
         (((2 * M + 2 * d).factorial : ℂ) *
           xiShiftedReciprocalSquare y q ^ (2 * M + 2 * d + 1)) =
       ((2 * M + 2 * d).factorial : ℂ) *
         (evalRealPolynomial
-            (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ 2 *
+            (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ (2 : ℕ) *
           xiShiftedReciprocalSquare y q ^ (2 * M + 2 * d + 1)) := by ring
     _ = _ := by rw [xiShiftedFilteredGamma_term_cancel hy M d c q]
 
@@ -168,8 +168,8 @@ private theorem tsum_xiShiftedFilteredGammaAtom_eq_kernel
   intro q
   rw [xiShiftedFilteredGammaAtom, xiHeatResolventAtom,
     xiPolynomialGaussianHeatTerm, xiGaussianHeatTerm, xiSquaredNode]
-  rw [show -(((y : ℂ) + xiSpectralPoint q ^ 2) * t) =
-      -((y : ℂ) * t) + (-(t : ℂ) * xiSpectralPoint q ^ 2) by ring,
+  rw [show -(((y : ℂ) + xiSpectralPoint q ^ (2 : ℕ)) * t) =
+      -((y : ℂ) * t) + (-(t : ℂ) * xiSpectralPoint q ^ (2 : ℕ)) by ring,
     Complex.exp_add]
   ring
 
@@ -183,7 +183,7 @@ private theorem integral_norm_xiShiftedFilteredGammaAtom_le
             (X ^ M * Polynomial.ofFn (d + 1) c) q‖ := by
   let n := 2 * M + 2 * d
   let A :=
-    evalRealPolynomial (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ 2
+    evalRealPolynomial (xiShiftedReversedPolynomial y d c) (xiSquaredNode q) ^ (2 : ℕ)
   have hbase := integral_norm_xiHeatResolventAtom_le hy n q
   have hnorm :
       ‖A‖ * ‖xiShiftedReciprocalSquare y q‖ ^ (n + 1) =

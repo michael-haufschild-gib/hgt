@@ -71,9 +71,9 @@ theorem toeplitzFiveEvenBlock_posSemidef_of_toeplitzFive
 
 /-- Saturating the first angle face collapses the five-even determinant to one negative square. -/
 theorem det_toeplitzFiveEvenBlock_of_head_saturated
-    {c₁ c₂ c₃ c₄ : ℝ} (hsat : c₂ = 2 * c₁ ^ 2 - 1) :
+    {c₁ c₂ c₃ c₄ : ℝ} (hsat : c₂ = 2 * c₁ ^ (2 : ℕ) - 1) :
     (toeplitzFiveEvenBlock 1 c₁ c₂ c₃ c₄).det =
-      -4 * (c₁ + c₃ - 2 * c₁ * c₂) ^ 2 := by
+      -4 * (c₁ + c₃ - 2 * c₁ * c₂) ^ (2 : ℕ) := by
   rw [Matrix.det_fin_three]
   simp [toeplitzFiveEvenBlock]
   rw [hsat]
@@ -82,7 +82,7 @@ theorem det_toeplitzFiveEvenBlock_of_head_saturated
 /-- Positive-survivor classifier: a PSD five-even extension of a saturated head has zero coupling
 to the new even channel. -/
 theorem toeplitzFiveEvenBlock_boundary_coupling_eq_zero_of_posSemidef
-    {c₁ c₂ c₃ c₄ : ℝ} (hsat : c₂ = 2 * c₁ ^ 2 - 1)
+    {c₁ c₂ c₃ c₄ : ℝ} (hsat : c₂ = 2 * c₁ ^ (2 : ℕ) - 1)
     (hpsd : Matrix.PosSemidef (toeplitzFiveEvenBlock 1 c₁ c₂ c₃ c₄)) :
     c₁ + c₃ = 2 * c₁ * c₂ := by
   have hdet := hpsd.det_nonneg
@@ -187,9 +187,9 @@ theorem not_posSemidef_toeplitzFiveEvenBlock_cos_fivePointStrictConcaveAngle :
         (Real.cos (fivePointStrictConcaveAngle 3))
         (Real.cos (fivePointStrictConcaveAngle 4))) := by
   intro hpsd
-  have hsqrt : (Real.sqrt 3) ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+  have hsqrt : (Real.sqrt 3) ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   have hsat : Real.cos (fivePointStrictConcaveAngle 2) =
-      2 * Real.cos (fivePointStrictConcaveAngle 1) ^ 2 - 1 := by
+      2 * Real.cos (fivePointStrictConcaveAngle 1) ^ (2 : ℕ) - 1 := by
     rw [fivePointStrictConcaveAngle_one, fivePointStrictConcaveAngle_two,
       Real.cos_pi_div_six, Real.cos_pi_div_three]
     nlinarith

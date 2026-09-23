@@ -26,7 +26,7 @@ def sceCounterCurvature (a b w : ℝ) : ℝ := 2 * w / (b - a)
 
 /-- Strictly convex source potential with positive endpoints and a negative checkpoint. -/
 def sceCounterPotential (a b w : ℝ) (t : ℝ) : ℝ :=
-  sceCounterCurvature a b w * (t - sceCounterMidpoint a b) ^ 2 -
+  sceCounterCurvature a b w * (t - sceCounterMidpoint a b) ^ (2 : ℕ) -
     sceCounterDepth a b w
 
 /-- Positive strictly convex reservoir whose affine event reduction is `sceCounterPotential`. -/
@@ -89,7 +89,7 @@ theorem hasDerivAt_sceCounterPotential (a b w t : ℝ) :
     (sceCounterDepth a b w)
   simp only [Pi.pow_apply, id_eq, Nat.cast_ofNat, Nat.reduceSub, pow_one, mul_one] at h
   change HasDerivAt
-    (fun u => sceCounterCurvature a b w * (u - sceCounterMidpoint a b) ^ 2 -
+    (fun u => sceCounterCurvature a b w * (u - sceCounterMidpoint a b) ^ (2 : ℕ) -
       sceCounterDepth a b w)
     (2 * sceCounterCurvature a b w * (t - sceCounterMidpoint a b)) t
   exact h.congr_deriv (by ring)
@@ -159,7 +159,7 @@ theorem strictConvexOn_sceCounterReservoir {a b w : ℝ} (hab : a < b) (hw : 0 <
 theorem sceCounterPotential_sub_midpoint (a b w u : ℝ) :
     sceCounterPotential a b w u -
         sceCounterPotential a b w (sceCounterMidpoint a b) =
-      sceCounterCurvature a b w * (u - sceCounterMidpoint a b) ^ 2 := by
+      sceCounterCurvature a b w * (u - sceCounterMidpoint a b) ^ (2 : ℕ) := by
   simp [sceCounterPotential]
 
 theorem sceCounterPotential_midpoint {a b w : ℝ} :
@@ -191,9 +191,9 @@ theorem sceCounterReservoir_pos {a b w t : ℝ} (hab : a < b) (hw : 0 < w) :
   have hk : 0 < sceCounterCurvature a b w := sceCounterCurvature_pos hab hw
   have hfloor : 0 < w * (b - a) / 8 := by positivity
   have hsquare : 0 ≤ sceCounterCurvature a b w *
-      (t - (a + (b - a) / 4)) ^ 2 := mul_nonneg hk.le (sq_nonneg _)
+      (t - (a + (b - a) / 4)) ^ (2 : ℕ) := mul_nonneg hk.le (sq_nonneg _)
   have hid : sceCounterReservoir a b w t =
-      sceCounterCurvature a b w * (t - (a + (b - a) / 4)) ^ 2 +
+      sceCounterCurvature a b w * (t - (a + (b - a) / 4)) ^ (2 : ℕ) +
         w * (b - a) / 8 := by
     have hne : b - a ≠ 0 := ne_of_gt hgap
     unfold sceCounterReservoir sceCounterPotential sceCounterCurvature
@@ -211,12 +211,12 @@ theorem sceCounterPotential_uniqueMin {a b w u : ℝ} (hab : a < b) (hw : 0 < w)
   have hdiff := sceCounterPotential_sub_midpoint a b w u
   constructor
   · have hnonneg : 0 ≤ sceCounterCurvature a b w *
-        (u - sceCounterMidpoint a b) ^ 2 := mul_nonneg hk.le (sq_nonneg _)
+        (u - sceCounterMidpoint a b) ^ (2 : ℕ) := mul_nonneg hk.le (sq_nonneg _)
     linarith
   · intro heq
     have hzero : sceCounterCurvature a b w *
-        (u - sceCounterMidpoint a b) ^ 2 = 0 := by linarith
-    have hsq : (u - sceCounterMidpoint a b) ^ 2 = 0 :=
+        (u - sceCounterMidpoint a b) ^ (2 : ℕ) = 0 := by linarith
+    have hsq : (u - sceCounterMidpoint a b) ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hzero).resolve_left (ne_of_gt hk)
     nlinarith
 

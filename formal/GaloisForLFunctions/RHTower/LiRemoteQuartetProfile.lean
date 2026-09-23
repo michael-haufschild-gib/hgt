@@ -46,11 +46,11 @@ def liMobiusCoordinate (rho : ℂ) : ℂ := 1 - rho⁻¹
 /-- Exact Cartesian Li coordinate of a point `beta + iT`. -/
 theorem liMobiusCoordinate_realPart_height {beta T : ℝ} (hT : T ≠ 0) :
     liMobiusCoordinate ((beta : ℂ) + (T : ℂ) * Complex.I) =
-      (((T ^ 2 - beta * (1 - beta)) / (T ^ 2 + beta ^ 2) : ℝ) : ℂ) +
-        (((T / (T ^ 2 + beta ^ 2) : ℝ) : ℂ) * Complex.I) := by
-  have hden : T ^ 2 + beta ^ 2 ≠ 0 := by
+      (((T ^ (2 : ℕ) - beta * (1 - beta)) / (T ^ (2 : ℕ) + beta ^ (2 : ℕ)) : ℝ) : ℂ) +
+        (((T / (T ^ (2 : ℕ) + beta ^ (2 : ℕ)) : ℝ) : ℂ) * Complex.I) := by
+  have hden : T ^ (2 : ℕ) + beta ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero hT]
-  have hden' : beta ^ 2 + T ^ 2 ≠ 0 := by
+  have hden' : beta ^ (2 : ℕ) + T ^ (2 : ℕ) ≠ 0 := by
     simpa [add_comm] using hden
   apply Complex.ext
   · rw [liMobiusCoordinate, Complex.sub_re, Complex.one_re, Complex.inv_re]
@@ -71,9 +71,9 @@ theorem liMobiusCoordinate_realPart_height {beta T : ℝ} (hT : T ≠ 0) :
 /-- Card equation (2): exact Cartesian Li coordinate of `1/2 - a + iT`. -/
 theorem liMobiusCoordinate_remoteQuartetZero {a T : ℝ} (hT : T ≠ 0) :
     liMobiusCoordinate (liRemoteQuartetZero a T) =
-      (((T ^ 2 - (1 / 2 - a) * (1 - (1 / 2 - a))) /
-          (T ^ 2 + (1 / 2 - a) ^ 2) : ℝ) : ℂ) +
-        (((T / (T ^ 2 + (1 / 2 - a) ^ 2) : ℝ) : ℂ) * Complex.I) := by
+      (((T ^ (2 : ℕ) - (1 / 2 - a) * (1 - (1 / 2 - a))) /
+          (T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ)) : ℝ) : ℂ) +
+        (((T / (T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ)) : ℝ) : ℂ) * Complex.I) := by
   simpa only [liRemoteQuartetZero] using
     (liMobiusCoordinate_realPart_height (beta := 1 / 2 - a) hT)
 
@@ -81,9 +81,9 @@ theorem liMobiusCoordinate_remoteQuartetZero {a T : ℝ} (hT : T ≠ 0) :
 theorem normSq_liMobiusCoordinate_realPart_height {beta T : ℝ} (hT : T ≠ 0) :
     Complex.normSq
         (liMobiusCoordinate ((beta : ℂ) + (T : ℂ) * Complex.I)) =
-      (T ^ 2 + (1 - beta) ^ 2) / (T ^ 2 + beta ^ 2) := by
+      (T ^ (2 : ℕ) + (1 - beta) ^ (2 : ℕ)) / (T ^ (2 : ℕ) + beta ^ (2 : ℕ)) := by
   rw [liMobiusCoordinate_realPart_height hT, Complex.normSq_apply]
-  have hden : T ^ 2 + beta ^ 2 ≠ 0 := by
+  have hden : T ^ (2 : ℕ) + beta ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero hT]
   simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re,
     Complex.ofReal_im, Complex.mul_re, Complex.mul_im, Complex.I_re,
@@ -95,24 +95,24 @@ theorem normSq_liMobiusCoordinate_realPart_height {beta T : ℝ} (hT : T ≠ 0) 
 `1 + 2a / (T² + (1/2-a)²)`. -/
 theorem normSq_liMobiusCoordinate_remoteQuartetZero {a T : ℝ} (hT : T ≠ 0) :
     Complex.normSq (liMobiusCoordinate (liRemoteQuartetZero a T)) =
-      1 + 2 * a / (T ^ 2 + (1 / 2 - a) ^ 2) := by
+      1 + 2 * a / (T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ)) := by
   rw [liRemoteQuartetZero,
     normSq_liMobiusCoordinate_realPart_height (beta := 1 / 2 - a) hT]
-  have hden : T ^ 2 + (1 / 2 - a) ^ 2 ≠ 0 := by
+  have hden : T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero hT]
   field_simp [hden]
   ring
 
 /-- Card equation (3): logarithmic radial coordinate of the remote Li quartet. -/
 def liRemoteRadialCoordinate (a T : ℝ) : ℝ :=
-  (1 / 2 : ℝ) * Real.log (1 + 2 * a / (T ^ 2 + (1 / 2 - a) ^ 2))
+  (1 / 2 : ℝ) * Real.log (1 + 2 * a / (T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ)))
 
 /-- A genuine horizontal displacement gives a strictly positive radial coordinate. -/
 theorem liRemoteRadialCoordinate_pos {a T : ℝ} (ha : 0 < a) (hT : T ≠ 0) :
     0 < liRemoteRadialCoordinate a T := by
-  have hden : 0 < T ^ 2 + (1 / 2 - a) ^ 2 := by
+  have hden : 0 < T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_ne_zero hT]
-  have hfrac : 0 < 2 * a / (T ^ 2 + (1 / 2 - a) ^ 2) :=
+  have hfrac : 0 < 2 * a / (T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ)) :=
     div_pos (by positivity) hden
   unfold liRemoteRadialCoordinate
   exact mul_pos (by norm_num) (Real.log_pos (by linarith))
@@ -125,12 +125,12 @@ theorem exp_two_mul_liRemoteRadialCoordinate {a T : ℝ}
       Complex.normSq (liMobiusCoordinate (liRemoteQuartetZero a T)) := by
   rw [normSq_liMobiusCoordinate_remoteQuartetZero hT,
     liRemoteRadialCoordinate]
-  have hden : 0 < T ^ 2 + (1 / 2 - a) ^ 2 := by
+  have hden : 0 < T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_ne_zero hT]
-  have hfrac : 0 < 2 * a / (T ^ 2 + (1 / 2 - a) ^ 2) :=
+  have hfrac : 0 < 2 * a / (T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ)) :=
     div_pos (by positivity) hden
   convert Real.exp_log (by linarith :
-      0 < 1 + 2 * a / (T ^ 2 + (1 / 2 - a) ^ 2)) using 1
+      0 < 1 + 2 * a / (T ^ (2 : ℕ) + (1 / 2 - a) ^ (2 : ℕ))) using 1
   ring_nf
 
 /-- The symmetry-complete complex Li sum is exactly the real cosh--cos profile. -/

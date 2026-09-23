@@ -102,16 +102,16 @@ theorem mtUpperAdicIndex_add_one_le_three_mul_adicIndex_add_one
   have hadicX := (adicIndex_block hdelta (by norm_num : (0 : ℝ) < 1) hXOne).2
   let a := adicIndex delta 1 X
   have hbasePos : 0 < (1 + delta) ^ (a + 1) := by positivity
-  have hsq : X ^ 2 < ((1 + delta) ^ (a + 1)) ^ 2 := by
+  have hsq : X ^ (2 : ℕ) < ((1 + delta) ^ (a + 1)) ^ (2 : ℕ) := by
     dsimp [a] at hbasePos ⊢
     nlinarith [sq_nonneg (X - (1 + delta) ^ (adicIndex delta 1 X + 1))]
-  have hpow : ((1 + delta) ^ (a + 1)) ^ 2 =
+  have hpow : ((1 + delta) ^ (a + 1)) ^ (2 : ℕ) =
       (1 + delta) ^ (2 * (a + 1)) := by
     rw [← pow_mul]
     congr 1
     omega
-  have hmPow : (m : ℝ) < ((1 + delta) ^ (a + 1)) ^ 2 := by
-    have htwoX : 2 * X ≤ X ^ 2 := by nlinarith [sq_nonneg (X - 2)]
+  have hmPow : (m : ℝ) < ((1 + delta) ^ (a + 1)) ^ (2 : ℕ) := by
+    have htwoX : 2 * X ≤ X ^ (2 : ℕ) := by nlinarith [sq_nonneg (X - 2)]
     exact (hmX.trans htwoX).trans_lt hsq
   have hmOne : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
   have hadicM : adicIndex delta 1 (m : ℝ) < 2 * (a + 1) := by
@@ -127,7 +127,7 @@ theorem eventually_cast_adicIndex_paperWidth_one_add_two_le_exp_eighth_sq
     (A : ℕ) :
     ∀ᶠ X : ℝ in Filter.atTop,
       ((adicIndex (mtPaperWidth A X) 1 X + 2 : ℕ) : ℝ) ≤
-        Real.exp ((Real.log (Real.log X)) ^ 2 / 8) := by
+        Real.exp ((Real.log (Real.log X)) ^ (2 : ℕ) / 8) := by
   have hlarge := (Real.tendsto_log_atTop.comp Real.tendsto_log_atTop).eventually_ge_atTop
     (8 * (((10 * A + 2 : ℕ) : ℝ)) + 3)
   filter_upwards [
@@ -148,7 +148,7 @@ theorem eventually_cast_adicIndex_paperWidth_one_add_two_le_exp_eighth_sq
     calc
       (4 : ℝ) ≤ u + 1 := by dsimp [u] at hll ⊢; linarith
       _ ≤ Real.exp u := Real.add_one_le_exp u
-  have hexponent : (((10 * A + 2 : ℕ) : ℝ)) * u ≤ u ^ 2 / 8 := by
+  have hexponent : (((10 * A + 2 : ℕ) : ℝ)) * u ≤ u ^ (2 : ℕ) / 8 := by
     have huLower : 8 * (((10 * A + 2 : ℕ) : ℝ)) ≤ u := by
       dsimp [u] at hll ⊢
       linarith
@@ -174,8 +174,8 @@ theorem eventually_cast_adicIndex_paperWidth_one_add_two_le_exp_eighth_sq
           ring
     _ = Real.exp ((((10 * A + 2 : ℕ) : ℝ)) * u) := by
       rw [hlogEq, Real.exp_nat_mul]
-    _ ≤ Real.exp (u ^ 2 / 8) := Real.exp_le_exp.mpr hexponent
-    _ = Real.exp ((Real.log (Real.log X)) ^ 2 / 8) := rfl
+    _ ≤ Real.exp (u ^ (2 : ℕ) / 8) := Real.exp_le_exp.mpr hexponent
+    _ = Real.exp ((Real.log (Real.log X)) ^ (2 : ℕ) / 8) := rfl
 
 /-- Minimal-root recursive chains use only half the proposition's fifth-power exponent. -/
 theorem eventually_sum_card_mtActiveBlockChains_minimalGeometric_le_exp_half_fifth
@@ -189,10 +189,10 @@ theorem eventually_sum_card_mtActiveBlockChains_minimalGeometric_le_exp_half_fif
         (maxDepth : ℕ)
         (j : Fin (mtMinimalGeometricDepth
           (mtPaperWidth A X) start recRoot hdelta + 1)),
-      (maxDepth : ℝ) ≤ 2 * (Real.log (Real.log X)) ^ 3 →
+      (maxDepth : ℝ) ≤ 2 * (Real.log (Real.log X)) ^ (3 : ℕ) →
       ((∑ depth ∈ Finset.range (maxDepth + 1),
           (mtActiveBlockChains data.block depth j).card : ℕ) : ℝ) ≤
-        Real.exp ((Real.log (Real.log X)) ^ 5 / 2) := by
+        Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ) / 2) := by
   have hll := (Real.tendsto_log_atTop.comp Real.tendsto_log_atTop).eventually_ge_atTop 3
   filter_upwards [
     eventually_cast_adicIndex_paperWidth_one_add_two_le_exp_eighth_sq A,
@@ -224,9 +224,9 @@ theorem card_mtHarmanCompressedRetainedBoxIndexSet_le_activeGrids
       data maxDepth j delta N recStart Y).card ≤
       (1 + outerActive.card +
           (mtActiveBlockIndices
-            (mtAdjacentPrimeBlock (t := outerD) endpointD)).card ^ 2 +
+            (mtAdjacentPrimeBlock (t := outerD) endpointD)).card ^ (2 : ℕ) +
           (mtActiveBlockIndices
-            (mtAdjacentPrimeBlock (t := outerD) endpointD)).card ^ 3) *
+            (mtAdjacentPrimeBlock (t := outerD) endpointD)).card ^ (3 : ℕ)) *
         (∑ depth ∈ Finset.range (maxDepth + 1),
           (mtActiveBlockChains data.block depth j).card) *
         (mtUpperAdicIndex delta data.D + 1) *
@@ -262,7 +262,7 @@ theorem eventually_card_mtHarmanCompressedRetainedBoxIndexSet_le_exp_log_log_fif
       ∀ (maxDepth : ℕ)
         (j : Fin (mtMinimalGeometricDepth
           (mtPaperWidth A X) start recRoot hdelta + 1)),
-      (maxDepth : ℝ) ≤ 2 * (Real.log (Real.log X)) ^ 3 →
+      (maxDepth : ℝ) ≤ 2 * (Real.log (Real.log X)) ^ (3 : ℕ) →
       ∀ N : ℕ, 1 ≤ N → (N : ℝ) ≤ 2 * X →
       ∀ recStart : ℕ, ∀ Y : ℝ,
       (((mtHarmanCompressedRetainedBoxIndexSet
@@ -273,7 +273,7 @@ theorem eventually_card_mtHarmanCompressedRetainedBoxIndexSet_le_exp_log_log_fif
         (mtPaperAlignedEndpoint (mtLowerCutoffNat X) Qouter (mtPaperWidth A X))
         (mtPaperAlignedEndpoint (mtLowerCutoffNat X) Douter (mtPaperWidth A X))
         E data maxDepth j (mtPaperWidth A X) N recStart Y).card : ℕ) : ℝ) ≤
-        Real.exp ((Real.log (Real.log X)) ^ 5) := by
+        Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ)) := by
   let K := 10 * A + 1
   filter_upwards [
     eventually_cast_card_mtPaperAlignedActiveBlockIndices_le_six_mul_log_pow A,
@@ -307,7 +307,7 @@ theorem eventually_card_mtHarmanCompressedRetainedBoxIndexSet_le_exp_log_log_fif
     rw [mtActiveBlockIndices_paperAligned]
     exact hactiveX Douter hD hDX
   have hchains : (chains : ℝ) ≤
-      Real.exp ((Real.log (Real.log X)) ^ 5 / 2) := by
+      Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ) / 2) := by
     dsimp [chains]
     exact hchainsX start recRoot hdelta (by linarith) hrootX
       data maxDepth j hdepth
@@ -333,39 +333,39 @@ theorem eventually_card_mtHarmanCompressedRetainedBoxIndexSet_le_exp_log_log_fif
       _ ≤ 3 * ((adicIndex (mtPaperWidth A X) 1 X + 1 : ℕ) : ℝ) := hcast
       _ ≤ 3 * (3 * (Real.log X) ^ (10 * A + 1)) := by gcongr
       _ = 9 * L := by simp [L, K]; ring
-  have hactiveD2 : (activeD.card : ℝ) ^ 2 ≤ (6 * L) ^ 2 :=
+  have hactiveD2 : (activeD.card : ℝ) ^ (2 : ℕ) ≤ (6 * L) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (Nat.cast_nonneg _) hactiveD 2
-  have hactiveD3 : (activeD.card : ℝ) ^ 3 ≤ (6 * L) ^ 3 :=
+  have hactiveD3 : (activeD.card : ℝ) ^ (3 : ℕ) ≤ (6 * L) ^ (3 : ℕ) :=
     pow_le_pow_left₀ (Nat.cast_nonneg _) hactiveD 3
-  have hLleCube : L ≤ L ^ 3 := by
+  have hLleCube : L ≤ L ^ (3 : ℕ) := by
     simpa using pow_le_pow_right₀ hLOne (by omega : 1 ≤ 3)
-  have hLSqleCube : L ^ 2 ≤ L ^ 3 :=
+  have hLSqleCube : L ^ (2 : ℕ) ≤ L ^ (3 : ℕ) :=
     pow_le_pow_right₀ hLOne (by omega : 2 ≤ 3)
-  have hOneLeCube : (1 : ℝ) ≤ L ^ 3 := one_le_pow₀ hLOne
+  have hOneLeCube : (1 : ℝ) ≤ L ^ (3 : ℕ) := one_le_pow₀ hLOne
   have houterCells :
-      (((1 + activeQ.card + activeD.card ^ 2 + activeD.card ^ 3 : ℕ) : ℕ) : ℝ) ≤
-        259 * L ^ 3 := by
+      (((1 + activeQ.card + activeD.card ^ (2 : ℕ) + activeD.card ^ (3 : ℕ) : ℕ) : ℕ) : ℝ) ≤
+        259 * L ^ (3 : ℕ) := by
     push_cast
     calc
-      1 + (activeQ.card : ℝ) + (activeD.card : ℝ) ^ 2 +
-          (activeD.card : ℝ) ^ 3 ≤
-          1 + 6 * L + (6 * L) ^ 2 + (6 * L) ^ 3 := by gcongr
-      _ ≤ 259 * L ^ 3 := by
+      1 + (activeQ.card : ℝ) + (activeD.card : ℝ) ^ (2 : ℕ) +
+          (activeD.card : ℝ) ^ (3 : ℕ) ≤
+          1 + 6 * L + (6 * L) ^ (2 : ℕ) + (6 * L) ^ (3 : ℕ) := by gcongr
+      _ ≤ 259 * L ^ (3 : ℕ) := by
         nlinarith [hLleCube, hLSqleCube, hOneLeCube]
   have houter :
-      (((1 + activeQ.card + activeD.card ^ 2 + activeD.card ^ 3 : ℕ) : ℕ) : ℝ) *
+      (((1 + activeQ.card + activeD.card ^ (2 : ℕ) + activeD.card ^ (3 : ℕ) : ℕ) : ℕ) : ℝ) *
           ((mtUpperAdicIndex (mtPaperWidth A X) data.D + 1 : ℕ) : ℝ) *
           ((mtUpperAdicIndex (mtPaperWidth A X) N + 1 : ℕ) : ℝ) ≤
-        Real.exp ((Real.log (Real.log X)) ^ 5 / 2) := by
+        Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ) / 2) := by
     calc
-      _ ≤ (259 * L ^ 3) * (9 * L) * (9 * L) := by gcongr
+      _ ≤ (259 * L ^ (3 : ℕ)) * (9 * L) * (9 * L) := by gcongr
       _ = 20979 * (Real.log X) ^ (5 * K) := by
-        have hpow5 : (Real.log X) ^ (5 * K) = L ^ 5 := by
+        have hpow5 : (Real.log X) ^ (5 * K) = L ^ (5 : ℕ) := by
           dsimp [L]
           rw [Nat.mul_comm 5 K, pow_mul]
         rw [hpow5]
         ring
-      _ ≤ Real.exp ((Real.log (Real.log X)) ^ 5 / 2) := houterX
+      _ ≤ Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ) / 2) := houterX
   have hcountNat := card_mtHarmanCompressedRetainedBoxIndexSet_le_activeGrids
     (outerD := Douter - mtLowerCutoffNat X) activeQ
     (mtPaperAlignedEndpoint (mtLowerCutoffNat X) Qouter (mtPaperWidth A X))
@@ -375,24 +375,24 @@ theorem eventually_card_mtHarmanCompressedRetainedBoxIndexSet_le_exp_log_log_fif
         (outerD := Douter - mtLowerCutoffNat X) activeQ
         (mtPaperAlignedEndpoint (mtLowerCutoffNat X) Qouter (mtPaperWidth A X))
         endpointD E data maxDepth j (mtPaperWidth A X) N recStart Y).card : ℕ) : ℝ) ≤
-      (((1 + activeQ.card + activeD.card ^ 2 + activeD.card ^ 3 : ℕ) : ℕ) : ℝ) *
+      (((1 + activeQ.card + activeD.card ^ (2 : ℕ) + activeD.card ^ (3 : ℕ) : ℕ) : ℕ) : ℝ) *
         (chains : ℝ) *
         ((mtUpperAdicIndex (mtPaperWidth A X) data.D + 1 : ℕ) : ℝ) *
         ((mtUpperAdicIndex (mtPaperWidth A X) N + 1 : ℕ) : ℝ) := by
     exact_mod_cast hcountNat
   calc
-    _ ≤ (((1 + activeQ.card + activeD.card ^ 2 + activeD.card ^ 3 : ℕ) : ℕ) : ℝ) *
+    _ ≤ (((1 + activeQ.card + activeD.card ^ (2 : ℕ) + activeD.card ^ (3 : ℕ) : ℕ) : ℕ) : ℝ) *
         (chains : ℝ) *
         ((mtUpperAdicIndex (mtPaperWidth A X) data.D + 1 : ℕ) : ℝ) *
         ((mtUpperAdicIndex (mtPaperWidth A X) N + 1 : ℕ) : ℝ) := hcount
-    _ = ((((1 + activeQ.card + activeD.card ^ 2 + activeD.card ^ 3 : ℕ) : ℕ) : ℝ) *
+    _ = ((((1 + activeQ.card + activeD.card ^ (2 : ℕ) + activeD.card ^ (3 : ℕ) : ℕ) : ℕ) : ℝ) *
           ((mtUpperAdicIndex (mtPaperWidth A X) data.D + 1 : ℕ) : ℝ) *
           ((mtUpperAdicIndex (mtPaperWidth A X) N + 1 : ℕ) : ℝ)) *
         (chains : ℝ) := by ring
-    _ ≤ Real.exp ((Real.log (Real.log X)) ^ 5 / 2) *
-        Real.exp ((Real.log (Real.log X)) ^ 5 / 2) :=
+    _ ≤ Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ) / 2) *
+        Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ) / 2) :=
       mul_le_mul houter hchains (Nat.cast_nonneg _) (Real.exp_pos _).le
-    _ = Real.exp ((Real.log (Real.log X)) ^ 5) := by
+    _ = Real.exp ((Real.log (Real.log X)) ^ (5 : ℕ)) := by
       rw [← Real.exp_add]
       congr 1
       ring

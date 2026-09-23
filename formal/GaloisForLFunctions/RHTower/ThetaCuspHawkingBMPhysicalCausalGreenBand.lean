@@ -210,7 +210,7 @@ theorem causalJointForcedResponse_operator_of_native (q : XiZeroCopy) (branch : 
     (hw : principalKernelGrowth q < w.re) :
     let U := ∫ t in Ioi (0:ℝ), expRay w t • causalJointForcedResponse q branch a t
     ∃ hmem : U ∈ jointEnergyOperator.domain,
-      jointEnergyOperator ⟨U,hmem⟩+(w^2-1) • U =
+      jointEnergyOperator ⟨U,hmem⟩+(w^(2 : ℕ)-1) • U =
         ∫ t in Ioi (0:ℝ), expRay w t • causalCuspSourceVector q branch a t := by
   have hw0 : 0 < w.re := by linarith [(actualPrincipalKernel_common_growth q).1]
   dsimp only
@@ -227,7 +227,7 @@ theorem actualJointCausal_original_green_band (q : XiZeroCopy) (branch : Bool) (
       IntegrableOn (fun t => expRay w t • causalJointForcedResponse q branch a t) (Ioi (0:ℝ)) ∧
       ∃ hmem : (∫ t in Ioi (0:ℝ), expRay w t • causalJointForcedResponse q branch a t) ∈ jointEnergyOperator.domain,
         jointEnergyOperator ⟨∫ t in Ioi (0:ℝ), expRay w t • causalJointForcedResponse q branch a t,hmem⟩+
-          (w^2-1) • (∫ t in Ioi (0:ℝ), expRay w t • causalJointForcedResponse q branch a t) =
+          (w^(2 : ℕ)-1) • (∫ t in Ioi (0:ℝ), expRay w t • causalJointForcedResponse q branch a t) =
             cuspResidualVector q branch w a (onsetTransform (2*physicalRate q branch) w)
               (principalChamber_of_native_growth q w hw) := by
   let c := (principalKernelGrowth q+2)/2
@@ -316,7 +316,7 @@ theorem causalPhysicalProjection_original_profile (q r : XiZeroCopy) (branch : B
       f 0 = 0 ∧ ∀ x : ℝ, x < 0 →
         HasDerivAt f (deriv f x) x ∧ HasDerivAt (deriv f) (deriv (deriv f) x) x ∧
         f x = completePhysicalGreenProfile q r branch w a x ∧
-        w^2*f x-deriv (deriv f) x-(physicalAngularParameter r^2-1/4)*angularWeight x^2*f x =
+        w^(2 : ℕ)*f x-deriv (deriv f) x-(physicalAngularParameter r^(2 : ℕ)-1/4)*angularWeight x^(2 : ℕ)*f x =
           continuedAngularSourceProjection q branch (physicalAngularParameter r) a w x ∧
         physicalAngularGapProduct q r*f x = clearedPhysicalGreen q r branch w a x := by
   let h0 := native_band_positive q w hw

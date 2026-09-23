@@ -5,7 +5,7 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc
 /-!
 # The exponential of an element whose square is a negative scalar
 
-In a complete normed complex algebra, an element `M` with `M * M = -(r^2) • 1` has scalar even
+In a complete normed complex algebra, an element `M` with `M * M = -(r^(2 : ℕ)) • 1` has scalar even
 powers and scalar multiples of itself as odd powers, so the exponential series splits into a cosine
 half on the identity and a cardinal sine half on the element:
 
@@ -24,8 +24,8 @@ variable {A : Type*} [NormedRing A] [NormedAlgebra ℂ A] [CompleteSpace A]
 omit [CompleteSpace A] in
 /-- Even powers of a scalar-square element are scalars. -/
 theorem pow_two_mul_of_mul_self_eq (M : A) (r : ℝ)
-    (h : M * M = (-((r : ℂ) ^ 2)) • (1 : A)) (k : ℕ) :
-    M ^ (2 * k) = ((-((r : ℂ) ^ 2)) ^ k) • (1 : A) := by
+    (h : M * M = (-((r : ℂ) ^ (2 : ℕ))) • (1 : A)) (k : ℕ) :
+    M ^ (2 * k) = ((-((r : ℂ) ^ (2 : ℕ))) ^ k) • (1 : A) := by
   induction k with
   | zero => simp
   | succ k ih =>
@@ -35,8 +35,8 @@ theorem pow_two_mul_of_mul_self_eq (M : A) (r : ℝ)
 omit [CompleteSpace A] in
 /-- Odd powers of a scalar-square element are scalar multiples of the element. -/
 theorem pow_two_mul_add_one_of_mul_self_eq (M : A) (r : ℝ)
-    (h : M * M = (-((r : ℂ) ^ 2)) • (1 : A)) (k : ℕ) :
-    M ^ (2 * k + 1) = ((-((r : ℂ) ^ 2)) ^ k) • M := by
+    (h : M * M = (-((r : ℂ) ^ (2 : ℕ))) • (1 : A)) (k : ℕ) :
+    M ^ (2 * k + 1) = ((-((r : ℂ) ^ (2 : ℕ))) ^ k) • M := by
   rw [pow_succ, pow_two_mul_of_mul_self_eq M r h k, smul_mul_assoc, one_mul]
 
 private theorem hasSum_expTerms (M : A) :
@@ -73,10 +73,10 @@ theorem hasSum_sincSeries (r : ℝ) :
     field_simp
     ring
 
-/-- **The exponential of a scalar-square element.**  If `M * M = -(r^2) • 1` in a complete normed
+/-- **The exponential of a scalar-square element.**  If `M * M = -(r^(2 : ℕ)) • 1` in a complete normed
 complex algebra, then `exp M = cos r • 1 + sinc r • M`. -/
 theorem exp_of_mul_self_eq_neg_sq_smul_one (M : A) (r : ℝ)
-    (h : M * M = (-((r : ℂ) ^ 2)) • (1 : A)) :
+    (h : M * M = (-((r : ℂ) ^ (2 : ℕ))) • (1 : A)) :
     NormedSpace.exp M
       = ((Real.cos r : ℝ) : ℂ) • (1 : A) + ((Real.sinc r : ℝ) : ℂ) • M := by
   have heven : HasSum (fun k : ℕ => (((2 * k).factorial : ℂ))⁻¹ • M ^ (2 * k))

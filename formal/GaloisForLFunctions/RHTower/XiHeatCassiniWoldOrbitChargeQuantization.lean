@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiHeatCassiniWoldRelativeOrbitLeakage
 The reflected physical Wold pole head has two quotient-orbit atoms away from the critical line and
 no charge on the line.  This module computes the exact squared coefficient energy of that charge.
 Every finite shift-two coboundary completion transports the same charge into its compensator, so
-an off-critical completion pays the scale-free floor `2 * m^2`, where `m` is pole multiplicity.
+an off-critical completion pays the scale-free floor `2 * m^(2 : ℕ)`, where `m` is pole multiplicity.
 
 Consequently no norm-small, subexponential, or limiting-zero compensator can close the Route-T
 handoff in a coefficient-faithful orbit topology.  The surviving producer must force literal
@@ -42,14 +42,14 @@ theorem principalPartOrbitChargeEnergy_neg
   exact Complex.normSq_neg ((v x) n)
 
 /-- Two distinct quotient atoms with common nonzero multiplicity coefficient have exact energy
-`2 * m^2`. -/
+`2 * m^(2 : ℕ)`. -/
 theorem principalPartOrbitChargeEnergy_two_single
     {α : Type*} [DecidableEq α] {x y : α} (hxy : x ≠ y)
     {m : ℕ} (hm : 1 ≤ m) :
     principalPartOrbitChargeEnergy
         (Finsupp.single x (Finsupp.single 1 (-(m : ℂ))) -
           Finsupp.single y (Finsupp.single 1 (-(m : ℂ)))) =
-      2 * (m : ℝ) ^ 2 := by
+      2 * (m : ℝ) ^ (2 : ℕ) := by
   classical
   have hm0 : m ≠ 0 := Nat.ne_zero_of_lt hm
   let a : ℕ →₀ ℂ := Finsupp.single 1 (-(m : ℂ))
@@ -109,13 +109,13 @@ def xiHeatCassiniReflectedWoldPhysicalOrbitCharge
         ℂ ⧸ AddSubgroup.zmultiples (2 : ℂ))
       (simplePoleDifferentialOperator 1 (-(m : ℂ)))
 
-/-- Off the critical line, the reflected physical orbit charge has exact energy `2 * m^2`. -/
+/-- Off the critical line, the reflected physical orbit charge has exact energy `2 * m^(2 : ℕ)`. -/
 theorem xiHeatCassiniReflectedWoldPhysicalOrbitCharge_energy_eq
     {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1)
     (hoff : rho.re ≠ 1 / 2) {m : ℕ} (hm : 1 ≤ m) :
     principalPartOrbitChargeEnergy
         (xiHeatCassiniReflectedWoldPhysicalOrbitCharge rho m) =
-      2 * (m : ℝ) ^ 2 := by
+      2 * (m : ℝ) ^ (2 : ℕ) := by
   rw [xiHeatCassiniReflectedWoldPhysicalOrbitCharge,
     simplePoleDifferentialOperator_one_eq_single]
   exact principalPartOrbitChargeEnergy_two_single
@@ -135,13 +135,13 @@ theorem xiHeatCassiniReflectedWoldPhysicalOrbitCharge_energy_eq_zero
     principalPartOrbitChargeEnergy]
 
 /-- Exact phase transition: reflected Wold orbit-charge energy is zero precisely on the critical
-line and `2 * m^2` everywhere else in the open strip. -/
+line and `2 * m^(2 : ℕ)` everywhere else in the open strip. -/
 theorem xiHeatCassiniReflectedWoldPhysicalOrbitCharge_energy_eq_ite
     {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1)
     {m : ℕ} (hm : 1 ≤ m) :
     principalPartOrbitChargeEnergy
         (xiHeatCassiniReflectedWoldPhysicalOrbitCharge rho m) =
-      if rho.re = 1 / 2 then 0 else 2 * (m : ℝ) ^ 2 := by
+      if rho.re = 1 / 2 then 0 else 2 * (m : ℝ) ^ (2 : ℕ) := by
   by_cases hhalf : rho.re = 1 / 2
   · rw [if_pos hhalf]
     exact xiHeatCassiniReflectedWoldPhysicalOrbitCharge_energy_eq_zero hhalf m
@@ -157,7 +157,7 @@ theorem xiHeatCassiniReflectedWoldPhysicalPoleHead_compensator_chargeEnergy_eq
     (h : xiHeatCassiniReflectedWoldPhysicalPoleHead rho m + R =
       finiteOrbitCoboundary (2 : ℂ) E) :
     principalPartOrbitChargeEnergy (orbitResidueVector (2 : ℂ) R) =
-      2 * (m : ℝ) ^ 2 := by
+      2 * (m : ℝ) ^ (2 : ℕ) := by
   rw [xiHeatCassiniReflectedWoldPhysicalPoleHead_compensator_orbitLeakage
     rho m R E h]
   rw [principalPartOrbitChargeEnergy_neg]

@@ -22,7 +22,7 @@ theorem projectiveQuantumTangentEnergy_le_rayleighExcess_div_gap
     {v g : E} {epsilon gap : ℝ}
     (hv : ‖v‖ = 1) (hg : ‖g‖ = 1)
     (hTv : T v = (epsilon : 𝕜) • v) (hgap : 0 < gap)
-    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ 2 ≤
+    (hcoercive : gap * ‖g - inner 𝕜 v g • v‖ ^ (2 : ℕ) ≤
       (T - (epsilon : 𝕜) • ContinuousLinearMap.id 𝕜 E).reApplyInnerSelf
         (g - inner 𝕜 v g • v)) :
     HTGeometry.projectiveGramTangentEnergy (𝕜 := 𝕜) v g ≤
@@ -37,7 +37,7 @@ exact defect value. -/
 theorem exists_unitScalar_norm_sub_sq_le_two_projectiveQuantumTangentEnergy
     {v g : E} (hv : ‖v‖ = 1) (hg : ‖g‖ = 1) :
     ∃ c : 𝕜, ‖c‖ = 1 ∧
-      ‖g - c • v‖ ^ 2 ≤
+      ‖g - c • v‖ ^ (2 : ℕ) ≤
         2 * HTGeometry.projectiveGramTangentEnergy (𝕜 := 𝕜) v g := by
   simpa [HTGeometry.projectiveGramTangentEnergy_eq_unit_projectiveDefect
     (𝕜 := 𝕜) hv hg] using

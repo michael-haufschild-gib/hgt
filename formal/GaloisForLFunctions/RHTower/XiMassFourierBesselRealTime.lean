@@ -37,20 +37,20 @@ theorem xiMassRealTimeRotation_lt {sigma h : ℝ} :
   Real.arctan_lt_pi_div_two _
 
 theorem sqrt_one_add_sq_div {sigma h : ℝ} (hsigma : 0 < sigma) :
-    sigma * Real.sqrt (1 + (h / sigma) ^ 2) = Real.sqrt (sigma ^ 2 + h ^ 2) := by
-  have hval : sigma ^ 2 * (1 + (h / sigma) ^ 2) = sigma ^ 2 + h ^ 2 := by
+    sigma * Real.sqrt (1 + (h / sigma) ^ (2 : ℕ)) = Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) := by
+  have hval : sigma ^ (2 : ℕ) * (1 + (h / sigma) ^ (2 : ℕ)) = sigma ^ (2 : ℕ) + h ^ (2 : ℕ) := by
     field_simp
   rw [← hval, Real.sqrt_mul (sq_nonneg sigma), Real.sqrt_sq hsigma.le]
 
 theorem cos_xiMassRealTimeRotation {sigma h : ℝ} (hsigma : 0 < sigma) :
-    Real.cos (xiMassRealTimeRotation sigma h) = sigma / Real.sqrt (sigma ^ 2 + h ^ 2) := by
-  have hroot : (0 : ℝ) < Real.sqrt (1 + (h / sigma) ^ 2) := Real.sqrt_pos.2 (by positivity)
+    Real.cos (xiMassRealTimeRotation sigma h) = sigma / Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) := by
+  have hroot : (0 : ℝ) < Real.sqrt (1 + (h / sigma) ^ (2 : ℕ)) := Real.sqrt_pos.2 (by positivity)
   rw [xiMassRealTimeRotation, Real.cos_arctan, ← sqrt_one_add_sq_div (h := h) hsigma]
   field_simp
 
 theorem sin_xiMassRealTimeRotation {sigma h : ℝ} (hsigma : 0 < sigma) :
-    Real.sin (xiMassRealTimeRotation sigma h) = h / Real.sqrt (sigma ^ 2 + h ^ 2) := by
-  have hroot : (0 : ℝ) < Real.sqrt (1 + (h / sigma) ^ 2) := Real.sqrt_pos.2 (by positivity)
+    Real.sin (xiMassRealTimeRotation sigma h) = h / Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) := by
+  have hroot : (0 : ℝ) < Real.sqrt (1 + (h / sigma) ^ (2 : ℕ)) := Real.sqrt_pos.2 (by positivity)
   rw [xiMassRealTimeRotation, Real.sin_arctan, ← sqrt_one_add_sq_div (h := h) hsigma]
   field_simp
 
@@ -59,13 +59,13 @@ theorem xiMassRealTimePhase_rotated {sigma h : ℝ} (hsigma : 0 < sigma) (x : �
     (sigma : ℂ) * Complex.cosh ((x : ℂ) - ((xiMassRealTimeRotation sigma h : ℝ) : ℂ) * I)
         + I * (h : ℂ) * Complex.sinh ((x : ℂ)
           - ((xiMassRealTimeRotation sigma h : ℝ) : ℂ) * I)
-      = ((Real.sqrt (sigma ^ 2 + h ^ 2) : ℝ) : ℂ) * Complex.cosh (x : ℂ) := by
+      = ((Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) : ℝ) : ℂ) * Complex.cosh (x : ℂ) := by
   set θ : ℝ := xiMassRealTimeRotation sigma h with hθ
-  have hqpos : (0 : ℝ) < Real.sqrt (sigma ^ 2 + h ^ 2) :=
+  have hqpos : (0 : ℝ) < Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) :=
     Real.sqrt_pos.2 (by positivity)
-  have hcos : Real.cos θ = sigma / Real.sqrt (sigma ^ 2 + h ^ 2) :=
+  have hcos : Real.cos θ = sigma / Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) :=
     cos_xiMassRealTimeRotation hsigma
-  have hsin : Real.sin θ = h / Real.sqrt (sigma ^ 2 + h ^ 2) :=
+  have hsin : Real.sin θ = h / Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) :=
     sin_xiMassRealTimeRotation hsigma
   have hcosh : Complex.cosh ((x : ℂ) - (θ : ℂ) * I)
       = Complex.cosh (x : ℂ) * ((Real.cos θ : ℝ) : ℂ)
@@ -80,16 +80,16 @@ theorem xiMassRealTimePhase_rotated {sigma h : ℝ} (hsigma : 0 < sigma) (x : �
       ← Complex.ofReal_sin]
     ring
   rw [hcosh, hsinh, hcos, hsin]
-  have hq : ((Real.sqrt (sigma ^ 2 + h ^ 2) : ℝ) : ℂ) ≠ 0 := by
+  have hq : ((Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) : ℝ) : ℂ) ≠ 0 := by
     simpa using ne_of_gt hqpos
-  have hqsq : ((Real.sqrt (sigma ^ 2 + h ^ 2) : ℝ) : ℂ) ^ 2 = ((sigma : ℂ) ^ 2 + (h : ℂ) ^ 2) := by
+  have hqsq : ((Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) : ℝ) : ℂ) ^ (2 : ℕ) = ((sigma : ℂ) ^ (2 : ℕ) + (h : ℂ) ^ (2 : ℕ)) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by positivity)]
     push_cast
     ring
   push_cast
   field_simp
   linear_combination (-(Complex.cosh (x : ℂ))) * hqsq
-    + (-(Complex.cosh (x : ℂ) * (h : ℂ) ^ 2)) * Complex.I_sq
+    + (-(Complex.cosh (x : ℂ) * (h : ℂ) ^ (2 : ℕ))) * Complex.I_sq
 
 /-! ## The identity -/
 
@@ -98,10 +98,10 @@ its own propagation radius. -/
 theorem stripFourier_xiMass_realTime_eq_bessel {a sigma h : ℝ}
     (ha : 0 < a) (hsigma : 0 < sigma) (hh : 0 ≤ h) :
     stripFourier (xiMassAnalyticTest a ((sigma : ℂ) + ((0 : ℝ) : ℂ) * I)) (h : ℂ)
-      = 2 * (a : ℂ) * (sigma : ℂ) / ((Real.sqrt (sigma ^ 2 + h ^ 2) : ℝ) : ℂ)
-        * HTGeometry.besselK1C ((a * Real.sqrt (sigma ^ 2 + h ^ 2) : ℝ) : ℂ) := by
+      = 2 * (a : ℂ) * (sigma : ℂ) / ((Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) : ℝ) : ℂ)
+        * HTGeometry.besselK1C ((a * Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) : ℝ) : ℂ) := by
   set θ : ℝ := xiMassRealTimeRotation sigma h with hθ
-  set q : ℝ := Real.sqrt (sigma ^ 2 + h ^ 2) with hq
+  set q : ℝ := Real.sqrt (sigma ^ (2 : ℕ) + h ^ (2 : ℕ)) with hq
   have hqpos : (0 : ℝ) < q := Real.sqrt_pos.2 (by positivity)
   have haq : (0 : ℝ) < a * q := mul_pos ha hqpos
   have haqre : (0 : ℝ) < (((a * q : ℝ) : ℂ)).re := by simpa using haq

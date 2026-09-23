@@ -198,8 +198,8 @@ theorem ringRadius_ratio_le {N m : ℕ} (h : N ∈ Nat.properDivisors m) :
   have hsm : 0 ≤ Real.sqrt m := Real.sqrt_nonneg _
   have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
   have key : 7 * Real.sqrt m * Real.sqrt N ≤ 5 * m := by
-    have h1 : (7 * Real.sqrt m * Real.sqrt N) ^ 2 ≤ (5 * m) ^ 2 := by
-      have e1 : (7 * Real.sqrt m * Real.sqrt N) ^ 2 = 49 * m * N := by
+    have h1 : (7 * Real.sqrt m * Real.sqrt N) ^ (2 : ℕ) ≤ (5 * m) ^ (2 : ℕ) := by
+      have e1 : (7 * Real.sqrt m * Real.sqrt N) ^ (2 : ℕ) = 49 * m * N := by
         rw [mul_pow, mul_pow, Real.sq_sqrt hm0, Real.sq_sqrt (Nat.cast_nonneg N)]; ring
       rw [e1]
       have : (2 * N : ℝ) ≤ m := by exact_mod_cast h2N
@@ -232,7 +232,7 @@ theorem ringSeed_div_ringRadius_pow (m : ℕ) :
 /-- `e^{2√m} ≥ 2m`. -/
 theorem two_mul_le_exp_two_sqrt (m : ℕ) : (2 * m : ℝ) ≤ Real.exp (2 * Real.sqrt m) := by
   have h := Real.pow_div_factorial_le_exp (2 * Real.sqrt m) (by positivity) 2
-  have e : (2 * Real.sqrt m) ^ 2 / (Nat.factorial 2 : ℝ) = 2 * m := by
+  have e : (2 * Real.sqrt m) ^ (2 : ℕ) / (Nat.factorial 2 : ℝ) = 2 * m := by
     rw [mul_pow, Real.sq_sqrt (Nat.cast_nonneg m)]
     norm_num [Nat.factorial]
     ring
@@ -241,10 +241,10 @@ theorem two_mul_le_exp_two_sqrt (m : ℕ) : (2 * m : ℝ) ≤ Real.exp (2 * Real
 
 /-- `e^{2√m} ≥ 64 m³/720`. -/
 theorem cube_le_exp_two_sqrt (m : ℕ) :
-    64 * (m : ℝ) ^ 3 / 720 ≤ Real.exp (2 * Real.sqrt m) := by
+    64 * (m : ℝ) ^ (3 : ℕ) / 720 ≤ Real.exp (2 * Real.sqrt m) := by
   have h := Real.pow_div_factorial_le_exp (2 * Real.sqrt m) (by positivity) 6
-  have e : (2 * Real.sqrt m) ^ 6 / (Nat.factorial 6 : ℝ) = 64 * (m : ℝ) ^ 3 / 720 := by
-    rw [mul_pow, show (Real.sqrt m) ^ 6 = ((Real.sqrt m) ^ 2) ^ 3 by ring,
+  have e : (2 * Real.sqrt m) ^ (6 : ℕ) / (Nat.factorial 6 : ℝ) = 64 * (m : ℝ) ^ (3 : ℕ) / 720 := by
+    rw [mul_pow, show (Real.sqrt m) ^ (6 : ℕ) = ((Real.sqrt m) ^ (2 : ℕ)) ^ (3 : ℕ) by ring,
       Real.sq_sqrt (Nat.cast_nonneg m)]
     norm_num [Nat.factorial]
   rw [e] at h
@@ -263,7 +263,7 @@ theorem exp_seed_cost_le {l : ℝ} (hl : 0 < l) (m : ℕ) :
     Real.exp (5 * Real.sqrt m - l * m) ≤ Real.exp (25 / (4 * l)) := by
   apply Real.exp_le_exp.mpr
   have hs := Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) m)
-  have hs2 : l ^ 2 * Real.sqrt m ^ 2 = l ^ 2 * m := by rw [hs]
+  have hs2 : l ^ (2 : ℕ) * Real.sqrt m ^ (2 : ℕ) = l ^ (2 : ℕ) * m := by rw [hs]
   have h := sq_nonneg (5 - 2 * l * Real.sqrt m)
   rw [le_div_iff₀ (by positivity)]
   nlinarith [h, hs2]
@@ -274,7 +274,7 @@ theorem exp_seed_cost_le_geom {l : ℝ} (hl : 0 < l) (m : ℕ) :
   rw [← Real.exp_nat_mul, ← Real.exp_add]
   apply Real.exp_le_exp.mpr
   have hs := Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) m)
-  have hs2 : l ^ 2 * Real.sqrt m ^ 2 = l ^ 2 * m := by rw [hs]
+  have hs2 : l ^ (2 : ℕ) * Real.sqrt m ^ (2 : ℕ) = l ^ (2 : ℕ) * m := by rw [hs]
   have h := sq_nonneg (5 - l * Real.sqrt m)
   have h2 : 5 * Real.sqrt m - l * m / 2 ≤ 25 / (2 * l) := by
     rw [le_div_iff₀ (by positivity)]
@@ -346,11 +346,11 @@ theorem ringWeight_le_bound {l : ℝ} (hl : 0 < l) (m : ℕ) : ringWeight l m �
 
 /-- The summable majorant of the weights. -/
 theorem ringWeight_le_majorant {l : ℝ} (hl : 0 < l) (m : ℕ) :
-    ringWeight l m ≤ ringWeightBound l * (45 / 4) / (m : ℝ) ^ 2
+    ringWeight l m ≤ ringWeightBound l * (45 / 4) / (m : ℝ) ^ (2 : ℕ)
       + Real.exp (25 / (2 * l)) * Real.exp (-(l / 2)) ^ m := by
   rcases Nat.eq_zero_or_pos m with rfl | hm
   · rw [ringWeight_zero]
-    have h1 : (0 : ℝ) ≤ ringWeightBound l * (45 / 4) / ((0 : ℕ) : ℝ) ^ 2 := by
+    have h1 : (0 : ℝ) ≤ ringWeightBound l * (45 / 4) / ((0 : ℕ) : ℝ) ^ (2 : ℕ) := by
       have := one_le_ringWeightBound hl; positivity
     have h2 : 1 ≤ Real.exp (25 / (2 * l)) := Real.one_le_exp (by positivity)
     simp only [pow_zero, mul_one]
@@ -362,21 +362,21 @@ theorem ringWeight_le_majorant {l : ℝ} (hl : 0 < l) (m : ℕ) :
     have hE := cube_le_exp_two_sqrt m
     have hEpos := Real.exp_pos (2 * Real.sqrt m)
     have hm0 : (1 : ℝ) ≤ m := by exact_mod_cast hm
-    have h4 : Real.exp (-(2 * Real.sqrt m)) ≤ 720 / (64 * (m : ℝ) ^ 3) := by
+    have h4 : Real.exp (-(2 * Real.sqrt m)) ≤ 720 / (64 * (m : ℝ) ^ (3 : ℕ)) := by
       rw [Real.exp_neg, inv_le_comm₀ hEpos (by positivity), inv_div]
       exact hE
     have h5 : ringWeightBound l * m * Real.exp (-(2 * Real.sqrt m))
-        ≤ ringWeightBound l * (45 / 4) / (m : ℝ) ^ 2 := by
+        ≤ ringWeightBound l * (45 / 4) / (m : ℝ) ^ (2 : ℕ) := by
       calc ringWeightBound l * m * Real.exp (-(2 * Real.sqrt m))
-          ≤ ringWeightBound l * m * (720 / (64 * (m : ℝ) ^ 3)) := by gcongr
-        _ = ringWeightBound l * (45 / 4) / (m : ℝ) ^ 2 := by
+          ≤ ringWeightBound l * m * (720 / (64 * (m : ℝ) ^ (3 : ℕ))) := by gcongr
+        _ = ringWeightBound l * (45 / 4) / (m : ℝ) ^ (2 : ℕ) := by
             have hm' : (m : ℝ) ≠ 0 := by positivity
             field_simp
             ring
     linarith
 
 theorem summable_ringWeight {l : ℝ} (hl : 0 < l) : Summable (ringWeight l) := by
-  have h1 : Summable fun m : ℕ => ringWeightBound l * (45 / 4) / (m : ℝ) ^ 2 := by
+  have h1 : Summable fun m : ℕ => ringWeightBound l * (45 / 4) / (m : ℝ) ^ (2 : ℕ) := by
     have := ((Real.summable_one_div_nat_pow (p := 2)).mpr (by norm_num)).mul_left
       (ringWeightBound l * (45 / 4))
     refine this.congr fun m => ?_
@@ -546,8 +546,8 @@ theorem exists_positive_configuration_powerSums_le {l : ℝ} (hl : 0 < l) :
   refine ⟨ringNodeWeight l, ringNode l, ringNodeWeight_pos, summable_ringNodeWeight hl,
     norm_ringNode_lt_one, ?_, ?_⟩
   · intro ε hε
-    obtain ⟨N, hN⟩ := exists_nat_gt (25 / ε ^ 2)
-    have h25 : (0 : ℝ) < 25 / ε ^ 2 := by positivity
+    obtain ⟨N, hN⟩ := exists_nat_gt (25 / ε ^ (2 : ℕ))
+    have h25 : (0 : ℝ) < 25 / ε ^ (2 : ℕ) := by positivity
     have hN0 : 0 < N := by exact_mod_cast (lt_trans h25 hN)
     refine ⟨⟨N, ⟨0, hN0⟩⟩, ?_⟩
     rw [norm_ringNode]
@@ -555,9 +555,9 @@ theorem exists_positive_configuration_powerSums_le {l : ℝ} (hl : 0 < l) :
     have h1 : 1 - 5 / Real.sqrt N ≤ ringRadius N := Real.one_sub_le_exp_neg _
     have h2 : 5 / Real.sqrt N < ε := by
       rw [div_lt_iff₀ hsN]
-      have h3 : 25 < ε ^ 2 * N := by
+      have h3 : 25 < ε ^ (2 : ℕ) * N := by
         rw [div_lt_iff₀ (by positivity)] at hN; linarith
-      have h4 : (5 : ℝ) ^ 2 < (ε * Real.sqrt N) ^ 2 := by
+      have h4 : (5 : ℝ) ^ (2 : ℕ) < (ε * Real.sqrt N) ^ (2 : ℕ) := by
         rw [mul_pow, Real.sq_sqrt (Nat.cast_nonneg N)]; linarith
       exact (pow_lt_pow_iff_left₀ (by norm_num) (by positivity) two_ne_zero).mp h4
     linarith

@@ -40,11 +40,11 @@ def lgWronskian (A A' Ξ Φ Φ' : ℝ → ℝ) (y : ℝ) : ℝ :=
   Φ' y * lgApprox A Ξ y - Φ y * lgApproxDeriv A A' Ξ y
 
 theorem hasDerivAt_lgApprox (hA : ∀ x, HasDerivAt A (A' x) x)
-    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ 2) x) (hApos : ∀ x, 0 < A x) (y : ℝ) :
+    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ (2 : ℕ)) x) (hApos : ∀ x, 0 < A x) (y : ℝ) :
     HasDerivAt (lgApprox A Ξ) (lgApproxDeriv A A' Ξ y) y := by
-  have hneg : HasDerivAt (fun x : ℝ => -(Ξ x)) (-(1 / A y ^ 2)) y := (hΞ y).neg
+  have hneg : HasDerivAt (fun x : ℝ => -(Ξ x)) (-(1 / A y ^ (2 : ℕ))) y := (hΞ y).neg
   have hexp : HasDerivAt (fun x => Real.exp (-(Ξ x)))
-      (-(1 / A y ^ 2) * Real.exp (-(Ξ y))) y := by
+      (-(1 / A y ^ (2 : ℕ)) * Real.exp (-(Ξ y))) y := by
     have h := hneg.exp
     refine h.congr_deriv ?_
     ring
@@ -57,17 +57,17 @@ theorem hasDerivAt_lgApprox (hA : ∀ x, HasDerivAt A (A' x) x)
 
 theorem hasDerivAt_lgApproxDeriv (hA : ∀ x, HasDerivAt A (A' x) x)
     (hA' : ∀ x, HasDerivAt A' (A'' x) x)
-    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ 2) x) (hApos : ∀ x, 0 < A x) (y : ℝ) :
+    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ (2 : ℕ)) x) (hApos : ∀ x, 0 < A x) (y : ℝ) :
     HasDerivAt (lgApproxDeriv A A' Ξ)
-      ((A'' y + 1 / A y ^ 3) * Real.exp (-(Ξ y))) y := by
+      ((A'' y + 1 / A y ^ (3 : ℕ)) * Real.exp (-(Ξ y))) y := by
   have hA0 : A y ≠ 0 := (hApos y).ne'
-  have hinv : HasDerivAt (fun x => 1 / A x) ((0 * A y - 1 * A' y) / A y ^ 2) y :=
+  have hinv : HasDerivAt (fun x => 1 / A x) ((0 * A y - 1 * A' y) / A y ^ (2 : ℕ)) y :=
     HasDerivAt.fun_div (hasDerivAt_const y (1 : ℝ)) (hA y) hA0
   have hbase : HasDerivAt (fun x => A' x - 1 / A x)
-      (A'' y - (0 * A y - 1 * A' y) / A y ^ 2) y := (hA' y).sub hinv
-  have hneg : HasDerivAt (fun x : ℝ => -(Ξ x)) (-(1 / A y ^ 2)) y := (hΞ y).neg
+      (A'' y - (0 * A y - 1 * A' y) / A y ^ (2 : ℕ)) y := (hA' y).sub hinv
+  have hneg : HasDerivAt (fun x : ℝ => -(Ξ x)) (-(1 / A y ^ (2 : ℕ))) y := (hΞ y).neg
   have hexp : HasDerivAt (fun x => Real.exp (-(Ξ x)))
-      (-(1 / A y ^ 2) * Real.exp (-(Ξ y))) y := by
+      (-(1 / A y ^ (2 : ℕ)) * Real.exp (-(Ξ y))) y := by
     have h := hneg.exp
     refine h.congr_deriv ?_
     ring
@@ -79,9 +79,9 @@ theorem hasDerivAt_lgApproxDeriv (hA : ∀ x, HasDerivAt A (A' x) x)
 /-- **The Wronskian derivative is the error-control density.** -/
 theorem hasDerivAt_lgWronskian (hA : ∀ x, HasDerivAt A (A' x) x)
     (hA' : ∀ x, HasDerivAt A' (A'' x) x)
-    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ 2) x) (hApos : ∀ x, 0 < A x)
+    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ (2 : ℕ)) x) (hApos : ∀ x, 0 < A x)
     (hΦ : ∀ x, HasDerivAt Φ (Φ' x) x) (hΦ' : ∀ x, HasDerivAt Φ' (Φ'' x) x)
-    (hode : ∀ x, Φ'' x = (1 / A x ^ 4) * Φ x) (y : ℝ) :
+    (hode : ∀ x, Φ'' x = (1 / A x ^ (4 : ℕ)) * Φ x) (y : ℝ) :
     HasDerivAt (lgWronskian A A' Ξ Φ Φ')
       (-(Φ y * A'' y * Real.exp (-(Ξ y)))) y := by
   have hA0 : A y ≠ 0 := (hApos y).ne'
@@ -97,10 +97,10 @@ theorem hasDerivAt_lgWronskian (hA : ∀ x, HasDerivAt A (A' x) x)
 def lgRatio (A Ξ Φ : ℝ → ℝ) (y : ℝ) : ℝ := Φ y / lgApprox A Ξ y
 
 theorem hasDerivAt_lgRatio (hA : ∀ x, HasDerivAt A (A' x) x)
-    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ 2) x) (hApos : ∀ x, 0 < A x)
+    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ (2 : ℕ)) x) (hApos : ∀ x, 0 < A x)
     (hΦ : ∀ x, HasDerivAt Φ (Φ' x) x) (y : ℝ) :
     HasDerivAt (lgRatio A Ξ Φ)
-      (lgWronskian A A' Ξ Φ Φ' y * Real.exp (2 * Ξ y) / A y ^ 2) y := by
+      (lgWronskian A A' Ξ Φ Φ' y * Real.exp (2 * Ξ y) / A y ^ (2 : ℕ)) y := by
   have hA0 : A y ≠ 0 := (hApos y).ne'
   have hGpos : lgApprox A Ξ y ≠ 0 := by
     rw [lgApprox]
@@ -108,15 +108,15 @@ theorem hasDerivAt_lgRatio (hA : ∀ x, HasDerivAt A (A' x) x)
     positivity
   have h := HasDerivAt.fun_div (hΦ y) (hasDerivAt_lgApprox hA hΞ hApos y) hGpos
   refine h.congr_deriv ?_
-  have hsq : Real.exp (-(Ξ y)) ^ 2 * Real.exp (2 * Ξ y) = 1 := by
-    have hpow : Real.exp (-(Ξ y)) ^ 2 = Real.exp (-(Ξ y)) * Real.exp (-(Ξ y)) := by ring
+  have hsq : Real.exp (-(Ξ y)) ^ (2 : ℕ) * Real.exp (2 * Ξ y) = 1 := by
+    have hpow : Real.exp (-(Ξ y)) ^ (2 : ℕ) = Real.exp (-(Ξ y)) * Real.exp (-(Ξ y)) := by ring
     rw [hpow, ← Real.exp_add, ← Real.exp_add,
       show -(Ξ y) + -(Ξ y) + 2 * Ξ y = 0 by ring, Real.exp_zero]
-  have hG2 : lgApprox A Ξ y ^ 2 * Real.exp (2 * Ξ y) = A y ^ 2 := by
+  have hG2 : lgApprox A Ξ y ^ (2 : ℕ) * Real.exp (2 * Ξ y) = A y ^ (2 : ℕ) := by
     rw [lgApprox, mul_pow]
-    calc A y ^ 2 * Real.exp (-(Ξ y)) ^ 2 * Real.exp (2 * Ξ y)
-        = A y ^ 2 * (Real.exp (-(Ξ y)) ^ 2 * Real.exp (2 * Ξ y)) := by ring
-      _ = A y ^ 2 := by rw [hsq]; ring
+    calc A y ^ (2 : ℕ) * Real.exp (-(Ξ y)) ^ (2 : ℕ) * Real.exp (2 * Ξ y)
+        = A y ^ (2 : ℕ) * (Real.exp (-(Ξ y)) ^ (2 : ℕ) * Real.exp (2 * Ξ y)) := by ring
+      _ = A y ^ (2 : ℕ) := by rw [hsq]; ring
   rw [lgWronskian, div_eq_div_iff (pow_ne_zero 2 hGpos) (pow_ne_zero 2 hA0), ← hG2]
   ring
 
@@ -128,9 +128,9 @@ primitive of `e^{2Ξ}/A²` vanishing at the left end. -/
 theorem isPhaseLGSolution_lgRatio
     (hA : ∀ x, HasDerivAt A (A' x) x) (hA' : ∀ x, HasDerivAt A' (A'' x) x)
     (hA''c : Continuous A'')
-    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ 2) x) (hApos : ∀ x, 0 < A x)
+    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ (2 : ℕ)) x) (hApos : ∀ x, 0 < A x)
     (hΦ : ∀ x, HasDerivAt Φ (Φ' x) x) (hΦ' : ∀ x, HasDerivAt Φ' (Φ'' x) x)
-    (hode : ∀ x, Φ'' x = (1 / A x ^ 4) * Φ x)
+    (hode : ∀ x, Φ'' x = (1 / A x ^ (4 : ℕ)) * Φ x)
     (hRb : lgRatio A Ξ Φ b = 1)
     (hHb : lgWronskian A A' Ξ Φ Φ' b = 0) :
     IsPhaseLGSolution b Ξ (fun t => A t * A'' t) (lgRatio A Ξ Φ) a := by
@@ -155,16 +155,16 @@ theorem isPhaseLGSolution_lgRatio
   have hyb : y ≤ b := hy.2
   set H : ℝ → ℝ := lgWronskian A A' Ξ Φ Φ' with hH
   set U : ℝ → ℝ := fun τ => (Real.exp (2 * Ξ τ) - Real.exp (2 * Ξ y)) / 2 with hU
-  have hUd : ∀ t : ℝ, HasDerivAt U (Real.exp (2 * Ξ t) / A t ^ 2) t := by
+  have hUd : ∀ t : ℝ, HasDerivAt U (Real.exp (2 * Ξ t) / A t ^ (2 : ℕ)) t := by
     intro t
-    have hin : HasDerivAt (fun x : ℝ => 2 * Ξ x) (2 * (1 / A t ^ 2)) t := (hΞ t).const_mul 2
+    have hin : HasDerivAt (fun x : ℝ => 2 * Ξ x) (2 * (1 / A t ^ (2 : ℕ))) t := (hΞ t).const_mul 2
     have hexp : HasDerivAt (fun x : ℝ => Real.exp (2 * Ξ x))
-        (Real.exp (2 * Ξ t) * (2 * (1 / A t ^ 2))) t := hin.exp
+        (Real.exp (2 * Ξ t) * (2 * (1 / A t ^ (2 : ℕ)))) t := hin.exp
     have h := (hexp.sub_const (Real.exp (2 * Ξ y))).div_const 2
     refine h.congr_deriv ?_
     field_simp
   have hUc : Continuous U := continuous_iff_continuousAt.2 fun t => (hUd t).continuousAt
-  have hU'c : Continuous fun t : ℝ => Real.exp (2 * Ξ t) / A t ^ 2 := by
+  have hU'c : Continuous fun t : ℝ => Real.exp (2 * Ξ t) / A t ^ (2 : ℕ) := by
     refine Continuous.div (Real.continuous_exp.comp (by fun_prop)) (hAc.pow 2) ?_
     intro x
     exact pow_ne_zero 2 (hAne x)
@@ -173,7 +173,7 @@ theorem isPhaseLGSolution_lgRatio
   -- integration by parts
   have hibp := intervalIntegral.integral_mul_deriv_eq_deriv_mul
     (u := H) (u' := fun t => -(Φ t * A'' t * Real.exp (-(Ξ t))))
-    (v := U) (v' := fun t => Real.exp (2 * Ξ t) / A t ^ 2)
+    (v := U) (v' := fun t => Real.exp (2 * Ξ t) / A t ^ (2 : ℕ))
     (a := y) (b := b)
     (fun t _ => hasDerivAt_lgWronskian hA hA' hΞ hApos hΦ hΦ' hode t)
     (fun t _ => hUd t) (hH'c.intervalIntegrable y b) (hU'c.intervalIntegrable y b)
@@ -183,17 +183,17 @@ theorem isPhaseLGSolution_lgRatio
   have hHbz : H b = 0 := hHb
   rw [hHbz, hUy] at hibp
   -- the ratio's derivative is the product
-  have hRd : ∀ t : ℝ, HasDerivAt (lgRatio A Ξ Φ) (H t * (Real.exp (2 * Ξ t) / A t ^ 2)) t := by
+  have hRd : ∀ t : ℝ, HasDerivAt (lgRatio A Ξ Φ) (H t * (Real.exp (2 * Ξ t) / A t ^ (2 : ℕ))) t := by
     intro t
     have h := hasDerivAt_lgRatio (A' := A') (Φ' := Φ') hA hΞ hApos hΦ t
     refine h.congr_deriv ?_
     rw [hH]
     field_simp
-  have hRint : IntervalIntegrable (fun t => H t * (Real.exp (2 * Ξ t) / A t ^ 2)) volume y b :=
+  have hRint : IntervalIntegrable (fun t => H t * (Real.exp (2 * Ξ t) / A t ^ (2 : ℕ))) volume y b :=
     (hHc.mul hU'c).intervalIntegrable y b
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hRd t) hRint
   -- rewrite the two integrals
-  have hkey : (∫ t in y..b, H t * (Real.exp (2 * Ξ t) / A t ^ 2))
+  have hkey : (∫ t in y..b, H t * (Real.exp (2 * Ξ t) / A t ^ (2 : ℕ)))
       = ∫ t in y..b, lgPhaseKernel Ξ y t * (A t * A'' t) * lgRatio A Ξ Φ t := by
     rw [hibp]
     simp only [zero_mul, mul_zero, sub_zero, zero_sub]
@@ -244,9 +244,9 @@ with `E = exp(½ ∫ |A A''|)` and `A = Q^{−1/4}`. -/
 theorem lgRatio_two_sided (hab : a ≤ b)
     (hA : ∀ x, HasDerivAt A (A' x) x) (hA' : ∀ x, HasDerivAt A' (A'' x) x)
     (hA''c : Continuous A'')
-    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ 2) x) (hApos : ∀ x, 0 < A x)
+    (hΞ : ∀ x, HasDerivAt Ξ (1 / A x ^ (2 : ℕ)) x) (hApos : ∀ x, 0 < A x)
     (hΦ : ∀ x, HasDerivAt Φ (Φ' x) x) (hΦ' : ∀ x, HasDerivAt Φ' (Φ'' x) x)
-    (hode : ∀ x, Φ'' x = (1 / A x ^ 4) * Φ x)
+    (hode : ∀ x, Φ'' x = (1 / A x ^ (4 : ℕ)) * Φ x)
     (hRb : lgRatio A Ξ Φ b = 1)
     (hHb : lgWronskian A A' Ξ Φ Φ' b = 0)
     {y : ℝ} (hy : y ∈ Icc a b) :

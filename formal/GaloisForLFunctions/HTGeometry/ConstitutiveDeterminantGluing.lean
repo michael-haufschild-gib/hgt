@@ -34,32 +34,32 @@ def paritySign (x : ZMod 2) : ℤ := if x = 0 then 1 else -1
   simp [paritySign]
 
 theorem paritySign_ne_zero (x : ZMod 2) : paritySign x ≠ 0 := by
-  rcases zmodTwo_eq_zero_or_one x with rfl | rfl <;> simp
+  rcases zmodTwo_eq_zero_or_one_constitutiveParityContextuality x with rfl | rfl <;> simp
 
 /-- The determinant sign is a character of the parity group. -/
 theorem paritySign_add (x y : ZMod 2) : paritySign (x + y) = paritySign x * paritySign y := by
-  rcases zmodTwo_eq_zero_or_one x with rfl | rfl <;>
-    rcases zmodTwo_eq_zero_or_one y with rfl | rfl <;>
+  rcases zmodTwo_eq_zero_or_one_constitutiveParityContextuality x with rfl | rfl <;>
+    rcases zmodTwo_eq_zero_or_one_constitutiveParityContextuality y with rfl | rfl <;>
       simp [CharTwo.add_self_eq_zero]
 
 theorem paritySign_injective : Function.Injective paritySign := by
   intro x y hxy
-  rcases zmodTwo_eq_zero_or_one x with rfl | rfl <;>
-    rcases zmodTwo_eq_zero_or_one y with rfl | rfl <;> simp_all
+  rcases zmodTwo_eq_zero_or_one_constitutiveParityContextuality x with rfl | rfl <;>
+    rcases zmodTwo_eq_zero_or_one_constitutiveParityContextuality y with rfl | rfl <;> simp_all
 
 theorem paritySign_eq_one_iff (x : ZMod 2) : paritySign x = 1 ↔ x = 0 := by
-  rcases zmodTwo_eq_zero_or_one x with rfl | rfl <;> simp
+  rcases zmodTwo_eq_zero_or_one_constitutiveParityContextuality x with rfl | rfl <;> simp
 
 /-- **Positive erasure at the level of one determinant complex.** -/
 theorem paritySign_mul_self (x : ZMod 2) : paritySign x * paritySign x = 1 := by
-  rcases zmodTwo_eq_zero_or_one x with rfl | rfl <;> simp
+  rcases zmodTwo_eq_zero_or_one_constitutiveParityContextuality x with rfl | rfl <;> simp
 
 theorem paritySign_complex_ne_zero (x : ZMod 2) : ((paritySign x : ℤ) : ℂ) ≠ 0 := by
   simpa using paritySign_ne_zero x
 
 /-- The positive determinant shadow of every local complex is one. -/
 theorem positiveShadow_paritySign (x : ZMod 2) : positiveShadow ((paritySign x : ℤ) : ℂ) = 1 := by
-  rcases zmodTwo_eq_zero_or_one x with rfl | rfl <;> simp [positiveShadow, paritySign]
+  rcases zmodTwo_eq_zero_or_one_constitutiveParityContextuality x with rfl | rfl <;> simp [positiveShadow, paritySign]
 
 theorem paritySign_prod {ι : Type*} (s : Finset ι) (f : ι → ZMod 2) :
     paritySign (∑ i ∈ s, f i) = ∏ i ∈ s, paritySign (f i) := by

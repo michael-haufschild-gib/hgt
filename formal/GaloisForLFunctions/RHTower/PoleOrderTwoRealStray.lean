@@ -187,7 +187,7 @@ theorem realStrayTransform_antisymm (w : ℝ) (s : ℂ) :
 /-! ## The completed function -/
 
 /-- The quadratic factor carrying the inserted real zero pair `1/2 ± w`. -/
-def realStrayQuadratic (w : ℝ) (s : ℂ) : ℂ := (s - 1 / 2) ^ 2 - (w : ℂ) ^ 2
+def realStrayQuadratic (w : ℝ) (s : ℂ) : ℂ := (s - 1 / 2) ^ (2 : ℕ) - (w : ℂ) ^ (2 : ℕ)
 
 /-- The inserted factor is invariant under the reflection `s ↦ 1 - s`. -/
 theorem realStrayQuadratic_reflect (w : ℝ) (s : ℂ) :

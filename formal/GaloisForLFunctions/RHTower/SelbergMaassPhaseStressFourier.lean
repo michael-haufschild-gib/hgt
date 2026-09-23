@@ -255,7 +255,7 @@ private theorem centered_integral_mul_fourier_zero :
       (x : ℂ) * fourier 0 ((x : ℝ) : AddCircle (1 : ℝ))) = 0 := by
   simp only [fourier_zero, mul_one]
   have hderiv : ∀ x ∈ Set.uIcc (-(1 / 2 : ℝ)) (1 / 2 : ℝ),
-      HasDerivAt (fun y : ℝ => (y : ℂ) ^ 2 / 2) (x : ℂ) x := by
+      HasDerivAt (fun y : ℝ => (y : ℂ) ^ (2 : ℕ) / 2) (x : ℂ) x := by
     intro x _
     have hx : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 x :=
       (hasDerivAt_id x).ofReal_comp

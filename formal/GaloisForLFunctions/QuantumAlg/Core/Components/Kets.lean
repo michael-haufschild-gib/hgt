@@ -46,7 +46,7 @@ theorem invSqrt2_mul_self : invSqrt2 * invSqrt2 = (2 : ℂ)⁻¹ := by
   norm_num
 
 @[simp]
-theorem invSqrt2_sq : invSqrt2 ^ 2 = (2 : ℂ)⁻¹ := by
+theorem invSqrt2_sq : invSqrt2 ^ (2 : ℕ) = (2 : ℂ)⁻¹ := by
   rw [sq, invSqrt2_mul_self]
 
 @[simp]
@@ -79,26 +79,26 @@ def ketMinusVec : StateVector (Qubits 1) :=
   invSqrt2 • ((ket0 : StateVector (Qubits 1)) - (ket1 : StateVector (Qubits 1)))
 
 @[simp]
-theorem ketPlusVec_apply (i : Fin (2 ^ 1)) :
+theorem ketPlusVec_apply (i : Fin (2 ^ (1 : ℕ))) :
     ketPlusVec i = invSqrt2 := by
   fin_cases i <;>
     simp [ketPlusVec, ket0, ket1, PiLp.smul_apply, PiLp.add_apply, smul_eq_mul]
 
 @[simp]
-theorem ketMinusVec_apply (i : Fin (2 ^ 1)) :
+theorem ketMinusVec_apply (i : Fin (2 ^ (1 : ℕ))) :
     ketMinusVec i = if i = 0 then invSqrt2 else -invSqrt2 := by
   fin_cases i <;>
     simp [ketMinusVec, ket0, ket1, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul]
 
-theorem norm_sq_invSqrt2 : ‖invSqrt2‖ ^ 2 = 2⁻¹ := by
+theorem norm_sq_invSqrt2 : ‖invSqrt2‖ ^ (2 : ℕ) = 2⁻¹ := by
   rw [norm_invSqrt2, inv_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
 
-/-- Norm over `Fin (2 ^ 1)` as a two-term sum. -/
+/-- Norm over `Fin (2 ^ (1 : ℕ))` as a two-term sum. -/
 theorem norm_eq_two_terms (psi : StateVector (Qubits 1)) :
-    ‖psi‖ = √(‖psi 0‖ ^ 2 + ‖psi 1‖ ^ 2) := by
+    ‖psi‖ = √(‖psi 0‖ ^ (2 : ℕ) + ‖psi 1‖ ^ (2 : ℕ)) := by
   rw [EuclideanSpace.norm_eq]
   congr 1
-  exact Fin.sum_univ_two (f := fun i : Fin (2 ^ 1) => ‖psi i‖ ^ 2)
+  exact Fin.sum_univ_two (f := fun i : Fin (2 ^ (1 : ℕ)) => ‖psi i‖ ^ (2 : ℕ))
 
 theorem norm_ketPlusVec : ‖ketPlusVec‖ = 1 := by
   rw [norm_eq_two_terms, ketPlusVec_apply, ketPlusVec_apply, ← two_mul,
@@ -107,7 +107,7 @@ theorem norm_ketPlusVec : ‖ketPlusVec‖ = 1 := by
 
 theorem norm_ketMinusVec : ‖ketMinusVec‖ = 1 := by
   rw [norm_eq_two_terms, ketMinusVec_apply, ketMinusVec_apply, if_pos rfl,
-    if_neg (show (1 : Fin (2 ^ 1)) ≠ 0 by decide), norm_neg, ← two_mul,
+    if_neg (show (1 : Fin (2 ^ (1 : ℕ))) ≠ 0 by decide), norm_neg, ← two_mul,
     norm_sq_invSqrt2]
   norm_num
 
@@ -118,12 +118,12 @@ def ketPlus : PureState (Qubits 1) := ofVec ketPlusVec norm_ketPlusVec
 def ketMinus : PureState (Qubits 1) := ofVec ketMinusVec norm_ketMinusVec
 
 @[simp]
-theorem ketPlus_apply (i : Fin (2 ^ 1)) : ketPlus i = invSqrt2 := by
+theorem ketPlus_apply (i : Fin (2 ^ (1 : ℕ))) : ketPlus i = invSqrt2 := by
   change ketPlusVec i = invSqrt2
   rw [ketPlusVec_apply]
 
 @[simp]
-theorem ketMinus_apply (i : Fin (2 ^ 1)) :
+theorem ketMinus_apply (i : Fin (2 ^ (1 : ℕ))) :
     ketMinus i = if i = 0 then invSqrt2 else -invSqrt2 := by
   change ketMinusVec i = if i = 0 then invSqrt2 else -invSqrt2
   rw [ketMinusVec_apply]
@@ -135,35 +135,35 @@ theorem norm_ketMinus : ‖ketMinus‖ = 1 := by
   exact ketMinus.norm_eq_one
 
 /-- Workhorse for test circuits: on `|0> ⊗ alpha + |1> ⊗ beta` the probability
-of reading `0` on qubit 0 is `‖alpha‖^2`. -/
+of reading `0` on qubit 0 is `‖alpha‖^(2 : ℕ)`. -/
 theorem probQubit0_ket0_tensor_add_ket1_tensor {n : ℕ}
     (alpha beta : StateVector (Qubits n)) :
     StateVector.probQubit0
         (StateVector.tensor (ket0 : StateVector (Qubits 1)) alpha
           + StateVector.tensor (ket1 : StateVector (Qubits 1)) beta) 0
-      = ‖alpha‖ ^ 2 := by
+      = ‖alpha‖ ^ (2 : ℕ) := by
   rw [StateVector.probQubit0, EuclideanSpace.norm_eq,
     Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg ‖alpha i‖)]
   refine Finset.sum_congr rfl fun y _ => ?_
   rw [PiLp.add_apply, StateVector.tensor_apply_prod, StateVector.tensor_apply_prod,
     ket0, ket1, ket_apply, ket_apply, if_pos rfl,
-    if_neg (show (0 : Fin (2 ^ 1)) ≠ 1 by decide), one_mul, zero_mul,
+    if_neg (show (0 : Fin (2 ^ (1 : ℕ))) ≠ 1 by decide), one_mul, zero_mul,
     add_zero]
 
 /-- On `|0> ⊗ alpha + |1> ⊗ beta` the probability of reading `1` on qubit 0 is
-`‖beta‖^2`. -/
+`‖beta‖^(2 : ℕ)`. -/
 theorem probQubit1_ket0_tensor_add_ket1_tensor {n : ℕ}
     (alpha beta : StateVector (Qubits n)) :
     StateVector.probQubit0
         (StateVector.tensor (ket0 : StateVector (Qubits 1)) alpha
           + StateVector.tensor (ket1 : StateVector (Qubits 1)) beta) 1
-      = ‖beta‖ ^ 2 := by
+      = ‖beta‖ ^ (2 : ℕ) := by
   rw [StateVector.probQubit0, EuclideanSpace.norm_eq,
     Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg ‖beta i‖)]
   refine Finset.sum_congr rfl fun y _ => ?_
   rw [PiLp.add_apply, StateVector.tensor_apply_prod, StateVector.tensor_apply_prod,
     ket0, ket1, ket_apply, ket_apply, if_pos rfl,
-    if_neg (show (1 : Fin (2 ^ 1)) ≠ 0 by decide), one_mul, zero_mul,
+    if_neg (show (1 : Fin (2 ^ (1 : ℕ))) ≠ 0 by decide), one_mul, zero_mul,
     zero_add]
 
 end

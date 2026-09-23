@@ -85,7 +85,7 @@ theorem gaussUnitPoleTransformComplex_eq_logDerivative {N m : ℕ}
 /-- Poisson density of faithful unit atoms. -/
 noncomputable def gaussUnitPolePoissonDensity
     (s : ℕ → ℝ) (m : ℕ) (a eta : ℝ) : ℝ :=
-  ∑ x ∈ gaussNodes s m, eta / ((a - x) ^ 2 + eta ^ 2)
+  ∑ x ∈ gaussNodes s m, eta / ((a - x) ^ (2 : ℕ) + eta ^ (2 : ℕ))
 
 /-- Negative imaginary part of faithful source transform is its positive Poisson density. -/
 theorem neg_im_gaussUnitPoleTransformComplex_eq_poissonDensity

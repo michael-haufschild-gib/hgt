@@ -32,11 +32,11 @@ variable (L : PeriodPair)
 /-- The order-one differential relation satisfied by `℘` on the whole plane: the Weierstrass
 equation multiplied by the value slot, which absorbs the junk values at the lattice points. -/
 noncomputable def weierstrassPRelation : MvPolynomial (Fin 3) ℂ :=
-  (X 2 ^ 2 - 4 * X 1 ^ 3 + C L.g₂ * X 1 + C L.g₃) * X 1
+  (X 2 ^ (2 : ℕ) - 4 * X 1 ^ (3 : ℕ) + C L.g₂ * X 1 + C L.g₃) * X 1
 
 theorem weierstrassPRelation_ne_zero : weierstrassPRelation L ≠ 0 := by
   have key : ∀ a b : ℂ, MvPolynomial.eval ![(0 : ℂ), a, b] (weierstrassPRelation L)
-      = (b ^ 2 - 4 * a ^ 3 + L.g₂ * a + L.g₃) * a := by
+      = (b ^ (2 : ℕ) - 4 * a ^ (3 : ℕ) + L.g₂ * a + L.g₃) * a := by
     intro a b
     simp [weierstrassPRelation]
   intro h
@@ -52,7 +52,7 @@ theorem differentiallyAlgebraic_weierstrassP :
     DifferentiallyAlgebraic (fun z => L.weierstrassP z) := by
   refine ⟨1, weierstrassPRelation L, weierstrassPRelation_ne_zero L, fun z => ?_⟩
   have key : ∀ a b : ℂ, MvPolynomial.eval ![z, a, b] (weierstrassPRelation L)
-      = (b ^ 2 - 4 * a ^ 3 + L.g₂ * a + L.g₃) * a := by
+      = (b ^ (2 : ℕ) - 4 * a ^ (3 : ℕ) + L.g₂ * a + L.g₃) * a := by
     intro a b
     simp [weierstrassPRelation]
   have hpt : (Fin.cons z (fun j : Fin 2 => iteratedDeriv (j : ℕ) (fun w => L.weierstrassP w) z))

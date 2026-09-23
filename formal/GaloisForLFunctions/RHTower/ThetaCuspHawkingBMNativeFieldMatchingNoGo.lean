@@ -73,7 +73,7 @@ theorem exists_original_scalar_ne_zero (q : XiZeroCopy) :
     exact hn ((lambda_completed _ hi').symm.trans hA)
 
 private theorem source_constant_ne_zero (q : XiZeroCopy) (br : Bool) :
-    (5*physicalRate q br^2+15*physicalRate q br+4)/4 ≠ (0:ℂ) := by
+    (5*physicalRate q br^(2 : ℕ)+15*physicalRate q br+4)/4 ≠ (0:ℂ) := by
   have hs : -2 < (physicalRate q br).re ∧ (physicalRate q br).re < -1 := by
     have hq := xi_divisor_support_re_mem_open_unit q.1
     cases br <;> norm_num [physicalRate] <;> constructor <;> linarith
@@ -86,7 +86,7 @@ private theorem source_constant_ne_zero (q : XiZeroCopy) (br : Bool) :
 
 theorem timeOriginalForcing_quadratic (q : XiZeroCopy) (br : Bool) (a : ℂ)
     (τ t : ℝ) (z : Fin 2 → ℝ) :
-    timeOriginalForcing q br a τ t z = a^2*timeOriginalForcing q br 1 τ t z := by
+    timeOriginalForcing q br a τ t z = a^(2 : ℕ)*timeOriginalForcing q br 1 τ t z := by
   unfold timeOriginalForcing D4BMJointSource.originalForcing sourceAmplitude
   ring
 
@@ -101,8 +101,8 @@ theorem exists_original_forcing_ne_zero (q : XiZeroCopy) (br : Bool) :
   have hJ : J ≠ 0 := by
     dsimp only [J,fullSquarePotential,z]
     exact mul_ne_zero (by norm_num) (mul_ne_zero hscalar hscalar)
-  let P : ℝ → ℂ := fun t => ((5*s^2+15*s+4)/4)*J+
-    s*(s-1)*(radialUnit t:ℂ)^2/4*((s+2)^2*J-K)
+  let P : ℝ → ℂ := fun t => ((5*s^(2 : ℕ)+15*s+4)/4)*J+
+    s*(s-1)*(radialUnit t:ℂ)^(2 : ℕ)/4*((s+2)^(2 : ℕ)*J-K)
   have hP0 : P 0 ≠ 0 := by
     simpa [P,radialUnit] using mul_ne_zero (source_constant_ne_zero q br) hJ
   have hP : ContinuousAt P 0 := by
@@ -116,13 +116,13 @@ theorem exists_original_forcing_ne_zero (q : XiZeroCopy) (br : Bool) :
   obtain ⟨t,ht,hpt⟩ := hev.exists
   have hu := radialUnit_bounds t ht
   have hu0 : (radialUnit t:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hu.1)
-  have hweight : 1-(radialUnit t:ℂ)^2 ≠ 0 := by
-    have h : (1:ℝ)-(radialUnit t)^2>0 := by nlinarith
+  have hweight : 1-(radialUnit t:ℂ)^(2 : ℕ) ≠ 0 := by
+    have h : (1:ℝ)-(radialUnit t)^(2 : ℕ)>0 := by nlinarith
     exact_mod_cast (ne_of_gt h)
   have hA : sourceAmplitude s 0 1 1 t ≠ 0 := by
     simpa [sourceAmplitude] using power_ne_zero (2*s) (radialUnit_add_one_pos t)
   have hF : D4BMJointSource.originalForcing s 0 1 1 J K t ≠ 0 := by
-    change -2*(1-(radialUnit t:ℂ)^2)*(radialUnit t:ℂ)*sourceAmplitude s 0 1 1 t*P t ≠ 0
+    change -2*(1-(radialUnit t:ℂ)^(2 : ℕ))*(radialUnit t:ℂ)*sourceAmplitude s 0 1 1 t*P t ≠ 0
     exact mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (by norm_num) hweight) hu0) hA) hpt
   refine ⟨t,X,Real.log y,ht,?_⟩
   rw [Real.exp_log hy]
@@ -157,7 +157,7 @@ theorem exists_originalPotential_amplitude_observation (q : XiZeroCopy) (br : Bo
     ∃ r X k : ℝ, 2<r ∧ ∃ c : ℂ, c≠0 ∧ ∀ a : ℂ,
       (4*deriv (fun v => deriv (fun u => originalPotential q br a u v X k) 2) r-
         angularLaplacian (originalPotential q br a 2 r) X k/
-          (Real.cosh ((2-r)/2):ℂ)^2)/c = a^2 := by
+          (Real.cosh ((2-r)/2):ℂ)^(2 : ℕ))/c = a^(2 : ℕ) := by
   obtain ⟨t,X,k,ht,hF⟩ := exists_original_forcing_ne_zero q br
   refine ⟨2-2*t,X,k,by linarith,timeOriginalForcing q br 1 (2-t) t ![X,Real.exp k],hF,?_⟩
   intro a
@@ -168,7 +168,7 @@ theorem exists_originalPotential_amplitude_observation (q : XiZeroCopy) (br : Bo
 /-- Complete physical retarded fields distinguish exactly squared source amplitudes. -/
 theorem originalPotential_amplitude_fibres (q : XiZeroCopy) (br : Bool) (a b : ℂ) :
     (∀ p r : ℝ, 0<p → p<r → ∀ X k : ℝ,
-      originalPotential q br a p r X k=originalPotential q br b p r X k) ↔ a^2=b^2 := by
+      originalPotential q br a p r X k=originalPotential q br b p r X k) ↔ a^(2 : ℕ)=b^(2 : ℕ) := by
   constructor
   · intro he
     obtain ⟨t,X,k,ht,hF⟩ := exists_original_forcing_ne_zero q br

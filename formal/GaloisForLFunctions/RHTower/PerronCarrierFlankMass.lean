@@ -7,7 +7,7 @@ The quantitative part of Perron boundary charge is carried entirely by the left 
 This module separates it from the qualitative escape of the other three edges.  The carrier-only
 weight
 
-`A_M(F) = integral |F(-M+it)| / (1+t^2) dt`
+`A_M(F) = integral |F(-M+it)| / (1+t^(2 : ℕ)) dt`
 
 contains no coefficient index and no Perron knot width.  Quadratic decay of the regularized Perron
 kernel converts this mass into the normalized boundary charge.  A second interface shows that

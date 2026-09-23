@@ -40,15 +40,15 @@ theorem eval_routeUHardEdgeWeilPoly_eq_sum (p : Polynomial ℝ) (u : ℝ) :
   simp
 
 theorem eval_routeUHardEdgeWeilPoly (p : Polynomial ℝ) (u : ℝ) :
-    (routeUHardEdgeWeilPoly p).eval u = u * p.eval u ^ 2 := by
+    (routeUHardEdgeWeilPoly p).eval u = u * p.eval u ^ (2 : ℕ) := by
   rw [routeUHardEdgeWeilPoly]
   simp
 
 theorem routeUHardEdgeRationalTest_sq_eq_sum {a : ℝ} (ha : 0 < a) (p : Polynomial ℝ) (x : ℝ) :
-    routeUHardEdgeRationalTest a p x ^ 2
+    routeUHardEdgeRationalTest a p x ^ (2 : ℕ)
       = ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-          (a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k) * (((a ^ 2 + x ^ 2) ^ k)⁻¹) := by
-  have hpos : (0 : ℝ) < a ^ 2 + x ^ 2 := by positivity
+          (a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k) * (((a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ k)⁻¹) := by
+  have hpos : (0 : ℝ) < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
   rw [routeUHardEdgeRationalTest_sq_eq ha p x, mul_assoc, ← eval_routeUHardEdgeWeilPoly p,
     eval_routeUHardEdgeWeilPoly_eq_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
@@ -59,20 +59,20 @@ theorem routeUHardEdgeRationalTest_sq_eq_sum {a : ℝ} (ha : 0 < a) (p : Polynom
 
 /-- The polar value of the squared rational hard-edge test. -/
 def routeUHardEdgePolar (a : ℝ) (p : Polynomial ℝ) : ℝ :=
-  a ^ 2 * (routeUHardEdgeWeilPoly p).eval ((a ^ 2 - 1 / 4)⁻¹)
+  a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).eval ((a ^ (2 : ℕ) - 1 / 4)⁻¹)
 
 theorem routeUHardEdgePolar_nonneg {a : ℝ} (ha : 1 / 2 < a) (p : Polynomial ℝ) :
     0 ≤ routeUHardEdgePolar a p := by
   have ha0 : (0 : ℝ) < a := by linarith
-  have hpos : (0 : ℝ) < a ^ 2 - 1 / 4 := by nlinarith
+  have hpos : (0 : ℝ) < a ^ (2 : ℕ) - 1 / 4 := by nlinarith
   rw [routeUHardEdgePolar, eval_routeUHardEdgeWeilPoly]
-  have hinv : (0 : ℝ) < (a ^ 2 - 1 / 4)⁻¹ := inv_pos.mpr hpos
+  have hinv : (0 : ℝ) < (a ^ (2 : ℕ) - 1 / 4)⁻¹ := inv_pos.mpr hpos
   positivity
 
 theorem routeUHardEdgePolar_eq_sum (a : ℝ) (p : Polynomial ℝ) :
     routeUHardEdgePolar a p
       = ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-          (a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k) * (((a ^ 2 - 1 / 4) ^ k)⁻¹) := by
+          (a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k) * (((a ^ (2 : ℕ) - 1 / 4) ^ k)⁻¹) := by
   rw [routeUHardEdgePolar, eval_routeUHardEdgeWeilPoly_eq_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [inv_pow]
@@ -88,12 +88,12 @@ theorem integrable_of_integrable_ofReal {f : ℝ → ℝ}
 
 theorem integrable_routeUArchimedeanWeight_massKernel {a : ℝ} (ha : 0 < a) (n : ℕ) :
     Integrable fun x : ℝ =>
-      routeUArchimedeanWeight x * ((((a ^ 2 + x ^ 2) ^ (n + 1) : ℝ)) : ℂ)⁻¹ :=
+      routeUArchimedeanWeight x * ((((a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ (n + 1) : ℝ)) : ℂ)⁻¹ :=
   integrable_logWeight_mul_massKernel continuous_routeUArchimedeanWeight
     norm_routeUArchimedeanWeight_le n (by positivity)
 
 theorem integrable_routeUArchimedeanRate_massKernel {a : ℝ} (ha : 0 < a) (n : ℕ) :
-    Integrable fun x : ℝ => routeUArchimedeanRate x * (((a ^ 2 + x ^ 2) ^ (n + 1))⁻¹) := by
+    Integrable fun x : ℝ => routeUArchimedeanRate x * (((a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ (n + 1))⁻¹) := by
   refine integrable_of_integrable_ofReal ?_
   refine (integrable_routeUArchimedeanWeight_massKernel ha n).congr ?_
   filter_upwards with x
@@ -101,11 +101,11 @@ theorem integrable_routeUArchimedeanRate_massKernel {a : ℝ} (ha : 0 < a) (n : 
   rw [← Complex.ofReal_inv, ← Complex.ofReal_mul]
 
 theorem integrable_routeUArchimedeanRate_mul_testSq {a : ℝ} (ha : 0 < a) (p : Polynomial ℝ) :
-    Integrable fun x : ℝ => routeUArchimedeanRate x * routeUHardEdgeRationalTest a p x ^ 2 := by
+    Integrable fun x : ℝ => routeUArchimedeanRate x * routeUHardEdgeRationalTest a p x ^ (2 : ℕ) := by
   have hsum : Integrable fun x : ℝ =>
       ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-        (a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k)
-          * (routeUArchimedeanRate x * (((a ^ 2 + x ^ 2) ^ k)⁻¹)) := by
+        (a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k)
+          * (routeUArchimedeanRate x * (((a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ k)⁻¹)) := by
     refine integrable_finsetSum _ fun k hk => ?_
     simp only [Finset.mem_Icc] at hk
     obtain ⟨j, rfl⟩ : ∃ j : ℕ, k = j + 1 := ⟨k - 1, by omega⟩
@@ -119,21 +119,21 @@ theorem integrable_routeUArchimedeanRate_mul_testSq {a : ℝ} (ha : 0 < a) (p : 
 /-! ## The archimedean and prime terms as finite sums of moments -/
 
 theorem integral_routeUArchimedeanRate_mul_testSq {a : ℝ} (ha : 0 < a) (p : Polynomial ℝ) :
-    ((∫ x : ℝ, routeUArchimedeanRate x * routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ)
+    ((∫ x : ℝ, routeUArchimedeanRate x * routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-          ((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-            * routeUArchimedeanMoment (k - 1) (a ^ 2) := by
+          ((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+            * routeUArchimedeanMoment (k - 1) (a ^ (2 : ℕ)) := by
   have hcast : ((∫ x : ℝ, routeUArchimedeanRate x
-        * routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ)
+        * routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ)
       = ∫ x : ℝ, ((routeUArchimedeanRate x
-          * routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ) :=
+          * routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ) :=
     (_root_.integral_ofReal).symm
   rw [hcast]
   have hcongr : ∀ x : ℝ, ((routeUArchimedeanRate x
-        * routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ)
+        * routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-          ((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-            * (routeUArchimedeanWeight x * ((((a ^ 2 + x ^ 2) ^ k : ℝ)) : ℂ)⁻¹) := by
+          ((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+            * (routeUArchimedeanWeight x * ((((a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ k : ℝ)) : ℂ)⁻¹) := by
     intro x
     rw [routeUHardEdgeRationalTest_sq_eq_sum ha p x]
     push_cast
@@ -156,13 +156,13 @@ theorem routeUHardEdgeFourierSq_eq_massPairing_sum {a : ℝ} (ha : 0 < a) (p : P
     (L : ℝ) :
     routeUHardEdgeFourierSq a p L
       = ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-          ((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-            * massPairing (cauchyFourierWeight L) (k - 1) (a ^ 2) := by
-  have hcongr : ∀ x : ℝ, ((routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ)
+          ((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+            * massPairing (cauchyFourierWeight L) (k - 1) (a ^ (2 : ℕ)) := by
+  have hcongr : ∀ x : ℝ, ((routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ)
         * Complex.exp (((-(L * x) : ℝ) : ℂ) * Complex.I)
       = ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-          ((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-            * (cauchyFourierWeight L x * ((((a ^ 2 + x ^ 2) ^ k : ℝ)) : ℂ)⁻¹) := by
+          ((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+            * (cauchyFourierWeight L x * ((((a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ k : ℝ)) : ℂ)⁻¹) := by
     intro x
     rw [routeUHardEdgeRationalTest_sq_eq_sum ha p x]
     push_cast
@@ -187,18 +187,18 @@ theorem tsum_routeUPrimeFourier_eq_sum {a : ℝ} (ha : 1 / 2 < a) (p : Polynomia
     (∑' m : ℕ, ((ArithmeticFunction.vonMangoldt m / Real.sqrt m : ℝ) : ℂ)
         * routeUHardEdgeFourierSq a p (Real.log m))
       = ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-          ((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-            * routeUPrimeMoment (k - 1) (a ^ 2) := by
+          ((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+            * routeUPrimeMoment (k - 1) (a ^ (2 : ℕ)) := by
   have ha0 : (0 : ℝ) < a := by linarith
-  have hX : (1 : ℝ) / 4 < a ^ 2 := by nlinarith
-  obtain ⟨X₀, hX₀lo, hX₀hi⟩ : ∃ X₀ : ℝ, 1 / 4 < X₀ ∧ X₀ < a ^ 2 :=
-    ⟨(1 / 4 + a ^ 2) / 2, by linarith, by linarith⟩
+  have hX : (1 : ℝ) / 4 < a ^ (2 : ℕ) := by nlinarith
+  obtain ⟨X₀, hX₀lo, hX₀hi⟩ : ∃ X₀ : ℝ, 1 / 4 < X₀ ∧ X₀ < a ^ (2 : ℕ) :=
+    ⟨(1 / 4 + a ^ (2 : ℕ)) / 2, by linarith, by linarith⟩
   obtain ⟨h, hh, hhX⟩ := exists_routeUPrimeAperture hX₀lo
   have hexpand : ∀ m : ℕ, ((ArithmeticFunction.vonMangoldt m / Real.sqrt m : ℝ) : ℂ)
       * routeUHardEdgeFourierSq a p (Real.log m)
       = ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-          ((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-            * routeUPrimeTerm (k - 1) m (a ^ 2) := by
+          ((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+            * routeUPrimeTerm (k - 1) m (a ^ (2 : ℕ)) := by
     intro m
     rw [routeUHardEdgeFourierSq_eq_massPairing_sum ha0 p, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
@@ -215,22 +215,22 @@ theorem tsum_routeUHardEdgeRationalTestSq_eq_density {a : ℝ} (ha : 1 / 2 < a) 
     (∑' q : XiZeroCopy, routeUHardEdgeRationalTestSq a p (xiSpectralPoint q))
       = 2 * ((routeUHardEdgePolar a p : ℝ) : ℂ)
         + (1 / (Real.pi : ℂ)) * ((∫ x : ℝ, routeUArchimedeanRate x
-            * routeUHardEdgeRationalTest a p x ^ 2 : ℝ) : ℂ)
+            * routeUHardEdgeRationalTest a p x ^ (2 : ℕ) : ℝ) : ℂ)
         - (1 / (Real.pi : ℂ)) * ∑' m : ℕ,
             ((ArithmeticFunction.vonMangoldt m / Real.sqrt m : ℝ) : ℂ)
               * routeUHardEdgeFourierSq a p (Real.log m) := by
   have ha0 : (0 : ℝ) < a := by linarith
-  have hX : (1 : ℝ) / 4 < a ^ 2 := by nlinarith
+  have hX : (1 : ℝ) / 4 < a ^ (2 : ℕ) := by nlinarith
   rw [tsum_routeUHardEdgeRationalTestSq_eq_moments a p, Finset.mul_sum]
   have hterm : ∀ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-      ((a ^ 2 : ℝ) : ℂ) * ((((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-          * xiResolventMoment (k - 1) (a ^ 2))
-        = ((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-              * (2 * ((((a ^ 2 - 1 / 4) ^ k : ℝ)) : ℂ)⁻¹)
-          + (1 / (Real.pi : ℂ)) * (((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-              * routeUArchimedeanMoment (k - 1) (a ^ 2))
-          - (1 / (Real.pi : ℂ)) * (((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
-              * routeUPrimeMoment (k - 1) (a ^ 2)) := by
+      ((a ^ (2 : ℕ) : ℝ) : ℂ) * ((((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+          * xiResolventMoment (k - 1) (a ^ (2 : ℕ)))
+        = ((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+              * (2 * ((((a ^ (2 : ℕ) - 1 / 4) ^ k : ℝ)) : ℂ)⁻¹)
+          + (1 / (Real.pi : ℂ)) * (((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+              * routeUArchimedeanMoment (k - 1) (a ^ (2 : ℕ)))
+          - (1 / (Real.pi : ℂ)) * (((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
+              * routeUPrimeMoment (k - 1) (a ^ (2 : ℕ))) := by
     intro k hk
     simp only [Finset.mem_Icc] at hk
     rw [xiResolventMoment_eq_routeUDensityMoment (k - 1) hX, routeUDensityMoment,

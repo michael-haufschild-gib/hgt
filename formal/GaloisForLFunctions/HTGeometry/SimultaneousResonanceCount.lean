@@ -88,7 +88,7 @@ theorem shared_k_separation {n d d' D : ℕ} {ε : ℝ} {k : ℤ}
   have hexp : (n : ℝ) ^ 2 * |(d : ℝ) - (d' : ℝ)|
       = |((n : ℝ) ^ 2 * (d : ℝ) - (k : ℝ) ^ 2) - ((n : ℝ) ^ 2 * (d' : ℝ) - (k : ℝ) ^ 2)| := by
     rw [show ((n : ℝ) ^ 2 * (d : ℝ) - (k : ℝ) ^ 2) - ((n : ℝ) ^ 2 * (d' : ℝ) - (k : ℝ) ^ 2)
-        = (n : ℝ) ^ 2 * ((d : ℝ) - (d' : ℝ)) by ring, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ (n:ℝ)^2)]
+        = (n : ℝ) ^ 2 * ((d : ℝ) - (d' : ℝ)) by ring, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ (n:ℝ)^(2 : ℕ))]
   rw [hexp]
   calc |((n : ℝ) ^ 2 * (d : ℝ) - (k : ℝ) ^ 2) - ((n : ℝ) ^ 2 * (d' : ℝ) - (k : ℝ) ^ 2)|
       ≤ |(n : ℝ) ^ 2 * (d : ℝ) - (k : ℝ) ^ 2| + |(n : ℝ) ^ 2 * (d' : ℝ) - (k : ℝ) ^ 2| :=

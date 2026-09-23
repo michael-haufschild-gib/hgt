@@ -32,7 +32,7 @@ open Real
 zero in the closed right half-plane. -/
 theorem quadratic_no_rhp_root (a2 a1 a0 : ℝ) (ha2 : 0 < a2) (ha1 : 0 < a1)
     (ha0 : 0 < a0) (z : ℂ) (hz : 0 ≤ z.re) :
-    (a2:ℂ)*z^2 + (a1:ℂ)*z + (a0:ℂ) ≠ 0 := by
+    (a2:ℂ)*z^(2 : ℕ) + (a1:ℂ)*z + (a0:ℂ) ≠ 0 := by
   intro hroot
   set s : ℝ := z.re with hs
   set t : ℝ := z.im with ht
@@ -40,7 +40,7 @@ theorem quadratic_no_rhp_root (a2 a1 a0 : ℝ) (ha2 : 0 < a2) (ha1 : 0 < a1)
     rw [hs, ht]
     exact (Complex.re_add_im z).symm
   rw [hz'] at hroot
-  have hre : a2*(s^2 - t^2) + a1*s + a0 = 0 := by
+  have hre : a2*(s^(2 : ℕ) - t^(2 : ℕ)) + a1*s + a0 = 0 := by
     have h := congrArg Complex.re hroot
     simp only [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im,
       Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
@@ -68,7 +68,7 @@ half-plane: writing a root as `s + it` with `s ≥ 0`, the imaginary part forces
 theorem cubic_no_rhp_root (a3 a2 a1 a0 : ℝ) (ha3 : 0 < a3) (ha2 : 0 ≤ a2)
     (ha1 : 0 ≤ a1) (ha0 : 0 < a0) (hH : a3 * a0 < a2 * a1)
     (z : ℂ) (hz : 0 ≤ z.re) :
-    (a3:ℂ)*z^3 + (a2:ℂ)*z^2 + (a1:ℂ)*z + (a0:ℂ) ≠ 0 := by
+    (a3:ℂ)*z^(3 : ℕ) + (a2:ℂ)*z^(2 : ℕ) + (a1:ℂ)*z + (a0:ℂ) ≠ 0 := by
   intro hroot
   set s : ℝ := z.re with hs
   set t : ℝ := z.im with ht
@@ -76,13 +76,13 @@ theorem cubic_no_rhp_root (a3 a2 a1 a0 : ℝ) (ha3 : 0 < a3) (ha2 : 0 ≤ a2)
     rw [hs, ht]
     exact (Complex.re_add_im z).symm
   rw [hz'] at hroot
-  have hre : a3*(s^3 - 3*s*t^2) + a2*(s^2 - t^2) + a1*s + a0 = 0 := by
+  have hre : a3*(s^(3 : ℕ) - 3*s*t^(2 : ℕ)) + a2*(s^(2 : ℕ) - t^(2 : ℕ)) + a1*s + a0 = 0 := by
     have h := congrArg Complex.re hroot
     simp only [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im,
       Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
       Complex.zero_re, pow_succ, pow_zero, one_mul] at h
     linear_combination h
-  have him : t * (3*a3*s^2 - a3*t^2 + 2*a2*s + a1) = 0 := by
+  have him : t * (3*a3*s^(2 : ℕ) - a3*t^(2 : ℕ) + 2*a2*s + a1) = 0 := by
     have h := congrArg Complex.im hroot
     simp only [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im,
       Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
@@ -92,12 +92,12 @@ theorem cubic_no_rhp_root (a3 a2 a1 a0 : ℝ) (ha3 : 0 < a3) (ha2 : 0 ≤ a2)
   · rw [ht0] at hre
     nlinarith [hre, mul_nonneg (mul_nonneg ha3.le hz) (mul_nonneg hz hz),
       mul_nonneg (mul_nonneg ha2 hz) hz, mul_nonneg ha1 hz]
-  · have hquad : a3*t^2 = 3*a3*s^2 + 2*a2*s + a1 := by
+  · have hquad : a3*t^(2 : ℕ) = 3*a3*s^(2 : ℕ) + 2*a2*s + a1 := by
       rcases mul_eq_zero.mp him with h | h
       · exact absurd h ht0
       · linarith [h]
     have hkey : a2*a1 - a3*a0
-        = -(8*a3^2*s^3 + 8*a3*a2*s^2 + 2*a3*a1*s + 2*a2^2*s) := by
+        = -(8*a3^(2 : ℕ)*s^(3 : ℕ) + 8*a3*a2*s^(2 : ℕ) + 2*a3*a1*s + 2*a2^(2 : ℕ)*s) := by
       linear_combination (-a3) * hre + (-(3*a3*s + a2)) * hquad
     nlinarith [hkey, mul_nonneg (mul_nonneg (mul_nonneg ha3.le ha3.le) hz)
       (mul_nonneg hz hz), mul_nonneg (mul_nonneg (mul_nonneg ha3.le ha2) hz) hz,
@@ -108,7 +108,7 @@ theorem gibbsDiag_pair_expand (p q : ℕ) (hpq : p ≠ q) (x z : ℝ) :
     gibbsDiag {p, q} x z
       = Real.exp (-x)
         + (Real.exp (-((p:ℝ)*x)) + Real.exp (-((q:ℝ)*x))) * z
-        + Real.exp (-((q:ℝ)*((p:ℝ)*x))) * z^2 := by
+        + Real.exp (-((q:ℝ)*((p:ℝ)*x))) * z^(2 : ℕ) := by
   have hpq' : p ∉ ({q} : Finset ℕ) := by simp [hpq]
   rw [gibbsDiag_insert p {q} hpq', gibbsDiag_singleton, gibbsDiag_singleton]
   ring
@@ -120,8 +120,8 @@ theorem gibbsDiag_triple_expand (p q r : ℕ) (hpq : p ≠ q) (hpr : p ≠ r) (h
       = Real.exp (-x)
         + (Real.exp (-((p:ℝ)*x)) + Real.exp (-((q:ℝ)*x)) + Real.exp (-((r:ℝ)*x))) * z
         + (Real.exp (-((q:ℝ)*((p:ℝ)*x))) + Real.exp (-((r:ℝ)*((p:ℝ)*x)))
-            + Real.exp (-((r:ℝ)*((q:ℝ)*x)))) * z^2
-        + Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) * z^3 := by
+            + Real.exp (-((r:ℝ)*((q:ℝ)*x)))) * z^(2 : ℕ)
+        + Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) * z^(3 : ℕ) := by
   have hqr' : q ∉ ({r} : Finset ℕ) := by simp [hqr]
   have hp' : p ∉ ({q, r} : Finset ℕ) := by simp [hpq, hpr]
   rw [gibbsDiag_insert p {q, r} hp', gibbsDiag_insert q {r} hqr',
@@ -170,7 +170,7 @@ theorem triple_gas_hurwitz (p q r : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 �
 /-- **Sector stability of the pair gas**: no zero in the closed right half-plane, at any
 coupling. -/
 theorem pair_gas_sector_stable (p q : ℕ) (x : ℝ) (z : ℂ) (hz : 0 ≤ z.re) :
-    (Real.exp (-((q:ℝ)*((p:ℝ)*x))) : ℂ) * z^2
+    (Real.exp (-((q:ℝ)*((p:ℝ)*x))) : ℂ) * z^(2 : ℕ)
       + ((Real.exp (-((p:ℝ)*x)) + Real.exp (-((q:ℝ)*x)) : ℝ) : ℂ) * z
       + (Real.exp (-x) : ℂ) ≠ 0 :=
   quadratic_no_rhp_root _ _ _ (Real.exp_pos _)
@@ -180,9 +180,9 @@ theorem pair_gas_sector_stable (p q : ℕ) (x : ℝ) (z : ℂ) (hz : 0 ≤ z.re)
 fails (the parity vortex), the vortex never crosses the imaginary axis. -/
 theorem triple_gas_sector_stable (p q r : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 ≤ r)
     (x : ℝ) (hx : 0 < x) (z : ℂ) (hz : 0 ≤ z.re) :
-    (Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) : ℂ) * z^3
+    (Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) : ℂ) * z^(3 : ℕ)
       + ((Real.exp (-((q:ℝ)*((p:ℝ)*x))) + Real.exp (-((r:ℝ)*((p:ℝ)*x)))
-          + Real.exp (-((r:ℝ)*((q:ℝ)*x))) : ℝ) : ℂ) * z^2
+          + Real.exp (-((r:ℝ)*((q:ℝ)*x))) : ℝ) : ℂ) * z^(2 : ℕ)
       + ((Real.exp (-((p:ℝ)*x)) + Real.exp (-((q:ℝ)*x))
           + Real.exp (-((r:ℝ)*x)) : ℝ) : ℂ) * z
       + (Real.exp (-x) : ℂ) ≠ 0 :=
@@ -198,7 +198,7 @@ theorem norm_one_add_lt_of_re_neg (ζ : ℂ) (hζ : ζ.re < 0) :
     simp only [Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im,
       Complex.one_re, Complex.one_im]
     nlinarith [hζ]
-  have h2 : ‖1 + ζ‖^2 < ‖1 - ζ‖^2 := by
+  have h2 : ‖1 + ζ‖^(2 : ℕ) < ‖1 - ζ‖^(2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
     exact h1
   have h3 : (0:ℝ) ≤ ‖1 - ζ‖ := norm_nonneg _
@@ -208,9 +208,9 @@ theorem norm_one_add_lt_of_re_neg (ζ : ℂ) (hζ : ζ.re < 0) :
 contributes cancellation at the parity point. -/
 theorem triple_gas_root_grading (p q r : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 ≤ r)
     (x : ℝ) (hx : 0 < x) (ζ : ℂ)
-    (hroot : (Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) : ℂ) * ζ^3
+    (hroot : (Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) : ℂ) * ζ^(3 : ℕ)
       + ((Real.exp (-((q:ℝ)*((p:ℝ)*x))) + Real.exp (-((r:ℝ)*((p:ℝ)*x)))
-          + Real.exp (-((r:ℝ)*((q:ℝ)*x))) : ℝ) : ℂ) * ζ^2
+          + Real.exp (-((r:ℝ)*((q:ℝ)*x))) : ℝ) : ℂ) * ζ^(2 : ℕ)
       + ((Real.exp (-((p:ℝ)*x)) + Real.exp (-((q:ℝ)*x))
           + Real.exp (-((r:ℝ)*x)) : ℝ) : ℂ) * ζ
       + (Real.exp (-x) : ℂ) = 0) :

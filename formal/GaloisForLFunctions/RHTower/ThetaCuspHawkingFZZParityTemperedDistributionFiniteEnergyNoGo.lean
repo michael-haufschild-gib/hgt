@@ -26,7 +26,7 @@ noncomputable section
 finite-energy condition on a source-faithful distributional FZZ reflection. -/
 def FZZCigarParityTemperedDistributionFEReflectionData.FiniteEnergy
     (D : FZZCigarParityTemperedDistributionFEReflectionData) : Prop :=
-  Summable (fun n : ℕ => (D.uvLocalProbeResponse n) ^ 2)
+  Summable (fun n : ℕ => (D.uvLocalProbeResponse n) ^ (2 : ℕ))
 
 /-- The forced reciprocal-Fermi ultraviolet response is uniformly separated from zero.  This is
 the sharp positive survivor needed by both trace and energy obstructions. -/
@@ -45,19 +45,19 @@ theorem FZZCigarParityTemperedDistributionFEReflectionData.not_finiteEnergy
     ¬ D.FiniteEnergy := by
   intro hsum
   have hzero : Tendsto
-      (fun n : ℕ => (D.uvLocalProbeResponse n) ^ 2) atTop (𝓝 0) :=
+      (fun n : ℕ => (D.uvLocalProbeResponse n) ^ (2 : ℕ)) atTop (𝓝 0) :=
     hsum.tendsto_atTop_zero
   let c : ℝ := Real.exp 1 / (Real.exp 1 + 1)
   have hc : 0 < c := by
     dsimp only [c]
     positivity
-  have hlower : ∀ n : ℕ, c ^ 2 ≤ (D.uvLocalProbeResponse n) ^ 2 := by
+  have hlower : ∀ n : ℕ, c ^ (2 : ℕ) ≤ (D.uvLocalProbeResponse n) ^ (2 : ℕ) := by
     intro n
     have hcn : c ≤ D.uvLocalProbeResponse n := by
       rw [D.uvLocalProbeResponse_eq_forced]
       exact fzzCigarParityForcedLocal_uvUniformLowerBound n
     exact pow_le_pow_left₀ hc.le hcn 2
-  have hcontra : c ^ 2 ≤ 0 :=
+  have hcontra : c ^ (2 : ℕ) ≤ 0 :=
     ge_of_tendsto hzero (Eventually.of_forall hlower)
   nlinarith [sq_pos_of_pos hc]
 

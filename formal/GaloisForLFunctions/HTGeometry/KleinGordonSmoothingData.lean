@@ -27,16 +27,16 @@ variable {W₀ : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Meas
 theorem kgStrongEnergy_kgSmoothMild_zero (hb0 : 0 ≤ b) (hW : ‖W₀‖ ≤ b)
     (g₀ h₀ : Lp ℂ 2 (volume : Measure E)) :
     kgStrongEnergy (kgSmoothMild W₀ g₀ h₀) (kgSmoothVel W₀ g₀ h₀) 0
-      = ‖kgFreqInvOp (kgFreqInvOp (E := E) h₀)‖ ^ 2
-        + ‖kgFreqInvOp (kgFreqInvOp (E := E) g₀)‖ ^ 2 := by
+      = ‖kgFreqInvOp (kgFreqInvOp (E := E) h₀)‖ ^ (2 : ℕ)
+        + ‖kgFreqInvOp (kgFreqInvOp (E := E) g₀)‖ ^ (2 : ℕ) := by
   rw [kgStrongEnergy, kgSmoothVel_at_zero, kgSmoothMild_at_zero hb0 hW]
 
 /-- **The energy estimate in terms of the data.** -/
 theorem kgStrongEnergy_kgSmoothMild_le_data (hb0 : 0 ≤ b) (hW : ‖W₀‖ ≤ b)
     (g₀ h₀ : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     kgStrongEnergy (kgSmoothMild W₀ g₀ h₀) (kgSmoothVel W₀ g₀ h₀) t
-      ≤ (‖kgFreqInvOp (kgFreqInvOp (E := E) h₀)‖ ^ 2
-          + ‖kgFreqInvOp (kgFreqInvOp (E := E) g₀)‖ ^ 2) * Real.exp (b * |t|) := by
+      ≤ (‖kgFreqInvOp (kgFreqInvOp (E := E) h₀)‖ ^ (2 : ℕ)
+          + ‖kgFreqInvOp (kgFreqInvOp (E := E) g₀)‖ ^ (2 : ℕ)) * Real.exp (b * |t|) := by
   have h := kgStrongEnergy_kgSmoothMild_le hb0 hW g₀ h₀ t
   rwa [kgStrongEnergy_kgSmoothMild_zero hb0 hW] at h
 

@@ -15,7 +15,7 @@ def egbFixedChargeAGibbsDiscardedModeEnergy (n : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) : ℝ :=
   ∑ j ∈ ((Finset.univ : Finset (Fin 5)).image (egbFixedChargeAFiveFourierModes n))ᶜ,
     ‖egbFixedChargeACriticalFourierCoordinates n
-      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight β E i : ℂ)) j‖ ^ 2
+      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight β E i : ℂ)) j‖ ^ (2 : ℕ)
 
 /-- The energy discarded in the first transition is nonnegative for every Gibbs input. -/
 theorem egbFixedChargeAGibbsDiscardedModeEnergy_nonneg (n : ℕ) (β : ℝ)
@@ -25,7 +25,7 @@ theorem egbFixedChargeAGibbsDiscardedModeEnergy_nonneg (n : ℕ) (β : ℝ)
 
 private theorem retained_energy_sum (n : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
-    (∑ k : Fin 5, ‖egbFixedChargeAGibbsFourierMoment n β E k‖ ^ 2) =
+    (∑ k : Fin 5, ‖egbFixedChargeAGibbsFourierMoment n β E k‖ ^ (2 : ℕ)) =
       ((2 : ℝ) ^ (n + 3))⁻¹ + egbFixedChargeAGibbsSlowModeEnergy n β E +
         egbFixedChargeAGibbsFastModeEnergy n β E := by
   simp [Fin.sum_univ_succ]
@@ -44,15 +44,15 @@ theorem egbFixedChargeAGibbsCollisionExcess_initial_spectral_partition (n : ℕ)
     (Finset.univ : Finset (Fin 5)).image (egbFixedChargeAFiveFourierModes n)
   let f : Fin (2 ^ (n + 3)) → ℝ := fun j =>
     ‖egbFixedChargeACriticalFourierCoordinates n
-      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight β E i : ℂ)) j‖ ^ 2
+      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight β E i : ℂ)) j‖ ^ (2 : ℕ)
   have hp := Finset.sum_compl_add_sum S f
   have hs : (∑ j ∈ S, f j) =
-      ∑ k : Fin 5, ‖egbFixedChargeAGibbsFourierMoment n β E k‖ ^ 2 := by
+      ∑ k : Fin 5, ‖egbFixedChargeAGibbsFourierMoment n β E k‖ ^ (2 : ℕ) := by
     dsimp [S]
     rw [Finset.sum_image (egbFixedChargeAFiveFourierModes_injective n).injOn]
     rfl
   rw [hs, retained_energy_sum] at hp
-  have hf : (∑ j, f j) = ∑ i, (_root_.HTGeometry.finiteGibbsStateWeight β E i) ^ 2 := by
+  have hf : (∑ j, f j) = ∑ i, (_root_.HTGeometry.finiteGibbsStateWeight β E i) ^ (2 : ℕ) := by
     dsimp [f]
     rw [egbFixedChargeACriticalFourierCoordinates_parseval]
     simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs]

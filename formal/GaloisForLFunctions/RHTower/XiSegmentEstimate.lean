@@ -30,11 +30,11 @@ noncomputable section
 
 theorem integral_abs_poissonShift_le {c β : ℝ} (hc : c ≠ 0) {σ : ℝ} (h1 : -1 ≤ σ) (h2 : σ ≤ 2)
     (hβ0 : -1 ≤ β) (hβ1 : β ≤ 1) :
-    (∫ u in σ..2, |(u - β) / ((u - β) ^ 2 + c ^ 2)|) ≤ Real.log (1 + 9 / c ^ 2) := by
-  have hshift : (∫ u in σ..2, |(u - β) / ((u - β) ^ 2 + c ^ 2)|)
-      = ∫ v in (σ - β)..(2 - β), |v| / (v ^ 2 + c ^ 2) := by
+    (∫ u in σ..2, |(u - β) / ((u - β) ^ (2 : ℕ) + c ^ (2 : ℕ))|) ≤ Real.log (1 + 9 / c ^ (2 : ℕ)) := by
+  have hshift : (∫ u in σ..2, |(u - β) / ((u - β) ^ (2 : ℕ) + c ^ (2 : ℕ))|)
+      = ∫ v in (σ - β)..(2 - β), |v| / (v ^ (2 : ℕ) + c ^ (2 : ℕ)) := by
     have := intervalIntegral.integral_comp_sub_right
-      (a := σ) (b := 2) (fun v : ℝ => |v| / (v ^ 2 + c ^ 2)) β
+      (a := σ) (b := 2) (fun v : ℝ => |v| / (v ^ (2 : ℕ) + c ^ (2 : ℕ))) β
     rw [← this]
     refine intervalIntegral.integral_congr fun u _ => ?_
     rw [abs_div, abs_of_pos (poissonDenom_pos hc (u - β))]
@@ -45,7 +45,7 @@ theorem integral_abs_poissonShift_le {c β : ℝ} (hc : c ≠ 0) {σ : ℝ} (h1 
 
 theorem re_inv_first (T u : ℝ) (ρ : ℂ) :
     ((((u : ℂ) + (T : ℂ) * I) - ρ)⁻¹).re
-      = (u - ρ.re) / ((u - ρ.re) ^ 2 + (T - ρ.im) ^ 2) := by
+      = (u - ρ.re) / ((u - ρ.re) ^ (2 : ℕ) + (T - ρ.im) ^ (2 : ℕ)) := by
   rw [Complex.inv_re, Complex.normSq_apply]
   have h1 : (((u : ℂ) + (T : ℂ) * I) - ρ).re = u - ρ.re := by simp
   have h2 : (((u : ℂ) + (T : ℂ) * I) - ρ).im = T - ρ.im := by simp
@@ -54,7 +54,7 @@ theorem re_inv_first (T u : ℝ) (ρ : ℂ) :
 
 theorem re_inv_second (T u : ℝ) (ρ : ℂ) :
     ((((u : ℂ) + (T : ℂ) * I) - 1 + ρ)⁻¹).re
-      = (u - (1 - ρ.re)) / ((u - (1 - ρ.re)) ^ 2 + (T + ρ.im) ^ 2) := by
+      = (u - (1 - ρ.re)) / ((u - (1 - ρ.re)) ^ (2 : ℕ) + (T + ρ.im) ^ (2 : ℕ)) := by
   rw [Complex.inv_re, Complex.normSq_apply]
   have h1 : (((u : ℂ) + (T : ℂ) * I) - 1 + ρ).re = u - (1 - ρ.re) := by simp; ring
   have h2 : (((u : ℂ) + (T : ℂ) * I) - 1 + ρ).im = T + ρ.im := by simp
@@ -70,9 +70,9 @@ theorem continuous_re_pairTerm {T : ℝ} {q : XiZeroCopy}
       ((((u : ℂ) + (T : ℂ) * I) - (q.1 : ℂ))⁻¹
         + (((u : ℂ) + (T : ℂ) * I) - 1 + (q.1 : ℂ))⁻¹).re)
       = fun u : ℝ =>
-        (u - (q.1 : ℂ).re) / ((u - (q.1 : ℂ).re) ^ 2 + (T - (q.1 : ℂ).im) ^ 2)
+        (u - (q.1 : ℂ).re) / ((u - (q.1 : ℂ).re) ^ (2 : ℕ) + (T - (q.1 : ℂ).im) ^ (2 : ℕ))
           + (u - (1 - (q.1 : ℂ).re))
-            / ((u - (1 - (q.1 : ℂ).re)) ^ 2 + (T + (q.1 : ℂ).im) ^ 2) := by
+            / ((u - (1 - (q.1 : ℂ).re)) ^ (2 : ℕ) + (T + (q.1 : ℂ).im) ^ (2 : ℕ)) := by
     funext u
     rw [Complex.add_re, re_inv_first, re_inv_second]
   rw [hfun]
@@ -86,22 +86,22 @@ theorem integral_abs_re_pairTerm_le {T : ℝ} {q : XiZeroCopy}
     {σ : ℝ} (hσ1 : -1 ≤ σ) (hσ2 : σ ≤ 2) :
     (∫ u in σ..2, ‖((((u : ℂ) + (T : ℂ) * I) - (q.1 : ℂ))⁻¹
         + (((u : ℂ) + (T : ℂ) * I) - 1 + (q.1 : ℂ))⁻¹).re‖)
-      ≤ Real.log (1 + 9 / (T - (q.1 : ℂ).im) ^ 2)
-        + Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ 2) := by
+      ≤ Real.log (1 + 9 / (T - (q.1 : ℂ).im) ^ (2 : ℕ))
+        + Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ (2 : ℕ)) := by
   obtain ⟨hb0, hb1⟩ := xi_divisor_support_re_mem_open_unit q.1
   set β : ℝ := (q.1 : ℂ).re with hβ
   set γ : ℝ := (q.1 : ℂ).im with hγ
-  have hcont1 : Continuous fun u : ℝ => |(u - β) / ((u - β) ^ 2 + (T - γ) ^ 2)| := by
+  have hcont1 : Continuous fun u : ℝ => |(u - β) / ((u - β) ^ (2 : ℕ) + (T - γ) ^ (2 : ℕ))| := by
     refine continuous_abs.comp (Continuous.div (by fun_prop) (by fun_prop) ?_)
     exact fun u => (poissonDenom_pos h1 (u - β)).ne'
   have hcont2 : Continuous fun u : ℝ =>
-      |(u - (1 - β)) / ((u - (1 - β)) ^ 2 + (T + γ) ^ 2)| := by
+      |(u - (1 - β)) / ((u - (1 - β)) ^ (2 : ℕ) + (T + γ) ^ (2 : ℕ))| := by
     refine continuous_abs.comp (Continuous.div (by fun_prop) (by fun_prop) ?_)
     exact fun u => (poissonDenom_pos h2 (u - (1 - β))).ne'
   have hsplit : (∫ u in σ..2, ‖((((u : ℂ) + (T : ℂ) * I) - (q.1 : ℂ))⁻¹
         + (((u : ℂ) + (T : ℂ) * I) - 1 + (q.1 : ℂ))⁻¹).re‖)
-      ≤ (∫ u in σ..2, |(u - β) / ((u - β) ^ 2 + (T - γ) ^ 2)|)
-        + ∫ u in σ..2, |(u - (1 - β)) / ((u - (1 - β)) ^ 2 + (T + γ) ^ 2)| := by
+      ≤ (∫ u in σ..2, |(u - β) / ((u - β) ^ (2 : ℕ) + (T - γ) ^ (2 : ℕ))|)
+        + ∫ u in σ..2, |(u - (1 - β)) / ((u - (1 - β)) ^ (2 : ℕ) + (T + γ) ^ (2 : ℕ))| := by
     rw [← intervalIntegral.integral_add (hcont1.intervalIntegrable _ _)
       (hcont2.intervalIntegrable _ _)]
     refine intervalIntegral.integral_mono_on hσ2 ?_ ?_ ?_
@@ -117,19 +117,19 @@ theorem integral_abs_re_pairTerm_le {T : ℝ} {q : XiZeroCopy}
 
 /-! ## Summability of the bound family -/
 
-theorem log_kernel_nonneg (x c : ℝ) : 0 ≤ Real.log (1 + 9 / (x - c) ^ 2) := by
+theorem log_kernel_nonneg (x c : ℝ) : 0 ≤ Real.log (1 + 9 / (x - c) ^ (2 : ℕ)) := by
   refine Real.log_nonneg ?_
-  have : (0 : ℝ) ≤ 9 / (x - c) ^ 2 := by positivity
+  have : (0 : ℝ) ≤ 9 / (x - c) ^ (2 : ℕ) := by positivity
   linarith
 
 theorem summable_logKernel (x : ℝ) :
-    Summable (fun q : XiZeroCopy => Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ 2)) := by
+    Summable (fun q : XiZeroCopy => Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ (2 : ℕ))) := by
   classical
   have hfin := finite_xiZeroCopy_band x (by norm_num : (0 : ℝ) ≤ 1)
   set S : Finset XiZeroCopy := hfin.toFinset with hS
   set b : XiZeroCopy → ℝ := fun q =>
-    if q ∈ S then Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ 2) else 0 with hb
-  set c : XiZeroCopy → ℝ := fun q => 18 * ((1 : ℝ) / (1 + (x - (q.1 : ℂ).im) ^ 2)) with hc
+    if q ∈ S then Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ (2 : ℕ)) else 0 with hb
+  set c : XiZeroCopy → ℝ := fun q => 18 * ((1 : ℝ) / (1 + (x - (q.1 : ℂ).im) ^ (2 : ℕ))) with hc
   have hbs : Summable b := by
     refine summable_of_ne_finset_zero (s := S) fun q hq => ?_
     rw [hb]
@@ -137,40 +137,40 @@ theorem summable_logKernel (x : ℝ) :
   have hcs : Summable c := (summable_xiZeroWeight x).mul_left 18
   refine Summable.of_nonneg_of_le (fun q => log_kernel_nonneg x _) (fun q => ?_) (hbs.add hcs)
   by_cases hq : q ∈ S
-  · have hbq : b q = Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ 2) := by
+  · have hbq : b q = Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ (2 : ℕ)) := by
       rw [hb]; simp [hq]
     have hcq : 0 ≤ c q := by
-      show (0:ℝ) ≤ 18 * ((1:ℝ) / (1 + (x - (q.1 : ℂ).im) ^ 2))
+      show (0:ℝ) ≤ 18 * ((1:ℝ) / (1 + (x - (q.1 : ℂ).im) ^ (2 : ℕ)))
       positivity
-    show Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ 2) ≤ b q + c q
+    show Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ (2 : ℕ)) ≤ b q + c q
     linarith
   · have hbq : b q = 0 := by rw [hb]; simp [hq]
-    have hfar : (1 : ℝ) < (x - (q.1 : ℂ).im) ^ 2 := by
+    have hfar : (1 : ℝ) < (x - (q.1 : ℂ).im) ^ (2 : ℕ) := by
       have hnot : ¬ (|(q.1 : ℂ).im - x| ≤ 1) := by
         intro hle
         exact hq (by rw [hS, Set.Finite.mem_toFinset]; exact hle)
       have habs : 1 < |(q.1 : ℂ).im - x| := lt_of_not_ge hnot
-      have hsq : ((q.1 : ℂ).im - x) ^ 2 = (x - (q.1 : ℂ).im) ^ 2 := by ring
+      have hsq : ((q.1 : ℂ).im - x) ^ (2 : ℕ) = (x - (q.1 : ℂ).im) ^ (2 : ℕ) := by ring
       nlinarith [abs_nonneg ((q.1 : ℂ).im - x), sq_abs ((q.1 : ℂ).im - x)]
-    have hlog : Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ 2) ≤ 9 / (x - (q.1 : ℂ).im) ^ 2 := by
-      have hpos : (0 : ℝ) < 1 + 9 / (x - (q.1 : ℂ).im) ^ 2 := by positivity
+    have hlog : Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ (2 : ℕ)) ≤ 9 / (x - (q.1 : ℂ).im) ^ (2 : ℕ) := by
+      have hpos : (0 : ℝ) < 1 + 9 / (x - (q.1 : ℂ).im) ^ (2 : ℕ) := by positivity
       have := Real.log_le_sub_one_of_pos hpos
       linarith
-    have hA : (0 : ℝ) < (x - (q.1 : ℂ).im) ^ 2 := by linarith
-    have hd : (0 : ℝ) < 1 + (x - (q.1 : ℂ).im) ^ 2 := by linarith
-    have hcq : c q = 18 / (1 + (x - (q.1 : ℂ).im) ^ 2) := by
-      show (18 : ℝ) * ((1 : ℝ) / (1 + (x - (q.1 : ℂ).im) ^ 2))
-          = 18 / (1 + (x - (q.1 : ℂ).im) ^ 2)
+    have hA : (0 : ℝ) < (x - (q.1 : ℂ).im) ^ (2 : ℕ) := by linarith
+    have hd : (0 : ℝ) < 1 + (x - (q.1 : ℂ).im) ^ (2 : ℕ) := by linarith
+    have hcq : c q = 18 / (1 + (x - (q.1 : ℂ).im) ^ (2 : ℕ)) := by
+      show (18 : ℝ) * ((1 : ℝ) / (1 + (x - (q.1 : ℂ).im) ^ (2 : ℕ)))
+          = 18 / (1 + (x - (q.1 : ℂ).im) ^ (2 : ℕ))
       ring
-    have hcmp : 9 / (x - (q.1 : ℂ).im) ^ 2 ≤ c q := by
+    have hcmp : 9 / (x - (q.1 : ℂ).im) ^ (2 : ℕ) ≤ c q := by
       rw [hcq, div_le_div_iff₀ hA hd]
       nlinarith
-    show Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ 2) ≤ b q + c q
+    show Real.log (1 + 9 / (x - (q.1 : ℂ).im) ^ (2 : ℕ)) ≤ b q + c q
     linarith
 
 theorem summable_xiSegmentBound (T : ℝ) :
-    Summable (fun q : XiZeroCopy => Real.log (1 + 9 / (T - (q.1 : ℂ).im) ^ 2)
-      + Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ 2)) := by
+    Summable (fun q : XiZeroCopy => Real.log (1 + 9 / (T - (q.1 : ℂ).im) ^ (2 : ℕ))
+      + Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ (2 : ℕ))) := by
   refine (summable_logKernel T).add ?_
   refine ((summable_logKernel (-T)).congr fun q => ?_)
   congr 2
@@ -186,14 +186,14 @@ theorem abs_two_mul_integral_re_logDeriv_xi_le {T : ℝ}
     (h2 : ∀ q : XiZeroCopy, T + (q.1 : ℂ).im ≠ 0)
     {σ : ℝ} (hσ1 : -1 ≤ σ) (hσ2 : σ ≤ 2) :
     |2 * (∫ u in σ..2, logDeriv xi ((u : ℂ) + (T : ℂ) * I)).re|
-      ≤ ∑' q : XiZeroCopy, (Real.log (1 + 9 / (T - (q.1 : ℂ).im) ^ 2)
-          + Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ 2)) := by
+      ≤ ∑' q : XiZeroCopy, (Real.log (1 + 9 / (T - (q.1 : ℂ).im) ^ (2 : ℕ))
+          + Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ (2 : ℕ))) := by
   classical
   set P : XiZeroCopy → ℝ → ℝ := fun q u =>
     ((((u : ℂ) + (T : ℂ) * I) - (q.1 : ℂ))⁻¹
       + (((u : ℂ) + (T : ℂ) * I) - 1 + (q.1 : ℂ))⁻¹).re with hP
-  set bnd : XiZeroCopy → ℝ := fun q => Real.log (1 + 9 / (T - (q.1 : ℂ).im) ^ 2)
-      + Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ 2) with hbnd
+  set bnd : XiZeroCopy → ℝ := fun q => Real.log (1 + 9 / (T - (q.1 : ℂ).im) ^ (2 : ℕ))
+      + Real.log (1 + 9 / (T + (q.1 : ℂ).im) ^ (2 : ℕ)) with hbnd
   have hcontP : ∀ q, Continuous (P q) := fun q => continuous_re_pairTerm (h1 q) (h2 q)
   have hint : ∀ q, Integrable (P q) (volume.restrict (Ioc σ 2)) := by
     intro q

@@ -198,7 +198,7 @@ theorem posLog_apply (y : ℝ) : Real.posLog y = max 0 (Real.log y) := by
   rw [Real.posLog_def]
   rfl
 
-theorem posLog_le_self {x : ℝ} (hx : 1 ≤ x) : Real.posLog x ≤ x := by
+theorem posLog_le_self_exponentialTowerGrowthSeparation {x : ℝ} (hx : 1 ≤ x) : Real.posLog x ≤ x := by
   rw [posLog_apply]
   refine max_le (by linarith) (Real.log_le_self (by linarith))
 
@@ -237,7 +237,7 @@ theorem growthSeparation_exp_expExp :
     rw [Complex.norm_exp, ← Complex.ofReal_exp, Complex.ofReal_re]
   rw [hz, hF1, hF2, posLog_exp (le_of_lt (Real.exp_pos x)),
     posLog_exp hx0.le]
-  have hlogx : Real.posLog x ≤ x := posLog_le_self hx1
+  have hlogx : Real.posLog x ≤ x := posLog_le_self_exponentialTowerGrowthSeparation hx1
   have hlin : c * (1 + Real.posLog x + x + K) ≤ B * x := by
     have h2 : c * (1 + Real.posLog x + x + K) ≤ c * (1 + x + x + K) := by
       have := mul_le_mul_of_nonneg_left hlogx hc

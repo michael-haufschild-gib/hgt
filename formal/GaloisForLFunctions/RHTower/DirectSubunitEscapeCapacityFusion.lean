@@ -88,7 +88,7 @@ theorem xiRight_tropicalizedDefectCapacityFusion
 theorem gammaSewnSynchronizedRecoveryQuadraticCost_singleton
     (p : Nat.Primes) :
     gammaSewnSynchronizedRecoveryQuadraticCost {p} =
-      (3 / 8 : ℝ) * Real.log (p : ℝ) ^ 2 := by
+      (3 / 8 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) := by
   simp [gammaSewnSynchronizedRecoveryQuadraticCost]
   ring
 
@@ -96,7 +96,7 @@ theorem gammaSewnSynchronizedRecoveryQuadraticCost_singleton
 singleton synchronized-recovery curvature appearing before divisor specialization. -/
 def xiWardCubicFormationMetricAnomalyTraceWeight
     (q : XiRightZeroCopy) (p : Nat.Primes) : ℝ :=
-  (115 / (324 * (xiRightCenteredZero q).re ^ 4) : ℝ) *
+  (115 / (324 * (xiRightCenteredZero q).re ^ (4 : ℕ)) : ℝ) *
     (gammaSewnSynchronizedRecoveryQuadraticCost {p} / (p : ℝ))
 
 /-- The phase-matched companion trace is exactly the primitive cubic source weight times resonant
@@ -105,7 +105,7 @@ theorem xiWardCubicPhaseMatchedKreinCompanionTraceWeight_prime_zero_eq
     (q : XiRightZeroCopy) (p : Nat.Primes) :
     xiWardCubicPhaseMatchedKreinCompanionTraceWeight q (p, 0) =
       xiGammaEulerPrimitiveCubicLogMomentWeight (p, 0) *
-        (((Real.log (p : ℝ) ^ 2 / (xiRightCenteredZero q).re ^ 2) : ℝ) ^ 2 - 1) := by
+        (((Real.log (p : ℝ) ^ (2 : ℕ) / (xiRightCenteredZero q).re ^ (2 : ℕ)) : ℝ) ^ (2 : ℕ) - 1) := by
   rw [xiWardCubicPhaseMatchedKreinCompanionTraceWeight,
     primitive_to_strictRight_kreinCompanion_sq_eq_excess_gain,
     normSq_phaseMatched_primitiveStrictRight_resonantTransfer]

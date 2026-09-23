@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.FiniteClockQuantumFisher
 
 Quantum Fisher information is a quadratic density in the chosen clock coordinate, not an
 absolute rate.  If a local change of clock multiplies the state tangent by `clockRate`, its QFI
-is multiplied by `clockRate ^ 2`; the reciprocal coordinate increment cancels that factor.
+is multiplied by `clockRate ^ (2 : ℕ)`; the reciprocal coordinate increment cancels that factor.
 Consequently the Fisher line value and the distinction between observable and invisible clock
 tangents are independent of clock calibration.
 
@@ -32,14 +32,14 @@ noncomputable section
 /-- The local quantum-Fisher length contributed by one clock-coordinate increment. -/
 def quantumFisherClockLineValue
     (mass overlap speedSq clockIncrement : ℝ) : ℝ :=
-  pureStateQuantumFisherValue mass overlap speedSq * clockIncrement ^ 2
+  pureStateQuantumFisherValue mass overlap speedSq * clockIncrement ^ (2 : ℕ)
 
 /-- Rescaling the clock tangent rescales its projective value quadratically. -/
 theorem projectiveQuantumTangentValue_clockRateScale
     (mass overlap speedSq clockRate : ℝ) :
     projectiveQuantumTangentValue mass (clockRate * overlap)
-        (clockRate ^ 2 * speedSq) =
-      clockRate ^ 2 * projectiveQuantumTangentValue mass overlap speedSq := by
+        (clockRate ^ (2 : ℕ) * speedSq) =
+      clockRate ^ (2 : ℕ) * projectiveQuantumTangentValue mass overlap speedSq := by
   unfold projectiveQuantumTangentValue
   ring
 
@@ -47,8 +47,8 @@ theorem projectiveQuantumTangentValue_clockRateScale
 theorem pureStateQuantumFisherValue_clockRateScale
     (mass overlap speedSq clockRate : ℝ) :
     pureStateQuantumFisherValue mass (clockRate * overlap)
-        (clockRate ^ 2 * speedSq) =
-      clockRate ^ 2 * pureStateQuantumFisherValue mass overlap speedSq := by
+        (clockRate ^ (2 : ℕ) * speedSq) =
+      clockRate ^ (2 : ℕ) * pureStateQuantumFisherValue mass overlap speedSq := by
   unfold pureStateQuantumFisherValue
   rw [projectiveQuantumTangentValue_clockRateScale]
   ring
@@ -58,7 +58,7 @@ contragrediently. -/
 theorem quantumFisherClockLineValue_reparameterize
     (mass overlap speedSq clockRate newIncrement : ℝ) :
     quantumFisherClockLineValue mass (clockRate * overlap)
-        (clockRate ^ 2 * speedSq) newIncrement =
+        (clockRate ^ (2 : ℕ) * speedSq) newIncrement =
       quantumFisherClockLineValue mass overlap speedSq
         (clockRate * newIncrement) := by
   unfold quantumFisherClockLineValue
@@ -70,7 +70,7 @@ theorem quantumFisherClockLineValue_invariant_of_reciprocalClockChange
     (mass overlap speedSq clockRate oldIncrement newIncrement : ℝ)
     (hchange : clockRate * newIncrement = oldIncrement) :
     quantumFisherClockLineValue mass (clockRate * overlap)
-        (clockRate ^ 2 * speedSq) newIncrement =
+        (clockRate ^ (2 : ℕ) * speedSq) newIncrement =
       quantumFisherClockLineValue mass overlap speedSq oldIncrement := by
   rw [quantumFisherClockLineValue_reparameterize, hchange]
 
@@ -78,7 +78,7 @@ theorem quantumFisherClockLineValue_invariant_of_reciprocalClockChange
 theorem pureStateQuantumFisherValue_clockRateScale_eq_zero_iff
     (mass overlap speedSq : ℝ) {clockRate : ℝ} (hrate : clockRate ≠ 0) :
     pureStateQuantumFisherValue mass (clockRate * overlap)
-        (clockRate ^ 2 * speedSq) = 0 ↔
+        (clockRate ^ (2 : ℕ) * speedSq) = 0 ↔
       pureStateQuantumFisherValue mass overlap speedSq = 0 := by
   rw [pureStateQuantumFisherValue_clockRateScale]
   exact mul_eq_zero.trans (or_iff_right (pow_ne_zero 2 hrate))
@@ -87,7 +87,7 @@ theorem pureStateQuantumFisherValue_clockRateScale_eq_zero_iff
 theorem pureStateQuantumFisherValue_clockRateScale_pos_iff
     (mass overlap speedSq : ℝ) {clockRate : ℝ} (hrate : clockRate ≠ 0) :
     0 < pureStateQuantumFisherValue mass (clockRate * overlap)
-        (clockRate ^ 2 * speedSq) ↔
+        (clockRate ^ (2 : ℕ) * speedSq) ↔
       0 < pureStateQuantumFisherValue mass overlap speedSq := by
   rw [pureStateQuantumFisherValue_clockRateScale]
   exact mul_pos_iff_of_pos_left (sq_pos_of_ne_zero hrate)
@@ -95,14 +95,14 @@ theorem pureStateQuantumFisherValue_clockRateScale_pos_iff
 /-- The line value corresponding to a static finite-clock observability variance. -/
 def finiteClockObservabilityLineValue
     (observabilityVariance clockIncrement : ℝ) : ℝ :=
-  4 * observabilityVariance * clockIncrement ^ 2
+  4 * observabilityVariance * clockIncrement ^ (2 : ℕ)
 
 /-- Quadratic clock-rate covariance also makes the static observability line coordinate-free. -/
 theorem finiteClockObservabilityLineValue_reparameterize
     (observabilityVariance clockRate oldIncrement newIncrement : ℝ)
     (hchange : clockRate * newIncrement = oldIncrement) :
     finiteClockObservabilityLineValue
-        (clockRate ^ 2 * observabilityVariance) newIncrement =
+        (clockRate ^ (2 : ℕ) * observabilityVariance) newIncrement =
       finiteClockObservabilityLineValue observabilityVariance oldIncrement := by
   unfold finiteClockObservabilityLineValue
   rw [← hchange]
@@ -118,9 +118,9 @@ theorem finiteClock_erasedQuantumFisherClockLineValue_eq_starObservabilityLineVa
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ)
     (clockIncrement : ℝ) :
-    quantumFisherClockLineValue (‖ψ‖ ^ 2)
+    quantumFisherClockLineValue (‖ψ‖ ^ (2 : ℕ))
         (‖inner K ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
-        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2)
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ))
         clockIncrement =
       finiteClockObservabilityLineValue
         (RCLike.re
@@ -138,9 +138,9 @@ theorem finiteClock_erasedQuantumFisherClockLineValue_eq_observabilityLineValue
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     (hX : IsSelfAdjoint X) {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ)
     (clockIncrement : ℝ) :
-    quantumFisherClockLineValue (‖ψ‖ ^ 2)
+    quantumFisherClockLineValue (‖ψ‖ ^ (2 : ℕ))
         (‖inner K ψ ((1 - finiteCyclicGaugeAverage U N) (X ψ))‖)
-        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2)
+        (‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ))
         clockIncrement =
       finiteClockObservabilityLineValue
         (RCLike.re

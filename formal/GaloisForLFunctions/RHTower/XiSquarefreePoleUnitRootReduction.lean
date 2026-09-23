@@ -131,7 +131,7 @@ theorem analyticOrderAt_squarefreeMobiusCriticalPoleUnit_eq_xi
 /-- The explicit completion factor has an unconditional analytic square root on `rightHalf`. -/
 theorem exists_rightHalf_sqrt_xiSquarefreePoleComplement :
     ∃ r : ℂ → ℂ, AnalyticOnNhd ℂ r rightHalf ∧
-      ∀ s ∈ rightHalf, r s ^ 2 = xiSquarefreePoleComplement s := by
+      ∀ s ∈ rightHalf, r s ^ (2 : ℕ) = xiSquarefreePoleComplement s := by
   exact Bottcher.exists_analyticOnNhd_pow_eq isSimplyConnected_rightHalf isOpen_rightHalf
     analyticOnNhd_xiSquarefreePoleComplement_rightHalf
     (fun s hs => xiSquarefreePoleComplement_ne_zero_rightHalf hs)
@@ -140,9 +140,9 @@ theorem exists_rightHalf_sqrt_xiSquarefreePoleComplement :
 /-- Xi has a right-half analytic square root iff the pole-cleared squarefree Euler function does. -/
 theorem exists_rightHalf_sqrt_xi_iff_squarefreeMobiusCriticalPoleUnit :
     (∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g rightHalf ∧
-        ∀ s ∈ rightHalf, g s ^ 2 = xi s) ↔
+        ∀ s ∈ rightHalf, g s ^ (2 : ℕ) = xi s) ↔
       ∃ h : ℂ → ℂ, AnalyticOnNhd ℂ h rightHalf ∧
-        ∀ s ∈ rightHalf, h s ^ 2 = squarefreeMobiusCriticalPoleUnit s := by
+        ∀ s ∈ rightHalf, h s ^ (2 : ℕ) = squarefreeMobiusCriticalPoleUnit s := by
   obtain ⟨r, hr, hrsq⟩ := exists_rightHalf_sqrt_xiSquarefreePoleComplement
   have hrne : ∀ s ∈ rightHalf, r s ≠ 0 := by
     intro s hs hzero
@@ -165,7 +165,7 @@ theorem exists_rightHalf_sqrt_xi_iff_squarefreeMobiusCriticalPoleUnit :
 /-- Exact arithmetic face of the first multiplicity-parity rung. -/
 theorem rhLadder_one_iff_squarefreeMobiusCriticalPoleUnit_sqrt :
     RHLadder 1 ↔ ∃ h : ℂ → ℂ, AnalyticOnNhd ℂ h rightHalf ∧
-      ∀ s ∈ rightHalf, h s ^ 2 = squarefreeMobiusCriticalPoleUnit s := by
+      ∀ s ∈ rightHalf, h s ^ (2 : ℕ) = squarefreeMobiusCriticalPoleUnit s := by
   rw [rhLadder_one_iff_sqrt_rightHalf,
     exists_rightHalf_sqrt_xi_iff_squarefreeMobiusCriticalPoleUnit]
 

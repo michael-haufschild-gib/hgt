@@ -59,11 +59,11 @@ theorem principal_center_weyl_coefficients (q : XiZeroCopy) (y : Ioi (0 : ℝ)) 
 
 /-- Exact three-power expansion of the literal principal square. -/
 theorem principal_center_square_weyl_coefficients (q : XiZeroCopy) (y : Ioi (0 : ℝ)) :
-    principal (D4BMGlobalAngularResponse.center q) ![0, y.val] ^ 2 =
-      reflectedCompletedLambda (2 * (q.1 : ℂ)) ^ 2 * (y.val : ℂ) ^ (2 * (q.1 : ℂ)) +
+    principal (D4BMGlobalAngularResponse.center q) ![0, y.val] ^ (2 : ℕ) =
+      reflectedCompletedLambda (2 * (q.1 : ℂ)) ^ (2 : ℕ) * (y.val : ℂ) ^ (2 * (q.1 : ℂ)) +
         (2 * reflectedCompletedLambda (2 * (q.1 : ℂ)) *
           reflectedCompletedLambda (2 * (q.1 : ℂ) - 1)) * (y.val : ℂ) +
-        reflectedCompletedLambda (2 * (q.1 : ℂ) - 1) ^ 2 *
+        reflectedCompletedLambda (2 * (q.1 : ℂ) - 1) ^ (2 : ℕ) *
           (y.val : ℂ) ^ (2 - 2 * (q.1 : ℂ)) := by
   rw [principal_center_weyl_coefficients]
   simpa using (cusp_power_square (q.1 : ℂ)
@@ -131,7 +131,7 @@ theorem reader_power_ne_zero (q : XiZeroCopy) :
 
 /-- Lower Weyl coefficient in the physical-reader square face. -/
 def lowerWeylFaceCoefficient (q : XiZeroCopy) : ℂ :=
-  (1 / 2 : ℂ) * reflectedCompletedLambda (2 * (q.1 : ℂ) - 1) ^ 2 *
+  (1 / 2 : ℂ) * reflectedCompletedLambda (2 * (q.1 : ℂ) - 1) ^ (2 : ℕ) *
     reflectedCompletedLambda ((q.1 : ℂ) - 1) * (1 - (q.1 : ℂ) / 2)
 
 /-- Vanishing of the lower physical-reader principal coefficient is exactly

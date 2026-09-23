@@ -117,7 +117,7 @@ def completeSourceAction (q : XiZeroCopy) (br : Bool) (amp w : ℂ) : ℂ :=
   let s := physicalRate q br
   let chi := physicalRadialFrequency q
   let K := D4BMOriginalCanonicalMetricCutoff.gradient q br
-  let mu := physicalAngularParameter q^2-1/4
+  let mu := physicalAngularParameter q^(2 : ℕ)-1/4
   let C := physicalSelfSourceCoefficient q;
   -mu*(mu-2)*C*sourceDerivativeFinitePart s chi amp 1 K w+
     forcingCoefficient q br w*nativeForcingSourceFinitePart q br amp K w+
@@ -276,7 +276,7 @@ theorem canonicalQNMValue_eq_source_finiteParts (q : XiZeroCopy) (br side : Bool
     let s := physicalRate q br
     let chi := physicalRadialFrequency q
     let K := D4BMOriginalCanonicalMetricCutoff.gradient q br
-    let mu := physicalAngularParameter q^2-1/4
+    let mu := physicalAngularParameter q^(2 : ℕ)-1/4
     let C := physicalSelfSourceCoefficient q
     canonicalQNMValue q br side amp=
       -mu*(mu-2)*C*sourceDerivativeFinitePart s chi amp 1 K w+

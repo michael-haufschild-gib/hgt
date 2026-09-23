@@ -12,7 +12,7 @@ which are exactly the limits of the prime-window reciprocal masses.  Comparing t
 `Σ_{j=1}^{m-1} g(j/m) · log ((j+1)/j)` with `∫_{1/m}^{1} g(t) dt/t` therefore costs only the
 Lipschitz oscillation on one cell, times the total weight:
 
-`|Σ_j g(j/m) log ((j+1)/j) − ∫_{1/m}^1 g(t) dt/t| ≤ (L/m) · log m`.
+`|Σ_j g(j/m) log ((j+1)/j) − ∫_{1/m}^(1 : ℕ) g(t) dt/t| ≤ (L/m) · log m`.
 
 No Riemann-sum theory is used: the weights *are* the cell integrals, so the comparison is one
 pointwise Lipschitz estimate integrated cell by cell.

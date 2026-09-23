@@ -10,22 +10,22 @@ noncomputable section
 
 /-- Singular endpoint term in Suzuki's finite-part Weil kernel applied to `x ↦ exp x`. -/
 def suzukiBoundaryLogTerm (a x : ℝ) : ℝ :=
-  -(1 / 2 : ℝ) * Real.exp x * Real.log (a ^ 2 - x ^ 2)
+  -(1 / 2 : ℝ) * Real.exp x * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))
 
 /-- Suzuki endpoint profile after collecting all terms with a finite left endpoint limit. -/
 def suzukiBoundaryKernelProfile (a : ℝ) (R : ℝ → ℝ) (x : ℝ) : ℝ :=
   suzukiBoundaryLogTerm a x + R x
 
 theorem tendsto_suzukiBoundaryDistanceSq_nhdsLT (a : ℝ) (ha : 0 < a) :
-    Tendsto (fun x : ℝ => a ^ 2 - x ^ 2) (𝓝[<] a) (𝓝[>] 0) := by
+    Tendsto (fun x : ℝ => a ^ (2 : ℕ) - x ^ (2 : ℕ)) (𝓝[<] a) (𝓝[>] 0) := by
   have hleft : ∀ᶠ x : ℝ in 𝓝[<] a, -a < x :=
     (show ∀ᶠ x : ℝ in 𝓝 a, -a < x from
       Ioi_mem_nhds (show -a < a by linarith)).filter_mono nhdsWithin_le_nhds
   apply tendsto_nhdsWithin_iff.mpr
   constructor
-  · have hcont : Continuous (fun x : ℝ => a ^ 2 - x ^ 2) :=
+  · have hcont : Continuous (fun x : ℝ => a ^ (2 : ℕ) - x ^ (2 : ℕ)) :=
       continuous_const.sub (continuous_id.pow 2)
-    have hzero : Tendsto (fun x : ℝ => a ^ 2 - x ^ 2) (𝓝 a) (𝓝 0) := by
+    have hzero : Tendsto (fun x : ℝ => a ^ (2 : ℕ) - x ^ (2 : ℕ)) (𝓝 a) (𝓝 0) := by
       simpa using hcont.tendsto a
     exact hzero.mono_left nhdsWithin_le_nhds
   · filter_upwards [self_mem_nhdsWithin, hleft] with x hxa hax
@@ -35,7 +35,7 @@ theorem tendsto_suzukiBoundaryDistanceSq_nhdsLT (a : ℝ) (ha : 0 < a) :
 theorem suzukiBoundaryLogTerm_tendsto_atTop (a : ℝ) (ha : 0 < a) :
     Tendsto (suzukiBoundaryLogTerm a) (𝓝[<] a) atTop := by
   have hdist := tendsto_suzukiBoundaryDistanceSq_nhdsLT a ha
-  have hlog : Tendsto (fun x : ℝ => -Real.log (a ^ 2 - x ^ 2)) (𝓝[<] a) atTop :=
+  have hlog : Tendsto (fun x : ℝ => -Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) (𝓝[<] a) atTop :=
     tendsto_neg_atBot_atTop.comp (Real.tendsto_log_nhdsGT_zero.comp hdist)
   have hcoeff : Tendsto (fun x : ℝ => (1 / 2 : ℝ) * Real.exp x)
       (𝓝[<] a) (𝓝 ((1 / 2 : ℝ) * Real.exp a)) :=
@@ -75,18 +75,18 @@ theorem suzukiBoundaryKernelProfile_ne_exp_smul
 
 /-- The endpoint logarithm is `o(1/(a - x))`: multiplying by the endpoint distance kills it. -/
 theorem tendsto_sub_mul_suzukiBoundaryLog (a : ℝ) (ha : 0 < a) :
-    Tendsto (fun x : ℝ => (a - x) * Real.log (a ^ 2 - x ^ 2)) (𝓝[<] a) (𝓝 0) := by
+    Tendsto (fun x : ℝ => (a - x) * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) (𝓝[<] a) (𝓝 0) := by
   have hleft : ∀ᶠ x : ℝ in 𝓝[<] a, -a < x :=
     (show ∀ᶠ x : ℝ in 𝓝 a, -a < x from
       Ioi_mem_nhds (show -a < a by linarith)).filter_mono nhdsWithin_le_nhds
   have hfac : ∀ᶠ x : ℝ in 𝓝[<] a,
       (a - x) * Real.log (a - x) + (a - x) * Real.log (a + x)
-        = (a - x) * Real.log (a ^ 2 - x ^ 2) := by
+        = (a - x) * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) := by
     filter_upwards [self_mem_nhdsWithin, hleft] with x hxa hax
     simp only [mem_Iio] at hxa
     have h1 : a - x ≠ 0 := ne_of_gt (sub_pos.mpr hxa)
     have h2 : a + x ≠ 0 := by intro h; linarith
-    have hsq : a ^ 2 - x ^ 2 = (a - x) * (a + x) := by ring
+    have hsq : a ^ (2 : ℕ) - x ^ (2 : ℕ) = (a - x) * (a + x) := by ring
     rw [hsq, Real.log_mul h1 h2, mul_add]
   refine Tendsto.congr' hfac ?_
   have h1 : Tendsto (fun x : ℝ => (a - x) * Real.log (a - x)) (𝓝[<] a) (𝓝 0) := by
@@ -108,18 +108,18 @@ theorem tendsto_sub_mul_suzukiBoundaryLog (a : ℝ) (ha : 0 < a) :
 /-- The endpoint simple pole survives multiplication by the endpoint distance, with a nonzero
 limit.  This is the exact rate the logarithm fails to reach. -/
 theorem tendsto_sub_mul_suzukiBoundaryPole (a : ℝ) (ha : 0 < a) :
-    Tendsto (fun x : ℝ => (a - x) * (x * Real.cosh x / (a ^ 2 - x ^ 2)))
+    Tendsto (fun x : ℝ => (a - x) * (x * Real.cosh x / (a ^ (2 : ℕ) - x ^ (2 : ℕ))))
       (𝓝[<] a) (𝓝 (Real.cosh a / 2)) := by
   have hleft : ∀ᶠ x : ℝ in 𝓝[<] a, -a < x :=
     (show ∀ᶠ x : ℝ in 𝓝 a, -a < x from
       Ioi_mem_nhds (show -a < a by linarith)).filter_mono nhdsWithin_le_nhds
   have hfac : ∀ᶠ x : ℝ in 𝓝[<] a,
-      x * Real.cosh x / (a + x) = (a - x) * (x * Real.cosh x / (a ^ 2 - x ^ 2)) := by
+      x * Real.cosh x / (a + x) = (a - x) * (x * Real.cosh x / (a ^ (2 : ℕ) - x ^ (2 : ℕ))) := by
     filter_upwards [self_mem_nhdsWithin, hleft] with x hxa hax
     simp only [mem_Iio] at hxa
     have h1 : a - x ≠ 0 := ne_of_gt (sub_pos.mpr hxa)
     have h2 : a + x ≠ 0 := by intro h; linarith
-    have hsq : a ^ 2 - x ^ 2 = (a - x) * (a + x) := by ring
+    have hsq : a ^ (2 : ℕ) - x ^ (2 : ℕ) = (a - x) * (a + x) := by ring
     rw [hsq]
     field_simp
   refine Tendsto.congr' hfac ?_
@@ -140,7 +140,7 @@ theorem suzukiBoundaryPole_ne_log_add_bounded
     {a : ℝ} (ha : 0 < a) {c R : ℝ → ℝ} {Lc LR : ℝ}
     (hc : Tendsto c (𝓝[<] a) (𝓝 Lc)) (hR : Tendsto R (𝓝[<] a) (𝓝 LR)) :
     ¬ ∀ᶠ x : ℝ in 𝓝[<] a,
-        x * Real.cosh x / (a ^ 2 - x ^ 2) = c x * Real.log (a ^ 2 - x ^ 2) + R x := by
+        x * Real.cosh x / (a ^ (2 : ℕ) - x ^ (2 : ℕ)) = c x * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) + R x := by
   intro hEq
   have hpole := tendsto_sub_mul_suzukiBoundaryPole a ha
   have hzero : Tendsto (fun x : ℝ => a - x) (𝓝[<] a) (𝓝 0) := by
@@ -148,21 +148,21 @@ theorem suzukiBoundaryPole_ne_log_add_bounded
     have hlim := hc.tendsto
     simp only [sub_self] at hlim
     exact hlim.mono_left nhdsWithin_le_nhds
-  have hlogpart : Tendsto (fun x : ℝ => c x * ((a - x) * Real.log (a ^ 2 - x ^ 2)))
+  have hlogpart : Tendsto (fun x : ℝ => c x * ((a - x) * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))))
       (𝓝[<] a) (𝓝 0) := by
     have := hc.mul (tendsto_sub_mul_suzukiBoundaryLog a ha)
     simpa using this
   have hRpart : Tendsto (fun x : ℝ => (a - x) * R x) (𝓝[<] a) (𝓝 0) := by
     have := hzero.mul hR
     simpa using this
-  have hright : Tendsto (fun x : ℝ => (a - x) * (c x * Real.log (a ^ 2 - x ^ 2) + R x))
+  have hright : Tendsto (fun x : ℝ => (a - x) * (c x * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) + R x))
       (𝓝[<] a) (𝓝 0) := by
     have hsum := hlogpart.add hRpart
     simp only [add_zero] at hsum
     exact hsum.congr fun x => by ring
   have hcongr : ∀ᶠ x : ℝ in 𝓝[<] a,
-      (a - x) * (x * Real.cosh x / (a ^ 2 - x ^ 2))
-        = (a - x) * (c x * Real.log (a ^ 2 - x ^ 2) + R x) := by
+      (a - x) * (x * Real.cosh x / (a ^ (2 : ℕ) - x ^ (2 : ℕ)))
+        = (a - x) * (c x * Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) + R x) := by
     filter_upwards [hEq] with x hx
     rw [hx]
   have heq := tendsto_nhds_unique (hpole.congr' hcongr) hright

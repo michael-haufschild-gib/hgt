@@ -65,10 +65,10 @@ theorem prod_pos_of_esymm_nonneg {d : ℕ} {x P : ℝ} (hx : 0 < x)
 
 /-- **Infinitely many extreme rays.**  The boundary of the two-dimensional positive cone carries the
 points `(t², t, 1)`, distinct for distinct `t`, all satisfying `ac = b²`. -/
-theorem cone_boundary_curve (t : ℝ) : (t ^ 2) * 1 = t ^ 2 := by ring
+theorem cone_boundary_curve (t : ℝ) : (t ^ (2 : ℕ)) * 1 = t ^ (2 : ℕ) := by ring
 
 /-- Distinct parameters give distinct boundary points, so the family is infinite. -/
-theorem boundary_points_distinct {t₁ t₂ : ℝ} (h : t₁ ≠ t₂) : (t₁ ^ 2, t₁) ≠ (t₂ ^ 2, t₂) := by
+theorem boundary_points_distinct {t₁ t₂ : ℝ} (h : t₁ ≠ t₂) : (t₁ ^ (2 : ℕ), t₁) ≠ (t₂ ^ (2 : ℕ), t₂) := by
   intro hEq
   exact h (congrArg Prod.snd hEq)
 

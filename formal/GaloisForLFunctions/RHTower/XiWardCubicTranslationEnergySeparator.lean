@@ -212,15 +212,15 @@ theorem criticalEvaluation_criticalShiftEnergyDifference
 differences on two strict-right Xi fibres. -/
 theorem integral_cubicTranslationEnergyFeature_xiRightZeroCopy
     (q w : XiRightZeroCopy) :
-    (∫ r : ℝ in Ioi 0, r ^ 2 *
+    (∫ r : ℝ in Ioi 0, r ^ (2 : ℕ) *
       cubicTranslationEnergyFeature r (xiSpectralPoint q.1) *
       cubicTranslationEnergyFeature r (xiSpectralPoint w.1)) =
       cubicLogMomentHellingerHorizontalKernel
         (xiRightCenteredZero q).re (xiRightCenteredZero w).re := by
-  rw [show (fun r : ℝ => r ^ 2 *
+  rw [show (fun r : ℝ => r ^ (2 : ℕ) *
       cubicTranslationEnergyFeature r (xiSpectralPoint q.1) *
       cubicTranslationEnergyFeature r (xiSpectralPoint w.1)) =
-      fun r : ℝ => r ^ 2 *
+      fun r : ℝ => r ^ (2 : ℕ) *
         (Real.exp (-((xiRightCenteredZero q).re * r)) -
           Real.exp (-((2 * (xiRightCenteredZero q).re) * r))) *
         (Real.exp (-((xiRightCenteredZero w).re * r)) -
@@ -236,7 +236,7 @@ and diverges as the copy approaches the critical line. -/
 theorem cubicTranslationEnergyFeature_xiRightZeroCopy_self_ge
     (q : XiRightZeroCopy) :
     115 / 108 ≤
-      ∫ r : ℝ in Ioi 0, r ^ 2 *
+      ∫ r : ℝ in Ioi 0, r ^ (2 : ℕ) *
         cubicTranslationEnergyFeature r (xiSpectralPoint q.1) *
         cubicTranslationEnergyFeature r (xiSpectralPoint q.1) := by
   rw [integral_cubicTranslationEnergyFeature_xiRightZeroCopy]

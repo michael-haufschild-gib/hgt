@@ -64,7 +64,7 @@ theorem suzukiCriticalWallField_eq_bareAmplitude_mul_kernel
 /-- Squaring the bare critical amplitude gives the exact von-Mangoldt far-hinge weight. -/
 theorem sq_suzukiCriticalEntryWallBareAmplitude_eq_vonMangoldt_div_sqrt
     (p : Nat.Primes) (e : ℕ) :
-    suzukiCriticalEntryWallBareAmplitude p e ^ 2 =
+    suzukiCriticalEntryWallBareAmplitude p e ^ (2 : ℕ) =
       ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
         Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ) := by
   let n := xiGammaEulerValuationNat (p, e)
@@ -109,7 +109,7 @@ theorem suzukiCriticalFarHingeWeight_pos
 theorem sq_suzukiOscillatoryKernel_primePowerEntryWall
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     suzukiOscillatoryKernel (t : ℂ)
-          (suzukiPrimePowerEntryWallAperture p e) ^ 2 =
+          (suzukiPrimePowerEntryWallAperture p e) ^ (2 : ℕ) =
       suzukiOscillatoryKernel (t : ℂ)
         (Real.log (xiGammaEulerValuationNat (p, e) : ℝ)) := by
   simp only [suzukiOscillatoryKernel, pow_two, ← Complex.exp_add]
@@ -122,7 +122,7 @@ theorem sq_suzukiOscillatoryKernel_primePowerEntryWall
 von-Mangoldt far-hinge numerator, including its full delay phase. -/
 theorem sq_suzukiCriticalWallField_eq_farHingeNumerator
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
-    suzukiCriticalWallField t p e ^ 2 =
+    suzukiCriticalWallField t p e ^ (2 : ℕ) =
       (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
           Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ) : ℂ) *
         suzukiOscillatoryKernel (t : ℂ)
@@ -133,14 +133,14 @@ theorem sq_suzukiCriticalWallField_eq_farHingeNumerator
   push_cast
   ring_nf
 
-/-- The Xi-real far delayed-hinge atom is `-I` times the wall-field square divided by `t^2`. -/
+/-- The Xi-real far delayed-hinge atom is `-I` times the wall-field square divided by `t^(2 : ℕ)`. -/
 theorem suzukiCriticalDelayedHingeJumpAtom_eq_neg_I_mul_wallField_sq_div
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     suzukiCriticalDelayedHingeJumpAtom
         (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
           Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ))
         (Real.log (xiGammaEulerValuationNat (p, e) : ℝ)) (t : ℂ) =
-      -I * suzukiCriticalWallField t p e ^ 2 / (t : ℂ) ^ 2 := by
+      -I * suzukiCriticalWallField t p e ^ (2 : ℕ) / (t : ℂ) ^ (2 : ℕ) := by
   rw [suzukiCriticalDelayedHingeJumpAtom,
     sq_suzukiCriticalWallField_eq_farHingeNumerator]
   simp only [suzukiOscillatoryKernel]
@@ -150,12 +150,12 @@ theorem suzukiCriticalDelayedHingeJumpAtom_eq_neg_I_mul_wallField_sq_div
 /-- Off the spectral center, matching denominators exposes the exact symmetric-square source. -/
 theorem sq_mul_suzukiCriticalDelayedHingeJumpAtom_eq_neg_I_mul_wallField_sq
     (t : ℝ) (p : Nat.Primes) (e : ℕ) (ht : t ≠ 0) :
-    (t : ℂ) ^ 2 *
+    (t : ℂ) ^ (2 : ℕ) *
         suzukiCriticalDelayedHingeJumpAtom
           (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
             Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ))
           (Real.log (xiGammaEulerValuationNat (p, e) : ℝ)) (t : ℂ) =
-      -I * suzukiCriticalWallField t p e ^ 2 := by
+      -I * suzukiCriticalWallField t p e ^ (2 : ℕ) := by
   rw [suzukiCriticalDelayedHingeJumpAtom_eq_neg_I_mul_wallField_sq_div]
   field_simp [Complex.ofReal_ne_zero.mpr ht]
 
@@ -164,7 +164,7 @@ theorem sq_mul_suzukiCriticalDelayedHingeJumpAtom_eq_neg_I_mul_wallField_sq
 /-- Bare third-jet entry forcing before observer pairing. -/
 def suzukiCriticalEntryWallBareThirdJetAtom
     (t : ℝ) (p : Nat.Primes) (e : ℕ) : ℂ :=
-  (t : ℂ) ^ 2 * suzukiCriticalWallField t p e
+  (t : ℂ) ^ (2 : ℕ) * suzukiCriticalWallField t p e
 
 /-- Inserting the bare Gamma amplitude at the prime-power wall gives the wall field's linear
 third-jet degree. -/
@@ -238,9 +238,9 @@ theorem suzukiCriticalEntryWallEndpointAmplitude_zero_injective
   have hq : 0 < q := xiTransversePrimeApertureDiskNode_pos 1 p
   have hqratio : 0 < q / (1 + q) := div_pos hq (by linarith)
   have hK : 0 < B * C * (q / (1 + q)) := by positivity
-  change B * (C * (q / (1 + q) * (1 - r₁) ^ 2)) =
-    B * (C * (q / (1 + q) * (1 - r₂) ^ 2)) at heq
-  have hsquares : (1 - r₁) ^ 2 = (1 - r₂) ^ 2 := by
+  change B * (C * (q / (1 + q) * (1 - r₁) ^ (2 : ℕ))) =
+    B * (C * (q / (1 + q) * (1 - r₂) ^ (2 : ℕ))) at heq
+  have hsquares : (1 - r₁) ^ (2 : ℕ) = (1 - r₂) ^ (2 : ℕ) := by
     nlinarith [heq]
   have hr₁lt : r₁ < 1 :=
     xiMobiusContinuousApertureDiskNode_lt_one (by positivity) p

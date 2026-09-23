@@ -37,16 +37,16 @@ theorem integral_suzukiFreePositionTorque_mul_exp_eq_eulerSource {σ : ℝ} (hσ
     have hc : ((σ + 3 / 2 : ℝ) : ℂ) = 0 := by push_cast; exact h
     have := Complex.ofReal_eq_zero.mp hc
     linarith
-  have hA : ((1 / (2 * σ ^ 2)
-        * (1 / (σ + 1 / 2) ^ 2 - 1 / (σ - 3 / 2) ^ 2 + 1 / (σ + 3 / 2) ^ 2) : ℝ) : ℂ)
-      = 1 / (2 * (σ : ℂ) ^ 2)
-        * (1 / ((σ : ℂ) + 1 / 2) ^ 2 - 1 / ((σ : ℂ) - 3 / 2) ^ 2
-          + 1 / ((σ : ℂ) + 3 / 2) ^ 2) := by
+  have hA : ((1 / (2 * σ ^ (2 : ℕ))
+        * (1 / (σ + 1 / 2) ^ (2 : ℕ) - 1 / (σ - 3 / 2) ^ (2 : ℕ) + 1 / (σ + 3 / 2) ^ (2 : ℕ)) : ℝ) : ℂ)
+      = 1 / (2 * (σ : ℂ) ^ (2 : ℕ))
+        * (1 / ((σ : ℂ) + 1 / 2) ^ (2 : ℕ) - 1 / ((σ : ℂ) - 3 / 2) ^ (2 : ℕ)
+          + 1 / ((σ : ℂ) + 3 / 2) ^ (2 : ℕ)) := by
     push_cast
     ring
-  have hB : (((∑' n : ℕ, suzukiTentCoeff n * Real.exp (-σ * Real.log n)) / σ ^ 2 : ℝ) : ℂ)
+  have hB : (((∑' n : ℕ, suzukiTentCoeff n * Real.exp (-σ * Real.log n)) / σ ^ (2 : ℕ) : ℝ) : ℂ)
       = ((1 : ℂ) / 2 * LSeries (LSeries.logMul filteredVonMangoldtCoeff) ((σ : ℂ) - 1 / 2))
-        / (σ : ℂ) ^ 2 := by
+        / (σ : ℂ) ^ (2 : ℕ) := by
     rw [Complex.ofReal_div, tsum_suzukiTentCoeff_mul_exp hσ]
     push_cast
     ring

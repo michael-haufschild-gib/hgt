@@ -9,7 +9,7 @@ resolvent weight `(w + X)^(-1)` changes nothing structurally — the divisor is 
 positive-measure moment condition — but it changes everything computationally: the moments of the
 resolvent trace are the **derivatives of the Euler-ray response**
 
-`sum_q (w q + x^2)^(-1) = logDeriv xi (1/2 + x) / x`,
+`sum_q (w q + x^(2 : ℕ))^(-1) = logDeriv xi (1/2 + x) / x`,
 
 which for `x > 1/2` is an absolutely convergent prime--Gamma expression.  So the criterion below is
 stated directly on data the corpus already computes from primes.

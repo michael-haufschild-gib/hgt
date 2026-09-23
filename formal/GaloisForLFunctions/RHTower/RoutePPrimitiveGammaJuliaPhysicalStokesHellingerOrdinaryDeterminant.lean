@@ -57,8 +57,8 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerCounterChannel_posSemide
 theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel_positiveShift_sub_counter {r : ℝ} (hr : 0 ≤ r) :
     routePPrimitiveGammaJuliaPhysicalStokesHellingerPositiveShiftChannel r - routePPrimitiveGammaJuliaPhysicalStokesHellingerCounterChannel r =
       routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r := by
-  have hsqrt : Real.sqrt r ^ 2 = r := Real.sq_sqrt hr
-  have hdefect : routeEPCubicFourthDepthJuliaDefect ^ 2 = (63 / 64 : ℝ) :=
+  have hsqrt : Real.sqrt r ^ (2 : ℕ) = r := Real.sq_sqrt hr
+  have hdefect : routeEPCubicFourthDepthJuliaDefect ^ (2 : ℕ) = (63 / 64 : ℝ) :=
     routeEPCubicFourthDepthJuliaDefect_sq
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -89,9 +89,9 @@ def routePPrimitiveGammaJuliaStokesChannelTensorKernel (A : Matrix (Fin 2) (Fin 
 
 theorem routePPrimitiveGammaJuliaStokesChannelTensorKernel_isHS (A : Matrix (Fin 2) (Fin 2) ℂ)
     {d : ℝ} (hd : 0 < d) : HilbertSchmidt.IsHS (routePPrimitiveGammaJuliaStokesChannelTensorKernel A d) := by
-  let g : Fin 2 × Fin 2 → ℝ := fun ij => ‖A ij.1 ij.2‖ ^ 2
+  let g : Fin 2 × Fin 2 → ℝ := fun ij => ‖A ij.1 ij.2‖ ^ (2 : ℕ)
   let h : Nat.Primes × Nat.Primes → ℝ := fun pq =>
-    ‖routePPrimitiveGammaJuliaStokesCofinalChildKernel d pq‖ ^ 2
+    ‖routePPrimitiveGammaJuliaStokesCofinalChildKernel d pq‖ ^ (2 : ℕ)
   have hg : Summable g := Summable.of_finite
   have hh : Summable h := routePPrimitiveGammaJuliaStokesCofinalChildKernel_isHS hd
   have hgh : Summable (fun x : (Fin 2 × Fin 2) ×

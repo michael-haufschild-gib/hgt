@@ -106,8 +106,8 @@ theorem seibergWittenInvariant_det_eq_zero (ψ : SeibergWittenSpinor) :
 
 /-- The Lorentz-coordinate representative of every finite curvature invariant is null. -/
 theorem seibergWittenInvariant_lorentzQuadratic_eq_zero (ψ : SeibergWittenSpinor) :
-    higgsSpinorTime ψ ^ 2 - higgsSpinorX ψ ^ 2 - higgsSpinorY ψ ^ 2 -
-        higgsSpinorZ ψ ^ 2 = 0 :=
+    higgsSpinorTime ψ ^ (2 : ℕ) - higgsSpinorX ψ ^ (2 : ℕ) - higgsSpinorY ψ ^ (2 : ℕ) -
+        higgsSpinorZ ψ ^ (2 : ℕ) = 0 :=
   higgsSpinor_lorentzQuadratic_eq_zero ψ
 
 /-- The selected spinor vacuum is an exact zero-energy configuration. -/

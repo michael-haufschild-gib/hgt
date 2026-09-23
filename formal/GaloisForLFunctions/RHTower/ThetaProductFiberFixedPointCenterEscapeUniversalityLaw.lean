@@ -24,9 +24,9 @@ theorem tendsto_thetaProductFiberCenteredCorrectedPhaseSeamCurrent_atTop_endpoin
       thetaProductFiberCenteredCorrectedPhaseSeamCurrent k c 0)
       atTop
       (nhds (∑ q ∈ thetaPositiveFactorPairs k,
-        (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ 2)) *
-          ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2 - 2) *
-            Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2)))) := by
+        (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ (2 : ℕ))) *
+          ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ) - 2) *
+            Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ))))) := by
   rw [← thetaProductFiberActualPhaseCurrent_zero_eq_endpointGibbsSum]
   exact tendsto_thetaProductFiberCenteredCorrectedPhaseSeamCurrent_atTop_actual k (by simp)
 
@@ -38,13 +38,13 @@ theorem thetaProductFiber_fixedPoint_centerEscape_positiveGibbsUniversality
       thetaProductFiberCenteredCorrectedPhaseSeamCurrent k c 0)
       atTop
       (nhds (∑ q ∈ thetaPositiveFactorPairs k,
-        (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ 2)) *
-          ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2 - 2) *
-            Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2)))) ∧
+        (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ (2 : ℕ))) *
+          ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ) - 2) *
+            Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ))))) ∧
       0 < ∑ q ∈ thetaPositiveFactorPairs k,
-        (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ 2)) *
-          ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2 - 2) *
-            Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2)) := by
+        (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ (2 : ℕ))) *
+          ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ) - 2) *
+            Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ))) := by
   refine ⟨tendsto_thetaProductFiberCenteredCorrectedPhaseSeamCurrent_atTop_endpointGibbsSum k, ?_⟩
   rw [← thetaProductFiberActualPhaseCurrent_zero_eq_endpointGibbsSum]
   exact thetaProductFiberActualPhaseCurrent_zero_pos hk

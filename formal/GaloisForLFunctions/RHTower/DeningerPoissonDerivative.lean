@@ -48,7 +48,7 @@ theorem summable_deningerPoissonLogTerm (f : 𝓢(ℝ, ℂ)) (t : ℝ) :
 
 theorem norm_deningerPoissonLogTerm_le (f : 𝓢(ℝ, ℂ)) (T : ℝ) {y : ℝ} (hy : T < y) (n : ℕ) :
     ‖f (((n : ℝ) + 1) * Real.exp y)‖
-      ≤ SchwartzMap.seminorm ℂ 2 0 f / (((n : ℝ) + 1) * Real.exp T) ^ 2 := by
+      ≤ SchwartzMap.seminorm ℂ 2 0 f / (((n : ℝ) + 1) * Real.exp T) ^ (2 : ℕ) := by
   set S : ℝ := SchwartzMap.seminorm ℂ 2 0 f with hS
   have hSnn : 0 ≤ S := apply_nonneg _ _
   have hpos : (0 : ℝ) < ((n : ℝ) + 1) * Real.exp T := by positivity
@@ -61,10 +61,10 @@ theorem norm_deningerPoissonLogTerm_le (f : 𝓢(ℝ, ℂ)) (T : ℝ) {y : ℝ} 
     rw [Real.norm_eq_abs, abs_of_pos hposy]
   rw [hnorm] at hsem
   have hstep : ‖f (((n : ℝ) + 1) * Real.exp y)‖
-      ≤ S / (((n : ℝ) + 1) * Real.exp y) ^ 2 := by
+      ≤ S / (((n : ℝ) + 1) * Real.exp y) ^ (2 : ℕ) := by
     rw [le_div_iff₀ (by positivity)]
-    calc ‖f (((n : ℝ) + 1) * Real.exp y)‖ * (((n : ℝ) + 1) * Real.exp y) ^ 2
-        = (((n : ℝ) + 1) * Real.exp y) ^ 2 * ‖f (((n : ℝ) + 1) * Real.exp y)‖ := by ring
+    calc ‖f (((n : ℝ) + 1) * Real.exp y)‖ * (((n : ℝ) + 1) * Real.exp y) ^ (2 : ℕ)
+        = (((n : ℝ) + 1) * Real.exp y) ^ (2 : ℕ) * ‖f (((n : ℝ) + 1) * Real.exp y)‖ := by ring
       _ ≤ S := hsem
   refine hstep.trans ?_
   refine div_le_div_of_nonneg_left hSnn (by positivity) ?_
@@ -72,14 +72,14 @@ theorem norm_deningerPoissonLogTerm_le (f : 𝓢(ℝ, ℂ)) (T : ℝ) {y : ℝ} 
 
 theorem summable_deningerPoissonBound (f : 𝓢(ℝ, ℂ)) (T : ℝ) :
     Summable fun n : ℕ =>
-      SchwartzMap.seminorm ℂ 2 0 f / (((n : ℝ) + 1) * Real.exp T) ^ 2 := by
-  have h1 : Summable fun n : ℕ => 1 / ((n : ℝ) ^ 2) :=
+      SchwartzMap.seminorm ℂ 2 0 f / (((n : ℝ) + 1) * Real.exp T) ^ (2 : ℕ) := by
+  have h1 : Summable fun n : ℕ => 1 / ((n : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
-  have h2 : Summable fun n : ℕ => 1 / ((((n + 1 : ℕ)) : ℝ) ^ 2) := (summable_nat_add_iff 1).mpr h1
+  have h2 : Summable fun n : ℕ => 1 / ((((n + 1 : ℕ)) : ℝ) ^ (2 : ℕ)) := (summable_nat_add_iff 1).mpr h1
   have hfun : (fun n : ℕ =>
-      SchwartzMap.seminorm ℂ 2 0 f / (((n : ℝ) + 1) * Real.exp T) ^ 2)
-      = fun n : ℕ => (SchwartzMap.seminorm ℂ 2 0 f / (Real.exp T) ^ 2)
-        * (1 / ((((n + 1 : ℕ)) : ℝ) ^ 2)) := by
+      SchwartzMap.seminorm ℂ 2 0 f / (((n : ℝ) + 1) * Real.exp T) ^ (2 : ℕ))
+      = fun n : ℕ => (SchwartzMap.seminorm ℂ 2 0 f / (Real.exp T) ^ (2 : ℕ))
+        * (1 / ((((n + 1 : ℕ)) : ℝ) ^ (2 : ℕ))) := by
     funext n
     have hexp : (Real.exp T) ≠ 0 := Real.exp_ne_zero T
     push_cast
@@ -104,7 +104,7 @@ theorem hasDerivAt_deningerPoissonLog (f : 𝓢(ℝ, ℂ)) (t : ℝ) :
     hasDerivAt_comp_exp f ((n : ℝ) + 1) y
   have hbound : ∀ (n : ℕ) (y : ℝ), y ∈ Set.Ioi T →
       ‖eulerSCLM f (((n : ℝ) + 1) * Real.exp y)‖
-        ≤ SchwartzMap.seminorm ℂ 2 0 (eulerSCLM f) / (((n : ℝ) + 1) * Real.exp T) ^ 2 :=
+        ≤ SchwartzMap.seminorm ℂ 2 0 (eulerSCLM f) / (((n : ℝ) + 1) * Real.exp T) ^ (2 : ℕ) :=
     fun n y hy => norm_deningerPoissonLogTerm_le (eulerSCLM f) T (Set.mem_Ioi.mp hy) n
   have hsum0 : Summable fun n : ℕ => f (((n : ℝ) + 1) * Real.exp t) :=
     summable_deningerPoissonLogTerm f t

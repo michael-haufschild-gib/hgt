@@ -25,16 +25,16 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The energy of a solution of `f'' + γ² f = 0`. -/
 noncomputable def sturmEnergy (f fd : ℝ → ℝ) (γ : ℝ) : ℝ → ℝ :=
-  fun t => fd t ^ 2 + γ ^ 2 * f t ^ 2
+  fun t => fd t ^ (2 : ℕ) + γ ^ (2 : ℕ) * f t ^ (2 : ℕ)
 
 theorem hasDerivAt_sturmEnergy {f fd fdd : ℝ → ℝ} {γ : ℝ}
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t) (t : ℝ) :
-    HasDerivAt (sturmEnergy f fd γ) (2 * fd t * (fdd t + γ ^ 2 * f t)) t := by
-  have h1 : HasDerivAt (fun s => fd s ^ 2) (2 * fd t ^ 1 * fdd t) t := (hfd t).pow 2
-  have h2 : HasDerivAt (fun s => γ ^ 2 * f s ^ 2) (γ ^ 2 * (2 * f t ^ 1 * fd t)) t :=
+    HasDerivAt (sturmEnergy f fd γ) (2 * fd t * (fdd t + γ ^ (2 : ℕ) * f t)) t := by
+  have h1 : HasDerivAt (fun s => fd s ^ (2 : ℕ)) (2 * fd t ^ (1 : ℕ) * fdd t) t := (hfd t).pow 2
+  have h2 : HasDerivAt (fun s => γ ^ (2 : ℕ) * f s ^ (2 : ℕ)) (γ ^ (2 : ℕ) * (2 * f t ^ (1 : ℕ) * fd t)) t :=
     ((hf t).pow 2).const_mul _
-  have heq : 2 * fd t ^ 1 * fdd t + γ ^ 2 * (2 * f t ^ 1 * fd t)
-      = 2 * fd t * (fdd t + γ ^ 2 * f t) := by ring
+  have heq : 2 * fd t ^ (1 : ℕ) * fdd t + γ ^ (2 : ℕ) * (2 * f t ^ (1 : ℕ) * fd t)
+      = 2 * fd t * (fdd t + γ ^ (2 : ℕ) * f t) := by ring
   have h3 := h1.add h2
   rw [heq] at h3
   exact h3
@@ -43,7 +43,7 @@ theorem hasDerivAt_sturmEnergy {f fd fdd : ℝ → ℝ} {γ : ℝ}
 constant. -/
 theorem sturmEnergy_const {f fd fdd : ℝ → ℝ} {γ : ℝ}
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hzero : ∀ t, fdd t + γ ^ 2 * f t = 0) (s t : ℝ) :
+    (hzero : ∀ t, fdd t + γ ^ (2 : ℕ) * f t = 0) (s t : ℝ) :
     sturmEnergy f fd γ s = sturmEnergy f fd γ t := by
   refine is_const_of_deriv_eq_zero
     (fun x => (hasDerivAt_sturmEnergy hf hfd x).differentiableAt) (fun x => ?_) s t
@@ -54,17 +54,17 @@ zeros: at a zero the energy is `f'²`, and if that vanished the constant energy 
 everywhere, forcing `f ≡ 0`. -/
 theorem deriv_ne_zero_of_sturm_zero {f fd fdd : ℝ → ℝ} {γ : ℝ} (hγ : 0 < γ)
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hzero : ∀ t, fdd t + γ ^ 2 * f t = 0) {t₁ : ℝ} (hne : f t₁ ≠ 0)
+    (hzero : ∀ t, fdd t + γ ^ (2 : ℕ) * f t = 0) {t₁ : ℝ} (hne : f t₁ ≠ 0)
     {t : ℝ} (hz : f t = 0) : fd t ≠ 0 := by
   intro hcon
   have hE : sturmEnergy f fd γ t = 0 := by
     rw [sturmEnergy, hcon, hz]; ring
   have hE1 := sturmEnergy_const hf hfd hzero t₁ t
   rw [hE, sturmEnergy] at hE1
-  have hsq : (0 : ℝ) ≤ fd t₁ ^ 2 := sq_nonneg _
-  have hγ2 : (0 : ℝ) < γ ^ 2 := by positivity
-  have hf2 : (0 : ℝ) ≤ f t₁ ^ 2 := sq_nonneg _
-  have h3 : f t₁ ^ 2 = 0 := by nlinarith
+  have hsq : (0 : ℝ) ≤ fd t₁ ^ (2 : ℕ) := sq_nonneg _
+  have hγ2 : (0 : ℝ) < γ ^ (2 : ℕ) := by positivity
+  have hf2 : (0 : ℝ) ≤ f t₁ ^ (2 : ℕ) := sq_nonneg _
+  have h3 : f t₁ ^ (2 : ℕ) = 0 := by nlinarith
   exact hne (sq_eq_zero_iff.mp h3)
 
 /-! ## Alternation from simplicity -/
@@ -91,7 +91,7 @@ there is simple, consecutive zeros number at most `2(b-a)γ/π + 2`.  Simplicity
 positivity of the Sturm expression as the source of arch alternation. -/
 theorem zero_count_le_of_simple {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hh : ∀ t, h t = fdd t + γ ^ 2 * f t)
+    (hh : ∀ t, h t = fdd t + γ ^ (2 : ℕ) * f t)
     (hhnn : ∀ t ∈ Ioo a b, 0 ≤ h t)
     (hsimple : ∀ t ∈ Icc a b, f t = 0 → fd t ≠ 0)
     {n : ℕ} (t : ℕ → ℝ)
@@ -172,7 +172,7 @@ theorem zero_count_le_of_simple {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ :
 gap-freeness hypothesis. -/
 theorem card_zeros_le_of_simple {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hh : ∀ t, h t = fdd t + γ ^ 2 * f t)
+    (hh : ∀ t, h t = fdd t + γ ^ (2 : ℕ) * f t)
     (hhnn : ∀ t ∈ Ioo a b, 0 ≤ h t)
     (hsimple : ∀ t ∈ Icc a b, f t = 0 → fd t ≠ 0)
     (Z : Finset ℝ) (hZmem : ∀ x ∈ Z, x ∈ Icc a b) (hZzero : ∀ x ∈ Z, f x = 0)
@@ -235,11 +235,11 @@ theorem card_zeros_le_of_simple {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ :
 the Sturm expression vanishes identically, so that no finite set carries its zeros. -/
 theorem card_zeros_le_of_sturm_zero {f fd fdd : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hzero : ∀ t, fdd t + γ ^ 2 * f t = 0) {t₁ : ℝ} (hne : f t₁ ≠ 0)
+    (hzero : ∀ t, fdd t + γ ^ (2 : ℕ) * f t = 0) {t₁ : ℝ} (hne : f t₁ ≠ 0)
     (Z : Finset ℝ) (hZmem : ∀ x ∈ Z, x ∈ Icc a b) (hZzero : ∀ x ∈ Z, f x = 0)
     (hZall : ∀ x ∈ Icc a b, f x = 0 → x ∈ Z) :
     (Z.card : ℝ) ≤ 2 * ((b - a) * γ / π) + 2 :=
-  card_zeros_le_of_simple (h := fun t => fdd t + γ ^ 2 * f t) hγ hab hf hfd (fun _ => rfl)
+  card_zeros_le_of_simple (h := fun t => fdd t + γ ^ (2 : ℕ) * f t) hγ hab hf hfd (fun _ => rfl)
     (fun s _ => (hzero s).ge)
     (fun _ _ hs => deriv_ne_zero_of_sturm_zero hγ hf hfd hzero hne hs)
     Z hZmem hZzero hZall

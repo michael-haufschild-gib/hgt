@@ -34,27 +34,27 @@ open GaloisForLFunctions.HTGeometry
 
 /-- At the matching point the constant scale `c² s` and the band scale differ by a bounded factor. -/
 theorem sturmAmplitude_const_le_three_mul_band {c s y₀ : ℝ} {Φ DΦ : ℝ → ℝ}
-    (hc : 0 < c) (hs0 : 0 < s) (hsy0 : s < y₀ ^ 2) (hy0h : y₀ ^ 2 ≤ 1 / 2)
-    (hratio : (y₀ ^ 2 - s) * (1 - y₀ ^ 2) ≤ 3 * s) :
-    sturmAmplitude (fun t => 1 - t ^ 2) Φ DΦ (c ^ 2 * s) y₀
+    (hc : 0 < c) (hs0 : 0 < s) (hsy0 : s < y₀ ^ (2 : ℕ)) (hy0h : y₀ ^ (2 : ℕ) ≤ 1 / 2)
+    (hratio : (y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ)) ≤ 3 * s) :
+    sturmAmplitude (fun t => 1 - t ^ (2 : ℕ)) Φ DΦ (c ^ (2 : ℕ) * s) y₀
       ≤ 3 * prolateBandAmplitude c s Φ DΦ y₀ := by
-  have hc2 : (0 : ℝ) < c ^ 2 := by positivity
-  have h1 : (0 : ℝ) < y₀ ^ 2 - s := by linarith
-  have h2 : (0 : ℝ) < 1 - y₀ ^ 2 := by linarith
-  have hKb : prolateBandScale c s y₀ = c ^ 2 * ((y₀ ^ 2 - s) * (1 - y₀ ^ 2)) := by
+  have hc2 : (0 : ℝ) < c ^ (2 : ℕ) := by positivity
+  have h1 : (0 : ℝ) < y₀ ^ (2 : ℕ) - s := by linarith
+  have h2 : (0 : ℝ) < 1 - y₀ ^ (2 : ℕ) := by linarith
+  have hKb : prolateBandScale c s y₀ = c ^ (2 : ℕ) * ((y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ))) := by
     rw [prolateBandScale]; ring
-  have hKbpos : (0 : ℝ) < c ^ 2 * ((y₀ ^ 2 - s) * (1 - y₀ ^ 2)) := by positivity
-  have hcs : (0 : ℝ) < c ^ 2 * s := by positivity
-  have hF : (0 : ℝ) ≤ ((1 - y₀ ^ 2) * DΦ y₀) ^ 2 := sq_nonneg _
-  have hfluxle : ((1 - y₀ ^ 2) * DΦ y₀) ^ 2 / (c ^ 2 * s)
-      ≤ 3 * (((1 - y₀ ^ 2) * DΦ y₀) ^ 2 / (c ^ 2 * ((y₀ ^ 2 - s) * (1 - y₀ ^ 2)))) := by
+  have hKbpos : (0 : ℝ) < c ^ (2 : ℕ) * ((y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ))) := by positivity
+  have hcs : (0 : ℝ) < c ^ (2 : ℕ) * s := by positivity
+  have hF : (0 : ℝ) ≤ ((1 - y₀ ^ (2 : ℕ)) * DΦ y₀) ^ (2 : ℕ) := sq_nonneg _
+  have hfluxle : ((1 - y₀ ^ (2 : ℕ)) * DΦ y₀) ^ (2 : ℕ) / (c ^ (2 : ℕ) * s)
+      ≤ 3 * (((1 - y₀ ^ (2 : ℕ)) * DΦ y₀) ^ (2 : ℕ) / (c ^ (2 : ℕ) * ((y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ))))) := by
     rw [div_le_iff₀ hcs]
-    have hval : 3 * (((1 - y₀ ^ 2) * DΦ y₀) ^ 2 / (c ^ 2 * ((y₀ ^ 2 - s) * (1 - y₀ ^ 2))))
-        * (c ^ 2 * s)
-        = ((1 - y₀ ^ 2) * DΦ y₀) ^ 2 * (3 * s / ((y₀ ^ 2 - s) * (1 - y₀ ^ 2))) := by
+    have hval : 3 * (((1 - y₀ ^ (2 : ℕ)) * DΦ y₀) ^ (2 : ℕ) / (c ^ (2 : ℕ) * ((y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ)))))
+        * (c ^ (2 : ℕ) * s)
+        = ((1 - y₀ ^ (2 : ℕ)) * DΦ y₀) ^ (2 : ℕ) * (3 * s / ((y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ)))) := by
       field_simp
     rw [hval]
-    have hge : (1 : ℝ) ≤ 3 * s / ((y₀ ^ 2 - s) * (1 - y₀ ^ 2)) := by
+    have hge : (1 : ℝ) ≤ 3 * s / ((y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ))) := by
       rw [le_div_iff₀ (by positivity)]
       linarith
     nlinarith [hF, hge]
@@ -64,82 +64,82 @@ theorem sturmAmplitude_const_le_three_mul_band {c s y₀ : ℝ} {Φ DΦ : ℝ �
 /-- **The allowed interval costs only `exp(O(c s))`.**  The constant scale `c² s` matches the
 potential there, so the amplitude envelope crosses the turning layer with no polynomial loss. -/
 theorem prolate_allowed_sq_le {c s y₀ y : ℝ} {Φ DΦ : ℝ → ℝ}
-    (hc : 0 < c) (hs0 : 0 < s) (hy04 : y₀ ^ 2 ≤ 4 * s) (hy0h : y₀ ^ 2 ≤ 1 / 2)
+    (hc : 0 < c) (hs0 : 0 < s) (hy04 : y₀ ^ (2 : ℕ) ≤ 4 * s) (hy0h : y₀ ^ (2 : ℕ) ≤ 1 / 2)
     (hy0 : 0 ≤ y) (hyy0 : y ≤ y₀)
     (hΦ : ∀ t ∈ Icc y y₀, HasDerivAt Φ (DΦ t) t)
-    (hfluxd : ∀ t ∈ Icc y y₀, HasDerivAt (fun u => (1 - u ^ 2) * DΦ u)
-      (-(c ^ 2 * (s - t ^ 2) * Φ t)) t) :
-    Φ y ^ 2 ≤ sturmAmplitude (fun t => 1 - t ^ 2) Φ DΦ (c ^ 2 * s) y₀
+    (hfluxd : ∀ t ∈ Icc y y₀, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦ u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * Φ t)) t) :
+    Φ y ^ (2 : ℕ) ≤ sturmAmplitude (fun t => 1 - t ^ (2 : ℕ)) Φ DΦ (c ^ (2 : ℕ) * s) y₀
       * Real.exp (5 * (c * Real.sqrt s) * y₀) := by
-  have hcs : (0 : ℝ) < c ^ 2 * s := by positivity
-  have hsqrtK : Real.sqrt (c ^ 2 * s) = c * Real.sqrt s := by
+  have hcs : (0 : ℝ) < c ^ (2 : ℕ) * s := by positivity
+  have hsqrtK : Real.sqrt (c ^ (2 : ℕ) * s) = c * Real.sqrt s := by
     rw [Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq hc.le]
-  have hmem : ∀ t ∈ Icc y y₀, 0 ≤ t ∧ t ^ 2 ≤ y₀ ^ 2 := by
+  have hmem : ∀ t ∈ Icc y y₀, 0 ≤ t ∧ t ^ (2 : ℕ) ≤ y₀ ^ (2 : ℕ) := by
     intro t ht
     have ht0 : 0 ≤ t := le_trans hy0 ht.1
     have hy0nn : 0 ≤ y₀ := le_trans ht0 ht.2
     exact ⟨ht0, by nlinarith [ht.2, ht0]⟩
-  have hp : ∀ t ∈ Icc y y₀, (1 : ℝ) - t ^ 2 ≠ 0 := by
+  have hp : ∀ t ∈ Icc y y₀, (1 : ℝ) - t ^ (2 : ℕ) ≠ 0 := by
     intro t ht
     have := (hmem t ht).2
     intro hcon
     nlinarith [hy0h, hcon]
   have hbound : ∀ t ∈ Icc y y₀,
-      |1 / (1 - t ^ 2) - c ^ 2 * (s - t ^ 2) / (c ^ 2 * s)| ≤ 5 := by
+      |1 / (1 - t ^ (2 : ℕ)) - c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) / (c ^ (2 : ℕ) * s)| ≤ 5 := by
     intro t ht
-    have ht2 : t ^ 2 ≤ y₀ ^ 2 := (hmem t ht).2
-    have ht2nn : (0 : ℝ) ≤ t ^ 2 := sq_nonneg t
-    have hden : (0 : ℝ) < 1 - t ^ 2 := by nlinarith [hy0h]
-    have hval : 1 / (1 - t ^ 2) - c ^ 2 * (s - t ^ 2) / (c ^ 2 * s)
-        = 1 / (1 - t ^ 2) - 1 + t ^ 2 / s := by
+    have ht2 : t ^ (2 : ℕ) ≤ y₀ ^ (2 : ℕ) := (hmem t ht).2
+    have ht2nn : (0 : ℝ) ≤ t ^ (2 : ℕ) := sq_nonneg t
+    have hden : (0 : ℝ) < 1 - t ^ (2 : ℕ) := by nlinarith [hy0h]
+    have hval : 1 / (1 - t ^ (2 : ℕ)) - c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) / (c ^ (2 : ℕ) * s)
+        = 1 / (1 - t ^ (2 : ℕ)) - 1 + t ^ (2 : ℕ) / s := by
       field_simp
       ring
     rw [hval, abs_le]
-    have hinv1 : (1 : ℝ) ≤ 1 / (1 - t ^ 2) := by
+    have hinv1 : (1 : ℝ) ≤ 1 / (1 - t ^ (2 : ℕ)) := by
       rw [le_div_iff₀ hden]
       linarith
-    have hinv2 : 1 / (1 - t ^ 2) ≤ 2 := by
+    have hinv2 : 1 / (1 - t ^ (2 : ℕ)) ≤ 2 := by
       rw [div_le_iff₀ hden]
       nlinarith [hy0h, ht2]
-    have hts : t ^ 2 / s ≤ 4 := by
+    have hts : t ^ (2 : ℕ) / s ≤ 4 := by
       rw [div_le_iff₀ hs0]
       nlinarith [hy04, ht2]
-    have htsnn : (0 : ℝ) ≤ t ^ 2 / s := by positivity
+    have htsnn : (0 : ℝ) ≤ t ^ (2 : ℕ) / s := by positivity
     constructor <;> linarith
-  have henv := sturmAmplitude_le_mul_exp (p := fun t : ℝ => 1 - t ^ 2)
-    (Q := fun t : ℝ => c ^ 2 * (s - t ^ 2)) (R := Φ) (DR := DΦ) (K := c ^ 2 * s) (M := 5)
+  have henv := sturmAmplitude_le_mul_exp (p := fun t : ℝ => 1 - t ^ (2 : ℕ))
+    (Q := fun t : ℝ => c ^ (2 : ℕ) * (s - t ^ (2 : ℕ))) (R := Φ) (DR := DΦ) (K := c ^ (2 : ℕ) * s) (M := 5)
     hyy0 hcs (by norm_num) hp hΦ hfluxd hbound
-  have hsq : Φ y ^ 2 ≤ sturmAmplitude (fun t => 1 - t ^ 2) Φ DΦ (c ^ 2 * s) y := by
+  have hsq : Φ y ^ (2 : ℕ) ≤ sturmAmplitude (fun t => 1 - t ^ (2 : ℕ)) Φ DΦ (c ^ (2 : ℕ) * s) y := by
     rw [sturmAmplitude]
-    have : (0 : ℝ) ≤ ((1 - y ^ 2) * DΦ y) ^ 2 / (c ^ 2 * s) := by positivity
+    have : (0 : ℝ) ≤ ((1 - y ^ (2 : ℕ)) * DΦ y) ^ (2 : ℕ) / (c ^ (2 : ℕ) * s) := by positivity
     linarith
-  have hGnn : 0 ≤ sturmAmplitude (fun t => 1 - t ^ 2) Φ DΦ (c ^ 2 * s) y₀ :=
+  have hGnn : 0 ≤ sturmAmplitude (fun t => 1 - t ^ (2 : ℕ)) Φ DΦ (c ^ (2 : ℕ) * s) y₀ :=
     sturmAmplitude_nonneg hcs
-  have hexp : Real.exp (5 * Real.sqrt (c ^ 2 * s) * (y₀ - y))
+  have hexp : Real.exp (5 * Real.sqrt (c ^ (2 : ℕ) * s) * (y₀ - y))
       ≤ Real.exp (5 * (c * Real.sqrt s) * y₀) := by
     rw [Real.exp_le_exp, hsqrtK]
     have hsqrt : (0 : ℝ) ≤ Real.sqrt s := Real.sqrt_nonneg s
     nlinarith [mul_nonneg (mul_nonneg hc.le hsqrt) hy0]
-  calc Φ y ^ 2 ≤ sturmAmplitude (fun t => 1 - t ^ 2) Φ DΦ (c ^ 2 * s) y := hsq
-    _ ≤ sturmAmplitude (fun t => 1 - t ^ 2) Φ DΦ (c ^ 2 * s) y₀
-        * Real.exp (5 * Real.sqrt (c ^ 2 * s) * (y₀ - y)) := henv
-    _ ≤ sturmAmplitude (fun t => 1 - t ^ 2) Φ DΦ (c ^ 2 * s) y₀
+  calc Φ y ^ (2 : ℕ) ≤ sturmAmplitude (fun t => 1 - t ^ (2 : ℕ)) Φ DΦ (c ^ (2 : ℕ) * s) y := hsq
+    _ ≤ sturmAmplitude (fun t => 1 - t ^ (2 : ℕ)) Φ DΦ (c ^ (2 : ℕ) * s) y₀
+        * Real.exp (5 * Real.sqrt (c ^ (2 : ℕ) * s) * (y₀ - y)) := henv
+    _ ≤ sturmAmplitude (fun t => 1 - t ^ (2 : ℕ)) Φ DΦ (c ^ (2 : ℕ) * s) y₀
         * Real.exp (5 * (c * Real.sqrt s) * y₀) := mul_le_mul_of_nonneg_left hexp hGnn
 
 /-! ## The band and the endpoint collar -/
 
 /-- The log-scale-ratio of the band transport, monotone in the left endpoint. -/
 def prolateScaleLog (s y₀ α : ℝ) : ℝ :=
-  (Real.log (α ^ 2 - s) - Real.log (y₀ ^ 2 - s)) + (Real.log (1 - y₀ ^ 2) - Real.log (1 - α ^ 2))
+  (Real.log (α ^ (2 : ℕ) - s) - Real.log (y₀ ^ (2 : ℕ) - s)) + (Real.log (1 - y₀ ^ (2 : ℕ)) - Real.log (1 - α ^ (2 : ℕ)))
 
-theorem prolateScaleLog_nonneg {s y₀ α : ℝ} (hsy0 : s < y₀ ^ 2) (hy0α : y₀ ≤ α)
+theorem prolateScaleLog_nonneg {s y₀ α : ℝ} (hsy0 : s < y₀ ^ (2 : ℕ)) (hy0α : y₀ ≤ α)
     (hy00 : 0 ≤ y₀) (hα1 : α < 1) : 0 ≤ prolateScaleLog s y₀ α := by
-  have hsq : y₀ ^ 2 ≤ α ^ 2 := by nlinarith
-  have h1 : (0 : ℝ) < y₀ ^ 2 - s := by linarith
-  have h2 : (0 : ℝ) < 1 - α ^ 2 := by nlinarith [hy00, hy0α]
-  have hlog1 : Real.log (y₀ ^ 2 - s) ≤ Real.log (α ^ 2 - s) :=
+  have hsq : y₀ ^ (2 : ℕ) ≤ α ^ (2 : ℕ) := by nlinarith
+  have h1 : (0 : ℝ) < y₀ ^ (2 : ℕ) - s := by linarith
+  have h2 : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith [hy00, hy0α]
+  have hlog1 : Real.log (y₀ ^ (2 : ℕ) - s) ≤ Real.log (α ^ (2 : ℕ) - s) :=
     Real.log_le_log h1 (by linarith)
-  have hlog2 : Real.log (1 - α ^ 2) ≤ Real.log (1 - y₀ ^ 2) :=
+  have hlog2 : Real.log (1 - α ^ (2 : ℕ)) ≤ Real.log (1 - y₀ ^ (2 : ℕ)) :=
     Real.log_le_log h2 (by linarith)
   rw [prolateScaleLog]
   linarith
@@ -147,18 +147,18 @@ theorem prolateScaleLog_nonneg {s y₀ α : ℝ} (hsy0 : s < y₀ ^ 2) (hy0α : 
 /-- **The band region, uniformly.**  For every point of the band past the matching point the
 amplitude is below its value at the matching point's transport. -/
 theorem prolateBandAmplitude_le_uniform {c s y₀ α y : ℝ} {Φ DΦ : ℝ → ℝ}
-    (hc : 0 < c) (hy00 : 0 < y₀) (hsy0 : s < y₀ ^ 2) (hy0y : y₀ ≤ y) (hyα : y ≤ α)
+    (hc : 0 < c) (hy00 : 0 < y₀) (hsy0 : s < y₀ ^ (2 : ℕ)) (hy0y : y₀ ≤ y) (hyα : y ≤ α)
     (hα1 : α < 1)
     (hΦ : ∀ t, HasDerivAt Φ (DΦ t) t)
-    (hfluxd : ∀ t ∈ Icc y₀ α, HasDerivAt (fun u => (1 - u ^ 2) * DΦ u)
-      (-(c ^ 2 * (s - t ^ 2) * Φ t)) t)
+    (hfluxd : ∀ t ∈ Icc y₀ α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦ u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * Φ t)) t)
     (hpos : ∀ t ∈ Icc y₀ α, Φ t ≠ 0) :
     prolateBandAmplitude c s Φ DΦ y
       ≤ prolateBandAmplitude c s Φ DΦ α
         * Real.exp (2 * c * (bandEndpointPhase s y₀ - bandEndpointPhase s α)
             + prolateScaleLog s y₀ α) := by
   have hy0nn : 0 ≤ y := le_trans hy00.le hy0y
-  have hsy : s < y ^ 2 := by nlinarith [hy0y, hy00]
+  have hsy : s < y ^ (2 : ℕ) := by nlinarith [hy0y, hy00]
   have hsub : Icc y α ⊆ Icc y₀ α := Icc_subset_Icc hy0y le_rfl
   have hmain := prolateBand_amplitude_le (c := c) (s := s) hc hy0nn hsy hyα hα1
     (fun t _ => hΦ t) (fun t ht => hfluxd t (hsub ht)) (fun t ht => hpos t (hsub ht))
@@ -169,12 +169,12 @@ theorem prolateBandAmplitude_le_uniform {c s y₀ α y : ℝ} {Φ DΦ : ℝ → 
   refine le_trans hmain (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 ?_) hGnn)
   have hphase : bandEndpointPhase s y ≤ bandEndpointPhase s y₀ :=
     antitone_bandEndpointPhase s hy0y
-  have hsq : y₀ ^ 2 ≤ y ^ 2 := by nlinarith
-  have h1 : (0 : ℝ) < y₀ ^ 2 - s := by linarith
-  have h2 : (0 : ℝ) < 1 - α ^ 2 := by nlinarith [hy0nn, hyα]
-  have hlog1 : Real.log (y₀ ^ 2 - s) ≤ Real.log (y ^ 2 - s) :=
+  have hsq : y₀ ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := by nlinarith
+  have h1 : (0 : ℝ) < y₀ ^ (2 : ℕ) - s := by linarith
+  have h2 : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith [hy0nn, hyα]
+  have hlog1 : Real.log (y₀ ^ (2 : ℕ) - s) ≤ Real.log (y ^ (2 : ℕ) - s) :=
     Real.log_le_log h1 (by linarith)
-  have hlog2 : Real.log (1 - y ^ 2) ≤ Real.log (1 - y₀ ^ 2) :=
+  have hlog2 : Real.log (1 - y ^ (2 : ℕ)) ≤ Real.log (1 - y₀ ^ (2 : ℕ)) :=
     Real.log_le_log (by nlinarith [hyα, hα1, hy0nn]) (by linarith)
   rw [prolateScaleLog]
   nlinarith [hphase, hlog1, hlog2, hc.le]
@@ -187,25 +187,25 @@ scale ratio, plus the endpoint collar's own contribution. -/
 theorem prolate_sq_le_aperture_envelope {c s y₀ α : ℝ} {Φ DΦ : ℝ → ℝ}
     (hc : 0 < c) (hs0 : 0 < s) (hs1 : s < 1)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1) (heven : Function.Even Φ)
-    (hsy0 : s < y₀ ^ 2) (hy00 : 0 < y₀) (hy04 : y₀ ^ 2 ≤ 4 * s) (hy0h : y₀ ^ 2 ≤ 1 / 2)
-    (hratio : (y₀ ^ 2 - s) * (1 - y₀ ^ 2) ≤ 3 * s)
+    (hsy0 : s < y₀ ^ (2 : ℕ)) (hy00 : 0 < y₀) (hy04 : y₀ ^ (2 : ℕ) ≤ 4 * s) (hy0h : y₀ ^ (2 : ℕ) ≤ 1 / 2)
+    (hratio : (y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ)) ≤ 3 * s)
     (hy0α : y₀ ≤ α) (hα1 : α < 1)
-    (houter : ∀ t ∈ Icc α 1, c ^ 2 * (1 - 2 * t ^ 2) ≤ -(s * c ^ 2))
+    (houter : ∀ t ∈ Icc α 1, c ^ (2 : ℕ) * (1 - 2 * t ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)))
     (hposΦ : ∀ t ∈ Icc y₀ 1, 0 < Φ t)
     (hΦd : ∀ t, HasDerivAt Φ (DΦ t) t)
-    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ 2) * DΦ u)
-      (-(c ^ 2 * (s - t ^ 2) * Φ t)) t)
+    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦ u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * Φ t)) t)
     {y : ℝ} (hy : y ∈ Icc (-1 : ℝ) 1) :
-    Φ y ^ 2
+    Φ y ^ (2 : ℕ)
       ≤ 3 * (prolateBandAmplitude c s Φ DΦ α
             * Real.exp (2 * c * (bandEndpointPhase s y₀ - bandEndpointPhase s α)
                 + prolateScaleLog s y₀ α))
           * Real.exp (5 * (c * Real.sqrt s) * y₀)
         + Real.exp (2 * (c * bandEndpointPhase s α)) := by
   have hα0 : 0 < α := lt_of_lt_of_le hy00 hy0α
-  have hsα : s < α ^ 2 := by nlinarith [hy0α, hy00]
+  have hsα : s < α ^ (2 : ℕ) := by nlinarith [hy0α, hy00]
   have hposband : ∀ t ∈ Icc y₀ α, Φ t ≠ 0 := fun t ht =>
     (hposΦ t ⟨ht.1, le_trans ht.2 hα1.le⟩).ne'
   set T : ℝ := prolateBandAmplitude c s Φ DΦ α
@@ -214,7 +214,7 @@ theorem prolate_sq_le_aperture_envelope {c s y₀ α : ℝ} {Φ DΦ : ℝ → �
   have hTnn : 0 ≤ T := by
     have hK : 0 < prolateBandScale c s α :=
       prolateBandScale_pos hc hsα (by nlinarith [hα1, hα0])
-    have := sturmAmplitudeVar_nonneg (p := fun t : ℝ => 1 - t ^ 2) (R := Φ) (DR := DΦ) hK
+    have := sturmAmplitudeVar_nonneg (p := fun t : ℝ => 1 - t ^ (2 : ℕ)) (R := Φ) (DR := DΦ) hK
     rw [hTdef]
     have hexp : (0 : ℝ) < Real.exp (2 * c * (bandEndpointPhase s y₀ - bandEndpointPhase s α)
         + prolateScaleLog s y₀ α) := Real.exp_pos _
@@ -247,9 +247,9 @@ theorem prolate_sq_le_aperture_envelope {c s y₀ α : ℝ} {Φ DΦ : ℝ → �
       le_rfl hy0α hα1 hΦd
       (fun t ht => hfluxd t ⟨le_trans hy00.le ht.1, ht.2⟩) hposband
     have hexp0 : (0 : ℝ) < Real.exp (5 * (c * Real.sqrt s) * y₀) := Real.exp_pos _
-    have hchain : Φ z ^ 2 ≤ 3 * T * Real.exp (5 * (c * Real.sqrt s) * y₀) := by
+    have hchain : Φ z ^ (2 : ℕ) ≤ 3 * T * Real.exp (5 * (c * Real.sqrt s) * y₀) := by
       refine le_trans hall ?_
-      have h1 : sturmAmplitude (fun t => 1 - t ^ 2) Φ DΦ (c ^ 2 * s) y₀ ≤ 3 * T := by
+      have h1 : sturmAmplitude (fun t => 1 - t ^ (2 : ℕ)) Φ DΦ (c ^ (2 : ℕ) * s) y₀ ≤ 3 * T := by
         refine le_trans hstep ?_
         have := hband
         rw [← hTdef] at this
@@ -260,11 +260,11 @@ theorem prolate_sq_le_aperture_envelope {c s y₀ α : ℝ} {Φ DΦ : ℝ → �
     · -- the band
       have hband := prolateBandAmplitude_le_uniform (c := c) (s := s) (y := z) hc hy00 hsy0
         hzy0.le hzα hα1 hΦd (fun t ht => hfluxd t ⟨le_trans hy00.le ht.1, ht.2⟩) hposband
-      have hsq : Φ z ^ 2 ≤ prolateBandAmplitude c s Φ DΦ z := by
+      have hsq : Φ z ^ (2 : ℕ) ≤ prolateBandAmplitude c s Φ DΦ z := by
         have hK : 0 < prolateBandScale c s z :=
           prolateBandScale_pos hc (by nlinarith [hzy0, hy00]) (by nlinarith [hzα, hα1, hz0])
         exact sq_le_sturmAmplitudeVar hK
-      have hle : Φ z ^ 2 ≤ T := by
+      have hle : Φ z ^ (2 : ℕ) ≤ T := by
         rw [hTdef]
         exact le_trans hsq hband
       nlinarith [hle, hTnn, hexp5, hcollarnn]
@@ -286,13 +286,13 @@ theorem prolate_sq_le_aperture_envelope {c s y₀ α : ℝ} {Φ DΦ : ℝ → �
         linarith [hfirst, hcollar1]
       have hposz : ∀ t ∈ Icc z 1, 0 < Φ t := fun t ht =>
         hposΦ t ⟨le_trans (le_trans hy0α hzα.le) ht.1, ht.2⟩
-      have hsz : s < z ^ 2 := by nlinarith [hzα, hα0, hsα]
-      have hQz : ∀ t ∈ Icc z 1, 0 < -(s * c ^ 2) + c ^ 2 * t ^ 2 := by
+      have hsz : s < z ^ (2 : ℕ) := by nlinarith [hzα, hα0, hsα]
+      have hQz : ∀ t ∈ Icc z 1, 0 < -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * t ^ (2 : ℕ) := by
         intro t ht
         have hzt : z ≤ t := ht.1
-        have hsqz : z ^ 2 ≤ t ^ 2 := by nlinarith [hz0, hzt]
+        have hsqz : z ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by nlinarith [hz0, hzt]
         nlinarith [mul_pos (pow_pos hc 2) (sub_pos.2 hsz)]
-      have houterz : ∀ t ∈ Icc z 1, c ^ 2 * (1 - 2 * t ^ 2) ≤ -(s * c ^ 2) := fun t ht =>
+      have houterz : ∀ t ∈ Icc z 1, c ^ (2 : ℕ) * (1 - 2 * t ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)) := fun t ht =>
         houter t ⟨le_trans hzα.le ht.1, ht.2⟩
       have hmain := prolate_anchor_le_exp_bandPhase hsm heig hc hs1
         hsz.le hz0 hz1l hposz hQz houterz
@@ -300,9 +300,9 @@ theorem prolate_sq_le_aperture_envelope {c s y₀ α : ℝ} {Φ DΦ : ℝ → �
       have hΦz : 0 < Φ z := hposΦ z ⟨le_trans hy0α hzα.le, hz1⟩
       have hbound : Φ z ≤ Real.exp (c * bandEndpointPhase s α) :=
         le_trans hmain (Real.exp_le_exp.2 (by nlinarith [hphase, hc.le]))
-      have hsq : Φ z ^ 2 ≤ Real.exp (c * bandEndpointPhase s α) ^ 2 :=
+      have hsq : Φ z ^ (2 : ℕ) ≤ Real.exp (c * bandEndpointPhase s α) ^ (2 : ℕ) :=
         pow_le_pow_left₀ hΦz.le hbound 2
-      have hval : Real.exp (c * bandEndpointPhase s α) ^ 2
+      have hval : Real.exp (c * bandEndpointPhase s α) ^ (2 : ℕ)
           = Real.exp (2 * (c * bandEndpointPhase s α)) := by
         rw [← Real.exp_nat_mul]
         push_cast
@@ -314,25 +314,25 @@ theorem prolate_sq_le_aperture_envelope {c s y₀ α : ℝ} {Φ DΦ : ℝ → �
 theorem integral_sq_le_aperture_envelope {c s y₀ α : ℝ} {Φ DΦ : ℝ → ℝ}
     (hc : 0 < c) (hs0 : 0 < s) (hs1 : s < 1)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1) (heven : Function.Even Φ)
-    (hsy0 : s < y₀ ^ 2) (hy00 : 0 < y₀) (hy04 : y₀ ^ 2 ≤ 4 * s) (hy0h : y₀ ^ 2 ≤ 1 / 2)
-    (hratio : (y₀ ^ 2 - s) * (1 - y₀ ^ 2) ≤ 3 * s)
+    (hsy0 : s < y₀ ^ (2 : ℕ)) (hy00 : 0 < y₀) (hy04 : y₀ ^ (2 : ℕ) ≤ 4 * s) (hy0h : y₀ ^ (2 : ℕ) ≤ 1 / 2)
+    (hratio : (y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ)) ≤ 3 * s)
     (hy0α : y₀ ≤ α) (hα1 : α < 1)
-    (houter : ∀ t ∈ Icc α 1, c ^ 2 * (1 - 2 * t ^ 2) ≤ -(s * c ^ 2))
+    (houter : ∀ t ∈ Icc α 1, c ^ (2 : ℕ) * (1 - 2 * t ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)))
     (hposΦ : ∀ t ∈ Icc y₀ 1, 0 < Φ t)
     (hΦd : ∀ t, HasDerivAt Φ (DΦ t) t)
-    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ 2) * DΦ u)
-      (-(c ^ 2 * (s - t ^ 2) * Φ t)) t) :
-    (∫ y in (-1 : ℝ)..1, Φ y ^ 2)
+    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦ u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * Φ t)) t) :
+    (∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ))
       ≤ 2 * (3 * (prolateBandAmplitude c s Φ DΦ α
               * Real.exp (2 * c * (bandEndpointPhase s y₀ - bandEndpointPhase s α)
                   + prolateScaleLog s y₀ α))
             * Real.exp (5 * (c * Real.sqrt s) * y₀)
           + Real.exp (2 * (c * bandEndpointPhase s α))) := by
-  have hint : IntervalIntegrable (fun y : ℝ => Φ y ^ 2) volume (-1) 1 :=
+  have hint : IntervalIntegrable (fun y : ℝ => Φ y ^ (2 : ℕ)) volume (-1) 1 :=
     (hsm.continuous.pow 2).intervalIntegrable (-1) 1
-  have hpoint : ∀ y ∈ Icc (-1 : ℝ) 1, Φ y ^ 2
+  have hpoint : ∀ y ∈ Icc (-1 : ℝ) 1, Φ y ^ (2 : ℕ)
       ≤ 3 * (prolateBandAmplitude c s Φ DΦ α
             * Real.exp (2 * c * (bandEndpointPhase s y₀ - bandEndpointPhase s α)
                 + prolateScaleLog s y₀ α))
@@ -342,7 +342,7 @@ theorem integral_sq_le_aperture_envelope {c s y₀ α : ℝ} {Φ DΦ : ℝ → �
       hy0α hα1 houter hposΦ hΦd hfluxd hy
   have hmono := intervalIntegral.integral_mono_on (by norm_num : (-1 : ℝ) ≤ 1)
     hint intervalIntegrable_const hpoint
-  calc (∫ y in (-1 : ℝ)..1, Φ y ^ 2)
+  calc (∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ))
       ≤ ∫ _y in (-1 : ℝ)..1, (3 * (prolateBandAmplitude c s Φ DΦ α
             * Real.exp (2 * c * (bandEndpointPhase s y₀ - bandEndpointPhase s α)
                 + prolateScaleLog s y₀ α))
@@ -361,28 +361,28 @@ sharp exponential `exp(2 c Xi_s(y₀))`, the scale ratio, and the `O(cs)` allowe
 theorem integral_sq_le_exp_sharp_action_amplitude {c s y₀ α : ℝ} {Φ DΦ : ℝ → ℝ}
     (hc : 0 < c) (hs0 : 0 < s) (hs1 : s < 1) (hcs : 4 ≤ c * s)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1) (heven : Function.Even Φ)
-    (hsy0 : s < y₀ ^ 2) (hy00 : 0 < y₀) (hy04 : y₀ ^ 2 ≤ 4 * s) (hy0h : y₀ ^ 2 ≤ 1 / 2)
-    (hratio : (y₀ ^ 2 - s) * (1 - y₀ ^ 2) ≤ 3 * s)
+    (hsy0 : s < y₀ ^ (2 : ℕ)) (hy00 : 0 < y₀) (hy04 : y₀ ^ (2 : ℕ) ≤ 4 * s) (hy0h : y₀ ^ (2 : ℕ) ≤ 1 / 2)
+    (hratio : (y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ)) ≤ 3 * s)
     (hy0α : y₀ ≤ α) (hα1 : α < 1)
-    (houter : ∀ t ∈ Icc α 1, c ^ 2 * (1 - 2 * t ^ 2) ≤ -(s * c ^ 2))
+    (houter : ∀ t ∈ Icc α 1, c ^ (2 : ℕ) * (1 - 2 * t ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)))
     (hposΦ : ∀ t ∈ Icc y₀ 1, 0 < Φ t)
     (hΦd : ∀ t, HasDerivAt Φ (DΦ t) t)
-    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ 2) * DΦ u)
-      (-(c ^ 2 * (s - t ^ 2) * Φ t)) t) :
-    (∫ y in (-1 : ℝ)..1, Φ y ^ 2)
-      ≤ 2 * (3 * (1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-                / (c ^ 2 * (α ^ 2 - s))) + 1)
+    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦ u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * Φ t)) t) :
+    (∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ))
+      ≤ 2 * (3 * (1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+                / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s))) + 1)
         * Real.exp (2 * c * bandEndpointPhase s y₀ + prolateScaleLog s y₀ α
             + 5 * (c * Real.sqrt s) * y₀) := by
   have hα0 : 0 < α := lt_of_lt_of_le hy00 hy0α
-  have hsα : s < α ^ 2 := by nlinarith [hy0α, hy00]
+  have hsα : s < α ^ (2 : ℕ) := by nlinarith [hy0α, hy00]
   have hαpos : ∀ u ∈ Icc α 1, 0 < Φ u := fun u hu =>
     hposΦ u ⟨le_trans hy0α hu.1, hu.2⟩
-  have hQα : ∀ t ∈ Icc α 1, 0 < -(s * c ^ 2) + c ^ 2 * t ^ 2 := by
+  have hQα : ∀ t ∈ Icc α 1, 0 < -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * t ^ (2 : ℕ) := by
     intro t ht
-    have hsqt : α ^ 2 ≤ t ^ 2 := by nlinarith [ht.1, hα0]
+    have hsqt : α ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by nlinarith [ht.1, hα0]
     nlinarith [mul_pos (pow_pos hc 2) (sub_pos.2 hsα)]
   have hEnv := integral_sq_le_aperture_envelope hc hs0 hs1 hsm heig hΦ1 heven hsy0 hy00 hy04
     hy0h hratio hy0α hα1 houter hposΦ hΦd hfluxd
@@ -394,17 +394,17 @@ theorem integral_sq_le_exp_sharp_action_amplitude {c s y₀ α : ℝ} {Φ DΦ : 
   have hGα := prolateBandAmplitude_anchor_le (c := c) (s := s) (α := α)
     (B := prolateRadialBarrier c s α + 6 / (1 - α)) hc hα0.le hα1 hsα
     (hαpos α ⟨le_rfl, hα1.le⟩) hΦd hB
-  set C : ℝ := 1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-      / (c ^ 2 * (α ^ 2 - s)) with hCdef
+  set C : ℝ := 1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+      / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s)) with hCdef
   have hCnn : 0 ≤ C := by
-    have h1 : (0 : ℝ) < α ^ 2 - s := by linarith
-    have h2 : (0 : ℝ) < 1 - α ^ 2 := by nlinarith
+    have h1 : (0 : ℝ) < α ^ (2 : ℕ) - s := by linarith
+    have h2 : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith
     rw [hCdef]
     positivity
   have hΦαnn : 0 ≤ Φ α := (hαpos α ⟨le_rfl, hα1.le⟩).le
-  have hZ : Φ α ^ 2 ≤ Real.exp (2 * (c * bandEndpointPhase s α)) := by
+  have hZ : Φ α ^ (2 : ℕ) ≤ Real.exp (2 * (c * bandEndpointPhase s α)) := by
     have hsq := pow_le_pow_left₀ hΦαnn hΦα 2
-    have hval : Real.exp (c * bandEndpointPhase s α) ^ 2
+    have hval : Real.exp (c * bandEndpointPhase s α) ^ (2 : ℕ)
         = Real.exp (2 * (c * bandEndpointPhase s α)) := by
       rw [← Real.exp_nat_mul]
       push_cast

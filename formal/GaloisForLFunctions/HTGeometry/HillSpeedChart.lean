@@ -39,7 +39,7 @@ theorem coordPartial_time_only {g : ℝ → ℝ} (hg : Differentiable ℝ g) (i 
   rw [Pi.single_eq_of_ne (Ne.symm (Fin.succ_ne_zero i)), map_zero]
 
 theorem differentiable_speedSq (hs : ContDiff ℝ ∞ c) :
-    Differentiable ℝ fun z : Fin (d + 1) → ℝ => c (z 0) ^ 2 := by
+    Differentiable ℝ fun z : Fin (d + 1) → ℝ => c (z 0) ^ (2 : ℕ) := by
   have hproj : ContDiff ℝ ∞ fun z : Fin (d + 1) → ℝ => z 0 :=
     (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (d + 1) => ℝ) 0).contDiff
   exact ((hs.comp hproj).pow 2).differentiable (by simp)
@@ -48,7 +48,7 @@ theorem differentiable_speedSq (hs : ContDiff ℝ ∞ c) :
 noncomputable def hillSpeedChart (d : ℕ) (c : ℝ → ℝ) (hs : ContDiff ℝ ∞ c) :
     SmoothMetricChart (d + 1) where
   inverseMetric := fun y =>
-    Matrix.diagonal fun j : Fin (d + 1) => if j = 0 then -1 else c (y 0) ^ 2
+    Matrix.diagonal fun j : Fin (d + 1) => if j = 0 then -1 else c (y 0) ^ (2 : ℕ)
   density := fun _ => 1
   contDiff_inverseMetric := by
     intro i j
@@ -57,15 +57,15 @@ noncomputable def hillSpeedChart (d : ℕ) (c : ℝ → ℝ) (hs : ContDiff ℝ 
       by_cases hi : i = 0
       · subst hi
         have hfun : (fun y : Fin (d + 1) → ℝ =>
-            (Matrix.diagonal fun j : Fin (d + 1) => if j = 0 then -1 else c (y 0) ^ 2)
+            (Matrix.diagonal fun j : Fin (d + 1) => if j = 0 then -1 else c (y 0) ^ (2 : ℕ))
               (0 : Fin (d + 1)) (0 : Fin (d + 1))) = fun _ => (-1 : ℝ) := by
           funext y
           rw [Matrix.diagonal_apply_eq, if_pos rfl]
         rw [hfun]
         exact contDiff_const
       · have hfun : (fun y : Fin (d + 1) → ℝ =>
-            (Matrix.diagonal fun j : Fin (d + 1) => if j = 0 then -1 else c (y 0) ^ 2) i i)
-              = fun y => c (y 0) ^ 2 := by
+            (Matrix.diagonal fun j : Fin (d + 1) => if j = 0 then -1 else c (y 0) ^ (2 : ℕ)) i i)
+              = fun y => c (y 0) ^ (2 : ℕ) := by
           funext y
           rw [Matrix.diagonal_apply_eq, if_neg hi]
         rw [hfun]
@@ -73,7 +73,7 @@ noncomputable def hillSpeedChart (d : ℕ) (c : ℝ → ℝ) (hs : ContDiff ℝ 
           (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (d + 1) => ℝ) 0).contDiff
         exact (hs.comp hproj).pow 2
     · have hfun : (fun y : Fin (d + 1) → ℝ =>
-          (Matrix.diagonal fun j : Fin (d + 1) => if j = 0 then -1 else c (y 0) ^ 2) i j)
+          (Matrix.diagonal fun j : Fin (d + 1) => if j = 0 then -1 else c (y 0) ^ (2 : ℕ)) i j)
             = fun _ => (0 : ℝ) := by
         funext y
         rw [Matrix.diagonal_apply_ne _ hij]
@@ -93,7 +93,7 @@ theorem hillSpeedChart_density (hs : ContDiff ℝ ∞ c) (y : Fin (d + 1) → �
 theorem hillSpeedChart_inverseMetric (hs : ContDiff ℝ ∞ c) (y : Fin (d + 1) → ℝ)
     (i j : Fin (d + 1)) :
     (hillSpeedChart d c hs).inverseMetric y i j =
-      Matrix.diagonal (fun k : Fin (d + 1) => if k = 0 then -1 else c (y 0) ^ 2) i j := rfl
+      Matrix.diagonal (fun k : Fin (d + 1) => if k = 0 then -1 else c (y 0) ^ (2 : ℕ)) i j := rfl
 
 /-! ## The fluxes -/
 
@@ -111,7 +111,7 @@ theorem hillSpeedChart_flux_zero (hs : ContDiff ℝ ∞ c) (u : (Fin (d + 1) →
 
 theorem hillSpeedChart_flux_succ (hs : ContDiff ℝ ∞ c) (u : (Fin (d + 1) → ℝ) → ℝ) (i : Fin d) :
     (hillSpeedChart d c hs).flux u i.succ
-      = fun y => c (y 0) ^ 2 * coordPartial i.succ u y := by
+      = fun y => c (y 0) ^ (2 : ℕ) * coordPartial i.succ u y := by
   funext y
   rw [SmoothMetricChart.flux, hillSpeedChart_density, one_mul,
     Finset.sum_eq_single i.succ]
@@ -127,7 +127,7 @@ theorem hillSpeedChart_flux_succ (hs : ContDiff ℝ ∞ c) (u : (Fin (d + 1) →
 theorem hillSpeedChart_dalembert (hs : ContDiff ℝ ∞ c) {u : (Fin (d + 1) → ℝ) → ℝ}
     {y : Fin (d + 1) → ℝ} (hdiff : ∀ j : Fin (d + 1), DifferentiableAt ℝ (coordPartial j u) y) :
     (hillSpeedChart d c hs).dalembert u y = hillWaveOp d c u y := by
-  have hspeed : DifferentiableAt ℝ (fun z : Fin (d + 1) → ℝ => c (z 0) ^ 2) y :=
+  have hspeed : DifferentiableAt ℝ (fun z : Fin (d + 1) → ℝ => c (z 0) ^ (2 : ℕ)) y :=
     (differentiable_speedSq hs) y
   have h0 : coordPartial 0 ((hillSpeedChart d c hs).flux u 0) y
       = -(coordPartial 0 (coordPartial 0 u) y) := by
@@ -139,10 +139,10 @@ theorem hillSpeedChart_dalembert (hs : ContDiff ℝ ∞ c) {u : (Fin (d + 1) →
     rw [hfun, coordPartial_const_mul (hdiff 0) (-1) 0]
     ring
   have hsucc : ∀ i : Fin d, coordPartial i.succ ((hillSpeedChart d c hs).flux u i.succ) y
-      = c (y 0) ^ 2 * coordPartial i.succ (coordPartial i.succ u) y := by
+      = c (y 0) ^ (2 : ℕ) * coordPartial i.succ (coordPartial i.succ u) y := by
     intro i
     rw [hillSpeedChart_flux_succ, coordPartial_mul hspeed (hdiff i.succ) i.succ,
-      coordPartial_time_only (g := fun t : ℝ => c t ^ 2) ((hs.pow 2).differentiable (by simp)) i y,
+      coordPartial_time_only (g := fun t : ℝ => c t ^ (2 : ℕ)) ((hs.pow 2).differentiable (by simp)) i y,
       mul_zero, add_zero]
   rw [SmoothMetricChart.dalembert, hillSpeedChart_density, inv_one, one_mul, Fin.sum_univ_succ,
     h0, Finset.sum_congr rfl fun i (_ : i ∈ Finset.univ) => hsucc i, ← Finset.mul_sum, hillWaveOp]

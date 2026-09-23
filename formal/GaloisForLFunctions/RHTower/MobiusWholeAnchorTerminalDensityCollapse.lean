@@ -119,11 +119,11 @@ theorem exists_column_ge_theta {A : ℝ} (hA : 0 < A) :
 theorem exists_wholeAnchorTerminalUniverse_card_le_proposedBand :
     ∃ C : ℝ, 0 < C ∧ ∀ a b T W Z : ℕ, 1 ≤ T → T * T ≤ b → 16 ≤ b → 2 ≤ W → W ≤ Z →
       Real.exp (Real.sqrt (logLog b)) ≤ Real.log W →
-      Real.log Z * (logLog b) ^ 2 ≤ Real.log b →
+      Real.log Z * (logLog b) ^ (2 : ℕ) ≤ Real.log b →
       ((wholeAnchorTerminalUniverse a b T W Z).card : ℝ) ≤
         C * (b : ℝ) * Real.exp (-Real.sqrt (logLog b)) := by
   obtain ⟨C₁, hC₁, h₁⟩ := exists_wholeAnchorTerminalUniverse_card_le
-  refine ⟨C₁ * mertensBandProductConst * (1 + |mertensUpperConst|) ^ 2,
+  refine ⟨C₁ * mertensBandProductConst * (1 + |mertensUpperConst|) ^ (2 : ℕ),
     mul_pos (mul_pos hC₁ mertensBandProductConst_pos) (by positivity),
     fun a b T W Z hT hsq hbig hW hWZ hWfloor hZceil => ?_⟩
   have hbR : (16 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hbig
@@ -137,55 +137,55 @@ theorem exists_wholeAnchorTerminalUniverse_card_le_proposedBand :
   have hexppos : (0 : ℝ) < Real.exp (Real.sqrt (logLog b)) := Real.exp_pos _
   -- the reservoir Euler product in the proposed band
   have hprod := bandPrimes_eulerProduct_le hW hWZ
-  have hZle : Real.log Z ≤ Real.log b / (logLog b) ^ 2 := by
+  have hZle : Real.log Z ≤ Real.log b / (logLog b) ^ (2 : ℕ) := by
     rw [le_div_iff₀ (by nlinarith)]
     exact hZceil
   have hratio : Real.log Z / Real.log W ≤
-      (Real.log b / (logLog b) ^ 2) * Real.exp (-Real.sqrt (logLog b)) := by
+      (Real.log b / (logLog b) ^ (2 : ℕ)) * Real.exp (-Real.sqrt (logLog b)) := by
     have hstep1 : Real.log Z / Real.log W ≤ Real.log Z / Real.exp (Real.sqrt (logLog b)) :=
       div_le_div_of_nonneg_left hlogZ.le hexppos hWfloor
     have hstep2 : Real.log Z / Real.exp (Real.sqrt (logLog b)) ≤
-        (Real.log b / (logLog b) ^ 2) / Real.exp (Real.sqrt (logLog b)) := by
+        (Real.log b / (logLog b) ^ (2 : ℕ)) / Real.exp (Real.sqrt (logLog b)) := by
       gcongr
-    have hstep3 : (Real.log b / (logLog b) ^ 2) / Real.exp (Real.sqrt (logLog b)) =
-        (Real.log b / (logLog b) ^ 2) * Real.exp (-Real.sqrt (logLog b)) := by
+    have hstep3 : (Real.log b / (logLog b) ^ (2 : ℕ)) / Real.exp (Real.sqrt (logLog b)) =
+        (Real.log b / (logLog b) ^ (2 : ℕ)) * Real.exp (-Real.sqrt (logLog b)) := by
       rw [Real.exp_neg, div_eq_mul_inv]
     linarith [hstep1, hstep2, hstep3.le, hstep3.ge]
   -- the two-sided comparison of the Mertens shift with the iterated logarithm
   have hLKle : logLog b + mertensUpperConst ≤ (1 + |mertensUpperConst|) * logLog b := by
     have habs : mertensUpperConst ≤ |mertensUpperConst| := le_abs_self _
     nlinarith [abs_nonneg mertensUpperConst]
-  have hsqle : (logLog b + mertensUpperConst) ^ 2 ≤
-      (1 + |mertensUpperConst|) ^ 2 * (logLog b) ^ 2 := by
+  have hsqle : (logLog b + mertensUpperConst) ^ (2 : ℕ) ≤
+      (1 + |mertensUpperConst|) ^ (2 : ℕ) * (logLog b) ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ logLog b + mertensUpperConst := by linarith
-    calc (logLog b + mertensUpperConst) ^ 2 ≤ ((1 + |mertensUpperConst|) * logLog b) ^ 2 :=
+    calc (logLog b + mertensUpperConst) ^ (2 : ℕ) ≤ ((1 + |mertensUpperConst|) * logLog b) ^ (2 : ℕ) :=
           pow_le_pow_left₀ h0 hLKle 2
-      _ = (1 + |mertensUpperConst|) ^ 2 * (logLog b) ^ 2 := by ring
-  have hquot : (logLog b + mertensUpperConst) ^ 2 / (logLog b) ^ 2 ≤
-      (1 + |mertensUpperConst|) ^ 2 := by
+      _ = (1 + |mertensUpperConst|) ^ (2 : ℕ) * (logLog b) ^ (2 : ℕ) := by ring
+  have hquot : (logLog b + mertensUpperConst) ^ (2 : ℕ) / (logLog b) ^ (2 : ℕ) ≤
+      (1 + |mertensUpperConst|) ^ (2 : ℕ) := by
     rw [div_le_iff₀ (by nlinarith)]
     exact hsqle
   -- assemble
-  have hfrontpos : (0 : ℝ) ≤ C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) := by
+  have hfrontpos : (0 : ℝ) ≤ C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) := by
     apply mul_nonneg hC₁.le
     apply div_nonneg _ hlogb.le
     apply mul_nonneg (by positivity)
     positivity
   have hchain : ((wholeAnchorTerminalUniverse a b T W Z).card : ℝ) ≤
-      C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+      C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
         (mertensBandProductConst *
-          ((Real.log b / (logLog b) ^ 2) * Real.exp (-Real.sqrt (logLog b)))) := by
+          ((Real.log b / (logLog b) ^ (2 : ℕ)) * Real.exp (-Real.sqrt (logLog b)))) := by
     refine le_trans (h₁ a b T W Z hT hsq hbig) ?_
     apply mul_le_mul_of_nonneg_left _ hfrontpos
     refine le_trans hprod ?_
     exact mul_le_mul_of_nonneg_left hratio mertensBandProductConst_pos.le
   have hEpos : (0 : ℝ) < Real.exp (-Real.sqrt (logLog b)) := Real.exp_pos _
-  have hL2pos : (0 : ℝ) < (logLog b) ^ 2 := by nlinarith
-  have hrewrite : C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+  have hL2pos : (0 : ℝ) < (logLog b) ^ (2 : ℕ) := by nlinarith
+  have hrewrite : C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
       (mertensBandProductConst *
-        ((Real.log b / (logLog b) ^ 2) * Real.exp (-Real.sqrt (logLog b)))) =
+        ((Real.log b / (logLog b) ^ (2 : ℕ)) * Real.exp (-Real.sqrt (logLog b)))) =
       C₁ * mertensBandProductConst * (b : ℝ) * Real.exp (-Real.sqrt (logLog b)) *
-        ((logLog b + mertensUpperConst) ^ 2 / (logLog b) ^ 2) := by
+        ((logLog b + mertensUpperConst) ^ (2 : ℕ) / (logLog b) ^ (2 : ℕ)) := by
     field_simp
   have hbase : (0 : ℝ) ≤ C₁ * mertensBandProductConst * (b : ℝ) *
       Real.exp (-Real.sqrt (logLog b)) := by
@@ -193,14 +193,14 @@ theorem exists_wholeAnchorTerminalUniverse_card_le_proposedBand :
     apply mul_nonneg _ (Nat.cast_nonneg b)
     exact mul_nonneg hC₁.le mertensBandProductConst_pos.le
   calc ((wholeAnchorTerminalUniverse a b T W Z).card : ℝ) ≤
-      C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ 2 / Real.log b) *
+      C₁ * ((b : ℝ) * (logLog b + mertensUpperConst) ^ (2 : ℕ) / Real.log b) *
         (mertensBandProductConst *
-          ((Real.log b / (logLog b) ^ 2) * Real.exp (-Real.sqrt (logLog b)))) := hchain
+          ((Real.log b / (logLog b) ^ (2 : ℕ)) * Real.exp (-Real.sqrt (logLog b)))) := hchain
     _ = C₁ * mertensBandProductConst * (b : ℝ) * Real.exp (-Real.sqrt (logLog b)) *
-        ((logLog b + mertensUpperConst) ^ 2 / (logLog b) ^ 2) := hrewrite
+        ((logLog b + mertensUpperConst) ^ (2 : ℕ) / (logLog b) ^ (2 : ℕ)) := hrewrite
     _ ≤ C₁ * mertensBandProductConst * (b : ℝ) * Real.exp (-Real.sqrt (logLog b)) *
-        (1 + |mertensUpperConst|) ^ 2 := mul_le_mul_of_nonneg_left hquot hbase
-    _ = C₁ * mertensBandProductConst * (1 + |mertensUpperConst|) ^ 2 * (b : ℝ) *
+        (1 + |mertensUpperConst|) ^ (2 : ℕ) := mul_le_mul_of_nonneg_left hquot hbase
+    _ = C₁ * mertensBandProductConst * (1 + |mertensUpperConst|) ^ (2 : ℕ) * (b : ℝ) *
         Real.exp (-Real.sqrt (logLog b)) := by ring
 
 /-- **Proposed-band column load.**  In the same band regime a row-stochastic kernel from a source
@@ -210,7 +210,7 @@ bounded-load relation for a source universe of linear size. -/
 theorem exists_column_ge_proposedBand :
     ∃ C : ℝ, 0 < C ∧ ∀ a b T W Z : ℕ, 1 ≤ T → T * T ≤ b → 16 ≤ b → 2 ≤ W → W ≤ Z →
       Real.exp (Real.sqrt (logLog b)) ≤ Real.log W →
-      Real.log Z * (logLog b) ^ 2 ≤ Real.log b →
+      Real.log Z * (logLog b) ^ (2 : ℕ) ≤ Real.log b →
       (wholeAnchorTerminalUniverse a b T W Z).Nonempty →
       ∀ (Anchor : Type u) [Fintype Anchor]
         (P : FiniteRowStochasticKernel Anchor ↥(wholeAnchorTerminalUniverse a b T W Z)),

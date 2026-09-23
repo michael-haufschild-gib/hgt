@@ -30,7 +30,7 @@ theorem mangoldtLogHaarAtomMass_mul_suzukiMangoldtFiveAlignedSample_eq
   have hpR : (0 : ℝ) < p := by positivity
   have hsqrt : Real.sqrt (p : ℝ) * Real.sqrt p = p :=
     Real.mul_self_sqrt hpR.le
-  have hsqrtSq : Real.sqrt (p : ℝ) ^ 2 = p := by
+  have hsqrtSq : Real.sqrt (p : ℝ) ^ (2 : ℕ) = p := by
     rw [pow_two]
     exact hsqrt
   field_simp [hpR.ne', (Real.sqrt_pos.mpr hpR).ne']

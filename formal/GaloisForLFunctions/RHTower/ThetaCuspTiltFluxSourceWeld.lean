@@ -11,9 +11,9 @@ moments and an all-plane Fourier--Laplace transform, but those statements did no
 stronger `ThetaSource` interface.
 
 This module closes that source weld.  The explicit theta envelope and the elementary estimate
-`exp (2t) >= 2t^2` give the global bound
+`exp (2t) >= 2t^(2 : ℕ)` give the global bound
 
-`k(x) <= U exp ((|M|+5)^2/24) exp (-M|x|)`.
+`k(x) <= U exp ((|M|+5)^(2 : ℕ)/24) exp (-M|x|)`.
 
 The resulting literal source has bilateral Laplace transform exactly `xiCent` on the whole plane.
 Consequently the abstract source Bezoutian and neutral tilt-flux RH criteria now specialize with no
@@ -31,7 +31,7 @@ open HedenmalmThetaSource
 
 /-- Explicit constant for the theta-cusp envelope at arbitrary real exponential rate. -/
 def thetaCuspTiltDecayConstant (M : ℝ) : ℝ :=
-  thetaEnvelopeUpper * Real.exp ((|M| + 5) ^ 2 / 24)
+  thetaEnvelopeUpper * Real.exp ((|M| + 5) ^ (2 : ℕ) / 24)
 
 theorem thetaCuspTiltDecayConstant_pos (M : ℝ) :
     0 < thetaCuspTiltDecayConstant M := by
@@ -51,21 +51,21 @@ theorem thetaCuspFullSource_le_tiltDecayConstant (M x : ℝ) :
     · rw [show x = -(-x) by ring, thetaCuspFullSource_neg]
       simp [t, abs_of_nonpos hx]
   have hsource := thetaCuspFullSource_le_envelope ht
-  have hexpQuad : 2 * t ^ 2 ≤ Real.exp (2 * t) := by
+  have hexpQuad : 2 * t ^ (2 : ℕ) ≤ Real.exp (2 * t) := by
     have h := Real.pow_div_factorial_le_exp
       (x := 2 * t) (show 0 ≤ 2 * t by positivity) 2
     norm_num at h ⊢
     nlinarith
   have hpi : 3 < Real.pi := Real.pi_gt_three
-  have hpiQuad : 6 * t ^ 2 ≤ Real.pi * Real.exp (2 * t) := by
+  have hpiQuad : 6 * t ^ (2 : ℕ) ≤ Real.pi * Real.exp (2 * t) := by
     nlinarith [mul_le_mul_of_nonneg_left hexpQuad (show 0 ≤ Real.pi by positivity)]
   have hlinear : (M + 9 / 2) * t ≤ A * t := by
     have hM : M ≤ |M| := le_abs_self M
     dsimp only [A]
     nlinarith
-  have hsquare : 0 ≤ (t - A / 12) ^ 2 := sq_nonneg _
+  have hsquare : 0 ≤ (t - A / 12) ^ (2 : ℕ) := sq_nonneg _
   have hexponent :
-      9 * t / 2 - Real.pi * Real.exp (2 * t) ≤ A ^ 2 / 24 - M * t := by
+      9 * t / 2 - Real.pi * Real.exp (2 * t) ≤ A ^ (2 : ℕ) / 24 - M * t := by
     nlinarith
   rw [hsourceAbs]
   calc
@@ -74,7 +74,7 @@ theorem thetaCuspFullSource_le_tiltDecayConstant (M x : ℝ) :
         (9 * t / 2 - Real.pi * Real.exp (2 * t)) := by
       rw [thetaEnvelope, ← Real.exp_add]
       ring_nf
-    _ ≤ thetaEnvelopeUpper * Real.exp (A ^ 2 / 24 - M * t) := by
+    _ ≤ thetaEnvelopeUpper * Real.exp (A ^ (2 : ℕ) / 24 - M * t) := by
       exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexponent)
         thetaEnvelopeUpper_pos.le
     _ = thetaCuspTiltDecayConstant M * Real.exp (-(M * |x|)) := by

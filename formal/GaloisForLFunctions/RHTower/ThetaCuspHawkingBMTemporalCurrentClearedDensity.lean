@@ -52,7 +52,7 @@ def contactExpression (q : XiZeroCopy) (branch : Bool) (a : ℂ) (u : ℂ) (t : 
 def clearedTemporalExpression (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (zang : D4BMHorizon.Point) (u : ℂ) (t : ℝ) : ℂ :=
   modeAngularSquare (physicalModeAngularJet q zang) *
-    ((-2 * u * (physicalAngularParameter q ^ 2 - 1 / 4 - 2) * selfExpression q branch a u t -
+    ((-2 * u * (physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2) * selfExpression q branch a u t -
       u * contactExpression q branch a u t) * tortoiseMode false u (physicalRadialFrequency q) t)
 
 /-! ## The two identities -/
@@ -93,7 +93,7 @@ theorem clearedTemporalDensity_eq_current (q : XiZeroCopy) (branch : Bool) (a : 
     (zang : D4BMHorizon.Point) (u : ℂ) (hs : u - 2 * physicalRate q branch ≠ 0)
     (hc : connection u (physicalRadialFrequency q) ≠ 0) (t : ℝ) (ht : t < 0) :
     reducedGreenClearingFactor u (physicalRadialFrequency q) (physicalRate q branch) *
-      (((tortoiseRadius t : ℂ) ^ 2 - 1) * continuedPhysicalTimeAction q branch u a false t zang) =
+      (((tortoiseRadius t : ℂ) ^ (2 : ℕ) - 1) * continuedPhysicalTimeAction q branch u a false t zang) =
       clearedTemporalDensity q branch a zang u t := by
   rw [clearedTemporalDensity_eq_expression q branch a zang u t ht,
     continuedPhysicalTimeAction_radial_density q branch u a false t ht zang,
@@ -118,7 +118,7 @@ theorem reducedHorizonQuotient_radialUnit_continuousAt (s u : ℂ) (t : ℝ) :
 theorem selfExpression_continuousAt (q : XiZeroCopy) (branch : Bool) (a : ℂ) (u : ℂ)
     (hu : u.im ≠ 0) (hur : -2 < u.re) (t : ℝ) (ht : t < 0) :
     ContinuousAt (selfExpression q branch a u) t := by
-  have hG := clearedReducedGreen_continuousAt u (physicalRadialFrequency q) (physicalRate q branch)
+  have hG := clearedReducedGreen_continuousAt_thetaCuspHawkingBMReducedOuterPairing u (physicalRadialFrequency q) (physicalRate q branch)
     a hu hur t ht
   have hP0 := (continuedPrincipalDifference_hasDerivAt q branch u a hu hur 0 t ht).1.continuousAt
   have hP1 := (continuedPrincipalDifference_hasDerivAt q branch u a hu hur 1 t ht).1.continuousAt

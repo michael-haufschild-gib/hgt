@@ -58,7 +58,7 @@ def kloostermanGlobalResponsePointwiseBudget
     (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) : ℝ :=
   ∑ q ∈ Q, Complex.normSq (w q) *
-    (((q + 1 : ℕ) : ℝ) ^ 2 *
+    (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
       ∑ z : ZMod (q + 1),
         Complex.normSq (kloostermanSourceResidue (q + 1) B b z))
 
@@ -80,7 +80,7 @@ private theorem normSq_sum_le_card_mul_sum_normSq_centered
   have htri : ‖∑ i ∈ S, a i‖ ≤ ∑ i ∈ S, ‖a i‖ := norm_sum_le _ _
   have hsum0 : 0 ≤ ∑ i ∈ S, ‖a i‖ := by positivity
   calc
-    ‖∑ i ∈ S, a i‖ ^ 2 ≤ (∑ i ∈ S, ‖a i‖) ^ 2 := by
+    ‖∑ i ∈ S, a i‖ ^ (2 : ℕ) ≤ (∑ i ∈ S, ‖a i‖) ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (∑ i ∈ S, a i)]
     _ ≤ (S.card : ℝ) * ∑ i ∈ S, Complex.normSq (a i) := by
       have h := Finset.sum_mul_sq_le_sq_mul_sq S
@@ -149,7 +149,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_centered
     rw [Finset.sum_sub_distrib] at hreal
     linarith
   have hpoint : ∀ k : ZMod P,
-      (total k - diagonal k) ^ 2 ≤
+      (total k - diagonal k) ^ (2 : ℕ) ≤
         (Q.card : ℝ) * U * total k + U * diagonal k := by
     intro k
     have hd := hdiagonal k
@@ -161,16 +161,16 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_centered
         total k ≤ (Q.card : ℝ) * diagonal k := htd
         _ ≤ (Q.card : ℝ) * U := by
           exact mul_le_mul_of_nonneg_left hdU (by positivity)
-    have htotalSq : total k ^ 2 ≤ (Q.card : ℝ) * U * total k := by
+    have htotalSq : total k ^ (2 : ℕ) ≤ (Q.card : ℝ) * U * total k := by
       nlinarith [mul_nonneg (sub_nonneg.mpr htotalUpper) ht]
-    have hdiagonalSq : diagonal k ^ 2 ≤ U * diagonal k := by
+    have hdiagonalSq : diagonal k ^ (2 : ℕ) ≤ U * diagonal k := by
       nlinarith [mul_nonneg (sub_nonneg.mpr hdU) hd]
     nlinarith [mul_nonneg ht hd]
   have hsumPoint :
-      (∑ k : ZMod P, (total k - diagonal k) ^ 2) ≤
+      (∑ k : ZMod P, (total k - diagonal k) ^ (2 : ℕ)) ≤
         ((Q.card : ℝ) + 1) * U * ∑ k : ZMod P, diagonal k := by
     calc
-      (∑ k : ZMod P, (total k - diagonal k) ^ 2) ≤
+      (∑ k : ZMod P, (total k - diagonal k) ^ (2 : ℕ)) ≤
           ∑ k : ZMod P,
             ((Q.card : ℝ) * U * total k + U * diagonal k) :=
         Finset.sum_le_sum fun k _ => hpoint k
@@ -207,9 +207,9 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_centered
       _ = V := by
         rfl
   rw [kloostermanGlobalFrequencyCollisionEnergy_eq_average_responseMassDefect]
-  change (P : ℝ)⁻¹ * ∑ k : ZMod P, (total k - diagonal k) ^ 2 ≤ _
+  change (P : ℝ)⁻¹ * ∑ k : ZMod P, (total k - diagonal k) ^ (2 : ℕ) ≤ _
   calc
-    (P : ℝ)⁻¹ * ∑ k : ZMod P, (total k - diagonal k) ^ 2 ≤
+    (P : ℝ)⁻¹ * ∑ k : ZMod P, (total k - diagonal k) ^ (2 : ℕ) ≤
         (P : ℝ)⁻¹ *
           (((Q.card : ℝ) + 1) * U * ∑ k : ZMod P, diagonal k) :=
       mul_le_mul_of_nonneg_left hsumPoint (by positivity)
@@ -228,17 +228,17 @@ normal form back to the terminal quadratic appearing in the integer-kernel decom
 theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_sq_le_centered
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
-    ‖kloostermanDistinctModulusTerminalGramQuadratic M Q w B b‖ ^ 2 ≤
+    ‖kloostermanDistinctModulusTerminalGramQuadratic M Q w B b‖ ^ (2 : ℕ) ≤
       (((Q.card : ℝ) + 1) *
           kloostermanGlobalResponsePointwiseBudget Q w B b *
           kloostermanGlobalResponseAverageBudget Q w B b) *
         ((kloostermanGlobalPeriod Q : ℝ) *
             (M % kloostermanGlobalPeriod Q : ℕ) -
-          ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ 2) := by
+          ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ (2 : ℕ)) := by
   have horbit :
       0 ≤ (kloostermanGlobalPeriod Q : ℝ) *
           (M % kloostermanGlobalPeriod Q : ℕ) -
-        ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ 2 := by
+        ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ (2 : ℕ) := by
     rw [← sum_normSq_kloostermanGlobalTerminalOrbit_erase_zero_eq M Q]
     exact Finset.sum_nonneg fun z hz => sq_nonneg _
   exact
@@ -251,7 +251,7 @@ theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_sq_le_centered
 def kloostermanGlobalResponsePointwiseIntervalBudget
     (Q : Finset ℕ) (w : ℕ → ℂ) (N : ℕ) (b : ℕ → ℂ) : ℝ :=
   ∑ q ∈ Q, Complex.normSq (w q) *
-    (((q + 1 : ℕ) : ℝ) ^ 2 *
+    (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
       ((kloostermanIntervalResidueMultiplicity q N : ℝ) *
         ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)))
 
@@ -322,17 +322,17 @@ occupancies, the sharp centered family factor, and the zero-mode-subtracted orbi
 theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_Icc_sq_le_centered
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ) (N : ℕ) (b : ℕ → ℂ) :
     ‖kloostermanDistinctModulusTerminalGramQuadratic
-        M Q w (Finset.Icc 1 N) b‖ ^ 2 ≤
+        M Q w (Finset.Icc 1 N) b‖ ^ (2 : ℕ) ≤
       (((Q.card : ℝ) + 1) *
           kloostermanGlobalResponsePointwiseIntervalBudget Q w N b *
           kloostermanGlobalResponseAverageIntervalBudget Q w N b) *
         ((kloostermanGlobalPeriod Q : ℝ) *
             (M % kloostermanGlobalPeriod Q : ℕ) -
-          ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ 2) := by
+          ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ (2 : ℕ)) := by
   have horbit :
       0 ≤ (kloostermanGlobalPeriod Q : ℝ) *
           (M % kloostermanGlobalPeriod Q : ℕ) -
-        ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ 2 := by
+        ((M % kloostermanGlobalPeriod Q : ℕ) : ℝ) ^ (2 : ℕ) := by
     rw [← sum_normSq_kloostermanGlobalTerminalOrbit_erase_zero_eq M Q]
     exact Finset.sum_nonneg fun z hz => sq_nonneg _
   exact

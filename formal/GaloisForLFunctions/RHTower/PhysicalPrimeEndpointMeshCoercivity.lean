@@ -51,16 +51,16 @@ section TwoCell
 first term is the sharp energy forced by the jump `b - a`. -/
 theorem twoCellEnergy_eq_harmonicJump_add_weightedMean
     {L R a b : ℝ} (hLR : L + R ≠ 0) :
-    L * a ^ 2 + R * b ^ 2 =
-      L * R / (L + R) * (b - a) ^ 2 +
-        (L * a + R * b) ^ 2 / (L + R) := by
+    L * a ^ (2 : ℕ) + R * b ^ (2 : ℕ) =
+      L * R / (L + R) * (b - a) ^ (2 : ℕ) +
+        (L * a + R * b) ^ (2 : ℕ) / (L + R) := by
   field_simp [hLR]
   ring
 
 /-- The harmonic jump term is the sharp lower bound for two positive adjacent cells. -/
 theorem harmonicJump_le_twoCellEnergy
     {L R a b : ℝ} (hLR : 0 < L + R) :
-    L * R / (L + R) * (b - a) ^ 2 ≤ L * a ^ 2 + R * b ^ 2 := by
+    L * R / (L + R) * (b - a) ^ (2 : ℕ) ≤ L * a ^ (2 : ℕ) + R * b ^ (2 : ℕ) := by
   rw [twoCellEnergy_eq_harmonicJump_add_weightedMean hLR.ne']
   exact le_add_of_nonneg_right (div_nonneg (sq_nonneg _) hLR.le)
 
@@ -68,13 +68,13 @@ theorem harmonicJump_le_twoCellEnergy
 vanishes. -/
 theorem twoCellEnergy_eq_harmonicJump_iff
     {L R a b : ℝ} (hLR : 0 < L + R) :
-    L * a ^ 2 + R * b ^ 2 = L * R / (L + R) * (b - a) ^ 2 ↔
+    L * a ^ (2 : ℕ) + R * b ^ (2 : ℕ) = L * R / (L + R) * (b - a) ^ (2 : ℕ) ↔
       L * a + R * b = 0 := by
   rw [twoCellEnergy_eq_harmonicJump_add_weightedMean hLR.ne']
   constructor
   · intro h
-    have hres : (L * a + R * b) ^ 2 / (L + R) = 0 := by linarith
-    have hsq : (L * a + R * b) ^ 2 = 0 := by
+    have hres : (L * a + R * b) ^ (2 : ℕ) / (L + R) = 0 := by linarith
+    have hsq : (L * a + R * b) ^ (2 : ℕ) = 0 := by
       exact (div_eq_zero_iff.mp hres).resolve_right hLR.ne'
     exact sq_eq_zero_iff.mp hsq
   · intro h
@@ -97,8 +97,8 @@ theorem half_min_le_harmonicCellCoefficient
 /-- The factor `1/2` in the shorter-cell lower bound is attained on two equal cells by the
 centered half-interval values `jump/2` and `-jump/2`. -/
 theorem equalTwoCell_halfMin_constant_is_sharp (sigma jump : ℝ) :
-    sigma * (jump / 2) ^ 2 + sigma * (-jump / 2) ^ 2 =
-      sigma / 2 * ((-jump / 2) - jump / 2) ^ 2 := by
+    sigma * (jump / 2) ^ (2 : ℕ) + sigma * (-jump / 2) ^ (2 : ℕ) =
+      sigma / 2 * ((-jump / 2) - jump / 2) ^ (2 : ℕ) := by
   ring
 
 end TwoCell
@@ -110,7 +110,7 @@ variable {ι : Type*} [DecidableEq ι]
 /-- Squared energy of a finite step mesh: cell length times squared cell value. -/
 def finiteStepMeshEnergy
     (cells : Finset ι) (cellLength cellValue : ι → ℝ) : ℝ :=
-  ∑ i ∈ cells, cellLength i * (cellValue i) ^ 2
+  ∑ i ∈ cells, cellLength i * (cellValue i) ^ (2 : ℕ)
 
 omit [DecidableEq ι] in
 theorem finiteStepMeshEnergy_nonneg
@@ -129,7 +129,7 @@ theorem harmonicJump_le_finiteStepMeshEnergy
     (hpair : 0 < cellLength left + cellLength right) :
     cellLength left * cellLength right /
           (cellLength left + cellLength right) *
-        (cellValue right - cellValue left) ^ 2 ≤
+        (cellValue right - cellValue left) ^ (2 : ℕ) ≤
       finiteStepMeshEnergy cells cellLength cellValue := by
   have hsubset : ({left, right} : Finset ι) ⊆ cells := by
     intro i hi
@@ -139,7 +139,7 @@ theorem harmonicJump_le_finiteStepMeshEnergy
     · exact hright
   have hmono :
       (∑ i ∈ ({left, right} : Finset ι),
-          cellLength i * (cellValue i) ^ 2) ≤
+          cellLength i * (cellValue i) ^ (2 : ℕ)) ≤
         finiteStepMeshEnergy cells cellLength cellValue := by
     unfold finiteStepMeshEnergy
     exact Finset.sum_le_sum_of_subset_of_nonneg hsubset fun i hi _ =>
@@ -147,12 +147,12 @@ theorem harmonicJump_le_finiteStepMeshEnergy
   calc
     cellLength left * cellLength right /
           (cellLength left + cellLength right) *
-        (cellValue right - cellValue left) ^ 2 ≤
-        cellLength left * (cellValue left) ^ 2 +
-          cellLength right * (cellValue right) ^ 2 :=
+        (cellValue right - cellValue left) ^ (2 : ℕ) ≤
+        cellLength left * (cellValue left) ^ (2 : ℕ) +
+          cellLength right * (cellValue right) ^ (2 : ℕ) :=
       harmonicJump_le_twoCellEnergy hpair
     _ = ∑ i ∈ ({left, right} : Finset ι),
-          cellLength i * (cellValue i) ^ 2 := by
+          cellLength i * (cellValue i) ^ (2 : ℕ) := by
       simp [hne]
     _ ≤ finiteStepMeshEnergy cells cellLength cellValue := hmono
 
@@ -165,14 +165,14 @@ theorem halfMinJump_le_finiteStepMeshEnergy
     (hlength : ∀ i ∈ cells, 0 ≤ cellLength i)
     (hpair : 0 < cellLength left + cellLength right) :
     min (cellLength left) (cellLength right) / 2 *
-        (cellValue right - cellValue left) ^ 2 ≤
+        (cellValue right - cellValue left) ^ (2 : ℕ) ≤
       finiteStepMeshEnergy cells cellLength cellValue := by
   calc
     min (cellLength left) (cellLength right) / 2 *
-        (cellValue right - cellValue left) ^ 2 ≤
+        (cellValue right - cellValue left) ^ (2 : ℕ) ≤
       cellLength left * cellLength right /
           (cellLength left + cellLength right) *
-        (cellValue right - cellValue left) ^ 2 :=
+        (cellValue right - cellValue left) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right
         (half_min_le_harmonicCellCoefficient
           (hlength left hleft) (hlength right hright) hpair)
@@ -195,7 +195,7 @@ theorem finiteStepMeshEnergy_pos_of_nonzero_jump
       0 < cellLength left * cellLength right /
         (cellLength left + cellLength right) :=
     div_pos (mul_pos hleftPos hrightPos) (add_pos hleftPos hrightPos)
-  have hjumpSq : 0 < (cellValue right - cellValue left) ^ 2 :=
+  have hjumpSq : 0 < (cellValue right - cellValue left) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero hjump
   exact lt_of_lt_of_le (mul_pos hcoefficient hjumpSq)
     (harmonicJump_le_finiteStepMeshEnergy cells cellLength cellValue

@@ -176,10 +176,10 @@ theorem not_deriv_eq_of_hyperexponential (D : Derivation C L L) (K : Intermediat
       deriv_aeval_eq_aeval_twistPoly D K hDK htD] at h
     exact h
   have hpoly : aeval t (twistPoly D K hDK u A * B - A * twistPoly D K hDK u B)
-      = aeval t (Polynomial.X * B ^ 2) := by
+      = aeval t (Polynomial.X * B ^ (2 : ℕ)) := by
     simp only [map_sub, map_mul, map_pow, aeval_X]
     linear_combination (aeval t (twistPoly D K hDK u B)) * hrepr - (aeval t B) * hd
-  have hid : twistPoly D K hDK u A * B - A * twistPoly D K hDK u B = Polynomial.X * B ^ 2 :=
+  have hid : twistPoly D K hDK u A * B - A * twistPoly D K hDK u B = Polynomial.X * B ^ (2 : ℕ) :=
     hinj hpoly
   -- the denominator divides its own twisted derivative
   have hdvd : B ∣ A * twistPoly D K hDK u B := by
@@ -243,7 +243,7 @@ theorem not_deriv_eq_of_hyperexponential (D : Derivation C L L) (K : Intermediat
     calc (twistPoly D K hDK u A - Polynomial.C ((m : ↥K) * u) * A) * Polynomial.X ^ m
         = twistPoly D K hDK u A * Polynomial.X ^ m
           - A * (Polynomial.C ((m : ↥K) * u) * Polynomial.X ^ m) := by ring
-      _ = Polynomial.X * (Polynomial.X ^ m) ^ 2 := hid'
+      _ = Polynomial.X * (Polynomial.X ^ m) ^ (2 : ℕ) := hid'
       _ = Polynomial.X ^ (m + 1) * Polynomial.X ^ m := by ring
   have hfinal := congrArg (fun P : (↥K)[X] => P.coeff (m + 1)) hcancel
   simp only [coeff_sub, coeff_twistPoly, coeff_C_mul, Polynomial.coeff_X_pow, if_true] at hfinal

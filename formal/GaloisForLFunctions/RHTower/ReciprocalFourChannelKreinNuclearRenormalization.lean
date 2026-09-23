@@ -53,16 +53,16 @@ def reciprocalContrast (δ : ℝ) (p : Nat.Primes) : ℝ :=
   formationContrast (2 * reciprocalCompactCoordinate δ p)
 
 def reciprocalHyperbolic (δ : ℝ) (p : Nat.Primes) : ℝ :=
-  reciprocalSplitCoordinate δ p ^ 2
+  reciprocalSplitCoordinate δ p ^ (2 : ℕ)
 
 def reciprocalKreinCompanion (δ : ℝ) (p : Nat.Primes) : ℝ :=
-  Real.sqrt (reciprocalHyperbolic δ p ^ 2 - 1)
+  Real.sqrt (reciprocalHyperbolic δ p ^ (2 : ℕ) - 1)
 
 /-- The two reciprocal coordinates multiply to the square of the prime clock. -/
 theorem reciprocalCompact_mul_split
     (δ : ReciprocalFormationRate) (p : Nat.Primes) :
     reciprocalCompactCoordinate δ p * reciprocalSplitCoordinate δ p =
-      reciprocalPrimeLog p ^ 2 := by
+      reciprocalPrimeLog p ^ (2 : ℕ) := by
   rw [reciprocalCompactCoordinate, reciprocalSplitCoordinate]
   field_simp [reciprocalFormationRate_ne_zero δ]
 
@@ -82,7 +82,7 @@ theorem one_lt_reciprocalSplitCoordinate
 /-- Compact theta polarization. -/
 theorem reciprocalVisibility_sq_add_contrast_sq
     (δ : ℝ) (p : Nat.Primes) :
-    reciprocalVisibility δ p ^ 2 + reciprocalContrast δ p ^ 2 = 1 := by
+    reciprocalVisibility δ p ^ (2 : ℕ) + reciprocalContrast δ p ^ (2 : ℕ) = 1 := by
   simpa [reciprocalVisibility, reciprocalContrast] using
     formationVisibility_sq_add_contrast_sq
       (2 * reciprocalCompactCoordinate δ p)
@@ -95,24 +95,24 @@ theorem one_lt_reciprocalHyperbolic
 
 theorem reciprocalKreinCompanion_sq
     (δ : ReciprocalFormationRate) (p : Nat.Primes) :
-    reciprocalKreinCompanion δ p ^ 2 = reciprocalHyperbolic δ p ^ 2 - 1 := by
+    reciprocalKreinCompanion δ p ^ (2 : ℕ) = reciprocalHyperbolic δ p ^ (2 : ℕ) - 1 := by
   rw [reciprocalKreinCompanion, Real.sq_sqrt]
   nlinarith [one_lt_reciprocalHyperbolic δ p]
 
 /-- Split completion polarization. -/
 theorem reciprocalHyperbolic_sq_sub_kreinCompanion_sq
     (δ : ReciprocalFormationRate) (p : Nat.Primes) :
-    reciprocalHyperbolic δ p ^ 2 - reciprocalKreinCompanion δ p ^ 2 = 1 := by
+    reciprocalHyperbolic δ p ^ (2 : ℕ) - reciprocalKreinCompanion δ p ^ (2 : ℕ) = 1 := by
   rw [reciprocalKreinCompanion_sq]
   ring
 
 /-- The local four-channel vector has exact `J = diag(1,1,-1,-1)` charge one. -/
 theorem reciprocalFourChannel_charge
     (δ : ReciprocalFormationRate) (p : Nat.Primes) :
-    (reciprocalVisibility δ p * reciprocalHyperbolic δ p) ^ 2 +
-        (reciprocalContrast δ p * reciprocalHyperbolic δ p) ^ 2 -
-        (reciprocalVisibility δ p * reciprocalKreinCompanion δ p) ^ 2 -
-        (reciprocalContrast δ p * reciprocalKreinCompanion δ p) ^ 2 = 1 := by
+    (reciprocalVisibility δ p * reciprocalHyperbolic δ p) ^ (2 : ℕ) +
+        (reciprocalContrast δ p * reciprocalHyperbolic δ p) ^ (2 : ℕ) -
+        (reciprocalVisibility δ p * reciprocalKreinCompanion δ p) ^ (2 : ℕ) -
+        (reciprocalContrast δ p * reciprocalKreinCompanion δ p) ^ (2 : ℕ) = 1 := by
   have hc := reciprocalVisibility_sq_add_contrast_sq (δ : ℝ) p
   have hh := reciprocalHyperbolic_sq_sub_kreinCompanion_sq δ p
   nlinarith
@@ -120,11 +120,11 @@ theorem reciprocalFourChannel_charge
 /-- Ordinary positive four-channel energy is the split factor `2h²-1`. -/
 theorem reciprocalFourChannel_positiveEnergy
     (δ : ReciprocalFormationRate) (p : Nat.Primes) :
-    (reciprocalVisibility δ p * reciprocalHyperbolic δ p) ^ 2 +
-        (reciprocalContrast δ p * reciprocalHyperbolic δ p) ^ 2 +
-        (reciprocalVisibility δ p * reciprocalKreinCompanion δ p) ^ 2 +
-        (reciprocalContrast δ p * reciprocalKreinCompanion δ p) ^ 2 =
-      2 * reciprocalHyperbolic δ p ^ 2 - 1 := by
+    (reciprocalVisibility δ p * reciprocalHyperbolic δ p) ^ (2 : ℕ) +
+        (reciprocalContrast δ p * reciprocalHyperbolic δ p) ^ (2 : ℕ) +
+        (reciprocalVisibility δ p * reciprocalKreinCompanion δ p) ^ (2 : ℕ) +
+        (reciprocalContrast δ p * reciprocalKreinCompanion δ p) ^ (2 : ℕ) =
+      2 * reciprocalHyperbolic δ p ^ (2 : ℕ) - 1 := by
   have hc := reciprocalVisibility_sq_add_contrast_sq (δ : ℝ) p
   have hh := reciprocalHyperbolic_sq_sub_kreinCompanion_sq δ p
   nlinarith
@@ -160,7 +160,7 @@ theorem reciprocalKreinCompanion_neg (δ : ℝ) (p : Nat.Primes) :
   simp [reciprocalKreinCompanion, reciprocalHyperbolic_neg]
 
 def reciprocalPrimitiveCubicWeight (p : Nat.Primes) : ℝ :=
-  115 / (864 * (p : ℝ) * reciprocalPrimeLog p ^ 2)
+  115 / (864 * (p : ℝ) * reciprocalPrimeLog p ^ (2 : ℕ))
 
 theorem reciprocalPrimitiveCubicWeight_eq_corpus (p : Nat.Primes) :
     reciprocalPrimitiveCubicWeight p =
@@ -171,8 +171,8 @@ theorem reciprocalPrimitiveCubicWeight_eq_corpus (p : Nat.Primes) :
 
 theorem reciprocalPrimitiveCubicWeight_mul_hyperbolic_sq
     (δ : ReciprocalFormationRate) (p : Nat.Primes) :
-    reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ 2 =
-      115 * reciprocalPrimeLog p ^ 2 / (864 * (δ : ℝ) ^ 4 * (p : ℝ)) := by
+    reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ (2 : ℕ) =
+      115 * reciprocalPrimeLog p ^ (2 : ℕ) / (864 * (δ : ℝ) ^ (4 : ℕ) * (p : ℝ)) := by
   have hp : (p : ℝ) ≠ 0 := by exact_mod_cast p.property.ne_zero
   have hl : reciprocalPrimeLog p ≠ 0 :=
     (lt_trans (by norm_num) (two_thirds_lt_reciprocalPrimeLog p)).ne'
@@ -182,15 +182,15 @@ theorem reciprocalPrimitiveCubicWeight_mul_hyperbolic_sq
 
 theorem reciprocalPrimitiveCubicWeight_mul_kreinCompanion_sq
     (δ : ReciprocalFormationRate) (p : Nat.Primes) :
-    reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ 2 =
+    reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ (2 : ℕ) =
       reciprocalPrimitiveCubicWeight p *
-        (reciprocalHyperbolic δ p ^ 2 - 1) := by
+        (reciprocalHyperbolic δ p ^ (2 : ℕ) - 1) := by
   rw [reciprocalKreinCompanion_sq]
 
 theorem reciprocalCubicAnomaly_sub_companion
     (δ : ReciprocalFormationRate) (p : Nat.Primes) :
-    reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ 2 -
-        reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ 2 =
+    reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ (2 : ℕ) -
+        reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ (2 : ℕ) =
       reciprocalPrimitiveCubicWeight p := by
   rw [reciprocalKreinCompanion_sq]
   ring
@@ -416,10 +416,10 @@ theorem reciprocalChannelKreinCharge_eq_one
       ContinuousLinearMap.id_apply, lp.coeFn_add, lp.coeFn_sub,
       Pi.add_apply, Pi.sub_apply]
     calc
-      _ = (((reciprocalVisibility δ i.2 * reciprocalHyperbolic δ i.2) ^ 2 +
-              (reciprocalContrast δ i.2 * reciprocalHyperbolic δ i.2) ^ 2 -
-              (reciprocalVisibility δ i.2 * reciprocalKreinCompanion δ i.2) ^ 2 -
-              (reciprocalContrast δ i.2 * reciprocalKreinCompanion δ i.2) ^ 2 : ℝ) : ℂ) *
+      _ = (((reciprocalVisibility δ i.2 * reciprocalHyperbolic δ i.2) ^ (2 : ℕ) +
+              (reciprocalContrast δ i.2 * reciprocalHyperbolic δ i.2) ^ (2 : ℕ) -
+              (reciprocalVisibility δ i.2 * reciprocalKreinCompanion δ i.2) ^ (2 : ℕ) -
+              (reciprocalContrast δ i.2 * reciprocalKreinCompanion δ i.2) ^ (2 : ℕ) : ℝ) : ℂ) *
             x i := by push_cast; ring
       _ = x i := by rw [reciprocalFourChannel_charge]; simp
   · simp [reciprocalVisiblePositiveChannel,
@@ -430,7 +430,7 @@ def reciprocalHyperbolicEnergyDiagonal
     (δ : ℝ) (E : Finset PrimeHodgeHistoryIndex) :
     PrimeHodgeHistoryHilbert →L[ℂ] PrimeHodgeHistoryHilbert :=
   reciprocalFinitePacketDiagonal E
-    (fun i => 2 * reciprocalHyperbolic δ i.2 ^ 2 - 1) 1
+    (fun i => 2 * reciprocalHyperbolic δ i.2 ^ (2 : ℕ) - 1) 1
 
 /-- The diagonal ordinary energy is exactly `2H²-I`. -/
 theorem reciprocalChannelPositiveEnergy_eq
@@ -453,12 +453,12 @@ theorem reciprocalChannelPositiveEnergy_eq
       reciprocalFinitePacketDiagonal_apply, if_pos hi,
       lp.coeFn_add, Pi.add_apply]
     calc
-      _ = (((reciprocalVisibility δ i.2 * reciprocalHyperbolic δ i.2) ^ 2 +
-              (reciprocalContrast δ i.2 * reciprocalHyperbolic δ i.2) ^ 2 +
-              (reciprocalVisibility δ i.2 * reciprocalKreinCompanion δ i.2) ^ 2 +
-              (reciprocalContrast δ i.2 * reciprocalKreinCompanion δ i.2) ^ 2 : ℝ) : ℂ) *
+      _ = (((reciprocalVisibility δ i.2 * reciprocalHyperbolic δ i.2) ^ (2 : ℕ) +
+              (reciprocalContrast δ i.2 * reciprocalHyperbolic δ i.2) ^ (2 : ℕ) +
+              (reciprocalVisibility δ i.2 * reciprocalKreinCompanion δ i.2) ^ (2 : ℕ) +
+              (reciprocalContrast δ i.2 * reciprocalKreinCompanion δ i.2) ^ (2 : ℕ) : ℝ) : ℂ) *
             x i := by push_cast; ring
-      _ = ((2 * reciprocalHyperbolic δ i.2 ^ 2 - 1 : ℝ) : ℂ) * x i := by
+      _ = ((2 * reciprocalHyperbolic δ i.2 ^ (2 : ℕ) - 1 : ℝ) : ℂ) * x i := by
         rw [reciprocalFourChannel_positiveEnergy]
   · simp [reciprocalVisiblePositiveChannel,
       reciprocalContrastPositiveChannel, reciprocalVisibleNegativeChannel,
@@ -1041,8 +1041,8 @@ theorem reciprocalPacketProjection_strong_tendsto_id
     Tendsto (fun n => reciprocalPacketProjection (F.packet n) x)
       atTop (nhds x) := by
   let f : ℕ → PrimeHodgeHistoryIndex → ℝ := fun n i =>
-    ‖(reciprocalPacketProjection (F.packet n) x - x) i‖ ^ 2
-  let bound : PrimeHodgeHistoryIndex → ℝ := fun i => ‖x i‖ ^ 2
+    ‖(reciprocalPacketProjection (F.packet n) x - x) i‖ ^ (2 : ℕ)
+  let bound : PrimeHodgeHistoryIndex → ℝ := fun i => ‖x i‖ ^ (2 : ℕ)
   have hbound : Summable bound := by
     simpa [bound] using (lp.memℓp x).summable (by norm_num)
   have hpoint : ∀ i, Tendsto (fun n => f n i) atTop (nhds 0) := by
@@ -1060,7 +1060,7 @@ theorem reciprocalPacketProjection_strong_tendsto_id
   have htsum : Tendsto (fun n => ∑' i, f n i) atTop (nhds 0) := by
     simpa using tendsto_tsum_of_dominated_convergence hbound hpoint hdom
   have hsq : ∀ n,
-      ‖reciprocalPacketProjection (F.packet n) x - x‖ ^ 2 = ∑' i, f n i := by
+      ‖reciprocalPacketProjection (F.packet n) x - x‖ ^ (2 : ℕ) = ∑' i, f n i := by
     intro n
     simpa [f] using HilbertSchmidt.lp_norm_sq_eq
       (reciprocalPacketProjection (F.packet n) x - x)
@@ -1341,7 +1341,7 @@ theorem reciprocalHyperbolic_tendsto_atTop_zero
   have hge : ∀ᶠ δ in nhdsWithin 0 (Set.Ioi 0),
       1 ≤ reciprocalSplitCoordinate δ p :=
     hsplit (eventually_ge_atTop 1)
-  change Tendsto (fun δ : ℝ => reciprocalSplitCoordinate δ p ^ 2)
+  change Tendsto (fun δ : ℝ => reciprocalSplitCoordinate δ p ^ (2 : ℕ))
     (nhdsWithin 0 (Set.Ioi 0)) atTop
   refine tendsto_atTop_mono' (nhdsWithin 0 (Set.Ioi 0)) ?_ hsplit
   filter_upwards [hge] with δ hδ
@@ -1354,30 +1354,30 @@ theorem reciprocalKreinCompanion_tendsto_atTop_zero
   have hhyper := reciprocalHyperbolic_tendsto_atTop_zero p
   have hge : ∀ᶠ δ in nhdsWithin 0 (Set.Ioi 0),
       1 ≤ reciprocalHyperbolic δ p := hhyper (eventually_ge_atTop 1)
-  have hsq : Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p ^ 2)
+  have hsq : Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p ^ (2 : ℕ))
       (nhdsWithin 0 (Set.Ioi 0)) atTop := by
     refine tendsto_atTop_mono' (nhdsWithin 0 (Set.Ioi 0)) ?_ hhyper
     filter_upwards [hge] with δ hδ
     nlinarith [sq_nonneg (reciprocalHyperbolic δ p)]
-  have hsub : Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p ^ 2 - 1)
+  have hsub : Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p ^ (2 : ℕ) - 1)
       (nhdsWithin 0 (Set.Ioi 0)) atTop := by
     simpa [sub_eq_add_neg] using
       tendsto_atTop_add_const_right (nhdsWithin 0 (Set.Ioi 0)) (-1) hsq
   unfold reciprocalKreinCompanion
   change Tendsto
     ((fun y : ℝ => Real.sqrt y) ∘
-      fun δ : ℝ => reciprocalHyperbolic δ p ^ 2 - 1)
+      fun δ : ℝ => reciprocalHyperbolic δ p ^ (2 : ℕ) - 1)
     (nhdsWithin 0 (Set.Ioi 0)) atTop
   exact Real.tendsto_sqrt_atTop.comp hsub
 
 theorem reciprocalPositiveEnergy_tendsto_atTop_zero
     (p : Nat.Primes) :
-    Tendsto (fun δ : ℝ => 2 * reciprocalHyperbolic δ p ^ 2 - 1)
+    Tendsto (fun δ : ℝ => 2 * reciprocalHyperbolic δ p ^ (2 : ℕ) - 1)
       (nhdsWithin 0 (Set.Ioi 0)) atTop := by
   have hhyper := reciprocalHyperbolic_tendsto_atTop_zero p
   have hge : ∀ᶠ δ in nhdsWithin 0 (Set.Ioi 0),
       1 ≤ reciprocalHyperbolic δ p := hhyper (eventually_ge_atTop 1)
-  have hsq : Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p ^ 2)
+  have hsq : Tendsto (fun δ : ℝ => reciprocalHyperbolic δ p ^ (2 : ℕ))
       (nhdsWithin 0 (Set.Ioi 0)) atTop := by
     refine tendsto_atTop_mono' (nhdsWithin 0 (Set.Ioi 0)) ?_ hhyper
     filter_upwards [hge] with δ hδ
@@ -1392,13 +1392,13 @@ zero-rate homotopy defect. -/
 theorem reciprocalFourChannelKreinNuclearRenormalization_closed :
     (∀ δ : ReciprocalFormationRate, ∀ p : Nat.Primes,
       reciprocalCompactCoordinate δ p * reciprocalSplitCoordinate δ p =
-          reciprocalPrimeLog p ^ 2 ∧
-        reciprocalVisibility δ p ^ 2 + reciprocalContrast δ p ^ 2 = 1 ∧
-        reciprocalHyperbolic δ p ^ 2 - reciprocalKreinCompanion δ p ^ 2 = 1 ∧
-        (reciprocalVisibility δ p * reciprocalHyperbolic δ p) ^ 2 +
-            (reciprocalContrast δ p * reciprocalHyperbolic δ p) ^ 2 -
-            (reciprocalVisibility δ p * reciprocalKreinCompanion δ p) ^ 2 -
-            (reciprocalContrast δ p * reciprocalKreinCompanion δ p) ^ 2 = 1) ∧
+          reciprocalPrimeLog p ^ (2 : ℕ) ∧
+        reciprocalVisibility δ p ^ (2 : ℕ) + reciprocalContrast δ p ^ (2 : ℕ) = 1 ∧
+        reciprocalHyperbolic δ p ^ (2 : ℕ) - reciprocalKreinCompanion δ p ^ (2 : ℕ) = 1 ∧
+        (reciprocalVisibility δ p * reciprocalHyperbolic δ p) ^ (2 : ℕ) +
+            (reciprocalContrast δ p * reciprocalHyperbolic δ p) ^ (2 : ℕ) -
+            (reciprocalVisibility δ p * reciprocalKreinCompanion δ p) ^ (2 : ℕ) -
+            (reciprocalContrast δ p * reciprocalKreinCompanion δ p) ^ (2 : ℕ) = 1) ∧
     (∀ E : Finset PrimeHodgeHistoryIndex,
       IsSelfAdjoint (reciprocalPacketProjection E) ∧
         reciprocalPacketProjection E ∘L reciprocalPacketProjection E =
@@ -1430,13 +1430,13 @@ theorem reciprocalFourChannelKreinNuclearRenormalization_closed :
         Tendsto (fun n => traceNorm PrimeHodgeHistoryHilbert
           (reciprocalPacketCompression (F.packet n))) atTop (nhds 1)) ∧
     (∀ δ : ReciprocalFormationRate, ∀ p : Nat.Primes,
-      reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ 2 =
-          115 * reciprocalPrimeLog p ^ 2 / (864 * (δ : ℝ) ^ 4 * (p : ℝ)) ∧
-        reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ 2 =
+      reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ (2 : ℕ) =
+          115 * reciprocalPrimeLog p ^ (2 : ℕ) / (864 * (δ : ℝ) ^ (4 : ℕ) * (p : ℝ)) ∧
+        reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ (2 : ℕ) =
           reciprocalPrimitiveCubicWeight p *
-            (reciprocalHyperbolic δ p ^ 2 - 1) ∧
-        reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ 2 -
-            reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ 2 =
+            (reciprocalHyperbolic δ p ^ (2 : ℕ) - 1) ∧
+        reciprocalPrimitiveCubicWeight p * reciprocalHyperbolic δ p ^ (2 : ℕ) -
+            reciprocalPrimitiveCubicWeight p * reciprocalKreinCompanion δ p ^ (2 : ℕ) =
           reciprocalPrimitiveCubicWeight p) ∧
     (∀ p : Nat.Primes,
       Tendsto (fun δ : ℝ => (reciprocalVisibility δ p, reciprocalContrast δ p))
@@ -1445,7 +1445,7 @@ theorem reciprocalFourChannelKreinNuclearRenormalization_closed :
           (nhdsWithin 0 (Set.Ioi 0)) atTop ∧
         Tendsto (fun δ : ℝ => reciprocalKreinCompanion δ p)
           (nhdsWithin 0 (Set.Ioi 0)) atTop ∧
-        Tendsto (fun δ : ℝ => 2 * reciprocalHyperbolic δ p ^ 2 - 1)
+        Tendsto (fun δ : ℝ => 2 * reciprocalHyperbolic δ p ^ (2 : ℕ) - 1)
           (nhdsWithin 0 (Set.Ioi 0)) atTop) := by
   refine ⟨fun δ p => ⟨reciprocalCompact_mul_split δ p,
       reciprocalVisibility_sq_add_contrast_sq δ p,

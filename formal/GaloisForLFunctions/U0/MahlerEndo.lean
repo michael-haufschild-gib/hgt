@@ -16,21 +16,21 @@ namespace MahlerPolynomial
 
 /-- Composition with the nonconstant `X²+c` preserves nonzero polynomials. -/
 @[aesop safe]
-theorem comp_quadratic_ne_zero {c : ℂ} {p : ℂ[X]} (hp : p ≠ 0) : p.comp (X ^ 2 + C c) ≠ 0 := by
+theorem comp_quadratic_ne_zero {c : ℂ} {p : ℂ[X]} (hp : p ≠ 0) : p.comp (X ^ (2 : ℕ) + C c) ≠ 0 := by
   intro h
   rw [comp_eq_zero_iff] at h
   rcases h with h1 | ⟨_, h2⟩
   · exact hp h1
-  · have hd : (X ^ 2 + C c).natDegree = 2 := by compute_degree!
+  · have hd : (X ^ (2 : ℕ) + C c).natDegree = 2 := by compute_degree!
     rw [h2, natDegree_C] at hd; exact absurd hd (by norm_num)
 
 /-- The polynomial Mahler substitution `p ↦ p(z²+c)` as a `ℂ`-algebra hom into `ℂ(z)`. -/
 noncomputable def mahlerPolyHom (c : ℂ) : Polynomial ℂ →ₐ[ℂ] RatFunc ℂ :=
-  (IsScalarTower.toAlgHom ℂ (Polynomial ℂ) (RatFunc ℂ)).comp (aeval (X ^ 2 + C c))
+  (IsScalarTower.toAlgHom ℂ (Polynomial ℂ) (RatFunc ℂ)).comp (aeval (X ^ (2 : ℕ) + C c))
 
 @[aesop safe]
 theorem mahlerPolyHom_apply (c : ℂ) (p : ℂ[X]) :
-    mahlerPolyHom c p = algebraMap (Polynomial ℂ) (RatFunc ℂ) (p.comp (X ^ 2 + C c)) := by
+    mahlerPolyHom c p = algebraMap (Polynomial ℂ) (RatFunc ℂ) (p.comp (X ^ (2 : ℕ) + C c)) := by
   rw [mahlerPolyHom, AlgHom.comp_apply, IsScalarTower.coe_toAlgHom']
   congr 1
 
@@ -52,7 +52,7 @@ noncomputable def mahlerHom (c : ℂ) : RatFunc ℂ →ₐ[ℂ] RatFunc ℂ :=
 @[aesop safe]
 theorem mahlerHom_algebraMap (c : ℂ) (p : ℂ[X]) :
     mahlerHom c (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
-      = algebraMap (Polynomial ℂ) (RatFunc ℂ) (p.comp (X ^ 2 + C c)) := by
+      = algebraMap (Polynomial ℂ) (RatFunc ℂ) (p.comp (X ^ (2 : ℕ) + C c)) := by
   rw [mahlerHom]
   have := RatFunc.liftAlgHom_apply_div (φ := mahlerPolyHom c)
     (hφ := by intro x hx; rw [Submonoid.mem_comap, mem_nonZeroDivisors_iff_ne_zero]
@@ -67,7 +67,7 @@ gives the polynomial Mahler cross-equation `num(σz)·denom² = num²·denom(σz
 `mahlerHom(N) = N²`, hence is constant. -/
 @[aesop safe]
 theorem mahler_eq_sq_imp_const {c : ℂ} (hc : c ≠ 0) {g : RatFunc ℂ}
-    (h : mahlerHom c g = g ^ 2) :
+    (h : mahlerHom c g = g ^ (2 : ℕ)) :
     (RatFunc.num g).natDegree = 0 ∧ (RatFunc.denom g).natDegree = 0 := by
   apply ratfunc_mahler_const hc
   have hinj := IsFractionRing.injective (Polynomial ℂ) (RatFunc ℂ)
@@ -76,16 +76,16 @@ theorem mahler_eq_sq_imp_const {c : ℂ} (hc : c ≠ 0) {g : RatFunc ℂ}
   have hD : D ≠ 0 := hD_def ▸ RatFunc.denom_ne_zero g
   have haD : algebraMap (Polynomial ℂ) (RatFunc ℂ) D ≠ 0 := by
     rw [Ne, map_eq_zero_iff _ hinj]; exact hD
-  have haDσ : algebraMap (Polynomial ℂ) (RatFunc ℂ) (D.comp (X ^ 2 + C c)) ≠ 0 := by
+  have haDσ : algebraMap (Polynomial ℂ) (RatFunc ℂ) (D.comp (X ^ (2 : ℕ) + C c)) ≠ 0 := by
     rw [Ne, map_eq_zero_iff _ hinj]; exact comp_quadratic_ne_zero hD
   have hgeq : g = algebraMap (Polynomial ℂ) (RatFunc ℂ) N
       / algebraMap (Polynomial ℂ) (RatFunc ℂ) D := (RatFunc.num_div_denom g).symm
   have hmh : mahlerHom c g
-      = algebraMap (Polynomial ℂ) (RatFunc ℂ) (N.comp (X ^ 2 + C c))
-        / algebraMap (Polynomial ℂ) (RatFunc ℂ) (D.comp (X ^ 2 + C c)) := by
+      = algebraMap (Polynomial ℂ) (RatFunc ℂ) (N.comp (X ^ (2 : ℕ) + C c))
+        / algebraMap (Polynomial ℂ) (RatFunc ℂ) (D.comp (X ^ (2 : ℕ) + C c)) := by
     rw [hgeq, map_div₀, mahlerHom_algebraMap, mahlerHom_algebraMap]
-  have hg2 : g ^ 2 = (algebraMap (Polynomial ℂ) (RatFunc ℂ) N) ^ 2
-      / (algebraMap (Polynomial ℂ) (RatFunc ℂ) D) ^ 2 := by rw [hgeq, div_pow]
+  have hg2 : g ^ (2 : ℕ) = (algebraMap (Polynomial ℂ) (RatFunc ℂ) N) ^ (2 : ℕ)
+      / (algebraMap (Polynomial ℂ) (RatFunc ℂ) D) ^ (2 : ℕ) := by rw [hgeq, div_pow]
   rw [hmh, hg2, div_eq_div_iff haDσ (pow_ne_zero 2 haD)] at h
   rw [← map_pow, ← map_mul, ← map_pow, ← map_mul] at h
   exact hinj h
@@ -98,10 +98,10 @@ to force the norm constant. This is the pure-algebra core of the n≥2 norm-desc
 needs to supply the identity `hid`. -/
 @[aesop safe]
 theorem mahler_coeff_zero_of_identity {c : ℂ} {m : Polynomial (RatFunc ℂ)} {s : RatFunc ℂ}
-    (hid : (m.map (mahlerHom c).toRingHom).comp (X ^ 2) = C s * m * m.comp (-X)) :
-    mahlerHom c (m.coeff 0) = s * (m.coeff 0) ^ 2 := by
+    (hid : (m.map (mahlerHom c).toRingHom).comp (X ^ (2 : ℕ)) = C s * m * m.comp (-X)) :
+    mahlerHom c (m.coeff 0) = s * (m.coeff 0) ^ (2 : ℕ) := by
   have h := congrArg (Polynomial.eval 0) hid
-  have hx2 : (X ^ 2 : (RatFunc ℂ)[X]).eval (0 : RatFunc ℂ) = 0 := by simp
+  have hx2 : (X ^ (2 : ℕ) : (RatFunc ℂ)[X]).eval (0 : RatFunc ℂ) = 0 := by simp
   have hm0 : m.eval 0 = m.coeff 0 := (coeff_zero_eq_eval_zero m).symm
   rw [eval_comp, hx2, eval_map, eval₂_at_zero, eval_mul, eval_mul, eval_C, eval_comp,
       eval_neg, eval_X, neg_zero, hm0] at h

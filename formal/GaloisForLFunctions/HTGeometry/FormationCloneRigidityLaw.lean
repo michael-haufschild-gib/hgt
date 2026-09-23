@@ -104,7 +104,7 @@ theorem finiteFormationAffinity_markovDataProcessing
       rw [Real.sqrt_mul (K.nonneg y x), Real.sqrt_mul (K.nonneg y x)]
       calc
         K.weight y x * (Real.sqrt (p x) * Real.sqrt (q x)) =
-            Real.sqrt (K.weight y x) ^ 2 *
+            Real.sqrt (K.weight y x) ^ (2 : ℕ) *
               (Real.sqrt (p x) * Real.sqrt (q x)) := by
                 rw [Real.sq_sqrt (K.nonneg y x)]
         _ = Real.sqrt (K.weight y x) * Real.sqrt (p x) *
@@ -118,7 +118,7 @@ theorem finiteFormationAffinity_independentPair
     {X : Type*} [Fintype X] (p q : X → ℝ)
     (hp : ∀ x, 0 ≤ p x) (hq : ∀ x, 0 ≤ q x) :
     finiteFormationAffinity (finiteIndependentPair p) (finiteIndependentPair q) =
-      finiteFormationAffinity p q ^ 2 := by
+      finiteFormationAffinity p q ^ (2 : ℕ) := by
   unfold finiteFormationAffinity finiteIndependentPair
   rw [Fintype.sum_prod_type]
   calc
@@ -133,7 +133,7 @@ theorem finiteFormationAffinity_independentPair
       intro y _
       rw [Real.sqrt_mul (hp x), Real.sqrt_mul (hq x)]
       ring
-    _ = (∑ x, Real.sqrt (p x) * Real.sqrt (q x)) ^ 2 := by
+    _ = (∑ x, Real.sqrt (p x) * Real.sqrt (q x)) ^ (2 : ℕ) := by
       rw [pow_two, Finset.sum_mul]
       apply Finset.sum_congr rfl
       intro x _
@@ -164,7 +164,7 @@ theorem finiteFormationAffinity_splitRecovery
       calc
         Real.sqrt (p x) * Real.sqrt (kappa x h) *
             (Real.sqrt (q x) * Real.sqrt (kappa x h)) =
-            Real.sqrt (kappa x h) ^ 2 *
+            Real.sqrt (kappa x h) ^ (2 : ℕ) *
               (Real.sqrt (p x) * Real.sqrt (q x)) := by ring
         _ = kappa x h * (Real.sqrt (p x) * Real.sqrt (q x)) := by
           rw [Real.sq_sqrt (hk x h)]
@@ -187,7 +187,7 @@ theorem finiteFormationClone_affinity_extreme
   let a := finiteFormationAffinity p q
   have ha0 : 0 ≤ a := finiteFormationAffinity_nonneg p q
   have ha1 : a ≤ 1 := finiteFormationAffinity_le_one p q hp hq hpsum hqsum
-  have hle : a ≤ a ^ 2 := by
+  have hle : a ≤ a ^ (2 : ℕ) := by
     have hdp := finiteFormationAffinity_markovDataProcessing K p q hp hq
     rw [hclonep, hcloneq, finiteFormationAffinity_independentPair p q hp hq] at hdp
     exact hdp

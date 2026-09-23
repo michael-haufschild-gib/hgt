@@ -25,11 +25,11 @@ theorem volume_maynardFixedAmbientPhysicalDefectPacket_large_le_of_integral_sq_l
     (a : ℝ → ℂ) (ha : Continuous a)
     (hmean :
       (∫ lambda : ℝ in x..(2 * x),
-          ‖maynardFixedAmbientPhysicalDefectPacket S a lambda N R H 1‖ ^ 2) ≤ C) :
+          ‖maynardFixedAmbientPhysicalDefectPacket S a lambda N R H 1‖ ^ (2 : ℕ)) ≤ C) :
     (volume.restrict (Set.Icc x (2 * x))).real
         {lambda | D ≤
           ‖maynardFixedAmbientPhysicalDefectPacket S a lambda N R H 1‖} ≤
-      C / D ^ 2 := by
+      C / D ^ (2 : ℕ) := by
   let b : ℕ → ℝ → ℂ :=
     maynardFixedAmbientDefectCellCoefficient a N R H 1
   let Q : ℝ → ℂ := maynardUnitCellMellinPacketPosExtension S b 0
@@ -50,14 +50,14 @@ theorem volume_maynardFixedAmbientPhysicalDefectPacket_large_le_of_integral_sq_l
     simpa using (maynardFixedAmbientPhysicalDefectPacket_eq_mellinPacket
       S a lambda N R H 1 hlambdaPos hR hH).symm
   have hmeanQ :
-      (∫ lambda : ℝ in x..(2 * x), ‖Q lambda‖ ^ 2) ≤ C := by
+      (∫ lambda : ℝ in x..(2 * x), ‖Q lambda‖ ^ (2 : ℕ)) ≤ C := by
     calc
-      (∫ lambda : ℝ in x..(2 * x), ‖Q lambda‖ ^ 2) =
-          ∫ lambda : ℝ in x..(2 * x), ‖E lambda‖ ^ 2 := by
+      (∫ lambda : ℝ in x..(2 * x), ‖Q lambda‖ ^ (2 : ℕ)) =
+          ∫ lambda : ℝ in x..(2 * x), ‖E lambda‖ ^ (2 : ℕ) := by
         apply intervalIntegral.integral_congr
         intro lambda hlambda
         rw [Set.uIcc_of_le (by linarith : x ≤ 2 * x)] at hlambda
-        change ‖Q lambda‖ ^ 2 = ‖E lambda‖ ^ 2
+        change ‖Q lambda‖ ^ (2 : ℕ) = ‖E lambda‖ ^ (2 : ℕ)
         rw [hQE lambda hlambda]
       _ ≤ C := hmean
   have hcheb := maynard_restrictVolume_norm_ge_le_of_intervalIntegral_sq_le
@@ -78,7 +78,7 @@ theorem volume_maynardFixedAmbientPhysicalDefectPacket_large_le_of_integral_sq_l
           ‖maynardFixedAmbientPhysicalDefectPacket S a lambda N R H 1‖} =
         μ.real {lambda | D ≤ ‖E lambda‖} := by rfl
     _ = μ.real {lambda | D ≤ ‖Q lambda‖} := hmeasure
-    _ ≤ C / D ^ 2 := by simpa only [μ] using hcheb
+    _ ≤ C / D ^ (2 : ℕ) := by simpa only [μ] using hcheb
 
 /-- Low-cell bad-base bound with the exact pole-cancelled cube.  Compared with the old uniform
 cell estimate, the kernel factor `R/N` is retained before summing actual squared cell envelopes. -/
@@ -95,8 +95,8 @@ theorem volume_fixedSource_lowRange_large_le_cube
                 ((1 : ℂ) + (y : ℝ) * Complex.I))
             lambda N R H 1‖} ≤
       (4 * (2 * x) * (1 + 2 * (1 + Real.log K)) *
-        (8 * heathBrownWindowRelevantFixedPolylogBound L X k M 1 * (R / N)) ^ 2 *
-          (K : ℝ) ^ 3) / D ^ 2 := by
+        (8 * heathBrownWindowRelevantFixedPolylogBound L X k M 1 * (R / N)) ^ (2 : ℕ) *
+          (K : ℝ) ^ (3 : ℕ)) / D ^ (2 : ℕ) := by
   let source : ℝ → ℂ := fun y =>
     heathBrownWindowRelevantEligibleDyadicAggregate L X k T0 t M
       ((1 : ℂ) + (y : ℝ) * Complex.I)

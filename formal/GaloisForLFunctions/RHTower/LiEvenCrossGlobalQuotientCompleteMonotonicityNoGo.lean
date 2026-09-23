@@ -3,8 +3,8 @@ import GaloisForLFunctions.RHTower.LiEvenCrossLocalBernsteinShapeNoGo
 /-!
 # Global real-ray complete monotonicity still does not orient the LI tower
 
-The exact LI radial response has atoms `z * b / (z+b)^2`; after division by `z`, its
-quotient atoms are `b / (z+b)^2`.  This module proves that the conjugation-symmetric packet
+The exact LI radial response has atoms `z * b / (z+b)^(2 : ℕ)`; after division by `z`, its
+quotient atoms are `b / (z+b)^(2 : ℕ)`.  This module proves that the conjugation-symmetric packet
 `7 × (1/2) + (3/4+i) + (3/4-i)` has a strictly completely monotone quotient response on the
 entire positive real ray, at every derivative order, while its fourth completed-Abel endpoint
 mode is strictly negative.
@@ -20,15 +20,15 @@ namespace RHTower
 
 noncomputable section
 
-def liLocalRadialQuotientAtom (b z : ℂ) : ℂ := b / (z + b) ^ 2
+def liLocalRadialQuotientAtom (b z : ℂ) : ℂ := b / (z + b) ^ (2 : ℕ)
 
 theorem iteratedDeriv_liLocalRadialQuotientAtom (b : ℂ) (m : ℕ) (z : ℂ)
     (hz : z + b ≠ 0) :
     iteratedDeriv m (liLocalRadialQuotientAtom b) z =
       (-1 : ℂ) ^ m * ((m + 1).factorial : ℂ) * b / (z + b) ^ (m + 2) := by
-  have hs : ContDiffAt ℂ m (fun w : ℂ => ((w + b) ^ 2)⁻¹) z :=
+  have hs : ContDiffAt ℂ m (fun w : ℂ => ((w + b) ^ (2 : ℕ))⁻¹) z :=
     ((contDiffAt_id.add contDiffAt_const).pow 2).inv (pow_ne_zero 2 hz)
-  change iteratedDeriv m (fun w : ℂ => b * ((w + b) ^ 2)⁻¹) z = _
+  change iteratedDeriv m (fun w : ℂ => b * ((w + b) ^ (2 : ℕ))⁻¹) z = _
   rw [iteratedDeriv_const_mul b hs, iteratedDeriv_invSq_add_const b m z hz]
   ring
 

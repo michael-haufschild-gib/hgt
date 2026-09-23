@@ -69,7 +69,7 @@ theorem thetaCuspCenterCompensationSource_quadratic_lower_inner {x : ℝ}
     (hq : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hqu : thetaCuspSingleAtomReflectionScale 1 x ≤ 9/2) :
     (1+(9/5)*thetaCuspSingleAtomReflectionScale 1 x-
-      (2/5)*thetaCuspSingleAtomReflectionScale 1 x^2)*thetaCuspFullSource x^2 ≤
+      (2/5)*thetaCuspSingleAtomReflectionScale 1 x^(2 : ℕ))*thetaCuspFullSource x^(2 : ℕ) ≤
       thetaCuspCenterCompensationSource x := by
   have hx := thetaCusp_pos_of_thirtySevenTenths_le hq
   have hF := thetaCuspFullSource_pos_all x
@@ -79,7 +79,7 @@ theorem thetaCuspCenterCompensationSource_quadratic_lower_inner {x : ℝ}
   have hc := ten_mul_center_add_five_halves_le_firstAtomScale hx.le
   have hr := mul_nonneg
     (show 0 ≤ thetaCuspSingleAtomReflectionScale 1 x-10*x-5/2 by linarith)
-    (show 0 ≤ (2*thetaCuspSingleAtomReflectionScale 1 x-4)*thetaCuspFullSource x^2 by
+    (show 0 ≤ (2*thetaCuspSingleAtomReflectionScale 1 x-4)*thetaCuspFullSource x^(2 : ℕ) by
       apply mul_nonneg (by linarith) (sq_nonneg _))
   unfold thetaCuspCenterCompensationSource
   nlinarith only [hd,hr]
@@ -90,7 +90,7 @@ theorem thetaCuspCenterCompensationSource_firstAtom_extra_inner {x : ℝ}
     (hqu : thetaCuspSingleAtomReflectionScale 1 x ≤ 9/2) :
     ((11/2-thetaCuspSingleAtomReflectionScale 1 x)+
       (2/5)*(thetaCuspSingleAtomReflectionScale 1 x-5/2)*
-        (9/2-thetaCuspSingleAtomReflectionScale 1 x))*thetaCuspSourceTerm x 1^2 ≤
+        (9/2-thetaCuspSingleAtomReflectionScale 1 x))*thetaCuspSourceTerm x 1^(2 : ℕ) ≤
       thetaCuspCenterCompensationSource x := by
   have hx := thetaCusp_pos_of_thirtySevenTenths_le hq
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
@@ -102,7 +102,7 @@ theorem thetaCuspCenterCompensationSource_firstAtom_extra_inner {x : ℝ}
     have h3 : 0 ≤ 9/2-thetaCuspSingleAtomReflectionScale 1 x := by linarith
     positivity
   apply (mul_le_mul_of_nonneg_left hm hC).trans
-  have he (q : ℝ) : (11/2-q)+(2/5)*(q-5/2)*(9/2-q) = 1+(9/5)*q-(2/5)*q^2 := by ring
+  have he (q : ℝ) : (11/2-q)+(2/5)*(q-5/2)*(9/2-q) = 1+(9/5)*q-(2/5)*q^(2 : ℕ) := by ring
   rw [he]
   exact thetaCuspCenterCompensationSource_quadratic_lower_inner hq hqu
 

@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry.AddComb
 term of Lemma 2.1, after substituting `k = t − 1` and `#T ≤ #A − #B + t − 1`, is
 `#A·#B − (#B − t + 1)²`, and the resulting inequality is impossible. -/
 theorem case32_key {a b t : ℝ} (ht : 1 ≤ t) (hb : 2 * t + 1 ≤ b) (hab : b ≤ a) :
-    a * b * (b - 2 * t) < (a + b - 2 * t) * (b - t + 1) ^ 2 := by
+    a * b * (b - 2 * t) < (a + b - 2 * t) * (b - t + 1) ^ (2 : ℕ) := by
   have hu : 0 ≤ a - b := by linarith
   have hm : 0 ≤ b - (2 * t + 1) := by linarith
   have ht0 : (0 : ℝ) ≤ t := by linarith
@@ -33,7 +33,7 @@ theorem case32_key {a b t : ℝ} (ht : 1 ≤ t) (hb : 2 * t + 1 ≤ b) (hab : b 
 /-- The denominator of the second term of Lemma 2.1 at `k = t − 1`, once `#T` is replaced by its
 upper bound, is `#A·#B − (#B − t + 1)²`. -/
 theorem case32_denominator (a b t T : ℝ) (hT : T = a - b + t - 1) :
-    (t - 1) * a + T * (b - (t - 1)) = a * b - (b - t + 1) ^ 2 := by
+    (t - 1) * a + T * (b - (t - 1)) = a * b - (b - t + 1) ^ (2 : ℕ) := by
   rw [hT]
   ring
 
@@ -42,7 +42,7 @@ theorem case32_denominator (a b t T : ℝ) (hT : T = a - b + t - 1) :
 theorem half_le_first_term {t : ℝ} (ht : 1 ≤ t) {M : ℝ} (hM : 0 ≤ M) :
     M / 2 ≤ t * M / (t + Real.sqrt (t * (t - 1))) := by
   have hnn : (0 : ℝ) ≤ t * (t - 1) := by nlinarith
-  have hs2 : Real.sqrt (t * (t - 1)) ^ 2 = t * (t - 1) := Real.sq_sqrt hnn
+  have hs2 : Real.sqrt (t * (t - 1)) ^ (2 : ℕ) = t * (t - 1) := Real.sq_sqrt hnn
   have hs0 : (0 : ℝ) ≤ Real.sqrt (t * (t - 1)) := Real.sqrt_nonneg _
   have hst : Real.sqrt (t * (t - 1)) ≤ t := by nlinarith [hs2, hs0]
   have hpos : (0 : ℝ) < t + Real.sqrt (t * (t - 1)) := by linarith

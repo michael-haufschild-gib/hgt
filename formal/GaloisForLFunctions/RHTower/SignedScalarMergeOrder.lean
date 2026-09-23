@@ -17,12 +17,12 @@ variable {α : Type*} [DecidableEq α]
 
 /-- Energy of a scalar head after absorbing a subset of signed singleton leaves. -/
 def scalarSubsetMergeEnergy (c : α → ℝ) (h : ℝ) (U P : Finset α) : ℝ :=
-  (h+∑ p ∈ P,c p)^2+∑ p ∈ U \ P,(c p)^2
+  (h+∑ p ∈ P,c p)^(2 : ℕ)+∑ p ∈ U \ P,(c p)^(2 : ℕ)
 
 omit [DecidableEq α] in
 private theorem scalar_nonneg_bound (c : α → ℝ) (h : ℝ) (U : Finset α)
     (hh : 0 ≤ h) (hc : ∀ p ∈ U,0 ≤ c p) :
-    h^2+∑ p ∈ U,(c p)^2 ≤ (h+∑ p ∈ U,c p)^2 := by
+    h^(2 : ℕ)+∑ p ∈ U,(c p)^(2 : ℕ) ≤ (h+∑ p ∈ U,c p)^(2 : ℕ) := by
   have hs := sum_sq_le_sq_sum_of_nonneg hc
   have hm := mul_nonneg hh (sum_nonneg hc)
   nlinarith only [hs,hm]
@@ -30,7 +30,7 @@ private theorem scalar_nonneg_bound (c : α → ℝ) (h : ℝ) (U : Finset α)
 omit [DecidableEq α] in
 private theorem scalar_nonpos_bound (c : α → ℝ) (h : ℝ) (U : Finset α)
     (hh : h ≤ 0) (hc : ∀ p ∈ U,c p ≤ 0) :
-    h^2+∑ p ∈ U,(c p)^2 ≤ (h+∑ p ∈ U,c p)^2 := by
+    h^(2 : ℕ)+∑ p ∈ U,(c p)^(2 : ℕ) ≤ (h+∑ p ∈ U,c p)^(2 : ℕ) := by
   have hb := scalar_nonneg_bound (fun p => -c p) (-h) U (by linarith)
     (fun p hp => by have := hc p hp; linarith)
   simpa only [neg_sq,sum_neg_distrib,← neg_add,neg_sq] using hb
@@ -45,12 +45,12 @@ theorem scalarSubsetMergeEnergy_insert (c : α → ℝ) (h : ℝ) (U R : Finset 
   ring
 
 private theorem scalar_safe_first (c : α → ℝ) (h : ℝ) (U : Finset α) (hU : U.Nonempty) :
-    ∃ p ∈ U,(h+c p)^2+∑ q ∈ U.erase p,(c q)^2 ≤
-      max (h^2+∑ q ∈ U,(c q)^2) ((h+∑ q ∈ U,c q)^2) := by
+    ∃ p ∈ U,(h+c p)^(2 : ℕ)+∑ q ∈ U.erase p,(c q)^(2 : ℕ) ≤
+      max (h^(2 : ℕ)+∑ q ∈ U,(c q)^(2 : ℕ)) ((h+∑ q ∈ U,c q)^(2 : ℕ)) := by
   by_cases hx : ∃ p ∈ U,h*c p ≤ 0
   · obtain ⟨p,hp,hs⟩ := hx
     refine ⟨p,hp,le_trans ?_ (le_max_left _ _)⟩
-    have he := sum_erase_add U (fun q => (c q)^2) hp
+    have he := sum_erase_add U (fun q => (c q)^(2 : ℕ)) hp
     nlinarith only [he,hs]
   · obtain ⟨p,hp⟩ := hU
     have hs : ∀ q ∈ U,0<h*c q := by
@@ -87,7 +87,7 @@ private theorem scalar_safe_first (c : α → ℝ) (h : ℝ) (U : Finset α) (hU
 theorem exists_scalarSubsetMergeOrder (c : α → ℝ) (h : ℝ) (U : Finset α) :
     ∃ l : List α,l.Nodup ∧ l.toFinset=U ∧ ∀ k : ℕ,
       scalarSubsetMergeEnergy c h U (l.take k).toFinset ≤
-        max (h^2+∑ p ∈ U,(c p)^2) ((h+∑ p ∈ U,c p)^2) := by
+        max (h^(2 : ℕ)+∑ p ∈ U,(c p)^(2 : ℕ)) ((h+∑ p ∈ U,c p)^(2 : ℕ)) := by
   revert h
   refine Finset.strongInductionOn U ?_
   intro U ih h
@@ -124,7 +124,7 @@ theorem exists_scalarSubsetMergeOrder (c : α → ℝ) (h : ℝ) (U : Finset α)
 theorem exists_scalarSubsetMergeOrder_iff (c : α → ℝ) (h B : ℝ) (U : Finset α) :
     (∃ l : List α,l.Nodup ∧ l.toFinset=U ∧ ∀ k : ℕ,
       scalarSubsetMergeEnergy c h U (l.take k).toFinset ≤ B) ↔
-    h^2+∑ p ∈ U,(c p)^2 ≤ B ∧ (h+∑ p ∈ U,c p)^2 ≤ B := by
+    h^(2 : ℕ)+∑ p ∈ U,(c p)^(2 : ℕ) ≤ B ∧ (h+∑ p ∈ U,c p)^(2 : ℕ) ≤ B := by
   constructor
   · rintro ⟨l,hl,hset,hbound⟩
     constructor

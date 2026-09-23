@@ -126,7 +126,7 @@ theorem norm_sq_hsInner_eulerPositiveFisherLowerBoundary_joinedReporter_le_half
         (infiniteFisherOneCornerJoinedReporter
           (lpCoordinateProjection (eulerPositiveLogCutoffSet T))
           D
-          (eulerPositiveStateLp sigma hsigma))‖ ^ 2 ≤
+          (eulerPositiveStateLp sigma hsigma))‖ ^ (2 : ℕ) ≤
       (1 / 2 : ℝ) *
         hsNormSq (eulerPositiveFisherLowerBoundary sigma T hsigma) := by
   apply norm_sq_hsInner_infiniteFisherOneCornerJoinedReporter_le_half

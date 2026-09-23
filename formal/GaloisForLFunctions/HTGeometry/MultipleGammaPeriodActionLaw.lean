@@ -7,7 +7,7 @@ import Mathlib.Analysis.Complex.ReImTopology
 /-!
 # Multiple-Gamma marked period action law
 
-This module formalizes the marked `Z^3` translation presentation with periods
+This module formalizes the marked `Z^(3 : ℕ)` translation presentation with periods
 `1, i, 2i + pi/m`, its cofinal boundary `1, i, 2i`, the exact kernels and image closures,
 the compatible affine involution, and the rank/depth ledger.
 -/
@@ -20,7 +20,7 @@ namespace HTGeometry
 
 noncomputable section
 
-/-- Marked source lattice `Z^3`. -/
+/-- Marked source lattice `Z^(3 : ℕ)`. -/
 abbrev MultipleGammaPeriodSource := Fin 3 → ℤ
 
 /-- Finite marked period family `(1, i, 2i + pi/m)`. -/
@@ -31,14 +31,14 @@ def finiteMultipleGammaPeriods (m : ℕ+) : Fin 3 → ℂ :=
 def boundaryMultipleGammaPeriods : Fin 3 → ℂ :=
   ![1, Complex.I, 2 * Complex.I]
 
-/-- Period realization `p_m : Z^3 → C` for finite `m`. -/
+/-- Period realization `p_m : Z^(3 : ℕ) → C` for finite `m`. -/
 def finiteMultipleGammaPeriodMap (m : ℕ+) : MultipleGammaPeriodSource →+ ℂ where
   toFun n := ∑ j, (n j : ℂ) * finiteMultipleGammaPeriods m j
   map_zero' := by simp
   map_add' x y := by
     simp only [Pi.add_apply, Int.cast_add, add_mul, Finset.sum_add_distrib]
 
-/-- Boundary period realization `p_infinity : Z^3 → C`. -/
+/-- Boundary period realization `p_infinity : Z^(3 : ℕ) → C`. -/
 def boundaryMultipleGammaPeriodMap : MultipleGammaPeriodSource →+ ℂ where
   toFun n := ∑ j, (n j : ℂ) * boundaryMultipleGammaPeriods j
   map_zero' := by simp

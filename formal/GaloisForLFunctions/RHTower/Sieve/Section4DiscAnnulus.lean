@@ -54,15 +54,15 @@ theorem section4_block_disc {B Q : Finset ℕ} {A₁ B₁ : ℕ}
     (v : ℕ → ℝ) (hv : ∀ k ∈ Finset.range L, 0 < v k) (Ik : ℕ → ℝ)
     (hIk : ∀ k ∈ Finset.range L,
       (∫ w in Set.Icc (-w₀) w₀,
-          ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2) ≤ Ik k) :
+          ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ)) ≤ Ik k) :
     (∫ w in Set.Icc (-w₀) w₀,
-        ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
-      ≤ (B.card : ℝ) ^ 2
+        ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
+      ≤ (B.card : ℝ) ^ (2 : ℕ)
         * (2 * ((∑ k ∈ Finset.range L, 1 / v k)
               * ∑ k ∈ Finset.range L, v k
-                  * (((geomBlock Q R (1 + η) k).card : ℝ) ^ 2 * Ik k))
+                  * (((geomBlock Q R (1 + η) k).card : ℝ) ^ (2 : ℕ) * Ik k))
           + 2 * ∫ w in Set.Icc (-w₀) w₀,
-              ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ 2) := by
+              ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ (2 : ℕ)) := by
   classical
   have hsub : Set.Icc (-w₀) w₀ ⊆ Set.Icc (-W) W := Set.Icc_subset_Icc (by linarith) hwW
   have hBf : ∀ w ∈ Set.Icc (-w₀) w₀, ‖primeBlockPoly B w‖ ≤ (B.card : ℝ) := by
@@ -90,15 +90,15 @@ theorem section4_block_disc {B Q : Finset ℕ} {A₁ B₁ : ℕ}
 theorem section4_block_disc_ann {B Q : Finset ℕ} {A₁ B₁ : ℕ} {W w₀ : ℝ} (hwW : w₀ ≤ W)
     {Ddisc Dann : ℝ}
     (hdisc : (∫ w in Set.Icc (-w₀) w₀,
-        ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2) ≤ Ddisc)
+        ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ)) ≤ Ddisc)
     (hann : (∫ w in windowAnnulus w₀ W,
-        ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
+        ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
       ≤ Dann) :
     (∫ w in Set.Icc (-W) W,
-        ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
+        ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
       ≤ Ddisc + Dann := by
   have hcont : Continuous fun w : ℝ =>
-      ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2 :=
+      ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ) :=
     (((continuous_primeBlockPoly B).norm).pow 2).mul
       (((continuous_omegaWeightedMoebiusPoly Q _).norm).pow 2)
   rw [setIntegral_Icc_split hcont hwW]

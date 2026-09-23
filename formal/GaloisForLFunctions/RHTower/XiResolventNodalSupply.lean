@@ -45,16 +45,16 @@ theorem polyTuranMinor_supply_of_partial_line {X δ : ℝ} (hX : 0 ≤ X) (hδ :
     {q₁ q₂ : XiZeroCopy}
     (h1 : δ ≤ ‖xiResolventPoint X q₁‖) (h2 : δ ≤ ‖xiResolventPoint X q₂‖)
     (hne : ‖xiResolventPoint X q₁‖ ≠ ‖xiResolventPoint X q₂‖)
-    (hmass : 8 * B ^ 4 * (∑' q : {q : XiZeroCopy | ‖xiResolventPoint X q‖ < δ},
+    (hmass : 8 * B ^ (4 : ℕ) * (∑' q : {q : XiZeroCopy | ‖xiResolventPoint X q‖ < δ},
         ‖xiResolventPoint X (q : XiZeroCopy)‖) *
         (∑' q : XiZeroCopy, ‖xiResolventPoint X q‖) ≤
       2 * ((‖xiResolventPoint X q₁‖ * ‖xiResolventPoint X q₂‖) ^ (2 * m + 1) *
-        (Polynomial.eval ‖xiResolventPoint X q₁‖ p ^ 2 *
-          Polynomial.eval ‖xiResolventPoint X q₂‖ p ^ 2) *
-        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ 2)) :
+        (Polynomial.eval ‖xiResolventPoint X q₁‖ p ^ (2 : ℕ) *
+          Polynomial.eval ‖xiResolventPoint X q₂‖ p ^ (2 : ℕ)) *
+        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ (2 : ℕ))) :
     0 ≤ (xiPolyMoment (Polynomial.X ^ m * p) 0 X *
       xiPolyMoment (Polynomial.X ^ m * p) 2 X -
-      xiPolyMoment (Polynomial.X ^ m * p) 1 X ^ 2).re := by
+      xiPolyMoment (Polynomial.X ^ m * p) 1 X ^ (2 : ℕ)).re := by
   classical
   have e0 : xiPolyMoment (Polynomial.X ^ m * p) 0 X = xiPolyMoment p (2 * m) X := by
     have h := xiPolyMoment_X_pow_mul m p 0 X
@@ -94,8 +94,8 @@ theorem polyTuranMinor_supply_of_partial_line {X δ : ℝ} (hX : 0 ≤ X) (hδ :
     simpa using h
   have hatombound : ∀ z : XiZeroCopy × XiZeroCopy,
       ‖(u z.1 * u z.2) ^ (2 * m + 1) *
-        (evalRealPolynomial p (u z.1) ^ 2 * evalRealPolynomial p (u z.2) ^ 2) *
-        (u z.1 - u z.2) ^ 2‖ ≤ ‖u z.1‖ * ‖u z.2‖ * (4 * B ^ 4) := by
+        (evalRealPolynomial p (u z.1) ^ (2 : ℕ) * evalRealPolynomial p (u z.2) ^ (2 : ℕ)) *
+        (u z.1 - u z.2) ^ (2 : ℕ)‖ ≤ ‖u z.1‖ * ‖u z.2‖ * (4 * B ^ (4 : ℕ)) := by
     intro z
     rw [norm_mul, norm_mul]
     have hu1 : ‖u z.1‖ ≤ 1 := norm_xiResolventPoint_le_one hX z.1
@@ -113,17 +113,17 @@ theorem polyTuranMinor_supply_of_partial_line {X δ : ℝ} (hX : 0 ≤ X) (hδ :
               (pow_le_one₀ (norm_nonneg _) hu2) (norm_nonneg _)
           _ = ‖u z.2‖ := mul_one _
       exact mul_le_mul hp1 hp2 (pow_nonneg (norm_nonneg _) _) (norm_nonneg _)
-    have hW : ‖evalRealPolynomial p (u z.1) ^ 2 * evalRealPolynomial p (u z.2) ^ 2‖ ≤
-        B ^ 4 := by
+    have hW : ‖evalRealPolynomial p (u z.1) ^ (2 : ℕ) * evalRealPolynomial p (u z.2) ^ (2 : ℕ)‖ ≤
+        B ^ (4 : ℕ) := by
       rw [norm_mul, norm_pow, norm_pow]
-      have b1 : ‖evalRealPolynomial p (u z.1)‖ ^ 2 ≤ B ^ 2 :=
+      have b1 : ‖evalRealPolynomial p (u z.1)‖ ^ (2 : ℕ) ≤ B ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) (hB _ hu1) 2
-      have b2 : ‖evalRealPolynomial p (u z.2)‖ ^ 2 ≤ B ^ 2 :=
+      have b2 : ‖evalRealPolynomial p (u z.2)‖ ^ (2 : ℕ) ≤ B ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) (hB _ hu2) 2
-      calc ‖evalRealPolynomial p (u z.1)‖ ^ 2 * ‖evalRealPolynomial p (u z.2)‖ ^ 2
-          ≤ B ^ 2 * B ^ 2 := mul_le_mul b1 b2 (by positivity) (by positivity)
-        _ = B ^ 4 := by ring
-    have hD : ‖(u z.1 - u z.2) ^ 2‖ ≤ 4 := by
+      calc ‖evalRealPolynomial p (u z.1)‖ ^ (2 : ℕ) * ‖evalRealPolynomial p (u z.2)‖ ^ (2 : ℕ)
+          ≤ B ^ (2 : ℕ) * B ^ (2 : ℕ) := mul_le_mul b1 b2 (by positivity) (by positivity)
+        _ = B ^ (4 : ℕ) := by ring
+    have hD : ‖(u z.1 - u z.2) ^ (2 : ℕ)‖ ≤ 4 := by
       rw [norm_pow]
       have h4 : ‖u z.1 - u z.2‖ ≤ 2 := by
         calc ‖u z.1 - u z.2‖ ≤ ‖u z.1‖ + ‖u z.2‖ := norm_sub_le _ _
@@ -131,18 +131,18 @@ theorem polyTuranMinor_supply_of_partial_line {X δ : ℝ} (hX : 0 ≤ X) (hδ :
           _ = 2 := by norm_num
       nlinarith [norm_nonneg (u z.1 - u z.2)]
     calc ‖(u z.1 * u z.2) ^ (2 * m + 1)‖ *
-        ‖evalRealPolynomial p (u z.1) ^ 2 * evalRealPolynomial p (u z.2) ^ 2‖ *
-        ‖(u z.1 - u z.2) ^ 2‖
-        ≤ (‖u z.1‖ * ‖u z.2‖) * B ^ 4 * 4 := by
+        ‖evalRealPolynomial p (u z.1) ^ (2 : ℕ) * evalRealPolynomial p (u z.2) ^ (2 : ℕ)‖ *
+        ‖(u z.1 - u z.2) ^ (2 : ℕ)‖
+        ≤ (‖u z.1‖ * ‖u z.2‖) * B ^ (4 : ℕ) * 4 := by
           refine mul_le_mul (mul_le_mul hA hW (norm_nonneg _)
             (mul_nonneg (norm_nonneg _) (norm_nonneg _))) hD (norm_nonneg _) ?_
           positivity
-      _ = ‖u z.1‖ * ‖u z.2‖ * (4 * B ^ 4) := by ring
+      _ = ‖u z.1‖ * ‖u z.2‖ * (4 * B ^ (4 : ℕ)) := by ring
   have hpairsummable : Summable (fun z : XiZeroCopy × XiZeroCopy =>
       (u z.1 * u z.2) ^ (2 * m + 1) *
-        (evalRealPolynomial p (u z.1) ^ 2 * evalRealPolynomial p (u z.2) ^ 2) *
-        (u z.1 - u z.2) ^ 2) :=
-    Summable.of_norm_bounded (hprodsum.mul_right (4 * B ^ 4)) hatombound
+        (evalRealPolynomial p (u z.1) ^ (2 : ℕ) * evalRealPolynomial p (u z.2) ^ (2 : ℕ)) *
+        (u z.1 - u z.2) ^ (2 : ℕ)) :=
+    Summable.of_norm_bounded (hprodsum.mul_right (4 * B ^ (4 : ℕ))) hatombound
   -- the weighted pair expansion split at scale `δ`
   have hpair := two_mul_polyTuranMinorAt_eq_tsum_pair hX p (2 * m)
   have hsplit := hpairsummable.sum_add_tsum_compl (s := F ×ˢ F)
@@ -154,22 +154,22 @@ theorem polyTuranMinor_supply_of_partial_line {X δ : ℝ} (hX : 0 ≤ X) (hδ :
   set r₂ : ℝ := ‖xiResolventPoint X q₂‖ with hr₂
   have hterm_re : ∀ z : XiZeroCopy × XiZeroCopy, z ∈ F ×ˢ F →
       ((u z.1 * u z.2) ^ (2 * m + 1) *
-        (evalRealPolynomial p (u z.1) ^ 2 * evalRealPolynomial p (u z.2) ^ 2) *
-        (u z.1 - u z.2) ^ 2).re =
+        (evalRealPolynomial p (u z.1) ^ (2 : ℕ) * evalRealPolynomial p (u z.2) ^ (2 : ℕ)) *
+        (u z.1 - u z.2) ^ (2 : ℕ)).re =
       (‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖) ^ (2 * m + 1) *
-        (Polynomial.eval ‖xiResolventPoint X z.1‖ p ^ 2 *
-          Polynomial.eval ‖xiResolventPoint X z.2‖ p ^ 2) *
-        (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ 2 := by
+        (Polynomial.eval ‖xiResolventPoint X z.1‖ p ^ (2 : ℕ) *
+          Polynomial.eval ‖xiResolventPoint X z.2‖ p ^ (2 : ℕ)) *
+        (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ (2 : ℕ) := by
     intro z hz
     rw [Finset.mem_product] at hz
     rw [hreal z.1 ((hmemF z.1).mp hz.1), hreal z.2 ((hmemF z.2).mp hz.2),
       evalRealPolynomial_ofReal, evalRealPolynomial_ofReal]
     norm_cast
   have hblock : 2 * ((r₁ * r₂) ^ (2 * m + 1) *
-      (Polynomial.eval r₁ p ^ 2 * Polynomial.eval r₂ p ^ 2) * (r₁ - r₂) ^ 2) ≤
+      (Polynomial.eval r₁ p ^ (2 : ℕ) * Polynomial.eval r₂ p ^ (2 : ℕ)) * (r₁ - r₂) ^ (2 : ℕ)) ≤
       (∑ z ∈ F ×ˢ F, (u z.1 * u z.2) ^ (2 * m + 1) *
-        (evalRealPolynomial p (u z.1) ^ 2 * evalRealPolynomial p (u z.2) ^ 2) *
-        (u z.1 - u z.2) ^ 2).re := by
+        (evalRealPolynomial p (u z.1) ^ (2 : ℕ) * evalRealPolynomial p (u z.2) ^ (2 : ℕ)) *
+        (u z.1 - u z.2) ^ (2 : ℕ)).re := by
     rw [Complex.re_sum, Finset.sum_congr rfl hterm_re]
     have hsub : ({(q₁, q₂), (q₂, q₁)} : Finset (XiZeroCopy × XiZeroCopy)) ⊆ F ×ˢ F := by
       intro z hz
@@ -180,26 +180,26 @@ theorem polyTuranMinor_supply_of_partial_line {X δ : ℝ} (hX : 0 ≤ X) (hδ :
       exact hqne (congrArg Prod.fst h)
     have hpairsum : ∑ z ∈ ({(q₁, q₂), (q₂, q₁)} : Finset (XiZeroCopy × XiZeroCopy)),
         (‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖) ^ (2 * m + 1) *
-          (Polynomial.eval ‖xiResolventPoint X z.1‖ p ^ 2 *
-            Polynomial.eval ‖xiResolventPoint X z.2‖ p ^ 2) *
-          (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ 2 =
+          (Polynomial.eval ‖xiResolventPoint X z.1‖ p ^ (2 : ℕ) *
+            Polynomial.eval ‖xiResolventPoint X z.2‖ p ^ (2 : ℕ)) *
+          (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ (2 : ℕ) =
         2 * ((r₁ * r₂) ^ (2 * m + 1) *
-          (Polynomial.eval r₁ p ^ 2 * Polynomial.eval r₂ p ^ 2) * (r₁ - r₂) ^ 2) := by
+          (Polynomial.eval r₁ p ^ (2 : ℕ) * Polynomial.eval r₂ p ^ (2 : ℕ)) * (r₁ - r₂) ^ (2 : ℕ)) := by
       rw [Finset.sum_pair hpairne]
       ring_nf
       nlinarith [sq_nonneg (r₁ - r₂), sq_nonneg (r₂ - r₁)]
     calc 2 * ((r₁ * r₂) ^ (2 * m + 1) *
-        (Polynomial.eval r₁ p ^ 2 * Polynomial.eval r₂ p ^ 2) * (r₁ - r₂) ^ 2)
+        (Polynomial.eval r₁ p ^ (2 : ℕ) * Polynomial.eval r₂ p ^ (2 : ℕ)) * (r₁ - r₂) ^ (2 : ℕ))
         = ∑ z ∈ ({(q₁, q₂), (q₂, q₁)} : Finset (XiZeroCopy × XiZeroCopy)),
             (‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖) ^ (2 * m + 1) *
-              (Polynomial.eval ‖xiResolventPoint X z.1‖ p ^ 2 *
-                Polynomial.eval ‖xiResolventPoint X z.2‖ p ^ 2) *
-              (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ 2 := hpairsum.symm
+              (Polynomial.eval ‖xiResolventPoint X z.1‖ p ^ (2 : ℕ) *
+                Polynomial.eval ‖xiResolventPoint X z.2‖ p ^ (2 : ℕ)) *
+              (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ (2 : ℕ) := hpairsum.symm
       _ ≤ ∑ z ∈ F ×ˢ F,
             (‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖) ^ (2 * m + 1) *
-              (Polynomial.eval ‖xiResolventPoint X z.1‖ p ^ 2 *
-                Polynomial.eval ‖xiResolventPoint X z.2‖ p ^ 2) *
-              (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ 2 := by
+              (Polynomial.eval ‖xiResolventPoint X z.1‖ p ^ (2 : ℕ) *
+                Polynomial.eval ‖xiResolventPoint X z.2‖ p ^ (2 : ℕ)) *
+              (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ (2 : ℕ) := by
           refine Finset.sum_le_sum_of_subset_of_nonneg hsub fun z _ _ => ?_
           positivity
   -- the tail mass
@@ -245,88 +245,88 @@ theorem polyTuranMinor_supply_of_partial_line {X δ : ℝ} (hX : 0 ≤ X) (hδ :
   have hcompl : ‖∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
       (u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^
           (2 * m + 1) *
-        (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ 2 *
-          evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2) *
-        (u (↑z : XiZeroCopy × XiZeroCopy).1 - u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2‖ ≤
-      4 * B ^ 4 * (2 * ε * S) := by
+        (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ (2 : ℕ) *
+          evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)) *
+        (u (↑z : XiZeroCopy × XiZeroCopy).1 - u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖ ≤
+      4 * B ^ (4 : ℕ) * (2 * ε * S) := by
     have hsubpair := (hpairsummable.norm.subtype
       ((↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ))
     have hsubprod := hprodsum.subtype ((↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ)
     calc ‖∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
           (u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^
               (2 * m + 1) *
-            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ 2 *
-              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2) *
+            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ (2 : ℕ) *
+              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2‖
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖
         ≤ ∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
             ‖(u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^
                 (2 * m + 1) *
-              (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ 2 *
-                evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2) *
+              (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ (2 : ℕ) *
+                evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)) *
               (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-                u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2‖ :=
+                u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖ :=
           norm_tsum_le_tsum_norm hsubpair
       _ ≤ ∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
             ‖u (↑z : XiZeroCopy × XiZeroCopy).1‖ *
-              ‖u (↑z : XiZeroCopy × XiZeroCopy).2‖ * (4 * B ^ 4) := by
+              ‖u (↑z : XiZeroCopy × XiZeroCopy).2‖ * (4 * B ^ (4 : ℕ)) := by
           refine Summable.tsum_le_tsum (fun z => hatombound _) hsubpair
-            (hsubprod.mul_right (4 * B ^ 4))
+            (hsubprod.mul_right (4 * B ^ (4 : ℕ)))
       _ = (∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
             ‖u (↑z : XiZeroCopy × XiZeroCopy).1‖ *
-              ‖u (↑z : XiZeroCopy × XiZeroCopy).2‖) * (4 * B ^ 4) := tsum_mul_right
-      _ ≤ 2 * ε * S * (4 * B ^ 4) := by
+              ‖u (↑z : XiZeroCopy × XiZeroCopy).2‖) * (4 * B ^ (4 : ℕ)) := tsum_mul_right
+      _ ≤ 2 * ε * S * (4 * B ^ (4 : ℕ)) := by
           refine mul_le_mul_of_nonneg_right hcomplprod (by positivity)
-      _ = 4 * B ^ 4 * (2 * ε * S) := by ring
+      _ = 4 * B ^ (4 : ℕ) * (2 * ε * S) := by ring
   -- assemble
   have hmain : 0 ≤ (2 * (xiPolyMoment p (2 * m) X * xiPolyMoment p (2 * m + 2) X -
-      xiPolyMoment p (2 * m + 1) X ^ 2)).re := by
+      xiPolyMoment p (2 * m + 1) X ^ (2 : ℕ))).re := by
     rw [hpair]
     have hEq : (∑' z : XiZeroCopy × XiZeroCopy,
         (u z.1 * u z.2) ^ (2 * m + 1) *
-          (evalRealPolynomial p (u z.1) ^ 2 * evalRealPolynomial p (u z.2) ^ 2) *
-          (u z.1 - u z.2) ^ 2) =
+          (evalRealPolynomial p (u z.1) ^ (2 : ℕ) * evalRealPolynomial p (u z.2) ^ (2 : ℕ)) *
+          (u z.1 - u z.2) ^ (2 : ℕ)) =
         (∑ z ∈ F ×ˢ F, (u z.1 * u z.2) ^ (2 * m + 1) *
-          (evalRealPolynomial p (u z.1) ^ 2 * evalRealPolynomial p (u z.2) ^ 2) *
-          (u z.1 - u z.2) ^ 2) +
+          (evalRealPolynomial p (u z.1) ^ (2 : ℕ) * evalRealPolynomial p (u z.2) ^ (2 : ℕ)) *
+          (u z.1 - u z.2) ^ (2 : ℕ)) +
         ∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
           (u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^
               (2 * m + 1) *
-            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ 2 *
-              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2) *
+            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ (2 : ℕ) *
+              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2 := hsplit.symm
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ) := hsplit.symm
     rw [hEq, Complex.add_re]
-    have htailre : -(4 * B ^ 4 * (2 * ε * S)) ≤
+    have htailre : -(4 * B ^ (4 : ℕ) * (2 * ε * S)) ≤
         (∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
           (u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^
               (2 * m + 1) *
-            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ 2 *
-              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2) *
+            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ (2 : ℕ) *
+              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2).re := by
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)).re := by
       have ha := Complex.abs_re_le_norm
         (∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
           (u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^
               (2 * m + 1) *
-            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ 2 *
-              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2) *
+            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ (2 : ℕ) *
+              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2)
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ))
       have hb := neg_abs_le
         (∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
           (u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^
               (2 * m + 1) *
-            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ 2 *
-              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2) *
+            (evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).1) ^ (2 : ℕ) *
+              evalRealPolynomial p (u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2).re
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)).re
       linarith
     linarith [hmass]
   have h2re : (2 * (xiPolyMoment p (2 * m) X * xiPolyMoment p (2 * m + 2) X -
-      xiPolyMoment p (2 * m + 1) X ^ 2)).re =
+      xiPolyMoment p (2 * m + 1) X ^ (2 : ℕ))).re =
       2 * (xiPolyMoment p (2 * m) X * xiPolyMoment p (2 * m + 2) X -
-        xiPolyMoment p (2 * m + 1) X ^ 2).re := by
+        xiPolyMoment p (2 * m + 1) X ^ (2 : ℕ)).re := by
     simp [Complex.mul_re]
   rw [h2re] at hmain
   linarith
@@ -344,12 +344,12 @@ theorem rational_nodal_datum_of_partial_line {X δ : ℝ} (hX : 0 ≤ X) (hδ : 
         ‖xiResolventPoint X (q : XiZeroCopy)‖) *
         (∑' q : XiZeroCopy, ‖xiResolventPoint X q‖) ≤
       2 * ((‖xiResolventPoint X q₁‖ * ‖xiResolventPoint X q₂‖) ^ (2 * m + 1) *
-        ((∏ i, (‖xiResolventPoint X q₁‖ - c i)) ^ 2 *
-          (∏ i, (‖xiResolventPoint X q₂‖ - c i)) ^ 2) *
-        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ 2)) :
+        ((∏ i, (‖xiResolventPoint X q₁‖ - c i)) ^ (2 : ℕ) *
+          (∏ i, (‖xiResolventPoint X q₂‖ - c i)) ^ (2 : ℕ)) *
+        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ (2 : ℕ))) :
     0 ≤ (xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 0 X *
       xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 2 X -
-      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ 2).re := by
+      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ (2 : ℕ)).re := by
   have hB : ∀ z : ℂ, ‖z‖ ≤ 1 → ‖evalRealPolynomial (finNodalPolynomial c) z‖ ≤ 2 ^ j := by
     intro z hz
     rw [evalRealPolynomial_finNodalPolynomial, norm_prod]
@@ -357,7 +357,7 @@ theorem rational_nodal_datum_of_partial_line {X δ : ℝ} (hX : 0 ≤ X) (hδ : 
           Finset.prod_le_prod (fun i _ => norm_nonneg _)
             (fun i _ => norm_sub_node_le hz (hc i).1 (hc i).2)
       _ = 2 ^ j := by rw [Finset.prod_const, Finset.card_fin]
-  have hBpow : ((2 : ℝ) ^ j) ^ 4 = 2 ^ (4 * j) := by
+  have hBpow : ((2 : ℝ) ^ j) ^ (4 : ℕ) = 2 ^ (4 * j) := by
     rw [← pow_mul, mul_comm]
   refine polyTuranMinor_supply_of_partial_line hX hδ hline (finNodalPolynomial c) m hB
     h1 h2 hne ?_

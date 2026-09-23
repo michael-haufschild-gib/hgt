@@ -57,7 +57,7 @@ theorem exists_deriv_wallSymbol_bound {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     refine div_le_div_of_nonneg_right ?_ ht0.le
     exact le_max_right _ _
 
-theorem hasDerivAt_wallSymbol {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (t : ℝ) :
+theorem hasDerivAt_wallSymbol_shiftedSymbolWeightedDifference {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (t : ℝ) :
     HasDerivAt (wallSymbol σ) (wallSymbolJet σ 1 t) t := by
   have h := (hasDerivAt_wallSymbolJet hσ0 hσ1 0 t).add_const
     (2 * (Real.eulerMascheroniConstant : ℂ))
@@ -74,12 +74,12 @@ theorem exists_bound_wallSymbol_growth {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1
   refine ⟨‖wallSymbol σ 0‖ + C₀, by positivity, fun t => ?_⟩
   have hderiv : ∀ θ ∈ uIcc (0 : ℝ) t, ‖deriv (wallSymbol σ) θ‖ ≤ C₀ := by
     intro θ _
-    rw [(hasDerivAt_wallSymbol hσ0 hσ1 θ).deriv]
+    rw [(hasDerivAt_wallSymbol_shiftedSymbolWeightedDifference hσ0 hσ1 θ).deriv]
     refine le_trans (hbound θ) ?_
     rw [div_le_iff₀ (by positivity : (0 : ℝ) < 1 + |θ|)]
     nlinarith [abs_nonneg θ, hC₀]
   have hdiff : ∀ θ ∈ uIcc (0 : ℝ) t, DifferentiableAt ℝ (wallSymbol σ) θ :=
-    fun θ _ => (hasDerivAt_wallSymbol hσ0 hσ1 θ).differentiableAt
+    fun θ _ => (hasDerivAt_wallSymbol_shiftedSymbolWeightedDifference hσ0 hσ1 θ).differentiableAt
   have hMVT := (convex_uIcc (0 : ℝ) t).norm_image_sub_le_of_norm_deriv_le hdiff hderiv
     left_mem_uIcc right_mem_uIcc
   have habs : ‖t - (0 : ℝ)‖ = |t| := by simp
@@ -100,12 +100,12 @@ theorem exists_bound_wallSymbol_nearDiagonal {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : 
     intro θ hθ
     have hθpos : (1 + |η|) / 2 ≤ 1 + |θ| := one_add_abs_ge_of_mem_uIcc hθ hnear
     have hθ0 : (0 : ℝ) < 1 + |θ| := by positivity
-    rw [(hasDerivAt_wallSymbol hσ0 hσ1 θ).deriv]
+    rw [(hasDerivAt_wallSymbol_shiftedSymbolWeightedDifference hσ0 hσ1 θ).deriv]
     refine (hbound θ).trans ?_
     rw [div_le_div_iff₀ hθ0 hηpos]
     nlinarith [hC₀, hθpos, hηpos]
   have hdiff : ∀ θ ∈ uIcc η ξ, DifferentiableAt ℝ (wallSymbol σ) θ :=
-    fun θ _ => (hasDerivAt_wallSymbol hσ0 hσ1 θ).differentiableAt
+    fun θ _ => (hasDerivAt_wallSymbol_shiftedSymbolWeightedDifference hσ0 hσ1 θ).differentiableAt
   have hMVT := (convex_uIcc η ξ).norm_image_sub_le_of_norm_deriv_le hdiff hderivbound
     left_mem_uIcc right_mem_uIcc
   rw [Real.norm_eq_abs] at hMVT
@@ -122,7 +122,7 @@ theorem exists_bound_wallSymbol_nearDiagonal {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : 
 /-- **`(35a)`: the global weighted symbol-difference bound on the shifted line.** -/
 theorem exists_bound_wallSymbol_global {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ ξ η : ℝ,
-      (1 + |ξ|) * ‖wallSymbol σ ξ - wallSymbol σ η‖ ≤ C * (|ξ - η| + |ξ - η| ^ 2) := by
+      (1 + |ξ|) * ‖wallSymbol σ ξ - wallSymbol σ η‖ ≤ C * (|ξ - η| + |ξ - η| ^ (2 : ℕ)) := by
   obtain ⟨C₁, hC₁, hnear⟩ := exists_bound_wallSymbol_nearDiagonal hσ0 hσ1
   obtain ⟨S, hS, hgrow⟩ := exists_bound_wallSymbol_growth hσ0 hσ1
   refine ⟨C₁ + 15 * S, by linarith, fun ξ η => ?_⟩
@@ -137,11 +137,11 @@ theorem exists_bound_wallSymbol_global {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1
       have htri : ‖wallSymbol σ ξ - wallSymbol σ η‖
           ≤ ‖wallSymbol σ ξ‖ + ‖wallSymbol σ η‖ := norm_sub_le _ _
       nlinarith [htri, hbξ, hbη, hS, hη, hξ]
-    have hfar : (1 + |ξ|) * ‖wallSymbol σ ξ - wallSymbol σ η‖ ≤ 15 * S * |ξ - η| ^ 2 := by
+    have hfar : (1 + |ξ|) * ‖wallSymbol σ ξ - wallSymbol σ η‖ ≤ 15 * S * |ξ - η| ^ (2 : ℕ) := by
       calc (1 + |ξ|) * ‖wallSymbol σ ξ - wallSymbol σ η‖
           ≤ (3 * |ξ - η|) * (5 * S * |ξ - η|) :=
             mul_le_mul hξ hdiff (norm_nonneg _) (by positivity)
-        _ = 15 * S * |ξ - η| ^ 2 := by ring
+        _ = 15 * S * |ξ - η| ^ (2 : ℕ) := by ring
     nlinarith [hfar, hC₁, hS, hsep, sq_nonneg (|ξ - η|)]
 
 end GaloisForLFunctions.RHTower

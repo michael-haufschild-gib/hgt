@@ -158,7 +158,7 @@ omit [CharZero K] in
 /-- Every value of the membrane pencil is three-step nilpotent. -/
 theorem linearWidthDetectorSymbol_cube_zero
     (c : Fin n → K) :
-    (linearWidthDetectorSymbol (K := K) (M := M) c) ^ 3 = 0 := by
+    (linearWidthDetectorSymbol (K := K) (M := M) c) ^ (3 : ℕ) = 0 := by
   classical
   apply LinearMap.ext
   intro f

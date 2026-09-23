@@ -39,11 +39,11 @@ theorem suzukiGammaStripNormSq_le_of_mem {σ₀ σ₁ : ℝ} (h0 : 0 < σ₀) {K
 
 /-- **The glued strip solution is uniformly bounded on every closed substrip.** -/
 theorem exists_bound_norm_stripSolution {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) (c : X) {σ₀ σ₁ : ℝ} (h0 : 0 < σ₀)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z) (c : X) {σ₀ σ₁ : ℝ} (h0 : 0 < σ₀)
     (h01 : σ₀ ≤ σ₁) (h1 : σ₁ < 1) :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ z : ℂ, z.im ∈ Icc σ₀ σ₁ → ‖stripSolution E T c z‖ ≤ D := by
   obtain ⟨K, hK0, hK⟩ := exists_bound_gammaRatio_substrip h0 h01 h1
-  set B : ℝ := (Real.exp (2 * |Real.eulerMascheroniConstant|) * Real.exp ‖T‖ * ‖c‖ ^ 2) * (K / σ₀)
+  set B : ℝ := (Real.exp (2 * |Real.eulerMascheroniConstant|) * Real.exp ‖T‖ * ‖c‖ ^ (2 : ℕ)) * (K / σ₀)
     with hB
   have hB0 : 0 ≤ B := by
     have : 0 ≤ K / σ₀ := div_nonneg hK0 h0.le
@@ -80,7 +80,7 @@ theorem exists_bound_norm_stripSolution {E : ℂ → ℂ} {T : X →L[ℂ] X} (h
   have hcarrier0 : 0 ≤ suzukiGammaStripNormSq σ z.re := by
     rw [suzukiGammaStripNormSq]
     positivity
-  have hchain : ‖stripSolution E T c z‖ ^ 2 ≤ B := by
+  have hchain : ‖stripSolution E T c z‖ ^ (2 : ℕ) ≤ B := by
     refine le_trans hsq ?_
     rw [hB]
     refine mul_le_mul ?_ hcarrier hcarrier0 (by positivity)

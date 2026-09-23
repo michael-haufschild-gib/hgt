@@ -26,7 +26,7 @@ theorem summable_symmetricShiftEulerGlobalDiscrepancyTerm_of_lt
     (a : SymmetricPositiveShift) {sigma : ℝ} (hsigma : 1 + a.1 < sigma) :
     Summable (fun z : Nat.Primes × ℕ => symmetricShiftEulerGlobalDiscrepancyTerm a sigma z) := by
   have hprime : Summable (fun p : Nat.Primes => ((p.1 : ℕ) : ℝ) ^ (-(sigma - a.1))) :=
-    RHTower.summable_primeRpow (by linarith)
+    RHTower.summable_primeRpow_eulerSupportEnergyUncertainty (by linarith)
   have hbase : Summable (fun p : symmetricShiftAllPrimeSupport =>
       ((p.1.1 : ℕ) : ℝ) ^ (-(sigma - a.1))) := by
     apply ((Equiv.Set.univ Nat.Primes).summable_iff).mpr hprime |>.congr

@@ -93,7 +93,7 @@ private theorem cutoffPower_continuous (k : ℂ) :
 /-- Horizontal integration includes the entire reader, not only its Weyl term. -/
 theorem truncated_scalarCutoff_eq_strip (u k : ℂ) (Y : ℝ) (hY : 1 ≤ Y) :
     truncatedIntegral (fun z => scalar u (coordinates z)*cutoffPower k (coordinates z)) Y =
-      ∫ y in (1:ℝ)..Y, principal u ![0,y]*cutoffPower k ![0,y]/(y:ℂ)^2 := by
+      ∫ y in (1:ℝ)..Y, principal u ![0,y]*cutoffPower k ![0,y]/(y:ℂ)^(2 : ℕ) := by
   let F (z : ℂ) := if z.im ≤ Y then scalar u ![z.re,z.im]*cutoffPower k ![z.re,z.im] else 0
   have hi : Integrable (fun z : UpperHalfPlane => F z) measure := by
     have hh := (truncated_integrable _ ((scalar_continuous u).mul (cutoffPower_continuous k)) Y).integrable_indicator
@@ -116,22 +116,22 @@ theorem truncated_scalarCutoff_eq_strip (u k : ℂ) (Y : ℝ) (hY : 1 ≤ Y) :
   rw [hl] at h
   rw [h,intervalIntegral.integral_of_le hY]
   have hm (y : ℝ) (hy : 1 < y) :
-      mean (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^2 =
-        if y ≤ Y then principal u ![0,y]*cutoffPower k ![0,y]/(y:ℂ)^2 else 0 := by
-    change mean (fun x => if y ≤ Y then scalar u ![x,y]*cutoffPower k ![x,y] else 0)/(y:ℂ)^2 = _
+      mean (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^(2 : ℕ) =
+        if y ≤ Y then principal u ![0,y]*cutoffPower k ![0,y]/(y:ℂ)^(2 : ℕ) else 0 := by
+    change mean (fun x => if y ≤ Y then scalar u ![x,y]*cutoffPower k ![x,y] else 0)/(y:ℂ)^(2 : ℕ) = _
     by_cases hyY : y ≤ Y
     · simp only [hyY,ite_true]
       have hc (x : ℝ) : cutoffPower k ![x,y] = cutoffPower k ![0,y] := rfl
       simp_rw [hc]
-      change (∫ x in Ioc (-1/2:ℝ) (1/2), scalar u ![x,y]*cutoffPower k ![0,y])/(y:ℂ)^2 = _
+      change (∫ x in Ioc (-1/2:ℝ) (1/2), scalar u ![x,y]*cutoffPower k ![0,y])/(y:ℂ)^(2 : ℕ) = _
       rw [integral_mul_const]
-      change (mean (fun x => scalar u ![x,y])*cutoffPower k ![0,y])/(y:ℂ)^2 = _
+      change (mean (fun x => scalar u ![x,y])*cutoffPower k ![0,y])/(y:ℂ)^(2 : ℕ) = _
       rw [mean_scalar u (by linarith)]
     · simp [hyY,D4BMCuspProjection.mean]
   calc
-    _ = ∫ y in Ioi (1:ℝ), if y ≤ Y then principal u ![0,y]*cutoffPower k ![0,y]/(y:ℂ)^2 else 0 :=
+    _ = ∫ y in Ioi (1:ℝ), if y ≤ Y then principal u ![0,y]*cutoffPower k ![0,y]/(y:ℂ)^(2 : ℕ) else 0 :=
       setIntegral_congr_fun measurableSet_Ioi (fun y hy => hm y hy)
-    _ = ∫ y in Ioc (1:ℝ) Y, if y ≤ Y then principal u ![0,y]*cutoffPower k ![0,y]/(y:ℂ)^2 else 0 := by
+    _ = ∫ y in Ioc (1:ℝ) Y, if y ≤ Y then principal u ![0,y]*cutoffPower k ![0,y]/(y:ℂ)^(2 : ℕ) else 0 := by
       apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi
         (show Ioc (1:ℝ) Y ⊆ Ioi 1 from fun y hy => hy.1)
       intro y hy
@@ -194,7 +194,7 @@ theorem physical_cutoff_restoration (q : XiZeroCopy) (i : Fin 3) (Y : ℝ) (hY :
   let C := reflectedCompletedLambda ((q.1:ℂ)-1)
   rw [truncated_scalarCutoff_eq_strip _ _ Y (by linarith),neg_div,physicalScalar_principalCutoff_div_gap]
   have hi : (∫ y in (1:ℝ)..Y, principal (physicalAngularParameter q) ![0,y]*
-      cutoffPower (principalExponent q i) ![0,y]/(y:ℂ)^2) =
+      cutoffPower (principalExponent q i) ![0,y]/(y:ℂ)^(2 : ℕ)) =
       C*(∫ y in (1:ℝ)..Y, cutoff ![0,y]*(y:ℂ)^(e-1)) := by
     rw [← intervalIntegral.integral_const_mul]
     apply intervalIntegral.integral_congr
@@ -205,8 +205,8 @@ theorem physical_cutoff_restoration (q : XiZeroCopy) (i : Fin 3) (Y : ℝ) (hY :
     have hn : (y:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hp.ne'
     dsimp only
     rw [physicalScalar_principal]
-    change C*(y:ℂ)^(1-(q.1:ℂ)/2)*(cutoff ![0,y]*(y:ℂ)^principalExponent q i)/(y:ℂ)^2 = _
-    rw [show (y:ℂ)^2=(y:ℂ)^(2:ℂ) by norm_cast]
+    change C*(y:ℂ)^(1-(q.1:ℂ)/2)*(cutoff ![0,y]*(y:ℂ)^principalExponent q i)/(y:ℂ)^(2 : ℕ) = _
+    rw [show (y:ℂ)^(2 : ℕ)=(y:ℂ)^(2:ℂ) by norm_cast]
     rw [show C*(y:ℂ)^(1-(q.1:ℂ)/2)*(cutoff ![0,y]*(y:ℂ)^principalExponent q i)=
       C*cutoff ![0,y]*((y:ℂ)^(1-(q.1:ℂ)/2)*(y:ℂ)^principalExponent q i) by ring,
       ← Complex.cpow_add _ _ hn,mul_div_assoc,← Complex.cpow_sub _ _ hn]
@@ -297,7 +297,7 @@ theorem original_square_finitePart (q : XiZeroCopy) :
 theorem original_square_finitePart_fourLambda (q : XiZeroCopy) (hq : 1/2 < (q.1:ℂ).re) :
     Tendsto (fun Y => truncatedIntegral (fun z => scalar (physicalAngularParameter q) (coordinates z)*
         fullSquarePotential q (coordinates z)) Y-principalCounterterm q (principalAmplitude q) Y)
-      atTop (𝓝 (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^2*
+      atTop (𝓝 (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^(2 : ℕ)*
         reflectedCompletedLambda (1-3*(q.1:ℂ)/2)/2)) := by
   rw [← physicalSelfSourceCoefficient_fourLambda q hq]
   exact original_square_finitePart q

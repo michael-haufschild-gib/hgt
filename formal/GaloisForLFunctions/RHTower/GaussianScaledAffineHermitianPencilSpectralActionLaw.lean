@@ -37,9 +37,9 @@ theorem FiniteGaussianHermitianPencil.scaledAffineCommutatorEnergy
     {scale : ℝ} (hscale : scale ≠ 0)
     (H₀ : Matrix ι ι ℂ) (x : E)
     (U : Matrix.unitaryGroup ι ℂ) :
-    ‖P.commutatorMap U (scale • x) - hermitianPencilCommutatorDrift H₀ U‖ ^ 2 =
-      scale ^ 2 *
-        ‖P.commutatorMap U x - scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ 2 := by
+    ‖P.commutatorMap U (scale • x) - hermitianPencilCommutatorDrift H₀ U‖ ^ (2 : ℕ) =
+      scale ^ (2 : ℕ) *
+        ‖P.commutatorMap U x - scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ (2 : ℕ) := by
   rw [LinearMap.map_smul]
   have hvec :
       scale • P.commutatorMap U x - hermitianPencilCommutatorDrift H₀ U =
@@ -80,7 +80,7 @@ theorem FiniteGaussianHermitianPencil.scaledAffineNearAction_le_adaptive_add_car
         (P.scaledAffineSpectralEnergy hH₀ scale x) r δ ≤
       staticChoiAdaptiveReplicaBase (P.scaledAffineSpectralEnergy hH₀ scale x)
           ((Fintype.card ι : ℝ)⁻¹ *
-            (scale ^ 2 * P.commutatorActivation U)) ^ r +
+            (scale ^ (2 : ℕ) * P.commutatorActivation U)) ^ r +
         if x ∈ gaussianAffineHalfActivationTube
             (n := Module.finrank ℝ E) (P.commutatorMap U)
               (scaledHermitianPencilCommutatorDrift scale H₀ U)
@@ -90,26 +90,26 @@ theorem FiniteGaussianHermitianPencil.scaledAffineNearAction_le_adaptive_add_car
       (d := Fintype.card ι) Fintype.card_pos
       (P.affineReindexedHamiltonian_isHermitian hH₀ (scale • x))
       (finiteGaussianHermitianPencilReindexedEndpoint U) r δ
-      (scale ^ 2 * P.commutatorActivation U)
+      (scale ^ (2 : ℕ) * P.commutatorActivation U)
   rw [P.affineReindexedCommutatorEnergy H₀ (scale • x) U,
     P.scaledAffineCommutatorEnergy hscale H₀ x U] at h
-  have hscaleSq : 0 < scale ^ 2 := sq_pos_of_ne_zero hscale
+  have hscaleSq : 0 < scale ^ (2 : ℕ) := sq_pos_of_ne_zero hscale
   by_cases hc : ‖P.commutatorMap U x -
-      scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ 2 ≤
+      scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ (2 : ℕ) ≤
       P.commutatorActivation U
   · have hcScaled :
-        scale ^ 2 * ‖P.commutatorMap U x -
-            scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ 2 ≤
-          scale ^ 2 * P.commutatorActivation U :=
+        scale ^ (2 : ℕ) * ‖P.commutatorMap U x -
+            scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ (2 : ℕ) ≤
+          scale ^ (2 : ℕ) * P.commutatorActivation U :=
       mul_le_mul_of_nonneg_left hc hscaleSq.le
     rw [if_pos hcScaled] at h
     rw [if_pos]
     · exact h
     · exact hc
   · have hcScaled : ¬
-        scale ^ 2 * ‖P.commutatorMap U x -
-            scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ 2 ≤
-          scale ^ 2 * P.commutatorActivation U := by
+        scale ^ (2 : ℕ) * ‖P.commutatorMap U x -
+            scaledHermitianPencilCommutatorDrift scale H₀ U‖ ^ (2 : ℕ) ≤
+          scale ^ (2 : ℕ) * P.commutatorActivation U := by
       exact fun hs => hc (le_of_mul_le_mul_left hs hscaleSq)
     rw [if_neg hcScaled] at h
     rw [if_neg]
@@ -134,7 +134,7 @@ theorem FiniteGaussianHermitianPencil.weightedScaledAffineNearAction_le_transver
       (∑ c, w c * staticChoiAdaptiveReplicaBase
         (P.scaledAffineSpectralEnergy hH₀ scale x)
         ((Fintype.card ι : ℝ)⁻¹ *
-          (scale ^ 2 * P.commutatorActivation (U c))) ^ r) +
+          (scale ^ (2 : ℕ) * P.commutatorActivation (U c))) ^ r) +
       gaussianWeightedAffineHalfActivationTubeMass
         (n := Module.finrank ℝ E) (fun c => P.commutatorMap (U c))
           (fun c => scaledHermitianPencilCommutatorDrift scale H₀ (U c)) w x := by
@@ -143,7 +143,7 @@ theorem FiniteGaussianHermitianPencil.weightedScaledAffineNearAction_le_transver
         (staticChoiAdaptiveReplicaBase
             (P.scaledAffineSpectralEnergy hH₀ scale x)
             ((Fintype.card ι : ℝ)⁻¹ *
-              (scale ^ 2 * P.commutatorActivation (U c))) ^ r +
+              (scale ^ (2 : ℕ) * P.commutatorActivation (U c))) ^ r +
           if x ∈ gaussianAffineHalfActivationTube
               (n := Module.finrank ℝ E) (P.commutatorMap (U c))
                 (scaledHermitianPencilCommutatorDrift scale H₀ (U c))
@@ -175,18 +175,18 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_weightedScaledAffineNe
           (∑ c, w c * staticChoiAdaptiveReplicaBase
             (P.scaledAffineSpectralEnergy hH₀ scale x)
             ((Fintype.card ι : ℝ)⁻¹ *
-              (scale ^ 2 * P.commutatorActivation (U c))) ^ r) + κ ≤
+              (scale ^ (2 : ℕ) * P.commutatorActivation (U c))) ^ r) + κ ≤
           ∑ c, w c * directStaticChoiTargetNearActionMass
             (choiVector
               (P.scaledAffineSpectralEndpoint hH₀ scale x (U c) :
                 Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ))
             (P.scaledAffineSpectralEnergy hH₀ scale x) r δ} ≤
       (∑ c, w c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 2) ^ 2) /
+              (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ)) /
             ∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 4))) / κ := by
+              (P.commutatorMap (U c)).singularValues i ^ (4 : ℕ)))) / κ := by
   apply (measureReal_mono ?_).trans
     (stdGaussian_measure_weightedAffineHalfActivationTubeMass_ge_le
       (n := Module.finrank ℝ E) (fun c => P.commutatorMap (U c))
@@ -217,7 +217,7 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_optimalDesignScaledAff
             staticChoiAdaptiveReplicaBase
               (P.scaledAffineSpectralEnergy hH₀ scale x)
               ((Fintype.card ι : ℝ)⁻¹ *
-                (scale ^ 2 * P.commutatorActivation (U c))) ^ r) + κ ≤
+                (scale ^ (2 : ℕ) * P.commutatorActivation (U c))) ^ r) + κ ≤
           ∑ c, finiteUnitaryChoiOptimalDesignWeight r U c *
             directStaticChoiTargetNearActionMass
               (choiVector
@@ -225,11 +225,11 @@ theorem FiniteGaussianHermitianPencil.stdGaussian_measure_optimalDesignScaledAff
                   Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) ℂ))
               (P.scaledAffineSpectralEnergy hH₀ scale x) r δ} ≤
       (∑ c, finiteUnitaryChoiOptimalDesignWeight r U c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 2) ^ 2) /
+              (P.commutatorMap (U c)).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ)) /
             ∑ i : Fin (Module.finrank ℝ E),
-              (P.commutatorMap (U c)).singularValues i ^ 4))) / κ := by
+              (P.commutatorMap (U c)).singularValues i ^ (4 : ℕ)))) / κ := by
   exact P.stdGaussian_measure_weightedScaledAffineNearAction_gap_le
     hH₀ hscale U (finiteUnitaryChoiOptimalDesignWeight r U)
       (finiteUnitaryChoiOptimalDesignWeight_mem_stdSimplex r U) r δ hκ

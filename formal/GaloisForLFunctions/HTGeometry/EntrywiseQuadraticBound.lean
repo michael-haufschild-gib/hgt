@@ -22,7 +22,7 @@ Hermitian quadratic form is at most the entrywise bound times the squared dimens
 squared supremum norm. -/
 theorem norm_quadForm_le_of_entries {n : ℕ} (E : Matrix (Fin n) (Fin n) ℂ) {M : ℝ}
     (hM : 0 ≤ M) (hE : ∀ j k, ‖E j k‖ ≤ M) (x : Fin n → ℂ) :
-    ‖star x ⬝ᵥ E.mulVec x‖ ≤ M * n ^ 2 * ‖x‖ ^ 2 := by
+    ‖star x ⬝ᵥ E.mulVec x‖ ≤ M * n ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) := by
   classical
   have hexp : star x ⬝ᵥ E.mulVec x = ∑ j, ∑ k, (starRingEnd ℂ) (x j) * (E j k * x k) := by
     rw [dotProduct]
@@ -34,7 +34,7 @@ theorem norm_quadForm_le_of_entries {n : ℕ} (E : Matrix (Fin n) (Fin n) ℂ) {
   have hnn : (0 : ℝ) ≤ ‖x‖ := norm_nonneg x
   calc ‖∑ j, ∑ k, (starRingEnd ℂ) (x j) * (E j k * x k)‖
       ≤ ∑ j, ‖∑ k, (starRingEnd ℂ) (x j) * (E j k * x k)‖ := norm_sum_le _ _
-    _ ≤ ∑ _j : Fin n, ∑ _k : Fin n, M * ‖x‖ ^ 2 := by
+    _ ≤ ∑ _j : Fin n, ∑ _k : Fin n, M * ‖x‖ ^ (2 : ℕ) := by
         refine Finset.sum_le_sum fun j _ => ?_
         refine le_trans (norm_sum_le _ _) ?_
         refine Finset.sum_le_sum fun k _ => ?_
@@ -43,8 +43,8 @@ theorem norm_quadForm_le_of_entries {n : ℕ} (E : Matrix (Fin n) (Fin n) ℂ) {
           apply mul_le_mul (hxle j) _ (by positivity) hnn
           exact mul_le_mul (hE j k) (hxle k) (norm_nonneg _) hM
         calc ‖x j‖ * (‖E j k‖ * ‖x k‖) ≤ ‖x‖ * (M * ‖x‖) := h1
-          _ = M * ‖x‖ ^ 2 := by ring
-    _ = M * n ^ 2 * ‖x‖ ^ 2 := by
+          _ = M * ‖x‖ ^ (2 : ℕ) := by ring
+    _ = M * n ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) := by
         simp [Finset.sum_const, Finset.card_univ]
         ring
 

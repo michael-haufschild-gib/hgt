@@ -129,9 +129,9 @@ theorem exists_zetaLine_logMean_floor_all_heights :
 
 /-- `½ log max(x², ε²) = max (log x) (log ε)` for `x, ε > 0`. -/
 theorem logMaxHalf_sq_eq_max {ε x : ℝ} (hε : 0 < ε) (hx : 0 < x) :
-    logMaxHalf ε (x ^ 2) = max (Real.log x) (Real.log ε) := by
+    logMaxHalf ε (x ^ (2 : ℕ)) = max (Real.log x) (Real.log ε) := by
   unfold logMaxHalf
-  have hsq : max (x ^ 2) (ε ^ 2) = (max x ε) ^ 2 := by
+  have hsq : max (x ^ (2 : ℕ)) (ε ^ (2 : ℕ)) = (max x ε) ^ (2 : ℕ) := by
     rcases le_total x ε with h | h
     · rw [max_eq_right h, max_eq_right (pow_le_pow_left₀ hx.le h 2)]
     · rw [max_eq_left h, max_eq_left (pow_le_pow_left₀ hε.le h 2)]
@@ -202,10 +202,10 @@ theorem exists_eventually_window_logMean_linearMollifier_ge (M : ℕ) (hM : 1 < 
   have hcontD : Continuous (dpoly a s) := by
     unfold dpoly cterm
     exact continuous_finset_sum _ fun n _ => by fun_prop
-  have hcφ : Continuous (fun t : ℝ => logMaxHalf ε (‖dpoly a s t‖ ^ 2)) :=
+  have hcφ : Continuous (fun t : ℝ => logMaxHalf ε (‖dpoly a s t‖ ^ (2 : ℕ))) :=
     (continuous_logMaxHalf hε).comp (by fun_prop)
   have hdecomp : (∫ t in T..(2 * T), Real.log ‖edPoly b s (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖)
-      = (∫ t in T..(2 * T), logMaxHalf ε (‖dpoly a s t‖ ^ 2)) - ∫ t in T..(2 * T), φ t := by
+      = (∫ t in T..(2 * T), logMaxHalf ε (‖dpoly a s t‖ ^ (2 : ℕ))) - ∫ t in T..(2 * T), φ t := by
     rw [← intervalIntegral.integral_sub (hcφ.intervalIntegrable _ _) hφint]
     apply intervalIntegral.integral_congr_ae
     have hfin := finite_edPolyLine_zeros b hs hne T (2 * T)
@@ -227,7 +227,7 @@ theorem exists_eventually_window_logMean_linearMollifier_ge (M : ℕ) (hM : 1 < 
     nlinarith [hC₂, hT1]
   rw [hdecomp, mul_sub]
   have hJ : linearMollifierTorusLogMean M ε - η ≤
-      T⁻¹ * ∫ t in T..(2 * T), logMaxHalf ε (‖dpoly a s t‖ ^ 2) := by
+      T⁻¹ * ∫ t in T..(2 * T), logMaxHalf ε (‖dpoly a s t‖ ^ (2 : ℕ)) := by
     unfold linearMollifierTorusLogMean
     linarith [hclose.1]
   have hφ' : T⁻¹ * ∫ t in T..(2 * T), φ t ≤ (C₁ + 4 * C₂) / lam := by

@@ -53,23 +53,23 @@ theorem exists_bound_invZeta_box (d T : ℝ) (hd : 1 ≤ d) (hT : 0 ≤ T) :
 the compact box handles the rest, and the box constant is absorbed because `log K ≥ 1`. -/
 theorem exists_norm_invZeta_uniform_strip :
     ∃ C L₀ : ℝ, 0 < C ∧ 1 ≤ L₀ ∧ ∀ x t K : ℝ, L₀ ≤ Real.log K → |t| ≤ K →
-      1 - 1 / Real.log K ^ 2 ≤ x → x ≤ 1 + 1 / Real.log K ^ 2 →
-      ‖invZeta ((x : ℂ) + (t : ℂ) * Complex.I)‖ ≤ C * Real.log K ^ 2 := by
+      1 - 1 / Real.log K ^ (2 : ℕ) ≤ x → x ≤ 1 + 1 / Real.log K ^ (2 : ℕ) →
+      ‖invZeta ((x : ℂ) + (t : ℂ) * Complex.I)‖ ≤ C * Real.log K ^ (2 : ℕ) := by
   obtain ⟨C₁, T, hC₁0, hT4, hstrip⟩ := exists_norm_invZeta_contour_le
   obtain ⟨δ, hδ0, M₀, hM₀0, hbox⟩ := exists_bound_invZeta_box 2 T (by norm_num) (by linarith)
   refine ⟨C₁ + M₀ + 1, max 1 (1 / δ), by linarith, le_max_left _ _, ?_⟩
   intro x t K hL hK hx1 hx2
   have hL1 : (1 : ℝ) ≤ Real.log K := le_trans (le_max_left _ _) hL
   have hLδ : 1 / δ ≤ Real.log K := le_trans (le_max_right _ _) hL
-  have hLsq : (1 : ℝ) ≤ Real.log K ^ 2 := by nlinarith
-  have hinv : 1 / Real.log K ^ 2 ≤ 1 := by
+  have hLsq : (1 : ℝ) ≤ Real.log K ^ (2 : ℕ) := by nlinarith
+  have hinv : 1 / Real.log K ^ (2 : ℕ) ≤ 1 := by
     rw [div_le_one (by linarith)]
     exact hLsq
   rcases le_or_gt T |t| with hbig | hsmall
   · have hres := hstrip x t K hbig hK hx1 hx2
     nlinarith [hres, hM₀0, hLsq]
   · -- the compact branch
-    have hδcmp : 1 / Real.log K ^ 2 ≤ δ := by
+    have hδcmp : 1 / Real.log K ^ (2 : ℕ) ≤ δ := by
       rw [div_le_iff₀ (by linarith)]
       have h1 : (1 : ℝ) ≤ δ * Real.log K := by
         rw [div_le_iff₀ hδ0] at hLδ

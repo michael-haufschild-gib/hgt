@@ -160,7 +160,7 @@ finitely supported real vector is at most `π` times its energy. -/
 theorem hilbertAbsQuadraticForm_le_pi (b : ℕ →₀ ℝ) :
     ∑ m ∈ b.support, ∑ n ∈ b.support,
         |b m| * |b n| * (1 / (((m + n : ℕ) : ℝ) + 1))
-      ≤ Real.pi * ∑ m ∈ b.support, (b m) ^ 2 := by
+      ≤ Real.pi * ∑ m ∈ b.support, (b m) ^ (2 : ℕ) := by
   classical
   set K : ℕ → ℕ → ℝ := fun r s => 1 / (((r + s : ℕ) : ℝ) + 1) with hK
   set w : ℕ → ℝ := fun r => (Real.sqrt ((r : ℝ) + 1 / 2))⁻¹ with hw
@@ -207,9 +207,9 @@ theorem hilbertAbsQuadraticForm_le_pi (b : ℕ →₀ ℝ) :
       exact Finset.sum_coe_sort b.support (fun n => |b m| * |b n| * K m n)
     calc ∑ m ∈ b.support, ∑ n ∈ b.support, |b m| * |b n| * (1 / (((m + n : ℕ) : ℝ) + 1))
         = ∑ r : ↥(b.support), ∑ s : ↥(b.support), |b (r : ℕ)| * |b (s : ℕ)| * K r s := hdouble.symm
-      _ ≤ Real.pi * ∑ r : ↥(b.support), (b (r : ℕ)) ^ 2 := hschur
-      _ = Real.pi * ∑ m ∈ b.support, (b m) ^ 2 := by
-          rw [Finset.sum_coe_sort b.support (fun m => (b m) ^ 2)]
+      _ ≤ Real.pi * ∑ r : ↥(b.support), (b (r : ℕ)) ^ (2 : ℕ) := hschur
+      _ = Real.pi * ∑ m ∈ b.support, (b m) ^ (2 : ℕ) := by
+          rw [Finset.sum_coe_sort b.support (fun m => (b m) ^ (2 : ℕ))]
   · intro r
     have hle : ∑ s : ↥(b.support), K r s * w s ≤ ∑ n ∈ b.support, K r n * w n := by
       rw [Finset.sum_coe_sort b.support (fun n => K r n * w n)]
@@ -219,7 +219,7 @@ theorem hilbertAbsQuadraticForm_le_pi (b : ℕ →₀ ℝ) :
 `π`. -/
 theorem hilbertQuadraticForm_abs_le_pi (b : ℕ →₀ ℝ) :
     |∑ m ∈ b.support, ∑ n ∈ b.support, b m * b n * (1 / (((m + n : ℕ) : ℝ) + 1))|
-      ≤ Real.pi * ∑ m ∈ b.support, (b m) ^ 2 := by
+      ≤ Real.pi * ∑ m ∈ b.support, (b m) ^ (2 : ℕ) := by
   refine le_trans (le_trans (Finset.abs_sum_le_sum_abs _ _) ?_) (hilbertAbsQuadraticForm_le_pi b)
   refine Finset.sum_le_sum fun m _ => ?_
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_

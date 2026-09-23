@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.DifferentiatedBarbanVehovGeneralScaleEr
 
 At every mollifier pair, the omitted lower endpoint `L * max(q,r)` is no smaller than `L` and no
 larger than `L*M`. The corpus's harmonic-log endpoint estimates therefore apply uniformly under
-the same admissible scale condition `8*M^2 ≤ L` as the full long energy.
+the same admissible scale condition `8*M^(2 : ℕ) ≤ L` as the full long energy.
 -/
 
 open Finset
@@ -44,7 +44,7 @@ theorem abs_sum_weight_mul_sub_le_of_pointwise
 /-- Pointwise base-kernel error at the omitted pair-dependent endpoint. -/
 theorem abs_barbanVehovOmittedLongHarmonicKernel_sub_continuous_le
     {L M q r : ℕ} (hq : 0 < q) (hr : 0 < r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovOmittedLongHarmonicKernel L (L * M) q r -
         barbanVehovLongHarmonicKernelContinuous
           (L * max q r) (L * M) q r| ≤
@@ -70,7 +70,7 @@ theorem abs_barbanVehovOmittedLongHarmonicKernel_sub_continuous_le
 /-- Pointwise first-log kernel error at the omitted pair-dependent endpoint. -/
 theorem abs_barbanVehovOmittedLongFirstLogKernel_sub_continuous_le
     {L M q r : ℕ} (hq : 0 < q) (hr : 0 < r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovOmittedLongFirstLogKernel L (L * M) q r -
         barbanVehovLongFirstLogKernelContinuous
           (L * max q r) (L * M) q r| ≤
@@ -97,11 +97,11 @@ theorem abs_barbanVehovOmittedLongFirstLogKernel_sub_continuous_le
 /-- Pointwise second-log kernel error at the omitted pair-dependent endpoint. -/
 theorem abs_barbanVehovOmittedLongSecondLogKernel_sub_continuous_le
     {L M q r : ℕ} (hq : 0 < q) (hr : 0 < r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovOmittedLongSecondLogKernel L (L * M) q r -
         barbanVehovLongSecondLogKernelContinuous
           (L * max q r) (L * M) q r| ≤
-      12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ) := by
+      12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ) := by
   have hMpos : 0 < M := hq.trans_le hqM
   have hLpos : 0 < L := by nlinarith
   have hmax1 : 1 ≤ max q r :=
@@ -118,15 +118,15 @@ theorem abs_barbanVehovOmittedLongSecondLogKernel_sub_continuous_le
   refine hk.trans ?_
   have hcast : (L : ℝ) ≤ (L * max q r : ℕ) := by
     exact_mod_cast (by simpa using Nat.mul_le_mul_left L hmax1)
-  have hnum : 0 ≤ 12 * Real.log (L * M + 1 : ℕ) ^ 2 := by positivity
+  have hnum : 0 ≤ 12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) := by positivity
   exact div_le_div_of_nonneg_left hnum (by positivity) hcast
 
 /-- Uniform base-moment approximation error for the omitted head boundary. -/
 theorem abs_barbanVehovOmittedLongBaseLcm_sub_continuous_le
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovOmittedLongBaseLcm L M -
         barbanVehovOmittedLongBaseContinuous L M| ≤
-      ((M : ℝ) * Real.log M) ^ 2 * (3 / (L : ℝ)) := by
+      ((M : ℝ) * Real.log M) ^ (2 : ℕ) * (3 / (L : ℝ)) := by
   rw [barbanVehovOmittedLongBaseLcm,
     barbanVehovOmittedLongBaseContinuous]
   let s := (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M)
@@ -150,10 +150,10 @@ theorem abs_barbanVehovOmittedLongBaseLcm_sub_continuous_le
 
 /-- Uniform base--derivative approximation error for the omitted head boundary. -/
 theorem abs_barbanVehovOmittedLongCrossLcm_sub_continuous_le
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovOmittedLongCrossLcm L M -
         barbanVehovOmittedLongCrossContinuous L M| ≤
-      ((M : ℝ) * Real.log M) ^ 2 *
+      ((M : ℝ) * Real.log M) ^ (2 : ℕ) *
         (6 * Real.log (L * M + 1 : ℕ) / (L : ℝ)) := by
   rw [barbanVehovOmittedLongCrossLcm,
     barbanVehovOmittedLongCrossContinuous]
@@ -193,11 +193,11 @@ theorem abs_barbanVehovOmittedLongCrossLcm_sub_continuous_le
 
 /-- Uniform derivative-square approximation error for the omitted head boundary. -/
 theorem abs_barbanVehovOmittedLongDerivativeLcm_sub_continuous_le
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovOmittedLongDerivativeLcm L M -
         barbanVehovOmittedLongDerivativeContinuous L M| ≤
-      ((M : ℝ) * Real.log M) ^ 2 *
-        (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)) := by
+      ((M : ℝ) * Real.log M) ^ (2 : ℕ) *
+        (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)) := by
   rw [barbanVehovOmittedLongDerivativeLcm,
     barbanVehovOmittedLongDerivativeContinuous]
   let s := (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M)
@@ -205,7 +205,7 @@ theorem abs_barbanVehovOmittedLongDerivativeLcm_sub_continuous_le
       |barbanVehovOmittedLongSecondLogKernel L (L * M) p.1 p.2 -
           barbanVehovLongSecondLogKernelContinuous
             (L * max p.1 p.2) (L * M) p.1 p.2| ≤
-        12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ) := by
+        12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ) := by
     intro p hp
     obtain ⟨hp1, hp2⟩ := Finset.mem_product.mp hp
     rw [Finset.mem_Icc] at hp1 hp2

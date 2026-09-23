@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.SourceZeroHorizontalCarrier
 # Reflection-pair equicontinuity firewall for the complete Riemann source
 
 The complete source vectors of a point and its functional-equation reflection
-converge to each other in the canonical `ell^1` topology.  Their literal
+converge to each other in the canonical `ell^(1 : ℕ)` topology.  Their literal
 prime-two endpoint characters remain separated off the critical line.
 
 This module strengthens the existing uniform-Lipschitz obstruction.  An exact
@@ -184,10 +184,10 @@ theorem
               (sourceHorizontalActualXiSecondCartierKreinScale x u q r N) n) =
           ‖bilateralEigenFamily
               (sourceHorizontalActualXiSecondCartierKreinPrimeCharacter q
-                (default : Nat.Primes)) (-(n : ℤ))‖ ^ 2 +
+                (default : Nat.Primes)) (-(n : ℤ))‖ ^ (2 : ℕ) +
             4 * ‖(sourceHorizontalActualXiEndpointSecondJetHardyDescent
               x u q r N (default : Nat.Primes)
-              sourceHorizontalBilateralSecondJetGhost) (n : ℤ)‖ ^ 2 ∧
+              sourceHorizontalBilateralSecondJetGhost) (n : ℤ)‖ ^ (2 : ℕ) ∧
         (∑ s : XiRightSupportFiber q,
           sourceHorizontalActualXiSecondCartierKreinPolarizedGhost
             x u s.1 r N) =

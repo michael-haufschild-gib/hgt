@@ -863,7 +863,7 @@ theorem eventually_maynardLowOrdinateDerivative_fixedCost_absorbed (q : ℕ) :
       congr 1
       norm_num
 
-/-- A window-relevant degree-60 complement has upper edge at most the fixed width times `T^8`.
+/-- A window-relevant degree-60 complement has upper edge at most the fixed width times `T^(8 : ℕ)`.
 This derives the scale needed by fixed-cost absorption from box geometry; it is not an added
 analytic hypothesis. -/
 theorem windowRelevant_heathBrownBox_complement_upper_le_width_mul_T8

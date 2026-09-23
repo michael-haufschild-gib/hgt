@@ -44,7 +44,7 @@ def triangleAccountCountingGram :
 
 theorem triangleAccountCycle_cube
     (K : Type*) [Ring K] :
-    triangleAccountCycle K ^ 3 = 1 := by
+    triangleAccountCycle K ^ (3 : ℕ) = 1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [triangleAccountCycle, pow_succ, Matrix.mul_apply,
@@ -52,7 +52,7 @@ theorem triangleAccountCycle_cube
 
 theorem triangleAccountReflection_sq
     (K : Type*) [Ring K] :
-    triangleAccountReflection K ^ 2 = 1 := by
+    triangleAccountReflection K ^ (2 : ℕ) = 1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [triangleAccountReflection, pow_two, Matrix.mul_apply,
@@ -62,7 +62,7 @@ theorem triangleAccountReflection_cycle_reflection
     (K : Type*) [Ring K] :
     triangleAccountReflection K * triangleAccountCycle K *
         triangleAccountReflection K =
-      triangleAccountCycle K ^ 2 := by
+      triangleAccountCycle K ^ (2 : ℕ) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [triangleAccountReflection, triangleAccountCycle, pow_two,
@@ -70,7 +70,7 @@ theorem triangleAccountReflection_cycle_reflection
 
 theorem triangleAccountPhaseGenerator_sq
     (K : Type*) [CommRing K] :
-    triangleAccountPhaseGenerator K ^ 2 =
+    triangleAccountPhaseGenerator K ^ (2 : ℕ) =
       (-3 : K) • (1 : Matrix (Fin 2) (Fin 2) K) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -200,10 +200,10 @@ theorem triangleAccount_no_nonzero_common_eigenvector
       simpa using hT0
     funext i
     fin_cases i <;> simp [hv0, hv1]
-  · have hmu2 : eigenT ^ 2 = 1 := by
+  · have hmu2 : eigenT ^ (2 : ℕ) = 1 := by
       apply (mul_left_cancel₀ hv0)
       calc
-        v 0 * eigenT ^ 2 = eigenT * (eigenT * v 0) := by ring
+        v 0 * eigenT ^ (2 : ℕ) = eigenT * (eigenT * v 0) := by ring
         _ = eigenT * v 1 := by rw [← hT0]
         _ = v 0 := hT1.symm
         _ = v 0 * 1 := by simp
@@ -298,7 +298,7 @@ theorem triangleAccountCountingGram_posDef :
       fin_cases i <;> simp [h]
     have henergy :
         star x ⬝ᵥ (triangleAccountCountingGram *ᵥ x) =
-          2 * x 0 ^ 2 + 2 * x 0 * x 1 + 2 * x 1 ^ 2 := by
+          2 * x 0 ^ (2 : ℕ) + 2 * x 0 * x 1 + 2 * x 1 ^ (2 : ℕ) := by
       simp [dotProduct, Matrix.mulVec, triangleAccountCountingGram,
         Fin.sum_univ_two]
       ring
@@ -366,7 +366,7 @@ theorem triangleAccountPhaseScalar_star_mul_self
     (a b : ℝ) :
     triangleAccountPhaseScalar a (-b) *
         triangleAccountPhaseScalar a b =
-      (a ^ 2 + 3 * b ^ 2) •
+      (a ^ (2 : ℕ) + 3 * b ^ (2 : ℕ)) •
         (1 : Matrix (Fin 2) (Fin 2) ℝ) := by
   rw [triangleAccountPhaseScalar_mul]
   ring_nf
@@ -374,7 +374,7 @@ theorem triangleAccountPhaseScalar_star_mul_self
 
 theorem triangleAccountPhaseScalar_norm_pos
     {a b : ℝ} (h : a ≠ 0 ∨ b ≠ 0) :
-    0 < a ^ 2 + 3 * b ^ 2 := by
+    0 < a ^ (2 : ℕ) + 3 * b ^ (2 : ℕ) := by
   rcases h with ha | hb
   · nlinarith [sq_pos_of_ne_zero ha, sq_nonneg b]
   · nlinarith [sq_nonneg a, sq_pos_of_ne_zero hb]

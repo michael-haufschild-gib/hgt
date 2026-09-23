@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.EntireZeroFactorization
 /-!
 # Lower-semicontinuous collision no-go for reflected Wold orbit charge
 
-The reflected physical Wold charge has exact multiplicity energy `2 * m^2`. This module tests
+The reflected physical Wold charge has exact multiplicity energy `2 * m^(2 : ℕ)`. This module tests
 that quadratic law on a source-faithful local divisor collision. Two simple off-wall zeros of an
 explicit entire quadratic merge into one double off-wall zero under compact-open convergence. The
 Wold energy jumps from `4` to `8`, so no scalar reporter exact on this collision can be sequentially
@@ -90,7 +90,7 @@ theorem woldSimplePairCollisionSource_tendstoLocallyUniformly :
       woldDoubleCollisionSource atTop := by
   have hscaleC : Tendsto (fun n => (woldCollisionScale n : ℂ)) atTop (𝓝 0) :=
     Complex.continuous_ofReal.continuousAt.tendsto.comp woldCollisionScale_tendsto_zero
-  have hsq : Tendsto (fun n => (woldCollisionScale n : ℂ) ^ 2) atTop (𝓝 0) := by
+  have hsq : Tendsto (fun n => (woldCollisionScale n : ℂ) ^ (2 : ℕ)) atTop (𝓝 0) := by
     simpa using hscaleC.pow 2
   rw [Metric.tendstoLocallyUniformly_iff]
   intro ε hε x
@@ -98,7 +98,7 @@ theorem woldSimplePairCollisionSource_tendstoLocallyUniformly :
   filter_upwards [Metric.tendsto_nhds.mp hsq ε hε] with n hn y hy
   have hdiff :
       woldSimplePairCollisionSource n y - woldDoubleCollisionSource y =
-        -(woldCollisionScale n : ℂ) ^ 2 := by
+        -(woldCollisionScale n : ℂ) ^ (2 : ℕ) := by
     simp [woldSimplePairCollisionSource, woldDoubleCollisionSource,
       symmetricShiftProduct, woldCollisionBaseSource]
     ring
@@ -106,8 +106,8 @@ theorem woldSimplePairCollisionSource_tendstoLocallyUniformly :
     dist (woldDoubleCollisionSource y) (woldSimplePairCollisionSource n y) =
         ‖woldSimplePairCollisionSource n y - woldDoubleCollisionSource y‖ := by
       rw [dist_comm, dist_eq_norm]
-    _ = ‖(woldCollisionScale n : ℂ) ^ 2‖ := by rw [hdiff, norm_neg]
-    _ = dist ((woldCollisionScale n : ℂ) ^ 2) 0 := by simp [dist_eq_norm]
+    _ = ‖(woldCollisionScale n : ℂ) ^ (2 : ℕ)‖ := by rw [hdiff, norm_neg]
+    _ = dist ((woldCollisionScale n : ℂ) ^ (2 : ℕ)) 0 := by simp [dist_eq_norm]
     _ < ε := hn
 
 theorem woldCollisionBaseSource_analyticOnNhd :

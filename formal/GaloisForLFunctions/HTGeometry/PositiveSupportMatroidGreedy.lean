@@ -175,7 +175,7 @@ theorem matroidGreedySet_exchange_of_greedyMembershipChanged
         have hEq : (G' : Set α) = (G : Set α) :=
           hB'.eq_of_subset_indep hB.indep hsub hB.subset
         have hEqFin : G' = G := Finset.coe_injective hEq
-        exact hf.2 (by simpa [hEqFin] using hf.1)
+        exact hf.2 ((Finset.ext_iff.mp hEqFin f).mpr hf.1)
       have heG : e ∉ G := by
         intro heG
         have hsub : (G' : Set α) ⊆ (G : Set α) := by
@@ -189,7 +189,7 @@ theorem matroidGreedySet_exchange_of_greedyMembershipChanged
         have hEq : (G' : Set α) = (G : Set α) :=
           hB'.eq_of_subset_indep hB.indep hsub hB.subset
         have hEqFin : G' = G := Finset.coe_injective hEq
-        exact hf.2 (by simpa [hEqFin] using hf.1)
+        exact hf.2 ((Finset.ext_iff.mp hEqFin f).mpr hf.1)
       refine ⟨hf, ⟨heG, heG'⟩, ?_⟩
       ext x
       simp only [Finset.mem_erase]
@@ -198,8 +198,8 @@ theorem matroidGreedySet_exchange_of_greedyMembershipChanged
         simp only [heG, and_false, ne_eq, not_true_eq_false, false_and]
       by_cases hxf : x = f
       · subst x
-        simp only [ne_eq, not_true_eq_false, false_and, hf.2, and_false]
-      simpa only [hxf, hxe, not_false_eq_true, true_and] using hsame hxe hxf
+        exact iff_of_false (fun h => h.1 rfl) (fun h => hf.2 h.2)
+      exact ⟨fun h => ⟨hxe, (hsame hxe hxf).mp h.2⟩, fun h => ⟨hxf, (hsame hxe hxf).mpr h.2⟩⟩
     · right
       have heG : e ∈ G := by
         by_contra heG
@@ -215,7 +215,7 @@ theorem matroidGreedySet_exchange_of_greedyMembershipChanged
         have hEq : (G : Set α) = (G' : Set α) :=
           hB.eq_of_subset_indep hB'.indep hsub hB'.subset
         have hEqFin : G = G' := Finset.coe_injective hEq
-        exact hf.2 (by simpa [hEqFin] using hf.1)
+        exact hf.2 ((Finset.ext_iff.mp hEqFin f).mpr hf.1)
       have heG' : e ∉ G' := by
         intro heG'
         have hsub : (G : Set α) ⊆ (G' : Set α) := by
@@ -229,7 +229,7 @@ theorem matroidGreedySet_exchange_of_greedyMembershipChanged
         have hEq : (G : Set α) = (G' : Set α) :=
           hB.eq_of_subset_indep hB'.indep hsub hB'.subset
         have hEqFin : G = G' := Finset.coe_injective hEq
-        exact hf.2 (by simpa [hEqFin] using hf.1)
+        exact hf.2 ((Finset.ext_iff.mp hEqFin f).mpr hf.1)
       refine ⟨⟨hf.2, hf.1⟩, ⟨heG, heG'⟩, ?_⟩
       ext x
       simp only [Finset.mem_erase]
@@ -238,8 +238,8 @@ theorem matroidGreedySet_exchange_of_greedyMembershipChanged
         simp only [ne_eq, not_true_eq_false, false_and, heG', and_false]
       by_cases hxf : x = f
       · subst x
-        simp only [hf.2, and_false, ne_eq, not_true_eq_false, false_and]
-      simpa only [hxe, hxf, not_false_eq_true, true_and] using hsame hxe hxf
+        exact iff_of_false (fun h => hf.2 h.2) (fun h => h.1 rfl)
+      exact ⟨fun h => ⟨hxf, (hsame hxe hxf).mp h.2⟩, fun h => ⟨hxe, (hsame hxe hxf).mpr h.2⟩⟩
   simpa [G, G'] using hresult
 
 /-- Adding a constant to every weight preserves all predecessor sets. -/

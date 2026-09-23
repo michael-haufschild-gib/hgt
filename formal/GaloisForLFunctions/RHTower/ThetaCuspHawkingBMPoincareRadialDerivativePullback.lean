@@ -41,46 +41,46 @@ noncomputable section
 
 /-- Poincare time coordinate in the Rindler--AdS chart. -/
 def d4BMRindlerToPoincareTime (tau rho sigma : ℝ) : ℝ :=
-  sigma * Real.sqrt (1 - rho ^ 2) * Real.sinh tau
+  sigma * Real.sqrt (1 - rho ^ (2 : ℕ)) * Real.sinh tau
 
 /-- Poincare horizon-transverse coordinate in the Rindler--AdS chart. -/
 def d4BMRindlerToPoincareHorizonY (tau rho sigma : ℝ) : ℝ :=
-  sigma * Real.sqrt (1 - rho ^ 2) * Real.cosh tau
+  sigma * Real.sqrt (1 - rho ^ (2 : ℕ)) * Real.cosh tau
 
 /-- Pullback of the Poincare coordinate vector `partial_Z` to real Rindler coordinate jets. -/
 def d4PoincareRadialPullbackOperator
     (rho sigma partialSigma partialRho : ℝ) : ℝ :=
-  rho * partialSigma + (1 - rho ^ 2) / sigma * partialRho
+  rho * partialSigma + (1 - rho ^ (2 : ℕ)) / sigma * partialRho
 
 /-- Complex-field version of the pulled-back Poincare radial coordinate vector. -/
 def d4PoincareRadialPullbackOperatorComplex
     (rho sigma : ℝ) (partialSigma partialRho : ℂ) : ℂ :=
-  (rho : ℂ) * partialSigma + (((1 - rho ^ 2) / sigma : ℝ) : ℂ) * partialRho
+  (rho : ℂ) * partialSigma + (((1 - rho ^ (2 : ℕ)) / sigma : ℝ) : ℂ) * partialRho
 
 theorem hasDerivAt_d4BMRindlerToPoincareTime_sigma
     (tau rho sigma : ℝ) :
     HasDerivAt (fun s => d4BMRindlerToPoincareTime tau rho s)
-      (Real.sqrt (1 - rho ^ 2) * Real.sinh tau) sigma := by
+      (Real.sqrt (1 - rho ^ (2 : ℕ)) * Real.sinh tau) sigma := by
   simpa [d4BMRindlerToPoincareTime, mul_assoc] using
     (hasDerivAt_id sigma).mul_const
-      (Real.sqrt (1 - rho ^ 2) * Real.sinh tau)
+      (Real.sqrt (1 - rho ^ (2 : ℕ)) * Real.sinh tau)
 
 theorem hasDerivAt_sqrt_one_sub_sq
     {rho : ℝ} (hrho : 0 < rho) (hrho1 : rho < 1) :
-    HasDerivAt (fun r : ℝ => Real.sqrt (1 - r ^ 2))
-      (-rho / Real.sqrt (1 - rho ^ 2)) rho := by
-  have hpos : 0 < 1 - rho ^ 2 := by nlinarith [sq_nonneg rho]
-  have hinner : HasDerivAt (fun r : ℝ => 1 - r ^ 2) (-2 * rho) rho := by
+    HasDerivAt (fun r : ℝ => Real.sqrt (1 - r ^ (2 : ℕ)))
+      (-rho / Real.sqrt (1 - rho ^ (2 : ℕ))) rho := by
+  have hpos : 0 < 1 - rho ^ (2 : ℕ) := by nlinarith [sq_nonneg rho]
+  have hinner : HasDerivAt (fun r : ℝ => 1 - r ^ (2 : ℕ)) (-2 * rho) rho := by
     simpa using (hasDerivAt_pow 2 rho).const_sub 1
   have hsqrt := hinner.sqrt hpos.ne'
   refine hsqrt.congr_deriv ?_
-  have hsqrt0 : Real.sqrt (1 - rho ^ 2) ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hpos)
+  have hsqrt0 : Real.sqrt (1 - rho ^ (2 : ℕ)) ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hpos)
   field_simp [hsqrt0]
 
 theorem hasDerivAt_d4BMRindlerToPoincareTime_rho
     (tau sigma : ℝ) {rho : ℝ} (hrho : 0 < rho) (hrho1 : rho < 1) :
     HasDerivAt (fun r => d4BMRindlerToPoincareTime tau r sigma)
-      (sigma * (-rho / Real.sqrt (1 - rho ^ 2)) * Real.sinh tau) rho := by
+      (sigma * (-rho / Real.sqrt (1 - rho ^ (2 : ℕ))) * Real.sinh tau) rho := by
   simpa [d4BMRindlerToPoincareTime, mul_assoc] using
     ((hasDerivAt_sqrt_one_sub_sq hrho hrho1).const_mul sigma).mul_const
       (Real.sinh tau)
@@ -88,15 +88,15 @@ theorem hasDerivAt_d4BMRindlerToPoincareTime_rho
 theorem hasDerivAt_d4BMRindlerToPoincareHorizonY_sigma
     (tau rho sigma : ℝ) :
     HasDerivAt (fun s => d4BMRindlerToPoincareHorizonY tau rho s)
-      (Real.sqrt (1 - rho ^ 2) * Real.cosh tau) sigma := by
+      (Real.sqrt (1 - rho ^ (2 : ℕ)) * Real.cosh tau) sigma := by
   simpa [d4BMRindlerToPoincareHorizonY, mul_assoc] using
     (hasDerivAt_id sigma).mul_const
-      (Real.sqrt (1 - rho ^ 2) * Real.cosh tau)
+      (Real.sqrt (1 - rho ^ (2 : ℕ)) * Real.cosh tau)
 
 theorem hasDerivAt_d4BMRindlerToPoincareHorizonY_rho
     (tau sigma : ℝ) {rho : ℝ} (hrho : 0 < rho) (hrho1 : rho < 1) :
     HasDerivAt (fun r => d4BMRindlerToPoincareHorizonY tau r sigma)
-      (sigma * (-rho / Real.sqrt (1 - rho ^ 2)) * Real.cosh tau) rho := by
+      (sigma * (-rho / Real.sqrt (1 - rho ^ (2 : ℕ))) * Real.cosh tau) rho := by
   simpa [d4BMRindlerToPoincareHorizonY, mul_assoc] using
     ((hasDerivAt_sqrt_one_sub_sq hrho hrho1).const_mul sigma).mul_const
       (Real.cosh tau)
@@ -119,15 +119,15 @@ theorem d4PoincareRadialPullbackOperator_is_coordinateVector
     (tau : ℝ) {rho sigma : ℝ} (hrho : 0 < rho) (hrho1 : rho < 1)
     (hsigma : 0 < sigma) :
     d4PoincareRadialPullbackOperator rho sigma
-        (Real.sqrt (1 - rho ^ 2) * Real.sinh tau)
-        (sigma * (-rho / Real.sqrt (1 - rho ^ 2)) * Real.sinh tau) = 0 ∧
+        (Real.sqrt (1 - rho ^ (2 : ℕ)) * Real.sinh tau)
+        (sigma * (-rho / Real.sqrt (1 - rho ^ (2 : ℕ))) * Real.sinh tau) = 0 ∧
       d4PoincareRadialPullbackOperator rho sigma
-        (Real.sqrt (1 - rho ^ 2) * Real.cosh tau)
-        (sigma * (-rho / Real.sqrt (1 - rho ^ 2)) * Real.cosh tau) = 0 ∧
+        (Real.sqrt (1 - rho ^ (2 : ℕ)) * Real.cosh tau)
+        (sigma * (-rho / Real.sqrt (1 - rho ^ (2 : ℕ))) * Real.cosh tau) = 0 ∧
       d4PoincareRadialPullbackOperator rho sigma rho sigma = 1 := by
-  have hpos : 0 < 1 - rho ^ 2 := by nlinarith [sq_nonneg rho]
-  have hsqrt0 : Real.sqrt (1 - rho ^ 2) ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hpos)
-  have hsqrt2 : Real.sqrt (1 - rho ^ 2) ^ 2 = 1 - rho ^ 2 :=
+  have hpos : 0 < 1 - rho ^ (2 : ℕ) := by nlinarith [sq_nonneg rho]
+  have hsqrt0 : Real.sqrt (1 - rho ^ (2 : ℕ)) ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hpos)
+  have hsqrt2 : Real.sqrt (1 - rho ^ (2 : ℕ)) ^ (2 : ℕ) = 1 - rho ^ (2 : ℕ) :=
     Real.sq_sqrt hpos.le
   have hsigma0 : sigma ≠ 0 := ne_of_gt hsigma
   constructor
@@ -147,7 +147,7 @@ theorem d4PoincareRadialPullbackOperator_is_coordinateVector
 /-- Pullback of `partial_Z` applied to a BM first-radial jet whose BM derivative is `J`. -/
 def d4PoincareRadialDerivativeOnBMFirstRadialJet
     (rho sigma : ℝ) (J : ℂ) : ℂ :=
-  (((-2 * rho * (1 - rho ^ 2)) / sigma : ℝ) : ℂ) * J
+  (((-2 * rho * (1 - rho ^ (2 : ℕ))) / sigma : ℝ) : ℂ) * J
 
 theorem d4PoincareRadialPullbackOperatorComplex_on_BMFirstRadialJet
     (rho sigma : ℝ) (J : ℂ) :
@@ -171,22 +171,22 @@ theorem d4PoincareRadialDerivativeOnBMFirstRadialJet_same_rho_ne
       d4PoincareRadialDerivativeOnBMFirstRadialJet rho 2 J := by
   intro h
   change
-    ((((-2 * rho * (1 - rho ^ 2)) / 1 : ℝ) : ℂ) * J) =
-      ((((-2 * rho * (1 - rho ^ 2)) / 2 : ℝ) : ℂ) * J) at h
+    ((((-2 * rho * (1 - rho ^ (2 : ℕ))) / 1 : ℝ) : ℂ) * J) =
+      ((((-2 * rho * (1 - rho ^ (2 : ℕ))) / 2 : ℝ) : ℂ) * J) at h
   have hreal :
-      ((-2 * rho * (1 - rho ^ 2)) / 1 : ℝ) -
-          ((-2 * rho * (1 - rho ^ 2)) / 2 : ℝ) ≠ 0 := by
-    have hgap : 0 < 1 - rho ^ 2 := by nlinarith [sq_nonneg rho]
+      ((-2 * rho * (1 - rho ^ (2 : ℕ))) / 1 : ℝ) -
+          ((-2 * rho * (1 - rho ^ (2 : ℕ))) / 2 : ℝ) ≠ 0 := by
+    have hgap : 0 < 1 - rho ^ (2 : ℕ) := by nlinarith [sq_nonneg rho]
     intro hz
     field_simp at hz
     nlinarith
   have hcoef :
-      (((((-2 * rho * (1 - rho ^ 2)) / 1 : ℝ) : ℂ) -
-          (((-2 * rho * (1 - rho ^ 2)) / 2 : ℝ) : ℂ))) ≠ 0 := by
+      (((((-2 * rho * (1 - rho ^ (2 : ℕ))) / 1 : ℝ) : ℂ) -
+          (((-2 * rho * (1 - rho ^ (2 : ℕ))) / 2 : ℝ) : ℂ))) ≠ 0 := by
     exact_mod_cast hreal
   have hz :
-      (((((-2 * rho * (1 - rho ^ 2)) / 1 : ℝ) : ℂ) -
-          (((-2 * rho * (1 - rho ^ 2)) / 2 : ℝ) : ℂ))) * J = 0 := by
+      (((((-2 * rho * (1 - rho ^ (2 : ℕ))) / 1 : ℝ) : ℂ) -
+          (((-2 * rho * (1 - rho ^ (2 : ℕ))) / 2 : ℝ) : ℂ))) * J = 0 := by
     rw [sub_mul, h, sub_self]
   exact hJ ((mul_eq_zero.mp hz).resolve_left hcoef)
 
@@ -247,7 +247,7 @@ theorem not_exists_d4BMRadialFactor_poincareRadialDerivativeOnBMXiCornerFirstJet
   let rho := Real.sqrt (1 - z)
   have hgap : 0 < 1 - z := by linarith
   have hrho0 : 0 < rho := Real.sqrt_pos.2 hgap
-  have hrho_sq : rho ^ 2 = 1 - z := Real.sq_sqrt hgap.le
+  have hrho_sq : rho ^ (2 : ℕ) = 1 - z := Real.sq_sqrt hgap.le
   have hrho1 : rho < 1 := by
     have hrho_nonneg : 0 ≤ rho := Real.sqrt_nonneg _
     nlinarith

@@ -38,11 +38,11 @@ theorem confocalDefect_le_scale_mul_transverseDefect
     dsimp only [a, s, x]
     simpa using Complex.re_le_norm ((R : ℂ) - z)
   have hs0 : 0 ≤ s := norm_nonneg _
-  have hrSq : r ^ 2 = x ^ 2 + y ^ 2 := by
+  have hrSq : r ^ (2 : ℕ) = x ^ (2 : ℕ) + y ^ (2 : ℕ) := by
     dsimp only [r, x, y]
     rw [Complex.sq_norm, Complex.normSq_apply]
     ring
-  have hsSq : s ^ 2 = a ^ 2 + y ^ 2 := by
+  have hsSq : s ^ (2 : ℕ) = a ^ (2 : ℕ) + y ^ (2 : ℕ) := by
     dsimp only [s, a, x, y]
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.ofReal_re, Complex.sub_im,
@@ -52,13 +52,13 @@ theorem confocalDefect_le_scale_mul_transverseDefect
   have hsum : r + x ≤ 2 * M := by
     have hxr : x ≤ r := hxle
     linarith
-  have hySq : y ^ 2 = (r - x) * (r + x) := by
+  have hySq : y ^ (2 : ℕ) = (r - x) * (r + x) := by
     nlinarith
-  have hySq_le : y ^ 2 ≤ 2 * M * (r - x) := by
+  have hySq_le : y ^ (2 : ℕ) ≤ 2 * M * (r - x) := by
     rw [hySq]
     nlinarith [mul_nonneg htrans0 (sub_nonneg.mpr hsum)]
   have hden : 0 < s + a := by positivity
-  have hgap : s - a = y ^ 2 / (s + a) := by
+  have hgap : s - a = y ^ (2 : ℕ) / (s + a) := by
     apply (eq_div_iff hden.ne').2
     nlinarith
   have hdenLower : 2 * (R - M) ≤ s + a := by
@@ -68,9 +68,9 @@ theorem confocalDefect_le_scale_mul_transverseDefect
     linarith
   have hgap_le : s - a ≤ M / (R - M) * (r - x) := by
     rw [hgap]
-    have hdiv : y ^ 2 / (s + a) ≤ y ^ 2 / (2 * (R - M)) :=
+    have hdiv : y ^ (2 : ℕ) / (s + a) ≤ y ^ (2 : ℕ) / (2 * (R - M)) :=
       div_le_div_of_nonneg_left (sq_nonneg y) (by positivity) hdenLower
-    have hnum : y ^ 2 / (2 * (R - M)) ≤
+    have hnum : y ^ (2 : ℕ) / (2 * (R - M)) ≤
         M / (R - M) * (r - x) := by
       rw [div_le_iff₀ (by positivity : 0 < 2 * (R - M))]
       rw [div_mul_eq_mul_div, div_mul_eq_mul_div]

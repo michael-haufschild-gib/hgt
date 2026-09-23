@@ -123,7 +123,7 @@ theorem integrable_prolateModeSource (ha : 0 < a) (hΦ : Continuous Φ) {C : ℝ
 theorem fourier_prolateModeSource (ha : 0 < a) (hΦ : Continuous Φ)
     (heven : Function.Even Φ) (x : ℝ) :
     𝓕 (fun y => ((prolateModeSource a Φ y : ℝ) : ℂ)) (a * x)
-      = (a : ℂ) * fourierBandTransform (2 * Real.pi * a ^ 2)
+      = (a : ℂ) * fourierBandTransform (2 * Real.pi * a ^ (2 : ℕ))
           (fun t => ((Φ t : ℝ) : ℂ)) x := by
   have hsupp : ∀ y : ℝ, y ∉ Icc (-a) a → ((prolateModeSource a Φ y : ℝ) : ℂ) = 0 := by
     intro y hy
@@ -132,7 +132,7 @@ theorem fourier_prolateModeSource (ha : 0 < a) (hΦ : Continuous Φ)
   rw [← hscale]
   simp only [Circle.smul_def, Real.fourierChar_apply, Complex.real_smul, smul_eq_mul]
   rw [← setIntegral_scaledFourierChar_eq_fourierBandTransform
-    (κ := a ^ 2) (h := fun t : ℝ => ((Φ t : ℝ) : ℂ))
+    (κ := a ^ (2 : ℕ)) (h := fun t : ℝ => ((Φ t : ℝ) : ℂ))
     (Complex.continuous_ofReal.comp hΦ) (fun t => by rw [heven t]) x]
   congr 1
   refine MeasureTheory.setIntegral_congr_ae measurableSet_Icc ?_

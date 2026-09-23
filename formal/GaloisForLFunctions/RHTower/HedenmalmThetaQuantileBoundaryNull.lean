@@ -28,7 +28,7 @@ theorem pinnedMean_eq_in_add_out_div_sqrtTwo (g : H) :
     pinnedMean g =
       (pinnedInAmplitude g + pinnedOutAmplitude g) /
         ((Real.sqrt 2 : ℝ) : ℂ) := by
-  have hsqrt : ((Real.sqrt 2 : ℝ) : ℂ) ^ 2 = (2 : ℂ) := by
+  have hsqrt : ((Real.sqrt 2 : ℝ) : ℂ) ^ (2 : ℕ) = (2 : ℂ) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num)]
     norm_num
   have hne : ((Real.sqrt 2 : ℝ) : ℂ) ≠ 0 := by
@@ -42,7 +42,7 @@ theorem pinnedCentered_eq_out_sub_in_div_sqrtTwo (g : H) :
     pinnedCentered g =
       (pinnedOutAmplitude g - pinnedInAmplitude g) /
         ((Real.sqrt 2 : ℝ) : ℂ) := by
-  have hsqrt : ((Real.sqrt 2 : ℝ) : ℂ) ^ 2 = (2 : ℂ) := by
+  have hsqrt : ((Real.sqrt 2 : ℝ) : ℂ) ^ (2 : ℕ) = (2 : ℂ) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num)]
     norm_num
   have hne : ((Real.sqrt 2 : ℝ) : ℂ) ≠ 0 := by

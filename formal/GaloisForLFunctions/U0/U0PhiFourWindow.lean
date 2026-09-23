@@ -14,7 +14,7 @@ regime `‖c‖ ≤ ‖z‖` is NOT needed at this parameter: the orbit bound is
   `phiFour z := exp(½ · bottcherLog 4 (z² + 4))`
 
 is analytic on the open disk `Ω := ball 0 (21/20)` — which CONTAINS the whole unit circle — and is
-canonically a Böttcher branch: `phiFour z ^ 2 = bottcherCoord 4 (z² + 4)` definitionally
+canonically a Böttcher branch: `phiFour z ^ (2 : ℕ) = bottcherCoord 4 (z² + 4)` definitionally
 (`phiFour_sq`).  Feeding `Ω, phiFour, z₁ = 1` to the windowed engine yields
 `u0_phiFour_no_relation`: u₀ admits no positive-degree polynomial relation over `ℂ(z)` with this
 Böttcher branch — with NO window hypothesis left.  The `u₀ ⟂ φ_b` content is therefore now
@@ -39,13 +39,13 @@ theorem isOpen_farW : IsOpen farW := isOpen_lt continuous_const continuous_norm
 /-- One quadratic step grows the norm on `farW`: `‖w² + 4‖ ≥ ‖w‖² − 4 > 289/100`. -/
 theorem farW_invariant {w : ℂ} (hw : w ∈ farW) : quadratic 4 w ∈ farW := by
   have h1 : (289 / 100 : ℝ) < ‖w‖ := hw
-  show (289 / 100 : ℝ) < ‖w ^ 2 + 4‖
-  have htri : ‖w ^ 2‖ ≤ ‖w ^ 2 + 4‖ + ‖(-4 : ℂ)‖ := by
-    calc ‖w ^ 2‖ = ‖w ^ 2 + 4 + (-4)‖ := by ring_nf
-      _ ≤ ‖w ^ 2 + 4‖ + ‖(-4 : ℂ)‖ := norm_add_le _ _
+  show (289 / 100 : ℝ) < ‖w ^ (2 : ℕ) + 4‖
+  have htri : ‖w ^ (2 : ℕ)‖ ≤ ‖w ^ (2 : ℕ) + 4‖ + ‖(-4 : ℂ)‖ := by
+    calc ‖w ^ (2 : ℕ)‖ = ‖w ^ (2 : ℕ) + 4 + (-4)‖ := by ring_nf
+      _ ≤ ‖w ^ (2 : ℕ) + 4‖ + ‖(-4 : ℂ)‖ := norm_add_le _ _
   have h4 : ‖(-4 : ℂ)‖ = 4 := by
     rw [norm_neg]; exact Complex.norm_ofNat 4
-  have hp : ‖w ^ 2‖ = ‖w‖ ^ 2 := norm_pow w 2
+  have hp : ‖w ^ (2 : ℕ)‖ = ‖w‖ ^ (2 : ℕ) := norm_pow w 2
   nlinarith [h1, htri]
 
 theorem farW_iterate (k : ℕ) {w : ℂ} (hw : w ∈ farW) : (quadratic 4)^[k] w ∈ farW := by
@@ -63,7 +63,7 @@ theorem farW_ne_zero {w : ℂ} (hw : w ∈ farW) : w ≠ 0 := by
   linarith
 
 /-- The series ratio is uniformly small on `farW`: `‖4/w²‖ ≤ 1/2`. -/
-theorem farW_ratio_le {w : ℂ} (hw : w ∈ farW) : ‖(4 : ℂ) / w ^ 2‖ ≤ 1 / 2 := by
+theorem farW_ratio_le {w : ℂ} (hw : w ∈ farW) : ‖(4 : ℂ) / w ^ (2 : ℕ)‖ ≤ 1 / 2 := by
   have h1 : (289 / 100 : ℝ) < ‖w‖ := hw
   rw [norm_div, norm_pow, Complex.norm_ofNat]
   rw [div_le_iff₀ (by positivity)]
@@ -74,15 +74,15 @@ no escape-regime hypothesis: the far field `farW` is self-improving. -/
 theorem norm_term_le {w : ℂ} (hw : w ∈ farW) (k : ℕ) :
     ‖bottcherLogTerm 4 w k‖ ≤ (1 / 2 : ℝ) ^ (k + 1) := by
   have hA : (quadratic 4)^[k] w ∈ farW := farW_iterate k hw
-  have hq : ‖(4 : ℂ) / ((quadratic 4)^[k] w) ^ 2‖ ≤ 1 / 2 := farW_ratio_le hA
+  have hq : ‖(4 : ℂ) / ((quadratic 4)^[k] w) ^ (2 : ℕ)‖ ≤ 1 / 2 := farW_ratio_le hA
   have hlog := norm_clog_one_add_le hq
   unfold bottcherLogTerm
   rw [norm_mul, norm_inv, norm_pow, Complex.norm_ofNat]
-  calc ((2 : ℝ) ^ (k + 1))⁻¹ * ‖Complex.log (1 + 4 / ((quadratic 4)^[k] w) ^ 2)‖
+  calc ((2 : ℝ) ^ (k + 1))⁻¹ * ‖Complex.log (1 + 4 / ((quadratic 4)^[k] w) ^ (2 : ℕ))‖
       ≤ ((2 : ℝ) ^ (k + 1))⁻¹ * (2 * (1 / 2)) := by
         refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-        calc ‖Complex.log (1 + 4 / ((quadratic 4)^[k] w) ^ 2)‖
-            ≤ 2 * ‖(4 : ℂ) / ((quadratic 4)^[k] w) ^ 2‖ := hlog
+        calc ‖Complex.log (1 + 4 / ((quadratic 4)^[k] w) ^ (2 : ℕ))‖
+            ≤ 2 * ‖(4 : ℂ) / ((quadratic 4)^[k] w) ^ (2 : ℕ)‖ := hlog
           _ ≤ 2 * (1 / 2) := by linarith
     _ = (1 / 2 : ℝ) ^ (k + 1) := by
         rw [one_div, inv_pow]
@@ -93,7 +93,7 @@ with the geometric bound). -/
 theorem tail_differentiableOn :
     DifferentiableOn ℂ (fun w => ∑' k, bottcherLogTerm 4 w k) farW := by
   have hqd : Differentiable ℂ (quadratic (4 : ℂ)) := by
-    have : (quadratic (4 : ℂ)) = fun z => z ^ 2 + 4 := by
+    have : (quadratic (4 : ℂ)) = fun z => z ^ (2 : ℕ) + 4 := by
       funext z; exact quadratic_apply 4 z
     rw [this]
     exact (differentiable_pow 2).add_const 4
@@ -106,19 +106,19 @@ theorem tail_differentiableOn :
   · intro k w hw
     apply DifferentiableAt.differentiableWithinAt
     have hA : (quadratic 4)^[k] w ∈ farW := farW_iterate k hw
-    have hAne : ((quadratic 4)^[k] w) ^ 2 ≠ 0 := pow_ne_zero 2 (farW_ne_zero hA)
+    have hAne : ((quadratic 4)^[k] w) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (farW_ne_zero hA)
     have hiter : DifferentiableAt ℂ ((quadratic (4 : ℂ))^[k]) w := (hqd.iterate k).differentiableAt
-    have hinner : DifferentiableAt ℂ (fun v => 1 + (4 : ℂ) / ((quadratic 4)^[k] v) ^ 2) w := by
-      have hdiv : DifferentiableAt ℂ (fun v => (4 : ℂ) / ((quadratic 4)^[k] v) ^ 2) w :=
+    have hinner : DifferentiableAt ℂ (fun v => 1 + (4 : ℂ) / ((quadratic 4)^[k] v) ^ (2 : ℕ)) w := by
+      have hdiv : DifferentiableAt ℂ (fun v => (4 : ℂ) / ((quadratic 4)^[k] v) ^ (2 : ℕ)) w :=
         (differentiableAt_const _).div (hiter.pow 2) hAne
       exact (differentiableAt_const (1 : ℂ)).add hdiv
-    have hslit : (1 + (4 : ℂ) / ((quadratic 4)^[k] w) ^ 2) ∈ slitPlane := by
+    have hslit : (1 + (4 : ℂ) / ((quadratic 4)^[k] w) ^ (2 : ℕ)) ∈ slitPlane := by
       refine Or.inl ?_
-      have hre : |((4 : ℂ) / ((quadratic 4)^[k] w) ^ 2).re|
-          ≤ ‖(4 : ℂ) / ((quadratic 4)^[k] w) ^ 2‖ := Complex.abs_re_le_norm _
+      have hre : |((4 : ℂ) / ((quadratic 4)^[k] w) ^ (2 : ℕ)).re|
+          ≤ ‖(4 : ℂ) / ((quadratic 4)^[k] w) ^ (2 : ℕ)‖ := Complex.abs_re_le_norm _
       have hq := farW_ratio_le hA
-      have : (1 + (4 : ℂ) / ((quadratic 4)^[k] w) ^ 2).re
-          = 1 + ((4 : ℂ) / ((quadratic 4)^[k] w) ^ 2).re := by
+      have : (1 + (4 : ℂ) / ((quadratic 4)^[k] w) ^ (2 : ℕ)).re
+          = 1 + ((4 : ℂ) / ((quadratic 4)^[k] w) ^ (2 : ℕ)).re := by
         simp [Complex.add_re]
       rw [this]
       have habs := abs_le.mp hre
@@ -133,7 +133,7 @@ noncomputable def phiFour (z : ℂ) : ℂ :=
 
 /-- `phiFour` is a canonical Böttcher branch: its square is the genuine `bottcherCoord 4` one
 quadratic step ahead. -/
-theorem phiFour_sq (z : ℂ) : phiFour z ^ 2 = bottcherCoord 4 (quadratic 4 z) := by
+theorem phiFour_sq (z : ℂ) : phiFour z ^ (2 : ℕ) = bottcherCoord 4 (quadratic 4 z) := by
   unfold phiFour bottcherCoord
   rw [pow_two, ← Complex.exp_add]
   congr 1
@@ -145,10 +145,10 @@ theorem phiFour_ne_zero (z : ℂ) : phiFour z ≠ 0 := Complex.exp_ne_zero _
 theorem quadFour_re_lower {z : ℂ} (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
     (1159 / 400 : ℝ) < (quadratic 4 z).re := by
   have hz' : ‖z‖ < 21 / 20 := by simpa [mem_ball, dist_zero_right] using hz
-  have hre : |(z ^ 2).re| ≤ ‖z ^ 2‖ := Complex.abs_re_le_norm _
-  have hp : ‖z ^ 2‖ = ‖z‖ ^ 2 := norm_pow z 2
-  have h1 : (quadratic 4 z).re = (z ^ 2).re + 4 := by
-    show (z ^ 2 + 4 : ℂ).re = (z ^ 2).re + 4
+  have hre : |(z ^ (2 : ℕ)).re| ≤ ‖z ^ (2 : ℕ)‖ := Complex.abs_re_le_norm _
+  have hp : ‖z ^ (2 : ℕ)‖ = ‖z‖ ^ (2 : ℕ) := norm_pow z 2
+  have h1 : (quadratic 4 z).re = (z ^ (2 : ℕ)).re + 4 := by
+    show (z ^ (2 : ℕ) + 4 : ℂ).re = (z ^ (2 : ℕ)).re + 4
     simp [Complex.add_re]
   rw [h1]
   have habs := abs_le.mp hre
@@ -173,7 +173,7 @@ theorem phiFour_analytic : AnalyticOnNhd ℂ phiFour (ball (0 : ℂ) (21 / 20)) 
   intro z hz
   apply DifferentiableAt.differentiableWithinAt
   have hqd : DifferentiableAt ℂ (quadratic (4 : ℂ)) z := by
-    have : (quadratic (4 : ℂ)) = fun v => v ^ 2 + 4 := by
+    have : (quadratic (4 : ℂ)) = fun v => v ^ (2 : ℕ) + 4 := by
       funext v; exact quadratic_apply 4 v
     rw [this]
     exact ((differentiable_pow 2).add_const 4).differentiableAt
@@ -324,22 +324,22 @@ theorem summable_term {w : ℂ} (hw : w ∈ farW) :
 /-- **The Böttcher functional equation on the far window** — branch-free at the `exp` level:
 `φ(z² + 4) = φ(z)²` for every `‖z‖ > 289/100`, well below the crude `‖z‖ > 4` regime. -/
 theorem bottcherCoord_quadratic_farW {z : ℂ} (hz : z ∈ farW) :
-    bottcherCoord 4 (quadratic 4 z) = (bottcherCoord 4 z) ^ 2 := by
+    bottcherCoord 4 (quadratic 4 z) = (bottcherCoord 4 z) ^ (2 : ℕ) := by
   have hz0 : z ≠ 0 := farW_ne_zero hz
   have hz2 : (289 / 100 : ℝ) < ‖z‖ := hz
-  have hzsq : z ^ 2 + 4 ≠ 0 := by
+  have hzsq : z ^ (2 : ℕ) + 4 ≠ 0 := by
     intro h0
-    have h1 : ‖z ^ 2‖ = ‖(-4 : ℂ)‖ := by
-      rw [show z ^ 2 = -4 from by linear_combination h0]
+    have h1 : ‖z ^ (2 : ℕ)‖ = ‖(-4 : ℂ)‖ := by
+      rw [show z ^ (2 : ℕ) = -4 from by linear_combination h0]
     rw [norm_pow] at h1
     simp only [norm_neg] at h1
     have h4 : ‖(4 : ℂ)‖ = 4 := by
       rw [show (4 : ℂ) = ((4 : ℝ) : ℂ) from by norm_num, Complex.norm_real]
       norm_num
     nlinarith [h1, h4.symm ▸ h1]
-  have hratio : (1 : ℂ) + 4 / z ^ 2 ≠ 0 := by
+  have hratio : (1 : ℂ) + 4 / z ^ (2 : ℕ) ≠ 0 := by
     intro h0
-    have h1 : z ^ 2 + 4 = 0 := by
+    have h1 : z ^ (2 : ℕ) + 4 = 0 := by
       field_simp at h0
       linear_combination h0
     exact hzsq h1
@@ -371,12 +371,12 @@ theorem bottcherCoord_quadratic_farW {z : ℂ} (hz : z ∈ farW) :
   -- assemble at the exp level
   unfold bottcherCoord bottcherLog
   rw [hsum]
-  have hterm0 : bottcherLogTerm 4 z 0 = (2 : ℂ)⁻¹ * Complex.log (1 + 4 / z ^ 2) := by
+  have hterm0 : bottcherLogTerm 4 z 0 = (2 : ℂ)⁻¹ * Complex.log (1 + 4 / z ^ (2 : ℕ)) := by
     unfold bottcherLogTerm
     simp
   rw [hterm0]
-  have hqz : quadratic 4 z = z ^ 2 + 4 := rfl
-  have hδ : Complex.exp (Complex.log (z ^ 2 + 4) - Complex.log (1 + 4 / z ^ 2)
+  have hqz : quadratic 4 z = z ^ (2 : ℕ) + 4 := rfl
+  have hδ : Complex.exp (Complex.log (z ^ (2 : ℕ) + 4) - Complex.log (1 + 4 / z ^ (2 : ℕ))
       - 2 * Complex.log z) = 1 := by
     rw [sub_sub, Complex.exp_sub, Complex.exp_add, Complex.exp_log hzsq,
       Complex.exp_log hratio]
@@ -390,19 +390,19 @@ theorem bottcherCoord_quadratic_farW {z : ℂ} (hz : z ∈ farW) :
     field_simp
   calc Complex.exp (Complex.log (quadratic 4 z)
         + (2 * (∑' k, bottcherLogTerm 4 z k) - 2 * ((2 : ℂ)⁻¹
-            * Complex.log (1 + 4 / z ^ 2))))
+            * Complex.log (1 + 4 / z ^ (2 : ℕ)))))
       = Complex.exp ((2 : ℂ) * (Complex.log z + ∑' k, bottcherLogTerm 4 z k)
-          + (Complex.log (z ^ 2 + 4) - Complex.log (1 + 4 / z ^ 2)
+          + (Complex.log (z ^ (2 : ℕ) + 4) - Complex.log (1 + 4 / z ^ (2 : ℕ))
             - 2 * Complex.log z)) := by
         rw [hqz]
         congr 1
         ring
     _ = Complex.exp ((2 : ℂ) * (Complex.log z + ∑' k, bottcherLogTerm 4 z k))
-          * Complex.exp (Complex.log (z ^ 2 + 4) - Complex.log (1 + 4 / z ^ 2)
+          * Complex.exp (Complex.log (z ^ (2 : ℕ) + 4) - Complex.log (1 + 4 / z ^ (2 : ℕ))
             - 2 * Complex.log z) := Complex.exp_add _ _
     _ = Complex.exp ((2 : ℂ) * (Complex.log z + ∑' k, bottcherLogTerm 4 z k)) := by
         rw [hδ, mul_one]
-    _ = Complex.exp (Complex.log z + ∑' k, bottcherLogTerm 4 z k) ^ 2 := by
+    _ = Complex.exp (Complex.log z + ∑' k, bottcherLogTerm 4 z k) ^ (2 : ℕ) := by
         rw [pow_two, ← Complex.exp_add]
         congr 1
         ring
@@ -421,12 +421,12 @@ theorem farW_growth (m : ℕ) {w : ℂ} (hw : w ∈ farW) :
     have hstep : (3 / 2 : ℝ) * ‖(quadratic 4)^[m] w‖ ≤ ‖(quadratic 4)^[m + 1] w‖ := by
       rw [Function.iterate_succ_apply']
       have hq : quadratic 4 ((quadratic 4)^[m] w)
-          = ((quadratic 4)^[m] w) ^ 2 + 4 := rfl
+          = ((quadratic 4)^[m] w) ^ (2 : ℕ) + 4 := rfl
       rw [hq]
       have h4 : ‖(4 : ℂ)‖ = 4 := by
         rw [show (4 : ℂ) = ((4 : ℝ) : ℂ) from by norm_num, Complex.norm_real]
         norm_num
-      have h1 : ‖((quadratic 4)^[m] w) ^ 2‖ ≤ ‖((quadratic 4)^[m] w) ^ 2 + 4‖ + ‖(4 : ℂ)‖ :=
+      have h1 : ‖((quadratic 4)^[m] w) ^ (2 : ℕ)‖ ≤ ‖((quadratic 4)^[m] w) ^ (2 : ℕ) + 4‖ + ‖(4 : ℂ)‖ :=
         norm_le_add_norm_add _ _
       rw [norm_pow] at h1
       rw [h4] at h1
@@ -445,7 +445,7 @@ theorem phiFour_pow_iterate {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) (21 / 20
   | succ m ihm =>
     have hmem : (quadratic 4)^[m] (quadratic 4 z) ∈ farW :=
       farW_iterate m (quadFour_mem_farW hz)
-    have hpow : phiFour z ^ (2 ^ (m + 1 + 1)) = (phiFour z ^ (2 ^ (m + 1))) ^ 2 := by
+    have hpow : phiFour z ^ (2 ^ (m + 1 + 1)) = (phiFour z ^ (2 ^ (m + 1))) ^ (2 : ℕ) := by
       rw [← pow_mul, ← pow_succ]
     rw [hpow, ihm, Function.iterate_succ_apply', bottcherCoord_quadratic_farW hmem]
 

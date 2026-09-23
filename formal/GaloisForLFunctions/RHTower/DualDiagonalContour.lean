@@ -307,7 +307,7 @@ theorem norm_dualDiagonalIntegrand_left_le {d c x τ : ℝ} (hd : 0 < d) (hd8 : 
         = ((1 / 2 + 2 * d : ℝ) : ℂ) + ((2 * v : ℝ) : ℂ) * I := by push_cast; ring
     rw [harg]
     exact hζ (1 / 2 + 2 * d) (2 * v) (by linarith) (by linarith)
-  -- combine the frequency powers: `(1+|v|)^{2a} (1+|2v|)^2 ≤ 4 (1+|v|)^3`
+  -- combine the frequency powers: `(1+|v|)^{2a} (1+|2v|)^(2 : ℕ) ≤ 4 (1+|v|)^(3 : ℕ)`
   have hva : (1 + |v|) ^ (1 / 4 - d) * (1 + |v|) ^ (1 / 4 - d) ≤ 1 + |v| := by
     rw [← Real.rpow_add (by positivity)]
     calc (1 + |v|) ^ (1 / 4 - d + (1 / 4 - d)) ≤ (1 + |v|) ^ (1 : ℝ) :=

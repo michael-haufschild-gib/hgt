@@ -16,7 +16,7 @@ def oppositeTemporalProfile (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (zang : D4BMHorizon.Point) (u : ℂ) (z : ℝ) : ℂ :=
   oppositeCurrentRatio q branch u *
     (modeAngularSquare (physicalModeAngularJet q zang) *
-      ((-2 * u * (physicalAngularParameter q ^ 2 - 1 / 4 - 2) * selfPart q branch a u z -
+      ((-2 * u * (physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2) * selfPart q branch a u z -
         u * contactPart q branch a u z) * gaussProfile q (-u) z) *
       ((Real.sqrt (1 - z))⁻¹ : ℂ) / 2)
 
@@ -98,7 +98,7 @@ theorem oppositeTemporalProfile_germ (q : XiZeroCopy) (branch side : Bool) (a : 
     simp only [contactPart, Fin.sum_univ_three]
     ring
   have h1 := hself.const_mul
-    (k := fun u => -2 * u * (physicalAngularParameter q ^ 2 - 1 / 4 - 2))
+    (k := fun u => -2 * u * (physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2))
     ((analyticAt_const.mul analyticAt_id).mul analyticAt_const)
   have h2 := hcontact.const_mul (k := fun u => u) analyticAt_id
   have hcore := ((h1.sub h2).mul (negativeGaussProfile_germ q side)).const_mul

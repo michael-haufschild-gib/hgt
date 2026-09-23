@@ -18,7 +18,7 @@ open ContinuousLinearMap
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-/-- FACHD's relative cubic operator `T(R,P) = (R-P)^3`. -/
+/-- FACHD's relative cubic operator `T(R,P) = (R-P)^(3 : ℕ)`. -/
 abbrev formationAnchoredCubicDefect (R P : H →L[ℂ] H) : H →L[ℂ] H :=
   restrictedProjectionCubicDefect R P
 

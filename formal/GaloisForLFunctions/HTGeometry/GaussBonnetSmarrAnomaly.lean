@@ -18,12 +18,12 @@ namespace GaloisForLFunctions.HTGeometry
 def egbSmarrAResidual (P Q a l r : ℝ) : ℝ :=
   egbMass P Q a r - (2 * egbTemperatureA P Q a r * egbEntropyA a l r -
     2 * P * egbThermodynamicVolume r + Q * egbElectricPotential Q r +
-      2 * a ^ 2 * egbCouplingConjugateA P Q a l r)
+      2 * a ^ (2 : ℕ) * egbCouplingConjugateA P Q a l r)
 
 /-- The exact defect of the fixed-reference homogeneous Smarr expression. -/
 theorem egbSmarrA_anomaly (P Q a l x : ℝ) :
-    egbSmarrAResidual P Q a l (exp x) = 4 * Real.pi * a ^ 2 * egbTemperatureA P Q a (exp x) := by
-  have hn : exp x ^ 2 + 2 * a ^ 2 ≠ 0 := by positivity
+    egbSmarrAResidual P Q a l (exp x) = 4 * Real.pi * a ^ (2 : ℕ) * egbTemperatureA P Q a (exp x) := by
+  have hn : exp x ^ (2 : ℕ) + 2 * a ^ (2 : ℕ) ≠ 0 := by positivity
   unfold egbSmarrAResidual egbMass egbEntropyA egbCouplingConjugateA egbElectricPotential
     egbThermodynamicVolume egbTemperatureA
   field_simp
@@ -34,7 +34,7 @@ theorem egbSmarrA_with_reference_work (P Q a l x : ℝ) :
     egbMass P Q a (exp x) =
       2 * egbTemperatureA P Q a (exp x) * egbEntropyA a l (exp x) -
         2 * P * egbThermodynamicVolume (exp x) + Q * egbElectricPotential Q (exp x) +
-        2 * a ^ 2 * egbCouplingConjugateA P Q a l (exp x) + egbReferenceConjugateA P Q a (exp x) := by
+        2 * a ^ (2 : ℕ) * egbCouplingConjugateA P Q a l (exp x) + egbReferenceConjugateA P Q a (exp x) := by
   have h := egbSmarrA_anomaly P Q a l x
   unfold egbSmarrAResidual egbReferenceConjugateA at *
   linarith
@@ -44,7 +44,7 @@ theorem egbSmarrB_homogeneous (P Q a x : ℝ) :
     egbMass P Q a (exp x) =
       2 * egbTemperatureB P Q a (exp x) * egbEntropyB (exp x) -
         2 * P * egbThermodynamicVolume (exp x) + Q * egbElectricPotential Q (exp x) +
-        2 * a ^ 2 * egbCouplingConjugateB (exp x) := by
+        2 * a ^ (2 : ℕ) * egbCouplingConjugateB (exp x) := by
   unfold egbMass egbTemperatureB egbEntropyB egbThermodynamicVolume egbElectricPotential egbCouplingConjugateB
   field_simp
   ring
@@ -62,7 +62,7 @@ theorem egbSmarrA_anomaly_reference_invariant (P Q a l c x : ℝ) :
 
 theorem egbTemperatureA_pressure (T Q a x : ℝ) :
     egbTemperatureA (egbPressureA T Q a (exp x)) Q a (exp x) = T := by
-  have hn : exp x ^ 2 + 2 * a ^ 2 ≠ 0 := by positivity
+  have hn : exp x ^ (2 : ℕ) + 2 * a ^ (2 : ℕ) ≠ 0 := by positivity
   unfold egbTemperatureA egbPressureA
   field_simp
   ring
@@ -83,8 +83,8 @@ theorem egbPositiveExternalTemperature_pos (τ x : ℝ) : 0 < egbPositiveExterna
 theorem egbPressureA_positive_state (Q a τ x : ℝ) :
     0 < egbPressureA (egbPositiveExternalTemperature τ x) Q a (exp x) := by
   have he : egbPressureA (egbPositiveExternalTemperature τ x) Q a (exp x) =
-      exp τ / (2 * exp x) + a ^ 2 * egbPositiveExternalTemperature τ x / exp x ^ 3 +
-        (Q ^ 2 + a ^ 2) / (8 * Real.pi * exp x ^ 4) := by
+      exp τ / (2 * exp x) + a ^ (2 : ℕ) * egbPositiveExternalTemperature τ x / exp x ^ (3 : ℕ) +
+        (Q ^ (2 : ℕ) + a ^ (2 : ℕ)) / (8 * Real.pi * exp x ^ (4 : ℕ)) := by
     unfold egbPressureA egbPositiveExternalTemperature
     ring
   rw [he]
@@ -104,7 +104,7 @@ theorem egbSmarrA_positive_state_exists (Q b l τ x : ℝ) :
       egbMass P Q (exp b) (exp x) ≠
         2 * egbTemperatureA P Q (exp b) (exp x) * egbEntropyA (exp b) l (exp x) -
           2 * P * egbThermodynamicVolume (exp x) + Q * egbElectricPotential Q (exp x) +
-          2 * exp b ^ 2 * egbCouplingConjugateA P Q (exp b) l (exp x) := by
+          2 * exp b ^ (2 : ℕ) * egbCouplingConjugateA P Q (exp b) l (exp x) := by
   refine ⟨egbPressureA (egbPositiveExternalTemperature τ x) Q (exp b) (exp x),
     egbPressureA_positive_state Q (exp b) τ x, ?_, ?_⟩
   · rw [egbTemperatureA_pressure]

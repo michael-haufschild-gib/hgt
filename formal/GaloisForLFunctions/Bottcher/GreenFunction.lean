@@ -37,33 +37,33 @@ theorem abs_log_le_two_abs_sub_one {r : ℝ} (hr : 1 / 2 ≤ r) :
 /-- **One-step Green estimate.** For `w` in the escape regime (`2‖c‖ ≤ ‖w‖²`, `w ≠ 0`),
 one quadratic step changes the rescaled log by a summable amount:
 `|log‖f_c w‖ − 2·log‖w‖| ≤ 2‖c‖/‖w‖²`. The Cauchy driver of `G_c`'s convergence. -/
-theorem log_quadratic_approx {c w : ℂ} (hw : 2 * ‖c‖ ≤ ‖w‖ ^ 2) (hw0 : w ≠ 0) :
-    |Real.log ‖quadratic c w‖ - 2 * Real.log ‖w‖| ≤ 2 * ‖c‖ / ‖w‖ ^ 2 := by
+theorem log_quadratic_approx {c w : ℂ} (hw : 2 * ‖c‖ ≤ ‖w‖ ^ (2 : ℕ)) (hw0 : w ≠ 0) :
+    |Real.log ‖quadratic c w‖ - 2 * Real.log ‖w‖| ≤ 2 * ‖c‖ / ‖w‖ ^ (2 : ℕ) := by
   rw [quadratic_apply]
-  have hR2 : 0 < ‖w‖ ^ 2 := by positivity
+  have hR2 : 0 < ‖w‖ ^ (2 : ℕ) := by positivity
   have hc0 : 0 ≤ ‖c‖ := norm_nonneg c
-  have hnw2 : ‖w ^ 2‖ = ‖w‖ ^ 2 := by rw [norm_pow]
-  have ha_up : ‖w ^ 2 + c‖ ≤ ‖w‖ ^ 2 + ‖c‖ := by
-    calc ‖w ^ 2 + c‖ ≤ ‖w ^ 2‖ + ‖c‖ := norm_add_le _ _
-      _ = ‖w‖ ^ 2 + ‖c‖ := by rw [hnw2]
-  have ha_low : ‖w‖ ^ 2 - ‖c‖ ≤ ‖w ^ 2 + c‖ := by
-    have h := norm_sub_norm_le (w ^ 2) (-c)
+  have hnw2 : ‖w ^ (2 : ℕ)‖ = ‖w‖ ^ (2 : ℕ) := by rw [norm_pow]
+  have ha_up : ‖w ^ (2 : ℕ) + c‖ ≤ ‖w‖ ^ (2 : ℕ) + ‖c‖ := by
+    calc ‖w ^ (2 : ℕ) + c‖ ≤ ‖w ^ (2 : ℕ)‖ + ‖c‖ := norm_add_le _ _
+      _ = ‖w‖ ^ (2 : ℕ) + ‖c‖ := by rw [hnw2]
+  have ha_low : ‖w‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖w ^ (2 : ℕ) + c‖ := by
+    have h := norm_sub_norm_le (w ^ (2 : ℕ)) (-c)
     rw [norm_neg, sub_neg_eq_add, hnw2] at h
     exact h
-  have ha0 : 0 < ‖w ^ 2 + c‖ := by nlinarith [ha_low, hw, hR2]
-  rw [show Real.log ‖w ^ 2 + c‖ - 2 * Real.log ‖w‖
-        = Real.log (‖w ^ 2 + c‖ / ‖w‖ ^ 2) from by
+  have ha0 : 0 < ‖w ^ (2 : ℕ) + c‖ := by nlinarith [ha_low, hw, hR2]
+  rw [show Real.log ‖w ^ (2 : ℕ) + c‖ - 2 * Real.log ‖w‖
+        = Real.log (‖w ^ (2 : ℕ) + c‖ / ‖w‖ ^ (2 : ℕ)) from by
       rw [Real.log_div ha0.ne' hR2.ne', Real.log_pow]; push_cast; ring]
-  have hr_half : (1 : ℝ) / 2 ≤ ‖w ^ 2 + c‖ / ‖w‖ ^ 2 := by
+  have hr_half : (1 : ℝ) / 2 ≤ ‖w ^ (2 : ℕ) + c‖ / ‖w‖ ^ (2 : ℕ) := by
     rw [le_div_iff₀ hR2]; linarith [ha_low, hw]
-  have hr1 : |‖w ^ 2 + c‖ / ‖w‖ ^ 2 - 1| ≤ ‖c‖ / ‖w‖ ^ 2 := by
+  have hr1 : |‖w ^ (2 : ℕ) + c‖ / ‖w‖ ^ (2 : ℕ) - 1| ≤ ‖c‖ / ‖w‖ ^ (2 : ℕ) := by
     rw [div_sub_one hR2.ne', abs_div, abs_of_pos hR2]
     gcongr
     rw [abs_le]; exact ⟨by linarith [ha_up], by linarith [ha_low]⟩
-  calc |Real.log (‖w ^ 2 + c‖ / ‖w‖ ^ 2)|
-      ≤ 2 * |‖w ^ 2 + c‖ / ‖w‖ ^ 2 - 1| := abs_log_le_two_abs_sub_one hr_half
-    _ ≤ 2 * (‖c‖ / ‖w‖ ^ 2) := by linarith [hr1]
-    _ = 2 * ‖c‖ / ‖w‖ ^ 2 := by ring
+  calc |Real.log (‖w ^ (2 : ℕ) + c‖ / ‖w‖ ^ (2 : ℕ))|
+      ≤ 2 * |‖w ^ (2 : ℕ) + c‖ / ‖w‖ ^ (2 : ℕ) - 1| := abs_log_le_two_abs_sub_one hr_half
+    _ ≤ 2 * (‖c‖ / ‖w‖ ^ (2 : ℕ)) := by linarith [hr1]
+    _ = 2 * ‖c‖ / ‖w‖ ^ (2 : ℕ) := by ring
 
 /-- The rescaled log of the orbit, `g_n(z) = 2⁻ⁿ·log‖f_c^[n] z‖`; its limit is `G_c`. -/
 noncomputable def greenApprox (c z : ℂ) (n : ℕ) : ℝ :=
@@ -73,9 +73,9 @@ noncomputable def greenApprox (c z : ℂ) (n : ℕ) : ℝ :=
 small, summable amount on the escape set: `|g_{n+1} − g_n| ≤ 2⁻⁽ⁿ⁺¹⁾·2‖c‖/‖f_c^[n] z‖²`.
 This is the Cauchy criterion driver for `G_c = lim g_n`. -/
 theorem greenApprox_step_bound {c z : ℂ} (n : ℕ)
-    (hw : 2 * ‖c‖ ≤ ‖(quadratic c)^[n] z‖ ^ 2) (hw0 : (quadratic c)^[n] z ≠ 0) :
+    (hw : 2 * ‖c‖ ≤ ‖(quadratic c)^[n] z‖ ^ (2 : ℕ)) (hw0 : (quadratic c)^[n] z ≠ 0) :
     |greenApprox c z (n + 1) - greenApprox c z n|
-      ≤ (2 ^ (n + 1) : ℝ)⁻¹ * (2 * ‖c‖ / ‖(quadratic c)^[n] z‖ ^ 2) := by
+      ≤ (2 ^ (n + 1) : ℝ)⁻¹ * (2 * ‖c‖ / ‖(quadratic c)^[n] z‖ ^ (2 : ℕ)) := by
   unfold greenApprox
   rw [Function.iterate_succ', Function.comp_apply]
   set w := (quadratic c)^[n] z with hwdef
@@ -117,7 +117,7 @@ theorem greenApproxPlus_tendsto_zero_of_mem {c z : ℂ} (hz : z ∈ filledJulia 
 /-- **Escape regime is stable**: once `‖z‖ > 2` and `‖c‖ ≤ ‖z‖`, every iterate stays in
 the one-step-estimate regime (`2‖c‖ ≤ ‖f_c^[n] z‖²`, nonzero), since the orbit grows. -/
 theorem escape_regime_stable {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) (n : ℕ) :
-    2 * ‖c‖ ≤ ‖(quadratic c)^[n] z‖ ^ 2 ∧ (quadratic c)^[n] z ≠ 0 := by
+    2 * ‖c‖ ≤ ‖(quadratic c)^[n] z‖ ^ (2 : ℕ) ∧ (quadratic c)^[n] z ≠ 0 := by
   have hg := quadratic_orbit_growth hc hz n
   have hge1 : (1 : ℝ) ≤ (‖z‖ - 1) ^ n := one_le_pow₀ (by linarith)
   have hzn : ‖z‖ ≤ ‖(quadratic c)^[n] z‖ :=
@@ -130,19 +130,19 @@ theorem escape_regime_stable {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < �
 by `(‖c‖/‖z‖²)·(1/2)ⁿ` — summable (ratio `1/2`), so `g_n` is Cauchy. The convergence
 engine of the Böttcher coordinate. (Uses only `A ≥ ‖z‖`, since `(‖z‖-1)²ⁿ ≥ 1`.) -/
 theorem greenApprox_step_geom_bound {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) (n : ℕ) :
-    |greenApprox c z (n + 1) - greenApprox c z n| ≤ ‖c‖ / ‖z‖ ^ 2 * (1 / 2) ^ n := by
+    |greenApprox c z (n + 1) - greenApprox c z n| ≤ ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2) ^ n := by
   obtain ⟨hreg, hne⟩ := escape_regime_stable hc hz n
   have hz0 : (0 : ℝ) < ‖z‖ := by linarith
-  have hz2 : (0 : ℝ) < ‖z‖ ^ 2 := pow_pos hz0 2
+  have hz2 : (0 : ℝ) < ‖z‖ ^ (2 : ℕ) := pow_pos hz0 2
   have hge1 : (1 : ℝ) ≤ (‖z‖ - 1) ^ n := one_le_pow₀ (by linarith)
   have hzn : ‖z‖ ≤ ‖(quadratic c)^[n] z‖ :=
     le_trans (by nlinarith [hge1, norm_nonneg z]) (quadratic_orbit_growth hc hz n)
-  have hAsq : ‖z‖ ^ 2 ≤ ‖(quadratic c)^[n] z‖ ^ 2 := by nlinarith [hzn, hz0]
+  have hAsq : ‖z‖ ^ (2 : ℕ) ≤ ‖(quadratic c)^[n] z‖ ^ (2 : ℕ) := by nlinarith [hzn, hz0]
   calc |greenApprox c z (n + 1) - greenApprox c z n|
-      ≤ (2 ^ (n + 1) : ℝ)⁻¹ * (2 * ‖c‖ / ‖(quadratic c)^[n] z‖ ^ 2) :=
+      ≤ (2 ^ (n + 1) : ℝ)⁻¹ * (2 * ‖c‖ / ‖(quadratic c)^[n] z‖ ^ (2 : ℕ)) :=
         greenApprox_step_bound n hreg hne
-    _ ≤ (2 ^ (n + 1) : ℝ)⁻¹ * (2 * ‖c‖ / ‖z‖ ^ 2) := by gcongr
-    _ = ‖c‖ / ‖z‖ ^ 2 * (1 / 2) ^ n := by rw [pow_succ, div_pow, one_pow]; field_simp
+    _ ≤ (2 ^ (n + 1) : ℝ)⁻¹ * (2 * ‖c‖ / ‖z‖ ^ (2 : ℕ)) := by gcongr
+    _ = ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2) ^ n := by rw [pow_succ, div_pow, one_pow]; field_simp
 
 /-- **The Green's function exists on the escape set.** For `z` in the immediate escape
 regime (`‖z‖ > 2`, `‖c‖ ≤ ‖z‖`), the rescaled logs `g_n(z)` form a Cauchy sequence
@@ -150,7 +150,7 @@ regime (`‖z‖ > 2`, `‖c‖ ≤ ‖z‖`), the rescaled logs `g_n(z)` form a
 analytic core of the Böttcher coordinate `φ_c = exp(G_c + i·conj)`. -/
 theorem greenApprox_converges {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
     ∃ L : ℝ, Tendsto (greenApprox c z) atTop (𝓝 L) := by
-  have hgeom : Summable (fun n : ℕ => ‖c‖ / ‖z‖ ^ 2 * (1 / 2 : ℝ) ^ n) :=
+  have hgeom : Summable (fun n : ℕ => ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2 : ℝ) ^ n) :=
     (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
   have hsum : Summable (fun n => greenApprox c z (n + 1) - greenApprox c z n) := by
     apply Summable.of_norm
@@ -201,7 +201,7 @@ theorem greenLimit_quadratic {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < �
 theorem greenLimit_eq_tsum {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
     greenLimit c z
       = greenApprox c z 0 + ∑' n, (greenApprox c z (n + 1) - greenApprox c z n) := by
-  have hgeom : Summable (fun n : ℕ => ‖c‖ / ‖z‖ ^ 2 * (1 / 2 : ℝ) ^ n) :=
+  have hgeom : Summable (fun n : ℕ => ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2 : ℝ) ^ n) :=
     (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
   have hsum : Summable (fun n => greenApprox c z (n + 1) - greenApprox c z n) := by
     apply Summable.of_norm
@@ -217,28 +217,28 @@ theorem greenLimit_eq_tsum {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z
 
 /-- **Lower bound** `G_c(z) ≥ log‖z‖ − 2‖c‖/‖z‖²` on the escape set (finite-sum / squeeze). -/
 theorem greenLimit_lower_bound {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
-    Real.log ‖z‖ - 2 * ‖c‖ / ‖z‖ ^ 2 ≤ greenLimit c z := by
+    Real.log ‖z‖ - 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) ≤ greenLimit c z := by
   have hgs : ∀ n, ∑ k ∈ Finset.range n, (1 / 2 : ℝ) ^ k ≤ 2 := by
     intro n
     rw [geom_sum_eq (by norm_num : (1 / 2 : ℝ) ≠ 1)]
     have : (0 : ℝ) ≤ (1 / 2 : ℝ) ^ n := by positivity
     rw [div_le_iff_of_neg (by norm_num : (1 / 2 : ℝ) - 1 < 0)]; nlinarith [this]
-  have hpern : ∀ n, Real.log ‖z‖ - 2 * ‖c‖ / ‖z‖ ^ 2 ≤ greenApprox c z n := by
+  have hpern : ∀ n, Real.log ‖z‖ - 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) ≤ greenApprox c z n := by
     intro n
     have htel : greenApprox c z n = greenApprox c z 0
         + ∑ k ∈ Finset.range n, (greenApprox c z (k + 1) - greenApprox c z k) := by
       rw [Finset.sum_range_sub (greenApprox c z) n]; ring
     have h0 : greenApprox c z 0 = Real.log ‖z‖ := by simp [greenApprox]
     have hsb : |∑ k ∈ Finset.range n, (greenApprox c z (k + 1) - greenApprox c z k)|
-        ≤ 2 * ‖c‖ / ‖z‖ ^ 2 := by
+        ≤ 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) := by
       calc |∑ k ∈ Finset.range n, (greenApprox c z (k + 1) - greenApprox c z k)|
           ≤ ∑ k ∈ Finset.range n, |greenApprox c z (k + 1) - greenApprox c z k| :=
             Finset.abs_sum_le_sum_abs _ _
-        _ ≤ ∑ k ∈ Finset.range n, ‖c‖ / ‖z‖ ^ 2 * (1 / 2 : ℝ) ^ k :=
+        _ ≤ ∑ k ∈ Finset.range n, ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2 : ℝ) ^ k :=
             Finset.sum_le_sum (fun k _ => greenApprox_step_geom_bound hc hz k)
-        _ = ‖c‖ / ‖z‖ ^ 2 * ∑ k ∈ Finset.range n, (1 / 2 : ℝ) ^ k := by rw [← Finset.mul_sum]
-        _ ≤ ‖c‖ / ‖z‖ ^ 2 * 2 := by gcongr; exact hgs n
-        _ = 2 * ‖c‖ / ‖z‖ ^ 2 := by ring
+        _ = ‖c‖ / ‖z‖ ^ (2 : ℕ) * ∑ k ∈ Finset.range n, (1 / 2 : ℝ) ^ k := by rw [← Finset.mul_sum]
+        _ ≤ ‖c‖ / ‖z‖ ^ (2 : ℕ) * 2 := by gcongr; exact hgs n
+        _ = 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) := by ring
     rw [htel, h0]; linarith [(abs_le.mp hsb).1]
   exact ge_of_tendsto (greenApprox_tendsto hc hz) (Filter.Eventually.of_forall hpern)
 
@@ -248,9 +248,9 @@ i.e. `|φ_c(z)| > 1`. Combined with the functional equation this gives `G_c > 0`
 theorem greenLimit_pos {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 3 < ‖z‖) : 0 < greenLimit c z := by
   have hz0 : (0 : ℝ) < ‖z‖ := by linarith
   have hlb := greenLimit_lower_bound hc (by linarith : 2 < ‖z‖)
-  have hcb : 2 * ‖c‖ / ‖z‖ ^ 2 ≤ 2 / ‖z‖ := by
-    have h2 : 2 * ‖z‖ / ‖z‖ ^ 2 = 2 / ‖z‖ := by rw [pow_two]; field_simp
-    calc 2 * ‖c‖ / ‖z‖ ^ 2 ≤ 2 * ‖z‖ / ‖z‖ ^ 2 := by gcongr
+  have hcb : 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) ≤ 2 / ‖z‖ := by
+    have h2 : 2 * ‖z‖ / ‖z‖ ^ (2 : ℕ) = 2 / ‖z‖ := by rw [pow_two]; field_simp
+    calc 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) ≤ 2 * ‖z‖ / ‖z‖ ^ (2 : ℕ) := by gcongr
       _ = 2 / ‖z‖ := h2
   have hlog : 1 - 1 / ‖z‖ ≤ Real.log ‖z‖ := by
     have := Real.one_sub_inv_le_log_of_pos hz0; rwa [inv_eq_one_div] at this
@@ -322,13 +322,13 @@ theorem greenLimit_pos_basin {c z : ℂ} (hz : z ∉ filledJulia c) : 0 < greenL
 Hence `G_c(z) = log‖z‖ + o(1)` as `z → ∞`: the Robin constant of `K_c` is `0`, so
 `cap(K_c) = 1` — the bridge from the Green function to the Tier-2 capacity theory. -/
 theorem greenLimit_abs_sub_log {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
-    |greenLimit c z - Real.log ‖z‖| ≤ 2 * ‖c‖ / ‖z‖ ^ 2 := by
+    |greenLimit c z - Real.log ‖z‖| ≤ 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) := by
   have hgs : ∀ n, ∑ k ∈ Finset.range n, (1 / 2 : ℝ) ^ k ≤ 2 := by
     intro n
     rw [geom_sum_eq (by norm_num : (1 / 2 : ℝ) ≠ 1)]
     have : (0 : ℝ) ≤ (1 / 2 : ℝ) ^ n := by positivity
     rw [div_le_iff_of_neg (by norm_num : (1 / 2 : ℝ) - 1 < 0)]; nlinarith [this]
-  have hpern : ∀ n, |greenApprox c z n - Real.log ‖z‖| ≤ 2 * ‖c‖ / ‖z‖ ^ 2 := by
+  have hpern : ∀ n, |greenApprox c z n - Real.log ‖z‖| ≤ 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) := by
     intro n
     have h0 : greenApprox c z 0 = Real.log ‖z‖ := by simp [greenApprox]
     have htel : greenApprox c z n - Real.log ‖z‖
@@ -338,11 +338,11 @@ theorem greenLimit_abs_sub_log {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < 
     calc |∑ k ∈ Finset.range n, (greenApprox c z (k + 1) - greenApprox c z k)|
         ≤ ∑ k ∈ Finset.range n, |greenApprox c z (k + 1) - greenApprox c z k| :=
           Finset.abs_sum_le_sum_abs _ _
-      _ ≤ ∑ k ∈ Finset.range n, ‖c‖ / ‖z‖ ^ 2 * (1 / 2 : ℝ) ^ k :=
+      _ ≤ ∑ k ∈ Finset.range n, ‖c‖ / ‖z‖ ^ (2 : ℕ) * (1 / 2 : ℝ) ^ k :=
           Finset.sum_le_sum (fun k _ => greenApprox_step_geom_bound hc hz k)
-      _ = ‖c‖ / ‖z‖ ^ 2 * ∑ k ∈ Finset.range n, (1 / 2 : ℝ) ^ k := by rw [← Finset.mul_sum]
-      _ ≤ ‖c‖ / ‖z‖ ^ 2 * 2 := by gcongr; exact hgs n
-      _ = 2 * ‖c‖ / ‖z‖ ^ 2 := by ring
+      _ = ‖c‖ / ‖z‖ ^ (2 : ℕ) * ∑ k ∈ Finset.range n, (1 / 2 : ℝ) ^ k := by rw [← Finset.mul_sum]
+      _ ≤ ‖c‖ / ‖z‖ ^ (2 : ℕ) * 2 := by gcongr; exact hgs n
+      _ = 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) := by ring
   have htends : Tendsto (fun n => |greenApprox c z n - Real.log ‖z‖|) atTop
       (𝓝 |greenLimit c z - Real.log ‖z‖|) := ((greenApprox_tendsto hc hz).sub_const _).abs
   exact le_of_tendsto htends (Filter.Eventually.of_forall hpern)
@@ -357,7 +357,7 @@ theorem one_lt_bottcherModulus {c z : ℂ} (hz : z ∉ filledJulia c) :
 
 /-- **Böttcher functional equation, modulus form**: `|φ_c(z²+c)| = |φ_c(z)|²`. -/
 theorem bottcherModulus_quadratic {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
-    bottcherModulus c (quadratic c z) = bottcherModulus c z ^ 2 := by
+    bottcherModulus c (quadratic c z) = bottcherModulus c z ^ (2 : ℕ) := by
   unfold bottcherModulus
   rw [greenLimit_quadratic hc hz, two_mul, Real.exp_add, ← pow_two]
 

@@ -8,15 +8,15 @@ This module turns the Gaussian heat parameter into the reciprocal frequency
 kernel used by the checked Montgomery--Vaughan inequality.  For a nonzero real
 gap `Delta`, Lean proves both the direct odd proper-time identity
 
-`integral_0^infinity Delta * exp(-u * Delta^2) du = Delta⁻¹`
+`integral_0^infinity Delta * exp(-u * Delta^(2 : ℕ)) du = Delta⁻¹`
 
 and the equivalent square-root proper-time identity
 
-`(2 / sqrt pi) * sign(Delta) * integral_0^infinity exp(-t^2 Delta^2) dt
+`(2 / sqrt pi) * sign(Delta) * integral_0^infinity exp(-t^(2 : ℕ) Delta^(2 : ℕ)) dt
     = Delta⁻¹`.
 
 The direct form retains the sign and oddness of the frequency difference.
-The square-root parameter `u = t^2` supplies an equivalent representation
+The square-root parameter `u = t^(2 : ℕ)` supplies an equivalent representation
 without placing a singular `u^(-1/2)` weight in the formal integral.  Zero
 gaps are explicitly assigned the value zero before integration; the
 development never treats the nonintegrable diagonal Gaussian as an ordinary
@@ -631,7 +631,7 @@ theorem pairedEtaFiniteCutoffLog_orientedSqrtHeat_mvHilbert_twentySix
 
 /-- Direct odd proper-time form of Montgomery--Vaughan at the centered eta
 cutoff nodes.  Its left side literally integrates
-`(lambda_i-lambda_j) * exp(-u*(lambda_i-lambda_j)^2)` before applying the
+`(lambda_i-lambda_j) * exp(-u*(lambda_i-lambda_j)^(2 : ℕ))` before applying the
 checked constant-26 Hilbert bound. -/
 theorem pairedEtaFiniteCutoffLog_oddHeat_mvHilbert_twentySix
     {K : ℕ} (hK : 0 < K) (x z : Fin K → ℂ) :

@@ -47,7 +47,7 @@ theorem principalDifference_secondDerivative (q : XiZeroCopy) (branch : Bool) (w
 /-- The actual principal differences solve the squared-source radial equations. -/
 theorem principalDifference_equation (q : XiZeroCopy) (branch : Bool) (w a T : ℂ)
     (hw : PrincipalChamber q w) (i : Fin 3) (t : ℝ) (ht : t < 0) :
-    w^2*principalDifference q branch w a T i t-
+    w^(2 : ℕ)*principalDifference q branch w a T i t-
         deriv (deriv (principalDifference q branch w a T i)) t-
         (horizonCoordinate t:ℂ)*principalExponent q i*(principalExponent q i-1)*
           principalDifference q branch w a T i t =

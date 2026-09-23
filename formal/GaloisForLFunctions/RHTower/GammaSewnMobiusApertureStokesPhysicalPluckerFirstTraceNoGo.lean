@@ -28,7 +28,7 @@ private theorem criticalPrimeTwoNode_bounds :
     (7071 / 10000 : ℝ) < r ∧ r < 7072 / 10000 := by
   let r := criticalStokesNode gammaSewnMobiusApertureStokesPrimeTwo
   have hr0 : 0 < r := criticalStokesNode_pos _
-  have hr2 : r ^ 2 = 1 / 2 := by
+  have hr2 : r ^ (2 : ℕ) = 1 / 2 := by
     simpa [r] using criticalStokesNode_sq gammaSewnMobiusApertureStokesPrimeTwo
   constructor <;> by_contra h
   · have hr : r ≤ 7071 / 10000 := le_of_not_gt h
@@ -43,7 +43,7 @@ private theorem criticalPrimeThreeNode_bounds :
     (5773 / 10000 : ℝ) < r ∧ r < 5774 / 10000 := by
   let r := criticalStokesNode gammaSewnMobiusApertureStokesPrimeThree
   have hr0 : 0 < r := criticalStokesNode_pos _
-  have hr2 : r ^ 2 = 1 / 3 := by
+  have hr2 : r ^ (2 : ℕ) = 1 / 3 := by
     simpa [r] using criticalStokesNode_sq gammaSewnMobiusApertureStokesPrimeThree
   constructor <;> by_contra h
   · have hr : r ≤ 5773 / 10000 := le_of_not_gt h
@@ -62,32 +62,32 @@ private theorem criticalPrimeThreeContraction_lt :
   have hr : (5773 / 10000 : ℝ) < r ∧ r < 5774 / 10000 := by
     simpa only [r, p] using criticalPrimeThreeNode_bounds
   have hr0 : 0 < r := criticalStokesNode_pos p
-  have hr2 : r ^ 2 = 1 / 3 := by
+  have hr2 : r ^ (2 : ℕ) = 1 / 3 := by
     have h := criticalStokesNode_sq p
     norm_num [p] at h
     simpa [r] using h
-  have hr4 : r ^ 4 = 1 / 9 := by
+  have hr4 : r ^ (4 : ℕ) = 1 / 9 := by
     calc
-      r ^ 4 = (r ^ 2) ^ 2 := by ring
-      _ = (1 / 3 : ℝ) ^ 2 := by rw [hr2]
+      r ^ (4 : ℕ) = (r ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ = (1 / 3 : ℝ) ^ (2 : ℕ) := by rw [hr2]
       _ = 1 / 9 := by norm_num
   have hc0 : 0 < c := gammaSewnMobiusValuationContractionMultiplier_pos _ _
   have hbase : (0 : ℝ) ≤ 1 + r := by positivity
-  have hnum : (1 + r) ^ 4 < (1 + (5774 / 10000 : ℝ)) ^ 4 :=
+  have hnum : (1 + r) ^ (4 : ℕ) < (1 + (5774 / 10000 : ℝ)) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ (by linarith [hr.2]) hbase (by norm_num)
-  have hc4eq : c ^ 4 = (1 + r) ^ 4 / (8 * (1 + r ^ 4)) := by
+  have hc4eq : c ^ (4 : ℕ) = (1 + r) ^ (4 : ℕ) / (8 * (1 + r ^ (4 : ℕ))) := by
     simpa only [c, r, p, criticalStokesNode] using
       gammaSewnMobiusValuationContractionMultiplier_pow_four (1 / 2) p
-  have hc4 : c ^ 4 < (23 / 25 : ℝ) ^ 4 := by
+  have hc4 : c ^ (4 : ℕ) < (23 / 25 : ℝ) ^ (4 : ℕ) := by
     rw [hc4eq, hr4]
     norm_num at hnum ⊢
     nlinarith
   by_contra h
   have hc : (23 / 25 : ℝ) ≤ c := le_of_not_gt h
-  have hc2 : (23 / 25 : ℝ) ^ 2 ≤ c ^ 2 := by
+  have hc2 : (23 / 25 : ℝ) ^ (2 : ℕ) ≤ c ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hc)
       (add_nonneg (by norm_num : (0 : ℝ) ≤ 23 / 25) hc0.le)]
-  have hc4le : (23 / 25 : ℝ) ^ 4 ≤ c ^ 4 := by
+  have hc4le : (23 / 25 : ℝ) ^ (4 : ℕ) ≤ c ^ (4 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hc2)
       (add_nonneg (sq_nonneg (23 / 25 : ℝ)) (sq_nonneg c))]
   linarith
@@ -103,7 +103,7 @@ private theorem criticalPrimeTwoInverseTilt_gt_five :
     simpa only [r, p] using criticalPrimeTwoNode_bounds
   have hr0 : 0 < r := criticalStokesNode_pos p
   have hr1 : r < 1 := by linarith [hr.2]
-  have hr2 : r ^ 2 = 1 / 2 := by
+  have hr2 : r ^ (2 : ℕ) = 1 / 2 := by
     have h := criticalStokesNode_sq p
     norm_num [p] at h
     simpa [r] using h
@@ -113,15 +113,15 @@ private theorem criticalPrimeTwoInverseTilt_gt_five :
   have hL : (0 : ℝ) < L := by dsimp [L, p]; positivity
   have hden : 0 < r * c * (1 - r) := by positivity
   rw [gammaSewnMobiusApertureStokesCriticalInverseTilt_eq]
-  change 5 < L / r * ((1 + r ^ 2) / (c * (1 - r)))
-  rw [show L / r * ((1 + r ^ 2) / (c * (1 - r))) =
-      L * (1 + r ^ 2) / (r * c * (1 - r)) by field_simp]
+  change 5 < L / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r)))
+  rw [show L / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r))) =
+      L * (1 + r ^ (2 : ℕ)) / (r * c * (1 - r)) by field_simp]
   rw [lt_div_iff₀ hden]
   have hcprod : r * c * (1 - r) < r * (1 - r) := by
     calc
       r * c * (1 - r) < r * 1 * (1 - r) := by gcongr
       _ = r * (1 - r) := by ring
-  have hnumeric : 5 * (r * (1 - r)) < L * (1 + r ^ 2) := by
+  have hnumeric : 5 * (r * (1 - r)) < L * (1 + r ^ (2 : ℕ)) := by
     dsimp [L, p]
     nlinarith [Real.log_two_gt_d9]
   nlinarith
@@ -137,7 +137,7 @@ private theorem criticalPrimeThreeInverseTilt_gt_thirteen_halves :
     simpa only [r, p] using criticalPrimeThreeNode_bounds
   have hr0 : 0 < r := criticalStokesNode_pos p
   have hr1 : r < 1 := by linarith [hr.2]
-  have hr2 : r ^ 2 = 1 / 3 := by
+  have hr2 : r ^ (2 : ℕ) = 1 / 3 := by
     have h := criticalStokesNode_sq p
     norm_num [p] at h
     simpa [r] using h
@@ -155,9 +155,9 @@ private theorem criticalPrimeThreeInverseTilt_gt_thirteen_halves :
       _ < (23 / 25 : ℝ) * (r * (1 - r)) := by gcongr
       _ < _ := by gcongr
   rw [gammaSewnMobiusApertureStokesCriticalInverseTilt_eq]
-  change (13 / 2 : ℝ) < L / r * ((1 + r ^ 2) / (c * (1 - r)))
-  rw [show L / r * ((1 + r ^ 2) / (c * (1 - r))) =
-      L * (1 + r ^ 2) / (r * c * (1 - r)) by field_simp]
+  change (13 / 2 : ℝ) < L / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r)))
+  rw [show L / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r))) =
+      L * (1 + r ^ (2 : ℕ)) / (r * c * (1 - r)) by field_simp]
   rw [lt_div_iff₀ hden]
   dsimp [L, p]
   nlinarith [Real.log_three_gt_d9]
@@ -185,15 +185,15 @@ private theorem criticalInverseTilt_gt_four_log
       nlinarith [sq_nonneg (r - 1 / 2)]
     exact hrc.trans_le hrr
   rw [gammaSewnMobiusApertureStokesCriticalInverseTilt_eq]
-  change 4 * L < L / r * ((1 + r ^ 2) / (c * (1 - r)))
-  rw [show L / r * ((1 + r ^ 2) / (c * (1 - r))) =
-      L * (1 + r ^ 2) / (r * c * (1 - r)) by field_simp]
+  change 4 * L < L / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r)))
+  rw [show L / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r))) =
+      L * (1 + r ^ (2 : ℕ)) / (r * c * (1 - r)) by field_simp]
   rw [lt_div_iff₀ hden]
   have hleft : 4 * L * (r * c * (1 - r)) < L := by
     calc
       4 * L * (r * c * (1 - r)) < 4 * L * (1 / 4) := by gcongr
       _ = L := by ring
-  have hright : L < L * (1 + r ^ 2) := by
+  have hright : L < L * (1 + r ^ (2 : ℕ)) := by
     nlinarith [sq_pos_of_pos hr0]
   exact hleft.trans hright
 
@@ -206,7 +206,7 @@ private theorem criticalPrimeFiveInverseTilt_gt_thirteen_halves :
   let L := Real.log (p : ℝ)
   have hr0 : 0 < r := criticalStokesNode_pos p
   have hr1 : r < 1 := xiMobiusContinuousApertureDiskNode_lt_one (by norm_num) p
-  have hr2 : r ^ 2 = 1 / 5 := by simpa [r, p] using criticalStokesNode_sq p
+  have hr2 : r ^ (2 : ℕ) = 1 / 5 := by simpa [r, p] using criticalStokesNode_sq p
   have hc0 : 0 < c := gammaSewnMobiusValuationContractionMultiplier_pos _ _
   have hc1 : c < 1 := gammaSewnMobiusValuationContractionMultiplier_lt_one
     (x := (1 / 2 : ℝ)) (by norm_num) p
@@ -219,13 +219,13 @@ private theorem criticalPrimeFiveInverseTilt_gt_thirteen_halves :
         _ = r * (1 - r) := by ring
     exact hrc.trans_le (by nlinarith [sq_nonneg (r - 1 / 2)])
   rw [gammaSewnMobiusApertureStokesCriticalInverseTilt_eq]
-  change (13 / 2 : ℝ) < L / r * ((1 + r ^ 2) / (c * (1 - r)))
-  rw [show L / r * ((1 + r ^ 2) / (c * (1 - r))) =
-      L * (1 + r ^ 2) / (r * c * (1 - r)) by field_simp]
+  change (13 / 2 : ℝ) < L / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r)))
+  rw [show L / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r))) =
+      L * (1 + r ^ (2 : ℕ)) / (r * c * (1 - r)) by field_simp]
   rw [lt_div_iff₀ hden]
   have hleft : (13 / 2 : ℝ) * (r * c * (1 - r)) < 13 / 8 := by
     nlinarith
-  have hright : (13 / 8 : ℝ) < L * (1 + r ^ 2) := by
+  have hright : (13 / 8 : ℝ) < L * (1 + r ^ (2 : ℕ)) := by
     dsimp [L, p]
     nlinarith [Real.log_five_gt_d9]
   linarith
@@ -273,7 +273,7 @@ theorem gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_depth_eq
     (p : Nat.Primes) (e : ℕ) :
     gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2) (p, e) =
       gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2) (p, 0) /
-        ((e : ℝ) + 1) ^ 2 := by
+        ((e : ℝ) + 1) ^ (2 : ℕ) := by
   have hW := (gammaSewnMobiusApertureStokesInverseTilt_pos (by norm_num : (0 : ℝ) < 1 / 2) p).ne'
   have he : (e : ℝ) + 1 ≠ 0 := by positivity
   unfold gammaSewnMobiusApertureStokesSquaredReciprocalGapNode
@@ -289,12 +289,12 @@ theorem gammaSewnMobiusApertureStokesPrimeTwo_baseNode_lt_one_div_twentyFive :
     gammaSewnMobiusApertureStokesPrimeTwo
   have hW : 5 < W := criticalPrimeTwoInverseTilt_gt_five
   have hW0 : 0 < W := gammaSewnMobiusApertureStokesInverseTilt_pos (by norm_num) _
-  have hW2 : (25 : ℝ) < W ^ 2 := by nlinarith
+  have hW2 : (25 : ℝ) < W ^ (2 : ℕ) := by nlinarith
   unfold gammaSewnMobiusApertureStokesSquaredReciprocalGapNode
     gammaSewnMobiusApertureStokesReciprocalGapNode
     gammaSewnMobiusApertureStokesGap
   simp only [Nat.cast_zero, zero_add, one_mul]
-  change W⁻¹ ^ 2 < (1 / 25 : ℝ)
+  change W⁻¹ ^ (2 : ℕ) < (1 / 25 : ℝ)
   rw [inv_pow]
   simpa [one_div] using one_div_lt_one_div_of_lt (by norm_num : (0 : ℝ) < 25) hW2
 
@@ -306,12 +306,12 @@ theorem gammaSewnMobiusApertureStokes_baseNode_lt_three_div_oneTwentyFive_of_thr
   have hW : (13 / 2 : ℝ) < W :=
     gammaSewnMobiusApertureStokesCriticalInverseTilt_gt_thirteen_halves_of_three_le p hp
   have hW0 : 0 < W := gammaSewnMobiusApertureStokesInverseTilt_pos (by norm_num) _
-  have hW2 : (125 / 3 : ℝ) < W ^ 2 := by nlinarith
+  have hW2 : (125 / 3 : ℝ) < W ^ (2 : ℕ) := by nlinarith
   unfold gammaSewnMobiusApertureStokesSquaredReciprocalGapNode
     gammaSewnMobiusApertureStokesReciprocalGapNode
     gammaSewnMobiusApertureStokesGap
   simp only [Nat.cast_zero, zero_add, one_mul]
-  change W⁻¹ ^ 2 < (3 / 125 : ℝ)
+  change W⁻¹ ^ (2 : ℕ) < (3 / 125 : ℝ)
   rw [inv_pow]
   have h := one_div_lt_one_div_of_lt (by norm_num : (0 : ℝ) < 125 / 3) hW2
   norm_num at h ⊢
@@ -327,7 +327,7 @@ private theorem squaredReciprocalGapNode_depth_le_base
       RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2) (p, 0) := by
   rw [RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_depth_eq]
   let B := RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2) (p, 0)
-  let d := ((e : ℝ) + 1) ^ 2
+  let d := ((e : ℝ) + 1) ^ (2 : ℕ)
   have hB : 0 ≤ B :=
     (RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_pos
       (by norm_num) (p, 0)).le
@@ -345,7 +345,7 @@ private theorem squaredReciprocalGapNode_succ_depth_le_quarter_base
       RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2) (p, 0) / 4 := by
   rw [RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_depth_eq]
   let B := RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2) (p, 0)
-  let d := (((e + 1 : ℕ) : ℝ) + 1) ^ 2
+  let d := (((e + 1 : ℕ) : ℝ) + 1) ^ (2 : ℕ)
   have hB : 0 ≤ B :=
     (RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_pos
       (by norm_num) (p, 0)).le

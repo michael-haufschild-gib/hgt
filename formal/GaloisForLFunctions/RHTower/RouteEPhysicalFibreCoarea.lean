@@ -56,11 +56,11 @@ def conditionalKernel (D : RouteEPhysicalFibreData Ω Λ) (ω η : Ω) : ℝ :=
 
 /-- Squared norm of the conditional projection. -/
 def projectedEnergy (D : RouteEPhysicalFibreData Ω Λ) : ℝ :=
-  ∑ ω, D.mass ω * D.projection ω ^ 2
+  ∑ ω, D.mass ω * D.projection ω ^ (2 : ℕ)
 
 /-- Energy lost after conditioning on the fibre label. -/
 def residualEnergy (D : RouteEPhysicalFibreData Ω Λ) : ℝ :=
-  ∑ ω, D.mass ω * (D.observable ω - D.projection ω) ^ 2
+  ∑ ω, D.mass ω * (D.observable ω - D.projection ω) ^ (2 : ℕ)
 
 theorem fibreMass_pos (D : RouteEPhysicalFibreData Ω Λ) (l : Λ) :
     0 < D.fibreMass l := by
@@ -259,29 +259,29 @@ theorem mean_projection (D : RouteEPhysicalFibreData Ω Λ) :
 
 /-- Exact fibre-coarea expression for conditional signed energy. -/
 theorem projectedEnergy_eq_fibreQuotient (D : RouteEPhysicalFibreData Ω Λ) :
-    D.projectedEnergy = ∑ l, D.fibreMoment l ^ 2 / D.fibreMass l := by
+    D.projectedEnergy = ∑ l, D.fibreMoment l ^ (2 : ℕ) / D.fibreMass l := by
   classical
   unfold projectedEnergy
   calc
-    (∑ ω, D.mass ω * D.projection ω ^ 2) =
-        ∑ l, ∑ ω with D.label ω = l, D.mass ω * D.projection ω ^ 2 :=
+    (∑ ω, D.mass ω * D.projection ω ^ (2 : ℕ)) =
+        ∑ l, ∑ ω with D.label ω = l, D.mass ω * D.projection ω ^ (2 : ℕ) :=
       (Finset.sum_fiberwise (Finset.univ : Finset Ω) D.label _).symm
-    _ = ∑ l, D.fibreMoment l ^ 2 / D.fibreMass l := by
+    _ = ∑ l, D.fibreMoment l ^ (2 : ℕ) / D.fibreMass l := by
       apply Finset.sum_congr rfl
       intro l _hl
       calc
-        (∑ ω with D.label ω = l, D.mass ω * D.projection ω ^ 2) =
+        (∑ ω with D.label ω = l, D.mass ω * D.projection ω ^ (2 : ℕ)) =
             (∑ ω with D.label ω = l,
-              D.mass ω * D.conditionalMean l ^ 2) := by
+              D.mass ω * D.conditionalMean l ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro ω hω
           have hlabel := (Finset.mem_filter.mp hω).2
           simp only [projection]
           rw [hlabel]
-        _ = D.fibreMass l * D.conditionalMean l ^ 2 := by
+        _ = D.fibreMass l * D.conditionalMean l ^ (2 : ℕ) := by
           rw [← Finset.sum_mul]
           rfl
-        _ = D.fibreMoment l ^ 2 / D.fibreMass l := by
+        _ = D.fibreMoment l ^ (2 : ℕ) / D.fibreMass l := by
           unfold conditionalMean
           field_simp [D.fibreMass_ne_zero l]
 
@@ -295,22 +295,22 @@ theorem residualEnergy_nonneg (D : RouteEPhysicalFibreData Ω Λ) :
 
 /-- Exact conditional ANOVA: total observable energy is projected energy plus fibre variance. -/
 theorem totalEnergy_eq_projected_add_residual (D : RouteEPhysicalFibreData Ω Λ) :
-    (∑ ω, D.mass ω * D.observable ω ^ 2) =
+    (∑ ω, D.mass ω * D.observable ω ^ (2 : ℕ)) =
       D.projectedEnergy + D.residualEnergy := by
   have hcross := D.projection_orthogonal D.conditionalMean
   change (∑ ω, D.mass ω * (D.observable ω - D.projection ω) * D.projection ω) = 0
     at hcross
   unfold projectedEnergy residualEnergy
   calc
-    (∑ ω, D.mass ω * D.observable ω ^ 2) =
-        ∑ ω, (D.mass ω * D.projection ω ^ 2 +
-          D.mass ω * (D.observable ω - D.projection ω) ^ 2 +
+    (∑ ω, D.mass ω * D.observable ω ^ (2 : ℕ)) =
+        ∑ ω, (D.mass ω * D.projection ω ^ (2 : ℕ) +
+          D.mass ω * (D.observable ω - D.projection ω) ^ (2 : ℕ) +
           2 * (D.mass ω * (D.observable ω - D.projection ω) * D.projection ω)) := by
       apply Finset.sum_congr rfl
       intro ω _hω
       ring
-    _ = (∑ ω, D.mass ω * D.projection ω ^ 2) +
-          (∑ ω, D.mass ω * (D.observable ω - D.projection ω) ^ 2) +
+    _ = (∑ ω, D.mass ω * D.projection ω ^ (2 : ℕ)) +
+          (∑ ω, D.mass ω * (D.observable ω - D.projection ω) ^ (2 : ℕ)) +
           2 * ∑ ω,
             D.mass ω * (D.observable ω - D.projection ω) * D.projection ω := by
       rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
@@ -318,19 +318,19 @@ theorem totalEnergy_eq_projected_add_residual (D : RouteEPhysicalFibreData Ω Λ
 
 /-- Weighted finite Cauchy--Schwarz for the projected signed mean. -/
 theorem mean_sq_le_projectedEnergy (D : RouteEPhysicalFibreData Ω Λ) :
-    (∑ ω, D.mass ω * D.observable ω) ^ 2 ≤ D.projectedEnergy := by
+    (∑ ω, D.mass ω * D.observable ω) ^ (2 : ℕ) ≤ D.projectedEnergy := by
   classical
   rw [← D.mean_projection]
   let u : Ω → ℝ := fun ω => Real.sqrt (D.mass ω)
   let v : Ω → ℝ := fun ω => Real.sqrt (D.mass ω) * D.projection ω
-  have hcs : (∑ ω, u ω * v ω) ^ 2 ≤
-      (∑ ω, u ω ^ 2) * ∑ ω, v ω ^ 2 := by
+  have hcs : (∑ ω, u ω * v ω) ^ (2 : ℕ) ≤
+      (∑ ω, u ω ^ (2 : ℕ)) * ∑ ω, v ω ^ (2 : ℕ) := by
     exact Finset.sum_mul_sq_le_sq_mul_sq (s := (Finset.univ : Finset Ω))
       (f := u) (g := v)
-  have hu : ∑ ω, u ω ^ 2 = 1 := by
+  have hu : ∑ ω, u ω ^ (2 : ℕ) = 1 := by
     simp only [u, Real.sq_sqrt (D.mass_pos _).le]
     exact D.mass_sum
-  have hv : ∑ ω, v ω ^ 2 = D.projectedEnergy := by
+  have hv : ∑ ω, v ω ^ (2 : ℕ) = D.projectedEnergy := by
     unfold projectedEnergy v
     apply Finset.sum_congr rfl
     intro ω _hω
@@ -350,8 +350,8 @@ theorem abs_mean_le_sqrt_projectedEnergy (D : RouteEPhysicalFibreData Ω Λ) :
   have hsq := D.mean_sq_le_projectedEnergy
   have hD := D.projectedEnergy_nonneg
   have hsqrt := Real.sqrt_nonneg D.projectedEnergy
-  have hsq' : |∑ ω, D.mass ω * D.observable ω| ^ 2 ≤
-      (Real.sqrt D.projectedEnergy) ^ 2 := by
+  have hsq' : |∑ ω, D.mass ω * D.observable ω| ^ (2 : ℕ) ≤
+      (Real.sqrt D.projectedEnergy) ^ (2 : ℕ) := by
     rw [sq_abs, Real.sq_sqrt hD]
     exact hsq
   exact (sq_le_sq₀ (abs_nonneg _) hsqrt).mp hsq'
@@ -417,7 +417,7 @@ theorem projectedEnergy_eq_relabel_add_defect
     (hπ : Function.Surjective π) :
     D.projectedEnergy = (D.relabel π hπ).projectedEnergy +
       ∑ ω, D.mass ω *
-        (D.projection ω - (D.relabel π hπ).projection ω) ^ 2 := by
+        (D.projection ω - (D.relabel π hπ).projection ω) ^ (2 : ℕ) := by
   let P := (D.replaceObservable D.projection).relabel π hπ
   have hmeans : ∀ g, P.conditionalMean g = (D.relabel π hπ).conditionalMean g :=
     D.relabel_conditionalMean_projection π hπ
@@ -430,13 +430,13 @@ theorem projectedEnergy_eq_relabel_add_defect
     exact hmeans _
   change D.projectedEnergy = (D.relabel π hπ).projectedEnergy +
       ∑ ω, D.mass ω *
-        (D.projection ω - (D.relabel π hπ).projection ω) ^ 2
+        (D.projection ω - (D.relabel π hπ).projection ω) ^ (2 : ℕ)
   calc
-    D.projectedEnergy = ∑ ω, P.mass ω * P.observable ω ^ 2 := rfl
+    D.projectedEnergy = ∑ ω, P.mass ω * P.observable ω ^ (2 : ℕ) := rfl
     _ = P.projectedEnergy + P.residualEnergy := htotal
     _ = (D.relabel π hπ).projectedEnergy +
         ∑ ω, D.mass ω *
-          (D.projection ω - (D.relabel π hπ).projection ω) ^ 2 := by
+          (D.projection ω - (D.relabel π hπ).projection ω) ^ (2 : ℕ) := by
       congr 1
       · unfold projectedEnergy
         apply Finset.sum_congr rfl
@@ -568,11 +568,11 @@ theorem independentExtension_projectedEnergy
   rw [Fintype.sum_prod_type]
   apply Finset.sum_congr rfl
   intro ω _hω
-  change (∑ y, (D.mass ω * factorMass y) * D.projection ω ^ 2) =
-    D.mass ω * D.projection ω ^ 2
+  change (∑ y, (D.mass ω * factorMass y) * D.projection ω ^ (2 : ℕ)) =
+    D.mass ω * D.projection ω ^ (2 : ℕ)
   calc
-    (∑ y, (D.mass ω * factorMass y) * D.projection ω ^ 2) =
-        (D.mass ω * D.projection ω ^ 2) * ∑ y, factorMass y := by
+    (∑ y, (D.mass ω * factorMass y) * D.projection ω ^ (2 : ℕ)) =
+        (D.mass ω * D.projection ω ^ (2 : ℕ)) * ∑ y, factorMass y := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro y _hy
@@ -591,22 +591,22 @@ theorem independentExtension_projectedEnergy_eq_relabel_add_defect
       ((D.independentExtensionData factorMass factorMass_pos factorMass_sum).relabel π hπ).projectedEnergy +
       ∑ p : Ω × Y, D.mass p.1 * factorMass p.2 *
         (D.projection p.1 -
-          ((D.independentExtensionData factorMass factorMass_pos factorMass_sum).relabel π hπ).projection p) ^ 2 := by
+          ((D.independentExtensionData factorMass factorMass_pos factorMass_sum).relabel π hπ).projection p) ^ (2 : ℕ) := by
   let E := D.independentExtensionData factorMass factorMass_pos factorMass_sum
   have h := E.projectedEnergy_eq_relabel_add_defect π hπ
   rw [D.independentExtension_projectedEnergy factorMass factorMass_pos factorMass_sum] at h
   have hsum :
       (∑ p : Ω × Y, D.mass p.1 * factorMass p.2 *
-        (D.projection p.1 - (E.relabel π hπ).projection p) ^ 2) =
+        (D.projection p.1 - (E.relabel π hπ).projection p) ^ (2 : ℕ)) =
       ∑ p : Ω × Y, E.mass p *
-        (E.projection p - (E.relabel π hπ).projection p) ^ 2 := by
+        (E.projection p - (E.relabel π hπ).projection p) ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro p _hp
     rw [D.independentExtension_projection factorMass factorMass_pos factorMass_sum]
     rfl
   change D.projectedEnergy = (E.relabel π hπ).projectedEnergy +
     ∑ p : Ω × Y, D.mass p.1 * factorMass p.2 *
-      (D.projection p.1 - (E.relabel π hπ).projection p) ^ 2
+      (D.projection p.1 - (E.relabel π hπ).projection p) ^ (2 : ℕ)
   rw [hsum]
   exact h
 
@@ -662,16 +662,16 @@ def successorMean (S : RouteEPhysicalConvolutionStep T Y Z) (z : Z) : ℝ :=
 
 /-- Conditional signed energy before adjoining the next factor. -/
 def predecessorEnergy (S : RouteEPhysicalConvolutionStep T Y Z) : ℝ :=
-  ∑ t, S.predecessorMass t * S.predecessorMean t ^ 2
+  ∑ t, S.predecessorMass t * S.predecessorMean t ^ (2 : ℕ)
 
 /-- Conditional signed energy after regrouping by the next product cell. -/
 def successorEnergy (S : RouteEPhysicalConvolutionStep T Y Z) : ℝ :=
-  ∑ z, S.successorMoment z ^ 2 / S.successorMass z
+  ∑ z, S.successorMoment z ^ (2 : ℕ) / S.successorMass z
 
 /-- Exact one-step reverse-factor variance. -/
 def dissipation (S : RouteEPhysicalConvolutionStep T Y Z) : ℝ :=
   ∑ p, S.predecessorMass p.1 * S.factorMass p.2 *
-    (S.predecessorMean p.1 - S.successorMean (S.combine p)) ^ 2
+    (S.predecessorMean p.1 - S.successorMean (S.combine p)) ^ (2 : ℕ)
 
 theorem fineData_fibreMass (S : RouteEPhysicalConvolutionStep T Y Z) (p : T × Y) :
     S.fineData.fibreMass p = S.predecessorMass p.1 * S.factorMass p.2 := by
@@ -727,11 +727,11 @@ theorem fine_projectedEnergy_eq_predecessorEnergy
   rw [Fintype.sum_prod_type]
   apply Finset.sum_congr rfl
   intro t _ht
-  change (∑ y, (S.predecessorMass t * S.factorMass y) * S.predecessorMean t ^ 2) =
-    S.predecessorMass t * S.predecessorMean t ^ 2
+  change (∑ y, (S.predecessorMass t * S.factorMass y) * S.predecessorMean t ^ (2 : ℕ)) =
+    S.predecessorMass t * S.predecessorMean t ^ (2 : ℕ)
   calc
-    (∑ y, (S.predecessorMass t * S.factorMass y) * S.predecessorMean t ^ 2) =
-        (S.predecessorMass t * S.predecessorMean t ^ 2) * ∑ y, S.factorMass y := by
+    (∑ y, (S.predecessorMass t * S.factorMass y) * S.predecessorMean t ^ (2 : ℕ)) =
+        (S.predecessorMass t * S.predecessorMean t ^ (2 : ℕ)) * ∑ y, S.factorMass y := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro y _hy
@@ -761,7 +761,7 @@ theorem predecessorEnergy_eq_successorEnergy_add_dissipation
   simp only [S.fineData_projection, S.relabel_projection] at h
   change S.predecessorEnergy = S.successorEnergy +
     ∑ p, S.predecessorMass p.1 * S.factorMass p.2 *
-      (S.predecessorMean p.1 - S.successorMean (S.combine p)) ^ 2 at h
+      (S.predecessorMean p.1 - S.successorMean (S.combine p)) ^ (2 : ℕ) at h
   exact h
 
 theorem successorEnergy_le_predecessorEnergy
@@ -786,7 +786,7 @@ theorem dissipation_eq_zero_iff_reverseFactor_constant
       have hmass : 0 < S.predecessorMass p.1 * S.factorMass p.2 :=
         mul_pos (S.predecessorMass_pos p.1) (S.factorMass_pos p.2)
       have hsquare :
-          (S.predecessorMean p.1 - S.successorMean (S.combine p)) ^ 2 = 0 := by
+          (S.predecessorMean p.1 - S.successorMean (S.combine p)) ^ (2 : ℕ) = 0 := by
         nlinarith
       exact sub_eq_zero.mp (sq_eq_zero_iff.mp hsquare)
     · intro h p _hp

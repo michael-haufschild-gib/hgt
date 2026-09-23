@@ -21,16 +21,16 @@ noncomputable section
 source at a proposed odd contact.  Both amplitudes enter source formation before aggregation. -/
 noncomputable def xiShiftedAdaptiveMixedOddContactFrontierPrice
     (w : ℝ) (n m : ℕ) (c : Fin (n + 1) → ℝ) (B : Polynomial ℝ) : ℝ :=
-  let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment (w ^ 2) j).re
+  let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) j).re
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
   let U := P * X ^ m
   let V := P * X ^ (m + 1)
   let a := HTGeometry.momentInner s V V
-  let A := xiShiftedAdaptiveNullPairPolynomial (w ^ 2) U V
+  let A := xiShiftedAdaptiveNullPairPolynomial (w ^ (2 : ℕ)) U V
   let x := Polynomial.toFn (n + m + 2) A
   ((xiShiftedNondegenerateNullFlagCompletedArithmeticSource
-        w (n + m) U B / 2) ^ 2 *
-      (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) /
+        w (n + m) U B / 2) ^ (2 : ℕ) *
+      (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) /
     xiShiftedMomentHankelQuadraticLipschitzWeight x
 
 /-- **Exact arithmetic source law.**  On a higher odd null contact, the literal adaptive
@@ -40,18 +40,18 @@ theorem xiShiftedAdaptiveMixedOddContactFrontierPrice_eq_firstOddDefect
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ j < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c j = 0)
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c j = 0)
     (B : Polynomial ℝ) :
-    let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment (w ^ 2) j).re
+    let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) j).re
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     let V := P * X ^ (m + 1)
-    let δ := xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+    let δ := xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
       (2 * n + (2 * m + 1))
     let a := HTGeometry.momentInner s V V
-    let A := xiShiftedAdaptiveNullPairPolynomial (w ^ 2) (P * X ^ m) V
+    let A := xiShiftedAdaptiveNullPairPolynomial (w ^ (2 : ℕ)) (P * X ^ m) V
     let x := Polynomial.toFn (n + m + 2) A
     xiShiftedAdaptiveMixedOddContactFrontierPrice w n m c B =
-      (δ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) /
+      (δ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) /
         xiShiftedMomentHankelQuadraticLipschitzWeight x := by
   have hsource :=
     xiShiftedNondegenerateNullFlagCompletedArithmeticSource_liftedNull_eq_two_mul_firstOddDefect
@@ -68,19 +68,19 @@ theorem xiShiftedAdaptiveMixedOddContactFrontierPrice_pos
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ j < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c j = 0)
-    (hfirst : xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c j = 0)
+    (hfirst : xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
       (2 * n + (2 * m + 1)) ≠ 0)
     (B : Polynomial ℝ) :
     0 < xiShiftedAdaptiveMixedOddContactFrontierPrice w n m c B := by
-  let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment (w ^ 2) j).re
+  let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) j).re
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
   let U := P * X ^ m
   let V := P * X ^ (m + 1)
-  let δ := xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+  let δ := xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
     (2 * n + (2 * m + 1))
   let a := HTGeometry.momentInner s V V
-  let A := xiShiftedAdaptiveNullPairPolynomial (w ^ 2) U V
+  let A := xiShiftedAdaptiveNullPairPolynomial (w ^ (2 : ℕ)) U V
   let x := Polynomial.toFn (n + m + 2) A
   have hP : P.Monic := HTGeometry.finiteHankelNullMonicPolynomial_monic c hlast
   have hPdeg : P.natDegree = n :=
@@ -108,17 +108,17 @@ theorem xiShiftedAdaptiveMixedOddContactFrontierPrice_pos
     exact hfirst
   have hAdeg : A.natDegree < n + m + 2 :=
     natDegree_xiShiftedAdaptiveNullPairPolynomial_lt hU hV
-  have hneg : xiShiftedMomentHankelQuadratic (w ^ 2) (n + m + 2) x < 0 := by
+  have hneg : xiShiftedMomentHankelQuadratic (w ^ (2 : ℕ)) (n + m + 2) x < 0 := by
     rw [xiShiftedMomentHankelQuadratic_toFn_eq_momentInner hAdeg]
     exact momentInner_xiShiftedAdaptiveNullPairPolynomial_self_neg U V hUU hUV
   have hw0 : 0 < w := by linarith
   have hweight : 0 < xiShiftedMomentHankelQuadraticLipschitzWeight x :=
     xiShiftedMomentHankelQuadraticLipschitzWeight_pos_of_neg
       (sq_pos_of_pos hw0) x hneg
-  have hδ : 0 < δ ^ 2 := sq_pos_of_ne_zero (by simpa only [δ] using hfirst)
+  have hδ : 0 < δ ^ (2 : ℕ) := sq_pos_of_ne_zero (by simpa only [δ] using hfirst)
   have hfactor : 0 < 2 * (|a| + 1) - a := by
     linarith [le_abs_self a, abs_nonneg a]
-  have hden : 0 < (|a| + 1) ^ 2 := sq_pos_of_pos (by positivity)
+  have hden : 0 < (|a| + 1) ^ (2 : ℕ) := sq_pos_of_pos (by positivity)
   rw [xiShiftedAdaptiveMixedOddContactFrontierPrice_eq_firstOddDefect
     hw hn c hlast hzero B]
   exact div_pos (div_pos (mul_pos hδ hfactor) hden) hweight
@@ -128,18 +128,18 @@ theorem add_xiShiftedAdaptiveMixedOddContactFrontierPrice_le_terminalFrontier
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ j < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c j = 0)
-    (hfirst : xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c j = 0)
+    (hfirst : xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
       (2 * n + (2 * m + 1)) ≠ 0)
     (B : Polynomial ℝ) :
-    w ^ 2 + xiShiftedAdaptiveMixedOddContactFrontierPrice w n m c B ≤
+    w ^ (2 : ℕ) + xiShiftedAdaptiveMixedOddContactFrontierPrice w n m c B ≤
       xiShiftedHigherBlockTerminalFrontier (n + m) := by
   have hw0 : 0 < w := by linarith
   rw [xiShiftedAdaptiveMixedOddContactFrontierPrice_eq_firstOddDefect
     hw hn c hlast hzero B]
   exact
     add_firstOddPadeDefectAdaptiveEnergy_div_lipschitzWeight_le_terminalFrontier_sharp
-      (y := w ^ 2) (sq_pos_of_pos hw0) c hlast hzero hfirst
+      (y := w ^ (2 : ℕ)) (sq_pos_of_pos hw0) c hlast hzero hfirst
 
 /-- **Closed source-first odd-contact certificate.**  Completed adaptive `P^sharp` source creates
 a strictly positive, exactly priced terminal-frontier displacement before reflection aggregation. -/
@@ -147,12 +147,12 @@ theorem xiShiftedAdaptiveMixedOddContactFrontierPrice_pos_and_le_terminalFrontie
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ j < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c j = 0)
-    (hfirst : xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c j = 0)
+    (hfirst : xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
       (2 * n + (2 * m + 1)) ≠ 0)
     (B : Polynomial ℝ) :
     0 < xiShiftedAdaptiveMixedOddContactFrontierPrice w n m c B ∧
-      w ^ 2 + xiShiftedAdaptiveMixedOddContactFrontierPrice w n m c B ≤
+      w ^ (2 : ℕ) + xiShiftedAdaptiveMixedOddContactFrontierPrice w n m c B ≤
         xiShiftedHigherBlockTerminalFrontier (n + m) := by
   exact ⟨xiShiftedAdaptiveMixedOddContactFrontierPrice_pos
       hw hn c hlast hzero hfirst B,

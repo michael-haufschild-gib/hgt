@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.QuantumBilinearNullActivation
 Two diagnostics from arXiv:2609.07645 are realized on the corpus's exact rotating
 rank-one information model. Normalized spectral rank remains one while explicit
 eigenvectors rotate. In contrast, squared relative velocity change on the normalized
-qubit curve is `4 sin((t-s)/2)^2`.
+qubit curve is `4 sin((t-s)/2)^(2 : ℕ)`.
 -/
 
 set_option autoImplicit false

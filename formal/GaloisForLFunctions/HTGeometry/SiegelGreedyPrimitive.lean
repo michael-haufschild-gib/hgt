@@ -24,12 +24,12 @@ variable {n : ℕ}
 
 /-- **The projected norm is quadratically homogeneous.** -/
 theorem JacobiData.projNorm_smul (J : JacobiData n) (i : Fin n) (c : ℝ) (v : Fin n → ℝ) :
-    J.projNorm i (c • v) = c ^ 2 * J.projNorm i v := by
+    J.projNorm i (c • v) = c ^ (2 : ℕ) * J.projNorm i v := by
   classical
   rw [JacobiData.projNorm, JacobiData.projNorm, Finset.mul_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [Matrix.mulVec_smul]
-  show J.d m * ((c • (J.U *ᵥ v)) m) ^ 2 = c ^ 2 * (J.d m * ((J.U *ᵥ v) m) ^ 2)
+  show J.d m * ((c • (J.U *ᵥ v)) m) ^ (2 : ℕ) = c ^ (2 : ℕ) * (J.d m * ((J.U *ᵥ v) m) ^ (2 : ℕ))
   simp only [Pi.smul_apply, smul_eq_mul]
   ring
 
@@ -78,15 +78,15 @@ theorem JacobiData.not_dvd_of_projNorm_min (J : JacobiData n) (i : Fin n)
     rw [htail m hm]
     push_cast
     ring
-  have hscale : J.projNorm i (intVec v) = (k : ℝ) ^ 2 * J.projNorm i (intVec w) := by
+  have hscale : J.projNorm i (intVec v) = (k : ℝ) ^ (2 : ℕ) * J.projNorm i (intVec w) := by
     rw [J.projNorm_congr_tail i hagree, J.projNorm_smul]
   have hlow : J.d i ≤ J.projNorm i (intVec w) := hmin w hwne
   have hkR : (2 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
   have hdi : (0 : ℝ) < J.d i := J.pos i
   rw [hvmin] at hscale
-  have hk2 : (4 : ℝ) ≤ (k : ℝ) ^ 2 := by nlinarith [hkR]
+  have hk2 : (4 : ℝ) ≤ (k : ℝ) ^ (2 : ℕ) := by nlinarith [hkR]
   have hP : 0 ≤ J.projNorm i (intVec w) := J.projNorm_nonneg i _
-  have h4 : 4 * J.projNorm i (intVec w) ≤ (k : ℝ) ^ 2 * J.projNorm i (intVec w) :=
+  have h4 : 4 * J.projNorm i (intVec w) ≤ (k : ℝ) ^ (2 : ℕ) * J.projNorm i (intVec w) :=
     mul_le_mul_of_nonneg_right hk2 hP
   linarith [hscale, hlow, hdi, h4]
 

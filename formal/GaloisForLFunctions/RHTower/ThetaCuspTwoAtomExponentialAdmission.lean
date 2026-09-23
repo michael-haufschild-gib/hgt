@@ -23,9 +23,9 @@ theorem thetaCuspTwoAtom_lower_envelope_admission {q : ℝ} (hq : 37/10 ≤ q) :
   have ht : 0 ≤ 3*(q-37/10) := by linarith
   have he := Real.sum_le_exp_of_nonneg ht 3
   norm_num [Finset.sum_range_succ] at he
-  have hpoly : 1+3*(q-37/10)+(9/2)*(q-37/10)^2 ≤ Real.exp (3*(q-37/10)) := by
+  have hpoly : 1+3*(q-37/10)+(9/2)*(q-37/10)^(2 : ℕ) ≤ Real.exp (3*(q-37/10)) := by
     nlinarith only [he]
-  have hp : 0 ≤ 1+3*(q-37/10)+(9/2)*(q-37/10)^2 := by
+  have hp : 0 ≤ 1+3*(q-37/10)+(9/2)*(q-37/10)^(2 : ℕ) := by
     have : 0 ≤ q-37/10 := by linarith
     positivity
   have hm := mul_le_mul exp_eleven_tenths_calibration hpoly hp (Real.exp_pos (111/10)).le

@@ -25,9 +25,9 @@ private theorem Icc_eq_Ioc_pred {y : ℕ} (hy : 1 ≤ y) :
 /-- **The reciprocal lcm sum over a balanced window, explicitly.** -/
 theorem sum_inv_lcm_explicit {y : ℕ} (hy : 1 ≤ y) :
     ∑ p ∈ (Finset.Icc y (2 * y)) ×ˢ (Finset.Icc y (2 * y)), 1 / ((Nat.lcm p.1 p.2 : ℕ) : ℝ)
-      ≤ (1 / (y : ℝ) ^ 2)
-        * (((y : ℝ) + 1) ^ 2 * (1 + Real.log (2 * y)) + 2 * ((y : ℝ) + 1) * (2 * (y : ℝ))
-            + (2 * (y : ℝ)) ^ 2) := by
+      ≤ (1 / (y : ℝ) ^ (2 : ℕ))
+        * (((y : ℝ) + 1) ^ (2 : ℕ) * (1 + Real.log (2 * y)) + 2 * ((y : ℝ) + 1) * (2 * (y : ℝ))
+            + (2 * (y : ℝ)) ^ (2 : ℕ)) := by
   classical
   have hyR : (1 : ℝ) ≤ (y : ℝ) := by exact_mod_cast hy
   have hgcd := sum_gcd_eq_sum_totient_mul_sq (S := Finset.Icc y (2 * y)) (M := 2 * y)
@@ -52,25 +52,25 @@ theorem sum_inv_lcm_explicit {y : ℕ} (hy : 1 ≤ y) :
   rw [hMcast] at htot
   have hgcdbound : ∑ p ∈ (Finset.Icc y (2 * y)) ×ˢ (Finset.Icc y (2 * y)),
       ((Nat.gcd p.1 p.2 : ℕ) : ℝ)
-      ≤ ((y : ℝ) + 1) ^ 2 * (1 + Real.log (2 * y)) + 2 * ((y : ℝ) + 1) * (2 * (y : ℝ))
-          + (2 * (y : ℝ)) ^ 2 := by
+      ≤ ((y : ℝ) + 1) ^ (2 : ℕ) * (1 + Real.log (2 * y)) + 2 * ((y : ℝ) + 1) * (2 * (y : ℝ))
+          + (2 * (y : ℝ)) ^ (2 : ℕ) := by
     rw [hgcd]
     refine le_trans (le_of_eq (Finset.sum_congr rfl fun g _ => ?_)) htot
     rw [hconv g]
   refine le_trans (sum_inv_lcm_le_gcd_sum hy) ?_
-  have hy2 : (0 : ℝ) < 1 / (y : ℝ) ^ 2 := by positivity
+  have hy2 : (0 : ℝ) < 1 / (y : ℝ) ^ (2 : ℕ) := by positivity
   exact mul_le_mul_of_nonneg_left hgcdbound (le_of_lt hy2)
 
 /-- The explicit second-moment constant for a balanced window. -/
 noncomputable def balancedMomentConst (y : ℕ) : ℝ :=
-  (1 / (y : ℝ) ^ 2)
-    * (((y : ℝ) + 1) ^ 2 * (1 + Real.log (2 * y)) + 2 * ((y : ℝ) + 1) * (2 * (y : ℝ))
-        + (2 * (y : ℝ)) ^ 2)
+  (1 / (y : ℝ) ^ (2 : ℕ))
+    * (((y : ℝ) + 1) ^ (2 : ℕ) * (1 + Real.log (2 * y)) + 2 * ((y : ℝ) + 1) * (2 * (y : ℝ))
+        + (2 * (y : ℝ)) ^ (2 : ℕ))
 
 /-- **The second moment of the balanced divisor count, explicitly.** -/
 theorem sum_sq_card_divisors_explicit {y : ℕ} (hy : 1 ≤ y) (X : ℕ) :
     ∑ m ∈ Finset.Icc 1 X,
-        ((((Finset.Icc y (2 * y)).filter (fun d => d ∣ m)).card : ℕ) : ℝ) ^ 2
+        ((((Finset.Icc y (2 * y)).filter (fun d => d ∣ m)).card : ℕ) : ℝ) ^ (2 : ℕ)
       ≤ (X : ℝ) * balancedMomentConst y := by
   refine le_trans (sum_sq_card_divisors_window_le X y) ?_
   exact mul_le_mul_of_nonneg_left (sum_inv_lcm_explicit hy) (Nat.cast_nonneg X)
@@ -80,7 +80,7 @@ theorem card_image_mul_ge_explicit {y X : ℕ} (hy : 1 ≤ y) (S : Finset (ℕ �
     (hV : 0 < (X : ℝ) * balancedMomentConst y)
     (hd : ∀ p ∈ S, p.1 ∈ Finset.Icc y (2 * y))
     (himg : ∀ p ∈ S, p.1 * p.2 ∈ Finset.Icc 1 X) :
-    ((S.card : ℕ) : ℝ) ^ 2 / ((X : ℝ) * balancedMomentConst y)
+    ((S.card : ℕ) : ℝ) ^ (2 : ℕ) / ((X : ℝ) * balancedMomentConst y)
       ≤ (((S.image (fun p => p.1 * p.2)).card : ℕ) : ℝ) :=
   card_image_mul_ge hy S hV hd himg (sum_sq_card_divisors_explicit hy X)
 

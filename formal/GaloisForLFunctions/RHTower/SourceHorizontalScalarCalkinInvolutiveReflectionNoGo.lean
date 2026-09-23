@@ -84,7 +84,7 @@ theorem linearMapFiniteRankAtMost_of_compactScalarPerturbation_involution
       ((T - c • ContinuousLinearMap.id ℝ M : M →L[ℝ] M) : M →ₗ[ℝ] M) k := by
   let K : M →L[ℝ] M := T - c • ContinuousLinearMap.id ℝ M
   have hKcompact : IsCompactOperator K := by exact hcompact
-  by_cases hc : c ^ 2 = 1
+  by_cases hc : c ^ (2 : ℕ) = 1
   · let P : M →L[ℝ] M := (-c / 2) • K
     have hPcompact : IsCompactOperator P := by
       exact hKcompact.smul (-c / 2)
@@ -107,7 +107,7 @@ theorem linearMapFiniteRankAtMost_of_compactScalarPerturbation_involution
       rw [smul_smul]
       congr 1
       calc
-        (-c / 2) * (-c / 2) * (-2 * c) = (-c / 2) * (c ^ 2) := by ring
+        (-c / 2) * (-c / 2) * (-2 * c) = (-c / 2) * (c ^ (2 : ℕ)) := by ring
         _ = -c / 2 := by rw [hc, mul_one]
     letI : FiniteDimensional ℝ (LinearMap.range (P : M →ₗ[ℝ] M)) :=
       finiteDimensional_range_of_compact_idempotent_real hPcompact hP
@@ -121,10 +121,10 @@ theorem linearMapFiniteRankAtMost_of_compactScalarPerturbation_involution
     simp only [P, smul_apply, map_smul, smul_smul]
     rw [show (-2 * c) * (-c / 2) = 1 by
       calc
-        (-2 * c) * (-c / 2) = c ^ 2 := by ring
+        (-2 * c) * (-c / 2) = c ^ (2 : ℕ) := by ring
         _ = 1 := hc, one_smul]
   · have hfactor : K * (T + c • ContinuousLinearMap.id ℝ M) =
-        (1 - c ^ 2) • ContinuousLinearMap.id ℝ M := by
+        (1 - c ^ (2 : ℕ)) • ContinuousLinearMap.id ℝ M := by
       ext x
       have hx : T (T x) = x := by
         have := congrArg (fun A : M →L[ℝ] M => A x) hinvol
@@ -133,7 +133,7 @@ theorem linearMapFiniteRankAtMost_of_compactScalarPerturbation_involution
         ContinuousLinearMap.id_apply, map_add, map_smul, hx, pow_two]
       module
     have hscalarCompact :
-        IsCompactOperator (((1 - c ^ 2) • ContinuousLinearMap.id ℝ M) :
+        IsCompactOperator (((1 - c ^ (2 : ℕ)) • ContinuousLinearMap.id ℝ M) :
           M →L[ℝ] M) := by
       have hprod : IsCompactOperator
           (K * (T + c • ContinuousLinearMap.id ℝ M)) := by
@@ -143,9 +143,9 @@ theorem linearMapFiniteRankAtMost_of_compactScalarPerturbation_involution
         rfl
       rw [hfactor] at hprod
       exact hprod
-    have ha : 1 - c ^ 2 ≠ 0 := sub_ne_zero.mpr (Ne.symm hc)
+    have ha : 1 - c ^ (2 : ℕ) ≠ 0 := sub_ne_zero.mpr (Ne.symm hc)
     letI : FiniteDimensional ℝ M :=
-      finiteDimensional_of_compact_nonzero_smul_id_real (1 - c ^ 2) ha hscalarCompact
+      finiteDimensional_of_compact_nonzero_smul_id_real (1 - c ^ (2 : ℕ)) ha hscalarCompact
     refine ⟨Module.finrank ℝ M, ?_⟩
     intro V _ _ _ g
     exact Submodule.finrank_le _

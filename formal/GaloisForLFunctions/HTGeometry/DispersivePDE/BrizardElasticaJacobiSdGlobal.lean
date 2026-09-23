@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 
 theorem classicalJacobiDn_sq_pos
     (m : ClassicalModulus) (J : JacobiEllipticSystem (m : ℝ)) (x : ℝ) :
-    0 < J.dn x ^ 2 := by
+    0 < J.dn x ^ (2 : ℕ) := by
   have hsn := J.sn_sq_le_one x
   have hdn := J.dn_sq_add_m_sn_sq x
   have hsn0 := sq_nonneg (J.sn x)
@@ -41,15 +41,15 @@ theorem jacobiSd_hasDerivAt_global
 
 theorem jacobiSd_firstIntegral_global
     (m : ClassicalModulus) (J : JacobiEllipticSystem (m : ℝ)) (x : ℝ) :
-    jacobiSdVelocity J x ^ 2 =
-      (1 - (1 - (m : ℝ)) * jacobiSd J x ^ 2) *
-        (1 + (m : ℝ) * jacobiSd J x ^ 2) := by
+    jacobiSdVelocity J x ^ (2 : ℕ) =
+      (1 - (1 - (m : ℝ)) * jacobiSd J x ^ (2 : ℕ)) *
+        (1 + (m : ℝ) * jacobiSd J x ^ (2 : ℕ)) := by
   exact jacobiSd_firstIntegral J (classicalJacobiDnRegularPoint m J x)
 
 noncomputable def jacobiSdAcceleration
     {m : ℝ} (J : JacobiEllipticSystem m) (x : ℝ) : ℝ :=
   (2 * m - 1) * jacobiSd J x -
-    2 * m * (1 - m) * jacobiSd J x ^ 3
+    2 * m * (1 - m) * jacobiSd J x ^ (3 : ℕ)
 
 theorem jacobiSdVelocity_hasDerivAt_global
     (m : ClassicalModulus) (J : JacobiEllipticSystem (m : ℝ)) (x : ℝ) :
@@ -61,7 +61,7 @@ theorem jacobiSdVelocity_hasDerivAt_global
   have hcn := J.sn_sq_add_cn_sq x
   have hdn := J.dn_sq_add_m_sn_sq x
   have hdne := classicalJacobiDn_ne_zero m J x
-  change HasDerivAt (fun y : ℝ => J.cn y / J.dn y ^ 2)
+  change HasDerivAt (fun y : ℝ => J.cn y / J.dn y ^ (2 : ℕ))
     (jacobiSdAcceleration J x) x
   apply h.congr_deriv
   rw [jacobiSdAcceleration, jacobiSd]

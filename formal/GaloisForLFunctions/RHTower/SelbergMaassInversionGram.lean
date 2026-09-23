@@ -41,7 +41,7 @@ theorem regularUnitary_symm (N : ℕ) (g : Deck N) (v : EuclideanSpace ℂ (Deck
 
 /-- The actual Gram form is precisely the squared inversion-transfer norm. -/
 theorem transferGram_inner (N : ℕ) (r s : ZMod (N+1)) (v : EuclideanSpace ℂ (Deck N)) :
-    (inner ℂ (transferGram N r s v) v).re=‖inversionTransfer N r s v‖^2 := by
+    (inner ℂ (transferGram N r s v) v).re=‖inversionTransfer N r s v‖^(2 : ℕ) := by
   unfold transferGram
   simp only [LinearMap.comp_apply]
   rw [characterProjection_self_adjoint,characterProjection_lower_conjugate,neg_neg,
@@ -84,7 +84,7 @@ theorem tripleWeight_eq (N : ℕ) (r s a b c : ZMod (N+1)) :
 /-- The actual original Gram operator is its complete three-parameter character kernel. -/
 theorem transferGram_coord (N : ℕ) (r s : ZMod (N+1))
     (v : EuclideanSpace ℂ (Deck N)) (q : Deck N) :
-    transferGram N r s v q=(((N+1 : ℕ) : ℂ)⁻¹)^3 *
+    transferGram N r s v q=(((N+1 : ℕ) : ℂ)⁻¹)^(3 : ℕ) *
       ∑ a : ZMod (N+1), ∑ b : ZMod (N+1), ∑ c : ZMod (N+1),
         tripleWeight N r s a b c*v (q*deckTriple N a b c) := by
   unfold transferGram
@@ -129,7 +129,7 @@ def fibreWeight (N : ℕ) (r s b : ZMod (N+1)) (g : Deck N) : ℂ := by
 
 /-- The normalized original Gram convolution kernel, with every arithmetic fibre retained. -/
 def gramKernel (N : ℕ) (r s : ZMod (N+1)) (g : Deck N) : ℂ :=
-  (((N+1 : ℕ) : ℂ)⁻¹)^3 * ∑ b : ZMod (N+1), fibreWeight N r s b g
+  (((N+1 : ℕ) : ℂ)⁻¹)^(3 : ℕ) * ∑ b : ZMod (N+1), fibreWeight N r s b g
 
 /-- The actual deck-parameter fibre is explicitly the middle-residue annihilator. -/
 def deckFibreEquiv (N : ℕ) (a b c : ZMod (N+1)) :
@@ -178,18 +178,18 @@ theorem transferGram_convolution (N : ℕ) (r s : ZMod (N+1))
   classical
   rw [transferGram_coord]
   calc
-    _ = (((N+1 : ℕ) : ℂ)⁻¹)^3 *
+    _ = (((N+1 : ℕ) : ℂ)⁻¹)^(3 : ℕ) *
       ∑ b : ZMod (N+1), ∑ a : ZMod (N+1), ∑ c : ZMod (N+1),
         tripleWeight N r s a b c*v (q*deckTriple N a b c) := by
           congr 1
           exact Finset.sum_comm
-    _ = (((N+1 : ℕ) : ℂ)⁻¹)^3 *
+    _ = (((N+1 : ℕ) : ℂ)⁻¹)^(3 : ℕ) *
       ∑ b : ZMod (N+1), ∑ g : Deck N, fibreWeight N r s b g*v (q*g) := by
           congr 1
           apply Finset.sum_congr rfl
           intro b _
           rw [fibreWeight_convolution,Fintype.sum_prod_type]
-    _ = (((N+1 : ℕ) : ℂ)⁻¹)^3 *
+    _ = (((N+1 : ℕ) : ℂ)⁻¹)^(3 : ℕ) *
       ∑ g : Deck N, ∑ b : ZMod (N+1), fibreWeight N r s b g*v (q*g) := by
           congr 1
           exact Finset.sum_comm
@@ -217,7 +217,7 @@ theorem fibreWeight_eq_zero_of_lowerEntry_ne (N : ℕ) (r s b : ZMod (N+1))
 /-- The complete kernel value is its annihilator multiplicity times the exact arithmetic phase. -/
 theorem gramKernel_at_word (N : ℕ) (r s a b c : ZMod (N+1)) :
     gramKernel N r s (deckTriple N a b c) =
-      (((N+1 : ℕ) : ℂ)⁻¹)^3 *
+      (((N+1 : ℕ) : ℂ)⁻¹)^(3 : ℕ) *
         ((Nat.card {t : ZMod (N+1) // b*t=0} : ℂ)*tripleWeight N r s a b c) := by
   classical
   unfold gramKernel
@@ -237,7 +237,7 @@ theorem deckTriple_zero (N : ℕ) : deckTriple N 0 0 0=1 := by
 
 /-- The original Gram kernel has exact diagonal value one over level squared. -/
 theorem gramKernel_one (N : ℕ) (r s : ZMod (N+1)) :
-    gramKernel N r s 1=(((N+1 : ℕ) : ℂ)⁻¹)^2 := by
+    gramKernel N r s 1=(((N+1 : ℕ) : ℂ)⁻¹)^(2 : ℕ) := by
   classical
   rw [← deckTriple_zero N,gramKernel_at_word]
   have hc : Nat.card {t : ZMod (N+1) // (0 : ZMod (N+1))*t=0}=N+1 := by
@@ -259,7 +259,7 @@ theorem source_lower_gram_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
         (coefficientVector N f n y)).re)
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ‖characterProjection N (lowerBlock N) r
-          (sourceVector N f (ofComplex (point x y)))‖^2) := by
+          (sourceVector N f (ofComplex (point x y)))‖^(2 : ℕ)) := by
   simp_rw [transferGram_inner]
   exact lowerCharacter_transfer_hasSum N f r hy
 
@@ -273,7 +273,7 @@ theorem tripleWeight_norm (N : ℕ) (r s a b c : ZMod (N+1)) :
 /-- Sharp kernel magnitude at every admissible word, including composite-level nonunits. -/
 theorem gramKernel_at_word_norm (N : ℕ) (r s a b c : ZMod (N+1)) :
     ‖gramKernel N r s (deckTriple N a b c)‖=
-      (((N+1 : ℕ) : ℝ)⁻¹)^3 * (Nat.card {t : ZMod (N+1) // b*t=0} : ℝ) := by
+      (((N+1 : ℕ) : ℝ)⁻¹)^(3 : ℕ) * (Nat.card {t : ZMod (N+1) // b*t=0} : ℝ) := by
   rw [gramKernel_at_word,norm_mul,norm_pow,norm_inv,norm_mul,tripleWeight_norm]
   simp only [Complex.norm_natCast,mul_one]
 
@@ -320,7 +320,7 @@ theorem sum_neutral_gramKernel (N : ℕ) : (∑ g : Deck N, gramKernel N 0 0 g)=
   have he : (∑ g : Deck N, gramKernel N 0 0 g)=transferGram N 0 0 v 1 := by
     simpa only [v,WithLp.ofLp_toLp,one_mul,mul_one] using h.symm
   rw [he,transferGram_coord]
-  change (((N+1 : ℕ) : ℂ)⁻¹)^3 *
+  change (((N+1 : ℕ) : ℂ)⁻¹)^(3 : ℕ) *
     (∑ a : ZMod (N+1), ∑ b : ZMod (N+1), ∑ c : ZMod (N+1), tripleWeight N 0 0 a b c*1)=1
   simp only [tripleWeight,zero_mul,sub_zero,AddChar.map_zero_eq_one,mul_one,
     Finset.sum_const,Finset.card_univ,ZMod.card,nsmul_eq_mul]

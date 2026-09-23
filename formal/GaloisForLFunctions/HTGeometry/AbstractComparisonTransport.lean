@@ -122,7 +122,7 @@ def driftAmplitudeDeriv (m B : ℝ → ℝ) (x : ℝ) : ℝ := driftAmplitude m 
 
 /-- Its second derivative. -/
 def driftAmplitudeSecondDeriv (m B B' : ℝ → ℝ) (x : ℝ) : ℝ :=
-  driftAmplitude m x * (B x ^ 2 / 4 + B' x / 2)
+  driftAmplitude m x * (B x ^ (2 : ℕ) / 4 + B' x / 2)
 
 theorem driftAmplitude_pos (hm0 : m x ≠ 0) : 0 < driftAmplitude m x :=
   Real.sqrt_pos.2 (abs_pos.2 hm0)
@@ -152,7 +152,7 @@ theorem hasDerivAt_driftAmplitude (hm : HasDerivAt m (m x * B x) x) (hm0 : m x �
   have h := hsq.comp x habs
   refine h.congr_deriv ?_
   have hs : (0 : ℝ) < Real.sqrt |m x| := Real.sqrt_pos.2 hpos
-  have hsq2 : Real.sqrt |m x| ^ 2 = |m x| := Real.sq_sqrt hpos.le
+  have hsq2 : Real.sqrt |m x| ^ (2 : ℕ) = |m x| := Real.sq_sqrt hpos.le
   rw [driftAmplitudeDeriv, driftAmplitude]
   field_simp
   rw [hsq2]
@@ -171,7 +171,7 @@ theorem hasDerivAt_driftAmplitudeDeriv (hm : HasDerivAt m (m x * B x) x) (hm0 : 
 /-- **The defect produced by the amplitude.**  `g''/g = B²/4 + B'/2`, the classical normal-form
 contribution of the drift. -/
 theorem driftAmplitudeSecondDeriv_div (hm0 : m x ≠ 0) :
-    driftAmplitudeSecondDeriv m B B' x / driftAmplitude m x = B x ^ 2 / 4 + B' x / 2 := by
+    driftAmplitudeSecondDeriv m B B' x / driftAmplitude m x = B x ^ (2 : ℕ) / 4 + B' x / 2 := by
   rw [driftAmplitudeSecondDeriv]
   field_simp [(driftAmplitude_pos hm0).ne']
 
@@ -187,7 +187,7 @@ theorem hasDerivAt_comparisonQuotientDeriv_driftAmplitude
       ∧ HasDerivAt (comparisonQuotientDeriv (driftAmplitude m) (driftAmplitudeDeriv m B) u Du)
         (-(B x) *
             comparisonQuotientDeriv (driftAmplitude m) (driftAmplitudeDeriv m B) u Du x
-          - (Q x + (B x ^ 2 / 4 + B' x / 2)) *
+          - (Q x + (B x ^ (2 : ℕ) / 4 + B' x / 2)) *
               comparisonQuotient (driftAmplitude m) u x) x := by
   have hg := hasDerivAt_driftAmplitude hm hm0
   have hDg := hasDerivAt_driftAmplitudeDeriv hm hm0 hB

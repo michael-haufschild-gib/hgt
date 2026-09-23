@@ -189,7 +189,7 @@ theorem tendsto_norm_eulerPositiveTransverseGammaXiPointedReporter_source_sq :
     Tendsto
       (fun sigma : ℝ =>
         if hsigma : 1 < sigma then
-          ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ 2
+          ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ (2 : ℕ)
         else 0)
       (nhdsWithin 1 (Ioi 1)) (nhds 4) :=
   tendsto_norm_eulerPositivePreScalarGammaTransverseSource_sq

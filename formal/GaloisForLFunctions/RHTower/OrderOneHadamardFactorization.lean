@@ -35,12 +35,12 @@ def hadamardProduct (f : ℂ → ℂ) : ℂ → ℂ := canonicalProductE1Indexed
 theorem summable_inv_sq_zeroCopyPoint {C : ℝ} (hC : 0 ≤ C)
     (hf : AnalyticOnNhd ℂ f Set.univ) (hf0 : f 0 ≠ 0)
     (hbound : ∀ z : ℂ, ‖f z‖ ≤ Real.exp (C * (1 + ‖z‖) * Real.log (2 + ‖z‖))) :
-    Summable (fun q : ZeroCopy f => 1 / ‖zeroCopyPoint f q‖ ^ 2) :=
+    Summable (fun q : ZeroCopy f => 1 / ‖zeroCopyPoint f q‖ ^ (2 : ℕ)) :=
   summable_inv_norm_sq_idx (zeroCopyPoint_ne_zero hf hf0) (locallyFinite_zeroCopyPoint hf)
     (orderOneDensityIdx_zeroCopyPoint hC hf hf0 hbound)
 
 theorem hadamardProduct_analytic (hf : AnalyticOnNhd ℂ f Set.univ) (hf0 : f 0 ≠ 0)
-    (hsum : Summable (fun q : ZeroCopy f => 1 / ‖zeroCopyPoint f q‖ ^ 2)) :
+    (hsum : Summable (fun q : ZeroCopy f => 1 / ‖zeroCopyPoint f q‖ ^ (2 : ℕ))) :
     AnalyticOnNhd ℂ (hadamardProduct f) Set.univ :=
   canonicalProductE1Indexed_analytic _ (zeroCopyPoint_ne_zero hf hf0) hsum
 
@@ -48,7 +48,7 @@ theorem hadamardProduct_analytic (hf : AnalyticOnNhd ℂ f Set.univ) (hf0 : f 0 
 `f` has the same analytic order as `f` at every point. -/
 theorem analyticOrderAt_hadamardProduct_eq (hf : AnalyticOnNhd ℂ f Set.univ) (hf0 : f 0 ≠ 0)
     (hford : ∀ z, analyticOrderAt f z ≠ ⊤)
-    (hsum : Summable (fun q : ZeroCopy f => 1 / ‖zeroCopyPoint f q‖ ^ 2)) (w : ℂ) :
+    (hsum : Summable (fun q : ZeroCopy f => 1 / ‖zeroCopyPoint f q‖ ^ (2 : ℕ))) (w : ℂ) :
     analyticOrderAt (hadamardProduct f) w = analyticOrderAt f w := by
   have hane := zeroCopyPoint_ne_zero hf hf0
   have hloc := locallyFinite_zeroCopyPoint hf

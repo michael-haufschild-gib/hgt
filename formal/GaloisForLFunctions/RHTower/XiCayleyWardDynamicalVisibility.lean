@@ -105,7 +105,7 @@ theorem one_half_lt_norm_xiWardLiCayleyNode (q : XiRightUpperZeroCopy) :
     xiZeroCopy_offLine_sevenThousandNineHundredSeven_over_ninetyThree_lt_im_sq
       q.1.1 (xiRightUpperZeroCopy_offLine q)
   have hρnorm : 2 < ‖(q.1.1.1 : ℂ)‖ := by
-    have hsq : 4 < ‖(q.1.1.1 : ℂ)‖ ^ 2 := by
+    have hsq : 4 < ‖(q.1.1.1 : ℂ)‖ ^ (2 : ℕ) := by
       rw [Complex.sq_norm, Complex.normSq_apply]
       nlinarith
     nlinarith [norm_nonneg (q.1.1.1 : ℂ)]
@@ -181,7 +181,7 @@ theorem exists_exponential_lowerBound_xiCayleyWardRadialVisibility
 line. -/
 theorem sq_norm_xiWardLiCayleyNode_eq_transverseDefect
     (q : XiRightUpperZeroCopy) :
-    ‖xiWardLiCayleyNode q‖ ^ 2 =
+    ‖xiWardLiCayleyNode q‖ ^ (2 : ℕ) =
       1 - (2 * (q.1.1.1 : ℂ).re - 1) /
         Complex.normSq (q.1.1.1 : ℂ) := by
   have h :=
@@ -209,12 +209,12 @@ reciprocal-quadratic endpoint floor multiplied by the exact inverse Cayley gain.
 delay detection but cannot erase it from the complete observation-order tower. -/
 theorem xiCayleyWardRadialVisibility_heightOrder_lowerBound
     (q : XiRightUpperZeroCopy) (n : ℕ) :
-    1 / ((q.1.1.1 : ℂ).im ^ 2 + 1) *
+    1 / ((q.1.1.1 : ℂ).im ^ (2 : ℕ) + 1) *
         (1 - (2 * (q.1.1.1 : ℂ).re - 1) /
           Complex.normSq (q.1.1.1 : ℂ))⁻¹ ^ n ≤
       xiCayleyWardRadialVisibility (2 * n) := by
   have hweight :
-      1 / ((q.1.1.1 : ℂ).im ^ 2 + 1) ≤
+      1 / ((q.1.1.1 : ℂ).im ^ (2 : ℕ) + 1) ≤
         xiEndpointWardPairWeight q := by
     simpa only [xiEndpointWardPairWeight, xiEndpointCrossCharge] using
       endpoint_cross_term_re_ge_inv_one_add_im_sq q.1.1
@@ -224,7 +224,7 @@ theorem xiCayleyWardRadialVisibility_heightOrder_lowerBound
     rw [← inv_norm_xiWardLiCayleyNode_pow_two_mul q n]
     positivity
   calc
-    1 / ((q.1.1.1 : ℂ).im ^ 2 + 1) *
+    1 / ((q.1.1.1 : ℂ).im ^ (2 : ℕ) + 1) *
           (1 - (2 * (q.1.1.1 : ℂ).re - 1) /
             Complex.normSq (q.1.1.1 : ℂ))⁻¹ ^ n ≤
         xiEndpointWardPairWeight q *
@@ -276,11 +276,11 @@ theorem xiCayleyWard_completeDynamicalVisibilityLaw :
     xiEndpointWeightedWardIndex =
       (8 * π) * xiCayleyWardRadialVisibility 0 ∧
     (∀ q : XiRightUpperZeroCopy,
-      ‖xiWardLiCayleyNode q‖ ^ 2 =
+      ‖xiWardLiCayleyNode q‖ ^ (2 : ℕ) =
         1 - (2 * (q.1.1.1 : ℂ).re - 1) /
           Complex.normSq (q.1.1.1 : ℂ)) ∧
     (∀ q : XiRightUpperZeroCopy, ∀ n : ℕ,
-      1 / ((q.1.1.1 : ℂ).im ^ 2 + 1) *
+      1 / ((q.1.1.1 : ℂ).im ^ (2 : ℕ) + 1) *
           (1 - (2 * (q.1.1.1 : ℂ).re - 1) /
             Complex.normSq (q.1.1.1 : ℂ))⁻¹ ^ n ≤
         xiCayleyWardRadialVisibility (2 * n)) ∧

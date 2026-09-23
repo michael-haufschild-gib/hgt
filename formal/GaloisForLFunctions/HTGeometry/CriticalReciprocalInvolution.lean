@@ -151,7 +151,7 @@ theorem criticalSourceRaw_eq_reciprocalNumerator_div
               criticalSourceRecipReindexed K hm hn ⟨0, by omega⟩ ^ (i : ℕ) =
             criticalSourceRecipReindexed K hm hn ⟨0, by omega⟩ ^ (k + 2) := by
           calc
-            _ = criticalSourceRecipReindexed K hm hn ⟨0, by omega⟩ ^ 1 *
+            _ = criticalSourceRecipReindexed K hm hn ⟨0, by omega⟩ ^ (1 : ℕ) *
                   criticalSourceRecipReindexed K hm hn ⟨0, by omega⟩ ^
                     (k - (i : ℕ) + 1) *
                   criticalSourceRecipReindexed K hm hn ⟨0, by omega⟩ ^ (i : ℕ) := by

@@ -77,7 +77,7 @@ theorem completedZetaArchimedeanCurvature_evenShift_sub
 
 private theorem hasDerivAt_one_div_add_const
     (s a : ℂ) (h : s + a ≠ 0) :
-    HasDerivAt (fun z : ℂ => 1 / (z + a)) (-1 / (s + a) ^ 2) s := by
+    HasDerivAt (fun z : ℂ => 1 / (z + a)) (-1 / (s + a) ^ (2 : ℕ)) s := by
   have hbase : HasDerivAt (fun z : ℂ => z + a) 1 s :=
     (hasDerivAt_id s).add_const a
   simpa only [one_div, one_mul, neg_div, add_comm] using! hbase.inv h

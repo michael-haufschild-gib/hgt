@@ -122,7 +122,7 @@ def heightFiberHermitianGram (a b : ℕ) (γ c : ℝ) : ℂ :=
 /-- The fiber variance: the multiplicity-weighted second moment of the imaginary offsets of
 the height fiber, a nonnegative real. -/
 def fiberVariance (γ c : ℝ) : ℝ :=
-  ∑ w ∈ heightFiber γ c, xiPacketMass w * w.im ^ 2
+  ∑ w ∈ heightFiber γ c, xiPacketMass w * w.im ^ (2 : ℕ)
 
 theorem xiPacketMass_nonneg (w : ℂ) : 0 ≤ xiPacketMass w := by
   unfold xiPacketMass
@@ -163,13 +163,13 @@ theorem heightFiberCenteredMoment_two {γ c : ℝ} (hc : 0 ≤ c) :
     heightFiberCenteredMoment 2 γ c = -((fiberVariance γ c : ℝ) : ℂ) := by
   have hcast : ((fiberVariance γ c : ℝ) : ℂ) =
       ∑ w ∈ heightFiber γ c,
-        ((analyticOrderAt XiC w).toNat : ℂ) * ((w.im : ℝ) : ℂ) ^ 2 := by
+        ((analyticOrderAt XiC w).toNat : ℂ) * ((w.im : ℝ) : ℂ) ^ (2 : ℕ) := by
     unfold fiberVariance xiPacketMass
     push_cast
     rfl
   have hterm : heightFiberCenteredMoment 2 γ c =
       ∑ w ∈ heightFiber γ c,
-        -(((analyticOrderAt XiC w).toNat : ℂ) * ((w.im : ℝ) : ℂ) ^ 2) := by
+        -(((analyticOrderAt XiC w).toNat : ℂ) * ((w.im : ℝ) : ℂ) ^ (2 : ℕ)) := by
     unfold heightFiberCenteredMoment
     refine Finset.sum_congr rfl fun w hw => ?_
     rw [sub_center_eq_im_mul_I hc hw, mul_pow, Complex.I_sq]
@@ -353,7 +353,7 @@ def slabDisplacementMoment (γ h c : ℝ) : ℂ :=
 displacement weight `Im(z − γ) · (z − γ) = (u − conj u) u / (2i)` by the reflection
 `conj u ↦ −u`. -/
 def slabDisplacementReflectedMoment (γ h c : ℝ) : ℂ :=
-  slabWeightedContour (fun z => -I * (z - (γ : ℂ)) ^ 2) γ h c
+  slabWeightedContour (fun z => -I * (z - (γ : ℂ)) ^ (2 : ℕ)) γ h c
 
 private theorem conj_eq_two_re_sub (u : ℂ) :
     (starRingEnd ℂ) u = ((2 * u.re : ℝ) : ℂ) - u := by
@@ -366,7 +366,7 @@ private theorem analyticOnNhd_reflectedWeight (γ : ℝ) (a b : ℕ) :
   exact ((h1.neg.pow a).mul (h1.pow b)).differentiableOn.analyticOnNhd isOpen_univ
 
 private theorem analyticOnNhd_displacementReflectedWeight (γ : ℝ) :
-    AnalyticOnNhd ℂ (fun z : ℂ => -I * (z - (γ : ℂ)) ^ 2) Set.univ := by
+    AnalyticOnNhd ℂ (fun z : ℂ => -I * (z - (γ : ℂ)) ^ (2 : ℕ)) Set.univ := by
   have h1 : Differentiable ℂ fun z : ℂ => z - (γ : ℂ) := differentiable_id.sub_const _
   exact ((differentiable_const _).mul (h1.pow 2)).differentiableOn.analyticOnNhd isOpen_univ
 
@@ -406,13 +406,13 @@ theorem slabConjugatedMoment_one_decomposition {γ h c : ℝ}
           (fun z => ((2 * (z - (γ : ℂ)).re : ℝ) : ℂ) * (z - (γ : ℂ)) ^ b) γ h c := by
   have hsub : Continuous fun z : ℂ => z - (γ : ℂ) := continuous_id.sub continuous_const
   have hre : Continuous fun z : ℂ => (z - (γ : ℂ)).re := Complex.continuous_re.comp hsub
-  have hF : Continuous fun z : ℂ => (-(z - (γ : ℂ))) ^ 1 * (z - (γ : ℂ)) ^ b :=
+  have hF : Continuous fun z : ℂ => (-(z - (γ : ℂ))) ^ (1 : ℕ) * (z - (γ : ℂ)) ^ b :=
     (hsub.neg.pow 1).mul (hsub.pow b)
   have hG : Continuous fun z : ℂ =>
       ((2 * (z - (γ : ℂ)).re : ℝ) : ℂ) * (z - (γ : ℂ)) ^ b :=
     (Complex.continuous_ofReal.comp (continuous_const.mul hre)).mul (hsub.pow b)
-  have hw : (fun z : ℂ => (starRingEnd ℂ) ((z - (γ : ℂ)) ^ 1) * (z - (γ : ℂ)) ^ b)
-      = fun z : ℂ => (-(z - (γ : ℂ))) ^ 1 * (z - (γ : ℂ)) ^ b
+  have hw : (fun z : ℂ => (starRingEnd ℂ) ((z - (γ : ℂ)) ^ (1 : ℕ)) * (z - (γ : ℂ)) ^ b)
+      = fun z : ℂ => (-(z - (γ : ℂ))) ^ (1 : ℕ) * (z - (γ : ℂ)) ^ b
           + ((2 * (z - (γ : ℂ)).re : ℝ) : ℂ) * (z - (γ : ℂ)) ^ b := by
     funext z
     rw [map_pow, conj_eq_two_re_sub (z - (γ : ℂ))]
@@ -434,15 +434,15 @@ theorem slabConjugatedMoment_two_decomposition {γ h c : ℝ}
           γ h c := by
   have hsub : Continuous fun z : ℂ => z - (γ : ℂ) := continuous_id.sub continuous_const
   have hre : Continuous fun z : ℂ => (z - (γ : ℂ)).re := Complex.continuous_re.comp hsub
-  have hF : Continuous fun z : ℂ => (-(z - (γ : ℂ))) ^ 2 * (z - (γ : ℂ)) ^ b :=
+  have hF : Continuous fun z : ℂ => (-(z - (γ : ℂ))) ^ (2 : ℕ) * (z - (γ : ℂ)) ^ b :=
     (hsub.neg.pow 2).mul (hsub.pow b)
   have hG : Continuous fun z : ℂ =>
       ((4 * (z - (γ : ℂ)).re : ℝ) : ℂ) *
         ((((z - (γ : ℂ)).re : ℝ) : ℂ) - (z - (γ : ℂ))) * (z - (γ : ℂ)) ^ b :=
     ((Complex.continuous_ofReal.comp (continuous_const.mul hre)).mul
       ((Complex.continuous_ofReal.comp hre).sub hsub)).mul (hsub.pow b)
-  have hw : (fun z : ℂ => (starRingEnd ℂ) ((z - (γ : ℂ)) ^ 2) * (z - (γ : ℂ)) ^ b)
-      = fun z : ℂ => (-(z - (γ : ℂ))) ^ 2 * (z - (γ : ℂ)) ^ b
+  have hw : (fun z : ℂ => (starRingEnd ℂ) ((z - (γ : ℂ)) ^ (2 : ℕ)) * (z - (γ : ℂ)) ^ b)
+      = fun z : ℂ => (-(z - (γ : ℂ))) ^ (2 : ℕ) * (z - (γ : ℂ)) ^ b
           + ((4 * (z - (γ : ℂ)).re : ℝ) : ℂ) *
               ((((z - (γ : ℂ)).re : ℝ) : ℂ) - (z - (γ : ℂ))) * (z - (γ : ℂ)) ^ b := by
     funext z
@@ -462,12 +462,12 @@ theorem slabDisplacementMoment_decomposition {γ h c : ℝ} (hadm : SlabAdmissib
           (fun z => I * (((z - (γ : ℂ)).re : ℝ) : ℂ) * (z - (γ : ℂ))) γ h c := by
   have hsub : Continuous fun z : ℂ => z - (γ : ℂ) := continuous_id.sub continuous_const
   have hre : Continuous fun z : ℂ => (z - (γ : ℂ)).re := Complex.continuous_re.comp hsub
-  have hF : Continuous fun z : ℂ => -I * (z - (γ : ℂ)) ^ 2 :=
+  have hF : Continuous fun z : ℂ => -I * (z - (γ : ℂ)) ^ (2 : ℕ) :=
     continuous_const.mul (hsub.pow 2)
   have hG : Continuous fun z : ℂ => I * (((z - (γ : ℂ)).re : ℝ) : ℂ) * (z - (γ : ℂ)) :=
     (continuous_const.mul (Complex.continuous_ofReal.comp hre)).mul hsub
   have hw : (fun z : ℂ => (((z - (γ : ℂ)).im : ℝ) : ℂ) * (z - (γ : ℂ)))
-      = fun z : ℂ => -I * (z - (γ : ℂ)) ^ 2
+      = fun z : ℂ => -I * (z - (γ : ℂ)) ^ (2 : ℕ)
           + I * (((z - (γ : ℂ)).re : ℝ) : ℂ) * (z - (γ : ℂ)) := by
     funext z
     have hu : z - (γ : ℂ) =
@@ -557,7 +557,7 @@ theorem exists_displacementGerm_rh_equivalence (γ : ℝ) :
         (analyticOnNhd_displacementReflectedWeight γ),
       hgap h hh0 hh_g₀, hfib]
     have hsum : ∑ w ∈ heightFiber γ (1 / 2),
-        ((analyticOrderAt XiC w).toNat : ℂ) * (-I * (w - (γ : ℂ)) ^ 2)
+        ((analyticOrderAt XiC w).toNat : ℂ) * (-I * (w - (γ : ℂ)) ^ (2 : ℕ))
         = -I * heightFiberCenteredMoment 2 γ (1 / 2) := by
       rw [heightFiberCenteredMoment, Finset.mul_sum]
       exact Finset.sum_congr rfl fun w _ => by ring

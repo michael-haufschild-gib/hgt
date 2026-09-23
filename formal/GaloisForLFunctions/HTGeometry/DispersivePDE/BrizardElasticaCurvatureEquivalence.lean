@@ -46,7 +46,7 @@ theorem normalizedCurvatureFunctional_transport
   have hq : 0 < (q : ℝ) := q.property
   have hs : Real.sqrt (1 - (m : ℝ)) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hm)
   have hsq : Real.sqrt (q : ℝ) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hq)
-  have hs2 : Real.sqrt (1 - (m : ℝ)) ^ 2 = 1 - (m : ℝ) :=
+  have hs2 : Real.sqrt (1 - (m : ℝ)) ^ (2 : ℕ) = 1 - (m : ℝ) :=
     Real.sq_sqrt hm.le
   rw [normalizedNegativeCurvatureFunctional, normalizedClassicalCurvatureFunctional,
     transportedNegativeCurvatureScale_sub_modulus,
@@ -69,7 +69,7 @@ theorem closureQ_curvatureScale_transport (m : NegativeModulus) :
     extendedToClassical]
   have hs : Real.sqrt (1 - (m : ℝ)) ≠ 0 :=
     Real.sqrt_ne_zero'.mpr (by linarith)
-  have hs2 : Real.sqrt (1 - (m : ℝ)) ^ 2 = 1 - (m : ℝ) := by
+  have hs2 : Real.sqrt (1 - (m : ℝ)) ^ (2 : ℕ) = 1 - (m : ℝ) := by
     rw [Real.sq_sqrt]
     linarith
   field_simp [hm, hK, hs]

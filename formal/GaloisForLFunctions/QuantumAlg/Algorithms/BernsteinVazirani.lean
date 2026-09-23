@@ -98,12 +98,12 @@ theorem walshSign_mul_self (x y : Fin (2 ^ n)) :
 
 /-- Flip bit `k` of a basis label. -/
 def flipBit (x : Fin (2 ^ n)) (k : Fin n) : Fin (2 ^ n) :=
-  ⟨x.val ^^^ 2 ^ k.val,
+  ⟨x.val ^^^ (2 : ℕ) ^ k.val,
     Nat.xor_lt_two_pow x.isLt (Nat.pow_lt_pow_right one_lt_two k.isLt)⟩
 
 theorem bit_flipBit (x : Fin (2 ^ n)) (k k' : Fin n) :
     bit (flipBit x k) k' = (bit x k' ^^ decide (k = k')) := by
-  change (x.val ^^^ 2 ^ k.val).testBit k'.val = (bit x k' ^^ decide (k = k'))
+  change (x.val ^^^ (2 : ℕ) ^ k.val).testBit k'.val = (bit x k' ^^ decide (k = k'))
   rw [Nat.testBit_xor, Nat.testBit_two_pow]
   congr 1
   rw [decide_eq_decide]

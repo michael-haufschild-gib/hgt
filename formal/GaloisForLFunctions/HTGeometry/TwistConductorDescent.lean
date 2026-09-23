@@ -14,8 +14,8 @@ q₁ = (Q / gcd q Q) * A .
 
 Two quantities govern the resulting reduction.
 
-*The conductor.*  `twistConductor Q q = (Q / gcd q Q) * q ^ 2` is the unique weight satisfying the exact
-recursion `twistConductor Q q₁ * q ^ 2 = twistConductor Q q * (Q * A ^ 2)`, with `twistConductor Q 1 = Q`.
+*The conductor.*  `twistConductor Q q = (Q / gcd q Q) * q ^ (2 : ℕ)` is the unique weight satisfying the exact
+recursion `twistConductor Q q₁ * q ^ (2 : ℕ) = twistConductor Q q * (Q * A ^ (2 : ℕ))`, with `twistConductor Q 1 = Q`.
 The recursion is independent of the representative `A` of the residue class, which is forced, since the
 twist itself only depends on `α` modulo one.
 
@@ -39,7 +39,7 @@ namespace HTGeometry
 def dualDenom (Q q A : ℕ) : ℕ := (Q / Nat.gcd q Q) * A
 
 /-- The conductor attached to a twist by `A / q` of a degree-two series of conductor `Q`. -/
-def twistConductor (Q q : ℕ) : ℕ := (Q / Nat.gcd q Q) * q ^ 2
+def twistConductor (Q q : ℕ) : ℕ := (Q / Nat.gcd q Q) * q ^ (2 : ℕ)
 
 /-- Untwisted parameter: the conductor of the series itself. -/
 theorem twistConductor_one (Q : ℕ) : twistConductor Q 1 = Q := by
@@ -72,7 +72,7 @@ theorem dualDenom_pos (Q q A : ℕ) (hQ : 0 < Q) (hA : 0 < A) : 0 < dualDenom Q 
 conductor by `Q α²`; cleared of denominators this is the displayed identity, and it does not depend on
 the choice of representative `A` of the class of `α` modulo one. -/
 theorem twistConductor_dualDenom (Q q A : ℕ) (hQ : 0 < Q) (hcop : Nat.Coprime A q) :
-    twistConductor Q (dualDenom Q q A) * q ^ 2 = twistConductor Q q * (Q * A ^ 2) := by
+    twistConductor Q (dualDenom Q q A) * q ^ (2 : ℕ) = twistConductor Q q * (Q * A ^ (2 : ℕ)) := by
   set g := Nat.gcd q Q with hg
   set m := Q / g with hm
   have hgm : g * m = Q := gcd_mul_div_gcd q Q
@@ -177,9 +177,9 @@ theorem dualDenom_four_second_cusp_mod (u A : ℕ) (hu : u % 2 = 1) (hA : A % 2 
 `Qα² - Qnα + 1 = 0`, so its rationality forces `Q(Qn² - 4)` to be a square.  At `Q = 2` this is
 `4n² - 8 = m²`, which has no integral solution: modulo `16` the left side is `8` or `12`, and neither
 is a square. -/
-theorem no_fixed_class_two (n m : ℤ) : 4 * n ^ 2 - 8 ≠ m ^ 2 := by
+theorem no_fixed_class_two (n m : ℤ) : 4 * n ^ (2 : ℕ) - 8 ≠ m ^ (2 : ℕ) := by
   intro h
-  have h16 : ((4 * n ^ 2 - 8 : ℤ) : ZMod 16) = ((m ^ 2 : ℤ) : ZMod 16) := by
+  have h16 : ((4 * n ^ (2 : ℕ) - 8 : ℤ) : ZMod 16) = ((m ^ (2 : ℕ) : ℤ) : ZMod 16) := by
     rw [h]
   push_cast at h16
   revert h16
@@ -190,9 +190,9 @@ theorem no_fixed_class_two (n m : ℤ) : 4 * n ^ 2 - 8 ≠ m ^ 2 := by
 
 /-- **No self-referential class at `Q = 3`.**  Here the equation is `9n² - 12 = m²`, excluded modulo
 `9`: the left side is `6`, which is not a square. -/
-theorem no_fixed_class_three (n m : ℤ) : 9 * n ^ 2 - 12 ≠ m ^ 2 := by
+theorem no_fixed_class_three (n m : ℤ) : 9 * n ^ (2 : ℕ) - 12 ≠ m ^ (2 : ℕ) := by
   intro h
-  have h9 : ((9 * n ^ 2 - 12 : ℤ) : ZMod 9) = ((m ^ 2 : ℤ) : ZMod 9) := by
+  have h9 : ((9 * n ^ (2 : ℕ) - 12 : ℤ) : ZMod 9) = ((m ^ (2 : ℕ) : ℤ) : ZMod 9) := by
     rw [h]
   push_cast at h9
   revert h9

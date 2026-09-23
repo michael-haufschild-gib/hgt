@@ -23,8 +23,8 @@ variable {G H : Subgroup (GL (Fin 2) ℝ)} [G.IsFiniteRelIndex H]
 
 local notation "𝒬" => H ⧸ (G.subgroupOf H)
 
-local instance : MulAction H H := Monoid.toMulAction ..
-local instance : MulAction H 𝒬 := .quotient ..
+local instance selbergMaassPositiveRationalTraceInst1 : MulAction H H := Monoid.toMulAction ..
+local instance selbergMaassPositiveRationalTraceInst2 : MulAction H 𝒬 := .quotient ..
 
 omit [G.IsFiniteRelIndex H] in
 theorem positiveRationalTrace_component_eigen
@@ -82,7 +82,7 @@ theorem positiveRationalMaassTrace_eigen_of_data
     (positiveRationalTrace_component_eigen hH lam f heigen q).1.contDiffAt
       (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
   simp only [Function.comp_def] at hq
-  change -(z.im : ℂ) ^ 2 *
+  change -(z.im : ℂ) ^ (2 : ℕ) *
     (dir 1 (dir 1 (fun w : ℂ => ∑ q : 𝒬, maassTraceQuotientFunc f q (ofComplex w))) (z : ℂ) +
       dir Complex.I (dir Complex.I (fun w : ℂ => ∑ q : 𝒬,
         maassTraceQuotientFunc f q (ofComplex w))) (z : ℂ)) = _

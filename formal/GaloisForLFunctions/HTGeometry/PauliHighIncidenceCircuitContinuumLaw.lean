@@ -42,7 +42,7 @@ theorem twoLocalCircuitScaledReturnDistance_time_le
     twoLocalCircuitScaledReturnDistance x u U ≤
       twoLocalCircuitScaledReturnDistance x t U +
         2 * Real.sqrt ((2 : ℝ) ^ n) *
-          ‖realActivePauliHamiltonian x‖ ^ 2 * |t - u| := by
+          ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) * |t - u| := by
   have hself := isSelfAdjoint_realActivePauliHamiltonian x
   have hdim : (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ) =
       (2 : ℝ) ^ n := by
@@ -78,7 +78,7 @@ theorem twoLocalCircuitScaledReturnDistance_time_le
             (U : Matrix (FiniteQubitConfiguration (Fin n))
               (FiniteQubitConfiguration (Fin n)) ℂ)) +
         2 * Real.sqrt ((2 : ℝ) ^ n) *
-          ‖realActivePauliHamiltonian x‖ ^ 2 * |t - u| := by
+          ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) * |t - u| := by
       rw [abs_sub_comm]
       ring
 
@@ -87,7 +87,7 @@ circuit-target distance by at most square-root Hilbert dimension. -/
 theorem twoLocalCircuitScaledReturnDistance_increment_le_sqrtDimension
     {n : ℕ} (hn : 1 ≤ n) {x : TwoLocalPauliCoefficientSpace n}
     (hx : x ∈ twoLocalPauliCoefficientBox n) {t u : ℝ}
-    (htu : |t - u| ≤ 1 / (648 * (n : ℝ) ^ 6))
+    (htu : |t - u| ≤ 1 / (648 * (n : ℝ) ^ (6 : ℕ)))
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ) :
     twoLocalCircuitScaledReturnDistance x u U ≤
       twoLocalCircuitScaledReturnDistance x t U +
@@ -98,19 +98,19 @@ theorem twoLocalCircuitScaledReturnDistance_increment_le_sqrtDimension
   refine hbase.trans ?_
   have hnR : (0 : ℝ) < n := by
     exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hn)
-  have hnormsq : ‖realActivePauliHamiltonian x‖ ^ 2 ≤
-      (18 * (n : ℝ) ^ 3) ^ 2 :=
+  have hnormsq : ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) ≤
+      (18 * (n : ℝ) ^ (3 : ℕ)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hcap 2
   have hdelta :
       2 * Real.sqrt ((2 : ℝ) ^ n) *
-          ‖realActivePauliHamiltonian x‖ ^ 2 * |t - u| ≤
+          ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) * |t - u| ≤
         Real.sqrt ((2 : ℝ) ^ n) := by
     calc
       2 * Real.sqrt ((2 : ℝ) ^ n) *
-          ‖realActivePauliHamiltonian x‖ ^ 2 * |t - u| ≤
+          ‖realActivePauliHamiltonian x‖ ^ (2 : ℕ) * |t - u| ≤
         2 * Real.sqrt ((2 : ℝ) ^ n) *
-          (18 * (n : ℝ) ^ 3) ^ 2 *
-            (1 / (648 * (n : ℝ) ^ 6)) := by
+          (18 * (n : ℝ) ^ (3 : ℕ)) ^ (2 : ℕ) *
+            (1 / (648 * (n : ℝ) ^ (6 : ℕ))) := by
         gcongr
       _ = Real.sqrt ((2 : ℝ) ^ n) := by
         field_simp
@@ -137,7 +137,7 @@ def twoLocalPauliHighIncidenceCircuitUniformNarrowReturnEvent
       (FiniteQubitConfiguration (Fin n)) ℂ) (t : ℝ) :
     Set (TwoLocalPauliCoefficientSpace n) :=
   ⋃ c : ↥(twoLocalPauliHighIncidenceCircuitTargets U),
-    {x | twoLocalCircuitScaledReturnDistance x t (U c.1) ^ 2 ≤
+    {x | twoLocalCircuitScaledReturnDistance x t (U c.1) ^ (2 : ℕ) ≤
       (gaussianIntervalActivationMass / 8) *
         (4 * (2 : ℝ) ^ n *
           twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1))}
@@ -148,11 +148,11 @@ theorem twoLocalPauli_highIncidenceCircuit_uniformNarrowEvent_subset_wide
     {n : ℕ} (hn : 1 ≤ n) {C : Type*} [Fintype C]
     (U : C → Matrix.unitaryGroup
       (FiniteQubitConfiguration (Fin n)) ℂ)
-    {t u : ℝ} (htu : |t - u| ≤ 1 / (648 * (n : ℝ) ^ 6)) :
+    {t u : ℝ} (htu : |t - u| ≤ 1 / (648 * (n : ℝ) ^ (6 : ℕ))) :
     twoLocalPauliCoefficientBox n ∩
         twoLocalPauliHighIncidenceCircuitUniformNarrowReturnEvent U t ⊆
       ⋃ c : ↥(twoLocalPauliHighIncidenceCircuitTargets U),
-        {x | twoLocalCircuitScaledReturnDistance x u (U c.1) ^ 2 ≤
+        {x | twoLocalCircuitScaledReturnDistance x u (U c.1) ^ (2 : ℕ) ≤
           (gaussianIntervalActivationMass / 2) *
             (4 * (2 : ℝ) ^ n *
               twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1))} := by
@@ -161,13 +161,13 @@ theorem twoLocalPauli_highIncidenceCircuit_uniformNarrowEvent_subset_wide
   rw [twoLocalPauliHighIncidenceCircuitUniformNarrowReturnEvent,
     Set.mem_iUnion] at hx
   obtain ⟨c, hc⟩ := hx
-  change twoLocalCircuitScaledReturnDistance x t (U c.1) ^ 2 ≤
+  change twoLocalCircuitScaledReturnDistance x t (U c.1) ^ (2 : ℕ) ≤
     (gaussianIntervalActivationMass / 8) *
       (4 * (2 : ℝ) ^ n *
         twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1)) at hc
   rw [Set.mem_iUnion]
   refine ⟨c, ?_⟩
-  change twoLocalCircuitScaledReturnDistance x u (U c.1) ^ 2 ≤
+  change twoLocalCircuitScaledReturnDistance x u (U c.1) ^ (2 : ℕ) ≤
     (gaussianIntervalActivationMass / 2) *
       (4 * (2 : ℝ) ^ n *
         twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1))
@@ -183,7 +183,7 @@ theorem twoLocalPauli_highIncidenceCircuit_uniformNarrowEvent_subset_wide
       (mul_nonneg
         (div_nonneg gaussianIntervalActivationMass_pos.le (by norm_num))
         (by positivity)) hI0
-  have hsmallSq : twoLocalCircuitScaledReturnDistance x t (U c.1) ^ 2 ≤ B := by
+  have hsmallSq : twoLocalCircuitScaledReturnDistance x t (U c.1) ^ (2 : ℕ) ≤ B := by
     unfold B I
     convert hc using 1
     ring
@@ -195,7 +195,7 @@ theorem twoLocalPauli_highIncidenceCircuit_uniformNarrowEvent_subset_wide
       Real.sqrt B := by
     calc
       twoLocalCircuitScaledReturnDistance x t (U c.1) =
-          Real.sqrt (twoLocalCircuitScaledReturnDistance x t (U c.1) ^ 2) :=
+          Real.sqrt (twoLocalCircuitScaledReturnDistance x t (U c.1) ^ (2 : ℕ)) :=
         (Real.sqrt_sq hdist0).symm
       _ ≤ Real.sqrt B := Real.sqrt_le_sqrt hsmallSq
   have hdimB : (2 : ℝ) ^ n ≤ B := by
@@ -214,7 +214,7 @@ theorem twoLocalPauli_highIncidenceCircuit_uniformNarrowEvent_subset_wide
   have hwideDist : twoLocalCircuitScaledReturnDistance x u (U c.1) ≤
       2 * Real.sqrt B := by
     linarith
-  have hwideSq : twoLocalCircuitScaledReturnDistance x u (U c.1) ^ 2 ≤
+  have hwideSq : twoLocalCircuitScaledReturnDistance x u (U c.1) ^ (2 : ℕ) ≤
       4 * B := by
     have hnonneg : 0 ≤ twoLocalCircuitScaledReturnDistance x u (U c.1) := by
       unfold twoLocalCircuitScaledReturnDistance
@@ -248,7 +248,7 @@ theorem twoLocalPauli_highIncidenceCircuitPolynomialWindowReturnEvent_subset
         ⋃ j : Fin (649 * n ^ (k + 7)),
           ⋃ c : ↥(twoLocalPauliHighIncidenceCircuitTargets U),
             {x | twoLocalCircuitScaledReturnDistance x
-                (twoLocalPauliContinuumGridTime k n A j) (U c.1) ^ 2 ≤
+                (twoLocalPauliContinuumGridTime k n A j) (U c.1) ^ (2 : ℕ) ≤
               (gaussianIntervalActivationMass / 2) *
                 (4 * (2 : ℝ) ^ n *
                   twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1))} := by
@@ -277,7 +277,7 @@ theorem stdGaussian_twoLocalPauli_measure_highIncidenceCircuitPolynomialWindowRe
           (twoLocalPauliCoefficientBox n)ᶜ +
         (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           ∑ c : ↥(twoLocalPauliHighIncidenceCircuitTargets U),
-            Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+            Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
               twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1)) := by
   have hsub :=
     twoLocalPauli_highIncidenceCircuitPolynomialWindowReturnEvent_subset
@@ -294,7 +294,7 @@ theorem stdGaussian_twoLocalPauli_measure_highIncidenceCircuitPolynomialWindowRe
           ⋃ j : Fin (649 * n ^ (k + 7)),
             ⋃ c : ↥(twoLocalPauliHighIncidenceCircuitTargets U),
               {x | twoLocalCircuitScaledReturnDistance x
-                  (twoLocalPauliContinuumGridTime k n A j) (U c.1) ^ 2 ≤
+                  (twoLocalPauliContinuumGridTime k n A j) (U c.1) ^ (2 : ℕ) ≤
                 (gaussianIntervalActivationMass / 2) *
                   (4 * (2 : ℝ) ^ n *
                     twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1))}) :=
@@ -305,7 +305,7 @@ theorem stdGaussian_twoLocalPauli_measure_highIncidenceCircuitPolynomialWindowRe
           (⋃ j : Fin (649 * n ^ (k + 7)),
             ⋃ c : ↥(twoLocalPauliHighIncidenceCircuitTargets U),
               {x | twoLocalCircuitScaledReturnDistance x
-                  (twoLocalPauliContinuumGridTime k n A j) (U c.1) ^ 2 ≤
+                  (twoLocalPauliContinuumGridTime k n A j) (U c.1) ^ (2 : ℕ) ≤
                 (gaussianIntervalActivationMass / 2) *
                   (4 * (2 : ℝ) ^ n *
                     twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1))}) :=
@@ -314,7 +314,7 @@ theorem stdGaussian_twoLocalPauli_measure_highIncidenceCircuitPolynomialWindowRe
           (twoLocalPauliCoefficientBox n)ᶜ +
         (Fintype.card (Fin (649 * n ^ (k + 7))) : ℝ) *
           (∑ c : ↥(twoLocalPauliHighIncidenceCircuitTargets U),
-            Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+            Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
               twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1))) := by
       gcongr
       apply measureReal_iUnion_le_card_mul
@@ -326,7 +326,7 @@ theorem stdGaussian_twoLocalPauli_measure_highIncidenceCircuitPolynomialWindowRe
           (twoLocalPauliCoefficientBox n)ᶜ +
         (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           ∑ c : ↥(twoLocalPauliHighIncidenceCircuitTargets U),
-            Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+            Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
               twoLocalPauliUnitaryAnticommutingIncidenceMass (U c.1)) := by
       simp [Nat.cast_mul, Nat.cast_pow]
 
@@ -423,7 +423,7 @@ theorem stdGaussian_twoLocalPauli_measure_highIncidenceCircuitPolynomialWindowRe
         (649 : ℝ) * (n : ℝ) ^ (k + 7) *
           ∑ V : ↥(twoLocalPauliHighIncidenceCircuitTargets
               (twoLocalPauliOccupiedCircuitTarget U)),
-            Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+            Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
               twoLocalPauliUnitaryAnticommutingIncidenceMass
                 (twoLocalPauliOccupiedCircuitTarget U V.1)) := by
   rw [twoLocalPauliHighIncidenceCircuitPolynomialWindowReturnEvent_eq_occupiedImage

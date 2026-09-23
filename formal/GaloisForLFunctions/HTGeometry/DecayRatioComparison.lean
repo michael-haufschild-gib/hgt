@@ -85,22 +85,22 @@ theorem ratio_le_of_solutionWronskian_nonpos (hab : a ≤ b)
     Φ b / Φ a ≤ Ψ b / Ψ a := by
   -- the quotient is antitone
   have hQd : ∀ x ∈ Icc a b, HasDerivAt (fun t => Φ t / Ψ t)
-      ((Φ' x * Ψ x - Φ x * Ψ' x) / Ψ x ^ 2) x := by
+      ((Φ' x * Ψ x - Φ x * Ψ' x) / Ψ x ^ (2 : ℕ)) x := by
     intro x hx
     exact HasDerivAt.fun_div (hΦ x) (hΨ x) (hΨpos x hx).ne'
-  have hanti : ∀ x ∈ Icc a b, 0 ≤ -((Φ' x * Ψ x - Φ x * Ψ' x) / Ψ x ^ 2) := by
+  have hanti : ∀ x ∈ Icc a b, 0 ≤ -((Φ' x * Ψ x - Φ x * Ψ' x) / Ψ x ^ (2 : ℕ)) := by
     intro x hx
     have hWx : solutionWronskian Φ Φ' Ψ Ψ' x ≤ 0 := by
       rw [solutionWronskian_const hΦ hΦ' hΨ hΨ' x b]
       exact hW
     rw [solutionWronskian] at hWx
-    have hpos : (0 : ℝ) < Ψ x ^ 2 := by
+    have hpos : (0 : ℝ) < Ψ x ^ (2 : ℕ) := by
       have := hΨpos x hx
       positivity
-    have : (Φ' x * Ψ x - Φ x * Ψ' x) / Ψ x ^ 2 ≤ 0 := div_nonpos_of_nonpos_of_nonneg hWx hpos.le
+    have : (Φ' x * Ψ x - Φ x * Ψ' x) / Ψ x ^ (2 : ℕ) ≤ 0 := div_nonpos_of_nonpos_of_nonneg hWx hpos.le
     linarith
   have hmono := le_of_hasDerivAt_nonneg (F := fun t => -(Φ t / Ψ t))
-    (F' := fun x => -((Φ' x * Ψ x - Φ x * Ψ' x) / Ψ x ^ 2)) hab
+    (F' := fun x => -((Φ' x * Ψ x - Φ x * Ψ' x) / Ψ x ^ (2 : ℕ))) hab
     (fun x hx => (hQd x hx).neg) hanti
   have hstep : Φ b / Ψ b ≤ Φ a / Ψ a := by linarith
   have hΦa := hΦpos a (left_mem_Icc.2 hab)

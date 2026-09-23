@@ -14,9 +14,9 @@ clocks lie between tau and (1+kappa)*tau after a source threshold. One
 common eventual cutoff tail carries the positive lower bound in the full
 logarithmically weighted finite clock energy for every helper subset.
 
-This closes the short delayed-span repayment candidate. Paid exhaustive
-continuation still requires older active helpers or a wider clock span,
-with cumulative control of the complete mixed source terms and cutoffs.
+The common cutoff tail depends on the fixed window. This excludes eventual
+repayment in that window; it does not exclude transient payment when the
+window and cutoff move together. Paid exhaustive continuation remains open.
 -/
 
 noncomputable section
@@ -96,7 +96,7 @@ theorem exists_mobiusDivisorLogClockSpanDebt :
               ∑'n,mobiusDivisorFixedCoreBlockMass (insert r (P∪S)) n) ∧
           ∀ᶠ M : ℕ in atTop,∀S : Finset ℕ,
             (∀p∈S,p.Prime ∧ τ < Real.log p ∧ Real.log p ≤ (1+κ)*τ) →
-            δ*(M:ℝ)^2*(1+Real.log M) ≤ 
+            δ*(M:ℝ)^(2 : ℕ)*(1+Real.log M) ≤ 
               mobiusDivisorFiniteClockEnergy 1 M (insert r (P∪S))-
                 mobiusDivisorFiniteClockEnergy 1 M P := by
   classical
@@ -150,7 +150,7 @@ theorem exists_mobiusDivisorLogClockSpanDebt :
   have hevent (S : Finset ℕ) (_hSA : S∈A.powerset) :
       ∀ᶠ M : ℕ in atTop,
         (∀p∈S,p.Prime ∧ τ < Real.log p ∧ Real.log p ≤ (1+κ)*τ) →
-        δ*(M:ℝ)^2*(1+Real.log M) ≤ 
+        δ*(M:ℝ)^(2 : ℕ)*(1+Real.log M) ≤ 
           mobiusDivisorFiniteClockEnergy 1 M (insert r (P∪S))-
             mobiusDivisorFiniteClockEnergy 1 M P := by
     by_cases hS : ∀p∈S,p.Prime ∧ τ < Real.log p ∧ Real.log p ≤ (1+κ)*τ
@@ -168,7 +168,7 @@ theorem exists_mobiusDivisorLogClockSpanDebt :
       intro _
       have hMR : (0:ℝ) < M := by exact_mod_cast (show 0 < M by omega)
       have hlog : 0 ≤ Real.log (M:ℝ) := Real.log_nonneg (by exact_mod_cast hM1)
-      have hden : 0 < (M:ℝ)^2*(1+Real.log M) := by positivity
+      have hden : 0 < (M:ℝ)^(2 : ℕ)*(1+Real.log M) := by positivity
       simp only [← sub_div] at hM
       have hm := (le_div_iff₀ hden).mp hM.le
       simpa only [mul_assoc] using hm

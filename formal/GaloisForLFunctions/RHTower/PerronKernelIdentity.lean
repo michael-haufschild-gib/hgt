@@ -24,13 +24,13 @@ open scoped FourierTransform
 theorem integrable_fourier_perronTent {a : ℝ} (ha : 0 < a) :
     Integrable (FourierTransform.fourier (perronTent a)) := by
   have heq : FourierTransform.fourier (perronTent a)
-      = fun w : ℝ => 1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2 :=
+      = fun w : ℝ => 1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ) :=
     funext (fourier_perronTent ha)
   rw [heq]
   have hπ0 : (0 : ℝ) < Real.pi := Real.pi_pos
-  set C : ℝ := 1 / a ^ 2 + 1 / (4 * Real.pi ^ 2) with hC
+  set C : ℝ := 1 / a ^ (2 : ℕ) + 1 / (4 * Real.pi ^ (2 : ℕ)) with hC
   have hC0 : 0 < C := by positivity
-  have hg : Integrable (fun w : ℝ => C * (1 + w ^ 2)⁻¹) :=
+  have hg : Integrable (fun w : ℝ => C * (1 + w ^ (2 : ℕ))⁻¹) :=
     integrable_inv_one_add_sq.const_mul C
   have hcne : ∀ w : ℝ, ((a : ℂ) + 2 * Real.pi * w * Complex.I) ≠ 0 := by
     intro w h
@@ -44,8 +44,8 @@ theorem integrable_fourier_perronTent {a : ℝ} (ha : 0 < a) :
     · intro w
       exact pow_ne_zero 2 (hcne w)
   · filter_upwards with w
-    have hnorm : ‖(1 : ℂ) / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2‖
-        = 1 / (a ^ 2 + (2 * Real.pi * w) ^ 2) := by
+    have hnorm : ‖(1 : ℂ) / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ)‖
+        = 1 / (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ)) := by
       rw [norm_div, norm_one, norm_pow]
       rw [show (a : ℂ) + 2 * Real.pi * w * Complex.I
           = ((a : ℝ) : ℂ) + ((2 * Real.pi * w : ℝ) : ℂ) * Complex.I by
@@ -53,30 +53,30 @@ theorem integrable_fourier_perronTent {a : ℝ} (ha : 0 < a) :
       rw [Complex.norm_add_mul_I]
       rw [Real.sq_sqrt (by positivity)]
     rw [hnorm]
-    have hgn : ‖C * (1 + w ^ 2)⁻¹‖ = C * (1 + w ^ 2)⁻¹ := by
+    have hgn : ‖C * (1 + w ^ (2 : ℕ))⁻¹‖ = C * (1 + w ^ (2 : ℕ))⁻¹ := by
       rw [Real.norm_eq_abs, abs_of_pos (by positivity)]
     rw [hgn]
     rw [inv_eq_one_div, mul_one_div,
       div_le_div_iff₀ (by positivity) (by positivity)]
-    have h1 : C * a ^ 2 = 1 + a ^ 2 / (4 * Real.pi ^ 2) := by
+    have h1 : C * a ^ (2 : ℕ) = 1 + a ^ (2 : ℕ) / (4 * Real.pi ^ (2 : ℕ)) := by
       rw [hC]
       field_simp
-    have h2 : C * (2 * Real.pi * w) ^ 2
-        = (2 * Real.pi * w) ^ 2 / a ^ 2 + w ^ 2 := by
+    have h2 : C * (2 * Real.pi * w) ^ (2 : ℕ)
+        = (2 * Real.pi * w) ^ (2 : ℕ) / a ^ (2 : ℕ) + w ^ (2 : ℕ) := by
       rw [hC]
       field_simp
       ring
-    have hdist : C * (a ^ 2 + (2 * Real.pi * w) ^ 2)
-        = C * a ^ 2 + C * (2 * Real.pi * w) ^ 2 := by ring
-    have h3 : (0 : ℝ) ≤ a ^ 2 / (4 * Real.pi ^ 2) := by positivity
-    have h4 : (0 : ℝ) ≤ (2 * Real.pi * w) ^ 2 / a ^ 2 := by positivity
+    have hdist : C * (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ))
+        = C * a ^ (2 : ℕ) + C * (2 * Real.pi * w) ^ (2 : ℕ) := by ring
+    have h3 : (0 : ℝ) ≤ a ^ (2 : ℕ) / (4 * Real.pi ^ (2 : ℕ)) := by positivity
+    have h4 : (0 : ℝ) ≤ (2 * Real.pi * w) ^ (2 : ℕ) / a ^ (2 : ℕ) := by positivity
     nlinarith [h1, h2, hdist, h3, h4]
 
 /-- **The Perron kernel identity**: Fourier inversion evaluates
 `∫ e^{2πiwu}·(a+2πiw)⁻² dw` to the tent `u·e^{-au}·1_{u>0}`. -/
 theorem perron_kernel_identity {a : ℝ} (ha : 0 < a) (u : ℝ) :
     ∫ w : ℝ, Complex.exp (((2 * Real.pi * (w * u) : ℝ) : ℂ) * Complex.I)
-      • (1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2)
+      • (1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ))
       = perronTent a u := by
   have hinv := (integrable_perronTent ha).fourierInv_fourier_eq
     (v := u) (integrable_fourier_perronTent ha)

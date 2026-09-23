@@ -18,7 +18,7 @@ namespace RHTower
 private def gcdElevenCoprimePolynomial (x a b c y e z : ℝ) : ℝ :=
   2*(a*b+a*c+a*e+b*c+b*e+c*e - x*(a+b+c+e-y-z)-b*z-c*y-e*y-e*z)
 private def gcdElevenTotalPolynomial (x a b c y e z : ℝ) : ℝ :=
-  (x-a-b-c+y-e+z)^2-(x^2+a^2+b^2+c^2+y^2+e^2+z^2)
+  (x-a-b-c+y-e+z)^(2 : ℕ)-(x^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+y^(2 : ℕ)+e^(2 : ℕ)+z^(2 : ℕ))
 
 private theorem gcd_coprime_polynomial_box {x a b c y e z : ℝ}
     (hx : 0.15 ≤ x ∧ x ≤ 0.18) (ha : 0.20 ≤ a ∧ a ≤ 0.21)
@@ -48,9 +48,9 @@ private theorem gcd_total_polynomial_box {x a b c y e z : ℝ}
     (hy : 0.13 ≤ y ∧ y ≤ 0.14) (he : 0.10 ≤ e ∧ e ≤ 0.11)
     (hz : 0.023 ≤ z ∧ z ≤ 0.025) :
     gcdElevenTotalPolynomial x a b c y e z < -1/100 := by
-  have hsq (l u : ℝ) (hl : 0 ≤ l) (hu : l ≤ u) : l^2 ≤ u^2 := by
+  have hsq (l u : ℝ) (hl : 0 ≤ l) (hu : l ≤ u) : l^(2 : ℕ) ≤ u^(2 : ℕ) := by
     simpa only [pow_two] using mul_le_mul hu hu hl (hl.trans hu)
-  have hQ : (145629/1000000:ℝ) ≤ x^2+a^2+b^2+c^2+y^2+e^2+z^2 := by
+  have hQ : (145629/1000000:ℝ) ≤ x^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+y^(2 : ℕ)+e^(2 : ℕ)+z^(2 : ℕ) := by
     linarith [hsq 0.15 x (by norm_num) hx.1,hsq 0.20 a (by norm_num) ha.1,
       hsq 0.19 b (by norm_num) hb.1,hsq 0.14 c (by norm_num) hc.1,
       hsq 0.13 y (by norm_num) hy.1,hsq 0.10 e (by norm_num) he.1,
@@ -59,7 +59,7 @@ private theorem gcd_total_polynomial_box {x a b c y e z : ℝ}
   have hShi : x-a-b-c+y-e+z ≤ -(285/1000:ℝ) := by linarith
   have hp := mul_nonneg (show 0 ≤ (x-a-b-c+y-e+z)+367/1000 by linarith)
     (show 0 ≤ 367/1000-(x-a-b-c+y-e+z) by linarith)
-  have hSsq : (x-a-b-c+y-e+z)^2 ≤ (367/1000:ℝ)^2 := by nlinarith only [hp]
+  have hSsq : (x-a-b-c+y-e+z)^(2 : ℕ) ≤ (367/1000:ℝ)^(2 : ℕ) := by nlinarith only [hp]
   unfold gcdElevenTotalPolynomial
   nlinarith only [hQ,hSsq]
 

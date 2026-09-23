@@ -32,16 +32,16 @@ theorem IsSectorConstrainedGround.unique {a : ℝ} {σ : ℕ → ℕ} {μ μ' : 
     (h : IsSectorConstrainedGround a σ μ) (h' : IsSectorConstrainedGround a σ μ') : μ = μ' := by
   obtain ⟨hfloor, f, ⟨x, hx⟩, hfne, hfcon, hfval, -⟩ := h
   obtain ⟨hfloor', g, ⟨y, hy⟩, hgne, hgcon, hgval, -⟩ := h'
-  have hfpos : 0 < ‖f‖ ^ 2 := by
+  have hfpos : 0 < ‖f‖ ^ (2 : ℕ) := by
     have hf : 0 < ‖f‖ := norm_pos_iff.mpr hfne
     positivity
-  have hgpos : 0 < ‖g‖ ^ 2 := by
+  have hgpos : 0 < ‖g‖ ^ (2 : ℕ) := by
     have hg : 0 < ‖g‖ := norm_pos_iff.mpr hgne
     positivity
-  have h1 : μ' * ‖f‖ ^ 2 ≤ μ * ‖f‖ ^ 2 := by
+  have h1 : μ' * ‖f‖ ^ (2 : ℕ) ≤ μ * ‖f‖ ^ (2 : ℕ) := by
     have hb := hfloor' x f hx hfcon
     rwa [hfval] at hb
-  have h2 : μ * ‖g‖ ^ 2 ≤ μ' * ‖g‖ ^ 2 := by
+  have h2 : μ * ‖g‖ ^ (2 : ℕ) ≤ μ' * ‖g‖ ^ (2 : ℕ) := by
     have hb := hfloor y g hy hgcon
     rwa [hgval] at hb
   have hle1 : μ' ≤ μ := le_of_mul_le_mul_right h1 hfpos

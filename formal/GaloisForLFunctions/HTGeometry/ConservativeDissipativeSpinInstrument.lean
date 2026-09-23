@@ -30,10 +30,10 @@ def spinFilterComplement (k : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
 theorem spinFilter_complete (k : ℂ) :
     (spinFilterSelected k)ᴴ * spinFilterSelected k +
       (spinFilterComplement k)ᴴ * spinFilterComplement k = 1 := by
-  have hd : 1 + ‖k‖ ^ 2 ≠ 0 := by positivity
-  have hs : spinChartScale k ^ 2 * (1 + ‖k‖ ^ 2) = 1 := by
+  have hd : 1 + ‖k‖ ^ (2 : ℕ) ≠ 0 := by positivity
+  have hs : spinChartScale k ^ (2 : ℕ) * (1 + ‖k‖ ^ (2 : ℕ)) = 1 := by
     rw [spinChartScale_sq, inv_mul_cancel₀ hd]
-  have hc : (spinChartScale k : ℂ) ^ 2 * (1 + conj k * k) = 1 := by
+  have hc : (spinChartScale k : ℂ) ^ (2 : ℕ) * (1 + conj k * k) = 1 := by
     rw [← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq]
     exact_mod_cast hs
   ext i j
@@ -69,7 +69,7 @@ theorem spinFilterSelected_spinor (k z : ℂ) :
   all_goals field_simp
 
 /-- Actual selected-outcome probability for the normalized chart state. -/
-def spinFilterProbability (k z : ℂ) : ℝ := spinFilterAmplitude k z ^ 2
+def spinFilterProbability (k z : ℂ) : ℝ := spinFilterAmplitude k z ^ (2 : ℕ)
 
 theorem spinFilterProbability_pos (k z : ℂ) : 0 < spinFilterProbability k z :=
   sq_pos_of_pos (spinFilterAmplitude_pos k z)
@@ -77,7 +77,7 @@ theorem spinFilterProbability_pos (k z : ℂ) : 0 < spinFilterProbability k z :=
 /-- Closed success-probability formula in the original complex chart. -/
 theorem spinFilterProbability_eq (k z : ℂ) :
     spinFilterProbability k z =
-      (1 + ‖k * z‖ ^ 2) / ((1 + ‖k‖ ^ 2) * (1 + ‖z‖ ^ 2)) := by
+      (1 + ‖k * z‖ ^ (2 : ℕ)) / ((1 + ‖k‖ ^ (2 : ℕ)) * (1 + ‖z‖ ^ (2 : ℕ))) := by
   rw [spinFilterProbability, spinFilterAmplitude, div_pow, mul_pow,
     spinChartScale_sq, spinChartScale_sq, spinChartScale_sq]
   field_simp
@@ -85,14 +85,14 @@ theorem spinFilterProbability_eq (k z : ℂ) :
 /-- The constructed success probability is always at most one. -/
 theorem spinFilterProbability_le_one (k z : ℂ) : spinFilterProbability k z ≤ 1 := by
   rw [spinFilterProbability_eq]
-  have hd : 0 < (1 + ‖k‖ ^ 2) * (1 + ‖z‖ ^ 2) := by positivity
+  have hd : 0 < (1 + ‖k‖ ^ (2 : ℕ)) * (1 + ‖z‖ ^ (2 : ℕ)) := by positivity
   apply (div_le_one hd).mpr
   rw [norm_mul, mul_pow]
   nlinarith [sq_nonneg ‖k‖, sq_nonneg ‖z‖]
 
 /-- Real amplitude scaling has its exact effect on the corpus's pure projector. -/
 theorem pureProjectorMatrix_real_smul (r : ℝ) (ψ : Fin 2 → ℂ) :
-    pureProjectorMatrix ((r : ℂ) • ψ) = ((r ^ 2 : ℝ) : ℂ) • pureProjectorMatrix ψ := by
+    pureProjectorMatrix ((r : ℂ) • ψ) = ((r ^ (2 : ℕ) : ℝ) : ℂ) • pureProjectorMatrix ψ := by
   ext i j
   simp [pureProjectorMatrix, Matrix.smul_apply]
   ring

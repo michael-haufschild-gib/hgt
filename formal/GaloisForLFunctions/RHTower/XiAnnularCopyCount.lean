@@ -20,8 +20,8 @@ namespace RHTower
 prescribed number of divisor-multiplicity copies. -/
 theorem exists_annular_copies (C : ℝ) :
     ∃ Γ₀ : ℝ, 0 < Γ₀ ∧ ∀ Γ : ℝ, Γ₀ ≤ Γ → ∃ S : Finset XiZeroCopy,
-      (∀ r ∈ S, Γ ^ 2 ≤ (r.1 : ℂ).im ^ 2) ∧
-      (∀ r ∈ S, (r.1 : ℂ).im ^ 2 ≤ (10 * Γ) ^ 2) ∧
+      (∀ r ∈ S, Γ ^ (2 : ℕ) ≤ (r.1 : ℂ).im ^ (2 : ℕ)) ∧
+      (∀ r ∈ S, (r.1 : ℂ).im ^ (2 : ℕ) ≤ (10 * Γ) ^ (2 : ℕ)) ∧
       C ≤ (S.card : ℝ) := by
   obtain ⟨Γ₁, hΓ₁⟩ := exists_annular_mass_lower C
   refine ⟨max Γ₁ 1, lt_of_lt_of_le one_pos (le_max_right _ _), fun Γ hΓ => ?_⟩
@@ -50,29 +50,29 @@ theorem exists_annular_copies (C : ℝ) :
 /-- **The unconditional annular payment.**  Every sufficiently high off-line atom has its
 complete-mass-normalized transverse charge strictly paid by divisor copies in one fixed annulus. -/
 theorem exists_annular_payment_of_large_height :
-    ∃ h₀ : ℝ, ∀ q : XiZeroCopy, h₀ ≤ (q.1 : ℂ).im ^ 2 → ∃ S : Finset XiZeroCopy,
+    ∃ h₀ : ℝ, ∀ q : XiZeroCopy, h₀ ≤ (q.1 : ℂ).im ^ (2 : ℕ) → ∃ S : Finset XiZeroCopy,
       (∑' i : XiZeroCopy, xiShiftedResponseMass 1 i) * xiShiftedTransverseChargeDensity 1 q
         < xiShiftedResponseMass 1 q *
           ∑ r ∈ S, xiShiftedResponseMass 1 r
-              * (xiShiftedResponseSlope 1 q - xiShiftedResponseSlope 1 r) ^ 2 := by
-  obtain ⟨Γ₀, hΓ₀, hcopies⟩ := exists_annular_copies ((87 / 256 : ℝ) * 10 ^ 2 + 1)
-  refine ⟨max (Γ₀ ^ 2 / 3) 71, fun q hq => ?_⟩
-  set h : ℝ := (q.1 : ℂ).im ^ 2 with hh
+              * (xiShiftedResponseSlope 1 q - xiShiftedResponseSlope 1 r) ^ (2 : ℕ) := by
+  obtain ⟨Γ₀, hΓ₀, hcopies⟩ := exists_annular_copies ((87 / 256 : ℝ) * 10 ^ (2 : ℕ) + 1)
+  refine ⟨max (Γ₀ ^ (2 : ℕ) / 3) 71, fun q hq => ?_⟩
+  set h : ℝ := (q.1 : ℂ).im ^ (2 : ℕ) with hh
   have hh71 : (71 : ℝ) ≤ h := le_trans (le_max_right _ _) hq
-  have hhΓ : Γ₀ ^ 2 / 3 ≤ h := le_trans (le_max_left _ _) hq
+  have hhΓ : Γ₀ ^ (2 : ℕ) / 3 ≤ h := le_trans (le_max_left _ _) hq
   have hheight : (141 / 2 : ℝ) < h := by linarith
   set Γ : ℝ := Real.sqrt (3 * (1 + h)) with hΓdef
   have h3h : (0 : ℝ) ≤ 3 * (1 + h) := by linarith
-  have hΓsq : Γ ^ 2 = 3 * (1 + h) := Real.sq_sqrt h3h
+  have hΓsq : Γ ^ (2 : ℕ) = 3 * (1 + h) := Real.sq_sqrt h3h
   have hΓ0 : 0 ≤ Γ := Real.sqrt_nonneg _
   have hΓge : Γ₀ ≤ Γ := by
-    have hle : Γ₀ ^ 2 ≤ Γ ^ 2 := by rw [hΓsq]; linarith
+    have hle : Γ₀ ^ (2 : ℕ) ≤ Γ ^ (2 : ℕ) := by rw [hΓsq]; linarith
     nlinarith [hΓ0, hΓ₀, hle]
   obtain ⟨S, hlow, hhigh, hcard⟩ := hcopies Γ hΓge
   have hSne : S.Nonempty := by
     rw [← Finset.card_pos]
     have : (0 : ℝ) < (S.card : ℝ) := by
-      have hnum : (0 : ℝ) < (87 / 256 : ℝ) * 10 ^ 2 + 1 := by norm_num
+      have hnum : (0 : ℝ) < (87 / 256 : ℝ) * 10 ^ (2 : ℕ) + 1 := by norm_num
       linarith
     exact_mod_cast this
   refine ⟨S, annulus_general_payment q hSne (by norm_num : (1 : ℝ) ≤ 10) ?_ ?_ hheight ?_⟩
@@ -83,7 +83,7 @@ theorem exists_annular_payment_of_large_height :
     linarith
   · intro r hr
     have h2 := hhigh r hr
-    have hval : (10 * Γ) ^ 2 = 3 * 10 ^ 2 * (1 + h) := by
+    have hval : (10 * Γ) ^ (2 : ℕ) = 3 * 10 ^ (2 : ℕ) * (1 + h) := by
       rw [mul_pow, hΓsq]
       ring
     rw [hval] at h2

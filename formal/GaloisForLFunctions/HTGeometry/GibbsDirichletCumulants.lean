@@ -24,7 +24,7 @@ def gibbsLogSecondMoment (f : ℕ → ℂ) (s : ℂ) : ℂ :=
 
 /-- Gibbs variance of `log n` for a Dirichlet partition. -/
 def gibbsLogVar (f : ℕ → ℂ) (s : ℂ) : ℂ :=
-  gibbsLogSecondMoment f s - gibbsLogMean f s ^ 2
+  gibbsLogSecondMoment f s - gibbsLogMean f s ^ (2 : ℕ)
 
 /-- **First cumulant.**  The logarithmic derivative of a Dirichlet partition is minus the Gibbs
 expectation of `log n`. -/

@@ -45,7 +45,7 @@ private theorem remainder_le (t : ℝ) (ht : 0 ≤ t) : fzzExpSecondRemainder t 
   linarith
 
 private theorem remainder_le_sq (t : ℝ) (ht : 0 ≤ t) (ht1 : t ≤ 1) :
-    fzzExpSecondRemainder t ≤ t^2 := by
+    fzzExpSecondRemainder t ≤ t^(2 : ℕ) := by
   have h := Real.norm_exp_sub_one_sub_id_le (x := -t) (by
     simpa only [norm_neg, Real.norm_eq_abs, abs_of_nonneg ht] using ht1)
   have hn : 0 ≤ Real.exp (-t) - 1 + t := remainder_nonneg t
@@ -79,7 +79,7 @@ private theorem second_left_bound (x : ℝ) (hx : x ≤ 0) :
     fzzSubtractedGammaLogKernel x ≤ Real.exp ((1/2:ℝ)*x) := by
   have ht1 : Real.exp x ≤ 1 := by simpa using Real.exp_le_exp.mpr hx
   calc
-    _ ≤ Real.exp ((-3/2:ℝ)*x) * (Real.exp x)^2 :=
+    _ ≤ Real.exp ((-3/2:ℝ)*x) * (Real.exp x)^(2 : ℕ) :=
       mul_le_mul_of_nonneg_left (remainder_le_sq _ (Real.exp_pos x).le ht1) (Real.exp_pos _).le
     _ = Real.exp ((1/2:ℝ)*x) := by
       rw [pow_two, ← Real.exp_add, ← Real.exp_add]

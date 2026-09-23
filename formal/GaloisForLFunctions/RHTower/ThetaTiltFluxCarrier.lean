@@ -158,13 +158,13 @@ theorem hasDerivAt_bilateralLaplace (S : ThetaSource) (w : ℂ) :
   obtain ⟨C, hC, hbd⟩ := S.exists_ball_bound w 1
   have hbd' : ∀ u : ℂ, ‖u - w‖ ≤ 1 → ∀ x : ℝ,
       ‖(x : ℂ) * (S.k x : ℂ) * Complex.exp (u * (x : ℂ))‖
-        ≤ C * (|x| ^ 1 * Real.exp (-1 * |x|)) := by
+        ≤ C * (|x| ^ (1 : ℕ) * Real.exp (-1 * |x|)) := by
     intro u hu x
     simpa only [pow_one] using hbd u hu x
   have hres := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (F := fun (u : ℂ) (x : ℝ) => (S.k x : ℂ) * Complex.exp (u * (x : ℂ)))
     (F' := fun (u : ℂ) (x : ℝ) => (x : ℂ) * (S.k x : ℂ) * Complex.exp (u * (x : ℂ)))
-    (x₀ := w) (bound := fun x : ℝ => C * (|x| ^ 1 * Real.exp (-1 * |x|)))
+    (x₀ := w) (bound := fun x : ℝ => C * (|x| ^ (1 : ℕ) * Real.exp (-1 * |x|)))
     (μ := volume)
     (Metric.ball_mem_nhds w one_pos)
     (Filter.Eventually.of_forall fun u => (S.continuous_laplace_integrand u).aestronglyMeasurable)
@@ -270,7 +270,7 @@ theorem tiltWindow_eq (S : ThetaSource) {d : ℕ} (c w : Fin d → ℂ) (a s : �
 
 /-- **Equation (4).**  The one-sided correlation energy of the tilted window. -/
 def tiltCorrelation (S : ThetaSource) {d : ℕ} (c w : Fin d → ℂ) (a : ℝ) : ℝ :=
-  ∫ s in Set.Ioi (0 : ℝ), ‖tiltWindow S c w a s‖ ^ 2
+  ∫ s in Set.Ioi (0 : ℝ), ‖tiltWindow S c w a s‖ ^ (2 : ℕ)
 
 /-- **Equation (8).**  The closed form of the correlation energy. -/
 def tiltCorrelationForm (S : ThetaSource) {d : ℕ} (c w : Fin d → ℂ) (a : ℝ) : ℂ :=
@@ -635,7 +635,7 @@ theorem integral_expSum_mul_conj {d : ℕ} (a b w : Fin d → ℂ) (hw : ∀ j, 
   ring
 
 theorem integral_norm_sq_eq_expSum {d : ℕ} (a w : Fin d → ℂ) (hw : ∀ j, 0 < (w j).re) :
-    ((∫ s in Set.Ioi (0 : ℝ), ‖expSum a w s‖ ^ 2 : ℝ) : ℂ)
+    ((∫ s in Set.Ioi (0 : ℝ), ‖expSum a w s‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ j, ∑ l, a j * conj (a l) / (w j + conj (w l)) := by
   rw [← integral_complex_ofReal, ← integral_expSum_mul_conj a a w hw]
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun s => ?_)
@@ -728,8 +728,8 @@ theorem sourceBezoutianSum_eq_pairing (S : ThetaSource) {d : ℕ} (c w : Fin d �
 /-- The two contraction energies differ by exactly `2 t` times the flux. -/
 theorem contraction_energy_difference (S : ThetaSource) {d : ℕ} (c w : Fin d → ℂ)
     (hw : ∀ j, 0 < (w j).re) (t : ℝ) :
-    ((∫ s in Set.Ioi (0 : ℝ), ‖contractionPlus S c w t s‖ ^ 2 : ℝ) : ℂ)
-        - ((∫ s in Set.Ioi (0 : ℝ), ‖contractionMinus S c w t s‖ ^ 2 : ℝ) : ℂ)
+    ((∫ s in Set.Ioi (0 : ℝ), ‖contractionPlus S c w t s‖ ^ (2 : ℕ) : ℝ) : ℂ)
+        - ((∫ s in Set.Ioi (0 : ℝ), ‖contractionMinus S c w t s‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = 2 * (t : ℂ) * (momentWindowPairing S c w + conj (momentWindowPairing S c w)) := by
   rw [contractionPlus_eq_expSum, contractionMinus_eq_expSum,
     integral_norm_sq_eq_expSum _ w hw, integral_norm_sq_eq_expSum _ w hw,
@@ -747,8 +747,8 @@ theorem sourceBezoutianSum_eq_contraction_difference (S : ThetaSource) {d : ℕ}
     (hw : ∀ j, 0 < (w j).re) {t : ℝ} (ht : 0 < t) :
     ∑ j, ∑ l, c j * conj (c l) * sourceBezoutian S (w j) (w l)
       = (1 / (2 * (t : ℂ)))
-        * (((∫ s in Set.Ioi (0 : ℝ), ‖contractionPlus S c w t s‖ ^ 2 : ℝ) : ℂ)
-          - ((∫ s in Set.Ioi (0 : ℝ), ‖contractionMinus S c w t s‖ ^ 2 : ℝ) : ℂ)) := by
+        * (((∫ s in Set.Ioi (0 : ℝ), ‖contractionPlus S c w t s‖ ^ (2 : ℕ) : ℝ) : ℂ)
+          - ((∫ s in Set.Ioi (0 : ℝ), ‖contractionMinus S c w t s‖ ^ (2 : ℕ) : ℝ) : ℂ)) := by
   have htne : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt ht)
   rw [contraction_energy_difference S c w hw t, sourceBezoutianSum_eq_pairing S c w hw]
   field_simp

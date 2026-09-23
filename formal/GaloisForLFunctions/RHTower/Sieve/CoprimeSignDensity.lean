@@ -27,8 +27,8 @@ noncomputable def coprimeSignClassCount (x h : ℝ) (s : ℤ) : ℝ :=
 /-- A pair of product sign `±1` has squarefree weight one. -/
 theorem weight_eq_one_of_sign {a b : ℕ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hab : μ a * μ b = s) :
-    ((μ a : ℤ) : ℝ) ^ 2 * ((μ b : ℤ) : ℝ) ^ 2 = 1 := by
-  have hsq : ((μ a : ℤ) : ℝ) ^ 2 * ((μ b : ℤ) : ℝ) ^ 2 = ((μ a * μ b : ℤ) : ℝ) ^ 2 := by
+    ((μ a : ℤ) : ℝ) ^ (2 : ℕ) * ((μ b : ℤ) : ℝ) ^ (2 : ℕ) = 1 := by
+  have hsq : ((μ a : ℤ) : ℝ) ^ (2 : ℕ) * ((μ b : ℤ) : ℝ) ^ (2 : ℕ) = ((μ a * μ b : ℤ) : ℝ) ^ (2 : ℕ) := by
     push_cast; ring
   rw [hsq, hab]
   rcases hs with rfl | rfl <;> norm_num
@@ -37,7 +37,7 @@ theorem weight_eq_one_of_sign {a b : ℕ} {s : ℤ} (hs : s = 1 ∨ s = -1)
 theorem signClassCount_sub_le {x h : ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1) :
     signClassCount x h s - noncoprimePairCount x h ≤ coprimeSignClassCount x h s := by
   classical
-  set w : ℕ × ℕ → ℝ := fun q => ((μ q.1 : ℤ) : ℝ) ^ 2 * ((μ q.2 : ℤ) : ℝ) ^ 2 with hw
+  set w : ℕ × ℕ → ℝ := fun q => ((μ q.1 : ℤ) : ℝ) ^ (2 : ℕ) * ((μ q.2 : ℤ) : ℝ) ^ (2 : ℕ) with hw
   have hw0 : ∀ q, 0 ≤ w q := by
     intro q; rw [hw]; positivity
   -- the sign class splits into the coprime part and the rest
@@ -84,17 +84,17 @@ theorem squarefreeDensity_pos : 0 < squarefreeDensity := by
 theorem eventually_coprimeSignClass_ge {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (hMRsign : Tendsto (fun x => signClassCount x (hh x) s
-        / (hh x * Real.sqrt x * Real.log 2)) atTop (𝓝 (squarefreeDensity ^ 2 / 2)))
+        / (hh x * Real.sqrt x * Real.log 2)) atTop (𝓝 (squarefreeDensity ^ (2 : ℕ) / 2)))
     (hMR : ∀ p : ℕ, p.Prime → MRBilinearAt (coprimeSquarefreeWeight p)
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ)))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   have hsignev := hMRsign.eventually (eventually_gt_nhds
-    (by linarith : squarefreeDensity ^ 2 / 2 - ε / 2 < squarefreeDensity ^ 2 / 2))
+    (by linarith : squarefreeDensity ^ (2 : ℕ) / 2 - ε / 2 < squarefreeDensity ^ (2 : ℕ) / 2))
   have hbadev := eventually_noncoprime_le hgrow hMR (ε := ε / 2) (by linarith)
   filter_upwards [eventually_gt_atTop (0 : ℝ), hhtop.eventually_gt_atTop (0 : ℝ),
     hsignev, hbadev] with x hx0 hhx hsx hbx
@@ -110,15 +110,15 @@ theorem eventually_coprimeSignClass_ge {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 
 
 /-- **The margin is strictly positive.** -/
 theorem coprime_margin_pos :
-    0 < squarefreeDensity ^ 2 / 2
-      - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity := by
+    0 < squarefreeDensity ^ (2 : ℕ) / 2
+      - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity := by
   have hD := squarefreeDensity_pos
   have hA := RHTower.coprimeSharedPrimeDensity_lt_half
-  have hsq : 0 < squarefreeDensity ^ 2 := by positivity
+  have hsq : 0 < squarefreeDensity ^ (2 : ℕ) := by positivity
   have hfac : 0 < 1 / 2 - RHTower.coprimeSharedPrimeDensity := by linarith
-  have hrw : squarefreeDensity ^ 2 / 2
-      - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity
-      = squarefreeDensity ^ 2 * (1 / 2 - RHTower.coprimeSharedPrimeDensity) := by ring
+  have hrw : squarefreeDensity ^ (2 : ℕ) / 2
+      - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity
+      = squarefreeDensity ^ (2 : ℕ) * (1 / 2 - RHTower.coprimeSharedPrimeDensity) := by ring
   rw [hrw]
   exact mul_pos hsq hfac
 

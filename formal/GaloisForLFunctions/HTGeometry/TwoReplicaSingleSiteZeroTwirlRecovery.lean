@@ -80,7 +80,7 @@ theorem re_inner_finiteTwoReplicaSingleSiteCollectiveSquare_eq_energy
       ∑ ja : V × Fin 3,
         ‖finiteMatrixHilbertEquiv
           (finiteTwoReplicaCollectiveCommutatorLinear
-            (finiteSingleSitePauliLabel ja.1 ja.2) X)‖ ^ 2 := by
+            (finiteSingleSitePauliLabel ja.1 ja.2) X)‖ ^ (2 : ℕ) := by
   simp only [linearFamilySquare_apply, map_sum, inner_sum]
   change Complex.reCLM (∑ ja : V × Fin 3,
       inner ℂ (finiteMatrixHilbertEquiv X)
@@ -108,14 +108,14 @@ theorem finiteTwoReplicaSingleSiteCollectiveSquare_eq_zero_iff
     have henergy : (∑ ja : V × Fin 3,
         ‖finiteMatrixHilbertEquiv
           (finiteTwoReplicaCollectiveCommutatorLinear
-            (finiteSingleSitePauliLabel ja.1 ja.2) X)‖ ^ 2) = 0 := by
+            (finiteSingleSitePauliLabel ja.1 ja.2) X)‖ ^ (2 : ℕ)) = 0 := by
       rw [← re_inner_finiteTwoReplicaSingleSiteCollectiveSquare_eq_energy,
         hzero]
       simp
     intro j a
     have hterm : ‖finiteMatrixHilbertEquiv
         (finiteTwoReplicaCollectiveCommutatorLinear
-          (finiteSingleSitePauliLabel j a) X)‖ ^ 2 = 0 := by
+          (finiteSingleSitePauliLabel j a) X)‖ ^ (2 : ℕ) = 0 := by
       exact (Finset.sum_eq_zero_iff_of_nonneg
         (fun ja _ => sq_nonneg _)).mp henergy (j, a) (Finset.mem_univ _)
     apply finiteMatrixHilbertEquiv.injective

@@ -23,13 +23,13 @@ noncomputable def jacobiDnOne1 (x : ℝ) : ℝ :=
 
 /-- The Jacobi identity `sn² + cn² = 1` at `m = 1`. -/
 theorem jacobiSnOne_sq_add_jacobiCnOne_sq (x : ℝ) :
-    jacobiSnOne x ^ 2 + jacobiCnOne x ^ 2 = 1 := by
+    jacobiSnOne x ^ (2 : ℕ) + jacobiCnOne x ^ (2 : ℕ) = 1 := by
   rw [jacobiSnOne, jacobiCnOne, solitonA_sq]
   simp [solitonQ]
 
 /-- The Jacobi identity `dn² + m sn² = 1` at `m = 1`. -/
 theorem jacobiDnOne_sq_add_jacobiSnOne_sq (x : ℝ) :
-    jacobiDnOne x ^ 2 + jacobiSnOne x ^ 2 = 1 := by
+    jacobiDnOne x ^ (2 : ℕ) + jacobiSnOne x ^ (2 : ℕ) = 1 := by
   rw [jacobiDnOne, jacobiSnOne, solitonA_sq]
   simp [solitonQ]
 
@@ -37,7 +37,7 @@ theorem jacobiDnOne_sq_add_jacobiSnOne_sq (x : ℝ) :
 theorem hasDerivAt_jacobiSnOne (x : ℝ) :
     HasDerivAt jacobiSnOne (jacobiCnOne x * jacobiDnOne x) x := by
   change HasDerivAt solitonT (solitonA x * solitonA x) x
-  rw [show solitonA x * solitonA x = solitonA x ^ 2 by ring, solitonA_sq]
+  rw [show solitonA x * solitonA x = solitonA x ^ (2 : ℕ) by ring, solitonA_sq]
   exact hasDerivAt_solitonT x
 
 /-- Second equation in the Jacobi differential system at `m = 1`. -/
@@ -55,7 +55,7 @@ theorem hasDerivAt_jacobiDnOne (x : ℝ) :
 /-- The paper's Lamé equation `dn'' = (2m sn² - m)dn` at `m = 1`. -/
 theorem hasDerivAt_jacobiDnOne1 (x : ℝ) :
     HasDerivAt jacobiDnOne1
-      ((2 * jacobiSnOne x ^ 2 - 1) * jacobiDnOne x) x := by
+      ((2 * jacobiSnOne x ^ (2 : ℕ) - 1) * jacobiDnOne x) x := by
   have h := hasDerivAt_solitonA1 x
   apply (h.congr_deriv ?_).congr_of_eventuallyEq
   · filter_upwards with y
@@ -66,8 +66,8 @@ theorem hasDerivAt_jacobiDnOne1 (x : ℝ) :
 
 /-- The Jacobi first integral `(sn')² = (1-sn²)(1-m sn²)` at `m = 1`. -/
 theorem jacobiSnOne_firstIntegral (x : ℝ) :
-    (jacobiCnOne x * jacobiDnOne x) ^ 2 =
-      (1 - jacobiSnOne x ^ 2) * (1 - jacobiSnOne x ^ 2) := by
+    (jacobiCnOne x * jacobiDnOne x) ^ (2 : ℕ) =
+      (1 - jacobiSnOne x ^ (2 : ℕ)) * (1 - jacobiSnOne x ^ (2 : ℕ)) := by
   have hcn := jacobiSnOne_sq_add_jacobiCnOne_sq x
   have hdn := jacobiDnOne_sq_add_jacobiSnOne_sq x
   nlinarith [sq_nonneg (jacobiCnOne x * jacobiDnOne x)]
@@ -79,11 +79,11 @@ theorem jacobiOne_initial :
 
 /-- Paper equation (61) specialized to the soliton boundary `m = q₀ = 1`. -/
 noncomputable def degenerateJacobiCurvatureSq (k₀ s : ℝ) : ℝ :=
-  k₀ ^ 2 * (1 - jacobiSnOne (k₀ * s / 2) ^ 2)
+  k₀ ^ (2 : ℕ) * (1 - jacobiSnOne (k₀ * s / 2) ^ (2 : ℕ))
 
 theorem degenerateJacobiCurvatureSq_eq_sech (k₀ s : ℝ) :
     degenerateJacobiCurvatureSq k₀ s =
-      (k₀ * jacobiDnOne (k₀ * s / 2)) ^ 2 := by
+      (k₀ * jacobiDnOne (k₀ * s / 2)) ^ (2 : ℕ) := by
   rw [degenerateJacobiCurvatureSq]
   have h := jacobiDnOne_sq_add_jacobiSnOne_sq (k₀ * s / 2)
   nlinarith
@@ -95,7 +95,7 @@ theorem opticalEnvelope_eq_degenerateJacobiCurvature (D k t x : ℝ) :
 
 /-- Optical NLS mass density equals the squared limiting elastica curvature. -/
 theorem opticalSoliton_normSq_eq_degenerateJacobiCurvatureSq (D k t x : ℝ) :
-    ‖opticalSoliton D k t x‖ ^ 2 = degenerateJacobiCurvatureSq (2 * k) x := by
+    ‖opticalSoliton D k t x‖ ^ (2 : ℕ) = degenerateJacobiCurvatureSq (2 * k) x := by
   rw [opticalSoliton, norm_envelopeSoliton_sq,
     opticalEnvelope_eq_degenerateJacobiCurvature]
   rw [degenerateJacobiCurvatureSq_eq_sech]

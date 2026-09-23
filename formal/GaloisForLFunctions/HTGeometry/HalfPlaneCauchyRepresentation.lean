@@ -28,7 +28,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- The boundary integrand along the line `Re s = 1`. -/
 def lineKernel (φ : ℂ → ℂ) (s : ℂ) (y : ℝ) : ℂ := φ (1 + (y : ℂ) * I) / ((1 + (y : ℂ) * I) - s)
 
-theorem norm_one_add_mul_I_sq (y : ℝ) : ‖(1 : ℂ) + (y : ℂ) * I‖ ^ 2 = 1 + y ^ 2 := by
+theorem norm_one_add_mul_I_sq (y : ℝ) : ‖(1 : ℂ) + (y : ℂ) * I‖ ^ (2 : ℕ) = 1 + y ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
   simp
   ring
@@ -40,11 +40,11 @@ theorem continuous_lineParam : Continuous fun y : ℝ => (1 : ℂ) + (y : ℂ) *
 
 /-- The boundary integrand is dominated by an integrable envelope. -/
 theorem norm_lineKernel_le {φ : ℂ → ℂ} {C : ℝ}
-    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ 2)
+    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ (2 : ℕ))
     {s : ℂ} (hs : 1 < s.re) (y : ℝ) :
-    ‖lineKernel φ s y‖ ≤ C / (1 + y ^ 2) / (s.re - 1) := by
+    ‖lineKernel φ s y‖ ≤ C / (1 + y ^ (2 : ℕ)) / (s.re - 1) := by
   have hre : ((1 : ℂ) + (y : ℂ) * I).re = 1 := re_one_add_mul_I y
-  have hnum : ‖φ ((1 : ℂ) + (y : ℂ) * I)‖ ≤ C / (1 + y ^ 2) := by
+  have hnum : ‖φ ((1 : ℂ) + (y : ℂ) * I)‖ ≤ C / (1 + y ^ (2 : ℕ)) := by
     have h := hbound _ (by rw [hre])
     rwa [norm_one_add_mul_I_sq] at h
   have hden : s.re - 1 ≤ ‖((1 : ℂ) + (y : ℂ) * I) - s‖ := by
@@ -53,13 +53,13 @@ theorem norm_lineKernel_le {φ : ℂ → ℂ} {C : ℝ}
     linarith
   have hdenpos : (0:ℝ) < s.re - 1 := by linarith
   have hnormpos : (0:ℝ) < ‖((1 : ℂ) + (y : ℂ) * I) - s‖ := lt_of_lt_of_le hdenpos hden
-  have hCnn : 0 ≤ C / (1 + y ^ 2) := le_trans (norm_nonneg _) hnum
+  have hCnn : 0 ≤ C / (1 + y ^ (2 : ℕ)) := le_trans (norm_nonneg _) hnum
   rw [lineKernel, norm_div]
   calc ‖φ ((1:ℂ) + (y:ℂ) * I)‖ / ‖((1:ℂ) + (y:ℂ) * I) - s‖
-      ≤ (C / (1 + y ^ 2)) / ‖((1:ℂ) + (y:ℂ) * I) - s‖ := by gcongr
-    _ ≤ (C / (1 + y ^ 2)) / (s.re - 1) := by gcongr
+      ≤ (C / (1 + y ^ (2 : ℕ))) / ‖((1:ℂ) + (y:ℂ) * I) - s‖ := by gcongr
+    _ ≤ (C / (1 + y ^ (2 : ℕ))) / (s.re - 1) := by gcongr
 
-theorem norm_mk_sq (x y : ℝ) : ‖(x : ℂ) + (y : ℂ) * I‖ ^ 2 = x ^ 2 + y ^ 2 := by
+theorem norm_mk_sq (x y : ℝ) : ‖(x : ℂ) + (y : ℂ) * I‖ ^ (2 : ℕ) = x ^ (2 : ℕ) + y ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
   simp
   ring
@@ -70,7 +70,7 @@ theorem continuousOn_of_analyticOn_halfPlane {φ : ℂ → ℂ}
   fun z hz => ((hφ z hz).continuousAt).continuousWithinAt
 
 theorem nonneg_of_halfPlane_bound {φ : ℂ → ℂ} {C : ℝ}
-    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ 2) : 0 ≤ C := by
+    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ (2 : ℕ)) : 0 ≤ C := by
   have h := hbound 1 (by simp)
   simp only [norm_one, one_pow, div_one] at h
   exact le_trans (norm_nonneg _) h
@@ -93,14 +93,14 @@ theorem continuous_lineKernel {φ : ℂ → ℂ} (hφ : ∀ z : ℂ, 1 ≤ z.re 
 
 theorem integrable_lineKernel {φ : ℂ → ℂ} {C : ℝ}
     (hφ : ∀ z : ℂ, 1 ≤ z.re → AnalyticAt ℂ φ z)
-    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ 2)
+    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ (2 : ℕ))
     {s : ℂ} (hs : 1 < s.re) :
     Integrable (lineKernel φ s) := by
   have hdenpos : (0:ℝ) < s.re - 1 := by linarith
-  have henv : Integrable fun y : ℝ => C / (1 + y ^ 2) / (s.re - 1) := by
+  have henv : Integrable fun y : ℝ => C / (1 + y ^ (2 : ℕ)) / (s.re - 1) := by
     have h := integrable_inv_one_add_sq
-    have heq : (fun y : ℝ => C / (1 + y ^ 2) / (s.re - 1))
-        = fun y : ℝ => (C / (s.re - 1)) * (1 + y ^ 2)⁻¹ := by
+    have heq : (fun y : ℝ => C / (1 + y ^ (2 : ℕ)) / (s.re - 1))
+        = fun y : ℝ => (C / (s.re - 1)) * (1 + y ^ (2 : ℕ))⁻¹ := by
       funext y
       field_simp
     rw [heq]
@@ -112,26 +112,26 @@ theorem integrable_lineKernel {φ : ℂ → ℂ} {C : ℝ}
 /-! ### The moving edges -/
 
 theorem norm_horizontal_edge_le {φ : ℂ → ℂ} {C : ℝ} (hC : 0 ≤ C)
-    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ 2)
-    {s : ℂ} {R c : ℝ} (hR : 1 ≤ R) (hc : c ^ 2 = R ^ 2) (hcabs : |c| = R)
+    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ (2 : ℕ))
+    {s : ℂ} {R c : ℝ} (hR : 1 ≤ R) (hc : c ^ (2 : ℕ) = R ^ (2 : ℕ)) (hcabs : |c| = R)
     (hcs : |s.im| < R) :
     ‖∫ x in (1:ℝ)..R, φ ((x : ℂ) + (c : ℂ) * I) * (((x : ℂ) + (c : ℂ) * I) - s)⁻¹‖
-      ≤ C / R ^ 2 / (R - |s.im|) * R := by
+      ≤ C / R ^ (2 : ℕ) / (R - |s.im|) * R := by
   have hRpos : (0:ℝ) < R := by linarith
   have hgap : (0:ℝ) < R - |s.im| := by linarith
   have hpt : ∀ x ∈ Set.uIoc (1:ℝ) R,
       ‖φ ((x : ℂ) + (c : ℂ) * I) * (((x : ℂ) + (c : ℂ) * I) - s)⁻¹‖
-        ≤ C / R ^ 2 / (R - |s.im|) := by
+        ≤ C / R ^ (2 : ℕ) / (R - |s.im|) := by
     intro x hx
     rw [Set.uIoc_of_le hR] at hx
     have hx1 : (1:ℝ) ≤ x := le_of_lt hx.1
     have hre : ((x : ℂ) + (c : ℂ) * I).re = x := by simp
-    have hnumsq : ‖(x : ℂ) + (c : ℂ) * I‖ ^ 2 = x ^ 2 + c ^ 2 := norm_mk_sq x c
-    have hnum : ‖φ ((x : ℂ) + (c : ℂ) * I)‖ ≤ C / R ^ 2 := by
+    have hnumsq : ‖(x : ℂ) + (c : ℂ) * I‖ ^ (2 : ℕ) = x ^ (2 : ℕ) + c ^ (2 : ℕ) := norm_mk_sq x c
+    have hnum : ‖φ ((x : ℂ) + (c : ℂ) * I)‖ ≤ C / R ^ (2 : ℕ) := by
       refine le_trans (hbound _ (by rw [hre]; exact hx1)) ?_
       rw [hnumsq, hc]
-      have hxsq : R ^ 2 ≤ x ^ 2 + R ^ 2 := by nlinarith
-      have hRsqpos : (0:ℝ) < R ^ 2 := by positivity
+      have hxsq : R ^ (2 : ℕ) ≤ x ^ (2 : ℕ) + R ^ (2 : ℕ) := by nlinarith
+      have hRsqpos : (0:ℝ) < R ^ (2 : ℕ) := by positivity
       exact div_le_div_of_nonneg_left hC hRsqpos hxsq
     have hden : R - |s.im| ≤ ‖((x : ℂ) + (c : ℂ) * I) - s‖ := by
       refine le_trans ?_ (Complex.abs_im_le_norm _)
@@ -143,36 +143,36 @@ theorem norm_horizontal_edge_le {φ : ℂ → ℂ} {C : ℝ} (hC : 0 ≤ C)
     have hdenpos : (0:ℝ) < ‖((x : ℂ) + (c : ℂ) * I) - s‖ := lt_of_lt_of_le hgap hden
     rw [norm_mul, norm_inv]
     calc ‖φ ((x : ℂ) + (c : ℂ) * I)‖ * ‖((x : ℂ) + (c : ℂ) * I) - s‖⁻¹
-        ≤ (C / R ^ 2) * ‖((x : ℂ) + (c : ℂ) * I) - s‖⁻¹ := by
+        ≤ (C / R ^ (2 : ℕ)) * ‖((x : ℂ) + (c : ℂ) * I) - s‖⁻¹ := by
           gcongr
-      _ ≤ (C / R ^ 2) * (R - |s.im|)⁻¹ := by
+      _ ≤ (C / R ^ (2 : ℕ)) * (R - |s.im|)⁻¹ := by
           refine mul_le_mul_of_nonneg_left ?_ (by positivity)
           rw [inv_eq_one_div, inv_eq_one_div]
           gcongr
-      _ = C / R ^ 2 / (R - |s.im|) := by ring
+      _ = C / R ^ (2 : ℕ) / (R - |s.im|) := by ring
   have hle := intervalIntegral.norm_integral_le_of_norm_le_const hpt
   rw [abs_of_nonneg (by linarith : (0:ℝ) ≤ R - 1)] at hle
   refine hle.trans ?_
   refine mul_le_mul_of_nonneg_left (by linarith) (by positivity)
 
 theorem norm_vertical_edge_le {φ : ℂ → ℂ} {C : ℝ} (hC : 0 ≤ C)
-    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ 2)
+    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ (2 : ℕ))
     {s : ℂ} {R : ℝ} (hR : 1 ≤ R) (hcs : s.re < R) :
     ‖∫ y in (-R:ℝ)..R, φ ((R : ℂ) + (y : ℂ) * I) * (((R : ℂ) + (y : ℂ) * I) - s)⁻¹‖
-      ≤ C / R ^ 2 / (R - s.re) * (2 * R) := by
+      ≤ C / R ^ (2 : ℕ) / (R - s.re) * (2 * R) := by
   have hRpos : (0:ℝ) < R := by linarith
   have hgap : (0:ℝ) < R - s.re := by linarith
   have hpt : ∀ y ∈ Set.uIoc (-R:ℝ) R,
       ‖φ ((R : ℂ) + (y : ℂ) * I) * (((R : ℂ) + (y : ℂ) * I) - s)⁻¹‖
-        ≤ C / R ^ 2 / (R - s.re) := by
+        ≤ C / R ^ (2 : ℕ) / (R - s.re) := by
     intro y _
     have hre : ((R : ℂ) + (y : ℂ) * I).re = R := by simp
-    have hnumsq : ‖(R : ℂ) + (y : ℂ) * I‖ ^ 2 = R ^ 2 + y ^ 2 := norm_mk_sq R y
-    have hnum : ‖φ ((R : ℂ) + (y : ℂ) * I)‖ ≤ C / R ^ 2 := by
+    have hnumsq : ‖(R : ℂ) + (y : ℂ) * I‖ ^ (2 : ℕ) = R ^ (2 : ℕ) + y ^ (2 : ℕ) := norm_mk_sq R y
+    have hnum : ‖φ ((R : ℂ) + (y : ℂ) * I)‖ ≤ C / R ^ (2 : ℕ) := by
       refine le_trans (hbound _ (by rw [hre]; linarith)) ?_
       rw [hnumsq]
-      have hxsq : R ^ 2 ≤ R ^ 2 + y ^ 2 := by nlinarith
-      have hRsqpos : (0:ℝ) < R ^ 2 := by positivity
+      have hxsq : R ^ (2 : ℕ) ≤ R ^ (2 : ℕ) + y ^ (2 : ℕ) := by nlinarith
+      have hRsqpos : (0:ℝ) < R ^ (2 : ℕ) := by positivity
       exact div_le_div_of_nonneg_left hC hRsqpos hxsq
     have hden : R - s.re ≤ ‖((R : ℂ) + (y : ℂ) * I) - s‖ := by
       refine le_trans ?_ (le_trans (le_abs_self _) (Complex.abs_re_le_norm _))
@@ -181,13 +181,13 @@ theorem norm_vertical_edge_le {φ : ℂ → ℂ} {C : ℝ} (hC : 0 ≤ C)
     have hdenpos : (0:ℝ) < ‖((R : ℂ) + (y : ℂ) * I) - s‖ := lt_of_lt_of_le hgap hden
     rw [norm_mul, norm_inv]
     calc ‖φ ((R : ℂ) + (y : ℂ) * I)‖ * ‖((R : ℂ) + (y : ℂ) * I) - s‖⁻¹
-        ≤ (C / R ^ 2) * ‖((R : ℂ) + (y : ℂ) * I) - s‖⁻¹ := by
+        ≤ (C / R ^ (2 : ℕ)) * ‖((R : ℂ) + (y : ℂ) * I) - s‖⁻¹ := by
           gcongr
-      _ ≤ (C / R ^ 2) * (R - s.re)⁻¹ := by
+      _ ≤ (C / R ^ (2 : ℕ)) * (R - s.re)⁻¹ := by
           refine mul_le_mul_of_nonneg_left ?_ (by positivity)
           rw [inv_eq_one_div, inv_eq_one_div]
           gcongr
-      _ = C / R ^ 2 / (R - s.re) := by ring
+      _ = C / R ^ (2 : ℕ) / (R - s.re) := by ring
   have hle := intervalIntegral.norm_integral_le_of_norm_le_const hpt
   rw [abs_of_nonneg (by linarith : (0:ℝ) ≤ R - -R)] at hle
   refine hle.trans (le_of_eq ?_)
@@ -196,7 +196,7 @@ theorem norm_vertical_edge_le {φ : ℂ → ℂ} {C : ℝ} (hC : 0 ≤ C)
 /-! ### The representation -/
 
 theorem tendsto_edgeBound (C a : ℝ) (k : ℝ) :
-    Tendsto (fun R : ℝ => C / R ^ 2 / (R - a) * (k * R)) atTop (nhds 0) := by
+    Tendsto (fun R : ℝ => C / R ^ (2 : ℕ) / (R - a) * (k * R)) atTop (nhds 0) := by
   have hmul : Tendsto (fun R : ℝ => R * (R - a)) atTop atTop :=
     Filter.tendsto_id.atTop_mul_atTop₀ (Filter.tendsto_atTop_add_const_right _ (-a) tendsto_id)
   have hzero : Tendsto (fun R : ℝ => (C * k) / (R * (R - a))) atTop (nhds 0) :=
@@ -214,7 +214,7 @@ theorem tendsto_edgeBound (C a : ℝ) (k : ℝ) :
 decaying like `‖s‖⁻²` there is reproduced by its boundary values on the line `Re s = 1`. -/
 theorem halfPlane_cauchy_representation {φ : ℂ → ℂ} {C : ℝ}
     (hφ : ∀ z : ℂ, 1 ≤ z.re → AnalyticAt ℂ φ z)
-    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ 2)
+    (hbound : ∀ z : ℂ, 1 ≤ z.re → ‖φ z‖ ≤ C / ‖z‖ ^ (2 : ℕ))
     {s : ℂ} (hs : 1 < s.re) :
     (∫ (y : ℝ), lineKernel φ s y) = -(2 * Real.pi) * φ s := by
   have hC : 0 ≤ C := nonneg_of_halfPlane_bound hbound

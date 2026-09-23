@@ -43,10 +43,10 @@ theorem cast_heathBrownPositiveProductLogCollisionAggregate_le_twoScale_arbitrar
     (A : Finset PNat) {N N0 : ℕ} (hN0 : 1 ≤ N0)
     {delta : ℝ} (hdelta0 : 0 < delta) (hdelta1 : delta ≤ 1) :
     (heathBrownPositiveProductLogCollisionAggregate A N delta : ℝ) ≤
-      15 * delta * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+      15 * delta * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
         ((N / N0 + 1 : ℕ) : ℝ) *
           (heathBrownPositiveProductLogCollisionAggregate A N0 delta : ℝ) +
-        ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2 := by
+        ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ) := by
   by_cases hN0N : N0 ≤ N
   · exact cast_heathBrownPositiveProductLogCollisionAggregate_le_twoScale
       A hN0 hN0N hdelta0 hdelta1
@@ -60,12 +60,12 @@ theorem cast_heathBrownPositiveProductLogCollisionAggregate_le_twoScale_arbitrar
     calc
       (heathBrownPositiveProductLogCollisionAggregate A N delta : ℝ) ≤
           (heathBrownPositiveProductLogCollisionAggregate A N0 delta : ℝ) := hmono
-      _ ≤ 15 * delta * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+      _ ≤ 15 * delta * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           (heathBrownPositiveProductLogCollisionAggregate A N0 delta : ℝ) +
-          (A.card : ℝ) ^ 2 := by
-        have hdiag : 0 ≤ 15 * delta * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 := by
+          (A.card : ℝ) ^ (2 : ℕ) := by
+        have hdiag : 0 ≤ 15 * delta * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) := by
           positivity
-        have hcard : 0 ≤ (A.card : ℝ) ^ 2 := sq_nonneg _
+        have hcard : 0 ≤ (A.card : ℝ) ^ (2 : ℕ) := sq_nonneg _
         linarith
 
 /-- Height-specialized arbitrary-scale aggregate recurrence. -/
@@ -73,10 +73,10 @@ theorem cast_heathBrownPositiveProductLogCollisionAggregate_le_twoScale_inv_arbi
     (A : Finset PNat) (T : Set.Ioi (0 : ℝ)) (hT : 1 ≤ (T : ℝ))
     {N N0 : ℕ} (hN0 : 1 ≤ N0) :
     (heathBrownPositiveProductLogCollisionAggregate A N ((T : ℝ)⁻¹) : ℝ) ≤
-      15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+      15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
         ((N / N0 + 1 : ℕ) : ℝ) *
           (heathBrownPositiveProductLogCollisionAggregate A N0 ((T : ℝ)⁻¹) : ℝ) +
-        ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2 := by
+        ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ) := by
   apply cast_heathBrownPositiveProductLogCollisionAggregate_le_twoScale_arbitrary A hN0
   · exact inv_pos.mpr T.property
   · exact (inv_le_one₀ T.property).mpr hT
@@ -87,15 +87,15 @@ theorem integral_Icc_normSq_heathBrown_factors_le_twoScaleAggregate_arbitrary
     (T : Set.Ioi (0 : ℝ)) (hT : 1 ≤ (T : ℝ))
     {N N0 : ℕ} (hB : ∀ n ∈ B, (n : ℕ) ≤ N) (hN0 : 1 ≤ N0) :
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (5 * Real.pi / 2) * (T : ℝ) *
-        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           ((N / N0 + 1 : ℕ) : ℝ) *
             (heathBrownPositiveProductLogCollisionAggregate A N0 ((T : ℝ)⁻¹) : ℝ) +
-          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2) := by
+          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ)) := by
   calc
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (5 * Real.pi / 2) * (T : ℝ) *
         heathBrownPositiveWeightedCollision A B q T :=
       integral_Icc_normSq_heathBrown_factors_le_weightedCollision A B eps q T
@@ -104,10 +104,10 @@ theorem integral_Icc_normSq_heathBrown_factors_le_twoScaleAggregate_arbitrary
       exact mul_le_mul_of_nonneg_left
         (heathBrownPositiveWeightedCollision_le_collisionAggregate A B q T hB) (by positivity)
     _ ≤ (5 * Real.pi / 2) * (T : ℝ) *
-        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           ((N / N0 + 1 : ℕ) : ℝ) *
             (heathBrownPositiveProductLogCollisionAggregate A N0 ((T : ℝ)⁻¹) : ℝ) +
-          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2) := by
+          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ)) := by
       exact mul_le_mul_of_nonneg_left
         (cast_heathBrownPositiveProductLogCollisionAggregate_le_twoScale_inv_arbitrary
           A T hT hN0) (by positivity)
@@ -118,37 +118,37 @@ theorem integral_Icc_normSq_heathBrown_factors_le_twoScaleIntegral_arbitrary
     (T : Set.Ioi (0 : ℝ)) (hT : 1 ≤ (T : ℝ))
     {N N0 : ℕ} (hB : ∀ n ∈ B, (n : ℕ) ≤ N) (hN0 : 1 ≤ N0) :
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (5 * Real.pi / 2) * (T : ℝ) *
-        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           ((N / N0 + 1 : ℕ) : ℝ) *
             ((5 / (2 * (T : ℝ))) *
               ∫ t in Set.Icc (-(heathBrownHalfHeight T : ℝ))
                   (heathBrownHalfHeight T : ℝ),
                 ‖heathBrownSparseFactor A (fun _ => 1) t *
                   heathBrownDenseFactor (heathBrownPositiveInterval N0 hN0)
-                    heathBrownDenseUnitWeight t‖ ^ 2) +
-          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2) := by
+                    heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)) +
+          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ)) := by
   calc
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownSparseFactor A eps t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (5 * Real.pi / 2) * (T : ℝ) *
-        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           ((N / N0 + 1 : ℕ) : ℝ) *
             (heathBrownPositiveProductLogCollisionAggregate A N0 ((T : ℝ)⁻¹) : ℝ) +
-          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2) :=
+          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ)) :=
       integral_Icc_normSq_heathBrown_factors_le_twoScaleAggregate_arbitrary
         A B eps q T hT hB hN0
     _ ≤ (5 * Real.pi / 2) * (T : ℝ) *
-        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           ((N / N0 + 1 : ℕ) : ℝ) *
             ((5 / (2 * (T : ℝ))) *
               ∫ t in Set.Icc (-(heathBrownHalfHeight T : ℝ))
                   (heathBrownHalfHeight T : ℝ),
                 ‖heathBrownSparseFactor A (fun _ => 1) t *
                   heathBrownDenseFactor (heathBrownPositiveInterval N0 hN0)
-                    heathBrownDenseUnitWeight t‖ ^ 2) +
-          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2) := by
+                    heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)) +
+          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ)) := by
       gcongr
       exact cast_heathBrownPositiveProductLogCollisionAggregate_le_halfHeightIntegral
         A T hN0

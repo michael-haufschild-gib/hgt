@@ -39,14 +39,14 @@ theorem massNormalizedSourceAction_eq_dissipation_div_degreeWeight
       xiShiftedCanonicalAdmissionCumulativeJacobiDissipation y n /
         (2 * n + 1 : ℝ) := by
   have hy0 : 0 ≤ y := le_trans (by norm_num) hy.le
-  have hsq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy0
   have hsqrt : 1 / 2 < Real.sqrt y := by
     have hsqrt0 := Real.sqrt_nonneg y
     nlinarith
   have hHsqrt : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (Real.sqrt y)) (n + 2)).PosDef := by
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ 2) k).re)
+      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ (2 : ℕ)) k).re)
         (n + 2)).PosDef
     simpa only [hsq] using hH
   rw [xiShiftedCanonicalAdmissionMassNormalizedAdaptiveMixedCompletedSourceAction,
@@ -62,14 +62,14 @@ theorem hasDerivAt_flux_eq_neg_literalMassSourceAction
       (fun v => xiShiftedCanonicalAdmissionCumulativeJacobiFlux v n)
       (-xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction (Real.sqrt y) n) y := by
   have hy0 : 0 ≤ y := le_trans (by norm_num) hy.le
-  have hsq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy0
   have hsqrt : 1 / 2 < Real.sqrt y := by
     have hsqrt0 := Real.sqrt_nonneg y
     nlinarith
   have hHsqrt : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (Real.sqrt y)) (n + 2)).PosDef := by
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ 2) k).re)
+      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ (2 : ℕ)) k).re)
         (n + 2)).PosDef
     simpa only [hsq] using hH
   have h := hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_neg_sourceAction
@@ -83,14 +83,14 @@ theorem literalMassSourceAction_pos
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     0 < xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction (Real.sqrt y) n := by
   have hy0 : 0 ≤ y := le_trans (by norm_num) hy.le
-  have hsq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy0
   have hsqrt : 1 / 2 < Real.sqrt y := by
     have hsqrt0 := Real.sqrt_nonneg y
     nlinarith
   have hHsqrt : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (Real.sqrt y)) (n + 2)).PosDef := by
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ 2) k).re)
+      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ (2 : ℕ)) k).re)
         (n + 2)).PosDef
     simpa only [hsq] using hH
   exact xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction_pos hsqrt hn hHsqrt
@@ -193,19 +193,19 @@ theorem dimensionlessCumulativeJacobiFlux_eq_square_mul_actual
     (hN : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 4)).PosDef)
     (hA : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 4)).PosDef) :
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 4)).PosDef) :
     dimensionlessCumulativeJacobiFlux w n =
-      w ^ 2 * xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n := by
+      w ^ (2 : ℕ) * xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n := by
   have hsum := normalizedAlpha_sum_eq_square_mul_actualAlpha_sum hw n hN hA
   have hNn : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 3)).PosDef :=
     momentHankel_posDef_of_le (by omega) hN
   have hAn : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 3)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 3)).PosDef :=
     momentHankel_posDef_of_le (by omega) hA
   have halpha := normalizedAlpha_eq_square_mul_actualAlpha hw n hNn hAn
   have hAtrace : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef :=
     momentHankel_posDef_of_le (by omega) hA
   rw [dimensionlessCumulativeJacobiFlux,
     xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_trace hn hAtrace,
@@ -216,10 +216,10 @@ theorem dimensionlessCumulativeJacobiFlux_eq_square_mul_actual
 theorem tendsto_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_squareParam_zero
     {n : ℕ} (hn : 0 < n) :
     Tendsto
-      (fun w : ℝ => xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n)
+      (fun w : ℝ => xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n)
       atTop (nhds 0) := by
   have hdim := tendsto_dimensionlessCumulativeJacobiFlux n
-  have hinv : Tendsto (fun w : ℝ => (w ^ 2)⁻¹) atTop (nhds 0) :=
+  have hinv : Tendsto (fun w : ℝ => (w ^ (2 : ℕ))⁻¹) atTop (nhds 0) :=
     tendsto_inv_atTop_zero.comp (tendsto_pow_atTop (by omega : 2 ≠ 0))
   have hprod := hdim.mul hinv
   rw [mul_zero] at hprod

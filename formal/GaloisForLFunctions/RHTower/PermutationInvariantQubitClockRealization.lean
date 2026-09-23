@@ -337,7 +337,7 @@ def symmetricInterpolatedQubitProbability
   ‖inner ℂ
       (symmetricOccupationKet n (interpolatedWeight n θ))
       (symmetricOccupationKetAt
-        T n (interpolatedWeight n θ) t)‖ ^ 2
+        T n (interpolatedWeight n θ) t)‖ ^ (2 : ℕ)
 
 theorem symmetricInterpolatedQubitProbability_eq
     {T : ℝ} (hT : 0 < T) {n : ℕ}

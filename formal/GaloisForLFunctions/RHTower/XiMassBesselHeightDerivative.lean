@@ -28,8 +28,8 @@ noncomputable section
 
 /-- The Bessel side as a function of a complex height. -/
 def xiMassBesselHeightSide (a : ℝ) (τ w : ℂ) : ℂ :=
-  2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ 2 + w ^ 2)
-    * HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + w ^ 2))
+  2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
+    * HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))
 
 theorem xiMassBesselHeightSide_ofReal (a h : ℝ) (τ : ℂ) :
     xiMassBesselHeightSide a τ (h : ℂ) = xiMassBesselSide a h τ := rfl
@@ -37,64 +37,64 @@ theorem xiMassBesselHeightSide_ofReal (a h : ℝ) (τ : ℂ) :
 /-- The closed height derivative of the Bessel side. -/
 def xiMassBesselHeightDeriv (a : ℝ) (τ w : ℂ) : ℂ :=
   2 * (a : ℂ) * τ * w
-    * ((a : ℂ) * HTGeometry.besselK1CDeriv ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + w ^ 2))
-        * HTGeometry.csqrt (τ ^ 2 + w ^ 2)
-      - HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + w ^ 2)))
-    / HTGeometry.csqrt (τ ^ 2 + w ^ 2) ^ 3
+    * ((a : ℂ) * HTGeometry.besselK1CDeriv ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))
+        * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
+      - HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))))
+    / HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) ^ (3 : ℕ)
 
 /-- **The height derivative of the Bessel side.** -/
 theorem hasDerivAt_xiMassBesselHeightSide {a : ℝ} {τ w : ℂ} (ha : 0 < a)
-    (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+    (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     HasDerivAt (xiMassBesselHeightSide a τ) (xiMassBesselHeightDeriv a τ w) w := by
-  have hzne : HTGeometry.csqrt (τ ^ 2 + w ^ 2) ≠ 0 := HTGeometry.csqrt_ne_zero hw
-  have hre : 0 < ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + w ^ 2)).re := by
-    have hval : ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + w ^ 2)).re
-        = a * HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) := by
+  have hzne : HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) ≠ 0 := HTGeometry.csqrt_ne_zero hw
+  have hre : 0 < ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))).re := by
+    have hval : ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))).re
+        = a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) := by
       rw [Complex.mul_re, HTGeometry.csqrt_re]
       simp
     rw [hval]
     exact mul_pos ha (HTGeometry.csqrtRe_pos hw)
-  have hq : HasDerivAt (fun v : ℂ => τ ^ 2 + v ^ 2) (2 * w) w := by
-    have h1 := (hasDerivAt_pow 2 w).const_add (τ ^ 2)
+  have hq : HasDerivAt (fun v : ℂ => τ ^ (2 : ℕ) + v ^ (2 : ℕ)) (2 * w) w := by
+    have h1 := (hasDerivAt_pow 2 w).const_add (τ ^ (2 : ℕ))
     simpa using h1
-  have hz : HasDerivAt (fun v : ℂ => HTGeometry.csqrt (τ ^ 2 + v ^ 2))
-      ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)) w := by
-    have h1 : HasDerivAt (HTGeometry.csqrt ∘ fun v : ℂ => τ ^ 2 + v ^ 2)
-        ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)) w :=
+  have hz : HasDerivAt (fun v : ℂ => HTGeometry.csqrt (τ ^ (2 : ℕ) + v ^ (2 : ℕ)))
+      ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)) w := by
+    have h1 : HasDerivAt (HTGeometry.csqrt ∘ fun v : ℂ => τ ^ (2 : ℕ) + v ^ (2 : ℕ))
+        ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)) w :=
       (HTGeometry.hasStrictDerivAt_csqrt hw).hasDerivAt.comp w hq
     exact h1
   have hconst : HasDerivAt (fun _ : ℂ => 2 * (a : ℂ) * τ) 0 w := hasDerivAt_const w _
-  have hdiv : HasDerivAt (fun v : ℂ => 2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ 2 + v ^ 2))
-      ((0 * HTGeometry.csqrt (τ ^ 2 + w ^ 2)
-        - 2 * (a : ℂ) * τ * ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)))
-        / HTGeometry.csqrt (τ ^ 2 + w ^ 2) ^ 2) w := by
+  have hdiv : HasDerivAt (fun v : ℂ => 2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ (2 : ℕ) + v ^ (2 : ℕ)))
+      ((0 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
+        - 2 * (a : ℂ) * τ * ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)))
+        / HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) ^ (2 : ℕ)) w := by
     have h1 : HasDerivAt ((fun _ : ℂ => 2 * (a : ℂ) * τ)
-        / fun v : ℂ => HTGeometry.csqrt (τ ^ 2 + v ^ 2))
-        ((0 * HTGeometry.csqrt (τ ^ 2 + w ^ 2)
-          - 2 * (a : ℂ) * τ * ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)))
-          / HTGeometry.csqrt (τ ^ 2 + w ^ 2) ^ 2) w :=
+        / fun v : ℂ => HTGeometry.csqrt (τ ^ (2 : ℕ) + v ^ (2 : ℕ)))
+        ((0 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
+          - 2 * (a : ℂ) * τ * ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)))
+          / HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) ^ (2 : ℕ)) w :=
       hconst.div hz hzne
     exact h1
-  have hinner : HasDerivAt (fun v : ℂ => (a : ℂ) * HTGeometry.csqrt (τ ^ 2 + v ^ 2))
-      ((a : ℂ) * ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w))) w := hz.const_mul _
+  have hinner : HasDerivAt (fun v : ℂ => (a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + v ^ (2 : ℕ)))
+      ((a : ℂ) * ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w))) w := hz.const_mul _
   have hbes : HasDerivAt
-      (fun v : ℂ => HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + v ^ 2)))
-      (HTGeometry.besselK1CDeriv ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + w ^ 2))
-        * ((a : ℂ) * ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)))) w := by
+      (fun v : ℂ => HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + v ^ (2 : ℕ))))
+      (HTGeometry.besselK1CDeriv ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))
+        * ((a : ℂ) * ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)))) w := by
     have h1 : HasDerivAt (HTGeometry.besselK1C
-        ∘ fun v : ℂ => (a : ℂ) * HTGeometry.csqrt (τ ^ 2 + v ^ 2))
-        (HTGeometry.besselK1CDeriv ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + w ^ 2))
-          * ((a : ℂ) * ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)))) w :=
+        ∘ fun v : ℂ => (a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + v ^ (2 : ℕ)))
+        (HTGeometry.besselK1CDeriv ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))
+          * ((a : ℂ) * ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)))) w :=
       (HTGeometry.hasDerivAt_besselK1C_deriv hre).comp w hinner
     exact h1
   have hprod := hdiv.mul hbes
-  have heq : (0 * HTGeometry.csqrt (τ ^ 2 + w ^ 2)
-        - 2 * (a : ℂ) * τ * ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w)))
-        / HTGeometry.csqrt (τ ^ 2 + w ^ 2) ^ 2
-      * HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + w ^ 2))
-      + 2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ 2 + w ^ 2)
-        * (HTGeometry.besselK1CDeriv ((a : ℂ) * HTGeometry.csqrt (τ ^ 2 + w ^ 2))
-          * ((a : ℂ) * ((2 * HTGeometry.csqrt (τ ^ 2 + w ^ 2))⁻¹ * (2 * w))))
+  have heq : (0 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
+        - 2 * (a : ℂ) * τ * ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w)))
+        / HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) ^ (2 : ℕ)
+      * HTGeometry.besselK1C ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))
+      + 2 * (a : ℂ) * τ / HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
+        * (HTGeometry.besselK1CDeriv ((a : ℂ) * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))
+          * ((a : ℂ) * ((2 * HTGeometry.csqrt (τ ^ (2 : ℕ) + w ^ (2 : ℕ)))⁻¹ * (2 * w))))
       = xiMassBesselHeightDeriv a τ w := by
     rw [xiMassBesselHeightDeriv]
     field_simp
@@ -111,7 +111,7 @@ theorem norm_besselHeightDerivCore_le {a t E : ℝ} {τ z : ℂ} (ha : 0 < a) (h
     (hE2 : ‖HTGeometry.besselK1CDeriv ((a : ℂ) * z)‖ ≤ E) :
     ‖2 * (a : ℂ) * τ * (t : ℂ)
         * ((a : ℂ) * HTGeometry.besselK1CDeriv ((a : ℂ) * z) * z
-          - HTGeometry.besselK1C ((a : ℂ) * z)) / z ^ 3‖
+          - HTGeometry.besselK1C ((a : ℂ) * z)) / z ^ (3 : ℕ)‖
       ≤ 2 * a * (‖τ‖ / ‖z‖) * (|t| / ‖z‖) * (a + 1 / z.re) * E := by
   have hzn : (0 : ℝ) < ‖z‖ := lt_of_lt_of_le hz (Complex.re_le_norm z)
   have hnum : ‖(a : ℂ) * HTGeometry.besselK1CDeriv ((a : ℂ) * z) * z
@@ -126,13 +126,13 @@ theorem norm_besselHeightDerivCore_le {a t E : ℝ} {τ z : ℂ} (ha : 0 < a) (h
     nlinarith [h2, hE1]
   have hsplit : ‖2 * (a : ℂ) * τ * (t : ℂ)
       * ((a : ℂ) * HTGeometry.besselK1CDeriv ((a : ℂ) * z) * z
-        - HTGeometry.besselK1C ((a : ℂ) * z)) / z ^ 3‖
+        - HTGeometry.besselK1C ((a : ℂ) * z)) / z ^ (3 : ℕ)‖
       = 2 * a * ‖τ‖ * |t| * ‖(a : ℂ) * HTGeometry.besselK1CDeriv ((a : ℂ) * z) * z
-          - HTGeometry.besselK1C ((a : ℂ) * z)‖ / ‖z‖ ^ 3 := by
+          - HTGeometry.besselK1C ((a : ℂ) * z)‖ / ‖z‖ ^ (3 : ℕ) := by
     have h2 : ‖(2 : ℂ)‖ = (2 : ℝ) := by norm_num
     rw [norm_div, norm_pow, norm_mul, norm_mul, norm_mul, norm_mul, h2, Complex.norm_real,
       Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos ha]
-  rw [hsplit, div_le_iff₀ (by positivity : (0 : ℝ) < ‖z‖ ^ 3)]
+  rw [hsplit, div_le_iff₀ (by positivity : (0 : ℝ) < ‖z‖ ^ (3 : ℕ))]
   have hcoef : (0 : ℝ) ≤ 2 * a * ‖τ‖ * |t| := by positivity
   have hstep := mul_le_mul_of_nonneg_left hnum hcoef
   refine hstep.trans ?_
@@ -142,7 +142,7 @@ theorem norm_besselHeightDerivCore_le {a t E : ℝ} {τ z : ℂ} (ha : 0 < a) (h
       field_simp
     rw [hd]
     linarith
-  have hgoal : 2 * a * (‖τ‖ / ‖z‖) * (|t| / ‖z‖) * (a + 1 / z.re) * E * ‖z‖ ^ 3
+  have hgoal : 2 * a * (‖τ‖ / ‖z‖) * (|t| / ‖z‖) * (a + 1 / z.re) * E * ‖z‖ ^ (3 : ℕ)
       = 2 * a * ‖τ‖ * |t| * (((a + 1 / z.re) * ‖z‖) * E) := by
     field_simp
   rw [hgoal]

@@ -61,7 +61,7 @@ theorem inv_lcmPair (a b : ℕ) :
 /-- **The pair sum of inverse lcms.** -/
 theorem sum_inv_lcmPair_le {P : Finset ℕ} (hP : ∀ p ∈ P, 0 < p) :
     ∑ a ∈ P, ∑ b ∈ P, (1 : ℝ) / ((lcmPair a b : ℕ) : ℝ)
-      ≤ (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ 2 + ∑ p ∈ P, (1 : ℝ) / (p : ℝ) := by
+      ≤ (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ (2 : ℕ) + ∑ p ∈ P, (1 : ℝ) / (p : ℝ) := by
   classical
   have hsplit : ∀ a ∈ P, ∑ b ∈ P, (1 : ℝ) / ((lcmPair a b : ℕ) : ℝ)
       ≤ (1 : ℝ) / (a : ℝ) + (1 : ℝ) / (a : ℝ) * ∑ p ∈ P, (1 : ℝ) / (p : ℝ) := by
@@ -88,7 +88,7 @@ theorem sum_inv_lcmPair_le {P : Finset ℕ} (hP : ∀ p ∈ P, 0 < p) :
   refine le_trans (Finset.sum_le_sum hsplit) ?_
   rw [Finset.sum_add_distrib, ← Finset.sum_mul]
   have hsq : (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ p ∈ P, (1 : ℝ) / (p : ℝ))
-      = (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ 2 := by ring
+      = (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ (2 : ℕ) := by ring
   linarith [hsq]
 
 /-- The modulus attached to a quadruple of primes drawn from two disjoint sets. -/
@@ -150,9 +150,9 @@ theorem sum_indicator_dvd_le (L M : ℕ) :
 theorem sum_sq_mul_sq_primeFactorsIn_le {P Q : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
     (hQ : ∀ q ∈ Q, q.Prime) (hPQ : Disjoint P Q) (M : ℕ) :
     ∑ n ∈ Finset.Icc 1 M,
-        ((primeFactorsIn P n).card : ℝ) ^ 2 * ((primeFactorsIn Q n).card : ℝ) ^ 2
-      ≤ (M : ℝ) * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ 2 + ∑ p ∈ P, (1 : ℝ) / (p : ℝ))
-          * ((∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) ^ 2 + ∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) := by
+        ((primeFactorsIn P n).card : ℝ) ^ (2 : ℕ) * ((primeFactorsIn Q n).card : ℝ) ^ (2 : ℕ)
+      ≤ (M : ℝ) * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ (2 : ℕ) + ∑ p ∈ P, (1 : ℝ) / (p : ℝ))
+          * ((∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) ^ (2 : ℕ) + ∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) := by
   classical
   have hne : ∀ p ∈ P, ∀ q ∈ Q, p ≠ q := by
     intro p hp q hq hpq
@@ -160,7 +160,7 @@ theorem sum_sq_mul_sq_primeFactorsIn_le {P Q : Finset ℕ} (hP : ∀ p ∈ P, p.
     exact (Finset.disjoint_left.1 hPQ hp) hq
   -- expand the fourth power as a quadruple sum
   have hexp : ∀ n : ℕ,
-      ((primeFactorsIn P n).card : ℝ) ^ 2 * ((primeFactorsIn Q n).card : ℝ) ^ 2
+      ((primeFactorsIn P n).card : ℝ) ^ (2 : ℕ) * ((primeFactorsIn Q n).card : ℝ) ^ (2 : ℕ)
         = ∑ p₁ ∈ P, ∑ p₂ ∈ P, ∑ q₁ ∈ Q, ∑ q₂ ∈ Q,
             ((if p₁ ∣ n then (1 : ℝ) else 0) * (if p₂ ∣ n then (1 : ℝ) else 0))
               * ((if q₁ ∣ n then (1 : ℝ) else 0) * (if q₂ ∣ n then (1 : ℝ) else 0)) := by
@@ -175,7 +175,7 @@ theorem sum_sq_mul_sq_primeFactorsIn_le {P Q : Finset ℕ} (hP : ∀ p ∈ P, p.
     refine Finset.sum_congr rfl fun q₁ _ => ?_
     rw [Finset.mul_sum]
   calc ∑ n ∈ Finset.Icc 1 M,
-        ((primeFactorsIn P n).card : ℝ) ^ 2 * ((primeFactorsIn Q n).card : ℝ) ^ 2
+        ((primeFactorsIn P n).card : ℝ) ^ (2 : ℕ) * ((primeFactorsIn Q n).card : ℝ) ^ (2 : ℕ)
       = ∑ n ∈ Finset.Icc 1 M, ∑ p₁ ∈ P, ∑ p₂ ∈ P, ∑ q₁ ∈ Q, ∑ q₂ ∈ Q,
           ((if p₁ ∣ n then (1 : ℝ) else 0) * (if p₂ ∣ n then (1 : ℝ) else 0))
             * ((if q₁ ∣ n then (1 : ℝ) else 0) * (if q₂ ∣ n then (1 : ℝ) else 0)) :=
@@ -236,8 +236,8 @@ theorem sum_sq_mul_sq_primeFactorsIn_le {P Q : Finset ℕ} (hP : ∀ p ∈ P, p.
           refine Finset.sum_congr rfl fun p₁ _ => ?_
           rw [Finset.mul_sum]
         rw [hstep1, hstep2, hstep3]
-    _ ≤ (M : ℝ) * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ 2 + ∑ p ∈ P, (1 : ℝ) / (p : ℝ))
-          * ((∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) ^ 2 + ∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) := by
+    _ ≤ (M : ℝ) * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ (2 : ℕ) + ∑ p ∈ P, (1 : ℝ) / (p : ℝ))
+          * ((∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) ^ (2 : ℕ) + ∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) := by
         have hPb := sum_inv_lcmPair_le (P := P) fun p hp => (hP p hp).pos
         have hQb := sum_inv_lcmPair_le (P := Q) fun q hq => (hQ q hq).pos
         have hPnn : (0 : ℝ) ≤ ∑ p₁ ∈ P, ∑ p₂ ∈ P, (1 : ℝ) / ((lcmPair p₁ p₂ : ℕ) : ℝ) :=
@@ -245,12 +245,12 @@ theorem sum_sq_mul_sq_primeFactorsIn_le {P Q : Finset ℕ} (hP : ∀ p ∈ P, p.
         have hQnn : (0 : ℝ) ≤ ∑ q₁ ∈ Q, ∑ q₂ ∈ Q, (1 : ℝ) / ((lcmPair q₁ q₂ : ℕ) : ℝ) :=
           Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => by positivity
         have hM : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg _
-        have hQ0 : (0 : ℝ) ≤ (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) ^ 2 + ∑ q ∈ Q, (1 : ℝ) / (q : ℝ) := by
+        have hQ0 : (0 : ℝ) ≤ (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) ^ (2 : ℕ) + ∑ q ∈ Q, (1 : ℝ) / (q : ℝ) := by
           have : (0 : ℝ) ≤ ∑ q ∈ Q, (1 : ℝ) / (q : ℝ) :=
             Finset.sum_nonneg fun _ _ => by positivity
           positivity
         have h1 : (M : ℝ) * (∑ p₁ ∈ P, ∑ p₂ ∈ P, (1 : ℝ) / ((lcmPair p₁ p₂ : ℕ) : ℝ))
-            ≤ (M : ℝ) * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ 2 + ∑ p ∈ P, (1 : ℝ) / (p : ℝ)) :=
+            ≤ (M : ℝ) * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) ^ (2 : ℕ) + ∑ p ∈ P, (1 : ℝ) / (p : ℝ)) :=
           mul_le_mul_of_nonneg_left hPb hM
         exact mul_le_mul h1 hQb hQnn (by positivity)
 
@@ -332,7 +332,7 @@ theorem sum_sq_joint_deviation_le {P Q : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
     (hQ : ∀ q ∈ Q, q.Prime) (hPQ : Disjoint P Q) (M : ℕ) :
     ∑ n ∈ Finset.Icc 1 M,
         (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ)
-          - (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ 2
+          - (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ (2 : ℕ)
       ≤ (M : ℝ) * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)))
           * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) + (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) + 1)
         + 2 * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)))
@@ -343,11 +343,11 @@ theorem sum_sq_joint_deviation_le {P Q : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
   have hWP0 : (0 : ℝ) ≤ WP := by rw [hWP]; exact Finset.sum_nonneg fun _ _ => by positivity
   have hWQ0 : (0 : ℝ) ≤ WQ := by rw [hWQ]; exact Finset.sum_nonneg fun _ _ => by positivity
   have hexpand : ∀ n : ℕ,
-      (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ) - WP * WQ) ^ 2
-        = ((primeFactorsIn P n).card : ℝ) ^ 2 * ((primeFactorsIn Q n).card : ℝ) ^ 2
+      (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ) - WP * WQ) ^ (2 : ℕ)
+        = ((primeFactorsIn P n).card : ℝ) ^ (2 : ℕ) * ((primeFactorsIn Q n).card : ℝ) ^ (2 : ℕ)
           - 2 * (WP * WQ)
             * (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ))
-          + (WP * WQ) ^ 2 := by
+          + (WP * WQ) ^ (2 : ℕ) := by
     intro n; ring
   rw [Finset.sum_congr rfl fun n _ => hexpand n, Finset.sum_add_distrib, Finset.sum_sub_distrib,
     Finset.sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel]

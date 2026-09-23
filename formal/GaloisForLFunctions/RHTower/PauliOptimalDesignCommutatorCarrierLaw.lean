@@ -104,11 +104,11 @@ theorem stdGaussian_twoLocalPauli_measure_physicalOptimalDesignCommutatorMass_ge
       Real.exp (-τ) *
         ∑ c, physicalPauliChoiOptimalDesignWeight r U c *
           Real.exp
-            (-(gaussianIntervalActivationMass ^ 2 / 2) *
+            (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
               (((n - 1 : ℕ) : ℝ) *
                 (1 - ‖Matrix.trace
-                  (U c : Matrix (QubitRegister n) (QubitRegister n) ℂ)‖ ^ 2 /
-                  ((2 : ℝ) ^ n) ^ 2))) := by
+                  (U c : Matrix (QubitRegister n) (QubitRegister n) ℂ)‖ ^ (2 : ℕ) /
+                  ((2 : ℝ) ^ n) ^ (2 : ℕ)))) := by
   let w := physicalPauliChoiOptimalDesignWeight r U
   have hw : w ∈ stdSimplex ℝ C :=
     physicalPauliChoiOptimalDesignWeight_mem_stdSimplex r U

@@ -46,7 +46,7 @@ theorem shiftedWaveProbe_multiplier_bound (J : V →L[ℂ] H) (hJ : ∀ v, ‖J 
 theorem shiftedWaveProbe_hardy (J : V →L[ℂ] H) (hJ : ∀ v, ‖J v‖ ≤ ‖v‖)
     (F : H) (ℓ : H →L[ℂ] ℂ) (δ : ℝ) (hδ : 0 < δ) :
     IsHalfPlaneHardy (shiftedWaveProbe J F ℓ δ)
-      (((‖ℓ‖*‖F‖)/δ)^2 * (1/(2*δ))) := by
+      (((‖ℓ‖*‖F‖)/δ)^(2 : ℕ) * (1/(2*δ))) := by
   have hi := isHalfPlaneHardy_inv_shift (c := (δ:ℂ)) (by simpa using hδ)
   have hg : DifferentiableOn ℂ (fun w : ℂ => (w+δ)*shiftedWaveProbe J F ℓ δ w)
       {w : ℂ | 0 < w.re} := by

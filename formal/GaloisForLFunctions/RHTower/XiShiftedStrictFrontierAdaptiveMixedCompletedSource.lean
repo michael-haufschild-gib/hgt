@@ -28,7 +28,7 @@ aggregation and carries the alternating contact sign. -/
 def XiShiftedAdaptiveMixedCompletedFirstContactSourceLaw
     (w : ℝ) (n d : ℕ) (c : Fin (n + 1) → ℝ) : Prop :=
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
-  let delta := xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d)
+  let delta := xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d)
   (∃ r : ℕ, 0 < r ∧ d = 2 * r ∧
       xiShiftedAdaptiveMixedCompletedArithmeticSource w (P * X ^ (r - 1)) =
         ((2 * n + d : ℕ) : ℝ) * delta ∧
@@ -49,9 +49,9 @@ theorem xiShifted_adaptiveMixedCompletedFirstContactSourceLaw
     {w : ℝ} (hw : 1 / 2 < w) {n d : ℕ} (hn : 0 < n) (hd : 0 < d)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + d,
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0)
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0)
     (hsigned : 0 < (-1 : ℝ) ^ d *
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d)) :
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d)) :
     XiShiftedAdaptiveMixedCompletedFirstContactSourceLaw w n d c := by
   dsimp only [XiShiftedAdaptiveMixedCompletedFirstContactSourceLaw]
   rcases Nat.even_or_odd d with ⟨r, hr⟩ | ⟨r, hr⟩
@@ -69,10 +69,10 @@ theorem xiShifted_adaptiveMixedCompletedFirstContactSourceLaw
         xiShiftedAdaptiveMixedCompletedArithmeticSource w
             (HTGeometry.finiteHankelNullMonicPolynomial c * X ^ (r - 1)) =
             2 * ((n + r : ℕ) : ℝ) *
-              xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + 2 * r) :=
+              xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + 2 * r) :=
           hsource
         _ = ((2 * n + d : ℕ) : ℝ) *
-              xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d) := by
+              xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d) := by
           rw [hdform]
           push_cast
           ring
@@ -80,7 +80,7 @@ theorem xiShifted_adaptiveMixedCompletedFirstContactSourceLaw
       rw [show xiShiftedAdaptiveMixedCompletedArithmeticSource w
           (HTGeometry.finiteHankelNullMonicPolynomial c * X ^ (r - 1)) =
           ((2 * n + d : ℕ) : ℝ) *
-            xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d) by
+            xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d) by
         have hsource :=
           xiShiftedAdaptiveMixedCompletedArithmeticSource_firstEvenContact_eq_evenPadeDefect
             hw hrpos c hlast (by
@@ -89,15 +89,15 @@ theorem xiShifted_adaptiveMixedCompletedFirstContactSourceLaw
         dsimp only at hsource
         calc
           _ = 2 * ((n + r : ℕ) : ℝ) *
-                xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + 2 * r) := hsource
+                xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + 2 * r) := hsource
           _ = _ := by rw [hdform]; push_cast; ring]
       calc
         (-1 : ℝ) ^ d *
             (((2 * n + d : ℕ) : ℝ) *
-              xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d)) =
+              xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d)) =
             ((2 * n + d : ℕ) : ℝ) *
               ((-1 : ℝ) ^ d *
-                xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d)) := by ring
+                xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d)) := by ring
         _ > 0 := mul_pos hfactor hsigned
   · have hdform : d = 2 * r + 1 := by omega
     right
@@ -120,10 +120,10 @@ theorem xiShifted_adaptiveMixedCompletedFirstContactSourceLaw
       rw [hsource]
       calc
         (-1 : ℝ) ^ d *
-            (2 * xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+            (2 * xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
               (2 * n + (2 * r + 1))) =
             2 * ((-1 : ℝ) ^ d *
-              xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d)) := by
+              xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d)) := by
           rw [hdform]
           ring
         _ > 0 := mul_pos (by norm_num) hsigned
@@ -155,7 +155,7 @@ theorem xiShiftedStrictFrontier_adaptiveMixedCompletedContactLaw
   have hy0 : 0 ≤ y := by
     dsimp only [y]
     linarith
-  have hsq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy0
   have hsqrt : 1 / 2 < Real.sqrt y := by
     have hsqrt0 := Real.sqrt_nonneg y
     change 1 / 4 < y at hphysical
@@ -163,13 +163,13 @@ theorem xiShiftedStrictFrontier_adaptiveMixedCompletedContactLaw
   have hlast : c (Fin.last m) ≠ 0 := by
     simp [c, xiShiftedStrictFrontierNullVector, m]
   have hzero' : ∀ k < 2 * m + d,
-      xiShiftedHankelBoundaryPadeDefect ((Real.sqrt y) ^ 2) c k = 0 := by
+      xiShiftedHankelBoundaryPadeDefect ((Real.sqrt y) ^ (2 : ℕ)) c k = 0 := by
     intro k hk
     rw [hsq]
     simpa only [m, c, xiShiftedStrictFrontierPadeDefect, y,
       xiShiftedStrictFrontierNullVector] using hzero k hk
   have hsigned' : 0 < (-1 : ℝ) ^ d *
-      xiShiftedHankelBoundaryPadeDefect ((Real.sqrt y) ^ 2) c (2 * m + d) := by
+      xiShiftedHankelBoundaryPadeDefect ((Real.sqrt y) ^ (2 : ℕ)) c (2 * m + d) := by
     rw [hsq]
     simpa only [m, c, xiShiftedStrictFrontierPadeDefect, y,
       xiShiftedStrictFrontierNullVector] using hsigned

@@ -228,8 +228,8 @@ two-spin partition and the synchronized two-spin cluster. -/
 theorem leeYangPairBlock_eq_fkMixture
     (c : FerromagneticCoupling) (z : ℂ) :
     leeYangPairBlock c.coefficient z =
-      (c.coefficient : ℂ) * (1 + z) ^ 2 +
-        ((1 - c.coefficient : ℝ) : ℂ) * (1 + z ^ 2) := by
+      (c.coefficient : ℂ) * (1 + z) ^ (2 : ℕ) +
+        ((1 - c.coefficient : ℝ) : ℂ) * (1 + z ^ (2 : ℕ)) := by
   simp only [leeYangPairBlock]
   push_cast
   ring

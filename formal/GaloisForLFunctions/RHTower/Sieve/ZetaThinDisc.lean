@@ -19,54 +19,54 @@ open Complex Metric
 
 /-- The real part of the thin disc's centre. -/
 theorem thin_centre_re (γ L : ℝ) :
-    ((((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).re = 1 + 1 / L ^ 2 := by
+    ((((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).re = 1 + 1 / L ^ (2 : ℕ) := by
   simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
     Complex.I_re, Complex.I_im]
   ring
 
 /-- The imaginary part of the thin disc's centre. -/
 theorem thin_centre_im (γ L : ℝ) :
-    ((((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).im = γ := by
+    ((((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).im = γ := by
   simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
     Complex.I_re, Complex.I_im]
   ring
 
 /-- Real parts on the thin disc. -/
 theorem thin_disc_re {γ L : ℝ} {w : ℂ}
-    (hw : w ∈ ball (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ 2)) :
-    1 - 2 / L ^ 2 < w.re := by
-  have hd : ‖w - (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ < 3 / L ^ 2 := by
+    (hw : w ∈ ball (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ (2 : ℕ))) :
+    1 - 2 / L ^ (2 : ℕ) < w.re := by
+  have hd : ‖w - (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ < 3 / L ^ (2 : ℕ) := by
     simpa [dist_eq_norm] using hw
-  have h1 : |(w - (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).re|
-      ≤ ‖w - (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ := Complex.abs_re_le_norm _
-  have h2 : (w - (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).re
-      = w.re - (1 + 1 / L ^ 2) := by
+  have h1 : |(w - (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).re|
+      ≤ ‖w - (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ := Complex.abs_re_le_norm _
+  have h2 : (w - (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).re
+      = w.re - (1 + 1 / L ^ (2 : ℕ)) := by
     rw [Complex.sub_re, thin_centre_re]
   rw [h2] at h1
   have h3 := abs_lt.mp (lt_of_le_of_lt h1 hd)
-  have h4 : (3 : ℝ) / L ^ 2 = 1 / L ^ 2 + 2 / L ^ 2 := by ring
+  have h4 : (3 : ℝ) / L ^ (2 : ℕ) = 1 / L ^ (2 : ℕ) + 2 / L ^ (2 : ℕ) := by ring
   linarith [h3.1, h4]
 
 /-- Heights on the thin disc. -/
 theorem thin_disc_im {γ L : ℝ} (hL3 : 3 ≤ L) {w : ℂ}
-    (hw : w ∈ ball (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ 2)) :
+    (hw : w ∈ ball (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ (2 : ℕ))) :
     |w.im - γ| < 3 := by
   have hL0 : (0 : ℝ) < L := by linarith
-  have hd : ‖w - (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ < 3 / L ^ 2 := by
+  have hd : ‖w - (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ < 3 / L ^ (2 : ℕ) := by
     simpa [dist_eq_norm] using hw
-  have h1 : |(w - (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).im|
-      ≤ ‖w - (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ := Complex.abs_im_le_norm _
-  have h2 : (w - (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).im = w.im - γ := by
+  have h1 : |(w - (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).im|
+      ≤ ‖w - (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)‖ := Complex.abs_im_le_norm _
+  have h2 : (w - (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).im = w.im - γ := by
     rw [Complex.sub_im, thin_centre_im]
   rw [h2] at h1
-  have hRle : (3 : ℝ) / L ^ 2 ≤ 3 := by
+  have hRle : (3 : ℝ) / L ^ (2 : ℕ) ≤ 3 := by
     rw [div_le_iff₀ (by positivity)]
     nlinarith [hL3]
   linarith
 
 /-- The height range on the thin disc. -/
 theorem thin_disc_height {γ L T₂ : ℝ} (hL3 : 3 ≤ L) (hγ4 : 5 ≤ |γ|) (hγT₂ : T₂ + 3 ≤ |γ|)
-    {w : ℂ} (hw : w ∈ ball (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ 2)) :
+    {w : ℂ} (hw : w ∈ ball (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ (2 : ℕ))) :
     T₂ ≤ |w.im| ∧ |w.im| ≤ 2 * |γ| := by
   have h := abs_le.mp (le_of_lt (thin_disc_im hL3 hw))
   constructor
@@ -79,7 +79,7 @@ theorem thin_disc_height {γ L T₂ : ℝ} (hL3 : 3 ≤ L) (hγ4 : 5 ≤ |γ|) (
 
 /-- The thin disc avoids the pole. -/
 theorem thin_disc_ne_one {γ L : ℝ} (hL3 : 3 ≤ L) (hγ4 : 5 ≤ |γ|) {w : ℂ}
-    (hw : w ∈ ball (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ 2)) :
+    (hw : w ∈ ball (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ (2 : ℕ))) :
     w ≠ 1 := by
   intro hcon
   have h := (thin_disc_height (T₂ := 1) hL3 hγ4 (by linarith) hw).1
@@ -89,7 +89,7 @@ theorem thin_disc_ne_one {γ L : ℝ} (hL3 : 3 ≤ L) (hγ4 : 5 ≤ |γ|) {w : �
 /-- **Analyticity on the thin disc.** -/
 theorem thin_disc_analytic {γ L : ℝ} (hL3 : 3 ≤ L) (hγ4 : 5 ≤ |γ|) :
     AnalyticOnNhd ℂ riemannZeta
-      (ball (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ 2)) :=
+      (ball (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ (2 : ℕ))) :=
   (differentiableOn_riemannZeta_of_ne_one fun _ hw => thin_disc_ne_one hL3 hγ4 hw).analyticOnNhd
     isOpen_ball
 
@@ -99,7 +99,7 @@ theorem thin_disc_zerofree {c T₂ γ L : ℝ} (hc0 : 0 < c)
       riemannZeta ((β : ℂ) + (γ' : ℂ) * Complex.I) ≠ 0)
     (hL3 : 3 ≤ L) (hLc : 5 / c ≤ L) (hγ4 : 5 ≤ |γ|) (hγT₂ : T₂ + 3 ≤ |γ|)
     (hLdef : L = Real.log |γ|) {w : ℂ}
-    (hw : w ∈ ball (((1 + 1 / L ^ 2 : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ 2)) :
+    (hw : w ∈ ball (((1 + 1 / L ^ (2 : ℕ) : ℝ) : ℂ) + (γ : ℂ) * Complex.I) (3 / L ^ (2 : ℕ))) :
     riemannZeta w ≠ 0 := by
   have hL0 : (0 : ℝ) < L := by linarith
   have hγ0 : (0 : ℝ) < |γ| := by linarith
@@ -123,7 +123,7 @@ theorem thin_disc_zerofree {c T₂ γ L : ℝ} (hc0 : 0 < c)
     exact Real.log_pos h1
   have hstep : c / (2 * L) ≤ c / Real.log |w.im| :=
     div_le_div_of_nonneg_left hc0.le hlogimpos hlogim
-  have htwo : 2 / L ^ 2 < c / (2 * L) := by
+  have htwo : 2 / L ^ (2 : ℕ) < c / (2 * L) := by
     rw [div_lt_div_iff₀ (by positivity) (by positivity)]
     nlinarith [hLc, hc0, hL0, hL3, (div_le_iff₀ hc0).mp hLc]
   have hre := thin_disc_re hw

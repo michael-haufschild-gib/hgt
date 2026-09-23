@@ -31,7 +31,7 @@ namespace RHTower
 theorem bandTransform_signedModeRadialData_R {a : ℝ} (ha : 0 < a) (n : ℕ)
     (hvalue : evenProlateSignedValue a n ≠ 0) (x : ℝ) :
     bandTransform (signedModeRadialBandwidth a) (signedModeRadialData a n).R x
-      = evenProlateSignedValue a n ^ 2 * (signedModeRadialData a n).R x := by
+      = evenProlateSignedValue a n ^ (2 : ℕ) * (signedModeRadialData a n).R x := by
   have hD := signedModeRadialData_isExact ha n hvalue
   have hRdef : (signedModeRadialData a n).R
       = prolateEndpointNormalize (signedModeRadialData a n).Phi := hD.2.2.2.2.1
@@ -51,7 +51,7 @@ theorem exists_bound_signedModeRadialData_R {a : ℝ} (ha : 0 < a) (n : ℕ)
     hD.2.2.2.2.2.1
   have hcont : Continuous (signedModeRadialData a n).R := hsm.continuous
   have hband := bandTransform_signedModeRadialData_R ha n hvalue
-  have hlam : evenProlateSignedValue a n ^ 2 ≠ 0 := pow_ne_zero 2 hvalue
+  have hlam : evenProlateSignedValue a n ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hvalue
   obtain ⟨C₀, hC₀0, hC₀⟩ := exists_bound_of_bandTransform_eigen hlam hcont hband
   obtain ⟨C₁, hC₁0, hC₁⟩ := exists_bound_deriv_of_bandTransform_eigen hlam hcont hband
   obtain ⟨C₂, hC₂0, hC₂⟩ := exists_bound_deriv2_of_bandTransform_eigen hlam hcont hband
@@ -153,7 +153,7 @@ theorem exists_bound_abs_signedMode_scaledSeparation_sub_rung {a : ℝ} (ha : 0 
     exact le_trans hstep (le_trans (le_max_right _ _) (le_max_right _ _))
   -- the exact prolate-to-oscillator identity
   have heq : ∀ x, hermiteSLAction u x + (c * (signedModeRadialData a n).s) * u x
-      = (x ^ 2 * u'' x + 2 * x * u' x) / c := by
+      = (x ^ (2 : ℕ) * u'' x + 2 * x * u' x) / c := by
     intro x
     have h := prolateHermiteRescale_radial_defect hc heig x
     rw [← hueq] at h
@@ -254,7 +254,7 @@ theorem abs_signedMode_scaledSeparation_sub_rung_le {a : ℝ} (ha : 0 < a) (n : 
     exact le_trans hstep (le_trans (le_max_right _ _) (le_max_right _ _))
   -- the exact prolate-to-oscillator identity
   have heq : ∀ x, hermiteSLAction u x + (c * (signedModeRadialData a n).s) * u x
-      = (x ^ 2 * u'' x + 2 * x * u' x) / c := by
+      = (x ^ (2 : ℕ) * u'' x + 2 * x * u' x) / c := by
     intro x
     have h := prolateHermiteRescale_radial_defect hc heig x
     rw [← hueq] at h

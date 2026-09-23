@@ -94,7 +94,7 @@ theorem exists_im_latticeLimitSymbol_ne_zero {d : ℕ} {c₀ κ : ℝ} {Q : Fins
       linarith [hupper]
     rw [hsum]
     have hsinh : 0 < Real.sinh (κ * (orbitLength q : ℝ)) := by
-      refine sinh_pos_of_pos ?_
+      refine sinh_pos_of_pos_suzukiHatanoNelsonWall ?_
       have hL : (0 : ℝ) < (orbitLength q : ℝ) := by linarith
       positivity
     have := hc q hq

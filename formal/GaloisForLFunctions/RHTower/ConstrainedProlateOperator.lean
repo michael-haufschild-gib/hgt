@@ -185,7 +185,7 @@ theorem norm_evenTimeBandFourier_le (a : ℝ) (f : evenSubspace) :
 
 theorem evenProlateLeakage_inner_eq (a : ℝ) (f : evenSubspace) :
     inner ℂ (evenProlateLeakage a f) f =
-      ((‖f‖ ^ 2 - ‖evenTimeBandFourier a f‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖f‖ ^ (2 : ℕ) - ‖evenTimeBandFourier a f‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [evenProlateLeakage, _root_.sub_apply,
     one_apply_eq_self, inner_sub_left, evenProlateConcentration]
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_left]
@@ -199,7 +199,7 @@ theorem evenProlateLeakage_isPositive (a : ℝ) :
       (evenProlateConcentration_isPositive a).isSymmetric
   intro f
   rw [ContinuousLinearMap.reApplyInnerSelf_apply, evenProlateLeakage_inner_eq]
-  change 0 ≤ ‖f‖ ^ 2 - ‖evenTimeBandFourier a f‖ ^ 2
+  change 0 ≤ ‖f‖ ^ (2 : ℕ) - ‖evenTimeBandFourier a f‖ ^ (2 : ℕ)
   have h := norm_evenTimeBandFourier_le a f
   nlinarith [norm_nonneg f, norm_nonneg (evenTimeBandFourier a f)]
 
@@ -308,7 +308,7 @@ constrained test vector. -/
 theorem constrainedProlateLeakage_inner_eq (a : ℝ)
     (f : constrainedProlateSubspace a) :
     inner ℂ (constrainedProlateLeakage a f) f =
-      ((‖f‖ ^ 2 - ‖evenTimeBandFourier a (f : evenSubspace)‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖f‖ ^ (2 : ℕ) - ‖evenTimeBandFourier a (f : evenSubspace)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [constrainedProlateLeakage_eq_compression]
   change inner ℂ
       ((constrainedProlateSubspace a).orthogonalProjectionOnto

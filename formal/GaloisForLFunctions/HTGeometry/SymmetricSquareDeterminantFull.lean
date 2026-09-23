@@ -371,7 +371,7 @@ theorem symmetricSquareMatrixGeneral_transvection_column_diag
     {i j : ι} (hij : i ≠ j) (c : R) :
     (fun p => symmetricSquareMatrixGeneral (Matrix.transvection i j c) p s(j, j)) =
       Pi.single s(j, j) 1 + (2 * c) • Pi.single s(i, j) 1 +
-        c ^ 2 • Pi.single s(i, i) 1 := by
+        c ^ (2 : ℕ) • Pi.single s(i, i) 1 := by
   change symmetricPairCoordinates
       (fun r => Matrix.transvection i j c r j)
       (fun r => Matrix.transvection i j c r j) = _

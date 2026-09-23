@@ -112,17 +112,17 @@ def kaiserPhysicalGridComplex {m : ℕ} (a : ℝ) (ha : 0 < a)
 /-- Pythagoras for the physical complex packet before applying the time-band operator. -/
 theorem norm_sq_kaiserPhysicalGridComplex {m : ℕ} {a : ℝ} (ha : 0 < a)
     (z : Fin m → ℂ) :
-    ‖kaiserPhysicalGridComplex a ha z‖ ^ 2 =
-      ‖kaiserPhysicalGridEven a ha (fun j => (z j).re)‖ ^ 2 +
-        ‖kaiserPhysicalGridEven a ha (fun j => (z j).im)‖ ^ 2 := by
+    ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) =
+      ‖kaiserPhysicalGridEven a ha (fun j => (z j).re)‖ ^ (2 : ℕ) +
+        ‖kaiserPhysicalGridEven a ha (fun j => (z j).im)‖ ^ (2 : ℕ) := by
   let u := kaiserPhysicalGridEven a ha (fun j => (z j).re)
   let v := kaiserPhysicalGridEven a ha (fun j => (z j).im)
   have huvIm : (inner ℂ u v).im = 0 := by
     change (inner ℂ
       (evenDilationUnitary a⁻¹ (inv_pos.mpr ha)
-        (kaiserGridEven (2 * Real.pi * a ^ 2) (fun j => (z j).re)))
+        (kaiserGridEven (2 * Real.pi * a ^ (2 : ℕ)) (fun j => (z j).re)))
       (evenDilationUnitary a⁻¹ (inv_pos.mpr ha)
-        (kaiserGridEven (2 * Real.pi * a ^ 2) (fun j => (z j).im)))).im = 0
+        (kaiserGridEven (2 * Real.pi * a ^ (2 : ℕ)) (fun j => (z j).im)))).im = 0
     rw [(evenDilationUnitary a⁻¹ (inv_pos.mpr ha)).inner_map_map]
     exact inner_kaiserGridEven_im_eq_zero _ _ _
   have hcross : RCLike.re (inner ℂ u (Complex.I • v)) = 0 := by
@@ -130,23 +130,23 @@ theorem norm_sq_kaiserPhysicalGridComplex {m : ℕ} {a : ℝ} (ha : 0 < a)
         Complex.I * inner ℂ u v := inner_smul_right u v Complex.I
     rw [heq]
     simpa [Complex.mul_re, huvIm]
-  change ‖u + Complex.I • v‖ ^ 2 = ‖u‖ ^ 2 + ‖v‖ ^ 2
+  change ‖u + Complex.I • v‖ ^ (2 : ℕ) = ‖u‖ ^ (2 : ℕ) + ‖v‖ ^ (2 : ℕ)
   rw [norm_add_sq (𝕜 := ℂ), hcross, norm_smul, Complex.norm_I]
   ring
 
 /-- Pythagoras is preserved after the actual compressed Fourier operator. -/
 theorem norm_sq_timeBand_kaiserPhysicalGridComplex {m : ℕ}
     {a : ℝ} (ha : 0 < a) (z : Fin m → ℂ) :
-    ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ 2 =
+    ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ (2 : ℕ) =
       ‖evenTimeBandFourier a
-          (kaiserPhysicalGridEven a ha (fun j => (z j).re))‖ ^ 2 +
+          (kaiserPhysicalGridEven a ha (fun j => (z j).re))‖ ^ (2 : ℕ) +
         ‖evenTimeBandFourier a
-          (kaiserPhysicalGridEven a ha (fun j => (z j).im))‖ ^ 2 := by
+          (kaiserPhysicalGridEven a ha (fun j => (z j).im))‖ ^ (2 : ℕ) := by
   let u := kaiserPhysicalGridEven a ha (fun j => (z j).re)
   let v := kaiserPhysicalGridEven a ha (fun j => (z j).im)
   have huvIm :
       (inner ℂ (evenTimeBandFourier a u) (evenTimeBandFourier a v)).im = 0 := by
-    let c : ℝ := 2 * Real.pi * a ^ 2
+    let c : ℝ := 2 * Real.pi * a ^ (2 : ℕ)
     have hre := evenTimeBandFourier_evenDilation_inv_kaiserGridEven
       ha c (fun j => (z j).re)
     have him := evenTimeBandFourier_evenDilation_inv_kaiserGridEven
@@ -170,7 +170,7 @@ theorem norm_sq_timeBand_kaiserPhysicalGridComplex {m : ℕ}
           (inner_smul_right (evenTimeBandFourier a u) (evenTimeBandFourier a v) Complex.I)
     rw [heq]
     simpa [Complex.mul_re, huvIm]
-  change ‖evenTimeBandFourier a (u + Complex.I • v)‖ ^ 2 = _
+  change ‖evenTimeBandFourier a (u + Complex.I • v)‖ ^ (2 : ℕ) = _
   rw [map_add, map_smul, norm_add_sq (𝕜 := ℂ), hcross, norm_smul, Complex.norm_I]
   ring
 
@@ -178,10 +178,10 @@ theorem norm_sq_timeBand_kaiserPhysicalGridComplex {m : ℕ}
 theorem eventually_exp_mul_timeBand_defect_kaiserPhysicalGridComplex_le {m : ℕ}
     (hm : 0 < m) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ a : ℝ in atTop, ∀ (ha : 0 < a) (z : Fin m → ℂ),
-      Real.exp ((2 - ε) * (2 * Real.pi * a ^ 2)) *
-          (‖kaiserPhysicalGridComplex a ha z‖ ^ 2 -
-            ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ 2) ≤
-        ‖kaiserPhysicalGridComplex a ha z‖ ^ 2 := by
+      Real.exp ((2 - ε) * (2 * Real.pi * a ^ (2 : ℕ))) *
+          (‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) -
+            ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ (2 : ℕ)) ≤
+        ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) := by
   have hreal := eventually_exp_mul_timeBand_defect_kaiserPhysicalGridEven_le hm hε
   filter_upwards [hreal] with a haReal
   intro ha z
@@ -337,10 +337,10 @@ theorem kaiserPhysicalGridSynthesis_apply {m : ℕ} {a : ℝ} (ha : 0 < a)
 /-- The physical packet synthesis is injective once the real energy lower bound is active. -/
 theorem kaiserPhysicalGridSynthesis_injective {m : ℕ} (hm : 0 < m)
     {a : ℝ} (ha : 0 < a)
-    (hc : 1 ≤ 2 * Real.pi * a ^ 2)
-    (hscale : 8 * (m : ℝ) ^ 2 ≤ Real.sqrt (2 * Real.pi * a ^ 2))
+    (hc : 1 ≤ 2 * Real.pi * a ^ (2 : ℕ))
+    (hscale : 8 * (m : ℝ) ^ (2 : ℕ) ≤ Real.sqrt (2 * Real.pi * a ^ (2 : ℕ)))
     (hsmall : 32 * (m : ℝ) *
-      Real.exp (-(Real.sqrt (2 * Real.pi * a ^ 2) / 2)) ≤ 1) :
+      Real.exp (-(Real.sqrt (2 * Real.pi * a ^ (2 : ℕ)) / 2)) ≤ 1) :
     Function.Injective (kaiserPhysicalGridSynthesis (m := m) a ha) := by
   intro z w hzw
   apply sub_eq_zero.mp
@@ -349,7 +349,7 @@ theorem kaiserPhysicalGridSynthesis_injective {m : ℕ} (hm : 0 < m)
     rw [← kaiserPhysicalGridSynthesis_apply]
     change kaiserPhysicalGridSynthesis a ha (z - w) = 0
     rw [map_sub, hzw, sub_self]
-  have hnorm : ‖kaiserPhysicalGridComplex a ha q‖ ^ 2 = 0 := by simp [hqzero]
+  have hnorm : ‖kaiserPhysicalGridComplex a ha q‖ ^ (2 : ℕ) = 0 := by simp [hqzero]
   have hreEnergy := exp_sq_mul_coeffEnergy_le_kaiserGridEnergy hm hc hscale hsmall
     (fun j => (q j).re)
   have himEnergy := exp_sq_mul_coeffEnergy_le_kaiserGridEnergy hm hc hscale hsmall
@@ -357,41 +357,41 @@ theorem kaiserPhysicalGridSynthesis_injective {m : ℕ} (hm : 0 < m)
   have hnormSplit := norm_sq_kaiserPhysicalGridComplex ha q
   rw [norm_sq_kaiserPhysicalGridEven, norm_sq_kaiserPhysicalGridEven] at hnormSplit
   rw [hnorm] at hnormSplit
-  have hreCoeff : (∑ j, (q j).re ^ 2) = 0 := by
-    have hexp : 0 < Real.exp (2 * Real.pi * a ^ 2) ^ 2 := by positivity
+  have hreCoeff : (∑ j, (q j).re ^ (2 : ℕ)) = 0 := by
+    have hexp : 0 < Real.exp (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
     have hreNonneg : 0 ≤ (∫ x in (-1 : ℝ)..1,
-        kaiserGridCombination (2 * Real.pi * a ^ 2) (fun j => (q j).re) x ^ 2) :=
+        kaiserGridCombination (2 * Real.pi * a ^ (2 : ℕ)) (fun j => (q j).re) x ^ (2 : ℕ)) :=
       intervalIntegral.integral_nonneg (by norm_num) (fun _ _ => sq_nonneg _)
     have himNonneg : 0 ≤ (∫ x in (-1 : ℝ)..1,
-        kaiserGridCombination (2 * Real.pi * a ^ 2) (fun j => (q j).im) x ^ 2) :=
+        kaiserGridCombination (2 * Real.pi * a ^ (2 : ℕ)) (fun j => (q j).im) x ^ (2 : ℕ)) :=
       intervalIntegral.integral_nonneg (by norm_num) (fun _ _ => sq_nonneg _)
     have hre0 : (∫ x in (-1 : ℝ)..1,
-        kaiserGridCombination (2 * Real.pi * a ^ 2) (fun j => (q j).re) x ^ 2) = 0 := by
+        kaiserGridCombination (2 * Real.pi * a ^ (2 : ℕ)) (fun j => (q j).re) x ^ (2 : ℕ)) = 0 := by
       nlinarith [hnormSplit]
     rw [hre0, mul_zero] at hreEnergy
-    have hsum0 : 0 ≤ ∑ j, (q j).re ^ 2 := Finset.sum_nonneg fun j _ => sq_nonneg _
+    have hsum0 : 0 ≤ ∑ j, (q j).re ^ (2 : ℕ) := Finset.sum_nonneg fun j _ => sq_nonneg _
     nlinarith
-  have himCoeff : (∑ j, (q j).im ^ 2) = 0 := by
-    have hexp : 0 < Real.exp (2 * Real.pi * a ^ 2) ^ 2 := by positivity
+  have himCoeff : (∑ j, (q j).im ^ (2 : ℕ)) = 0 := by
+    have hexp : 0 < Real.exp (2 * Real.pi * a ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
     have hreNonneg : 0 ≤ (∫ x in (-1 : ℝ)..1,
-        kaiserGridCombination (2 * Real.pi * a ^ 2) (fun j => (q j).re) x ^ 2) :=
+        kaiserGridCombination (2 * Real.pi * a ^ (2 : ℕ)) (fun j => (q j).re) x ^ (2 : ℕ)) :=
       intervalIntegral.integral_nonneg (by norm_num) (fun _ _ => sq_nonneg _)
     have himNonneg : 0 ≤ (∫ x in (-1 : ℝ)..1,
-        kaiserGridCombination (2 * Real.pi * a ^ 2) (fun j => (q j).im) x ^ 2) :=
+        kaiserGridCombination (2 * Real.pi * a ^ (2 : ℕ)) (fun j => (q j).im) x ^ (2 : ℕ)) :=
       intervalIntegral.integral_nonneg (by norm_num) (fun _ _ => sq_nonneg _)
     have him0 : (∫ x in (-1 : ℝ)..1,
-        kaiserGridCombination (2 * Real.pi * a ^ 2) (fun j => (q j).im) x ^ 2) = 0 := by
+        kaiserGridCombination (2 * Real.pi * a ^ (2 : ℕ)) (fun j => (q j).im) x ^ (2 : ℕ)) = 0 := by
       nlinarith [hnormSplit]
     rw [him0, mul_zero] at himEnergy
-    have hsum0 : 0 ≤ ∑ j, (q j).im ^ 2 := Finset.sum_nonneg fun j _ => sq_nonneg _
+    have hsum0 : 0 ≤ ∑ j, (q j).im ^ (2 : ℕ) := Finset.sum_nonneg fun j _ => sq_nonneg _
     nlinarith
   funext j
   have hre : (q j).re = 0 := by
-    have hle : (q j).re ^ 2 ≤ ∑ k, (q k).re ^ 2 :=
+    have hle : (q j).re ^ (2 : ℕ) ≤ ∑ k, (q k).re ^ (2 : ℕ) :=
       Finset.single_le_sum (fun k _ => sq_nonneg ((q k).re)) (Finset.mem_univ j)
     nlinarith [sq_nonneg ((q j).re), hreCoeff]
   have him : (q j).im = 0 := by
-    have hle : (q j).im ^ 2 ≤ ∑ k, (q k).im ^ 2 :=
+    have hle : (q j).im ^ (2 : ℕ) ≤ ∑ k, (q k).im ^ (2 : ℕ) :=
       Finset.single_le_sum (fun k _ => sq_nonneg ((q k).im)) (Finset.mem_univ j)
     nlinarith [sq_nonneg ((q j).im), himCoeff]
   change q j = 0

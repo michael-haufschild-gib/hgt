@@ -26,9 +26,9 @@ private theorem sum_tensor {ι : Type*} [Fintype ι] (a b : ι → ℝ) :
 /-- Finite complex pair squares and total phase square recover the full real radial defect. -/
 theorem finite_pair_phase_identity {ι : Type*} [Fintype ι] (a b : ι → ℂ) :
     (∑ i, normSq (a i)) * (∑ i, normSq (b i)) -
-        (∑ i, (b i * (starRingEnd ℂ) (a i)).re) ^ 2 =
+        (∑ i, (b i * (starRingEnd ℂ) (a i)).re) ^ (2 : ℕ) =
       (1 / 2 : ℝ) * ∑ i, ∑ j, normSq (a i * b j - a j * b i) +
-        (∑ i, (b i * (starRingEnd ℂ) (a i)).im) ^ 2 := by
+        (∑ i, (b i * (starRingEnd ℂ) (a i)).im) ^ (2 : ℕ) := by
   have hp (i j : ι) : normSq (a i * b j - a j * b i) =
       normSq (a i) * normSq (b j) + normSq (a j) * normSq (b i) -
       2 * (b i * (starRingEnd ℂ) (a i)).re * (b j * (starRingEnd ℂ) (a j)).re -
@@ -62,8 +62,8 @@ theorem pairEnergy_nonneg (v z : ℂ) : 0 ≤ pairEnergy N f v z :=
 
 /-- Exact source Gram identity with the scalar trace current and full phase square retained. -/
 theorem source_pair_phase_identity (v : ℂ) (z : ℍ) :
-    density N f z * directionalEnergy N f v z - current N f v z ^ 2 / 4 =
-      pairEnergy N f v (z : ℂ) + phaseCurrent N f v (z : ℂ) ^ 2 := by
+    density N f z * directionalEnergy N f v z - current N f v z ^ (2 : ℕ) / 4 =
+      pairEnergy N f v (z : ℂ) + phaseCurrent N f v (z : ℂ) ^ (2 : ℕ) := by
   have h := finite_pair_phase_identity
     (fun q : Deck N => field N f q (z : ℂ))
     (fun q : Deck N => dir v (field N f q) (z : ℂ))
@@ -76,7 +76,7 @@ theorem source_pair_phase_identity (v : ℂ) (z : ℍ) :
         realPairing N f v z := by
     simp only [field, realPairing, Function.comp_apply, ofComplex_apply]
   change (∑ q : Deck N, normSq (field N f q (z : ℂ))) * directionalEnergy N f v z - _ =
-    pairEnergy N f v (z : ℂ) + phaseCurrent N f v (z : ℂ) ^ 2 at h
+    pairEnergy N f v (z : ℂ) + phaseCurrent N f v (z : ℂ) ^ (2 : ℕ) at h
   rw [hd, hr] at h
   rw [current_eq_realPairing]
   nlinarith [h]
@@ -84,7 +84,7 @@ theorem source_pair_phase_identity (v : ℂ) (z : ℍ) :
 /-- Actual radial residual is exactly the pair-plus-phase energy after multiplication by density, including common zeros. -/
 theorem density_mul_radialResidual (v : ℂ) (z : ℍ) :
     density N f z * radialResidual N f v (radialSlope N f v z) z =
-      pairEnergy N f v (z : ℂ) + phaseCurrent N f v (z : ℂ) ^ 2 := by
+      pairEnergy N f v (z : ℂ) + phaseCurrent N f v (z : ℂ) ^ (2 : ℕ) := by
   have h := source_pair_phase_identity N f v z
   rw [density_mul_directionalEnergy] at h
   linarith
@@ -93,32 +93,32 @@ theorem density_mul_radialResidual (v : ℂ) (z : ℍ) :
 theorem density_mul_angularEnergy (z : ℍ) :
     density N f z * angularEnergy N f z =
       pairEnergy N f 1 (z : ℂ) + pairEnergy N f Complex.I (z : ℂ) +
-        phaseCurrent N f 1 (z : ℂ) ^ 2 + phaseCurrent N f Complex.I (z : ℂ) ^ 2 := by
+        phaseCurrent N f 1 (z : ℂ) ^ (2 : ℕ) + phaseCurrent N f Complex.I (z : ℂ) ^ (2 : ℕ) := by
   rw [angularEnergy, mul_add, density_mul_radialResidual, density_mul_radialResidual]
   ring
 
 /-- The actual Fisher identity resolves its full angular contribution into conserved-current candidates. -/
 theorem trace_fisher_pair_phase_identity (z : ℍ) :
     density N f z * realLaplacian (density N f ∘ ofComplex) (z : ℂ) =
-      (current N f 1 z ^ 2 + current N f Complex.I z ^ 2) / 2 +
+      (current N f 1 z ^ (2 : ℕ) + current N f Complex.I z ^ (2 : ℕ)) / 2 +
         2 * (pairEnergy N f 1 (z : ℂ) + pairEnergy N f Complex.I (z : ℂ) +
-          phaseCurrent N f 1 (z : ℂ) ^ 2 + phaseCurrent N f Complex.I (z : ℂ) ^ 2) -
-        2 * lam * density N f z ^ 2 / z.im ^ 2 := by
+          phaseCurrent N f 1 (z : ℂ) ^ (2 : ℕ) + phaseCurrent N f Complex.I (z : ℂ) ^ (2 : ℕ)) -
+        2 * lam * density N f z ^ (2 : ℕ) / z.im ^ (2 : ℕ) := by
   rw [trace_fisher_identity, mul_assoc 2, density_mul_angularEnergy]
 
 /-- The full regularized residual retains the pair and phase squares and the exact regulator derivative energy. -/
 theorem regularized_pair_phase_identity (e : Ioi (0 : ℝ)) (v : ℂ) (z : ℍ) :
-    (density N f z + (e : ℝ) ^ 2) *
+    (density N f z + (e : ℝ) ^ (2 : ℕ)) *
         SelbergMaassTraceRegularized.directionalRemainder N f e v z =
-      pairEnergy N f v (z : ℂ) + phaseCurrent N f v (z : ℂ) ^ 2 +
-        (e : ℝ) ^ 2 * directionalEnergy N f v z := by
-  have hd : density N f z + (e : ℝ) ^ 2 ≠ 0 := by
+      pairEnergy N f v (z : ℂ) + phaseCurrent N f v (z : ℂ) ^ (2 : ℕ) +
+        (e : ℝ) ^ (2 : ℕ) * directionalEnergy N f v z := by
+  have hd : density N f z + (e : ℝ) ^ (2 : ℕ) ≠ 0 := by
     simpa only [ofComplex_apply] using
       (SelbergMaassTraceRegularized.denominator_pos N f e (z : ℂ)).ne'
   rw [SelbergMaassTraceRegularized.directionalRemainder_eq]
   calc
-    _ = density N f z * directionalEnergy N f v z - current N f v z ^ 2 / 4 +
-        (e : ℝ) ^ 2 * directionalEnergy N f v z := by
+    _ = density N f z * directionalEnergy N f v z - current N f v z ^ (2 : ℕ) / 4 +
+        (e : ℝ) ^ (2 : ℕ) * directionalEnergy N f v z := by
       field_simp
       ring
     _ = _ := by rw [source_pair_phase_identity]

@@ -30,12 +30,12 @@ theorem intervalIntegrable_sin_hardyTwistPhase (L u v : ℝ) :
 /-- **The cell bound for a real combination of the two twisted phases.** -/
 theorem abs_integral_hardyTwistCombination_le {u v L δ T a b : ℝ} (huv : u ≤ v) (hδ : 0 < δ)
     (hT : 0 < T) (hu : T ≤ u)
-    (herr : 33 / (16 * T ^ 2) + Real.pi / (2 * T) ≤ δ)
+    (herr : 33 / (16 * T ^ (2 : ℕ)) + Real.pi / (2 * T) ≤ δ)
     (hL : L ≤ Real.log (T / (2 * Real.pi)) / 2 - 2 * δ) :
     |∫ τ in u..v, (a * Real.cos (hardyTwistPhase L τ)
         + b * Real.sin (hardyTwistPhase L τ))|
-      ≤ (|a| + |b|) * (2 / δ + (v - u) * (1 / T ^ 2 + Real.pi / (4 * T)) / δ ^ 2) := by
-  set B : ℝ := 2 / δ + (v - u) * (1 / T ^ 2 + Real.pi / (4 * T)) / δ ^ 2 with hB
+      ≤ (|a| + |b|) * (2 / δ + (v - u) * (1 / T ^ (2 : ℕ) + Real.pi / (4 * T)) / δ ^ (2 : ℕ)) := by
+  set B : ℝ := 2 / δ + (v - u) * (1 / T ^ (2 : ℕ) + Real.pi / (4 * T)) / δ ^ (2 : ℕ) with hB
   have hcosBound : |∫ τ in u..v, Real.cos (hardyTwistPhase L τ)| ≤ B := by
     have h := abs_integral_cos_hardyTwistPhase_le (u := u) (v := v) (L := L) (φ := 0)
       huv hδ hT hu herr hL
@@ -77,12 +77,12 @@ theorem abs_integral_hardyTwistCombination_le {u v L δ T a b : ℝ} (huv : u �
 weight `w` and amplitude `(√n)⁻¹` obeys the bare cell bound scaled by `(√n)⁻¹(|Re w| + |Im w|)`. -/
 theorem abs_integral_afeTerm_le {u v L δ T c : ℝ} (hc : 0 ≤ c) {w : ℂ} (huv : u ≤ v) (hδ : 0 < δ)
     (hT : 0 < T) (hu : T ≤ u)
-    (herr : 33 / (16 * T ^ 2) + Real.pi / (2 * T) ≤ δ)
+    (herr : 33 / (16 * T ^ (2 : ℕ)) + Real.pi / (2 * T) ≤ δ)
     (hL : L ≤ Real.log (T / (2 * Real.pi)) / 2 - 2 * δ) :
     |∫ τ in u..v, c * (Real.cos (hardyTwistPhase L τ) * w.re
         - Real.sin (hardyTwistPhase L τ) * w.im)|
       ≤ c * (|w.re| + |w.im|) *
-        (2 / δ + (v - u) * (1 / T ^ 2 + Real.pi / (4 * T)) / δ ^ 2) := by
+        (2 / δ + (v - u) * (1 / T ^ (2 : ℕ) + Real.pi / (4 * T)) / δ ^ (2 : ℕ)) := by
   have hrw : (∫ τ in u..v, c * (Real.cos (hardyTwistPhase L τ) * w.re
         - Real.sin (hardyTwistPhase L τ) * w.im))
       = c * ∫ τ in u..v, (w.re * Real.cos (hardyTwistPhase L τ)
@@ -97,10 +97,10 @@ theorem abs_integral_afeTerm_le {u v L δ T c : ℝ} (hc : 0 ≤ c) {w : ℂ} (h
   calc c * |∫ τ in u..v, (w.re * Real.cos (hardyTwistPhase L τ)
         + (-w.im) * Real.sin (hardyTwistPhase L τ))|
       ≤ c * ((|w.re| + |w.im|) *
-          (2 / δ + (v - u) * (1 / T ^ 2 + Real.pi / (4 * T)) / δ ^ 2)) :=
+          (2 / δ + (v - u) * (1 / T ^ (2 : ℕ) + Real.pi / (4 * T)) / δ ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_left hmain hc
     _ = c * (|w.re| + |w.im|) *
-        (2 / δ + (v - u) * (1 / T ^ 2 + Real.pi / (4 * T)) / δ ^ 2) := by ring
+        (2 / δ + (v - u) * (1 / T ^ (2 : ℕ) + Real.pi / (4 * T)) / δ ^ (2 : ℕ)) := by ring
 
 end RHTower
 

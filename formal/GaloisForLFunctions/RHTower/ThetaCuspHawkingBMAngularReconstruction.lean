@@ -21,8 +21,8 @@ theorem reconstructionOperator_inner (v h : energyDomain) :
 
 /-- A unit coercivity floor is supplied by the constructed energy norm itself. -/
 theorem reconstructionOperator_coercive (h : energyDomain) :
-    ‖h‖^2 ≤ (inner ℂ (reconstructionOperator h) h).re := by
-  change ‖h‖^2 ≤ (inner ℂ (h+embedding.adjoint (embedding h)) h).re
+    ‖h‖^(2 : ℕ) ≤ (inner ℂ (reconstructionOperator h) h).re := by
+  change ‖h‖^(2 : ℕ) ≤ (inner ℂ (h+embedding.adjoint (embedding h)) h).re
   rw [inner_add_left, embedding.adjoint_inner_left,
     inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K]
   simp only [Complex.add_re, RCLike.ofReal_eq_complex_ofReal,
@@ -78,7 +78,7 @@ theorem angular_reconstruction_norm_le (F : Space) (h : energyDomain)
     ← Complex.ofReal_pow, Complex.ofReal_re] at hre
   have hb : (inner ℂ (embedding h) F).re ≤ ‖embedding h‖*‖F‖ :=
     (Complex.re_le_norm _).trans (norm_inner_le_norm (𝕜 := ℂ) _ _)
-  have hs : (2*‖h‖)^2 ≤ ‖F‖^2 := by
+  have hs : (2*‖h‖)^(2 : ℕ) ≤ ‖F‖^(2 : ℕ) := by
     nlinarith [sq_nonneg (2*‖embedding h‖-‖F‖)]
   nlinarith [norm_nonneg h, norm_nonneg F]
 

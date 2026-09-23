@@ -177,7 +177,7 @@ theorem seedGap_rough_component_secondMoment_zero (lam : ℕ → ℝ)
     (∫ x in A..B,
       ‖dpoly (fun n => ∑ e ∈ n.divisors.filter (fun e => e ≤ z ∧ n ≤ N * e),
             lam e) P x
-        - dpoly (fun _ => (1 : ℝ)) P x‖ ^ 2) = 0 := by
+        - dpoly (fun _ => (1 : ℝ)) P x‖ ^ (2 : ℕ)) = 0 := by
   rw [dpoly_prime_finset_secondMoment_sub_eq_zero_iff_coeff_eq_on_union
     P P hP hP hAB]
   intro p hpmem
@@ -196,18 +196,18 @@ theorem boundary_gap_packet_secondMoment_pos_iff (lam : ℕ → ℝ) {d : ℕ}
     (hd : 0 < d) {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) (hPne : P.Nonempty)
     {A B : ℝ} (hAB : A < B) :
     (0 < ∫ x in A..B,
-        ‖dpoly (fun _ => lam d) (P.image (fun p => p * d)) x‖ ^ 2)
+        ‖dpoly (fun _ => lam d) (P.image (fun p => p * d)) x‖ ^ (2 : ℕ))
       ↔ lam d ≠ 0 := by
   have hshift : ∀ x : ℝ,
       ‖dpoly (fun _ => lam d) (P.image (fun p => p * d)) x‖
         = ‖dpoly (fun _ => lam d) P x‖ := fun x =>
     dpoly_shift_norm (fun _ => lam d) (fun p hpP => (hP p hpP).pos) hd x
   have hint : (∫ x in A..B,
-        ‖dpoly (fun _ => lam d) (P.image (fun p => p * d)) x‖ ^ 2)
-      = ∫ x in A..B, ‖dpoly (fun _ => lam d) P x‖ ^ 2 := by
+        ‖dpoly (fun _ => lam d) (P.image (fun p => p * d)) x‖ ^ (2 : ℕ))
+      = ∫ x in A..B, ‖dpoly (fun _ => lam d) P x‖ ^ (2 : ℕ) := by
     apply intervalIntegral.integral_congr
     intro x _
-    exact congrArg (fun r : ℝ => r ^ 2) (hshift x)
+    exact congrArg (fun r : ℝ => r ^ (2 : ℕ)) (hshift x)
   rw [hint,
     dpoly_prime_finset_secondMoment_pos_iff_exists_coeff_ne_zero_on_vertical_interval
       P hP hAB]
@@ -280,15 +280,15 @@ theorem seedGap_boundary_component_secondMoment_eq_prime_packet (lam : ℕ → �
     (hbig : ∀ p ∈ P, N < p * d.minFac)
     {A B : ℝ} :
     (∫ x in A..B,
-        ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ 2)
-      = ∫ x in A..B, ‖dpoly (fun _ => lam d) P x‖ ^ 2 := by
+        ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ (2 : ℕ))
+      = ∫ x in A..B, ‖dpoly (fun _ => lam d) P x‖ ^ (2 : ℕ) := by
   have hd : 0 < d := by omega
   apply intervalIntegral.integral_congr
   intro x _
-  change ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ 2 =
-    ‖dpoly (fun _ => lam d) P x‖ ^ 2
+  change ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ (2 : ℕ) =
+    ‖dpoly (fun _ => lam d) P x‖ ^ (2 : ℕ)
   rw [seedGap_boundary_component_dpoly_eq lam hd2 hdy hP hPy hPN hbig x]
-  exact congrArg (fun r : ℝ => r ^ 2)
+  exact congrArg (fun r : ℝ => r ^ (2 : ℕ))
     (dpoly_shift_norm (fun _ => lam d) (fun p hpP => (hP p hpP).pos) hd x)
 
 /-- A finite set of primes is disjoint from its singleton-boundary image
@@ -350,16 +350,16 @@ theorem seedGap_rough_boundary_component_secondMoment_eq_prime_packet (lam : ℕ
     (hPy : ∀ p ∈ P, y < p) (hPN : ∀ p ∈ P, p ≤ N)
     (hbig : ∀ p ∈ P, N < p * d.minFac) {A B : ℝ} :
     (∫ x in A..B,
-        ‖dpoly (seedGapCoeff lam N y) (P ∪ P.image (fun p => p * d)) x‖ ^ 2)
-      = ∫ x in A..B, ‖dpoly (fun _ => lam d) P x‖ ^ 2 := by
+        ‖dpoly (seedGapCoeff lam N y) (P ∪ P.image (fun p => p * d)) x‖ ^ (2 : ℕ))
+      = ∫ x in A..B, ‖dpoly (fun _ => lam d) P x‖ ^ (2 : ℕ) := by
   have hd : 0 < d := by omega
   apply intervalIntegral.integral_congr
   intro x _
-  change ‖dpoly (seedGapCoeff lam N y) (P ∪ P.image (fun p => p * d)) x‖ ^ 2 =
-    ‖dpoly (fun _ => lam d) P x‖ ^ 2
+  change ‖dpoly (seedGapCoeff lam N y) (P ∪ P.image (fun p => p * d)) x‖ ^ (2 : ℕ) =
+    ‖dpoly (fun _ => lam d) P x‖ ^ (2 : ℕ)
   rw [seedGap_rough_boundary_component_dpoly_eq_boundary lam hlam1 hy hd2 hdy hP hPy hPN
     hbig x]
-  exact congrArg (fun r : ℝ => r ^ 2)
+  exact congrArg (fun r : ℝ => r ^ (2 : ℕ))
     (dpoly_shift_norm (fun _ => lam d) (fun p hpP => (hP p hpP).pos) hd x)
 
 /-- **The actual boundary seed-gap packet is cancellation-free.**  On a finite
@@ -374,7 +374,7 @@ theorem seedGap_boundary_component_secondMoment_pos_iff (lam : ℕ → ℝ)
     (hbig : ∀ p ∈ P, N < p * d.minFac)
     {A B : ℝ} (hAB : A < B) :
     (0 < ∫ x in A..B,
-        ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ 2) ↔
+        ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ (2 : ℕ)) ↔
       lam d ≠ 0 := by
   rw [seedGap_boundary_component_secondMoment_eq_prime_packet lam hd2 hdy hP hPy hPN hbig,
     dpoly_prime_finset_secondMoment_pos_iff_exists_coeff_ne_zero_on_vertical_interval P hP hAB]

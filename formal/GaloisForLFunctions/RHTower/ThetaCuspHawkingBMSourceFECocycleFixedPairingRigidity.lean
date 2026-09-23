@@ -144,11 +144,11 @@ private theorem unitSource_reflection_eq_neg_conj_forces_criticalLine
   let s : ℂ := q.1
   let u : ℂ := 1 - s
   let v : ℂ := (starRingEnd ℂ) s
-  have hpoly : (1 + u / 2) * (u / 2) ^ 2 =
-      (1 + v / 2) * (v / 2) ^ 2 := by
+  have hpoly : (1 + u / 2) * (u / 2) ^ (2 : ℕ) =
+      (1 + v / 2) * (v / 2) ^ (2 : ℕ) := by
     simpa [s, u, v] using hcarrier
   have hfactor :
-      (u - v) * (u ^ 2 + u * v + v ^ 2 + 2 * (u + v)) = 0 := by
+      (u - v) * (u ^ (2 : ℕ) + u * v + v ^ (2 : ℕ) + 2 * (u + v)) = 0 := by
     linear_combination 8 * hpoly
   rcases mul_eq_zero.mp hfactor with huv | hquad
   · have hre := congrArg Complex.re huv
@@ -204,8 +204,8 @@ private theorem unitSource_reflection_eq_conj_forces_criticalLine
   let s : ℂ := q.1
   let u : ℂ := 1 - s
   let v : ℂ := (starRingEnd ℂ) s
-  have hpoly : (1 + u / 2) * (u / 2) ^ 2 =
-      -((1 + v / 2) * (v / 2) ^ 2) := by
+  have hpoly : (1 + u / 2) * (u / 2) ^ (2 : ℕ) =
+      -((1 + v / 2) * (v / 2) ^ (2 : ℕ)) := by
     simpa [s, u, v] using hcarrier
   have hre := congrArg Complex.re hpoly
   have him := congrArg Complex.im hpoly
@@ -213,18 +213,18 @@ private theorem unitSource_reflection_eq_conj_forces_criticalLine
   have hheight := xi_divisor_support_im_ne_zero q.1
   have himfactor :
       (q.1 : ℂ).im *
-          (2 * (q.1 : ℂ).im ^ 2 - 6 * (q.1 : ℂ).re ^ 2 +
+          (2 * (q.1 : ℂ).im ^ (2 : ℕ) - 6 * (q.1 : ℂ).re ^ (2 : ℕ) +
             6 * (q.1 : ℂ).re - 7) = 0 := by
     nlinarith
   have himcore :
-      2 * (q.1 : ℂ).im ^ 2 - 6 * (q.1 : ℂ).re ^ 2 +
+      2 * (q.1 : ℂ).im ^ (2 : ℕ) - 6 * (q.1 : ℂ).re ^ (2 : ℕ) +
           6 * (q.1 : ℂ).re - 7 = 0 :=
     (mul_eq_zero.mp himfactor).resolve_left hheight
   nlinarith [sq_nonneg ((q.1 : ℂ).re - 1 / 2)]
 
 /-- Fixed bilinear-pairing isometry of the source FE cocycle occurs exactly on critical wall. -/
 theorem hbXiPeierlsUnitSourceFECocycle_sq_eq_one_iff (q : XiZeroCopy) :
-    hbXiPeierlsUnitSourceFECocycle q ^ 2 = 1 ↔
+    hbXiPeierlsUnitSourceFECocycle q ^ (2 : ℕ) = 1 ↔
       (q.1 : ℂ).re = 1 / 2 := by
   constructor
   · intro hsquare

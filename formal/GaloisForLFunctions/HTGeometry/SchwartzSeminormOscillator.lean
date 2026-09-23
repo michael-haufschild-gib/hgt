@@ -72,7 +72,7 @@ theorem schwartzSeminorm_le_shifted (k n : ℕ) :
       SchwartzMap.seminorm ℂ k n f
         ≤ C * ‖((shiftedNumberCLM^[k + n + 2]) f).toLp 2 (volume : Measure ℝ)‖ := by
   classical
-  set Cs : ℝ := (∫ t : ℝ, ((1 + t ^ 2)⁻¹) ^ (2 : ℝ)) ^ (1 / (2 : ℝ)) with hCs
+  set Cs : ℝ := (∫ t : ℝ, ((1 + t ^ (2 : ℕ))⁻¹) ^ (2 : ℝ)) ^ (1 / (2 : ℝ)) with hCs
   have hCs_nonneg : 0 ≤ Cs := by
     rw [hCs]
     positivity

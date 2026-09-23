@@ -81,7 +81,7 @@ theorem primeArchCombinedCoefficientResidual_of_degreeTenCombined
 /-- The concrete degree-seven endpoint-pair test is monic. -/
 theorem primeArchDegreeSevenEndpointPolynomial_monic :
     primeArchDegreeSevenEndpointPolynomial.Monic := by
-  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 6
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ (6 : ℕ)
   have hlow : lower.natDegree < 7 := by
     apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
     rw [max_lt_iff]
@@ -96,14 +96,14 @@ theorem primeArchDegreeSevenEndpointPolynomial_monic :
     · exact (Polynomial.natDegree_lt_iff_degree_lt hzero).mp hlow
   unfold primeArchDegreeSevenEndpointPolynomial
   rw [add_assoc]
-  change (X ^ 7 + lower).Monic
+  change (X ^ (7 : ℕ) + lower).Monic
   exact Polynomial.monic_X_pow_add hlowDegree
 
 /-- The concrete degree-seven endpoint-pair test is Eisenstein at two. -/
 theorem primeArchDegreeSevenEndpointPolynomial_twoEisenstein :
     primeArchDegreeSevenEndpointPolynomial.IsEisensteinAt
       primeArchTwoEisensteinIdeal := by
-  have h := primeArch_twoEisenstein_plus (X ^ 6 : Polynomial ℤ) 7 3 (by simp)
+  have h := primeArch_twoEisenstein_plus (X ^ (6 : ℕ) : Polynomial ℤ) 7 3 (by simp)
   have hval : (4 * ((3 : ℕ) : ℤ)) = 12 := by norm_num
   rw [hval] at h
   exact h
@@ -123,7 +123,7 @@ theorem primeArchDegreeSevenEndpointPolynomial_not_combinedResidual :
 /-- The concrete degree-eight square-coefficient test is monic. -/
 theorem primeArchDegreeEightSquareCoeffPolynomial_monic :
     primeArchDegreeEightSquareCoeffPolynomial.Monic := by
-  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 7
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ (7 : ℕ)
   have hlow : lower.natDegree < 8 := by
     apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
     rw [max_lt_iff]
@@ -138,14 +138,14 @@ theorem primeArchDegreeEightSquareCoeffPolynomial_monic :
     · exact (Polynomial.natDegree_lt_iff_degree_lt hzero).mp hlow
   unfold primeArchDegreeEightSquareCoeffPolynomial
   rw [add_assoc]
-  change (X ^ 8 + lower).Monic
+  change (X ^ (8 : ℕ) + lower).Monic
   exact Polynomial.monic_X_pow_add hlowDegree
 
 /-- The concrete degree-eight square-coefficient test is Eisenstein at two. -/
 theorem primeArchDegreeEightSquareCoeffPolynomial_twoEisenstein :
     primeArchDegreeEightSquareCoeffPolynomial.IsEisensteinAt
       primeArchTwoEisensteinIdeal := by
-  have h := primeArch_twoEisenstein_plus (X ^ 7 : Polynomial ℤ) 8 3 (by simp)
+  have h := primeArch_twoEisenstein_plus (X ^ (7 : ℕ) : Polynomial ℤ) 8 3 (by simp)
   have hval : (4 * ((3 : ℕ) : ℤ)) = 12 := by norm_num
   rw [hval] at h
   exact h
@@ -163,7 +163,7 @@ theorem primeArchDegreeEightSquareCoeffPolynomial_not_combinedResidual :
 /-- The concrete degree-nine square-coefficient test is monic. -/
 theorem primeArchDegreeNineSquareCoeffPolynomial_monic :
     primeArchDegreeNineSquareCoeffPolynomial.Monic := by
-  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 8
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ (8 : ℕ)
   have hlow : lower.natDegree < 9 := by
     apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
     rw [max_lt_iff]
@@ -178,14 +178,14 @@ theorem primeArchDegreeNineSquareCoeffPolynomial_monic :
     · exact (Polynomial.natDegree_lt_iff_degree_lt hzero).mp hlow
   unfold primeArchDegreeNineSquareCoeffPolynomial
   rw [add_assoc]
-  change (X ^ 9 + lower).Monic
+  change (X ^ (9 : ℕ) + lower).Monic
   exact Polynomial.monic_X_pow_add hlowDegree
 
 /-- The concrete degree-nine square-coefficient test is Eisenstein at two. -/
 theorem primeArchDegreeNineSquareCoeffPolynomial_twoEisenstein :
     primeArchDegreeNineSquareCoeffPolynomial.IsEisensteinAt
       primeArchTwoEisensteinIdeal := by
-  have h := primeArch_twoEisenstein_plus (X ^ 8 : Polynomial ℤ) 9 3 (by simp)
+  have h := primeArch_twoEisenstein_plus (X ^ (8 : ℕ) : Polynomial ℤ) 9 3 (by simp)
   have hval : (4 * ((3 : ℕ) : ℤ)) = 12 := by norm_num
   rw [hval] at h
   exact h
@@ -201,7 +201,7 @@ theorem primeArchDegreeNineSquareCoeffPolynomial_not_combinedResidual :
 /-- The concrete degree-ten square-coefficient test is monic. -/
 theorem primeArchDegreeTenSquareCoeffPolynomial_monic :
     primeArchDegreeTenSquareCoeffPolynomial.Monic := by
-  let lower : Polynomial ℤ := C 2 + C 12 * X ^ 9
+  let lower : Polynomial ℤ := C 2 + C 12 * X ^ (9 : ℕ)
   have hlow : lower.natDegree < 10 := by
     apply lt_of_le_of_lt (Polynomial.natDegree_add_le _ _)
     rw [max_lt_iff]
@@ -216,14 +216,14 @@ theorem primeArchDegreeTenSquareCoeffPolynomial_monic :
     · exact (Polynomial.natDegree_lt_iff_degree_lt hzero).mp hlow
   unfold primeArchDegreeTenSquareCoeffPolynomial
   rw [add_assoc]
-  change (X ^ 10 + lower).Monic
+  change (X ^ (10 : ℕ) + lower).Monic
   exact Polynomial.monic_X_pow_add hlowDegree
 
 /-- The concrete degree-ten square-coefficient test is Eisenstein at two. -/
 theorem primeArchDegreeTenSquareCoeffPolynomial_twoEisenstein :
     primeArchDegreeTenSquareCoeffPolynomial.IsEisensteinAt
       primeArchTwoEisensteinIdeal := by
-  have h := primeArch_twoEisenstein_plus (X ^ 9 : Polynomial ℤ) 10 3 (by simp)
+  have h := primeArch_twoEisenstein_plus (X ^ (9 : ℕ) : Polynomial ℤ) 10 3 (by simp)
   have hval : (4 * ((3 : ℕ) : ℤ)) = 12 := by norm_num
   rw [hval] at h
   exact h

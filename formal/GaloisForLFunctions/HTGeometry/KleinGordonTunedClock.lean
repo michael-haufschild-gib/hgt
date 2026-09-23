@@ -31,7 +31,7 @@ variable {b c : ℝ}
 
 /-- The potential that tunes the frequency to `c` on its band. -/
 def kgTunedPot (b c : ℝ) (ξ : E) : ℝ :=
-  if ‖ξ‖ ≤ Real.sqrt (c ^ 2 - 1 + b) then kgFreq ξ ^ 2 - c ^ 2 else 0
+  if ‖ξ‖ ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b) then kgFreq ξ ^ (2 : ℕ) - c ^ (2 : ℕ) else 0
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem measurable_kgTunedPot (b c : ℝ) : Measurable (kgTunedPot (E := E) b c) :=
@@ -40,23 +40,23 @@ theorem measurable_kgTunedPot (b c : ℝ) : Measurable (kgTunedPot (E := E) b c)
     measurable_const
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-theorem kgFreq_sq_eq (ξ : E) : kgFreq ξ ^ 2 = 1 + ‖ξ‖ ^ 2 := by
+theorem kgFreq_sq_eq (ξ : E) : kgFreq ξ ^ (2 : ℕ) = 1 + ‖ξ‖ ^ (2 : ℕ) := by
   rw [kgFreq, Real.sq_sqrt (by positivity)]
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **The tuned potential is admissible.** -/
-theorem abs_kgTunedPot_le (hb0 : 0 ≤ b) (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (ξ : E) :
+theorem abs_kgTunedPot_le (hb0 : 0 ≤ b) (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (ξ : E) :
     |kgTunedPot b c ξ| ≤ b := by
   rw [kgTunedPot]
   split
   · rename_i hξ
-    have hrange : ‖ξ‖ ^ 2 ≤ c ^ 2 - 1 + b := by
-      have hnn : (0 : ℝ) ≤ c ^ 2 - 1 + b := by linarith
-      have hsq : ‖ξ‖ ^ 2 ≤ Real.sqrt (c ^ 2 - 1 + b) ^ 2 := by
+    have hrange : ‖ξ‖ ^ (2 : ℕ) ≤ c ^ (2 : ℕ) - 1 + b := by
+      have hnn : (0 : ℝ) ≤ c ^ (2 : ℕ) - 1 + b := by linarith
+      have hsq : ‖ξ‖ ^ (2 : ℕ) ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b) ^ (2 : ℕ) := by
         have := norm_nonneg ξ
-        nlinarith [Real.sqrt_nonneg (c ^ 2 - 1 + b)]
+        nlinarith [Real.sqrt_nonneg (c ^ (2 : ℕ) - 1 + b)]
       rwa [Real.sq_sqrt hnn] at hsq
-    have hnn2 : (0 : ℝ) ≤ ‖ξ‖ ^ 2 := sq_nonneg _
+    have hnn2 : (0 : ℝ) ≤ ‖ξ‖ ^ (2 : ℕ) := sq_nonneg _
     rw [kgFreq_sq_eq, abs_le]
     constructor
     · linarith
@@ -66,20 +66,20 @@ theorem abs_kgTunedPot_le (hb0 : 0 ≤ b) (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **On its band the tuned potential makes the shifted frequency `c`.** -/
 theorem kgShiftedFreq_kgTunedPot (hc0 : 0 < c) {ξ : E}
-    (hξ : ‖ξ‖ ≤ Real.sqrt (c ^ 2 - 1 + b)) :
+    (hξ : ‖ξ‖ ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b)) :
     kgShiftedFreq (fun ζ : E => -(kgTunedPot b c ζ)) ξ = c := by
-  have hpot : kgTunedPot b c ξ = kgFreq ξ ^ 2 - c ^ 2 := by
+  have hpot : kgTunedPot b c ξ = kgFreq ξ ^ (2 : ℕ) - c ^ (2 : ℕ) := by
     rw [kgTunedPot, if_pos hξ]
   rw [kgShiftedFreq, hpot]
-  have harg : kgFreq ξ ^ 2 + -(kgFreq ξ ^ 2 - c ^ 2) = c ^ 2 := by ring
+  have harg : kgFreq ξ ^ (2 : ℕ) + -(kgFreq ξ ^ (2 : ℕ) - c ^ (2 : ℕ)) = c ^ (2 : ℕ) := by ring
   rw [harg, Real.sqrt_sq hc0.le]
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- On its band the shifted cosine symbol is the constant `cos (c t)`. -/
 theorem kgShiftedCos_kgTunedPot_lowPass (hc0 : 0 < c) (t : ℝ) (ξ : E) :
     kgShiftedCos (fun ζ : E => -(kgTunedPot b c ζ)) t ξ
-        * kgLowPass (Real.sqrt (c ^ 2 - 1 + b)) ξ
-      = ((Real.cos (t * c) : ℝ) : ℂ) * kgLowPass (Real.sqrt (c ^ 2 - 1 + b)) ξ := by
+        * kgLowPass (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) ξ
+      = ((Real.cos (t * c) : ℝ) : ℂ) * kgLowPass (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) ξ := by
   rw [kgLowPass]
   split
   · rename_i hξ
@@ -90,8 +90,8 @@ omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensi
 /-- On its band the shifted sine symbol is the constant `sin (c t) / c`. -/
 theorem kgShiftedSinOverFreq_kgTunedPot_lowPass (hc0 : 0 < c) (t : ℝ) (ξ : E) :
     kgShiftedSinOverFreq (fun ζ : E => -(kgTunedPot b c ζ)) t ξ
-        * kgLowPass (Real.sqrt (c ^ 2 - 1 + b)) ξ
-      = ((Real.sin (t * c) / c : ℝ) : ℂ) * kgLowPass (Real.sqrt (c ^ 2 - 1 + b)) ξ := by
+        * kgLowPass (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) ξ
+      = ((Real.sin (t * c) / c : ℝ) : ℂ) * kgLowPass (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) ξ := by
   rw [kgLowPass]
   split
   · rename_i hξ

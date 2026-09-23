@@ -24,23 +24,23 @@ namespace HTGeometry
 
 /-- The Gaussian integral of a shifted profile. -/
 theorem integral_exp_neg_mul_sq_shift (c m : ℝ) :
-    (∫ t : ℝ, Real.exp (-c * (t - m) ^ 2)) = Real.sqrt (Real.pi / c) := by
-  have hshift : (∫ t : ℝ, Real.exp (-c * (t - m) ^ 2)) = ∫ t : ℝ, Real.exp (-c * t ^ 2) :=
+    (∫ t : ℝ, Real.exp (-c * (t - m) ^ (2 : ℕ))) = Real.sqrt (Real.pi / c) := by
+  have hshift : (∫ t : ℝ, Real.exp (-c * (t - m) ^ (2 : ℕ))) = ∫ t : ℝ, Real.exp (-c * t ^ (2 : ℕ)) :=
     MeasureTheory.integral_sub_right_eq_self (μ := (volume : Measure ℝ))
-      (fun s : ℝ => Real.exp (-c * s ^ 2)) m
+      (fun s : ℝ => Real.exp (-c * s ^ (2 : ℕ))) m
   rw [hshift, integral_gaussian]
 
 /-- The derivative of the order-one Schläfli integral. -/
 def besselK1CDeriv (z : ℂ) : ℂ :=
-  ∫ t in Ioi (0 : ℝ), -(Complex.cosh (t : ℂ)) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ))
+  ∫ t in Ioi (0 : ℝ), -(Complex.cosh (t : ℂ)) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))
 
 theorem hasDerivAt_besselK1C_deriv {w : ℂ} (hw : 0 < w.re) :
     HasDerivAt besselK1C (besselK1CDeriv w) w :=
   hasDerivAt_besselK1C hw
 
 theorem norm_besselK1CDeriv_integrand (z : ℂ) (t : ℝ) :
-    ‖-(Complex.cosh (t : ℂ)) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ))‖
-      = Real.cosh t ^ 2 * Real.exp (-(z.re * Real.cosh t)) := by
+    ‖-(Complex.cosh (t : ℂ)) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))‖
+      = Real.cosh t ^ (2 : ℕ) * Real.exp (-(z.re * Real.cosh t)) := by
   rw [norm_mul, norm_neg, norm_pow, Complex.norm_exp, ← Complex.ofReal_cosh, Complex.norm_real,
     Real.norm_eq_abs, abs_of_nonneg (Real.cosh_pos t).le]
   congr 1
@@ -49,19 +49,19 @@ theorem norm_besselK1CDeriv_integrand (z : ℂ) (t : ℝ) :
 /-- On the positive axis `cosh²` against the decaying exponential of `cosh` is dominated by one
 shifted Gaussian. -/
 theorem cosh_sq_mul_exp_neg_mul_cosh_le_shift {X t : ℝ} (hX : 0 < X) (ht : 0 ≤ t) :
-    Real.cosh t ^ 2 * Real.exp (-(X * Real.cosh t))
-      ≤ Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ 2) := by
-  have hlow : 1 + t ^ 2 / 2 ≤ Real.cosh t := one_add_sq_div_two_le_cosh ht
+    Real.cosh t ^ (2 : ℕ) * Real.exp (-(X * Real.cosh t))
+      ≤ Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ (2 : ℕ)) := by
+  have hlow : 1 + t ^ (2 : ℕ) / 2 ≤ Real.cosh t := one_add_sq_div_two_le_cosh ht
   have hup : Real.cosh t ≤ Real.exp t := cosh_le_exp ht
   have hpos : 0 < Real.cosh t := Real.cosh_pos t
-  have hsq : Real.cosh t ^ 2 ≤ Real.exp (2 * t) := by
-    have hstep : Real.cosh t ^ 2 ≤ Real.exp t ^ 2 := by nlinarith [Real.exp_pos t]
-    calc Real.cosh t ^ 2 ≤ Real.exp t ^ 2 := hstep
+  have hsq : Real.cosh t ^ (2 : ℕ) ≤ Real.exp (2 * t) := by
+    have hstep : Real.cosh t ^ (2 : ℕ) ≤ Real.exp t ^ (2 : ℕ) := by nlinarith [Real.exp_pos t]
+    calc Real.cosh t ^ (2 : ℕ) ≤ Real.exp t ^ (2 : ℕ) := hstep
       _ = Real.exp (2 * t) := by rw [two_mul, Real.exp_add, sq]
-  have hexp1 : Real.exp (-(X * Real.cosh t)) ≤ Real.exp (-(X * (1 + t ^ 2 / 2))) :=
+  have hexp1 : Real.exp (-(X * Real.cosh t)) ≤ Real.exp (-(X * (1 + t ^ (2 : ℕ) / 2))) :=
     Real.exp_le_exp.2 (by nlinarith)
-  have hstep : Real.cosh t ^ 2 * Real.exp (-(X * Real.cosh t))
-      ≤ Real.exp (2 * t) * Real.exp (-(X * (1 + t ^ 2 / 2))) :=
+  have hstep : Real.cosh t ^ (2 : ℕ) * Real.exp (-(X * Real.cosh t))
+      ≤ Real.exp (2 * t) * Real.exp (-(X * (1 + t ^ (2 : ℕ) / 2))) :=
     mul_le_mul hsq hexp1 (Real.exp_pos _).le (Real.exp_pos _).le
   refine hstep.trans (le_of_eq ?_)
   rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
@@ -78,40 +78,40 @@ theorem norm_besselK1CDeriv_le {z : ℂ} (hz : 0 < z.re) :
   have hX2 : (0 : ℝ) < X / 2 := by linarith
   have hnorm : ‖besselK1CDeriv z‖
       ≤ ∫ t in Ioi (0 : ℝ),
-        ‖-(Complex.cosh (t : ℂ)) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ))‖ :=
+        ‖-(Complex.cosh (t : ℂ)) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))‖ :=
     norm_integral_le_integral_norm _
   refine le_trans hnorm ?_
   have hmaj : ∀ t ∈ Ioi (0 : ℝ),
-      ‖-(Complex.cosh (t : ℂ)) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ))‖
-        ≤ Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ 2) := by
+      ‖-(Complex.cosh (t : ℂ)) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))‖
+        ≤ Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ (2 : ℕ)) := by
     intro t ht
     rw [norm_besselK1CDeriv_integrand z t]
     exact cosh_sq_mul_exp_neg_mul_cosh_le_shift hXpos (le_of_lt ht)
   have hintmaj : IntegrableOn
-      (fun t : ℝ => Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ 2))
+      (fun t : ℝ => Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ (2 : ℕ)))
       (Ioi 0) :=
     ((integrable_exp_neg_mul_sq_shift hX2).const_mul _).integrableOn
   have hintf : IntegrableOn
-      (fun t : ℝ => ‖-(Complex.cosh (t : ℂ)) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ))‖)
+      (fun t : ℝ => ‖-(Complex.cosh (t : ℂ)) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))‖)
       (Ioi 0) := by
     refine Integrable.mono' hintmaj ?_ ?_
     · refine (Measurable.aestronglyMeasurable ?_)
       have h1 : Measurable fun t : ℝ => Complex.exp (-z * Complex.cosh (t : ℂ)) := by fun_prop
-      have h2 : Measurable fun t : ℝ => -(Complex.cosh (t : ℂ)) ^ 2 := by fun_prop
+      have h2 : Measurable fun t : ℝ => -(Complex.cosh (t : ℂ)) ^ (2 : ℕ) := by fun_prop
       exact (h2.mul h1).norm
     · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
       rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
       exact hmaj t ht
   have hcomp : (∫ t in Ioi (0 : ℝ),
-        ‖-(Complex.cosh (t : ℂ)) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ))‖)
+        ‖-(Complex.cosh (t : ℂ)) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))‖)
       ≤ ∫ t in Ioi (0 : ℝ),
-        Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ 2) :=
+        Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ (2 : ℕ)) :=
     setIntegral_mono_on hintf hintmaj measurableSet_Ioi hmaj
   refine le_trans hcomp ?_
   have hfull : (∫ t in Ioi (0 : ℝ),
-        Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ 2))
+        Real.exp (-X) * Real.exp (2 / X) * Real.exp (-(X / 2) * (t - 2 / X) ^ (2 : ℕ)))
       ≤ ∫ t : ℝ, Real.exp (-X) * Real.exp (2 / X)
-          * Real.exp (-(X / 2) * (t - 2 / X) ^ 2) := by
+          * Real.exp (-(X / 2) * (t - 2 / X) ^ (2 : ℕ)) := by
     refine setIntegral_le_integral ((integrable_exp_neg_mul_sq_shift hX2).const_mul _) ?_
     filter_upwards with t
     positivity

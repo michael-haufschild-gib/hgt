@@ -101,7 +101,7 @@ charge.  The two decorations are simultaneously preserved: `g` still carries the
 (`orbitQuartic ρ · G₀` is FE + Schwarz, so `feBundle P · (orbitQuartic ρ · G₀)` is a `FiniteEulerClass`
 member), stays eventually nonvanishing (`eventuallyNonvanishing_orbitQuartic_mul`), and matches the
 same tail `F` (`dlogTail_orbitQuartic_mul`).  Since `f₀ ρ ≠ 0` its order at `ρ` is `0`, so the quartic
-raises the order of `g` at `ρ` to `1` — deck charge `(−1)^1 = −1 ≠ 1`. -/
+raises the order of `g` at `ρ` to `1` — deck charge `(−1)^(1 : ℕ) = −1 ≠ 1`. -/
 theorem shadowClass_charged_witness {P : Finset ℕ} {F f₀ : ℂ → ℂ}
     (hf₀ : ShadowClass P F f₀) {ρ : ℂ} (hre : ρ.re ≠ 1 / 2) (him : ρ.im ≠ 0)
     (hf₀ρ : f₀ ρ ≠ 0) :

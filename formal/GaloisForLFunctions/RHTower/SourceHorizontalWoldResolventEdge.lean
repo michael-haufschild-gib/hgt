@@ -155,22 +155,22 @@ theorem xiZeroCopy_re_eq_half_of_xiResolventPoint_eq_norm
     {X : ℝ} (q : XiZeroCopy)
     (hreal : xiResolventPoint X q = (‖xiResolventPoint X q‖ : ℂ)) :
     (q.1 : ℂ).re = 1 / 2 := by
-  have hwreal : xiSpectralPoint q ^ 2 + (X : ℂ) =
+  have hwreal : xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ) =
       ((‖xiResolventPoint X q‖ : ℝ) : ℂ)⁻¹ := by
-    have h2 : ((xiSpectralPoint q ^ 2 + (X : ℂ))⁻¹) =
+    have h2 : ((xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ))⁻¹) =
         ((‖xiResolventPoint X q‖ : ℝ) : ℂ) := hreal
     calc
-      xiSpectralPoint q ^ 2 + (X : ℂ)
-          = ((xiSpectralPoint q ^ 2 + (X : ℂ))⁻¹)⁻¹ := (inv_inv _).symm
+      xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)
+          = ((xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ))⁻¹)⁻¹ := (inv_inv _).symm
       _ = ((‖xiResolventPoint X q‖ : ℝ) : ℂ)⁻¹ := by rw [h2]
-  have himsq : (xiSpectralPoint q ^ 2).im = 0 := by
-    have h3 : (xiSpectralPoint q ^ 2 + (X : ℂ)).im = 0 := by
+  have himsq : (xiSpectralPoint q ^ (2 : ℕ)).im = 0 := by
+    have h3 : (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).im = 0 := by
       rw [hwreal, ← Complex.ofReal_inv]
       exact Complex.ofReal_im _
     rw [Complex.add_im, Complex.ofReal_im, add_zero] at h3
     exact h3
   have hprod : 2 * (xiSpectralPoint q).re * (xiSpectralPoint q).im = 0 := by
-    have h4 : (xiSpectralPoint q ^ 2).im =
+    have h4 : (xiSpectralPoint q ^ (2 : ℕ)).im =
         2 * (xiSpectralPoint q).re * (xiSpectralPoint q).im := by
       rw [sq, Complex.mul_im]
       ring

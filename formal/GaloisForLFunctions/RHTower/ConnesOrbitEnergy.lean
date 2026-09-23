@@ -29,7 +29,7 @@ variable {G X : Type*} [Group G] [MulAction G X]
 
 /-- Conjugate-square of a complex number as a real square. -/
 theorem connes_conj_mul_self (z : ℂ) :
-    (starRingEnd ℂ) z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+    (starRingEnd ℂ) z * z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [mul_comm, Complex.mul_conj]
   norm_cast
   exact Complex.normSq_eq_norm_sq z
@@ -51,7 +51,7 @@ def connesOrbitReindex : G × G ≃ G × G where
 double orbit sum of the correlation. -/
 theorem connes_periodization_normSq_eq_orbitSum (f : X → ℂ) (x : X)
     (hs : Summable fun p : G => ‖f (p • x)‖) :
-    ((‖∑' p : G, f (p • x)‖ ^ 2 : ℝ) : ℂ)
+    ((‖∑' p : G, f (p • x)‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑' z : G × G, (starRingEnd ℂ) (f (z.2 • x)) * f ((z.1 * z.2) • x) := by
   have hsc : Summable fun p : G => f (p • x) := hs.of_norm
   have hconjnorm : Summable fun p : G => ‖(starRingEnd ℂ) (f (p • x))‖ := by
@@ -80,7 +80,7 @@ theorem connes_orbitForm_eq_fundamentalDomain_energy
       ∫ x in F, ‖(starRingEnd ℂ) (f (z.2 • x)) * f ((z.1 * z.2) • x)‖ ∂μ)
     (hpt : ∀ x : X, Summable fun p : G => ‖f (p • x)‖) :
     (∑' q : G, ∫ x, (starRingEnd ℂ) (f x) * f (q • x) ∂μ)
-      = ∫ x in F, ((‖∑' p : G, f (p • x)‖ ^ 2 : ℝ) : ℂ) ∂μ := by
+      = ∫ x in F, ((‖∑' p : G, f (p • x)‖ ^ (2 : ℕ) : ℝ) : ℂ) ∂μ := by
   have hstep1 : ∀ q : G, (∫ x, (starRingEnd ℂ) (f x) * f (q • x) ∂μ)
       = ∑' p : G, ∫ x in F, (starRingEnd ℂ) (f (p • x)) * f ((q * p) • x) ∂μ := by
     intro q
@@ -108,7 +108,7 @@ theorem connes_orbitForm_eq_fundamentalDomain_energy
     _ = ∫ x in F, ∑' z : G × G,
           (starRingEnd ℂ) (f (z.2 • x)) * f ((z.1 * z.2) • x) ∂μ :=
         MeasureTheory.integral_tsum_of_summable_integral_norm hint hsum
-    _ = ∫ x in F, ((‖∑' p : G, f (p • x)‖ ^ 2 : ℝ) : ℂ) ∂μ := by
+    _ = ∫ x in F, ((‖∑' p : G, f (p • x)‖ ^ (2 : ℕ) : ℝ) : ℂ) ∂μ := by
         refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
         exact (connes_periodization_normSq_eq_orbitSum f x (hpt x)).symm
 

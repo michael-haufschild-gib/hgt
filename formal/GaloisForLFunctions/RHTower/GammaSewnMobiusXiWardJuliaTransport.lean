@@ -530,7 +530,7 @@ anchored Julia cell has exactly that preprojection column as its aperture tangen
 theorem mobiusGammaFourUnitTangent_to_continuedXiTraceColumn :
     Tendsto (fun sigma : ℝ =>
       if hsigma : 1 < sigma then
-        ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ 2
+        ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ (2 : ℕ)
       else 0)
         (nhdsWithin 1 (Set.Ioi 1)) (nhds 4) ∧
     (∀ ⦃sigma u : ℝ⦄ (hsigma : 1 < sigma) (hu : 0 ≤ u),

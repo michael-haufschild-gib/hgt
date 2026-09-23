@@ -56,7 +56,7 @@ theorem xiTransversePrimeFirstValuationGaussianGramMatrixAt_apply
     {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes) (t : ℝ) (i j : Fin N) :
     xiTransversePrimeFirstValuationGaussianGramMatrixAt shift p t i j =
       Real.exp (-t * (xiTransversePrimeApertureDiskNode (shift i) p -
-        xiTransversePrimeApertureDiskNode (shift j) p) ^ 2) := by
+        xiTransversePrimeApertureDiskNode (shift j) p) ^ (2 : ℕ)) := by
   simp only [xiTransversePrimeFirstValuationGaussianGramMatrixAt,
     finiteGaussianDistanceGram, Fin.sum_univ_one]
   congr 2
@@ -129,7 +129,7 @@ theorem xiTransversePrimeFirstValuationGaussianGramMatrix_apply
     {N : ℕ} (shift : Fin N → ℕ) (p : Nat.Primes) (i j : Fin N) :
     xiTransversePrimeFirstValuationGaussianGramMatrix shift p i j =
       Real.exp (-(xiTransversePrimeApertureDiskNode (shift i) p -
-        xiTransversePrimeApertureDiskNode (shift j) p) ^ 2) := by
+        xiTransversePrimeApertureDiskNode (shift j) p) ^ (2 : ℕ)) := by
   simpa [xiTransversePrimeFirstValuationGaussianGramMatrix] using
     xiTransversePrimeFirstValuationGaussianGramMatrixAt_apply shift p 1 i j
 

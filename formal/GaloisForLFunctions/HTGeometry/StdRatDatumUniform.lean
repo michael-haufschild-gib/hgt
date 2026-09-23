@@ -70,7 +70,7 @@ theorem exists_uniform_bound_polynomial_mul_inv_pow (P : Polynomial ℂ) :
   have hpowle : ‖s‖⁻¹ ^ (k + 1) ≤ 1 / t := by
     calc ‖s‖⁻¹ ^ (k + 1) ≤ (1 / t) ^ (k + 1) :=
           pow_le_pow_left₀ (by positivity) hinvle (k + 1)
-      _ ≤ (1 / t) ^ 1 := by
+      _ ≤ (1 / t) ^ (1 : ℕ) := by
           refine pow_le_pow_of_le_one (by positivity) ?_ (by omega)
           rw [div_le_one htpos]
           exact ht

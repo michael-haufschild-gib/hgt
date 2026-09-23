@@ -21,7 +21,7 @@ noncomputable section
 
 /-- Universal squared mass of the depth-one Wold source profile. -/
 def woldDepthOneFisherMass : ℝ :=
-  ∑' p : Nat.Primes, woldCoeff 1 p ^ 2
+  ∑' p : Nat.Primes, woldCoeff 1 p ^ (2 : ℕ)
 
 /-- Centered physical depth-one relative-log coefficient.  The trace-class seam is subtracted
 before taking the source energy. -/
@@ -31,21 +31,21 @@ def xiDepthOneCenteredWoldCoefficient
 
 /-- Squared Hilbert energy of one divisor-labelled centered valuation-one source. -/
 def xiDepthOneCenteredWoldEnergy (q : XiZeroCopy) : ℝ :=
-  ∑' p : Nat.Primes, xiDepthOneCenteredWoldCoefficient q p ^ 2
+  ∑' p : Nat.Primes, xiDepthOneCenteredWoldCoefficient q p ^ (2 : ℕ)
 
 /-- Positive gauge transporting centered horizontal source rate into shifted Cassini orientation. -/
 def xiHeatCassiniBVWoldTransferGauge (y : ℝ) (q : XiZeroCopy) : ℝ :=
-  let D₀ := Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ 2
+  let D₀ := Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ (2 : ℕ)
   let D₁ := Complex.normSq
     (1 + (y : ℂ) * xiZeroCopyReciprocalSquare q)
-  (q.1 : ℂ).im ^ 2 /
-    ((D₀ * D₁) ^ 2 * (xiShiftedReciprocalSquare y q).re)
+  (q.1 : ℂ).im ^ (2 : ℕ) /
+    ((D₀ * D₁) ^ (2 : ℕ) * (xiShiftedReciprocalSquare y q).re)
 
 /-- Squared depth-one Wold profile is summable although the unsquared profile is not. -/
 theorem summable_woldCoeff_one_sq :
-    Summable (fun p : Nat.Primes => woldCoeff 1 p ^ 2) := by
+    Summable (fun p : Nat.Primes => woldCoeff 1 p ^ (2 : ℕ)) := by
   have hmajorant : Summable (fun p : Nat.Primes =>
-      (Real.log (p : ℝ) / (p : ℝ)) ^ 2) :=
+      (Real.log (p : ℝ) / (p : ℝ)) ^ (2 : ℕ)) :=
     GaloisForLFunctions.HTGeometry.summable_logSq_div_sq.comp_injective
       Subtype.val_injective
   apply Summable.of_nonneg_of_le (fun p => sq_nonneg _) (fun p => ?_) hmajorant
@@ -56,17 +56,17 @@ theorem summable_woldCoeff_one_sq :
     linarith
   have hf1 : 1 - 1 / (p : ℝ) ≤ 1 := by
     exact sub_le_self _ (div_nonneg zero_le_one hp0.le)
-  have hpow : (1 - 1 / (p : ℝ)) ^ 6 ≤ 1 :=
+  have hpow : (1 - 1 / (p : ℝ)) ^ (6 : ℕ) ≤ 1 :=
     pow_le_one₀ hf0 hf1
   rw [woldCoeff]
   simp only [pow_one]
   calc
-    (((1 - 1 / (p : ℝ)) ^ 3 * Real.log (p : ℝ) / (p : ℝ)) ^ 2) =
-        (1 - 1 / (p : ℝ)) ^ 6 *
-          (Real.log (p : ℝ) / (p : ℝ)) ^ 2 := by ring
-    _ ≤ 1 * (Real.log (p : ℝ) / (p : ℝ)) ^ 2 := by
+    (((1 - 1 / (p : ℝ)) ^ (3 : ℕ) * Real.log (p : ℝ) / (p : ℝ)) ^ (2 : ℕ)) =
+        (1 - 1 / (p : ℝ)) ^ (6 : ℕ) *
+          (Real.log (p : ℝ) / (p : ℝ)) ^ (2 : ℕ) := by ring
+    _ ≤ 1 * (Real.log (p : ℝ) / (p : ℝ)) ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_right hpow (sq_nonneg _)
-    _ = (Real.log (p : ℝ) / (p : ℝ)) ^ 2 := one_mul _
+    _ = (Real.log (p : ℝ) / (p : ℝ)) ^ (2 : ℕ) := one_mul _
 
 /-- Universal Wold Fisher mass is strictly positive. -/
 theorem woldDepthOneFisherMass_pos :
@@ -88,9 +88,9 @@ theorem xiDepthOneCenteredWoldCoefficient_eq
 
 /-- Every divisor-labelled centered Wold source has finite squared energy. -/
 theorem summable_xiDepthOneCenteredWoldCoefficient_sq (q : XiZeroCopy) :
-    Summable (fun p : Nat.Primes => xiDepthOneCenteredWoldCoefficient q p ^ 2) := by
+    Summable (fun p : Nat.Primes => xiDepthOneCenteredWoldCoefficient q p ^ (2 : ℕ)) := by
   have h := summable_woldCoeff_one_sq.mul_left
-    (primeDepthBVWoldXiCenteredRate q.1 ^ 2)
+    (primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ))
   exact h.congr fun p => by
     rw [xiDepthOneCenteredWoldCoefficient_eq]
     ring
@@ -98,7 +98,7 @@ theorem summable_xiDepthOneCenteredWoldCoefficient_sq (q : XiZeroCopy) :
 /-- Exact source norm: only divisor dependence is centered horizontal rate squared. -/
 theorem xiDepthOneCenteredWoldEnergy_eq_rate_sq_mul_mass (q : XiZeroCopy) :
     xiDepthOneCenteredWoldEnergy q =
-      primeDepthBVWoldXiCenteredRate q.1 ^ 2 * woldDepthOneFisherMass := by
+      primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) * woldDepthOneFisherMass := by
   rw [xiDepthOneCenteredWoldEnergy, woldDepthOneFisherMass, ← tsum_mul_left]
   exact tsum_congr fun p => by
     rw [xiDepthOneCenteredWoldCoefficient_eq]
@@ -127,7 +127,7 @@ theorem xiZeroCopyReciprocalSquare_im_eq_centeredRate_mul_height_div
     (q : XiZeroCopy) :
     (xiZeroCopyReciprocalSquare q).im =
       primeDepthBVWoldXiCenteredRate q.1 * (q.1 : ℂ).im /
-        Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ 2 := by
+        Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ (2 : ℕ) := by
   rw [xiZeroCopyReciprocalSquare_eq, xiCentralReciprocalSquare_im]
   unfold primeDepthBVWoldXiCenteredRate
   ring
@@ -136,9 +136,9 @@ theorem xiZeroCopyReciprocalSquare_im_eq_centeredRate_mul_height_div
 theorem xiHeatCassiniOrientationTerm_eq_rate_sq_mul_bvWoldGauge
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
     xiHeatCassiniOrientationTerm y q =
-      primeDepthBVWoldXiCenteredRate q.1 ^ 2 *
+      primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) *
         xiHeatCassiniBVWoldTransferGauge y q := by
-  let D₀ : ℝ := Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ 2
+  let D₀ : ℝ := Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ (2 : ℕ)
   let D₁ : ℝ := Complex.normSq
     (1 + (y : ℂ) * xiZeroCopyReciprocalSquare q)
   have hD₀ : D₀ ≠ 0 := by
@@ -161,7 +161,7 @@ theorem xiHeatCassiniOrientationTerm_eq_rate_sq_mul_bvWoldGauge
 theorem xiHeatCassiniBVWoldTransferGauge_pos
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
     0 < xiHeatCassiniBVWoldTransferGauge y q := by
-  let D₀ : ℝ := Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ 2
+  let D₀ : ℝ := Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ (2 : ℕ)
   let D₁ : ℝ := Complex.normSq
     (1 + (y : ℂ) * xiZeroCopyReciprocalSquare q)
   have hD₀ : 0 < D₀ := pow_pos
@@ -170,9 +170,9 @@ theorem xiHeatCassiniBVWoldTransferGauge_pos
     (one_add_mul_xiZeroCopyReciprocalSquare_ne_zero hy.le q)
   have hre : 0 < (xiShiftedReciprocalSquare y q).re := by
     simpa only [xiShiftedResponseMass] using xiShiftedResponseMass_pos hy q
-  have him : 0 < (q.1 : ℂ).im ^ 2 :=
+  have him : 0 < (q.1 : ℂ).im ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)
-  change 0 < (q.1 : ℂ).im ^ 2 / ((D₀ * D₁) ^ 2 *
+  change 0 < (q.1 : ℂ).im ^ (2 : ℕ) / ((D₀ * D₁) ^ (2 : ℕ) *
     (xiShiftedReciprocalSquare y q).re)
   exact div_pos him (mul_pos (sq_pos_of_pos (mul_pos hD₀ hD₁)) hre)
 

@@ -38,7 +38,7 @@ theorem norm_le_of_step_bound_ge {L : ℂ → ℂ} {N : ℕ} {K R : ℝ} (hK : 0
     simpa using h.symm
   have hstepbound : ∀ k : ℕ,
       ‖L (z + ((k : ℕ) + 1 : ℕ)) - L (z + (k : ℂ))‖
-        ≤ (2 * K) / (‖z‖ ^ N * (‖z‖ + (k : ℝ)) ^ 2) := by
+        ≤ (2 * K) / (‖z‖ ^ N * (‖z‖ + (k : ℝ)) ^ (2 : ℕ)) := by
     intro k
     have hcast : ((z : ℂ) + (((k : ℕ) + 1 : ℕ) : ℂ)) = (z + (k : ℂ)) + 1 := by
       push_cast
@@ -46,7 +46,7 @@ theorem norm_le_of_step_bound_ge {L : ℂ → ℂ} {N : ℕ} {K R : ℝ} (hK : 0
     rw [hcast]
     refine le_trans (hstep (z + (k : ℂ)) (hzre k) (hnormR k)) ?_
     have hpow := norm_add_natCast_pow_ge hz N k
-    have hden : (0 : ℝ) < ‖z‖ ^ N * (‖z‖ + (k : ℝ)) ^ 2 := by
+    have hden : (0 : ℝ) < ‖z‖ ^ N * (‖z‖ + (k : ℝ)) ^ (2 : ℕ) := by
       have : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
       positivity
     have hcpos : (0 : ℝ) < ‖z + (k : ℂ)‖ ^ (N + 2) := by
@@ -59,15 +59,15 @@ theorem norm_le_of_step_bound_ge {L : ℂ → ℂ} {N : ℕ} {K R : ℝ} (hK : 0
     rw [htel M]
     refine le_trans (norm_sum_le _ _) ?_
     refine le_trans (Finset.sum_le_sum fun k _ => hstepbound k) ?_
-    have hrw : ∀ k : ℕ, (2 * K) / (‖z‖ ^ N * (‖z‖ + (k : ℝ)) ^ 2)
-        = ((2 * K) / ‖z‖ ^ N) * ((1 : ℝ) / (‖z‖ + (k : ℝ)) ^ 2) := by
+    have hrw : ∀ k : ℕ, (2 * K) / (‖z‖ ^ N * (‖z‖ + (k : ℝ)) ^ (2 : ℕ))
+        = ((2 * K) / ‖z‖ ^ N) * ((1 : ℝ) / (‖z‖ + (k : ℝ)) ^ (2 : ℕ)) := by
       intro k
       field_simp
     rw [Finset.sum_congr rfl (fun k _ => hrw k), ← Finset.mul_sum]
     have hsum := sum_inv_sq_shift_head_le hzpos M
     have hc0 : (0 : ℝ) ≤ (2 * K) / ‖z‖ ^ N := by positivity
     refine le_trans (mul_le_mul_of_nonneg_left hsum hc0) ?_
-    have hid : ((2 * K) / ‖z‖ ^ N) * (1 / ‖z‖ ^ 2 + 1 / ‖z‖)
+    have hid : ((2 * K) / ‖z‖ ^ N) * (1 / ‖z‖ ^ (2 : ℕ) + 1 / ‖z‖)
         = (2 * K) / ‖z‖ ^ (N + 2) + (2 * K) / ‖z‖ ^ (N + 1) := by
       rw [pow_add, pow_add]
       field_simp

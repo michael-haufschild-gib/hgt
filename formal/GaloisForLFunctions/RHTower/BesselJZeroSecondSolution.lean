@@ -70,7 +70,7 @@ def besselMDeriv (u : ℝ) : ℝ :=
 /-- Its second derivative. -/
 def besselMSecondDeriv (u : ℝ) : ℝ :=
   -∫ θ in (0 : ℝ)..(Real.pi / 2),
-    Real.cos θ ^ 2 * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ)
+    Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ)
 
 theorem intervalIntegrable_abs_log_sin (a b : ℝ) :
     IntervalIntegrable (fun θ : ℝ => |Real.log (Real.sin θ)|) volume a b := by
@@ -145,7 +145,7 @@ theorem hasDerivAt_besselMDeriv (u : ℝ) : HasDerivAt besselMDeriv (besselMSeco
     (bound := fun θ : ℝ => |Real.log (Real.sin θ)|)
     (F := fun (x : ℝ) (θ : ℝ) => -(Real.cos θ * Real.sin (x * Real.cos θ) * Real.log (Real.sin θ)))
     (F' := fun (x : ℝ) (θ : ℝ) =>
-      -(Real.cos θ ^ 2 * Real.cos (x * Real.cos θ) * Real.log (Real.sin θ)))
+      -(Real.cos θ ^ (2 : ℕ) * Real.cos (x * Real.cos θ) * Real.log (Real.sin θ)))
     (x₀ := u) (s := Set.univ) (by simp)
     (Filter.Eventually.of_forall fun x =>
       ((measurable_besselMDerivIntegrand x).aestronglyMeasurable).restrict)
@@ -166,13 +166,13 @@ theorem hasDerivAt_besselMDeriv (u : ℝ) : HasDerivAt besselMDeriv (besselMSeco
       fun_prop)
     (Filter.Eventually.of_forall fun θ _ x _ => by
       rw [norm_neg, Real.norm_eq_abs, abs_mul, abs_mul]
-      have h1 : Real.cos θ ^ 2 ≤ 1 := by
+      have h1 : Real.cos θ ^ (2 : ℕ) ≤ 1 := by
         nlinarith [Real.abs_cos_le_one θ, abs_nonneg (Real.cos θ), sq_abs (Real.cos θ)]
-      have h1' : |Real.cos θ ^ 2| ≤ 1 := by
+      have h1' : |Real.cos θ ^ (2 : ℕ)| ≤ 1 := by
         rw [abs_of_nonneg (sq_nonneg (Real.cos θ))]
         exact h1
       have h2 : |Real.cos (x * Real.cos θ)| ≤ 1 := Real.abs_cos_le_one _
-      have hAB : |Real.cos θ ^ 2| * |Real.cos (x * Real.cos θ)| ≤ 1 := by
+      have hAB : |Real.cos θ ^ (2 : ℕ)| * |Real.cos (x * Real.cos θ)| ≤ 1 := by
         nlinarith [mul_nonneg (sub_nonneg.mpr h1') (abs_nonneg (Real.cos (x * Real.cos θ)))]
       linarith [mul_le_mul_of_nonneg_right hAB (abs_nonneg (Real.log (Real.sin θ)))])
     (intervalIntegrable_abs_log_sin _ _)
@@ -184,12 +184,12 @@ theorem hasDerivAt_besselMDeriv (u : ℝ) : HasDerivAt besselMDeriv (besselMSeco
       have h3 := h2.neg
       have hval : -(Real.cos θ * (Real.cos (x * Real.cos θ) * Real.cos θ)
             * Real.log (Real.sin θ))
-          = -(Real.cos θ ^ 2 * Real.cos (x * Real.cos θ) * Real.log (Real.sin θ)) := by ring
+          = -(Real.cos θ ^ (2 : ℕ) * Real.cos (x * Real.cos θ) * Real.log (Real.sin θ)) := by ring
       rw [hval] at h3
       exact h3)
   have hderiv := hmain.2
   have hval : (∫ θ in (0 : ℝ)..(Real.pi / 2),
-        -(Real.cos θ ^ 2 * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ)))
+        -(Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ)))
       = besselMSecondDeriv u := by
     rw [besselMSecondDeriv, intervalIntegral.integral_neg]
   rw [hval] at hderiv
@@ -222,7 +222,7 @@ def besselMPrimitive (u θ : ℝ) : ℝ :=
 /-- Its derivative on the open interval. -/
 def besselMPrimitiveDeriv (u θ : ℝ) : ℝ :=
   (Real.cos θ * Real.log (Real.sin θ) + Real.cos θ) * Real.sin (u * Real.cos θ)
-    - u * Real.sin θ ^ 2 * Real.log (Real.sin θ) * Real.cos (u * Real.cos θ)
+    - u * Real.sin θ ^ (2 : ℕ) * Real.log (Real.sin θ) * Real.cos (u * Real.cos θ)
 
 theorem continuous_besselMPrimitive (u : ℝ) : Continuous (besselMPrimitive u) := by
   have h1 : Continuous fun θ : ℝ => Real.sin θ * Real.log (Real.sin θ) :=
@@ -286,19 +286,19 @@ theorem intervalIntegrable_besselMPrimitiveDeriv (u a b : ℝ) :
             rw [abs_mul]
             nlinarith [hc, hL]
     linarith
-  have hterm2 : |u * Real.sin θ ^ 2 * Real.log (Real.sin θ) * Real.cos (u * Real.cos θ)|
+  have hterm2 : |u * Real.sin θ ^ (2 : ℕ) * Real.log (Real.sin θ) * Real.cos (u * Real.cos θ)|
       ≤ |u| * |Real.log (Real.sin θ)| := by
     rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg (sq_nonneg (Real.sin θ))]
-    have hssq : Real.sin θ ^ 2 ≤ 1 := by nlinarith [hs, abs_nonneg (Real.sin θ), sq_abs (Real.sin θ)]
-    have h1 : |u| * Real.sin θ ^ 2 ≤ |u| := by nlinarith [abs_nonneg u, sq_nonneg (Real.sin θ)]
-    calc |u| * Real.sin θ ^ 2 * |Real.log (Real.sin θ)| * |Real.cos (u * Real.cos θ)|
-        ≤ |u| * Real.sin θ ^ 2 * |Real.log (Real.sin θ)| * 1 := by
-          have hpos : (0 : ℝ) ≤ |u| * Real.sin θ ^ 2 * |Real.log (Real.sin θ)| := by positivity
+    have hssq : Real.sin θ ^ (2 : ℕ) ≤ 1 := by nlinarith [hs, abs_nonneg (Real.sin θ), sq_abs (Real.sin θ)]
+    have h1 : |u| * Real.sin θ ^ (2 : ℕ) ≤ |u| := by nlinarith [abs_nonneg u, sq_nonneg (Real.sin θ)]
+    calc |u| * Real.sin θ ^ (2 : ℕ) * |Real.log (Real.sin θ)| * |Real.cos (u * Real.cos θ)|
+        ≤ |u| * Real.sin θ ^ (2 : ℕ) * |Real.log (Real.sin θ)| * 1 := by
+          have hpos : (0 : ℝ) ≤ |u| * Real.sin θ ^ (2 : ℕ) * |Real.log (Real.sin θ)| := by positivity
           nlinarith [hcu, hpos]
       _ ≤ |u| * |Real.log (Real.sin θ)| := by nlinarith [h1, hL]
   calc |besselMPrimitiveDeriv u θ|
       ≤ |(Real.cos θ * Real.log (Real.sin θ) + Real.cos θ) * Real.sin (u * Real.cos θ)|
-        + |u * Real.sin θ ^ 2 * Real.log (Real.sin θ) * Real.cos (u * Real.cos θ)| := by
+        + |u * Real.sin θ ^ (2 : ℕ) * Real.log (Real.sin θ) * Real.cos (u * Real.cos θ)| := by
         rw [besselMPrimitiveDeriv]
         exact abs_sub _ _
     _ ≤ (|Real.log (Real.sin θ)| + 1) + |u| * |Real.log (Real.sin θ)| := by linarith
@@ -343,40 +343,40 @@ private theorem intI1 (u a b : ℝ) : IntervalIntegrable
   nlinarith [mul_nonneg (abs_nonneg (Real.cos θ)) hL, hc, hsu, abs_nonneg (Real.cos θ)]
 
 private theorem intI3 (u a b : ℝ) : IntervalIntegrable
-    (fun θ : ℝ => Real.sin θ ^ 2 * Real.log (Real.sin θ) * Real.cos (u * Real.cos θ))
+    (fun θ : ℝ => Real.sin θ ^ (2 : ℕ) * Real.log (Real.sin θ) * Real.cos (u * Real.cos θ))
     volume a b := by
   refine integrable_trig_logSin a b (by fun_prop) fun θ => ?_
   rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg (Real.sin θ))]
-  have hs : Real.sin θ ^ 2 ≤ 1 := by
+  have hs : Real.sin θ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [Real.abs_sin_le_one θ, abs_nonneg (Real.sin θ), sq_abs (Real.sin θ)]
   have hcu : |Real.cos (u * Real.cos θ)| ≤ 1 := Real.abs_cos_le_one _
   have hL : (0 : ℝ) ≤ |Real.log (Real.sin θ)| := abs_nonneg _
   nlinarith [mul_nonneg (sq_nonneg (Real.sin θ)) hL, hs, hcu]
 
 private theorem intI4 (u a b : ℝ) : IntervalIntegrable
-    (fun θ : ℝ => Real.cos θ ^ 2 * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ))
+    (fun θ : ℝ => Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ))
     volume a b := by
   refine integrable_trig_logSin a b (by fun_prop) fun θ => ?_
   rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg (Real.cos θ))]
-  have hc : Real.cos θ ^ 2 ≤ 1 := by
+  have hc : Real.cos θ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [Real.abs_cos_le_one θ, abs_nonneg (Real.cos θ), sq_abs (Real.cos θ)]
   have hcu : |Real.cos (u * Real.cos θ)| ≤ 1 := Real.abs_cos_le_one _
   have hL : (0 : ℝ) ≤ |Real.log (Real.sin θ)| := abs_nonneg _
-  have hAB : Real.cos θ ^ 2 * |Real.cos (u * Real.cos θ)| ≤ 1 := by
+  have hAB : Real.cos θ ^ (2 : ℕ) * |Real.cos (u * Real.cos θ)| ≤ 1 := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hc) (abs_nonneg (Real.cos (u * Real.cos θ))),
       abs_nonneg (Real.cos (u * Real.cos θ)), sq_nonneg (Real.cos θ)]
   linarith [mul_le_mul_of_nonneg_right hAB hL]
 
 private theorem intI6 (u a b : ℝ) : IntervalIntegrable
-    (fun θ : ℝ => Real.sin θ ^ 2 * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ))
+    (fun θ : ℝ => Real.sin θ ^ (2 : ℕ) * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ))
     volume a b := by
   refine integrable_trig_logSin a b (by fun_prop) fun θ => ?_
   rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg (Real.sin θ))]
-  have hs : Real.sin θ ^ 2 ≤ 1 := by
+  have hs : Real.sin θ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [Real.abs_sin_le_one θ, abs_nonneg (Real.sin θ), sq_abs (Real.sin θ)]
   have hcu : |Real.cos (u * Real.cos θ)| ≤ 1 := Real.abs_cos_le_one _
   have hL : (0 : ℝ) ≤ |Real.log (Real.sin θ)| := abs_nonneg _
-  have hAB : Real.sin θ ^ 2 * |Real.cos (u * Real.cos θ)| ≤ 1 := by
+  have hAB : Real.sin θ ^ (2 : ℕ) * |Real.cos (u * Real.cos θ)| ≤ 1 := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hs) (abs_nonneg (Real.cos (u * Real.cos θ))),
       abs_nonneg (Real.cos (u * Real.cos θ)), sq_nonneg (Real.sin θ)]
   linarith [mul_le_mul_of_nonneg_right hAB hL]
@@ -397,16 +397,16 @@ private theorem intI7 (u a b : ℝ) : IntervalIntegrable
 theorem besselMSecondDeriv_add_besselM (u : ℝ) :
     besselMSecondDeriv u + besselM u
       = ∫ θ in (0 : ℝ)..(Real.pi / 2),
-          Real.sin θ ^ 2 * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ) := by
+          Real.sin θ ^ (2 : ℕ) * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ) := by
   have key : (∫ θ in (0 : ℝ)..(Real.pi / 2), Real.cos (u * Real.cos θ) * Real.log (Real.sin θ))
       - (∫ θ in (0 : ℝ)..(Real.pi / 2),
-          Real.cos θ ^ 2 * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ))
+          Real.cos θ ^ (2 : ℕ) * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ))
       = ∫ θ in (0 : ℝ)..(Real.pi / 2),
-          Real.sin θ ^ 2 * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ) := by
+          Real.sin θ ^ (2 : ℕ) * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ) := by
     rw [← intervalIntegral.integral_sub (intervalIntegrable_besselMIntegrand u _ _)
       (intI4 u _ _)]
     refine intervalIntegral.integral_congr fun θ _ => ?_
-    have hpy : Real.sin θ ^ 2 = 1 - Real.cos θ ^ 2 := by
+    have hpy : Real.sin θ ^ (2 : ℕ) = 1 - Real.cos θ ^ (2 : ℕ) := by
       have := Real.sin_sq_add_cos_sq θ
       linarith
     rw [hpy]
@@ -427,7 +427,7 @@ theorem besselM_defect (u : ℝ) :
             Real.cos θ * Real.log (Real.sin θ) * Real.sin (u * Real.cos θ))
           + ∫ θ in (0 : ℝ)..(Real.pi / 2), Real.cos θ * Real.sin (u * Real.cos θ))
         - u * ∫ θ in (0 : ℝ)..(Real.pi / 2),
-            Real.sin θ ^ 2 * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ) := by
+            Real.sin θ ^ (2 : ℕ) * Real.cos (u * Real.cos θ) * Real.log (Real.sin θ) := by
     have hcont : IntervalIntegrable
         (fun θ : ℝ => Real.cos θ * Real.sin (u * Real.cos θ)) volume 0 (Real.pi / 2) := by
       refine Continuous.intervalIntegrable ?_ _ _
@@ -476,7 +476,7 @@ theorem hasDerivAt_besselK {u : ℝ} (hu : 0 < u) : HasDerivAt besselK (besselKD
 
 /-- The second derivative of the second solution. -/
 def besselKSecondDeriv (u : ℝ) : ℝ :=
-  Real.pi / 4 * (2 * besselJ0Deriv u / u - besselJ0 u / u ^ 2
+  Real.pi / 4 * (2 * besselJ0Deriv u / u - besselJ0 u / u ^ (2 : ℕ)
       + Real.log u * besselJ0SecondDeriv u)
     + besselMSecondDeriv u
 
@@ -485,14 +485,14 @@ theorem hasDerivAt_besselKDeriv {u : ℝ} (hu : 0 < u) :
   have hune : u ≠ 0 := hu.ne'
   have hlog : HasDerivAt Real.log u⁻¹ u := Real.hasDerivAt_log hune
   have hquot : HasDerivAt (fun t : ℝ => besselJ0 t / t)
-      ((besselJ0Deriv u * u - besselJ0 u * 1) / u ^ 2) u :=
+      ((besselJ0Deriv u * u - besselJ0 u * 1) / u ^ (2 : ℕ)) u :=
     (hasDerivAt_besselJ0 u).fun_div (hasDerivAt_id u) hune
   have hprod : HasDerivAt (fun t : ℝ => Real.log t * besselJ0Deriv t)
       (u⁻¹ * besselJ0Deriv u + Real.log u * besselJ0SecondDeriv u) u :=
     hlog.fun_mul (hasDerivAt_besselJ0Deriv u)
   have hsum := (hquot.fun_add hprod).const_mul (Real.pi / 4)
   have h := hsum.fun_add (hasDerivAt_besselMDeriv u)
-  have hval : Real.pi / 4 * ((besselJ0Deriv u * u - besselJ0 u * 1) / u ^ 2
+  have hval : Real.pi / 4 * ((besselJ0Deriv u * u - besselJ0 u * 1) / u ^ (2 : ℕ)
         + (u⁻¹ * besselJ0Deriv u + Real.log u * besselJ0SecondDeriv u))
       + besselMSecondDeriv u
       = besselKSecondDeriv u := by
@@ -602,21 +602,21 @@ theorem abs_besselJ0Deriv_le_one (u : ℝ) : |besselJ0Deriv u| ≤ 1 := by
     _ = 1 := by field_simp
 
 /-- A quadratic lower bound near the origin: `J_0(u) >= 1 - u²/2`. -/
-theorem one_sub_sq_div_two_le_besselJ0 (u : ℝ) : 1 - u ^ 2 / 2 ≤ besselJ0 u := by
+theorem one_sub_sq_div_two_le_besselJ0 (u : ℝ) : 1 - u ^ (2 : ℕ) / 2 ≤ besselJ0 u := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hcont : Continuous fun θ : ℝ => Real.cos (u * Real.sin θ) := by fun_prop
-  have hmono : (∫ θ in (0 : ℝ)..Real.pi, (1 - u ^ 2 / 2))
+  have hmono : (∫ θ in (0 : ℝ)..Real.pi, (1 - u ^ (2 : ℕ) / 2))
       ≤ ∫ θ in (0 : ℝ)..Real.pi, Real.cos (u * Real.sin θ) := by
     refine intervalIntegral.integral_mono_on hpi.le intervalIntegrable_const
       (hcont.intervalIntegrable _ _) fun θ hθ => ?_
-    have hlow : 1 - (u * Real.sin θ) ^ 2 / 2 ≤ Real.cos (u * Real.sin θ) :=
+    have hlow : 1 - (u * Real.sin θ) ^ (2 : ℕ) / 2 ≤ Real.cos (u * Real.sin θ) :=
       Real.one_sub_sq_div_two_le_cos
-    have hs : Real.sin θ ^ 2 ≤ 1 := by
+    have hs : Real.sin θ ^ (2 : ℕ) ≤ 1 := by
       nlinarith [Real.abs_sin_le_one θ, abs_nonneg (Real.sin θ), sq_abs (Real.sin θ)]
     nlinarith [hlow, hs, sq_nonneg u, sq_nonneg (Real.sin θ)]
   rw [intervalIntegral.integral_const, sub_zero, smul_eq_mul] at hmono
   have h := mul_le_mul_of_nonneg_left hmono (by positivity : (0 : ℝ) ≤ 1 / Real.pi)
-  rw [show 1 / Real.pi * (Real.pi * (1 - u ^ 2 / 2)) = 1 - u ^ 2 / 2 from by field_simp] at h
+  rw [show 1 / Real.pi * (Real.pi * (1 - u ^ (2 : ℕ) / 2)) = 1 - u ^ (2 : ℕ) / 2 from by field_simp] at h
   rw [besselJ0]
   exact h
 
@@ -629,7 +629,7 @@ def besselWronskian (u : ℝ) : ℝ :=
 
 /-- The log terms cancel: the Wronskian is `(pi/4) J_0² plus a bounded remainder`. -/
 theorem besselWronskian_eq {u : ℝ} (hu : 0 < u) :
-    besselWronskian u = Real.pi / 4 * besselJ0 u ^ 2
+    besselWronskian u = Real.pi / 4 * besselJ0 u ^ (2 : ℕ)
       + u * (besselJ0 u * besselMDeriv u - besselJ0Deriv u * besselM u) := by
   have hune : u ≠ 0 := hu.ne'
   rw [besselWronskian, besselKDeriv, besselK]
@@ -691,7 +691,7 @@ theorem besselWronskian_pos {u : ℝ} (hu : 0 < u) : 0 < besselWronskian u := by
     have hJup : besselJ0 (1 / 10) ≤ 1 := by
       have h := abs_besselJ0_le_one (1 / 10)
       exact (abs_le.mp h).2
-    have hJsq : (199 : ℝ) / 200 * (199 / 200) ≤ besselJ0 (1 / 10) ^ 2 := by
+    have hJsq : (199 : ℝ) / 200 * (199 / 200) ≤ besselJ0 (1 / 10) ^ (2 : ℕ) := by
       nlinarith [hJlow, hJup]
     have hMd := abs_besselMDeriv_le (1 / 10)
     have hM := abs_besselM_le (1 / 10)
@@ -734,19 +734,19 @@ weighted energy `(v² + v'²) exp(1/(2x) - 1/2)` has derivative
 `-2q E (v v' + v² + v'²) <= 0`, because `v v' + v² + v'² = (v + v'/2)² + (3/4) v'²`. -/
 theorem sq_add_sq_le_of_perturbed_harmonic {v dv : ℝ → ℝ}
     (hv : ∀ x : ℝ, 1 ≤ x → HasDerivAt v (dv x) x)
-    (hdv : ∀ x : ℝ, 1 ≤ x → HasDerivAt dv (-(1 + 1 / (4 * x ^ 2)) * v x) x)
+    (hdv : ∀ x : ℝ, 1 ≤ x → HasDerivAt dv (-(1 + 1 / (4 * x ^ (2 : ℕ))) * v x) x)
     {x : ℝ} (hx : 1 ≤ x) :
-    v x ^ 2 + dv x ^ 2 ≤ (v 1 ^ 2 + dv 1 ^ 2) * Real.exp (1 / 2) := by
+    v x ^ (2 : ℕ) + dv x ^ (2 : ℕ) ≤ (v 1 ^ (2 : ℕ) + dv 1 ^ (2 : ℕ)) * Real.exp (1 / 2) := by
   set E : ℝ → ℝ := fun t => Real.exp (1 / (2 * t) - 1 / 2) with hEdef
-  set h : ℝ → ℝ := fun t => (v t ^ 2 + dv t ^ 2) * E t with hhdef
+  set h : ℝ → ℝ := fun t => (v t ^ (2 : ℕ) + dv t ^ (2 : ℕ)) * E t with hhdef
   have hEpos : ∀ t : ℝ, 0 < E t := fun t => Real.exp_pos _
-  have hEderiv : ∀ t : ℝ, 0 < t → HasDerivAt E (-(1 / (2 * t ^ 2)) * E t) t := by
+  have hEderiv : ∀ t : ℝ, 0 < t → HasDerivAt E (-(1 / (2 * t ^ (2 : ℕ))) * E t) t := by
     intro t ht
-    have hinner : HasDerivAt (fun s : ℝ => 1 / (2 * s) - 1 / 2) (-(1 / (2 * t ^ 2))) t := by
+    have hinner : HasDerivAt (fun s : ℝ => 1 / (2 * s) - 1 / 2) (-(1 / (2 * t ^ (2 : ℕ)))) t := by
       have h1 : HasDerivAt (fun s : ℝ => 2 * s) 2 t := by
         simpa using (hasDerivAt_id t).const_mul 2
       have h2 := (hasDerivAt_const t (1 : ℝ)).fun_div h1 (by positivity)
-      have hval : ((0 : ℝ) * (2 * t) - 1 * 2) / (2 * t) ^ 2 = -(1 / (2 * t ^ 2)) := by
+      have hval : ((0 : ℝ) * (2 * t) - 1 * 2) / (2 * t) ^ (2 : ℕ) = -(1 / (2 * t ^ (2 : ℕ))) := by
         field_simp
         ring
       rw [hval] at h2
@@ -755,37 +755,37 @@ theorem sq_add_sq_le_of_perturbed_harmonic {v dv : ℝ → ℝ}
     rw [hEdef]
     exact h.congr_deriv (by ring)
   have hAderiv : ∀ t : ℝ, 1 ≤ t →
-      HasDerivAt (fun s : ℝ => v s ^ 2 + dv s ^ 2)
-        (-(2 * (1 / (4 * t ^ 2))) * (v t * dv t)) t := by
+      HasDerivAt (fun s : ℝ => v s ^ (2 : ℕ) + dv s ^ (2 : ℕ))
+        (-(2 * (1 / (4 * t ^ (2 : ℕ)))) * (v t * dv t)) t := by
     intro t ht
-    have hsq : (fun s : ℝ => v s ^ 2) = fun s : ℝ => v s * v s := by
+    have hsq : (fun s : ℝ => v s ^ (2 : ℕ)) = fun s : ℝ => v s * v s := by
       funext s
       ring
-    have hsq' : (fun s : ℝ => dv s ^ 2) = fun s : ℝ => dv s * dv s := by
+    have hsq' : (fun s : ℝ => dv s ^ (2 : ℕ)) = fun s : ℝ => dv s * dv s := by
       funext s
       ring
-    have h1 : HasDerivAt (fun s : ℝ => v s ^ 2) (2 * v t * dv t) t := by
+    have h1 : HasDerivAt (fun s : ℝ => v s ^ (2 : ℕ)) (2 * v t * dv t) t := by
       rw [hsq, show (2 * v t * dv t) = dv t * v t + v t * dv t from by ring]
       exact (hv t ht).fun_mul (hv t ht)
-    have h2 : HasDerivAt (fun s : ℝ => dv s ^ 2)
-        (2 * dv t * (-(1 + 1 / (4 * t ^ 2)) * v t)) t := by
-      rw [hsq', show (2 * dv t * (-(1 + 1 / (4 * t ^ 2)) * v t))
-        = (-(1 + 1 / (4 * t ^ 2)) * v t) * dv t + dv t * (-(1 + 1 / (4 * t ^ 2)) * v t) from by
+    have h2 : HasDerivAt (fun s : ℝ => dv s ^ (2 : ℕ))
+        (2 * dv t * (-(1 + 1 / (4 * t ^ (2 : ℕ))) * v t)) t := by
+      rw [hsq', show (2 * dv t * (-(1 + 1 / (4 * t ^ (2 : ℕ))) * v t))
+        = (-(1 + 1 / (4 * t ^ (2 : ℕ))) * v t) * dv t + dv t * (-(1 + 1 / (4 * t ^ (2 : ℕ))) * v t) from by
           ring]
       exact (hdv t ht).fun_mul (hdv t ht)
     have h := h1.fun_add h2
-    have hval : 2 * v t * dv t + 2 * dv t * (-(1 + 1 / (4 * t ^ 2)) * v t)
-        = -(2 * (1 / (4 * t ^ 2))) * (v t * dv t) := by ring
+    have hval : 2 * v t * dv t + 2 * dv t * (-(1 + 1 / (4 * t ^ (2 : ℕ))) * v t)
+        = -(2 * (1 / (4 * t ^ (2 : ℕ)))) * (v t * dv t) := by ring
     rw [hval] at h
     exact h
   have hhderiv : ∀ t : ℝ, 1 ≤ t → HasDerivAt h
-      (-(2 * (1 / (4 * t ^ 2))) * E t * (v t * dv t + (v t ^ 2 + dv t ^ 2))) t := by
+      (-(2 * (1 / (4 * t ^ (2 : ℕ)))) * E t * (v t * dv t + (v t ^ (2 : ℕ) + dv t ^ (2 : ℕ)))) t := by
     intro t ht
     have ht0 : (0 : ℝ) < t := by linarith
     have h := (hAderiv t ht).fun_mul (hEderiv t ht0)
-    have hval : -(2 * (1 / (4 * t ^ 2))) * (v t * dv t) * E t
-          + (v t ^ 2 + dv t ^ 2) * (-(1 / (2 * t ^ 2)) * E t)
-        = -(2 * (1 / (4 * t ^ 2))) * E t * (v t * dv t + (v t ^ 2 + dv t ^ 2)) := by
+    have hval : -(2 * (1 / (4 * t ^ (2 : ℕ)))) * (v t * dv t) * E t
+          + (v t ^ (2 : ℕ) + dv t ^ (2 : ℕ)) * (-(1 / (2 * t ^ (2 : ℕ))) * E t)
+        = -(2 * (1 / (4 * t ^ (2 : ℕ)))) * E t * (v t * dv t + (v t ^ (2 : ℕ) + dv t ^ (2 : ℕ))) := by
       field_simp
       ring
     rw [hval] at h
@@ -802,8 +802,8 @@ theorem sq_add_sq_le_of_perturbed_harmonic {v dv : ℝ → ℝ}
       rw [interior_Ici] at ht
       have ht1 : (1 : ℝ) < t := ht
       rw [(hhderiv t ht1.le).deriv]
-      have hq : (0 : ℝ) < 2 * (1 / (4 * t ^ 2)) := by positivity
-      have hsum : 0 ≤ v t * dv t + (v t ^ 2 + dv t ^ 2) := by
+      have hq : (0 : ℝ) < 2 * (1 / (4 * t ^ (2 : ℕ))) := by positivity
+      have hsum : 0 ≤ v t * dv t + (v t ^ (2 : ℕ) + dv t ^ (2 : ℕ)) := by
         nlinarith [sq_nonneg (v t + dv t / 2), sq_nonneg (dv t)]
       have := mul_nonneg (mul_nonneg hq.le (hEpos t).le) hsum
       linarith [this]
@@ -817,17 +817,17 @@ theorem sq_add_sq_le_of_perturbed_harmonic {v dv : ℝ → ℝ}
     refine Real.exp_le_exp.mpr ?_
     have : (0 : ℝ) < 1 / (2 * x) := by positivity
     linarith
-  have hAnn : 0 ≤ v x ^ 2 + dv x ^ 2 := by positivity
-  have hA1nn : 0 ≤ v 1 ^ 2 + dv 1 ^ 2 := by positivity
+  have hAnn : 0 ≤ v x ^ (2 : ℕ) + dv x ^ (2 : ℕ) := by positivity
+  have hA1nn : 0 ≤ v 1 ^ (2 : ℕ) + dv 1 ^ (2 : ℕ) := by positivity
   rw [hhdef] at hle
   simp only at hle
   rw [hE1, mul_one] at hle
   -- (A x) * E x ≤ A 1
-  have hstep : (v x ^ 2 + dv x ^ 2) * Real.exp (-(1 / 2)) ≤ v 1 ^ 2 + dv 1 ^ 2 := by
-    calc (v x ^ 2 + dv x ^ 2) * Real.exp (-(1 / 2))
-        ≤ (v x ^ 2 + dv x ^ 2) * E x := by
+  have hstep : (v x ^ (2 : ℕ) + dv x ^ (2 : ℕ)) * Real.exp (-(1 / 2)) ≤ v 1 ^ (2 : ℕ) + dv 1 ^ (2 : ℕ) := by
+    calc (v x ^ (2 : ℕ) + dv x ^ (2 : ℕ)) * Real.exp (-(1 / 2))
+        ≤ (v x ^ (2 : ℕ) + dv x ^ (2 : ℕ)) * E x := by
           exact mul_le_mul_of_nonneg_left hEx hAnn
-      _ ≤ v 1 ^ 2 + dv 1 ^ 2 := hle
+      _ ≤ v 1 ^ (2 : ℕ) + dv 1 ^ (2 : ℕ) := hle
   have hexp : Real.exp (-(1 / 2)) * Real.exp (1 / 2) = 1 := by
     rw [← Real.exp_add]
     norm_num
@@ -846,7 +846,7 @@ theorem hasDerivAt_besselKV {x : ℝ} (hx : 0 < x) : HasDerivAt besselKV (bessel
   (Real.hasDerivAt_sqrt hx.ne').mul (hasDerivAt_besselK hx)
 
 theorem hasDerivAt_besselKVDeriv {x : ℝ} (hx : 0 < x) :
-    HasDerivAt besselKVDeriv (-(1 + 1 / (4 * x ^ 2)) * besselKV x) x := by
+    HasDerivAt besselKVDeriv (-(1 + 1 / (4 * x ^ (2 : ℕ))) * besselKV x) x := by
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx
   have hsq : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx.le
   have hsqrt : HasDerivAt (fun t : ℝ => Real.sqrt t) (1 / (2 * Real.sqrt x)) x :=
@@ -856,11 +856,11 @@ theorem hasDerivAt_besselKVDeriv {x : ℝ} (hx : 0 < x) :
   have hinv : HasDerivAt (fun t : ℝ => 1 / (2 * Real.sqrt t))
       (-(1 / (4 * x * Real.sqrt x))) x := by
     have h := (hasDerivAt_const x (1 : ℝ)).fun_div hden (by positivity)
-    have h4 : (2 * Real.sqrt x) ^ 2 = 4 * x := by
+    have h4 : (2 * Real.sqrt x) ^ (2 : ℕ) = 4 * x := by
       rw [mul_pow, Real.sq_sqrt hx.le]
       ring
     have hval : ((0 : ℝ) * (2 * Real.sqrt x) - 1 * (2 * (1 / (2 * Real.sqrt x))))
-          / (2 * Real.sqrt x) ^ 2
+          / (2 * Real.sqrt x) ^ (2 : ℕ)
         = -(1 / (4 * x * Real.sqrt x)) := by
       rw [h4]
       field_simp
@@ -879,7 +879,7 @@ theorem hasDerivAt_besselKVDeriv {x : ℝ} (hx : 0 < x) :
   have hval : -(1 / (4 * x * Real.sqrt x)) * besselK x
         + 1 / (2 * Real.sqrt x) * besselKDeriv x
       + (1 / (2 * Real.sqrt x) * besselKDeriv x + Real.sqrt x * besselKSecondDeriv x)
-      = -(1 + 1 / (4 * x ^ 2)) * besselKV x := by
+      = -(1 + 1 / (4 * x ^ (2 : ℕ))) * besselKV x := by
     obtain ⟨S, hS0, hSx, hSeq⟩ : ∃ S : ℝ, 0 < S ∧ S * S = x ∧ Real.sqrt x = S :=
       ⟨Real.sqrt x, hsx, hsq, rfl⟩
     have hode' : besselKSecondDeriv x = (-besselKDeriv x - x * besselK x) / x := by
@@ -896,7 +896,7 @@ theorem hasDerivAt_besselKVDeriv {x : ℝ} (hx : 0 < x) :
 does all the work, and this is what makes `K` an admissible partner of `J_0` in the Green kernel. -/
 theorem exists_besselK_envelope :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ u : ℝ, 1 ≤ u → |besselK u| ≤ C / Real.sqrt u := by
-  refine ⟨Real.sqrt ((besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2)),
+  refine ⟨Real.sqrt ((besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ)) * Real.exp (1 / 2)),
     Real.sqrt_nonneg _, fun u hu => ?_⟩
   have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
   have hsu : (0 : ℝ) < Real.sqrt u := Real.sqrt_pos.mpr hu0
@@ -905,11 +905,11 @@ theorem exists_besselK_envelope :
     (v := besselKV) (dv := besselKVDeriv)
     (fun x hx => hasDerivAt_besselKV (lt_of_lt_of_le zero_lt_one hx))
     (fun x hx => hasDerivAt_besselKVDeriv (lt_of_lt_of_le zero_lt_one hx)) hu
-  have hVsq : besselKV u ^ 2
-      ≤ (besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2) := by
+  have hVsq : besselKV u ^ (2 : ℕ)
+      ≤ (besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ)) * Real.exp (1 / 2) := by
     nlinarith [sq_nonneg (besselKVDeriv u), henergy]
   have hV : |besselKV u|
-      ≤ Real.sqrt ((besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2)) := by
+      ≤ Real.sqrt ((besselKV 1 ^ (2 : ℕ) + besselKVDeriv 1 ^ (2 : ℕ)) * Real.exp (1 / 2)) := by
     rw [← Real.sqrt_sq_eq_abs]
     exact Real.sqrt_le_sqrt hVsq
   have hKV : |besselKV u| = Real.sqrt u * |besselK u| := by

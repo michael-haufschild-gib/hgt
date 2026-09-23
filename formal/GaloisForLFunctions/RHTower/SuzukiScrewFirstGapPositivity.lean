@@ -58,7 +58,7 @@ private theorem hasSum_reciprocalStep (N : ℕ) :
   · ring
 
 private theorem reciprocalStep_le_lerch_reciprocal_sq (N j : ℕ) :
-    reciprocalStep N j ≤ 1 / (lerchExp (N + j)) ^ 2 := by
+    reciprocalStep N j ≤ 1 / (lerchExp (N + j)) ^ (2 : ℕ) := by
   have hA : (0 : ℝ) < (4 * (N + j) + 1 : ℕ) := by positivity
   have hB : (0 : ℝ) < (4 * (N + j + 1) + 1 : ℕ) := by positivity
   have hstep : reciprocalStep N j =
@@ -72,7 +72,7 @@ private theorem reciprocalStep_le_lerch_reciprocal_sq (N j : ℕ) :
     ring
   rw [hstep, hlerch]
   have hle : (4 * (N + j) + 1 : ℕ) ≤ 4 * (N + j + 1) + 1 := by omega
-  have hden : ((4 * (N + j) + 1 : ℕ) : ℝ) ^ 2 ≤
+  have hden : ((4 * (N + j) + 1 : ℕ) : ℝ) ^ (2 : ℕ) ≤
       ((4 * (N + j) + 1 : ℕ) : ℝ) * (4 * (N + j + 1) + 1 : ℕ) := by
     have hleR : ((4 * (N + j) + 1 : ℕ) : ℝ) ≤
         ((4 * (N + j + 1) + 1 : ℕ) : ℝ) := by exact_mod_cast hle
@@ -86,16 +86,16 @@ private theorem reciprocalStep_le_lerch_reciprocal_sq (N j : ℕ) :
 
 private theorem lerch_difference_tail_lower (N : ℕ) {t : ℝ} (ht : 0 < t) :
     (∑ k ∈ Finset.range N,
-        (1 - Real.exp (-(lerchExp k * t))) / (lerchExp k) ^ 2) +
+        (1 - Real.exp (-(lerchExp k * t))) / (lerchExp k) ^ (2 : ℕ)) +
       (1 - Real.exp (-(lerchExp N * t))) / (4 * N + 1 : ℕ) ≤
         screwLerchConst - screwLerchTail t := by
   have hfull : HasSum (fun k : ℕ =>
-      (1 - Real.exp (-(lerchExp k * t))) / (lerchExp k) ^ 2)
+      (1 - Real.exp (-(lerchExp k * t))) / (lerchExp k) ^ (2 : ℕ))
       (screwLerchConst - screwLerchTail t) := by
-    have hzero : HasSum (fun k : ℕ => 1 / (lerchExp k) ^ 2) screwLerchConst := by
+    have hzero : HasSum (fun k : ℕ => 1 / (lerchExp k) ^ (2 : ℕ)) screwLerchConst := by
       simpa [screwLerchConst, screwLerchTail] using summable_one_div_lerchExp_sq.hasSum
     have htail : HasSum (fun k : ℕ =>
-        Real.exp (-(lerchExp k * t)) / (lerchExp k) ^ 2) (screwLerchTail t) :=
+        Real.exp (-(lerchExp k * t)) / (lerchExp k) ^ (2 : ℕ)) (screwLerchTail t) :=
       (summable_screwLerchTerm ht).hasSum
     apply HasSum.congr_fun (hzero.sub htail)
     intro k
@@ -121,10 +121,10 @@ private theorem lerch_difference_tail_lower (N : ℕ) {t : ℝ} (ht : 0 < t) :
   have hsmall : Summable (fun j : ℕ => base * reciprocalStep N j) :=
     (hasSum_reciprocalStep N).summable.mul_left base
   have hlarge : Summable (fun j : ℕ =>
-      (1 - Real.exp (-(lerchExp (j + N) * t))) / (lerchExp (j + N)) ^ 2) :=
+      (1 - Real.exp (-(lerchExp (j + N) * t))) / (lerchExp (j + N)) ^ (2 : ℕ)) :=
     htail.summable
   have hpoint : ∀ j : ℕ, base * reciprocalStep N j ≤
-      (1 - Real.exp (-(lerchExp (j + N) * t))) / (lerchExp (j + N)) ^ 2 := by
+      (1 - Real.exp (-(lerchExp (j + N) * t))) / (lerchExp (j + N)) ^ (2 : ℕ) := by
     intro j
     have hstep := reciprocalStep_le_lerch_reciprocal_sq N j
     have hstep0 := reciprocalStep_nonneg N j
@@ -138,7 +138,7 @@ private theorem lerch_difference_tail_lower (N : ℕ) {t : ℝ} (ht : 0 < t) :
           (1 - Real.exp (-(lerchExp (j + N) * t))) * reciprocalStep N j :=
         mul_le_mul_of_nonneg_right (hmono j) hstep0
       _ ≤ (1 - Real.exp (-(lerchExp (j + N) * t))) *
-          (1 / (lerchExp (N + j)) ^ 2) :=
+          (1 / (lerchExp (N + j)) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hstep hnum0
       _ = _ := by rw [Nat.add_comm]; ring
   have htails := Summable.tsum_le_tsum hpoint hsmall hlarge
@@ -292,13 +292,13 @@ private theorem suzukiFirstGapLower_pos {t : ℝ} (ht : 0 < t)
     rw [Real.exp_lt_one_iff]
     linarith
   have hyone : y ≤ 1 := hytop.le
-  have hy_sq : (1 / 2 : ℝ) ≤ y ^ 2 := by
+  have hy_sq : (1 / 2 : ℝ) ≤ y ^ (2 : ℕ) := by
     have hneg : -Real.log 2 ≤ -t := by linarith
     have hexp := Real.exp_le_exp.mpr hneg
     have hlog2 : Real.exp (-Real.log 2) = (1 / 2 : ℝ) := by
       rw [Real.exp_neg, Real.exp_log (by norm_num : (0 : ℝ) < 2)]
       norm_num
-    have hy2 : y ^ 2 = Real.exp (-t) := by
+    have hy2 : y ^ (2 : ℕ) = Real.exp (-t) := by
       dsimp [y]
       rw [← Real.exp_nat_mul]
       congr 1
@@ -316,28 +316,28 @@ private theorem suzukiFirstGapLower_pos {t : ℝ} (ht : 0 < t)
     rw [Real.sinh_eq] at h
     dsimp [x, y]
     nlinarith
-  have h5 : Real.exp (-(5 * t / 2)) = y ^ 5 := by
+  have h5 : Real.exp (-(5 * t / 2)) = y ^ (5 : ℕ) := by
     rw [exp_neg_half_pow]
     norm_num
-  have h9 : Real.exp (-(9 * t / 2)) = y ^ 9 := by
+  have h9 : Real.exp (-(9 * t / 2)) = y ^ (9 : ℕ) := by
     rw [exp_neg_half_pow]
     norm_num
-  have h13 : Real.exp (-(13 * t / 2)) = y ^ 13 := by
+  have h13 : Real.exp (-(13 * t / 2)) = y ^ (13 : ℕ) := by
     rw [exp_neg_half_pow]
     norm_num
-  have h17 : Real.exp (-(17 * t / 2)) = y ^ 17 := by
+  have h17 : Real.exp (-(17 * t / 2)) = y ^ (17 : ℕ) := by
     rw [exp_neg_half_pow]
     norm_num
-  have h21 : Real.exp (-(21 * t / 2)) = y ^ 21 := by
+  have h21 : Real.exp (-(21 * t / 2)) = y ^ (21 : ℕ) := by
     rw [exp_neg_half_pow]
     norm_num
   have hfactor :
       4 * (x - 1) - (27 / 10) * (x - y) +
-        (4 / 25) * (1 - y ^ 5) +
-        (4 / 81) * (1 - y ^ 9) +
-        (4 / 169) * (1 - y ^ 13) +
-        (4 / 289) * (1 - y ^ 17) +
-        (1 / 21) * (1 - y ^ 21) =
+        (4 / 25) * (1 - y ^ (5 : ℕ)) +
+        (4 / 81) * (1 - y ^ (9 : ℕ)) +
+        (4 / 169) * (1 - y ^ (13 : ℕ)) +
+        (4 / 289) * (1 - y ^ (17 : ℕ)) +
+        (1 / 21) * (1 - y ^ (21 : ℕ)) =
           ((1 - y) / y) * fiveBlockPolynomial y := by
     rw [hxdiv]
     field_simp [hy.ne']

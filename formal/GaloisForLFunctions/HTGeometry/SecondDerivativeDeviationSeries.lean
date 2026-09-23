@@ -68,7 +68,7 @@ theorem deriv_coeffFun_eq (ha : EntireCoeffs a) (z : ℂ) :
 
 /-- **The second derivative with the coordinate weight is the falling-factorial series.** -/
 theorem mul_sq_deriv2_coeffFun_eq (ha : EntireCoeffs a) (z : ℂ) :
-    z ^ 2 * deriv (deriv (coeffFun a)) z
+    z ^ (2 : ℕ) * deriv (deriv (coeffFun a)) z
       = ∑' n : ℕ, ((n : ℂ) * ((n : ℂ) - 1)) * a n * z ^ n := by
   have hfun : deriv (coeffFun a) = coeffFun (derivCoeffs a) := funext (deriv_coeffFun_eq ha)
   have hb : EntireCoeffs (derivCoeffs a) := entireCoeffs_derivCoeffs ha
@@ -77,7 +77,7 @@ theorem mul_sq_deriv2_coeffFun_eq (ha : EntireCoeffs a) (z : ℂ) :
   have hsum : Summable fun m : ℕ => (m : ℂ) * derivCoeffs a m * z ^ m := by
     refine (summable_entireCoeffs_term (entireCoeffs_mul_index hb) z).congr fun m => ?_
     ring
-  have hstep : z ^ 2 * deriv (deriv (coeffFun a)) z
+  have hstep : z ^ (2 : ℕ) * deriv (deriv (coeffFun a)) z
       = z * ∑' m : ℕ, (m : ℂ) * derivCoeffs a m * z ^ m := by
     rw [hfun, ← h1]
     ring
@@ -115,8 +115,8 @@ theorem mul_sq_deriv2_coeffFun_eq (ha : EntireCoeffs a) (z : ℂ) :
 /-! ## The order-two deviation series -/
 
 private theorem norm_deviation_sq_term (a : ℕ → ℂ) (z : ℂ) (n k : ℕ) :
-    ‖((n : ℂ) - (k : ℂ)) ^ 2 * a n * z ^ n‖
-      = ((n : ℝ) - (k : ℝ)) ^ 2 * (‖a n‖ * ‖z‖ ^ n) := by
+    ‖((n : ℂ) - (k : ℂ)) ^ (2 : ℕ) * a n * z ^ n‖
+      = ((n : ℝ) - (k : ℝ)) ^ (2 : ℕ) * (‖a n‖ * ‖z‖ ^ n) := by
   have hidx : ‖((n : ℂ) - (k : ℂ))‖ = |(n : ℝ) - (k : ℝ)| := by
     rw [show ((n : ℂ) - (k : ℂ)) = (((n : ℝ) - (k : ℝ) : ℝ) : ℂ) by push_cast; ring,
       Complex.norm_real, Real.norm_eq_abs]
@@ -124,15 +124,15 @@ private theorem norm_deviation_sq_term (a : ℕ → ℂ) (z : ℂ) (n k : ℕ) :
   ring
 
 theorem summable_deviation_sq_term (ha : EntireCoeffs a) {z : ℂ} (hz : 0 < ‖z‖) (k : ℕ) :
-    Summable fun n : ℕ => ((n : ℂ) - (k : ℂ)) ^ 2 * a n * z ^ n :=
+    Summable fun n : ℕ => ((n : ℂ) - (k : ℂ)) ^ (2 : ℕ) * a n * z ^ n :=
   Summable.of_norm ((summable_index_deviation_sq ha hz k).congr fun n =>
     (norm_deviation_sq_term a z n k).symm)
 
 /-- **The order-two deviation series.**  `z² f″(z) − k(k−1) f(z)` splits into the squared-deviation
 series and `(2k−1)` times the order-one deviation. -/
 theorem mul_sq_deriv2_sub_eq_tsum (ha : EntireCoeffs a) {z : ℂ} (hz : 0 < ‖z‖) (k : ℕ) :
-    z ^ 2 * deriv (deriv (coeffFun a)) z - ((k : ℂ) * ((k : ℂ) - 1)) * coeffFun a z
-      = (∑' n : ℕ, ((n : ℂ) - (k : ℂ)) ^ 2 * a n * z ^ n)
+    z ^ (2 : ℕ) * deriv (deriv (coeffFun a)) z - ((k : ℂ) * ((k : ℂ) - 1)) * coeffFun a z
+      = (∑' n : ℕ, ((n : ℂ) - (k : ℂ)) ^ (2 : ℕ) * a n * z ^ n)
         + (2 * (k : ℂ) - 1) * (z * deriv (coeffFun a) z - (k : ℂ) * coeffFun a z) := by
   have hfall : Summable fun n : ℕ => ((n : ℂ) * ((n : ℂ) - 1)) * a n * z ^ n := by
     refine Summable.of_norm_bounded
@@ -160,7 +160,7 @@ theorem mul_sq_deriv2_sub_eq_tsum (ha : EntireCoeffs a) {z : ℂ} (hz : 0 < ‖z
     refine (summable_entireCoeffs_term (entireCoeffs_mul_index ha) z).congr fun n => ?_
     ring
   have hc : Summable fun n : ℕ => a n * z ^ n := summable_entireCoeffs_term ha z
-  have hdev : Summable fun n : ℕ => ((n : ℂ) - (k : ℂ)) ^ 2 * a n * z ^ n :=
+  have hdev : Summable fun n : ℕ => ((n : ℂ) - (k : ℂ)) ^ (2 : ℕ) * a n * z ^ n :=
     summable_deviation_sq_term ha hz k
   rw [mul_sq_deriv2_coeffFun_eq ha z, coeffFun_eq_tsum, mul_deriv_coeffFun_eq ha z,
     ← tsum_mul_left, ← tsum_mul_left, ← Summable.tsum_sub hidx (hc.mul_left (k : ℂ)),
@@ -172,14 +172,14 @@ theorem mul_sq_deriv2_sub_eq_tsum (ha : EntireCoeffs a) {z : ℂ} (hz : 0 < ‖z
 
 /-- **The order-two deviation estimate.** -/
 theorem norm_mul_sq_deriv2_sub_le (ha : EntireCoeffs a) {z : ℂ} (hz : 0 < ‖z‖) (k : ℕ) :
-    ‖z ^ 2 * deriv (deriv (coeffFun a)) z - ((k : ℂ) * ((k : ℂ) - 1)) * coeffFun a z‖
-      ≤ (∑' n : ℕ, ((n : ℝ) - (k : ℝ)) ^ 2 * (‖a n‖ * ‖z‖ ^ n))
+    ‖z ^ (2 : ℕ) * deriv (deriv (coeffFun a)) z - ((k : ℂ) * ((k : ℂ) - 1)) * coeffFun a z‖
+      ≤ (∑' n : ℕ, ((n : ℝ) - (k : ℝ)) ^ (2 : ℕ) * (‖a n‖ * ‖z‖ ^ n))
         + (2 * (k : ℝ) + 1) * ‖z * deriv (coeffFun a) z - (k : ℂ) * coeffFun a z‖ := by
   rw [mul_sq_deriv2_sub_eq_tsum ha hz k]
-  have hdev : Summable fun n : ℕ => ((n : ℂ) - (k : ℂ)) ^ 2 * a n * z ^ n :=
+  have hdev : Summable fun n : ℕ => ((n : ℂ) - (k : ℂ)) ^ (2 : ℕ) * a n * z ^ n :=
     summable_deviation_sq_term ha hz k
-  have h1 : ‖∑' n : ℕ, ((n : ℂ) - (k : ℂ)) ^ 2 * a n * z ^ n‖
-      ≤ ∑' n : ℕ, ((n : ℝ) - (k : ℝ)) ^ 2 * (‖a n‖ * ‖z‖ ^ n) := by
+  have h1 : ‖∑' n : ℕ, ((n : ℂ) - (k : ℂ)) ^ (2 : ℕ) * a n * z ^ n‖
+      ≤ ∑' n : ℕ, ((n : ℝ) - (k : ℝ)) ^ (2 : ℕ) * (‖a n‖ * ‖z‖ ^ n) := by
     refine le_trans (norm_tsum_le_tsum_norm ?_) (le_of_eq (tsum_congr fun n => ?_))
     · exact (summable_index_deviation_sq ha hz k).congr fun n =>
         (norm_deviation_sq_term a z n k).symm

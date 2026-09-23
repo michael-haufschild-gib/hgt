@@ -162,7 +162,7 @@ theorem capCharge_eq_zero_iff {A : ℝ} (hA : 0 < A) :
 /-- Fourth-power base of the finite-level critical amplitude predicted by the reduced HP flow.
 For `a = 1/k`, this equals `A_HP^(4/k)`. -/
 def hpCriticalAmplitudeBase (a : ℝ) : ℝ :=
-  (Real.Gamma (1 - a))⁻¹ ^ 2
+  (Real.Gamma (1 - a))⁻¹ ^ (2 : ℕ)
 
 /-- Fourth-power base of the exact finite-level worldsheet winding amplitude.
 For `a = 1/k`, this equals `A_string^(4/k)`. -/
@@ -182,7 +182,7 @@ theorem criticalOvershootBase_eq_sine {a : ℝ} (ha0 : 0 < a) (ha1 : a < 1) :
   rw [show 1 + a = a + 1 by ring, Real.Gamma_add_one ha0.ne']
   calc
     a * Real.Gamma a / Real.Gamma (1 - a) /
-          (Real.Gamma (1 - a))⁻¹ ^ 2 =
+          (Real.Gamma (1 - a))⁻¹ ^ (2 : ℕ) =
         a * (Real.Gamma a * Real.Gamma (1 - a)) := by
           field_simp [hgm]
     _ = a * (Real.pi / Real.sin (Real.pi * a)) := by

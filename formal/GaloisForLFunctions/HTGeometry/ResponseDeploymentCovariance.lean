@@ -48,13 +48,13 @@ theorem response_product_first_moment {X Y : Type*} [Fintype X] [Fintype Y]
 /-- The exact product-packet second-moment decomposition. -/
 theorem response_product_second_moment {X Y : Type*} [Fintype X] [Fintype Y]
     (p f : X → ℝ) (q g : Y → ℝ) :
-    (∑ x, ∑ y, p x * q y * (f x + g y) ^ 2) =
-      (∑ x, p x * f x ^ 2) * (∑ y, q y) +
+    (∑ x, ∑ y, p x * q y * (f x + g y) ^ (2 : ℕ)) =
+      (∑ x, p x * f x ^ (2 : ℕ)) * (∑ y, q y) +
         2 * (∑ x, p x * f x) * (∑ y, q y * g y) +
-          (∑ x, p x) * ∑ y, q y * g y ^ 2 := by
-  have ht (x : X) (y : Y) : p x * q y * (f x + g y) ^ 2 =
-      (p x * f x ^ 2) * q y + (2 * (p x * f x)) * (q y * g y) +
-        p x * (q y * g y ^ 2) := by ring
+          (∑ x, p x) * ∑ y, q y * g y ^ (2 : ℕ) := by
+  have ht (x : X) (y : Y) : p x * q y * (f x + g y) ^ (2 : ℕ) =
+      (p x * f x ^ (2 : ℕ)) * q y + (2 * (p x * f x)) * (q y * g y) +
+        p x * (q y * g y ^ (2 : ℕ)) := by ring
   simp_rw [ht, Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.sum_mul]
   rw [← Finset.mul_sum]
 
@@ -76,8 +76,8 @@ theorem finiteIndependentPower_response_first_zero {X : Type*} [Fintype X]
 /-- The independent aggregate second moment has exactly one diagonal contribution per recipient. -/
 theorem finiteIndependentPower_response_second {X : Type*} [Fintype X]
     (p f : X → ℝ) (d : ℕ) :
-    (∑ z, finiteIndependentPower p d z * (∑ j, responseCenteredSignal p f (z j)) ^ 2) =
-      (d : ℝ) * (∑ x, p x) ^ (d - 1) * ∑ x, p x * responseCenteredSignal p f x ^ 2 := by
+    (∑ z, finiteIndependentPower p d z * (∑ j, responseCenteredSignal p f (z j)) ^ (2 : ℕ)) =
+      (d : ℝ) * (∑ x, p x) ^ (d - 1) * ∑ x, p x * responseCenteredSignal p f x ^ (2 : ℕ) := by
   induction d with
   | zero => simp
   | succ d ih =>
@@ -85,7 +85,7 @@ theorem finiteIndependentPower_response_second {X : Type*} [Fintype X]
       simp only [finiteIndependentPower, Fin.prod_univ_succ, Fin.sum_univ_succ,
         Fin.cons_zero, Fin.cons_succ]
       change (∑ x, ∑ z : Fin d → X, p x * finiteIndependentPower p d z *
-        (responseCenteredSignal p f x + ∑ j, responseCenteredSignal p f (z j)) ^ 2) = _
+        (responseCenteredSignal p f x + ∑ j, responseCenteredSignal p f (z j)) ^ (2 : ℕ)) = _
       rw [response_product_second_moment, sum_responseCenteredSignal,
         finiteIndependentPower_sum, ih]
       cases d with
@@ -107,7 +107,7 @@ theorem finiteDiagonalPower_response_expectation {X : Type*} [Fintype X] [Decida
 theorem finiteDiagonalPower_response_average_second {X : Type*} [Fintype X] [DecidableEq X]
     (p f : X → ℝ) (d : ℕ) :
     (∑ z, finiteDiagonalPower p (d + 1) z *
-      ((∑ j, f (z j)) / (d + 1 : ℝ)) ^ 2) = ∑ x, p x * f x ^ 2 := by
+      ((∑ j, f (z j)) / (d + 1 : ℝ)) ^ (2 : ℕ)) = ∑ x, p x * f x ^ (2 : ℕ) := by
   rw [finiteDiagonalPower_response_expectation]
   have hd : (d + 1 : ℝ) ≠ 0 := by positivity
   simp [Finset.sum_const, nsmul_eq_mul, hd]
@@ -124,9 +124,9 @@ theorem finiteIndependentPower_uniform_response_average_second (m d : ℕ)
     (f : Fin (m + 1) → ℝ) :
     (∑ z, finiteIndependentPower (responseUniformWeight m) (d + 1) z *
       ((∑ j, responseCenteredSignal (responseUniformWeight m) f (z j)) /
-        (d + 1 : ℝ)) ^ 2) =
+        (d + 1 : ℝ)) ^ (2 : ℕ)) =
       (∑ x, responseUniformWeight m x *
-        responseCenteredSignal (responseUniformWeight m) f x ^ 2) / (d + 1 : ℝ) := by
+        responseCenteredSignal (responseUniformWeight m) f x ^ (2 : ℕ)) / (d + 1 : ℝ) := by
   have hd : (d + 1 : ℝ) ≠ 0 := by positivity
   simp_rw [div_pow, ← mul_div_assoc, ← Finset.sum_div]
   rw [finiteIndependentPower_response_second, sum_responseUniformWeight]
@@ -137,10 +137,10 @@ theorem finiteIndependentPower_uniform_response_average_second (m d : ℕ)
 theorem response_deployment_dichotomy (m d : ℕ) (f : Fin (m + 1) → ℝ) :
     (∑ z, finiteDiagonalPower (responseUniformWeight m) (d + 1) z *
       ((∑ j, responseCenteredSignal (responseUniformWeight m) f (z j)) /
-        (d + 1 : ℝ)) ^ 2) =
+        (d + 1 : ℝ)) ^ (2 : ℕ)) =
       (d + 1 : ℝ) * ∑ z, finiteIndependentPower (responseUniformWeight m) (d + 1) z *
         ((∑ j, responseCenteredSignal (responseUniformWeight m) f (z j)) /
-          (d + 1 : ℝ)) ^ 2 := by
+          (d + 1 : ℝ)) ^ (2 : ℕ) := by
   rw [finiteDiagonalPower_response_average_second,
     finiteIndependentPower_uniform_response_average_second]
   have hd : (d + 1 : ℝ) ≠ 0 := by positivity

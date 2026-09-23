@@ -75,24 +75,24 @@ theorem seamMoment_evenFrequency (B lambda : ℝ) {k : ℕ} (hk : 1 ≤ k) :
   exact seamMoment_factorialCoeff (fun j => B * lambda ^ (2 * j)) hk
 
 theorem seamMoment_evenFrequency_one (B lambda : ℝ) :
-    seamMoment (evenFrequencyCoeff B lambda) 1 = B * lambda ^ 2 := by
+    seamMoment (evenFrequencyCoeff B lambda) 1 = B * lambda ^ (2 : ℕ) := by
   rw [seamMoment_evenFrequency B lambda (le_refl 1)]
   norm_num
 
 theorem seamMoment_evenFrequency_two (B lambda : ℝ) :
-    seamMoment (evenFrequencyCoeff B lambda) 2 = -B * lambda ^ 4 / 6 := by
+    seamMoment (evenFrequencyCoeff B lambda) 2 = -B * lambda ^ (4 : ℕ) / 6 := by
   rw [seamMoment_evenFrequency B lambda (by norm_num)]
   norm_num [Nat.factorial]
 
 theorem seamMoment_evenFrequency_three (B lambda : ℝ) :
-    seamMoment (evenFrequencyCoeff B lambda) 3 = B * lambda ^ 6 / 120 := by
+    seamMoment (evenFrequencyCoeff B lambda) 3 = B * lambda ^ (6 : ℕ) / 120 := by
   rw [seamMoment_evenFrequency B lambda (by norm_num)]
   norm_num [Nat.factorial]
 
 /-- **The single even frequency fails the first shifted Hankel test.** -/
 theorem seamMoment_evenFrequency_det_neg {B lambda : ℝ} (hB : 0 < B) (hlambda : 0 < lambda) :
     seamMoment (evenFrequencyCoeff B lambda) 1 * seamMoment (evenFrequencyCoeff B lambda) 3 -
-        seamMoment (evenFrequencyCoeff B lambda) 2 ^ 2 < 0 := by
+        seamMoment (evenFrequencyCoeff B lambda) 2 ^ (2 : ℕ) < 0 := by
   rw [seamMoment_evenFrequency_one, seamMoment_evenFrequency_two, seamMoment_evenFrequency_three]
   exact singleEvenFrequency_det_neg hB hlambda
 
@@ -118,17 +118,17 @@ theorem seamMoment_halfTurn_evenFrequency (B lambda : ℝ) {k : ℕ} (hk : 1 ≤
   field_simp
 
 theorem seamMoment_halfTurn_one (B lambda : ℝ) :
-    seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 1 = B * lambda ^ 2 := by
+    seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 1 = B * lambda ^ (2 : ℕ) := by
   rw [seamMoment_halfTurn_evenFrequency B lambda (le_refl 1)]
   norm_num
 
 theorem seamMoment_halfTurn_two (B lambda : ℝ) :
-    seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 2 = B * lambda ^ 4 / 6 := by
+    seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 2 = B * lambda ^ (4 : ℕ) / 6 := by
   rw [seamMoment_halfTurn_evenFrequency B lambda (by norm_num)]
   norm_num [Nat.factorial]
 
 theorem seamMoment_halfTurn_three (B lambda : ℝ) :
-    seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 3 = B * lambda ^ 6 / 120 := by
+    seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 3 = B * lambda ^ (6 : ℕ) / 120 := by
   rw [seamMoment_halfTurn_evenFrequency B lambda (by norm_num)]
   norm_num [Nat.factorial]
 
@@ -136,7 +136,7 @@ theorem seamMoment_halfTurn_three (B lambda : ℝ) :
 theorem seamMoment_halfTurn_det_neg {B lambda : ℝ} (hB : 0 < B) (hlambda : 0 < lambda) :
     seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 1 *
           seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 3 -
-        seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 2 ^ 2 < 0 := by
+        seamMoment (halfTurnCoeff (evenFrequencyCoeff B lambda)) 2 ^ (2 : ℕ) < 0 := by
   rw [seamMoment_halfTurn_one, seamMoment_halfTurn_two, seamMoment_halfTurn_three]
   exact singleEvenFrequency_halfTurn_det_neg hB hlambda
 
@@ -303,7 +303,7 @@ variable {ι : Type*} [Fintype ι]
 This is the packet form of `(x - a)(x - b) ≤ 0`. -/
 theorem boundedPacket_moment_inequality (c x : ι → ℝ) {a b : ℝ}
     (hc : ∀ i, 0 < c i) (hlow : ∀ i, a ≤ x i) (hhigh : ∀ i, x i ≤ b) (ha : 0 < a) :
-    (∑ i, c i * x i ^ 3) + a * b * (∑ i, c i * x i) ≤ (a + b) * (∑ i, c i * x i ^ 2) := by
+    (∑ i, c i * x i ^ (3 : ℕ)) + a * b * (∑ i, c i * x i) ≤ (a + b) * (∑ i, c i * x i ^ (2 : ℕ)) := by
   rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_le_sum fun i _ => ?_
   have hxpos : 0 < x i := lt_of_lt_of_le ha (hlow i)
@@ -320,45 +320,45 @@ theorem boundedPacket_halfTurn_det_neg [Nonempty ι] (c x : ι → ℝ) {a b : �
     (ha : 0 < a) (hab : a ≤ b) (hc : ∀ i, 0 < c i)
     (hlow : ∀ i, a ≤ x i) (hhigh : ∀ i, x i ≤ b)
     (hthreshold : b / a < halfTurnUpperThreshold) :
-    (∑ i, c i * x i) * (∑ i, c i * x i ^ 3) / 120 - ((∑ i, c i * x i ^ 2) / 6) ^ 2 < 0 := by
+    (∑ i, c i * x i) * (∑ i, c i * x i ^ (3 : ℕ)) / 120 - ((∑ i, c i * x i ^ (2 : ℕ)) / 6) ^ (2 : ℕ) < 0 := by
   have hxpos : ∀ i, 0 < x i := fun i => lt_of_lt_of_le ha (hlow i)
   have hM1pos : 0 < ∑ i, c i * x i :=
     Finset.sum_pos (fun i _ => mul_pos (hc i) (hxpos i)) Finset.univ_nonempty
-  have hM2pos : 0 < ∑ i, c i * x i ^ 2 :=
+  have hM2pos : 0 < ∑ i, c i * x i ^ (2 : ℕ) :=
     Finset.sum_pos (fun i _ => mul_pos (hc i) (pow_pos (hxpos i) 2)) Finset.univ_nonempty
-  have hM3pos : 0 < ∑ i, c i * x i ^ 3 :=
+  have hM3pos : 0 < ∑ i, c i * x i ^ (3 : ℕ) :=
     Finset.sum_pos (fun i _ => mul_pos (hc i) (pow_pos (hxpos i) 3)) Finset.univ_nonempty
   have hkey := boundedPacket_moment_inequality c x hc hlow hhigh ha
   have habpos : 0 < a * b := mul_pos ha (lt_of_lt_of_le ha hab)
-  have hAM : 4 * (a * b * (∑ i, c i * x i)) * (∑ i, c i * x i ^ 3) ≤
-      ((∑ i, c i * x i ^ 3) + a * b * (∑ i, c i * x i)) ^ 2 := by
-    nlinarith [sq_nonneg ((∑ i, c i * x i ^ 3) - a * b * (∑ i, c i * x i))]
-  have hsq : ((∑ i, c i * x i ^ 3) + a * b * (∑ i, c i * x i)) ^ 2 ≤
-      (a + b) ^ 2 * (∑ i, c i * x i ^ 2) ^ 2 := by
-    have hnn : 0 ≤ (∑ i, c i * x i ^ 3) + a * b * (∑ i, c i * x i) := by
+  have hAM : 4 * (a * b * (∑ i, c i * x i)) * (∑ i, c i * x i ^ (3 : ℕ)) ≤
+      ((∑ i, c i * x i ^ (3 : ℕ)) + a * b * (∑ i, c i * x i)) ^ (2 : ℕ) := by
+    nlinarith [sq_nonneg ((∑ i, c i * x i ^ (3 : ℕ)) - a * b * (∑ i, c i * x i))]
+  have hsq : ((∑ i, c i * x i ^ (3 : ℕ)) + a * b * (∑ i, c i * x i)) ^ (2 : ℕ) ≤
+      (a + b) ^ (2 : ℕ) * (∑ i, c i * x i ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    have hnn : 0 ≤ (∑ i, c i * x i ^ (3 : ℕ)) + a * b * (∑ i, c i * x i) := by
       have : 0 ≤ a * b * (∑ i, c i * x i) := le_of_lt (mul_pos habpos hM1pos)
       linarith
     nlinarith [hkey, hnn]
   have hr : 1 ≤ b / a := (le_div_iff₀ ha).mpr (by linarith)
-  have hquadneg : 3 * (b / a) ^ 2 - 34 * (b / a) + 3 < 0 :=
+  have hquadneg : 3 * (b / a) ^ (2 : ℕ) - 34 * (b / a) + 3 < 0 :=
     (halfTurn_ratio_quad_neg_iff hr).mpr hthreshold
-  have hquad : 3 * (a + b) ^ 2 < 40 * (a * b) := by
-    have ha2 : 0 < a ^ 2 := pow_pos ha 2
-    have hexpand : 3 * (b / a) ^ 2 - 34 * (b / a) + 3 =
-        (3 * b ^ 2 - 34 * a * b + 3 * a ^ 2) / a ^ 2 := by
+  have hquad : 3 * (a + b) ^ (2 : ℕ) < 40 * (a * b) := by
+    have ha2 : 0 < a ^ (2 : ℕ) := pow_pos ha 2
+    have hexpand : 3 * (b / a) ^ (2 : ℕ) - 34 * (b / a) + 3 =
+        (3 * b ^ (2 : ℕ) - 34 * a * b + 3 * a ^ (2 : ℕ)) / a ^ (2 : ℕ) := by
       field_simp
     rw [hexpand] at hquadneg
-    have hnum : 3 * b ^ 2 - 34 * a * b + 3 * a ^ 2 < 0 := by
+    have hnum : 3 * b ^ (2 : ℕ) - 34 * a * b + 3 * a ^ (2 : ℕ) < 0 := by
       by_contra hcon
       push Not at hcon
       exact absurd hquadneg (not_lt.mpr (div_nonneg hcon (le_of_lt ha2)))
     nlinarith [hnum]
-  have hfinal : 3 * ((∑ i, c i * x i) * (∑ i, c i * x i ^ 3)) < 10 * (∑ i, c i * x i ^ 2) ^ 2 := by
-    have h1 : 12 * (a * b) * ((∑ i, c i * x i) * (∑ i, c i * x i ^ 3)) ≤
-        3 * (a + b) ^ 2 * (∑ i, c i * x i ^ 2) ^ 2 := by nlinarith [hAM, hsq]
-    have h2 : 3 * (a + b) ^ 2 * (∑ i, c i * x i ^ 2) ^ 2 <
-        40 * (a * b) * (∑ i, c i * x i ^ 2) ^ 2 := by
-      have hpos : 0 < (∑ i, c i * x i ^ 2) ^ 2 := pow_pos hM2pos 2
+  have hfinal : 3 * ((∑ i, c i * x i) * (∑ i, c i * x i ^ (3 : ℕ))) < 10 * (∑ i, c i * x i ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    have h1 : 12 * (a * b) * ((∑ i, c i * x i) * (∑ i, c i * x i ^ (3 : ℕ))) ≤
+        3 * (a + b) ^ (2 : ℕ) * (∑ i, c i * x i ^ (2 : ℕ)) ^ (2 : ℕ) := by nlinarith [hAM, hsq]
+    have h2 : 3 * (a + b) ^ (2 : ℕ) * (∑ i, c i * x i ^ (2 : ℕ)) ^ (2 : ℕ) <
+        40 * (a * b) * (∑ i, c i * x i ^ (2 : ℕ)) ^ (2 : ℕ) := by
+      have hpos : 0 < (∑ i, c i * x i ^ (2 : ℕ)) ^ (2 : ℕ) := pow_pos hM2pos 2
       nlinarith [hquad, hpos]
     nlinarith [h1, h2, habpos]
   exact halfTurn_det_neg_of_moment_ratio_lt hfinal

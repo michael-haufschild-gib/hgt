@@ -203,7 +203,7 @@ theorem replicaCommutatorMat_hasUnitMassSynthesis (s : Fin n → Fin 4) (hs : s 
             (replicaCommutatorMat R n t) := ih (QuantumAlg.pauliWeight4 t) (by omega) t ht rfl
         have humem : replicaCommutatorMat R n u ∈ twoLocalReplicaCommutatorSet R n :=
           Set.mem_insert_of_mem _ ⟨u, hu, huW.le, rfl⟩
-        have hu1 : HasUnitMassSynthesis (twoLocalReplicaCommutatorSet R n ^ 1)
+        have hu1 : HasUnitMassSynthesis (twoLocalReplicaCommutatorSet R n ^ (1 : ℕ))
             (replicaCommutatorMat R n u) := by
           refine hasUnitMassSynthesis_of_mem ?_
           rw [pow_one]
@@ -220,12 +220,12 @@ theorem replicaCommutatorMat_hasUnitMassSynthesis (s : Fin n → Fin 4) (hs : s 
                   - replicaCommutatorMat R n u * replicaCommutatorMat R n t) := by
           rw [hb, smul_smul, inv_mul_cancel₀ hzne, one_smul]
         have hST : ∀ x ∈ twoLocalReplicaCommutatorSet R n ^ QuantumAlg.pauliWeight4 t,
-            ∀ y ∈ twoLocalReplicaCommutatorSet R n ^ 1,
+            ∀ y ∈ twoLocalReplicaCommutatorSet R n ^ (1 : ℕ),
             x * y ∈ twoLocalReplicaCommutatorSet R n ^ (QuantumAlg.pauliWeight4 t + 1) := by
           intro x hx y hy
           rw [pow_add]
           exact Set.mul_mem_mul hx hy
-        have hTS : ∀ y ∈ twoLocalReplicaCommutatorSet R n ^ 1,
+        have hTS : ∀ y ∈ twoLocalReplicaCommutatorSet R n ^ (1 : ℕ),
             ∀ x ∈ twoLocalReplicaCommutatorSet R n ^ QuantumAlg.pauliWeight4 t,
             y * x ∈ twoLocalReplicaCommutatorSet R n ^ (QuantumAlg.pauliWeight4 t + 1) := by
           intro y hy x hx

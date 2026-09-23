@@ -3088,7 +3088,7 @@ theorem prodEquiv_flip_left {Left Right : Type}
       have hbase :=
         prodEquiv_testBit_left (left := leftLabel) (right := rightLabel) bit
       rw [← hidx, hleft]
-      change (leftLabel.val ^^^ 2 ^ (WireAddress.bitIndex wire).val).testBit
+      change (leftLabel.val ^^^ (2 : ℕ) ^ (WireAddress.bitIndex wire).val).testBit
           bit.val =
         ((prodEquiv (m := left.width) (n := right.width)
             (leftLabel, rightLabel)).val ^^^
@@ -3143,7 +3143,7 @@ theorem prodEquiv_flip_right {Left Right : Type}
       have hbase :=
         prodEquiv_testBit_right (left := leftLabel) (right := rightLabel) bit
       rw [hleft]
-      change (rightLabel.val ^^^ 2 ^ (WireAddress.bitIndex wire).val).testBit
+      change (rightLabel.val ^^^ (2 : ℕ) ^ (WireAddress.bitIndex wire).val).testBit
           bit.val =
         ((prodEquiv (m := left.width) (n := right.width)
             (leftLabel, rightLabel)).val ^^^

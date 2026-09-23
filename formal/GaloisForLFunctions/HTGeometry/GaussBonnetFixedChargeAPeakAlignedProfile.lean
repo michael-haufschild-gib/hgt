@@ -16,19 +16,19 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAPeakAlignedProfile (τ φ ψ : ℝ) : ℝ :=
-  (1 - egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ 2) ^ 2
+  (1 - egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ (2 : ℕ)) ^ (2 : ℕ)
 
 theorem egbFixedChargeAPeakAlignedProfile_bounds (τ φ ψ : ℝ) :
     0 ≤ egbFixedChargeAPeakAlignedProfile τ φ ψ ∧ egbFixedChargeAPeakAlignedProfile τ φ ψ ≤ 1 := by
   have hx := egbFixedChargeAPeakAlignedCoordinate_bounds τ φ ψ
-  have hx2 : egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ 2 ≤ 1 := by
+  have hx2 : egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [mul_nonneg (by linarith : 0 ≤ 1 - egbFixedChargeAPeakAlignedCoordinate τ φ ψ)
       (by linarith : 0 ≤ 1 + egbFixedChargeAPeakAlignedCoordinate τ φ ψ)]
   unfold egbFixedChargeAPeakAlignedProfile
   constructor
   · positivity
   · nlinarith [sq_nonneg (egbFixedChargeAPeakAlignedCoordinate τ φ ψ),
-      sq_nonneg (egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ 2)]
+      sq_nonneg (egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ (2 : ℕ))]
 
 theorem egbFixedChargeAPeakAlignedProfile_zero_iff (τ φ ψ : ℝ) :
     egbFixedChargeAPeakAlignedProfile τ φ ψ = 0 ↔ cos ψ = 0 := by
@@ -36,7 +36,7 @@ theorem egbFixedChargeAPeakAlignedProfile_zero_iff (τ φ ψ : ℝ) :
   constructor
   · intro hz
     unfold egbFixedChargeAPeakAlignedProfile at hz
-    have hx2 : egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ 2 = 1 := by nlinarith
+    have hx2 : egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ (2 : ℕ) = 1 := by nlinarith
     have hp : (egbFixedChargeAPeakAlignedCoordinate τ φ ψ - 1) *
         (egbFixedChargeAPeakAlignedCoordinate τ φ ψ + 1) = 0 := by nlinarith [hx2]
     rcases mul_eq_zero.mp hp with h | h
@@ -45,7 +45,7 @@ theorem egbFixedChargeAPeakAlignedProfile_zero_iff (τ φ ψ : ℝ) :
     · have hs := (egbFixedChargeAPeakAlignedCoordinate_small_iff τ φ ψ).mp (by linarith)
       nlinarith [sin_sq_add_cos_sq ψ]
   · intro hz
-    have hs2 : sin ψ ^ 2 = 1 := by nlinarith [sin_sq_add_cos_sq ψ]
+    have hs2 : sin ψ ^ (2 : ℕ) = 1 := by nlinarith [sin_sq_add_cos_sq ψ]
     have hp : (sin ψ - 1) * (sin ψ + 1) = 0 := by nlinarith [hs2]
     rcases mul_eq_zero.mp hp with h | h
     · have he := (egbFixedChargeAPeakAlignedCoordinate_large_iff τ φ ψ).mpr (by linarith)
@@ -57,47 +57,47 @@ theorem egbFixedChargeAPeakAlignedProfile_one_iff (τ φ ψ : ℝ) :
     egbFixedChargeAPeakAlignedProfile τ φ ψ = 1 ↔ sin ψ = egbFixedChargeAMiddleGapCoordinate τ φ := by
   rw [← egbFixedChargeAPeakAlignedCoordinate_zero_iff τ φ ψ]
   have hx := egbFixedChargeAPeakAlignedCoordinate_bounds τ φ ψ
-  have hx2 : egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ 2 ≤ 1 := by
+  have hx2 : egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [mul_nonneg (by linarith : 0 ≤ 1 - egbFixedChargeAPeakAlignedCoordinate τ φ ψ)
       (by linarith : 0 ≤ 1 + egbFixedChargeAPeakAlignedCoordinate τ φ ψ)]
   unfold egbFixedChargeAPeakAlignedProfile
   constructor
   · intro he
-    have hnon : 0 ≤ egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ 2 := sq_nonneg _
-    nlinarith [mul_nonneg hnon (by linarith : 0 ≤ 1 - egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ 2)]
+    have hnon : 0 ≤ egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ (2 : ℕ) := sq_nonneg _
+    nlinarith [mul_nonneg hnon (by linarith : 0 ≤ 1 - egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ (2 : ℕ))]
   · intro he
     rw [he]
     norm_num
 
 theorem egbFixedChargeAPeakAlignedProfile_critical_limit (φ ψ : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAPeakAlignedProfile τ φ ψ) atBot (𝓝 (cos ψ ^ 4)) := by
+    Tendsto (fun τ => egbFixedChargeAPeakAlignedProfile τ φ ψ) atBot (𝓝 (cos ψ ^ (4 : ℕ))) := by
   have h := ((tendsto_const_nhds (x := (1 : ℝ))).sub ((egbFixedChargeAPeakAlignedCoordinate_critical_limit φ ψ).pow 2)).pow 2
-  have hs : 1 - sin ψ ^ 2 = cos ψ ^ 2 := by linarith [sin_sq_add_cos_sq ψ]
-  have he : (1 - sin ψ ^ 2) ^ 2 = cos ψ ^ 4 := by rw [hs]; ring
+  have hs : 1 - sin ψ ^ (2 : ℕ) = cos ψ ^ (2 : ℕ) := by linarith [sin_sq_add_cos_sq ψ]
+  have he : (1 - sin ψ ^ (2 : ℕ)) ^ (2 : ℕ) = cos ψ ^ (4 : ℕ) := by rw [hs]; ring
   rw [he] at h
   exact h
 
 theorem egbFixedChargeAPeakAlignedProfile_linear_formula (τ φ ψ : ℝ) :
-    (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ =
+    (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ =
       ((egbFixedChargeAPeakAlignedCoordinate τ φ ψ - sin ψ) / egbCoexistenceASymmetricRatio τ) *
         (egbFixedChargeAPeakAlignedCoordinate τ φ ψ + sin ψ) *
-        (egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ 2 + sin ψ ^ 2 - 2) := by
-  have hs : cos ψ ^ 2 = 1 - sin ψ ^ 2 := by linarith [sin_sq_add_cos_sq ψ]
-  have he : cos ψ ^ 4 = (1 - sin ψ ^ 2) ^ 2 := by rw [← hs]; ring
+        (egbFixedChargeAPeakAlignedCoordinate τ φ ψ ^ (2 : ℕ) + sin ψ ^ (2 : ℕ) - 2) := by
+  have hs : cos ψ ^ (2 : ℕ) = 1 - sin ψ ^ (2 : ℕ) := by linarith [sin_sq_add_cos_sq ψ]
+  have he : cos ψ ^ (4 : ℕ) = (1 - sin ψ ^ (2 : ℕ)) ^ (2 : ℕ) := by rw [← hs]; ring
   unfold egbFixedChargeAPeakAlignedProfile
   rw [he]
   ring
 
 theorem egbFixedChargeAPeakAlignedProfile_first_correction_limit (φ ψ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ)
-      atBot (𝓝 (4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4)) := by
+    Tendsto (fun τ => (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ)
+      atBot (𝓝 (4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ))) := by
   have hx := egbFixedChargeAPeakAlignedCoordinate_critical_limit φ ψ
   have h := ((egbFixedChargeAPeakAlignedCoordinate_linear_limit φ ψ).mul
     (hx.add (tendsto_const_nhds (x := sin ψ)))).mul
-    (((hx.pow 2).add (tendsto_const_nhds (x := sin ψ ^ 2))).sub (tendsto_const_nhds (x := (2 : ℝ))))
-  have hs : sin ψ ^ 2 = 1 - cos ψ ^ 2 := by linarith [sin_sq_add_cos_sq ψ]
-  have he : (-egbFixedChargeAMiddleMeanCorrection φ * cos ψ ^ 2) * (sin ψ + sin ψ) *
-      (sin ψ ^ 2 + sin ψ ^ 2 - 2) = 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4 := by
+    (((hx.pow 2).add (tendsto_const_nhds (x := sin ψ ^ (2 : ℕ)))).sub (tendsto_const_nhds (x := (2 : ℝ))))
+  have hs : sin ψ ^ (2 : ℕ) = 1 - cos ψ ^ (2 : ℕ) := by linarith [sin_sq_add_cos_sq ψ]
+  have he : (-egbFixedChargeAMiddleMeanCorrection φ * cos ψ ^ (2 : ℕ)) * (sin ψ + sin ψ) *
+      (sin ψ ^ (2 : ℕ) + sin ψ ^ (2 : ℕ) - 2) = 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ) := by
     rw [hs]
     ring
   rw [he] at h

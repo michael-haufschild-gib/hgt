@@ -42,17 +42,17 @@ quasi-α-firmly nonexpansive at any of its fixed points, for every `α ∈ [τ/�
 theorem busemannStep_quasiFirmAt (F : BusemannFlow X) (dφ : ℝ → ℝ) {lam β M₂ : ℝ}
     (hlam : 0 < lam) (hM₂ : 0 < M₂) (hnonneg : ∀ s, 0 ≤ dφ s) (hmono : Monotone dφ)
     (hlip : ∀ u v : ℝ, |dφ u - dφ v| ≤ M₂ * |u - v|) (p : X) (hp : dφ (lam * F.fn p + β) = 0)
-    {τ α : ℝ} (hτ0 : 0 < τ) (hα : τ / (2 / (lam ^ 2 * M₂)) ≤ α) (hα1 : α < 1) :
+    {τ α : ℝ} (hτ0 : 0 < τ) (hα : τ / (2 / (lam ^ (2 : ℕ) * M₂)) ≤ α) (hα1 : α < 1) :
     QuasiFirmAt (busemannStep F dφ lam β τ) p ((1 - α) / α) := by
-  have hτbar : 0 < 2 / (lam ^ 2 * M₂) := by positivity
+  have hτbar : 0 < 2 / (lam ^ (2 : ℕ) * M₂) := by positivity
   refine quasiFirmAt_of_geodesicFamily (busemannStep F dφ lam β)
     (fun α' τ' hα₀' hα₁' hτ' x => gd_busemannStep F dφ hlam.le hnonneg hα₀' hα₁' hτ' x)
     hτbar ?_ p ?_ hτ0 hα hα1
   · intro τ' hτ'0 hτ'bar x y
     rw [busemannStep_eq_layer, busemannStep_eq_layer]
     refine activation_layer_nonexpansive F dφ τ' lam β M₂ hτ'0 hlam.le hnonneg hmono hlip ?_ x y
-    have h : τ' * (lam ^ 2 * M₂) ≤ 2 := by
-      have := (le_div_iff₀ (by positivity : (0:ℝ) < lam ^ 2 * M₂)).mp hτ'bar
+    have h : τ' * (lam ^ (2 : ℕ) * M₂) ≤ 2 := by
+      have := (le_div_iff₀ (by positivity : (0:ℝ) < lam ^ (2 : ℕ) * M₂)).mp hτ'bar
       linarith
     linarith [h]
   · intro τ' _
@@ -63,19 +63,19 @@ Busemann gradient-descent layer converge to a fixed point. -/
 theorem busemannStep_tendsto_iterate [ProperSpace X] (F : BusemannFlow X) (dφ : ℝ → ℝ)
     {lam β M₂ : ℝ} (hlam : 0 < lam) (hM₂ : 0 < M₂) (hnonneg : ∀ s, 0 ≤ dφ s)
     (hmono : Monotone dφ) (hlip : ∀ u v : ℝ, |dφ u - dφ v| ≤ M₂ * |u - v|) (p : X)
-    (hp : dφ (lam * F.fn p + β) = 0) {τ : ℝ} (hτ0 : 0 < τ) (hτ : τ * (lam ^ 2 * M₂) < 2)
+    (hp : dφ (lam * F.fn p + β) = 0) {τ : ℝ} (hτ0 : 0 < τ) (hτ : τ * (lam ^ (2 : ℕ) * M₂) < 2)
     (x₀ : X) :
     ∃ q : X, busemannStep F dφ lam β τ q = q ∧
       Filter.Tendsto (fun n => (busemannStep F dφ lam β τ)^[n] x₀) Filter.atTop (nhds q) := by
-  have hτbar : 0 < 2 / (lam ^ 2 * M₂) := by positivity
-  have hlt : τ / (2 / (lam ^ 2 * M₂)) < 1 := by
-    rw [div_lt_one hτbar, lt_div_iff₀ (by positivity : (0:ℝ) < lam ^ 2 * M₂)]
+  have hτbar : 0 < 2 / (lam ^ (2 : ℕ) * M₂) := by positivity
+  have hlt : τ / (2 / (lam ^ (2 : ℕ) * M₂)) < 1 := by
+    rw [div_lt_one hτbar, lt_div_iff₀ (by positivity : (0:ℝ) < lam ^ (2 : ℕ) * M₂)]
     linarith
-  set α : ℝ := (τ / (2 / (lam ^ 2 * M₂)) + 1) / 2 with hαdef
+  set α : ℝ := (τ / (2 / (lam ^ (2 : ℕ) * M₂)) + 1) / 2 with hαdef
   have hαpos : 0 < α := by
-    have : 0 < τ / (2 / (lam ^ 2 * M₂)) := by positivity
+    have : 0 < τ / (2 / (lam ^ (2 : ℕ) * M₂)) := by positivity
     rw [hαdef]; linarith
-  have hαle : τ / (2 / (lam ^ 2 * M₂)) ≤ α := by rw [hαdef]; linarith
+  have hαle : τ / (2 / (lam ^ (2 : ℕ) * M₂)) ≤ α := by rw [hαdef]; linarith
   have hα1 : α < 1 := by rw [hαdef]; linarith
   have hqf := busemannStep_quasiFirmAt F dφ hlam hM₂ hnonneg hmono hlip p hp hτ0 hαle hα1
   have hne : ∀ x y : X, dist (busemannStep F dφ lam β τ x) (busemannStep F dφ lam β τ y)

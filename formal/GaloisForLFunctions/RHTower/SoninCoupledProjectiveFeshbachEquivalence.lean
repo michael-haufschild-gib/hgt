@@ -40,7 +40,7 @@ theorem soninAllPrimeCoupledTraceMoment_eq_ofReal
 /-- The vacuum-column mass is the zeroth real coupled trace moment. -/
 theorem norm_soninAllPrimeCoupledPowerVector_zero_sq
     (a : SoninPositiveAperture) :
-    ‖soninAllPrimeCoupledPowerVector a 0‖ ^ 2 =
+    ‖soninAllPrimeCoupledPowerVector a 0‖ ^ (2 : ℕ) =
       soninAllPrimeCoupledRealTraceMoment a 0 := by
   have h := soninAllPrimeCoupledGramBlock_eq_traceMoment
     1 a (0 : Fin 1) (0 : Fin 1)
@@ -50,7 +50,7 @@ theorem norm_soninAllPrimeCoupledPowerVector_zero_sq
         soninAllPrimeCoupledTraceMoment a 0 := by
     simpa [soninAllPrimeCoupledGramBlock, Matrix.gram_apply] using h
   calc
-    ‖soninAllPrimeCoupledPowerVector a 0‖ ^ 2 =
+    ‖soninAllPrimeCoupledPowerVector a 0‖ ^ (2 : ℕ) =
         (inner ℂ (soninAllPrimeCoupledPowerVector a 0)
           (soninAllPrimeCoupledPowerVector a 0)).re :=
       (inner_self_eq_norm_sq (𝕜 := ℂ)
@@ -63,7 +63,7 @@ value of the real coupled trace sequence. -/
 theorem soninAllPrimeCoupledPolynomialGramValue_eq_momentFunctional
     (a : SoninPositiveAperture) (p : Polynomial ℝ) :
     soninAllPrimeCoupledPolynomialGramValue a p =
-      HTGeometry.momentFunctional (soninAllPrimeCoupledRealTraceMoment a) (p ^ 2) := by
+      HTGeometry.momentFunctional (soninAllPrimeCoupledRealTraceMoment a) (p ^ (2 : ℕ)) := by
   let N : ℕ := p.natDegree + 1
   let c : Fin N → ℝ := Polynomial.toFn N p
   have hN : p.natDegree < N := by omega
@@ -90,18 +90,18 @@ theorem soninAllPrimeCoupledPolynomialGramValue_eq_momentFunctional
       ring
     _ = HTGeometry.momentFunctional
         (soninAllPrimeCoupledRealTraceMoment a)
-        ((Polynomial.ofFn N c) ^ 2) :=
+        ((Polynomial.ofFn N c) ^ (2 : ℕ)) :=
       HTGeometry.dotProduct_mulVec_momentHankelMatrix
         (soninAllPrimeCoupledRealTraceMoment a) N c
     _ = HTGeometry.momentFunctional
-        (soninAllPrimeCoupledRealTraceMoment a) (p ^ 2) := by rw [hp]
+        (soninAllPrimeCoupledRealTraceMoment a) (p ^ (2 : ℕ)) := by rw [hp]
 
 /-- The complete coupled source trace-Hankel value is literally the squared norm of the actual
 polynomial source vector. -/
 theorem sequenceTraceHankel_soninAllPrimeCoupledRealTraceMoment_eq_norm_sq
     (a : SoninPositiveAperture) (p : Polynomial ℝ) :
     sequenceTraceHankel (soninAllPrimeCoupledRealTraceMoment a) p =
-      ‖soninAllPrimeCoupledPolynomialPowerVector a p‖ ^ 2 := by
+      ‖soninAllPrimeCoupledPolynomialPowerVector a p‖ ^ (2 : ℕ) := by
   rw [sequenceTraceHankel_eq_momentFunctional,
     ← soninAllPrimeCoupledPolynomialGramValue_eq_momentFunctional,
     soninAllPrimeCoupledPolynomialGramValue_eq_norm_sq]
@@ -209,7 +209,7 @@ theorem soninAllPrimeCoupledPureStateQuantumFisherValue_eq_sourceFeshbach
   change 4 * (soninAllPrimeCoupledRealTraceMoment a.1 0 *
       HTGeometry.momentVacuumFeshbachRemainder
         (soninAllPrimeCoupledRealTraceMoment a.1) p) /
-      soninAllPrimeCoupledRealTraceMoment a.1 0 ^ 2 =
+      soninAllPrimeCoupledRealTraceMoment a.1 0 ^ (2 : ℕ) =
     4 * HTGeometry.momentVacuumFeshbachRemainder
       (soninAllPrimeCoupledRealTraceMoment a.1) p /
       soninAllPrimeCoupledRealTraceMoment a.1 0
@@ -236,7 +236,7 @@ theorem soninAllPrimeCoupledPureStateQuantumFisherValue_X_pow_eq_traceRatios
       4 * (soninAllPrimeCoupledRealTraceMoment a.1 (n + n) /
           soninAllPrimeCoupledRealTraceMoment a.1 0 -
         (soninAllPrimeCoupledRealTraceMoment a.1 n /
-          soninAllPrimeCoupledRealTraceMoment a.1 0) ^ 2) := by
+          soninAllPrimeCoupledRealTraceMoment a.1 0) ^ (2 : ℕ)) := by
   rw [soninAllPrimeCoupledPureStateQuantumFisherValue_eq_four_mul_normalizedVariance,
     HTGeometry.momentNormalizedVariance_X_pow]
 
@@ -256,7 +256,7 @@ theorem sourceFeshbach_le_norm_soninAllPrimeCoupledPolynomialShift
     (a : SoninCoupledNondegenerateAperture) (p : Polynomial ℝ) (c : ℝ) :
     HTGeometry.momentVacuumFeshbachRemainder
         (soninAllPrimeCoupledRealTraceMoment a.1) p ≤
-      ‖soninAllPrimeCoupledPolynomialPowerVector a.1 (p - C c)‖ ^ 2 := by
+      ‖soninAllPrimeCoupledPolynomialPowerVector a.1 (p - C c)‖ ^ (2 : ℕ) := by
   rw [← soninAllPrimeCoupledPolynomialGramValue_eq_norm_sq,
     soninAllPrimeCoupledPolynomialGramValue_eq_momentFunctional]
   exact HTGeometry.momentVacuumFeshbachRemainder_le_shifted_sq
@@ -268,7 +268,7 @@ This closes the value-level counterterm minimization without a coefficient-linea
 theorem exists_norm_soninAllPrimeCoupledPolynomialShift_eq_sourceFeshbach
     (a : SoninCoupledNondegenerateAperture) (p : Polynomial ℝ) :
     ∃ c : ℝ,
-      ‖soninAllPrimeCoupledPolynomialPowerVector a.1 (p - C c)‖ ^ 2 =
+      ‖soninAllPrimeCoupledPolynomialPowerVector a.1 (p - C c)‖ ^ (2 : ℕ) =
         HTGeometry.momentVacuumFeshbachRemainder
           (soninAllPrimeCoupledRealTraceMoment a.1) p := by
   obtain ⟨c, hc⟩ := HTGeometry.exists_shifted_sq_eq_momentVacuumFeshbachRemainder
@@ -284,7 +284,7 @@ theorem norm_soninAllPrimeCoupledCanonicalPolynomialShift_sq_eq_sourceFeshbach
     (a : SoninCoupledNondegenerateAperture) (p : Polynomial ℝ) :
     ‖soninAllPrimeCoupledPolynomialPowerVector a.1
         (HTGeometry.momentVacuumCenteredPolynomial
-          (soninAllPrimeCoupledRealTraceMoment a.1) p)‖ ^ 2 =
+          (soninAllPrimeCoupledRealTraceMoment a.1) p)‖ ^ (2 : ℕ) =
       HTGeometry.momentVacuumFeshbachRemainder
         (soninAllPrimeCoupledRealTraceMoment a.1) p := by
   rw [← soninAllPrimeCoupledPolynomialGramValue_eq_norm_sq,
@@ -459,7 +459,7 @@ theorem soninCoupledPrimeArchVacuumProjectiveFisherUpperBound_iff_sourceFeshbach
               soninAllPrimeCoupledProjectiveTangentEnergy a.1 p := by
           rw [soninAllPrimeCoupledProjectiveTangentEnergy_eq_mass_mul_sourceFeshbach]
           ring
-        _ ≤ (targetRem + ε) * sourceMass ^ 2 := by
+        _ ≤ (targetRem + ε) * sourceMass ^ (2 : ℕ) := by
           simpa only [p, targetRem, sourceMass,
             soninAllPrimeCoupledRealTraceMoment] using ha
         _ = ((targetRem + ε) * sourceMass) * sourceMass := by ring
@@ -483,7 +483,7 @@ theorem soninCoupledPrimeArchVacuumProjectiveFisherUpperBound_iff_sourceFeshbach
           rw [soninAllPrimeCoupledProjectiveTangentEnergy_eq_mass_mul_sourceFeshbach]
           ring
       _ ≤ ((targetRem + ε) * sourceMass) * sourceMass := hscaled
-      _ = (targetRem + ε) * sourceMass ^ 2 := by ring
+      _ = (targetRem + ε) * sourceMass ^ (2 : ℕ) := by ring
 
 /-- The moment-Feshbach source interface is exactly the older aperture-plus-counterterm variance
 interface: the former chooses the canonical minimizer, while the latter can never beat it. -/

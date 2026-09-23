@@ -214,8 +214,8 @@ theorem characterProjection_self_adjoint (N : ℕ)
 /-- Exact energy decomposition over every residue channel. -/
 theorem sum_characterProjection_norm_sq (N : ℕ)
     (p : Multiplicative (ZMod (N+1)) →* Deck N) (v : EuclideanSpace ℂ (Deck N)) :
-    (∑ r : ZMod (N+1), ‖characterProjection N p r v‖^2)=‖v‖^2 := by
-  have he (r : ZMod (N+1)) : ‖characterProjection N p r v‖^2 =
+    (∑ r : ZMod (N+1), ‖characterProjection N p r v‖^(2 : ℕ))=‖v‖^(2 : ℕ) := by
+  have he (r : ZMod (N+1)) : ‖characterProjection N p r v‖^(2 : ℕ) =
       (inner ℂ (characterProjection N p r v) v).re := by
     rw [characterProjection_inner_left]
     exact (inner_self_eq_norm_sq (𝕜 := ℂ) _).symm
@@ -284,13 +284,13 @@ theorem source_lower_character (r : ZMod (N+1)) (z : ℍ) :
 
 /-- Exact source character energy transport, with the actual inverted point retained. -/
 theorem source_lower_character_norm_sq (r : ZMod (N+1)) (z : ℍ) :
-    ‖characterProjection N (lowerBlock N) r (sourceVector N f z)‖^2 =
-      ‖characterProjection N (upperBlock N) (-r) (sourceVector N f (S⁻¹ • z))‖^2 := by
+    ‖characterProjection N (lowerBlock N) r (sourceVector N f z)‖^(2 : ℕ) =
+      ‖characterProjection N (upperBlock N) (-r) (sourceVector N f (S⁻¹ • z))‖^(2 : ℕ) := by
   rw [source_lower_character,LinearIsometryEquiv.norm_map]
 
 /-- Every actual source density is the sum of all original block-character energies. -/
 theorem source_character_energy_sum (p : Multiplicative (ZMod (N+1)) →* Deck N) (z : ℍ) :
-    (∑ r : ZMod (N+1), ‖characterProjection N p r (sourceVector N f z)‖^2)=
+    (∑ r : ZMod (N+1), ‖characterProjection N p r (sourceVector N f z)‖^(2 : ℕ))=
       density N f z := by
   rw [sum_characterProjection_norm_sq,sourceVector_norm_sq]
 

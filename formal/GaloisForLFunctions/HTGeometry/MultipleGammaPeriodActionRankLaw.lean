@@ -7,7 +7,7 @@ import Mathlib.LinearAlgebra.Dimension.Localization
 # Multiple-Gamma marked period rank and excess law
 
 This module formalizes the literal rationalized marked quotient
-`Q tensor_Z (Z^3 / ker p)`, the real span of the period image, marked excess, stabilizer rank,
+`Q tensor_Z (Z^(3 : ℕ) / ker p)`, the real span of the period image, marked excess, stabilizer rank,
 finite/boundary depth ledger, and the general integral period-action conservation law.
 -/
 
@@ -21,7 +21,7 @@ noncomputable section
 
 /-! ## Literal marked quotient and real period span -/
 
-/-- Rationalized effective marked source `Q tensor_Z (Z^3 / ker p)`. -/
+/-- Rationalized effective marked source `Q tensor_Z (Z^(3 : ℕ) / ker p)`. -/
 abbrev markedRationalizedSource (p : MultipleGammaPeriodSource →+ ℂ) : Type :=
   ℚ ⊗[ℤ] (MultipleGammaPeriodSource ⧸ p.ker)
 
@@ -34,7 +34,7 @@ dimension. -/
 noncomputable def markedPeriodExcess (p : MultipleGammaPeriodSource →+ ℂ) : ℕ :=
   Module.finrank ℚ (markedRationalizedSource p) - Module.finrank ℝ (markedPeriodRealSpan p)
 
-/-- Finite effective marked source is rationally `Q^3`. -/
+/-- Finite effective marked source is rationally `Q^(3 : ℕ)`. -/
 noncomputable def finiteMultipleGammaRationalizedSourceEquiv (m : ℕ+) :
     markedRationalizedSource (finiteMultipleGammaPeriodMap m) ≃ₗ[ℚ] (Fin 3 → ℚ) :=
   (TensorProduct.AlgebraTensorModule.congr
@@ -58,7 +58,7 @@ def boundaryMultipleGammaEffectiveCoordinates :
     ext i
     fin_cases i <;> simp <;> ring
 
-/-- Effective boundary coordinates are onto `Z^2`. -/
+/-- Effective boundary coordinates are onto `Z^(2 : ℕ)`. -/
 theorem boundaryMultipleGammaEffectiveCoordinates_surjective :
     Function.Surjective boundaryMultipleGammaEffectiveCoordinates := by
   intro y
@@ -88,7 +88,7 @@ theorem boundaryMultipleGammaEffectiveCoordinates_ker :
     rw [AddMonoidHom.mem_ker, map_zsmul]
     simp [boundaryMultipleGammaEffectiveCoordinates, boundaryMultipleGammaRelation]
 
-/-- Boundary effective marked source is rationally `Q^2`. -/
+/-- Boundary effective marked source is rationally `Q^(2 : ℕ)`. -/
 noncomputable def boundaryMultipleGammaRationalizedSourceEquiv :
     markedRationalizedSource boundaryMultipleGammaPeriodMap ≃ₗ[ℚ] (Fin 2 → ℚ) :=
   (TensorProduct.AlgebraTensorModule.congr

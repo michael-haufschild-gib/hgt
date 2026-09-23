@@ -25,7 +25,7 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_majorant_ratio :
       ‖(2 * Real.pi : ℝ) • (∑' n : ℕ,
           (ArithmeticFunction.moebius n : ℂ) * ((smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
         ≤ (N + H + 1)
-            * coeffMajorant (C * (L + 2) ^ 2) (C' * (L + 2)) M₀ (1024 / zeroFreeConst)
+            * coeffMajorant (C * (L + 2) ^ (2 : ℕ)) (C' * (L + 2)) M₀ (1024 / zeroFreeConst)
                 ((Real.log (N + H)) ^ ((1 : ℝ) / 10))
             * Real.exp (-(zeroFreeConst * (Real.log (N + H)) ^ ((1 : ℝ) / 10) / 8192)) := by
   obtain ⟨C, C', M₀, K₀, hC, hC', hM₀, hmain⟩ :=
@@ -35,7 +35,7 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_majorant_ratio :
   set x : ℝ := N + H with hxdef
   have hx0 : (0 : ℝ) < x := by rw [hxdef]; linarith
   have hL2 : (0 : ℝ) ≤ L + 2 := by linarith
-  have hĈ : (0 : ℝ) ≤ C * (L + 2) ^ 2 := by positivity
+  have hĈ : (0 : ℝ) ≤ C * (L + 2) ^ (2 : ℕ) := by positivity
   have hĈ' : (0 : ℝ) ≤ C' * (L + 2) := by positivity
   have ht : (2 : ℝ) ≤ (Real.log x) ^ ((1 : ℝ) / 10) := hlog2
   have ht1 : (1 : ℝ) ≤ (Real.log x) ^ ((1 : ℝ) / 10) := by linarith
@@ -50,26 +50,26 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_majorant_ratio :
       linarith
     linarith
   have hx1le : Real.log x ≤ Real.log (x + 1) := Real.log_le_log hx0 (by linarith)
-  have hsq : x + 1 ≤ x ^ 2 := by nlinarith [hxe]
+  have hsq : x + 1 ≤ x ^ (2 : ℕ) := by nlinarith [hxe]
   have hy : Real.log (x + 1) ≤ 2 * Real.log x := by
     have h := Real.log_le_log (by linarith) hsq
     rwa [Real.log_pow] at h
   have hbase := hmain N H L hN hH1 hL (contourParam x) hK
-  have hcomb := combined_terms_le (x := x) (C := C * (L + 2) ^ 2) (C' := C' * (L + 2))
+  have hcomb := combined_terms_le (x := x) (C := C * (L + 2) ^ (2 : ℕ)) (C' := C' * (L + 2))
     (R := invZetaRightBound (contourParam x)) (E := invZetaEdgeBound (contourParam x))
     (M₀ := M₀) hlog1 ht hx0 hy hx1le hĈ hĈ'
     (invZetaRightBound_nonneg _) (invZetaEdgeBound_nonneg _) hM₀ hgap
-  have hcoeff := coeff_le_coeffMajorant (x := x) (C := C * (L + 2) ^ 2) (C' := C' * (L + 2))
+  have hcoeff := coeff_le_coeffMajorant (x := x) (C := C * (L + 2) ^ (2 : ℕ)) (C' := C' * (L + 2))
     hlog1 hĈ hĈ' hM₀
   have hSpos : (0 : ℝ) < Real.exp (-(zeroFreeConst * (Real.log x) ^ ((1 : ℝ) / 10) / 8192)) :=
     Real.exp_pos _
   have hfinal : (x + 1)
-      * (8 * invZetaRightBound (contourParam x) * (C * (L + 2) ^ 2)
+      * (8 * invZetaRightBound (contourParam x) * (C * (L + 2) ^ (2 : ℕ))
           + 8 * invZetaEdgeBound (contourParam x) * (C' * (L + 2))
-          + max M₀ (invZetaEdgeBound (contourParam x)) * (4 + 2 * (C * (L + 2) ^ 2)))
+          + max M₀ (invZetaEdgeBound (contourParam x)) * (4 + 2 * (C * (L + 2) ^ (2 : ℕ))))
       * Real.exp (-(zeroFreeConst * (Real.log x) ^ ((1 : ℝ) / 10) / 8192))
       ≤ (x + 1)
-          * coeffMajorant (C * (L + 2) ^ 2) (C' * (L + 2)) M₀ (1024 / zeroFreeConst)
+          * coeffMajorant (C * (L + 2) ^ (2 : ℕ)) (C' * (L + 2)) M₀ (1024 / zeroFreeConst)
               ((Real.log x) ^ ((1 : ℝ) / 10))
           * Real.exp (-(zeroFreeConst * (Real.log x) ^ ((1 : ℝ) / 10) / 8192)) := by
     have hx10 : (0 : ℝ) ≤ x + 1 := by linarith

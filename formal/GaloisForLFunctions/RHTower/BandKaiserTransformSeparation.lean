@@ -4,14 +4,14 @@ import GaloisForLFunctions.RHTower.BandKaiserGeneralShiftTail
 # Exponential separation of Kaiser transform readings
 
 Inside the band the exact Kaiser transform is a hyperbolic-sine quotient.  Moving an angular
-frequency by `q` lowers its exponential phase from `c` to `sqrt(c^2-q^2)`, and concavity of the
-square root gives the explicit loss `q^2/(2c)`.  This module records a robust quantitative form:
+frequency by `q` lowers its exponential phase from `c` to `sqrt(c^(2 : ℕ)-q^(2 : ℕ))`, and concavity of the
+square root gives the explicit loss `q^(2 : ℕ)/(2c)`.  This module records a robust quantitative form:
 
 ```text
-T_c(q) <= 8 exp(-q^2/(2c)) T_c(0)
+T_c(q) <= 8 exp(-q^(2 : ℕ)/(2c)) T_c(0)
 ```
 
-whenever `c >= 1` and `q^2 <= c^2/2`.  This is the diagonal-separation input for finite Kaiser
+whenever `c >= 1` and `q^(2 : ℕ) <= c^(2 : ℕ)/2`.  This is the diagonal-separation input for finite Kaiser
 packet Gram conditioning.
 -/
 
@@ -28,7 +28,7 @@ def kaiserAngularTransform (c q : ℝ) : ℝ :=
 theorem kaiserAngularTransform_zero {c : ℝ} (hc : 0 < c) :
     kaiserAngularTransform c 0 = 2 * Real.sinh c / c := by
   rw [kaiserAngularTransform,
-    integral_kaiserTrial_cos_of_lt (by nlinarith [sq_pos_of_pos hc] : (0 : ℝ) ^ 2 < c ^ 2)]
+    integral_kaiserTrial_cos_of_lt (by nlinarith [sq_pos_of_pos hc] : (0 : ℝ) ^ (2 : ℕ) < c ^ (2 : ℕ))]
   norm_num only [zero_pow, sub_zero]
   rw [Real.sqrt_sq_eq_abs, abs_of_pos hc]
 
@@ -64,84 +64,84 @@ private theorem sinh_le_exp (v : ℝ) : Real.sinh v ≤ Real.exp v := by
   have hneg : 0 < Real.exp (-v) := Real.exp_pos _
   linarith
 
-/-- The inner-band phase drops by at least `q^2/(2c)`. -/
+/-- The inner-band phase drops by at least `q^(2 : ℕ)/(2c)`. -/
 theorem sqrt_sq_sub_sq_le_sub_div {c q : ℝ} (hc : 0 < c)
-    (hq : q ^ 2 ≤ c ^ 2) :
-    Real.sqrt (c ^ 2 - q ^ 2) ≤ c - q ^ 2 / (2 * c) := by
-  have hdepth : 0 ≤ c ^ 2 - q ^ 2 := sub_nonneg.mpr hq
-  have hrhs : 0 ≤ c - q ^ 2 / (2 * c) := by
-    have hdiv : q ^ 2 / (2 * c) ≤ c / 2 := by
+    (hq : q ^ (2 : ℕ) ≤ c ^ (2 : ℕ)) :
+    Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)) ≤ c - q ^ (2 : ℕ) / (2 * c) := by
+  have hdepth : 0 ≤ c ^ (2 : ℕ) - q ^ (2 : ℕ) := sub_nonneg.mpr hq
+  have hrhs : 0 ≤ c - q ^ (2 : ℕ) / (2 * c) := by
+    have hdiv : q ^ (2 : ℕ) / (2 * c) ≤ c / 2 := by
       rw [div_le_iff₀ (by positivity)]
       nlinarith
     linarith
   rw [← sq_le_sq₀ (Real.sqrt_nonneg _) hrhs, Real.sq_sqrt hdepth]
   have hcne : c ≠ 0 := hc.ne'
   field_simp [hcne]
-  nlinarith [sq_nonneg (q ^ 2)]
+  nlinarith [sq_nonneg (q ^ (2 : ℕ))]
 
 /-- On the middle half of the band the exact transform has an explicit upper envelope. -/
 theorem kaiserAngularTransform_le_four_exp_div {c q : ℝ} (hc : 0 < c)
-    (hq : q ^ 2 ≤ c ^ 2 / 2) :
+    (hq : q ^ (2 : ℕ) ≤ c ^ (2 : ℕ) / 2) :
     kaiserAngularTransform c q ≤
-      4 * Real.exp (Real.sqrt (c ^ 2 - q ^ 2)) / c := by
-  have hdepth : 0 < c ^ 2 - q ^ 2 := by
-    have hcsq : 0 < c ^ 2 := sq_pos_of_pos hc
+      4 * Real.exp (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) / c := by
+  have hdepth : 0 < c ^ (2 : ℕ) - q ^ (2 : ℕ) := by
+    have hcsq : 0 < c ^ (2 : ℕ) := sq_pos_of_pos hc
     nlinarith
-  have hv : 0 < Real.sqrt (c ^ 2 - q ^ 2) := Real.sqrt_pos.mpr hdepth
-  have hvsq : Real.sqrt (c ^ 2 - q ^ 2) ^ 2 = c ^ 2 - q ^ 2 :=
+  have hv : 0 < Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)) := Real.sqrt_pos.mpr hdepth
+  have hvsq : Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)) ^ (2 : ℕ) = c ^ (2 : ℕ) - q ^ (2 : ℕ) :=
     Real.sq_sqrt hdepth.le
-  have hvlow : c / 2 ≤ Real.sqrt (c ^ 2 - q ^ 2) := by
+  have hvlow : c / 2 ≤ Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)) := by
     apply (sq_le_sq₀ (by positivity) hv.le).mp
     rw [hvsq]
     nlinarith [sq_nonneg c]
-  rw [kaiserAngularTransform, integral_kaiserTrial_cos_of_lt (by linarith : q ^ 2 < c ^ 2)]
-  have hsinh := sinh_le_exp (Real.sqrt (c ^ 2 - q ^ 2))
-  have hnum : 2 * Real.sinh (Real.sqrt (c ^ 2 - q ^ 2)) ≤
-      2 * Real.exp (Real.sqrt (c ^ 2 - q ^ 2)) :=
+  rw [kaiserAngularTransform, integral_kaiserTrial_cos_of_lt (by linarith : q ^ (2 : ℕ) < c ^ (2 : ℕ))]
+  have hsinh := sinh_le_exp (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)))
+  have hnum : 2 * Real.sinh (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) ≤
+      2 * Real.exp (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) :=
     mul_le_mul_of_nonneg_left hsinh (by norm_num)
-  have hfirst : 2 * Real.sinh (Real.sqrt (c ^ 2 - q ^ 2)) /
-      Real.sqrt (c ^ 2 - q ^ 2) ≤
-        2 * Real.exp (Real.sqrt (c ^ 2 - q ^ 2)) /
-          Real.sqrt (c ^ 2 - q ^ 2) :=
+  have hfirst : 2 * Real.sinh (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) /
+      Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)) ≤
+        2 * Real.exp (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) /
+          Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ)) :=
     div_le_div_of_nonneg_right hnum hv.le
   refine hfirst.trans ?_
   rw [div_le_div_iff₀ hv hc]
-  have hexp0 : 0 ≤ Real.exp (Real.sqrt (c ^ 2 - q ^ 2)) := (Real.exp_pos _).le
+  have hexp0 : 0 ≤ Real.exp (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) := (Real.exp_pos _).le
   nlinarith
 
 /-- **Exponential transform separation.**  An angular displacement `q` suppresses the Kaiser
-reading by `exp(-q^2/(2c))`, up to an absolute factor. -/
+reading by `exp(-q^(2 : ℕ)/(2c))`, up to an absolute factor. -/
 theorem kaiserAngularTransform_le_exp_separation {c q : ℝ} (hc : 1 ≤ c)
-    (hq : q ^ 2 ≤ c ^ 2 / 2) :
+    (hq : q ^ (2 : ℕ) ≤ c ^ (2 : ℕ) / 2) :
     kaiserAngularTransform c q ≤
-      8 * Real.exp (-(q ^ 2 / (2 * c))) * kaiserAngularTransform c 0 := by
+      8 * Real.exp (-(q ^ (2 : ℕ) / (2 * c))) * kaiserAngularTransform c 0 := by
   have hcpos : 0 < c := one_pos.trans_le hc
-  have hqfull : q ^ 2 ≤ c ^ 2 := by
-    have hcsq : 0 ≤ c ^ 2 := sq_nonneg c
+  have hqfull : q ^ (2 : ℕ) ≤ c ^ (2 : ℕ) := by
+    have hcsq : 0 ≤ c ^ (2 : ℕ) := sq_nonneg c
     linarith
   have hphase := sqrt_sq_sub_sq_le_sub_div hcpos hqfull
-  have hexpPhase : Real.exp (Real.sqrt (c ^ 2 - q ^ 2)) ≤
-      Real.exp (c - q ^ 2 / (2 * c)) := Real.exp_le_exp.mpr hphase
+  have hexpPhase : Real.exp (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) ≤
+      Real.exp (c - q ^ (2 : ℕ) / (2 * c)) := Real.exp_le_exp.mpr hphase
   have hupper := kaiserAngularTransform_le_four_exp_div hcpos hq
   have hcenter := exp_div_two_c_le_kaiserAngularTransform_zero hc
-  have hstep : 4 * Real.exp (Real.sqrt (c ^ 2 - q ^ 2)) / c ≤
-      4 * Real.exp (c - q ^ 2 / (2 * c)) / c := by
+  have hstep : 4 * Real.exp (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) / c ≤
+      4 * Real.exp (c - q ^ (2 : ℕ) / (2 * c)) / c := by
     exact div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left hexpPhase (by norm_num)) hcpos.le
-  have hexpSplit : Real.exp (c - q ^ 2 / (2 * c)) =
-      Real.exp (-(q ^ 2 / (2 * c))) * Real.exp c := by
+  have hexpSplit : Real.exp (c - q ^ (2 : ℕ) / (2 * c)) =
+      Real.exp (-(q ^ (2 : ℕ) / (2 * c))) * Real.exp c := by
     rw [← Real.exp_add]
     congr 1
     ring
   calc
     kaiserAngularTransform c q
-        ≤ 4 * Real.exp (Real.sqrt (c ^ 2 - q ^ 2)) / c := hupper
-    _ ≤ 4 * Real.exp (c - q ^ 2 / (2 * c)) / c := hstep
-    _ = 8 * Real.exp (-(q ^ 2 / (2 * c))) * (Real.exp c / (2 * c)) := by
+        ≤ 4 * Real.exp (Real.sqrt (c ^ (2 : ℕ) - q ^ (2 : ℕ))) / c := hupper
+    _ ≤ 4 * Real.exp (c - q ^ (2 : ℕ) / (2 * c)) / c := hstep
+    _ = 8 * Real.exp (-(q ^ (2 : ℕ) / (2 * c))) * (Real.exp c / (2 * c)) := by
       rw [hexpSplit]
       field_simp [hcpos.ne']
       ring
-    _ ≤ 8 * Real.exp (-(q ^ 2 / (2 * c))) * kaiserAngularTransform c 0 := by
+    _ ≤ 8 * Real.exp (-(q ^ (2 : ℕ) / (2 * c))) * kaiserAngularTransform c 0 := by
       exact mul_le_mul_of_nonneg_left hcenter (by positivity)
 
 end GaloisForLFunctions.RHTower

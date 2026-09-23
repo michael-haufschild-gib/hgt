@@ -109,11 +109,11 @@ theorem thetaCuspTailPhaseTranslationPacketIntegratedNorm_le_abs
         ((R : ℝ) + 1) * Real.exp (((1 + R : ℕ) : ℝ) * |a|) := by
   let f0 : ℝ → ℝ := fun x =>
     |thetaCuspTailDerivative 2 x| *
-      ((((R : ℝ) * (x + |a|)) ^ 0 / ((0 : ℕ).factorial : ℕ)) *
+      ((((R : ℝ) * (x + |a|)) ^ (0 : ℕ) / ((0 : ℕ).factorial : ℕ)) *
         Real.exp ((R : ℝ) * (x + |a|)))
   let f1 : ℝ → ℝ := fun x =>
     |thetaCuspTailDerivative 2 x| *
-      ((((R : ℝ) * (x + |a|)) ^ 1 / ((1 : ℕ).factorial : ℕ)) *
+      ((((R : ℝ) * (x + |a|)) ^ (1 : ℕ) / ((1 : ℕ).factorial : ℕ)) *
         Real.exp ((R : ℝ) * (x + |a|)))
   have ha : 0 ≤ |a| := abs_nonneg a
   have hf0int : IntegrableOn f0 (Ioi 0) := by

@@ -48,15 +48,15 @@ private theorem finite_offLine_card_mul_fiveCenterLocalCharge_le_offLineLatticeB
       round (xiSpectralPoint q).re + 2 ∈ K)
     (hlocal : ∀ q ∈ S, c ≤
       ((criticalFeatureCauchyKernelTest
-        (((round (xiSpectralPoint q).re : ℤ) : ℝ) - 2) (xiSpectralPoint q)) ^ 2).re +
+        (((round (xiSpectralPoint q).re : ℤ) : ℝ) - 2) (xiSpectralPoint q)) ^ (2 : ℕ)).re +
       ((criticalFeatureCauchyKernelTest
-        (((round (xiSpectralPoint q).re : ℤ) : ℝ) - 1) (xiSpectralPoint q)) ^ 2).re +
+        (((round (xiSpectralPoint q).re : ℤ) : ℝ) - 1) (xiSpectralPoint q)) ^ (2 : ℕ)).re +
       ((criticalFeatureCauchyKernelTest
-        ((round (xiSpectralPoint q).re : ℤ) : ℝ) (xiSpectralPoint q)) ^ 2).re +
+        ((round (xiSpectralPoint q).re : ℤ) : ℝ) (xiSpectralPoint q)) ^ (2 : ℕ)).re +
       ((criticalFeatureCauchyKernelTest
-        (((round (xiSpectralPoint q).re : ℤ) : ℝ) + 1) (xiSpectralPoint q)) ^ 2).re +
+        (((round (xiSpectralPoint q).re : ℤ) : ℝ) + 1) (xiSpectralPoint q)) ^ (2 : ℕ)).re +
       ((criticalFeatureCauchyKernelTest
-        (((round (xiSpectralPoint q).re : ℤ) : ℝ) + 2) (xiSpectralPoint q)) ^ 2).re) :
+        (((round (xiSpectralPoint q).re : ℤ) : ℝ) + 2) (xiSpectralPoint q)) ^ (2 : ℕ)).re) :
     (S.card : ℝ) * c ≤ criticalFeaturePrimeGammaOffLineLatticeBudget K := by
   calc
     (S.card : ℝ) * c = ∑ _q ∈ S, c := by simp
@@ -69,7 +69,7 @@ private theorem finite_offLine_card_mul_fiveCenterLocalCharge_le_offLineLatticeB
       have hfive := hlocal q hq
       have hoffeq (j : ℤ) :
           ((criticalFeatureCauchyKernelTest (j : ℝ)
-            (xiSpectralPoint q)) ^ 2).re =
+            (xiSpectralPoint q)) ^ (2 : ℕ)).re =
             offLineCriticalFeatureHolomorphicEnergy (j : ℝ) q := by
         rw [offLineCriticalFeatureHolomorphicEnergy, if_neg hqoff]
       have hcastm2 : (kq : ℝ) - 2 = ((kq - 2 : ℤ) : ℝ) := by
@@ -82,15 +82,15 @@ private theorem finite_offLine_card_mul_fiveCenterLocalCharge_le_offLineLatticeB
         exact_mod_cast (rfl : kq + 2 = kq + 2)
       change c ≤
         ((criticalFeatureCauchyKernelTest ((kq : ℝ) - 2)
-          (xiSpectralPoint q)) ^ 2).re +
+          (xiSpectralPoint q)) ^ (2 : ℕ)).re +
         ((criticalFeatureCauchyKernelTest ((kq : ℝ) - 1)
-          (xiSpectralPoint q)) ^ 2).re +
+          (xiSpectralPoint q)) ^ (2 : ℕ)).re +
         ((criticalFeatureCauchyKernelTest (kq : ℝ)
-          (xiSpectralPoint q)) ^ 2).re +
+          (xiSpectralPoint q)) ^ (2 : ℕ)).re +
         ((criticalFeatureCauchyKernelTest ((kq : ℝ) + 1)
-          (xiSpectralPoint q)) ^ 2).re +
+          (xiSpectralPoint q)) ^ (2 : ℕ)).re +
         ((criticalFeatureCauchyKernelTest ((kq : ℝ) + 2)
-          (xiSpectralPoint q)) ^ 2).re at hfive
+          (xiSpectralPoint q)) ^ (2 : ℕ)).re at hfive
       rw [hcastm2, hcastm1, hcastp1, hcastp2,
         hoffeq, hoffeq, hoffeq, hoffeq, hoffeq] at hfive
       let Tq : Finset ℤ := {kq - 2, kq - 1, kq, kq + 1, kq + 2}

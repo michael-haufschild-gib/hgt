@@ -26,7 +26,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-def liRemoteQuartetNormalization (a T : ℝ) : ℝ := (a ^ 2 + T ^ 2) ^ 2
+def liRemoteQuartetNormalization (a T : ℝ) : ℝ := (a ^ (2 : ℕ) + T ^ (2 : ℕ)) ^ (2 : ℕ)
 
 def liRemoteQuartetGauge (a T : ℝ) (s : ℂ) : ℂ :=
   centeredQuartetGauge a T s / (liRemoteQuartetNormalization a T : ℂ)
@@ -56,13 +56,13 @@ theorem liRemoteQuartetGaugePolynomial_ne_zero {a T : ℝ} (hT : 0 < T) :
 
 theorem liRemoteQuartetGauge_eq_card (a T : ℝ) (s : ℂ) :
     liRemoteQuartetGauge a T s =
-      ((((s - (1 / 2 : ℂ)) ^ 2 - ((a : ℂ) + I * (T : ℂ)) ^ 2) *
-        ((s - (1 / 2 : ℂ)) ^ 2 - ((a : ℂ) - I * (T : ℂ)) ^ 2)) /
+      ((((s - (1 / 2 : ℂ)) ^ (2 : ℕ) - ((a : ℂ) + I * (T : ℂ)) ^ (2 : ℕ)) *
+        ((s - (1 / 2 : ℂ)) ^ (2 : ℕ) - ((a : ℂ) - I * (T : ℂ)) ^ (2 : ℕ))) /
           (liRemoteQuartetNormalization a T : ℂ)) := by
   unfold liRemoteQuartetGauge centeredQuartetGauge
   ring_nf
-  have hI2 : I ^ 2 = (-1 : ℂ) := by rw [pow_two, I_mul_I]
-  have hI4 : I ^ 4 = (1 : ℂ) := by
+  have hI2 : I ^ (2 : ℕ) = (-1 : ℂ) := by rw [pow_two, I_mul_I]
+  have hI4 : I ^ (4 : ℕ) = (1 : ℂ) := by
     rw [show (4 : ℕ) = 2 * 2 by norm_num, pow_mul, hI2]
     norm_num
   rw [hI2, hI4]

@@ -26,7 +26,7 @@ def routeUSparseEscapeDegree (k : ℕ) : ℕ := 2 ^ k
 
 /-- Exact quadratic mass attached to the sparse degree. -/
 def routeUSparseEscapeMass (k : ℕ) : ℝ :=
-  (routeUSparseEscapeDegree k : ℝ) ^ 2
+  (routeUSparseEscapeDegree k : ℝ) ^ (2 : ℕ)
 
 /-- Model cumulative source flux. -/
 def routeUSparseEscapeFlux (n : ℕ) (y : ℝ) : ℝ :=
@@ -34,28 +34,28 @@ def routeUSparseEscapeFlux (n : ℕ) (y : ℝ) : ℝ :=
 
 /-- Model positive source action. -/
 def routeUSparseEscapeAction (n : ℕ) (y : ℝ) : ℝ :=
-  (n : ℝ) / y ^ 2
+  (n : ℝ) / y ^ (2 : ℕ)
 
 /-- **Closed sparse-parabolic escape.**  All present scalar source-capital mechanisms coexist
 with geometrically summable entry budgets on a cofinal quadratic schedule. -/
 theorem routeUSparseParabolicCapitalEscape :
     (∀ k : ℕ, 0 < routeUSparseEscapeDegree k) ∧
     (∀ k : ℕ,
-      routeUSparseEscapeMass k = (routeUSparseEscapeDegree k : ℝ) ^ 2) ∧
+      routeUSparseEscapeMass k = (routeUSparseEscapeDegree k : ℝ) ^ (2 : ℕ)) ∧
     Tendsto routeUSparseEscapeDegree atTop atTop ∧
     Tendsto routeUSparseEscapeMass atTop atTop ∧
     (∀ n : ℕ, 0 < n → ∀ y : ℝ, 0 < y →
       HasDerivAt (routeUSparseEscapeFlux n)
         (-routeUSparseEscapeAction n y) y) ∧
     (∀ n : ℕ, 0 < n → ∀ y : ℝ, 0 < y →
-      (routeUSparseEscapeFlux (n + 1) y - routeUSparseEscapeFlux n y) ^ 2 <
+      (routeUSparseEscapeFlux (n + 1) y - routeUSparseEscapeFlux n y) ^ (2 : ℕ) <
         (3 / 2 : ℝ) * routeUSparseEscapeAction (n + 1) y) ∧
     (∀ n : ℕ, 0 < n → ∀ y : ℝ, 0 < y →
       2 * routeUSparseEscapeAction n y =
-        ((n : ℝ) - 1) / y ^ 2 + ((n : ℝ) + 1) / y ^ 2 ∧
-      0 < ((n : ℝ) + 1) / y ^ 2) ∧
+        ((n : ℝ) - 1) / y ^ (2 : ℕ) + ((n : ℝ) + 1) / y ^ (2 : ℕ) ∧
+      0 < ((n : ℝ) + 1) / y ^ (2 : ℕ)) ∧
     Tendsto (fun k : ℕ =>
-      routeUSparseEscapeMass k ^ 2 *
+      routeUSparseEscapeMass k ^ (2 : ℕ) *
         routeUSparseEscapeAction (routeUSparseEscapeDegree k)
           (routeUSparseEscapeMass k)) atTop atTop ∧
     (∀ k : ℕ,
@@ -85,7 +85,7 @@ theorem routeUSparseParabolicCapitalEscape :
     have hy0 : y ≠ 0 := ne_of_gt hy
     have h := (hasDerivAt_inv hy0).const_mul (n : ℝ)
     change HasDerivAt (fun z : ℝ => (n : ℝ) * z⁻¹)
-      (-((n : ℝ) * (y ^ 2)⁻¹)) y
+      (-((n : ℝ) * (y ^ (2 : ℕ))⁻¹)) y
     simpa only [mul_neg, neg_mul] using h
   constructor
   · intro n hn y hy
@@ -100,11 +100,11 @@ theorem routeUSparseParabolicCapitalEscape :
       field_simp
       ring
     rw [hdiff]
-    have hy2 : 0 < y ^ 2 := sq_pos_of_pos hy
+    have hy2 : 0 < y ^ (2 : ℕ) := sq_pos_of_pos hy
     calc
-      (1 / y) ^ 2 = 1 / y ^ 2 := by field_simp
-      _ < ((3 / 2 : ℝ) * (n + 1 : ℕ)) / y ^ 2 := by gcongr
-      _ = (3 / 2 : ℝ) * (((n + 1 : ℕ) : ℝ) / y ^ 2) := by ring
+      (1 / y) ^ (2 : ℕ) = 1 / y ^ (2 : ℕ) := by field_simp
+      _ < ((3 / 2 : ℝ) * (n + 1 : ℕ)) / y ^ (2 : ℕ) := by gcongr
+      _ = (3 / 2 : ℝ) * (((n + 1 : ℕ) : ℝ) / y ^ (2 : ℕ)) := by ring
   constructor
   · intro n hn y hy
     have hy0 : y ≠ 0 := ne_of_gt hy

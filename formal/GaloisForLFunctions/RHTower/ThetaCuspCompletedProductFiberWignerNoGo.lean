@@ -43,13 +43,13 @@ private theorem firstCompletedFiberJet_zero :
   exact (thetaCuspSourceTerm_eq_polynomialAtom 1).symm
 
 private def firstCompletedFiberHalfAmplitude (x : ℝ) : ℝ :=
-  firstCompletedFiberJet 0 x ^ 2
+  firstCompletedFiberJet 0 x ^ (2 : ℕ)
 
 private def firstCompletedFiberHalfSlope (x : ℝ) : ℝ :=
   2 * firstCompletedFiberJet 0 x * firstCompletedFiberJet 1 x
 
 private def firstCompletedFiberHalfCurvature (x : ℝ) : ℝ :=
-  2 * (firstCompletedFiberJet 1 x ^ 2 +
+  2 * (firstCompletedFiberJet 1 x ^ (2 : ℕ) +
     firstCompletedFiberJet 0 x * firstCompletedFiberJet 2 x)
 
 private theorem hasDerivAt_firstCompletedFiberHalfAmplitude (x : ℝ) :
@@ -78,7 +78,7 @@ private theorem hasDerivAt_firstCompletedFiberHalfSlope (x : ℝ) :
   have hd :
       2 * (firstCompletedFiberJet (0 + 1) x * firstCompletedFiberJet 1 x +
         firstCompletedFiberJet 0 x * firstCompletedFiberJet (1 + 1) x) =
-      2 * (firstCompletedFiberJet 1 x ^ 2 +
+      2 * (firstCompletedFiberJet 1 x ^ (2 : ℕ) +
         firstCompletedFiberJet 0 x * firstCompletedFiberJet 2 x) := by
     simp only [Nat.zero_add, Nat.one_add, pow_two]
   have hfun : firstCompletedFiberHalfSlope =
@@ -94,7 +94,7 @@ private theorem integrableOn_firstCompletedFiberJet_mul
     IntegrableOn (fun x : ℝ =>
       firstCompletedFiberJet m x * firstCompletedFiberJet n x) (Ioi 0) := by
   let C : ℝ := thetaCuspGaussianConstant (thetaCuspLogDerivativePolynomial m) *
-    Real.exp (-(Real.pi / 2) * (1 : ℝ) ^ 2)
+    Real.exp (-(Real.pi / 2) * (1 : ℝ) ^ (2 : ℕ))
   have hC : 0 ≤ C := by
     dsimp only [C]
     exact mul_nonneg (thetaCuspGaussianConstant_nonneg _)
@@ -183,7 +183,7 @@ private theorem firstCompletedFiberHalfSlope_zero_pos :
 
 private theorem firstCompletedFiberHalfCosine_secondIntegrationByParts
     (b : ℝ) :
-    b ^ 2 * (∫ x : ℝ in Ioi 0,
+    b ^ (2 : ℕ) * (∫ x : ℝ in Ioi 0,
       firstCompletedFiberHalfAmplitude x * Real.cos (b * x)) =
       -firstCompletedFiberHalfSlope 0 -
         ∫ x : ℝ in Ioi 0,
@@ -196,7 +196,7 @@ private theorem firstCompletedFiberHalfCosine_secondIntegrationByParts
     all_goals try rfl
     ring
   have hsin (x : ℝ) : HasDerivAt (fun y : ℝ => -b * Real.sin (b * y))
-      (-b ^ 2 * Real.cos (b * x)) x := by
+      (-b ^ (2 : ℕ) * Real.cos (b * x)) x := by
     have h := ((Real.hasDerivAt_sin (b * x)).comp x
       ((hasDerivAt_id x).const_mul b)).const_mul (-b)
     convert h using 1
@@ -273,12 +273,12 @@ private theorem firstCompletedFiberHalfCosine_secondIntegrationByParts
       rw [Real.norm_eq_abs, abs_mul, abs_neg]
       exact mul_le_of_le_one_right (abs_nonneg b) (abs_sin_le_one _)
   have hcosAmp : IntegrableOn (fun x : ℝ =>
-      (-b ^ 2 * Real.cos (b * x)) * firstCompletedFiberHalfAmplitude x) (Ioi 0) := by
+      (-b ^ (2 : ℕ) * Real.cos (b * x)) * firstCompletedFiberHalfAmplitude x) (Ioi 0) := by
     apply Integrable.bdd_mul integrableOn_firstCompletedFiberHalfAmplitude
-    · exact (by fun_prop : Continuous (fun x : ℝ => -b ^ 2 * Real.cos (b * x))).aestronglyMeasurable.restrict
+    · exact (by fun_prop : Continuous (fun x : ℝ => -b ^ (2 : ℕ) * Real.cos (b * x))).aestronglyMeasurable.restrict
     · filter_upwards with x
       rw [Real.norm_eq_abs, abs_mul, abs_neg]
-      exact mul_le_of_le_one_right (abs_nonneg (b ^ 2)) (abs_cos_le_one _)
+      exact mul_le_of_le_one_right (abs_nonneg (b ^ (2 : ℕ))) (abs_cos_le_one _)
   have hfirst := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (u := fun x => Real.cos (b * x))
     (u' := fun x => -b * Real.sin (b * x))
@@ -288,7 +288,7 @@ private theorem firstCompletedFiberHalfCosine_secondIntegrationByParts
     hcosCurv hsinSlope hcosSlopeZero hcosSlopeInf
   have hsecond := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (u := fun x => -b * Real.sin (b * x))
-    (u' := fun x => -b ^ 2 * Real.cos (b * x))
+    (u' := fun x => -b ^ (2 : ℕ) * Real.cos (b * x))
     (v := firstCompletedFiberHalfAmplitude)
     (v' := firstCompletedFiberHalfSlope)
     (fun x _ => hsin x) (fun x _ => hasDerivAt_firstCompletedFiberHalfAmplitude x)
@@ -315,8 +315,8 @@ private theorem firstCompletedFiberHalfCosine_secondIntegrationByParts
       filter_upwards with x
       ring] at hsecond
   rw [show (∫ x : ℝ in Ioi 0,
-      (-b ^ 2 * Real.cos (b * x)) * firstCompletedFiberHalfAmplitude x) =
-      -b ^ 2 * ∫ x : ℝ in Ioi 0,
+      (-b ^ (2 : ℕ) * Real.cos (b * x)) * firstCompletedFiberHalfAmplitude x) =
+      -b ^ (2 : ℕ) * ∫ x : ℝ in Ioi 0,
         firstCompletedFiberHalfAmplitude x * Real.cos (b * x) by
       rw [← integral_const_mul]
       apply integral_congr_ae
@@ -346,11 +346,11 @@ private theorem eventually_firstCompletedFiberHalfCosine_neg :
   filter_upwards [hsmall, eventually_gt_atTop (0 : ℝ)] with b hb hbpos
   have hibp := firstCompletedFiberHalfCosine_secondIntegrationByParts b
   have hrem := (abs_lt.mp hb).1
-  have hbsq : 0 < b ^ 2 := sq_pos_of_pos hbpos
+  have hbsq : 0 < b ^ (2 : ℕ) := sq_pos_of_pos hbpos
   nlinarith
 
 private theorem firstCompletedFiberHalfAmplitude_eq_sourceTerm_sq (x : ℝ) :
-    firstCompletedFiberHalfAmplitude x = thetaCuspSourceTerm x 1 ^ 2 := by
+    firstCompletedFiberHalfAmplitude x = thetaCuspSourceTerm x 1 ^ (2 : ℕ) := by
   rw [firstCompletedFiberHalfAmplitude, firstCompletedFiberJet_zero]
 
 private theorem thetaPositiveFactorPairs_one_wigner :

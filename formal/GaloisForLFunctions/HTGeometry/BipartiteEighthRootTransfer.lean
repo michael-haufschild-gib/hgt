@@ -106,7 +106,7 @@ def prodCollCoeff (e : ι → α × β → ℂ)
 
 /-- The unnormalized bipartite collision. -/
 def prodQuarticSum (e : ι → α × β → ℂ) (θ : (α ⊕ β) → ℝ) : ℝ :=
-  ∑ j, ‖finiteComplexInner (e j) (phaseVec θ)‖ ^ 4
+  ∑ j, ‖finiteComplexInner (e j) (phaseVec θ)‖ ^ (4 : ℕ)
 
 /-- **The bipartite collision is a trigonometric polynomial** on eight register coordinates. -/
 theorem prodQuarticSum_eq_trigLift (e : ι → α × β → ℂ) (θ : (α ⊕ β) → ℝ) :
@@ -114,7 +114,7 @@ theorem prodQuarticSum_eq_trigLift (e : ι → α × β → ℂ) (θ : (α ⊕ �
       = trigLift (Finset.univ : Finset (((α × β) × (α × β)) × ((α × β) × (α × β))))
           prodCollFreq (prodCollCoeff e) θ := by
   classical
-  have hterm : ∀ j : ι, ((‖finiteComplexInner (e j) (phaseVec θ)‖ ^ 4 : ℝ) : ℂ)
+  have hterm : ∀ j : ι, ((‖finiteComplexInner (e j) (phaseVec θ)‖ ^ (4 : ℕ) : ℝ) : ℂ)
       = trigLift (Finset.univ : Finset (((α × β) × (α × β)) × ((α × β) × (α × β))))
           prodCollFreq
           (fun pq => ((starRingEnd ℂ) (e j pq.1.1) * (starRingEnd ℂ) (e j pq.1.2)) *
@@ -122,7 +122,7 @@ theorem prodQuarticSum_eq_trigLift (e : ι → α × β → ℂ) (θ : (α ⊕ �
               (starRingEnd ℂ) (e j pq.2.2)))) θ := by
     intro j
     obtain ⟨z, hz⟩ : ∃ z, z = finiteComplexInner (e j) (phaseVec θ) := ⟨_, rfl⟩
-    have hquartic : ((‖z‖ ^ 4 : ℝ) : ℂ) = z ^ 2 * (starRingEnd ℂ) (z ^ 2) := by
+    have hquartic : ((‖z‖ ^ (4 : ℕ) : ℝ) : ℂ) = z ^ (2 : ℕ) * (starRingEnd ℂ) (z ^ (2 : ℕ)) := by
       rw [map_pow, ← mul_pow, Complex.mul_conj,
         show (4 : ℕ) = 2 * 2 from rfl, pow_mul, Complex.sq_norm]
       push_cast
@@ -263,15 +263,15 @@ theorem average_prodQuarticSum_polyEval_eq_integral (m : ℕ) (hm : 8 ≤ 2 ^ (m
 
 
 theorem sum_inner_prodPhaseSeed_fourth_eq (e : ι → α × β → ℂ) (θ : (α ⊕ β) → ℝ) :
-    (∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ 4)
-      = (((Fintype.card α : ℝ) * Fintype.card β) ^ 2)⁻¹ * prodQuarticSum e θ := by
+    (∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ (4 : ℕ))
+      = (((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ))⁻¹ * prodQuarticSum e θ := by
   classical
   have hD : (0 : ℝ) ≤ (Fintype.card α : ℝ) * Fintype.card β := by positivity
-  have hsqrt : Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) ^ 2 =
+  have hsqrt : Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ) =
       (Fintype.card α : ℝ) * Fintype.card β := Real.sq_sqrt hD
-  have hpt : ∀ j : ι, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ 4
-      = (((Fintype.card α : ℝ) * Fintype.card β) ^ 2)⁻¹ *
-        ‖finiteComplexInner (e j) (phaseVec θ)‖ ^ 4 := by
+  have hpt : ∀ j : ι, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ (4 : ℕ)
+      = (((Fintype.card α : ℝ) * Fintype.card β) ^ (2 : ℕ))⁻¹ *
+        ‖finiteComplexInner (e j) (phaseVec θ)‖ ^ (4 : ℕ) := by
     intro j
     have hlin : finiteComplexInner (e j) (prodPhaseSeed θ) =
         ((Real.sqrt ((Fintype.card α : ℝ) * Fintype.card β) : ℝ) : ℂ)⁻¹ *
@@ -293,15 +293,15 @@ theorem average_prodCollision_polyEval_eq_integral (m : ℕ) (hm : 8 ≤ 2 ^ (m 
     ((Fintype.card ((MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8)) : ℝ))⁻¹ *
         ∑ c : (MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8),
           (∑ j, ‖finiteComplexInner (e j)
-            (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ 4)
+            (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ (4 : ℕ))
       = ∫ θ in torusBox ((ιA → Bool) ⊕ (ιB → Bool)),
-          ∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ 4 := by
+          ∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ (4 : ℕ) := by
   classical
   obtain ⟨D, hDdef⟩ : ∃ D : ℝ, D = ((Fintype.card (ιA → Bool) : ℝ) *
-    Fintype.card (ιB → Bool)) ^ 2 := ⟨_, rfl⟩
+    Fintype.card (ιB → Bool)) ^ (2 : ℕ) := ⟨_, rfl⟩
   have hleft : ∑ c : (MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8),
       (∑ j, ‖finiteComplexInner (e j)
-        (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ 4)
+        (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ (4 : ℕ))
       = D⁻¹ * ∑ c : (MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8),
         prodQuarticSum e (eighthPhase (prodPolyEval m c)) := by
     rw [Finset.mul_sum]
@@ -309,7 +309,7 @@ theorem average_prodCollision_polyEval_eq_integral (m : ℕ) (hm : 8 ≤ 2 ^ (m 
     rw [hDdef]
     exact sum_inner_prodPhaseSeed_fourth_eq e _
   have hright : (∫ θ in torusBox ((ιA → Bool) ⊕ (ιB → Bool)),
-        ∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ 4)
+        ∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ (4 : ℕ))
       = D⁻¹ * ∫ θ in torusBox ((ιA → Bool) ⊕ (ιB → Bool)), prodQuarticSum e θ := by
     rw [← integral_const_mul]
     refine setIntegral_congr_fun measurableSet_torusBox fun θ _ => ?_
@@ -323,12 +323,12 @@ theorem average_prodCollision_polyEval_eq_integral (m : ℕ) (hm : 8 ≤ 2 ^ (m 
 bipartite space there is one exactly preparable product cubic-phase seed whose spectral collision is
 at most `4/D`. -/
 theorem exists_prodPolyEval_collision_le_four_div (m : ℕ) (hm : 8 ≤ 2 ^ (m + 1) - 1)
-    (e : ι → ((ιA → Bool) × (ιB → Bool)) → ℂ) (he : ∀ j, (∑ p, ‖e j p‖ ^ 2) = 1)
+    (e : ι → ((ιA → Bool) × (ιB → Bool)) → ℂ) (he : ∀ j, (∑ p, ‖e j p‖ ^ (2 : ℕ)) = 1)
     (hcard : Fintype.card ι =
       Fintype.card (ιA → Bool) * Fintype.card (ιB → Bool)) :
     ∃ c : (MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8),
       (∑ j, ‖finiteComplexInner (e j)
-        (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ 4)
+        (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ (4 : ℕ))
         ≤ 4 / ((Fintype.card (ιA → Bool) : ℝ) * Fintype.card (ιB → Bool)) := by
   classical
   have hApos : (0 : ℝ) < (Fintype.card (ιA → Bool) : ℝ) := by
@@ -342,7 +342,7 @@ theorem exists_prodPolyEval_collision_le_four_div (m : ℕ) (hm : 8 ≤ 2 ^ (m +
     have : 0 < Fintype.card ((MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8)) := Fintype.card_pos
     exact_mod_cast this
   have hbound : (∫ θ in torusBox ((ιA → Bool) ⊕ (ιB → Bool)),
-      ∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ 4)
+      ∑ j, ‖finiteComplexInner (e j) (prodPhaseSeed θ)‖ ^ (4 : ℕ))
       ≤ 4 / ((Fintype.card (ιA → Bool) : ℝ) * Fintype.card (ιB → Bool)) := by
     refine le_trans (integral_box_sum_inner_prodPhaseSeed_fourth_le e he) (le_of_eq ?_)
     rw [hcard]
@@ -351,14 +351,14 @@ theorem exists_prodPolyEval_collision_le_four_div (m : ℕ) (hm : 8 ≤ 2 ^ (m +
   have havg := average_prodCollision_polyEval_eq_integral m hm e
   have hsum : ∑ c : (MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8),
       (∑ j, ‖finiteComplexInner (e j)
-        (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ 4)
+        (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ (4 : ℕ))
       ≤ ∑ _c : (MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8),
         4 / ((Fintype.card (ιA → Bool) : ℝ) * Fintype.card (ιB → Bool)) := by
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     have hle : ((Fintype.card ((MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8)) : ℝ))⁻¹ *
         ∑ c : (MonLe ιA m → ZMod 8) × (MonLe ιB m → ZMod 8),
           (∑ j, ‖finiteComplexInner (e j)
-            (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ 4)
+            (prodPhaseSeed (eighthPhase (prodPolyEval m c)))‖ ^ (4 : ℕ))
         ≤ 4 / ((Fintype.card (ιA → Bool) : ℝ) * Fintype.card (ιB → Bool)) := by
       rw [havg]
       exact hbound

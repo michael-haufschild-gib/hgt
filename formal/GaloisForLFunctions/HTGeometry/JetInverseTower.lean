@@ -104,14 +104,14 @@ theorem shiftTower_mul_pow (R : RatFunc C) {r : ℕ} (hr : 1 ≤ r) :
             + ((q + 1 : ℕ) : JetField C Unit) * (jetRatio 2 : JetField C Unit)
               * shiftTower R (q + 1) := shiftTower_add_two R q
       have hz2 : (jetRatio 2 : JetField C Unit)
-          * (JetField.jet ((), 1) : JetField C Unit) ^ 2
+          * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ)
           = (JetField.jet ((), 2) : JetField C Unit) := by
         rw [jetRatio]
         field_simp
       rw [deltaIter_succ, hleib, hrec]
       have hsplit : (JetField.jet ((), 1) : JetField C Unit) ^ (q + 1 + 1)
           = (JetField.jet ((), 1) : JetField C Unit) ^ q
-            * (JetField.jet ((), 1) : JetField C Unit) ^ 2 := by
+            * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ) := by
         rw [← pow_add]
       rw [hsplit]
       linear_combination (((q + 1 : ℕ) : JetField C Unit)
@@ -128,7 +128,7 @@ def invTower (t : ℕ) : JetField C Unit :=
 /-- The inhomogeneous term of the level-free tower. -/
 def invTowerDefect (R : RatFunc C) (t : ℕ) : JetField C Unit :=
   (substitutionDeriv R * deltaIter (t + 1) ((JetField.jet ((), 1) : JetField C Unit)⁻¹)
-      - substitutionDeriv R ^ 2
+      - substitutionDeriv R ^ (2 : ℕ)
         * deltaIter (t + 1)
           (((JetField.jet ((), 1) : JetField C Unit) * substitutionDeriv R)⁻¹))
     / (JetField.jet ((), 1) : JetField C Unit) ^ t
@@ -155,7 +155,7 @@ theorem jetSubstitution_invTower (R : RatFunc C) (hR : substitutionDeriv R ≠ 0
 omit [CharZero C] in
 theorem pd_jet_one_inv :
     JetField.pd ((), 1) ((JetField.jet ((), 1) : JetField C Unit)⁻¹)
-      = -((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ 2 := by
+      = -((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ (2 : ℕ) := by
   have h := (JetField.pd ((), 1) :
     Derivation C (JetField C Unit) (JetField C Unit)).leibniz_inv
       (JetField.jet ((), 1) : JetField C Unit)
@@ -171,7 +171,7 @@ theorem pd_jet_one_inv_of_ne {j : ℕ} (hj : j ≠ 1) :
 omit [CharZero C] in
 theorem pd_invTower_top (t : ℕ) :
     JetField.pd ((), t + 2) (invTower (C := C) t)
-      = ((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ 2
+      = ((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ (2 : ℕ)
         / (JetField.jet ((), 1) : JetField C Unit) ^ t := by
   have hy1 : (JetField.jet ((), 1) : JetField C Unit) ≠ 0 := jet_ne_zero _
   obtain ⟨hord, htop⟩ := pd_deltaIter_of_order_one (C := C)
@@ -179,7 +179,7 @@ theorem pd_invTower_top (t : ℕ) :
     (fun j hj => pd_jet_one_inv_of_ne (by omega)) (t + 1)
   have htop' : JetField.pd ((), t + 2)
       (deltaIter (t + 1) ((JetField.jet ((), 1) : JetField C Unit)⁻¹))
-      = -((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ 2 := by
+      = -((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ (2 : ℕ) := by
     rw [pd_jet_one_inv] at htop
     exact htop
   have hpowpd : JetField.pd ((), t + 2)
@@ -302,7 +302,7 @@ theorem pd_invTowerDefect_of_gt (R : RatFunc C) {t j : ℕ} (hj : t + 1 < j) :
       simp only [ne_eq, Prod.mk.injEq, true_and]; omega)) t)
   have hnum : JetField.pd ((), j)
       (substitutionDeriv R * deltaIter (t + 1) ((JetField.jet ((), 1) : JetField C Unit)⁻¹)
-        - substitutionDeriv R ^ 2
+        - substitutionDeriv R ^ (2 : ℕ)
           * deltaIter (t + 1)
             (((JetField.jet ((), 1) : JetField C Unit) * substitutionDeriv R)⁻¹)) = 0 := by
     have hl1 := (JetField.pd ((), j) :
@@ -310,7 +310,7 @@ theorem pd_invTowerDefect_of_gt (R : RatFunc C) {t j : ℕ} (hj : t + 1 < j) :
         (substitutionDeriv R) (deltaIter (t + 1) ((JetField.jet ((), 1) : JetField C Unit)⁻¹))
     have hl2 := (JetField.pd ((), j) :
       Derivation C (JetField C Unit) (JetField C Unit)).leibniz
-        (substitutionDeriv R ^ 2)
+        (substitutionDeriv R ^ (2 : ℕ))
         (deltaIter (t + 1) (((JetField.jet ((), 1) : JetField C Unit)
           * substitutionDeriv R)⁻¹))
     simp only [smul_eq_mul] at hl1 hl2
@@ -319,13 +319,13 @@ theorem pd_invTowerDefect_of_gt (R : RatFunc C) {t j : ℕ} (hj : t + 1 < j) :
     · subst heq
       have hA : JetField.pd ((), t + 2)
           (deltaIter (t + 1) ((JetField.jet ((), 1) : JetField C Unit)⁻¹))
-          = -((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ 2 := by
+          = -((JetField.jet ((), 1) : JetField C Unit))⁻¹ ^ (2 : ℕ) := by
         rw [pd_jet_one_inv] at htA
         exact htA
       have hB : JetField.pd ((), t + 2)
           (deltaIter (t + 1) (((JetField.jet ((), 1) : JetField C Unit)
             * substitutionDeriv R)⁻¹))
-          = -(((JetField.jet ((), 1) : JetField C Unit) * substitutionDeriv R)⁻¹ ^ 2)
+          = -(((JetField.jet ((), 1) : JetField C Unit) * substitutionDeriv R)⁻¹ ^ (2 : ℕ))
             * substitutionDeriv R := by
         have hb := (JetField.pd ((), 1) :
           Derivation C (JetField C Unit) (JetField C Unit)).leibniz_inv
@@ -349,7 +349,7 @@ theorem pd_invTowerDefect_of_gt (R : RatFunc C) {t j : ℕ} (hj : t + 1 < j) :
   have hleib := (JetField.pd ((), j) :
     Derivation C (JetField C Unit) (JetField C Unit)).leibniz
       (substitutionDeriv R * deltaIter (t + 1) ((JetField.jet ((), 1) : JetField C Unit)⁻¹)
-        - substitutionDeriv R ^ 2
+        - substitutionDeriv R ^ (2 : ℕ)
           * deltaIter (t + 1)
             (((JetField.jet ((), 1) : JetField C Unit) * substitutionDeriv R)⁻¹))
       (((JetField.jet ((), 1) : JetField C Unit) ^ t)⁻¹)
@@ -555,7 +555,7 @@ theorem invTowerDefect_eq (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) (t : 
     inv_mul_cancel₀ hyρ
   have hnum : substitutionDeriv R
         * deltaIter (t + 1) ((JetField.jet ((), 1) : JetField C Unit)⁻¹)
-      - substitutionDeriv R ^ 2
+      - substitutionDeriv R ^ (2 : ℕ)
         * deltaIter (t + 1) (((JetField.jet ((), 1) : JetField C Unit)
           * substitutionDeriv R)⁻¹)
       = deltaIter (t + 1) (substitutionDeriv R) / (JetField.jet ((), 1) : JetField C Unit)

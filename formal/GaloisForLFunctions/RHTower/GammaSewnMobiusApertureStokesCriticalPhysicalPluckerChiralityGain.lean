@@ -41,12 +41,12 @@ theorem gammaSewnCriticalPhysicalPlucker_p2ConsecutiveRawWeight_eq :
         gammaSewnCriticalPlucker_hostileHarmonicAperture
         gammaSewnCriticalPlucker_hostileRate
         gammaSewnCriticalPlucker_hostileCell 0 =
-      4 * gammaSewnCriticalPlucker_hostileHarmonicAperture ^ 2 /
-        (81 * Real.log 2 ^ 2 *
+      4 * gammaSewnCriticalPlucker_hostileHarmonicAperture ^ (2 : ℕ) /
+        (81 * Real.log 2 ^ (2 : ℕ) *
           ((1 / 4 : ℝ) -
-              (gammaSewnCriticalPlucker_hostileHarmonicAperture / Real.log 2) ^ 2) ^ 2 *
+              (gammaSewnCriticalPlucker_hostileHarmonicAperture / Real.log 2) ^ (2 : ℕ)) ^ (2 : ℕ) *
           ((9 / 4 : ℝ) -
-              (gammaSewnCriticalPlucker_hostileHarmonicAperture / Real.log 2) ^ 2) ^ 2) := by
+              (gammaSewnCriticalPlucker_hostileHarmonicAperture / Real.log 2) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   have hL : Real.log 2 ≠ 0 := (Real.log_pos (by norm_num)).ne'
   have ha0 := gammaSewnCriticalPlucker_hostileHarmonicAperture_boundary_ne (0 : Fin 4)
   have ha1 := gammaSewnCriticalPlucker_hostileHarmonicAperture_boundary_ne (1 : Fin 4)
@@ -67,12 +67,12 @@ theorem gammaSewnCriticalPhysicalPlucker_p3ConsecutiveRawWeight_eq :
         gammaSewnCriticalPlucker_hostileHarmonicAperture
         gammaSewnCriticalPlucker_hostileRate
         gammaSewnCriticalPlucker_hostileCell 5 =
-      4 * gammaSewnCriticalPlucker_hostileHarmonicAperture ^ 2 /
-        (256 * Real.log 3 ^ 2 *
+      4 * gammaSewnCriticalPlucker_hostileHarmonicAperture ^ (2 : ℕ) /
+        (256 * Real.log 3 ^ (2 : ℕ) *
           ((1 / 4 : ℝ) -
-              (gammaSewnCriticalPlucker_hostileHarmonicAperture / Real.log 3) ^ 2) ^ 2 *
+              (gammaSewnCriticalPlucker_hostileHarmonicAperture / Real.log 3) ^ (2 : ℕ)) ^ (2 : ℕ) *
           ((9 / 4 : ℝ) -
-              (gammaSewnCriticalPlucker_hostileHarmonicAperture / Real.log 3) ^ 2) ^ 2) := by
+              (gammaSewnCriticalPlucker_hostileHarmonicAperture / Real.log 3) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   have hL : Real.log 3 ≠ 0 := (Real.log_pos (by norm_num)).ne'
   simp [RHTower.gammaSewnFourRateBoundaryPairRawWeight,
     RHTower.twoBoundaryCauchyPairPluckerSq,
@@ -101,10 +101,10 @@ theorem gammaSewnCriticalPhysicalPlucker_p3ConsecutiveRawWeight_lt_p2 :
   let L3 := Real.log 3
   let u2 := a / L2
   let u3 := a / L3
-  let A2 := (1 / 4 : ℝ) - u2 ^ 2
-  let A3 := (1 / 4 : ℝ) - u3 ^ 2
-  let B2 := (9 / 4 : ℝ) - u2 ^ 2
-  let B3 := (9 / 4 : ℝ) - u3 ^ 2
+  let A2 := (1 / 4 : ℝ) - u2 ^ (2 : ℕ)
+  let A3 := (1 / 4 : ℝ) - u3 ^ (2 : ℕ)
+  let B2 := (9 / 4 : ℝ) - u2 ^ (2 : ℕ)
+  let B3 := (9 / 4 : ℝ) - u3 ^ (2 : ℕ)
   have ha : 0 < a := gammaSewnCriticalPlucker_hostileHarmonicAperture_pos
   have hL2 : 0 < L2 := Real.log_pos (by norm_num)
   have hL3 : 0 < L3 := Real.log_pos (by norm_num)
@@ -123,7 +123,7 @@ theorem gammaSewnCriticalPhysicalPlucker_p3ConsecutiveRawWeight_lt_p2 :
   have hu2half : u2 < 1 / 2 := by
     apply (div_lt_iff₀ hL2).2
     nlinarith
-  have hu3sq_u2sq : u3 ^ 2 < u2 ^ 2 :=
+  have hu3sq_u2sq : u3 ^ (2 : ℕ) < u2 ^ (2 : ℕ) :=
     (sq_lt_sq₀ hu3.le hu2.le).2 hu3u2
   have hA2 : 0 < A2 := by
     dsimp [A2]
@@ -143,33 +143,33 @@ theorem gammaSewnCriticalPhysicalPlucker_p3ConsecutiveRawWeight_lt_p2 :
   have hB23 : B2 < B3 := by
     dsimp [B2, B3]
     linarith
-  have hA23sq : A2 ^ 2 < A3 ^ 2 :=
+  have hA23sq : A2 ^ (2 : ℕ) < A3 ^ (2 : ℕ) :=
     (sq_lt_sq₀ hA2.le hA3.le).2 hA23
-  have hB23sq : B2 ^ 2 < B3 ^ 2 :=
+  have hB23sq : B2 ^ (2 : ℕ) < B3 ^ (2 : ℕ) :=
     (sq_lt_sq₀ hB2.le hB3.le).2 hB23
-  have hL23sq : L2 ^ 2 < L3 ^ 2 :=
+  have hL23sq : L2 ^ (2 : ℕ) < L3 ^ (2 : ℕ) :=
     (sq_lt_sq₀ hL2.le hL3.le).2 hL23
-  have hbase : 81 * L2 ^ 2 < 256 * L3 ^ 2 := by
-    have hfirst : 81 * L2 ^ 2 < 81 * L3 ^ 2 :=
+  have hbase : 81 * L2 ^ (2 : ℕ) < 256 * L3 ^ (2 : ℕ) := by
+    have hfirst : 81 * L2 ^ (2 : ℕ) < 81 * L3 ^ (2 : ℕ) :=
       mul_lt_mul_of_pos_left hL23sq (by norm_num)
-    have hsecond : 81 * L3 ^ 2 < 256 * L3 ^ 2 := by
+    have hsecond : 81 * L3 ^ (2 : ℕ) < 256 * L3 ^ (2 : ℕ) := by
       nlinarith [sq_pos_of_pos hL3]
     exact hfirst.trans hsecond
-  have hbase_pos : 0 < 81 * L2 ^ 2 := mul_pos (by norm_num) (sq_pos_of_pos hL2)
-  have hbase3_pos : 0 < 256 * L3 ^ 2 := mul_pos (by norm_num) (sq_pos_of_pos hL3)
-  have hbaseA : (81 * L2 ^ 2) * A2 ^ 2 < (256 * L3 ^ 2) * A3 ^ 2 :=
+  have hbase_pos : 0 < 81 * L2 ^ (2 : ℕ) := mul_pos (by norm_num) (sq_pos_of_pos hL2)
+  have hbase3_pos : 0 < 256 * L3 ^ (2 : ℕ) := mul_pos (by norm_num) (sq_pos_of_pos hL3)
+  have hbaseA : (81 * L2 ^ (2 : ℕ)) * A2 ^ (2 : ℕ) < (256 * L3 ^ (2 : ℕ)) * A3 ^ (2 : ℕ) :=
     mul_lt_mul hbase hA23sq.le (sq_pos_of_pos hA2) hbase3_pos.le
   have hden :
-      (81 * L2 ^ 2 * A2 ^ 2) * B2 ^ 2 <
-        (256 * L3 ^ 2 * A3 ^ 2) * B3 ^ 2 :=
+      (81 * L2 ^ (2 : ℕ) * A2 ^ (2 : ℕ)) * B2 ^ (2 : ℕ) <
+        (256 * L3 ^ (2 : ℕ) * A3 ^ (2 : ℕ)) * B3 ^ (2 : ℕ) :=
     mul_lt_mul hbaseA hB23sq.le (sq_pos_of_pos hB2)
       (mul_nonneg hbase3_pos.le (sq_nonneg A3))
-  have hden2 : 0 < (81 * L2 ^ 2 * A2 ^ 2) * B2 ^ 2 := by positivity
-  have hden3 : 0 < (256 * L3 ^ 2 * A3 ^ 2) * B3 ^ 2 := by positivity
+  have hden2 : 0 < (81 * L2 ^ (2 : ℕ) * A2 ^ (2 : ℕ)) * B2 ^ (2 : ℕ) := by positivity
+  have hden3 : 0 < (256 * L3 ^ (2 : ℕ) * A3 ^ (2 : ℕ)) * B3 ^ (2 : ℕ) := by positivity
   rw [gammaSewnCriticalPhysicalPlucker_p2ConsecutiveRawWeight_eq,
     gammaSewnCriticalPhysicalPlucker_p3ConsecutiveRawWeight_eq]
-  change 4 * a ^ 2 / ((256 * L3 ^ 2 * A3 ^ 2) * B3 ^ 2) <
-    4 * a ^ 2 / ((81 * L2 ^ 2 * A2 ^ 2) * B2 ^ 2)
+  change 4 * a ^ (2 : ℕ) / ((256 * L3 ^ (2 : ℕ) * A3 ^ (2 : ℕ)) * B3 ^ (2 : ℕ)) <
+    4 * a ^ (2 : ℕ) / ((81 * L2 ^ (2 : ℕ) * A2 ^ (2 : ℕ)) * B2 ^ (2 : ℕ))
   apply (div_lt_div_iff₀ hden3 hden2).2
   exact mul_lt_mul_of_pos_left hden (mul_pos (by norm_num) (sq_pos_of_pos ha))
 

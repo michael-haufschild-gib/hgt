@@ -6,13 +6,13 @@ open D4BMJointSource
 noncomputable section
 
 def ellipticCoefficient (p : Point3) (i : Fin 3) : ℝ :=
-  ![1,warp (p 0)^2*(p 2)^2,warp (p 0)^2*(p 2)^2] i
+  ![1,warp (p 0)^(2 : ℕ)*(p 2)^(2 : ℕ),warp (p 0)^(2 : ℕ)*(p 2)^(2 : ℕ)] i
 
 def firstRatio (p : Point3) (i : Fin 3) : ℝ :=
   ![-radialUnit (p 0)/2,0,1/(2*p 2)] i
 
 def secondRatio (p : Point3) (i : Fin 3) : ℝ :=
-  ![warp (p 0)^2/2+radialUnit (p 0)^2/4,0,-1/(4*(p 2)^2)] i
+  ![warp (p 0)^(2 : ℕ)/2+radialUnit (p 0)^(2 : ℕ)/4,0,-1/(4*(p 2)^(2 : ℕ))] i
 
 theorem weightFirst_ratio (p : Point3) (i : Fin 3) :
     weightFirst p i = weight p*(firstRatio p i:ℂ) := by
@@ -25,10 +25,10 @@ theorem weightSecond_ratio (p : Point3) (i : Fin 3) :
 /-- The full joint principal symbol becomes the Euclidean identity multiplied by Y². -/
 theorem chart_principalSymbol (p : Point3) (j k : Fin 3) :
     (∑ i : Fin 3, ellipticCoefficient p i*chartFirst p i j*chartFirst p i k) =
-      (chart p 1)^2*(if j = k then 1 else 0) := by
+      (chart p 1)^(2 : ℕ)*(if j = k then 1 else 0) := by
   fin_cases j <;> fin_cases k <;>
     norm_num [Fin.sum_univ_succ,ellipticCoefficient,chartFirst,chart]
-  all_goals first | solve | ring | linear_combination (p 2)^2*warp (p 0)^2*(warp_relation (p 0))
+  all_goals first | solve | ring | linear_combination (p 2)^(2 : ℕ)*warp (p 0)^(2 : ℕ)*(warp_relation (p 0))
 
 /-- Every first derivative cancels after the actual field-weight conjugation. -/
 theorem chart_driftCancellation (p : Point3) (hp : 0 < p 2) (j : Fin 3) :

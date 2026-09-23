@@ -15,12 +15,12 @@ namespace GaloisForLFunctions
 open Complex
 
 theorem log_div_even_pow_le_sq (j k : ℕ) :
-    Real.log k / (k : ℝ) ^ (2 * j + 2) ≤ Real.log k / (k : ℝ) ^ 2 := by
+    Real.log k / (k : ℝ) ^ (2 * j + 2) ≤ Real.log k / (k : ℝ) ^ (2 : ℕ) := by
   rcases k.eq_zero_or_pos with rfl | hk
   · simp
   · have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
     have hlog : 0 ≤ Real.log k := Real.log_nonneg hk1
-    have hpow : (k : ℝ) ^ 2 ≤ (k : ℝ) ^ (2 * j + 2) :=
+    have hpow : (k : ℝ) ^ (2 : ℕ) ≤ (k : ℝ) ^ (2 * j + 2) :=
       pow_le_pow_right₀ hk1 (by omega)
     exact div_le_div_of_nonneg_left hlog (pow_pos (by positivity) 2) hpow
 
@@ -72,7 +72,7 @@ theorem summable_arcsin_even_log_spectrum :
     (fun j => mul_nonneg (arcsinCoeff_nonneg j)
       (le_of_lt (tsum_log_div_even_pow_pos j)))
     (fun j => ?_)
-    (summable_arcsinCoeff.mul_right (∑' k : ℕ, Real.log k / (k : ℝ) ^ 2))
+    (summable_arcsinCoeff.mul_right (∑' k : ℕ, Real.log k / (k : ℝ) ^ (2 : ℕ)))
   apply mul_le_mul_of_nonneg_left _ (arcsinCoeff_nonneg j)
   exact Summable.tsum_le_tsum (log_div_even_pow_le_sq j)
     (summable_log_div_even_pow j) summable_log_div_sq
@@ -117,7 +117,7 @@ noncomputable def prolateArcsineCharge : ℝ :=
   ∑' k : ℕ, Real.log k / k * Real.arcsin (1 / (k : ℝ))
 
 theorem log_div_sq_le_arcsine_slice (k : ℕ) :
-    Real.log k / (k : ℝ) ^ 2 ≤
+    Real.log k / (k : ℝ) ^ (2 : ℕ) ≤
       Real.log k / k * Real.arcsin (1 / (k : ℝ)) := by
   have hk0 : 0 ≤ (1 / (k : ℝ)) := by positivity
   have hk1 : 1 / (k : ℝ) ≤ 1 := by
@@ -132,13 +132,13 @@ theorem log_div_sq_le_arcsine_slice (k : ℕ) :
     exact h
   have hlog : 0 ≤ Real.log k / k := div_nonneg (log_natCast_nonneg k) (Nat.cast_nonneg k)
   calc
-    Real.log k / (k : ℝ) ^ 2 = Real.log k / k * (1 / (k : ℝ)) := by ring
+    Real.log k / (k : ℝ) ^ (2 : ℕ) = Real.log k / k * (1 / (k : ℝ)) := by ring
     _ ≤ Real.log k / k * Real.arcsin (1 / (k : ℝ)) :=
       mul_le_mul_of_nonneg_left harc hlog
 
 theorem arcsine_slice_le_pi_half_log_div_sq (k : ℕ) :
     Real.log k / k * Real.arcsin (1 / (k : ℝ)) ≤
-      Real.pi / 2 * (Real.log k / (k : ℝ) ^ 2) := by
+      Real.pi / 2 * (Real.log k / (k : ℝ) ^ (2 : ℕ)) := by
   have hk1 : 1 / (k : ℝ) ≤ 1 := by
     rcases k.eq_zero_or_pos with rfl | hk
     · simp
@@ -150,7 +150,7 @@ theorem arcsine_slice_le_pi_half_log_div_sq (k : ℕ) :
     Real.log k / k * Real.arcsin (1 / (k : ℝ)) ≤
         Real.log k / k * (Real.pi / 2 * (1 / (k : ℝ))) :=
       mul_le_mul_of_nonneg_left harc hlog
-    _ = Real.pi / 2 * (Real.log k / (k : ℝ) ^ 2) := by ring
+    _ = Real.pi / 2 * (Real.log k / (k : ℝ) ^ (2 : ℕ)) := by ring
 
 theorem prolateArcsineCharge_pos : 0 < prolateArcsineCharge := by
   unfold prolateArcsineCharge
@@ -159,21 +159,21 @@ theorem prolateArcsineCharge_pos : 0 < prolateArcsineCharge := by
     (Real.arcsin_pos.mpr (by norm_num))
 
 theorem prolateArcsineCharge_bounds_dirichlet :
-    (∑' k : ℕ, Real.log k / (k : ℝ) ^ 2) ≤ prolateArcsineCharge ∧
+    (∑' k : ℕ, Real.log k / (k : ℝ) ^ (2 : ℕ)) ≤ prolateArcsineCharge ∧
       prolateArcsineCharge ≤
-        Real.pi / 2 * (∑' k : ℕ, Real.log k / (k : ℝ) ^ 2) := by
+        Real.pi / 2 * (∑' k : ℕ, Real.log k / (k : ℝ) ^ (2 : ℕ)) := by
   constructor
   · exact Summable.tsum_le_tsum log_div_sq_le_arcsine_slice
       summable_log_div_sq arcsine_row_summable
   · have hscaled : Summable (fun k : ℕ =>
-        Real.pi / 2 * (Real.log k / (k : ℝ) ^ 2)) := summable_log_div_sq.mul_left _
+        Real.pi / 2 * (Real.log k / (k : ℝ) ^ (2 : ℕ))) := summable_log_div_sq.mul_left _
     rw [← tsum_mul_left]
     exact Summable.tsum_le_tsum arcsine_slice_le_pi_half_log_div_sq
       arcsine_row_summable hscaled
 
 theorem zeta_deriv_two_re_eq_neg_log_sq_tsum :
     (deriv riemannZeta (2 : ℂ)).re =
-      -(∑' k : ℕ, Real.log k / (k : ℝ) ^ 2) := by
+      -(∑' k : ℕ, Real.log k / (k : ℝ) ^ (2 : ℕ)) := by
   have h := congrArg Complex.re (zeta_deriv_even_eq_neg_log_tsum 0)
   norm_num at h ⊢
   exact h

@@ -27,8 +27,8 @@ noncomputable section
 
 /-- Difference of the two Poisson densities in a line-conjugate off-line resolvent pair. -/
 def lineConjugateCauchyConcentrationProfile (b y t : ℝ) : ℝ :=
-  (b - y) / ((b - y) ^ 2 + t ^ 2) -
-    (b + y) / ((b + y) ^ 2 + t ^ 2)
+  (b - y) / ((b - y) ^ (2 : ℕ) + t ^ (2 : ℕ)) -
+    (b + y) / ((b + y) ^ (2 : ℕ) + t ^ (2 : ℕ))
 
 /-- The signed off-line pair profile is integrable across frequency. -/
 theorem integrable_lineConjugateCauchyConcentrationProfile
@@ -51,8 +51,8 @@ theorem integral_lineConjugateCauchyConcentrationProfile_eq_zero
   have ha : 0 < b - y := sub_pos.mpr hyb
   have hbeta : 0 < b + y := by linarith
   change (∫ t : ℝ,
-    (b - y) * (((b - y) ^ 2 + t ^ 2)⁻¹) -
-      (b + y) * (((b + y) ^ 2 + t ^ 2)⁻¹)) = 0
+    (b - y) * (((b - y) ^ (2 : ℕ) + t ^ (2 : ℕ))⁻¹) -
+      (b + y) * (((b + y) ^ (2 : ℕ) + t ^ (2 : ℕ))⁻¹)) = 0
   rw [integral_sub]
   · rw [integral_const_mul, integral_const_mul,
       GaloisForLFunctions.HTGeometry.integral_inv_sq_add_sq ha,
@@ -65,23 +65,23 @@ theorem integral_lineConjugateCauchyConcentrationProfile_eq_zero
 /-- The squared off-line pair profile is integrable across frequency. -/
 theorem integrable_sq_lineConjugateCauchyConcentrationProfile
     {b y : ℝ} (hy : 0 < y) (hyb : y < b) :
-    Integrable (fun t : ℝ => lineConjugateCauchyConcentrationProfile b y t ^ 2) := by
+    Integrable (fun t : ℝ => lineConjugateCauchyConcentrationProfile b y t ^ (2 : ℕ)) := by
   let a := b - y
   let c := b + y
   have ha : 0 < a := by dsimp [a]; linarith
   have hc : 0 < c := by dsimp [c]; linarith
   have hA :=
-    (GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq_sq ha).const_mul (a ^ 2)
+    (GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq_sq ha).const_mul (a ^ (2 : ℕ))
   have hC :=
-    (GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq_sq hc).const_mul (c ^ 2)
+    (GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq_sq hc).const_mul (c ^ (2 : ℕ))
   have hcross :=
     (GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq_mul ha hc).const_mul
       (2 * a * c)
   refine (hA.add hC |>.sub hcross).congr (Filter.Eventually.of_forall fun t => ?_)
   simp only [Pi.add_apply, Pi.sub_apply]
   dsimp only [lineConjugateCauchyConcentrationProfile, a, c]
-  have h1 : (b - y) ^ 2 + t ^ 2 ≠ 0 := by positivity
-  have h2 : (b + y) ^ 2 + t ^ 2 ≠ 0 := by positivity
+  have h1 : (b - y) ^ (2 : ℕ) + t ^ (2 : ℕ) ≠ 0 := by positivity
+  have h2 : (b + y) ^ (2 : ℕ) + t ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp [h1, h2]
   ring
 
@@ -90,8 +90,8 @@ signed integral.  The resulting energy is an explicit positive rational function
 and off-line displacement. -/
 theorem integral_sq_lineConjugateCauchyConcentrationProfile
     {b y : ℝ} (hy : 0 < y) (hyb : y < b) :
-    (∫ t : ℝ, lineConjugateCauchyConcentrationProfile b y t ^ 2) =
-      Real.pi * y ^ 2 / (b * (b ^ 2 - y ^ 2)) := by
+    (∫ t : ℝ, lineConjugateCauchyConcentrationProfile b y t ^ (2 : ℕ)) =
+      Real.pi * y ^ (2 : ℕ) / (b * (b ^ (2 : ℕ) - y ^ (2 : ℕ))) := by
   let a := b - y
   let c := b + y
   have ha : 0 < a := by dsimp [a]; linarith
@@ -100,44 +100,44 @@ theorem integral_sq_lineConjugateCauchyConcentrationProfile
   have hC := GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq_sq hc
   have hcross := GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq_mul ha hc
   have hexpand : ∀ t : ℝ,
-      lineConjugateCauchyConcentrationProfile b y t ^ 2 =
-        a ^ 2 * ((a ^ 2 + t ^ 2) ^ 2)⁻¹ +
-          c ^ 2 * ((c ^ 2 + t ^ 2) ^ 2)⁻¹ -
-            (2 * a * c) * (((a ^ 2 + t ^ 2) * (c ^ 2 + t ^ 2))⁻¹) := by
+      lineConjugateCauchyConcentrationProfile b y t ^ (2 : ℕ) =
+        a ^ (2 : ℕ) * ((a ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))⁻¹ +
+          c ^ (2 : ℕ) * ((c ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))⁻¹ -
+            (2 * a * c) * (((a ^ (2 : ℕ) + t ^ (2 : ℕ)) * (c ^ (2 : ℕ) + t ^ (2 : ℕ)))⁻¹) := by
     intro t
     dsimp only [lineConjugateCauchyConcentrationProfile, a, c]
-    have h1 : (b - y) ^ 2 + t ^ 2 ≠ 0 := by positivity
-    have h2 : (b + y) ^ 2 + t ^ 2 ≠ 0 := by positivity
+    have h1 : (b - y) ^ (2 : ℕ) + t ^ (2 : ℕ) ≠ 0 := by positivity
+    have h2 : (b + y) ^ (2 : ℕ) + t ^ (2 : ℕ) ≠ 0 := by positivity
     field_simp [h1, h2]
     ring
   rw [integral_congr_ae (Filter.Eventually.of_forall hexpand)]
   have hsplit :
       (∫ t : ℝ,
-        a ^ 2 * ((a ^ 2 + t ^ 2) ^ 2)⁻¹ +
-          c ^ 2 * ((c ^ 2 + t ^ 2) ^ 2)⁻¹ -
-            (2 * a * c) * (((a ^ 2 + t ^ 2) * (c ^ 2 + t ^ 2))⁻¹)) =
-        (∫ t : ℝ, a ^ 2 * ((a ^ 2 + t ^ 2) ^ 2)⁻¹) +
-          (∫ t : ℝ, c ^ 2 * ((c ^ 2 + t ^ 2) ^ 2)⁻¹) -
+        a ^ (2 : ℕ) * ((a ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))⁻¹ +
+          c ^ (2 : ℕ) * ((c ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))⁻¹ -
+            (2 * a * c) * (((a ^ (2 : ℕ) + t ^ (2 : ℕ)) * (c ^ (2 : ℕ) + t ^ (2 : ℕ)))⁻¹)) =
+        (∫ t : ℝ, a ^ (2 : ℕ) * ((a ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))⁻¹) +
+          (∫ t : ℝ, c ^ (2 : ℕ) * ((c ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))⁻¹) -
             (∫ t : ℝ,
-              (2 * a * c) * (((a ^ 2 + t ^ 2) * (c ^ 2 + t ^ 2))⁻¹)) := by
+              (2 * a * c) * (((a ^ (2 : ℕ) + t ^ (2 : ℕ)) * (c ^ (2 : ℕ) + t ^ (2 : ℕ)))⁻¹)) := by
     calc
       _ = (∫ t : ℝ,
-            a ^ 2 * ((a ^ 2 + t ^ 2) ^ 2)⁻¹ +
-              c ^ 2 * ((c ^ 2 + t ^ 2) ^ 2)⁻¹) -
+            a ^ (2 : ℕ) * ((a ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))⁻¹ +
+              c ^ (2 : ℕ) * ((c ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))⁻¹) -
             (∫ t : ℝ,
-              (2 * a * c) * (((a ^ 2 + t ^ 2) * (c ^ 2 + t ^ 2))⁻¹)) := by
+              (2 * a * c) * (((a ^ (2 : ℕ) + t ^ (2 : ℕ)) * (c ^ (2 : ℕ) + t ^ (2 : ℕ)))⁻¹)) := by
           simpa only [Pi.add_apply, Pi.sub_apply] using
             integral_sub
-              ((hA.const_mul (a ^ 2)).add (hC.const_mul (c ^ 2)))
+              ((hA.const_mul (a ^ (2 : ℕ))).add (hC.const_mul (c ^ (2 : ℕ))))
               (hcross.const_mul (2 * a * c))
       _ = _ := by
-        rw [integral_add (hA.const_mul (a ^ 2)) (hC.const_mul (c ^ 2))]
+        rw [integral_add (hA.const_mul (a ^ (2 : ℕ))) (hC.const_mul (c ^ (2 : ℕ)))]
   have hane : a ≠ 0 := ne_of_gt ha
   have hcne : c ≠ 0 := ne_of_gt hc
   have hacpos : 0 < a + c := add_pos ha hc
-  have hAred : a ^ 2 * (Real.pi / (2 * a ^ 3)) = Real.pi / (2 * a) := by
+  have hAred : a ^ (2 : ℕ) * (Real.pi / (2 * a ^ (3 : ℕ))) = Real.pi / (2 * a) := by
     field_simp [hane]
-  have hCred : c ^ 2 * (Real.pi / (2 * c ^ 3)) = Real.pi / (2 * c) := by
+  have hCred : c ^ (2 : ℕ) * (Real.pi / (2 * c ^ (3 : ℕ))) = Real.pi / (2 * c) := by
     field_simp [hcne]
   have hcrossRed :
       (2 * a * c) * (Real.pi / (a * c * (a + c))) = 2 * Real.pi / (a + c) := by
@@ -149,7 +149,7 @@ theorem integral_sq_lineConjugateCauchyConcentrationProfile
     hAred, hCred, hcrossRed]
   dsimp only [a, c]
   have hb : 0 < b := hy.trans hyb
-  have hsqdiff : 0 < b ^ 2 - y ^ 2 := by nlinarith
+  have hsqdiff : 0 < b ^ (2 : ℕ) - y ^ (2 : ℕ) := by nlinarith
   have hminus : b - y ≠ 0 := ne_of_gt (sub_pos.mpr hyb)
   have hplus : b + y ≠ 0 := ne_of_gt (by linarith)
   field_simp [ne_of_gt hb, ne_of_gt hsqdiff, hminus, hplus]
@@ -161,14 +161,14 @@ theorem tendsto_integral_sq_lineConjugateCauchyConcentrationProfile_at_offLineWa
     {b : ℝ} (hb : 0 < b) :
     Tendsto
       (fun y : ℝ => ∫ t : ℝ,
-        lineConjugateCauchyConcentrationProfile b y t ^ 2)
+        lineConjugateCauchyConcentrationProfile b y t ^ (2 : ℕ))
       (𝓝[<] b) atTop := by
-  let numerator : ℝ → ℝ := fun y => Real.pi * y ^ 2
-  let denominator : ℝ → ℝ := fun y => b * (b ^ 2 - y ^ 2)
-  have hnum : Tendsto numerator (𝓝[<] b) (nhds (Real.pi * b ^ 2)) := by
+  let numerator : ℝ → ℝ := fun y => Real.pi * y ^ (2 : ℕ)
+  let denominator : ℝ → ℝ := fun y => b * (b ^ (2 : ℕ) - y ^ (2 : ℕ))
+  have hnum : Tendsto numerator (𝓝[<] b) (nhds (Real.pi * b ^ (2 : ℕ))) := by
     apply (show ContinuousAt numerator b by fun_prop).tendsto.mono_left
     exact nhdsWithin_le_nhds
-  have hnumPos : 0 < Real.pi * b ^ 2 := mul_pos Real.pi_pos (sq_pos_of_pos hb)
+  have hnumPos : 0 < Real.pi * b ^ (2 : ℕ) := mul_pos Real.pi_pos (sq_pos_of_pos hb)
   have hden0 : Tendsto denominator (𝓝[<] b) (nhds 0) := by
     have h : Tendsto denominator (𝓝[<] b) (𝓝 (denominator b)) :=
       (show ContinuousAt denominator b by fun_prop).tendsto.mono_left nhdsWithin_le_nhds
@@ -180,7 +180,7 @@ theorem tendsto_integral_sq_lineConjugateCauchyConcentrationProfile_at_offLineWa
     dsimp only [denominator]
     have hsum : 0 < b + y := by linarith
     have hdiff : 0 < b - y := sub_pos.mpr hylt
-    rw [show b ^ 2 - y ^ 2 = (b - y) * (b + y) by ring]
+    rw [show b ^ (2 : ℕ) - y ^ (2 : ℕ) = (b - y) * (b + y) by ring]
     exact mul_pos hb (mul_pos hdiff hsum)
   have hdenWithin : Tendsto denominator (𝓝[<] b) (𝓝[>] 0) :=
     tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
@@ -203,9 +203,9 @@ theorem tendsto_boundaryWidth_mul_integral_sq_lineConjugateCauchyConcentrationPr
     {b : ℝ} (hb : 0 < b) :
     Tendsto
       (fun y : ℝ => (b - y) *
-        (∫ t : ℝ, lineConjugateCauchyConcentrationProfile b y t ^ 2))
+        (∫ t : ℝ, lineConjugateCauchyConcentrationProfile b y t ^ (2 : ℕ)))
       (𝓝[<] b) (𝓝 (Real.pi / 2)) := by
-  let reduced : ℝ → ℝ := fun y => Real.pi * y ^ 2 / (b * (b + y))
+  let reduced : ℝ → ℝ := fun y => Real.pi * y ^ (2 : ℕ) / (b * (b + y))
   have hden : b * (b + b) ≠ 0 := by positivity
   have hvalue : reduced b = Real.pi / 2 := by
     dsimp only [reduced]
@@ -225,7 +225,7 @@ theorem tendsto_boundaryWidth_mul_integral_sq_lineConjugateCauchyConcentrationPr
   dsimp only [reduced]
   have hminus : b - y ≠ 0 := ne_of_gt (sub_pos.mpr hylt)
   have hbne : b ≠ 0 := ne_of_gt hb
-  rw [show b ^ 2 - y ^ 2 = (b - y) * (b + y) by ring]
+  rw [show b ^ (2 : ℕ) - y ^ (2 : ℕ) = (b - y) * (b + y) by ring]
   field_simp [hminus, hbne]
 
 /-- **Xi pair identification.**  On a frequency line through zero height `A`, the imaginary part
@@ -257,15 +257,15 @@ theorem relativeResolvent_conj_pair_im_eq_lineConjugateCauchyConcentrationProfil
     linarith
   have hminusPos : 0 < b - y := sub_pos.mpr hyb
   have hplusPos : 0 < b + y := by linarith
-  have h1 : (b - y) ^ 2 + t ^ 2 ≠ 0 := by nlinarith [sq_pos_of_pos hminusPos]
-  have h2 : (b + y) ^ 2 + t ^ 2 ≠ 0 := by nlinarith [sq_pos_of_pos hplusPos]
+  have h1 : (b - y) ^ (2 : ℕ) + t ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_pos_of_pos hminusPos]
+  have h2 : (b + y) ^ (2 : ℕ) + t ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_pos_of_pos hplusPos]
   have hybNeg : y - b < 0 := sub_neg.mpr hyb
   have hybPos : 0 < y + b := by linarith
-  have hleft : t ^ 2 + (y - b) ^ 2 ≠ 0 := by nlinarith [sq_pos_of_neg hybNeg]
-  have hright : t ^ 2 + (y + b) ^ 2 ≠ 0 := by nlinarith [sq_pos_of_pos hybPos]
+  have hleft : t ^ (2 : ℕ) + (y - b) ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_pos_of_neg hybNeg]
+  have hright : t ^ (2 : ℕ) + (y + b) ^ (2 : ℕ) ≠ 0 := by nlinarith [sq_pos_of_pos hybPos]
   have hformula :
-      -2 * y * (t ^ 2 + y ^ 2 - b ^ 2) /
-          ((t ^ 2 + (y - b) ^ 2) * (t ^ 2 + (y + b) ^ 2)) =
+      -2 * y * (t ^ (2 : ℕ) + y ^ (2 : ℕ) - b ^ (2 : ℕ)) /
+          ((t ^ (2 : ℕ) + (y - b) ^ (2 : ℕ)) * (t ^ (2 : ℕ) + (y + b) ^ (2 : ℕ))) =
         lineConjugateCauchyConcentrationProfile b y t := by
     dsimp only [lineConjugateCauchyConcentrationProfile]
     field_simp [h1, h2, hleft, hright]

@@ -30,12 +30,12 @@ then a family of windows of total weight at least `T/8` — each carrying a crit
 zero — exists. -/
 private theorem exists_heavyFinset {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 : 0 < T)
     {M4 ME : ℝ} (hM4 : 0 < M4)
-    (hC : T / 4 ≤ ∫ τ in T..(2 * T), (hardyZ τ) ^ 2)
+    (hC : T / 4 ≤ ∫ τ in T..(2 * T), (hardyZ τ) ^ (2 : ℕ))
     (h4 : ∀ k : ℕ, k < K →
-      (∫ τ in (T + k * (T / K))..(T + ((k + 1 : ℕ) : ℝ) * (T / K)), (hardyZ τ) ^ 4) ≤ M4)
+      (∫ τ in (T + k * (T / K))..(T + ((k + 1 : ℕ) : ℝ) * (T / K)), (hardyZ τ) ^ (4 : ℕ)) ≤ M4)
     (hE : ∀ k : ℕ, k < K →
       |∫ τ in (T + k * (T / K))..(T + ((k + 1 : ℕ) : ℝ) * (T / K)), hardyZ τ| ≤ ME)
-    (hgap : ME ^ 2 * M4 < (T / (8 * K)) ^ 3) :
+    (hgap : ME ^ (2 : ℕ) * M4 < (T / (8 * K)) ^ (3 : ℕ)) :
     ∃ S : Finset ℕ,
       (∀ k ∈ S, k < K ∧ ∃ τ, ((T + k * (T / K) ≤ τ ∧ τ ≤ T + ((k + 1 : ℕ) : ℝ) * (T / K)) ∧
         riemannZeta (linePt τ) = 0)) ∧
@@ -50,14 +50,14 @@ private theorem exists_heavyFinset {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 : 0 
     dsimp only
     push_cast
     nlinarith [hTK0]
-  set m : ℕ → ℝ := fun k => ∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 2 with hmdef
+  set m : ℕ → ℝ := fun k => ∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ (2 : ℕ) with hmdef
   have hm0 : ∀ k : ℕ, 0 ≤ m k := by
     intro k
     rw [hmdef]
     exact intervalIntegral.integral_nonneg (ha_le k) (fun u _ => sq_nonneg _)
-  have hpart : ∑ k ∈ range K, m k = ∫ τ in T..(2 * T), (hardyZ τ) ^ 2 := by
+  have hpart : ∑ k ∈ range K, m k = ∫ τ in T..(2 * T), (hardyZ τ) ^ (2 : ℕ) := by
     have h := intervalIntegral.sum_integral_adjacent_intervals
-      (f := fun τ => (hardyZ τ) ^ 2) (μ := volume)
+      (f := fun τ => (hardyZ τ) ^ (2 : ℕ)) (μ := volume)
       (a := fun k : ℕ => T + k * (T / K)) (n := K)
       (fun k _ => ((continuous_hardyZ.pow 2).intervalIntegrable _ _))
     have hz : T + ((0 : ℕ) : ℝ) * (T / K) = T := by push_cast; ring
@@ -74,23 +74,23 @@ private theorem exists_heavyFinset {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 : 0 
   · -- the sign-change detector on a heavy window
     have hkK := (hSmem k hk).1
     have hΘm := (hSmem k hk).2
-    have hΘm' : Θ ≤ ∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 2 := by
+    have hΘm' : Θ ≤ ∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ (2 : ℕ) := by
       simpa only [hmdef] using hΘm
-    have hgap' : (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ 2 * M4 < Θ ^ 3 := by
+    have hgap' : (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ (2 : ℕ) * M4 < Θ ^ (3 : ℕ) := by
       have h2 := hE k hkK
       have h3 : |∫ τ in (a k)..(a (k + 1)), hardyZ τ| ≤ ME := by
         rw [hadef]
         dsimp only
         exact h2
       have h4' := abs_le.mp h3
-      have h1 : (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ 2 ≤ ME ^ 2 := by
+      have h1 : (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ (2 : ℕ) ≤ ME ^ (2 : ℕ) := by
         nlinarith [h4'.1, h4'.2]
-      have h5 : (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ 2 * M4 ≤ ME ^ 2 * M4 :=
+      have h5 : (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ (2 : ℕ) * M4 ≤ ME ^ (2 : ℕ) * M4 :=
         mul_le_mul_of_nonneg_right h1 hM4.le
-      calc (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ 2 * M4 ≤ ME ^ 2 * M4 := h5
-        _ < (T / (8 * K)) ^ 3 := hgap
-        _ = Θ ^ 3 := by rw [hΘdef]
-    have h4' : (∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 4) ≤ M4 := by
+      calc (∫ τ in (a k)..(a (k + 1)), hardyZ τ) ^ (2 : ℕ) * M4 ≤ ME ^ (2 : ℕ) * M4 := h5
+        _ < (T / (8 * K)) ^ (3 : ℕ) := hgap
+        _ = Θ ^ (3 : ℕ) := by rw [hΘdef]
+    have h4' : (∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ (4 : ℕ)) ≤ M4 := by
       have h := h4 k hkK
       rw [hadef]
       dsimp only
@@ -137,47 +137,47 @@ private theorem exists_heavyFinset {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 : 0 
         push_cast
         ring
       have hle := ha_le k
-      have hf : MeasureTheory.IntegrableOn (fun τ => (hardyZ τ) ^ 2)
+      have hf : MeasureTheory.IntegrableOn (fun τ => (hardyZ τ) ^ (2 : ℕ))
           (Set.Ioc (a k) (a (k + 1))) MeasureTheory.volume :=
         (continuous_hardyZ.pow 2).integrableOn_Ioc
-      have hf2 : MeasureTheory.IntegrableOn (fun τ => ((hardyZ τ) ^ 2) ^ 2)
+      have hf2 : MeasureTheory.IntegrableOn (fun τ => ((hardyZ τ) ^ (2 : ℕ)) ^ (2 : ℕ))
           (Set.Ioc (a k) (a (k + 1))) MeasureTheory.volume := by
-        have h : MeasureTheory.IntegrableOn (fun τ => (hardyZ τ) ^ 4)
+        have h : MeasureTheory.IntegrableOn (fun τ => (hardyZ τ) ^ (4 : ℕ))
             (Set.Ioc (a k) (a (k + 1))) MeasureTheory.volume :=
           (continuous_hardyZ.pow 4).integrableOn_Ioc
         exact MeasureTheory.IntegrableOn.congr_fun h (fun τ _ => by ring)
           measurableSet_Ioc
       have h2 := GaloisForLFunctions.HTGeometry.sq_integral_le_length_mul hle hf hf2
-      have hcongr : (∫ τ in Set.Ioc (a k) (a (k + 1)), ((hardyZ τ) ^ 2) ^ 2)
-          = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 4 := by
+      have hcongr : (∫ τ in Set.Ioc (a k) (a (k + 1)), ((hardyZ τ) ^ (2 : ℕ)) ^ (2 : ℕ))
+          = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ (4 : ℕ) := by
         apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioc
         intro τ _
         ring
       rw [hcongr, hlen] at h2
-      have hIoc1 : (∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 2)
-          = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 2 :=
+      have hIoc1 : (∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ (2 : ℕ))
+          = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ (2 : ℕ) :=
         intervalIntegral.integral_of_le hle
-      have hIoc2 : (∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ 4)
-          = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 4 :=
+      have hIoc2 : (∫ τ in (a k)..(a (k + 1)), (hardyZ τ) ^ (4 : ℕ))
+          = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ (4 : ℕ) :=
         intervalIntegral.integral_of_le hle
-      have h4w : (∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 4) ≤ M4 := by
+      have h4w : (∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ (4 : ℕ)) ≤ M4 := by
         rw [← hIoc2]
         have h := h4 k hkK
         rw [hadef]
         dsimp only
         exact h
-      have hHF : (m k) ^ 2 ≤ (T / K) * M4 := by
-        have h7 : (T / K) * (∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 4)
+      have hHF : (m k) ^ (2 : ℕ) ≤ (T / K) * M4 := by
+        have h7 : (T / K) * (∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ (4 : ℕ))
             ≤ (T / K) * M4 :=
           mul_le_mul_of_nonneg_left h4w hTK0.le
-        have h8 : m k = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ 2 := by
+        have h8 : m k = ∫ τ in Set.Ioc (a k) (a (k + 1)), (hardyZ τ) ^ (2 : ℕ) := by
           rw [hmdef]
           dsimp only
           exact hIoc1
         rw [h8]
         linarith [h2, h7]
       have hmk0 := hm0 k
-      calc m k = Real.sqrt ((m k) ^ 2) := (Real.sqrt_sq hmk0).symm
+      calc m k = Real.sqrt ((m k) ^ (2 : ℕ)) := (Real.sqrt_sq hmk0).symm
         _ ≤ Real.sqrt ((T / K) * M4) := Real.sqrt_le_sqrt hHF
     have hsum := Finset.sum_le_card_nsmul S m _ hcap
     rw [nsmul_eq_mul] at hsum
@@ -186,9 +186,9 @@ private theorem exists_heavyFinset {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 : 0 
 /-! ## The window fourth-moment budget -/
 
 theorem window_fourth_le {T : ℝ} {K : ℕ} (hK1 : 1 ≤ K) (hT0 : 0 < T)
-    {M4 : ℝ} (hdyadic : (∫ τ in T..(2 * T), (hardyZ τ) ^ 4) ≤ M4) :
+    {M4 : ℝ} (hdyadic : (∫ τ in T..(2 * T), (hardyZ τ) ^ (4 : ℕ)) ≤ M4) :
     ∀ k : ℕ, k < K →
-      (∫ τ in (T + k * (T / K))..(T + ((k + 1 : ℕ) : ℝ) * (T / K)), (hardyZ τ) ^ 4)
+      (∫ τ in (T + k * (T / K))..(T + ((k + 1 : ℕ) : ℝ) * (T / K)), (hardyZ τ) ^ (4 : ℕ))
         ≤ M4 := by
   intro k hkK
   have hKR0 : (0 : ℝ) < (K : ℝ) := by exact_mod_cast hK1
@@ -292,15 +292,15 @@ theorem exists_distinct_ordinates {T : ℝ} {K : ℕ} (hT0 : 0 < T) (hK1 : 1 ≤
 /-! ## Iterated square roots and the polylogarithm bound -/
 
 private theorem sqrt_sq_chain {r : ℝ} (hr : 0 ≤ r) :
-    Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (r ^ 16)))) = r := by
-  have h1 : (r ^ 16 : ℝ) = (r ^ 8) ^ 2 := by ring
-  have h2 : (r ^ 8 : ℝ) = (r ^ 4) ^ 2 := by ring
-  have h3 : (r ^ 4 : ℝ) = (r ^ 2) ^ 2 := by ring
+    Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (r ^ (16 : ℕ))))) = r := by
+  have h1 : (r ^ (16 : ℕ) : ℝ) = (r ^ (8 : ℕ)) ^ (2 : ℕ) := by ring
+  have h2 : (r ^ (8 : ℕ) : ℝ) = (r ^ (4 : ℕ)) ^ (2 : ℕ) := by ring
+  have h3 : (r ^ (4 : ℕ) : ℝ) = (r ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
   rw [h1, Real.sqrt_sq (by positivity), h2, Real.sqrt_sq (by positivity), h3,
     Real.sqrt_sq (by positivity), Real.sqrt_sq hr]
 
 theorem one_add_log_pow_four_le_sixteenth {T : ℝ} (hT : 1 ≤ T) :
-    (1 + Real.log T) ^ 4
+    (1 + Real.log T) ^ (4 : ℕ)
       ≤ 21381376 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) := by
   have hT0 : (0 : ℝ) < T := by linarith
   set N : ℝ := Real.sqrt (Real.sqrt T) with hN
@@ -311,16 +311,16 @@ theorem one_add_log_pow_four_le_sixteenth {T : ℝ} (hT : 1 ≤ T) :
     rw [hN, Real.log_sqrt (Real.sqrt_nonneg T), Real.log_sqrt hT0.le]
     ring
   have hlog0 : 0 ≤ Real.log T := Real.log_nonneg hT
-  have hquarter : (1 + Real.log T) ^ 4 ≤ 256 * (1 + Real.log N) ^ 4 := by
+  have hquarter : (1 + Real.log T) ^ (4 : ℕ) ≤ 256 * (1 + Real.log N) ^ (4 : ℕ) := by
     have h1 : 1 + Real.log T ≤ 4 * (1 + Real.log N) := by
       rw [hlogN]
       linarith
-    have h2 : (1 + Real.log T) ^ 4 ≤ (4 * (1 + Real.log N)) ^ 4 :=
+    have h2 : (1 + Real.log T) ^ (4 : ℕ) ≤ (4 * (1 + Real.log N)) ^ (4 : ℕ) :=
       pow_le_pow_left₀ (by linarith) h1 4
-    calc (1 + Real.log T) ^ 4 ≤ (4 * (1 + Real.log N)) ^ 4 := h2
-      _ = 256 * (1 + Real.log N) ^ 4 := by ring
+    calc (1 + Real.log T) ^ (4 : ℕ) ≤ (4 * (1 + Real.log N)) ^ (4 : ℕ) := h2
+      _ = 256 * (1 + Real.log N) ^ (4 : ℕ) := by ring
   have hbase := one_add_log_pow_four_le hN1
-  calc (1 + Real.log T) ^ 4 ≤ 256 * (1 + Real.log N) ^ 4 := hquarter
+  calc (1 + Real.log T) ^ (4 : ℕ) ≤ 256 * (1 + Real.log N) ^ (4 : ℕ) := hquarter
     _ ≤ 256 * (83521 * Real.sqrt (Real.sqrt N)) := by
         nlinarith [Real.sqrt_nonneg (Real.sqrt N)]
     _ = 21381376 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) := by
@@ -330,22 +330,22 @@ theorem one_add_log_pow_four_le_sixteenth {T : ℝ} (hT : 1 ≤ T) :
 /-! ## The numeric gap for the `⌊T^{1/8}⌋`-window partition -/
 
 private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
-    (hTD : (512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
-      + 21381376 + 5) ^ 16 ≤ T) :
-    (CE * (Real.sqrt T * Real.sqrt (Real.sqrt T))) ^ 2
-        * ((CF + 1) * T * (1 + Real.log T) ^ 4)
-      < (T / (8 * (⌊Real.sqrt (Real.sqrt (Real.sqrt T))⌋₊ : ℝ))) ^ 3 := by
-  set D : ℝ := 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
+    (hTD : (512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) + 74000 ^ (2 : ℕ) * (CF + 1)
+      + 21381376 + 5) ^ (16 : ℕ) ≤ T) :
+    (CE * (Real.sqrt T * Real.sqrt (Real.sqrt T))) ^ (2 : ℕ)
+        * ((CF + 1) * T * (1 + Real.log T) ^ (4 : ℕ))
+      < (T / (8 * (⌊Real.sqrt (Real.sqrt (Real.sqrt T))⌋₊ : ℝ))) ^ (3 : ℕ) := by
+  set D : ℝ := 512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) + 74000 ^ (2 : ℕ) * (CF + 1)
       + 21381376 + 4 with hDdef
   have hD4 : (4 : ℝ) ≤ D := by
     rw [hDdef]
     nlinarith [sq_nonneg CE, hCF]
-  have hTD' : (D + 1) ^ 16 ≤ T := by
-    have : D + 1 = 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
+  have hTD' : (D + 1) ^ (16 : ℕ) ≤ T := by
+    have : D + 1 = 512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) + 74000 ^ (2 : ℕ) * (CF + 1)
         + 21381376 + 5 := by rw [hDdef]; ring
     rw [this]
     exact hTD
-  -- Keep `(D + 1) ^ 16` away from `linarith`: while `D` is still `set`-bound to its
+  -- Keep `(D + 1) ^ (16 : ℕ)` away from `linarith`: while `D` is still `set`-bound to its
   -- big body, ring-normalising that power builds a degree-48 polynomial in `CE, CF`.
   have hD1 : (1 : ℝ) ≤ D + 1 := by linarith only [hD4]
   have hT0 : (0 : ℝ) < T :=
@@ -355,13 +355,13 @@ private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
   set s2 : ℝ := Real.sqrt s1 with hs2def
   set s3 : ℝ := Real.sqrt s2 with hs3def
   set s4 : ℝ := Real.sqrt s3 with hs4def
-  have hs1sq : s1 ^ 2 = T := by rw [hs1def, Real.sq_sqrt hT0.le]
-  have hs2sq : s2 ^ 2 = s1 := by rw [hs2def, Real.sq_sqrt (Real.sqrt_nonneg T)]
-  have hs3sq : s3 ^ 2 = s2 := by rw [hs3def, Real.sq_sqrt (Real.sqrt_nonneg s1)]
-  have hs4sq : s4 ^ 2 = s3 := by rw [hs4def, Real.sq_sqrt (Real.sqrt_nonneg s2)]
+  have hs1sq : s1 ^ (2 : ℕ) = T := by rw [hs1def, Real.sq_sqrt hT0.le]
+  have hs2sq : s2 ^ (2 : ℕ) = s1 := by rw [hs2def, Real.sq_sqrt (Real.sqrt_nonneg T)]
+  have hs3sq : s3 ^ (2 : ℕ) = s2 := by rw [hs3def, Real.sq_sqrt (Real.sqrt_nonneg s1)]
+  have hs4sq : s4 ^ (2 : ℕ) = s3 := by rw [hs4def, Real.sq_sqrt (Real.sqrt_nonneg s2)]
   have hs40 : 0 ≤ s4 := Real.sqrt_nonneg _
   have hs4D : D + 1 ≤ s4 := by
-    have hmono : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt ((D + 1) ^ 16)))) ≤ s4 := by
+    have hmono : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt ((D + 1) ^ (16 : ℕ))))) ≤ s4 := by
       rw [hs4def, hs3def, hs2def, hs1def]
       exact Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (Real.sqrt_le_sqrt
         (Real.sqrt_le_sqrt hTD')))
@@ -373,7 +373,7 @@ private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
   have hs1pos : (0 : ℝ) < s1 := hs2sq ▸ pow_pos hs2pos 2
   have hs45 : (5 : ℝ) ≤ s4 := by linarith only [hs4D, hD4]
   have hs325 : (25 : ℝ) ≤ s3 := by
-    have h6 : (5 : ℝ) ^ 2 ≤ s4 ^ 2 := pow_le_pow_left₀ (by norm_num) hs45 2
+    have h6 : (5 : ℝ) ^ (2 : ℕ) ≤ s4 ^ (2 : ℕ) := pow_le_pow_left₀ (by norm_num) hs45 2
     linarith only [h6, hs4sq.le, hs4sq.ge]
   set K : ℕ := ⌊s3⌋₊ with hKdef
   have hKle : (K : ℝ) ≤ s3 := Nat.floor_le hs3pos.le
@@ -383,74 +383,74 @@ private theorem numeric_gap {T CE CF : ℝ} (_hCE : 0 ≤ CE) (hCF : 0 ≤ CF)
   -- the key coefficient inequality
   have hlog4 := one_add_log_pow_four_le_sixteenth hT1
   rw [← hs1def, ← hs2def, ← hs3def, ← hs4def] at hlog4
-  have hkey : 512 * (K : ℝ) ^ 3 * CE ^ 2 * (CF + 1) * (1 + Real.log T) ^ 4 < s1 := by
-    have hK3 : (K : ℝ) ^ 3 ≤ s3 ^ 3 := pow_le_pow_left₀ hKR0.le hKle 3
-    have hs3s1 : s3 ^ 4 = s1 := by
-      rw [show s3 ^ 4 = (s3 ^ 2) ^ 2 by ring, hs3sq, hs2sq]
-    have h1 : 512 * (K : ℝ) ^ 3 * CE ^ 2 * (CF + 1) * (1 + Real.log T) ^ 4
-        ≤ 512 * s3 ^ 3 * CE ^ 2 * (CF + 1) * (21381376 * s4) := by
-      have hb1 : (0 : ℝ) ≤ 512 * CE ^ 2 * (CF + 1) := by positivity
-      have hb3 : (0 : ℝ) ≤ (1 + Real.log T) ^ 4 := by positivity
-      have hstep1 : (K : ℝ) ^ 3 * (1 + Real.log T) ^ 4
-          ≤ s3 ^ 3 * (1 + Real.log T) ^ 4 :=
+  have hkey : 512 * (K : ℝ) ^ (3 : ℕ) * CE ^ (2 : ℕ) * (CF + 1) * (1 + Real.log T) ^ (4 : ℕ) < s1 := by
+    have hK3 : (K : ℝ) ^ (3 : ℕ) ≤ s3 ^ (3 : ℕ) := pow_le_pow_left₀ hKR0.le hKle 3
+    have hs3s1 : s3 ^ (4 : ℕ) = s1 := by
+      rw [show s3 ^ (4 : ℕ) = (s3 ^ (2 : ℕ)) ^ (2 : ℕ) by ring, hs3sq, hs2sq]
+    have h1 : 512 * (K : ℝ) ^ (3 : ℕ) * CE ^ (2 : ℕ) * (CF + 1) * (1 + Real.log T) ^ (4 : ℕ)
+        ≤ 512 * s3 ^ (3 : ℕ) * CE ^ (2 : ℕ) * (CF + 1) * (21381376 * s4) := by
+      have hb1 : (0 : ℝ) ≤ 512 * CE ^ (2 : ℕ) * (CF + 1) := by positivity
+      have hb3 : (0 : ℝ) ≤ (1 + Real.log T) ^ (4 : ℕ) := by positivity
+      have hstep1 : (K : ℝ) ^ (3 : ℕ) * (1 + Real.log T) ^ (4 : ℕ)
+          ≤ s3 ^ (3 : ℕ) * (1 + Real.log T) ^ (4 : ℕ) :=
         mul_le_mul_of_nonneg_right hK3 hb3
-      have hstep2 : s3 ^ 3 * (1 + Real.log T) ^ 4 ≤ s3 ^ 3 * (21381376 * s4) :=
+      have hstep2 : s3 ^ (3 : ℕ) * (1 + Real.log T) ^ (4 : ℕ) ≤ s3 ^ (3 : ℕ) * (21381376 * s4) :=
         mul_le_mul_of_nonneg_left hlog4 (pow_nonneg hs3pos.le 3)
       have hstep4 := mul_le_mul_of_nonneg_left (le_trans hstep1 hstep2) hb1
-      calc 512 * (K : ℝ) ^ 3 * CE ^ 2 * (CF + 1) * (1 + Real.log T) ^ 4
-          = (512 * CE ^ 2 * (CF + 1)) * ((K : ℝ) ^ 3 * (1 + Real.log T) ^ 4) := by ring
-        _ ≤ (512 * CE ^ 2 * (CF + 1)) * (s3 ^ 3 * (21381376 * s4)) := hstep4
-        _ = 512 * s3 ^ 3 * CE ^ 2 * (CF + 1) * (21381376 * s4) := by ring
-    have h2 : 512 * s3 ^ 3 * CE ^ 2 * (CF + 1) * (21381376 * s4) < s1 := by
+      calc 512 * (K : ℝ) ^ (3 : ℕ) * CE ^ (2 : ℕ) * (CF + 1) * (1 + Real.log T) ^ (4 : ℕ)
+          = (512 * CE ^ (2 : ℕ) * (CF + 1)) * ((K : ℝ) ^ (3 : ℕ) * (1 + Real.log T) ^ (4 : ℕ)) := by ring
+        _ ≤ (512 * CE ^ (2 : ℕ) * (CF + 1)) * (s3 ^ (3 : ℕ) * (21381376 * s4)) := hstep4
+        _ = 512 * s3 ^ (3 : ℕ) * CE ^ (2 : ℕ) * (CF + 1) * (21381376 * s4) := by ring
+    have h2 : 512 * s3 ^ (3 : ℕ) * CE ^ (2 : ℕ) * (CF + 1) * (21381376 * s4) < s1 := by
       rw [← hs3s1]
-      have hexp : s3 ^ 4 = s3 ^ 3 * (s4 * s4) := by
-        rw [show s3 ^ 4 = s3 ^ 3 * s3 by ring, ← hs4sq]
+      have hexp : s3 ^ (4 : ℕ) = s3 ^ (3 : ℕ) * (s4 * s4) := by
+        rw [show s3 ^ (4 : ℕ) = s3 ^ (3 : ℕ) * s3 by ring, ← hs4sq]
         ring
       rw [hexp]
-      have hfactor : 512 * s3 ^ 3 * CE ^ 2 * (CF + 1) * (21381376 * s4)
-          = (512 * 21381376 * CE ^ 2 * (CF + 1)) * s4 * s3 ^ 3 := by ring
+      have hfactor : 512 * s3 ^ (3 : ℕ) * CE ^ (2 : ℕ) * (CF + 1) * (21381376 * s4)
+          = (512 * 21381376 * CE ^ (2 : ℕ) * (CF + 1)) * s4 * s3 ^ (3 : ℕ) := by ring
       rw [hfactor]
-      have hcoef : 512 * 21381376 * CE ^ 2 * (CF + 1) < s4 := by
-        have h3 : 512 * 21381376 * CE ^ 2 * (CF + 1)
-            ≤ 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) := by
+      have hcoef : 512 * 21381376 * CE ^ (2 : ℕ) * (CF + 1) < s4 := by
+        have h3 : 512 * 21381376 * CE ^ (2 : ℕ) * (CF + 1)
+            ≤ 512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) := by
           linarith only [hCF]
         rw [hDdef] at hs4D
         linarith only [h3, hs4D, hCF]
-      have h5 : (512 * 21381376 * CE ^ 2 * (CF + 1)) * s4 < s4 * s4 :=
+      have h5 : (512 * 21381376 * CE ^ (2 : ℕ) * (CF + 1)) * s4 < s4 * s4 :=
         mul_lt_mul_of_pos_right hcoef hs4pos
       have h6 := mul_lt_mul_of_pos_right h5 (pow_pos hs3pos 3)
-      calc (512 * 21381376 * CE ^ 2 * (CF + 1)) * s4 * s3 ^ 3
-          < s4 * s4 * s3 ^ 3 := h6
-        _ = s3 ^ 3 * (s4 * s4) := by ring
+      calc (512 * 21381376 * CE ^ (2 : ℕ) * (CF + 1)) * s4 * s3 ^ (3 : ℕ)
+          < s4 * s4 * s3 ^ (3 : ℕ) := h6
+        _ = s3 ^ (3 : ℕ) * (s4 * s4) := by ring
     linarith
   -- the mean square value
-  have hmean : (CE * (s1 * s2)) ^ 2 = CE ^ 2 * (T * s1) := by
+  have hmean : (CE * (s1 * s2)) ^ (2 : ℕ) = CE ^ (2 : ℕ) * (T * s1) := by
     rw [mul_pow, mul_pow, hs1sq, hs2sq]
   -- assemble
-  have hΘcube : (T / (8 * (K : ℝ))) ^ 3 = T ^ 3 / (512 * (K : ℝ) ^ 3) := by
+  have hΘcube : (T / (8 * (K : ℝ))) ^ (3 : ℕ) = T ^ (3 : ℕ) / (512 * (K : ℝ) ^ (3 : ℕ)) := by
     rw [div_pow]
     congr 1
     ring
-  have hmain : (CE * (s1 * s2)) ^ 2 * ((CF + 1) * T * (1 + Real.log T) ^ 4)
-      < (T / (8 * (K : ℝ))) ^ 3 := by
-    rw [hmean, hΘcube, lt_div_iff₀ (by positivity : (0 : ℝ) < 512 * (K : ℝ) ^ 3)]
-    have hT3 : T ^ 3 = T ^ 2 * s1 ^ 2 := by rw [hs1sq]; ring
+  have hmain : (CE * (s1 * s2)) ^ (2 : ℕ) * ((CF + 1) * T * (1 + Real.log T) ^ (4 : ℕ))
+      < (T / (8 * (K : ℝ))) ^ (3 : ℕ) := by
+    rw [hmean, hΘcube, lt_div_iff₀ (by positivity : (0 : ℝ) < 512 * (K : ℝ) ^ (3 : ℕ))]
+    have hT3 : T ^ (3 : ℕ) = T ^ (2 : ℕ) * s1 ^ (2 : ℕ) := by rw [hs1sq]; ring
     rw [hT3]
-    have hlhs : CE ^ 2 * (T * s1) * ((CF + 1) * T * (1 + Real.log T) ^ 4)
-        * (512 * (K : ℝ) ^ 3)
-        = (512 * (K : ℝ) ^ 3 * CE ^ 2 * (CF + 1) * (1 + Real.log T) ^ 4)
-          * (s1 * T ^ 2) := by ring
+    have hlhs : CE ^ (2 : ℕ) * (T * s1) * ((CF + 1) * T * (1 + Real.log T) ^ (4 : ℕ))
+        * (512 * (K : ℝ) ^ (3 : ℕ))
+        = (512 * (K : ℝ) ^ (3 : ℕ) * CE ^ (2 : ℕ) * (CF + 1) * (1 + Real.log T) ^ (4 : ℕ))
+          * (s1 * T ^ (2 : ℕ)) := by ring
     rw [hlhs]
     have hstep := mul_lt_mul_of_pos_right hkey (mul_pos hs1pos (pow_pos hT0 2))
-    calc (512 * (K : ℝ) ^ 3 * CE ^ 2 * (CF + 1) * (1 + Real.log T) ^ 4) * (s1 * T ^ 2)
-        < s1 * (s1 * T ^ 2) := hstep
-      _ = T ^ 2 * s1 ^ 2 := by ring
+    calc (512 * (K : ℝ) ^ (3 : ℕ) * CE ^ (2 : ℕ) * (CF + 1) * (1 + Real.log T) ^ (4 : ℕ)) * (s1 * T ^ (2 : ℕ))
+        < s1 * (s1 * T ^ (2 : ℕ)) := hstep
+      _ = T ^ (2 : ℕ) * s1 ^ (2 : ℕ) := by ring
   exact hmain
 
 /-! ## The polynomial zero count -/
 
 private theorem no_small_count_s4 {CE CF s4 L2 : ℝ} (hCF : 0 ≤ CF) (hs4pos : 0 < s4)
-    (hs4D : 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
+    (hs4D : 512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) + 74000 ^ (2 : ℕ) * (CF + 1)
         + 21381376 + 5 ≤ s4)
     (hbound : s4 ≤ 16 * (Real.sqrt (CF + 1) * L2))
     (hlogsq : L2 ≤ 4624 * Real.sqrt s4) : False := by
@@ -475,104 +475,104 @@ private theorem no_small_count_s4 {CE CF s4 L2 : ℝ} (hCF : 0 ≤ CF) (hs4pos :
     exact le_of_mul_le_mul_right hcross hsq4pos
   have hCFsq : Real.sqrt (CF + 1) * Real.sqrt (CF + 1) = CF + 1 :=
     Real.mul_self_sqrt (by linarith)
-  have h4 : s4 ≤ 73984 ^ 2 * (CF + 1) := by
+  have h4 : s4 ≤ 73984 ^ (2 : ℕ) * (CF + 1) := by
     have h5 : Real.sqrt s4 * Real.sqrt s4
         ≤ (73984 * Real.sqrt (CF + 1)) * (73984 * Real.sqrt (CF + 1)) :=
       mul_le_mul h3 h3 (Real.sqrt_nonneg _) (by positivity)
     calc s4 = Real.sqrt s4 * Real.sqrt s4 := h2.symm
       _ ≤ (73984 * Real.sqrt (CF + 1)) * (73984 * Real.sqrt (CF + 1)) := h5
-      _ = 73984 ^ 2 * (Real.sqrt (CF + 1) * Real.sqrt (CF + 1)) := by ring
-      _ = 73984 ^ 2 * (CF + 1) := by rw [hCFsq]
-  have hpos1 : (0 : ℝ) ≤ 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) := by positivity
-  have hgap2 : 73984 ^ 2 * (CF + 1) ≤ 74000 ^ 2 * (CF + 1) := by
+      _ = 73984 ^ (2 : ℕ) * (Real.sqrt (CF + 1) * Real.sqrt (CF + 1)) := by ring
+      _ = 73984 ^ (2 : ℕ) * (CF + 1) := by rw [hCFsq]
+  have hpos1 : (0 : ℝ) ≤ 512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) := by positivity
+  have hgap2 : 73984 ^ (2 : ℕ) * (CF + 1) ≤ 74000 ^ (2 : ℕ) * (CF + 1) := by
     linarith only [hCF]
   linarith only [hs4D, h4, hpos1, hgap2]
 
 private theorem sixteenth_final_count {T CF s3 s4 CE : ℝ} {K : ℕ}
     {S : Finset ℕ} {τS : Finset ℝ}
     (hT0 : 0 < T) (hT1 : 1 ≤ T) (hCF : 0 ≤ CF)
-    (hs4sq : s4 ^ 2 = s3) (hs4pos : 0 < s4)
-    (hlog4 : (1 + Real.log T) ^ 4 ≤ 21381376 * s4)
-    (hs4D : 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
+    (hs4sq : s4 ^ (2 : ℕ) = s3) (hs4pos : 0 < s4)
+    (hlog4 : (1 + Real.log T) ^ (4 : ℕ) ≤ 21381376 * s4)
+    (hs4D : 512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) + 74000 ^ (2 : ℕ) * (CF + 1)
         + 21381376 + 5 ≤ s4)
     (hKR0 : (0 : ℝ) < (K : ℝ)) (hKge : s3 / 2 ≤ (K : ℝ))
     (hScount : T / 8 ≤ (S.card : ℝ)
-        * Real.sqrt ((T / K) * ((CF + 1) * T * (1 + Real.log T) ^ 4)))
+        * Real.sqrt ((T / K) * ((CF + 1) * T * (1 + Real.log T) ^ (4 : ℕ))))
     (hτScard : S.card ≤ 2 * τS.card + 1) :
-    1 / (48 * (Real.sqrt (CF + 1) + 1)) * s4 / (1 + Real.log T) ^ 2
+    1 / (48 * (Real.sqrt (CF + 1) + 1)) * s4 / (1 + Real.log T) ^ (2 : ℕ)
       ≤ (τS.card : ℝ) := by
   have hlog0 : (0 : ℝ) ≤ Real.log T := Real.log_nonneg hT1
   have hL0 : (0 : ℝ) < 1 + Real.log T := by linarith only [hlog0]
   have hs40 : (0 : ℝ) ≤ s4 := hs4pos.le
   -- the counting arithmetic
-  have hcap : Real.sqrt ((T / K) * ((CF + 1) * T * (1 + Real.log T) ^ 4))
-      ≤ Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2 / Real.sqrt (K : ℝ) := by
-    have hval : (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2 / Real.sqrt (K : ℝ)) ^ 2
-        = (T / K) * ((CF + 1) * T * (1 + Real.log T) ^ 4) := by
+  have hcap : Real.sqrt ((T / K) * ((CF + 1) * T * (1 + Real.log T) ^ (4 : ℕ)))
+      ≤ Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ (2 : ℕ) / Real.sqrt (K : ℝ) := by
+    have hval : (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ (2 : ℕ) / Real.sqrt (K : ℝ)) ^ (2 : ℕ)
+        = (T / K) * ((CF + 1) * T * (1 + Real.log T) ^ (4 : ℕ)) := by
       rw [div_pow, mul_pow, mul_pow, Real.sq_sqrt (by linarith : (0 : ℝ) ≤ CF + 1),
         Real.sq_sqrt hKR0.le]
-      have h1 : ((1 + Real.log T) ^ 2) ^ 2 = (1 + Real.log T) ^ 4 := by ring
+      have h1 : ((1 + Real.log T) ^ (2 : ℕ)) ^ (2 : ℕ) = (1 + Real.log T) ^ (4 : ℕ) := by ring
       rw [h1, div_mul_eq_mul_div]
       congr 1
       ring
-    have heq : Real.sqrt ((T / K) * ((CF + 1) * T * (1 + Real.log T) ^ 4))
-        = Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2 / Real.sqrt (K : ℝ) := by
+    have heq : Real.sqrt ((T / K) * ((CF + 1) * T * (1 + Real.log T) ^ (4 : ℕ)))
+        = Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ (2 : ℕ) / Real.sqrt (K : ℝ) := by
       rw [← hval, Real.sqrt_sq (by positivity)]
     exact le_of_eq heq
   have hsK0 : (0 : ℝ) < Real.sqrt (K : ℝ) := Real.sqrt_pos.mpr hKR0
-  have hcount : s4 ≤ 16 * (S.card : ℝ) * Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2 := by
+  have hcount : s4 ≤ 16 * (S.card : ℝ) * Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ) := by
     have h2 : T / 8 ≤ (S.card : ℝ)
-        * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2 / Real.sqrt (K : ℝ)) := by
+        * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ (2 : ℕ) / Real.sqrt (K : ℝ)) := by
       refine le_trans hScount ?_
       exact mul_le_mul_of_nonneg_left hcap (by positivity)
     have h3 : (T / 8) * Real.sqrt (K : ℝ)
-        ≤ (S.card : ℝ) * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2) := by
+        ≤ (S.card : ℝ) * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ (2 : ℕ)) := by
       have h4 := mul_le_mul_of_nonneg_right h2 hsK0.le
       have h5 : (S.card : ℝ)
-          * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2 / Real.sqrt (K : ℝ))
+          * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ (2 : ℕ) / Real.sqrt (K : ℝ))
           * Real.sqrt (K : ℝ)
-          = (S.card : ℝ) * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2) := by
+          = (S.card : ℝ) * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ (2 : ℕ)) := by
         field_simp
       linarith only [h4, h5.le, h5.ge]
     have hs4K : s4 / 2 ≤ Real.sqrt (K : ℝ) := by
-      have h4 : (s4 / 2) ^ 2 ≤ (K : ℝ) := by
-        have h5 : (s4 / 2) ^ 2 = s3 / 4 := by rw [← hs4sq]; ring
+      have h4 : (s4 / 2) ^ (2 : ℕ) ≤ (K : ℝ) := by
+        have h5 : (s4 / 2) ^ (2 : ℕ) = s3 / 4 := by rw [← hs4sq]; ring
         rw [h5]
         linarith [hKge]
       have h6 := Real.sqrt_le_sqrt h4
       rwa [Real.sqrt_sq (by positivity)] at h6
     have h7 : (T / 8) * (s4 / 2)
-        ≤ (S.card : ℝ) * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ 2) := by
+        ≤ (S.card : ℝ) * (Real.sqrt (CF + 1) * T * (1 + Real.log T) ^ (2 : ℕ)) := by
       have h8 : (T / 8) * (s4 / 2) ≤ (T / 8) * Real.sqrt (K : ℝ) :=
         mul_le_mul_of_nonneg_left hs4K (by positivity)
       linarith only [h8, h3]
     have h9 : T * (s4 / 16)
-        ≤ T * ((S.card : ℝ) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2)) := by
+        ≤ T * ((S.card : ℝ) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ))) := by
       linarith only [h7]
     have h10 := le_of_mul_le_mul_left h9 hT0
     linarith only [h10]
   have hcardcast : (S.card : ℝ) ≤ 2 * (τS.card : ℝ) + 1 := by exact_mod_cast hτScard
-  have hlog2pos : (0 : ℝ) < (1 + Real.log T) ^ 2 := by positivity
+  have hlog2pos : (0 : ℝ) < (1 + Real.log T) ^ (2 : ℕ) := by positivity
   have hs4bound : s4 ≤ (32 * (τS.card : ℝ) + 16)
-      * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2) := by
-    have hb : (0 : ℝ) ≤ Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2 := by positivity
-    have h1 : (S.card : ℝ) * (16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2))
+      * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ)) := by
+    have hb : (0 : ℝ) ≤ Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ) := by positivity
+    have h1 : (S.card : ℝ) * (16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ)))
         ≤ (2 * (τS.card : ℝ) + 1)
-          * (16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2)) :=
+          * (16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ))) :=
       mul_le_mul_of_nonneg_right hcardcast (by linarith only [hb])
     linarith only [hcount, h1]
-  have hlogsq : (1 + Real.log T) ^ 2 ≤ 4624 * Real.sqrt s4 := by
+  have hlogsq : (1 + Real.log T) ^ (2 : ℕ) ≤ 4624 * Real.sqrt s4 := by
     have h1 := hlog4
-    have h3 : (4624 * Real.sqrt s4) ^ 2 = 21381376 * s4 := by
+    have h3 : (4624 * Real.sqrt s4) ^ (2 : ℕ) = 21381376 * s4 := by
       rw [mul_pow, Real.sq_sqrt hs40]
       norm_num
-    have h2 : ((1 + Real.log T) ^ 2) ^ 2 ≤ (4624 * Real.sqrt s4) ^ 2 := by
+    have h2 : ((1 + Real.log T) ^ (2 : ℕ)) ^ (2 : ℕ) ≤ (4624 * Real.sqrt s4) ^ (2 : ℕ) := by
       rw [h3]
-      calc ((1 + Real.log T) ^ 2) ^ 2 = (1 + Real.log T) ^ 4 := by ring
+      calc ((1 + Real.log T) ^ (2 : ℕ)) ^ (2 : ℕ) = (1 + Real.log T) ^ (4 : ℕ) := by ring
         _ ≤ 21381376 * s4 := h1
-    calc (1 + Real.log T) ^ 2
-        = Real.sqrt (((1 + Real.log T) ^ 2) ^ 2) := (Real.sqrt_sq (by positivity)).symm
-      _ ≤ Real.sqrt ((4624 * Real.sqrt s4) ^ 2) := Real.sqrt_le_sqrt h2
+    calc (1 + Real.log T) ^ (2 : ℕ)
+        = Real.sqrt (((1 + Real.log T) ^ (2 : ℕ)) ^ (2 : ℕ)) := (Real.sqrt_sq (by positivity)).symm
+      _ ≤ Real.sqrt ((4624 * Real.sqrt s4) ^ (2 : ℕ)) := Real.sqrt_le_sqrt h2
       _ = 4624 * Real.sqrt s4 := Real.sqrt_sq (by positivity)
   have himg1 : (1 : ℝ) ≤ (τS.card : ℝ) := by
     by_contra h0
@@ -584,24 +584,24 @@ private theorem sixteenth_final_count {T CF s3 s4 CE : ℝ} {K : ℕ}
       linarith only [h0lt, h3]
     have hz : ((τS.card : ℕ) : ℝ) = 0 := by exact_mod_cast h0'
     rw [hz] at hs4bound
-    have hb16 : s4 ≤ 16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2) := by
-      calc s4 ≤ (32 * 0 + 16) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2) := hs4bound
-        _ = 16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2) := by ring
+    have hb16 : s4 ≤ 16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ)) := by
+      calc s4 ≤ (32 * 0 + 16) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ)) := hs4bound
+        _ = 16 * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ)) := by ring
     exact no_small_count_s4 hCF hs4pos hs4D hb16 hlogsq
   have hfin : s4 ≤ 48 * (τS.card : ℝ)
-      * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ 2) := by
-    have hb : (0 : ℝ) ≤ Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2 := by positivity
-    have h1 : (32 * (τS.card : ℝ) + 16) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2)
-        ≤ 48 * (τS.card : ℝ) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2) := by
+      * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ (2 : ℕ)) := by
+    have hb : (0 : ℝ) ≤ Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ) := by positivity
+    have h1 : (32 * (τS.card : ℝ) + 16) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ))
+        ≤ 48 * (τS.card : ℝ) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ)) := by
       have h2 : 32 * (τS.card : ℝ) + 16 ≤ 48 * (τS.card : ℝ) := by
         linarith only [himg1]
       exact mul_le_mul_of_nonneg_right h2 hb
-    have h3 : 48 * (τS.card : ℝ) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2)
-        ≤ 48 * (τS.card : ℝ) * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ 2) := by
-      have h4 : Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2
-          ≤ (Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ 2 := by
-        have h5 : (Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ 2
-            = Real.sqrt (CF + 1) * (1 + Real.log T) ^ 2 + (1 + Real.log T) ^ 2 := by
+    have h3 : 48 * (τS.card : ℝ) * (Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ))
+        ≤ 48 * (τS.card : ℝ) * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ (2 : ℕ)) := by
+      have h4 : Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ)
+          ≤ (Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ (2 : ℕ) := by
+        have h5 : (Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ (2 : ℕ)
+            = Real.sqrt (CF + 1) * (1 + Real.log T) ^ (2 : ℕ) + (1 + Real.log T) ^ (2 : ℕ) := by
           ring
         rw [h5]
         linarith only [hlog2pos]
@@ -610,12 +610,12 @@ private theorem sixteenth_final_count {T CF s3 s4 CE : ℝ} {K : ℕ}
   rw [div_le_iff₀ hlog2pos]
   have hkey2 : 1 / (48 * (Real.sqrt (CF + 1) + 1)) * s4
       ≤ 1 / (48 * (Real.sqrt (CF + 1) + 1))
-        * (48 * (τS.card : ℝ) * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ 2)) :=
+        * (48 * (τS.card : ℝ) * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ (2 : ℕ))) :=
     mul_le_mul_of_nonneg_left hfin (by positivity)
   have hne : (48 : ℝ) * (Real.sqrt (CF + 1) + 1) ≠ 0 := by positivity
   have hsimp : 1 / (48 * (Real.sqrt (CF + 1) + 1))
-      * (48 * (τS.card : ℝ) * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ 2))
-      = (τS.card : ℝ) * (1 + Real.log T) ^ 2 := by
+      * (48 * (τS.card : ℝ) * ((Real.sqrt (CF + 1) + 1) * (1 + Real.log T) ^ (2 : ℕ)))
+      = (τS.card : ℝ) * (1 + Real.log T) ^ (2 : ℕ) := by
     field_simp
   rw [hsimp] at hkey2
   exact hkey2
@@ -626,38 +626,38 @@ critical-line zeros `ζ(1/2 + iτ) = 0`, for all large `T`. -/
 theorem exists_many_distinct_line_zeros_dyadic :
     ∃ c : ℝ, 0 < c ∧ ∃ T₁ : ℝ, 1 ≤ T₁ ∧ ∀ T : ℝ, T₁ ≤ T →
       ∃ τS : Finset ℝ, (∀ τ ∈ τS, T < τ ∧ τ ≤ 2 * T ∧ riemannZeta (linePt τ) = 0) ∧
-        c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ 2
+        c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ (2 : ℕ)
           ≤ (τS.card : ℝ) := by
   classical
   obtain ⟨TC, hTC0, hC⟩ := exists_le_integral_hardyZ_sq
   obtain ⟨CF, hCF, hF⟩ := exists_integral_hardyZ_pow_four_dyadic_real_le
   obtain ⟨CE, hCE, hE⟩ := exists_abs_integral_hardyZ_window_le
-  set D : ℝ := 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
+  set D : ℝ := 512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) + 74000 ^ (2 : ℕ) * (CF + 1)
       + 21381376 + 4 with hDdef
   have hD4 : (4 : ℝ) ≤ D := by
     rw [hDdef]
     nlinarith [sq_nonneg CE, hCF]
   refine ⟨1 / (48 * (Real.sqrt (CF + 1) + 1)), by positivity,
-    max (max TC 16) ((D + 1) ^ 16), ?_, fun T hT => ?_⟩
+    max (max TC 16) ((D + 1) ^ (16 : ℕ)), ?_, fun T hT => ?_⟩
   · refine le_trans ?_ (le_max_right _ _)
-    calc (1 : ℝ) = 1 ^ 16 := by norm_num
-      _ ≤ (D + 1) ^ 16 := pow_le_pow_left₀ (by norm_num) (by linarith) 16
+    calc (1 : ℝ) = 1 ^ (16 : ℕ) := by norm_num
+      _ ≤ (D + 1) ^ (16 : ℕ) := pow_le_pow_left₀ (by norm_num) (by linarith) 16
   have hT16 : (16 : ℝ) ≤ T := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hT
   have hTTC : TC ≤ T := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hT
-  have hTD : (D + 1) ^ 16 ≤ T := le_trans (le_max_right _ _) hT
+  have hTD : (D + 1) ^ (16 : ℕ) ≤ T := le_trans (le_max_right _ _) hT
   have hT0 : (0 : ℝ) < T := by linarith
   have hT1 : (1 : ℝ) ≤ T := by linarith
   set s1 : ℝ := Real.sqrt T with hs1def
   set s2 : ℝ := Real.sqrt s1 with hs2def
   set s3 : ℝ := Real.sqrt s2 with hs3def
   set s4 : ℝ := Real.sqrt s3 with hs4def
-  have hs1sq : s1 ^ 2 = T := by rw [hs1def, Real.sq_sqrt hT0.le]
-  have hs2sq : s2 ^ 2 = s1 := by rw [hs2def, Real.sq_sqrt (Real.sqrt_nonneg T)]
-  have hs3sq : s3 ^ 2 = s2 := by rw [hs3def, Real.sq_sqrt (Real.sqrt_nonneg s1)]
-  have hs4sq : s4 ^ 2 = s3 := by rw [hs4def, Real.sq_sqrt (Real.sqrt_nonneg s2)]
+  have hs1sq : s1 ^ (2 : ℕ) = T := by rw [hs1def, Real.sq_sqrt hT0.le]
+  have hs2sq : s2 ^ (2 : ℕ) = s1 := by rw [hs2def, Real.sq_sqrt (Real.sqrt_nonneg T)]
+  have hs3sq : s3 ^ (2 : ℕ) = s2 := by rw [hs3def, Real.sq_sqrt (Real.sqrt_nonneg s1)]
+  have hs4sq : s4 ^ (2 : ℕ) = s3 := by rw [hs4def, Real.sq_sqrt (Real.sqrt_nonneg s2)]
   have hs40 : 0 ≤ s4 := Real.sqrt_nonneg _
   have hs4D : D + 1 ≤ s4 := by
-    have hmono : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt ((D + 1) ^ 16)))) ≤ s4 := by
+    have hmono : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt ((D + 1) ^ (16 : ℕ))))) ≤ s4 := by
       rw [hs4def, hs3def, hs2def, hs1def]
       exact Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (Real.sqrt_le_sqrt
         (Real.sqrt_le_sqrt hTD)))
@@ -667,7 +667,7 @@ theorem exists_many_distinct_line_zeros_dyadic :
   have hs3pos : (0 : ℝ) < s3 := hs4sq ▸ pow_pos hs4pos 2
   have hs32 : (2 : ℝ) ≤ s3 := by
     have hs45 : (5 : ℝ) ≤ s4 := by linarith only [hs4D, hD4]
-    have h6 : (5 : ℝ) ^ 2 ≤ s4 ^ 2 := pow_le_pow_left₀ (by norm_num) hs45 2
+    have h6 : (5 : ℝ) ^ (2 : ℕ) ≤ s4 ^ (2 : ℕ) := pow_le_pow_left₀ (by norm_num) hs45 2
     linarith only [h6, hs4sq.le, hs4sq.ge]
   set K : ℕ := ⌊s3⌋₊ with hKdef
   have hKle : (K : ℝ) ≤ s3 := Nat.floor_le hs3pos.le
@@ -680,16 +680,16 @@ theorem exists_many_distinct_line_zeros_dyadic :
   have hTK0 : (0 : ℝ) < T / K := by positivity
   -- the three inputs of the pigeonhole
   have hCdyadic := hC T hTTC
-  set M4 : ℝ := (CF + 1) * T * (1 + Real.log T) ^ 4 with hM4def
+  set M4 : ℝ := (CF + 1) * T * (1 + Real.log T) ^ (4 : ℕ) with hM4def
   have hlogT0 : 0 ≤ Real.log T := Real.log_nonneg hT1
   have hM40 : 0 < M4 := by
     rw [hM4def]
     have h1 : (0 : ℝ) < 1 + Real.log T := by linarith
     positivity
-  have hM4dyadic : (∫ τ in T..(2 * T), (hardyZ τ) ^ 4) ≤ M4 := by
+  have hM4dyadic : (∫ τ in T..(2 * T), (hardyZ τ) ^ (4 : ℕ)) ≤ M4 := by
     refine le_trans (hF (by linarith)) ?_
     rw [hM4def]
-    have h1 : (0 : ℝ) ≤ T * (1 + Real.log T) ^ 4 := by positivity
+    have h1 : (0 : ℝ) ≤ T * (1 + Real.log T) ^ (4 : ℕ) := by positivity
     linarith only [h1]
   have h4win := window_fourth_le hK1 hT0 hM4dyadic
   have hEwin : ∀ k : ℕ, k < K →
@@ -708,10 +708,10 @@ theorem exists_many_distinct_line_zeros_dyadic :
         mul_le_mul_of_nonneg_right hk1K hTK0.le
       have h2 : (K : ℝ) * (T / K) = T := by field_simp
       linarith only [h1, h2.le, h2.ge]
-  have hgap : (CE * (Real.sqrt T * Real.sqrt (Real.sqrt T))) ^ 2 * M4
-      < (T / (8 * (K : ℝ))) ^ 3 := by
+  have hgap : (CE * (Real.sqrt T * Real.sqrt (Real.sqrt T))) ^ (2 : ℕ) * M4
+      < (T / (8 * (K : ℝ))) ^ (3 : ℕ) := by
     have h := numeric_gap hCE hCF (T := T) (by
-      have : D + 1 = 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
+      have : D + 1 = 512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) + 74000 ^ (2 : ℕ) * (CF + 1)
           + 21381376 + 5 := by rw [hDdef]; ring
       rw [← this]
       exact hTD)
@@ -723,12 +723,12 @@ theorem exists_many_distinct_line_zeros_dyadic :
   refine ⟨τS, hτSmem, ?_⟩
   have hlog4' := one_add_log_pow_four_le_sixteenth hT1
   rw [← hs1def, ← hs2def, ← hs3def, ← hs4def] at hlog4'
-  have hs4D5 : 512 * 21381376 * (CE ^ 2 + 1) * (CF + 1) + 74000 ^ 2 * (CF + 1)
+  have hs4D5 : 512 * 21381376 * (CE ^ (2 : ℕ) + 1) * (CF + 1) + 74000 ^ (2 : ℕ) * (CF + 1)
       + 21381376 + 5 ≤ s4 := by
     rw [hDdef] at hs4D
     linarith only [hs4D]
   have hScount' : T / 8 ≤ (S.card : ℝ)
-      * Real.sqrt ((T / K) * ((CF + 1) * T * (1 + Real.log T) ^ 4)) := by
+      * Real.sqrt ((T / K) * ((CF + 1) * T * (1 + Real.log T) ^ (4 : ℕ))) := by
     rw [← hM4def]
     exact hScount
   exact sixteenth_final_count hT0 hT1 hCF hs4sq hs4pos hlog4' hs4D5 hKR0 hKge
@@ -808,7 +808,7 @@ of critical-line zeros of `xi` with ordinate in `(T, 2T]`, counted with multipli
 least `c · T^{1/16} / (1 + log T)²` for all large `T`. -/
 theorem exists_sixteenthRoot_le_xiPosCriticalZeroCount_sub :
     ∃ c : ℝ, 0 < c ∧ ∃ T₁ : ℝ, 1 ≤ T₁ ∧ ∀ T : ℝ, T₁ ≤ T →
-      c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ 2
+      c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ (2 : ℕ)
         ≤ (xiPosCriticalZeroCount (2 * T) : ℝ) - (xiPosCriticalZeroCount T : ℝ) := by
   obtain ⟨c, hc, T₁, hT₁, h⟩ := exists_many_distinct_line_zeros_dyadic
   refine ⟨c, hc, T₁, hT₁, fun T hT => ?_⟩
@@ -825,7 +825,7 @@ critical-line zeros of `xi` with ordinate in `(0, T]`, counted with multiplicity
 logarithmic Hardy census. -/
 theorem exists_sixteenthRoot_le_xiPosCriticalZeroCount :
     ∃ c : ℝ, 0 < c ∧ ∃ T₁ : ℝ, 1 ≤ T₁ ∧ ∀ T : ℝ, T₁ ≤ T →
-      c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ 2
+      c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ (2 : ℕ)
         ≤ (xiPosCriticalZeroCount T : ℝ) := by
   obtain ⟨c, hc, T₁, hT₁, h⟩ := exists_sixteenthRoot_le_xiPosCriticalZeroCount_sub
   refine ⟨c / 2, by positivity, max (2 * T₁) 2, ?_, fun T hT => ?_⟩
@@ -842,56 +842,56 @@ theorem exists_sixteenthRoot_le_xiPosCriticalZeroCount :
   have hl2 : Real.log (T / 2) ≤ Real.log T := Real.log_le_log hT20 (by linarith)
   have hp1 : (0 : ℝ) < 1 + Real.log (T / 2) := by linarith
   have hp2 : (0 : ℝ) < 1 + Real.log T := by linarith
-  have hlogc : (1 + Real.log (T / 2)) ^ 2 ≤ (1 + Real.log T) ^ 2 :=
+  have hlogc : (1 + Real.log (T / 2)) ^ (2 : ℕ) ≤ (1 + Real.log T) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hp1.le (by linarith) 2
   have hchain : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
       ≤ 2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2)))) := by
     set u : ℝ := Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2)))) with hu
     have hu0 : 0 ≤ u := Real.sqrt_nonneg _
-    have h1 : u ^ 2 = Real.sqrt (Real.sqrt (Real.sqrt (T / 2))) := by
+    have h1 : u ^ (2 : ℕ) = Real.sqrt (Real.sqrt (Real.sqrt (T / 2))) := by
       rw [hu, Real.sq_sqrt (Real.sqrt_nonneg _)]
-    have h2 : (u ^ 2) ^ 2 = Real.sqrt (Real.sqrt (T / 2)) := by
+    have h2 : (u ^ (2 : ℕ)) ^ (2 : ℕ) = Real.sqrt (Real.sqrt (T / 2)) := by
       rw [h1, Real.sq_sqrt (Real.sqrt_nonneg _)]
-    have h3 : ((u ^ 2) ^ 2) ^ 2 = Real.sqrt (T / 2) := by
+    have h3 : ((u ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ) = Real.sqrt (T / 2) := by
       rw [h2, Real.sq_sqrt (Real.sqrt_nonneg _)]
-    have h4 : (((u ^ 2) ^ 2) ^ 2) ^ 2 = T / 2 := by
+    have h4 : (((u ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ) = T / 2 := by
       rw [h3, Real.sq_sqrt hT20.le]
-    have h5 : u ^ 16 = T / 2 := by
-      have h6 : u ^ 16 = (((u ^ 2) ^ 2) ^ 2) ^ 2 := by ring
+    have h5 : u ^ (16 : ℕ) = T / 2 := by
+      have h6 : u ^ (16 : ℕ) = (((u ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
       rw [h6, h4]
-    have hTle : T ≤ (2 * u) ^ 16 := by
-      have h7 : (2 * u) ^ 16 = 65536 * u ^ 16 := by ring
+    have hTle : T ≤ (2 * u) ^ (16 : ℕ) := by
+      have h7 : (2 * u) ^ (16 : ℕ) = 65536 * u ^ (16 : ℕ) := by ring
       rw [h7, h5]
       linarith
     have hmono2 : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
-        ≤ Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt ((2 * u) ^ 16)))) :=
+        ≤ Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt ((2 * u) ^ (16 : ℕ))))) :=
       Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (Real.sqrt_le_sqrt hTle)))
     rwa [sqrt_sq_chain (by positivity : (0 : ℝ) ≤ 2 * u)] at hmono2
-  have hlogsq1 : (0 : ℝ) < (1 + Real.log T) ^ 2 := pow_pos hp2 2
-  have hlogsq2 : (0 : ℝ) < (1 + Real.log (T / 2)) ^ 2 := pow_pos hp1 2
+  have hlogsq1 : (0 : ℝ) < (1 + Real.log T) ^ (2 : ℕ) := pow_pos hp2 2
+  have hlogsq2 : (0 : ℝ) < (1 + Real.log (T / 2)) ^ (2 : ℕ) := pow_pos hp1 2
   have hfinal : c / 2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
-      / (1 + Real.log T) ^ 2
+      / (1 + Real.log T) ^ (2 : ℕ)
       ≤ c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2))))
-        / (1 + Real.log (T / 2)) ^ 2 := by
+        / (1 + Real.log (T / 2)) ^ (2 : ℕ) := by
     rw [div_le_div_iff₀ hlogsq1 hlogsq2]
     have hprod : Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
-        * (1 + Real.log (T / 2)) ^ 2
+        * (1 + Real.log (T / 2)) ^ (2 : ℕ)
         ≤ (2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2)))))
-          * (1 + Real.log T) ^ 2 :=
+          * (1 + Real.log T) ^ (2 : ℕ) :=
       mul_le_mul hchain hlogc hlogsq2.le (by positivity)
     have hscale := mul_le_mul_of_nonneg_left hprod (by positivity : (0 : ℝ) ≤ c / 2)
     calc c / 2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
-          * (1 + Real.log (T / 2)) ^ 2
+          * (1 + Real.log (T / 2)) ^ (2 : ℕ)
         = c / 2 * (Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T)))
-          * (1 + Real.log (T / 2)) ^ 2) := by ring
+          * (1 + Real.log (T / 2)) ^ (2 : ℕ)) := by ring
       _ ≤ c / 2 * ((2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2)))))
-          * (1 + Real.log T) ^ 2) := hscale
+          * (1 + Real.log T) ^ (2 : ℕ)) := hscale
       _ = c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2))))
-          * (1 + Real.log T) ^ 2 := by ring
+          * (1 + Real.log T) ^ (2 : ℕ) := by ring
   have hcnn : (0 : ℝ) ≤ (xiPosCriticalZeroCount (T / 2) : ℝ) := Nat.cast_nonneg _
-  calc c / 2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ 2
+  calc c / 2 * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt T))) / (1 + Real.log T) ^ (2 : ℕ)
       ≤ c * Real.sqrt (Real.sqrt (Real.sqrt (Real.sqrt (T / 2))))
-        / (1 + Real.log (T / 2)) ^ 2 := hfinal
+        / (1 + Real.log (T / 2)) ^ (2 : ℕ) := hfinal
     _ ≤ (xiPosCriticalZeroCount T : ℝ) - (xiPosCriticalZeroCount (T / 2) : ℝ) := hspec
     _ ≤ (xiPosCriticalZeroCount T : ℝ) := by linarith
 

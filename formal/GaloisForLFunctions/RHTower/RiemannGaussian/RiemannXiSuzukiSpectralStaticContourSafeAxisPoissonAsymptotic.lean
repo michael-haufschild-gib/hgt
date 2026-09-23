@@ -9,7 +9,7 @@ unscaled large-height limit.  At `z = i y`, the critical-strip bound gives
 the uniform divisor gap `y - 1/2`.  The established logarithm-versus-Poisson
 comparison then has relative excess
 
-`2 y / (y - 1/2)^2`.
+`2 y / (y - 1/2)^(2 : ℕ)`.
 
 That excess is `O(1 / y)`, while the preceding module proves that the full
 logarithmic defect is `o(y)`.  Their product is therefore `o(1)`: the real

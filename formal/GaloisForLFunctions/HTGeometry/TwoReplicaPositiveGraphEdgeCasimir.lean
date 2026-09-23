@@ -142,7 +142,7 @@ noncomputable def finiteTwoReplicaPhysicalGraphEnergy
     ∑ a : Fin 3, ∑ b : Fin 3,
       ‖finiteMatrixHilbertEquiv
         (finiteTwoReplicaCollectiveCommutatorLinear
-          (finiteEdgePauliLabel e.1 e.2 a b) X)‖ ^ 2
+          (finiteEdgePauliLabel e.1 e.2 a b) X)‖ ^ (2 : ℕ)
     else 0
 
 /-- Exact graph energy identity: graph-Casimir expectation is the sum of all
@@ -203,7 +203,7 @@ theorem finiteTwoReplicaPhysicalGraphCasimir_embed_eq_zero_iff
         ∑ a : Fin 3, ∑ b : Fin 3,
           ‖finiteMatrixHilbertEquiv
             (finiteTwoReplicaCollectiveCommutatorLinear
-              (finiteEdgePauliLabel e.1 e.2 a b) X)‖ ^ 2
+              (finiteEdgePauliLabel e.1 e.2 a b) X)‖ ^ (2 : ℕ)
       else 0) = 0 at henergy
     have hedgeZero : ∀ ⦃u v⦄, G.Adj u v →
         finiteTwoReplicaPhysicalEdgeCasimir u v X = 0 := by
@@ -213,7 +213,7 @@ theorem finiteTwoReplicaPhysicalGraphCasimir_embed_eq_zero_iff
             ∑ a : Fin 3, ∑ b : Fin 3,
               ‖finiteMatrixHilbertEquiv
                 (finiteTwoReplicaCollectiveCommutatorLinear
-                  (finiteEdgePauliLabel e.1 e.2 a b) X)‖ ^ 2
+                  (finiteEdgePauliLabel e.1 e.2 a b) X)‖ ^ (2 : ℕ)
           else 0 := by
         intro e _
         by_cases he : G.Adj e.1 e.2
@@ -226,7 +226,7 @@ theorem finiteTwoReplicaPhysicalGraphCasimir_embed_eq_zero_iff
             ∑ a : Fin 3, ∑ b : Fin 3,
               ‖finiteMatrixHilbertEquiv
                 (finiteTwoReplicaCollectiveCommutatorLinear
-                  (finiteEdgePauliLabel u v a b) X)‖ ^ 2
+                  (finiteEdgePauliLabel u v a b) X)‖ ^ (2 : ℕ)
           else 0) = 0 := by
         have hall :=
           (Finset.sum_eq_zero_iff_of_nonneg houterNonneg).mp henergy
@@ -235,7 +235,7 @@ theorem finiteTwoReplicaPhysicalGraphCasimir_embed_eq_zero_iff
           (∑ a : Fin 3, ∑ b : Fin 3,
             ‖finiteMatrixHilbertEquiv
               (finiteTwoReplicaCollectiveCommutatorLinear
-                (finiteEdgePauliLabel u v a b) X)‖ ^ 2) = 0 := by
+                (finiteEdgePauliLabel u v a b) X)‖ ^ (2 : ℕ)) = 0 := by
         simpa [huv] using houter
       have hcomm (a b : Fin 3) :
           finiteTwoReplicaCollectiveCommutatorLinear
@@ -244,14 +244,14 @@ theorem finiteTwoReplicaPhysicalGraphCasimir_embed_eq_zero_iff
             (∑ b : Fin 3,
               ‖finiteMatrixHilbertEquiv
                 (finiteTwoReplicaCollectiveCommutatorLinear
-                  (finiteEdgePauliLabel u v a b) X)‖ ^ 2) = 0 := by
+                  (finiteEdgePauliLabel u v a b) X)‖ ^ (2 : ℕ)) = 0 := by
           apply (Finset.sum_eq_zero_iff_of_nonneg
             (fun a _ => Finset.sum_nonneg fun b _ => sq_nonneg _)).mp
               hedgeEnergy a (Finset.mem_univ a)
         have hab :
             ‖finiteMatrixHilbertEquiv
               (finiteTwoReplicaCollectiveCommutatorLinear
-                (finiteEdgePauliLabel u v a b) X)‖ ^ 2 = 0 := by
+                (finiteEdgePauliLabel u v a b) X)‖ ^ (2 : ℕ) = 0 := by
           apply (Finset.sum_eq_zero_iff_of_nonneg
             (fun b _ => sq_nonneg _)).mp ha b (Finset.mem_univ b)
         apply finiteMatrixHilbertEquiv.injective

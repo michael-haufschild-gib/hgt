@@ -53,7 +53,7 @@ def CCMSingleClockForwardAtlas (A : ℝ) : Prop :=
     (fun L => ccmFirstClockPolarSubtractedSource L -
       2 * xiLineScrewSeries L) atTop (𝓝 0) ∧
   (∀ lam : ℝ, lam ≠ 0 →
-    -((lam : ℂ) ^ 2) *
+    -((lam : ℂ) ^ (2 : ℕ)) *
         bohrCoefficient
           (fun L => ((2 * xiLineScrewSeries L : ℝ) : ℂ)) lam =
       (xiCriticalAbsoluteOrdinateMultiplicity lam : ℂ))

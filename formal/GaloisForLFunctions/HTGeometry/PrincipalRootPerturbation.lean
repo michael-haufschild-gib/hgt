@@ -20,8 +20,8 @@ private theorem norm_csqrt_sub_le {z w : ℂ} (hz : 0 < z.re) (hw : 0 < w.re) :
   have hzr : 0 < csqrtRe z := csqrtRe_pos hz
   have hwr : 0 < csqrtRe w := csqrtRe_pos hw
   have hfac : (csqrt z - csqrt w) * (csqrt z + csqrt w) = z - w := by
-    have h1 : csqrt z ^ 2 = z := csqrt_sq hz
-    have h2 : csqrt w ^ 2 = w := csqrt_sq hw
+    have h1 : csqrt z ^ (2 : ℕ) = z := csqrt_sq hz
+    have h2 : csqrt w ^ (2 : ℕ) = w := csqrt_sq hw
     linear_combination h1 - h2
   have hsumre : csqrtRe w ≤ (csqrt z + csqrt w).re := by
     rw [Complex.add_re, csqrt_re, csqrt_re]

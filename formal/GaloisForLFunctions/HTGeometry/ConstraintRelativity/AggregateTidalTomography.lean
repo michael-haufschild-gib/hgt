@@ -261,7 +261,7 @@ theorem ringCommutator_sq_single_coefficient (C : Matrix m m ℂ) (i j : m) :
 theorem factorCommutatorLinear_square_trace (C : Matrix m m ℂ) :
     (LinearMap.trace ℂ (Matrix m m ℂ))
         ((factorCommutatorLinear C).comp (factorCommutatorLinear C)) =
-      2 * (Fintype.card m : ℂ) * (C * C).trace - 2 * C.trace ^ 2 := by
+      2 * (Fintype.card m : ℂ) * (C * C).trace - 2 * C.trace ^ (2 : ℕ) := by
   classical
   rw [LinearMap.trace_eq_matrix_trace ℂ (Matrix.stdBasis ℂ m m)]
   simp only [Matrix.trace, Matrix.diag_apply, LinearMap.toMatrix_apply,
@@ -278,7 +278,7 @@ theorem factorCommutatorLinear_square_trace (C : Matrix m m ℂ) :
       (Fintype.card m : ℂ) * Q := by
     simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     rfl
-  have hcross : (∑ i : m, ∑ j : m, 2 * C i i * C j j) = 2 * S ^ 2 := by
+  have hcross : (∑ i : m, ∑ j : m, 2 * C i i * C j j) = 2 * S ^ (2 : ℕ) := by
     calc
       _ = ∑ i : m, (2 * C i i) * S := by
         dsimp [S]
@@ -286,10 +286,10 @@ theorem factorCommutatorLinear_square_trace (C : Matrix m m ℂ) :
         intro i _
         rw [Finset.mul_sum]
       _ = (∑ i : m, 2 * C i i) * S := by rw [Finset.sum_mul]
-      _ = 2 * S ^ 2 := by rw [← Finset.mul_sum]; ring
+      _ = 2 * S ^ (2 : ℕ) := by rw [← Finset.mul_sum]; ring
   simp_rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
   rw [hfirst, hsecond, hcross]
-  change _ = 2 * (Fintype.card m : ℂ) * Q - 2 * S ^ 2
+  change _ = 2 * (Fintype.card m : ℂ) * Q - 2 * S ^ (2 : ℕ)
   ring
 
 /-- Hilbert--Schmidt self-pairing is the complexification of the real entrywise energy. -/

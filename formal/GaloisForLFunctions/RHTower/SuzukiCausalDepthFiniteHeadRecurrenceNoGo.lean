@@ -60,7 +60,7 @@ theorem exists_late_suzukiCriticalApertureDepthFrostmanFiniteHeadSeparation_le
       suzukiCriticalApertureDepthFrostmanFiniteHeadSeparation h a P t 0 ≤
         (∑ p ∈ P,
           (suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ /
-            ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^2) * δ^2 := by
+            ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^(2 : ℕ)) * δ^(2 : ℕ) := by
   let B : {p : Nat.Primes // p ∈ P} → ℝ := fun p =>
     -(Real.log (p.1 : ℝ) / 2)
   obtain ⟨t, ht, hphase⟩ := exists_simultaneous_phase_recurrence B hδ T
@@ -74,22 +74,22 @@ theorem exists_late_suzukiCriticalApertureDepthFrostmanFiniteHeadSeparation_le
   have hpPhase : ‖HTGeometry.phaseClockValue (Real.log (p : ℝ) / 2) t - 1‖ ≤ δ := by
     rw [← bohrChar_neg_eq_phaseClock]
     simpa only [B] using hphase ⟨p, hp⟩
-  have hphaseSq : ‖HTGeometry.phaseClockValue (Real.log (p : ℝ) / 2) t - 1‖ ^ 2 ≤ δ^2 :=
+  have hphaseSq : ‖HTGeometry.phaseClockValue (Real.log (p : ℝ) / 2) t - 1‖ ^ (2 : ℕ) ≤ δ^(2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) hδ.le).mpr hpPhase
   have hdef : 1 - suzukiCriticalApertureDepthFrostmanProfile h a t p ≤
-      (q / (q - 1)^2) * δ^2 := by
+      (q / (q - 1)^(2 : ℕ)) * δ^(2 : ℕ) := by
     have hbase := frostman_profile_deficit_le_phaseClock_sq hq
       (r := Real.log (p : ℝ) / 2) (t := t)
     have hmul := mul_le_mul_of_nonneg_left hphaseSq
-      (by positivity : 0 ≤ q / (q - 1)^2)
+      (by positivity : 0 ≤ q / (q - 1)^(2 : ℕ))
     calc
       1 - suzukiCriticalApertureDepthFrostmanProfile h a t p =
           1 - ccmFrostmanPoissonProfile q ((Real.log (p : ℝ) / 2) * t) := by
             simp only [suzukiCriticalApertureDepthFrostmanProfile, q]
             ring
-      _ ≤ (q / (q - 1)^2) *
-          ‖HTGeometry.phaseClockValue (Real.log (p : ℝ) / 2) t - 1‖ ^ 2 := hbase
-      _ ≤ (q / (q - 1)^2) * δ^2 := hmul
+      _ ≤ (q / (q - 1)^(2 : ℕ)) *
+          ‖HTGeometry.phaseClockValue (Real.log (p : ℝ) / 2) t - 1‖ ^ (2 : ℕ) := hbase
+      _ ≤ (q / (q - 1)^(2 : ℕ)) * δ^(2 : ℕ) := hmul
   simpa only [sub_zero, q] using hdef
 
 /-- **Finite-head recurrence no-go.** No fixed finite positive causal-depth Frostman head can be
@@ -103,7 +103,7 @@ theorem not_exists_eventual_positive_lowerBound_suzukiCriticalApertureDepthFrost
   rintro ⟨ε, hε, T, hlower⟩
   let C : ℝ := ∑ p ∈ P,
     (suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ /
-      ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^2
+      ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^(2 : ℕ)
   have hC : 0 ≤ C := by
     dsimp only [C]
     exact Finset.sum_nonneg fun p _ => by
@@ -117,13 +117,13 @@ theorem not_exists_eventual_positive_lowerBound_suzukiCriticalApertureDepthFrost
   obtain ⟨t, ht, hbound⟩ :=
     exists_late_suzukiCriticalApertureDepthFrostmanFiniteHeadSeparation_le
       hh ha P hδ T
-  change suzukiCriticalApertureDepthFrostmanFiniteHeadSeparation h a P t 0 ≤ C * δ^2 at hbound
+  change suzukiCriticalApertureDepthFrostmanFiniteHeadSeparation h a P t 0 ≤ C * δ^(2 : ℕ) at hbound
   have hδone : δ ≤ 1 := by
     dsimp only [δ]
     exact min_le_left _ _
-  have hδsq : δ ^ 2 ≤ δ := by
+  have hδsq : δ ^ (2 : ℕ) ≤ δ := by
     nlinarith [mul_self_nonneg (δ - 1)]
-  have hCδsq : C * δ ^ 2 ≤ C * δ :=
+  have hCδsq : C * δ ^ (2 : ℕ) ≤ C * δ :=
     mul_le_mul_of_nonneg_left hδsq hC
   have hδfrac : δ ≤ ε / (C + 1) := by
     dsimp only [δ]

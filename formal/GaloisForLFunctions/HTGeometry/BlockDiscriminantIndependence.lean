@@ -28,7 +28,7 @@ theorem not_isSquare_prod_sq_add_four_sq {ι : Type*} [Fintype ι] [Nonempty ι]
     (hI : I * I = -1) (h2 : (2 : K) ≠ 0) {δ : ι → K}
     (hinj : Function.Injective δ) (hne : ∀ z z', δ z ≠ -δ z') :
     ¬ IsSquare (algebraMap K[X] (RatFunc K)
-      (∏ z, (C (δ z) ^ 2 + 4 * X ^ 2))) := by
+      (∏ z, (C (δ z) ^ (2 : ℕ) + 4 * X ^ (2 : ℕ)))) := by
   classical
   have hI0 : I ≠ 0 := by
     intro h
@@ -56,7 +56,7 @@ theorem not_isSquare_prod_sq_add_four_sq {ι : Type*} [Fintype ι] [Nonempty ι]
     · exact absurd (hopp (δ z') (δ z) h.symm) (hne z' z)
     · exact absurd (hopp (δ z) (δ z') h) (hne z z')
     · exact congrArg (fun w => (w, true)) (hinj (hcancel _ _ h))
-  have hfactor : ∀ z : ι, (C (δ z) ^ 2 + 4 * X ^ 2 : K[X])
+  have hfactor : ∀ z : ι, (C (δ z) ^ (2 : ℕ) + 4 * X ^ (2 : ℕ) : K[X])
       = 4 * ((X - C (root (z, true))) * (X - C (root (z, false)))) := by
     intro z
     have hrt : root (z, true) = I * δ z / 2 := by
@@ -74,15 +74,15 @@ theorem not_isSquare_prod_sq_add_four_sq {ι : Type*} [Fintype ι] [Nonempty ι]
       simpa [map_mul, map_neg, map_ofNat] using this
     rw [hrt, hrf, map_neg]
     linear_combination hsqC
-  have hprod : (∏ z, (C (δ z) ^ 2 + 4 * X ^ 2) : K[X])
-      = ((2 : K[X]) ^ Fintype.card ι) ^ 2 * ∏ p : ι × Bool, (X - C (root p)) := by
+  have hprod : (∏ z, (C (δ z) ^ (2 : ℕ) + 4 * X ^ (2 : ℕ)) : K[X])
+      = ((2 : K[X]) ^ Fintype.card ι) ^ (2 : ℕ) * ∏ p : ι × Bool, (X - C (root p)) := by
     rw [Finset.prod_congr rfl fun z (_ : z ∈ Finset.univ) => hfactor z]
     rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ]
     rw [Fintype.prod_prod_type]
     rw [Finset.prod_congr rfl fun z (_ : z ∈ Finset.univ) =>
       (Fintype.prod_bool (fun b => (X - C (root (z, b))))).symm]
     congr 1
-    rw [show (4 : K[X]) = (2 : K[X]) ^ 2 by ring, ← pow_mul, mul_comm 2 (Fintype.card ι), pow_mul]
+    rw [show (4 : K[X]) = (2 : K[X]) ^ (2 : ℕ) by ring, ← pow_mul, mul_comm 2 (Fintype.card ι), pow_mul]
   intro hsq
   refine not_isSquare_ratFunc_prod_X_sub_C hrootinj ?_
   rw [hprod, map_mul, map_pow] at hsq
@@ -124,22 +124,22 @@ theorem eight_ne_zero (h2 : (2 : K) ≠ 0) : (8 : K) ≠ 0 := by
   exact mul_ne_zero (mul_ne_zero h2 h2) h2
 
 theorem derivative_block (c : K) :
-    Polynomial.derivative (C c ^ 2 + 4 * X ^ 2 : K[X]) = C (8 : K) * X := by
+    Polynomial.derivative (C c ^ (2 : ℕ) + 4 * X ^ (2 : ℕ) : K[X]) = C (8 : K) * X := by
   rw [map_ofNat, sq (C c), ← map_mul]
   simp
   ring
 
 theorem separable_block (h2 : (2 : K) ≠ 0) {c : K} (hc : c ≠ 0) :
-    (C c ^ 2 + 4 * X ^ 2 : K[X]).Separable := by
+    (C c ^ (2 : ℕ) + 4 * X ^ (2 : ℕ) : K[X]).Separable := by
   have hcc : c * c ≠ 0 := mul_ne_zero hc hc
-  have hsq : (C c : K[X]) ^ 2 = C (c * c) := by rw [sq, ← map_mul]
-  have hcoX : IsCoprime (C c ^ 2 + 4 * X ^ 2 : K[X]) X := by
+  have hsq : (C c : K[X]) ^ (2 : ℕ) = C (c * c) := by rw [sq, ← map_mul]
+  have hcoX : IsCoprime (C c ^ (2 : ℕ) + 4 * X ^ (2 : ℕ) : K[X]) X := by
     refine ⟨C (c * c)⁻¹, -(C (c * c)⁻¹ * 4 * X), ?_⟩
     have h1 : (C (c * c)⁻¹ : K[X]) * C (c * c) = 1 := by
       rw [← map_mul, inv_mul_cancel₀ hcc, map_one]
     rw [hsq]
     linear_combination h1
-  have hco8 : IsCoprime (C c ^ 2 + 4 * X ^ 2 : K[X]) (C (8 : K)) := by
+  have hco8 : IsCoprime (C c ^ (2 : ℕ) + 4 * X ^ (2 : ℕ) : K[X]) (C (8 : K)) := by
     refine ⟨0, C ((8 : K)⁻¹), ?_⟩
     rw [zero_mul, zero_add, ← map_mul, inv_mul_cancel₀ (eight_ne_zero h2), map_one]
   show IsCoprime _ (Polynomial.derivative _)
@@ -147,27 +147,27 @@ theorem separable_block (h2 : (2 : K) ≠ 0) {c : K} (hc : c ≠ 0) :
   exact hco8.mul_right hcoX
 
 theorem isCoprime_block {c c' : K} (hcc : c * c - c' * c' ≠ 0) :
-    IsCoprime (C c ^ 2 + 4 * X ^ 2 : K[X]) (C c' ^ 2 + 4 * X ^ 2 : K[X]) := by
+    IsCoprime (C c ^ (2 : ℕ) + 4 * X ^ (2 : ℕ) : K[X]) (C c' ^ (2 : ℕ) + 4 * X ^ (2 : ℕ) : K[X]) := by
   refine ⟨C (c * c - c' * c')⁻¹, -C (c * c - c' * c')⁻¹, ?_⟩
   have h1 : (C (c * c - c' * c')⁻¹ : K[X]) * C (c * c - c' * c') = 1 := by
     rw [← map_mul, inv_mul_cancel₀ hcc, map_one]
   rw [map_sub] at h1
-  rw [show (C c : K[X]) ^ 2 = C (c * c) from by rw [sq, ← map_mul],
-    show (C c' : K[X]) ^ 2 = C (c' * c') from by rw [sq, ← map_mul]]
+  rw [show (C c : K[X]) ^ (2 : ℕ) = C (c * c) from by rw [sq, ← map_mul],
+    show (C c' : K[X]) ^ (2 : ℕ) = C (c' * c') from by rw [sq, ← map_mul]]
   linear_combination h1
 
 theorem natDegree_block (h2 : (2 : K) ≠ 0) (c : K) :
-    (C c ^ 2 + 4 * X ^ 2 : K[X]).natDegree = 2 := by
-  have hsq : (C c : K[X]) ^ 2 = C (c * c) := by rw [sq, ← map_mul]
+    (C c ^ (2 : ℕ) + 4 * X ^ (2 : ℕ) : K[X]).natDegree = 2 := by
+  have hsq : (C c : K[X]) ^ (2 : ℕ) = C (c * c) := by rw [sq, ← map_mul]
   have h4 : (4 : K[X]) ≠ 0 := by
     intro hcon
     exact four_ne_zero h2 (by simpa using congrArg (fun p : K[X] => p.coeff 0) hcon)
-  have hX : (X : K[X]) ^ 2 ≠ 0 := pow_ne_zero 2 Polynomial.X_ne_zero
+  have hX : (X : K[X]) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 Polynomial.X_ne_zero
   rw [hsq, add_comm, Polynomial.natDegree_add_C, Polynomial.natDegree_mul h4 hX,
     Polynomial.natDegree_X_pow]
   simp
 
-theorem block_ne_zero (h2 : (2 : K) ≠ 0) (c : K) : (C c ^ 2 + 4 * X ^ 2 : K[X]) ≠ 0 := by
+theorem block_ne_zero (h2 : (2 : K) ≠ 0) (c : K) : (C c ^ (2 : ℕ) + 4 * X ^ (2 : ℕ) : K[X]) ≠ 0 := by
   intro hcon
   have := congrArg Polynomial.natDegree hcon
   rw [natDegree_block h2 c] at this
@@ -182,7 +182,7 @@ theorem not_isSquare_prod_sq_add_four_sq' {ι : Type*} [Fintype ι] [Nonempty ι
     (h2 : (2 : K) ≠ 0) {δ : ι → K}
     (hinj : Function.Injective δ) (hne : ∀ z z', δ z ≠ -δ z') :
     ¬ IsSquare (algebraMap K[X] (RatFunc K)
-      (∏ z, (C (δ z) ^ 2 + 4 * X ^ 2))) := by
+      (∏ z, (C (δ z) ^ (2 : ℕ) + 4 * X ^ (2 : ℕ)))) := by
   classical
   have hδ0 : ∀ z, δ z ≠ 0 := fun z hz => hne z z (by rw [hz, neg_zero])
   have hdiff : ∀ z z' : ι, z ≠ z' → δ z * δ z - δ z' * δ z' ≠ 0 := by

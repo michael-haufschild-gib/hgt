@@ -84,7 +84,7 @@ theorem logPhaseProfile_nonpos {v : ℝ} (hv : -1 < v) : logPhaseProfile v ≤ 0
   linarith
 
 /-- **The quadratic upper bound.**  `-ψ(v) ≤ v²` on the whole ray. -/
-theorem neg_logPhaseProfile_le_sq {v : ℝ} (hv : -1 < v) : -logPhaseProfile v ≤ v ^ 2 := by
+theorem neg_logPhaseProfile_le_sq {v : ℝ} (hv : -1 < v) : -logPhaseProfile v ≤ v ^ (2 : ℕ) := by
   have hpos : (0 : ℝ) < 1 + v := by linarith
   have h := log_one_add_le hv
   have hmul : (1 + v) * Real.log (1 + v) ≤ (1 + v) * v :=
@@ -151,7 +151,7 @@ theorem halfLogGap_nonpos {v : ℝ} (hv : -1 < v) (h0 : v ≤ 0) : halfLogGap v 
 /-! ### The quadratic lower bound -/
 
 /-- The gap between `-ψ` and its quadratic minorant. -/
-def logPhaseQuadGap (v : ℝ) : ℝ := -logPhaseProfile v - v ^ 2 / 4
+def logPhaseQuadGap (v : ℝ) : ℝ := -logPhaseProfile v - v ^ (2 : ℕ) / 4
 
 @[simp] theorem logPhaseQuadGap_zero : logPhaseQuadGap 0 = 0 := by
   simp [logPhaseQuadGap]
@@ -159,7 +159,7 @@ def logPhaseQuadGap (v : ℝ) : ℝ := -logPhaseProfile v - v ^ 2 / 4
 theorem hasDerivAt_logPhaseQuadGap {v : ℝ} (hv : -1 < v) :
     HasDerivAt logPhaseQuadGap (halfLogGap v) v := by
   have h1 := (hasDerivAt_logPhaseProfile hv).neg
-  have h2 : HasDerivAt (fun x : ℝ => x ^ 2 / 4) (2 * v / 4) v := by
+  have h2 : HasDerivAt (fun x : ℝ => x ^ (2 : ℕ) / 4) (2 * v / 4) v := by
     simpa using ((hasDerivAt_pow 2 v).div_const 4)
   have h := h1.sub h2
   refine h.congr_deriv ?_
@@ -168,7 +168,7 @@ theorem hasDerivAt_logPhaseQuadGap {v : ℝ} (hv : -1 < v) :
 
 /-- **The quadratic lower bound.**  `v²/4 ≤ -ψ(v)` on `(-1,1]`. -/
 theorem sq_div_four_le_neg_logPhaseProfile {v : ℝ} (hv : -1 < v) (h1 : v ≤ 1) :
-    v ^ 2 / 4 ≤ -logPhaseProfile v := by
+    v ^ (2 : ℕ) / 4 ≤ -logPhaseProfile v := by
   have key : 0 ≤ logPhaseQuadGap v := by
     rcases le_or_gt 0 v with h0 | h0
     · -- increasing on [0, v]

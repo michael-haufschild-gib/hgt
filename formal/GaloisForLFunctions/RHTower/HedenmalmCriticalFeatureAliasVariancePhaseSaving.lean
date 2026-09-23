@@ -26,7 +26,7 @@ theorem exists_re_le_neg_variance_div_of_zeroMean
     (hupper : ∀ θ, (f θ).re ≤ M)
     (hmean : (∫ θ, f θ ∂GaloisForLFunctions.unitCircleHaar) = 0) :
     ∃ θ, (f θ).re ≤
-      -(∫ θ, ((f θ).re) ^ 2 ∂GaloisForLFunctions.unitCircleHaar) / M := by
+      -(∫ θ, ((f θ).re) ^ (2 : ℕ) ∂GaloisForLFunctions.unitCircleHaar) / M := by
   let h : UnitAddCircle → ℝ := fun θ => (f θ).re
   have hh : Continuous h := Complex.continuous_re.comp hf
   obtain ⟨θ₀, _hθ₀mem, hmin⟩ :=
@@ -37,14 +37,14 @@ theorem exists_re_le_neg_variance_div_of_zeroMean
   have hhInt : Integrable h GaloisForLFunctions.unitCircleHaar := by
     rw [← integrableOn_univ]
     exact hh.continuousOn.integrableOn_compact isCompact_univ
-  have hsqInt : Integrable (fun θ => (h θ) ^ 2)
+  have hsqInt : Integrable (fun θ => (h θ) ^ (2 : ℕ))
       GaloisForLFunctions.unitCircleHaar := by
     rw [← integrableOn_univ]
     exact (hh.pow 2).continuousOn.integrableOn_compact isCompact_univ
   have hmajorInt : Integrable (fun θ => (M + h θ₀) * h θ - h θ₀ * M)
       GaloisForLFunctions.unitCircleHaar := by
     fun_prop
-  have hpoint : ∀ θ, (h θ) ^ 2 ≤ (M + h θ₀) * h θ - h θ₀ * M := by
+  have hpoint : ∀ θ, (h θ) ^ (2 : ℕ) ≤ (M + h θ₀) * h θ - h θ₀ * M := by
     intro θ
     have hlow : h θ₀ ≤ h θ := hmin (Set.mem_univ θ)
     have hhi : h θ ≤ M := hupper θ
@@ -56,13 +56,13 @@ theorem exists_re_le_neg_variance_div_of_zeroMean
     rw [hre, hmean]
     simp
   have hbound :
-      (∫ θ, (h θ) ^ 2 ∂GaloisForLFunctions.unitCircleHaar) ≤ -h θ₀ * M := by
+      (∫ θ, (h θ) ^ (2 : ℕ) ∂GaloisForLFunctions.unitCircleHaar) ≤ -h θ₀ * M := by
     have hmulInt : Integrable (fun θ => (M + h θ₀) * h θ)
         GaloisForLFunctions.unitCircleHaar := hhInt.const_mul _
     have hconstInt : Integrable (fun _θ : UnitAddCircle => h θ₀ * M)
         GaloisForLFunctions.unitCircleHaar := integrable_const _
     calc
-      (∫ θ, (h θ) ^ 2 ∂GaloisForLFunctions.unitCircleHaar) ≤
+      (∫ θ, (h θ) ^ (2 : ℕ) ∂GaloisForLFunctions.unitCircleHaar) ≤
           ∫ θ, ((M + h θ₀) * h θ - h θ₀ * M)
             ∂GaloisForLFunctions.unitCircleHaar := hint
       _ = -h θ₀ * M := by
@@ -86,7 +86,7 @@ def criticalFeatureSourceAliasCoefficientMass
 def criticalFeatureSourceAliasRealVariance
     (μ : Measure ℝ) (g : ℝ → ℝ) : ℝ :=
   ∫ θ : UnitAddCircle,
-    ((criticalFeatureSourceNonzeroFourierAliasAtPhase θ μ g).re) ^ 2
+    ((criticalFeatureSourceNonzeroFourierAliasAtPhase θ μ g).re) ^ (2 : ℕ)
       ∂GaloisForLFunctions.unitCircleHaar
 
 theorem norm_criticalFeatureSourceNonzeroFourierAliasAtPhase_le_coefficientMass

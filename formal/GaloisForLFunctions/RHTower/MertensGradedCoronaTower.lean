@@ -38,7 +38,7 @@ noncomputable section
 
 /-- The graded logarithmic Marcinkiewicz quotient at grade `k`, equation (1). -/
 def gradedMarcinkiewiczQuotient (k : ℕ) (b : ℕ → ℝ) (X : ℕ) : ℝ :=
-  primeLogMass b X / (Real.log X) ^ (k + 1)
+  primeLogMass_weightedEulerCoefficientSpaces b X / (Real.log X) ^ (k + 1)
 
 /-- Membership in the graded Marcinkiewicz layer `M_k`. -/
 def MemGradedMarcinkiewiczLayer (k : ℕ) (b : ℕ → ℝ) : Prop :=
@@ -72,7 +72,7 @@ theorem memGradedVanishingTailLayer_zero (b : ℕ → ℝ) :
 theorem gradedMarcinkiewiczQuotient_nonneg (k : ℕ) (b : ℕ → ℝ) {X : ℕ} (hX : 2 ≤ X) :
     0 ≤ gradedMarcinkiewiczQuotient k b X := by
   have hlog : 0 < Real.log X := log_cutoff_pos hX
-  exact div_nonneg (primeLogMass_nonneg b X) (by positivity)
+  exact div_nonneg (primeLogMass_nonneg_weightedEulerCoefficientSpaces b X) (by positivity)
 
 /-! ## Equation (14): the logarithmic clock raises degree -/
 
@@ -86,8 +86,8 @@ grade `k+1`. -/
 theorem gradedMarcinkiewiczQuotient_logClock_le (k : ℕ) (b : ℕ → ℝ) {X : ℕ} (hX : 2 ≤ X) :
     gradedMarcinkiewiczQuotient (k + 1) (logClock b) X ≤ gradedMarcinkiewiczQuotient k b X := by
   have hlog : 0 < Real.log X := log_cutoff_pos hX
-  have hmass : primeLogMass (logClock b) X ≤ Real.log X * primeLogMass b X := by
-    rw [primeLogMass, primeLogMass, Finset.mul_sum]
+  have hmass : primeLogMass_weightedEulerCoefficientSpaces (logClock b) X ≤ Real.log X * primeLogMass_weightedEulerCoefficientSpaces b X := by
+    rw [primeLogMass_weightedEulerCoefficientSpaces, primeLogMass_weightedEulerCoefficientSpaces, Finset.mul_sum]
     refine Finset.sum_le_sum fun n hn => ?_
     obtain ⟨hmem, hp⟩ := Finset.mem_filter.mp hn
     obtain ⟨h1, h2⟩ := Finset.mem_Icc.mp hmem
@@ -107,7 +107,7 @@ theorem gradedMarcinkiewiczQuotient_logClock_le (k : ℕ) (b : ℕ → ℝ) {X :
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   have hpow : (Real.log X) ^ (k + 1 + 1) = Real.log X * (Real.log X) ^ (k + 1) := by ring
   rw [hpow]
-  have hmassnn : 0 ≤ primeLogMass b X := primeLogMass_nonneg b X
+  have hmassnn : 0 ≤ primeLogMass_weightedEulerCoefficientSpaces b X := primeLogMass_nonneg_weightedEulerCoefficientSpaces b X
   have hpk : (0 : ℝ) < (Real.log X) ^ (k + 1) := by positivity
   nlinarith [hmass, hmassnn, hpk, hlog]
 
@@ -139,8 +139,8 @@ theorem memGradedVanishingTailLayer_logClock {k : ℕ} {b : ℕ → ℝ}
 /-! ## Equations (4) and (7): the higher Mertens normalization of the grade source -/
 
 theorem primeLogMass_gradeSource (k X : ℕ) :
-    primeLogMass (gradeSource k) X = primeLogPowSum (k + 1) (X : ℝ) := by
-  rw [primeLogPowSum, Nat.floor_natCast, primeLogMass, Finset.sum_filter]
+    primeLogMass_weightedEulerCoefficientSpaces (gradeSource k) X = primeLogPowSum (k + 1) (X : ℝ) := by
+  rw [primeLogPowSum, Nat.floor_natCast, primeLogMass_weightedEulerCoefficientSpaces, Finset.sum_filter]
   rw [show Finset.Icc 0 X = insert 0 (Finset.Icc 1 X) by
     ext n
     simp only [Finset.mem_Icc, Finset.mem_insert]
@@ -198,16 +198,16 @@ theorem tendsto_gradedMarcinkiewiczQuotient_gradeSource_tail (k : ℕ) (P : ℕ)
       gradedMarcinkiewiczQuotient k (primeCoefficientTail (gradeSource k) P) X) atTop
       (nhds (1 / ((k : ℝ) + 1))) := by
   have hhead : Tendsto (fun X : ℕ =>
-      primeLogMass (primeCoefficientHead (gradeSource k) P) X / (Real.log X) ^ (k + 1))
+      primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientHead (gradeSource k) P) X / (Real.log X) ^ (k + 1))
       atTop (nhds 0) := by
-    have hbdd : ∀ X : ℕ, primeLogMass (primeCoefficientHead (gradeSource k) P) X
-        ≤ primeLogMass (gradeSource k) P := primeLogMass_head_le (gradeSource k) P
+    have hbdd : ∀ X : ℕ, primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientHead (gradeSource k) P) X
+        ≤ primeLogMass_weightedEulerCoefficientSpaces (gradeSource k) P := primeLogMass_head_le (gradeSource k) P
     have hden : ∀ X : ℕ, (0 : ℝ) ≤ (Real.log X) ^ (k + 1) :=
       fun X => pow_nonneg (Real.log_natCast_nonneg X) _
-    refine squeeze_zero (fun X => div_nonneg (primeLogMass_nonneg _ X) (hden X))
+    refine squeeze_zero (fun X => div_nonneg (primeLogMass_nonneg_weightedEulerCoefficientSpaces _ X) (hden X))
       (fun X => div_le_div_of_nonneg_right (hbdd X) (hden X))
       (tendsto_const_nhds.div_atTop (tendsto_logPow_atTop k) :
-        Tendsto (fun X : ℕ => primeLogMass (gradeSource k) P / (Real.log X) ^ (k + 1))
+        Tendsto (fun X : ℕ => primeLogMass_weightedEulerCoefficientSpaces (gradeSource k) P / (Real.log X) ^ (k + 1))
           atTop (nhds 0))
   have hsub := (tendsto_gradedMarcinkiewiczQuotient_gradeSource k).sub hhead
   rw [sub_zero] at hsub
@@ -252,7 +252,7 @@ theorem abs_gradedPrimeMean_le (k : ℕ) (b : ℕ → ℝ) {X : ℕ} (hX : 2 ≤
     |gradedPrimeMean k b X| ≤ ((k : ℝ) + 1) * gradedMarcinkiewiczQuotient k b X := by
   have hlog : 0 < Real.log X := log_cutoff_pos hX
   have hpow : (0 : ℝ) < (Real.log X) ^ (k + 1) := by positivity
-  have hnum : |∑ n ∈ Finset.Icc 1 X with n.Prime, Real.log n / n * b n| ≤ primeLogMass b X := by
+  have hnum : |∑ n ∈ Finset.Icc 1 X with n.Prime, Real.log n / n * b n| ≤ primeLogMass_weightedEulerCoefficientSpaces b X := by
     refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
     refine le_of_eq (Finset.sum_congr rfl fun n hn => ?_)
     have hnp : n.Prime := (Finset.mem_filter.mp hn).2
@@ -264,8 +264,8 @@ theorem abs_gradedPrimeMean_le (k : ℕ) (b : ℕ → ℝ) {X : ℕ} (hX : 2 ≤
   rw [gradedPrimeMean, gradedMarcinkiewiczQuotient, abs_div, abs_of_pos hpow, abs_mul,
     abs_of_nonneg (by positivity : (0 : ℝ) ≤ ((k : ℝ) + 1))]
   rw [div_le_iff₀ hpow]
-  have hq : ((k : ℝ) + 1) * (primeLogMass b X / (Real.log X) ^ (k + 1)) * (Real.log X) ^ (k + 1)
-      = ((k : ℝ) + 1) * primeLogMass b X := by
+  have hq : ((k : ℝ) + 1) * (primeLogMass_weightedEulerCoefficientSpaces b X / (Real.log X) ^ (k + 1)) * (Real.log X) ^ (k + 1)
+      = ((k : ℝ) + 1) * primeLogMass_weightedEulerCoefficientSpaces b X := by
     field_simp
   rw [hq]
   have hk : (0 : ℝ) ≤ (k : ℝ) + 1 := by positivity
@@ -306,9 +306,9 @@ theorem tendsto_gradedPrimeMean_zero_of_gradedVanishingTail {k : ℕ} {b : ℕ �
   have hk : (0 : ℝ) < (k : ℝ) + 1 := by positivity
   obtain ⟨P, hP⟩ := hb (ε / (4 * ((k : ℝ) + 1))) (by positivity)
   have hhead : Tendsto (fun X : ℕ => ((k : ℝ) + 1)
-      * (primeLogMass b P / (Real.log X) ^ (k + 1))) atTop (nhds 0) := by
+      * (primeLogMass_weightedEulerCoefficientSpaces b P / (Real.log X) ^ (k + 1))) atTop (nhds 0) := by
     have := (tendsto_const_nhds.div_atTop (tendsto_logPow_atTop k) :
-      Tendsto (fun X : ℕ => primeLogMass b P / (Real.log X) ^ (k + 1)) atTop (nhds 0))
+      Tendsto (fun X : ℕ => primeLogMass_weightedEulerCoefficientSpaces b P / (Real.log X) ^ (k + 1)) atTop (nhds 0))
     have h2 := this.const_mul ((k : ℝ) + 1)
     rwa [mul_zero] at h2
   rw [NormedAddGroup.tendsto_nhds_zero] at hhead
@@ -321,11 +321,11 @@ theorem tendsto_gradedPrimeMean_zero_of_gradedVanishingTail {k : ℕ} {b : ℕ �
       positivity
     have hmass := primeLogMass_head_le b P X
     have hbound : ((k : ℝ) + 1) * gradedMarcinkiewiczQuotient k (primeCoefficientHead b P) X
-        ≤ ((k : ℝ) + 1) * (primeLogMass b P / (Real.log X) ^ (k + 1)) := by
+        ≤ ((k : ℝ) + 1) * (primeLogMass_weightedEulerCoefficientSpaces b P / (Real.log X) ^ (k + 1)) := by
       rw [gradedMarcinkiewiczQuotient]
       exact mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hmass hden.le) hk.le
     refine le_trans hbound ?_
-    have hnorm : |((k : ℝ) + 1) * (primeLogMass b P / (Real.log X) ^ (k + 1))| < ε / 4 := by
+    have hnorm : |((k : ℝ) + 1) * (primeLogMass_weightedEulerCoefficientSpaces b P / (Real.log X) ^ (k + 1))| < ε / 4 := by
       rw [← Real.norm_eq_abs]
       exact hX1
     exact le_of_lt (lt_of_le_of_lt (le_abs_self _) hnorm)
@@ -351,7 +351,7 @@ theorem tendsto_gradedPrimeMean_gradeSource (k : ℕ) :
   rw [hval] at hlim
   refine hlim.congr' ?_
   filter_upwards [Filter.eventually_ge_atTop 2] with X hX
-  rw [gradedMarcinkiewiczQuotient, gradedPrimeMean, primeLogMass]
+  rw [gradedMarcinkiewiczQuotient, gradedPrimeMean, primeLogMass_weightedEulerCoefficientSpaces]
   have hsum : (∑ n ∈ Finset.Icc 1 X with n.Prime, Real.log n / n * |gradeSource k n|)
       = ∑ n ∈ Finset.Icc 1 X with n.Prime, Real.log n / n * gradeSource k n := by
     refine Finset.sum_congr rfl fun n _ => ?_
@@ -399,7 +399,7 @@ theorem gradedMarcinkiewiczQuotient_le_marcinkiewicz (k : ℕ) (b : ℕ → ℝ)
     field_simp
   rw [hq]
   have hnn : 0 ≤ marcinkiewiczLogQuotient b X :=
-    div_nonneg (primeLogMass_nonneg b X) hlog.le
+    div_nonneg (primeLogMass_nonneg_weightedEulerCoefficientSpaces b X) hlog.le
   refine div_le_div_of_nonneg_left hnn (by positivity) hpow
     
 theorem memGradedVanishingTailLayer_of_memVanishingTailLayer (k : ℕ) {b : ℕ → ℝ}
@@ -486,10 +486,10 @@ theorem sum_primeUnitTranslation_graded_block_le {b : ℕ → ℝ} {C h : ℝ} {
     obtain ⟨-, hup, hpp⟩ := hmem p hp
     rw [Finset.mem_filter, Finset.mem_Icc]
     exact ⟨⟨hpp.one_lt.le.trans' (by norm_num), by omega⟩, hpp⟩
-  have hmassle : ∑ p ∈ B, (Real.log p / p * |b p|) ≤ primeLogMass b (2 ^ (j + 1)) := by
-    rw [primeLogMass]
+  have hmassle : ∑ p ∈ B, (Real.log p / p * |b p|) ≤ primeLogMass_weightedEulerCoefficientSpaces b (2 ^ (j + 1)) := by
+    rw [primeLogMass_weightedEulerCoefficientSpaces]
     exact Finset.sum_le_sum_of_subset_of_nonneg hsub fun p _ _ => primeLog_term_nonneg b p
-  have hbound : primeLogMass b (2 ^ (j + 1))
+  have hbound : primeLogMass_weightedEulerCoefficientSpaces b (2 ^ (j + 1))
       ≤ C * (((j : ℝ) + 1) * Real.log 2) ^ (k + 1) := by
     have h2 : 2 ≤ 2 ^ (j + 1) := Nat.le_self_pow (by omega) 2
     have hq := hC (2 ^ (j + 1)) h2
@@ -608,16 +608,16 @@ theorem memGradedMarcinkiewiczLayer_of_memGradedVanishingTailLayer {k : ℕ} {b 
     (hb : MemGradedVanishingTailLayer k b) : MemGradedMarcinkiewiczLayer k b := by
   obtain ⟨P, hP⟩ := hb 1 (by norm_num)
   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  refine ⟨primeLogMass b P / (Real.log 2) ^ (k + 1) + 1, fun X hX => ?_⟩
+  refine ⟨primeLogMass_weightedEulerCoefficientSpaces b P / (Real.log 2) ^ (k + 1) + 1, fun X hX => ?_⟩
   have hlog : 0 < Real.log X := log_cutoff_pos hX
   have hpow : (0 : ℝ) < (Real.log X) ^ (k + 1) := by positivity
   have hpow2 : (Real.log 2) ^ (k + 1) ≤ (Real.log X) ^ (k + 1) :=
     pow_le_pow_left₀ hlog2.le (log_two_le_log_cutoff hX) _
   have hsplit := primeLogMass_head_add_tail b P X
-  have hhead : primeLogMass (primeCoefficientHead b P) X / (Real.log X) ^ (k + 1)
-      ≤ primeLogMass b P / (Real.log 2) ^ (k + 1) := by
+  have hhead : primeLogMass_weightedEulerCoefficientSpaces (primeCoefficientHead b P) X / (Real.log X) ^ (k + 1)
+      ≤ primeLogMass_weightedEulerCoefficientSpaces b P / (Real.log 2) ^ (k + 1) := by
     refine le_trans (div_le_div_of_nonneg_right (primeLogMass_head_le b P X) hpow.le) ?_
-    exact div_le_div_of_nonneg_left (primeLogMass_nonneg b P) (by positivity) hpow2
+    exact div_le_div_of_nonneg_left (primeLogMass_nonneg_weightedEulerCoefficientSpaces b P) (by positivity) hpow2
   have htail := hP X hX
   rw [gradedMarcinkiewiczQuotient] at htail ⊢
   rw [hsplit, add_div]

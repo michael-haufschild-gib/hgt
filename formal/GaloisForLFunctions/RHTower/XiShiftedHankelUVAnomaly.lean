@@ -27,9 +27,9 @@ open XiShiftedCanonicalAdmission
 while some strictly higher block remains indefinite at the same mass. -/
 def XiShiftedHankelUVAnomaly : Prop :=
   ∀ d : ℕ, ∀ᶠ w : ℝ in atTop,
-    (∀ n ≤ d, (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef) ∧
+    (∀ n ≤ d, (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef) ∧
       ∃ n : ℕ, d < n ∧
-        ¬ (xiShiftedMomentHankelMatrix (w ^ 2) n).PosSemidef
+        ¬ (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosSemidef
 
 /-- **Ultraviolet anomaly classification.** False RH is exactly simultaneous far-right
 restoration at every fixed Hankel cutoff and persistent failure above that cutoff. -/
@@ -65,7 +65,7 @@ theorem exists_fixedDegree_integrable_literalMassSourceAction_tail
             (Real.sqrt y) n) =
         xiShiftedCanonicalAdmissionCumulativeJacobiFlux a n := by
   have hSquare : ∀ᶠ w : ℝ in atTop,
-      (xiShiftedMomentHankelMatrix (w ^ 2) (n + 2)).PosDef :=
+      (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 2)).PosDef :=
     xiShiftedMomentHankelMatrix_squareParam_posDef_eventually (n + 2)
   have hSqrt := Real.tendsto_sqrt_atTop.eventually hSquare
   have hEvent : ∀ᶠ y : ℝ in atTop,

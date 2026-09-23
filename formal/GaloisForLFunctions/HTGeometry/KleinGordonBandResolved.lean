@@ -32,7 +32,7 @@ theorem norm_sq_split_of_proj
     (hsa : ∀ x y : Lp ℂ 2 (volume : Measure E), (inner ℂ (Λ x) y : ℂ) = inner ℂ x (Λ y))
     (hidem : ∀ x : Lp ℂ 2 (volume : Measure E), Λ (Λ x) = Λ x)
     (x : Lp ℂ 2 (volume : Measure E)) :
-    ‖x‖ ^ 2 = ‖Λ x‖ ^ 2 + ‖x - Λ x‖ ^ 2 := by
+    ‖x‖ ^ (2 : ℕ) = ‖Λ x‖ ^ (2 : ℕ) + ‖x - Λ x‖ ^ (2 : ℕ) := by
   have hz : Λ (x - Λ x) = 0 := by
     rw [map_sub, hidem, sub_self]
   have h0 : (inner ℂ (Λ x) (x - Λ x) : ℂ) = 0 := inner_eq_zero_of_proj hsa (hidem x) hz
@@ -47,16 +47,16 @@ theorem kgDatum_energy_split
     (hsa : ∀ x y : Lp ℂ 2 (volume : Measure E), (inner ℂ (Λ x) y : ℂ) = inner ℂ x (Λ y))
     (hidem : ∀ x : Lp ℂ 2 (volume : Measure E), Λ (Λ x) = Λ x)
     (g h : Lp ℂ 2 (volume : Measure E)) :
-    ‖g‖ ^ 2 + ‖h‖ ^ 2
-      = (‖Λ g‖ ^ 2 + ‖Λ h‖ ^ 2) + (‖g - Λ g‖ ^ 2 + ‖h - Λ h‖ ^ 2) := by
+    ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)
+      = (‖Λ g‖ ^ (2 : ℕ) + ‖Λ h‖ ^ (2 : ℕ)) + (‖g - Λ g‖ ^ (2 : ℕ) + ‖h - Λ h‖ ^ (2 : ℕ)) := by
   rw [norm_sq_split_of_proj hsa hidem g, norm_sq_split_of_proj hsa hidem h]
   ring
 
 /-- The initial energy splits across any annulus of frequencies. -/
 theorem kgDatum_energy_split_annulus (R₁ R₂ : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) :
-    ‖g‖ ^ 2 + ‖h‖ ^ 2
-      = (‖kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖kgAnnulusOp R₁ R₂ h‖ ^ 2)
-        + (‖g - kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖h - kgAnnulusOp R₁ R₂ h‖ ^ 2) :=
+    ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)
+      = (‖kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ))
+        + (‖g - kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖h - kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ)) :=
   kgDatum_energy_split (kgAnnulusOp_inner R₁ R₂) (kgAnnulusOp_idem R₁ R₂) g h
 
 end DatumSplit
@@ -74,10 +74,10 @@ theorem kgFieldEnergyT_annulus_le (hw : ∀ r : ℝ, Measurable (w r)) (hb0 : 0 
       Continuous fun r : ℝ => (fourierMulCLM (hw r) hb0 (hwb r)) x)
     (R₁ R₂ : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-            (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+            (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
         + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-            (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
-      ≤ (‖kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖kgAnnulusOp R₁ R₂ h‖ ^ 2) * Real.exp (2 * (b * |t|)) :=
+            (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
+      ≤ (‖kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ)) * Real.exp (2 * (b * |t|)) :=
   kgFieldEnergyT_le hb0 (fun _ => norm_fourierMulCLM_le _ _ _) hWs
     (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t
 
@@ -89,10 +89,10 @@ theorem kgFieldEnergyT_annulus_compl_le (hw : ∀ r : ℝ, Measurable (w r)) (hb
       Continuous fun r : ℝ => (fourierMulCLM (hw r) hb0 (hwb r)) x)
     (R₁ R₂ : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-            (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+            (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
         + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-            (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2
-      ≤ (‖g - kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖h - kgAnnulusOp R₁ R₂ h‖ ^ 2)
+            (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
+      ≤ (‖g - kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖h - kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ))
           * Real.exp (2 * (b * |t|)) :=
   kgFieldEnergyT_le hb0 (fun _ => norm_fourierMulCLM_le _ _ _) hWs
     (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t
@@ -106,30 +106,30 @@ theorem kgFieldEnergyT_band_resolved (hw : ∀ r : ℝ, Measurable (w r)) (hb0 :
     (hWs : ∀ x : Lp ℂ 2 (volume : Measure E),
       Continuous fun r : ℝ => (fourierMulCLM (hw r) hb0 (hwb r)) x)
     (R₁ R₂ : ℝ) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ 2
-            + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ 2
+    ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ (2 : ℕ)
+            + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ (2 : ℕ)
           = (‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-                  (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+                  (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
               + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-                  (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2)
+                  (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ))
             + (‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-                  (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+                  (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
               + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-                  (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2)
-      ∧ ‖g‖ ^ 2 + ‖h‖ ^ 2
-          = (‖kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖kgAnnulusOp R₁ R₂ h‖ ^ 2)
-            + (‖g - kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖h - kgAnnulusOp R₁ R₂ h‖ ^ 2)
+                  (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ))
+      ∧ ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)
+          = (‖kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ))
+            + (‖g - kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖h - kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ))
       ∧ ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
             + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ 2
-          ≤ (‖kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖kgAnnulusOp R₁ R₂ h‖ ^ 2)
+              (kgAnnulusOp R₁ R₂ g) (kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
+          ≤ (‖kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ))
               * Real.exp (2 * (b * |t|))
       ∧ ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2
+              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
             + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r))
-              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ 2
-          ≤ (‖g - kgAnnulusOp R₁ R₂ g‖ ^ 2 + ‖h - kgAnnulusOp R₁ R₂ h‖ ^ 2)
+              (g - kgAnnulusOp R₁ R₂ g) (h - kgAnnulusOp R₁ R₂ h) t‖ ^ (2 : ℕ)
+          ≤ (‖g - kgAnnulusOp R₁ R₂ g‖ ^ (2 : ℕ) + ‖h - kgAnnulusOp R₁ R₂ h‖ ^ (2 : ℕ))
               * Real.exp (2 * (b * |t|)) :=
   ⟨kgFieldEnergyT_annulus_split hw hb0 hwb hWs R₁ R₂ g h t,
     kgDatum_energy_split_annulus R₁ R₂ g h,

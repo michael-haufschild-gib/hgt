@@ -40,8 +40,8 @@ theorem exists_int_abs_sub_two_pi_mul_le {θ c : ℝ} (hc : 0 ≤ c) (h : 1 - Re
     rw [← this]
     congr 1
     ring
-  have hsin : 1 - Real.cos r = 2 * Real.sin (r / 2) ^ 2 := by
-    have h2 : Real.cos r = 1 - 2 * Real.sin (r / 2) ^ 2 := by
+  have hsin : 1 - Real.cos r = 2 * Real.sin (r / 2) ^ (2 : ℕ) := by
+    have h2 : Real.cos r = 1 - 2 * Real.sin (r / 2) ^ (2 : ℕ) := by
       have := Real.cos_two_mul (r / 2)
       have hpyth := Real.sin_sq_add_cos_sq (r / 2)
       have hr2 : 2 * (r / 2) = r := by ring
@@ -74,18 +74,18 @@ theorem exists_int_abs_sub_two_pi_mul_le {θ c : ℝ} (hc : 0 ≤ c) (h : 1 - Re
       rw [Real.sin_neg] at hjordan
       linarith
   -- combine
-  have hsq : 2 * ((2 / Real.pi) * |r / 2|) ^ 2 ≤ c := by
-    have hsin2 : (2 * Real.sin (r / 2) ^ 2) ≤ c := by
+  have hsq : 2 * ((2 / Real.pi) * |r / 2|) ^ (2 : ℕ) ≤ c := by
+    have hsin2 : (2 * Real.sin (r / 2) ^ (2 : ℕ)) ≤ c := by
       rw [← hsin, ← hcos]
       exact h
-    have habs : ((2 / Real.pi) * |r / 2|) ^ 2 ≤ Real.sin (r / 2) ^ 2 := by
+    have habs : ((2 / Real.pi) * |r / 2|) ^ (2 : ℕ) ≤ Real.sin (r / 2) ^ (2 : ℕ) := by
       have h0 : (0 : ℝ) ≤ (2 / Real.pi) * |r / 2| := by positivity
-      calc ((2 / Real.pi) * |r / 2|) ^ 2 ≤ |Real.sin (r / 2)| ^ 2 := by
+      calc ((2 / Real.pi) * |r / 2|) ^ (2 : ℕ) ≤ |Real.sin (r / 2)| ^ (2 : ℕ) := by
             exact pow_le_pow_left₀ h0 hsinbound 2
-        _ = Real.sin (r / 2) ^ 2 := sq_abs _
+        _ = Real.sin (r / 2) ^ (2 : ℕ) := sq_abs _
     linarith
   have hrbound : |r| ≤ Real.pi * Real.sqrt (c / 2) := by
-    have hkey : (|r| / Real.pi) ^ 2 ≤ c / 2 := by
+    have hkey : (|r| / Real.pi) ^ (2 : ℕ) ≤ c / 2 := by
       have habs2 : (2 / Real.pi) * |r / 2| = |r| / Real.pi := by
         rw [abs_div, abs_of_pos (show (0 : ℝ) < 2 by norm_num)]
         field_simp

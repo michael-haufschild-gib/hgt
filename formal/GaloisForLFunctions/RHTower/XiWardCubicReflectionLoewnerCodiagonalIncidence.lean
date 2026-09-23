@@ -153,7 +153,7 @@ theorem xiWardCubicTensorConormalFeature_reflection_neg (s : ℂ) (r : ℝ) :
 /-- The ordinate phase is unitary, so norm square retains exactly the cubic radial weight. -/
 theorem xiWardCubicTensorConormalFeature_normSq (s : ℂ) (r : ℝ) :
     Complex.normSq (xiWardCubicTensorConormalFeature s r) =
-      r ^ 2 * (xiWardCubicTensorHorizontalDifference s r) ^ 2 := by
+      r ^ (2 : ℕ) * (xiWardCubicTensorHorizontalDifference s r) ^ (2 : ℕ) := by
   rw [xiWardCubicTensorConormalFeature, Complex.normSq_mul, Complex.normSq_mul]
   have hphase : Complex.normSq
       (Complex.exp (-I * (((s - 1 / 2).im * r : ℝ) : ℂ))) = 1 := by
@@ -172,7 +172,7 @@ theorem integral_xiWardCubicTensorConormalFeature_normSq
         (s - 1 / 2).re (s - 1 / 2).re := by
   rw [show (fun r : ℝ =>
       Complex.normSq (xiWardCubicTensorConormalFeature s r)) =
-      fun r : ℝ => r ^ 2 *
+      fun r : ℝ => r ^ (2 : ℕ) *
         (Real.exp (-((s - 1 / 2).re * r)) -
           Real.exp (-((2 * (s - 1 / 2).re) * r))) *
         (Real.exp (-((s - 1 / 2).re * r)) -

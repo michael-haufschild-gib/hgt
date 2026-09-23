@@ -29,7 +29,7 @@ noncomputable def sincScalar (c u : ℝ) : ℝ := Real.sin (c * u) / (Real.pi * 
 
 /-- Off the origin, `g'(u) = (cu·cos(cu) − sin(cu))/(πu²)`. -/
 noncomputable def sincScalarD (c u : ℝ) : ℝ :=
-  (c * u * Real.cos (c * u) - Real.sin (c * u)) / (Real.pi * u ^ 2)
+  (c * u * Real.cos (c * u) - Real.sin (c * u)) / (Real.pi * u ^ (2 : ℕ))
 
 theorem hasDerivAt_sincScalar {c u : ℝ} (h : u ≠ 0) :
     HasDerivAt (sincScalar c) (sincScalarD c u) u := by
@@ -41,7 +41,7 @@ theorem hasDerivAt_sincScalar {c u : ℝ} (h : u ≠ 0) :
   have hden0 : Real.pi * u ≠ 0 := mul_ne_zero Real.pi_ne_zero h
   have hdiv := hnum.div hden hden0
   have hval : (Real.cos (c * u) * c * (Real.pi * u) - Real.sin (c * u) * Real.pi)
-        / (Real.pi * u) ^ 2 = sincScalarD c u := by
+        / (Real.pi * u) ^ (2 : ℕ) = sincScalarD c u := by
     unfold sincScalarD
     field_simp
   rw [hval] at hdiv
@@ -56,7 +56,7 @@ theorem deriv_sincScalar {c u : ℝ} (h : u ≠ 0) :
 harmonic equation `(u·g)'' = −c²·(u·g)`. -/
 theorem sincScalar_bessel {c u : ℝ} (h : u ≠ 0) :
     u * deriv (deriv (sincScalar c)) u + 2 * deriv (sincScalar c) u
-      + c ^ 2 * u * sincScalar c u = 0 := by
+      + c ^ (2 : ℕ) * u * sincScalar c u = 0 := by
   have hev : deriv (sincScalar c) =ᶠ[nhds u] fun v => sincScalarD c v := by
     filter_upwards [isOpen_compl_singleton.mem_nhds
       (by simpa using h : u ∈ ({0}ᶜ : Set ℝ))] with v hv
@@ -68,17 +68,17 @@ theorem sincScalar_bessel {c u : ℝ} (h : u ≠ 0) :
   have hnum : HasDerivAt (fun v : ℝ => c * v * Real.cos (c * v) - Real.sin (c * v))
       (c * Real.cos (c * u) + c * u * (-Real.sin (c * u) * c) - Real.cos (c * u) * c) u :=
     hcv.sub hcu.sin
-  have hden : HasDerivAt (fun v : ℝ => Real.pi * v ^ 2) (Real.pi * (2 * u)) u := by
-    have h2 : HasDerivAt (fun v : ℝ => v ^ 2) (2 * u) u := by
+  have hden : HasDerivAt (fun v : ℝ => Real.pi * v ^ (2 : ℕ)) (Real.pi * (2 * u)) u := by
+    have h2 : HasDerivAt (fun v : ℝ => v ^ (2 : ℕ)) (2 * u) u := by
       simpa using hasDerivAt_pow 2 u
     simpa using h2.const_mul Real.pi
-  have hden0 : Real.pi * u ^ 2 ≠ 0 := mul_ne_zero Real.pi_ne_zero (pow_ne_zero 2 h)
+  have hden0 : Real.pi * u ^ (2 : ℕ) ≠ 0 := mul_ne_zero Real.pi_ne_zero (pow_ne_zero 2 h)
   have hdiv := hnum.div hden hden0
   have hD2 : deriv (deriv (sincScalar c)) u
       = ((c * Real.cos (c * u) + c * u * (-Real.sin (c * u) * c) - Real.cos (c * u) * c)
-            * (Real.pi * u ^ 2)
+            * (Real.pi * u ^ (2 : ℕ))
           - (c * u * Real.cos (c * u) - Real.sin (c * u)) * (Real.pi * (2 * u)))
-        / (Real.pi * u ^ 2) ^ 2 := by
+        / (Real.pi * u ^ (2 : ℕ)) ^ (2 : ℕ) := by
     rw [hev.deriv_eq]
     exact hdiv.deriv
   rw [hD2, deriv_sincScalar h]

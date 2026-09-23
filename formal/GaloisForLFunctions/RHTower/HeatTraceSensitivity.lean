@@ -55,14 +55,14 @@ namespace RHTower
 
 /-- **Completing the square.**  The Gaussian pole pairing exponent. -/
 theorem gaussian_complete_square (u x : ℝ) (hx : x ≠ 0) :
-    -(u ^ 2) / (4 * x) + u / 2 = -((u - x) ^ 2) / (4 * x) + x / 4 := by
+    -(u ^ (2 : ℕ)) / (4 * x) + u / 2 = -((u - x) ^ (2 : ℕ)) / (4 * x) + x / 4 := by
   field_simp
   ring
 
 /-- **The super-exponential tail bound, one term.**  For `x ≥ 1` and `γ₁² ≤ γ²`,
 `e^{-γ²x} ≤ e^{-γ₁²x}·e^{-(γ²-γ₁²)}`. -/
-theorem heat_term_le {g1 g x : ℝ} (hx : 1 ≤ x) (hle : g1 ^ 2 ≤ g ^ 2) :
-    Real.exp (-(g ^ 2) * x) ≤ Real.exp (-(g1 ^ 2) * x) * Real.exp (-(g ^ 2 - g1 ^ 2)) := by
+theorem heat_term_le {g1 g x : ℝ} (hx : 1 ≤ x) (hle : g1 ^ (2 : ℕ) ≤ g ^ (2 : ℕ)) :
+    Real.exp (-(g ^ (2 : ℕ)) * x) ≤ Real.exp (-(g1 ^ (2 : ℕ)) * x) * Real.exp (-(g ^ (2 : ℕ) - g1 ^ (2 : ℕ))) := by
   rw [← Real.exp_add]
   apply Real.exp_le_exp.mpr
   nlinarith [hx, hle]
@@ -71,17 +71,17 @@ theorem heat_term_le {g1 g x : ℝ} (hx : 1 ≤ x) (hle : g1 ^ 2 ≤ g ^ 2) :
 `C·e^{-γ₁²x}` is below `ε·x^{-1/2}` for every `ε > 0`; formalized as the elementary comparison that
 the exponential factor tends to zero. -/
 theorem exp_decay_lt_of_large {g1 C eps x : ℝ} (hg1 : 0 < g1) (hC : 0 < C) (heps : 0 < eps)
-    (hx : Real.log (C / eps) / g1 ^ 2 < x) :
-    C * Real.exp (-(g1 ^ 2) * x) < eps := by
-  have hg2 : (0 : ℝ) < g1 ^ 2 := by positivity
-  have hlog : Real.log (C / eps) < g1 ^ 2 * x := by
+    (hx : Real.log (C / eps) / g1 ^ (2 : ℕ) < x) :
+    C * Real.exp (-(g1 ^ (2 : ℕ)) * x) < eps := by
+  have hg2 : (0 : ℝ) < g1 ^ (2 : ℕ) := by positivity
+  have hlog : Real.log (C / eps) < g1 ^ (2 : ℕ) * x := by
     rw [div_lt_iff₀ hg2] at hx; linarith
-  have hkey : C / eps < Real.exp (g1 ^ 2 * x) := by
+  have hkey : C / eps < Real.exp (g1 ^ (2 : ℕ) * x) := by
     have := Real.exp_lt_exp.mpr hlog
     rwa [Real.exp_log (by positivity)] at this
   rw [div_lt_iff₀ heps] at hkey
-  have hpos : 0 < Real.exp (g1 ^ 2 * x) := Real.exp_pos _
-  rw [show -(g1 ^ 2) * x = -(g1 ^ 2 * x) by ring, Real.exp_neg]
+  have hpos : 0 < Real.exp (g1 ^ (2 : ℕ) * x) := Real.exp_pos _
+  rw [show -(g1 ^ (2 : ℕ)) * x = -(g1 ^ (2 : ℕ) * x) by ring, Real.exp_neg]
   rw [mul_inv_lt_iff₀ hpos]
   linarith
 

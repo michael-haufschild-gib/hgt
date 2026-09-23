@@ -11,7 +11,7 @@ independent, yet their joint Möbius spectral packet is still a nonzero germ.
 
 The exact characteristic relation is
 
-`w^2 - (1 + z₁) w + z₁ - z₀^2 = 0`.
+`w^(2 : ℕ) - (1 + z₁) w + z₁ - z₀^(2 : ℕ) = 0`.
 
 The diagonal-only branch is exactly `z₁` near zero.  If the joint packet
 vanished, the full branch on `(t,t)` would equal the transverse-only branch
@@ -75,7 +75,7 @@ theorem twoControlIndependentMatrix_isHermitian_real
 theorem twoControlIndependent_relation
     (z : Fin 2 → ℂ) (w : ℂ) :
     matrixCharpolyRelation (twoControlIndependentMatrix z, w) =
-      w ^ 2 - (1 + z 1) * w + z 1 - (z 0) ^ 2 := by
+      w ^ (2 : ℕ) - (1 + z 1) * w + z 1 - (z 0) ^ (2 : ℕ) := by
   simp [matrixCharpolyRelation, twoControlIndependentMatrix,
     affineMatrixFamily, twoControlIndependentInteraction,
     twoControlSharpEnergy, Matrix.det_fin_two]
@@ -99,9 +99,9 @@ theorem twoControlIndependentBranch_zero :
 
 theorem twoControlIndependentBranch_relation :
     ∀ᶠ z : Fin 2 → ℂ in 𝓝 0,
-      twoControlIndependentBranch z ^ 2 -
+      twoControlIndependentBranch z ^ (2 : ℕ) -
         (1 + z 1) * twoControlIndependentBranch z +
-        z 1 - (z 0) ^ 2 = 0 := by
+        z 1 - (z 0) ^ (2 : ℕ) = 0 := by
   have ht := twoControlIndependentMatrix_analyticAt.continuousAt
   change Tendsto twoControlIndependentMatrix (𝓝 0)
     (𝓝 (twoControlIndependentMatrix 0)) at ht
@@ -138,7 +138,7 @@ theorem twoControlIndependentRightBranch_eq :
       (twoControlIndependentBranch (twoControlSharpRightRay t) - t) *
         (twoControlIndependentBranch (twoControlSharpRightRay t) - 1) = 0 := by
     calc
-      _ = twoControlIndependentBranch (twoControlSharpRightRay t) ^ 2 -
+      _ = twoControlIndependentBranch (twoControlSharpRightRay t) ^ (2 : ℕ) -
           (1 + t) *
             twoControlIndependentBranch (twoControlSharpRightRay t) +
           t := by ring
@@ -218,22 +218,22 @@ theorem twoControlIndependent_packetResponse_ne_zero :
         twoControlIndependentBranch_zero, hr] at hm
       linear_combination hm
     have hb' :
-        twoControlIndependentBranch (twoControlSharpBothRay t) ^ 2 -
+        twoControlIndependentBranch (twoControlSharpBothRay t) ^ (2 : ℕ) -
           (1 + t) *
             twoControlIndependentBranch (twoControlSharpBothRay t) +
-          t - t ^ 2 = 0 := by
+          t - t ^ (2 : ℕ) = 0 := by
       simpa [twoControlSharpBothRay] using hb
     have hl' :
-        twoControlIndependentBranch (twoControlSharpLeftRay t) ^ 2 -
+        twoControlIndependentBranch (twoControlSharpLeftRay t) ^ (2 : ℕ) -
           twoControlIndependentBranch (twoControlSharpLeftRay t) -
-          t ^ 2 = 0 := by
+          t ^ (2 : ℕ) = 0 := by
       simpa [twoControlSharpLeftRay] using hl
     rw [hadd] at hb'
     have hproduct :
         twoControlIndependentBranch (twoControlSharpLeftRay t) * t = 0 := by
       linear_combination hb' - hl'
     rcases mul_eq_zero.mp hproduct with ha | ht
-    · have hz : t ^ 2 = 0 := by
+    · have hz : t ^ (2 : ℕ) = 0 := by
         rw [ha] at hl'
         simpa using hl'.symm
       exact sq_eq_zero_iff.mp hz

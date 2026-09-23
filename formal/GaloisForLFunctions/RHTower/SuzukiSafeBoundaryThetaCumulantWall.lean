@@ -23,7 +23,7 @@ mean, variance, and third cumulant, and
 
 then the exact unconditional calibration is
 
-`8 * (A*C - B^2) = mu*kappa3 + (mu-v)*(mu+2*v)`.
+`8 * (A*C - B^(2 : ℕ)) = mu*kappa3 + (mu-v)*(mu+2*v)`.
 
 Thus Suzuki's first nonlinear admission gate is one explicit skewness budget for the literal
 boundary theta law.  The equivalence is proved here; the sign of that budget is not assumed.

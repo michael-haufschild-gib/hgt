@@ -11,13 +11,13 @@ def realPart (x : RealOctonion) : ℝ := x.1.re
 
 /-- Squared Euclidean length of the imaginary part of a concrete Cayley octonion. -/
 def imaginaryNormSq (x : RealOctonion) : ℝ :=
-  x.1.imI ^ 2 + x.1.imJ ^ 2 + x.1.imK ^ 2 + Quaternion.normSq x.2
+  x.1.imI ^ (2 : ℕ) + x.1.imJ ^ (2 : ℕ) + x.1.imK ^ (2 : ℕ) + Quaternion.normSq x.2
 
 theorem realPart_scalarEmbed (r : ℝ) : realPart (scalarEmbed r) = r := by
   simp [realPart, scalarEmbed]
 
 theorem normSq_eq_realPart_sq_add_imaginaryNormSq (x : RealOctonion) :
-    normSq x = realPart x ^ 2 + imaginaryNormSq x := by
+    normSq x = realPart x ^ (2 : ℕ) + imaginaryNormSq x := by
   unfold realPart imaginaryNormSq
   rw [normSq_eq_quaternion_normSq, Quaternion.normSq_def']
   ring
@@ -45,8 +45,8 @@ theorem sameConjugacySphere_iff_mem_conjugacySphere (s q : RealOctonion) :
     · have hs := normSq_eq_realPart_sq_add_imaginaryNormSq s
       have hq := normSq_eq_realPart_sq_add_imaginaryNormSq q
       calc
-        imaginaryNormSq s = normSq s - realPart s ^ 2 := by linarith
-        _ = normSq q - realPart q ^ 2 := by rw [hnorm, hre]
+        imaginaryNormSq s = normSq s - realPart s ^ (2 : ℕ) := by linarith
+        _ = normSq q - realPart q ^ (2 : ℕ) := by rw [hnorm, hre]
         _ = imaginaryNormSq q := by linarith
   · rintro ⟨hre, him⟩
     constructor
@@ -54,13 +54,13 @@ theorem sameConjugacySphere_iff_mem_conjugacySphere (s q : RealOctonion) :
     · have hs := normSq_eq_realPart_sq_add_imaginaryNormSq s
       have hq := normSq_eq_realPart_sq_add_imaginaryNormSq q
       calc
-        normSq s = realPart s ^ 2 + imaginaryNormSq s := hs
-        _ = realPart q ^ 2 + imaginaryNormSq q := by rw [hre, him]
+        normSq s = realPart s ^ (2 : ℕ) + imaginaryNormSq s := hs
+        _ = realPart q ^ (2 : ℕ) + imaginaryNormSq q := by rw [hre, him]
         _ = normSq q := hq.symm
 
 theorem quadratic_of_scalarEmbed (s : RealOctonion) (r : ℝ) :
     quadratic s (scalarEmbed r) =
-      scalarEmbed (r ^ 2 - 2 * s.1.re * r + normSq s) := by
+      scalarEmbed (r ^ (2 : ℕ) - 2 * s.1.re * r + normSq s) := by
   unfold quadratic
   rw [← map_mul, ← map_mul, ← map_sub, ← map_add]
   congr 1
@@ -71,7 +71,7 @@ theorem scalarEmbed_injective : Function.Injective scalarEmbed := by
   have hre := congrArg (fun x : RealOctonion => x.1.re) h
   simpa [scalarEmbed] using hre
 
-theorem normSq_scalarEmbed (r : ℝ) : normSq (scalarEmbed r) = r ^ 2 := by
+theorem normSq_scalarEmbed (r : ℝ) : normSq (scalarEmbed r) = r ^ (2 : ℕ) := by
   rw [normSq_eq_quaternion_normSq]
   simp [scalarEmbed, Quaternion.normSq_coe]
 
@@ -137,23 +137,23 @@ theorem quadratic_eq_zero_iff_sameConjugacySphere (s q : RealOctonion) :
       have hqscalar := eq_scalarEmbed_of_scalar_linear_relation
         (2 * (q.1.re - s.1.re)) (normSq s - normSq q) q hlin hcoeff
       have hreal : quadratic s q =
-          scalarEmbed ((-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q)) ^ 2 -
+          scalarEmbed ((-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q)) ^ (2 : ℕ) -
             2 * s.1.re * (-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q)) + normSq s) := by
         calc
           quadratic s q = quadratic s
               (scalarEmbed (-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q))) := by
                 conv_lhs => rw [hqscalar]
-          _ = scalarEmbed ((-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q)) ^ 2 -
+          _ = scalarEmbed ((-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q)) ^ (2 : ℕ) -
               2 * s.1.re * (-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q)) + normSq s) :=
                 quadratic_of_scalarEmbed s _
       rw [hreal] at hzero
-      have hpoly : (-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q)) ^ 2 -
+      have hpoly : (-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q)) ^ (2 : ℕ) -
           2 * s.1.re * (-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q)) + normSq s = 0 :=
         scalarEmbed_injective (by simpa using hzero)
       have hdecomp := normSq_eq_realPart_sq_add_imaginaryNormSq s
-      change normSq s = s.1.re ^ 2 + imaginaryNormSq s at hdecomp
+      change normSq s = s.1.re ^ (2 : ℕ) + imaginaryNormSq s at hdecomp
       have hsum :
-          (-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q) - s.1.re) ^ 2 +
+          (-(2 * (q.1.re - s.1.re))⁻¹ * (normSq s - normSq q) - s.1.re) ^ (2 : ℕ) +
             imaginaryNormSq s = 0 := by
         nlinarith [hpoly, hdecomp]
       have hparts := (add_eq_zero_iff_of_nonneg (sq_nonneg _)

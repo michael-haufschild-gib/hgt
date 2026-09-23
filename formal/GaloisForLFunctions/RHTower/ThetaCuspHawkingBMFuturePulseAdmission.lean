@@ -33,7 +33,7 @@ private theorem growth_nonneg (q : XiZeroCopy) : 0 ≤ decayExponent q := by
 
 /-- Compact radial profile of the original seed derivative. -/
 def seedHorizonProfile (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (u : ℝ) : ℂ :=
-  parameter q branch*power (2*physicalRate q branch) (1+u)*amp^2*(1+(u:ℂ))*
+  parameter q branch*power (2*physicalRate q branch) (1+u)*amp^(2 : ℕ)*(1+(u:ℂ))*
     ((2*physicalRate q branch+1)*(u:ℂ)+1)
 
 /-- The actual seed derivative carries the same exact horizon exponential as the lift derivative. -/
@@ -53,7 +53,7 @@ theorem seedFirst_horizon (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (y : ℝ)
   rw [sourceSeedFieldFirst,hp,hp1]
   simp only [sourceAmplitude,zero_mul,Complex.exp_zero,one_mul,mul_one,amplitudeRate,zero_add]
   calc
-    _ = parameter q branch*power (2*physicalRate q branch) (1+radialUnit y)*amp^2*
+    _ = parameter q branch*power (2*physicalRate q branch) (1+radialUnit y)*amp^(2 : ℕ)*
         (1-(radialUnit y:ℂ))*((2*physicalRate q branch+1)*(radialUnit y:ℂ)+1) := by ring
     _ = _ := by rw [he]; dsimp only [seedHorizonProfile]; ring
 
@@ -64,7 +64,7 @@ private theorem seedHorizonProfile_continuous (q : XiZeroCopy) (branch : Bool) (
     (power_derivatives (2*physicalRate q branch) (by linarith [hu.1])).1.continuousAt.comp
       (continuous_const.add continuous_id).continuousAt
   have hc : ContinuousAt (fun v : ℝ => parameter q branch*power (2*physicalRate q branch) (1+v)*
-      amp^2*(1+(v:ℂ))*((2*physicalRate q branch+1)*(v:ℂ)+1)) u := by fun_prop
+      amp^(2 : ℕ)*(1+(v:ℂ))*((2*physicalRate q branch+1)*(v:ℂ)+1)) u := by fun_prop
   exact hc.continuousWithinAt
 
 private theorem radial_pair_bound (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :

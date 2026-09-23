@@ -22,7 +22,7 @@ noncomputable section
 /-- Squared coefficient of the literal theta/Gamma Wold--Jordan harmonic carrier. -/
 def xiGammaSixWoldJordanHarmonicWeight (q : XiZeroCopy) : ℝ :=
   4 * sourceHorizontalWoldPrimeClockUniversalProfile
-    (primeDepthBVWoldXiCenteredRate q.1) ^ 2
+    (primeDepthBVWoldXiCenteredRate q.1) ^ (2 : ℕ)
 
 theorem xiGammaSixWoldJordanHarmonicWeight_nonneg (q : XiZeroCopy) :
     0 ≤ xiGammaSixWoldJordanHarmonicWeight q := by
@@ -37,7 +37,7 @@ theorem xiGammaSixWoldJordanHarmonicWeight_eq_zero_iff (q : XiZeroCopy) :
 
 theorem thetaGammaSixWoldHorizontalCarrier_sq_eq_weight_div
     (p : Nat.Primes) (q : XiZeroCopy) :
-    thetaGammaSixWoldHorizontalCarrier p q ^ 2 =
+    thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ) =
       xiGammaSixWoldJordanHarmonicWeight q / (p : ℝ) := by
   rw [thetaGammaSixWoldHorizontalCarrier_sq,
     xiGammaSixWoldJordanHarmonicWeight]
@@ -47,19 +47,19 @@ sides; no asymptotic relabelling is used. -/
 theorem gammaSixFilteredBoundarySecondJet_woldJordan_twoSided
     {m : ℕ} (hm : 1 ≤ m) (q : XiZeroCopy) (p : Nat.Primes) :
     gammaSixFilteredBoundaryHarmonicConstant m q *
-          thetaGammaSixWoldHorizontalCarrier p q ^ 2 ≤
+          thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ) ≤
         xiGammaSixWoldJordanHarmonicWeight q *
           gammaSixFilteredBoundarySecondJet m q p ∧
       xiGammaSixWoldJordanHarmonicWeight q *
           gammaSixFilteredBoundarySecondJet m q p ≤
-        (Real.log 2 / (m : ℝ) ^ 2) *
-          thetaGammaSixWoldHorizontalCarrier p q ^ 2 := by
+        (Real.log 2 / (m : ℝ) ^ (2 : ℕ)) *
+          thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ) := by
   have hA : 0 ≤ xiGammaSixWoldJordanHarmonicWeight q :=
     xiGammaSixWoldJordanHarmonicWeight_nonneg q
   constructor
   · calc
       gammaSixFilteredBoundaryHarmonicConstant m q *
-          thetaGammaSixWoldHorizontalCarrier p q ^ 2 =
+          thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ) =
           xiGammaSixWoldJordanHarmonicWeight q *
             (gammaSixFilteredBoundaryHarmonicConstant m q * (1 / (p : ℝ))) := by
               rw [thetaGammaSixWoldHorizontalCarrier_sq_eq_weight_div]
@@ -72,11 +72,11 @@ theorem gammaSixFilteredBoundarySecondJet_woldJordan_twoSided
       xiGammaSixWoldJordanHarmonicWeight q *
           gammaSixFilteredBoundarySecondJet m q p ≤
           xiGammaSixWoldJordanHarmonicWeight q *
-            ((Real.log 2 / (m : ℝ) ^ 2) * (1 / (p : ℝ))) :=
+            ((Real.log 2 / (m : ℝ) ^ (2 : ℕ)) * (1 / (p : ℝ))) :=
         mul_le_mul_of_nonneg_left
           (gammaSixFilteredBoundarySecondJet_le_harmonic hm q p) hA
-      _ = (Real.log 2 / (m : ℝ) ^ 2) *
-          thetaGammaSixWoldHorizontalCarrier p q ^ 2 := by
+      _ = (Real.log 2 / (m : ℝ) ^ (2 : ℕ)) *
+          thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ) := by
         rw [thetaGammaSixWoldHorizontalCarrier_sq_eq_weight_div]
         ring
 
@@ -85,13 +85,13 @@ majorant. At the neutral fibre both carrier and Hessian vanish; total division s
 coefficient to zero. -/
 def xiGammaSixWoldJordanHessianDominationConstant
     (m : ℕ) (q : XiZeroCopy) : ℝ :=
-  (Real.log 2 / (m : ℝ) ^ 2) / xiGammaSixWoldJordanHarmonicWeight q
+  (Real.log 2 / (m : ℝ) ^ (2 : ℕ)) / xiGammaSixWoldJordanHarmonicWeight q
 
 /-- Literal Wold--Jordan source majorant for the Gamma boundary Hessian. -/
 def xiGammaSixWoldJordanHessianMajorant
     (m : ℕ) (q : XiZeroCopy) (p : Nat.Primes) : ℝ :=
   xiGammaSixWoldJordanHessianDominationConstant m q *
-    thetaGammaSixWoldHorizontalCarrier p q ^ 2
+    thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ)
 
 /-- Unconditional coefficient-faithful domination of the literal Gamma boundary Hessian by the
 literal nondecaying theta/Gamma Wold--Jordan source carrier. -/
@@ -110,7 +110,7 @@ theorem gammaSixFilteredBoundarySecondJet_le_woldJordanMajorant
     have hmajor : xiGammaSixWoldJordanHessianMajorant m q p = 0 := by
       rw [xiGammaSixWoldJordanHessianMajorant,
         xiGammaSixWoldJordanHessianDominationConstant]
-      change (Real.log 2 / (m : ℝ) ^ 2) / A * _ = 0
+      change (Real.log 2 / (m : ℝ) ^ (2 : ℕ)) / A * _ = 0
       rw [hA]
       simp
     rw [hmajor]
@@ -118,12 +118,12 @@ theorem gammaSixFilteredBoundarySecondJet_le_woldJordanMajorant
       gammaSixFilteredBoundarySecondJet_le_harmonic hm q p
     calc
       gammaSixFilteredBoundarySecondJet m q p ≤
-          (Real.log 2 / (m : ℝ) ^ 2) * (1 / (p : ℝ)) := hupper
+          (Real.log 2 / (m : ℝ) ^ (2 : ℕ)) * (1 / (p : ℝ)) := hupper
       _ = xiGammaSixWoldJordanHessianMajorant m q p := by
         rw [xiGammaSixWoldJordanHessianMajorant,
           xiGammaSixWoldJordanHessianDominationConstant,
           thetaGammaSixWoldHorizontalCarrier_sq_eq_weight_div]
-        change _ = (Real.log 2 / (m : ℝ) ^ 2) / A * (A / (p : ℝ))
+        change _ = (Real.log 2 / (m : ℝ) ^ (2 : ℕ)) / A * (A / (p : ℝ))
         field_simp [hA]
 
 /-- Finite source packets inherit the same coefficient-faithful domination. -/
@@ -187,7 +187,7 @@ theorem summable_xiGammaSixWoldJordanHessianMajorant_iff
     have hscaled := hsum.mul_left
       (xiGammaSixWoldJordanHessianDominationConstant m q)⁻¹
     have hcarrier : Summable (fun p : Nat.Primes =>
-        thetaGammaSixWoldHorizontalCarrier p q ^ 2) := by
+        thetaGammaSixWoldHorizontalCarrier p q ^ (2 : ℕ)) := by
       refine hscaled.congr fun p => ?_
       rw [xiGammaSixWoldJordanHessianMajorant]
       field_simp [hC.ne']

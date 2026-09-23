@@ -167,10 +167,10 @@ difference between the full second null-gauged coefficient polynomial and `2N+1`
 adaptive shear.  Unlike the shear, this term is supported strictly below odd contact. -/
 def xiShiftedAdaptiveNullGaugeLowerResidualPolynomial
     (A : Polynomial ℝ) (N : ℕ) : Polynomial ℝ :=
-  (((((2 * N + 1 : ℕ) : ℝ) * ((N + 1 : ℕ) : ℝ)) • (A ^ 2 * X ^ 2) -
-      (((2 * N + 1 : ℕ) : ℝ) * A.nextCoeff) • (A ^ 2 * X)) +
+  (((((2 * N + 1 : ℕ) : ℝ) * ((N + 1 : ℕ) : ℝ)) • (A ^ (2 : ℕ) * X ^ (2 : ℕ)) -
+      (((2 * N + 1 : ℕ) : ℝ) * A.nextCoeff) • (A ^ (2 : ℕ) * X)) +
     PowerSeries.coeff 2
-      (xiShiftedAdaptiveNullRootGaugePolynomial A N : PowerSeries ℝ)⁻¹ • (A ^ 2)) -
+      (xiShiftedAdaptiveNullRootGaugePolynomial A N : PowerSeries ℝ)⁻¹ • (A ^ (2 : ℕ))) -
     ((2 * N + 1 : ℕ) : ℝ) • xiShiftedBoundaryAdaptiveShearPolynomial A
 
 /-- **Associated-graded support theorem.** One inverse null gauge cancels both degrees above the
@@ -180,15 +180,15 @@ theorem degree_xiShiftedAdaptiveNullGaugeLowerResidualPolynomial_lt_contact
     {A : Polynomial ℝ} {N : ℕ} (hA : A.Monic) (hAdeg : A.natDegree = N) :
     (xiShiftedAdaptiveNullGaugeLowerResidualPolynomial A N).degree <
       ((2 * N + 1 : ℕ) : WithBot ℕ) := by
-  have hA2 : (A ^ 2).Monic := hA.pow 2
-  have hA2deg : (A ^ 2).natDegree = 2 * N := by
+  have hA2 : (A ^ (2 : ℕ)).Monic := hA.pow 2
+  have hA2deg : (A ^ (2 : ℕ)).natDegree = 2 * N := by
     rw [Polynomial.natDegree_pow, hAdeg]
-  have hA2X : (A ^ 2 * X).Monic := hA2.mul Polynomial.monic_X
-  have hA2Xdeg : (A ^ 2 * X).natDegree = 2 * N + 1 := by
+  have hA2X : (A ^ (2 : ℕ) * X).Monic := hA2.mul Polynomial.monic_X
+  have hA2Xdeg : (A ^ (2 : ℕ) * X).natDegree = 2 * N + 1 := by
     rw [hA2.natDegree_mul Polynomial.monic_X, hA2deg]
     simp
-  have hA2X2 : (A ^ 2 * X ^ 2).Monic := hA2.mul (Polynomial.monic_X_pow 2)
-  have hA2X2deg : (A ^ 2 * X ^ 2).natDegree = 2 * N + 2 := by
+  have hA2X2 : (A ^ (2 : ℕ) * X ^ (2 : ℕ)).Monic := hA2.mul (Polynomial.monic_X_pow 2)
+  have hA2X2deg : (A ^ (2 : ℕ) * X ^ (2 : ℕ)).natDegree = 2 * N + 2 := by
     rw [hA2.natDegree_mul (Polynomial.monic_X_pow 2), hA2deg,
       Polynomial.natDegree_X_pow]
   have hdeg : (xiShiftedAdaptiveNullGaugeLowerResidualPolynomial A N).natDegree ≤
@@ -207,32 +207,32 @@ theorem degree_xiShiftedAdaptiveNullGaugeLowerResidualPolynomial_lt_contact
           (hA2deg.le.trans (by omega))
     · exact (Polynomial.natDegree_smul_le _ _).trans
         (natDegree_xiShiftedBoundaryAdaptiveShearPolynomial_le hA hAdeg)
-  have hcoeffA2X2top : (A ^ 2 * X ^ 2).coeff (2 * N + 2) = 1 := by
+  have hcoeffA2X2top : (A ^ (2 : ℕ) * X ^ (2 : ℕ)).coeff (2 * N + 2) = 1 := by
     rw [← hA2X2deg]
     exact hA2X2.coeff_natDegree
-  have hcoeffA2Xtop : (A ^ 2 * X).coeff (2 * N + 1) = 1 := by
+  have hcoeffA2Xtop : (A ^ (2 : ℕ) * X).coeff (2 * N + 1) = 1 := by
     rw [← hA2Xdeg]
     exact hA2X.coeff_natDegree
-  have hcoeffA2X2next : (A ^ 2 * X ^ 2).coeff (2 * N + 1) =
+  have hcoeffA2X2next : (A ^ (2 : ℕ) * X ^ (2 : ℕ)).coeff (2 * N + 1) =
       2 * A.nextCoeff := by
     by_cases hN : N = 0
     · have hAone := Polynomial.eq_one_of_monic_natDegree_zero hA (hAdeg.trans hN)
       subst A
       subst N
       norm_num [Polynomial.nextCoeff]
-    · have hA2pos : 0 < (A ^ 2).natDegree := by rw [hA2deg]; omega
-      have hnext : (A ^ 2).nextCoeff = 2 * A.nextCoeff := by
+    · have hA2pos : 0 < (A ^ (2 : ℕ)).natDegree := by rw [hA2deg]; omega
+      have hnext : (A ^ (2 : ℕ)).nextCoeff = 2 * A.nextCoeff := by
         rw [hA.nextCoeff_pow]
         norm_num
-      have hcoeff : (A ^ 2).coeff (2 * N - 1) = 2 * A.nextCoeff := by
+      have hcoeff : (A ^ (2 : ℕ)).coeff (2 * N - 1) = 2 * A.nextCoeff := by
         rw [← hnext, Polynomial.nextCoeff_of_natDegree_pos hA2pos, hA2deg]
       have hindex : 2 * N - 1 + 2 = 2 * N + 1 := by omega
       rw [← hindex, Polynomial.coeff_mul_X_pow, hcoeff]
   have htop : (xiShiftedAdaptiveNullGaugeLowerResidualPolynomial A N).coeff
       (2 * N + 2) = 0 := by
-    have hA2Xzero : (A ^ 2 * X).coeff (2 * N + 2) = 0 :=
+    have hA2Xzero : (A ^ (2 : ℕ) * X).coeff (2 * N + 2) = 0 :=
       Polynomial.coeff_eq_zero_of_natDegree_lt (by rw [hA2Xdeg]; omega)
-    have hA2zero : (A ^ 2).coeff (2 * N + 2) = 0 :=
+    have hA2zero : (A ^ (2 : ℕ)).coeff (2 * N + 2) = 0 :=
       Polynomial.coeff_eq_zero_of_natDegree_lt (by rw [hA2deg]; omega)
     simp only [xiShiftedAdaptiveNullGaugeLowerResidualPolynomial, Polynomial.coeff_sub,
       Polynomial.coeff_add, Polynomial.coeff_smul, smul_eq_mul]
@@ -242,7 +242,7 @@ theorem degree_xiShiftedAdaptiveNullGaugeLowerResidualPolynomial_lt_contact
     ring
   have hnext : (xiShiftedAdaptiveNullGaugeLowerResidualPolynomial A N).coeff
       (2 * N + 1) = 0 := by
-    have hA2zero : (A ^ 2).coeff (2 * N + 1) = 0 :=
+    have hA2zero : (A ^ (2 : ℕ)).coeff (2 * N + 1) = 0 :=
       Polynomial.coeff_eq_zero_of_natDegree_lt (by rw [hA2deg]; omega)
     simp only [xiShiftedAdaptiveNullGaugeLowerResidualPolynomial, Polynomial.coeff_sub,
       Polynomial.coeff_add, Polynomial.coeff_smul, smul_eq_mul]
@@ -349,9 +349,9 @@ theorem two_mul_coeff_two_xiShiftedAdaptiveNullGaugeMomentSourceSeries_sub_lower
     let A := P * X ^ m
     2 * PowerSeries.coeff 2
           (xiShiftedAdaptiveNullGaugeSourceSeries
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) A (n + m)) -
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) A (n + m)) -
         2 * HTGeometry.momentFunctional
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
           (xiShiftedAdaptiveNullGaugeLowerResidualPolynomial A (n + m)) =
       ((2 * (n + m) + 1 : ℕ) : ℝ) *
         (xiShiftedBoundaryArchimedeanAggregate w 2
@@ -388,16 +388,16 @@ theorem coeff_two_xiShiftedAdaptiveNullGaugeSourceSeries_eq_adaptiveShear
       ((2 * N + 1 : ℕ) : ℝ) *
         (((2 * N + 1 : ℕ) : ℝ) * A.nextCoeff * a (2 * N + 1) +
           ((N + 1 : ℕ) : ℝ) * a (2 * N + 2)) := by
-  have hA2deg : (A ^ 2).natDegree = 2 * N := by
+  have hA2deg : (A ^ (2 : ℕ)).natDegree = 2 * N := by
     rw [pow_two, hA.natDegree_mul hA, hAdeg]
     omega
-  have hzero0 : HTGeometry.momentFunctional a (A ^ 2) = 0 := by
+  have hzero0 : HTGeometry.momentFunctional a (A ^ (2 : ℕ)) = 0 := by
     apply HTGeometry.momentFunctional_eq_zero_of_sequence_eq_zero_below hzero
     omega
-  have hfirst : HTGeometry.momentFunctional a (A ^ 2 * X) = a (2 * N + 1) := by
+  have hfirst : HTGeometry.momentFunctional a (A ^ (2 : ℕ) * X) = a (2 * N + 1) := by
     simpa using HTGeometry.momentFunctional_monic_first_contact
       (d := 1) hA hAdeg (by omega) hzero
-  have hsecond : HTGeometry.momentFunctional a (A ^ 2 * X ^ 2) =
+  have hsecond : HTGeometry.momentFunctional a (A ^ (2 : ℕ) * X ^ (2 : ℕ)) =
       A.nextCoeff * 2 * a (2 * N + 1) + a (2 * N + 2) := by
     rw [momentFunctional_eq_two_top_of_sequence_eq_zero_below hzero]
     · by_cases hN : N = 0
@@ -406,23 +406,23 @@ theorem coeff_two_xiShiftedAdaptiveNullGaugeSourceSeries_eq_adaptiveShear
         subst A
         subst N
         norm_num [Polynomial.nextCoeff]
-      · have hA2 : (A ^ 2).Monic := hA.pow 2
-        have hA2pos : 0 < (A ^ 2).natDegree := by rw [hA2deg]; omega
-        have hnext : (A ^ 2).coeff (2 * N - 1) = 2 * A.nextCoeff := by
+      · have hA2 : (A ^ (2 : ℕ)).Monic := hA.pow 2
+        have hA2pos : 0 < (A ^ (2 : ℕ)).natDegree := by rw [hA2deg]; omega
+        have hnext : (A ^ (2 : ℕ)).coeff (2 * N - 1) = 2 * A.nextCoeff := by
           rw [← hA2deg, ← Polynomial.nextCoeff_of_natDegree_pos hA2pos,
             hA.nextCoeff_pow]
           simp
         have hsub : 2 * N - 1 + 2 = 2 * N + 1 := by omega
-        have htop : (A ^ 2 * X ^ 2).coeff (2 * N + 2) = 1 := by
+        have htop : (A ^ (2 : ℕ) * X ^ (2 : ℕ)).coeff (2 * N + 2) = 1 := by
           rw [Polynomial.coeff_mul_X_pow, ← hA2deg,
             hA2.coeff_natDegree]
-        have hnextShift : (A ^ 2 * X ^ 2).coeff (2 * N + 1) =
+        have hnextShift : (A ^ (2 : ℕ) * X ^ (2 : ℕ)).coeff (2 * N + 1) =
             2 * A.nextCoeff := by
           rw [← hsub, Polynomial.coeff_mul_X_pow, hnext]
         rw [hnextShift, htop]
         ring
     · calc
-        (A ^ 2 * X ^ 2).natDegree = 2 * N + 2 := by
+        (A ^ (2 : ℕ) * X ^ (2 : ℕ)).natDegree = 2 * N + 2 := by
           rw [(hA.pow 2).natDegree_mul (Polynomial.monic_X_pow 2),
             Polynomial.natDegree_pow, hAdeg, Polynomial.natDegree_X_pow]
         _ ≤ (2 * N + 1) + 1 := by omega
@@ -541,12 +541,12 @@ theorem two_mul_coeff_two_xiShiftedAdaptiveNullGaugeSourceSeries_eq_arch_add_dis
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (c : Fin (n + 1) → ℝ)
     (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0) :
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     let A := P * X ^ m
     2 * PowerSeries.coeff 2
         (xiShiftedAdaptiveNullGaugeSourceSeries
-          (xiShiftedHankelBoundaryPadeDefect (w ^ 2) c) A (n + m)) =
+          (xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c) A (n + m)) =
       ((2 * (n + m) + 1 : ℕ) : ℝ) *
         (xiShiftedBoundaryArchimedeanAggregate w 2
             (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
@@ -578,14 +578,14 @@ theorem exists_xiShiftedAdaptiveNullGaugeCorrectedSource_neg_on_outgoingRay_of_g
     (hleft : ∀ᶠ u in nhdsWithin (0 : ℝ) (Set.Ioi 0),
       ¬ (xiShiftedMomentHankelMatrix (y - u) (n + 1)).PosSemidef) :
     ∃ m : ℕ, ∃ w : ℝ,
-      1 / 2 < w ∧ y < w ^ 2 ∧
+      1 / 2 < w ∧ y < w ^ (2 : ℕ) ∧
       let P := HTGeometry.finiteHankelNullMonicPolynomial c
       let A := P * X ^ m
       2 * PowerSeries.coeff 2
             (xiShiftedAdaptiveNullGaugeSourceSeries
-              (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) A (n + m)) -
+              (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) A (n + m)) -
           2 * HTGeometry.momentFunctional
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
             (xiShiftedAdaptiveNullGaugeLowerResidualPolynomial A (n + m)) < 0 := by
   obtain ⟨m, w, hw, hyw, hsource⟩ :=
     exists_xiShiftedCompletedAdaptiveSource_neg_on_outgoingRay_of_genuine_crossing

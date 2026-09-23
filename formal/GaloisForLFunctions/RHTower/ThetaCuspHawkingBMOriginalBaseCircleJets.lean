@@ -105,7 +105,7 @@ theorem weighted_horizontal_second (a b : ℕ) (f : P → ℂ) (hf : ContDiffOn 
 theorem weighted_height_second (a b : ℕ) (f : P → ℂ) (hf : ContDiffOn ℝ ∞ f domain)
     (d theta x k : ℝ) :
     deriv (deriv (fun t => weighted a b f d theta x t)) k=
-      ((a:ℂ)+(b:ℂ))^2*weighted a b f d theta x k+
+      ((a:ℂ)+(b:ℂ))^(2 : ℕ)*weighted a b f d theta x k+
       (2*((a:ℂ)+(b:ℂ))+1)*(weighted (a+1) b (coordDeriv 0 f) d theta x k+
         weighted a (b+1) (coordDeriv 1 f) d theta x k)+
       weighted (a+2) b (coordDeriv 0 (coordDeriv 0 f)) d theta x k+

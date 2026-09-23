@@ -72,19 +72,19 @@ theorem chebWidthOne_eq (N : ℝ) :
 
 /-- The square of the smoothing ratio, as an exponential. -/
 theorem sq_chebRatioOne_le (N : ℝ) :
-    (chebRatioOne N + 2) ^ 2 ≤ 9 * Real.exp (Real.sqrt (Real.log N) / 120000) := by
+    (chebRatioOne N + 2) ^ (2 : ℕ) ≤ 9 * Real.exp (Real.sqrt (Real.log N) / 120000) := by
   have h1 : (1 : ℝ) ≤ chebRatioOne N := one_le_chebRatioOne N
-  have hsq : chebRatioOne N ^ 2 = Real.exp (Real.sqrt (Real.log N) / 120000) := by
+  have hsq : chebRatioOne N ^ (2 : ℕ) = Real.exp (Real.sqrt (Real.log N) / 120000) := by
     rw [chebRatioOne, sq, ← Real.exp_add]
     ring_nf
-  calc (chebRatioOne N + 2) ^ 2 ≤ (3 * chebRatioOne N) ^ 2 := by nlinarith
-    _ = 9 * chebRatioOne N ^ 2 := by ring
+  calc (chebRatioOne N + 2) ^ (2 : ℕ) ≤ (3 * chebRatioOne N) ^ (2 : ℕ) := by nlinarith
+    _ = 9 * chebRatioOne N ^ (2 : ℕ) := by ring
     _ = 9 * Real.exp (Real.sqrt (Real.log N) / 120000) := by rw [hsq]
 
 /-- **A square is absorbed by an exponential, at any rate.**  From `x + 1 ≤ exp x` squared.  The
 Möbius chain's `sq_le_exp_div` is the case `k = 108`. -/
 theorem sq_le_exp_div_gen {t k : ℝ} (ht : 0 ≤ t) (hk : 0 < k) :
-    t ^ 2 ≤ 4 * k ^ 2 * Real.exp (t / k) := by
+    t ^ (2 : ℕ) ≤ 4 * k ^ (2 : ℕ) * Real.exp (t / k) := by
   have h := Real.add_one_le_exp (t / (2 * k))
   have hle : t ≤ 2 * k * Real.exp (t / (2 * k)) := by
     have hk2 : (0 : ℝ) < 2 * k := by linarith
@@ -92,7 +92,7 @@ theorem sq_le_exp_div_gen {t k : ℝ} (ht : 0 ≤ t) (hk : 0 < k) :
     have hmul := mul_le_mul_of_nonneg_left hdiv hk2.le
     have heq : 2 * k * (t / (2 * k)) = t := by field_simp
     linarith [hmul, heq]
-  have hexp : Real.exp (t / (2 * k)) ^ 2 = Real.exp (t / k) := by
+  have hexp : Real.exp (t / (2 * k)) ^ (2 : ℕ) = Real.exp (t / k) := by
     rw [sq, ← Real.exp_add]
     congr 1
     field_simp

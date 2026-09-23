@@ -106,9 +106,9 @@ theorem isConnected_green_superlevel (c : ℂ) {s : ℝ} (hs : 0 < s) :
       have h1 : Real.exp (s + 2) < ‖z‖ := lt_of_le_of_lt (le_max_right _ _) hz
       calc s + 2 = Real.log (Real.exp (s + 2)) := (Real.log_exp _).symm
         _ < Real.log ‖z‖ := Real.log_lt_log (Real.exp_pos _) h1
-    have hcorr : 2 * ‖c‖ / ‖z‖ ^ 2 ≤ 1 := by
-      have hz2 : 2 * ‖c‖ ≤ ‖z‖ ^ 2 := by nlinarith [norm_nonneg c]
-      rw [div_le_one (by nlinarith [norm_nonneg c] : (0:ℝ) < ‖z‖ ^ 2)]
+    have hcorr : 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ) ≤ 1 := by
+      have hz2 : 2 * ‖c‖ ≤ ‖z‖ ^ (2 : ℕ) := by nlinarith [norm_nonneg c]
+      rw [div_le_one (by nlinarith [norm_nonneg c] : (0:ℝ) < ‖z‖ ^ (2 : ℕ))]
       exact hz2
     show s < greenFunctionDyn c z
     unfold greenFunctionDyn

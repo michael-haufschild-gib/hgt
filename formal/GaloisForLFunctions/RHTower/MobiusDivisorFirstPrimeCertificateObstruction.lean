@@ -22,7 +22,7 @@ namespace RHTower
 private lemma gamma_lower : (0.5768:ℝ) ≤ Real.eulerMascheroniConstant := by
   have h := (harmonic_mascheroni_half_bounds (n := 16) (by norm_num)).2
   have hlog : Real.log (16:ℝ)=4*Real.log 2 := by
-    rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]
+    rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]
     norm_num
   norm_num [harmonic,Finset.sum_range_succ,hlog] at h
   linarith [Real.log_two_lt_d9]
@@ -37,18 +37,18 @@ private lemma mean_upper :
 private lemma defect_eleven_lower : (1.175:ℝ) ≤ primeFreeDivisorDefect 11 := by
   have h7 := log_le_half_sub_inv (x := (8:ℝ)/7) (by norm_num)
   have h8 : Real.log (8:ℝ)=3*Real.log 2 := by
-    rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num
+    rw [show (8:ℝ)=2^(3 : ℕ) by norm_num,Real.log_pow]; norm_num
   rw [Real.log_div (by norm_num) (by norm_num),h8] at h7
   norm_num at h7
-  have h11 := Real.log_le_log (by norm_num : (0:ℝ)<2^8*5)
-    (by norm_num : (2:ℝ)^8*5≤11^3)
+  have h11 := Real.log_le_log (by norm_num : (0:ℝ)<2^(8 : ℕ)*5)
+    (by norm_num : (2:ℝ)^(8 : ℕ)*5≤11^(3 : ℕ))
   rw [Real.log_mul (by norm_num) (by norm_num)] at h11
   simp only [Real.log_pow, Nat.cast_ofNat] at h11
   have h4 : Real.log 4=2*Real.log 2 := Real.log_four_eq
   have h6 : Real.log 6=Real.log 2+Real.log 3 := by
     rw [← Real.log_mul (by norm_num : (2:ℝ)≠0) (by norm_num : (3:ℝ)≠0)]; norm_num
   have h9 : Real.log 9=2*Real.log 3 := by
-    rw [show (9:ℝ)=3^2 by norm_num,Real.log_pow]; norm_num
+    rw [show (9:ℝ)=3^(2 : ℕ) by norm_num,Real.log_pow]; norm_num
   have h10 : Real.log 10=Real.log 2+Real.log 5 := by
     rw [← Real.log_mul (by norm_num : (2:ℝ)≠0) (by norm_num : (5:ℝ)≠0)]; norm_num
   norm_num [primeFreeDivisorDefect,Finset.sum_Icc_succ_top,h4,h6,h8,h9,h10]
@@ -110,11 +110,11 @@ private lemma twelve_head_defect :
   have hmax : Real.sqrt (12*p:ℕ)/4000 ≤ max (-mobiusDivisorOrientedFibre (12*p) {p} ∅) 0 :=
     hlow.trans (le_max_left _ _)
   have hsq := mul_self_le_mul_self (by positivity : 0≤Real.sqrt (12*p:ℕ)/4000) hmax
-  have hsum : (max (-mobiusDivisorOrientedFibre (12*p) {p} ∅) 0)^2 ≤
+  have hsum : (max (-mobiusDivisorOrientedFibre (12*p) {p} ∅) 0)^(2 : ℕ) ≤
       mobiusDivisorParityDefectEnergy (12*p) {p} := by
     unfold mobiusDivisorParityDefectEnergy
     exact Finset.single_le_sum
-      (f := fun R : Finset ℕ => (max (-mobiusDivisorOrientedFibre (12*p) {p} R) 0)^2)
+      (f := fun R : Finset ℕ => (max (-mobiusDivisorOrientedFibre (12*p) {p} R) 0)^(2 : ℕ))
       (fun R _ => sq_nonneg _) (mem_powerset.mpr (empty_subset _))
   have hs := Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) (12*p))
   norm_num only [Nat.cast_mul,Nat.cast_ofNat] at hs hsq
@@ -135,13 +135,13 @@ private lemma twelve_release_upper {p : ℕ} (hp : p.Prime) :
     mobiusDivisorSelectionEnergy (12*p) ∅-mobiusDivisorSelectionEnergy (12*p) {p} ≤
       14112*(p:ℝ) := by
   let M := 12*p
-  let f := fun d => (((ArithmeticFunction.moebius d:ℤ):ℝ)^2*
+  let f := fun d => (((ArithmeticFunction.moebius d:ℤ):ℝ)^(2 : ℕ)*
       divisorUnsignedDilationChannel M d*divisorUnsignedDilationChannel M (p*d))
   have hnon (d : ℕ) : 0≤f d := mul_nonneg
     (mul_nonneg (sq_nonneg _) (divisorUnsignedDilationChannel_nonneg M d))
     (divisorUnsignedDilationChannel_nonneg M (p*d))
   have hterm (d : ℕ) : f d≤49*(M:ℝ) := by
-    have hmu : (((ArithmeticFunction.moebius d:ℤ):ℝ))^2≤1 := by
+    have hmu : (((ArithmeticFunction.moebius d:ℤ):ℝ))^(2 : ℕ)≤1 := by
       have h : |((ArithmeticFunction.moebius d:ℤ):ℝ)|≤1 := by
         exact_mod_cast (ArithmeticFunction.abs_moebius_le_one (n:=d))
       obtain ⟨hl,hu⟩ := abs_le.mp h
@@ -189,7 +189,7 @@ private lemma twelve_release_upper {p : ℕ} (hp : p.Prime) :
 
 private lemma twelve_diagonal_lower :
     ∃ b : ℝ, 0<b ∧ ∃ T : ℕ, ∀ p : ℕ, T≤p →
-      b*(p:ℝ)^2 ≤ mobiusDivisorSelectionEnergy (12*p) ∅ := by
+      b*(p:ℝ)^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy (12*p) ∅ := by
   obtain ⟨c,hc,T,hT,h⟩ := exists_mobiusDivisorSelectionEnergy_first_prime_reserve
   refine ⟨72*c,by positivity,T,?_⟩
   intro p hpT
@@ -204,7 +204,7 @@ private lemma twelve_diagonal_lower :
 while both defect energy and released reserve have linear bounds in the selected prime. -/
 theorem exists_firstPrime_twelve_energy_balance :
     ∃ b : ℝ, 0<b ∧ ∃ T : ℕ, ∀ p : ℕ, T≤p → p.Prime →
-      b*(p:ℝ)^2-136130*(p:ℝ) ≤ mobiusDivisorParityGoodEnergy (12*p) {p} ∧
+      b*(p:ℝ)^(2 : ℕ)-136130*(p:ℝ) ≤ mobiusDivisorParityGoodEnergy (12*p) {p} ∧
       (p:ℝ)/2000000 ≤ mobiusDivisorParityDefectEnergy (12*p) {p} ∧
       mobiusDivisorParityDefectEnergy (12*p) {p} ≤ 122018*(p:ℝ) ∧
       0 ≤ mobiusDivisorSelectionEnergy (12*p) ∅-mobiusDivisorSelectionEnergy (12*p) {p} ∧
@@ -236,16 +236,16 @@ theorem exists_firstPrime_twelve_geometric_excess (L : ℝ) :
   obtain ⟨Td,hTd,hD⟩ := twelve_head_defect
   let K := |L|+14113
   have hK : 0<K := by dsimp [K]; positivity
-  obtain ⟨N,hN⟩ := exists_nat_gt ((2000000*K^2+136130)/b)
+  obtain ⟨N,hN⟩ := exists_nat_gt ((2000000*K^(2 : ℕ)+136130)/b)
   refine ⟨max Tb (max Td N),?_⟩
   intro p hpT hp
   have hpp : (0:ℝ)<p := by exact_mod_cast hp.pos
   have hpB : Tb≤p := (le_max_left _ _).trans hpT
   have hpD : Td≤p := (le_max_left _ _).trans ((le_max_right _ _).trans hpT)
   have hpN : N≤p := (le_max_right _ _).trans ((le_max_right _ _).trans hpT)
-  have hsize : 2000000*K^2+136130 ≤ b*(p:ℝ) := by
+  have hsize : 2000000*K^(2 : ℕ)+136130 ≤ b*(p:ℝ) := by
     have hpNr : (N:ℝ)≤p := by exact_mod_cast hpN
-    have hs : (2000000*K^2+136130)/b≤p := hN.le.trans hpNr
+    have hs : (2000000*K^(2 : ℕ)+136130)/b≤p := hN.le.trans hpNr
     have hm := (div_le_iff₀ hb).mp hs
     nlinarith only [hm]
   let G := mobiusDivisorParityGoodEnergy (12*p) {p}
@@ -260,15 +260,15 @@ theorem exists_firstPrime_twelve_geometric_excess (L : ℝ) :
   change G+D=_ at henergy
   change D≤_ at hdUpper
   change _≤D at hdLower
-  have hgLower : 2000000*K^2*(p:ℝ)≤G := by
+  have hgLower : 2000000*K^(2 : ℕ)*(p:ℝ)≤G := by
     have hs := mul_le_mul_of_nonneg_right hsize hpp.le
     nlinarith only [hs,hbase,hrelease,hdUpper,henergy]
-  have hprod : K^2*(p:ℝ)^2≤G*D := by
+  have hprod : K^(2 : ℕ)*(p:ℝ)^(2 : ℕ)≤G*D := by
     calc
-      _ = (2000000*K^2*(p:ℝ))*((p:ℝ)/2000000) := by ring
+      _ = (2000000*K^(2 : ℕ)*(p:ℝ))*((p:ℝ)/2000000) := by ring
       _ ≤ G*D := mul_le_mul hgLower hdLower (by positivity) hg0
   have hroots : K*(p:ℝ)≤Real.sqrt G*Real.sqrt D := by
-    have hs : (Real.sqrt G*Real.sqrt D)^2=G*D := by
+    have hs : (Real.sqrt G*Real.sqrt D)^(2 : ℕ)=G*D := by
       rw [mul_pow,Real.sq_sqrt hg0,Real.sq_sqrt hd0]
     have hn : 0≤Real.sqrt G*Real.sqrt D := mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
     nlinarith [mul_pos hK hpp]

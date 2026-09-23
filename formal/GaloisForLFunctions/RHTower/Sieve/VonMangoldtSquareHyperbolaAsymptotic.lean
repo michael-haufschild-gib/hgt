@@ -19,10 +19,10 @@ theorem monotone_vonMangoldtSquareHyperbolaMass :
   intro M N hMN
   rw [vonMangoldtSquareHyperbolaMass, vonMangoldtSquareHyperbolaMass]
   calc
-    ∑ d ∈ Finset.Icc 1 M, (Λ d) ^ 2 / (d : ℝ) *
-        ∑ m ∈ Finset.Icc 1 (M / d), (Λ m) ^ 2 / (m : ℝ) ≤
-      ∑ d ∈ Finset.Icc 1 M, (Λ d) ^ 2 / (d : ℝ) *
-        ∑ m ∈ Finset.Icc 1 (N / d), (Λ m) ^ 2 / (m : ℝ) := by
+    ∑ d ∈ Finset.Icc 1 M, (Λ d) ^ (2 : ℕ) / (d : ℝ) *
+        ∑ m ∈ Finset.Icc 1 (M / d), (Λ m) ^ (2 : ℕ) / (m : ℝ) ≤
+      ∑ d ∈ Finset.Icc 1 M, (Λ d) ^ (2 : ℕ) / (d : ℝ) *
+        ∑ m ∈ Finset.Icc 1 (N / d), (Λ m) ^ (2 : ℕ) / (m : ℝ) := by
           apply Finset.sum_le_sum
           intro d hd
           have hdiv : M / d ≤ N / d := Nat.div_le_div_right hMN
@@ -32,8 +32,8 @@ theorem monotone_vonMangoldtSquareHyperbolaMass :
               simp only [Finset.mem_Icc] at hm ⊢
               exact ⟨hm.1, hm.2.trans hdiv⟩)
               (fun m hm hnot => by positivity)) (by positivity)
-    _ ≤ ∑ d ∈ Finset.Icc 1 N, (Λ d) ^ 2 / (d : ℝ) *
-        ∑ m ∈ Finset.Icc 1 (N / d), (Λ m) ^ 2 / (m : ℝ) := by
+    _ ≤ ∑ d ∈ Finset.Icc 1 N, (Λ d) ^ (2 : ℕ) / (d : ℝ) *
+        ∑ m ∈ Finset.Icc 1 (N / d), (Λ m) ^ (2 : ℕ) / (m : ℝ) := by
           apply Finset.sum_le_sum_of_subset_of_nonneg
           · intro d hd
             simp only [Finset.mem_Icc] at hd ⊢
@@ -76,7 +76,7 @@ private theorem tendsto_binaryLog_ratio_pred :
 private theorem tendsto_dyadic_lower_envelope :
     Tendsto (fun N : ℕ =>
       vonMangoldtSquareHyperbolaMass (2 ^ Nat.log 2 N) /
-        (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ 4)
+        (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ (4 : ℕ))
       atTop (𝓝 (1 / 24 : ℝ)) := by
   have hD := tendsto_vonMangoldtSquareHyperbolaMass_pow_two_div_logFourth.comp
     tendsto_binaryLog_atTop
@@ -84,9 +84,9 @@ private theorem tendsto_dyadic_lower_envelope :
   have hprod := hD.mul hr
   have hfinal : Tendsto (fun N : ℕ =>
       (vonMangoldtSquareHyperbolaMass (2 ^ Nat.log 2 N) /
-        ((Nat.log 2 N : ℝ) * Real.log 2) ^ 4) *
-      ((Nat.log 2 N : ℝ) / ((Nat.log 2 N : ℝ) + 1)) ^ 4)
-      atTop (𝓝 ((1 / 24 : ℝ) * 1 ^ 4)) := hprod
+        ((Nat.log 2 N : ℝ) * Real.log 2) ^ (4 : ℕ)) *
+      ((Nat.log 2 N : ℝ) / ((Nat.log 2 N : ℝ) + 1)) ^ (4 : ℕ))
+      atTop (𝓝 ((1 / 24 : ℝ) * 1 ^ (4 : ℕ))) := hprod
   simpa only [one_pow, mul_one] using hfinal.congr' (by
     filter_upwards [tendsto_binaryLog_atTop.eventually (eventually_gt_atTop 0)] with N hlog
     have hlogR : (Nat.log 2 N : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hlog)
@@ -96,7 +96,7 @@ private theorem tendsto_dyadic_lower_envelope :
 private theorem tendsto_dyadic_upper_envelope :
     Tendsto (fun N : ℕ =>
       vonMangoldtSquareHyperbolaMass (2 ^ (Nat.log 2 N + 1)) /
-        ((Nat.log 2 N : ℝ) * Real.log 2) ^ 4)
+        ((Nat.log 2 N : ℝ) * Real.log 2) ^ (4 : ℕ))
       atTop (𝓝 (1 / 24 : ℝ)) := by
   have hlogSucc : Tendsto (fun N : ℕ => Nat.log 2 N + 1) atTop atTop := by
     apply tendsto_atTop.2
@@ -105,21 +105,21 @@ private theorem tendsto_dyadic_upper_envelope :
     omega
   have hD' : Tendsto (fun N : ℕ =>
       vonMangoldtSquareHyperbolaMass (2 ^ (Nat.log 2 N + 1)) /
-        (((Nat.log 2 N + 1 : ℕ) : ℝ) * Real.log 2) ^ 4)
+        (((Nat.log 2 N + 1 : ℕ) : ℝ) * Real.log 2) ^ (4 : ℕ))
       atTop (nhds (1 / 24 : ℝ)) :=
     tendsto_vonMangoldtSquareHyperbolaMass_pow_two_div_logFourth.comp hlogSucc
   have hD : Tendsto (fun N : ℕ =>
       vonMangoldtSquareHyperbolaMass (2 ^ (Nat.log 2 N + 1)) /
-        (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ 4)
+        (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ (4 : ℕ))
       atTop (nhds (1 / 24 : ℝ)) := by
     simpa only [Nat.cast_add, Nat.cast_one] using hD'
   have hr := tendsto_binaryLog_ratio_succ.pow 4
   have hprod := hD.mul hr
   have hfinal : Tendsto (fun N : ℕ =>
       (vonMangoldtSquareHyperbolaMass (2 ^ (Nat.log 2 N + 1)) /
-        (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ 4) *
-      (((Nat.log 2 N : ℝ) + 1) / (Nat.log 2 N : ℝ)) ^ 4)
-      atTop (𝓝 ((1 / 24 : ℝ) * 1 ^ 4)) := hprod
+        (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ (4 : ℕ)) *
+      (((Nat.log 2 N : ℝ) + 1) / (Nat.log 2 N : ℝ)) ^ (4 : ℕ))
+      atTop (𝓝 ((1 / 24 : ℝ) * 1 ^ (4 : ℕ))) := hprod
   simpa only [one_pow, mul_one] using hfinal.congr' (by
     filter_upwards [tendsto_binaryLog_atTop.eventually (eventually_gt_atTop 0)] with N hlog
     have hlogR : (Nat.log 2 N : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hlog)
@@ -129,7 +129,7 @@ private theorem tendsto_dyadic_upper_envelope :
 /-- Sharp all-cutoff asymptotic for square-weight harmonic hyperbola. -/
 theorem tendsto_vonMangoldtSquareHyperbolaMass_div_logFourth :
     Tendsto (fun N : ℕ =>
-      vonMangoldtSquareHyperbolaMass N / Real.log N ^ 4)
+      vonMangoldtSquareHyperbolaMass N / Real.log N ^ (4 : ℕ))
       atTop (𝓝 (1 / 24 : ℝ)) := by
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le'
     tendsto_dyadic_lower_envelope tendsto_dyadic_upper_envelope
@@ -157,10 +157,10 @@ theorem tendsto_vonMangoldtSquareHyperbolaMass_div_logFourth :
     have hlogN : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN)
     calc
       vonMangoldtSquareHyperbolaMass (2 ^ Nat.log 2 N) /
-          (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ 4 ≤
+          (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ (4 : ℕ) ≤
         vonMangoldtSquareHyperbolaMass N /
-          (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ 4 := by gcongr
-      _ ≤ vonMangoldtSquareHyperbolaMass N / Real.log N ^ 4 := by
+          (((Nat.log 2 N : ℝ) + 1) * Real.log 2) ^ (4 : ℕ) := by gcongr
+      _ ≤ vonMangoldtSquareHyperbolaMass N / Real.log N ^ (4 : ℕ) := by
         gcongr
   · filter_upwards [eventually_ge_atTop 2] with N hN
     have hN0 : N ≠ 0 := by omega
@@ -177,15 +177,15 @@ theorem tendsto_vonMangoldtSquareHyperbolaMass_div_logFourth :
     have hH0 := vonMangoldtSquareHyperbolaMass_nonneg (2 ^ (Nat.log 2 N + 1))
     have hlogN : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN)
     calc
-      vonMangoldtSquareHyperbolaMass N / Real.log N ^ 4 ≤
+      vonMangoldtSquareHyperbolaMass N / Real.log N ^ (4 : ℕ) ≤
         vonMangoldtSquareHyperbolaMass (2 ^ (Nat.log 2 N + 1)) /
-          Real.log N ^ 4 := by gcongr
+          Real.log N ^ (4 : ℕ) := by gcongr
       _ ≤ vonMangoldtSquareHyperbolaMass (2 ^ (Nat.log 2 N + 1)) /
-          ((Nat.log 2 N : ℝ) * Real.log 2) ^ 4 := by
+          ((Nat.log 2 N : ℝ) * Real.log 2) ^ (4 : ℕ) := by
         have hlogNat : 1 ≤ Nat.log 2 N :=
           Nat.le_log_of_pow_le (by norm_num) (by simpa using hN)
         have hlogR : 0 < (Nat.log 2 N : ℝ) := by exact_mod_cast hlogNat
-        have hden : 0 < ((Nat.log 2 N : ℝ) * Real.log 2) ^ 4 := by positivity
+        have hden : 0 < ((Nat.log 2 N : ℝ) * Real.log 2) ^ (4 : ℕ) := by positivity
         gcongr
 
 end RHTower.Sieve

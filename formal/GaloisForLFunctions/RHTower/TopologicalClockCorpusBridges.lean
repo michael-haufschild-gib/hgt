@@ -12,13 +12,13 @@ noncomputable section
 namespace GaloisForLFunctions.RHTower.TopologicalClockApplications
 
 theorem riceMeleNormSq_zero (J delta Delta : ℝ) :
-    riceMeleNormSq J delta Delta 0 = Delta ^ 2 + 4 * J ^ 2 := by
+    riceMeleNormSq J delta Delta 0 = Delta ^ (2 : ℕ) + 4 * J ^ (2 : ℕ) := by
   rw [riceMeleNormSq_eq]
   simp
   ring
 
 theorem riceMeleNormSq_pi (J delta Delta : ℝ) :
-    riceMeleNormSq J delta Delta Real.pi = Delta ^ 2 + 4 * J ^ 2 * delta ^ 2 := by
+    riceMeleNormSq J delta Delta Real.pi = Delta ^ (2 : ℕ) + 4 * J ^ (2 : ℕ) * delta ^ (2 : ℕ) := by
   rw [riceMeleNormSq_eq, Real.cos_pi]
   ring
 
@@ -27,28 +27,28 @@ theorem normalizedPump_zoneEdge_minimal (k tau : ℝ) :
       riceMeleNormSq 1 (normalizedPumpDelta tau) (normalizedPumpMass tau) k := by
   rw [normalizedPump_normSq_decomposition, normalizedPump_normSq_decomposition]
   simp only [Real.cos_pi]
-  have hcosSq : Real.cos tau ^ 2 ≤ 1 := by
+  have hcosSq : Real.cos tau ^ (2 : ℕ) ≤ 1 := by
     nlinarith [Real.neg_one_le_cos tau, Real.cos_le_one tau]
-  have hfactor : 0 ≤ 1 - (1 / 4 : ℝ) * Real.cos tau ^ 2 := by nlinarith
+  have hfactor : 0 ≤ 1 - (1 / 4 : ℝ) * Real.cos tau ^ (2 : ℕ) := by nlinarith
   have hbase : 0 ≤ 1 + Real.cos k := by linarith [Real.neg_one_le_cos k]
   nlinarith [mul_nonneg hfactor hbase]
 
 theorem hasDerivAt_riceMeleNormSq (J delta Delta k : ℝ) :
     HasDerivAt (fun q => riceMeleNormSq J delta Delta q)
-      (-2 * J ^ 2 * (1 - delta ^ 2) * Real.sin k) k := by
+      (-2 * J ^ (2 : ℕ) * (1 - delta ^ (2 : ℕ)) * Real.sin k) k := by
   have hfun : (fun q => riceMeleNormSq J delta Delta q) =
-      fun q => (Delta ^ 2 + 2 * J ^ 2 * (1 + delta ^ 2)) +
-        (2 * J ^ 2 * (1 - delta ^ 2)) * Real.cos q := by
+      fun q => (Delta ^ (2 : ℕ) + 2 * J ^ (2 : ℕ) * (1 + delta ^ (2 : ℕ))) +
+        (2 * J ^ (2 : ℕ) * (1 - delta ^ (2 : ℕ))) * Real.cos q := by
     funext q
     rw [riceMeleNormSq_eq]
     ring
   rw [hfun]
   have h := (hasDerivAt_const k
-      (Delta ^ 2 + 2 * J ^ 2 * (1 + delta ^ 2))).add
-    ((Real.hasDerivAt_cos k).const_mul (2 * J ^ 2 * (1 - delta ^ 2)))
+      (Delta ^ (2 : ℕ) + 2 * J ^ (2 : ℕ) * (1 + delta ^ (2 : ℕ)))).add
+    ((Real.hasDerivAt_cos k).const_mul (2 * J ^ (2 : ℕ) * (1 - delta ^ (2 : ℕ))))
   have hderiv :
-      (0 : ℝ) + (2 * J ^ 2 * (1 - delta ^ 2)) * (-Real.sin k) =
-        -2 * J ^ 2 * (1 - delta ^ 2) * Real.sin k := by ring
+      (0 : ℝ) + (2 * J ^ (2 : ℕ) * (1 - delta ^ (2 : ℕ))) * (-Real.sin k) =
+        -2 * J ^ (2 : ℕ) * (1 - delta ^ (2 : ℕ)) * Real.sin k := by ring
   rw [← hderiv]
   exact h
 
@@ -75,7 +75,7 @@ theorem paperLinearPhase_minimumAction (C : ℤ) :
     HTGeometry.liftedPhaseAction (2 * Real.pi)
         (HTGeometry.constantSpeedPhaseLift (2 * Real.pi) (-2 * C)
           (Real.pi * (C : ℝ))) =
-      2 * Real.pi * (C : ℝ) ^ 2 := by
+      2 * Real.pi * (C : ℝ) ^ (2 : ℕ) := by
   rw [HTGeometry.liftedPhaseAction_constantSpeed (by positivity)]
   field_simp [Real.pi_ne_zero]
   push_cast
@@ -139,7 +139,7 @@ theorem paperGeometricLoop_winding (C : ℤ) :
   exact PrimeQuasiLocalCharge.scalarCircleLoopOfInt_winding (-C)
 
 theorem paperForwardBackwardReadout_winding (C : ℤ) :
-    RHTower.windingNumber (fun t => paperGeometricLoop C t ^ 2)
+    RHTower.windingNumber (fun t => paperGeometricLoop C t ^ (2 : ℕ))
         0 (2 * Real.pi) = -2 * C := by
   rw [RHTower.windingNumber_pow (paperGeometricLoop C).isLoop 2]
   change 2 * PrimeQuasiLocalCharge.scalarCircleLoopWinding (paperGeometricLoop C) = _
@@ -147,7 +147,7 @@ theorem paperForwardBackwardReadout_winding (C : ℤ) :
   ring
 
 theorem riceMeleDiracReadout_winding :
-    RHTower.windingNumber (fun t => paperGeometricLoop 1 t ^ 2)
+    RHTower.windingNumber (fun t => paperGeometricLoop 1 t ^ (2 : ℕ))
         0 (2 * Real.pi) = -2 := by
   simpa using paperForwardBackwardReadout_winding 1
 
@@ -168,7 +168,7 @@ theorem determinantHistoryCircleLoop_winding (N : ℤ) :
   exact PrimeQuasiLocalCharge.scalarCircleLoopOfInt_winding N
 
 theorem determinantHistory_clockReadout_winding (N : ℤ) :
-    RHTower.windingNumber (fun t => determinantHistoryCircleLoop N t ^ 2)
+    RHTower.windingNumber (fun t => determinantHistoryCircleLoop N t ^ (2 : ℕ))
         0 (2 * Real.pi) = 2 * N := by
   rw [RHTower.windingNumber_pow (determinantHistoryCircleLoop N).isLoop 2]
   change 2 * PrimeQuasiLocalCharge.scalarCircleLoopWinding

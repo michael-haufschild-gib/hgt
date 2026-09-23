@@ -65,7 +65,7 @@ theorem carrierCharge_eq_one_of_ne_zero (f : ℂ → ℂ) (k : ℕ) {ρ : ℂ}
 
 /-- Squaring a level-`2n` deck value gives the level-`n` value. -/
 private theorem deckRed_sq_two_mul {n : ℕ} (hn : 0 < n) (m : ℤ) :
-    deckRed (2 * n) m ^ 2 = deckRed n m := by
+    deckRed (2 * n) m ^ (2 : ℕ) = deckRed n m := by
   unfold deckRed
   rw [← Complex.exp_nat_mul]
   congr 1
@@ -75,7 +75,7 @@ private theorem deckRed_sq_two_mul {n : ℕ} (hn : 0 < n) (m : ℤ) :
 
 /-- **Dyadic coherence.**  `w_{k+1}² = w_k`: the charge descends the `2`-power tower. -/
 theorem carrierCharge_succ_sq (f : ℂ → ℂ) (k : ℕ) (ρ : ℂ) :
-    carrierCharge f (k + 1) ρ ^ 2 = carrierCharge f k ρ := by
+    carrierCharge f (k + 1) ρ ^ (2 : ℕ) = carrierCharge f k ρ := by
   unfold carrierCharge
   rw [show (2 ^ (k + 1) : ℕ) = 2 * 2 ^ k from by ring,
     deckRed_sq_two_mul (pow_pos (by norm_num) k)]
@@ -89,7 +89,7 @@ theorem carrierCharge_zero (f : ℂ → ℂ) (ρ : ℂ) : carrierCharge f 0 ρ =
 theorem carrierCharge_one_eq_neg_one_pow (f : ℂ → ℂ) (ρ : ℂ) :
     carrierCharge f 1 ρ = (-1) ^ (analyticOrderAt f ρ).toNat := by
   unfold carrierCharge deckRed
-  have harg : 2 * (Real.pi : ℂ) * I * (((analyticOrderAt f ρ).toNat : ℤ) : ℂ) / ((2 ^ 1 : ℕ) : ℂ)
+  have harg : 2 * (Real.pi : ℂ) * I * (((analyticOrderAt f ρ).toNat : ℤ) : ℂ) / ((2 ^ (1 : ℕ) : ℕ) : ℂ)
       = (((analyticOrderAt f ρ).toNat : ℕ) : ℂ) * ((Real.pi : ℂ) * I) := by
     push_cast
     ring

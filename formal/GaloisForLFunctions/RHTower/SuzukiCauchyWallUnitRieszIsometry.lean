@@ -55,7 +55,7 @@ def suzukiCauchyWallPhaseInner (x y : ℝ) : ℂ :=
   (Real.pi : ℂ)⁻¹ *
     ∫ t : ℝ,
       suzukiCauchyWallPhase x t * star (suzukiCauchyWallPhase y t) *
-        (((1 + t ^ 2 : ℝ) : ℂ))⁻¹
+        (((1 + t ^ (2 : ℕ) : ℝ) : ℂ))⁻¹
 
 /-- Cauchy height converts wall phase difference into the exponential coherent kernel. -/
 theorem suzukiCauchyWallPhaseInner_eq
@@ -65,7 +65,7 @@ theorem suzukiCauchyWallPhaseInner_eq
   have hmass :
       (∫ t : ℝ,
           suzukiCauchyWallPhase x t * star (suzukiCauchyWallPhase y t) *
-            (((1 + t ^ 2 : ℝ) : ℂ))⁻¹) =
+            (((1 + t ^ (2 : ℕ) : ℝ) : ℂ))⁻¹) =
         GaloisForLFunctions.HTGeometry.massPairing
           (GaloisForLFunctions.HTGeometry.cauchyFourierWeight ((y - x) / 2))
           0 1 := by

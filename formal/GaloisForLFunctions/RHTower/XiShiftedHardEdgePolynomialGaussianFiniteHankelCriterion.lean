@@ -23,7 +23,7 @@ namespace RHTower
 def routeUPolynomialGaussianFiniteHankelQuadratic
     (P : Polynomial ℝ) (t : {τ : ℝ // 0 < τ}) (n k N : ℕ) : ℝ :=
   xiShiftedReciprocalHankelQuadratic
-    (routeUHardEdgeMass (k : ℝ) ^ 2)
+    (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
     (xiHardEdgeLiftCoefficients (routeUHardEdgeMass (k : ℝ))
       (routeUFiniteChebyshevPacketPolynomial n
         (routeUXiHeatPhysicalReal P t) (k : ℝ) N))
@@ -45,7 +45,7 @@ theorem exists_negative_routeUPolynomialGaussianFiniteHankelQuadratic_of_not_rh
   have hcutRe : Tendsto (fun n : ℕ =>
       (∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n
-          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2).re)
+          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)).re)
       atTop (nhds (xiPolynomialGaussianHeatTraceReal P τ)) := by
     have h := (Complex.reCLM.continuous.tendsto
       (xiPolynomialGaussianHeatTrace P τ)).comp hcutLim
@@ -53,11 +53,11 @@ theorem exists_negative_routeUPolynomialGaussianFiniteHankelQuadratic_of_not_rh
         ((Complex.reCLM : ℂ → ℝ) ∘ fun n : ℕ =>
           ∑' q : XiZeroCopy,
             routeUComplexPositiveFourierExtension n
-              (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2) =
+              (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)) =
         fun n : ℕ =>
           (∑' q : XiZeroCopy,
             routeUComplexPositiveFourierExtension n
-              (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2).re := by
+              (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)).re := by
       funext n
       exact Complex.reCLM_apply _
     rw [hfun] at h
@@ -69,7 +69,7 @@ theorem exists_negative_routeUPolynomialGaussianFiniteHankelQuadratic_of_not_rh
   have hcutEventually : ∀ᶠ n : ℕ in atTop,
       (∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n
-          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2).re < 0 :=
+          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)).re < 0 :=
     hcutRe.eventually (Iio_mem_nhds htraceNeg)
   obtain ⟨n, hn⟩ := Filter.eventually_atTop.1 hcutEventually
   have hcutNeg := hn n le_rfl
@@ -80,10 +80,10 @@ theorem exists_negative_routeUPolynomialGaussianFiniteHankelQuadratic_of_not_rh
   have htarget :
       (∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n (routeURealEvenAmplitude g)
-          (xiSpectralPoint q) ^ 2) =
+          (xiSpectralPoint q) ^ (2 : ℕ)) =
       ∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n
-          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2 := by
+          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ) := by
     rw [show routeURealEvenAmplitude g = routeUXiHeatPhysicalComplex P t by
       exact routeURealEvenAmplitude_heatPhysical_eq P t]
   have hhardRe : Tendsto (fun k : ℕ =>
@@ -93,7 +93,7 @@ theorem exists_negative_routeUPolynomialGaussianFiniteHankelQuadratic_of_not_rh
       atTop
       (nhds ((∑' q : XiZeroCopy,
         routeUComplexPositiveFourierExtension n
-          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ 2).re)) := by
+          (routeUXiHeatPhysicalComplex P t) (xiSpectralPoint q) ^ (2 : ℕ)).re)) := by
     rw [← htarget]
     have h := (Complex.reCLM.continuous.tendsto _).comp hhardLim
     have hfun :
@@ -119,11 +119,11 @@ theorem exists_negative_routeUPolynomialGaussianFiniteHankelQuadratic_of_not_rh
   obtain ⟨N, hpoint, hquadEq⟩ :=
     exists_routeUExactFiniteHankelWitness n g (k : ℝ)
   refine ⟨P, t, n, k, N, ?_⟩
-  have hmass : 0 < routeUHardEdgeMass (k : ℝ) ^ 2 :=
+  have hmass : 0 < routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) :=
     sq_pos_of_pos (routeUHardEdgeMass_pos (k : ℝ))
   dsimp only [g] at hquadEq
   change xiShiftedReciprocalHankelQuadratic
-    (routeUHardEdgeMass (k : ℝ) ^ 2)
+    (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
     (xiHardEdgeLiftCoefficients (routeUHardEdgeMass (k : ℝ))
       (routeUFiniteChebyshevPacketPolynomial n
         (routeUXiHeatPhysicalReal P t) (k : ℝ) N)) < 0

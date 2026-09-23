@@ -41,7 +41,7 @@ theorem momentFunctional_finset_sum {ι : Type*} [DecidableEq ι]
 functional evaluated on the square of the corresponding polynomial. -/
 theorem dotProduct_mulVec_momentHankelMatrix (s : ℕ → ℝ) (n : ℕ) (a : Fin n → ℝ) :
     a ⬝ᵥ (momentHankelMatrix s n).mulVec a =
-      momentFunctional s ((Polynomial.ofFn n a) ^ 2) := by
+      momentFunctional s ((Polynomial.ofFn n a) ^ (2 : ℕ)) := by
   rw [Polynomial.ofFn_eq_sum_monomial, pow_two, Finset.sum_mul]
   simp_rw [Finset.mul_sum]
   rw [momentFunctional_finset_sum]
@@ -66,7 +66,7 @@ theorem momentHankelMatrix_posDef_of_infiniteSupport {μ : Measure ℝ} (s : ℕ
   intro a ha
   rw [star_trivial, dotProduct_mulVec_momentHankelMatrix]
   have hnonneg := momentFunctional_pow_two_nonneg s hs hint (Polynomial.ofFn n a)
-  have hne : momentFunctional s ((Polynomial.ofFn n a) ^ 2) ≠ 0 := by
+  have hne : momentFunctional s ((Polynomial.ofFn n a) ^ (2 : ℕ)) ≠ 0 := by
     intro hzero
     have hp := momentFunctional_pow_two_eq_zero s hs hint hμinf (Polynomial.ofFn n a) hzero
     apply ha

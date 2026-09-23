@@ -68,8 +68,8 @@ def pcmRefractiveIndex (nReal nLoss : ℝ) : ℂ :=
   simp [pcmRefractiveIndex]
 
 theorem pcmRefractiveIndex_sq (nReal nLoss : ℝ) :
-    pcmRefractiveIndex nReal nLoss ^ 2 =
-      ((nReal ^ 2 - nLoss ^ 2 : ℝ) : ℂ) -
+    pcmRefractiveIndex nReal nLoss ^ (2 : ℕ) =
+      ((nReal ^ (2 : ℕ) - nLoss ^ (2 : ℕ) : ℝ) : ℂ) -
         Complex.I * ((2 * nReal * nLoss : ℝ) : ℂ) := by
   apply Complex.ext
   · simp [pcmRefractiveIndex, pow_two, Complex.mul_re, Complex.mul_im]
@@ -264,7 +264,7 @@ def pcmComplexDiracMass (m₁ m₂ : ℝ) : ℂ :=
   simp [pcmComplexDiracMass]
 
 theorem pcmComplexDiracMass_normSq (m₁ m₂ : ℝ) :
-    Complex.normSq (pcmComplexDiracMass m₁ m₂) = m₁ ^ 2 + m₂ ^ 2 := by
+    Complex.normSq (pcmComplexDiracMass m₁ m₂) = m₁ ^ (2 : ℕ) + m₂ ^ (2 : ℕ) := by
   simp [Complex.normSq_apply]
   ring
 
@@ -340,7 +340,7 @@ theorem pcmDiracMassMatrix_sq (m₁ m₂ : ℝ) :
 theorem pcmDiracAdjointMass_characteristic (m₁ m₂ μ : ℝ) :
     Matrix.det (μ • (1 : Matrix (Fin 3) (Fin 3) ℝ) -
       gomesPauliAdjointMass (pcmDiracCarrier m₁ m₂)) =
-        μ * (μ - Complex.normSq (pcmComplexDiracMass m₁ m₂)) ^ 2 := by
+        μ * (μ - Complex.normSq (pcmComplexDiracMass m₁ m₂)) ^ (2 : ℕ) := by
   rw [gomesPauliAdjointMass_characteristic, pcmDiracCarrier_norm]
 
 theorem pcmDiracAdjointMass_signBlind (m₁ m₂ : ℝ) :
@@ -357,7 +357,7 @@ def pcmDiracMassPhaseLoop (radius phase : ℝ) : ℂ :=
   pcmComplexDiracMass (radius * Real.cos phase) (radius * Real.sin phase)
 
 theorem pcmDiracMassPhaseLoop_normSq (radius phase : ℝ) :
-    Complex.normSq (pcmDiracMassPhaseLoop radius phase) = radius ^ 2 := by
+    Complex.normSq (pcmDiracMassPhaseLoop radius phase) = radius ^ (2 : ℕ) := by
   rw [pcmDiracMassPhaseLoop, pcmComplexDiracMass_normSq]
   nlinarith [Real.sin_sq_add_cos_sq phase]
 

@@ -105,7 +105,7 @@ theorem exists_even_joint_prolate_eigen_gt_of_rayleigh_gt {c K : ℝ} (hc0 : 0 <
         inner_eq_inner_bandComponent c v _ hTmem
       -- the quadratic form is at most `-(c²/2)` times the squared norm
       have hquad : (inner ℝ u (GaloisForLFunctions.RHTower.bandClass
-            (prolateSLAction c Phi) hLPhic) : ℝ) ≤ -K * ‖u‖ ^ 2 := by
+            (prolateSLAction c Phi) hLPhic) : ℝ) ≤ -K * ‖u‖ ^ (2 : ℕ) := by
         by_contra hgt
         push Not at hgt
         have hform : (inner ℝ (prolateOnEvenEigenspace hc0 hμ bu) bu : ℝ)
@@ -121,14 +121,14 @@ theorem exists_even_joint_prolate_eigen_gt_of_rayleigh_gt {c K : ℝ} (hc0 : 0 <
                   GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1) : ℝ) from rfl, hval]
           exact real_inner_comm _ _
         have hnorm : ‖bu‖ = ‖u‖ := rfl
-        have hlt : -K * ‖bu‖ ^ 2
+        have hlt : -K * ‖bu‖ ^ (2 : ℕ)
             < (inner ℝ (prolateOnEvenEigenspace hc0 hμ bu) bu : ℝ) := by
           rw [hnorm, hform]
           exact hgt
         obtain ⟨eta, Phi', heta, hsm, hne, heven, hband, hprolate⟩ :=
           exists_joint_even_prolate_eigen_gt hc0 hμ hlt
         exact absurd heta (not_lt.mpr (hcon μ eta Phi' hμ hsm hne heven hband hprolate))
-      have hselfinner : (inner ℝ v u : ℝ) = ‖u‖ ^ 2 := inner_self_bandComponent c v μ
+      have hselfinner : (inner ℝ v u : ℝ) = ‖u‖ ^ (2 : ℕ) := inner_self_bandComponent c v μ
       rw [hmove, hproj, hselfinner]
       exact hquad
   -- sum the estimate
@@ -158,9 +158,9 @@ theorem exists_even_joint_prolate_eigen_separation_lt_half {c : ℝ} (hc : 400 �
       (∀ x : ℝ, prolateSLAction c Phi x = eta * Phi x) ∧
       radialSeparationRatio c eta < 1 / 2 := by
   have hc0 : (0 : ℝ) < c := by linarith
-  have hcsq : (0 : ℝ) < c ^ 2 := by positivity
+  have hcsq : (0 : ℝ) < c ^ (2 : ℕ) := by positivity
   obtain ⟨lam, eta, Phi, hlam, hsm, hne, heven, hband, hprolate, heta⟩ :=
-    exists_even_joint_prolate_eigen_gt_of_rayleigh_gt (K := c ^ 2 / 2) hc0
+    exists_even_joint_prolate_eigen_gt_of_rayleigh_gt (K := c ^ (2 : ℕ) / 2) hc0
       (prolate_gaussian_rayleigh_gt hc)
   refine ⟨lam, eta, Phi, hlam, hsm, hne, heven, hband, hprolate, ?_⟩
   rw [radialSeparationRatio, div_lt_div_iff₀ hcsq (by norm_num : (0 : ℝ) < 2)]

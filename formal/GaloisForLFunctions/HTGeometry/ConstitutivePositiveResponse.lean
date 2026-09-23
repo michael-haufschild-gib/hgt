@@ -58,7 +58,7 @@ theorem constitutiveAdditiveResponse_self (h : ℂ) :
 theorem constitutivePositiveDoctrine_add_intervention (h z : ℂ) (ε : ℝ) :
     constitutivePositiveDoctrine (z + (ε : ℂ) * h) =
       constitutivePositiveDoctrine z + ε * constitutiveAdditiveResponse h z +
-        ε ^ 2 * constitutivePositiveDoctrine h := by
+        ε ^ (2 : ℕ) * constitutivePositiveDoctrine h := by
   simp [constitutivePositiveDoctrine, constitutiveAdditiveResponse, Complex.normSq_apply,
     Complex.mul_re, Complex.mul_im]
   ring
@@ -71,7 +71,7 @@ theorem constitutivePositiveDoctrine_hasDerivAt_intervention (h z : ℂ) :
   have hfun :
       (fun ε : ℝ ↦ constitutivePositiveDoctrine (z + (ε : ℂ) * h)) =
         fun ε : ℝ ↦ constitutivePositiveDoctrine z +
-          ε * constitutiveAdditiveResponse h z + ε ^ 2 * constitutivePositiveDoctrine h := by
+          ε * constitutiveAdditiveResponse h z + ε ^ (2 : ℕ) * constitutivePositiveDoctrine h := by
     funext ε
     exact constitutivePositiveDoctrine_add_intervention h z ε
   rw [hfun]

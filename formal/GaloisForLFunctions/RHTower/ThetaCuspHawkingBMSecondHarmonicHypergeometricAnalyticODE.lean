@@ -58,7 +58,7 @@ theorem HasSum.shiftTwoCoefficient_mul_pow
     (h : HasSum (fun j => u j * z ^ j) S) :
     HasSum
       (fun j => shiftOneCoefficient (shiftOneCoefficient u) j * z ^ j)
-      (z ^ 2 * S) := by
+      (z ^ (2 : ℕ) * S) := by
   have h1 := HasSum.shiftOneCoefficient_mul_pow h
   have h2 := HasSum.shiftOneCoefficient_mul_pow h1
   simpa [pow_two, mul_assoc] using h2

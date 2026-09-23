@@ -22,32 +22,32 @@ variable {N : ℕ} [NeZero N]
 omit [NeZero N] in
 /-- The cubic term of the exponential series dominates a shifted square. -/
 theorem eventually_sq_le_exp {b : ℝ} (hb : 0 < b) (c : ℝ) :
-    ∀ᶠ u : ℝ in atTop, (c + u) ^ 2 ≤ Real.exp (b * u) := by
-  have hser : ∀ x : ℝ, 0 ≤ x → x ^ 3 / 6 ≤ Real.exp x := by
+    ∀ᶠ u : ℝ in atTop, (c + u) ^ (2 : ℕ) ≤ Real.exp (b * u) := by
+  have hser : ∀ x : ℝ, 0 ≤ x → x ^ (3 : ℕ) / 6 ≤ Real.exp x := by
     intro x hx
     have h := Real.sum_le_exp_of_nonneg hx 4
     simp [Finset.sum_range_succ, Nat.factorial] at h
     nlinarith [h, hx, sq_nonneg x]
-  filter_upwards [eventually_ge_atTop (max |c| (max (24 / b ^ 3) 1))] with u hu
+  filter_upwards [eventually_ge_atTop (max |c| (max (24 / b ^ (3 : ℕ)) 1))] with u hu
   have hc : |c| ≤ u := le_trans (le_max_left _ _) hu
-  have hbig : 24 / b ^ 3 ≤ u := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hu
+  have hbig : 24 / b ^ (3 : ℕ) ≤ u := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hu
   have hu1 : (1 : ℝ) ≤ u := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hu
   have hu0 : (0 : ℝ) < u := by linarith
   have hcle : c ≤ u := le_trans (le_abs_self c) hc
   have hcge : -u ≤ c := by linarith [neg_abs_le c]
-  have h1 : (c + u) ^ 2 ≤ 4 * u ^ 2 := by nlinarith
-  have hb3 : (0 : ℝ) < b ^ 3 := by positivity
-  have hbu : 24 ≤ b ^ 3 * u := by
+  have h1 : (c + u) ^ (2 : ℕ) ≤ 4 * u ^ (2 : ℕ) := by nlinarith
+  have hb3 : (0 : ℝ) < b ^ (3 : ℕ) := by positivity
+  have hbu : 24 ≤ b ^ (3 : ℕ) * u := by
     rw [div_le_iff₀ hb3] at hbig
     linarith
-  have h2 : 4 * u ^ 2 ≤ (b * u) ^ 3 / 6 := by nlinarith [hbu, hu0, sq_nonneg u]
-  have h3 : (b * u) ^ 3 / 6 ≤ Real.exp (b * u) := hser (b * u) (by positivity)
+  have h2 : 4 * u ^ (2 : ℕ) ≤ (b * u) ^ (3 : ℕ) / 6 := by nlinarith [hbu, hu0, sq_nonneg u]
+  have h3 : (b * u) ^ (3 : ℕ) / 6 ≤ Real.exp (b * u) := hser (b * u) (by positivity)
   linarith
 
 /-- Away from `4`, the regularized function is holomorphic. -/
 theorem differentiableAt_regularized {χ : DirichletCharacter ℂ N} (hχ : χ ≠ 1) {z : ℂ}
     (hz : z.re ≤ 3) :
-    DifferentiableAt ℂ (fun w : ℂ => DirichletCharacter.LFunction χ w / (w - 4) ^ 3) z := by
+    DifferentiableAt ℂ (fun w : ℂ => DirichletCharacter.LFunction χ w / (w - 4) ^ (3 : ℕ)) z := by
   have hne : z - 4 ≠ 0 := by
     intro h
     have hz4 : z = 4 := by linear_combination h
@@ -58,7 +58,7 @@ theorem differentiableAt_regularized {χ : DirichletCharacter ℂ N} (hχ : χ �
 
 /-- **Differentiability on the strip and continuity on its closure.** -/
 theorem diffContOnCl_regularized {χ : DirichletCharacter ℂ N} (hχ : χ ≠ 1) :
-    DiffContOnCl ℂ (fun w : ℂ => DirichletCharacter.LFunction χ w / (w - 4) ^ 3)
+    DiffContOnCl ℂ (fun w : ℂ => DirichletCharacter.LFunction χ w / (w - 4) ^ (3 : ℕ))
       (Complex.re ⁻¹' Set.Ioo (-2 : ℝ) 3) := by
   have hclosure : closure (Complex.re ⁻¹' Set.Ioo (-2 : ℝ) 3)
       ⊆ Complex.re ⁻¹' Set.Icc (-2 : ℝ) 3 :=
@@ -72,7 +72,7 @@ theorem diffContOnCl_regularized {χ : DirichletCharacter ℂ N} (hχ : χ ≠ 1
 regularized function is dominated by `exp (B exp (|t|/3))`, and `1/3 < π/5`. -/
 theorem isBigO_regularized {χ : DirichletCharacter ℂ N} (hχ : χ ≠ 1) :
     ∃ c < Real.pi / (3 - (-2 : ℝ)), ∃ B : ℝ,
-      (fun w : ℂ => DirichletCharacter.LFunction χ w / (w - 4) ^ 3)
+      (fun w : ℂ => DirichletCharacter.LFunction χ w / (w - 4) ^ (3 : ℕ))
         =O[comap (_root_.abs ∘ Complex.im) atTop ⊓ 𝓟 (Complex.re ⁻¹' Set.Ioo (-2 : ℝ) 3)]
         fun w : ℂ => Real.exp (B * Real.exp (c * |w.im|)) := by
   obtain ⟨B₁, hB₁, hgrow⟩ := exists_growth_LFunction_strip hχ
@@ -101,7 +101,7 @@ theorem isBigO_regularized {χ : DirichletCharacter ℂ N} (hχ : χ ≠ 1) :
         rw [abs_of_nonpos (by linarith)]; ring
       rw [show ((4 : ℂ)).re = 4 by norm_num, this] at h
       linarith
-    have hdiv : ‖DirichletCharacter.LFunction χ w / (w - 4) ^ 3‖
+    have hdiv : ‖DirichletCharacter.LFunction χ w / (w - 4) ^ (3 : ℕ)‖
         ≤ ‖DirichletCharacter.LFunction χ w‖ := by
       rw [norm_div, norm_pow]
       rw [div_le_iff₀ (by positivity)]
@@ -115,7 +115,7 @@ theorem isBigO_regularized {χ : DirichletCharacter ℂ N} (hχ : χ ≠ 1) :
       have hpos : (0 : ℝ) < 2 + ‖w‖ := by positivity
       have h := Real.log_le_sub_one_of_pos hpos
       linarith
-    have hshape : B₁ * (1 + ‖w‖) * Real.log (2 + ‖w‖) ≤ B₁ * (5 + |w.im|) ^ 2 := by
+    have hshape : B₁ * (1 + ‖w‖) * Real.log (2 + ‖w‖) ≤ B₁ * (5 + |w.im|) ^ (2 : ℕ) := by
       have hlognn : 0 ≤ Real.log (2 + ‖w‖) :=
         Real.log_nonneg (by linarith [norm_nonneg w])
       have h1 : (1 + ‖w‖) ≤ 5 + |w.im| := by linarith
@@ -123,14 +123,14 @@ theorem isBigO_regularized {χ : DirichletCharacter ℂ N} (hχ : χ ≠ 1) :
         mul_le_mul_of_nonneg_right h1 hlognn
       have s2 : (5 + |w.im|) * Real.log (2 + ‖w‖) ≤ (5 + |w.im|) * (5 + |w.im|) :=
         mul_le_mul_of_nonneg_left hlog (by positivity)
-      have hprod : (1 + ‖w‖) * Real.log (2 + ‖w‖) ≤ (5 + |w.im|) ^ 2 := by nlinarith [s1, s2]
+      have hprod : (1 + ‖w‖) * Real.log (2 + ‖w‖) ≤ (5 + |w.im|) ^ (2 : ℕ) := by nlinarith [s1, s2]
       nlinarith [mul_le_mul_of_nonneg_left hprod hB₁.le]
-    have hsq : (5 + |w.im|) ^ 2 ≤ Real.exp (1 / 3 * |w.im|) := by
+    have hsq : (5 + |w.im|) ^ (2 : ℕ) ≤ Real.exp (1 / 3 * |w.im|) := by
       exact hT |w.im| hwT
-    calc ‖DirichletCharacter.LFunction χ w / (w - 4) ^ 3‖
+    calc ‖DirichletCharacter.LFunction χ w / (w - 4) ^ (3 : ℕ)‖
         ≤ ‖DirichletCharacter.LFunction χ w‖ := hdiv
       _ ≤ Real.exp (B₁ * (1 + ‖w‖) * Real.log (2 + ‖w‖)) := hgrow w hre1 hre2 hw2
-      _ ≤ Real.exp (B₁ * (5 + |w.im|) ^ 2) := Real.exp_le_exp.mpr hshape
+      _ ≤ Real.exp (B₁ * (5 + |w.im|) ^ (2 : ℕ)) := Real.exp_le_exp.mpr hshape
       _ ≤ Real.exp (B₁ * Real.exp (1 / 3 * |w.im|)) := by
           refine Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hsq hB₁.le)
       _ = 1 * ‖Real.exp (B₁ * Real.exp (1 / 3 * |w.im|))‖ := by
@@ -142,11 +142,11 @@ by `(s-4)³` gives a cubic bound for the L-function itself. -/
 theorem bound_LFunction_strip {χ : DirichletCharacter ℂ N} (hχ : χ ≠ 1)
     (hprim : χ.IsPrimitive) :
     ∃ C : ℝ, 0 < C ∧ ∀ z : ℂ, -2 ≤ z.re → z.re ≤ 3 →
-      ‖DirichletCharacter.LFunction χ z‖ ≤ C * ‖z - 4‖ ^ 3 := by
+      ‖DirichletCharacter.LFunction χ z‖ ≤ C * ‖z - 4‖ ^ (3 : ℕ) := by
   obtain ⟨C, hC, hr, hl⟩ := exists_bound_regularized_edges hχ hprim
   refine ⟨C, hC, fun z h1 h2 => ?_⟩
   have hPL := PhragmenLindelof.vertical_strip
-    (f := fun w : ℂ => DirichletCharacter.LFunction χ w / (w - 4) ^ 3)
+    (f := fun w : ℂ => DirichletCharacter.LFunction χ w / (w - 4) ^ (3 : ℕ))
     (a := (-2 : ℝ)) (b := (3 : ℝ)) (C := C) (z := z)
     (diffContOnCl_regularized hχ) (isBigO_regularized hχ) hl hr h1 h2
   have hne : z - 4 ≠ 0 := by
@@ -154,7 +154,7 @@ theorem bound_LFunction_strip {χ : DirichletCharacter ℂ N} (hχ : χ ≠ 1)
     have hz4 : z = 4 := by linear_combination h
     rw [hz4] at h2
     norm_num at h2
-  have hpos : (0 : ℝ) < ‖z - 4‖ ^ 3 := by
+  have hpos : (0 : ℝ) < ‖z - 4‖ ^ (3 : ℕ) := by
     have : (0 : ℝ) < ‖z - 4‖ := norm_pos_iff.mpr hne
     positivity
   rw [norm_div, norm_pow, div_le_iff₀ hpos] at hPL

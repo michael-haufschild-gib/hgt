@@ -34,22 +34,22 @@ def riceMeleDz (Delta : ℝ) : ℝ := Delta
 
 /-- Squared length of the Rice--Mele Bloch vector. -/
 def riceMeleNormSq (J delta Delta k : ℝ) : ℝ :=
-  riceMeleDx J delta k ^ 2 + riceMeleDy J delta k ^ 2 + riceMeleDz Delta ^ 2
+  riceMeleDx J delta k ^ (2 : ℕ) + riceMeleDy J delta k ^ (2 : ℕ) + riceMeleDz Delta ^ (2 : ℕ)
 
 /-- Closed radicand formula, equation (6) of the paper. -/
 theorem riceMeleNormSq_closedForm (J delta Delta k : ℝ) :
     riceMeleNormSq J delta Delta k =
-      Delta ^ 2 + 2 * J ^ 2 *
-        (1 + delta ^ 2 + (1 - delta ^ 2) * Real.cos k) := by
+      Delta ^ (2 : ℕ) + 2 * J ^ (2 : ℕ) *
+        (1 + delta ^ (2 : ℕ) + (1 - delta ^ (2 : ℕ)) * Real.cos k) := by
   unfold riceMeleNormSq riceMeleDx riceMeleDy riceMeleDz
   calc
-    (J * (1 + delta + (1 - delta) * Real.cos k)) ^ 2 +
-          (J * (1 - delta) * Real.sin k) ^ 2 + Delta ^ 2 =
-        Delta ^ 2 + J ^ 2 * ((1 + delta) ^ 2 +
+    (J * (1 + delta + (1 - delta) * Real.cos k)) ^ (2 : ℕ) +
+          (J * (1 - delta) * Real.sin k) ^ (2 : ℕ) + Delta ^ (2 : ℕ) =
+        Delta ^ (2 : ℕ) + J ^ (2 : ℕ) * ((1 + delta) ^ (2 : ℕ) +
           2 * (1 + delta) * (1 - delta) * Real.cos k +
-          (1 - delta) ^ 2 * (Real.sin k ^ 2 + Real.cos k ^ 2)) := by ring
-    _ = Delta ^ 2 + 2 * J ^ 2 *
-        (1 + delta ^ 2 + (1 - delta ^ 2) * Real.cos k) := by
+          (1 - delta) ^ (2 : ℕ) * (Real.sin k ^ (2 : ℕ) + Real.cos k ^ (2 : ℕ))) := by ring
+    _ = Delta ^ (2 : ℕ) + 2 * J ^ (2 : ℕ) *
+        (1 + delta ^ (2 : ℕ) + (1 - delta ^ (2 : ℕ)) * Real.cos k) := by
       rw [Real.sin_sq_add_cos_sq]
       ring
 

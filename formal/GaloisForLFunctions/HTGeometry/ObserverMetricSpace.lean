@@ -101,9 +101,9 @@ theorem det_sqrtOp {P : E →ₗ[ℂ] E} (hP : P.IsSymmetric) (hn : finrank ℂ 
       = ∏ i, ((Real.sqrt (hP.eigenvalues hn i) : ℝ) : ℂ) := by
     rw [← LinearMap.det_toMatrix (hP.eigenvectorBasis hn).toBasis,
       toMatrix_of_diagonal hP hn (sqrtOp_apply_basis hP hn), Matrix.det_diagonal]
-  have hprodsq : (∏ i, Real.sqrt (hP.eigenvalues hn i)) ^ 2 = 1 := by
+  have hprodsq : (∏ i, Real.sqrt (hP.eigenvalues hn i)) ^ (2 : ℕ) = 1 := by
     rw [← Finset.prod_pow]
-    have hsq : ∀ i : Fin n, Real.sqrt (hP.eigenvalues hn i) ^ 2 = hP.eigenvalues hn i :=
+    have hsq : ∀ i : Fin n, Real.sqrt (hP.eigenvalues hn i) ^ (2 : ℕ) = hP.eigenvalues hn i :=
       fun i => Real.sq_sqrt (le_of_lt (eigenvalues_pos hP hn hpos i))
     rw [Finset.prod_congr rfl fun i _ => hsq i]
     have h := hP.det_eq_prod_eigenvalues hn
@@ -139,9 +139,9 @@ theorem congruence_eq_refl_iff (g : E ≃ₗ[ℂ] E) :
   · intro h v
     have hvv := h v v
     rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at hvv
-    have hsq : ‖g v‖ ^ 2 = ‖v‖ ^ 2 := by exact_mod_cast hvv.symm
-    calc ‖g v‖ = Real.sqrt (‖g v‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
-      _ = Real.sqrt (‖v‖ ^ 2) := by rw [hsq]
+    have hsq : ‖g v‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) := by exact_mod_cast hvv.symm
+    calc ‖g v‖ = Real.sqrt (‖g v‖ ^ (2 : ℕ)) := (Real.sqrt_sq (norm_nonneg _)).symm
+      _ = Real.sqrt (‖v‖ ^ (2 : ℕ)) := by rw [hsq]
       _ = ‖v‖ := Real.sqrt_sq (norm_nonneg _)
   · intro h v w
     exact ((LinearMap.norm_map_iff_inner_map_map (𝕜 := ℂ) (g : E →ₗ[ℂ] E)).1 h v w).symm

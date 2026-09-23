@@ -70,7 +70,7 @@ def correctedError (N : ℕ) (c : ℝ) (n : ℕ) : ℝ :=
 
 /-- The genuine full-tail weights, with all coordinates n>=1 present. -/
 def correctedEnergyTerm (N : ℕ) (c : ℝ) (j : ℕ) : ℝ :=
-  correctedError N c (j+1)^2/(((j : ℝ)+1)*((j : ℝ)+2))
+  correctedError N c (j+1)^(2 : ℕ)/(((j : ℝ)+1)*((j : ℝ)+2))
 
 /-- Changing the counterterm adds precisely a linear tail to the bounded actual error. -/
 theorem correctedError_eq (N : ℕ) (c : ℝ) (n : ℕ) :
@@ -100,12 +100,12 @@ theorem correctedError_div_tendsto (N : ℕ) (c : ℝ) :
 
 /-- Every incorrect scalar leaves a nonzero limiting energy summand. -/
 theorem correctedEnergyTerm_tendsto (N : ℕ) (c : ℝ) :
-    Tendsto (correctedEnergyTerm N c) atTop (nhds ((c-deningerHarmonicPartial N)^2)) := by
+    Tendsto (correctedEnergyTerm N c) atTop (nhds ((c-deningerHarmonicPartial N)^(2 : ℕ))) := by
   have hr : Tendsto (fun j : ℕ => ((j : ℝ)+1)/((j : ℝ)+2)) atTop (nhds 1) := by
     simpa only [Function.comp_def,Nat.cast_add,Nat.cast_one,show (1 : ℝ)+1=2 by ring,add_assoc] using
       (tendsto_natCast_div_add_atTop (1 : ℝ)).comp (tendsto_add_atTop_nat 1)
   have hfun (j : ℕ) : correctedEnergyTerm N c j =
-      (correctedError N c (j+1)/((j : ℝ)+1))^2 * (((j : ℝ)+1)/((j : ℝ)+2)) := by
+      (correctedError N c (j+1)/((j : ℝ)+1))^(2 : ℕ) * (((j : ℝ)+1)/((j : ℝ)+2)) := by
     rw [correctedEnergyTerm]
     field_simp
   change Tendsto (fun j => correctedEnergyTerm N c j) _ _
@@ -133,7 +133,7 @@ theorem summable_correctedEnergyTerm_iff (N : ℕ) (c : ℝ) :
 
 /-- The uncompensated quotient field has finite energy exactly at zero harmonic defect. -/
 theorem summable_floorResidual_energy_iff (N : ℕ) :
-    Summable (fun j : ℕ => bdMobiusFloorResidual N (j+1)^2/
+    Summable (fun j : ℕ => bdMobiusFloorResidual N (j+1)^(2 : ℕ)/
       (((j : ℝ)+1)*((j : ℝ)+2))) ↔ deningerHarmonicPartial N=0 := by
   have h := summable_correctedEnergyTerm_iff N 0
   unfold correctedEnergyTerm correctedError at h

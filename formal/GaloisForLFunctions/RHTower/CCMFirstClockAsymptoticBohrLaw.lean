@@ -22,7 +22,7 @@ noncomputable section
 
 /-- Reciprocal-square weight of the real coordinate of one Xi zero copy. -/
 def xiCriticalScrewWeight (q : XiZeroCopy) : ℝ :=
-  1 / xiRealSpectralPoint q ^ 2
+  1 / xiRealSpectralPoint q ^ (2 : ℕ)
 
 /-- Relation-hull screw series carried by the real coordinates of all Xi zero copies. -/
 def xiCriticalScrewSeries (L : ℝ) : ℝ :=
@@ -81,8 +81,8 @@ theorem xiScrewDivisor_re_eq_xiCriticalScrewSeries_of_rh
   rw [hcos]
   rw [show (1 : ℂ) - (Real.cos (xiRealSpectralPoint q * L) : ℂ) =
       ((1 - Real.cos (xiRealSpectralPoint q * L) : ℝ) : ℂ) by push_cast; rfl]
-  rw [show (xiRealSpectralPoint q : ℂ) ^ 2 =
-      ((xiRealSpectralPoint q ^ 2 : ℝ) : ℂ) by push_cast; rfl]
+  rw [show (xiRealSpectralPoint q : ℂ) ^ (2 : ℕ) =
+      ((xiRealSpectralPoint q ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; rfl]
   rw [← Complex.ofReal_div]
   simp only [Complex.ofReal_re]
   ring
@@ -103,7 +103,7 @@ theorem ccmFirstClockRationalKernel_xiSpectralPoint_re_eq_of_rh
     (hRH : RiemannHypothesis) (L : ℝ) (q : XiZeroCopy) :
     (ccmFirstClockRationalKernel L (xiSpectralPoint q)).re =
       (1 - Real.cos (xiRealSpectralPoint q * L)) /
-        (xiRealSpectralPoint q ^ 2 - (2 * Real.pi / L) ^ 2) := by
+        (xiRealSpectralPoint q ^ (2 : ℕ) - (2 * Real.pi / L) ^ (2 : ℕ)) := by
   rw [xiSpectralPoint_eq_ofReal_of_rh hRH q]
   unfold ccmFirstClockRationalKernel
   have hcos : Complex.cos ((L : ℂ) * (xiRealSpectralPoint q : ℂ)) =
@@ -114,9 +114,9 @@ theorem ccmFirstClockRationalKernel_xiSpectralPoint_re_eq_of_rh
   rw [hcos]
   rw [show (1 : ℂ) - (Real.cos (xiRealSpectralPoint q * L) : ℂ) =
       ((1 - Real.cos (xiRealSpectralPoint q * L) : ℝ) : ℂ) by push_cast; rfl]
-  rw [show (xiRealSpectralPoint q : ℂ) ^ 2 -
-        (((2 * Real.pi / L : ℝ) : ℂ)) ^ 2 =
-      ((xiRealSpectralPoint q ^ 2 - (2 * Real.pi / L) ^ 2 : ℝ) : ℂ) by
+  rw [show (xiRealSpectralPoint q : ℂ) ^ (2 : ℕ) -
+        (((2 * Real.pi / L : ℝ) : ℂ)) ^ (2 : ℕ) =
+      ((xiRealSpectralPoint q ^ (2 : ℕ) - (2 * Real.pi / L) ^ (2 : ℕ) : ℝ) : ℂ) by
         push_cast; rfl]
   rw [← Complex.ofReal_div]
   exact Complex.ofReal_re _
@@ -130,7 +130,7 @@ theorem ccmFirstClockRationalKernel_sub_criticalScrewTerm_bounds_of_rh
       (ccmFirstClockRationalKernel L (xiSpectralPoint q)).re -
           xiCriticalScrewWeight q *
             (1 - Real.cos (xiRealSpectralPoint q * L)) ≤
-        (2 / 15 : ℝ) * (2 * Real.pi / L) ^ 2 * xiCriticalScrewWeight q := by
+        (2 / 15 : ℝ) * (2 * Real.pi / L) ^ (2 : ℕ) * xiCriticalScrewWeight q := by
   let r : ℝ := xiRealSpectralPoint q
   let w : ℝ := 2 * Real.pi / L
   have hLpos : 0 < L := lt_of_lt_of_le (mul_pos (by norm_num) Real.pi_pos) hL
@@ -143,43 +143,43 @@ theorem ccmFirstClockRationalKernel_sub_criticalScrewTerm_bounds_of_rh
     rw [xiSpectralPoint_eq_ofReal_of_rh hRH q, Complex.norm_real,
       Real.norm_eq_abs] at hgap
     exact hgap
-  have hr2 : 16 < r ^ 2 := by
+  have hr2 : 16 < r ^ (2 : ℕ) := by
     rw [← sq_abs]
     nlinarith [sq_nonneg (|r| - 4)]
-  have hr2pos : 0 < r ^ 2 := lt_trans (by norm_num) hr2
+  have hr2pos : 0 < r ^ (2 : ℕ) := lt_trans (by norm_num) hr2
   have hrne : r ≠ 0 := by nlinarith [sq_nonneg r]
-  have hden15 : 15 < r ^ 2 - w ^ 2 := by
+  have hden15 : 15 < r ^ (2 : ℕ) - w ^ (2 : ℕ) := by
     nlinarith [sq_nonneg w]
-  have hdenpos : 0 < r ^ 2 - w ^ 2 := lt_trans (by norm_num) hden15
+  have hdenpos : 0 < r ^ (2 : ℕ) - w ^ (2 : ℕ) := lt_trans (by norm_num) hden15
   have hn0 : 0 ≤ 1 - Real.cos (r * L) := sub_nonneg.mpr (Real.cos_le_one _)
   have hn2 : 1 - Real.cos (r * L) ≤ 2 := by
     linarith [Real.neg_one_le_cos (r * L)]
   have hid :
-      (1 - Real.cos (r * L)) / (r ^ 2 - w ^ 2) -
-          (1 / r ^ 2) * (1 - Real.cos (r * L)) =
-        (1 - Real.cos (r * L)) * w ^ 2 /
-          (r ^ 2 * (r ^ 2 - w ^ 2)) := by
+      (1 - Real.cos (r * L)) / (r ^ (2 : ℕ) - w ^ (2 : ℕ)) -
+          (1 / r ^ (2 : ℕ)) * (1 - Real.cos (r * L)) =
+        (1 - Real.cos (r * L)) * w ^ (2 : ℕ) /
+          (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - w ^ (2 : ℕ))) := by
     field_simp [hrne, ne_of_gt hdenpos]
     ring
   rw [ccmFirstClockRationalKernel_xiSpectralPoint_re_eq_of_rh hRH L q]
-  change 0 ≤ (1 - Real.cos (r * L)) / (r ^ 2 - w ^ 2) -
-      (1 / r ^ 2) * (1 - Real.cos (r * L)) ∧
-    (1 - Real.cos (r * L)) / (r ^ 2 - w ^ 2) -
-        (1 / r ^ 2) * (1 - Real.cos (r * L)) ≤
-      (2 / 15 : ℝ) * w ^ 2 * (1 / r ^ 2)
+  change 0 ≤ (1 - Real.cos (r * L)) / (r ^ (2 : ℕ) - w ^ (2 : ℕ)) -
+      (1 / r ^ (2 : ℕ)) * (1 - Real.cos (r * L)) ∧
+    (1 - Real.cos (r * L)) / (r ^ (2 : ℕ) - w ^ (2 : ℕ)) -
+        (1 / r ^ (2 : ℕ)) * (1 - Real.cos (r * L)) ≤
+      (2 / 15 : ℝ) * w ^ (2 : ℕ) * (1 / r ^ (2 : ℕ))
   rw [hid]
   constructor
   · positivity
   · calc
-      (1 - Real.cos (r * L)) * w ^ 2 / (r ^ 2 * (r ^ 2 - w ^ 2)) =
-          (((1 - Real.cos (r * L)) * w ^ 2 / r ^ 2) /
-            (r ^ 2 - w ^ 2)) := by
+      (1 - Real.cos (r * L)) * w ^ (2 : ℕ) / (r ^ (2 : ℕ) * (r ^ (2 : ℕ) - w ^ (2 : ℕ))) =
+          (((1 - Real.cos (r * L)) * w ^ (2 : ℕ) / r ^ (2 : ℕ)) /
+            (r ^ (2 : ℕ) - w ^ (2 : ℕ))) := by
               field_simp [hrne, ne_of_gt hdenpos]
-      _ ≤ ((2 * w ^ 2 / r ^ 2) / (r ^ 2 - w ^ 2)) := by
+      _ ≤ ((2 * w ^ (2 : ℕ) / r ^ (2 : ℕ)) / (r ^ (2 : ℕ) - w ^ (2 : ℕ))) := by
         gcongr
-      _ ≤ (2 * w ^ 2 / r ^ 2) / 15 := by
+      _ ≤ (2 * w ^ (2 : ℕ) / r ^ (2 : ℕ)) / 15 := by
         exact div_le_div_of_nonneg_left (by positivity) (by norm_num) hden15.le
-      _ = (2 / 15 : ℝ) * w ^ 2 * (1 / r ^ 2) := by ring
+      _ = (2 / 15 : ℝ) * w ^ (2 : ℕ) * (1 / r ^ (2 : ℕ)) := by ring
 
 /-- Difference between the exact first-clock rational divisor and its limiting screw series. -/
 def ccmFirstClockMovingDenominatorError (L : ℝ) : ℝ :=
@@ -191,7 +191,7 @@ theorem ccmFirstClockMovingDenominatorError_bounds_of_rh
     (hRH : RiemannHypothesis) {L : ℝ} (hL : 2 * Real.pi ≤ L) :
     0 ≤ ccmFirstClockMovingDenominatorError L ∧
       ccmFirstClockMovingDenominatorError L ≤
-        (2 / 15 : ℝ) * (2 * Real.pi / L) ^ 2 *
+        (2 / 15 : ℝ) * (2 * Real.pi / L) ^ (2 : ℕ) *
           ∑' q : XiZeroCopy, xiCriticalScrewWeight q := by
   have hphysical : Real.pi / 2 ≤ L := by
     have hpi := Real.pi_pos
@@ -206,9 +206,9 @@ theorem ccmFirstClockMovingDenominatorError_bounds_of_rh
         xiCriticalScrewWeight q *
           (1 - Real.cos (xiRealSpectralPoint q * L))) := hQre.sub hS
   have hmajor : Summable (fun q : XiZeroCopy =>
-      (2 / 15 : ℝ) * (2 * Real.pi / L) ^ 2 * xiCriticalScrewWeight q) :=
+      (2 / 15 : ℝ) * (2 * Real.pi / L) ^ (2 : ℕ) * xiCriticalScrewWeight q) :=
     (summable_xiCriticalScrewWeight_of_rh hRH).mul_left
-      ((2 / 15 : ℝ) * (2 * Real.pi / L) ^ 2)
+      ((2 / 15 : ℝ) * (2 * Real.pi / L) ^ (2 : ℕ))
   rw [ccmFirstClockMovingDenominatorError, ccmFirstClockXiRationalDivisor,
     Complex.re_tsum hQ, xiCriticalScrewSeries, screwSeries,
     ← Summable.tsum_sub hQre hS]
@@ -221,13 +221,13 @@ theorem ccmFirstClockMovingDenominatorError_bounds_of_rh
             xiCriticalScrewWeight q *
               (1 - Real.cos (xiRealSpectralPoint q * L)))) ≤
           ∑' q : XiZeroCopy,
-            ((2 / 15 : ℝ) * (2 * Real.pi / L) ^ 2 *
+            ((2 / 15 : ℝ) * (2 * Real.pi / L) ^ (2 : ℕ) *
               xiCriticalScrewWeight q) :=
         herr.tsum_le_tsum
           (fun q =>
             (ccmFirstClockRationalKernel_sub_criticalScrewTerm_bounds_of_rh
               hRH hL q).2) hmajor
-      _ = (2 / 15 : ℝ) * (2 * Real.pi / L) ^ 2 *
+      _ = (2 / 15 : ℝ) * (2 * Real.pi / L) ^ (2 : ℕ) *
           ∑' q : XiZeroCopy, xiCriticalScrewWeight q := by
         rw [tsum_mul_left]
 

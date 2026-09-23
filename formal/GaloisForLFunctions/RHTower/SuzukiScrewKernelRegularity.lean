@@ -10,7 +10,7 @@ import GaloisForLFunctions.RHTower.SuzukiScrewCesaroCurvatureRecurrence
 
 Suzuki's screw function of a multiplicity-weighted ordinate family is the explicit series
 
-`g t = ∑ 2 * mult γ / γ ^ 2 * (1 - cos (γ t))`.
+`g t = ∑ 2 * mult γ / γ ^ (2 : ℕ) * (1 - cos (γ t))`.
 
 Two properties of it are used as inputs elsewhere: that it vanishes at the origin, and that it is
 continuous.  Both are consequences of the definition — the first termwise, the second from the
@@ -57,13 +57,13 @@ Hilbert–Schmidt finiteness input for the operator with kernel `g (t - s)`. -/
 theorem integral_integral_sq_suzukiScrewKernel_le
     (hsum : Summable (_root_.RHTower.suzukiScrewWeight mult gamma)) {A : ℝ} (hA : 0 ≤ A) :
     (∫ t in (0 : ℝ)..A, ∫ s in (0 : ℝ)..A,
-        (_root_.RHTower.suzukiScrewFunction mult gamma (t - s)) ^ 2)
-      ≤ A * ∫ u in (-A)..A, (_root_.RHTower.suzukiScrewFunction mult gamma u) ^ 2 :=
+        (_root_.RHTower.suzukiScrewFunction mult gamma (t - s)) ^ (2 : ℕ))
+      ≤ A * ∫ u in (-A)..A, (_root_.RHTower.suzukiScrewFunction mult gamma u) ^ (2 : ℕ) :=
   integral_integral_sq_sub_le (continuous_suzukiScrewFunction hsum) hA
 
 /-! ## The screw function of the actual critical ordinates
 
-The corpus carries the screw series of the critical zero family itself, with weights `1 / γ ^ 2`
+The corpus carries the screw series of the critical zero family itself, with weights `1 / γ ^ (2 : ℕ)`
 over the critical ordinates, together with unconditional summability of those weights.  Everything
 above therefore specialises to it with no hypotheses at all. -/
 
@@ -74,7 +74,7 @@ section XiLine
   simp [_root_.RHTower.xiLineScrewSeries, screwSeries]
 
 /-- **The small-aperture limit for the screw function of the critical ordinates**, with no
-hypotheses: summability of the weights `1 / γ ^ 2` is a corpus theorem. -/
+hypotheses: summability of the weights `1 / γ ^ (2 : ℕ)` is a corpus theorem. -/
 theorem tendsto_xiLineScrewAperture_average_zero :
     Tendsto
       (fun A : ℝ => (∫ t in (0 : ℝ)..(2 * A), _root_.RHTower.xiLineScrewSeries t) / (2 * A))
@@ -86,8 +86,8 @@ theorem tendsto_xiLineScrewAperture_average_zero :
 finite square**, unconditionally. -/
 theorem integral_integral_sq_xiLineScrewKernel_le {A : ℝ} (hA : 0 ≤ A) :
     (∫ t in (0 : ℝ)..A, ∫ s in (0 : ℝ)..A,
-        (_root_.RHTower.xiLineScrewSeries (t - s)) ^ 2)
-      ≤ A * ∫ u in (-A)..A, (_root_.RHTower.xiLineScrewSeries u) ^ 2 :=
+        (_root_.RHTower.xiLineScrewSeries (t - s)) ^ (2 : ℕ))
+      ≤ A * ∫ u in (-A)..A, (_root_.RHTower.xiLineScrewSeries u) ^ (2 : ℕ) :=
   integral_integral_sq_sub_le _root_.RHTower.xiLineScrewSeries_continuous hA
 
 /-- **Small apertures clear the Xi curvature threshold.**  The threshold is strictly negative while

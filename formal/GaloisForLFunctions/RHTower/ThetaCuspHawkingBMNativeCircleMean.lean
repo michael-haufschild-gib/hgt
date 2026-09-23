@@ -203,9 +203,9 @@ private theorem average_periodic_derivative {f : ℝ → ℂ} (hf : ContDiff ℝ
 
 /-- The original circle average has the full radial Darboux action on the original theta source. -/
 theorem mean_radial_action (q : XiZeroCopy) (d x k : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => mean q r x k)) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => mean q r x k)) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => mean q r x k) d=
-      (Real.sinh d:ℂ)^2*average (fun theta =>
+      (Real.sinh d:ℂ)^(2 : ℕ)*average (fun theta =>
         scalarLaplacian (fullSquarePotential q) (logCircle d theta x k)) := by
   have hf := radial_family q x k
   have hr := first_slice_continuous hf d
@@ -215,9 +215,9 @@ theorem mean_radial_action (q : XiZeroCopy) (d x k : ℝ) :
   have hz : average (deriv (deriv (fun theta => source q d theta x k)))=0 :=
     average_periodic_derivative (smooth_derivative ht) (periodic_derivative ht (source_periodic q d x k))
   have h := congrArg average (funext (fun theta => source_darboux_integrand q d theta x k))
-  erw [average_add ((hrr.const_mul ((Real.sinh d:ℂ)^2)).add
+  erw [average_add ((hrr.const_mul ((Real.sinh d:ℂ)^(2 : ℕ))).add
       (hr.const_mul ((Real.sinh d:ℂ)*(Real.cosh d:ℂ)))) htt,
-    average_add (hrr.const_mul ((Real.sinh d:ℂ)^2))
+    average_add (hrr.const_mul ((Real.sinh d:ℂ)^(2 : ℕ)))
       (hr.const_mul ((Real.sinh d:ℂ)*(Real.cosh d:ℂ))),average_const_mul,average_const_mul,
     average_const_mul,hz,add_zero] at h
   rw [← average_second hf d,← average_derivative hf d] at h
@@ -248,7 +248,7 @@ private theorem horizontal_theta_periodic (q : XiZeroCopy) (d x k theta : ℝ) :
 
 /-- The actual base-point Laplacian commutes with averaging the complete original theta half-square. -/
 theorem mean_laplacian_commutes (q : XiZeroCopy) (d x k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun r => mean q d r k)) x+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => mean q d r k)) x+
       deriv (deriv (fun r => mean q d x r)) k-deriv (fun r => mean q d x r) k=
       average (fun theta => scalarLaplacian (fullSquarePotential q) (logCircle d theta x k)) := by
   have hx := horizontal_family q d k
@@ -263,26 +263,26 @@ theorem mean_laplacian_commutes (q : XiZeroCopy) (d x k : ℝ) :
       fun theta => deriv (fun r => source q d theta r k) x :=
     funext (fun theta => (source_horizontal_derivative q d theta x k).symm)
   have he (theta : ℝ) : scalarLaplacian (fullSquarePotential q) (logCircle d theta x k)=
-      (Real.exp k:ℂ)^2*deriv (deriv (fun r => source q d theta r k)) x+
+      (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => source q d theta r k)) x+
       deriv (deriv (fun r => source q d theta x r)) k-deriv (fun r => source q d theta x r) k+
       2*(Real.exp k:ℂ)*deriv (fun t => deriv (fun r => source q d t r k) x) theta := by
     have h := source_base_laplacian_integrand q d theta x k
     rw [hQ] at h
     linear_combination -h
   have h := congrArg average (funext he)
-  erw [average_add (((hxx.const_mul ((Real.exp k:ℂ)^2)).add hkk).sub hk1)
+  erw [average_add (((hxx.const_mul ((Real.exp k:ℂ)^(2 : ℕ))).add hkk).sub hk1)
       (hgp.const_mul (2*(Real.exp k:ℂ))),
-    average_sub ((hxx.const_mul ((Real.exp k:ℂ)^2)).add hkk) hk1,
-    average_add (hxx.const_mul ((Real.exp k:ℂ)^2)) hkk,
+    average_sub ((hxx.const_mul ((Real.exp k:ℂ)^(2 : ℕ))).add hkk) hk1,
+    average_add (hxx.const_mul ((Real.exp k:ℂ)^(2 : ℕ))) hkk,
     average_const_mul,average_const_mul,hz,mul_zero,add_zero] at h
   rw [← average_second hx x,← average_second hk k,← average_derivative hk k] at h
   exact h.symm
 
 /-- The full native theta circle average solves the original hyperbolic Darboux equation. -/
 theorem mean_darboux (q : XiZeroCopy) (d x k : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => mean q r x k)) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => mean q r x k)) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => mean q r x k) d=
-      (Real.sinh d:ℂ)^2*((Real.exp k:ℂ)^2*deriv (deriv (fun r => mean q d r k)) x+
+      (Real.sinh d:ℂ)^(2 : ℕ)*((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => mean q d r k)) x+
         deriv (deriv (fun r => mean q d x r)) k-deriv (fun r => mean q d x r) k) := by
   rw [mean_radial_action,mean_laplacian_commutes]
 

@@ -38,8 +38,8 @@ theorem sum_biUnion_le_of_nonneg {ι α : Type*} [DecidableEq α] {s : Finset ι
 /-- The noncoprime balanced pair count. -/
 noncomputable def noncoprimePairCount (x h : ℝ) : ℝ :=
   ∑ q ∈ (balancedPairs x h).filter (fun q => ¬ Nat.Coprime q.1 q.2),
-    ((ArithmeticFunction.moebius q.1 : ℤ) : ℝ) ^ 2
-      * ((ArithmeticFunction.moebius q.2 : ℤ) : ℝ) ^ 2
+    ((ArithmeticFunction.moebius q.1 : ℤ) : ℝ) ^ (2 : ℕ)
+      * ((ArithmeticFunction.moebius q.2 : ℤ) : ℝ) ^ (2 : ℕ)
 
 /-- Every noncoprime balanced pair shares a prime below `2√x`. -/
 theorem exists_shared_prime {x h : ℝ} (hx : 0 < x) {q : ℕ × ℕ}
@@ -78,8 +78,8 @@ theorem noncoprimePairCount_le {x h : ℝ} (hx : 0 < x) :
     noncoprimePairCount x h
       ≤ ∑ p ∈ Nat.primesLE ⌊2 * Real.sqrt x⌋₊, sharedSectorCount x h p := by
   classical
-  set w : ℕ × ℕ → ℝ := fun q => ((ArithmeticFunction.moebius q.1 : ℤ) : ℝ) ^ 2
-    * ((ArithmeticFunction.moebius q.2 : ℤ) : ℝ) ^ 2 with hw
+  set w : ℕ × ℕ → ℝ := fun q => ((ArithmeticFunction.moebius q.1 : ℤ) : ℝ) ^ (2 : ℕ)
+    * ((ArithmeticFunction.moebius q.2 : ℤ) : ℝ) ^ (2 : ℕ) with hw
   have hw0 : ∀ q, 0 ≤ w q := by
     intro q
     rw [hw]

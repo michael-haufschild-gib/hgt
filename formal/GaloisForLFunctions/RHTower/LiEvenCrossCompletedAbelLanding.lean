@@ -44,14 +44,14 @@ theorem liEvenCrossCauchyDensityAtMass_eq_unit_scaled
   simp only [liEvenCrossCauchyDensityAtMass, routeUHardEdgeCrossCauchyDensity,
     liEvenCrossRightPolynomial, Polynomial.eval_mul, Polynomial.eval_sub,
     Polynomial.eval_one, Polynomial.eval_X]
-  let u : ℝ := (a ^ 2 - x ^ 2) / (a ^ 2 + x ^ 2)
-  have hden : a ^ 2 + x ^ 2 ≠ 0 := by positivity
+  let u : ℝ := (a ^ (2 : ℕ) - x ^ (2 : ℕ)) / (a ^ (2 : ℕ) + x ^ (2 : ℕ))
+  have hden : a ^ (2 : ℕ) + x ^ (2 : ℕ) ≠ 0 := by positivity
   have hcoord : liCriticalCayleyCoordinate (x / a / 2) = u := by
     rw [liCriticalCayleyCoordinate]
     dsimp only [u]
     field_simp [ha.ne', hden]
   rw [hcoord]
-  have hfactor : a ^ 2 / (a ^ 2 + x ^ 2) * (1 - u) = (1 - u ^ 2) / 2 := by
+  have hfactor : a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) * (1 - u) = (1 - u ^ (2 : ℕ)) / 2 := by
     dsimp only [u]
     field_simp [hden]
     ring
@@ -106,16 +106,16 @@ theorem routeUHardEdgeRationalTest_liEvenCrossReciprocal_mul
     routeUHardEdgeRationalTest a (liEvenCrossLeftReciprocalPolynomialAtMass a n) x *
         routeUHardEdgeRationalTest a (liEvenCrossRightReciprocalPolynomialAtMass a n) x =
       liEvenCrossCauchyDensityAtMass a n x := by
-  have hden : 0 < a ^ 2 + x ^ 2 := by positivity
-  have hsqrt : Real.sqrt (a ^ 2 + x ^ 2) ^ 2 = a ^ 2 + x ^ 2 :=
+  have hden : 0 < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
+  have hsqrt : Real.sqrt (a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ (2 : ℕ) = a ^ (2 : ℕ) + x ^ (2 : ℕ) :=
     Real.sq_sqrt hden.le
   simp only [routeUHardEdgeRationalTest, liEvenCrossLeftReciprocalPolynomialAtMass,
     liEvenCrossRightReciprocalPolynomialAtMass, xiHardEdgeReciprocalPolynomial,
     Polynomial.eval_comp, Polynomial.eval_sub, Polynomial.eval_mul,
     Polynomial.eval_C, Polynomial.eval_X, liEvenCrossCauchyDensityAtMass,
     routeUHardEdgeCrossCauchyDensity]
-  have hcoord : 2 * a ^ 2 * (a ^ 2 + x ^ 2)⁻¹ - 1 =
-      (a ^ 2 - x ^ 2) / (a ^ 2 + x ^ 2) := by
+  have hcoord : 2 * a ^ (2 : ℕ) * (a ^ (2 : ℕ) + x ^ (2 : ℕ))⁻¹ - 1 =
+      (a ^ (2 : ℕ) - x ^ (2 : ℕ)) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) := by
     field_simp [hden.ne']
     ring
   rw [hcoord]
@@ -153,8 +153,8 @@ theorem liEvenCrossFourierAbelReporter_eq_clock
   let p := liEvenCrossLeftReciprocalPolynomialAtMass a n
   let q := liEvenCrossRightReciprocalPolynomialAtMass a n
   have hpq : ∀ x : ℝ,
-      ((routeUHardEdgeRationalTest a (p + q) x ^ 2 : ℝ) : ℂ) -
-          ((routeUHardEdgeRationalTest a (p - q) x ^ 2 : ℝ) : ℂ) =
+      ((routeUHardEdgeRationalTest a (p + q) x ^ (2 : ℕ) : ℝ) : ℂ) -
+          ((routeUHardEdgeRationalTest a (p - q) x ^ (2 : ℕ) : ℝ) : ℂ) =
         4 * (liEvenCrossCauchyDensityAtMass a n x : ℂ) := by
     intro x
     have hlinAdd : routeUHardEdgeRationalTest a (p + q) x =
@@ -170,8 +170,8 @@ theorem liEvenCrossFourierAbelReporter_eq_clock
     change routeUHardEdgeRationalTest a p x *
       routeUHardEdgeRationalTest a q x = _ at hmul
     calc
-      (((routeUHardEdgeRationalTest a p x + routeUHardEdgeRationalTest a q x) ^ 2 : ℝ) : ℂ) -
-          (((routeUHardEdgeRationalTest a p x - routeUHardEdgeRationalTest a q x) ^ 2 : ℝ) : ℂ) =
+      (((routeUHardEdgeRationalTest a p x + routeUHardEdgeRationalTest a q x) ^ (2 : ℕ) : ℝ) : ℂ) -
+          (((routeUHardEdgeRationalTest a p x - routeUHardEdgeRationalTest a q x) ^ (2 : ℕ) : ℝ) : ℂ) =
         4 * ((routeUHardEdgeRationalTest a p x *
           routeUHardEdgeRationalTest a q x : ℝ) : ℂ) := by
             push_cast
@@ -186,20 +186,20 @@ theorem liEvenCrossFourierAbelReporter_eq_clock
   change (∫ x : ℝ,
       ((((routeUHardEdgeRationalTest a
           (liEvenCrossLeftReciprocalPolynomialAtMass a n +
-            liEvenCrossRightReciprocalPolynomialAtMass a n) x) ^ 2 : ℝ) : ℂ) *
+            liEvenCrossRightReciprocalPolynomialAtMass a n) x) ^ (2 : ℕ) : ℝ) : ℂ) *
           Complex.exp (((-(ξ * x) : ℝ) : ℂ) * I) -
         (((routeUHardEdgeRationalTest a
           (liEvenCrossLeftReciprocalPolynomialAtMass a n -
-            liEvenCrossRightReciprocalPolynomialAtMass a n) x) ^ 2 : ℝ) : ℂ) *
+            liEvenCrossRightReciprocalPolynomialAtMass a n) x) ^ (2 : ℕ) : ℝ) : ℂ) *
           Complex.exp (((-(ξ * x) : ℝ) : ℂ) * I)) / 4) = _
   rw [show (fun x : ℝ =>
       ((((routeUHardEdgeRationalTest a
           (liEvenCrossLeftReciprocalPolynomialAtMass a n +
-            liEvenCrossRightReciprocalPolynomialAtMass a n) x) ^ 2 : ℝ) : ℂ) *
+            liEvenCrossRightReciprocalPolynomialAtMass a n) x) ^ (2 : ℕ) : ℝ) : ℂ) *
           Complex.exp (((-(ξ * x) : ℝ) : ℂ) * I) -
         (((routeUHardEdgeRationalTest a
           (liEvenCrossLeftReciprocalPolynomialAtMass a n -
-            liEvenCrossRightReciprocalPolynomialAtMass a n) x) ^ 2 : ℝ) : ℂ) *
+            liEvenCrossRightReciprocalPolynomialAtMass a n) x) ^ (2 : ℕ) : ℝ) : ℂ) *
           Complex.exp (((-(ξ * x) : ℝ) : ℂ) * I)) / 4) =
       fun x => (liEvenCrossCauchyDensityAtMass a n x : ℂ) *
         Complex.exp (-I * ((ξ * x : ℝ) : ℂ)) by
@@ -221,16 +221,16 @@ theorem summable_routeUPrimeFourierAtMass
       ((ArithmeticFunction.vonMangoldt m / Real.sqrt m : ℝ) : ℂ) *
         routeUHardEdgeFourierSq a p (Real.log m)) := by
   have ha0 : (0 : ℝ) < a := by linarith
-  have hX : (1 : ℝ) / 4 < a ^ 2 := by nlinarith
-  obtain ⟨X₀, hX₀lo, hX₀hi⟩ : ∃ X₀ : ℝ, 1 / 4 < X₀ ∧ X₀ < a ^ 2 :=
-    ⟨(1 / 4 + a ^ 2) / 2, by linarith, by linarith⟩
+  have hX : (1 : ℝ) / 4 < a ^ (2 : ℕ) := by nlinarith
+  obtain ⟨X₀, hX₀lo, hX₀hi⟩ : ∃ X₀ : ℝ, 1 / 4 < X₀ ∧ X₀ < a ^ (2 : ℕ) :=
+    ⟨(1 / 4 + a ^ (2 : ℕ)) / 2, by linarith, by linarith⟩
   obtain ⟨h, hh, hhX⟩ := exists_routeUPrimeAperture hX₀lo
   have hexpand : ∀ m : ℕ,
       ((ArithmeticFunction.vonMangoldt m / Real.sqrt m : ℝ) : ℂ) *
           routeUHardEdgeFourierSq a p (Real.log m) =
         ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-          ((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) *
-            routeUPrimeTerm (k - 1) m (a ^ 2) := by
+          ((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) *
+            routeUPrimeTerm (k - 1) m (a ^ (2 : ℕ)) := by
     intro m
     rw [routeUHardEdgeFourierSq_eq_massPairing_sum ha0 p, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
@@ -240,8 +240,8 @@ theorem summable_routeUPrimeFourierAtMass
       ((ArithmeticFunction.vonMangoldt m / Real.sqrt m : ℝ) : ℂ) *
         routeUHardEdgeFourierSq a p (Real.log m)) =
       fun m => ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-        ((a ^ 2 * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) *
-          routeUPrimeTerm (k - 1) m (a ^ 2) by
+        ((a ^ (2 : ℕ) * (routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) *
+          routeUPrimeTerm (k - 1) m (a ^ (2 : ℕ)) by
     funext m
     exact hexpand m]
   exact summable_sum fun k _ =>
@@ -343,11 +343,11 @@ theorem liEvenCrossArchimedeanAbelValue_eq_polarized
       ((∫ x : ℝ, routeUArchimedeanRate x *
           routeUHardEdgeRationalTest a
             (liEvenCrossLeftReciprocalPolynomialAtMass a n +
-              liEvenCrossRightReciprocalPolynomialAtMass a n) x ^ 2) -
+              liEvenCrossRightReciprocalPolynomialAtMass a n) x ^ (2 : ℕ)) -
         (∫ x : ℝ, routeUArchimedeanRate x *
           routeUHardEdgeRationalTest a
             (liEvenCrossLeftReciprocalPolynomialAtMass a n -
-              liEvenCrossRightReciprocalPolynomialAtMass a n) x ^ 2)) / 4 := by
+              liEvenCrossRightReciprocalPolynomialAtMass a n) x ^ (2 : ℕ))) / 4 := by
   let p := liEvenCrossLeftReciprocalPolynomialAtMass a n
   let q := liEvenCrossRightReciprocalPolynomialAtMass a n
   have hp := integrable_routeUArchimedeanRate_mul_testSq ha (p + q)
@@ -468,34 +468,34 @@ theorem tendsto_xiHardEdgeDivisorPacketTerm_mass
       (𝓝 (xiHardEdgeDivisorPacketTerm (1 / 2) P q)) := by
   have ha : Tendsto (fun a : ℝ => a) (𝓝 (1 / 2 : ℝ)) (𝓝 (1 / 2 : ℝ)) :=
     tendsto_id
-  have ha2 : Tendsto (fun a : ℝ => a ^ 2) (𝓝 (1 / 2 : ℝ)) (𝓝 ((1 / 2 : ℝ) ^ 2)) :=
+  have ha2 : Tendsto (fun a : ℝ => a ^ (2 : ℕ)) (𝓝 (1 / 2 : ℝ)) (𝓝 ((1 / 2 : ℝ) ^ (2 : ℕ))) :=
     ha.pow 2
   have hlamBase : Tendsto (fun y : ℝ => xiShiftedReciprocalSquare y q)
-      (𝓝 ((1 / 2 : ℝ) ^ 2))
-      (𝓝 (xiShiftedReciprocalSquare ((1 / 2 : ℝ) ^ 2) q)) := by
+      (𝓝 ((1 / 2 : ℝ) ^ (2 : ℕ)))
+      (𝓝 (xiShiftedReciprocalSquare ((1 / 2 : ℝ) ^ (2 : ℕ)) q)) := by
     have h := (hasDerivAt_xiShiftedReciprocalSquare_pow
-      (by norm_num : (0 : ℝ) < (1 / 2 : ℝ) ^ 2) q 0).continuousAt
+      (by norm_num : (0 : ℝ) < (1 / 2 : ℝ) ^ (2 : ℕ)) q 0).continuousAt
     rw [ContinuousAt] at h
     simpa only [Nat.zero_add, pow_one] using h
-  have hlam : Tendsto (fun a : ℝ => xiShiftedReciprocalSquare (a ^ 2) q)
+  have hlam : Tendsto (fun a : ℝ => xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q)
       (𝓝 (1 / 2 : ℝ))
-      (𝓝 (xiShiftedReciprocalSquare ((1 / 2 : ℝ) ^ 2) q)) :=
+      (𝓝 (xiShiftedReciprocalSquare ((1 / 2 : ℝ) ^ (2 : ℕ)) q)) :=
     hlamBase.comp ha2
-  have ha2C : Tendsto (fun a : ℝ => ((a ^ 2 : ℝ) : ℂ))
-      (𝓝 (1 / 2 : ℝ)) (𝓝 ((((1 / 2 : ℝ) ^ 2 : ℝ) : ℂ))) :=
+  have ha2C : Tendsto (fun a : ℝ => ((a ^ (2 : ℕ) : ℝ) : ℂ))
+      (𝓝 (1 / 2 : ℝ)) (𝓝 ((((1 / 2 : ℝ) ^ (2 : ℕ) : ℝ) : ℂ))) :=
     Complex.continuous_ofReal.continuousAt.tendsto.comp ha2
   have hcoord : Tendsto (fun a : ℝ =>
-      (((2 * a ^ 2 : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ 2) q - 1))
+      (((2 * a ^ (2 : ℕ) : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q - 1))
       (𝓝 (1 / 2 : ℝ))
-      (𝓝 ((((2 * (1 / 2 : ℝ) ^ 2 : ℝ) : ℂ) *
-        xiShiftedReciprocalSquare ((1 / 2 : ℝ) ^ 2) q - 1))) := by
+      (𝓝 ((((2 * (1 / 2 : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) *
+        xiShiftedReciprocalSquare ((1 / 2 : ℝ) ^ (2 : ℕ)) q - 1))) := by
     exact ((ha2.const_mul 2).ofReal.mul hlam).sub tendsto_const_nhds
   have hpoly : Tendsto (fun a : ℝ => evalRealPolynomial P
-      (((2 * a ^ 2 : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ 2) q - 1))
+      (((2 * a ^ (2 : ℕ) : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q - 1))
       (𝓝 (1 / 2 : ℝ))
       (𝓝 (evalRealPolynomial P
-        (((2 * (1 / 2 : ℝ) ^ 2 : ℝ) : ℂ) *
-          xiShiftedReciprocalSquare ((1 / 2 : ℝ) ^ 2) q - 1))) := by
+        (((2 * (1 / 2 : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) *
+          xiShiftedReciprocalSquare ((1 / 2 : ℝ) ^ (2 : ℕ)) q - 1))) := by
     exact (Polynomial.continuous _).continuousAt.tendsto.comp hcoord
   simpa only [xiHardEdgeDivisorPacketTerm,
     xiHardEdgeCayleyCoordinate_xiSpectralPoint] using
@@ -505,18 +505,18 @@ theorem norm_xiHardEdgeDivisorPacketTerm_le_reciprocalMajorant
     {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a ≤ 1)
     (P : Polynomial ℝ) (q : XiZeroCopy) :
     ‖xiHardEdgeDivisorPacketTerm a P q‖ ≤
-      evalRealPolynomialNormBound P 2 ^ 2 * ‖xiZeroCopyReciprocalSquare q‖ := by
-  have haSq : a ^ 2 ≤ 1 := by nlinarith
+      evalRealPolynomialNormBound P 2 ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖ := by
+  have haSq : a ^ (2 : ℕ) ≤ 1 := by nlinarith
   have hlam := norm_xiShiftedReciprocalSquare_le (sq_nonneg a) q
-  have hlamSmall : ‖xiShiftedReciprocalSquare (a ^ 2) q‖ ≤ 2 / 41 :=
+  have hlamSmall : ‖xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q‖ ≤ 2 / 41 :=
     hlam.trans (le_of_lt (norm_xiZeroCopyReciprocalSquare_lt_two_over_fortyOne q))
-  have hcoord : ‖(((2 * a ^ 2 : ℝ) : ℂ) *
-      xiShiftedReciprocalSquare (a ^ 2) q - 1)‖ ≤ 2 := by
+  have hcoord : ‖(((2 * a ^ (2 : ℕ) : ℝ) : ℂ) *
+      xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q - 1)‖ ≤ 2 := by
     calc
-      ‖(((2 * a ^ 2 : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ 2) q - 1)‖ ≤
-          ‖(((2 * a ^ 2 : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ 2) q)‖ + ‖(1 : ℂ)‖ :=
+      ‖(((2 * a ^ (2 : ℕ) : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q - 1)‖ ≤
+          ‖(((2 * a ^ (2 : ℕ) : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q)‖ + ‖(1 : ℂ)‖ :=
         norm_sub_le _ _
-      _ = (2 * a ^ 2) * ‖xiShiftedReciprocalSquare (a ^ 2) q‖ + 1 := by
+      _ = (2 * a ^ (2 : ℕ)) * ‖xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q‖ + 1 := by
         rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
           abs_of_nonneg (by positivity), norm_one]
       _ ≤ 2 := by nlinarith
@@ -525,18 +525,18 @@ theorem norm_xiHardEdgeDivisorPacketTerm_le_reciprocalMajorant
     xiHardEdgeCayleyCoordinate_xiSpectralPoint, norm_mul, norm_mul, norm_pow,
     Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg a)]
   calc
-    a ^ 2 * ‖xiShiftedReciprocalSquare (a ^ 2) q‖ *
+    a ^ (2 : ℕ) * ‖xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q‖ *
         ‖evalRealPolynomial P
-          (((2 * a ^ 2 : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ 2) q - 1)‖ ^ 2 ≤
-      1 * ‖xiZeroCopyReciprocalSquare q‖ * evalRealPolynomialNormBound P 2 ^ 2 := by
+          (((2 * a ^ (2 : ℕ) : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q - 1)‖ ^ (2 : ℕ) ≤
+      1 * ‖xiZeroCopyReciprocalSquare q‖ * evalRealPolynomialNormBound P 2 ^ (2 : ℕ) := by
         gcongr
     _ = _ := by ring
 
 def liEvenCrossDivisorAbelMajorant (n : ℕ) (q : XiZeroCopy) : ℝ :=
   ((evalRealPolynomialNormBound
-      (liEvenCrossLeftPolynomial n + liEvenCrossRightPolynomial n) 2 ^ 2 +
+      (liEvenCrossLeftPolynomial n + liEvenCrossRightPolynomial n) 2 ^ (2 : ℕ) +
     evalRealPolynomialNormBound
-      (liEvenCrossLeftPolynomial n - liEvenCrossRightPolynomial n) 2 ^ 2) / 4) *
+      (liEvenCrossLeftPolynomial n - liEvenCrossRightPolynomial n) 2 ^ (2 : ℕ)) / 4) *
     ‖xiZeroCopyReciprocalSquare q‖
 
 theorem summable_liEvenCrossDivisorAbelMajorant (n : ℕ) :
@@ -559,8 +559,8 @@ theorem norm_liEvenCrossDivisorAbelTerm_le_majorant
           ‖xiHardEdgeDivisorPacketTerm a Q q‖) / 4 := by
       gcongr
       exact norm_sub_le _ _
-    _ ≤ ((evalRealPolynomialNormBound P 2 ^ 2 * ‖xiZeroCopyReciprocalSquare q‖) +
-        (evalRealPolynomialNormBound Q 2 ^ 2 * ‖xiZeroCopyReciprocalSquare q‖)) / 4 := by
+    _ ≤ ((evalRealPolynomialNormBound P 2 ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖) +
+        (evalRealPolynomialNormBound Q 2 ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖)) / 4 := by
       gcongr
     _ = liEvenCrossDivisorAbelMajorant n q := by
       simp only [liEvenCrossDivisorAbelMajorant, P, Q]
@@ -614,7 +614,7 @@ theorem tendsto_liEvenCrossCompletedArithmeticAbelValue_half (n : ℕ) :
 theorem re_liEvenCrossDivisorAbelValue_eq_massSq_mul_bilinear
     (a : ℝ) (n : ℕ) :
     (liEvenCrossDivisorAbelValue a n).re =
-      a ^ 2 * xiShiftedReciprocalHankelBilinear (a ^ 2)
+      a ^ (2 : ℕ) * xiShiftedReciprocalHankelBilinear (a ^ (2 : ℕ))
         (routeUHardEdgeCommonLeftCoefficients a
           (liEvenCrossLeftPolynomial n) (liEvenCrossRightPolynomial n))
         (routeUHardEdgeCommonRightCoefficients a

@@ -327,7 +327,7 @@ theorem error_eq_ramped_signed_floorTail_average {X M n : ℕ}
 
 /-- Exact finite cumulative energy at the modular carrier weight. -/
 def cumulativeEnergy (c : ℕ → ℝ) (T : ℕ) : ℝ :=
-  ∑ n ∈ Finset.Icc 1 T, (∑ j ∈ Finset.Icc 1 n, c j)^2/((n : ℝ)*((n : ℝ)+1))
+  ∑ n ∈ Finset.Icc 1 T, (∑ j ∈ Finset.Icc 1 n, c j)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1))
 
 /-- Covariance kernel induced by accumulation followed by the critical carrier weight. -/
 def cumulativeKernel (T j k : ℕ) : ℝ :=
@@ -375,7 +375,7 @@ theorem cumulativeEnergy_eq_covariance (c : ℕ → ℝ) (T : ℕ) :
     have := (Finset.mem_Icc.mp hn).2
     omega
   have hrow (n : ℕ) (hn : n∈Finset.Icc 1 T) :
-      (∑ j ∈ Finset.Icc 1 n, c j)^2/((n : ℝ)*((n : ℝ)+1))=
+      (∑ j ∈ Finset.Icc 1 n, c j)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1))=
         ∑ j ∈ Finset.Icc 1 T, ∑ k ∈ Finset.Icc 1 T,
           if j≤n ∧ k≤n then c j*c k/((n : ℝ)*((n : ℝ)+1)) else 0 := by
     rw [hext n hn,pow_two,Finset.sum_mul,Finset.sum_div]
@@ -398,7 +398,7 @@ theorem cumulativeEnergy_eq_covariance (c : ℕ → ℝ) (T : ℕ) :
 
 /-- The averaged target-error energy is precisely the compensated temporal covariance. -/
 theorem errorEnergy_eq_covariance {X M : ℕ} (hXM : X≤M) (T : ℕ) :
-    (∑ n ∈ Finset.Icc 1 T, (1-modular X M n)^2/((n : ℝ)*((n : ℝ)+1)))=
+    (∑ n ∈ Finset.Icc 1 T, (1-modular X M n)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1)))=
       ∑ j ∈ Finset.Icc 1 T, ∑ k ∈ Finset.Icc 1 T,
         errorIncrement X M j*errorIncrement X M k*cumulativeKernel T j k := by
   rw [← cumulativeEnergy_eq_covariance]
@@ -410,17 +410,17 @@ theorem errorEnergy_eq_covariance {X M : ℕ} (hXM : X≤M) (T : ℕ) :
 
 /-- Graham's corpus estimate controls the unsummed divisor coefficient energy. -/
 theorem sum_sq_divisorSource_le {X M N : ℕ} (hX : 1≤X) (hXM : X<M) (hMN : M≤N) :
-    (∑ k ∈ Finset.Icc 1 N, divisorSource X M k^2)≤
-      2*((N : ℝ)*(4*coprimeLogMoebiusConst^2*(1+Real.log M))+((M : ℝ)*Real.log M)^2+
-        ((N : ℝ)*(4*coprimeLogMoebiusConst^2*(1+Real.log X))+((X : ℝ)*Real.log X)^2))/
-      (Real.log M-Real.log X)^2 := by
+    (∑ k ∈ Finset.Icc 1 N, divisorSource X M k^(2 : ℕ))≤
+      2*((N : ℝ)*(4*coprimeLogMoebiusConst^(2 : ℕ)*(1+Real.log M))+((M : ℝ)*Real.log M)^(2 : ℕ)+
+        ((N : ℝ)*(4*coprimeLogMoebiusConst^(2 : ℕ)*(1+Real.log X))+((X : ℝ)*Real.log X)^(2 : ℕ)))/
+      (Real.log M-Real.log X)^(2 : ℕ) := by
   have hM := sum_sq_barbanVehovCoeff_le (by omega : 1≤M) hMN
   have hX' := sum_sq_barbanVehovCoeff_le hX (hXM.le.trans hMN)
   simp_rw [divisorSource_eq_difference hX hXM,div_pow]
   rw [← Finset.sum_div]
   apply div_le_div_of_nonneg_right _ (sq_nonneg _)
-  have hterm : (∑ k ∈ Finset.Icc 1 N, (barbanVehovCoeff M k-barbanVehovCoeff X k)^2)≤
-      ∑ k ∈ Finset.Icc 1 N, (2*barbanVehovCoeff M k^2+2*barbanVehovCoeff X k^2) := by
+  have hterm : (∑ k ∈ Finset.Icc 1 N, (barbanVehovCoeff M k-barbanVehovCoeff X k)^(2 : ℕ))≤
+      ∑ k ∈ Finset.Icc 1 N, (2*barbanVehovCoeff M k^(2 : ℕ)+2*barbanVehovCoeff X k^(2 : ℕ)) := by
     apply Finset.sum_le_sum
     intro k hk
     nlinarith [sq_nonneg (barbanVehovCoeff M k+barbanVehovCoeff X k)]
@@ -454,7 +454,7 @@ def fullErrorEnergy (X M : ℕ) : ℝ :=
 
 /-- The full averaged error is genuinely square summable at each finite pair of cutoffs. -/
 theorem hasSum_fullErrorEnergy {X M : ℕ} (hX : 1≤X) (hXM : X<M) :
-    HasSum (fun j : ℕ => (1-modular X M (j+1))^2/(((j : ℝ)+1)*((j : ℝ)+2)))
+    HasSum (fun j : ℕ => (1-modular X M (j+1))^(2 : ℕ)/(((j : ℝ)+1)*((j : ℝ)+2)))
       (fullErrorEnergy X M) := by
   simpa only [pow_two,fullErrorEnergy] using
     hasSum_stepGram (abs_error_le hX hXM) (abs_error_le hX hXM)
@@ -464,12 +464,12 @@ theorem fullErrorEnergy_eq_covariance_add_tail {X M : ℕ} (hX : 1≤X) (hXM : X
     fullErrorEnergy X M=
       (∑ j ∈ Finset.Icc 1 T, ∑ k ∈ Finset.Icc 1 T,
         errorIncrement X M j*errorIncrement X M k*cumulativeKernel T j k)+
-      ∑' i : ℕ, (1-modular X M (i+T+1))^2/
+      ∑' i : ℕ, (1-modular X M (i+T+1))^(2 : ℕ)/
         ((((i+T : ℕ) : ℝ)+1)*(((i+T : ℕ) : ℝ)+2)) := by
-  let f : ℕ → ℝ := fun j => (1-modular X M (j+1))^2/(((j : ℝ)+1)*((j : ℝ)+2))
+  let f : ℕ → ℝ := fun j => (1-modular X M (j+1))^(2 : ℕ)/(((j : ℝ)+1)*((j : ℝ)+2))
   have hsum : HasSum f (fullErrorEnergy X M) := hasSum_fullErrorEnergy hX hXM
   have hpref (L : ℕ) : (∑ i ∈ Finset.range L, f i)=
-      ∑ n ∈ Finset.Icc 1 L, (1-modular X M n)^2/((n : ℝ)*((n : ℝ)+1)) := by
+      ∑ n ∈ Finset.Icc 1 L, (1-modular X M n)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1)) := by
     induction L with
     | zero => simp
     | succ L ih =>

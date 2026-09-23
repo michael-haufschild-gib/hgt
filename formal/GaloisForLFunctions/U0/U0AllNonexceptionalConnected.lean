@@ -31,31 +31,31 @@ theorem xStar_lt_add_one {B : ℝ} (hB : 0 < B) : xStar B < B + 1 := by
   linarith
 
 /-- Real lower comparison for a quadratic orbit.  If the initial complex norm dominates `t` and
-`t` is above the larger fixed point of `s \mapsto s^2-B`, then every complex iterate dominates the
+`t` is above the larger fixed point of `s \mapsto s^(2 : ℕ)-B`, then every complex iterate dominates the
 corresponding real comparison iterate. -/
 theorem real_iterate_le_norm_quadratic_iterate {b w : ℂ} {t : ℝ}
     (hb : b ≠ 0) (ht : xStar ‖b‖ ≤ t) (htw : t ≤ ‖w‖) (n : ℕ) :
-    (fun s : ℝ => s ^ 2 - ‖b‖)^[n] t ≤ ‖(quadratic b)^[n] w‖ := by
+    (fun s : ℝ => s ^ (2 : ℕ) - ‖b‖)^[n] t ≤ ‖(quadratic b)^[n] w‖ := by
   have hB : 0 < ‖b‖ := norm_pos_iff.mpr hb
   induction n with
   | zero => simpa using htw
   | succ n ih =>
       rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
-      have hreal : t ≤ (fun s : ℝ => s ^ 2 - ‖b‖)^[n] t := by
+      have hreal : t ≤ (fun s : ℝ => s ^ (2 : ℕ) - ‖b‖)^[n] t := by
         have h := iterate_linear_growth (B := ‖b‖) (t := t) hB ht n
         have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
         have hdelta : (0 : ℝ) ≤ t - xStar ‖b‖ := sub_nonneg.mpr ht
         exact le_trans (by nlinarith [mul_nonneg hn0 hdelta]) h
-      have hreal0 : 0 ≤ (fun s : ℝ => s ^ 2 - ‖b‖)^[n] t := by
+      have hreal0 : 0 ≤ (fun s : ℝ => s ^ (2 : ℕ) - ‖b‖)^[n] t := by
         have hx : 1 < xStar ‖b‖ := one_lt_xStar hB
         linarith
-      have hrev : ‖(quadratic b)^[n] w‖ ^ 2 - ‖b‖ ≤
+      have hrev : ‖(quadratic b)^[n] w‖ ^ (2 : ℕ) - ‖b‖ ≤
           ‖quadratic b ((quadratic b)^[n] w)‖ := by
-        have h := norm_sub_norm_le (((quadratic b)^[n] w) ^ 2) (-b)
+        have h := norm_sub_norm_le (((quadratic b)^[n] w) ^ (2 : ℕ)) (-b)
         rw [norm_neg, sub_neg_eq_add, norm_pow] at h
         exact h
-      have hsq : (fun s : ℝ => s ^ 2 - ‖b‖)^[n] t ^ 2 ≤
-          ‖(quadratic b)^[n] w‖ ^ 2 := by
+      have hsq : (fun s : ℝ => s ^ (2 : ℕ) - ‖b‖)^[n] t ^ (2 : ℕ) ≤
+          ‖(quadratic b)^[n] w‖ ^ (2 : ℕ) := by
         nlinarith [mul_nonneg (sub_nonneg.mpr ih)
           (add_nonneg (norm_nonneg ((quadratic b)^[n] w)) hreal0)]
       exact le_trans (sub_le_sub_right hsq _) hrev
@@ -84,7 +84,7 @@ theorem exists_aligned_unit_radial_escape {b : ℂ} (hb : b ≠ 0) :
     dsimp [u]
     rw [norm_div, norm_real, Real.norm_eq_abs, abs_of_pos hBpos]
     simpa [B] using div_self hbnorm.ne'
-  obtain ⟨z, hz⟩ : ∃ z : ℂ, z ^ 2 = u :=
+  obtain ⟨z, hz⟩ : ∃ z : ℂ, z ^ (2 : ℕ) = u :=
     IsAlgClosed.exists_pow_nat_eq u (by norm_num)
   have hznorm : ‖z‖ = 1 := by
     have h := congrArg norm hz
@@ -95,12 +95,12 @@ theorem exists_aligned_unit_radial_escape {b : ℂ} (hb : b ≠ 0) :
   have hc : b = (B : ℂ) * u := by
     dsimp [u]
     field_simp
-  have hq : quadratic b ((t : ℂ) * z) = ((t ^ 2 + B : ℝ) : ℂ) * u := by
+  have hq : quadratic b ((t : ℂ) * z) = ((t ^ (2 : ℕ) + B : ℝ) : ℂ) * u := by
     rw [quadratic_apply, mul_pow, hz]
     nth_rewrite 1 [hc]
     push_cast
     ring
-  have hqnorm : ‖quadratic b ((t : ℂ) * z)‖ = t ^ 2 + ‖b‖ := by
+  have hqnorm : ‖quadratic b ((t : ℂ) * z)‖ = t ^ (2 : ℕ) + ‖b‖ := by
     rw [hq, norm_mul, hu, mul_one, norm_real, Real.norm_eq_abs,
       abs_of_nonneg (by positivity)]
   have hstart : xStar ‖b‖ < ‖quadratic b ((t : ℂ) * z)‖ := by

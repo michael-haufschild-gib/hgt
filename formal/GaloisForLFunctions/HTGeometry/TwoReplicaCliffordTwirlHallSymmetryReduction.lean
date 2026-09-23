@@ -44,7 +44,7 @@ theorem cliffordQuarterTurn_matrix (a : Fin 3) :
     QubitTwoDesign.qubitClifford (cliffordQuarterTurnCode a) =
       rt2inv • ((1 : Matrix (Fin 2) (Fin 2) ℂ) +
         Complex.I • cliffordQubitPauli a) := by
-  have hsq : ((Real.sqrt 2 : ℂ) ^ 2) = 2 := by
+  have hsq : ((Real.sqrt 2 : ℂ) ^ (2 : ℕ)) = 2 := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
   fin_cases a <;>
@@ -207,8 +207,8 @@ theorem cliffordTwoReplicaCollectiveCommutator_square_groupAlgebra
       Matrix.add_apply, Matrix.sub_apply] <;>
     ring_nf <;>
     simp [Complex.I_sq,
-      show rt2inv ^ 4 = (1 / 4 : ℂ) by
-        rw [show rt2inv ^ 4 =
+      show rt2inv ^ (4 : ℕ) = (1 / 4 : ℂ) by
+        rw [show rt2inv ^ (4 : ℕ) =
           (rt2inv * rt2inv) * (rt2inv * rt2inv) by ring,
           rt2inv_mul_self]
         norm_num] <;>

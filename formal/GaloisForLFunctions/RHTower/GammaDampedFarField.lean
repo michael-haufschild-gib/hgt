@@ -153,13 +153,13 @@ theorem integrableOn_farEnergy {σ : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2)
     (hm0 : 0 ≤ squarefreeMobiusLogMoment 1 σ)
     (hm : squarefreeMobiusLogMoment 1 σ ≤ 2 / (σ - 1)) :
     IntegrableOn (fun x : ℝ =>
-      ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2 * HTGeometry.gammaCyclicDensity x)
+      ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ (2 : ℕ) * HTGeometry.gammaCyclicDensity x)
       {x : ℝ | 3 ≤ |x|} := by
   have hmeas : MeasurableSet {x : ℝ | 3 ≤ |x|} :=
     measurableSet_le measurable_const continuous_abs.measurable
   have htail := HTGeometry.integrableOn_log_sq_mul_gammaCyclicDensity
     (6 + Real.log (2 * Real.pi))
-  refine Integrable.mono' (htail.const_mul ((12 / (σ - 1)) ^ 2)) ?_ ?_
+  refine Integrable.mono' (htail.const_mul ((12 / (σ - 1)) ^ (2 : ℕ))) ?_ ?_
   · refine (Measurable.aestronglyMeasurable ?_)
     refine Measurable.mul ?_ HTGeometry.continuous_gammaCyclicDensity.measurable
     have hc : Continuous fun x : ℝ => (gammaDampedSymbol σ (2 * Real.pi * x)).im :=
@@ -169,14 +169,14 @@ theorem integrableOn_farEnergy {σ : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2)
     have hx3 : 3 ≤ |x| := hx
     have hpt := abs_im_gammaDampedSymbol_scaled_le hσ1 hσ2 hm0 hm hx3
     have hρ : (0 : ℝ) ≤ HTGeometry.gammaCyclicDensity x := HTGeometry.gammaCyclicDensity_nonneg x
-    have hsq : ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2
-        ≤ (12 / (σ - 1)) ^ 2 * (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) ^ 2 := by
+    have hsq : ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ (2 : ℕ)
+        ≤ (12 / (σ - 1)) ^ (2 : ℕ) * (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) ^ (2 : ℕ) := by
       have hnn : (0 : ℝ) ≤ 12 / (σ - 1) * (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) :=
         le_trans (abs_nonneg _) hpt
       have hsq' := mul_self_le_mul_self (abs_nonneg _) hpt
       rw [← sq_abs, ← mul_pow]
       nlinarith [hsq', sq_abs ((gammaDampedSymbol σ (2 * Real.pi * x)).im)]
-    have hnn : (0 : ℝ) ≤ ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2 *
+    have hnn : (0 : ℝ) ≤ ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ (2 : ℕ) *
         HTGeometry.gammaCyclicDensity x := by positivity
     rw [Real.norm_eq_abs, abs_of_nonneg hnn]
     nlinarith [hsq, hρ]
@@ -186,25 +186,25 @@ theorem gammaDampedFarEnergy_le {σ : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2)
     (hm0 : 0 ≤ squarefreeMobiusLogMoment 1 σ)
     (hm : squarefreeMobiusLogMoment 1 σ ≤ 2 / (σ - 1)) :
     (∫ x in {x : ℝ | 3 ≤ |x|},
-        ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2 * HTGeometry.gammaCyclicDensity x)
-      ≤ (12 / (σ - 1)) ^ 2 * ∫ x in {x : ℝ | 3 ≤ |x|},
-          (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) ^ 2 *
+        ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ (2 : ℕ) * HTGeometry.gammaCyclicDensity x)
+      ≤ (12 / (σ - 1)) ^ (2 : ℕ) * ∫ x in {x : ℝ | 3 ≤ |x|},
+          (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) ^ (2 : ℕ) *
             HTGeometry.gammaCyclicDensity x := by
   have hmeas : MeasurableSet {x : ℝ | 3 ≤ |x|} :=
     measurableSet_le measurable_const continuous_abs.measurable
   have htail := HTGeometry.integrableOn_log_sq_mul_gammaCyclicDensity
     (6 + Real.log (2 * Real.pi))
   have hbound : ∀ x ∈ {x : ℝ | 3 ≤ |x|},
-      ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2 * HTGeometry.gammaCyclicDensity x
-        ≤ (12 / (σ - 1)) ^ 2 *
-          ((Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) ^ 2 *
+      ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ (2 : ℕ) * HTGeometry.gammaCyclicDensity x
+        ≤ (12 / (σ - 1)) ^ (2 : ℕ) *
+          ((Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) ^ (2 : ℕ) *
             HTGeometry.gammaCyclicDensity x) := by
     intro x hx
     have hx3 : 3 ≤ |x| := hx
     have hpt := abs_im_gammaDampedSymbol_scaled_le hσ1 hσ2 hm0 hm hx3
     have hρ : (0 : ℝ) ≤ HTGeometry.gammaCyclicDensity x := HTGeometry.gammaCyclicDensity_nonneg x
-    have hsq : ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2
-        ≤ (12 / (σ - 1)) ^ 2 * (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) ^ 2 := by
+    have hsq : ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ (2 : ℕ)
+        ≤ (12 / (σ - 1)) ^ (2 : ℕ) * (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) ^ (2 : ℕ) := by
       have hnn : (0 : ℝ) ≤ 12 / (σ - 1) * (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) := by
         refine le_trans (abs_nonneg _) hpt
       have hsq' := mul_self_le_mul_self (abs_nonneg _) hpt

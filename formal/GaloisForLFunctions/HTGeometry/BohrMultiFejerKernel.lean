@@ -31,12 +31,12 @@ noncomputable def multiFejerKernel {ι : Type*} [Fintype ι] (β : ι → ℝ) (
 /-- The multi-dimensional kernel is a nonnegative real. -/
 theorem multiFejerKernel_eq_ofReal {ι : Type*} [Fintype ι] (β : ι → ℝ) (N : ι → ℕ) (u : ℝ) :
     multiFejerKernel β N u
-      = (((∏ j : ι, ‖fejerSum (β j) (N j) u‖ ^ 2 / ((N j : ℝ) + 1)) : ℝ) : ℂ) := by
+      = (((∏ j : ι, ‖fejerSum (β j) (N j) u‖ ^ (2 : ℕ) / ((N j : ℝ) + 1)) : ℝ) : ℂ) := by
   rw [multiFejerKernel, Complex.ofReal_prod]
   exact Finset.prod_congr rfl fun j _ => fejerKernel_eq_ofReal (β j) (N j) u
 
 theorem multiFejerKernel_nonneg {ι : Type*} [Fintype ι] (β : ι → ℝ) (N : ι → ℕ) (u : ℝ) :
-    0 ≤ ∏ j : ι, ‖fejerSum (β j) (N j) u‖ ^ 2 / ((N j : ℝ) + 1) :=
+    0 ≤ ∏ j : ι, ‖fejerSum (β j) (N j) u‖ ^ (2 : ℕ) / ((N j : ℝ) + 1) :=
   Finset.prod_nonneg fun j _ => fejerKernel_nonneg (β j) (N j) u
 
 /-- **Expansion of the multi-dimensional kernel.**  Its frequencies are the integer combinations

@@ -24,7 +24,7 @@ theorem thetaCuspLikelihoodSixthFockOddWeight_lt_sourceLogPartitionJetSix
   let M := thetaCuspHigherLikelihoodSpectralMoment B
   let r := thetaCuspHigherLikelihoodSpectralResponse B
   let P := thetaCuspLikelihoodPartition B
-  let evenTail := ∑' m : ℕ, (((2 * (m + 2) : ℕ) : ℝ) ^ 5) *
+  let evenTail := ∑' m : ℕ, (((2 * (m + 2) : ℕ) : ℝ) ^ (5 : ℕ)) *
     r ^ (2 * (m + 2) - 1)
   have hB : 0 < B := by
     simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx
@@ -62,26 +62,26 @@ theorem thetaCuspLikelihoodSixthFockOddWeight_lt_sourceLogPartitionJetSix
     exact tsum_nonneg fun m => by positivity
   have hfactor : 1 - (384 * r + 30 * evenTail) ≤ 1 := by
     nlinarith
-  have hlead0 : 0 ≤ (1 / 30 : ℝ) * A ^ 6 * M 6 := by positivity
+  have hlead0 : 0 ≤ (1 / 30 : ℝ) * A ^ (6 : ℕ) * M 6 := by positivity
   have hfockUpper : thetaCuspLikelihoodSixthFockOddWeight x ≤
-      (1 / 30 : ℝ) * A ^ 6 * M 6 := by
+      (1 / 30 : ℝ) * A ^ (6 : ℕ) * M 6 := by
     rw [thetaCuspLikelihoodSixthFockOddWeight]
     dsimp only [A, B, r, M, evenTail]
     exact mul_le_of_le_one_right hlead0 hfactor
-  have hAM : 0 < A ^ 6 * M 6 := mul_pos (pow_pos hA 6) hM6
+  have hAM : 0 < A ^ (6 : ℕ) * M 6 := mul_pos (pow_pos hA 6) hM6
   have hrawNormalized :
-      (1 / 30 : ℝ) * A ^ 6 * M 6 <
-        (2 / 25 : ℝ) * A ^ 6 * (M 6 / P) := by
-    rw [show (2 / 25 : ℝ) * A ^ 6 * (M 6 / P) =
-        ((2 / 25 : ℝ) * A ^ 6 * M 6) / P by ring]
+      (1 / 30 : ℝ) * A ^ (6 : ℕ) * M 6 <
+        (2 / 25 : ℝ) * A ^ (6 : ℕ) * (M 6 / P) := by
+    rw [show (2 / 25 : ℝ) * A ^ (6 : ℕ) * (M 6 / P) =
+        ((2 / 25 : ℝ) * A ^ (6 : ℕ) * M 6) / P by ring]
     apply (lt_div_iff₀ hP).2
-    have hprod : 0 < (2 - P) * (A ^ 6 * M 6) :=
+    have hprod : 0 < (2 - P) * (A ^ (6 : ℕ) * M 6) :=
       mul_pos (sub_pos.mpr hPtwo) hAM
     nlinarith
   have hsource :=
     two_twentyFifths_mul_likelihoodSixthMoment_lt_sourceLogPartitionJetSix hx
   have hsource' :
-      (2 / 25 : ℝ) * A ^ 6 * (M 6 / P) <
+      (2 / 25 : ℝ) * A ^ (6 : ℕ) * (M 6 / P) <
         thetaCuspLikelihoodSourceLogPartitionJetSix x := by
     simpa only [A, B, M, P, thetaCuspLikelihoodNormalizedMoment] using hsource
   exact lt_of_le_of_lt hfockUpper (hrawNormalized.trans hsource')

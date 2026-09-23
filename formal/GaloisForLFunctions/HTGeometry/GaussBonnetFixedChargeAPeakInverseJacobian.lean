@@ -14,13 +14,13 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAPeakInverseJacobian (τ φ ψ : ℝ) : ℝ :=
-  (1 - egbFixedChargeAMiddleGapCoordinate τ φ ^ 2) /
-    (1 + egbFixedChargeAMiddleGapCoordinate τ φ * sin ψ) ^ 2
+  (1 - egbFixedChargeAMiddleGapCoordinate τ φ ^ (2 : ℕ)) /
+    (1 + egbFixedChargeAMiddleGapCoordinate τ φ * sin ψ) ^ (2 : ℕ)
 
 theorem egbFixedChargeAPeakInverseJacobian_pos (τ φ ψ : ℝ) :
     0 < egbFixedChargeAPeakInverseJacobian τ φ ψ := by
   have hc := egbFixedChargeAMiddleGapCoordinate_bounds τ φ
-  have hn : 0 < 1 - egbFixedChargeAMiddleGapCoordinate τ φ ^ 2 := by
+  have hn : 0 < 1 - egbFixedChargeAMiddleGapCoordinate τ φ ^ (2 : ℕ) := by
     nlinarith [mul_pos (by linarith : 0 < 1 - egbFixedChargeAMiddleGapCoordinate τ φ)
       (by linarith : 0 < 1 + egbFixedChargeAMiddleGapCoordinate τ φ)]
   have hd := egbFixedChargeAPeakInverseCoordinate_denominator_pos τ φ ψ
@@ -44,20 +44,20 @@ theorem egbFixedChargeAPeakInverseCoordinate_hasDerivAt (τ φ ψ : ℝ) :
 
 theorem egbFixedChargeAPeakInverseCoordinate_linear_formula (τ φ ψ : ℝ) :
     (egbFixedChargeAPeakInverseCoordinate τ φ ψ - sin ψ) / egbCoexistenceASymmetricRatio τ =
-      (egbFixedChargeAMiddleGapCoordinate τ φ / egbCoexistenceASymmetricRatio τ) * cos ψ ^ 2 /
+      (egbFixedChargeAMiddleGapCoordinate τ φ / egbCoexistenceASymmetricRatio τ) * cos ψ ^ (2 : ℕ) /
         (1 + egbFixedChargeAMiddleGapCoordinate τ φ * sin ψ) := by
   have hd := egbFixedChargeAPeakInverseCoordinate_denominator_pos τ φ ψ
   have hd' : 1 + sin ψ * egbFixedChargeAMiddleGapCoordinate τ φ ≠ 0 := by simpa only [mul_comm] using hd.ne'
   have hz := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hs : cos ψ ^ 2 = 1 - sin ψ ^ 2 := by linarith [sin_sq_add_cos_sq ψ]
+  have hs : cos ψ ^ (2 : ℕ) = 1 - sin ψ ^ (2 : ℕ) := by linarith [sin_sq_add_cos_sq ψ]
   rw [egbFixedChargeAPeakInverseCoordinate_formula, hs]
   field_simp [hd.ne', hd', hz.ne'] <;> ring
 
 theorem egbFixedChargeAPeakInverseJacobian_linear_formula (τ φ ψ : ℝ) :
     (egbFixedChargeAPeakInverseJacobian τ φ ψ - 1) / egbCoexistenceASymmetricRatio τ =
       -(egbFixedChargeAMiddleGapCoordinate τ φ / egbCoexistenceASymmetricRatio τ) *
-        (2 * sin ψ + egbFixedChargeAMiddleGapCoordinate τ φ * (1 + sin ψ ^ 2)) /
-          (1 + egbFixedChargeAMiddleGapCoordinate τ φ * sin ψ) ^ 2 := by
+        (2 * sin ψ + egbFixedChargeAMiddleGapCoordinate τ φ * (1 + sin ψ ^ (2 : ℕ))) /
+          (1 + egbFixedChargeAMiddleGapCoordinate τ φ * sin ψ) ^ (2 : ℕ) := by
   have hd := egbFixedChargeAPeakInverseCoordinate_denominator_pos τ φ ψ
   have hd' : 1 + sin ψ * egbFixedChargeAMiddleGapCoordinate τ φ ≠ 0 := by simpa only [mul_comm] using hd.ne'
   have hz := (egbCoexistenceASymmetricRatio_bounds τ).1
@@ -66,11 +66,11 @@ theorem egbFixedChargeAPeakInverseJacobian_linear_formula (τ φ ψ : ℝ) :
 
 theorem egbFixedChargeAPeakInverseCoordinate_linear_limit (φ ψ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAPeakInverseCoordinate τ φ ψ - sin ψ) / egbCoexistenceASymmetricRatio τ)
-      atBot (𝓝 (egbFixedChargeAMiddleMeanCorrection φ * cos ψ ^ 2)) := by
+      atBot (𝓝 (egbFixedChargeAMiddleMeanCorrection φ * cos ψ ^ (2 : ℕ))) := by
   have hc := egbFixedChargeAMiddleGapCoordinate_critical_limit φ
   have hden := (tendsto_const_nhds (x := (1 : ℝ))).add (hc.mul (tendsto_const_nhds (x := sin ψ)))
   simp only [zero_mul, add_zero] at hden
-  have h := ((egbFixedChargeAMiddleGapCoordinate_linear_limit φ).mul (tendsto_const_nhds (x := cos ψ ^ 2))).div hden one_ne_zero
+  have h := ((egbFixedChargeAMiddleGapCoordinate_linear_limit φ).mul (tendsto_const_nhds (x := cos ψ ^ (2 : ℕ)))).div hden one_ne_zero
   simpa only [egbFixedChargeAPeakInverseCoordinate_linear_formula, Pi.div_def, div_one] using h
 
 theorem egbFixedChargeAPeakInverseJacobian_critical_limit (φ ψ : ℝ) :
@@ -87,10 +87,10 @@ theorem egbFixedChargeAPeakInverseJacobian_linear_limit (φ ψ : ℝ) :
   have hc := egbFixedChargeAMiddleGapCoordinate_critical_limit φ
   have hden := (tendsto_const_nhds (x := (1 : ℝ))).add (hc.mul (tendsto_const_nhds (x := sin ψ)))
   simp only [zero_mul, add_zero] at hden
-  have hnum := (tendsto_const_nhds (x := 2 * sin ψ)).add (hc.mul (tendsto_const_nhds (x := 1 + sin ψ ^ 2)))
+  have hnum := (tendsto_const_nhds (x := 2 * sin ψ)).add (hc.mul (tendsto_const_nhds (x := 1 + sin ψ ^ (2 : ℕ))))
   simp only [zero_mul, add_zero] at hnum
   have h := (((egbFixedChargeAMiddleGapCoordinate_linear_limit φ).neg).mul hnum).div (hden.pow 2) (by norm_num)
-  have he : (-egbFixedChargeAMiddleMeanCorrection φ) * (2 * sin ψ) / (1 : ℝ) ^ 2 =
+  have he : (-egbFixedChargeAMiddleMeanCorrection φ) * (2 * sin ψ) / (1 : ℝ) ^ (2 : ℕ) =
       -2 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ := by ring
   rw [he] at h
   simpa only [egbFixedChargeAPeakInverseJacobian_linear_formula, Pi.div_def] using h

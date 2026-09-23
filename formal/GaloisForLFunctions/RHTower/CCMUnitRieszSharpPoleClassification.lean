@@ -89,7 +89,7 @@ theorem exp_unitRieszSuzukiBase_half_lt_thirteen_tenths :
   by_contra h
   have hle : (13 / 10 : ℝ) ≤ Real.exp (1 / 4) := le_of_not_gt h
   have hp := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 13 / 10) hle 4
-  have heq : Real.exp (1 / 4 : ℝ) ^ 4 = Real.exp 1 := by
+  have heq : Real.exp (1 / 4 : ℝ) ^ (4 : ℕ) = Real.exp 1 := by
     rw [← Real.exp_nat_mul]
     congr 1
     norm_num
@@ -160,7 +160,7 @@ theorem neg_screwLerchTail₁_unitRieszSuzukiBase_lt_nineteen_tenths :
       Real.log ((1 + y) / (1 - y)) < Real.log 9 :=
         Real.log_lt_log hratioPos hratio
       _ = 2 * Real.log 3 := by
-        rw [show (9 : ℝ) = 3 ^ 2 by norm_num, Real.log_pow]
+        rw [show (9 : ℝ) = 3 ^ (2 : ℕ) by norm_num, Real.log_pow]
         norm_num
   have hatan : Real.arctan y < Real.pi / 4 := by
     rw [← Real.arctan_one]
@@ -227,14 +227,14 @@ theorem abs_unitRieszSuzukiReporter_le_quarter
     dsimp only [x]
     rw [Real.exp_le_one_iff]
     linarith
-  have hxpow : Real.exp (h - H) = x ^ 2 := by
+  have hxpow : Real.exp (h - H) = x ^ (2 : ℕ) := by
     dsimp only [x]
     rw [← Real.exp_nat_mul]
     congr 1
     ring
   rw [abs_of_nonneg (unitRieszSuzukiReporter_nonneg_of_mem hh),
     unitRieszSuzukiReporter, hxpow]
-  change x - x ^ 2 ≤ 1 / 4
+  change x - x ^ (2 : ℕ) ≤ 1 / 4
   nlinarith [sq_nonneg (x - 1 / 2)]
 
 theorem abs_unitRieszSuzukiReporterDeriv_le_half
@@ -246,14 +246,14 @@ theorem abs_unitRieszSuzukiReporterDeriv_le_half
     dsimp only [x]
     rw [Real.exp_le_one_iff]
     linarith
-  have hxpow : Real.exp (h - H) = x ^ 2 := by
+  have hxpow : Real.exp (h - H) = x ^ (2 : ℕ) := by
     dsimp only [x]
     rw [← Real.exp_nat_mul]
     congr 1
     ring
   rw [unitRieszSuzukiReporterDeriv, hxpow, abs_le]
-  change -(1 / 2 : ℝ) ≤ (1 / 2 : ℝ) * x - x ^ 2 ∧
-    (1 / 2 : ℝ) * x - x ^ 2 ≤ 1 / 2
+  change -(1 / 2 : ℝ) ≤ (1 / 2 : ℝ) * x - x ^ (2 : ℕ) ∧
+    (1 / 2 : ℝ) * x - x ^ (2 : ℕ) ≤ 1 / 2
   constructor <;> nlinarith [mul_self_le_mul_self hx0 hx1]
 
 theorem abs_suzukiPsi_lt_fiftyEight_over_sixHundredTwentyFive_of_rh
@@ -397,7 +397,7 @@ theorem unitRieszSuzukiPolarLinearThreshold_sub_two_lt_fortyThree_twentieths :
     by_contra h
     have hle : (33 / 20 : ℝ) ≤ Real.exp (1 / 2) := le_of_not_gt h
     have hp := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 33 / 20) hle 2
-    have heq : Real.exp (1 / 2 : ℝ) ^ 2 = Real.exp 1 := by
+    have heq : Real.exp (1 / 2 : ℝ) ^ (2 : ℕ) = Real.exp 1 := by
       rw [← Real.exp_nat_mul]
       congr 1
       norm_num
@@ -410,7 +410,7 @@ theorem unitRieszSuzukiPolarLinearThreshold_sub_two_lt_fortyThree_twentieths :
 theorem exp_neg_two_lt_seven_fiftieths : Real.exp (-2) < (7 / 50 : ℝ) := by
   have hneg : Real.exp (-1) < (46 / 125 : ℝ) := by
     nlinarith [Real.exp_neg_one_lt_d9]
-  have hsq : Real.exp (-2) = Real.exp (-1) ^ 2 := by
+  have hsq : Real.exp (-2) = Real.exp (-1) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     norm_num
   rw [hsq]
@@ -440,12 +440,12 @@ theorem abs_unitRieszSuzukiPolarCorrection_lt_seven_tenths
   let A : ℝ := unitRieszSuzukiPolarQuadraticCoeff
   let B : ℝ := unitRieszSuzukiPolarLinearThreshold
   have hx0 : 0 < x := Real.exp_pos _
-  have hxpow : Real.exp (-H) = x ^ 2 := by
+  have hxpow : Real.exp (-H) = x ^ (2 : ℕ) := by
     dsimp only [x]
     rw [← Real.exp_nat_mul]
     congr 1
     ring
-  have hformula : unitRieszSuzukiPolarCorrection H = (H - B) * x + A * x ^ 2 := by
+  have hformula : unitRieszSuzukiPolarCorrection H = (H - B) * x + A * x ^ (2 : ℕ) := by
     rw [unitRieszSuzukiPolarCorrection_eq, hxpow]
     dsimp only [A, B, unitRieszSuzukiPolarQuadraticCoeff,
       unitRieszSuzukiPolarLinearThreshold, x]
@@ -465,13 +465,13 @@ theorem abs_unitRieszSuzukiPolarCorrection_lt_seven_tenths
     have he := Real.add_one_le_exp (-H / 2)
     dsimp only [x]
     nlinarith
-  have hlowerPoly : 0 < (377 / 192 : ℝ) * x ^ 2 - (43 / 20) * x + 7 / 10 := by
+  have hlowerPoly : 0 < (377 / 192 : ℝ) * x ^ (2 : ℕ) - (43 / 20) * x + 7 / 10 := by
     nlinarith [sq_nonneg (2 * (377 / 192 : ℝ) * x - 43 / 20)]
   have hlower : -(7 / 10 : ℝ) < unitRieszSuzukiPolarCorrection H := by
     rw [hformula]
     have hHx : 2 * (1 - x) * x ≤ H * x :=
       mul_le_mul_of_nonneg_right hHlinear hx0.le
-    have hAterm : (377 / 192 : ℝ) * x ^ 2 ≤ (A - 2) * x ^ 2 :=
+    have hAterm : (377 / 192 : ℝ) * x ^ (2 : ℕ) ≤ (A - 2) * x ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right hAlower (sq_nonneg x)
     have hBterm : -(B - 2) * x > -(43 / 20 : ℝ) * x := by
       have := mul_lt_mul_of_pos_right hBupper hx0
@@ -531,7 +531,7 @@ theorem abs_unitRieszSuzukiPolarCorrection_lt_seven_tenths
             have hAx : A * x < (21 / 5 : ℝ) * (1 / 2) :=
               mul_lt_mul hAupper hxhalf'.le hx0 (by norm_num)
             nlinarith
-      have hvalue : (H - B) * x + A * x ^ 2 < 0 := by
+      have hvalue : (H - B) * x + A * x ^ (2 : ℕ) < 0 := by
         have hp : x * (H - B + A * x) < 0 :=
           mul_neg_of_pos_of_neg hx0 hbracket
         nlinarith
@@ -540,11 +540,11 @@ theorem abs_unitRieszSuzukiPolarCorrection_lt_seven_tenths
       by_cases hHB : H ≤ B
       · have hfirst : (H - B) * x ≤ 0 := mul_nonpos_of_nonpos_of_nonneg
           (sub_nonpos.mpr hHB) hx0.le
-        have hx2 : x ^ 2 < 7 / 50 := by
+        have hx2 : x ^ (2 : ℕ) < 7 / 50 := by
           rw [← hxpow]
           exact (Real.exp_lt_exp.mpr (by linarith : -H < -2)).trans
             exp_neg_two_lt_seven_fiftieths
-        have hsecond : A * x ^ 2 < (21 / 5 : ℝ) * (7 / 50) :=
+        have hsecond : A * x ^ (2 : ℕ) < (21 / 5 : ℝ) * (7 / 50) :=
           mul_lt_mul hAupper hx2.le (sq_pos_of_pos hx0) (by norm_num)
         nlinarith
       · have hBH : B < H := lt_of_not_ge hHB
@@ -556,16 +556,16 @@ theorem abs_unitRieszSuzukiPolarCorrection_lt_seven_tenths
         have hfirst : (H - B) * x < 7 / 25 := by
           dsimp only [x]
           nlinarith
-        have hx2 : x ^ 2 < 1 / 50 := by
+        have hx2 : x ^ (2 : ℕ) < 1 / 50 := by
           rw [← hxpow]
-          have he4 : Real.exp (-4) = Real.exp (-2) ^ 2 := by
+          have he4 : Real.exp (-4) = Real.exp (-2) ^ (2 : ℕ) := by
             rw [← Real.exp_nat_mul]
             norm_num
           have he4lt : Real.exp (-4) < 1 / 50 := by
             rw [he4]
             nlinarith [Real.exp_pos (-2), exp_neg_two_lt_seven_fiftieths]
           exact (Real.exp_lt_exp.mpr (by linarith : -H < -4)).trans he4lt
-        have hsecond : A * x ^ 2 < 21 / 250 := by
+        have hsecond : A * x ^ (2 : ℕ) < 21 / 250 := by
           have := mul_lt_mul hAupper hx2.le (sq_pos_of_pos hx0)
             (by norm_num : (0 : ℝ) ≤ 21 / 5)
           norm_num at this ⊢

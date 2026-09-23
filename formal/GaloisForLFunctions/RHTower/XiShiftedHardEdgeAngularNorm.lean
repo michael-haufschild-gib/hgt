@@ -23,7 +23,7 @@ namespace RHTower
 def routeUHardEdgeAngularChart (a θ : ℝ) : ℝ := a * Real.tan (θ / 2)
 
 /-- The Jacobian of the angular chart. -/
-def routeUHardEdgeAngularJacobian (a θ : ℝ) : ℝ := a * (1 / Real.cos (θ / 2) ^ 2 * (1 / 2))
+def routeUHardEdgeAngularJacobian (a θ : ℝ) : ℝ := a * (1 / Real.cos (θ / 2) ^ (2 : ℕ) * (1 / 2))
 
 theorem cos_half_pos_of_mem_Ioo {θ : ℝ} (hθ : θ ∈ Set.Ioo (-Real.pi) Real.pi) :
     0 < Real.cos (θ / 2) := by
@@ -68,9 +68,9 @@ theorem image_routeUHardEdgeAngularChart {a : ℝ} (ha : 0 < a) :
 /-- **(CSHC.8) The angular `L²` identity.**  The half-density factor of the rational test cancels
 the Jacobian of the Cayley chart. -/
 theorem integral_routeUHardEdgeRationalTest_sq {a : ℝ} (ha : 0 < a) (p : Polynomial ℝ) :
-    (∫ x : ℝ, routeUHardEdgeRationalTest a p x ^ 2)
+    (∫ x : ℝ, routeUHardEdgeRationalTest a p x ^ (2 : ℕ))
       = (a / 2) * ∫ θ in Set.Ioo (-Real.pi) Real.pi,
-          ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ 2 := by
+          ((routeUHardEdgeAngularPoly a p).eval (Real.cos θ)) ^ (2 : ℕ) := by
   have hchange := MeasureTheory.integral_image_eq_integral_abs_deriv_smul
     (s := Set.Ioo (-Real.pi) Real.pi)
     (f := routeUHardEdgeAngularChart a) (f' := routeUHardEdgeAngularJacobian a)
@@ -78,18 +78,18 @@ theorem integral_routeUHardEdgeRationalTest_sq {a : ℝ} (ha : 0 < a) (p : Polyn
     (fun θ hθ => (hasDerivAt_routeUHardEdgeAngularChart
       (ne_of_gt (cos_half_pos_of_mem_Ioo hθ))).hasDerivWithinAt)
     (injOn_routeUHardEdgeAngularChart ha)
-    (fun x => routeUHardEdgeRationalTest a p x ^ 2)
+    (fun x => routeUHardEdgeRationalTest a p x ^ (2 : ℕ))
   rw [image_routeUHardEdgeAngularChart ha, setIntegral_univ] at hchange
   rw [hchange, ← MeasureTheory.integral_const_mul]
   refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioo fun θ hθ => ?_
   have hcos := cos_half_pos_of_mem_Ioo hθ
-  have hjac : |routeUHardEdgeAngularJacobian a θ| = a * (1 / Real.cos (θ / 2) ^ 2 * (1 / 2)) := by
+  have hjac : |routeUHardEdgeAngularJacobian a θ| = a * (1 / Real.cos (θ / 2) ^ (2 : ℕ) * (1 / 2)) := by
     rw [routeUHardEdgeAngularJacobian, abs_of_pos (by positivity)]
   have hval : routeUHardEdgeRationalTest a p (routeUHardEdgeAngularChart a θ)
       = Real.cos (θ / 2) * (routeUHardEdgeAngularPoly a p).eval (Real.cos θ) :=
     routeUHardEdgeRationalTest_tan ha p hcos
   rw [smul_eq_mul, hjac, hval, mul_pow]
-  have hne : Real.cos (θ / 2) ^ 2 ≠ 0 := pow_ne_zero 2 (ne_of_gt hcos)
+  have hne : Real.cos (θ / 2) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (ne_of_gt hcos)
   field_simp
 
 end RHTower

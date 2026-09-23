@@ -58,27 +58,27 @@ theorem exists_contDiff_uniform_approx_vector {N : ℕ} {s : Set ℂ} (hs : IsCo
   choose P hP hPerr using fun q => exists_contDiff_uniform_approx hs (hcoord q) hδ
   refine ⟨vectorOfCoordinates P, contDiff_vectorOfCoordinates hP, ?_⟩
   intro x hx
-  have hsq : ∀ q : Deck N, ‖G x q - P q x‖ ^ 2 < δ ^ 2 := by
+  have hsq : ∀ q : Deck N, ‖G x q - P q x‖ ^ (2 : ℕ) < δ ^ (2 : ℕ) := by
     intro q
     have hnonneg : 0 ≤ ‖G x q - P q x‖ := norm_nonneg _
     nlinarith [hPerr q x hx]
-  have hsum : ∑ q : Deck N, ‖G x q - P q x‖ ^ 2 < η ^ 2 := by
+  have hsum : ∑ q : Deck N, ‖G x q - P q x‖ ^ (2 : ℕ) < η ^ (2 : ℕ) := by
     calc
-      ∑ q : Deck N, ‖G x q - P q x‖ ^ 2 < ∑ _q : Deck N, δ ^ 2 :=
+      ∑ q : Deck N, ‖G x q - P q x‖ ^ (2 : ℕ) < ∑ _q : Deck N, δ ^ (2 : ℕ) :=
         Finset.sum_lt_sum (fun q _ => (hsq q).le) ⟨1, Finset.mem_univ _, hsq 1⟩
-      _ = c * δ ^ 2 := by simp [c]
-      _ < η ^ 2 := by
-        have hcSq : c < (c + 1) ^ 2 := by nlinarith
-        have hcDiv : c / (c + 1) ^ 2 < 1 := (div_lt_one₀ (sq_pos_of_pos hc1)).mpr hcSq
-        have hηSq : 0 < η ^ 2 := sq_pos_of_pos hη
+      _ = c * δ ^ (2 : ℕ) := by simp [c]
+      _ < η ^ (2 : ℕ) := by
+        have hcSq : c < (c + 1) ^ (2 : ℕ) := by nlinarith
+        have hcDiv : c / (c + 1) ^ (2 : ℕ) < 1 := (div_lt_one₀ (sq_pos_of_pos hc1)).mpr hcSq
+        have hηSq : 0 < η ^ (2 : ℕ) := sq_pos_of_pos hη
         calc
-          c * δ ^ 2 = (c / (c + 1) ^ 2) * η ^ 2 := by
+          c * δ ^ (2 : ℕ) = (c / (c + 1) ^ (2 : ℕ)) * η ^ (2 : ℕ) := by
             dsimp [δ]
             field_simp
-          _ < 1 * η ^ 2 := (mul_lt_mul_of_pos_right hcDiv hηSq)
-          _ = η ^ 2 := one_mul _
-  have hnormsq : ‖G x - vectorOfCoordinates P x‖ ^ 2 =
-      ∑ q : Deck N, ‖G x q - P q x‖ ^ 2 := by
+          _ < 1 * η ^ (2 : ℕ) := (mul_lt_mul_of_pos_right hcDiv hηSq)
+          _ = η ^ (2 : ℕ) := one_mul _
+  have hnormsq : ‖G x - vectorOfCoordinates P x‖ ^ (2 : ℕ) =
+      ∑ q : Deck N, ‖G x q - P q x‖ ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_sq_eq]
     apply Finset.sum_congr rfl
     intro q _

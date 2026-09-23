@@ -355,7 +355,7 @@ theorem imageArm_ingoing_zero (q : XiZeroCopy) (branch : Bool) (v X k : ℝ) :
 
 def liftTraceCoefficient (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) : ℂ :=
   (-physicalRate q branch*(physicalRate q branch-1)/4)*
-    D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amplitude^2
+    D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amplitude^(2 : ℕ)
 
 /-- Source-derived direct/image null-cap field, with the original lift normalization. -/
 def capBoundaryField (q : XiZeroCopy) (branch : Bool) (amplitude : ℂ) (τ x X k : ℝ) : ℂ :=

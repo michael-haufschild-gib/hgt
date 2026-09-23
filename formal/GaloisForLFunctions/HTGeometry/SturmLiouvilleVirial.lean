@@ -34,7 +34,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {p Q R DR DpQ : ℝ → ℝ} {α β : ℝ}
 
 /-- The Sturm energy of a solution of `(p R')' + Q R = 0`. -/
-def slEnergy (p Q R DR : ℝ → ℝ) (x : ℝ) : ℝ := (p x * DR x) ^ 2 + p x * Q x * R x ^ 2
+def slEnergy (p Q R DR : ℝ → ℝ) (x : ℝ) : ℝ := (p x * DR x) ^ (2 : ℕ) + p x * Q x * R x ^ (2 : ℕ)
 
 theorem slEnergy_nonneg (hp : 0 ≤ p x) (hQ : 0 ≤ Q x) : 0 ≤ slEnergy p Q R DR x := by
   rw [slEnergy]
@@ -44,7 +44,7 @@ theorem slEnergy_nonneg (hp : 0 ≤ p x) (hQ : 0 ≤ Q x) : 0 ≤ slEnergy p Q R
 /-- **The virial identity.**  `(p R R')' = p R'² − Q R²`. -/
 theorem hasDerivAt_virial {x : ℝ} (hR : HasDerivAt R (DR x) x)
     (hpR : HasDerivAt (fun t => p t * DR t) (-(Q x * R x)) x) :
-    HasDerivAt (fun t => R t * (p t * DR t)) (p x * DR x ^ 2 - Q x * R x ^ 2) x := by
+    HasDerivAt (fun t => R t * (p t * DR t)) (p x * DR x ^ (2 : ℕ) - Q x * R x ^ (2 : ℕ)) x := by
   refine (hR.mul hpR).congr_deriv ?_
   ring
 
@@ -52,14 +52,14 @@ theorem hasDerivAt_virial {x : ℝ} (hR : HasDerivAt R (DR x) x)
 theorem hasDerivAt_slEnergy {x : ℝ} (hR : HasDerivAt R (DR x) x)
     (hpR : HasDerivAt (fun t => p t * DR t) (-(Q x * R x)) x)
     (hpQ : HasDerivAt (fun t => p t * Q t) (DpQ x) x) :
-    HasDerivAt (slEnergy p Q R DR) (DpQ x * R x ^ 2) x := by
-  have h1 : HasDerivAt (fun t => (p t * DR t) ^ 2)
-      (2 * (p x * DR x) ^ 1 * -(Q x * R x)) x := hpR.pow 2
-  have h2 : HasDerivAt (fun t => p t * Q t * R t ^ 2)
-      (DpQ x * R x ^ 2 + p x * Q x * (2 * R x ^ 1 * DR x)) x := hpQ.mul (hR.pow 2)
+    HasDerivAt (slEnergy p Q R DR) (DpQ x * R x ^ (2 : ℕ)) x := by
+  have h1 : HasDerivAt (fun t => (p t * DR t) ^ (2 : ℕ))
+      (2 * (p x * DR x) ^ (1 : ℕ) * -(Q x * R x)) x := hpR.pow 2
+  have h2 : HasDerivAt (fun t => p t * Q t * R t ^ (2 : ℕ))
+      (DpQ x * R x ^ (2 : ℕ) + p x * Q x * (2 * R x ^ (1 : ℕ) * DR x)) x := hpQ.mul (hR.pow 2)
   have h := h1.add h2
   have hfun : slEnergy p Q R DR
-      = fun t => (p t * DR t) ^ 2 + p t * Q t * R t ^ 2 := by
+      = fun t => (p t * DR t) ^ (2 : ℕ) + p t * Q t * R t ^ (2 : ℕ) := by
     funext t
     rw [slEnergy]
   rw [hfun]
@@ -73,7 +73,7 @@ theorem slEnergy_le_of_monotone
     (hpQ : ∀ x ∈ Icc α β, HasDerivAt (fun t => p t * Q t) (DpQ x) x)
     (hnn : ∀ x ∈ Icc α β, 0 ≤ DpQ x) {x : ℝ} (hx : x ∈ Icc α β) :
     slEnergy p Q R DR α ≤ slEnergy p Q R DR x := by
-  have hd : ∀ y ∈ Icc α β, HasDerivAt (slEnergy p Q R DR) (DpQ y * R y ^ 2) y :=
+  have hd : ∀ y ∈ Icc α β, HasDerivAt (slEnergy p Q R DR) (DpQ y * R y ^ (2 : ℕ)) y :=
     fun y hy => hasDerivAt_slEnergy (hR y hy) (hpR y hy) (hpQ y hy)
   have hsub : Icc α x ⊆ Icc α β := Icc_subset_Icc le_rfl hx.2
   have hcont : ContinuousOn (slEnergy p Q R DR) (Icc α x) := fun y hy =>
@@ -94,9 +94,9 @@ theorem slEnergy_le_of_monotone
 theorem integral_virial
     (hR : ∀ x ∈ uIcc α β, HasDerivAt R (DR x) x)
     (hpR : ∀ x ∈ uIcc α β, HasDerivAt (fun t => p t * DR t) (-(Q x * R x)) x)
-    (hint : IntervalIntegrable (fun x => p x * DR x ^ 2 - Q x * R x ^ 2)
+    (hint : IntervalIntegrable (fun x => p x * DR x ^ (2 : ℕ) - Q x * R x ^ (2 : ℕ))
       MeasureTheory.volume α β) :
-    (∫ x in α..β, (p x * DR x ^ 2 - Q x * R x ^ 2))
+    (∫ x in α..β, (p x * DR x ^ (2 : ℕ) - Q x * R x ^ (2 : ℕ)))
       = R β * (p β * DR β) - R α * (p α * DR α) :=
   intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun x hx => hasDerivAt_virial (hR x hx) (hpR x hx)) hint
@@ -108,25 +108,25 @@ theorem integral_slEnergy_div_eq
     (hR : ∀ x ∈ uIcc α β, HasDerivAt R (DR x) x)
     (hpR : ∀ x ∈ uIcc α β, HasDerivAt (fun t => p t * DR t) (-(Q x * R x)) x)
     (hp0 : ∀ x ∈ uIcc α β, p x ≠ 0)
-    (hint : IntervalIntegrable (fun x => p x * DR x ^ 2 - Q x * R x ^ 2)
+    (hint : IntervalIntegrable (fun x => p x * DR x ^ (2 : ℕ) - Q x * R x ^ (2 : ℕ))
       MeasureTheory.volume α β)
-    (hQR : IntervalIntegrable (fun x => Q x * R x ^ 2) MeasureTheory.volume α β) :
+    (hQR : IntervalIntegrable (fun x => Q x * R x ^ (2 : ℕ)) MeasureTheory.volume α β) :
     (∫ x in α..β, slEnergy p Q R DR x / p x)
-      = 2 * (∫ x in α..β, Q x * R x ^ 2) + (R β * (p β * DR β) - R α * (p α * DR α)) := by
+      = 2 * (∫ x in α..β, Q x * R x ^ (2 : ℕ)) + (R β * (p β * DR β) - R α * (p α * DR α)) := by
   have hvir := integral_virial hR hpR hint
-  have hsplit : (∫ x in α..β, (p x * DR x ^ 2 - Q x * R x ^ 2))
-      = (∫ x in α..β, p x * DR x ^ 2) - ∫ x in α..β, Q x * R x ^ 2 := by
-    have hpd : IntervalIntegrable (fun x => p x * DR x ^ 2) MeasureTheory.volume α β := by
+  have hsplit : (∫ x in α..β, (p x * DR x ^ (2 : ℕ) - Q x * R x ^ (2 : ℕ)))
+      = (∫ x in α..β, p x * DR x ^ (2 : ℕ)) - ∫ x in α..β, Q x * R x ^ (2 : ℕ) := by
+    have hpd : IntervalIntegrable (fun x => p x * DR x ^ (2 : ℕ)) MeasureTheory.volume α β := by
       have := hint.add hQR
       exact this.congr fun x _ => by ring
     rw [intervalIntegral.integral_sub hpd hQR]
   have hEeq : (∫ x in α..β, slEnergy p Q R DR x / p x)
-      = (∫ x in α..β, p x * DR x ^ 2) + ∫ x in α..β, Q x * R x ^ 2 := by
-    have hpd : IntervalIntegrable (fun x => p x * DR x ^ 2) MeasureTheory.volume α β := by
+      = (∫ x in α..β, p x * DR x ^ (2 : ℕ)) + ∫ x in α..β, Q x * R x ^ (2 : ℕ) := by
+    have hpd : IntervalIntegrable (fun x => p x * DR x ^ (2 : ℕ)) MeasureTheory.volume α β := by
       have := hint.add hQR
       exact this.congr fun x _ => by ring
     have hcongr : (∫ x in α..β, slEnergy p Q R DR x / p x)
-        = ∫ x in α..β, (p x * DR x ^ 2 + Q x * R x ^ 2) := by
+        = ∫ x in α..β, (p x * DR x ^ (2 : ℕ) + Q x * R x ^ (2 : ℕ)) := by
       refine intervalIntegral.integral_congr fun x hx => ?_
       have hpx : p x ≠ 0 := hp0 x hx
       rw [slEnergy]
@@ -140,18 +140,18 @@ budget must carry mass proportional to the energy floor.  Nothing about the osci
 theorem mass_lower_of_slEnergy {F₀ Ip B Qβ : ℝ} (hαβ : α ≤ β)
     (hR : ∀ x ∈ uIcc α β, HasDerivAt R (DR x) x)
     (hpR : ∀ x ∈ uIcc α β, HasDerivAt (fun t => p t * DR t) (-(Q x * R x)) x)
-    (hint : IntervalIntegrable (fun x => p x * DR x ^ 2 - Q x * R x ^ 2)
+    (hint : IntervalIntegrable (fun x => p x * DR x ^ (2 : ℕ) - Q x * R x ^ (2 : ℕ))
       MeasureTheory.volume α β)
-    (hQR : IntervalIntegrable (fun x => Q x * R x ^ 2) MeasureTheory.volume α β)
+    (hQR : IntervalIntegrable (fun x => Q x * R x ^ (2 : ℕ)) MeasureTheory.volume α β)
     (hEint : IntervalIntegrable (fun x => slEnergy p Q R DR x / p x) MeasureTheory.volume α β)
     (hpinv : IntervalIntegrable (fun x => 1 / p x) MeasureTheory.volume α β)
-    (hR2 : IntervalIntegrable (fun x => R x ^ 2) MeasureTheory.volume α β)
+    (hR2 : IntervalIntegrable (fun x => R x ^ (2 : ℕ)) MeasureTheory.volume α β)
     (hppos : ∀ x ∈ Icc α β, 0 < p x)
     (hF₀ : ∀ x ∈ Icc α β, F₀ ≤ slEnergy p Q R DR x) (hF₀0 : 0 ≤ F₀)
     (hIp : Ip ≤ ∫ x in α..β, 1 / p x)
     (hbd : R β * (p β * DR β) - R α * (p α * DR α) ≤ B)
     (hQ : ∀ x ∈ Icc α β, Q x ≤ Qβ) (hQβ : 0 < Qβ) :
-    (F₀ * Ip - B) / (2 * Qβ) ≤ ∫ x in α..β, R x ^ 2 := by
+    (F₀ * Ip - B) / (2 * Qβ) ≤ ∫ x in α..β, R x ^ (2 : ℕ) := by
   have huIcc : uIcc α β = Icc α β := uIcc_of_le hαβ
   have hp0 : ∀ x ∈ uIcc α β, p x ≠ 0 := by
     rw [huIcc]
@@ -172,8 +172,8 @@ theorem mass_lower_of_slEnergy {F₀ Ip B Qβ : ℝ} (hαβ : α ≤ β)
     rw [hconst] at hmono
     linarith [hmono, hIp']
   -- the potential mass from above
-  have hpot : (∫ x in α..β, Q x * R x ^ 2) ≤ Qβ * ∫ x in α..β, R x ^ 2 := by
-    have hmono : (∫ x in α..β, Q x * R x ^ 2) ≤ ∫ x in α..β, Qβ * R x ^ 2 := by
+  have hpot : (∫ x in α..β, Q x * R x ^ (2 : ℕ)) ≤ Qβ * ∫ x in α..β, R x ^ (2 : ℕ) := by
+    have hmono : (∫ x in α..β, Q x * R x ^ (2 : ℕ)) ≤ ∫ x in α..β, Qβ * R x ^ (2 : ℕ) := by
       refine intervalIntegral.integral_mono_on hαβ hQR (hR2.const_mul Qβ) fun x hx => ?_
       nlinarith [hQ x hx, sq_nonneg (R x)]
     rwa [intervalIntegral.integral_const_mul] at hmono
@@ -202,7 +202,7 @@ carries `c²`, so a companion solution with energy `O(c)` forces the solution's 
 
 /-- **The weighted Lagrange identity.** -/
 theorem sq_wronskian_mul_le_slEnergy_mul (p Q R₁ DR₁ R₂ DR₂ : ℝ → ℝ) (x : ℝ) :
-    p x * Q x * (R₁ x * (p x * DR₂ x) - (p x * DR₁ x) * R₂ x) ^ 2
+    p x * Q x * (R₁ x * (p x * DR₂ x) - (p x * DR₁ x) * R₂ x) ^ (2 : ℕ)
       ≤ slEnergy p Q R₁ DR₁ x * slEnergy p Q R₂ DR₂ x := by
   rw [slEnergy, slEnergy]
   nlinarith [sq_nonneg ((p x * DR₁ x) * (p x * DR₂ x) + (p x * Q x) * (R₁ x * R₂ x))]
@@ -212,7 +212,7 @@ theorem slEnergy_lower_of_wronskian {p Q R₁ DR₁ R₂ DR₂ : ℝ → ℝ} {x
     (hWval : R₁ x * (p x * DR₂ x) - (p x * DR₁ x) * R₂ x = W)
     (hpQ : 0 ≤ p x * Q x)
     (hE₂ : slEnergy p Q R₂ DR₂ x ≤ C) (hC : 0 < C) :
-    p x * Q x * W ^ 2 / C ≤ slEnergy p Q R₁ DR₁ x := by
+    p x * Q x * W ^ (2 : ℕ) / C ≤ slEnergy p Q R₁ DR₁ x := by
   have hCS := sq_wronskian_mul_le_slEnergy_mul p Q R₁ DR₁ R₂ DR₂ x
   rw [hWval] at hCS
   have hE1 : 0 ≤ slEnergy p Q R₁ DR₁ x := by

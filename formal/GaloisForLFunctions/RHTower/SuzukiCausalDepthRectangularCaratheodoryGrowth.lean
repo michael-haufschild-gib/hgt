@@ -13,7 +13,7 @@ boundary pairing has positive rectangular real part; no fitted phase is introduc
 The proof first establishes a stronger source-independent radial law: for `0 < c < 1` and every
 real `s ≤ 1`, the rational real part
 
-`(1-x)^2 (1-c*x^2*s) / (1-2*c*x^2*s+c^2*x^4)`
+`(1-x)^(2 : ℕ) (1-c*x^(2 : ℕ)*s) / (1-2*c*x^(2 : ℕ)*s+c^(2 : ℕ)*x^(4 : ℕ))`
 
 is strictly decreasing on `0 < x < 1`.  The lower bound `-1 ≤ s` is unnecessary.  The Suzuki
 depth recursion then identifies `x` with the aperture disk node, which decreases strictly with
@@ -32,8 +32,8 @@ namespace RHTower
 noncomputable section
 
 def causalDepthRadialRealPart (c s x : ℝ) : ℝ :=
-  (1 - x) ^ 2 * (1 - c * x ^ 2 * s) /
-    (1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4)
+  (1 - x) ^ (2 : ℕ) * (1 - c * x ^ (2 : ℕ) * s) /
+    (1 - 2 * c * x ^ (2 : ℕ) * s + c ^ (2 : ℕ) * x ^ (4 : ℕ))
 
 private theorem one_sub_mul_pos {b s : ℝ} (hb0 : 0 < b) (hb1 : b < 1)
     (hs : s ≤ 1) :
@@ -43,30 +43,30 @@ private theorem one_sub_mul_pos {b s : ℝ} (hb0 : 0 < b) (hb1 : b < 1)
 
 private theorem radial_den_pos {b s : ℝ} (hb0 : 0 < b) (hb1 : b < 1)
     (hs : s ≤ 1) :
-    0 < 1 - 2 * b * s + b ^ 2 := by
-  have hid : 1 - 2 * b * s + b ^ 2 =
-      (1 - b) ^ 2 + 2 * b * (1 - s) := by ring
+    0 < 1 - 2 * b * s + b ^ (2 : ℕ) := by
+  have hid : 1 - 2 * b * s + b ^ (2 : ℕ) =
+      (1 - b) ^ (2 : ℕ) + 2 * b * (1 - s) := by ring
   rw [hid]
   exact add_pos_of_pos_of_nonneg (sq_pos_of_pos (sub_pos.mpr hb1))
     (mul_nonneg (mul_nonneg (by norm_num) hb0.le) (sub_nonneg.mpr hs))
 
 private theorem causalDepthRadialPhaseCross_le {b s : ℝ}
     (hb0 : 0 < b) (hb1 : b < 1) (hs : s ≤ 1) :
-    (1 - b) * (s * (1 + b ^ 2) - 2 * b) ≤
-      (1 - b * s) * (1 - 2 * b * s + b ^ 2) := by
-  have hfactor : 0 ≤ 1 + 2 * b - b ^ 2 - 2 * b ^ 2 * s := by
+    (1 - b) * (s * (1 + b ^ (2 : ℕ)) - 2 * b) ≤
+      (1 - b * s) * (1 - 2 * b * s + b ^ (2 : ℕ)) := by
+  have hfactor : 0 ≤ 1 + 2 * b - b ^ (2 : ℕ) - 2 * b ^ (2 : ℕ) * s := by
     have hlow : (1 - b) * (1 + 3 * b) ≤
-        1 + 2 * b - b ^ 2 - 2 * b ^ 2 * s := by
+        1 + 2 * b - b ^ (2 : ℕ) - 2 * b ^ (2 : ℕ) * s := by
       nlinarith [mul_nonneg (sq_nonneg b) (sub_nonneg.mpr hs)]
     have : 0 < (1 - b) * (1 + 3 * b) :=
       mul_pos (sub_pos.mpr hb1) (by nlinarith)
     linarith
-  have hprod : 0 ≤ (1 - s) * (1 + 2 * b - b ^ 2 - 2 * b ^ 2 * s) :=
+  have hprod : 0 ≤ (1 - s) * (1 + 2 * b - b ^ (2 : ℕ) - 2 * b ^ (2 : ℕ) * s) :=
     mul_nonneg (sub_nonneg.mpr hs) hfactor
   have hid :
-      (1 - b * s) * (1 - 2 * b * s + b ^ 2) -
-          (1 - b) * (s * (1 + b ^ 2) - 2 * b) =
-        (1 - s) * (1 + 2 * b - b ^ 2 - 2 * b ^ 2 * s) := by
+      (1 - b * s) * (1 - 2 * b * s + b ^ (2 : ℕ)) -
+          (1 - b) * (s * (1 + b ^ (2 : ℕ)) - 2 * b) =
+        (1 - s) * (1 + 2 * b - b ^ (2 : ℕ) - 2 * b ^ (2 : ℕ) * s) := by
     ring
   nlinarith
 
@@ -74,54 +74,54 @@ private theorem causalDepthRadialRealPart_pos
     {c s x : ℝ} (hc0 : 0 < c) (hc1 : c < 1)
     (hs : s ≤ 1) (hx0 : 0 < x) (hx1 : x < 1) :
     0 < causalDepthRadialRealPart c s x := by
-  let b := c * x ^ 2
+  let b := c * x ^ (2 : ℕ)
   have hb0 : 0 < b := mul_pos hc0 (sq_pos_of_pos hx0)
   have hb1 : b < 1 := by
-    have hxsq : x ^ 2 < 1 := pow_lt_one₀ hx0.le hx1 (by norm_num)
+    have hxsq : x ^ (2 : ℕ) < 1 := pow_lt_one₀ hx0.le hx1 (by norm_num)
     exact mul_lt_one_of_nonneg_of_lt_one_left hc0.le hc1 hxsq.le
   have hnum := one_sub_mul_pos hb0 hb1 hs
   have hden := radial_den_pos hb0 hb1 hs
-  have hden' : 0 < 1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4 := by
+  have hden' : 0 < 1 - 2 * c * x ^ (2 : ℕ) * s + c ^ (2 : ℕ) * x ^ (4 : ℕ) := by
     convert hden using 1
     all_goals ring
   rw [causalDepthRadialRealPart]
   exact div_pos (mul_pos (sq_pos_of_pos (sub_pos.mpr hx1)) hnum) hden'
 
 private theorem hasDerivAt_causalDepthRadialRealPart
-    {c s x : ℝ} (hden : 1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4 ≠ 0) :
+    {c s x : ℝ} (hden : 1 - 2 * c * x ^ (2 : ℕ) * s + c ^ (2 : ℕ) * x ^ (4 : ℕ) ≠ 0) :
     HasDerivAt (causalDepthRadialRealPart c s)
-      ((((-2 * (1 - x)) * (1 - c * x ^ 2 * s) +
-            (1 - x) ^ 2 * (-c * (2 * x) * s)) *
-          (1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4) -
-        (1 - x) ^ 2 * (1 - c * x ^ 2 * s) *
-          (-2 * c * (2 * x) * s + c ^ 2 * (4 * x ^ 3))) /
-          (1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4) ^ 2) x := by
+      ((((-2 * (1 - x)) * (1 - c * x ^ (2 : ℕ) * s) +
+            (1 - x) ^ (2 : ℕ) * (-c * (2 * x) * s)) *
+          (1 - 2 * c * x ^ (2 : ℕ) * s + c ^ (2 : ℕ) * x ^ (4 : ℕ)) -
+        (1 - x) ^ (2 : ℕ) * (1 - c * x ^ (2 : ℕ) * s) *
+          (-2 * c * (2 * x) * s + c ^ (2 : ℕ) * (4 * x ^ (3 : ℕ)))) /
+          (1 - 2 * c * x ^ (2 : ℕ) * s + c ^ (2 : ℕ) * x ^ (4 : ℕ)) ^ (2 : ℕ)) x := by
   have hsub : HasDerivAt (fun y : ℝ => 1 - y) (-1) x := by
     have hd := (hasDerivAt_const x 1).sub (hasDerivAt_id x)
     simp only [zero_sub] at hd
     exact hd
-  have hsq : HasDerivAt (fun y : ℝ => y ^ 2) (2 * x) x := by
+  have hsq : HasDerivAt (fun y : ℝ => y ^ (2 : ℕ)) (2 * x) x := by
     convert (hasDerivAt_id x).pow 2 using 1
     all_goals first | rfl | simp only [id_eq]
     all_goals first | rfl | ring
-  have hfour : HasDerivAt (fun y : ℝ => y ^ 4) (4 * x ^ 3) x := by
+  have hfour : HasDerivAt (fun y : ℝ => y ^ (4 : ℕ)) (4 * x ^ (3 : ℕ)) x := by
     convert (hasDerivAt_id x).pow 4 using 1
     all_goals first | rfl | simp only [id_eq]
     all_goals first | rfl | ring
   have hn : HasDerivAt
-      (fun y : ℝ => (1 - y) ^ 2 * (1 - c * y ^ 2 * s))
-      ((-2 * (1 - x)) * (1 - c * x ^ 2 * s) +
-        (1 - x) ^ 2 * (-c * (2 * x) * s)) x := by
+      (fun y : ℝ => (1 - y) ^ (2 : ℕ) * (1 - c * y ^ (2 : ℕ) * s))
+      ((-2 * (1 - x)) * (1 - c * x ^ (2 : ℕ) * s) +
+        (1 - x) ^ (2 : ℕ) * (-c * (2 * x) * s)) x := by
     convert (hsub.pow 2).mul
       ((hasDerivAt_const x 1).sub ((hsq.const_mul c).mul_const s)) using 1
     all_goals first | rfl | simp only [Pi.pow_apply, Pi.sub_apply]
     all_goals first | rfl | ring
   have hd : HasDerivAt
-      (fun y : ℝ => 1 - 2 * c * y ^ 2 * s + c ^ 2 * y ^ 4)
-      (-2 * c * (2 * x) * s + c ^ 2 * (4 * x ^ 3)) x := by
+      (fun y : ℝ => 1 - 2 * c * y ^ (2 : ℕ) * s + c ^ (2 : ℕ) * y ^ (4 : ℕ))
+      (-2 * c * (2 * x) * s + c ^ (2 : ℕ) * (4 * x ^ (3 : ℕ))) x := by
     convert ((hasDerivAt_const x 1).sub
       ((hsq.const_mul (2 * c)).mul_const s)).add
-        (hfour.const_mul (c ^ 2)) using 1
+        (hfour.const_mul (c ^ (2 : ℕ))) using 1
     all_goals first | rfl | ring_nf
   exact hn.div hd hden
 
@@ -130,23 +130,23 @@ theorem causalDepthRadialRealPart_strictAntiOn
     StrictAntiOn (causalDepthRadialRealPart c s) (Ioo 0 1) := by
   apply strictAntiOn_of_deriv_neg (convex_Ioo 0 1)
   · intro x hx
-    have hb0 : 0 < c * x ^ 2 := mul_pos hc0 (sq_pos_of_pos hx.1)
-    have hb1 : c * x ^ 2 < 1 := by
-      have hxsq : x ^ 2 < 1 := pow_lt_one₀ hx.1.le hx.2 (by norm_num)
+    have hb0 : 0 < c * x ^ (2 : ℕ) := mul_pos hc0 (sq_pos_of_pos hx.1)
+    have hb1 : c * x ^ (2 : ℕ) < 1 := by
+      have hxsq : x ^ (2 : ℕ) < 1 := pow_lt_one₀ hx.1.le hx.2 (by norm_num)
       exact mul_lt_one_of_nonneg_of_lt_one_left hc0.le hc1 hxsq.le
     have hden := radial_den_pos hb0 hb1 hs
-    have hden' : 0 < 1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4 := by
+    have hden' : 0 < 1 - 2 * c * x ^ (2 : ℕ) * s + c ^ (2 : ℕ) * x ^ (4 : ℕ) := by
       convert hden using 1
       all_goals ring
     exact (hasDerivAt_causalDepthRadialRealPart hden'.ne').continuousAt.continuousWithinAt
   · intro x hx
     rw [interior_Ioo] at hx
-    let b := c * x ^ 2
-    let D := 1 - 2 * b * s + b ^ 2
-    let M := s * (1 + b ^ 2) - 2 * b
+    let b := c * x ^ (2 : ℕ)
+    let D := 1 - 2 * b * s + b ^ (2 : ℕ)
+    let M := s * (1 + b ^ (2 : ℕ)) - 2 * b
     have hb0 : 0 < b := mul_pos hc0 (sq_pos_of_pos hx.1)
     have hb1 : b < 1 := by
-      have hxsq : x ^ 2 < 1 := pow_lt_one₀ hx.1.le hx.2 (by norm_num)
+      have hxsq : x ^ (2 : ℕ) < 1 := pow_lt_one₀ hx.1.le hx.2 (by norm_num)
       exact mul_lt_one_of_nonneg_of_lt_one_left hc0.le hc1 hxsq.le
     have hnum := one_sub_mul_pos hb0 hb1 hs
     have hD : 0 < D := radial_den_pos hb0 hb1 hs
@@ -167,25 +167,25 @@ theorem causalDepthRadialRealPart_strictAntiOn
           mul_lt_mul_of_pos_right hk hM0
         linarith
     have hfactor :
-        ((-2 * (1 - x)) * (1 - c * x ^ 2 * s) +
-              (1 - x) ^ 2 * (-c * (2 * x) * s)) *
-            (1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4) -
-          (1 - x) ^ 2 * (1 - c * x ^ 2 * s) *
-            (-2 * c * (2 * x) * s + c ^ 2 * (4 * x ^ 3)) =
+        ((-2 * (1 - x)) * (1 - c * x ^ (2 : ℕ) * s) +
+              (1 - x) ^ (2 : ℕ) * (-c * (2 * x) * s)) *
+            (1 - 2 * c * x ^ (2 : ℕ) * s + c ^ (2 : ℕ) * x ^ (4 : ℕ)) -
+          (1 - x) ^ (2 : ℕ) * (1 - c * x ^ (2 : ℕ) * s) *
+            (-2 * c * (2 * x) * s + c ^ (2 : ℕ) * (4 * x ^ (3 : ℕ))) =
           2 * (1 - x) *
             (-(1 - b * s) * D + c * x * (1 - x) * M) := by
       dsimp [b, D, M]
       ring
     have hnumDeriv :
-        ((-2 * (1 - x)) * (1 - c * x ^ 2 * s) +
-              (1 - x) ^ 2 * (-c * (2 * x) * s)) *
-            (1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4) -
-          (1 - x) ^ 2 * (1 - c * x ^ 2 * s) *
-            (-2 * c * (2 * x) * s + c ^ 2 * (4 * x ^ 3)) < 0 := by
+        ((-2 * (1 - x)) * (1 - c * x ^ (2 : ℕ) * s) +
+              (1 - x) ^ (2 : ℕ) * (-c * (2 * x) * s)) *
+            (1 - 2 * c * x ^ (2 : ℕ) * s + c ^ (2 : ℕ) * x ^ (4 : ℕ)) -
+          (1 - x) ^ (2 : ℕ) * (1 - c * x ^ (2 : ℕ) * s) *
+            (-2 * c * (2 * x) * s + c ^ (2 : ℕ) * (4 * x ^ (3 : ℕ))) < 0 := by
       rw [hfactor]
       exact mul_neg_of_pos_of_neg
         (mul_pos (by norm_num) (sub_pos.mpr hx.2)) hinner
-    have hden' : 0 < 1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4 := by
+    have hden' : 0 < 1 - 2 * c * x ^ (2 : ℕ) * s + c ^ (2 : ℕ) * x ^ (4 : ℕ) := by
       dsimp [D, b] at hD
       convert hD using 1
       all_goals ring
@@ -314,7 +314,7 @@ theorem suzukiCriticalEntryWallEndpointAmplitude_zero_eq_base_mul_disk
     (h a : ℝ) (p : Nat.Primes) :
     suzukiCriticalEntryWallEndpointAmplitude h a p 0 =
       suzukiCriticalApertureDepthFusionBaseAmplitude h p *
-        (1 - suzukiCriticalApertureDepthFusionDiskCoordinate h a p) ^ 2 := by
+        (1 - suzukiCriticalApertureDepthFusionDiskCoordinate h a p) ^ (2 : ℕ) := by
   rw [suzukiCriticalEntryWallEndpointAmplitude,
     suzukiCriticalApertureDepthFusionBaseAmplitude,
     xiMobiusCubicNormalizedInnovationFeature,
@@ -328,16 +328,16 @@ theorem suzukiCriticalApertureDepthFusionRadius_eq_base_mul_disk
     (h a : ℝ) (p : Nat.Primes) :
     suzukiCriticalApertureDepthFusionRadius h a p =
       suzukiCriticalApertureDepthFusionBaseRadius p *
-        suzukiCriticalApertureDepthFusionDiskCoordinate h a p ^ 2 := by
+        suzukiCriticalApertureDepthFusionDiskCoordinate h a p ^ (2 : ℕ) := by
   rfl
 
 theorem suzukiCriticalApertureDepthFusedDemodulatedAtom_eq_radial
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) (t : ℝ) (p : Nat.Primes) :
     suzukiCriticalApertureDepthFusedDemodulatedAtom h a t p =
       (suzukiCriticalApertureDepthFusionBaseAmplitude h p : ℂ) *
-        ((1 - suzukiCriticalApertureDepthFusionDiskCoordinate h a p) ^ 2 : ℝ) *
+        ((1 - suzukiCriticalApertureDepthFusionDiskCoordinate h a p) ^ (2 : ℕ) : ℝ) *
         (1 - (suzukiCriticalApertureDepthFusionBaseRadius p : ℂ) *
-          suzukiCriticalApertureDepthFusionDiskCoordinate h a p ^ 2 *
+          suzukiCriticalApertureDepthFusionDiskCoordinate h a p ^ (2 : ℕ) *
             suzukiCriticalApertureDepthFusionPhase t p)⁻¹ := by
   rw [suzukiCriticalApertureDepthFusedDemodulatedAtom,
     suzukiCriticalApertureDepthFusedAtom_eq_mobius hh ha,
@@ -354,26 +354,26 @@ theorem suzukiCriticalApertureDepthFusedDemodulatedAtom_eq_radial
   calc
     star (suzukiCriticalApertureDepthFusionPhase t p) *
         ((suzukiCriticalApertureDepthFusionBaseAmplitude h p : ℂ) *
-            (1 - (suzukiCriticalApertureDepthFusionDiskCoordinate h a p : ℂ)) ^ 2 *
+            (1 - (suzukiCriticalApertureDepthFusionDiskCoordinate h a p : ℂ)) ^ (2 : ℕ) *
           suzukiCriticalApertureDepthFusionPhase t p *
             (1 -
               (suzukiCriticalApertureDepthFusionBaseRadius p : ℂ) *
-                (suzukiCriticalApertureDepthFusionDiskCoordinate h a p : ℂ) ^ 2 *
+                (suzukiCriticalApertureDepthFusionDiskCoordinate h a p : ℂ) ^ (2 : ℕ) *
                   suzukiCriticalApertureDepthFusionPhase t p)⁻¹) =
         (suzukiCriticalApertureDepthFusionBaseAmplitude h p : ℂ) *
-          (1 - (suzukiCriticalApertureDepthFusionDiskCoordinate h a p : ℂ)) ^ 2 *
+          (1 - (suzukiCriticalApertureDepthFusionDiskCoordinate h a p : ℂ)) ^ (2 : ℕ) *
             (star (suzukiCriticalApertureDepthFusionPhase t p) *
               suzukiCriticalApertureDepthFusionPhase t p) *
                 (1 -
                   (suzukiCriticalApertureDepthFusionBaseRadius p : ℂ) *
-                    (suzukiCriticalApertureDepthFusionDiskCoordinate h a p : ℂ) ^ 2 *
+                    (suzukiCriticalApertureDepthFusionDiskCoordinate h a p : ℂ) ^ (2 : ℕ) *
                       suzukiCriticalApertureDepthFusionPhase t p)⁻¹ := by ring
     _ = _ := by rw [hz]; ring
 
 private theorem re_causalDepthRadialTransfer_exp
     (c x θ : ℝ) :
-    (((((1 - x) ^ 2 : ℝ) : ℂ) *
-      (1 - ((c * x ^ 2 : ℝ) : ℂ) * Complex.exp ((θ : ℂ) * I))⁻¹).re) =
+    (((((1 - x) ^ (2 : ℕ) : ℝ) : ℂ) *
+      (1 - ((c * x ^ (2 : ℕ) : ℝ) : ℂ) * Complex.exp ((θ : ℂ) * I))⁻¹).re) =
       causalDepthRadialRealPart c (Real.cos θ) x := by
   rw [Complex.mul_re]
   simp only [Complex.ofReal_re, Complex.inv_re, Complex.ofReal_im, zero_mul, sub_zero]
@@ -386,12 +386,12 @@ private theorem re_causalDepthRadialTransfer_exp
   simp only [zero_add]
   rw [causalDepthRadialRealPart]
   have hden :
-      (1 - c * x ^ 2 * Real.cos θ) * (1 - c * x ^ 2 * Real.cos θ) +
-          (-(c * x ^ 2 * Real.sin θ)) * (-(c * x ^ 2 * Real.sin θ)) =
-        1 - 2 * c * x ^ 2 * Real.cos θ + c ^ 2 * x ^ 4 := by
+      (1 - c * x ^ (2 : ℕ) * Real.cos θ) * (1 - c * x ^ (2 : ℕ) * Real.cos θ) +
+          (-(c * x ^ (2 : ℕ) * Real.sin θ)) * (-(c * x ^ (2 : ℕ) * Real.sin θ)) =
+        1 - 2 * c * x ^ (2 : ℕ) * Real.cos θ + c ^ (2 : ℕ) * x ^ (4 : ℕ) := by
     calc
-      _ = 1 - 2 * c * x ^ 2 * Real.cos θ +
-          c ^ 2 * x ^ 4 * (Real.sin θ ^ 2 + Real.cos θ ^ 2) := by ring
+      _ = 1 - 2 * c * x ^ (2 : ℕ) * Real.cos θ +
+          c ^ (2 : ℕ) * x ^ (4 : ℕ) * (Real.sin θ ^ (2 : ℕ) + Real.cos θ ^ (2 : ℕ)) := by ring
       _ = _ := by rw [Real.sin_sq_add_cos_sq]; ring
   rw [hden]
   ring

@@ -15,7 +15,7 @@ and the functional equation `H(t²)=H(t)²+c·t²` from `ψ`; by the identity th
 continuation exists — the unit circle is a natural boundary. -/
 theorem c_mem_of_psi_entire_continuation {ψ H : ℂ → ℂ} {C : ℝ} {n : ℕ} {c : ℂ}
     (hodd : ∀ w, 1 < ‖w‖ → ψ (-w) = -ψ w)
-    (hfe : ∀ w, 1 < ‖w‖ → ψ (w ^ 2) = (ψ w) ^ 2 + c)
+    (hfe : ∀ w, 1 < ‖w‖ → ψ (w ^ (2 : ℕ)) = (ψ w) ^ (2 : ℕ) + c)
     (hH : Differentiable ℂ H)
     (hgrowth : ∀ z, ‖H z‖ ≤ C * (max 1 ‖z‖) ^ n)
     (hH0 : H 0 = 1)
@@ -51,21 +51,21 @@ theorem c_mem_of_psi_entire_continuation {ψ H : ℂ → ℂ} {C : ℝ} {n : ℕ
     have := entire_zero_of_ball _ hE hEball z
     linear_combination this
   -- functional equation for H
-  have hHfe : ∀ t, H (t ^ 2) = (H t) ^ 2 + c * t ^ 2 := by
-    have hG : Differentiable ℂ (fun t => H (t ^ 2) - (H t) ^ 2 - c * t ^ 2) := by fun_prop
-    have hGball : ∀ t ∈ ball (0 : ℂ) 1, H (t ^ 2) - (H t) ^ 2 - c * t ^ 2 = 0 := by
+  have hHfe : ∀ t, H (t ^ (2 : ℕ)) = (H t) ^ (2 : ℕ) + c * t ^ (2 : ℕ) := by
+    have hG : Differentiable ℂ (fun t => H (t ^ (2 : ℕ)) - (H t) ^ (2 : ℕ) - c * t ^ (2 : ℕ)) := by fun_prop
+    have hGball : ∀ t ∈ ball (0 : ℂ) 1, H (t ^ (2 : ℕ)) - (H t) ^ (2 : ℕ) - c * t ^ (2 : ℕ) = 0 := by
       intro t ht
       rw [mem_ball, dist_zero_right] at ht
       rcases eq_or_ne t 0 with rfl | ht0
       · norm_num [hH0]
       · have htpos : 0 < ‖t‖ := norm_pos_iff.mpr ht0
-        have ht2pos : 0 < ‖t ^ 2‖ := by rw [norm_pow]; positivity
-        have ht2lt : ‖t ^ 2‖ < 1 := by
+        have ht2pos : 0 < ‖t ^ (2 : ℕ)‖ := by rw [norm_pow]; positivity
+        have ht2lt : ‖t ^ (2 : ℕ)‖ < 1 := by
           rw [norm_pow]; exact pow_lt_one₀ (norm_nonneg t) ht (by norm_num)
         have hw : (1 : ℝ) < ‖(1 : ℂ) / t‖ := by
           rw [norm_div, norm_one, lt_div_iff₀ htpos, one_mul]; exact ht
-        rw [hagree (t ^ 2) ht2pos ht2lt, hagree t htpos ht,
-          show (1 : ℂ) / t ^ 2 = (1 / t) ^ 2 from by ring, hfe (1 / t) hw]
+        rw [hagree (t ^ (2 : ℕ)) ht2pos ht2lt, hagree t htpos ht,
+          show (1 : ℂ) / t ^ (2 : ℕ) = (1 / t) ^ (2 : ℕ) from by ring, hfe (1 / t) hw]
         ring
     intro t
     have := entire_zero_of_ball _ hG hGball t

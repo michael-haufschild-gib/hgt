@@ -8,7 +8,7 @@ import Mathlib.Topology.Algebra.Order.Field
 
 A finite passive scalar response has the form
 
-`a + sum_j ell_j^2 / (pole_j - x)`.
+`a + sum_j ell_j^(2 : ℕ) / (pole_j - x)`.
 
 Every summand is increasing across a real interval which contains no pole.  Consequently any
 strict descent between two source samples forces a pole strictly between the samples.  This is a
@@ -21,16 +21,16 @@ open scoped BigOperators
 
 namespace HTGeometry
 
-/-- Finite scalar response with nonnegative spectral residues `ell j ^ 2`. -/
+/-- Finite scalar response with nonnegative spectral residues `ell j ^ (2 : ℕ)`. -/
 noncomputable def positiveResidueResponse
     {ι : Type*} [DecidableEq ι]
     (s : Finset ι) (pole ell : ι → ℝ) (a x : ℝ) : ℝ :=
-  a + ∑ j ∈ s, ell j ^ 2 / (pole j - x)
+  a + ∑ j ∈ s, ell j ^ (2 : ℕ) / (pole j - x)
 
 /-- One positive-residue summand increases across an interval avoided by its pole. -/
 theorem positiveResidueTerm_le_of_pole_avoids
     {p e x y : ℝ} (hxy : x < y) (hpole : p < x ∨ y < p) :
-    e ^ 2 / (p - x) ≤ e ^ 2 / (p - y) := by
+    e ^ (2 : ℕ) / (p - x) ≤ e ^ (2 : ℕ) / (p - y) := by
   by_cases he : e = 0
   · simp [he]
   have hprod : 0 < (p - y) * (p - x) := by
@@ -42,11 +42,11 @@ theorem positiveResidueTerm_le_of_pole_avoids
   have hneY : p - y ≠ 0 := by
     rcases hpole with hpole | hpole <;> linarith
   have hdiff :
-      e ^ 2 / (p - y) - e ^ 2 / (p - x) =
-        e ^ 2 * (y - x) / ((p - y) * (p - x)) := by
+      e ^ (2 : ℕ) / (p - y) - e ^ (2 : ℕ) / (p - x) =
+        e ^ (2 : ℕ) * (y - x) / ((p - y) * (p - x)) := by
     field_simp [hneX, hneY]
     ring
-  have hpos : 0 < e ^ 2 * (y - x) / ((p - y) * (p - x)) :=
+  have hpos : 0 < e ^ (2 : ℕ) * (y - x) / ((p - y) * (p - x)) :=
     div_pos (mul_pos (sq_pos_of_ne_zero he) (sub_pos.mpr hxy)) hprod
   linarith
 

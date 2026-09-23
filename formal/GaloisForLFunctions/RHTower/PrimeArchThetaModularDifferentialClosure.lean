@@ -44,7 +44,7 @@ private def thetaModularZC (w : ℂ) : ℂ :=
   2 * Bottcher.modularLambda (thetaModularTauC w) - 1
 
 private def thetaModularR (x : ℝ) : ℂ :=
-  (Real.pi : ℂ) * thetaModularH x ^ 4
+  (Real.pi : ℂ) * thetaModularH x ^ (4 : ℕ)
 
 private def thetaModularP (x : ℝ) : ℂ :=
   (Real.pi : ℂ) * Complex.exp (2 * (x : ℂ)) *
@@ -242,9 +242,9 @@ private theorem hasDerivAt_thetaModularH_raw (x : ℝ) :
   exact (hasDerivAt_thetaModularHC x).comp_ofReal
 
 private theorem thetaModularH_pow_four (x : ℝ) :
-    thetaModularH x ^ 4 =
+    thetaModularH x ^ (4 : ℕ) =
       Complex.exp (2 * (x : ℂ)) *
-        Bottcher.thetaThree (thetaModularTau x) ^ 4 := by
+        Bottcher.thetaThree (thetaModularTau x) ^ (4 : ℕ) := by
   rw [thetaModularH, mul_pow, ← Complex.exp_nat_mul]
   congr 1
   push_cast
@@ -261,16 +261,16 @@ private theorem thetaModularE2_ofComplex (x : ℝ) :
 private theorem thetaModularR_mul_Z (x : ℝ) :
     thetaModularR x * thetaModularZ x =
       (Real.pi : ℂ) * Complex.exp (2 * (x : ℂ)) *
-        (Bottcher.thetaTwo (thetaModularTau x) ^ 4 -
-          Bottcher.thetaFour (thetaModularTau x) ^ 4) := by
+        (Bottcher.thetaTwo (thetaModularTau x) ^ (4 : ℕ) -
+          Bottcher.thetaFour (thetaModularTau x) ^ (4 : ℕ)) := by
   let τ := thetaModularTau x
   have hτ : 0 < τ.im := thetaModularTau_im_pos x
   have h3ne := Bottcher.thetaThree_ne_zero_of_im_pos hτ
   have hQ := Bottcher.pow4_jacobi hτ
   have htheta :
-      Bottcher.thetaThree τ ^ 4 *
+      Bottcher.thetaThree τ ^ (4 : ℕ) *
           (2 * Bottcher.modularLambda τ - 1) =
-        Bottcher.thetaTwo τ ^ 4 - Bottcher.thetaFour τ ^ 4 := by
+        Bottcher.thetaTwo τ ^ (4 : ℕ) - Bottcher.thetaFour τ ^ (4 : ℕ) := by
     rw [Bottcher.modularLambda, div_pow]
     field_simp [h3ne]
     rw [hQ]
@@ -279,7 +279,7 @@ private theorem thetaModularR_mul_Z (x : ℝ) :
   change
     (Real.pi : ℂ) *
           (Complex.exp (2 * (x : ℂ)) *
-            Bottcher.thetaThree τ ^ 4) *
+            Bottcher.thetaThree τ ^ (4 : ℕ)) *
         (2 * Bottcher.modularLambda τ - 1) =
       _
   rw [← htheta]
@@ -299,8 +299,8 @@ private theorem deriv_thetaModularH (x : ℝ) :
         Bottcher.thetaThree τ *
           ((Real.pi : ℂ) * I / 12 *
             (EisensteinSeries.E2 ⟨τ, hτ⟩ +
-              Bottcher.thetaTwo τ ^ 4 -
-              Bottcher.thetaFour τ ^ 4)) := by
+              Bottcher.thetaTwo τ ^ (4 : ℕ) -
+              Bottcher.thetaFour τ ^ (4 : ℕ))) := by
     apply (div_eq_iff h3ne).mp at hlog
     linear_combination hlog
   rw [(hasDerivAt_thetaModularH_raw x).deriv]
@@ -308,8 +308,8 @@ private theorem deriv_thetaModularH (x : ℝ) :
       Bottcher.thetaThree τ *
         ((Real.pi : ℂ) * I / 12 *
           (EisensteinSeries.E2 ⟨τ, hτ⟩ +
-            Bottcher.thetaTwo τ ^ 4 -
-            Bottcher.thetaFour τ ^ 4)) by exact hder]
+            Bottcher.thetaTwo τ ^ (4 : ℕ) -
+            Bottcher.thetaFour τ ^ (4 : ℕ))) by exact hder]
   rw [thetaModularP, thetaModularR_mul_Z,
     thetaModularE2_ofComplex]
   unfold thetaModularH thetaModularTau
@@ -351,7 +351,7 @@ private theorem deriv_thetaModularZ (x : ℝ) :
   have hlam := Bottcher.deriv_modularLambda_eq_lambda' hτ
   rw [(hasDerivAt_thetaModularZ_raw x).deriv]
   rw [show deriv Bottcher.modularLambda (thetaModularTau x) =
-      (Real.pi : ℂ) * I * Bottcher.thetaThree τ ^ 4 *
+      (Real.pi : ℂ) * I * Bottcher.thetaThree τ ^ (4 : ℕ) *
         Bottcher.modularLambda τ * (1 - Bottcher.modularLambda τ) by
       exact hlam]
   rw [thetaModularR, thetaModularH_pow_four]
@@ -372,7 +372,7 @@ private theorem deriv_thetaModularR (x : ℝ) :
   have hR' :
       HasDerivAt thetaModularR
         ((Real.pi : ℂ) *
-          (4 * thetaModularH x ^ 3 * deriv thetaModularH x)) x := by
+          (4 * thetaModularH x ^ (3 : ℕ) * deriv thetaModularH x)) x := by
     exact hR
   rw [hR'.deriv]
   rw [deriv_thetaModularH]
@@ -382,26 +382,26 @@ private theorem deriv_thetaModularR (x : ℝ) :
 private theorem thetaModularE4_eq_state (x : ℝ) :
     ModularForm.E₄
         ⟨thetaModularTau x, thetaModularTau_im_pos x⟩ =
-      Bottcher.thetaThree (thetaModularTau x) ^ 8 *
-        (3 + thetaModularZ x ^ 2) / 4 := by
+      Bottcher.thetaThree (thetaModularTau x) ^ (8 : ℕ) *
+        (3 + thetaModularZ x ^ (2 : ℕ)) / 4 := by
   let τ := thetaModularTau x
   have hτ : 0 < τ.im := thetaModularTau_im_pos x
   have h3ne := Bottcher.thetaThree_ne_zero_of_im_pos hτ
   have hQ := Bottcher.pow4_jacobi hτ
   have hQ8 :
-      Bottcher.thetaThree τ ^ 8 =
-        (Bottcher.thetaTwo τ ^ 4 +
-          Bottcher.thetaFour τ ^ 4) ^ 2 := by
-    rw [show Bottcher.thetaThree τ ^ 8 =
-        (Bottcher.thetaThree τ ^ 4) ^ 2 by ring, hQ]
+      Bottcher.thetaThree τ ^ (8 : ℕ) =
+        (Bottcher.thetaTwo τ ^ (4 : ℕ) +
+          Bottcher.thetaFour τ ^ (4 : ℕ)) ^ (2 : ℕ) := by
+    rw [show Bottcher.thetaThree τ ^ (8 : ℕ) =
+        (Bottcher.thetaThree τ ^ (4 : ℕ)) ^ (2 : ℕ) by ring, hQ]
   rw [Bottcher.eisensteinSeries_E4_eq_theta_nullwerte]
   unfold thetaModularZ
   change
-    (Bottcher.thetaTwo τ ^ 8 + Bottcher.thetaThree τ ^ 8 +
-          Bottcher.thetaFour τ ^ 8) /
+    (Bottcher.thetaTwo τ ^ (8 : ℕ) + Bottcher.thetaThree τ ^ (8 : ℕ) +
+          Bottcher.thetaFour τ ^ (8 : ℕ)) /
         2 =
-      Bottcher.thetaThree τ ^ 8 *
-        (3 + (2 * Bottcher.modularLambda τ - 1) ^ 2) / 4
+      Bottcher.thetaThree τ ^ (8 : ℕ) *
+        (3 + (2 * Bottcher.modularLambda τ - 1) ^ (2 : ℕ)) / 4
   rw [Bottcher.modularLambda, div_pow]
   field_simp [h3ne]
   rw [hQ8, hQ]
@@ -410,7 +410,7 @@ private theorem thetaModularE4_eq_state (x : ℝ) :
 private theorem thetaModularR_sq_state (x : ℝ) :
     (thetaModularR x * thetaModularR x) *
         (3 + thetaModularZ x * thetaModularZ x) =
-      4 * (Real.pi : ℂ) ^ 2 * Complex.exp (4 * (x : ℂ)) *
+      4 * (Real.pi : ℂ) ^ (2 : ℕ) * Complex.exp (4 * (x : ℂ)) *
         ModularForm.E₄
           ⟨thetaModularTau x, thetaModularTau_im_pos x⟩ := by
   rw [thetaModularR, thetaModularH_pow_four,
@@ -528,7 +528,7 @@ private theorem deriv_thetaModularP (x : ℝ) :
       (EisensteinSeries.E2 ∘ UpperHalfPlane.ofComplex)
         (thetaModularTau x) =
       (Real.pi : ℂ) * I / 6 *
-      (EisensteinSeries.E2 ⟨τ, hτ⟩ ^ 2 -
+      (EisensteinSeries.E2 ⟨τ, hτ⟩ ^ (2 : ℕ) -
           ModularForm.E₄ ⟨τ, hτ⟩) by exact hRam]
   simp only [Function.comp_apply]
   rw [thetaModularR_sq_state]
@@ -578,36 +578,36 @@ private theorem thetaModularP_zero :
 
 /-- Real degree-eight polynomial selected by reflected second--sixth seam elimination. -/
 def thetaCuspReflectedSixthSeamModularPolynomial (X : ℝ) : ℝ :=
-  127575 / 4096 - 1828575 / 16384 * X + 6333795 / 65536 * X ^ 2 -
-    7447545 / 262144 * X ^ 3 + 397305 / 262144 * X ^ 4 -
-    48411 / 262144 * X ^ 5 + 229545 / 8388608 * X ^ 6 +
-    225 / 1048576 * X ^ 7 - 375 / 33554432 * X ^ 8
+  127575 / 4096 - 1828575 / 16384 * X + 6333795 / 65536 * X ^ (2 : ℕ) -
+    7447545 / 262144 * X ^ (3 : ℕ) + 397305 / 262144 * X ^ (4 : ℕ) -
+    48411 / 262144 * X ^ (5 : ℕ) + 229545 / 8388608 * X ^ (6 : ℕ) +
+    225 / 1048576 * X ^ (7 : ℕ) - 375 / 33554432 * X ^ (8 : ℕ)
 
 /-- Source-specialized modular value of the reflected second--sixth seam invariant. -/
 def thetaCuspReflectedSixthSeamModularClosureValue : ℝ :=
-  thetaCuspSelfDualThetaMass ^ 4 *
+  thetaCuspSelfDualThetaMass ^ (4 : ℕ) *
     thetaCuspReflectedSixthSeamModularPolynomial
-      (thetaCuspSelfDualModularScale ^ 2)
+      (thetaCuspSelfDualModularScale ^ (2 : ℕ))
 
 /-- Real degree-eight polynomial selected by the first transverse action-velocity seam minor. -/
 def thetaCuspActionVelocitySeamMinorModularPolynomial (X : ℝ) : ℝ :=
-  2025 / 2048 - 57375 / 8192 * X - 240075 / 32768 * X ^ 2 -
-    159525 / 131072 * X ^ 3 + 467169 / 262144 * X ^ 4 -
-    4125 / 524288 * X ^ 5 + 15589 / 2097152 * X ^ 6 -
-    1677 / 8388608 * X ^ 7 - 387 / 16777216 * X ^ 8
+  2025 / 2048 - 57375 / 8192 * X - 240075 / 32768 * X ^ (2 : ℕ) -
+    159525 / 131072 * X ^ (3 : ℕ) + 467169 / 262144 * X ^ (4 : ℕ) -
+    4125 / 524288 * X ^ (5 : ℕ) + 15589 / 2097152 * X ^ (6 : ℕ) -
+    1677 / 8388608 * X ^ (7 : ℕ) - 387 / 16777216 * X ^ (8 : ℕ)
 
 /-- Source-specialized modular value of the first transverse action-velocity seam minor. -/
 def thetaCuspActionVelocitySeamMinorModularClosureValue : ℝ :=
-  thetaCuspSelfDualThetaMass ^ 4 *
+  thetaCuspSelfDualThetaMass ^ (4 : ℕ) *
     thetaCuspActionVelocitySeamMinorModularPolynomial
-      (thetaCuspSelfDualModularScale ^ 2)
+      (thetaCuspSelfDualModularScale ^ (2 : ℕ))
 
 /-- Exact modular closure of the completed theta profile's sixth seam. -/
 theorem completedThetaProfile_sixthSeam_modularClosure :
     let f : ℕ → ℂ := fun n =>
       (iteratedDeriv (n + 2) thetaModularH 0 -
         (1 / 4 : ℂ) * iteratedDeriv n thetaModularH 0) / 2
-    f 0 ^ 2 * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ 3 =
+    f 0 ^ (2 : ℕ) * f 6 - 15 * f 0 * f 2 * f 4 + 30 * f 2 ^ (3 : ℕ) =
       (thetaCuspGaussianApertureSixthSeamModularClosureValue : ℂ) := by
   have h := HTGeometry.modularThetaSixthSeamClosure_of_ode
     (thetaCuspSelfDualThetaMass : ℂ)
@@ -627,8 +627,8 @@ theorem completedThetaProfile_reflectedSixthSeam_modularClosure :
     let f : ℕ → ℂ := fun n =>
       (iteratedDeriv (n + 2) thetaModularH 0 -
         (1 / 4 : ℂ) * iteratedDeriv n thetaModularH 0) / 2
-    f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
-        9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
+    f 0 ^ (2 : ℕ) * (f 2 * f 6 - f 4 ^ (2 : ℕ)) +
+        9 * f 0 * f 2 ^ (2 : ℕ) * f 4 - 9 * f 2 ^ (4 : ℕ) =
       (thetaCuspReflectedSixthSeamModularClosureValue : ℂ) := by
   have h := HTGeometry.modularThetaReflectedSixthSeamClosure_of_ode
     (thetaCuspSelfDualThetaMass : ℂ)
@@ -650,8 +650,8 @@ theorem completedThetaProfile_actionVelocitySeamMinor_modularClosure :
     let f : ℕ → ℂ := fun n =>
       (iteratedDeriv (n + 2) thetaModularH 0 -
         (1 / 4 : ℂ) * iteratedDeriv n thetaModularH 0) / 2
-    f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
-        12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 =
+    f 0 ^ (2 : ℕ) * f 2 * f 6 - 3 * f 0 * f 2 ^ (2 : ℕ) * f 4 +
+        12 * f 2 ^ (4 : ℕ) - 2 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) =
       (thetaCuspActionVelocitySeamMinorModularClosureValue : ℂ) := by
   have h := HTGeometry.modularThetaActionVelocitySeamMinorClosure_of_ode
     (thetaCuspSelfDualThetaMass : ℂ)
@@ -790,8 +790,8 @@ private theorem completedThetaProfile_sourceJet (n : ℕ) :
 /-- The native full-theta source invariant is exactly the reflected modular-closure value. -/
 theorem thetaCuspFullSource_reflectedSixthSeam_eq_modularClosure :
     let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource 0
-    f 0 ^ 2 * (f 2 * f 6 - f 4 ^ 2) +
-        9 * f 0 * f 2 ^ 2 * f 4 - 9 * f 2 ^ 4 =
+    f 0 ^ (2 : ℕ) * (f 2 * f 6 - f 4 ^ (2 : ℕ)) +
+        9 * f 0 * f 2 ^ (2 : ℕ) * f 4 - 9 * f 2 ^ (4 : ℕ) =
       thetaCuspReflectedSixthSeamModularClosureValue := by
   apply Complex.ofReal_injective
   have h := completedThetaProfile_reflectedSixthSeam_modularClosure
@@ -807,8 +807,8 @@ theorem thetaCuspFullSource_reflectedSixthSeam_eq_modularClosure :
 value. -/
 theorem thetaCuspFullSource_actionVelocitySeamMinor_eq_modularClosure :
     let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource 0
-    f 0 ^ 2 * f 2 * f 6 - 3 * f 0 * f 2 ^ 2 * f 4 +
-        12 * f 2 ^ 4 - 2 * f 0 ^ 2 * f 4 ^ 2 =
+    f 0 ^ (2 : ℕ) * f 2 * f 6 - 3 * f 0 * f 2 ^ (2 : ℕ) * f 4 +
+        12 * f 2 ^ (4 : ℕ) - 2 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) =
       thetaCuspActionVelocitySeamMinorModularClosureValue := by
   apply Complex.ofReal_injective
   have h := completedThetaProfile_actionVelocitySeamMinor_modularClosure
@@ -846,18 +846,18 @@ theorem thetaCuspGaussianApertureSixthSeamNumerator_pos :
 
 /-- Real degree-twelve polynomial selected by the rank-three reflected eighth-jet seam. -/
 def thetaCuspReflectedEighthSeamModularPolynomial (X : ℝ) : ℝ :=
-  3444525 / 512 - 80754975 / 2048 * X + 4194195795 / 65536 * X ^ 2 -
-    2646917595 / 65536 * X ^ 3 + 5201727255 / 524288 * X ^ 4 -
-    1723813569 / 1048576 * X ^ 5 + 4581650223 / 16777216 * X ^ 6 -
-    612571059 / 16777216 * X ^ 7 + 35927199 / 16777216 * X ^ 8 +
-    1999197 / 268435456 * X ^ 9 - 117855 / 134217728 * X ^ 10 -
-    13245 / 536870912 * X ^ 11 + 14025 / 8589934592 * X ^ 12
+  3444525 / 512 - 80754975 / 2048 * X + 4194195795 / 65536 * X ^ (2 : ℕ) -
+    2646917595 / 65536 * X ^ (3 : ℕ) + 5201727255 / 524288 * X ^ (4 : ℕ) -
+    1723813569 / 1048576 * X ^ (5 : ℕ) + 4581650223 / 16777216 * X ^ (6 : ℕ) -
+    612571059 / 16777216 * X ^ (7 : ℕ) + 35927199 / 16777216 * X ^ (8 : ℕ) +
+    1999197 / 268435456 * X ^ (9 : ℕ) - 117855 / 134217728 * X ^ (10 : ℕ) -
+    13245 / 536870912 * X ^ (11 : ℕ) + 14025 / 8589934592 * X ^ (12 : ℕ)
 
 /-- Source-specialized modular value of rank-three reflected eighth-jet curvature. -/
 def thetaCuspReflectedEighthSeamModularClosureValue : ℝ :=
-  thetaCuspSelfDualThetaMass ^ 6 *
+  thetaCuspSelfDualThetaMass ^ (6 : ℕ) *
     thetaCuspReflectedEighthSeamModularPolynomial
-      (thetaCuspSelfDualModularScale ^ 2)
+      (thetaCuspSelfDualModularScale ^ (2 : ℕ))
 
 /-- Exact modular closure of the completed theta profile's rank-three reflected seam. -/
 theorem completedThetaProfile_reflectedEighthSeam_modularClosure :
@@ -865,11 +865,11 @@ theorem completedThetaProfile_reflectedEighthSeam_modularClosure :
       (iteratedDeriv (n + 2) thetaModularH 0 -
         (1 / 4 : ℂ) * iteratedDeriv n thetaModularH 0) / 2
     HTGeometry.signedEvenHankelThreeDetC
-      (f 0 ^ 2)
+      (f 0 ^ (2 : ℕ))
       (2 * f 0 * f 2)
-      (2 * f 0 * f 4 + 6 * f 2 ^ 2)
+      (2 * f 0 * f 4 + 6 * f 2 ^ (2 : ℕ))
       (2 * f 0 * f 6 + 30 * f 2 * f 4)
-      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2) =
+      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ (2 : ℕ)) =
       (thetaCuspReflectedEighthSeamModularClosureValue : ℂ) := by
   have h := HTGeometry.modularThetaReflectedEighthSeamClosure_of_ode
     (thetaCuspSelfDualThetaMass : ℂ)
@@ -889,11 +889,11 @@ theorem completedThetaProfile_reflectedEighthSeam_modularClosure :
 theorem thetaCuspFullSource_reflectedEighthHankelSeam_eq_modularClosure :
     let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource 0
     HilbertMetric.signedEvenHankelThreeDet
-      (f 0 ^ 2)
+      (f 0 ^ (2 : ℕ))
       (2 * f 0 * f 2)
-      (2 * f 0 * f 4 + 6 * f 2 ^ 2)
+      (2 * f 0 * f 4 + 6 * f 2 ^ (2 : ℕ))
       (2 * f 0 * f 6 + 30 * f 2 * f 4)
-      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2) =
+      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ (2 : ℕ)) =
       thetaCuspReflectedEighthSeamModularClosureValue := by
   apply Complex.ofReal_injective
   have h := completedThetaProfile_reflectedEighthSeam_modularClosure
@@ -932,8 +932,8 @@ def thetaCuspModularDrift (x : ℝ) : ℂ :=
 
 /-- Positive discriminant gap of the real modular trajectory. -/
 def thetaCuspModularGapAmplitude (x : ℝ) : ℝ :=
-  (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
-    (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2)
+  (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
+    (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ))
 
 /-- Transverse shear coupling the Riccati drift to the modular-lambda direction. -/
 def thetaCuspModularTransverseShear (x : ℝ) : ℝ :=
@@ -989,7 +989,7 @@ def thetaCuspModularSourcePositiveState
   | .U => fun x => (thetaCuspModularQuasimodularDrift x : ℂ)
   | .B => fun x => ((-(thetaCuspModularDrift x).re / 3 : ℝ) : ℂ)
   | .Q => fun x =>
-      (((6 * (-(thetaCuspModularDrift x).re / 3) ^ 2 +
+      (((6 * (-(thetaCuspModularDrift x).re / 3) ^ (2 : ℕ) +
         thetaCuspModularGapAmplitude x - 6) / 16 : ℝ) : ℂ)
 
 /-- The mass coordinate is the real completed-theta profile. -/
@@ -1021,7 +1021,7 @@ theorem thetaCuspModularODEState_H_im_eq_zero (x : ℝ) :
 /-- The modular scale coordinate is the positive real number `π H⁴`. -/
 theorem thetaCuspModularODEState_R_eq_completedThetaProfile (x : ℝ) :
     thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x =
-      (Real.pi * Bottcher.completedThetaProfile x ^ 4 : ℝ) := by
+      (Real.pi * Bottcher.completedThetaProfile x ^ (4 : ℕ) : ℝ) := by
   dsimp only [thetaCuspModularODEState, thetaModularR]
   rw [thetaModularH_eq_completedThetaProfile]
   rw [← Complex.ofReal_pow, ← Complex.ofReal_mul]
@@ -1189,7 +1189,7 @@ theorem thetaCuspModularGapAmplitude_pos (x : ℝ) :
     0 < thetaCuspModularGapAmplitude x := by
   have hZ := thetaCuspModularODEState_Z_re_mem_Ioo x
   have hgap : 0 <
-      1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2 := by
+      1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ) := by
     have hprod : 0 <
         (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) *
           (1 + (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) :=
@@ -1205,11 +1205,11 @@ theorem hasDerivAt_thetaCuspModularODEState_Z_re (x : ℝ) :
         (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z y).re)
       (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
         (1 -
-          (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2)) x := by
+          (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ))) x := by
   have hcomplex : HasDerivAt
       (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z)
       (-thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x *
-        (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2)) x := by
+        (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ))) x := by
     have h := (contDiff_thetaModularZ.differentiable (by simp) x).hasDerivAt
     rw [deriv_thetaModularZ] at h
     simpa only [thetaCuspModularODEState, pow_two, neg_mul] using h
@@ -1217,16 +1217,16 @@ theorem hasDerivAt_thetaCuspModularODEState_Z_re (x : ℝ) :
       (fun y =>
         (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z y).re)
       ((-thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x *
-        (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2)).re) x :=
+        (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ))).re) x :=
     Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hcomplex
   have hR := thetaCuspModularODEState_R_im_eq_zero x
   have hZ := thetaCuspModularODEState_Z_im_eq_zero x
   have hcoef :
       (-thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x *
-          (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2)).re =
+          (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ))).re =
         -(thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
           (1 -
-            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2) := by
+            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)) := by
     simp only [pow_two, Complex.neg_re, Complex.sub_re, Complex.one_re,
       Complex.mul_re, Complex.neg_im]
     simp only [hR, hZ, neg_zero, zero_mul, sub_zero]
@@ -1241,7 +1241,7 @@ theorem strictAnti_thetaCuspModularODEState_Z_re :
   intro x
   have hZ := thetaCuspModularODEState_Z_re_mem_Ioo x
   have hgap : 0 <
-      1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2 := by
+      1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ) := by
     have hprod : 0 <
         (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) *
           (1 + (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) :=
@@ -1324,17 +1324,17 @@ theorem hasDerivAt_thetaCuspModularODEState
 in `(Z,R,S)`, where `S = P + RZ`. -/
 theorem hasDerivAt_thetaCuspModularDrift (x : ℝ) :
     HasDerivAt thetaCuspModularDrift
-      (3 - thetaCuspModularDrift x ^ 2 / 3 -
+      (3 - thetaCuspModularDrift x ^ (2 : ℕ) / 3 -
         (3 / 4 : ℂ) *
-          thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ 2 *
-          (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2)) x := by
+          thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ (2 : ℕ) *
+          (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ))) x := by
   have hP : HasDerivAt
       (thetaCuspModularODEState HTGeometry.ModularThetaODEState.P)
       (3 - (1 / 3 : ℂ) *
-          thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x ^ 2 +
+          thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x ^ (2 : ℕ) +
         (1 / 12 : ℂ) *
-          thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ 2 *
-          (3 + thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2)) x := by
+          thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ (2 : ℕ) *
+          (3 + thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ))) x := by
     simpa [HTGeometry.modularThetaODEVectorField] using
       hasDerivAt_thetaCuspModularODEState x HTGeometry.ModularThetaODEState.P
   have hR : HasDerivAt
@@ -1349,20 +1349,20 @@ theorem hasDerivAt_thetaCuspModularDrift (x : ℝ) :
   have hZ : HasDerivAt
       (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z)
       (-thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x *
-        (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2)) x := by
+        (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ))) x := by
     simpa [HTGeometry.modularThetaODEVectorField] using
       hasDerivAt_thetaCuspModularODEState x HTGeometry.ModularThetaODEState.Z
   have hsum := hP.add (hR.mul hZ)
   have hcoef :
-      3 - thetaCuspModularDrift x ^ 2 / 3 -
+      3 - thetaCuspModularDrift x ^ (2 : ℕ) / 3 -
           (3 / 4 : ℂ) *
-            thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ 2 *
-            (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2) =
+            thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ (2 : ℕ) *
+            (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ)) =
         (3 - (1 / 3 : ℂ) *
-            thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x ^ 2 +
+            thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x ^ (2 : ℕ) +
           (1 / 12 : ℂ) *
-            thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ 2 *
-            (3 + thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2)) +
+            thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ (2 : ℕ) *
+            (3 + thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ))) +
           (-(2 / 3 : ℂ) *
                 thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x *
                 (thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x +
@@ -1371,7 +1371,7 @@ theorem hasDerivAt_thetaCuspModularDrift (x : ℝ) :
               thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x +
             thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x *
               (-thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x *
-                (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2))) := by
+                (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ)))) := by
     unfold thetaCuspModularDrift
     ring
   rw [hcoef]
@@ -1404,14 +1404,14 @@ theorem hasDerivAt_thetaCuspModularReducedState
   | S =>
       have h := hasDerivAt_thetaCuspModularDrift x
       have hcoef :
-          3 - thetaCuspModularDrift x ^ 2 / 3 -
+          3 - thetaCuspModularDrift x ^ (2 : ℕ) / 3 -
               (3 / 4 : ℂ) *
-                thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ 2 *
-                (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2) =
-            3 - (1 / 3 : ℂ) * thetaCuspModularDrift x ^ 2 -
+                thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ (2 : ℕ) *
+                (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ)) =
+            3 - (1 / 3 : ℂ) * thetaCuspModularDrift x ^ (2 : ℕ) -
               (3 / 4 : ℂ) *
-                thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ 2 *
-                (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2) := by
+                thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ (2 : ℕ) *
+                (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ)) := by
         ring
       rw [hcoef] at h
       simpa only [thetaCuspModularReducedState,
@@ -1432,11 +1432,11 @@ theorem hasDerivAt_thetaCuspModularMass_reduced (x : ℝ) :
 /-- Real form of the reduced three-state Riccati equation on the physical trajectory. -/
 theorem hasDerivAt_thetaCuspModularDrift_re (x : ℝ) :
     HasDerivAt (fun y => (thetaCuspModularDrift y).re)
-      (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+      (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
         (3 / 4 : ℝ) *
-          (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
+          (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
           (1 -
-            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2)) x := by
+            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ))) x := by
   have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt x
     (hasDerivAt_thetaCuspModularDrift x)
   have hS := thetaCuspModularDrift_im_eq_zero x
@@ -1448,22 +1448,22 @@ theorem hasDerivAt_thetaCuspModularDrift_re (x : ℝ) :
     rfl
   rw [hfun]
   have hcoef :
-      3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+      3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
           (3 / 4 : ℝ) *
-            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
+            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
             (1 -
-              (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2) =
+              (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)) =
         Complex.reCLM
-          (3 - thetaCuspModularDrift x ^ 2 / 3 -
+          (3 - thetaCuspModularDrift x ^ (2 : ℕ) / 3 -
             (3 / 4 : ℂ) *
-              thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ 2 *
+              thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ (2 : ℕ) *
               (1 -
-                thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2)) := by
+                thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ))) := by
     change _ =
-      (3 - thetaCuspModularDrift x ^ 2 / 3 -
+      (3 - thetaCuspModularDrift x ^ (2 : ℕ) / 3 -
         (3 / 4 : ℂ) *
-          thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ 2 *
-          (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2)).re
+          thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ (2 : ℕ) *
+          (1 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ))).re
     norm_num [pow_two, Complex.mul_re, Complex.mul_im, hS, hR, hZ]
   rw [hcoef]
   exact hre
@@ -1507,7 +1507,7 @@ theorem hasDerivAt_thetaCuspModularODEState_R_re (x : ℝ) :
 theorem hasDerivAt_thetaCuspModularTransverseShear (x : ℝ) :
     HasDerivAt thetaCuspModularTransverseShear
       (2 + thetaCuspModularGapAmplitude x / 2 +
-        (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ 2 -
+        (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ (2 : ℕ) -
         (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
           thetaCuspModularTransverseShear x) x := by
   have hS := hasDerivAt_thetaCuspModularDrift_re x
@@ -1516,11 +1516,11 @@ theorem hasDerivAt_thetaCuspModularTransverseShear (x : ℝ) :
   have hraw := (hS.const_mul (2 / 3 : ℝ)).sub (hR.mul hZ)
   have hcoef :
       (2 / 3 : ℝ) *
-          (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+          (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
             (3 / 4 : ℝ) *
-              (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
+              (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
               (1 -
-                (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2)) -
+                (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ))) -
         (-(2 / 3 : ℝ) *
               (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
                 (thetaCuspModularDrift x).re *
@@ -1528,9 +1528,9 @@ theorem hasDerivAt_thetaCuspModularTransverseShear (x : ℝ) :
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
             (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
               (1 -
-                (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2))) =
+                (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)))) =
       2 + thetaCuspModularGapAmplitude x / 2 +
-        (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ 2 -
+        (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ (2 : ℕ) -
         (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
           thetaCuspModularTransverseShear x := by
     unfold thetaCuspModularGapAmplitude thetaCuspModularTransverseShear
@@ -1549,11 +1549,11 @@ theorem hasDerivAt_thetaCuspModularTransverseShear (x : ℝ) :
 theorem hasDerivAt_thetaCuspModularQuasimodularDrift (x : ℝ) :
     HasDerivAt thetaCuspModularQuasimodularDrift
       (3 + thetaCuspModularGapAmplitude x / 4 +
-        (thetaCuspModularDrift x).re ^ 2 / 3 -
+        (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
         (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
           thetaCuspModularQuasimodularDrift x) x := by
   have hS : HasDerivAt (fun y => (thetaCuspModularDrift y).re)
-      (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+      (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
         (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x) x := by
     convert hasDerivAt_thetaCuspModularDrift_re x using 1
     unfold thetaCuspModularGapAmplitude
@@ -1562,14 +1562,14 @@ theorem hasDerivAt_thetaCuspModularQuasimodularDrift (x : ℝ) :
   have hraw := (hS.const_mul (1 / 3 : ℝ)).add hW
   have hcoef :
       (1 / 3 : ℝ) *
-          (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+          (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
             (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x) +
         (2 + thetaCuspModularGapAmplitude x / 2 +
-          (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ 2 -
+          (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ (2 : ℕ) -
           (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
             thetaCuspModularTransverseShear x) =
       3 + thetaCuspModularGapAmplitude x / 4 +
-        (thetaCuspModularDrift x).re ^ 2 / 3 -
+        (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
         (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
           thetaCuspModularQuasimodularDrift x := by
     unfold thetaCuspModularQuasimodularDrift
@@ -1589,7 +1589,7 @@ theorem hasDerivAt_thetaCuspModularQuasimodularDrift (x : ℝ) :
 theorem hasDerivAt_thetaCuspModularNormalizedQuasimodularDrift (x : ℝ) :
     HasDerivAt thetaCuspModularNormalizedQuasimodularDrift
       ((3 + thetaCuspModularGapAmplitude x / 4 +
-          (thetaCuspModularDrift x).re ^ 2 / 3) /
+          (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3) /
         (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re) x := by
   have hU := hasDerivAt_thetaCuspModularQuasimodularDrift x
   have hR := hasDerivAt_thetaCuspModularODEState_R_re x
@@ -1599,7 +1599,7 @@ theorem hasDerivAt_thetaCuspModularNormalizedQuasimodularDrift (x : ℝ) :
   have hraw := hU.div hR hRne
   have hcoef :
       ((3 + thetaCuspModularGapAmplitude x / 4 +
-            (thetaCuspModularDrift x).re ^ 2 / 3 -
+            (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
             (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
               thetaCuspModularQuasimodularDrift x) *
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re -
@@ -1607,9 +1607,9 @@ theorem hasDerivAt_thetaCuspModularNormalizedQuasimodularDrift (x : ℝ) :
           (-(2 / 3 : ℝ) *
             (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
               (thetaCuspModularDrift x).re)) /
-          (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 =
+          (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) =
         (3 + thetaCuspModularGapAmplitude x / 4 +
-            (thetaCuspModularDrift x).re ^ 2 / 3) /
+            (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3) /
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re := by
     field_simp [hRne]
     ring
@@ -1701,7 +1701,7 @@ theorem three_mul_normalizedShear_sub_two_mul_normalizedQuasimodularDrift
 theorem hasDerivAt_thetaCuspModularNormalizedShear (x : ℝ) :
     HasDerivAt thetaCuspModularNormalizedShear
       ((2 + thetaCuspModularGapAmplitude x / 2 +
-          (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ 2) /
+          (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ (2 : ℕ)) /
         (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re) x := by
   have hW := hasDerivAt_thetaCuspModularTransverseShear x
   have hR := hasDerivAt_thetaCuspModularODEState_R_re x
@@ -1711,7 +1711,7 @@ theorem hasDerivAt_thetaCuspModularNormalizedShear (x : ℝ) :
   have hraw := hW.div hR hRne
   have hcoef :
       ((2 + thetaCuspModularGapAmplitude x / 2 +
-            (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ 2 -
+            (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ (2 : ℕ) -
             (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
               thetaCuspModularTransverseShear x) *
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re -
@@ -1719,9 +1719,9 @@ theorem hasDerivAt_thetaCuspModularNormalizedShear (x : ℝ) :
           (-(2 / 3 : ℝ) *
             (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
               (thetaCuspModularDrift x).re)) /
-          (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 =
+          (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) =
         (2 + thetaCuspModularGapAmplitude x / 2 +
-            (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ 2) /
+            (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ (2 : ℕ)) /
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re := by
     field_simp [hRne]
     ring
@@ -1777,7 +1777,7 @@ theorem hasDerivAt_thetaCuspModularGapAmplitude (x : ℝ) :
   have hZ := hasDerivAt_thetaCuspModularODEState_Z_re x
   have hR2 : HasDerivAt
       (fun y =>
-        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R y).re ^ 2)
+        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R y).re ^ (2 : ℕ))
       (2 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
         (-(2 / 3 : ℝ) *
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
@@ -1785,11 +1785,11 @@ theorem hasDerivAt_thetaCuspModularGapAmplitude (x : ℝ) :
     convert hR.pow 2 using 1 <;> first | rfl | ring
   have hZ2 : HasDerivAt
       (fun y =>
-        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z y).re ^ 2)
+        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z y).re ^ (2 : ℕ))
       (2 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re *
         (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
           (1 -
-            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2))) x := by
+            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)))) x := by
     convert hZ.pow 2 using 1 <;> first | rfl | ring
   have hgap := (hasDerivAt_const x (1 : ℝ)).sub hZ2
   have hraw := hR2.mul hgap
@@ -1799,13 +1799,13 @@ theorem hasDerivAt_thetaCuspModularGapAmplitude (x : ℝ) :
               (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
                 (thetaCuspModularDrift x).re)) *
           (1 -
-            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2) +
-        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
+            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)) +
+        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
           (0 -
             2 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re *
               (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
                 (1 -
-                  (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2))) =
+                  (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)))) =
       -2 * thetaCuspModularGapAmplitude x *
         thetaCuspModularTransverseShear x := by
     unfold thetaCuspModularGapAmplitude thetaCuspModularTransverseShear
@@ -1813,9 +1813,9 @@ theorem hasDerivAt_thetaCuspModularGapAmplitude (x : ℝ) :
   rw [← hcoef]
   have hfun : thetaCuspModularGapAmplitude =
       (fun y =>
-        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R y).re ^ 2 *
+        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R y).re ^ (2 : ℕ) *
           (1 -
-            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z y).re ^ 2)) := by
+            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z y).re ^ (2 : ℕ))) := by
     rfl
   rw [hfun]
   exact hraw
@@ -1859,11 +1859,11 @@ theorem hasDerivAt_thetaCuspModularLyapunovState
               (HTGeometry.modularThetaLyapunovVectorField
                 HTGeometry.ModularThetaLyapunovState.S) =
             Complex.ofRealCLM
-              (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+              (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
                 (3 / 4 : ℝ) *
-                  (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
+                  (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
                   (1 -
-                    (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2)) := by
+                    (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ))) := by
         simp [thetaCuspModularLyapunovState,
           HTGeometry.modularThetaLyapunovVectorField,
           thetaCuspModularGapAmplitude]
@@ -1905,7 +1905,7 @@ theorem hasDerivAt_thetaCuspModularLyapunovState
                 HTGeometry.ModularThetaLyapunovState.W) =
             Complex.ofRealCLM
               (2 + thetaCuspModularGapAmplitude x / 2 +
-                (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ 2 -
+                (2 / 9 : ℝ) * (thetaCuspModularDrift x).re ^ (2 : ℕ) -
                 (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
                   thetaCuspModularTransverseShear x) := by
         simp [thetaCuspModularLyapunovState,
@@ -1962,7 +1962,7 @@ theorem hasDerivAt_thetaCuspModularPositiveState
                 HTGeometry.ModularThetaPositiveState.U) =
             Complex.ofRealCLM
               (3 + thetaCuspModularGapAmplitude x / 4 +
-                (thetaCuspModularDrift x).re ^ 2 / 3 -
+                (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
                 (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
                   thetaCuspModularQuasimodularDrift x) := by
         rw [thetaCuspModularGapAmplitude_eq_positiveChamberFactors x]
@@ -1974,7 +1974,7 @@ theorem hasDerivAt_thetaCuspModularPositiveState
       exact h
   | B =>
       have hS : HasDerivAt (fun y => (thetaCuspModularDrift y).re)
-          (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+          (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
             (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x) x := by
         convert hasDerivAt_thetaCuspModularDrift_re x using 1
         unfold thetaCuspModularGapAmplitude
@@ -1995,7 +1995,7 @@ theorem hasDerivAt_thetaCuspModularPositiveState
                 HTGeometry.ModularThetaPositiveState.B) =
             Complex.ofRealCLM
               (-(1 / 3 : ℝ) *
-                (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+                (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
                   (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x)) := by
         rw [thetaCuspModularGapAmplitude_eq_positiveChamberFactors x]
         simp [thetaCuspModularPositiveState,
@@ -2021,7 +2021,7 @@ theorem hasDerivAt_thetaCuspModularPositiveState
             (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
               (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
                   (1 -
-                  (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2))) x := by
+                  (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)))) x := by
         have hraw := hR.mul honePlusZ
         have hfunReal :
             (fun y =>
@@ -2061,7 +2061,7 @@ theorem hasDerivAt_thetaCuspModularPositiveState
                 (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
                   (-(thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
                     (1 -
-                      (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2))) := by
+                      (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)))) := by
         have hRim := thetaCuspModularODEState_R_im_eq_zero x
         have hZim := thetaCuspModularODEState_Z_im_eq_zero x
         simp [thetaCuspModularPositiveState,
@@ -2120,7 +2120,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState
                 HTGeometry.ModularThetaSourcePositiveState.U) =
             Complex.ofRealCLM
               (3 + thetaCuspModularGapAmplitude x / 4 +
-                (thetaCuspModularDrift x).re ^ 2 / 3 -
+                (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
                 (2 / 3 : ℝ) * (thetaCuspModularDrift x).re *
                   thetaCuspModularQuasimodularDrift x) := by
         simp [thetaCuspModularSourcePositiveState,
@@ -2130,7 +2130,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState
       exact h
   | B =>
       have hS : HasDerivAt (fun y => (thetaCuspModularDrift y).re)
-          (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+          (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
             (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x) x := by
         convert hasDerivAt_thetaCuspModularDrift_re x using 1
         unfold thetaCuspModularGapAmplitude
@@ -2152,7 +2152,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState
                 HTGeometry.ModularThetaSourcePositiveState.B) =
             Complex.ofRealCLM
               (-(1 / 3 : ℝ) *
-                (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+                (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
                   (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x)) := by
         simp [thetaCuspModularSourcePositiveState,
           HTGeometry.modularThetaSourcePositiveVectorField]
@@ -2161,7 +2161,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState
       exact h
   | Q =>
       have hS : HasDerivAt (fun y => (thetaCuspModularDrift y).re)
-          (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+          (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
             (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x) x := by
         convert hasDerivAt_thetaCuspModularDrift_re x using 1
         unfold thetaCuspModularGapAmplitude
@@ -2169,7 +2169,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState
       have hB : HasDerivAt
           (fun y => -(thetaCuspModularDrift y).re / 3)
           (-(1 / 3 : ℝ) *
-            (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+            (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
               (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x)) x := by
         have hB0 := hS.const_mul (-(1 / 3 : ℝ))
         have hfunB :
@@ -2184,12 +2184,12 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState
         ((((hB.pow 2).const_mul (6 : ℝ)).add hA).sub_const 6).div_const 16
       have hreal : HasDerivAt
           (fun y =>
-            (6 * (-(thetaCuspModularDrift y).re / 3) ^ 2 +
+            (6 * (-(thetaCuspModularDrift y).re / 3) ^ (2 : ℕ) +
               thetaCuspModularGapAmplitude y - 6) / 16)
           ((6 *
                 (2 * (-(thetaCuspModularDrift x).re / 3) *
                   (-(1 / 3 : ℝ) *
-                    (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+                    (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
                       (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x))) +
               (-2 * thetaCuspModularGapAmplitude x *
                 thetaCuspModularTransverseShear x)) / 16) x := by
@@ -2201,7 +2201,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState
               HTGeometry.ModularThetaSourcePositiveState.Q =
             Complex.ofRealCLM ∘
               (fun y =>
-                (6 * (-(thetaCuspModularDrift y).re / 3) ^ 2 +
+                (6 * (-(thetaCuspModularDrift y).re / 3) ^ (2 : ℕ) +
                   thetaCuspModularGapAmplitude y - 6) / 16) := by
         funext y
         rfl
@@ -2214,7 +2214,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState
               ((6 *
                     (2 * (-(thetaCuspModularDrift x).re / 3) *
                       (-(1 / 3 : ℝ) *
-                        (3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+                        (3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
                           (3 / 4 : ℝ) * thetaCuspModularGapAmplitude x))) +
                   (-2 * thetaCuspModularGapAmplitude x *
                     thetaCuspModularTransverseShear x)) / 16) := by
@@ -2252,7 +2252,7 @@ theorem strictAntiOn_thetaCuspModularGapAmplitude :
 
 /-- Exact self-dual value of the modular discriminant gap. -/
 theorem thetaCuspModularGapAmplitude_zero :
-    thetaCuspModularGapAmplitude 0 = thetaCuspSelfDualModularScale ^ 2 := by
+    thetaCuspModularGapAmplitude 0 = thetaCuspSelfDualModularScale ^ (2 : ℕ) := by
   unfold thetaCuspModularGapAmplitude
   dsimp only [thetaCuspModularODEState]
   rw [thetaModularR_zero, thetaModularZ_zero]
@@ -2260,7 +2260,7 @@ theorem thetaCuspModularGapAmplitude_zero :
 
 /-- The modular discriminant gap is strictly below its self-dual value for `x > 0`. -/
 theorem thetaCuspModularGapAmplitude_lt_selfDual_of_pos {x : ℝ} (hx : 0 < x) :
-    thetaCuspModularGapAmplitude x < thetaCuspSelfDualModularScale ^ 2 := by
+    thetaCuspModularGapAmplitude x < thetaCuspSelfDualModularScale ^ (2 : ℕ) := by
   have hanti : StrictAntiOn thetaCuspModularGapAmplitude (Set.Icc 0 x) := by
     apply strictAntiOn_of_deriv_neg (convex_Icc 0 x)
     · exact (continuous_iff_continuousAt.mpr fun y =>
@@ -2337,14 +2337,14 @@ def thetaCuspReflectedEighthSourcePositiveModularValue (x : ℝ) : ℂ :=
 /-- Mass-normalized theta-cusp source factor in the three non-mass modular coordinates. -/
 def thetaCuspModularSourceFactor (x : ℝ) : ℂ :=
   (1 / 24 : ℂ) *
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x ^ 2 +
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x ^ (2 : ℕ) +
     (1 / 12 : ℂ) *
       thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x *
       thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x *
       thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x +
     (1 / 48 : ℂ) *
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ 2 *
-        (3 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ 2) -
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x ^ (2 : ℕ) *
+        (3 - thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x ^ (2 : ℕ)) -
     3 / 8
 
 /-- Exact mass-normalized theta-cusp source in the three non-mass modular coordinates. -/
@@ -2388,8 +2388,8 @@ private theorem thetaCuspFullSource_zero_pos_from_modularFactor :
   rw [h]
   have hm := thetaCuspCompletedThetaProfile_pos 0
   have hR := thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one
-  have hpRe : (((thetaCuspSelfDualModularScale : ℂ) ^ 2).re) =
-      thetaCuspSelfDualModularScale ^ 2 := by norm_cast
+  have hpRe : (((thetaCuspSelfDualModularScale : ℂ) ^ (2 : ℕ)).re) =
+      thetaCuspSelfDualModularScale ^ (2 : ℕ) := by norm_cast
   rw [hpRe]
   exact mul_pos hm (by nlinarith)
 
@@ -2562,12 +2562,12 @@ theorem thetaCuspModularSourceFactor_re_pos (x : ℝ) :
 /-- Real-coordinate form of the exact mass-normalized theta-cusp source factor. -/
 theorem thetaCuspModularSourceFactor_re_eq_realCone (x : ℝ) :
     (thetaCuspModularSourceFactor x).re =
-      (2 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x).re ^ 2 +
+      (2 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x).re ^ (2 : ℕ) +
         4 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x).re *
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re +
-        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
-          (3 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2) -
+        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
+          (3 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)) -
         18) / 48 := by
   have hP := thetaCuspModularODEState_P_im_eq_zero x
   have hR := thetaCuspModularODEState_R_im_eq_zero x
@@ -2582,10 +2582,10 @@ theorem thetaCuspModularSourceFactor_re_eq_realCone (x : ℝ) :
 /-- In reduced `(Z,R,S)` coordinates the source cone has no mixed term. -/
 theorem thetaCuspModularSourceFactor_re_eq_driftCone (x : ℝ) :
     (thetaCuspModularSourceFactor x).re =
-      (2 * (thetaCuspModularDrift x).re ^ 2 +
-        3 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
+      (2 * (thetaCuspModularDrift x).re ^ (2 : ℕ) +
+        3 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
           (1 -
-            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2) -
+            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)) -
         18) / 48 := by
   rw [thetaCuspModularSourceFactor_re_eq_realCone]
   have hR := thetaCuspModularODEState_R_im_eq_zero x
@@ -2604,7 +2604,7 @@ theorem thetaCuspModularSourcePositiveState_Q_eq_sourceFactor (x : ℝ) :
     rw [thetaCuspModularSourceFactor_re_eq_driftCone]
     unfold thetaCuspModularGapAmplitude
     ring
-  · change (((6 * (-(thetaCuspModularDrift x).re / 3) ^ 2 +
+  · change (((6 * (-(thetaCuspModularDrift x).re / 3) ^ (2 : ℕ) +
         thetaCuspModularGapAmplitude x - 6) / 16 : ℝ) : ℂ).im =
       (thetaCuspModularSourceFactor x).im
     rw [Complex.ofReal_im, thetaCuspModularSourceFactor_im_eq_zero]
@@ -2695,7 +2695,7 @@ theorem thetaCuspModularSourcePositiveState_im_eq_zero
   | U => simp [thetaCuspModularSourcePositiveState]
   | B => simp [thetaCuspModularSourcePositiveState]
   | Q =>
-      change (((6 * (-(thetaCuspModularDrift x).re / 3) ^ 2 +
+      change (((6 * (-(thetaCuspModularDrift x).re / 3) ^ (2 : ℕ) +
         thetaCuspModularGapAmplitude x - 6) / 16 : ℝ) : ℂ).im = 0
       exact Complex.ofReal_im _
 
@@ -2708,7 +2708,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState_U_re (x : ℝ) :
         4 * (thetaCuspModularSourcePositiveState
           HTGeometry.ModularThetaSourcePositiveState.Q x).re +
         (3 / 2 : ℝ) * (thetaCuspModularSourcePositiveState
-          HTGeometry.ModularThetaSourcePositiveState.B x).re ^ 2 +
+          HTGeometry.ModularThetaSourcePositiveState.B x).re ^ (2 : ℕ) +
         2 * (thetaCuspModularSourcePositiveState
           HTGeometry.ModularThetaSourcePositiveState.B x).re *
           (thetaCuspModularSourcePositiveState
@@ -2736,7 +2736,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState_U_re (x : ℝ) :
           4 * (thetaCuspModularSourcePositiveState
             HTGeometry.ModularThetaSourcePositiveState.Q x).re +
           (3 / 2 : ℝ) * (thetaCuspModularSourcePositiveState
-            HTGeometry.ModularThetaSourcePositiveState.B x).re ^ 2 +
+            HTGeometry.ModularThetaSourcePositiveState.B x).re ^ (2 : ℕ) +
           2 * (thetaCuspModularSourcePositiveState
             HTGeometry.ModularThetaSourcePositiveState.B x).re *
             (thetaCuspModularSourcePositiveState
@@ -2755,7 +2755,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState_B_re (x : ℝ) :
         4 * (thetaCuspModularSourcePositiveState
           HTGeometry.ModularThetaSourcePositiveState.Q x).re -
         (1 / 2 : ℝ) * (thetaCuspModularSourcePositiveState
-          HTGeometry.ModularThetaSourcePositiveState.B x).re ^ 2) x := by
+          HTGeometry.ModularThetaSourcePositiveState.B x).re ^ (2 : ℕ)) x := by
   have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt x
     (hasDerivAt_thetaCuspModularSourcePositiveState x
       HTGeometry.ModularThetaSourcePositiveState.B)
@@ -2777,7 +2777,7 @@ theorem hasDerivAt_thetaCuspModularSourcePositiveState_B_re (x : ℝ) :
           4 * (thetaCuspModularSourcePositiveState
             HTGeometry.ModularThetaSourcePositiveState.Q x).re -
           (1 / 2 : ℝ) * (thetaCuspModularSourcePositiveState
-            HTGeometry.ModularThetaSourcePositiveState.B x).re ^ 2 := by
+            HTGeometry.ModularThetaSourcePositiveState.B x).re ^ (2 : ℕ) := by
     simp [HTGeometry.modularThetaSourcePositiveVectorField, pow_two,
       Complex.mul_re, hB]
   rw [← hcoef]
@@ -2833,11 +2833,11 @@ theorem hasDerivAt_thetaCuspModularDrift_re_eq_sourceDissipation (x : ℝ) :
   have h := hasDerivAt_thetaCuspModularDrift_re x
   have hfactor := thetaCuspModularSourceFactor_re_eq_driftCone x
   have hcoef :
-      3 - (thetaCuspModularDrift x).re ^ 2 / 3 -
+      3 - (thetaCuspModularDrift x).re ^ (2 : ℕ) / 3 -
           (3 / 4 : ℝ) *
-            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
+            (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
             (1 -
-              (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2) =
+              (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)) =
         -(8 * (thetaCuspModularSourceFactor x).re +
           thetaCuspModularGapAmplitude x / 4) := by
     rw [hfactor]
@@ -2849,12 +2849,12 @@ theorem hasDerivAt_thetaCuspModularDrift_re_eq_sourceDissipation (x : ℝ) :
 /-- The physical modular trajectory lies strictly inside the source cone in `(Z,R,P)`. -/
 theorem thetaCuspModularSourceRealCone_pos (x : ℝ) :
     0 <
-      2 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x).re ^ 2 +
+      2 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x).re ^ (2 : ℕ) +
         4 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re *
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.P x).re *
           (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re +
-        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
-          (3 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2) -
+        (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
+          (3 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)) -
         18 := by
   have hpos := thetaCuspModularSourceFactor_re_pos x
   rw [thetaCuspModularSourceFactor_re_eq_realCone] at hpos
@@ -2862,9 +2862,9 @@ theorem thetaCuspModularSourceRealCone_pos (x : ℝ) :
 
 /-- The physical reduced trajectory lies strictly inside the diagonal source cone. -/
 theorem thetaCuspModularSourceDriftCone_pos (x : ℝ) :
-    0 < 2 * (thetaCuspModularDrift x).re ^ 2 +
-      3 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
-        (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2) -
+    0 < 2 * (thetaCuspModularDrift x).re ^ (2 : ℕ) +
+      3 * (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
+        (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)) -
       18 := by
   have hpos := thetaCuspModularSourceFactor_re_pos x
   rw [thetaCuspModularSourceFactor_re_eq_driftCone] at hpos
@@ -2877,15 +2877,15 @@ theorem strictAnti_thetaCuspModularDrift_re :
   intro x
   have hZ := thetaCuspModularODEState_Z_re_mem_Ioo x
   have hgap : 0 <
-      1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2 := by
+      1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ) := by
     have hprod : 0 <
         (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) *
           (1 + (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re) :=
       mul_pos (sub_pos.mpr hZ.2) (by linarith [hZ.1])
     nlinarith
   have hA : 0 <
-      (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ 2 *
-        (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ 2) :=
+      (thetaCuspModularODEState HTGeometry.ModularThetaODEState.R x).re ^ (2 : ℕ) *
+        (1 - (thetaCuspModularODEState HTGeometry.ModularThetaODEState.Z x).re ^ (2 : ℕ)) :=
     mul_pos (pow_pos (thetaCuspModularODEState_R_re_pos x) 2) hgap
   have hcone := thetaCuspModularSourceDriftCone_pos x
   nlinarith
@@ -2894,7 +2894,7 @@ theorem strictAnti_thetaCuspModularDrift_re :
 theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_normalized
     (x : ℝ) :
     thetaCuspReflectedEighthGeneralModularValue x =
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ 6 *
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ (6 : ℕ) *
         thetaCuspReflectedEighthNormalizedModularValue x := by
   exact HTGeometry.eval_modularThetaReflectedEighthGeneralPolynomial_eq_H_pow_six_mul_normalized
     (fun i => thetaCuspModularODEState i x)
@@ -2903,7 +2903,7 @@ theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_normalized
 theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_reduced
     (x : ℝ) :
     thetaCuspReflectedEighthGeneralModularValue x =
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ 6 *
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ (6 : ℕ) *
         thetaCuspReflectedEighthReducedModularValue x := by
   have hgeneral := HTGeometry.modularThetaReflectedEighthGeneralClosure_of_ode
     thetaCuspModularODEState hasDerivAt_thetaCuspModularODEState x
@@ -2917,7 +2917,7 @@ theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_reduced
 theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_lyapunov
     (x : ℝ) :
     thetaCuspReflectedEighthGeneralModularValue x =
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ 6 *
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ (6 : ℕ) *
         thetaCuspReflectedEighthLyapunovModularValue x := by
   have hgeneral := HTGeometry.modularThetaReflectedEighthGeneralClosure_of_ode
     thetaCuspModularODEState hasDerivAt_thetaCuspModularODEState x
@@ -2931,7 +2931,7 @@ theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_lyapunov
 theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_positive
     (x : ℝ) :
     thetaCuspReflectedEighthGeneralModularValue x =
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ 6 *
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ (6 : ℕ) *
         thetaCuspReflectedEighthPositiveModularValue x := by
   have hgeneral := HTGeometry.modularThetaReflectedEighthGeneralClosure_of_ode
     thetaCuspModularODEState hasDerivAt_thetaCuspModularODEState x
@@ -2945,7 +2945,7 @@ theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_positive
 theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_sourcePositive
     (x : ℝ) :
     thetaCuspReflectedEighthGeneralModularValue x =
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ 6 *
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ (6 : ℕ) *
         thetaCuspReflectedEighthSourcePositiveModularValue x := by
   let H : ℝ → ℂ :=
     thetaCuspModularODEState HTGeometry.ModularThetaODEState.H
@@ -2982,7 +2982,7 @@ theorem thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_sourcePosit
     iteratedDeriv_thetaModularSourceCombination 7 x,
     iteratedDeriv_thetaModularSourceCombination 8 x] at hsource
   change thetaCuspReflectedEighthGeneralModularValue x =
-    thetaModularH x ^ 6 *
+    thetaModularH x ^ (6 : ℕ) *
       thetaCuspReflectedEighthSourcePositiveModularValue x
   simpa only [thetaCuspReflectedEighthGeneralModularValue,
     thetaCuspReflectedEighthSourcePositiveModularValue] using
@@ -3000,7 +3000,7 @@ theorem thetaCuspReflectedEighthReducedModularValue_eq_normalized
     thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_normalized x
   rw [hnorm] at hred
   have hHne :
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ 6 ≠ 0 := by
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ (6 : ℕ) ≠ 0 := by
     apply pow_ne_zero
     intro hzero
     have hpos := thetaCuspModularODEState_H_re_pos x
@@ -3019,7 +3019,7 @@ theorem thetaCuspReflectedEighthLyapunovModularValue_eq_normalized
     thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_normalized x
   rw [hnorm] at hlyapunov
   have hHne :
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ 6 ≠ 0 := by
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ (6 : ℕ) ≠ 0 := by
     apply pow_ne_zero
     intro hzero
     have hpos := thetaCuspModularODEState_H_re_pos x
@@ -3038,7 +3038,7 @@ theorem thetaCuspReflectedEighthPositiveModularValue_eq_normalized
     thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_normalized x
   rw [hnorm] at hpositive
   have hHne :
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ 6 ≠ 0 := by
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ (6 : ℕ) ≠ 0 := by
     apply pow_ne_zero
     intro hzero
     have hpos := thetaCuspModularODEState_H_re_pos x
@@ -3057,7 +3057,7 @@ theorem thetaCuspReflectedEighthSourcePositiveModularValue_eq_normalized
     thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_normalized x
   rw [hnorm] at hsource
   have hHne :
-      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ 6 ≠ 0 := by
+      thetaCuspModularODEState HTGeometry.ModularThetaODEState.H x ^ (6 : ℕ) ≠ 0 := by
     apply pow_ne_zero
     intro hzero
     have hpos := thetaCuspModularODEState_H_re_pos x
@@ -3070,7 +3070,7 @@ theorem thetaCuspFullSource_reflectedEighthHankel_eq_generalModular
     (x : ℝ) :
     let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource x
     ((HilbertMetric.signedEvenHankelThreeDet
-      (f 0 ^ 2)
+      (f 0 ^ (2 : ℕ))
       (HilbertMetric.reflectedProductSecondJet (f 0) (f 1) (f 2))
       (HilbertMetric.reflectedProductFourthJet
         (f 0) (f 1) (f 2) (f 3) (f 4))

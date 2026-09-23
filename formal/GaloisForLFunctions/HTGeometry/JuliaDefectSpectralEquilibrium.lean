@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.PositiveDefinitePacketCauchy
 
 The scalar Gamma--Julia compression square is
 
-`kappa(y) = cosh(y / 2)^2 / sqrt(cosh(2y))`.
+`kappa(y) = cosh(y / 2)^(2 : ℕ) / sqrt(cosh(2y))`.
 
 Its negative logarithm has the classical hyperbolic Lévy--Khintchine density
 
@@ -32,7 +32,7 @@ def juliaCompressionSquareProfile (y : ℝ) : ℝ :=
 /-- Hyperbolic closed form of the Julia compression square. -/
 theorem juliaCompressionSquareProfile_eq_cosh_ratio (y : ℝ) :
     juliaCompressionSquareProfile y =
-      Real.cosh (y / 2) ^ 2 / Real.sqrt (Real.cosh (2 * y)) := by
+      Real.cosh (y / 2) ^ (2 : ℕ) / Real.sqrt (Real.cosh (2 * y)) := by
   rw [juliaCompressionSquareProfile,
     inv_sqrt_juliaDefectQuartic_tanh_eq_cosh_ratio]
   congr 2
@@ -72,7 +72,7 @@ theorem anchorCorrelation_sq_le_gramEnergy_of_positiveDefinite
       (fun y => (K y : ℂ)))
     (hK0 : K 0 = 1) (hEven : ∀ y, K (-y) = K y)
     {N : ℕ} (t b : Fin N → ℝ) :
-    (∑ i, b i * K (t i)) ^ 2 ≤
+    (∑ i, b i * K (t i)) ^ (2 : ℕ) ≤
       ∑ i, ∑ j, b i * K (t j - t i) * b j := by
   have h :=
     GaloisForLFunctions.HTGeometry.realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite

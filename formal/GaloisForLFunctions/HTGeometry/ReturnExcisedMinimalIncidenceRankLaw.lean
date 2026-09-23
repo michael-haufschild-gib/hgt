@@ -124,35 +124,35 @@ theorem returnExcisedReplicaIncidenceSpan_withZero
 
 noncomputable def finiteCoordinateEnergy
     {X ι : Type*} [Fintype ι] (a : X → ι → ℂ) (x : X) : ℝ :=
-  ∑ i, ‖a x i‖ ^ 2
+  ∑ i, ‖a x i‖ ^ (2 : ℕ)
 
 theorem re_finiteCoordinateCovariance_diag
     {X ι : Type*} [MeasurableSpace X] [Fintype ι]
     (μ : Measure X) (a : X → ι → ℂ) (i : ι) :
     (finiteCoordinateCovariance μ a i i).re =
-      ∫ x, ‖a x i‖ ^ 2 ∂μ := by
+      ∫ x, ‖a x i‖ ^ (2 : ℕ) ∂μ := by
   unfold finiteCoordinateCovariance
   rw [show
       (fun x => star (a x i) * a x i) =
-        (fun x => ((‖a x i‖ ^ 2 : ℝ) : ℂ)) by
+        (fun x => ((‖a x i‖ ^ (2 : ℕ) : ℝ) : ℂ)) by
     funext x
     rw [show star (a x i) * a x i =
       ((starRingEnd ℂ) (a x i)) * a x i from rfl, RCLike.conj_mul]
     norm_cast]
   exact (congrArg Complex.re
-    (@integral_ofReal X _ μ ℂ _ (fun x => ‖a x i‖ ^ 2))).trans
+    (@integral_ofReal X _ μ ℂ _ (fun x => ‖a x i‖ ^ (2 : ℕ)))).trans
       (Complex.ofReal_re _)
 
 theorem integral_finiteCoordinateEnergy_eq_sum_re_covariance_diag
     {X ι : Type*} [MeasurableSpace X] [Fintype ι]
     (μ : Measure X) (a : X → ι → ℂ)
-    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ 2) μ) :
+    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ (2 : ℕ)) μ) :
     (∫ x, finiteCoordinateEnergy a x ∂μ) =
       ∑ i, (finiteCoordinateCovariance μ a i i).re := by
   calc
     (∫ x, finiteCoordinateEnergy a x ∂μ) =
-        ∫ x, ∑ i, ‖a x i‖ ^ 2 ∂μ := rfl
-    _ = ∑ i, ∫ x, ‖a x i‖ ^ 2 ∂μ := by
+        ∫ x, ∑ i, ‖a x i‖ ^ (2 : ℕ) ∂μ := rfl
+    _ = ∑ i, ∫ x, ‖a x i‖ ^ (2 : ℕ) ∂μ := by
       rw [integral_finsetSum Finset.univ]
       exact fun i _ => hsq i
     _ = ∑ i, (finiteCoordinateCovariance μ a i i).re := by
@@ -163,10 +163,10 @@ theorem integral_finiteCoordinateEnergy_eq_sum_re_covariance_diag
 theorem sq_integral_finiteCoordinateEnergy_le_card_mul_collision
     {X ι : Type*} [MeasurableSpace X] [Fintype ι]
     (μ : Measure X) (a : X → ι → ℂ)
-    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ 2) μ) :
-    (∫ x, finiteCoordinateEnergy a x ∂μ) ^ 2 ≤
+    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ (2 : ℕ)) μ) :
+    (∫ x, finiteCoordinateEnergy a x ∂μ) ^ (2 : ℕ) ≤
       (Fintype.card ι : ℝ) *
-        ∑ i, ∑ j, ‖finiteCoordinateCovariance μ a i j‖ ^ 2 := by
+        ∑ i, ∑ j, ‖finiteCoordinateCovariance μ a i j‖ ^ (2 : ℕ) := by
   rw [integral_finiteCoordinateEnergy_eq_sum_re_covariance_diag μ a hsq]
   exact sq_sum_re_diag_le_card_mul_matrix_hilbertSchmidt
     (finiteCoordinateCovariance μ a)
@@ -178,12 +178,12 @@ theorem measureReal_restrict_event_mul_threshold_sq_le_coordinateCollision
     (a : X → ι → ℂ) (threshold : ℝ) (hthreshold : 0 < threshold)
     (hcapture : E ∩ returnSetᶜ ⊆
       {x | threshold ≤ finiteCoordinateEnergy a x})
-    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ 2)
+    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ (2 : ℕ))
       (μ.restrict returnSetᶜ)) :
-    (((μ.restrict returnSetᶜ).real E * threshold) ^ 2) ≤
+    (((μ.restrict returnSetᶜ).real E * threshold) ^ (2 : ℕ)) ≤
       (Fintype.card ι : ℝ) *
         ∑ i, ∑ j,
-          ‖finiteCoordinateCovariance (μ.restrict returnSetᶜ) a i j‖ ^ 2 := by
+          ‖finiteCoordinateCovariance (μ.restrict returnSetᶜ) a i j‖ ^ (2 : ℕ) := by
   let ν := μ.restrict returnSetᶜ
   let q := finiteCoordinateEnergy a
   let Q : Set X := {x | threshold ≤ q x}
@@ -210,8 +210,8 @@ theorem measureReal_restrict_event_mul_threshold_sq_le_coordinateCollision
       ν.real E * threshold ≤ ν.real Q * threshold := by gcongr
       _ = threshold * ν.real Q := mul_comm _ _
       _ ≤ ∫ x, q x ∂ν := hmarkov
-  have hsquare : (ν.real E * threshold) ^ 2 ≤
-      (∫ x, q x ∂ν) ^ 2 :=
+  have hsquare : (ν.real E * threshold) ^ (2 : ℕ) ≤
+      (∫ x, q x ∂ν) ^ (2 : ℕ) :=
     pow_le_pow_left₀
       (mul_nonneg measureReal_nonneg hthreshold.le) hscaled 2
   exact hsquare.trans
@@ -242,16 +242,16 @@ theorem returnExcisedFiniteCoordinateIncidence_bound
       {x | threshold ≤ finiteCoordinateEnergy a x})
     (hmeas : ∀ i, AEStronglyMeasurable (fun x => a x i)
       (μ.restrict returnSetᶜ))
-    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ 2)
+    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ (2 : ℕ))
       (μ.restrict returnSetᶜ)) :
-    (((μ.restrict returnSetᶜ).real E * threshold) ^ 2) ≤
+    (((μ.restrict returnSetᶜ).real E * threshold) ^ (2 : ℕ)) ≤
       (Fintype.card ι : ℝ) *
         returnExcisedFiniteCoordinateIncidenceAction μ a returnSet := by
   calc
-    (((μ.restrict returnSetᶜ).real E * threshold) ^ 2) ≤
+    (((μ.restrict returnSetᶜ).real E * threshold) ^ (2 : ℕ)) ≤
         (Fintype.card ι : ℝ) *
           ∑ i, ∑ j,
-            ‖finiteCoordinateCovariance (μ.restrict returnSetᶜ) a i j‖ ^ 2 :=
+            ‖finiteCoordinateCovariance (μ.restrict returnSetᶜ) a i j‖ ^ (2 : ℕ) :=
       measureReal_restrict_event_mul_threshold_sq_le_coordinateCollision
         μ E returnSet hreturn a threshold hthreshold hcapture hsq
     _ = (Fintype.card ι : ℝ) *
@@ -264,23 +264,23 @@ noncomputable def replicaSubspaceProjectionMass
     {α : Type*} [Fintype α] (r : ℕ)
     (S : Submodule ℂ (EuclideanSpace ℂ (Fin r → α)))
     (ψ : α → ℂ) : ℝ :=
-  ‖S.orthogonalProjectionOnto (finitePureTensorPowerEuclidean r ψ)‖ ^ 2
+  ‖S.orthogonalProjectionOnto (finitePureTensorPowerEuclidean r ψ)‖ ^ (2 : ℕ)
 
 theorem replicaSubspaceProjectionMass_eq_finiteCoordinateEnergy
     {α : Type*} [Fintype α] (r : ℕ)
     (S : Submodule ℂ (EuclideanSpace ℂ (Fin r → α)))
     (ψ : α → ℂ) :
     replicaSubspaceProjectionMass r S ψ =
-      ∑ i, ‖replicaSubspaceCoordinate r S ψ i‖ ^ 2 := by
+      ∑ i, ‖replicaSubspaceCoordinate r S ψ i‖ ^ (2 : ℕ) := by
   let u := finitePureTensorPowerEuclidean r ψ
   let b := replicaSubspaceOrthonormalBasis r S
-  change ‖S.orthogonalProjectionOnto u‖ ^ 2 =
-    ∑ i, ‖replicaSubspaceCoordinate r S ψ i‖ ^ 2
+  change ‖S.orthogonalProjectionOnto u‖ ^ (2 : ℕ) =
+    ∑ i, ‖replicaSubspaceCoordinate r S ψ i‖ ^ (2 : ℕ)
   rw [← b.sum_sq_norm_inner_right (S.orthogonalProjectionOnto u)]
   apply Finset.sum_congr rfl
   intro i _
-  change ‖inner ℂ (b i) (S.orthogonalProjectionOnto u)‖ ^ 2 =
-    ‖inner ℂ ((b i : S) : EuclideanSpace ℂ (Fin r → α)) u‖ ^ 2
+  change ‖inner ℂ (b i) (S.orthogonalProjectionOnto u)‖ ^ (2 : ℕ) =
+    ‖inner ℂ ((b i : S) : EuclideanSpace ℂ (Fin r → α)) u‖ ^ (2 : ℕ)
   rw [S.inner_orthogonalProjectionOnto_eq_of_mem_left]
 
 theorem replicaTargetProjectionMass_eq_incidenceProjectionMass_offReturn
@@ -296,7 +296,7 @@ theorem replicaTargetProjectionMass_eq_incidenceProjectionMass_offReturn
       r target state returnSet hx
   unfold replicaTargetProjectionMass replicaSubspaceProjectionMass
   simpa only [Submodule.starProjection_apply, Submodule.coe_norm] using
-    congrArg (fun v => ‖v‖ ^ 2) hstar.symm
+    congrArg (fun v => ‖v‖ ^ (2 : ℕ)) hstar.symm
 
 theorem sum_star_replicaSubspaceCoordinate_mul_eq_inner_projection
     {α : Type*} [Fintype α] (r : ℕ)
@@ -344,7 +344,7 @@ theorem replicaSubspacePairIncidenceKernel_eq_norm_inner_projection
         (S.starProjection
           (finitePureTensorPowerEuclidean r (state p.1)))
         (S.starProjection
-          (finitePureTensorPowerEuclidean r (state p.2)))‖ ^ 2 := by
+          (finitePureTensorPowerEuclidean r (state p.2)))‖ ^ (2 : ℕ) := by
   unfold replicaSubspacePairIncidenceKernel finiteCoordinatePairKernel
   rw [sum_star_replicaSubspaceCoordinate_mul_eq_inner_projection]
   rfl
@@ -411,10 +411,10 @@ theorem quenchedReplica_returnExcisedMinimalIncidence_bound
     (hcoord : ∀ i, Integrable
       (fun x => ‖replicaSubspaceCoordinate r
         (returnExcisedReplicaIncidenceSpan r target state returnSet)
-        (state x) i‖ ^ 2) (μ.restrict returnSetᶜ)) :
+        (state x) i‖ ^ (2 : ℕ)) (μ.restrict returnSetᶜ)) :
     (((μ.restrict returnSetᶜ).real {x | ∃ c,
           threshold ≤ finitePureStateFidelity (state x) (target c)} *
-        threshold ^ r) ^ 2) ≤
+        threshold ^ r) ^ (2 : ℕ)) ≤
       (returnExcisedReplicaIncidenceNumber r target state returnSet : ℝ) *
         returnExcisedReplicaMinimalIncidenceAction
           μ r target state returnSet := by
@@ -499,7 +499,7 @@ theorem quenchedReplica_returnExcisedMinimalRankCoareaIncidence_bound
     (hcoord : ∀ i, Integrable
       (fun x => ‖replicaSubspaceCoordinate r
         (returnExcisedReplicaIncidenceSpan r target state returnSet)
-        (state x) i‖ ^ 2) (μ.restrict returnSetᶜ)) :
+        (state x) i‖ ^ (2 : ℕ)) (μ.restrict returnSetᶜ)) :
     (μ.real {x | ∃ c,
         threshold ≤ finitePureStateFidelity (state x) (target c)} ≤
       μ.real returnSet +
@@ -507,7 +507,7 @@ theorem quenchedReplica_returnExcisedMinimalRankCoareaIncidence_bound
           threshold ≤ finitePureStateFidelity (state x) (target c)}) ∧
     (((μ.restrict returnSetᶜ).real {x | ∃ c,
           threshold ≤ finitePureStateFidelity (state x) (target c)} *
-        threshold ^ r) ^ 2 ≤
+        threshold ^ r) ^ (2 : ℕ) ≤
       (returnExcisedReplicaIncidenceNumber r target state returnSet : ℝ) *
         returnExcisedReplicaIncidenceAction
           μ r target state returnSet) := by
@@ -535,7 +535,7 @@ theorem measureReal_capture_le_return_add_sqrt_minimalRankAction
     (hcoord : ∀ i, Integrable
       (fun x => ‖replicaSubspaceCoordinate r
         (returnExcisedReplicaIncidenceSpan r target state returnSet)
-        (state x) i‖ ^ 2) (μ.restrict returnSetᶜ)) :
+        (state x) i‖ ^ (2 : ℕ)) (μ.restrict returnSetᶜ)) :
     μ.real {x | ∃ c,
         threshold ≤ finitePureStateFidelity (state x) (target c)} ≤
       μ.real returnSet +

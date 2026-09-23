@@ -35,13 +35,13 @@ theorem mobiusDivisorWeightedHeadEnergy_terminal_step_iff (α : ℝ) (M : ℕ) (
     (hterminal : mobiusDivisorSmallSelectionPrimes M  ⊆  P)
     {p : ℕ} (hp : p  ∈  mobiusDivisorSelectionPrimes M \ P) :
     (mobiusDivisorWeightedHeadEnergy α M (insert p P) ≤ mobiusDivisorWeightedHeadEnergy α M P) ↔
-      α*(mobiusDivisorSelectionFibre M P ∅+mobiusDivisorSelectionFibre M P {p})^2 ≤ 
-        α*(mobiusDivisorSelectionFibre M P ∅)^2+(mobiusDivisorSelectionFibre M P {p})^2 := by
+      α*(mobiusDivisorSelectionFibre M P ∅+mobiusDivisorSelectionFibre M P {p})^(2 : ℕ) ≤ 
+        α*(mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+(mobiusDivisorSelectionFibre M P {p})^(2 : ℕ) := by
   have hE := mobiusDivisorSelectionEnergy_union_terminal M P {p} hterminal
   have hH := mobiusDivisorSelectionHead_union_terminal M P {p} hterminal
   simp only [union_singleton,sum_singleton,scalarSubsetMergeEnergy] at hE hH
   have hsum := sum_erase_add (mobiusDivisorSelectionPrimes M \ P)
-    (fun q => (mobiusDivisorSelectionFibre M P {q})^2) hp
+    (fun q => (mobiusDivisorSelectionFibre M P {q})^(2 : ℕ)) hp
   rw [← sdiff_singleton_eq_erase] at hsum
   unfold mobiusDivisorWeightedHeadEnergy mobiusDivisorNonemptyEnergy
   rw [hE,hH,mobiusDivisorSelectionEnergy_terminal M P hterminal]
@@ -164,7 +164,7 @@ theorem exists_mobiusDivisorSmallTerminalCore_without_weighted_completion :
           mobiusDivisorSelectionPrimes M \ (A ∪ B) ⊆ P ∧
           mobiusDivisorSmallSelectionPrimes M ⊆ P ∧
           |mobiusDivisorSelectionFibre M P ∅| ≤ 5*Real.sqrt M ∧
-          mobiusDivisorSuccessorEnvelope M P ≤ ε*(M:ℝ)^2 ∧
+          mobiusDivisorSuccessorEnvelope M P ≤ ε*(M:ℝ)^(2 : ℕ) ∧
           ¬ MobiusDivisorWeightedCompletion α M P := by
   obtain ⟨b,hb,hcores⟩ := exists_mobiusDivisorSmallTerminalCore
   refine ⟨b,hb,?_⟩

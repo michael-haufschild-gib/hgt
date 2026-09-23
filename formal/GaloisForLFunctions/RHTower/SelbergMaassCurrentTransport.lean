@@ -28,7 +28,7 @@ theorem field_modular (q : Deck N) (A : SL2Z) (z : ℍ) :
 
 /-- Actual directional derivatives retain the full Möbius differential and source permutation. -/
 theorem field_dir_modular (q : Deck N) (A : SL2Z) (z : ℍ) (v : ℂ) :
-    dir ((1 / (denom A z) ^ 2) * v) (field N f q) (A • z : ℍ) =
+    dir ((1 / (denom A z) ^ (2 : ℕ)) * v) (field N f q) (A • z : ℍ) =
       dir v (field N f (q * QuotientGroup.mk A)) (z : ℂ) := by
   let G : ℂ → ℂ := fun w => ((A • ofComplex w : ℍ) : ℂ)
   have hG : HasFDerivAt G (UpperHalfPlane.smulFDeriv (A : GL (Fin 2) ℝ) (z : ℂ)) (z : ℂ) :=
@@ -44,20 +44,20 @@ theorem field_dir_modular (q : Deck N) (A : SL2Z) (z : ℍ) (v : ℂ) :
   rw [he] at hc
   have h := congrArg (fun L => L v) hc.fderiv
   have hj : UpperHalfPlane.smulFDeriv (A : GL (Fin 2) ℝ) (z : ℂ) v =
-      (1 / (denom A z) ^ 2) * v := by
+      (1 / (denom A z) ^ (2 : ℕ)) * v := by
     simp [UpperHalfPlane.smulFDeriv, UpperHalfPlane.σ, mul_comm]
   simpa only [ContinuousLinearMap.comp_apply, G, ofComplex_apply, hj, dir] using h.symm
 
 /-- Every original complex pair current transforms with the actual differential and both source indices. -/
 theorem bracket_modular (q r : Deck N) (A : SL2Z) (z : ℍ) (v : ℂ) :
-    bracket (field N f q) (field N f r) ((1 / (denom A z) ^ 2) * v) (A • z : ℍ) =
+    bracket (field N f q) (field N f r) ((1 / (denom A z) ^ (2 : ℕ)) * v) (A • z : ℍ) =
       bracket (field N f (q * QuotientGroup.mk A))
         (field N f (r * QuotientGroup.mk A)) v (z : ℂ) := by
   simp only [bracket, field_modular, field_dir_modular]
 
 /-- The total phase-current one-form descends with its full Möbius differential. -/
 theorem phase_current_modular (A : SL2Z) (z : ℍ) (v : ℂ) :
-    phaseCurrent N f ((1 / (denom A z) ^ 2) * v) (A • z : ℍ) =
+    phaseCurrent N f ((1 / (denom A z) ^ (2 : ℕ)) * v) (A • z : ℍ) =
       phaseCurrent N f v (z : ℂ) := by
   unfold phaseCurrent
   simp_rw [field_modular, field_dir_modular]
@@ -66,7 +66,7 @@ theorem phase_current_modular (A : SL2Z) (z : ℍ) (v : ℂ) :
 
 /-- The full pair-current directional energy is invariant under simultaneous point and tangent transport. -/
 theorem pair_energy_modular (A : SL2Z) (z : ℍ) (v : ℂ) :
-    pairEnergy N f ((1 / (denom A z) ^ 2) * v) (A • z : ℍ) =
+    pairEnergy N f ((1 / (denom A z) ^ (2 : ℕ)) * v) (A • z : ℍ) =
       pairEnergy N f v (z : ℂ) := by
   unfold pairEnergy
   simp_rw [bracket_modular]

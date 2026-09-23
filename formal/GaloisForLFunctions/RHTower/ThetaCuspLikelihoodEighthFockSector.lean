@@ -6,8 +6,8 @@ import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthFockSector
 
 The complete ordered grade-two sector is already absorbed.  This module sharpens the stable
 Gaussian constants and closes every higher even grade.  The key scale-free series is
-`sum_{q=4,6,...} q^7 r^(q-1)`: the logarithmic coefficient `1/q` cancels one power from the
-eighth-order convex fusion cost `q^8`.  Actual theta activity satisfies `399r<1`, making this
+`sum_{q=4,6,...} q^(7 : ℕ) r^(q-1)`: the logarithmic coefficient `1/q` cancels one power from the
+eighth-order convex fusion cost `q^(8 : ℕ)`.  Actual theta activity satisfies `399r<1`, making this
 tail smaller than `1/3000` of the one-particle eighth monomial mass.
 -/
 

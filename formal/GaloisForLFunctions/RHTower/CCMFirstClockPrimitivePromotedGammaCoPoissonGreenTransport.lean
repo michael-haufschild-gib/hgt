@@ -276,8 +276,8 @@ theorem deningerCalderonWittAlgebraicCup_packetLegTransport
 /-- Induced transport on the full vector-valued exterior source. -/
 def deningerCalderonWittExteriorPacketTransport
     (p : Nat.Primes) (c : ℂ) :
-    (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) →ₗ[ℂ]
-      (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :=
+    (⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) →ₗ[ℂ]
+      (⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) :=
   exteriorPower.map 2 (deningerCalderonWittPacketLegTransport p c)
 
 /-- Boundary transport on the algebraic suspension packet. -/
@@ -320,8 +320,8 @@ and orientation trace.
 -/
 def deningerCalderonWittPrimitiveGammaCoPoissonExteriorTransport
     (pe : Nat.Primes × ℕ) (z w : ℂ) :
-    (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne pe.1)) →ₗ[ℂ]
-      (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne pe.1)) :=
+    (⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne pe.1)) →ₗ[ℂ]
+      (⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne pe.1)) :=
   deningerCalderonWittExteriorPacketTransport pe.1
     (xiGammaEulerPrimitiveGammaCoPoissonCell pe z w)
 
@@ -428,7 +428,7 @@ theorem deningerCalderonWittMilnorIncidencePacketTransport_coe
     (p : Nat.Primes) (c : ℂ)
     (i : deningerCalderonWittMilnorIncidence p) :
     (deningerCalderonWittMilnorIncidencePacketTransport p c i :
-        ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) =
+        ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) =
       deningerCalderonWittExteriorPacketTransport p c i.1 :=
   rfl
 
@@ -439,7 +439,7 @@ endomorphism preserves cofinal admitted sector.
 -/
 theorem deningerCalderonWittMilnorGreenRetraction_packetTransport
     (p : Nat.Primes) (c : ℂ)
-    (w : ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :
+    (w : ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) :
     deningerCalderonWittMilnorGreenRetraction p
         (deningerCalderonWittExteriorPacketTransport p c w) =
       deningerCalderonWittMilnorIncidencePacketTransport p c

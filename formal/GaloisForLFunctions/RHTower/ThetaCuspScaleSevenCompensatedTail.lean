@@ -17,25 +17,25 @@ theorem thetaCuspNativeOddCompensatedDet_scaleSeven_normalized_lower {C x : ℝ}
     (hC0 : 0 ≤ C) (hC1 : C ≤ 3000000000)
     (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     5000000000 ≤ thetaCuspNativeOddCompensatedDet C x /
-      (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9) := by
+      (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let f := thetaCuspSourceTerm x 1
-  let H := thetaCuspNativeOddHankelThreeDet x/(f^6*q^9)
-  let D := thetaCuspNativeOddHeadDet x/(f^4*q^4)
-  let G := thetaCuspCenterCompensationSource x/(f^2*q^5)
+  let H := thetaCuspNativeOddHankelThreeDet x/(f^(6 : ℕ)*q^(9 : ℕ))
+  let D := thetaCuspNativeOddHeadDet x/(f^(4 : ℕ)*q^(4 : ℕ))
+  let G := thetaCuspCenterCompensationSource x/(f^(2 : ℕ)*q^(5 : ℕ))
   have hx := regimeOne_pos_of_six_le (x := x) (by linarith)
   have hf : 0 < f := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < q := by dsimp [q]; linarith
   have hH : 70000000000 ≤ H := thetaCuspNativeOddHankelThreeDet_scaleSeven_normalized_lower hq
   have hD : 0 < D ∧ D ≤ 28000 := thetaCuspNativeOddHeadDet_scaleSeven_normalized_bounds hq
-  have hG : -(13/50 : ℝ)/7^3 ≤ G := thetaCuspCenterCompensationSource_scaleSeven_normalized_lower hq
+  have hG : -(13/50 : ℝ)/7^(3 : ℕ) ≤ G := thetaCuspCenterCompensationSource_scaleSeven_normalized_lower hq
   have hCD := mul_le_mul hC1 hD.2 hD.1.le (by norm_num : (0 : ℝ) ≤ 3000000000)
   have hCG := mul_le_mul_of_nonneg_left hG (mul_nonneg hC0 hD.1.le)
-  have heq : thetaCuspNativeOddCompensatedDet C x/(f^6*q^9) = H+C*D*G := by
+  have heq : thetaCuspNativeOddCompensatedDet C x/(f^(6 : ℕ)*q^(9 : ℕ)) = H+C*D*G := by
     dsimp [H,D,G]
     unfold thetaCuspNativeOddCompensatedDet
     field_simp
-  change 5000000000 ≤ thetaCuspNativeOddCompensatedDet C x/(f^6*q^9)
+  change 5000000000 ≤ thetaCuspNativeOddCompensatedDet C x/(f^(6 : ℕ)*q^(9 : ℕ))
   rw [heq]
   nlinarith only [hH, hCD, hCG]
 
@@ -46,12 +46,12 @@ theorem thetaCuspNativeOddCompensatedDet_pos_of_seven_le {C x : ℝ}
     0 < thetaCuspNativeOddCompensatedDet C x := by
   have hl := thetaCuspNativeOddCompensatedDet_scaleSeven_normalized_lower hC0 hC1 hq
   have hpos : 0 < thetaCuspNativeOddCompensatedDet C x /
-      (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9) := by linarith
+      (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)) := by linarith
   have hx := regimeOne_pos_of_six_le (x := x) (by linarith)
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))
   have hqp : 0 < thetaCuspSingleAtomReflectionScale 1 x := by linarith
   have hh := (lt_div_iff₀ (by positivity : 0 <
-    thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9)).mp hpos
+    thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ))).mp hpos
   simpa only [zero_mul] using hh
 
 /-- A rational center endpoint lies beyond scale seven by the global exponential comparison. -/

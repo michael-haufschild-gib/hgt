@@ -90,7 +90,7 @@ theorem tendstoMarcinkiewiczZero_tail {b : ℕ → ℂ}
 
 /-! ## The canonical shift residue -/
 
-theorem analyticAt_riemannZeta {z : ℂ} (hz : z ≠ 1) : AnalyticAt ℂ riemannZeta z := by
+theorem analyticAt_riemannZeta_primeShiftResidueClosability {z : ℂ} (hz : z ≠ 1) : AnalyticAt ℂ riemannZeta z := by
   have hdon : DifferentiableOn ℂ riemannZeta {(1 : ℂ)}ᶜ :=
     fun w hw => (differentiableAt_riemannZeta (by simpa using hw)).differentiableWithinAt
   exact hdon.analyticOnNhd isOpen_compl_singleton z (by simpa using hz)
@@ -121,7 +121,7 @@ noncomputable def primeShiftResidue (z : ℂ) : ℂ := -(zetaMultiplicity z : �
 
 theorem zetaMultiplicity_eq_zero_iff {z : ℂ} (hz : z ≠ 1) :
     zetaMultiplicity z = 0 ↔ riemannZeta z ≠ 0 := by
-  have hana := analyticAt_riemannZeta hz
+  have hana := analyticAt_riemannZeta_primeShiftResidueClosability hz
   have hne := analyticOrderAt_riemannZeta_ne_top hz
   rw [zetaMultiplicity, analyticOrderNatAt, ENat.toNat_eq_zero]
   constructor
@@ -149,7 +149,7 @@ theorem tendsto_sub_mul_xiPrimeLogDirichletContinuation {z : ℂ}
       nhdsWithin_le_nhds
   have htail0 := hlin.mul htail
   by_cases hzero : riemannZeta z = 0
-  · have hana := analyticAt_riemannZeta hz1
+  · have hana := analyticAt_riemannZeta_primeShiftResidueClosability hz1
     have hnetop := analyticOrderAt_riemannZeta_ne_top hz1
     obtain ⟨g, hg, hg0, hfac⟩ := hana.analyticOrderAt_ne_top.mp hnetop
     have hres := logDeriv_residue_of_factorization (n := zetaMultiplicity z) hg hg0 hfac

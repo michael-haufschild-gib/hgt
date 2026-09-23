@@ -72,23 +72,23 @@ theorem negativePoissonPolynomial_X : negativePoissonPolynomial X = -X := by
   have h := negativePoissonPolynomial_X_mul 1
   simpa [negativePoissonPolynomial_one] using h
 
-theorem negativePoissonPolynomial_X_sq : negativePoissonPolynomial (X^2) = X^2-X := by
+theorem negativePoissonPolynomial_X_sq : negativePoissonPolynomial (X^(2 : ℕ)) = X^(2 : ℕ)-X := by
   have h := negativePoissonPolynomial_X_mul X
   rw [negativePoissonPolynomial_X] at h
   simp only [derivative_neg,derivative_X] at h
   rw [pow_two,h]
   ring
 
-/-- The literal theta seed is the transformed polynomial 4 J^2 + 2 J. -/
+/-- The literal theta seed is the transformed polynomial 4 J^(2 : ℕ) + 2 J. -/
 theorem negativePoissonPolynomial_thetaSeed :
-    negativePoissonPolynomial ((4 : ℝ) • X^2+(2 : ℝ) • X) = 4*X^2-6*X := by
+    negativePoissonPolynomial ((4 : ℝ) • X^(2 : ℕ)+(2 : ℝ) • X) = 4*X^(2 : ℕ)-6*X := by
   rw [map_add,map_smul,map_smul,negativePoissonPolynomial_X_sq,negativePoissonPolynomial_X]
   simp only [smul_eq_C_mul,C_ofNat]
   norm_num
   ring
 
 /-- The signed clock seed for each literal theta atom. -/
-def thetaClockSeed : ℝ[X] := (4 : ℝ) • X^2+(2 : ℝ) • X
+def thetaClockSeed : ℝ[X] := (4 : ℝ) • X^(2 : ℕ)+(2 : ℝ) • X
 
 /-- The clock polynomial that differentiates the literal theta atom. -/
 def thetaClockMultiply (P : ℝ[X]) : ℝ[X] := (2 : ℝ) • (X*P)+(1/2 : ℝ) • P
@@ -256,7 +256,7 @@ theorem negativePoissonPolynomial_X_mul_shift (P : ℝ[X]) :
 /-- Both powers in the physical theta seed reduce to two literal clock shifts. -/
 theorem negativePoissonPolynomial_thetaSeed_mul (P : ℝ[X]) :
     negativePoissonPolynomial (thetaClockSeed*P) =
-      4*X^2*negativePoissonPolynomial (Polynomial.taylor 2 P)-
+      4*X^(2 : ℕ)*negativePoissonPolynomial (Polynomial.taylor 2 P)-
         6*X*negativePoissonPolynomial (Polynomial.taylor 1 P) := by
   have hP : thetaClockSeed*P = (4 : ℝ) • (X*(X*P))+(2 : ℝ) • (X*P) := by
     simp only [thetaClockSeed,smul_eq_C_mul,C_ofNat]
@@ -290,9 +290,9 @@ theorem negativePoissonPolynomial_product (P Q : ℝ[X]) (p : ℝ) :
 
 /-- The physical source transform has the exact finite signed-square expansion. -/
 theorem negativePoissonPolynomial_square (P : ℝ[X]) (p : ℝ) :
-    (negativePoissonPolynomial (P^2)).eval p =
+    (negativePoissonPolynomial (P^(2 : ℕ))).eval p =
       ∑ k ∈ Finset.range (P.natDegree+1), weight (-p) k*
-        (negativePoissonPolynomial ((sourceForwardDifference^[k]) P)).eval p^2 := by
+        (negativePoissonPolynomial ((sourceForwardDifference^[k]) P)).eval p^(2 : ℕ) := by
   simpa only [pow_two,mul_assoc] using negativePoissonPolynomial_product P P p
 
 end

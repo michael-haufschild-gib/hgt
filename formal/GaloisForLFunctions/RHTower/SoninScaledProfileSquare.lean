@@ -23,7 +23,7 @@ open MeasureTheory
 open scoped FourierTransform ContDiff
 
 /-- The square of the reference profile. -/
-def soninUnitBumpSq : ℝ → ℝ := fun y => soninUnitBumpData y ^ 2
+def soninUnitBumpSq : ℝ → ℝ := fun y => soninUnitBumpData y ^ (2 : ℕ)
 
 /-- The square of the reference profile, complexified. -/
 def soninUnitBumpSqC : ℝ → ℂ := fun y => (soninUnitBumpSq y : ℂ)
@@ -87,7 +87,7 @@ theorem integral_soninUnitBumpSq_pos : 0 < ∫ y : ℝ, soninUnitBumpSq y := by
 
 /-- A lobe's square is a translated dilate of the reference square. -/
 theorem soninOneSidedBump_sq (m δ : ℝ) (x : ℝ) :
-    soninOneSidedBump m δ x ^ 2 = soninUnitBumpSq ((x - m) / δ) := rfl
+    soninOneSidedBump m δ x ^ (2 : ℕ) = soninUnitBumpSq ((x - m) / δ) := rfl
 
 /-- **The lobes are disjoint** once the half-width is below the annulus radius. -/
 theorem soninOneSidedBump_mul_neg_eq_zero (m δ : ℝ) (hδ : 0 < δ) (hm : δ < m) (x : ℝ) :
@@ -115,16 +115,16 @@ theorem soninOneSidedBump_mul_neg_eq_zero (m δ : ℝ) (hδ : 0 < δ) (hm : δ <
 
 /-- **The squared profile splits into two squared lobes.** -/
 theorem soninScaledAnnulusBump_sq (m δ : ℝ) (hδ : 0 < δ) (hm : δ < m) (x : ℝ) :
-    soninScaledAnnulusBump m δ x ^ 2 =
-      soninOneSidedBump m δ x ^ 2 + soninOneSidedBump m δ (-x) ^ 2 := by
+    soninScaledAnnulusBump m δ x ^ (2 : ℕ) =
+      soninOneSidedBump m δ x ^ (2 : ℕ) + soninOneSidedBump m δ (-x) ^ (2 : ℕ) := by
   have hcross := soninOneSidedBump_mul_neg_eq_zero m δ hδ hm x
   rw [soninScaledAnnulusBump_eq_oneSided_add m δ x]
   nlinarith [hcross]
 
 /-- The squared lobe is integrable. -/
 theorem integrable_soninOneSidedBump_sq (m δ : ℝ) (hδ : 0 < δ) :
-    Integrable fun x : ℝ => soninOneSidedBump m δ x ^ 2 := by
-  have hc : Continuous fun x : ℝ => soninOneSidedBump m δ x ^ 2 :=
+    Integrable fun x : ℝ => soninOneSidedBump m δ x ^ (2 : ℕ) := by
+  have hc : Continuous fun x : ℝ => soninOneSidedBump m δ x ^ (2 : ℕ) :=
     (soninUnitBumpData.continuous.comp ((continuous_id.sub continuous_const).div_const δ)).pow 2
   refine hc.integrable_of_hasCompactSupport ?_
   refine HasCompactSupport.of_support_subset_isCompact
@@ -144,11 +144,11 @@ theorem integrable_soninOneSidedBump_sq (m δ : ℝ) (hδ : 0 < δ) :
 
 /-- The squared lobe carries the half-width times the reference square's mass. -/
 theorem integral_soninOneSidedBump_sq (m δ : ℝ) (hδ : 0 < δ) :
-    ∫ x : ℝ, soninOneSidedBump m δ x ^ 2 = δ * ∫ y : ℝ, soninUnitBumpSq y := by
+    ∫ x : ℝ, soninOneSidedBump m δ x ^ (2 : ℕ) = δ * ∫ y : ℝ, soninUnitBumpSq y := by
   have hshift : ∫ x : ℝ, soninUnitBumpSq ((x + -m) / δ) = ∫ x : ℝ, soninUnitBumpSq (x / δ) :=
     MeasureTheory.integral_add_right_eq_self (μ := (volume : Measure ℝ))
       (fun u : ℝ => soninUnitBumpSq (u / δ)) (-m)
-  have hpoint : ∀ x : ℝ, soninOneSidedBump m δ x ^ 2 = soninUnitBumpSq ((x + -m) / δ) := by
+  have hpoint : ∀ x : ℝ, soninOneSidedBump m δ x ^ (2 : ℕ) = soninUnitBumpSq ((x + -m) / δ) := by
     intro x
     rw [soninOneSidedBump_sq m δ x, sub_eq_add_neg]
   rw [integral_congr_ae (Filter.Eventually.of_forall hpoint), hshift,
@@ -156,11 +156,11 @@ theorem integral_soninOneSidedBump_sq (m δ : ℝ) (hδ : 0 < δ) :
 
 /-- **The squared profile's mass is centre free.** -/
 theorem integral_soninScaledAnnulusBump_sq_eq (m δ : ℝ) (hδ : 0 < δ) (hm : δ < m) :
-    ∫ x : ℝ, soninScaledAnnulusBump m δ x ^ 2 = 2 * δ * ∫ y : ℝ, soninUnitBumpSq y := by
+    ∫ x : ℝ, soninScaledAnnulusBump m δ x ^ (2 : ℕ) = 2 * δ * ∫ y : ℝ, soninUnitBumpSq y := by
   have hlobe := integrable_soninOneSidedBump_sq m δ hδ
-  have hrefl : ∫ x : ℝ, soninOneSidedBump m δ (-x) ^ 2 =
-      ∫ x : ℝ, soninOneSidedBump m δ x ^ 2 :=
-    MeasureTheory.integral_neg_eq_self (fun x : ℝ => soninOneSidedBump m δ x ^ 2) volume
+  have hrefl : ∫ x : ℝ, soninOneSidedBump m δ (-x) ^ (2 : ℕ) =
+      ∫ x : ℝ, soninOneSidedBump m δ x ^ (2 : ℕ) :=
+    MeasureTheory.integral_neg_eq_self (fun x : ℝ => soninOneSidedBump m δ x ^ (2 : ℕ)) volume
   rw [integral_congr_ae (Filter.Eventually.of_forall (soninScaledAnnulusBump_sq m δ hδ hm)),
     integral_add hlobe hlobe.comp_neg, hrefl, integral_soninOneSidedBump_sq m δ hδ]
   ring

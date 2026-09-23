@@ -183,7 +183,7 @@ theorem heatOpTo_X_mul {t : ℝ} {m : ℕ} {p : Polynomial ℝ} (hp : p.natDegre
           Polynomial.C (-1 / (2 * t)) * (Polynomial.C ((-1 / (4 * t)) ^ j / (Nat.factorial j : ℝ))
             * Polynomial.derivative^[2 * j + 1] p) := by
     rw [Finset.sum_range_succ']
-    have hzero : Polynomial.C ((-1 / (4 * t)) ^ 0 / (Nat.factorial 0 : ℝ))
+    have hzero : Polynomial.C ((-1 / (4 * t)) ^ (0 : ℕ) / (Nat.factorial 0 : ℝ))
         * (Polynomial.C ((2 * 0 : ℕ) : ℝ) * Polynomial.derivative^[2 * 0 - 1] p) = 0 := by
       simp
     rw [hzero, add_zero]
@@ -313,16 +313,16 @@ theorem gaussHeatFourier {t : ℝ} (ht : 0 < t) (R : Polynomial ℝ) (ξ : ℝ) 
 
 /-- The polynomial `R(u) = Q(-u²)²` takes the value `Q(x²)²` at `u = ix`. -/
 theorem aeval_I_mul_sqComp (Q : Polynomial ℝ) (x : ℝ) :
-    Polynomial.aeval (Complex.I * (x : ℂ)) ((Q.comp (-Polynomial.X ^ 2)) ^ 2)
-      = (((Q.eval (x ^ 2)) ^ 2 : ℝ) : ℂ) := by
-  have hz : Polynomial.aeval (Complex.I * (x : ℂ)) (-Polynomial.X ^ 2 : Polynomial ℝ)
-      = ((x ^ 2 : ℝ) : ℂ) := by
+    Polynomial.aeval (Complex.I * (x : ℂ)) ((Q.comp (-Polynomial.X ^ (2 : ℕ))) ^ (2 : ℕ))
+      = (((Q.eval (x ^ (2 : ℕ))) ^ (2 : ℕ) : ℝ) : ℂ) := by
+  have hz : Polynomial.aeval (Complex.I * (x : ℂ)) (-Polynomial.X ^ (2 : ℕ) : Polynomial ℝ)
+      = ((x ^ (2 : ℕ) : ℝ) : ℂ) := by
     simp only [map_neg, map_pow, Polynomial.aeval_X]
     rw [mul_pow, Complex.I_sq]
     push_cast
     ring
-  have hQ : Polynomial.aeval (((x ^ 2 : ℝ) : ℂ)) Q = ((Q.eval (x ^ 2) : ℝ) : ℂ) := by
-    rw [show (((x ^ 2 : ℝ)) : ℂ) = algebraMap ℝ ℂ (x ^ 2) from rfl,
+  have hQ : Polynomial.aeval (((x ^ (2 : ℕ) : ℝ) : ℂ)) Q = ((Q.eval (x ^ (2 : ℕ)) : ℝ) : ℂ) := by
+    rw [show (((x ^ (2 : ℕ) : ℝ)) : ℂ) = algebraMap ℝ ℂ (x ^ (2 : ℕ)) from rfl,
       Polynomial.aeval_algebraMap_apply]
     simp
   rw [map_pow, Polynomial.aeval_comp, hz, hQ]
@@ -332,10 +332,10 @@ theorem aeval_I_mul_sqComp (Q : Polynomial ℝ) (x : ℝ) :
 /-- **(24.189) in the form used for the shell filter.**  The transform of `Q(x²)²e^{-tx²}` is the
 Gaussian times the heat operator applied to `R(u) = Q(-u²)²` at `u = ξ/(2t)`. -/
 theorem gaussHeatFourier_sq {t : ℝ} (ht : 0 < t) (Q : Polynomial ℝ) (ξ : ℝ) :
-    (∫ x : ℝ, (((Q.eval (x ^ 2)) ^ 2 : ℝ) : ℂ) * gaussPhase t ξ x)
+    (∫ x : ℝ, (((Q.eval (x ^ (2 : ℕ))) ^ (2 : ℕ) : ℝ) : ℂ) * gaussPhase t ξ x)
       = (Real.sqrt (Real.pi / t) : ℂ) * ((gaussKernel t ξ : ℝ) : ℂ)
-        * (((heatOp t ((Q.comp (-Polynomial.X ^ 2)) ^ 2)).eval (ξ / (2 * t)) : ℝ) : ℂ) := by
-  rw [← gaussHeatFourier ht ((Q.comp (-Polynomial.X ^ 2)) ^ 2) ξ]
+        * (((heatOp t ((Q.comp (-Polynomial.X ^ (2 : ℕ))) ^ (2 : ℕ))).eval (ξ / (2 * t)) : ℝ) : ℂ) := by
+  rw [← gaussHeatFourier ht ((Q.comp (-Polynomial.X ^ (2 : ℕ))) ^ (2 : ℕ)) ξ]
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   simp only [aeval_I_mul_sqComp]
 

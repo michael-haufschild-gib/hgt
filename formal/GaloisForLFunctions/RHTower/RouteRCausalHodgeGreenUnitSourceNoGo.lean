@@ -8,7 +8,7 @@ This module formalizes C22 of the Route R prepolar audit.  The causal half-densi
 reads the literal Gauss--Hodge mass collar by an exact resolvent identity.  For `rho = x + iy` in
 the open critical strip, the reading is
 
-`(2*x-1)^2 / ((x^2+y^2) * ((1-x)^2+y^2))`.
+`(2*x-1)^(2 : ℕ) / ((x^(2 : ℕ)+y^(2 : ℕ)) * ((1-x)^(2 : ℕ)+y^(2 : ℕ)))`.
 
 The identity includes the continuous zero-frequency kernel `u * exp (-u/2)`.  The same kernel
 solves the first-order covariant Green system, has zero boundary value, but has covariant boundary

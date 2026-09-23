@@ -21,16 +21,16 @@ open GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 namespace RHTower
 
 private lemma choiBase_le_one_tenth :
-    Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ 2) / 2) ≤ 1 / 10 := by
+    Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ (2 : ℕ)) / 2) ≤ 1 / 10 := by
   rw [Real.sqrt_le_iff]
   constructor
   · norm_num
-  · have hsqrt : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  · have hsqrt : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
     rw [mul_pow, hsqrt]
     nlinarith [Real.pi_lt_four]
 
 private lemma exp_half_lt_two : Real.exp (1 / 2 : ℝ) < 2 := by
-  have hsq : Real.exp (1 / 2 : ℝ) ^ 2 = Real.exp 1 := by
+  have hsq : Real.exp (1 / 2 : ℝ) ^ (2 : ℕ) = Real.exp 1 := by
     rw [sq, ← Real.exp_add]
     congr 1
     norm_num
@@ -85,7 +85,7 @@ and nearest-neighbour path size `L`. -/
 noncomputable def polynomialCircuitChoiEntropyCost (g k L : ℕ) : ℝ :=
   (g : ℝ) ^ (L ^ k + 1) *
     (((4 ^ L : ℕ) : ℝ) * Real.exp (((4 ^ L : ℕ) : ℝ) / 2) *
-      Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ 2) / 2) ^
+      Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ (2 : ℕ)) / 2) ^
         ((4 ^ L : ℕ) - 1))
 
 private lemma twoPow_entropy_major_identity (D : ℕ) (hD : 1 ≤ D) :
@@ -100,7 +100,7 @@ private lemma twoPow_entropy_major_identity (D : ℕ) (hD : 1 ≤ D) :
   rw [show (2 : ℝ) ^ (m * 2) = (4 : ℝ) ^ m by
     calc
       (2 : ℝ) ^ (m * 2) = 2 ^ (2 * m) := by rw [Nat.mul_comm]
-      _ = (2 ^ 2) ^ m := by rw [pow_mul]
+      _ = (2 ^ (2 : ℕ)) ^ m := by rw [pow_mul]
       _ = 4 ^ m := by norm_num]
   rw [pow_succ]
   rw [pow_succ]
@@ -117,9 +117,9 @@ theorem eventually_polynomialCircuitChoiEntropyCost_le_major (g k : ℕ) :
   have hexp := exp_nat_half_le_two_pow D
   have hbase := choiBase_le_one_tenth
   have hbase0 : 0 ≤ Real.sqrt
-      (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ 2) / 2) := Real.sqrt_nonneg _
+      (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ (2 : ℕ)) / 2) := Real.sqrt_nonneg _
   have hbasePow :
-      Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ 2) / 2) ^ (D - 1) ≤
+      Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ (2 : ℕ)) / 2) ^ (D - 1) ≤
         (1 / 10 : ℝ) ^ (D - 1) :=
     pow_le_pow_left₀ hbase0 hbase _
   calc
@@ -137,7 +137,7 @@ anti-concentration exponent. -/
 theorem tendsto_polynomialCircuitChoiEntropyCost_atTop (g k : ℕ) :
     Tendsto (polynomialCircuitChoiEntropyCost g k) atTop (nhds 0) := by
   have hbase : Tendsto
-      (fun D : ℕ => (D : ℝ) ^ 1 * (2 / 5 : ℝ) ^ D) atTop (nhds 0) :=
+      (fun D : ℕ => (D : ℝ) ^ (1 : ℕ) * (2 / 5 : ℝ) ^ D) atTop (nhds 0) :=
     tendsto_pow_const_mul_const_pow_of_lt_one 1 (by norm_num) (by norm_num)
   have hD : Tendsto (fun L : ℕ => 4 ^ L) atTop atTop :=
     tendsto_pow_atTop_atTop_of_one_lt (by norm_num)
@@ -159,7 +159,7 @@ theorem nearestNeighborPathProjectiveDimension_add_one (L : ℕ) :
   rw [Nat.sub_add_cancel (one_le_pow₀ (by norm_num : 1 ≤ 2))]
   calc
     2 ^ (L * 2) = 2 ^ (2 * L) := by rw [Nat.mul_comm]
-    _ = (2 ^ 2) ^ L := by rw [pow_mul]
+    _ = (2 ^ (2 : ℕ)) ^ L := by rw [pow_mul]
     _ = 4 ^ L := by norm_num
 
 /-- Complete polynomial-circuit Choi entropy vanishes for the nearest-neighbour path family. -/
@@ -170,7 +170,7 @@ theorem tendsto_nearestNeighborPolynomialCircuitChoiEntropyCost_atTop
         (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
           Real.exp (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
           Real.sqrt
-            (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ 2) / 2) ^
+            (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1)))
       atTop (nhds 0) := by
   convert tendsto_polynomialCircuitChoiEntropyCost_atTop
@@ -187,7 +187,7 @@ theorem eventually_nearestNeighborPolynomialCircuitChoiEntropy_lt_one
         (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
           Real.exp (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
           Real.sqrt
-            (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ 2) / 2) ^
+            (Real.pi * (2 * (Real.sqrt 2 * (1 / 100 : ℝ)) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1)) < 1 :=
   (tendsto_nearestNeighborPolynomialCircuitChoiEntropyCost_atTop gate k).eventually_lt_const
     (by norm_num)

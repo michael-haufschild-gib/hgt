@@ -61,20 +61,20 @@ theorem sepEnum_gap {S : Finset ℝ} {R : ℕ} (hcard : S.card = R + 1) {delta :
 theorem huxley_large_values_finset {N : ℕ} (hN : 1 ≤ N)
     (a : EuclideanSpace ℂ (Fin N))
     {delta Ttot V G : ℝ} (hdelta : 0 < delta) (hV : 0 < V) (hTtot : 0 ≤ Ttot)
-    (hmass : ‖a‖ ^ 2 ≤ G)
+    (hmass : ‖a‖ ^ (2 : ℕ) ≤ G)
     (S : Finset ℝ)
     (hsep : ∀ x ∈ S, ∀ y ∈ S, x ≠ y → delta ≤ |x - y|)
     (hspread : ∀ x ∈ S, ∀ y ∈ S, |x - y| ≤ Ttot)
     (hbig : ∀ x ∈ S, V ≤ ‖⟪dyadicDirRow N x, a⟫_ℂ‖)
-    (hthresh : G * (1 + 1536 * Real.sqrt (3 * (N : ℝ) / (4 * Real.pi))) ≤ V ^ 2 / 3) :
-    ((S.card : ℝ)) * V ^ 2
-      ≤ (Ttot * (1284 * G) ^ 2 / V ^ 4 + 1) *
+    (hthresh : G * (1 + 1536 * Real.sqrt (3 * (N : ℝ) / (4 * Real.pi))) ≤ V ^ (2 : ℕ) / 3) :
+    ((S.card : ℝ)) * V ^ (2 : ℕ)
+      ≤ (Ttot * (1284 * G) ^ (2 : ℕ) / V ^ (4 : ℕ) + 1) *
         (2 * G * ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta)
           * ∑ i ∈ Finset.range S.card, 1 / ((i : ℝ) + 1))) := by
   rcases S.eq_empty_or_nonempty with hemp | hne
   · have hG0 : (0 : ℝ) ≤ G := le_trans (by positivity) hmass
-    have h1 : (0 : ℝ) ≤ Ttot * (1284 * G) ^ 2 / V ^ 4 + 1 := by
-      have hq : (0 : ℝ) ≤ Ttot * (1284 * G) ^ 2 / V ^ 4 :=
+    have h1 : (0 : ℝ) ≤ Ttot * (1284 * G) ^ (2 : ℕ) / V ^ (4 : ℕ) + 1 := by
+      have hq : (0 : ℝ) ≤ Ttot * (1284 * G) ^ (2 : ℕ) / V ^ (4 : ℕ) :=
         div_nonneg (mul_nonneg hTtot (sq_nonneg _)) (by positivity)
       linarith
     have h2 : (0 : ℝ) ≤ 2 * G * (N : ℝ) :=

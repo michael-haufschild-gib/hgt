@@ -145,7 +145,7 @@ theorem quadForm_rankOne (z v : n → ℂ) :
   rw [rankOne_apply]
   ring
 
-theorem quadForm_one (v : n → ℂ) : boundedReplicaThresholdProjectorQuadForm (1 : Matrix n n ℂ) v = hermInner v v := by
+theorem quadForm_one_boundedReplicaThresholdProjector (v : n → ℂ) : boundedReplicaThresholdProjectorQuadForm (1 : Matrix n n ℂ) v = hermInner v v := by
   rw [quadForm_eq_sum, hermInner]
   simp only [Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
     if_true, ite_mul, zero_mul]
@@ -217,7 +217,7 @@ theorem quadForm_outcomeFactor {z v : n → ℂ} {r : ℕ} (S : Finset (Fin r)) 
     have hsmul : boundedReplicaThresholdProjectorQuadForm ((-1 : ℂ) • rankOne z) v = -boundedReplicaThresholdProjectorQuadForm (rankOne z) v := by
       simp only [quadForm_eq_sum, Matrix.smul_apply, smul_eq_mul, ← Finset.sum_neg_distrib]
       exact Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => by ring
-    rw [hsmul, quadForm_one, hv, quadForm_rankOne]
+    rw [hsmul, quadForm_one_boundedReplicaThresholdProjector, hv, quadForm_rankOne]
     ring
 
 /-! ### The bounded replica projector -/
@@ -436,7 +436,7 @@ theorem normSq_hermInner_le_one {z v : n → ℂ} (hz : hermInner z z = 1)
     have hsmul : boundedReplicaThresholdProjectorQuadForm ((-1 : ℂ) • rankOne z) v = -boundedReplicaThresholdProjectorQuadForm (rankOne z) v := by
       simp only [quadForm_eq_sum, Matrix.smul_apply, smul_eq_mul, ← Finset.sum_neg_distrib]
       exact Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => by ring
-    rw [hsmul, quadForm_one, hv, quadForm_rankOne]
+    rw [hsmul, quadForm_one_boundedReplicaThresholdProjector, hv, quadForm_rankOne]
     push_cast
     ring
   rw [hval] at hpos

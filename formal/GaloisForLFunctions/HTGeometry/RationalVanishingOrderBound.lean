@@ -20,7 +20,7 @@ theorem exists_radius_norm_polyEval_ge {Q : Polynomial ℂ} (hQ : Polynomial.eva
     ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ 1 ∧ ∀ u : ℂ, ‖u‖ ≤ ρ → ‖Polynomial.eval 0 Q‖ / 2 ≤ ‖Q.eval u‖ := by
   classical
   have hdvd : (Polynomial.X : Polynomial ℂ) ∣ Q - Polynomial.C (Polynomial.eval 0 Q) := by
-    have h1 : ((Polynomial.X : Polynomial ℂ) ^ 1) ∣ Q - Polynomial.C (Polynomial.eval 0 Q) := by
+    have h1 : ((Polynomial.X : Polynomial ℂ) ^ (1 : ℕ)) ∣ Q - Polynomial.C (Polynomial.eval 0 Q) := by
       rw [Polynomial.X_pow_dvd_iff]
       intro d hd
       interval_cases d

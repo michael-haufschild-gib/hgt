@@ -49,7 +49,7 @@ def vaidyaConformalHorizonFunction (ε x : ℝ) : ℝ :=
   1 - 1 / x - 4 * ε * x
 
 def vaidyaMassRateOfHorizonRatio (q : ℝ) : ℝ :=
-  q / (4 * (1 + q) ^ 2)
+  q / (4 * (1 + q) ^ (2 : ℕ))
 
 def vaidyaEventHorizon (q : ℝ) : ℝ :=
   1 + q
@@ -86,7 +86,7 @@ theorem vaidyaMassRateOfHorizonRatio_lt_critical
     {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) :
     vaidyaMassRateOfHorizonRatio q < 1 / 16 := by
   rw [vaidyaMassRateOfHorizonRatio]
-  have hden : 0 < 4 * (1 + q) ^ 2 :=
+  have hden : 0 < 4 * (1 + q) ^ (2 : ℕ) :=
     mul_pos (by norm_num) (sq_pos_of_pos (by linarith))
   rw [div_lt_iff₀ hden]
   nlinarith [sq_pos_of_pos (by linarith : 0 < 1 - q)]
@@ -106,12 +106,12 @@ theorem vaidyaEventHorizon_div_outerHorizon
   field_simp [hq, hq1]
 
 def vaidyaConformalHorizonSlope (ε x : ℝ) : ℝ :=
-  1 / x ^ 2 - 4 * ε
+  1 / x ^ (2 : ℕ) - 4 * ε
 
 theorem vaidyaEventHorizonSlope_eq
     {q : ℝ} (hq0 : 0 < q) :
     vaidyaConformalHorizonSlope (vaidyaMassRateOfHorizonRatio q)
-      (vaidyaEventHorizon q) = (1 - q) / (1 + q) ^ 2 := by
+      (vaidyaEventHorizon q) = (1 - q) / (1 + q) ^ (2 : ℕ) := by
   rw [vaidyaConformalHorizonSlope, vaidyaMassRateOfHorizonRatio, vaidyaEventHorizon]
   have hq1 : 1 + q ≠ 0 := ne_of_gt (by linarith)
   field_simp [hq1]
@@ -119,7 +119,7 @@ theorem vaidyaEventHorizonSlope_eq
 theorem vaidyaOuterHorizonSlope_eq
     {q : ℝ} (hq0 : 0 < q) :
     vaidyaConformalHorizonSlope (vaidyaMassRateOfHorizonRatio q)
-      (vaidyaOuterHorizon q) = -q * (1 - q) / (1 + q) ^ 2 := by
+      (vaidyaOuterHorizon q) = -q * (1 - q) / (1 + q) ^ (2 : ℕ) := by
   rw [vaidyaConformalHorizonSlope, vaidyaMassRateOfHorizonRatio, vaidyaOuterHorizon]
   have hq : q ≠ 0 := ne_of_gt hq0
   have hq1 : 1 + q ≠ 0 := ne_of_gt (by linarith)
@@ -179,8 +179,8 @@ theorem vaidyaRepeatedHorizonScale_two_mul_replicaLevel
 
 def VaidyaEvaporationUniversalKreinSign (ω : ℂ) : Prop :=
   ∀ q : ℝ, 0 < q → q < 1 →
-    ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ 2).im = 0 ∧
-    ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ 2).re ≤ 0
+    ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).im = 0 ∧
+    ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).re ≤ 0
 
 theorem vaidyaEvaporationUniversalKreinSign_iff_re_eq_zero (ω : ℂ) :
     VaidyaEvaporationUniversalKreinSign ω ↔ ω.re = 0 := by
@@ -201,8 +201,8 @@ theorem fixed_vaidyaMassRate_has_offAxis_krein_blind_point
     {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) :
     ∃ ω : ℂ,
       ω.re ≠ 0 ∧
-        ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ 2).im = 0 ∧
-        ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ 2).re < 0 := by
+        ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).im = 0 ∧
+        ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).re < 0 := by
   exact GaloisForLFunctions.fixed_hawking_temperature_has_offAxis_krein_blind_point
     (vaidyaRepeatedHorizonScale q) (div_pos hq0 (by linarith))
 
@@ -246,7 +246,7 @@ private lemma complex_sinh_im_local (z : ℂ) :
   ring
 
 private lemma complex_sinh_sq_im_local (z : ℂ) :
-    ((Complex.sinh z) ^ 2).im =
+    ((Complex.sinh z) ^ (2 : ℕ)).im =
       Real.sinh (2 * z.re) * Real.sin (2 * z.im) / 2 := by
   rw [pow_two, Complex.mul_im, complex_sinh_re_local, complex_sinh_im_local,
     Real.sinh_two_mul, Real.sin_two_mul]
@@ -254,8 +254,8 @@ private lemma complex_sinh_sq_im_local (z : ℂ) :
 
 def PositiveScaleGermKreinSign (cap : ℝ) (ω : ℂ) : Prop :=
   ∀ β : ℝ, 0 < β → β < cap →
-    ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2).im = 0 ∧
-      ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2).re ≤ 0
+    ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ)).im = 0 ∧
+      ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ)).re ≤ 0
 
 theorem positiveScaleGermKreinSign_iff_re_eq_zero
     {cap : ℝ} (hcap : 0 < cap) (ω : ℂ) :
@@ -278,10 +278,10 @@ theorem positiveScaleGermKreinSign_iff_re_eq_zero
         rw [complex_sinh_re_local, hzim, Real.cos_zero, mul_one]
       have hsim : (Complex.sinh z).im = 0 := by
         rw [complex_sinh_im_local, hzim, Real.sin_zero, mul_zero]
-      have hsqre : ((Complex.sinh z) ^ 2).re = (Real.sinh z.re) ^ 2 := by
+      have hsqre : ((Complex.sinh z) ^ (2 : ℕ)).re = (Real.sinh z.re) ^ (2 : ℕ) := by
         rw [pow_two, Complex.mul_re, hsre, hsim]
         ring
-      have hpos : 0 < ((Complex.sinh z) ^ 2).re := by
+      have hpos : 0 < ((Complex.sinh z) ^ (2 : ℕ)).re := by
         rw [hsqre]
         exact sq_pos_of_ne_zero (real_sinh_ne_zero_of_ne_zero hzre_ne)
       exact (not_lt_of_ge hnonpos) hpos
@@ -322,7 +322,7 @@ theorem positiveScaleGermKreinSign_iff_re_eq_zero
             nlinarith [Real.pi_pos]
           exact (Real.sin_pos_of_pos_of_lt_pi hargpos hargupper).ne'
       have hsqim :
-          ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ 2).im =
+          ((Complex.sinh (((β : ℂ) * ω) / 2)) ^ (2 : ℕ)).im =
             Real.sinh (β * ω.re) * Real.sin (β * ω.im) / 2 := by
         rw [complex_sinh_sq_im_local]
         congr 2 <;> simp [Complex.mul_re, Complex.mul_im] <;> ring_nf
@@ -334,8 +334,8 @@ theorem positiveScaleGermKreinSign_iff_re_eq_zero
 
 def VaidyaEvaporationGermKreinSign (qCap : ℝ) (ω : ℂ) : Prop :=
   ∀ q : ℝ, 0 < q → q < qCap →
-    ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ 2).im = 0 ∧
-    ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ 2).re ≤ 0
+    ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).im = 0 ∧
+    ((Complex.sinh (((vaidyaRepeatedHorizonScale q : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).re ≤ 0
 
 theorem vaidyaEvaporationGermKreinSign_iff_re_eq_zero
     {qCap : ℝ} (hqCap0 : 0 < qCap) (hqCap1 : qCap < 1) (ω : ℂ) :

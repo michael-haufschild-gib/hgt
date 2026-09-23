@@ -46,15 +46,15 @@ theorem normSq_ne_zero_of_ne_zero {t : ℂ} (ht : t ≠ 0) : (Complex.normSq t :
 /-- The explicit quadratic form of the factor. -/
 theorem remotePairFactor_eq {t : ℂ} (ht : t ≠ 0) (z : ℂ) :
     remotePairFactor t z
-      = 1 + (z ^ 2 - 2 * (t.re : ℂ) * z) * ((Complex.normSq t : ℂ))⁻¹ := by
+      = 1 + (z ^ (2 : ℕ) - 2 * (t.re : ℂ) * z) * ((Complex.normSq t : ℂ))⁻¹ := by
   have hns : (Complex.normSq t : ℂ) ≠ 0 := normSq_ne_zero_of_ne_zero ht
   have hexp : (z - t) * (z - (starRingEnd ℂ) t)
-      = z ^ 2 - 2 * (t.re : ℂ) * z + (Complex.normSq t : ℂ) := by
+      = z ^ (2 : ℕ) - 2 * (t.re : ℂ) * z + (Complex.normSq t : ℂ) := by
     have hadd : t + (starRingEnd ℂ) t = 2 * (t.re : ℂ) := by
       rw [Complex.add_conj]; push_cast; ring
     have hmul : t * (starRingEnd ℂ) t = (Complex.normSq t : ℂ) := Complex.mul_conj t
     have : (z - t) * (z - (starRingEnd ℂ) t)
-        = z ^ 2 - (t + (starRingEnd ℂ) t) * z + t * (starRingEnd ℂ) t := by ring
+        = z ^ (2 : ℕ) - (t + (starRingEnd ℂ) t) * z + t * (starRingEnd ℂ) t := by ring
     rw [this, hadd, hmul]
   rw [remotePairFactor, hexp]
   field_simp
@@ -230,10 +230,10 @@ theorem remotePairFactor_tendstoLocallyUniformly {ι : Type*} {l : Filter ι} {�
     (hnorm : Tendsto (fun i => ((Complex.normSq (t i) : ℂ))⁻¹) l (nhds 0)) :
     TendstoLocallyUniformly (fun i z => remotePairFactor (t i) z) (fun _ : ℂ => (1 : ℂ)) l := by
   have hbase := tendstoLocallyUniformly_one_add_mul (l := l)
-    (fun i => ((Complex.normSq (t i) : ℂ))⁻¹) (fun z : ℂ => z ^ 2 - 2 * (δ : ℂ) * z)
+    (fun i => ((Complex.normSq (t i) : ℂ))⁻¹) (fun z : ℂ => z ^ (2 : ℕ) - 2 * (δ : ℂ) * z)
     (by fun_prop) hnorm
   have hlhs : (fun i z => remotePairFactor (t i) z)
-      = fun i (z : ℂ) => (1 : ℂ) + (z ^ 2 - 2 * (δ : ℂ) * z) * ((Complex.normSq (t i) : ℂ))⁻¹ := by
+      = fun i (z : ℂ) => (1 : ℂ) + (z ^ (2 : ℕ) - 2 * (δ : ℂ) * z) * ((Complex.normSq (t i) : ℂ))⁻¹ := by
     funext i z
     rw [remotePairFactor_eq (hne i) z, hre i]
   rw [hlhs]

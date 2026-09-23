@@ -70,19 +70,19 @@ theorem sum_sq_fibreSum_moebius_le_unitOmega {x h : ℝ} {P : Finset ℕ} {E : �
     (hbd : ∀ a ∈ outerBlock x h,
       ((({b ∈ innerFibre x h a | (primeFactorsIn P b).card = 0}).card : ℕ) : ℝ)
         + ((({b ∈ innerFibre x h a | 2 ≤ (primeFactorsIn P b).card}).card : ℕ) : ℝ) ≤ E) :
-    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ 2
-      ≤ 2 * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, unitOmegaMoebius P b) ^ 2
-        + 2 * ((outerBlock x h).card : ℝ) * E ^ 2 := by
+    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ (2 : ℕ)
+      ≤ 2 * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, unitOmegaMoebius P b) ^ (2 : ℕ)
+        + 2 * ((outerBlock x h).card : ℝ) * E ^ (2 : ℕ) := by
   classical
   have hterm : ∀ a ∈ outerBlock x h,
-      (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ 2
-        ≤ 2 * (∑ b ∈ innerFibre x h a, unitOmegaMoebius P b) ^ 2 + 2 * E ^ 2 := by
+      (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ (2 : ℕ)
+        ≤ 2 * (∑ b ∈ innerFibre x h a, unitOmegaMoebius P b) ^ (2 : ℕ) + 2 * E ^ (2 : ℕ) := by
     intro a ha
     set A : ℝ := ∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ) with hAdef
     set G : ℝ := ∑ b ∈ innerFibre x h a, unitOmegaMoebius P b with hGdef
     have hdef : |A - G| ≤ E := by
       refine le_trans (abs_sum_sub_unitOmega_le P (innerFibre x h a)) (hbd a ha)
-    have hsq : (A - G) ^ 2 ≤ E ^ 2 := by
+    have hsq : (A - G) ^ (2 : ℕ) ≤ E ^ (2 : ℕ) := by
       nlinarith [abs_nonneg (A - G), sq_abs (A - G), hdef, hE]
     nlinarith [hsq, sq_nonneg (A - 2 * G)]
   refine le_trans (Finset.sum_le_sum hterm) (le_of_eq ?_)

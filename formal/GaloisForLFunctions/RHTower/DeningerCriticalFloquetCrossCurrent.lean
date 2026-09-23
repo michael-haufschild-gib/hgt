@@ -29,9 +29,9 @@ theorem exists_deningerAutocorrelationExpBound
   obtain ⟨C, hC, hu⟩ :=
     deningerMeyerStrongLog_norm_le_exp_neg_abs u (2 * A)
   let J : ℝ := ∫ x : ℝ, Real.exp (-(A * |x|))
-  let B : ℝ := C ^ 2 * J
+  let B : ℝ := C ^ (2 : ℕ) * J
   have hJint : Integrable (fun x : ℝ => Real.exp (-(A * |x|))) :=
-    integrable_exp_neg_mul_abs hA
+    integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hA
   have hJ : 0 ≤ J := by
     dsimp only [J]
     exact integral_nonneg fun _ => Real.exp_nonneg _
@@ -39,7 +39,7 @@ theorem exists_deningerAutocorrelationExpBound
   have hleft :=
     (integrable_deningerMeyerStrongLogAutocorrelationIntegrand u a).norm
   have hright : Integrable (fun x : ℝ =>
-      (C ^ 2 * Real.exp (-A * |a|)) * Real.exp (-(A * |x|))) :=
+      (C ^ (2 : ℕ) * Real.exp (-A * |a|)) * Real.exp (-(A * |x|))) :=
     hJint.const_mul _
   rw [deningerMeyerStrongLogAutocorrelation]
   calc
@@ -49,7 +49,7 @@ theorem exists_deningerAutocorrelationExpBound
           (starRingEnd ℂ) ((u : ℝ → ℂ) (x + a))‖ :=
       norm_integral_le_integral_norm _
     _ ≤ ∫ x : ℝ,
-        (C ^ 2 * Real.exp (-A * |a|)) * Real.exp (-(A * |x|)) := by
+        (C ^ (2 : ℕ) * Real.exp (-A * |a|)) * Real.exp (-(A * |x|)) := by
       apply integral_mono hleft hright
       intro x
       change ‖(u : ℝ → ℂ) x *
@@ -76,17 +76,17 @@ theorem exists_deningerAutocorrelationExpBound
         ‖(u : ℝ → ℂ) x‖ * ‖(u : ℝ → ℂ) (x + a)‖ ≤
             (C * Real.exp (-(2 * A) * |x|)) *
               (C * Real.exp (-(2 * A) * |x + a|)) := hprod
-        _ = C ^ 2 * Real.exp (-(2 * A) * (|x| + |x + a|)) := by
+        _ = C ^ (2 : ℕ) * Real.exp (-(2 * A) * (|x| + |x + a|)) := by
           rw [show (C * Real.exp (-(2 * A) * |x|)) *
               (C * Real.exp (-(2 * A) * |x + a|)) =
-              C ^ 2 * (Real.exp (-(2 * A) * |x|) *
+              C ^ (2 : ℕ) * (Real.exp (-(2 * A) * |x|) *
                 Real.exp (-(2 * A) * |x + a|)) by ring,
             ← Real.exp_add]
-          apply congrArg (fun y : ℝ => C ^ 2 * Real.exp y)
+          apply congrArg (fun y : ℝ => C ^ (2 : ℕ) * Real.exp y)
           ring
-        _ ≤ C ^ 2 * Real.exp (-A * (|a| + |x|)) :=
+        _ ≤ C ^ (2 : ℕ) * Real.exp (-A * (|a| + |x|)) :=
           mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexponent) (sq_nonneg C)
-        _ = (C ^ 2 * Real.exp (-A * |a|)) * Real.exp (-(A * |x|)) := by
+        _ = (C ^ (2 : ℕ) * Real.exp (-A * |a|)) * Real.exp (-(A * |x|)) := by
           rw [show -A * (|a| + |x|) = -A * |a| + -(A * |x|) by ring,
             Real.exp_add]
           ring

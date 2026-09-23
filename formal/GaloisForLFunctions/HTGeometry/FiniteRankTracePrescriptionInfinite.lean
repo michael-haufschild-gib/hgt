@@ -29,11 +29,11 @@ theorem diagFinsetBlock_eq_zero_of_notMem (s : Finset ι) (t : ℂ) {p : ι × �
   exact hp (Finset.mem_product.mpr ⟨hmem, hdiag ▸ hmem⟩)
 
 theorem sum_diagFinsetBlock_normSq (s : Finset ι) (t : ℂ) :
-    ∑ p ∈ s ×ˢ s, ‖diagFinsetBlock s t p‖ ^ 2 = (s.card : ℝ) * ‖t‖ ^ 2 := by
+    ∑ p ∈ s ×ˢ s, ‖diagFinsetBlock s t p‖ ^ (2 : ℕ) = (s.card : ℝ) * ‖t‖ ^ (2 : ℕ) := by
   classical
   rw [Finset.sum_product]
   have hinner : ∀ i ∈ s,
-      (∑ j ∈ s, ‖diagFinsetBlock s t (i, j)‖ ^ 2) = ‖t‖ ^ 2 := by
+      (∑ j ∈ s, ‖diagFinsetBlock s t (i, j)‖ ^ (2 : ℕ)) = ‖t‖ ^ (2 : ℕ) := by
     intro i hi
     rw [Finset.sum_eq_single i]
     · simp [diagFinsetBlock, hi]
@@ -49,7 +49,7 @@ theorem isHS_diagFinsetBlock (s : Finset ι) (t : ℂ) : IsHS (diagFinsetBlock s
   simp
 
 theorem hsNormSq_diagFinsetBlock (s : Finset ι) (t : ℂ) :
-    hsNormSq (diagFinsetBlock s t) = (s.card : ℝ) * ‖t‖ ^ 2 := by
+    hsNormSq (diagFinsetBlock s t) = (s.card : ℝ) * ‖t‖ ^ (2 : ℕ) := by
   classical
   rw [hsNormSq, tsum_eq_sum (s := s ×ˢ s)
     (fun p hp => by rw [diagFinsetBlock_eq_zero_of_notMem s t hp, norm_zero]; simp),
@@ -91,11 +91,11 @@ theorem exists_finiteSupport_hsNorm_sub_lt_and_hsTraceDiag_eq_of_infinite
     · rw [if_neg h]
   have hTHS : IsHS T := isHS_truncKernel hK s
   let R : ℂ := c - hsTraceDiag T
-  obtain ⟨M₀, hM₀⟩ := exists_nat_gt (‖R‖ ^ 2 / (ε / 2) ^ 2)
+  obtain ⟨M₀, hM₀⟩ := exists_nat_gt (‖R‖ ^ (2 : ℕ) / (ε / 2) ^ (2 : ℕ))
   let M : ℕ := M₀ + 1
   have hMpos : 0 < M := by simp [M]
   have hMR : (0 : ℝ) < (M : ℝ) := by exact_mod_cast hMpos
-  have hMbig : ‖R‖ ^ 2 / (ε / 2) ^ 2 < (M : ℝ) := by
+  have hMbig : ‖R‖ ^ (2 : ℕ) / (ε / 2) ^ (2 : ℕ) < (M : ℝ) := by
     have hle : (M₀ : ℝ) ≤ (M : ℝ) := by
       exact_mod_cast (show M₀ ≤ M by simp [M])
     linarith
@@ -129,12 +129,12 @@ theorem exists_finiteSupport_hsNorm_sub_lt_and_hsTraceDiag_eq_of_infinite
       exact hs
     have hB : hsNorm (diagFinsetBlock u t) < ε / 2 := by
       rw [hsNorm, hsNormSq_diagFinsetBlock, hu, hnormt]
-      have hval : (M : ℝ) * (‖R‖ / (M : ℝ)) ^ 2 = ‖R‖ ^ 2 / (M : ℝ) := by
+      have hval : (M : ℝ) * (‖R‖ / (M : ℝ)) ^ (2 : ℕ) = ‖R‖ ^ (2 : ℕ) / (M : ℝ) := by
         field_simp
       rw [hval]
       refine (Real.sqrt_lt' hhalf).mpr ?_
       rw [div_lt_iff₀ hMR]
-      have hpos : (0 : ℝ) < (ε / 2) ^ 2 := by positivity
+      have hpos : (0 : ℝ) < (ε / 2) ^ (2 : ℕ) := by positivity
       rw [div_lt_iff₀ hpos] at hMbig
       nlinarith [hMbig]
     have hadd := hsNorm_add_le (isHS_sub hTHS hK) (isHS_diagFinsetBlock u t)

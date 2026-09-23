@@ -99,7 +99,7 @@ theorem xi_im_eq_zero_on_line {p : ℂ} (hp : p.re = 1 / 2) : (xi p).im = 0 := b
 /-- **Pointwise sign reading** (generic carrier): the deck class of a root against its
 own mirror equals the product of the carrier's signs at the on-line basepoints. -/
 theorem deckClass_mirror_eq_sign_product {f g : ℂ → ℂ} {pP pM : ℂ}
-    (hP2 : g pP ^ 2 = f pP) (hM2 : g pM ^ 2 = f pM)
+    (hP2 : g pP ^ (2 : ℕ) = f pP) (hM2 : g pM ^ (2 : ℕ) = f pM)
     (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2)
     (hPim : (f pP).im = 0) (hMim : (f pM).im = 0)
     (hPre : (f pP).re ≠ 0) (hMre : (f pM).re ≠ 0) :
@@ -127,7 +127,7 @@ datum is the classical sign-change reading. -/
 theorem xi_deckClass_eq_sign_product {g₁ g₂ : ℂ → ℂ} {U : Set ℂ}
     (hU : IsOpen U) (hUc : IsPreconnected U)
     (hg₁ : AnalyticOnNhd ℂ g₁ U) (hg₂ : AnalyticOnNhd ℂ g₂ (lineReflect ⁻¹' U))
-    (hp₁ : ∀ s ∈ U, g₁ s ^ 2 = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ 2 = xi s)
+    (hp₁ : ∀ s ∈ U, g₁ s ^ (2 : ℕ) = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ (2 : ℕ) = xi s)
     {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
     (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2)
     (hxP : xi pP ≠ 0) (hxM : xi pM ≠ 0) :
@@ -152,7 +152,7 @@ theorem xi_deckClass_eq_sign_product {g₁ g₂ : ℂ → ℂ} {U : Set ℂ}
     rw [Set.mem_preimage, hfixM]; exact hpM
   have hmg : AnalyticOnNhd ℂ (mirrorRoot g₁) (lineReflect ⁻¹' U) :=
     mirrorRoot_analyticOnNhd hU hg₁
-  have hmp : ∀ s ∈ lineReflect ⁻¹' U, mirrorRoot g₁ s ^ 2 = xi s :=
+  have hmp : ∀ s ∈ lineReflect ⁻¹' U, mirrorRoot g₁ s ^ (2 : ℕ) = xi s :=
     mirrorRoot_pow xi_lineReflect hp₁
   have htrans := deckClass_root_indep (f := xi) (by norm_num : (0 : ℕ) < 2)
     hU hUc hVopen hVc hg₁ hg₁ hmg hg₂ hp₁ hp₁ hmp hp₂
@@ -224,8 +224,8 @@ theorem xi_sign_product_eq_parity {ι : Type*} (s : Finset ι) (ρ : ι → ℂ)
     (hfact : ∀ z ∈ ball a R, xi z = (∏ i ∈ s, (z - ρ i) ^ m i) * h z)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = xi z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = xi z) :
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = xi z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = xi z) :
     (if 0 < (xi (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)).re then (1 : ℂ) else -1)
       * (if 0 < (xi (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)).re then (1 : ℂ) else -1)
       = (-1) ^ (∑ i ∈ s, m i) := by
@@ -278,7 +278,7 @@ theorem xi_sign_product_eq_parity {ι : Type*} (s : Finset ι) (ρ : ι → ℂ)
     lineReflect_preimage_chartRA ha r₀ R
   have hG₂' : AnalyticOnNhd ℂ G₂ (lineReflect ⁻¹' chartRA a r₀ R) := by
     rw [hmirror]; exact hG₂
-  have hpG₂' : ∀ z ∈ lineReflect ⁻¹' chartRA a r₀ R, G₂ z ^ 2 = xi z := by
+  have hpG₂' : ∀ z ∈ lineReflect ⁻¹' chartRA a r₀ R, G₂ z ^ (2 : ℕ) = xi z := by
     rw [hmirror]; exact hpG₂
   have hsign := xi_deckClass_eq_sign_product (isOpen_chartRA a r₀ R)
     (isPreconnected_chartRA a h0) hG₁ hG₂' hpG₁ hpG₂' hPmem hMmem hPline hMline hxP hxM
@@ -307,8 +307,8 @@ theorem xi_sign_product_eq_onLine_parity {t : Finset ℂ} {m : ℂ → ℕ}
     (hfact : ∀ z ∈ ball a R, xi z = (∏ ρ ∈ t, (z - ρ) ^ m ρ) * h z)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = xi z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = xi z) :
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = xi z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = xi z) :
     (if 0 < (xi (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)).re then (1 : ℂ) else -1)
       * (if 0 < (xi (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)).re then (1 : ℂ) else -1)
       = (-1) ^ (∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z) := by

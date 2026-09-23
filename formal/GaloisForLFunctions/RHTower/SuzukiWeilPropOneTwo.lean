@@ -10,7 +10,7 @@ Proposition 1.2 (`prop_101`): for every fixed `t`, the function
 
 `S_t(z) = i (1 + Theta_xi^#(z))/2 * P_t(z)`     (eq. 1.5)
 
-belongs to `L^2(R)` as a function of the real variable.  Unconditional.
+belongs to `L^(2 : ℕ)(R)` as a function of the real variable.  Unconditional.
 
 The published proof runs through Titchmarsh 9.6(A) (`zeta'/zeta` equals the sum over nearby zeros
 up to `O(log t)`) and Titchmarsh 9.2 (the local zero count is `O(log t)`), obtaining
@@ -23,7 +23,7 @@ up to `O(log t)`) and Titchmarsh 9.2 (the local zero count is `O(log t)`), obtai
 
 in which no pole survives (`suzukiFrakS_ofReal_decomp`).
 
-For the `L^2` statement itself one more thing is needed: a *measurable* representative.  The
+For the `L^(2 : ℕ)` statement itself one more thing is needed: a *measurable* representative.  The
 displayed formula for `S_t` involves `zeta'/zeta`, whose measurability is not available off the
 shelf.  It is avoided by working with `suzukiFrakSModel`, which is the same decomposition with the
 digamma traded for the Lerch kernel through the Gauss bridge; the model is built from `XiC`, `deriv

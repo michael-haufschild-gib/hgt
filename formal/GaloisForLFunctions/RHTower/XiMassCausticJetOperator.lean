@@ -44,11 +44,11 @@ theorem xiHeightCoeff_const_mul (τ : ℂ) (c : ℂ) (P Q : Polynomial ℂ) (j :
   simp only [Polynomial.eval_mul, Polynomial.eval_C]
   ring
 
-theorem xiHeightCoeff_embed {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re) (P Q : Polynomial ℂ)
+theorem xiHeightCoeff_embed {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) (P Q : Polynomial ℂ)
     (j m : ℕ) :
     xiHeightCoeff τ (P * xiMassRadiusPoly τ ^ m) (Q * xiMassRadiusPoly τ ^ m) (j + m) w
       = xiHeightCoeff τ P Q j w := by
-  have hRne : (τ ^ 2 + w ^ 2) ≠ 0 := by
+  have hRne : (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) ≠ 0 := by
     intro hcon
     rw [hcon] at hw
     simp at hw
@@ -77,35 +77,35 @@ def xiJetTwoQB (a : ℝ) (τ : ℂ) (PA QB : Polynomial ℂ) (j : ℕ) : Polynom
 
 /-- The even `K₀` coefficient of the caustic combination. -/
 def xiCausticPA (a : ℝ) (τ : ℂ) (PA QB : Polynomial ℂ) (j : ℕ) : Polynomial ℂ :=
-  Polynomial.C (4 * (a : ℂ) ^ 4) * (PA * xiMassRadiusPoly τ ^ 2) - xiJetTwoPA a τ PA QB j
+  Polynomial.C (4 * (a : ℂ) ^ (4 : ℕ)) * (PA * xiMassRadiusPoly τ ^ (2 : ℕ)) - xiJetTwoPA a τ PA QB j
 
 /-- The odd `K₀` coefficient of the caustic combination. -/
 def xiCausticQA (a : ℝ) (τ : ℂ) (QA PB : Polynomial ℂ) (j : ℕ) : Polynomial ℂ :=
-  Polynomial.C (4 * (a : ℂ) ^ 4) * (QA * xiMassRadiusPoly τ ^ 2) - xiJetTwoQA a τ QA PB j
+  Polynomial.C (4 * (a : ℂ) ^ (4 : ℕ)) * (QA * xiMassRadiusPoly τ ^ (2 : ℕ)) - xiJetTwoQA a τ QA PB j
 
 /-- The even `K₁` coefficient of the caustic combination. -/
 def xiCausticPB (a : ℝ) (τ : ℂ) (QA PB : Polynomial ℂ) (j : ℕ) : Polynomial ℂ :=
-  Polynomial.C (4 * (a : ℂ) ^ 4) * (PB * xiMassRadiusPoly τ ^ 2) - xiJetTwoPB a τ QA PB j
+  Polynomial.C (4 * (a : ℂ) ^ (4 : ℕ)) * (PB * xiMassRadiusPoly τ ^ (2 : ℕ)) - xiJetTwoPB a τ QA PB j
 
 /-- The odd `K₁` coefficient of the caustic combination. -/
 def xiCausticQB (a : ℝ) (τ : ℂ) (PA QB : Polynomial ℂ) (j : ℕ) : Polynomial ℂ :=
-  Polynomial.C (4 * (a : ℂ) ^ 4) * (QB * xiMassRadiusPoly τ ^ 2) - xiJetTwoQB a τ PA QB j
+  Polynomial.C (4 * (a : ℂ) ^ (4 : ℕ)) * (QB * xiMassRadiusPoly τ ^ (2 : ℕ)) - xiJetTwoQB a τ PA QB j
 
 /-- **The caustic combination of a height-ring coefficient.** -/
-theorem xiCausticCoeff_eq {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re) (a : ℝ)
+theorem xiCausticCoeff_eq {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) (a : ℝ)
     (P Q P₂ Q₂ : Polynomial ℂ) (j : ℕ) :
-    xiHeightCoeff τ (Polynomial.C (4 * (a : ℂ) ^ 4) * (P * xiMassRadiusPoly τ ^ 2) - P₂)
-        (Polynomial.C (4 * (a : ℂ) ^ 4) * (Q * xiMassRadiusPoly τ ^ 2) - Q₂) (j + 2) w
-      = 4 * (a : ℂ) ^ 4 * xiHeightCoeff τ P Q j w - xiHeightCoeff τ P₂ Q₂ (j + 2) w := by
+    xiHeightCoeff τ (Polynomial.C (4 * (a : ℂ) ^ (4 : ℕ)) * (P * xiMassRadiusPoly τ ^ (2 : ℕ)) - P₂)
+        (Polynomial.C (4 * (a : ℂ) ^ (4 : ℕ)) * (Q * xiMassRadiusPoly τ ^ (2 : ℕ)) - Q₂) (j + 2) w
+      = 4 * (a : ℂ) ^ (4 : ℕ) * xiHeightCoeff τ P Q j w - xiHeightCoeff τ P₂ Q₂ (j + 2) w := by
   rw [xiHeightCoeff_sub, xiHeightCoeff_const_mul, xiHeightCoeff_embed hw]
 
 /-- **The caustic operator on states.**  Two jet steps and one embedding. -/
-theorem xiCaustic_state_eq {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re)
+theorem xiCaustic_state_eq {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re)
     (PA QA PB QB : Polynomial ℂ) (j : ℕ) :
     xiMassBesselState a τ
         (xiHeightCoeff τ (xiCausticPA a τ PA QB j) (xiCausticQA a τ QA PB j) (j + 2))
         (xiHeightCoeff τ (xiCausticPB a τ QA PB j) (xiCausticQB a τ PA QB j) (j + 2)) w
-      = 4 * (a : ℂ) ^ 4
+      = 4 * (a : ℂ) ^ (4 : ℕ)
           * xiMassBesselState a τ (xiHeightCoeff τ PA QA j) (xiHeightCoeff τ PB QB j) w
         - xiMassBesselState a τ
             (xiHeightCoeff τ (xiJetTwoPA a τ PA QB j) (xiJetTwoQA a τ QA PB j) (j + 2))
@@ -115,7 +115,7 @@ theorem xiCaustic_state_eq {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re)
   ring
 
 /-- **Two height steps.**  The derivative of the once-stepped state is the twice-stepped state. -/
-theorem hasDerivAt_xiJetState_two {a : ℝ} {τ w : ℂ} (ha : 0 < a) (hw : 0 < (τ ^ 2 + w ^ 2).re)
+theorem hasDerivAt_xiJetState_two {a : ℝ} {τ w : ℂ} (ha : 0 < a) (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re)
     (PA QA PB QB : Polynomial ℂ) (j : ℕ) :
     HasDerivAt
       (xiMassBesselState a τ

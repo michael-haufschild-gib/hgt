@@ -128,7 +128,7 @@ multiplication of the completed response by `z²`. -/
 theorem suzukiChebyshevLogAverageLaplacePoleClearedContinuation_eq_sq_mul_completed
     {z : ℂ} (hz : z ≠ 0) :
     suzukiChebyshevLogAverageLaplacePoleClearedContinuation z =
-      z ^ 2 * suzukiChebyshevLogAverageLaplaceCompletedContinuation z := by
+      z ^ (2 : ℕ) * suzukiChebyshevLogAverageLaplaceCompletedContinuation z := by
   unfold suzukiChebyshevLogAverageLaplacePoleClearedContinuation
     suzukiChebyshevLogAverageLaplaceRegularCorrection
     suzukiChebyshevLogAverageLaplaceCompletedContinuation
@@ -139,7 +139,7 @@ theorem suzukiChebyshevLogAverageLaplacePoleClearedContinuation_eq_sq_mul_comple
 literally `z²` times the arithmetic Laplace integral. -/
 theorem sq_mul_suzukiChebyshevLogAverageComplexLaplaceTransform_eq_poleCleared
     {z : ℂ} (hz : z ∈ suzukiChebyshevLogAverageComplexLaplaceDomain) :
-    z ^ 2 * suzukiChebyshevLogAverageComplexLaplaceTransform z =
+    z ^ (2 : ℕ) * suzukiChebyshevLogAverageComplexLaplaceTransform z =
       suzukiChebyshevLogAverageLaplacePoleClearedContinuation z := by
   have hzRe : (1 / 2 : ℝ) < z.re := hz
   have hz0 : z ≠ 0 := by

@@ -30,31 +30,31 @@ private theorem exp_neg_one_bound : Real.exp (-1 : ℝ) ≤ 10/27 := by
   exact h
 
 private theorem peak_eleven {t : ℝ} (ht : 0 ≤ t) :
-    t^11*Real.exp (-(5/4*t)) ≤ (5/4 : ℝ)*8^11*Real.exp (-10) := by
+    t^(11 : ℕ)*Real.exp (-(5/4*t)) ≤ (5/4 : ℝ)*8^(11 : ℕ)*Real.exp (-10) := by
   have hp := pow_mul_exp_neg_le_stationary_radius 11 (a := 44/5) (t := t) (by norm_num) ht
   norm_num only [Nat.cast_ofNat, div_div, div_mul_eq_mul_div] at hp
   rw [show -(5*t/4) = -(5/4*t) by ring] at hp
   have hs : Real.exp (-11 : ℝ) = Real.exp (-10)*Real.exp (-1) := by rw [← Real.exp_add]; norm_num
   rw [hs] at hp
   have he := mul_le_mul_of_nonneg_left exp_neg_one_bound
-    (show 0 ≤ (44/5 : ℝ)^11*Real.exp (-10) by positivity)
-  have hc : (44/5 : ℝ)^11*(10/27) ≤ (5/4)*8^11 := by norm_num
+    (show 0 ≤ (44/5 : ℝ)^(11 : ℕ)*Real.exp (-10) by positivity)
+  have hc : (44/5 : ℝ)^(11 : ℕ)*(10/27) ≤ (5/4)*8^(11 : ℕ) := by norm_num
   have hm := mul_le_mul_of_nonneg_right hc (Real.exp_pos (-10)).le
   nlinarith only [hp, he, hm]
 
 private theorem peak_twelve {t : ℝ} (ht : 0 ≤ t) :
-    t^12*Real.exp (-(5/4*t)) ≤ (5/4 : ℝ)*8^12*Real.exp (-10) := by
+    t^(12 : ℕ)*Real.exp (-(5/4*t)) ≤ (5/4 : ℝ)*8^(12 : ℕ)*Real.exp (-10) := by
   have hp := pow_mul_exp_neg_le_stationary_radius 12 (a := 48/5) (t := t) (by norm_num) ht
   norm_num only [Nat.cast_ofNat, div_div, div_mul_eq_mul_div] at hp
   rw [show -(5*t/4) = -(5/4*t) by ring] at hp
-  have hs : Real.exp (-12 : ℝ) = Real.exp (-10)*Real.exp (-1)^2 := by
+  have hs : Real.exp (-12 : ℝ) = Real.exp (-10)*Real.exp (-1)^(2 : ℕ) := by
     rw [← Real.exp_nat_mul, ← Real.exp_add]
     norm_num
   rw [hs] at hp
   have he2 := pow_le_pow_left₀ (Real.exp_pos (-1)).le exp_neg_one_bound 2
   have he := mul_le_mul_of_nonneg_left he2
-    (show 0 ≤ (48/5 : ℝ)^12*Real.exp (-10) by positivity)
-  have hc : (48/5 : ℝ)^12*(10/27)^2 ≤ (5/4)*8^12 := by norm_num
+    (show 0 ≤ (48/5 : ℝ)^(12 : ℕ)*Real.exp (-10) by positivity)
+  have hc : (48/5 : ℝ)^(12 : ℕ)*(10/27)^(2 : ℕ) ≤ (5/4)*8^(12 : ℕ) := by norm_num
   have hm := mul_le_mul_of_nonneg_right hc (Real.exp_pos (-10)).le
   nlinarith only [hp, he, hm]
 

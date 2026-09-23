@@ -202,11 +202,11 @@ theorem tendsto_logDeriv_of_envelope_of_antitoneOn {D : ℝ → ℝ} {k₁ k₂ 
 logarithmic derivative `-(2 beta b)` in the inner one. -/
 theorem tendsto_scaled_logDeriv {D D' : ℝ → ℝ} {β b : ℝ} (hβ : 0 < β)
     (h : Tendsto (fun c => D' c / D c) atTop (𝓝 (-b))) :
-    Tendsto (fun l => D' (β * l ^ 2) * (2 * β * l) / (l * D (β * l ^ 2))) atTop
+    Tendsto (fun l => D' (β * l ^ (2 : ℕ)) * (2 * β * l) / (l * D (β * l ^ (2 : ℕ)))) atTop
       (𝓝 (-(2 * β * b))) := by
-  have hinner : Tendsto (fun l : ℝ => β * l ^ 2) atTop atTop :=
+  have hinner : Tendsto (fun l : ℝ => β * l ^ (2 : ℕ)) atTop atTop :=
     Filter.Tendsto.const_mul_atTop hβ (tendsto_pow_atTop two_ne_zero)
-  have hcomp : Tendsto (fun l : ℝ => D' (β * l ^ 2) / D (β * l ^ 2)) atTop (𝓝 (-b)) :=
+  have hcomp : Tendsto (fun l : ℝ => D' (β * l ^ (2 : ℕ)) / D (β * l ^ (2 : ℕ))) atTop (𝓝 (-b)) :=
     h.comp hinner
   have hmul := hcomp.const_mul (2 * β)
   have hval : 2 * β * -b = -(2 * β * b) := by ring
@@ -219,13 +219,13 @@ theorem tendsto_scaled_logDeriv {D D' : ℝ → ℝ} {β b : ℝ} (hβ : 0 < β)
 /-- The chain rule for the quadratic reparametrisation, in the form the endpoint identity uses. -/
 theorem hasDerivAt_comp_quadratic {D D' : ℝ → ℝ} {β : ℝ} (hD : ∀ c, HasDerivAt D (D' c) c)
     (l : ℝ) :
-    HasDerivAt (fun t => D (β * t ^ 2)) (D' (β * l ^ 2) * (2 * β * l)) l := by
-  have hinner : HasDerivAt (fun t : ℝ => β * t ^ 2) (2 * β * l) l := by
+    HasDerivAt (fun t => D (β * t ^ (2 : ℕ))) (D' (β * l ^ (2 : ℕ)) * (2 * β * l)) l := by
+  have hinner : HasDerivAt (fun t : ℝ => β * t ^ (2 : ℕ)) (2 * β * l) l := by
     have h := (hasDerivAt_pow 2 l).const_mul β
     refine h.congr_deriv ?_
     push_cast
     ring
-  exact (hD (β * l ^ 2)).comp l hinner
+  exact (hD (β * l ^ (2 : ℕ))).comp l hinner
 
 end GaloisForLFunctions.HTGeometry
 

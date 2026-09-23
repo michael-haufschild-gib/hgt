@@ -56,7 +56,7 @@ theorem norm_expPhase_sub_le (a b : ℝ) :
 most `2π` times the sup-distance between the phase vectors. -/
 theorem norm_phaseOrbit_sub_le (u : d → V)
     (horth : ∀ i j : d, i ≠ j → (inner ℂ (u i) (u j) : ℂ) = 0)
-    (hweight : ∑ j : d, ‖u j‖ ^ 2 ≤ 1) {ρ : ℝ} (hρ : 0 ≤ ρ) (x y : d → ℝ)
+    (hweight : ∑ j : d, ‖u j‖ ^ (2 : ℕ) ≤ 1) {ρ : ℝ} (hρ : 0 ≤ ρ) (x y : d → ℝ)
     (hxy : ∀ j, |x j - y j| ≤ ρ) :
     ‖phaseOrbit u x - phaseOrbit u y‖ ≤ 2 * π * ρ := by
   classical
@@ -73,14 +73,14 @@ theorem norm_phaseOrbit_sub_le (u : d → V)
     intro i j hij
     rw [inner_smul_left, inner_smul_right, horth i j hij]
     ring
-  have hpy : ‖phaseOrbit u x - phaseOrbit u y‖ ^ 2
+  have hpy : ‖phaseOrbit u x - phaseOrbit u y‖ ^ (2 : ℕ)
       = ∑ j : d, ‖(Complex.exp (-(2 * π * Complex.I) * (x j))
-          - Complex.exp (-(2 * π * Complex.I) * (y j))) • u j‖ ^ 2 := by
+          - Complex.exp (-(2 * π * Complex.I) * (y j))) • u j‖ ^ (2 : ℕ) := by
     rw [hdiff]
     exact norm_sq_sum_of_orthogonal horth'
   have hterm : ∀ j : d, ‖(Complex.exp (-(2 * π * Complex.I) * (x j))
-      - Complex.exp (-(2 * π * Complex.I) * (y j))) • u j‖ ^ 2
-      ≤ (2 * π * ρ) ^ 2 * ‖u j‖ ^ 2 := by
+      - Complex.exp (-(2 * π * Complex.I) * (y j))) • u j‖ ^ (2 : ℕ)
+      ≤ (2 * π * ρ) ^ (2 : ℕ) * ‖u j‖ ^ (2 : ℕ) := by
     intro j
     rw [norm_smul, mul_pow]
     refine mul_le_mul_of_nonneg_right ?_ (by positivity)
@@ -91,22 +91,22 @@ theorem norm_phaseOrbit_sub_le (u : d → V)
       have := hxy j
       nlinarith [Real.pi_pos]
     exact pow_le_pow_left₀ (norm_nonneg _) hle 2
-  have hsq : ‖phaseOrbit u x - phaseOrbit u y‖ ^ 2 ≤ (2 * π * ρ) ^ 2 := by
-    calc ‖phaseOrbit u x - phaseOrbit u y‖ ^ 2
+  have hsq : ‖phaseOrbit u x - phaseOrbit u y‖ ^ (2 : ℕ) ≤ (2 * π * ρ) ^ (2 : ℕ) := by
+    calc ‖phaseOrbit u x - phaseOrbit u y‖ ^ (2 : ℕ)
         = ∑ j : d, ‖(Complex.exp (-(2 * π * Complex.I) * (x j))
-            - Complex.exp (-(2 * π * Complex.I) * (y j))) • u j‖ ^ 2 := hpy
-      _ ≤ ∑ j : d, (2 * π * ρ) ^ 2 * ‖u j‖ ^ 2 := Finset.sum_le_sum fun j _ => hterm j
-      _ = (2 * π * ρ) ^ 2 * ∑ j : d, ‖u j‖ ^ 2 := by rw [Finset.mul_sum]
-      _ ≤ (2 * π * ρ) ^ 2 * 1 := by
+            - Complex.exp (-(2 * π * Complex.I) * (y j))) • u j‖ ^ (2 : ℕ) := hpy
+      _ ≤ ∑ j : d, (2 * π * ρ) ^ (2 : ℕ) * ‖u j‖ ^ (2 : ℕ) := Finset.sum_le_sum fun j _ => hterm j
+      _ = (2 * π * ρ) ^ (2 : ℕ) * ∑ j : d, ‖u j‖ ^ (2 : ℕ) := by rw [Finset.mul_sum]
+      _ ≤ (2 * π * ρ) ^ (2 : ℕ) * 1 := by
           refine mul_le_mul_of_nonneg_left hweight (by positivity)
-      _ = (2 * π * ρ) ^ 2 := by ring
+      _ = (2 * π * ρ) ^ (2 : ℕ) := by ring
   have hnn : (0 : ℝ) ≤ 2 * π * ρ := by positivity
   nlinarith [norm_nonneg (phaseOrbit u x - phaseOrbit u y), hsq, hnn]
 
 /-- **`(27)` in the radian parametrization.**  Measuring the phases in radians removes the `2π`. -/
 theorem norm_phaseOrbit_sub_le_radian (u : d → V)
     (horth : ∀ i j : d, i ≠ j → (inner ℂ (u i) (u j) : ℂ) = 0)
-    (hweight : ∑ j : d, ‖u j‖ ^ 2 ≤ 1) {ρ : ℝ} (hρ : 0 ≤ ρ) (θ θ' : d → ℝ)
+    (hweight : ∑ j : d, ‖u j‖ ^ (2 : ℕ) ≤ 1) {ρ : ℝ} (hρ : 0 ≤ ρ) (θ θ' : d → ℝ)
     (hθ : ∀ j, |θ j - θ' j| ≤ ρ) :
     ‖phaseOrbit u (fun j => -θ j / (2 * π)) - phaseOrbit u (fun j => -θ' j / (2 * π))‖ ≤ ρ := by
   have hpi : (0 : ℝ) < 2 * π := by positivity
@@ -126,7 +126,7 @@ theorem norm_phaseOrbit_sub_le_radian (u : d → V)
 
 /-- **`(28)`.**  The overlap score with a unit target is `2`-Lipschitz in the state. -/
 theorem abs_score_sub_le (z v w : V) (hz : ‖z‖ ≤ 1) (hv : ‖v‖ ≤ 1) (hw : ‖w‖ ≤ 1) :
-    |‖(inner ℂ z v : ℂ)‖ ^ 2 - ‖(inner ℂ z w : ℂ)‖ ^ 2| ≤ 2 * ‖v - w‖ := by
+    |‖(inner ℂ z v : ℂ)‖ ^ (2 : ℕ) - ‖(inner ℂ z w : ℂ)‖ ^ (2 : ℕ)| ≤ 2 * ‖v - w‖ := by
   have hsub : ‖(inner ℂ z v : ℂ)‖ - ‖(inner ℂ z w : ℂ)‖ ≤ ‖v - w‖ ∧
       ‖(inner ℂ z w : ℂ)‖ - ‖(inner ℂ z v : ℂ)‖ ≤ ‖v - w‖ := by
     have hdiff : (inner ℂ z v : ℂ) - (inner ℂ z w : ℂ) = (inner ℂ z (v - w) : ℂ) := by
@@ -153,8 +153,8 @@ theorem abs_score_sub_le (z v w : V) (hz : ‖z‖ ≤ 1) (hv : ‖v‖ ≤ 1) (
 /-- **`(29)`.**  A strict overlap bound at the cube centre survives on the whole cube, with the loss
 `2ρ`. -/
 theorem score_le_of_norm_sub_le {z v w : V} (hz : ‖z‖ ≤ 1) (hv : ‖v‖ ≤ 1) (hw : ‖w‖ ≤ 1)
-    {a ρ : ℝ} (hcentre : ‖(inner ℂ z w : ℂ)‖ ^ 2 ≤ a) (hnear : ‖v - w‖ ≤ ρ) :
-    ‖(inner ℂ z v : ℂ)‖ ^ 2 ≤ a + 2 * ρ := by
+    {a ρ : ℝ} (hcentre : ‖(inner ℂ z w : ℂ)‖ ^ (2 : ℕ) ≤ a) (hnear : ‖v - w‖ ≤ ρ) :
+    ‖(inner ℂ z v : ℂ)‖ ^ (2 : ℕ) ≤ a + 2 * ρ := by
   have h := abs_score_sub_le z v w hz hv hw
   have h2 := (abs_le.mp h).2
   have hmono : 2 * ‖v - w‖ ≤ 2 * ρ := by linarith

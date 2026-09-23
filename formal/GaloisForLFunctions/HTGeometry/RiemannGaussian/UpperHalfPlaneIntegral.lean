@@ -27,7 +27,7 @@ theorem polynomialQuotient_upperHalfPlane_quadraticDecay
     (hupper : ∀ z : ℂ, 0 ≤ z.im → P.eval z ≠ 0) :
     ∃ C R : ℝ, 0 < C ∧ 0 ≤ R ∧
       ∀ T : ℝ, R ≤ T → 0 < T → ∀ z : ℂ, 0 ≤ z.im →
-        T ≤ ‖z‖ → ‖q.eval z / P.eval z‖ ≤ C / T ^ 2 := by
+        T ≤ ‖z‖ → ‖q.eval z / P.eval z‖ ≤ C / T ^ (2 : ℕ) := by
   have hP : P ≠ 0 := by
     intro hzero
     exact hupper 0 (by simp) (by simp [hzero])
@@ -36,15 +36,15 @@ theorem polynomialQuotient_upperHalfPlane_quadraticDecay
     intro T _hT hTpos z _hz _hTz
     simp [hq]
     positivity
-  have hXq : X ^ 2 * q ≠ 0 :=
+  have hXq : X ^ (2 : ℕ) * q ≠ 0 :=
     mul_ne_zero (pow_ne_zero 2 X_ne_zero) hq
-  have hdegreePoly : (X ^ 2 * q).degree ≤ P.degree := by
+  have hdegreePoly : (X ^ (2 : ℕ) * q).degree ≤ P.degree := by
     rw [degree_eq_natDegree hXq, degree_eq_natDegree hP]
     exact_mod_cast (by
       rw [natDegree_X_pow_mul 2 hq]
       exact hdegree)
   have hbigO :
-      (X ^ 2 * q).eval =O[Bornology.cobounded ℂ] P.eval :=
+      (X ^ (2 : ℕ) * q).eval =O[Bornology.cobounded ℂ] P.eval :=
     Polynomial.isBigO_cobounded_of_degree_le hdegreePoly
   obtain ⟨C, hC, hbound⟩ := Asymptotics.isBigO_iff'.mp hbigO
   obtain ⟨R, _hRtrivial, hR⟩ :=
@@ -60,10 +60,10 @@ theorem polynomialQuotient_upperHalfPlane_quadraticDecay
   rw [eval_mul, eval_pow, eval_X, norm_mul, norm_pow] at hpolyBound
   rw [norm_div]
   calc
-    ‖q.eval z‖ / ‖P.eval z‖ ≤ C / ‖z‖ ^ 2 := by
+    ‖q.eval z‖ / ‖P.eval z‖ ≤ C / ‖z‖ ^ (2 : ℕ) := by
       rw [div_le_div_iff₀ hPnorm (sq_pos_of_pos hznorm)]
       simpa [mul_comm] using hpolyBound
-    _ ≤ C / T ^ 2 := by
+    _ ≤ C / T ^ (2 : ℕ) := by
       apply div_le_div_of_nonneg_left hC.le (sq_pos_of_pos hTpos)
       nlinarith [sq_nonneg (‖z‖ - T)]
 
@@ -77,7 +77,7 @@ theorem integral_realLine_eq_zero_of_upperHalfPlane_decay
     (hint : Integrable (fun x : ℝ ↦ f (x : ℂ)))
     {C R : ℝ}
     (hdecay : ∀ T : ℝ, R ≤ T → 0 < T →
-      ∀ z : ℂ, 0 ≤ z.im → T ≤ ‖z‖ → ‖f z‖ ≤ C / T ^ 2) :
+      ∀ z : ℂ, 0 ≤ z.im → T ≤ ‖z‖ → ‖f z‖ ≤ C / T ^ (2 : ℕ)) :
     (∫ x : ℝ, f (x : ℂ)) = 0 := by
   let topEdge : ℝ → ℂ := fun T ↦
     ∫ x : ℝ in -T..T, f ((x : ℂ) + (T : ℂ) * Complex.I)
@@ -98,7 +98,7 @@ theorem integral_realLine_eq_zero_of_upperHalfPlane_decay
       calc
         ‖∫ x : ℝ in -T..T,
             f ((x : ℂ) + (T : ℂ) * Complex.I)‖ ≤
-            (C / T ^ 2) * |T - (-T)| := by
+            (C / T ^ (2 : ℕ)) * |T - (-T)| := by
           apply intervalIntegral.norm_integral_le_of_norm_le_const
           intro x _hx
           have him :
@@ -130,7 +130,7 @@ theorem integral_realLine_eq_zero_of_upperHalfPlane_decay
       calc
         ‖∫ y : ℝ in 0..T,
             f ((T : ℂ) + (y : ℂ) * Complex.I)‖ ≤
-            (C / T ^ 2) * |T - 0| := by
+            (C / T ^ (2 : ℕ)) * |T - 0| := by
           apply intervalIntegral.norm_integral_le_of_norm_le_const
           intro y hy
           rw [uIoc_of_le hTpos.le] at hy
@@ -158,7 +158,7 @@ theorem integral_realLine_eq_zero_of_upperHalfPlane_decay
       calc
         ‖∫ y : ℝ in 0..T,
             f ((-T : ℂ) + (y : ℂ) * Complex.I)‖ ≤
-            (C / T ^ 2) * |T - 0| := by
+            (C / T ^ (2 : ℕ)) * |T - 0| := by
           apply intervalIntegral.norm_integral_le_of_norm_le_const
           intro y hy
           rw [uIoc_of_le hTpos.le] at hy

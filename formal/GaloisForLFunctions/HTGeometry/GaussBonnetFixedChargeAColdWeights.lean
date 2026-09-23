@@ -15,7 +15,7 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 open CPV
 
-def egbFixedChargeANormalizedWeight (τ φ : ℝ) : ℝ := egbFixedChargeAWeight τ φ / thermalRatio τ ^ 2
+def egbFixedChargeANormalizedWeight (τ φ : ℝ) : ℝ := egbFixedChargeAWeight τ φ / thermalRatio τ ^ (2 : ℕ)
 
 theorem egbFixedChargeANormalizedWeight_pos (τ φ : ℝ) : 0 < egbFixedChargeANormalizedWeight τ φ := by
   have hs := egbFixedChargeAWeight_pos τ φ
@@ -25,14 +25,14 @@ theorem egbFixedChargeANormalizedWeight_pos (τ φ : ℝ) : 0 < egbFixedChargeAN
 
 theorem egbFixedChargeANormalizedWeight_formula (τ φ : ℝ) :
     egbFixedChargeANormalizedWeight τ φ =
-      2 * (thermalRatio τ ^ 2 + 1) / (egbFixedChargeAQuadraticB τ φ + sqrt (egbFixedChargeADiscriminant τ φ)) := by
+      2 * (thermalRatio τ ^ (2 : ℕ) + 1) / (egbFixedChargeAQuadraticB τ φ + sqrt (egbFixedChargeADiscriminant τ φ)) := by
   have hz := thermalRatio_pos τ
   have hB := egbFixedChargeAQuadraticB_pos τ φ
   unfold egbFixedChargeANormalizedWeight egbFixedChargeAWeight egbCoexistenceAQuadraticC
   field_simp <;> ring
 
 theorem egbFixedChargeAWeight_normalized (τ φ : ℝ) :
-    egbFixedChargeAWeight τ φ = egbFixedChargeANormalizedWeight τ φ * thermalRatio τ ^ 2 := by
+    egbFixedChargeAWeight τ φ = egbFixedChargeANormalizedWeight τ φ * thermalRatio τ ^ (2 : ℕ) := by
   have hz := thermalRatio_pos τ
   unfold egbFixedChargeANormalizedWeight
   field_simp
@@ -45,7 +45,7 @@ theorem egbFixedChargeAQuadraticB_cold_limit (φ : ℝ) :
   simpa only [mul_zero, sub_zero] using h
 
 theorem egbFixedChargeADiscriminant_product (τ φ : ℝ) :
-    egbFixedChargeADiscriminant τ φ = egbFixedChargeAQuadraticB τ φ ^ 2 +
+    egbFixedChargeADiscriminant τ φ = egbFixedChargeAQuadraticB τ φ ^ (2 : ℕ) +
       4 * egbFixedChargeAFraction φ * (egbCoexistenceAQuadraticA τ * egbCoexistenceAQuadraticC τ) := by
   unfold egbFixedChargeADiscriminant
   ring
@@ -53,9 +53,9 @@ theorem egbFixedChargeADiscriminant_product (τ φ : ℝ) :
 theorem egbFixedChargeADiscriminant_cold_limit (φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeADiscriminant τ φ) atTop (𝓝 1) := by
   simp only [egbFixedChargeADiscriminant_product]
-  have h : Tendsto (fun τ => egbFixedChargeAQuadraticB τ φ ^ 2 +
+  have h : Tendsto (fun τ => egbFixedChargeAQuadraticB τ φ ^ (2 : ℕ) +
       4 * egbFixedChargeAFraction φ * (egbCoexistenceAQuadraticA τ * egbCoexistenceAQuadraticC τ)) atTop
-      (𝓝 ((1 : ℝ) ^ 2 + 4 * egbFixedChargeAFraction φ * 0)) :=
+      (𝓝 ((1 : ℝ) ^ (2 : ℕ) + 4 * egbFixedChargeAFraction φ * 0)) :=
     ((egbFixedChargeAQuadraticB_cold_limit φ).pow 2).add
       (tendsto_const_nhds.mul egbCoexistenceA_quadratic_product_cold_limit)
   norm_num at h
@@ -65,9 +65,9 @@ theorem egbFixedChargeANormalizedWeight_cold_limit (φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeANormalizedWeight τ φ) atTop (𝓝 1) := by
   simp only [egbFixedChargeANormalizedWeight_formula]
   have hz := thermalRatio_tendsto_atTop_zero
-  have h : Tendsto (fun τ => 2 * (thermalRatio τ ^ 2 + 1) /
+  have h : Tendsto (fun τ => 2 * (thermalRatio τ ^ (2 : ℕ) + 1) /
       (egbFixedChargeAQuadraticB τ φ + sqrt (egbFixedChargeADiscriminant τ φ))) atTop
-      (𝓝 ((2 * ((0 : ℝ) ^ 2 + 1)) / (1 + sqrt 1))) :=
+      (𝓝 ((2 * ((0 : ℝ) ^ (2 : ℕ) + 1)) / (1 + sqrt 1))) :=
     (tendsto_const_nhds.mul ((hz.pow 2).add tendsto_const_nhds)).div
       ((egbFixedChargeAQuadraticB_cold_limit φ).add (egbFixedChargeADiscriminant_cold_limit φ).sqrt) (by positivity)
   norm_num at h
@@ -89,7 +89,7 @@ theorem egbFixedChargeACouplingWeight_cold_limit (φ : ℝ) :
 theorem egbFixedChargeA_kernel_product_normalized (τ φ : ℝ) :
     egbFixedChargeACouplingWeight τ φ * egbCoexistenceALogKernel τ =
       egbFixedChargeAFraction φ * egbFixedChargeANormalizedWeight τ φ *
-        (egbCoexistenceALogKernel τ * thermalRatio τ ^ 2) := by
+        (egbCoexistenceALogKernel τ * thermalRatio τ ^ (2 : ℕ)) := by
   unfold egbFixedChargeACouplingWeight
   rw [egbFixedChargeAWeight_normalized]
   ring
@@ -126,18 +126,18 @@ theorem egbFixedChargeATemperatureWeight_cold_limit (φ : ℝ) :
 theorem egbFixedChargeAPressureWeight_cold_limit (φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAPressureWeight τ φ) atTop (𝓝 3) := by
   have he : (fun τ => egbFixedChargeAPressureWeight τ φ) = (fun τ =>
-      (3 * (thermalRatio τ ^ 2 + 1) + 8 * egbFixedChargeACouplingWeight τ φ -
+      (3 * (thermalRatio τ ^ (2 : ℕ) + 1) + 8 * egbFixedChargeACouplingWeight τ φ -
         4 * (egbFixedChargeACouplingWeight τ φ * egbCoexistenceALogKernel τ)) /
-          (egbFixedChargeADenominator τ φ * (thermalRatio τ ^ 2 + 1))) := by
+          (egbFixedChargeADenominator τ φ * (thermalRatio τ ^ (2 : ℕ) + 1))) := by
     funext τ
     unfold egbFixedChargeAPressureWeight
     ring
   rw [he]
   have hz := thermalRatio_tendsto_atTop_zero
-  have h : Tendsto (fun τ => (3 * (thermalRatio τ ^ 2 + 1) + 8 * egbFixedChargeACouplingWeight τ φ -
+  have h : Tendsto (fun τ => (3 * (thermalRatio τ ^ (2 : ℕ) + 1) + 8 * egbFixedChargeACouplingWeight τ φ -
       4 * (egbFixedChargeACouplingWeight τ φ * egbCoexistenceALogKernel τ)) /
-        (egbFixedChargeADenominator τ φ * (thermalRatio τ ^ 2 + 1))) atTop
-      (𝓝 ((3 * ((0 : ℝ) ^ 2 + 1) + 8 * 0 - 4 * 0) / (1 * (0 ^ 2 + 1)))) :=
+        (egbFixedChargeADenominator τ φ * (thermalRatio τ ^ (2 : ℕ) + 1))) atTop
+      (𝓝 ((3 * ((0 : ℝ) ^ (2 : ℕ) + 1) + 8 * 0 - 4 * 0) / (1 * (0 ^ (2 : ℕ) + 1)))) :=
     (((tendsto_const_nhds.mul ((hz.pow 2).add tendsto_const_nhds)).add
       (tendsto_const_nhds.mul (egbFixedChargeACouplingWeight_cold_limit φ))).sub
         (tendsto_const_nhds.mul (egbFixedChargeA_kernel_product_cold_limit φ))).div

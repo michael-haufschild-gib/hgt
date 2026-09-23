@@ -190,12 +190,12 @@ theorem thetaB_const {s : ℂ} (n : ℕ) (q : Fin 3 → Fin 3 → Polynomial ℂ
   rw [ThetaB]
   simp only [Fin.sum_univ_three]
   linear_combination
-    (tailFactored s ((0:Fin 3):ℕ) n (Complex.exp z))^2 * e00
+    (tailFactored s ((0:Fin 3):ℕ) n (Complex.exp z))^(2 : ℕ) * e00
     + (tailFactored s ((0:Fin 3):ℕ) n (Complex.exp z)) * (tailFactored s ((1:Fin 3):ℕ) n (Complex.exp z)) * e01
     + (tailFactored s ((0:Fin 3):ℕ) n (Complex.exp z)) * (tailFactored s ((2:Fin 3):ℕ) n (Complex.exp z)) * e02
-    + (tailFactored s ((1:Fin 3):ℕ) n (Complex.exp z))^2 * e11
+    + (tailFactored s ((1:Fin 3):ℕ) n (Complex.exp z))^(2 : ℕ) * e11
     + (tailFactored s ((1:Fin 3):ℕ) n (Complex.exp z)) * (tailFactored s ((2:Fin 3):ℕ) n (Complex.exp z)) * e12
-    + (tailFactored s ((2:Fin 3):ℕ) n (Complex.exp z))^2 * e22
+    + (tailFactored s ((2:Fin 3):ℕ) n (Complex.exp z))^(2 : ℕ) * e22
     + (tailFactored s ((0:Fin 3):ℕ) n (Complex.exp z)) * f0
     + (tailFactored s ((1:Fin 3):ℕ) n (Complex.exp z)) * f1
     + (tailFactored s ((2:Fin 3):ℕ) n (Complex.exp z)) * f2

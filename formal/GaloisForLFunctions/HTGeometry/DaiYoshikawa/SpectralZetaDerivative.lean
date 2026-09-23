@@ -25,7 +25,7 @@ Differentiating at the origin gives
 ζ(0) = a₁ − h ,        ζ'(0) = H(0) + T(0) − a₀ + (a₁ − h) γ ,
 ```
 
-`H(0) = ∫_0^1 (Θ(t) − a₀/t − a₁) dt/t` and `T(0) = ∫_1^∞ (Θ(t) − h) dt/t` being exactly the two
+`H(0) = ∫_0^(1 : ℕ) (Θ(t) − a₀/t − a₁) dt/t` and `T(0) = ∫_1^∞ (Θ(t) − h) dt/t` being exactly the two
 integrals of formula (3.3) in Dai–Yoshikawa, *Degeneration of Riemann surfaces and small eigenvalues
 of the Laplacian* (arXiv:2509.06151v2).  The constant term produced by the computation is
 `−a₀ + (a₁ − h) γ`; the paper's (3.3) prints `−Γ'(1)(a₀ − h) = (a₀ − h) γ` instead.  Nothing in the
@@ -98,7 +98,7 @@ theorem hasDerivAt_zetaCont_zero
   have hdiv := hN.div hΓshift hΓne
   have hval : ((G 0) * Complex.Gamma ((0 : ℂ) + 1)
       - ((0 : ℂ) * G 0 + (a₁ - h)) * (-(Real.eulerMascheroniConstant : ℂ)))
-      / Complex.Gamma ((0 : ℂ) + 1) ^ 2
+      / Complex.Gamma ((0 : ℂ) + 1) ^ (2 : ℕ)
       = mellinHead g₁ 0 + mellinTail g₂ 0 - a₀
         + (a₁ - h) * (Real.eulerMascheroniConstant : ℂ) := by
     rw [hΓ1, hG0]

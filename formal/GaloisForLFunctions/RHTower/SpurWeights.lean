@@ -77,16 +77,16 @@ theorem weight_sum_rule {s : Multiset ℝ} {c : ℝ}
 /-- Derivative of the reciprocal-sum field: `d/dz Σ (z−r)⁻¹ = −Σ (z−r)⁻²`. -/
 theorem hasDerivAt_inv_sum (s : Multiset ℝ) (c : ℝ) (hc : ∀ r ∈ s, c - r ≠ 0) :
     HasDerivAt (fun z => (s.map fun r => (z - r)⁻¹).sum)
-      (-(s.map fun r => ((c - r) ^ 2)⁻¹).sum) c := by
+      (-(s.map fun r => ((c - r) ^ (2 : ℕ))⁻¹).sum) c := by
   induction s using Multiset.induction_on with
   | empty => simpa using hasDerivAt_const c (0 : ℝ)
   | cons a s ih =>
       have ha : c - a ≠ 0 := hc a (Multiset.mem_cons_self ..)
       have hs : ∀ r ∈ s, c - r ≠ 0 := fun r hr => hc r (Multiset.mem_cons_of_mem hr)
-      have h1 : HasDerivAt (fun z : ℝ => (z - a)⁻¹) (-((c - a) ^ 2)⁻¹) c := by
+      have h1 : HasDerivAt (fun z : ℝ => (z - a)⁻¹) (-((c - a) ^ (2 : ℕ))⁻¹) c := by
         have hbase : HasDerivAt (fun z : ℝ => z - a) 1 c := (hasDerivAt_id c).sub_const a
         have h2 := hbase.inv ha
-        have h3 : (-1 : ℝ) / (c - a) ^ 2 = -((c - a) ^ 2)⁻¹ := by
+        have h3 : (-1 : ℝ) / (c - a) ^ (2 : ℕ) = -((c - a) ^ (2 : ℕ))⁻¹ := by
           rw [neg_div, one_div]
         exact h3 ▸ h2
       have hfun : (fun z : ℝ => ((a ::ₘ s).map fun r => (z - r)⁻¹).sum)
@@ -101,7 +101,7 @@ theorem hasDerivAt_inv_sum (s : Multiset ℝ) (c : ℝ) (hc : ∀ r ∈ s, c - r
 theorem energy_eq_neg_second_derivative {s : Multiset ℝ} {c : ℝ}
     (hc : eval c (rootProd s) ≠ 0) (hcrit : eval c (derivative (rootProd s)) = 0) :
     eval c (derivative (derivative (rootProd s)))
-      = -((s.map fun r => ((c - r) ^ 2)⁻¹).sum) * eval c (rootProd s) := by
+      = -((s.map fun r => ((c - r) ^ (2 : ℕ))⁻¹).sum) * eval c (rootProd s) := by
   set P := rootProd s with hP
   -- the product identity P′ = P · (Σ (z−r)⁻¹) holds eventually near c
   have hopen : ∀ᶠ z in nhds c, eval z P ≠ 0 := by
@@ -118,7 +118,7 @@ theorem energy_eq_neg_second_derivative {s : Multiset ℝ} {c : ℝ}
   have hsum := hasDerivAt_inv_sum s c (sub_ne_zero_of_eval_rootProd_ne_zero hc)
   have hrhs : HasDerivAt (fun z => eval z P * (s.map fun r => (z - r)⁻¹).sum)
       (eval c (derivative P) * (s.map fun r => (c - r)⁻¹).sum
-        + eval c P * (-(s.map fun r => ((c - r) ^ 2)⁻¹).sum)) c :=
+        + eval c P * (-(s.map fun r => ((c - r) ^ (2 : ℕ))⁻¹).sum)) c :=
     (P.hasDerivAt c).mul hsum
   have heq := (hlhs.congr_of_eventuallyEq hev.symm).unique hrhs
   rw [hcrit, zero_mul, zero_add] at heq
@@ -129,28 +129,28 @@ theorem energy_eq_neg_second_derivative {s : Multiset ℝ} {c : ℝ}
 `Σ (1 − c/(c−r))² = card s + c²·Σ (c−r)⁻²`. -/
 theorem S_eq_card_add_energy {s : Multiset ℝ} {c : ℝ}
     (hc : eval c (rootProd s) ≠ 0) (hcrit : eval c (derivative (rootProd s)) = 0) :
-    (s.map fun r => (1 - c / (c - r)) ^ 2).sum
-      = (s.card : ℝ) + c ^ 2 * (s.map fun r => ((c - r) ^ 2)⁻¹).sum := by
+    (s.map fun r => (1 - c / (c - r)) ^ (2 : ℕ)).sum
+      = (s.card : ℝ) + c ^ (2 : ℕ) * (s.map fun r => ((c - r) ^ (2 : ℕ))⁻¹).sum := by
   have hne := sub_ne_zero_of_eval_rootProd_ne_zero hc
   have hrule := weight_sum_rule hc hcrit
-  have hpt : (s.map fun r => (1 - c / (c - r)) ^ 2)
-      = (s.map fun r => 1 - 2 * (c / (c - r)) + c ^ 2 * ((c - r) ^ 2)⁻¹) := by
+  have hpt : (s.map fun r => (1 - c / (c - r)) ^ (2 : ℕ))
+      = (s.map fun r => 1 - 2 * (c / (c - r)) + c ^ (2 : ℕ) * ((c - r) ^ (2 : ℕ))⁻¹) := by
     apply Multiset.map_congr rfl
     intro r hr
     have h := hne r hr
     field_simp
     ring
   rw [hpt]
-  have h1 : (s.map fun r => 1 - 2 * (c / (c - r)) + c ^ 2 * ((c - r) ^ 2)⁻¹).sum
+  have h1 : (s.map fun r => 1 - 2 * (c / (c - r)) + c ^ (2 : ℕ) * ((c - r) ^ (2 : ℕ))⁻¹).sum
       = (s.map fun r => 1 - 2 * (c / (c - r))).sum
-        + (s.map fun r => c ^ 2 * ((c - r) ^ 2)⁻¹).sum := Multiset.sum_map_add
+        + (s.map fun r => c ^ (2 : ℕ) * ((c - r) ^ (2 : ℕ))⁻¹).sum := Multiset.sum_map_add
   have h2 : (s.map fun r => 1 - 2 * (c / (c - r))).sum
       = (s.map fun _ => (1 : ℝ)).sum - (s.map fun r => 2 * (c / (c - r))).sum :=
     Multiset.sum_map_sub
   have h3 : (s.map fun r => 2 * (c / (c - r))).sum
       = 2 * (s.map fun r => c / (c - r)).sum := Multiset.sum_map_mul_left
-  have h4 : (s.map fun r => c ^ 2 * ((c - r) ^ 2)⁻¹).sum
-      = c ^ 2 * (s.map fun r => ((c - r) ^ 2)⁻¹).sum := Multiset.sum_map_mul_left
+  have h4 : (s.map fun r => c ^ (2 : ℕ) * ((c - r) ^ (2 : ℕ))⁻¹).sum
+      = c ^ (2 : ℕ) * (s.map fun r => ((c - r) ^ (2 : ℕ))⁻¹).sum := Multiset.sum_map_mul_left
   rw [h1, h2, h3, h4, hrule, Multiset.map_const', Multiset.sum_replicate, nsmul_eq_mul,
     mul_one, mul_zero, sub_zero]
 

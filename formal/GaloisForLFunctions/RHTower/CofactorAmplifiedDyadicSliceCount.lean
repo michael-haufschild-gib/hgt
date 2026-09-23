@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.RouteECofactorParityBalance
 
 The cofactor-amplified card uses distinguished-prime exponents in the literal interval
 `[1.1 - 10⁻⁴, 1.1]`.  Its dyadic slices are indexed by the integral powers of two lying between
-`(log U)^1.0999` and `2 (log U)^1.1`.
+`(log U)^(1 : ℕ).0999` and `2 (log U)^(1 : ℕ).1`.
 
 This module keeps the ceiling and floor defining that finite index set and proves equation `(6a)`
 with its exact leading constant: after division by `log log U`, the number of slices tends to
@@ -22,7 +22,7 @@ noncomputable section
 def cofactorAmplifiedSliceLower (U : ℝ) : ℝ :=
   (Real.log U) ^ ((10999 : ℝ) / 10000)
 
-/-- Upper endpoint `2 (log U)^1.1` of the card's distinguished-prime band. -/
+/-- Upper endpoint `2 (log U)^(1 : ℕ).1` of the card's distinguished-prime band. -/
 def cofactorAmplifiedSliceUpper (U : ℝ) : ℝ :=
   2 * (Real.log U) ^ ((11 : ℝ) / 10)
 

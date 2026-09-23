@@ -170,10 +170,10 @@ theorem seam_jump_sign_readoff {f h GU GD G₁ G₂ : ℂ → ℂ} {τ₀ t₁ t
     (hreal : ∀ τ ∈ Set.Icc t₁ t₂, (f (linePt τ)).im = 0)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartR (linePt τ₀) R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartL (linePt τ₀) R))
-    (hpG₁ : ∀ z ∈ chartR (linePt τ₀) R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartL (linePt τ₀) R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartR (linePt τ₀) R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartL (linePt τ₀) R, G₂ z ^ (2 : ℕ) = f z)
     {qP qM : ℂ} (hqP : qP ∈ overlapU (linePt τ₀) R) (hqM : qM ∈ overlapD (linePt τ₀) R)
-    (hpGU : GU qP ^ 2 = f qP) (hpGD : GD qM ^ 2 = f qM) :
+    (hpGU : GU qP ^ (2 : ℕ) = f qP) (hpGD : GD qM ^ (2 : ℕ) = f qM) :
     (GU qP / G₂ qP) / (GD qM / G₂ qM) =
       (if 0 < seamSign f t₁ t₂ then 1 else -1) *
         ((GU qP / G₁ qP) / (GD qM / G₁ qM)) := by

@@ -40,41 +40,41 @@ theorem choose_le_pow_div_factorial (n j : ℕ) :
 /-- Exponential tail bound `Σ_{2 ≤ j ≤ n} x^j/j! ≤ x²·e^x` for `x ≥ 0`. -/
 theorem sum_Ico_pow_div_factorial_le {x : ℝ} (hx : 0 ≤ x) (n : ℕ) :
     (∑ j ∈ Finset.Ico 2 (n + 1), x ^ j / (j.factorial : ℝ))
-      ≤ x ^ 2 * Real.exp x := by
+      ≤ x ^ (2 : ℕ) * Real.exp x := by
   rw [Finset.sum_Ico_eq_sum_range]
   have hterm : ∀ k ∈ Finset.range (n + 1 - 2),
       x ^ (2 + k) / ((2 + k).factorial : ℝ)
-        ≤ x ^ 2 * (x ^ k / (k.factorial : ℝ)) := by
+        ≤ x ^ (2 : ℕ) * (x ^ k / (k.factorial : ℝ)) := by
     intro k _
     rw [pow_add]
     have hfacle : (k.factorial : ℝ) ≤ ((2 + k).factorial : ℝ) := by
       exact_mod_cast Nat.factorial_le (Nat.le_add_left k 2)
     have hfac0 : (0:ℝ) < (k.factorial : ℝ) := by positivity
     have hfac0' : (0:ℝ) < ((2 + k).factorial : ℝ) := by positivity
-    rw [div_le_iff₀ hfac0', mul_comm (x ^ 2) (x ^ k / (k.factorial : ℝ))]
-    calc x ^ 2 * x ^ k
-        = (x ^ k / (k.factorial : ℝ)) * x ^ 2 * (k.factorial : ℝ) := by
+    rw [div_le_iff₀ hfac0', mul_comm (x ^ (2 : ℕ)) (x ^ k / (k.factorial : ℝ))]
+    calc x ^ (2 : ℕ) * x ^ k
+        = (x ^ k / (k.factorial : ℝ)) * x ^ (2 : ℕ) * (k.factorial : ℝ) := by
           field_simp
-    _ ≤ (x ^ k / (k.factorial : ℝ)) * x ^ 2 * ((2 + k).factorial : ℝ) := by
+    _ ≤ (x ^ k / (k.factorial : ℝ)) * x ^ (2 : ℕ) * ((2 + k).factorial : ℝ) := by
           apply mul_le_mul_of_nonneg_left hfacle
           positivity
   calc (∑ k ∈ Finset.range (n + 1 - 2), x ^ (2 + k) / ((2 + k).factorial : ℝ))
-      ≤ ∑ k ∈ Finset.range (n + 1 - 2), x ^ 2 * (x ^ k / (k.factorial : ℝ)) :=
+      ≤ ∑ k ∈ Finset.range (n + 1 - 2), x ^ (2 : ℕ) * (x ^ k / (k.factorial : ℝ)) :=
         Finset.sum_le_sum hterm
-    _ = x ^ 2 * ∑ k ∈ Finset.range (n + 1 - 2), x ^ k / (k.factorial : ℝ) := by
+    _ = x ^ (2 : ℕ) * ∑ k ∈ Finset.range (n + 1 - 2), x ^ k / (k.factorial : ℝ) := by
         rw [Finset.mul_sum]
-    _ ≤ x ^ 2 * Real.exp x := by
+    _ ≤ x ^ (2 : ℕ) * Real.exp x := by
         apply mul_le_mul_of_nonneg_left _ (by positivity)
         exact Real.sum_le_exp_of_nonneg hx _
 
 /-- **Quadratic linearization bound**:
 `|(1+b)^m - 1 - m·b| ≤ (m|b|)²·e^{m|b|}`. -/
 theorem abs_pow_sub_one_sub_le (b : ℝ) (m : ℕ) :
-    |(1 + b) ^ m - 1 - m * b| ≤ (m * |b|) ^ 2 * Real.exp (m * |b|) := by
+    |(1 + b) ^ m - 1 - m * b| ≤ (m * |b|) ^ (2 : ℕ) * Real.exp (m * |b|) := by
   match m with
   | 0 => simp
   | 1 =>
-    have h : |(1 + b) ^ 1 - 1 - (1:ℕ) * b| = 0 := by
+    have h : |(1 + b) ^ (1 : ℕ) - 1 - (1:ℕ) * b| = 0 := by
       norm_num
     rw [h]
     positivity
@@ -111,7 +111,7 @@ theorem abs_pow_sub_one_sub_le (b : ℝ) (m : ℕ) :
                 apply mul_le_mul_of_nonneg_left
                   (choose_le_pow_div_factorial N j) (by positivity)
             _ = (N : ℝ) ^ j * |b| ^ j / (j.factorial : ℝ) := by ring
-      _ ≤ ((N : ℝ) * |b|) ^ 2 * Real.exp ((N : ℝ) * |b|) :=
+      _ ≤ ((N : ℝ) * |b|) ^ (2 : ℕ) * Real.exp ((N : ℝ) * |b|) :=
           sum_Ico_pow_div_factorial_le (by positivity) N
 
 end HTGeometry

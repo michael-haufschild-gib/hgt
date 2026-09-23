@@ -12,13 +12,13 @@ private theorem point_im (x y : ℝ) (hy : 0 < y) : (ofComplex (⟨x,y⟩:ℂ)).
   rfl
 
 private theorem orbit_bound (q : XiZeroCopy) (C : ℝ)
-    (hb : ∀ y : ℝ, ‖nativeSquareCutoffHeight q y‖ ≤ C*y^2) (z : UpperHalfPlane) :
+    (hb : ∀ y : ℝ, ‖nativeSquareCutoffHeight q y‖ ≤ C*y^(2 : ℕ)) (z : UpperHalfPlane) :
     ‖periodize (squareCutoffSeed q) z‖ ≤ C*positiveCuspRows 2 z := by
   rw [squareCutoffSeed_eq_heightSeed q]
   exact highCuspHeight_periodize_norm_le _ (nativeSquareCutoffHeight_zero q) C hb z
 
 private theorem line_bound (q : XiZeroCopy) (s : ℂ) (C : ℝ)
-    (hb : ∀ y : ℝ, ‖nativeSquareCutoffHeight q y‖ ≤ C*y^2) {y : ℝ} (hy : 0 < y) (x : ℝ) :
+    (hb : ∀ y : ℝ, ‖nativeSquareCutoffHeight q y‖ ≤ C*y^(2 : ℕ)) {y : ℝ} (hy : 0 < y) (x : ℝ) :
     ‖nativeCutoffLowerPair q s (ofComplex (⟨x,y⟩:ℂ))‖ ≤
       (‖lowCuspPower s y‖*C)*positiveCuspRows 2 (ofComplex (⟨x,y⟩:ℂ)) := by
   rw [nativeCutoffLowerPair,norm_mul,point_im x y hy]
@@ -37,7 +37,7 @@ theorem nativeCutoffLowerPair_horizontal_integrable (q : XiZeroCopy)
   exact ae_of_all _ (fun x => line_bound q P.s C hb hy x)
 
 private theorem lower_density_identity (s C D y : ℝ) (hy : 0 < y) :
-    (y^2)⁻¹*((y^s*C)*(y^2+D*y^(-1:ℝ))) = C*(y^s+D*y^(s-3)) := by
+    (y^(2 : ℕ))⁻¹*((y^s*C)*(y^(2 : ℕ)+D*y^(-1:ℝ))) = C*(y^s+D*y^(s-3)) := by
   have h2 : y^(-2:ℝ)*y^s*y^(2:ℝ) = y^s := by
     rw [← Real.rpow_add hy,← Real.rpow_add hy]
     congr 1
@@ -56,7 +56,7 @@ theorem nativeCutoffLowerPair_integrable (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.
     IntegrableOn (nativeCutoffLowerPair q s) modularStrip volume := by
   let P : D4BMEisensteinAbsoluteConvergenceParameter := ⟨s,by linarith⟩
   obtain ⟨C,hC,hb⟩ := nativeSquareCutoffHeight_quadratic_bound q
-  let M : ℝ → ℝ := fun y => (y^2)⁻¹*∫ x in Ico (0:ℝ) 1,
+  let M : ℝ → ℝ := fun y => (y^(2 : ℕ))⁻¹*∫ x in Ico (0:ℝ) 1,
     ‖nativeCutoffLowerPair q s (ofComplex (⟨x,y⟩:ℂ))‖
   have hm : Measurable M := (measurable_id.pow_const 2).inv.mul
     (cuspHorizontalNormMean_measurable _ (nativeCutoffLowerPair_measurable q P))
@@ -81,7 +81,7 @@ theorem nativeCutoffLowerPair_integrable (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.
     have hM : 0 ≤ M y := mul_nonneg (by positivity) (integral_nonneg (fun _ => norm_nonneg _))
     rw [Real.norm_eq_abs,abs_of_nonneg hM]
     calc
-      M y ≤ (y^2)⁻¹*((y^s.re*C)*(y^2+cuspReflectionNorm 2*y^(-1:ℝ))) :=
+      M y ≤ (y^(2 : ℕ))⁻¹*((y^s.re*C)*(y^(2 : ℕ)+cuspReflectionNorm 2*y^(-1:ℝ))) :=
         mul_le_mul_of_nonneg_left (hi.trans ha) (by positivity)
       _ = C*(y^s.re+cuspReflectionNorm 2*y^(s.re-3)) := lower_density_identity _ _ _ _ hy.1
   have hhi : IntegrableOn M (Ioi (1/2:ℝ)) := by

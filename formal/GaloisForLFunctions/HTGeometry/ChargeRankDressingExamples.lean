@@ -221,18 +221,18 @@ def phiCDD (B : ℝ) : ℝ → ℂ := fun x => ((4 * Real.arctan (Real.sinh x / 
 
 theorem hasDerivAt_phiCDD {B : ℝ} (hB : 0 < B) (x : ℝ) :
     HasDerivAt (phiCDD B)
-      (((4 * B * Real.cosh x / (B ^ 2 + Real.sinh x ^ 2) : ℝ) : ℂ)) x := by
+      (((4 * B * Real.cosh x / (B ^ (2 : ℕ) + Real.sinh x ^ (2 : ℕ)) : ℝ) : ℂ)) x := by
   have hBne : B ≠ 0 := ne_of_gt hB
-  have hden : B ^ 2 + Real.sinh x ^ 2 ≠ 0 := by positivity
+  have hden : B ^ (2 : ℕ) + Real.sinh x ^ (2 : ℕ) ≠ 0 := by positivity
   have hinner : HasDerivAt (fun y : ℝ => Real.sinh y / B) (Real.cosh x / B) x := by
     simpa [div_eq_mul_inv] using (Real.hasDerivAt_sinh x).mul_const B⁻¹
   have hcomp0 := (Real.hasDerivAt_arctan (Real.sinh x / B)).comp x hinner
   have hcomp : HasDerivAt (fun y : ℝ => Real.arctan (Real.sinh y / B))
-      ((1 / (1 + (Real.sinh x / B) ^ 2)) * (Real.cosh x / B)) x := hcomp0
+      ((1 / (1 + (Real.sinh x / B) ^ (2 : ℕ))) * (Real.cosh x / B)) x := hcomp0
   have hscaled : HasDerivAt (fun y : ℝ => 4 * Real.arctan (Real.sinh y / B))
-      (4 * ((1 / (1 + (Real.sinh x / B) ^ 2)) * (Real.cosh x / B))) x := hcomp.const_mul 4
-  have hval : 4 * ((1 / (1 + (Real.sinh x / B) ^ 2)) * (Real.cosh x / B))
-      = 4 * B * Real.cosh x / (B ^ 2 + Real.sinh x ^ 2) := by
+      (4 * ((1 / (1 + (Real.sinh x / B) ^ (2 : ℕ))) * (Real.cosh x / B))) x := hcomp.const_mul 4
+  have hval : 4 * ((1 / (1 + (Real.sinh x / B) ^ (2 : ℕ))) * (Real.cosh x / B))
+      = 4 * B * Real.cosh x / (B ^ (2 : ℕ) + Real.sinh x ^ (2 : ℕ)) := by
     field_simp
   rw [hval] at hscaled
   exact hscaled.ofReal_comp
@@ -242,25 +242,25 @@ theorem continuous_phiCDD (B : ℝ) : Continuous (phiCDD B) :=
     (continuous_const.mul (Real.continuous_arctan.comp (Real.continuous_sinh.div_const B)))
 
 /-- A complex rapidity at which the CDD denominator vanishes. -/
-def cddPole (B : ℝ) : ℂ := Complex.log (Complex.I * ((B + Real.sqrt (B ^ 2 - 1) : ℝ) : ℂ))
+def cddPole (B : ℝ) : ℂ := Complex.log (Complex.I * ((B + Real.sqrt (B ^ (2 : ℕ) - 1) : ℝ) : ℂ))
 
 theorem sinh_cddPole {B : ℝ} (hB : 1 < B) :
     Complex.sinh (cddPole B) = Complex.I * (B : ℂ) := by
-  set c : ℝ := B + Real.sqrt (B ^ 2 - 1) with hc
+  set c : ℝ := B + Real.sqrt (B ^ (2 : ℕ) - 1) with hc
   have hB0 : (0 : ℝ) < B := lt_trans zero_lt_one hB
-  have hsq : Real.sqrt (B ^ 2 - 1) ^ 2 = B ^ 2 - 1 := Real.sq_sqrt (by nlinarith)
+  have hsq : Real.sqrt (B ^ (2 : ℕ) - 1) ^ (2 : ℕ) = B ^ (2 : ℕ) - 1 := Real.sq_sqrt (by nlinarith)
   have hcpos : 0 < c := by
-    have hnn : 0 ≤ Real.sqrt (B ^ 2 - 1) := Real.sqrt_nonneg _
+    have hnn : 0 ≤ Real.sqrt (B ^ (2 : ℕ) - 1) := Real.sqrt_nonneg _
     simp only [hc]
     linarith
   have hcne : (c : ℂ) ≠ 0 := by
     simpa using (ne_of_gt hcpos)
   have hw0 : Complex.I * (c : ℂ) ≠ 0 := mul_ne_zero Complex.I_ne_zero hcne
   have hexp : Complex.exp (cddPole B) = Complex.I * (c : ℂ) := Complex.exp_log hw0
-  have hquad : (c : ℝ) ^ 2 - 2 * B * c + 1 = 0 := by
+  have hquad : (c : ℝ) ^ (2 : ℕ) - 2 * B * c + 1 = 0 := by
     simp only [hc]
     nlinarith [hsq]
-  have hquadC : (c : ℂ) ^ 2 - 2 * (B : ℂ) * (c : ℂ) + 1 = 0 := by
+  have hquadC : (c : ℂ) ^ (2 : ℕ) - 2 * (B : ℂ) * (c : ℂ) + 1 = 0 := by
     have hcast := congrArg (fun r : ℝ => (r : ℂ)) hquad
     push_cast at hcast
     simpa using hcast
@@ -278,10 +278,10 @@ theorem cosh_cddPole_ne_zero {B : ℝ} (hB : 1 < B) : Complex.cosh (cddPole B) �
   intro hzero
   have hid := Complex.cosh_sq_sub_sinh_sq (cddPole B)
   rw [hzero, sinh_cddPole hB] at hid
-  have hBsq : (B : ℂ) ^ 2 = 1 := by
-    linear_combination hid + (B : ℂ) ^ 2 * Complex.I_sq
-  have hreal : B ^ 2 = 1 := by
-    have hcast : ((B ^ 2 : ℝ) : ℂ) = ((1 : ℝ) : ℂ) := by push_cast; exact hBsq
+  have hBsq : (B : ℂ) ^ (2 : ℕ) = 1 := by
+    linear_combination hid + (B : ℂ) ^ (2 : ℕ) * Complex.I_sq
+  have hreal : B ^ (2 : ℕ) = 1 := by
+    have hcast : ((B ^ (2 : ℕ) : ℝ) : ℂ) = ((1 : ℝ) : ℂ) := by push_cast; exact hBsq
     exact_mod_cast hcast
   nlinarith
 
@@ -292,7 +292,7 @@ theorem not_mem_expPolySpace_phiCDD {B : ℝ} (hB : 1 < B) : phiCDD B ∉ expPol
   have hderivmem : deriv (phiCDD B) ∈ expPolySpace := deriv_mem_expPolySpace hmem
   obtain ⟨E, hEmem, hEeq⟩ := exists_entire_extension hderivmem
   have hEan : AnalyticOnNhd ℂ E (Set.univ : Set ℂ) := analyticOnNhd_of_mem_expPolySpaceC hEmem
-  set A : ℂ → ℂ := fun z => E z * ((B : ℂ) ^ 2 + Complex.sinh z ^ 2) with hA
+  set A : ℂ → ℂ := fun z => E z * ((B : ℂ) ^ (2 : ℕ) + Complex.sinh z ^ (2 : ℕ)) with hA
   set C : ℂ → ℂ := fun z => 4 * (B : ℂ) * Complex.cosh z with hC
   have hAan : AnalyticOnNhd ℂ A (Set.univ : Set ℂ) :=
     hEan.mul (analyticOnNhd_const.add (analyticOnNhd_csinh.pow 2))
@@ -301,18 +301,18 @@ theorem not_mem_expPolySpace_phiCDD {B : ℝ} (hB : 1 < B) : phiCDD B ∉ expPol
   have hreal : ∀ x : ℝ, A (x : ℂ) = C (x : ℂ) := by
     intro x
     have hd : deriv (phiCDD B) x
-        = ((4 * B * Real.cosh x / (B ^ 2 + Real.sinh x ^ 2) : ℝ) : ℂ) :=
+        = ((4 * B * Real.cosh x / (B ^ (2 : ℕ) + Real.sinh x ^ (2 : ℕ)) : ℝ) : ℂ) :=
       (hasDerivAt_phiCDD hB0 x).deriv
-    have hden : B ^ 2 + Real.sinh x ^ 2 ≠ 0 := by positivity
-    have hdenC : ((B : ℂ) ^ 2 + Complex.sinh (x : ℂ) ^ 2)
-        = ((B ^ 2 + Real.sinh x ^ 2 : ℝ) : ℂ) := by
+    have hden : B ^ (2 : ℕ) + Real.sinh x ^ (2 : ℕ) ≠ 0 := by positivity
+    have hdenC : ((B : ℂ) ^ (2 : ℕ) + Complex.sinh (x : ℂ) ^ (2 : ℕ))
+        = ((B ^ (2 : ℕ) + Real.sinh x ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [← Complex.ofReal_sinh]
       push_cast
       ring
-    have hdenCne : ((B ^ 2 + Real.sinh x ^ 2 : ℝ) : ℂ) ≠ 0 := by
+    have hdenCne : ((B ^ (2 : ℕ) + Real.sinh x ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 := by
       rw [ne_eq, Complex.ofReal_eq_zero]
       exact hden
-    have hdenCne2 : ((B : ℂ) ^ 2 + Complex.sinh (x : ℂ) ^ 2) ≠ 0 := by
+    have hdenCne2 : ((B : ℂ) ^ (2 : ℕ) + Complex.sinh (x : ℂ) ^ (2 : ℕ)) ≠ 0 := by
       rw [hdenC]; exact hdenCne
     simp only [hA, hC, hEeq x, hd, hdenC]
     rw [← Complex.ofReal_cosh]
@@ -320,9 +320,9 @@ theorem not_mem_expPolySpace_phiCDD {B : ℝ} (hB : 1 < B) : phiCDD B ∉ expPol
     field_simp
   have hAC : A = C := eq_of_eqOn_real hAan hCan hreal
   have hz := congrFun hAC (cddPole B)
-  have hdenzero : (B : ℂ) ^ 2 + Complex.sinh (cddPole B) ^ 2 = 0 := by
+  have hdenzero : (B : ℂ) ^ (2 : ℕ) + Complex.sinh (cddPole B) ^ (2 : ℕ) = 0 := by
     rw [sinh_cddPole hB]
-    linear_combination (B : ℂ) ^ 2 * Complex.I_sq
+    linear_combination (B : ℂ) ^ (2 : ℕ) * Complex.I_sq
   simp only [hA, hC, hdenzero, mul_zero] at hz
   have hBne : (B : ℂ) ≠ 0 := by simpa using ne_of_gt hB0
   refine cosh_cddPole_ne_zero hB ?_
@@ -382,18 +382,18 @@ private theorem aeval_X_sub_C_expChar (μ : ℂ) (hm : realExpChar μ ∈ smooth
   abel
 
 private theorem aeval_XsqSubC_expChar_pos (s : ℂ) (hm : realExpChar s ∈ smoothSubmodule) :
-    (Polynomial.aeval smoothDerivLM (Polynomial.X ^ 2 - Polynomial.C (s ^ 2)))
+    (Polynomial.aeval smoothDerivLM (Polynomial.X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))))
       (⟨realExpChar s, hm⟩ : smoothSubmodule) = 0 := by
-  have hfac : (Polynomial.X ^ 2 - Polynomial.C (s ^ 2) : Polynomial ℂ)
+  have hfac : (Polynomial.X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ)) : Polynomial ℂ)
       = (Polynomial.X + Polynomial.C s) * (Polynomial.X - Polynomial.C s) := by
     rw [Polynomial.C_pow]
     ring
   rw [hfac, map_mul, Module.End.mul_apply, aeval_X_sub_C_expChar s hm, map_zero]
 
 private theorem aeval_XsqSubC_expChar_neg (s : ℂ) (hm : realExpChar (-s) ∈ smoothSubmodule) :
-    (Polynomial.aeval smoothDerivLM (Polynomial.X ^ 2 - Polynomial.C (s ^ 2)))
+    (Polynomial.aeval smoothDerivLM (Polynomial.X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))))
       (⟨realExpChar (-s), hm⟩ : smoothSubmodule) = 0 := by
-  have hfac : (Polynomial.X ^ 2 - Polynomial.C (s ^ 2) : Polynomial ℂ)
+  have hfac : (Polynomial.X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ)) : Polynomial ℂ)
       = (Polynomial.X - Polynomial.C s) * (Polynomial.X - Polynomial.C (-s)) := by
     rw [Polynomial.C_pow, Polynomial.C_neg]
     ring
@@ -401,15 +401,15 @@ private theorem aeval_XsqSubC_expChar_neg (s : ℂ) (hm : realExpChar (-s) ∈ s
 
 /-- **The explicit higher-spin annihilator is nonzero.** -/
 theorem prod_XsqSubC_ne_zero (F : Finset ℂ) :
-    (∏ s ∈ F, (Polynomial.X ^ 2 - Polynomial.C (s ^ 2)) : Polynomial ℂ) ≠ 0 := by
+    (∏ s ∈ F, (Polynomial.X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) : Polynomial ℂ) ≠ 0 := by
   refine Finset.prod_ne_zero_iff.mpr fun s _ => ?_
-  exact (Polynomial.monic_X_pow_sub_C (s ^ 2) (by norm_num)).ne_zero
+  exact (Polynomial.monic_X_pow_sub_C (s ^ (2 : ℕ)) (by norm_num)).ne_zero
 
 /-- **A finite higher-spin dressing is annihilated by `∏_{s ∈ F} (X² − s²)`.** -/
 theorem realConstCoeffOp_phiSpin_eq_zero (F : Finset ℂ) (α : ℂ → ℂ) :
-    realConstCoeffOp (∏ s ∈ F, (Polynomial.X ^ 2 - Polynomial.C (s ^ 2))) (phiSpin F α) = 0 := by
+    realConstCoeffOp (∏ s ∈ F, (Polynomial.X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ)))) (phiSpin F α) = 0 := by
   classical
-  set L : Polynomial ℂ := ∏ s ∈ F, (Polynomial.X ^ 2 - Polynomial.C (s ^ 2)) with hL
+  set L : Polynomial ℂ := ∏ s ∈ F, (Polynomial.X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) with hL
   have hsm : ∀ μ : ℂ, realExpChar μ ∈ smoothSubmodule := fun μ => contDiff_expChar μ
   have hphism : phiSpin F α ∈ smoothSubmodule :=
     contDiff_of_mem_expPolySpace (phiSpin_mem_expPolySpace F α)
@@ -417,8 +417,8 @@ theorem realConstCoeffOp_phiSpin_eq_zero (F : Finset ℂ) (α : ℂ → ℂ) :
       ((2 : ℂ)⁻¹ • (⟨realExpChar s, hsm s⟩ : smoothSubmodule)
         - (2 : ℂ)⁻¹ • (⟨realExpChar (-s), hsm (-s)⟩ : smoothSubmodule)) = 0 := by
     intro s hs
-    have hsplit : L = (∏ t ∈ F.erase s, (Polynomial.X ^ 2 - Polynomial.C (t ^ 2)))
-        * (Polynomial.X ^ 2 - Polynomial.C (s ^ 2)) := (Finset.prod_erase_mul F _ hs).symm
+    have hsplit : L = (∏ t ∈ F.erase s, (Polynomial.X ^ (2 : ℕ) - Polynomial.C (t ^ (2 : ℕ))))
+        * (Polynomial.X ^ (2 : ℕ) - Polynomial.C (s ^ (2 : ℕ))) := (Finset.prod_erase_mul F _ hs).symm
     rw [map_sub, map_smul, map_smul, hsplit, map_mul]
     rw [Module.End.mul_apply, Module.End.mul_apply,
       aeval_XsqSubC_expChar_pos s (hsm s), aeval_XsqSubC_expChar_neg s (hsm (-s))]

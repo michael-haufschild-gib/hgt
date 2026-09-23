@@ -21,15 +21,15 @@ namespace RHTower.HedenmalmThetaSource
 
 noncomputable section
 open HedenmalmQuantile HedenmalmClosedWeightedDerivative
-private abbrev ThetaH := Lp ℂ 2 unitIntervalMeasure
+private abbrev ThetaH_hedenmalmThetaEsscherCyclicity_hedenmalmThetaExteriorPseudospectralSeparation := Lp ℂ 2 unitIntervalMeasure
 
 theorem norm_thetaEsscherFourierFamily_eq (h tau : ℝ) :
     ‖thetaEsscherFourierFamily h tau‖ = ‖thetaEsscherFourierFamily h 0‖ := by
   have hi : inner ℂ (thetaEsscherFourierFamily h tau) (thetaEsscherFourierFamily h tau) =
       inner ℂ (thetaEsscherFourierFamily h 0) (thetaEsscherFourierFamily h 0) := by
     simp only [inner_thetaEsscherFourierFamily, sub_self]
-  have hs : ‖thetaEsscherFourierFamily h tau‖ ^ 2 =
-      ‖thetaEsscherFourierFamily h 0‖ ^ 2 := by
+  have hs : ‖thetaEsscherFourierFamily h tau‖ ^ (2 : ℕ) =
+      ‖thetaEsscherFourierFamily h 0‖ ^ (2 : ℕ) := by
     rw [norm_sq_eq_re_inner (𝕜 := ℂ), norm_sq_eq_re_inner (𝕜 := ℂ)]
     exact congrArg Complex.re hi
   nlinarith [norm_nonneg (thetaEsscherFourierFamily h tau),
@@ -64,11 +64,11 @@ theorem adjoint_thetaSourcePencil_esscher
       Ring.inverse_mul_cancel _ hz
     rw [hmul, ContinuousLinearMap.adjoint_one]
   rw [hE, map_smul]
-  exact congrArg (fun T : ThetaH →L[ℂ] ThetaH =>
+  exact congrArg (fun T : ThetaH_hedenmalmThetaEsscherCyclicity_hedenmalmThetaExteriorPseudospectralSeparation →L[ℂ] ThetaH_hedenmalmThetaEsscherCyclicity_hedenmalmThetaExteriorPseudospectralSeparation =>
     (starRingEnd ℂ) (rootA thetaSource z 1) • T pinnedOne) hinv
 
 /-- Unit source-selected vector; no Xi zeros occur in its definition. -/
-def thetaExteriorPseudomode (h tau : ℝ) : ThetaH :=
+def thetaExteriorPseudomode (h tau : ℝ) : ThetaH_hedenmalmThetaEsscherCyclicity_hedenmalmThetaExteriorPseudospectralSeparation :=
   ((‖thetaEsscherFourierFamily h 0‖ : ℝ) : ℂ)⁻¹ • thetaEsscherFourierFamily h tau
 
 theorem norm_thetaExteriorPseudomode {h : ℝ} (hh : 1 / 2 ≤ |h|) (tau : ℝ) :
@@ -236,7 +236,7 @@ theorem exists_exponential_thetaComplexResolvent_lower
     rw [hmul, ContinuousLinearMap.adjoint_one]
   have hnorm := (thetaComplexResolvent z).adjoint.le_opNorm ((thetaSourcePencil z).adjoint v)
   have heval : (thetaComplexResolvent z).adjoint ((thetaSourcePencil z).adjoint v) = v :=
-    congrArg (fun T : ThetaH →L[ℂ] ThetaH => T v) hinv
+    congrArg (fun T : ThetaH_hedenmalmThetaEsscherCyclicity_hedenmalmThetaExteriorPseudospectralSeparation →L[ℂ] ThetaH_hedenmalmThetaEsscherCyclicity_hedenmalmThetaExteriorPseudospectralSeparation => T v) hinv
   rw [heval, show ‖v‖ = 1 from norm_thetaExteriorPseudomode hh0 tau,
     ContinuousLinearMap.adjoint.norm_map] at hnorm
   have hineq : 1 ≤ ‖thetaComplexResolvent z‖ * (C * Real.exp (-δ * |tau|)) :=

@@ -32,38 +32,38 @@ then the connection alone has squared norm strictly greater than four. -/
 theorem norm_connection_sq_gt_four_of_adaptedWardColumn
     (q : XiRightUpperZeroCopy) (father connection : K)
     (hfather :
-      ‖father‖ ^ 2 ≤
+      ‖father‖ ^ (2 : ℕ) ≤
         (2 * (xiRightCenteredZero q.1).re)⁻¹)
     (hcolumn :
       inner ℂ father connection =
         continuedXiAntiCausalWardResponse
           ((starRingEnd ℂ) (xiRightCenteredZero q.1))) :
-    4 < ‖connection‖ ^ 2 := by
+    4 < ‖connection‖ ^ (2 : ℕ) := by
   let a := (xiRightCenteredZero q.1).re
   have ha : 0 < a := xiRightCenteredZero_re_pos q.1
   have hr :=
     normSq_continuedXiAntiCausalWardResponse_at_adaptedNode_gt q
   have hr' :
-      2 * a⁻¹ < ‖inner ℂ father connection‖ ^ 2 := by
+      2 * a⁻¹ < ‖inner ℂ father connection‖ ^ (2 : ℕ) := by
     rw [hcolumn, Complex.sq_norm]
     simpa only [a] using hr
   have hinner := norm_inner_le_norm (𝕜 := ℂ) father connection
   have hinnerSq :
-      ‖inner ℂ father connection‖ ^ 2 ≤
-        (‖father‖ * ‖connection‖) ^ 2 := by
+      ‖inner ℂ father connection‖ ^ (2 : ℕ) ≤
+        (‖father‖ * ‖connection‖) ^ (2 : ℕ) := by
     exact (sq_le_sq₀ (norm_nonneg _)
       (mul_nonneg (norm_nonneg _) (norm_nonneg _))).2 hinner
   have hfactor :
       (2 * a)⁻¹ = (1 / 2 : ℝ) * a⁻¹ := by
     field_simp [ha.ne']
   have hproduct :
-      ‖father‖ ^ 2 * ‖connection‖ ^ 2 ≤
-        ((1 / 2 : ℝ) * a⁻¹) * ‖connection‖ ^ 2 := by
+      ‖father‖ ^ (2 : ℕ) * ‖connection‖ ^ (2 : ℕ) ≤
+        ((1 / 2 : ℝ) * a⁻¹) * ‖connection‖ ^ (2 : ℕ) := by
     rw [← hfactor]
     exact mul_le_mul_of_nonneg_right hfather (sq_nonneg _)
   have hexpand :
-      (‖father‖ * ‖connection‖) ^ 2 =
-        ‖father‖ ^ 2 * ‖connection‖ ^ 2 := by
+      (‖father‖ * ‖connection‖) ^ (2 : ℕ) =
+        ‖father‖ ^ (2 : ℕ) * ‖connection‖ ^ (2 : ℕ) := by
     ring
   rw [hexpand] at hinnerSq
   have hainv : 0 < a⁻¹ := inv_pos.mpr ha
@@ -75,12 +75,12 @@ norm budget.  This statement has no orthogonality or decomposition premise. -/
 theorem not_exists_fourUnit_adaptedWardDetail
     (q : XiRightUpperZeroCopy) :
     ¬ ∃ father detail : K,
-      ‖father‖ ^ 2 ≤
+      ‖father‖ ^ (2 : ℕ) ≤
           (2 * (xiRightCenteredZero q.1).re)⁻¹ ∧
         inner ℂ father detail =
           continuedXiAntiCausalWardResponse
             ((starRingEnd ℂ) (xiRightCenteredZero q.1)) ∧
-        ‖detail‖ ^ 2 ≤ 4 := by
+        ‖detail‖ ^ (2 : ℕ) ≤ 4 := by
   rintro ⟨father, detail, hfather, hcolumn, hdetail⟩
   exact (not_lt_of_ge hdetail)
     (norm_connection_sq_gt_four_of_adaptedWardColumn
@@ -91,14 +91,14 @@ pushes the augmented detail strictly beyond the four-unit source budget. -/
 theorem norm_orthogonal_connection_augmentedDetail_sq_gt_four
     (q : XiRightUpperZeroCopy) (father transported connection : K)
     (hfather :
-      ‖father‖ ^ 2 ≤
+      ‖father‖ ^ (2 : ℕ) ≤
         (2 * (xiRightCenteredZero q.1).re)⁻¹)
     (hcolumn :
       inner ℂ father connection =
         continuedXiAntiCausalWardResponse
           ((starRingEnd ℂ) (xiRightCenteredZero q.1)))
     (horth : inner ℂ transported connection = 0) :
-    4 < ‖transported + connection‖ ^ 2 := by
+    4 < ‖transported + connection‖ ^ (2 : ℕ) := by
   have hc :=
     norm_connection_sq_gt_four_of_adaptedWardColumn
       q father connection hfather hcolumn
@@ -106,10 +106,10 @@ theorem norm_orthogonal_connection_augmentedDetail_sq_gt_four
     norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero
       transported connection horth
   calc
-    4 < ‖connection‖ ^ 2 := hc
-    _ ≤ ‖transported‖ ^ 2 + ‖connection‖ ^ 2 := by
+    4 < ‖connection‖ ^ (2 : ℕ) := hc
+    _ ≤ ‖transported‖ ^ (2 : ℕ) + ‖connection‖ ^ (2 : ℕ) := by
       exact le_add_of_nonneg_left (sq_nonneg _)
-    _ = ‖transported + connection‖ ^ 2 := by
+    _ = ‖transported + connection‖ ^ (2 : ℕ) := by
       simpa only [pow_two] using hpyth.symm
 
 /-- Universal four-unit cancellation law: a correction whose own squared norm
@@ -117,16 +117,16 @@ exceeds four can keep the corrected vector inside the four-unit ball only by
 strictly negative interference with the original vector. -/
 theorem four_unit_connection_forces_strict_negative_interference
     (transported connection : K)
-    (hconnection : 4 < ‖connection‖ ^ 2)
-    (htotal : ‖transported + connection‖ ^ 2 ≤ 4) :
+    (hconnection : 4 < ‖connection‖ ^ (2 : ℕ))
+    (htotal : ‖transported + connection‖ ^ (2 : ℕ) ≤ 4) :
     2 * re (inner ℂ transported connection) <
-      -(‖transported‖ ^ 2) := by
+      -(‖transported‖ ^ (2 : ℕ)) := by
   have hsum := norm_add_sq (𝕜 := ℂ) transported connection
   have hsum' :
-      ‖transported + connection‖ ^ 2 =
-        ‖transported‖ ^ 2 +
+      ‖transported + connection‖ ^ (2 : ℕ) =
+        ‖transported‖ ^ (2 : ℕ) +
           2 * re (inner ℂ transported connection) +
-            ‖connection‖ ^ 2 := by
+            ‖connection‖ ^ (2 : ℕ) := by
     simpa using hsum
   linarith
 
@@ -135,15 +135,15 @@ Ward column has quantitatively forced destructive interference. -/
 theorem adaptedWardConnection_forces_strict_negative_interference
     (q : XiRightUpperZeroCopy) (father transported connection : K)
     (hfather :
-      ‖father‖ ^ 2 ≤
+      ‖father‖ ^ (2 : ℕ) ≤
         (2 * (xiRightCenteredZero q.1).re)⁻¹)
     (hcolumn :
       inner ℂ father connection =
         continuedXiAntiCausalWardResponse
           ((starRingEnd ℂ) (xiRightCenteredZero q.1)))
-    (htotal : ‖transported + connection‖ ^ 2 ≤ 4) :
+    (htotal : ‖transported + connection‖ ^ (2 : ℕ) ≤ 4) :
     2 * re (inner ℂ transported connection) <
-      -(‖transported‖ ^ 2) := by
+      -(‖transported‖ ^ (2 : ℕ)) := by
   exact four_unit_connection_forces_strict_negative_interference
     transported connection
     (norm_connection_sq_gt_four_of_adaptedWardColumn
@@ -161,13 +161,13 @@ theorem
     not_exists_fourUnit_adaptedWardConnection_of_father_orthogonal_transport
     (q : XiRightUpperZeroCopy) :
     ¬ ∃ father transported connection : K,
-      ‖father‖ ^ 2 ≤
+      ‖father‖ ^ (2 : ℕ) ≤
           (2 * (xiRightCenteredZero q.1).re)⁻¹ ∧
         inner ℂ father transported = 0 ∧
         inner ℂ father connection =
           continuedXiAntiCausalWardResponse
             ((starRingEnd ℂ) (xiRightCenteredZero q.1)) ∧
-        ‖transported + connection‖ ^ 2 ≤ 4 := by
+        ‖transported + connection‖ ^ (2 : ℕ) ≤ 4 := by
   rintro ⟨father, transported, connection,
     hfather, horth, hcolumn, htotal⟩
   have htotalColumn :
@@ -191,7 +191,7 @@ theorem not_exists_cofinal_fourUnit_adaptedWardLift
     (q : XiRightUpperZeroCopy) :
     ¬ ∃ father detail : ℕ → K,
       Filter.Tendsto
-          (fun n => ‖father n‖ ^ 2)
+          (fun n => ‖father n‖ ^ (2 : ℕ))
           Filter.atTop
           (nhds ((2 * (xiRightCenteredZero q.1).re)⁻¹)) ∧
         Filter.Tendsto
@@ -199,48 +199,48 @@ theorem not_exists_cofinal_fourUnit_adaptedWardLift
           Filter.atTop
           (nhds (continuedXiAntiCausalWardResponse
             ((starRingEnd ℂ) (xiRightCenteredZero q.1)))) ∧
-        (∀ n, ‖detail n‖ ^ 2 ≤ 4) := by
+        (∀ n, ‖detail n‖ ^ (2 : ℕ) ≤ 4) := by
   rintro ⟨father, detail, hfather, hcolumn, hdetail⟩
   let a := (xiRightCenteredZero q.1).re
   let r :=
     continuedXiAntiCausalWardResponse
       ((starRingEnd ℂ) (xiRightCenteredZero q.1))
   have hpoint (n : ℕ) :
-      ‖inner ℂ (father n) (detail n)‖ ^ 2 -
-          4 * ‖father n‖ ^ 2 ≤ 0 := by
+      ‖inner ℂ (father n) (detail n)‖ ^ (2 : ℕ) -
+          4 * ‖father n‖ ^ (2 : ℕ) ≤ 0 := by
     have hinner := norm_inner_le_norm (𝕜 := ℂ) (father n) (detail n)
     have hinnerSq :
-        ‖inner ℂ (father n) (detail n)‖ ^ 2 ≤
-          (‖father n‖ * ‖detail n‖) ^ 2 := by
+        ‖inner ℂ (father n) (detail n)‖ ^ (2 : ℕ) ≤
+          (‖father n‖ * ‖detail n‖) ^ (2 : ℕ) := by
       exact (sq_le_sq₀ (norm_nonneg _)
         (mul_nonneg (norm_nonneg _) (norm_nonneg _))).2 hinner
     have hmul :
-        ‖father n‖ ^ 2 * ‖detail n‖ ^ 2 ≤
-          ‖father n‖ ^ 2 * 4 :=
+        ‖father n‖ ^ (2 : ℕ) * ‖detail n‖ ^ (2 : ℕ) ≤
+          ‖father n‖ ^ (2 : ℕ) * 4 :=
       mul_le_mul_of_nonneg_left (hdetail n) (sq_nonneg _)
     have hexpand :
-        (‖father n‖ * ‖detail n‖) ^ 2 =
-          ‖father n‖ ^ 2 * ‖detail n‖ ^ 2 := by
+        (‖father n‖ * ‖detail n‖) ^ (2 : ℕ) =
+          ‖father n‖ ^ (2 : ℕ) * ‖detail n‖ ^ (2 : ℕ) := by
       ring
     rw [hexpand] at hinnerSq
     nlinarith
   have hleft :
       Filter.Tendsto
-        (fun n => ‖inner ℂ (father n) (detail n)‖ ^ 2)
-        Filter.atTop (nhds (‖r‖ ^ 2)) := by
+        (fun n => ‖inner ℂ (father n) (detail n)‖ ^ (2 : ℕ))
+        Filter.atTop (nhds (‖r‖ ^ (2 : ℕ))) := by
     simpa only [r] using hcolumn.norm.pow 2
   have hright :
       Filter.Tendsto
-        (fun n => 4 * ‖father n‖ ^ 2)
+        (fun n => 4 * ‖father n‖ ^ (2 : ℕ))
         Filter.atTop (nhds (4 * (2 * a)⁻¹)) := by
     simpa only [a] using hfather.const_mul 4
   have hlimit :
-      ‖r‖ ^ 2 - 4 * (2 * a)⁻¹ ≤ 0 :=
+      ‖r‖ ^ (2 : ℕ) - 4 * (2 * a)⁻¹ ≤ 0 :=
     le_of_tendsto (hleft.sub hright)
       (Filter.Eventually.of_forall hpoint)
   have ha : 0 < a := xiRightCenteredZero_re_pos q.1
   have hr :
-      2 * a⁻¹ < ‖r‖ ^ 2 := by
+      2 * a⁻¹ < ‖r‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm]
     simpa only [a, r] using
       normSq_continuedXiAntiCausalWardResponse_at_adaptedNode_gt q
@@ -255,13 +255,13 @@ continued-Xi Ward column at a strict-right zero. -/
 theorem not_exists_orthogonal_fourUnit_adaptedWardConnection
     (q : XiRightUpperZeroCopy) :
     ¬ ∃ father transported connection : K,
-      ‖father‖ ^ 2 ≤
+      ‖father‖ ^ (2 : ℕ) ≤
           (2 * (xiRightCenteredZero q.1).re)⁻¹ ∧
         inner ℂ father connection =
           continuedXiAntiCausalWardResponse
             ((starRingEnd ℂ) (xiRightCenteredZero q.1)) ∧
         inner ℂ transported connection = 0 ∧
-        ‖transported + connection‖ ^ 2 ≤ 4 := by
+        ‖transported + connection‖ ^ (2 : ℕ) ≤ 4 := by
   rintro ⟨father, transported, connection,
     hfather, hcolumn, horth, htotal⟩
   exact (not_lt_of_ge htotal)

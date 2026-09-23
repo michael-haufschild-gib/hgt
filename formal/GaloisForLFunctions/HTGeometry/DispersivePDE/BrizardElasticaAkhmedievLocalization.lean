@@ -15,30 +15,30 @@ open Filter
 
 theorem akhmedievNumeratorSq_sub_denominator_sq
     (φ : BreatherAngle) (ξ τ : ℝ) :
-    akhmedievNumeratorSq φ ξ τ - akhmedievDenominator φ ξ τ ^ 2 =
-      4 * Real.sin (φ : ℝ) ^ 2 * Real.cos (φ : ℝ) *
+    akhmedievNumeratorSq φ ξ τ - akhmedievDenominator φ ξ τ ^ (2 : ℕ) =
+      4 * Real.sin (φ : ℝ) ^ (2 : ℕ) * Real.cos (φ : ℝ) *
         (Real.cosh (akhmedievOmega φ * τ) *
             Real.cos (akhmedievWaveNumber φ * ξ) - Real.cos (φ : ℝ)) := by
   rw [akhmedievNumeratorSq, akhmedievDenominator, Real.cos_two_mul,
     Real.sin_two_mul]
   rw [show (Real.sinh (akhmedievOmega φ * τ) *
-      (2 * Real.sin (φ : ℝ) * Real.cos (φ : ℝ))) ^ 2 =
-      4 * Real.sinh (akhmedievOmega φ * τ) ^ 2 * Real.sin (φ : ℝ) ^ 2 *
-        Real.cos (φ : ℝ) ^ 2 by ring]
-  have hsin : Real.sin (φ : ℝ) ^ 2 = 1 - Real.cos (φ : ℝ) ^ 2 := by
+      (2 * Real.sin (φ : ℝ) * Real.cos (φ : ℝ))) ^ (2 : ℕ) =
+      4 * Real.sinh (akhmedievOmega φ * τ) ^ (2 : ℕ) * Real.sin (φ : ℝ) ^ (2 : ℕ) *
+        Real.cos (φ : ℝ) ^ (2 : ℕ) by ring]
+  have hsin : Real.sin (φ : ℝ) ^ (2 : ℕ) = 1 - Real.cos (φ : ℝ) ^ (2 : ℕ) := by
     nlinarith [Real.sin_sq_add_cos_sq (φ : ℝ)]
   rw [Real.sinh_sq, hsin]
   ring
 
 noncomputable def akhmedievLocalizationCorrection
     (φ : BreatherAngle) (ξ τ : ℝ) : ℝ :=
-  2 * Real.sin (φ : ℝ) ^ 2 * Real.cos (φ : ℝ) *
+  2 * Real.sin (φ : ℝ) ^ (2 : ℕ) * Real.cos (φ : ℝ) *
     (Real.cosh (akhmedievOmega φ * τ) * Real.cos (akhmedievWaveNumber φ * ξ) -
-      Real.cos (φ : ℝ)) / akhmedievDenominator φ ξ τ ^ 2
+      Real.cos (φ : ℝ)) / akhmedievDenominator φ ξ τ ^ (2 : ℕ)
 
 theorem norm_akhmedievBreather_sq_eq_background_add
     (φ : BreatherAngle) (ξ τ : ℝ) :
-    ‖akhmedievBreather φ ξ τ‖ ^ 2 =
+    ‖akhmedievBreather φ ξ τ‖ ^ (2 : ℕ) =
       1 / 2 + akhmedievLocalizationCorrection φ ξ τ := by
   rw [norm_akhmedievBreather_sq, akhmedievLocalizationCorrection]
   have hdiff := akhmedievNumeratorSq_sub_denominator_sq φ ξ τ
@@ -66,48 +66,48 @@ theorem tendsto_akhmedievLocalizationCorrection_atTop
   have hC : Tendsto C atTop atTop := tendsto_akhmedievCosh_atTop φ
   have hR : Tendsto (fun τ => (C τ)⁻¹) atTop (nhds 0) :=
     tendsto_inv_atTop_zero.comp hC
-  have hR2 : Tendsto (fun τ => (C τ)⁻¹ ^ 2) atTop (nhds 0) := by
+  have hR2 : Tendsto (fun τ => (C τ)⁻¹ ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa using hR.pow 2
-  have hnum : Tendsto (fun τ => y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ 2)
+  have hnum : Tendsto (fun τ => y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ (2 : ℕ))
       atTop (nhds 0) := by
     simpa using (tendsto_const_nhds.mul hR).sub (tendsto_const_nhds.mul hR2)
   have hbase : Tendsto (fun τ => 1 - c * y * (C τ)⁻¹) atTop (nhds 1) := by
     simpa using tendsto_const_nhds.sub (tendsto_const_nhds.mul hR)
-  have hden : Tendsto (fun τ => (1 - c * y * (C τ)⁻¹) ^ 2) atTop (nhds 1) := by
+  have hden : Tendsto (fun τ => (1 - c * y * (C τ)⁻¹) ^ (2 : ℕ)) atTop (nhds 1) := by
     simpa using hbase.pow 2
   have hquot : Tendsto
-      (fun τ => (y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ 2) /
-        (1 - c * y * (C τ)⁻¹) ^ 2) atTop (nhds 0) := by
+      (fun τ => (y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ (2 : ℕ)) /
+        (1 - c * y * (C τ)⁻¹) ^ (2 : ℕ)) atTop (nhds 0) := by
     change Tendsto
-      ((fun τ => y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ 2) /
-        (fun τ => (1 - c * y * (C τ)⁻¹) ^ 2)) atTop (nhds 0)
+      ((fun τ => y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ (2 : ℕ)) /
+        (fun τ => (1 - c * y * (C τ)⁻¹) ^ (2 : ℕ))) atTop (nhds 0)
     simpa using hnum.div hden (by norm_num : (1 : ℝ) ≠ 0)
   have hscaled : Tendsto
-      (fun τ => (2 * Real.sin (φ : ℝ) ^ 2 * c) *
-        ((y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ 2) /
-          (1 - c * y * (C τ)⁻¹) ^ 2)) atTop (nhds 0) := by
+      (fun τ => (2 * Real.sin (φ : ℝ) ^ (2 : ℕ) * c) *
+        ((y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ (2 : ℕ)) /
+          (1 - c * y * (C τ)⁻¹) ^ (2 : ℕ))) atTop (nhds 0) := by
     simpa using (tendsto_const_nhds.mul hquot : Tendsto
-      (fun τ => (2 * Real.sin (φ : ℝ) ^ 2 * c) *
-        ((y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ 2) /
-          (1 - c * y * (C τ)⁻¹) ^ 2)) atTop
-      (nhds ((2 * Real.sin (φ : ℝ) ^ 2 * c) * 0)))
+      (fun τ => (2 * Real.sin (φ : ℝ) ^ (2 : ℕ) * c) *
+        ((y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ (2 : ℕ)) /
+          (1 - c * y * (C τ)⁻¹) ^ (2 : ℕ))) atTop
+      (nhds ((2 * Real.sin (φ : ℝ) ^ (2 : ℕ) * c) * 0)))
   apply hscaled.congr'
   filter_upwards with τ
   have hCne : C τ ≠ 0 := ne_of_gt (Real.cosh_pos _)
-  change (2 * Real.sin (φ : ℝ) ^ 2 * c) *
-      ((y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ 2) /
-        (1 - c * y * (C τ)⁻¹) ^ 2) =
+  change (2 * Real.sin (φ : ℝ) ^ (2 : ℕ) * c) *
+      ((y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ (2 : ℕ)) /
+        (1 - c * y * (C τ)⁻¹) ^ (2 : ℕ)) =
     akhmedievLocalizationCorrection φ ξ τ
   rw [akhmedievLocalizationCorrection, akhmedievDenominator]
-  change (2 * Real.sin (φ : ℝ) ^ 2 * c) *
-      ((y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ 2) /
-        (1 - c * y * (C τ)⁻¹) ^ 2) =
-    2 * Real.sin (φ : ℝ) ^ 2 * c * (C τ * y - c) / (C τ - c * y) ^ 2
+  change (2 * Real.sin (φ : ℝ) ^ (2 : ℕ) * c) *
+      ((y * (C τ)⁻¹ - c * (C τ)⁻¹ ^ (2 : ℕ)) /
+        (1 - c * y * (C τ)⁻¹) ^ (2 : ℕ)) =
+    2 * Real.sin (φ : ℝ) ^ (2 : ℕ) * c * (C τ * y - c) / (C τ - c * y) ^ (2 : ℕ)
   field_simp [hCne]
 
 theorem tendsto_norm_akhmedievBreather_sq_atTop
     (φ : BreatherAngle) (ξ : ℝ) :
-    Tendsto (fun τ => ‖akhmedievBreather φ ξ τ‖ ^ 2) atTop (nhds (1 / 2)) := by
+    Tendsto (fun τ => ‖akhmedievBreather φ ξ τ‖ ^ (2 : ℕ)) atTop (nhds (1 / 2)) := by
   have h : Tendsto (fun τ => (1 / 2 : ℝ) + akhmedievLocalizationCorrection φ ξ τ)
       atTop (nhds (1 / 2)) := by
     simpa using (tendsto_const_nhds.add

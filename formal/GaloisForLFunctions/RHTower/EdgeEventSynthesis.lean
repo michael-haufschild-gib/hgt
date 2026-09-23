@@ -149,16 +149,16 @@ theorem exists_height_net_rate_ge {P : Finset ℕ} {σ B_D ρ₀ : ℝ} (hσ0 : 
   have hapos : 0 < a := by linarith
   have hlog : 2 * C + 4 ≤ Real.log (a / (2 * Real.pi)) := hA₀ a haA₀
   -- the correction terms are small at height ≥ 12
-  have hcorr1 : 4 / a ^ 2 ≤ 4 / 144 := by
+  have hcorr1 : 4 / a ^ (2 : ℕ) ≤ 4 / 144 := by
     apply div_le_div_of_nonneg_left (by norm_num) (by norm_num) (by nlinarith)
   have hcorrπ : Real.pi / a ≤ Real.pi / 12 :=
     div_le_div_of_nonneg_left Real.pi_pos.le (by norm_num) ha12
   have h1s' : 1 - σ ≤ 1 := by linarith [hσ0]
-  have hcorrσ : (1 - σ) / a ^ 2 ≤ 1 / 144 :=
+  have hcorrσ : (1 - σ) / a ^ (2 : ℕ) ≤ 1 / 144 :=
     div_le_div₀ (by norm_num) h1s' (by norm_num) (by nlinarith)
   have hπ : Real.pi < 3.15 := Real.pi_lt_d2
   unfold stripFloor
-  have hbound : (4 / a ^ 2 + Real.pi / a) ≤ 4 / 144 + 3.15 / 12 := by
+  have hbound : (4 / a ^ (2 : ℕ) + Real.pi / a) ≤ 4 / 144 + 3.15 / 12 := by
     nlinarith [hπ, hcorrπ, hcorr1]
   linarith [hlog, hbound, hcorrσ, hC]
 

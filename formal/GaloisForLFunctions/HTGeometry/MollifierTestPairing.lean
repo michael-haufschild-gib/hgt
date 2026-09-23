@@ -37,11 +37,11 @@ theorem lineConvolution_flip (g V : ℝ → ℝ) (x : ℝ) :
 moves onto the test side. -/
 theorem integral_lineConvolution_mul_test {g V φ : ℝ → ℝ}
     (hgc : Continuous g) (hgsupp : HasCompactSupport g)
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ)))
     (hφc : Continuous φ) (hφsupp : HasCompactSupport φ) :
     (∫ x, lineConvolution g V x * φ x) = ∫ t, V t * ∫ u, g u * φ (t + u) := by
   have hVm : AEStronglyMeasurable V volume := hVmm.aestronglyMeasurable
-  have hg2 : Integrable (fun u => g u ^ 2) :=
+  have hg2 : Integrable (fun u => g u ^ (2 : ℕ)) :=
     (hgc.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hgsupp)
   have hφint : Integrable φ := hφc.integrable_of_hasCompactSupport hφsupp
   set F : ℝ × ℝ → ℝ := fun p => g (p.1 - p.2) * V p.2 * φ p.1 with hF
@@ -59,42 +59,42 @@ theorem integral_lineConvolution_mul_test {g V φ : ℝ → ℝ}
     refine this.congr ?_
     filter_upwards with t
     rw [hF]
-  have hCg : ∀ x : ℝ, (∫ t, |g (x - t) * V t|) ^ 2 ≤ (∫ u, g u ^ 2) * ∫ t, V t ^ 2 := by
+  have hCg : ∀ x : ℝ, (∫ t, |g (x - t) * V t|) ^ (2 : ℕ) ≤ (∫ u, g u ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ) := by
     intro x
     have hgabsm : AEStronglyMeasurable (fun t => |g (x - t)|) volume :=
       ((hgc.comp (continuous_const.sub continuous_id)).abs).aestronglyMeasurable
     have hVabsm : AEStronglyMeasurable (fun t => |V t|) volume :=
       (continuous_abs.measurable.comp hVmm).aestronglyMeasurable
-    have hgabs2 : Integrable (fun t => |g (x - t)| ^ 2) := by
+    have hgabs2 : Integrable (fun t => |g (x - t)| ^ (2 : ℕ)) := by
       refine (integrable_sq_comp_sub hg2 x).congr ?_
       filter_upwards with t
-      show g (x - t) ^ 2 = |g (x - t)| ^ 2
+      show g (x - t) ^ (2 : ℕ) = |g (x - t)| ^ (2 : ℕ)
       rw [sq_abs]
-    have hVabs2 : Integrable (fun t => |V t| ^ 2) := by
+    have hVabs2 : Integrable (fun t => |V t| ^ (2 : ℕ)) := by
       refine hV2.congr ?_
       filter_upwards with t
-      show V t ^ 2 = |V t| ^ 2
+      show V t ^ (2 : ℕ) = |V t| ^ (2 : ℕ)
       rw [sq_abs]
     have habs := sq_integral_mul_le (μ := (volume : Measure ℝ)) hgabsm hVabsm hgabs2 hVabs2
     have heq1 : (∫ t, |g (x - t)| * |V t|) = ∫ t, |g (x - t) * V t| := by
       refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
       show |g (x - t)| * |V t| = |g (x - t) * V t|
       rw [abs_mul]
-    have heq2 : (∫ t, |g (x - t)| ^ 2) = ∫ u, g u ^ 2 := by
-      have h1 : (∫ t, |g (x - t)| ^ 2) = ∫ t, g (x - t) ^ 2 := by
+    have heq2 : (∫ t, |g (x - t)| ^ (2 : ℕ)) = ∫ u, g u ^ (2 : ℕ) := by
+      have h1 : (∫ t, |g (x - t)| ^ (2 : ℕ)) = ∫ t, g (x - t) ^ (2 : ℕ) := by
         refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-        show |g (x - t)| ^ 2 = g (x - t) ^ 2
+        show |g (x - t)| ^ (2 : ℕ) = g (x - t) ^ (2 : ℕ)
         rw [sq_abs]
       rw [h1, integral_sq_comp_sub]
-    have heq3 : (∫ t, |V t| ^ 2) = ∫ t, V t ^ 2 := by
+    have heq3 : (∫ t, |V t| ^ (2 : ℕ)) = ∫ t, V t ^ (2 : ℕ) := by
       refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-      show |V t| ^ 2 = V t ^ 2
+      show |V t| ^ (2 : ℕ) = V t ^ (2 : ℕ)
       rw [sq_abs]
     rw [heq1, heq2, heq3] at habs
     exact habs
-  have hCgnn : (0 : ℝ) ≤ (∫ u, g u ^ 2) * ∫ t, V t ^ 2 :=
+  have hCgnn : (0 : ℝ) ≤ (∫ u, g u ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ) :=
     mul_nonneg (integral_nonneg fun u => sq_nonneg _) (integral_nonneg fun t => sq_nonneg _)
-  set Cg : ℝ := Real.sqrt ((∫ u, g u ^ 2) * ∫ t, V t ^ 2) with hCgdef
+  set Cg : ℝ := Real.sqrt ((∫ u, g u ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ)) with hCgdef
   have hmass : ∀ x : ℝ, (∫ t, |g (x - t) * V t|) ≤ Cg := by
     intro x
     have hnn : (0 : ℝ) ≤ ∫ t, |g (x - t) * V t| := integral_nonneg fun t => abs_nonneg _

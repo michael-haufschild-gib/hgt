@@ -9,13 +9,13 @@ The zero-free margin contains more information than the unconditional constant e
 copy.  Mass shifting contracts transverse displacement.  Splitting each trace term at Poisson
 height
 
-`|u| / log (|u| + 9)^9`
+`|u| / log (|u| + 9)^(9 : ℕ)`
 
 then balances two mechanisms: low points spend the zero-free margin, while high points spend half
 of the real-time Laplace decay.  The resulting trace and literal von-Mangoldt source have the
 unconditional envelope
 
-`exp (|u|/2 - min(C, sigma/2) |u| / log(|u|+9)^9)`.
+`exp (|u|/2 - min(C, sigma/2) |u| / log(|u|+9)^(9 : ℕ))`.
 
 This is strictly smaller than every fixed constant times `exp (|u|/2)` at large height.  It does
 not assert boundedness and uses no RH hypothesis.

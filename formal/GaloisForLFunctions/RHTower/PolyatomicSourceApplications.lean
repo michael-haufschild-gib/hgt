@@ -29,7 +29,7 @@ theorem gammaLaplaceAtom_eq_collisionLaplaceAtom (a : ℝ) (n : ℕ) :
   filter_upwards [gammaLaplaceAtom_ae ⟨Real.exp a, Real.exp_pos a⟩ n,
     collisionLaplaceAtom_ae a 0 (Real.sqrt ((n : ℝ) + 1 / 2))] with t hg hc
   rw [hg, hc]
-  have hs : Real.sqrt ((n : ℝ) + 1 / 2) ^ 2 = (n : ℝ) + 1 / 2 :=
+  have hs : Real.sqrt ((n : ℝ) + 1 / 2) ^ (2 : ℕ) = (n : ℝ) + 1 / 2 :=
     Real.sq_sqrt (by positivity)
   simp only [gammaLaplaceFeature, collisionLaplaceFeature, Real.exp_zero, hs]
   congr 3
@@ -56,8 +56,8 @@ theorem gammaLaplaceAtom_gram_det_ne_zero (a : ℝ) (N : ℕ) :
 
 /-- The corpus's conservative Markov flow is the equal-weight collision-mode relaxation. -/
 theorem reflectedBiHeatMarkovFlow_eq_collisionRelaxation (r t : ℝ) (p : ℝ × ℝ) :
-    reflectedBiHeatMarkovFlow (r ^ 2 / 2) t p = collisionRelaxation 1 r t p := by
-  have he : Real.exp (-2 * (r ^ 2 / 2) * t) = Real.exp (-r ^ 2 * t) := by
+    reflectedBiHeatMarkovFlow (r ^ (2 : ℕ) / 2) t p = collisionRelaxation 1 r t p := by
+  have he : Real.exp (-2 * (r ^ (2 : ℕ) / 2) * t) = Real.exp (-r ^ (2 : ℕ) * t) := by
     congr 1
     ring
   apply Prod.ext <;>

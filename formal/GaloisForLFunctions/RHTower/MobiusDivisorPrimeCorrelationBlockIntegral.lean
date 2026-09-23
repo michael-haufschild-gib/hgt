@@ -17,7 +17,7 @@ namespace RHTower
 
 /-- The physical product kernel of the complete discrete prime-release source. -/
 def mobiusDivisorPrimeCorrelationKernel (P : Finset ℕ) (p : ℕ) (u : ℝ) : ℝ :=
-  2*Real.sqrt p*mobiusDivisorContinuousHead P u*mobiusDivisorContinuousHead P (u/p)/u^3
+  2*Real.sqrt p*mobiusDivisorContinuousHead P u*mobiusDivisorContinuousHead P (u/p)/u^(3 : ℕ)
 
 /-- The literal prime-correlation kernel is absolutely integrable on its full ray. -/
 theorem integrable_mobiusDivisorPrimeCorrelationKernel (P : Finset ℕ) {p : ℕ} (hp : 0<p) :

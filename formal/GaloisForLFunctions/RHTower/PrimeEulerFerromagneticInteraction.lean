@@ -12,7 +12,7 @@ ferromagnetic coefficient
 Keeping `exp(-log(p) I z)` as the field and moving `p⁻¹⁄²` into the interaction gives the
 source-native block
 
-`1 + 2 c_p u_p(z) + u_p(z)^2`.
+`1 + 2 c_p u_p(z) + u_p(z)^(2 : ℕ)`.
 
 This file proves that every zero of each such block, and of every finite product of them, lies on
 the centered critical line.  It is a positive successor to the amplitude-displacement no-go, not

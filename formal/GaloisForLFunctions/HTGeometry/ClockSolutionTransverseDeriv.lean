@@ -27,7 +27,7 @@ theorem continuousOn_clampedSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) 
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1) :
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1) :
     ContinuousOn (fun q : (ℝ × ℝ) × ℂ => clampedSolution V T q.1 q.2) (univ ×ˢ imStrip ρ) :=
   continuousOn_clockSolution_clamped hρ₀ hV hMv0 hMv hρ0 hρ hT hsmall
 
@@ -36,7 +36,7 @@ theorem differentiableOn_clampedSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ�
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (p : ℝ × ℝ) : DifferentiableOn ℂ (clampedSolution V T p) (imStrip ρ) :=
   differentiableOn_clockSolution hρ₀ hV hMv0 hMv hρ0 hρ hT hsmall
     (abs_boxClamp_le hT p.1) (abs_boxClamp_le hT p.2)
@@ -47,7 +47,7 @@ theorem continuousAt_deriv_clampedSolution {ρ₀ Mv ρ ρ₁ T : ℝ} (hρ₀ :
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) {q : (ℝ × ℝ) × ℂ} (hq : q.2 ∈ imStrip ρ₁) :
     ContinuousAt (fun q' : (ℝ × ℝ) × ℂ => deriv (clampedSolution V T q'.1) q'.2) q :=
   continuousAt_deriv_of_strip hρ₁ hρ₁0
@@ -60,7 +60,7 @@ theorem continuousAt_deriv_deriv_clampedSolution {ρ₀ Mv ρ ρ₁ T : ℝ} (h�
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) {q : (ℝ × ℝ) × ℂ} (hq : q.2 ∈ imStrip ρ₁) :
     ContinuousAt (fun q' : (ℝ × ℝ) × ℂ => deriv (deriv (clampedSolution V T q'.1)) q'.2) q :=
   continuousAt_deriv_deriv_of_strip hρ₁ hρ₁0
@@ -74,7 +74,7 @@ theorem continuousAt_clampedStep_joint {ρ₀ Mv ρ ρ₁ T : ℝ} (hρ₀ : 0 <
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) {q : (ℝ × ℝ) × ℂ} (hq : q.2 ∈ imStrip ρ₁) :
     ContinuousAt (fun q' : (ℝ × ℝ) × ℂ => clampedStep V T q'.2 q'.1.1 q'.1.2) q := by
   have hopen : IsOpen ((univ : Set (ℝ × ℝ)) ×ˢ imStrip ρ) :=

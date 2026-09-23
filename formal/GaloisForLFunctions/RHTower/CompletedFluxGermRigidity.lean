@@ -71,7 +71,7 @@ theorem xi_shift_eq_const_mul_of_seamFlux_germ_eq
     have hdiv := hfa.div hfb hbx
     have hdiv' : deriv ratio x =
         (deriv xi (a + x) * xi (b + x) - xi (a + x) * deriv xi (b + x)) /
-          xi (b + x) ^ 2 := by
+          xi (b + x) ^ (2 : ℕ) := by
       simpa only [ratio, Pi.div_apply] using! hdiv.deriv
     rw [hdiv']
     have hlog : deriv xi (a + x) / xi (a + x) =
@@ -122,7 +122,7 @@ theorem seamFlux_germ_injective {a b : ℂ} (ha : xi a ≠ 0) (hb : xi b ≠ 0)
       _ = c * xi z := by
         congr 2
         ring
-  have hc_sq : c ^ 2 = 1 := by
+  have hc_sq : c ^ (2 : ℕ) = 1 := by
     have hz := hglobal (1 - (2 : ℂ) - h)
     have hz2 := hglobal 2
     have hxi2 : xi (2 : ℂ) ≠ 0 := xi_ne_zero_of_one_le_re (by norm_num)
@@ -130,7 +130,7 @@ theorem seamFlux_germ_injective {a b : ℂ} (ha : xi a ≠ 0) (hb : xi b ≠ 0)
       show 1 - (2 : ℂ) - h = 1 - (2 + h) by ring, xi_one_sub, hz2] at hz
     apply mul_left_cancel₀ hxi2
     calc
-      xi 2 * c ^ 2 = c * (c * xi 2) := by ring
+      xi 2 * c ^ (2 : ℕ) = c * (c * xi 2) := by ring
       _ = xi 2 := hz.symm
       _ = xi 2 * 1 := by ring
   have hperiod : ∀ z : ℂ, xi (z + 2 * h) = xi z := by
@@ -141,7 +141,7 @@ theorem seamFlux_germ_injective {a b : ℂ} (ha : xi a ≠ 0) (hb : xi b ≠ 0)
         ring
       _ = c * xi (z + h) := hglobal (z + h)
       _ = c * (c * xi z) := by rw [hglobal z]
-      _ = c ^ 2 * xi z := by ring
+      _ = c ^ (2 : ℕ) * xi z := by ring
       _ = xi z := by rw [hc_sq, one_mul]
   have hh : h = 0 := by
     by_contra hh0

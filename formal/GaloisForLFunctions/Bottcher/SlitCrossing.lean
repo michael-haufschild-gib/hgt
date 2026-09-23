@@ -40,7 +40,7 @@ theorem exists_slit_sqrt {P : ℂ → ℂ} {rA rB : ℝ} (hrA : 0 < rA) (hAB : r
     (hdne : ∀ v ∈ annulusSet rA rB, deriv P v ≠ 0) (c : ℂ) :
     ∃ θ₀ : ℝ, ∃ σr : ℂ → ℂ,
       AnalyticOnNhd ℂ σr (slitAnnulus rA rB θ₀) ∧
-      (∀ v ∈ slitAnnulus rA rB θ₀, σr v ^ 2 = P v - c) ∧
+      (∀ v ∈ slitAnnulus rA rB θ₀, σr v ^ (2 : ℕ) = P v - c) ∧
       (∀ v ∈ slitAnnulus rA rB θ₀, σr v ≠ 0) ∧
       Set.InjOn σr (slitAnnulus rA rB θ₀) ∧
       (∀ v ∈ slitAnnulus rA rB θ₀, deriv σr v ≠ 0) := by
@@ -49,7 +49,7 @@ theorem exists_slit_sqrt {P : ℂ → ℂ} {rA rB : ℝ} (hrA : 0 < rA) (hAB : r
   have hmain : ∀ θ₀ : ℝ, (∀ v ∈ slitAnnulus rA rB θ₀, P v ≠ c) →
       ∃ σr : ℂ → ℂ,
         AnalyticOnNhd ℂ σr (slitAnnulus rA rB θ₀) ∧
-        (∀ v ∈ slitAnnulus rA rB θ₀, σr v ^ 2 = P v - c) ∧
+        (∀ v ∈ slitAnnulus rA rB θ₀, σr v ^ (2 : ℕ) = P v - c) ∧
         (∀ v ∈ slitAnnulus rA rB θ₀, σr v ≠ 0) ∧
         Set.InjOn σr (slitAnnulus rA rB θ₀) ∧
         (∀ v ∈ slitAnnulus rA rB θ₀, deriv σr v ≠ 0) := by
@@ -79,7 +79,7 @@ theorem exists_slit_sqrt {P : ℂ → ℂ} {rA rB : ℝ} (hrA : 0 < rA) (hAB : r
       exact hinj (hWsub h₁) (hWsub h₂) h3
     · intro v hv
       have hs_d : HasDerivAt s (deriv s v) v := (hs_an v hv).differentiableAt.hasDerivAt
-      have hLd : HasDerivAt (fun x => s x ^ 2) (2 * s v * deriv s v) v := by
+      have hLd : HasDerivAt (fun x => s x ^ (2 : ℕ)) (2 * s v * deriv s v) v := by
         have h4 := hs_d.pow 2
         have h5 : (2:ℕ) * s v ^ (2 - 1) * deriv s v = 2 * s v * deriv s v := by
           push_cast
@@ -87,7 +87,7 @@ theorem exists_slit_sqrt {P : ℂ → ℂ} {rA rB : ℝ} (hrA : 0 < rA) (hAB : r
         rwa [h5] at h4
       have hRd : HasDerivAt (fun x => P x - c) (deriv P v) v :=
         ((han v (hWsub hv)).differentiableAt.hasDerivAt).sub_const c
-      have hEqF : (fun x => s x ^ 2) =ᶠ[nhds v] (fun x => P x - c) := by
+      have hEqF : (fun x => s x ^ (2 : ℕ)) =ᶠ[nhds v] (fun x => P x - c) := by
         filter_upwards [hWopen.mem_nhds hv] with z hz
         exact hs_sq z hz
       have h7 : HasDerivAt (fun x => P x - c) (2 * s v * deriv s v) v :=

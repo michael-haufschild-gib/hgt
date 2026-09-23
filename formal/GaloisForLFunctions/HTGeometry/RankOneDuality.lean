@@ -34,12 +34,12 @@ theorem rankOneDualMultiplier_mul_left (g : G) : rankOneDualMultiplier g * g = 1
 /-- A rank-one multiplier is equal to its dual exactly when it has square one. -/
 @[aesop norm simp]
 theorem rankOne_selfDualMultiplier_iff_sq_eq_one (g : G) :
-    rankOneDualMultiplier g = g ↔ g ^ 2 = 1 := by
+    rankOneDualMultiplier g = g ↔ g ^ (2 : ℕ) = 1 := by
   constructor
   · intro h
     have hinv : g⁻¹ = g := by simpa [rankOneDualMultiplier] using h
     calc
-      g ^ 2 = g * g := by rw [pow_two]
+      g ^ (2 : ℕ) = g * g := by rw [pow_two]
       _ = g⁻¹ * g := by rw [hinv]
       _ = 1 := by simp
   · intro h
@@ -52,7 +52,7 @@ theorem rankOne_selfDualMultiplier_iff_sq_eq_one (g : G) :
 
 /-- A multiplier whose square is not one cannot be self-dual. -/
 @[aesop safe]
-theorem rankOne_noSelfDualMultiplier_of_sq_ne_one (g : G) (h : g ^ 2 ≠ 1) :
+theorem rankOne_noSelfDualMultiplier_of_sq_ne_one (g : G) (h : g ^ (2 : ℕ) ≠ 1) :
     rankOneDualMultiplier g ≠ g := by
   intro hself
   exact h ((rankOne_selfDualMultiplier_iff_sq_eq_one g).mp hself)

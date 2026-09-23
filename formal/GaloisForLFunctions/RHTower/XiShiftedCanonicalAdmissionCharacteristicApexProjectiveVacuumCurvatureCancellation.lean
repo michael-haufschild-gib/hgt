@@ -24,7 +24,7 @@ open XiShiftedCanonicalAdmission
 def xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature (y : ℝ) (n : ℕ) : ℝ :=
   deriv (fun v => xiShiftedCanonicalAdmissionAdjacentEdge v (n + 1)) y *
       xiShiftedCanonicalAdmissionApexProjectiveTopRatio y n +
-    y⁻¹ ^ 2 + deriv (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) y
+    y⁻¹ ^ (2 : ℕ) + deriv (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) y
 
 private theorem hasDerivAt_xiShiftedCanonicalAdmissionAdjacentEdge_succ
     {y : ℝ} (hy : 0 < y) {n : ℕ} (hn : 0 < n)
@@ -66,8 +66,8 @@ private theorem monicOrthoFirstCoeff_normalizedCentralBinom (n : ℕ) :
 /-- Effective norm-decay rate has exact weight-two arcsine recession constant. -/
 theorem tendsto_square_mul_xiShiftedCanonicalAdmissionEffectivityRate_succ (n : ℕ) :
     Tendsto
-      (fun w : ℝ => w ^ 2 *
-        xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) (n + 1))
+      (fun w : ℝ => w ^ (2 : ℕ) *
+        xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) (n + 1))
       atTop (nhds ((4 * (n + 1 : ℕ) + 1 : ℕ) / 2 : ℝ)) := by
   let m := n + 1
   have hfirst := (tendsto_dimensionless_monicOrthoFirstCoeff m).const_mul (-2 : ℝ)
@@ -93,13 +93,13 @@ theorem tendsto_square_mul_xiShiftedCanonicalAdmissionEffectivityRate_succ (n : 
       (xiShiftedFarRightNormalizedMoment w) (m + 2)).PosDef :=
     XiShiftedCanonicalAdmission.momentHankel_posDef_of_le (by omega) hN'
   have hAfirst : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (m + 2)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (m + 2)).PosDef :=
     xiShiftedMomentHankel_posDef_of_le (by omega) hA
   have hfirstScale := normalizedFirstCoeff_eq_square_mul_actualFirstCoeff
     hw m hNfirst hAfirst
   have halphaScale := normalizedAlpha_eq_square_mul_actualAlpha hw m hN' hA
   have hAm : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (m + 2)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (m + 2)).PosDef :=
     xiShiftedMomentHankel_posDef_of_le (by omega) hA
   rw [xiShiftedCanonicalAdmissionEffectivityRate,
     xiShiftedCanonicalAdmissionFirstCoeff_eq_monicOrthoFirstCoeff (by omega) hAm,
@@ -112,16 +112,16 @@ theorem tendsto_square_mul_xiShiftedCanonicalAdmissionEffectivityRate_succ (n : 
 theorem tendsto_sixth_mul_deriv_xiShiftedCanonicalAdmissionAdjacentEdge_succ_succ
     (n : ℕ) :
     Tendsto
-      (fun w : ℝ => w ^ 6 * deriv
-        (fun y => xiShiftedCanonicalAdmissionAdjacentEdge y (n + 2)) (w ^ 2))
+      (fun w : ℝ => w ^ (6 : ℕ) * deriv
+        (fun y => xiShiftedCanonicalAdmissionAdjacentEdge y (n + 2)) (w ^ (2 : ℕ)))
       atTop (nhds (-1 / 8 : ℝ)) := by
   let m := n + 1
-  let b : ℝ → ℝ := fun w => w ^ 4 * HTGeometry.monicOrthoBeta
-    (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (m + 1)
-  let e0 : ℝ → ℝ := fun w => w ^ 2 *
-    xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) m
-  let e1 : ℝ → ℝ := fun w => w ^ 2 *
-    xiShiftedCanonicalAdmissionEffectivityRate (w ^ 2) (m + 1)
+  let b : ℝ → ℝ := fun w => w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta
+    (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (m + 1)
+  let e0 : ℝ → ℝ := fun w => w ^ (2 : ℕ) *
+    xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) m
+  let e1 : ℝ → ℝ := fun w => w ^ (2 : ℕ) *
+    xiShiftedCanonicalAdmissionEffectivityRate (w ^ (2 : ℕ)) (m + 1)
   have hb : Tendsto b atTop (nhds (1 / 16 : ℝ)) :=
     tendsto_fourth_mul_xiShiftedActualMonicOrthoBeta_succ_sixteenth (by omega)
   have he0 : Tendsto e0 atTop (nhds ((4 * m + 1 : ℕ) / 2 : ℝ)) := by
@@ -141,14 +141,14 @@ theorem tendsto_sixth_mul_deriv_xiShiftedCanonicalAdmissionAdjacentEdge_succ_suc
   filter_upwards [xiShiftedMomentHankelMatrix_squareParam_posDef_eventually (m + 4),
     eventually_gt_atTop (1 : ℝ)] with w hA hw
   have hAflow : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (m + 3)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (m + 3)).PosDef :=
     xiShiftedMomentHankel_posDef_of_le (by omega) hA
   have hB := hasDerivAt_xiShiftedCanonicalAdmissionAdjacentEdge_succ
     (sq_pos_of_pos (lt_trans zero_lt_one hw)) (n := m) (by omega) hAflow
   have hBval := xiShiftedCanonicalAdmissionAdjacentEdge_eq_monicOrthoBeta
     (n := m + 1) (by omega) hAflow
-  change b w * (e0 w - e1 w) = w ^ 6 * deriv
-    (fun y => xiShiftedCanonicalAdmissionAdjacentEdge y (m + 1)) (w ^ 2)
+  change b w * (e0 w - e1 w) = w ^ (6 : ℕ) * deriv
+    (fun y => xiShiftedCanonicalAdmissionAdjacentEdge y (m + 1)) (w ^ (2 : ℕ))
   rw [hB.deriv, hBval]
   simp only [b, e0, e1]
   have hw0 : w ≠ 0 := ne_of_gt (lt_trans zero_lt_one hw)
@@ -158,16 +158,16 @@ theorem tendsto_sixth_mul_deriv_xiShiftedCanonicalAdmissionAdjacentEdge_succ_suc
 theorem tendsto_fourth_mul_deriv_xiShiftedCanonicalAdmissionAlpha_succ_succ
     (n : ℕ) :
     Tendsto
-      (fun w : ℝ => w ^ 4 * deriv
-        (fun y => xiShiftedCanonicalAdmissionAlpha y (n + 2)) (w ^ 2))
+      (fun w : ℝ => w ^ (4 : ℕ) * deriv
+        (fun y => xiShiftedCanonicalAdmissionAlpha y (n + 2)) (w ^ (2 : ℕ)))
       atTop (nhds (-1 / 2 : ℝ)) := by
   let m := n + 1
-  let b0 : ℝ → ℝ := fun w => w ^ 4 * HTGeometry.monicOrthoBeta
-    (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (m + 1)
-  let b1 : ℝ → ℝ := fun w => w ^ 4 * HTGeometry.monicOrthoBeta
-    (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (m + 2)
-  let a : ℝ → ℝ := fun w => w ^ 2 * HTGeometry.monicOrthoAlpha
-    (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (m + 1)
+  let b0 : ℝ → ℝ := fun w => w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta
+    (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (m + 1)
+  let b1 : ℝ → ℝ := fun w => w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta
+    (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (m + 2)
+  let a : ℝ → ℝ := fun w => w ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha
+    (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (m + 1)
   have hb0 : Tendsto b0 atTop (nhds (1 / 16 : ℝ)) :=
     tendsto_fourth_mul_xiShiftedActualMonicOrthoBeta_succ_sixteenth (by omega)
   have hb1 : Tendsto b1 atTop (nhds (1 / 16 : ℝ)) :=
@@ -177,7 +177,7 @@ theorem tendsto_fourth_mul_deriv_xiShiftedCanonicalAdmissionAlpha_succ_succ
   have hraw := (hb0.const_mul (2 * (m : ℝ))).sub
     ((hb1.const_mul (2 * ((m + 2 : ℕ) : ℝ))).add (ha.pow 2))
   have hlim : 2 * (m : ℝ) * (1 / 16 : ℝ) -
-      (2 * ((m + 2 : ℕ) : ℝ) * (1 / 16 : ℝ) + (1 / 2 : ℝ) ^ 2) =
+      (2 * ((m + 2 : ℕ) : ℝ) * (1 / 16 : ℝ) + (1 / 2 : ℝ) ^ (2 : ℕ)) =
       -1 / 2 := by
     push_cast
     ring
@@ -186,14 +186,14 @@ theorem tendsto_fourth_mul_deriv_xiShiftedCanonicalAdmissionAlpha_succ_succ
   filter_upwards [xiShiftedMomentHankelMatrix_squareParam_posDef_eventually (m + 5),
     eventually_gt_atTop (1 : ℝ)] with w hA hw
   have hAflow : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) ((m + 1) + 2)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) ((m + 1) + 2)).PosDef :=
     xiShiftedMomentHankel_posDef_of_le (by omega) hA
   have hflow := hasDerivAt_xiShiftedCanonicalAdmissionAlpha_eq_adjacentJacobiFlow
     (sq_pos_of_pos (lt_trans zero_lt_one hw)) (n := m + 1) (by omega) hAflow
   change 2 * (m : ℝ) * b0 w -
-      (2 * ((m + 2 : ℕ) : ℝ) * b1 w + a w ^ 2) =
-    w ^ 4 * deriv
-      (fun y => xiShiftedCanonicalAdmissionAlpha y (m + 1)) (w ^ 2)
+      (2 * ((m + 2 : ℕ) : ℝ) * b1 w + a w ^ (2 : ℕ)) =
+    w ^ (4 : ℕ) * deriv
+      (fun y => xiShiftedCanonicalAdmissionAlpha y (m + 1)) (w ^ (2 : ℕ))
   rw [hflow.deriv]
   simp only [b0, b1, a]
   push_cast
@@ -202,16 +202,16 @@ theorem tendsto_fourth_mul_deriv_xiShiftedCanonicalAdmissionAlpha_succ_succ
 /-- The full projective-renewal curvature has vanishing weight-four recession limit. -/
 theorem tendsto_fourth_mul_xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature_succ_zero
     (n : ℕ) :
-    Tendsto (fun w : ℝ => w ^ 4 *
-      xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature (w ^ 2) (n + 1))
+    Tendsto (fun w : ℝ => w ^ (4 : ℕ) *
+      xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature (w ^ (2 : ℕ)) (n + 1))
       atTop (nhds 0) := by
   let m := n + 1
-  let bd : ℝ → ℝ := fun w => w ^ 6 * deriv
-    (fun y => xiShiftedCanonicalAdmissionAdjacentEdge y (m + 1)) (w ^ 2)
+  let bd : ℝ → ℝ := fun w => w ^ (6 : ℕ) * deriv
+    (fun y => xiShiftedCanonicalAdmissionAdjacentEdge y (m + 1)) (w ^ (2 : ℕ))
   let r : ℝ → ℝ := fun w =>
-    xiShiftedCanonicalAdmissionApexProjectiveTopRatio (w ^ 2) m / w ^ 2
-  let ad : ℝ → ℝ := fun w => w ^ 4 * deriv
-    (fun y => xiShiftedCanonicalAdmissionAlpha y (m + 1)) (w ^ 2)
+    xiShiftedCanonicalAdmissionApexProjectiveTopRatio (w ^ (2 : ℕ)) m / w ^ (2 : ℕ)
+  let ad : ℝ → ℝ := fun w => w ^ (4 : ℕ) * deriv
+    (fun y => xiShiftedCanonicalAdmissionAlpha y (m + 1)) (w ^ (2 : ℕ))
   have hbd : Tendsto bd atTop (nhds (-1 / 8 : ℝ)) := by
     simpa only [m] using
       tendsto_sixth_mul_deriv_xiShiftedCanonicalAdmissionAdjacentEdge_succ_succ n
@@ -236,11 +236,11 @@ theorem tendsto_fourth_mul_xiShiftedCanonicalAdmissionApexProjectiveRenewalCurva
 theorem eventually_xiShiftedCanonicalAdmissionApexProjectiveWronskian_renewalDefect_div_sq_eq_curvature
     (n : ℕ) :
     ∀ᶠ w : ℝ in atTop,
-      (xiShiftedCanonicalAdmissionApexProjectiveWronskian (w ^ 2) (n + 2) -
-          xiShiftedCanonicalAdmissionAdjacentEdge (w ^ 2) (n + 2) *
-            xiShiftedCanonicalAdmissionApexProjectiveWronskian (w ^ 2) (n + 1)) /
-          xiShiftedCanonicalAdmissionApexValue (w ^ 2) (n + 2) ^ 2 =
-        xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature (w ^ 2) (n + 1) := by
+      (xiShiftedCanonicalAdmissionApexProjectiveWronskian (w ^ (2 : ℕ)) (n + 2) -
+          xiShiftedCanonicalAdmissionAdjacentEdge (w ^ (2 : ℕ)) (n + 2) *
+            xiShiftedCanonicalAdmissionApexProjectiveWronskian (w ^ (2 : ℕ)) (n + 1)) /
+          xiShiftedCanonicalAdmissionApexValue (w ^ (2 : ℕ)) (n + 2) ^ (2 : ℕ) =
+        xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature (w ^ (2 : ℕ)) (n + 1) := by
   let m := n + 1
   have hQnext := tendsto_xiShiftedDimensionlessAdmission_eval_one
     (by omega : m + 1 ≠ 0)
@@ -259,27 +259,27 @@ theorem eventually_xiShiftedCanonicalAdmissionApexProjectiveWronskian_renewalDef
   have hNnext := XiShiftedCanonicalAdmission.momentHankel_posDef_of_le
     (by omega : m + 1 ≤ m + 5) hN'
   have hAnext : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (m + 1)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (m + 1)).PosDef :=
     xiShiftedMomentHankel_posDef_of_le (by omega) hA
   have hsourceNext :=
     XiShiftedCanonicalAdmission.sourceCoordinateAdmission_eq_actualAdmission
       hw (by omega : 0 < m + 1) (ne_of_gt hNnext.det_pos) (ne_of_gt hAnext.det_pos)
-  have hdenom : xiShiftedCanonicalAdmissionApexValue (w ^ 2) (m + 1) ≠ 0 := by
+  have hdenom : xiShiftedCanonicalAdmissionApexValue (w ^ (2 : ℕ)) (m + 1) ≠ 0 := by
     rw [xiShiftedCanonicalAdmissionApexValue, ← hsourceNext,
       xiShiftedSourceCoordinateAdmission_eval_inv_square hw0]
     exact mul_ne_zero (inv_ne_zero (pow_ne_zero _ hw0)) hQnextNe
   have hArenew : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (m + 4)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (m + 4)).PosDef :=
     xiShiftedMomentHankel_posDef_of_le (by omega) hA
   have hrenew :=
     xiShiftedCanonicalAdmissionApexProjectiveWronskian_degreeRenewal
       (sq_pos_of_pos (lt_trans zero_lt_one hw)) (n := m) (by omega) hArenew
   change
-    (xiShiftedCanonicalAdmissionApexProjectiveWronskian (w ^ 2) (m + 1) -
-        xiShiftedCanonicalAdmissionAdjacentEdge (w ^ 2) (m + 1) *
-          xiShiftedCanonicalAdmissionApexProjectiveWronskian (w ^ 2) m) /
-        xiShiftedCanonicalAdmissionApexValue (w ^ 2) (m + 1) ^ 2 =
-      xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature (w ^ 2) m
+    (xiShiftedCanonicalAdmissionApexProjectiveWronskian (w ^ (2 : ℕ)) (m + 1) -
+        xiShiftedCanonicalAdmissionAdjacentEdge (w ^ (2 : ℕ)) (m + 1) *
+          xiShiftedCanonicalAdmissionApexProjectiveWronskian (w ^ (2 : ℕ)) m) /
+        xiShiftedCanonicalAdmissionApexValue (w ^ (2 : ℕ)) (m + 1) ^ (2 : ℕ) =
+      xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature (w ^ (2 : ℕ)) m
   rw [hrenew]
   unfold xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature
     xiShiftedCanonicalAdmissionApexProjectiveTopRatio
@@ -299,8 +299,8 @@ theorem tendsto_dimensionlessCumulativeJacobiDissipation_succ (n : ℕ) :
   have hflux := (tendsto_dimensionlessCumulativeJacobiFlux m).pow 2
   have hraw := (hsurplus.add hflux).div_const c
   have hlim :
-      ((((2 * m + 1 : ℕ) : ℝ) ^ 2 / 4) +
-          (((2 * m + 1 : ℕ) : ℝ) / 2) ^ 2) / c =
+      ((((2 * m + 1 : ℕ) : ℝ) ^ (2 : ℕ) / 4) +
+          (((2 * m + 1 : ℕ) : ℝ) / 2) ^ (2 : ℕ)) / c =
         ((2 * m + 1 : ℕ) / 2 : ℝ) := by
     dsimp only [c]
     push_cast
@@ -324,7 +324,7 @@ theorem tendsto_dimensionlessCumulativeJacobiDissipation_succ (n : ℕ) :
 theorem tendsto_fourth_mul_xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction_succ_succ
     (n : ℕ) :
     Tendsto
-      (fun w : ℝ => w ^ 4 *
+      (fun w : ℝ => w ^ (4 : ℕ) *
         xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w (n + 2))
       atTop (nhds ((2 * (n + 2 : ℕ) + 1 : ℕ) / 2 : ℝ)) := by
   let m := n + 2
@@ -351,7 +351,7 @@ theorem tendsto_xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature_div_ad
     (n : ℕ) :
     Tendsto
       (fun w : ℝ =>
-        xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature (w ^ 2) (n + 1) /
+        xiShiftedCanonicalAdmissionApexProjectiveRenewalCurvature (w ^ (2 : ℕ)) (n + 1) /
         xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w (n + 2))
       atTop (nhds 0) := by
   have hcurv :=

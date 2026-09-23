@@ -46,7 +46,7 @@ variable {n : ℕ}
 Möbius flow. -/
 def nodeQuadCorrectionTerm (m : ℕ) (x : Fin (n + 1) → ℝ) (i : Fin (n + 1)) : ℝ :=
   (2 * (n : ℝ) + 2) * (2 * nodeLogDeriv x i * (x i) ^ (m + 1) - ((m : ℝ) + 1) * (x i) ^ m)
-    / (nodeSeparation x i) ^ 2
+    / (nodeSeparation x i) ^ (2 : ℕ)
 
 /-- The total departure of the quadrature moment flow of order `m+1` from the atomic Möbius flow,
 per unit of the invisible defect. -/
@@ -71,7 +71,7 @@ theorem hasDerivAt_quadratureMoment {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : F
     (m : ℕ) :
     HasDerivAt (fun t => ∑ i, w i t * (x i t) ^ (m + 1))
       (-((m : ℝ) + 2) * (∑ i, w i y * (x i y) ^ (m + 2))
-        + momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+        + momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
             * nodeQuadCorrection m (fun j => x j y)) y := by
   have hterm : ∀ i : Fin (n + 1),
       HasDerivAt (fun t => w i t * (x i t) ^ (m + 1))
@@ -97,7 +97,7 @@ theorem hasDerivAt_quadratureMoment {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : F
   have hval : ∀ i : Fin (n + 1),
       w' i * (x i y) ^ (m + 1) + w i y * (((m + 1 : ℕ) : ℝ) * (x i y) ^ m * x' i)
         = -((m : ℝ) + 2) * (w i y * (x i y) ^ (m + 2))
-          + momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+          + momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
               * nodeQuadCorrectionTerm m (fun j => x j y) i := by
     intro i
     have hwv := weightVelocity hs hx hw hquad i (hsep i) (hdist i)
@@ -125,7 +125,7 @@ theorem hasDerivAt_quadDefect {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n 
     (m : ℕ) :
     HasDerivAt (fun t => s t (m + 1) - ∑ i, w i t * (x i t) ^ (m + 1))
       (-((m : ℝ) + 2) * (s y (m + 2) - ∑ i, w i y * (x i y) ^ (m + 2))
-        - momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+        - momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
             * nodeQuadCorrection m (fun j => x j y)) y := by
   have hsderiv : HasDerivAt (fun t => s t (m + 1)) (-(((m : ℝ) + 2) * s y (m + 2))) y := by
     have h := hs (m + 1)
@@ -136,10 +136,10 @@ theorem hasDerivAt_quadDefect {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n 
   have hsub := hsderiv.sub (hasDerivAt_quadratureMoment hs hx hw hquad hsep hdist m)
   have hval : -(((m : ℝ) + 2) * s y (m + 2))
       - (-((m : ℝ) + 2) * (∑ i, w i y * (x i y) ^ (m + 2))
-        + momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+        + momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
             * nodeQuadCorrection m (fun j => x j y))
       = -((m : ℝ) + 2) * (s y (m + 2) - ∑ i, w i y * (x i y) ^ (m + 2))
-        - momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+        - momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
             * nodeQuadCorrection m (fun j => x j y) := by ring
   rwa [hval] at hsub
 
@@ -148,7 +148,7 @@ first Padé defect with `L(p²)`. -/
 theorem quadDefect_zero_eq {s : ℕ → ℝ} {x w : Fin (n + 1) → ℝ}
     (hquad : ∀ g : Polynomial ℝ, g.natDegree ≤ 2 * n + 1 →
       momentFunctional s g = ∑ i, w i * g.eval (x i)) :
-    s (2 * n + 2) - ∑ i, w i * (x i) ^ (2 * n + 2) = momentFunctional s ((nodePoly x) ^ 2) := by
+    s (2 * n + 2) - ∑ i, w i * (x i) ^ (2 * n + 2) = momentFunctional s ((nodePoly x) ^ (2 : ℕ)) := by
   have hdeg : (Polynomial.X ^ (2 * n + 2) : Polynomial ℝ).natDegree ≤ 2 * n + 2 := by
     rw [Polynomial.natDegree_X_pow]
   have h := momentFunctional_eq_quadSum_add_top hquad (Polynomial.X ^ (2 * n + 2)) hdeg
@@ -203,9 +203,9 @@ theorem contDiffAt_nodeQuadCorrectionFun {x : Fin (n + 1) → ℝ → ℝ} {y₀
     contDiffAt_const.mul
       ((((contDiffAt_const).mul (contDiffAt_nodeLogDerivFun hsx i (hdist i) k)).mul
           ((hsx i k).pow (m + 1))).sub (contDiffAt_const.mul ((hsx i k).pow m)))
-  have hden : ContDiffAt ℝ k (fun t => (nodeSeparation (fun j => x j t) i) ^ 2) y₀ :=
+  have hden : ContDiffAt ℝ k (fun t => (nodeSeparation (fun j => x j t) i) ^ (2 : ℕ)) y₀ :=
     (contDiffAt_nodeSeparationFun hsx i k).pow 2
-  have hne : (fun t => (nodeSeparation (fun j => x j t) i) ^ 2) y₀ ≠ 0 :=
+  have hne : (fun t => (nodeSeparation (fun j => x j t) i) ^ (2 : ℕ)) y₀ ≠ 0 :=
     pow_ne_zero 2 (nodeSeparation_ne_zero_of_dist (hdist i))
   exact hnum.div hden hne
 
@@ -252,7 +252,7 @@ theorem iteratedDeriv_quadDefect {s : ℝ → ℕ → ℝ} {y₀ : ℝ} {x w x' 
     have hidx2 : 2 * n + 1 + q + 2 = 2 * n + 2 + (q + 1) := by omega
     have hcast : ((2 * n + 1 + q : ℕ) : ℝ) + 2 = c q := by rw [hc_def]; push_cast; ring
     rw [hidx1, hidx2, hcast] at hstep
-    have hbot : momentFunctional (s t) ((nodePoly (fun j => x j t)) ^ 2) = A 0 t := by
+    have hbot : momentFunctional (s t) ((nodePoly (fun j => x j t)) ^ (2 : ℕ)) = A 0 t := by
       rw [hA_def]
       simp only [Nat.add_zero]
       exact (quadDefect_zero_eq (fun g hg => hquad t g hg)).symm
@@ -271,7 +271,7 @@ theorem iteratedDeriv_quadDefect {s : ℝ → ℕ → ℝ} {y₀ : ℝ} {x w x' 
 /-- The reciprocal Christoffel factor through which the invisible defect drives the hard node
 coordinate. -/
 def hardCoordinateFactor (x w : Fin (n + 1) → ℝ) (i : Fin (n + 1)) : ℝ :=
-  (2 * (n : ℝ) + 2) / ((x i) ^ 2 * nodeEnergy x w i)
+  (2 * (n : ℝ) + 2) / ((x i) ^ (2 : ℕ) * nodeEnergy x w i)
 
 theorem contDiffAt_hardCoordinateFactorFun {x w : Fin (n + 1) → ℝ → ℝ} {y₀ : ℝ}
     (hsx : ∀ (i : Fin (n + 1)) (k : ℕ), ContDiffAt ℝ k (x i) y₀)
@@ -305,14 +305,14 @@ theorem deriv_hardNodeCoordinate_eq {s : ℝ → ℕ → ℝ} {x w x' w' : Fin (
   have hstep := hasDerivAt_hardNodeCoordinate (s := s) (y := t) (x := x) (w := w)
     (x' := fun i => x' i t) (w' := fun i => w' i t)
     (fun k => hs t k) (fun i => hx t i) (fun i => hw t i) hquad i₀ (hsep i₀) (hwne t) (hxne t)
-  have hbot : momentFunctional (s t) ((nodePoly (fun j => x j t)) ^ 2)
+  have hbot : momentFunctional (s t) ((nodePoly (fun j => x j t)) ^ (2 : ℕ))
       = s t (2 * n + 2) - ∑ i, w i t * (x i t) ^ (2 * n + 2) :=
     (quadDefect_zero_eq (fun g hg => hquad t g hg)).symm
   rw [hbot] at hstep
   have heq : (s t (2 * n + 2) - ∑ i, w i t * (x i t) ^ (2 * n + 2))
       * hardCoordinateFactor (fun j => x j t) (fun j => w j t) i₀
       = (2 * (n : ℝ) + 2) * (s t (2 * n + 2) - ∑ i, w i t * (x i t) ^ (2 * n + 2))
-          / ((x i₀ t) ^ 2 * nodeEnergy (fun j => x j t) (fun j => w j t) i₀) := by
+          / ((x i₀ t) ^ (2 : ℕ) * nodeEnergy (fun j => x j t) (fun j => w j t) i₀) := by
     simp only [hardCoordinateFactor]
     ring
   rw [heq]

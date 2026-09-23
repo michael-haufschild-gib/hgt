@@ -189,7 +189,7 @@ theorem leftJostFrame_tendsto_one (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
   rwa [leftAsymptoticMatrix_mul_inverse] at h
 
 theorem leftJostFrame_eq_diagonal_mul (q : SchwartzMap ℝ ℂ) (κ x : ℝ) :
-    leftJostFrame q κ x = diagonalFrame ((Real.exp κ)^2) x*leftJostMatrix q κ x := by
+    leftJostFrame q κ x = diagonalFrame ((Real.exp κ)^(2 : ℕ)) x*leftJostMatrix q κ x := by
   unfold leftJostFrame leftJostMatrix
   rw [← Matrix.mul_assoc]
   congr 1
@@ -223,16 +223,16 @@ theorem leftJostMatrix_entry_hasDerivAt (q : SchwartzMap ℝ ℂ) (κ x : ℝ) (
 
 /-- The left-normalized Jost function, in the phase convention of equation (2.2). -/
 def leftJostFunction (q : SchwartzMap ℝ ℂ) (κ x : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  leftJostMatrix q κ x*diagonalFrame ((Real.exp κ)^2) x
+  leftJostMatrix q κ x*diagonalFrame ((Real.exp κ)^(2 : ℕ)) x
 
 theorem leftJostFunction_norm_sub_one (q : SchwartzMap ℝ ℂ) (κ x : ℝ) :
     ‖leftJostFunction q κ x-1‖ = ‖leftJostFrame q κ x-1‖ := by
-  have hleft : diagonalFrame (-((Real.exp κ)^2)) x*leftJostFrame q κ x =
+  have hleft : diagonalFrame (-((Real.exp κ)^(2 : ℕ))) x*leftJostFrame q κ x =
       leftJostMatrix q κ x := by
     rw [leftJostFrame_eq_diagonal_mul, ← Matrix.mul_assoc, diagonalFrame_neg_inverse, one_mul]
   have he : leftJostFunction q κ x-1 =
-      diagonalFrame (-((Real.exp κ)^2)) x*(leftJostFrame q κ x-1)*
-        diagonalFrame ((Real.exp κ)^2) x := by
+      diagonalFrame (-((Real.exp κ)^(2 : ℕ))) x*(leftJostFrame q κ x-1)*
+        diagonalFrame ((Real.exp κ)^(2 : ℕ)) x := by
     rw [mul_sub, sub_mul, mul_one, hleft, diagonalFrame_neg_inverse]
     rfl
   rw [he, diagonalFrame_conjugation_norm]
@@ -254,21 +254,21 @@ theorem leftJostFunction_entry_hasDerivAt (q : SchwartzMap ℝ ℂ) (κ x : ℝ)
         leftJostFunction q κ x*spatialLax 0 0 (Complex.exp (κ:ℂ))) i j) x := by
   fin_cases j
   · have he : (fun y => leftJostFunction q κ y i 0) =
-        fun y => leftJostMatrix q κ y i 0*FDNLS.staggerPhase ((Real.exp κ)^2) y := by
+        fun y => leftJostMatrix q κ y i 0*FDNLS.staggerPhase ((Real.exp κ)^(2 : ℕ)) y := by
       funext y
       simp [leftJostFunction, diagonalFrame, Matrix.mul_apply, Fin.sum_univ_two]
     refine (((leftJostMatrix_entry_hasDerivAt q κ x i 0).fun_mul
-      (FDNLS.hasDerivAt_staggerPhase ((Real.exp κ)^2) x)).congr_of_eventuallyEq
+      (FDNLS.hasDerivAt_staggerPhase ((Real.exp κ)^(2 : ℕ)) x)).congr_of_eventuallyEq
       (Filter.Eventually.of_forall (fun y => congrFun he y))).congr_deriv ?_
     fin_cases i <;>
       simp [leftJostFunction, diagonalFrame, spatialLax, Matrix.mul_apply, Matrix.vecMul,
         dotProduct, Fin.sum_univ_two, ← Complex.ofReal_exp] <;> ring
   · have he : (fun y => leftJostFunction q κ y i 1) =
-        fun y => leftJostMatrix q κ y i 1*FDNLS.staggerPhase (-((Real.exp κ)^2)) y := by
+        fun y => leftJostMatrix q κ y i 1*FDNLS.staggerPhase (-((Real.exp κ)^(2 : ℕ))) y := by
       funext y
       simp [leftJostFunction, diagonalFrame, Matrix.mul_apply, Fin.sum_univ_two]
     refine (((leftJostMatrix_entry_hasDerivAt q κ x i 1).fun_mul
-      (FDNLS.hasDerivAt_staggerPhase (-((Real.exp κ)^2)) x)).congr_of_eventuallyEq
+      (FDNLS.hasDerivAt_staggerPhase (-((Real.exp κ)^(2 : ℕ))) x)).congr_of_eventuallyEq
       (Filter.Eventually.of_forall (fun y => congrFun he y))).congr_deriv ?_
     fin_cases i <;>
       simp [leftJostFunction, diagonalFrame, spatialLax, Matrix.mul_apply, Matrix.vecMul,

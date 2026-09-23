@@ -71,7 +71,7 @@ theorem wideScale_five_le {γ : ℝ} (hγ : 0 < γ) : wideScale (5 * γ) ≤ wid
 set_option maxHeartbeats 1000000 in
 /-- **`ζ` is polylogarithmic on the whole band, at the single order `wideOrder γ`.** -/
 theorem norm_riemannZeta_wide_band {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
-    (hL : (10 : ℝ) ^ 16 + 1 ≤ wideScale γ) {w : ℂ}
+    (hL : (10 : ℝ) ^ (16 : ℕ) + 1 ≤ wideScale γ) {w : ℂ}
     (hre : 1 - 1 / (6 * (2 : ℝ) ^ wideOrder γ) ≤ w.re) (hre2 : w.re ≤ 2)
     (him1 : γ - 1 ≤ w.im) (him2 : w.im ≤ 5 * γ) :
     ‖riemannZeta w‖ ≤ (wideScale γ + 3) ^ (34 : ℕ) + 5 := by
@@ -79,8 +79,8 @@ theorem norm_riemannZeta_wide_band {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
   have hπd : (3.14 : ℝ) < Real.pi := Real.pi_gt_d2
   have hγ2 : (2 : ℝ) ≤ γ := by nlinarith
   have hγ0 : (0 : ℝ) < γ := by linarith
-  have hLγ : (10 : ℝ) ^ 16 ≤ wideScale γ := by linarith
-  have hL12 : (10 : ℝ) ^ 12 ≤ wideScale γ := by nlinarith
+  have hLγ : (10 : ℝ) ^ (16 : ℕ) ≤ wideScale γ := by linarith
+  have hL12 : (10 : ℝ) ^ (12 : ℕ) ≤ wideScale γ := by nlinarith
   have hL0 : (0 : ℝ) < wideScale γ := by nlinarith
   have hx := thirtyone_le_log_wideScale hLγ
   have hK10 := ten_le_wideOrder hL12
@@ -96,16 +96,16 @@ theorem norm_riemannZeta_wide_band {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
       refine wideScale_mono (by linarith) him2
     have h2 := wideScale_five_le hγ0
     linarith
-  have hMlow : (10 : ℝ) ^ 16 ≤ wideScale w.im := by linarith
+  have hMlow : (10 : ℝ) ^ (16 : ℕ) ≤ wideScale w.im := by linarith
   have hM0 : (0 : ℝ) < wideScale w.im := by nlinarith
   have him16 : 16 * Real.pi ≤ w.im := by linarith
   -- the two order hypotheses transfer
   have hKhi : 100 * (2 : ℝ) ^ wideOrder γ ≤ wideScale w.im := by
     have hspec := wideOrder_spec hL12
-    have hgap : (0 : ℝ) ≤ (2 : ℝ) ^ wideOrder γ * (Real.log (wideScale γ) ^ 2 - 961) :=
+    have hgap : (0 : ℝ) ≤ (2 : ℝ) ^ wideOrder γ * (Real.log (wideScale γ) ^ (2 : ℕ) - 961) :=
       mul_nonneg hP.le (by nlinarith)
     nlinarith [hspec, hP, hgap, hlow]
-  have hKlo : wideScale w.im < 120 * (2 : ℝ) ^ wideOrder γ * Real.log (wideScale w.im) ^ 2 := by
+  have hKlo : wideScale w.im < 120 * (2 : ℝ) ^ wideOrder γ * Real.log (wideScale w.im) ^ (2 : ℕ) := by
     have hgt := lt_two_pow_wideOrder_succ hL12
     have hpow : (2 : ℝ) ^ (wideOrder γ + 1) = 2 * (2 : ℝ) ^ wideOrder γ := by ring
     rw [hpow] at hgt
@@ -126,11 +126,11 @@ theorem norm_riemannZeta_wide_band {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
           have h := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num); linarith
         linarith [hd.le, hd.ge]
       linarith
-    have hsqstep : (Real.log (wideScale γ)) ^ 2 * (900 / 961)
-        ≤ Real.log (wideScale w.im) ^ 2 := by
+    have hsqstep : (Real.log (wideScale γ)) ^ (2 : ℕ) * (900 / 961)
+        ≤ Real.log (wideScale w.im) ^ (2 : ℕ) := by
       have hnn : (0 : ℝ) ≤ Real.log (wideScale γ) - 1 := by linarith
-      have hbig : (Real.log (wideScale γ) - 1) ^ 2
-          ≤ Real.log (wideScale w.im) ^ 2 := by nlinarith [hlogstep, hnn]
+      have hbig : (Real.log (wideScale γ) - 1) ^ (2 : ℕ)
+          ≤ Real.log (wideScale w.im) ^ (2 : ℕ) := by nlinarith [hlogstep, hnn]
       nlinarith [hx, hbig]
     nlinarith [hgt, hP, hsqstep, hhigh, hL0]
   have hmain := norm_riemannZeta_wide_le (w := w) (K := wideOrder γ) hre hre2 him16 hMlow

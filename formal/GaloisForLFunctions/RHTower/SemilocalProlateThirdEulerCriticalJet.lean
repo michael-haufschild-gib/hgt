@@ -48,9 +48,9 @@ def sourcePreviousParityTraceSum (n : ℕ) : ℝ :=
   1 - semilocalFirstEulerAtom n *
     ((n : ℝ) + semilocalHypergeometricTail n / 2)
 
-/-- Polynomial `p(n)=1-(4n+1)^2/2` of the new `ℓ=1` source atom. -/
+/-- Polynomial `p(n)=1-(4n+1)^(2 : ℕ)/2` of the new `ℓ=1` source atom. -/
 def thirdTracePolynomial (n : ℕ) : ℝ :=
-  1 - (4 * (n : ℝ) + 1) ^ 2 / 2
+  1 - (4 * (n : ℝ) + 1) ^ (2 : ℕ) / 2
 
 /-- `q³` coefficient contributed by products of the first parity determinant ratios. -/
 def publishedThirdBaseRelativeCoefficient (n : ℕ) : ℝ :=
@@ -66,12 +66,12 @@ def publishedThirdAdditionalRelativeCoefficient (n : ℕ) : ℝ :=
   semilocalFirstEulerAtom (n + 1) * thirdTracePolynomial (n + 1) -
     semilocalFirstEulerAtom n * thirdTracePolynomial n
 
-/-- Literal published relative `q³` coefficient of `aₙ(q)^2`. -/
+/-- Literal published relative `q³` coefficient of `aₙ(q)^(2 : ℕ)`. -/
 def squaredJacobiRadiusThirdRelativeCoefficient (n : ℕ) : ℝ :=
   publishedThirdBaseRelativeCoefficient n +
     publishedThirdAdditionalRelativeCoefficient n
 
-/-- Literal published absolute `q³` coefficient of `aₙ(q)^2`. -/
+/-- Literal published absolute `q³` coefficient of `aₙ(q)^(2 : ℕ)`. -/
 def squaredJacobiRadiusThirdCoefficient (n : ℕ) : ℝ :=
   archimedeanSquaredRadius n *
     squaredJacobiRadiusThirdRelativeCoefficient n
@@ -85,10 +85,10 @@ def jacobiRadiusThirdCoefficient (n : ℕ) : ℝ :=
 theorem publishedThirdBaseRelativeCoefficient_eq_simplified (n : ℕ) :
     publishedThirdBaseRelativeCoefficient n =
       (1 + centralBinomRatio n) * semilocalFirstEulerAtom n -
-        semilocalFirstEulerAtom n ^ 3 *
+        semilocalFirstEulerAtom n ^ (3 : ℕ) *
           (centralBinomRatio n *
-              ((n : ℝ) + semilocalHypergeometricTail n / 2) ^ 2 +
-            ((n : ℝ) + 1 - semilocalHypergeometricTail n / 2) ^ 2 +
+              ((n : ℝ) + semilocalHypergeometricTail n / 2) ^ (2 : ℕ) +
+            ((n : ℝ) + 1 - semilocalHypergeometricTail n / 2) ^ (2 : ℕ) +
             centralBinomRatio n *
               (1 - semilocalHypergeometricTail n)) := by
   unfold publishedThirdBaseRelativeCoefficient sourceParityTraceSum
@@ -99,7 +99,7 @@ theorem publishedThirdBaseRelativeCoefficient_eq_simplified (n : ℕ) :
 
 /-- Positive polynomial-rational amplitude exposed by the `ℓ=1` trace term. -/
 def thirdAdditionalPolynomialAmplitude (n : ℕ) : ℝ :=
-  16 * (n : ℝ) ^ 2 + 20 * (n : ℝ) + 5 +
+  16 * (n : ℝ) ^ (2 : ℕ) + 20 * (n : ℝ) + 5 +
     1 / (4 * ((n : ℝ) + 1))
 
 theorem thirdAdditionalPolynomialAmplitude_eq (n : ℕ) :
@@ -149,7 +149,7 @@ theorem jacobiRadiusThirdCoefficient_eq_signed_amplitudes (n : ℕ) :
         (thirdRadiusDominantAmplitude n +
           thirdRadiusRemainderAmplitude n) := by
   unfold thirdRadiusRemainderAmplitude
-  have hsign : ((-1 : ℝ) ^ n) ^ 2 = 1 := by
+  have hsign : ((-1 : ℝ) ^ n) ^ (2 : ℕ) = 1 := by
     rw [← pow_mul]
     norm_num
   rw [mul_add, mul_sub]
@@ -216,11 +216,11 @@ def thirdRadiusRemainderScale (n : ℕ) : ℝ :=
 
 /-- Natural `n^(5/2)` scale of the third-radius coefficient. -/
 def thirdRadiusScale (n : ℕ) : ℝ :=
-  ((n : ℝ) + 1) ^ 2 * Real.sqrt ((n : ℝ) + 1)
+  ((n : ℝ) + 1) ^ (2 : ℕ) * Real.sqrt ((n : ℝ) + 1)
 
 /-- Natural `n^(7/2)` scale of the squared-radius third coefficient. -/
 def thirdSquaredRadiusScale (n : ℕ) : ℝ :=
-  ((n : ℝ) + 1) ^ 3 * Real.sqrt ((n : ℝ) + 1)
+  ((n : ℝ) + 1) ^ (3 : ℕ) * Real.sqrt ((n : ℝ) + 1)
 
 /-- Sharp positive amplitude of the alternating third-radius leading term. -/
 def thirdRadiusBoundaryAmplitude : ℝ :=
@@ -253,7 +253,7 @@ theorem tendsto_sqrt_succ_mul_positiveSemilocalFirstEulerAtom :
 theorem tendsto_thirdAdditionalPolynomialAmplitude_div_sq :
     Tendsto
       (fun n : ℕ =>
-        thirdAdditionalPolynomialAmplitude n / ((n : ℝ) + 1) ^ 2)
+        thirdAdditionalPolynomialAmplitude n / ((n : ℝ) + 1) ^ (2 : ℕ))
       atTop (nhds 16) := by
   have hi := tendsto_succ_inv_zero
   have h16 : Tendsto (fun _ : ℕ => (16 : ℝ)) atTop (nhds 16) :=
@@ -283,13 +283,13 @@ theorem tendsto_publishedThirdAdditionalRelativeCoefficient_signed :
   · funext n
     rw [publishedThirdAdditionalRelativeCoefficient_eq_signed]
     unfold thirdRelativeScale
-    have hs : ((-1 : ℝ) ^ n) ^ 2 = 1 := by
+    have hs : ((-1 : ℝ) ^ n) ^ (2 : ℕ) = 1 := by
       rw [← pow_mul]
       norm_num
     have hx : (n : ℝ) + 1 ≠ 0 := by positivity
     have hsqrt : Real.sqrt ((n : ℝ) + 1) ≠ 0 := by positivity
     have hsquare :
-        Real.sqrt ((n : ℝ) + 1) ^ 2 = (n : ℝ) + 1 :=
+        Real.sqrt ((n : ℝ) + 1) ^ (2 : ℕ) = (n : ℝ) + 1 :=
       Real.sq_sqrt (by positivity)
     have hmul : (-1 : ℝ) ^ n * (-1 : ℝ) ^ n = 1 := by
       simpa [pow_two] using hs
@@ -312,10 +312,10 @@ theorem tendsto_publishedThirdAdditionalRelativeCoefficient_signed :
 /-- Positive signed amplitude of the published base determinant-ratio term. -/
 def thirdBaseRelativeAmplitude (n : ℕ) : ℝ :=
   (1 + centralBinomRatio n) * positiveSemilocalFirstEulerAtom n -
-    positiveSemilocalFirstEulerAtom n ^ 3 *
+    positiveSemilocalFirstEulerAtom n ^ (3 : ℕ) *
       (centralBinomRatio n *
-          ((n : ℝ) + semilocalHypergeometricTail n / 2) ^ 2 +
-        ((n : ℝ) + 1 - semilocalHypergeometricTail n / 2) ^ 2 +
+          ((n : ℝ) + semilocalHypergeometricTail n / 2) ^ (2 : ℕ) +
+        ((n : ℝ) + 1 - semilocalHypergeometricTail n / 2) ^ (2 : ℕ) +
         centralBinomRatio n *
           (1 - semilocalHypergeometricTail n))
 
@@ -326,8 +326,8 @@ theorem publishedThirdBaseRelativeCoefficient_eq_signed (n : ℕ) :
     semilocalFirstEulerAtom_eq_signed_positive]
   unfold thirdBaseRelativeAmplitude
   have hc : (((-1 : ℝ) ^ n) *
-      positiveSemilocalFirstEulerAtom n) ^ 3 =
-      (-1 : ℝ) ^ n * positiveSemilocalFirstEulerAtom n ^ 3 := by
+      positiveSemilocalFirstEulerAtom n) ^ (3 : ℕ) =
+      (-1 : ℝ) ^ n * positiveSemilocalFirstEulerAtom n ^ (3 : ℕ) := by
     rw [mul_pow]
     congr 1
     rw [← pow_mul, show n * 3 = n + 2 * n by omega,
@@ -380,11 +380,11 @@ private theorem tendsto_thirdBaseBracket_div_sq :
     Tendsto
       (fun n : ℕ =>
         (centralBinomRatio n *
-            ((n : ℝ) + semilocalHypergeometricTail n / 2) ^ 2 +
-          ((n : ℝ) + 1 - semilocalHypergeometricTail n / 2) ^ 2 +
+            ((n : ℝ) + semilocalHypergeometricTail n / 2) ^ (2 : ℕ) +
+          ((n : ℝ) + 1 - semilocalHypergeometricTail n / 2) ^ (2 : ℕ) +
           centralBinomRatio n *
             (1 - semilocalHypergeometricTail n)) /
-          ((n : ℝ) + 1) ^ 2)
+          ((n : ℝ) + 1) ^ (2 : ℕ))
       atTop (nhds 2) := by
   have hq := tendsto_centralBinomRatio
   have hfirst := tendsto_thirdBaseFirstFactor
@@ -393,7 +393,7 @@ private theorem tendsto_thirdBaseBracket_div_sq :
       Tendsto
         (fun n : ℕ =>
           (1 - semilocalHypergeometricTail n) /
-            ((n : ℝ) + 1) ^ 2)
+            ((n : ℝ) + 1) ^ (2 : ℕ))
         atTop (nhds 0) := by
     have hnum := (tendsto_const_nhds :
       Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (nhds 1)).sub
@@ -414,7 +414,7 @@ theorem tendsto_thirdBaseRelativeAmplitude_div_sqrt :
         thirdBaseRelativeAmplitude n /
           Real.sqrt ((n : ℝ) + 1))
       atTop
-      (nhds (-2 * positiveEulerBoundaryAmplitude ^ 3)) := by
+      (nhds (-2 * positiveEulerBoundaryAmplitude ^ (3 : ℕ))) := by
   have ht := tendsto_sqrt_succ_mul_positiveSemilocalFirstEulerAtom
   have hq := tendsto_centralBinomRatio
   have hfirst :
@@ -432,7 +432,7 @@ theorem tendsto_thirdBaseRelativeAmplitude_div_sqrt :
     · funext n
       have hs : Real.sqrt ((n : ℝ) + 1) ≠ 0 := by positivity
       have hsquare :
-          Real.sqrt ((n : ℝ) + 1) ^ 2 = (n : ℝ) + 1 :=
+          Real.sqrt ((n : ℝ) + 1) ^ (2 : ℕ) = (n : ℝ) + 1 :=
         Real.sq_sqrt (by positivity)
       field_simp [hs]
       rw [hsquare]
@@ -442,22 +442,22 @@ theorem tendsto_thirdBaseRelativeAmplitude_div_sqrt :
   have hsecond' :
       Tendsto
         (fun n : ℕ =>
-          positiveSemilocalFirstEulerAtom n ^ 3 *
+          positiveSemilocalFirstEulerAtom n ^ (3 : ℕ) *
             (centralBinomRatio n *
-                ((n : ℝ) + semilocalHypergeometricTail n / 2) ^ 2 +
-              ((n : ℝ) + 1 - semilocalHypergeometricTail n / 2) ^ 2 +
+                ((n : ℝ) + semilocalHypergeometricTail n / 2) ^ (2 : ℕ) +
+              ((n : ℝ) + 1 - semilocalHypergeometricTail n / 2) ^ (2 : ℕ) +
               centralBinomRatio n *
                 (1 - semilocalHypergeometricTail n)) /
             Real.sqrt ((n : ℝ) + 1))
-        atTop (nhds (2 * positiveEulerBoundaryAmplitude ^ 3)) := by
+        atTop (nhds (2 * positiveEulerBoundaryAmplitude ^ (3 : ℕ))) := by
     convert hsecond using 1
     · funext n
       have hs : Real.sqrt ((n : ℝ) + 1) ≠ 0 := by positivity
       have hsquare :
-          Real.sqrt ((n : ℝ) + 1) ^ 2 = (n : ℝ) + 1 :=
+          Real.sqrt ((n : ℝ) + 1) ^ (2 : ℕ) = (n : ℝ) + 1 :=
         Real.sq_sqrt (by positivity)
       have hfour :
-          Real.sqrt ((n : ℝ) + 1) ^ 4 = ((n : ℝ) + 1) ^ 2 := by
+          Real.sqrt ((n : ℝ) + 1) ^ (4 : ℕ) = ((n : ℝ) + 1) ^ (2 : ℕ) := by
         rw [show 4 = 2 * 2 by norm_num, pow_mul, hsquare]
       field_simp [hs]
       rw [hfour]
@@ -476,14 +476,14 @@ theorem tendsto_publishedThirdBaseRelativeCoefficient_signed_div_sqrt :
         ((-1 : ℝ) ^ n * publishedThirdBaseRelativeCoefficient n) /
           Real.sqrt ((n : ℝ) + 1))
       atTop
-      (nhds (-2 * positiveEulerBoundaryAmplitude ^ 3)) := by
+      (nhds (-2 * positiveEulerBoundaryAmplitude ^ (3 : ℕ))) := by
   apply tendsto_thirdBaseRelativeAmplitude_div_sqrt.congr'
   exact Filter.Eventually.of_forall fun n => by
     change thirdBaseRelativeAmplitude n / Real.sqrt ((n : ℝ) + 1) =
       ((-1 : ℝ) ^ n * publishedThirdBaseRelativeCoefficient n) /
         Real.sqrt ((n : ℝ) + 1)
     rw [publishedThirdBaseRelativeCoefficient_eq_signed]
-    have hs : ((-1 : ℝ) ^ n) ^ 2 = 1 := by
+    have hs : ((-1 : ℝ) ^ n) ^ (2 : ℕ) = 1 := by
       rw [← pow_mul]
       norm_num
     have hmul : (-1 : ℝ) ^ n * (-1 : ℝ) ^ n = 1 := by
@@ -513,7 +513,7 @@ theorem thirdRadiusRemainderAmplitude_eq (n : ℕ) :
     publishedThirdBaseRelativeCoefficient_eq_signed,
     publishedThirdAdditionalRelativeCoefficient_eq_signed,
     jacobiRadiusJet_eq_signed_positive]
-  have hs : ((-1 : ℝ) ^ n) ^ 2 = 1 := by
+  have hs : ((-1 : ℝ) ^ n) ^ (2 : ℕ) = 1 := by
     rw [← pow_mul]
     norm_num
   have hr := (semilocalArchimedeanJacobiCoefficient_pos n).ne'
@@ -531,7 +531,7 @@ theorem tendsto_thirdRadiusRemainderAmplitude :
       (fun n : ℕ =>
         thirdRadiusRemainderAmplitude n /
           thirdRadiusRemainderScale n)
-      atTop (nhds (-positiveEulerBoundaryAmplitude ^ 3)) := by
+      atTop (nhds (-positiveEulerBoundaryAmplitude ^ (3 : ℕ))) := by
   have hr := tendsto_semilocalArchimedeanJacobiCoefficient_div_succ
   have hb := tendsto_thirdBaseRelativeAmplitude_div_sqrt
   have hmain := (hr.mul hb).div_const 2
@@ -587,7 +587,7 @@ theorem tendsto_thirdRadiusDominantAmplitude :
     have hx : (n : ℝ) + 1 ≠ 0 := by positivity
     have hs : Real.sqrt ((n : ℝ) + 1) ≠ 0 := by positivity
     have hsquare :
-        Real.sqrt ((n : ℝ) + 1) ^ 2 = (n : ℝ) + 1 :=
+        Real.sqrt ((n : ℝ) + 1) ^ (2 : ℕ) = (n : ℝ) + 1 :=
       Real.sq_sqrt (by positivity)
     field_simp [hx, hs]
     rw [hsquare]
@@ -734,7 +734,7 @@ private theorem tendsto_radius_shift_two_ratio_firstOrder :
       semilocalArchimedeanJacobiCoefficient n
   have hsquare :
       Tendsto
-        (fun n : ℕ => ((n : ℝ) + 1) * (ratio n ^ 2 - 1))
+        (fun n : ℕ => ((n : ℝ) + 1) * (ratio n ^ (2 : ℕ) - 1))
         atTop (nhds 4) := by
     have hrat :
         Tendsto
@@ -753,7 +753,7 @@ private theorem tendsto_radius_shift_two_ratio_firstOrder :
       change (4 * (n : ℝ) + 7) / ((n : ℝ) + 1 / 2) =
         ((n : ℝ) + 1) *
           ((semilocalArchimedeanJacobiCoefficient (n + 2) /
-              semilocalArchimedeanJacobiCoefficient n) ^ 2 - 1)
+              semilocalArchimedeanJacobiCoefficient n) ^ (2 : ℕ) - 1)
       rw [div_pow,
         semilocalArchimedeanJacobiCoefficient_sq,
         semilocalArchimedeanJacobiCoefficient_sq]
@@ -769,7 +769,7 @@ private theorem tendsto_radius_shift_two_ratio_firstOrder :
   · funext n
     change ((n : ℝ) + 1) *
         (ratio n - 1) =
-      (((n : ℝ) + 1) * (ratio n ^ 2 - 1)) /
+      (((n : ℝ) + 1) * (ratio n ^ (2 : ℕ) - 1)) /
         (semilocalArchimedeanJacobiCoefficient (n + 2) /
             semilocalArchimedeanJacobiCoefficient n + 1)
     unfold ratio
@@ -859,7 +859,7 @@ private theorem tendsto_thirdAdditionalPolynomialAmplitude_twoStepRatio_firstOrd
             thirdAdditionalPolynomialAmplitude n - 1) =
       ((thirdAdditionalPolynomialAmplitude (n + 2) -
           thirdAdditionalPolynomialAmplitude n) / ((n : ℝ) + 1)) /
-        (thirdAdditionalPolynomialAmplitude n / ((n : ℝ) + 1) ^ 2)
+        (thirdAdditionalPolynomialAmplitude n / ((n : ℝ) + 1) ^ (2 : ℕ))
     have hp := (thirdAdditionalPolynomialAmplitude_pos n).ne'
     have hx : (n : ℝ) + 1 ≠ 0 := by positivity
     field_simp [hp, hx]
@@ -1082,7 +1082,7 @@ private theorem tendsto_remainder_boundaryShift_div_scale (j : ℕ) :
       (fun n : ℕ =>
         thirdRadiusRemainderAmplitude (criticalBoundaryDegree n + j) /
           thirdRadiusRemainderScale (criticalBoundaryDegree n))
-      atTop (nhds (-positiveEulerBoundaryAmplitude ^ 3)) := by
+      atTop (nhds (-positiveEulerBoundaryAmplitude ^ (3 : ℕ))) := by
   have hmain :=
     tendsto_thirdRadiusRemainderAmplitude.comp
       (tendsto_criticalBoundaryDegree_add j)
@@ -1201,8 +1201,8 @@ private theorem tendsto_radius_increment :
     rw [show
       semilocalArchimedeanJacobiCoefficient (n + 1) -
           semilocalArchimedeanJacobiCoefficient n =
-        (semilocalArchimedeanJacobiCoefficient (n + 1) ^ 2 -
-            semilocalArchimedeanJacobiCoefficient n ^ 2) /
+        (semilocalArchimedeanJacobiCoefficient (n + 1) ^ (2 : ℕ) -
+            semilocalArchimedeanJacobiCoefficient n ^ (2 : ℕ)) /
           (semilocalArchimedeanJacobiCoefficient (n + 1) +
             semilocalArchimedeanJacobiCoefficient n) by
               field_simp [hsum]
@@ -1376,7 +1376,7 @@ private theorem tendsto_remainder_mul_radius_boundaryShift_div_scale
           semilocalArchimedeanJacobiCoefficient
             (criticalBoundaryDegree n + k) /
           thirdRadiusScale (criticalBoundaryDegree n))
-      atTop (nhds (-positiveEulerBoundaryAmplitude ^ 3)) := by
+      atTop (nhds (-positiveEulerBoundaryAmplitude ^ (3 : ℕ))) := by
   have hg := tendsto_remainder_boundaryShift_div_scale j
   have hr := tendsto_radius_boundaryShift_div_succ k
   have h := hg.mul hr
@@ -1467,7 +1467,7 @@ private theorem tendsto_positiveEulerRadiusJet_boundaryShift_div_sqrtSucc
 private theorem tendsto_boundarySucc_inv_sq_zero :
     Tendsto
       (fun n : ℕ =>
-        (((criticalBoundaryDegree n : ℝ) + 1)⁻¹) ^ 2)
+        (((criticalBoundaryDegree n : ℝ) + 1)⁻¹) ^ (2 : ℕ))
       atTop (nhds 0) := by
   have hx :
       Tendsto

@@ -27,11 +27,11 @@ theorem eventually_rarityExponent_le_polyLog (q : ℕ) (hq : 1 ≤ q) {ε : ℝ}
     ∀ᶠ n : ℕ in atTop,
       (Quantum.nonidentityPauliWeightCount n q : ℝ) *
           Real.log (8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) /
-            (gaussianFloorConstant * ε ^ 2))
+            (gaussianFloorConstant * ε ^ (2 : ℕ)))
         ≤ (q : ℝ) * 3 ^ q * (n : ℝ) ^ q *
-            Real.log (8 * ((q : ℝ) * 3 ^ q) / (gaussianFloorConstant * ε ^ 2) * (n : ℝ) ^ q) := by
+            Real.log (8 * ((q : ℝ) * 3 ^ q) / (gaussianFloorConstant * ε ^ (2 : ℕ)) * (n : ℝ) ^ q) := by
   set A : ℝ := (q : ℝ) * 3 ^ q with hAdef
-  set K : ℝ := gaussianFloorConstant * ε ^ 2 with hKdef
+  set K : ℝ := gaussianFloorConstant * ε ^ (2 : ℕ) with hKdef
   have hK : 0 < K := by
     rw [hKdef]; exact mul_pos gaussianFloorConstant_pos (by positivity)
   have hqr : (0 : ℝ) < (q : ℝ) := by exact_mod_cast hq
@@ -73,11 +73,11 @@ theorem eventually_rarityExponent_lt_rampExponent (q : ℕ) (hq : 1 ≤ q)
     ∀ᶠ n : ℕ in atTop,
       (Quantum.nonidentityPauliWeightCount n q : ℝ) *
           Real.log (8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) /
-            (gaussianFloorConstant * ε ^ 2))
+            (gaussianFloorConstant * ε ^ (2 : ℕ)))
         < (1 - η) * (Quantum.productInputObserverRank n q : ℝ) *
             (c * (n : ℝ) * Real.log 2) := by
   set A : ℝ := (q : ℝ) * 3 ^ q with hAdef
-  set K : ℝ := gaussianFloorConstant * ε ^ 2 with hKdef
+  set K : ℝ := gaussianFloorConstant * ε ^ (2 : ℕ) with hKdef
   have hK : 0 < K := by
     rw [hKdef]; exact mul_pos gaussianFloorConstant_pos (by positivity)
   have hqr : (0 : ℝ) < (q : ℝ) := by exact_mod_cast hq

@@ -217,7 +217,7 @@ def ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceRealCrossingForm_eq
     (xi : ℝ) (n : ℕ) :
     ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceRealCrossingForm xi n =
-      2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         (ccmActualHeadMatchedOrientedPhaseSymbol n xi).re := by
   simp [ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceRealCrossingForm,
     ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceRealShear,
@@ -229,7 +229,7 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceRealCrossingForm_eq
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm_eq
     (xi : ℝ) (n : ℕ) :
     ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm xi n =
-      2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         (ccmActualHeadMatchedOrientedPhaseSymbol n xi).im := by
   simp [ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm,
     ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagShear,
@@ -282,13 +282,13 @@ theorem det_ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceCrossingFamily
 /-- Squared norm of the two fixed shear crossing coordinates. -/
 def ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceJointCrossingEnergy
     (xi : ℝ) (n : ℕ) : ℝ :=
-  ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceRealCrossingForm xi n ^ 2 +
-    ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm xi n ^ 2
+  ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceRealCrossingForm xi n ^ (2 : ℕ) +
+    ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm xi n ^ (2 : ℕ)
 
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceJointCrossingEnergy_eq
     (xi : ℝ) (n : ℕ) :
     ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceJointCrossingEnergy xi n =
-      4 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 4 *
+      4 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (4 : ℕ) *
         Complex.normSq (ccmActualHeadMatchedOrientedPhaseSymbol n xi) := by
   rw [ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceJointCrossingEnergy,
     ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceRealCrossingForm_eq,
@@ -310,7 +310,7 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceJointCrossingEnergy
       (xiGammaEulerValuationNat (p, e)) hw.ne'
   have hfactor :
       0 < 4 * ccmActualHeadMatchedPhaseProjectiveGauge
-        (xiGammaEulerValuationNat (p, e)) ^ 4 := by positivity
+        (xiGammaEulerValuationNat (p, e)) ^ (4 : ℕ) := by positivity
   rw [mul_pos_iff_of_pos_left hfactor]
   rw [Complex.normSq_pos]
   exact ccmActualHeadMatchedOrientedPhaseSymbol_primePower_ne_zero_iff p e xi
@@ -370,16 +370,16 @@ theorem hasDerivAt_ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCros
     (n : ℕ) :
     HasDerivAt
       (ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm · n)
-      (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         ccmActualHeadMatchedOrientedFirstMoment n) 0 := by
   rw [show (ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm · n) =
-      fun xi : ℝ => 2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      fun xi : ℝ => 2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         (ccmActualHeadMatchedOrientedPhaseSymbol n xi).im by
     funext xi
     exact ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm_eq xi n]
   simpa using
     (hasDerivAt_ccmActualHeadMatchedOrientedPhaseSymbol_im_zero n).const_mul
-      (2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2)
+      (2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ))
 
 theorem deriv_ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingForm_zero_primePower_neg
     (p : Nat.Primes) (e : ℕ) :
@@ -398,7 +398,7 @@ theorem deriv_ccmActualHeadMatchedPhaseProjectiveGaugeComplexSourceImagCrossingF
       (xiGammaEulerValuationNat (p, e)) hw.ne'
   have hsq :
       0 < ccmActualHeadMatchedPhaseProjectiveGauge
-        (xiGammaEulerValuationNat (p, e)) ^ 2 := sq_pos_of_ne_zero hgauge
+        (xiGammaEulerValuationNat (p, e)) ^ (2 : ℕ) := sq_pos_of_ne_zero hgauge
   have hm := ccmActualHeadMatchedOrientedFirstMoment_primePower_pos p e
   exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos (by norm_num) hsq) hm
 

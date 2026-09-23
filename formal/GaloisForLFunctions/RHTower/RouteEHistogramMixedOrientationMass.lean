@@ -80,7 +80,7 @@ theorem boolWindowMass_eq_subset (p : ℝ) (value : C → Bool → ℕ) (L U c :
 
 theorem boolWindowMass_increasing_bound (p : ℝ) (value : C → Bool → ℕ) (L W c : ℝ)
     (ha : ∀ i, 1 ≤ value i false) (hab : ∀ i, value i false < value i true)
-    (hL : 0 ≤ L) (hW : 0 ≤ W) (hc : 1 ≤ c) (hwidth : W^3 < 27*L^2) :
+    (hL : 0 ≤ L) (hW : 0 ≤ W) (hc : 1 ≤ c) (hwidth : W^(3 : ℕ) < 27*L^(2 : ℕ)) :
     boolWindowMass p value L (L+W) c ≤
       3*Real.sqrt (GaloisForLFunctions.HTGeometry.bernsteinRowSquare p (1-p) (Fintype.card C)) := by
   rw [boolWindowMass_eq_subset]
@@ -133,7 +133,7 @@ theorem boolWindowMass_increasing_block_bound (p : ℝ) (value : C → Bool → 
     (P : C → Prop) [DecidablePred P]
     (hp0 : 0 ≤ p) (hp1 : p ≤ 1) (hvalue : ∀ i b, 1 ≤ value i b)
     (hincreasing : ∀ i, P i → value i false < value i true)
-    (hL : 0 ≤ L) (hW : 0 ≤ W) (hc : 1 ≤ c) (hwidth : W^3 < 27*L^2) :
+    (hL : 0 ≤ L) (hW : 0 ≤ W) (hc : 1 ≤ c) (hwidth : W^(3 : ℕ) < 27*L^(2 : ℕ)) :
     boolWindowMass p value L (L+W) c ≤
       3*Real.sqrt (GaloisForLFunctions.HTGeometry.bernsteinRowSquare p (1-p)
         (Fintype.card {i // P i})) := by
@@ -182,7 +182,7 @@ theorem boolWindowMass_orientation_bound (p : ℝ) (value : C → Bool → ℕ)
     (hchange : ∀ i, value i false ≠ value i true) :
     ∃ q : ℝ, ∃ k : ℕ, 0 ≤ q ∧ q ≤ 1 ∧ q*(1-q) = p*(1-p) ∧
       Fintype.card C ≤ 2*k ∧
-      ∀ L W c : ℝ, 0 ≤ L → 0 ≤ W → 1 ≤ c → W^3 < 27*L^2 →
+      ∀ L W c : ℝ, 0 ≤ L → 0 ≤ W → 1 ≤ c → W^(3 : ℕ) < 27*L^(2 : ℕ) →
         boolWindowMass p value L (L+W) c ≤
           3*Real.sqrt (GaloisForLFunctions.HTGeometry.bernsteinRowSquare q (1-q) k) := by
   let P : C → Prop := fun i => value i false < value i true

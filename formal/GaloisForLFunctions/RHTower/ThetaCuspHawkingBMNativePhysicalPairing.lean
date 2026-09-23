@@ -86,7 +86,7 @@ theorem scalarResidualPeriod_physical_eq_continuation (q : XiZeroCopy)
 /-- The physical original quotient pairing retains the reflected cutoff correction. -/
 theorem scalarResidualPeriod_physical_value (q : XiZeroCopy) (hq : 1/2 < (q.1:ℂ).re) :
     scalarResidualPeriod q (((q.1:ℂ)-1)/2) =
-      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^2*
+      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^(2 : ℕ)*
         reflectedCompletedLambda (1-3*(q.1:ℂ)/2))/2+
       reflectedCompletedLambda ((q.1:ℂ)-1)*nativePrincipalMomentContinuation q (-((q.1:ℂ)/2)) := by
   rw [scalarResidualPeriod_physical_eq_continuation q hq,nativePeriodContinuation_physical_value]
@@ -95,7 +95,7 @@ theorem scalarResidualPeriod_physical_value (q : XiZeroCopy) (hq : 1/2 < (q.1:�
 theorem scalarResidualPeriod_physical_eq_diagonal_iff (q : XiZeroCopy)
     (hq : 1/2 < (q.1:ℂ).re) :
     scalarResidualPeriod q (((q.1:ℂ)-1)/2) =
-      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^2*
+      (reflectedCompletedLambda (5*(q.1:ℂ)/2-1)*reflectedCompletedLambda ((q.1:ℂ)/2)^(2 : ℕ)*
         reflectedCompletedLambda (1-3*(q.1:ℂ)/2))/2 ↔
       nativePrincipalMomentContinuation q (-((q.1:ℂ)/2)) = 0 := by
   rw [scalarResidualPeriod_physical_eq_continuation q hq]

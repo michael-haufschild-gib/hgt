@@ -38,33 +38,33 @@ theorem thetaCuspTailSecondDensityAtom_ge_half_survivalAtom
           eval u (thetaCuspTailDerivativePolynomial 1) ≤
         eval u (thetaCuspTailDerivativePolynomial 2) := by
     simp [thetaCuspTailDerivativePolynomial, thetaCuspLogDerivativeStep]
-    have hu2 : 1 ≤ u ^ 2 := by nlinarith [sq_nonneg u]
-    have hnonneg : 0 ≤ 4 * (Real.pi * u ^ 2) ^ 2 -
-        7 * (Real.pi * u ^ 2) + 1 / 2 := by
-      nlinarith [sq_nonneg (Real.pi * u ^ 2 - 1)]
+    have hu2 : 1 ≤ u ^ (2 : ℕ) := by nlinarith [sq_nonneg u]
+    have hnonneg : 0 ≤ 4 * (Real.pi * u ^ (2 : ℕ)) ^ (2 : ℕ) -
+        7 * (Real.pi * u ^ (2 : ℕ)) + 1 / 2 := by
+      nlinarith [sq_nonneg (Real.pi * u ^ (2 : ℕ) - 1)]
     nlinarith
   unfold thetaCuspTailSurvivalAtom thetaCuspTailSecondDensityAtom
     thetaCuspPolynomialAtom
   dsimp [u] at hpoly
   have hfront : 0 ≤
       4 * (Real.exp (x / 2) *
-        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2)) := by positivity
+        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ))) := by positivity
   calc
     (1 / 2 : ℝ) *
         (-4 * (Real.exp (x / 2) *
           eval ((n : ℝ) * Real.exp x) (thetaCuspTailDerivativePolynomial 1) *
-            Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2))) =
+            Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)))) =
       (4 * (Real.exp (x / 2) *
-        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2))) *
+        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)))) *
           (-(1 / 2 : ℝ) *
             eval ((n : ℝ) * Real.exp x) (thetaCuspTailDerivativePolynomial 1)) := by ring
     _ ≤ (4 * (Real.exp (x / 2) *
-        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2))) *
+        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)))) *
           eval ((n : ℝ) * Real.exp x) (thetaCuspTailDerivativePolynomial 2) :=
       mul_le_mul_of_nonneg_left hpoly hfront
     _ = 4 * (Real.exp (x / 2) *
         eval ((n : ℝ) * Real.exp x) (thetaCuspTailDerivativePolynomial 2) *
-          Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2)) := by ring
+          Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ))) := by ring
 
 theorem thetaCuspTailSecondDensity_ge_half_survival
     {x : ℝ} (hx : 0 ≤ x) :

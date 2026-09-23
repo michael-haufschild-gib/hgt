@@ -251,7 +251,7 @@ theorem exists_second_test_bound (b : Bool) (v w : ℂ) : ∃ C : ℝ, 0 ≤ C �
     ∀ (q : XiZeroCopy) (c : ℂ) (hc : 3 < c.im),
       ‖∫ z : ℂ, (evaluationTest b c hc).field z*
         fderiv ℝ (fun u => fderiv ℝ (D4BMAngularTwo.globalResponse q ∘ ofComplex) u w) z v‖ ≤
-          C*(c.im+1)^2*responseMass q := by
+          C*(c.im+1)^(2 : ℕ)*responseMass q := by
   have hsm : ContDiff ℝ ∞ (fun z => fderiv ℝ (kernelPartial b v) z w) :=
     ((kernelPartial_smooth b v).fderiv_right (m := ∞) (by simp)).clm_apply contDiff_const
   obtain ⟨B,hB⟩ := ((kernelPartial_compact b v).fderiv_apply ℝ w).exists_bound_of_continuous hsm.continuous
@@ -271,7 +271,7 @@ theorem exists_second_test_bound (b : Bool) (v w : ℂ) : ∃ C : ℝ, 0 ≤ C �
   have hgreen := congrArg norm (mixed_green g (D4BMAngularTwo.globalResponse q ∘ ofComplex)
     (D4BMAngularTwo.globalResponse_smooth q).planar_contDiffOn v w)
   have he : ‖∫ z : ℂ, (D4BMAngularTwo.globalResponse q ∘ ofComplex) z*
-      ((g.derivative v).derivative w).field z‖ ≤ 3*(c.im+1)^2*B*responseMass q := by
+      ((g.derivative v).derivative w).field z‖ ≤ 3*(c.im+1)^(2 : ℕ)*B*responseMass q := by
     simpa only [Function.comp_apply,mul_comm] using htest
   rw [hgreen] at he
   convert he using 1
@@ -287,7 +287,7 @@ theorem exists_connection_test_bound (b : Bool) (v : ℂ) : ∃ C : ℝ, 0 ≤ C
     ∀ (q : XiZeroCopy) (c : ℂ) (hc : 3 < c.im),
       ‖∫ z : ℂ, (evaluationTest b c hc).field z/(z.im:ℂ)*
         fderiv ℝ (D4BMAngularTwo.globalResponse q ∘ ofComplex) z v‖ ≤
-          C*(c.im+1)^2*responseMass q := by
+          C*(c.im+1)^(2 : ℕ)*responseMass q := by
   obtain ⟨B,hB⟩ := (evaluationKernel_compact b).exists_bound_of_continuous (evaluationKernel_smooth b).continuous
   obtain ⟨D,hD⟩ := (kernelPartial_compact b v).exists_bound_of_continuous (kernelPartial_smooth b v).continuous
   have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
@@ -308,7 +308,7 @@ theorem exists_connection_test_bound (b : Bool) (v : ℂ) : ∃ C : ℝ, 0 ≤ C
   simp only [norm_neg,Function.comp_apply] at he
   have hb' : ‖∫ z : ℂ, D4BMAngularTwo.globalResponse q (ofComplex z)*
       ((g.divHeight 1).derivative v).field z‖ ≤
-        3*(c.im+1)^2*(D+B*‖(v.im:ℂ)‖)*responseMass q := by
+        3*(c.im+1)^(2 : ℕ)*(D+B*‖(v.im:ℂ)‖)*responseMass q := by
     simpa only [mul_comm] using hb
   rw [he] at hb'
   convert hb' using 1
@@ -321,7 +321,7 @@ theorem exists_connection_test_bound (b : Bool) (v : ℂ) : ∃ C : ℝ, 0 ≤ C
 private def Controlled (b : Bool) (f : ℂ → ℂ) : Prop :=
   ContDiffOn ℝ ∞ f {z : ℂ | 0 < z.im} ∧
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (c : ℂ) (hc : 4 < c.im),
-      ‖∫ z : ℂ, (evaluationTest b c (by linarith)).field z*f z‖ ≤ C*(c.im+1)^2
+      ‖∫ z : ℂ, (evaluationTest b c (by linarith)).field z*f z‖ ≤ C*(c.im+1)^(2 : ℕ)
 
 private theorem Controlled.integrable {b : Bool} {f : ℂ → ℂ} (hf : Controlled b f)
     (c : ℂ) (hc : 4 < c.im) :
@@ -395,7 +395,7 @@ private theorem remainder_controlled (q : XiZeroCopy) (b : Bool) (i j : Fin 2) :
     simp only [add_sub_cancel_right] at ht
     exact ht.symm
   rw [hm] at he
-  have hY : 1 ≤ (c.im+1)^2 := by nlinarith
+  have hY : 1 ≤ (c.im+1)^(2 : ℕ) := by nlinarith
   exact he.trans (by simpa only [mul_one] using mul_le_mul_of_nonneg_left hY (mul_nonneg hB hM))
 
 private def second (q : XiZeroCopy) (i j : Fin 2) (z : ℂ) : ℂ :=
@@ -479,7 +479,7 @@ private theorem kernel_support_high (c z : ℂ) (hc : 4 < c.im) (hk : kernel (z-
 /-- The first actual holomorphic tensor polarization has polynomial cusp growth. -/
 theorem holomorphicPolarization_growth (q : XiZeroCopy) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ c : ℂ, 4 < c.im →
-      ‖holomorphicPolarization q c‖ ≤ C*(c.im+1)^2 := by
+      ‖holomorphicPolarization q c‖ ≤ C*(c.im+1)^(2 : ℕ) := by
   obtain ⟨C,hC,hbound⟩ :=
     ((modelA_controlled q false).sub ((modelB_controlled q false).scale Complex.I)).2
   refine ⟨C/Real.pi,div_nonneg hC Real.pi_pos.le,?_⟩
@@ -498,14 +498,14 @@ theorem holomorphicPolarization_growth (q : XiZeroCopy) :
         holomorphicPolarization,Function.comp_apply,defectA_planar_high q z hz,defectB_planar_high q z hz]
   rw [hid,he,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos Real.pi_pos] at hb
   calc
-    ‖holomorphicPolarization q c‖ ≤ (C*(c.im+1)^2)/Real.pi :=
+    ‖holomorphicPolarization q c‖ ≤ (C*(c.im+1)^(2 : ℕ))/Real.pi :=
       (le_div_iff₀ Real.pi_pos).mpr (by nlinarith [hb])
-    _ = C/Real.pi*(c.im+1)^2 := by ring
+    _ = C/Real.pi*(c.im+1)^(2 : ℕ) := by ring
 
 /-- The independent conjugate polarization has the same order of cusp growth, without reality. -/
 theorem conjugatePolarization_growth (q : XiZeroCopy) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ c : ℂ, 4 < c.im →
-      ‖conjugatePolarization q c‖ ≤ C*(c.im+1)^2 := by
+      ‖conjugatePolarization q c‖ ≤ C*(c.im+1)^(2 : ℕ) := by
   obtain ⟨C,hC,hbound⟩ :=
     ((modelA_controlled q true).add ((modelB_controlled q true).scale Complex.I)).2
   refine ⟨C/Real.pi,div_nonneg hC Real.pi_pos.le,?_⟩
@@ -527,9 +527,9 @@ theorem conjugatePolarization_growth (q : XiZeroCopy) :
   rw [Complex.norm_conj,he,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos Real.pi_pos] at hnorm
   rw [hnorm] at hb
   calc
-    ‖conjugatePolarization q c‖ ≤ (C*(c.im+1)^2)/Real.pi :=
+    ‖conjugatePolarization q c‖ ≤ (C*(c.im+1)^(2 : ℕ))/Real.pi :=
       (le_div_iff₀ Real.pi_pos).mpr (by nlinarith [hb])
-    _ = C/Real.pi*(c.im+1)^2 := by ring
+    _ = C/Real.pi*(c.im+1)^(2 : ℕ) := by ring
 
 end
 end RHTower.D4BMAngularTwoCuspGrowth

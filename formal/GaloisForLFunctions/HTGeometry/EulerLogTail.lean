@@ -51,7 +51,7 @@ theorem hasSum_logTail {z : ℂ} (hz : ‖z‖ < 1) :
 
 /-- The tail is quadratically small. -/
 theorem norm_logTail_le {z : ℂ} (hz : ‖z‖ < 1) :
-    ‖logTail z‖ ≤ ‖z‖ ^ 2 / (2 * (1 - ‖z‖)) := by
+    ‖logTail z‖ ≤ ‖z‖ ^ (2 : ℕ) / (2 * (1 - ‖z‖)) := by
   have hnn : (0:ℝ) ≤ ‖z‖ := norm_nonneg z
   have hmaj : ∀ k : ℕ, ‖z ^ (k + 2) / (((k + 2 : ℕ) : ℂ))‖ ≤ (1 / 2) * ‖z‖ ^ (k + 2) := by
     intro k
@@ -68,14 +68,14 @@ theorem norm_logTail_le {z : ℂ} (hz : ‖z‖ < 1) :
       linarith
     nlinarith [pow_nonneg hnn (k + 2)]
   have hgeo : HasSum (fun k : ℕ => (1 / 2 : ℝ) * ‖z‖ ^ (k + 2))
-      ((1 / 2 : ℝ) * (‖z‖ ^ 2 / (1 - ‖z‖))) := by
+      ((1 / 2 : ℝ) * (‖z‖ ^ (2 : ℕ) / (1 - ‖z‖))) := by
     have hg : HasSum (fun k : ℕ => ‖z‖ ^ k) (1 - ‖z‖)⁻¹ := hasSum_geometric_of_lt_one hnn hz
-    have hg2 : HasSum (fun k : ℕ => ‖z‖ ^ 2 * ‖z‖ ^ k) (‖z‖ ^ 2 * (1 - ‖z‖)⁻¹) := hg.mul_left _
-    have hfun : (fun k : ℕ => ‖z‖ ^ (k + 2)) = fun k : ℕ => ‖z‖ ^ 2 * ‖z‖ ^ k := by
+    have hg2 : HasSum (fun k : ℕ => ‖z‖ ^ (2 : ℕ) * ‖z‖ ^ k) (‖z‖ ^ (2 : ℕ) * (1 - ‖z‖)⁻¹) := hg.mul_left _
+    have hfun : (fun k : ℕ => ‖z‖ ^ (k + 2)) = fun k : ℕ => ‖z‖ ^ (2 : ℕ) * ‖z‖ ^ k := by
       funext k
       rw [pow_add]
       ring
-    have hg3 : HasSum (fun k : ℕ => ‖z‖ ^ (k + 2)) (‖z‖ ^ 2 / (1 - ‖z‖)) := by
+    have hg3 : HasSum (fun k : ℕ => ‖z‖ ^ (k + 2)) (‖z‖ ^ (2 : ℕ) / (1 - ‖z‖)) := by
       rw [hfun, div_eq_mul_inv]
       exact hg2
     exact hg3.mul_left _
@@ -86,7 +86,7 @@ theorem norm_logTail_le {z : ℂ} (hz : ‖z‖ < 1) :
 
 /-! ### The cube-root cancellation -/
 
-theorem cubeRootUnit_sq : cubeRootUnit ^ 2 = (starRingEnd ℂ) cubeRootUnit := by
+theorem cubeRootUnit_sq : cubeRootUnit ^ (2 : ℕ) = (starRingEnd ℂ) cubeRootUnit := by
   have h1 := cubeRootUnit_add_conj
   have h2 := cubeRootUnit_mul_conj
   have hconj : (starRingEnd ℂ) cubeRootUnit = -1 - cubeRootUnit := by linear_combination h1
@@ -94,26 +94,26 @@ theorem cubeRootUnit_sq : cubeRootUnit ^ 2 = (starRingEnd ℂ) cubeRootUnit := b
   rw [hconj] at h2
   linear_combination -h2
 
-theorem cubeRootUnit_pow_three : cubeRootUnit ^ 3 = 1 := by
+theorem cubeRootUnit_pow_three : cubeRootUnit ^ (3 : ℕ) = 1 := by
   have h := cubeRootUnit_mul_conj
   rw [← cubeRootUnit_sq] at h
-  calc cubeRootUnit ^ 3 = cubeRootUnit * cubeRootUnit ^ 2 := by ring
+  calc cubeRootUnit ^ (3 : ℕ) = cubeRootUnit * cubeRootUnit ^ (2 : ℕ) := by ring
     _ = 1 := h
 
-theorem one_add_cubeRootUnit_add_sq : 1 + cubeRootUnit + cubeRootUnit ^ 2 = 0 := by
+theorem one_add_cubeRootUnit_add_sq : 1 + cubeRootUnit + cubeRootUnit ^ (2 : ℕ) = 0 := by
   have h1 := cubeRootUnit_add_conj
   rw [← cubeRootUnit_sq] at h1
   linear_combination h1
 
 theorem cubeRootUnit_pow_sum (n : ℕ) :
-    1 + cubeRootUnit ^ n + (cubeRootUnit ^ 2) ^ n = if 3 ∣ n then 3 else 0 := by
-  have h3 : cubeRootUnit ^ 3 = 1 := cubeRootUnit_pow_three
+    1 + cubeRootUnit ^ n + (cubeRootUnit ^ (2 : ℕ)) ^ n = if 3 ∣ n then 3 else 0 := by
+  have h3 : cubeRootUnit ^ (3 : ℕ) = 1 := cubeRootUnit_pow_three
   have hmod : cubeRootUnit ^ n = cubeRootUnit ^ (n % 3) := by
     conv_lhs => rw [← Nat.div_add_mod n 3]
     rw [pow_add, pow_mul, h3, one_pow, one_mul]
-  have h9 : (cubeRootUnit ^ 2) ^ 3 = 1 := by
+  have h9 : (cubeRootUnit ^ (2 : ℕ)) ^ (3 : ℕ) = 1 := by
     rw [← pow_mul, mul_comm, pow_mul, h3, one_pow]
-  have hmod2 : (cubeRootUnit ^ 2) ^ n = (cubeRootUnit ^ 2) ^ (n % 3) := by
+  have hmod2 : (cubeRootUnit ^ (2 : ℕ)) ^ n = (cubeRootUnit ^ (2 : ℕ)) ^ (n % 3) := by
     conv_lhs => rw [← Nat.div_add_mod n 3]
     rw [pow_add, pow_mul, h9, one_pow, one_mul]
   have hdvd : (3 ∣ n) ↔ n % 3 = 0 := Nat.dvd_iff_mod_eq_zero
@@ -126,8 +126,8 @@ theorem cubeRootUnit_pow_sum (n : ℕ) :
     have := one_add_cubeRootUnit_add_sq
     linear_combination this
   · rw [h, if_neg (fun hc => by rw [hdvd.mp hc] at h; exact absurd h (by norm_num))]
-    have hkey : (cubeRootUnit ^ 2) ^ 2 = cubeRootUnit := by
-      have : (cubeRootUnit ^ 2) ^ 2 = cubeRootUnit ^ 3 * cubeRootUnit := by ring
+    have hkey : (cubeRootUnit ^ (2 : ℕ)) ^ (2 : ℕ) = cubeRootUnit := by
+      have : (cubeRootUnit ^ (2 : ℕ)) ^ (2 : ℕ) = cubeRootUnit ^ (3 : ℕ) * cubeRootUnit := by ring
       rw [this, h3, one_mul]
     rw [hkey]
     have := one_add_cubeRootUnit_add_sq
@@ -136,21 +136,21 @@ theorem cubeRootUnit_pow_sum (n : ℕ) :
 /-- **The three rotated Euler logarithms reassemble the logarithm at the cube.** -/
 theorem neg_log_cube_sum {z : ℂ} (hz : ‖z‖ < 1) :
     (-Complex.log (1 - z)) + (-Complex.log (1 - cubeRootUnit * z))
-        + (-Complex.log (1 - cubeRootUnit ^ 2 * z))
-      = -Complex.log (1 - z ^ 3) := by
+        + (-Complex.log (1 - cubeRootUnit ^ (2 : ℕ) * z))
+      = -Complex.log (1 - z ^ (3 : ℕ)) := by
   classical
   have hnorm1 : ‖cubeRootUnit * z‖ < 1 := by
     rw [norm_mul, norm_cubeRootUnit, one_mul]; exact hz
-  have hnorm2 : ‖cubeRootUnit ^ 2 * z‖ < 1 := by
+  have hnorm2 : ‖cubeRootUnit ^ (2 : ℕ) * z‖ < 1 := by
     rw [norm_mul, norm_pow, norm_cubeRootUnit, one_pow, one_mul]; exact hz
-  have hnorm3 : ‖z ^ 3‖ < 1 := by
+  have hnorm3 : ‖z ^ (3 : ℕ)‖ < 1 := by
     rw [norm_pow]
-    calc ‖z‖ ^ 3 ≤ ‖z‖ ^ 1 := pow_le_pow_of_le_one (norm_nonneg z) hz.le (by norm_num)
+    calc ‖z‖ ^ (3 : ℕ) ≤ ‖z‖ ^ (1 : ℕ) := pow_le_pow_of_le_one (norm_nonneg z) hz.le (by norm_num)
       _ = ‖z‖ := pow_one _
       _ < 1 := hz
   set f : ℕ → ℂ := fun n => (if 3 ∣ n then (3 : ℂ) else 0) * z ^ n / (n : ℂ) with hfdef
   have hsum : HasSum f ((-Complex.log (1 - z)) + (-Complex.log (1 - cubeRootUnit * z))
-      + (-Complex.log (1 - cubeRootUnit ^ 2 * z))) := by
+      + (-Complex.log (1 - cubeRootUnit ^ (2 : ℕ) * z))) := by
     refine (((hasSum_neg_log_sub hz).add (hasSum_neg_log_sub hnorm1)).add
       (hasSum_neg_log_sub hnorm2)).congr_fun fun n => ?_
     rw [hfdef]
@@ -168,7 +168,7 @@ theorem neg_log_cube_sum {z : ℂ} (hz : ‖z‖ < 1) :
     rw [hfdef]
     simp only
     rw [if_neg hnd, zero_mul, zero_div]
-  have hcomp : (f ∘ fun j : ℕ => 3 * j) = fun j : ℕ => (z ^ 3) ^ j / (j : ℂ) := by
+  have hcomp : (f ∘ fun j : ℕ => 3 * j) = fun j : ℕ => (z ^ (3 : ℕ)) ^ j / (j : ℂ) := by
     funext j
     rw [Function.comp_apply, hfdef]
     simp only
@@ -186,9 +186,9 @@ theorem neg_log_cube_sum {z : ℂ} (hz : ‖z‖ < 1) :
 
 /-- **The cube-root cancellation for the quadratic tail.** -/
 theorem logTail_cube_sum {z : ℂ} (hz : ‖z‖ < 1) :
-    logTail z + logTail (cubeRootUnit * z) + logTail (cubeRootUnit ^ 2 * z)
-      = -Complex.log (1 - z ^ 3) := by
-  have hlin : z + cubeRootUnit * z + cubeRootUnit ^ 2 * z = 0 := by
+    logTail z + logTail (cubeRootUnit * z) + logTail (cubeRootUnit ^ (2 : ℕ) * z)
+      = -Complex.log (1 - z ^ (3 : ℕ)) := by
+  have hlin : z + cubeRootUnit * z + cubeRootUnit ^ (2 : ℕ) * z = 0 := by
     have := one_add_cubeRootUnit_add_sq
     linear_combination z * this
   rw [logTail, logTail, logTail]

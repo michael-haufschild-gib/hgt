@@ -316,7 +316,7 @@ private def angularAction (q : XiZeroCopy) (branch : Bool) (d X k : ℝ) : ℂ :
 private def radius (z : ℝ) : ℝ := Real.arcosh (max 1 z)
 private def forcing (q : XiZeroCopy) (branch : Bool) (x X k u v : ℝ) : ℂ :=
   angularAction q branch (radius (invariant ((u+v)/2) (x+(v-u)/2) x)) X k /
-    (4*(Real.cosh (x+(v-u)/2):ℂ)^2)
+    (4*(Real.cosh (x+(v-u)/2):ℂ)^(2 : ℕ))
 
 private theorem forcing_continuous (q : XiZeroCopy) (branch : Bool) (x X k : ℝ) :
     Continuous (Function.uncurry (forcing q branch x X k)) := by
@@ -343,7 +343,7 @@ private theorem forcing_raw (q : XiZeroCopy) (branch : Bool) (x X k : ℝ)
     {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :
     forcing q branch x X k u v =
       angularAction q branch (Real.arcosh (invariant ((u+v)/2) (x+(v-u)/2) x)) X k /
-        (4*(Real.cosh (x+(v-u)/2):ℂ)^2) := by
+        (4*(Real.cosh (x+(v-u)/2):ℂ)^(2 : ℕ)) := by
   have hz := invariant_causal (⟨_,_,_,null_cone x hu hv⟩ : CausalPoint)
   dsimp only [forcing,radius]
   rw [max_eq_right hz]
@@ -464,7 +464,7 @@ theorem sourceKernel_circleMean (q : XiZeroCopy) (branch image : Bool) (p r X k 
 private def sourceAction (q : XiZeroCopy) (branch image : Bool) (p r X k v w : ℝ) : ℂ :=
   angularAction q branch (Real.arcosh (invariant ((v+w-p-r)/2) ((p-r)/2)
     (if image then -((v-w)/2) else (v-w)/2))) X k /
-    (4*(Real.cosh ((v-w)/2):ℂ)^2)
+    (4*(Real.cosh ((v-w)/2):ℂ)^(2 : ℕ))
 
 private theorem direct_kernel (q : XiZeroCopy) (branch : Bool) (p r X k v w : ℝ)
     (hv : p ≤ v) (hw : r ≤ w) :
@@ -530,9 +530,9 @@ private theorem average_const_mul (c : ℂ) (f : ℝ → ℂ) :
   rw [integral_const_mul]
   ring
 
-private theorem radial_metric (t : ℝ) : 1-(radialUnit t:ℂ)^2=1/(Real.cosh t:ℂ)^2 := by
+private theorem radial_metric (t : ℝ) : 1-(radialUnit t:ℂ)^(2 : ℕ)=1/(Real.cosh t:ℂ)^(2 : ℕ) := by
   have hn : (Real.cosh t:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.cosh_pos t).ne'
-  have he : (Real.cosh t:ℂ)^2-(Real.sinh t:ℂ)^2=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq t
+  have he : (Real.cosh t:ℂ)^(2 : ℕ)-(Real.sinh t:ℂ)^(2 : ℕ)=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq t
   dsimp only [radialUnit]
   simp only [Complex.ofReal_div,Complex.ofReal_neg]
   field_simp [hn]
@@ -543,7 +543,7 @@ private theorem seed_wave (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     timeFieldWave (timeAngularSeedField q branch amp) ((v+w)/2) ((v-w)/2) z=
       4*seedNullMixed q branch amp v w*fullAngularField q branch z-
         seedNull q branch amp v w*scalarLaplacian (fullAngularField q branch) z /
-          (Real.cosh ((v-w)/2):ℂ)^2 := by
+          (Real.cosh ((v-w)/2):ℂ)^(2 : ℕ) := by
   have hL : scalarLaplacian (fun y =>
       timeSourceSeed (physicalRate q branch) amp (parameter q branch) ((v+w)/2) ((v-w)/2)*
         fullAngularField q branch y) z=
@@ -565,7 +565,7 @@ private theorem seed_wave_mean (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (v w
         (logCircle d theta X k))/4 =
       angularMean q branch d X k*seedNullMixed q branch amp v w-
         seedNull q branch amp v w*angularAction q branch d X k /
-          (4*(Real.cosh ((v-w)/2):ℂ)^2) := by
+          (4*(Real.cosh ((v-w)/2):ℂ)^(2 : ℕ)) := by
   have hb := circle_continuous (fullAngularField q branch)
     (fun z hz => (fullAngularField_smooth q branch z hz).continuousAt) d X k
   have hq := circle_continuous (fullSquarePotential q)
@@ -573,8 +573,8 @@ private theorem seed_wave_mean (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (v w
   have he (theta : ℝ) :
       timeFieldWave (timeAngularSeedField q branch amp) ((v+w)/2) ((v-w)/2) (logCircle d theta X k)=
       (4*seedNullMixed q branch amp v w-seedNull q branch amp v w*parameter q branch/
-        (Real.cosh ((v-w)/2):ℂ)^2)*fullAngularField q branch (logCircle d theta X k)-
-      (seedNull q branch amp v w*parameter q branch/(Real.cosh ((v-w)/2):ℂ)^2)*
+        (Real.cosh ((v-w)/2):ℂ)^(2 : ℕ))*fullAngularField q branch (logCircle d theta X k)-
+      (seedNull q branch amp v w*parameter q branch/(Real.cosh ((v-w)/2):ℂ)^(2 : ℕ))*
         fullSquarePotential q (logCircle d theta X k) := by
     have hz : 0 < logCircle d theta X k 1 :=
       mul_pos (Real.exp_pos _) (one_div_pos.mpr (denominator_pos _ _))
@@ -583,8 +583,8 @@ private theorem seed_wave_mean (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (v w
     ring
   simp_rw [he]
   rw [average_sub (hb.const_mul _) (hq.const_mul _),average_const_mul,average_const_mul]
-  change ((4*seedNullMixed q branch amp v w-_/(_ : ℂ)^2)*angularMean q branch d X k-
-    (_/(_ : ℂ)^2)*D4BMNativeCircle.mean q d X k)/4=_
+  change ((4*seedNullMixed q branch amp v w-_/(_ : ℂ)^(2 : ℕ))*angularMean q branch d X k-
+    (_/(_ : ℂ)^(2 : ℕ))*D4BMNativeCircle.mean q d X k)/4=_
   dsimp only [angularAction]
   ring
 

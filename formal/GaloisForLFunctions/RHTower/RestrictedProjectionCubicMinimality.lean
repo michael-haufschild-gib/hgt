@@ -65,16 +65,16 @@ def RestrictedProjectionCubicMinimalityStatement : Prop :=
       A.IsHilbertSchmidt ∧ ¬ MemSchattenClass 1 A) ∧
   (∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
       [CompleteSpace H] (A : H →L[ℂ] H),
-      A.IsHilbertSchmidt → MemSchattenClass 1 (A ^ 2)) ∧
+      A.IsHilbertSchmidt → MemSchattenClass 1 (A ^ (2 : ℕ))) ∧
   (∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
       [CompleteSpace H] (A : H →L[ℂ] H),
-      (-A) ^ 2 = A ^ 2) ∧
+      (-A) ^ (2 : ℕ) = A ^ (2 : ℕ)) ∧
   (∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
       [CompleteSpace H] (A : H →L[ℂ] H),
-      A.IsHilbertSchmidt → MemSchattenClass 1 (A ^ 3)) ∧
+      A.IsHilbertSchmidt → MemSchattenClass 1 (A ^ (3 : ℕ))) ∧
   (∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
       [CompleteSpace H] (A : H →L[ℂ] H),
-      (-A) ^ 3 = -(A ^ 3)) ∧
+      (-A) ^ (3 : ℕ) = -(A ^ (3 : ℕ))) ∧
   (∃ (R P : ℂ →L[ℂ] ℂ),
       R.IsHilbertSchmidt ∧ P.IsHilbertSchmidt ∧
       ContinuousLinearMap.opTrace (restrictedProjectionCubicDefect R P) = 1)

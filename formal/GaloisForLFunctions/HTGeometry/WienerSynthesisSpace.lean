@@ -70,7 +70,7 @@ theorem norm_inner_le_kgFreq (v ξ : E) : |⟪ξ, v⟫| ≤ ‖v‖ * kgFreq ξ 
   have h1 : |⟪ξ, v⟫| ≤ ‖ξ‖ * ‖v‖ := abs_real_inner_le_norm ξ v
   have h2 : ‖ξ‖ ≤ kgFreq ξ := by
     rw [kgFreq]
-    have hle : ‖ξ‖ ^ 2 ≤ 1 + ‖ξ‖ ^ 2 := by nlinarith
+    have hle : ‖ξ‖ ^ (2 : ℕ) ≤ 1 + ‖ξ‖ ^ (2 : ℕ) := by nlinarith
     have := Real.sqrt_le_sqrt hle
     rwa [Real.sqrt_sq (norm_nonneg ξ)] at this
   nlinarith [norm_nonneg v, norm_nonneg ξ]
@@ -145,9 +145,9 @@ theorem hasDerivAt_deriv_kgSynthesis_dir {f : E → ℂ}
     (hmeas : AEStronglyMeasurable f (volume : Measure E))
     (hint : Integrable f (volume : Measure E))
     (h1 : Integrable (fun ξ : E => kgFreq ξ * ‖f ξ‖) (volume : Measure E))
-    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ 2 * ‖f ξ‖) (volume : Measure E)) (x v : E) (r : ℝ) :
+    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ (2 : ℕ) * ‖f ξ‖) (volume : Measure E)) (x v : E) (r : ℝ) :
     HasDerivAt (fun s : ℝ => deriv (fun q : ℝ => kgSynthesis f (x + q • v)) s)
-      (∫ ξ, (2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ 2 * kgChar (x + r • v) ξ * f ξ) r := by
+      (∫ ξ, (2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ (2 : ℕ) * kgChar (x + r • v) ξ * f ξ) r := by
   have hfun : (fun s : ℝ => deriv (fun q : ℝ => kgSynthesis f (x + q • v)) s)
       = fun s : ℝ =>
         ∫ ξ, 2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ) * kgChar (x + s • v) ξ * f ξ := by
@@ -162,7 +162,7 @@ theorem hasDerivAt_deriv_kgSynthesis_dir {f : E → ℂ}
     (((continuous_const.mul hinnerCont).mul
       (continuous_kgChar' (x + s • v))).aestronglyMeasurable).mul hmeas
   have hmeasF' : ∀ s : ℝ, AEStronglyMeasurable
-      (fun ξ : E => (2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ 2
+      (fun ξ : E => (2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ (2 : ℕ)
         * kgChar (x + s • v) ξ * f ξ) (volume : Measure E) := fun s =>
     ((((continuous_const.mul hinnerCont).pow 2).mul
       (continuous_kgChar' (x + s • v))).aestronglyMeasurable).mul hmeas
@@ -178,14 +178,14 @@ theorem hasDerivAt_deriv_kgSynthesis_dir {f : E → ℂ}
       mul_le_mul_of_nonneg_right hinner hf
     nlinarith [hstep, hpipos]
   have hb2 : ∀ (s : ℝ) (ξ : E),
-      ‖(2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ 2 * kgChar (x + s • v) ξ * f ξ‖
-        ≤ (2 * Real.pi * ‖v‖) ^ 2 * (kgFreq ξ ^ 2 * ‖f ξ‖) := by
+      ‖(2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ (2 : ℕ) * kgChar (x + s • v) ξ * f ξ‖
+        ≤ (2 * Real.pi * ‖v‖) ^ (2 : ℕ) * (kgFreq ξ ^ (2 : ℕ) * ‖f ξ‖) := by
     intro s ξ
     rw [norm_mul, norm_mul, norm_kgChar, mul_one, norm_pow, norm_two_pi_I_inner]
     have hinner := norm_inner_le_kgFreq v ξ
     have hf : (0 : ℝ) ≤ ‖f ξ‖ := norm_nonneg _
     have hpipos : (0 : ℝ) < 2 * Real.pi := by positivity
-    have hsq : (2 * Real.pi * |(⟪ξ, v⟫ : ℝ)|) ^ 2 ≤ (2 * Real.pi * (‖v‖ * kgFreq ξ)) ^ 2 := by
+    have hsq : (2 * Real.pi * |(⟪ξ, v⟫ : ℝ)|) ^ (2 : ℕ) ≤ (2 * Real.pi * (‖v‖ * kgFreq ξ)) ^ (2 : ℕ) := by
       have hnn : (0 : ℝ) ≤ 2 * Real.pi * |(⟪ξ, v⟫ : ℝ)| := by positivity
       have hmono : 2 * Real.pi * |(⟪ξ, v⟫ : ℝ)| ≤ 2 * Real.pi * (‖v‖ * kgFreq ξ) :=
         mul_le_mul_of_nonneg_left hinner hpipos.le
@@ -200,9 +200,9 @@ theorem hasDerivAt_deriv_kgSynthesis_dir {f : E → ℂ}
   have hmain := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := (volume : Measure E))
     (x₀ := r) (s := Set.univ)
     (F := fun s ξ => 2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ) * kgChar (x + s • v) ξ * f ξ)
-    (F' := fun s ξ => (2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ 2
+    (F' := fun s ξ => (2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ (2 : ℕ)
       * kgChar (x + s • v) ξ * f ξ)
-    (bound := fun ξ => (2 * Real.pi * ‖v‖) ^ 2 * (kgFreq ξ ^ 2 * ‖f ξ‖)) Filter.univ_mem
+    (bound := fun ξ => (2 * Real.pi * ‖v‖) ^ (2 : ℕ) * (kgFreq ξ ^ (2 : ℕ) * ‖f ξ‖)) Filter.univ_mem
     (Filter.Eventually.of_forall hmeasF) hF_int (hmeasF' r) ?_ (h2.const_mul _) ?_
   · exact hmain.2
   · filter_upwards with ξ

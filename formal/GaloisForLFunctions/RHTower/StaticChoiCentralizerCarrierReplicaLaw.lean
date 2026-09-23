@@ -143,7 +143,7 @@ theorem unitaryRadialDiagonalMatrix_mem_unitary
     unitaryRadialDiagonalMatrix W ∈ Matrix.unitaryGroup (Fin d) ℂ := by
   apply mem_unitaryGroup_diagonal_general
   intro i
-  exact norm_phaseNormalize (by norm_num)
+  exact norm_phaseNormalize_finiteSpectralPhaseActionLaw (by norm_num)
 
 def unitaryDiagonalCentralizerMass
     {d : ℕ} (W : Matrix (Fin d) (Fin d) ℂ) : ℝ :=
@@ -173,9 +173,9 @@ theorem directStaticChoiCentralizerMass_choiVector_eq
   field_simp [Real.sqrt_ne_zero'.mpr hdR]
   ring_nf at hsqrt ⊢
   calc
-    ‖W i i‖ * (d : ℝ) = ‖W i i‖ * Real.sqrt (d : ℝ) ^ 2 :=
+    ‖W i i‖ * (d : ℝ) = ‖W i i‖ * Real.sqrt (d : ℝ) ^ (2 : ℕ) :=
       congrArg (fun x : ℝ => ‖W i i‖ * x) hsqrt.symm
-    _ = Real.sqrt (d : ℝ) ^ 2 * ‖W i i‖ := mul_comm _ _
+    _ = Real.sqrt (d : ℝ) ^ (2 : ℕ) * ‖W i i‖ := mul_comm _ _
 
 theorem trace_radialDiagonal_conjTranspose_mul
     {d : ℕ} (W : Matrix (Fin d) (Fin d) ℂ) :
@@ -196,7 +196,7 @@ centralizer phase. -/
 theorem choiDist_radialDiagonal_exact
     {d : ℕ} (hd : 0 < d) (W : Matrix (Fin d) (Fin d) ℂ) :
     choiDist (unitaryRadialDiagonalMatrix W) W =
-      Real.sqrt (1 - unitaryDiagonalCentralizerMass W ^ 2) := by
+      Real.sqrt (1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ)) := by
   rw [choiDist_eq (by simpa using hd)]
   rw [trace_radialDiagonal_conjTranspose_mul]
   have hsum : 0 ≤ ∑ i : Fin d, ‖W i i‖ := Finset.sum_nonneg fun i _ => norm_nonneg _
@@ -233,14 +233,14 @@ theorem choiDist_radialDiagonal_lt_of_mass_gt
     {β : ℝ} (hβ0 : 0 ≤ β)
     (hmass : β < unitaryDiagonalCentralizerMass W) :
     choiDist (unitaryRadialDiagonalMatrix W) W <
-      Real.sqrt (1 - β ^ 2) := by
+      Real.sqrt (1 - β ^ (2 : ℕ)) := by
   rw [choiDist_radialDiagonal_exact hd]
   have hmass0 := unitaryDiagonalCentralizerMass_nonneg W
   have hmass1 := unitaryDiagonalCentralizerMass_le_one hd hW
-  have hsquare : β ^ 2 < unitaryDiagonalCentralizerMass W ^ 2 := by
+  have hsquare : β ^ (2 : ℕ) < unitaryDiagonalCentralizerMass W ^ (2 : ℕ) := by
     simpa [pow_two] using
       (mul_self_lt_mul_self_iff hβ0 hmass0).mp hmass
-  have hrad : 0 ≤ 1 - unitaryDiagonalCentralizerMass W ^ 2 := by
+  have hrad : 0 ≤ 1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hmass1)
       (add_nonneg (by norm_num : (0 : ℝ) ≤ 1) hmass0)]
   exact Real.sqrt_lt_sqrt hrad (by linarith)
@@ -271,7 +271,7 @@ theorem weighted_unitaryChoiNearActionMass_le_transverse_add_centralizerTube
         (choiVector (W c)) energy r δ) ≤
       β ^ (2 * r) +
         ∑ c, if choiDist (unitaryRadialDiagonalMatrix (W c)) (W c) <
-            Real.sqrt (1 - β ^ 2) then w c else 0 := by
+            Real.sqrt (1 - β ^ (2 : ℕ)) then w c else 0 := by
   have htarget : ∀ c, ‖choiVector (W c)‖ = 1 := by
     intro c
     apply norm_choiVector_eq_one (by simpa using hd)
@@ -285,7 +285,7 @@ theorem weighted_unitaryChoiNearActionMass_le_transverse_add_centralizerTube
           then w c else 0 := hsplit
     _ ≤ β ^ (2 * r) +
         ∑ c, if choiDist (unitaryRadialDiagonalMatrix (W c)) (W c) <
-            Real.sqrt (1 - β ^ 2) then w c else 0 := by
+            Real.sqrt (1 - β ^ (2 : ℕ)) then w c else 0 := by
       gcongr
       rw [directStaticChoiCentralizerMass_choiVector_eq hd (W c)]
       by_cases hc : β < unitaryDiagonalCentralizerMass (W c)
@@ -317,16 +317,16 @@ theorem no_forward_unitaryChoiCircuitReturn_of_canonicalCentralizerTubeBudget
         ((r.factorial : ℝ) * (d : ℝ)⁻¹ ^ r +
           β ^ (2 * r) +
           (∑ c, if choiDist (unitaryRadialDiagonalMatrix (W c)) (W c) <
-              Real.sqrt (1 - β ^ 2) then
+              Real.sqrt (1 - β ^ (2 : ℕ)) then
             staticChoiTargetOptimalDesignWeight r (fun c => choiVector (W c))
               (fun c => norm_choiVector_eq_one (by simpa using hd)
                 (by simpa [Matrix.star_eq_conjTranspose] using
                   (Matrix.mem_unitaryGroup_iff'.mp (hW c)))) c
           else 0) +
-          Real.exp (-((T * δ) ^ 2) / 2)) <
+          Real.exp (-((T * δ) ^ (2 : ℕ)) / 2)) <
         gaussianFloorTwo *
           ((epsw - epsn) / staticChoiSpeed energy / (2 * T)) *
-          (1 - epsw ^ 2) ^ r) :
+          (1 - epsw ^ (2 : ℕ)) ^ r) :
     ¬ ∃ t ∈ Icc
         (epsw / staticChoiSpeed energy +
           (epsw - epsn) / staticChoiSpeed energy) T,
@@ -350,7 +350,7 @@ theorem no_forward_unitaryChoiCircuitReturn_of_canonicalCentralizerTubeBudget
         directStaticChoiTargetNearActionMass (target c) energy r δ) ≤
         β ^ (2 * r) +
           ∑ c, if choiDist (unitaryRadialDiagonalMatrix (W c)) (W c) <
-              Real.sqrt (1 - β ^ 2) then
+              Real.sqrt (1 - β ^ (2 : ℕ)) then
             staticChoiTargetOptimalDesignWeight r target htarget c else 0 := by
     simpa only [target, w] using hsplit
   nlinarith

@@ -39,10 +39,10 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_blocks_mass_filter
     {ι : Type*} [DecidableEq ι] (I : Finset ι) (B : ι → Finset ℕ)
     (hdisj : (I : Set ι).PairwiseDisjoint B) (hcover : I.biUnion B = P)
     (hBprime : ∀ i ∈ I, ∀ p ∈ B i, p.Prime) :
-    (∫ w in E, ‖harmonicRamareBilinear P s w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P s w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P *
           ∑ i ∈ I.filter (fun i => 0 < harmonicPrimeMass (B i)),
-            (∫ w in E, ‖harmonicRamareBlock P s (B i) w‖ ^ 2)
+            (∫ w in E, ‖harmonicRamareBlock P s (B i) w‖ ^ (2 : ℕ))
               / harmonicPrimeMass (B i) := by
   classical
   set I' : Finset ι := I.filter (fun i => 0 < harmonicPrimeMass (B i)) with hI'def

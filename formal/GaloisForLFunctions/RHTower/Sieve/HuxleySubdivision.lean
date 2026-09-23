@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.HuxleyLargeValues
 
 `Sieve/HuxleyLargeValues` proves the *local* Huxley estimate: on a frequency window whose diameter
 `W` is small enough that the second-derivative envelope is absorbed by the threshold, the number of
-`delta`-separated large values is at most `2 G (N + 12 pi N (1 + log K)/delta)/V^2`.
+`delta`-separated large values is at most `2 G (N + 12 pi N (1 + log K)/delta)/V^(2 : ℕ)`.
 
 Huxley's global theorem is obtained by cutting the whole frequency range into windows of length `W`
 and adding the local counts.  The combinatorial half of that step is isolated here as
@@ -114,12 +114,12 @@ theorem card_le_of_window_bound {lam : ℕ → ℝ} (hmono : Monotone lam)
   exact hle
 
 /-- **Huxley's global large-values theorem.**  Subdividing the frequency range into windows of
-diameter `W` — short enough that the second-derivative envelope `B` is absorbed by `V^2/2` — and
+diameter `W` — short enough that the second-derivative envelope `B` is absorbed by `V^(2 : ℕ)/2` — and
 adding the local counts gives the global count with the subdivision factor `floor (Ttot/W) + 1`. -/
 theorem huxley_global_large_values {N : ℕ} (hN : 1 ≤ N)
     (a : EuclideanSpace ℂ (Fin N)) {lam : ℕ → ℝ}
     {delta U W Ttot V G B : ℝ} (hdelta : 0 < delta) (hU : 0 < U) (hV : 0 < V) (hW : 0 < W)
-    (hmass : ‖a‖ ^ 2 ≤ G)
+    (hmass : ‖a‖ ^ (2 : ℕ) ≤ G)
     (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamW : logDyadicLambda N W ≤ 1)
@@ -127,8 +127,8 @@ theorem huxley_global_large_values {N : ℕ} (hN : 1 ≤ N)
     (R : ℕ)
     (hspread : ∀ r, r ≤ R → lam r - lam 0 ≤ Ttot)
     (hbig : ∀ r, r ≤ R → V ≤ ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖)
-    (habsorb : G * B ≤ V ^ 2 / 2) :
-    ((R : ℝ) + 1) * V ^ 2
+    (habsorb : G * B ≤ V ^ (2 : ℕ) / 2) :
+    ((R : ℝ) + 1) * V ^ (2 : ℕ)
       ≤ ((⌊Ttot / W⌋₊ : ℝ) + 1) *
         (2 * G * ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta)
           * ∑ i ∈ Finset.range (R + 1), 1 / ((i : ℝ) + 1))) := by
@@ -138,10 +138,10 @@ theorem huxley_global_large_values {N : ℕ} (hN : 1 ≤ N)
       linarith)
     exact hs.monotone
   have hG0 : (0 : ℝ) ≤ G := le_trans (by positivity) hmass
-  have hV2 : (0 : ℝ) < V ^ 2 := by positivity
+  have hV2 : (0 : ℝ) < V ^ (2 : ℕ) := by positivity
   set Cnum : ℝ := 2 * G * ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta)
       * ∑ i ∈ Finset.range (R + 1), 1 / ((i : ℝ) + 1)) with hCnum
-  have hkey : ((R : ℝ) + 1) ≤ ((⌊Ttot / W⌋₊ : ℝ) + 1) * (Cnum / V ^ 2) := by
+  have hkey : ((R : ℝ) + 1) ≤ ((⌊Ttot / W⌋₊ : ℝ) + 1) * (Cnum / V ^ (2 : ℕ)) := by
     refine card_le_of_window_bound hmono hW R hspread ?_
     intro j m hjm hwin
     have hgap' : ∀ i, lam (j + i) + delta ≤ lam (j + (i + 1)) := by
@@ -183,11 +183,11 @@ theorem huxley_global_large_values {N : ℕ} (hN : 1 ≤ N)
       have hcoef : (0 : ℝ) ≤ 12 * Real.pi * (N : ℝ) / delta := by positivity
       have hinner := mul_le_mul_of_nonneg_left hharm hcoef
       nlinarith [hG0, hinner]
-    have hfin : ((m : ℝ) + 1) * V ^ 2 ≤ Cnum := le_trans hloc hup
+    have hfin : ((m : ℝ) + 1) * V ^ (2 : ℕ) ≤ Cnum := le_trans hloc hup
     rw [le_div_iff₀ hV2]
     exact hfin
-  calc ((R : ℝ) + 1) * V ^ 2
-      ≤ ((⌊Ttot / W⌋₊ : ℝ) + 1) * (Cnum / V ^ 2) * V ^ 2 := by
+  calc ((R : ℝ) + 1) * V ^ (2 : ℕ)
+      ≤ ((⌊Ttot / W⌋₊ : ℝ) + 1) * (Cnum / V ^ (2 : ℕ)) * V ^ (2 : ℕ) := by
         exact mul_le_mul_of_nonneg_right hkey hV2.le
     _ = ((⌊Ttot / W⌋₊ : ℝ) + 1) * Cnum := by
         field_simp

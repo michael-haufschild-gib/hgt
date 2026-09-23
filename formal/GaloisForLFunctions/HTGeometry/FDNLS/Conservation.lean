@@ -55,7 +55,7 @@ theorem imPair_antisymm (z w : ℂ) : imPair z w = -imPair w z := by simp [imPai
 
 theorem imPair_self (z : ℂ) : imPair z z = 0 := by simp [imPair]; ring
 
-theorem rePair_self (z : ℂ) : rePair z z = ‖z‖ ^ 2 := by
+theorem rePair_self (z : ℂ) : rePair z z = ‖z‖ ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq]
   simp [rePair, Complex.normSq_apply]
 
@@ -96,9 +96,9 @@ theorem hasDerivAt_rePair {f g : ℝ → ℂ} {f' g' : ℂ} {t : ℝ}
   ring
 
 theorem hasDerivAt_normSqPair {f : ℝ → ℂ} {f' : ℂ} {t : ℝ} (h : HasDerivAt f f' t) :
-    HasDerivAt (fun s => ‖f s‖ ^ 2) (2 * rePair (f t) f') t := by
+    HasDerivAt (fun s => ‖f s‖ ^ (2 : ℕ)) (2 * rePair (f t) f') t := by
   have h2 := hasDerivAt_rePair h h
-  have h3 : (fun s => rePair (f s) (f s)) = fun s => ‖f s‖ ^ 2 :=
+  have h3 : (fun s => rePair (f s) (f s)) = fun s => ‖f s‖ ^ (2 : ℕ) :=
     funext fun s => rePair_self (f s)
   rw [h3] at h2
   refine h2.congr_deriv ?_
@@ -149,22 +149,22 @@ variable {ι : Type*} [Fintype ι]
 /-- **Equation (16).**  The right-hand side of a discrete NLS lattice with real coupling kernel
 `D`, coupling constant `C` and nonlinearity sign `σ`. -/
 noncomputable def latticeNLSField (C σ : ℝ) (D : ι → ι → ℝ) (u : ι → ℂ) (n : ι) : ℂ :=
-  (C : ℂ) * (∑ m, ((D n m : ℝ) : ℂ) * u m) - ((σ * ‖u n‖ ^ 2 : ℝ) : ℂ) * u n
+  (C : ℂ) * (∑ m, ((D n m : ℝ) : ℂ) * u m) - ((σ * ‖u n‖ ^ (2 : ℕ) : ℝ) : ℂ) * u n
 
 /-- A time-dependent lattice function solving `i u̇ = latticeNLSField`. -/
 def IsLatticeNLSSolution (C σ : ℝ) (D : ι → ι → ℝ) (u : ℝ → ι → ℂ) : Prop :=
   ∀ (t : ℝ) (n : ι), HasDerivAt (fun s => u s n) (-Complex.I * latticeNLSField C σ D (u t) n) t
 
 /-- **Equation (18).**  The power (norm). -/
-noncomputable def latticePower (u : ι → ℂ) : ℝ := ∑ n, ‖u n‖ ^ 2
+noncomputable def latticePower (u : ι → ℂ) : ℝ := ∑ n, ‖u n‖ ^ (2 : ℕ)
 
 /-- **Equation (17).**  The Hamiltonian (energy). -/
 noncomputable def latticeHamiltonian (C σ : ℝ) (D : ι → ι → ℝ) (u : ι → ℂ) : ℝ :=
-  C * (∑ n, ∑ m, D n m * rePair (u n) (u m)) - σ / 2 * ∑ n, ‖u n‖ ^ 4
+  C * (∑ n, ∑ m, D n m * rePair (u n) (u m)) - σ / 2 * ∑ n, ‖u n‖ ^ (4 : ℕ)
 
 theorem imPair_latticeNLSField (C σ : ℝ) (D : ι → ι → ℝ) (u : ι → ℂ) (n m : ι) :
     imPair (u n) (latticeNLSField C σ D u m)
-      = C * (∑ p, D m p * imPair (u n) (u p)) - σ * ‖u m‖ ^ 2 * imPair (u n) (u m) := by
+      = C * (∑ p, D m p * imPair (u n) (u p)) - σ * ‖u m‖ ^ (2 : ℕ) * imPair (u n) (u m) := by
   rw [latticeNLSField, imPair_sub_right, imPair_ofReal_mul, imPair_sum_right, imPair_ofReal_mul]
   have h : (∑ p, imPair (u n) (((D m p : ℝ) : ℂ) * u p)) = ∑ p, D m p * imPair (u n) (u p) :=
     Finset.sum_congr rfl fun p _ => imPair_ofReal_mul _ _ _
@@ -207,9 +207,9 @@ theorem power_derivative_zero (C σ : ℝ) (D : ι → ι → ℝ) (hD : ∀ n m
 theorem hasDerivAt_latticePower {C σ : ℝ} {D : ι → ι → ℝ} (hD : ∀ n m, D n m = D m n)
     {u : ℝ → ι → ℂ} (hu : IsLatticeNLSSolution C σ D u) (t : ℝ) :
     HasDerivAt (fun s => latticePower (u s)) 0 t := by
-  have hd : HasDerivAt (fun s => ∑ n : ι, ‖u s n‖ ^ 2)
+  have hd : HasDerivAt (fun s => ∑ n : ι, ‖u s n‖ ^ (2 : ℕ))
       (∑ n : ι, 2 * rePair (u t n) (-Complex.I * latticeNLSField C σ D (u t) n)) t := by
-    exact hasDerivAt_finsetSum (A := fun n s => ‖u s n‖ ^ 2) fun n => hasDerivAt_normSqPair (hu t n)
+    exact hasDerivAt_finsetSum (A := fun n s => ‖u s n‖ ^ (2 : ℕ)) fun n => hasDerivAt_normSqPair (hu t n)
   rw [power_derivative_zero C σ D hD (u t)] at hd
   exact hd
 
@@ -230,7 +230,7 @@ theorem hamiltonian_derivative_zero (C σ : ℝ) (D : ι → ι → ℝ) (hD : �
     (w : ι → ℂ) :
     C * (∑ n, ∑ m, D n m * (rePair (-Complex.I * latticeNLSField C σ D w n) (w m)
         + rePair (w n) (-Complex.I * latticeNLSField C σ D w m)))
-      - σ / 2 * (∑ n, 2 * ‖w n‖ ^ 2 * (2 * rePair (w n)
+      - σ / 2 * (∑ n, 2 * ‖w n‖ ^ (2 : ℕ) * (2 * rePair (w n)
           (-Complex.I * latticeNLSField C σ D w n))) = 0 := by
   set F : ι → ℂ := fun n => latticeNLSField C σ D w n with hF
   have hAterm : ∀ n m : ι,
@@ -257,8 +257,8 @@ theorem hamiltonian_derivative_zero (C σ : ℝ) (D : ι → ι → ℝ) (hD : �
       rw [hD m n]
     rw [h1, h2]
     ring
-  have hB : (∑ n : ι, 2 * ‖w n‖ ^ 2 * (2 * rePair (w n) (-Complex.I * F n)))
-      = ∑ n : ι, ∑ m : ι, (4 * C) * (‖w n‖ ^ 2 * (D n m * imPair (w n) (w m))) := by
+  have hB : (∑ n : ι, 2 * ‖w n‖ ^ (2 : ℕ) * (2 * rePair (w n) (-Complex.I * F n)))
+      = ∑ n : ι, ∑ m : ι, (4 * C) * (‖w n‖ ^ (2 : ℕ) * (D n m * imPair (w n) (w m))) := by
     refine Finset.sum_congr rfl fun n _ => ?_
     rw [rePair_neg_I_mul, hF]
     simp only
@@ -266,10 +266,10 @@ theorem hamiltonian_derivative_zero (C σ : ℝ) (D : ι → ι → ℝ) (hD : �
     simp only [Finset.mul_sum]
     exact Finset.sum_congr rfl fun m _ => by ring
   have hG : (∑ n : ι, ∑ m : ι, D n m * imPair (w n) (F m))
-      = -(σ * ∑ n : ι, ∑ m : ι, D n m * (‖w m‖ ^ 2 * imPair (w n) (w m))) := by
+      = -(σ * ∑ n : ι, ∑ m : ι, D n m * (‖w m‖ ^ (2 : ℕ) * imPair (w n) (w m))) := by
     have hexp : ∀ n m : ι, D n m * imPair (w n) (F m)
         = C * (∑ p : ι, D n m * D m p * imPair (w n) (w p))
-          - σ * (D n m * (‖w m‖ ^ 2 * imPair (w n) (w m))) := by
+          - σ * (D n m * (‖w m‖ ^ (2 : ℕ) * imPair (w n) (w m))) := by
       intro n m
       rw [hF]
       simp only
@@ -279,16 +279,16 @@ theorem hamiltonian_derivative_zero (C σ : ℝ) (D : ι → ι → ℝ) (hD : �
       · ring
     have hstep : (∑ n : ι, ∑ m : ι, D n m * imPair (w n) (F m))
         = ∑ n : ι, ∑ m : ι, (C * (∑ p : ι, D n m * D m p * imPair (w n) (w p))
-            - σ * (D n m * (‖w m‖ ^ 2 * imPair (w n) (w m)))) :=
+            - σ * (D n m * (‖w m‖ ^ (2 : ℕ) * imPair (w n) (w m)))) :=
       Finset.sum_congr rfl fun n _ => Finset.sum_congr rfl fun m _ => hexp n m
     rw [hstep, sum_sum_sub, sum_sum_const_mul, sum_sum_const_mul,
       sum_triple_eq_zero D hD w, mul_zero, zero_sub]
-  have hfin : (∑ n : ι, ∑ m : ι, D n m * (‖w m‖ ^ 2 * imPair (w n) (w m)))
-      + ∑ n : ι, ∑ m : ι, ‖w n‖ ^ 2 * (D n m * imPair (w n) (w m)) = 0 := by
+  have hfin : (∑ n : ι, ∑ m : ι, D n m * (‖w m‖ ^ (2 : ℕ) * imPair (w n) (w m)))
+      + ∑ n : ι, ∑ m : ι, ‖w n‖ ^ (2 : ℕ) * (D n m * imPair (w n) (w m)) = 0 := by
     rw [← Finset.sum_add_distrib]
-    have hcomb : ∀ n : ι, (∑ m : ι, D n m * (‖w m‖ ^ 2 * imPair (w n) (w m)))
-        + ∑ m : ι, ‖w n‖ ^ 2 * (D n m * imPair (w n) (w m))
-        = ∑ m : ι, D n m * imPair (w n) (w m) * (‖w m‖ ^ 2 + ‖w n‖ ^ 2) := by
+    have hcomb : ∀ n : ι, (∑ m : ι, D n m * (‖w m‖ ^ (2 : ℕ) * imPair (w n) (w m)))
+        + ∑ m : ι, ‖w n‖ ^ (2 : ℕ) * (D n m * imPair (w n) (w m))
+        = ∑ m : ι, D n m * imPair (w n) (w m) * (‖w m‖ ^ (2 : ℕ) + ‖w n‖ ^ (2 : ℕ)) := by
       intro n
       rw [← Finset.sum_add_distrib]
       exact Finset.sum_congr rfl fun m _ => by ring
@@ -297,8 +297,8 @@ theorem hamiltonian_derivative_zero (C σ : ℝ) (D : ι → ι → ℝ) (hD : �
     rw [hD n m, imPair_antisymm (w n) (w m)]
     ring
   rw [hA, hB, hG, sum_sum_const_mul]
-  have hUV : (∑ n : ι, ∑ m : ι, ‖w n‖ ^ 2 * (D n m * imPair (w n) (w m)))
-      = -(∑ n : ι, ∑ m : ι, D n m * (‖w m‖ ^ 2 * imPair (w n) (w m))) := by linarith [hfin]
+  have hUV : (∑ n : ι, ∑ m : ι, ‖w n‖ ^ (2 : ℕ) * (D n m * imPair (w n) (w m)))
+      = -(∑ n : ι, ∑ m : ι, D n m * (‖w m‖ ^ (2 : ℕ) * imPair (w n) (w m))) := by linarith [hfin]
   rw [hUV]
   ring
 
@@ -315,22 +315,22 @@ theorem hasDerivAt_latticeHamiltonian {C σ : ℝ} {D : ι → ι → ℝ} (hD :
       (∑ n : ι, ∑ m : ι, D n m * (rePair (-Complex.I * latticeNLSField C σ D (u t) n) (u t m)
         + rePair (u t n) (-Complex.I * latticeNLSField C σ D (u t) m))) t :=
     hasDerivAt_finsetSum (A := fun n s => ∑ m : ι, D n m * rePair (u s n) (u s m)) hinner
-  have hquart : ∀ n : ι, HasDerivAt (fun s => ‖u s n‖ ^ 4)
-      (2 * ‖u t n‖ ^ 2 * (2 * rePair (u t n)
+  have hquart : ∀ n : ι, HasDerivAt (fun s => ‖u s n‖ ^ (4 : ℕ))
+      (2 * ‖u t n‖ ^ (2 : ℕ) * (2 * rePair (u t n)
         (-Complex.I * latticeNLSField C σ D (u t) n))) t := by
     intro n
     have hp := (hasDerivAt_normSqPair (hu t n)).pow 2
-    have hfun : ((fun s => ‖u s n‖ ^ 2) ^ (2 : ℕ) : ℝ → ℝ) = fun s => ‖u s n‖ ^ 4 := by
+    have hfun : ((fun s => ‖u s n‖ ^ (2 : ℕ)) ^ (2 : ℕ) : ℝ → ℝ) = fun s => ‖u s n‖ ^ (4 : ℕ) := by
       funext s
       simp only [Pi.pow_apply]
       ring
     rw [hfun] at hp
     refine hp.congr_deriv ?_
     norm_num
-  have hd2 : HasDerivAt (fun s => ∑ n : ι, ‖u s n‖ ^ 4)
-      (∑ n : ι, 2 * ‖u t n‖ ^ 2 * (2 * rePair (u t n)
+  have hd2 : HasDerivAt (fun s => ∑ n : ι, ‖u s n‖ ^ (4 : ℕ))
+      (∑ n : ι, 2 * ‖u t n‖ ^ (2 : ℕ) * (2 * rePair (u t n)
         (-Complex.I * latticeNLSField C σ D (u t) n))) t :=
-    hasDerivAt_finsetSum (A := fun n s => ‖u s n‖ ^ 4) hquart
+    hasDerivAt_finsetSum (A := fun n s => ‖u s n‖ ^ (4 : ℕ)) hquart
   have hd := (hd1.const_mul C).sub (hd2.const_mul (σ / 2))
   rw [hamiltonian_derivative_zero C σ D hD (u t)] at hd
   exact hd

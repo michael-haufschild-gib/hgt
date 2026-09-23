@@ -16,7 +16,7 @@ def egbFixedChargeAClapeyronSlope (w φ τ : ℝ) : ℝ :=
   egbFixedChargeAEntropyJump w φ τ / egbFixedChargeAVolumeJump w φ τ
 
 theorem egbFixedChargeA_coupling_scaling (w φ τ : ℝ) :
-    (exp w * sin φ) ^ 2 = egbFixedChargeALargeRadius w φ τ ^ 2 * egbFixedChargeACouplingWeight τ φ := by
+    (exp w * sin φ) ^ (2 : ℕ) = egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) * egbFixedChargeACouplingWeight τ φ := by
   have h := egbFixedChargeA_coupling_square w φ τ
   rw [egbCoexistenceACouplingRoot_sq, egbFixedChargeALogScale_exp, egbFixedChargeAAngle_coupling] at h
   exact h.symm
@@ -37,8 +37,8 @@ theorem egbFixedChargeAEntropyJump_pos (w φ τ : ℝ) : 0 < egbFixedChargeAEntr
   exact egbCoexistenceAEntropyJump_pos _ _ _
 
 theorem egbFixedChargeAEntropyJump_formula (w φ τ : ℝ) :
-    egbFixedChargeAEntropyJump w φ τ = Real.pi * egbFixedChargeALargeRadius w φ τ ^ 2 *
-      (1 - thermalRatio τ ^ 2 - 4 * egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ)) := by
+    egbFixedChargeAEntropyJump w φ τ = Real.pi * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) *
+      (1 - thermalRatio τ ^ (2 : ℕ) - 4 * egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ)) := by
   have h := egbCoexistenceA_entropy_jump (egbFixedChargeALogScale w φ τ) τ (egbFixedChargeAAngle τ φ) 0
   rw [egbFixedChargeA_entropy_function, egbFixedChargeA_large_radius_transfer, egbFixedChargeA_small_radius_transfer] at h
   change egbFixedChargeAEntropyJump w φ τ = _ at h
@@ -50,7 +50,7 @@ theorem egbFixedChargeAEntropyJump_formula (w φ τ : ℝ) :
   ring
 
 theorem egbFixedChargeAVolumeJump_formula (w φ τ : ℝ) :
-    egbFixedChargeAVolumeJump w φ τ = 4 * Real.pi * egbFixedChargeALargeRadius w φ τ ^ 3 * (1 - thermalRatio τ ^ 3) / 3 := by
+    egbFixedChargeAVolumeJump w φ τ = 4 * Real.pi * egbFixedChargeALargeRadius w φ τ ^ (3 : ℕ) * (1 - thermalRatio τ ^ (3 : ℕ)) / 3 := by
   unfold egbFixedChargeAVolumeJump egbThermodynamicVolume egbFixedChargeASmallRadius
   ring
 
@@ -59,8 +59,8 @@ theorem egbFixedChargeAVolumeJump_pos (w φ τ : ℝ) : 0 < egbFixedChargeAVolum
   have hz1 := thermalRatio_lt_one τ
   have hR := egbFixedChargeALargeRadius_pos w φ τ
   have h₁ : 0 < 1 - thermalRatio τ := sub_pos.mpr hz1
-  have hgap : 0 < 1 - thermalRatio τ ^ 3 := by
-    have h := mul_pos h₁ (show 0 < 1 + thermalRatio τ + thermalRatio τ ^ 2 by positivity)
+  have hgap : 0 < 1 - thermalRatio τ ^ (3 : ℕ) := by
+    have h := mul_pos h₁ (show 0 < 1 + thermalRatio τ + thermalRatio τ ^ (2 : ℕ) by positivity)
     nlinarith
   rw [egbFixedChargeAVolumeJump_formula]
   positivity

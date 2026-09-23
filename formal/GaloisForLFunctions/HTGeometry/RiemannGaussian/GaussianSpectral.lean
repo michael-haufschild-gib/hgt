@@ -87,7 +87,7 @@ theorem riemannHypothesis_iff_spectralCoordinate_real :
 /-- Entire extension of `translatedGaussian` to the complex spectral
 coordinate. -/
 def complexTranslatedGaussian (ε t : ℝ) (z : ℂ) : ℂ :=
-  Complex.exp (-((ε : ℂ) * (z - (t : ℂ)) ^ 2))
+  Complex.exp (-((ε : ℂ) * (z - (t : ℂ)) ^ (2 : ℕ)))
 
 /-- Entire extension of the even translated Gaussian used by the arithmetic
 certificates. -/
@@ -98,7 +98,7 @@ def complexSymmetricGaussian (ε t : ℝ) (z : ℂ) : ℂ :=
 the full Gaussian is its pointwise squared modulus; this is the elementary
 factorization behind its role as a Weil convolution square. -/
 def complexHalfGaussian (ε t : ℝ) (z : ℂ) : ℂ :=
-  Complex.exp (-(((ε / 2 : ℝ) : ℂ) * (z - (t : ℂ)) ^ 2))
+  Complex.exp (-(((ε / 2 : ℝ) : ℂ) * (z - (t : ℂ)) ^ (2 : ℕ)))
 
 theorem complexTranslatedGaussian_eq_half_mul_half (ε t : ℝ) (z : ℂ) :
     complexTranslatedGaussian ε t z =
@@ -114,7 +114,7 @@ their midpoint. -/
 theorem complexHalfGaussian_mul_complexHalfGaussian
     (ε t s : ℝ) (z : ℂ) :
     complexHalfGaussian ε t z * complexHalfGaussian ε s z =
-      (Real.exp (-ε * (t - s) ^ 2 / 4) : ℂ) *
+      (Real.exp (-ε * (t - s) ^ (2 : ℕ) / 4) : ℂ) *
         complexTranslatedGaussian ε ((t + s) / 2) z := by
   rw [complexHalfGaussian, complexHalfGaussian, complexTranslatedGaussian,
     ← Complex.exp_add, Complex.ofReal_exp, ← Complex.exp_add]
@@ -125,7 +125,7 @@ theorem complexHalfGaussian_mul_complexHalfGaussian
 @[simp]
 theorem complexHalfGaussian_ofReal (ε t r : ℝ) :
     complexHalfGaussian ε t (r : ℂ) =
-      (Real.exp (-(ε / 2) * (r - t) ^ 2) : ℝ) := by
+      (Real.exp (-(ε / 2) * (r - t) ^ (2 : ℕ)) : ℝ) := by
   rw [complexHalfGaussian, Complex.ofReal_exp]
   congr 1
   push_cast
@@ -200,7 +200,7 @@ theorem complexTranslatedGaussian_neg_center (ε t : ℝ) (z : ℂ) :
 envelope, amplified by the squared distance from the real spectral axis. -/
 theorem norm_complexTranslatedGaussian (ε t : ℝ) (z : ℂ) :
     ‖complexTranslatedGaussian ε t z‖ =
-      Real.exp (ε * z.im ^ 2 - ε * (z.re - t) ^ 2) := by
+      Real.exp (ε * z.im ^ (2 : ℕ) - ε * (z.re - t) ^ (2 : ℕ)) := by
   rw [complexTranslatedGaussian, Complex.norm_exp]
   congr 1
   simp only [Complex.neg_re, Complex.mul_re, Complex.ofReal_re,
@@ -217,7 +217,7 @@ theorem complexTranslatedGaussian_conjugate_pair
     (ε t γ a : ℝ) :
     complexTranslatedGaussian ε t ((γ : ℂ) + (a : ℂ) * Complex.I) +
         complexTranslatedGaussian ε t ((γ : ℂ) - (a : ℂ) * Complex.I) =
-      (2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) *
+      (2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) *
         Real.cos (2 * ε * a * (γ - t)) : ℝ) := by
   have hzre :
       (((γ : ℂ) + (a : ℂ) * Complex.I) - (t : ℂ)).re = γ - t := by
@@ -226,8 +226,8 @@ theorem complexTranslatedGaussian_conjugate_pair
       (((γ : ℂ) + (a : ℂ) * Complex.I) - (t : ℂ)).im = a := by
     simp
   let w : ℂ := -((ε : ℂ) *
-    (((γ : ℂ) + (a : ℂ) * Complex.I) - (t : ℂ)) ^ 2)
-  have hre : w.re = ε * a ^ 2 - ε * (γ - t) ^ 2 := by
+    (((γ : ℂ) + (a : ℂ) * Complex.I) - (t : ℂ)) ^ (2 : ℕ))
+  have hre : w.re = ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ) := by
     simp only [w, Complex.neg_re, Complex.mul_re, Complex.sub_re, Complex.add_re,
       Complex.ofReal_re, Complex.I_re, Complex.I_im, Complex.ofReal_im,
       mul_zero, mul_one, zero_sub, pow_two]
@@ -247,20 +247,20 @@ theorem complexTranslatedGaussian_conjugate_pair
   rw [hconj, Complex.add_conj]
   norm_cast
   change 2 * (Complex.exp w).re =
-    2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) *
+    2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) *
       Real.cos (2 * ε * a * (γ - t))
   rw [Complex.exp_re, hre, him, Real.cos_neg]
   ring
 
 /-- The real contribution of one conjugate off-axis packet. -/
 def offAxisPacketContribution (ε t γ a : ℝ) : ℝ :=
-  2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) *
+  2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) *
     Real.cos (2 * ε * a * (γ - t))
 
 /-- Real part contributed by one spectral point `γ + a i`.  A conjugate
 packet consists of two equal such real parts. -/
 def offAxisSingleContribution (ε t γ a : ℝ) : ℝ :=
-  Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) *
+  Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) *
     Real.cos (2 * ε * a * (γ - t))
 
 theorem offAxisPacketContribution_eq_two_mul_single
@@ -283,8 +283,8 @@ theorem complexTranslatedGaussian_re_eq_offAxisSingleContribution
       (((γ : ℂ) + (a : ℂ) * Complex.I) - (t : ℂ)).im = a := by
     simp
   let w : ℂ := -((ε : ℂ) *
-    (((γ : ℂ) + (a : ℂ) * Complex.I) - (t : ℂ)) ^ 2)
-  have hre : w.re = ε * a ^ 2 - ε * (γ - t) ^ 2 := by
+    (((γ : ℂ) + (a : ℂ) * Complex.I) - (t : ℂ)) ^ (2 : ℕ))
+  have hre : w.re = ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ) := by
     simp only [w, Complex.neg_re, Complex.mul_re, Complex.sub_re,
       Complex.add_re, Complex.ofReal_re, Complex.I_re, Complex.I_im,
       Complex.ofReal_im, mul_zero, mul_one, zero_sub, pow_two]
@@ -303,7 +303,7 @@ theorem complexTranslatedGaussian_re_eq_offAxisSingleContribution
 /-- A single real contribution is bounded above by its Gaussian envelope. -/
 theorem offAxisSingleContribution_le_envelope (ε t γ a : ℝ) :
     offAxisSingleContribution ε t γ a ≤
-      Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) := by
+      Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) := by
   unfold offAxisSingleContribution
   simpa only [mul_one] using
     (mul_le_mul_of_nonneg_left (Real.cos_le_one _)
@@ -312,7 +312,7 @@ theorem offAxisSingleContribution_le_envelope (ε t γ a : ℝ) :
 /-- Absolute-value envelope bound for one spectral point. -/
 theorem abs_offAxisSingleContribution_le_envelope (ε t γ a : ℝ) :
     |offAxisSingleContribution ε t γ a| ≤
-      Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) := by
+      Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) := by
   unfold offAxisSingleContribution
   rw [abs_mul, abs_of_pos (Real.exp_pos _)]
   simpa using mul_le_mul_of_nonneg_left (Real.abs_cos_le_one _)
@@ -341,8 +341,8 @@ theorem offAxisPacketContribution_neg_center (ε t γ a : ℝ) :
   unfold offAxisPacketContribution
   rw [show 2 * ε * a * (γ - -t) =
       -(2 * ε * a * (-γ - t)) by ring, Real.cos_neg]
-  rw [show ε * a ^ 2 - ε * (γ - -t) ^ 2 =
-      ε * a ^ 2 - ε * (-γ - t) ^ 2 by ring]
+  rw [show ε * a ^ (2 : ℕ) - ε * (γ - -t) ^ (2 : ℕ) =
+      ε * a ^ (2 : ℕ) - ε * (-γ - t) ^ (2 : ℕ) by ring]
 
 /-- Exact conjugate-pair formula for the symmetric certified test family. -/
 theorem complexSymmetricGaussian_conjugate_pair_eq_packetContribution
@@ -380,31 +380,31 @@ theorem complexTranslatedGaussian_conjugate_pair_eq_packetContribution
 /-- A packet is bounded above by its positive Gaussian envelope. -/
 theorem offAxisPacketContribution_le_envelope (ε t γ a : ℝ) :
     offAxisPacketContribution ε t γ a ≤
-      2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) := by
+      2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) := by
   unfold offAxisPacketContribution
   have hnonneg :
-      0 ≤ 2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) := by positivity
+      0 ≤ 2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) := by positivity
   calc
-    2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) *
+    2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) *
           Real.cos (2 * ε * a * (γ - t))
-        ≤ (2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2)) * 1 :=
+        ≤ (2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ))) * 1 :=
       mul_le_mul_of_nonneg_left (Real.cos_le_one _) hnonneg
-    _ = 2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) := by ring
+    _ = 2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) := by ring
 
 /-- Absolute-value version of the packet envelope bound. -/
 theorem abs_offAxisPacketContribution_le_envelope (ε t γ a : ℝ) :
     |offAxisPacketContribution ε t γ a| ≤
-      2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) := by
+      2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) := by
   unfold offAxisPacketContribution
   have hnonneg :
-      0 ≤ 2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) := by positivity
+      0 ≤ 2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) := by positivity
   rw [abs_mul, abs_of_nonneg hnonneg]
   calc
-    2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) *
+    2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) *
           |Real.cos (2 * ε * a * (γ - t))| ≤
-        (2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2)) * 1 :=
+        (2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ))) * 1 :=
       mul_le_mul_of_nonneg_left (Real.abs_cos_le_one _) hnonneg
-    _ = 2 * Real.exp (ε * a ^ 2 - ε * (γ - t) ^ 2) := by ring
+    _ = 2 * Real.exp (ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)) := by ring
 
 /-- A translate which puts the off-axis pair exactly at cosine phase `π`. -/
 def offAxisDetectionCenter (ε γ a : ℝ) : ℝ :=
@@ -415,18 +415,18 @@ packet `(η, b)` when the target is evaluated at its detection center.  A
 positive gap means that the other packet's Gaussian envelope is
 exponentially smaller as `ε → ∞`. -/
 def offAxisPacketGap (γ a η b : ℝ) : ℝ :=
-  a ^ 2 - b ^ 2 + (η - γ) ^ 2
+  a ^ (2 : ℕ) - b ^ (2 : ℕ) + (η - γ) ^ (2 : ℕ)
 
 /-- A packet of no greater off-axis height has positive gap unless it has
 both the same ordinate and the same squared height as the target. -/
 theorem offAxisPacketGap_pos_of_sq_le_of_not_duplicate
-    (γ a η b : ℝ) (hheight : b ^ 2 ≤ a ^ 2)
-    (hdistinct : b ^ 2 < a ^ 2 ∨ η ≠ γ) :
+    (γ a η b : ℝ) (hheight : b ^ (2 : ℕ) ≤ a ^ (2 : ℕ))
+    (hdistinct : b ^ (2 : ℕ) < a ^ (2 : ℕ) ∨ η ≠ γ) :
     0 < offAxisPacketGap γ a η b := by
   unfold offAxisPacketGap
   rcases hdistinct with hstrict | hcenter
   · nlinarith [sq_nonneg (η - γ)]
-  · have hsq : 0 < (η - γ) ^ 2 :=
+  · have hsq : 0 < (η - γ) ^ (2 : ℕ) :=
       sq_pos_of_ne_zero (sub_ne_zero.mpr hcenter)
     nlinarith
 
@@ -443,8 +443,8 @@ detection center.  Besides the exponentially scaled packet gap, only a
 constant displacement factor remains. -/
 theorem offAxisDetectionCenter_exponent_difference
     (ε γ a η b : ℝ) (hε : ε ≠ 0) (ha : a ≠ 0) :
-    (ε * b ^ 2 - ε * (η - offAxisDetectionCenter ε γ a) ^ 2) -
-        (ε * a ^ 2 - ε * (γ - offAxisDetectionCenter ε γ a) ^ 2) =
+    (ε * b ^ (2 : ℕ) - ε * (η - offAxisDetectionCenter ε γ a) ^ (2 : ℕ)) -
+        (ε * a ^ (2 : ℕ) - ε * (γ - offAxisDetectionCenter ε γ a) ^ (2 : ℕ)) =
       -ε * offAxisPacketGap γ a η b -
         (Real.pi / a) * (η - γ) := by
   unfold offAxisDetectionCenter offAxisPacketGap
@@ -458,8 +458,8 @@ theorem tendsto_offAxis_exponentDifference_atBot
     (hgap : 0 < offAxisPacketGap γ a η b) :
     Tendsto
       (fun ε : ℝ =>
-        (ε * b ^ 2 - ε * (η - offAxisDetectionCenter ε γ a) ^ 2) -
-          (ε * a ^ 2 - ε * (γ - offAxisDetectionCenter ε γ a) ^ 2))
+        (ε * b ^ (2 : ℕ) - ε * (η - offAxisDetectionCenter ε γ a) ^ (2 : ℕ)) -
+          (ε * a ^ (2 : ℕ) - ε * (γ - offAxisDetectionCenter ε γ a) ^ (2 : ℕ)))
       atTop atBot := by
   have hlinear :
       Tendsto
@@ -489,8 +489,8 @@ theorem tendsto_offAxis_relativeEnvelope
     (hgap : 0 < offAxisPacketGap γ a η b) :
     Tendsto
       (fun ε : ℝ => Real.exp
-        ((ε * b ^ 2 - ε * (η - offAxisDetectionCenter ε γ a) ^ 2) -
-          (ε * a ^ 2 - ε * (γ - offAxisDetectionCenter ε γ a) ^ 2)))
+        ((ε * b ^ (2 : ℕ) - ε * (η - offAxisDetectionCenter ε γ a) ^ (2 : ℕ)) -
+          (ε * a ^ (2 : ℕ) - ε * (γ - offAxisDetectionCenter ε γ a) ^ (2 : ℕ))))
       atTop (𝓝 0) := by
   refine (Real.tendsto_exp_atBot.comp
     (tendsto_offAxis_exponentDifference_atBot γ a η b ha hgap)).congr' ?_
@@ -504,8 +504,8 @@ theorem complexTranslatedGaussian_conjugate_pair_at_detectionCenter
         ((γ : ℂ) + (a : ℂ) * Complex.I) +
       complexTranslatedGaussian ε (offAxisDetectionCenter ε γ a)
         ((γ : ℂ) - (a : ℂ) * Complex.I) =
-      (-2 * Real.exp (ε * a ^ 2 -
-        ε * (γ - offAxisDetectionCenter ε γ a) ^ 2) : ℝ) := by
+      (-2 * Real.exp (ε * a ^ (2 : ℕ) -
+        ε * (γ - offAxisDetectionCenter ε γ a) ^ (2 : ℕ)) : ℝ) := by
   rw [complexTranslatedGaussian_conjugate_pair,
     offAxisDetectionCenter_phase ε γ a hε ha, Real.cos_pi]
   push_cast
@@ -515,8 +515,8 @@ theorem complexTranslatedGaussian_conjugate_pair_at_detectionCenter
 theorem offAxisPacketContribution_at_detectionCenter
     (ε γ a : ℝ) (hε : ε ≠ 0) (ha : a ≠ 0) :
     offAxisPacketContribution ε (offAxisDetectionCenter ε γ a) γ a =
-      -2 * Real.exp (ε * a ^ 2 -
-        ε * (γ - offAxisDetectionCenter ε γ a) ^ 2) := by
+      -2 * Real.exp (ε * a ^ (2 : ℕ) -
+        ε * (γ - offAxisDetectionCenter ε γ a) ^ (2 : ℕ)) := by
   unfold offAxisPacketContribution
   rw [offAxisDetectionCenter_phase ε γ a hε ha, Real.cos_pi]
   ring
@@ -535,8 +535,8 @@ theorem eventually_offAxisPacketContribution_add_negative
   filter_upwards [eventually_gt_atTop (0 : ℝ), hdiff] with ε hε hdiffε
   refine ⟨hε, ?_⟩
   let t := offAxisDetectionCenter ε γ a
-  let targetExponent := ε * a ^ 2 - ε * (γ - t) ^ 2
-  let otherExponent := ε * b ^ 2 - ε * (η - t) ^ 2
+  let targetExponent := ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)
+  let otherExponent := ε * b ^ (2 : ℕ) - ε * (η - t) ^ (2 : ℕ)
   have hexp : Real.exp otherExponent < Real.exp targetExponent := by
     rw [Real.exp_lt_exp]
     exact sub_neg.mp hdiffε
@@ -568,8 +568,8 @@ theorem eventually_offAxisSymmetricPacketContribution_negative
     rw [offAxisPacketContribution_neg_center]
     simp only [neg_zero]
     rw [offAxisPacketContribution_at_detectionCenter ε 0 a hε.ne' ha]
-    nlinarith [Real.exp_pos (ε * a ^ 2 -
-      ε * (0 - offAxisDetectionCenter ε 0 a) ^ 2)]
+    nlinarith [Real.exp_pos (ε * a ^ (2 : ℕ) -
+      ε * (0 - offAxisDetectionCenter ε 0 a) ^ (2 : ℕ))]
   · have hgap : 0 < offAxisPacketGap γ a (-γ) a := by
       unfold offAxisPacketGap
       nlinarith [sq_pos_of_ne_zero hγ]
@@ -601,8 +601,8 @@ theorem eventually_offAxisPacketContribution_add_finiteFamily_negative
       Tendsto
         (fun ε : ℝ =>
           ∑ i, Real.exp
-            ((ε * (b i) ^ 2 - ε * (η i - offAxisDetectionCenter ε γ a) ^ 2) -
-              (ε * a ^ 2 - ε * (γ - offAxisDetectionCenter ε γ a) ^ 2)))
+            ((ε * (b i) ^ (2 : ℕ) - ε * (η i - offAxisDetectionCenter ε γ a) ^ (2 : ℕ)) -
+              (ε * a ^ (2 : ℕ) - ε * (γ - offAxisDetectionCenter ε γ a) ^ (2 : ℕ))))
         atTop (𝓝 0) := by
     simpa using
       (tendsto_finsetSum Finset.univ fun i _ =>
@@ -611,9 +611,9 @@ theorem eventually_offAxisPacketContribution_add_finiteFamily_negative
   filter_upwards [eventually_gt_atTop (0 : ℝ), hsmall] with ε hε hsmallε
   refine ⟨hε, ?_⟩
   let t := offAxisDetectionCenter ε γ a
-  let targetExponent := ε * a ^ 2 - ε * (γ - t) ^ 2
+  let targetExponent := ε * a ^ (2 : ℕ) - ε * (γ - t) ^ (2 : ℕ)
   let otherExponent : ι → ℝ := fun i =>
-    ε * (b i) ^ 2 - ε * (η i - t) ^ 2
+    ε * (b i) ^ (2 : ℕ) - ε * (η i - t) ^ (2 : ℕ)
   let relativeEnvelope : ι → ℝ := fun i =>
     Real.exp (otherExponent i - targetExponent)
   have hother :
@@ -664,8 +664,8 @@ packets have been grouped together. -/
 theorem eventually_maximalOffAxisPacket_add_finiteFamily_negative
     {ι : Type*} [Fintype ι]
     (γ a : ℝ) (η b : ι → ℝ) (ha : a ≠ 0)
-    (hheight : ∀ i, (b i) ^ 2 ≤ a ^ 2)
-    (hnoduplicate : ∀ i, (b i) ^ 2 < a ^ 2 ∨ η i ≠ γ) :
+    (hheight : ∀ i, (b i) ^ (2 : ℕ) ≤ a ^ (2 : ℕ))
+    (hnoduplicate : ∀ i, (b i) ^ (2 : ℕ) < a ^ (2 : ℕ) ∨ η i ≠ γ) :
     ∀ᶠ ε : ℝ in atTop,
       0 < ε ∧
         offAxisPacketContribution ε (offAxisDetectionCenter ε γ a) γ a +
@@ -681,8 +681,8 @@ the real contribution of every other zero is smaller than the detected
 pair's magnitude, the complete value is negative. -/
 theorem complexTranslatedGaussian_pair_add_remainder_negative
     (ε γ a remainder : ℝ) (hε : ε ≠ 0) (ha : a ≠ 0)
-    (hrem : remainder < 2 * Real.exp (ε * a ^ 2 -
-      ε * (γ - offAxisDetectionCenter ε γ a) ^ 2)) :
+    (hrem : remainder < 2 * Real.exp (ε * a ^ (2 : ℕ) -
+      ε * (γ - offAxisDetectionCenter ε γ a) ^ (2 : ℕ))) :
     (complexTranslatedGaussian ε (offAxisDetectionCenter ε γ a)
         ((γ : ℂ) + (a : ℂ) * Complex.I) +
       complexTranslatedGaussian ε (offAxisDetectionCenter ε γ a)
@@ -704,8 +704,8 @@ theorem exists_complexTranslatedGaussian_conjugate_pair_negative
   refine ⟨offAxisDetectionCenter ε γ a, ?_⟩
   rw [complexTranslatedGaussian_conjugate_pair_at_detectionCenter ε γ a hε.ne' ha]
   simp only [Complex.ofReal_re]
-  nlinarith [Real.exp_pos (ε * a ^ 2 -
-    ε * (γ - offAxisDetectionCenter ε γ a) ^ 2)]
+  nlinarith [Real.exp_pos (ε * a ^ (2 : ℕ) -
+    ε * (γ - offAxisDetectionCenter ε γ a) ^ (2 : ℕ))]
 
 end
 

@@ -115,7 +115,7 @@ def cubicGradedLineInnerProductSpace (k : ℕ) :
     toNormedSpace := cubicGradedLineNormedSpace k
     inner := fun x y => e x * e y
     norm_sq_eq_re_inner := fun x => by
-      change |e x| ^ 2 = e x * e x
+      change |e x| ^ (2 : ℕ) = e x * e x
       rw [sq_abs]
       ring
     conj_inner_symm := fun x y => by
@@ -131,7 +131,7 @@ def cubicGradedLineInnerProductSpace (k : ℕ) :
 theorem cubicGradedLine_inner (k : ℕ) (x y : cubicGradedDefect k) :
     letI := cubicGradedLineNormedGroup k
     letI := cubicGradedLineInnerProductSpace k
-    inner ℝ x y = (cubicGradedRecoveryGap k)^2 *
+    inner ℝ x y = (cubicGradedRecoveryGap k)^(2 : ℕ) *
       cubicGradedDefectCoordinate k x * cubicGradedDefectCoordinate k y := by
   letI := cubicGradedLineNormedGroup k
   letI := cubicGradedLineInnerProductSpace k

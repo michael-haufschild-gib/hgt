@@ -16,19 +16,19 @@ open MeasureTheory
 theorem le_two_mul_add_sq_mul_of_le_add_of_sq_le_mul
     {x y a b k : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y)
     (hb : 0 ≤ b) (hk : 0 ≤ k) (hxy : x ≤ a + b * y)
-    (hy2 : y ^ 2 ≤ k * x) :
-    x ≤ 2 * a + b ^ 2 * k := by
-  have hby2 : (b * y) ^ 2 ≤ (b ^ 2 * k) * x := by
+    (hy2 : y ^ (2 : ℕ) ≤ k * x) :
+    x ≤ 2 * a + b ^ (2 : ℕ) * k := by
+  have hby2 : (b * y) ^ (2 : ℕ) ≤ (b ^ (2 : ℕ) * k) * x := by
     calc
-      (b * y) ^ 2 = b ^ 2 * y ^ 2 := by ring
-      _ ≤ b ^ 2 * (k * x) := by gcongr
-      _ = (b ^ 2 * k) * x := by ring
-  have hamgm : 2 * (b * y) ≤ x + b ^ 2 * k := by
+      (b * y) ^ (2 : ℕ) = b ^ (2 : ℕ) * y ^ (2 : ℕ) := by ring
+      _ ≤ b ^ (2 : ℕ) * (k * x) := by gcongr
+      _ = (b ^ (2 : ℕ) * k) * x := by ring
+  have hamgm : 2 * (b * y) ≤ x + b ^ (2 : ℕ) * k := by
     by_contra h
-    have hgt : x + b ^ 2 * k < 2 * (b * y) := lt_of_not_ge h
-    have hleft : 0 ≤ x + b ^ 2 * k := by positivity
+    have hgt : x + b ^ (2 : ℕ) * k < 2 * (b * y) := lt_of_not_ge h
+    have hleft : 0 ≤ x + b ^ (2 : ℕ) * k := by positivity
     have hright : 0 ≤ b * y := mul_nonneg hb hy
-    nlinarith [sq_nonneg (x - b ^ 2 * k)]
+    nlinarith [sq_nonneg (x - b ^ (2 : ℕ) * k)]
   linarith
 
 /-- Unit coefficients through `K`, zero thereafter. -/
@@ -89,12 +89,12 @@ theorem integral_Icc_normSq_heathBrown_fullUnit_mono
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
         ‖heathBrownSparseFactor A eps t *
           heathBrownDenseFactor (heathBrownPositiveInterval K hK)
-            heathBrownDenseUnitWeight t‖ ^ 2) ≤
+            heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)) ≤
       (25 * Real.pi / 8) *
         ∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
           ‖heathBrownSparseFactor A (fun _ => 1) t *
             heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-              heathBrownDenseUnitWeight t‖ ^ 2 := by
+              heathBrownDenseUnitWeight t‖ ^ (2 : ℕ) := by
   have h := integral_Icc_normSq_heathBrown_factors_le_unit A
     (heathBrownPositiveInterval N hN) eps (heathBrownDenseCutoffWeight K) T
   simpa only [heathBrownDenseFactor_cutoff_eq hK hN hKN] using h
@@ -105,15 +105,15 @@ theorem integral_Icc_normSq_heathBrown_fullUnit_height_mono
     (∫ t in Set.Icc (-V) V,
         ‖heathBrownSparseFactor A (fun _ => 1) t *
           heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-            heathBrownDenseUnitWeight t‖ ^ 2) ≤
+            heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)) ≤
       ∫ t in Set.Icc (-W) W,
         ‖heathBrownSparseFactor A (fun _ => 1) t *
           heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-            heathBrownDenseUnitWeight t‖ ^ 2 := by
+            heathBrownDenseUnitWeight t‖ ^ (2 : ℕ) := by
   let f : ℝ → ℝ := fun t =>
     ‖heathBrownSparseFactor A (fun _ => 1) t *
       heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-        heathBrownDenseUnitWeight t‖ ^ 2
+        heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)
   have hf : Continuous f :=
     ((continuous_heathBrownSparseFactor A (fun _ => 1)).mul
       (continuous_heathBrownDenseFactor (heathBrownPositiveInterval N hN)
@@ -148,15 +148,15 @@ theorem integral_Icc_normSq_heathBrown_fullUnit_sq_le_ambientSquareLift
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
         ‖heathBrownSparseFactor A (fun _ => 1) t *
           heathBrownDenseFactor (heathBrownPositiveInterval K hK)
-            heathBrownDenseUnitWeight t‖ ^ 2) ^ 2 ≤
+            heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)) ^ (2 : ℕ) ≤
       ((5 * Real.pi * Real.exp 1 * X + (5 * Real.pi / 2) * (T : ℝ)) *
         (A.card : ℝ)) *
-      (heathBrownSquareDivisorScale K eta ^ 2 * (25 * Real.pi / 8) *
+      (heathBrownSquareDivisorScale K eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
         ((25 * Real.pi / 8) *
           ∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
             ‖heathBrownSparseFactor A (fun _ => 1) t *
               heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-                heathBrownDenseUnitWeight t‖ ^ 2)) := by
+                heathBrownDenseUnitWeight t‖ ^ (2 : ℕ))) := by
   have hlift := integral_Icc_normSq_heathBrown_fullUnit_sq_le_squareLift
     A T hT hA hK heta
   have hKsq : 1 ≤ K * K := by simpa using Nat.mul_le_mul hK hK
@@ -169,20 +169,20 @@ theorem integral_Icc_normSq_heathBrown_fullUnit_sq_le_ambientSquareLift
   calc
     _ ≤ ((5 * Real.pi * Real.exp 1 * X + (5 * Real.pi / 2) * (T : ℝ)) *
           (A.card : ℝ)) *
-        (heathBrownSquareDivisorScale K eta ^ 2 * (25 * Real.pi / 8) *
+        (heathBrownSquareDivisorScale K eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
           ∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
             ‖heathBrownSparseFactor A (fun _ => 1) t *
               heathBrownDenseFactor
                 (heathBrownPositiveInterval (K * K) hKsq)
-                heathBrownDenseUnitWeight t‖ ^ 2) := hlift
+                heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)) := hlift
     _ ≤ ((5 * Real.pi * Real.exp 1 * X + (5 * Real.pi / 2) * (T : ℝ)) *
           (A.card : ℝ)) *
-        (heathBrownSquareDivisorScale K eta ^ 2 * (25 * Real.pi / 8) *
+        (heathBrownSquareDivisorScale K eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
           ((25 * Real.pi / 8) *
             ∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
               ‖heathBrownSparseFactor A (fun _ => 1) t *
                 heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-                  heathBrownDenseUnitWeight t‖ ^ 2)) := by
+                  heathBrownDenseUnitWeight t‖ ^ (2 : ℕ))) := by
       gcongr
 
 /-- Closed one-step self-bound obtained from the two-scale recurrence and square lift. -/
@@ -194,37 +194,37 @@ theorem integral_Icc_normSq_heathBrown_fullUnit_le_oneStepSelfBound
     let I : ℝ := ∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
       ‖heathBrownSparseFactor A (fun _ => 1) t *
         heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-          heathBrownDenseUnitWeight t‖ ^ 2
+          heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)
     let a : ℝ := (5 * Real.pi / 2) * (T : ℝ) *
-      (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
-        ((2 * (N / K) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2)
+      (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
+        ((2 * (N / K) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ))
     let b : ℝ := (5 * Real.pi / 2) * (T : ℝ) *
       (((N / K + 1 : ℕ) : ℝ) * (5 / (2 * (T : ℝ))))
     let k : ℝ :=
       ((5 * Real.pi * Real.exp 1 * X +
           (5 * Real.pi / 2) * (heathBrownHalfHeight T : ℝ)) * (A.card : ℝ)) *
-        (heathBrownSquareDivisorScale K eta ^ 2 * (25 * Real.pi / 8) *
+        (heathBrownSquareDivisorScale K eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
           (25 * Real.pi / 8))
-    I ≤ 2 * a + b ^ 2 * k := by
+    I ≤ 2 * a + b ^ (2 : ℕ) * k := by
   dsimp only
   let I : ℝ := ∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
     ‖heathBrownSparseFactor A (fun _ => 1) t *
       heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-        heathBrownDenseUnitWeight t‖ ^ 2
+        heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)
   let J : ℝ := ∫ t in Set.Icc (-(heathBrownHalfHeight T : ℝ))
       (heathBrownHalfHeight T : ℝ),
     ‖heathBrownSparseFactor A (fun _ => 1) t *
       heathBrownDenseFactor (heathBrownPositiveInterval K hK)
-        heathBrownDenseUnitWeight t‖ ^ 2
+        heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)
   let a : ℝ := (5 * Real.pi / 2) * (T : ℝ) *
-    (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
-      ((2 * (N / K) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2)
+    (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
+      ((2 * (N / K) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ))
   let b : ℝ := (5 * Real.pi / 2) * (T : ℝ) *
     (((N / K + 1 : ℕ) : ℝ) * (5 / (2 * (T : ℝ))))
   let k : ℝ :=
     ((5 * Real.pi * Real.exp 1 * X +
         (5 * Real.pi / 2) * (heathBrownHalfHeight T : ℝ)) * (A.card : ℝ)) *
-      (heathBrownSquareDivisorScale K eta ^ 2 * (25 * Real.pi / 8) *
+      (heathBrownSquareDivisorScale K eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
         (25 * Real.pi / 8))
   have hTone : 1 ≤ (T : ℝ) := by linarith
   have hKleN : K ≤ N := by
@@ -242,10 +242,10 @@ theorem integral_Icc_normSq_heathBrown_fullUnit_le_oneStepSelfBound
   have hIrec : I ≤ a + b * J := by
     calc
       I ≤ (5 * Real.pi / 2) * (T : ℝ) *
-          (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+          (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
             ((N / K + 1 : ℕ) : ℝ) *
               ((5 / (2 * (T : ℝ))) * J) +
-            ((2 * (N / K) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2) := by
+            ((2 * (N / K) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ)) := by
         simpa only [I, J] using hrec
       _ = a + b * J := by dsimp only [a, b]; ring
   have hhalf : 1 ≤ (heathBrownHalfHeight T : ℝ) := by
@@ -263,24 +263,24 @@ theorem integral_Icc_normSq_heathBrown_fullUnit_le_oneStepSelfBound
           (5 * Real.pi / 2) * (heathBrownHalfHeight T : ℝ)) * (A.card : ℝ) :=
     heathBrownSparseMeanSquareEnvelope_nonneg A hA
       (heathBrownHalfHeight T).property.le
-  have hJlift : J ^ 2 ≤ k * I := by
+  have hJlift : J ^ (2 : ℕ) ≤ k * I := by
     calc
-      J ^ 2 ≤
+      J ^ (2 : ℕ) ≤
           ((5 * Real.pi * Real.exp 1 * X +
               (5 * Real.pi / 2) * (heathBrownHalfHeight T : ℝ)) *
             (A.card : ℝ)) *
-          (heathBrownSquareDivisorScale K eta ^ 2 * (25 * Real.pi / 8) *
+          (heathBrownSquareDivisorScale K eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
             ((25 * Real.pi / 8) *
               ∫ t in Set.Icc (-(heathBrownHalfHeight T : ℝ))
                   (heathBrownHalfHeight T : ℝ),
                 ‖heathBrownSparseFactor A (fun _ => 1) t *
                   heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-                    heathBrownDenseUnitWeight t‖ ^ 2)) := by
+                    heathBrownDenseUnitWeight t‖ ^ (2 : ℕ))) := by
         simpa only [J] using hlift
       _ ≤ ((5 * Real.pi * Real.exp 1 * X +
               (5 * Real.pi / 2) * (heathBrownHalfHeight T : ℝ)) *
             (A.card : ℝ)) *
-          (heathBrownSquareDivisorScale K eta ^ 2 * (25 * Real.pi / 8) *
+          (heathBrownSquareDivisorScale K eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
             ((25 * Real.pi / 8) * I)) := by
         gcongr
       _ = k * I := by dsimp only [k]; ring

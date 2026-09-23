@@ -321,7 +321,7 @@ theorem eventPlebanskiVolume_ne_zero : eventPlebanskiVolume ≠ 0 := by
   have htop : exteriorPower.ιMulti ℂ 4 coframe ≠ 0 :=
     exteriorPower_ιMulti_ne_zero_of_linearIndependent coframe hLI
   have heq :
-      ((exteriorPower.ιMulti ℂ 4 coframe : ⋀[ℂ]^4 EventCoframe4) :
+      ((exteriorPower.ιMulti ℂ 4 coframe : ⋀[ℂ]^(4 : ℕ) EventCoframe4) :
           EventCoframeExterior) =
         eventPlebanskiVolume := by
     change ExteriorAlgebra.ιMulti ℂ 4 coframe = eventPlebanskiVolume

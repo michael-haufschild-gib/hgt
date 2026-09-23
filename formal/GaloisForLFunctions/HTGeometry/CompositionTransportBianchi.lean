@@ -16,7 +16,7 @@ For a triangle of comparisons, these edge defects do not vary independently of t
 two-step comparison to equal the direct comparison.  Bilinearity forces an exact nonlinear
 triangle identity.  Its flat specialization is a cocycle law.
 
-The projective version has an additional central term `(a - a^2) • μ₂ (T₀₂ x) (T₀₂ y)`.  Hence a
+The projective version has an additional central term `(a - a^(2 : ℕ)) • μ₂ (T₀₂ x) (T₀₂ y)`.  Hence a
 nonzero neutral binary composition is incompatible with a nontrivial nonzero scalar path phase.
 The positive replacement is central-weight balance: at every nonzero bilinear composition, the
 output central weight equals the product of the two input weights.
@@ -93,7 +93,7 @@ def projectiveComparisonPathDefect
 /--
 Projective coupled triangle identity.
 
-The central term `(a - a^2) • μ₂ (T₀₂ x) (T₀₂ y)` is the exact mismatch between a phase acting
+The central term `(a - a^(2 : ℕ)) • μ₂ (T₀₂ x) (T₀₂ y)` is the exact mismatch between a phase acting
 once on the output and twice through the two inputs of a bilinear composition.
 -/
 theorem compositionTransportDefect_projective_triangle_bianchi
@@ -105,7 +105,7 @@ theorem compositionTransportDefect_projective_triangle_bianchi
         compositionTransportDefect T₁₂ μ₁ μ₂ (T₀₁ x) (T₀₁ y) -
         a • compositionTransportDefect T₀₂ μ₀ μ₂ x y =
       projectiveComparisonPathDefect a T₀₁ T₁₂ T₀₂ (μ₀ x y) +
-        (a - a ^ 2) • μ₂ (T₀₂ x) (T₀₂ y) -
+        (a - a ^ (2 : ℕ)) • μ₂ (T₀₂ x) (T₀₂ y) -
         a • μ₂ (projectiveComparisonPathDefect a T₀₁ T₁₂ T₀₂ x) (T₀₂ y) -
         a • μ₂ (T₀₂ x) (projectiveComparisonPathDefect a T₀₁ T₁₂ T₀₂ y) -
         μ₂ (projectiveComparisonPathDefect a T₀₁ T₁₂ T₀₂ x)
@@ -141,9 +141,9 @@ theorem projectiveComposition_phase_idempotent
     a μ₀ μ₁ μ₂ T₀₁ T₁₂ T₀₂ x y
   rw [h₀₁, h₁₂, h₀₂, hK] at h
   simp at h
-  have hscalar : a - a ^ 2 = 0 := by
+  have hscalar : a - a ^ (2 : ℕ) = 0 := by
     exact (smul_eq_zero.mp h.symm).resolve_right hnonzero
-  rw [show a - a ^ 2 = a * (1 - a) by ring] at hscalar
+  rw [show a - a ^ (2 : ℕ) = a * (1 - a) by ring] at hscalar
   rcases mul_eq_zero.mp hscalar with ha | ha
   · exact Or.inl ha
   · exact Or.inr (sub_eq_zero.mp ha).symm

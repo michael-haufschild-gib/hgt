@@ -57,13 +57,13 @@ theorem setIntegral_normSq_omegaWeighted_le_blocks_allSmall {Q : Finset ℕ} {A�
     (v : ℕ → ℝ) (hv : ∀ k ∈ Finset.range L, 0 < v k) (Vk Ik : ℕ → ℝ)
     (hIk : ∀ k ∈ Finset.range L,
       (∫ w in allBlocksSmall Q R η L Vk W,
-          ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2) ≤ Ik k) :
+          ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ)) ≤ Ik k) :
     (∫ w in allBlocksSmall Q R η L Vk W,
-        ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
+        ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ k ∈ Finset.range L, 1 / v k)
-            * ∑ k ∈ Finset.range L, v k * (Vk k ^ 2 * Ik k))
+            * ∑ k ∈ Finset.range L, v k * (Vk k ^ (2 : ℕ) * Ik k))
         + 2 * ∫ w in allBlocksSmall Q R η L Vk W,
-            ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ 2 :=
+            ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ (2 : ℕ) :=
   setIntegral_normSq_omegaWeighted_le_blocks hR hη hL hQprime hQrange v hv Vk Ik
     (measurableSet_allBlocksSmall Q R η L Vk W) (allBlocksSmall_subset Q R η L Vk W)
     (fun _k hk _w hw => norm_primeBlockPoly_le_of_mem_allBlocksSmall hk hw) hIk

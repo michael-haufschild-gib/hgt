@@ -38,7 +38,7 @@ theorem meromorphicOrderAt_weierstrassP_pow_zero (k : ℕ) :
     meromorphicOrderAt (fun z => L.weierstrassP z ^ k) 0 = ((-(2 * k) : ℤ) : WithTop ℤ) := by
   induction k with
   | zero =>
-      have hfun : (fun z : ℂ => L.weierstrassP z ^ 0) = fun _ : ℂ => (1 : ℂ) := by
+      have hfun : (fun z : ℂ => L.weierstrassP z ^ (0 : ℕ)) = fun _ : ℂ => (1 : ℂ) := by
         funext z; simp
       have hord0 : analyticOrderAt (fun _ : ℂ => (1 : ℂ)) 0 = 0 :=
         analyticOrderAt_eq_zero.mpr (Or.inr one_ne_zero)

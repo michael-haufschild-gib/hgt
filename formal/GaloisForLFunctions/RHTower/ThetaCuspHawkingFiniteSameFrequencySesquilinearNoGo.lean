@@ -56,12 +56,12 @@ theorem thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent_eq_intensity_mul
     (x : ℝ) (amplitude : ℂ) :
     thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent
         symbol coeff x amplitude =
-      (((‖amplitude‖ ^ 2 : ℝ)) : ℂ) *
+      (((‖amplitude‖ ^ (2 : ℕ) : ℝ)) : ℂ) *
         thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent
           symbol coeff x 1 := by
   classical
   have hconj (z : ℂ) :
-      (starRingEnd ℂ) z * z = (((‖z‖ ^ 2 : ℝ)) : ℂ) := by
+      (starRingEnd ℂ) z * z = (((‖z‖ ^ (2 : ℕ) : ℝ)) : ℂ) := by
     rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   unfold thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent
   calc
@@ -69,7 +69,7 @@ theorem thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent_eq_intensity_mul
         (starRingEnd ℂ) (symbol x j * amplitude) * coeff x j k *
           (symbol x k * amplitude)) =
         ∑ j, ∑ k,
-          (((‖amplitude‖ ^ 2 : ℝ)) : ℂ) *
+          (((‖amplitude‖ ^ (2 : ℕ) : ℝ)) : ℂ) *
             ((starRingEnd ℂ) (symbol x j) * coeff x j k * symbol x k) := by
       apply Finset.sum_congr rfl
       intro j _hj
@@ -83,7 +83,7 @@ theorem thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent_eq_intensity_mul
               ((starRingEnd ℂ) (symbol x j) * coeff x j k * symbol x k) := by
                 ring
         _ = _ := by rw [hconj]
-    _ = (((‖amplitude‖ ^ 2 : ℝ)) : ℂ) *
+    _ = (((‖amplitude‖ ^ (2 : ℕ) : ℝ)) : ℂ) *
         ∑ j, ∑ k,
           (starRingEnd ℂ) (symbol x j * 1) * coeff x j k *
             (symbol x k * 1) := by
@@ -101,12 +101,12 @@ theorem thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent_phase_invariant
   calc
     thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent
         symbol coeff x (phase * amplitude) =
-        (((‖phase * amplitude‖ ^ 2 : ℝ)) : ℂ) *
+        (((‖phase * amplitude‖ ^ (2 : ℕ) : ℝ)) : ℂ) *
           thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent
             symbol coeff x 1 :=
       thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent_eq_intensity_mul
         symbol coeff x (phase * amplitude)
-    _ = (((‖amplitude‖ ^ 2 : ℝ)) : ℂ) *
+    _ = (((‖amplitude‖ ^ (2 : ℕ) : ℝ)) : ℂ) *
           thetaCuspHawkingFiniteSameFrequencySesquilinearCurrent
             symbol coeff x 1 := by
       rw [norm_mul, hphase, one_mul]

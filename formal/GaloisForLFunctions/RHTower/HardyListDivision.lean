@@ -188,14 +188,14 @@ theorem exists_isHalfPlaneHardy_listDiv {C : ℂ → ℂ} {MC : ℝ} (hC : IsHal
           have hstep : ∀ w : ℂ, w ≠ -(1 / 2) → w ≠ z →
               K' w + (z + 1 / 2) * divPowNF K' z 1 w = (w + 1 / 2) * K' w / (w - z) := by
             intro w hw hwz
-            have hDw : divPowNF K' z 1 w = K' w / (w - z) ^ 1 :=
+            have hDw : divPowNF K' z 1 w = K' w / (w - z) ^ (1 : ℕ) :=
               divPowNF_eq hK'mero (hK'ana w hw) hwz
             have hne : (w : ℂ) - z ≠ 0 := sub_ne_zero.2 hwz
             rw [hDw, pow_one]
             field_simp
             ring
           refine ⟨fun w => K' w + (z + 1 / 2) * divPowNF K' z 1 w,
-            2 * N' + 2 * (‖(z : ℂ) + 1 / 2‖ ^ 2 * N₁),
+            2 * N' + 2 * (‖(z : ℂ) + 1 / 2‖ ^ (2 : ℕ) * N₁),
             isHalfPlaneHardy_add hK' (isHalfPlaneHardy_const_mul hN₁ _),
             fun s => (hK'mero s).add (analyticAt_const.meromorphicAt.mul (hDmero s)),
             fun s hs => (hK'ana s hs).add (analyticAt_const.mul (hDana s hs)), ?_, ?_⟩

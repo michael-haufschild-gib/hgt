@@ -218,7 +218,7 @@ private theorem fullSquarePotential_reflect (q : XiZeroCopy) :
 defined here so reflection covariance remains independently source-checkable while
 the canonical cap-action artifact is unavailable. -/
 def literalCapScalarAction (S : Point → ℂ) (z : Point) : ℂ :=
-  (z 1 : ℂ)^2 *
+  (z 1 : ℂ)^(2 : ℕ) *
     (coordDeriv 0 (coordDeriv 0 S) z + coordDeriv 1 (coordDeriv 1 S) z)
 
 /-- The complete physical cap action of the literal cyclic Peierls vertex is

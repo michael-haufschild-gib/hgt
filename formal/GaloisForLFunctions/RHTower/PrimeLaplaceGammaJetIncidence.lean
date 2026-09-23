@@ -197,7 +197,7 @@ theorem eq_zero_of_forall_iteratedDeriv_eq_zero {θ : ℝ} (hθ : 0 ≤ θ) {a :
     exact_mod_cast hw
   simpa [hwc] using mul_eq_zero.mp hp
 
-theorem logMul_iterate (j : ℕ) (f : ℕ → ℂ) (n : ℕ) :
+theorem logMul_iterate_primeLaplaceGammaJetIncidence (j : ℕ) (f : ℕ → ℂ) (n : ℕ) :
     (LSeries.logMul^[j] f) n = (Real.log n : ℂ) ^ j * f n := by
   induction j generalizing f with
   | zero => simp
@@ -218,7 +218,7 @@ theorem iteratedDeriv_primeLaplace_eq {θ : ℝ} (hθ : 0 ≤ θ) {a : Nat.Prime
   rw [← LSeries_smul]
   congr 1
   funext n
-  simp only [Pi.smul_apply, smul_eq_mul, logMul_iterate]
+  simp only [Pi.smul_apply, smul_eq_mul, logMul_iterate_primeLaplaceGammaJetIncidence]
   rw [neg_pow]
   ring
 

@@ -35,7 +35,7 @@ theorem sum_rotate {M : Type*} [AddCommMonoid M] {α β γ : Type*} [Fintype α]
     _ = ∑ c, ∑ a, ∑ b, F a b c := Finset.sum_comm
 
 theorem dotProduct_gram (X : Matrix (Fin r) (Fin n) ℂ) (v : Fin n → ℂ) :
-    (star v) ⬝ᵥ ((Xᴴ * X) *ᵥ v) = ((∑ a, ‖(X *ᵥ v) a‖ ^ 2 : ℝ) : ℂ) := by
+    (star v) ⬝ᵥ ((Xᴴ * X) *ᵥ v) = ((∑ a, ‖(X *ᵥ v) a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hL : (star v) ⬝ᵥ ((Xᴴ * X) *ᵥ v)
       = ∑ i, ∑ j, ∑ a, ((starRingEnd ℂ) (v i) * ((starRingEnd ℂ) (X a i) * X a j) * v j) := by
     simp only [dotProduct, Matrix.mulVec, Matrix.mul_apply, Matrix.conjTranspose_apply,
@@ -58,7 +58,7 @@ theorem dotProduct_gram (X : Matrix (Fin r) (Fin n) ℂ) (v : Fin n → ℂ) :
   ring
 
 theorem trace_gram (X : Matrix (Fin r) (Fin n) ℂ) :
-    (Xᴴ * X).trace = ((∑ a, ∑ i, ‖X a i‖ ^ 2 : ℝ) : ℂ) := by
+    (Xᴴ * X).trace = ((∑ a, ∑ i, ‖X a i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [Matrix.trace]
   simp only [Matrix.diag_apply, Matrix.mul_apply, Matrix.conjTranspose_apply]
   rw [Finset.sum_comm]
@@ -70,7 +70,7 @@ theorem trace_gram (X : Matrix (Fin r) (Fin n) ℂ) :
   ring
 
 theorem dotProduct_one (v : Fin n → ℂ) :
-    (star v) ⬝ᵥ ((1 : Matrix (Fin n) (Fin n) ℂ) *ᵥ v) = ((∑ i, ‖v i‖ ^ 2 : ℝ) : ℂ) := by
+    (star v) ⬝ᵥ ((1 : Matrix (Fin n) (Fin n) ℂ) *ᵥ v) = ((∑ i, ‖v i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [Matrix.one_mulVec]
   simp only [dotProduct, Pi.star_apply, RCLike.star_def]
   push_cast
@@ -87,30 +87,30 @@ theorem dotProduct_smul_mulVec (c : ℂ) (M : Matrix (Fin n) (Fin n) ℂ) (v : F
 
 theorem causalizerForm_quadratic (a b : ℝ) (X : Matrix (Fin r) (Fin n) ℂ) (v : Fin n → ℂ) :
     (star v) ⬝ᵥ (causalizerForm a b X *ᵥ v)
-      = ((a * (∑ p, ‖(X *ᵥ v) p‖ ^ 2)
-          + b * (∑ p, ∑ i, ‖X p i‖ ^ 2) * (∑ i, ‖v i‖ ^ 2) : ℝ) : ℂ) := by
+      = ((a * (∑ p, ‖(X *ᵥ v) p‖ ^ (2 : ℕ))
+          + b * (∑ p, ∑ i, ‖X p i‖ ^ (2 : ℕ)) * (∑ i, ‖v i‖ ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [causalizerForm, Matrix.add_mulVec, dotProduct_add, dotProduct_smul_mulVec,
     dotProduct_smul_mulVec, dotProduct_smul_mulVec, dotProduct_gram, trace_gram, dotProduct_one]
   push_cast
   ring
 
 theorem sum_norm_mulVec_sq_le (X : Matrix (Fin r) (Fin n) ℂ) (v : Fin n → ℂ) :
-    (∑ p, ‖(X *ᵥ v) p‖ ^ 2) ≤ (∑ p, ∑ i, ‖X p i‖ ^ 2) * (∑ i, ‖v i‖ ^ 2) := by
-  have hrow : ∀ p, ‖(X *ᵥ v) p‖ ^ 2 ≤ (∑ i, ‖X p i‖ ^ 2) * (∑ i, ‖v i‖ ^ 2) := by
+    (∑ p, ‖(X *ᵥ v) p‖ ^ (2 : ℕ)) ≤ (∑ p, ∑ i, ‖X p i‖ ^ (2 : ℕ)) * (∑ i, ‖v i‖ ^ (2 : ℕ)) := by
+  have hrow : ∀ p, ‖(X *ᵥ v) p‖ ^ (2 : ℕ) ≤ (∑ i, ‖X p i‖ ^ (2 : ℕ)) * (∑ i, ‖v i‖ ^ (2 : ℕ)) := by
     intro p
     have h1 : ‖(X *ᵥ v) p‖ ≤ ∑ i, ‖X p i‖ * ‖v i‖ := by
       have : (X *ᵥ v) p = ∑ i, X p i * v i := rfl
       rw [this]
       refine le_trans (norm_sum_le _ _) (le_of_eq ?_)
       exact Finset.sum_congr rfl (fun i _ => norm_mul _ _)
-    have h2 : (∑ i, ‖X p i‖ * ‖v i‖) ^ 2 ≤ (∑ i, ‖X p i‖ ^ 2) * (∑ i, ‖v i‖ ^ 2) :=
+    have h2 : (∑ i, ‖X p i‖ * ‖v i‖) ^ (2 : ℕ) ≤ (∑ i, ‖X p i‖ ^ (2 : ℕ)) * (∑ i, ‖v i‖ ^ (2 : ℕ)) :=
       Finset.sum_mul_sq_le_sq_mul_sq _ _ _
     have h3 : (0:ℝ) ≤ ∑ i, ‖X p i‖ * ‖v i‖ :=
       Finset.sum_nonneg (fun i _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
     nlinarith [norm_nonneg ((X *ᵥ v) p)]
-  calc (∑ p, ‖(X *ᵥ v) p‖ ^ 2)
-      ≤ ∑ p, (∑ i, ‖X p i‖ ^ 2) * (∑ i, ‖v i‖ ^ 2) := Finset.sum_le_sum (fun p _ => hrow p)
-    _ = (∑ p, ∑ i, ‖X p i‖ ^ 2) * (∑ i, ‖v i‖ ^ 2) := by rw [← Finset.sum_mul]
+  calc (∑ p, ‖(X *ᵥ v) p‖ ^ (2 : ℕ))
+      ≤ ∑ p, (∑ i, ‖X p i‖ ^ (2 : ℕ)) * (∑ i, ‖v i‖ ^ (2 : ℕ)) := Finset.sum_le_sum (fun p _ => hrow p)
+    _ = (∑ p, ∑ i, ‖X p i‖ ^ (2 : ℕ)) * (∑ i, ‖v i‖ ^ (2 : ℕ)) := by rw [← Finset.sum_mul]
 
 theorem isHermitian_causalizerForm (a b : ℝ) (X : Matrix (Fin r) (Fin n) ℂ) :
     (causalizerForm a b X).IsHermitian := by
@@ -127,7 +127,7 @@ noncomputable def testMatrix (hr : 0 < r) (i : Fin n) : Matrix (Fin r) (Fin n) �
   Matrix.single ⟨0, hr⟩ i 1
 
 theorem sum_norm_testMatrix (hr : 0 < r) (i : Fin n) :
-    (∑ p, ∑ k, ‖testMatrix hr i p k‖ ^ 2) = 1 := by
+    (∑ p, ∑ k, ‖testMatrix hr i p k‖ ^ (2 : ℕ)) = 1 := by
   classical
   rw [Finset.sum_eq_single (⟨0, hr⟩ : Fin r)]
   · rw [Finset.sum_eq_single i]
@@ -156,7 +156,7 @@ theorem testMatrix_mulVec (hr : 0 < r) (i : Fin n) (v : Fin n → ℂ) (p : Fin 
     exact absurd (Finset.mem_univ i) hk
 
 theorem sum_norm_single_vec (i : Fin n) :
-    (∑ k, ‖(Pi.single i (1 : ℂ) : Fin n → ℂ) k‖ ^ 2) = 1 := by
+    (∑ k, ‖(Pi.single i (1 : ℂ) : Fin n → ℂ) k‖ ^ (2 : ℕ)) = 1 := by
   classical
   rw [Finset.sum_eq_single i]
   · simp
@@ -185,7 +185,7 @@ theorem posSemidef_causalizerForm_iff (hr : 0 < r) (hn : 2 ≤ n) (a b : ℝ) :
       have h := ((Matrix.posSemidef_iff_dotProduct_mulVec).mp
         (hpos (testMatrix hr i0))).2 (Pi.single i1 (1 : ℂ) : Fin n → ℂ)
       rw [causalizerForm_quadratic, sum_norm_testMatrix hr i0, sum_norm_single_vec i1] at h
-      have hzero : (∑ p, ‖(testMatrix hr i0 *ᵥ (Pi.single i1 (1 : ℂ) : Fin n → ℂ)) p‖ ^ 2) = 0 := by
+      have hzero : (∑ p, ‖(testMatrix hr i0 *ᵥ (Pi.single i1 (1 : ℂ) : Fin n → ℂ)) p‖ ^ (2 : ℕ)) = 0 := by
         refine Finset.sum_eq_zero (fun p _ => ?_)
         rw [testMatrix_mulVec]
         by_cases hp : p = (⟨0, hr⟩ : Fin r) <;> simp [hp, Ne.symm hne]
@@ -196,7 +196,7 @@ theorem posSemidef_causalizerForm_iff (hr : 0 < r) (hn : 2 ≤ n) (a b : ℝ) :
     have h := ((Matrix.posSemidef_iff_dotProduct_mulVec).mp
       (hpos (testMatrix hr i0))).2 (Pi.single i0 (1 : ℂ) : Fin n → ℂ)
     rw [causalizerForm_quadratic, sum_norm_testMatrix hr i0, sum_norm_single_vec i0] at h
-    have hone : (∑ p, ‖(testMatrix hr i0 *ᵥ (Pi.single i0 (1 : ℂ) : Fin n → ℂ)) p‖ ^ 2) = 1 := by
+    have hone : (∑ p, ‖(testMatrix hr i0 *ᵥ (Pi.single i0 (1 : ℂ) : Fin n → ℂ)) p‖ ^ (2 : ℕ)) = 1 := by
       rw [Finset.sum_eq_single (⟨0, hr⟩ : Fin r)]
       · rw [testMatrix_mulVec]
         simp
@@ -212,16 +212,16 @@ theorem posSemidef_causalizerForm_iff (hr : 0 < r) (hn : 2 ≤ n) (a b : ℝ) :
     refine (Matrix.posSemidef_iff_dotProduct_mulVec).mpr
       ⟨isHermitian_causalizerForm a b X, fun v => ?_⟩
     rw [causalizerForm_quadratic, Complex.zero_le_real]
-    have hS : (0:ℝ) ≤ ∑ p, ‖(X *ᵥ v) p‖ ^ 2 :=
+    have hS : (0:ℝ) ≤ ∑ p, ‖(X *ᵥ v) p‖ ^ (2 : ℕ) :=
       Finset.sum_nonneg (fun p _ => by positivity)
-    have hT : (0:ℝ) ≤ ∑ p, ∑ i, ‖X p i‖ ^ 2 :=
+    have hT : (0:ℝ) ≤ ∑ p, ∑ i, ‖X p i‖ ^ (2 : ℕ) :=
       Finset.sum_nonneg (fun p _ => Finset.sum_nonneg (fun i _ => by positivity))
-    have hN : (0:ℝ) ≤ ∑ i, ‖v i‖ ^ 2 :=
+    have hN : (0:ℝ) ≤ ∑ i, ‖v i‖ ^ (2 : ℕ) :=
       Finset.sum_nonneg (fun i _ => by positivity)
     have hCS := sum_norm_mulVec_sq_le X v
     rcases le_or_gt 0 a with ha | ha
-    · have h1 : 0 ≤ a * (∑ p, ‖(X *ᵥ v) p‖ ^ 2) := mul_nonneg ha hS
-      have h2 : 0 ≤ b * (∑ p, ∑ i, ‖X p i‖ ^ 2) * (∑ i, ‖v i‖ ^ 2) :=
+    · have h1 : 0 ≤ a * (∑ p, ‖(X *ᵥ v) p‖ ^ (2 : ℕ)) := mul_nonneg ha hS
+      have h2 : 0 ≤ b * (∑ p, ∑ i, ‖X p i‖ ^ (2 : ℕ)) * (∑ i, ‖v i‖ ^ (2 : ℕ)) :=
         mul_nonneg (mul_nonneg hb hT) hN
       linarith
     · nlinarith [mul_nonneg hT hN]
@@ -346,14 +346,14 @@ theorem kernel_fidelity_iff (hr : 0 < r) (hn : 2 ≤ n) (a b : ℝ) (hb : 0 ≤ 
           rw [h]
           simp
         rw [dotProduct_gram] at hquad
-        have hsum : (∑ p, ‖(X *ᵥ v) p‖ ^ 2) = 0 := by
+        have hsum : (∑ p, ‖(X *ᵥ v) p‖ ^ (2 : ℕ)) = 0 := by
           exact_mod_cast hquad
         funext p
-        have hp : ‖(X *ᵥ v) p‖ ^ 2 = 0 := by
+        have hp : ‖(X *ᵥ v) p‖ ^ (2 : ℕ) = 0 := by
           refine le_antisymm ?_ (by positivity)
           rw [← hsum]
           exact Finset.single_le_sum
-            (f := fun q => ‖(X *ᵥ v) q‖ ^ 2) (fun q _ => by positivity) (Finset.mem_univ p)
+            (f := fun q => ‖(X *ᵥ v) q‖ ^ (2 : ℕ)) (fun q _ => by positivity) (Finset.mem_univ p)
         have : ‖(X *ᵥ v) p‖ = 0 := by
           nlinarith [norm_nonneg ((X *ᵥ v) p)]
         simpa using this

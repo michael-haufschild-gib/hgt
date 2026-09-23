@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The first-order metric written directly with the paper's printed appendix source. -/
 def einastoLiteralAppendixMetric (d l a β r : ℝ) : ℝ :=
-  einastoMetric d l a r + β * ((∫ v in 0..r, 8 * Real.pi * v ^ 2 * quadraticAppendixSource (einastoMetric d l a) v) / r)
+  einastoMetric d l a r + β * ((∫ v in 0..r, 8 * Real.pi * v ^ (2 : ℕ) * quadraticAppendixSource (einastoMetric d l a) v) / r)
 
 theorem einastoLiteralAppendixMetric_center (d l a β : ℝ) : einastoLiteralAppendixMetric d l a β 0 = 1 := by
   simp only [einastoLiteralAppendixMetric, einastoMetric_zero, intervalIntegral.integral_same, zero_div, mul_zero, add_zero]
@@ -62,7 +62,7 @@ theorem einastoLiteralAppendixMetric_curvatures_eventually (d l a β : ℝ) :
 theorem einastoLiteralAppendixMetric_Kretschmann_finite_limit_iff (d l a β K : ℝ) :
     Tendsto (fun t => radialKretschmannScalar (einastoLiteralAppendixMetric d l a β) (exp t)) atBot (𝓝 K) ↔
       (β = 0 ∨ 2 ≤ exp (-a)) ∧
-        K = (512 * Real.pi ^ 2 * exp d ^ 2 / 3) * einastoShapeCoreMultiplier d l a (-1) β ^ 2 := by
+        K = (512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3) * einastoShapeCoreMultiplier d l a (-1) β ^ (2 : ℕ) := by
   rw [tendsto_congr' (einastoLiteralAppendixMetric_curvatures_eventually d l a β).1]
   exact einastoShapeMetric_Kretschmann_finite_limit_iff d l a (-1) β K
 

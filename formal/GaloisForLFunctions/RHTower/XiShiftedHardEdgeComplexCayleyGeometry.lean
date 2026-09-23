@@ -274,7 +274,7 @@ theorem hasDerivAt_complex_arctan_zero :
   have hratio : HasDerivAt (fun z => p z / m z) (2 * Complex.I) 0 := by
     have hraw := hp.fun_div hm hm0
     have hder :
-        (Complex.I * m 0 - p 0 * (-Complex.I)) / m 0 ^ 2 =
+        (Complex.I * m 0 - p 0 * (-Complex.I)) / m 0 ^ (2 : ℕ) =
           2 * Complex.I := by
       simp [p, m]
       ring

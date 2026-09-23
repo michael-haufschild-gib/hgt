@@ -20,13 +20,13 @@ noncomputable section
 
 /-- A strengthened adjacent log-convexity inequality at raw moment levels `1,2,3`. -/
 def ThetaCuspUpperAdjacentRatioSeparation : Prop :=
-  14 * thetaCuspRawEvenMoment 2 ^ 2 ≤
+  14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ) ≤
     9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3
 
 /-- A relaxed fourth-moment concentration inequality at raw moment levels `0,1,2`. -/
 def ThetaCuspRelaxedFourthMomentConcentration : Prop :=
   16 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 ≤
-    45 * thetaCuspRawEvenMoment 1 ^ 2
+    45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ)
 
 /-- The two quadratic ratio defects resolve the cubic raw-moment obstruction exactly:
 
@@ -36,15 +36,15 @@ where `C = 3m₀m₁m₃ + 15m₁²m₂ - 10m₀m₂²`. -/
 theorem thetaCusp_ratioSplit_exact_identity :
     thetaCuspRawEvenMoment 0 *
           (9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3 -
-            14 * thetaCuspRawEvenMoment 2 ^ 2) +
+            14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ)) +
         thetaCuspRawEvenMoment 2 *
-          (45 * thetaCuspRawEvenMoment 1 ^ 2 -
+          (45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) -
             16 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2) =
       3 *
         (3 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 1 *
             thetaCuspRawEvenMoment 3 +
-          15 * thetaCuspRawEvenMoment 1 ^ 2 * thetaCuspRawEvenMoment 2 -
-          10 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 ^ 2) := by
+          15 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) * thetaCuspRawEvenMoment 2 -
+          10 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ)) := by
   ring
 
 /-- The two source-pure quadratic ratio inequalities force the cubic raw-moment inequality. -/
@@ -53,8 +53,8 @@ theorem thetaCusp_raw_cubic_nonneg_of_ratioSplit
     (hrelaxed : ThetaCuspRelaxedFourthMomentConcentration) :
     0 ≤ 3 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 1 *
           thetaCuspRawEvenMoment 3 +
-        15 * thetaCuspRawEvenMoment 1 ^ 2 * thetaCuspRawEvenMoment 2 -
-        10 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 ^ 2 := by
+        15 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) * thetaCuspRawEvenMoment 2 -
+        10 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ) := by
   rw [ThetaCuspUpperAdjacentRatioSeparation] at hupper
   rw [ThetaCuspRelaxedFourthMomentConcentration] at hrelaxed
   have h0 := thetaCuspRawEvenMoment_nonneg 0
@@ -62,11 +62,11 @@ theorem thetaCusp_raw_cubic_nonneg_of_ratioSplit
   have hupperWeighted :
       0 ≤ thetaCuspRawEvenMoment 0 *
         (9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3 -
-          14 * thetaCuspRawEvenMoment 2 ^ 2) := by
+          14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ)) := by
     exact mul_nonneg h0 (sub_nonneg.mpr hupper)
   have hrelaxedWeighted :
       0 ≤ thetaCuspRawEvenMoment 2 *
-        (45 * thetaCuspRawEvenMoment 1 ^ 2 -
+        (45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) -
           16 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2) := by
     exact mul_nonneg h2 (sub_nonneg.mpr hrelaxed)
   nlinarith [hrelaxedWeighted]

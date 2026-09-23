@@ -49,7 +49,7 @@ theorem mass_le (d t : ℝ) : mass d t ≤ 1 / (2 * Real.exp d) := by
 
 /-- A terminally normalized squared energy. -/
 def energy {E : Type*} [SeminormedAddCommGroup E] (d t : ℝ) (f : ℝ → E) : ℝ :=
-  ∫ s in (0 : ℝ)..|t|, weight d t s * ‖f s‖ ^ 2
+  ∫ s in (0 : ℝ)..|t|, weight d t s * ‖f s‖ ^ (2 : ℕ)
 
 theorem energy_nonneg {E : Type*} [SeminormedAddCommGroup E]
     (d t : ℝ) (f : ℝ → E) : 0 ≤ energy d t f := by
@@ -58,13 +58,13 @@ theorem energy_nonneg {E : Type*} [SeminormedAddCommGroup E]
 
 /-- Exact saturation by constant data, including the zero-length interval. -/
 theorem energy_const {E : Type*} [SeminormedAddCommGroup E]
-    (d t : ℝ) (x : E) : energy d t (fun _ => x) = mass d t * ‖x‖ ^ 2 := by
+    (d t : ℝ) (x : E) : energy d t (fun _ => x) = mass d t * ‖x‖ ^ (2 : ℕ) := by
   rw [energy, intervalIntegral.integral_mul_const, integral_weight]
 
 /-- The finite-interval energy bound for arbitrary bounded continuous data. -/
 theorem energy_le_mass {E : Type*} [SeminormedAddCommGroup E]
     (d t : ℝ) (f : BoundedContinuousFunction ℝ E) :
-    energy d t f ≤ mass d t * ‖f‖ ^ 2 := by
+    energy d t f ≤ mass d t * ‖f‖ ^ (2 : ℕ) := by
   rw [← energy_const d t f]
   apply intervalIntegral.integral_mono_on (abs_nonneg t)
     (((continuous_weight d t).mul (f.continuous.norm.pow 2)).intervalIntegrable 0 |t|)
@@ -77,9 +77,9 @@ theorem energy_le_mass {E : Type*} [SeminormedAddCommGroup E]
 /-- Lemma 2.3's squared one-direction gain, with every analytic bound discharged. -/
 theorem energy_le {E : Type*} [SeminormedAddCommGroup E]
     (d t : ℝ) (f : BoundedContinuousFunction ℝ E) :
-    energy d t f ≤ ‖f‖ ^ 2 / (2 * Real.exp d) := by
-  calc energy d t f ≤ mass d t * ‖f‖ ^ 2 := energy_le_mass d t f
-    _ ≤ (1 / (2 * Real.exp d)) * ‖f‖ ^ 2 :=
+    energy d t f ≤ ‖f‖ ^ (2 : ℕ) / (2 * Real.exp d) := by
+  calc energy d t f ≤ mass d t * ‖f‖ ^ (2 : ℕ) := energy_le_mass d t f
+    _ ≤ (1 / (2 * Real.exp d)) * ‖f‖ ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right (mass_le d t) (sq_nonneg _)
     _ = _ := by ring
 
@@ -87,7 +87,7 @@ theorem energy_le {E : Type*} [SeminormedAddCommGroup E]
 theorem sqrt_energy_le {E : Type*} [SeminormedAddCommGroup E]
     (d t : ℝ) (f : BoundedContinuousFunction ℝ E) :
     Real.sqrt (energy d t f) ≤ ‖f‖ / Real.sqrt (2 * Real.exp d) := by
-  calc Real.sqrt (energy d t f) ≤ Real.sqrt (‖f‖ ^ 2 / (2 * Real.exp d)) :=
+  calc Real.sqrt (energy d t f) ≤ Real.sqrt (‖f‖ ^ (2 : ℕ) / (2 * Real.exp d)) :=
       Real.sqrt_le_sqrt (energy_le d t f)
     _ = _ := by rw [Real.sqrt_div (sq_nonneg _), Real.sqrt_sq (norm_nonneg _)]
 

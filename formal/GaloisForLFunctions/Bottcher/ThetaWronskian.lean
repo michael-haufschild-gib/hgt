@@ -717,7 +717,7 @@ theorem thetaWronskianRatioH_mdiff : MDiff thetaWronskianRatioH := by
   · show thetaWronskianRatio ((ofComplex z : ℍ) : ℂ) = thetaWronskianRatio z
     rw [ofComplex_apply_of_im_pos hz']
 
-/-- `P ∣[0] S = P` (weight-0, `S`-invariance `P(−1/τ)=P(τ)`; the `denom^0 = 1` factor drops). -/
+/-- `P ∣[0] S = P` (weight-0, `S`-invariance `P(−1/τ)=P(τ)`; the `denom^(0 : ℕ) = 1` factor drops). -/
 theorem thetaWronskianRatioH_slash_S :
     thetaWronskianRatioH ∣[(0 : ℤ)] ModularGroup.S = thetaWronskianRatioH := by
   funext z

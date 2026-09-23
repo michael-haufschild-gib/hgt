@@ -9,8 +9,8 @@ theorem third_deriv_of_quadratic_log_jet
     (hX : HasDerivAt X (Y x) x) (hY : HasDerivAt Y (Z x) x)
     (hP : HasDerivAt P (P₁ x) x)
     (hP₁ : P₁ = fun t => X t * P t)
-    (hP₂ : P₂ = (Y + X ^ 2) * P) :
-    HasDerivAt P₂ ((Z x + 3 * Y x * X x + X x ^ 3) * P x) x := by
+    (hP₂ : P₂ = (Y + X ^ (2 : ℕ)) * P) :
+    HasDerivAt P₂ ((Z x + 3 * Y x * X x + X x ^ (3 : ℕ)) * P x) x := by
   rw [hP₂]
   have hsquare := hX.pow 2
   have hsum := hY.add hsquare

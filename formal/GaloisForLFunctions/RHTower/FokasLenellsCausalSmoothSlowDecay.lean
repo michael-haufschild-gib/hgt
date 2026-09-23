@@ -9,7 +9,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalSmoothSlowDecayInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- The concrete time-weighted family after finite actual resolvent smoothing. -/
 def causalWeightedSmoothedEvolution (z : {z : ℂ // 0 < z.re}) (k n : ℕ) :

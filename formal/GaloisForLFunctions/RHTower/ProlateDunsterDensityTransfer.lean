@@ -17,16 +17,16 @@ open MeasureTheory Set
 namespace GaloisForLFunctions.RHTower
 
 /-- The exact endpoint-normalized radial density. -/
-def radialProlateDensity (c : ℝ) (R : ℝ → ℝ) (x : ℝ) : ℝ := c * R x ^ 2
+def radialProlateDensity (c : ℝ) (R : ℝ → ℝ) (x : ℝ) : ℝ := c * R x ^ (2 : ℕ)
 
 /-- The regular Dunster/Bessel density before oscillatory averaging. -/
 def radialProlateBesselDensity (s c x : ℝ) : ℝ :=
-  (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2
+  (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ (2 : ℕ)
 
 /-- Fixed coefficient in the global exact-profile envelope. -/
 def radialProlateDensityEnvelopeConstant : ℝ :=
   Real.pi * ((1 + radialProlateUniformTransferConstant) *
-    lgBesselCommonEnvelopeConstant) ^ 2
+    lgBesselCommonEnvelopeConstant) ^ (2 : ℕ)
 
 theorem radialProlateDensityEnvelopeConstant_nonneg :
     0 ≤ radialProlateDensityEnvelopeConstant := by
@@ -37,7 +37,7 @@ theorem radialProlateDensityEnvelopeConstant_nonneg :
 def radialProlateDensityTransferConstant : ℝ :=
   Real.pi * radialProlateUniformTransferConstant *
     (radialProlateUniformTransferConstant + 2) *
-      lgBesselCommonEnvelopeConstant ^ 2
+      lgBesselCommonEnvelopeConstant ^ (2 : ℕ)
 
 theorem radialProlateDensityTransferConstant_nonneg :
     0 ≤ radialProlateDensityTransferConstant := by
@@ -50,22 +50,22 @@ theorem radialProlateDensityTransferConstant_nonneg :
 weight. -/
 theorem xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight
     {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    xiAmplitude s x ^ 2 / xiEndpointPhase s x = Real.pi * profileWeight s x := by
+    xiAmplitude s x ^ (2 : ℕ) / xiEndpointPhase s x = Real.pi * profileWeight s x := by
   have hphase : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have hamp : 0 < xiAmplitude s x := xiAmplitude_pos hs0 hs1 hx
   have hfourth := xiAmplitude_pow_four hs0 hs1 hx
   have hweight := profileWeight_eq_ampFourth_sq hs1 hx
   have hampFourth := ampFourth_sq hs1 hx
-  have hleft : 0 < x ^ 2 - 1 := by nlinarith
-  have hright : 0 < x ^ 2 - s := by nlinarith
-  have hprod : 0 < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos hleft hright
-  have hsqrt : 0 < Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) :=
+  have hleft : 0 < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hright : 0 < x ^ (2 : ℕ) - s := by nlinarith
+  have hprod : 0 < (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) := mul_pos hleft hright
+  have hsqrt : 0 < Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) :=
     Real.sqrt_pos.mpr hprod
   rw [hweight, hampFourth]
-  have hsq : xiAmplitude s x ^ 2 =
-      xiEndpointPhase s x / Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := by
+  have hsq : xiAmplitude s x ^ (2 : ℕ) =
+      xiEndpointPhase s x / Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) := by
     apply (sq_eq_sq₀ (sq_nonneg _) (div_nonneg hphase.le hsqrt.le)).mp
-    rw [show (xiAmplitude s x ^ 2) ^ 2 = xiAmplitude s x ^ 4 by ring,
+    rw [show (xiAmplitude s x ^ (2 : ℕ)) ^ (2 : ℕ) = xiAmplitude s x ^ (4 : ℕ) by ring,
       hfourth, div_pow, Real.sq_sqrt hprod.le]
   rw [hsq]
   field_simp
@@ -77,8 +77,8 @@ theorem abs_radialProlate_sub_besselProfile_le
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
     (hx : dunsterEndpointCrossing c ≤ x) :
     |R x - xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)|
       ≤ xiAmplitude s x *
@@ -107,8 +107,8 @@ theorem radialProlateDensity_le_profileWeight
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
     (hx : dunsterEndpointCrossing c ≤ x) :
     radialProlateDensity c R x ≤ radialProlateDensityEnvelopeConstant * profileWeight s x := by
   let K := radialProlateUniformTransferConstant
@@ -166,23 +166,23 @@ theorem radialProlateDensity_le_profileWeight
     exact mul_le_mul_of_nonneg_left hU hamp.le
   have hsq := (sq_le_sq₀ (abs_nonneg (R x)) (by positivity)).2 hRabs
   have hweight := xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight hs0 hs1 hxx
-  have hAmp : xiAmplitude s x ^ 2 =
+  have hAmp : xiAmplitude s x ^ (2 : ℕ) =
       Real.pi * profileWeight s x * xiEndpointPhase s x := by
     rw [div_eq_iff hphase.ne'] at hweight
     exact hweight
   rw [radialProlateDensity, radialProlateDensityEnvelopeConstant]
-  have hRsq : R x ^ 2 = |R x| ^ 2 := (sq_abs (R x)).symm
+  have hRsq : R x ^ (2 : ℕ) = |R x| ^ (2 : ℕ) := (sq_abs (R x)).symm
   rw [hRsq]
   calc
-    c * |R x| ^ 2
+    c * |R x| ^ (2 : ℕ)
         ≤ c * (xiAmplitude s x *
-          (((1 + K) * C) / Real.sqrt (c * xiEndpointPhase s x))) ^ 2 :=
+          (((1 + K) * C) / Real.sqrt (c * xiEndpointPhase s x))) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hsq hc0.le
-    _ = Real.pi * ((1 + K) * C) ^ 2 * profileWeight s x := by
+    _ = Real.pi * ((1 + K) * C) ^ (2 : ℕ) * profileWeight s x := by
       rw [mul_pow, div_pow, Real.sq_sqrt (mul_pos hc0 hphase).le, hAmp]
       field_simp
     _ = Real.pi * ((1 + radialProlateUniformTransferConstant) *
-          lgBesselCommonEnvelopeConstant) ^ 2 * profileWeight s x := by rfl
+          lgBesselCommonEnvelopeConstant) ^ (2 : ℕ) * profileWeight s x := by rfl
 
 /-- Squaring the exact-to-Bessel profile estimate costs only `O(c⁻¹)` in the integrable profile
 weight. -/
@@ -192,8 +192,8 @@ theorem abs_radialProlateDensity_sub_besselDensity_le
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
     (hx : dunsterEndpointCrossing c ≤ x) :
     |radialProlateDensity c R x - radialProlateBesselDensity s c x|
       ≤ (radialProlateDensityTransferConstant / c) * profileWeight s x := by
@@ -245,7 +245,7 @@ theorem abs_radialProlateDensity_sub_besselDensity_le
   have hweight := xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight hs0 hs1 hxx
   have hamp : 0 < xiAmplitude s x := xiAmplitude_pos hs0 hs1 hxx
   have hfac : radialProlateDensity c R x - radialProlateBesselDensity s c x =
-      c * xiAmplitude s x ^ 2 *
+      c * xiAmplitude s x ^ (2 : ℕ) *
         ((R x / xiAmplitude s x - besselJ0 (c * xiEndpointPhase s x)) *
           (R x / xiAmplitude s x + besselJ0 (c * xiEndpointPhase s x))) := by
     rw [radialProlateDensity, radialProlateBesselDensity]
@@ -255,17 +255,17 @@ theorem abs_radialProlateDensity_sub_besselDensity_le
   rw [hfac, abs_mul, abs_mul, abs_mul, abs_of_pos hc0, abs_of_pos (sq_pos_of_pos hamp)]
   have hprod := mul_le_mul htransfer hsum (abs_nonneg _) (by positivity)
   calc
-    c * xiAmplitude s x ^ 2 *
+    c * xiAmplitude s x ^ (2 : ℕ) *
         (|R x / xiAmplitude s x - besselJ0 (c * xiEndpointPhase s x)| *
           |R x / xiAmplitude s x + besselJ0 (c * xiEndpointPhase s x)|)
-        ≤ c * xiAmplitude s x ^ 2 *
+        ≤ c * xiAmplitude s x ^ (2 : ℕ) *
           (((K / c) * (C / Real.sqrt (c * xiEndpointPhase s x))) *
             (((K + 2) * C) / Real.sqrt (c * xiEndpointPhase s x))) :=
       mul_le_mul_of_nonneg_left hprod (mul_nonneg hc0.le (sq_nonneg _))
-    _ = (Real.pi * K * (K + 2) * C ^ 2 / c) * profileWeight s x := by
-      have hrootSq : Real.sqrt (c * xiEndpointPhase s x) ^ 2 =
+    _ = (Real.pi * K * (K + 2) * C ^ (2 : ℕ) / c) * profileWeight s x := by
+      have hrootSq : Real.sqrt (c * xiEndpointPhase s x) ^ (2 : ℕ) =
           c * xiEndpointPhase s x := Real.sq_sqrt (mul_pos hc0 hphase).le
-      have hAmp : xiAmplitude s x ^ 2 =
+      have hAmp : xiAmplitude s x ^ (2 : ℕ) =
           Real.pi * profileWeight s x * xiEndpointPhase s x := by
         rw [div_eq_iff hphase.ne'] at hweight
         linarith
@@ -280,17 +280,17 @@ theorem profileWeight_le_four_mul_profileDensity
     {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     profileWeight s x ≤ 4 * profileDensity x := by
   have hdiff := abs_profileWeight_sub_density_le hs0 hs1 hx
-  have hden : 0 < x ^ 2 - s := by nlinarith
-  have hratio : 3 * s / (x ^ 2 - s) ≤ 3 := by
+  have hden : 0 < x ^ (2 : ℕ) - s := by nlinarith
+  have hratio : 3 * s / (x ^ (2 : ℕ) - s) ≤ 3 := by
     rw [div_le_iff₀ hden]
     nlinarith
   have hD0 : 0 ≤ profileDensity x := profileDensity_nonneg hx.le
   have hupper : profileWeight s x - profileDensity x ≤
-      3 * s * profileDensity x / (x ^ 2 - s) := (abs_le.mp hdiff).2
-  have hsmall : 3 * s * profileDensity x / (x ^ 2 - s) ≤ 3 * profileDensity x := by
+      3 * s * profileDensity x / (x ^ (2 : ℕ) - s) := (abs_le.mp hdiff).2
+  have hsmall : 3 * s * profileDensity x / (x ^ (2 : ℕ) - s) ≤ 3 * profileDensity x := by
     calc
-      3 * s * profileDensity x / (x ^ 2 - s) =
-          (3 * s / (x ^ 2 - s)) * profileDensity x := by ring
+      3 * s * profileDensity x / (x ^ (2 : ℕ) - s) =
+          (3 * s / (x ^ (2 : ℕ) - s)) * profileDensity x := by ring
       _ ≤ 3 * profileDensity x := mul_le_mul_of_nonneg_right hratio hD0
   linarith
 
@@ -338,7 +338,7 @@ theorem radialProlateBesselDensity_le_profileWeight
     {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c)
     (hx : 1 < x) (hv : 1 ≤ c * xiEndpointPhase s x) :
     radialProlateBesselDensity s c x ≤
-      Real.pi * lgBesselCommonEnvelopeConstant ^ 2 * profileWeight s x := by
+      Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ) * profileWeight s x := by
   let C := lgBesselCommonEnvelopeConstant
   have hC0 : 0 ≤ C := lgBesselCommonEnvelopeConstant_nonneg
   have hphase : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
@@ -347,22 +347,22 @@ theorem radialProlateBesselDensity_le_profileWeight
   have hsq := (sq_le_sq₀ (abs_nonneg (besselJ0 (c * xiEndpointPhase s x)))
     (div_nonneg hC0 (Real.sqrt_nonneg _))).2 hmodel
   have hweight := xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight hs0 hs1 hx
-  have hAmp : xiAmplitude s x ^ 2 =
+  have hAmp : xiAmplitude s x ^ (2 : ℕ) =
       Real.pi * profileWeight s x * xiEndpointPhase s x := by
     rw [div_eq_iff hphase.ne'] at hweight
     exact hweight
-  have hJ : besselJ0 (c * xiEndpointPhase s x) ^ 2 =
-      |besselJ0 (c * xiEndpointPhase s x)| ^ 2 := (sq_abs _).symm
+  have hJ : besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ) =
+      |besselJ0 (c * xiEndpointPhase s x)| ^ (2 : ℕ) := (sq_abs _).symm
   rw [radialProlateBesselDensity, mul_pow, mul_pow, Real.sq_sqrt hc.le, hJ]
   calc
-    c * xiAmplitude s x ^ 2 * |besselJ0 (c * xiEndpointPhase s x)| ^ 2
-        ≤ c * xiAmplitude s x ^ 2 *
-          (C / Real.sqrt (c * xiEndpointPhase s x)) ^ 2 :=
+    c * xiAmplitude s x ^ (2 : ℕ) * |besselJ0 (c * xiEndpointPhase s x)| ^ (2 : ℕ)
+        ≤ c * xiAmplitude s x ^ (2 : ℕ) *
+          (C / Real.sqrt (c * xiEndpointPhase s x)) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hsq (mul_nonneg hc.le (sq_nonneg _))
-    _ = Real.pi * C ^ 2 * profileWeight s x := by
+    _ = Real.pi * C ^ (2 : ℕ) * profileWeight s x := by
       rw [div_pow, Real.sq_sqrt (mul_pos hc hphase).le, hAmp]
       field_simp
-    _ = Real.pi * lgBesselCommonEnvelopeConstant ^ 2 * profileWeight s x := rfl
+    _ = Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ) * profileWeight s x := rfl
 
 theorem radialProlateBesselDensity_nonneg (s c x : ℝ) :
     0 ≤ radialProlateBesselDensity s c x := by
@@ -386,7 +386,7 @@ theorem integrableOn_radialProlateBesselDensity
     {s c a : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c)
     (ha : 1 < a) (hca : 1 ≤ c * xiEndpointPhase s a) :
     IntegrableOn (radialProlateBesselDensity s c) (Ioi a) := by
-  let K : ℝ := Real.pi * lgBesselCommonEnvelopeConstant ^ 2
+  let K : ℝ := Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ)
   have hdom : IntegrableOn (fun x : ℝ => K * profileWeight s x) (Ioi a) :=
     (integrableOn_profileWeight hs0 hs1 ha).const_mul K
   refine Integrable.mono' hdom
@@ -406,9 +406,9 @@ theorem integral_Ioi_radialProlateBesselDensity_le
     {s c a : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c)
     (ha : 1 < a) (hca : 1 ≤ c * xiEndpointPhase s a) :
     (∫ x in Ioi a, radialProlateBesselDensity s c x) ≤
-      (4 * Real.pi * lgBesselCommonEnvelopeConstant ^ 2) *
+      (4 * Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ)) *
         ∫ x in Ioi a, profileDensity x := by
-  let K : ℝ := 4 * Real.pi * lgBesselCommonEnvelopeConstant ^ 2
+  let K : ℝ := 4 * Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ)
   have hsubset : Ioi a ⊆ Ioi (1 : ℝ) := Ioi_subset_Ioi ha.le
   have htarget : IntegrableOn (fun x : ℝ => K * profileDensity x) (Ioi a) :=
     (integrableOn_profileDensity.mono_set hsubset).const_mul K
@@ -424,18 +424,18 @@ theorem integral_Ioi_radialProlateBesselDensity_le
     have hB := radialProlateBesselDensity_le_profileWeight
       hs0 hs1 hc (ha.trans hx) hcx
     have hW := profileWeight_le_four_mul_profileDensity hs0 hs1 (ha.trans hx)
-    have hcoef : 0 ≤ Real.pi * lgBesselCommonEnvelopeConstant ^ 2 := by positivity
+    have hcoef : 0 ≤ Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ) := by positivity
     calc
       radialProlateBesselDensity s c x
-          ≤ Real.pi * lgBesselCommonEnvelopeConstant ^ 2 * profileWeight s x := hB
-      _ ≤ Real.pi * lgBesselCommonEnvelopeConstant ^ 2 * (4 * profileDensity x) :=
+          ≤ Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ) * profileWeight s x := hB
+      _ ≤ Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ) * (4 * profileDensity x) :=
         mul_le_mul_of_nonneg_left hW hcoef
       _ = K * profileDensity x := by dsimp [K]; ring
   calc
     (∫ x in Ioi a, radialProlateBesselDensity s c x)
         ≤ ∫ x in Ioi a, K * profileDensity x := hmono
     _ = K * ∫ x in Ioi a, profileDensity x := by rw [integral_const_mul]
-    _ = (4 * Real.pi * lgBesselCommonEnvelopeConstant ^ 2) *
+    _ = (4 * Real.pi * lgBesselCommonEnvelopeConstant ^ (2 : ℕ)) *
           ∫ x in Ioi a, profileDensity x := by rfl
 
 /-- Global `L¹` exact-to-Bessel density transfer on every tail beginning beyond the matching
@@ -447,8 +447,8 @@ theorem integral_Ioi_abs_radialProlateDensity_sub_besselDensity_le
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
     (∫ x in Ioi a,
       |radialProlateDensity c R x - radialProlateBesselDensity s c x|)
       ≤ 2 * radialProlateDensityTransferConstant / c := by

@@ -13,12 +13,12 @@ Fix `r ≥ 1` and pairwise distinct nodes `x j > 1`.  Put
 so that the quadratic form of the shifted Hankel block `[m (N + i + j)]` of size `k` at a
 coefficient vector `c` is
 
-`∑ j, x j ^ N * p(x j) ^ 2 - ε * p(1) ^ 2`,  `p = ∑ i, c i X ^ i`.
+`∑ j, x j ^ N * p(x j) ^ (2 : ℕ) - ε * p(1) ^ (2 : ℕ)`,  `p = ∑ i, c i X ^ i`.
 
 For `k ≤ r` the Lagrange formula `p(1) = ∑ j (L j).eval 1 * p(x j)` and Cauchy–Schwarz make the
 subtracted term strictly smaller than the bulk term once `ε` is below the reciprocal Lagrange
 budget, so every such block is positive definite at every shift.  At size `r + 1` the coefficient
-vector of `∏ j (X - x j)` kills the bulk term and leaves `-ε * (∏ j (1 - x j)) ^ 2 < 0`.
+vector of `∏ j (X - x j)` kills the bulk term and leaves `-ε * (∏ j (1 - x j)) ^ (2 : ℕ) < 0`.
 -/
 
 noncomputable section
@@ -47,7 +47,7 @@ def shiftedHankel (m : ℕ → ℝ) (N k : ℕ) : Matrix (Fin k) (Fin k) ℝ :=
 
 theorem hankelBilinear_pow {k : ℕ} (c : Fin k → ℝ) (N : ℕ) (t : ℝ) :
     (∑ i : Fin k, ∑ i' : Fin k, c i * t ^ (N + (i : ℕ) + (i' : ℕ)) * c i')
-      = t ^ N * (∑ i : Fin k, c i * t ^ (i : ℕ)) ^ 2 := by
+      = t ^ N * (∑ i : Fin k, c i * t ^ (i : ℕ)) ^ (2 : ℕ) := by
   rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.mul_sum]
@@ -56,7 +56,7 @@ theorem hankelBilinear_pow {k : ℕ} (c : Fin k → ℝ) (N : ℕ) (t : ℝ) :
   ring
 
 theorem hankelBilinear_const {k : ℕ} (c : Fin k → ℝ) (ε : ℝ) :
-    (∑ i : Fin k, ∑ i' : Fin k, c i * ε * c i') = ε * (∑ i : Fin k, c i) ^ 2 := by
+    (∑ i : Fin k, ∑ i' : Fin k, c i * ε * c i') = ε * (∑ i : Fin k, c i) ^ (2 : ℕ) := by
   rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.mul_sum]
@@ -67,7 +67,7 @@ theorem hankelBilinear_const {k : ℕ} (c : Fin k → ℝ) (ε : ℝ) :
 negative rank-one term. -/
 theorem quadForm_shiftedHankel_signedAtom (x : Fin r → ℝ) (ε : ℝ) (N k : ℕ) (c : Fin k → ℝ) :
     c ⬝ᵥ ((shiftedHankel (signedAtomMoment x ε) N k) *ᵥ c) =
-      (∑ j, x j ^ N * ((coeffPoly c).eval (x j)) ^ 2) - ε * ((coeffPoly c).eval 1) ^ 2 := by
+      (∑ j, x j ^ N * ((coeffPoly c).eval (x j)) ^ (2 : ℕ)) - ε * ((coeffPoly c).eval 1) ^ (2 : ℕ) := by
   have hexpand : c ⬝ᵥ ((shiftedHankel (signedAtomMoment x ε) N k) *ᵥ c)
       = ∑ i : Fin k, ∑ i' : Fin k,
         ((∑ j, c i * x j ^ (N + (i : ℕ) + (i' : ℕ)) * c i') - c i * ε * c i') := by
@@ -131,7 +131,7 @@ def lagrangeWeight (x : Fin r → ℝ) (j : Fin r) : ℝ :=
   (Lagrange.basis (Finset.univ : Finset (Fin r)) x j).eval 1
 
 /-- The Lagrange budget of the node family. -/
-def lagrangeBudget (x : Fin r → ℝ) : ℝ := ∑ j, (lagrangeWeight x j) ^ 2
+def lagrangeBudget (x : Fin r → ℝ) : ℝ := ∑ j, (lagrangeWeight x j) ^ (2 : ℕ)
 
 /-- The admissible negative-atom weight. -/
 def signedAtomWeight (x : Fin r → ℝ) : ℝ := 1 / (1 + lagrangeBudget x)
@@ -165,7 +165,7 @@ theorem eval_one_eq_lagrange (x : Fin r → ℝ) (hx : Function.Injective x)
 /-- A nonzero polynomial of degree below the number of nodes has a nonzero value at some node. -/
 theorem sum_sq_eval_pos (x : Fin r → ℝ) (hx : Function.Injective x)
     {p : Polynomial ℝ} (hp : p.degree < (r : ℕ)) (hp0 : p ≠ 0) :
-    0 < ∑ j, (p.eval (x j)) ^ 2 := by
+    0 < ∑ j, (p.eval (x j)) ^ (2 : ℕ) := by
   classical
   have hvs : Set.InjOn x ↑(Finset.univ : Finset (Fin r)) := fun a _ b _ h => hx h
   have hcard : ((Finset.univ : Finset (Fin r)).card : WithBot ℕ) = (r : ℕ) := by simp
@@ -183,7 +183,7 @@ theorem sum_sq_eval_pos (x : Fin r → ℝ) (hx : Function.Injective x)
 /-- Cauchy–Schwarz against the Lagrange weights. -/
 theorem sq_eval_one_le (x : Fin r → ℝ) (hx : Function.Injective x)
     {p : Polynomial ℝ} (hp : p.degree < (r : ℕ)) :
-    (p.eval 1) ^ 2 ≤ lagrangeBudget x * ∑ j, (p.eval (x j)) ^ 2 := by
+    (p.eval 1) ^ (2 : ℕ) ≤ lagrangeBudget x * ∑ j, (p.eval (x j)) ^ (2 : ℕ) := by
   rw [eval_one_eq_lagrange x hx hp, lagrangeBudget]
   exact Finset.sum_mul_sq_le_sq_mul_sq _ _ _
 
@@ -196,22 +196,22 @@ theorem quadForm_pos_of_le (x : Fin r → ℝ) (hx : Function.Injective x) (hx1 
   have hp0 : coeffPoly c ≠ 0 := coeffPoly_ne_zero hc
   have hdeg : (coeffPoly c).degree < (r : ℕ) :=
     lt_of_lt_of_le (degree_coeffPoly_lt c) (by exact_mod_cast hk)
-  have hpos : 0 < ∑ j, ((coeffPoly c).eval (x j)) ^ 2 := sum_sq_eval_pos x hx hdeg hp0
-  have hbulk : (∑ j, ((coeffPoly c).eval (x j)) ^ 2)
-      ≤ ∑ j, x j ^ N * ((coeffPoly c).eval (x j)) ^ 2 := by
+  have hpos : 0 < ∑ j, ((coeffPoly c).eval (x j)) ^ (2 : ℕ) := sum_sq_eval_pos x hx hdeg hp0
+  have hbulk : (∑ j, ((coeffPoly c).eval (x j)) ^ (2 : ℕ))
+      ≤ ∑ j, x j ^ N * ((coeffPoly c).eval (x j)) ^ (2 : ℕ) := by
     refine Finset.sum_le_sum fun j _ => ?_
     have hpow : (1 : ℝ) ≤ x j ^ N := one_le_pow₀ (hx1 j)
     nlinarith [sq_nonneg ((coeffPoly c).eval (x j))]
   have hcs := sq_eval_one_le x hx hdeg
   have hB := lagrangeBudget_nonneg x
   rw [quadForm_shiftedHankel_signedAtom]
-  have hkey : signedAtomWeight x * ((coeffPoly c).eval 1) ^ 2
-      < ∑ j, ((coeffPoly c).eval (x j)) ^ 2 := by
-    have h1 : signedAtomWeight x * ((coeffPoly c).eval 1) ^ 2
-        ≤ signedAtomWeight x * (lagrangeBudget x * ∑ j, ((coeffPoly c).eval (x j)) ^ 2) :=
+  have hkey : signedAtomWeight x * ((coeffPoly c).eval 1) ^ (2 : ℕ)
+      < ∑ j, ((coeffPoly c).eval (x j)) ^ (2 : ℕ) := by
+    have h1 : signedAtomWeight x * ((coeffPoly c).eval 1) ^ (2 : ℕ)
+        ≤ signedAtomWeight x * (lagrangeBudget x * ∑ j, ((coeffPoly c).eval (x j)) ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hcs (le_of_lt (signedAtomWeight_pos x))
-    have h2 : signedAtomWeight x * (lagrangeBudget x * ∑ j, ((coeffPoly c).eval (x j)) ^ 2)
-        < ∑ j, ((coeffPoly c).eval (x j)) ^ 2 := by
+    have h2 : signedAtomWeight x * (lagrangeBudget x * ∑ j, ((coeffPoly c).eval (x j)) ^ (2 : ℕ))
+        < ∑ j, ((coeffPoly c).eval (x j)) ^ (2 : ℕ) := by
       unfold signedAtomWeight
       rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
       nlinarith [hpos, hB]
@@ -275,13 +275,13 @@ theorem quadForm_neg_at_succ (x : Fin r → ℝ) (hx1 : ∀ j, 1 < x j) (N : ℕ
         ((shiftedHankel (signedAtomMoment x (signedAtomWeight x)) N (r + 1)) *ᵥ
           (nodeCoeffVector x)) < 0 := by
   rw [quadForm_shiftedHankel_signedAtom, coeffPoly_nodeCoeffVector]
-  have hbulk : (∑ j, x j ^ N * ((nodePoly x).eval (x j)) ^ 2) = 0 := by
+  have hbulk : (∑ j, x j ^ N * ((nodePoly x).eval (x j)) ^ (2 : ℕ)) = 0 := by
     refine Finset.sum_eq_zero fun j _ => ?_
     rw [eval_nodePoly_node]
     ring
   rw [hbulk]
   have hne := eval_nodePoly_one_ne_zero x hx1
-  have hsq : 0 < ((nodePoly x).eval 1) ^ 2 := by positivity
+  have hsq : 0 < ((nodePoly x).eval 1) ^ (2 : ℕ) := by positivity
   have hw := signedAtomWeight_pos x
   nlinarith
 

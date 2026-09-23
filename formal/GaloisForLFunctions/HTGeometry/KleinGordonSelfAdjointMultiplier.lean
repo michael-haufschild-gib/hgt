@@ -85,12 +85,12 @@ consequence of the symbol being real. -/
 theorem kgFieldEnergy_trapped_diagonal (hφ : Measurable φ) (hb0 : 0 ≤ b) (hb1 : b < 1)
     (hC : ∀ ξ : E, ‖φ ξ‖ ≤ b) (hreal : ∀ ξ : E, (starRingEnd ℂ) (φ ξ) = φ ξ)
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    (‖g‖ ^ 2 + ‖h‖ ^ 2) / ((1 + b) / (1 - b))
-        ≤ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
-          + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
-      ∧ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
-          + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ 2
-        ≤ (1 + b) / (1 - b) * (‖g‖ ^ 2 + ‖h‖ ^ 2) :=
+    (‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)) / ((1 + b) / (1 - b))
+        ≤ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
+          + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
+      ∧ ‖kgFieldGrad (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
+          + ‖kgFieldVel (fourierMulCLM hφ hb0 hC) g h t‖ ^ (2 : ℕ)
+        ≤ (1 + b) / (1 - b) * (‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)) :=
   kgFieldEnergy_trapped_all_time hb0 hb1 (norm_fourierMulCLM_le hφ hb0 hC)
     (fourierMulCLM_inner hφ hb0 hC hreal) g h t
 

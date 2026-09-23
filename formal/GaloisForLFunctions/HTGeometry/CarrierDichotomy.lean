@@ -371,7 +371,7 @@ theorem completedZeta_reflection_bounded :
 
 /-- **The uncompleted reflection carrier is unbounded.**  The uncompleted functional equation
 `ζ(1−s) = χ(s)·ζ(s)` (`riemannZeta_one_sub`) has symbol `χ(s) = 2·(2π)^(−s)·Γ(s)·cos(πs/2)`, which is
-*unbounded*: at the `Γ`-pole `s = −2` — where the power factor `(2π)^2` and `cos(−π) = −1` are nonzero
+*unbounded*: at the `Γ`-pole `s = −2` — where the power factor `(2π)^(2 : ℕ)` and `cos(−π) = −1` are nonzero
 — `χ` blows up, so no global bound survives.  Proof reads the blow-up off `gamma_residue` (the residue
 of `Γ` at `−2` is `1/2 ≠ 0`): `(s+2)·χ(s)` tends to a nonzero limit, incompatible with any bound
 `‖χ‖ ≤ B`.  This is the uncompleted counterpart of `completedZeta_reflection_bounded`: the completion

@@ -69,8 +69,8 @@ theorem hsNormSq_crossKernel (r : ℕ) : hsNormSq (crossKernel r) = (r : ℝ) :=
 `r`-crossing by `c` scales its self-energy `r` by `‖c‖²`.  This realizes the moonshot §1 Weil energy of
 a single weighted crossing as a genuine Hilbert–Schmidt norm on `ℓ²(ℤ)`. -/
 theorem hsNormSq_smul_crossKernel (c : ℂ) (r : ℕ) :
-    hsNormSq (c • crossKernel r) = ‖c‖ ^ 2 * (r : ℝ) := by
-  have hself : hsInner (c • crossKernel r) (c • crossKernel r) = ((‖c‖ ^ 2 * (r : ℝ) : ℝ) : ℂ) := by
+    hsNormSq (c • crossKernel r) = ‖c‖ ^ (2 : ℕ) * (r : ℝ) := by
+  have hself : hsInner (c • crossKernel r) (c • crossKernel r) = ((‖c‖ ^ (2 : ℕ) * (r : ℝ) : ℝ) : ℂ) := by
     rw [hsInner_smul_left, hsInner_smul_right, hsInner_crossKernel, if_pos rfl,
       ← mul_assoc, mul_comm ((starRingEnd ℂ) c) c, Complex.mul_conj]
     push_cast [Complex.normSq_eq_norm_sq]; ring

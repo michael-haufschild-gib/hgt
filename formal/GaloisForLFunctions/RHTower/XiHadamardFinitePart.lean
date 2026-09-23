@@ -100,14 +100,14 @@ theorem norm_xiZero_le_two_mul (q : XiZeroCopy) :
 /-! ## Summability of the zero power sums -/
 
 theorem summable_inv_norm_xiZero_sq :
-    Summable (fun q : XiZeroCopy => 1 / ‖xiZero q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => 1 / ‖xiZero q‖ ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun q => by positivity) (fun q => ?_)
     (xiSpectralPoint_inv_sq_summable.mul_left 4)
   have h3 := three_lt_norm_xiZero q
   have hs4 := four_lt_norm_xiSpectralPoint q
   have h := norm_xiSpectralPoint_le_two_mul q
-  have hA : (0 : ℝ) < ‖xiZero q‖ ^ 2 := by positivity
-  have hB : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ 2 := by positivity
+  have hA : (0 : ℝ) < ‖xiZero q‖ ^ (2 : ℕ) := by positivity
+  have hB : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by positivity
   rw [mul_one_div, le_div_iff₀ hB, div_mul_eq_mul_div, div_le_iff₀ hA]
   nlinarith
 
@@ -121,8 +121,8 @@ theorem summable_norm_inv_xiZero_pow {k : ℕ} (hk : 2 ≤ k) :
     rw [inv_le_one_iff₀]
     right; linarith
   have hnn : (0 : ℝ) ≤ ‖xiZero q‖⁻¹ := by positivity
-  calc ‖xiZero q‖⁻¹ ^ k ≤ ‖xiZero q‖⁻¹ ^ 2 := pow_le_pow_of_le_one hnn hle1 hk
-    _ = 1 / ‖xiZero q‖ ^ 2 := by rw [inv_pow, one_div]
+  calc ‖xiZero q‖⁻¹ ^ k ≤ ‖xiZero q‖⁻¹ ^ (2 : ℕ) := pow_le_pow_of_le_one hnn hle1 hk
+    _ = 1 / ‖xiZero q‖ ^ (2 : ℕ) := by rw [inv_pow, one_div]
 
 theorem summable_inv_xiZero_pow {k : ℕ} (hk : 2 ≤ k) :
     Summable (fun q : XiZeroCopy => (xiZero q)⁻¹ ^ k) :=
@@ -235,7 +235,7 @@ def gTerm (s : ℂ) (p : XiZeroCopy × ℕ) : ℂ :=
 set_option maxHeartbeats 1000000 in
 theorem summable_gTerm {s : ℂ} (hs1 : ‖s‖ ≤ 1) : Summable (gTerm s) := by
   have hmaj : Summable (fun p : XiZeroCopy × ℕ =>
-      (1 / ‖xiZero p.1‖ ^ 2) * (1 / 3 : ℝ) ^ p.2) :=
+      (1 / ‖xiZero p.1‖ ^ (2 : ℕ)) * (1 / 3 : ℝ) ^ p.2) :=
     Summable.mul_of_nonneg summable_inv_norm_xiZero_sq
       (summable_geometric_of_lt_one (by norm_num) (by norm_num))
       (fun q => by positivity) (fun m => by positivity)
@@ -252,11 +252,11 @@ theorem summable_gTerm {s : ℂ} (hs1 : ‖s‖ ≤ 1) : Summable (gTerm s) := b
   calc ‖s‖ ^ (m + 1) * ‖xiZero q‖⁻¹ ^ (m + 2)
       ≤ 1 * ‖xiZero q‖⁻¹ ^ (m + 2) :=
         mul_le_mul_of_nonneg_right hs (by positivity)
-    _ = ‖xiZero q‖⁻¹ ^ 2 * ‖xiZero q‖⁻¹ ^ m := by
+    _ = ‖xiZero q‖⁻¹ ^ (2 : ℕ) * ‖xiZero q‖⁻¹ ^ m := by
         rw [one_mul, ← pow_add]
         congr 1
         omega
-    _ ≤ (1 / ‖xiZero q‖ ^ 2) * (1 / 3) ^ m := by
+    _ ≤ (1 / ‖xiZero q‖ ^ (2 : ℕ)) * (1 / 3) ^ m := by
         refine mul_le_mul (le_of_eq (by rw [inv_pow, one_div])) ?_ (by positivity)
           (by positivity)
         exact pow_le_pow_left₀ hinvnn hinv m
@@ -277,8 +277,8 @@ theorem hasSum_gTerm_fiber {s : ℂ} (hs1 : ‖s‖ ≤ 1) (hs : xi s ≠ 0) (q 
       _ = ‖xiZero q‖⁻¹ := one_mul _
       _ < 1 := h2
   have hgeo := (hasSum_geometric_of_norm_lt_one hratio).mul_left
-    (-(s * (xiZero q)⁻¹ ^ 2))
-  have hfun : (fun m : ℕ => -(s * (xiZero q)⁻¹ ^ 2) * (s * (xiZero q)⁻¹) ^ m)
+    (-(s * (xiZero q)⁻¹ ^ (2 : ℕ)))
+  have hfun : (fun m : ℕ => -(s * (xiZero q)⁻¹ ^ (2 : ℕ)) * (s * (xiZero q)⁻¹) ^ m)
       = fun m : ℕ => gTerm s (q, m) := by
     funext m
     simp only [gTerm, mul_pow]
@@ -289,7 +289,7 @@ theorem hasSum_gTerm_fiber {s : ℂ} (hs1 : ‖s‖ ≤ 1) (hs : xi s ≠ 0) (q 
   have hden : (1 : ℂ) - s * (xiZero q)⁻¹ ≠ 0 := by
     rw [hsplit]
     exact mul_ne_zero hns (inv_ne_zero hne)
-  have hval : -(s * (xiZero q)⁻¹ ^ 2) * (1 - s * (xiZero q)⁻¹)⁻¹
+  have hval : -(s * (xiZero q)⁻¹ ^ (2 : ℕ)) * (1 - s * (xiZero q)⁻¹)⁻¹
       = (xiZero q)⁻¹ - (xiZero q - s)⁻¹ := by
     rw [hsplit, mul_inv, inv_inv]
     field_simp

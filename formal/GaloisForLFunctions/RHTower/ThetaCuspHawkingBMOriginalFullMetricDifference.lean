@@ -106,39 +106,39 @@ private theorem reader_coefficient_collar (q : XiZeroCopy) (w : ℂ) {L : ℝ} (
 
 /-- Literal source discrepancy has exactly its unchanged physical coefficient. -/
 theorem original_source_difference_collar (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (p L k : ℝ) (hL : 0<L) :
-    ((tortoiseRadius (-L/2):ℂ)^2-1)*sourcePrefactor q (tortoiseRadius (-L/2))*
+    ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*sourcePrefactor q (tortoiseRadius (-L/2))*
       sourcePeriodDifference q br true amp w p (tortoiseRadius (-L/2)) (Real.exp k)=
         mu q*(mu q-2)*originalPeriodError q br amp w p L k := by
   let R : ℂ := tortoiseRadius (-L/2)
   have hr : R≠0 := Complex.ofReal_ne_zero.mpr (by have h:=tortoiseRadius_exterior (-L/2) (by linarith : -L/2<0);linarith)
-  have hf : R^2-1≠0 := by
-    change (tortoiseRadius (-L/2):ℂ)^2-1≠0
-    exact_mod_cast (show tortoiseRadius (-L/2)^2-1≠0 by nlinarith [tortoiseRadius_exterior (-L/2) (by linarith : -L/2<0)])
+  have hf : R^(2 : ℕ)-1≠0 := by
+    change (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1≠0
+    exact_mod_cast (show tortoiseRadius (-L/2)^(2 : ℕ)-1≠0 by nlinarith [tortoiseRadius_exterior (-L/2) (by linarith : -L/2<0)])
   rw [sourcePeriodDifference,original_source_period_cut,sourceRestoredSlice,reader_coefficient_collar q w hL,
     tortoise_original_inverse (-L/2) (by linarith : -L/2<0)]
   simp only [show p-2*(-L/2)=p+L by ring,sourcePrefactor,originalPeriodError]
-  change (R^2-1)*(mu q*(mu q-2)/(R^2*(R^2-1)))*(_-_) = _
+  change (R^(2 : ℕ)-1)*(mu q*(mu q-2)/(R^(2 : ℕ)*(R^(2 : ℕ)-1)))*(_-_) = _
   dsimp only [R] at *
   simp only [neg_div] at hr hf ⊢
   field_simp [hr,hf]
 
 /-- Literal forcing discrepancy has exactly its unchanged physical coefficient. -/
 theorem original_forcing_difference_collar (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (p L k : ℝ) (hL : 0<L) :
-    ((tortoiseRadius (-L/2):ℂ)^2-1)*forcingPrefactor q w (tortoiseRadius (-L/2))*
+    ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*forcingPrefactor q w (tortoiseRadius (-L/2))*
       forcingPeriodDifference q br true amp w p (tortoiseRadius (-L/2)) (Real.exp k)=
         mu q*w*forcingPeriodError q br amp w p L k := by
   let R : ℂ := tortoiseRadius (-L/2)
   have hr : R≠0 := Complex.ofReal_ne_zero.mpr (by have h:=tortoiseRadius_exterior (-L/2) (by linarith : -L/2<0);linarith)
-  have hf : R^2-1≠0 := by
-    change (tortoiseRadius (-L/2):ℂ)^2-1≠0
-    exact_mod_cast (show tortoiseRadius (-L/2)^2-1≠0 by nlinarith [tortoiseRadius_exterior (-L/2) (by linarith : -L/2<0)])
-  have hz : (horizonCoordinate (-L/2):ℂ)=(R^2-1)/R^2 := by
+  have hf : R^(2 : ℕ)-1≠0 := by
+    change (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1≠0
+    exact_mod_cast (show tortoiseRadius (-L/2)^(2 : ℕ)-1≠0 by nlinarith [tortoiseRadius_exterior (-L/2) (by linarith : -L/2<0)])
+  have hz : (horizonCoordinate (-L/2):ℂ)=(R^(2 : ℕ)-1)/R^(2 : ℕ) := by
     apply (eq_div_iff (pow_ne_zero 2 hr)).mpr
     simpa only [R,mul_comm] using radius_sq_mul_horizonCoordinate (-L/2) (by linarith : -L/2<0)
   rw [forcingPeriodDifference,original_forcing_period_cut,forcingRestoredSlice,reader_coefficient_collar q w hL,
     tortoise_original_inverse (-L/2) (by linarith : -L/2<0),hz]
   unfold forcingPrefactor forcingPeriodError
-  change (R^2-1)*(mu q*R*w/(R^2-1)^2)*(_-_)=_
+  change (R^(2 : ℕ)-1)*(mu q*R*w/(R^(2 : ℕ)-1)^(2 : ℕ))*(_-_)=_
   dsimp only [R] at *
   simp only [neg_div] at hr hf ⊢
   field_simp [hr,hf]
@@ -147,14 +147,14 @@ theorem original_forcing_difference_collar (q : XiZeroCopy) (br : Bool) (amp w :
 is the sum of the actual scalar-period error, forcing-period error and full boundary. -/
 theorem original_full_metric_difference (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hw : w.im≠0)
     (a b L k : ℝ) (ha : 0<a) (hab : a≤b) (hL : 0<L) (hk : 4≤Real.exp k) :
-    ((tortoiseRadius (-L/2):ℂ)^2-1)*
+    ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*
       (metricTimeCut q br true amp w a b (tortoiseRadius (-L/2)) (Real.exp k)-
         restoredMetricTime q br true amp w a b (tortoiseRadius (-L/2)))=
       mu q*(mu q-2)*(originalPeriodError q br amp w b L k-originalPeriodError q br amp w a L k+
         2*w*(∫ p in a..b,originalPeriodError q br amp w p L k))+
       mu q*w*(∫ p in a..b,forcingPeriodError q br amp w p L k)+radialBoundary q br amp w a b L k := by
   let R := tortoiseRadius (-L/2)
-  let f : ℂ := (R:ℂ)^2-1
+  let f : ℂ := (R:ℂ)^(2 : ℕ)-1
   have hS := original_source_difference_collar q br amp w
   have hF := original_forcing_difference_collar q br amp w
   have hSI : f*sourcePrefactor q R*(∫ p in a..b,sourcePeriodDifference q br true amp w p R (Real.exp k))=

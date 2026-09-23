@@ -30,10 +30,10 @@ structure SoninPinchingQuantumGeometricSaturationCertificate
     HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ) u v = 0
   pureStateQuantumFisherZero :
     HTGeometry.pureStateQuantumFisherValue
-      (‖u‖ ^ 2) (‖inner ℂ u v‖) (‖v‖ ^ 2) = 0
+      (‖u‖ ^ (2 : ℕ)) (‖inner ℂ u v‖) (‖v‖ ^ (2 : ℕ)) = 0
   quantumMetricBerrySaturated :
     HTGeometry.quantumMetricAreaValue u v =
-      HTGeometry.berryCurvatureValue u v ^ 2 / 4
+      HTGeometry.berryCurvatureValue u v ^ (2 : ℕ) / 4
   gramDetZero :
     (Matrix.gram ℂ ![u, v]).det = 0
   pairDependent :
@@ -84,17 +84,17 @@ theorem soninLogPinching_unitaryFrameQuantumGeometricSaturation
     simpa only [Y, S, u, v] using hsonin.2.2
   have hvalue :
       HTGeometry.projectiveQuantumTangentValue
-        (‖u‖ ^ 2) (‖inner ℂ u v‖) (‖v‖ ^ 2) = 0 := by
+        (‖u‖ ^ (2 : ℕ)) (‖inner ℂ u v‖) (‖v‖ ^ (2 : ℕ)) = 0 := by
     rw [← HTGeometry.projectiveGramTangentEnergy_eq_value]
     exact hzero
   have hqfi :
       HTGeometry.pureStateQuantumFisherValue
-        (‖u‖ ^ 2) (‖inner ℂ u v‖) (‖v‖ ^ 2) = 0 := by
+        (‖u‖ ^ (2 : ℕ)) (‖inner ℂ u v‖) (‖v‖ ^ (2 : ℕ)) = 0 := by
     rw [HTGeometry.pureStateQuantumFisherValue, hvalue]
     norm_num
   have hmetric :
       HTGeometry.quantumMetricAreaValue u v =
-        HTGeometry.berryCurvatureValue u v ^ 2 / 4 := by
+        HTGeometry.berryCurvatureValue u v ^ (2 : ℕ) / 4 := by
     rw [HTGeometry.quantumMetricAreaValue_eq_projectiveGram_add_berry,
       hzero, zero_add]
   have hgram : (Matrix.gram ℂ ![u, v]).det = 0 := by

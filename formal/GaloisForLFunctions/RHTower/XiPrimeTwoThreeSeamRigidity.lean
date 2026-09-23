@@ -26,7 +26,7 @@ noncomputable section
 
 /-- Certified comparison of the two scalar coefficients occurring in the raw seam norms. -/
 lemma log_two_sq_div_two_lt_log_three_sq_div_three :
-    (Real.log 2) ^ 2 / 2 < (Real.log 3) ^ 2 / 3 := by
+    (Real.log 2) ^ (2 : ℕ) / 2 < (Real.log 3) ^ (2 : ℕ) / 3 := by
   have h2pos : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have h2up := Real.log_two_lt_d9
   have h3low := Real.log_three_gt_d9
@@ -35,8 +35,8 @@ lemma log_two_sq_div_two_lt_log_three_sq_div_three :
 /-- Away from zero, the squared hyperbolic displacement at scale `log 2` is strictly smaller
 than at scale `log 3`. -/
 lemma sinh_sq_mul_log_two_lt_three {x : ℝ} (hx : x ≠ 0) :
-    Real.sinh (x * Real.log 2) ^ 2 <
-      Real.sinh (x * Real.log 3) ^ 2 := by
+    Real.sinh (x * Real.log 2) ^ (2 : ℕ) <
+      Real.sinh (x * Real.log 3) ^ (2 : ℕ) := by
   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hlog3 : 0 < Real.log 3 := Real.log_pos (by norm_num)
   have hlog23 : Real.log 2 < Real.log 3 := by
@@ -65,9 +65,9 @@ lemma sinh_sq_mul_log_two_lt_three {x : ℝ} (hx : x ≠ 0) :
 
 /-- Raw norm-square formula for the canonical prime-`2` seam charge. -/
 lemma norm_sq_orbitwiseNatPrimeSeamCharge_two (rho : ℂ) :
-    ‖orbitwiseNatPrimeSeamCharge 2 rho‖ ^ 2 =
-      4 * ((Real.log 2) ^ 2 / 2) *
-        Real.sinh ((rho.re - 1 / 2) * Real.log 2) ^ 2 := by
+    ‖orbitwiseNatPrimeSeamCharge 2 rho‖ ^ (2 : ℕ) =
+      4 * ((Real.log 2) ^ (2 : ℕ) / 2) *
+        Real.sinh ((rho.re - 1 / 2) * Real.log 2) ^ (2 : ℕ) := by
   have h := orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_sinh
     rho (⟨2, by norm_num⟩ : Nat.Primes)
   norm_num at h ⊢
@@ -75,9 +75,9 @@ lemma norm_sq_orbitwiseNatPrimeSeamCharge_two (rho : ℂ) :
 
 /-- Raw norm-square formula for the canonical prime-`3` seam charge. -/
 lemma norm_sq_orbitwiseNatPrimeSeamCharge_three (rho : ℂ) :
-    ‖orbitwiseNatPrimeSeamCharge 3 rho‖ ^ 2 =
-      4 * ((Real.log 3) ^ 2 / 3) *
-        Real.sinh ((rho.re - 1 / 2) * Real.log 3) ^ 2 := by
+    ‖orbitwiseNatPrimeSeamCharge 3 rho‖ ^ (2 : ℕ) =
+      4 * ((Real.log 3) ^ (2 : ℕ) / 3) *
+        Real.sinh ((rho.re - 1 / 2) * Real.log 3) ^ (2 : ℕ) := by
   have h := orbitwiseNatPrimeSeamCharge_weighted_norm_sq_eq_sinh
     rho (⟨3, by norm_num⟩ : Nat.Primes)
   norm_num at h ⊢
@@ -95,26 +95,26 @@ theorem norm_orbitwiseNatPrimeSeamCharge_two_lt_three_of_re_ne_half
   have hcoeff := log_two_sq_div_two_lt_log_three_sq_div_three
   have hlog2ne : Real.log 2 ≠ 0 := ne_of_gt (Real.log_pos (by norm_num))
   have hlog3ne : Real.log 3 ≠ 0 := ne_of_gt (Real.log_pos (by norm_num))
-  have hcoeff3pos : 0 < (Real.log 3) ^ 2 / 3 :=
+  have hcoeff3pos : 0 < (Real.log 3) ^ (2 : ℕ) / 3 :=
     div_pos (sq_pos_of_ne_zero hlog3ne) (by norm_num)
-  have hsinh2pos : 0 < Real.sinh (x * Real.log 2) ^ 2 :=
+  have hsinh2pos : 0 < Real.sinh (x * Real.log 2) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (Real.sinh_ne_zero.mpr (mul_ne_zero hx hlog2ne))
   have hprod_left :
-      (Real.log 2) ^ 2 / 2 * Real.sinh (x * Real.log 2) ^ 2 <
-        (Real.log 3) ^ 2 / 3 * Real.sinh (x * Real.log 2) ^ 2 :=
+      (Real.log 2) ^ (2 : ℕ) / 2 * Real.sinh (x * Real.log 2) ^ (2 : ℕ) <
+        (Real.log 3) ^ (2 : ℕ) / 3 * Real.sinh (x * Real.log 2) ^ (2 : ℕ) :=
     mul_lt_mul_of_pos_right hcoeff hsinh2pos
   have hprod_right :
-      (Real.log 3) ^ 2 / 3 * Real.sinh (x * Real.log 2) ^ 2 <
-        (Real.log 3) ^ 2 / 3 * Real.sinh (x * Real.log 3) ^ 2 :=
+      (Real.log 3) ^ (2 : ℕ) / 3 * Real.sinh (x * Real.log 2) ^ (2 : ℕ) <
+        (Real.log 3) ^ (2 : ℕ) / 3 * Real.sinh (x * Real.log 3) ^ (2 : ℕ) :=
     mul_lt_mul_of_pos_left hsinh hcoeff3pos
-  have hsq : ‖orbitwiseNatPrimeSeamCharge 2 rho‖ ^ 2 <
-      ‖orbitwiseNatPrimeSeamCharge 3 rho‖ ^ 2 := by
+  have hsq : ‖orbitwiseNatPrimeSeamCharge 2 rho‖ ^ (2 : ℕ) <
+      ‖orbitwiseNatPrimeSeamCharge 3 rho‖ ^ (2 : ℕ) := by
     rw [norm_sq_orbitwiseNatPrimeSeamCharge_two,
       norm_sq_orbitwiseNatPrimeSeamCharge_three]
-    change 4 * ((Real.log 2) ^ 2 / 2) *
-          Real.sinh (x * Real.log 2) ^ 2 <
-        4 * ((Real.log 3) ^ 2 / 3) *
-          Real.sinh (x * Real.log 3) ^ 2
+    change 4 * ((Real.log 2) ^ (2 : ℕ) / 2) *
+          Real.sinh (x * Real.log 2) ^ (2 : ℕ) <
+        4 * ((Real.log 3) ^ (2 : ℕ) / 3) *
+          Real.sinh (x * Real.log 3) ^ (2 : ℕ)
     nlinarith
   exact (sq_lt_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
 
@@ -131,8 +131,8 @@ theorem re_eq_half_of_orbitwiseNatPrimeSeamCharge_two_eq_three
 
 /-- The scalar diagonal-energy gap between the prime-`3` and prime-`2` seam charges. -/
 def orbitwisePrimeTwoThreeSeamNormGap (rho : ℂ) : ℝ :=
-  ‖orbitwiseNatPrimeSeamCharge 3 rho‖ ^ 2 -
-    ‖orbitwiseNatPrimeSeamCharge 2 rho‖ ^ 2
+  ‖orbitwiseNatPrimeSeamCharge 3 rho‖ ^ (2 : ℕ) -
+    ‖orbitwiseNatPrimeSeamCharge 2 rho‖ ^ (2 : ℕ)
 
 /-- The fixed two--three diagonal seam gap vanishes on the critical line. -/
 theorem orbitwisePrimeTwoThreeSeamNormGap_eq_zero_of_re_eq_half

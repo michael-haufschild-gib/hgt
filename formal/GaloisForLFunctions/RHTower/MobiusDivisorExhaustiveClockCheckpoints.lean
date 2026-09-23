@@ -4,13 +4,13 @@ import GaloisForLFunctions.RHTower.MobiusDivisorPaidCutoffInterval
 /-!
 # Prime-exhaustive geometric clock checkpoints
 
-Actual signed terminal windows yield a universal bound of `200*M^2` for
+Actual signed terminal windows yield a universal bound of `200*M^(2 : ℕ)` for
 the full logarithmically weighted clock energy. Prime density absorbs the
 logarithmic weight; no constant depends on the processed core cardinality.
 
 Choose checkpoints with `M(n+1)=8*M(n)`. Every next core contains every prime
 active at the previous checkpoint, so the cores are nested and exhaust all
-primes. The same bound holds at every checkpoint, with bound `201*L^2` on
+primes. The same bound holds at every checkpoint, with bound `201*L^(2 : ℕ)` on
 its original fourth-root cutoff collar. No energy or cancellation premise
 is assumed by either public construction.
 
@@ -35,7 +35,7 @@ private lemma clock_le_log_energy (M : ℕ) (P : Finset ℕ) :
   have hlog : 1+Real.log (r:ℝ) ≤ 1+Real.log (M:ℝ) :=
     add_le_add le_rfl (Real.log_le_log (by exact_mod_cast hr'.1) (by exact_mod_cast hr'.2))
   have h := mul_le_mul_of_nonneg_right hlog
-    (show 0 ≤ (r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 by positivity)
+    (show 0 ≤ (r:ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) by positivity)
   simpa only [mul_assoc] using h
 
 private lemma eventually_log_prime_count :
@@ -58,7 +58,7 @@ private lemma eventually_terminal_clock_bound :
       mobiusDivisorSmallSelectionPrimes M ⊆ P →
       (∀ p ∈ mobiusDivisorSelectionPrimes M \ P,M/p ≤ 7) →
       |mobiusDivisorSelectionFibre M P ∅| ≤ 5*Real.sqrt M →
-      mobiusDivisorFiniteClockEnergy 1 M P ≤ 200*(M:ℝ)^2 := by
+      mobiusDivisorFiniteClockEnergy 1 M P ≤ 200*(M:ℝ)^(2 : ℕ) := by
   filter_upwards [eventually_log_prime_count,eventually_ge_atTop (1:ℕ)] with M hc hM
   intro P hterminal hfront hhead
   have hb := mobiusDivisorSuccessorEnvelope_le_terminal_density M 7 P 5
@@ -83,9 +83,9 @@ theorem eventually_exists_mobiusDivisorTerminalClockBudget :
       let M := 7*(b+1)*(4*N)
       ∃ P : Finset ℕ, P ⊆ mobiusDivisorSelectionPrimes M ∧
         mobiusDivisorSelectionPrimes (4*b*N+1) ⊆ P ∧
-        mobiusDivisorFiniteClockEnergy 1 M P ≤ 200*(M:ℝ)^2 ∧
+        mobiusDivisorFiniteClockEnergy 1 M P ≤ 200*(M:ℝ)^(2 : ℕ) ∧
         ∀ L : ℕ, M ≤ L → (L:ℝ)-M ≤ Real.sqrt (Real.sqrt M) →
-          mobiusDivisorFiniteClockEnergy 1 L P ≤ 201*(L:ℝ)^2 := by
+          mobiusDivisorFiniteClockEnergy 1 L P ≤ 201*(L:ℝ)^(2 : ℕ) := by
   obtain ⟨b,hb,hcores⟩ := exists_mobiusDivisorSmallTerminalCore
   have hclock : Tendsto (fun N : ℕ => 7*(b+1)*(4*N)) atTop atTop := by
     apply tendsto_atTop_mono _ tendsto_id
@@ -137,10 +137,10 @@ theorem eventually_exists_mobiusDivisorTerminalClockBudget :
   · intro L hML hgap
     have hlog := Real.log_natCast_nonneg M
     have hWlog : mobiusDivisorFiniteClockEnergy 1 M P ≤
-        200*(M:ℝ)^2*(1+Real.log M) := by
+        200*(M:ℝ)^(2 : ℕ)*(1+Real.log M) := by
       nlinarith only [hbound,mul_nonneg (sq_nonneg (M:ℝ)) hlog]
     have htrans := ht P hWlog L hML hgap
-    have hsq : (M:ℝ)^2 ≤ (L:ℝ)^2 := by
+    have hsq : (M:ℝ)^(2 : ℕ) ≤ (L:ℝ)^(2 : ℕ) := by
       gcongr
     nlinarith only [htrans,hbound,hsq]
 
@@ -155,9 +155,9 @@ theorem exists_mobiusDivisorExhaustiveClockCheckpoints :
       (∀ n,P n ⊆ mobiusDivisorSelectionPrimes (M n)) ∧
       (∀ n,mobiusDivisorSelectionPrimes (M n) ⊆ P (n+1)) ∧
       Monotone P ∧ (∀ p : ℕ,p.Prime → ∀ᶠ n : ℕ in atTop,p ∈ P n) ∧
-      (∀ n,mobiusDivisorFiniteClockEnergy 1 (M n) (P n) ≤ 200*(M n:ℝ)^2) ∧
+      (∀ n,mobiusDivisorFiniteClockEnergy 1 (M n) (P n) ≤ 200*(M n:ℝ)^(2 : ℕ)) ∧
       ∀ n L : ℕ,M n ≤ L → (L:ℝ)-M n ≤ Real.sqrt (Real.sqrt (M n)) →
-        mobiusDivisorFiniteClockEnergy 1 L (P n) ≤ 201*(L:ℝ)^2 := by
+        mobiusDivisorFiniteClockEnergy 1 L (P n) ≤ 201*(L:ℝ)^(2 : ℕ) := by
   obtain ⟨b,hb,hcores⟩ := eventually_exists_mobiusDivisorTerminalClockBudget
   obtain ⟨T,hT⟩ := Filter.eventually_atTop.mp hcores
   let N := fun n : ℕ => (T+1)*8^n

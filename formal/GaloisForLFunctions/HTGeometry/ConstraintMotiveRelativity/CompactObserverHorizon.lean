@@ -237,14 +237,14 @@ theorem not_exists_bounded_left_inverse (K : H →L[𝕜] Y) (hK : IsCompactOper
 noncomputable def gram (K : H →L[𝕜] Y) : H →L[𝕜] H := (ContinuousLinearMap.adjoint K).comp K
 
 theorem gram_inner_self (K : H →L[𝕜] Y) (x : H) :
-    RCLike.re (inner 𝕜 (gram K x) x) = ‖K x‖ ^ 2 := by
+    RCLike.re (inner 𝕜 (gram K x) x) = ‖K x‖ ^ (2 : ℕ) := by
   rw [gram, ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_left]
   exact inner_self_eq_norm_sq _
 
 /-- **`(COH.6)`.**  The compressed positive metric has the same floor. -/
 theorem gram_floor (K : H →L[𝕜] Y) (S : Submodule 𝕜 H) [FiniteDimensional 𝕜 S] [Nontrivial S] :
-    (∃ x ∈ chartSphere (𝕜 := 𝕜) S, RCLike.re (inner 𝕜 (gram K x) x) = obsFloor K S ^ 2) ∧
-      ∀ y ∈ chartSphere (𝕜 := 𝕜) S, obsFloor K S ^ 2 ≤ RCLike.re (inner 𝕜 (gram K y) y) := by
+    (∃ x ∈ chartSphere (𝕜 := 𝕜) S, RCLike.re (inner 𝕜 (gram K x) x) = obsFloor K S ^ (2 : ℕ)) ∧
+      ∀ y ∈ chartSphere (𝕜 := 𝕜) S, obsFloor K S ^ (2 : ℕ) ≤ RCLike.re (inner 𝕜 (gram K y) y) := by
   obtain ⟨x, hx, hval⟩ := exists_norm_eq_obsFloor K S
   constructor
   · exact ⟨x, hx, by rw [gram_inner_self, hval]⟩
@@ -280,7 +280,7 @@ omit [CompleteSpace H] in
 /-- An orthonormal family is uniformly separated. -/
 theorem norm_sub_orthonormal {ι : Type*} {e : ι → H} (he : Orthonormal 𝕜 e) {m n : ι}
     (h : m ≠ n) : ‖e m - e n‖ = Real.sqrt 2 := by
-  have hsq : ‖e m - e n‖ ^ 2 = 2 := by
+  have hsq : ‖e m - e n‖ ^ (2 : ℕ) = 2 := by
     rw [@norm_sub_sq 𝕜, he.1 m, he.1 n, he.2 h]
     norm_num
   have hnn : (0 : ℝ) ≤ ‖e m - e n‖ := norm_nonneg _
@@ -295,14 +295,14 @@ theorem tendsto_norm_image_orthonormal (K : H →L[𝕜] Y) (hK : IsCompactOpera
     intro z
     have hsum := he.inner_products_summable (ContinuousLinearMap.adjoint K z)
     have hz := hsum.tendsto_atTop_zero
-    have hrw : ∀ n, ‖inner 𝕜 (K (e n)) z‖ ^ 2
-        = ‖inner 𝕜 (e n) (ContinuousLinearMap.adjoint K z)‖ ^ 2 := by
+    have hrw : ∀ n, ‖inner 𝕜 (K (e n)) z‖ ^ (2 : ℕ)
+        = ‖inner 𝕜 (e n) (ContinuousLinearMap.adjoint K z)‖ ^ (2 : ℕ) := by
       intro n
       rw [ContinuousLinearMap.adjoint_inner_right]
-    have hz2 : Filter.Tendsto (fun n => ‖inner 𝕜 (K (e n)) z‖ ^ 2) Filter.atTop (nhds 0) :=
+    have hz2 : Filter.Tendsto (fun n => ‖inner 𝕜 (K (e n)) z‖ ^ (2 : ℕ)) Filter.atTop (nhds 0) :=
       hz.congr fun n => (hrw n).symm
     rw [tendsto_zero_iff_norm_tendsto_zero]
-    have hsq : Filter.Tendsto (fun n => Real.sqrt (‖inner 𝕜 (K (e n)) z‖ ^ 2)) Filter.atTop
+    have hsq : Filter.Tendsto (fun n => Real.sqrt (‖inner 𝕜 (K (e n)) z‖ ^ (2 : ℕ))) Filter.atTop
         (nhds (Real.sqrt 0)) := (Real.continuous_sqrt.tendsto 0).comp hz2
     rw [Real.sqrt_zero] at hsq
     exact hsq.congr fun n => Real.sqrt_sq (norm_nonneg _)
@@ -361,7 +361,7 @@ theorem tendsto_reconstruction_energy_atTop (K : H →L[𝕜] Y) (hK : IsCompact
     (hH : ¬ FiniteDimensional 𝕜 H) (Hn : ℕ → Submodule 𝕜 H) (hmono : Monotone Hn)
     (hnt : ∀ n, Hn n ≠ ⊥) (hdense : Dense (⋃ n, (Hn n : Set H)))
     (hpos : ∀ n, 0 < obsFloor K (Hn n)) :
-    Filter.Tendsto (fun n => (obsFloor K (Hn n))⁻¹ ^ 2) Filter.atTop Filter.atTop := by
+    Filter.Tendsto (fun n => (obsFloor K (Hn n))⁻¹ ^ (2 : ℕ)) Filter.atTop Filter.atTop := by
   have h := tendsto_reconstruction_norm_atTop K hK hH Hn hmono hnt hdense hpos
   exact (tendsto_pow_atTop (two_ne_zero)).comp h
 

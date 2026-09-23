@@ -82,15 +82,15 @@ def painleveIIID6QuadraticPullback (s : ℂ) : ℂ :=
 /-- Polynomial produced by a quadratic exponential tau normalization after the quadratic
 Painlevé pullback. -/
 def painleveIIID6PulledTauNormalizationPolynomial (a b c : ℂ) : Polynomial ℂ :=
-  Polynomial.C a * (Polynomial.X - Polynomial.X ^ 2) ^ 2 +
-    Polynomial.C b * (Polynomial.X - Polynomial.X ^ 2) +
+  Polynomial.C a * (Polynomial.X - Polynomial.X ^ (2 : ℕ)) ^ (2 : ℕ) +
+    Polynomial.C b * (Polynomial.X - Polynomial.X ^ (2 : ℕ)) +
       Polynomial.C c
 
 /-- Evaluation of the pulled-back tau-normalization polynomial is the expected quadratic
 expression in the pullback variable. -/
 theorem painleveIIID6PulledTauNormalizationPolynomial_eval (a b c s : ℂ) :
     (painleveIIID6PulledTauNormalizationPolynomial a b c).eval s =
-      a * (s * (1 - s)) ^ 2 + b * (s * (1 - s)) + c := by
+      a * (s * (1 - s)) ^ (2 : ℕ) + b * (s * (1 - s)) + c := by
   simp [painleveIIID6PulledTauNormalizationPolynomial]
   ring
 
@@ -100,7 +100,7 @@ theorem painleveIIID6PulledTauNormalizationPolynomial_natDegree_le_four (a b c :
     (painleveIIID6PulledTauNormalizationPolynomial a b c).natDegree ≤ 4 := by
   dsimp [painleveIIID6PulledTauNormalizationPolynomial]
   have hbase :
-      (Polynomial.X - Polynomial.X ^ 2 : Polynomial ℂ).natDegree ≤ 2 := by
+      (Polynomial.X - Polynomial.X ^ (2 : ℕ) : Polynomial ℂ).natDegree ≤ 2 := by
     rw [sub_eq_add_neg]
     exact (Polynomial.natDegree_add_le _ _).trans (by simp)
   apply Polynomial.natDegree_add_le_of_degree_le
@@ -116,17 +116,17 @@ theorem painleveIIID6PulledTauNormalizationPolynomial_natDegree_le_four (a b c :
 def painleveIIID6TauA : MvPolynomial (Fin 5) ℂ :=
   MvPolynomial.X 1 * MvPolynomial.X 2 +
     MvPolynomial.X 0 * MvPolynomial.X 1 * MvPolynomial.X 3 -
-      MvPolynomial.X 0 * MvPolynomial.X 2 ^ 2
+      MvPolynomial.X 0 * MvPolynomial.X 2 ^ (2 : ℕ)
 
 /-- The second numerator occurring after substituting the logarithmic derivative of tau into the
 `PIII(D₆)` sigma equation. -/
 def painleveIIID6TauB : MvPolynomial (Fin 5) ℂ :=
   2 * MvPolynomial.X 1 *
-      (MvPolynomial.X 1 * MvPolynomial.X 3 - MvPolynomial.X 2 ^ 2) +
+      (MvPolynomial.X 1 * MvPolynomial.X 3 - MvPolynomial.X 2 ^ (2 : ℕ)) +
     MvPolynomial.X 0 *
-      (MvPolynomial.X 1 ^ 2 * MvPolynomial.X 4 -
+      (MvPolynomial.X 1 ^ (2 : ℕ) * MvPolynomial.X 4 -
         3 * MvPolynomial.X 1 * MvPolynomial.X 2 * MvPolynomial.X 3 +
-          2 * MvPolynomial.X 2 ^ 3)
+          2 * MvPolynomial.X 2 ^ (3 : ℕ))
 
 /-- The denominator-cleared tau-function form of
 
@@ -135,14 +135,14 @@ def painleveIIID6TauB : MvPolynomial (Fin 5) ℂ :=
 
 It is an order-three algebraic differential equation with polynomial coefficients in `t`. -/
 def painleveIIID6TauRelation (theta0 thetaInf : ℂ) : MvPolynomial (Fin 5) ℂ :=
-  MvPolynomial.X 0 ^ 2 * painleveIIID6TauB ^ 2 -
-    (MvPolynomial.X 0 ^ 2 *
+  MvPolynomial.X 0 ^ (2 : ℕ) * painleveIIID6TauB ^ (2 : ℕ) -
+    (MvPolynomial.X 0 ^ (2 : ℕ) *
         (2 * painleveIIID6TauA -
-          MvPolynomial.C (theta0 + thetaInf) * MvPolynomial.X 1 ^ 2) ^ 2 *
-          (MvPolynomial.X 2 ^ 2 - MvPolynomial.X 1 * MvPolynomial.X 3) +
+          MvPolynomial.C (theta0 + thetaInf) * MvPolynomial.X 1 ^ (2 : ℕ)) ^ (2 : ℕ) *
+          (MvPolynomial.X 2 ^ (2 : ℕ) - MvPolynomial.X 1 * MvPolynomial.X 3) +
       4 * painleveIIID6TauA *
-        (painleveIIID6TauA - MvPolynomial.C theta0 * MvPolynomial.X 1 ^ 2) *
-        (painleveIIID6TauA - MvPolynomial.C thetaInf * MvPolynomial.X 1 ^ 2))
+        (painleveIIID6TauA - MvPolynomial.C theta0 * MvPolynomial.X 1 ^ (2 : ℕ)) *
+        (painleveIIID6TauA - MvPolynomial.C thetaInf * MvPolynomial.X 1 ^ (2 : ℕ)))
 
 /-- The cleared `PIII(D₆)` tau relation is nonzero for every pair of monodromy exponents. -/
 theorem painleveIIID6TauRelation_ne_zero (theta0 thetaInf : ℂ) :
@@ -178,8 +178,8 @@ structure PainleveIIID6TauCarrier
   tau_sigma : Set.EqOn (fun t => tau t * sigma t) (fun t => t * deriv tau t)
     (painleveIIID6QuadraticPullback '' Metric.ball center radius)
   sigma_equation : ∀ t ∈ painleveIIID6QuadraticPullback '' Metric.ball center radius,
-    (t * deriv (deriv sigma) t) ^ 2 =
-      (2 * deriv sigma t - theta0 - thetaInf) ^ 2 *
+    (t * deriv (deriv sigma) t) ^ (2 : ℕ) =
+      (2 * deriv sigma t - theta0 - thetaInf) ^ (2 : ℕ) *
           (sigma t - t * deriv sigma t) +
         4 * deriv sigma t * (deriv sigma t - theta0) * (deriv sigma t - thetaInf)
   carrier_eq : ∀ s ∈ Metric.ball center radius,
@@ -203,7 +203,7 @@ private theorem deriv_painleveIIID6QuadraticPullback (s : ℂ) :
 
 private theorem painleveIIID6QuadraticPullback_differentiallyAlgebraic :
     DifferentiallyAlgebraic painleveIIID6QuadraticPullback := by
-  let p : Polynomial ℂ := Polynomial.X - Polynomial.X ^ 2
+  let p : Polynomial ℂ := Polynomial.X - Polynomial.X ^ (2 : ℕ)
   have hp := differentiallyAlgebraic_polynomial p
   have hfun : (fun s : ℂ => p.eval s) = painleveIIID6QuadraticPullback := by
     funext s
@@ -225,10 +225,10 @@ theorem PainleveIIID6TauCarrier.tau_equation
         (painleveIIID6TauRelation theta0 thetaInf) = 0 := by
   let V := painleveIIID6QuadraticPullback '' Metric.ball hE.center hE.radius
   have hA : ∀ z ∈ V,
-      hE.tau z ^ 2 * deriv hE.sigma z =
+      hE.tau z ^ (2 : ℕ) * deriv hE.sigma z =
         hE.tau z * deriv hE.tau z +
           z * hE.tau z * deriv (deriv hE.tau) z -
-            z * deriv hE.tau z ^ 2 := by
+            z * deriv hE.tau z ^ (2 : ℕ) := by
     intro z hz
     have hTau : HasDerivAt hE.tau (deriv hE.tau z) z :=
       (hE.tau_analytic z hz).differentiableAt.hasDerivAt
@@ -256,24 +256,24 @@ theorem PainleveIIID6TauCarrier.tau_equation
   have hSigma' : HasDerivAt (deriv hE.sigma) (deriv (deriv hE.sigma) t) t :=
     (hE.sigma_analytic.deriv t ht).differentiableAt.hasDerivAt
   have hADeriv := Set.EqOn.deriv hA hVo ht
-  have hLeftA : HasDerivAt (fun x => hE.tau x ^ 2 * deriv hE.sigma x)
+  have hLeftA : HasDerivAt (fun x => hE.tau x ^ (2 : ℕ) * deriv hE.sigma x)
       (2 * hE.tau t * deriv hE.tau t * deriv hE.sigma t +
-        hE.tau t ^ 2 * deriv (deriv hE.sigma) t) t := by
+        hE.tau t ^ (2 : ℕ) * deriv (deriv hE.sigma) t) t := by
     have hraw := (hTau.pow 2).mul hSigma'
     have hcoef :
         2 * hE.tau t ^ (2 - 1) * deriv hE.tau t * deriv hE.sigma t +
-            hE.tau t ^ 2 * deriv (deriv hE.sigma) t =
+            hE.tau t ^ (2 : ℕ) * deriv (deriv hE.sigma) t =
           2 * hE.tau t * deriv hE.tau t * deriv hE.sigma t +
-            hE.tau t ^ 2 * deriv (deriv hE.sigma) t := by ring
+            hE.tau t ^ (2 : ℕ) * deriv (deriv hE.sigma) t := by ring
     simpa only [Pi.pow_apply, Pi.mul_apply] using! hraw.congr_deriv hcoef
   have hRightA : HasDerivAt (fun x =>
       hE.tau x * deriv hE.tau x +
         x * hE.tau x * deriv (deriv hE.tau) x -
-          x * deriv hE.tau x ^ 2)
-      ((deriv hE.tau t ^ 2 + hE.tau t * deriv (deriv hE.tau) t) +
+          x * deriv hE.tau x ^ (2 : ℕ))
+      ((deriv hE.tau t ^ (2 : ℕ) + hE.tau t * deriv (deriv hE.tau) t) +
         ((1 * hE.tau t + t * deriv hE.tau t) * deriv (deriv hE.tau) t +
           t * hE.tau t * deriv (deriv (deriv hE.tau)) t) -
-        (1 * deriv hE.tau t ^ 2 +
+        (1 * deriv hE.tau t ^ (2 : ℕ) +
           t * (2 * deriv hE.tau t * deriv (deriv hE.tau) t))) t := by
     have hraw := ((hTau.mul hTau').add
       (((hasDerivAt_id t).mul hTau).mul hTau'')).sub
@@ -282,10 +282,10 @@ theorem PainleveIIID6TauCarrier.tau_equation
         (fun x : ℂ =>
           hE.tau x * deriv hE.tau x +
             x * hE.tau x * deriv (deriv hE.tau) x -
-              x * deriv hE.tau x ^ 2) =
+              x * deriv hE.tau x ^ (2 : ℕ)) =
           hE.tau * deriv hE.tau +
             id * hE.tau * deriv (deriv hE.tau) -
-              id * deriv hE.tau ^ 2 := by
+              id * deriv hE.tau ^ (2 : ℕ) := by
       funext x
       simp only [Pi.add_apply, Pi.sub_apply, Pi.mul_apply, Pi.pow_apply, id_eq]
     rw [hfun]
@@ -294,79 +294,79 @@ theorem PainleveIIID6TauCarrier.tau_equation
       ring)
   rw [hLeftA.deriv, hRightA.deriv] at hADeriv
   let A := hE.tau t * deriv hE.tau t +
-    t * hE.tau t * deriv (deriv hE.tau) t - t * deriv hE.tau t ^ 2
+    t * hE.tau t * deriv (deriv hE.tau) t - t * deriv hE.tau t ^ (2 : ℕ)
   let B := 2 * hE.tau t *
-      (hE.tau t * deriv (deriv hE.tau) t - deriv hE.tau t ^ 2) +
-    t * (hE.tau t ^ 2 * deriv (deriv (deriv hE.tau)) t -
+      (hE.tau t * deriv (deriv hE.tau) t - deriv hE.tau t ^ (2 : ℕ)) +
+    t * (hE.tau t ^ (2 : ℕ) * deriv (deriv (deriv hE.tau)) t -
       3 * hE.tau t * deriv hE.tau t * deriv (deriv hE.tau) t +
-        2 * deriv hE.tau t ^ 3)
-  let D := deriv hE.tau t ^ 2 - hE.tau t * deriv (deriv hE.tau) t
-  have hAAt : hE.tau t ^ 2 * deriv hE.sigma t = A := by
+        2 * deriv hE.tau t ^ (3 : ℕ))
+  let D := deriv hE.tau t ^ (2 : ℕ) - hE.tau t * deriv (deriv hE.tau) t
+  have hAAt : hE.tau t ^ (2 : ℕ) * deriv hE.sigma t = A := by
     simpa only [A] using hA t ht
-  have hBAt : hE.tau t ^ 3 * deriv (deriv hE.sigma) t = B := by
+  have hBAt : hE.tau t ^ (3 : ℕ) * deriv (deriv hE.sigma) t = B := by
     dsimp only [B]
     linear_combination hE.tau t * hADeriv - 2 * deriv hE.tau t * hAAt
   have hDifference :
-      hE.tau t ^ 2 * (hE.sigma t - t * deriv hE.sigma t) = t ^ 2 * D := by
+      hE.tau t ^ (2 : ℕ) * (hE.sigma t - t * deriv hE.sigma t) = t ^ (2 : ℕ) * D := by
     dsimp only [D]
     linear_combination hE.tau t * hE.tau_sigma ht - t * hAAt
   have hTwoA :
-      hE.tau t ^ 2 * (2 * deriv hE.sigma t - theta0 - thetaInf) =
-        2 * A - (theta0 + thetaInf) * hE.tau t ^ 2 := by
+      hE.tau t ^ (2 : ℕ) * (2 * deriv hE.sigma t - theta0 - thetaInf) =
+        2 * A - (theta0 + thetaInf) * hE.tau t ^ (2 : ℕ) := by
     rw [← hAAt]
     ring
   have hTheta0 :
-      hE.tau t ^ 2 * (deriv hE.sigma t - theta0) =
-        A - theta0 * hE.tau t ^ 2 := by
+      hE.tau t ^ (2 : ℕ) * (deriv hE.sigma t - theta0) =
+        A - theta0 * hE.tau t ^ (2 : ℕ) := by
     rw [← hAAt]
     ring
   have hThetaInf :
-      hE.tau t ^ 2 * (deriv hE.sigma t - thetaInf) =
-        A - thetaInf * hE.tau t ^ 2 := by
+      hE.tau t ^ (2 : ℕ) * (deriv hE.sigma t - thetaInf) =
+        A - thetaInf * hE.tau t ^ (2 : ℕ) := by
     rw [← hAAt]
     ring
   have hFirst :
-      hE.tau t ^ 6 *
-          (2 * deriv hE.sigma t - theta0 - thetaInf) ^ 2 *
+      hE.tau t ^ (6 : ℕ) *
+          (2 * deriv hE.sigma t - theta0 - thetaInf) ^ (2 : ℕ) *
             (hE.sigma t - t * deriv hE.sigma t) =
-        t ^ 2 * (2 * A - (theta0 + thetaInf) * hE.tau t ^ 2) ^ 2 * D := by
+        t ^ (2 : ℕ) * (2 * A - (theta0 + thetaInf) * hE.tau t ^ (2 : ℕ)) ^ (2 : ℕ) * D := by
     calc
-      _ = (hE.tau t ^ 2 *
-            (2 * deriv hE.sigma t - theta0 - thetaInf)) ^ 2 *
-              (hE.tau t ^ 2 * (hE.sigma t - t * deriv hE.sigma t)) := by ring
-      _ = (2 * A - (theta0 + thetaInf) * hE.tau t ^ 2) ^ 2 *
-              (t ^ 2 * D) := by rw [hTwoA, hDifference]
+      _ = (hE.tau t ^ (2 : ℕ) *
+            (2 * deriv hE.sigma t - theta0 - thetaInf)) ^ (2 : ℕ) *
+              (hE.tau t ^ (2 : ℕ) * (hE.sigma t - t * deriv hE.sigma t)) := by ring
+      _ = (2 * A - (theta0 + thetaInf) * hE.tau t ^ (2 : ℕ)) ^ (2 : ℕ) *
+              (t ^ (2 : ℕ) * D) := by rw [hTwoA, hDifference]
       _ = _ := by ring
   have hSecond :
-      hE.tau t ^ 6 *
+      hE.tau t ^ (6 : ℕ) *
           (4 * deriv hE.sigma t * (deriv hE.sigma t - theta0) *
             (deriv hE.sigma t - thetaInf)) =
-        4 * A * (A - theta0 * hE.tau t ^ 2) *
-          (A - thetaInf * hE.tau t ^ 2) := by
+        4 * A * (A - theta0 * hE.tau t ^ (2 : ℕ)) *
+          (A - thetaInf * hE.tau t ^ (2 : ℕ)) := by
     calc
-      _ = 4 * (hE.tau t ^ 2 * deriv hE.sigma t) *
-          (hE.tau t ^ 2 * (deriv hE.sigma t - theta0)) *
-          (hE.tau t ^ 2 * (deriv hE.sigma t - thetaInf)) := by ring
+      _ = 4 * (hE.tau t ^ (2 : ℕ) * deriv hE.sigma t) *
+          (hE.tau t ^ (2 : ℕ) * (deriv hE.sigma t - theta0)) *
+          (hE.tau t ^ (2 : ℕ) * (deriv hE.sigma t - thetaInf)) := by ring
       _ = _ := by rw [hAAt, hTheta0, hThetaInf]
   have hRelation :
-      t ^ 2 * B ^ 2 =
-        t ^ 2 * (2 * A - (theta0 + thetaInf) * hE.tau t ^ 2) ^ 2 * D +
-          4 * A * (A - theta0 * hE.tau t ^ 2) *
-            (A - thetaInf * hE.tau t ^ 2) := by
+      t ^ (2 : ℕ) * B ^ (2 : ℕ) =
+        t ^ (2 : ℕ) * (2 * A - (theta0 + thetaInf) * hE.tau t ^ (2 : ℕ)) ^ (2 : ℕ) * D +
+          4 * A * (A - theta0 * hE.tau t ^ (2 : ℕ)) *
+            (A - thetaInf * hE.tau t ^ (2 : ℕ)) := by
     calc
-      _ = hE.tau t ^ 6 * (t * deriv (deriv hE.sigma) t) ^ 2 := by
+      _ = hE.tau t ^ (6 : ℕ) * (t * deriv (deriv hE.sigma) t) ^ (2 : ℕ) := by
         rw [← hBAt]
         ring
-      _ = hE.tau t ^ 6 *
-          ((2 * deriv hE.sigma t - theta0 - thetaInf) ^ 2 *
+      _ = hE.tau t ^ (6 : ℕ) *
+          ((2 * deriv hE.sigma t - theta0 - thetaInf) ^ (2 : ℕ) *
               (hE.sigma t - t * deriv hE.sigma t) +
             4 * deriv hE.sigma t * (deriv hE.sigma t - theta0) *
               (deriv hE.sigma t - thetaInf)) := by
         rw [hE.sigma_equation t ht]
-      _ = hE.tau t ^ 6 *
-            (2 * deriv hE.sigma t - theta0 - thetaInf) ^ 2 *
+      _ = hE.tau t ^ (6 : ℕ) *
+            (2 * deriv hE.sigma t - theta0 - thetaInf) ^ (2 : ℕ) *
               (hE.sigma t - t * deriv hE.sigma t) +
-            hE.tau t ^ 6 *
+            hE.tau t ^ (6 : ℕ) *
               (4 * deriv hE.sigma t * (deriv hE.sigma t - theta0) *
                 (deriv hE.sigma t - thetaInf)) := by ring
       _ = _ := by rw [hFirst, hSecond]

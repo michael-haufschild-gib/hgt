@@ -33,7 +33,7 @@ namespace GaloisForLFunctions
 
 theorem schwartzPair_conj_self (u : 𝓢(ℝ, ℂ)) :
     schwartzPair (SchwartzMap.conjSLM u) u
-      = ((‖u.toLp 2 (volume : Measure ℝ)‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖u.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [schwartzPair_eq_inner, conjSLM_conjSLM, inner_self_eq_norm_sq_to_K]
   norm_cast
 
@@ -62,7 +62,7 @@ theorem shiftedNumberCLM_apply (g : 𝓢(ℝ, ℂ)) :
 norm of the annihilation operator applied to it. -/
 theorem schwartzPair_conj_numberCLM (g : 𝓢(ℝ, ℂ)) :
     schwartzPair (SchwartzMap.conjSLM g) (numberCLM g)
-      = ((‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hadj : schwartzPair (SchwartzMap.conjSLM g) (creationCLM (annihilationCLM g))
       = schwartzPair (annihilationCLM (SchwartzMap.conjSLM g)) (annihilationCLM g) := by
     have h := schwartzPair_creationCLM (annihilationCLM g) (SchwartzMap.conjSLM g)
@@ -76,8 +76,8 @@ theorem norm_le_shiftedNumberCLM (g : 𝓢(ℝ, ℂ)) :
     4 * π * ‖g.toLp 2 (volume : Measure ℝ)‖
       ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ := by
   have hpair : schwartzPair (SchwartzMap.conjSLM g) (shiftedNumberCLM g)
-      = ((‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2
-        + 4 * π * ‖g.toLp 2 (volume : Measure ℝ)‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
+        + 4 * π * ‖g.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [shiftedNumberCLM_apply, schwartzPair_add_right, schwartzPair_conj_numberCLM,
       schwartzPair_smul_right, schwartzPair_conj_self]
     push_cast
@@ -91,7 +91,7 @@ theorem norm_le_shiftedNumberCLM (g : 𝓢(ℝ, ℂ)) :
   rcases eq_or_lt_of_le (norm_nonneg (g.toLp 2 (volume : Measure ℝ))) with hzero | hpos
   · rw [← hzero]
     simp
-  · have hge : 4 * π * ‖g.toLp 2 (volume : Measure ℝ)‖ ^ 2
+  · have hge : 4 * π * ‖g.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
         ≤ ‖g.toLp 2 (volume : Measure ℝ)‖
           * ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ := by
       refine le_trans ?_ hnorm
@@ -105,13 +105,13 @@ theorem norm_le_shiftedNumberCLM (g : 𝓢(ℝ, ℂ)) :
 /-! ## The oscillator operators are dominated by the shift -/
 
 theorem norm_creationCLM_sq_le_shifted (g : 𝓢(ℝ, ℂ)) :
-    4 * π * ‖(creationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2
-      ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+    4 * π * ‖(creationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
+      ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   have h1 := norm_toLp_creationCLM_sq_le g
   have h2 := norm_le_shiftedNumberCLM g
   have hshift : (numberCLM g + (4 * (π : ℂ)) • g) = shiftedNumberCLM g := rfl
   rw [hshift] at h1
-  calc 4 * π * ‖(creationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2
+  calc 4 * π * ‖(creationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
       ≤ 4 * π * (‖g.toLp 2 (volume : Measure ℝ)‖
         * ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖) := by
         have hpi : (0 : ℝ) ≤ 4 * π := by positivity
@@ -121,11 +121,11 @@ theorem norm_creationCLM_sq_le_shifted (g : 𝓢(ℝ, ℂ)) :
     _ ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖
         * ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ :=
         mul_le_mul_of_nonneg_right h2 (norm_nonneg _)
-    _ = ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by ring
+    _ = ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by ring
 
 theorem norm_annihilationCLM_sq_le_shifted (g : 𝓢(ℝ, ℂ)) :
-    2 * π * ‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2
-      ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+    2 * π * ‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
+      ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   have h1 := norm_toLp_annihilationCLM_sq_le g
   have h2 := norm_le_shiftedNumberCLM g
   have hsub : numberCLM g = shiftedNumberCLM g - (4 * (π : ℂ)) • g := by
@@ -143,12 +143,12 @@ theorem norm_annihilationCLM_sq_le_shifted (g : 𝓢(ℝ, ℂ)) :
     linarith [h2]
   have hg : 4 * π * ‖g.toLp 2 (volume : Measure ℝ)‖
       ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ := h2
-  calc 2 * π * ‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2
+  calc 2 * π * ‖(annihilationCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
       ≤ 2 * π * (‖g.toLp 2 (volume : Measure ℝ)‖
         * ‖(numberCLM g).toLp 2 (volume : Measure ℝ)‖) := by
         have hpi : (0 : ℝ) ≤ 2 * π := by positivity
         exact mul_le_mul_of_nonneg_left h1 hpi
-    _ ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+    _ ≤ ‖(shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
         nlinarith [norm_nonneg (g.toLp 2 (volume : Measure ℝ)),
           norm_nonneg ((shiftedNumberCLM g).toLp 2 (volume : Measure ℝ)),
           norm_nonneg ((numberCLM g).toLp 2 (volume : Measure ℝ)), Real.pi_pos, hN, hg]

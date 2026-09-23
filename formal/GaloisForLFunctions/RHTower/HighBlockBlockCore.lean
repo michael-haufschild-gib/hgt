@@ -75,16 +75,16 @@ theorem integral_normSq_zeta_mul_edPoly_block_le
     (hpole : ∀ τ : ℝ, a ≤ τ → τ ≤ v →
       ‖smoothAFEZetaShiftedPoleResidue (displacedLinePt d τ) x‖ ≤ Epole)
     (htail : ∀ τ : ℝ, a ≤ τ → τ ≤ v → ‖highBlockAFETail d x τ L‖ ≤ Etail)
-    (hW : ∀ τ : ℝ, a ≤ τ → τ ≤ v → ‖zetaChi (displacedLinePt d τ)‖ ^ 2 ≤ Wsup)
+    (hW : ∀ τ : ℝ, a ≤ τ → τ ≤ v → ‖zetaChi (displacedLinePt d τ)‖ ^ (2 : ℕ) ≤ Wsup)
     (hw : ∀ τ : ℝ, a ≤ τ → τ ≤ v → chiModulusWeight (2 * d) τ ≤ wmax) (hwmax0 : 0 ≤ wmax) :
     (∫ τ in a..v, ‖riemannZeta (displacedLinePt d τ) *
-        edPoly b (Finset.Icc 1 N) (displacedLinePt d τ)‖ ^ 2) ≤
+        edPoly b (Finset.Icc 1 N) (displacedLinePt d τ)‖ ^ (2 : ℕ)) ≤
       (1 + η) * (2 * ((v - a) * Edir +
           (J : ℝ) * (8 * ((L * N : ℕ) : ℝ) * (1 + Real.log ((L * N : ℕ) : ℝ))) * Edir) +
         2 * (Real.exp 1 * (Edual * ((v - a) * wmax) +
           (J : ℝ) * (8 * ((L * N : ℕ) : ℝ) * (1 + Real.log ((L * N : ℕ) : ℝ))) * Edual *
             (2 * wmax)))) +
-      (1 + 1 / η) * 3 * (v - a) * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)) := by
+      (1 + 1 / η) * 3 * (v - a) * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) := by
   set MV : ℝ := 8 * ((L * N : ℕ) : ℝ) * (1 + Real.log ((L * N : ℕ) : ℝ)) with hMV
   have hMV0 : 0 ≤ MV := by
     rw [hMV]
@@ -111,7 +111,7 @@ theorem integral_normSq_zeta_mul_edPoly_block_le
   have hWs0 : 0 ≤ Wsup := le_trans (by positivity) (hW a le_rfl hav)
   -- the integrand is continuous, hence interval integrable on every sub-block
   set F : ℝ → ℝ := fun τ => ‖riemannZeta (displacedLinePt d τ) *
-    edPoly b (Finset.Icc 1 N) (displacedLinePt d τ)‖ ^ 2 with hF
+    edPoly b (Finset.Icc 1 N) (displacedLinePt d τ)‖ ^ (2 : ℕ) with hF
   have hFc : Continuous F :=
     ((continuous_riemannZeta_displacedLinePt hd).mul
       (continuous_edPoly_displacedLinePt b N d)).norm.pow 2
@@ -121,7 +121,7 @@ theorem integral_normSq_zeta_mul_edPoly_block_le
         (1 + η) * (2 * (h * Edir + MV * Edir) +
           2 * (Real.exp 1 * (Edual * (∫ τ in T j..T (j + 1), chiModulusWeight (2 * d) τ) +
             MV * Edual * (2 * wmax)))) +
-        (1 + 1 / η) * 3 * h * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)) := by
+        (1 + 1 / η) * 3 * h * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) := by
     intro j hj
     rw [Finset.mem_range] at hj
     have hTj4 : 4 ≤ T j := le_trans ha (hTge j)
@@ -137,15 +137,15 @@ theorem integral_normSq_zeta_mul_edPoly_block_le
     refine hsub'.trans ?_
     rw [hTsucc j]
     -- e^{2d(π/T+5/T²)} ≤ e, w(T_{j+1}) ≤ wmax
-    have hexp : Real.exp (2 * d * (Real.pi / T j + 5 / T j ^ 2)) ≤ Real.exp 1 := by
+    have hexp : Real.exp (2 * d * (Real.pi / T j + 5 / T j ^ (2 : ℕ))) ≤ Real.exp 1 := by
       apply Real.exp_le_exp.mpr
       have hTpos : 0 < T j := by linarith
       have h1 : Real.pi / T j ≤ Real.pi / 4 :=
         div_le_div_of_nonneg_left Real.pi_pos.le (by norm_num) hTj4
-      have h2 : 5 / T j ^ 2 ≤ 5 / 4 ^ 2 :=
+      have h2 : 5 / T j ^ (2 : ℕ) ≤ 5 / 4 ^ (2 : ℕ) :=
         div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hTj4 2)
-      have h3 : 0 ≤ Real.pi / T j + 5 / T j ^ 2 := by positivity
-      calc 2 * d * (Real.pi / T j + 5 / T j ^ 2) ≤ 2 * (1 / 4) * (Real.pi / 4 + 5 / 4 ^ 2) := by
+      have h3 : 0 ≤ Real.pi / T j + 5 / T j ^ (2 : ℕ) := by positivity
+      calc 2 * d * (Real.pi / T j + 5 / T j ^ (2 : ℕ)) ≤ 2 * (1 / 4) * (Real.pi / 4 + 5 / 4 ^ (2 : ℕ)) := by
             apply mul_le_mul (by linarith) (by linarith) h3 (by norm_num)
         _ ≤ 1 := by nlinarith [Real.pi_le_four]
     have hwT : chiModulusWeight (2 * d) (T (j + 1)) ≤ wmax := hw _ (hTge _) hTjv
@@ -190,13 +190,13 @@ theorem integral_normSq_zeta_mul_edPoly_block_le
   set I : ℕ → ℝ := fun j => ∫ τ in T j..T (j + 1), chiModulusWeight (2 * d) τ with hI
   set C₁ : ℝ := (1 + η) * (2 * (h * Edir + MV * Edir) +
       2 * (Real.exp 1 * (MV * Edual * (2 * wmax)))) +
-    (1 + 1 / η) * 3 * h * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)) with hC₁
+    (1 + 1 / η) * 3 * h * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) with hC₁
   set C₂ : ℝ := (1 + η) * (2 * (Real.exp 1 * Edual)) with hC₂
   have hC₂0 : 0 ≤ C₂ := by rw [hC₂]; positivity
   have hbody : ∀ j : ℕ,
       (1 + η) * (2 * (h * Edir + MV * Edir) +
         2 * (Real.exp 1 * (Edual * I j + MV * Edual * (2 * wmax)))) +
-      (1 + 1 / η) * 3 * h * ((N : ℝ) ^ 2 * (Wsup * Efreeze ^ 2 + Epole ^ 2 + Etail ^ 2)) =
+      (1 + 1 / η) * 3 * h * ((N : ℝ) ^ (2 : ℕ) * (Wsup * Efreeze ^ (2 : ℕ) + Epole ^ (2 : ℕ) + Etail ^ (2 : ℕ))) =
       C₁ + C₂ * I j := fun j => by rw [hC₁, hC₂]; ring
   calc (∫ τ in a..v, F τ)
       = ∑ j ∈ Finset.range J, ∫ τ in T j..T (j + 1), F τ := hsplit

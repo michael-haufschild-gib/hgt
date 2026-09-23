@@ -32,7 +32,7 @@ private theorem real_pair_inner (a b c d : ℝ) :
   push_cast
   ring
 
-theorem qgtQubitState_norm_sq (theta : ℝ) : ‖qgtQubitState theta‖ ^ 2 = 1 := by
+theorem qgtQubitState_norm_sq (theta : ℝ) : ‖qgtQubitState theta‖ ^ (2 : ℕ) = 1 := by
   rw [norm_sq_eq_re_inner (𝕜 := ℂ)]
   unfold qgtQubitState
   rw [real_pair_inner, RCLike.re_to_complex, Complex.ofReal_re]
@@ -47,11 +47,11 @@ theorem qgtQubitState_inner_tangent (theta v : ℝ) :
       Real.sin theta * (v * Real.cos theta) = 0 := by ring
   rw [h, Complex.ofReal_zero]
 
-theorem qgtQubitTangent_norm_sq (theta v : ℝ) : ‖qgtQubitTangent theta v‖ ^ 2 = v ^ 2 := by
+theorem qgtQubitTangent_norm_sq (theta v : ℝ) : ‖qgtQubitTangent theta v‖ ^ (2 : ℕ) = v ^ (2 : ℕ) := by
   rw [norm_sq_eq_re_inner (𝕜 := ℂ)]
   unfold qgtQubitTangent
   rw [real_pair_inner, RCLike.re_to_complex, Complex.ofReal_re]
-  nlinarith [congrArg (fun z : ℝ => v ^ 2 * z) (Real.sin_sq_add_cos_sq theta)]
+  nlinarith [congrArg (fun z : ℝ => v ^ (2 : ℕ) * z) (Real.sin_sq_add_cos_sq theta)]
 
 /-- A genuine derivative of the bilinear ansatz along every affine parameter perturbation. -/
 theorem hasDerivAt_qgt_bilinear_state (x y dx dy : ℝ) :
@@ -84,22 +84,22 @@ theorem hasDerivAt_qgt_bilinear_state (x y dx dy : ℝ) :
 
 /-- The corpus's intrinsic projective Gram energy is exactly squared angular speed. -/
 theorem qgtQubit_projective_energy (theta v : ℝ) :
-    projectiveGramTangentEnergy (𝕜 := ℂ) (qgtQubitState theta) (qgtQubitTangent theta v) = v ^ 2 := by
+    projectiveGramTangentEnergy (𝕜 := ℂ) (qgtQubitState theta) (qgtQubitTangent theta v) = v ^ (2 : ℕ) := by
   simp [projectiveGramTangentEnergy, qgtQubitState_norm_sq,
     qgtQubitTangent_norm_sq, qgtQubitState_inner_tangent]
 
 /-- The pure-state quantum Fisher normalization gives four times squared angular speed. -/
 theorem qgtQubit_fisher (theta v : ℝ) :
-    pureStateQuantumFisherValue (‖qgtQubitState theta‖ ^ 2)
+    pureStateQuantumFisherValue (‖qgtQubitState theta‖ ^ (2 : ℕ))
       ‖inner ℂ (qgtQubitState theta) (qgtQubitTangent theta v)‖
-      (‖qgtQubitTangent theta v‖ ^ 2) = 4 * v ^ 2 := by
+      (‖qgtQubitTangent theta v‖ ^ (2 : ℕ)) = 4 * v ^ (2 : ℕ) := by
   simp [pureStateQuantumFisherValue, projectiveQuantumTangentValue,
     qgtQubitState_norm_sq, qgtQubitTangent_norm_sq, qgtQubitState_inner_tangent]
 
 /-- Exact finite-time activation of the old null direction. -/
 theorem qgt_bilinear_null_activation (s t : ℝ) :
     projectiveGramTangentEnergy (𝕜 := ℂ) (qgtQubitState t)
-      (qgtQubitTangent t (t * 1 + 1 * (-s))) = (t - s) ^ 2 := by
+      (qgtQubitTangent t (t * 1 + 1 * (-s))) = (t - s) ^ (2 : ℕ) := by
   rw [qgtQubit_projective_energy]
   ring
 
@@ -115,7 +115,7 @@ theorem qgt_bilinear_null_then_visible (s : ℝ) :
 /-- The same activation reaches the corpus's pure-state projector-tangent determinant. -/
 theorem qgt_bilinear_projector_determinant (s t : ℝ) :
     (pureStateProjectorTangentCompression (qgtQubitState t)
-      (qgtQubitTangent t (t * 1 + 1 * (-s)))).det = -((t - s : ℝ) : ℂ) ^ 4 := by
+      (qgtQubitTangent t (t * 1 + 1 * (-s)))).det = -((t - s : ℝ) : ℂ) ^ (4 : ℕ) := by
   rw [det_pureStateProjectorTangentCompression_eq_neg_projectiveEnergy_sq,
     qgt_bilinear_null_activation]
   push_cast
@@ -128,7 +128,7 @@ theorem qgtQubit_berry_zero (theta v : ℝ) :
 
 /-- The metric area records the sensitivity missed by the Berry value. -/
 theorem qgtQubit_metric_area (theta v : ℝ) :
-    quantumMetricAreaValue (qgtQubitState theta) (qgtQubitTangent theta v) = v ^ 2 := by
+    quantumMetricAreaValue (qgtQubitState theta) (qgtQubitTangent theta v) = v ^ (2 : ℕ) := by
   rw [quantumMetricAreaValue_eq_projectiveGram_add_berry,
     qgtQubit_projective_energy, qgtQubit_berry_zero]
   ring

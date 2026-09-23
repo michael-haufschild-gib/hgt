@@ -27,7 +27,7 @@ namespace RHTower
 open ArithmeticFunction Finset
 
 /-- `log x ≤ 2√x` for `0 < x`. -/
-theorem log_le_two_sqrt {x : ℝ} (hx : 0 < x) :
+theorem log_le_two_sqrt_psiRatioImprove {x : ℝ} (hx : 0 < x) :
     Real.log x ≤ 2 * Real.sqrt x :=
   GaloisForLFunctions.HTGeometry.log_le_two_mul_sqrt hx
 
@@ -35,7 +35,7 @@ theorem log_le_two_sqrt {x : ℝ} (hx : 0 < x) :
 theorem sqrt_add_le_add_sqrt {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :
     Real.sqrt (u + v) ≤ Real.sqrt u + Real.sqrt v := by
   rw [show Real.sqrt u + Real.sqrt v
-      = Real.sqrt ((Real.sqrt u + Real.sqrt v) ^ 2) from
+      = Real.sqrt ((Real.sqrt u + Real.sqrt v) ^ (2 : ℕ)) from
       (Real.sqrt_sq (by positivity)).symm]
   apply Real.sqrt_le_sqrt
   nlinarith [Real.sq_sqrt hu, Real.sq_sqrt hv,
@@ -84,16 +84,16 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
   have hQR : (1 : ℝ) ≤ (Q : ℝ) := by exact_mod_cast hQ1
   have hlogx₁0 : 0 ≤ Real.log x₁ :=
     Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ x₁))
-  have hGx₁0 : 0 ≤ Real.log x₁ ^ 2 + 2 * Real.log x₁ := by positivity
+  have hGx₁0 : 0 ≤ Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁ := by positivity
   -- the growth constants of the cutoff
-  set B₁ : ℝ := 2 / ρ + (x₀ : ℝ) + (16 / κ) ^ 4 + 4 + 2 / κ with hB₁
+  set B₁ : ℝ := 2 / ρ + (x₀ : ℝ) + (16 / κ) ^ (4 : ℕ) + 4 + 2 / κ with hB₁
   set K₁ : ℝ := 2 * (Q : ℝ) * B₁ + 1 with hK₁
   set K₂ : ℝ := 2 * (Q : ℝ) * (2 / κ) with hK₂
   have hx₀0R : (0 : ℝ) ≤ (x₀ : ℝ) := Nat.cast_nonneg x₀
   have hB₁0 : 0 < B₁ := by
     rw [hB₁]
     have h1 : 0 < 2 / ρ := by positivity
-    have h2 : (0 : ℝ) < (16 / κ) ^ 4 := by positivity
+    have h2 : (0 : ℝ) < (16 / κ) ^ (4 : ℕ) := by positivity
     have h3 : 0 < 2 / κ := by positivity
     linarith
   have hK₁1 : 1 ≤ K₁ := by
@@ -102,7 +102,7 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
   have hK₂0 : 0 < K₂ := by
     rw [hK₂]
     positivity
-  set K₃ : ℝ := 80 * a + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 8466
+  set K₃ : ℝ := 80 * a + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 8466
     + 64 * Real.sqrt K₁ with hK₃
   set K₄ : ℝ := 64 * Real.sqrt K₂ with hK₄
   have hK₃0 : 0 < K₃ := by
@@ -115,9 +115,9 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
     linarith
   -- thresholds
   obtain ⟨M₁, hM₁⟩ := exists_nat_log_ge 1
-  obtain ⟨M₂, hM₂⟩ := exists_nat_log_ge (max (4 * K₃ / θ) ((4 * K₄ / θ) ^ 2))
+  obtain ⟨M₂, hM₂⟩ := exists_nat_log_ge (max (4 * K₃ / θ) ((4 * K₄ / θ) ^ (2 : ℕ)))
   set x₀' : ℕ := max (max M₁ M₂)
-    (max (⌈2 * (x₁ : ℝ) * K₁⌉₊ + 1) (⌈(4 * (x₁ : ℝ) * K₂) ^ 2⌉₊ + 1))
+    (max (⌈2 * (x₁ : ℝ) * K₁⌉₊ + 1) (⌈(4 * (x₁ : ℝ) * K₂) ^ (2 : ℕ)⌉₊ + 1))
     with hx₀'def
   refine ⟨x₀', fun N hN => ?_⟩
   have hNM₁ : M₁ ≤ N :=
@@ -126,7 +126,7 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
     le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hN
   have hNA : ⌈2 * (x₁ : ℝ) * K₁⌉₊ + 1 ≤ N :=
     le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hN
-  have hNB : ⌈(4 * (x₁ : ℝ) * K₂) ^ 2⌉₊ + 1 ≤ N :=
+  have hNB : ⌈(4 * (x₁ : ℝ) * K₂) ^ (2 : ℕ)⌉₊ + 1 ≤ N :=
     le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hN
   have hN0 : 0 < N := by omega
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN0
@@ -140,22 +140,22 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
       exact_mod_cast hNA
     push_cast at h2
     linarith
-  have hNK₂sq : (4 * (x₁ : ℝ) * K₂) ^ 2 ≤ (N : ℝ) := by
-    have h1 : (4 * (x₁ : ℝ) * K₂) ^ 2
-        ≤ (⌈(4 * (x₁ : ℝ) * K₂) ^ 2⌉₊ : ℝ) := Nat.le_ceil _
-    have h2 : ((⌈(4 * (x₁ : ℝ) * K₂) ^ 2⌉₊ + 1 : ℕ) : ℝ) ≤ (N : ℝ) := by
+  have hNK₂sq : (4 * (x₁ : ℝ) * K₂) ^ (2 : ℕ) ≤ (N : ℝ) := by
+    have h1 : (4 * (x₁ : ℝ) * K₂) ^ (2 : ℕ)
+        ≤ (⌈(4 * (x₁ : ℝ) * K₂) ^ (2 : ℕ)⌉₊ : ℝ) := Nat.le_ceil _
+    have h2 : ((⌈(4 * (x₁ : ℝ) * K₂) ^ (2 : ℕ)⌉₊ + 1 : ℕ) : ℝ) ≤ (N : ℝ) := by
       exact_mod_cast hNB
     push_cast at h2
     linarith
   -- the N-dependent cutoff
-  set S : ℝ := 2 / ρ + (x₀ : ℝ) + (16 / κ) ^ 4 + (2 / κ) * (Real.log N + 1)
+  set S : ℝ := 2 / ρ + (x₀ : ℝ) + (16 / κ) ^ (4 : ℕ) + (2 / κ) * (Real.log N + 1)
     + 2 with hS
   have hSc : 0 ≤ (2 / κ) * (Real.log N + 1) :=
     mul_nonneg (by positivity) (by linarith)
   have hS2 : 2 ≤ S := by
     rw [hS]
     have h1 : 0 < 2 / ρ := by positivity
-    have h2 : (0 : ℝ) < (16 / κ) ^ 4 := by positivity
+    have h2 : (0 : ℝ) < (16 / κ) ^ (4 : ℕ) := by positivity
     linarith
   set c : ℕ := ⌈2 * (Q : ℝ) * (S + 2)⌉₊ with hcdef
   have hcR : 2 * (Q : ℝ) * (S + 2) ≤ (c : ℝ) := Nat.le_ceil _
@@ -175,21 +175,21 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
     exact_mod_cast h2
   have hcomp1 : 2 / ρ ≤ S := by
     rw [hS]
-    have h2 : (0 : ℝ) < (16 / κ) ^ 4 := by positivity
+    have h2 : (0 : ℝ) < (16 / κ) ^ (4 : ℕ) := by positivity
     linarith
   have hcomp2 : (x₀ : ℝ) ≤ S := by
     rw [hS]
     have h1 : 0 < 2 / ρ := by positivity
-    have h2 : (0 : ℝ) < (16 / κ) ^ 4 := by positivity
+    have h2 : (0 : ℝ) < (16 / κ) ^ (4 : ℕ) := by positivity
     linarith
-  have hcomp3 : (16 / κ) ^ 4 ≤ S := by
+  have hcomp3 : (16 / κ) ^ (4 : ℕ) ≤ S := by
     rw [hS]
     have h1 : 0 < 2 / ρ := by positivity
     linarith
   have hcomp4 : (2 / κ) * (Real.log N + 1) ≤ S := by
     rw [hS]
     have h1 : 0 < 2 / ρ := by positivity
-    have h2 : (0 : ℝ) < (16 / κ) ^ 4 := by positivity
+    have h2 : (0 : ℝ) < (16 / κ) ^ (4 : ℕ) := by positivity
     linarith
   have hρc : 2 / ρ ≤ (c : ℝ) / (2 * Q) - 1 := by linarith
   have hx₀c : (x₀ : ℝ) ≤ (c : ℝ) / (2 * Q) - 1 := by linarith
@@ -213,7 +213,7 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
       have h1 := Real.sqrt_le_sqrt hNK₂sq
       rwa [Real.sqrt_sq (by positivity)] at h1
     have hlog2s : Real.log N ≤ 2 * Real.sqrt N :=
-      log_le_two_sqrt hNR
+      log_le_two_sqrt_psiRatioImprove hNR
     have hs2 : (x₁ : ℝ) * K₂ * Real.log N
         ≤ (x₁ : ℝ) * K₂ * (2 * Real.sqrt N) :=
       mul_le_mul_of_nonneg_left hlog2s (by positivity)
@@ -237,7 +237,7 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
     linarith [hcR]
   have hlogc : Real.log c
       ≤ 2 * Real.sqrt K₁ + 2 * (Real.sqrt K₂ * Real.sqrt (Real.log N)) := by
-    have h1 := log_le_two_sqrt hc0R
+    have h1 := log_le_two_sqrt_psiRatioImprove hc0R
     have h2 : Real.sqrt c ≤ Real.sqrt (K₁ + K₂ * Real.log N) :=
       Real.sqrt_le_sqrt hcup
     have h3 : Real.sqrt (K₁ + K₂ * Real.log N)
@@ -249,7 +249,7 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
     rw [h4] at h3
     linarith
   have hCK : 80 * a + 32 * Real.log c
-      + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 8466
+      + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 8466
       ≤ K₃ + K₄ * Real.sqrt (Real.log N) := by
     rw [hK₃, hK₄]
     linarith [hlogc]
@@ -259,7 +259,7 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
     rw [div_le_iff₀ hθpos] at h1
     linarith
   have hR2b : K₄ * Real.sqrt (Real.log N) ≤ θ / 4 * Real.log N := by
-    have h1 : (4 * K₄ / θ) ^ 2 ≤ Real.log N :=
+    have h1 : (4 * K₄ / θ) ^ (2 : ℕ) ≤ Real.log N :=
       le_trans (le_max_right _ _) hy₂
     have h2 : 4 * K₄ / θ ≤ Real.sqrt (Real.log N) := by
       have h3 := Real.sqrt_le_sqrt h1
@@ -272,23 +272,23 @@ theorem psi_ratio_improve {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
     nlinarith [mul_le_mul_of_nonneg_right h3
       (Real.sqrt_nonneg (Real.log N)), huu]
   have hCθ : 80 * a + 32 * Real.log c
-      + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 8466
+      + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 8466
       ≤ θ / 2 * Real.log N := by linarith
   -- divide the recursion step by `log²N`
-  have hlog2pos : (0 : ℝ) < Real.log N ^ 2 := by positivity
+  have hlog2pos : (0 : ℝ) < Real.log N ^ (2 : ℕ) := by positivity
   have h1 : (80 * a + 32 * Real.log c
-        + 8 * (Real.log x₁ ^ 2 + 2 * Real.log x₁) + 8466)
+        + 8 * (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁) + 8466)
         * (N : ℝ) * Real.log N
-      ≤ θ / 2 * (N : ℝ) * Real.log N ^ 2 := by
+      ≤ θ / 2 * (N : ℝ) * Real.log N ^ (2 : ℕ) := by
     have h2 := mul_le_mul_of_nonneg_right hCθ
       (by positivity : (0 : ℝ) ≤ (N : ℝ) * Real.log N)
     nlinarith [h2]
-  have hkey : |psiRemainder N| * Real.log N ^ 2
-      ≤ ((a - θ + 12 * a / x₁) * N + θ / 2 * N) * Real.log N ^ 2 := by
+  have hkey : |psiRemainder N| * Real.log N ^ (2 : ℕ)
+      ≤ ((a - θ + 12 * a / x₁) * N + θ / 2 * N) * Real.log N ^ (2 : ℕ) := by
     have hexp : ((a - θ + 12 * a / x₁) * (N : ℝ) + θ / 2 * N)
-          * Real.log N ^ 2
-        = (a - θ + 12 * a / x₁) * (N : ℝ) * Real.log N ^ 2
-          + θ / 2 * (N : ℝ) * Real.log N ^ 2 := by
+          * Real.log N ^ (2 : ℕ)
+        = (a - θ + 12 * a / x₁) * (N : ℝ) * Real.log N ^ (2 : ℕ)
+          + θ / 2 * (N : ℝ) * Real.log N ^ (2 : ℕ) := by
       ring
     rw [hexp]
     linarith [hD, h1]

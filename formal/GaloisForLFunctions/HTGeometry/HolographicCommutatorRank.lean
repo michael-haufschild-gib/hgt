@@ -42,7 +42,7 @@ def derivationCommutatorAlternatingMap
 /-- The commutator symbol as a linear map from the second exterior power of law space. -/
 def derivationCommutatorMap
     (ρ : V →ₗ[K] Derivation K L L) :
-    (⋀[K]^2 V) →ₗ[K] Derivation K L L :=
+    (⋀[K]^(2 : ℕ) V) →ₗ[K] Derivation K L L :=
   exteriorPower.alternatingMapLinearEquiv (derivationCommutatorAlternatingMap ρ)
 
 omit [CharZero K] in
@@ -118,7 +118,7 @@ then the commutator symbol is injective.  In three law dimensions, where every b
 decomposable, this is the algebraic core of total horizon-forced noncommutativity. -/
 theorem derivationCommutatorMap_injective_of_every_nonzero_bivector_horizonSecant
     (ρ : V →ₗ[K] Derivation K L L) (x : L)
-    (hsecant : ∀ z : ⋀[K]^2 V, z ≠ 0 →
+    (hsecant : ∀ z : ⋀[K]^(2 : ℕ) V, z ≠ 0 →
       ∃ v w : V, ∃ a b : K,
         z = exteriorPower.ιMulti K 2 ![v, w] ∧
         v ∈ linearDerivationDependenceHorizon ρ x ∧
@@ -145,8 +145,8 @@ has rank at least `r`. -/
 theorem finrank_derivationCommutatorMap_range_ge_of_horizonSecant_avoidance
     [FiniteDimensional K V]
     (ρ : V →ₗ[K] Derivation K L L) (x : L) (r : ℕ)
-    (hsecant : ∀ U : Submodule K (⋀[K]^2 V),
-      Module.finrank K U + r > Module.finrank K (⋀[K]^2 V) →
+    (hsecant : ∀ U : Submodule K (⋀[K]^(2 : ℕ) V),
+      Module.finrank K U + r > Module.finrank K (⋀[K]^(2 : ℕ) V) →
       ∃ v w : V, ∃ a b : K,
         v ∈ linearDerivationDependenceHorizon ρ x ∧
         w ∈ linearDerivationDependenceHorizon ρ x ∧
@@ -160,7 +160,7 @@ theorem finrank_derivationCommutatorMap_range_ge_of_horizonSecant_avoidance
   have hnullity := LinearMap.finrank_range_add_finrank_ker
     (derivationCommutatorMap ρ)
   have hlarge : Module.finrank K (derivationCommutatorMap ρ).ker + r >
-      Module.finrank K (⋀[K]^2 V) := by
+      Module.finrank K (⋀[K]^(2 : ℕ) V) := by
     omega
   obtain ⟨v, w, a, b, hv, hw, hker, hHT⟩ :=
     hsecant (derivationCommutatorMap ρ).ker hlarge

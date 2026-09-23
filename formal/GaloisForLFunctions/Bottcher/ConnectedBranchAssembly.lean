@@ -131,7 +131,7 @@ theorem exists_global_branch_of_levelRootInput_modulus (c : ℂ) (h : LevelRootI
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) := by
   obtain ⟨βlev, hanalytic, hpow, hne, hanchorEsc⟩ :=
@@ -234,7 +234,7 @@ theorem levelRootInput_of_iterate_image_winding (c : ℂ)
           norm_num
         exact (gSub a₀).2 hzero
       let e₀ : {w : ℂ // w ≠ 0} := ⟨e, hene⟩
-      have he : (⟨(e₀ : ℂ) ^ 2, pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀ := by
+      have he : (⟨(e₀ : ℂ) ^ (2 : ℕ), pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀ := by
         apply Subtype.ext
         exact hepow
       have hwindStep : ∀ p : Path a₀ a₀, ∃ m : ℤ,
@@ -258,7 +258,7 @@ theorem levelRootInput_of_iterate_image_winding (c : ℂ)
         have hfz : quadratic c z ∈ escapeLevel c n := (quadratic_mapsTo_escapeLevel c n) hz
         calc
           (s z) ^ (2 ^ (n + 1))
-              = ((s z) ^ 2) ^ (2 ^ n) := by
+              = ((s z) ^ (2 : ℕ)) ^ (2 ^ n) := by
                 rw [show (2 : ℕ) ^ (n + 1) = 2 * 2 ^ n from by rw [pow_succ]; ring]
                 rw [pow_mul]
           _ = (βlevn (quadratic c z)) ^ (2 ^ n) := by rw [hssq z hz]
@@ -309,7 +309,7 @@ theorem exists_global_branch_modulus_of_iterate_image_winding (c : ℂ)
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) :=
   exists_global_branch_of_levelRootInput_modulus c
@@ -347,7 +347,7 @@ theorem exists_global_branch_modulus_of_rho_lift_endpoints (c : ℂ)
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) :=
   exists_global_branch_modulus_of_iterate_image_winding c
@@ -385,7 +385,7 @@ theorem exists_global_branch_modulus_of_rho_lift_endpoints_of_mem_mandelbrot (c 
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) :=
   exists_global_branch_modulus_of_rho_lift_endpoints c
@@ -425,7 +425,7 @@ theorem exists_global_branch_modulus_of_rho_lifts_antiperiod (c : ℂ)
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) :=
   exists_global_branch_modulus_of_iterate_image_winding c
@@ -465,7 +465,7 @@ theorem exists_global_branch_modulus_of_rho_lifts_antiperiod_of_mem_mandelbrot (
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) :=
   exists_global_branch_modulus_of_rho_lifts_antiperiod c
@@ -843,7 +843,7 @@ theorem exists_subsingleton_fiber_global_branch_to_unitExterior {c : ℂ} {β : 
     dsimp [R]
     have hcn : 0 ≤ ‖c‖ := norm_nonneg c
     nlinarith
-  have hR2 : 16 * ‖c‖ < R ^ 2 := by
+  have hR2 : 16 * ‖c‖ < R ^ (2 : ℕ) := by
     dsimp [R]
     have hcn : 0 ≤ ‖c‖ := norm_nonneg c
     have hm2 : 2 ≤ max 2 ‖c‖ := le_max_left 2 ‖c‖
@@ -958,7 +958,7 @@ theorem exists_global_branch_modulus_deriv_ne_zero_of_rho_lifts_antiperiod (c : 
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) := by
@@ -985,7 +985,7 @@ theorem exists_global_branch_modulus_localInverse_of_rho_lifts_antiperiod (c : �
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
@@ -1014,7 +1014,7 @@ theorem exists_global_branch_covering_of_rho_lifts_antiperiod (c : ℂ)
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
-        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
         (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
           β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
         (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
@@ -1042,7 +1042,7 @@ theorem exists_global_branch_covering_bijective_of_rho_lifts_antiperiod (c : ℂ
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
-        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
         (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
           β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
         (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
@@ -1072,7 +1072,7 @@ theorem exists_global_branch_covering_bijective_of_rho_covering_antiperiod (c : 
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
-        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
         (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
           β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
         (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
@@ -1099,7 +1099,7 @@ theorem exists_global_branch_covering_bijective_of_rho_covering_odd_shift_windin
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
-        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
         (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
           β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
         (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
@@ -1126,7 +1126,7 @@ theorem exists_global_branch_modulus_deriv_ne_zero_of_rho_lifts_antiperiod_of_me
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) :=
@@ -1149,7 +1149,7 @@ theorem exists_global_branch_modulus_localInverse_of_rho_lifts_antiperiod_of_mem
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
@@ -1176,7 +1176,7 @@ theorem exists_global_branch_covering_of_rho_lifts_antiperiod_of_mem_mandelbrot 
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
-        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
         (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
           β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
         (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
@@ -1203,7 +1203,7 @@ theorem exists_global_branch_covering_bijective_of_rho_lifts_antiperiod_of_mem_m
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
-        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
         (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
           β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
         (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
@@ -1231,7 +1231,7 @@ theorem exists_global_branch_covering_bijective_of_rho_covering_antiperiod_of_me
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
-        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
         (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
           β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
         (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
@@ -1264,7 +1264,7 @@ theorem exists_global_branch_covering_bijective_of_rho_covering_odd_shift_windin
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
-        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
         (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
           β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
         (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧

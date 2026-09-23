@@ -16,11 +16,11 @@ theorem summable_one_sub_norm_xiShiftPoleDiskCoordinate
       1 - ‖xiShiftPoleDiskCoordinate omega q‖) := by
   have hbound : ∀ q : XiShiftRightZeroCopy omega,
       1 - ‖xiShiftPoleDiskCoordinate omega q‖ ≤
-        8 / ‖xiSpectralPoint q.1‖ ^ 2 := by
+        8 / ‖xiSpectralPoint q.1‖ ^ (2 : ℕ) := by
     intro q
     let mu : ℂ := xiSpectralPoint q.1
     let p : ℂ := xiShiftPoleCoordinate omega q
-    have hmuImSq : mu.im ^ 2 < 1 / 4 := by
+    have hmuImSq : mu.im ^ (2 : ℕ) < 1 / 4 := by
       have hstrip := xi_divisor_support_centered_re_sq_lt_quarter q.1.1
       have him : mu.im = -(((q.1.1 : ℂ).re) - 1 / 2) := by
         simp [mu, xiSpectralPoint]
@@ -72,29 +72,29 @@ theorem summable_one_sub_norm_xiShiftPoleDiskCoordinate
         _ ≤ ‖-(p + I)‖ + 1 := add_le_add le_rfl hshiftNorm
         _ = ‖p + I‖ + 1 := by rw [norm_neg]
         _ ≤ 2 * ‖p + I‖ := by linarith
-    have hmuSqLe : ‖mu‖ ^ 2 ≤ 4 * ‖p + I‖ ^ 2 := by
+    have hmuSqLe : ‖mu‖ ^ (2 : ℕ) ≤ 4 * ‖p + I‖ ^ (2 : ℕ) := by
       nlinarith [norm_nonneg mu, norm_nonneg (p + I)]
     have hmuPos : 0 < ‖mu‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q.1)
     have hdenPos : 0 < ‖p + I‖ := norm_pos_iff.mpr hden
     rw [hcoord]
     calc
-      1 - ‖upperToDiskCayley p‖ ≤ 1 - ‖upperToDiskCayley p‖ ^ 2 := by
+      1 - ‖upperToDiskCayley p‖ ≤ 1 - ‖upperToDiskCayley p‖ ^ (2 : ℕ) := by
         nlinarith [norm_nonneg (upperToDiskCayley p)]
-      _ = 4 * p.im / ‖p + I‖ ^ 2 := hdefect
-      _ ≤ 8 / ‖mu‖ ^ 2 := by
+      _ = 4 * p.im / ‖p + I‖ ^ (2 : ℕ) := hdefect
+      _ ≤ 8 / ‖mu‖ ^ (2 : ℕ) := by
         apply (div_le_div_iff₀ (sq_pos_of_pos hdenPos) (sq_pos_of_pos hmuPos)).2
-        have hleft : 4 * p.im * ‖mu‖ ^ 2 ≤ 2 * ‖mu‖ ^ 2 := by
+        have hleft : 4 * p.im * ‖mu‖ ^ (2 : ℕ) ≤ 2 * ‖mu‖ ^ (2 : ℕ) := by
           exact mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg ‖mu‖)
-        have hright : 2 * ‖mu‖ ^ 2 ≤ 8 * ‖p + I‖ ^ 2 := by
+        have hright : 2 * ‖mu‖ ^ (2 : ℕ) ≤ 8 * ‖p + I‖ ^ (2 : ℕ) := by
           linarith
         exact hleft.trans hright
-      _ = 8 / ‖xiSpectralPoint q.1‖ ^ 2 := rfl
+      _ = 8 / ‖xiSpectralPoint q.1‖ ^ (2 : ℕ) := rfl
   have hbase : Summable (fun q : XiShiftRightZeroCopy omega =>
-      1 / ‖xiSpectralPoint q.1‖ ^ 2) :=
+      1 / ‖xiSpectralPoint q.1‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable.subtype
       (fun q => omega < (I * xiSpectralPoint q).re)
   have hmajor : Summable (fun q : XiShiftRightZeroCopy omega =>
-      8 / ‖xiSpectralPoint q.1‖ ^ 2) := by
+      8 / ‖xiSpectralPoint q.1‖ ^ (2 : ℕ)) := by
     refine (hbase.mul_left 8).congr fun q => ?_
     ring
   exact Summable.of_nonneg_of_le

@@ -75,7 +75,7 @@ theorem hedenmalmSquarefreeRightSourceZeros_finite (T : ℝ) :
 squarefree source zero support. Neither support nor multiplicity is defined using `xi`. -/
 def hedenmalmSquarefreeFisherReflectionCharge (T : ℝ) : ℕ :=
   2 * ∑ rho ∈ (hedenmalmSquarefreeRightSourceZeros_finite T).toFinset,
-    (hedenmalmSquarefreeConormalMultiplicity rho) ^ 2
+    (hedenmalmSquarefreeConormalMultiplicity rho) ^ (2 : ℕ)
 
 /-- Fixed-chart squarefree Fisher quotient has residue twice source conormal multiplicity at every
 strict-right Xi zero. -/

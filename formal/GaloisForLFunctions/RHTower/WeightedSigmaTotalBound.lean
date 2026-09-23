@@ -38,7 +38,7 @@ theorem weighted_sigma_total_le {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
         * (1 / (v : ℝ) - 1 / ((v : ℝ) + 1)) * (Real.log N - Real.log v)
       ≤ (a - (a - (δ + ρ * (Real.log (1 / ρ) + 3) + κ)) * (ρ / 3)
             / Real.log ((2 * Q : ℕ) : ℝ))
-          * (Real.log N ^ 2 / 2 + 1)
+          * (Real.log N ^ (2 : ℕ) / 2 + 1)
         + ((a - (δ + ρ * (Real.log (1 / ρ) + 3) + κ)) * (ρ / 3)
             + 14 * a / x₁ + 8 * (Real.log x₁ + 2))
           * (Real.log N + 2) := by
@@ -106,7 +106,7 @@ theorem weighted_sigma_total_le {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
       (by exact_mod_cast (by omega : N - 1 ≤ N))
   have hlog0 : 0 ≤ Real.log ((N - 1 : ℕ) : ℝ) :=
     Real.log_nonneg (by exact_mod_cast hN1)
-  have hsqmono : Real.log ((N - 1 : ℕ) : ℝ) ^ 2 ≤ Real.log N ^ 2 :=
+  have hsqmono : Real.log ((N - 1 : ℕ) : ℝ) ^ (2 : ℕ) ≤ Real.log N ^ (2 : ℕ) :=
     pow_le_pow_left₀ hlog0 hmono 2
   -- assemble
   calc ∑ v ∈ Finset.Icc 1 N, |psiRemainder v|
@@ -121,14 +121,14 @@ theorem weighted_sigma_total_le {a δ ρ κ : ℝ} {Q x₀ x₁ : ℕ}
     _ = θc * ∑ s ∈ Finset.Icc 1 (N - 1), Real.log s / s
         + C₁ * ∑ s ∈ Finset.Icc 1 (N - 1), 1 / (s : ℝ) := by
         rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
-    _ ≤ θc * (Real.log ((N - 1 : ℕ) : ℝ) ^ 2 / 2 + 1)
+    _ ≤ θc * (Real.log ((N - 1 : ℕ) : ℝ) ^ (2 : ℕ) / 2 + 1)
         + C₁ * (Real.log ((N - 1 : ℕ) : ℝ) + 2) := by
         have hm1 := mul_le_mul_of_nonneg_left hlogdiv hθc0
         have hm2 := mul_le_mul_of_nonneg_left hinv hC₁0
         linarith
-    _ ≤ θc * (Real.log N ^ 2 / 2 + 1) + C₁ * (Real.log N + 2) := by
-        have hm1 : θc * (Real.log ((N - 1 : ℕ) : ℝ) ^ 2 / 2 + 1)
-            ≤ θc * (Real.log N ^ 2 / 2 + 1) := by
+    _ ≤ θc * (Real.log N ^ (2 : ℕ) / 2 + 1) + C₁ * (Real.log N + 2) := by
+        have hm1 : θc * (Real.log ((N - 1 : ℕ) : ℝ) ^ (2 : ℕ) / 2 + 1)
+            ≤ θc * (Real.log N ^ (2 : ℕ) / 2 + 1) := by
           apply mul_le_mul_of_nonneg_left _ hθc0
           linarith
         have hm2 : C₁ * (Real.log ((N - 1 : ℕ) : ℝ) + 2)

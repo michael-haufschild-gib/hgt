@@ -131,7 +131,7 @@ def DyadicSharpPrimeCancelledSourceSquareOnCollisionBand : Prop :=
   ∃ g : ℂ → ℂ,
     AnalyticOnNhd ℂ g dyadicSharpPrimeCollisionBand ∧
       ∀ s ∈ dyadicSharpPrimeCollisionBand,
-        g s ^ 2 = dyadicSharpPrimeCancelledSource s
+        g s ^ (2 : ℕ) = dyadicSharpPrimeCancelledSource s
 
 /-- An analytic square factorization forces every cancelled-source order in the collision band to
 be even, including the locally identically-zero case whose extended-natural order has `toNat = 0`.
@@ -144,7 +144,7 @@ theorem dyadicSharpPrimeCancelledSourceEvenOrderOnCollisionBand_of_square
   have hopen : IsOpen dyadicSharpPrimeCollisionBand := by
     exact (isOpen_lt continuous_const Complex.continuous_re).inter
       (isOpen_lt Complex.continuous_re continuous_const)
-  have hev : dyadicSharpPrimeCancelledSource =ᶠ[nhds s] g ^ 2 := by
+  have hev : dyadicSharpPrimeCancelledSource =ᶠ[nhds s] g ^ (2 : ℕ) := by
     filter_upwards [hopen.mem_nhds hs] with z hz
     exact (hsq z hz).symm
   have horder : analyticOrderAt dyadicSharpPrimeCancelledSource s =

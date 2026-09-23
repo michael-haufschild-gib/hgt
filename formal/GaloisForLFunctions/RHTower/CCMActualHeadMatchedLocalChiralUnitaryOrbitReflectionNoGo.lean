@@ -24,9 +24,9 @@ namespace RHTower
 /-- The real half-turn about the source-anchor axis `(g,0,-1)`, regarded as a complex matrix. -/
 def ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn
     (g : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
-  !![((g ^ 2 - 1) / (g ^ 2 + 1) : ℝ), 0, (-2 * g / (g ^ 2 + 1) : ℝ);
+  !![((g ^ (2 : ℕ) - 1) / (g ^ (2 : ℕ) + 1) : ℝ), 0, (-2 * g / (g ^ (2 : ℕ) + 1) : ℝ);
      0, -1, 0;
-     (-2 * g / (g ^ 2 + 1) : ℝ), 0, ((1 - g ^ 2) / (g ^ 2 + 1) : ℝ)]
+     (-2 * g / (g ^ (2 : ℕ) + 1) : ℝ), 0, ((1 - g ^ (2 : ℕ)) / (g ^ (2 : ℕ) + 1) : ℝ)]
 
 /-- The source-reflection half-turn is real symmetric. -/
 theorem ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn_conjTranspose
@@ -42,9 +42,9 @@ theorem ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn_star_mul_self
     (g : ℝ) :
     (ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn g)ᴴ *
         ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn g = 1 := by
-  have hd : (1 + (g : ℂ) ^ 2) ≠ 0 := by
-    exact_mod_cast (show (1 + g ^ 2 : ℝ) ≠ 0 by positivity)
-  have hd' : ((g : ℂ) ^ 2 + 1) ≠ 0 := by simpa [add_comm] using hd
+  have hd : (1 + (g : ℂ) ^ (2 : ℕ)) ≠ 0 := by
+    exact_mod_cast (show (1 + g ^ (2 : ℕ) : ℝ) ≠ 0 by positivity)
+  have hd' : ((g : ℂ) ^ (2 : ℕ) + 1) ≠ 0 := by simpa [add_comm] using hd
   rw [ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn_conjTranspose]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -58,9 +58,9 @@ theorem ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn_star_mul_self
 theorem ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn_det
     (g : ℝ) :
     (ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn g).det = 1 := by
-  have hd : (1 + (g : ℂ) ^ 2) ≠ 0 := by
-    exact_mod_cast (show (1 + g ^ 2 : ℝ) ≠ 0 by positivity)
-  have hd' : ((g : ℂ) ^ 2 + 1) ≠ 0 := by simpa [add_comm] using hd
+  have hd : (1 + (g : ℂ) ^ (2 : ℕ)) ≠ 0 := by
+    exact_mod_cast (show (1 + g ^ (2 : ℕ) : ℝ) ≠ 0 by positivity)
+  have hd' : ((g : ℂ) ^ (2 : ℕ) + 1) ≠ 0 := by simpa [add_comm] using hd
   simp [ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn, Matrix.det_fin_three]
   field_simp [hd']
   ring
@@ -73,9 +73,9 @@ theorem ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn_conjugates
         ccmActualHeadMatchedLocalChiralHermitianModel g r *
         (ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn g)ᴴ =
       ccmActualHeadMatchedLocalChiralHermitianModel g (-r) := by
-  have hd : (1 + (g : ℂ) ^ 2) ≠ 0 := by
-    exact_mod_cast (show (1 + g ^ 2 : ℝ) ≠ 0 by positivity)
-  have hd' : ((g : ℂ) ^ 2 + 1) ≠ 0 := by simpa [add_comm] using hd
+  have hd : (1 + (g : ℂ) ^ (2 : ℕ)) ≠ 0 := by
+    exact_mod_cast (show (1 + g ^ (2 : ℕ) : ℝ) ≠ 0 by positivity)
+  have hd' : ((g : ℂ) ^ (2 : ℕ) + 1) ≠ 0 := by simpa [add_comm] using hd
   rw [ccmActualHeadMatchedLocalChiralSourceReflectionHalfTurn_conjTranspose]
   ext i j
   fin_cases i <;> fin_cases j <;>

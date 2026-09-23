@@ -136,14 +136,14 @@ theorem seminorm_dualCartanGraphNullSequence
     (hinv : ∀ (t : ℝ) (u : E), p (V t u) = p u)
     (n : ℕ) :
     p (dualCartanGraphNullSequence V x z n) =
-      Real.exp (-((n : ℝ) * z.re ^ 2)) * p x := by
+      Real.exp (-((n : ℝ) * z.re ^ (2 : ℕ))) * p x := by
   rw [dualCartanGraphNullSequence]
   calc
     p (Complex.exp (-((((n : ℝ) * z.re : ℝ) : ℂ) * z)) •
         V ((n : ℝ) * z.re) x) =
         ‖Complex.exp (-((((n : ℝ) * z.re : ℝ) : ℂ) * z))‖ *
           p (V ((n : ℝ) * z.re) x) := p.smul' _ _
-    _ = Real.exp (-((n : ℝ) * z.re ^ 2)) * p x := by
+    _ = Real.exp (-((n : ℝ) * z.re ^ (2 : ℕ))) * p x := by
       rw [hinv, Complex.norm_exp]
       congr 2
       simp only [Complex.neg_re, Complex.mul_re, Complex.ofReal_re,
@@ -160,14 +160,14 @@ theorem seminorm_dualCartanGraphNullSequence_tendsto_zero
     (hz : z.re ≠ 0) :
     Filter.Tendsto (fun n => p (dualCartanGraphNullSequence V x z n))
       Filter.atTop (nhds 0) := by
-  have hsq : 0 < z.re ^ 2 := sq_pos_of_ne_zero hz
+  have hsq : 0 < z.re ^ (2 : ℕ) := sq_pos_of_ne_zero hz
   have htop :
-      Filter.Tendsto (fun n : ℕ => (n : ℝ) * z.re ^ 2)
+      Filter.Tendsto (fun n : ℕ => (n : ℝ) * z.re ^ (2 : ℕ))
         Filter.atTop Filter.atTop :=
     tendsto_natCast_atTop_atTop.atTop_mul_const hsq
   have hdecay :
       Filter.Tendsto
-        (fun n : ℕ => Real.exp (-((n : ℝ) * z.re ^ 2)))
+        (fun n : ℕ => Real.exp (-((n : ℝ) * z.re ^ (2 : ℕ))))
         Filter.atTop (𝓝 0) :=
     Real.tendsto_exp_atBot.comp
       (tendsto_neg_atTop_atBot.comp htop)

@@ -70,14 +70,14 @@ theorem compactInvariant_corner (first : Bool) (w T t u : ℝ) :
 
 def cornerRadius (first : Bool) (z : Fin 4 → ℝ) : ℝ :=
   2*Real.arsinh (Real.sin (z 2)*Real.sqrt (cornerFactor first (Real.exp (z 0))
-    (Real.exp (z 1)) (Real.sin (z 2)^2) (Real.sin (z 3)^2)))
+    (Real.exp (z 1)) (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))))
 
 @[fun_prop] theorem cornerFactor_chart_smooth (first : Bool) :
     ContDiff ℝ ∞ (fun z : Fin 4 → ℝ => cornerFactor first (Real.exp (z 0))
-      (Real.exp (z 1)) (Real.sin (z 2)^2) (Real.sin (z 3)^2)) := by
+      (Real.exp (z 1)) (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))) := by
   have hd (z : Fin 4 → ℝ) :
       (1+Real.exp (-Real.exp (z 0)))*
-        (2-radialLoss first (Real.sin (z 2)^2) (Real.sin (z 3)^2)) ≠ 0 := by
+        (2-radialLoss first (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))) ≠ 0 := by
     apply mul_ne_zero (ne_of_gt (by positivity))
     have h := (radialLoss_bounds first
       ⟨sq_nonneg (Real.sin (z 2)),Real.sin_sq_le_one (z 2)⟩
@@ -91,7 +91,7 @@ def cornerRadius (first : Bool) (z : Fin 4 → ℝ) : ℝ :=
 
 @[fun_prop] theorem cornerRadius_smooth (first : Bool) : ContDiff ℝ ∞ (cornerRadius first) := by
   have hp (z : Fin 4 → ℝ) : 0 < cornerFactor first (Real.exp (z 0)) (Real.exp (z 1))
-      (Real.sin (z 2)^2) (Real.sin (z 3)^2) :=
+      (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ)) :=
     cornerFactor_pos first (Real.exp_pos _) (Real.exp_pos _)
       ⟨sq_nonneg _,Real.sin_sq_le_one _⟩ ⟨sq_nonneg _,Real.sin_sq_le_one _⟩
   unfold cornerRadius
@@ -109,7 +109,7 @@ theorem compact_corner_radius (first : Bool) {w T t u : ℝ}
       compactInvariant false (Real.exp (-w-timeOffset first T t u)) (Real.exp (-w))
         (1-radialLoss first t u) := by
     rw [Real.cosh_two_mul,Real.cosh_arsinh,Real.sinh_arsinh,
-      Real.sq_sqrt (by positivity : 0 ≤ 1+(Real.sqrt t*Real.sqrt (cornerFactor first w T t u))^2),
+      Real.sq_sqrt (by positivity : 0 ≤ 1+(Real.sqrt t*Real.sqrt (cornerFactor first w T t u))^(2 : ℕ)),
       mul_pow,Real.sq_sqrt ht.1,Real.sq_sqrt hp.le]
     linear_combination -(compactInvariant_corner first w T t u)
   rw [← hc,max_eq_right (Real.one_le_cosh _),Real.arcosh_cosh]
@@ -124,7 +124,7 @@ theorem cornerRadius_eq (first : Bool) (W L : ℝ) {t u : ℝ}
         (1-radialLoss first t u))) := by
   rw [compact_corner_radius first (Real.exp_pos _) (Real.exp_pos _) ht hu]
   change 2*Real.arsinh (Real.sin (angleMap t)*Real.sqrt (cornerFactor first (Real.exp W)
-    (Real.exp L) (Real.sin (angleMap t)^2) (Real.sin (angleMap u)^2))) = _
+    (Real.exp L) (Real.sin (angleMap t)^(2 : ℕ)) (Real.sin (angleMap u)^(2 : ℕ)))) = _
   rw [angleMap_sine_square ht,angleMap_sine_square hu]
   have hs : Real.sin (angleMap t)=Real.sqrt t := by
     unfold angleMap
@@ -221,10 +221,10 @@ private theorem chartCircle_height_pos (first : Bool) (z : (Fin 5 → ℝ) × (F
 /-- Full pulse with the two-triangle Jacobian, on globally smooth target/source charts. -/
 def cornerIntegrand (first : Bool) (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (z : (Fin 5 → ℝ) × (Fin 3 → ℝ)) : ℂ :=
-  (Real.exp (z.1 2)*Real.sin (z.2 0)^2:ℝ)*
+  (Real.exp (z.1 2)*Real.sin (z.2 0)^(2 : ℕ):ℝ)*
     compactPulse q branch amp
-      (z.1 0+timeOffset first (Real.exp (z.1 2)) (Real.sin (z.2 0)^2) (Real.sin (z.2 1)^2))
-      (1-radialLoss first (Real.sin (z.2 0)^2) (Real.sin (z.2 1)^2))
+      (z.1 0+timeOffset first (Real.exp (z.1 2)) (Real.sin (z.2 0)^(2 : ℕ)) (Real.sin (z.2 1)^(2 : ℕ)))
+      (1-radialLoss first (Real.sin (z.2 0)^(2 : ℕ)) (Real.sin (z.2 1)^(2 : ℕ)))
       (fullAngularField q branch (chartCircle first z)) (fullSquarePotential q (chartCircle first z))/4
 
 /-- Every target derivative exists across the resolved characteristic corner. -/
@@ -241,23 +241,23 @@ theorem cornerIntegrand_smooth (first : Bool) (q : XiZeroCopy) (branch : Bool) (
     exact (contDiffAt_infty.mpr (fun n =>
       fullSquarePotential_smooth q _ (chartCircle_height_pos first z) n)).comp z hC.contDiffAt
   have hv : ContDiff ℝ ∞ (fun z : (Fin 5 → ℝ) × (Fin 3 → ℝ) =>
-      z.1 0+timeOffset first (Real.exp (z.1 2)) (Real.sin (z.2 0)^2) (Real.sin (z.2 1)^2)) := by
+      z.1 0+timeOffset first (Real.exp (z.1 2)) (Real.sin (z.2 0)^(2 : ℕ)) (Real.sin (z.2 1)^(2 : ℕ))) := by
     cases first <;> dsimp [timeOffset,timeScale] <;> fun_prop
   have hz : ContDiff ℝ ∞ (fun z : (Fin 5 → ℝ) × (Fin 3 → ℝ) =>
-      1-radialLoss first (Real.sin (z.2 0)^2) (Real.sin (z.2 1)^2)) := by
+      1-radialLoss first (Real.sin (z.2 0)^(2 : ℕ)) (Real.sin (z.2 1)^(2 : ℕ))) := by
     cases first <;> dsimp [radialLoss,radialScale] <;> fun_prop
   have hp (z : (Fin 5 → ℝ) × (Fin 3 → ℝ)) :
-      0<1+(1-radialLoss first (Real.sin (z.2 0)^2) (Real.sin (z.2 1)^2)) := by
+      0<1+(1-radialLoss first (Real.sin (z.2 0)^(2 : ℕ)) (Real.sin (z.2 1)^(2 : ℕ))) := by
     have h := (radialLoss_bounds first
       ⟨sq_nonneg (Real.sin (z.2 0)),Real.sin_sq_le_one (z.2 0)⟩
       ⟨sq_nonneg (Real.sin (z.2 1)),Real.sin_sq_le_one (z.2 1)⟩).2
     linarith
   have hF := compactPulse_comp_smooth q branch amp hv hz hB hQ hp
   have hJ : ContDiff ℝ ∞ (fun z : (Fin 5 → ℝ) × (Fin 3 → ℝ) =>
-      ((Real.exp (z.1 2)*Real.sin (z.2 0)^2:ℝ):ℂ)) :=
+      ((Real.exp (z.1 2)*Real.sin (z.2 0)^(2 : ℕ):ℝ):ℂ)) :=
     Complex.ofRealCLM.contDiff.comp
       (by fun_prop : ContDiff ℝ ∞ (fun z : (Fin 5 → ℝ) × (Fin 3 → ℝ) =>
-        Real.exp (z.1 2)*Real.sin (z.2 0)^2))
+        Real.exp (z.1 2)*Real.sin (z.2 0)^(2 : ℕ)))
   unfold cornerIntegrand
   simpa only [div_eq_mul_inv] using (hJ.mul hF).mul (contDiff_const (c := (4:ℂ)⁻¹))
 
@@ -474,10 +474,10 @@ private theorem cornerIntegrand_eq_sample (first : Bool) (q : XiZeroCopy) (branc
     rfl
   unfold cornerIntegrand
   rw [hc]
-  change ((Real.exp (z 2)*Real.sin (angleMap t)^2:ℝ):ℂ)*
+  change ((Real.exp (z 2)*Real.sin (angleMap t)^(2 : ℕ):ℝ):ℂ)*
     compactPulse q branch amp
-      (z 0+timeOffset first (Real.exp (z 2)) (Real.sin (angleMap t)^2) (Real.sin (angleMap u)^2))
-      (1-radialLoss first (Real.sin (angleMap t)^2) (Real.sin (angleMap u)^2)) _ _/4=_
+      (z 0+timeOffset first (Real.exp (z 2)) (Real.sin (angleMap t)^(2 : ℕ)) (Real.sin (angleMap u)^(2 : ℕ)))
+      (1-radialLoss first (Real.sin (angleMap t)^(2 : ℕ)) (Real.sin (angleMap u)^(2 : ℕ))) _ _/4=_
   rw [angleMap_sine_square ht,angleMap_sine_square hu]
   unfold upperSample
   rw [max_eq_right (sub_nonneg.mpr (radialLoss_bounds first ht hu).2)]

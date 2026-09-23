@@ -137,7 +137,7 @@ theorem tendsto_mobiusCompletedNormalConeTransfer_one
 /-- The projectivized square of the exceptional section is the reciprocal-horizon transition. -/
 @[simp] theorem neg_sq_mobiusCompletedNormalConeTransfer_one
     (X : ℂ → ℂ) (s : ℂ) :
-    -(mobiusCompletedNormalConeTransfer X 1 s) ^ 2 = -(X s)⁻¹ ^ 2 := by
+    -(mobiusCompletedNormalConeTransfer X 1 s) ^ (2 : ℕ) = -(X s)⁻¹ ^ (2 : ℕ) := by
   simp
 
 /-- **Finite mixed-curvature no-go.**  The entire two-variable normal-cone family has separated

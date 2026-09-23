@@ -27,15 +27,15 @@ noncomputable section
 power.  It retains grade weight, actual Xi height, and full-Einstein radiation norm. -/
 def hbXiPeierlsFESchwarzCanonicalWardEnergyMultiplier
     (n : ℕ) (q : XiZeroCopy) : ℝ :=
-  4 * (8 * (n : ℝ) + 5) * (q.1 : ℂ).im ^ 2 *
+  4 * (8 * (n : ℝ) + 5) * (q.1 : ℂ).im ^ (2 : ℕ) *
     ‖d4BMGaugeFixedSecondHarmonicRadiationMap q
-      (d4ThetaHawkingSelfDualQuadraticCarrierCoefficient 1 (xiSpectralPoint q), 0)‖ ^ 2
+      (d4ThetaHawkingSelfDualQuadraticCarrierCoefficient 1 (xiSpectralPoint q), 0)‖ ^ (2 : ℕ)
 
 /-- Every factor in the canonical HB Ward-energy conversion is strictly positive. -/
 theorem hbXiPeierlsFESchwarzCanonicalWardEnergyMultiplier_pos
     (n : ℕ) (q : XiZeroCopy) :
     0 < hbXiPeierlsFESchwarzCanonicalWardEnergyMultiplier n q := by
-  have him : 0 < (q.1 : ℂ).im ^ 2 :=
+  have him : 0 < (q.1 : ℂ).im ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)
   have hradiates :
       d4BMGaugeFixedSecondHarmonicRadiationMap q
@@ -53,7 +53,7 @@ theorem hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower_eq_wardEnergyMultiplier_m
     (n : ℕ) (q : XiZeroCopy) :
     hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower n q =
       hbXiPeierlsFESchwarzCanonicalWardEnergyMultiplier n q *
-        (fzzCigarParityDeningerReflectGaugeWardCharge q).re ^ 2 := by
+        (fzzCigarParityDeningerReflectGaugeWardCharge q).re ^ (2 : ℕ) := by
   rw [hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower,
     hbXiPeierlsFESchwarzFullEinsteinOrbitRadiationPower,
     hbXiPeierlsFESchwarzOrbitRadiationPower_eq_flux,
@@ -71,9 +71,9 @@ theorem hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower_eq_informationRatio_mul_f
     hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower n q =
       (hbXiPeierlsFESchwarzCanonicalWardEnergyMultiplier n q /
           fzzCigarParityDeningerInformationWardMultiplier
-              (deningerDivisorThetaEigen q).re ^ 2) *
+              (deningerDivisorThetaEigen q).re ^ (2 : ℕ)) *
         fzzCigarParityReflectedFermiInformationForce
-            (deningerDivisorThetaEigen q).re ^ 2 := by
+            (deningerDivisorThetaEigen q).re ^ (2 : ℕ) := by
   obtain ⟨h0, h1⟩ := xi_divisor_support_re_mem_open_unit q.1
   have hCpos := fzzCigarParityDeningerInformationWardMultiplier_pos h0 h1
   have hC : fzzCigarParityDeningerInformationWardMultiplier
@@ -90,9 +90,9 @@ theorem hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower_eq_pwRatio_mul_imbalance_
     (n : ℕ) (q : XiZeroCopy) (k : ℕ) :
     hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower n q =
       (hbXiPeierlsFESchwarzCanonicalWardEnergyMultiplier n q /
-          schwarzschildParikhWilczekDeningerWardMultiplier k ^ 2) *
+          schwarzschildParikhWilczekDeningerWardMultiplier k ^ (2 : ℕ)) *
         schwarzschildParikhWilczekBorelPartnerRealImbalance
-            (deningerDivisorThetaEigen q) k ^ 2 := by
+            (deningerDivisorThetaEigen q) k ^ (2 : ℕ) := by
   have hPpos := schwarzschildParikhWilczekDeningerWardMultiplier_pos k
   have hP : schwarzschildParikhWilczekDeningerWardMultiplier k ≠ 0 := ne_of_gt hPpos
   rw [hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower_eq_wardEnergyMultiplier_mul_charge_sq,
@@ -106,8 +106,8 @@ theorem hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower_eq_rbhRatio_mul_imbalance
         (reflectedBiHeatFirstDivisorCopy rho) =
       (4 * hbXiPeierlsFESchwarzCanonicalWardEnergyMultiplier n
           (reflectedBiHeatFirstDivisorCopy rho) /
-        reflectedBiHeatMultiplicityInformationWardMultiplier rho ^ 2) *
-      reflectedBiHeatMultiplicityLeadingJetNormImbalance rho ^ 2 := by
+        reflectedBiHeatMultiplicityInformationWardMultiplier rho ^ (2 : ℕ)) *
+      reflectedBiHeatMultiplicityLeadingJetNormImbalance rho ^ (2 : ℕ) := by
   have hRpos := reflectedBiHeatMultiplicityInformationWardMultiplier_pos rho
   have hR : reflectedBiHeatMultiplicityInformationWardMultiplier rho ≠ 0 := ne_of_gt hRpos
   rw [hbXiPeierlsFESchwarzCanonicalOrbitOpticalPower_eq_wardEnergyMultiplier_mul_charge_sq,

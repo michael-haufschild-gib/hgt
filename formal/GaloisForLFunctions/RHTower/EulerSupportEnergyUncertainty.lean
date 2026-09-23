@@ -280,7 +280,7 @@ theorem holderBudget_ge_of_divisorPoint {D : Set ℂ} {A : ℝ}
 
 /-! ## The tempered split -/
 
-theorem summable_primeRpow {σ : ℝ} (hσ : 1 < σ) :
+theorem summable_primeRpow_eulerSupportEnergyUncertainty {σ : ℝ} (hσ : 1 < σ) :
     Summable fun p : Nat.Primes => ((p.1 : ℕ) : ℝ) ^ (-σ) := by
   have hnat : Summable fun n : ℕ => ((n : ℝ)) ^ (-σ) := by
     simpa using Real.summable_nat_rpow_inv.mpr hσ

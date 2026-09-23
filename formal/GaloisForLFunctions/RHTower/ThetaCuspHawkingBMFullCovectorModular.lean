@@ -17,7 +17,7 @@ private theorem response_coordinates (q : XiZeroCopy) (branch : Bool) (z : Upper
 /-- The full response covector has the actual modular pullback law. -/
 theorem fullAngularCovector_modular (q : XiZeroCopy) (branch : Bool) (A : SL(2,ℤ))
     (z : UpperHalfPlane) (v : ℂ) :
-    covectorAction (fullAngularCovector q branch) (coordinates (A • z)) ((1/(denom A z)^2)*v) =
+    covectorAction (fullAngularCovector q branch) (coordinates (A • z)) ((1/(denom A z)^(2 : ℕ))*v) =
       covectorAction (fullAngularCovector q branch) (coordinates z) v := by
   apply coexact_modular_action A _ (fullAngularField_smooth q branch)
   intro w
@@ -42,7 +42,7 @@ private theorem square_action (q : XiZeroCopy) (z : UpperHalfPlane) (v : ℂ) :
 
 /-- The original quadratic source covector transforms with the actual modular Jacobian. -/
 theorem fullSquareCovector_modular (q : XiZeroCopy) (A : SL(2,ℤ)) (z : UpperHalfPlane) (v : ℂ) :
-    covectorAction (fullSquareCovector q) (coordinates (A • z)) ((1/(denom A z)^2)*v) =
+    covectorAction (fullSquareCovector q) (coordinates (A • z)) ((1/(denom A z)^(2 : ℕ))*v) =
       covectorAction (fullSquareCovector q) (coordinates z) v := by
   have h := coexact_modular_action A _ (square_smooth q) (fullSquarePotential_modular q A) z v
   simpa only [square_action] using h
@@ -89,7 +89,7 @@ private theorem gradient_action (q : XiZeroCopy) (branch : Bool) (z : UpperHalfP
 /-- The retained original gradient-source covector has the full modular tensor transformation law. -/
 theorem fullGradientCovector_modular (q : XiZeroCopy) (branch : Bool) (A : SL(2,ℤ))
     (z : UpperHalfPlane) (v : ℂ) :
-    covectorAction (fullGradientCovector q branch) (coordinates (A • z)) ((1/(denom A z)^2)*v) =
+    covectorAction (fullGradientCovector q branch) (coordinates (A • z)) ((1/(denom A z)^(2 : ℕ))*v) =
       covectorAction (fullGradientCovector q branch) (coordinates z) v := by
   have h := coexact_modular_action A _ (fullGradientEnergy_smooth q) (fullGradientEnergy_modular q A) z v
   rw [gradient_action q branch,gradient_action q branch] at h

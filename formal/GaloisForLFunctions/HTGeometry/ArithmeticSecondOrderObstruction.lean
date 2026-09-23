@@ -27,7 +27,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem arithmetic_repeated_add_defect_bound {g : ℕ → F} {C : ℝ}
     (hC : 0 ≤ C) (h0 : g 0 = 0)
     (hb : ∀ m n, ‖g (m + n) - g m - g n‖ ≤ C * ((m + n : ℕ) : ℝ)) :
-    ∀ m n, ‖g (m * n) - (m : ℝ) • g n‖ ≤ C * (m : ℝ) ^ 2 * (n : ℝ) := by
+    ∀ m n, ‖g (m * n) - (m : ℝ) • g n‖ ≤ C * (m : ℝ) ^ (2 : ℕ) * (n : ℝ) := by
   intro m n
   induction m with
   | zero => simp [h0]
@@ -56,7 +56,7 @@ theorem arithmetic_second_order_obstruction {f : ℕ → E} {g : ℕ → F}
   have hd : IsArithmeticLeibniz d := by
     intro n k
     simpa [d] using congrArg (B (f m)) (hf n k)
-  have hlin : ∀ n, ‖d n‖ ≤ (C * (m : ℝ) ^ 2 + ‖g m‖) * (n : ℝ) := by
+  have hlin : ∀ n, ‖d n‖ ≤ (C * (m : ℝ) ^ (2 : ℕ) + ‖g m‖) * (n : ℝ) := by
     intro n
     have hsplit : d n = (g (m * n) - (m : ℝ) • g n) - (n : ℝ) • g m := by
       rw [hg m n]
@@ -65,10 +65,10 @@ theorem arithmetic_second_order_obstruction {f : ℕ → E} {g : ℕ → F}
     rw [hsplit]
     calc
       _ ≤ ‖g (m * n) - (m : ℝ) • g n‖ + ‖(n : ℝ) • g m‖ := norm_sub_le _ _
-      _ ≤ C * (m : ℝ) ^ 2 * (n : ℝ) + (n : ℝ) * ‖g m‖ := by
+      _ ≤ C * (m : ℝ) ^ (2 : ℕ) * (n : ℝ) + (n : ℝ) * ‖g m‖ := by
         rw [norm_smul, Real.norm_natCast]
         exact add_le_add (arithmetic_repeated_add_defect_bound hC hg0 hb m n) le_rfl
-      _ = (C * (m : ℝ) ^ 2 + ‖g m‖) * (n : ℝ) := by ring
+      _ = (C * (m : ℝ) ^ (2 : ℕ) + ‖g m‖) * (n : ℝ) := by ring
   have hz := hd.eq_zero_of_linear_bound hlin
   intro n
   exact congrFun hz n

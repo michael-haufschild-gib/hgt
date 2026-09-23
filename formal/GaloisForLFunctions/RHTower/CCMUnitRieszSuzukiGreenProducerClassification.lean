@@ -766,7 +766,7 @@ theorem riemannHypothesis_iff_unitRieszCompletedOutgoingEnergyBounded :
   · intro hRH
     obtain ⟨B₀, hB₀, hlog⟩ :=
       exists_log_nat_bound_criticalMellinChebyshevResolventSource_of_riemannHypothesis hRH
-    refine ⟨B₀ ^ 2, sq_nonneg B₀, ?_⟩
+    refine ⟨B₀ ^ (2 : ℕ), sq_nonneg B₀, ?_⟩
     intro N hN
     rw [integral_leakDensity_unitRieszCoherentCompletedOutgoingProfile]
     rw [unitRieszCoherentCompletedOutgoingCharge_eq_resolvent_half hN]
@@ -781,7 +781,7 @@ theorem riemannHypothesis_iff_unitRieszCompletedOutgoingEnergyBounded :
     rw [integral_leakDensity_unitRieszCoherentCompletedOutgoingProfile,
       unitRieszCoherentCompletedOutgoingCharge_eq_resolvent_half hN] at hbound
     have habs : |criticalMellinChebyshevResolventSource (Real.log N)| ≤
-        (criticalMellinChebyshevResolventSource (Real.log N)) ^ 2 + 1 := by
+        (criticalMellinChebyshevResolventSource (Real.log N)) ^ (2 : ℕ) + 1 := by
       have hs := sq_nonneg (|criticalMellinChebyshevResolventSource
         (Real.log N)| - 1 / 2)
       nlinarith [sq_abs (criticalMellinChebyshevResolventSource (Real.log N))]

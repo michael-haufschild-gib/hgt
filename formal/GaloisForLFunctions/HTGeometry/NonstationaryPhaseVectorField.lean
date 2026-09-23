@@ -23,7 +23,7 @@ section Field
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 /-- The nonstationary-phase field attached to a gradient vector. -/
-noncomputable def phaseField (G : E) : E := (‖G‖ ^ 2)⁻¹ • G
+noncomputable def phaseField (G : E) : E := (‖G‖ ^ (2 : ℕ))⁻¹ • G
 
 /-- **The field differentiates the oscillation.**  Pairing the gradient with its phase field gives
 one, so the directional derivative of `e^{-itφ}` along the field is `-it e^{-itφ}`. -/
@@ -54,19 +54,19 @@ Hessian `H` is `v ↦ Hv/‖G‖² - 2⟪Hv,G⟫G/‖G‖⁴`; its trace is at m
 whenever `‖G‖ ≥ g > 0` and `‖H‖ ≤ K`.  The Laplacian term contributes the dimension and the radial
 term contributes two. -/
 theorem abs_trace_le_of_phaseFieldDeriv (H : E →L[ℝ] E) (G : E) (L : E →ₗ[ℝ] E)
-    (hL : ∀ v, L v = (‖G‖ ^ 2)⁻¹ • H v - (2 * inner ℝ (H v) G / ‖G‖ ^ 4) • G)
+    (hL : ∀ v, L v = (‖G‖ ^ (2 : ℕ))⁻¹ • H v - (2 * inner ℝ (H v) G / ‖G‖ ^ (4 : ℕ)) • G)
     {g K : ℝ} (hg : 0 < g) (hG : g ≤ ‖G‖) (hK : ‖H‖ ≤ K) :
-    |LinearMap.trace ℝ E L| ≤ ((Module.finrank ℝ E : ℝ) + 2) * K / g ^ 2 := by
+    |LinearMap.trace ℝ E L| ≤ ((Module.finrank ℝ E : ℝ) + 2) * K / g ^ (2 : ℕ) := by
   classical
   set d := Module.finrank ℝ E with hd
   set b := stdOrthonormalBasis ℝ E with hb
   have hpos : 0 < ‖G‖ := lt_of_lt_of_le hg hG
-  have hN2 : (0 : ℝ) < ‖G‖ ^ 2 := by positivity
-  have hN4 : (0 : ℝ) < ‖G‖ ^ 4 := by positivity
+  have hN2 : (0 : ℝ) < ‖G‖ ^ (2 : ℕ) := by positivity
+  have hN4 : (0 : ℝ) < ‖G‖ ^ (4 : ℕ) := by positivity
   set T₁ : ℝ := ∑ i, inner ℝ (b i) (H (b i)) with hT₁
   set T₂ : ℝ := ∑ i, inner ℝ (H (b i)) G * inner ℝ (b i) G with hT₂
   -- the trace splits into the Laplacian and the radial term
-  have htrace : LinearMap.trace ℝ E L = (‖G‖ ^ 2)⁻¹ * T₁ - (2 / ‖G‖ ^ 4) * T₂ := by
+  have htrace : LinearMap.trace ℝ E L = (‖G‖ ^ (2 : ℕ))⁻¹ * T₁ - (2 / ‖G‖ ^ (4 : ℕ)) * T₂ := by
     rw [LinearMap.trace_eq_sum_inner L b, hT₁, hT₂, Finset.mul_sum, Finset.mul_sum,
       ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -93,41 +93,41 @@ theorem abs_trace_le_of_phaseFieldDeriv (H : E →L[ℝ] E) (G : E) (L : E →�
     rw [hT₂, ← b.sum_inner_mul_inner (ContinuousLinearMap.adjoint H G) G]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [ContinuousLinearMap.adjoint_inner_left, real_inner_comm (H (b i)) G]
-  have h₂bound : |T₂| ≤ ‖H‖ * ‖G‖ ^ 2 := by
+  have h₂bound : |T₂| ≤ ‖H‖ * ‖G‖ ^ (2 : ℕ) := by
     rw [h₂]
     calc |inner ℝ (ContinuousLinearMap.adjoint H G) G|
         ≤ ‖ContinuousLinearMap.adjoint H G‖ * ‖G‖ := abs_real_inner_le_norm _ _
       _ ≤ (‖ContinuousLinearMap.adjoint H‖ * ‖G‖) * ‖G‖ :=
           mul_le_mul_of_nonneg_right ((ContinuousLinearMap.adjoint H).le_opNorm _) (norm_nonneg G)
-      _ = ‖H‖ * ‖G‖ ^ 2 := by
+      _ = ‖H‖ * ‖G‖ ^ (2 : ℕ) := by
           rw [ContinuousLinearMap.adjoint.norm_map H]
           ring
   -- assemble
   have hHnn : (0 : ℝ) ≤ ‖H‖ := norm_nonneg H
   have hdnn : (0 : ℝ) ≤ (d : ℝ) := Nat.cast_nonneg d
-  have hmain : |LinearMap.trace ℝ E L| ≤ ((d : ℝ) + 2) * ‖H‖ / ‖G‖ ^ 2 := by
+  have hmain : |LinearMap.trace ℝ E L| ≤ ((d : ℝ) + 2) * ‖H‖ / ‖G‖ ^ (2 : ℕ) := by
     rw [htrace]
-    have hsplit : |(‖G‖ ^ 2)⁻¹ * T₁ - (2 / ‖G‖ ^ 4) * T₂|
-        ≤ (‖G‖ ^ 2)⁻¹ * |T₁| + (2 / ‖G‖ ^ 4) * |T₂| := by
-      calc |(‖G‖ ^ 2)⁻¹ * T₁ - (2 / ‖G‖ ^ 4) * T₂|
-          ≤ |(‖G‖ ^ 2)⁻¹ * T₁| + |(2 / ‖G‖ ^ 4) * T₂| := by
+    have hsplit : |(‖G‖ ^ (2 : ℕ))⁻¹ * T₁ - (2 / ‖G‖ ^ (4 : ℕ)) * T₂|
+        ≤ (‖G‖ ^ (2 : ℕ))⁻¹ * |T₁| + (2 / ‖G‖ ^ (4 : ℕ)) * |T₂| := by
+      calc |(‖G‖ ^ (2 : ℕ))⁻¹ * T₁ - (2 / ‖G‖ ^ (4 : ℕ)) * T₂|
+          ≤ |(‖G‖ ^ (2 : ℕ))⁻¹ * T₁| + |(2 / ‖G‖ ^ (4 : ℕ)) * T₂| := by
             rw [sub_eq_add_neg]
             refine le_trans (abs_add_le _ _) ?_
             rw [abs_neg]
-        _ = (‖G‖ ^ 2)⁻¹ * |T₁| + (2 / ‖G‖ ^ 4) * |T₂| := by
+        _ = (‖G‖ ^ (2 : ℕ))⁻¹ * |T₁| + (2 / ‖G‖ ^ (4 : ℕ)) * |T₂| := by
             rw [abs_mul, abs_mul, abs_of_nonneg (le_of_lt (inv_pos.mpr hN2)),
-              abs_of_nonneg (le_of_lt (by positivity : (0 : ℝ) < 2 / ‖G‖ ^ 4))]
-    have hfirst : (‖G‖ ^ 2)⁻¹ * |T₁| ≤ (‖G‖ ^ 2)⁻¹ * ((d : ℝ) * ‖H‖) :=
+              abs_of_nonneg (le_of_lt (by positivity : (0 : ℝ) < 2 / ‖G‖ ^ (4 : ℕ)))]
+    have hfirst : (‖G‖ ^ (2 : ℕ))⁻¹ * |T₁| ≤ (‖G‖ ^ (2 : ℕ))⁻¹ * ((d : ℝ) * ‖H‖) :=
       mul_le_mul_of_nonneg_left h₁ (le_of_lt (inv_pos.mpr hN2))
-    have hsecond : (2 / ‖G‖ ^ 4) * |T₂| ≤ (2 / ‖G‖ ^ 4) * (‖H‖ * ‖G‖ ^ 2) :=
+    have hsecond : (2 / ‖G‖ ^ (4 : ℕ)) * |T₂| ≤ (2 / ‖G‖ ^ (4 : ℕ)) * (‖H‖ * ‖G‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left h₂bound (by positivity)
-    have hcollect : (‖G‖ ^ 2)⁻¹ * ((d : ℝ) * ‖H‖) + (2 / ‖G‖ ^ 4) * (‖H‖ * ‖G‖ ^ 2)
-        = ((d : ℝ) + 2) * ‖H‖ / ‖G‖ ^ 2 := by
+    have hcollect : (‖G‖ ^ (2 : ℕ))⁻¹ * ((d : ℝ) * ‖H‖) + (2 / ‖G‖ ^ (4 : ℕ)) * (‖H‖ * ‖G‖ ^ (2 : ℕ))
+        = ((d : ℝ) + 2) * ‖H‖ / ‖G‖ ^ (2 : ℕ) := by
       field_simp
     linarith [hsplit, hfirst, hsecond, hcollect.le, hcollect.ge]
   refine le_trans hmain ?_
-  have hgg : g ^ 2 ≤ ‖G‖ ^ 2 := by nlinarith [hg.le, hG]
-  have hg2 : (0 : ℝ) < g ^ 2 := by positivity
+  have hgg : g ^ (2 : ℕ) ≤ ‖G‖ ^ (2 : ℕ) := by nlinarith [hg.le, hG]
+  have hg2 : (0 : ℝ) < g ^ (2 : ℕ) := by positivity
   have hKnn : (0 : ℝ) ≤ K := le_trans hHnn hK
   rw [div_le_div_iff₀ hN2 hg2]
   nlinarith [mul_le_mul_of_nonneg_left hK (by linarith : (0:ℝ) ≤ (d : ℝ) + 2),

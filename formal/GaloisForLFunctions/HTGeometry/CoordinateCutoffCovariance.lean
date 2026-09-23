@@ -177,7 +177,7 @@ theorem hasDerivAt_twistedBump {φ φ' : ℝ → ℝ} (h : ∀ L, HasDerivAt φ 
 
 /-- The modulus square of the twisted derivative separates the two real components. -/
 theorem normSq_twistedBumpDeriv (φ φ' : ℝ → ℝ) (N L : ℝ) :
-    ‖twistedBumpDeriv φ φ' N L‖ ^ 2 = φ' L ^ 2 + N ^ 2 * φ L ^ 2 := by
+    ‖twistedBumpDeriv φ φ' N L‖ ^ (2 : ℕ) = φ' L ^ (2 : ℕ) + N ^ (2 : ℕ) * φ L ^ (2 : ℕ) := by
   rw [twistedBumpDeriv, norm_mul, mul_pow]
   have hexp : ‖Complex.exp (N * L * Complex.I)‖ = 1 := by
     rw [show ((N : ℂ) * L * Complex.I) = ((N * L : ℝ) : ℂ) * Complex.I by push_cast; ring]
@@ -188,7 +188,7 @@ theorem normSq_twistedBumpDeriv (φ φ' : ℝ → ℝ) (N L : ℝ) :
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, hre, him]
   ring
 
-theorem norm_twistedBump (φ : ℝ → ℝ) (N L : ℝ) : ‖twistedBump φ N L‖ ^ 2 = φ L ^ 2 := by
+theorem norm_twistedBump (φ : ℝ → ℝ) (N L : ℝ) : ‖twistedBump φ N L‖ ^ (2 : ℕ) = φ L ^ (2 : ℕ) := by
   rw [twistedBump, norm_mul, mul_pow]
   have hexp : ‖Complex.exp (N * L * Complex.I)‖ = 1 := by
     rw [show ((N : ℂ) * L * Complex.I) = ((N * L : ℝ) : ℂ) * Complex.I by push_cast; ring]
@@ -200,49 +200,49 @@ frequency `N` multiplies the commutator's mass by at least `δ² N²` while leav
 unchanged. -/
 theorem sq_norm_valuationCutoffCommutator_twisted_ge {φ φ' : ℝ → ℝ} {δ : ℝ} (hδ : 0 ≤ δ)
     (hbound : ∀ L, φ L ≠ 0 → δ ≤ ‖α s ν * (χ ν L - χ (ν + s) L)‖) (N L : ℝ) :
-    δ ^ 2 * (N ^ 2 * φ L ^ 2)
-      ≤ ‖valuationCutoffCommutator χ α s (fun _ => twistedBumpDeriv φ φ' N) ν L‖ ^ 2 := by
+    δ ^ (2 : ℕ) * (N ^ (2 : ℕ) * φ L ^ (2 : ℕ))
+      ≤ ‖valuationCutoffCommutator χ α s (fun _ => twistedBumpDeriv φ φ' N) ν L‖ ^ (2 : ℕ) := by
   rw [valuationCutoffCommutator_apply, norm_mul, mul_pow, normSq_twistedBumpDeriv]
   by_cases hz : φ L = 0
   · rw [hz]
     simp
     positivity
   · have hb := hbound L hz
-    have h1 : δ ^ 2 ≤ ‖α s ν * (χ ν L - χ (ν + s) L)‖ ^ 2 := by
+    have h1 : δ ^ (2 : ℕ) ≤ ‖α s ν * (χ ν L - χ (ν + s) L)‖ ^ (2 : ℕ) := by
       exact pow_le_pow_left₀ hδ hb 2
-    have h2 : N ^ 2 * φ L ^ 2 ≤ φ' L ^ 2 + N ^ 2 * φ L ^ 2 := by nlinarith [sq_nonneg (φ' L)]
+    have h2 : N ^ (2 : ℕ) * φ L ^ (2 : ℕ) ≤ φ' L ^ (2 : ℕ) + N ^ (2 : ℕ) * φ L ^ (2 : ℕ) := by nlinarith [sq_nonneg (φ' L)]
     exact mul_le_mul h1 h2 (by positivity) (by positivity)
 
 /-- **No zero-order bound.**  For every constant `C` there is a frequency whose twisted profile
 violates `‖[M_χ, S_s] ∂_L F‖₂ ≤ C ‖F‖₂`. -/
 theorem no_zero_order_bound {φ φ' : ℝ → ℝ} {δ : ℝ} (hδ : 0 < δ)
     (hbound : ∀ L, φ L ≠ 0 → δ ≤ ‖α s ν * (χ ν L - χ (ν + s) L)‖)
-    (hint : Integrable (fun L => φ L ^ 2))
-    (hpos : 0 < ∫ L, φ L ^ 2)
+    (hint : Integrable (fun L => φ L ^ (2 : ℕ)))
+    (hpos : 0 < ∫ L, φ L ^ (2 : ℕ))
     (hintc : ∀ N : ℝ,
-      Integrable (fun L => ‖valuationCutoffCommutator χ α s (fun _ => twistedBumpDeriv φ φ' N) ν L‖ ^ 2))
+      Integrable (fun L => ‖valuationCutoffCommutator χ α s (fun _ => twistedBumpDeriv φ φ' N) ν L‖ ^ (2 : ℕ)))
     (C : ℝ) :
-    ∃ N : ℝ, C * (∫ L, ‖twistedBump φ N L‖ ^ 2)
-      < ∫ L, ‖valuationCutoffCommutator χ α s (fun _ => twistedBumpDeriv φ φ' N) ν L‖ ^ 2 := by
-  obtain ⟨N, hN⟩ : ∃ N : ℝ, C < δ ^ 2 * N ^ 2 := by
-    obtain ⟨n, hn⟩ := exists_nat_gt (C / δ ^ 2)
+    ∃ N : ℝ, C * (∫ L, ‖twistedBump φ N L‖ ^ (2 : ℕ))
+      < ∫ L, ‖valuationCutoffCommutator χ α s (fun _ => twistedBumpDeriv φ φ' N) ν L‖ ^ (2 : ℕ) := by
+  obtain ⟨N, hN⟩ : ∃ N : ℝ, C < δ ^ (2 : ℕ) * N ^ (2 : ℕ) := by
+    obtain ⟨n, hn⟩ := exists_nat_gt (C / δ ^ (2 : ℕ))
     refine ⟨Real.sqrt n, ?_⟩
-    have hδ2 : 0 < δ ^ 2 := by positivity
-    have hns : Real.sqrt (n : ℝ) ^ 2 = (n : ℝ) := Real.sq_sqrt (by positivity)
+    have hδ2 : 0 < δ ^ (2 : ℕ) := by positivity
+    have hns : Real.sqrt (n : ℝ) ^ (2 : ℕ) = (n : ℝ) := Real.sq_sqrt (by positivity)
     rw [hns]
     rw [div_lt_iff₀ hδ2] at hn
     linarith
   refine ⟨N, ?_⟩
-  have hmass : (∫ L, ‖twistedBump φ N L‖ ^ 2) = ∫ L, φ L ^ 2 := by
+  have hmass : (∫ L, ‖twistedBump φ N L‖ ^ (2 : ℕ)) = ∫ L, φ L ^ (2 : ℕ) := by
     simp only [norm_twistedBump]
-  have hlow : (∫ L, δ ^ 2 * (N ^ 2 * φ L ^ 2))
-      ≤ ∫ L, ‖valuationCutoffCommutator χ α s (fun _ => twistedBumpDeriv φ φ' N) ν L‖ ^ 2 :=
-    integral_mono ((hint.const_mul (N ^ 2)).const_mul (δ ^ 2)) (hintc N)
+  have hlow : (∫ L, δ ^ (2 : ℕ) * (N ^ (2 : ℕ) * φ L ^ (2 : ℕ)))
+      ≤ ∫ L, ‖valuationCutoffCommutator χ α s (fun _ => twistedBumpDeriv φ φ' N) ν L‖ ^ (2 : ℕ) :=
+    integral_mono ((hint.const_mul (N ^ (2 : ℕ))).const_mul (δ ^ (2 : ℕ))) (hintc N)
       (fun L => sq_norm_valuationCutoffCommutator_twisted_ge hδ.le hbound N L)
-  have hcalc : (∫ L, δ ^ 2 * (N ^ 2 * φ L ^ 2)) = δ ^ 2 * N ^ 2 * ∫ L, φ L ^ 2 := by
+  have hcalc : (∫ L, δ ^ (2 : ℕ) * (N ^ (2 : ℕ) * φ L ^ (2 : ℕ))) = δ ^ (2 : ℕ) * N ^ (2 : ℕ) * ∫ L, φ L ^ (2 : ℕ) := by
     rw [integral_const_mul, integral_const_mul, mul_assoc]
   rw [hmass]
-  have : C * (∫ L, φ L ^ 2) < δ ^ 2 * N ^ 2 * ∫ L, φ L ^ 2 :=
+  have : C * (∫ L, φ L ^ (2 : ℕ)) < δ ^ (2 : ℕ) * N ^ (2 : ℕ) * ∫ L, φ L ^ (2 : ℕ) :=
     mul_lt_mul_of_pos_right hN hpos
   linarith [hcalc ▸ hlow]
 

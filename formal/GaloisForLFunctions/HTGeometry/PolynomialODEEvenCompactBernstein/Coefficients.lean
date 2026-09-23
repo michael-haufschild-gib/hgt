@@ -982,7 +982,7 @@ def rowCoefficient (a b : ℕ) : ℝ :=
   (numeratorCoefficient6 a b : ℝ)/501530650214400000000000000000000-3*(numeratorCoefficient5 a b : ℝ)/13931406950400000000000000000-(numeratorCoefficient4 a b : ℝ)/128994508800000000000000+8*(numeratorCoefficient3 a b : ℝ)/10749542400000000000-(31/8)*(numeratorCoefficient2 a b : ℝ)/298598400000000-(3/8)*(numeratorCoefficient1 a b : ℝ)/8294400000+(15/64)*(numeratorCoefficient0 a b : ℝ)/230400+ (((12 : ℕ).choose b : ℕ) : ℝ)*(
       (((8 : ℕ).choose a : ℕ) : ℝ)*((341/480 : ℝ)*(3*(341/480)-(6/19))-1/100)+
       (if 1 ≤ a then (((7 : ℕ).choose (a-1) : ℕ) : ℝ)*(35/480)*(6*(341/480)-(6/19)) else 0)+
-      (if 2 ≤ a then (((6 : ℕ).choose (a-2) : ℕ) : ℝ)*3*(35/480)^2 else 0))
+      (if 2 ≤ a then (((6 : ℕ).choose (a-2) : ℕ) : ℝ)*3*(35/480)^(2 : ℕ) else 0))
 
 end
 end HTGeometry.EvenCompactBernstein

@@ -89,7 +89,7 @@ theorem isHS_thetaSourceEscapingOddCellKernel (k : ℕ) :
 
 /-- Explicit dimension-free Hilbert--Schmidt energy decay. -/
 theorem hsNormSq_thetaSourceEscapingOddCellKernel_le (k : ℕ) :
-    hsNormSq (thetaSourceEscapingOddCellKernel k) ≤ 4 / (((k + 1 : ℕ) : ℝ) ^ 2) := by
+    hsNormSq (thetaSourceEscapingOddCellKernel k) ≤ 4 / (((k + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   let x : ℝ := hsNorm (thetaSourceSignedKernel k)
   have hx : 0 ≤ x := hsNorm_nonneg _
   have hk : 0 < (((k + 1 : ℕ) : ℝ)) := by positivity
@@ -98,14 +98,14 @@ theorem hsNormSq_thetaSourceEscapingOddCellKernel_le (k : ℕ) :
   rw [thetaSourceEscapingOddCellKernel]
   refine hbase.trans ?_
   rw [thetaSourceOddCellEscapeScale]
-  have hsquare : hsNormSq (thetaSourceSignedKernel k) = x ^ 2 := by
+  have hsquare : hsNormSq (thetaSourceSignedKernel k) = x ^ (2 : ℕ) := by
     dsimp only [x]
     rw [HilbertSchmidt.hsNorm]
     exact (Real.sq_sqrt (hsNormSq_nonneg _)).symm
   rw [hsquare]
-  have hratio : x ^ 2 ≤ (1 + x) ^ 2 := by nlinarith
-  change (4 / ((((k + 1 : ℕ) : ℝ) * (1 + x)) ^ 2)) * x ^ 2 ≤
-    4 / (((k + 1 : ℕ) : ℝ) ^ 2)
+  have hratio : x ^ (2 : ℕ) ≤ (1 + x) ^ (2 : ℕ) := by nlinarith
+  change (4 / ((((k + 1 : ℕ) : ℝ) * (1 + x)) ^ (2 : ℕ))) * x ^ (2 : ℕ) ≤
+    4 / (((k + 1 : ℕ) : ℝ) ^ (2 : ℕ))
   field_simp
   nlinarith [sq_nonneg (((k + 1 : ℕ) : ℝ)), sq_nonneg (1 + x)]
 

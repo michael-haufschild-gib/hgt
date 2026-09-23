@@ -137,7 +137,7 @@ theorem deningerCoeff_eq_smul_mode (lam : d → ℝ) (n : d → ℤ)
     (hsys₂ : ∀ (r : ℝ) (η : UnitAddTorus d), br' r η = Ya r η)
     (hfreq : 2 * Real.pi * deningerFrequency n lam ≠ 0)
     (hL2 : IntegrableOn
-      (fun r => ‖deningerCoeff n a r‖ ^ 2 + ‖deningerCoeff n b r‖ ^ 2) (Ioi (0 : ℝ))) :
+      (fun r => ‖deningerCoeff n a r‖ ^ (2 : ℕ) + ‖deningerCoeff n b r‖ ^ (2 : ℕ)) (Ioi (0 : ℝ))) :
     ∃ c : ℂ, ∀ r ∈ Ioi (0 : ℝ),
       (deningerCoeff n a r, deningerCoeff n b r)
         = c • deningerMode (2 * Real.pi * deningerFrequency n lam) r := by

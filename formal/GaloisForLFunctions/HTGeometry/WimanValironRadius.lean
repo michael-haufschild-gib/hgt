@@ -45,9 +45,9 @@ theorem exists_radius_norm_mul_logDeriv_sub_centralIndex_le
                 + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                     / (1 - Real.exp (-((N : ℝ) / (4 * L))))))
                 * |meanIndex a (Real.exp x) - (centralIndex a (Real.exp x) : ℝ)|
-              + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-                    + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-                        / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+              + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+                    + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+                        / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
                   * (Real.sqrt (2 * (N : ℝ) + 1)
                     + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                         / (1 - Real.exp (-((N : ℝ) / (4 * L))))))) := by
@@ -77,9 +77,9 @@ theorem exists_radius_point_norm_mul_logDeriv_sub_centralIndex_le
             + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                 / (1 - Real.exp (-((N : ℝ) / (4 * L))))))
             * |meanIndex a (Real.exp x) - (centralIndex a (Real.exp x) : ℝ)|
-          + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-                + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-                    / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+          + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+                + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+                    / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
               * (Real.sqrt (2 * (N : ℝ) + 1)
                 + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                     / (1 - Real.exp (-((N : ℝ) / (4 * L))))))) := by
@@ -123,9 +123,9 @@ theorem exists_radius_point_norm_mul_logDeriv_sub_centralIndex_le_closed
             * (2 * L * h
               + 2 * Real.log ((centralIndex a (Real.exp x) : ℝ) + 2 * L * h + 1
                   + 1 / (Real.exp h - 1)) / h)
-          + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-                + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-                    / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+          + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+                + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+                    / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
               * (Real.sqrt (2 * (N : ℝ) + 1)
                 + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                     / (1 - Real.exp (-((N : ℝ) / (4 * L))))))) := by
@@ -204,9 +204,9 @@ theorem exists_radius_point_wiman_valiron_bound
             * (2 * L * h
               + 2 * Real.log ((centralIndex a (Real.exp x) : ℝ) + 2 * L * h + 1
                   + 1 / (Real.exp h - 1)) / h)
-          + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-                + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-                    / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+          + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+                + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+                    / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
               * (Real.sqrt (2 * (N : ℝ) + 1)
                 + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                     / (1 - Real.exp (-((N : ℝ) / (4 * L))))))) := by

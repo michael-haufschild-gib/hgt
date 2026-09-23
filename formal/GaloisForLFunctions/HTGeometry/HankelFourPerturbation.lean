@@ -9,7 +9,7 @@ private theorem four_product_error {a b c d A B C D M δ : ℝ}
     (hb : |b| ≤ M) (hc : |c| ≤ M) (hd : |d| ≤ M)
     (hA : |A| ≤ M) (hB : |B| ≤ M) (hC : |C| ≤ M)
     (hea : |a-A| ≤ δ) (heb : |b-B| ≤ δ) (hec : |c-C| ≤ δ) (hed : |d-D| ≤ δ) :
-    |a*b*c*d-A*B*C*D| ≤ 4*M^3*δ := by
+    |a*b*c*d-A*B*C*D| ≤ 4*M^(3 : ℕ)*δ := by
   have h1 : |(a-A)*b*c*d| ≤ δ*M*M*M := by
     simp only [abs_mul]
     gcongr
@@ -33,7 +33,7 @@ theorem hankelFourDet_error_le {a b : Fin 7 → ℝ} {M δ : ℝ}
     (hM : 0 ≤ M) (hδ : 0 ≤ δ) (ha : ∀ i, |a i| ≤ M) (hb : ∀ i, |b i| ≤ M)
     (he : ∀ i, |a i-b i| ≤ δ) :
     |hankelFourDet (a 0) (a 1) (a 2) (a 3) (a 4) (a 5) (a 6)-
-      hankelFourDet (b 0) (b 1) (b 2) (b 3) (b 4) (b 5) (b 6)| ≤ 96*M^3*δ := by
+      hankelFourDet (b 0) (b 1) (b 2) (b 3) (b 4) (b 5) (b 6)| ≤ 96*M^(3 : ℕ)*δ := by
   have h0 := abs_le.mp (four_product_error hM hδ (ha 2) (ha 4) (ha 6)
     (hb 0) (hb 2) (hb 4) (he 0) (he 2) (he 4) (he 6))
   have h1 := abs_le.mp (four_product_error hM hδ (ha 2) (ha 5) (ha 5)

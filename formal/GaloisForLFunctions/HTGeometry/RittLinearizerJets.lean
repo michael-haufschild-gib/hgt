@@ -71,7 +71,7 @@ theorem shift_jet_sub_mem_jetSpan {τ : L} {q : K} (hqconst : Fr.dK q = 0)
       have h := Fr.sigma_d_eq_of_shift hqconst hshift
       have hg : Fr.σ (Fr.d^[0 + 1] τ)
           - algebraMap K L (q / Fr.ρ ^ (0 + 1)) * Fr.d^[0 + 1] τ = 0 := by
-        show Fr.σ (Fr.d τ) - algebraMap K L (q / Fr.ρ ^ 1) * Fr.d τ = 0
+        show Fr.σ (Fr.d τ) - algebraMap K L (q / Fr.ρ ^ (1 : ℕ)) * Fr.d τ = 0
         rw [pow_one, h, sub_self]
       rw [hg]
       exact Submodule.zero_mem _

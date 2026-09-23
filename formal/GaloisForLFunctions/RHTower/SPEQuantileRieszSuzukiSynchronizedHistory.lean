@@ -39,7 +39,7 @@ theorem speQuantileRieszSuzukiSynchronizedCurrentStage_add_three (n : ℕ) :
   unfold speQuantileRieszSuzukiSynchronizedCurrentStage
   apply Nat.sub_add_cancel
   calc
-    3 = 3 ^ 1 := by norm_num
+    3 = 3 ^ (1 : ℕ) := by norm_num
     _ ≤ 3 ^ (n + 1) := Nat.pow_le_pow_right (by omega) (by omega)
 
 /-- The selected history index is exactly the labelled prime power `2^(n+1)`. -/
@@ -48,7 +48,7 @@ theorem speQuantileRieszSuzukiSynchronizedHistoryIndex_add_two (n : ℕ) :
   unfold speQuantileRieszSuzukiSynchronizedHistoryIndex
   apply Nat.sub_add_cancel
   calc
-    2 = 2 ^ 1 := by norm_num
+    2 = 2 ^ (1 : ℕ) := by norm_num
     _ ≤ 2 ^ (n + 1) := Nat.pow_le_pow_right (by omega) (by omega)
 
 /-- At the literal `3^(n+1)` admission, the literal `2^(n+1)` atom belongs to retained SP-E

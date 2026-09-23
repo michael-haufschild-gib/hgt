@@ -95,22 +95,22 @@ theorem adjacentBlock_lower_product_lt
     (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂) :
     mtAdjacentBlockLowerScale endpoint i₁ *
-        mtAdjacentBlockLowerScale endpoint i₂ ^ 4 <
-      (q₁ : ℝ) * (q₂ : ℝ) ^ 4 := by
+        mtAdjacentBlockLowerScale endpoint i₂ ^ (4 : ℕ) <
+      (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) := by
   have h₁ := (mem_mtAdjacentPrimeBlock_scale_iff hendpoint i₁ q₁).mp hq₁ |>.2.1
   have h₂ := (mem_mtAdjacentPrimeBlock_scale_iff hendpoint i₂ q₂).mp hq₂ |>.2.1
   have hlower₂_nonneg : 0 ≤ mtAdjacentBlockLowerScale endpoint i₂ := by
     simp [mtAdjacentBlockLowerScale]
   have hq₁pos : 0 < (q₁ : ℝ) :=
     lt_of_le_of_lt (by simp [mtAdjacentBlockLowerScale]) h₁
-  have h₂pow : mtAdjacentBlockLowerScale endpoint i₂ ^ 4 < (q₂ : ℝ) ^ 4 :=
+  have h₂pow : mtAdjacentBlockLowerScale endpoint i₂ ^ (4 : ℕ) < (q₂ : ℝ) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ h₂ hlower₂_nonneg (by norm_num)
   calc
     mtAdjacentBlockLowerScale endpoint i₁ *
-        mtAdjacentBlockLowerScale endpoint i₂ ^ 4 ≤
-      (q₁ : ℝ) * mtAdjacentBlockLowerScale endpoint i₂ ^ 4 :=
+        mtAdjacentBlockLowerScale endpoint i₂ ^ (4 : ℕ) ≤
+      (q₁ : ℝ) * mtAdjacentBlockLowerScale endpoint i₂ ^ (4 : ℕ) :=
         mul_le_mul_of_nonneg_right h₁.le (by positivity)
-    _ < (q₁ : ℝ) * (q₂ : ℝ) ^ 4 :=
+    _ < (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) :=
       mul_lt_mul_of_pos_left h₂pow hq₁pos
 
 /-- Actual prime product is at most the product of its block upper scales. -/
@@ -119,20 +119,20 @@ theorem adjacentBlock_product_le_upper
     {i₁ i₂ : Fin t} {q₁ q₂ : ℕ}
     (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂) :
-    (q₁ : ℝ) * (q₂ : ℝ) ^ 4 ≤
+    (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) ≤
       mtAdjacentBlockUpperScale endpoint i₁ *
-        mtAdjacentBlockUpperScale endpoint i₂ ^ 4 := by
+        mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) := by
   have h₁ := (mem_mtAdjacentPrimeBlock_scale_iff hendpoint i₁ q₁).mp hq₁ |>.2.2
   have h₂ := (mem_mtAdjacentPrimeBlock_scale_iff hendpoint i₂ q₂).mp hq₂ |>.2.2
   have hupper₁_nonneg : 0 ≤ mtAdjacentBlockUpperScale endpoint i₁ := by
     simp [mtAdjacentBlockUpperScale]
   have h₂pow := pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ q₂) h₂ 4
   calc
-    (q₁ : ℝ) * (q₂ : ℝ) ^ 4 ≤
-        mtAdjacentBlockUpperScale endpoint i₁ * (q₂ : ℝ) ^ 4 :=
+    (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) ≤
+        mtAdjacentBlockUpperScale endpoint i₁ * (q₂ : ℝ) ^ (4 : ℕ) :=
       mul_le_mul_of_nonneg_right h₁ (by positivity)
     _ ≤ mtAdjacentBlockUpperScale endpoint i₁ *
-        mtAdjacentBlockUpperScale endpoint i₂ ^ 4 :=
+        mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) :=
       mul_le_mul_of_nonneg_left h₂pow hupper₁_nonneg
 
 /-- One cell upper-product is strictly below the fifth power of its block-width dilation times
@@ -147,8 +147,8 @@ theorem adjacentBlock_upper_product_lt_dilated_actual
     (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂) :
     mtAdjacentBlockUpperScale endpoint i₁ *
-        mtAdjacentBlockUpperScale endpoint i₂ ^ 4 <
-      (1 + δ) ^ 5 * ((q₁ : ℝ) * (q₂ : ℝ) ^ 4) := by
+        mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) <
+      (1 + δ) ^ (5 : ℕ) * ((q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ)) := by
   have hq₁Mem := (mem_mtAdjacentPrimeBlock_scale_iff hendpoint i₁ q₁).mp hq₁
   have hq₂Mem := (mem_mtAdjacentPrimeBlock_scale_iff hendpoint i₂ q₂).mp hq₂
   have hdilation : 0 < 1 + δ := by linarith
@@ -160,20 +160,20 @@ theorem adjacentBlock_upper_product_lt_dilated_actual
   have hq₂Pos : 0 < (q₂ : ℝ) := by exact_mod_cast hq₂Mem.1.pos
   have hupper₂Pos : 0 < mtAdjacentBlockUpperScale endpoint i₂ :=
     hq₂Pos.trans_le hq₂Mem.2.2
-  have hupper₂Pow : mtAdjacentBlockUpperScale endpoint i₂ ^ 4 <
-      ((1 + δ) * (q₂ : ℝ)) ^ 4 :=
+  have hupper₂Pow : mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) <
+      ((1 + δ) * (q₂ : ℝ)) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ hupper₂ hupper₂Pos.le (by norm_num)
   calc
     mtAdjacentBlockUpperScale endpoint i₁ *
-        mtAdjacentBlockUpperScale endpoint i₂ ^ 4 <
-      ((1 + δ) * (q₁ : ℝ)) * mtAdjacentBlockUpperScale endpoint i₂ ^ 4 :=
+        mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) <
+      ((1 + δ) * (q₁ : ℝ)) * mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) :=
         mul_lt_mul_of_pos_right hupper₁ (pow_pos hupper₂Pos 4)
-    _ < ((1 + δ) * (q₁ : ℝ)) * ((1 + δ) * (q₂ : ℝ)) ^ 4 :=
+    _ < ((1 + δ) * (q₁ : ℝ)) * ((1 + δ) * (q₂ : ℝ)) ^ (4 : ℕ) :=
       mul_lt_mul_of_pos_left hupper₂Pow (mul_pos hdilation hq₁Pos)
-    _ = (1 + δ) ^ 5 * ((q₁ : ℝ) * (q₂ : ℝ) ^ 4) := by ring
+    _ = (1 + δ) ^ (5 : ℕ) * ((q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ)) := by ring
 
 /-- A threshold-crossing cell places its actual pair in a multiplicative window of exact relative
-width `(1+δ)^5`. -/
+width `(1+δ)^(5 : ℕ)`. -/
 theorem adjacentBlock_thresholdBoundary_implies_harmanWindow
     {t : ℕ} {endpoint : ℕ → ℕ} (hendpoint : ∀ i, 1 ≤ endpoint i)
     {i₁ i₂ : Fin t} {q₁ q₂ : ℕ} {δ E : ℝ}
@@ -183,11 +183,11 @@ theorem adjacentBlock_thresholdBoundary_implies_harmanWindow
         (1 + δ) * mtAdjacentBlockLowerScale endpoint i)
     (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂)
-    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E)
+    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E)
     (hboundary : E ≤ mtAdjacentBlockUpperScale endpoint i₁ *
-      mtAdjacentBlockUpperScale endpoint i₂ ^ 4) :
-    E < (1 + δ) ^ 5 * ((q₁ : ℝ) * (q₂ : ℝ) ^ 4) ∧
-      (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E := by
+      mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ)) :
+    E < (1 + δ) ^ (5 : ℕ) * ((q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ)) ∧
+      (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E := by
   exact ⟨hboundary.trans_lt
     (adjacentBlock_upper_product_lt_dilated_actual
       hendpoint hδ hband hq₁ hq₂), hgeometry⟩
@@ -199,15 +199,15 @@ theorem adjacentBlock_good_or_thresholdBoundary
     {i₁ i₂ : Fin t} {q₁ q₂ : ℕ} {E : ℝ}
     (hq₁ : q₁ ∈ mtAdjacentPrimeBlock endpoint i₁)
     (hq₂ : q₂ ∈ mtAdjacentPrimeBlock endpoint i₂)
-    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ 4 < E) :
+    (hgeometry : (q₁ : ℝ) * (q₂ : ℝ) ^ (4 : ℕ) < E) :
     mtAdjacentBlockUpperScale endpoint i₁ *
-        mtAdjacentBlockUpperScale endpoint i₂ ^ 4 < E ∨
+        mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) < E ∨
       (mtAdjacentBlockLowerScale endpoint i₁ *
-          mtAdjacentBlockLowerScale endpoint i₂ ^ 4 < E ∧
+          mtAdjacentBlockLowerScale endpoint i₂ ^ (4 : ℕ) < E ∧
         E ≤ mtAdjacentBlockUpperScale endpoint i₁ *
-          mtAdjacentBlockUpperScale endpoint i₂ ^ 4) := by
+          mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ)) := by
   by_cases hgood : mtAdjacentBlockUpperScale endpoint i₁ *
-      mtAdjacentBlockUpperScale endpoint i₂ ^ 4 < E
+      mtAdjacentBlockUpperScale endpoint i₂ ^ (4 : ℕ) < E
   · exact Or.inl hgood
   · exact Or.inr ⟨(adjacentBlock_lower_product_lt hendpoint hq₁ hq₂).trans hgeometry,
       le_of_not_gt hgood⟩

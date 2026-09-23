@@ -84,7 +84,7 @@ theorem completeCuspResponse_compact_equation (q r : XiZeroCopy) (branch : Bool)
     inner ℂ (l2SeparatedProduct (radialWeightedValue f.angularWeighted)
       (fieldVector (physicalCoreCutoff r n).laplacian))
       (jointEmbedding (jointWaveResponse w hw (continuedCuspResidualL2 q branch a w)))-
-    w^2*inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector (physicalCoreCutoff r n)))
+    w^(2 : ℕ)*inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector (physicalCoreCutoff r n)))
       (jointEmbedding (jointWaveResponse w hw (continuedCuspResidualL2 q branch a w))) =
     -inner ℂ (l2SeparatedProduct (radialValue f) (fieldVector (physicalCoreCutoff r n)))
       (continuedCuspResidualL2 q branch a w) :=

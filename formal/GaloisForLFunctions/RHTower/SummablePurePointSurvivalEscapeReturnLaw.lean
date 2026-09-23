@@ -50,7 +50,7 @@ the exact countable spectral tail.
 -/
 def summablePurePointSurvivalRecurrenceBudget
     (p : ℕ → ℝ) (M Q : ℕ) : ℝ :=
-  (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+  (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
       ∑ k ∈ Finset.range (M - 1), p (k + 1) +
     4 * summablePurePointSurvivalTail p M
 
@@ -204,12 +204,12 @@ private theorem summablePurePointSurvivalProbability_eq_projective
 
 private theorem projectivePhase_chord_sq
     (omega : ℕ → ℝ) (t : ℝ) (k : ℕ) :
-    ‖summablePurePointProjectivePhase omega t k - 1‖ ^ 2 =
+    ‖summablePurePointProjectivePhase omega t k - 1‖ ^ (2 : ℕ) =
       2 - 2 * (summablePurePointProjectivePhase omega t k).re := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
   have hnorm :
-      (summablePurePointProjectivePhase omega t k).re ^ 2 +
-        (summablePurePointProjectivePhase omega t k).im ^ 2 = 1 := by
+      (summablePurePointProjectivePhase omega t k).re ^ (2 : ℕ) +
+        (summablePurePointProjectivePhase omega t k).im ^ (2 : ℕ) = 1 := by
     simp only [pow_two]
     rw [← Complex.normSq_apply, Complex.normSq_eq_norm_sq,
       summablePurePointProjectivePhase_norm]
@@ -229,7 +229,7 @@ private theorem summablePurePointSurvivalDeviation_le_projectivePhaseEnergy
   let z : ℕ → ℂ :=
     fun k => summablePurePointProjectivePhase omega t k
   let B : ℂ := summablePurePointProjectiveAmplitude p omega t
-  let e : ℕ → ℝ := fun k => p k * ‖z k - 1‖ ^ 2
+  let e : ℕ → ℝ := fun k => p k * ‖z k - 1‖ ^ (2 : ℕ)
   have hpC :
       Summable (fun k => (p k : ℂ)) :=
     (Complex.ofRealCLM : ℝ →L[ℝ] ℂ).summable hsum
@@ -250,7 +250,7 @@ private theorem summablePurePointSurvivalDeviation_le_projectivePhaseEnergy
             simpa only [z] using
               summablePurePointProjectivePhase_norm omega t k]
           norm_num
-    have hsq : ‖z k - 1‖ ^ 2 ≤ 4 := by
+    have hsq : ‖z k - 1‖ ^ (2 : ℕ) ≤ 4 := by
       nlinarith [norm_nonneg (z k - 1)]
     simpa only [mul_comm] using
       mul_le_mul_of_nonneg_left hsq (hp k)
@@ -379,7 +379,7 @@ theorem exists_summablePurePointSurvival_recurrence_quantitative
         summablePurePointSurvivalDeviation_le_projectivePhaseEnergy
           p omega hp hsum htotal n
     _ ≤
-        (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+        (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
             ∑ k ∈ Finset.range (M - 1), pShift k +
           4 * ∑' k : {k : ℕ // k ∉ Finset.range (M - 1)},
             pShift k := henergy

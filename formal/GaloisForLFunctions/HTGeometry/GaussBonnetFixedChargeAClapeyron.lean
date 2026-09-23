@@ -21,7 +21,7 @@ theorem egbMass_pressure_split (P Q a r : ℝ) :
 
 theorem egbMass_explicit_derivative (P Q a x : ℝ) :
     HasDerivAt (egbMass P Q a)
-      (1 / 2 - (Q ^ 2 + a ^ 2) / (2 * exp x ^ 2) + 4 * Real.pi * P * exp x ^ 2) (exp x) := by
+      (1 / 2 - (Q ^ (2 : ℕ) + a ^ (2 : ℕ)) / (2 * exp x ^ (2 : ℕ)) + 4 * Real.pi * P * exp x ^ (2 : ℕ)) (exp x) := by
   apply (egbMass_derivative P Q a x).congr_deriv
   unfold egbTemperatureB
   field_simp

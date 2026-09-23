@@ -29,10 +29,10 @@ variable {α ι : Type*} [Fintype α] [DecidableEq α] [Fintype ι] [DecidableEq
 
 theorem sum_normSq_of_orthonormal {e : ι → α → ℂ}
     (horth : ∀ j k, finiteComplexInner (e j) (e k) = if j = k then 1 else 0) (j : ι) :
-    (∑ a, ‖e j a‖ ^ 2) = 1 := by
+    (∑ a, ‖e j a‖ ^ (2 : ℕ)) = 1 := by
   have h := horth j j
   rw [if_pos rfl, finiteComplexInner] at h
-  have hre : ((∑ a, ‖e j a‖ ^ 2 : ℝ) : ℂ) = 1 := by
+  have hre : ((∑ a, ‖e j a‖ ^ (2 : ℕ) : ℝ) : ℂ) = 1 := by
     rw [← h]
     push_cast
     refine Finset.sum_congr rfl fun a _ => ?_
@@ -41,7 +41,7 @@ theorem sum_normSq_of_orthonormal {e : ι → α → ℂ}
 
 /-- The normalized collision is the unit-weight quartic sum over the squared dimension. -/
 theorem phaseCollision_eq_quartic_div (e : ι → α → ℂ) (x : α → ℝ) :
-    phaseCollision e x = (∑ j, ‖phaseAmp e j x‖ ^ 4) / (Fintype.card α : ℝ) ^ 2 := by
+    phaseCollision e x = (∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ)) / (Fintype.card α : ℝ) ^ (2 : ℕ) := by
   classical
   rcases Nat.eq_zero_or_pos (Fintype.card α) with hcard | hcard
   · have hempty : IsEmpty α := Fintype.card_eq_zero_iff.mp hcard
@@ -57,7 +57,7 @@ theorem phaseCollision_eq_quartic_div (e : ι → α → ℂ) (x : α → ℝ) :
     simp [hterm, hterm']
   · have hD : (0 : ℝ) < (Fintype.card α : ℝ) := by exact_mod_cast hcard
     have hpt : ∀ j : ι, finitePureStateFidelity (uniformPhaseSeed x) (e j)
-        = ‖phaseAmp e j x‖ ^ 2 / (Fintype.card α : ℝ) := by
+        = ‖phaseAmp e j x‖ ^ (2 : ℕ) / (Fintype.card α : ℝ) := by
       intro j
       have hinner : finiteComplexInner (uniformPhaseSeed x) (e j)
           = ((Real.sqrt ((Fintype.card α : ℝ))⁻¹ : ℝ) : ℂ) * phaseAmp e j x := by
@@ -80,9 +80,9 @@ theorem phaseCollision_eq_quartic_div (e : ι → α → ℂ) (x : α → ℝ) :
 /-- **The variance half of `(8)`.**  The normalized collision has variance at most `96|ι|/D⁴`. -/
 theorem integral_box_variance_phaseCollision_le (e : ι → α → ℂ)
     (horth : ∀ j k, finiteComplexInner (e j) (e k) = if j = k then 1 else 0) :
-    (∫ x in torusBox α, (phaseCollision e x) ^ 2) -
-        (∫ x in torusBox α, phaseCollision e x) ^ 2
-      ≤ 96 * (Fintype.card ι : ℝ) / (Fintype.card α : ℝ) ^ 4 := by
+    (∫ x in torusBox α, (phaseCollision e x) ^ (2 : ℕ)) -
+        (∫ x in torusBox α, phaseCollision e x) ^ (2 : ℕ)
+      ≤ 96 * (Fintype.card ι : ℝ) / (Fintype.card α : ℝ) ^ (4 : ℕ) := by
   classical
   rcases Nat.eq_zero_or_pos (Fintype.card α) with hcard | hcard
   · have hzero : ∀ x : α → ℝ, phaseCollision e x = 0 := by
@@ -92,34 +92,34 @@ theorem integral_box_variance_phaseCollision_le (e : ι → α → ℂ)
     simp only [hzero]
     simp [hcard]
   · have hD : (0 : ℝ) < (Fintype.card α : ℝ) := by exact_mod_cast hcard
-    have hsq : ∀ x : α → ℝ, (phaseCollision e x) ^ 2
-        = (∑ j, ‖phaseAmp e j x‖ ^ 4) ^ 2 / (Fintype.card α : ℝ) ^ 4 := by
+    have hsq : ∀ x : α → ℝ, (phaseCollision e x) ^ (2 : ℕ)
+        = (∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ)) ^ (2 : ℕ) / (Fintype.card α : ℝ) ^ (4 : ℕ) := by
       intro x
       rw [phaseCollision_eq_quartic_div, div_pow]
       congr 1
       ring
     have hmain := integral_box_variance_collision_le e horth
-    have h1 : (∫ x in torusBox α, (phaseCollision e x) ^ 2)
-        = (∫ x in torusBox α, (∑ j, ‖phaseAmp e j x‖ ^ 4) ^ 2) / (Fintype.card α : ℝ) ^ 4 := by
+    have h1 : (∫ x in torusBox α, (phaseCollision e x) ^ (2 : ℕ))
+        = (∫ x in torusBox α, (∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ)) ^ (2 : ℕ)) / (Fintype.card α : ℝ) ^ (4 : ℕ) := by
       rw [← integral_div]
       exact integral_congr_ae (Filter.Eventually.of_forall hsq)
     have h2 : (∫ x in torusBox α, phaseCollision e x)
-        = (∫ x in torusBox α, ∑ j, ‖phaseAmp e j x‖ ^ 4) / (Fintype.card α : ℝ) ^ 2 := by
+        = (∫ x in torusBox α, ∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ)) / (Fintype.card α : ℝ) ^ (2 : ℕ) := by
       rw [← integral_div]
       exact integral_congr_ae (Filter.Eventually.of_forall
         fun x => phaseCollision_eq_quartic_div e x)
     rw [h1, h2, div_pow]
-    have hpow : ((Fintype.card α : ℝ) ^ 2) ^ 2 = (Fintype.card α : ℝ) ^ 4 := by ring
+    have hpow : ((Fintype.card α : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) = (Fintype.card α : ℝ) ^ (4 : ℕ) := by ring
     rw [hpow, div_sub_div_same, div_le_div_iff_of_pos_right (by positivity)]
     exact hmain
 
 
 /-- The collision is bounded by the family size. -/
 theorem phaseCollision_le_card (e : ι → α → ℂ)
-    (he : ∀ j, (∑ a, ‖e j a‖ ^ 2) ≤ 1) (x : α → ℝ) :
+    (he : ∀ j, (∑ a, ‖e j a‖ ^ (2 : ℕ)) ≤ 1) (x : α → ℝ) :
     phaseCollision e x ≤ (Fintype.card ι : ℝ) := by
   classical
-  have hterm : ∀ j : ι, finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ 2 ≤ 1 := by
+  have hterm : ∀ j : ι, finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ (2 : ℕ) ≤ 1 := by
     intro j
     have h0 : 0 ≤ finitePureStateFidelity (uniformPhaseSeed x) (e j) :=
       fidelity_torusReplicaPhaseOrbit_nonneg _ _ _
@@ -127,12 +127,12 @@ theorem phaseCollision_le_card (e : ι → α → ℂ)
       fidelity_torusReplicaPhaseOrbit_le_one (fun _ => uniformPhaseWeights_nonneg _)
         sum_uniformPhaseWeights_le_one (he j) x
     nlinarith
-  calc phaseCollision e x = ∑ j, finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ 2 := rfl
+  calc phaseCollision e x = ∑ j, finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ (2 : ℕ) := rfl
     _ ≤ ∑ _j : ι, (1 : ℝ) := Finset.sum_le_sum fun j _ => hterm j
     _ = (Fintype.card ι : ℝ) := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
 
-theorem memLp_phaseCollision (e : ι → α → ℂ) (he : ∀ j, (∑ a, ‖e j a‖ ^ 2) ≤ 1) :
+theorem memLp_phaseCollision (e : ι → α → ℂ) (he : ∀ j, (∑ a, ‖e j a‖ ^ (2 : ℕ)) ≤ 1) :
     MemLp (phaseCollision e) 2 ((volume : Measure (α → ℝ)).restrict (torusBox α)) := by
   classical
   haveI := isFiniteMeasure_restrict_torusBox (d := α)
@@ -151,33 +151,33 @@ theorem measureReal_phaseCollision_gt_le (e : ι → α → ℂ)
     (hcard : Fintype.card ι = Fintype.card α) (hD : 0 < Fintype.card α) {κ : ℝ} (hκ : 0 < κ) :
     ((volume : Measure (α → ℝ)).restrict (torusBox α)).real
         {x | (2 + κ) / (Fintype.card α : ℝ) < phaseCollision e x}
-      ≤ 96 / (κ ^ 2 * (Fintype.card α : ℝ)) := by
+      ≤ 96 / (κ ^ (2 : ℕ) * (Fintype.card α : ℝ)) := by
   classical
   haveI : IsProbabilityMeasure ((volume : Measure (α → ℝ)).restrict (torusBox α)) :=
     ⟨by rw [Measure.restrict_apply_univ, volume_torusBox]⟩
   have hDR : (0 : ℝ) < (Fintype.card α : ℝ) := by exact_mod_cast hD
-  have he : ∀ j, (∑ a, ‖e j a‖ ^ 2) ≤ 1 := fun j => le_of_eq (sum_normSq_of_orthonormal horth j)
+  have he : ∀ j, (∑ a, ‖e j a‖ ^ (2 : ℕ)) ≤ 1 := fun j => le_of_eq (sum_normSq_of_orthonormal horth j)
   have hmem := memLp_phaseCollision e he
   have hmean : (∫ x in torusBox α, phaseCollision e x) ≤ 2 / (Fintype.card α : ℝ) := by
     have h := integral_box_phaseCollision_le e he
     rw [hcard] at h
     calc (∫ x in torusBox α, phaseCollision e x)
-        ≤ 2 * (Fintype.card α : ℝ) * ((Fintype.card α : ℝ))⁻¹ ^ 2 := h
+        ≤ 2 * (Fintype.card α : ℝ) * ((Fintype.card α : ℝ))⁻¹ ^ (2 : ℕ) := h
       _ = 2 / (Fintype.card α : ℝ) := by
           field_simp
   have hvar : Var[phaseCollision e; (volume : Measure (α → ℝ)).restrict (torusBox α)]
-      ≤ 96 / (Fintype.card α : ℝ) ^ 3 := by
+      ≤ 96 / (Fintype.card α : ℝ) ^ (3 : ℕ) := by
     rw [variance_eq_sub hmem]
     have h := integral_box_variance_phaseCollision_le e horth
     rw [hcard] at h
-    have hpt : ∀ x : α → ℝ, ((phaseCollision e) ^ 2) x = (phaseCollision e x) ^ 2 := fun x => rfl
-    calc (∫ x in torusBox α, ((phaseCollision e) ^ 2) x) -
-          (∫ x in torusBox α, phaseCollision e x) ^ 2
-        = (∫ x in torusBox α, (phaseCollision e x) ^ 2) -
-          (∫ x in torusBox α, phaseCollision e x) ^ 2 := by
+    have hpt : ∀ x : α → ℝ, ((phaseCollision e) ^ (2 : ℕ)) x = (phaseCollision e x) ^ (2 : ℕ) := fun x => rfl
+    calc (∫ x in torusBox α, ((phaseCollision e) ^ (2 : ℕ)) x) -
+          (∫ x in torusBox α, phaseCollision e x) ^ (2 : ℕ)
+        = (∫ x in torusBox α, (phaseCollision e x) ^ (2 : ℕ)) -
+          (∫ x in torusBox α, phaseCollision e x) ^ (2 : ℕ) := by
           rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
-      _ ≤ 96 * (Fintype.card α : ℝ) / (Fintype.card α : ℝ) ^ 4 := h
-      _ = 96 / (Fintype.card α : ℝ) ^ 3 := by
+      _ ≤ 96 * (Fintype.card α : ℝ) / (Fintype.card α : ℝ) ^ (4 : ℕ) := h
+      _ = 96 / (Fintype.card α : ℝ) ^ (3 : ℕ) := by
           field_simp
   have hcheb := measureReal_gt_le_of_mean_le hmem hmean hvar (κ := κ / (Fintype.card α : ℝ))
     (by positivity)

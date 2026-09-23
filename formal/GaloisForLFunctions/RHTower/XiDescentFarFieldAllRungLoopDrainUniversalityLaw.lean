@@ -23,13 +23,13 @@ theorem xiDescent_farField_allRungLocalLoopDrain
     {ρ : ℂ} (hfar : 1 < ρ.re) (k : ℕ) :
     ∃ R₀ > 0, ∀ r : ℝ, 0 < r → r < R₀ →
       loopCharge k
-          (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+          (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
             (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi) = 0 ∧
       deckChar (2 ^ k)
           (loopCharge k
-            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
               (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) = 1 ∧
-      carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ 2) = 1 ∧
+      carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)) = 1 ∧
       carrierCharge xi k ρ = 1 := by
   haveI : NeZero (2 ^ k) := ⟨pow_ne_zero k (by norm_num)⟩
   have hright : ρ ∈ rightHalf := by
@@ -39,7 +39,7 @@ theorem xiDescent_farField_allRungLocalLoopDrain
   have hxiCharge : carrierCharge xi k ρ = 1 :=
     carrierCharge_eq_one_of_ne_zero xi k hxi
   have hdescentCharge :
-      carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ 2) = 1 :=
+      carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)) = 1 :=
     (RHTower.xiDescent_carrierCharge_center_sq hright k).trans hxiCharge
   obtain ⟨R₀, hR₀, hloop⟩ :=
     deckChar_loopCharge_xiDescent_center_sq hright k
@@ -47,12 +47,12 @@ theorem xiDescent_farField_allRungLocalLoopDrain
   have hcharacter :
       deckChar (2 ^ k)
           (loopCharge k
-            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
               (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) = 1 :=
     (hloop r hr hrR).2.trans hxiCharge
   have hadditive :
       loopCharge k
-          (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+          (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
             (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi) = 0 := by
     apply deckChar_injective
     simpa using hcharacter

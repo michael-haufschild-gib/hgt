@@ -252,7 +252,7 @@ theorem logarithmicWeight_succ_mul {K : Type*} [Field K] [CharZero K]
   push_cast
   rw [div_mul_cancel₀ _ hj]
   calc
-    (-1 : K) ^ (j + 1 + 1) = (-1 : K) ^ j * (-1 : K) ^ 2 := by
+    (-1 : K) ^ (j + 1 + 1) = (-1 : K) ^ j * (-1 : K) ^ (2 : ℕ) := by
       rw [← pow_add]
     _ = (-1 : K) ^ j := by ring
 
@@ -567,7 +567,7 @@ theorem logOf_add_logOf_eq_zero_of_mul_eq_one
     rw [hinvinv]
     calc
       f⁻¹ * (PowerSeries.derivative K) f +
-          f * (-(f⁻¹) ^ 2 * (PowerSeries.derivative K) f) =
+          f * (-(f⁻¹) ^ (2 : ℕ) * (PowerSeries.derivative K) f) =
           (1 - f * f⁻¹) * (f⁻¹ * (PowerSeries.derivative K) f) := by ring
       _ = 0 := by rw [PowerSeries.mul_inv_cancel (h := hf0), sub_self, zero_mul]
   · rw [map_add, PowerSeries.constantCoeff_logOf hf,

@@ -39,7 +39,7 @@ def xiCompleteDivisorOddDirac : XiDivisorL2 →ₗ.[ℂ] XiDivisorL2 where
                 (x : XiDivisorL2) (xiZeroCopyReflectEquiv q)) 2
             apply HilbertSchmidt.memℓp_of_sq
             have hx : Summable (fun q : XiZeroCopy =>
-                ‖(xiCompleteDivisorEnergy q : ℂ) * (x : XiDivisorL2) q‖ ^ 2) := by
+                ‖(xiCompleteDivisorEnergy q : ℂ) * (x : XiDivisorL2) q‖ ^ (2 : ℕ)) := by
               simpa using x.property.summable (by norm_num)
             exact (xiZeroCopyReflectEquiv.summable_iff.mpr hx).congr fun q => by
               simp only [Function.comp_apply, xiCompleteDivisorEnergy,
@@ -148,7 +148,7 @@ theorem xiCompleteDivisorOddDirac_isSelfAdjoint :
       change Memℓp (fun q : XiZeroCopy =>
         (xiCompleteDivisorEnergy q : ℂ) * y q) 2
       apply HilbertSchmidt.memℓp_of_sq
-      have hz : Summable (fun q : XiZeroCopy => ‖z q‖ ^ 2) :=
+      have hz : Summable (fun q : XiZeroCopy => ‖z q‖ ^ (2 : ℕ)) :=
         HilbertSchmidt.summable_coe_sq z
       exact (xiZeroCopyReflectEquiv.summable_iff.mpr hz).congr fun q => by
         simp only [Function.comp_apply]
@@ -260,7 +260,7 @@ theorem norm_xiCompleteDivisorInverseWeight_le (q : XiZeroCopy) :
     (xiDivisorSpectralGap_le q)
 
 theorem summable_norm_xiCompleteDivisorInverseWeight_sq :
-    Summable fun q : XiZeroCopy => ‖xiCompleteDivisorInverseWeight q‖ ^ 2 := by
+    Summable fun q : XiZeroCopy => ‖xiCompleteDivisorInverseWeight q‖ ^ (2 : ℕ) := by
   simpa [xiCompleteDivisorInverseWeight, norm_inv, Complex.norm_real,
     Real.norm_eq_abs, abs_of_nonneg, inv_pow, one_div,
     xiCompleteDivisorEnergy] using xiSpectralPoint_inv_sq_summable

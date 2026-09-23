@@ -167,7 +167,7 @@ private theorem lambda_ne_left {s : ℂ} (hs : s.re ≤ 0) (hi : s.im ≠ 0) :
     field_simp [gammaR_ne_zero_of_im_ne hi]
   have hr : 1 ≤ (1-s).re := by simp only [Complex.sub_re,Complex.one_re]; linarith
   rw [he,← completedRiemannZeta_one_sub s,
-    completedRiemannZeta_eq_Gammaℝ_mul (by linarith : 0 < (1-s).re)]
+    completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE (by linarith : 0 < (1-s).re)]
   exact lambda_ne_right hr
 
 /-- Every nonzero finite complete quarter-lattice packet fails actual native cusp admission. -/

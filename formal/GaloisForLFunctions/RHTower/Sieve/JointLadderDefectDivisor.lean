@@ -96,13 +96,13 @@ theorem integral_normSq_jointLadderProductDefect_le_divisor {P Q : Finset ℕ} {
     {RP ηP W : ℝ} (hRP : 1 < RP) (hηP : 0 ≤ ηP) (hW : 1 ≤ W) {LP : ℕ}
     (hPprime : ∀ p ∈ P, p.Prime) (hPge : ∀ p ∈ P, RP ≤ (p : ℝ))
     {RQ : ℝ} (hRQ : 1 < RQ) (hQprime : ∀ q ∈ Q, q.Prime) (hQge : ∀ q ∈ Q, RQ ≤ (q : ℝ)) :
-    (∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q 1 B₀ RP ηP LP w‖ ^ 2)
-      ≤ (Real.log B₀ / Real.log RQ + 1) ^ 2
+    (∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q 1 B₀ RP ηP LP w‖ ^ (2 : ℕ))
+      ≤ (Real.log B₀ / Real.log RQ + 1) ^ (2 : ℕ)
         * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + ηP)⌋₊ : ℕ) : ℝ))
           * (Real.log ((⌊(B₀ : ℝ) * (1 + ηP)⌋₊ : ℕ) : ℝ) / Real.log RP
             * ∑ j ∈ Finset.range LP, (RP * (1 + ηP) ^ j * ηP + 1)
                 * ((((1 : ℕ) : ℝ) + (B₀ : ℝ)) * ηP / (RP * (1 + ηP) ^ j) + 5
-                  + (B₀ : ℝ) / (RP * (1 + ηP) ^ j) ^ 2))) := by
+                  + (B₀ : ℝ) / (RP * (1 + ηP) ^ j) ^ (2 : ℕ)))) := by
   classical
   have hRP0 : (0 : ℝ) < RP := lt_trans zero_lt_one hRP
   have hlogRP : 0 < Real.log RP := Real.log_pos hRP
@@ -146,11 +146,11 @@ theorem integral_normSq_jointLadderProductDefect_le_divisor {P Q : Finset ℕ} {
   have hmain := integral_Icc_normSq_primeShift_family_le_bound (ladderIndex P RP ηP LP)
     (fun x => x.2) (ladderGapSetAt 1 B₀ RP ηP)
     (restrictCoeff (Finset.Icc 1 B₀) (omegaQCoeff Q)) hpos hDpos hΩ hcbd hK0 hDN hKmem hW
-  have hcongr : (∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q 1 B₀ RP ηP LP w‖ ^ 2)
+  have hcongr : (∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q 1 B₀ RP ηP LP w‖ ^ (2 : ℕ))
       = ∫ w in Set.Icc (-W) W,
         ‖∑ x ∈ ladderIndex P RP ηP LP, moebiusPhase w x.2
           * logPoly (restrictCoeff (Finset.Icc 1 B₀) (omegaQCoeff Q))
-              (ladderGapSetAt 1 B₀ RP ηP x) w‖ ^ 2 := by
+              (ladderGapSetAt 1 B₀ RP ηP x) w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [jointLadderProductDefect_eq_restrict hRP.le hηP LP w]
   rw [hcongr]

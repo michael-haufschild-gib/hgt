@@ -61,18 +61,18 @@ theorem exists_primeTorsion_complete_circuitRay_avoidance_of_replicaBudget
     (hbudget :
       (((p - 1) * Fintype.card Y : ℕ) : ℝ) * (n.factorial : ℝ) *
           ((d : ℝ)⁻¹) ^ n <
-        (Real.sqrt (1 - 4 * epsilon ^ 2)) ^ (2 * n)) :
+        (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ))) ^ (2 * n)) :
     ∃ q : Fin d → ZMod p,
       ∀ a : ZMod p, a ≠ 0 → ∀ y : Y,
         epsilon < pureStateTraceDistance
           (finiteGridChoiVector p d fun i => a * q i) (target y) := by
-  let threshold := Real.sqrt (1 - 4 * epsilon ^ 2)
+  let threshold := Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ))
   have hsumSq :
-      ∑ i : Fin d, finiteGridChoiWeight d i ^ 2 = (d : ℝ)⁻¹ :=
+      ∑ i : Fin d, finiteGridChoiWeight d i ^ (2 : ℕ) = (d : ℝ)⁻¹ :=
     finiteGridChoiWeight_sq_sum hd
   have hprod : 0 < (1 / 2 - epsilon) * (1 / 2 + epsilon) :=
     mul_pos (sub_pos.mpr hepsilonHalf) (by linarith)
-  have hrad : 0 < 1 - 4 * epsilon ^ 2 := by
+  have hrad : 0 < 1 - 4 * epsilon ^ (2 : ℕ) := by
     nlinarith
   have hthreshold : 0 < threshold := Real.sqrt_pos.2 hrad
   have hcap := finiteGridCoherenceCap_card_mul_pow_le_factorial

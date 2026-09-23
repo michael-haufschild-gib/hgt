@@ -272,34 +272,34 @@ theorem tendsto_liRemoteLogPhaseAlignedDegree_div_visibilityLog
 private theorem tendsto_real_fourth_atTop
     {ι : Type*} {l : Filter ι} {H : ι → ℝ}
     (hH : Tendsto H l atTop) :
-    Tendsto (fun i => H i ^ 4) l atTop := by
+    Tendsto (fun i => H i ^ (4 : ℕ)) l atTop := by
   refine tendsto_atTop_mono' l ?_ hH
   filter_upwards [hH.eventually_gt_atTop 1] with i hi
-  have h2 : H i ≤ H i ^ 2 := by
+  have h2 : H i ≤ H i ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (by linarith : 0 ≤ H i) (by linarith : 0 ≤ H i - 1)]
-  have h4 : H i ^ 2 ≤ H i ^ 4 := by
+  have h4 : H i ^ (2 : ℕ) ≤ H i ^ (4 : ℕ) := by
     nlinarith [mul_nonneg (sq_nonneg (H i))
-      (by nlinarith [sq_nonneg (H i - 1)] : 0 ≤ H i ^ 2 - 1)]
+      (by nlinarith [sq_nonneg (H i - 1)] : 0 ≤ H i ^ (2 : ℕ) - 1)]
   exact h2.trans h4
 
 private theorem tendsto_real_eighth_atTop
     {ι : Type*} {l : Filter ι} {H : ι → ℝ}
     (hH : Tendsto H l atTop) :
-    Tendsto (fun i => H i ^ 8) l atTop := by
+    Tendsto (fun i => H i ^ (8 : ℕ)) l atTop := by
   have h4 := tendsto_real_fourth_atTop hH
   refine tendsto_atTop_mono' l ?_ h4
   filter_upwards [hH.eventually_gt_atTop 1] with i hi
-  have h4one : 1 ≤ H i ^ 4 := by
-    nlinarith [sq_nonneg (H i), sq_nonneg (H i ^ 2 - 1)]
-  nlinarith [mul_nonneg (by positivity : 0 ≤ H i ^ 4)
-    (by linarith : 0 ≤ H i ^ 4 - 1)]
+  have h4one : 1 ≤ H i ^ (4 : ℕ) := by
+    nlinarith [sq_nonneg (H i), sq_nonneg (H i ^ (2 : ℕ) - 1)]
+  nlinarith [mul_nonneg (by positivity : 0 ≤ H i ^ (4 : ℕ))
+    (by linarith : 0 ≤ H i ^ (4 : ℕ) - 1)]
 
 /-- If `x - 4 log H → 0` and `H → ∞`, then `cosh x / H⁴ → 1/2`. -/
 theorem tendsto_cosh_div_fourth_of_sub_four_log
     {ι : Type*} {l : Filter ι} {x H : ι → ℝ}
     (hH : Tendsto H l atTop)
     (hdiff : Tendsto (fun i => x i - 4 * Real.log (H i)) l (nhds 0)) :
-    Tendsto (fun i => Real.cosh (x i) / H i ^ 4) l (nhds (1 / 2)) := by
+    Tendsto (fun i => Real.cosh (x i) / H i ^ (4 : ℕ)) l (nhds (1 / 2)) := by
   let d : ι → ℝ := fun i => x i - 4 * Real.log (H i)
   have hd : Tendsto d l (nhds 0) := hdiff
   have hexp : Tendsto (fun i => Real.exp (d i)) l (nhds 1) := by
@@ -310,17 +310,17 @@ theorem tendsto_cosh_div_fourth_of_sub_four_log
   have hexpNeg : Tendsto (fun i => Real.exp (-d i)) l (nhds 1) := by
     have h0 := (Real.continuous_exp.tendsto 0).comp hneg
     simpa only [Real.exp_zero] using h0.congr' (by filter_upwards with i; rfl)
-  have hH8 : Tendsto (fun i => H i ^ 8) l atTop :=
+  have hH8 : Tendsto (fun i => H i ^ (8 : ℕ)) l atTop :=
     tendsto_real_eighth_atTop hH
-  have hsmall : Tendsto (fun i => Real.exp (-d i) / H i ^ 8) l (nhds 0) :=
+  have hsmall : Tendsto (fun i => Real.exp (-d i) / H i ^ (8 : ℕ)) l (nhds 0) :=
     Filter.Tendsto.div_atTop hexpNeg hH8
   have hsum := (hexp.add hsmall).mul_const (1 / 2 : ℝ)
   have hHpos : ∀ᶠ i in l, 0 < H i := hH.eventually_gt_atTop 0
-  have hsum' : Tendsto (fun i => Real.cosh (x i) / H i ^ 4)
+  have hsum' : Tendsto (fun i => Real.cosh (x i) / H i ^ (4 : ℕ))
       l (nhds ((1 + 0) * (1 / 2))) := hsum.congr' (by
         filter_upwards [hHpos] with i hHi
         have hH0 := ne_of_gt hHi
-        have hexpLog : Real.exp (4 * Real.log (H i)) = H i ^ 4 := by
+        have hexpLog : Real.exp (4 * Real.log (H i)) = H i ^ (4 : ℕ) := by
           have h := Real.exp_nat_mul (Real.log (H i)) 4
           rw [Real.exp_log hHi] at h
           norm_num at h ⊢
@@ -331,7 +331,7 @@ theorem tendsto_cosh_div_fourth_of_sub_four_log
         rw [Real.cosh_eq, hx, Real.exp_add, hexpLog]
         rw [show -(d i + 4 * Real.log (H i)) =
             -d i + -(4 * Real.log (H i)) by ring, Real.exp_add]
-        have hexpNegLog : Real.exp (-(4 * Real.log (H i))) = (H i ^ 4)⁻¹ := by
+        have hexpNegLog : Real.exp (-(4 * Real.log (H i))) = (H i ^ (4 : ℕ))⁻¹ := by
           rw [Real.exp_neg, hexpLog]
         rw [hexpNegLog, Real.exp_neg]
         field_simp [hH0, Real.exp_ne_zero])
@@ -347,7 +347,7 @@ theorem tendsto_liRemoteLogPhaseAlignedQuartetProfile_normalized
         liRemoteQuartetProfile (liRemoteLogPhaseAlignedDegree (a i) (T i))
             (liRemoteRadialCoordinate (a i) (T i))
             (liRemoteAngularCoordinate (a i) (T i)) /
-          (-2 * liRemoteVisibilityScale (a i) (T i) ^ 4))
+          (-2 * liRemoteVisibilityScale (a i) (T i) ^ (4 : ℕ)))
       l (nhds 1) := by
   let n : ι → ℕ := fun i => liRemoteLogPhaseAlignedDegree (a i) (T i)
   let ell : ι → ℝ := fun i => liRemoteRadialCoordinate (a i) (T i)
@@ -358,19 +358,19 @@ theorem tendsto_liRemoteLogPhaseAlignedQuartetProfile_normalized
       l (nhds 0) := by
     simpa only [n, ell, H, liRemoteLogarithmicTarget] using
       tendsto_liRemoteLogPhaseAlignedDegree_radial_sub_target hT ha
-  have hcosh : Tendsto (fun i => Real.cosh ((n i : ℝ) * ell i) / H i ^ 4)
+  have hcosh : Tendsto (fun i => Real.cosh ((n i : ℝ) * ell i) / H i ^ (4 : ℕ))
       l (nhds (1 / 2)) := tendsto_cosh_div_fourth_of_sub_four_log hH hdiff
   have hphase := tendstoModuloTwoPi_liRemoteLogPhaseAlignedDegree hT ha
   have hcos : Tendsto (fun i => Real.cos ((n i : ℝ) * theta i)) l (nhds 1) := by
     simpa only [n, theta, Real.cos_zero] using hphase.cos
-  have hH4 : Tendsto (fun i => H i ^ 4) l atTop :=
+  have hH4 : Tendsto (fun i => H i ^ (4 : ℕ)) l atTop :=
     tendsto_real_fourth_atTop hH
-  have hinv : Tendsto (fun i => (1 : ℝ) / H i ^ 4) l (nhds 0) :=
+  have hinv : Tendsto (fun i => (1 : ℝ) / H i ^ (4 : ℕ)) l (nhds 0) :=
     Filter.Tendsto.div_atTop tendsto_const_nhds hH4
   have hnorm := ((hcosh.mul hcos).sub hinv).const_mul (2 : ℝ)
   have hHpos : ∀ᶠ i in l, 0 < H i := hH.eventually_gt_atTop 0
   have hnorm' : Tendsto (fun i =>
-      liRemoteQuartetProfile (n i) (ell i) (theta i) / (-2 * H i ^ 4))
+      liRemoteQuartetProfile (n i) (ell i) (theta i) / (-2 * H i ^ (4 : ℕ)))
       l (nhds (2 * ((1 / 2) * 1 - 0))) := hnorm.congr' (by
         filter_upwards [hHpos] with i hHi
         unfold liRemoteQuartetProfile

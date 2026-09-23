@@ -24,21 +24,21 @@ namespace ZetaFisher
 `2 (M₂M₄ − M₃²) = ∑_{a,b∈s} w_a w_b x_a² x_b² (x_a − x_b)²`.  A pure symmetrization identity: each of
 the two cross-term double sums is reindexed `a ↔ b` and combined into a perfect square. -/
 theorem two_mul_dispersion {R : Type*} [CommRing R] {ι : Type*} (s : Finset ι) (w x : ι → R) :
-    2 * ((∑ i ∈ s, w i * x i ^ 2) * (∑ i ∈ s, w i * x i ^ 4) - (∑ i ∈ s, w i * x i ^ 3) ^ 2)
-      = ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ 2 * x b ^ 2 * (x a - x b) ^ 2 := by
-  set d : ι → ι → R := fun a b => w a * w b * x a ^ 2 * x b ^ 2 * (x b ^ 2 - x a * x b) with hd
+    2 * ((∑ i ∈ s, w i * x i ^ (2 : ℕ)) * (∑ i ∈ s, w i * x i ^ (4 : ℕ)) - (∑ i ∈ s, w i * x i ^ (3 : ℕ)) ^ (2 : ℕ))
+      = ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ (2 : ℕ) * x b ^ (2 : ℕ) * (x a - x b) ^ (2 : ℕ) := by
+  set d : ι → ι → R := fun a b => w a * w b * x a ^ (2 : ℕ) * x b ^ (2 : ℕ) * (x b ^ (2 : ℕ) - x a * x b) with hd
   -- expand the two products of sums into double sums
-  have hM24 : (∑ i ∈ s, w i * x i ^ 2) * (∑ i ∈ s, w i * x i ^ 4)
-      = ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ 2 * x b ^ 4 := by
+  have hM24 : (∑ i ∈ s, w i * x i ^ (2 : ℕ)) * (∑ i ∈ s, w i * x i ^ (4 : ℕ))
+      = ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ (2 : ℕ) * x b ^ (4 : ℕ) := by
     rw [Finset.sum_mul_sum]
     exact Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => by ring))
-  have hM33 : (∑ i ∈ s, w i * x i ^ 3) ^ 2
-      = ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ 3 * x b ^ 3 := by
+  have hM33 : (∑ i ∈ s, w i * x i ^ (3 : ℕ)) ^ (2 : ℕ)
+      = ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ (3 : ℕ) * x b ^ (3 : ℕ) := by
     rw [sq, Finset.sum_mul_sum]
     exact Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => by ring))
   -- combine the cross-difference into a single double sum of `d`
-  have key : (∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ 2 * x b ^ 4)
-           - (∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ 3 * x b ^ 3)
+  have key : (∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ (2 : ℕ) * x b ^ (4 : ℕ))
+           - (∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ (3 : ℕ) * x b ^ (3 : ℕ))
            = ∑ a ∈ s, ∑ b ∈ s, d a b := by
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl (fun a _ => ?_)
@@ -47,9 +47,9 @@ theorem two_mul_dispersion {R : Type*} [CommRing R] {ι : Type*} (s : Finset ι)
   have hswap : ∑ a ∈ s, ∑ b ∈ s, d a b = ∑ a ∈ s, ∑ b ∈ s, d b a := Finset.sum_comm
   rw [hM24, hM33, key]
   -- prove RHS = 2 * ∑∑ d via symmetrization, then flip
-  refine (?_ : ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ 2 * x b ^ 2 * (x a - x b) ^ 2
+  refine (?_ : ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ (2 : ℕ) * x b ^ (2 : ℕ) * (x a - x b) ^ (2 : ℕ)
       = 2 * ∑ a ∈ s, ∑ b ∈ s, d a b).symm
-  calc ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ 2 * x b ^ 2 * (x a - x b) ^ 2
+  calc ∑ a ∈ s, ∑ b ∈ s, w a * w b * x a ^ (2 : ℕ) * x b ^ (2 : ℕ) * (x a - x b) ^ (2 : ℕ)
       = ∑ a ∈ s, ∑ b ∈ s, (d a b + d b a) := by
         refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
         simp only [hd]; ring
@@ -62,13 +62,13 @@ theorem two_mul_dispersion {R : Type*} [CommRing R] {ι : Type*} (s : Finset ι)
 /-- Nonnegativity form: over an ordered field with nonnegative weights, `M₂M₄ − M₃² ≥ 0`. -/
 theorem dispersion_nonneg {R : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
     {ι : Type*} (s : Finset ι) (w x : ι → R) (hw : ∀ i ∈ s, 0 ≤ w i) :
-    0 ≤ (∑ i ∈ s, w i * x i ^ 2) * (∑ i ∈ s, w i * x i ^ 4) - (∑ i ∈ s, w i * x i ^ 3) ^ 2 := by
-  have h2 : (0 : R) ≤ 2 * ((∑ i ∈ s, w i * x i ^ 2) * (∑ i ∈ s, w i * x i ^ 4)
-      - (∑ i ∈ s, w i * x i ^ 3) ^ 2) := by
+    0 ≤ (∑ i ∈ s, w i * x i ^ (2 : ℕ)) * (∑ i ∈ s, w i * x i ^ (4 : ℕ)) - (∑ i ∈ s, w i * x i ^ (3 : ℕ)) ^ (2 : ℕ) := by
+  have h2 : (0 : R) ≤ 2 * ((∑ i ∈ s, w i * x i ^ (2 : ℕ)) * (∑ i ∈ s, w i * x i ^ (4 : ℕ))
+      - (∑ i ∈ s, w i * x i ^ (3 : ℕ)) ^ (2 : ℕ)) := by
     rw [two_mul_dispersion]
     refine Finset.sum_nonneg (fun a ha => Finset.sum_nonneg (fun b hb => ?_))
-    have heq : w a * w b * x a ^ 2 * x b ^ 2 * (x a - x b) ^ 2
-        = (w a * w b) * (x a * x b * (x a - x b)) ^ 2 := by ring
+    have heq : w a * w b * x a ^ (2 : ℕ) * x b ^ (2 : ℕ) * (x a - x b) ^ (2 : ℕ)
+        = (w a * w b) * (x a * x b * (x a - x b)) ^ (2 : ℕ) := by ring
     rw [heq]
     exact mul_nonneg (mul_nonneg (hw a ha) (hw b hb)) (sq_nonneg _)
   linarith [h2]

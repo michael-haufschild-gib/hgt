@@ -12,7 +12,7 @@ Main results:
 * `norm_pauliEnsemble_le_of_box`, `norm_pauliEnsemble_sub_le` — the generator bounds on the box.
 * `exists_uniform_margin` — a strict miss of a finite dictionary is a uniform margin.
 * `exists_rational_time_positive_mass` — **`(17)`--`(18)`**.
-* `exists_rational_witness` — **`(19)`--`(20)`**.
+* `exists_rational` — **`(19)`--`(20)`**.
 -/
 import GaloisForLFunctions.HTGeometry.CommonTimeCircuitHardness
 import GaloisForLFunctions.HTGeometry.PauliOperatorNormSandwich
@@ -304,7 +304,7 @@ theorem orbitVec_smul_generator (H : Matrix I I ℂ) (psi : I → ℂ) (c t : �
 end Rescale
 
 /-- A finite family of rationals has a positive common denominator. -/
-theorem exists_common_denominator {α : Type*} [Fintype α] (x : α → ℚ) :
+theorem exists_common_denominator_rationalCommonTimeWitness {α : Type*} [Fintype α] (x : α → ℚ) :
     ∃ D : ℕ, 0 < D ∧ ∀ a, ∃ z : ℤ, ((D : ℚ)) * x a = (z : ℚ) := by
   classical
   refine ⟨∏ a, (x a).den, Finset.prod_pos fun a _ => (x a).pos, fun a => ?_⟩
@@ -342,7 +342,7 @@ theorem exists_integer_coefficient_witness
   classical
   obtain ⟨τ, Jq, -, hτpos, -, -, hhard⟩ := exists_rational_common_time_witness w hq hwsupp hw hwne
     hcard0 hB0 hB Z hZ heps0 heps1 hr hscale hM hcard hs horizon
-  obtain ⟨D, hD0, hDdvd⟩ := exists_common_denominator Jq
+  obtain ⟨D, hD0, hDdvd⟩ := exists_common_denominator_rationalCommonTimeWitness Jq
   choose Jz hJz using hDdvd
   refine ⟨Jz, τ / (D : ℚ), by positivity, ?_⟩
   have hDreal : (0 : ℝ) < (D : ℝ) := by exact_mod_cast hD0

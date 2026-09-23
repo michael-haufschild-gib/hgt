@@ -160,7 +160,7 @@ theorem inner_eq_inner_bandComponent (c : ℝ)
 /-- Pairing a vector against its own eigencomponent returns that component's squared norm. -/
 theorem inner_self_bandComponent (c : ℝ)
     (v : GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1) (μ : ℝ) :
-    (inner ℝ v (bandComponent c v μ) : ℝ) = ‖bandComponent c v μ‖ ^ 2 := by
+    (inner ℝ v (bandComponent c v μ) : ℝ) = ‖bandComponent c v μ‖ ^ (2 : ℕ) := by
   have h := inner_eq_inner_bandComponent c v (bandComponent c v μ) (bandComponent_mem c v μ)
   rw [h, real_inner_self_eq_norm_sq]
 

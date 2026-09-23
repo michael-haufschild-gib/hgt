@@ -32,13 +32,13 @@ noncomputable section
 def gammaSewnMobiusJuliaEulerLogCoefficient (x : ℝ) (n : ℕ) : ℂ :=
   if hpow : IsPrimePow n then
     ((gammaSewnMobiusJuliaHardHalfWeightTransport x (-1)
-      (Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩) ^ 2 / Real.log n : ℝ) : ℂ)
+      (Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩) ^ (2 : ℕ) / Real.log n : ℝ) : ℂ)
   else 0
 
 /-- Exact boundary normalization on one prime-power cell. -/
 theorem xiGammaEulerBoundaryRealAmplitude_neg_one_sq_div_log
     (pe : Nat.Primes × ℕ) :
-    xiGammaEulerBoundaryRealAmplitude (-1) pe ^ 2 /
+    xiGammaEulerBoundaryRealAmplitude (-1) pe ^ (2 : ℕ) /
         Real.log (xiGammaEulerValuationNat pe) =
       1 / (pe.2 + 1 : ℝ) := by
   have hpLog : 0 < Real.log (pe.1 : ℝ) :=
@@ -57,7 +57,7 @@ theorem xiGammaEulerBoundaryRealAmplitude_neg_one_sq_div_log
     norm_num [Nat.cast_add, Nat.cast_one]
   have hamp := xiGammaEulerBoundaryRealAmplitude_sq (-1) pe
   have hamp' :
-      xiGammaEulerBoundaryRealAmplitude (-1) pe ^ 2 =
+      xiGammaEulerBoundaryRealAmplitude (-1) pe ^ (2 : ℕ) =
         Real.log (pe.1 : ℝ) := by
     rw [show -(-1 : ℝ) * Real.log (xiGammaEulerValuationNat pe) =
       Real.log (xiGammaEulerValuationNat pe) by ring,
@@ -96,17 +96,17 @@ theorem tendsto_gammaSewnMobiusJuliaEulerLogCoefficient_nhdsGT_zero
     have hdiv :
         Tendsto
           (fun x : ℝ =>
-            gammaSewnMobiusJuliaHardHalfWeightTransport x (-1) pe ^ 2 /
+            gammaSewnMobiusJuliaHardHalfWeightTransport x (-1) pe ^ (2 : ℕ) /
               Real.log n)
           (nhdsWithin (0 : ℝ) (Ioi 0))
           (nhds
-            (xiGammaEulerBoundaryRealAmplitude (-1) pe ^ 2 /
+            (xiGammaEulerBoundaryRealAmplitude (-1) pe ^ (2 : ℕ) /
               Real.log n)) :=
       hlim.div_const (Real.log n)
     have hcast := Complex.continuous_ofReal.tendsto
-      (xiGammaEulerBoundaryRealAmplitude (-1) pe ^ 2 / Real.log n) |>.comp hdiv
+      (xiGammaEulerBoundaryRealAmplitude (-1) pe ^ (2 : ℕ) / Real.log n) |>.comp hdiv
     have htarget :
-        ((xiGammaEulerBoundaryRealAmplitude (-1) pe ^ 2 / Real.log n : ℝ) : ℂ) =
+        ((xiGammaEulerBoundaryRealAmplitude (-1) pe ^ (2 : ℕ) / Real.log n : ℝ) : ℂ) =
           eulerLogDirichletCoeff n := by
       rw [← hn,
         xiGammaEulerBoundaryRealAmplitude_neg_one_sq_div_log]

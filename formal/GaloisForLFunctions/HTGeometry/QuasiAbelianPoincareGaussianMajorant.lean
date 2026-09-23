@@ -49,7 +49,7 @@ def polynomialGaussianLatticeWeight
     (ι : Type) [Fintype ι] (A : ι → ℕ) (sigma : ι → ℝ)
     (z : ι → ℤ) : ℝ :=
   ∏ i, (1 + ((z i).natAbs : ℝ)) ^ A i *
-    Real.exp (-sigma i * (z i : ℝ) ^ 2)
+    Real.exp (-sigma i * (z i : ℝ) ^ (2 : ℕ))
 
 /-- Every such weight is summable when every coordinate has strictly positive Gaussian decay. -/
 theorem summable_polynomialGaussianLatticeWeight
@@ -58,7 +58,7 @@ theorem summable_polynomialGaussianLatticeWeight
     Summable (polynomialGaussianLatticeWeight ι A sigma) := by
   change Summable (fun z : ι → ℤ =>
     ∏ i, (1 + ((z i).natAbs : ℝ)) ^ A i *
-      Real.exp (-sigma i * (z i : ℝ) ^ 2))
+      Real.exp (-sigma i * (z i : ℝ) ^ (2 : ℕ)))
   exact GaloisForLFunctions.summable_fintype_pi_polynomialGaussian
     ι A sigma hsigma
 

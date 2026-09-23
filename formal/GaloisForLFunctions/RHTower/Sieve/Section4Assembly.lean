@@ -24,20 +24,20 @@ noncomputable section
 theorem integral_Icc_normSq_logPoly_le_support_bound (a : ℕ → ℂ) {s : Finset ℕ}
     (hs0 : (0 : ℕ) ∉ s) {M : ℕ} (hsM : ∀ n ∈ s, n ≤ M) {Ω W : ℝ} (hΩ : 0 < Ω)
     (ha : ∀ n, ‖a n‖ ≤ Ω) (hW : 1 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
-      ≤ Ω ^ 2 * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (s.card : ℝ)) := by
+    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ Ω ^ (2 : ℕ) * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (s.card : ℝ)) := by
   classical
   have ha1 : ∀ n, ‖a n / (Ω : ℂ)‖ ≤ 1 := by
     intro n
     rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hΩ, div_le_one hΩ]
     exact ha n
   have hbase := integral_Icc_normSq_logPoly_le_support (fun n => a n / (Ω : ℂ)) hs0 hsM ha1 hW
-  have hrep : ∀ w : ℝ, ‖logPoly (fun n => a n / (Ω : ℂ)) s w‖ ^ 2
-      = ‖logPoly a s w‖ ^ 2 / Ω ^ 2 := by
+  have hrep : ∀ w : ℝ, ‖logPoly (fun n => a n / (Ω : ℂ)) s w‖ ^ (2 : ℕ)
+      = ‖logPoly a s w‖ ^ (2 : ℕ) / Ω ^ (2 : ℕ) := by
     intro w
     rw [logPoly_div_const, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hΩ, div_pow]
-  have hint : (∫ w in Set.Icc (-W) W, ‖logPoly (fun n => a n / (Ω : ℂ)) s w‖ ^ 2)
-      = (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2) / Ω ^ 2 := by
+  have hint : (∫ w in Set.Icc (-W) W, ‖logPoly (fun n => a n / (Ω : ℂ)) s w‖ ^ (2 : ℕ))
+      = (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ)) / Ω ^ (2 : ℕ) := by
     rw [← MeasureTheory.integral_div]
     exact MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => hrep w
   rw [hint, div_le_iff₀ (by positivity)] at hbase
@@ -51,11 +51,11 @@ theorem integral_normSq_jointOmegaPoly_le {P Q : Finset ℕ} {A₀ B₀ : ℕ} {
     (u : ℕ → ℝ) (hu : ∀ j ∈ Finset.range L, 0 < u j) (J : ℕ → ℝ)
     (hJ : ∀ j ∈ Finset.range L,
       (∫ w in Set.Icc (-W) W,
-          ‖primeBlockPoly (geomBlock P R (1 + η) j) w‖ ^ 2
-            * ‖omegaWeightedMoebiusPoly Q (geomCofactorBlockAt A₀ B₀ R η j) w‖ ^ 2) ≤ J j) :
-    (∫ w in Set.Icc (-W) W, ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ 2)
+          ‖primeBlockPoly (geomBlock P R (1 + η) j) w‖ ^ (2 : ℕ)
+            * ‖omegaWeightedMoebiusPoly Q (geomCofactorBlockAt A₀ B₀ R η j) w‖ ^ (2 : ℕ)) ≤ J j) :
+    (∫ w in Set.Icc (-W) W, ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ j ∈ Finset.range L, 1 / u j) * ∑ j ∈ Finset.range L, u j * J j)
-        + 2 * ∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q A₀ B₀ R η L w‖ ^ 2 := by
+        + 2 * ∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q A₀ B₀ R η L w‖ ^ (2 : ℕ) := by
   classical
   have hcontLad : Continuous (jointLadderProductPoly P Q A₀ B₀ R η L) := by
     refine continuous_finsetSum _ fun j _ => ?_
@@ -75,16 +75,16 @@ theorem integral_normSq_jointOmegaPoly_le {P Q : Finset ℕ} {A₀ B₀ : ℕ} {
     (F := jointLadderProductPoly P Q A₀ B₀ R η L)
     (G := fun w => -(jointLadderProductDefect P Q A₀ B₀ R η L w))
     hcontLad hcontDef.neg measurableSet_Icc (subset_refl (Set.Icc (-W) W))
-  have hneg : (∫ w in Set.Icc (-W) W, ‖-(jointLadderProductDefect P Q A₀ B₀ R η L w)‖ ^ 2)
-      = ∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q A₀ B₀ R η L w‖ ^ 2 := by
+  have hneg : (∫ w in Set.Icc (-W) W, ‖-(jointLadderProductDefect P Q A₀ B₀ R η L w)‖ ^ (2 : ℕ))
+      = ∫ w in Set.Icc (-W) W, ‖jointLadderProductDefect P Q A₀ B₀ R η L w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [norm_neg]
   rw [hneg] at hsplit
   have hharm := integral_normSq_jointLadderProductPoly_le (P := P) (Q := Q) A₀ B₀ R η u hu W
   have hstep : ∀ j ∈ Finset.range L,
       u j * (∫ w in Set.Icc (-W) W,
-          ‖primeBlockPoly (geomBlock P R (1 + η) j) w‖ ^ 2
-            * ‖logPoly (omegaQCoeff Q) (geomCofactorBlockAt A₀ B₀ R η j) w‖ ^ 2)
+          ‖primeBlockPoly (geomBlock P R (1 + η) j) w‖ ^ (2 : ℕ)
+            * ‖logPoly (omegaQCoeff Q) (geomCofactorBlockAt A₀ B₀ R η j) w‖ ^ (2 : ℕ))
         ≤ u j * J j := by
     intro j hj
     refine mul_le_mul_of_nonneg_left ?_ (hu j hj).le

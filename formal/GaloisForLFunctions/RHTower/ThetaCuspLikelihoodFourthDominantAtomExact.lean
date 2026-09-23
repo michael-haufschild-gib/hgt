@@ -20,13 +20,13 @@ theorem integrable_thetaLikelihoodFourthScore_mul_exp_higher_general
     Integrable (fun t : ℝ => thetaLikelihoodFourthScore (A * t) * Real.exp (-(B * t)))
       thetaCuspHigherLikelihoodSpectralMeasure := by
   have h4 :=
-    (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB).const_mul (A ^ 4)
+    (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB).const_mul (A ^ (4 : ℕ))
   have h3 :=
     (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 3 hB).const_mul
-      (6 * A ^ 3)
+      (6 * A ^ (3 : ℕ))
   have h2 :=
     (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 2 hB).const_mul
-      (7 * A ^ 2)
+      (7 * A ^ (2 : ℕ))
   have h1 :=
     (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 1 hB).const_mul A
   convert (((h4.sub h3).add h2).sub h1) using 1
@@ -39,24 +39,24 @@ theorem integral_thetaLikelihoodFourthScore_mul_exp_higher_eq_general
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     (∫ t : ℝ, thetaLikelihoodFourthScore (A * t) * Real.exp (-(B * t))
       ∂thetaCuspHigherLikelihoodSpectralMeasure) =
-      A ^ 4 * thetaCuspHigherLikelihoodSpectralMoment B 4 -
-        6 * A ^ 3 * thetaCuspHigherLikelihoodSpectralMoment B 3 +
-        7 * A ^ 2 * thetaCuspHigherLikelihoodSpectralMoment B 2 -
+      A ^ (4 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 4 -
+        6 * A ^ (3 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 3 +
+        7 * A ^ (2 : ℕ) * thetaCuspHigherLikelihoodSpectralMoment B 2 -
         A * thetaCuspHigherLikelihoodSpectralMoment B 1 := by
   have h4 :=
-    (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB).const_mul (A ^ 4)
+    (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB).const_mul (A ^ (4 : ℕ))
   have h3 :=
     (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 3 hB).const_mul
-      (6 * A ^ 3)
+      (6 * A ^ (3 : ℕ))
   have h2 :=
     (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 2 hB).const_mul
-      (7 * A ^ 2)
+      (7 * A ^ (2 : ℕ))
   have h1 :=
     (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 1 hB).const_mul A
-  let f4 : ℝ → ℝ := fun t => A ^ 4 * (t ^ 4 * Real.exp (-B * t))
-  let f3 : ℝ → ℝ := fun t => (6 * A ^ 3) * (t ^ 3 * Real.exp (-B * t))
-  let f2 : ℝ → ℝ := fun t => (7 * A ^ 2) * (t ^ 2 * Real.exp (-B * t))
-  let f1 : ℝ → ℝ := fun t => A * (t ^ 1 * Real.exp (-B * t))
+  let f4 : ℝ → ℝ := fun t => A ^ (4 : ℕ) * (t ^ (4 : ℕ) * Real.exp (-B * t))
+  let f3 : ℝ → ℝ := fun t => (6 * A ^ (3 : ℕ)) * (t ^ (3 : ℕ) * Real.exp (-B * t))
+  let f2 : ℝ → ℝ := fun t => (7 * A ^ (2 : ℕ)) * (t ^ (2 : ℕ) * Real.exp (-B * t))
+  let f1 : ℝ → ℝ := fun t => A * (t ^ (1 : ℕ) * Real.exp (-B * t))
   rw [show (fun t : ℝ => thetaLikelihoodFourthScore (A * t) * Real.exp (-(B * t))) =
       ((f4 - f3) + f2) - f1 by
     funext t
@@ -89,20 +89,20 @@ theorem integral_thetaLikelihoodFourthScore_dominantAtom_eq_exact
       Measure.le_sum (fun k : ℕ => thetaCuspAtomLikelihoodSpectralMeasure (k + 2)) 0
   have h4 :=
     ((integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB).mono_measure
-      hMeasure).const_mul (A ^ 4)
+      hMeasure).const_mul (A ^ (4 : ℕ))
   have h3 :=
     ((integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 3 hB).mono_measure
-      hMeasure).const_mul (6 * A ^ 3)
+      hMeasure).const_mul (6 * A ^ (3 : ℕ))
   have h2 :=
     ((integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 2 hB).mono_measure
-      hMeasure).const_mul (7 * A ^ 2)
+      hMeasure).const_mul (7 * A ^ (2 : ℕ))
   have h1 :=
     ((integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 1 hB).mono_measure
       hMeasure).const_mul A
-  let f4 : ℝ → ℝ := fun t => A ^ 4 * (t ^ 4 * Real.exp (-B * t))
-  let f3 : ℝ → ℝ := fun t => (6 * A ^ 3) * (t ^ 3 * Real.exp (-B * t))
-  let f2 : ℝ → ℝ := fun t => (7 * A ^ 2) * (t ^ 2 * Real.exp (-B * t))
-  let f1 : ℝ → ℝ := fun t => A * (t ^ 1 * Real.exp (-B * t))
+  let f4 : ℝ → ℝ := fun t => A ^ (4 : ℕ) * (t ^ (4 : ℕ) * Real.exp (-B * t))
+  let f3 : ℝ → ℝ := fun t => (6 * A ^ (3 : ℕ)) * (t ^ (3 : ℕ) * Real.exp (-B * t))
+  let f2 : ℝ → ℝ := fun t => (7 * A ^ (2 : ℕ)) * (t ^ (2 : ℕ) * Real.exp (-B * t))
+  let f1 : ℝ → ℝ := fun t => A * (t ^ (1 : ℕ) * Real.exp (-B * t))
   rw [show (fun t : ℝ => thetaLikelihoodFourthScore (A * t) * Real.exp (-(B * t))) =
       ((f4 - f3) + f2) - f1 by
     funext t

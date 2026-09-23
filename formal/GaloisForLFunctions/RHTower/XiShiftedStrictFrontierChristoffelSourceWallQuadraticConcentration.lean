@@ -23,17 +23,17 @@ noncomputable section
 private theorem not_intervalIntegrable_sq_of_sub_inv_isBigO
     {y b : ℝ} {wall : ℝ → ℝ}
     (hbig : (fun v => (v - y)⁻¹) =O[𝓝[>] y] wall) (hb : y < b) :
-    ¬IntervalIntegrable (fun v => wall v ^ 2) volume y b := by
+    ¬IntervalIntegrable (fun v => wall v ^ (2 : ℕ)) volume y b := by
   let kernel : ℝ → ℝ := fun v => (v - y)⁻¹
   have hbig' : kernel =O[𝓝[>] y] wall := by
     simpa only [kernel] using hbig
   have hderiv : ∀ᶠ v in 𝓝[>] y,
-      HasDerivAt (-kernel) (kernel v ^ 2) v := by
+      HasDerivAt (-kernel) (kernel v ^ (2 : ℕ)) v := by
     filter_upwards [self_mem_nhdsWithin] with v hv
     change y < v at hv
     have hlinear : HasDerivAt (fun z : ℝ => z - y) 1 v := by
       simpa using (hasDerivAt_id v).sub_const y
-    have hbase : HasDerivAt kernel (-(kernel v ^ 2)) v := by
+    have hbase : HasDerivAt kernel (-(kernel v ^ (2 : ℕ))) v := by
       have hbase' := hlinear.inv (sub_ne_zero.mpr hv.ne')
       have hkernel : kernel = (fun z : ℝ => z - y)⁻¹ := by
         funext z
@@ -64,7 +64,7 @@ private theorem not_intervalIntegrable_sq_of_sub_inv_isBigO
     rw [Real.norm_eq_abs, abs_of_neg (neg_lt_zero.mpr hpos)]
     ring
   have hderivBig : deriv (-kernel) =O[𝓝[>] y]
-      (fun v => wall v ^ 2) :=
+      (fun v => wall v ^ (2 : ℕ)) :=
     (hbig'.pow 2).congr' (hderiv.mono fun v hv => hv.deriv.symm) EventuallyEq.rfl
   rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hb.le]
   exact not_integrableOn_of_tendsto_norm_atTop_of_deriv_isBigO_filter
@@ -82,7 +82,7 @@ theorem not_intervalIntegrable_sq_xiShiftedCanonicalAdmissionChristoffelSourceWa
       xiShiftedHigherBlockTerminalFrontier (n + 1))
     {b : ℝ} (hb : xiShiftedHigherBlockTerminalFrontier (n + 1) < b) :
     ¬IntervalIntegrable
-      (fun v => xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1) ^ 2)
+      (fun v => xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1) ^ (2 : ℕ))
       volume (xiShiftedHigherBlockTerminalFrontier (n + 1)) b := by
   let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
   let wall : ℝ → ℝ := fun v =>
@@ -153,7 +153,7 @@ theorem not_intervalIntegrable_sq_xiShiftedCanonicalAdmissionArcsineCenteredChri
       xiShiftedHigherBlockTerminalFrontier (n + 1))
     {b : ℝ} (hb : xiShiftedHigherBlockTerminalFrontier (n + 1) < b) :
     ¬IntervalIntegrable
-      (fun v => xiShiftedCanonicalAdmissionArcsineCenteredChristoffelSourceWall v (n + 1) ^ 2)
+      (fun v => xiShiftedCanonicalAdmissionArcsineCenteredChristoffelSourceWall v (n + 1) ^ (2 : ℕ))
       volume (xiShiftedHigherBlockTerminalFrontier (n + 1)) b := by
   let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
   let wall : ℝ → ℝ := fun v =>

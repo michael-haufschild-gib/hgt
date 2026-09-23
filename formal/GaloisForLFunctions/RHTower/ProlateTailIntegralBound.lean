@@ -31,18 +31,18 @@ theorem intervalIntegral_secondMoment_mono {c K N : ℝ} {Phi : ℝ → ℝ}
     (hK : 0 < K) (hKc : K ≤ Real.sqrt c) (hcpos : 0 < c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (hmom : (∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
-      ξ ^ 2 * (normalizedProlateProfile c Phi ξ) ^ 2) ≤ N) :
-    (∫ ξ in K..(Real.sqrt c), ξ ^ 2 * (normalizedProlateProfile c Phi ξ) ^ 2) ≤ N := by
-  have hcont : Continuous fun ξ : ℝ => ξ ^ 2 * (normalizedProlateProfile c Phi ξ) ^ 2 :=
+      ξ ^ (2 : ℕ) * (normalizedProlateProfile c Phi ξ) ^ (2 : ℕ)) ≤ N) :
+    (∫ ξ in K..(Real.sqrt c), ξ ^ (2 : ℕ) * (normalizedProlateProfile c Phi ξ) ^ (2 : ℕ)) ≤ N := by
+  have hcont : Continuous fun ξ : ℝ => ξ ^ (2 : ℕ) * (normalizedProlateProfile c Phi ξ) ^ (2 : ℕ) :=
     (continuous_pow 2).mul ((continuous_normalizedProlateProfile hsm).pow 2)
   have hsqrt : 0 < Real.sqrt c := Real.sqrt_pos.2 hcpos
   have hleft : (-Real.sqrt c : ℝ) ≤ K := by linarith
   have hadd := intervalIntegral.integral_add_adjacent_intervals
-    (f := fun ξ : ℝ => ξ ^ 2 * (normalizedProlateProfile c Phi ξ) ^ 2)
+    (f := fun ξ : ℝ => ξ ^ (2 : ℕ) * (normalizedProlateProfile c Phi ξ) ^ (2 : ℕ))
     (μ := MeasureTheory.volume) (a := -Real.sqrt c) (b := K) (c := Real.sqrt c)
     (hcont.intervalIntegrable _ _) (hcont.intervalIntegrable _ _)
   have hnn : (0 : ℝ) ≤ ∫ ξ in (-Real.sqrt c)..K,
-      ξ ^ 2 * (normalizedProlateProfile c Phi ξ) ^ 2 :=
+      ξ ^ (2 : ℕ) * (normalizedProlateProfile c Phi ξ) ^ (2 : ℕ) :=
     intervalIntegral.integral_nonneg hleft fun ξ _ => by positivity
   linarith [hadd, hnn, hmom]
 
@@ -51,7 +51,7 @@ theorem normalizedProlate_tail_le {c K N : ℝ} {Phi : ℝ → ℝ}
     (hcpos : 0 < c) (hK : 0 < K) (hKc : K ≤ Real.sqrt c) (hN : 0 < N)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (hmom : (∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
-      ξ ^ 2 * (normalizedProlateProfile c Phi ξ) ^ 2) ≤ N) :
+      ξ ^ (2 : ℕ) * (normalizedProlateProfile c Phi ξ) ^ (2 : ℕ)) ≤ N) :
     |∫ ξ in K..(Real.sqrt c), normalizedProlateProfile c Phi ξ| ≤ Real.sqrt (N / K) :=
   intervalIntegral_abs_le_sqrt hK hKc hN (continuous_normalizedProlateProfile hsm)
     (intervalIntegral_secondMoment_mono hK hKc hcpos hsm hmom)
@@ -59,17 +59,17 @@ theorem normalizedProlate_tail_le {c K N : ℝ} {Phi : ℝ → ℝ}
 /-- **The tail is small when the cut is far out.**  For any target `δ` a cut past `N/δ²` works. -/
 theorem normalizedProlate_tail_lt {c K N δ : ℝ} {Phi : ℝ → ℝ}
     (hcpos : 0 < c) (hK : 0 < K) (hKc : K ≤ Real.sqrt c) (hN : 0 < N) (hδ : 0 < δ)
-    (hcut : N / δ ^ 2 < K)
+    (hcut : N / δ ^ (2 : ℕ) < K)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (hmom : (∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
-      ξ ^ 2 * (normalizedProlateProfile c Phi ξ) ^ 2) ≤ N) :
+      ξ ^ (2 : ℕ) * (normalizedProlateProfile c Phi ξ) ^ (2 : ℕ)) ≤ N) :
     |∫ ξ in K..(Real.sqrt c), normalizedProlateProfile c Phi ξ| < δ := by
   refine lt_of_le_of_lt (normalizedProlate_tail_le hcpos hK hKc hN hsm hmom) ?_
-  have hlt : N / K < δ ^ 2 := by
+  have hlt : N / K < δ ^ (2 : ℕ) := by
     rw [div_lt_iff₀ hK]
     rw [div_lt_iff₀ (by positivity)] at hcut
     nlinarith [hcut]
-  calc Real.sqrt (N / K) < Real.sqrt (δ ^ 2) := by
+  calc Real.sqrt (N / K) < Real.sqrt (δ ^ (2 : ℕ)) := by
         refine Real.sqrt_lt_sqrt (by positivity) hlt
     _ = δ := Real.sqrt_sq hδ.le
 

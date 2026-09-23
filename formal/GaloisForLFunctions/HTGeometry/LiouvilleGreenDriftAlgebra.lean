@@ -38,9 +38,9 @@ private def lgDrift (Ξ Ξ' D : ℝ → ℝ) (y : ℝ) : ℝ := Ξ' y / Ξ y - D
 theorem hasDerivAt_lgDrift (hΞ : HasDerivAt Ξ (Ξ' y) y) (hΞ' : HasDerivAt Ξ' (Ξ'' y) y)
     (hD : HasDerivAt D (D' y) y) (hΞ0 : Ξ y ≠ 0) :
     HasDerivAt (lgDrift Ξ Ξ' D)
-      (Ξ'' y / Ξ y - Ξ' y ^ 2 / Ξ y ^ 2 - D' y) y := by
+      (Ξ'' y / Ξ y - Ξ' y ^ (2 : ℕ) / Ξ y ^ (2 : ℕ) - D' y) y := by
   have hquot : HasDerivAt (fun t => Ξ' t / Ξ t)
-      ((Ξ'' y * Ξ y - Ξ' y * Ξ' y) / Ξ y ^ 2) y := HasDerivAt.fun_div hΞ' hΞ hΞ0
+      ((Ξ'' y * Ξ y - Ξ' y * Ξ' y) / Ξ y ^ (2 : ℕ)) y := HasDerivAt.fun_div hΞ' hΞ hΞ0
   have h := hquot.sub hD
   refine h.congr_deriv ?_
   field_simp
@@ -48,8 +48,8 @@ theorem hasDerivAt_lgDrift (hΞ : HasDerivAt Ξ (Ξ' y) y) (hΞ' : HasDerivAt Ξ
 /-- **The normal-form contribution of the drift.**  With `Ξ'' = Ξ'·D` the cross terms cancel and no
 `Ξ''/Ξ` survives. -/
 theorem lgDrift_normalForm (hΞ0 : Ξ y ≠ 0) (hrel : Ξ'' y = Ξ' y * D y) :
-    lgDrift Ξ Ξ' D y ^ 2 / 4 + (Ξ'' y / Ξ y - Ξ' y ^ 2 / Ξ y ^ 2 - D' y) / 2
-      = -(Ξ' y ^ 2 / (4 * Ξ y ^ 2)) + D y ^ 2 / 4 - D' y / 2 := by
+    lgDrift Ξ Ξ' D y ^ (2 : ℕ) / 4 + (Ξ'' y / Ξ y - Ξ' y ^ (2 : ℕ) / Ξ y ^ (2 : ℕ) - D' y) / 2
+      = -(Ξ' y ^ (2 : ℕ) / (4 * Ξ y ^ (2 : ℕ))) + D y ^ (2 : ℕ) / 4 - D' y / 2 := by
   rw [lgDrift, hrel]
   field_simp
   ring
@@ -59,9 +59,9 @@ theorem lgDrift_normalForm_of_hasDerivAt
     (hΞ : HasDerivAt Ξ (Ξ' y) y) (hΞ' : HasDerivAt Ξ' (Ξ'' y) y)
     (hD : HasDerivAt D (D' y) y) (hΞ0 : Ξ y ≠ 0) (hrel : Ξ'' y = Ξ' y * D y) :
     ∃ B' : ℝ, HasDerivAt (lgDrift Ξ Ξ' D) B' y ∧
-      lgDrift Ξ Ξ' D y ^ 2 / 4 + B' / 2
-        = -(Ξ' y ^ 2 / (4 * Ξ y ^ 2)) + D y ^ 2 / 4 - D' y / 2 :=
-  ⟨Ξ'' y / Ξ y - Ξ' y ^ 2 / Ξ y ^ 2 - D' y,
+      lgDrift Ξ Ξ' D y ^ (2 : ℕ) / 4 + B' / 2
+        = -(Ξ' y ^ (2 : ℕ) / (4 * Ξ y ^ (2 : ℕ))) + D y ^ (2 : ℕ) / 4 - D' y / 2 :=
+  ⟨Ξ'' y / Ξ y - Ξ' y ^ (2 : ℕ) / Ξ y ^ (2 : ℕ) - D' y,
     hasDerivAt_lgDrift hΞ hΞ' hD hΞ0, lgDrift_normalForm hΞ0 hrel⟩
 
 end GaloisForLFunctions.HTGeometry

@@ -5,8 +5,8 @@ import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSpectralWindowMass
 
 The logarithmic pseudo-hyperbolic defect has both an upper height bound and a
 canonical lower bound.  The lower bound is the disk defect
-`1 - rho_H(z, alpha)^2`, equivalently the upper-half-plane Poisson weight
-`4 * Im(z) * Im(alpha) / |z - conj(alpha)|^2`.  This file proves that bound
+`1 - rho_H(z, alpha)^(2 : ℕ)`, equivalently the upper-half-plane Poisson weight
+`4 * Im(z) * Im(alpha) / |z - conj(alpha)|^(2 : ℕ)`.  This file proves that bound
 per zero and then lifts it, with genuine analytic multiplicities, to the full
 extended spectral divisor.
 -/
@@ -18,7 +18,7 @@ namespace RiemannGaussian
 
 noncomputable section
 
-/-- The disk defect `1 - rho^2` is exactly the upper-half-plane Poisson
+/-- The disk defect `1 - rho^(2 : ℕ)` is exactly the upper-half-plane Poisson
 weight in real coordinates. -/
 theorem one_sub_sq_pairHyperbolicRadius_eq_height_div_lowerSq
     {d v a : ℝ} (hv : 0 < v) (ha : 0 < a) :

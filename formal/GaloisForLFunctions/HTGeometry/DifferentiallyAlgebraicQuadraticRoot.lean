@@ -27,7 +27,7 @@ theorem differentiallyAlgebraic_of_quadratic_relation
     (hh : AnalyticOnNhd ℂ h Set.univ)
     (hq : AnalyticOnNhd ℂ q Set.univ)
     (hs : AnalyticOnNhd ℂ s Set.univ)
-    (hrel : ∀ z, h z ^ 2 - q z * h z + s z = 0)
+    (hrel : ∀ z, h z ^ (2 : ℕ) - q z * h z + s z = 0)
     (hqDA : DifferentiallyAlgebraic q)
     (hsDA : DifferentiallyAlgebraic s) :
     DifferentiallyAlgebraic h := by
@@ -47,7 +47,7 @@ theorem differentiallyAlgebraic_of_quadratic_relation
   let qF : differentialAdjoin (RatFunc ℂ) G := ⟨qm, hqmem⟩
   let sF : differentialAdjoin (RatFunc ℂ) G := ⟨sm, hsmem⟩
   let p : Polynomial (differentialAdjoin (RatFunc ℂ) G) :=
-    Polynomial.X ^ 2 + (-Polynomial.C qF * Polynomial.X + Polynomial.C sF)
+    Polynomial.X ^ (2 : ℕ) + (-Polynomial.C qF * Polynomial.X + Polynomial.C sF)
   have hpdeg :
       (-Polynomial.C qF * Polynomial.X + Polynomial.C sF).degree < (2 : WithBot ℕ) := by
     have hqdeg : (-Polynomial.C qF * Polynomial.X).degree ≤ 1 := by
@@ -66,24 +66,24 @@ theorem differentiallyAlgebraic_of_quadratic_relation
       _ ≤ 1 := max_le hqdeg hsdeg
       _ < 2 := by norm_num
   have hpmonic : p.Monic := Polynomial.monic_X_pow_add hpdeg
-  have hfieldrel : hm ^ 2 - qm * hm + sm = 0 := by
+  have hfieldrel : hm ^ (2 : ℕ) - qm * hm + sm = 0 := by
     have hpw := analyticMeroElement_pow hh 2
     have hmul := analyticMeroElement_mul hq hh
     have hsub :
-        analyticMeroElement (fun z => h z ^ 2 - q z * h z) ((hh.pow 2).sub (hq.mul hh)) =
-          analyticMeroElement (fun z => h z ^ 2) (hh.pow 2) -
+        analyticMeroElement (fun z => h z ^ (2 : ℕ) - q z * h z) ((hh.pow 2).sub (hq.mul hh)) =
+          analyticMeroElement (fun z => h z ^ (2 : ℕ)) (hh.pow 2) -
             analyticMeroElement (fun z => q z * h z) (hq.mul hh) :=
       analyticMeroElement_sub (hh.pow 2) (hq.mul hh)
     have hadd :
-        analyticMeroElement (fun z => (h z ^ 2 - q z * h z) + s z)
+        analyticMeroElement (fun z => (h z ^ (2 : ℕ) - q z * h z) + s z)
             (((hh.pow 2).sub (hq.mul hh)).add hs) =
-          analyticMeroElement (fun z => h z ^ 2 - q z * h z)
+          analyticMeroElement (fun z => h z ^ (2 : ℕ) - q z * h z)
               ((hh.pow 2).sub (hq.mul hh)) + analyticMeroElement s hs :=
       analyticMeroElement_add ((hh.pow 2).sub (hq.mul hh)) hs
     rw [← hpw, ← hmul, ← hsub, ← hadd]
-    have hzero : (fun z => h z ^ 2 - q z * h z + s z) = 0 := funext hrel
+    have hzero : (fun z => h z ^ (2 : ℕ) - q z * h z + s z) = 0 := funext hrel
     calc
-      analyticMeroElement (fun z => h z ^ 2 - q z * h z + s z)
+      analyticMeroElement (fun z => h z ^ (2 : ℕ) - q z * h z + s z)
           (((hh.pow 2).sub (hq.mul hh)).add hs) =
           analyticMeroElement (fun _ : ℂ => 0) analyticOnNhd_const :=
         analyticMeroElement_congr _ _ hzero

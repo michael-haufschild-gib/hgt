@@ -8,7 +8,7 @@ Proposition 1.3 (`prop_102`): for `phi` in `C_c^infty(R)`,
 
 `Phat_phi(z) = integral over R of S_t^#(z) phi(t) dt`      (eq. 1.7)
 
-belongs to `L^2(R)`.  Unconditional.
+belongs to `L^(2 : ℕ)(R)`.  Unconditional.
 
 `S_t` is taken in the zero-series form `suzukiFrakSFull`, which agrees with eq. (1.5)/(1.6) for
 `t > 0` and, unlike the paper's even extension, is the object that equations (3.6)–(3.8) actually
@@ -16,11 +16,11 @@ use — see `GaloisForLFunctions.RHTower.SuzukiWeilFrakSZeroSeries` for why the 
 Lemma 3.2 and eq. (1.9) false.
 
 The published proof invokes Minkowski's integral inequality together with the uniformity of the
-`L^2` norm of `S_t` on compact sets of `t`.  Here neither is needed: the master bound of
+`L^(2 : ℕ)` norm of `S_t` on compact sets of `t`.  Here neither is needed: the master bound of
 Proposition 1.2 is *pointwise*, `‖S_t(x)‖ <= C(|t|) (1+|x|)^{-3/4}` with `C` explicit and
 nondecreasing (`suzukiFrakSConst_mono`), so on the support of `phi` it is dominated by `C(T)`, and
 
-`‖Phat_phi(x)‖ <= C(T) (1+|x|)^{-3/4} * ‖phi‖_{L^1}`
+`‖Phat_phi(x)‖ <= C(T) (1+|x|)^{-3/4} * ‖phi‖_{L^(1 : ℕ)}`
 
 follows from `‖integral‖ <= integral of ‖.‖` alone.  The same dominating function as in
 Proposition 1.2 then gives membership.  Measurability of `x |-> Phat_phi(x)` comes from the joint

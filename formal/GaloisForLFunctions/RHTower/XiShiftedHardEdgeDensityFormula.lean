@@ -87,7 +87,7 @@ theorem hasDerivAt_polarMoment (n : ℕ) {X : ℝ} (hX : 1 / 4 < X) :
     refine (hbase.inv hnepow).congr_deriv ?_
     have hun : ((X - 1 / 4) ^ n) ≠ 0 := by positivity
     have hu2 : ((X - 1 / 4) ^ (n + 2)) ≠ 0 := by positivity
-    have hpowid : ((X - 1 / 4) ^ (n + 1)) ^ 2 = (X - 1 / 4) ^ (n + 2) * (X - 1 / 4) ^ n := by
+    have hpowid : ((X - 1 / 4) ^ (n + 1)) ^ (2 : ℕ) = (X - 1 / 4) ^ (n + 2) * (X - 1 / 4) ^ n := by
       rw [← pow_mul, ← pow_add]
       congr 1
       omega
@@ -122,19 +122,19 @@ theorem hasDerivAt_routeUDensityMoment (n : ℕ) {X : ℝ} (hX : 1 / 4 < X) :
 /-! ## The base case -/
 
 theorem routeUDensityMoment_zero_eq {a : ℝ} (ha : 1 / 2 < a) :
-    routeUDensityMoment 0 (a ^ 2)
+    routeUDensityMoment 0 (a ^ (2 : ℕ))
       = ((a : ℂ))⁻¹ * (((1 / 2 : ℂ) + (a : ℂ))⁻¹ + ((1 / 2 : ℂ) + (a : ℂ) - 1)⁻¹
           + logDeriv Complex.Gammaℝ ((1 / 2 : ℂ) + (a : ℂ))
           - LSeries (fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ))
               ((1 / 2 : ℂ) + (a : ℂ))) := by
   have ha0 : (0 : ℝ) < a := by linarith
   have hane : ((a : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (ne_of_gt ha0)
-  have hX : (1 : ℝ) / 4 < a ^ 2 := by nlinarith
-  have hsqrt : Real.sqrt (a ^ 2) = a := Real.sqrt_sq ha0.le
+  have hX : (1 : ℝ) / 4 < a ^ (2 : ℕ) := by nlinarith
+  have hsqrt : Real.sqrt (a ^ (2 : ℕ)) = a := Real.sqrt_sq ha0.le
   have hpi : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (ne_of_gt Real.pi_pos)
   have hshift : ((1 / 2 : ℂ) + (a : ℂ)) = (((1 / 2 + a : ℝ)) : ℂ) := by push_cast; ring
   -- the polar term
-  have hpolar : 2 * ((((a ^ 2 - 1 / 4) ^ (0 + 1) : ℝ)) : ℂ)⁻¹
+  have hpolar : 2 * ((((a ^ (2 : ℕ) - 1 / 4) ^ (0 + 1) : ℝ)) : ℂ)⁻¹
       = ((a : ℂ))⁻¹ * (((1 / 2 : ℂ) + (a : ℂ))⁻¹ + ((1 / 2 : ℂ) + (a : ℂ) - 1)⁻¹) := by
     have h1 : ((1 / 2 : ℂ) + (a : ℂ)) ≠ 0 := by
       intro h
@@ -149,14 +149,14 @@ theorem routeUDensityMoment_zero_eq {a : ℝ} (ha : 1 / 2 < a) :
         Complex.zero_re] at this
       norm_num at this
       linarith
-    have h3 : ((((a ^ 2 - 1 / 4) ^ (0 + 1) : ℝ)) : ℂ) ≠ 0 := by
+    have h3 : ((((a ^ (2 : ℕ) - 1 / 4) ^ (0 + 1) : ℝ)) : ℂ) ≠ 0 := by
       refine Complex.ofReal_ne_zero.2 ?_
-      have : (0 : ℝ) < (a ^ 2 - 1 / 4) ^ (0 + 1) := by
-        have : (0 : ℝ) < a ^ 2 - 1 / 4 := by nlinarith
+      have : (0 : ℝ) < (a ^ (2 : ℕ) - 1 / 4) ^ (0 + 1) := by
+        have : (0 : ℝ) < a ^ (2 : ℕ) - 1 / 4 := by nlinarith
         positivity
       exact ne_of_gt this
     rw [pow_one]
-    have hfac : ((((a ^ 2 - 1 / 4 : ℝ)) : ℂ))
+    have hfac : ((((a ^ (2 : ℕ) - 1 / 4 : ℝ)) : ℂ))
         = ((1 / 2 : ℂ) + (a : ℂ)) * ((1 / 2 : ℂ) + (a : ℂ) - 1) := by
       push_cast
       ring
@@ -164,7 +164,7 @@ theorem routeUDensityMoment_zero_eq {a : ℝ} (ha : 1 / 2 < a) :
     rw [hfac, mul_inv, inv_add_inv h1 h2, huv]
     field_simp
   -- the archimedean term
-  have harch : (1 / (Real.pi : ℂ)) * routeUArchimedeanMoment 0 (a ^ 2)
+  have harch : (1 / (Real.pi : ℂ)) * routeUArchimedeanMoment 0 (a ^ (2 : ℕ))
       = ((a : ℂ))⁻¹ * logDeriv Complex.Gammaℝ ((1 / 2 : ℂ) + (a : ℂ)) := by
     have hL := logDeriv_Gammaℝ_ofReal_eq (by linarith : (0 : ℝ) < 1 / 2 + a)
     rw [routeUArchimedeanMoment_zero_eq ha0, hshift]
@@ -172,7 +172,7 @@ theorem routeUDensityMoment_zero_eq {a : ℝ} (ha : 1 / 2 < a) :
     push_cast
     field_simp
   -- the prime term
-  have hprime : (1 / (Real.pi : ℂ)) * routeUPrimeMoment 0 (a ^ 2)
+  have hprime : (1 / (Real.pi : ℂ)) * routeUPrimeMoment 0 (a ^ (2 : ℕ))
       = ((a : ℂ))⁻¹ * LSeries (fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ))
           ((1 / 2 : ℂ) + (a : ℂ)) := by
     rw [routeUPrimeMoment_zero_eq hX, hsqrt, hshift]
@@ -191,11 +191,11 @@ theorem xiResolventMoment_eq_routeUDensityMoment :
   | zero =>
     intro X hX
     have hXpos : (0 : ℝ) < X := by linarith
-    have hsq : Real.sqrt X ^ 2 = X := Real.sq_sqrt hXpos.le
+    have hsq : Real.sqrt X ^ (2 : ℕ) = X := Real.sq_sqrt hXpos.le
     have ha : (1 : ℝ) / 2 < Real.sqrt X := by
       have h := Real.sqrt_lt_sqrt (by norm_num : (0 : ℝ) ≤ 1 / 4) hX
       rwa [show Real.sqrt (1 / 4 : ℝ) = 1 / 2 by
-        rw [show (1 : ℝ) / 4 = (1 / 2) ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at h
+        rw [show (1 : ℝ) / 4 = (1 / 2) ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at h
     have ha0 : (0 : ℝ) < Real.sqrt X := by linarith
     have hane : ((Real.sqrt X : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (ne_of_gt ha0)
     have hbase := tsum_routeUHardEdgeRationalTestSq_one_eq_arithmetic ha

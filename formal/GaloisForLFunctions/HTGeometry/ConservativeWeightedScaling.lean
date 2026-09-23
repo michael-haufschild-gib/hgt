@@ -90,9 +90,9 @@ theorem conservativeWeightedScale_centered (p : FiniteProbabilityLaw ι)
 theorem conservativeWeightedScale_variance (p : FiniteProbabilityLaw ι)
     (g x : ι → ℝ) (θ : unitInterval) :
     (∑ i, (conservativeGeometryLaw p g).prob i *
-      (conservativeWeightedScale p g x θ i - conservativeWeightedAnchor p g x) ^ 2) =
-      (θ : ℝ) ^ 2 * ∑ i, (conservativeGeometryLaw p g).prob i *
-        (x i - conservativeWeightedAnchor p g x) ^ 2 := by
+      (conservativeWeightedScale p g x θ i - conservativeWeightedAnchor p g x) ^ (2 : ℕ)) =
+      (θ : ℝ) ^ (2 : ℕ) * ∑ i, (conservativeGeometryLaw p g).prob i *
+        (x i - conservativeWeightedAnchor p g x) ^ (2 : ℕ) := by
   simp_rw [conservativeWeightedScale_centered, mul_pow, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i _
@@ -101,35 +101,35 @@ theorem conservativeWeightedScale_variance (p : FiniteProbabilityLaw ι)
 /-- The exact quadratic-entropy change, stronger than monotonicity alone. -/
 theorem conservativeWeightedScale_quadratic_drop (p : FiniteProbabilityLaw ι)
     (g x : ι → ℝ) (θ : unitInterval) :
-    (∑ i, (conservativeGeometryLaw p g).prob i * x i ^ 2) -
-      (∑ i, (conservativeGeometryLaw p g).prob i * conservativeWeightedScale p g x θ i ^ 2) =
-      (1 - (θ : ℝ) ^ 2) * ∑ i, (conservativeGeometryLaw p g).prob i *
-        (x i - conservativeWeightedAnchor p g x) ^ 2 := by
+    (∑ i, (conservativeGeometryLaw p g).prob i * x i ^ (2 : ℕ)) -
+      (∑ i, (conservativeGeometryLaw p g).prob i * conservativeWeightedScale p g x θ i ^ (2 : ℕ)) =
+      (1 - (θ : ℝ) ^ (2 : ℕ)) * ∑ i, (conservativeGeometryLaw p g).prob i *
+        (x i - conservativeWeightedAnchor p g x) ^ (2 : ℕ) := by
   let w := conservativeGeometryLaw p g
   let a := conservativeWeightedAnchor p g x
   have hx : ∑ i, w.prob i * x i = a := rfl
   have hs := conservativeWeightedScale_mean p g x θ
   have expand (y : ι → ℝ) :
-      (∑ i, w.prob i * (y i - a) ^ 2) =
-        (∑ i, w.prob i * y i ^ 2) - 2 * a * (∑ i, w.prob i * y i) + a ^ 2 := by
-    have he i : w.prob i * (y i - a) ^ 2 =
-        w.prob i * y i ^ 2 - 2 * a * (w.prob i * y i) + w.prob i * a ^ 2 := by ring
+      (∑ i, w.prob i * (y i - a) ^ (2 : ℕ)) =
+        (∑ i, w.prob i * y i ^ (2 : ℕ)) - 2 * a * (∑ i, w.prob i * y i) + a ^ (2 : ℕ) := by
+    have he i : w.prob i * (y i - a) ^ (2 : ℕ) =
+        w.prob i * y i ^ (2 : ℕ) - 2 * a * (w.prob i * y i) + w.prob i * a ^ (2 : ℕ) := by ring
     simp_rw [he, Finset.sum_add_distrib, Finset.sum_sub_distrib,
       ← Finset.mul_sum, ← Finset.sum_mul, w.sum_prob, one_mul]
   have hv := conservativeWeightedScale_variance p g x θ
-  change (∑ i, w.prob i * (conservativeWeightedScale p g x θ i - a) ^ 2) =
-    (θ : ℝ) ^ 2 * ∑ i, w.prob i * (x i - a) ^ 2 at hv
+  change (∑ i, w.prob i * (conservativeWeightedScale p g x θ i - a) ^ (2 : ℕ)) =
+    (θ : ℝ) ^ (2 : ℕ) * ∑ i, w.prob i * (x i - a) ^ (2 : ℕ) at hv
   rw [expand, expand, hx, hs] at hv
-  change (∑ i, w.prob i * x i ^ 2) - _ =
-    (1 - (θ : ℝ) ^ 2) * ∑ i, w.prob i * (x i - a) ^ 2
+  change (∑ i, w.prob i * x i ^ (2 : ℕ)) - _ =
+    (1 - (θ : ℝ) ^ (2 : ℕ)) * ∑ i, w.prob i * (x i - a) ^ (2 : ℕ)
   rw [expand, hx]
   nlinarith [hv]
 
 /-- Conservative scaling never increases weighted quadratic entropy. -/
 theorem conservativeWeightedScale_quadratic_le (p : FiniteProbabilityLaw ι)
     (g x : ι → ℝ) (θ : unitInterval) :
-    (∑ i, (conservativeGeometryLaw p g).prob i * conservativeWeightedScale p g x θ i ^ 2) ≤
-      ∑ i, (conservativeGeometryLaw p g).prob i * x i ^ 2 := by
+    (∑ i, (conservativeGeometryLaw p g).prob i * conservativeWeightedScale p g x θ i ^ (2 : ℕ)) ≤
+      ∑ i, (conservativeGeometryLaw p g).prob i * x i ^ (2 : ℕ) := by
   apply sub_nonneg.mp
   rw [conservativeWeightedScale_quadratic_drop]
   apply mul_nonneg

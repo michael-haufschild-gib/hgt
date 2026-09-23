@@ -284,8 +284,8 @@ theorem firstOrder_eq (lam t : ℝ) :
 /-- **The first-order transition probability.**  It is the golden-rule kernel integrated against the
 form-factor density. -/
 theorem normSq_firstOrder (lam t : ℝ) :
-    ‖M.firstOrder lam t‖ ^ 2
-      = lam ^ 2 * ∫ x, goldenRuleKernel t (M.energy x - M.level) * ‖(M.form : α → ℂ) x‖ ^ 2 ∂μ := by
+    ‖M.firstOrder lam t‖ ^ (2 : ℕ)
+      = lam ^ (2 : ℕ) * ∫ x, goldenRuleKernel t (M.energy x - M.level) * ‖(M.form : α → ℂ) x‖ ^ (2 : ℕ) ∂μ := by
   rw [firstOrder, norm_smul, norm_neg_I_mul_ofReal, M.norm_freeProp_apply, mul_pow, sq_abs,
     norm_sq_ampOp_apply]
 
@@ -293,7 +293,7 @@ theorem normSq_firstOrder (lam t : ℝ) :
 `λ² ‖V‖² t²`. -/
 theorem norm_sub_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
     ‖M.evol lam t M.bound - M.freeProp t M.bound - M.firstOrder lam t‖
-      ≤ lam ^ 2 * ‖M.coupling‖ ^ 2 * t ^ 2 := by
+      ≤ lam ^ (2 : ℕ) * ‖M.coupling‖ ^ (2 : ℕ) * t ^ (2 : ℕ) := by
   have hcont1 : Continuous fun s : ℝ => (M.duhamelIntegrand lam t s) M.bound :=
     (M.continuous_duhamelIntegrand lam t).clm_apply continuous_const
   have hcont2 : Continuous fun s : ℝ => (-Complex.I * (lam : ℂ)) •
@@ -310,7 +310,7 @@ theorem norm_sub_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
   have hb : ∀ s ∈ Set.uIoc (0 : ℝ) t,
       ‖(M.duhamelIntegrand lam t s) M.bound
         - (-Complex.I * (lam : ℂ)) • (M.freeProp (t - s) (M.coupling (M.freeProp s M.bound)))‖
-      ≤ lam ^ 2 * ‖M.coupling‖ ^ 2 * t := by
+      ≤ lam ^ (2 : ℕ) * ‖M.coupling‖ ^ (2 : ℕ) * t := by
     intro s hs
     rw [Set.uIoc_of_le ht] at hs
     have hs0 : 0 ≤ s := le_of_lt hs.1
@@ -331,17 +331,17 @@ theorem norm_sub_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
         ≤ |lam| * (‖M.coupling‖ * (|lam| * ‖M.coupling‖ * s)) :=
       mul_le_mul_of_nonneg_left h1 (abs_nonneg _)
     have h3 : |lam| * (‖M.coupling‖ * (|lam| * ‖M.coupling‖ * s))
-        ≤ lam ^ 2 * ‖M.coupling‖ ^ 2 * t := by
-      have hla : |lam| * |lam| = lam ^ 2 := by
+        ≤ lam ^ (2 : ℕ) * ‖M.coupling‖ ^ (2 : ℕ) * t := by
+      have hla : |lam| * |lam| = lam ^ (2 : ℕ) := by
         rw [← abs_mul, abs_of_nonneg (mul_self_nonneg lam)]; ring
       have heq : |lam| * (‖M.coupling‖ * (|lam| * ‖M.coupling‖ * s))
-          = lam ^ 2 * ‖M.coupling‖ ^ 2 * s := by
+          = lam ^ (2 : ℕ) * ‖M.coupling‖ ^ (2 : ℕ) * s := by
         rw [← hla]; ring
       rw [heq]
       exact mul_le_mul_of_nonneg_left hs.2 (by positivity)
     linarith
   have h := intervalIntegral.norm_integral_le_of_norm_le_const hb
-  have hfin : lam ^ 2 * ‖M.coupling‖ ^ 2 * t * |t - 0| = lam ^ 2 * ‖M.coupling‖ ^ 2 * t ^ 2 := by
+  have hfin : lam ^ (2 : ℕ) * ‖M.coupling‖ ^ (2 : ℕ) * t * |t - 0| = lam ^ (2 : ℕ) * ‖M.coupling‖ ^ (2 : ℕ) * t ^ (2 : ℕ) := by
     rw [sub_zero, abs_of_nonneg ht]
     ring
   rw [hfin] at h
@@ -351,7 +351,7 @@ theorem norm_sub_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
 term to second order in the coupling.** -/
 theorem abs_norm_sub_norm_firstOrder_le (lam : ℝ) {t : ℝ} (ht : 0 ≤ t) :
     |‖M.evol lam t M.bound - M.freeProp t M.bound‖ - ‖M.firstOrder lam t‖|
-      ≤ lam ^ 2 * ‖M.coupling‖ ^ 2 * t ^ 2 :=
+      ≤ lam ^ (2 : ℕ) * ‖M.coupling‖ ^ (2 : ℕ) * t ^ (2 : ℕ) :=
   le_trans (abs_norm_sub_norm_le _ _) (M.norm_sub_firstOrder_le lam ht)
 
 /-! ## Fermi's golden rule -/
@@ -362,20 +362,20 @@ rate `2 π λ² ρ(E₀)`. -/
 theorem tendsto_normSq_firstOrder (lam : ℝ) {ρ : ℝ → ℝ} (hρ : Integrable ρ (volume : Measure ℝ))
     (hc : ContinuousAt ρ M.level)
     (hdens : ∀ t : ℝ,
-      (∫ x, goldenRuleKernel t (M.energy x - M.level) * ‖(M.form : α → ℂ) x‖ ^ 2 ∂μ)
+      (∫ x, goldenRuleKernel t (M.energy x - M.level) * ‖(M.form : α → ℂ) x‖ ^ (2 : ℕ) ∂μ)
         = ∫ E : ℝ, goldenRuleKernel t (E - M.level) * ρ E) :
-    Filter.Tendsto (fun t : ℝ => ‖M.firstOrder lam t‖ ^ 2 / t) Filter.atTop
-      (nhds (2 * Real.pi * lam ^ 2 * ρ M.level)) := by
-  have heq : ∀ t : ℝ, ‖M.firstOrder lam t‖ ^ 2 / t
-      = lam ^ 2 * ((∫ E : ℝ, goldenRuleKernel t (E - M.level) * ρ E) / t) := by
+    Filter.Tendsto (fun t : ℝ => ‖M.firstOrder lam t‖ ^ (2 : ℕ) / t) Filter.atTop
+      (nhds (2 * Real.pi * lam ^ (2 : ℕ) * ρ M.level)) := by
+  have heq : ∀ t : ℝ, ‖M.firstOrder lam t‖ ^ (2 : ℕ) / t
+      = lam ^ (2 : ℕ) * ((∫ E : ℝ, goldenRuleKernel t (E - M.level) * ρ E) / t) := by
     intro t
     rw [M.normSq_firstOrder lam t, hdens t]
     ring
   have h3 : Filter.Tendsto
-      (fun t : ℝ => lam ^ 2 * ((∫ E : ℝ, goldenRuleKernel t (E - M.level) * ρ E) / t))
-      Filter.atTop (nhds (lam ^ 2 * (2 * Real.pi * ρ M.level))) :=
+      (fun t : ℝ => lam ^ (2 : ℕ) * ((∫ E : ℝ, goldenRuleKernel t (E - M.level) * ρ E) / t))
+      Filter.atTop (nhds (lam ^ (2 : ℕ) * (2 * Real.pi * ρ M.level))) :=
     (tendsto_goldenRuleKernel_density hρ hc).const_mul _
-  have hval : lam ^ 2 * (2 * Real.pi * ρ M.level) = 2 * Real.pi * lam ^ 2 * ρ M.level := by ring
+  have hval : lam ^ (2 : ℕ) * (2 * Real.pi * ρ M.level) = 2 * Real.pi * lam ^ (2 : ℕ) * ρ M.level := by ring
   rw [← hval]
   exact h3.congr fun t => (heq t).symm
 

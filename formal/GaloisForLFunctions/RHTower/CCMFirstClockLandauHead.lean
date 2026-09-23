@@ -11,7 +11,7 @@ theorem norm_ccmFirstClockFixedCompactKernel_le
     {x : ℂ} (him : |x.im| ≤ Real.pi / 4) :
     ‖ccmFirstClockFixedCompactKernel x‖ ≤
       ‖-(1 / (2 * (Real.pi : ℂ)))‖ * Real.exp (Real.pi / 4) := by
-  by_cases hden : x ^ 2 = (2 * (Real.pi : ℂ)) ^ 2
+  by_cases hden : x ^ (2 : ℕ) = (2 * (Real.pi : ℂ)) ^ (2 : ℕ)
   · unfold ccmFirstClockFixedCompactKernel
     rw [hden, sub_self, div_zero, norm_zero]
     positivity
@@ -51,7 +51,7 @@ theorem norm_ccmFirstClockFixedCompactKernel_le_div_sq
     {x : ℂ} (him : |x.im| ≤ Real.pi / 4)
     (hfar : 2 * ‖2 * (Real.pi : ℂ)‖ ≤ ‖x‖) :
     ‖ccmFirstClockFixedCompactKernel x‖ ≤
-      ((4 : ℝ) / 3) * (1 + Real.exp (Real.pi / 4)) / ‖x‖ ^ 2 := by
+      ((4 : ℝ) / 3) * (1 + Real.exp (Real.pi / 4)) / ‖x‖ ^ (2 : ℕ) := by
   let a : ℂ := 2 * (Real.pi : ℂ)
   have hpi : 0 < Real.pi := Real.pi_pos
   have ha : 0 < ‖a‖ := by
@@ -61,11 +61,11 @@ theorem norm_ccmFirstClockFixedCompactKernel_le_div_sq
       (Complex.ofReal_ne_zero.mpr (ne_of_gt hpi))
   have hx : 0 < ‖x‖ :=
     lt_of_lt_of_le (mul_pos (by norm_num) ha) hfar
-  have hquarter : ‖a‖ ^ 2 ≤ (1 / 4 : ℝ) * ‖x‖ ^ 2 := by
+  have hquarter : ‖a‖ ^ (2 : ℕ) ≤ (1 / 4 : ℝ) * ‖x‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (‖x‖ - 2 * ‖a‖)]
   have hdenLower :
-      (3 / 4 : ℝ) * ‖x‖ ^ 2 ≤ ‖x ^ 2 - a ^ 2‖ := by
-    have htri := norm_sub_norm_le (x ^ 2) (a ^ 2)
+      (3 / 4 : ℝ) * ‖x‖ ^ (2 : ℕ) ≤ ‖x ^ (2 : ℕ) - a ^ (2 : ℕ)‖ := by
+    have htri := norm_sub_norm_le (x ^ (2 : ℕ)) (a ^ (2 : ℕ))
     rw [norm_pow, norm_pow] at htri
     nlinarith
   have hcos :
@@ -89,17 +89,17 @@ theorem norm_ccmFirstClockFixedCompactKernel_le_div_sq
     exact lt_of_lt_of_le (mul_pos (by norm_num) (sq_pos_of_pos hx))
       hdenLower) (sq_pos_of_pos hx)).2
   calc
-    ‖1 - Complex.cos x‖ * ‖x‖ ^ 2 ≤
-        (1 + Real.exp (Real.pi / 4)) * ‖x‖ ^ 2 := by
+    ‖1 - Complex.cos x‖ * ‖x‖ ^ (2 : ℕ) ≤
+        (1 + Real.exp (Real.pi / 4)) * ‖x‖ ^ (2 : ℕ) := by
       gcongr
     _ ≤ (((4 : ℝ) / 3) * (1 + Real.exp (Real.pi / 4))) *
-        ‖x ^ 2 - (2 * (Real.pi : ℂ)) ^ 2‖ := by
+        ‖x ^ (2 : ℕ) - (2 * (Real.pi : ℂ)) ^ (2 : ℕ)‖ := by
       nlinarith [mul_le_mul_of_nonneg_left hdenLower
         (show 0 ≤ (4 / 3 : ℝ) * (1 + Real.exp (Real.pi / 4)) by positivity)]
 
 /-- Universal constant controlling every first-clock atom on the compact physical head. -/
 def ccmFirstClockHeadReciprocalSquareConstant : ℝ :=
-  (2 * ‖2 * (Real.pi : ℂ)‖) ^ 2 *
+  (2 * ‖2 * (Real.pi : ℂ)‖) ^ (2 : ℕ) *
       (‖-(1 / (2 * (Real.pi : ℂ)))‖ *
         Real.exp (Real.pi / 4)) +
     ((4 : ℝ) / 3) * (1 + Real.exp (Real.pi / 4))
@@ -117,7 +117,7 @@ theorem norm_ccmFirstClockRationalKernel_xiSpectralPoint_le_head
     (q : XiZeroCopy) :
     ‖ccmFirstClockRationalKernel L (xiSpectralPoint q)‖ ≤
       ccmFirstClockHeadReciprocalSquareConstant /
-        ‖xiSpectralPoint q‖ ^ 2 := by
+        ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   by_cases hLzero : L = 0
   · subst L
     rw [show ccmFirstClockRationalKernel 0 (xiSpectralPoint q) = 0 by
@@ -153,19 +153,19 @@ theorem norm_ccmFirstClockRationalKernel_xiSpectralPoint_le_head
   rw [norm_mul, norm_pow, norm_real, Real.norm_eq_abs, abs_of_nonneg hL0]
   by_cases hfar : B ≤ ‖x‖
   · have hdecay :
-        ‖ccmFirstClockFixedCompactKernel x‖ ≤ Cfar / ‖x‖ ^ 2 := by
+        ‖ccmFirstClockFixedCompactKernel x‖ ≤ Cfar / ‖x‖ ^ (2 : ℕ) := by
       apply norm_ccmFirstClockFixedCompactKernel_le_div_sq hxim
       simpa only [B] using hfar
     calc
-      L ^ 2 * ‖ccmFirstClockFixedCompactKernel x‖ ≤
-          L ^ 2 * (Cfar / ‖x‖ ^ 2) := by
+      L ^ (2 : ℕ) * ‖ccmFirstClockFixedCompactKernel x‖ ≤
+          L ^ (2 : ℕ) * (Cfar / ‖x‖ ^ (2 : ℕ)) := by
         gcongr
-      _ = Cfar / ‖z‖ ^ 2 := by
+      _ = Cfar / ‖z‖ ^ (2 : ℕ) := by
         rw [hxNorm]
         field_simp [hLzero, ne_of_gt hzNorm]
-      _ ≤ ccmFirstClockHeadReciprocalSquareConstant / ‖z‖ ^ 2 := by
-        change Cfar / ‖z‖ ^ 2 ≤
-          (B ^ 2 * C₀ + Cfar) / ‖z‖ ^ 2
+      _ ≤ ccmFirstClockHeadReciprocalSquareConstant / ‖z‖ ^ (2 : ℕ) := by
+        change Cfar / ‖z‖ ^ (2 : ℕ) ≤
+          (B ^ (2 : ℕ) * C₀ + Cfar) / ‖z‖ ^ (2 : ℕ)
         apply div_le_div_of_nonneg_right _ (sq_nonneg ‖z‖)
         exact le_add_of_nonneg_left (mul_nonneg (sq_nonneg B) (by
           dsimp only [C₀]
@@ -178,16 +178,16 @@ theorem norm_ccmFirstClockRationalKernel_xiSpectralPoint_le_head
     have hC0 : 0 ≤ C₀ := by dsimp only [C₀]; positivity
     apply (le_div_iff₀ (sq_pos_of_pos hzNorm)).2
     calc
-      L ^ 2 * ‖ccmFirstClockFixedCompactKernel x‖ * ‖z‖ ^ 2 ≤
-          L ^ 2 * C₀ * ‖z‖ ^ 2 := by
+      L ^ (2 : ℕ) * ‖ccmFirstClockFixedCompactKernel x‖ * ‖z‖ ^ (2 : ℕ) ≤
+          L ^ (2 : ℕ) * C₀ * ‖z‖ ^ (2 : ℕ) := by
         gcongr
-      _ = (L * ‖z‖) ^ 2 * C₀ := by ring
-      _ ≤ B ^ 2 * C₀ := by
+      _ = (L * ‖z‖) ^ (2 : ℕ) * C₀ := by ring
+      _ ≤ B ^ (2 : ℕ) * C₀ := by
         gcongr
         rw [← hxNorm]
         exact hnear.le
       _ ≤ ccmFirstClockHeadReciprocalSquareConstant := by
-        change B ^ 2 * C₀ ≤ B ^ 2 * C₀ + Cfar
+        change B ^ (2 : ℕ) * C₀ ≤ B ^ (2 : ℕ) * C₀ + Cfar
         exact le_add_of_nonneg_right hCfar
 
 end

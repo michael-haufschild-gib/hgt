@@ -28,7 +28,7 @@ theorem hasDerivWithinAt_routePPrimitiveBurnolApertureBoundaryDefectEnergy_zero
           (routePPrimitiveBurnolWindowFeature pe kappa)))
       0 (Set.Ici 0) 0 := by
   let g : ℝ → ℝ := fun u =>
-    ‖routePPrimitiveBurnolWindowFeature pe kappa u‖ ^ 2
+    ‖routePPrimitiveBurnolWindowFeature pe kappa u‖ ^ (2 : ℕ)
   have hgcont : Continuous g := by
     dsimp [g]
     exact (continuous_routePPrimitiveBurnolWindowFeature pe kappa).norm.pow 2
@@ -91,7 +91,7 @@ theorem routePPrimeGammaApertureDefectFluxWeight_valuation
 
 /-- Quadratic Green profile selected by the first variation of P-G188's cubic source mass. -/
 def ccmRoutePApertureTailFluxGreenLogProfile (h : ℝ) : ℝ :=
-  Real.exp (-h / 2) / (2 * (max h (Real.log 2)) ^ 2)
+  Real.exp (-h / 2) / (2 * (max h (Real.log 2)) ^ (2 : ℕ))
 
 /-- The quadratic flux profile on the compact CCM physical horizon. -/
 def ccmRoutePApertureTailFluxGreenHorizonTest (a : ℝ) :
@@ -111,7 +111,7 @@ def ccmRoutePApertureTailFluxGreenHorizonTest (a : ℝ) :
 theorem ccmRoutePApertureTailFluxGreenLogProfile_log
     {n : ℕ} (hn : 2 ≤ n) :
     ccmRoutePApertureTailFluxGreenLogProfile (Real.log n) =
-      Real.exp (-Real.log n / 2) / (2 * Real.log n ^ 2) := by
+      Real.exp (-Real.log n / 2) / (2 * Real.log n ^ (2 : ℕ)) := by
   rw [ccmRoutePApertureTailFluxGreenLogProfile, max_eq_left]
   exact Real.strictMonoOn_log.monotoneOn
     (show (2 : ℝ) ∈ Set.Ioi 0 by norm_num)

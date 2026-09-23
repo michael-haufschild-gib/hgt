@@ -40,16 +40,16 @@ theorem tendsto_norm_xiMassCenteredArchIntegrand_natMass_zero
   refine squeeze_zero' (Eventually.of_forall fun n => norm_nonneg _) ?_ hmajor
   exact Eventually.of_forall fun n => by
     have ha : 0 < ((n : ℝ) + 2) := by positivity
-    have harg : 0 ≤ x ^ 2 + ((n : ℝ) + 2) ^ 2 := by positivity
+    have harg : 0 ≤ x ^ (2 : ℕ) + ((n : ℝ) + 2) ^ (2 : ℕ) := by positivity
     have hsquare := Real.sq_sqrt harg
-    have hsqrt := Real.sqrt_nonneg (x ^ 2 + ((n : ℝ) + 2) ^ 2)
-    have hroot : (n : ℝ) + 2 ≤ Real.sqrt (x ^ 2 + ((n : ℝ) + 2) ^ 2) := by
+    have hsqrt := Real.sqrt_nonneg (x ^ (2 : ℕ) + ((n : ℝ) + 2) ^ (2 : ℕ))
+    have hroot : (n : ℝ) + 2 ≤ Real.sqrt (x ^ (2 : ℕ) + ((n : ℝ) + 2) ^ (2 : ℕ)) := by
       nlinarith [sq_nonneg x]
     rw [xiMassCenteredArchIntegrand, norm_mul]
     have hnorm := norm_xiMassAnalyticTest_ofReal_eq
       (a := (n : ℝ) + 2) (σ := σ) (u := 0) (x := x) ha
     rw [show ‖xiMassAnalyticTest ((n : ℝ) + 2) (σ : ℂ) (x : ℂ)‖ =
-      Real.exp (-σ * Real.sqrt (x ^ 2 + ((n : ℝ) + 2) ^ 2)) by simpa using hnorm]
+      Real.exp (-σ * Real.sqrt (x ^ (2 : ℕ) + ((n : ℝ) + 2) ^ (2 : ℕ))) by simpa using hnorm]
     exact mul_le_mul_of_nonneg_right
       (Real.exp_le_exp.mpr (by nlinarith)) (norm_nonneg _)
 
@@ -95,11 +95,11 @@ theorem tendsto_exp_neg_xiMassArchPoleFrequency_natMass_zero
   refine squeeze_zero' (Eventually.of_forall fun n => (Real.exp_pos _).le) ?_ hmajor
   exact Eventually.of_forall fun n => by
     have hA : 0 ≤ (n : ℝ) + 2 := by positivity
-    have harg : 0 ≤ ((n : ℝ) + 2) ^ 2 - 1 / 4 := by nlinarith
-    have hsquare : xiMassArchPoleFrequency ((n : ℝ) + 2) ^ 2 =
-        ((n : ℝ) + 2) ^ 2 - 1 / 4 := by
+    have harg : 0 ≤ ((n : ℝ) + 2) ^ (2 : ℕ) - 1 / 4 := by nlinarith
+    have hsquare : xiMassArchPoleFrequency ((n : ℝ) + 2) ^ (2 : ℕ) =
+        ((n : ℝ) + 2) ^ (2 : ℕ) - 1 / 4 := by
       rw [xiMassArchPoleFrequency, Real.sq_sqrt harg]
-    have hfreq := Real.sqrt_nonneg (((n : ℝ) + 2) ^ 2 - 1 / 4)
+    have hfreq := Real.sqrt_nonneg (((n : ℝ) + 2) ^ (2 : ℕ) - 1 / 4)
     rw [← xiMassArchPoleFrequency] at hfreq
     have hlower : ((n : ℝ) + 2) / 2 ≤
         xiMassArchPoleFrequency ((n : ℝ) + 2) := by

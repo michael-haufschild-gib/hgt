@@ -49,12 +49,12 @@ theorem exists_ground_family :
         (∀ x : ℝ, bandTransform c (Psi c) x = lam * Psi c x) ∧
         (∀ x : ℝ, prolateSLAction c (Psi c) x = chi * Psi c x) ∧
         mu c = c * radialSeparationRatio c chi ∧
-        0 < (∫ x in (-1 : ℝ)..1, (Psi c x) ^ 2) ∧
-        (∫ x in (-1 : ℝ)..1, x ^ 2 * (Psi c x) ^ 2)
-          ≤ (mu c / c) * ∫ x in (-1 : ℝ)..1, (Psi c x) ^ 2 ∧
-        (∫ x in (-1 : ℝ)..1, (c * x * Psi c x + (1 - x ^ 2) * deriv (Psi c) x) ^ 2)
-          ≤ c * ((mu c - 1) * (∫ x in (-1 : ℝ)..1, (Psi c x) ^ 2)
-            + 3 * ∫ x in (-1 : ℝ)..1, x ^ 2 * (Psi c x) ^ 2) := by
+        0 < (∫ x in (-1 : ℝ)..1, (Psi c x) ^ (2 : ℕ)) ∧
+        (∫ x in (-1 : ℝ)..1, x ^ (2 : ℕ) * (Psi c x) ^ (2 : ℕ))
+          ≤ (mu c / c) * ∫ x in (-1 : ℝ)..1, (Psi c x) ^ (2 : ℕ) ∧
+        (∫ x in (-1 : ℝ)..1, (c * x * Psi c x + (1 - x ^ (2 : ℕ)) * deriv (Psi c) x) ^ (2 : ℕ))
+          ≤ c * ((mu c - 1) * (∫ x in (-1 : ℝ)..1, (Psi c x) ^ (2 : ℕ))
+            + 3 * ∫ x in (-1 : ℝ)..1, x ^ (2 : ℕ) * (Psi c x) ^ (2 : ℕ)) := by
   have hex : ∀ c : ℝ, ∃ p : ℝ × (ℝ → ℝ), 0 < c →
       ((∃ (lam chi : ℝ), lam ≠ 0 ∧
         ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p.2 ∧ p.2 ≠ 0 ∧ Function.Even p.2 ∧
@@ -75,7 +75,7 @@ theorem exists_ground_family :
     · filter_upwards [eventually_gt_atTop (0 : ℝ)] with c hc
       obtain ⟨⟨lam, chi, hlam, hsm, hne, heven, hband, hprolate, hval⟩, _⟩ :=
         (Classical.choose_spec (hex c)) hc
-      have hposS : 0 < ∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ 2 :=
+      have hposS : 0 < ∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ (2 : ℕ) :=
         integral_sq_pos_of_band_eigen hsm.continuous hlam hne hband
       have := bandwidthSeparation_ge hc hsm hposS (fun x _ => hprolate x)
       rw [hval]
@@ -84,14 +84,14 @@ theorem exists_ground_family :
     obtain ⟨⟨lam, chi, hlam, hsm, hne, heven, hband, hprolate, hval⟩, _⟩ :=
       (Classical.choose_spec (hex c)) hc
     have hcne : c ≠ 0 := ne_of_gt hc
-    have hposS : 0 < ∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ 2 :=
+    have hposS : 0 < ∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ (2 : ℕ) :=
       integral_sq_pos_of_band_eigen hsm.continuous hlam hne hband
     have hmom := integral_sq_mul_sq_le_separation hcne hsm (fun x _ => hprolate x)
     have hdef := integral_prolateGaussianDefect_le hc hsm (fun x _ => hprolate x)
     refine ⟨lam, chi, hlam, hsm, hne, heven, hband, hprolate, hval, hposS, ?_, ?_⟩
-    · show (∫ x in (-1 : ℝ)..1, x ^ 2 * ((Classical.choose (hex c)).2 x) ^ 2)
+    · show (∫ x in (-1 : ℝ)..1, x ^ (2 : ℕ) * ((Classical.choose (hex c)).2 x) ^ (2 : ℕ))
           ≤ ((Classical.choose (hex c)).1 / c)
-            * ∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ 2
+            * ∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ (2 : ℕ)
       rw [hval]
       have hid : c * radialSeparationRatio c chi / c = radialSeparationRatio c chi := by
         field_simp
@@ -99,10 +99,10 @@ theorem exists_ground_family :
       exact hmom
     · show (∫ x in (-1 : ℝ)..1,
           (c * x * (Classical.choose (hex c)).2 x
-            + (1 - x ^ 2) * deriv ((Classical.choose (hex c)).2) x) ^ 2)
+            + (1 - x ^ (2 : ℕ)) * deriv ((Classical.choose (hex c)).2) x) ^ (2 : ℕ))
           ≤ c * (((Classical.choose (hex c)).1 - 1)
-            * (∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ 2)
-            + 3 * ∫ x in (-1 : ℝ)..1, x ^ 2 * ((Classical.choose (hex c)).2 x) ^ 2)
+            * (∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ (2 : ℕ))
+            + 3 * ∫ x in (-1 : ℝ)..1, x ^ (2 : ℕ) * ((Classical.choose (hex c)).2 x) ^ (2 : ℕ))
       rw [hval]
       exact hdef
 

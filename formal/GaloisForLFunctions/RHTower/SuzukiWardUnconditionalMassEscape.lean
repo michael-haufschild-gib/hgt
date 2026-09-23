@@ -37,9 +37,9 @@ private theorem outgoingBracket_ge_halfDensity
     {A B : ℝ}
     (hA : 0 < A) (hB : 0 < B)
     (hlo : A / 3 ≤ B) (hhi : B ≤ A / 2) :
-    1 / (6 * B) ≤ 1 / A - B / A ^ 2 := by
+    1 / (6 * B) ≤ 1 / A - B / A ^ (2 : ℕ) := by
   have hBA : 0 ≤ A - B := by linarith
-  have hprod : A ^ 2 ≤ 6 * B * (A - B) := by
+  have hprod : A ^ (2 : ℕ) ≤ 6 * B * (A - B) := by
     have h1 : A / 3 * (A / 2) ≤ B * (A - B) :=
       mul_le_mul hlo (by linarith) (by positivity) hB.le
     nlinarith

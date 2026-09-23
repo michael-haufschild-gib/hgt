@@ -37,7 +37,7 @@ theorem star_primeBurnolWindowFeature_mul
     star (primeBurnolWindowFeature u kappa L) *
         primeBurnolWindowFeature v nu L =
       primeBurnolAmplitude u * primeBurnolAmplitude v *
-        ((L : ℂ) ^ 2 *
+        ((L : ℂ) ^ (2 : ℕ) *
           Complex.exp (-(primeBurnolPairRate u v kappa nu * (L : ℂ)))) := by
   rw [primeBurnolWindowFeature, primeBurnolWindowFeature]
   rw [star_mul, star_mul, star_primeBurnolAmplitude]
@@ -51,7 +51,7 @@ theorem star_primeBurnolWindowFeature_mul
             ((L : ℂ) * primeBurnolAmplitude u) *
           (primeBurnolAmplitude v * (L : ℂ) *
             Complex.exp (primeBurnolComplexExponent v nu * (L : ℂ))) =
-        primeBurnolAmplitude u * primeBurnolAmplitude v * ((L : ℂ) ^ 2 *
+        primeBurnolAmplitude u * primeBurnolAmplitude v * ((L : ℂ) ^ (2 : ℕ) *
           (Complex.exp ((L : ℂ) * star (primeBurnolComplexExponent u kappa)) *
             Complex.exp (primeBurnolComplexExponent v nu * (L : ℂ)))) by ring]
   rw [← Complex.exp_add]
@@ -69,7 +69,7 @@ theorem inner_primeBurnolWindowFeatureLp_eq
     inner ℂ (primeBurnolWindowFeatureLp u kappa)
         (primeBurnolWindowFeatureLp v nu) =
       primeBurnolAmplitude u * primeBurnolAmplitude v *
-        ((2 : ℂ) / primeBurnolPairRate u v kappa nu ^ 3) := by
+        ((2 : ℂ) / primeBurnolPairRate u v kappa nu ^ (3 : ℕ)) := by
   rw [MeasureTheory.L2.inner_def]
   have hinner :
       (∫ L : ℝ,
@@ -79,7 +79,7 @@ theorem inner_primeBurnolWindowFeatureLp_eq
           ∂volume.restrict (Ioi (0 : ℝ))) =
       ∫ L : ℝ in Ioi 0,
         primeBurnolAmplitude u * primeBurnolAmplitude v *
-          ((L : ℂ) ^ 2 *
+          ((L : ℂ) ^ (2 : ℕ) *
             Complex.exp (-(primeBurnolPairRate u v kappa nu * (L : ℂ)))) := by
     apply integral_congr_ae
     filter_upwards [primeBurnolWindowFeatureLp_coeFn u kappa,
@@ -96,7 +96,7 @@ theorem primeBurnolWindowGramMatrix_apply
     (i j : Fin N) :
     primeBurnolWindowGramMatrix pe kappa i j =
       primeBurnolAmplitude (pe i) * primeBurnolAmplitude (pe j) *
-        ((2 : ℂ) / primeBurnolPairRate (pe i) (pe j) (kappa i) (kappa j) ^ 3) := by
+        ((2 : ℂ) / primeBurnolPairRate (pe i) (pe j) (kappa i) (kappa j) ^ (3 : ℕ)) := by
   rw [primeBurnolWindowGramMatrix, Matrix.gram_apply,
     inner_primeBurnolWindowFeatureLp_eq]
 

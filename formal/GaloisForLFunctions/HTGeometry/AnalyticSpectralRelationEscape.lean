@@ -171,7 +171,7 @@ theorem exists_coefficientObstruction_eval_ne_zero_of_analytic
       k branch U hUopen hUconnected hUnonempty hbranch hlabel
   refine ⟨p, hpU, ?_⟩
   rw [eval₂_spectralRelationCoefficientPolynomial_complex_esymm,
-    eval₂_spectralRelationOrbitPolynomial_complex]
+    eval₂_spectralRelationOrbitPolynomial]
   exact hp
 
 end

@@ -10,7 +10,7 @@ import Mathlib.Analysis.SpecificLimits.Basic
 For `Q = -ι S⁻¹S'`, the order-`r` jets of `Q` lie in the order-`r+1` jet field
 of `S`.  Conversely, the order-`r+1` jets of `S` lie in the compositum of the
 order-`r` jet field of `Q` and the order-zero field of `S`.  The corresponding
-ordinary algebraic-matroid ranks therefore differ by at most the `(n+1)^2`
+ordinary algebraic-matroid ranks therefore differ by at most the `(n+1)^(2 : ℕ)`
 initial matrix entries, and every convergent normalized Kolchin growth slope is
 preserved.
 -/
@@ -420,20 +420,20 @@ noncomputable def matrixFinitePacketUnion {E : Type*}
   classical
   exact left ∪ right
 
-/-- The finite matrix-jet packet has at most `(n+1)^2(r+1)` coordinates. -/
+/-- The finite matrix-jet packet has at most `(n+1)^(2 : ℕ)(r+1)` coordinates. -/
 theorem matrixFiniteJetPacket_card_le
     {E : Type*} [Field E] [Differential E] {n : ℕ}
     (S : Matrix (Fin (n + 1)) (Fin (n + 1)) E) (r : ℕ) :
-    (matrixFiniteJetPacket S r).card ≤ (n + 1) ^ 2 * (r + 1) := by
+    (matrixFiniteJetPacket S r).card ≤ (n + 1) ^ (2 : ℕ) * (r + 1) := by
   classical
   calc
     (matrixFiniteJetPacket S r).card ≤
         ((Finset.univ : Finset (Fin (n + 1) × Fin (n + 1))) ×ˢ
           Finset.range (r + 1)).card := Finset.card_image_le
-    _ = (n + 1) ^ 2 * (r + 1) := by simp [pow_two]
+    _ = (n + 1) ^ (2 : ℕ) * (r + 1) := by simp [pow_two]
 
 /-- **Reverse finite-jet rank inequality.**  The only possible rank excess of `S` over the
-one-order-lower `Q` packet is its `(n+1)^2` order-zero initial layer. -/
+one-order-lower `Q` packet is its `(n+1)^(2 : ℕ)` order-zero initial layer. -/
 theorem matrixWignerSmith_reverse_finiteJetRank_le
     {F E : Type u} [Field F] [Field E] [Algebra F E]
     [Differential F] [Differential E] [DifferentialAlgebra F E]
@@ -441,7 +441,7 @@ theorem matrixWignerSmith_reverse_finiteJetRank_le
     (S : Matrix (Fin (n + 1)) (Fin (n + 1)) E) (hdet : S.det ≠ 0)
     (r : ℕ) :
     matrixFiniteJetRank F S (r + 1) ≤
-      matrixFiniteJetRank F (matrixWignerSmith ι S) r + (n + 1) ^ 2 := by
+      matrixFiniteJetRank F (matrixWignerSmith ι S) r + (n + 1) ^ (2 : ℕ) := by
   classical
   let Q := matrixWignerSmith ι S
   let qPacket := matrixFiniteJetPacket Q r
@@ -468,10 +468,10 @@ theorem matrixWignerSmith_reverse_finiteJetRank_le
     let R := transcendenceRank F E
     have h := R.marginal_le_card qPacket sZeroPacket
     simpa [finiteAlgebraicMatroidRank, unionPacket, matrixFinitePacketUnion, R] using h
-  have hcard : sZeroPacket.card ≤ (n + 1) ^ 2 := by
+  have hcard : sZeroPacket.card ≤ (n + 1) ^ (2 : ℕ) := by
     simpa [sZeroPacket] using matrixFiniteJetPacket_card_le S 0
   change finiteAlgebraicMatroidRank F (matrixFiniteJetPacket S (r + 1)) ≤
-    finiteAlgebraicMatroidRank F qPacket + (n + 1) ^ 2
+    finiteAlgebraicMatroidRank F qPacket + (n + 1) ^ (2 : ℕ)
   exact hrank.trans (hmarginal.trans (Nat.add_le_add_left hcard _))
 
 /-- Normalization of a natural-valued rank profile by the number `r+1` of visible jet layers. -/
@@ -548,7 +548,7 @@ theorem matrixFiniteJetRank_succ_le
     {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
     {n : ℕ} (S : Matrix (Fin (n + 1)) (Fin (n + 1)) E) (r : ℕ) :
     matrixFiniteJetRank F S (r + 1) ≤
-      matrixFiniteJetRank F S r + (n + 1) ^ 2 := by
+      matrixFiniteJetRank F S r + (n + 1) ^ (2 : ℕ) := by
   classical
   let layer := matrixJetLayerPacket S (r + 1)
   have hpacket :
@@ -566,12 +566,12 @@ theorem matrixFiniteJetRank_succ_le
       · exact ⟨p, r + 1, by omega, hzk⟩
   let R := transcendenceRank F E
   have hmarginal := R.marginal_le_card (matrixFiniteJetPacket S r) layer
-  have hcard : layer.card ≤ (n + 1) ^ 2 := by
-    simpa [layer] using (show (matrixJetLayerPacket S (r + 1)).card ≤ (n + 1) ^ 2 from by
+  have hcard : layer.card ≤ (n + 1) ^ (2 : ℕ) := by
+    simpa [layer] using (show (matrixJetLayerPacket S (r + 1)).card ≤ (n + 1) ^ (2 : ℕ) from by
       calc
         (matrixJetLayerPacket S (r + 1)).card ≤ (Finset.univ :
           Finset (Fin (n + 1) × Fin (n + 1))).card := Finset.card_image_le
-        _ = (n + 1) ^ 2 := by simp [pow_two])
+        _ = (n + 1) ^ (2 : ℕ) := by simp [pow_two])
   unfold matrixFiniteJetRank finiteAlgebraicMatroidRank
   rw [hpacket]
   exact hmarginal.trans (Nat.add_le_add_left hcard _)
@@ -599,7 +599,7 @@ theorem hasMatrixKolchinSlope_shift_iff
   unfold HasMatrixKolchinSlope matrixNormalizedFiniteJetRank
   apply tendsto_normalizedRankSequence_iff_of_bounded_difference
     (matrixFiniteJetRank F S) (fun r => matrixFiniteJetRank F S (r + 1))
-    ((n + 1) ^ 2)
+    ((n + 1) ^ (2 : ℕ))
   · exact fun r => matrixFiniteJetRank_mono S (Nat.le_succ r)
   · exact matrixFiniteJetRank_succ_le S
 
@@ -623,7 +623,7 @@ theorem matrixWignerSmith_hasMatrixKolchinSlope_iff
           Filter.atTop (nhds σ) := by
     apply tendsto_normalizedRankSequence_iff_of_bounded_difference
       (matrixFiniteJetRank F Q) (fun r => matrixFiniteJetRank F S (r + 1))
-      ((n + 1) ^ 2)
+      ((n + 1) ^ (2 : ℕ))
     · exact matrixWignerSmith_finiteJetRank_le ι S
     · exact matrixWignerSmith_reverse_finiteJetRank_le ι hι S hdet
   rw [hasMatrixKolchinSlope_shift_iff S σ]

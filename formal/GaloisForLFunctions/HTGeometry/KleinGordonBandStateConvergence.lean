@@ -125,9 +125,9 @@ equation, not only about the compressed one. -/
 theorem tendsto_kgFieldEnergy_band (hb0 : 0 ≤ b) (hW : ‖W₀‖ ≤ b)
     (g y : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     Tendsto (fun R : ℝ =>
-        ‖kgFieldGrad (kgBandOp W₀ R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ 2
-          + ‖kgFieldVel (kgBandOp W₀ R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ 2) atTop
-      (𝓝 (‖kgFieldGrad W₀ g y t‖ ^ 2 + ‖kgFieldVel W₀ g y t‖ ^ 2)) :=
+        ‖kgFieldGrad (kgBandOp W₀ R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ (2 : ℕ)
+          + ‖kgFieldVel (kgBandOp W₀ R) (kgLowPassOp R g) (kgLowPassOp R y) t‖ ^ (2 : ℕ)) atTop
+      (𝓝 (‖kgFieldGrad W₀ g y t‖ ^ (2 : ℕ) + ‖kgFieldVel W₀ g y t‖ ^ (2 : ℕ))) :=
   (((tendsto_kgFieldGrad_band hb0 hW g y t).norm).pow 2).add
     (((tendsto_kgFieldVel_band hb0 hW g y t).norm).pow 2)
 

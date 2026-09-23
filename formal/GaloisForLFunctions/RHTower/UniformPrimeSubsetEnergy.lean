@@ -44,10 +44,10 @@ theorem uniformSubsetMean_sum (U : Finset α) (I : Finset ι) (f : ι → Finset
 omit [DecidableEq α] in
 /-- Exact variance gap, with the original signed mean retained. -/
 theorem uniformSubsetMean_variance (U : Finset α) (f : Finset α → ℝ) :
-    uniformSubsetMean U (fun P => (f P)^2) - (uniformSubsetMean U f)^2 =
-      uniformSubsetMean U (fun P => (f P-uniformSubsetMean U f)^2) := by
+    uniformSubsetMean U (fun P => (f P)^(2 : ℕ)) - (uniformSubsetMean U f)^(2 : ℕ) =
+      uniformSubsetMean U (fun P => (f P-uniformSubsetMean U f)^(2 : ℕ)) := by
   have hpoint (P : Finset α) :
-      (f P-uniformSubsetMean U f)^2 = (f P)^2-2*uniformSubsetMean U f*f P+(uniformSubsetMean U f)^2 := by ring
+      (f P-uniformSubsetMean U f)^(2 : ℕ) = (f P)^(2 : ℕ)-2*uniformSubsetMean U f*f P+(uniformSubsetMean U f)^(2 : ℕ) := by ring
   simp_rw [hpoint]
   simp only [uniformSubsetMean, sum_add_distrib, sum_sub_distrib,
     ← mul_sum, sum_const, nsmul_eq_mul, card_powerset, Nat.cast_pow, Nat.cast_ofNat]
@@ -57,9 +57,9 @@ theorem uniformSubsetMean_variance (U : Finset α) (f : Finset α → ℝ) :
 omit [DecidableEq α] in
 /-- The square of the uniform mean is bounded by the uniform square mean. -/
 theorem uniformSubsetMean_sq_le (U : Finset α) (f : Finset α → ℝ) :
-    (uniformSubsetMean U f)^2 ≤ uniformSubsetMean U (fun P => (f P)^2) := by
+    (uniformSubsetMean U f)^(2 : ℕ) ≤ uniformSubsetMean U (fun P => (f P)^(2 : ℕ)) := by
   have h := uniformSubsetMean_variance U f
-  have hn : 0 ≤ uniformSubsetMean U (fun P => (f P-uniformSubsetMean U f)^2) :=
+  have hn : 0 ≤ uniformSubsetMean U (fun P => (f P-uniformSubsetMean U f)^(2 : ℕ)) :=
     div_nonneg (sum_nonneg fun _ _ => sq_nonneg _) (by positivity)
   linarith only [h,hn]
 
@@ -69,14 +69,14 @@ def subsetLabelFibre (I : Finset ι) (a : ι → Finset α) (c : ι → ℝ)
 
 /-- Sum the squares of every retained fibre, without normalization of the source. -/
 def subsetLabelEnergy (U : Finset α) (I : Finset ι) (a : ι → Finset α)
-    (c : ι → ℝ) (P : Finset α) : ℝ := ∑ R ∈ U.powerset, (subsetLabelFibre I a c P R)^2
+    (c : ι → ℝ) (P : Finset α) : ℝ := ∑ R ∈ U.powerset, (subsetLabelFibre I a c P R)^(2 : ℕ)
 
 /-- Retained-square energy weighted by the number of coordinates still present
 in its label.  Unlike ordinary energy, a pair that first meets only after all
 of its coordinates are processed has zero weight at that meeting. -/
 def subsetLabelArityEnergy (U : Finset α) (I : Finset ι) (a : ι → Finset α)
     (c : ι → ℝ) (P : Finset α) : ℝ :=
-  ∑ R ∈ U.powerset, (R.card : ℝ) * (subsetLabelFibre I a c P R)^2
+  ∑ R ∈ U.powerset, (R.card : ℝ) * (subsetLabelFibre I a c P R)^(2 : ℕ)
 
 private theorem sdiff_eq_iff_symmDiff_subset (S T P : Finset α) :
     S \ P = T \ P ↔ S ∆ T ⊆ P := by
@@ -207,7 +207,7 @@ theorem uniformSubsetMean_labelHead (U : Finset α) (I : Finset ι) (a : ι → 
 /-- The actual retained-head mean squared is a lower bound for averaged energy. -/
 theorem uniformSubsetMean_labelHead_sq_le_energy (U : Finset α) (I : Finset ι)
     (a : ι → Finset α) (c : ι → ℝ) (ha : ∀ i ∈ I, a i ⊆ U) :
-    (∑ i ∈ I, c i / (2:ℝ)^(a i).card)^2 ≤
+    (∑ i ∈ I, c i / (2:ℝ)^(a i).card)^(2 : ℕ) ≤
       uniformSubsetMean U (subsetLabelEnergy U I a c) := by
   rw [← uniformSubsetMean_labelHead U I a c ha]
   refine (uniformSubsetMean_sq_le U _).trans ?_
@@ -222,7 +222,7 @@ theorem uniformSubsetMean_labelHead_sq_le_energy (U : Finset α) (I : Finset ι)
 theorem subsetLabelEnergy_empty (U : Finset α) (I : Finset ι) (a : ι → Finset α)
     (c : ι → ℝ) (ha : ∀ i ∈ I, a i ⊆ U)
     (hinj : ∀ i ∈ I, ∀ j ∈ I, a i = a j → i = j) :
-    subsetLabelEnergy U I a c ∅ = ∑ i ∈ I, (c i)^2 := by
+    subsetLabelEnergy U I a c ∅ = ∑ i ∈ I, (c i)^(2 : ℕ) := by
   rw [subsetLabelEnergy_eq_pairs U I a c ha]
   apply sum_congr rfl
   intro i hi
@@ -237,7 +237,7 @@ theorem subsetLabelEnergy_empty (U : Finset α) (I : Finset ι) (a : ι → Fins
 /-- Complete elimination gives exactly the squared complete signed source. -/
 theorem subsetLabelEnergy_full (U : Finset α) (I : Finset ι) (a : ι → Finset α)
     (c : ι → ℝ) (ha : ∀ i ∈ I, a i ⊆ U) :
-    subsetLabelEnergy U I a c U = (∑ i ∈ I, c i)^2 := by
+    subsetLabelEnergy U I a c U = (∑ i ∈ I, c i)^(2 : ℕ) := by
   rw [subsetLabelEnergy_eq_pairs U I a c ha,sq,sum_mul_sum]
   apply sum_congr rfl
   intro i hi

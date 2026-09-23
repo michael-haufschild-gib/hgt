@@ -96,7 +96,7 @@ theorem exists_sum_normSq_convPow_le_rpow (ℓ : ℕ) (hℓ : 0 < ℓ) {ε : ℝ
   refine ⟨C, hC, ?_⟩
   intro N hN a
   have hD0 : 0 ≤ C * ((N ^ ℓ : ℕ) : ℝ) ^ ε := by positivity
-  exact sum_normSq_convPow_le_of_support N ℓ a Finset.univ
+  exact sum_normSq_convPow_le_of_support_primePowerSupport N ℓ a Finset.univ
     (fun n _ => Finset.mem_univ n) (fun j => hfibre N hN Finset.univ j) hD0
 
 /-- **Multiplicative support survives raising.**  If the original factor is supported in the

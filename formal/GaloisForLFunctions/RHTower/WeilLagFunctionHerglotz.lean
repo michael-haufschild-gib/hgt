@@ -46,43 +46,43 @@ theorem lagPartner_coe (q : XiZeroCopy) :
 /-- `(X(σ−a) + 2aγA)((σ+a)² + A²) + (X(σ+a) − 2aγA)((σ−a)² + A²) = 2σ(X(σ²−a²+A²) + 4a²γA) ≥ 0`
 when `4a⁴γ² ≤ X²(σ² − a²)`, `X > 0`, `σ ≥ 0`. -/
 theorem pairNumerator_nonneg {X a γ σ A : ℝ} (hX : 0 < X) (hσ : 0 ≤ σ)
-    (hcond : 4 * a ^ 4 * γ ^ 2 ≤ X ^ 2 * (σ ^ 2 - a ^ 2)) :
-    0 ≤ (X * (σ - a) + 2 * a * γ * A) * ((σ + a) ^ 2 + A ^ 2)
-        + (X * (σ + a) - 2 * a * γ * A) * ((σ - a) ^ 2 + A ^ 2) := by
-  have hkey : 0 ≤ X * (σ ^ 2 - a ^ 2 + A ^ 2) + 4 * a ^ 2 * γ * A := by
-    have h1 : 0 ≤ X * (X * A + 2 * a ^ 2 * γ) ^ 2 := mul_nonneg hX.le (sq_nonneg _)
-    have h2 : 0 ≤ X * (X ^ 2 * (σ ^ 2 - a ^ 2) - 4 * a ^ 4 * γ ^ 2) :=
+    (hcond : 4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ) ≤ X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ))) :
+    0 ≤ (X * (σ - a) + 2 * a * γ * A) * ((σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ))
+        + (X * (σ + a) - 2 * a * γ * A) * ((σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ)) := by
+  have hkey : 0 ≤ X * (σ ^ (2 : ℕ) - a ^ (2 : ℕ) + A ^ (2 : ℕ)) + 4 * a ^ (2 : ℕ) * γ * A := by
+    have h1 : 0 ≤ X * (X * A + 2 * a ^ (2 : ℕ) * γ) ^ (2 : ℕ) := mul_nonneg hX.le (sq_nonneg _)
+    have h2 : 0 ≤ X * (X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) - 4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ)) :=
       mul_nonneg hX.le (by linarith)
-    have h3 : X ^ 2 * (X * (σ ^ 2 - a ^ 2 + A ^ 2) + 4 * a ^ 2 * γ * A)
-        = X * (X * A + 2 * a ^ 2 * γ) ^ 2 + X * (X ^ 2 * (σ ^ 2 - a ^ 2) - 4 * a ^ 4 * γ ^ 2) := by
+    have h3 : X ^ (2 : ℕ) * (X * (σ ^ (2 : ℕ) - a ^ (2 : ℕ) + A ^ (2 : ℕ)) + 4 * a ^ (2 : ℕ) * γ * A)
+        = X * (X * A + 2 * a ^ (2 : ℕ) * γ) ^ (2 : ℕ) + X * (X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) - 4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ)) := by
       ring
-    have hX2 : 0 < X ^ 2 := by positivity
-    have h4 : 0 ≤ X ^ 2 * (X * (σ ^ 2 - a ^ 2 + A ^ 2) + 4 * a ^ 2 * γ * A) := by
+    have hX2 : 0 < X ^ (2 : ℕ) := by positivity
+    have h4 : 0 ≤ X ^ (2 : ℕ) * (X * (σ ^ (2 : ℕ) - a ^ (2 : ℕ) + A ^ (2 : ℕ)) + 4 * a ^ (2 : ℕ) * γ * A) := by
       rw [h3]; linarith
     exact (mul_nonneg_iff_of_pos_left hX2).mp h4
-  have hexp : (X * (σ - a) + 2 * a * γ * A) * ((σ + a) ^ 2 + A ^ 2)
-        + (X * (σ + a) - 2 * a * γ * A) * ((σ - a) ^ 2 + A ^ 2)
-      = 2 * σ * (X * (σ ^ 2 - a ^ 2 + A ^ 2) + 4 * a ^ 2 * γ * A) := by ring
+  have hexp : (X * (σ - a) + 2 * a * γ * A) * ((σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ))
+        + (X * (σ + a) - 2 * a * γ * A) * ((σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ))
+      = 2 * σ * (X * (σ ^ (2 : ℕ) - a ^ (2 : ℕ) + A ^ (2 : ℕ)) + 4 * a ^ (2 : ℕ) * γ * A) := by ring
   rw [hexp]
   exact mul_nonneg (by linarith) hkey
 
 /-- The partner-pair sum of real parts, in real coordinates, is nonnegative. -/
 theorem pairRatio_nonneg {X a γ σ A N : ℝ} (hX : 0 < X) (hN : 0 < N) (hσ : 0 ≤ σ) (ha : |a| < σ)
-    (hcond : 4 * a ^ 4 * γ ^ 2 ≤ X ^ 2 * (σ ^ 2 - a ^ 2)) :
-    0 ≤ (X * (σ - a) + 2 * a * γ * A) / (N * ((σ - a) ^ 2 + A ^ 2))
-        + (X * (σ + a) - 2 * a * γ * A) / (N * ((σ + a) ^ 2 + A ^ 2)) := by
+    (hcond : 4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ) ≤ X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ))) :
+    0 ≤ (X * (σ - a) + 2 * a * γ * A) / (N * ((σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ)))
+        + (X * (σ + a) - 2 * a * γ * A) / (N * ((σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ))) := by
   have ha' := abs_lt.mp ha
-  have hD1 : 0 < (σ - a) ^ 2 + A ^ 2 := by nlinarith [sq_nonneg A]
-  have hD2 : 0 < (σ + a) ^ 2 + A ^ 2 := by nlinarith [sq_nonneg A]
-  have hden1 : N * ((σ - a) ^ 2 + A ^ 2) ≠ 0 := (mul_pos hN hD1).ne'
-  have hden2 : N * ((σ + a) ^ 2 + A ^ 2) ≠ 0 := (mul_pos hN hD2).ne'
+  have hD1 : 0 < (σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ) := by nlinarith [sq_nonneg A]
+  have hD2 : 0 < (σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ) := by nlinarith [sq_nonneg A]
+  have hden1 : N * ((σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ)) ≠ 0 := (mul_pos hN hD1).ne'
+  have hden2 : N * ((σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ)) ≠ 0 := (mul_pos hN hD2).ne'
   rw [div_add_div _ _ hden1 hden2]
   apply div_nonneg
   · have := pairNumerator_nonneg (A := A) hX hσ hcond
-    have e : (X * (σ - a) + 2 * a * γ * A) * (N * ((σ + a) ^ 2 + A ^ 2))
-        + N * ((σ - a) ^ 2 + A ^ 2) * (X * (σ + a) - 2 * a * γ * A)
-        = N * ((X * (σ - a) + 2 * a * γ * A) * ((σ + a) ^ 2 + A ^ 2)
-            + (X * (σ + a) - 2 * a * γ * A) * ((σ - a) ^ 2 + A ^ 2)) := by ring
+    have e : (X * (σ - a) + 2 * a * γ * A) * (N * ((σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ)))
+        + N * ((σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ)) * (X * (σ + a) - 2 * a * γ * A)
+        = N * ((X * (σ - a) + 2 * a * γ * A) * ((σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ))
+            + (X * (σ + a) - 2 * a * γ * A) * ((σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ))) := by ring
     rw [e]
     exact mul_nonneg hN.le this
   · exact (mul_pos (mul_pos hN hD1) (mul_pos hN hD2)).le
@@ -100,7 +100,7 @@ theorem re_lagTerm_eq (q : XiZeroCopy) (s : ℂ) :
 
 theorem lagZ_re (ρ s : ℂ) :
     (ρ * (1 - ρ) * (s - (ρ - 1 / 2))).re =
-      (ρ.re * (1 - ρ.re) + ρ.im ^ 2) * (s.re - (ρ.re - 1 / 2))
+      (ρ.re * (1 - ρ.re) + ρ.im ^ (2 : ℕ)) * (s.re - (ρ.re - 1 / 2))
         + 2 * (ρ.re - 1 / 2) * ρ.im * (s.im - ρ.im) := by
   simp only [Complex.mul_re, Complex.mul_im, Complex.sub_re, Complex.sub_im, Complex.one_re,
     Complex.one_im, Complex.div_ofNat_re, Complex.div_ofNat_im]
@@ -108,8 +108,8 @@ theorem lagZ_re (ρ s : ℂ) :
 
 theorem lagZ_normSq (ρ s : ℂ) :
     Complex.normSq (ρ * (1 - ρ) * (s - (ρ - 1 / 2))) =
-      ((ρ.re * (1 - ρ.re) + ρ.im ^ 2) ^ 2 + 4 * (ρ.re - 1 / 2) ^ 2 * ρ.im ^ 2)
-        * ((s.re - (ρ.re - 1 / 2)) ^ 2 + (s.im - ρ.im) ^ 2) := by
+      ((ρ.re * (1 - ρ.re) + ρ.im ^ (2 : ℕ)) ^ (2 : ℕ) + 4 * (ρ.re - 1 / 2) ^ (2 : ℕ) * ρ.im ^ (2 : ℕ))
+        * ((s.re - (ρ.re - 1 / 2)) ^ (2 : ℕ) + (s.im - ρ.im) ^ (2 : ℕ)) := by
   rw [Complex.normSq_mul, Complex.normSq_apply, Complex.normSq_apply]
   simp only [Complex.mul_re, Complex.mul_im, Complex.sub_re, Complex.sub_im, Complex.one_re,
     Complex.one_im, Complex.div_ofNat_re, Complex.div_ofNat_im]
@@ -120,9 +120,9 @@ theorem lagZ_normSq (ρ s : ℂ) :
 partner add to a nonnegative number. -/
 theorem re_lagTerm_add_partner_nonneg (q : XiZeroCopy) {s : ℂ}
     (ha : |(q.1 : ℂ).re - 1 / 2| < s.re)
-    (hcond : 4 * ((q.1 : ℂ).re - 1 / 2) ^ 4 * (q.1 : ℂ).im ^ 2
-        ≤ ((q.1 : ℂ).re * (1 - (q.1 : ℂ).re) + (q.1 : ℂ).im ^ 2) ^ 2
-            * (s.re ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2)) :
+    (hcond : 4 * ((q.1 : ℂ).re - 1 / 2) ^ (4 : ℕ) * (q.1 : ℂ).im ^ (2 : ℕ)
+        ≤ ((q.1 : ℂ).re * (1 - (q.1 : ℂ).re) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)
+            * (s.re ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))) :
     0 ≤ (lagWeight q / (s - lagPole q)).re
         + (lagWeight (lagPartner q) / (s - lagPole (lagPartner q))).re := by
   have hu0 := xiZeroCopy_re_pos q
@@ -135,13 +135,13 @@ theorem re_lagTerm_add_partner_nonneg (q : XiZeroCopy) {s : ℂ}
   set γ : ℝ := (q.1 : ℂ).im with hγ
   set σ : ℝ := s.re with hσ
   set t : ℝ := s.im with ht
-  have hX : 0 < u * (1 - u) + γ ^ 2 := by
+  have hX : 0 < u * (1 - u) + γ ^ (2 : ℕ) := by
     have := mul_pos hu0 (by linarith : (0:ℝ) < 1 - u)
     positivity
-  have hN : 0 < (u * (1 - u) + γ ^ 2) ^ 2 + 4 * (u - 1 / 2) ^ 2 * γ ^ 2 := by positivity
+  have hN : 0 < (u * (1 - u) + γ ^ (2 : ℕ)) ^ (2 : ℕ) + 4 * (u - 1 / 2) ^ (2 : ℕ) * γ ^ (2 : ℕ) := by positivity
   have hσ0 : 0 ≤ σ := le_trans (abs_nonneg _) ha.le
-  have key := pairRatio_nonneg (X := u * (1 - u) + γ ^ 2) (a := u - 1 / 2) (γ := γ) (σ := σ)
-    (A := t - γ) (N := (u * (1 - u) + γ ^ 2) ^ 2 + 4 * (u - 1 / 2) ^ 2 * γ ^ 2) hX hN hσ0 ha hcond
+  have key := pairRatio_nonneg (X := u * (1 - u) + γ ^ (2 : ℕ)) (a := u - 1 / 2) (γ := γ) (σ := σ)
+    (A := t - γ) (N := (u * (1 - u) + γ ^ (2 : ℕ)) ^ (2 : ℕ) + 4 * (u - 1 / 2) ^ (2 : ℕ) * γ ^ (2 : ℕ)) hX hN hσ0 ha hcond
   convert key using 1
   ring
 
@@ -203,19 +203,19 @@ theorem re_lagPoleSeries_nonneg {s : ℂ} (hs : 13 / 25 ≤ s.re) : 0 ≤ (lagPo
   have ha : |u - 1 / 2| < σ := by
     rw [abs_lt]; constructor <;> linarith
   refine re_lagTerm_add_partner_nonneg q ha ?_
-  have hA : (u - 1 / 2) ^ 2 < 1 / 4 := by nlinarith
-  have hA4 : 4 * (u - 1 / 2) ^ 4 ≤ 1 / 4 := by nlinarith [sq_nonneg ((u - 1 / 2) ^ 2)]
-  have hXg : γ ^ 2 ≤ u * (1 - u) + γ ^ 2 := by nlinarith
-  have hX2 : γ ^ 2 * γ ^ 2 ≤ (u * (1 - u) + γ ^ 2) ^ 2 := by
+  have hA : (u - 1 / 2) ^ (2 : ℕ) < 1 / 4 := by nlinarith
+  have hA4 : 4 * (u - 1 / 2) ^ (4 : ℕ) ≤ 1 / 4 := by nlinarith [sq_nonneg ((u - 1 / 2) ^ (2 : ℕ))]
+  have hXg : γ ^ (2 : ℕ) ≤ u * (1 - u) + γ ^ (2 : ℕ) := by nlinarith
+  have hX2 : γ ^ (2 : ℕ) * γ ^ (2 : ℕ) ≤ (u * (1 - u) + γ ^ (2 : ℕ)) ^ (2 : ℕ) := by
     have := pow_le_pow_left₀ (sq_nonneg γ) hXg 2
     nlinarith [this]
-  have hsa : 51 / 2500 ≤ σ ^ 2 - (u - 1 / 2) ^ 2 := by nlinarith
-  have h1 : γ ^ 2 * γ ^ 2 * (51 / 2500) ≤ (u * (1 - u) + γ ^ 2) ^ 2 * (σ ^ 2 - (u - 1 / 2) ^ 2) :=
+  have hsa : 51 / 2500 ≤ σ ^ (2 : ℕ) - (u - 1 / 2) ^ (2 : ℕ) := by nlinarith
+  have h1 : γ ^ (2 : ℕ) * γ ^ (2 : ℕ) * (51 / 2500) ≤ (u * (1 - u) + γ ^ (2 : ℕ)) ^ (2 : ℕ) * (σ ^ (2 : ℕ) - (u - 1 / 2) ^ (2 : ℕ)) :=
     mul_le_mul hX2 hsa (by norm_num) (by positivity)
-  have h2 : 4 * (u - 1 / 2) ^ 4 * γ ^ 2 ≤ γ ^ 2 * γ ^ 2 * (51 / 2500) := by
-    have hg0 : 0 ≤ γ ^ 2 := sq_nonneg γ
-    have h21 : 4 * (u - 1 / 2) ^ 4 * γ ^ 2 ≤ 1 / 4 * γ ^ 2 := mul_le_mul_of_nonneg_right hA4 hg0
-    have h22 : (41 / 2) * γ ^ 2 * (51 / 2500) ≤ γ ^ 2 * γ ^ 2 * (51 / 2500) := by
+  have h2 : 4 * (u - 1 / 2) ^ (4 : ℕ) * γ ^ (2 : ℕ) ≤ γ ^ (2 : ℕ) * γ ^ (2 : ℕ) * (51 / 2500) := by
+    have hg0 : 0 ≤ γ ^ (2 : ℕ) := sq_nonneg γ
+    have h21 : 4 * (u - 1 / 2) ^ (4 : ℕ) * γ ^ (2 : ℕ) ≤ 1 / 4 * γ ^ (2 : ℕ) := mul_le_mul_of_nonneg_right hA4 hg0
+    have h22 : (41 / 2) * γ ^ (2 : ℕ) * (51 / 2500) ≤ γ ^ (2 : ℕ) * γ ^ (2 : ℕ) * (51 / 2500) := by
       have := mul_le_mul_of_nonneg_right hγ.le hg0
       nlinarith [this]
     nlinarith [h21, h22]

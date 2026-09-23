@@ -27,25 +27,25 @@ def frozenStreamMasterFirst (w v r B : ℂ) (square : Bool) (V : Covector)
 def forcedStreamValue (q : XiZeroCopy) (branch : Bool) (r B : ℂ)
     (k : Fin 2) (z : Point) : ℂ :=
   let s := physicalRate q branch
-  streamRadialValue (2*s) r (B^2) false * fullAngularCovector q branch k z -
-    (s*(s-1)/4)*streamRadialValue (2*s) r (B^2) true * fullSquareCovector q k z
+  streamRadialValue (2*s) r (B^(2 : ℕ)) false * fullAngularCovector q branch k z -
+    (s*(s-1)/4)*streamRadialValue (2*s) r (B^(2 : ℕ)) true * fullSquareCovector q k z
 
 /-- Its original first radial derivative; both differentiated profiles are retained. -/
 def forcedStreamFirst (q : XiZeroCopy) (branch : Bool) (r B : ℂ)
     (k : Fin 2) (z : Point) : ℂ :=
   let s := physicalRate q branch
-  streamRadialFirst (2*s) r (B^2) false * fullAngularCovector q branch k z -
-    (s*(s-1)/4)*streamRadialFirst (2*s) r (B^2) true * fullSquareCovector q k z
+  streamRadialFirst (2*s) r (B^(2 : ℕ)) false * fullAngularCovector q branch k z -
+    (s*(s-1)/4)*streamRadialFirst (2*s) r (B^(2 : ℕ)) true * fullSquareCovector q k z
 
 private theorem master_frequency (w v r H H1 H2 A D : ℂ) :
     master w r H H1 H2 A D = master v r H H1 H2 A D -
-      (w^2-v^2)*r^2/(r^2-1)*H*A := by
+      (w^(2 : ℕ)-v^(2 : ℕ))*r^(2 : ℕ)/(r^(2 : ℕ)-1)*H*A := by
   unfold master
   ring
 
 private theorem masterFirst_frequency (w v r H H1 H2 H3 A D : ℂ) :
     masterFirst w r H H1 H2 H3 A D = masterFirst v r H H1 H2 H3 A D -
-      (w^2-v^2)*(r^2/(r^2-1)*H1-2*r/(r^2-1)^2*H)*A := by
+      (w^(2 : ℕ)-v^(2 : ℕ))*(r^(2 : ℕ)/(r^(2 : ℕ)-1)*H1-2*r/(r^(2 : ℕ)-1)^(2 : ℕ)*H)*A := by
   unfold masterFirst
   ring
 
@@ -56,10 +56,10 @@ theorem forced_stream_frequency (q : XiZeroCopy) (branch : Bool)
     let s := physicalRate q branch
     let r := (p.val 1 : ℂ)
     let z := angularPoint p.val
-    frozenStreamMaster w (2*s) r (B^2) false (fullAngularCovector q branch) k z -
-      (s*(s-1)/4)*frozenStreamMaster w (2*s) r (B^2) true (fullSquareCovector q) k z =
+    frozenStreamMaster w (2*s) r (B^(2 : ℕ)) false (fullAngularCovector q branch) k z -
+      (s*(s-1)/4)*frozenStreamMaster w (2*s) r (B^(2 : ℕ)) true (fullSquareCovector q) k z =
       2*current s r B (fullSquareCovector q k z) (fullGradientCovector q branch k z) -
-        (w^2-(2*s)^2)*r^2/(r^2-1)*forcedStreamValue q branch r B k z := by
+        (w^(2 : ℕ)-(2*s)^(2 : ℕ))*r^(2 : ℕ)/(r^(2 : ℕ)-1)*forcedStreamValue q branch r B k z := by
   dsimp only
   have h := forced_stream_master q branch p B k
   dsimp only at h
@@ -78,11 +78,11 @@ theorem forced_streamFirst_frequency (q : XiZeroCopy) (branch : Bool)
     let s := physicalRate q branch
     let r := (p.val 1 : ℂ)
     let z := angularPoint p.val
-    frozenStreamMasterFirst w (2*s) r (B^2) false (fullAngularCovector q branch) k z -
-      (s*(s-1)/4)*frozenStreamMasterFirst w (2*s) r (B^2) true (fullSquareCovector q) k z =
+    frozenStreamMasterFirst w (2*s) r (B^(2 : ℕ)) false (fullAngularCovector q branch) k z -
+      (s*(s-1)/4)*frozenStreamMasterFirst w (2*s) r (B^(2 : ℕ)) true (fullSquareCovector q) k z =
       2*currentFirst s r B (fullSquareCovector q k z) (fullGradientCovector q branch k z) -
-        (w^2-(2*s)^2)*(r^2/(r^2-1)*forcedStreamFirst q branch r B k z -
-          2*r/(r^2-1)^2*forcedStreamValue q branch r B k z) := by
+        (w^(2 : ℕ)-(2*s)^(2 : ℕ))*(r^(2 : ℕ)/(r^(2 : ℕ)-1)*forcedStreamFirst q branch r B k z -
+          2*r/(r^(2 : ℕ)-1)^(2 : ℕ)*forcedStreamValue q branch r B k z) := by
   dsimp only
   have h := forced_stream_masterFirst q branch p B k
   dsimp only at h

@@ -108,8 +108,8 @@ theorem exists_mobiusDivisorTwoPlaneWindowGeometry :
       let M := 14*(b+1)*N
       (∀ p∈mobiusDivisorCoupledTwoPool b N,‖mobiusDivisorTwoPlanePacket M p P‖≤ 9) ∧
       (∀ p∈mobiusDivisorCoupledTwoPool b N,
-        d*(M:ℝ)≤ (p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2) ∧
-        d*(M:ℝ)≤ (p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2) ∧
+        d*(M:ℝ)≤ (p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) ∧
+        d*(M:ℝ)≤ (p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) ∧
       ∀ q : ℕ,∀ L : Finset ℕ,L.card< mobiusDivisorCoupledTwoCapacity b N-1 → ∀ z : ℝ × ℝ,
         ∃ p∈(mobiusDivisorCoupledTwoPool b N).erase q,p∉L ∧
           z.1*(mobiusDivisorTwoPlanePacket M p P).1+z.2*(mobiusDivisorTwoPlanePacket M p P).2≤ -c*‖z‖ := by
@@ -211,24 +211,24 @@ theorem exists_mobiusDivisorTwoPlaneWindowGeometry :
 of a bounded physical displacement under a quadratic envelope budget. -/
 theorem mobiusDivisor_two_plane_repair_error_budget (E C H d m n D : ℝ)
     (hC : 0< C) (hH : 0< H) (hd : 0< d) (hm : 1≤ m)
-    (hE : E≤ C*m^2) (hD0 : 0≤ D) (hD : D≤ H*Real.sqrt m)
-    (hn : (2*Real.sqrt C*H+H^2+1)/d*Real.sqrt m≤ n) :
-    2*Real.sqrt E*D+D^2+m≤ d*n*m := by
+    (hE : E≤ C*m^(2 : ℕ)) (hD0 : 0≤ D) (hD : D≤ H*Real.sqrt m)
+    (hn : (2*Real.sqrt C*H+H^(2 : ℕ)+1)/d*Real.sqrt m≤ n) :
+    2*Real.sqrt E*D+D^(2 : ℕ)+m≤ d*n*m := by
   have hm0 : 0≤ m := by linarith only [hm]
   have hs : Real.sqrt E≤ Real.sqrt C*m := by
     calc
-      _ ≤ Real.sqrt (C*m^2) := Real.sqrt_le_sqrt hE
+      _ ≤ Real.sqrt (C*m^(2 : ℕ)) := Real.sqrt_le_sqrt hE
       _ = _ := by rw [Real.sqrt_mul hC.le,Real.sqrt_sq hm0]
   have hr1 : 1≤ Real.sqrt m := by rw [Real.le_sqrt (by norm_num) hm0]; simpa using hm
-  have hquad : D^2≤ (H*Real.sqrt m)^2 := by gcongr
+  have hquad : D^(2 : ℕ)≤ (H*Real.sqrt m)^(2 : ℕ) := by gcongr
   have hlin : 2*Real.sqrt E*D≤ 2*(Real.sqrt C*m)*(H*Real.sqrt m) := by gcongr
-  have hscale := mul_le_mul_of_nonneg_left hr1 (show 0≤ (H^2+1)*m by positivity)
+  have hscale := mul_le_mul_of_nonneg_left hr1 (show 0≤ (H^(2 : ℕ)+1)*m by positivity)
   have hpay := mul_le_mul_of_nonneg_right hn (show 0≤ d*m by positivity)
-  have he : ((2*Real.sqrt C*H+H^2+1)/d*Real.sqrt m)*(d*m)=
-      (2*Real.sqrt C*H+H^2+1)*m*Real.sqrt m := by field_simp
+  have he : ((2*Real.sqrt C*H+H^(2 : ℕ)+1)/d*Real.sqrt m)*(d*m)=
+      (2*Real.sqrt C*H+H^(2 : ℕ)+1)*m*Real.sqrt m := by field_simp
   rw [he] at hpay
   have hsq := Real.sq_sqrt hm0
-  have hquad' : D^2≤ H^2*m := by nlinarith only [hquad,hsq]
+  have hquad' : D^(2 : ℕ)≤ H^(2 : ℕ)*m := by nlinarith only [hquad,hsq]
   nlinarith only [hlin,hquad',hscale,hpay]
 
 /-- For all sufficiently large fields, actual unused source windows pay for any prescribed
@@ -241,7 +241,7 @@ theorem exists_mobiusDivisor_prescribed_window_repair :
       ∀ P : Finset ℕ,∀ q : ℕ,
         mobiusDivisorCoupledTwoCore⊆P → 2∉P →
         (∀ p∈mobiusDivisorCoupledTwoPool b N,p∉P) →
-        mobiusDivisorSuccessorEnvelope M P≤ C*(M:ℝ)^2 →
+        mobiusDivisorSuccessorEnvelope M P≤ C*(M:ℝ)^(2 : ℕ) →
         q.Prime → q∉P → q< M → 15≤ q → M/q≤ 14 →
         ∃ L : Finset ℕ,q∈L ∧ L⊆insert q (mobiusDivisorCoupledTwoPool b N) ∧
           L.card=⌈A*Real.sqrt M⌉₊+1 ∧
@@ -249,9 +249,9 @@ theorem exists_mobiusDivisor_prescribed_window_repair :
   obtain ⟨b,c,d,hb,hc,hd,hgeometry⟩ := exists_mobiusDivisorTwoPlaneWindowGeometry
   refine ⟨b,hb,?_⟩
   intro C hC
-  let H : ℝ := 2*(9^2/c+9)
+  let H : ℝ := 2*(9^(2 : ℕ)/c+9)
   have hH : 0< H := by dsimp only [H]; positivity
-  let A : ℝ := (2*Real.sqrt C*H+H^2+1)/d
+  let A : ℝ := (2*Real.sqrt C*H+H^(2 : ℕ)+1)/d
   have hA : 0< A := by dsimp only [A]; positivity
   refine ⟨A,hA,?_⟩
   filter_upwards [eventually_mobiusDivisorCoupledTwoCapacity_sub_one_ge_sqrt b (by omega) A hA,
@@ -287,19 +287,19 @@ theorem exists_mobiusDivisor_prescribed_window_repair :
     (fun p hp r hr _ => by have := (pdata p hp).2.2.2.2; have := (pdata r hr).2.2.2.1; omega)
   let X : ℝ := ∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅
   let Y : ℝ := ∑ p∈L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}
-  let R : ℝ := ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2)
-  let T : ℝ := ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2
+  let R : ℝ := ∑ p∈L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ))
+  let T : ℝ := ∑ p∈L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)
   change mobiusDivisorSuccessorEnvelope M (P∪L)+min R T≤
-    mobiusDivisorSuccessorEnvelope M P+2*Real.sqrt (mobiusDivisorSuccessorEnvelope M P)*(|X|+|Y|)+(|X|+|Y|)^2 at hbase
+    mobiusDivisorSuccessorEnvelope M P+2*Real.sqrt (mobiusDivisorSuccessorEnvelope M P)*(|X|+|Y|)+(|X|+|Y|)^(2 : ℕ) at hbase
   let x := (mobiusDivisorTwoPlanePacket M q P).1+∑ p∈S,(mobiusDivisorTwoPlanePacket M p P).1
   let y := (mobiusDivisorTwoPlanePacket M q P).2+∑ p∈S,(mobiusDivisorTwoPlanePacket M p P).2
   have hxy : |x|+|y|≤ H := by
-    change x^2+y^2≤ 2*(9^2/c+9)^2 at hbound
+    change x^(2 : ℕ)+y^(2 : ℕ)≤ 2*(9^(2 : ℕ)/c+9)^(2 : ℕ) at hbound
     have hx := sq_abs x
     have hy := sq_abs y
     have hh := sq_nonneg (|x|-|y|)
     dsimp only [H]
-    have hpos : 0<9^2/c+9 := by positivity
+    have hpos : 0<9^(2 : ℕ)/c+9 := by positivity
     nlinarith only [hbound,hx,hy,hh,hpos,abs_nonneg x,abs_nonneg y]
   have hr : 0< Real.sqrt (M:ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast (show 0< M by omega))
   have hsum (R' : Finset ℕ) :
@@ -343,7 +343,7 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
       let M := 14*(b+1)*N
       ∀ P : Finset ℕ,mobiusDivisorCoupledTwoCore⊆P → 2∉P →
         (∀ p∈mobiusDivisorCoupledTwoPool b N,p∉P) →
-        mobiusDivisorSuccessorEnvelope M P≤ C*(M:ℝ)^2 →
+        mobiusDivisorSuccessorEnvelope M P≤ C*(M:ℝ)^(2 : ℕ) →
         (∀ q∈mobiusDivisorSelectionPrimes M\insert 2 P,M/q≤ J) →
         ∃ L : Finset ℕ,2∈L ∧ L⊆insert 2 (mobiusDivisorCoupledTwoPool b N) ∧
           L.card=⌈A*Real.sqrt M⌉₊+1 ∧
@@ -351,11 +351,11 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
   obtain ⟨b,c,d,hb,hc,hd,hgeometry⟩ := exists_mobiusDivisorTwoPlaneWindowGeometry
   refine ⟨b,hb,?_⟩
   intro J C hC
-  let H : ℝ := 2*(9^2/c+9)
+  let H : ℝ := 2*(9^(2 : ℕ)/c+9)
   have hH : 0< H := by dsimp only [H]; positivity
   let C' : ℝ := C+2*((J:ℝ)+1)*Real.sqrt C
   have hC' : 0< C' := by dsimp only [C']; positivity
-  let B : ℝ := (2*Real.sqrt C'*H+H^2+1)/(d/2)
+  let B : ℝ := (2*Real.sqrt C'*H+H^(2 : ℕ)+1)/(d/2)
   let D : ℝ := 4*((J:ℝ)+1)*Real.sqrt C/d
   let A : ℝ := B+D
   have hB : 0< B := by dsimp only [B]; positivity
@@ -370,7 +370,7 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
   have hm1 : (1:ℝ)≤ M := by exact_mod_cast (show 1≤ M by omega)
   have hr : 0< Real.sqrt (M:ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast (show 0< M by omega))
   have hrM : Real.sqrt M≤ (M:ℝ) := by
-    have h := Real.sqrt_le_sqrt (show (M:ℝ)≤ (M:ℝ)^2 by nlinarith only [hm1])
+    have h := Real.sqrt_le_sqrt (show (M:ℝ)≤ (M:ℝ)^(2 : ℕ) by nlinarith only [hm1])
     simpa only [Real.sqrt_sq hm0] using h
   dsimp only
   intro P hP h2 hfresh hE hfront
@@ -379,7 +379,7 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
   let E' := mobiusDivisorSuccessorEnvelope M P'
   have hsE : Real.sqrt E≤ Real.sqrt C*(M:ℝ) := by
     calc
-      _ ≤ Real.sqrt (C*(M:ℝ)^2) := Real.sqrt_le_sqrt hE
+      _ ≤ Real.sqrt (C*(M:ℝ)^(2 : ℕ)) := Real.sqrt_le_sqrt hE
       _ = _ := by rw [Real.sqrt_mul hC.le,Real.sqrt_sq hm0]
   have hfront0 := mobiusDivisorSuccessorEnvelope_insert_le_remaining_quotient M J P Nat.prime_two hM h2 hfront
   rw [Real.sqrt_mul hm0] at hfront0
@@ -392,7 +392,7 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
     norm_num only [Nat.cast_ofNat] at hfront0
     change E'≤ E+(6/5:ℝ)*(J:ℝ)*(Real.sqrt M*Real.sqrt E) at hfront0
     linarith only [hfront0,hcost]
-  have hE' : E'≤ C'*(M:ℝ)^2 := by
+  have hE' : E'≤ C'*(M:ℝ)^(2 : ℕ) := by
     have hh := mul_le_mul_of_nonneg_left hrM (show 0≤ 2*((J:ℝ)+1)*Real.sqrt C*(M:ℝ) by positivity)
     dsimp only [C']
     nlinarith only [hfront',hE,hh]
@@ -426,16 +426,16 @@ theorem exists_mobiusDivisor_two_bounded_front_repair :
     (fun p hp => ((mobiusDivisorCoupledTwoCore_covers (by have := (pdata p hp).2.2.2.2; omega)).trans hP).trans (subset_insert 2 P))
     (fun p hp r hr _ => by have := (pdata p hp).2.2.2.2; have := (pdata r hr).2.2.2.1; omega)
   let Z : ℝ := ∑ p∈S,Real.sqrt p*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})
-  let T : ℝ := ∑ p∈S,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2
+  let T : ℝ := ∑ p∈S,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)
   dsimp only at hbase
   simp only [hfold,hzero,mul_zero,sum_const_zero,abs_zero,zero_pow (by norm_num : (2:ℕ)≠0),add_zero,min_self] at hbase
-  change mobiusDivisorSuccessorEnvelope M (P'∪S)+T≤ E'+2*Real.sqrt E'*|Z|+|Z|^2 at hbase
+  change mobiusDivisorSuccessorEnvelope M (P'∪S)+T≤ E'+2*Real.sqrt E'*|Z|+|Z|^(2 : ℕ) at hbase
   let x : ℝ := ∑ p∈S,(mobiusDivisorTwoPlanePacket M p P).1
   let y : ℝ := ∑ p∈S,(mobiusDivisorTwoPlanePacket M p P).2
   have hxy : |x|+|y|≤ H := by
     simp only [zero_add] at hbound
-    change x^2+y^2≤ 2*(9^2/c+9)^2 at hbound
-    have hpos : 0<9^2/c+9 := by positivity
+    change x^(2 : ℕ)+y^(2 : ℕ)≤ 2*(9^(2 : ℕ)/c+9)^(2 : ℕ) at hbound
+    have hpos : 0<9^(2 : ℕ)/c+9 := by positivity
     dsimp only [H]
     nlinarith only [hbound,sq_abs x,sq_abs y,sq_nonneg (|x|-|y|),hpos,abs_nonneg x,abs_nonneg y]
   have hsum (R : Finset ℕ) :

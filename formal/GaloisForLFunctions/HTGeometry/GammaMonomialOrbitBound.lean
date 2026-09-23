@@ -40,9 +40,9 @@ theorem gammaMonomial_shift_nat {r : ℕ} (lam : Fin r → ℂ) (g : Fin r → �
 
 /-- On the right half plane the shifted norms grow at least like `(‖s‖+j)/√2`. -/
 theorem two_mul_norm_add_natCast_sq_ge {s : ℂ} (hs : 0 < s.re) (j : ℕ) :
-    (‖s‖ + (j : ℝ)) ^ 2 ≤ 2 * ‖s + (j : ℂ)‖ ^ 2 := by
+    (‖s‖ + (j : ℝ)) ^ (2 : ℕ) ≤ 2 * ‖s + (j : ℂ)‖ ^ (2 : ℕ) := by
   have hj : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
-  have hsq : ‖s‖ ^ 2 + (j : ℝ) ^ 2 ≤ ‖s + (j : ℂ)‖ ^ 2 := by
+  have hsq : ‖s‖ ^ (2 : ℕ) + (j : ℝ) ^ (2 : ℕ) ≤ ‖s + (j : ℂ)‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply,
       Complex.add_re, Complex.add_im, Complex.natCast_re, Complex.natCast_im]
     nlinarith [hs, hj]
@@ -76,51 +76,51 @@ theorem exists_prod_norm_shiftRatio_le {r : ℕ} (lam : Fin r → ℂ) (g : Fin 
     intro j
     exact le_trans (le_trans (le_max_left _ _) hsn) (norm_le_norm_add_natCast hre j)
   have hterm : ∀ j ∈ Finset.range n,
-      ‖∏ k, (s + (j : ℂ) + lam k) ^ (g k)‖ ≤ Real.exp (K / ‖s + (j : ℂ)‖ ^ 2) := by
+      ‖∏ k, (s + (j : ℂ) + lam k) ^ (g k)‖ ≤ Real.exp (K / ‖s + (j : ℂ)‖ ^ (2 : ℕ)) := by
     intro j _
     have hb := hK (s + (j : ℂ)) (hjnorm j) (fun k => hjlam j k)
     have hnorm := norm_sub_le (∏ k, (s + (j : ℂ) + lam k) ^ (g k)) 1
-    have hle : ‖∏ k, (s + (j : ℂ) + lam k) ^ (g k)‖ ≤ 1 + K / ‖s + (j : ℂ)‖ ^ 2 := by
+    have hle : ‖∏ k, (s + (j : ℂ) + lam k) ^ (g k)‖ ≤ 1 + K / ‖s + (j : ℂ)‖ ^ (2 : ℕ) := by
       have h1 := norm_add_le ((∏ k, (s + (j : ℂ) + lam k) ^ (g k)) - 1) 1
       simp only [sub_add_cancel, norm_one] at h1
       linarith [hb, h1]
-    exact le_trans hle (by linarith [Real.add_one_le_exp (K / ‖s + (j : ℂ)‖ ^ 2)])
-  have hsum : ∑ j ∈ Finset.range n, K / ‖s + (j : ℂ)‖ ^ 2 ≤ 4 * K := by
+    exact le_trans hle (by linarith [Real.add_one_le_exp (K / ‖s + (j : ℂ)‖ ^ (2 : ℕ))])
+  have hsum : ∑ j ∈ Finset.range n, K / ‖s + (j : ℂ)‖ ^ (2 : ℕ) ≤ 4 * K := by
     have hcmp : ∀ j ∈ Finset.range n,
-        K / ‖s + (j : ℂ)‖ ^ 2 ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2) := by
+        K / ‖s + (j : ℂ)‖ ^ (2 : ℕ) ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by
       intro j _
       have hlow := two_mul_norm_add_natCast_sq_ge hre j
       have hjn : (0 : ℝ) < ‖s + (j : ℂ)‖ := by
         have := norm_le_norm_add_natCast hre j
         linarith
-      have hpos : (0 : ℝ) < (‖s‖ + (j : ℝ)) ^ 2 := by
+      have hpos : (0 : ℝ) < (‖s‖ + (j : ℝ)) ^ (2 : ℕ) := by
         have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
         positivity
-      rw [div_le_iff₀ (by positivity : (0:ℝ) < ‖s + (j : ℂ)‖ ^ 2)]
-      have hratio : (1 : ℝ) ≤ 2 * ‖s + (j : ℂ)‖ ^ 2 / (‖s‖ + (j : ℝ)) ^ 2 := by
+      rw [div_le_iff₀ (by positivity : (0:ℝ) < ‖s + (j : ℂ)‖ ^ (2 : ℕ))]
+      have hratio : (1 : ℝ) ≤ 2 * ‖s + (j : ℂ)‖ ^ (2 : ℕ) / (‖s‖ + (j : ℝ)) ^ (2 : ℕ) := by
         rw [le_div_iff₀ hpos]
         linarith [hlow]
-      have hfin : 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2) * ‖s + (j : ℂ)‖ ^ 2
-          = K * (2 * ‖s + (j : ℂ)‖ ^ 2 / (‖s‖ + (j : ℝ)) ^ 2) := by
+      have hfin : 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) * ‖s + (j : ℂ)‖ ^ (2 : ℕ)
+          = K * (2 * ‖s + (j : ℂ)‖ ^ (2 : ℕ) / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by
         field_simp
       rw [hfin]
       nlinarith [hratio, hK0]
     refine le_trans (Finset.sum_le_sum hcmp) ?_
     rw [← Finset.mul_sum]
     have hhead := sum_inv_sq_shift_head_le hspos n
-    have h2 : (1 : ℝ) / ‖s‖ ^ 2 + 1 / ‖s‖ ≤ 2 := by
+    have h2 : (1 : ℝ) / ‖s‖ ^ (2 : ℕ) + 1 / ‖s‖ ≤ 2 := by
       have ha : (1 : ℝ) / ‖s‖ ≤ 1 := by
         rw [div_le_one hspos]; linarith
-      have hb : (1 : ℝ) / ‖s‖ ^ 2 ≤ 1 := by
+      have hb : (1 : ℝ) / ‖s‖ ^ (2 : ℕ) ≤ 1 := by
         rw [div_le_one (by positivity)]
         nlinarith
       linarith
     nlinarith [hhead, hK0]
   calc ‖∏ j ∈ Finset.range n, ∏ k, (s + (j : ℂ) + lam k) ^ (g k)‖
       = ∏ j ∈ Finset.range n, ‖∏ k, (s + (j : ℂ) + lam k) ^ (g k)‖ := by rw [norm_prod]
-    _ ≤ ∏ j ∈ Finset.range n, Real.exp (K / ‖s + (j : ℂ)‖ ^ 2) :=
+    _ ≤ ∏ j ∈ Finset.range n, Real.exp (K / ‖s + (j : ℂ)‖ ^ (2 : ℕ)) :=
         Finset.prod_le_prod (fun j _ => norm_nonneg _) hterm
-    _ = Real.exp (∑ j ∈ Finset.range n, K / ‖s + (j : ℂ)‖ ^ 2) := (Real.exp_sum _ _).symm
+    _ = Real.exp (∑ j ∈ Finset.range n, K / ‖s + (j : ℂ)‖ ^ (2 : ℕ)) := (Real.exp_sum _ _).symm
     _ ≤ Real.exp (4 * K) := Real.exp_le_exp.mpr hsum
 
 end

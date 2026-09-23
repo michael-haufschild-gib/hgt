@@ -32,7 +32,7 @@ open Finset MeasureTheory
 
 /-- The fixed-length window square, as the square of a window sum. -/
 theorem fixedWindowSq_eq_sq_sum (f : ℕ → ℝ) {ℓ : ℕ} (hℓ : 1 ≤ ℓ) (z : ℕ) :
-    fixedWindowSq f ℓ z = (∑ n ∈ Finset.Ioc z (z + ℓ), f n) ^ 2 := by
+    fixedWindowSq f ℓ z = (∑ n ∈ Finset.Ioc z (z + ℓ), f n) ^ (2 : ℕ) := by
   have hwin := window_eq_partialSum f (y := z + 1) (by omega) (ℓ - 1)
   have hidx : z + 1 + (ℓ - 1) = z + ℓ := by omega
   have hpred : z + 1 - 1 = z := by omega
@@ -41,7 +41,7 @@ theorem fixedWindowSq_eq_sq_sum (f : ℕ → ℝ) {ℓ : ℕ} (hℓ : 1 ≤ ℓ)
 
 /-- The window square, in the complex form the Gallagher layer uses. -/
 theorem fixedWindowSq_eq_normSq (f : ℕ → ℝ) {ℓ : ℕ} (hℓ : 1 ≤ ℓ) (z : ℕ) :
-    fixedWindowSq f ℓ z = ‖∑ n ∈ Finset.Ioc z (z + ℓ), ((f n : ℝ) : ℂ)‖ ^ 2 := by
+    fixedWindowSq f ℓ z = ‖∑ n ∈ Finset.Ioc z (z + ℓ), ((f n : ℝ) : ℂ)‖ ^ (2 : ℕ) := by
   rw [fixedWindowSq_eq_sq_sum f hℓ z]
   have hcast : ∑ n ∈ Finset.Ioc z (z + ℓ), ((f n : ℝ) : ℂ)
       = (((∑ n ∈ Finset.Ioc z (z + ℓ), f n : ℝ)) : ℂ) := by
@@ -57,8 +57,8 @@ theorem dyadicMeanSquare_le_gallagher (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 1
     (hM : B + 1 + ℓ < M + 1)
     (hcover : (A : ℝ) + ((B + 1 - A : ℕ) : ℝ) ≤ (A : ℝ) * (1 + ε) ^ K')
     (h₁ : ∀ w ∈ Set.Icc (-W) W,
-      ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 ≤ M₁)
-    (h₂ : ∀ w : ℝ, ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 ≤ M₂) :
+      ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ) ≤ M₁)
+    (h₂ : ∀ w : ℝ, ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ) ≤ M₂) :
     dyadicMeanSquare f ℓ A B
       ≤ ((A : ℝ) * (1 + ε) ^ K') * ((K' : ℝ) * blockCost (ℓ : ℝ) (A : ℝ) ε M₁ M₂ W) := by
   classical
@@ -69,7 +69,7 @@ theorem dyadicMeanSquare_le_gallagher (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤ 1
     exact hf n
   -- rewrite the mean square in complex window form over `range K`
   have hreindex : dyadicMeanSquare f ℓ A B
-      = ∑ k ∈ Finset.range (B + 1 - A), ‖∑ n ∈ Finset.Ioc (A + k) (A + k + ℓ), c n‖ ^ 2 := by
+      = ∑ k ∈ Finset.range (B + 1 - A), ‖∑ n ∈ Finset.Ioc (A + k) (A + k + ℓ), c n‖ ^ (2 : ℕ) := by
     rw [dyadicMeanSquare, ← Finset.Ico_add_one_right_eq_Icc, Finset.sum_Ico_eq_sum_range]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [fixedWindowSq_eq_normSq f hℓ (A + k)]

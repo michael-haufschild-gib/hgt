@@ -122,10 +122,10 @@ theorem connes_cutoffTrace_split (G : ℝ → ℂ) {L : ℝ} (hL : 0 ≤ L) (hG 
 
 /-- The cut-off ball of the trace formula is the logarithmic sublevel set. -/
 theorem connes_logBall_eq {Λ : ℝ} (hΛ : 1 ≤ Λ) :
-    {u : ℝ | Real.log |u| ≤ 2 * Real.log Λ} = {u : ℝ | |u| ≤ Λ ^ 2} := by
+    {u : ℝ | Real.log |u| ≤ 2 * Real.log Λ} = {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)} := by
   have hΛ0 : (0 : ℝ) < Λ := lt_of_lt_of_le zero_lt_one hΛ
-  have hsq : (0 : ℝ) < Λ ^ 2 := by positivity
-  have hlogsq : Real.log (Λ ^ 2) = 2 * Real.log Λ := by
+  have hsq : (0 : ℝ) < Λ ^ (2 : ℕ) := by positivity
+  have hlogsq : Real.log (Λ ^ (2 : ℕ)) = 2 * Real.log Λ := by
     rw [Real.log_pow]
     push_cast
     ring
@@ -146,7 +146,7 @@ theorem connes_logBall_eq {Λ : ℝ} (hΛ : 1 ≤ Λ) :
 /-- **§VII (30) = (31) + (32) + (33), in the cut-off `Λ` of Theorem 4.** -/
 theorem connes_cutoffTrace_expansion (G : ℝ → ℂ) {Λ : ℝ} (hΛ : 1 ≤ Λ) (hG : Integrable G)
     (hGlog : Integrable fun u : ℝ => G u * ((Real.log |u| : ℝ) : ℂ)) :
-    (∫ u in {u : ℝ | |u| ≤ Λ ^ 2}, G u * (((2 * Real.log Λ - Real.log |u| : ℝ)) : ℂ))
+    (∫ u in {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)}, G u * (((2 * Real.log Λ - Real.log |u| : ℝ)) : ℂ))
       = ((2 * Real.log Λ : ℝ) : ℂ) * (∫ u : ℝ, G u)
         - (∫ u : ℝ, G u * ((Real.log |u| : ℝ) : ℂ))
         + ∫ u : ℝ, G u * ((connesCutoffExcess (2 * Real.log Λ) u : ℝ) : ℂ) := by

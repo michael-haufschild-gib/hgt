@@ -24,7 +24,7 @@ private lemma mean_lower : (0.091:ℝ) ≤
   have he : Real.log (157/25:ℝ)+Real.log (625/628:ℝ) = 2*Real.log 5-2*Real.log 2 := by
     rw [← Real.log_mul (by norm_num) (by norm_num)]
     norm_num
-    rw [show (25/4:ℝ)=5^2/2^2 by norm_num,Real.log_div (by norm_num) (by norm_num),Real.log_pow,Real.log_pow]
+    rw [show (25/4:ℝ)=5^(2 : ℕ)/2^(2 : ℕ) by norm_num,Real.log_div (by norm_num) (by norm_num),Real.log_pow,Real.log_pow]
     norm_num
   have hg := eulerMascheroniConstant_lt_fiveHundredSeventySevenThousandTwoHundredSixteen_over_oneMillion
   linarith [Real.log_five_gt_d9,Real.log_two_lt_d9]
@@ -87,9 +87,9 @@ private lemma defect_eleven_upper : primeFreeDivisorDefect 11 ≤ (1.22:ℝ) := 
   have h6 : Real.log 6=Real.log 2+Real.log 3 := by
     rw [← Real.log_mul (by norm_num : (2:ℝ)≠0) (by norm_num : (3:ℝ)≠0)]; norm_num
   have h8 : Real.log 8=3*Real.log 2 := by
-    rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num
+    rw [show (8:ℝ)=2^(3 : ℕ) by norm_num,Real.log_pow]; norm_num
   have h9 : Real.log 9=2*Real.log 3 := by
-    rw [show (9:ℝ)=3^2 by norm_num,Real.log_pow]; norm_num
+    rw [show (9:ℝ)=3^(2 : ℕ) by norm_num,Real.log_pow]; norm_num
   have h10 : Real.log 10=Real.log 2+Real.log 5 := by
     rw [← Real.log_mul (by norm_num : (2:ℝ)≠0) (by norm_num : (5:ℝ)≠0)]; norm_num
   have h12 : Real.log 12=2*Real.log 2+Real.log 3 := by
@@ -121,7 +121,7 @@ private lemma twelve_profile_bound {d : ℕ} (hd : 0<d) :
 private lemma separated_block {a b c h : ℝ} (hh : 0≤h)
     (ha : 0.09*h≤a) (hb0 : 0≤b) (hc0 : 0≤c)
     (hb : b≤0.104*h) (hc : c≤0.6*h) :
-    (a-b-c)^2≤a^2+b^2+c^2 := by
+    (a-b-c)^(2 : ℕ)≤a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) := by
   have ha0 : 0≤a := by linarith
   by_cases hs : b≤0.09*h
   · have h0 := mul_nonneg ha0 hb0
@@ -134,7 +134,7 @@ private lemma separated_block {a b c h : ℝ} (hh : 0≤h)
 private lemma adjacent_block {a b c e h : ℝ} (hh : 0≤h)
     (ha : 0.09*h≤a) (hc : 0.09*h≤c) (hnear : |a-c|≤0.001*h)
     (hb0 : 0≤b) (he0 : 0≤e) (hb : b≤0.104*h) (he : e≤0.104*h) :
-    (a-b-c+e)^2≤a^2+b^2+c^2+e^2 := by
+    (a-b-c+e)^(2 : ℕ)≤a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+e^(2 : ℕ) := by
   obtain ⟨hl,hu⟩ := abs_le.mp hnear
   have hsa := mul_self_le_mul_self (by positivity : 0≤0.09*h) ha
   have hsc := mul_self_le_mul_self (by positivity : 0≤0.09*h) hc
@@ -149,11 +149,11 @@ theorem exists_twelve_large_dilation_all_two_coordinate_blocks :
       (divisorUnsignedDilationChannel (12*p) r-
         divisorUnsignedDilationChannel (12*p) (p*r)-
         divisorUnsignedDilationChannel (12*p) (q*r)+
-        divisorUnsignedDilationChannel (12*p) (p*(q*r)))^2 ≤
-      (divisorUnsignedDilationChannel (12*p) r)^2+
-        (divisorUnsignedDilationChannel (12*p) (p*r))^2+
-        (divisorUnsignedDilationChannel (12*p) (q*r))^2+
-        (divisorUnsignedDilationChannel (12*p) (p*(q*r)))^2 := by
+        divisorUnsignedDilationChannel (12*p) (p*(q*r)))^(2 : ℕ) ≤
+      (divisorUnsignedDilationChannel (12*p) r)^(2 : ℕ)+
+        (divisorUnsignedDilationChannel (12*p) (p*r))^(2 : ℕ)+
+        (divisorUnsignedDilationChannel (12*p) (q*r))^(2 : ℕ)+
+        (divisorUnsignedDilationChannel (12*p) (p*(q*r)))^(2 : ℕ) := by
   obtain ⟨T,hT,hmean⟩ := exists_divisorUnsignedDilationChannel_uniform_mean_error
     (1/2000) (by norm_num)
   refine ⟨12*T,by omega,?_⟩
@@ -191,7 +191,7 @@ theorem exists_twelve_large_dilation_all_two_coordinate_blocks :
       r = 1*r := by omega
       _ ≤ q*r := Nat.mul_le_mul_right r (by omega)
   change (divisorUnsignedDilationChannel M r-divisorUnsignedDilationChannel M (p*r)-
-    divisorUnsignedDilationChannel M (q*r)+divisorUnsignedDilationChannel M (p*(q*r)))^2≤_
+    divisorUnsignedDilationChannel M (q*r)+divisorUnsignedDilationChannel M (p*(q*r)))^(2 : ℕ)≤_
   by_cases hr12 : r≤12
   · have hA := hlarge r hr (by omega)
     have ha : (0.09:ℝ)*Real.sqrt M≤divisorUnsignedDilationChannel M r := by

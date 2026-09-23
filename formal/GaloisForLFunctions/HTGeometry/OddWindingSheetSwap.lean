@@ -31,10 +31,10 @@ have even degree, contradicting `oddDegree`. -/
 theorem squareRootPath_endpoint_eq_neg_of_oddDegree
     (root : C(I, ℂ))
     (root_ne_zero : ∀ s : I, root s ≠ 0)
-    (rootSquareClosed : (root 1) ^ 2 = (root 0) ^ 2)
+    (rootSquareClosed : (root 1) ^ (2 : ℕ) = (root 0) ^ (2 : ℕ))
     (radicand : Path Pi1CMinusZero.one_cs Pi1CMinusZero.one_cs)
     (normalizedSquare :
-      ∀ s : I, (root s / root 0) ^ 2 = (radicand s : ℂ))
+      ∀ s : I, (root s / root 0) ^ (2 : ℕ) = (radicand s : ℂ))
     (oddDegree :
       ∃ k : ℤ, Pi1CMinusZero.degZ ⟦radicand⟧ = 2 * k + 1) :
     root 1 = -root 0 := by
@@ -61,7 +61,7 @@ theorem squareRootPath_endpoint_eq_neg_of_oddDegree
       apply Path.ext
       funext s
       apply Subtype.ext
-      show (root s / root 0) ^ 2 = (radicand s : ℂ)
+      show (root s / root 0) ^ (2 : ℕ) = (radicand s : ℂ)
       exact normalizedSquare s
     obtain ⟨k, hk⟩ := oddDegree
     have evenDegree :

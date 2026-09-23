@@ -31,7 +31,7 @@ def lgDiff (v : ℕ → ℝ) (n : ℕ) : ℝ := v (n + 1) - v n
 def lgProd (v : ℕ → ℝ) (n : ℕ) : ℝ := v n * v (n + 1)
 
 /-- The discrete energy of the Sturm--Liouville recurrence. -/
-def lgEnergy (p v : ℕ → ℝ) (n : ℕ) : ℝ := lgDiff v n ^ 2 + p n * lgProd v n
+def lgEnergy (p v : ℕ → ℝ) (n : ℕ) : ℝ := lgDiff v n ^ (2 : ℕ) + p n * lgProd v n
 
 /-- The unimodular discrete Sturm--Liouville recurrence. -/
 def IsLGSolution (p v : ℕ → ℝ) : Prop :=
@@ -56,7 +56,7 @@ theorem lgEnergy_succ_sub (h : IsLGSolution p v) (n : ℕ) :
 /-- **The discrete virial identity.** -/
 theorem lgVirial (h : IsLGSolution p v) (n : ℕ) :
     v (n + 2) * lgDiff v (n + 1) - v (n + 1) * lgDiff v n
-      = lgDiff v (n + 1) ^ 2 - p (n + 1) * v (n + 1) ^ 2 := by
+      = lgDiff v (n + 1) ^ (2 : ℕ) - p (n + 1) * v (n + 1) ^ (2 : ℕ) := by
   have hrec := h n
   rw [lgDiff, lgDiff] at hrec
   simp only [lgDiff]
@@ -65,42 +65,42 @@ theorem lgVirial (h : IsLGSolution p v) (n : ℕ) :
 /-- The energy is nonnegative once the weight is at most `4`. -/
 theorem lgEnergy_nonneg (hp : 0 ≤ p n) (hp4 : p n ≤ 4) : 0 ≤ lgEnergy p v n := by
   have hsplit : lgEnergy p v n
-      = (lgDiff v n + p n * v n / 2) ^ 2 + p n * v n ^ 2 * (1 - p n / 4) := by
+      = (lgDiff v n + p n * v n / 2) ^ (2 : ℕ) + p n * v n ^ (2 : ℕ) * (1 - p n / 4) := by
     simp only [lgEnergy, lgDiff, lgProd]
     ring
   rw [hsplit]
-  have h1 : (0 : ℝ) ≤ (lgDiff v n + p n * v n / 2) ^ 2 := sq_nonneg _
-  have h2 : (0 : ℝ) ≤ p n * v n ^ 2 * (1 - p n / 4) := by
+  have h1 : (0 : ℝ) ≤ (lgDiff v n + p n * v n / 2) ^ (2 : ℕ) := sq_nonneg _
+  have h2 : (0 : ℝ) ≤ p n * v n ^ (2 : ℕ) * (1 - p n / 4) := by
     have : (0 : ℝ) ≤ 1 - p n / 4 := by linarith
     positivity
   linarith
 
 /-- The solution is controlled by the energy divided by the weight. -/
 theorem sq_le_two_mul_lgEnergy_div (hp : 0 < p n) (hp2 : p n ≤ 2) :
-    p n * v n ^ 2 ≤ 2 * lgEnergy p v n := by
+    p n * v n ^ (2 : ℕ) ≤ 2 * lgEnergy p v n := by
   have hsplit : lgEnergy p v n
-      = (lgDiff v n + p n * v n / 2) ^ 2 + p n * v n ^ 2 * (1 - p n / 4) := by
+      = (lgDiff v n + p n * v n / 2) ^ (2 : ℕ) + p n * v n ^ (2 : ℕ) * (1 - p n / 4) := by
     simp only [lgEnergy, lgDiff, lgProd]
     ring
-  have h1 : (0 : ℝ) ≤ (lgDiff v n + p n * v n / 2) ^ 2 := sq_nonneg _
-  have h2 : p n * v n ^ 2 * (1 - p n / 4) ≤ lgEnergy p v n := by rw [hsplit]; linarith
-  have h3 : p n * v n ^ 2 / 2 ≤ p n * v n ^ 2 * (1 - p n / 4) := by
-    have hnn : (0 : ℝ) ≤ p n * v n ^ 2 := by positivity
+  have h1 : (0 : ℝ) ≤ (lgDiff v n + p n * v n / 2) ^ (2 : ℕ) := sq_nonneg _
+  have h2 : p n * v n ^ (2 : ℕ) * (1 - p n / 4) ≤ lgEnergy p v n := by rw [hsplit]; linarith
+  have h3 : p n * v n ^ (2 : ℕ) / 2 ≤ p n * v n ^ (2 : ℕ) * (1 - p n / 4) := by
+    have hnn : (0 : ℝ) ≤ p n * v n ^ (2 : ℕ) := by positivity
     have hc : (0 : ℝ) ≤ 1 / 2 - p n / 4 := by linarith
     nlinarith [mul_nonneg hnn hc]
   linarith
 
 /-- The forward difference is controlled by the energy. -/
 theorem sq_lgDiff_le (hp : 0 < p n) (hp2 : p n ≤ 2) :
-    lgDiff v n ^ 2 ≤ 2 * lgEnergy p v n := by
+    lgDiff v n ^ (2 : ℕ) ≤ 2 * lgEnergy p v n := by
   have hsplit : lgEnergy p v n
-      = lgDiff v n ^ 2 + p n * v n ^ 2 + p n * v n * lgDiff v n := by
+      = lgDiff v n ^ (2 : ℕ) + p n * v n ^ (2 : ℕ) + p n * v n * lgDiff v n := by
     simp only [lgEnergy, lgDiff, lgProd]
     ring
-  have hkey : 2 * lgEnergy p v n - lgDiff v n ^ 2
-      = (lgDiff v n + p n * v n) ^ 2 + p n * v n ^ 2 * (2 - p n) := by rw [hsplit]; ring
-  have h1 : (0 : ℝ) ≤ (lgDiff v n + p n * v n) ^ 2 := sq_nonneg _
-  have h2 : (0 : ℝ) ≤ p n * v n ^ 2 * (2 - p n) := by
+  have hkey : 2 * lgEnergy p v n - lgDiff v n ^ (2 : ℕ)
+      = (lgDiff v n + p n * v n) ^ (2 : ℕ) + p n * v n ^ (2 : ℕ) * (2 - p n) := by rw [hsplit]; ring
+  have h1 : (0 : ℝ) ≤ (lgDiff v n + p n * v n) ^ (2 : ℕ) := sq_nonneg _
+  have h2 : (0 : ℝ) ≤ p n * v n ^ (2 : ℕ) * (2 - p n) := by
     have h : (0 : ℝ) ≤ 2 - p n := by linarith
     positivity
   linarith
@@ -118,9 +118,9 @@ noncomputable def lgNormalizedEnergy (p v : ℕ → ℝ) (n : ℕ) : ℝ :=
   lgEnergy p v n / Real.sqrt (p n)
 
 theorem lg_increment_algebra {sa sb d M : ℝ} (hsa : 0 < sa) (hsb : 0 < sb) :
-    ((d ^ 2 + sa ^ 2 * M) + (sb ^ 2 - sa ^ 2) * M) / sb - (d ^ 2 + sa ^ 2 * M) / sa
-      = ((sa ^ 2 - sb ^ 2) / (sa ^ 2 * sb))
-        * (d ^ 2 - (sb / (sa + sb)) * (d ^ 2 + sa ^ 2 * M)) := by
+    ((d ^ (2 : ℕ) + sa ^ (2 : ℕ) * M) + (sb ^ (2 : ℕ) - sa ^ (2 : ℕ)) * M) / sb - (d ^ (2 : ℕ) + sa ^ (2 : ℕ) * M) / sa
+      = ((sa ^ (2 : ℕ) - sb ^ (2 : ℕ)) / (sa ^ (2 : ℕ) * sb))
+        * (d ^ (2 : ℕ) - (sb / (sa + sb)) * (d ^ (2 : ℕ) + sa ^ (2 : ℕ) * M)) := by
   have hsum : sa + sb ≠ 0 := by positivity
   have hsa' : sa ≠ 0 := hsa.ne'
   have hsb' : sb ≠ 0 := hsb.ne'
@@ -131,16 +131,16 @@ theorem lg_increment_algebra {sa sb d M : ℝ} (hsa : 0 < sa) (hsb : 0 < sb) :
 theorem lgNormalizedEnergy_succ_sub (h : IsLGSolution p v) {n : ℕ}
     (hpn : 0 < p n) (hpn' : 0 < p (n + 1)) :
     lgNormalizedEnergy p v (n + 1) - lgNormalizedEnergy p v n
-      = lgDrift p n * (lgDiff v n ^ 2 - lgWeightRatio p n * lgEnergy p v n) := by
+      = lgDrift p n * (lgDiff v n ^ (2 : ℕ) - lgWeightRatio p n * lgEnergy p v n) := by
   have hsa : 0 < Real.sqrt (p n) := Real.sqrt_pos.mpr hpn
   have hsb : 0 < Real.sqrt (p (n + 1)) := Real.sqrt_pos.mpr hpn'
-  have hsa2 : Real.sqrt (p n) ^ 2 = p n := Real.sq_sqrt hpn.le
-  have hsb2 : Real.sqrt (p (n + 1)) ^ 2 = p (n + 1) := Real.sq_sqrt hpn'.le
+  have hsa2 : Real.sqrt (p n) ^ (2 : ℕ) = p n := Real.sq_sqrt hpn.le
+  have hsb2 : Real.sqrt (p (n + 1)) ^ (2 : ℕ) = p (n + 1) := Real.sq_sqrt hpn'.le
   have key := lg_increment_algebra (d := lgDiff v n) (M := lgProd v n) hsa hsb
   rw [hsa2, hsb2] at key
-  have hEn : lgEnergy p v n = lgDiff v n ^ 2 + p n * lgProd v n := rfl
+  have hEn : lgEnergy p v n = lgDiff v n ^ (2 : ℕ) + p n * lgProd v n := rfl
   have hEsucc : lgEnergy p v (n + 1)
-      = lgDiff v n ^ 2 + p n * lgProd v n + (p (n + 1) - p n) * lgProd v n := by
+      = lgDiff v n ^ (2 : ℕ) + p n * lgProd v n + (p (n + 1) - p n) * lgProd v n := by
     have := lgEnergy_succ_sub h n
     rw [hEn] at this
     linarith
@@ -148,7 +148,7 @@ theorem lgNormalizedEnergy_succ_sub (h : IsLGSolution p v) {n : ℕ}
   exact key
 
 /-- The virial expression `d² − p v²`, whose shift is an exact discrete derivative. -/
-def lgVirialTerm (p v : ℕ → ℝ) (n : ℕ) : ℝ := lgDiff v n ^ 2 - p n * v n ^ 2
+def lgVirialTerm (p v : ℕ → ℝ) (n : ℕ) : ℝ := lgDiff v n ^ (2 : ℕ) - p n * v n ^ (2 : ℕ)
 
 /-- The discrete primitive of the virial expression. -/
 def lgVirialPrimitive (v : ℕ → ℝ) (n : ℕ) : ℝ := v (n + 1) * lgDiff v n
@@ -183,13 +183,13 @@ theorem lgNormalizedEnergy_succ_sub_split (h : IsLGSolution p v) {n : ℕ}
         + lgDrift p n * lgRatioDefect p n * lgEnergy p v n := by
   have hstep := lgNormalizedEnergy_succ_sub h hpn hpn'
   have hratio := lgWeightRatio_eq (p := p) (n := n) hpn hpn'
-  have hvir : lgDiff v n ^ 2 - p n * lgProd v n
+  have hvir : lgDiff v n ^ (2 : ℕ) - p n * lgProd v n
       = lgVirialTerm p v n - p n * v n * lgDiff v n := by
     simp only [lgVirialTerm, lgProd, lgDiff]
     ring
-  have hE : lgEnergy p v n = lgDiff v n ^ 2 + p n * lgProd v n := rfl
+  have hE : lgEnergy p v n = lgDiff v n ^ (2 : ℕ) + p n * lgProd v n := rfl
   rw [hstep, hratio]
-  have hinner : lgDiff v n ^ 2 - (1 / 2 - lgRatioDefect p n) * lgEnergy p v n
+  have hinner : lgDiff v n ^ (2 : ℕ) - (1 / 2 - lgRatioDefect p n) * lgEnergy p v n
       = (lgVirialTerm p v n - p n * v n * lgDiff v n) / 2
         + lgRatioDefect p n * lgEnergy p v n := by
     rw [← hvir, hE]
@@ -203,7 +203,7 @@ theorem lgNormalizedEnergy_nonneg (hpn : 0 < p n) (hp4 : p n ≤ 4) :
   exact div_nonneg (lgEnergy_nonneg hpn.le hp4) (Real.sqrt_nonneg _)
 
 theorem lgNormalizedEnergy_sq (hpn : 0 < p n) :
-    lgNormalizedEnergy p v n ^ 2 * p n = lgEnergy p v n ^ 2 := by
+    lgNormalizedEnergy p v n ^ (2 : ℕ) * p n = lgEnergy p v n ^ (2 : ℕ) := by
   rw [lgNormalizedEnergy, div_pow, Real.sq_sqrt hpn.le]
   field_simp
 
@@ -214,15 +214,15 @@ theorem abs_mul_lgDiff_le (hpn : 0 < p n) (hp2 : p n ≤ 2) :
   have hF := lgNormalizedEnergy_nonneg (p := p) (v := v) (n := n) hpn (by linarith)
   have h1 := sq_le_two_mul_lgEnergy_div (p := p) (v := v) (n := n) hpn hp2
   have h2 := sq_lgDiff_le (p := p) (v := v) (n := n) hpn hp2
-  have hsq : (v n * lgDiff v n) ^ 2 * p n ≤ (2 * lgNormalizedEnergy p v n) ^ 2 * p n := by
-    have hFsq : (2 * lgNormalizedEnergy p v n) ^ 2 * p n = 4 * lgEnergy p v n ^ 2 := by
+  have hsq : (v n * lgDiff v n) ^ (2 : ℕ) * p n ≤ (2 * lgNormalizedEnergy p v n) ^ (2 : ℕ) * p n := by
+    have hFsq : (2 * lgNormalizedEnergy p v n) ^ (2 : ℕ) * p n = 4 * lgEnergy p v n ^ (2 : ℕ) := by
       have := lgNormalizedEnergy_sq (p := p) (v := v) (n := n) hpn
       nlinarith [this]
     rw [hFsq]
-    have hvd : (v n * lgDiff v n) ^ 2 * p n = (p n * v n ^ 2) * lgDiff v n ^ 2 := by ring
+    have hvd : (v n * lgDiff v n) ^ (2 : ℕ) * p n = (p n * v n ^ (2 : ℕ)) * lgDiff v n ^ (2 : ℕ) := by ring
     rw [hvd]
     nlinarith [h1, h2, sq_nonneg (lgDiff v n), hE]
-  have hsq' : (v n * lgDiff v n) ^ 2 ≤ (2 * lgNormalizedEnergy p v n) ^ 2 :=
+  have hsq' : (v n * lgDiff v n) ^ (2 : ℕ) ≤ (2 * lgNormalizedEnergy p v n) ^ (2 : ℕ) :=
     le_of_mul_le_mul_right (by linarith [hsq]) hpn
   have hs := Real.sqrt_le_sqrt hsq'
   rwa [Real.sqrt_sq_eq_abs, Real.sqrt_sq (by positivity)] at hs
@@ -245,10 +245,10 @@ theorem abs_lgVirialPrimitive_le (hpn : 0 < p n) (hp1 : p n ≤ 1) :
   have hF := lgNormalizedEnergy_nonneg (p := p) (v := v) (n := n) hpn (by linarith)
   have hmix := abs_mul_lgDiff_le (p := p) (v := v) (n := n) hpn hp2
   have hd := sq_lgDiff_le (p := p) (v := v) (n := n) hpn hp2
-  have hsplit : lgVirialPrimitive v n = v n * lgDiff v n + lgDiff v n ^ 2 := by
+  have hsplit : lgVirialPrimitive v n = v n * lgDiff v n + lgDiff v n ^ (2 : ℕ) := by
     simp only [lgVirialPrimitive, lgDiff]
     ring
-  have hdF : lgDiff v n ^ 2 ≤ 2 * lgNormalizedEnergy p v n := by
+  have hdF : lgDiff v n ^ (2 : ℕ) ≤ 2 * lgNormalizedEnergy p v n := by
     have hsqrt : Real.sqrt (p n) ≤ 1 := by
       rw [show (1 : ℝ) = Real.sqrt 1 by simp]
       exact Real.sqrt_le_sqrt hp1
@@ -258,9 +258,9 @@ theorem abs_lgVirialPrimitive_le (hpn : 0 < p n) (hp1 : p n ≤ 1) :
     rw [hEF] at hd
     nlinarith [Real.sqrt_nonneg (p n)]
   rw [hsplit]
-  calc |v n * lgDiff v n + lgDiff v n ^ 2| ≤ |v n * lgDiff v n| + |lgDiff v n ^ 2| :=
+  calc |v n * lgDiff v n + lgDiff v n ^ (2 : ℕ)| ≤ |v n * lgDiff v n| + |lgDiff v n ^ (2 : ℕ)| :=
         abs_add_le _ _
-    _ = |v n * lgDiff v n| + lgDiff v n ^ 2 := by
+    _ = |v n * lgDiff v n| + lgDiff v n ^ (2 : ℕ) := by
         rw [abs_of_nonneg (sq_nonneg (lgDiff v n))]
     _ ≤ 2 * lgNormalizedEnergy p v n + 2 * lgNormalizedEnergy p v n := by linarith
     _ = 4 * lgNormalizedEnergy p v n := by ring
@@ -545,13 +545,13 @@ theorem sq_le_of_lgControl (h : IsLGSolution p v) {N₀ : ℕ}
     (hbdry : ∀ n, N₀ ≤ n → 2 * |lgDrift p n| ≤ 1 / 8)
     (hctrl : ∀ K, ∑ k ∈ Finset.Ico N₀ K, lgControl p k ≤ 1 / 8)
     {m : ℕ} (hm : N₀ ≤ m) :
-    v m ^ 2
+    v m ^ (2 : ℕ)
       ≤ 4 * max (lgNormalizedEnergy p v N₀) (lgNormalizedEnergy p v (N₀ + 1))
           / Real.sqrt (p m) := by
   have hp := hpos m hm
   have hp1 := hle m hm
   have hs : 0 < Real.sqrt (p m) := Real.sqrt_pos.mpr hp
-  have hs2 : Real.sqrt (p m) ^ 2 = p m := Real.sq_sqrt hp.le
+  have hs2 : Real.sqrt (p m) ^ (2 : ℕ) = p m := Real.sq_sqrt hp.le
   have hbound := lgNormalizedEnergy_le_of_control (p := p) (v := v) h hpos hle hbdry hctrl hm
   have hEq := lgEnergy_eq_normalized (p := p) (v := v) (n := m) hp
   have hsq := sq_le_two_mul_lgEnergy_div (p := p) (v := v) (n := m) hp (by linarith)
@@ -559,7 +559,7 @@ theorem sq_le_of_lgControl (h : IsLGSolution p v) {N₀ : ℕ}
   have hE : lgEnergy p v m ≤ 2 * C * Real.sqrt (p m) := by
     rw [hEq]
     exact mul_le_mul_of_nonneg_right hbound hs.le
-  have hkey : p m * v m ^ 2 ≤ 4 * C * Real.sqrt (p m) := by linarith
+  have hkey : p m * v m ^ (2 : ℕ) ≤ 4 * C * Real.sqrt (p m) := by linarith
   rw [le_div_iff₀ hs]
   nlinarith [hkey, hs, hs2, sq_nonneg (v m)]
 

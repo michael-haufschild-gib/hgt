@@ -16,7 +16,7 @@ the constant fibre sum, while the remaining terms are bounded uniformly by Cauch
 the divisor is separated from `a`.  Letting `z` approach `a` inside the punctured neighbourhood of
 regular points kills the fibre sum.
 
-Consequently the closed Cauchy core is the whole divisor `ell^2` space if and only if every Xi zero
+Consequently the closed Cauchy core is the whole divisor `ell^(2 : ℕ)` space if and only if every Xi zero
 is simple, and otherwise its orthogonal complement is exactly the space of fibrewise mean-zero
 vectors.
 -/
@@ -49,7 +49,7 @@ def xiZeroCopyFiber (ρ : XiDivisorSupport) : Finset XiZeroCopy :=
 def xiWeilFiberSum (u : XiZeroCopy → ℂ) (ρ : XiDivisorSupport) : ℂ :=
   ∑ q ∈ xiZeroCopyFiber ρ, u q
 
-/-- Square-summability of the coordinates of an `ell^2` vector. -/
+/-- Square-summability of the coordinates of an `ell^(2 : ℕ)` vector. -/
 theorem summable_sq_lp {ι : Type*} (u : lp (fun _ : ι => ℂ) 2) :
     Summable (fun q => ‖u q‖ ^ 2) := by
   have h := (memℓp_gen_iff (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal)).mp (lp.memℓp u)
@@ -72,7 +72,7 @@ theorem summable_sq_conj_lp (u : lp (fun _ : XiZeroCopy => ℂ) 2) :
     Summable (fun q => ‖(starRingEnd ℂ) (u q)‖ ^ 2) := by
   simpa only [RCLike.norm_conj] using summable_sq_lp u
 
-/-- Absolute summability of the resolvent pairing of an `ell^2` divisor vector with a Cauchy
+/-- Absolute summability of the resolvent pairing of an `ell^(2 : ℕ)` divisor vector with a Cauchy
 kernel. -/
 theorem summable_norm_conj_mul_cauchy (u : lp (fun _ : XiZeroCopy => ℂ) 2) (z : ℂ) :
     Summable (fun q : XiZeroCopy => ‖(starRingEnd ℂ) (u q) * (xiSpectralPoint q - z)⁻¹‖) :=
@@ -353,7 +353,7 @@ theorem mem_orthogonal_xiWeilCauchyAlgebraicSubspace_iff
   exact inner_eq_zero_on_xiWeilCauchyAlgebraicSubspace_iff u
 
 /-- **Exact density criterion for the Cauchy resolvent core.**  The closed span of the regular
-Cauchy evaluation vectors is the whole divisor `ell^2` space exactly when every Xi zero is simple:
+Cauchy evaluation vectors is the whole divisor `ell^(2 : ℕ)` space exactly when every Xi zero is simple:
 a zero of multiplicity two or more carries a difference of two copies which is annihilated by every
 Cauchy kernel, and conversely a simple divisor makes the fibre sums the coordinates themselves. -/
 theorem xiWeilCauchyHilbertSubspace_eq_top_iff :

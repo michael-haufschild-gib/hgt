@@ -46,7 +46,7 @@ def ccmActualHeadMellinWallField (xi : ℝ) (n : ℕ) : ℂ :=
 def ccmActualHeadMellinWallChord (xi : ℝ) (n : ℕ) : ℂ :=
   ccmActualHeadMellinWallField xi n - ccmActualHeadMellinWallField (-xi) n
 
-theorem criticalMellinAtomWeight_nonneg (n : ℕ) :
+theorem criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer (n : ℕ) :
     0 ≤ criticalMellinAtomWeight n := by
   unfold criticalMellinAtomWeight
   exact mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _)
@@ -63,7 +63,7 @@ theorem normSq_ccmActualHeadMellinWallChord (xi : ℝ) (n : ℕ) :
   rw [Complex.normSq_eq_norm_sq]
   rw [GaloisForLFunctions.HTGeometry.normSq_expI_sub]
   rw [← pow_two (Real.sqrt (criticalMellinAtomWeight n)),
-    Real.sq_sqrt (criticalMellinAtomWeight_nonneg n)]
+    Real.sq_sqrt (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n)]
   congr 2
   congr 1
   ring_nf

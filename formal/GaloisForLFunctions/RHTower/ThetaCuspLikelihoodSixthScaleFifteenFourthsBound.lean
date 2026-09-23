@@ -21,20 +21,20 @@ theorem thetaLikelihoodSixthScoreShift_scaleFifteenFourths_envelope
     {s : ℝ} (hs : 0 ≤ s) :
     thetaLikelihoodSixthScoreShift (9 / 4 + s) ≤ 250000 * Real.exp s := by
   have he := Real.sum_le_exp_of_nonneg hs 7
-  have ht : 1 + s + s ^ 2 / 2 + s ^ 3 / 6 + s ^ 4 / 24 +
-      s ^ 5 / 120 + s ^ 6 / 720 ≤ Real.exp s := by
+  have ht : 1 + s + s ^ (2 : ℕ) / 2 + s ^ (3 : ℕ) / 6 + s ^ (4 : ℕ) / 24 +
+      s ^ (5 : ℕ) / 120 + s ^ (6 : ℕ) / 720 ≤ Real.exp s := by
     norm_num [Finset.sum_range_succ] at he ⊢
     exact he
   have hp : thetaLikelihoodSixthScoreShift (9 / 4 + s) ≤
-      250000 * (1 + s + s ^ 2 / 2 + s ^ 3 / 6 + s ^ 4 / 24 +
-        s ^ 5 / 120 + s ^ 6 / 720) := by
+      250000 * (1 + s + s ^ (2 : ℕ) / 2 + s ^ (3 : ℕ) / 6 + s ^ (4 : ℕ) / 24 +
+        s ^ (5 : ℕ) / 120 + s ^ (6 : ℕ) / 720) := by
     dsimp [thetaLikelihoodSixthScoreShift]
     ring_nf
-    have hs2 : 0 ≤ s ^ 2 := by positivity
-    have hs3 : 0 ≤ s ^ 3 := by positivity
-    have hs4 : 0 ≤ s ^ 4 := by positivity
-    have hs5 : 0 ≤ s ^ 5 := by positivity
-    have hs6 : 0 ≤ s ^ 6 := by positivity
+    have hs2 : 0 ≤ s ^ (2 : ℕ) := by positivity
+    have hs3 : 0 ≤ s ^ (3 : ℕ) := by positivity
+    have hs4 : 0 ≤ s ^ (4 : ℕ) := by positivity
+    have hs5 : 0 ≤ s ^ (5 : ℕ) := by positivity
+    have hs6 : 0 ≤ s ^ (6 : ℕ) := by positivity
     nlinarith
   exact hp.trans (mul_le_mul_of_nonneg_left ht (by norm_num))
 
@@ -44,14 +44,14 @@ theorem thetaLikelihoodSixthScoreRayTransformPolynomial_scaleFifteenFourths_enve
     thetaLikelihoodSixthScoreRayTransformPolynomial (5 / 3) (9 / 4 + s) ≤
       1660000 * Real.exp s := by
   have he := Real.sum_le_exp_of_nonneg hs 7
-  have ht : 1 + s + s ^ 2 / 2 + s ^ 3 / 6 + s ^ 4 / 24 +
-      s ^ 5 / 120 + s ^ 6 / 720 ≤ Real.exp s := by
+  have ht : 1 + s + s ^ (2 : ℕ) / 2 + s ^ (3 : ℕ) / 6 + s ^ (4 : ℕ) / 24 +
+      s ^ (5 : ℕ) / 120 + s ^ (6 : ℕ) / 720 ≤ Real.exp s := by
     norm_num [Finset.sum_range_succ] at he ⊢
     exact he
   have hp :
       thetaLikelihoodSixthScoreRayTransformPolynomial (5 / 3) (9 / 4 + s) ≤
-        1660000 * (1 + s + s ^ 2 / 2 + s ^ 3 / 6 + s ^ 4 / 24 +
-          s ^ 5 / 120 + s ^ 6 / 720) := by
+        1660000 * (1 + s + s ^ (2 : ℕ) / 2 + s ^ (3 : ℕ) / 6 + s ^ (4 : ℕ) / 24 +
+          s ^ (5 : ℕ) / 120 + s ^ (6 : ℕ) / 720) := by
     dsimp [thetaLikelihoodSixthScoreRayTransformPolynomial,
       thetaLikelihoodSixthScoreShift, thetaLikelihoodSixthScoreShiftDerivOne,
       thetaLikelihoodSixthScoreShiftDerivTwo,
@@ -60,18 +60,18 @@ theorem thetaLikelihoodSixthScoreRayTransformPolynomial_scaleFifteenFourths_enve
       thetaLikelihoodSixthScoreShiftDerivFive,
       thetaLikelihoodSixthScoreShiftDerivSix]
     ring_nf
-    have hs2 : 0 ≤ s ^ 2 := by positivity
-    have hs3 : 0 ≤ s ^ 3 := by positivity
-    have hs4 : 0 ≤ s ^ 4 := by positivity
-    have hs5 : 0 ≤ s ^ 5 := by positivity
-    have hs6 : 0 ≤ s ^ 6 := by positivity
+    have hs2 : 0 ≤ s ^ (2 : ℕ) := by positivity
+    have hs3 : 0 ≤ s ^ (3 : ℕ) := by positivity
+    have hs4 : 0 ≤ s ^ (4 : ℕ) := by positivity
+    have hs5 : 0 ≤ s ^ (5 : ℕ) := by positivity
+    have hs6 : 0 ≤ s ^ (6 : ℕ) := by positivity
     nlinarith
   exact hp.trans (mul_le_mul_of_nonneg_left ht (by norm_num))
 
 /-- Rational enclosure for the recentered scale-`15/4` exponential. -/
 theorem exp_neg_fortyFiveFourths_lt_oneSeventySixThousand :
     Real.exp (-(45 / 4 : ℝ)) < (1 / 76000 : ℝ) := by
-  have hpow : Real.exp (-1) ^ 11 < (0.3678794412 : ℝ) ^ 11 :=
+  have hpow : Real.exp (-1) ^ (11 : ℕ) < (0.3678794412 : ℝ) ^ (11 : ℕ) :=
     pow_lt_pow_left₀ Real.exp_neg_one_lt_d9 (Real.exp_pos (-1)).le (by norm_num)
   have h11 : Real.exp (-11) < (1 / 59800 : ℝ) := by
     rw [show (-11 : ℝ) = (11 : ℕ) * (-1 : ℝ) by norm_num, Real.exp_nat_mul]
@@ -235,13 +235,13 @@ theorem integral_thetaLikelihoodSixthScore_lt_twoHundredThirtyNine_of_fifteenFou
     thetaCuspLikelihoodDominantAtomSixthScoreMass_lt_twoHundredTwentyEight_of_fifteenFourths_le
       A hAFifteenFourths hBA
   have hs := tsum_thetaCuspLikelihoodStableAtomSixthScoreMass_le hApi hBA
-  have hpi2 : Real.pi ^ 2 < (10 : ℝ) := by
+  have hpi2 : Real.pi ^ (2 : ℕ) < (10 : ℝ) := by
     nlinarith [Real.pi_pos, Real.pi_lt_d4]
-  have hpi6 : Real.pi ^ 6 < (1000 : ℝ) := by
+  have hpi6 : Real.pi ^ (6 : ℕ) < (1000 : ℝ) := by
     have h := pow_lt_pow_left₀ hpi2 (sq_nonneg Real.pi) (by norm_num : (3 : ℕ) ≠ 0)
     calc
-      Real.pi ^ 6 = (Real.pi ^ 2) ^ 3 := by ring
-      _ < (10 : ℝ) ^ 3 := h
+      Real.pi ^ (6 : ℕ) = (Real.pi ^ (2 : ℕ)) ^ (3 : ℕ) := by ring
+      _ < (10 : ℝ) ^ (3 : ℕ) := h
       _ = 1000 := by norm_num
   rw [thetaCuspLikelihoodSixthScoreIntegral_eq_dominant_add_stable hx]
   dsimp only [A, B] at hd hs ⊢

@@ -50,16 +50,16 @@ theorem sum_Icc_inv_mul_primeLogCoeff (n : ℕ) :
 /-- **Summation by parts for Mertens' weighted prime sum.** -/
 theorem mertensA_eq_theta_div_add_setIntegral {b : ℝ} (hb : 2 ≤ b) :
     mertensA ⌊b⌋₊ = Chebyshev.theta b / b
-      + ∫ t in Set.Ioc 2 b, Chebyshev.theta t / t ^ 2 := by
+      + ∫ t in Set.Ioc 2 b, Chebyshev.theta t / t ^ (2 : ℕ) := by
   have hb0 : (0 : ℝ) < b := by linarith
-  have hderiv : ∀ t ∈ Set.Icc (2 : ℝ) b, HasDerivAt (fun x : ℝ => x⁻¹) (-(t ^ 2)⁻¹) t := by
+  have hderiv : ∀ t ∈ Set.Icc (2 : ℝ) b, HasDerivAt (fun x : ℝ => x⁻¹) (-(t ^ (2 : ℕ))⁻¹) t := by
     intro t ht
     exact hasDerivAt_inv (by have := ht.1; intro h; rw [h] at this; norm_num at this)
   have hdiff : ∀ t ∈ Set.Icc (2 : ℝ) b, DifferentiableAt ℝ (fun x : ℝ => x⁻¹) t :=
     fun t ht => (hderiv t ht).differentiableAt
-  have hderiv_eq : ∀ t ∈ Set.Icc (2 : ℝ) b, deriv (fun x : ℝ => x⁻¹) t = -(t ^ 2)⁻¹ :=
+  have hderiv_eq : ∀ t ∈ Set.Icc (2 : ℝ) b, deriv (fun x : ℝ => x⁻¹) t = -(t ^ (2 : ℕ))⁻¹ :=
     fun t ht => (hderiv t ht).deriv
-  have hcont : ContinuousOn (fun t : ℝ => -(t ^ 2)⁻¹) (Set.Icc 2 b) := by
+  have hcont : ContinuousOn (fun t : ℝ => -(t ^ (2 : ℕ))⁻¹) (Set.Icc 2 b) := by
     refine ContinuousOn.neg (ContinuousOn.inv₀ (by fun_prop) ?_)
     intro t ht
     have h2 : (2 : ℝ) ≤ t := ht.1
@@ -71,7 +71,7 @@ theorem mertensA_eq_theta_div_add_setIntegral {b : ℝ} (hb : 2 ≤ b) :
   rw [sum_Icc_inv_mul_primeLogCoeff, sum_Icc_primeLogCoeff] at habel
   have hinner : ∫ t in Set.Ioc 2 b, deriv (fun x : ℝ => x⁻¹) t
         * ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, primeLogCoeff k
-      = -∫ t in Set.Ioc 2 b, Chebyshev.theta t / t ^ 2 := by
+      = -∫ t in Set.Ioc 2 b, Chebyshev.theta t / t ^ (2 : ℕ) := by
     rw [← MeasureTheory.integral_neg]
     refine setIntegral_congr_fun measurableSet_Ioc fun t ht => ?_
     have h2 : (2 : ℝ) < t := ht.1

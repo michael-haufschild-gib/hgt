@@ -159,7 +159,7 @@ theorem exists_xiHalfDescent_half_ne_zero {ρ : ℂ} (hρ : xi ρ = 0) (hi : ρ.
 
 private theorem abs_neg_half_pow_le (n : ℕ) (hn : 1 ≤ n) : |(-1 / 2 : ℝ) ^ n| ≤ 1 / 2 := by
   rw [abs_pow, abs_div, abs_neg, abs_one, abs_two]
-  calc (1 / 2 : ℝ) ^ n ≤ (1 / 2 : ℝ) ^ 1 :=
+  calc (1 / 2 : ℝ) ^ n ≤ (1 / 2 : ℝ) ^ (1 : ℕ) :=
         pow_le_pow_of_le_one (by norm_num) (by norm_num) hn
     _ = 1 / 2 := pow_one _
 

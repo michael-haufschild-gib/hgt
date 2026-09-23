@@ -34,7 +34,7 @@ namespace GaloisForLFunctions.RHTower
 def cdOddFlatPhase (Q : ℂ → ℂ) (z : ℂ) : ℂ := Q z * (z * Q (-z))
 
 def cdClockDensity (H : ℂ → ℂ) (z : ℂ) : ℂ :=
-  1 + deriv H z ^ 2
+  1 + deriv H z ^ (2 : ℕ)
 
 def cdSchwarzOddPrimitive (F : ℂ → ℂ) (z : ℂ) : ℂ :=
   ((F z + suzukiEntireSharp F z) -
@@ -192,8 +192,8 @@ theorem cdClockDensity_schwarzReal {Q : ℂ → ℂ}
   intro z
   have hdz := hdsym z
   rw [suzukiEntireSharp] at hdz ⊢
-  change (starRingEnd ℂ) (1 + d ((starRingEnd ℂ) z) ^ 2) =
-    1 + d z ^ 2
+  change (starRingEnd ℂ) (1 + d ((starRingEnd ℂ) z) ^ (2 : ℕ)) =
+    1 + d z ^ (2 : ℕ)
   rw [map_add, map_one, map_pow, hdz]
 
 theorem cdSchwarzOddPrimitive_neg (F : ℂ → ℂ) (z : ℂ) :
@@ -469,7 +469,7 @@ theorem cdPositiveClockAllPassPlusClock_eq {Q K : ℂ → ℂ}
     (hK : ∀ z, HasDerivAt K (cdClockDensity (cdOddFlatPhase Q) z) z)
     (x : ℝ) :
     cdPositiveClockAllPassPlusClock Q K x =
-      1 + (deriv (cdOddFlatPhase Q) (x : ℂ)).re ^ 2 +
+      1 + (deriv (cdOddFlatPhase Q) (x : ℂ)).re ^ (2 : ℕ) +
         (deriv (cdOddFlatPhase Q) (x : ℂ)).re := by
   have hresp := hasDerivAt_cdPositiveClockAllPassPlus hQ hK (x : ℂ)
   rw [cdPositiveClockAllPassPlusClock, logDeriv_apply, hresp.deriv]
@@ -494,7 +494,7 @@ theorem cdPositiveClockAllPassMinusClock_eq {Q K : ℂ → ℂ}
     (hK : ∀ z, HasDerivAt K (cdClockDensity (cdOddFlatPhase Q) z) z)
     (x : ℝ) :
     cdPositiveClockAllPassMinusClock Q K x =
-      1 + (deriv (cdOddFlatPhase Q) (x : ℂ)).re ^ 2 -
+      1 + (deriv (cdOddFlatPhase Q) (x : ℂ)).re ^ (2 : ℕ) -
         (deriv (cdOddFlatPhase Q) (x : ℂ)).re := by
   have hresp := hasDerivAt_cdPositiveClockAllPassMinus hQ hK (x : ℂ)
   rw [cdPositiveClockAllPassMinusClock, logDeriv_apply, hresp.deriv]

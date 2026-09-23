@@ -43,10 +43,10 @@ namespace RHTower
 approximate-similitude estimate with defect `δ` forces the ratio `q` to be at most `δ`. -/
 theorem no_approx_similitude_of_kernel {q δ nv nx : ℝ}
     (hnv : nv = 0) (hx : nx = 1)
-    (hsim : |nv ^ 2 - q * nx ^ 2| ≤ δ * nx ^ 2) : q ≤ δ := by
+    (hsim : |nv ^ (2 : ℕ) - q * nx ^ (2 : ℕ)| ≤ δ * nx ^ (2 : ℕ)) : q ≤ δ := by
   rw [hnv, hx] at hsim
   simp only [one_pow, mul_one] at hsim
-  have h : |(0:ℝ) ^ 2 - q| ≤ δ := by simpa using hsim
+  have h : |(0:ℝ) ^ (2 : ℕ) - q| ≤ δ := by simpa using hsim
   have h2 : |(-q : ℝ)| ≤ δ := by simpa using h
   have h3 : -δ ≤ -q ∧ -q ≤ δ := abs_le.mp h2
   linarith [h3.1]

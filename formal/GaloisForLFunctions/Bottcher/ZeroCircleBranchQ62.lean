@@ -144,7 +144,7 @@ therefore its positive half-plane preimage gives a depth-`1` sheet for every rad
 The only ambient-domain input is backward containment of that one-step preimage in `Ext`. -/
 theorem uniformZeroCircleSheet_one_step_of_base_ball_preimage_subset_ext
     {c v : ℂ} {Ext : Set ℂ} {a b ρ : ℝ}
-    (hv : v ^ 2 = -c) (ha : 0 < a) (hbρ : b < ρ) (hρc : ρ < ‖c‖)
+    (hv : v ^ (2 : ℕ) = -c) (ha : 0 < a) (hbρ : b < ρ) (hρc : ρ < ‖c‖)
     (hpreExt : ∀ z : ℂ, quadratic c z ∈ Metric.ball (0 : ℂ) ρ → z ∈ Ext) :
     ∀ R ∈ Set.Ioo a b, ∃ B : Set ℂ,
       IsOpen B ∧ B ⊆ Ext ∧
@@ -161,14 +161,14 @@ theorem uniformZeroCircleSheet_one_step_of_base_ball_preimage_subset_ext
       exact neg_eq_zero.mp hzero.symm
     rw [hc0, norm_zero] at hρc
     linarith
-  have hAhalf : ∀ w ∈ A, ‖(w - c) - v^2‖ < ‖v^2‖ := by
+  have hAhalf : ∀ w ∈ A, ‖(w - c) - v^(2 : ℕ)‖ < ‖v^(2 : ℕ)‖ := by
     intro w hw
     have hwρ : ‖w‖ < ρ := by
       simpa [A, Metric.mem_ball, dist_zero_right] using hw
-    have hleft : (w - c) - v^2 = w := by
+    have hleft : (w - c) - v^(2 : ℕ) = w := by
       rw [hv]
       ring
-    have hright : ‖v^2‖ = ‖c‖ := by
+    have hright : ‖v^(2 : ℕ)‖ = ‖c‖ := by
       rw [hv, norm_neg]
     rw [hleft, hright]
     exact lt_trans hwρ hρc
@@ -365,7 +365,7 @@ theorem uniformZeroCircleSheet_succ_of_disjoint_boundary_ray_sheets {c : ℂ} {n
       ∃ v : ℂ,
         v ≠ 0 ∧
         (∀ z : ℂ, 0 < (starRingEnd ℂ v * z).re → quadratic c z ∈ A → z ∈ Ext) ∧
-        Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^2 * v^2}) :
+        Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)}) :
     ∀ R ∈ Set.Ioo a b, ∃ B : Set ℂ,
       IsOpen B ∧ B ⊆ Ext ∧
       (∀ z ∈ B, ∀ j < n+1, (quadratic c)^[j] z ≠ 0) ∧
@@ -402,7 +402,7 @@ theorem uniformZeroCircleSheet_succ_of_disjoint_boundary_ray_preimage_subset_ext
       ∃ v : ℂ,
         v ≠ 0 ∧
         (∀ z : ℂ, quadratic c z ∈ A → z ∈ Ext) ∧
-        Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^2 * v^2}) :
+        Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)}) :
     ∀ R ∈ Set.Ioo a b, ∃ B : Set ℂ,
       IsOpen B ∧ B ⊆ Ext ∧
       (∀ z ∈ B, ∀ j < n+1, (quadratic c)^[j] z ≠ 0) ∧
@@ -436,7 +436,7 @@ theorem uniformZeroCircleSheet_succ_of_centered_halfplane_preimage_subset_ext_sh
       ∃ v : ℂ,
         v ≠ 0 ∧
         (∀ z : ℂ, quadratic c z ∈ A → z ∈ Ext) ∧
-        (∀ w ∈ A, 0 < (((v ^ 2)⁻¹) * (w - c)).re)) :
+        (∀ w ∈ A, 0 < (((v ^ (2 : ℕ))⁻¹) * (w - c)).re)) :
     ∀ R ∈ Set.Ioo a b, ∃ B : Set ℂ,
       IsOpen B ∧ B ⊆ Ext ∧
       (∀ z ∈ B, ∀ j < n+1, (quadratic c)^[j] z ≠ 0) ∧
@@ -470,7 +470,7 @@ theorem uniformZeroCircleSheet_succ_of_centered_ball_preimage_subset_ext_sheets
       ∃ v : ℂ,
         v ≠ 0 ∧
         (∀ z : ℂ, quadratic c z ∈ A → z ∈ Ext) ∧
-        (∀ w ∈ A, ‖(w - c) - v^2‖ < ‖v^2‖)) :
+        (∀ w ∈ A, ‖(w - c) - v^(2 : ℕ)‖ < ‖v^(2 : ℕ)‖)) :
     ∀ R ∈ Set.Ioo a b, ∃ B : Set ℂ,
       IsOpen B ∧ B ⊆ Ext ∧
       (∀ z ∈ B, ∀ j < n+1, (quadratic c)^[j] z ≠ 0) ∧
@@ -574,7 +574,7 @@ theorem uniformZeroCircleSheet_all_depths_of_centered_ball_steps
       ∃ v : ℂ,
         v ≠ 0 ∧
         (∀ z : ℂ, quadratic c z ∈ A → z ∈ Ext) ∧
-        (∀ w ∈ A, ‖(w - c) - v^2‖ < ‖v^2‖)) :
+        (∀ w ∈ A, ‖(w - c) - v^(2 : ℕ)‖ < ‖v^(2 : ℕ)‖)) :
     ∀ n : ℕ, ∀ R ∈ Set.Ioo a b, ∃ A : Set ℂ,
       IsOpen A ∧ A ⊆ Ext ∧
       (∀ z ∈ A, ∀ j < n, (quadratic c)^[j] z ≠ 0) ∧
@@ -710,7 +710,7 @@ theorem uniformZeroCircleBallSheet_succ_of_branch_ball_steps
       (∀ z ∈ A, ∀ j < n, (quadratic c)^[j] z ≠ 0) →
       Set.InjOn ((quadratic c)^[n]) A →
       (∀ θ : ℝ, circleMap (0 : ℂ) R θ ∈ ((quadratic c)^[n]) '' A) →
-      ∀ v : ℂ, v ^ 2 = q - c → v ≠ 0 → v ≠ c ∧ r / ‖v‖ ≤ ‖v - c‖) :
+      ∀ v : ℂ, v ^ (2 : ℕ) = q - c → v ≠ 0 → v ≠ c ∧ r / ‖v‖ ≤ ‖v - c‖) :
     ∀ R ∈ Set.Ioo a b, ∃ (B : Set ℂ) (qB : ℂ) (rB : ℝ),
       IsOpen B ∧ B ⊆ Ext ∧ qB ≠ c ∧ B ⊆ Metric.ball qB rB ∧ rB ≤ ‖qB - c‖ ∧
       (∀ z ∈ B, ∀ j < n+1, (quadratic c)^[j] z ≠ 0) ∧
@@ -759,7 +759,7 @@ theorem uniformZeroCircleBallSheet_succ_of_branch_ball_exterior_budget_steps
       (∀ z ∈ A, ∀ j < n, (quadratic c)^[j] z ≠ 0) →
       Set.InjOn ((quadratic c)^[n]) A →
       (∀ θ : ℝ, circleMap (0 : ℂ) R θ ∈ ((quadratic c)^[n]) '' A) →
-      ∀ v : ℂ, v ^ 2 = q - c → v ≠ 0 → v ≠ c ∧ r + S * ‖v‖ ≤ ‖q - c‖) :
+      ∀ v : ℂ, v ^ (2 : ℕ) = q - c → v ≠ 0 → v ≠ c ∧ r + S * ‖v‖ ≤ ‖q - c‖) :
     ∀ R ∈ Set.Ioo a b, ∃ (B : Set ℂ) (qB : ℂ) (rB : ℝ),
       IsOpen B ∧ B ⊆ Ext ∧ qB ≠ c ∧ B ⊆ Metric.ball qB rB ∧ rB ≤ ‖qB - c‖ ∧
       (∀ z ∈ B, ∀ j < n+1, (quadratic c)^[j] z ≠ 0) ∧
@@ -825,7 +825,7 @@ theorem uniformZeroCircleBallSheet_all_depths_of_branch_ball_steps
       (∀ z ∈ A, ∀ j < n, (quadratic c)^[j] z ≠ 0) →
       Set.InjOn ((quadratic c)^[n]) A →
       (∀ θ : ℝ, circleMap (0 : ℂ) R θ ∈ ((quadratic c)^[n]) '' A) →
-      ∀ v : ℂ, v ^ 2 = q - c → v ≠ 0 → v ≠ c ∧ r / ‖v‖ ≤ ‖v - c‖) :
+      ∀ v : ℂ, v ^ (2 : ℕ) = q - c → v ≠ 0 → v ≠ c ∧ r / ‖v‖ ≤ ‖v - c‖) :
     ∀ n : ℕ, ∀ R ∈ Set.Ioo a b, ∃ (A : Set ℂ) (q : ℂ) (r : ℝ),
       IsOpen A ∧ A ⊆ Ext ∧ q ≠ c ∧ A ⊆ Metric.ball q r ∧ r ≤ ‖q - c‖ ∧
       (∀ z ∈ A, ∀ j < n, (quadratic c)^[j] z ≠ 0) ∧
@@ -859,7 +859,7 @@ theorem uniformZeroCircleBallSheet_all_depths_of_branch_ball_exterior_budget_ste
       (∀ z ∈ A, ∀ j < n, (quadratic c)^[j] z ≠ 0) →
       Set.InjOn ((quadratic c)^[n]) A →
       (∀ θ : ℝ, circleMap (0 : ℂ) R θ ∈ ((quadratic c)^[n]) '' A) →
-      ∀ v : ℂ, v ^ 2 = q - c → v ≠ 0 → v ≠ c ∧ r + S * ‖v‖ ≤ ‖q - c‖) :
+      ∀ v : ℂ, v ^ (2 : ℕ) = q - c → v ≠ 0 → v ≠ c ∧ r + S * ‖v‖ ≤ ‖q - c‖) :
     ∀ n : ℕ, ∀ R ∈ Set.Ioo a b, ∃ (A : Set ℂ) (q : ℂ) (r : ℝ),
       IsOpen A ∧ A ⊆ Ext ∧ q ≠ c ∧ A ⊆ Metric.ball q r ∧ r ≤ ‖q - c‖ ∧
       (∀ z ∈ A, ∀ j < n, (quadratic c)^[j] z ≠ 0) ∧
@@ -899,7 +899,7 @@ theorem uniformZeroCircleSheet_all_depths_of_branch_ball_steps
       (∀ z ∈ A, ∀ j < n, (quadratic c)^[j] z ≠ 0) →
       Set.InjOn ((quadratic c)^[n]) A →
       (∀ θ : ℝ, circleMap (0 : ℂ) R θ ∈ ((quadratic c)^[n]) '' A) →
-      ∀ v : ℂ, v ^ 2 = q - c → v ≠ 0 → v ≠ c ∧ r / ‖v‖ ≤ ‖v - c‖) :
+      ∀ v : ℂ, v ^ (2 : ℕ) = q - c → v ≠ 0 → v ≠ c ∧ r / ‖v‖ ≤ ‖v - c‖) :
     ∀ n : ℕ, ∀ R ∈ Set.Ioo a b, ∃ A : Set ℂ,
       IsOpen A ∧ A ⊆ Ext ∧
       (∀ z ∈ A, ∀ j < n, (quadratic c)^[j] z ≠ 0) ∧
@@ -1212,7 +1212,7 @@ theorem q62_disconnected_of_centeredBallStepSheets_escape
         ∃ v : ℂ,
           v ≠ 0 ∧
           (∀ z : ℂ, quadratic c₁ z ∈ A → z ∈ Ext) ∧
-          (∀ w ∈ A, ‖(w - c₁) - v^2‖ < ‖v^2‖))) :
+          (∀ w ∈ A, ‖(w - c₁) - v^(2 : ℕ)‖ < ‖v^(2 : ℕ)‖))) :
     haveI := isDomain_analyticSubring U hUo hUc hUne
     haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
     NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
@@ -1359,7 +1359,7 @@ theorem q62_disconnected_of_branchBallStepSheets_escape
         (∀ z ∈ A, ∀ j < n, (quadratic c₁)^[j] z ≠ 0) →
         Set.InjOn ((quadratic c₁)^[n]) A →
         (∀ θ : ℝ, circleMap (0 : ℂ) R θ ∈ ((quadratic c₁)^[n]) '' A) →
-        ∀ v : ℂ, v ^ 2 = q - c₁ → v ≠ 0 → v ≠ c₁ ∧ r / ‖v‖ ≤ ‖v - c₁‖)) :
+        ∀ v : ℂ, v ^ (2 : ℕ) = q - c₁ → v ≠ 0 → v ≠ c₁ ∧ r / ‖v‖ ≤ ‖v - c₁‖)) :
     haveI := isDomain_analyticSubring U hUo hUc hUne
     haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
     NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
@@ -1415,7 +1415,7 @@ theorem q62_disconnected_of_branchBallBudgetStepSheets_escape
         (∀ z ∈ A, ∀ j < n, (quadratic c₁)^[j] z ≠ 0) →
         Set.InjOn ((quadratic c₁)^[n]) A →
         (∀ θ : ℝ, circleMap (0 : ℂ) R θ ∈ ((quadratic c₁)^[n]) '' A) →
-        ∀ v : ℂ, v ^ 2 = q - c₁ → v ≠ 0 →
+        ∀ v : ℂ, v ^ (2 : ℕ) = q - c₁ → v ≠ 0 →
           v ≠ c₁ ∧ r + ‖c₁‖ * ‖v‖ ≤ ‖q - c₁‖)) :
     haveI := isDomain_analyticSubring U hUo hUc hUne
     haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
@@ -1472,7 +1472,7 @@ theorem q62_disconnected_of_branchBallExteriorBudgetStepSheets_escape
         (∀ z ∈ A, ∀ j < n, (quadratic c₁)^[j] z ≠ 0) →
         Set.InjOn ((quadratic c₁)^[n]) A →
         (∀ θ : ℝ, circleMap (0 : ℂ) R θ ∈ ((quadratic c₁)^[n]) '' A) →
-        ∀ v : ℂ, v ^ 2 = q - c₁ → v ≠ 0 →
+        ∀ v : ℂ, v ^ (2 : ℕ) = q - c₁ → v ≠ 0 →
           v ≠ c₁ ∧ r + S * ‖v‖ ≤ ‖q - c₁‖)) :
     haveI := isDomain_analyticSubring U hUo hUc hUne
     haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra

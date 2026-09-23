@@ -36,7 +36,7 @@ theorem squarefreeMobiusProbability_one (sigma : ℝ) :
 the empty-occupation basis state is exactly the reciprocal partition `Z(σ)⁻¹`. -/
 theorem norm_inner_vacuum_infiniteMobiusSignedWeightLp_sq
     {sigma : ℝ} (hsigma : 1 < sigma) :
-    ‖inner ℂ ((HilbertSchmidt.lpBasis ℕ) 1) (infiniteMobiusSignedWeightLp sigma hsigma)‖ ^ 2 =
+    ‖inner ℂ ((HilbertSchmidt.lpBasis ℕ) 1) (infiniteMobiusSignedWeightLp sigma hsigma)‖ ^ (2 : ℕ) =
       (squarefreeMobiusTotal sigma)⁻¹ := by
   rw [HilbertSchmidt.lpBasis_apply, lp.inner_single_left]
   simp only [RCLike.inner_apply, map_one, mul_one, infiniteMobiusSignedWeightLp_apply]
@@ -176,7 +176,7 @@ theorem squarefreeCriticalFockEscape :
         Tendsto criticalSquarefreeSourceFamily (𝓝[>] (1 : ℝ)) (𝓝 v)) ∧
       Tendsto (fun sigma : ℝ =>
           if hsigma : 1 < sigma then
-            ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ 2
+            ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ (2 : ℕ)
           else 0)
         (𝓝[>] (1 : ℝ)) (𝓝 4) :=
   ⟨not_exists_strong_limit_criticalSquarefreeSourceFamily,

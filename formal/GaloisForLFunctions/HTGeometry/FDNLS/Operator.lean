@@ -84,7 +84,7 @@ theorem quasiRieszDeriv_eq_fourierMultiplier {α : ℝ} (hα : 0 ≤ α) (S : Fi
 /-- **Equation (11), coefficient table.**  At `α = 2` the coupling is `π²/3` on the diagonal and
 `2(-1)^ℓ/ℓ²` off it: an inverse-square long-range lattice with alternating signs. -/
 theorem quasiRieszCoupling_two_eq (ℓ : ℤ) :
-    quasiRieszCoupling 2 ℓ = if ℓ = 0 then Real.pi ^ 2 / 3 else 2 * (-1 : ℝ) ^ ℓ / (ℓ : ℝ) ^ 2 := by
+    quasiRieszCoupling 2 ℓ = if ℓ = 0 then Real.pi ^ (2 : ℕ) / 3 else 2 * (-1 : ℝ) ^ ℓ / (ℓ : ℝ) ^ (2 : ℕ) := by
   by_cases h : ℓ = 0
   · rw [if_pos h, h, quasiRieszCoupling_two_zero]
   · rw [if_neg h, quasiRieszCoupling_two h]
@@ -93,7 +93,7 @@ theorem quasiRieszCoupling_two_eq (ℓ : ℤ) :
 every even separation, and `-2/(π ℓ²)` at every odd one. -/
 theorem quasiRieszCoupling_one_eq (ℓ : ℤ) :
     quasiRieszCoupling 1 ℓ
-      = if ℓ = 0 then Real.pi / 2 else ((-1 : ℝ) ^ ℓ - 1) / (Real.pi * (ℓ : ℝ) ^ 2) := by
+      = if ℓ = 0 then Real.pi / 2 else ((-1 : ℝ) ^ ℓ - 1) / (Real.pi * (ℓ : ℝ) ^ (2 : ℕ)) := by
   by_cases h : ℓ = 0
   · rw [if_pos h, h, quasiRieszCoupling_one_zero]
   · rw [if_neg h, quasiRieszCoupling_one h]
@@ -102,12 +102,12 @@ theorem quasiRieszCoupling_one_eq (ℓ : ℤ) :
 data. -/
 theorem quasiRieszDeriv_two (S : Finset ℤ) (u : ℤ → ℂ) (hu : ∀ m ∉ S, u m = 0) (n : ℤ) :
     quasiRieszDeriv 2 u n
-      = ((Real.pi ^ 2 / 3 : ℝ) : ℂ) * u n
-        + ∑ m ∈ S.erase n, ((2 * (-1 : ℝ) ^ (m - n) / ((m - n : ℤ) : ℝ) ^ 2 : ℝ) : ℂ) * u m := by
+      = ((Real.pi ^ (2 : ℕ) / 3 : ℝ) : ℂ) * u n
+        + ∑ m ∈ S.erase n, ((2 * (-1 : ℝ) ^ (m - n) / ((m - n : ℤ) : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) * u m := by
   rw [quasiRieszDeriv_eq_finsum S u hu n]
   by_cases hn : n ∈ S
   · rw [← Finset.sum_erase_add S _ hn]
-    have hd : ((quasiRieszCoupling 2 (n - n) : ℝ) : ℂ) * u n = ((Real.pi ^ 2 / 3 : ℝ) : ℂ) * u n := by
+    have hd : ((quasiRieszCoupling 2 (n - n) : ℝ) : ℂ) * u n = ((Real.pi ^ (2 : ℕ) / 3 : ℝ) : ℂ) * u n := by
       rw [show n - n = (0:ℤ) by ring, quasiRieszCoupling_two_zero]
     rw [hd, add_comm]
     congr 1
@@ -129,7 +129,7 @@ theorem quasiRieszDeriv_one (S : Finset ℤ) (u : ℤ → ℂ) (hu : ∀ m ∉ S
     quasiRieszDeriv 1 u n
       = ((Real.pi / 2 : ℝ) : ℂ) * u n
         + ∑ m ∈ S.erase n,
-            ((((-1 : ℝ) ^ (m - n) - 1) / (Real.pi * ((m - n : ℤ) : ℝ) ^ 2) : ℝ) : ℂ) * u m := by
+            ((((-1 : ℝ) ^ (m - n) - 1) / (Real.pi * ((m - n : ℤ) : ℝ) ^ (2 : ℕ)) : ℝ) : ℂ) * u m := by
   rw [quasiRieszDeriv_eq_finsum S u hu n]
   by_cases hn : n ∈ S
   · rw [← Finset.sum_erase_add S _ hn]

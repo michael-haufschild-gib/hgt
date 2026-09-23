@@ -20,52 +20,52 @@ def thetaCuspLikelihoodEighthBellJetOne (x : ℝ) : ℝ :=
 def thetaCuspLikelihoodEighthBellJetTwo (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  4 * (A ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 -
+  4 * (A ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 -
     A * thetaCuspLikelihoodMean B)
 
 def thetaCuspLikelihoodEighthBellJetThree (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  8 * (A ^ 3 * thetaCuspLikelihoodNormalizedMoment B 3 -
-    3 * A ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 +
+  8 * (A ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 -
+    3 * A ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 +
     A * thetaCuspLikelihoodMean B)
 
 def thetaCuspLikelihoodEighthBellJetFour (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  16 * (A ^ 4 * thetaCuspLikelihoodNormalizedMoment B 4 -
-    6 * A ^ 3 * thetaCuspLikelihoodNormalizedMoment B 3 +
-    7 * A ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 -
+  16 * (A ^ (4 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 4 -
+    6 * A ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 +
+    7 * A ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 -
     A * thetaCuspLikelihoodMean B)
 
 def thetaCuspLikelihoodEighthBellJetFive (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  32 * (A ^ 5 * thetaCuspLikelihoodNormalizedMoment B 5 -
-    10 * A ^ 4 * thetaCuspLikelihoodNormalizedMoment B 4 +
-    25 * A ^ 3 * thetaCuspLikelihoodNormalizedMoment B 3 -
-    15 * A ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 +
+  32 * (A ^ (5 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 5 -
+    10 * A ^ (4 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 4 +
+    25 * A ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 -
+    15 * A ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 +
     A * thetaCuspLikelihoodMean B)
 
 def thetaCuspLikelihoodEighthBellJetSix (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  64 * (A ^ 6 * thetaCuspLikelihoodNormalizedMoment B 6 -
-    15 * A ^ 5 * thetaCuspLikelihoodNormalizedMoment B 5 +
-    65 * A ^ 4 * thetaCuspLikelihoodNormalizedMoment B 4 -
-    90 * A ^ 3 * thetaCuspLikelihoodNormalizedMoment B 3 +
-    31 * A ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 -
+  64 * (A ^ (6 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 6 -
+    15 * A ^ (5 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 5 +
+    65 * A ^ (4 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 4 -
+    90 * A ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 +
+    31 * A ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 -
     A * thetaCuspLikelihoodMean B)
 
 def thetaCuspLikelihoodEighthBellJetSeven (x : ℝ) : ℝ :=
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
-  128 * (A ^ 7 * thetaCuspLikelihoodNormalizedMoment B 7 -
-    21 * A ^ 6 * thetaCuspLikelihoodNormalizedMoment B 6 +
-    140 * A ^ 5 * thetaCuspLikelihoodNormalizedMoment B 5 -
-    350 * A ^ 4 * thetaCuspLikelihoodNormalizedMoment B 4 +
-    301 * A ^ 3 * thetaCuspLikelihoodNormalizedMoment B 3 -
-    63 * A ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 +
+  128 * (A ^ (7 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 7 -
+    21 * A ^ (6 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 6 +
+    140 * A ^ (5 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 5 -
+    350 * A ^ (4 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 4 +
+    301 * A ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 -
+    63 * A ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 +
     A * thetaCuspLikelihoodMean B)
 
 def thetaCuspLikelihoodEighthBellJetEight (x : ℝ) : ℝ :=
@@ -75,51 +75,51 @@ def thetaCuspLikelihoodEighthBellGradeTwo (x : ℝ) : ℝ :=
   8 * thetaCuspLikelihoodEighthBellJetOne x * thetaCuspLikelihoodEighthBellJetSeven x +
     28 * thetaCuspLikelihoodEighthBellJetTwo x * thetaCuspLikelihoodEighthBellJetSix x +
     56 * thetaCuspLikelihoodEighthBellJetThree x * thetaCuspLikelihoodEighthBellJetFive x +
-    35 * thetaCuspLikelihoodEighthBellJetFour x ^ 2
+    35 * thetaCuspLikelihoodEighthBellJetFour x ^ (2 : ℕ)
 
 def thetaCuspLikelihoodEighthBellGradeThree (x : ℝ) : ℝ :=
-  28 * thetaCuspLikelihoodEighthBellJetOne x ^ 2 *
+  28 * thetaCuspLikelihoodEighthBellJetOne x ^ (2 : ℕ) *
       thetaCuspLikelihoodEighthBellJetSix x +
     168 * thetaCuspLikelihoodEighthBellJetOne x *
       thetaCuspLikelihoodEighthBellJetTwo x * thetaCuspLikelihoodEighthBellJetFive x +
     280 * thetaCuspLikelihoodEighthBellJetOne x *
       thetaCuspLikelihoodEighthBellJetThree x * thetaCuspLikelihoodEighthBellJetFour x +
-    210 * thetaCuspLikelihoodEighthBellJetTwo x ^ 2 *
+    210 * thetaCuspLikelihoodEighthBellJetTwo x ^ (2 : ℕ) *
       thetaCuspLikelihoodEighthBellJetFour x +
     280 * thetaCuspLikelihoodEighthBellJetTwo x *
-      thetaCuspLikelihoodEighthBellJetThree x ^ 2
+      thetaCuspLikelihoodEighthBellJetThree x ^ (2 : ℕ)
 
 def thetaCuspLikelihoodEighthBellGradeFour (x : ℝ) : ℝ :=
-  56 * thetaCuspLikelihoodEighthBellJetOne x ^ 3 *
+  56 * thetaCuspLikelihoodEighthBellJetOne x ^ (3 : ℕ) *
       thetaCuspLikelihoodEighthBellJetFive x +
-    420 * thetaCuspLikelihoodEighthBellJetOne x ^ 2 *
+    420 * thetaCuspLikelihoodEighthBellJetOne x ^ (2 : ℕ) *
       thetaCuspLikelihoodEighthBellJetTwo x * thetaCuspLikelihoodEighthBellJetFour x +
-    280 * thetaCuspLikelihoodEighthBellJetOne x ^ 2 *
-      thetaCuspLikelihoodEighthBellJetThree x ^ 2 +
+    280 * thetaCuspLikelihoodEighthBellJetOne x ^ (2 : ℕ) *
+      thetaCuspLikelihoodEighthBellJetThree x ^ (2 : ℕ) +
     840 * thetaCuspLikelihoodEighthBellJetOne x *
-      thetaCuspLikelihoodEighthBellJetTwo x ^ 2 * thetaCuspLikelihoodEighthBellJetThree x +
-    105 * thetaCuspLikelihoodEighthBellJetTwo x ^ 4
+      thetaCuspLikelihoodEighthBellJetTwo x ^ (2 : ℕ) * thetaCuspLikelihoodEighthBellJetThree x +
+    105 * thetaCuspLikelihoodEighthBellJetTwo x ^ (4 : ℕ)
 
 def thetaCuspLikelihoodEighthBellGradeFive (x : ℝ) : ℝ :=
-  70 * thetaCuspLikelihoodEighthBellJetOne x ^ 4 *
+  70 * thetaCuspLikelihoodEighthBellJetOne x ^ (4 : ℕ) *
       thetaCuspLikelihoodEighthBellJetFour x +
-    560 * thetaCuspLikelihoodEighthBellJetOne x ^ 3 *
+    560 * thetaCuspLikelihoodEighthBellJetOne x ^ (3 : ℕ) *
       thetaCuspLikelihoodEighthBellJetTwo x * thetaCuspLikelihoodEighthBellJetThree x +
-    420 * thetaCuspLikelihoodEighthBellJetOne x ^ 2 *
-      thetaCuspLikelihoodEighthBellJetTwo x ^ 3
+    420 * thetaCuspLikelihoodEighthBellJetOne x ^ (2 : ℕ) *
+      thetaCuspLikelihoodEighthBellJetTwo x ^ (3 : ℕ)
 
 def thetaCuspLikelihoodEighthBellGradeSix (x : ℝ) : ℝ :=
-  56 * thetaCuspLikelihoodEighthBellJetOne x ^ 5 *
+  56 * thetaCuspLikelihoodEighthBellJetOne x ^ (5 : ℕ) *
       thetaCuspLikelihoodEighthBellJetThree x +
-    210 * thetaCuspLikelihoodEighthBellJetOne x ^ 4 *
-      thetaCuspLikelihoodEighthBellJetTwo x ^ 2
+    210 * thetaCuspLikelihoodEighthBellJetOne x ^ (4 : ℕ) *
+      thetaCuspLikelihoodEighthBellJetTwo x ^ (2 : ℕ)
 
 def thetaCuspLikelihoodEighthBellGradeSeven (x : ℝ) : ℝ :=
-  28 * thetaCuspLikelihoodEighthBellJetOne x ^ 6 *
+  28 * thetaCuspLikelihoodEighthBellJetOne x ^ (6 : ℕ) *
     thetaCuspLikelihoodEighthBellJetTwo x
 
 def thetaCuspLikelihoodEighthBellGradeEight (x : ℝ) : ℝ :=
-  thetaCuspLikelihoodEighthBellJetOne x ^ 8
+  thetaCuspLikelihoodEighthBellJetOne x ^ (8 : ℕ)
 
 set_option maxRecDepth 20000 in
 set_option maxHeartbeats 4000000 in
@@ -216,27 +216,27 @@ theorem thetaCuspLikelihoodEighthBellJets_one_to_six_pos
     nlinarith [mul_pos hA0 he1]
   have hb4 : 0 < thetaCuspLikelihoodEighthBellJetFour x := by
     have hmul := mul_lt_mul_of_pos_left hAe4 (pow_pos hA0 3)
-    have htail : A * e1 < 7 * A ^ 2 * e2 := by
+    have htail : A * e1 < 7 * A ^ (2 : ℕ) * e2 := by
       have h := mul_lt_mul_of_pos_left hAe2 hA0
       nlinarith
     dsimp only [thetaCuspLikelihoodEighthBellJetFour, A, B, e1, e2, e3, e4]
     nlinarith
   have hb5 : 0 < thetaCuspLikelihoodEighthBellJetFive x := by
     have h := one_sixth_mul_likelihoodSourceLinearFive_le hx
-    have h' : (1 / 6 : ℝ) * A ^ 5 * e5 ≤
-        A ^ 5 * e5 - 10 * A ^ 4 * e4 + 25 * A ^ 3 * e3 -
-          15 * A ^ 2 * e2 + A * e1 := by
+    have h' : (1 / 6 : ℝ) * A ^ (5 : ℕ) * e5 ≤
+        A ^ (5 : ℕ) * e5 - 10 * A ^ (4 : ℕ) * e4 + 25 * A ^ (3 : ℕ) * e3 -
+          15 * A ^ (2 : ℕ) * e2 + A * e1 := by
       simpa only [A, B, e1, e2, e3, e4, e5] using h
-    have hlead : 0 < (32 / 6 : ℝ) * A ^ 5 * e5 := by positivity
+    have hlead : 0 < (32 / 6 : ℝ) * A ^ (5 : ℕ) * e5 := by positivity
     dsimp only [thetaCuspLikelihoodEighthBellJetFive, A, B, e1, e2, e3, e4, e5]
     nlinarith
   have hb6 : 0 < thetaCuspLikelihoodEighthBellJetSix x := by
     have h := one_thirtieth_mul_likelihoodSourceLinearSix_le hx
-    have h' : (1 / 30 : ℝ) * A ^ 6 * e6 ≤
-        A ^ 6 * e6 - 15 * A ^ 5 * e5 + 65 * A ^ 4 * e4 -
-          90 * A ^ 3 * e3 + 31 * A ^ 2 * e2 - A * e1 := by
+    have h' : (1 / 30 : ℝ) * A ^ (6 : ℕ) * e6 ≤
+        A ^ (6 : ℕ) * e6 - 15 * A ^ (5 : ℕ) * e5 + 65 * A ^ (4 : ℕ) * e4 -
+          90 * A ^ (3 : ℕ) * e3 + 31 * A ^ (2 : ℕ) * e2 - A * e1 := by
       simpa only [A, B, e1, e2, e3, e4, e5, e6] using h
-    have hlead : 0 < (64 / 30 : ℝ) * A ^ 6 * e6 := by positivity
+    have hlead : 0 < (64 / 30 : ℝ) * A ^ (6 : ℕ) * e6 := by positivity
     dsimp only [thetaCuspLikelihoodEighthBellJetSix, A, B, e1, e2, e3, e4, e5, e6]
     nlinarith
   exact ⟨hb1, hb2, hb3, hb4, hb5, hb6⟩

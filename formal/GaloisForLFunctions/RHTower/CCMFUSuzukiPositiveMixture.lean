@@ -23,12 +23,12 @@ theorem integral_rectangularMixDensity_mul_sub_add_endpoint_eq
     {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
     (∫ t in b..H,
         ccmThirdGradeCesaroRectangularMixDensity H t * (t - b)) +
-      (32 / H ^ 4) * (H - b) =
-        32 / b ^ 3 - 32 / (H * b ^ 2) := by
+      (32 / H ^ (4 : ℕ)) * (H - b) =
+        32 / b ^ (3 : ℕ) - 32 / (H * b ^ (2 : ℕ)) := by
   have hH : 0 < H := hb.trans_le hbH
   let P : ℝ → ℝ := fun t =>
-    (-128 * (1 / t ^ 3) + 96 * b * (1 / t ^ 4)) +
-      ((96 / H) * (1 / t ^ 2) - (64 * b / H) * (1 / t ^ 3))
+    (-128 * (1 / t ^ (3 : ℕ)) + 96 * b * (1 / t ^ (4 : ℕ))) +
+      ((96 / H) * (1 / t ^ (2 : ℕ)) - (64 * b / H) * (1 / t ^ (3 : ℕ)))
   have hP : ∀ t ∈ Set.uIcc b H,
       HasDerivAt P
         (ccmThirdGradeCesaroRectangularMixDensity H t * (t - b)) t := by
@@ -38,21 +38,21 @@ theorem integral_rectangularMixDensity_mul_sub_add_endpoint_eq
     have h2raw := (hasDerivAt_const (x := t) (c := (1 : ℝ))).div
       ((hasDerivAt_id t).pow 2) (pow_ne_zero 2 ht0)
     simp only [Pi.pow_apply, id_eq] at h2raw
-    have h2 : HasDerivAt (fun x : ℝ => 1 / x ^ 2) (-2 / t ^ 3) t := by
+    have h2 : HasDerivAt (fun x : ℝ => 1 / x ^ (2 : ℕ)) (-2 / t ^ (3 : ℕ)) t := by
       apply h2raw.congr_deriv
       field_simp [ht0]
       ring
     have h3raw := (hasDerivAt_const (x := t) (c := (1 : ℝ))).div
       ((hasDerivAt_id t).pow 3) (pow_ne_zero 3 ht0)
     simp only [Pi.pow_apply, id_eq] at h3raw
-    have h3 : HasDerivAt (fun x : ℝ => 1 / x ^ 3) (-3 / t ^ 4) t := by
+    have h3 : HasDerivAt (fun x : ℝ => 1 / x ^ (3 : ℕ)) (-3 / t ^ (4 : ℕ)) t := by
       apply h3raw.congr_deriv
       field_simp [ht0]
       ring
     have h4raw := (hasDerivAt_const (x := t) (c := (1 : ℝ))).div
       ((hasDerivAt_id t).pow 4) (pow_ne_zero 4 ht0)
     simp only [Pi.pow_apply, id_eq] at h4raw
-    have h4 : HasDerivAt (fun x : ℝ => 1 / x ^ 4) (-4 / t ^ 5) t := by
+    have h4 : HasDerivAt (fun x : ℝ => 1 / x ^ (4 : ℕ)) (-4 / t ^ (5 : ℕ)) t := by
       apply h4raw.congr_deriv
       field_simp [ht0]
       ring
@@ -85,13 +85,13 @@ theorem integral_rectangularMixDensity_mul_sub_add_endpoint_eq
 negative values of `suzukiPsi` remain coupled inside one readout. -/
 def ccmFUCentralXiScrewPositiveMixture (b H : ℝ) : ℝ :=
   (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t * suzukiPsi t) +
-  (32 / H ^ 4) * suzukiPsi H
+  (32 / H ^ (4 : ℕ)) * suzukiPsi H
 
 /-- Explicit affine wall memory removed from the Xi-screw codiagonal mixture. -/
 def ccmFUCentralXiScrewAffineMemory (b H : ℝ) : ℝ :=
   suzukiPsi b * ccmGuinandWeilThirdGradeCesaroErrorKernel H b +
     ccmGuinandWeilXiScrewRightSlope b *
-      (32 / b ^ 3 - 32 / (H * b ^ 2))
+      (32 / b ^ (3 : ℕ) - 32 / (H * b ^ (2 : ℕ)))
 
 /-- The codiagonal reporter differs from the positive marked Suzuki-profile average by one fully
 explicit affine wall memory. -/
@@ -167,8 +167,8 @@ theorem exists_nonnegative_uniform_bound_ccmFUCentralXiScrewAffineMemory
     ∃ C : ℝ, 0 ≤ C ∧ ∀ H : ℝ, b < H →
       |ccmFUCentralXiScrewAffineMemory b H| ≤ C := by
   let C : ℝ :=
-    |suzukiPsi b| * (96 / b ^ 4) +
-      |ccmGuinandWeilXiScrewRightSlope b| * (32 / b ^ 3)
+    |suzukiPsi b| * (96 / b ^ (4 : ℕ)) +
+      |ccmGuinandWeilXiScrewRightSlope b| * (32 / b ^ (3 : ℕ))
   refine ⟨C, ?_, ?_⟩
   · dsimp only [C]
     positivity
@@ -179,15 +179,15 @@ theorem exists_nonnegative_uniform_bound_ccmFUCentralXiScrewAffineMemory
       ccmGuinandWeilThirdGradeCesaroErrorKernel_bounds hb hbHle
         (show b ∈ Set.Icc b H from ⟨le_rfl, hbHle⟩)
     have hk0 : 0 ≤ ccmGuinandWeilThirdGradeCesaroErrorKernel H b := by
-      exact (by positivity : 0 ≤ 32 / b ^ 4) |>.trans hk.1
-    let m : ℝ := 32 / b ^ 3 - 32 / (H * b ^ 2)
+      exact (by positivity : 0 ≤ 32 / b ^ (4 : ℕ)) |>.trans hk.1
+    let m : ℝ := 32 / b ^ (3 : ℕ) - 32 / (H * b ^ (2 : ℕ))
     have hm0 : 0 ≤ m := by
       dsimp only [m]
       field_simp [hb.ne', hH.ne']
       nlinarith
-    have hmle : m ≤ 32 / b ^ 3 := by
+    have hmle : m ≤ 32 / b ^ (3 : ℕ) := by
       dsimp only [m]
-      have hsub : 0 ≤ 32 / (H * b ^ 2) := by positivity
+      have hsub : 0 ≤ 32 / (H * b ^ (2 : ℕ)) := by positivity
       linarith
     unfold ccmFUCentralXiScrewAffineMemory
     change |suzukiPsi b * ccmGuinandWeilThirdGradeCesaroErrorKernel H b +
@@ -198,8 +198,8 @@ theorem exists_nonnegative_uniform_bound_ccmFUCentralXiScrewAffineMemory
       _ = |suzukiPsi b| * ccmGuinandWeilThirdGradeCesaroErrorKernel H b +
           |ccmGuinandWeilXiScrewRightSlope b| * m := by
         rw [abs_mul, abs_mul, abs_of_nonneg hk0, abs_of_nonneg hm0]
-      _ ≤ |suzukiPsi b| * (96 / b ^ 4) +
-          |ccmGuinandWeilXiScrewRightSlope b| * (32 / b ^ 3) :=
+      _ ≤ |suzukiPsi b| * (96 / b ^ (4 : ℕ)) +
+          |ccmGuinandWeilXiScrewRightSlope b| * (32 / b ^ (3 : ℕ)) :=
         add_le_add
           (mul_le_mul_of_nonneg_left hk.2 (abs_nonneg _))
           (mul_le_mul_of_nonneg_left hmle (abs_nonneg _))

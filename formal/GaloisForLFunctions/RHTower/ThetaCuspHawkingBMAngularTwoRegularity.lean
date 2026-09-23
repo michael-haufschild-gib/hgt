@@ -442,7 +442,7 @@ theorem full_response_smooth_planar_test (q : XiZeroCopy) (g : PlanarChartTest) 
 private def responseResidual (q : XiZeroCopy) (z : ℂ) : ℂ :=
   planarLaplacian (globalResponse q ∘ ofComplex) z -
     ((2:ℂ)*globalResponse q (ofComplex z)-globalForcing q (ofComplex z)) /
-      (z.im : ℂ)^2
+      (z.im : ℂ)^(2 : ℕ)
 
 private theorem responseResidual_continuousOn (q : XiZeroCopy) :
     ContinuousOn (responseResidual q) {z : ℂ | 0 < z.im} := by
@@ -491,7 +491,7 @@ private theorem responseResidual_test_zero (q : XiZeroCopy) (g : PlanarChartTest
 theorem globalResponse_classical_planar (q : XiZeroCopy) (z : ℂ) (hz : 0 < z.im) :
     planarLaplacian (globalResponse q ∘ ofComplex) z =
       ((2:ℂ)*globalResponse q (ofComplex z)-globalForcing q (ofComplex z)) /
-        (z.im : ℂ)^2 := by
+        (z.im : ℂ)^(2 : ℕ) := by
   have hc := responseResidual_continuousOn q
   have ha := isOpen_upperHalfPlaneSet.ae_eq_zero_of_integral_contDiff_smul_eq_zero
     (hc.locallyIntegrableOn isOpen_upperHalfPlaneSet.measurableSet) (fun b hb hk hs => by
@@ -533,7 +533,7 @@ private theorem chartLaplacian_sub (f g : UpperHalfPlane → ℂ)
     have hG : DifferentiableAt ℝ (fun w => fderiv ℝ G w (direction i)) (z:ℂ) := (((hg z).fderiv_right (m := ∞) (by simp)).clm_apply contDiffAt_const).differentiableAt
       (by simp)
     rw [he.fderiv_eq,fderiv_fun_sub hF hG,sub_apply]
-  change (z.im : ℂ)^2*(∑ i : Fin 2,
+  change (z.im : ℂ)^(2 : ℕ)*(∑ i : Fin 2,
     fderiv ℝ (fun w => fderiv ℝ (fun w => F w-G w) w (direction i)) (z:ℂ) (direction i)) = _
   rw [Finset.sum_congr rfl (fun i _ => hd i),Finset.sum_sub_distrib,mul_sub]
   rfl
@@ -568,7 +568,7 @@ theorem smoothFullResponse_renormalized_native (q : XiZeroCopy) :
 /-- The actual shift-two inverse solves the complete original source equation pointwise. -/
 theorem smoothFullResponse_classical_equation (q : XiZeroCopy) (z : UpperHalfPlane) :
     2*smoothFullResponse q z-chartLaplacian (smoothFullResponse q) z =
-      scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^2 := by
+      scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^(2 : ℕ) := by
   change 2*(globalResponse q z-globalCuspCutoff q z)-
     chartLaplacian (fun w => globalResponse q w-globalCuspCutoff q w) z = _
   rw [chartLaplacian_sub _ _ (globalResponse_smooth q) (globalCuspCutoff_smooth q)]
@@ -601,7 +601,7 @@ theorem coordinateResponse_smooth (q : XiZeroCopy) (z : Fin 2 → ℝ) (hz : 0 <
 /-- The original coordinate Laplacian retains the entire literal scalar-square source. -/
 theorem coordinateResponse_equation (q : XiZeroCopy) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
     2*coordinateResponse q z-D4BMAngularSeries.hyperbolicLaplacian (coordinateResponse q) z =
-      scalar (D4BMGlobalAngularResponse.center q) z^2 := by
+      scalar (D4BMGlobalAngularResponse.center q) z^(2 : ℕ) := by
   let w : UpperHalfPlane := ⟨angularCoordinates.symm z,by
     change 0 < ((z 0 : ℂ)+(z 1 : ℂ)*Complex.I).im
     simpa using hz⟩

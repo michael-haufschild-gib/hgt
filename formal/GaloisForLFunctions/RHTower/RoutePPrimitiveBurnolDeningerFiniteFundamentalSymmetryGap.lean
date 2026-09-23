@@ -210,7 +210,7 @@ theorem xiWeilHilbertQuadratic_finiteFourLegOrientationDefectJet
     (A : ℂ) (w : DeningerPrimeGammaUpperPoint) (n : ℕ) :
     xiWeilHilbertQuadratic
         (routePDeningerFiniteFourLegOrientationDefectJet A w n) =
-      -‖routePDeningerFiniteFourLegOrientationDefectJet A w n‖ ^ 2 := by
+      -‖routePDeningerFiniteFourLegOrientationDefectJet A w n‖ ^ (2 : ℕ) := by
   rw [xiWeilHilbertQuadratic,
     xiWeilLineConj_finiteFourLegOrientationDefectJet,
     inner_neg_left, inner_self_eq_norm_sq_to_K]
@@ -219,21 +219,21 @@ theorem xiWeilHilbertQuadratic_finiteFourLegOrientationDefectJet
 /-- Exact W-H206 correction size seen by the finite Route P packet. -/
 theorem norm_sq_finiteFourLegOrientationDefectJet_eq_amplitude_pairDifEnergy
     (A : ℂ) (w : DeningerPrimeGammaUpperPoint) (n : ℕ) :
-    ‖routePDeningerFiniteFourLegOrientationDefectJet A w n‖ ^ 2 =
-      ‖A‖ ^ 2 *
+    ‖routePDeningerFiniteFourLegOrientationDefectJet A w n‖ ^ (2 : ℕ) =
+      ‖A‖ ^ (2 : ℕ) *
         ∑' q : XiZeroCopy,
           ‖xiWeilPairDif
             (xiWardCubicPrimeGammaLowerSecantTest
               (deningerPrimeGammaPointConjEquiv.symm w)
-              (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ 2 := by
+              (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ (2 : ℕ) := by
   rw [routePDeningerFiniteFourLegOrientationDefectJet_eq_neg_smul_star_pairDif,
     norm_smul, norm_neg, norm_star]
-  have hnorm : ‖routePDeningerFiniteLowerPairDifJet w n‖ ^ 2 =
+  have hnorm : ‖routePDeningerFiniteLowerPairDifJet w n‖ ^ (2 : ℕ) =
       ∑' q : XiZeroCopy,
         ‖xiWeilPairDif
           (xiWardCubicPrimeGammaLowerSecantTest
             (deningerPrimeGammaPointConjEquiv.symm w)
-            (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ 2 := by
+            (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ (2 : ℕ) := by
     rw [HilbertSchmidt.lp_norm_sq_eq]
     rfl
   rw [← hnorm]
@@ -257,7 +257,7 @@ theorem routePDeningerFiniteLowerFundamentalSymmetryGap_eq_half_pairDifEnergy
           ‖xiWeilPairDif
             (xiWardCubicPrimeGammaLowerSecantTest
               (deningerPrimeGammaPointConjEquiv.symm w)
-              (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ 2 := by
+              (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ (2 : ℕ) := by
   exact xiWeilParityFlip_energy_sub_weil_eq_half_pairDifEnergy
     (xiWardCubicPrimeGammaLowerSecant_squareSummable _ _)
 
@@ -277,12 +277,12 @@ theorem xiWeilHilbertQuadratic_finiteFourLegOrientationDefectJet_eq_neg_amplitud
     (A : ℂ) (w : DeningerPrimeGammaUpperPoint) (n : ℕ) :
     xiWeilHilbertQuadratic
         (routePDeningerFiniteFourLegOrientationDefectJet A w n) =
-      -‖A‖ ^ 2 *
+      -‖A‖ ^ (2 : ℕ) *
         ∑' q : XiZeroCopy,
           ‖xiWeilPairDif
             (xiWardCubicPrimeGammaLowerSecantTest
               (deningerPrimeGammaPointConjEquiv.symm w)
-              (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ 2 := by
+              (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ (2 : ℕ) := by
   rw [xiWeilHilbertQuadratic_finiteFourLegOrientationDefectJet,
     norm_sq_finiteFourLegOrientationDefectJet_eq_amplitude_pairDifEnergy]
   ring
@@ -305,28 +305,28 @@ theorem routePDeningerFiniteFourLegOrientationDefectJet_eq_zero_iff_riemannHypot
       ‖xiWeilPairDif
         (xiWardCubicPrimeGammaLowerSecantTest
           (deningerPrimeGammaPointConjEquiv.symm w)
-          (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ 2
+          (routePDeningerLowerReflectedSecantPoint w n)) q‖ ^ (2 : ℕ)
   have hcriterion : RiemannHypothesis ↔ E = 0 := by
     exact riemannHypothesis_iff_fixedPrimeGammaSecant_pairDifEnergy_zero
       (deningerPrimeGammaPointConjEquiv.symm w)
       (routePDeningerLowerReflectedSecantPoint w n)
       (routePDeningerLowerReflectedSecantPoint_ne w n)
   have hnorm :
-      ‖routePDeningerFiniteFourLegOrientationDefectJet A w n‖ ^ 2 =
-        ‖A‖ ^ 2 * E := by
+      ‖routePDeningerFiniteFourLegOrientationDefectJet A w n‖ ^ (2 : ℕ) =
+        ‖A‖ ^ (2 : ℕ) * E := by
     exact norm_sq_finiteFourLegOrientationDefectJet_eq_amplitude_pairDifEnergy A w n
   constructor
   · intro hzero
-    have hprod : ‖A‖ ^ 2 * E = 0 := by
+    have hprod : ‖A‖ ^ (2 : ℕ) * E = 0 := by
       rw [← hnorm, hzero, norm_zero]
       norm_num
-    have hnormA : ‖A‖ ^ 2 ≠ 0 :=
+    have hnormA : ‖A‖ ^ (2 : ℕ) ≠ 0 :=
       pow_ne_zero 2 (norm_ne_zero_iff.mpr hA)
     exact hcriterion.mpr ((mul_eq_zero.mp hprod).resolve_left hnormA)
   · intro hRH
     apply norm_eq_zero.mp
     have hsq :
-        ‖routePDeningerFiniteFourLegOrientationDefectJet A w n‖ ^ 2 = 0 := by
+        ‖routePDeningerFiniteFourLegOrientationDefectJet A w n‖ ^ (2 : ℕ) = 0 := by
       rw [hnorm, hcriterion.mp hRH, mul_zero]
     nlinarith [norm_nonneg
       (routePDeningerFiniteFourLegOrientationDefectJet A w n)]
@@ -382,7 +382,7 @@ theorem xiWeilHilbertQuadratic_add_twice_amplitude_fundamentalSymmetryGap_eq_zer
     (A : ℂ) (w : DeningerPrimeGammaUpperPoint) (n : ℕ) :
     xiWeilHilbertQuadratic
           (routePDeningerFiniteFourLegOrientationDefectJet A w n) +
-        2 * ‖A‖ ^ 2 *
+        2 * ‖A‖ ^ (2 : ℕ) *
           routePDeningerFiniteLowerFundamentalSymmetryGap w n = 0 := by
   rw [xiWeilHilbertQuadratic_finiteFourLegOrientationDefectJet_eq_neg_amplitude_pairDifEnergy,
     routePDeningerFiniteLowerFundamentalSymmetryGap_eq_half_pairDifEnergy]

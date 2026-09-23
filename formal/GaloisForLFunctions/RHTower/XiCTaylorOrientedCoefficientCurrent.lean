@@ -57,8 +57,8 @@ theorem hasDerivAt_normSq_polynomial_vertical
   rw [show (fun t : ℝ => Complex.normSq
       (P.eval ((x : ℂ) + (t : ℂ) * I))) =
       fun t : ℝ =>
-        (P.eval ((x : ℂ) + (t : ℂ) * I)).re ^ 2 +
-          (P.eval ((x : ℂ) + (t : ℂ) * I)).im ^ 2 by
+        (P.eval ((x : ℂ) + (t : ℂ) * I)).re ^ (2 : ℕ) +
+          (P.eval ((x : ℂ) + (t : ℂ) * I)).im ^ (2 : ℕ) by
     funext t
     rw [Complex.normSq_apply]
     ring]

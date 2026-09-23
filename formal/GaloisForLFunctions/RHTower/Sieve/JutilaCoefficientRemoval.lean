@@ -8,13 +8,13 @@ ones before applying the critical-line moment estimate.  The finite inequality b
 Jutila's 1975 coefficient-removal lemma:
 
 ```text
-sum_{r,s} |sum_n a_n x_{r,n} conj(x_{s,n})|^2
-  <= (max_n |a_n|)^2 sum_{r,s} |sum_n x_{r,n} conj(x_{s,n})|^2.
+sum_{r,s} |sum_n a_n x_{r,n} conj(x_{s,n})|^(2 : ℕ)
+  <= (max_n |a_n|)^(2 : ℕ) sum_{r,s} |sum_n x_{r,n} conj(x_{s,n})|^(2 : ℕ).
 ```
 
 After expanding the squared norms, the coefficient of `a_n conj(a_m)` is the nonnegative column
-Gram energy `|sum_r x_{r,n} conj(x_{r,m})|^2`.  Bounding the real part of each coefficient product
-therefore proves the result with exact constant `A^2`.  No positivity or phase condition on the
+Gram energy `|sum_r x_{r,n} conj(x_{r,m})|^(2 : ℕ)`.  Bounding the real part of each coefficient product
+therefore proves the result with exact constant `A^(2 : ℕ)`.  No positivity or phase condition on the
 coefficients is needed.
 -/
 
@@ -74,7 +74,7 @@ private theorem sum_four_rotate {α β γ δ M : Type*}
 
 private theorem jutila_energy_expansion {ρ ν : Type*} [Fintype ρ] [Fintype ν]
     (x : ρ → ν → ℂ) (a : ν → ℂ) :
-    ((∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s a‖ ^ 2 : ℝ) : ℂ) =
+    ((∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s a‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       ∑ n, ∑ m, a n * conj (a m) *
         (jutilaColumnGram x n m * conj (jutilaColumnGram x n m)) := by
   simp only [jutilaWeightedGramKernel, jutilaColumnGram, Complex.ofReal_sum,
@@ -95,8 +95,8 @@ private theorem jutila_energy_expansion {ρ ν : Type*} [Fintype ρ] [Fintype ν
 
 private theorem jutila_unweighted_energy_expansion
     {ρ ν : Type*} [Fintype ρ] [Fintype ν] (x : ρ → ν → ℂ) :
-    (∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s (fun _ => 1)‖ ^ 2 : ℝ) =
-      ∑ n, ∑ m, ‖jutilaColumnGram x n m‖ ^ 2 := by
+    (∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s (fun _ => 1)‖ ^ (2 : ℕ) : ℝ) =
+      ∑ n, ∑ m, ‖jutilaColumnGram x n m‖ ^ (2 : ℕ) := by
   have h := jutila_energy_expansion x (fun _ => 1)
   simp only [one_mul, map_one] at h
   have hre := congrArg Complex.re h
@@ -105,17 +105,17 @@ private theorem jutila_unweighted_energy_expansion
     Complex.normSq_eq_norm_sq] using hre
 
 /-- **Jutila's coefficient-removal inequality (1975, Lemma 5.2).**  A uniform coefficient bound
-can be removed from a finite double Gram energy at exact cost `A^2`. -/
+can be removed from a finite double Gram energy at exact cost `A^(2 : ℕ)`. -/
 theorem jutila_coefficient_removal {ρ ν : Type*} [Fintype ρ] [Fintype ν]
     (x : ρ → ν → ℂ) (a : ν → ℂ) {A : ℝ} (hA : 0 ≤ A)
     (ha : ∀ n, ‖a n‖ ≤ A) :
-    ∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s a‖ ^ 2 ≤
-      A ^ 2 * ∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s (fun _ => 1)‖ ^ 2 := by
+    ∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s a‖ ^ (2 : ℕ) ≤
+      A ^ (2 : ℕ) * ∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s (fun _ => 1)‖ ^ (2 : ℕ) := by
   have hexp := jutila_energy_expansion x a
   have hre := congrArg Complex.re hexp
   have hre' :
-      (∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s a‖ ^ 2 : ℝ) =
-        ∑ n, ∑ m, (a n * conj (a m)).re * ‖jutilaColumnGram x n m‖ ^ 2 := by
+      (∑ r, ∑ s, ‖jutilaWeightedGramKernel x r s a‖ ^ (2 : ℕ) : ℝ) =
+        ∑ n, ∑ m, (a n * conj (a m)).re * ‖jutilaColumnGram x n m‖ ^ (2 : ℕ) := by
     simp_rw [Complex.re_sum] at hre
     simpa only [Complex.ofReal_re, Complex.mul_re,
       Complex.mul_conj, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero,
@@ -127,12 +127,12 @@ theorem jutila_coefficient_removal {ρ ν : Type*} [Fintype ρ] [Fintype ν]
   rw [Finset.mul_sum]
   apply Finset.sum_le_sum
   intro m _
-  have hreBound : (a n * conj (a m)).re ≤ A ^ 2 := by
+  have hreBound : (a n * conj (a m)).re ≤ A ^ (2 : ℕ) := by
     calc
       (a n * conj (a m)).re ≤ ‖a n * conj (a m)‖ := Complex.re_le_norm _
       _ = ‖a n‖ * ‖a m‖ := by rw [norm_mul, norm_conj]
       _ ≤ A * A := mul_le_mul (ha n) (ha m) (norm_nonneg _) hA
-      _ = A ^ 2 := by ring
+      _ = A ^ (2 : ℕ) := by ring
   exact mul_le_mul_of_nonneg_right hreBound (sq_nonneg _)
 
 end

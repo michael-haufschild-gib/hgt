@@ -51,7 +51,7 @@ theorem fourierUnitary_soninScaledPacketL2_coeFn (m δ κ : ℝ) (hδ : 0 < δ) 
 
 /-- The spectral density of the rescaled packet computes the `L²` transform's modulus. -/
 theorem soninScaledPacketSpectralDensity_eq_norm_sq (m δ κ : ℝ) (hδ : 0 < δ) :
-    (fun ξ : ℝ => ‖((fourierUnitary (soninScaledPacketL2 m δ κ hδ) : SoninL2) : ℝ → ℂ) ξ‖ ^ 2)
+    (fun ξ : ℝ => ‖((fourierUnitary (soninScaledPacketL2 m δ κ hδ) : SoninL2) : ℝ → ℂ) ξ‖ ^ (2 : ℕ))
       =ᵐ[volume] soninScaledPacketSpectralDensity m δ κ := by
   filter_upwards [fourierUnitary_soninScaledPacketL2_coeFn m δ κ hδ] with ξ hξ
   rw [hξ, soninScaledPacketSpectralDensity]

@@ -15,9 +15,9 @@ set_option backward.isDefEq.respectTransparency false
 private theorem hilbert_unit_ball_pair_eq
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (x y : H) (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) (hxy : ‖x + y‖ = 2) : x = y := by
-  have hx2 : ‖x‖ ^ 2 ≤ 1 := by
+  have hx2 : ‖x‖ ^ (2 : ℕ) ≤ 1 := by
     simpa only [one_pow] using (sq_le_sq₀ (norm_nonneg x) zero_le_one).mpr hx
-  have hy2 : ‖y‖ ^ 2 ≤ 1 := by
+  have hy2 : ‖y‖ ^ (2 : ℕ) ≤ 1 := by
     simpa only [one_pow] using (sq_le_sq₀ (norm_nonneg y) zero_le_one).mpr hy
   have hp := parallelogram_law_with_norm ℂ x y
   rw [hxy] at hp

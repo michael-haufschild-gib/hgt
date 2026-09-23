@@ -163,7 +163,7 @@ theorem eq_zero_of_inner_suzukiPHatLp {G : Lp ℂ 2 (volume : Measure ℝ)}
   set A : XiDivisorSupport → ℂ := fun ρ => (starRingEnd ℂ) (suzukiRestriction hRH G ρ) with hA
   have hmnn : ∀ ρ : XiDivisorSupport, (0 : ℝ) ≤ (xiSupportMult ρ : ℝ) :=
     fun ρ => Nat.cast_nonneg _
-  have hsum : Summable (fun ρ : XiDivisorSupport => (xiSupportMult ρ : ℝ) * ‖A ρ‖ ^ 2) := by
+  have hsum : Summable (fun ρ : XiDivisorSupport => (xiSupportMult ρ : ℝ) * ‖A ρ‖ ^ (2 : ℕ)) := by
     have hbase := ((hasSum_suzukiClarkWeight_normSq_restriction hRH hG).summable).mul_left
       (1 / Real.pi)
     refine hbase.congr fun ρ => ?_

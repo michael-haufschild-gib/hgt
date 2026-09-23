@@ -57,9 +57,9 @@ private theorem pairing_common_data (s chi a J K w : ℂ)
         ∀ z ∈ Ioc (0:ℝ) b,
           AnalyticAt ℂ (fun v => incomingSourcePrimitive s chi a J K v z) u ∧
           ‖incomingPairingFactor u chi z-(1/2:ℂ)-
-            (horizonGaussFirstCoefficient u chi+1/4)*(z:ℂ)‖ ≤ C*z^2 ∧
+            (horizonGaussFirstCoefficient u chi+1/4)*(z:ℂ)‖ ≤ C*z^(2 : ℕ) ∧
           ‖incomingSourcePrimitive s chi a J K u z*incomingPairingFactor u chi z-
-            (incomingResponseSlope s a J K u/2)*(z:ℂ)‖ ≤ D*z^2 ∧
+            (incomingResponseSlope s a J K u/2)*(z:ℂ)‖ ≤ D*z^(2 : ℕ) ∧
           (connection u chi ≠ 0 → continuedResponse s chi a J K z u/horizon u chi z=
             incomingResponseEndpoint s chi a J K u b+incomingSourcePrimitive s chi a J K u z) := by
   obtain ⟨RP,b,CP,MP,hRP,hb,hbhalf,hCP,_,hP⟩ := incomingSourcePrimitive_common_data s chi a J K w hw hwr hs
@@ -88,8 +88,8 @@ private theorem pairing_common_data (s chi a J K w : ℂ)
   obtain ⟨hPa,_,hPe,hQ⟩ := hPb z hz
   have hMe := (hM u huM).2 z ⟨hz.1.le,hz.2.trans hbhalf⟩
   refine ⟨hPa,hMe,?_,hQ⟩
-  change ‖incomingSourcePrimitive s chi a J K u z-incomingResponseSlope s a J K u*(z:ℂ)‖ ≤ CP*z^2 at hPe
-  have hPe' : ‖incomingSourcePrimitive s chi a J K u z-0-incomingResponseSlope s a J K u*(z:ℂ)‖ ≤ CP*z^2 := by simpa using hPe
+  change ‖incomingSourcePrimitive s chi a J K u z-incomingResponseSlope s a J K u*(z:ℂ)‖ ≤ CP*z^(2 : ℕ) at hPe
+  have hPe' : ‖incomingSourcePrimitive s chi a J K u z-0-incomingResponseSlope s a J K u*(z:ℂ)‖ ≤ CP*z^(2 : ℕ) := by simpa using hPe
   have hp := quadratic_endpoint_product_bound
     (show z ∈ Icc (0:ℝ) 1 from ⟨hz.1.le,lt_of_le_of_lt (hz.2.trans hbhalf) (by norm_num) |>.le⟩)
     hCP hCM hPe' hMe
@@ -127,9 +127,9 @@ theorem incomingPairingFinitePart_horizon_restoration_below (s chi a J K w : ℂ
       ∀ z ∈ Ioc (0:ℝ) b,
         AnalyticAt ℂ (fun v => incomingSourcePrimitive s chi a J K v z) u ∧
         ‖incomingPairingFactor u chi z-(1/2:ℂ)-
-          (horizonGaussFirstCoefficient u chi+1/4)*(z:ℂ)‖ ≤ C*z^2 ∧
+          (horizonGaussFirstCoefficient u chi+1/4)*(z:ℂ)‖ ≤ C*z^(2 : ℕ) ∧
         ‖incomingSourcePrimitive s chi a J K u z*incomingPairingFactor u chi z-
-          (incomingResponseSlope s a J K u/2)*(z:ℂ)‖ ≤ D*z^2 ∧
+          (incomingResponseSlope s a J K u/2)*(z:ℂ)‖ ≤ D*z^(2 : ℕ) ∧
         (connection u chi ≠ 0 → continuedResponse s chi a J K z u/horizon u chi z=
           incomingResponseEndpoint s chi a J K u b+incomingSourcePrimitive s chi a J K u z) := by
     obtain ⟨hui,hure,hus,hPc,hdata⟩ := hbig u hu
@@ -191,7 +191,7 @@ theorem incomingPairingFinitePart_horizon_restoration_below (s chi a J K w : ℂ
       (F := fun v z => incomingSourcePrimitive s chi a J K v z*incomingPairingFactor v chi z)
       (a₀ := fun _ => 0) (a₁ := fun v => incomingResponseSlope s a J K v/2) (w := u) hb hur hu0 hu1 hPMcont
       (fun z hz => show ‖incomingSourcePrimitive s chi a J K u z*incomingPairingFactor u chi z-0-
-        (incomingResponseSlope s a J K u/2)*(z:ℂ)‖ ≤ D*z^2 from by
+        (incomingResponseSlope s a J K u/2)*(z:ℂ)‖ ≤ D*z^(2 : ℕ) from by
         simpa only [sub_zero] using (hdata z hz).2.2.1)
     have hlim := (hNM.const_mul (incomingResponseEndpoint s chi a J K u b)).add hJM
     change Tendsto _ (𝓝[>] (0:ℝ)) (𝓝 (incomingPairingFinitePart s chi a J K b u)) at hlim

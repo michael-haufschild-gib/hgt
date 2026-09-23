@@ -61,7 +61,7 @@ theorem projectedAdjointDefectForm_hasExactNegativeIndex_rank
     have hstar : K.starProjection (incl y) = incl y :=
       Submodule.starProjection_eq_self_iff.mpr hmemK
     rw [projectedAdjointDefectForm, hstar]
-    change ‖incl y‖ ^ 2 - ‖A (y : K)‖ ^ 2 - ‖incl y‖ ^ 2 < 0
+    change ‖incl y‖ ^ (2 : ℕ) - ‖A (y : K)‖ ^ (2 : ℕ) - ‖incl y‖ ^ (2 : ℕ) < 0
     nlinarith [norm_pos_iff.mpr hAnz]
   · intro V hV
     let P : V →ₗ[ℂ] LinearMap.range A :=
@@ -86,7 +86,7 @@ theorem projectedAdjointDefectForm_hasExactNegativeIndex_rank
       have hsplit : d = u + v := by
         change d = u + (d - u)
         abel
-      have hpyth : ‖d‖ ^ 2 = ‖u‖ ^ 2 + ‖v‖ ^ 2 := by
+      have hpyth : ‖d‖ ^ (2 : ℕ) = ‖u‖ ^ (2 : ℕ) + ‖v‖ ^ (2 : ℕ) := by
         rw [hsplit]
         simpa [sq] using norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero u v hperp
       have hadj : ContinuousLinearMap.adjoint C d =

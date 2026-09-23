@@ -42,7 +42,7 @@ theorem quadOne_eval_zero : quadOne.eval (0 : ℂ) = 1 := by rw [quadOne_eval]; 
 /-! ## The forward orbit of the critical value -/
 
 theorem quadOneOrbit_lt_succ (n : ℕ) : quadOneOrbit n < quadOneOrbit (n + 1) := by
-  have h : quadOneOrbit n ≤ quadOneOrbit n ^ 2 :=
+  have h : quadOneOrbit n ≤ quadOneOrbit n ^ (2 : ℕ) :=
     Nat.le_self_pow (by norm_num) (quadOneOrbit n)
   rw [quadOneOrbit]
   omega

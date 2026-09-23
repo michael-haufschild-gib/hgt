@@ -24,7 +24,7 @@ namespace RHTower
 noncomputable def primeLogRpowTailConstant (δ : ℝ) : ℝ :=
   2 * Real.log 4 / (1 - (2 : ℝ) ^ (-δ))
 
-theorem two_rpow_neg_lt_one {δ : ℝ} (hδ : 0 < δ) : (2 : ℝ) ^ (-δ) < 1 := by
+theorem two_rpow_neg_lt_one_primeLogRpowTail {δ : ℝ} (hδ : 0 < δ) : (2 : ℝ) ^ (-δ) < 1 := by
   rw [Real.rpow_neg (by norm_num), inv_lt_one_iff₀]
   right
   exact Real.one_lt_rpow_iff_of_pos (by norm_num) |>.2 (Or.inl ⟨by norm_num, hδ⟩)
@@ -34,7 +34,7 @@ theorem two_rpow_neg_pos (δ : ℝ) : (0 : ℝ) < (2 : ℝ) ^ (-δ) :=
 
 theorem primeLogRpowTailConstant_nonneg {δ : ℝ} (hδ : 0 < δ) :
     0 ≤ primeLogRpowTailConstant δ := by
-  have h := two_rpow_neg_lt_one hδ
+  have h := two_rpow_neg_lt_one_primeLogRpowTail hδ
   rw [primeLogRpowTailConstant]
   have hlog : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
   positivity
@@ -119,7 +119,7 @@ theorem sum_prime_log_rpow_dyadic_tail_le {δ : ℝ} (hδ : 0 < δ) (m N : ℕ) 
   classical
   set r : ℝ := (2 : ℝ) ^ (-δ) with hr
   have hr0 : 0 < r := two_rpow_neg_pos δ
-  have hr1 : r < 1 := two_rpow_neg_lt_one hδ
+  have hr1 : r < 1 := two_rpow_neg_lt_one_primeLogRpowTail hδ
   set S := {p ∈ Nat.primesBelow (N + 1) | 2 ^ m ≤ p} with hS
   by_cases hmN : m ≤ Nat.log 2 N
   · have hmaps : ∀ p ∈ S, Nat.log 2 p ∈ Finset.Icc m (Nat.log 2 N) := by

@@ -14,7 +14,7 @@ nonzero coefficient is the `n = 2` coefficient.  After scaling by `2^x`, its
 far-right limit is therefore the corresponding power of `log 2`.  It follows
 that the first normalized Hankel determinant has the scaled limit
 
-`-7 * (log 2)^8 / 360`,
+`-7 * (log 2)^(8 : ℕ) / 360`,
 
 and hence is strictly negative for all sufficiently large real `x`.
 -/
@@ -108,14 +108,14 @@ theorem tendsto_scaled_vonMangoldtLogMoment (m : ℕ) :
 /-- The first factorial-normalized Hankel determinant of the Euler trace moments. -/
 def vonMangoldtNormalizedFirstHankelDet (x : ℝ) : ℝ :=
   vonMangoldtLogMoment 1 x * (vonMangoldtLogMoment 5 x / 120) -
-    (vonMangoldtLogMoment 3 x / 6) ^ 2
+    (vonMangoldtLogMoment 3 x / 6) ^ (2 : ℕ)
 
 /-- Exact projective limit of the first normalized Euler trace-Hankel determinant. -/
 theorem tendsto_scaled_vonMangoldtNormalizedFirstHankelDet :
     Tendsto
       (fun x : ℝ =>
-        ((2 : ℝ) ^ x) ^ 2 * vonMangoldtNormalizedFirstHankelDet x)
-      atTop (nhds (-7 * (Real.log 2) ^ 8 / 360)) := by
+        ((2 : ℝ) ^ x) ^ (2 : ℕ) * vonMangoldtNormalizedFirstHankelDet x)
+      atTop (nhds (-7 * (Real.log 2) ^ (8 : ℕ) / 360)) := by
   have h1 := tendsto_scaled_vonMangoldtLogMoment 1
   have h3 := tendsto_scaled_vonMangoldtLogMoment 3
   have h5 := tendsto_scaled_vonMangoldtLogMoment 5
@@ -129,14 +129,14 @@ theorem tendsto_scaled_vonMangoldtNormalizedFirstHankelDet :
 /-- The actual Euler source eventually lies in the negative normalized Hankel chamber. -/
 theorem vonMangoldtNormalizedFirstHankelDet_eventually_neg :
     ∀ᶠ x : ℝ in atTop, vonMangoldtNormalizedFirstHankelDet x < 0 := by
-  have hlimneg : -7 * (Real.log 2) ^ 8 / 360 < 0 := by
+  have hlimneg : -7 * (Real.log 2) ^ (8 : ℕ) / 360 < 0 := by
     have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
-    have hpos : 0 < 7 * (Real.log 2) ^ 8 / 360 := by positivity
+    have hpos : 0 < 7 * (Real.log 2) ^ (8 : ℕ) / 360 := by positivity
     linarith
   have hev := tendsto_scaled_vonMangoldtNormalizedFirstHankelDet.eventually
     (Iio_mem_nhds hlimneg)
   filter_upwards [hev] with x hx
-  have hscale : 0 < ((2 : ℝ) ^ x) ^ 2 := by positivity
+  have hscale : 0 < ((2 : ℝ) ^ x) ^ (2 : ℕ) := by positivity
   nlinarith
 
 end

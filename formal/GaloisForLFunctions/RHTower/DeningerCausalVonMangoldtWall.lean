@@ -58,7 +58,7 @@ theorem deningerCausalRenorm_norm_le {f φ : ℝ → ℂ} {C : ℝ}
     (hlip : ∀ x : ℝ, ‖φ x - φ 0‖ ≤ C * |x|)
     (hfy : IntegrableOn (fun y => (y : ℝ) * f y) (Set.Ioi 0)) (n : ℕ) :
     ‖deningerCausalRenorm f φ n‖
-      ≤ (C * deningerCausalMass f) * (vonMangoldt n / (n : ℝ) ^ 2) := by
+      ≤ (C * deningerCausalMass f) * (vonMangoldt n / (n : ℝ) ^ (2 : ℕ)) := by
   have hmass := deningerCausalMass_integrable hfy
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · have hzero : ∀ y : ℝ, φ (y / ((0 : ℕ) : ℝ)) - φ 0 = 0 := by
@@ -101,7 +101,7 @@ theorem deningerCausalRenorm_norm_le {f φ : ℝ → ℂ} {C : ℝ}
 
 /-- The von Mangoldt weights are square-summable against `n⁻²`. -/
 theorem deningerVonMangoldt_summable_div_sq :
-    Summable fun n : ℕ => vonMangoldt n / (n : ℝ) ^ 2 := by
+    Summable fun n : ℕ => vonMangoldt n / (n : ℝ) ^ (2 : ℕ) := by
   refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) Sieve.summable_log_div_sq
   · exact div_nonneg vonMangoldt_nonneg (by positivity)
   · rcases Nat.eq_zero_or_pos n with rfl | hn

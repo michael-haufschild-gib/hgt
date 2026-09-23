@@ -25,14 +25,14 @@ theorem sum_sq_card_fibre_roughSet_log {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 ≤ h
         + Real.log 2 ≤ (k : ℝ))
     (hcorr : 0 < 1 - Real.log ⌊h⌋₊ / (Real.log P₁ * (P₁ : ℝ))) :
     ∑ a ∈ outerBlock x h,
-        ((((innerFibre x h a ∩ roughSet P₁ hN ⌊Y⌋₊).card : ℕ)) : ℝ) ^ 2
+        ((((innerFibre x h a ∩ roughSet P₁ hN ⌊Y⌋₊).card : ℕ)) : ℝ) ^ (2 : ℕ)
       ≤ (2 * h + 1) * (2 * ((2 * Y * (Real.log P₁ / Real.log hN)
               * Real.exp (mertensErr P₁ + mertensErr hN)
             + ∑ e ∈ (rangePrimorial P₁ hN).divisors,
                 (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0))
           + ((⌊h⌋₊ : ℕ) : ℝ)
-              * (2 * Y * (Real.log P₁ / Real.log hN) ^ 2
-                    * Real.exp (mertensErr P₁ + mertensErr hN) ^ 2
+              * (2 * Y * (Real.log P₁ / Real.log hN) ^ (2 : ℕ)
+                    * Real.exp (mertensErr P₁ + mertensErr hN) ^ (2 : ℕ)
                     / (1 - Real.log ⌊h⌋₊ / (Real.log P₁ * (P₁ : ℝ)))
                 + ∑ e ∈ (rangePrimorial P₁ hN).divisors,
                     (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)))) := by
@@ -73,19 +73,19 @@ theorem sum_sq_card_fibre_roughSet_log {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 ≤ h
     linarith [hgoal]
   · -- the off-diagonal term
     set c : ℝ := 1 - Real.log ⌊h⌋₊ / (Real.log P₁ * (P₁ : ℝ)) with hc
-    have hAsq : ((Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) * E) ^ 2 = 1 / A ^ 2 := by
+    have hAsq : ((Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) * E) ^ (2 : ℕ) = 1 / A ^ (2 : ℕ) := by
       rw [← hAinv, div_pow, one_pow]
-    have hsq : A ^ 2 ≤ Δ ^ 2 := by nlinarith [hAle, hA0, hΔ0]
-    have hrwR : 2 * Y * (Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) ^ 2 * E ^ 2 / c
-        = Y / ((1 / 2) * (A ^ 2 * c)) := by
-      have h2 : (Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) ^ 2 * E ^ 2 = 1 / A ^ 2 := by
+    have hsq : A ^ (2 : ℕ) ≤ Δ ^ (2 : ℕ) := by nlinarith [hAle, hA0, hΔ0]
+    have hrwR : 2 * Y * (Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) ^ (2 : ℕ) * E ^ (2 : ℕ) / c
+        = Y / ((1 / 2) * (A ^ (2 : ℕ) * c)) := by
+      have h2 : (Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) ^ (2 : ℕ) * E ^ (2 : ℕ) = 1 / A ^ (2 : ℕ) := by
         rw [← mul_pow]
         exact hAsq
-      calc 2 * Y * (Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) ^ 2 * E ^ 2 / c
-          = 2 * Y * ((Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) ^ 2 * E ^ 2) / c := by ring
-        _ = 2 * Y * (1 / A ^ 2) / c := by rw [h2]
-        _ = Y / ((1 / 2) * (A ^ 2 * c)) := by
-              have hA2 : A ^ 2 ≠ 0 := by positivity
+      calc 2 * Y * (Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) ^ (2 : ℕ) * E ^ (2 : ℕ) / c
+          = 2 * Y * ((Real.log (P₁ : ℝ) / Real.log (hN : ℝ)) ^ (2 : ℕ) * E ^ (2 : ℕ)) / c := by ring
+        _ = 2 * Y * (1 / A ^ (2 : ℕ)) / c := by rw [h2]
+        _ = Y / ((1 / 2) * (A ^ (2 : ℕ) * c)) := by
+              have hA2 : A ^ (2 : ℕ) ≠ 0 := by positivity
               have hcne : c ≠ 0 := ne_of_gt hcorr
               field_simp
     rw [hrwR]

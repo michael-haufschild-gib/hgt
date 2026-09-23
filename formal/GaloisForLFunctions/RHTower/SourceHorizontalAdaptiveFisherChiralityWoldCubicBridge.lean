@@ -110,7 +110,7 @@ theorem iteratedDeriv_sourceHorizontalPrimeAdaptiveKLChirality_three_zero
     (p : Nat.Primes) :
     iteratedDeriv 3 (sourceHorizontalPrimeAdaptiveKLChirality p) 0 =
       8 * sourceHorizontalFermiVarianceFirstJet (-Real.log (p : ℝ)) *
-        Real.log (p : ℝ) ^ 3 := by
+        Real.log (p : ℝ) ^ (3 : ℕ) := by
   have hfun : sourceHorizontalPrimeAdaptiveKLChirality p =
       fun t => sourceHorizontalCenteredBernoulliKLChirality
         (-Real.log (p : ℝ)) (t * Real.log (p : ℝ)) := by
@@ -129,7 +129,7 @@ theorem iteratedDeriv_sourceHorizontalPrimeAdaptiveKLChirality_three_zero
       (hinner t)).deriv
   have hsecond : deriv (fun t : ℝ =>
       sourceHorizontalCenteredBernoulliKLChiralityFirstJet c (t * L) * L) =
-      fun t => sourceHorizontalCenteredBernoulliKLChiralitySecondJet c (t * L) * L ^ 2 := by
+      fun t => sourceHorizontalCenteredBernoulliKLChiralitySecondJet c (t * L) * L ^ (2 : ℕ) := by
     funext t
     have h := ((sourceHorizontalHasDerivAt_centeredBernoulliKLChiralityFirstJet c (t * L)).comp
       t (hinner t)).mul_const L
@@ -141,7 +141,7 @@ theorem iteratedDeriv_sourceHorizontalPrimeAdaptiveKLChirality_three_zero
   have hD2 : HasDerivAt (sourceHorizontalCenteredBernoulliKLChiralitySecondJet c)
       (8 * sourceHorizontalFermiVarianceFirstJet c) (0 * L) := by
     simpa using sourceHorizontalHasDerivAt_centeredBernoulliKLChiralitySecondJet_zero c
-  have hthird := (hD2.comp 0 (hinner 0)).mul_const (L ^ 2)
+  have hthird := (hD2.comp 0 (hinner 0)).mul_const (L ^ (2 : ℕ))
   convert hthird.deriv using 1
   all_goals simp [c, L]
   ring
@@ -155,7 +155,7 @@ theorem sourceHorizontalSigmoid_neg_log_prime (p : Nat.Primes) :
 
 theorem sourceHorizontalFermiVarianceFirstJet_neg_log_prime (p : Nat.Primes) :
     sourceHorizontalFermiVarianceFirstJet (-Real.log (p : ℝ)) =
-      (p : ℝ) * ((p : ℝ) - 1) / ((p : ℝ) + 1) ^ 3 := by
+      (p : ℝ) * ((p : ℝ) - 1) / ((p : ℝ) + 1) ^ (3 : ℕ) := by
   rw [sourceHorizontalFermiVarianceFirstJet, sourceHorizontalFermiVariance,
     sourceHorizontalSigmoid_neg_log_prime]
   field_simp [show (p : ℝ) + 1 ≠ 0 by positivity]
@@ -165,14 +165,14 @@ theorem sourceHorizontalFermiVarianceFirstJet_neg_log_prime (p : Nat.Primes) :
 theorem iteratedDeriv_sourceHorizontalPrimeAdaptiveKLChirality_three_zero_eq
     (p : Nat.Primes) :
     iteratedDeriv 3 (sourceHorizontalPrimeAdaptiveKLChirality p) 0 =
-      8 * ((p : ℝ) * ((p : ℝ) - 1) / ((p : ℝ) + 1) ^ 3) *
-        Real.log (p : ℝ) ^ 3 := by
+      8 * ((p : ℝ) * ((p : ℝ) - 1) / ((p : ℝ) + 1) ^ (3 : ℕ)) *
+        Real.log (p : ℝ) ^ (3 : ℕ) := by
   rw [iteratedDeriv_sourceHorizontalPrimeAdaptiveKLChirality_three_zero,
     sourceHorizontalFermiVarianceFirstJet_neg_log_prime]
 
 /-- Exact gauge identifying adaptive information chirality with the Wold cubic jet. -/
 def sourceHorizontalAdaptiveChiralityWoldCubicGauge (p : Nat.Primes) : ℝ :=
-  8 * (p : ℝ) ^ 5 / (((p : ℝ) - 1) ^ 2 * ((p : ℝ) + 1) ^ 3)
+  8 * (p : ℝ) ^ (5 : ℕ) / (((p : ℝ) - 1) ^ (2 : ℕ) * ((p : ℝ) + 1) ^ (3 : ℕ))
 
 /-- Frankenstein bridge: adaptive information chirality and Route-T Wold residual are the same
 third neutral prime jet through an explicit coefficient-faithful gauge. -/
@@ -216,24 +216,24 @@ theorem sourceHorizontalAdaptiveChiralityWoldCubicGauge_bounds (p : Nat.Primes) 
     dsimp [b]
     rw [div_le_iff₀ hPp1]
     linarith
-  have haSqLower : 1 ≤ a ^ 2 := by
+  have haSqLower : 1 ≤ a ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr ha1) (by linarith : 0 ≤ a + 1)]
-  have haSqUpper : a ^ 2 ≤ 4 := by
+  have haSqUpper : a ^ (2 : ℕ) ≤ 4 := by
     nlinarith [mul_nonneg (sub_nonneg.mpr ha2) (by linarith : 0 ≤ a + 2)]
-  have hbCubeLower : 1 / 8 ≤ b ^ 3 := by
-    have hquad : 0 ≤ b ^ 2 + b / 2 + 1 / 4 := by positivity
+  have hbCubeLower : 1 / 8 ≤ b ^ (3 : ℕ) := by
+    have hquad : 0 ≤ b ^ (2 : ℕ) + b / 2 + 1 / 4 := by positivity
     nlinarith [mul_nonneg (sub_nonneg.mpr hbhalf) hquad]
-  have hbCubeUpper : b ^ 3 ≤ 1 := by
-    have hquad : 0 ≤ 1 + b + b ^ 2 := by positivity
+  have hbCubeUpper : b ^ (3 : ℕ) ≤ 1 := by
+    have hquad : 0 ≤ 1 + b + b ^ (2 : ℕ) := by positivity
     nlinarith [mul_nonneg (sub_nonneg.mpr hb1) hquad]
-  have hproductLower : 1 / 8 ≤ a ^ 2 * b ^ 3 := by
+  have hproductLower : 1 / 8 ≤ a ^ (2 : ℕ) * b ^ (3 : ℕ) := by
     nlinarith [mul_le_mul haSqLower hbCubeLower (by norm_num : 0 ≤ (1 / 8 : ℝ))
-      (by linarith : 0 ≤ a ^ 2)]
-  have hproductUpper : a ^ 2 * b ^ 3 ≤ 4 := by
-    nlinarith [mul_le_mul haSqUpper hbCubeUpper (by linarith : 0 ≤ b ^ 3)
+      (by linarith : 0 ≤ a ^ (2 : ℕ))]
+  have hproductUpper : a ^ (2 : ℕ) * b ^ (3 : ℕ) ≤ 4 := by
+    nlinarith [mul_le_mul haSqUpper hbCubeUpper (by linarith : 0 ≤ b ^ (3 : ℕ))
       (by norm_num : 0 ≤ (4 : ℝ))]
   have hgauge : sourceHorizontalAdaptiveChiralityWoldCubicGauge p =
-      8 * a ^ 2 * b ^ 3 := by
+      8 * a ^ (2 : ℕ) * b ^ (3 : ℕ) := by
     dsimp [sourceHorizontalAdaptiveChiralityWoldCubicGauge, a, b, P]
     field_simp [hPm1.ne', hPp1.ne']
   rw [hgauge]
@@ -307,7 +307,7 @@ theorem sourceHorizontalAdaptiveChiralityNaturalCubicMoment_eq_wold
 /-- Adaptive-information presentation of the complete Route-T residual cubic coefficient. -/
 def sourceHorizontalAdaptiveChiralityResidualCubicCoefficient (N : ℕ) : ℝ :=
   sourceHorizontalAdaptiveChiralityNaturalCubicMoment N -
-    xiMassNthPrimeLogHeight N ^ 3
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)
 
 theorem sourceHorizontalAdaptiveChiralityResidualCubicCoefficient_eq_wold
     (N : ℕ) :
@@ -321,7 +321,7 @@ theorem sourceHorizontalAdaptiveChiralityResidualCubicCoefficient_eq_wold
 theorem tendsto_sourceHorizontalAdaptiveChiralityResidualCubicCoefficient_normalized :
     Tendsto (fun N : ℕ =>
       sourceHorizontalAdaptiveChiralityResidualCubicCoefficient N /
-        xiMassNthPrimeLogHeight N ^ 3)
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ))
       atTop (𝓝 (-2 / 3 : ℝ)) := by
   simpa only [sourceHorizontalAdaptiveChiralityResidualCubicCoefficient_eq_wold] using
     tendsto_sourceHorizontalWoldResidualPrimitiveCubicCoefficient_normalized
@@ -329,9 +329,9 @@ theorem tendsto_sourceHorizontalAdaptiveChiralityResidualCubicCoefficient_normal
 /-- Multiplicity-labelled Xi response written entirely through adaptive information cubic jets. -/
 def sourceZeroHorizontalAdaptiveChiralityPrimeClockCubicResponse
     (q : XiZeroCopy) (N : ℕ) : ℝ :=
-  primeDepthBVWoldXiCenteredRate q.1 ^ 3 *
+  primeDepthBVWoldXiCenteredRate q.1 ^ (3 : ℕ) *
     (sourceHorizontalAdaptiveChiralityResidualCubicCoefficient N /
-      xiMassNthPrimeLogHeight N ^ 3)
+      xiMassNthPrimeLogHeight N ^ (3 : ℕ))
 
 theorem sourceZeroHorizontalAdaptiveChiralityPrimeClockCubicResponse_eq_wold
     (q : XiZeroCopy) (N : ℕ) :
@@ -353,7 +353,7 @@ theorem sourceZeroHorizontalAdaptiveChiralityPrimeClockCubicResponse_eq_wold
 theorem tendsto_sourceZeroHorizontalAdaptiveChiralityPrimeClockCubicResponse
     (q : XiZeroCopy) :
     Tendsto (sourceZeroHorizontalAdaptiveChiralityPrimeClockCubicResponse q) atTop
-      (𝓝 ((-2 / 3 : ℝ) * primeDepthBVWoldXiCenteredRate q.1 ^ 3)) := by
+      (𝓝 ((-2 / 3 : ℝ) * primeDepthBVWoldXiCenteredRate q.1 ^ (3 : ℕ))) := by
   have heq : sourceZeroHorizontalAdaptiveChiralityPrimeClockCubicResponse q =
       sourceZeroHorizontalWoldPrimeClockCubicResponse q := by
     funext N
@@ -364,7 +364,7 @@ theorem tendsto_sourceZeroHorizontalAdaptiveChiralityPrimeClockCubicResponse
 /-- Adaptive-information cubic horizon limit vanishes exactly on the critical line. -/
 theorem sourceZeroHorizontalAdaptiveChiralityPrimeClockCubicLimit_eq_zero_iff
     (q : XiZeroCopy) :
-    (-2 / 3 : ℝ) * primeDepthBVWoldXiCenteredRate q.1 ^ 3 = 0 ↔
+    (-2 / 3 : ℝ) * primeDepthBVWoldXiCenteredRate q.1 ^ (3 : ℕ) = 0 ↔
       (q.1 : ℂ).re = 1 / 2 :=
   sourceZeroHorizontalWoldPrimeClockCubicLimit_eq_zero_iff q
 

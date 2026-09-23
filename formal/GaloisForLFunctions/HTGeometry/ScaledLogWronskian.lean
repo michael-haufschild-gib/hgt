@@ -24,13 +24,13 @@ open Polynomial
 
 /-- The cleared derivative of the scaled logarithmic derivative `v·Q'/Q`. -/
 noncomputable def scaledLogWronskian (Q v : Polynomial ℂ) : Polynomial ℂ :=
-  (v.derivative * Q.derivative + v * Q.derivative.derivative) * Q - v * Q.derivative ^ 2
+  (v.derivative * Q.derivative + v * Q.derivative.derivative) * Q - v * Q.derivative ^ (2 : ℕ)
 
 /-- **The product rule.**  The scaled logarithmic derivative is additive, so its Wronskian is a
 weighted sum. -/
 theorem scaledLogWronskian_mul (P R v : Polynomial ℂ) :
     scaledLogWronskian (P * R) v
-      = R ^ 2 * scaledLogWronskian P v + P ^ 2 * scaledLogWronskian R v := by
+      = R ^ (2 : ℕ) * scaledLogWronskian P v + P ^ (2 : ℕ) * scaledLogWronskian R v := by
   simp only [scaledLogWronskian, derivative_mul, derivative_add]
   ring
 
@@ -40,7 +40,7 @@ theorem scaledLogWronskian_mul (P R v : Polynomial ℂ) :
 
 /-- On `v` itself the Wronskian is the curvature of `v`. -/
 theorem scaledLogWronskian_self (v : Polynomial ℂ) :
-    scaledLogWronskian v v = v ^ 2 * v.derivative.derivative := by
+    scaledLogWronskian v v = v ^ (2 : ℕ) * v.derivative.derivative := by
   simp only [scaledLogWronskian]
   ring
 
@@ -90,10 +90,10 @@ theorem natDegree_scaledLogWronskian_le {Q v : Polynomial ℂ} (hv : v.natDegree
       · have h2 : (v * Q.derivative.derivative).natDegree
             ≤ v.natDegree + Q.derivative.derivative.natDegree := Polynomial.natDegree_mul_le
         omega
-  have hlast : (v * Q.derivative ^ 2).natDegree ≤ 2 * Q.natDegree - 1 := by
-    have hE : (Q.derivative ^ 2).natDegree ≤ 2 * Q.derivative.natDegree :=
+  have hlast : (v * Q.derivative ^ (2 : ℕ)).natDegree ≤ 2 * Q.natDegree - 1 := by
+    have hE : (Q.derivative ^ (2 : ℕ)).natDegree ≤ 2 * Q.derivative.natDegree :=
       Polynomial.natDegree_pow_le
-    have h1 : (v * Q.derivative ^ 2).natDegree ≤ v.natDegree + (Q.derivative ^ 2).natDegree :=
+    have h1 : (v * Q.derivative ^ (2 : ℕ)).natDegree ≤ v.natDegree + (Q.derivative ^ (2 : ℕ)).natDegree :=
       Polynomial.natDegree_mul_le
     omega
   rw [scaledLogWronskian]
@@ -112,13 +112,13 @@ This is the combination that governs the height induction of a product law: at e
 cross term outweighs the Wronskian left by the level below. -/
 theorem scaledLogWronskian_add_cross_ne_zero {Q v : Polynomial ℂ} {c : ℂ}
     (hc : c ≠ 0) (hQ : 1 ≤ Q.natDegree) (hv : v.natDegree ≤ 1) :
-    scaledLogWronskian Q v + Polynomial.C c * Q ^ 2 * Q.derivative ≠ 0 := by
+    scaledLogWronskian Q v + Polynomial.C c * Q ^ (2 : ℕ) * Q.derivative ≠ 0 := by
   have hQ0 : Q ≠ 0 := fun h => by simp [h] at hQ
   have hQ'0 : Q.derivative ≠ 0 := by
     intro h
     rw [Polynomial.derivative_eq_zero] at h
     omega
-  have hcross : (Polynomial.C c * Q ^ 2 * Q.derivative).degree
+  have hcross : (Polynomial.C c * Q ^ (2 : ℕ) * Q.derivative).degree
       = ((3 * Q.natDegree - 1 : ℕ) : WithBot ℕ) := by
     rw [Polynomial.degree_mul, Polynomial.degree_mul, Polynomial.degree_C hc, zero_add,
       Polynomial.degree_pow, Polynomial.degree_eq_natDegree hQ0,
@@ -136,7 +136,7 @@ theorem scaledLogWronskian_add_cross_ne_zero {Q v : Polynomial ℂ} {c : ℂ}
     exact_mod_cast Nat.cast_lt.mpr (by omega : 2 * Q.natDegree - 1 < 3 * Q.natDegree - 1)
   intro h0
   have hdeg := Polynomial.degree_add_eq_right_of_degree_lt
-    (p := scaledLogWronskian Q v) (q := Polynomial.C c * Q ^ 2 * Q.derivative)
+    (p := scaledLogWronskian Q v) (q := Polynomial.C c * Q ^ (2 : ℕ) * Q.derivative)
     (by rw [hcross]; exact lt_of_le_of_lt hW hlt)
   rw [h0, Polynomial.degree_zero, hcross] at hdeg
   exact absurd hdeg.symm (by simp)

@@ -27,7 +27,7 @@ theorem integral_Ioi_indicator_Ioc_real {h : ℝ → ℝ} :
 /-- Compact square substitution for the scaled exponential-integral profile. -/
 theorem integral_Ioc_scaledEinProfile_sq {V : ℝ} (hV : 0 < V) :
     (∫ t in Ioc (0 : ℝ) 1,
-        (1 - Real.exp (-(V * t ^ 2))) / t) = ein V / 2 := by
+        (1 - Real.exp (-(V * t ^ (2 : ℕ)))) / t) = ein V / 2 := by
   let g : ℝ → ℝ := Set.indicator (Ioc (0 : ℝ) 1) (scaledEinProfile V)
   have hsq := GaloisForLFunctions.HTGeometry.integral_Ioi_comp_sq g
   have hleft : (∫ u in Ioi (0 : ℝ), g u) = ein V := by
@@ -37,18 +37,18 @@ theorem integral_Ioc_scaledEinProfile_sq {V : ℝ} (hV : 0 < V) :
     rw [← intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1),
       integral_scaledEinProfile hV]
   have hright :
-      (∫ t in Ioi (0 : ℝ), (2 * t) * g (t ^ 2)) =
+      (∫ t in Ioi (0 : ℝ), (2 * t) * g (t ^ (2 : ℕ))) =
         2 * ∫ t in Ioc (0 : ℝ) 1,
-          (1 - Real.exp (-(V * t ^ 2))) / t := by
+          (1 - Real.exp (-(V * t ^ (2 : ℕ)))) / t := by
     rw [← MeasureTheory.integral_const_mul,
       ← integral_Ioi_indicator_Ioc_real
-        (h := fun t : ℝ => 2 * ((1 - Real.exp (-(V * t ^ 2))) / t))]
+        (h := fun t : ℝ => 2 * ((1 - Real.exp (-(V * t ^ (2 : ℕ)))) / t))]
     apply setIntegral_congr_fun measurableSet_Ioi
     intro t ht
     have ht0 : 0 < t := ht
     by_cases ht1 : t ≤ 1
     · have htmem : t ∈ Ioc (0 : ℝ) 1 := ⟨ht0, ht1⟩
-      have htsqmem : t ^ 2 ∈ Ioc (0 : ℝ) 1 := by
+      have htsqmem : t ^ (2 : ℕ) ∈ Ioc (0 : ℝ) 1 := by
         constructor
         · positivity
         · nlinarith
@@ -57,7 +57,7 @@ theorem integral_Ioc_scaledEinProfile_sq {V : ℝ} (hV : 0 < V) :
       rw [if_neg (pow_ne_zero 2 (ne_of_gt ht0))]
       field_simp
     · have htmem : t ∉ Ioc (0 : ℝ) 1 := fun h => ht1 h.2
-      have htsqmem : t ^ 2 ∉ Ioc (0 : ℝ) 1 := by
+      have htsqmem : t ^ (2 : ℕ) ∉ Ioc (0 : ℝ) 1 := by
         intro h
         have htgt : 1 < t := lt_of_not_ge ht1
         nlinarith [h.2]
@@ -68,10 +68,10 @@ theorem integral_Ioc_scaledEinProfile_sq {V : ℝ} (hV : 0 < V) :
 /-- Exact finite-window logarithmic Gaussian head in terms of `Ein`. -/
 theorem integral_Ioc_gaussian_sub_one_div {x : ℝ} (hx : 0 < x) :
     (∫ theta in Ioc (0 : ℝ) Real.pi,
-        (Real.exp (-(theta ^ 2 / (4 * Real.pi * x))) - 1) / theta) =
+        (Real.exp (-(theta ^ (2 : ℕ) / (4 * Real.pi * x))) - 1) / theta) =
       -ein (Real.pi / (4 * x)) / 2 := by
   let f : ℝ → ℝ := fun theta =>
-    (Real.exp (-(theta ^ 2 / (4 * Real.pi * x))) - 1) / theta
+    (Real.exp (-(theta ^ (2 : ℕ) / (4 * Real.pi * x))) - 1) / theta
   let V : ℝ := Real.pi / (4 * x)
   have hV : 0 < V := by dsimp [V]; positivity
   have hscale := intervalIntegral.integral_comp_mul_left
@@ -79,14 +79,14 @@ theorem integral_Ioc_gaussian_sub_one_div {x : ℝ} (hx : 0 < x) :
   rw [mul_zero, mul_one, smul_eq_mul] at hscale
   calc
     (∫ theta in Ioc (0 : ℝ) Real.pi,
-        (Real.exp (-(theta ^ 2 / (4 * Real.pi * x))) - 1) / theta) =
+        (Real.exp (-(theta ^ (2 : ℕ) / (4 * Real.pi * x))) - 1) / theta) =
         ∫ theta in (0 : ℝ)..Real.pi, f theta := by
           rw [intervalIntegral.integral_of_le Real.pi_pos.le]
     _ = Real.pi * ∫ t in (0 : ℝ)..1, f (Real.pi * t) := by
       rw [hscale]
       field_simp
     _ = -(∫ t in (0 : ℝ)..1,
-        (1 - Real.exp (-(V * t ^ 2))) / t) := by
+        (1 - Real.exp (-(V * t ^ (2 : ℕ)))) / t) := by
       rw [← intervalIntegral.integral_const_mul,
         ← intervalIntegral.integral_neg]
       apply intervalIntegral.integral_congr
@@ -116,7 +116,7 @@ theorem gaussianLogFinitePart_eq_tail {x : ℝ} (hx : 0 < x)
     (hxUpper : x ≤ Real.pi / 4) :
     Real.log Real.pi +
         (∫ theta in Ioc (0 : ℝ) Real.pi,
-          (Real.exp (-(theta ^ 2 / (4 * Real.pi * x))) - 1) / theta) =
+          (Real.exp (-(theta ^ (2 : ℕ) / (4 * Real.pi * x))) - 1) / theta) =
       (Real.log (4 * Real.pi * x) - Real.eulerMascheroniConstant) / 2 -
         (∫ t in Ioi (Real.pi / (4 * x)), Real.exp (-t) / t) / 2 := by
   have hV : 1 ≤ Real.pi / (4 * x) := by

@@ -27,8 +27,8 @@ theorem schwarzschildPotential_metric (mu nu x polar : ℝ) :
           (2 * Real.exp nu + Real.exp x) polar 0 0 := by
   rw [schwarzschildBoyerLindquistMetric_explicit]
   change schwarzschildPotential mu nu (Real.exp x) =
-    -Real.exp mu / 2 * (-((2 * Real.exp nu + Real.exp x)^2 -
-      2 * Real.exp nu * (2 * Real.exp nu + Real.exp x)) / (2 * Real.exp nu + Real.exp x)^2)
+    -Real.exp mu / 2 * (-((2 * Real.exp nu + Real.exp x)^(2 : ℕ) -
+      2 * Real.exp nu * (2 * Real.exp nu + Real.exp x)) / (2 * Real.exp nu + Real.exp x)^(2 : ℕ))
   unfold schwarzschildPotential
   have hr : 2 * Real.exp nu + Real.exp x ≠ 0 := by positivity
   field_simp
@@ -36,7 +36,7 @@ theorem schwarzschildPotential_metric (mu nu x polar : ℝ) :
 /-- Exact first-order error, strictly quadratic in horizon distance. -/
 theorem schwarzschildPotential_remainder (mu nu x : ℝ) :
     horizonLinearPotential mu nu (Real.exp x) - schwarzschildPotential mu nu (Real.exp x) =
-      Real.exp mu * Real.exp x ^ 2 /
+      Real.exp mu * Real.exp x ^ (2 : ℕ) /
         (4 * Real.exp nu * (2 * Real.exp nu + Real.exp x)) := by
   unfold horizonLinearPotential schwarzschildPotential
   have hr : 2 * Real.exp nu + Real.exp x ≠ 0 := by positivity
@@ -47,7 +47,7 @@ theorem schwarzschildPotential_remainder (mu nu x : ℝ) :
 theorem schwarzschildPotential_lt_linear (mu nu x : ℝ) :
     schwarzschildPotential mu nu (Real.exp x) < horizonLinearPotential mu nu (Real.exp x) := by
   have h := schwarzschildPotential_remainder mu nu x
-  have hp : 0 < Real.exp mu * Real.exp x ^ 2 /
+  have hp : 0 < Real.exp mu * Real.exp x ^ (2 : ℕ) /
       (4 * Real.exp nu * (2 * Real.exp nu + Real.exp x)) := by positivity
   linarith
 
@@ -71,7 +71,7 @@ theorem schwarzschildPotential_pos (mu nu x : ℝ) :
 /-- Explicit uniform quadratic error bound throughout the exterior. -/
 theorem schwarzschildPotential_error_bound (mu nu x : ℝ) :
     horizonLinearPotential mu nu (Real.exp x) - schwarzschildPotential mu nu (Real.exp x) ≤
-      Real.exp mu * Real.exp x ^ 2 / (8 * Real.exp nu ^ 2) := by
+      Real.exp mu * Real.exp x ^ (2 : ℕ) / (8 * Real.exp nu ^ (2 : ℕ)) := by
   rw [schwarzschildPotential_remainder]
   apply div_le_div_of_nonneg_left (by positivity) (by positivity)
   nlinarith [Real.exp_pos nu, Real.exp_pos x, mul_pos (Real.exp_pos nu) (Real.exp_pos x)]

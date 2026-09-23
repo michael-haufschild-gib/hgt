@@ -2807,7 +2807,7 @@ theorem deckHalfDiff_sq_comp_eq_self_of_comp_self
   rw [map_pow, h]
   ring
 
-/-- Substitute the invariant deck coordinates `C = (Y+τ)/2` and `T = ((Y-τ)/2)^2` into a polynomial
+/-- Substitute the invariant deck coordinates `C = (Y+τ)/2` and `T = ((Y-τ)/2)^(2 : ℕ)` into a polynomial
 `C[z][C][T]`. This is the algebraic shape of the single-branch even relation. -/
 noncomputable def specializeAtDeckInvariantCoordinates (τ : Polynomial (Polynomial ℂ)) :
     Polynomial (Polynomial (Polynomial ℂ)) →+* Polynomial (Polynomial ℂ) :=
@@ -2840,7 +2840,7 @@ theorem specializeAtDeckInvariantCoordinates_comp_eq_self_of_comp_self
   rw [hhom]
 
 /-- Evaluation of invariant-coordinate specialization is the single-branch form
-`R(z, center(z,y), halfDiff(z,y)^2)`. -/
+`R(z, center(z,y), halfDiff(z,y)^(2 : ℕ))`. -/
 theorem eval₂_specializeAtDeckInvariantCoordinates
     (τ : Polynomial (Polynomial ℂ)) (R : Polynomial (Polynomial (Polynomial ℂ))) (z y : ℂ) :
     (specializeAtDeckInvariantCoordinates τ R).eval₂ (Polynomial.evalRingHom z) y =
@@ -2967,7 +2967,7 @@ end Bottcher
 namespace Bottcher
 
 /-- An even polynomial in the deck variable is recovered by contracting to the square coordinate and
-expanding back along `Y ↦ Y^2`. This is the formal `p(Y) = P(Y^2)` brick. -/
+expanding back along `Y ↦ Y^(2 : ℕ)`. This is the formal `p(Y) = P(Y^(2 : ℕ))` brick. -/
 theorem expand_contract_two_eq_self_of_comp_neg_X_eq_self
     {p : Polynomial (Polynomial ℂ)} (h : p.comp (-Polynomial.X) = p) :
     Polynomial.expand (Polynomial ℂ) 2 (Polynomial.contract 2 p) = p := by
@@ -3025,7 +3025,7 @@ theorem comp_shift_comp_unshift_eq_self (p : Polynomial (Polynomial ℂ)) (c : P
   rw [hinner, Polynomial.comp_X]
 
 /-- If a polynomial is invariant under the reflection `Y ↦ 2c - Y`, it is a polynomial in
-`(Y-c)^2`. This is the centered single-branch representation brick for a sign deck. -/
+`(Y-c)^(2 : ℕ)`. This is the centered single-branch representation brick for a sign deck. -/
 theorem exists_comp_square_of_comp_reflection_eq_self
     {p : Polynomial (Polynomial ℂ)} (c : Polynomial ℂ)
     (h : p.comp (Polynomial.C (2 * c) - Polynomial.X) = p) :

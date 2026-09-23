@@ -25,7 +25,7 @@ noncomputable section
 theorem exists_norm_xiUnitDoubleCompletedOffDiagonalResponseKernel_global_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x y : ℝ,
       ‖xiUnitDoubleCompletedOffDiagonalResponseKernel x y‖ ≤
-        C * (1 + |x - y|) ^ 9 := by
+        C * (1 + |x - y|) ^ (9 : ℕ) := by
   obtain ⟨C₁, hC₁, hlineOne⟩ :=
     exists_norm_seamFluxCochain_boundary_global_le
   obtain ⟨C₂, hC₂, hlineTwo⟩ :=
@@ -41,12 +41,12 @@ theorem exists_norm_xiUnitDoubleCompletedOffDiagonalResponseKernel_global_le :
       simpa using norm_sub_le
         (2 * seamFluxCochain ((2 : ℂ) + ((x - y : ℝ) : ℂ) * Complex.I))
         (seamFluxCochain ((1 : ℂ) + ((x - y : ℝ) : ℂ) * Complex.I))
-    _ ≤ 2 * (C₂ * (1 + |x - y|) ^ 9) +
-        C₁ * (1 + |x - y|) ^ 9 := by
+    _ ≤ 2 * (C₂ * (1 + |x - y|) ^ (9 : ℕ)) +
+        C₁ * (1 + |x - y|) ^ (9 : ℕ) := by
       exact add_le_add
         (mul_le_mul_of_nonneg_left (hlineTwo (x - y)) (by norm_num))
         (hlineOne (x - y))
-    _ = (C₁ + 2 * C₂) * (1 + |x - y|) ^ 9 := by ring
+    _ = (C₁ + 2 * C₂) * (1 + |x - y|) ^ (9 : ℕ) := by ring
 
 /-- Two primes in one logarithmic window have log-ratio bounded by the window width. -/
 theorem abs_primeLog_sub_le_of_mem_xiPhysicalPrimeLogWindowPacket
@@ -66,17 +66,17 @@ theorem abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_le_of_kernelB
       |xiUnitDoubleCompletedPrimeRatioRealKernel p q| ≤ K)
     (m k : ℝ) :
     |xiUnitDoubleCompletedRefinementApertureDirichletEnergy P A m k| ≤
-      4 * A * K * xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 := by
+      4 * A * K * xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) := by
   rw [xiUnitDoubleCompletedRefinementApertureDirichletEnergy_eq_kernel_distance]
   calc
     |∑ p ∈ P, ∑ q ∈ P,
         physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
           (-xiUnitDoubleCompletedPrimeRatioRealKernel p q) *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2| ≤
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ)| ≤
       ∑ p ∈ P, ∑ q ∈ P,
         |physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
           (-xiUnitDoubleCompletedPrimeRatioRealKernel p q) *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2| := by
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ)| := by
       exact (Finset.abs_sum_le_sum_abs _ _).trans
         (Finset.sum_le_sum fun p _ => Finset.abs_sum_le_sum_abs _ _)
     _ ≤ ∑ p ∈ P, ∑ q ∈ P,
@@ -98,14 +98,14 @@ theorem abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_le_of_kernelB
       have hw : 0 ≤ w := mul_nonneg hwp hwq
       calc
         w * |xiUnitDoubleCompletedPrimeRatioRealKernel p q| *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2 ≤
-          w * K * xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2 :=
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ) ≤
+          w * K * xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left hk hw) (sq_nonneg _)
         _ ≤ w * K * (4 * A) :=
           mul_le_mul_of_nonneg_left hd (mul_nonneg hw hK)
         _ = 4 * A * K * w := by ring
-    _ = 4 * A * K * xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 := by
+    _ = 4 * A * K * xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) := by
       rw [xiPhysicalPrimeLogEndpointTotalWeight, sq, Finset.sum_mul_sum]
       simp_rw [Finset.mul_sum]
 
@@ -114,15 +114,15 @@ theorem abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_supportPacket
     {C : ℝ} (hC : 0 ≤ C)
     (hglobal : ∀ x y : ℝ,
       ‖xiUnitDoubleCompletedOffDiagonalResponseKernel x y‖ ≤
-        C * (1 + |x - y|) ^ 9)
+        C * (1 + |x - y|) ^ (9 : ℕ))
     {A m c : ℝ} (hA : 0 < A) (hc : 0 ≤ c)
     (hlow : 2 ≤ Real.exp (m - A)) :
     |xiUnitDoubleCompletedRefinementApertureDirichletEnergy
         (xiPhysicalPrimeLogWindowPacket (m - A) (m + c)) A m (m + c)| ≤
-      4 * A * (C * (1 + (A + c)) ^ 9) *
-        (A + c + primeLogWindowConst) ^ 2 := by
+      4 * A * (C * (1 + (A + c)) ^ (9 : ℕ)) *
+        (A + c + primeLogWindowConst) ^ (2 : ℕ) := by
   let P := xiPhysicalPrimeLogWindowPacket (m - A) (m + c)
-  let K := C * (1 + (A + c)) ^ 9
+  let K := C * (1 + (A + c)) ^ (9 : ℕ)
   have hwidth : 0 ≤ A + c := by linarith
   have hK : 0 ≤ K := mul_nonneg hC (pow_nonneg (by linarith) 9)
   have hkernel : ∀ p ∈ P, ∀ q ∈ P,
@@ -137,15 +137,15 @@ theorem abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_supportPacket
       exact Complex.abs_re_le_norm _
     have hraw := hglobal (Real.log (p : ℝ)) (Real.log (q : ℝ))
     have hpow :
-        (1 + |Real.log (p : ℝ) - Real.log (q : ℝ)|) ^ 9 ≤
-          (1 + (A + c)) ^ 9 := by
+        (1 + |Real.log (p : ℝ) - Real.log (q : ℝ)|) ^ (9 : ℕ) ≤
+          (1 + (A + c)) ^ (9 : ℕ) := by
       exact pow_le_pow_left₀ (by positivity) (by linarith) 9
     calc
       |xiUnitDoubleCompletedPrimeRatioRealKernel p q| ≤
           ‖xiUnitDoubleCompletedOffDiagonalResponseKernel
             (Real.log (p : ℝ)) (Real.log (q : ℝ))‖ := hre
-      _ ≤ C * (1 + |Real.log (p : ℝ) - Real.log (q : ℝ)|) ^ 9 := hraw
-      _ ≤ C * (1 + (A + c)) ^ 9 := mul_le_mul_of_nonneg_left hpow hC
+      _ ≤ C * (1 + |Real.log (p : ℝ) - Real.log (q : ℝ)|) ^ (9 : ℕ) := hraw
+      _ ≤ C * (1 + (A + c)) ^ (9 : ℕ) := mul_le_mul_of_nonneg_left hpow hC
       _ = K := rfl
   have hbase :=
     abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_le_of_kernelBound
@@ -157,8 +157,8 @@ theorem abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_supportPacket
     simpa [P] using
       xiPhysicalPrimeLogWindowPacket_totalWeight_le_fixedWidth hA hc hlow
   have hB : 0 ≤ A + c + primeLogWindowConst := hW.trans hWle
-  have hsquare : xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 ≤
-      (A + c + primeLogWindowConst) ^ 2 :=
+  have hsquare : xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) ≤
+      (A + c + primeLogWindowConst) ^ (2 : ℕ) :=
     (sq_le_sq₀ hW hB).2 hWle
   have hcoef : 0 ≤ 4 * A * K :=
     mul_nonneg (mul_nonneg (by norm_num) hA.le) hK
@@ -173,8 +173,8 @@ theorem exists_uniform_abs_xiUnitDoubleCompletedRefinementApertureDirichletEnerg
         (xiPhysicalPrimeLogWindowPacket (m - A) (m + c)) A m (m + c)| ≤ B := by
   obtain ⟨C, hC, hglobal⟩ :=
     exists_norm_xiUnitDoubleCompletedOffDiagonalResponseKernel_global_le
-  let B := 4 * A * (C * (1 + (A + c)) ^ 9) *
-    (A + c + primeLogWindowConst) ^ 2
+  let B := 4 * A * (C * (1 + (A + c)) ^ (9 : ℕ)) *
+    (A + c + primeLogWindowConst) ^ (2 : ℕ)
   have hwidth : 0 ≤ A + c := by linarith
   have hmass : 0 ≤ A + c + primeLogWindowConst :=
     add_nonneg hwidth primeLogWindowConst_nonneg
@@ -196,7 +196,7 @@ theorem exists_uniform_abs_xiPhysicalEndpointCompletedBalancedApertureDirichletE
   obtain ⟨B, hB, href⟩ :=
     exists_uniform_abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_fixedWidth hA hc
   let K := 4 * A * routeKPhysicalEndpointCorrectionMass *
-    (A + c + primeLogWindowConst) ^ 2
+    (A + c + primeLogWindowConst) ^ (2 : ℕ)
   have hwidth : 0 ≤ A + c := by linarith
   have hmass : 0 ≤ A + c + primeLogWindowConst :=
     add_nonneg hwidth primeLogWindowConst_nonneg

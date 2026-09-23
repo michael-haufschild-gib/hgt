@@ -44,7 +44,7 @@ theorem memLp_XiC_ofReal :
   exact (𝓕 xiThetaSchwartzSource).memLp 2 volume
 
 theorem integrable_sq_norm_XiC_ofReal :
-    Integrable (fun x : ℝ => ‖XiC (x : ℂ)‖ ^ 2) volume :=
+    Integrable (fun x : ℝ => ‖XiC (x : ℂ)‖ ^ (2 : ℕ)) volume :=
   (memLp_two_iff_integrable_sq_norm
     ((continuous_iff_continuousAt.mpr fun x => by
       simpa only [Function.comp_def] using
@@ -97,12 +97,12 @@ theorem memLp_completedXiFirstDividedFunction (rho : XiDivisorSupport) :
     (continuous_completedXiFirstDividedFunction rho).aestronglyMeasurable).mpr
   let R := completedXiDividedRadius rho
   have hcompact : IntegrableOn
-      (fun x : ℝ => ‖completedXiFirstDividedFunction rho x‖ ^ 2)
+      (fun x : ℝ => ‖completedXiFirstDividedFunction rho x‖ ^ (2 : ℕ))
       (Icc (-R) R) :=
     ((continuous_completedXiFirstDividedFunction rho).norm.pow 2).continuousOn
       |>.integrableOn_compact isCompact_Icc
   have htail : IntegrableOn
-      (fun x : ℝ => ‖completedXiFirstDividedFunction rho x‖ ^ 2)
+      (fun x : ℝ => ‖completedXiFirstDividedFunction rho x‖ ^ (2 : ℕ))
       (Icc (-R) R)ᶜ := by
     refine integrable_sq_norm_XiC_ofReal.integrableOn.mono' ?_ ?_
     · exact ((continuous_completedXiFirstDividedFunction rho).norm.pow 2).aestronglyMeasurable.restrict

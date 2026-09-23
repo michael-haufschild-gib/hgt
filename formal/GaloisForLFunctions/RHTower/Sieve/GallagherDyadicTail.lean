@@ -88,18 +88,18 @@ theorem iUnion_dyadicAnnulus {W : ℝ} (hW : 0 < W) :
 `α·T + β` above the cut, the frequencies past the cut cost `4α/(π²W) + 4β/(3π²W²)`. -/
 theorem gallagher_farTail_dyadic_le (a : ℕ → ℂ) (s : Finset ℕ) {δ W α β : ℝ}
     (hδ : 0 < δ) (hW : 0 < W)
-    (hG : ∀ T : ℝ, W ≤ T → (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2) ≤ α * T + β) :
-    (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-      ≤ 4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2) := by
+    (hG : ∀ T : ℝ, W ≤ T → (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ (2 : ℕ)) ≤ α * T + β) :
+    (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ 4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) := by
   have hpi := Real.pi_pos
-  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 :=
+  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) :=
     integrable_gallagher_weight_mul hδ a s
-  have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly a s).norm).pow 2
-  have hnnw : ∀ w : ℝ, 0 ≤ (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 := fun w =>
+  have hnnw : ∀ w : ℝ, 0 ≤ (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) := fun w =>
     mul_nonneg (fourier_triC_re_nonneg hδ w) (by positivity)
-  have hfar : (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-      ≤ 4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2) := by
+  have hfar : (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ 4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) := by
     have hsub : (Set.Icc (-W) W)ᶜ ⊆ {w : ℝ | W ≤ |w|} := by
       intro w hw
       rw [Set.mem_compl_iff, Set.mem_Icc, not_and_or] at hw
@@ -113,21 +113,21 @@ theorem gallagher_farTail_dyadic_le (a : ℕ → ℂ) (s : Finset ℕ) {δ W α 
         have hw0 : 0 < w := lt_trans hW h
         rw [abs_of_pos hw0]
         linarith
-    have hmono : (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-        ≤ ∫ w in {w : ℝ | W ≤ |w|}, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 :=
+    have hmono : (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+        ≤ ∫ w in {w : ℝ | W ≤ |w|}, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) :=
       setIntegral_mono_set hF.integrableOn
         (Filter.Eventually.of_forall fun w => hnnw w) hsub.eventuallyLE
     have hHasSum : HasSum
         (fun k : ℕ => ∫ w in dyadicAnnulus W k,
-          (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
+          (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
         (∫ w in ⋃ k : ℕ, dyadicAnnulus W k,
-          (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2) :=
+          (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ)) :=
       MeasureTheory.hasSum_integral_iUnion (fun k => measurableSet_dyadicAnnulus W k)
         (pairwise_disjoint_dyadicAnnulus hW) hF.integrableOn
     have hblock : ∀ k : ℕ,
-        (∫ w in dyadicAnnulus W k, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-          ≤ 2 * α / (Real.pi ^ 2 * W) * ((1 : ℝ) / 2) ^ k
-            + β / (Real.pi ^ 2 * W ^ 2) * ((1 : ℝ) / 4) ^ k := by
+        (∫ w in dyadicAnnulus W k, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+          ≤ 2 * α / (Real.pi ^ (2 : ℕ) * W) * ((1 : ℝ) / 2) ^ k
+            + β / (Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) * ((1 : ℝ) / 4) ^ k := by
       intro k
       have hc : (0 : ℝ) < 2 ^ k * W := by positivity
       have hsubIcc : dyadicAnnulus W k
@@ -138,12 +138,12 @@ theorem gallagher_farTail_dyadic_le (a : ℕ → ℂ) (s : Finset ℕ) {δ W α 
         · linarith [neg_abs_le w, hw.2]
         · linarith [le_abs_self w, hw.2]
       have hIccInt : IntegrableOn
-          (fun w => 1 / (Real.pi ^ 2 * (2 ^ k * W) ^ 2) * ‖logPoly a s w‖ ^ 2)
+          (fun w => 1 / (Real.pi ^ (2 : ℕ) * (2 ^ k * W) ^ (2 : ℕ)) * ‖logPoly a s w‖ ^ (2 : ℕ))
           (dyadicAnnulus W k) :=
         ((hcont.const_mul _).integrableOn_Icc).mono_set hsubIcc
-      have h1 : (∫ w in dyadicAnnulus W k, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
+      have h1 : (∫ w in dyadicAnnulus W k, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
           ≤ ∫ w in dyadicAnnulus W k,
-              1 / (Real.pi ^ 2 * (2 ^ k * W) ^ 2) * ‖logPoly a s w‖ ^ 2 := by
+              1 / (Real.pi ^ (2 : ℕ) * (2 ^ k * W) ^ (2 : ℕ)) * ‖logPoly a s w‖ ^ (2 : ℕ) := by
         refine setIntegral_mono_on hF.integrableOn hIccInt
           (measurableSet_dyadicAnnulus W k) fun w hw => ?_
         have hw0 : w ≠ 0 := by
@@ -152,16 +152,16 @@ theorem gallagher_farTail_dyadic_le (a : ℕ → ℂ) (s : Finset ℕ) {δ W α 
           rw [h0, abs_zero] at h1'
           exact absurd h1' (not_le.mpr hc)
         have hdecay := fourier_triC_re_le_inv_sq hδ hw0
-        have hcw : (2 ^ k * W) ^ 2 ≤ w ^ 2 := by
+        have hcw : (2 ^ k * W) ^ (2 : ℕ) ≤ w ^ (2 : ℕ) := by
           have h := pow_le_pow_left₀ hc.le hw.1 2
           rwa [sq_abs] at h
-        have hmonole : 1 / (Real.pi ^ 2 * w ^ 2)
-            ≤ 1 / (Real.pi ^ 2 * (2 ^ k * W) ^ 2) := by
+        have hmonole : 1 / (Real.pi ^ (2 : ℕ) * w ^ (2 : ℕ))
+            ≤ 1 / (Real.pi ^ (2 : ℕ) * (2 ^ k * W) ^ (2 : ℕ)) := by
           refine one_div_le_one_div_of_le (by positivity) ?_
           nlinarith [sq_nonneg Real.pi]
         exact mul_le_mul_of_nonneg_right (le_trans hdecay hmonole) (by positivity)
-      have h3 : (∫ w in dyadicAnnulus W k, ‖logPoly a s w‖ ^ 2)
-          ≤ ∫ w in Set.Icc (-(2 ^ (k + 1) * W)) (2 ^ (k + 1) * W), ‖logPoly a s w‖ ^ 2 :=
+      have h3 : (∫ w in dyadicAnnulus W k, ‖logPoly a s w‖ ^ (2 : ℕ))
+          ≤ ∫ w in Set.Icc (-(2 ^ (k + 1) * W)) (2 ^ (k + 1) * W), ‖logPoly a s w‖ ^ (2 : ℕ) :=
         setIntegral_mono_set hcont.integrableOn_Icc
           (Filter.Eventually.of_forall fun w => by positivity) hsubIcc.eventuallyLE
       have hWT : W ≤ 2 ^ (k + 1) * W := by
@@ -169,8 +169,8 @@ theorem gallagher_farTail_dyadic_le (a : ℕ → ℂ) (s : Finset ℕ) {δ W α 
           simpa using pow_le_pow_right₀ (one_le_two (α := ℝ)) (Nat.zero_le (k + 1))
         nlinarith
       have h4 := hG (2 ^ (k + 1) * W) hWT
-      have hchain : (∫ w in dyadicAnnulus W k, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-          ≤ 1 / (Real.pi ^ 2 * (2 ^ k * W) ^ 2) * (α * (2 ^ (k + 1) * W) + β) := by
+      have hchain : (∫ w in dyadicAnnulus W k, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+          ≤ 1 / (Real.pi ^ (2 : ℕ) * (2 ^ k * W) ^ (2 : ℕ)) * (α * (2 ^ (k + 1) * W) + β) := by
         refine le_trans h1 ?_
         rw [MeasureTheory.integral_const_mul]
         exact mul_le_mul_of_nonneg_left (le_trans h3 h4) (by positivity)
@@ -180,29 +180,29 @@ theorem gallagher_farTail_dyadic_le (a : ℕ → ℂ) (s : Finset ℕ) {δ W α 
       have hpine : Real.pi ≠ 0 := hpi.ne'
       have hhalf : ((1 : ℝ) / 2) ^ k = ((2 : ℝ) ^ k)⁻¹ := by
         rw [one_div, inv_pow]
-      have hquarter : ((1 : ℝ) / 4) ^ k = (((2 : ℝ) ^ k) ^ 2)⁻¹ := by
+      have hquarter : ((1 : ℝ) / 4) ^ k = (((2 : ℝ) ^ k) ^ (2 : ℕ))⁻¹ := by
         rw [one_div, inv_pow]
         congr 1
-        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, ← pow_mul, ← pow_mul, mul_comm 2 k]
+        rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul, ← pow_mul, mul_comm 2 k]
       rw [hhalf, hquarter, pow_succ]
       field_simp
       ring
     have hsummb : Summable (fun k : ℕ =>
-        2 * α / (Real.pi ^ 2 * W) * ((1 : ℝ) / 2) ^ k
-          + β / (Real.pi ^ 2 * W ^ 2) * ((1 : ℝ) / 4) ^ k) := by
+        2 * α / (Real.pi ^ (2 : ℕ) * W) * ((1 : ℝ) / 2) ^ k
+          + β / (Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) * ((1 : ℝ) / 4) ^ k) := by
       refine Summable.add ?_ ?_
       · exact (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
       · exact (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
     have htsum_le :
         (∑' k : ℕ, ∫ w in dyadicAnnulus W k,
-            (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-          ≤ ∑' k : ℕ, (2 * α / (Real.pi ^ 2 * W) * ((1 : ℝ) / 2) ^ k
-              + β / (Real.pi ^ 2 * W ^ 2) * ((1 : ℝ) / 4) ^ k) :=
+            (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+          ≤ ∑' k : ℕ, (2 * α / (Real.pi ^ (2 : ℕ) * W) * ((1 : ℝ) / 2) ^ k
+              + β / (Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) * ((1 : ℝ) / 4) ^ k) :=
       hHasSum.summable.tsum_le_tsum hblock hsummb
     have htsum_eval :
-        (∑' k : ℕ, (2 * α / (Real.pi ^ 2 * W) * ((1 : ℝ) / 2) ^ k
-            + β / (Real.pi ^ 2 * W ^ 2) * ((1 : ℝ) / 4) ^ k))
-          = 4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2) := by
+        (∑' k : ℕ, (2 * α / (Real.pi ^ (2 : ℕ) * W) * ((1 : ℝ) / 2) ^ k
+            + β / (Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) * ((1 : ℝ) / 4) ^ k))
+          = 4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) := by
       rw [Summable.tsum_add
         ((summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _)
         ((summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _),
@@ -213,16 +213,16 @@ theorem gallagher_farTail_dyadic_le (a : ℕ → ℂ) (s : Finset ℕ) {δ W α 
       have h14 : ((1 : ℝ) - 1 / 4)⁻¹ = 4 / 3 := by norm_num
       rw [h12, h14]
       ring
-    calc (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-        ≤ ∫ w in {w : ℝ | W ≤ |w|}, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 := hmono
+    calc (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+        ≤ ∫ w in {w : ℝ | W ≤ |w|}, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) := hmono
       _ = ∫ w in ⋃ k : ℕ, dyadicAnnulus W k,
-            (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 := by
+            (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) := by
           rw [iUnion_dyadicAnnulus hW]
       _ = ∑' k : ℕ, ∫ w in dyadicAnnulus W k,
-            (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 := hHasSum.tsum_eq.symm
-      _ ≤ ∑' k : ℕ, (2 * α / (Real.pi ^ 2 * W) * ((1 : ℝ) / 2) ^ k
-            + β / (Real.pi ^ 2 * W ^ 2) * ((1 : ℝ) / 4) ^ k) := htsum_le
-      _ = 4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2) := htsum_eval
+            (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) := hHasSum.tsum_eq.symm
+      _ ≤ ∑' k : ℕ, (2 * α / (Real.pi ^ (2 : ℕ) * W) * ((1 : ℝ) / 2) ^ k
+            + β / (Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) * ((1 : ℝ) / 4) ^ k) := htsum_le
+      _ = 4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)) := htsum_eval
   exact hfar
 
 /-- **Gallagher's identity with a dyadically paid far tail.**  Under an affine symmetric
@@ -230,22 +230,22 @@ mean-square majorant `α·T + β`, every frequency is paid by a mean square: the
 `2δ²(αW + β)` and the far tail `4α/(π²W) + 4β/(3π²W²)`.  No ℓ¹ coefficient mass occurs. -/
 theorem gallagher_split_integral_dyadic (a : ℕ → ℂ) (s : Finset ℕ) {δ W α β : ℝ}
     (hδ : 0 < δ) (hW : 0 < W)
-    (hG : ∀ T : ℝ, W ≤ T → (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2) ≤ α * T + β) :
-    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2)
-      ≤ 2 * δ ^ 2 * (α * W + β)
-        + (4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)) := by
-  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 :=
+    (hG : ∀ T : ℝ, W ≤ T → (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ (2 : ℕ)) ≤ α * T + β) :
+    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ) * (α * W + β)
+        + (4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))) := by
+  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) :=
     integrable_gallagher_weight_mul hδ a s
-  have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly a s).norm).pow 2
   rw [gallagher_identity a s hδ]
   rw [← integral_add_compl (measurableSet_Icc (a := -W) (b := W)) hF]
-  have hin : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-      ≤ 2 * δ ^ 2 * (α * W + β) := by
-    have hstep : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-        ≤ ∫ w in Set.Icc (-W) W, 2 * δ ^ 2 * ‖logPoly a s w‖ ^ 2 := by
+  have hin : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ) * (α * W + β) := by
+    have hstep : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+        ≤ ∫ w in Set.Icc (-W) W, 2 * δ ^ (2 : ℕ) * ‖logPoly a s w‖ ^ (2 : ℕ) := by
       refine setIntegral_mono_on hF.integrableOn
-        ((hcont.const_mul (2 * δ ^ 2)).integrableOn_Icc) measurableSet_Icc fun w _ => ?_
+        ((hcont.const_mul (2 * δ ^ (2 : ℕ))).integrableOn_Icc) measurableSet_Icc fun w _ => ?_
       exact mul_le_mul_of_nonneg_right (fourier_triC_re_le_two_sq hδ w) (by positivity)
     refine le_trans hstep ?_
     rw [MeasureTheory.integral_const_mul]
@@ -258,23 +258,23 @@ diagonal, so using it below the cut reproduces the trivial bound; a genuine esti
 frequencies below the cut must be supplied on its own, and the affine majorant used only above. -/
 theorem gallagher_split_integral_dyadic_head (a : ℕ → ℂ) (s : Finset ℕ) {δ W α β β₀ : ℝ}
     (hδ : 0 < δ) (hW : 0 < W)
-    (hHead : (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2) ≤ β₀)
-    (hG : ∀ T : ℝ, W ≤ T → (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ 2) ≤ α * T + β) :
-    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2)
-      ≤ 2 * δ ^ 2 * β₀
-        + (4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)) := by
-  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 :=
+    (hHead : (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ)) ≤ β₀)
+    (hG : ∀ T : ℝ, W ≤ T → (∫ w in Set.Icc (-T) T, ‖logPoly a s w‖ ^ (2 : ℕ)) ≤ α * T + β) :
+    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ) * β₀
+        + (4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))) := by
+  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) :=
     integrable_gallagher_weight_mul hδ a s
-  have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly a s).norm).pow 2
   rw [gallagher_identity a s hδ]
   rw [← integral_add_compl (measurableSet_Icc (a := -W) (b := W)) hF]
-  have hin : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-      ≤ 2 * δ ^ 2 * β₀ := by
-    have hstep : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-        ≤ ∫ w in Set.Icc (-W) W, 2 * δ ^ 2 * ‖logPoly a s w‖ ^ 2 := by
+  have hin : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ) * β₀ := by
+    have hstep : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+        ≤ ∫ w in Set.Icc (-W) W, 2 * δ ^ (2 : ℕ) * ‖logPoly a s w‖ ^ (2 : ℕ) := by
       refine setIntegral_mono_on hF.integrableOn
-        ((hcont.const_mul (2 * δ ^ 2)).integrableOn_Icc) measurableSet_Icc fun w _ => ?_
+        ((hcont.const_mul (2 * δ ^ (2 : ℕ))).integrableOn_Icc) measurableSet_Icc fun w _ => ?_
       exact mul_le_mul_of_nonneg_right (fourier_triC_re_le_two_sq hδ w) (by positivity)
     refine le_trans hstep ?_
     rw [MeasureTheory.integral_const_mul]
@@ -286,13 +286,13 @@ theorem gallagher_split_integral_dyadic_head (a : ℕ → ℂ) (s : Finset ℕ) 
 tail carries the mean-square coefficient mass `∑‖a‖²`, not the ℓ¹ mass `(∑‖a‖)²`. -/
 theorem gallagher_meanValue_dyadic_le (a : ℕ → ℂ) (N : ℕ) {δ W : ℝ} (hδ : 0 < δ)
     (hW : 0 < W) :
-    (∫ u : ℝ, ‖logWindowSum a (Finset.Icc 1 N) δ u‖ ^ 2)
-      ≤ 2 * δ ^ 2 * (2 * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2) * W
+    (∫ u : ℝ, ‖logWindowSum a (Finset.Icc 1 N) δ u‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ) * (2 * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ)) * W
             + 4 * (N : ℝ) * (1 + Real.log N) / Real.pi
-              * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2))
-        + (4 * (2 * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)) / (Real.pi ^ 2 * W)
+              * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ)))
+        + (4 * (2 * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))) / (Real.pi ^ (2 : ℕ) * W)
             + 4 * (4 * (N : ℝ) * (1 + Real.log N) / Real.pi
-                * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)) / (3 * Real.pi ^ 2 * W ^ 2)) := by
+                * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))) / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))) := by
   have hpi := Real.pi_pos
   refine gallagher_split_integral_dyadic a (Finset.Icc 1 N) hδ hW ?_
   intro T hT

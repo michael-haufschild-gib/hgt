@@ -93,14 +93,14 @@ theorem exists_integral_smoothAFEZetaDisplacedReflectedMovingHead_normSq_le_dyad
         4 ≤ T → u ∈ Set.Icc T (2 * T) → a ≤ b → T ≤ a → b ≤ 2 * T →
         u ∈ Set.Icc a b → b - a ≤ H → 2 * H ≤ T → 1 < M →
         (∫ t in a..b,
-          ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ 2) ≤
-          2 * (K * (2 * T) ^ d) ^ 2 *
+          ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ (2 : ℕ)) ≤
+          2 * (K * (2 * T) ^ d) ^ (2 : ℕ) *
             ((‖((b - a : ℝ) : ℂ) *
                 smoothAFEZetaDisplacedReflectedCombinedMollifiedDiagonal lam d
                   (logDeriv zetaChi (displacedLinePt d u)) L M‖ +
               smoothAFEZetaDisplacedReflectedCombinedMollifiedMeanError lam
                 (logDeriv zetaChi (displacedLinePt d u)) L M) +
-            (|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ 2 *
+            (|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ (2 : ℕ) *
               (‖((b - a : ℝ) : ℂ) *
                   smoothAFEZetaDisplacedReflectedBaseMollifiedDiagonal d L M‖ +
                 smoothAFEZetaDisplacedReflectedBaseMollifiedMeanError L M)) := by
@@ -114,13 +114,13 @@ theorem exists_integral_smoothAFEZetaDisplacedReflectedMovingHead_normSq_le_dyad
     (‖Sieve.dirPoly L
           (fun n => smoothAFEZetaDisplacedReflectedCombinedCoeff lam d
             (logDeriv zetaChi (displacedLinePt d u)) n) t‖ *
-        ‖Sieve.levinsonLinearMollifier M t‖) ^ 2
+        ‖Sieve.levinsonLinearMollifier M t‖) ^ (2 : ℕ)
   let e : ℝ → ℝ := fun t =>
-    ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ 2
+    ‖smoothAFEZetaDisplacedReflectedCombinedFreezingError lam d u L M t‖ ^ (2 : ℕ)
   have hC0 : 0 ≤ C := by dsimp only [C]; positivity
   have hpoint : ∀ t ∈ Set.Icc a b,
-      ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ 2 ≤
-        2 * C ^ 2 * (f t + e t) := by
+      ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ (2 : ℕ) ≤
+        2 * C ^ (2 : ℕ) * (f t + e t) := by
     intro t ht
     have htT : t ∈ Set.Icc T (2 * T) := ⟨haT.trans ht.1, ht.2.trans hbT⟩
     have hz := hchi d hd.le hdd₀ T t (by linarith) htT
@@ -137,8 +137,8 @@ theorem exists_integral_smoothAFEZetaDisplacedReflectedMovingHead_normSq_le_dyad
     rw [norm_mul] at hnorm
     change ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ≤
       C * (x + y) at hnorm
-    change ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ 2 ≤
-      2 * C ^ 2 * (x ^ 2 + y ^ 2)
+    change ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ (2 : ℕ) ≤
+      2 * C ^ (2 : ℕ) * (x ^ (2 : ℕ) + y ^ (2 : ℕ))
     nlinarith [norm_nonneg (smoothAFEZetaDisplacedReflectedMovingHead lam d L M t),
       sq_nonneg (x - y)]
   have hdhalf : d < 1 / 2 := lt_of_le_of_lt hdd₀ hd₀half
@@ -146,12 +146,12 @@ theorem exists_integral_smoothAFEZetaDisplacedReflectedMovingHead_normSq_le_dyad
     continuous_smoothAFEZetaDisplacedReflectedMovingCarrier hd hdhalf lam L M
   have hchiCont := continuous_norm_zetaChi_left_line hd hdhalf
   have hheadCont : Continuous
-      (fun t : ℝ => ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ 2) := by
+      (fun t : ℝ => ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ (2 : ℕ)) := by
     have heq :
-        (fun t : ℝ => ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ 2) =
+        (fun t : ℝ => ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ (2 : ℕ)) =
         fun t : ℝ =>
           (‖zetaChi (((1 / 2 - d : ℝ) : ℂ) + (t : ℂ) * I)‖ *
-            ‖smoothAFEZetaDisplacedReflectedMovingCarrier lam d L M t‖) ^ 2 := by
+            ‖smoothAFEZetaDisplacedReflectedMovingCarrier lam d L M t‖) ^ (2 : ℕ) := by
       funext t
       simp [smoothAFEZetaDisplacedReflectedMovingHead, displacedLinePt]
     rw [heq]
@@ -168,12 +168,12 @@ theorem exists_integral_smoothAFEZetaDisplacedReflectedMovingHead_normSq_le_dyad
     dsimp only [e]
     exact (continuous_smoothAFEZetaDisplacedReflectedCombinedFreezingError
       hd hdhalf lam u L M).norm.pow 2
-  have hrightCont : Continuous (fun t : ℝ => 2 * C ^ 2 * (f t + e t)) :=
+  have hrightCont : Continuous (fun t : ℝ => 2 * C ^ (2 : ℕ) * (f t + e t)) :=
     continuous_const.mul (hfCont.add heCont)
   have hmono :
       (∫ t in a..b,
-        ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ 2) ≤
-      ∫ t in a..b, 2 * C ^ 2 * (f t + e t) :=
+        ‖smoothAFEZetaDisplacedReflectedMovingHead lam d L M t‖ ^ (2 : ℕ)) ≤
+      ∫ t in a..b, 2 * C ^ (2 : ℕ) * (f t + e t) :=
     intervalIntegral.integral_mono_on hab
       (hheadCont.intervalIntegrable (μ := MeasureTheory.volume) a b)
       (hrightCont.intervalIntegrable (μ := MeasureTheory.volume) a b) hpoint
@@ -194,21 +194,21 @@ theorem exists_integral_smoothAFEZetaDisplacedReflectedMovingHead_normSq_le_dyad
   have heBound :=
     integral_smoothAFEZetaDisplacedReflectedCombinedFreezingError_normSq_le_dyadic
       (lam := lam) hd hdquarter hT huT hab huab hwidth hH L M hM
-  change (∫ t in a..b, e t) ≤ D ^ 2 *
+  change (∫ t in a..b, e t) ≤ D ^ (2 : ℕ) *
       (‖((b - a : ℝ) : ℂ) *
           smoothAFEZetaDisplacedReflectedBaseMollifiedDiagonal d L M‖ +
         smoothAFEZetaDisplacedReflectedBaseMollifiedMeanError L M) at heBound
   have hsum := add_le_add hfBound heBound
-  have hfactor0 : 0 ≤ 2 * C ^ 2 := by positivity
-  change (2 * C ^ 2) * ((∫ t in a..b, f t) + ∫ t in a..b, e t) ≤ _
-  change (2 * C ^ 2) * ((∫ t in a..b, f t) + ∫ t in a..b, e t) ≤
-    (2 * C ^ 2) *
+  have hfactor0 : 0 ≤ 2 * C ^ (2 : ℕ) := by positivity
+  change (2 * C ^ (2 : ℕ)) * ((∫ t in a..b, f t) + ∫ t in a..b, e t) ≤ _
+  change (2 * C ^ (2 : ℕ)) * ((∫ t in a..b, f t) + ∫ t in a..b, e t) ≤
+    (2 * C ^ (2 : ℕ)) *
       ((‖((b - a : ℝ) : ℂ) *
           smoothAFEZetaDisplacedReflectedCombinedMollifiedDiagonal lam d
             (logDeriv zetaChi (displacedLinePt d u)) L M‖ +
         smoothAFEZetaDisplacedReflectedCombinedMollifiedMeanError lam
           (logDeriv zetaChi (displacedLinePt d u)) L M) +
-      D ^ 2 *
+      D ^ (2 : ℕ) *
         (‖((b - a : ℝ) : ℂ) *
             smoothAFEZetaDisplacedReflectedBaseMollifiedDiagonal d L M‖ +
           smoothAFEZetaDisplacedReflectedBaseMollifiedMeanError L M))

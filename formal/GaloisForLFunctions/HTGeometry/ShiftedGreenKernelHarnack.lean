@@ -38,12 +38,12 @@ theorem harmonicAt_outerDiscGreenKernel {u w : ℂ} {R : ℝ}
     apply PoissonJensen.innerLogKernel_ne_zero hR
     have huR : ‖u‖ ≤ R := by simpa [mem_closedBall_iff_norm] using hu
     have hwR : ‖w‖ < R := by simpa [mem_ball_zero_iff] using hw
-    have : ‖u‖ * ‖w‖ < R ^ 2 := by
+    have : ‖u‖ * ‖w‖ < R ^ (2 : ℕ) := by
       calc
         ‖u‖ * ‖w‖ ≤ R * ‖w‖ :=
           mul_le_mul_of_nonneg_right huR (norm_nonneg w)
         _ < R * R := mul_lt_mul_of_pos_left hwR hR
-        _ = R ^ 2 := by ring
+        _ = R ^ (2 : ℕ) := by ring
     simpa using this
   change HarmonicAt
     (fun z ↦ Real.log ‖PoissonJensen.innerLogKernel 0 u R z‖ - Real.log ‖z - u‖) w

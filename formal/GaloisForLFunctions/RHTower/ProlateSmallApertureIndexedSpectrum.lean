@@ -43,7 +43,7 @@ theorem isCompactOperator_complexEvenApertureMomentSynthesis (c : ℝ) :
 /-- Exact indexed Gram transfer for the actual even prolate block. -/
 theorem rectApproxNumber_complexEven_sq_eq_scaled_evenValue
     {c : ℝ} (hc : 0 < c) (n : ℕ) :
-    rectApproxNumber (complexEvenApertureMomentSynthesis c) n ^ 2 =
+    rectApproxNumber (complexEvenApertureMomentSynthesis c) n ^ (2 : ℕ) =
       (2 * Real.pi / c) * complexUnitBandEvenValue c n := by
   rw [rectApproxNumber_sq_eq_approxNumber_adjoint_comp_self
       (complexEvenApertureMomentSynthesis c)
@@ -59,7 +59,7 @@ theorem complexUnitBandEvenValue_eq_c_mul_rectApproxNumber_sq
     {c : ℝ} (hc : 0 < c) (n : ℕ) :
     complexUnitBandEvenValue c n =
       (c / (2 * Real.pi)) *
-        rectApproxNumber (complexEvenApertureMomentSynthesis c) n ^ 2 := by
+        rectApproxNumber (complexEvenApertureMomentSynthesis c) n ^ (2 : ℕ) := by
   have h := rectApproxNumber_complexEven_sq_eq_scaled_evenValue hc n
   field_simp [hc.ne', Real.pi_ne_zero] at h ⊢
   nlinarith
@@ -73,8 +73,8 @@ theorem exists_pos_eventually_complexUnitBandEvenValue_twoSided (n : ℕ) :
           complexUnitBandEvenValue c n ≤ B * c ^ (4 * n + 1) := by
   obtain ⟨C, D, hC, hD, hbounds⟩ :=
     exists_pos_eventually_rectApproxNumber_complexEven_twoSided n
-  let A : ℝ := C ^ 2 / (2 * Real.pi)
-  let B : ℝ := D ^ 2 / (2 * Real.pi)
+  let A : ℝ := C ^ (2 : ℕ) / (2 * Real.pi)
+  let B : ℝ := D ^ (2 : ℕ) / (2 * Real.pi)
   have hA : 0 < A := by
     dsimp [A]
     positivity
@@ -92,31 +92,31 @@ theorem exists_pos_eventually_complexUnitBandEvenValue_twoSided (n : ℕ) :
   rw [hcAbs] at hcBounds
   let s : ℝ := rectApproxNumber (complexEvenApertureMomentSynthesis c) n
   have hs0 : 0 ≤ s := rectApproxNumber_nonneg _ _
-  have hlowSq : (C * c ^ (2 * n)) ^ 2 ≤ s ^ 2 :=
+  have hlowSq : (C * c ^ (2 * n)) ^ (2 : ℕ) ≤ s ^ (2 : ℕ) :=
     pow_le_pow_left₀ (mul_nonneg hC.le (pow_nonneg hc.le _)) hcBounds.1 2
-  have huppSq : s ^ 2 ≤ (D * c ^ (2 * n)) ^ 2 :=
+  have huppSq : s ^ (2 : ℕ) ≤ (D * c ^ (2 * n)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hs0 hcBounds.2 2
-  have hpow : c ^ (4 * n + 1) = c * (c ^ (2 * n)) ^ 2 := by
+  have hpow : c ^ (4 * n + 1) = c * (c ^ (2 * n)) ^ (2 : ℕ) := by
     calc
       c ^ (4 * n + 1) = c ^ (1 + (2 * n) * 2) := by congr 1; omega
-      _ = c ^ 1 * c ^ ((2 * n) * 2) := pow_add _ _ _
-      _ = c * (c ^ (2 * n)) ^ 2 := by rw [pow_one, pow_mul]
+      _ = c ^ (1 : ℕ) * c ^ ((2 * n) * 2) := pow_add _ _ _
+      _ = c * (c ^ (2 * n)) ^ (2 : ℕ) := by rw [pow_one, pow_mul]
   rw [complexUnitBandEvenValue_eq_c_mul_rectApproxNumber_sq hc n]
-  change A * c ^ (4 * n + 1) ≤ (c / (2 * Real.pi)) * s ^ 2 ∧
-    (c / (2 * Real.pi)) * s ^ 2 ≤ B * c ^ (4 * n + 1)
+  change A * c ^ (4 * n + 1) ≤ (c / (2 * Real.pi)) * s ^ (2 : ℕ) ∧
+    (c / (2 * Real.pi)) * s ^ (2 : ℕ) ≤ B * c ^ (4 * n + 1)
   constructor
   · calc
       A * c ^ (4 * n + 1) =
-          (c / (2 * Real.pi)) * (C * c ^ (2 * n)) ^ 2 := by
+          (c / (2 * Real.pi)) * (C * c ^ (2 * n)) ^ (2 : ℕ) := by
         dsimp [A]
         rw [hpow]
         field_simp [Real.pi_ne_zero]
-      _ ≤ (c / (2 * Real.pi)) * s ^ 2 :=
+      _ ≤ (c / (2 * Real.pi)) * s ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hlowSq
           (div_nonneg hc.le (mul_nonneg (by norm_num) Real.pi_pos.le))
   · calc
-      (c / (2 * Real.pi)) * s ^ 2 ≤
-          (c / (2 * Real.pi)) * (D * c ^ (2 * n)) ^ 2 :=
+      (c / (2 * Real.pi)) * s ^ (2 : ℕ) ≤
+          (c / (2 * Real.pi)) * (D * c ^ (2 * n)) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left huppSq
           (div_nonneg hc.le (mul_nonneg (by norm_num) Real.pi_pos.le))
       _ = B * c ^ (4 * n + 1) := by

@@ -29,14 +29,14 @@ theorem isTotallyDisconnected_filledJulia_of_four_le {c : ℂ} (hc : 4 ≤ ‖c�
     rw [neg_eq_zero] at h
     rw [h, norm_zero] at hc
     linarith
-  obtain ⟨u, hu⟩ : ∃ u : ℂ, u ^ 2 = -c := by
+  obtain ⟨u, hu⟩ : ∃ u : ℂ, u ^ (2 : ℕ) = -c := by
     refine ⟨Complex.exp (Complex.log (-c) / 2), ?_⟩
     rw [← Complex.exp_nat_mul]
     rw [show ((2 : ℕ) : ℂ) * (Complex.log (-c) / 2) = Complex.log (-c) by push_cast; ring]
     exact Complex.exp_log hcne
-  have hu2 : ‖u‖ ^ 2 = ‖c‖ := by rw [← norm_pow, hu, norm_neg]
+  have hu2 : ‖u‖ ^ (2 : ℕ) = ‖c‖ := by rw [← norm_pow, hu, norm_neg]
   have huge : 2 ≤ ‖u‖ := by nlinarith [norm_nonneg u]
-  have hsqrt2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hsqrt2 : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hsqrt2nn : (0 : ℝ) ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
   have hsqrt2lt : Real.sqrt 2 < 2 := by nlinarith
   -- membership bounds
@@ -46,21 +46,21 @@ theorem isTotallyDisconnected_filledJulia_of_four_le {c : ℂ} (hc : 4 ≤ ‖c�
     rw [Metric.mem_closedBall, dist_zero_right] at h1
     calc ‖z‖ ≤ max 2 ‖c‖ := h1
       _ = ‖c‖ := max_eq_right (by linarith)
-  have hK2 : ∀ z ∈ filledJulia c, ‖z‖ ^ 2 ≤ 2 * ‖c‖ := by
+  have hK2 : ∀ z ∈ filledJulia c, ‖z‖ ^ (2 : ℕ) ≤ 2 * ‖c‖ := by
     intro z hz
     have hfz : quadratic c z ∈ filledJulia c := (mem_filledJulia_iff_quadratic_mem c z).mp hz
     have h1 : ‖quadratic c z‖ ≤ ‖c‖ := hKnorm _ hfz
     rw [quadratic_apply] at h1
-    calc ‖z‖ ^ 2 = ‖z ^ 2‖ := (norm_pow z 2).symm
-      _ = ‖(z ^ 2 + c) - c‖ := by ring_nf
-      _ ≤ ‖z ^ 2 + c‖ + ‖c‖ := norm_sub_le _ _
+    calc ‖z‖ ^ (2 : ℕ) = ‖z ^ (2 : ℕ)‖ := (norm_pow z 2).symm
+      _ = ‖(z ^ (2 : ℕ) + c) - c‖ := by ring_nf
+      _ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖c‖ := norm_sub_le _ _
       _ ≤ ‖c‖ + ‖c‖ := by linarith
       _ = 2 * ‖c‖ := by ring
   -- the fibre-product identity and the two-cell dichotomy
   have hprod : ∀ z ∈ filledJulia c, ‖z - u‖ * ‖z + u‖ ≤ Real.sqrt 2 * ‖u‖ := by
     intro z hz
     have hfz : quadratic c z ∈ filledJulia c := (mem_filledJulia_iff_quadratic_mem c z).mp hz
-    have h1 : ‖quadratic c z‖ ^ 2 ≤ 2 * ‖c‖ := hK2 _ hfz
+    have h1 : ‖quadratic c z‖ ^ (2 : ℕ) ≤ 2 * ‖c‖ := hK2 _ hfz
     have h2 : ‖quadratic c z‖ ≤ Real.sqrt (2 * ‖c‖) :=
       (Real.le_sqrt (norm_nonneg _) (by positivity)).mpr h1
     have h3 : Real.sqrt (2 * ‖c‖) = Real.sqrt 2 * ‖u‖ := by
@@ -69,7 +69,7 @@ theorem isTotallyDisconnected_filledJulia_of_four_le {c : ℂ} (hc : 4 ≤ ‖c�
       _ = ‖quadratic c z‖ := by
           rw [quadratic_apply]
           congr 1
-          have hcu : c = -(u ^ 2) := by rw [hu]; ring
+          have hcu : c = -(u ^ (2 : ℕ)) := by rw [hu]; ring
           rw [hcu]
           ring
       _ ≤ Real.sqrt 2 * ‖u‖ := h3 ▸ h2

@@ -34,7 +34,7 @@ theorem thetaCuspTailEvenCoefficient_eq_complex_integral (k : ℕ) :
 
 theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_integral
     (d : ℕ) (z : ℂ) :
-    (thetaCuspTailEvenPolynomial d).eval₂ (algebraMap ℝ ℂ) (-z ^ 2) =
+    (thetaCuspTailEvenPolynomial d).eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)) =
       2 * ∫ x : ℝ in Ioi 0,
         (thetaCuspTailDerivative 0 x : ℂ) * truncatedCosineSection d z x := by
   rw [thetaCuspTailEvenPolynomial]
@@ -53,13 +53,13 @@ theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_integral
     push_cast
     ring]
   rw [MeasureTheory.integral_finsetSum]
-  · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+  · rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
         (∑ k ∈ Finset.range (d + 1),
           C (thetaCuspTailEvenCoefficient k) * X ^ k) =
         ∑ k ∈ Finset.range (d + 1),
-          eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+          eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
             (C (thetaCuspTailEvenCoefficient k) * X ^ k) by
-      change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ 2))
+      change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)))
           (∑ k ∈ Finset.range (d + 1),
             C (thetaCuspTailEvenCoefficient k) * X ^ k) = _
       rw [map_sum]
@@ -68,18 +68,18 @@ theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_integral
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro k _
-    change (thetaCuspTailEvenCoefficient k : ℂ) * (-z ^ 2) ^ k = _
+    change (thetaCuspTailEvenCoefficient k : ℂ) * (-z ^ (2 : ℕ)) ^ k = _
     rw [thetaCuspTailEvenCoefficient_eq_complex_integral]
     calc
       (2 * ∫ x : ℝ in Ioi 0,
           ((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ) /
-            (2 * k).factorial) * (-z ^ 2) ^ k =
+            (2 * k).factorial) * (-z ^ (2 : ℕ)) ^ k =
           2 * ((∫ x : ℝ in Ioi 0,
             ((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ) /
-              (2 * k).factorial) * (-z ^ 2) ^ k) := by ring
+              (2 * k).factorial) * (-z ^ (2 : ℕ)) ^ k) := by ring
       _ = 2 * ∫ x : ℝ in Ioi 0,
           (((x ^ (2 * k) * thetaCuspTailDerivative 0 x : ℝ) : ℂ) /
-            (2 * k).factorial) * (-z ^ 2) ^ k := by
+            (2 * k).factorial) * (-z ^ (2 : ℕ)) ^ k := by
         rw [MeasureTheory.integral_mul_const]
       _ = 2 * ∫ x : ℝ in Ioi 0,
           ((-1 : ℂ) ^ k * z ^ (2 * k)) *
@@ -102,7 +102,7 @@ theorem thetaCuspTailEvenPolynomial_eval₂_neg_sq_eq_integral
 theorem xiCTaylorThetaTailCorePolynomial_eval_eq_integral
     (d : ℕ) (z : ℂ) :
     (xiCTaylorThetaTailCorePolynomial d).eval z =
-      1 / 2 - (z ^ 2 + 1 / 4) *
+      1 / 2 - (z ^ (2 : ℕ) + 1 / 4) *
         (2 * ∫ x : ℝ in Ioi 0,
           (thetaCuspTailDerivative 0 x : ℂ) * truncatedCosineSection d z x) := by
   rw [xiCTaylorThetaTailCorePolynomial, evenMagnitudeLift_eval]

@@ -310,7 +310,7 @@ theorem gammaSewnCriticalPlucker_hostileHarmonicAperture_lt_rate (i : Fin 4) :
   exact (inv_lt_inv₀ hden (inv_pos.mpr hrate)).2 hlt
 
 theorem gammaSewnCriticalPlucker_hostileHarmonicAperture_boundary_ne (i : Fin 4) :
-    gammaSewnCriticalPlucker_hostileRate i ^ 2 - gammaSewnCriticalPlucker_hostileHarmonicAperture ^ 2 ≠ 0 := by
+    gammaSewnCriticalPlucker_hostileRate i ^ (2 : ℕ) - gammaSewnCriticalPlucker_hostileHarmonicAperture ^ (2 : ℕ) ≠ 0 := by
   apply sub_ne_zero.mpr
   exact ne_of_gt ((sq_lt_sq₀ gammaSewnCriticalPlucker_hostileHarmonicAperture_pos.le
     (gammaSewnCriticalPlucker_hostileRate_pos i).le).2 (gammaSewnCriticalPlucker_hostileHarmonicAperture_lt_rate i))
@@ -336,7 +336,7 @@ theorem gammaSewnCriticalPlucker_p2_node_bounds :
       RHTower.xiMobiusContinuousApertureDiskNode (1 / 2) gammaSewnCriticalPlucker_p2 < 71 / 100 := by
   let r := RHTower.xiMobiusContinuousApertureDiskNode (1 / 2) gammaSewnCriticalPlucker_p2
   have hr0 : 0 < r := RHTower.xiMobiusContinuousApertureDiskNode_pos _ _
-  have hr2 : r ^ 2 = 1 / 2 := by
+  have hr2 : r ^ (2 : ℕ) = 1 / 2 := by
     simpa [r, gammaSewnCriticalPlucker_p2, RHTower.xiTransversePrimeApertureDiskNode_one_eq_inv] using
       RHTower.xiMobiusContinuousApertureDiskNode_half_sq gammaSewnCriticalPlucker_p2
   constructor
@@ -354,7 +354,7 @@ theorem gammaSewnCriticalPlucker_p3_node_bounds :
       RHTower.xiMobiusContinuousApertureDiskNode (1 / 2) gammaSewnCriticalPlucker_p3 < 58 / 100 := by
   let r := RHTower.xiMobiusContinuousApertureDiskNode (1 / 2) gammaSewnCriticalPlucker_p3
   have hr0 : 0 < r := RHTower.xiMobiusContinuousApertureDiskNode_pos _ _
-  have hr2 : r ^ 2 = 1 / 3 := by
+  have hr2 : r ^ (2 : ℕ) = 1 / 3 := by
     simpa [r, gammaSewnCriticalPlucker_p3, RHTower.xiTransversePrimeApertureDiskNode_one_eq_inv] using
       RHTower.xiMobiusContinuousApertureDiskNode_half_sq gammaSewnCriticalPlucker_p3
   constructor
@@ -369,12 +369,12 @@ theorem gammaSewnCriticalPlucker_p3_node_bounds :
 
 theorem gammaSewnCriticalPlucker_criticalSquaredWeight_eq (p : Nat.Primes) (e : ℕ) :
     RHTower.gammaSewnMobiusApertureStokesSquaredWeight (1 / 2) (p, e) =
-      2 * RHTower.gammaSewnMobiusValuationContractionMultiplier (1 / 2) p ^ 2 *
+      2 * RHTower.gammaSewnMobiusValuationContractionMultiplier (1 / 2) p ^ (2 : ℕ) *
         (RHTower.xiTransversePrimeApertureDiskNode 1 p /
-          (1 + RHTower.xiTransversePrimeApertureDiskNode 1 p)) ^ 2 *
-        (1 - RHTower.xiMobiusContinuousApertureDiskNode (1 / 2) p) ^ 2 *
+          (1 + RHTower.xiTransversePrimeApertureDiskNode 1 p)) ^ (2 : ℕ) *
+        (1 - RHTower.xiMobiusContinuousApertureDiskNode (1 / 2) p) ^ (2 : ℕ) *
         RHTower.xiMobiusContinuousApertureDiskNode (1 / 2) p ^ e /
-        (((e + 1 : ℕ) : ℝ) ^ 2 * Real.log (p : ℝ) *
+        (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ) *
           RHTower.xiMobiusContinuousApertureDiskNode (1 / 2) p) := by
   rw [RHTower.gammaSewnMobiusApertureStokesSquaredWeight,
     gammaSewnMobiusApertureStokesReflectedWeight_eq_source (by norm_num)]
@@ -390,10 +390,10 @@ theorem gammaSewnCriticalPlucker_p2_weight_zero_upper :
   have hc0 : 0 < c := RHTower.gammaSewnMobiusValuationContractionMultiplier_pos _ _
   have hc : c < 1 := RHTower.gammaSewnMobiusValuationContractionMultiplier_lt_one
     (by norm_num) _
-  have hc2 : c ^ 2 < 1 := by nlinarith [sq_nonneg (c - 1)]
-  have hgap : (1 - r) ^ 2 < (3 / 10 : ℝ) ^ 2 := by
+  have hc2 : c ^ (2 : ℕ) < 1 := by nlinarith [sq_nonneg (c - 1)]
+  have hgap : (1 - r) ^ (2 : ℕ) < (3 / 10 : ℝ) ^ (2 : ℕ) := by
     exact pow_lt_pow_left₀ (by linarith [hr.1]) (by linarith [hr.2]) (by norm_num)
-  have hprod : c ^ 2 * (1 - r) ^ 2 < (3 / 10 : ℝ) ^ 2 := by
+  have hprod : c ^ (2 : ℕ) * (1 - r) ^ (2 : ℕ) < (3 / 10 : ℝ) ^ (2 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hc2) (sub_pos.mpr hgap)]
   have hlog : (69 / 100 : ℝ) < Real.log 2 := by
     nlinarith [Real.log_two_gt_d9]
@@ -419,10 +419,10 @@ theorem gammaSewnCriticalPlucker_p3_weight_zero_upper :
   have hc0 : 0 < c := RHTower.gammaSewnMobiusValuationContractionMultiplier_pos _ _
   have hc : c < 1 := RHTower.gammaSewnMobiusValuationContractionMultiplier_lt_one
     (by norm_num) _
-  have hc2 : c ^ 2 < 1 := by nlinarith [sq_nonneg (c - 1)]
-  have hgap : (1 - r) ^ 2 < (43 / 100 : ℝ) ^ 2 := by
+  have hc2 : c ^ (2 : ℕ) < 1 := by nlinarith [sq_nonneg (c - 1)]
+  have hgap : (1 - r) ^ (2 : ℕ) < (43 / 100 : ℝ) ^ (2 : ℕ) := by
     exact pow_lt_pow_left₀ (by linarith [hr.1]) (by linarith [hr.2]) (by norm_num)
-  have hprod : c ^ 2 * (1 - r) ^ 2 < (43 / 100 : ℝ) ^ 2 := by
+  have hprod : c ^ (2 : ℕ) * (1 - r) ^ (2 : ℕ) < (43 / 100 : ℝ) ^ (2 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hc2) (sub_pos.mpr hgap)]
   have hlog : (109 / 100 : ℝ) < Real.log 3 := by
     nlinarith [Real.log_three_gt_d9]
@@ -554,8 +554,8 @@ theorem gammaSewnCriticalPlucker_depthTestRate_injective :
   exact_mod_cast (show (i.val : ℝ) = j.val by linarith)
 
 theorem gammaSewnCriticalPlucker_depthTest_boundary_ne (i : Fin 4) :
-    gammaSewnCriticalPlucker_depthTestRate i ^ 2 -
-        gammaSewnCriticalPlucker_depthTestAperture ^ 2 ≠ 0 := by
+    gammaSewnCriticalPlucker_depthTestRate i ^ (2 : ℕ) -
+        gammaSewnCriticalPlucker_depthTestAperture ^ (2 : ℕ) ≠ 0 := by
   have hlog : Real.log 2 ≠ 0 := ne_of_gt (Real.log_pos (by norm_num))
   fin_cases i <;>
     simp [gammaSewnCriticalPlucker_depthTestRate,

@@ -256,7 +256,7 @@ theorem deningerDlogCombFunctional_apply (c z u : Fin r → ℂ) :
   exact Finset.sum_congr rfl fun j _ => rfl
 
 /-- **A closed holomorphic one-form on a character stage is a combination of the logarithmic
-differentials plus an exact form.**  This is the surjectivity half of `L ⊗ ℂ ≅ H^1` in every
+differentials plus an exact form.**  This is the surjectivity half of `L ⊗ ℂ ≅ H^(1 : ℕ)` in every
 dimension. -/
 theorem deningerStage_closed_one_form_exact {ω : DeningerStageForm r 1}
     (hω : DeningerIsHolomorphicForm ω)

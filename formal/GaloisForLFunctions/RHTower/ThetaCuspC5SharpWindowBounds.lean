@@ -73,14 +73,14 @@ theorem sharpJet_uniform_bounds {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflect
   -- generic step
   have step : ∀ (k : ℕ), k ≤ 7 → ∀ (K L b : ℝ), 0 ≤ K → 0 ≤ L →
       K * 6 ^ k * (49 / 100000000) * (5 / 10000000) + L * 6 ^ k * (1 / 3500000000) / 399 ≤ b →
-      K * thetaCuspSingleAtomReflectionScale 1 x ^ k * regimeOneLikelihoodScale x ^ 2 +
+      K * thetaCuspSingleAtomReflectionScale 1 x ^ k * regimeOneLikelihoodScale x ^ (2 : ℕ) +
         L * thetaCuspSingleAtomReflectionScale 1 x ^ k *
           (Real.exp (-(8 * (thetaCuspSingleAtomReflectionScale 1 x - Real.pi))) / 399) ≤ b := by
     intro k hk K L b hK hL hb
     have h1 := regimeOne_scale_pow_le (k := k) (by exact_mod_cast (show k ≤ 18 by omega)) hA
     have h2 := pow_mul_exp_neg_eight_gap_le hA k hk
     have hp : 0 ≤ thetaCuspSingleAtomReflectionScale 1 x ^ k * regimeOneLikelihoodScale x := by positivity
-    have e1 : K * thetaCuspSingleAtomReflectionScale 1 x ^ k * regimeOneLikelihoodScale x ^ 2 =
+    have e1 : K * thetaCuspSingleAtomReflectionScale 1 x ^ k * regimeOneLikelihoodScale x ^ (2 : ℕ) =
         K * ((thetaCuspSingleAtomReflectionScale 1 x ^ k * regimeOneLikelihoodScale x) *
           regimeOneLikelihoodScale x) := by ring
     have e2 : L * thetaCuspSingleAtomReflectionScale 1 x ^ k *
@@ -131,65 +131,65 @@ theorem thetaCuspLogCurvatureJetFive_eq_bornWitten_sub_jet {x : ℝ} (hx : 0 < x
 
 /-- Majorant of `|BW₆|` for `q ∈ [qlo, qhi]`. -/
 noncomputable def bwSixAbs (qlo qhi : ℝ) : ℝ :=
-  (2 * qhi + 3) * (32 + 48 / qlo ^ 2 + 2160 / qlo ^ 3 + 16200 / qlo ^ 4 + 38880 / qlo ^ 5 +
-    29160 / qlo ^ 6)
+  (2 * qhi + 3) * (32 + 48 / qlo ^ (2 : ℕ) + 2160 / qlo ^ (3 : ℕ) + 16200 / qlo ^ (4 : ℕ) + 38880 / qlo ^ (5 : ℕ) +
+    29160 / qlo ^ (6 : ℕ))
 
 /-- Majorant of `|BW₇|` for `q ∈ [qlo, qhi]`. -/
 noncomputable def bwSevenAbs (qlo qhi : ℝ) : ℝ :=
-  (2 * qhi + 3) * (64 + 96 / qlo ^ 2 + 8928 / qlo ^ 3 + 116640 / qlo ^ 4 + 505440 / qlo ^ 5 +
-    874800 / qlo ^ 6 + 524880 / qlo ^ 7)
+  (2 * qhi + 3) * (64 + 96 / qlo ^ (2 : ℕ) + 8928 / qlo ^ (3 : ℕ) + 116640 / qlo ^ (4 : ℕ) + 505440 / qlo ^ (5 : ℕ) +
+    874800 / qlo ^ (6 : ℕ) + 524880 / qlo ^ (7 : ℕ))
 
 theorem inv_pow_le_of_le {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (k : ℕ) : 1 / b ^ k ≤ 1 / a ^ k :=
   one_div_le_one_div_of_le (pow_pos ha k) (pow_le_pow_left₀ ha.le hab k)
 
 theorem abs_bornWittenSix_le {q qlo qhi : ℝ} (hlo : 0 < qlo) (h1 : qlo ≤ q) (h2 : q ≤ qhi) :
-    |(2 * q + 3) * (32 + 48 / q ^ 2 + 2160 / q ^ 3 + 16200 / q ^ 4 + 38880 / q ^ 5 +
-      29160 / q ^ 6)| ≤ bwSixAbs qlo qhi := by
+    |(2 * q + 3) * (32 + 48 / q ^ (2 : ℕ) + 2160 / q ^ (3 : ℕ) + 16200 / q ^ (4 : ℕ) + 38880 / q ^ (5 : ℕ) +
+      29160 / q ^ (6 : ℕ))| ≤ bwSixAbs qlo qhi := by
   have hq : 0 < q := by linarith
-  have j2 : 48 / q ^ 2 ≤ 48 / qlo ^ 2 :=
+  have j2 : 48 / q ^ (2 : ℕ) ≤ 48 / qlo ^ (2 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 2) (pow_le_pow_left₀ hlo.le h1 2)
-  have j3 : 2160 / q ^ 3 ≤ 2160 / qlo ^ 3 :=
+  have j3 : 2160 / q ^ (3 : ℕ) ≤ 2160 / qlo ^ (3 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 3) (pow_le_pow_left₀ hlo.le h1 3)
-  have j4 : 16200 / q ^ 4 ≤ 16200 / qlo ^ 4 :=
+  have j4 : 16200 / q ^ (4 : ℕ) ≤ 16200 / qlo ^ (4 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 4) (pow_le_pow_left₀ hlo.le h1 4)
-  have j5 : 38880 / q ^ 5 ≤ 38880 / qlo ^ 5 :=
+  have j5 : 38880 / q ^ (5 : ℕ) ≤ 38880 / qlo ^ (5 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 5) (pow_le_pow_left₀ hlo.le h1 5)
-  have j6 : 29160 / q ^ 6 ≤ 29160 / qlo ^ 6 :=
+  have j6 : 29160 / q ^ (6 : ℕ) ≤ 29160 / qlo ^ (6 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 6) (pow_le_pow_left₀ hlo.le h1 6)
-  have hg : 32 + 48 / q ^ 2 + 2160 / q ^ 3 + 16200 / q ^ 4 + 38880 / q ^ 5 + 29160 / q ^ 6 ≤
-      32 + 48 / qlo ^ 2 + 2160 / qlo ^ 3 + 16200 / qlo ^ 4 + 38880 / qlo ^ 5 + 29160 / qlo ^ 6 := by
+  have hg : 32 + 48 / q ^ (2 : ℕ) + 2160 / q ^ (3 : ℕ) + 16200 / q ^ (4 : ℕ) + 38880 / q ^ (5 : ℕ) + 29160 / q ^ (6 : ℕ) ≤
+      32 + 48 / qlo ^ (2 : ℕ) + 2160 / qlo ^ (3 : ℕ) + 16200 / qlo ^ (4 : ℕ) + 38880 / qlo ^ (5 : ℕ) + 29160 / qlo ^ (6 : ℕ) := by
     linarith
-  have hg0 : 0 ≤ 32 + 48 / q ^ 2 + 2160 / q ^ 3 + 16200 / q ^ 4 + 38880 / q ^ 5 + 29160 / q ^ 6 := by
+  have hg0 : 0 ≤ 32 + 48 / q ^ (2 : ℕ) + 2160 / q ^ (3 : ℕ) + 16200 / q ^ (4 : ℕ) + 38880 / q ^ (5 : ℕ) + 29160 / q ^ (6 : ℕ) := by
     positivity
   rw [abs_of_nonneg (mul_nonneg (by linarith) hg0)]
   unfold bwSixAbs
   exact mul_le_mul (by linarith) hg hg0 (by linarith)
 
 theorem abs_bornWittenSeven_le {q qlo qhi : ℝ} (hlo : 0 < qlo) (h1 : qlo ≤ q) (h2 : q ≤ qhi) :
-    |(2 * q + 3) * (64 - 96 / q ^ 2 - 8928 / q ^ 3 - 116640 / q ^ 4 - 505440 / q ^ 5 -
-      874800 / q ^ 6 - 524880 / q ^ 7)| ≤ bwSevenAbs qlo qhi := by
+    |(2 * q + 3) * (64 - 96 / q ^ (2 : ℕ) - 8928 / q ^ (3 : ℕ) - 116640 / q ^ (4 : ℕ) - 505440 / q ^ (5 : ℕ) -
+      874800 / q ^ (6 : ℕ) - 524880 / q ^ (7 : ℕ))| ≤ bwSevenAbs qlo qhi := by
   have hq : 0 < q := by linarith
-  have j2 : 96 / q ^ 2 ≤ 96 / qlo ^ 2 :=
+  have j2 : 96 / q ^ (2 : ℕ) ≤ 96 / qlo ^ (2 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 2) (pow_le_pow_left₀ hlo.le h1 2)
-  have j3 : 8928 / q ^ 3 ≤ 8928 / qlo ^ 3 :=
+  have j3 : 8928 / q ^ (3 : ℕ) ≤ 8928 / qlo ^ (3 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 3) (pow_le_pow_left₀ hlo.le h1 3)
-  have j4 : 116640 / q ^ 4 ≤ 116640 / qlo ^ 4 :=
+  have j4 : 116640 / q ^ (4 : ℕ) ≤ 116640 / qlo ^ (4 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 4) (pow_le_pow_left₀ hlo.le h1 4)
-  have j5 : 505440 / q ^ 5 ≤ 505440 / qlo ^ 5 :=
+  have j5 : 505440 / q ^ (5 : ℕ) ≤ 505440 / qlo ^ (5 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 5) (pow_le_pow_left₀ hlo.le h1 5)
-  have j6 : 874800 / q ^ 6 ≤ 874800 / qlo ^ 6 :=
+  have j6 : 874800 / q ^ (6 : ℕ) ≤ 874800 / qlo ^ (6 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 6) (pow_le_pow_left₀ hlo.le h1 6)
-  have j7 : 524880 / q ^ 7 ≤ 524880 / qlo ^ 7 :=
+  have j7 : 524880 / q ^ (7 : ℕ) ≤ 524880 / qlo ^ (7 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (pow_pos hlo 7) (pow_le_pow_left₀ hlo.le h1 7)
-  have p2 : 0 ≤ 96 / q ^ 2 := by positivity
-  have p3 : 0 ≤ 8928 / q ^ 3 := by positivity
-  have p4 : 0 ≤ 116640 / q ^ 4 := by positivity
-  have p5 : 0 ≤ 505440 / q ^ 5 := by positivity
-  have p6 : 0 ≤ 874800 / q ^ 6 := by positivity
-  have p7 : 0 ≤ 524880 / q ^ 7 := by positivity
-  have hg : |64 - 96 / q ^ 2 - 8928 / q ^ 3 - 116640 / q ^ 4 - 505440 / q ^ 5 - 874800 / q ^ 6 -
-      524880 / q ^ 7| ≤ 64 + 96 / qlo ^ 2 + 8928 / qlo ^ 3 + 116640 / qlo ^ 4 + 505440 / qlo ^ 5 +
-      874800 / qlo ^ 6 + 524880 / qlo ^ 7 := by
+  have p2 : 0 ≤ 96 / q ^ (2 : ℕ) := by positivity
+  have p3 : 0 ≤ 8928 / q ^ (3 : ℕ) := by positivity
+  have p4 : 0 ≤ 116640 / q ^ (4 : ℕ) := by positivity
+  have p5 : 0 ≤ 505440 / q ^ (5 : ℕ) := by positivity
+  have p6 : 0 ≤ 874800 / q ^ (6 : ℕ) := by positivity
+  have p7 : 0 ≤ 524880 / q ^ (7 : ℕ) := by positivity
+  have hg : |64 - 96 / q ^ (2 : ℕ) - 8928 / q ^ (3 : ℕ) - 116640 / q ^ (4 : ℕ) - 505440 / q ^ (5 : ℕ) - 874800 / q ^ (6 : ℕ) -
+      524880 / q ^ (7 : ℕ)| ≤ 64 + 96 / qlo ^ (2 : ℕ) + 8928 / qlo ^ (3 : ℕ) + 116640 / qlo ^ (4 : ℕ) + 505440 / qlo ^ (5 : ℕ) +
+      874800 / qlo ^ (6 : ℕ) + 524880 / qlo ^ (7 : ℕ) := by
     rw [abs_le]
     constructor <;> linarith
   rw [abs_mul, abs_of_nonneg (by linarith : (0:ℝ) ≤ 2 * q + 3)]
@@ -264,32 +264,32 @@ theorem abs_jetFive_le_window {u t : ℝ}
 
 /-! ## Chamber bounds for the centre jets -/
 
-noncomputable def bwTwoLo (q₁ q₂ : ℝ) : ℝ := (2 * q₁ + 3) * (2 + 3 / q₂ ^ 2)
-noncomputable def bwTwoHi (q₁ q₂ : ℝ) : ℝ := (2 * q₂ + 3) * (2 + 3 / q₁ ^ 2)
-noncomputable def bwThreeLo (q₁ : ℝ) : ℝ := (2 * q₁ + 3) * (4 - 6 / q₁ ^ 2 - 18 / q₁ ^ 3)
-noncomputable def bwThreeHi (q₂ : ℝ) : ℝ := (2 * q₂ + 3) * (4 - 6 / q₂ ^ 2 - 18 / q₂ ^ 3)
+noncomputable def bwTwoLo (q₁ q₂ : ℝ) : ℝ := (2 * q₁ + 3) * (2 + 3 / q₂ ^ (2 : ℕ))
+noncomputable def bwTwoHi (q₁ q₂ : ℝ) : ℝ := (2 * q₂ + 3) * (2 + 3 / q₁ ^ (2 : ℕ))
+noncomputable def bwThreeLo (q₁ : ℝ) : ℝ := (2 * q₁ + 3) * (4 - 6 / q₁ ^ (2 : ℕ) - 18 / q₁ ^ (3 : ℕ))
+noncomputable def bwThreeHi (q₂ : ℝ) : ℝ := (2 * q₂ + 3) * (4 - 6 / q₂ ^ (2 : ℕ) - 18 / q₂ ^ (3 : ℕ))
 noncomputable def bwFourLo (q₁ q₂ : ℝ) : ℝ :=
-  (2 * q₁ + 3) * (8 + 12 / q₂ ^ 2 + 108 / q₂ ^ 3 + 162 / q₂ ^ 4)
+  (2 * q₁ + 3) * (8 + 12 / q₂ ^ (2 : ℕ) + 108 / q₂ ^ (3 : ℕ) + 162 / q₂ ^ (4 : ℕ))
 noncomputable def bwFourHi (q₁ q₂ : ℝ) : ℝ :=
-  (2 * q₂ + 3) * (8 + 12 / q₁ ^ 2 + 108 / q₁ ^ 3 + 162 / q₁ ^ 4)
+  (2 * q₂ + 3) * (8 + 12 / q₁ ^ (2 : ℕ) + 108 / q₁ ^ (3 : ℕ) + 162 / q₁ ^ (4 : ℕ))
 noncomputable def bwFiveLo (q₁ : ℝ) : ℝ :=
-  (2 * q₁ + 3) * (16 - 24 / q₁ ^ 2 - 504 / q₁ ^ 3 - 1944 / q₁ ^ 4 - 1944 / q₁ ^ 5)
+  (2 * q₁ + 3) * (16 - 24 / q₁ ^ (2 : ℕ) - 504 / q₁ ^ (3 : ℕ) - 1944 / q₁ ^ (4 : ℕ) - 1944 / q₁ ^ (5 : ℕ))
 noncomputable def bwFiveHi (q₂ : ℝ) : ℝ :=
-  (2 * q₂ + 3) * (16 - 24 / q₂ ^ 2 - 504 / q₂ ^ 3 - 1944 / q₂ ^ 4 - 1944 / q₂ ^ 5)
+  (2 * q₂ + 3) * (16 - 24 / q₂ ^ (2 : ℕ) - 504 / q₂ ^ (3 : ℕ) - 1944 / q₂ ^ (4 : ℕ) - 1944 / q₂ ^ (5 : ℕ))
 
 theorem div_pow_antitone {c q₁ q : ℝ} (hc : 0 ≤ c) (h1 : 0 < q₁) (hq : q₁ ≤ q) (k : ℕ) :
     c / q ^ k ≤ c / q₁ ^ k :=
   div_le_div_of_nonneg_left hc (pow_pos h1 k) (pow_le_pow_left₀ h1.le hq k)
 
 theorem bornWitten_chamber_bounds {q q₁ q₂ : ℝ} (h1 : 9 / 2 ≤ q₁) (hq1 : q₁ ≤ q) (hq2 : q ≤ q₂) :
-    bwTwoLo q₁ q₂ ≤ (2 * q + 3) * (2 + 3 / q ^ 2) ∧
-    (2 * q + 3) * (2 + 3 / q ^ 2) ≤ bwTwoHi q₁ q₂ ∧
-    bwThreeLo q₁ ≤ (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) ∧
-    (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) ≤ bwThreeHi q₂ ∧
-    bwFourLo q₁ q₂ ≤ (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4) ∧
-    (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4) ≤ bwFourHi q₁ q₂ ∧
-    bwFiveLo q₁ ≤ (2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5) ∧
-    (2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5) ≤ bwFiveHi q₂ := by
+    bwTwoLo q₁ q₂ ≤ (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) ∧
+    (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) ≤ bwTwoHi q₁ q₂ ∧
+    bwThreeLo q₁ ≤ (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) ∧
+    (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) ≤ bwThreeHi q₂ ∧
+    bwFourLo q₁ q₂ ≤ (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)) ∧
+    (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)) ≤ bwFourHi q₁ q₂ ∧
+    bwFiveLo q₁ ≤ (2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ)) ∧
+    (2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ)) ≤ bwFiveHi q₂ := by
   have h10 : 0 < q₁ := by linarith
   have hq0 : 0 < q := by linarith
   have hq20 : 0 < q₂ := by linarith
@@ -322,8 +322,8 @@ theorem bornWitten_chamber_bounds {q q₁ q₂ : ℝ} (h1 : 9 / 2 ≤ q₁) (hq1
   have c1944 := div_pow_antitone (by norm_num : (0:ℝ) ≤ 1944) (by norm_num : (0:ℝ) < 9 / 2) h1 4
   have c1944' := div_pow_antitone (by norm_num : (0:ℝ) ≤ 1944) (by norm_num : (0:ℝ) < 9 / 2) h1 5
   norm_num at c6 c18 c24 c504 c1944 c1944'
-  have g3pos : 0 ≤ 4 - 6 / q₁ ^ 2 - 18 / q₁ ^ 3 := by linarith
-  have g5pos : 0 ≤ 16 - 24 / q₁ ^ 2 - 504 / q₁ ^ 3 - 1944 / q₁ ^ 4 - 1944 / q₁ ^ 5 := by linarith
+  have g3pos : 0 ≤ 4 - 6 / q₁ ^ (2 : ℕ) - 18 / q₁ ^ (3 : ℕ) := by linarith
+  have g5pos : 0 ≤ 16 - 24 / q₁ ^ (2 : ℕ) - 504 / q₁ ^ (3 : ℕ) - 1944 / q₁ ^ (4 : ℕ) - 1944 / q₁ ^ (5 : ℕ) := by linarith
   have hl : 0 ≤ 2 * q₁ + 3 := by linarith
   have hm : 2 * q₁ + 3 ≤ 2 * q + 3 := by linarith
   have hM : 2 * q + 3 ≤ 2 * q₂ + 3 := by linarith
@@ -400,23 +400,23 @@ theorem sharpKey_of_bounds {c₀ c₁ c₂ c₃ S₄ S₅ t : ℝ}
     (h0 : c₀l ≤ c₀ ∧ c₀ ≤ c₀u) (h1 : c₁l ≤ c₁ ∧ c₁ ≤ c₁u) (h2 : c₂l ≤ c₂ ∧ c₂ ≤ c₂u)
     (h3 : c₃l ≤ c₃ ∧ c₃ ≤ c₃u) (hS4 : 0 ≤ S₄ ∧ S₄ ≤ S₄u) (hS5 : 0 ≤ S₅ ∧ S₅ ≤ S₅u)
     (hc0l : 0 ≤ c₀l) (hc1l : 0 ≤ c₁l) (hc2l : 0 ≤ c₂l) (hc3l : 0 ≤ c₃l)
-    (hΦb : 0 ≤ c₀l - S₄u * tb ^ 4 / 360) (hEb : 0 ≤ c₀l - S₄u * tb ^ 4 / 120)
-    (hOb : 0 ≤ c₁l / 2 - S₅u * tb ^ 4 / 720) (hYb : 0 ≤ c₂l / 3 - S₄u * tb ^ 2 / 30)
-    (hnum : 5 * ((c₀u + c₂u * tb ^ 2 / 6 + S₄u * tb ^ 4 / 120) * (S₅u / 90) +
-        (c₁u / 2 + c₃u * tb ^ 2 / 24 + S₅u * tb ^ 4 / 720) * (S₄u / 15)) <
-      12 * (c₀l - S₄u * tb ^ 4 / 360) *
-        ((c₁l / 2 - S₅u * tb ^ 4 / 720) * (c₂l / 3 - S₄u * tb ^ 2 / 30) -
-          (c₀u + c₂u * tb ^ 2 / 6 + S₄u * tb ^ 4 / 120) * (c₃u / 12 + S₅u * tb ^ 2 / 180))) :
-    (0 ≤ c₀ * t + c₂ * t ^ 3 / 6 - S₄ * t ^ 5 / 120) ∧
-    (0 ≤ c₁ * t ^ 2 / 2 + c₃ * t ^ 4 / 24 - S₅ * t ^ 6 / 720) ∧
-    (0 ≤ c₂ * t ^ 3 / 3 - S₄ * t ^ 5 / 30) ∧
-    (0 ≤ c₃ * t ^ 4 / 12 + S₅ * t ^ 6 / 180) ∧
-    (0 ≤ c₀ * t ^ 2 + c₂ * t ^ 4 / 12 - S₄ * t ^ 6 / 360) ∧
-    5 * ((c₀ * t + |c₂| * t ^ 3 / 6 + S₄ * t ^ 5 / 120) * (S₅ * t ^ 6 / 90) +
-        (c₁ * t ^ 2 / 2 + |c₃| * t ^ 4 / 24 + S₅ * t ^ 6 / 720) * (S₄ * t ^ 5 / 15)) <
-      12 * (c₀ * t ^ 2 + c₂ * t ^ 4 / 12 - S₄ * t ^ 6 / 360) *
-        ((c₁ * t ^ 2 / 2 + c₃ * t ^ 4 / 24 - S₅ * t ^ 6 / 720) * (c₂ * t ^ 3 / 3 - S₄ * t ^ 5 / 30) -
-        (c₀ * t + |c₂| * t ^ 3 / 6 + S₄ * t ^ 5 / 120) * (c₃ * t ^ 4 / 12 + S₅ * t ^ 6 / 180)) := by
+    (hΦb : 0 ≤ c₀l - S₄u * tb ^ (4 : ℕ) / 360) (hEb : 0 ≤ c₀l - S₄u * tb ^ (4 : ℕ) / 120)
+    (hOb : 0 ≤ c₁l / 2 - S₅u * tb ^ (4 : ℕ) / 720) (hYb : 0 ≤ c₂l / 3 - S₄u * tb ^ (2 : ℕ) / 30)
+    (hnum : 5 * ((c₀u + c₂u * tb ^ (2 : ℕ) / 6 + S₄u * tb ^ (4 : ℕ) / 120) * (S₅u / 90) +
+        (c₁u / 2 + c₃u * tb ^ (2 : ℕ) / 24 + S₅u * tb ^ (4 : ℕ) / 720) * (S₄u / 15)) <
+      12 * (c₀l - S₄u * tb ^ (4 : ℕ) / 360) *
+        ((c₁l / 2 - S₅u * tb ^ (4 : ℕ) / 720) * (c₂l / 3 - S₄u * tb ^ (2 : ℕ) / 30) -
+          (c₀u + c₂u * tb ^ (2 : ℕ) / 6 + S₄u * tb ^ (4 : ℕ) / 120) * (c₃u / 12 + S₅u * tb ^ (2 : ℕ) / 180))) :
+    (0 ≤ c₀ * t + c₂ * t ^ (3 : ℕ) / 6 - S₄ * t ^ (5 : ℕ) / 120) ∧
+    (0 ≤ c₁ * t ^ (2 : ℕ) / 2 + c₃ * t ^ (4 : ℕ) / 24 - S₅ * t ^ (6 : ℕ) / 720) ∧
+    (0 ≤ c₂ * t ^ (3 : ℕ) / 3 - S₄ * t ^ (5 : ℕ) / 30) ∧
+    (0 ≤ c₃ * t ^ (4 : ℕ) / 12 + S₅ * t ^ (6 : ℕ) / 180) ∧
+    (0 ≤ c₀ * t ^ (2 : ℕ) + c₂ * t ^ (4 : ℕ) / 12 - S₄ * t ^ (6 : ℕ) / 360) ∧
+    5 * ((c₀ * t + |c₂| * t ^ (3 : ℕ) / 6 + S₄ * t ^ (5 : ℕ) / 120) * (S₅ * t ^ (6 : ℕ) / 90) +
+        (c₁ * t ^ (2 : ℕ) / 2 + |c₃| * t ^ (4 : ℕ) / 24 + S₅ * t ^ (6 : ℕ) / 720) * (S₄ * t ^ (5 : ℕ) / 15)) <
+      12 * (c₀ * t ^ (2 : ℕ) + c₂ * t ^ (4 : ℕ) / 12 - S₄ * t ^ (6 : ℕ) / 360) *
+        ((c₁ * t ^ (2 : ℕ) / 2 + c₃ * t ^ (4 : ℕ) / 24 - S₅ * t ^ (6 : ℕ) / 720) * (c₂ * t ^ (3 : ℕ) / 3 - S₄ * t ^ (5 : ℕ) / 30) -
+        (c₀ * t + |c₂| * t ^ (3 : ℕ) / 6 + S₄ * t ^ (5 : ℕ) / 120) * (c₃ * t ^ (4 : ℕ) / 12 + S₅ * t ^ (6 : ℕ) / 180)) := by
   obtain ⟨h0l, h0u⟩ := h0
   obtain ⟨h1l, h1u⟩ := h1
   obtain ⟨h2l, h2u⟩ := h2
@@ -430,44 +430,44 @@ theorem sharpKey_of_bounds {c₀ c₁ c₂ c₃ S₄ S₅ t : ℝ}
   rw [abs_of_nonneg hc2, abs_of_nonneg hc3]
   have ht0 : 0 ≤ t := ht.le
   have htb0 : 0 ≤ tb := le_trans ht0 htb
-  have ht2 : t ^ 2 ≤ tb ^ 2 := pow_le_pow_left₀ ht0 htb 2
-  have ht4 : t ^ 4 ≤ tb ^ 4 := pow_le_pow_left₀ ht0 htb 4
-  have ht20 : 0 ≤ t ^ 2 := by positivity
-  have ht40 : 0 ≤ t ^ 4 := by positivity
-  have ht7 : 0 < t ^ 7 := by positivity
+  have ht2 : t ^ (2 : ℕ) ≤ tb ^ (2 : ℕ) := pow_le_pow_left₀ ht0 htb 2
+  have ht4 : t ^ (4 : ℕ) ≤ tb ^ (4 : ℕ) := pow_le_pow_left₀ ht0 htb 4
+  have ht20 : 0 ≤ t ^ (2 : ℕ) := by positivity
+  have ht40 : 0 ≤ t ^ (4 : ℕ) := by positivity
+  have ht7 : 0 < t ^ (7 : ℕ) := by positivity
   -- the six reduced quantities at `t`
-  have p44 : S₄ * t ^ 4 ≤ S₄u * tb ^ 4 := mul_le_mul hS4u ht4 ht40 (by linarith)
-  have p42 : S₄ * t ^ 2 ≤ S₄u * tb ^ 2 := mul_le_mul hS4u ht2 ht20 (by linarith)
-  have p54 : S₅ * t ^ 4 ≤ S₅u * tb ^ 4 := mul_le_mul hS5u ht4 ht40 (by linarith)
-  have p52 : S₅ * t ^ 2 ≤ S₅u * tb ^ 2 := mul_le_mul hS5u ht2 ht20 (by linarith)
-  have p22 : c₂ * t ^ 2 ≤ c₂u * tb ^ 2 := mul_le_mul h2u ht2 ht20 (by linarith)
-  have p32 : c₃ * t ^ 2 ≤ c₃u * tb ^ 2 := mul_le_mul h3u ht2 ht20 (by linarith)
-  have n22 : 0 ≤ c₂ * t ^ 2 := mul_nonneg hc2 ht20
-  have n32 : 0 ≤ c₃ * t ^ 2 := mul_nonneg hc3 ht20
-  have hΦ : c₀l - S₄u * tb ^ 4 / 360 ≤ c₀ + c₂ * t ^ 2 / 12 - S₄ * t ^ 4 / 360 := by linarith
-  have hO : c₁l / 2 - S₅u * tb ^ 4 / 720 ≤ c₁ / 2 + c₃ * t ^ 2 / 24 - S₅ * t ^ 4 / 720 := by linarith
-  have hY : c₂l / 3 - S₄u * tb ^ 2 / 30 ≤ c₂ / 3 - S₄ * t ^ 2 / 30 := by linarith
-  have hE : c₀ + c₂ * t ^ 2 / 6 + S₄ * t ^ 4 / 120 ≤ c₀u + c₂u * tb ^ 2 / 6 + S₄u * tb ^ 4 / 120 := by
+  have p44 : S₄ * t ^ (4 : ℕ) ≤ S₄u * tb ^ (4 : ℕ) := mul_le_mul hS4u ht4 ht40 (by linarith)
+  have p42 : S₄ * t ^ (2 : ℕ) ≤ S₄u * tb ^ (2 : ℕ) := mul_le_mul hS4u ht2 ht20 (by linarith)
+  have p54 : S₅ * t ^ (4 : ℕ) ≤ S₅u * tb ^ (4 : ℕ) := mul_le_mul hS5u ht4 ht40 (by linarith)
+  have p52 : S₅ * t ^ (2 : ℕ) ≤ S₅u * tb ^ (2 : ℕ) := mul_le_mul hS5u ht2 ht20 (by linarith)
+  have p22 : c₂ * t ^ (2 : ℕ) ≤ c₂u * tb ^ (2 : ℕ) := mul_le_mul h2u ht2 ht20 (by linarith)
+  have p32 : c₃ * t ^ (2 : ℕ) ≤ c₃u * tb ^ (2 : ℕ) := mul_le_mul h3u ht2 ht20 (by linarith)
+  have n22 : 0 ≤ c₂ * t ^ (2 : ℕ) := mul_nonneg hc2 ht20
+  have n32 : 0 ≤ c₃ * t ^ (2 : ℕ) := mul_nonneg hc3 ht20
+  have hΦ : c₀l - S₄u * tb ^ (4 : ℕ) / 360 ≤ c₀ + c₂ * t ^ (2 : ℕ) / 12 - S₄ * t ^ (4 : ℕ) / 360 := by linarith
+  have hO : c₁l / 2 - S₅u * tb ^ (4 : ℕ) / 720 ≤ c₁ / 2 + c₃ * t ^ (2 : ℕ) / 24 - S₅ * t ^ (4 : ℕ) / 720 := by linarith
+  have hY : c₂l / 3 - S₄u * tb ^ (2 : ℕ) / 30 ≤ c₂ / 3 - S₄ * t ^ (2 : ℕ) / 30 := by linarith
+  have hE : c₀ + c₂ * t ^ (2 : ℕ) / 6 + S₄ * t ^ (4 : ℕ) / 120 ≤ c₀u + c₂u * tb ^ (2 : ℕ) / 6 + S₄u * tb ^ (4 : ℕ) / 120 := by
     linarith
-  have hΛ : c₃ / 12 + S₅ * t ^ 2 / 180 ≤ c₃u / 12 + S₅u * tb ^ 2 / 180 := by linarith
-  have hOu : c₁ / 2 + c₃ * t ^ 2 / 24 + S₅ * t ^ 4 / 720 ≤
-      c₁u / 2 + c₃u * tb ^ 2 / 24 + S₅u * tb ^ 4 / 720 := by linarith
-  have hE0 : 0 ≤ c₀ + c₂ * t ^ 2 / 6 + S₄ * t ^ 4 / 120 := by positivity
-  have hΛ0 : 0 ≤ c₃ / 12 + S₅ * t ^ 2 / 180 := by positivity
-  have hOu0 : 0 ≤ c₁ / 2 + c₃ * t ^ 2 / 24 + S₅ * t ^ 4 / 720 := by positivity
+  have hΛ : c₃ / 12 + S₅ * t ^ (2 : ℕ) / 180 ≤ c₃u / 12 + S₅u * tb ^ (2 : ℕ) / 180 := by linarith
+  have hOu : c₁ / 2 + c₃ * t ^ (2 : ℕ) / 24 + S₅ * t ^ (4 : ℕ) / 720 ≤
+      c₁u / 2 + c₃u * tb ^ (2 : ℕ) / 24 + S₅u * tb ^ (4 : ℕ) / 720 := by linarith
+  have hE0 : 0 ≤ c₀ + c₂ * t ^ (2 : ℕ) / 6 + S₄ * t ^ (4 : ℕ) / 120 := by positivity
+  have hΛ0 : 0 ≤ c₃ / 12 + S₅ * t ^ (2 : ℕ) / 180 := by positivity
+  have hOu0 : 0 ≤ c₁ / 2 + c₃ * t ^ (2 : ℕ) / 24 + S₅ * t ^ (4 : ℕ) / 720 := by positivity
   -- generalize the reduced quantities
-  generalize hΦt : c₀ + c₂ * t ^ 2 / 12 - S₄ * t ^ 4 / 360 = Φt at hΦ
-  generalize hOt : c₁ / 2 + c₃ * t ^ 2 / 24 - S₅ * t ^ 4 / 720 = Ot at hO
-  generalize hYt : c₂ / 3 - S₄ * t ^ 2 / 30 = Yt at hY
-  generalize hEt : c₀ + c₂ * t ^ 2 / 6 + S₄ * t ^ 4 / 120 = Et at hE hE0
-  generalize hΛt : c₃ / 12 + S₅ * t ^ 2 / 180 = Λt at hΛ hΛ0
-  generalize hOut : c₁ / 2 + c₃ * t ^ 2 / 24 + S₅ * t ^ 4 / 720 = Out at hOu hOu0
-  generalize hΦb' : c₀l - S₄u * tb ^ 4 / 360 = Φb at hΦ hΦb hnum
-  generalize hOb' : c₁l / 2 - S₅u * tb ^ 4 / 720 = Ob at hO hOb hnum
-  generalize hYb' : c₂l / 3 - S₄u * tb ^ 2 / 30 = Yb at hY hYb hnum
-  generalize hEb' : c₀u + c₂u * tb ^ 2 / 6 + S₄u * tb ^ 4 / 120 = Eb at hE hnum
-  generalize hΛb' : c₃u / 12 + S₅u * tb ^ 2 / 180 = Λb at hΛ hnum
-  generalize hOub' : c₁u / 2 + c₃u * tb ^ 2 / 24 + S₅u * tb ^ 4 / 720 = Oub at hOu hnum
+  generalize hΦt : c₀ + c₂ * t ^ (2 : ℕ) / 12 - S₄ * t ^ (4 : ℕ) / 360 = Φt at hΦ
+  generalize hOt : c₁ / 2 + c₃ * t ^ (2 : ℕ) / 24 - S₅ * t ^ (4 : ℕ) / 720 = Ot at hO
+  generalize hYt : c₂ / 3 - S₄ * t ^ (2 : ℕ) / 30 = Yt at hY
+  generalize hEt : c₀ + c₂ * t ^ (2 : ℕ) / 6 + S₄ * t ^ (4 : ℕ) / 120 = Et at hE hE0
+  generalize hΛt : c₃ / 12 + S₅ * t ^ (2 : ℕ) / 180 = Λt at hΛ hΛ0
+  generalize hOut : c₁ / 2 + c₃ * t ^ (2 : ℕ) / 24 + S₅ * t ^ (4 : ℕ) / 720 = Out at hOu hOu0
+  generalize hΦb' : c₀l - S₄u * tb ^ (4 : ℕ) / 360 = Φb at hΦ hΦb hnum
+  generalize hOb' : c₁l / 2 - S₅u * tb ^ (4 : ℕ) / 720 = Ob at hO hOb hnum
+  generalize hYb' : c₂l / 3 - S₄u * tb ^ (2 : ℕ) / 30 = Yb at hY hYb hnum
+  generalize hEb' : c₀u + c₂u * tb ^ (2 : ℕ) / 6 + S₄u * tb ^ (4 : ℕ) / 120 = Eb at hE hnum
+  generalize hΛb' : c₃u / 12 + S₅u * tb ^ (2 : ℕ) / 180 = Λb at hΛ hnum
+  generalize hOub' : c₁u / 2 + c₃u * tb ^ (2 : ℕ) / 24 + S₅u * tb ^ (4 : ℕ) / 720 = Oub at hOu hnum
   have hΦt0 : 0 ≤ Φt := le_trans hΦb hΦ
   have hOt0 : 0 ≤ Ot := le_trans hOb hO
   have hYt0 : 0 ≤ Yt := le_trans hYb hY
@@ -496,26 +496,26 @@ theorem sharpKey_of_bounds {c₀ c₁ c₂ c₃ S₄ S₅ t : ℝ}
     have := mul_le_mul hOu (div_le_div_of_nonneg_right hS4u (by norm_num : (0:ℝ) ≤ 15)) (by positivity) hOub0
     linarith
   -- factor `t⁷`
-  have eL : 5 * ((c₀ * t + c₂ * t ^ 3 / 6 + S₄ * t ^ 5 / 120) * (S₅ * t ^ 6 / 90) +
-      (c₁ * t ^ 2 / 2 + c₃ * t ^ 4 / 24 + S₅ * t ^ 6 / 720) * (S₄ * t ^ 5 / 15)) =
-      t ^ 7 * (5 * (Et * (S₅ / 90) + Out * (S₄ / 15))) := by
+  have eL : 5 * ((c₀ * t + c₂ * t ^ (3 : ℕ) / 6 + S₄ * t ^ (5 : ℕ) / 120) * (S₅ * t ^ (6 : ℕ) / 90) +
+      (c₁ * t ^ (2 : ℕ) / 2 + c₃ * t ^ (4 : ℕ) / 24 + S₅ * t ^ (6 : ℕ) / 720) * (S₄ * t ^ (5 : ℕ) / 15)) =
+      t ^ (7 : ℕ) * (5 * (Et * (S₅ / 90) + Out * (S₄ / 15))) := by
     rw [← hEt, ← hOut]; ring
-  have eR : 12 * (c₀ * t ^ 2 + c₂ * t ^ 4 / 12 - S₄ * t ^ 6 / 360) *
-      ((c₁ * t ^ 2 / 2 + c₃ * t ^ 4 / 24 - S₅ * t ^ 6 / 720) * (c₂ * t ^ 3 / 3 - S₄ * t ^ 5 / 30) -
-      (c₀ * t + c₂ * t ^ 3 / 6 + S₄ * t ^ 5 / 120) * (c₃ * t ^ 4 / 12 + S₅ * t ^ 6 / 180)) =
-      t ^ 7 * (12 * Φt * (Ot * Yt - Et * Λt)) := by
+  have eR : 12 * (c₀ * t ^ (2 : ℕ) + c₂ * t ^ (4 : ℕ) / 12 - S₄ * t ^ (6 : ℕ) / 360) *
+      ((c₁ * t ^ (2 : ℕ) / 2 + c₃ * t ^ (4 : ℕ) / 24 - S₅ * t ^ (6 : ℕ) / 720) * (c₂ * t ^ (3 : ℕ) / 3 - S₄ * t ^ (5 : ℕ) / 30) -
+      (c₀ * t + c₂ * t ^ (3 : ℕ) / 6 + S₄ * t ^ (5 : ℕ) / 120) * (c₃ * t ^ (4 : ℕ) / 12 + S₅ * t ^ (6 : ℕ) / 180)) =
+      t ^ (7 : ℕ) * (12 * Φt * (Ot * Yt - Et * Λt)) := by
     rw [← hΦt, ← hOt, ← hYt, ← hEt, ← hΛt]; ring
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-  · have : 0 ≤ t * (c₀ + c₂ * t ^ 2 / 6 - S₄ * t ^ 4 / 120) := by
+  · have : 0 ≤ t * (c₀ + c₂ * t ^ (2 : ℕ) / 6 - S₄ * t ^ (4 : ℕ) / 120) := by
       apply mul_nonneg ht0
       linarith
     linarith [this]
-  · have : 0 ≤ t ^ 2 * Ot := mul_nonneg ht20 hOt0
+  · have : 0 ≤ t ^ (2 : ℕ) * Ot := mul_nonneg ht20 hOt0
     rw [← hOt] at this; linarith [this]
-  · have : 0 ≤ t ^ 3 * Yt := mul_nonneg (by positivity) hYt0
+  · have : 0 ≤ t ^ (3 : ℕ) * Yt := mul_nonneg (by positivity) hYt0
     rw [← hYt] at this; linarith [this]
   · positivity
-  · have : 0 ≤ t ^ 2 * Φt := mul_nonneg ht20 hΦt0
+  · have : 0 ≤ t ^ (2 : ℕ) * Φt := mul_nonneg ht20 hΦt0
     rw [← hΦt] at this; linarith [this]
   · rw [eL, eR]
     apply mul_lt_mul_of_pos_left _ ht7

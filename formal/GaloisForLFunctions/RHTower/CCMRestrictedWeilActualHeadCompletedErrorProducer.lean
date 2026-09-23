@@ -10,14 +10,14 @@ import GaloisForLFunctions.RHTower.L2FourierEndpointOrthogonality
 This module closes the regularity and cancellation gap in the Route O producer.  For every actual
 complex `L²` aperture head `f`, the polar autocorrelation debt is exactly
 
-`integral_[0,2a] 2 cosh(h/2) * ||U_h f - f||^2 dh`.
+`integral_[0,2a] 2 cosh(h/2) * ||U_h f - f||^(2 : ℕ) dh`.
 
 The proof starts from the literal mixed CCM polar factorization on strict-interior smooth sources,
 proves continuity of the translation-defect integral on the full aperture Hilbert space, and uses
 the already-certified dense source range.  It therefore introduces no differentiability of the
 head autocorrelation.  Exact null overlap at the aperture-diameter translate also gives
 
-`||U_(2a) f - f||^2 = 2 ||f||^2`.
+`||U_(2a) f - f||^(2 : ℕ) = 2 ||f||^(2 : ℕ)`.
 
 Consequently the prime atoms, polar continuum, and completed endpoint combine into one signed
 quadrature of the same actual-head defect profile.  On canonical finite Gamma--Slepian heads this

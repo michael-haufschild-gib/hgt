@@ -70,12 +70,12 @@ fixed interior point. -/
 def dyadicLogAmplifiedInterpolationPolynomial (A : ℕ) (z : ℂ) : ℂ :=
   ((dyadicLogAmplifiedInterpolationTarget A).re : ℂ) +
     ((2 * (dyadicLogAmplifiedInterpolationTarget A).im : ℝ) : ℂ) *
-      ((z + (3 / 2 : ℂ)) ^ 2 + 15 / 16)
+      ((z + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16)
 
 theorem dyadicLogAmplifiedInterpolationPolynomial_target (A : ℕ) :
     dyadicLogAmplifiedInterpolationPolynomial A nonrealInteriorResponsePoint =
       dyadicLogAmplifiedInterpolationTarget A := by
-  have hu : (nonrealInteriorResponsePoint + (3 / 2 : ℂ)) ^ 2 + 15 / 16 = I / 2 := by
+  have hu : (nonrealInteriorResponsePoint + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16 = I / 2 := by
     rw [nonrealInteriorResponsePoint]
     ring_nf
     rw [Complex.I_sq]
@@ -110,10 +110,10 @@ theorem orderOneEnvelope_dyadicLogAmplifiedInterpolationPolynomial (A : ℕ) :
   have hid : OrderOneEnvelope (fun z : ℂ => z) := orderOneEnvelope_id
   have hc : OrderOneEnvelope (fun z : ℂ => z + (3 / 2 : ℂ)) :=
     hid.add (orderOneEnvelope_const (3 / 2))
-  have hsq : OrderOneEnvelope (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ 2) :=
+  have hsq : OrderOneEnvelope (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ (2 : ℕ)) :=
     (hc.mul hc).congr fun z => by ring
   have hoff : OrderOneEnvelope (fun z : ℂ =>
-      (z + (3 / 2 : ℂ)) ^ 2 + 15 / 16) :=
+      (z + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16) :=
     hsq.add (orderOneEnvelope_const (15 / 16))
   exact ((orderOneEnvelope_const
       ((dyadicLogAmplifiedInterpolationTarget A).re : ℂ)).add
@@ -285,7 +285,7 @@ theorem dyadicLogAmplifiedDensityResponse_iteratedDeriv
   let H : ℂ → ℂ := fun z =>
     completedBlackHoleJetInterpolation z *
       (dyadicLogAmplifiedInterpolationPolynomial A z *
-        anchoredSymmetricJetNullGenerator z) ^ 2
+        anchoredSymmetricJetNullGenerator z) ^ (2 : ℕ)
   have hQ : Differentiable ℂ Q := differentiable_dyadicLogSchwarzEvenProduct
   have hQp : Differentiable ℂ Qp := hQ.pow (A + 1)
   have hH : Differentiable ℂ H := by
@@ -302,20 +302,20 @@ theorem dyadicLogAmplifiedDensityResponse_iteratedDeriv
     intro k hk
     exact iteratedDeriv_pow_eq_zero_before_mul_order hQ hQzero
       (A + 1) k hk
-  have hQpsq : Differentiable ℂ (fun z => Qp z ^ 2) := hQp.pow 2
+  have hQpsq : Differentiable ℂ (fun z => Qp z ^ (2 : ℕ)) := hQp.pow 2
   have hQpsqzero : ∀ k < 2 * ((A + 1) * 2 ^ j),
-      iteratedDeriv k (fun z => Qp z ^ 2) (dyadicLogPhysicalNode j n) = 0 := by
+      iteratedDeriv k (fun z => Qp z ^ (2 : ℕ)) (dyadicLogPhysicalNode j n) = 0 := by
     intro k hk
     exact iteratedDeriv_pow_eq_zero_before_mul_order hQp hQpzero 2 k hk
-  have hprod : Differentiable ℂ (fun z => H z * Qp z ^ 2) := hH.mul hQpsq
-  have hzero : iteratedDeriv r (fun z => H z * Qp z ^ 2)
+  have hprod : Differentiable ℂ (fun z => H z * Qp z ^ (2 : ℕ)) := hH.mul hQpsq
+  have hzero : iteratedDeriv r (fun z => H z * Qp z ^ (2 : ℕ))
       (dyadicLogPhysicalNode j n) = 0 := by
     refine complex_iteratedDeriv_mul_eq_zero_before_add_order
       hH.contDiff.contDiffAt hQpsq.contDiff.contDiffAt
       (m := 0) (n := 2 * ((A + 1) * 2 ^ j))
       (fun k hk => by omega) hQpsqzero (by simpa using hr)
   have hcounter : dyadicLogAmplifiedDensityResponse A = fun z =>
-      completedBlackHoleJetInterpolation z + H z * Qp z ^ 2 := by
+      completedBlackHoleJetInterpolation z + H z * Qp z ^ (2 : ℕ) := by
     funext z
     rw [dyadicLogAmplifiedDensityResponse,
       dyadicLogAmplifiedDensityGauge,
@@ -324,8 +324,8 @@ theorem dyadicLogAmplifiedDensityResponse_iteratedDeriv
     dsimp [H, Qp, Q]
     ring
   rw [hcounter]
-  have hsum : (fun z => completedBlackHoleJetInterpolation z + H z * Qp z ^ 2) =
-      completedBlackHoleJetInterpolation + (fun z => H z * Qp z ^ 2) := rfl
+  have hsum : (fun z => completedBlackHoleJetInterpolation z + H z * Qp z ^ (2 : ℕ)) =
+      completedBlackHoleJetInterpolation + (fun z => H z * Qp z ^ (2 : ℕ)) := rfl
   rw [hsum, iteratedDeriv_add
     differentiable_completedBlackHoleJetInterpolation.contDiff.contDiffAt
     hprod.contDiff.contDiffAt, hzero, add_zero]

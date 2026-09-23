@@ -84,10 +84,10 @@ theorem titchmarsh_logarithmic_weight {h : ℝ} (hh : 0 < h) :
   rw [Real.log_div hhne h4, Real.log_div hhne h8,
     Real.log_div hhne h2]
   have hlog4 : Real.log 4 = 2 * Real.log 2 := by
-    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+    rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.log_pow]
     norm_num
   have hlog8 : Real.log 8 = 3 * Real.log 2 := by
-    rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]
+    rw [show (8 : ℝ) = 2 ^ (3 : ℕ) by norm_num, Real.log_pow]
     norm_num
   rw [hlog4, hlog8]
   have hlog2 : Real.log 2 ≠ 0 := ne_of_gt (Real.log_pos (by norm_num))

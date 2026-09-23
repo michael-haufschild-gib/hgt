@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.ImaginaryAxisPositiveRepair
 
 The polynomial multiplier
 
-`1 + exp(-(N+1)^2) Q(z)^(N+1)`
+`1 + exp(-(N+1)^(2 : ℕ)) Q(z)^(N+1)`
 
 is flat to order `N+1` on one real-even quartet, strictly positive on the imaginary axis, and
 nonconstant.  Multiplying the periodic cosh quartet envelope by it gives an aperiodic, exact-order-one
@@ -63,7 +63,7 @@ theorem guardedClosurePolynomial_conj (a : ℝ) (M : ℕ) (ε : ℝ) (z : ℂ) :
 /-- A nonzero real displacement keeps the selected quartet polynomial away from zero on the
 imaginary axis. -/
 theorem closureQuartetCenter_axis_nondegenerate {a y : ℝ} (ha : a ≠ 0) :
-    ((y : ℂ) ^ 2) + (closureQuartetCenter a) ^ 2 ≠ 0 := by
+    ((y : ℂ) ^ (2 : ℕ)) + (closureQuartetCenter a) ^ (2 : ℕ) ≠ 0 := by
   intro h
   have him := congrArg Complex.im h
   simp [closureQuartetCenter, pow_two, Complex.mul_im] at him
@@ -131,8 +131,8 @@ theorem quartetFlatAtom_neg_parameter (α z : ℂ) :
 /-- Changing the quartet parameter by conjugation does not change its Schwarz-paired atom. -/
 theorem quartetFlatAtom_conj_parameter (α z : ℂ) :
     quartetFlatAtom ((starRingEnd ℂ) α) z = quartetFlatAtom α z := by
-  change (z ^ 2 - (star α) ^ 2) * (z ^ 2 - (star (star α)) ^ 2) =
-    (z ^ 2 - α ^ 2) * (z ^ 2 - (star α) ^ 2)
+  change (z ^ (2 : ℕ) - (star α) ^ (2 : ℕ)) * (z ^ (2 : ℕ) - (star (star α)) ^ (2 : ℕ)) =
+    (z ^ (2 : ℕ) - α ^ (2 : ℕ)) * (z ^ (2 : ℕ) - (star α) ^ (2 : ℕ))
   rw [star_star]
   ring
 
@@ -176,8 +176,8 @@ theorem guardedClosurePolynomial_shift_upperPartner (a ε : ℝ) (M : ℕ) (x : 
 
 theorem closureQuartetCenter_self_factor_ne {a : ℝ} (ha : a ≠ 0) :
     (2 * closureQuartetCenter a) *
-      ((closureQuartetCenter a) ^ 2 -
-        ((starRingEnd ℂ) (closureQuartetCenter a)) ^ 2) ≠ 0 := by
+      ((closureQuartetCenter a) ^ (2 : ℕ) -
+        ((starRingEnd ℂ) (closureQuartetCenter a)) ^ (2 : ℕ)) ≠ 0 := by
   apply mul_ne_zero
   · intro h
     have hre := congrArg Complex.re h
@@ -196,14 +196,14 @@ theorem closureQuartetCenter_self_factor_ne {a : ℝ} (ha : a ≠ 0) :
 
 theorem closureLowerCenter_self_factor_ne {a : ℝ} (ha : a ≠ 0) :
     (2 * closureLowerCenter a) *
-      ((closureLowerCenter a) ^ 2 -
-        ((starRingEnd ℂ) (closureLowerCenter a)) ^ 2) ≠ 0 := by
+      ((closureLowerCenter a) ^ (2 : ℕ) -
+        ((starRingEnd ℂ) (closureLowerCenter a)) ^ (2 : ℕ)) ≠ 0 := by
   simpa [closureLowerCenter] using closureQuartetCenter_self_factor_ne ha
 
 theorem closureUpperPartnerCenter_self_factor_ne {a : ℝ} (ha : a ≠ 0) :
     (2 * closureUpperPartnerCenter a) *
-      ((closureUpperPartnerCenter a) ^ 2 -
-        ((starRingEnd ℂ) (closureUpperPartnerCenter a)) ^ 2) ≠ 0 := by
+      ((closureUpperPartnerCenter a) ^ (2 : ℕ) -
+        ((starRingEnd ℂ) (closureUpperPartnerCenter a)) ^ (2 : ℕ)) ≠ 0 := by
   have hbase := closureLowerCenter_self_factor_ne ha
   have hcenter : closureUpperPartnerCenter a =
       (starRingEnd ℂ) (closureLowerCenter a) := by
@@ -217,7 +217,7 @@ theorem closureUpperPartnerCenter_self_factor_ne {a : ℝ} (ha : a ≠ 0) :
 
 theorem guardedClosureLocalUnit_zero_ne {ε : ℝ} {M : ℕ} {c : ℂ}
     (hε : ε ≠ 0)
-    (hc : (2 * c) * (c ^ 2 - ((starRingEnd ℂ) c) ^ 2) ≠ 0) :
+    (hc : (2 * c) * (c ^ (2 : ℕ) - ((starRingEnd ℂ) c) ^ (2 : ℕ)) ≠ 0) :
     guardedClosureLocalUnit ε M c 0 ≠ 0 := by
   rw [guardedClosureLocalUnit]
   apply mul_ne_zero (ofReal_ne_zero.mpr hε)
@@ -281,21 +281,21 @@ theorem guardedClosure_partner_fluxCorrection_same_prefix
 
 /-- A Gaussian depth scale beats every fixed geometric growth factor. -/
 theorem exp_neg_nat_sq_mul_pow_tendsto_zero {R : ℝ} (hR : 0 < R) :
-    Tendsto (fun n : ℕ => Real.exp (-((n : ℝ) ^ 2)) * R ^ n) atTop (𝓝 0) := by
-  let P : Polynomial ℝ := X ^ 2 - C (Real.log R) * X
+    Tendsto (fun n : ℕ => Real.exp (-((n : ℝ) ^ (2 : ℕ))) * R ^ n) atTop (𝓝 0) := by
+  let P : Polynomial ℝ := X ^ (2 : ℕ) - C (Real.log R) * X
   have hnatlt : (C (Real.log R) * X : Polynomial ℝ).natDegree <
-      (X ^ 2 : Polynomial ℝ).natDegree := by
+      (X ^ (2 : ℕ) : Polynomial ℝ).natDegree := by
     calc
       (C (Real.log R) * X : Polynomial ℝ).natDegree ≤ X.natDegree :=
         natDegree_C_mul_le _ _
-      _ < (X ^ 2 : Polynomial ℝ).natDegree := by simp
+      _ < (X ^ (2 : ℕ) : Polynomial ℝ).natDegree := by simp
   have hdeg : 0 < P.degree := by
     rw [← natDegree_pos_iff_degree_pos]
-    rw [show P = X ^ 2 - C (Real.log R) * X by rfl,
+    rw [show P = X ^ (2 : ℕ) - C (Real.log R) * X by rfl,
       natDegree_sub_eq_left_of_natDegree_lt hnatlt]
     simp
   have hlead : 0 ≤ P.leadingCoeff := by
-    rw [show P = X ^ 2 - C (Real.log R) * X by rfl,
+    rw [show P = X ^ (2 : ℕ) - C (Real.log R) * X by rfl,
       leadingCoeff_sub_of_degree_lt (degree_lt_degree hnatlt)]
     simp
   have htopR : Tendsto (fun x : ℝ => P.eval x) atTop atTop :=
@@ -314,10 +314,10 @@ theorem exp_neg_nat_sq_mul_pow_tendsto_zero {R : ℝ} (hR : 0 < R) :
   ring
 
 theorem exp_neg_nat_sq_mul_pow_tendsto_zero_of_nonneg {R : ℝ} (hR : 0 ≤ R) :
-    Tendsto (fun n : ℕ => Real.exp (-((n : ℝ) ^ 2)) * R ^ n) atTop (𝓝 0) := by
+    Tendsto (fun n : ℕ => Real.exp (-((n : ℝ) ^ (2 : ℕ))) * R ^ n) atTop (𝓝 0) := by
   rcases hR.eq_or_lt with rfl | hpos
   · refine (tendsto_congr' (show ∀ᶠ n : ℕ in atTop,
-      Real.exp (-((n : ℝ) ^ 2)) * 0 ^ n = 0 by
+      Real.exp (-((n : ℝ) ^ (2 : ℕ))) * 0 ^ n = 0 by
         filter_upwards [eventually_ge_atTop 1] with n hn
         simp [Nat.ne_of_gt hn])).mpr ?_
     exact tendsto_const_nhds
@@ -325,7 +325,7 @@ theorem exp_neg_nat_sq_mul_pow_tendsto_zero_of_nonneg {R : ℝ} (hR : 0 ≤ R) :
 
 /-- Superexponential scale used to pass from finite-depth realizers to the periodic boundary. -/
 def guardedClosureScale (N : ℕ) : ℝ :=
-  Real.exp (-(((N + 1 : ℕ) : ℝ) ^ 2))
+  Real.exp (-(((N + 1 : ℕ) : ℝ) ^ (2 : ℕ)))
 
 /-- The guarded aperiodic realizer at contact depth `N`. -/
 def guardedClosureApproximant (a : ℝ) (N : ℕ) (z : ℂ) : ℂ :=
@@ -341,7 +341,7 @@ theorem guardedClosureApproximant_tendsto (a : ℝ) (z : ℂ) :
   have hnorm : Tendsto
       (fun N : ℕ => ‖((guardedClosureScale N : ℝ) : ℂ) * q ^ (N + 1)‖) atTop (𝓝 0) := by
     rw [show (fun N : ℕ => ‖((guardedClosureScale N : ℝ) : ℂ) * q ^ (N + 1)‖) =
-        fun N : ℕ => Real.exp (-((((N + 1 : ℕ) : ℝ)) ^ 2)) * ‖q‖ ^ (N + 1) by
+        fun N : ℕ => Real.exp (-((((N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))) * ‖q‖ ^ (N + 1) by
       funext N
       rw [norm_mul, norm_pow]
       rw [Complex.norm_real, Real.norm_eq_abs, guardedClosureScale,

@@ -64,55 +64,55 @@ theorem rayleigh_lower_of_blocks {N J : ℕ} (hJ : 0 < J) {η m : ℝ} (hη : 0 
     (hBmass : ∀ i, m ≤ ∑ r ∈ B i, w r)
     (c : Fin J → ℝ) :
     (m / ((J : ℝ) * (2 * (((J : ℝ)) * (2 ^ (J - 1) / (η ^ (J - 1) * ((J - 1).factorial))))
-        * unitCoeffConstSum J) ^ 2)) * (∑ k, c k ^ 2)
-      ≤ ∑ r, w r * (Polynomial.eval (x r) (Polynomial.ofFn J c)) ^ 2 := by
+        * unitCoeffConstSum J) ^ (2 : ℕ))) * (∑ k, c k ^ (2 : ℕ))
+      ≤ ∑ r, w r * (Polynomial.eval (x r) (Polynomial.ofFn J c)) ^ (2 : ℕ) := by
   classical
   set P : Polynomial ℝ := Polynomial.ofFn J c with hPdef
-  set E : ℝ := ∑ r, w r * (Polynomial.eval (x r) P) ^ 2 with hEdef
+  set E : ℝ := ∑ r, w r * (Polynomial.eval (x r) P) ^ (2 : ℕ) with hEdef
   set Kc : ℝ := ((J : ℝ)) * (2 ^ (J - 1) / (η ^ (J - 1) * ((J - 1).factorial))) with hKcdef
   set U : ℝ := unitCoeffConstSum J with hUdef
   have hE0 : 0 ≤ E := Finset.sum_nonneg fun r _ => mul_nonneg (hw r).le (sq_nonneg _)
   set ε : ℝ := Real.sqrt (E / m) with hepsdef
   have heps0 : 0 ≤ ε := Real.sqrt_nonneg _
-  have hepssq : ε ^ 2 = E / m := Real.sq_sqrt (by positivity)
+  have hepssq : ε ^ (2 : ℕ) = E / m := Real.sq_sqrt (by positivity)
   -- each block average is at most `ε` times the block mass
   have hblock : ∀ i : Fin J,
       |∑ r ∈ B i, w r * Polynomial.eval (x r) P| ≤ ε * ∑ r ∈ B i, w r := by
     intro i
     have hWi : 0 < ∑ r ∈ B i, w r := lt_of_lt_of_le hm (hBmass i)
-    have hCS : (∑ r ∈ B i, Polynomial.eval (x r) P * w r) ^ 2
-        ≤ (∑ r ∈ B i, (Polynomial.eval (x r) P) ^ 2 * w r) * ∑ r ∈ B i, w r := by
+    have hCS : (∑ r ∈ B i, Polynomial.eval (x r) P * w r) ^ (2 : ℕ)
+        ≤ (∑ r ∈ B i, (Polynomial.eval (x r) P) ^ (2 : ℕ) * w r) * ∑ r ∈ B i, w r := by
       have h := Finset.sum_mul_sq_le_sq_mul_sq (B i)
         (fun r => Polynomial.eval (x r) P * Real.sqrt (w r)) (fun r => Real.sqrt (w r))
       have hL : ∀ r ∈ B i, (Polynomial.eval (x r) P * Real.sqrt (w r)) * Real.sqrt (w r)
           = Polynomial.eval (x r) P * w r := by
         intro r _
         rw [mul_assoc, Real.mul_self_sqrt (hw r).le]
-      have hL2 : ∀ r ∈ B i, (Polynomial.eval (x r) P * Real.sqrt (w r)) ^ 2
-          = (Polynomial.eval (x r) P) ^ 2 * w r := by
+      have hL2 : ∀ r ∈ B i, (Polynomial.eval (x r) P * Real.sqrt (w r)) ^ (2 : ℕ)
+          = (Polynomial.eval (x r) P) ^ (2 : ℕ) * w r := by
         intro r _
         rw [mul_pow, Real.sq_sqrt (hw r).le]
-      have hR2 : ∀ r ∈ B i, (Real.sqrt (w r)) ^ 2 = w r := by
+      have hR2 : ∀ r ∈ B i, (Real.sqrt (w r)) ^ (2 : ℕ) = w r := by
         intro r _
         rw [Real.sq_sqrt (hw r).le]
       rw [Finset.sum_congr rfl hL, Finset.sum_congr rfl hL2, Finset.sum_congr rfl hR2] at h
       exact h
-    have hEblock : ∑ r ∈ B i, (Polynomial.eval (x r) P) ^ 2 * w r ≤ E := by
+    have hEblock : ∑ r ∈ B i, (Polynomial.eval (x r) P) ^ (2 : ℕ) * w r ≤ E := by
       rw [hEdef]
       refine Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) ?_ |>.trans_eq ?_
       · intro r _ _
         exact mul_nonneg (sq_nonneg _) (hw r).le
       · exact Finset.sum_congr rfl fun r _ => by ring
-    have hsq : (∑ r ∈ B i, w r * Polynomial.eval (x r) P) ^ 2 ≤ (ε * ∑ r ∈ B i, w r) ^ 2 := by
+    have hsq : (∑ r ∈ B i, w r * Polynomial.eval (x r) P) ^ (2 : ℕ) ≤ (ε * ∑ r ∈ B i, w r) ^ (2 : ℕ) := by
       have hcomm : ∑ r ∈ B i, w r * Polynomial.eval (x r) P
           = ∑ r ∈ B i, Polynomial.eval (x r) P * w r :=
         Finset.sum_congr rfl fun r _ => mul_comm _ _
       rw [hcomm, mul_pow, hepssq]
-      have hstep : (∑ r ∈ B i, Polynomial.eval (x r) P * w r) ^ 2 ≤ E * ∑ r ∈ B i, w r := by
+      have hstep : (∑ r ∈ B i, Polynomial.eval (x r) P * w r) ^ (2 : ℕ) ≤ E * ∑ r ∈ B i, w r := by
         refine hCS.trans ?_
         exact mul_le_mul_of_nonneg_right hEblock hWi.le
       have hmass : m ≤ ∑ r ∈ B i, w r := hBmass i
-      have hfinal : E * ∑ r ∈ B i, w r ≤ E / m * (∑ r ∈ B i, w r) ^ 2 := by
+      have hfinal : E * ∑ r ∈ B i, w r ≤ E / m * (∑ r ∈ B i, w r) ^ (2 : ℕ) := by
         rw [div_mul_eq_mul_div, le_div_iff₀ hm]
         nlinarith [hE0, hWi, hmass]
       exact hstep.trans hfinal
@@ -154,19 +154,19 @@ theorem rayleigh_lower_of_blocks {N J : ℕ} (hJ : 0 < J) {η m : ℝ} (hη : 0 
       linarith
     exact mul_le_mul_of_nonneg_right this heps0
   -- assemble
-  have hCsum : ∑ k, c k ^ 2 ≤ (J : ℝ) * (2 * Kc * U) ^ 2 * ε ^ 2 := by
-    have hterm : ∀ k : Fin J, c k ^ 2 ≤ (2 * Kc * U) ^ 2 * ε ^ 2 := by
+  have hCsum : ∑ k, c k ^ (2 : ℕ) ≤ (J : ℝ) * (2 * Kc * U) ^ (2 : ℕ) * ε ^ (2 : ℕ) := by
+    have hterm : ∀ k : Fin J, c k ^ (2 : ℕ) ≤ (2 * Kc * U) ^ (2 : ℕ) * ε ^ (2 : ℕ) := by
       intro k
       have h1 := hcoeff k
-      have h2 : |c k| ^ 2 = c k ^ 2 := sq_abs _
+      have h2 : |c k| ^ (2 : ℕ) = c k ^ (2 : ℕ) := sq_abs _
       nlinarith [abs_nonneg (c k), h1]
-    calc ∑ k, c k ^ 2 ≤ ∑ _k : Fin J, (2 * Kc * U) ^ 2 * ε ^ 2 :=
+    calc ∑ k, c k ^ (2 : ℕ) ≤ ∑ _k : Fin J, (2 * Kc * U) ^ (2 : ℕ) * ε ^ (2 : ℕ) :=
           Finset.sum_le_sum fun k _ => hterm k
-      _ = (J : ℝ) * (2 * Kc * U) ^ 2 * ε ^ 2 := by
+      _ = (J : ℝ) * (2 * Kc * U) ^ (2 : ℕ) * ε ^ (2 : ℕ) := by
           rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
           ring
-  have hden : (0:ℝ) < (J : ℝ) * (2 * Kc * U) ^ 2 ∨ (2 * Kc * U) = 0 := by
-    rcases eq_or_lt_of_le (by positivity : (0:ℝ) ≤ (2 * Kc * U) ^ 2) with h | h
+  have hden : (0:ℝ) < (J : ℝ) * (2 * Kc * U) ^ (2 : ℕ) ∨ (2 * Kc * U) = 0 := by
+    rcases eq_or_lt_of_le (by positivity : (0:ℝ) ≤ (2 * Kc * U) ^ (2 : ℕ)) with h | h
     · right
       have := (pow_eq_zero_iff (n := 2) (by norm_num)).mp h.symm
       exact this
@@ -178,15 +178,15 @@ theorem rayleigh_lower_of_blocks {N J : ℕ} (hJ : 0 < J) {η m : ℝ} (hη : 0 
     have := hCsum
     rw [hepssq] at this
     have hJ0 : (0:ℝ) < (J : ℝ) := by exact_mod_cast hJ
-    calc m * ∑ k, c k ^ 2
-        ≤ m * ((J : ℝ) * (2 * Kc * U) ^ 2 * (E / m)) :=
+    calc m * ∑ k, c k ^ (2 : ℕ)
+        ≤ m * ((J : ℝ) * (2 * Kc * U) ^ (2 : ℕ) * (E / m)) :=
           mul_le_mul_of_nonneg_left this hm.le
-      _ = E * ((J : ℝ) * (2 * Kc * U) ^ 2) := by field_simp
-  · have hz : ∑ k, c k ^ 2 ≤ 0 := by
+      _ = E * ((J : ℝ) * (2 * Kc * U) ^ (2 : ℕ)) := by field_simp
+  · have hz : ∑ k, c k ^ (2 : ℕ) ≤ 0 := by
       have := hCsum
       rw [hzero] at this
       simpa using this
-    have hz0 : ∑ k, c k ^ 2 = 0 :=
+    have hz0 : ∑ k, c k ^ (2 : ℕ) = 0 :=
       le_antisymm hz (Finset.sum_nonneg fun k _ => sq_nonneg _)
     rw [hz0, mul_zero]
     exact hE0
@@ -196,8 +196,8 @@ content of Andersson's Lemma 4: a Rayleigh floor for the nodal energy and a smal
 produce a polynomial bounded by one on the unit interval whose weighted moments hit the target. -/
 theorem exists_unit_polynomial_solution {N J : ℕ} (hJ : 0 < J) {lam : ℝ} (hlam : 0 < lam)
     (x w : Fin N → ℝ)
-    (hquad : ∀ a : Fin J → ℝ, lam * (∑ i, a i ^ 2) ≤ a ⬝ᵥ (atomicHankel w x J).mulVec a)
-    (ξ : Fin J → ℝ) (hξ : (J : ℝ) * (∑ k, ξ k ^ 2) ≤ lam ^ 2) :
+    (hquad : ∀ a : Fin J → ℝ, lam * (∑ i, a i ^ (2 : ℕ)) ≤ a ⬝ᵥ (atomicHankel w x J).mulVec a)
+    (ξ : Fin J → ℝ) (hξ : (J : ℝ) * (∑ k, ξ k ^ (2 : ℕ)) ≤ lam ^ (2 : ℕ)) :
     ∃ c : Fin J → ℝ, (atomicHankel w x J).mulVec c = ξ ∧
       ∀ t ∈ Set.Icc (0:ℝ) 1, |Polynomial.eval t (Polynomial.ofFn J c)| ≤ 1 := by
   classical
@@ -216,22 +216,22 @@ theorem exists_unit_polynomial_solution {N J : ℕ} (hJ : 0 < J) {lam : ℝ} (hl
     calc |c k| * |t ^ (k : ℕ)| ≤ |c k| * 1 :=
           mul_le_mul_of_nonneg_left hpow (abs_nonneg _)
       _ = |c k| := by ring
-  have hCS : (∑ k : Fin J, |c k|) ^ 2 ≤ (J : ℝ) * ∑ k : Fin J, c k ^ 2 := by
+  have hCS : (∑ k : Fin J, |c k|) ^ (2 : ℕ) ≤ (J : ℝ) * ∑ k : Fin J, c k ^ (2 : ℕ) := by
     have h := Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset (Fin J))
       (fun k => |c k|) (fun _ => (1:ℝ))
     simp only [mul_one, one_pow, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
       nsmul_eq_mul, sq_abs] at h
-    calc (∑ k : Fin J, |c k|) ^ 2 ≤ (∑ k : Fin J, c k ^ 2) * (J : ℝ) := h
-      _ = (J : ℝ) * ∑ k : Fin J, c k ^ 2 := by ring
-  have hcsum : lam ^ 2 * (∑ k, c k ^ 2) ≤ ∑ k, ξ k ^ 2 := hcbound
+    calc (∑ k : Fin J, |c k|) ^ (2 : ℕ) ≤ (∑ k : Fin J, c k ^ (2 : ℕ)) * (J : ℝ) := h
+      _ = (J : ℝ) * ∑ k : Fin J, c k ^ (2 : ℕ) := by ring
+  have hcsum : lam ^ (2 : ℕ) * (∑ k, c k ^ (2 : ℕ)) ≤ ∑ k, ξ k ^ (2 : ℕ) := hcbound
   have hJ0 : (0:ℝ) < (J : ℝ) := by exact_mod_cast hJ
-  have hfinal : (∑ k : Fin J, |c k|) ^ 2 ≤ 1 := by
-    have h1 : (J : ℝ) * ∑ k : Fin J, c k ^ 2 ≤ (J : ℝ) * ((∑ k, ξ k ^ 2) / lam ^ 2) := by
+  have hfinal : (∑ k : Fin J, |c k|) ^ (2 : ℕ) ≤ 1 := by
+    have h1 : (J : ℝ) * ∑ k : Fin J, c k ^ (2 : ℕ) ≤ (J : ℝ) * ((∑ k, ξ k ^ (2 : ℕ)) / lam ^ (2 : ℕ)) := by
       refine mul_le_mul_of_nonneg_left ?_ hJ0.le
       rw [le_div_iff₀ (by positivity)]
-      calc (∑ k, c k ^ 2) * lam ^ 2 = lam ^ 2 * ∑ k, c k ^ 2 := by ring
-        _ ≤ ∑ k, ξ k ^ 2 := hcsum
-    have h2 : (J : ℝ) * ((∑ k, ξ k ^ 2) / lam ^ 2) ≤ 1 := by
+      calc (∑ k, c k ^ (2 : ℕ)) * lam ^ (2 : ℕ) = lam ^ (2 : ℕ) * ∑ k, c k ^ (2 : ℕ) := by ring
+        _ ≤ ∑ k, ξ k ^ (2 : ℕ) := hcsum
+    have h2 : (J : ℝ) * ((∑ k, ξ k ^ (2 : ℕ)) / lam ^ (2 : ℕ)) ≤ 1 := by
       rw [mul_div_assoc'] at *
       rw [div_le_one (by positivity)]
       exact hξ

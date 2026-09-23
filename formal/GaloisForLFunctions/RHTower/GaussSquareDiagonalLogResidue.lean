@@ -48,9 +48,9 @@ theorem exists_norm_gaussSampleValue_pow_mul_succ_le {m : ℕ} (hm : 1 ≤ m) (k
 theorem inner_one_gaussPrincipalStep_sq {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
     (hp : (1 : ℝ) < (p : ℝ)) (i : ℤ) :
     (inner ℂ (fourierLp 2 0)
-        ((gaussPrincipalStepBlock hm k p hp i ^ 2) (fourierLp 2 0)) : ℂ)
-      = ((‖gaussPrincipalStepBlock hm k p hp i (fourierLp 2 0)‖ ^ 2 : ℝ) : ℂ) := by
-  have happ : (gaussPrincipalStepBlock hm k p hp i ^ 2) (fourierLp 2 0)
+        ((gaussPrincipalStepBlock hm k p hp i ^ (2 : ℕ)) (fourierLp 2 0)) : ℂ)
+      = ((‖gaussPrincipalStepBlock hm k p hp i (fourierLp 2 0)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
+  have happ : (gaussPrincipalStepBlock hm k p hp i ^ (2 : ℕ)) (fourierLp 2 0)
       = gaussPrincipalStepBlock hm k p hp i
           (gaussPrincipalStepBlock hm k p hp i (fourierLp 2 0)) := by
     rw [pow_two]
@@ -63,18 +63,18 @@ theorem inner_one_gaussPrincipalStep_sq {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p 
 amplitude. -/
 theorem norm_sq_gaussMovingAmplitude_one {p : ℝ} (hp : 1 < p) {s : ℝ}
     (hs0 : 0 ≤ s) (hs1 : s < 1) :
-    ((‖gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) (fourierLp 2 0)‖ ^ 2 : ℝ) : ℂ)
+    ((‖gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) (fourierLp 2 0)‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ((gaussAmplitudeSegment p 2 s : ℝ) : ℂ) := by
-  have happ : (gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) ^ 2)
+  have happ : (gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) ^ (2 : ℕ))
       (fourierLp 2 0)
       = gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ))
           (gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) (fourierLp 2 0)) := by
     rw [pow_two]
     rfl
   have hfold : ((‖gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ))
-      (fourierLp 2 0)‖ ^ 2 : ℝ) : ℂ)
+      (fourierLp 2 0)‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = inner ℂ (fourierLp 2 0)
-          ((gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) ^ 2)
+          ((gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) ^ (2 : ℕ))
             (fourierLp 2 0)) := by
     rw [happ, ← gaussMovingAmplitudeBlock_inner hp _ (fourierLp 2 0),
       inner_self_eq_norm_sq_to_K]
@@ -118,7 +118,7 @@ period average is at most the relative factor. -/
 theorem norm_inner_one_gaussPrincipalStep_sq_sub_le {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
     (p : Nat.Primes) (hp : (1 : ℝ) < (p : ℝ)) (i : ℤ) :
     ‖(inner ℂ (fourierLp 2 0)
-        ((gaussPrincipalStepBlock hm k p hp i ^ 2) (fourierLp 2 0)) : ℂ) -
+        ((gaussPrincipalStepBlock hm k p hp i ^ (2 : ℕ)) (fourierLp 2 0)) : ℂ) -
       ((gaussAmplitudeSegment (p : ℝ) 2 (Int.fract (gaussSamplePhase m p i)) : ℝ) : ℂ)‖
       ≤ gaussSquareRelativeFactor hm k p hp i := by
   have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
@@ -133,7 +133,7 @@ theorem norm_inner_one_gaussPrincipalStep_sq_sub_le {m : ℕ} (hm : 1 ≤ m) (k 
   have hs0 : 0 ≤ Int.fract (gaussSamplePhase m p i) := Int.fract_nonneg _
   have hs1 : Int.fract (gaussSamplePhase m p i) < 1 := Int.fract_lt_one _
   have hAval : ((gaussAmplitudeSegment (p : ℝ) 2 (Int.fract (gaussSamplePhase m p i)) : ℝ) : ℂ)
-      = ((‖a‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [ha, hδ]
     exact (norm_sq_gaussMovingAmplitude_one hp hs0 hs1).symm
   rw [inner_one_gaussPrincipalStep_sq hm k p hp i, hAval, ← hR1, ← Complex.ofReal_sub,
@@ -147,8 +147,8 @@ theorem norm_inner_one_gaussPrincipalStep_sq_sub_le {m : ℕ} (hm : 1 ≤ m) (k 
     have h := norm_add_le (R1 - a) a
     rwa [sub_add_cancel] at h
   have habs : |‖R1‖ - ‖a‖| ≤ ‖R1 - a‖ := abs_norm_sub_norm_le R1 a
-  have hfactor : |‖R1‖ ^ 2 - ‖a‖ ^ 2| = |‖R1‖ - ‖a‖| * (‖R1‖ + ‖a‖) := by
-    rw [show ‖R1‖ ^ 2 - ‖a‖ ^ 2 = (‖R1‖ - ‖a‖) * (‖R1‖ + ‖a‖) from by ring, abs_mul,
+  have hfactor : |‖R1‖ ^ (2 : ℕ) - ‖a‖ ^ (2 : ℕ)| = |‖R1‖ - ‖a‖| * (‖R1‖ + ‖a‖) := by
+    rw [show ‖R1‖ ^ (2 : ℕ) - ‖a‖ ^ (2 : ℕ) = (‖R1‖ - ‖a‖) * (‖R1‖ + ‖a‖) from by ring, abs_mul,
       abs_of_nonneg (add_nonneg (norm_nonneg R1) (norm_nonneg a))]
   rw [gaussSquareRelativeFactor, ← hR1, ← ha, hfactor]
   have hsum : ‖R1‖ + ‖a‖ ≤ ‖R1 - a‖ + 2 * (p : ℝ) := by
@@ -166,11 +166,11 @@ theorem tendsto_gaussSquareFourierDiagonal_logResidue (k : Fin 2) (p : Nat.Prime
     Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range N,
         ((inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-            ((gaussQuasiInnerGFull one_le_two k p ^ 2) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
+            ((gaussQuasiInnerGFull one_le_two k p ^ (2 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
           inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-            ((gaussQuasiInnerGFull one_le_two k p ^ 2)
+            ((gaussQuasiInnerGFull one_le_two k p ^ (2 : ℕ))
               (fourierLp 2 (-((n : ℤ) + 1)))))) / (Real.log N : ℂ))
-      atTop (nhds ((2 * ((p : ℝ) ^ 2 - 1) ^ 2 / (4 * Real.log (p : ℝ)) : ℝ) : ℂ)) := by
+      atTop (nhds ((2 * ((p : ℝ) ^ (2 : ℕ) - 1) ^ (2 : ℕ) / (4 * Real.log (p : ℝ)) : ℝ) : ℂ)) := by
   have hm : (1 : ℕ) ≤ 2 := one_le_two
   have hm2 : (2 : ℕ) ≤ 2 := le_refl 2
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
@@ -192,25 +192,25 @@ theorem tendsto_gaussSquareFourierDiagonal_logResidue (k : Fin 2) (p : Nat.Prime
     tendsto_gaussSquareRelativeFactor hm2 k p hp hιm
   set S : ℕ → ℂ := fun n =>
     (inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-        ((gaussQuasiInnerGFull hm k p ^ 2) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
+        ((gaussQuasiInnerGFull hm k p ^ (2 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
       inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-        ((gaussQuasiInnerGFull hm k p ^ 2) (fourierLp 2 (-((n : ℤ) + 1)))) with hSdef
+        ((gaussQuasiInnerGFull hm k p ^ (2 : ℕ)) (fourierLp 2 (-((n : ℤ) + 1)))) with hSdef
   set err : ℕ → ℂ := fun n => S n - gaussPrincipalDiagonalTerm k p n with herrdef
   -- the diagonal of `G²` at a nonzero frequency is the squared step scalar times `⟨1, R²·1⟩`
   have hdiag : ∀ i : ℤ, i ≠ 0 →
       (inner ℂ (fourierLp 2 i)
-          ((gaussQuasiInnerG hm k p ^ 2) (fourierLp 2 i)) : ℂ)
+          ((gaussQuasiInnerG hm k p ^ (2 : ℕ)) (fourierLp 2 i)) : ℂ)
         = ((((p : ℝ) : ℂ) *
-              (starRingEnd ℂ (gaussSampleValue k p i) * gaussSampleValue k p i)) ^ 2) *
+              (starRingEnd ℂ (gaussSampleValue k p i) * gaussSampleValue k p i)) ^ (2 : ℕ)) *
             inner ℂ (fourierLp 2 0)
-              ((gaussPrincipalStepBlock hm k p hp i ^ 2) (fourierLp 2 0)) := by
+              ((gaussPrincipalStepBlock hm k p hp i ^ (2 : ℕ)) (fourierLp 2 0)) := by
     intro i hi
     have hblock := gaussQuasiInnerG_pow_fourierMulBlock hm k p hp hi (fourierLp 2 0) 2
     rw [← fourierMulBlock_fourierLp_zero i, hblock, inner_smul_right,
       fourierMulBlock_inner]
   -- the pointwise relative bound
   have hbound : ∀ n : ℕ, ((n : ℝ) + 1) * ‖err n‖
-      ≤ gaussArchScale 2 ^ (2 * 2) * ((p : ℝ) ^ 2 * C) *
+      ≤ gaussArchScale 2 ^ (2 * 2) * ((p : ℝ) ^ (2 : ℕ) * C) *
         (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by
     intro n
     have hip : ((n : ℤ) + 1) ≠ 0 := by omega
@@ -220,14 +220,14 @@ theorem tendsto_gaussSquareFourierDiagonal_logResidue (k : Fin 2) (p : Nat.Prime
       (starRingEnd ℂ (gaussSampleValue k p ((n : ℤ) + 1)) *
         gaussSampleValue k p ((n : ℤ) + 1)) with hσ
     set X : ℂ := (inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-        ((gaussQuasiInnerG hm k p ^ 2) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) -
-      σ ^ 2 * ((gaussAmplitudeSegment (p : ℝ) 2
+        ((gaussQuasiInnerG hm k p ^ (2 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) -
+      σ ^ (2 : ℕ) * ((gaussAmplitudeSegment (p : ℝ) 2
           (Int.fract (gaussSamplePhase 2 p ((n : ℤ) + 1))) : ℝ) : ℂ) with hX
     set Y : ℂ := (inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-        ((gaussQuasiInnerG hm k p ^ 2) (fourierLp 2 (-((n : ℤ) + 1)))) : ℂ) -
+        ((gaussQuasiInnerG hm k p ^ (2 : ℕ)) (fourierLp 2 (-((n : ℤ) + 1)))) : ℂ) -
       (((p : ℝ) : ℂ) *
           (starRingEnd ℂ (gaussSampleValue k p (-((n : ℤ) + 1))) *
-            gaussSampleValue k p (-((n : ℤ) + 1)))) ^ 2 *
+            gaussSampleValue k p (-((n : ℤ) + 1)))) ^ (2 : ℕ) *
         ((gaussAmplitudeSegment (p : ℝ) 2
           (Int.fract (gaussSamplePhase 2 p (-((n : ℤ) + 1)))) : ℝ) : ℂ) with hY
     have hsplit : err n = ((gaussArchScale 2 ^ (2 * 2) : ℝ) : ℂ) * (X + Y) := by
@@ -244,56 +244,56 @@ theorem tendsto_gaussSquareFourierDiagonal_logResidue (k : Fin 2) (p : Nat.Prime
       simp only [hX, hY, hσ, hphase]
       rw [gaussSampleValue_neg, Complex.conj_conj]
       ring
-    have hscalar : ‖σ ^ 2‖ * ((n : ℝ) + 1) ≤ (p : ℝ) ^ 2 * C := by
-      have hnormσ : ‖σ‖ = (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 := by
+    have hscalar : ‖σ ^ (2 : ℕ)‖ * ((n : ℝ) + 1) ≤ (p : ℝ) ^ (2 : ℕ) * C := by
+      have hnormσ : ‖σ‖ = (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) := by
         rw [hσ, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
           abs_of_pos hppos, RCLike.norm_conj]
         ring
       have hCn := hCb n
       rw [norm_pow, hnormσ]
-      calc ((p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2) ^ 2 * ((n : ℝ) + 1)
-          = (p : ℝ) ^ 2 *
+      calc ((p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ)) ^ (2 : ℕ) * ((n : ℝ) + 1)
+          = (p : ℝ) ^ (2 : ℕ) *
             (‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 * 2) * ((n : ℝ) + 1)) := by
             ring
-        _ ≤ (p : ℝ) ^ 2 * C := by
+        _ ≤ (p : ℝ) ^ (2 : ℕ) * C := by
             exact mul_le_mul_of_nonneg_left hCn (by positivity)
-    have hXbound : ‖X‖ ≤ ‖σ ^ 2‖ * F ((n : ℤ) + 1) := by
+    have hXbound : ‖X‖ ≤ ‖σ ^ (2 : ℕ)‖ * F ((n : ℤ) + 1) := by
       have hd := hdiag ((n : ℤ) + 1) hip
       have hrel := norm_inner_one_gaussPrincipalStep_sq_sub_le hm k p hp ((n : ℤ) + 1)
-      calc ‖X‖ = ‖σ ^ 2 *
+      calc ‖X‖ = ‖σ ^ (2 : ℕ) *
             ((inner ℂ (fourierLp 2 0)
-                ((gaussPrincipalStepBlock hm k p hp ((n : ℤ) + 1) ^ 2)
+                ((gaussPrincipalStepBlock hm k p hp ((n : ℤ) + 1) ^ (2 : ℕ))
                   (fourierLp 2 0)) : ℂ) -
               ((gaussAmplitudeSegment (p : ℝ) 2
                 (Int.fract (gaussSamplePhase 2 p ((n : ℤ) + 1))) : ℝ) : ℂ))‖ := by
             rw [hX, hd, hσ, mul_sub]
-        _ = ‖σ ^ 2‖ * ‖(inner ℂ (fourierLp 2 0)
-              ((gaussPrincipalStepBlock hm k p hp ((n : ℤ) + 1) ^ 2)
+        _ = ‖σ ^ (2 : ℕ)‖ * ‖(inner ℂ (fourierLp 2 0)
+              ((gaussPrincipalStepBlock hm k p hp ((n : ℤ) + 1) ^ (2 : ℕ))
                 (fourierLp 2 0)) : ℂ) -
               ((gaussAmplitudeSegment (p : ℝ) 2
                 (Int.fract (gaussSamplePhase 2 p ((n : ℤ) + 1))) : ℝ) : ℂ)‖ := norm_mul _ _
-        _ ≤ ‖σ ^ 2‖ * F ((n : ℤ) + 1) :=
+        _ ≤ ‖σ ^ (2 : ℕ)‖ * F ((n : ℤ) + 1) :=
             mul_le_mul_of_nonneg_left hrel (norm_nonneg _)
     have hσm : ‖(((p : ℝ) : ℂ) *
         (starRingEnd ℂ (gaussSampleValue k p (-((n : ℤ) + 1))) *
-          gaussSampleValue k p (-((n : ℤ) + 1)))) ^ 2‖ = ‖σ ^ 2‖ := by
+          gaussSampleValue k p (-((n : ℤ) + 1)))) ^ (2 : ℕ)‖ = ‖σ ^ (2 : ℕ)‖ := by
       rw [norm_pow, norm_pow]
       congr 1
       rw [hσ, norm_mul, norm_mul, norm_mul, norm_mul, RCLike.norm_conj, RCLike.norm_conj,
         gaussSampleValue_neg, RCLike.norm_conj]
-    have hYbound : ‖Y‖ ≤ ‖σ ^ 2‖ * F (-((n : ℤ) + 1)) := by
+    have hYbound : ‖Y‖ ≤ ‖σ ^ (2 : ℕ)‖ * F (-((n : ℤ) + 1)) := by
       have hd := hdiag (-((n : ℤ) + 1)) him
       have hrel := norm_inner_one_gaussPrincipalStep_sq_sub_le hm k p hp (-((n : ℤ) + 1))
       calc ‖Y‖ = ‖(((p : ℝ) : ℂ) *
             (starRingEnd ℂ (gaussSampleValue k p (-((n : ℤ) + 1))) *
-              gaussSampleValue k p (-((n : ℤ) + 1)))) ^ 2‖ *
+              gaussSampleValue k p (-((n : ℤ) + 1)))) ^ (2 : ℕ)‖ *
             ‖(inner ℂ (fourierLp 2 0)
-                ((gaussPrincipalStepBlock hm k p hp (-((n : ℤ) + 1)) ^ 2)
+                ((gaussPrincipalStepBlock hm k p hp (-((n : ℤ) + 1)) ^ (2 : ℕ))
                   (fourierLp 2 0)) : ℂ) -
               ((gaussAmplitudeSegment (p : ℝ) 2
                 (Int.fract (gaussSamplePhase 2 p (-((n : ℤ) + 1)))) : ℝ) : ℂ)‖ := by
             rw [hY, hd, ← mul_sub, norm_mul]
-        _ ≤ ‖σ ^ 2‖ * F (-((n : ℤ) + 1)) := by
+        _ ≤ ‖σ ^ (2 : ℕ)‖ * F (-((n : ℤ) + 1)) := by
             rw [hσm]
             exact mul_le_mul_of_nonneg_left hrel (norm_nonneg _)
     have hFsum : (0 : ℝ) ≤ F ((n : ℤ) + 1) + F (-((n : ℤ) + 1)) :=
@@ -304,24 +304,24 @@ theorem tendsto_gaussSquareFourierDiagonal_logResidue (k : Fin 2) (p : Nat.Prime
           rw [hsplit, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg harch]
           exact mul_le_mul_of_nonneg_left (norm_add_le _ _) harch
       _ ≤ ((n : ℝ) + 1) * (gaussArchScale 2 ^ (2 * 2) *
-            (‖σ ^ 2‖ * (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))))) := by
+            (‖σ ^ (2 : ℕ)‖ * (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))))) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ harch) hnn
-          calc ‖X‖ + ‖Y‖ ≤ ‖σ ^ 2‖ * F ((n : ℤ) + 1) + ‖σ ^ 2‖ * F (-((n : ℤ) + 1)) :=
+          calc ‖X‖ + ‖Y‖ ≤ ‖σ ^ (2 : ℕ)‖ * F ((n : ℤ) + 1) + ‖σ ^ (2 : ℕ)‖ * F (-((n : ℤ) + 1)) :=
                 add_le_add hXbound hYbound
-            _ = ‖σ ^ 2‖ * (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by ring
-      _ = gaussArchScale 2 ^ (2 * 2) * (‖σ ^ 2‖ * ((n : ℝ) + 1)) *
+            _ = ‖σ ^ (2 : ℕ)‖ * (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by ring
+      _ = gaussArchScale 2 ^ (2 * 2) * (‖σ ^ (2 : ℕ)‖ * ((n : ℝ) + 1)) *
             (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by ring
-      _ ≤ gaussArchScale 2 ^ (2 * 2) * ((p : ℝ) ^ 2 * C) *
+      _ ≤ gaussArchScale 2 ^ (2 * 2) * ((p : ℝ) ^ (2 : ℕ) * C) *
             (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by
           refine mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left hscalar harch) hFsum
   -- the weighted error vanishes, and the model supplies the residue
   have hbig : Tendsto (fun n : ℕ =>
-      gaussArchScale 2 ^ (2 * 2) * ((p : ℝ) ^ 2 * C) *
+      gaussArchScale 2 ^ (2 * 2) * ((p : ℝ) ^ (2 : ℕ) * C) *
         (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1)))) atTop (nhds 0) := by
     have hsum := hFp.add hFm
     rw [add_zero] at hsum
-    have := hsum.const_mul (gaussArchScale 2 ^ (2 * 2) * ((p : ℝ) ^ 2 * C))
+    have := hsum.const_mul (gaussArchScale 2 ^ (2 * 2) * ((p : ℝ) ^ (2 : ℕ) * C))
     simpa using this
   have hscaled : Tendsto (fun n : ℕ => (((n : ℝ) + 1) : ℝ) • err n) atTop (nhds 0) := by
     refine squeeze_zero_norm (fun n => ?_) hbig
@@ -338,9 +338,9 @@ theorem tendsto_gaussSquareFourierDiagonal_logResidue (k : Fin 2) (p : Nat.Prime
     rw [Finset.sum_congr rfl fun n _ => hinner n, Complex.real_smul,
       Complex.ofReal_inv, div_eq_mul_inv, mul_comm]
   have hPDT := gaussPrincipalDiagonalTerm_logResidue hm k p
-  have hval : ((2 * ((p : ℝ) ^ (2 : ℕ) - 1) ^ 2 /
-      (((2 : ℕ) : ℝ) ^ 2 * Real.log (p : ℝ)) : ℝ) : ℂ)
-      = ((2 * ((p : ℝ) ^ 2 - 1) ^ 2 / (4 * Real.log (p : ℝ)) : ℝ) : ℂ) := by
+  have hval : ((2 * ((p : ℝ) ^ (2 : ℕ) - 1) ^ (2 : ℕ) /
+      (((2 : ℕ) : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ)) : ℝ) : ℂ)
+      = ((2 * ((p : ℝ) ^ (2 : ℕ) - 1) ^ (2 : ℕ) / (4 * Real.log (p : ℝ)) : ℝ) : ℂ) := by
     norm_num
   rw [hval] at hPDT
   have hsum := hPDT.add herr
@@ -362,15 +362,15 @@ theorem tendsto_gaussSquareLocalDiagonal_logResidue (k : Fin 2) (p : Nat.Primes)
       ((gaussLocalFactorWeight 2 p : ℝ) : ℂ) *
         ((∑ n ∈ Finset.range N,
           ((inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-              ((gaussQuasiInnerGFull one_le_two k p ^ 2) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
+              ((gaussQuasiInnerGFull one_le_two k p ^ (2 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
             inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-              ((gaussQuasiInnerGFull one_le_two k p ^ 2)
+              ((gaussQuasiInnerGFull one_le_two k p ^ (2 : ℕ))
                 (fourierLp 2 (-((n : ℤ) + 1)))))) / (Real.log N : ℂ)))
       atTop (nhds ((gaussChannelResidue 2 p : ℝ) : ℂ)) := by
   have hbase := (tendsto_gaussSquareFourierDiagonal_logResidue k p).const_mul
     ((gaussLocalFactorWeight 2 p : ℝ) : ℂ)
   have hval : ((gaussLocalFactorWeight 2 p : ℝ) : ℂ) *
-      ((2 * ((p : ℝ) ^ 2 - 1) ^ 2 / (4 * Real.log (p : ℝ)) : ℝ) : ℂ)
+      ((2 * ((p : ℝ) ^ (2 : ℕ) - 1) ^ (2 : ℕ) / (4 * Real.log (p : ℝ)) : ℝ) : ℂ)
       = ((gaussChannelResidue 2 p : ℝ) : ℂ) := by
     rw [← Complex.ofReal_mul]
     have h := gaussLocalFactorWeight_mul_principalResidue (one_le_two) p

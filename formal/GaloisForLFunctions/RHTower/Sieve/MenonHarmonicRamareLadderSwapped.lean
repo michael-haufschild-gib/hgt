@@ -26,13 +26,13 @@ the reciprocal Halasz--Montgomery mean square of the prime block, plus the exact
 error. -/
 def menonHarmonicSwappedBlockCost
     (P : Finset ℕ) (A₀ B₀ : ℕ) (Q eta W : ℝ) (E : Set ℝ) (j : ℕ) : ℝ :=
-  2 * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2 *
+  2 * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ) *
       ((2 * Real.pi)⁻¹ *
         (hmMassRecip ⌊Q * (1 + eta) ^ (j + 1)⌋₊
           (2 * Real.pi * W) (2 * Real.pi * volume.real E) *
-            ((1 / ((⌊Q * (1 + eta) ^ j⌋₊ + 1 : ℕ) : ℝ)) ^ 2 *
+            ((1 / ((⌊Q * (1 + eta) ^ j⌋₊ + 1 : ℕ) : ℝ)) ^ (2 : ℕ) *
               ((geomBlock P Q (1 + eta) j).card : ℝ))))
-    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ 2 *
+    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ (2 : ℕ) *
         harmonicCofactorSupportError A₀ B₀ Q eta W j
 
 /-- One geometric block, against the swapped cost. -/
@@ -45,7 +45,7 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le_swappedCost
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
     (∫ w in E,
       ‖harmonicRamareBlock P (Finset.Icc A₀ B₀)
-        (geomBlock P Q (1 + eta) j) w‖ ^ 2)
+        (geomBlock P Q (1 + eta) j) w‖ ^ (2 : ℕ))
       ≤ menonHarmonicSwappedBlockCost P A₀ B₀ Q eta W E j :=
   setIntegral_normSq_harmonicRamareBlock_geom_le_HM_swapped
     hA₀ hQ heta hW j hPprime hleft htop hEm hEs
@@ -63,7 +63,7 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le_min
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w‖ ≤ V) :
     (∫ w in E,
       ‖harmonicRamareBlock P (Finset.Icc A₀ B₀)
-        (geomBlock P Q (1 + eta) j) w‖ ^ 2)
+        (geomBlock P Q (1 + eta) j) w‖ ^ (2 : ℕ))
       ≤ min (menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W V E j)
           (menonHarmonicSwappedBlockCost P A₀ B₀ Q eta W E j) := by
   refine le_min ?_ ?_
@@ -83,7 +83,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_swapped
       1 ≤ ⌈(A₀ : ℝ) / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊)
     (htop : ∀ j ∈ Finset.range L, 1 ≤ ⌊Q * (1 + eta) ^ (j + 1)⌋₊)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
           menonHarmonicSwappedBlockCost P A₀ B₀ Q eta W E j := by
   classical
@@ -116,7 +116,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_min
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (hprime : ∀ j ∈ Finset.range L, ∀ w ∈ E,
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w‖ ≤ V j) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
           min (menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j) E j)
             (menonHarmonicSwappedBlockCost P A₀ B₀ Q eta W E j) := by

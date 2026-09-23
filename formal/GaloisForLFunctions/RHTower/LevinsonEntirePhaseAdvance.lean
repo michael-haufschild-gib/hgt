@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.LevinsonEntireDetector
 /-!
 # The phase advance of the detector in entire form
 
-Passing from `G` to the entire multiple `G♯ = (s-1)^2 G` changes the logarithmic derivative on the
+Passing from `G` to the entire multiple `G♯ = (s-1)^(2 : ℕ) G` changes the logarithmic derivative on the
 critical line by `Re[2/(-½+iτ)] = -(¼+τ²)^{-1} ≤ 0`.  The correction therefore only helps: the phase
 advance of Hardy's `Z` is bounded below by the archimedean increment plus the argument variation of
 the *entire* detector,
@@ -29,29 +29,29 @@ theorem linePt_sub_one_im (τ : ℝ) : (linePt τ - 1).im = τ := by
   rw [Complex.sub_im, linePt_im, Complex.one_im]; ring
 
 theorem re_two_div_linePt_sub_one (τ : ℝ) :
-    ((2 : ℂ) / (linePt τ - 1)).re = -(1 / (1 / 4 + τ ^ 2)) := by
-  have hns : Complex.normSq (linePt τ - 1) = 1 / 4 + τ ^ 2 := by
+    ((2 : ℂ) / (linePt τ - 1)).re = -(1 / (1 / 4 + τ ^ (2 : ℕ))) := by
+  have hns : Complex.normSq (linePt τ - 1) = 1 / 4 + τ ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, linePt_sub_one_re, linePt_sub_one_im]; ring
   rw [Complex.div_re, hns, linePt_sub_one_re, linePt_sub_one_im]
   simp only [Complex.re_ofNat, Complex.im_ofNat]
   ring
 
-theorem linePt_ne_one (τ : ℝ) : linePt τ ≠ 1 := linePt_ne_one' τ
+theorem linePt_ne_one_levinsonEntirePhaseAdvance (τ : ℝ) : linePt τ ≠ 1 := linePt_ne_one' τ
 
 /-- On the critical line the logarithmic derivative of `G` exceeds that of its entire multiple by
 the positive quantity `(¼+τ²)^{-1}`. -/
 theorem re_logDeriv_levinsonG_line (lam : ℂ) {τ : ℝ}
     (hG : levinsonG lam (linePt τ) ≠ 0) :
     (logDeriv (levinsonG lam) (linePt τ)).re
-      = (logDeriv (levinsonGEntire lam) (linePt τ)).re + 1 / (1 / 4 + τ ^ 2) := by
-  rw [logDeriv_levinsonGEntire lam (linePt_ne_one τ) hG, Complex.add_re,
+      = (logDeriv (levinsonGEntire lam) (linePt τ)).re + 1 / (1 / 4 + τ ^ (2 : ℕ)) := by
+  rw [logDeriv_levinsonGEntire lam (linePt_ne_one_levinsonEntirePhaseAdvance τ) hG, Complex.add_re,
     re_two_div_linePt_sub_one]
   ring
 
 theorem levinsonGEntire_line_ne_zero {lam : ℂ} {τ : ℝ}
     (hG : levinsonG lam (linePt τ) ≠ 0) :
     levinsonGEntire lam (linePt τ) ≠ 0 := by
-  rw [Ne, levinsonGEntire_eq_zero_iff lam (linePt_ne_one τ)]
+  rw [Ne, levinsonGEntire_eq_zero_iff lam (linePt_ne_one_levinsonEntirePhaseAdvance τ)]
   exact hG
 
 theorem continuousOn_re_logDeriv_levinsonGEntire_line (lam : ℂ) {S : Set ℝ}
@@ -92,15 +92,15 @@ theorem exists_polar_hardyZ_advance_entire_le {lam : ℝ} (hlam : lam ≤ 0)
   have hEint : IntervalIntegrable
       (fun τ : ℝ => (logDeriv (levinsonGEntire ((lam : ℝ) : ℂ)) (linePt τ)).re)
       volume T₁ T₂ := hEcont.intervalIntegrable
-  have hCint : IntervalIntegrable (fun τ : ℝ => 1 / (1 / 4 + τ ^ 2)) volume T₁ T₂ := by
+  have hCint : IntervalIntegrable (fun τ : ℝ => 1 / (1 / 4 + τ ^ (2 : ℕ))) volume T₁ T₂ := by
     refine Continuous.intervalIntegrable ?_ _ _
-    have : ∀ τ : ℝ, (1 : ℝ) / 4 + τ ^ 2 ≠ 0 := fun τ => by positivity
+    have : ∀ τ : ℝ, (1 : ℝ) / 4 + τ ^ (2 : ℕ) ≠ 0 := fun τ => by positivity
     fun_prop (disch := intro τ; positivity)
   have hsplit : ∀ τ ∈ uIcc T₁ T₂,
       (deriv (levinsonG ((lam : ℝ) : ℂ)) (linePt τ)
           / levinsonG ((lam : ℝ) : ℂ) (linePt τ)).re
         = (logDeriv (levinsonGEntire ((lam : ℝ) : ℂ)) (linePt τ)).re
-          + 1 / (1 / 4 + τ ^ 2) := by
+          + 1 / (1 / 4 + τ ^ (2 : ℕ)) := by
     intro τ hτ
     rw [huIcc] at hτ
     have := re_logDeriv_levinsonG_line ((lam : ℝ) : ℂ) (hne τ hτ)
@@ -108,7 +108,7 @@ theorem exists_polar_hardyZ_advance_entire_le {lam : ℝ} (hlam : lam ≤ 0)
     exact this
   rw [hadv, intervalIntegral.integral_congr hsplit,
     intervalIntegral.integral_add hEint hCint]
-  have hpos : (0 : ℝ) ≤ ∫ τ in T₁..T₂, 1 / (1 / 4 + τ ^ 2) :=
+  have hpos : (0 : ℝ) ≤ ∫ τ in T₁..T₂, 1 / (1 / 4 + τ ^ (2 : ℕ)) :=
     intervalIntegral.integral_nonneg hT (fun τ _ => by positivity)
   linarith
 

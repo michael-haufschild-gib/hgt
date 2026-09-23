@@ -53,7 +53,7 @@ theorem memLp_two_expWeightKernel {eps : ℝ} (heps : 0 < eps) :
     refine Continuous.aestronglyMeasurable ?_
     fun_prop
   rw [MeasureTheory.memLp_two_iff_integrable_sq_norm hmeas]
-  have hsq : ∀ L : ℝ, ‖((Real.exp (-(eps * L)) : ℝ) : ℂ)‖ ^ 2 = Real.exp (-(2 * eps) * L) := by
+  have hsq : ∀ L : ℝ, ‖((Real.exp (-(eps * L)) : ℝ) : ℂ)‖ ^ (2 : ℕ) = Real.exp (-(2 * eps) * L) := by
     intro L
     rw [Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos _).le, ← Real.exp_nat_mul]
     congr 1
@@ -229,14 +229,14 @@ theorem not_exists_memLp_two_of_halfLineConvMinus_eq_canonical {eps : ℝ} (heps
   have hfLp : MemLp f 2 (volume.restrict (Ioi (0 : ℝ))) := by
     refine hg.ae_eq ?_
     exact ae_restrict_of_ae hae
-  have hsq : IntegrableOn (fun L : ℝ => ‖canonicalHalfLineInput lam L‖ ^ 2) (Ioi (0 : ℝ)) := by
+  have hsq : IntegrableOn (fun L : ℝ => ‖canonicalHalfLineInput lam L‖ ^ (2 : ℕ)) (Ioi (0 : ℝ)) := by
     have hmeas : AEStronglyMeasurable f (volume.restrict (Ioi (0 : ℝ))) :=
       hfmeas.aestronglyMeasurable
-    have hI : IntegrableOn (fun L : ℝ => ‖f L‖ ^ 2) (Ioi (0 : ℝ)) :=
+    have hI : IntegrableOn (fun L : ℝ => ‖f L‖ ^ (2 : ℕ)) (Ioi (0 : ℝ)) :=
       (MeasureTheory.memLp_two_iff_integrable_sq_norm hmeas).1 hfLp
     refine hI.congr_fun ?_ measurableSet_Ioi
     intro L hL
-    show ‖f L‖ ^ 2 = ‖canonicalHalfLineInput lam L‖ ^ 2
+    show ‖f L‖ ^ (2 : ℕ) = ‖canonicalHalfLineInput lam L‖ ^ (2 : ℕ)
     rw [hf, zeroExtend, Set.indicator_of_mem hL]
   exact not_integrableOn_norm_sq_canonicalHalfLineInput (le_of_eq hlam) hsq
 
@@ -252,7 +252,7 @@ theorem integral_neg_secondDeriv_mul_conj (y y' y'' : ℝ → ℂ)
     (hint₂ : IntegrableOn (fun L : ℝ => y' L * (starRingEnd ℂ) (y' L)) (Ioi (0 : ℝ)))
     (hlim : Filter.Tendsto (fun L : ℝ => y' L * (starRingEnd ℂ) (y L)) Filter.atTop (nhds 0)) :
     (∫ L in Ioi (0 : ℝ), -(y'' L) * (starRingEnd ℂ) (y L))
-      = ∫ L in Ioi (0 : ℝ), ((‖y' L‖ ^ 2 : ℝ) : ℂ) := by
+      = ∫ L in Ioi (0 : ℝ), ((‖y' L‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hFderiv : ∀ L : ℝ, HasDerivAt (fun L : ℝ => y' L * (starRingEnd ℂ) (y L))
       (y'' L * (starRingEnd ℂ) (y L) + y' L * (starRingEnd ℂ) (y' L)) L := by
     intro L
@@ -265,7 +265,7 @@ theorem integral_neg_secondDeriv_mul_conj (y y' y'' : ℝ → ℂ)
     (a := (0 : ℝ)) ((hFderiv 0).continuousAt.continuousWithinAt)
     (fun L _ => hFderiv L) (hint₁.add hint₂) hlim
   rw [MeasureTheory.integral_add hint₁ hint₂, hbdry] at hmain
-  have hsq : ∀ L : ℝ, y' L * (starRingEnd ℂ) (y' L) = ((‖y' L‖ ^ 2 : ℝ) : ℂ) := by
+  have hsq : ∀ L : ℝ, y' L * (starRingEnd ℂ) (y' L) = ((‖y' L‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro L
     rw [Complex.mul_conj]
     simp [Complex.normSq_eq_norm_sq]

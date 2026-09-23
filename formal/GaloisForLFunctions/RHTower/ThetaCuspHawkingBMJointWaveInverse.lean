@@ -9,7 +9,7 @@ variable {V H : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [Complet
 
 /-- The form equation retains its complete spatial part and the independent Laplace frequency. -/
 def WaveFormSolution (J : V →L[ℂ] H) (w : ℂ) (F : H) (u : V) : Prop :=
-  ∀ v : V, inner ℂ v u + (w^2-1)*inner ℂ (J v) (J u) = inner ℂ (J v) F
+  ∀ v : V, inner ℂ v u + (w^(2 : ℕ)-1)*inner ℂ (J v) (J u) = inner ℂ (J v) F
 
 private theorem solution_iff (J : V →L[ℂ] H) (w : ℂ) (F : H) (u : V) :
     WaveFormSolution J w F u ↔ waveFormOperator J w u = J.adjoint F := by
@@ -65,7 +65,7 @@ theorem waveFormSolution_mass_bound (J : V →L[ℂ] H) (hJ : ∀ v, ‖J v‖ �
     ‖J u‖ ≤ ‖F‖ / (w.re * ‖w‖) := by
   have hw0 : w ≠ 0 := fun h => by simp [h] at hw
   have hwn : 0 < ‖w‖ := norm_pos_iff.mpr hw0
-  have hmass : ‖J u‖^2 ≤ ‖u‖^2 := pow_le_pow_left₀ (norm_nonneg _) (hJ u) 2
+  have hmass : ‖J u‖^(2 : ℕ) ≤ ‖u‖^(2 : ℕ) := pow_le_pow_left₀ (norm_nonneg _) (hJ u) 2
   have he := rotatedWaveOperator_energy J w u
   have hr : rotatedWaveOperator J w u = conj w • J.adjoint F := by
     change conj w • waveFormOperator J w u = _
@@ -78,7 +78,7 @@ theorem waveFormSolution_mass_bound (J : V →L[ℂ] H) (hJ : ∀ v, ‖J v‖ �
       _ ≤ ‖w‖ * (‖F‖ * ‖J u‖) := mul_le_mul_of_nonneg_left (norm_inner_le_norm _ _) hwn.le
       _ = _ := by ring
   rw [he,Complex.normSq_eq_norm_sq] at hupper
-  have hb : w.re * ‖w‖^2 * ‖J u‖^2 ≤ ‖w‖ * ‖F‖ * ‖J u‖ := by
+  have hb : w.re * ‖w‖^(2 : ℕ) * ‖J u‖^(2 : ℕ) ≤ ‖w‖ * ‖F‖ * ‖J u‖ := by
     nlinarith [mul_nonneg hw.le (sub_nonneg.mpr hmass)]
   rcases eq_or_lt_of_le (norm_nonneg (J u)) with hz | hp
   · rw [← hz]

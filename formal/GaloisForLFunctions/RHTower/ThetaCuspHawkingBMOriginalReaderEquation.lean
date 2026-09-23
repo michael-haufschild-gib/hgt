@@ -142,14 +142,14 @@ private theorem lift_values (q : XiZeroCopy) (side outer : Bool) (r : ℝ) (hr :
   exact he.deriv_eq.trans (by simpa only [radius_inverse r hr] using (hh r hr).2.1.deriv)
 
 private def staticContact (r : ℂ) (J : ScalarTwoJet (Fin 4) ℂ) : ℂ :=
-  -r^2*(r^2-1)*J.second 1 1+r^2/(r^2-1)*J.second 0 0-2*r*J.first 1
+  -r^(2 : ℕ)*(r^(2 : ℕ)-1)*J.second 1 1+r^(2 : ℕ)/(r^(2 : ℕ)-1)*J.second 0 0-2*r*J.first 1
 
 private theorem contact_toStatic (U : F) (x : P) (hr : 1<x 1) :
     scalarContact U x=staticContact (x 1)
       (D4BMIngoingFullCurrent.toStatic (x 1) (ofField U x)) := by
-  have hf : (x 1:ℂ)^2-1≠0 := by exact_mod_cast (show x 1^2-1≠0 by nlinarith)
-  change -(x 1:ℂ)^2*((x 1:ℂ)^2-1)*(ofField U x).second 1 1-
-    (x 1:ℂ)^2*((ofField U x).second 0 1+(ofField U x).second 1 0)-
+  have hf : (x 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show x 1^(2 : ℕ)-1≠0 by nlinarith)
+  change -(x 1:ℂ)^(2 : ℕ)*((x 1:ℂ)^(2 : ℕ)-1)*(ofField U x).second 1 1-
+    (x 1:ℂ)^(2 : ℕ)*((ofField U x).second 0 1+(ofField U x).second 1 0)-
     2*(x 1:ℂ)*(ofField U x).first 1+2*(x 1:ℂ)*(ofField U x).first 0=_
   simp only [staticContact,D4BMIngoingFullCurrent.toStatic,ite_true,zero_ne_one,ite_false,add_zero,and_self]
   field_simp [hf]
@@ -237,7 +237,7 @@ theorem left_angular_equation (q : XiZeroCopy) (side outer : Bool) (x : P)
   have hj := reader_static_jet q side outer x hr hy
   have hv : leftScalar q side outer x=staticScalar q side outer (staticPoint x) := congrArg (fun J => J.value) hj
   rw [static_jet q side outer (staticPoint x) hr hy] at hj
-  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^2*(J.second 2 2+J.second 3 3)) hj
+  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^(2 : ℕ)*(J.second 2 2+J.second 3 3)) hj
   simp only [D4BMIngoingFullCurrent.toStatic,show (2:Fin 4)≠1 by decide,
     show (3:Fin 4)≠1 by decide,ite_false,and_self,add_zero] at he
   change angularLap (leftScalar q side outer) x=_ at he
@@ -247,12 +247,12 @@ theorem left_angular_equation (q : XiZeroCopy) (side outer : Bool) (x : P)
   let E : ℂ := Complex.exp (-frequency q side*((x 0-tortoise (x 1):ℝ):ℂ))
   let H : ℂ := radiusLift (profile q side outer) (x 1)
   let S := D4BMLiteralCusp.scalar (physicalAngularParameter q)
-  change (x 3:ℂ)^2*(E*H*coordDeriv 0 (coordDeriv 0 S) (angularPoint x)+
+  change (x 3:ℂ)^(2 : ℕ)*(E*H*coordDeriv 0 (coordDeriv 0 S) (angularPoint x)+
     E*H*coordDeriv 1 (coordDeriv 1 S) (angularPoint x))=
     eigenvalue q*(E*H*S (angularPoint x))
-  change (x 3:ℂ)^2*(coordDeriv 0 (coordDeriv 0 S) (angularPoint x)+
+  change (x 3:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 S) (angularPoint x)+
     coordDeriv 1 (coordDeriv 1 S) (angularPoint x))=
-    -(1/4-physicalAngularParameter q^2)*S (angularPoint x) at hS
+    -(1/4-physicalAngularParameter q^(2 : ℕ))*S (angularPoint x) at hS
   dsimp only [eigenvalue]
   linear_combination (E*H)*hS
 
@@ -289,7 +289,7 @@ private theorem angularLap_partial {f : F} {x : P} (hf : ContDiffAt ℝ ∞ f x)
   have hY := hYs.differentiable (by simp) x
   have h2 := (smooth_partial (smooth_partial hf 2) 2).differentiableAt (by simp)
   have h3 := (smooth_partial (smooth_partial hf 3) 3).differentiableAt (by simp)
-  change coordDeriv i (fun z => (z 3:ℂ)^2*
+  change coordDeriv i (fun z => (z 3:ℂ)^(2 : ℕ)*
     (coordDeriv 2 (coordDeriv 2 f) z+coordDeriv 3 (coordDeriv 3 f) z)) x=_
   simp only [pow_two]
   have hYY : DifferentiableAt ℝ (fun z : P => (z 3:ℂ)*(z 3:ℂ)) x := hY.mul hY
@@ -306,7 +306,7 @@ private theorem angularLap_const_mul (c : ℂ) {U : F} {x : P} (hU : ContDiffAt 
     angularLap (fun z => c*U z) x=c*angularLap U x := by
   have hj := ofField_mul (contDiffAt_const (c := c)) hU
   rw [ofField_constant] at hj
-  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^2*(J.second 2 2+J.second 3 3)) hj
+  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^(2 : ℕ)*(J.second 2 2+J.second 3 3)) hj
   change angularLap (fun z => c*U z) x=_ at he
   rw [he]
   simp only [ScalarTwoJet.mul,constant,zero_mul,add_zero,zero_add,ofField,angularLap]
@@ -316,7 +316,7 @@ private theorem angularLap_add {U V : F} {x : P}
     (hU : ContDiffAt ℝ 2 U x) (hV : ContDiffAt ℝ 2 V x) :
     angularLap (fun z => U z+V z) x=angularLap U x+angularLap V x := by
   have hj := ofField_add hU hV
-  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^2*(J.second 2 2+J.second 3 3)) hj
+  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^(2 : ℕ)*(J.second 2 2+J.second 3 3)) hj
   change angularLap (fun z => U z+V z) x=_ at he
   rw [he]
   simp only [ScalarTwoJet.add,ofField,angularLap]
@@ -329,7 +329,7 @@ private theorem angularLap_radial_mul (h : ℝ → ℂ) {U : F} {x : P}
     hh.comp x (contDiff_apply ℝ ℝ (1:Fin 4)).contDiffAt
   have hj := ofField_mul hh' hU
   rw [coordinate_jet_real h 1 x hh] at hj
-  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^2*(J.second 2 2+J.second 3 3)) hj
+  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^(2 : ℕ)*(J.second 2 2+J.second 3 3)) hj
   change angularLap (fun z => h (z 1)*U z) x=_ at he
   rw [he]
   simp [ScalarTwoJet.mul,ofField,angularLap]
@@ -363,24 +363,24 @@ theorem left_orbit_angular (q : XiZeroCopy) (side outer : Bool) (x : P)
   have hs := leftScalar_smooth q side outer x hr hy
   have h0 := smooth_two (smooth_partial hs 0)
   have h1 := smooth_two (smooth_partial hs 1)
-  have hR : ContDiffAt ℝ 2 (fun R : ℝ => (R:ℂ)^2-1) (x 1) :=
+  have hR : ContDiffAt ℝ 2 (fun R : ℝ => (R:ℂ)^(2 : ℕ)-1) (x 1) :=
     (Complex.ofRealCLM.contDiff.contDiffAt.pow 2).sub contDiffAt_const
   by_cases hj : j=0
   · subst j
     exact left_partial_angular q side outer x hr hy 1 (by decide)
   · have hfun : D4BMOriginalOrbitCurrent.orbitDerivative (leftScalar q side outer) j=
-        fun z => ((z 1:ℂ)^2-1)*coordDeriv 1 (leftScalar q side outer) z+coordDeriv 0 (leftScalar q side outer) z := by
+        fun z => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (leftScalar q side outer) z+coordDeriv 0 (leftScalar q side outer) z := by
       funext z
       exact if_neg hj
     rw [hfun]
-    change angularLap (fun z => ((z 1:ℂ)^2-1)*coordDeriv 1 (leftScalar q side outer) z+
+    change angularLap (fun z => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (leftScalar q side outer) z+
       coordDeriv 0 (leftScalar q side outer) z) x=_
-    have hR' : ContDiffAt ℝ 2 (fun z : P => ((z 1:ℂ)^2-1)*coordDeriv 1 (leftScalar q side outer) z) x := by
+    have hR' : ContDiffAt ℝ 2 (fun z : P => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (leftScalar q side outer) z) x := by
       simpa only [Function.comp_def] using (hR.comp x (contDiff_apply ℝ ℝ (1:Fin 4)).contDiffAt).mul h1
     rw [angularLap_add hR' h0,
       angularLap_radial_mul _ hR h1,left_partial_angular q side outer x hr hy 1 (by decide),
       left_partial_angular q side outer x hr hy 0 (by decide)]
-    change _=eigenvalue q*(((x 1:ℂ)^2-1)*coordDeriv 1 (leftScalar q side outer) x+
+    change _=eigenvalue q*(((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (leftScalar q side outer) x+
       coordDeriv 0 (leftScalar q side outer) x)
     ring
 
@@ -395,7 +395,7 @@ theorem left_contact_angular (q : XiZeroCopy) (side outer : Bool) (x : P)
       (isOpen_lt continuous_const (continuous_apply 3)).mem_nhds hy] with z hR hY
     exact left_scalar_contact q side outer z hR hY
   have hj := ofField_germ hg
-  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^2*(J.second 2 2+J.second 3 3)) hj
+  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^(2 : ℕ)*(J.second 2 2+J.second 3 3)) hj
   change angularLap (scalarContact (leftScalar q side outer)) x=
     angularLap (fun z => (eigenvalue q-2)*leftScalar q side outer z) x at he
   rw [he,angularLap_const_mul _ (smooth_two (leftScalar_smooth q side outer x hr hy)),
@@ -408,15 +408,15 @@ open GaloisForLFunctions.RHTower SelbergMaassMean SelbergMaassTraceStokes Selber
 
 /-- Original bilinear scalar period on a finite modular domain, with hyperbolic area. -/
 def scalarPeriod (A B : F) (p R Y : ℝ) : ℂ :=
-  ∫ w in domain Y, A (slice p R (point w.1 w.2))*B (slice p R (point w.1 w.2))/(w.2:ℂ)^2
+  ∫ w in domain Y, A (slice p R (point w.1 w.2))*B (slice p R (point w.1 w.2))/(w.2:ℂ)^(2 : ℕ)
 
 /-- Both scalar bulk densities in the actual metric transfer have explicit reader coefficients. -/
 theorem original_reader_densities (q : XiZeroCopy) (side outer : Bool) (A : F) (x : P)
     (hr : 1<x 1) (hy : 0<x 3) (j : Fin 2) :
     scalarDensity A (scalarContact (leftScalar q side outer)) x=
-      (eigenvalue q*(eigenvalue q-2))*(A x*leftScalar q side outer x/(x 3:ℂ)^2) ∧
+      (eigenvalue q*(eigenvalue q-2))*(A x*leftScalar q side outer x/(x 3:ℂ)^(2 : ℕ)) ∧
     scalarDensity A (orbitDerivative (leftScalar q side outer) j) x=
-      eigenvalue q*(A x*orbitDerivative (leftScalar q side outer) j x/(x 3:ℂ)^2) := by
+      eigenvalue q*(A x*orbitDerivative (leftScalar q side outer) j x/(x 3:ℂ)^(2 : ℕ)) := by
   constructor
   · rw [scalarDensity_eq _ _ _ hy,left_contact_angular q side outer x hr hy]
     ring
@@ -433,9 +433,9 @@ theorem original_metric_scalar_integral (q r : XiZeroCopy) (branch side outer : 
     let D := forcedContact q branch amp
     let E := orbitDerivative W j
     (∫ w in domain Y, metricDensity q r branch side outer amp j (slice p R (point w.1 w.2)))+
-      1/(R:ℂ)^2*((eigenvalue r*(eigenvalue r-2))*scalarPeriod A W p R Y-
+      1/(R:ℂ)^(2 : ℕ)*((eigenvalue r*(eigenvalue r-2))*scalarPeriod A W p R Y-
         eigenvalue r*scalarPeriod D E p R Y)=
-      1/(R:ℂ)^2*(boundary (transfer A (scalarContact W) 0) (transfer A (scalarContact W) 1) p R Y-
+      1/(R:ℂ)^(2 : ℕ)*(boundary (transfer A (scalarContact W) 0) (transfer A (scalarContact W) 1) p R Y-
         boundary (transfer D E 0) (transfer D E 1) p R Y) := by
   dsimp only
   have h := original_metric_integral q r branch side outer amp p R hp hr hY j
@@ -468,7 +468,7 @@ abbrev modeProfile (q : XiZeroCopy) (w : ℂ) (outer : Bool) : ℝ → ℂ :=
 private abbrev modeFirst (q : XiZeroCopy) (w : ℂ) (outer : Bool) : ℝ → ℂ :=
   tortoiseModeFirst outer w (physicalRadialFrequency q)
 private def modePotential (q : XiZeroCopy) (w : ℂ) (t : ℝ) : ℂ :=
-  w^2-eigenvalue q*(horizonCoordinate t:ℂ)
+  w^(2 : ℕ)-eigenvalue q*(horizonCoordinate t:ℂ)
 private def modeSecond (q : XiZeroCopy) (w : ℂ) (outer : Bool) (t : ℝ) : ℂ :=
   modePotential q w t*modeProfile q w outer t
 
@@ -491,7 +491,7 @@ private theorem mode_derivatives (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0)
         simp only [Complex.real_smul,↓reduceIte]
         ring
   have he : tortoiseModeSecond outer w (physicalRadialFrequency q) t=
-      (w^2+(horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency q^2))*modeProfile q w outer t := by
+      (w^(2 : ℕ)+(horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency q^(2 : ℕ)))*modeProfile q w outer t := by
     cases outer
     · exact tortoiseMode_equation_continued w (physicalRadialFrequency q) hw t t.property
     · have hz := horizonCoordinate_interior t t.property
@@ -503,7 +503,7 @@ private theorem mode_derivatives (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0)
       field_simp [hz0] at h
       dsimp only [modeProfile,tortoiseMode,tortoiseModeSecond,radialMode,radialModeFirst,
         radialModeSecond,if_true,coordinateFirst,coordinateSecond]
-      have hu : (radialUnit t:ℂ)^2=1-(horizonCoordinate t:ℂ) := by
+      have hu : (radialUnit t:ℂ)^(2 : ℕ)=1-(horizonCoordinate t:ℂ) := by
         simp only [horizonCoordinate,Complex.ofReal_sub,Complex.ofReal_one,Complex.ofReal_pow]
         ring
       push_cast
@@ -650,9 +650,9 @@ theorem mode_scalar_contact (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0) (outer : 
   have hv : modeStaticScalar q w outer z=modeScalar q w outer x := congrArg (fun J => J.value) hj
   rw [contact_toStatic _ x hr,← hj,mode_static_jet q w hw outer z hr hy,← hv]
   have hR : (x 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hf : (x 1:ℂ)^2-1≠0 := by exact_mod_cast (show x 1^2-1≠0 by nlinarith)
-  have hi : horizonCoordinate (tortoise (x 1))=((x 1)^2-1)/(x 1)^2 := by
-    have h : (horizonCoordinate (tortoise (x 1)):ℂ)=((x 1:ℂ)^2-1)/(x 1:ℂ)^2 := by
+  have hf : (x 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show x 1^(2 : ℕ)-1≠0 by nlinarith)
+  have hi : horizonCoordinate (tortoise (x 1))=((x 1)^(2 : ℕ)-1)/(x 1)^(2 : ℕ) := by
+    have h : (horizonCoordinate (tortoise (x 1)):ℂ)=((x 1:ℂ)^(2 : ℕ)-1)/(x 1:ℂ)^(2 : ℕ) := by
       rw [horizonCoordinate_jointWeight _ (tortoise_neg _ hr),
         angularWeight_original_coefficient _ (tortoise_neg _ hr),radius_inverse _ hr]
     exact_mod_cast h
@@ -687,7 +687,7 @@ theorem mode_angular_equation (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0)
   have hj := mode_reader_static_jet q w hw outer x hr hy
   have hv : modeScalar q w outer x=modeStaticScalar q w outer (staticPoint x) := congrArg (fun J => J.value) hj
   rw [mode_static_jet q w hw outer (staticPoint x) hr hy] at hj
-  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^2*(J.second 2 2+J.second 3 3)) hj
+  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^(2 : ℕ)*(J.second 2 2+J.second 3 3)) hj
   simp only [D4BMIngoingFullCurrent.toStatic,show (2:Fin 4)≠1 by decide,
     show (3:Fin 4)≠1 by decide,ite_false,and_self,add_zero] at he
   change angularLap (modeScalar q w outer) x=_ at he
@@ -697,10 +697,10 @@ theorem mode_angular_equation (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0)
   let E : ℂ := Complex.exp (-w*((x 0-tortoise (x 1):ℝ):ℂ))
   let H : ℂ := radiusLift (modeProfile q w outer) (x 1)
   let S := D4BMLiteralCusp.scalar (physicalAngularParameter q)
-  change (x 3:ℂ)^2*(E*H*coordDeriv 0 (coordDeriv 0 S) (angularPoint x)+
+  change (x 3:ℂ)^(2 : ℕ)*(E*H*coordDeriv 0 (coordDeriv 0 S) (angularPoint x)+
     E*H*coordDeriv 1 (coordDeriv 1 S) (angularPoint x))=eigenvalue q*(E*H*S (angularPoint x))
-  change (x 3:ℂ)^2*(coordDeriv 0 (coordDeriv 0 S) (angularPoint x)+
-    coordDeriv 1 (coordDeriv 1 S) (angularPoint x))= -(1/4-physicalAngularParameter q^2)*S (angularPoint x) at hS
+  change (x 3:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 S) (angularPoint x)+
+    coordDeriv 1 (coordDeriv 1 S) (angularPoint x))= -(1/4-physicalAngularParameter q^(2 : ℕ))*S (angularPoint x) at hS
   dsimp only [eigenvalue]
   linear_combination (E*H)*hS
 
@@ -832,11 +832,11 @@ def modeMetricDensity (q r : XiZeroCopy) (branch outer : Bool) (amp w : ℂ) (j 
   let z := staticPoint x
   let U := D4BMActualIngoingCurrent.originalStaticStream q branch amp
   let W := physicalLeftModeStream r w outer
-  let J := fun k => (x 1:ℂ)^2/(x 3:ℂ)^2*D4BMMixedActionCurrent.actionSymplectic
+  let J := fun k => (x 1:ℂ)^(2 : ℕ)/(x 3:ℂ)^(2 : ℕ)*D4BMMixedActionCurrent.actionSymplectic
     (D4BMBackground.jet (x 1) (x 3))
     (ofMetricField (D4BMActualIngoingCurrent.reconstructedMetric U) z)
     (ofMetricField (D4BMActualIngoingCurrent.reconstructedMetric W) z) k
-  if j=0 then J 0+J 1/((x 1:ℂ)^2-1) else J 1
+  if j=0 then J 0+J 1/((x 1:ℂ)^(2 : ℕ)-1) else J 1
 
 /-- The family recovers the original prescribed-QNM metric density exactly. -/
 theorem modeMetricDensity_specialize (q r : XiZeroCopy) (branch side outer : Bool) (amp : ℂ) :
@@ -877,7 +877,7 @@ with the original forcing retained and without assuming temporal matching. -/
 theorem mode_metric_density (q r : XiZeroCopy) (branch outer : Bool) (amp w : ℂ)
     (hw : w.im≠0) (x : P) (hp : 0<x 0) (hr : 1<x 1) (hy : 0<x 3) (j : Fin 2) :
     modeMetricDensity q r branch outer amp w j x=
-      1/(x 1:ℂ)^2*(D4BMOriginalOrbitCurrent.pairing
+      1/(x 1:ℂ)^(2 : ℕ)*(D4BMOriginalOrbitCurrent.pairing
         (D4BMOriginalOrbitCurrent.orbitDerivative (sourceScalar q branch amp) j)
         (scalarContact (modeScalar r w outer)) x-
       D4BMOriginalOrbitCurrent.pairing (D4BMOriginalOrbitCurrent.forcedContact q branch amp)
@@ -929,24 +929,24 @@ theorem mode_orbit_angular (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0) (outer : B
   have hs := modeScalar_smooth q w hw outer x hr hy
   have h0 := smooth_two (smooth_partial hs 0)
   have h1 := smooth_two (smooth_partial hs 1)
-  have hR : ContDiffAt ℝ 2 (fun R : ℝ => (R:ℂ)^2-1) (x 1) :=
+  have hR : ContDiffAt ℝ 2 (fun R : ℝ => (R:ℂ)^(2 : ℕ)-1) (x 1) :=
     (Complex.ofRealCLM.contDiff.contDiffAt.pow 2).sub contDiffAt_const
   by_cases hj : j=0
   · subst j
     exact mode_partial_angular q w hw outer x hr hy 1 (by decide)
   · have hfun : D4BMOriginalOrbitCurrent.orbitDerivative (modeScalar q w outer) j=
-        fun z => ((z 1:ℂ)^2-1)*coordDeriv 1 (modeScalar q w outer) z+coordDeriv 0 (modeScalar q w outer) z := by
+        fun z => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (modeScalar q w outer) z+coordDeriv 0 (modeScalar q w outer) z := by
       funext z
       exact if_neg hj
     rw [hfun]
-    change angularLap (fun z => ((z 1:ℂ)^2-1)*coordDeriv 1 (modeScalar q w outer) z+
+    change angularLap (fun z => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (modeScalar q w outer) z+
       coordDeriv 0 (modeScalar q w outer) z) x=_
-    have hR' : ContDiffAt ℝ 2 (fun z : P => ((z 1:ℂ)^2-1)*coordDeriv 1 (modeScalar q w outer) z) x := by
+    have hR' : ContDiffAt ℝ 2 (fun z : P => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (modeScalar q w outer) z) x := by
       simpa only [Function.comp_def] using (hR.comp x (contDiff_apply ℝ ℝ (1:Fin 4)).contDiffAt).mul h1
     rw [angularLap_add hR' h0,
       angularLap_radial_mul _ hR h1,mode_partial_angular q w hw outer x hr hy 1 (by decide),
       mode_partial_angular q w hw outer x hr hy 0 (by decide)]
-    change _=eigenvalue q*(((x 1:ℂ)^2-1)*coordDeriv 1 (modeScalar q w outer) x+
+    change _=eigenvalue q*(((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (modeScalar q w outer) x+
       coordDeriv 0 (modeScalar q w outer) x)
     ring
 
@@ -961,7 +961,7 @@ theorem mode_contact_angular (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0) (outer :
       (isOpen_lt continuous_const (continuous_apply 3)).mem_nhds hy] with z hR hY
     exact mode_scalar_contact q w hw outer z hR hY
   have hj := ofField_germ hg
-  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^2*(J.second 2 2+J.second 3 3)) hj
+  have he := congrArg (fun J : ScalarTwoJet (Fin 4) ℂ => (x 3:ℂ)^(2 : ℕ)*(J.second 2 2+J.second 3 3)) hj
   change angularLap (scalarContact (modeScalar q w outer)) x=
     angularLap (fun z => (eigenvalue q-2)*modeScalar q w outer z) x at he
   rw [he,angularLap_const_mul _ (smooth_two (modeScalar_smooth q w hw outer x hr hy)),

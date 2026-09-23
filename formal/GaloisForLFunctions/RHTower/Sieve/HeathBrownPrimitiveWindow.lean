@@ -47,7 +47,7 @@ theorem heathBrownFareyValue_injOn_primitiveSquare {Q : ℕ} :
 `Q⁻²` in ordinary slope. -/
 theorem heathBrownPrimitiveSquare_sep {Q : ℕ} (hQ : 1 ≤ Q) :
     ∀ p ∈ heathBrownPrimitiveSquare Q, ∀ q ∈ heathBrownPrimitiveSquare Q, p ≠ q →
-      1 / (Q : ℝ) ^ 2 ≤ |heathBrownFareyValue p - heathBrownFareyValue q| := by
+      1 / (Q : ℝ) ^ (2 : ℕ) ≤ |heathBrownFareyValue p - heathBrownFareyValue q| := by
   intro p hp q hq hpq
   have hp' := mem_heathBrownPrimitiveSquare.mp hp
   have hq' := mem_heathBrownPrimitiveSquare.mp hq
@@ -70,17 +70,17 @@ theorem heathBrownPrimitiveSquare_sep {Q : ℕ} (hQ : 1 ≤ Q) :
   have hone : (1 : ℝ) ≤
       |(p.1 : ℝ) * (q.2 : ℝ) - (q.1 : ℝ) * (p.2 : ℝ)| := by
     exact_mod_cast honeZ
-  have hden : (p.2 : ℝ) * (q.2 : ℝ) ≤ (Q : ℝ) ^ 2 := by
+  have hden : (p.2 : ℝ) * (q.2 : ℝ) ≤ (Q : ℝ) ^ (2 : ℕ) := by
     have hpQ : (p.2 : ℝ) ≤ Q := by exact_mod_cast hp'.2.2.2.1
     have hqQ : (q.2 : ℝ) ≤ Q := by exact_mod_cast hq'.2.2.2.1
     nlinarith
-  have hfrac : 1 / (Q : ℝ) ^ 2 ≤
+  have hfrac : 1 / (Q : ℝ) ^ (2 : ℕ) ≤
       |(p.1 : ℝ) * (q.2 : ℝ) - (q.1 : ℝ) * (p.2 : ℝ)| /
         ((p.2 : ℝ) * (q.2 : ℝ)) := by
     have hdenpos : (0 : ℝ) < (p.2 : ℝ) * (q.2 : ℝ) := mul_pos hp2 hq2
     rw [div_le_div_iff₀ (sq_pos_of_pos hQpos) hdenpos]
     nlinarith
-  change 1 / (Q : ℝ) ^ 2 ≤
+  change 1 / (Q : ℝ) ^ (2 : ℕ) ≤
     |(p.1 : ℝ) / (p.2 : ℝ) - (q.1 : ℝ) / (q.2 : ℝ)|
   refine hfrac.trans_eq ?_
   have heq : (p.1 : ℝ) / (p.2 : ℝ) - (q.1 : ℝ) / (q.2 : ℝ) =
@@ -99,7 +99,7 @@ def heathBrownPrimitiveWindow (Q : ℕ) (a b : ℝ) : Finset (ℕ × ℕ) :=
 theorem card_heathBrownPrimitiveWindow_le {Q : ℕ} (hQ : 1 ≤ Q)
     {a b : ℝ} (hab : a ≤ b) :
     ((heathBrownPrimitiveWindow Q a b).card : ℝ) ≤
-      (b - a) * (Q : ℝ) ^ 2 + 1 := by
+      (b - a) * (Q : ℝ) ^ (2 : ℕ) + 1 := by
   let W := heathBrownPrimitiveWindow Q a b
   let V := W.image heathBrownFareyValue
   have hinj : Set.InjOn heathBrownFareyValue (W : Set (ℕ × ℕ)) :=
@@ -107,7 +107,7 @@ theorem card_heathBrownPrimitiveWindow_le {Q : ℕ} (hQ : 1 ≤ Q)
       (Finset.mem_filter.mp hp).1
   have hcard : V.card = W.card := Finset.card_image_of_injOn hinj
   have hsep : ∀ x ∈ V, ∀ y ∈ V, x ≠ y →
-      1 / (Q : ℝ) ^ 2 ≤ |x - y| := by
+      1 / (Q : ℝ) ^ (2 : ℕ) ≤ |x - y| := by
     intro x hx y hy hxy
     obtain ⟨p, hpW, rfl⟩ := Finset.mem_image.mp hx
     obtain ⟨q, hqW, rfl⟩ := Finset.mem_image.mp hy
@@ -121,7 +121,7 @@ theorem card_heathBrownPrimitiveWindow_le {Q : ℕ} (hQ : 1 ≤ Q)
     obtain ⟨p, hpW, rfl⟩ := Finset.mem_image.mp hx
     exact (Finset.mem_filter.mp hpW).2
   have hQpos : (0 : ℝ) < (Q : ℝ) := by exact_mod_cast hQ
-  have hL : (0 : ℝ) < 1 / (Q : ℝ) ^ 2 := by positivity
+  have hL : (0 : ℝ) < 1 / (Q : ℝ) ^ (2 : ℕ) := by positivity
   have hbound := card_le_of_separated_of_subset_Icc hL hab V hsep hsub
   rw [hcard] at hbound
   change (W.card : ℝ) ≤ _

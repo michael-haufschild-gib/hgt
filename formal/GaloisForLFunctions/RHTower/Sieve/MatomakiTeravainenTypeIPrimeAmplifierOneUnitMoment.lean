@@ -25,10 +25,10 @@ noncomputable def mtTypeIPrimeOneUnitBlockMomentBound
   ((ell : ℝ) / V) * Real.sqrt
       (C * T ^ epsilon *
         (T + ((((2 * B) * N' : ℕ) : ℝ))) *
-        (1 / (B : ℝ) ^ 2) *
-        (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ 2) *
+        (1 / (B : ℝ) ^ (2 : ℕ)) *
+        (∑ m ∈ Finset.Ioc B (2 * B), ‖b m‖ ^ (2 : ℕ)) *
         (1 / (N : ℝ)) *
-        (Real.sqrt T / (N : ℝ) + 1 / Real.sqrt T) ^ 2) *
+        (Real.sqrt T / (N : ℝ) + 1 / Real.sqrt T) ^ (2 : ℕ)) *
     Real.sqrt
       (generalMeanSquareConst (fun n => mtTypeILongSquareAF a A n)
           (Finset.Icc 1 ((2 * A) * (2 * A))) 1 +
@@ -46,8 +46,8 @@ theorem exists_setIntegral_mtTypeI_primeAmplifier_oneUnit
       2 ≤ T → 0 < V → (N : ℝ) ≤ T →
       (∀ r : Fin ell, (mtTypeIPrimeBlockLength P ell r : ℝ) ≤ T) →
       (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V,
-          ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-            ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+          ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+            ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
         ∑ r : Fin ell,
           mtTypeIPrimeOneUnitBlockMomentBound
             C epsilon a A P ell N N' T V r := by
@@ -56,7 +56,7 @@ theorem exists_setIntegral_mtTypeI_primeAmplifier_oneUnit
   refine ⟨C, hC, ?_⟩
   intro a A P ell N N' T V hA hP hell hN hNN' hN' hT hV hNT hblockHeight
   let f : ℝ → ℝ := fun t =>
-    ‖mtWattCoefficientBlock a A t‖ ^ 2 * ‖mtWattUnitBlock N N' t‖ ^ 2
+    ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) * ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)
   have hunion : (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V, f t) ≤
       ∑ r : Fin ell,
         ∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r, f t :=
@@ -99,9 +99,9 @@ theorem exists_setIntegral_mtTypeI_primeAmplifier_oneUnit
       hK (measurableSet_mtTypeIPrimeAmplifierBlockLargeSet P ell T V r)
       (mtTypeIPrimeAmplifierBlockLargeSet_subset_Icc P ell T V r) hlarge
     have hmixedSet : (∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r,
-        ‖mtWattUnitBlock N N' t‖ ^ 4 * ‖mtWattCoefficientBlock b B t‖ ^ 2) ≤
+        ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) * ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ)) ≤
         ∫ t in (T / 2)..T,
-          ‖mtWattUnitBlock N N' t‖ ^ 4 * ‖mtWattCoefficientBlock b B t‖ ^ 2 :=
+          ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) * ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ) :=
       setIntegral_le_intervalIntegral_of_subset_Icc
         (((continuous_perronPoly _ _ _).norm.pow 4).mul
           ((continuous_perronPoly _ _ _).norm.pow 2))
@@ -110,8 +110,8 @@ theorem exists_setIntegral_mtTypeI_primeAmplifier_oneUnit
         (fun t => mul_nonneg (pow_nonneg (norm_nonneg _) 4) (sq_nonneg _))
     have hfourthSet :
         (∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r,
-          ‖mtWattCoefficientBlock a A t‖ ^ 4) ≤
-        ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ 4 :=
+          ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ)) ≤
+        ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ) :=
       setIntegral_le_intervalIntegral_of_subset_Icc
         ((continuous_perronPoly _ _ _).norm.pow 4)
         (by linarith)

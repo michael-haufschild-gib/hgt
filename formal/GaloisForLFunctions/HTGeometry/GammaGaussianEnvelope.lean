@@ -8,7 +8,7 @@ import Mathlib.Tactic
 The entire multiplier
 
 ```text
-A(s) = exp((s - 1/2)^2) · π^(s/2) / Γ(s/2)
+A(s) = exp((s - 1/2)^(2 : ℕ)) · π^(s/2) / Γ(s/2)
 ```
 
 is the centered Gaussian times the inverse archimedean factor `Γ_ℝ(s) = π^(-s/2) Γ(s/2)`.  Against
@@ -39,7 +39,7 @@ noncomputable section
 archimedean factors. -/
 def evenChiFactor (s : ℂ) : ℂ := Complex.Gammaℝ (1 - s) * (Complex.Gammaℝ s)⁻¹
 
-/-- The universal Gamma–Gaussian multiplier `exp((s-1/2)^2) π^(s/2)/Γ(s/2)`. -/
+/-- The universal Gamma–Gaussian multiplier `exp((s-1/2)^(2 : ℕ)) π^(s/2)/Γ(s/2)`. -/
 def gammaGaussianEnvelope (s : ℂ) : ℂ := Complex.exp ((s - 1 / 2) ^ 2) * (Complex.Gammaℝ s)⁻¹
 
 /-! ## The explicit shapes -/
@@ -54,7 +54,7 @@ theorem inv_Gammaℝ_eq (s : ℂ) :
   congr 1
   ring
 
-/-- The multiplier in the explicit form `exp((s-1/2)^2) π^(s/2)/Γ(s/2)`. -/
+/-- The multiplier in the explicit form `exp((s-1/2)^(2 : ℕ)) π^(s/2)/Γ(s/2)`. -/
 theorem gammaGaussianEnvelope_eq (s : ℂ) :
     gammaGaussianEnvelope s
       = Complex.exp ((s - 1 / 2) ^ 2) * (Real.pi : ℂ) ^ (s / 2) * (Complex.Gamma (s / 2))⁻¹ := by
@@ -155,7 +155,7 @@ theorem evenChiFactor_mul_envelope_one_sub_of_re_lt_one {s : ℂ} (hs : s.re < 1
 
 /-- **The archimedean seam.**  Completing the enveloped datum cancels the multiplier and leaves the
 bare centered Gaussian. -/
-theorem Gammaℝ_mul_gammaGaussianEnvelope {s : ℂ} (hs : Complex.Gammaℝ s ≠ 0) :
+theorem Gammaℝ_mul {s : ℂ} (hs : Complex.Gammaℝ s ≠ 0) :
     Complex.Gammaℝ s * gammaGaussianEnvelope s = Complex.exp ((s - 1 / 2) ^ 2) := by
   rw [gammaGaussianEnvelope]
   calc Complex.Gammaℝ s * (Complex.exp ((s - 1 / 2) ^ 2) * (Complex.Gammaℝ s)⁻¹)
@@ -166,7 +166,7 @@ theorem Gammaℝ_mul_gammaGaussianEnvelope {s : ℂ} (hs : Complex.Gammaℝ s �
 theorem Gammaℝ_mul_envelope_mul {s : ℂ} (hs : Complex.Gammaℝ s ≠ 0) (F : ℂ → ℂ) :
     Complex.Gammaℝ s * (gammaGaussianEnvelope s * F s)
       = Complex.exp ((s - 1 / 2) ^ 2) * F s := by
-  rw [← mul_assoc, Gammaℝ_mul_gammaGaussianEnvelope hs]
+  rw [← mul_assoc, Gammaℝ_mul hs]
 
 /-! ## Entirety -/
 

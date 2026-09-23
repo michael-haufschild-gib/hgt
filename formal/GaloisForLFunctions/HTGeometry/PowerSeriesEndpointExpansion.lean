@@ -90,7 +90,7 @@ theorem coeff_aeval_lowPart_eq {K : ℕ} (jets : σ → PowerSeries k) (P : MvPo
     funext j
     exact lowPart_add_highPart K (jets j)
   have hdef := taylorDefect_mem_sq J S L hLmem P
-  have hsq : J ^ 2 ≤ J := Ideal.pow_le_self (by norm_num)
+  have hsq : J ^ (2 : ℕ) ≤ J := Ideal.pow_le_self (by norm_num)
   have hmem : aeval jets P - aeval S P ∈ J := by
     have hexp := aeval_add_eq_add_sum_pderiv_mod_sq S L P
     rw [hSL] at hexp
@@ -156,11 +156,11 @@ theorem coeff_aeval_endpoint_expansion (jets : σ → PowerSeries k) (P : MvPoly
   have hexp := aeval_add_eq_add_sum_pderiv_mod_sq S L P
   rw [hSL] at hexp
   -- the defect is invisible at degree `N`
-  have hsqspan : J ^ 2 = Ideal.span {(PowerSeries.X : PowerSeries k) ^ (2 * K + 2)} := by
+  have hsqspan : J ^ (2 : ℕ) = Ideal.span {(PowerSeries.X : PowerSeries k) ^ (2 * K + 2)} := by
     rw [hJ, pow_two, Ideal.span_singleton_mul_span_singleton, ← pow_add]
     have harith : K + 1 + (K + 1) = 2 * K + 2 := by ring
     rw [harith]
-  have hdef : taylorDefect S L P ∈ J ^ 2 := taylorDefect_mem_sq J S L hLmem P
+  have hdef : taylorDefect S L P ∈ J ^ (2 : ℕ) := taylorDefect_mem_sq J S L hLmem P
   rw [hsqspan] at hdef
   have hdefzero : PowerSeries.coeff N (taylorDefect S L P) = 0 := by
     refine coeff_eq_zero_of_mem_span_X_pow ?_ hdef

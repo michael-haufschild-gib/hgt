@@ -76,7 +76,7 @@ cannot follow from generic finite Hankel geometry; theta source dynamics are ind
 theorem exists_signedEvenHankelThree_singular_strictHead_negativeCrossing :
     ∃ p₀ p₂ p₄ p₆ p₈ q₀ q₂ q₄ q₆ q₈ : ℝ,
       signedEvenHankelThreeDet p₀ p₂ p₄ p₆ p₈ = 0 ∧
-      0 < p₀ ∧ 0 < p₀ * p₄ - p₂ ^ 2 ∧
+      0 < p₀ ∧ 0 < p₀ * p₄ - p₂ ^ (2 : ℕ) ∧
       signedEvenHankelThreeBoundaryCrossing
         p₀ p₂ p₄ p₆ q₀ q₂ q₄ q₆ q₈ < 0 := by
   refine ⟨2, 1, 1, 1, 1, 0, 0, 0, 0, -1, ?_⟩
@@ -130,7 +130,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_of_boundaryCrossing
   have hderivnonpos :
       thetaCuspReflectedEighthSourceProjectiveDrift c /
         (4 * (thetaCuspModularSourcePositiveState
-          HTGeometry.ModularThetaSourcePositiveState.Q c).re ^ 7) ≤ 0 :=
+          HTGeometry.ModularThetaSourcePositiveState.Q c).re ^ (7 : ℕ)) ≤ 0 :=
     GaloisForLFunctions.HTGeometry.deriv_nonpos_of_first_zero hcpos hd hczero hleft
   rw [hd.deriv] at hderivpos
   linarith

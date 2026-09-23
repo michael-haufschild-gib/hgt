@@ -26,11 +26,11 @@ def difference (r t : ℝ) : ℝ := Real.exp (-(r * t)) - Real.exp (-(2 * r * t)
 
 /-- Squared response at logarithmic rate `s`, integrated in logarithmic scale. -/
 def logScaleEnergy (s : ℝ) : ℝ :=
-  ∫ t in Ioi (0 : ℝ), difference (Real.exp s) t ^ 2 / t
+  ∫ t in Ioi (0 : ℝ), difference (Real.exp s) t ^ (2 : ℕ) / t
 
 /-- Squared response at logarithmic rate `s`, integrated in ordinary scale. -/
 def ordinaryScaleEnergy (s : ℝ) : ℝ :=
-  ∫ t in Ioi (0 : ℝ), difference (Real.exp s) t ^ 2
+  ∫ t in Ioi (0 : ℝ), difference (Real.exp s) t ^ (2 : ℕ)
 
 private def realFrullani (a b t : ℝ) : ℝ :=
   (Real.exp (-(a * t)) - Real.exp (-(b * t))) / t
@@ -66,10 +66,10 @@ private theorem integral_realFrullani {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
 
 /-- Exact three-exponential expansion of the squared dyadic response. -/
 theorem difference_sq (r t : ℝ) :
-    difference r t ^ 2 =
+    difference r t ^ (2 : ℕ) =
       Real.exp (-(2 * r * t)) - 2 * Real.exp (-(3 * r * t)) +
         Real.exp (-(4 * r * t)) := by
-  have h₂ : Real.exp (-(2 * r * t)) = Real.exp (-(r * t)) ^ 2 := by
+  have h₂ : Real.exp (-(2 * r * t)) = Real.exp (-(r * t)) ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -78,7 +78,7 @@ theorem difference_sq (r t : ℝ) :
     rw [← Real.exp_add]
     congr 1
     ring
-  have h₄ : Real.exp (-(4 * r * t)) = Real.exp (-(2 * r * t)) ^ 2 := by
+  have h₄ : Real.exp (-(4 * r * t)) = Real.exp (-(2 * r * t)) ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -88,7 +88,7 @@ theorem difference_sq (r t : ℝ) :
   ring
 
 private theorem logScale_split (r : ℝ) :
-    (fun t => difference r t ^ 2 / t) =
+    (fun t => difference r t ^ (2 : ℕ) / t) =
       (fun t => realFrullani (2 * r) (3 * r) t + realFrullani (4 * r) (3 * r) t) := by
   funext t
   rw [difference_sq]
@@ -97,7 +97,7 @@ private theorem logScale_split (r : ℝ) :
 
 /-- The logarithmic-scale integrand is integrable on the positive ray. -/
 theorem logScale_integrable (s : ℝ) :
-    IntegrableOn (fun t => difference (Real.exp s) t ^ 2 / t) (Ioi (0 : ℝ)) := by
+    IntegrableOn (fun t => difference (Real.exp s) t ^ (2 : ℕ) / t) (Ioi (0 : ℝ)) := by
   rw [logScale_split]
   exact (realFrullani_integrable (by positivity) (by positivity)).add
     (realFrullani_integrable (by positivity) (by positivity))
@@ -128,7 +128,7 @@ private theorem integral_expRate {r : ℝ} (hr : 0 < r) :
 
 /-- The ordinary-scale squared response is integrable on the positive ray. -/
 theorem ordinaryScale_integrable (s : ℝ) :
-    IntegrableOn (fun t => difference (Real.exp s) t ^ 2) (Ioi (0 : ℝ)) := by
+    IntegrableOn (fun t => difference (Real.exp s) t ^ (2 : ℕ)) (Ioi (0 : ℝ)) := by
   simp_rw [difference_sq]
   exact ((expRate_integrable (by positivity)).sub
     ((expRate_integrable (by positivity)).const_mul 2)).add
@@ -199,9 +199,9 @@ theorem range_ordinaryScaleEnergy : Set.range ordinaryScaleEnergy = Ioi (0 : ℝ
 theorem ordinaryScaleEnergy_no_uniform_bound :
     ¬ ∃ b : ℝ, ∀ s : ℝ, ordinaryScaleEnergy s ≤ b := by
   rintro ⟨b, hb⟩
-  have hmem : b ^ 2 + 1 ∈ Set.range ordinaryScaleEnergy := by
+  have hmem : b ^ (2 : ℕ) + 1 ∈ Set.range ordinaryScaleEnergy := by
     rw [range_ordinaryScaleEnergy]
-    exact show 0 < b ^ 2 + 1 by positivity
+    exact show 0 < b ^ (2 : ℕ) + 1 by positivity
   obtain ⟨s, hs⟩ := hmem
   have h := hb s
   rw [hs] at h

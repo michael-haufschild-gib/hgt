@@ -20,17 +20,17 @@ namespace RHTower
 
 /-- Polynomial part of the normalized theta-cusp seed. -/
 def thetaCuspSeedPolynomial : ℝ[X] :=
-  C (4 * Real.pi ^ 2) * X ^ 4 - C (6 * Real.pi) * X ^ 2
+  C (4 * Real.pi ^ (2 : ℕ)) * X ^ (4 : ℕ) - C (6 * Real.pi) * X ^ (2 : ℕ)
 
 theorem thetaCuspSeed_eq_polynomial (t : ℝ) :
     thetaCuspSeed t =
-      eval t thetaCuspSeedPolynomial * Real.exp (-Real.pi * t ^ 2) := by
+      eval t thetaCuspSeedPolynomial * Real.exp (-Real.pi * t ^ (2 : ℕ)) := by
   simp [thetaCuspSeed, thetaCuspSeedPolynomial]
   ring
 
 /-- Polynomial recursion induced by logarithmic differentiation after the `e^(x/2)` weight. -/
 def thetaCuspLogDerivativeStep (P : ℝ[X]) : ℝ[X] :=
-  C (1 / 2) * P + X * derivative P - C (2 * Real.pi) * X ^ 2 * P
+  C (1 / 2) * P + X * derivative P - C (2 * Real.pi) * X ^ (2 : ℕ) * P
 
 /-- Polynomial part of the `m`-th logarithmic derivative. -/
 def thetaCuspLogDerivativePolynomial : ℕ → ℝ[X]
@@ -40,7 +40,7 @@ def thetaCuspLogDerivativePolynomial : ℕ → ℝ[X]
 /-- A polynomial-Gaussian atom at the logarithmically scaled integer `n`. -/
 def thetaCuspPolynomialAtom (P : ℝ[X]) (n : ℕ) (x : ℝ) : ℝ :=
   Real.exp (x / 2) * eval ((n : ℝ) * Real.exp x) P *
-    Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2)
+    Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ))
 
 theorem hasDerivAt_thetaCuspPolynomialAtom (P : ℝ[X]) (n : ℕ) (x : ℝ) :
     HasDerivAt (thetaCuspPolynomialAtom P n)
@@ -74,40 +74,40 @@ theorem hasDerivAt_thetaCuspPolynomialAtom (P : ℝ[X]) (n : ℕ) (x : ℝ) :
       rfl
     rw [hfun]
     exact hraw
-  have hsq : HasDerivAt (fun z : ℝ => ((n : ℝ) * Real.exp z) ^ 2)
-      (2 * y ^ 2) x := by
+  have hsq : HasDerivAt (fun z : ℝ => ((n : ℝ) * Real.exp z) ^ (2 : ℕ))
+      (2 * y ^ (2 : ℕ)) x := by
     have hraw := hy.pow 2
     have hfun :
-        (fun z : ℝ => ((n : ℝ) * Real.exp z) ^ 2) =
-          (fun z : ℝ => (n : ℝ) * Real.exp z) ^ 2 := by
+        (fun z : ℝ => ((n : ℝ) * Real.exp z) ^ (2 : ℕ)) =
+          (fun z : ℝ => (n : ℝ) * Real.exp z) ^ (2 : ℕ) := by
       funext z
       rfl
     have hcoef :
-        (2 : ℝ) * ((n : ℝ) * Real.exp x) ^ (2 - 1) * y = 2 * y ^ 2 := by
+        (2 : ℝ) * ((n : ℝ) * Real.exp x) ^ (2 - 1) * y = 2 * y ^ (2 : ℕ) := by
       norm_num
       dsimp [y]
       ring
     rw [hfun]
     exact hraw.congr_deriv hcoef
   have hgauss : HasDerivAt
-      (fun z : ℝ => Real.exp (-Real.pi * ((n : ℝ) * Real.exp z) ^ 2))
-      ((-2 * Real.pi * y ^ 2) * Real.exp (-Real.pi * y ^ 2)) x := by
+      (fun z : ℝ => Real.exp (-Real.pi * ((n : ℝ) * Real.exp z) ^ (2 : ℕ)))
+      ((-2 * Real.pi * y ^ (2 : ℕ)) * Real.exp (-Real.pi * y ^ (2 : ℕ))) x := by
     have hinnerRaw := (hasDerivAt_const x (-Real.pi)).mul hsq
     have hinnerFun :
-        (fun z : ℝ => -Real.pi * ((n : ℝ) * Real.exp z) ^ 2) =
+        (fun z : ℝ => -Real.pi * ((n : ℝ) * Real.exp z) ^ (2 : ℕ)) =
           (fun _ : ℝ => -Real.pi) *
-            fun z : ℝ => ((n : ℝ) * Real.exp z) ^ 2 := by
+            fun z : ℝ => ((n : ℝ) * Real.exp z) ^ (2 : ℕ) := by
       funext z
       rfl
     have hinner : HasDerivAt
-        (fun z : ℝ => -Real.pi * ((n : ℝ) * Real.exp z) ^ 2)
-        (-2 * Real.pi * y ^ 2) x := by
+        (fun z : ℝ => -Real.pi * ((n : ℝ) * Real.exp z) ^ (2 : ℕ))
+        (-2 * Real.pi * y ^ (2 : ℕ)) x := by
       rw [hinnerFun]
       exact hinnerRaw.congr_deriv (by ring)
-    have hraw := (Real.hasDerivAt_exp (-Real.pi * y ^ 2)).comp x hinner
+    have hraw := (Real.hasDerivAt_exp (-Real.pi * y ^ (2 : ℕ))).comp x hinner
     have hfun :
-        (fun z : ℝ => Real.exp (-Real.pi * ((n : ℝ) * Real.exp z) ^ 2)) =
-          Real.exp ∘ fun z : ℝ => -Real.pi * ((n : ℝ) * Real.exp z) ^ 2 := by
+        (fun z : ℝ => Real.exp (-Real.pi * ((n : ℝ) * Real.exp z) ^ (2 : ℕ))) =
+          Real.exp ∘ fun z : ℝ => -Real.pi * ((n : ℝ) * Real.exp z) ^ (2 : ℕ) := by
       funext z
       rfl
     rw [hfun]
@@ -117,7 +117,7 @@ theorem hasDerivAt_thetaCuspPolynomialAtom (P : ℝ[X]) (n : ℕ) (x : ℝ) :
       thetaCuspPolynomialAtom P n =
         ((fun z : ℝ => Real.exp (z / 2)) *
           fun z : ℝ => eval ((n : ℝ) * Real.exp z) P) *
-            fun z : ℝ => Real.exp (-Real.pi * ((n : ℝ) * Real.exp z) ^ 2) := by
+            fun z : ℝ => Real.exp (-Real.pi * ((n : ℝ) * Real.exp z) ^ (2 : ℕ)) := by
     funext z
     rfl
   rw [hfun]
@@ -194,24 +194,24 @@ theorem abs_thetaCuspPolynomialAtom_le_majorant
   have hexpHalf : Real.exp (x / 2) ≤ Real.exp (R / 2) :=
     Real.exp_le_exp.mpr (by linarith [hx.2])
   have hexpLower : Real.exp (-R) ≤ Real.exp x := Real.exp_le_exp.mpr hx.1
-  have hn2 : (n : ℝ) ≤ (n : ℝ) ^ 2 := by
+  have hn2 : (n : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by
     cases n with
     | zero => norm_num
     | succ n =>
         have h1 : (1 : ℝ) ≤ (n.succ : ℕ) := by exact_mod_cast n.succ_pos
         nlinarith
-  have hexpSq : Real.exp (-2 * R) ≤ Real.exp x ^ 2 := by
-    rw [show Real.exp (-2 * R) = Real.exp (-R) ^ 2 by
+  have hexpSq : Real.exp (-2 * R) ≤ Real.exp x ^ (2 : ℕ) := by
+    rw [show Real.exp (-2 * R) = Real.exp (-R) ^ (2 : ℕ) by
       rw [pow_two, ← Real.exp_add]
       congr 1
       ring]
     exact (sq_le_sq₀ (Real.exp_pos _).le (Real.exp_pos _).le).2 hexpLower
   have hscale : (n : ℝ) * Real.exp (-2 * R) ≤
-      (n : ℝ) ^ 2 * Real.exp x ^ 2 := by
+      (n : ℝ) ^ (2 : ℕ) * Real.exp x ^ (2 : ℕ) := by
     calc
-      (n : ℝ) * Real.exp (-2 * R) ≤ (n : ℝ) ^ 2 * Real.exp (-2 * R) := by gcongr
-      _ ≤ (n : ℝ) ^ 2 * Real.exp x ^ 2 := by gcongr
-  have hdecay : Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2) ≤
+      (n : ℝ) * Real.exp (-2 * R) ≤ (n : ℝ) ^ (2 : ℕ) * Real.exp (-2 * R) := by gcongr
+      _ ≤ (n : ℝ) ^ (2 : ℕ) * Real.exp x ^ (2 : ℕ) := by gcongr
+  have hdecay : Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)) ≤
       Real.exp (-(Real.pi * Real.exp (-2 * R)) * n) := by
     apply Real.exp_le_exp.mpr
     have := mul_le_mul_of_nonneg_left hscale Real.pi_pos.le
@@ -231,13 +231,13 @@ theorem abs_thetaCuspPolynomialAtom_le_majorant
   have hA : 0 ≤ A := by dsimp [A]; positivity
   calc
     Real.exp (x / 2) * |eval ((n : ℝ) * Real.exp x) P| *
-        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2) ≤
+        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)) ≤
       Real.exp (R / 2) *
         (∑ k ∈ P.support, |P.coeff k| * ((n : ℝ) * Real.exp R) ^ k) *
-        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2) := by
+        Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)) := by
       gcongr
       exact heval.trans hcoeff
-    _ = A * Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2) := by rfl
+    _ = A * Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)) := by rfl
     _ ≤ A * Real.exp (-(Real.pi * Real.exp (-2 * R)) * n) :=
       mul_le_mul_of_nonneg_left hdecay hA
     _ = thetaCuspPolynomialMajorant P R n := by rfl

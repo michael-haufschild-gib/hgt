@@ -32,8 +32,8 @@ theorem pow_mul_regimeOneLikelihoodScale_le_of_seven_le {k : ℕ} (hk : k ≤ 5)
 /-- The quadratic likelihood error has the same explicit endpoint control. -/
 theorem pow_mul_regimeOneLikelihoodScale_sq_le_of_seven_le {k : ℕ} (hk : k ≤ 5) {x : ℝ}
     (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    thetaCuspSingleAtomReflectionScale 1 x^k*regimeOneLikelihoodScale x^2 ≤
-      (7 : ℝ)^k*(32/1300000000)^2 := by
+    thetaCuspSingleAtomReflectionScale 1 x^k*regimeOneLikelihoodScale x^(2 : ℕ) ≤
+      (7 : ℝ)^k*(32/1300000000)^(2 : ℕ) := by
   have h1 := pow_mul_regimeOneLikelihoodScale_le_of_seven_le hk hq
   have h0 := pow_mul_regimeOneLikelihoodScale_le_of_seven_le (k := 0) (by omega) hq
   simp only [pow_zero, one_mul] at h0

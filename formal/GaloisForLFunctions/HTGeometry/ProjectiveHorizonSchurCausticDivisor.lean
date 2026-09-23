@@ -48,10 +48,10 @@ theorem criticalReciprocalJacobian_det_normalized {K : Type*} [CommRing K]
         * (rectangularSchurToeplitz (fun k => (Z * Z).coeff k) n m).det := by
   rw [criticalReciprocalJacobian_det_eq_rectangularSchur]
   have hsq : (fun k => ((Polynomial.C y0 * Z) * (Polynomial.C y0 * Z)).coeff k)
-      = fun k => y0 ^ 2 * (Z * Z).coeff k := by
+      = fun k => y0 ^ (2 : ℕ) * (Z * Z).coeff k := by
     funext k
     rw [show (Polynomial.C y0 * Z) * (Polynomial.C y0 * Z)
-        = Polynomial.C (y0 ^ 2) * (Z * Z) by rw [Polynomial.C_pow]; ring,
+        = Polynomial.C (y0 ^ (2 : ℕ)) * (Z * Z) by rw [Polynomial.C_pow]; ring,
       Polynomial.coeff_C_mul]
   rw [hsq, rectangularSchurToeplitz_smul, Matrix.det_smul]
   rw [Fintype.card_fin, ← pow_mul]
@@ -126,7 +126,7 @@ theorem exists_unitJet_with_unipotentSquare {n L : ℕ} (hn : 1 ≤ n) (hL : 0 <
       ∀ k < L, (Z * Z).coeff k = unipotentJetCoeff (K := ℚ) n k := by
   classical
   set W : PowerSeries ℚ := 1 + PowerSeries.X ^ n with hW
-  set f : (PowerSeries ℚ)[X] := Polynomial.X ^ 2 - Polynomial.C W with hf
+  set f : (PowerSeries ℚ)[X] := Polynomial.X ^ (2 : ℕ) - Polynomial.C W with hf
   have hmonic : f.Monic := by
     rw [hf]
     exact Polynomial.monic_X_pow_sub_C W (by norm_num)
@@ -136,7 +136,7 @@ theorem exists_unitJet_with_unipotentSquare {n L : ℕ} (hn : 1 ≤ n) (hL : 0 <
   have hWconst : (PowerSeries.constantCoeff (R := ℚ)) W = 1 := by
     rw [hW, map_add, map_one, hXn, add_zero]
   have hmapf : f.map ((PowerSeries.constantCoeff (R := ℚ)))
-      = Polynomial.X ^ 2 - Polynomial.C (1 : ℚ) := by
+      = Polynomial.X ^ (2 : ℕ) - Polynomial.C (1 : ℚ) := by
     rw [hf]
     simp [hWconst]
   have hroot : (f.map ((PowerSeries.constantCoeff (R := ℚ)))).eval (1 : ℚ) = 0 := by

@@ -2,7 +2,7 @@
 The Deninger averaging layer is the `p = 2πi` case of the general periodic averaging layer.
 
 `RHTower/DeningerFullAverage` builds the constant-plus-exact decomposition of a closed periodic
-`C^1` form on `(Fin r → ℂ)` with period `2πi`, through its own averaged-data recursion.
+`C^(1 : ℕ)` form on `(Fin r → ℂ)` with period `2πi`, through its own averaged-data recursion.
 `HTGeometry/PeriodicFullAverage` builds the same decomposition for an arbitrary `RCLike` scalar
 field and an arbitrary nonzero period, and additionally proves that the constant form of the
 decomposition is **unique**.
@@ -64,7 +64,7 @@ theorem deningerPeriodic_closed_eq_const_add_exact_of_periodic
   periodic_closed_eq_const_add_exact deningerPeriod_ne_zero hdiff hcont' hper hclosed
 
 /-!
-Packaging existence and uniqueness as one `∃!` would need the difference of two `C^1` primitives,
+Packaging existence and uniqueness as one `∃!` would need the difference of two `C^(1 : ℕ)` primitives,
 whose `fderiv` continuity is the continuity of a sum in
 `(Fin r → ℂ) →L[ℂ] (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ`.  That space carries the strong operator topology,
 for which `ContinuousAdd` is not available here, so the pairwise uniqueness statement above is the

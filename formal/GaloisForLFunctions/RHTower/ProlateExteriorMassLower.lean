@@ -34,36 +34,36 @@ variable {s c x : ℝ}
 
 /-- The square of the exterior amplitude. -/
 theorem xiAmplitude_sq (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    xiAmplitude s x ^ 2
-      = xiEndpointPhase s x / Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := by
+    xiAmplitude s x ^ (2 : ℕ)
+      = xiEndpointPhase s x / Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have h1 : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have h2 : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hz : (0 : ℝ) < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos h1 h2
-  have hsz : (0 : ℝ) < Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := Real.sqrt_pos.2 hz
+  have h1 : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have h2 : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hz : (0 : ℝ) < (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s) := mul_pos h1 h2
+  have hsz : (0 : ℝ) < Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s)) := Real.sqrt_pos.2 hz
   have hphase : 0 ≤ xiEndpointPhase s x := by
     have := (xiEndpointPhase_bounds hs0 (by linarith) hx.le).1
-    have hnn : (0 : ℝ) ≤ Real.sqrt (1 - s) * Real.sqrt (x ^ 2 - 1) := by positivity
+    have hnn : (0 : ℝ) ≤ Real.sqrt (1 - s) * Real.sqrt (x ^ (2 : ℕ) - 1) := by positivity
     linarith
   rw [xiAmplitude, div_pow, Real.sq_sqrt hphase, Real.sq_sqrt hsz.le]
 
 /-- **The amplitude-to-speed identity.**  `A² / Ξ' = Ξ/(x²−s)`, exactly. -/
 theorem xiAmplitude_sq_eq_mul_xiSpeed (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    xiAmplitude s x ^ 2 = xiEndpointPhase s x / (x ^ 2 - s) * xiSpeed s x := by
+    xiAmplitude s x ^ (2 : ℕ) = xiEndpointPhase s x / (x ^ (2 : ℕ) - s) * xiSpeed s x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have h1 : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have h2 : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hsq : Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))
-      = Real.sqrt (x ^ 2 - 1) * Real.sqrt (x ^ 2 - s) := Real.sqrt_mul h1.le _
-  have hs1' : Real.sqrt (x ^ 2 - 1) > 0 := Real.sqrt_pos.2 h1
-  have hs2' : Real.sqrt (x ^ 2 - s) > 0 := Real.sqrt_pos.2 h2
-  have hspeed : xiSpeed s x = Real.sqrt (x ^ 2 - s) / Real.sqrt (x ^ 2 - 1) := by
+  have h1 : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have h2 : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hsq : Real.sqrt ((x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - s))
+      = Real.sqrt (x ^ (2 : ℕ) - 1) * Real.sqrt (x ^ (2 : ℕ) - s) := Real.sqrt_mul h1.le _
+  have hs1' : Real.sqrt (x ^ (2 : ℕ) - 1) > 0 := Real.sqrt_pos.2 h1
+  have hs2' : Real.sqrt (x ^ (2 : ℕ) - s) > 0 := Real.sqrt_pos.2 h2
+  have hspeed : xiSpeed s x = Real.sqrt (x ^ (2 : ℕ) - s) / Real.sqrt (x ^ (2 : ℕ) - 1) := by
     rw [xiSpeed, Real.sqrt_div h2.le]
-  have hsq1 : Real.sqrt (x ^ 2 - 1) * Real.sqrt (x ^ 2 - 1) = x ^ 2 - 1 :=
+  have hsq1 : Real.sqrt (x ^ (2 : ℕ) - 1) * Real.sqrt (x ^ (2 : ℕ) - 1) = x ^ (2 : ℕ) - 1 :=
     Real.mul_self_sqrt h1.le
-  have hsq2 : Real.sqrt (x ^ 2 - s) * Real.sqrt (x ^ 2 - s) = x ^ 2 - s :=
+  have hsq2 : Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (x ^ (2 : ℕ) - s) = x ^ (2 : ℕ) - s :=
     Real.mul_self_sqrt h2.le
-  have hsqsq : Real.sqrt (x ^ 2 - s) ^ 2 = x ^ 2 - s := Real.sq_sqrt h2.le
+  have hsqsq : Real.sqrt (x ^ (2 : ℕ) - s) ^ (2 : ℕ) = x ^ (2 : ℕ) - s := Real.sq_sqrt h2.le
   rw [xiAmplitude_sq hs0 hs1 hx, hsq, hspeed]
   field_simp
   rw [hsqsq]
@@ -71,7 +71,7 @@ theorem xiAmplitude_sq_eq_mul_xiSpeed (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 
 /-- The Bessel density in amplitude form. -/
 theorem radialProlateBesselDensity_eq (hc : 0 ≤ c) :
     radialProlateBesselDensity s c x
-      = c * xiAmplitude s x ^ 2 * besselJ0 (c * xiEndpointPhase s x) ^ 2 := by
+      = c * xiAmplitude s x ^ (2 : ℕ) * besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ) := by
   rw [radialProlateBesselDensity, mul_pow, mul_pow, Real.sq_sqrt hc]
 
 /-- The phase on the window `[2,3]` is bounded below by `61/50`. -/
@@ -80,16 +80,16 @@ theorem xiEndpointPhase_ge_window (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx2 : 2 �
   have hx : (1 : ℝ) < x := by linarith
   have hlow := (xiEndpointPhase_bounds hs0 (by linarith) hx.le).1
   have h1 : Real.sqrt (1 / 2 : ℝ) ≤ Real.sqrt (1 - s) := Real.sqrt_le_sqrt (by linarith)
-  have h2 : Real.sqrt 3 ≤ Real.sqrt (x ^ 2 - 1) := Real.sqrt_le_sqrt (by nlinarith)
+  have h2 : Real.sqrt 3 ≤ Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_le_sqrt (by nlinarith)
   have h3 : (0 : ℝ) ≤ Real.sqrt (1 / 2 : ℝ) := Real.sqrt_nonneg _
   have h4 : (0 : ℝ) ≤ Real.sqrt 3 := Real.sqrt_nonneg _
-  have hprod : Real.sqrt (1 / 2 : ℝ) * Real.sqrt 3 ≤ Real.sqrt (1 - s) * Real.sqrt (x ^ 2 - 1) :=
+  have hprod : Real.sqrt (1 / 2 : ℝ) * Real.sqrt 3 ≤ Real.sqrt (1 - s) * Real.sqrt (x ^ (2 : ℕ) - 1) :=
     mul_le_mul h1 h2 h4 (le_trans h3 h1)
   have hmul : Real.sqrt (1 / 2 : ℝ) * Real.sqrt 3 = Real.sqrt (3 / 2) := by
     rw [← Real.sqrt_mul (by norm_num)]
     norm_num
   have hge : (61 : ℝ) / 50 ≤ Real.sqrt (3 / 2) := by
-    rw [show (61 : ℝ) / 50 = Real.sqrt ((61 / 50) ^ 2) from (Real.sqrt_sq (by norm_num)).symm]
+    rw [show (61 : ℝ) / 50 = Real.sqrt ((61 / 50) ^ (2 : ℕ)) from (Real.sqrt_sq (by norm_num)).symm]
     exact Real.sqrt_le_sqrt (by norm_num)
   rw [hmul] at hprod
   linarith [hlow, hprod, hge]
@@ -98,28 +98,28 @@ theorem xiEndpointPhase_ge_window (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx2 : 2 �
 density into the shape a change of variables consumes. -/
 theorem besselDensity_ge_speed (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c)
     (hx2 : 2 ≤ x) (hx3 : x ≤ 3) :
-    1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ 2)
+    1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ))
       ≤ radialProlateBesselDensity s c x := by
   have hx : (1 : ℝ) < x := by linarith
   have hx0 : (0 : ℝ) < x := by linarith
-  have h2 : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have h2 : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   have hxi := xiEndpointPhase_ge_window hs0 hs1 hx2
-  have hratio : (1 : ℝ) / 8 ≤ xiEndpointPhase s x / (x ^ 2 - s) := by
+  have hratio : (1 : ℝ) / 8 ≤ xiEndpointPhase s x / (x ^ (2 : ℕ) - s) := by
     rw [le_div_iff₀ h2]
     nlinarith [hxi, hx3, hs0, hx2]
   have hspeed : 0 ≤ xiSpeed s x := Real.sqrt_nonneg _
-  have hJ : (0 : ℝ) ≤ besselJ0 (c * xiEndpointPhase s x) ^ 2 := sq_nonneg _
+  have hJ : (0 : ℝ) ≤ besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ) := sq_nonneg _
   rw [radialProlateBesselDensity_eq hc.le, xiAmplitude_sq_eq_mul_xiSpeed hs0 hs1 hx]
   have hstep : 1 / 8 * (c * xiSpeed s x)
-      ≤ c * (xiEndpointPhase s x / (x ^ 2 - s) * xiSpeed s x) := by
+      ≤ c * (xiEndpointPhase s x / (x ^ (2 : ℕ) - s) * xiSpeed s x) := by
     have h := mul_le_mul_of_nonneg_right hratio (mul_nonneg hc.le hspeed)
     nlinarith [h]
   nlinarith [hstep, hJ]
 
 /-- **The change of variables.**  Under `u = cΞ(x)` the dominating integral becomes `∫ J₀(u)² du`. -/
 theorem integral_speed_besselJ0_sq (hs0 : 0 ≤ s) :
-    (∫ x in (2 : ℝ)..3, (c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ 2)
-      = ∫ u in (c * xiEndpointPhase s 2)..(c * xiEndpointPhase s 3), besselJ0 u ^ 2 := by
+    (∫ x in (2 : ℝ)..3, (c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ))
+      = ∫ u in (c * xiEndpointPhase s 2)..(c * xiEndpointPhase s 3), besselJ0 u ^ (2 : ℕ) := by
   have huIcc : uIcc (2 : ℝ) 3 = Icc (2 : ℝ) 3 := uIcc_of_le (by norm_num)
   have hderiv : ∀ x ∈ uIcc (2 : ℝ) 3,
       HasDerivAt (fun t : ℝ => c * xiEndpointPhase s t) (c * xiSpeed s x) x := by
@@ -134,53 +134,53 @@ theorem integral_speed_besselJ0_sq (hs0 : 0 ≤ s) :
     (continuous_besselJ0.pow 2)
 
 theorem besselJ0_sq_eq_normalForm {u : ℝ} (hu : 0 < u) :
-    besselJ0 u ^ 2 = besselNormalForm u ^ 2 / u := by
+    besselJ0 u ^ (2 : ℕ) = besselNormalForm u ^ (2 : ℕ) / u := by
   rw [besselNormalForm, mul_pow, Real.sq_sqrt hu.le]
   field_simp
 
 /-- **The `u`-integral from below**, by tiling the normal-form mass. -/
 theorem integral_besselJ0_sq_ge {u₁ u₂ : ℝ} (h1 : 1 ≤ u₁) (n : ℕ)
     (hn : u₁ + 4 * (n : ℝ) ≤ u₂) :
-    (n : ℝ) * (4 / 9 * besselEnergyFloor) / u₂ ≤ ∫ u in u₁..u₂, besselJ0 u ^ 2 := by
+    (n : ℝ) * (4 / 9 * besselEnergyFloor) / u₂ ≤ ∫ u in u₁..u₂, besselJ0 u ^ (2 : ℕ) := by
   have hu1 : (0 : ℝ) < u₁ := lt_of_lt_of_le zero_lt_one h1
   have hn0 : (0 : ℝ) ≤ 4 * (n : ℝ) := by positivity
   have h12 : u₁ ≤ u₂ := by linarith
   have hu2 : (0 : ℝ) < u₂ := lt_of_lt_of_le hu1 h12
-  have hwc : Continuous fun u : ℝ => besselNormalForm u ^ 2 :=
+  have hwc : Continuous fun u : ℝ => besselNormalForm u ^ (2 : ℕ) :=
     continuous_besselNormalForm.pow 2
-  have hJc : Continuous fun u : ℝ => besselJ0 u ^ 2 := continuous_besselJ0.pow 2
+  have hJc : Continuous fun u : ℝ => besselJ0 u ^ (2 : ℕ) := continuous_besselJ0.pow 2
   -- pointwise: J₀² ≥ w²/u₂
-  have hpt : (∫ u in u₁..u₂, besselNormalForm u ^ 2 / u₂)
-      ≤ ∫ u in u₁..u₂, besselJ0 u ^ 2 := by
+  have hpt : (∫ u in u₁..u₂, besselNormalForm u ^ (2 : ℕ) / u₂)
+      ≤ ∫ u in u₁..u₂, besselJ0 u ^ (2 : ℕ) := by
     refine intervalIntegral.integral_mono_on h12 ((hwc.div_const u₂).intervalIntegrable _ _)
       (hJc.intervalIntegrable _ _) fun u hu => ?_
     have hupos : (0 : ℝ) < u := lt_of_lt_of_le hu1 hu.1
     rw [besselJ0_sq_eq_normalForm hupos]
     refine div_le_div_of_nonneg_left (sq_nonneg _) hupos ?_
     exact hu.2
-  have hdiv : (∫ u in u₁..u₂, besselNormalForm u ^ 2 / u₂)
-      = (∫ u in u₁..u₂, besselNormalForm u ^ 2) / u₂ := by
+  have hdiv : (∫ u in u₁..u₂, besselNormalForm u ^ (2 : ℕ) / u₂)
+      = (∫ u in u₁..u₂, besselNormalForm u ^ (2 : ℕ)) / u₂ := by
     simp only [div_eq_mul_inv]
     rw [intervalIntegral.integral_mul_const]
   -- tiling on the left part
   have htile := besselMass_lower_tiled h1 n
-  have hrest : (∫ u in u₁..(u₁ + 4 * (n : ℝ)), besselNormalForm u ^ 2)
-      ≤ ∫ u in u₁..u₂, besselNormalForm u ^ 2 := by
+  have hrest : (∫ u in u₁..(u₁ + 4 * (n : ℝ)), besselNormalForm u ^ (2 : ℕ))
+      ≤ ∫ u in u₁..u₂, besselNormalForm u ^ (2 : ℕ) := by
     have hadd := intervalIntegral.integral_add_adjacent_intervals
-      (f := fun u : ℝ => besselNormalForm u ^ 2) (μ := MeasureTheory.volume)
+      (f := fun u : ℝ => besselNormalForm u ^ (2 : ℕ)) (μ := MeasureTheory.volume)
       (a := u₁) (b := u₁ + 4 * (n : ℝ)) (c := u₂)
       (hwc.intervalIntegrable _ _) (hwc.intervalIntegrable _ _)
-    have hnn : (0 : ℝ) ≤ ∫ u in (u₁ + 4 * (n : ℝ))..u₂, besselNormalForm u ^ 2 :=
+    have hnn : (0 : ℝ) ≤ ∫ u in (u₁ + 4 * (n : ℝ))..u₂, besselNormalForm u ^ (2 : ℕ) :=
       intervalIntegral.integral_nonneg hn fun _ _ => sq_nonneg _
     linarith [hadd, hnn]
   rw [div_le_iff₀ hu2]
   have hkey : (n : ℝ) * (4 / 9 * besselEnergyFloor)
-      ≤ ∫ u in u₁..u₂, besselNormalForm u ^ 2 := le_trans htile hrest
-  have hfin : (∫ u in u₁..u₂, besselNormalForm u ^ 2) / u₂ ≤ ∫ u in u₁..u₂, besselJ0 u ^ 2 := by
+      ≤ ∫ u in u₁..u₂, besselNormalForm u ^ (2 : ℕ) := le_trans htile hrest
+  have hfin : (∫ u in u₁..u₂, besselNormalForm u ^ (2 : ℕ)) / u₂ ≤ ∫ u in u₁..u₂, besselJ0 u ^ (2 : ℕ) := by
     rw [← hdiv]
     exact hpt
-  have hfin' : (∫ u in u₁..u₂, besselNormalForm u ^ 2)
-      ≤ (∫ u in u₁..u₂, besselJ0 u ^ 2) * u₂ := (div_le_iff₀ hu2).mp hfin
+  have hfin' : (∫ u in u₁..u₂, besselNormalForm u ^ (2 : ℕ))
+      ≤ (∫ u in u₁..u₂, besselJ0 u ^ (2 : ℕ)) * u₂ := (div_le_iff₀ hu2).mp hfin
   linarith [hkey, hfin']
 
 /-- The phase increases by at least one across the window. -/
@@ -224,9 +224,9 @@ theorem integral_window_besselDensity_ge (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc
     xiEndpointPhase_ge_window hs0 hs1 le_rfl
   have hxi3 : xiEndpointPhase s 3 ≤ 3 := by
     have h := (xiEndpointPhase_bounds hs0 (by linarith) (by norm_num : (1:ℝ) ≤ 3)).2
-    have h8 : Real.sqrt ((3:ℝ) ^ 2 - 1) ≤ 3 := by
-      rw [show ((3:ℝ) ^ 2 - 1) = 8 by norm_num,
-        show (3:ℝ) = Real.sqrt 9 from (by rw [show (9:ℝ) = 3 ^ 2 by norm_num,
+    have h8 : Real.sqrt ((3:ℝ) ^ (2 : ℕ) - 1) ≤ 3 := by
+      rw [show ((3:ℝ) ^ (2 : ℕ) - 1) = 8 by norm_num,
+        show (3:ℝ) = Real.sqrt 9 from (by rw [show (9:ℝ) = 3 ^ (2 : ℕ) by norm_num,
           Real.sqrt_sq (by norm_num)])]
       exact Real.sqrt_le_sqrt (by norm_num)
     linarith
@@ -242,7 +242,7 @@ theorem integral_window_besselDensity_ge (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc
   -- the u-integral
   have hInt := integral_besselJ0_sq_ge hu1 n hgap
   have hlow : besselEnergyFloor / 54
-      ≤ ∫ u in (c * xiEndpointPhase s 2)..(c * xiEndpointPhase s 3), besselJ0 u ^ 2 := by
+      ≤ ∫ u in (c * xiEndpointPhase s 2)..(c * xiEndpointPhase s 3), besselJ0 u ^ (2 : ℕ) := by
     refine le_trans ?_ hInt
     rw [div_le_div_iff₀ (by norm_num) hu2pos]
     have hκ : 0 < besselEnergyFloor := besselEnergyFloor_pos
@@ -253,7 +253,7 @@ theorem integral_window_besselDensity_ge (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc
   have ha1 : (1 : ℝ) < 2 := by norm_num
   have hca : dunsterEndpointCrossing c ≤ 2 := by
     rw [dunsterEndpointCrossing]
-    have h9 : 9 / (8 * c ^ 2) ≤ 1 := by
+    have h9 : 9 / (8 * c ^ (2 : ℕ)) ≤ 1 := by
       rw [div_le_one (by positivity)]
       nlinarith [hc]
     linarith
@@ -264,10 +264,10 @@ theorem integral_window_besselDensity_ge (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)]
     exact hBint.mono_set (fun t ht => ht.1)
   have hSint : IntervalIntegrable
-      (fun x : ℝ => 1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ 2))
+      (fun x : ℝ => 1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ)))
       MeasureTheory.volume 2 3 := by
     have hcont : ContinuousOn
-        (fun x : ℝ => 1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ 2))
+        (fun x : ℝ => 1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ)))
         (uIcc (2:ℝ) 3) := by
       rw [uIcc_of_le (by norm_num : (2:ℝ) ≤ 3)]
       refine continuousOn_const.mul ((continuousOn_const.mul
@@ -277,17 +277,17 @@ theorem integral_window_besselDensity_ge (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc
           fun t ht => lt_of_lt_of_le (by norm_num) ht.1)))
     exact hcont.intervalIntegrable
   have hcmp : (∫ x in (2:ℝ)..3,
-        1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ 2))
+        1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ)))
       ≤ ∫ x in (2:ℝ)..3, radialProlateBesselDensity s c x := by
     refine intervalIntegral.integral_mono_on (by norm_num) hSint hBii fun x hx => ?_
     exact besselDensity_ge_speed hs0 hs1 hc0 hx.1 hx.2
   have hscale : (∫ x in (2:ℝ)..3,
-      1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ 2))
-      = 1 / 8 * ∫ x in (2:ℝ)..3, (c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ 2 :=
+      1 / 8 * ((c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ)))
+      = 1 / 8 * ∫ x in (2:ℝ)..3, (c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ) :=
     intervalIntegral.integral_const_mul _ _
   rw [hscale] at hcmp
   have hfin : besselEnergyFloor / 432
-      ≤ 1 / 8 * ∫ x in (2:ℝ)..3, (c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ 2 := by
+      ≤ 1 / 8 * ∫ x in (2:ℝ)..3, (c * xiSpeed s x) * besselJ0 (c * xiEndpointPhase s x) ^ (2 : ℕ) := by
     linarith [hlow]
   linarith [hcmp, hfin]
 
@@ -299,17 +299,17 @@ theorem integral_Ioi_radialProlate_sq_ge {R DR DDR : ℝ → ℝ}
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
-    besselEnergyFloor / 432 / c - 2 * radialProlateDensityTransferConstant / c ^ 2
-      ≤ ∫ x in Ioi (2 : ℝ), R x ^ 2 := by
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
+    besselEnergyFloor / 432 / c - 2 * radialProlateDensityTransferConstant / c ^ (2 : ℕ)
+      ≤ ∫ x in Ioi (2 : ℝ), R x ^ (2 : ℕ) := by
   have hc0 : (0 : ℝ) < c := by linarith
   have ha1 : (1 : ℝ) < 2 := by norm_num
   have hxi2 : (61 : ℝ) / 50 ≤ xiEndpointPhase s 2 := xiEndpointPhase_ge_window hs0 hs1 le_rfl
   have hcaxi : (1 : ℝ) ≤ c * xiEndpointPhase s 2 := by nlinarith [hxi2, hc]
   have hca : dunsterEndpointCrossing c ≤ 2 := by
     rw [dunsterEndpointCrossing]
-    have h9 : 9 / (8 * c ^ 2) ≤ 1 := by
+    have h9 : 9 / (8 * c ^ (2 : ℕ)) ≤ 1 := by
       rw [div_le_one (by positivity)]
       nlinarith [hc]
     linarith
@@ -352,19 +352,19 @@ theorem integral_Ioi_radialProlate_sq_ge {R DR DDR : ℝ → ℝ}
     rwa [integral_add hDint habsint] at hmono
   -- rescale
   have hscale : (∫ x in Ioi (2:ℝ), radialProlateDensity c R x)
-      = c * ∫ x in Ioi (2:ℝ), R x ^ 2 := by
+      = c * ∫ x in Ioi (2:ℝ), R x ^ (2 : ℕ) := by
     rw [← integral_const_mul]
     exact setIntegral_congr_fun measurableSet_Ioi fun x _ => by rw [radialProlateDensity]
   rw [hscale] at hsplit
   have hkey : besselEnergyFloor / 432 - 2 * radialProlateDensityTransferConstant / c
-      ≤ c * ∫ x in Ioi (2:ℝ), R x ^ 2 := by
+      ≤ c * ∫ x in Ioi (2:ℝ), R x ^ (2 : ℕ) := by
     linarith [hwin, hwindow, hsplit, hdiff]
   have hfin : (besselEnergyFloor / 432 - 2 * radialProlateDensityTransferConstant / c) / c
-      ≤ ∫ x in Ioi (2:ℝ), R x ^ 2 := by
+      ≤ ∫ x in Ioi (2:ℝ), R x ^ (2 : ℕ) := by
     rw [div_le_iff₀ hc0]
     linarith [hkey]
   have heq : (besselEnergyFloor / 432 - 2 * radialProlateDensityTransferConstant / c) / c
-      = besselEnergyFloor / 432 / c - 2 * radialProlateDensityTransferConstant / c ^ 2 := by
+      = besselEnergyFloor / 432 / c - 2 * radialProlateDensityTransferConstant / c ^ (2 : ℕ) := by
     field_simp
   linarith [hfin, heq.le, heq.ge]
 

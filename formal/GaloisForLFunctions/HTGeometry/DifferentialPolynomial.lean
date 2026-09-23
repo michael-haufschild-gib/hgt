@@ -390,7 +390,7 @@ theorem primitive_support_degree_eq_one
   rw [MvPolynomial.coeff_C_mul] at heq
   have hpow : (2 : C) ^ (s.sum fun _ n => n) = 2 := by
     exact mul_left_cancel₀ hc (heq.trans (mul_comm _ _))
-  have hnat : 2 ^ (s.sum fun _ n => n) = 2 ^ 1 := by
+  have hnat : 2 ^ (s.sum fun _ n => n) = 2 ^ (1 : ℕ) := by
     apply Nat.cast_injective (R := C)
     simpa using hpow
   exact Nat.pow_right_injective (by omega : 1 < 2) hnat

@@ -33,11 +33,11 @@ open GaloisForLFunctions.HTGeometry
 
 /-- Full signed source determinant with the stronger correction, in fixed units. -/
 def evenCompactRawDet (u a w : ℝ) : ℝ :=
-  hankelFourDet ((oddCompactSourceZero u a)^2) (-oddCompactReflectedScalar2 u a w)
+  hankelFourDet ((oddCompactSourceZero u a)^(2 : ℕ)) (-oddCompactReflectedScalar2 u a w)
     (oddCompactReflectedScalar4 u a w) (-oddCompactReflectedScalar6 u a w)
     (oddCompactReflectedScalar8 u a w) (-oddCompactReflectedScalar10 u a w)
     (evenCompactReflectedScalar12 u a w+1000000000000*oddCompactSourceZero u a*
-      (3*oddCompactSourceZero u a-6/19))/(100 : ℝ)^12
+      (3*oddCompactSourceZero u a-6/19))/(100 : ℝ)^(12 : ℕ)
 
 /-- Gap grading of every coefficient of the corrected raw determinant. -/
 def evenCompactRawPolynomial (u a w : ℝ) : ℝ :=

@@ -22,7 +22,7 @@ variable {E F : Type*}
 
 /-- Exact quadratic observation charge of the existing Koplienko remainder. -/
 theorem quantum_gram_remainder_expectation (P R : E →L[ℂ] F) (r : ℝ) (x : E) :
-    (inner ℂ x (gramSecondOrderRemainder P R (r : ℂ) x)).re = r ^ 2 * ‖R x‖ ^ 2 := by
+    (inner ℂ x (gramSecondOrderRemainder P R (r : ℂ) x)).re = r ^ (2 : ℕ) * ‖R x‖ ^ (2 : ℕ) := by
   rw [gramSecondOrderRemainder_eq_residualEnergy]
   simp only [_root_.smul_apply, ContinuousLinearMap.comp_apply, inner_smul_right,
     ContinuousLinearMap.adjoint_inner_right, Complex.star_def, Complex.conj_ofReal,

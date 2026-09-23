@@ -135,7 +135,7 @@ theorem exists_factor_of_analytic {f : ℂ → ℂ} (hf : AnalyticAt ℂ f 0) (h
 /-- The seed `w - log(1+w)` vanishes to second order at the origin. -/
 theorem exists_logSeed_factor :
     ∃ g : ℂ → ℂ, AnalyticAt ℂ g 0 ∧
-      ∀ᶠ w in nhds (0 : ℂ), (w - Complex.log (1 + w)) = w ^ 2 * g w := by
+      ∀ᶠ w in nhds (0 : ℂ), (w - Complex.log (1 + w)) = w ^ (2 : ℕ) * g w := by
   have hbase : shiftDefect 0 = fun w : ℂ => w - Complex.log (1 + w) := by
     funext w
     simp [shiftDefect]
@@ -158,7 +158,7 @@ theorem exists_logSeed_factor :
         have hwlt : ‖w‖ < 1 / 2 := by
           simpa [Complex.dist_eq] using hball
         have hlog : ‖Complex.log (1 + w) - Complex.logTaylor 2 w‖
-            ≤ ‖w‖ ^ 2 * (1 - ‖w‖)⁻¹ / 2 := by
+            ≤ ‖w‖ ^ (2 : ℕ) * (1 - ‖w‖)⁻¹ / 2 := by
           have hml := Complex.norm_log_sub_logTaylor_le 1 (by linarith : ‖w‖ < 1)
           norm_num at hml ⊢
           exact hml
@@ -198,7 +198,7 @@ theorem exists_logSeed_factor :
 /-- **The general defect can be pushed to any order.**  If the seed vanishes to second order then
 for every `N` some polynomial makes the defect vanish to order `N+2`. -/
 theorem exists_genDefect_factor {F : ℂ → ℂ} {g₀ : ℂ → ℂ}
-    (hg₀ : AnalyticAt ℂ g₀ 0) (hseed : ∀ᶠ w in nhds (0 : ℂ), F w = w ^ 2 * g₀ w) (N : ℕ) :
+    (hg₀ : AnalyticAt ℂ g₀ 0) (hseed : ∀ᶠ w in nhds (0 : ℂ), F w = w ^ (2 : ℕ) * g₀ w) (N : ℕ) :
     ∃ (P : Polynomial ℂ) (g : ℂ → ℂ), P.eval 0 = 0 ∧ AnalyticAt ℂ g 0 ∧
       ∀ᶠ w in nhds (0 : ℂ), genDefect F P w = w ^ (N + 2) * g w := by
   induction N with

@@ -55,7 +55,7 @@ theorem preconnected_of_scale_connectors
     (hSP : ∀ v : ℂ, ‖v‖ ≤ ρ₀ → ‖v‖ / 2 < v.re → v ∉ P)
     (h0P : (0:ℂ) ∈ P)
     (hfund : ∀ r : ℝ, ρ₀ / lam ≤ r → r ≤ ρ₀ → ∀ v : ℂ, v ∉ P →
-      r / lam ^ 2 ≤ ‖v‖ → ‖v‖ < r →
+      r / lam ^ (2 : ℕ) ≤ ‖v‖ → ‖v‖ < r →
       ∃ C : Set ℂ, IsPreconnected C ∧ v ∈ C ∧ (∃ u ∈ C, ‖u‖ / 2 < u.re) ∧
         ∀ u ∈ C, u ∉ P ∧ ‖u‖ < r) :
     ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₀ → IsPreconnected {v : ℂ | ‖v‖ < ρ ∧ v ∉ P} := by
@@ -63,7 +63,7 @@ theorem preconnected_of_scale_connectors
   have hlam0 : (0:ℝ) < lam := by linarith
   -- Step 1: extend the connector supply to ALL scales r ≤ ρ₀ by one scaling jump.
   have hfund_all : ∀ r : ℝ, 0 < r → r ≤ ρ₀ → ∀ v : ℂ, v ∉ P →
-      r / lam ^ 2 ≤ ‖v‖ → ‖v‖ < r →
+      r / lam ^ (2 : ℕ) ≤ ‖v‖ → ‖v‖ < r →
       ∃ C : Set ℂ, IsPreconnected C ∧ v ∈ C ∧ (∃ u ∈ C, ‖u‖ / 2 < u.re) ∧
         ∀ u ∈ C, u ∉ P ∧ ‖u‖ < r := by
     intro r hr hrρ₀ v hvP hvlo hvhi
@@ -101,7 +101,7 @@ theorem preconnected_of_scale_connectors
               apply mul_le_mul_of_nonneg_left (le_of_lt hvhi) (le_of_lt hpow0)
           _ ≤ ρ₀ := hmtop
       exact hvP ((scale_inv_pow hlam hρ₀ hinv m v h2).mp hcon)
-    have hVlo : (lam ^ m * r) / lam ^ 2 ≤ ‖V‖ := by
+    have hVlo : (lam ^ m * r) / lam ^ (2 : ℕ) ≤ ‖V‖ := by
       rw [hVnorm]
       rw [div_le_iff₀ (by positivity)]
       rw [div_le_iff₀ (by positivity)] at hvlo
@@ -191,7 +191,7 @@ theorem preconnected_of_scale_connectors
         exact hvP h0P
       have hvnorm : (0:ℝ) < ‖v‖ := norm_pos_iff.mpr hv0
       -- choose the working scale
-      rcases le_or_gt (ρ / lam ^ 2) ‖v‖ with hcase | hcase
+      rcases le_or_gt (ρ / lam ^ (2 : ℕ)) ‖v‖ with hcase | hcase
       · -- outer shell: scale ρ directly
         obtain ⟨C, hCpre, hvC, ⟨u₀, hu₀C, hu₀sec⟩, hCprop⟩ :=
           hfund_all ρ hρ hρρ₀ v hvP hcase hvρ
@@ -201,16 +201,16 @@ theorem preconnected_of_scale_connectors
       · -- inner: scale lam * ‖v‖
         have hr : (0:ℝ) < lam * ‖v‖ := by positivity
         have hrρ₀ : lam * ‖v‖ ≤ ρ₀ := by
-          have h5 : lam * ‖v‖ < lam * (ρ / lam ^ 2) := by
+          have h5 : lam * ‖v‖ < lam * (ρ / lam ^ (2 : ℕ)) := by
             apply mul_lt_mul_of_pos_left hcase hlam0
-          have h6 : lam * (ρ / lam ^ 2) = ρ / lam := by
+          have h6 : lam * (ρ / lam ^ (2 : ℕ)) = ρ / lam := by
             field_simp
           rw [h6] at h5
           have h7 : ρ / lam ≤ ρ := by
             rw [div_le_iff₀ hlam0]
             nlinarith
           linarith
-        have hlo : (lam * ‖v‖) / lam ^ 2 ≤ ‖v‖ := by
+        have hlo : (lam * ‖v‖) / lam ^ (2 : ℕ) ≤ ‖v‖ := by
           rw [div_le_iff₀ (by positivity)]
           nlinarith
         have hhi : ‖v‖ < lam * ‖v‖ := by nlinarith
@@ -219,9 +219,9 @@ theorem preconnected_of_scale_connectors
         have hsub : ∀ u ∈ C, ‖u‖ < ρ := by
           intro u huC
           have h8 := (hCprop u huC).2
-          have h9 : lam * ‖v‖ < lam * (ρ / lam ^ 2) := by
+          have h9 : lam * ‖v‖ < lam * (ρ / lam ^ (2 : ℕ)) := by
             apply mul_lt_mul_of_pos_left hcase hlam0
-          have h10 : lam * (ρ / lam ^ 2) = ρ / lam := by
+          have h10 : lam * (ρ / lam ^ (2 : ℕ)) = ρ / lam := by
             field_simp
           rw [h10] at h9
           have h11 : ρ / lam ≤ ρ := by
@@ -252,7 +252,7 @@ namespace Bottcher
 /-- **The linearizer is a local homeomorphism at the fixed point**: injective on a small disk,
 with nonvanishing derivative there, and mapping open subsets to open sets.  The coordinate
 transfer toolkit for the tip clause. -/
-theorem koenigsFun_localHomeo {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+theorem koenigsFun_localHomeo {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
     ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 64 ∧
       Set.InjOn (koenigsFun c β) (Metric.ball 0 r) ∧
       (∀ s : Set ℂ, s ⊆ Metric.ball 0 r → IsOpen s → IsOpen (koenigsFun c β '' s)) := by
@@ -322,7 +322,7 @@ namespace Bottcher
 /-- **The repelling inverse branch at the fixed point**, with the exact contraction algebra
 `g(z) − β = (z − β)/(g(z) + β)`: a continuous right inverse of the quadratic near `β`, fixing
 `β`, contracting distances by almost the multiplier. -/
-theorem exists_inverse_branch (c β : ℂ) (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+theorem exists_inverse_branch (c β : ℂ) (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
     ∃ (g : ℂ → ℂ) (rg : ℝ), 0 < rg ∧
       g β = β ∧
       ContinuousOn g (Metric.ball β rg) ∧
@@ -339,7 +339,7 @@ theorem exists_inverse_branch (c β : ℂ) (hβ : β ^ 2 + c = β) (hlam2 : 2 �
     unfold quadratic
     fun_prop
   have hderivat : HasDerivAt (quadratic c) (2 * β) β := by
-    have h1 : HasDerivAt (fun z : ℂ => z ^ 2) (2 * β) β := by
+    have h1 : HasDerivAt (fun z : ℂ => z ^ (2 : ℕ)) (2 * β) β := by
       have h2 := hasDerivAt_pow 2 β
       simpa [pow_one] using h2
     exact h1.add_const c
@@ -386,12 +386,12 @@ theorem exists_inverse_branch (c β : ℂ) (hβ : β ^ 2 + c = β) (hlam2 : 2 �
       exact h8.preimage_mem_nhds h10
     filter_upwards [h7] with z hz hzright
     have h11 : (g z - β) * (g z + β) = z - β := by
-      have h12 : (g z) ^ 2 + c = z := hzright
-      have h13 : β ^ 2 + c = β := hβ
-      have h14 : (g z) ^ 2 - β ^ 2 = z - β := by
-        calc (g z) ^ 2 - β ^ 2 = ((g z) ^ 2 + c) - (β ^ 2 + c) := by ring
+      have h12 : (g z) ^ (2 : ℕ) + c = z := hzright
+      have h13 : β ^ (2 : ℕ) + c = β := hβ
+      have h14 : (g z) ^ (2 : ℕ) - β ^ (2 : ℕ) = z - β := by
+        calc (g z) ^ (2 : ℕ) - β ^ (2 : ℕ) = ((g z) ^ (2 : ℕ) + c) - (β ^ (2 : ℕ) + c) := by ring
           _ = z - β := by rw [h12, h13]
-      calc (g z - β) * (g z + β) = (g z) ^ 2 - β ^ 2 := by ring
+      calc (g z - β) * (g z + β) = (g z) ^ (2 : ℕ) - β ^ (2 : ℕ) := by ring
         _ = z - β := h14
     have h15 : ‖2 * β‖ / 2 ≤ ‖g z + β‖ := by
       have h16 : g z + β = 2 * β - (β - g z) := by ring
@@ -435,13 +435,13 @@ the root-limit pigeonhole (open problem 03) and, as fallback, the factor-2 basis
 consumed by `noRelation_phiMero_of_basin_branch_basisApproach`. -/
 def SectorConnectorProp (c β : ℂ) (ρ₀ : ℝ) : Prop :=
   ∀ r : ℝ, ρ₀ / ‖2 * β‖ ≤ r → r ≤ ρ₀ →
-    ∀ v : ℂ, koenigsFun c β v ∉ filledJulia c → r / ‖2 * β‖ ^ 2 ≤ ‖v‖ → ‖v‖ < r →
+    ∀ v : ℂ, koenigsFun c β v ∉ filledJulia c → r / ‖2 * β‖ ^ (2 : ℕ) ≤ ‖v‖ → ‖v‖ < r →
     ∃ C : Set ℂ, IsPreconnected C ∧ v ∈ C ∧ (∃ u ∈ C, ‖u‖ / 2 < u.re) ∧
       ∀ u ∈ C, koenigsFun c β u ∉ filledJulia c ∧ ‖u‖ < r
 
 /-- The linearizer admits a ratio-linear local right inverse: every `z` near `β` is `ψ(v)` with
 `‖v‖ ≤ 2‖z − β‖`.  Quantitative surjectivity from the tangency bootstrap. -/
-theorem koenigsFun_ratio_surjective {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+theorem koenigsFun_ratio_surjective {c β : ℂ} (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
     ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 64 ∧ ∀ z : ℂ, ‖z - β‖ < δ →
       ∃ v : ℂ, koenigsFun c β v = z ∧ ‖v‖ ≤ 33 / 32 * ‖z - β‖ := by
   classical
@@ -486,13 +486,13 @@ theorem koenigsFun_ratio_surjective {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 
   obtain ⟨hzright, hzsmall⟩ := hδball z hzball
   refine ⟨gψ z, hzright, ?_⟩
   -- the tangency bootstrap: ‖gψ z‖ ≤ ‖z − β‖ + ‖gψ z‖²
-  have h8 : ‖z - β - gψ z‖ ≤ ‖gψ z‖ ^ 2 := by
+  have h8 : ‖z - β - gψ z‖ ≤ ‖gψ z‖ ^ (2 : ℕ) := by
     have h9 := koenigsFun_normalization hβ hlam2 (le_of_lt hzsmall |>.trans (by norm_num))
     have h10 : koenigsFun c β (gψ z) - (β + gψ z) = z - β - gψ z := by
       rw [hzright]
       ring
     rwa [h10] at h9
-  have h11 : ‖gψ z‖ - ‖z - β‖ ≤ ‖gψ z‖ ^ 2 := by
+  have h11 : ‖gψ z‖ - ‖z - β‖ ≤ ‖gψ z‖ ^ (2 : ℕ) := by
     have h12 := norm_sub_norm_le (gψ z) (z - β)
     have h13 : ‖gψ z - (z - β)‖ = ‖z - β - gψ z‖ := by
       rw [← norm_neg]
@@ -500,7 +500,7 @@ theorem koenigsFun_ratio_surjective {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 
       ring
     linarith [h8]
   -- ‖gψ z‖ < 1/64 gives ‖gψ z‖² ≤ ‖gψ z‖/64, hence ‖gψ z‖(1 − 1/64) ≤ ‖z−β‖
-  have h14 : ‖gψ z‖ ^ 2 ≤ ‖gψ z‖ / 64 := by
+  have h14 : ‖gψ z‖ ^ (2 : ℕ) ≤ ‖gψ z‖ / 64 := by
     have h15 := norm_nonneg (gψ z)
     nlinarith
   have h16 := norm_nonneg (gψ z)
@@ -524,7 +524,7 @@ theorem koenigs_basis_family {c : ℝ} (hc0 : c ≤ 0)
         (filledJulia (c:ℂ))ᶜ ∩ Metric.ball ((betaFixed c : ℝ) : ℂ) (t/2) ⊆ T := by
   classical
   set β : ℂ := ((betaFixed c : ℝ) : ℂ) with hβdef
-  have hβsq : β ^ 2 + (c:ℂ) = β := by
+  have hβsq : β ^ (2 : ℕ) + (c:ℂ) = β := by
     rw [hβdef]
     exact_mod_cast congrArg (fun t : ℝ => (t : ℂ)) (betaFixed_sq hc0)
   have hβ1 : 1 ≤ betaFixed c := one_le_betaFixed hc0
@@ -578,7 +578,7 @@ theorem koenigs_basis_family {c : ℝ} (hc0 : c ≤ 0)
     rw [koenigsFun_zero hβsq, hβdef]
     exact betaFixed_mem_filledJulia hc0
   have hfund' : ∀ r : ℝ, ρ₀ / lam ≤ r → r ≤ ρ₀ → ∀ v : ℂ, v ∉ P →
-      r / lam ^ 2 ≤ ‖v‖ → ‖v‖ < r →
+      r / lam ^ (2 : ℕ) ≤ ‖v‖ → ‖v‖ < r →
       ∃ C : Set ℂ, IsPreconnected C ∧ v ∈ C ∧ (∃ u ∈ C, ‖u‖ / 2 < u.re) ∧
         ∀ u ∈ C, u ∉ P ∧ ‖u‖ < r := by
     intro r hr1 hr2 v hvP hvlo hvhi
@@ -610,7 +610,7 @@ theorem koenigs_basis_family {c : ℝ} (hc0 : c ≤ 0)
       rw [h9]
       calc ‖(koenigsFun (c:ℂ) β v - (β + v)) + v‖
           ≤ ‖koenigsFun (c:ℂ) β v - (β + v)‖ + ‖v‖ := norm_add_le _ _
-        _ ≤ ‖v‖ ^ 2 + ‖v‖ := by linarith [htang]
+        _ ≤ ‖v‖ ^ (2 : ℕ) + ‖v‖ := by linarith [htang]
         _ < t := by nlinarith [norm_nonneg v, hv1]
     · exact hv2
   · -- hT_pre: continuous image of the collapse conclusion

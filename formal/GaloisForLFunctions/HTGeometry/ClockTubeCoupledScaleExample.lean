@@ -212,7 +212,7 @@ noncomputable def coupledMultiPotential (k : ℕ) (a massSq ε : ℝ) :
     ℝ → ℝ → (Fin k → ℂ) → ℂ :=
   fun s t z => ((massSq : ℝ) : ℂ) * Complex.exp (2 * coupledMultiSin ε s t z)
     + ((a * ((k : ℝ) - 4) : ℝ) : ℂ) * coupledMultiSin ε s t z
-    - ((a ^ 2 * ((k : ℝ) - 4) : ℝ) : ℂ)
+    - ((a ^ (2 : ℕ) * ((k : ℝ) - 4) : ℝ) : ℂ)
       * (coupledMultiCos ε s t z * coupledMultiCos ε s t z)
 
 theorem abs_im_coupledArg {ρ : ℝ} (_hρ : 0 ≤ ρ) (s t : ℝ) {z : Fin k → ℂ} (hz : z ∈ tube k ρ) :
@@ -279,7 +279,7 @@ theorem exists_boundedC1_coupledMultiPotential (k : ℕ) (a massSq ε : ℝ) {ρ
   have hT2 := (BoundedC1TubePotential.const (k := k)
     ((a * ((k : ℝ) - 4) : ℝ) : ℂ) ρ).mul hSin
   have hT3 := (BoundedC1TubePotential.const (k := k)
-    ((a ^ 2 * ((k : ℝ) - 4) : ℝ) : ℂ) ρ).mul (hCos.mul hCos)
+    ((a ^ (2 : ℕ) * ((k : ℝ) - 4) : ℝ) : ℂ) ρ).mul (hCos.mul hCos)
   exact ⟨_, _, _, (hT1.add hT2).sub hT3⟩
 
 /-- **The effective potential of the coupled scale is real at real transverse points**, with the
@@ -288,7 +288,7 @@ theorem coupledMultiPotential_ofReal (k : ℕ) (a massSq ε : ℝ) (s t : ℝ) (
     coupledMultiPotential k a massSq ε s t (realTube y)
       = ((massSq * Real.exp (2 * (ε * Real.sin (s + t + ∑ i, y i)))
           + a * ((k : ℝ) - 4) * (ε * Real.sin (s + t + ∑ i, y i))
-          - a ^ 2 * ((k : ℝ) - 4)
+          - a ^ (2 : ℕ) * ((k : ℝ) - 4)
             * (ε * Real.cos (s + t + ∑ i, y i) * (ε * Real.cos (s + t + ∑ i, y i))) : ℝ) : ℂ) := by
   have hsum : ∑ i, realTube y i = ((∑ i, y i : ℝ) : ℂ) := by
     rw [Complex.ofReal_sum]
@@ -320,8 +320,8 @@ theorem conformalPotentialMulti_coupledScaleMulti (k : ℕ) (a massSq ε : ℝ) 
   have h1 : ∑ _i : Fin k, -(ε * Real.sin (s + t + ∑ i, y i))
       = (k : ℝ) * -(ε * Real.sin (s + t + ∑ i, y i)) := by
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-  have h2 : ∑ _i : Fin k, (ε * Real.cos (s + t + ∑ i, y i)) ^ 2
-      = (k : ℝ) * (ε * Real.cos (s + t + ∑ i, y i)) ^ 2 := by
+  have h2 : ∑ _i : Fin k, (ε * Real.cos (s + t + ∑ i, y i)) ^ (2 : ℕ)
+      = (k : ℝ) * (ε * Real.cos (s + t + ∑ i, y i)) ^ (2 : ℕ) := by
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   rw [h1, h2]
   ring
@@ -333,7 +333,7 @@ chosen. -/
 theorem tubeDatum_of_boundedC1 {V Vs Vt : ℝ → ℝ → (Fin k → ℂ) → ℂ} {ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T : ℝ}
     (hV : BoundedC1TubePotential V Vs Vt ρ₀ Mv) (hρ₀ : 0 < ρ₀) (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀)
     (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 < ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 < ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 < ρ₃) (hρ₃ : ρ₃ < ρ₂) :
     TubeDatum V Vs Vt ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T where
@@ -386,13 +386,13 @@ theorem twoSpecies_scale_reconstruction_coupledScaleMulti (k n : ℕ) (a ε : �
   obtain ⟨Vs, Vt, Mv, hV⟩ := exists_boundedC1_coupledMultiPotential k a massSq ε zero_le_one
   have hMv0 : 0 ≤ Mv := hV.boundNonneg
   obtain ⟨T, hTpos, hsmall'⟩ := exists_small_side
-    (A := 4 * (k : ℝ) + Mv * (1 : ℝ) ^ 2 / 4 + 1) (B := ((1 : ℝ) - 1 / 2) / 2)
+    (A := 4 * (k : ℝ) + Mv * (1 : ℝ) ^ (2 : ℕ) / 4 + 1) (B := ((1 : ℝ) - 1 / 2) / 2)
     (by positivity) (by norm_num)
-  have hsmall : (4 * (k : ℝ) + Mv * (1 : ℝ) ^ 2 / 4) * T ^ 2 * Real.exp 2
-      / (((1 : ℝ) - 1 / 2) / 2) ^ 2 < 1 := by
-    have hden : (0 : ℝ) < (((1 : ℝ) - 1 / 2) / 2) ^ 2 := by norm_num
+  have hsmall : (4 * (k : ℝ) + Mv * (1 : ℝ) ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2
+      / (((1 : ℝ) - 1 / 2) / 2) ^ (2 : ℕ) < 1 := by
+    have hden : (0 : ℝ) < (((1 : ℝ) - 1 / 2) / 2) ^ (2 : ℕ) := by norm_num
     rw [div_lt_one hden] at hsmall' ⊢
-    have hX : (0 : ℝ) ≤ T ^ 2 * Real.exp 2 := by positivity
+    have hX : (0 : ℝ) ≤ T ^ (2 : ℕ) * Real.exp 2 := by positivity
     nlinarith [hX]
   have hD := tubeDatum_of_boundedC1 (ρ := (1 : ℝ) / 2) (ρ₁ := (1 : ℝ) / 4)
     (ρ₂ := (1 : ℝ) / 8) (ρ₃ := (1 : ℝ) / 16) hV one_pos (by norm_num) (by norm_num)

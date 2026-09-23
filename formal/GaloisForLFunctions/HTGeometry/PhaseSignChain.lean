@@ -135,7 +135,7 @@ theorem exists_sign_chain_of_phase_increase {φ ρ : ℝ → ℝ} {m₀ : ℤ} {
       rw [hccast, hccast]; push_cast; ring
     have hcos : Real.cos (c (i + 1)) = -Real.cos (c i) := by
       rw [hstep, Real.cos_add_pi]
-    have hsq : Real.cos (c i) ^ 2 = 1 := by
+    have hsq : Real.cos (c i) ^ (2 : ℕ) = 1 := by
       have hsin : Real.sin (c i) = 0 := by
         rw [hc]; exact Real.sin_int_mul_pi _
       have := Real.sin_sq_add_cos_sq (c i)

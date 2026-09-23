@@ -33,15 +33,15 @@ theorem cell_energy_le {T : ℝ} (hT : 0 ≤ T) (H : ℕ) (hH : T ≤ (H : ℝ))
     (hΦ : ∀ k : ℕ, ∀ t : ℝ, |t - cellCentre H k| ≤ 1 / 2 → F t ≤ Φ k)
     (hE : ∀ k : ℕ,
       (∫ t in (cellCentre H k - 1 / 2)..(cellCentre H k + 1 / 2), B t) ≤ E k) :
-    (∫ t in (-T)..T, B t * F t / (1 + t ^ 2))
-      ≤ ∑ k ∈ Finset.range (2 * H + 1), 4 * Φ k * E k / (1 + (cellCentre H k) ^ 2) := by
+    (∫ t in (-T)..T, B t * F t / (1 + t ^ (2 : ℕ)))
+      ≤ ∑ k ∈ Finset.range (2 * H + 1), 4 * Φ k * E k / (1 + (cellCentre H k) ^ (2 : ℕ)) := by
   classical
-  set g : ℝ → ℝ := fun t => B t * F t / (1 + t ^ 2) with hg
+  set g : ℝ → ℝ := fun t => B t * F t / (1 + t ^ (2 : ℕ)) with hg
   have hgc : Continuous g := by
     refine (hB.mul hF).div (by continuity) fun t => ?_
     positivity
   have hgnn : ∀ t, 0 ≤ g t := fun t => by
-    have h1 : (0 : ℝ) < 1 + t ^ 2 := by positivity
+    have h1 : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
     exact div_nonneg (mul_nonneg (hBnn t) (hFnn t)) h1.le
   set a : ℕ → ℝ := fun k => -(H : ℝ) - 1 / 2 + (k : ℝ) with ha
   have hint : ∀ k, IntervalIntegrable g volume (a k) (a (k + 1)) :=
@@ -58,7 +58,7 @@ theorem cell_energy_le {T : ℝ} (hT : 0 ≤ T) (H : ℕ) (hH : T ≤ (H : ℝ))
     filter_upwards with t using hgnn t
   -- the per-cell bound
   have hcell : ∀ k ∈ Finset.range (2 * H + 1),
-      (∫ t in (a k)..(a (k + 1)), g t) ≤ 4 * Φ k * E k / (1 + (cellCentre H k) ^ 2) := by
+      (∫ t in (a k)..(a (k + 1)), g t) ≤ 4 * Φ k * E k / (1 + (cellCentre H k) ^ (2 : ℕ)) := by
     intro k _
     have hak : a k = cellCentre H k - 1 / 2 := by rw [ha, cellCentre_sub]
     have hak1 : a (k + 1) = cellCentre H k + 1 / 2 := by
@@ -66,35 +66,35 @@ theorem cell_energy_le {T : ℝ} (hT : 0 ≤ T) (H : ℕ) (hH : T ≤ (H : ℝ))
     have hΦ0 : 0 ≤ Φ k := by
       have := hΦ k (cellCentre H k) (by simp)
       exact le_trans (hFnn _) this
-    have hc0 : (0 : ℝ) < 1 + (cellCentre H k) ^ 2 := by positivity
-    have hcoef0 : (0 : ℝ) ≤ 4 * Φ k / (1 + (cellCentre H k) ^ 2) := by positivity
+    have hc0 : (0 : ℝ) < 1 + (cellCentre H k) ^ (2 : ℕ) := by positivity
+    have hcoef0 : (0 : ℝ) ≤ 4 * Φ k / (1 + (cellCentre H k) ^ (2 : ℕ)) := by positivity
     have hle : a k ≤ a (k + 1) := by rw [hak, hak1]; linarith
     have hpt : ∀ t ∈ Set.Icc (a k) (a (k + 1)),
-        g t ≤ (4 * Φ k / (1 + (cellCentre H k) ^ 2)) * B t := by
+        g t ≤ (4 * Φ k / (1 + (cellCentre H k) ^ (2 : ℕ))) * B t := by
       intro t ht
       rw [hak, hak1] at ht
       have habs : |t - cellCentre H k| ≤ 1 / 2 := by
         rw [abs_le]
         exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
       have hFt : F t ≤ Φ k := hΦ k t habs
-      have hcell : 1 / (1 + t ^ 2) ≤ 4 / (1 + (cellCentre H k) ^ 2) :=
+      have hcell : 1 / (1 + t ^ (2 : ℕ)) ≤ 4 / (1 + (cellCentre H k) ^ (2 : ℕ)) :=
         inv_one_add_sq_le_cell habs
-      have ht0 : (0 : ℝ) < 1 + t ^ 2 := by positivity
-      show B t * F t / (1 + t ^ 2) ≤ _
-      have hrw : B t * F t / (1 + t ^ 2) = (B t * F t) * (1 / (1 + t ^ 2)) := by
+      have ht0 : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
+      show B t * F t / (1 + t ^ (2 : ℕ)) ≤ _
+      have hrw : B t * F t / (1 + t ^ (2 : ℕ)) = (B t * F t) * (1 / (1 + t ^ (2 : ℕ))) := by
         field_simp
       rw [hrw]
-      have h1 : (B t * F t) * (1 / (1 + t ^ 2)) ≤ (B t * Φ k) * (1 / (1 + t ^ 2)) := by
+      have h1 : (B t * F t) * (1 / (1 + t ^ (2 : ℕ))) ≤ (B t * Φ k) * (1 / (1 + t ^ (2 : ℕ))) := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
         exact mul_le_mul_of_nonneg_left hFt (hBnn t)
-      have h2 : (B t * Φ k) * (1 / (1 + t ^ 2))
-          ≤ (B t * Φ k) * (4 / (1 + (cellCentre H k) ^ 2)) :=
+      have h2 : (B t * Φ k) * (1 / (1 + t ^ (2 : ℕ)))
+          ≤ (B t * Φ k) * (4 / (1 + (cellCentre H k) ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_left hcell (mul_nonneg (hBnn t) hΦ0)
-      have h3 : (B t * Φ k) * (4 / (1 + (cellCentre H k) ^ 2))
-          = (4 * Φ k / (1 + (cellCentre H k) ^ 2)) * B t := by ring
+      have h3 : (B t * Φ k) * (4 / (1 + (cellCentre H k) ^ (2 : ℕ)))
+          = (4 * Φ k / (1 + (cellCentre H k) ^ (2 : ℕ))) * B t := by ring
       linarith [h1, h2, h3.le, h3.ge]
     have hcont2 : Continuous fun t : ℝ =>
-        (4 * Φ k / (1 + (cellCentre H k) ^ 2)) * B t := continuous_const.mul hB
+        (4 * Φ k / (1 + (cellCentre H k) ^ (2 : ℕ))) * B t := continuous_const.mul hB
     have hmono := intervalIntegral.integral_mono_on (μ := volume) hle
       (hgc.intervalIntegrable _ _) (hcont2.intervalIntegrable _ _) hpt
     rw [intervalIntegral.integral_const_mul] at hmono
@@ -108,7 +108,7 @@ theorem cell_energy_le {T : ℝ} (hT : 0 ≤ T) (H : ℕ) (hH : T ≤ (H : ℝ))
       ≤ ∫ t in (-(H : ℝ) - 1 / 2)..((H : ℝ) + 1 / 2), g t := hwide
     _ = ∑ k ∈ Finset.range (2 * H + 1), ∫ t in (a k)..(a (k + 1)), g t := by
         rw [hsum, ha0, haN]
-    _ ≤ ∑ k ∈ Finset.range (2 * H + 1), 4 * Φ k * E k / (1 + (cellCentre H k) ^ 2) :=
+    _ ≤ ∑ k ∈ Finset.range (2 * H + 1), 4 * Φ k * E k / (1 + (cellCentre H k) ^ (2 : ℕ)) :=
         Finset.sum_le_sum hcell
 
 /-- The centre of the `k`-th cell of half-width `ρ` covering `[-2ρN, 2ρN]`. -/
@@ -124,15 +124,15 @@ theorem cell_energy_scaled_le {T ρ : ℝ} (hT : 0 ≤ T) (hρ : 0 < ρ) (hρ2 :
     (hΦ : ∀ k : ℕ, ∀ t : ℝ, |t - scaledCentre ρ N k| ≤ ρ → F t ≤ Φ k)
     (hE : ∀ k : ℕ,
       (∫ t in (scaledCentre ρ N k - ρ)..(scaledCentre ρ N k + ρ), B t) ≤ E k) :
-    (∫ t in (-T)..T, B t * F t / (1 + t ^ 2))
-      ≤ ∑ k ∈ Finset.range (2 * N), 4 * Φ k * E k / (1 + (scaledCentre ρ N k) ^ 2) := by
+    (∫ t in (-T)..T, B t * F t / (1 + t ^ (2 : ℕ)))
+      ≤ ∑ k ∈ Finset.range (2 * N), 4 * Φ k * E k / (1 + (scaledCentre ρ N k) ^ (2 : ℕ)) := by
   classical
-  set g : ℝ → ℝ := fun t => B t * F t / (1 + t ^ 2) with hg
+  set g : ℝ → ℝ := fun t => B t * F t / (1 + t ^ (2 : ℕ)) with hg
   have hgc : Continuous g := by
     refine (hB.mul hF).div (by continuity) fun t => ?_
     positivity
   have hgnn : ∀ t, 0 ≤ g t := fun t => by
-    have h1 : (0 : ℝ) < 1 + t ^ 2 := by positivity
+    have h1 : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
     exact div_nonneg (mul_nonneg (hBnn t) (hFnn t)) h1.le
   set a : ℕ → ℝ := fun k => -2 * ρ * (N : ℝ) + 2 * ρ * (k : ℝ) with ha
   have hsum := intervalIntegral.sum_integral_adjacent_intervals
@@ -146,17 +146,17 @@ theorem cell_energy_scaled_le {T ρ : ℝ} (hT : 0 ≤ T) (hρ : 0 < ρ) (hρ2 :
       ?_ (hgc.intervalIntegrable _ _)
     filter_upwards with t using hgnn t
   have hcell : ∀ k ∈ Finset.range (2 * N),
-      (∫ t in (a k)..(a (k + 1)), g t) ≤ 4 * Φ k * E k / (1 + (scaledCentre ρ N k) ^ 2) := by
+      (∫ t in (a k)..(a (k + 1)), g t) ≤ 4 * Φ k * E k / (1 + (scaledCentre ρ N k) ^ (2 : ℕ)) := by
     intro k _
     have hak : a k = scaledCentre ρ N k - ρ := by rw [ha, scaledCentre]; ring
     have hak1 : a (k + 1) = scaledCentre ρ N k + ρ := by
       rw [ha, scaledCentre]; push_cast; ring
     have hΦ0 : 0 ≤ Φ k := le_trans (hFnn _) (hΦ k (scaledCentre ρ N k) (by simp [hρ.le]))
-    have hc0 : (0 : ℝ) < 1 + (scaledCentre ρ N k) ^ 2 := by positivity
-    have hcoef0 : (0 : ℝ) ≤ 4 * Φ k / (1 + (scaledCentre ρ N k) ^ 2) := by positivity
+    have hc0 : (0 : ℝ) < 1 + (scaledCentre ρ N k) ^ (2 : ℕ) := by positivity
+    have hcoef0 : (0 : ℝ) ≤ 4 * Φ k / (1 + (scaledCentre ρ N k) ^ (2 : ℕ)) := by positivity
     have hle : a k ≤ a (k + 1) := by rw [hak, hak1]; linarith
     have hpt : ∀ t ∈ Set.Icc (a k) (a (k + 1)),
-        g t ≤ (4 * Φ k / (1 + (scaledCentre ρ N k) ^ 2)) * B t := by
+        g t ≤ (4 * Φ k / (1 + (scaledCentre ρ N k) ^ (2 : ℕ))) * B t := by
       intro t ht
       rw [hak, hak1] at ht
       have habs : |t - scaledCentre ρ N k| ≤ ρ := by
@@ -164,22 +164,22 @@ theorem cell_energy_scaled_le {T ρ : ℝ} (hT : 0 ≤ T) (hρ : 0 < ρ) (hρ2 :
         exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
       have habs2 : |t - scaledCentre ρ N k| ≤ 1 / 2 := le_trans habs hρ2
       have hFt : F t ≤ Φ k := hΦ k t habs
-      have hcmp : 1 / (1 + t ^ 2) ≤ 4 / (1 + (scaledCentre ρ N k) ^ 2) :=
+      have hcmp : 1 / (1 + t ^ (2 : ℕ)) ≤ 4 / (1 + (scaledCentre ρ N k) ^ (2 : ℕ)) :=
         inv_one_add_sq_le_cell habs2
-      have ht0 : (0 : ℝ) < 1 + t ^ 2 := by positivity
-      show B t * F t / (1 + t ^ 2) ≤ _
-      have hrw : B t * F t / (1 + t ^ 2) = (B t * F t) * (1 / (1 + t ^ 2)) := by field_simp
+      have ht0 : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
+      show B t * F t / (1 + t ^ (2 : ℕ)) ≤ _
+      have hrw : B t * F t / (1 + t ^ (2 : ℕ)) = (B t * F t) * (1 / (1 + t ^ (2 : ℕ))) := by field_simp
       rw [hrw]
-      have h1 : (B t * F t) * (1 / (1 + t ^ 2)) ≤ (B t * Φ k) * (1 / (1 + t ^ 2)) :=
+      have h1 : (B t * F t) * (1 / (1 + t ^ (2 : ℕ))) ≤ (B t * Φ k) * (1 / (1 + t ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hFt (hBnn t)) (by positivity)
-      have h2 : (B t * Φ k) * (1 / (1 + t ^ 2))
-          ≤ (B t * Φ k) * (4 / (1 + (scaledCentre ρ N k) ^ 2)) :=
+      have h2 : (B t * Φ k) * (1 / (1 + t ^ (2 : ℕ)))
+          ≤ (B t * Φ k) * (4 / (1 + (scaledCentre ρ N k) ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_left hcmp (mul_nonneg (hBnn t) hΦ0)
-      have h3 : (B t * Φ k) * (4 / (1 + (scaledCentre ρ N k) ^ 2))
-          = (4 * Φ k / (1 + (scaledCentre ρ N k) ^ 2)) * B t := by ring
+      have h3 : (B t * Φ k) * (4 / (1 + (scaledCentre ρ N k) ^ (2 : ℕ)))
+          = (4 * Φ k / (1 + (scaledCentre ρ N k) ^ (2 : ℕ))) * B t := by ring
       linarith [h1, h2, h3.le, h3.ge]
     have hcont2 : Continuous fun t : ℝ =>
-        (4 * Φ k / (1 + (scaledCentre ρ N k) ^ 2)) * B t := continuous_const.mul hB
+        (4 * Φ k / (1 + (scaledCentre ρ N k) ^ (2 : ℕ))) * B t := continuous_const.mul hB
     have hmono := intervalIntegral.integral_mono_on (μ := volume) hle
       (hgc.intervalIntegrable _ _) (hcont2.intervalIntegrable _ _) hpt
     rw [intervalIntegral.integral_const_mul] at hmono
@@ -191,7 +191,7 @@ theorem cell_energy_scaled_le {T ρ : ℝ} (hT : 0 ≤ T) (hρ : 0 < ρ) (hρ2 :
       ≤ ∫ t in (-2 * ρ * (N : ℝ))..(2 * ρ * (N : ℝ)), g t := hwide
     _ = ∑ k ∈ Finset.range (2 * N), ∫ t in (a k)..(a (k + 1)), g t := by
         rw [hsum, ha0, haN]
-    _ ≤ ∑ k ∈ Finset.range (2 * N), 4 * Φ k * E k / (1 + (scaledCentre ρ N k) ^ 2) :=
+    _ ≤ ∑ k ∈ Finset.range (2 * N), 4 * Φ k * E k / (1 + (scaledCentre ρ N k) ^ (2 : ℕ)) :=
         Finset.sum_le_sum hcell
 
 end

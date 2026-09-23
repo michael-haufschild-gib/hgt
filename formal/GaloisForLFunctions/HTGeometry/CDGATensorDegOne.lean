@@ -225,7 +225,7 @@ theorem tensorLeftDegOne_tensorRightDegOne_add (f : ∀ a : ℕ, M a →ₗ[R] M
       | succ b' =>
           show tensorLeftDegOne (N := N') f (n + 1) (tensorRightDegOne (M := M) g n F)
                 ⟨(0, b' + 1), h⟩
-              + ((-1 : R)) ^ 0 • TensorProduct.map LinearMap.id (g b')
+              + ((-1 : R)) ^ (0 : ℕ) • TensorProduct.map LinearMap.id (g b')
                 (tensorLeftDegOne (N := N) f n F ⟨(0, b'), by omega⟩) = 0
           simp only [tensorLeftDegOne_zero, map_zero, smul_zero, add_zero]
   | succ a' =>

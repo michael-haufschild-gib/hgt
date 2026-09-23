@@ -77,7 +77,7 @@ private theorem opposite_rate (q : XiZeroCopy) (br : Bool) :
 No independent angular jets or replacement forcing are inserted. -/
 def PreservesSource (q : XiZeroCopy) (br : Bool) (W : ℝ → ℂ) : Prop :=
   ∀ (a b : ℂ) (v : ℝ) (x : Iio (0:ℝ)) (z : UpperHalfPlane),
-    -2*(1-(radialUnit x.val:ℂ)^2)*(radialUnit x.val:ℂ)*
+    -2*(1-(radialUnit x.val:ℂ)^(2 : ℕ))*(radialUnit x.val:ℂ)*
       seed (physicalRate q br) a v x.val 1 *
       transposeProfile (scalarParameter q)
         (fun y => W y*seed (physicalRate q (!br)) b v y (fullSquarePotential q (coordinates z)))
@@ -89,7 +89,7 @@ def PreservesSource (q : XiZeroCopy) (br : Bool) (W : ℝ → ℂ) : Prop :=
 private theorem weighted_defect (q : XiZeroCopy) (br : Bool) (W : ℝ → ℂ)
     (x : Iio (0:ℝ)) (hW : DifferentiableAt ℝ W x.val) (z : UpperHalfPlane) :
     ((radialUnit x.val:ℂ)-1)*
-      (-2*(1-(radialUnit x.val:ℂ)^2)*(radialUnit x.val:ℂ)*
+      (-2*(1-(radialUnit x.val:ℂ)^(2 : ℕ))*(radialUnit x.val:ℂ)*
         seed (physicalRate q br) 1 2 x.val 1 *
         transposeProfile (scalarParameter q)
           (fun y => W y*seed (physicalRate q (!br)) 1 2 y (fullSquarePotential q (coordinates z)))
@@ -97,7 +97,7 @@ private theorem weighted_defect (q : XiZeroCopy) (br : Bool) (W : ℝ → ℂ)
             (scalarLaplacian (fullSquarePotential q) (coordinates z))) x.val -
         W x.val*seed (physicalRate q (!br)) 1 2 x.val 1*
           timeOriginalForcing q br 1 (2-x.val) x.val (coordinates z)) =
-      -2*(1-(radialUnit x.val:ℂ)^2)*(radialUnit x.val:ℂ)^3*
+      -2*(1-(radialUnit x.val:ℂ)^(2 : ℕ))*(radialUnit x.val:ℂ)^(3 : ℕ)*
         seed (physicalRate q br) 1 2 x.val 1*
         seed (physicalRate q (!br)) 1 2 x.val 1*sourceContact q (coordinates z)*
         (deriv W x.val-((radialUnit x.val:ℂ)-1)*(1-4/(radialUnit x.val:ℂ))*W x.val) := by
@@ -123,8 +123,8 @@ theorem source_weight_derivative (q : XiZeroCopy) (br : Bool) (W : ℝ → ℂ)
   have hd := weighted_defect q br W x (hW.differentiableAt (isOpen_Iio.mem_nhds x.property)) z
   rw [hP 1 1 2 x z,sub_self,mul_zero] at hd
   have hu := radialUnit_bounds x.val x.property
-  have hn : 1-(radialUnit x.val:ℂ)^2 ≠ 0 := by
-    have h : (1:ℝ)-(radialUnit x.val)^2>0 := by nlinarith
+  have hn : 1-(radialUnit x.val:ℂ)^(2 : ℕ) ≠ 0 := by
+    have h : (1:ℝ)-(radialUnit x.val)^(2 : ℕ)>0 := by nlinarith
     exact_mod_cast h.ne'
   have hc := mul_ne_zero
     (mul_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (by norm_num : (-2:ℂ)≠0) hn)
@@ -213,9 +213,9 @@ theorem preserving_weight_boundary_charge (q : XiZeroCopy) (br : Bool) (W : ℝ 
     (hW : DifferentiableOn ℝ W (Iio 0)) (hP : PreservesSource q br W) :
     ∃ c : ℂ, (∀ x : Iio (0:ℝ), W x.val=c*dualWeight x.val) ∧
       ∀ (a : ℂ) (v : ℝ) (z : UpperHalfPlane),
-        Tendsto (fun x : ℝ => (radialUnit x:ℂ)^4*
+        Tendsto (fun x : ℝ => (radialUnit x:ℂ)^(4 : ℕ)*
           (W x*seed (physicalRate q (!br)) a v x (fullSquarePotential q (coordinates z))))
-          (𝓝[<] 0) (𝓝 (c*(a^2*timeOnset (2*physicalRate q (!br)) v*
+          (𝓝[<] 0) (𝓝 (c*(a^(2 : ℕ)*timeOnset (2*physicalRate q (!br)) v*
             fullSquarePotential q (coordinates z)))) := by
   obtain ⟨c,hc⟩ := source_weight_classification q br W hW hP
   refine ⟨c,hc,?_⟩

@@ -66,14 +66,14 @@ private theorem rapid_mul {T : Ici (0:ℝ)} {f : F} (hf : Rapid T f)
     _ = _ := by ring
 
 private theorem rapid_height_square {T : Ici (0:ℝ)} {f : F} (hf : Rapid T f) :
-    Rapid T (fun p r X k => (Real.exp k:ℂ)^2*f p r X k) := by
+    Rapid T (fun p r X k => (Real.exp k:ℂ)^(2 : ℕ)*f p r X k) := by
   intro N
   obtain ⟨D,B,hD,hB,hf⟩ := hf (N+2)
   refine ⟨D,B,hD,hB,?_⟩
   intro p hp r hr X k hk
   rw [norm_mul,norm_pow,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _)]
   calc
-    _ ≤ (Real.exp k)^2*(B*Real.exp (-((N+2:ℕ):ℝ)*k)) := by
+    _ ≤ (Real.exp k)^(2 : ℕ)*(B*Real.exp (-((N+2:ℕ):ℝ)*k)) := by
       exact mul_le_mul_of_nonneg_left (hf p hp r hr X k hk) (sq_nonneg _)
     _ = B*Real.exp (-(N:ℝ)*k) := by
       rw [pow_two,← Real.exp_add]
@@ -116,11 +116,11 @@ private theorem forcing_rapid (q : XiZeroCopy) (s amp : ℂ) (T : Ici (0:ℝ)) :
     (continuous_const.mul (weight_continuous s amp))
   have ha := rapid_add (rapid_add (rapid_height_square (response_rapid q s amp [0,0] T))
     (response_rapid q s amp [1,1] T)) (rapid_neg (response_rapid q s amp [1] T))
-  have hc : Continuous (fun z : ℝ × ℝ => (1:ℂ)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^2)) := by
+  have hc : Continuous (fun z : ℝ × ℝ => (1:ℂ)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^(2 : ℕ))) := by
     apply Continuous.div continuous_const (by fun_prop)
     intro z
     exact mul_ne_zero (by norm_num) (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.cosh_pos _).ne'))
-  have h := rapid_add hs (rapid_mul ha (fun p r => (1:ℂ)/(4*(Real.cosh ((p-r)/2):ℂ)^2)) hc)
+  have h := rapid_add hs (rapid_mul ha (fun p r => (1:ℂ)/(4*(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ))) hc)
   convert h using 1
   funext p r X k
   dsimp only [remainderForcing,Matrix.cons_val]

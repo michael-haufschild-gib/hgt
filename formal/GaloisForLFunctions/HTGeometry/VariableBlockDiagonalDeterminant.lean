@@ -31,7 +31,7 @@ def sigmaFiberEquiv : {x : Σ i, m i // x.1 = k} ≃ m k where
 variable {R : Type*} [CommRing R]
 
 /-- Determinant of a dependently typed block-diagonal matrix. -/
-theorem det_blockDiagonal'
+theorem det_blockDiagonal'_variableBlockDiagonalDeterminant
     [Fintype o] [DecidableEq o]
     [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)]
     (M : ∀ i, Matrix (m i) (m i) R) :
@@ -65,7 +65,7 @@ theorem valuation_det_blockDiagonal'
     [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)]
     (val : Valuation K Γ) (M : ∀ i, Matrix (m i) (m i) K) :
     val (Matrix.blockDiagonal' M).det = ∏ i, val (M i).det := by
-  rw [det_blockDiagonal' m M, map_prod]
+  rw [det_blockDiagonal'_variableBlockDiagonalDeterminant m M, map_prod]
 
 end
 

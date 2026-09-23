@@ -43,18 +43,18 @@ def ratFuncToLaurent (A : Type) [Field A] : RatFunc A →+* LaurentSeries A :=
 /-- The square root of the block discriminant `δ² + 4u²`, with constant term `δ`. -/
 def directionRadicalSeries (h2 : (2 : A) ≠ 0) {δ : A} (hδ : δ ≠ 0) : PowerSeries A :=
   Classical.choose (exists_powerSeries_sqrt_branch h2
-    (PowerSeries.C (δ * δ) + PowerSeries.C (4 : A) * PowerSeries.X ^ 2) δ hδ (by simp))
+    (PowerSeries.C (δ * δ) + PowerSeries.C (4 : A) * PowerSeries.X ^ (2 : ℕ)) δ hδ (by simp))
 
 theorem directionRadicalSeries_sq (h2 : (2 : A) ≠ 0) {δ : A} (hδ : δ ≠ 0) :
     directionRadicalSeries h2 hδ * directionRadicalSeries h2 hδ
-      = PowerSeries.C (δ * δ) + PowerSeries.C (4 : A) * PowerSeries.X ^ 2 :=
+      = PowerSeries.C (δ * δ) + PowerSeries.C (4 : A) * PowerSeries.X ^ (2 : ℕ) :=
   (Classical.choose_spec (exists_powerSeries_sqrt_branch h2
-    (PowerSeries.C (δ * δ) + PowerSeries.C (4 : A) * PowerSeries.X ^ 2) δ hδ (by simp))).1
+    (PowerSeries.C (δ * δ) + PowerSeries.C (4 : A) * PowerSeries.X ^ (2 : ℕ)) δ hδ (by simp))).1
 
 theorem constantCoeff_directionRadicalSeries (h2 : (2 : A) ≠ 0) {δ : A} (hδ : δ ≠ 0) :
     PowerSeries.constantCoeff (R := A) (directionRadicalSeries h2 hδ) = δ :=
   (Classical.choose_spec (exists_powerSeries_sqrt_branch h2
-    (PowerSeries.C (δ * δ) + PowerSeries.C (4 : A) * PowerSeries.X ^ 2) δ hδ (by simp))).2
+    (PowerSeries.C (δ * δ) + PowerSeries.C (4 : A) * PowerSeries.X ^ (2 : ℕ)) δ hδ (by simp))).2
 
 /-- The base field structure the radical field is built over. -/
 scoped instance ratFuncLaurentAlgebra : Algebra (RatFunc A) (LaurentSeries A) :=
@@ -77,7 +77,7 @@ theorem directionRadical_sq (h2 : (2 : A) ≠ 0) {δ : A} (hδ : δ ≠ 0) :
     directionRadical h2 hδ * directionRadical h2 hδ
       = algebraMap (RatFunc A) (LaurentSeries A)
         (algebraMap (Polynomial A) (RatFunc A)
-          (Polynomial.C (δ * δ) + Polynomial.C (4 : A) * Polynomial.X ^ 2)) := by
+          (Polynomial.C (δ * δ) + Polynomial.C (4 : A) * Polynomial.X ^ (2 : ℕ))) := by
   rw [directionRadical, ← map_mul, directionRadicalSeries_sq]
   rw [algebraMap_ratFunc_laurent, ratFuncToLaurent_polynomial]
   congr 1
@@ -100,7 +100,7 @@ theorem directionFieldRadical_sq (h2 : (2 : A) ≠ 0) {δ : ι → A} (hδ : ∀
     directionFieldRadical h2 hδ z * directionFieldRadical h2 hδ z
       = algebraMap (RatFunc A) ↥(directionField h2 hδ)
         (algebraMap (Polynomial A) (RatFunc A)
-          (Polynomial.C (δ z * δ z) + Polynomial.C (4 : A) * Polynomial.X ^ 2)) := by
+          (Polynomial.C (δ z * δ z) + Polynomial.C (4 : A) * Polynomial.X ^ (2 : ℕ))) := by
   apply Subtype.ext
   show directionRadical h2 (hδ z) * directionRadical h2 (hδ z) = _
   rw [directionRadical_sq]
@@ -131,7 +131,7 @@ theorem exists_directionFlip (h2 : (2 : A) ≠ 0) {δ : ι → A}
     exact ⟨_, rfl⟩
   have hprodeq : ∀ T : Finset ι, (∏ z ∈ T, ρ z * ρ z)
       = algebraMap (RatFunc A) ↥L (algebraMap (Polynomial A) (RatFunc A)
-          (∏ z ∈ T, (Polynomial.C (δ z * δ z) + Polynomial.C (4 : A) * Polynomial.X ^ 2))) := by
+          (∏ z ∈ T, (Polynomial.C (δ z * δ z) + Polynomial.C (4 : A) * Polynomial.X ^ (2 : ℕ)))) := by
     intro T
     rw [map_prod, map_prod]
     exact Finset.prod_congr rfl fun z _ => by rw [hρ, directionFieldRadical_sq]
@@ -145,7 +145,7 @@ theorem exists_directionFlip (h2 : (2 : A) ≠ 0) {δ : ι → A}
     have hinj' : Function.Injective
         (algebraMap (RatFunc A) ↥L) := (algebraMap (RatFunc A) ↥L).injective
     have hsquare : algebraMap (Polynomial A) (RatFunc A)
-        (∏ z ∈ T, (Polynomial.C (δ z * δ z) + Polynomial.C (4 : A) * Polynomial.X ^ 2))
+        (∏ z ∈ T, (Polynomial.C (δ z * δ z) + Polynomial.C (4 : A) * Polynomial.X ^ (2 : ℕ)))
         = v * v := hinj' (by rw [hw, map_mul])
     refine not_isSquare_prod_sq_add_four_sq' (K := A) h2
       (δ := fun z : T => δ (z : ι)) (fun a b hab => Subtype.ext (hinj hab))

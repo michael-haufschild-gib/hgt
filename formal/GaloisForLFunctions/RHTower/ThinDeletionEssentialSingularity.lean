@@ -33,17 +33,17 @@ theorem exp_neg_div_lt_pow {c : ℝ} (hc : 0 < c) (m : ℕ) {K : ℝ} (hK : 0 < 
   set U : ℝ := max 1 ((2 * (m : ℝ) + |Real.log K| + 1) / c) with hUdef
   have hU1 : (1 : ℝ) ≤ U := le_max_left _ _
   have hUpos : (0 : ℝ) < U := by linarith
-  refine ⟨1 / U ^ 2, by positivity, ?_⟩
+  refine ⟨1 / U ^ (2 : ℕ), by positivity, ?_⟩
   intro t ht0 htlt
   have hst : 0 < Real.sqrt t := Real.sqrt_pos.mpr ht0
   set v : ℝ := 1 / Real.sqrt t with hvdef
   have hvpos : 0 < v := by positivity
-  -- `t < 1 / U ^ 2` gives `v > U`
+  -- `t < 1 / U ^ (2 : ℕ)` gives `v > U`
   have hvU : U < v := by
     have hsq : Real.sqrt t < 1 / U := by
-      have h1 : Real.sqrt t < Real.sqrt (1 / U ^ 2) := by
+      have h1 : Real.sqrt t < Real.sqrt (1 / U ^ (2 : ℕ)) := by
         exact Real.sqrt_lt_sqrt ht0.le htlt
-      have h2 : Real.sqrt (1 / U ^ 2) = 1 / U := by
+      have h2 : Real.sqrt (1 / U ^ (2 : ℕ)) = 1 / U := by
         rw [one_div, Real.sqrt_inv, Real.sqrt_sq hUpos.le, one_div]
       rwa [h2] at h1
     rw [hvdef, lt_div_iff₀ hst]
@@ -51,7 +51,7 @@ theorem exp_neg_div_lt_pow {c : ℝ} (hc : 0 < c) (m : ℕ) {K : ℝ} (hK : 0 < 
           exact mul_lt_mul_of_pos_left hsq hUpos
       _ = 1 := by field_simp
   -- the quadratic in `v` is positive
-  have hquad : 0 < c * v ^ 2 - 2 * (m : ℝ) * v + Real.log K := by
+  have hquad : 0 < c * v ^ (2 : ℕ) - 2 * (m : ℝ) * v + Real.log K := by
     have hcv : 2 * (m : ℝ) + |Real.log K| + 1 ≤ c * v := by
       have : (2 * (m : ℝ) + |Real.log K| + 1) / c ≤ U := le_max_right _ _
       have h2 : (2 * (m : ℝ) + |Real.log K| + 1) / c < v := lt_of_le_of_lt this hvU
@@ -63,10 +63,10 @@ theorem exp_neg_div_lt_pow {c : ℝ} (hc : 0 < c) (m : ℕ) {K : ℝ} (hK : 0 < 
       mul_le_mul_of_nonneg_right hcv hvpos.le
     have step2 : |Real.log K| + 1 ≤ (|Real.log K| + 1) * v := by
       nlinarith [abs_nonneg (Real.log K)]
-    have hvsq : c * v * v = c * v ^ 2 := by ring
+    have hvsq : c * v * v = c * v ^ (2 : ℕ) := by ring
     nlinarith [step1, step2, habs, hvsq]
-  -- translate back: `c / t = c * v ^ 2` and `m * log t ≥ -2 * m * v`
-  have hcv2 : c / t = c * v ^ 2 := by
+  -- translate back: `c / t = c * v ^ (2 : ℕ)` and `m * log t ≥ -2 * m * v`
+  have hcv2 : c / t = c * v ^ (2 : ℕ) := by
     rw [hvdef, div_pow, one_pow, Real.sq_sqrt ht0.le]
     field_simp
   have hlogt : -(2 * (m : ℝ) * v) ≤ (m : ℝ) * Real.log t := by

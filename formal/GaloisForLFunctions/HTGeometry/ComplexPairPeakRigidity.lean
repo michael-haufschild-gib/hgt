@@ -30,7 +30,7 @@ variable {m : ℕ}
 private theorem sin_eq_zero_of_cos_eq_one {x : ℝ} (h : Real.cos x = 1) : Real.sin x = 0 := by
   have := Real.sin_sq_add_cos_sq x
   rw [h] at this
-  have hsq : Real.sin x ^ 2 = 0 := by linarith
+  have hsq : Real.sin x ^ (2 : ℕ) = 0 := by linarith
   exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hsq
 
 private theorem contact_deriv_eq_zero (c a : Fin m → ℝ) {β γ p : ℝ}
@@ -80,7 +80,7 @@ private theorem rigidity_aux (c a : Fin m → ℝ) (hc : ∀ i, 0 < c i)
       ((contDiff_expSum _ b).differentiable (by simp)) (fun t => ?_)
     rw [hd2, expSum]
     refine Finset.sum_nonneg (fun i _ => ?_)
-    have hrw : c i * b i * b i = c i * b i ^ 2 := by ring
+    have hrw : c i * b i * b i = c i * b i ^ (2 : ℕ) := by ring
     rw [hrw]
     exact mul_nonneg (mul_nonneg (hc i).le (sq_nonneg _)) (Real.exp_pos _).le
   have hzeroOn : ∀ t ∈ Icc p q, expSum (fun i => c i * b i) b t = 0 := by
@@ -101,7 +101,7 @@ private theorem rigidity_aux (c a : Fin m → ℝ) (hc : ∀ i, 0 < c i)
   -- a positive combination of exponentials vanishes only if every coefficient does
   rw [expSum] at hsecond
   have hterm := (Finset.sum_eq_zero_iff_of_nonneg (fun i (_ : i ∈ Finset.univ) => by
-    have hrw : c i * b i * b i = c i * b i ^ 2 := by ring
+    have hrw : c i * b i * b i = c i * b i ^ (2 : ℕ) := by ring
     rw [hrw]
     exact mul_nonneg (mul_nonneg (hc i).le (sq_nonneg _)) (Real.exp_pos _).le)).mp hsecond
   intro i

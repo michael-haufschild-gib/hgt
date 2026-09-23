@@ -30,7 +30,7 @@ def marcinkiewiczLogPreSubmodule : Submodule ℂ (ℕ → ℂ) where
   carrier := {b | MemMarcinkiewiczLogLayer (absField b)}
   zero_mem' := by
     refine ⟨0, fun X hX => ?_⟩
-    simp [marcinkiewiczLogQuotient, primeLogMass, absField]
+    simp [marcinkiewiczLogQuotient, primeLogMass_weightedEulerCoefficientSpaces, absField]
   add_mem' := by
     intro b c hb hc
     obtain ⟨B, hB⟩ := hb
@@ -81,7 +81,7 @@ theorem marcinkiewiczPreNorm_le (b : MarcinkiewiczLogPre) {C : ℝ}
 
 theorem complexMarcinkiewiczQuotient_nonneg (b : ℕ → ℂ) {X : ℕ} (hX : 2 ≤ X) :
     0 ≤ complexMarcinkiewiczQuotient b X := by
-  exact div_nonneg (primeLogMass_nonneg (absField b) X) (log_cutoff_pos hX).le
+  exact div_nonneg (primeLogMass_nonneg_weightedEulerCoefficientSpaces (absField b) X) (log_cutoff_pos hX).le
 
 theorem marcinkiewiczPreNorm_nonneg (b : MarcinkiewiczLogPre) :
     0 ≤ marcinkiewiczPreNorm b := by
@@ -93,7 +93,7 @@ theorem marcinkiewiczPreNorm_nonneg (b : MarcinkiewiczLogPre) :
   apply le_antisymm
   · apply marcinkiewiczPreNorm_le
     intro X hX
-    simp [complexMarcinkiewiczQuotient, marcinkiewiczLogQuotient, primeLogMass, absField]
+    simp [complexMarcinkiewiczQuotient, marcinkiewiczLogQuotient, primeLogMass_weightedEulerCoefficientSpaces, absField]
   · exact marcinkiewiczPreNorm_nonneg 0
 
 theorem marcinkiewiczPreNorm_add_le (b c : MarcinkiewiczLogPre) :
@@ -193,7 +193,7 @@ theorem memVanishingTailLayer_absField_of_finiteSupport {b : ℕ → ℂ}
       simp [primeCoefficientTail, hPn, absField, hbn]
     · simp [primeCoefficientTail, hPn]
   rw [htail]
-  simp [marcinkiewiczLogQuotient, primeLogMass, hε.le]
+  simp [marcinkiewiczLogQuotient, primeLogMass_weightedEulerCoefficientSpaces, hε.le]
 
 /-- Truncation tails contract every finite cutoff. -/
 theorem complexMarcinkiewiczQuotient_tail_le (b : ℕ → ℂ) (P : ℕ)
@@ -204,7 +204,7 @@ theorem complexMarcinkiewiczQuotient_tail_le (b : ℕ → ℂ) (P : ℕ)
   unfold marcinkiewiczLogQuotient
   apply div_le_div_of_nonneg_right _ (log_cutoff_pos hX).le
   have hsplit := primeLogMass_head_add_tail (absField b) P X
-  have hhead := primeLogMass_nonneg (primeCoefficientHead (absField b) P) X
+  have hhead := primeLogMass_nonneg_weightedEulerCoefficientSpaces (primeCoefficientHead (absField b) P) X
   linarith
 
 /-- Truncation tail as an element of the bounded carrier. -/
@@ -333,7 +333,7 @@ theorem memVanishingTailLayer_of_finiteSupport {b : ℕ → ℝ}
       simp [primeCoefficientTail, hPn, hbn]
     · simp [primeCoefficientTail, hPn]
   rw [htail]
-  simp [marcinkiewiczLogQuotient, primeLogMass, hε.le]
+  simp [marcinkiewiczLogQuotient, primeLogMass_weightedEulerCoefficientSpaces, hε.le]
 
 /-- Actual complex Euler unit as a bounded algebraic Marcinkiewicz field. -/
 def marcinkiewiczUnitPre : MarcinkiewiczLogPre := by
@@ -400,9 +400,9 @@ theorem marcinkiewiczUnit_tail_preNorm_le_one_add { ε : ℝ } (hε : 0 < ε) :
   by_cases hXP : X ≤ P
   · rw [complexMarcinkiewiczQuotient, marcinkiewiczTailPre_coe,
       absField_primeFieldTail]
-    have hmass0 : primeLogMass
+    have hmass0 : primeLogMass_weightedEulerCoefficientSpaces
         (primeCoefficientTail (absField (marcinkiewiczUnitPre : ℕ → ℂ)) P) X = 0 := by
-      unfold primeLogMass
+      unfold primeLogMass_weightedEulerCoefficientSpaces
       apply Finset.sum_eq_zero
       intro n hn
       rw [Finset.mem_filter, Finset.mem_Icc] at hn
@@ -416,15 +416,15 @@ theorem marcinkiewiczUnit_tail_preNorm_le_one_add { ε : ℝ } (hε : 0 < ε) :
     have hCeps : mertensPrimeConstant ≤ ε * Real.log P := by
       rw [div_le_iff₀ hε] at hPlog
       nlinarith
-    have hmassTail : primeLogMass
+    have hmassTail : primeLogMass_weightedEulerCoefficientSpaces
         (primeCoefficientTail (fun _ => (1 : ℝ)) P) X ≤
-        primeLogMass (fun _ => (1 : ℝ)) X := by
+        primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1 : ℝ)) X := by
       have hsplit := primeLogMass_head_add_tail (fun _ => (1 : ℝ)) P X
-      have hhead := primeLogMass_nonneg
+      have hhead := primeLogMass_nonneg_weightedEulerCoefficientSpaces
         (primeCoefficientHead (fun _ => (1 : ℝ)) P) X
       linarith
     have hmassUnit := primeLogMass_unit_le X (by omega)
-    have hmass : primeLogMass
+    have hmass : primeLogMass_weightedEulerCoefficientSpaces
         (primeCoefficientTail (fun _ => (1 : ℝ)) P) X ≤
         (1 + ε) * Real.log X := by
       have hC : mertensPrimeConstant ≤ ε * Real.log X :=

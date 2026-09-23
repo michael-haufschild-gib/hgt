@@ -41,7 +41,7 @@ theorem half_pow_le_exp_neg_half (N : ℕ) :
 /-- The fixed coefficient in the geometric finite-homotopy residual bound. -/
 noncomputable def finiteERootPinnedResidualConstant
     (A eta : ℝ) (z : ℂ) : ℝ :=
-  (1 + |eta|) * 2 * Real.exp (A * (2 * ‖z‖ + 4) ^ 2)
+  (1 + |eta|) * 2 * Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ))
 
 /-- A positive coefficient simultaneously majorizing the Taylor error and
 the affine exact-root correction on every nonnegative radial disk. -/
@@ -69,14 +69,14 @@ theorem exists_riemannXiSpectral_taylor_and_finiteE_geometric_bound :
       (∀ {r : ℝ}, 0 < r → ∀ {N : ℕ} {w : ℂ}, ‖w‖ ≤ r →
         ‖((riemannXiSpectralRealTaylorPolynomial N).map
               Complex.ofRealHom).eval w - riemannXiSpectral w‖ ≤
-          2 * (Real.exp (A * (2 * r + 2) ^ 2) *
+          2 * (Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ N)) ∧
       (∀ (eta : ℝ) (z : ℂ) (N : ℕ),
         ‖(finiteEPolynomial
               (riemannXiSpectralRealTaylorPolynomial N) eta).eval z -
             analyticEValue riemannXiSpectral eta z‖ ≤
           (1 + |eta|) *
-            (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ 2) *
+            (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ)) *
               ((1 : ℝ) / 2) ^ N))) := by
   obtain ⟨A, hA, hTaylor⟩ :=
     exists_riemannXiSpectral_taylor_fixedDisk_geometric_bound
@@ -88,16 +88,16 @@ theorem exists_riemannXiSpectral_taylor_and_finiteE_geometric_bound :
   · intro r hr N w hw
     have hraw := hTaylor hr (N := N) hw
     have hexp :
-        Real.exp (A * (2 * r + 2) ^ 2) ≤
-          Real.exp (G * (2 * r + 2) ^ 2) := by
+        Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) ≤
+          Real.exp (G * (2 * r + 2) ^ (2 : ℕ)) := by
       apply Real.exp_le_exp.mpr
       exact mul_le_mul_of_nonneg_right (le_max_left A B) (sq_nonneg _)
     exact hraw.trans (by gcongr)
   · intro eta z N
     have hraw := hE eta z N
     have hexp :
-        Real.exp (B * (2 * ‖z‖ + 4) ^ 2) ≤
-          Real.exp (G * (2 * ‖z‖ + 4) ^ 2) := by
+        Real.exp (B * (2 * ‖z‖ + 4) ^ (2 : ℕ)) ≤
+          Real.exp (G * (2 * ‖z‖ + 4) ^ (2 : ℕ)) := by
       apply Real.exp_le_exp.mpr
       exact mul_le_mul_of_nonneg_right (le_max_right A B) (sq_nonneg _)
     exact hraw.trans (by gcongr)
@@ -113,7 +113,7 @@ theorem exists_riemannXiSpectral_pinnedTaylor_radial_geometric_bound :
             (riemannXiSpectralRealTaylorPolynomial N) eta z).map
               Complex.ofRealHom).eval w - riemannXiSpectral w‖ ≤
         finiteERootPinnedRadialConstant A eta z * (r + 1) *
-          Real.exp (A * (2 * r + 2) ^ 2) *
+          Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ N := by
   obtain ⟨A, hA, hTaylor, hE⟩ :=
     exists_riemannXiSpectral_taylor_and_finiteE_geometric_bound
@@ -122,7 +122,7 @@ theorem exists_riemannXiSpectral_pinnedTaylor_radial_geometric_bound :
   let K : ℝ := finiteERootPinnedResidualConstant A eta z
   let D : ℝ := |z.im + eta|
   let L : ℝ := finiteERootPinnedRadialConstant A eta z
-  let E : ℝ := Real.exp (A * (2 * r + 2) ^ 2)
+  let E : ℝ := Real.exp (A * (2 * r + 2) ^ (2 : ℕ))
   let q : ℝ := ((1 : ℝ) / 2) ^ N
   have hA0 : 0 ≤ A := hA.trans' zero_le_one
   have hK : 0 ≤ K := by
@@ -148,7 +148,7 @@ theorem exists_riemannXiSpectral_pinnedTaylor_radial_geometric_bound :
             analyticEValue riemannXiSpectral eta z‖ := by
         rw [hroot, sub_zero]
       _ ≤ (1 + |eta|) *
-          (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ 2) *
+          (2 * (Real.exp (A * (2 * ‖z‖ + 4) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ N)) := hE eta z N
       _ = K * q := by
         simp only [K, q, finiteERootPinnedResidualConstant]
@@ -249,7 +249,7 @@ theorem exists_riemannXiSpectral_pinnedTaylor_radial_geometric_bound :
     _ ≤ (L * (r + 1) * E) * q :=
       mul_le_mul_of_nonneg_right hcoeff hq0
     _ = finiteERootPinnedRadialConstant A eta z * (r + 1) *
-          Real.exp (A * (2 * r + 2) ^ 2) *
+          Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ N := by
       rfl
 
@@ -258,14 +258,14 @@ exponent while retaining single-exponential growth. -/
 noncomputable def radialRoucheIndex
     (A L C : ℝ) (n : ℕ) : ℕ :=
   let r := quantitativeSpectralRadialBoundary n
-  ⌈2 * (L + r + A * (2 * r + 2) ^ 2 +
+  ⌈2 * (L + r + A * (2 * r + 2) ^ (2 : ℕ) +
     C * Real.exp (5 * r) + 2)⌉₊
 
 /-- The real scheduling target is below the cast of its natural ceiling. -/
 theorem radialRoucheIndex_target_le_cast
     (A L C : ℝ) (n : ℕ) :
     2 * (L + quantitativeSpectralRadialBoundary n +
-        A * (2 * quantitativeSpectralRadialBoundary n + 2) ^ 2 +
+        A * (2 * quantitativeSpectralRadialBoundary n + 2) ^ (2 : ℕ) +
         C * Real.exp (5 * quantitativeSpectralRadialBoundary n) + 2) ≤
       (radialRoucheIndex A L C n : ℝ) := by
   exact Nat.le_ceil _
@@ -281,12 +281,12 @@ theorem quantitativeSpectralRadialBoundary_le_radialRoucheIndex
   have hr : 0 ≤ r := by
     simpa [r] using (quantitativeSpectralRadialBoundary_pos n).le
   have htarget := radialRoucheIndex_target_le_cast A L C n
-  have hAterm : 0 ≤ A * (2 * r + 2) ^ 2 :=
+  have hAterm : 0 ≤ A * (2 * r + 2) ^ (2 : ℕ) :=
     mul_nonneg hA (sq_nonneg _)
   have hCterm : 0 ≤ C * Real.exp (5 * r) := by positivity
   change r ≤ (radialRoucheIndex A L C n : ℝ)
   have htarget' :
-      2 * (L + r + A * (2 * r + 2) ^ 2 +
+      2 * (L + r + A * (2 * r + 2) ^ (2 : ℕ) +
         C * Real.exp (5 * r) + 2) ≤
         (radialRoucheIndex A L C n : ℝ) := by
     simpa [r] using htarget
@@ -326,7 +326,7 @@ theorem radialRoucheIndex_pinned_geometric_bound
     (A L C : ℝ) (n : ℕ) :
     L * (quantitativeSpectralRadialBoundary n + 1) *
           Real.exp
-            (A * (2 * quantitativeSpectralRadialBoundary n + 2) ^ 2) *
+            (A * (2 * quantitativeSpectralRadialBoundary n + 2) ^ (2 : ℕ)) *
           ((1 : ℝ) / 2) ^ (radialRoucheIndex A L C n) ≤
       Real.exp
           (-C * Real.exp
@@ -334,7 +334,7 @@ theorem radialRoucheIndex_pinned_geometric_bound
         Real.exp (-2) := by
   let r : ℝ := quantitativeSpectralRadialBoundary n
   let N : ℕ := radialRoucheIndex A L C n
-  let S : ℝ := L + r + A * (2 * r + 2) ^ 2
+  let S : ℝ := L + r + A * (2 * r + 2) ^ (2 : ℕ)
   have hr : 0 ≤ r := by
     simpa [r] using (quantitativeSpectralRadialBoundary_pos n).le
   have hN :
@@ -346,21 +346,21 @@ theorem radialRoucheIndex_pinned_geometric_bound
     exact (by linarith : L ≤ L + 1).trans (Real.add_one_le_exp L)
   have hrexp : r + 1 ≤ Real.exp r := Real.add_one_le_exp r
   have hcoefficient :
-      L * (r + 1) * Real.exp (A * (2 * r + 2) ^ 2) ≤
+      L * (r + 1) * Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) ≤
         Real.exp S := by
     calc
-      L * (r + 1) * Real.exp (A * (2 * r + 2) ^ 2) ≤
+      L * (r + 1) * Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) ≤
           Real.exp L * Real.exp r *
-            Real.exp (A * (2 * r + 2) ^ 2) := by
+            Real.exp (A * (2 * r + 2) ^ (2 : ℕ)) := by
         gcongr
       _ = Real.exp S := by
         rw [← Real.exp_add, ← Real.exp_add]
   calc
     L * (quantitativeSpectralRadialBoundary n + 1) *
           Real.exp
-            (A * (2 * quantitativeSpectralRadialBoundary n + 2) ^ 2) *
+            (A * (2 * quantitativeSpectralRadialBoundary n + 2) ^ (2 : ℕ)) *
           ((1 : ℝ) / 2) ^ (radialRoucheIndex A L C n) =
-        (L * (r + 1) * Real.exp (A * (2 * r + 2) ^ 2)) *
+        (L * (r + 1) * Real.exp (A * (2 * r + 2) ^ (2 : ℕ))) *
           ((1 : ℝ) / 2) ^ N := by rfl
     _ ≤ Real.exp S * Real.exp (-((N : ℝ) / 2)) :=
       mul_le_mul hcoefficient hhalf (by positivity) (by positivity)
@@ -390,7 +390,7 @@ theorem radialRoucheIndex_separable_error_bound
         Real.exp (-2)) / 2 := by
   let r : ℝ := quantitativeSpectralRadialBoundary n
   let N : ℕ := radialRoucheIndex A L C n
-  let S : ℝ := L + r + A * (2 * r + 2) ^ 2
+  let S : ℝ := L + r + A * (2 * r + 2) ^ (2 : ℕ)
   have hr : 0 ≤ r := by
     simpa [r] using (quantitativeSpectralRadialBoundary_pos n).le
   have hS : 0 ≤ S := by
@@ -432,7 +432,7 @@ theorem radialRoucheIndex_cast_lt_exponential
         Real.exp (5 * quantitativeSpectralRadialBoundary n) := by
   let r : ℝ := quantitativeSpectralRadialBoundary n
   let E : ℝ := Real.exp (5 * r)
-  let X : ℝ := 2 * (L + r + A * (2 * r + 2) ^ 2 + C * E + 2)
+  let X : ℝ := 2 * (L + r + A * (2 * r + 2) ^ (2 : ℕ) + C * E + 2)
   have hr : 0 ≤ r := by
     simpa [r] using (quantitativeSpectralRadialBoundary_pos n).le
   have hEone : 1 ≤ E := by
@@ -442,17 +442,17 @@ theorem radialRoucheIndex_cast_lt_exponential
   have hexp25 : Real.exp (2 * r) ≤ E := by
     dsimp [E]
     exact Real.exp_le_exp.mpr (by linarith)
-  have hsquare : (r + 1) ^ 2 ≤ E := by
+  have hsquare : (r + 1) ^ (2 : ℕ) ≤ E := by
     calc
-      (r + 1) ^ 2 ≤ (Real.exp r) ^ 2 :=
+      (r + 1) ^ (2 : ℕ) ≤ (Real.exp r) ^ (2 : ℕ) :=
         (sq_le_sq₀ (by linarith) (by positivity)).mpr hrexp
       _ = Real.exp (2 * r) := by
         rw [show 2 * r = (2 : ℕ) * r by norm_num]
         exact (Real.exp_nat_mul r 2).symm
       _ ≤ E := hexp25
-  have hquadratic : A * (2 * r + 2) ^ 2 ≤ 4 * A * E := by
+  have hquadratic : A * (2 * r + 2) ^ (2 : ℕ) ≤ 4 * A * E := by
     calc
-      A * (2 * r + 2) ^ 2 = 4 * A * (r + 1) ^ 2 := by ring
+      A * (2 * r + 2) ^ (2 : ℕ) = 4 * A * (r + 1) ^ (2 : ℕ) := by ring
       _ ≤ 4 * A * E :=
         mul_le_mul_of_nonneg_left hsquare (by positivity)
   have hrE : r ≤ E := by
@@ -460,7 +460,7 @@ theorem radialRoucheIndex_cast_lt_exponential
       (hrexp.trans (by
         exact Real.exp_le_exp.mpr (by linarith)))
   have hsum :
-      L + r + A * (2 * r + 2) ^ 2 + C * E + 2 ≤
+      L + r + A * (2 * r + 2) ^ (2 : ℕ) + C * E + 2 ≤
         (L + 4 * A + C + 3) * E := by
     have hLE : L ≤ L * E := by
       simpa using mul_le_mul_of_nonneg_left hEone hL
@@ -468,7 +468,7 @@ theorem radialRoucheIndex_cast_lt_exponential
       simpa using
         mul_le_mul_of_nonneg_left hEone (by norm_num : (0 : ℝ) ≤ 2)
     calc
-      L + r + A * (2 * r + 2) ^ 2 + C * E + 2 ≤
+      L + r + A * (2 * r + 2) ^ (2 : ℕ) + C * E + 2 ≤
           L * E + E + 4 * A * E + C * E + 2 * E := by
         linarith
       _ = (L + 4 * A + C + 3) * E := by ring
@@ -479,7 +479,7 @@ theorem radialRoucheIndex_cast_lt_exponential
   have hXbound :
       X + 1 ≤ (2 * (L + 4 * A + C + 3) + 1) * E := by
     change
-      2 * (L + r + A * (2 * r + 2) ^ 2 + C * E + 2) + 1 ≤
+      2 * (L + r + A * (2 * r + 2) ^ (2 : ℕ) + C * E + 2) + 1 ≤
         (2 * (L + 4 * A + C + 3) + 1) * E
     have hscaled :=
       mul_le_mul_of_nonneg_left hsum (by norm_num : (0 : ℝ) ≤ 2)
@@ -609,7 +609,7 @@ theorem exists_radialRouche_canonicalFiniteHardyFrontier_sequence_of_not_rh
             riemannXiSpectral w‖ ≤
           L * (quantitativeSpectralRadialBoundary n + 1) *
             Real.exp
-              (A * (2 * quantitativeSpectralRadialBoundary n + 2) ^ 2) *
+              (A * (2 * quantitativeSpectralRadialBoundary n + 2) ^ (2 : ℕ)) *
             ((1 : ℝ) / 2) ^ N := by
       simpa [P, L] using
         hPinned hroot hden

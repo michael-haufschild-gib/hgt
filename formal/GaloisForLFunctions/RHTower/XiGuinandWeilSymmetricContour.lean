@@ -44,8 +44,8 @@ theorem logDeriv_XiC_neg (z : ℂ) :
 
 /-- The squared rectangular test times the completed logarithmic derivative is odd. -/
 theorem rectangularLogDerivIntegrand_neg (L a : ℝ) (z : ℂ) :
-    xiRectangularTwoEdgeTransform L a (-z) ^ 2 * logDeriv XiC (-z) =
-      -(xiRectangularTwoEdgeTransform L a z ^ 2 * logDeriv XiC z) := by
+    xiRectangularTwoEdgeTransform L a (-z) ^ (2 : ℕ) * logDeriv XiC (-z) =
+      -(xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) * logDeriv XiC z) := by
   rw [xiRectangularTwoEdgeTransform_neg, logDeriv_XiC_neg]
   ring
 
@@ -100,13 +100,13 @@ theorem intervalIntegral_vertical_neg_of_odd
 /-- The upper rectangular logarithmic-derivative edge is the negative lower edge. -/
 theorem rectangularLogDeriv_horizontal_fold (L a R c : ℝ) :
     (∫ x in -R..R,
-        xiRectangularTwoEdgeTransform L a ((x : ℂ) + c * I) ^ 2 *
+        xiRectangularTwoEdgeTransform L a ((x : ℂ) + c * I) ^ (2 : ℕ) *
           logDeriv XiC ((x : ℂ) + c * I)) =
       -(∫ x in -R..R,
-        xiRectangularTwoEdgeTransform L a ((x : ℂ) - c * I) ^ 2 *
+        xiRectangularTwoEdgeTransform L a ((x : ℂ) - c * I) ^ (2 : ℕ) *
           logDeriv XiC ((x : ℂ) - c * I)) := by
   exact intervalIntegral_horizontal_neg_of_odd
-    (fun z => xiRectangularTwoEdgeTransform L a z ^ 2 * logDeriv XiC z)
+    (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) * logDeriv XiC z)
     (rectangularLogDerivIntegrand_neg L a) R c
 
 /-- A symmetric rectangle integral of an odd function is twice one bottom edge plus one right
@@ -149,16 +149,16 @@ theorem rectIntegral_symmetric_eq_two_bottom_add_vertical
 /-- Symmetric-contour reduction for the exact squared rectangular Xi test. -/
 theorem rectIntegral_rectangularLogDeriv_symmetric (L a R c : ℝ) :
     rectIntegral
-        (fun z => xiRectangularTwoEdgeTransform L a z ^ 2 * logDeriv XiC z)
+        (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) * logDeriv XiC z)
         (((-R : ℝ) : ℂ) - c * I) (((R : ℝ) : ℂ) + c * I) =
       2 * ((∫ x in -R..R,
-          xiRectangularTwoEdgeTransform L a ((x : ℂ) - c * I) ^ 2 *
+          xiRectangularTwoEdgeTransform L a ((x : ℂ) - c * I) ^ (2 : ℕ) *
             logDeriv XiC ((x : ℂ) - c * I)) +
         I • (∫ y in -c..c,
-          xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ 2 *
+          xiRectangularTwoEdgeTransform L a ((R : ℂ) + y * I) ^ (2 : ℕ) *
             logDeriv XiC ((R : ℂ) + y * I))) := by
   exact rectIntegral_symmetric_eq_two_bottom_add_vertical
-    (fun z => xiRectangularTwoEdgeTransform L a z ^ 2 * logDeriv XiC z)
+    (fun z => xiRectangularTwoEdgeTransform L a z ^ (2 : ℕ) * logDeriv XiC z)
     (rectangularLogDerivIntegrand_neg L a) R c
 
 /-- Below depth 1/2, the symmetric contour's bottom edge is exactly the honest von-Mangoldt

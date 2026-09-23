@@ -267,7 +267,7 @@ structure MTTypeI_II_PieceData (X Y δ ε : ℝ) where
   M₃_pos : 0 < M₃
   α_divisorBounded : MTPolynomialDivisorBounded α
   β_divisorBounded : MTPolynomialDivisorBounded β
-  square_product_le : M₁ ^ 2 * M₂ ≤ X ^ (1 - ε)
+  square_product_le : M₁ ^ (2 : ℕ) * M₂ ≤ X ^ (1 - ε)
   M₂_le : M₂ ≤ X ^ (1 / 4 - ε)
   product_mem : Y / 2 < M₁ * M₂ * M₃ ∧ M₁ * M₂ * M₃ ≤ 4 * Y
 

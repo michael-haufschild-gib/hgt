@@ -41,7 +41,7 @@ theorem tendsto_tsum_norm_detCoeff_sub_of_hsNorm_sub_tendsto_zero
           hsNorm_add_le (isHS_sub (hK k) hK₀) hK₀
     rw [hMdef]
     linarith
-  set E : ℝ := Real.exp ((2 * ρ) ^ 2 * M ^ 2 / 2) with hEdef
+  set E : ℝ := Real.exp ((2 * ρ) ^ (2 : ℕ) * M ^ (2 : ℕ) / 2) with hEdef
   set bnd : ℕ → ℝ := fun n => 2 * E * (1 / 2) ^ n with hbnd
   have hsumbnd : Summable bnd := by
     rw [hbnd]
@@ -49,14 +49,14 @@ theorem tendsto_tsum_norm_detCoeff_sub_of_hsNorm_sub_tendsto_zero
   have hkernel_bound : ∀ (A : ι × ι → ℂ), IsHS A → hsNorm A ≤ M → ∀ n,
       ‖detCoeff A n‖ * ρ ^ n ≤ E * (1 / 2) ^ n := by
     intro A hA hAM n
-    have hAsq : hsNormSq A ≤ M ^ 2 := by
-      have heq : hsNormSq A = hsNorm A ^ 2 := by
+    have hAsq : hsNormSq A ≤ M ^ (2 : ℕ) := by
+      have heq : hsNormSq A = hsNorm A ^ (2 : ℕ) := by
         rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg A)]
       rw [heq]
       exact pow_le_pow_left₀ (hsNorm_nonneg A) hAM 2
     calc
       ‖detCoeff A n‖ * ρ ^ n
-          ≤ Real.exp ((2 * ρ) ^ 2 * hsNormSq A / 2) * (1 / 2) ^ n :=
+          ≤ Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq A / 2) * (1 / 2) ^ n :=
             norm_detCoeff_mul_pow_le hA hρ n
       _ ≤ E * (1 / 2) ^ n := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
@@ -107,19 +107,19 @@ theorem tendstoUniformlyOn_entireDet2_of_hsNorm_sub_tendsto_zero
           hsNorm_add_le (isHS_sub (hK k) hK₀) hK₀
     rw [hMdef]
     linarith
-  set E : ℝ := Real.exp ((2 * ρ) ^ 2 * M ^ 2 / 2) with hEdef
+  set E : ℝ := Real.exp ((2 * ρ) ^ (2 : ℕ) * M ^ (2 : ℕ) / 2) with hEdef
   have hK₀M : hsNorm K₀ ≤ M := by simp [hMdef]
   have hkernel_bound : ∀ (A : ι × ι → ℂ), IsHS A → hsNorm A ≤ M → ∀ n,
       ‖detCoeff A n‖ * ρ ^ n ≤ E * (1 / 2) ^ n := by
     intro A hA hAM n
-    have hAsq : hsNormSq A ≤ M ^ 2 := by
-      have heq : hsNormSq A = hsNorm A ^ 2 := by
+    have hAsq : hsNormSq A ≤ M ^ (2 : ℕ) := by
+      have heq : hsNormSq A = hsNorm A ^ (2 : ℕ) := by
         rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg A)]
       rw [heq]
       exact pow_le_pow_left₀ (hsNorm_nonneg A) hAM 2
     calc
       ‖detCoeff A n‖ * ρ ^ n
-          ≤ Real.exp ((2 * ρ) ^ 2 * hsNormSq A / 2) * (1 / 2) ^ n :=
+          ≤ Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq A / 2) * (1 / 2) ^ n :=
             norm_detCoeff_mul_pow_le hA hρ n
       _ ≤ E * (1 / 2) ^ n := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)

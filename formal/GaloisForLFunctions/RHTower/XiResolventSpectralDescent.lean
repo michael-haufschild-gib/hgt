@@ -13,9 +13,9 @@ critical line.
 
 **Theorem**: at any one shift `X ≥ 0`,
 
-`RH  ↔  ∀ p : Polynomial ℝ, ∀ n, 0 ≤ Re (M_p n * M_p (n+2) - M_p (n+1)^2)`
+`RH  ↔  ∀ p : Polynomial ℝ, ∀ n, 0 ≤ Re (M_p n * M_p (n+2) - M_p (n+1)^(2 : ℕ))`
 
-where `M_p k = sum_q u_q^(k+1) (p (u_q))^2` are the `p`-weighted resolvent moments.  The data on
+where `M_p k = sum_q u_q^(k+1) (p (u_q))^(2 : ℕ)` are the `p`-weighted resolvent moments.  The data on
 the right is the family of Turán (log-convexity) inequalities of the polynomially reweighted
 moment sequences — the two-dimensional slice of the full Hankel positivity carved out by squared
 real polynomial weights — and the forward implication proceeds by infinite descent down the zero
@@ -31,15 +31,15 @@ noncomputable section
 /-- The `p`-weighted resolvent moments. -/
 def xiPolyMoment (p : Polynomial ℝ) (k : ℕ) (X : ℝ) : ℂ :=
   xiWeightedResolventMoment
-    (fun q => evalRealPolynomial p (xiResolventPoint X q) ^ 2) k X
+    (fun q => evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ)) k X
 
 /-- Norm-summability of the polynomially weighted atoms. -/
 theorem summable_norm_polyAtom {X : ℝ} (hX : 0 ≤ X) (p : Polynomial ℝ) (k : ℕ) :
     Summable (fun q : XiZeroCopy =>
       ‖xiResolventPoint X q ^ (k + 1) *
-        evalRealPolynomial p (xiResolventPoint X q) ^ 2‖) := by
+        evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ)‖) := by
   refine Summable.of_nonneg_of_le (fun q => norm_nonneg _) (fun q => ?_)
-    ((summable_norm_xiResolventPoint hX).mul_right (evalRealPolynomialNormBound p 1 ^ 2))
+    ((summable_norm_xiResolventPoint hX).mul_right (evalRealPolynomialNormBound p 1 ^ (2 : ℕ)))
   rw [norm_mul]
   have h1 : ‖xiResolventPoint X q ^ (k + 1)‖ ≤ ‖xiResolventPoint X q‖ := by
     rw [norm_pow, pow_succ']
@@ -47,8 +47,8 @@ theorem summable_norm_polyAtom {X : ℝ} (hX : 0 ≤ X) (p : Polynomial ℝ) (k 
       pow_le_one₀ (norm_nonneg _) (norm_xiResolventPoint_le_one hX q)
     nlinarith [norm_nonneg (xiResolventPoint X q),
       pow_nonneg (norm_nonneg (xiResolventPoint X q)) k]
-  have h2 : ‖evalRealPolynomial p (xiResolventPoint X q) ^ 2‖ ≤
-      evalRealPolynomialNormBound p 1 ^ 2 := by
+  have h2 : ‖evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ)‖ ≤
+      evalRealPolynomialNormBound p 1 ^ (2 : ℕ) := by
     rw [norm_pow]
     exact pow_le_pow_left₀ (norm_nonneg _)
       (norm_evalRealPolynomial_le p (norm_xiResolventPoint_le_one hX q)) 2
@@ -57,12 +57,12 @@ theorem summable_norm_polyAtom {X : ℝ} (hX : 0 ≤ X) (p : Polynomial ℝ) (k 
 /-- **The polynomially weighted variance expansion.** -/
 theorem two_mul_polyTuranMinorAt_eq_tsum_pair {X : ℝ} (hX : 0 ≤ X)
     (p : Polynomial ℝ) (n : ℕ) :
-    2 * (xiPolyMoment p n X * xiPolyMoment p (n + 2) X - xiPolyMoment p (n + 1) X ^ 2) =
+    2 * (xiPolyMoment p n X * xiPolyMoment p (n + 2) X - xiPolyMoment p (n + 1) X ^ (2 : ℕ)) =
       ∑' z : XiZeroCopy × XiZeroCopy,
         (xiResolventPoint X z.1 * xiResolventPoint X z.2) ^ (n + 1) *
-          (evalRealPolynomial p (xiResolventPoint X z.1) ^ 2 *
-            evalRealPolynomial p (xiResolventPoint X z.2) ^ 2) *
-          (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ 2 := by
+          (evalRealPolynomial p (xiResolventPoint X z.1) ^ (2 : ℕ) *
+            evalRealPolynomial p (xiResolventPoint X z.2) ^ (2 : ℕ)) *
+          (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ (2 : ℕ) := by
   have h0 := summable_norm_polyAtom hX p n
   have h1 := summable_norm_polyAtom hX p (n + 1)
   have h2 := summable_norm_polyAtom hX p (n + 2)
@@ -74,31 +74,31 @@ theorem two_mul_polyTuranMinorAt_eq_tsum_pair {X : ℝ} (hX : 0 ≤ X)
   have hsumC := summable_mul_of_summable_norm h2 h0
   have hpt : ∀ z : XiZeroCopy × XiZeroCopy,
       (xiResolventPoint X z.1 * xiResolventPoint X z.2) ^ (n + 1) *
-        (evalRealPolynomial p (xiResolventPoint X z.1) ^ 2 *
-          evalRealPolynomial p (xiResolventPoint X z.2) ^ 2) *
-        (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ 2 =
+        (evalRealPolynomial p (xiResolventPoint X z.1) ^ (2 : ℕ) *
+          evalRealPolynomial p (xiResolventPoint X z.2) ^ (2 : ℕ)) *
+        (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ (2 : ℕ) =
       (((xiResolventPoint X z.1 ^ (n + 1) *
-          evalRealPolynomial p (xiResolventPoint X z.1) ^ 2) *
+          evalRealPolynomial p (xiResolventPoint X z.1) ^ (2 : ℕ)) *
           (xiResolventPoint X z.2 ^ (n + 2 + 1) *
-            evalRealPolynomial p (xiResolventPoint X z.2) ^ 2) -
+            evalRealPolynomial p (xiResolventPoint X z.2) ^ (2 : ℕ)) -
         2 * ((xiResolventPoint X z.1 ^ (n + 1 + 1) *
-            evalRealPolynomial p (xiResolventPoint X z.1) ^ 2) *
+            evalRealPolynomial p (xiResolventPoint X z.1) ^ (2 : ℕ)) *
           (xiResolventPoint X z.2 ^ (n + 1 + 1) *
-            evalRealPolynomial p (xiResolventPoint X z.2) ^ 2))) +
+            evalRealPolynomial p (xiResolventPoint X z.2) ^ (2 : ℕ)))) +
         (xiResolventPoint X z.1 ^ (n + 2 + 1) *
-          evalRealPolynomial p (xiResolventPoint X z.1) ^ 2) *
+          evalRealPolynomial p (xiResolventPoint X z.1) ^ (2 : ℕ)) *
           (xiResolventPoint X z.2 ^ (n + 1) *
-            evalRealPolynomial p (xiResolventPoint X z.2) ^ 2)) := by
+            evalRealPolynomial p (xiResolventPoint X z.2) ^ (2 : ℕ))) := by
     intro z
     ring
   rw [show xiPolyMoment p n X = ∑' q : XiZeroCopy, xiResolventPoint X q ^ (n + 1) *
-      evalRealPolynomial p (xiResolventPoint X q) ^ 2 from rfl,
+      evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ) from rfl,
     show xiPolyMoment p (n + 1) X = ∑' q : XiZeroCopy,
       xiResolventPoint X q ^ (n + 1 + 1) *
-        evalRealPolynomial p (xiResolventPoint X q) ^ 2 from rfl,
+        evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ) from rfl,
     show xiPolyMoment p (n + 2) X = ∑' q : XiZeroCopy,
       xiResolventPoint X q ^ (n + 2 + 1) *
-        evalRealPolynomial p (xiResolventPoint X q) ^ 2 from rfl,
+        evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ) from rfl,
     tsum_congr hpt, (hsumA.sub (hsumB.mul_left 2)).tsum_add hsumC,
     hsumA.tsum_sub (hsumB.mul_left 2), tsum_mul_left, ← hA, ← hB, ← hC]
   ring
@@ -108,20 +108,20 @@ nonnegative reals. -/
 theorem polyTuranMinor_re_nonneg_of_riemannHypothesis (hRH : RiemannHypothesis)
     {X : ℝ} (hX : 0 ≤ X) (p : Polynomial ℝ) (n : ℕ) :
     0 ≤ (xiPolyMoment p n X * xiPolyMoment p (n + 2) X -
-      xiPolyMoment p (n + 1) X ^ 2).re := by
+      xiPolyMoment p (n + 1) X ^ (2 : ℕ)).re := by
   have hhalf : (0 : ℝ) ≤ (2 * (xiPolyMoment p n X * xiPolyMoment p (n + 2) X -
-      xiPolyMoment p (n + 1) X ^ 2)).re := by
+      xiPolyMoment p (n + 1) X ^ (2 : ℕ))).re := by
     rw [two_mul_polyTuranMinorAt_eq_tsum_pair hX p n]
     have hterm : ∀ z : XiZeroCopy × XiZeroCopy, ∃ w : ℝ, 0 ≤ w ∧
         (xiResolventPoint X z.1 * xiResolventPoint X z.2) ^ (n + 1) *
-          (evalRealPolynomial p (xiResolventPoint X z.1) ^ 2 *
-            evalRealPolynomial p (xiResolventPoint X z.2) ^ 2) *
-          (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ 2 = (w : ℂ) := by
+          (evalRealPolynomial p (xiResolventPoint X z.1) ^ (2 : ℕ) *
+            evalRealPolynomial p (xiResolventPoint X z.2) ^ (2 : ℕ)) *
+          (xiResolventPoint X z.1 - xiResolventPoint X z.2) ^ (2 : ℕ) = (w : ℂ) := by
       intro z
       obtain ⟨v₁, hv₁, he₁⟩ := exists_pos_ofReal_xiResolventPoint_of_rh hRH hX z.1
       obtain ⟨v₂, hv₂, he₂⟩ := exists_pos_ofReal_xiResolventPoint_of_rh hRH hX z.2
       refine ⟨(v₁ * v₂) ^ (n + 1) *
-        (Polynomial.eval v₁ p ^ 2 * Polynomial.eval v₂ p ^ 2) * (v₁ - v₂) ^ 2,
+        (Polynomial.eval v₁ p ^ (2 : ℕ) * Polynomial.eval v₂ p ^ (2 : ℕ)) * (v₁ - v₂) ^ (2 : ℕ),
         by positivity, ?_⟩
       rw [he₁, he₂, evalRealPolynomial_ofReal, evalRealPolynomial_ofReal]
       push_cast
@@ -134,9 +134,9 @@ theorem polyTuranMinor_re_nonneg_of_riemannHypothesis (hRH : RiemannHypothesis)
     · rw [tsum_eq_zero_of_not_summable hsum]
       simp
   have h2 : (2 * (xiPolyMoment p n X * xiPolyMoment p (n + 2) X -
-      xiPolyMoment p (n + 1) X ^ 2)).re =
+      xiPolyMoment p (n + 1) X ^ (2 : ℕ))).re =
       2 * (xiPolyMoment p n X * xiPolyMoment p (n + 2) X -
-        xiPolyMoment p (n + 1) X ^ 2).re := by
+        xiPolyMoment p (n + 1) X ^ (2 : ℕ)).re := by
     simp [Complex.mul_re]
   rw [h2] at hhalf
   linarith
@@ -147,7 +147,7 @@ critical line, by strong induction on the number of copies of larger resolvent m
 theorem forall_criticalLine_of_forall_polyTuranMinor_re_nonneg {X : ℝ} (hX : 0 ≤ X)
     (hpoly : ∀ (p : Polynomial ℝ) (n : ℕ),
       0 ≤ (xiPolyMoment p n X * xiPolyMoment p (n + 2) X -
-        xiPolyMoment p (n + 1) X ^ 2).re) :
+        xiPolyMoment p (n + 1) X ^ (2 : ℕ)).re) :
     ∀ q : XiZeroCopy, (xiSpectralPoint q).im = 0 := by
   classical
   have hdescent : ∀ N : ℕ, ∀ q : XiZeroCopy,
@@ -206,20 +206,20 @@ theorem forall_criticalLine_of_forall_polyTuranMinor_re_nonneg {X : ℝ} (hX : 0
         refine Finset.prod_congr rfl fun r _ => ?_
         simp
       have hWbound : ∀ q' : XiZeroCopy,
-          ‖evalRealPolynomial P (xiResolventPoint X q') ^ 2‖ ≤
-            evalRealPolynomialNormBound P 1 ^ 2 := by
+          ‖evalRealPolynomial P (xiResolventPoint X q') ^ (2 : ℕ)‖ ≤
+            evalRealPolynomialNormBound P 1 ^ (2 : ℕ) := by
         intro q'
         rw [norm_pow]
         exact pow_le_pow_left₀ (norm_nonneg _)
           (norm_evalRealPolynomial_le P (norm_xiResolventPoint_le_one hX q')) 2
       have hvalW : ∀ q₁ q₂ : XiZeroCopy,
           xiResolventPoint X q₂ = (starRingEnd ℂ) (xiResolventPoint X q₁) →
-          evalRealPolynomial P (xiResolventPoint X q₂) ^ 2 =
-            (starRingEnd ℂ) (evalRealPolynomial P (xiResolventPoint X q₁) ^ 2) := by
+          evalRealPolynomial P (xiResolventPoint X q₂) ^ (2 : ℕ) =
+            (starRingEnd ℂ) (evalRealPolynomial P (xiResolventPoint X q₁) ^ (2 : ℕ)) := by
         intro q₁ q₂ h
         rw [h, evalRealPolynomial_conj, ← map_pow]
       have hkill : ∀ q', ‖xiResolventPoint X q‖ < ‖xiResolventPoint X q'‖ →
-          evalRealPolynomial P (xiResolventPoint X q') ^ 2 = 0 := by
+          evalRealPolynomial P (xiResolventPoint X q') ^ (2 : ℕ) = 0 := by
         intro q' hq'
         have hmemA : q' ∈ A := by
           rw [hA, Finset.mem_filter, Set.Finite.mem_toFinset]
@@ -235,7 +235,7 @@ theorem forall_criticalLine_of_forall_polyTuranMinor_re_nonneg {X : ℝ} (hX : 0
         rw [hPzero]
         ring
       have hnz : ∀ q', ‖xiResolventPoint X q'‖ = ‖xiResolventPoint X q‖ →
-          evalRealPolynomial P (xiResolventPoint X q') ^ 2 ≠ 0 := by
+          evalRealPolynomial P (xiResolventPoint X q') ^ (2 : ℕ) ≠ 0 := by
         intro q' hq' hzero
         have hPzero : evalRealPolynomial P (xiResolventPoint X q') = 0 :=
           pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hzero
@@ -258,12 +258,12 @@ theorem forall_criticalLine_of_forall_polyTuranMinor_re_nonneg {X : ℝ} (hX : 0
 theorem riemannHypothesis_of_forall_polyTuranMinor_re_nonneg {X : ℝ} (hX : 0 ≤ X)
     (hpoly : ∀ (p : Polynomial ℝ) (n : ℕ),
       0 ≤ (xiPolyMoment p n X * xiPolyMoment p (n + 2) X -
-        xiPolyMoment p (n + 1) X ^ 2).re) :
+        xiPolyMoment p (n + 1) X ^ (2 : ℕ)).re) :
     RiemannHypothesis := by
   have hall := forall_criticalLine_of_forall_polyTuranMinor_re_nonneg hX hpoly
   by_contra hRH
   obtain ⟨q, hq⟩ := exists_spectralSq_im_pos_of_not_riemannHypothesis hRH
-  have h1 : (xiSpectralPoint q ^ 2).im = 0 := by
+  have h1 : (xiSpectralPoint q ^ (2 : ℕ)).im = 0 := by
     rw [sq, Complex.mul_im, hall q]
     ring
   rw [h1] at hq
@@ -275,7 +275,7 @@ sequences. -/
 theorem riemannHypothesis_iff_forall_polyTuranMinor_re_nonneg {X : ℝ} (hX : 0 ≤ X) :
     RiemannHypothesis ↔ ∀ (p : Polynomial ℝ) (n : ℕ),
       0 ≤ (xiPolyMoment p n X * xiPolyMoment p (n + 2) X -
-        xiPolyMoment p (n + 1) X ^ 2).re :=
+        xiPolyMoment p (n + 1) X ^ (2 : ℕ)).re :=
   ⟨fun hRH p n => polyTuranMinor_re_nonneg_of_riemannHypothesis hRH hX p n,
     riemannHypothesis_of_forall_polyTuranMinor_re_nonneg hX⟩
 

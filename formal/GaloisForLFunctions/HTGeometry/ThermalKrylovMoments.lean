@@ -64,7 +64,7 @@ def thermalEvenGapMoment {α : Type*} [Fintype α]
 theorem thermalEvenGapMoment_eq {α : Type*} [Fintype α]
     (intensity : α → α → ℝ) (energy : α → ℝ) (k : ℕ) :
     thermalEvenGapMoment intensity energy k =
-      ∑ a, ∑ b, intensity a b * ((energy a - energy b) ^ 2) ^ k := by
+      ∑ a, ∑ b, intensity a b * ((energy a - energy b) ^ (2 : ℕ)) ^ k := by
   simp only [thermalEvenGapMoment, thermalGapMoment]
   apply Finset.sum_congr rfl
   intro a _
@@ -76,7 +76,7 @@ theorem thermalEvenGapMoment_eq {α : Type*} [Fintype α]
 theorem momentFunctional_thermalEvenGapMoment {α : Type*} [Fintype α]
     (intensity : α → α → ℝ) (energy : α → ℝ) (p : Polynomial ℝ) :
     momentFunctional (thermalEvenGapMoment intensity energy) p =
-      ∑ a, ∑ b, intensity a b * p.eval ((energy a - energy b) ^ 2) := by
+      ∑ a, ∑ b, intensity a b * p.eval ((energy a - energy b) ^ (2 : ℕ)) := by
   rw [momentFunctional_eq_support_sum]
   simp_rw [thermalEvenGapMoment_eq, Finset.mul_sum]
   rw [Finset.sum_comm]
@@ -94,7 +94,7 @@ theorem momentFunctional_thermalEvenGapMoment {α : Type*} [Fintype α]
 theorem momentFunctional_thermalEvenGapMoment_sq_nonneg {α : Type*} [Fintype α]
     (intensity : α → α → ℝ) (energy : α → ℝ)
     (hintensity : ∀ a b, 0 ≤ intensity a b) (p : Polynomial ℝ) :
-    0 ≤ momentFunctional (thermalEvenGapMoment intensity energy) (p ^ 2) := by
+    0 ≤ momentFunctional (thermalEvenGapMoment intensity energy) (p ^ (2 : ℕ)) := by
   rw [momentFunctional_thermalEvenGapMoment]
   apply Finset.sum_nonneg
   intro a _
@@ -107,7 +107,7 @@ theorem momentFunctional_thermalEvenGapMoment_sq_nonneg {α : Type*} [Fintype α
 theorem momentFunctional_X_mul_sq_thermalEvenGapMoment_nonneg {α : Type*} [Fintype α]
     (intensity : α → α → ℝ) (energy : α → ℝ)
     (hintensity : ∀ a b, 0 ≤ intensity a b) (p : Polynomial ℝ) :
-    0 ≤ momentFunctional (thermalEvenGapMoment intensity energy) (X * p ^ 2) := by
+    0 ≤ momentFunctional (thermalEvenGapMoment intensity energy) (X * p ^ (2 : ℕ)) := by
   rw [momentFunctional_thermalEvenGapMoment]
   apply Finset.sum_nonneg
   intro a _

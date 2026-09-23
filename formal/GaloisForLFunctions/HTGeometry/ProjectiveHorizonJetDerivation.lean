@@ -68,7 +68,7 @@ def jetDerivation (M : Matrix n n K) :
 
 omit [DecidableEq n] in
 @[simp]
-theorem jetDerivation_algebraMap (M : Matrix n n K) (p : MvPolynomial (n × ℕ) K) :
+theorem jetDerivation_algebraMap_projectiveHorizonJetDerivation (M : Matrix n n K) (p : MvPolynomial (n × ℕ) K) :
     jetDerivation M (algebraMap (MvPolynomial (n × ℕ) K) (HomogeneousJetField n K) p) =
       algebraMap (MvPolynomial (n × ℕ) K) (HomogeneousJetField n K) (jetDerivationPoly M p) :=
   extendFreeCoordinatePolynomialDerivation_algebraMap _ _
@@ -78,7 +78,7 @@ theorem jetDerivation_freeCoordinate (M : Matrix n n K) (k : n) (l : ℕ) :
     jetDerivation M (freeCoordinate K (n × ℕ) (k, l)) =
       ∑ m, algebraMap K (HomogeneousJetField n K) (M k m) * freeCoordinate K (n × ℕ) (m, l) := by
   simp only [freeCoordinate]
-  rw [jetDerivation_algebraMap, jetDerivationPoly_X, map_sum]
+  rw [jetDerivation_algebraMap_projectiveHorizonJetDerivation, jetDerivationPoly_X, map_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [map_mul, ← MvPolynomial.algebraMap_eq, ← IsScalarTower.algebraMap_apply]
 
@@ -167,7 +167,7 @@ theorem jetDerivation_single_eq_zero_of_mem_horizonField [Infinite K] {t : Set n
   have hcross := jetDerivationPoly_single_cross_of_forall hx hB
     (fun c => mem_horizonField_iff.1 hf _
       (transvectionSL_mem_chartSubsetTransvectionSet hi hx c))
-  rw [Derivation.leibniz_div, jetDerivation_algebraMap, jetDerivation_algebraMap]
+  rw [Derivation.leibniz_div, jetDerivation_algebraMap_projectiveHorizonJetDerivation, jetDerivation_algebraMap_projectiveHorizonJetDerivation]
   have hzero : algebraMap (MvPolynomial (n × ℕ) K) (HomogeneousJetField n K) B •
         algebraMap (MvPolynomial (n × ℕ) K) (HomogeneousJetField n K)
           (jetDerivationPoly (Matrix.single x i (1 : K)) A) -

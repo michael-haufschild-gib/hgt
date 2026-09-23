@@ -38,7 +38,7 @@ theorem upperHalfPlaneHyperbolicHeatIntegrand_le_gaussianZeroEnvelope
     (z alpha : ℂ) {tau : ℝ} (htau : 0 < tau) :
     upperHalfPlaneHyperbolicHeatIntegrand z alpha tau ≤
       tau⁻¹ * Real.exp
-        (tau * alpha.im ^ 2 - tau * (alpha.re - z.re) ^ 2) := by
+        (tau * alpha.im ^ (2 : ℕ) - tau * (alpha.re - z.re) ^ (2 : ℕ)) := by
   have hsub :
       Real.exp (-(Complex.normSq (z - alpha) * tau)) -
           Real.exp
@@ -48,7 +48,7 @@ theorem upperHalfPlaneHyperbolicHeatIntegrand_le_gaussianZeroEnvelope
       (-(Complex.normSq (z - starRingEnd ℂ alpha) * tau))]
   have hexponent :
       -(Complex.normSq (z - alpha) * tau) ≤
-        tau * alpha.im ^ 2 - tau * (alpha.re - z.re) ^ 2 := by
+        tau * alpha.im ^ (2 : ℕ) - tau * (alpha.re - z.re) ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im]
     nlinarith [sq_nonneg (z.im - alpha.im),
@@ -133,8 +133,8 @@ theorem summable_zetaUpperHyperbolicHeatSummand
   have henvelope : Summable fun rho : NontrivialZetaZero ↦
       (analyticZetaZeroMultiplicity rho : ℝ) *
         Real.exp
-          (tau * (zetaSpectralCoordinate rho.1).im ^ 2 -
-            tau * ((zetaSpectralCoordinate rho.1).re - z.re) ^ 2) := by
+          (tau * (zetaSpectralCoordinate rho.1).im ^ (2 : ℕ) -
+            tau * ((zetaSpectralCoordinate rho.1).re - z.re) ^ (2 : ℕ)) := by
     simpa only [zetaGaussianDistinctZeroSummand, Complex.norm_mul,
       Complex.norm_natCast, norm_complexTranslatedGaussian] using
         hdistinct.summable.norm
@@ -152,8 +152,8 @@ theorem summable_zetaUpperHyperbolicHeatSummand
             (zetaSpectralCoordinate rho.1) tau ≤
         (analyticZetaZeroMultiplicity rho : ℝ) *
           (tau⁻¹ * Real.exp
-            (tau * (zetaSpectralCoordinate rho.1).im ^ 2 -
-              tau * ((zetaSpectralCoordinate rho.1).re - z.re) ^ 2)) :=
+            (tau * (zetaSpectralCoordinate rho.1).im ^ (2 : ℕ) -
+              tau * ((zetaSpectralCoordinate rho.1).re - z.re) ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_left
           (upperHalfPlaneHyperbolicHeatIntegrand_le_gaussianZeroEnvelope
             z (zetaSpectralCoordinate rho.1) htau)
@@ -161,8 +161,8 @@ theorem summable_zetaUpperHyperbolicHeatSummand
       _ = tau⁻¹ *
           ((analyticZetaZeroMultiplicity rho : ℝ) *
             Real.exp
-              (tau * (zetaSpectralCoordinate rho.1).im ^ 2 -
-                tau * ((zetaSpectralCoordinate rho.1).re - z.re) ^ 2)) := by
+              (tau * (zetaSpectralCoordinate rho.1).im ^ (2 : ℕ) -
+                tau * ((zetaSpectralCoordinate rho.1).re - z.re) ^ (2 : ℕ))) := by
         ring
   · rw [zetaUpperHyperbolicHeatSummand, if_neg hupper, Real.norm_eq_abs,
       abs_zero]

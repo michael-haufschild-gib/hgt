@@ -107,7 +107,7 @@ theorem complex_hadamard_entry_bound {n : ℕ}
 Stirling's lower bound reduces its tail to a geometric series. -/
 theorem summable_hadamard_majorant (c : ℝ) (hc : 0 ≤ c) :
     Summable (fun n : ℕ => (Real.sqrt n * c) ^ n / (n.factorial : ℝ)) := by
-  obtain ⟨N, hN⟩ := exists_nat_ge ((2 * Real.exp 1 * c) ^ 2)
+  obtain ⟨N, hN⟩ := exists_nat_ge ((2 * Real.exp 1 * c) ^ (2 : ℕ))
   refine (summable_geometric_of_lt_one (by norm_num : (0 : ℝ) ≤ 1 / 2)
     (by norm_num : (1 : ℝ) / 2 < 1)).of_norm_bounded_eventually_nat ?_
   rw [Filter.eventually_atTop]

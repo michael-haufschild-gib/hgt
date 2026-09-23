@@ -11,7 +11,7 @@ models.  A lossless scalar Kerr response applies an intensity-dependent phase
 and therefore preserves amplitude norm; composition accumulates its nonlinear
 phase.  Sampled carriers are closed under third powers and under the
 conjugated triple product used by four-wave mixing.  A cubic response to a
-finite modal packet has a finite presentation of width at most `d^3`.
+finite modal packet has a finite presentation of width at most `d^(3 : ℕ)`.
 
 The final two theorems state the finite-versus-countable cascade dichotomy in
 the temporal-spectrum formalism.  They are structural analogues of finite
@@ -27,7 +27,7 @@ noncomputable section
 
 /-- Lossless scalar Kerr phase response with real nonlinear coupling. -/
 def opticalKerrPhaseShift (coupling : ℝ) (amplitude : ℂ) : ℂ :=
-  Complex.exp (Complex.I * ((coupling * ‖amplitude‖ ^ 2 : ℝ) : ℂ)) * amplitude
+  Complex.exp (Complex.I * ((coupling * ‖amplitude‖ ^ (2 : ℕ) : ℝ) : ℂ)) * amplitude
 
 /-- A lossless scalar Kerr phase shift preserves optical amplitude norm exactly. -/
 theorem norm_opticalKerrPhaseShift (coupling : ℝ) (amplitude : ℂ) :
@@ -40,7 +40,7 @@ theorem opticalKerrPhaseShift_compose (coupling₁ coupling₂ : ℝ) (amplitude
     opticalKerrPhaseShift coupling₂ (opticalKerrPhaseShift coupling₁ amplitude) =
       opticalKerrPhaseShift (coupling₁ + coupling₂) amplitude := by
   change Complex.exp (Complex.I *
-      ((coupling₂ * ‖opticalKerrPhaseShift coupling₁ amplitude‖ ^ 2 : ℝ) : ℂ)) *
+      ((coupling₂ * ‖opticalKerrPhaseShift coupling₁ amplitude‖ ^ (2 : ℕ) : ℝ) : ℂ)) *
       opticalKerrPhaseShift coupling₁ amplitude =
     opticalKerrPhaseShift (coupling₁ + coupling₂) amplitude
   rw [norm_opticalKerrPhaseShift]
@@ -62,7 +62,7 @@ theorem opticalCarrier_mul (a p b q : ℂ) (n : ℕ) :
 
 /-- Cubing a sampled carrier produces its third-harmonic carrier. -/
 theorem opticalCarrier_thirdHarmonic (a p : ℂ) (n : ℕ) :
-    opticalCarrier a p n ^ 3 = opticalCarrier (a ^ 3) (p ^ 3) n := by
+    opticalCarrier a p n ^ (3 : ℕ) = opticalCarrier (a ^ (3 : ℕ)) (p ^ (3 : ℕ)) n := by
   unfold opticalCarrier
   rw [mul_pow]
   ring
@@ -84,11 +84,11 @@ def opticalTwoTone (a p b q : ℂ) (n : ℕ) : ℂ :=
 
 /-- Cubic response of two tones contains the two self and two mixed sidebands. -/
 theorem opticalTwoTone_cubic_sidebands (a p b q : ℂ) (n : ℕ) :
-    opticalTwoTone a p b q n ^ 3 =
-      opticalCarrier a p n ^ 3 +
-        3 * opticalCarrier a p n ^ 2 * opticalCarrier b q n +
-        3 * opticalCarrier a p n * opticalCarrier b q n ^ 2 +
-        opticalCarrier b q n ^ 3 := by
+    opticalTwoTone a p b q n ^ (3 : ℕ) =
+      opticalCarrier a p n ^ (3 : ℕ) +
+        3 * opticalCarrier a p n ^ (2 : ℕ) * opticalCarrier b q n +
+        3 * opticalCarrier a p n * opticalCarrier b q n ^ (2 : ℕ) +
+        opticalCarrier b q n ^ (3 : ℕ) := by
   unfold opticalTwoTone
   ring
 
@@ -102,7 +102,7 @@ def finiteModalCubicNode {d : ℕ} (node : Fin d → ℂ) : Fin ((d * d) * d) �
 
 /-- The exact cubic response of a finite modal packet is a finite modal packet. -/
 theorem finiteModalSequence_cube (weight node : Fin d → ℂ) (n : ℕ) :
-    finiteModalSequence weight node n ^ 3 =
+    finiteModalSequence weight node n ^ (3 : ℕ) =
       finiteModalSequence (finiteModalCubicWeight weight) (finiteModalCubicNode node) n := by
   rw [pow_three, finiteModalSequence_mul weight node weight node n,
     mul_comm (finiteModalSequence weight node n),
@@ -110,10 +110,10 @@ theorem finiteModalSequence_cube (weight node : Fin d → ℂ) (n : ℕ) :
       (finiteModalProductNode node node) weight node n]
   rfl
 
-/-- A `d`-mode packet has a cubic sideband presentation of width at most `d^3`. -/
+/-- A `d`-mode packet has a cubic sideband presentation of width at most `d^(3 : ℕ)`. -/
 theorem finiteModalSequence_cube_width (weight node : Fin d → ℂ) :
     FiniteModalWidthAtMost ((d * d) * d)
-      (fun n => finiteModalSequence weight node n ^ 3) := by
+      (fun n => finiteModalSequence weight node n ^ (3 : ℕ)) := by
   refine ⟨finiteModalCubicWeight weight, finiteModalCubicNode node, ?_⟩
   funext n
   exact finiteModalSequence_cube weight node n

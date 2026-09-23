@@ -176,20 +176,20 @@ theorem tendsto_nat_mul_sharpOddError :
   · ring
 
 def sharpCriticalEnergy (m : ℕ) : ℝ :=
-  (2 * m + 1 / 2 : ℝ) * sharpHarmonicError m ^ 2 +
-    (2 * m + 3 / 2 : ℝ) * sharpOddError m ^ 2
+  (2 * m + 1 / 2 : ℝ) * sharpHarmonicError m ^ (2 : ℕ) +
+    (2 * m + 3 / 2 : ℝ) * sharpOddError m ^ (2 : ℕ)
 
 theorem tendsto_nat_mul_evenCriticalEnergy :
     Tendsto (fun m : ℕ =>
-      (m : ℝ) * (2 * m + 1 / 2 : ℝ) * sharpHarmonicError m ^ 2)
+      (m : ℝ) * (2 * m + 1 / 2 : ℝ) * sharpHarmonicError m ^ (2 : ℕ))
       atTop (nhds (1 / 8)) := by
   have hcoeff := tendsto_add_mul_div_add_mul_atTop_nhds
     (1 / 2 : ℝ) 0 2 (by norm_num : (1 : ℝ) ≠ 0)
   have hprod := hcoeff.mul (tendsto_nat_mul_sharpHarmonicError.pow 2)
   have hprod' : Tendsto (fun m : ℕ =>
       ((1 / 2 : ℝ) + 2 * m) / (m : ℝ) *
-        ((m : ℝ) * sharpHarmonicError m) ^ 2) atTop (nhds (1 / 8)) := by
-    have hval : (2 : ℝ) * (1 / 4) ^ 2 = 1 / 8 := by norm_num
+        ((m : ℝ) * sharpHarmonicError m) ^ (2 : ℕ)) atTop (nhds (1 / 8)) := by
+    have hval : (2 : ℝ) * (1 / 4) ^ (2 : ℕ) = 1 / 8 := by norm_num
     simpa only [zero_add, one_mul, div_one, hval] using hprod
   apply hprod'.congr'
   filter_upwards [eventually_ne_atTop 0] with m hm
@@ -199,15 +199,15 @@ theorem tendsto_nat_mul_evenCriticalEnergy :
 
 theorem tendsto_nat_mul_oddCriticalEnergy :
     Tendsto (fun m : ℕ =>
-      (m : ℝ) * (2 * m + 3 / 2 : ℝ) * sharpOddError m ^ 2)
+      (m : ℝ) * (2 * m + 3 / 2 : ℝ) * sharpOddError m ^ (2 : ℕ))
       atTop (nhds (1 / 8)) := by
   have hcoeff := tendsto_add_mul_div_add_mul_atTop_nhds
     (3 / 2 : ℝ) 0 2 (by norm_num : (1 : ℝ) ≠ 0)
   have hprod := hcoeff.mul (tendsto_nat_mul_sharpOddError.pow 2)
   have hprod' : Tendsto (fun m : ℕ =>
       ((3 / 2 : ℝ) + 2 * m) / (m : ℝ) *
-        ((m : ℝ) * sharpOddError m) ^ 2) atTop (nhds (1 / 8)) := by
-    have hval : (2 : ℝ) * (1 / 4) ^ 2 = 1 / 8 := by norm_num
+        ((m : ℝ) * sharpOddError m) ^ (2 : ℕ)) atTop (nhds (1 / 8)) := by
+    have hval : (2 : ℝ) * (1 / 4) ^ (2 : ℕ) = 1 / 8 := by norm_num
     simpa only [zero_add, one_mul, div_one, hval] using hprod
   apply hprod'.congr'
   filter_upwards [eventually_ne_atTop 0] with m hm
@@ -225,11 +225,11 @@ theorem tendsto_nat_mul_sharpCriticalEnergy :
   · ring
 
 theorem sharpCriticalEnergy_error_bound (m : ℕ) (hm : 0 < m) :
-    |sharpCriticalEnergy m - 1 / (4 * (m : ℝ))| ≤ 17 / (m : ℝ) ^ 2 := by
+    |sharpCriticalEnergy m - 1 / (4 * (m : ℝ))| ≤ 17 / (m : ℝ) ^ (2 : ℕ) := by
   let d := sharpHarmonicError m
   let o := sharpOddError m
   let q : ℝ := 1 / (4 * (m : ℝ))
-  let r : ℝ := 1 / (m : ℝ) ^ 2
+  let r : ℝ := 1 / (m : ℝ) ^ (2 : ℕ)
   have hmR : (0 : ℝ) < m := by exact_mod_cast hm
   have hd0 : 0 ≤ d := (sharpHarmonicError_pos m hm).le
   have ho0 : 0 ≤ o := (sharpOddError_pos m hm).le
@@ -276,8 +276,8 @@ theorem sharpCriticalEnergy_error_bound (m : ℕ) (hm : 0 < m) :
       rw [one_div_le_one_div (by positivity) hmR]
       nlinarith
     linarith
-  have hdSq : |d ^ 2 - q ^ 2| ≤ 2 / (m : ℝ) ^ 3 := by
-    rw [show d ^ 2 - q ^ 2 = (d - q) * (d + q) by ring, abs_mul]
+  have hdSq : |d ^ (2 : ℕ) - q ^ (2 : ℕ)| ≤ 2 / (m : ℝ) ^ (3 : ℕ) := by
+    rw [show d ^ (2 : ℕ) - q ^ (2 : ℕ) = (d - q) * (d + q) by ring, abs_mul]
     have hsum : |d + q| ≤ 2 / (m : ℝ) := by
       rw [abs_of_nonneg (add_nonneg hd0 hq0)]
       calc
@@ -286,9 +286,9 @@ theorem sharpCriticalEnergy_error_bound (m : ℕ) (hm : 0 < m) :
     calc
       |d - q| * |d + q| ≤ r * (2 / (m : ℝ)) :=
         mul_le_mul hdErr hsum (abs_nonneg _) (by positivity)
-      _ = 2 / (m : ℝ) ^ 3 := by dsimp [r]; field_simp
-  have hoSq : |o ^ 2 - q ^ 2| ≤ 2 / (m : ℝ) ^ 3 := by
-    rw [show o ^ 2 - q ^ 2 = (o - q) * (o + q) by ring, abs_mul]
+      _ = 2 / (m : ℝ) ^ (3 : ℕ) := by dsimp [r]; field_simp
+  have hoSq : |o ^ (2 : ℕ) - q ^ (2 : ℕ)| ≤ 2 / (m : ℝ) ^ (3 : ℕ) := by
+    rw [show o ^ (2 : ℕ) - q ^ (2 : ℕ) = (o - q) * (o + q) by ring, abs_mul]
     have hsum : |o + q| ≤ 2 / (m : ℝ) := by
       rw [abs_of_nonneg (add_nonneg ho0 hq0)]
       calc
@@ -297,7 +297,7 @@ theorem sharpCriticalEnergy_error_bound (m : ℕ) (hm : 0 < m) :
     calc
       |o - q| * |o + q| ≤ r * (2 / (m : ℝ)) :=
         mul_le_mul hoErr hsum (abs_nonneg _) (by positivity)
-      _ = 2 / (m : ℝ) ^ 3 := by dsimp [r]; field_simp
+      _ = 2 / (m : ℝ) ^ (3 : ℕ) := by dsimp [r]; field_simp
   let w₁ : ℝ := 2 * m + 1 / 2
   let w₂ : ℝ := 2 * m + 3 / 2
   have hw₁0 : 0 ≤ w₁ := by dsimp [w₁]; positivity
@@ -310,47 +310,47 @@ theorem sharpCriticalEnergy_error_bound (m : ℕ) (hm : 0 < m) :
     dsimp [w₂]
     have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast hm
     linarith
-  have hdev : |w₁ * (d ^ 2 - q ^ 2) + w₂ * (o ^ 2 - q ^ 2)| ≤
-      16 / (m : ℝ) ^ 2 := by
+  have hdev : |w₁ * (d ^ (2 : ℕ) - q ^ (2 : ℕ)) + w₂ * (o ^ (2 : ℕ) - q ^ (2 : ℕ))| ≤
+      16 / (m : ℝ) ^ (2 : ℕ) := by
     calc
-      |w₁ * (d ^ 2 - q ^ 2) + w₂ * (o ^ 2 - q ^ 2)| ≤
-          |w₁ * (d ^ 2 - q ^ 2)| + |w₂ * (o ^ 2 - q ^ 2)| :=
+      |w₁ * (d ^ (2 : ℕ) - q ^ (2 : ℕ)) + w₂ * (o ^ (2 : ℕ) - q ^ (2 : ℕ))| ≤
+          |w₁ * (d ^ (2 : ℕ) - q ^ (2 : ℕ))| + |w₂ * (o ^ (2 : ℕ) - q ^ (2 : ℕ))| :=
             abs_add_le _ _
       _ =
-          w₁ * |d ^ 2 - q ^ 2| + w₂ * |o ^ 2 - q ^ 2| := by
+          w₁ * |d ^ (2 : ℕ) - q ^ (2 : ℕ)| + w₂ * |o ^ (2 : ℕ) - q ^ (2 : ℕ)| := by
             rw [abs_mul, abs_mul, abs_of_nonneg hw₁0, abs_of_nonneg hw₂0]
-      _ ≤ (4 * (m : ℝ)) * (2 / (m : ℝ) ^ 3) +
-          (4 * (m : ℝ)) * (2 / (m : ℝ) ^ 3) := by
+      _ ≤ (4 * (m : ℝ)) * (2 / (m : ℝ) ^ (3 : ℕ)) +
+          (4 * (m : ℝ)) * (2 / (m : ℝ) ^ (3 : ℕ)) := by
             gcongr
-      _ = 16 / (m : ℝ) ^ 2 := by field_simp; ring
-  have hbase : (w₁ + w₂) * q ^ 2 =
-      1 / (4 * (m : ℝ)) + 1 / (8 * (m : ℝ) ^ 2) := by
+      _ = 16 / (m : ℝ) ^ (2 : ℕ) := by field_simp; ring
+  have hbase : (w₁ + w₂) * q ^ (2 : ℕ) =
+      1 / (4 * (m : ℝ)) + 1 / (8 * (m : ℝ) ^ (2 : ℕ)) := by
     dsimp [w₁, w₂, q]
     field_simp
     ring
   have hdecomp : sharpCriticalEnergy m - 1 / (4 * (m : ℝ)) =
-      (w₁ * (d ^ 2 - q ^ 2) + w₂ * (o ^ 2 - q ^ 2)) +
-        1 / (8 * (m : ℝ) ^ 2) := by
+      (w₁ * (d ^ (2 : ℕ) - q ^ (2 : ℕ)) + w₂ * (o ^ (2 : ℕ) - q ^ (2 : ℕ))) +
+        1 / (8 * (m : ℝ) ^ (2 : ℕ)) := by
     unfold sharpCriticalEnergy
-    change w₁ * d ^ 2 + w₂ * o ^ 2 - 1 / (4 * (m : ℝ)) =
-      (w₁ * (d ^ 2 - q ^ 2) + w₂ * (o ^ 2 - q ^ 2)) +
-        1 / (8 * (m : ℝ) ^ 2)
+    change w₁ * d ^ (2 : ℕ) + w₂ * o ^ (2 : ℕ) - 1 / (4 * (m : ℝ)) =
+      (w₁ * (d ^ (2 : ℕ) - q ^ (2 : ℕ)) + w₂ * (o ^ (2 : ℕ) - q ^ (2 : ℕ))) +
+        1 / (8 * (m : ℝ) ^ (2 : ℕ))
     calc
-      w₁ * d ^ 2 + w₂ * o ^ 2 - 1 / (4 * (m : ℝ)) =
-          w₁ * (d ^ 2 - q ^ 2) + w₂ * (o ^ 2 - q ^ 2) +
-            ((w₁ + w₂) * q ^ 2 - 1 / (4 * (m : ℝ))) := by ring
-      _ = w₁ * (d ^ 2 - q ^ 2) + w₂ * (o ^ 2 - q ^ 2) +
-            1 / (8 * (m : ℝ) ^ 2) := by rw [hbase]; ring
+      w₁ * d ^ (2 : ℕ) + w₂ * o ^ (2 : ℕ) - 1 / (4 * (m : ℝ)) =
+          w₁ * (d ^ (2 : ℕ) - q ^ (2 : ℕ)) + w₂ * (o ^ (2 : ℕ) - q ^ (2 : ℕ)) +
+            ((w₁ + w₂) * q ^ (2 : ℕ) - 1 / (4 * (m : ℝ))) := by ring
+      _ = w₁ * (d ^ (2 : ℕ) - q ^ (2 : ℕ)) + w₂ * (o ^ (2 : ℕ) - q ^ (2 : ℕ)) +
+            1 / (8 * (m : ℝ) ^ (2 : ℕ)) := by rw [hbase]; ring
   rw [hdecomp]
   calc
-    |w₁ * (d ^ 2 - q ^ 2) + w₂ * (o ^ 2 - q ^ 2) +
-        1 / (8 * (m : ℝ) ^ 2)| ≤
-      |w₁ * (d ^ 2 - q ^ 2) + w₂ * (o ^ 2 - q ^ 2)| +
-        |1 / (8 * (m : ℝ) ^ 2)| := abs_add_le _ _
-    _ ≤ 16 / (m : ℝ) ^ 2 + 1 / (8 * (m : ℝ) ^ 2) := by
+    |w₁ * (d ^ (2 : ℕ) - q ^ (2 : ℕ)) + w₂ * (o ^ (2 : ℕ) - q ^ (2 : ℕ)) +
+        1 / (8 * (m : ℝ) ^ (2 : ℕ))| ≤
+      |w₁ * (d ^ (2 : ℕ) - q ^ (2 : ℕ)) + w₂ * (o ^ (2 : ℕ) - q ^ (2 : ℕ))| +
+        |1 / (8 * (m : ℝ) ^ (2 : ℕ))| := abs_add_le _ _
+    _ ≤ 16 / (m : ℝ) ^ (2 : ℕ) + 1 / (8 * (m : ℝ) ^ (2 : ℕ)) := by
       gcongr
       rw [abs_of_nonneg (by positivity)]
-    _ ≤ 17 / (m : ℝ) ^ 2 := by
+    _ ≤ 17 / (m : ℝ) ^ (2 : ℕ) := by
       field_simp
       nlinarith
 
@@ -358,9 +358,9 @@ theorem sharpCriticalEnergy_error_bound (m : ℕ) (hm : 0 < m) :
 theorem summable_sharpCriticalEnergy_error :
     Summable (fun n : ℕ =>
       sharpCriticalEnergy (n + 1) - 1 / (4 * (n + 1 : ℝ))) := by
-  have hsquare : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 2) :=
+  have hsquare : Summable (fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
-  have hshift : Summable (fun n : ℕ => 17 / (n + 1 : ℝ) ^ 2) := by
+  have hshift : Summable (fun n : ℕ => 17 / (n + 1 : ℝ) ^ (2 : ℕ)) := by
     have h := ((summable_nat_add_iff 1).mpr hsquare).mul_left (17 : ℝ)
     simpa [Nat.cast_add, Nat.cast_one, div_eq_mul_inv] using h
   apply Summable.of_norm_bounded hshift
@@ -507,7 +507,7 @@ theorem sharpCoPoissonP_odd_cell (m : ℕ) (hm : 0 < m) {t : ℝ}
     natFloor_half_eq_on_odd_cell m ht0 ht1, if_neg (by linarith)]
 
 lemma intervalIntegral_id_exact (a b : ℝ) :
-    ∫ t in a..b, t = (b ^ 2 - a ^ 2) / 2 := by
+    ∫ t in a..b, t = (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / 2 := by
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (f := fun x : ℝ => x * x / 2) (f' := fun x : ℝ => x)
     (a := a) (b := b) (fun x hx => by
@@ -519,10 +519,10 @@ lemma intervalIntegral_id_exact (a b : ℝ) :
   all_goals ring
 
 theorem integral_even_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
-    ∫ t in (2 * m : ℝ)..(2 * m + 1 : ℝ), t * sharpCoPoissonP t ^ 2 =
-      (2 * m + 1 / 2 : ℝ) * sharpHarmonicError m ^ 2 := by
+    ∫ t in (2 * m : ℝ)..(2 * m + 1 : ℝ), t * sharpCoPoissonP t ^ (2 : ℕ) =
+      (2 * m + 1 / 2 : ℝ) * sharpHarmonicError m ^ (2 : ℕ) := by
   rw [intervalIntegral.integral_congr_ae (g := fun t : ℝ =>
-      t * sharpHarmonicError m ^ 2) (by
+      t * sharpHarmonicError m ^ (2 : ℕ)) (by
     filter_upwards [MeasureTheory.volume.ae_ne (2 * m + 1 : ℝ)] with t ht hmem
     rw [Set.uIoc_of_le (by linarith), Set.mem_Ioc] at hmem
     have ht0 : (2 * m : ℝ) < t := hmem.1
@@ -534,10 +534,10 @@ theorem integral_even_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
   ring
 
 theorem integral_odd_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
-    ∫ t in (2 * m + 1 : ℝ)..(2 * m + 2 : ℝ), t * sharpCoPoissonP t ^ 2 =
-      (2 * m + 3 / 2 : ℝ) * sharpOddError m ^ 2 := by
+    ∫ t in (2 * m + 1 : ℝ)..(2 * m + 2 : ℝ), t * sharpCoPoissonP t ^ (2 : ℕ) =
+      (2 * m + 3 / 2 : ℝ) * sharpOddError m ^ (2 : ℕ) := by
   rw [intervalIntegral.integral_congr_ae (g := fun t : ℝ =>
-      t * sharpOddError m ^ 2) (by
+      t * sharpOddError m ^ (2 : ℕ)) (by
     filter_upwards [MeasureTheory.volume.ae_ne (2 * m + 2 : ℝ)] with t ht hmem
     rw [Set.uIoc_of_le (by linarith), Set.mem_Ioc] at hmem
     have ht0 : (2 * m + 1 : ℝ) < t := hmem.1
@@ -548,9 +548,9 @@ theorem integral_odd_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
   ring
 
 lemma intervalIntegrable_even_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
-    IntervalIntegrable (fun t : ℝ => t * sharpCoPoissonP t ^ 2) MeasureTheory.volume
+    IntervalIntegrable (fun t : ℝ => t * sharpCoPoissonP t ^ (2 : ℕ)) MeasureTheory.volume
       (2 * m : ℝ) (2 * m + 1 : ℝ) := by
-  have hcont : Continuous (fun t : ℝ => t * sharpHarmonicError m ^ 2) :=
+  have hcont : Continuous (fun t : ℝ => t * sharpHarmonicError m ^ (2 : ℕ)) :=
     continuous_id.mul continuous_const
   apply (hcont.intervalIntegrable _ _).congr_ae
   filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_uIoc,
@@ -563,9 +563,9 @@ lemma intervalIntegrable_even_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
   ring
 
 lemma intervalIntegrable_odd_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
-    IntervalIntegrable (fun t : ℝ => t * sharpCoPoissonP t ^ 2) MeasureTheory.volume
+    IntervalIntegrable (fun t : ℝ => t * sharpCoPoissonP t ^ (2 : ℕ)) MeasureTheory.volume
       (2 * m + 1 : ℝ) (2 * m + 2 : ℝ) := by
-  have hcont : Continuous (fun t : ℝ => t * sharpOddError m ^ 2) :=
+  have hcont : Continuous (fun t : ℝ => t * sharpOddError m ^ (2 : ℕ)) :=
     continuous_id.mul continuous_const
   apply (hcont.intervalIntegrable _ _).congr_ae
   filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_uIoc,
@@ -577,7 +577,7 @@ lemma intervalIntegrable_odd_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
   rw [sharpCoPoissonP_odd_cell m hm ht0 ht1]
 
 theorem integral_two_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
-    ∫ t in (2 * m : ℝ)..(2 * m + 2 : ℝ), t * sharpCoPoissonP t ^ 2 =
+    ∫ t in (2 * m : ℝ)..(2 * m + 2 : ℝ), t * sharpCoPoissonP t ^ (2 : ℕ) =
       sharpCriticalEnergy m := by
   rw [← intervalIntegral.integral_add_adjacent_intervals
     (intervalIntegrable_even_cell_criticalEnergy m hm)
@@ -587,20 +587,20 @@ theorem integral_two_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
   ring
 
 lemma intervalIntegrable_two_cell_criticalEnergy (m : ℕ) (hm : 0 < m) :
-    IntervalIntegrable (fun t : ℝ => t * sharpCoPoissonP t ^ 2) MeasureTheory.volume
+    IntervalIntegrable (fun t : ℝ => t * sharpCoPoissonP t ^ (2 : ℕ)) MeasureTheory.volume
       (2 * m : ℝ) (2 * m + 2 : ℝ) :=
   (intervalIntegrable_even_cell_criticalEnergy m hm).trans
     (intervalIntegrable_odd_cell_criticalEnergy m hm)
 
 lemma intervalIntegrable_sharpCriticalFlux_cutoff (M : ℕ) :
-    IntervalIntegrable (fun t : ℝ => t * sharpCoPoissonP t ^ 2) MeasureTheory.volume
+    IntervalIntegrable (fun t : ℝ => t * sharpCoPoissonP t ^ (2 : ℕ)) MeasureTheory.volume
       2 (2 * (M + 1) : ℝ) := by
   induction M with
   | zero => simp
   | succ M ih =>
       have hblock := intervalIntegrable_two_cell_criticalEnergy (M + 1) (by omega)
       have hblock' : IntervalIntegrable
-          (fun t : ℝ => t * sharpCoPoissonP t ^ 2) MeasureTheory.volume
+          (fun t : ℝ => t * sharpCoPoissonP t ^ (2 : ℕ)) MeasureTheory.volume
           (2 * ((M + 1) : ℝ)) (2 * (((M + 1) + 1) : ℝ)) := by
         convert hblock using 1 <;> push_cast <;> ring
       convert ih.trans hblock' using 1
@@ -609,7 +609,7 @@ lemma intervalIntegrable_sharpCriticalFlux_cutoff (M : ℕ) :
 
 /-- Exact identification of physical weighted flux with discrete critical block energy. -/
 theorem integral_sharpCriticalFlux_cutoff_eq (M : ℕ) :
-    ∫ t in (2 : ℝ)..(2 * (M + 1) : ℝ), t * sharpCoPoissonP t ^ 2 =
+    ∫ t in (2 : ℝ)..(2 * (M + 1) : ℝ), t * sharpCoPoissonP t ^ (2 : ℕ) =
       sharpCriticalPartialEnergy M := by
   induction M with
   | zero => simp [sharpCriticalPartialEnergy]
@@ -617,27 +617,27 @@ theorem integral_sharpCriticalFlux_cutoff_eq (M : ℕ) :
       have hleft := intervalIntegrable_sharpCriticalFlux_cutoff M
       have hblock := intervalIntegrable_two_cell_criticalEnergy (M + 1) (by omega)
       have hblock' : IntervalIntegrable
-          (fun t : ℝ => t * sharpCoPoissonP t ^ 2) MeasureTheory.volume
+          (fun t : ℝ => t * sharpCoPoissonP t ^ (2 : ℕ)) MeasureTheory.volume
           (2 * ((M + 1) : ℝ)) (2 * (((M + 1) + 1) : ℝ)) := by
         convert hblock using 1 <;> push_cast <;> ring
       have hadd := intervalIntegral.integral_add_adjacent_intervals hleft hblock'
       have hblockEq :
           (∫ t in (2 * ((M : ℝ) + 1) : ℝ)..(2 * ((M : ℝ) + 1 + 1) : ℝ),
-            t * sharpCoPoissonP t ^ 2) = sharpCriticalEnergy (M + 1) := by
+            t * sharpCoPoissonP t ^ (2 : ℕ)) = sharpCriticalEnergy (M + 1) := by
         convert integral_two_cell_criticalEnergy (M + 1) (by omega) using 1
         push_cast
         ring
       calc
         _ =
             ∫ t in (2 : ℝ)..(2 * ((M : ℝ) + 1 + 1) : ℝ),
-              t * sharpCoPoissonP t ^ 2 := by
+              t * sharpCoPoissonP t ^ (2 : ℕ) := by
                 congr 2
                 push_cast
                 ring
         _ = (∫ t in (2 : ℝ)..(2 * ((M : ℝ) + 1) : ℝ),
-              t * sharpCoPoissonP t ^ 2) +
+              t * sharpCoPoissonP t ^ (2 : ℕ)) +
             ∫ t in (2 * ((M : ℝ) + 1) : ℝ)..(2 * ((M : ℝ) + 1 + 1) : ℝ),
-              t * sharpCoPoissonP t ^ 2 := hadd.symm
+              t * sharpCoPoissonP t ^ (2 : ℕ) := hadd.symm
         _ = sharpCriticalPartialEnergy M + sharpCriticalEnergy (M + 1) := by
           rw [ih, hblockEq]
         _ = sharpCriticalPartialEnergy (M + 1) := by
@@ -698,7 +698,7 @@ theorem tendsto_sharpCriticalPartialEnergy_div_log_cutoff :
 /-- Physical weighted flux through exact dyadic-block cutoffs has coefficient `1/4`. -/
 theorem tendsto_integral_sharpCriticalFlux_cutoff_div_log :
     Tendsto (fun M : ℕ =>
-      (∫ t in (2 : ℝ)..(2 * (M + 1) : ℝ), t * sharpCoPoissonP t ^ 2) /
+      (∫ t in (2 : ℝ)..(2 * (M + 1) : ℝ), t * sharpCoPoissonP t ^ (2 : ℕ)) /
         Real.log (2 * ((M : ℝ) + 1))) atTop (nhds (1 / 4)) := by
   simpa only [integral_sharpCriticalFlux_cutoff_eq] using
     tendsto_sharpCriticalPartialEnergy_div_log_cutoff

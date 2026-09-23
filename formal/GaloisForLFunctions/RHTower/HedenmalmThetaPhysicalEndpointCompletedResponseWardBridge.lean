@@ -36,8 +36,8 @@ def thetaPhysicalEndpointNormalizedHalfDensity
 theorem physicalPrimeEndpointWeight_mul_normalizedHalfDensity_sq
     (p : Nat.Primes) (q : XiZeroCopy) :
     physicalPrimeEndpointWeight p *
-        thetaPhysicalEndpointNormalizedHalfDensity p q ^ 2 =
-      thetaMobiusPrimeNormalProfileHalfDensityAmplitude p q ^ 2 := by
+        thetaPhysicalEndpointNormalizedHalfDensity p q ^ (2 : ℕ) =
+      thetaMobiusPrimeNormalProfileHalfDensityAmplitude p q ^ (2 : ℕ) := by
   have hp : (1 : ℝ) < p := by exact_mod_cast p.2.one_lt
   have hlog : 0 < Real.log (p : ℝ) := Real.log_pos hp
   have hratio : 0 ≤ (p : ℝ) / Real.log (p : ℝ) :=
@@ -61,7 +61,7 @@ def thetaPhysicalEndpointCompletedResponseDirichletEnergy
   ∑ p ∈ P, ∑ r ∈ P,
     xiPhysicalEndpointCompletedBalancedCoupling P p r *
       (thetaPhysicalEndpointNormalizedHalfDensity p q -
-        thetaPhysicalEndpointNormalizedHalfDensity r q) ^ 2
+        thetaPhysicalEndpointNormalizedHalfDensity r q) ^ (2 : ℕ)
 
 /-- Forced diagonal completion disappears from the Dirichlet term; only actual off-diagonal
 completed source response remains. -/
@@ -71,7 +71,7 @@ theorem thetaPhysicalEndpointCompletedResponseDirichletEnergy_eq_pairResponse
       ∑ p ∈ P, ∑ r ∈ P,
         xiPhysicalEndpointCompletedPairResponse p r *
           (thetaPhysicalEndpointNormalizedHalfDensity p q -
-            thetaPhysicalEndpointNormalizedHalfDensity r q) ^ 2 := by
+            thetaPhysicalEndpointNormalizedHalfDensity r q) ^ (2 : ℕ) := by
   rw [thetaPhysicalEndpointCompletedResponseDirichletEnergy]
   apply Finset.sum_congr rfl
   intro p hp
@@ -90,7 +90,7 @@ theorem thetaPhysicalEndpointCompletedResponseDirichletEnergy_eq_kernel
         physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight r *
           xiPhysicalEndpointCompletedPrimeRatioRealKernel p r *
             (thetaPhysicalEndpointNormalizedHalfDensity p q -
-              thetaPhysicalEndpointNormalizedHalfDensity r q) ^ 2 := by
+              thetaPhysicalEndpointNormalizedHalfDensity r q) ^ (2 : ℕ) := by
   rw [thetaPhysicalEndpointCompletedResponseDirichletEnergy_eq_pairResponse]
   apply Finset.sum_congr rfl
   intro p hp
@@ -112,7 +112,7 @@ theorem thetaPhysicalEndpointCompletedResponsePairing_eq_packetEnergy_sub_half_d
     (fun p _hp r _hr => xiPhysicalEndpointCompletedBalancedCoupling_symm P p r)
     (sum_xiPhysicalEndpointCompletedBalancedCoupling P)
   rw [show (∑ p ∈ P, physicalPrimeEndpointWeight p *
-      ‖thetaPhysicalEndpointNormalizedHalfDensity p q‖ ^ 2) =
+      ‖thetaPhysicalEndpointNormalizedHalfDensity p q‖ ^ (2 : ℕ)) =
       thetaMobiusPrimeNormalProfilePacketEnergy q P by
     rw [thetaMobiusPrimeNormalProfilePacketEnergy]
     apply Finset.sum_congr rfl
@@ -155,7 +155,7 @@ theorem thetaPhysicalEndpointCompletedResponseWardBoundAt_iff_mobiusWardBoundAt
 theorem thetaPhysicalEndpointCompletedResponseWardBoundAt_iff_reciprocalEigenvalue_sq_positiveReal
     (q : XiZeroCopy) :
     ThetaPhysicalEndpointCompletedResponseWardBoundAt q ↔
-      ∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ 2 = (r : ℂ) := by
+      ∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ (2 : ℕ) = (r : ℂ) := by
   rw [thetaPhysicalEndpointCompletedResponseWardBoundAt_iff_mobiusWardBoundAt,
     thetaMobiusPrimeNormalWardBoundAt_iff_reciprocalEigenvalue_sq_positiveReal]
 

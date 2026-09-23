@@ -33,7 +33,7 @@ theorem fourierMulCLM_toDistribution {φ : ℝ → ℂ} (hφ : Measurable φ)
   rfl
 
 private theorem kgFreqInv_besselSymbol :
-    (kgFreqInv : ℝ → ℂ) = fun x => (((1+‖x‖^2)^((-1:ℝ)/2):ℝ):ℂ) := by
+    (kgFreqInv : ℝ → ℂ) = fun x => (((1+‖x‖^(2 : ℕ))^((-1:ℝ)/2):ℝ):ℂ) := by
   funext x
   rw [kgFreqInv,kgFreq,Real.sqrt_eq_rpow,← Real.rpow_neg (by positivity)]
   congr 2

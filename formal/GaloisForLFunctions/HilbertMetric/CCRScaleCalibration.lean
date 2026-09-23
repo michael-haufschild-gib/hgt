@@ -73,9 +73,9 @@ omit [DecidableEq I] in
 /-- The Hilbert–Schmidt energy of a scalar matrix. -/
 theorem matrixHilbertSchmidtEnergy_smul_one (c : ℝ) :
     matrixHilbertSchmidtEnergy (c • (1 : Matrix n n ℝ)) =
-      (Fintype.card n : ℝ) * c ^ 2 := by
-  have hentry : ∀ a b : n, (c • (1 : Matrix n n ℝ)) a b ^ 2 =
-      if a = b then c ^ 2 else 0 := by
+      (Fintype.card n : ℝ) * c ^ (2 : ℕ) := by
+  have hentry : ∀ a b : n, (c • (1 : Matrix n n ℝ)) a b ^ (2 : ℕ) =
+      if a = b then c ^ (2 : ℕ) else 0 := by
     intro a b
     by_cases hab : a = b <;> simp [hab]
   simp only [matrixHilbertSchmidtEnergy]
@@ -86,7 +86,7 @@ omit [DecidableEq I] in
 /-- The mean energy of a scalar compression tuple. -/
 theorem ccrMeanEnergy_scalar (c : I → ℝ) :
     ccrMeanEnergy (fun i => c i • (1 : Matrix n n ℝ)) =
-      (Fintype.card n : ℝ) * ∑ i, (c i) ^ 2 := by
+      (Fintype.card n : ℝ) * ∑ i, (c i) ^ (2 : ℕ) := by
   simp only [ccrMeanEnergy]
   rw [Finset.sum_congr rfl fun i _ => matrixHilbertSchmidtEnergy_smul_one (n := n) (c i),
     ← Finset.mul_sum]
@@ -123,8 +123,8 @@ theorem ccrNumberVariance_scalar_eq_ccrMeanEnergy (c : I → ℝ) :
   rw [ccrMeanEnergy_scalar, ccrNumberVariance, rectangularMatrixHilbertSchmidtEnergy]
   have hentry : ∀ (p : I × n) (a : n),
       ccrLeakageTrace (fun i => c i • (1 : Matrix n n ℝ))
-          (unitModeLeakage (I := I) (n := n)) p a ^ 2 =
-        if p.2 = a then (c p.1) ^ 2 else 0 := by
+          (unitModeLeakage (I := I) (n := n)) p a ^ (2 : ℕ) =
+        if p.2 = a then (c p.1) ^ (2 : ℕ) else 0 := by
     intro p a
     rw [ccrLeakageTrace_scalar]
     by_cases hpa : p.2 = a <;> simp [hpa]

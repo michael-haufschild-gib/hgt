@@ -169,8 +169,8 @@ theorem denominator_eq_zero_of_mobiusVelocity_mem_horizon
     (hx : Transcendental T x)
     (hy : Transcendental F (y : E))
     (hdet : det ≠ 0)
-    (hEq : (q : E) * (algebraMap F E c * x + algebraMap F E d) ^ 2 =
-      algebraMap F E a2 * x ^ 2 + algebraMap F E a1 * x + algebraMap F E a0 +
+    (hEq : (q : E) * (algebraMap F E c * x + algebraMap F E d) ^ (2 : ℕ) =
+      algebraMap F E a2 * x ^ (2 : ℕ) + algebraMap F E a1 * x + algebraMap F E a0 +
         algebraMap F E det * (y : E)) :
     c = 0 := by
   by_contra hc
@@ -181,18 +181,18 @@ theorem denominator_eq_zero_of_mobiusVelocity_mem_horizon
   let a0T : T := algebraMap F T a0
   let detT : T := algebraMap F T det
   let P : T[X] :=
-    monomial 2 (q * cT ^ 2 - a2T) +
+    monomial 2 (q * cT ^ (2 : ℕ) - a2T) +
       monomial 1 (2 * q * cT * dT - a1T) +
-      C (q * dT ^ 2 - a0T - detT * y)
+      C (q * dT ^ (2 : ℕ) - a0T - detT * y)
   have hP_eval : Polynomial.aeval x P = 0 := by
-    have hcalc : ((q : E) * algebraMap F E c ^ 2 - algebraMap F E a2) * x ^ 2 +
+    have hcalc : ((q : E) * algebraMap F E c ^ (2 : ℕ) - algebraMap F E a2) * x ^ (2 : ℕ) +
         ((2 : E) * (q : E) * algebraMap F E c * algebraMap F E d -
           algebraMap F E a1) * x +
-        ((q : E) * algebraMap F E d ^ 2 - algebraMap F E a0 -
+        ((q : E) * algebraMap F E d ^ (2 : ℕ) - algebraMap F E a0 -
           algebraMap F E det * (y : E)) = 0 := by
       calc
-      _ = (q : E) * (algebraMap F E c * x + algebraMap F E d) ^ 2 -
-          (algebraMap F E a2 * x ^ 2 + algebraMap F E a1 * x +
+      _ = (q : E) * (algebraMap F E c * x + algebraMap F E d) ^ (2 : ℕ) -
+          (algebraMap F E a2 * x ^ (2 : ℕ) + algebraMap F E a1 * x +
             algebraMap F E a0 + algebraMap F E det * (y : E)) := by ring
       _ = 0 := sub_eq_zero.mpr hEq
     simp only [P, map_add, aeval_monomial, aeval_C, map_sub, map_mul, map_pow,
@@ -208,26 +208,26 @@ theorem denominator_eq_zero_of_mobiusVelocity_mem_horizon
     norm_num [coeff_monomial, coeff_C] at h2 h0
     have hcT : cT ≠ 0 := by
       simpa [cT] using (algebraMap F T).injective.ne hc
-    have hq : q = algebraMap F T (a2 / c ^ 2) := by
+    have hq : q = algebraMap F T (a2 / c ^ (2 : ℕ)) := by
       calc
-        q = a2T / cT ^ 2 := (eq_div_iff (pow_ne_zero 2 hcT)).2 (sub_eq_zero.mp h2)
-        _ = algebraMap F T (a2 / c ^ 2) := by
+        q = a2T / cT ^ (2 : ℕ) := (eq_div_iff (pow_ne_zero 2 hcT)).2 (sub_eq_zero.mp h2)
+        _ = algebraMap F T (a2 / c ^ (2 : ℕ)) := by
           simp [cT, a2T, map_div₀, map_pow]
     rw [hq] at h0
     have hdetT : detT ≠ 0 := by
       simpa [detT] using (algebraMap F T).injective.ne hdet
     have hyT : y = algebraMap F T
-        (((a2 / c ^ 2) * d ^ 2 - a0) / det) := by
+        (((a2 / c ^ (2 : ℕ)) * d ^ (2 : ℕ) - a0) / det) := by
       rw [map_div₀]
       apply (eq_div_iff hdetT).2
       have h0eq :
-          algebraMap F T (a2 / c ^ 2) * dT ^ 2 - a0T = detT * y :=
+          algebraMap F T (a2 / c ^ (2 : ℕ)) * dT ^ (2 : ℕ) - a0T = detT * y :=
         sub_eq_zero.mp h0
       simpa [cT, dT, a2T, a0T, detT, map_div₀, map_mul, map_pow,
         mul_comm] using h0eq.symm
     apply hy
     refine ⟨Polynomial.X - Polynomial.C
-      (((a2 / c ^ 2) * d ^ 2 - a0) / det), ?_, ?_⟩
+      (((a2 / c ^ (2 : ℕ)) * d ^ (2 : ℕ) - a0) / det), ?_, ?_⟩
     · exact Polynomial.X_sub_C_ne_zero _
     · simp [hyT]
   exact hx ⟨P, hP_ne, hP_eval⟩
@@ -325,8 +325,8 @@ theorem mobiusDenominator_eq_zero_of_deriv_mem_jetTail
   have hyF : Transcendental F (y : E) := by
     simpa [y, differentialJet_succ] using
       (hypertranscendentalOver_jet_transcendental hx 1)
-  have hEq : (q : E) * (algebraMap F E c * x + algebraMap F E d) ^ 2 =
-      algebraMap F E (a′ * c - a * c′) * x ^ 2 +
+  have hEq : (q : E) * (algebraMap F E c * x + algebraMap F E d) ^ (2 : ℕ) =
+      algebraMap F E (a′ * c - a * c′) * x ^ (2 : ℕ) +
         algebraMap F E (a′ * d + b′ * c - a * d′ - b * c′) * x +
         algebraMap F E (b′ * d - b * d′) +
         algebraMap F E (a * d - b * c) * (y : E) := by

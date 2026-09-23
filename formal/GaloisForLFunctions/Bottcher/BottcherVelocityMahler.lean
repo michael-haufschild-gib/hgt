@@ -19,8 +19,8 @@ namespace GaloisForLFunctions
 
 /-- **The velocity series satisfies its Mahler equation**: `A(X²) = 2·A − X²`. -/
 theorem bottcherVelocitySeries_mahler :
-    subst (PowerSeries.X ^ 2) bottcherVelocitySeries
-      = PowerSeries.C (2 : ℂ) * bottcherVelocitySeries - PowerSeries.X ^ 2 := by
+    subst (PowerSeries.X ^ (2 : ℕ)) bottcherVelocitySeries
+      = PowerSeries.C (2 : ℂ) * bottcherVelocitySeries - PowerSeries.X ^ (2 : ℕ) := by
   ext n
   rw [PowerSeries.coeff_subst_X_pow (by norm_num : (2 : ℕ) ≠ 0), map_sub, coeff_C_mul,
     PowerSeries.coeff_X_pow]
@@ -36,7 +36,7 @@ theorem bottcherVelocitySeries_mahler :
       · have ha1 : PowerSeries.coeff 1 bottcherVelocitySeries = 0 :=
           coeff_bottcherVelocitySeries_of_ne 1 (fun j => by
             have h4 : 2 ≤ 2 ^ (j + 1) := by
-              calc (2 : ℕ) = 2 ^ 1 := by norm_num
+              calc (2 : ℕ) = 2 ^ (1 : ℕ) := by norm_num
                 _ ≤ 2 ^ (j + 1) := Nat.pow_le_pow_right (by norm_num) (by omega)
             omega)
         have ha2 : PowerSeries.coeff (2 * 1) bottcherVelocitySeries = (2 : ℂ)⁻¹ := by
@@ -51,7 +51,7 @@ theorem bottcherVelocitySeries_mahler :
             coeff_bottcherVelocitySeries_pow (j + 1)]
           have hne2 : 2 ^ (j + 1 + 1) ≠ 2 := by
             have h4 : (4 : ℕ) ≤ 2 ^ (j + 1 + 1) := by
-              calc (4 : ℕ) = 2 ^ 2 := by norm_num
+              calc (4 : ℕ) = 2 ^ (2 : ℕ) := by norm_num
                 _ ≤ 2 ^ (j + 1 + 1) := Nat.pow_le_pow_right (by norm_num) (by omega)
             omega
           rw [if_neg hne2, sub_zero]
@@ -82,10 +82,10 @@ theorem bottcherVelocitySeries_mahler :
 /-- **Uniqueness**: the velocity series is the only formal solution of its Mahler equation —
 no normalization needed, the homogeneous rigidity pins even the constant term. -/
 theorem bottcherVelocity_mahler_unique {Y : ℂ⟦X⟧}
-    (h : subst (PowerSeries.X ^ 2) Y
-      = PowerSeries.C (2 : ℂ) * Y - PowerSeries.X ^ 2) :
+    (h : subst (PowerSeries.X ^ (2 : ℕ)) Y
+      = PowerSeries.C (2 : ℂ) * Y - PowerSeries.X ^ (2 : ℕ)) :
     Y = bottcherVelocitySeries := by
-  have hsub : subst (PowerSeries.X ^ 2) (Y - bottcherVelocitySeries)
+  have hsub : subst (PowerSeries.X ^ (2 : ℕ)) (Y - bottcherVelocitySeries)
       = PowerSeries.C (2 : ℂ) * (Y - bottcherVelocitySeries) := by
     rw [← PowerSeries.coe_substAlgHom
       (PowerSeries.HasSubst.X_pow (by norm_num : (2 : ℕ) ≠ 0)), map_sub,
@@ -99,7 +99,7 @@ chain rule yields `X·A'(X²) = A' − X`: the dyadic transform of the derivativ
 from the derivative itself — the triangular mechanism by which the second parameter jet
 exposes the spatial derivative of the first. -/
 theorem bottcherVelocity_deriv_transfer :
-    PowerSeries.X * subst (PowerSeries.X ^ 2) (d⁄dX ℂ bottcherVelocitySeries)
+    PowerSeries.X * subst (PowerSeries.X ^ (2 : ℕ)) (d⁄dX ℂ bottcherVelocitySeries)
       = d⁄dX ℂ bottcherVelocitySeries - PowerSeries.X := by
   have hC2 : PowerSeries.C (2 : ℂ) = (2 : ℂ⟦X⟧) := map_ofNat _ 2
   have h20 : (2 : ℂ⟦X⟧) ≠ 0 := by
@@ -114,12 +114,12 @@ theorem bottcherVelocity_deriv_transfer :
       = PowerSeries.C (2 : ℂ) * d⁄dX ℂ bottcherVelocitySeries := by
     rw [Derivation.leibniz, PowerSeries.derivative_C]
     simp [smul_eq_mul]
-  have hX2 : d⁄dX ℂ (PowerSeries.X ^ 2 : ℂ⟦X⟧) = 2 * PowerSeries.X := by
+  have hX2 : d⁄dX ℂ (PowerSeries.X ^ (2 : ℕ) : ℂ⟦X⟧) = 2 * PowerSeries.X := by
     rw [pow_two, Derivation.leibniz, PowerSeries.derivative_X]
     simp only [smul_eq_mul, mul_one]
     ring
   rw [hCA, hX2, hC2] at h
-  have h2 : (2 : ℂ⟦X⟧) * (PowerSeries.X * subst (PowerSeries.X ^ 2)
+  have h2 : (2 : ℂ⟦X⟧) * (PowerSeries.X * subst (PowerSeries.X ^ (2 : ℕ))
         (d⁄dX ℂ bottcherVelocitySeries))
       = 2 * (d⁄dX ℂ bottcherVelocitySeries - PowerSeries.X) := by
     linear_combination h

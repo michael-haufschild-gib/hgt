@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.KubalalikaLargeScale
 
 The hard cofactor endpoints cannot be replaced at the full ambient prime scale with the logarithmic
 rate required by the growing-marker argument.  We therefore stop the designated-prime ladder at
-`X / (log X)^20`.  This leaves only a polylogarithmic cofactor beside any omitted larger prime and
+`X / (log X)^(20 : ℕ)`.  This leaves only a polylogarithmic cofactor beside any omitted larger prime and
 puts the global ladder defect below a fixed negative power of `log X`.
 -/
 

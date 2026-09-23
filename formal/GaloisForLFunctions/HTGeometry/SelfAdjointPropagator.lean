@@ -82,11 +82,11 @@ theorem norm_apply_of_mem_unitary {U : 𝓗 →L[ℂ] 𝓗} (hU : U ∈ unitary 
     simpa [ContinuousLinearMap.star_eq_adjoint] using h2
   have hinner : (inner ℂ (U x) (U x) : ℂ) = inner ℂ x x := by
     rw [← ContinuousLinearMap.adjoint_inner_right U x (U x), hone]
-  have hsq : ‖U x‖ ^ 2 = ‖x‖ ^ 2 := by
+  have hsq : ‖U x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
     rw [InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ),
       InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ), hinner]
-  calc ‖U x‖ = Real.sqrt (‖U x‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
-    _ = Real.sqrt (‖x‖ ^ 2) := by rw [hsq]
+  calc ‖U x‖ = Real.sqrt (‖U x‖ ^ (2 : ℕ)) := (Real.sqrt_sq (norm_nonneg _)).symm
+    _ = Real.sqrt (‖x‖ ^ (2 : ℕ)) := by rw [hsq]
     _ = ‖x‖ := Real.sqrt_sq (norm_nonneg _)
 
 theorem norm_propagator_apply {H : 𝓗 →L[ℂ] 𝓗} (hH : IsSelfAdjoint H) (t : ℝ) (x : 𝓗) :

@@ -7,7 +7,7 @@ An arbitrary scalar shift `sigma` acts on the cubic transport `v H` by the first
 `(D + sigma)` faces.  There is a unique adaptive shift cancelling the affine velocity drift,
 `dv + sigma v = 0`.  That cancellation looks favorable, but its second face is exactly
 
-`v * (H'' - sigma^2 H)`.
+`v * (H'' - sigma^(2 : ℕ) H)`.
 
 Hence the physical chamber `v > 0`, `H < 0`, `H'' > 0` forces this face to be strictly positive.
 At the first-atom endpoint of the literal theta-cusp homotopy, all three signs are already proved.
@@ -43,7 +43,7 @@ def shiftedTransportTwo (d : C5LikelihoodAffineData) (l sigma : ℝ) : ℝ :=
     2 * sigma *
       (d.t * d.da * d.velocityCenter l +
         (d.t * d.jetOne l) * d.velocityCenterOne l) +
-    sigma ^ 2 * d.shiftedTransportZero l sigma
+    sigma ^ (2 : ℕ) * d.shiftedTransportZero l sigma
 
 /-- Third face of the scalar-shifted cubic transport. -/
 def shiftedTransportThree (d : C5LikelihoodAffineData) (l sigma : ℝ) : ℝ :=
@@ -51,10 +51,10 @@ def shiftedTransportThree (d : C5LikelihoodAffineData) (l sigma : ℝ) : ℝ :=
     3 * sigma *
       (2 * (d.t * d.da) * d.velocityCenterOne l +
         (d.t * d.jetOne l) * d.velocityCenterTwo) +
-    3 * sigma ^ 2 *
+    3 * sigma ^ (2 : ℕ) *
       (d.t * d.da * d.velocityCenter l +
         (d.t * d.jetOne l) * d.velocityCenterOne l) +
-    sigma ^ 3 * d.shiftedTransportZero l sigma
+    sigma ^ (3 : ℕ) * d.shiftedTransportZero l sigma
 
 /-- All-nonpositive shifted Bernstein faces through cubic order. -/
 def ShiftedTransportCone (d : C5LikelihoodAffineData) (l sigma : ℝ) : Prop :=
@@ -80,8 +80,8 @@ def velocityCancellationShift (d : C5LikelihoodAffineData) (l : ℝ) : ℝ :=
 private theorem shiftedTransportTwo_cancellation_algebra
     (v dv H H1 H2 sigma : ℝ) (hcancel : dv + sigma * v = 0) :
     2 * dv * H1 + v * H2 +
-        2 * sigma * (dv * H + v * H1) + sigma ^ 2 * (v * H) =
-      v * (H2 - sigma ^ 2 * H) := by
+        2 * sigma * (dv * H + v * H1) + sigma ^ (2 : ℕ) * (v * H) =
+      v * (H2 - sigma ^ (2 : ℕ) * H) := by
   have hdv : dv = -sigma * v := by linarith
   rw [hdv]
   ring
@@ -92,7 +92,7 @@ theorem shiftedTransportTwo_eq_of_velocityCancellation
     (hcancel : d.t * d.da + sigma * (d.t * d.jetOne l) = 0) :
     d.shiftedTransportTwo l sigma =
       (d.t * d.jetOne l) *
-        (d.velocityCenterTwo - sigma ^ 2 * d.velocityCenter l) := by
+        (d.velocityCenterTwo - sigma ^ (2 : ℕ) * d.velocityCenter l) := by
   unfold shiftedTransportTwo shiftedTransportZero
   exact shiftedTransportTwo_cancellation_algebra
     (d.t * d.jetOne l) (d.t * d.da) (d.velocityCenter l)
@@ -106,7 +106,7 @@ theorem shiftedTransportTwo_pos_of_velocityCancellation
     (hcancel : d.t * d.da + sigma * (d.t * d.jetOne l) = 0) :
     0 < d.shiftedTransportTwo l sigma := by
   rw [d.shiftedTransportTwo_eq_of_velocityCancellation l sigma hcancel]
-  have hsH : sigma ^ 2 * d.velocityCenter l ≤ 0 :=
+  have hsH : sigma ^ (2 : ℕ) * d.velocityCenter l ≤ 0 :=
     mul_nonpos_of_nonneg_of_nonpos (sq_nonneg sigma) hH.le
   exact mul_pos hv (sub_pos.mpr (lt_of_le_of_lt hsH hHtwo))
 

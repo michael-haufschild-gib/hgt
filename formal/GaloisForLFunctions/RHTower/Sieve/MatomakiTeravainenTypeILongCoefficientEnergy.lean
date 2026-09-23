@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardFixedDivisorMoment
 /-!
 # Divisor-bounded energy for the Type-I long factor
 
-The literal coefficient hypothesis from Proposition 2.2 bounds the exact dyadic `ell^2` energy
+The literal coefficient hypothesis from Proposition 2.2 bounds the exact dyadic `ell^(2 : ℕ)` energy
 in the long fourth-moment receiver.  A fixed divisor moment supplies a polylogarithmic loss, with
 no pointwise positive power of the height.
 -/

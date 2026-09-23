@@ -765,7 +765,7 @@ theorem integral_stdGaussian_realLinearHamiltonianKrylovIncidenceAction
     (hpolar : MeasureTheory.Integrable
       (fun p : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 × Set.Ioi (0 : ℝ) =>
         ((Real.sqrt (2 * Real.pi))⁻¹ ^ m *
-          Real.exp (-p.2.1 ^ 2 / 2)) •
+          Real.exp (-p.2.1 ^ (2 : ℕ) / 2)) •
           realLinearHamiltonianKrylovIncidenceAction
             A ψ K r target (p.2.1 • p.1.1) t)
       ((MeasureTheory.volume : MeasureTheory.Measure

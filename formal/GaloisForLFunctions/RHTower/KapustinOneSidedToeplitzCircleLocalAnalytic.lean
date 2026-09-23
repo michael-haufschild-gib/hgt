@@ -42,7 +42,7 @@ theorem exists_localAnalytic_kapustinOneSidedToeplitzCircleSymbol_with_square (x
         dist (z : ℂ) (circleCayley x₀ : ℂ) < 2 * r →
           kapustinOneSidedToeplitzCircleSymbol z = L z) (ae circleLebesgue) ∧
       ∀ᶠ z in nhds (circleCayley x₀ : ℂ),
-        L z ^ 2 = kapustinOneSidedToeplitzCircleAnalyticSquare z := by
+        L z ^ (2 : ℕ) = kapustinOneSidedToeplitzCircleAnalyticSquare z := by
   obtain ⟨h, hhMeas, hhAnalytic, _hh₀, hhTrace, hhSquare⟩ :=
     exists_measurable_analyticAt_eventuallyEq_kapustinOneSidedToeplitzSymbol_with_square x₀
   let z₀ : ℂ := (circleCayley x₀ : ℂ)
@@ -144,7 +144,7 @@ theorem exists_localAnalytic_kapustinOneSidedToeplitzCircleSymbol_with_square (x
     rw [← hinv₀]
     exact hInvContinuous
   have hLsq : ∀ᶠ z in nhds z₀,
-      L z ^ 2 = kapustinOneSidedToeplitzCircleAnalyticSquare z := by
+      L z ^ (2 : ℕ) = kapustinOneSidedToeplitzCircleAnalyticSquare z := by
     exact hInvTendsto.eventually hhSquare
   refine ⟨L, r, hLMeas, hr, ?_, ?_, ?_⟩
   · simpa [z₀] using hLAnalytic

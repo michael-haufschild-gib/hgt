@@ -36,16 +36,16 @@ bounded by `C` times the sampled energy, then the sampled energy is at most `C` 
 energy.  Cauchy–Schwarz, then cancel one factor. -/
 theorem sampled_energy_le_of_dual_bound {M : ι → κ → ℂ} {a : κ → ℂ} {b : ι → ℂ} {C : ℝ}
     (hb : ∀ r, b r = ∑ n, a n * M r n) (hC : 0 ≤ C)
-    (hdual : ∑ n, ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖ ^ 2
-      ≤ C * ∑ r, ‖b r‖ ^ 2) :
-    ∑ r, ‖b r‖ ^ 2 ≤ C * ∑ n, ‖a n‖ ^ 2 := by
+    (hdual : ∑ n, ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖ ^ (2 : ℕ)
+      ≤ C * ∑ r, ‖b r‖ ^ (2 : ℕ)) :
+    ∑ r, ‖b r‖ ^ (2 : ℕ) ≤ C * ∑ n, ‖a n‖ ^ (2 : ℕ) := by
   classical
-  set E : ℝ := ∑ r, ‖b r‖ ^ 2 with hE
-  set A : ℝ := ∑ n, ‖a n‖ ^ 2 with hA
+  set E : ℝ := ∑ r, ‖b r‖ ^ (2 : ℕ) with hE
+  set A : ℝ := ∑ n, ‖a n‖ ^ (2 : ℕ) with hA
   have hEnn : 0 ≤ E := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hAnn : 0 ≤ A := Finset.sum_nonneg fun _ _ => sq_nonneg _
   -- the pairing identity
-  have hconj : ∀ z : ℂ, (starRingEnd ℂ) z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+  have hconj : ∀ z : ℂ, (starRingEnd ℂ) z * z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro z
     rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   have hpair : (E : ℂ) = ∑ n, a n * ∑ r, (starRingEnd ℂ) (b r) * M r n := by
@@ -63,22 +63,22 @@ theorem sampled_energy_le_of_dual_bound {M : ι → κ → ℂ} {a : κ → ℂ}
             ring
     rw [hswap]
     have : ∀ r : ι, (starRingEnd ℂ) (b r) * ∑ n, a n * M r n
-        = ((‖b r‖ ^ 2 : ℝ) : ℂ) := by
+        = ((‖b r‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       intro r
       rw [← hb r, hconj]
     rw [Finset.sum_congr rfl fun r _ => this r, hE]
     push_cast
     rfl
   -- Cauchy–Schwarz on the pairing
-  have hcs : E ^ 2 ≤ A * (∑ n, ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖ ^ 2) := by
+  have hcs : E ^ (2 : ℕ) ≤ A * (∑ n, ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖ ^ (2 : ℕ)) := by
     have habs : E = ‖(E : ℂ)‖ := by
       rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hEnn]
     have hle : ‖(E : ℂ)‖ ≤ ∑ n, ‖a n‖ * ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖ := by
       rw [hpair]
       refine le_trans (norm_sum_le _ _) (le_of_eq ?_)
       exact Finset.sum_congr rfl fun n _ => norm_mul _ _
-    have hcs' : (∑ n, ‖a n‖ * ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖) ^ 2
-        ≤ A * ∑ n, ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖ ^ 2 := by
+    have hcs' : (∑ n, ‖a n‖ * ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖) ^ (2 : ℕ)
+        ≤ A * ∑ n, ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖ ^ (2 : ℕ) := by
       simpa [hA] using
         Finset.sum_mul_sq_le_sq_mul_sq (univ : Finset κ)
           (fun n => ‖a n‖) (fun n => ‖∑ r, (starRingEnd ℂ) (b r) * M r n‖)
@@ -89,7 +89,7 @@ theorem sampled_energy_le_of_dual_bound {M : ι → κ → ℂ} {a : κ → ℂ}
   -- combine with the dual bound and cancel
   rcases eq_or_lt_of_le hEnn with hzero | hpos
   · rw [← hzero]; positivity
-  · have h1 : E ^ 2 ≤ A * (C * E) := le_trans hcs (by nlinarith [hdual, hAnn])
+  · have h1 : E ^ (2 : ℕ) ≤ A * (C * E) := le_trans hcs (by nlinarith [hdual, hAnn])
     nlinarith [h1, hpos]
 
 
@@ -98,14 +98,14 @@ theorem sampled_energy_le_of_dual_bound {M : ι → κ → ℂ} {a : κ → ℂ}
 /-- **Expansion of the dual sum.**  The dual energy is the sampling Gram form: diagonal plus
 off-diagonal, with entries the correlation sums `∑ₙ M(r,n)·conj M(s,n)`. -/
 theorem dual_sum_expand {M : ι → κ → ℂ} (c : ι → ℂ) :
-    ∑ n, ‖∑ r, c r * M r n‖ ^ 2
+    ∑ n, ‖∑ r, c r * M r n‖ ^ (2 : ℕ)
       = ∑ r, ∑ s, (c r * (starRingEnd ℂ) (c s) *
           ∑ n, M r n * (starRingEnd ℂ) (M s n)).re := by
   classical
-  have hstep : ∀ n : κ, ‖∑ r, c r * M r n‖ ^ 2
+  have hstep : ∀ n : κ, ‖∑ r, c r * M r n‖ ^ (2 : ℕ)
       = ∑ r, ∑ s, (c r * (starRingEnd ℂ) (c s) * (M r n * (starRingEnd ℂ) (M s n))).re := by
     intro n
-    have hz : ‖∑ r, c r * M r n‖ ^ 2
+    have hz : ‖∑ r, c r * M r n‖ ^ (2 : ℕ)
         = ((∑ r, c r * M r n) * (starRingEnd ℂ) (∑ r, c r * M r n)).re := by
       rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
       norm_cast
@@ -157,7 +157,7 @@ theorem sampled_energy_le_of_correlation_bounds [DecidableEq ι]
     (hdiag : ∀ r, ‖∑ n, M r n * (starRingEnd ℂ) (M r n)‖ ≤ D)
     (hoff : ∀ r s, r ≠ s → ‖∑ n, M r n * (starRingEnd ℂ) (M s n)‖ ≤ M₀ * sepKernel t r s)
     (hrow : ∀ r, ∑ s, sepKernel t r s ≤ H) :
-    ∑ r, ‖b r‖ ^ 2 ≤ (D + M₀ * H) * ∑ n, ‖a n‖ ^ 2 := by
+    ∑ r, ‖b r‖ ^ (2 : ℕ) ≤ (D + M₀ * H) * ∑ n, ‖a n‖ ^ (2 : ℕ) := by
   classical
   refine sampled_energy_le_of_dual_bound hb (by positivity) ?_
   set c : ι → ℂ := fun r => (starRingEnd ℂ) (b r) with hc
@@ -166,7 +166,7 @@ theorem sampled_energy_le_of_correlation_bounds [DecidableEq ι]
   -- termwise domination
   have hterm : ∀ r s : ι,
       (c r * (starRingEnd ℂ) (c s) * ∑ n, M r n * (starRingEnd ℂ) (M s n)).re
-        ≤ (if r = s then D * ‖b r‖ ^ 2 else 0)
+        ≤ (if r = s then D * ‖b r‖ ^ (2 : ℕ) else 0)
           + M₀ * (‖b r‖ * ‖b s‖ * sepKernel t r s) := by
     intro r s
     by_cases hrs : r = s
@@ -186,16 +186,16 @@ theorem sampled_energy_le_of_correlation_bounds [DecidableEq ι]
             rw [hcn r, hcn s]; ring
   have hsum : ∑ r, ∑ s, (c r * (starRingEnd ℂ) (c s) *
         ∑ n, M r n * (starRingEnd ℂ) (M s n)).re
-      ≤ ∑ r, ∑ s, ((if r = s then D * ‖b r‖ ^ 2 else 0)
+      ≤ ∑ r, ∑ s, ((if r = s then D * ‖b r‖ ^ (2 : ℕ) else 0)
           + M₀ * (‖b r‖ * ‖b s‖ * sepKernel t r s)) :=
     Finset.sum_le_sum fun r _ => Finset.sum_le_sum fun s _ => hterm r s
-  have hdiagSum : ∑ r, ∑ s, (if r = s then D * ‖b r‖ ^ 2 else 0)
-      = D * ∑ r, ‖b r‖ ^ 2 := by
+  have hdiagSum : ∑ r, ∑ s, (if r = s then D * ‖b r‖ ^ (2 : ℕ) else 0)
+      = D * ∑ r, ‖b r‖ ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
     simp
   have hoffSum : ∑ r, ∑ s, M₀ * (‖b r‖ * ‖b s‖ * sepKernel t r s)
-      ≤ M₀ * (H * ∑ r, ‖b r‖ ^ 2) := by
+      ≤ M₀ * (H * ∑ r, ‖b r‖ ^ (2 : ℕ)) := by
     have hbase := sampling_offDiagonal_le (t := t) (b := fun r => ‖b r‖) hrow
     have habs : ∀ r, |‖b r‖| = ‖b r‖ := fun r => abs_of_nonneg (norm_nonneg _)
     simp only [habs] at hbase
@@ -204,10 +204,10 @@ theorem sampled_energy_le_of_correlation_bounds [DecidableEq ι]
           rw [Finset.mul_sum]
           refine Finset.sum_congr rfl fun r _ => ?_
           rw [Finset.mul_sum]
-      _ ≤ M₀ * (H * ∑ r, ‖b r‖ ^ 2) := mul_le_mul_of_nonneg_left hbase hM₀
-  have hsplit : ∑ r, ∑ s, ((if r = s then D * ‖b r‖ ^ 2 else 0)
+      _ ≤ M₀ * (H * ∑ r, ‖b r‖ ^ (2 : ℕ)) := mul_le_mul_of_nonneg_left hbase hM₀
+  have hsplit : ∑ r, ∑ s, ((if r = s then D * ‖b r‖ ^ (2 : ℕ) else 0)
         + M₀ * (‖b r‖ * ‖b s‖ * sepKernel t r s))
-      = (∑ r, ∑ s, (if r = s then D * ‖b r‖ ^ 2 else 0))
+      = (∑ r, ∑ s, (if r = s then D * ‖b r‖ ^ (2 : ℕ) else 0))
         + ∑ r, ∑ s, M₀ * (‖b r‖ * ‖b s‖ * sepKernel t r s) := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun r _ => ?_
@@ -231,9 +231,9 @@ theorem dual_sum_le_via_energy {Dt : Type*} [DecidableEq Dt]
     (hB : ∀ r, ‖c r‖ ≤ B) (hB0 : 0 ≤ B) (hf : ∀ x, 0 ≤ f x)
     (hmem : ∀ p : ι × ι, d p.1 p.2 ∈ S)
     (hcorr : ∀ r s, ‖∑ n, M r n * (starRingEnd ℂ) (M s n)‖ ≤ f (d r s)) :
-    ∑ n, ‖∑ r, c r * M r n‖ ^ 2
-      ≤ B ^ 2 * (Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ 2)
-          * Real.sqrt (∑ x ∈ S, f x ^ 2)) := by
+    ∑ n, ‖∑ r, c r * M r n‖ ^ (2 : ℕ)
+      ≤ B ^ (2 : ℕ) * (Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ))
+          * Real.sqrt (∑ x ∈ S, f x ^ (2 : ℕ))) := by
   classical
   rw [dual_sum_expand (M := M) c]
   -- each Gram entry is at most the weights times the correlation bound
@@ -255,11 +255,11 @@ theorem dual_sum_le_via_energy {Dt : Type*} [DecidableEq Dt]
     _ = ∑ p : ι × ι, |‖c p.1‖| * |‖c p.2‖| * f (d p.1 p.2) := by
         refine Finset.sum_congr rfl fun p _ => ?_
         rw [habs p.1, habs p.2]
-    _ ≤ B ^ 2 * ∑ p : ι × ι, f (d p.1 p.2) :=
+    _ ≤ B ^ (2 : ℕ) * ∑ p : ι × ι, f (d p.1 p.2) :=
         weighted_pairs_le_of_bounded (b := fun r => ‖c r‖) d f
           (fun r => by rw [habs r]; exact hB r) hB0 hf
-    _ ≤ B ^ 2 * (Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ 2)
-          * Real.sqrt (∑ x ∈ S, f x ^ 2)) := by
+    _ ≤ B ^ (2 : ℕ) * (Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ))
+          * Real.sqrt (∑ x ∈ S, f x ^ (2 : ℕ))) := by
         refine mul_le_mul_of_nonneg_left (sum_pairs_le_sqrt_energy d f S hmem) (by positivity)
 
 

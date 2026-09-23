@@ -45,11 +45,11 @@ theorem abs_le_of_bandTransform_eigen_explicit {c lam : ℝ} (hlam : lam ≠ 0) 
 
 /-- Rescaling a square mass from the Hermite scale to the unit window. -/
 theorem integral_sq_rescale {c : ℝ} (hc : 0 < c) (v : ℝ → ℝ) :
-    (∫ y in (-1 : ℝ)..1, v (Real.sqrt c * y) ^ 2)
-      = (Real.sqrt c)⁻¹ * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), v ξ ^ 2 := by
+    (∫ y in (-1 : ℝ)..1, v (Real.sqrt c * y) ^ (2 : ℕ))
+      = (Real.sqrt c)⁻¹ * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), v ξ ^ (2 : ℕ) := by
   have hs : Real.sqrt c ≠ 0 := Real.sqrt_ne_zero'.mpr hc
   have h := intervalIntegral.integral_comp_mul_left (a := (-1 : ℝ)) (b := 1)
-    (c := Real.sqrt c) (fun ξ : ℝ => v ξ ^ 2) hs
+    (c := Real.sqrt c) (fun ξ : ℝ => v ξ ^ (2 : ℕ)) hs
   rw [h]
   simp [smul_eq_mul, mul_neg, mul_one]
 
@@ -57,38 +57,38 @@ theorem integral_sq_rescale {c : ℝ} (hc : 0 < c) (v : ℝ → ℝ) :
 balanced scale `t` turns a square-mass bound into an absolute-mass bound with the square root of the
 same size. -/
 theorem integral_abs_le_of_integral_sq_le {w : ℝ → ℝ} {S t : ℝ} (ht : 0 < t)
-    (hw : Continuous w) (hS : (∫ y in (-1 : ℝ)..1, w y ^ 2) ≤ S) :
+    (hw : Continuous w) (hS : (∫ y in (-1 : ℝ)..1, w y ^ (2 : ℕ)) ≤ S) :
     (∫ y in (-1 : ℝ)..1, |w y|) ≤ t + S / (2 * t) := by
   have hint1 : IntervalIntegrable (fun y : ℝ => |w y|) volume (-1) 1 :=
     hw.abs.intervalIntegrable _ _
-  have hcw : Continuous fun y : ℝ => w y ^ 2 / (2 * t) := by fun_prop
-  have hint2 : IntervalIntegrable (fun y : ℝ => t / 2 + w y ^ 2 / (2 * t)) volume (-1) 1 :=
+  have hcw : Continuous fun y : ℝ => w y ^ (2 : ℕ) / (2 * t) := by fun_prop
+  have hint2 : IntervalIntegrable (fun y : ℝ => t / 2 + w y ^ (2 : ℕ) / (2 * t)) volume (-1) 1 :=
     (continuous_const.add hcw).intervalIntegrable _ _
-  have hpt : ∀ y : ℝ, |w y| ≤ t / 2 + w y ^ 2 / (2 * t) := by
+  have hpt : ∀ y : ℝ, |w y| ≤ t / 2 + w y ^ (2 : ℕ) / (2 * t) := by
     intro y
-    have hsq : (0 : ℝ) ≤ |w y| ^ 2 - 2 * |w y| * t + t ^ 2 := by
+    have hsq : (0 : ℝ) ≤ |w y| ^ (2 : ℕ) - 2 * |w y| * t + t ^ (2 : ℕ) := by
       have h := sq_nonneg (|w y| - t)
       nlinarith [h]
-    have habs : |w y| ^ 2 = w y ^ 2 := sq_abs _
-    have hkey : |w y| * (2 * t) ≤ (t / 2 + w y ^ 2 / (2 * t)) * (2 * t) := by
-      have hexp : (t / 2 + w y ^ 2 / (2 * t)) * (2 * t) = t ^ 2 + w y ^ 2 := by
+    have habs : |w y| ^ (2 : ℕ) = w y ^ (2 : ℕ) := sq_abs _
+    have hkey : |w y| * (2 * t) ≤ (t / 2 + w y ^ (2 : ℕ) / (2 * t)) * (2 * t) := by
+      have hexp : (t / 2 + w y ^ (2 : ℕ) / (2 * t)) * (2 * t) = t ^ (2 : ℕ) + w y ^ (2 : ℕ) := by
         field_simp
       rw [hexp]
       nlinarith [hsq, habs]
     exact le_of_mul_le_mul_right hkey (by positivity)
   have hmono : (∫ y in (-1 : ℝ)..1, |w y|)
-      ≤ ∫ y in (-1 : ℝ)..1, (t / 2 + w y ^ 2 / (2 * t)) :=
+      ≤ ∫ y in (-1 : ℝ)..1, (t / 2 + w y ^ (2 : ℕ) / (2 * t)) :=
     intervalIntegral.integral_mono_on (by norm_num) hint1 hint2 fun y _ => hpt y
-  have hcompute : (∫ y in (-1 : ℝ)..1, (t / 2 + w y ^ 2 / (2 * t)))
-      = t + (∫ y in (-1 : ℝ)..1, w y ^ 2) / (2 * t) := by
+  have hcompute : (∫ y in (-1 : ℝ)..1, (t / 2 + w y ^ (2 : ℕ) / (2 * t)))
+      = t + (∫ y in (-1 : ℝ)..1, w y ^ (2 : ℕ)) / (2 * t) := by
     have hadd := intervalIntegral.integral_add (a := (-1 : ℝ)) (b := 1)
-      (f := fun _ : ℝ => t / 2) (g := fun y : ℝ => w y ^ 2 / (2 * t))
+      (f := fun _ : ℝ => t / 2) (g := fun y : ℝ => w y ^ (2 : ℕ) / (2 * t))
       (intervalIntegrable_const (μ := volume)) (hcw.intervalIntegrable _ _)
     rw [hadd, intervalIntegral.integral_const, intervalIntegral.integral_div]
     simp
     ring
   rw [hcompute] at hmono
-  have hstep : (∫ y in (-1 : ℝ)..1, w y ^ 2) / (2 * t) ≤ S / (2 * t) := by
+  have hstep : (∫ y in (-1 : ℝ)..1, w y ^ (2 : ℕ)) / (2 * t) ≤ S / (2 * t) := by
     gcongr
   linarith
 
@@ -98,31 +98,31 @@ square mass forces the band eigenfunction's sup norm below `|lam|⁻¹ (c/π)(1+
 rescaled profile grows at most like `c^{3/4}`. -/
 theorem abs_le_of_rescaled_mass_le {c lam N : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
     {Φ : ℝ → ℝ} (hΦ : Continuous Φ) (hband : ∀ x : ℝ, bandTransform c Φ x = lam * Φ x)
-    (hmass : (∫ ξ in (-Real.sqrt c)..(Real.sqrt c), prolateHermiteRescale c Φ ξ ^ 2) ≤ N)
+    (hmass : (∫ ξ in (-Real.sqrt c)..(Real.sqrt c), prolateHermiteRescale c Φ ξ ^ (2 : ℕ)) ≤ N)
     (x : ℝ) :
     |Φ x| ≤ |lam|⁻¹ * (c / Real.pi * ((1 + N / 2) / Real.sqrt (Real.sqrt c))) := by
   have hs : (0 : ℝ) < Real.sqrt c := Real.sqrt_pos.2 hc
   have hq : (0 : ℝ) < Real.sqrt (Real.sqrt c) := Real.sqrt_pos.2 hs
-  have hqsq : Real.sqrt (Real.sqrt c) ^ 2 = Real.sqrt c := Real.sq_sqrt hs.le
+  have hqsq : Real.sqrt (Real.sqrt c) ^ (2 : ℕ) = Real.sqrt c := Real.sq_sqrt hs.le
   set q : ℝ := Real.sqrt (Real.sqrt c) with hqdef
   -- the unit-window square mass is the rescaled one, divided by `√c`
   have hpt : ∀ y : ℝ, prolateHermiteRescale c Φ (Real.sqrt c * y) = Φ y := by
     intro y
     exact congrFun (prolateHermiteRescale_sqrtScale hc Φ) y
-  have hrescale : (∫ y in (-1 : ℝ)..1, Φ y ^ 2)
+  have hrescale : (∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ))
       = (Real.sqrt c)⁻¹ * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
-          prolateHermiteRescale c Φ ξ ^ 2 := by
+          prolateHermiteRescale c Φ ξ ^ (2 : ℕ) := by
     rw [← integral_sq_rescale hc (prolateHermiteRescale c Φ)]
     exact intervalIntegral.integral_congr fun y _ => by rw [hpt y]
-  have hsqmass : (∫ y in (-1 : ℝ)..1, Φ y ^ 2) ≤ N / q ^ 2 := by
+  have hsqmass : (∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ)) ≤ N / q ^ (2 : ℕ) := by
     rw [hrescale, hqsq]
     rw [inv_mul_eq_div, div_le_div_iff₀ hs hs]
     nlinarith [hmass, hs]
   -- the absolute mass, at the balanced scale
   have habsmass : (∫ y in (-1 : ℝ)..1, |Φ y|) ≤ (1 + N / 2) / q := by
-    have h := integral_abs_le_of_integral_sq_le (w := Φ) (S := N / q ^ 2) (t := q⁻¹)
+    have h := integral_abs_le_of_integral_sq_le (w := Φ) (S := N / q ^ (2 : ℕ)) (t := q⁻¹)
       (by positivity) hΦ hsqmass
-    have hid : q⁻¹ + N / q ^ 2 / (2 * q⁻¹) = (1 + N / 2) / q := by
+    have hid : q⁻¹ + N / q ^ (2 : ℕ) / (2 * q⁻¹) = (1 + N / 2) / q := by
       field_simp
     rwa [hid] at h
   -- combine with the kernel bound

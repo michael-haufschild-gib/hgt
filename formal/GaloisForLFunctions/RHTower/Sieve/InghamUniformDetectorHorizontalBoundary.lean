@@ -18,7 +18,7 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
         (∀ x ∈ Icc (inghamUniformGabrielCenter sigma) 4,
           inghamDetector X ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) ∧
         inghamClassicalHorizontalBoundary X (inghamUniformGabrielCenter sigma) 4 T₁ T₂ ≤
-          K * (1 + Real.log X) ^ 2 := by
+          K * (1 + Real.log X) ^ (2 : ℕ) := by
   have hcenter699 : (699 / 1000 : ℝ) ≤ inghamUniformGabrielCenter sigma := by
     unfold inghamUniformGabrielCenter
     nlinarith
@@ -29,7 +29,7 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
     exists_inghamDetector_two_horizontal_edges_polylog
   let B : ℝ := K0 + 2
   let W : ℝ := 4 - inghamUniformGabrielCenter sigma
-  let K : ℝ := 2 * W ^ 2 * B
+  let K : ℝ := 2 * W ^ (2 : ℕ) * B
   have hB : 0 ≤ B := by dsimp only [B]; linarith
   have hW : 0 ≤ W := by dsimp only [W]; linarith
   have hK : 0 ≤ K := by dsimp only [K]; positivity
@@ -43,7 +43,7 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
     dsimp only [u]
     have := Real.log_nonneg hX1
     linarith
-  have huSq1 : 1 ≤ u ^ 2 := by nlinarith
+  have huSq1 : 1 ≤ u ^ (2 : ℕ) := by nlinarith
   have hT₁abs : 1 ≤ |T₁| := by
     rw [abs_of_nonpos (by linarith [hT₁.2, hXR])]
     linarith [hT₁.2]
@@ -52,7 +52,7 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
     linarith [hT₂.1]
   have hclassical₁ : ∀ x ∈ Icc (inghamUniformGabrielCenter sigma) 4,
       ‖logDeriv (inghamClassicalDetector X) ((x : ℂ) + (T₁ : ℂ) * I)‖ ≤
-        B * u ^ 2 := by
+        B * u ^ (2 : ℕ) := by
     intro x hx
     have hx' : x ∈ Icc (699 / 1000 : ℝ) 4 := by
       exact ⟨hcenter699.trans hx.1, hx.2⟩
@@ -67,19 +67,19 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
       linarith
     have htransfer := norm_logDeriv_inghamClassicalDetector_le
       X hs1 (by simpa only [s] using hH) (by rw [hsIm]; exact hT₁abs)
-    have hdet' : ‖logDeriv (inghamDetector X) s‖ ≤ K0 * u ^ 2 := by
+    have hdet' : ‖logDeriv (inghamDetector X) s‖ ≤ K0 * u ^ (2 : ℕ) := by
       simpa only [s, u] using hdet
     calc
       ‖logDeriv (inghamClassicalDetector X) s‖ ≤
           ‖logDeriv (inghamDetector X) s‖ + 2 := htransfer
-      _ ≤ K0 * u ^ 2 + 2 := by
+      _ ≤ K0 * u ^ (2 : ℕ) + 2 := by
         exact add_le_add hdet' (le_refl 2)
-      _ ≤ B * u ^ 2 := by
+      _ ≤ B * u ^ (2 : ℕ) := by
         dsimp only [B]
         nlinarith
   have hclassical₂ : ∀ x ∈ Icc (inghamUniformGabrielCenter sigma) 4,
       ‖logDeriv (inghamClassicalDetector X) ((x : ℂ) + (T₂ : ℂ) * I)‖ ≤
-        B * u ^ 2 := by
+        B * u ^ (2 : ℕ) := by
     intro x hx
     have hx' : x ∈ Icc (699 / 1000 : ℝ) 4 := by
       exact ⟨hcenter699.trans hx.1, hx.2⟩
@@ -94,17 +94,17 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
       linarith
     have htransfer := norm_logDeriv_inghamClassicalDetector_le
       X hs1 (by simpa only [s] using hH) (by rw [hsIm]; exact hT₂abs)
-    have hdet' : ‖logDeriv (inghamDetector X) s‖ ≤ K0 * u ^ 2 := by
+    have hdet' : ‖logDeriv (inghamDetector X) s‖ ≤ K0 * u ^ (2 : ℕ) := by
       simpa only [s, u] using hdet
     calc
       ‖logDeriv (inghamClassicalDetector X) s‖ ≤
           ‖logDeriv (inghamDetector X) s‖ + 2 := htransfer
-      _ ≤ K0 * u ^ 2 + 2 := by
+      _ ≤ K0 * u ^ (2 : ℕ) + 2 := by
         exact add_le_add hdet' (le_refl 2)
-      _ ≤ B * u ^ 2 := by
+      _ ≤ B * u ^ (2 : ℕ) := by
         dsimp only [B]
         nlinarith
-  let M : ℝ := W * (B * u ^ 2)
+  let M : ℝ := W * (B * u ^ (2 : ℕ))
   have hpoint₁ : ∀ x ∈ Set.uIoc (inghamUniformGabrielCenter sigma) 4,
       ‖(x - inghamUniformGabrielCenter sigma) *
         (logDeriv (inghamClassicalDetector X)
@@ -123,7 +123,7 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
             ‖logDeriv (inghamClassicalDetector X)
               ((x : ℂ) + (T₁ : ℂ) * I)‖ :=
         mul_le_mul_of_nonneg_left himle (sub_nonneg.mpr hxIcc.1)
-      _ ≤ W * (B * u ^ 2) := by
+      _ ≤ W * (B * u ^ (2 : ℕ)) := by
         apply mul_le_mul (by dsimp only [W]; linarith [hxIcc.2])
           (hclassical₁ x hxIcc) (norm_nonneg _) hW
       _ = M := rfl
@@ -145,7 +145,7 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
             ‖logDeriv (inghamClassicalDetector X)
               ((x : ℂ) + (T₂ : ℂ) * I)‖ :=
         mul_le_mul_of_nonneg_left himle (sub_nonneg.mpr hxIcc.1)
-      _ ≤ W * (B * u ^ 2) := by
+      _ ≤ W * (B * u ^ (2 : ℕ)) := by
         apply mul_le_mul (by dsimp only [W]; linarith [hxIcc.2])
           (hclassical₂ x hxIcc) (norm_nonneg _) hW
       _ = M := rfl
@@ -183,7 +183,7 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
   let I₂ : ℝ := ∫ x in (inghamUniformGabrielCenter sigma)..4,
       (x - inghamUniformGabrielCenter sigma) *
         (logDeriv (inghamClassicalDetector X) ((x : ℂ) + (T₂ : ℂ) * I)).im
-  change I₁ - I₂ ≤ K * u ^ 2
+  change I₁ - I₂ ≤ K * u ^ (2 : ℕ)
   have hdiff : I₁ - I₂ ≤ ‖I₁ - I₂‖ := by
     rw [Real.norm_eq_abs]
     exact le_abs_self _
@@ -194,7 +194,7 @@ theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
     I₁ - I₂ ≤ ‖I₁ - I₂‖ := hdiff
     _ ≤ ‖I₁‖ + ‖I₂‖ := htri
     _ ≤ M * W + M * W := add_le_add hI₁ hI₂
-    _ = K * u ^ 2 := by dsimp only [M, K]; ring
+    _ = K * u ^ (2 : ℕ) := by dsimp only [M, K]; ring
 
 
 end

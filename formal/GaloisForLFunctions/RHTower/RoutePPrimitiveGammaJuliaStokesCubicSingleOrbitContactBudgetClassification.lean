@@ -35,8 +35,8 @@ noncomputable def routePPrimitiveGammaJuliaStokesSingleOrbitUnitCoefficient
     {p : ℕ} {m K N : Fin (p + 1) → ℕ}
     (genus : ℕ) (d : LocalData p (fun _ => 1) m K N) : ℝ :=
   fusionCoefficient genus (p + 1) +
-    ∑ a, (1 + (m a : ℝ) ^ 2 -
-      routePPrimitiveGammaJuliaStokesSingleOrbitContactBudget (d a)) / (m a : ℝ) ^ 2
+    ∑ a, (1 + (m a : ℝ) ^ (2 : ℕ) -
+      routePPrimitiveGammaJuliaStokesSingleOrbitContactBudget (d a)) / (m a : ℝ) ^ (2 : ℕ)
 
 private theorem singleOrbit_branchCount_pos
     {m K N : ℕ} (d : PuiseuxOrbitCoareaDatum 1 m K N) :
@@ -58,8 +58,8 @@ private theorem singleOrbit_localRank_eq_branchCount_mul
 private theorem singleOrbit_localWittForm_eq_contactBudget
     {m K N : ℕ} (d : PuiseuxOrbitCoareaDatum 1 m K N) (x : Fin 1 → ℝ) :
     localWittForm d x =
-      (1 + (m : ℝ) ^ 2 -
-        routePPrimitiveGammaJuliaStokesSingleOrbitContactBudget d) * x 0 ^ 2 := by
+      (1 + (m : ℝ) ^ (2 : ℕ) -
+        routePPrimitiveGammaJuliaStokesSingleOrbitContactBudget d) * x 0 ^ (2 : ℕ) := by
   have horbit : ∀ i : Fin m, d.toOrbitCoareaDatum.orbit i = 0 := by
     intro i
     change d.orbit i = 0
@@ -71,7 +71,7 @@ private theorem singleOrbit_localWittForm_eq_contactBudget
     change d.branches.canonicalCuts.contact i j = _
     exact d.branches.canonicalCuts_contact_eq i j
   have hpair : d.toOrbitCoareaDatum.contactPairing x =
-      routePPrimitiveGammaJuliaStokesSingleOrbitContactBudget d * x 0 ^ 2 := by
+      routePPrimitiveGammaJuliaStokesSingleOrbitContactBudget d * x 0 ^ (2 : ℕ) := by
     simp only [OrbitCoareaDatum.contactPairing, OrbitCoareaDatum.liftCharge, horbit,
       hcontact, routePPrimitiveGammaJuliaStokesSingleOrbitContactBudget]
     rw [Finset.sum_mul]
@@ -95,7 +95,7 @@ theorem routePPrimitiveGammaJuliaStokesSingleOrbitUnitWittForm_contactBudgetLaw
     (x : compatibleCharges d) :
     globalReesWittForm genus d (fun _ _ => 1) x =
       routePPrimitiveGammaJuliaStokesSingleOrbitUnitCoefficient genus d *
-        commonRankLinear d x ^ 2 := by
+        commonRankLinear d x ^ (2 : ℕ) := by
   have hmpos : ∀ a, 0 < m a := fun a => singleOrbit_branchCount_pos (d a)
   have hmne : ∀ a, (m a : ℝ) ≠ 0 := by
     intro a
@@ -107,12 +107,12 @@ theorem routePPrimitiveGammaJuliaStokesSingleOrbitUnitWittForm_contactBudgetLaw
     rw [← hrank]
     field_simp [hmne a]
   have hlocal : ∀ a,
-      (1 + (m a : ℝ) ^ 2 -
+      (1 + (m a : ℝ) ^ (2 : ℕ) -
           routePPrimitiveGammaJuliaStokesSingleOrbitContactBudget (d a)) *
-          (commonRankLinear d x / (m a : ℝ)) ^ 2 =
-        ((1 + (m a : ℝ) ^ 2 -
+          (commonRankLinear d x / (m a : ℝ)) ^ (2 : ℕ) =
+        ((1 + (m a : ℝ) ^ (2 : ℕ) -
           routePPrimitiveGammaJuliaStokesSingleOrbitContactBudget (d a)) /
-            (m a : ℝ) ^ 2) * commonRankLinear d x ^ 2 := by
+            (m a : ℝ) ^ (2 : ℕ)) * commonRankLinear d x ^ (2 : ℕ) := by
     intro a
     field_simp [hmne a]
   rw [globalReesWittForm_one, globalWittForm, QuadraticMap.add_apply,
@@ -132,8 +132,8 @@ theorem routePPrimitiveGammaJuliaStokesCubicSingleOrbitUnitLanding_chargeMagnitu
     (x : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
       genus d (fun _ _ => 1)) :
     (-routePPrimitiveGammaJuliaStokesSingleOrbitUnitCoefficient genus d) *
-        commonRankLinear d x.1 ^ 2 =
-      -(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) := by
+        commonRankLinear d x.1 ^ (2 : ℕ) =
+      -(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) := by
   have hlaw :=
     routePPrimitiveGammaJuliaStokesSingleOrbitUnitWittForm_contactBudgetLaw genus d x.1
   rw [x.2] at hlaw
@@ -158,12 +158,12 @@ theorem nonempty_routePPrimitiveGammaJuliaStokesCubicSingleOrbitUnitLandingFiber
     push Not at hcoefficient
     have hnonneg :
         0 ≤ routePPrimitiveGammaJuliaStokesSingleOrbitUnitCoefficient genus d *
-          commonRankLinear d x.1 ^ 2 :=
+          commonRankLinear d x.1 ^ (2 : ℕ) :=
       mul_nonneg hcoefficient (sq_nonneg _)
     linarith
   · intro hcoefficient
     let target : ℝ :=
-      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4
+      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4
     let A : ℝ := routePPrimitiveGammaJuliaStokesSingleOrbitUnitCoefficient genus d
     let r : ℝ := Real.sqrt ((-target) / (-A))
     let raw : GlobalCharge p (fun _ => 1) := fun a _ => r / (m a : ℝ)
@@ -185,7 +185,7 @@ theorem nonempty_routePPrimitiveGammaJuliaStokesCubicSingleOrbitUnitLandingFiber
       exact hcoefficient
     have hquot : 0 ≤ (-target) / (-A) :=
       div_nonneg (neg_nonneg.mpr htarget.le) (neg_nonneg.mpr hA.le)
-    have hr_sq : r ^ 2 = (-target) / (-A) := by
+    have hr_sq : r ^ (2 : ℕ) = (-target) / (-A) := by
       dsimp [r]
       exact Real.sq_sqrt hquot
     have hyrank : commonRankLinear d y = r := by

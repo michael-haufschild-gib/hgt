@@ -17,7 +17,7 @@ namespace RHTower
 
 /-- Forced change of jet grade from the cubic prime-entry scale to matched wall-light contact. -/
 def ccmActualHeadMatchedWallLightThirdJetDressing (n : ℕ) : ℝ :=
-  Real.pi / 8 * Real.log n ^ 4 * ccmActualHeadMatchedOrientedFirstMoment n
+  Real.pi / 8 * Real.log n ^ (4 : ℕ) * ccmActualHeadMatchedOrientedFirstMoment n
 
 theorem ccmActualHeadMatchedWallLightThirdJetDressing_nonneg (n : ℕ) :
     0 ≤ ccmActualHeadMatchedWallLightThirdJetDressing n := by
@@ -94,10 +94,10 @@ theorem ccmActualHeadMatchedWallLightThirdJetConnection_quadratic_of_sum_eq_zero
     (S : Finset (Nat.Primes × ℕ)) (N : ℕ)
     (v : Fin (2 * N + 1) → ℝ) (hv : ∑ i, v i = 0) :
     dotProduct v (ccmActualHeadMatchedWallLightThirdJetConnection S N *ᵥ v) =
-      2 * Real.pi ^ 2 *
+      2 * Real.pi ^ (2 : ℕ) *
         (∑ pe ∈ S,
           ccmActualHeadMatchedWallLightOrientedQuadraticJet pe.1 pe.2) *
-          (∑ i, ccmPublishedCenteredClock N i * v i) ^ 2 := by
+          (∑ i, ccmPublishedCenteredClock N i * v i) ^ (2 : ℕ) := by
   rw [ccmActualHeadMatchedWallLightThirdJetConnection_eq_rate_smul,
     Matrix.smul_mulVec]
   simp only [dotProduct, Pi.smul_apply, smul_eq_mul]

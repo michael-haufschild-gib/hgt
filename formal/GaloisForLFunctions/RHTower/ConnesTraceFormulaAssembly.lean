@@ -49,7 +49,7 @@ theorem connes_trace4_mainTerm (s : Finset ι) (g : ι → 𝓢(ℝ, ℂ)) :
 of the cut-off. -/
 theorem connes_trace4_asymptotic (s : Finset ι) (g : ι → 𝓢(ℝ, ℂ)) (N : ℕ) :
     Tendsto (fun Λ : ℝ => Λ ^ N *
-        ‖(∑ i ∈ s, ∫ u in {u : ℝ | |u| ≤ Λ ^ 2},
+        ‖(∑ i ∈ s, ∫ u in {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)},
               (SchwartzMap.fourierTransformCLM ℂ (g i) : ℝ → ℂ) u
                 * (((2 * Real.log Λ - Real.log |u| : ℝ)) : ℂ))
             - (((2 * Real.log Λ : ℝ) : ℂ) * (∑ i ∈ s, (g i) 0)
@@ -58,7 +58,7 @@ theorem connes_trace4_asymptotic (s : Finset ι) (g : ι → 𝓢(ℝ, ℂ)) (N 
       atTop (𝓝 0) := by
   set G : ι → 𝓢(ℝ, ℂ) := fun i => SchwartzMap.fourierTransformCLM ℂ (g i) with hG
   set Rem : ι → ℝ → ℂ := fun i Λ =>
-    (∫ u in {u : ℝ | |u| ≤ Λ ^ 2}, (G i : ℝ → ℂ) u * (((2 * Real.log Λ - Real.log |u| : ℝ)) : ℂ))
+    (∫ u in {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)}, (G i : ℝ → ℂ) u * (((2 * Real.log Λ - Real.log |u| : ℝ)) : ℂ))
       - (((2 * Real.log Λ : ℝ) : ℂ) * (∫ u : ℝ, (G i : ℝ → ℂ) u)
           - ∫ u : ℝ, (G i : ℝ → ℂ) u * ((Real.log |u| : ℝ) : ℂ)) with hRem
   have hper : ∀ i : ι, Tendsto (fun Λ : ℝ => Λ ^ N * ‖Rem i Λ‖) atTop (𝓝 0) := by
@@ -68,7 +68,7 @@ theorem connes_trace4_asymptotic (s : Finset ι) (g : ι → 𝓢(ℝ, ℂ)) (N 
     have := tendsto_finsetSum s (fun i (_ : i ∈ s) => hper i)
     simpa using this
   have hEq : ∀ Λ : ℝ,
-      (∑ i ∈ s, ∫ u in {u : ℝ | |u| ≤ Λ ^ 2}, (G i : ℝ → ℂ) u
+      (∑ i ∈ s, ∫ u in {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)}, (G i : ℝ → ℂ) u
             * (((2 * Real.log Λ - Real.log |u| : ℝ)) : ℂ))
           - (((2 * Real.log Λ : ℝ) : ℂ) * (∑ i ∈ s, (g i) 0)
               - ∑ i ∈ s, ∫ u : ℝ, (G i : ℝ → ℂ) u * ((Real.log |u| : ℝ) : ℂ))

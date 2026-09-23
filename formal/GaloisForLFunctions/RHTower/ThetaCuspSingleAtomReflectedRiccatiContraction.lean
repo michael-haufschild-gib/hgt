@@ -16,19 +16,19 @@ noncomputable section
 
 /-- Natural exponential scale of one theta-cusp atom. -/
 def thetaCuspSingleAtomReflectionScale (n : ℕ) (u : ℝ) : ℝ :=
-  Real.pi * (n : ℝ) ^ 2 * Real.exp (2 * u)
+  Real.pi * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * u)
 
 theorem three_lt_thetaCuspSingleAtomReflectionScale
     {n : ℕ} (hn : 0 < n) {u : ℝ} (hu : 0 ≤ u) :
     3 < thetaCuspSingleAtomReflectionScale n u := by
   unfold thetaCuspSingleAtomReflectionScale
   have hnR : 1 ≤ (n : ℝ) := by exact_mod_cast hn
-  have hnSq : 1 ≤ (n : ℝ) ^ 2 := by nlinarith [sq_nonneg ((n : ℝ) - 1)]
+  have hnSq : 1 ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith [sq_nonneg ((n : ℝ) - 1)]
   have he : 1 ≤ Real.exp (2 * u) := Real.one_le_exp (by linarith)
-  have hprod : 1 ≤ (n : ℝ) ^ 2 * Real.exp (2 * u) :=
+  have hprod : 1 ≤ (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * u) :=
     one_le_mul_of_one_le_of_one_le hnSq he
   have hpi :
-      Real.pi ≤ Real.pi * ((n : ℝ) ^ 2 * Real.exp (2 * u)) :=
+      Real.pi ≤ Real.pi * ((n : ℝ) ^ (2 : ℕ) * Real.exp (2 * u)) :=
     le_mul_of_one_le_right Real.pi_pos.le hprod
   nlinarith [Real.pi_gt_three]
 
@@ -38,7 +38,7 @@ def thetaCuspSingleAtomReflectionDefect (t : ℝ) : ℝ :=
 
 /-- Rational coefficient in the normalized reflected atom product. -/
 def thetaCuspSingleAtomReflectionLambda (A : ℝ) : ℝ :=
-  3 * A / (A - 3 / 2) ^ 2
+  3 * A / (A - 3 / 2) ^ (2 : ℕ)
 
 /-- Positive polynomial factor in the normalized reflected atom product. -/
 def thetaCuspSingleAtomReflectionFactor (A z : ℝ) : ℝ :=
@@ -67,15 +67,15 @@ def thetaCuspSingleAtomReflectedActionJetOne (A z z' : ℝ) : ℝ :=
 def thetaCuspSingleAtomReflectedActionJetTwo (A z : ℝ) : ℝ :=
   let l := thetaCuspSingleAtomReflectionLambda A
   let r := thetaCuspSingleAtomReflectionFactor A z
-  4 * (l ^ 2 / r ^ 2) * z * (z + 2) +
+  4 * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) * z * (z + 2) +
     4 * thetaCuspSingleAtomReflectionSlope A z * (z + 1)
 
 /-- Third displacement jet of the reflected logarithmic action. -/
 def thetaCuspSingleAtomReflectedActionJetThree (A z z' : ℝ) : ℝ :=
   let l := thetaCuspSingleAtomReflectionLambda A
   let r := thetaCuspSingleAtomReflectionFactor A z
-  z' * (8 * (l ^ 3 / r ^ 3) * z * (z + 2) +
-    12 * (l ^ 2 / r ^ 2) * (z + 1) +
+  z' * (8 * (l ^ (3 : ℕ) / r ^ (3 : ℕ)) * z * (z + 2) +
+    12 * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) * (z + 1) +
       4 * thetaCuspSingleAtomReflectionSlope A z)
 
 /-- The reflected Riccati margin `2 q q' - q''` in exact defect coordinates. -/
@@ -88,8 +88,8 @@ def thetaCuspSingleAtomReflectedRiccatiMargin (A z z' : ℝ) : ℝ :=
 def thetaCuspSingleAtomReflectedReducedMargin (A z : ℝ) : ℝ :=
   let l := thetaCuspSingleAtomReflectionLambda A
   let r := thetaCuspSingleAtomReflectionFactor A z
-  l ^ 2 / r ^ 2 * (4 * A * z * (z + 2) - (z + 1)) +
-    8 * A ^ 2 * (z + 1) - 2 * A +
+  l ^ (2 : ℕ) / r ^ (2 : ℕ) * (4 * A * z * (z + 2) - (z + 1)) +
+    8 * A ^ (2 : ℕ) * (z + 1) - 2 * A +
       (8 * A * (z + 1) - 1) * l / r
 
 /-- The reflected action is literally the negative logarithm of the normalized model. -/
@@ -134,11 +134,11 @@ theorem hasDerivAt_two_mul_sinh_two (t : ℝ) :
   ring
 
 theorem sq_two_mul_sinh_two (t : ℝ) :
-    (2 * Real.sinh (2 * t)) ^ 2 =
+    (2 * Real.sinh (2 * t)) ^ (2 : ℕ) =
       4 * thetaCuspSingleAtomReflectionDefect t *
         (thetaCuspSingleAtomReflectionDefect t + 2) := by
-  rw [show (2 * Real.sinh (2 * t)) ^ 2 =
-      4 * Real.sinh (2 * t) ^ 2 by ring, Real.sinh_sq]
+  rw [show (2 * Real.sinh (2 * t)) ^ (2 : ℕ) =
+      4 * Real.sinh (2 * t) ^ (2 : ℕ) by ring, Real.sinh_sq]
   unfold thetaCuspSingleAtomReflectionDefect
   ring
 
@@ -169,9 +169,9 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionSlope
     HasDerivAt
       (fun x => thetaCuspSingleAtomReflectionSlope A
         (thetaCuspSingleAtomReflectionDefect x))
-      (thetaCuspSingleAtomReflectionLambda A ^ 2 /
+      (thetaCuspSingleAtomReflectionLambda A ^ (2 : ℕ) /
         thetaCuspSingleAtomReflectionFactor A
-          (thetaCuspSingleAtomReflectionDefect t) ^ 2 *
+          (thetaCuspSingleAtomReflectionDefect t) ^ (2 : ℕ) *
             (2 * Real.sinh (2 * t))) t := by
   let l := thetaCuspSingleAtomReflectionLambda A
   have hrDeriv := hasDerivAt_thetaCuspSingleAtomReflectionFactor A t
@@ -197,12 +197,12 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionCurvature
       (thetaCuspSingleAtomReflectionDefect t) ≠ 0) :
     HasDerivAt
       (fun x =>
-        thetaCuspSingleAtomReflectionLambda A ^ 2 /
+        thetaCuspSingleAtomReflectionLambda A ^ (2 : ℕ) /
           thetaCuspSingleAtomReflectionFactor A
-            (thetaCuspSingleAtomReflectionDefect x) ^ 2)
-      (2 * thetaCuspSingleAtomReflectionLambda A ^ 3 /
+            (thetaCuspSingleAtomReflectionDefect x) ^ (2 : ℕ))
+      (2 * thetaCuspSingleAtomReflectionLambda A ^ (3 : ℕ) /
         thetaCuspSingleAtomReflectionFactor A
-          (thetaCuspSingleAtomReflectionDefect t) ^ 3 *
+          (thetaCuspSingleAtomReflectionDefect t) ^ (3 : ℕ) *
             (2 * Real.sinh (2 * t))) t := by
   have hrDeriv := hasDerivAt_thetaCuspSingleAtomReflectionFactor A t
   have hquot := (hasDerivAt_const t
@@ -210,12 +210,12 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionCurvature
   have hsquare := hquot.pow 2
   have hfun :
       (fun x =>
-        thetaCuspSingleAtomReflectionLambda A ^ 2 /
+        thetaCuspSingleAtomReflectionLambda A ^ (2 : ℕ) /
           thetaCuspSingleAtomReflectionFactor A
-            (thetaCuspSingleAtomReflectionDefect x) ^ 2) =
+            (thetaCuspSingleAtomReflectionDefect x) ^ (2 : ℕ)) =
         (fun x => thetaCuspSingleAtomReflectionLambda A /
           thetaCuspSingleAtomReflectionFactor A
-            (thetaCuspSingleAtomReflectionDefect x)) ^ 2 := by
+            (thetaCuspSingleAtomReflectionDefect x)) ^ (2 : ℕ) := by
     funext x
     simp only [Pi.pow_apply, div_pow]
   rw [hfun]
@@ -275,14 +275,14 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectedActionJetOne
   apply hraw.congr_deriv
   unfold thetaCuspSingleAtomReflectedActionJetTwo
   rw [show
-      thetaCuspSingleAtomReflectionLambda A ^ 2 /
+      thetaCuspSingleAtomReflectionLambda A ^ (2 : ℕ) /
             thetaCuspSingleAtomReflectionFactor A
-              (thetaCuspSingleAtomReflectionDefect t) ^ 2 *
+              (thetaCuspSingleAtomReflectionDefect t) ^ (2 : ℕ) *
           (2 * Real.sinh (2 * t)) * (2 * Real.sinh (2 * t)) =
-        thetaCuspSingleAtomReflectionLambda A ^ 2 /
+        thetaCuspSingleAtomReflectionLambda A ^ (2 : ℕ) /
             thetaCuspSingleAtomReflectionFactor A
-              (thetaCuspSingleAtomReflectionDefect t) ^ 2 *
-          (2 * Real.sinh (2 * t)) ^ 2 by ring,
+              (thetaCuspSingleAtomReflectionDefect t) ^ (2 : ℕ) *
+          (2 * Real.sinh (2 * t)) ^ (2 : ℕ) by ring,
     sq_two_mul_sinh_two t]
   ring
 
@@ -307,9 +307,9 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectedActionJetTwo
         (thetaCuspSingleAtomReflectionDefect x)) =
         (fun y =>
           4 * ((fun x =>
-            thetaCuspSingleAtomReflectionLambda A ^ 2 /
+            thetaCuspSingleAtomReflectionLambda A ^ (2 : ℕ) /
               thetaCuspSingleAtomReflectionFactor A
-                (thetaCuspSingleAtomReflectionDefect x) ^ 2) *
+                (thetaCuspSingleAtomReflectionDefect x) ^ (2 : ℕ)) *
                   (thetaCuspSingleAtomReflectionDefect *
                     fun x => 2 + thetaCuspSingleAtomReflectionDefect x)) y) +
         fun y =>
@@ -331,7 +331,7 @@ theorem thetaCuspSingleAtomReflectionLambda_pos
     {A : ℝ} (hA : 3 < A) :
     0 < thetaCuspSingleAtomReflectionLambda A := by
   unfold thetaCuspSingleAtomReflectionLambda
-  have hden : 0 < (A - 3 / 2) ^ 2 := sq_pos_of_pos (by linarith)
+  have hden : 0 < (A - 3 / 2) ^ (2 : ℕ) := sq_pos_of_pos (by linarith)
   exact div_pos (mul_pos (by norm_num) (by linarith)) hden
 
 theorem thetaCuspSingleAtomReflectionLambda_le_four
@@ -339,7 +339,7 @@ theorem thetaCuspSingleAtomReflectionLambda_le_four
     thetaCuspSingleAtomReflectionLambda A ≤ 4 := by
   unfold thetaCuspSingleAtomReflectionLambda
   have hbase : 0 < A - 3 / 2 := by linarith
-  have hden : 0 < (A - 3 / 2) ^ 2 := sq_pos_of_pos hbase
+  have hden : 0 < (A - 3 / 2) ^ (2 : ℕ) := sq_pos_of_pos hbase
   apply (div_le_iff₀ hden).2
   have hfactor : 0 ≤ (A - 3) * (4 * A - 3) :=
     mul_nonneg (sub_nonneg.mpr hA) (by linarith)
@@ -374,16 +374,16 @@ theorem thetaCuspSingleAtomReflectedReducedMargin_pos
     simpa only [l] using thetaCuspSingleAtomReflectionLambda_le_four hA.le
   have hr0 : 0 < r := by simpa only [r] using hr
   have hA0 : 0 < A := lt_trans (by norm_num) hA
-  have hbase : 0 < 8 * A ^ 2 * (z + 1) - 2 * A := by
+  have hbase : 0 < 8 * A ^ (2 : ℕ) * (z + 1) - 2 * A := by
     nlinarith [sq_pos_of_pos hA0]
   have hlast : 0 < (8 * A * (z + 1) - 1) * l / r := by
     have hcoeff : 0 < 8 * A * (z + 1) - 1 := by
       nlinarith [mul_nonneg hA0.le hz]
     exact div_pos (mul_pos hcoeff hl0) hr0
   by_cases hC : 0 ≤ C
-  · have hfirst : 0 ≤ l ^ 2 / r ^ 2 * C := by positivity
-    have htarget : 0 < l ^ 2 / r ^ 2 * C +
-        8 * A ^ 2 * (z + 1) - 2 * A +
+  · have hfirst : 0 ≤ l ^ (2 : ℕ) / r ^ (2 : ℕ) * C := by positivity
+    have htarget : 0 < l ^ (2 : ℕ) / r ^ (2 : ℕ) * C +
+        8 * A ^ (2 : ℕ) * (z + 1) - 2 * A +
           (8 * A * (z + 1) - 1) * l / r := by
       nlinarith
     simpa only [thetaCuspSingleAtomReflectedReducedMargin, l, r, C] using htarget
@@ -403,40 +403,40 @@ theorem thetaCuspSingleAtomReflectedReducedMargin_pos
       change 19 / 23 < 1 - l * z
       linarith
     have hz1 : z + 1 < 24 / 23 := by linarith
-    have hlSq : l ^ 2 ≤ 16 := by nlinarith
-    have hrSq : (19 / 23 : ℝ) ^ 2 < r ^ 2 := by
+    have hlSq : l ^ (2 : ℕ) ≤ 16 := by nlinarith
+    have hrSq : (19 / 23 : ℝ) ^ (2 : ℕ) < r ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (r - 19 / 23)]
-    have hnum : (z + 1) * l ^ 2 < (24 / 23 : ℝ) * 16 := by
+    have hnum : (z + 1) * l ^ (2 : ℕ) < (24 / 23 : ℝ) * 16 := by
       calc
-        (z + 1) * l ^ 2 < (24 / 23) * l ^ 2 :=
+        (z + 1) * l ^ (2 : ℕ) < (24 / 23) * l ^ (2 : ℕ) :=
           mul_lt_mul_of_pos_right hz1 (sq_pos_of_pos hl0)
         _ ≤ (24 / 23) * 16 := by gcongr
-    have hquot : (z + 1) * l ^ 2 / r ^ 2 < 25 := by
+    have hquot : (z + 1) * l ^ (2 : ℕ) / r ^ (2 : ℕ) < 25 := by
       calc
-        (z + 1) * l ^ 2 / r ^ 2 <
-            ((24 / 23 : ℝ) * 16) / r ^ 2 :=
+        (z + 1) * l ^ (2 : ℕ) / r ^ (2 : ℕ) <
+            ((24 / 23 : ℝ) * 16) / r ^ (2 : ℕ) :=
           div_lt_div_of_pos_right hnum (sq_pos_of_pos hr0)
-        _ < ((24 / 23 : ℝ) * 16) / (19 / 23 : ℝ) ^ 2 := by
+        _ < ((24 / 23 : ℝ) * 16) / (19 / 23 : ℝ) ^ (2 : ℕ) := by
           exact div_lt_div_of_pos_left (by positivity) (by positivity) hrSq
         _ < 25 := by norm_num
     have hClo : -(z + 1) ≤ C := by
       have hnonneg : 0 ≤ 4 * A * z * (z + 2) := by positivity
       dsimp [C]
       linarith
-    have hfirst : -25 < l ^ 2 / r ^ 2 * C := by
-      have hscale0 : 0 ≤ l ^ 2 / r ^ 2 := by positivity
+    have hfirst : -25 < l ^ (2 : ℕ) / r ^ (2 : ℕ) * C := by
+      have hscale0 : 0 ≤ l ^ (2 : ℕ) / r ^ (2 : ℕ) := by positivity
       have hmul :
-          -(z + 1) * (l ^ 2 / r ^ 2) ≤ C * (l ^ 2 / r ^ 2) :=
+          -(z + 1) * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) ≤ C * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_right hClo hscale0
       have hrearrange :
-          -(z + 1) * (l ^ 2 / r ^ 2) =
-            -((z + 1) * l ^ 2 / r ^ 2) := by ring
+          -(z + 1) * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) =
+            -((z + 1) * l ^ (2 : ℕ) / r ^ (2 : ℕ)) := by ring
       rw [hrearrange] at hmul
       nlinarith
-    have hbase66 : 66 < 8 * A ^ 2 * (z + 1) - 2 * A := by
+    have hbase66 : 66 < 8 * A ^ (2 : ℕ) * (z + 1) - 2 * A := by
       nlinarith [mul_nonneg (sub_nonneg.mpr hA.le) (by linarith : 0 ≤ 8 * A + 22)]
-    have htarget : 0 < l ^ 2 / r ^ 2 * C +
-        8 * A ^ 2 * (z + 1) - 2 * A +
+    have htarget : 0 < l ^ (2 : ℕ) / r ^ (2 : ℕ) * C +
+        8 * A ^ (2 : ℕ) * (z + 1) - 2 * A +
           (8 * A * (z + 1) - 1) * l / r := by
       linarith
     simpa only [thetaCuspSingleAtomReflectedReducedMargin, l, r, C] using htarget
@@ -454,22 +454,22 @@ theorem thetaCuspSingleAtomReflectedRiccatiMargin_pos
 theorem thetaCuspSourceTerm_eq_singleAtomScale
     {n : ℕ} (x : ℝ) :
     thetaCuspSourceTerm x n =
-      4 * Real.pi * (n : ℝ) ^ 2 * Real.exp (5 * x / 2) *
+      4 * Real.pi * (n : ℝ) ^ (2 : ℕ) * Real.exp (5 * x / 2) *
         (thetaCuspSingleAtomReflectionScale n x - 3 / 2) *
           Real.exp (-thetaCuspSingleAtomReflectionScale n x) := by
   unfold thetaCuspSourceTerm thetaCuspSeed thetaCuspSingleAtomReflectionScale
-  rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+  rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
     rw [show 2 * x = x + x by ring, Real.exp_add]
     ring]
   rw [show Real.exp (5 * x / 2) =
-      Real.exp (x / 2) * Real.exp x ^ 2 by
+      Real.exp (x / 2) * Real.exp x ^ (2 : ℕ) by
     calc
       Real.exp (5 * x / 2) = Real.exp (x / 2 + 2 * x) := by
         congr 1
         ring
       _ = Real.exp (x / 2) * Real.exp (2 * x) := Real.exp_add _ _
-      _ = Real.exp (x / 2) * Real.exp x ^ 2 := by
-        rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+      _ = Real.exp (x / 2) * Real.exp x ^ (2 : ℕ) := by
+        rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
           rw [show 2 * x = x + x by ring, Real.exp_add]
           ring]]
   ring_nf
@@ -478,7 +478,7 @@ theorem thetaCuspSourceTerm_eq_singleAtomScale
 theorem thetaCuspSourceTerm_reflected_mul_eq_singleAtomModel
     {n : ℕ} (hn : 0 < n) {u t : ℝ} (ht : 0 ≤ t) (htu : t ≤ u) :
     thetaCuspSourceTerm (u + t) n * thetaCuspSourceTerm (u - t) n =
-      thetaCuspSourceTerm u n ^ 2 *
+      thetaCuspSourceTerm u n ^ (2 : ℕ) *
         thetaCuspSingleAtomReflectedNormalizedModel
           (thetaCuspSingleAtomReflectionScale n u)
           (thetaCuspSingleAtomReflectionDefect t) := by
@@ -489,7 +489,7 @@ theorem thetaCuspSourceTerm_reflected_mul_eq_singleAtomModel
   have hA : 3 < A := by
     simpa only [A] using three_lt_thetaCuspSingleAtomReflectionScale hn hu
   have hA32 : A - 3 / 2 ≠ 0 := by linarith
-  have hA32sq : (A - 3 / 2) ^ 2 ≠ 0 := pow_ne_zero 2 hA32
+  have hA32sq : (A - 3 / 2) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hA32
   have h2A3 : 2 * A - 3 ≠ 0 := by linarith
   have hA23 : A * 2 - 3 ≠ 0 := by linarith
   have he : 0 < e := by simp only [e]; positivity
@@ -505,7 +505,7 @@ theorem thetaCuspSourceTerm_reflected_mul_eq_singleAtomModel
     ring
   have hfive :
       Real.exp (5 * (u + t) / 2) * Real.exp (5 * (u - t) / 2) =
-        Real.exp (5 * u / 2) ^ 2 := by
+        Real.exp (5 * u / 2) ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
@@ -515,26 +515,26 @@ theorem thetaCuspSourceTerm_reflected_mul_eq_singleAtomModel
     rw [Real.cosh_eq, heInv]
   have hpoly :
       (A * e - 3 / 2) * (A / e - 3 / 2) =
-        (A - 3 / 2) ^ 2 *
+        (A - 3 / 2) ^ (2 : ℕ) *
           (1 - thetaCuspSingleAtomReflectionLambda A * z) := by
     have hlambda :
-        (A - 3 / 2) ^ 2 * thetaCuspSingleAtomReflectionLambda A =
+        (A - 3 / 2) ^ (2 : ℕ) * thetaCuspSingleAtomReflectionLambda A =
           3 * A := by
       unfold thetaCuspSingleAtomReflectionLambda
       field_simp [hA32sq, h2A3, hA23]
     have hraw :
         (A * e - 3 / 2) * (A / e - 3 / 2) =
-          (A - 3 / 2) ^ 2 - 3 * A * z := by
+          (A - 3 / 2) ^ (2 : ℕ) - 3 * A * z := by
       simp only [z, thetaCuspSingleAtomReflectionDefect, hcosh]
       field_simp [he.ne']
       ring
     rw [hraw, mul_sub, mul_one]
-    rw [show (A - 3 / 2) ^ 2 *
+    rw [show (A - 3 / 2) ^ (2 : ℕ) *
         (thetaCuspSingleAtomReflectionLambda A * z) =
       3 * A * z by rw [← mul_assoc, hlambda]]
   have hgauss :
       Real.exp (-(A * e)) * Real.exp (-(A / e)) =
-        Real.exp (-A) ^ 2 * Real.exp (-2 * A * z) := by
+        Real.exp (-A) ^ (2 : ℕ) * Real.exp (-2 * A * z) := by
     have hexponent :
         -(A * e) + -(A / e) = -A + -A + (-2 * A * z) := by
       simp only [z, thetaCuspSingleAtomReflectionDefect, hcosh]
@@ -550,13 +550,13 @@ theorem thetaCuspSourceTerm_reflected_mul_eq_singleAtomModel
   rw [show thetaCuspSingleAtomReflectionScale n u = A by rfl,
     show thetaCuspSingleAtomReflectionDefect t = z by rfl]
   calc
-    _ = (4 * Real.pi * (n : ℝ) ^ 2) ^ 2 *
+    _ = (4 * Real.pi * (n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) *
           (Real.exp (5 * (u + t) / 2) * Real.exp (5 * (u - t) / 2)) *
           ((A * e - 3 / 2) * (A / e - 3 / 2)) *
           (Real.exp (-(A * e)) * Real.exp (-(A / e))) := by ring
-    _ = ((4 * Real.pi * (n : ℝ) ^ 2) ^ 2 *
-          Real.exp (5 * u / 2) ^ 2 * (A - 3 / 2) ^ 2 *
-            Real.exp (-A) ^ 2) *
+    _ = ((4 * Real.pi * (n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) *
+          Real.exp (5 * u / 2) ^ (2 : ℕ) * (A - 3 / 2) ^ (2 : ℕ) *
+            Real.exp (-A) ^ (2 : ℕ)) *
           ((1 - thetaCuspSingleAtomReflectionLambda A * z) *
             Real.exp (-2 * A * z)) := by
       rw [hfive, hpoly, hgauss]
@@ -567,7 +567,7 @@ theorem thetaCuspSourceTerm_reflected_mul_eq_singleAtomModel
 theorem thetaCuspSourceTerm_reflected_normalized_eq_singleAtomModel
     {n : ℕ} (hn : 0 < n) {u t : ℝ} (ht : 0 ≤ t) (htu : t ≤ u) :
     thetaCuspSourceTerm (u + t) n * thetaCuspSourceTerm (u - t) n /
-        thetaCuspSourceTerm u n ^ 2 =
+        thetaCuspSourceTerm u n ^ (2 : ℕ) =
       thetaCuspSingleAtomReflectedNormalizedModel
         (thetaCuspSingleAtomReflectionScale n u)
         (thetaCuspSingleAtomReflectionDefect t) := by

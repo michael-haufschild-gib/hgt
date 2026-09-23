@@ -8,7 +8,7 @@ noncomputable section
 def jasGammaThetaLocalRenormalizedFourthFactor
     (x : ℝ) (p : Nat.Primes) : ℝ :=
   8 * (gammaSewnMobiusValuationContractionMultiplier x p *
-    (1 - xiMobiusContinuousApertureDiskNode x p)) ^ 4
+    (1 - xiMobiusContinuousApertureDiskNode x p)) ^ (4 : ℕ)
 
 /-- Local loss of the separately normalized synchronized-lcm Gamma tensor factor. -/
 def jasGammaThetaLocalRenormalizedDefect
@@ -20,13 +20,13 @@ theorem jasGammaThetaLocalRenormalizedFourthFactor_eq
     (x : ℝ) (p : Nat.Primes) :
     jasGammaThetaLocalRenormalizedFourthFactor x p =
       let q := xiMobiusContinuousApertureDiskNode x p
-      (1 - q ^ 2) ^ 4 / (1 + q ^ 4) := by
+      (1 - q ^ (2 : ℕ)) ^ (4 : ℕ) / (1 + q ^ (4 : ℕ)) := by
   let q := xiMobiusContinuousApertureDiskNode x p
-  have hden : 8 * (1 + q ^ 4) ≠ 0 := by positivity
+  have hden : 8 * (1 + q ^ (4 : ℕ)) ≠ 0 := by positivity
   rw [jasGammaThetaLocalRenormalizedFourthFactor, mul_pow,
     gammaSewnMobiusValuationContractionMultiplier_pow_four]
-  change 8 * ((1 + q) ^ 4 / (8 * (1 + q ^ 4)) * (1 - q) ^ 4) =
-    (1 - q ^ 2) ^ 4 / (1 + q ^ 4)
+  change 8 * ((1 + q) ^ (4 : ℕ) / (8 * (1 + q ^ (4 : ℕ))) * (1 - q) ^ (4 : ℕ)) =
+    (1 - q ^ (2 : ℕ)) ^ (4 : ℕ) / (1 + q ^ (4 : ℕ))
   field_simp [hden]
   ring
 
@@ -36,66 +36,66 @@ theorem jasGammaThetaLocalRenormalizedDefect_eq
     (x : ℝ) (p : Nat.Primes) :
     jasGammaThetaLocalRenormalizedDefect x p =
       let q := xiMobiusContinuousApertureDiskNode x p
-      q ^ 2 * (4 - 5 * q ^ 2 + 4 * q ^ 4 - q ^ 6) / (1 + q ^ 4) := by
+      q ^ (2 : ℕ) * (4 - 5 * q ^ (2 : ℕ) + 4 * q ^ (4 : ℕ) - q ^ (6 : ℕ)) / (1 + q ^ (4 : ℕ)) := by
   let q := xiMobiusContinuousApertureDiskNode x p
-  have hden : 1 + q ^ 4 ≠ 0 := by positivity
+  have hden : 1 + q ^ (4 : ℕ) ≠ 0 := by positivity
   rw [jasGammaThetaLocalRenormalizedDefect,
     jasGammaThetaLocalRenormalizedFourthFactor_eq]
-  change 1 - (1 - q ^ 2) ^ 4 / (1 + q ^ 4) =
-    q ^ 2 * (4 - 5 * q ^ 2 + 4 * q ^ 4 - q ^ 6) / (1 + q ^ 4)
+  change 1 - (1 - q ^ (2 : ℕ)) ^ (4 : ℕ) / (1 + q ^ (4 : ℕ)) =
+    q ^ (2 : ℕ) * (4 - 5 * q ^ (2 : ℕ) + 4 * q ^ (4 : ℕ) - q ^ (6 : ℕ)) / (1 + q ^ (4 : ℕ))
   field_simp [hden]
   ring
 
 /-- The quadratic Gamma defect is uniformly comparable with the squared aperture node. -/
 theorem xiMobiusContinuousApertureDiskNode_sq_le_jasGammaThetaLocalRenormalizedDefect
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
-    xiMobiusContinuousApertureDiskNode x p ^ 2 ≤
+    xiMobiusContinuousApertureDiskNode x p ^ (2 : ℕ) ≤
       jasGammaThetaLocalRenormalizedDefect x p := by
   let q := xiMobiusContinuousApertureDiskNode x p
   have hq0 : 0 < q := xiMobiusContinuousApertureDiskNode_pos x p
   have hq1 : q < 1 := xiMobiusContinuousApertureDiskNode_lt_one hx p
-  have hq2 : q ^ 2 < 1 := by
+  have hq2 : q ^ (2 : ℕ) < 1 := by
     nlinarith [mul_pos (sub_pos.mpr hq1) (add_pos hq0 zero_lt_one)]
-  have hq4 : q ^ 4 < 1 := by
+  have hq4 : q ^ (4 : ℕ) < 1 := by
     nlinarith [mul_pos (sub_pos.mpr hq2) (add_pos (sq_pos_of_pos hq0) zero_lt_one)]
-  have hG : 2 ≤ 4 - 5 * q ^ 2 + 4 * q ^ 4 - q ^ 6 := by
-    nlinarith [mul_nonneg (sq_nonneg (1 - q ^ 2)) (by linarith : 0 ≤ 2 - q ^ 2)]
+  have hG : 2 ≤ 4 - 5 * q ^ (2 : ℕ) + 4 * q ^ (4 : ℕ) - q ^ (6 : ℕ) := by
+    nlinarith [mul_nonneg (sq_nonneg (1 - q ^ (2 : ℕ))) (by linarith : 0 ≤ 2 - q ^ (2 : ℕ))]
   rw [jasGammaThetaLocalRenormalizedDefect_eq]
-  change q ^ 2 ≤ q ^ 2 * (4 - 5 * q ^ 2 + 4 * q ^ 4 - q ^ 6) / (1 + q ^ 4)
-  rw [le_div_iff₀ (by positivity : 0 < 1 + q ^ 4)]
+  change q ^ (2 : ℕ) ≤ q ^ (2 : ℕ) * (4 - 5 * q ^ (2 : ℕ) + 4 * q ^ (4 : ℕ) - q ^ (6 : ℕ)) / (1 + q ^ (4 : ℕ))
+  rw [le_div_iff₀ (by positivity : 0 < 1 + q ^ (4 : ℕ))]
   calc
-    q ^ 2 * (1 + q ^ 4) ≤ q ^ 2 * 2 :=
+    q ^ (2 : ℕ) * (1 + q ^ (4 : ℕ)) ≤ q ^ (2 : ℕ) * 2 :=
       mul_le_mul_of_nonneg_left (by linarith) (sq_nonneg q)
-    _ ≤ q ^ 2 * (4 - 5 * q ^ 2 + 4 * q ^ 4 - q ^ 6) :=
+    _ ≤ q ^ (2 : ℕ) * (4 - 5 * q ^ (2 : ℕ) + 4 * q ^ (4 : ℕ) - q ^ (6 : ℕ)) :=
       mul_le_mul_of_nonneg_left hG (sq_nonneg q)
 
 /-- The same local defect is at most four copies of the squared aperture node. -/
 theorem jasGammaThetaLocalRenormalizedDefect_le_four_mul_sq
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
     jasGammaThetaLocalRenormalizedDefect x p ≤
-      4 * xiMobiusContinuousApertureDiskNode x p ^ 2 := by
+      4 * xiMobiusContinuousApertureDiskNode x p ^ (2 : ℕ) := by
   let q := xiMobiusContinuousApertureDiskNode x p
   have hq0 : 0 < q := xiMobiusContinuousApertureDiskNode_pos x p
   have hq1 : q < 1 := xiMobiusContinuousApertureDiskNode_lt_one hx p
-  have hq2 : q ^ 2 < 1 := by
+  have hq2 : q ^ (2 : ℕ) < 1 := by
     nlinarith [mul_pos (sub_pos.mpr hq1) (add_pos hq0 zero_lt_one)]
-  have hG4 : 4 - 5 * q ^ 2 + 4 * q ^ 4 - q ^ 6 ≤ 4 := by
-    nlinarith [mul_nonneg (sq_nonneg (q ^ 2 - 2)) (sq_nonneg q)]
+  have hG4 : 4 - 5 * q ^ (2 : ℕ) + 4 * q ^ (4 : ℕ) - q ^ (6 : ℕ) ≤ 4 := by
+    nlinarith [mul_nonneg (sq_nonneg (q ^ (2 : ℕ) - 2)) (sq_nonneg q)]
   rw [jasGammaThetaLocalRenormalizedDefect_eq]
-  change q ^ 2 * (4 - 5 * q ^ 2 + 4 * q ^ 4 - q ^ 6) / (1 + q ^ 4) ≤
-    4 * q ^ 2
-  rw [div_le_iff₀ (by positivity : 0 < 1 + q ^ 4)]
+  change q ^ (2 : ℕ) * (4 - 5 * q ^ (2 : ℕ) + 4 * q ^ (4 : ℕ) - q ^ (6 : ℕ)) / (1 + q ^ (4 : ℕ)) ≤
+    4 * q ^ (2 : ℕ)
+  rw [div_le_iff₀ (by positivity : 0 < 1 + q ^ (4 : ℕ))]
   calc
-    q ^ 2 * (4 - 5 * q ^ 2 + 4 * q ^ 4 - q ^ 6) ≤ q ^ 2 * 4 :=
+    q ^ (2 : ℕ) * (4 - 5 * q ^ (2 : ℕ) + 4 * q ^ (4 : ℕ) - q ^ (6 : ℕ)) ≤ q ^ (2 : ℕ) * 4 :=
       mul_le_mul_of_nonneg_left hG4 (sq_nonneg q)
-    _ ≤ 4 * q ^ 2 * (1 + q ^ 4) := by
-      nlinarith [sq_nonneg q, sq_nonneg (q ^ 2)]
+    _ ≤ 4 * q ^ (2 : ℕ) * (1 + q ^ (4 : ℕ)) := by
+      nlinarith [sq_nonneg q, sq_nonneg (q ^ (2 : ℕ))]
 
 /-- Squared true aperture nodes have the same exact prime wall as prime-Poisson amplitudes. -/
 theorem summable_xiMobiusContinuousApertureDiskNode_sq_iff
     (x : ℝ) (hx : 0 < x) :
     Summable (fun p : Nat.Primes =>
-      xiMobiusContinuousApertureDiskNode x p ^ 2) ↔ 1 / 2 < x := by
+      xiMobiusContinuousApertureDiskNode x p ^ (2 : ℕ)) ↔ 1 / 2 < x := by
   rw [← GaloisForLFunctions.HTGeometry.summable_normSq_primePoissonParameter_zero_iff
     x 0 hx]
   apply summable_congr
@@ -118,7 +118,7 @@ theorem summable_jasGammaThetaLocalRenormalizedDefect_iff
       hdefect
   · intro hnode
     have hfour : Summable (fun p : Nat.Primes =>
-        4 * xiMobiusContinuousApertureDiskNode x p ^ 2) := hnode.mul_left 4
+        4 * xiMobiusContinuousApertureDiskNode x p ^ (2 : ℕ)) := hnode.mul_left 4
     exact Summable.of_nonneg_of_le
       (fun p => (sq_nonneg (xiMobiusContinuousApertureDiskNode x p)).trans
         (xiMobiusContinuousApertureDiskNode_sq_le_jasGammaThetaLocalRenormalizedDefect

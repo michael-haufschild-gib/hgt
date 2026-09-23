@@ -64,7 +64,7 @@ private theorem shellSource_eventuallyEq_model {m : ℕ} {s : ℂ} (hs : s ≠ 1
 /-! ## First and second derivative ratios -/
 
 private theorem hasDerivAt_inv_sub_one {z : ℂ} (hz : z ≠ 1) :
-    HasDerivAt (fun w : ℂ => (w - 1)⁻¹) (-((z - 1) ^ 2)⁻¹) z := by
+    HasDerivAt (fun w : ℂ => (w - 1)⁻¹) (-((z - 1) ^ (2 : ℕ))⁻¹) z := by
   have hz1 : z - 1 ≠ 0 := sub_ne_zero.mpr hz
   have hbase : HasDerivAt (fun w : ℂ => w - 1) 1 z := (hasDerivAt_id z).sub_const 1
   have h := hbase.inv hz1
@@ -72,10 +72,10 @@ private theorem hasDerivAt_inv_sub_one {z : ℂ} (hz : z ≠ 1) :
     simp only [div_eq_mul_inv, neg_one_mul])
 
 private theorem hasDerivAt_neg_inv_sq_sub_one {z : ℂ} (hz : z ≠ 1) :
-    HasDerivAt (fun w : ℂ => -((w - 1) ^ 2)⁻¹) (2 * ((z - 1) ^ 3)⁻¹) z := by
+    HasDerivAt (fun w : ℂ => -((w - 1) ^ (2 : ℕ))⁻¹) (2 * ((z - 1) ^ (3 : ℕ))⁻¹) z := by
   have hz1 : z - 1 ≠ 0 := sub_ne_zero.mpr hz
   have hbase : HasDerivAt (fun w : ℂ => w - 1) 1 z := (hasDerivAt_id z).sub_const 1
-  have hsq : HasDerivAt (fun w : ℂ => (w - 1) ^ 2) (2 * (z - 1) ^ 1 * 1) z := hbase.pow 2
+  have hsq : HasDerivAt (fun w : ℂ => (w - 1) ^ (2 : ℕ)) (2 * (z - 1) ^ (1 : ℕ) * 1) z := hbase.pow 2
   have hneg := (hsq.inv (pow_ne_zero 2 hz1)).neg
   simpa only [Pi.neg_apply, Pi.inv_apply] using! hneg.congr_deriv (by
     field_simp [hz1])
@@ -84,7 +84,7 @@ private theorem hasDerivAt_neg_inv_sq_sub_one {z : ℂ} (hz : z ≠ 1) :
 theorem deriv_shellSource {m : ℕ} (hm : 12 ≤ m) {z : ℂ} (hz : z ≠ 1) (hre : 1 / 2 < z.re) :
     deriv (shellSource m) z
       = deriv (shellResidueUnit m) z * (z - 1)⁻¹
-        + shellResidueUnit m z * (-((z - 1) ^ 2)⁻¹) := by
+        + shellResidueUnit m z * (-((z - 1) ^ (2 : ℕ))⁻¹) := by
   rw [(shellSource_eventuallyEq_model (m := m) hz).deriv_eq]
   exact ((analyticAt_shellResidueUnit hm hre).differentiableAt.hasDerivAt.mul
     (hasDerivAt_inv_sub_one hz)).deriv
@@ -143,15 +143,15 @@ theorem tendsto_shellSource_logDeriv {m : ℕ} (hm : 12 ≤ m) :
 theorem deriv_deriv_shellSource {m : ℕ} (hm : 12 ≤ m) {z : ℂ} (hz : z ≠ 1) (hre : 1 / 2 < z.re) :
     deriv (deriv (shellSource m)) z
       = deriv (deriv (shellResidueUnit m)) z * (z - 1)⁻¹
-        + 2 * deriv (shellResidueUnit m) z * (-((z - 1) ^ 2)⁻¹)
-        + shellResidueUnit m z * (2 * ((z - 1) ^ 3)⁻¹) := by
+        + 2 * deriv (shellResidueUnit m) z * (-((z - 1) ^ (2 : ℕ))⁻¹)
+        + shellResidueUnit m z * (2 * ((z - 1) ^ (3 : ℕ))⁻¹) := by
   have hopen : ({1}ᶜ : Set ℂ) ∈ 𝓝 z :=
     isOpen_compl_singleton.mem_nhds (by simpa using hz)
   have hreOpen : {w : ℂ | (1 : ℝ) / 2 < w.re} ∈ 𝓝 z :=
     (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hre
   have hEq : deriv (shellSource m) =ᶠ[𝓝 z] fun w : ℂ =>
       deriv (shellResidueUnit m) w * (w - 1)⁻¹
-        + shellResidueUnit m w * (-((w - 1) ^ 2)⁻¹) := by
+        + shellResidueUnit m w * (-((w - 1) ^ (2 : ℕ))⁻¹) := by
     filter_upwards [hopen, hreOpen] with w hw hwre
     exact deriv_shellSource hm (by simpa using hw) hwre
   rw [hEq.deriv_eq]
@@ -159,24 +159,24 @@ theorem deriv_deriv_shellSource {m : ℕ} (hm : 12 ≤ m) {z : ℂ} (hz : z ≠ 
   have hUderiv : AnalyticAt ℂ (deriv (shellResidueUnit m)) z := hU.deriv
   have h1 : HasDerivAt (fun w : ℂ => deriv (shellResidueUnit m) w * (w - 1)⁻¹)
       (deriv (deriv (shellResidueUnit m)) z * (z - 1)⁻¹
-        + deriv (shellResidueUnit m) z * (-((z - 1) ^ 2)⁻¹)) z :=
+        + deriv (shellResidueUnit m) z * (-((z - 1) ^ (2 : ℕ))⁻¹)) z :=
     hUderiv.differentiableAt.hasDerivAt.mul (hasDerivAt_inv_sub_one hz)
-  have h2 : HasDerivAt (fun w : ℂ => shellResidueUnit m w * (-((w - 1) ^ 2)⁻¹))
-      (deriv (shellResidueUnit m) z * (-((z - 1) ^ 2)⁻¹)
-        + shellResidueUnit m z * (2 * ((z - 1) ^ 3)⁻¹)) z :=
+  have h2 : HasDerivAt (fun w : ℂ => shellResidueUnit m w * (-((w - 1) ^ (2 : ℕ))⁻¹))
+      (deriv (shellResidueUnit m) z * (-((z - 1) ^ (2 : ℕ))⁻¹)
+        + shellResidueUnit m z * (2 * ((z - 1) ^ (3 : ℕ))⁻¹)) z :=
     hU.differentiableAt.hasDerivAt.mul (hasDerivAt_neg_inv_sq_sub_one hz)
   have h3 : HasDerivAt (fun w : ℂ =>
-      deriv (shellResidueUnit m) w * (w - 1)⁻¹ + shellResidueUnit m w * (-((w - 1) ^ 2)⁻¹))
+      deriv (shellResidueUnit m) w * (w - 1)⁻¹ + shellResidueUnit m w * (-((w - 1) ^ (2 : ℕ))⁻¹))
       ((deriv (deriv (shellResidueUnit m)) z * (z - 1)⁻¹
-          + deriv (shellResidueUnit m) z * (-((z - 1) ^ 2)⁻¹))
-        + (deriv (shellResidueUnit m) z * (-((z - 1) ^ 2)⁻¹)
-          + shellResidueUnit m z * (2 * ((z - 1) ^ 3)⁻¹))) z := h1.add h2
+          + deriv (shellResidueUnit m) z * (-((z - 1) ^ (2 : ℕ))⁻¹))
+        + (deriv (shellResidueUnit m) z * (-((z - 1) ^ (2 : ℕ))⁻¹)
+          + shellResidueUnit m z * (2 * ((z - 1) ^ (3 : ℕ))⁻¹))) z := h1.add h2
   rw [h3.deriv]
   ring
 
 /-- **Second critical moment of the shell source.**  `(z-1)²·S_m''/S_m → 2` as `z → 1`. -/
 theorem tendsto_shellSource_secondDeriv {m : ℕ} (hm : 12 ≤ m) :
-    Tendsto (fun z : ℂ => (z - 1) ^ 2 * (deriv (deriv (shellSource m)) z / shellSource m z))
+    Tendsto (fun z : ℂ => (z - 1) ^ (2 : ℕ) * (deriv (deriv (shellSource m)) z / shellSource m z))
       (𝓝[≠] (1 : ℂ)) (𝓝 2) := by
   have hhalf : (1 : ℝ) / 2 < ((1 : ℂ)).re := by norm_num
   have hUana := analyticAt_shellResidueUnit hm hhalf
@@ -204,14 +204,14 @@ theorem tendsto_shellSource_secondDeriv {m : ℕ} (hm : 12 ≤ m) :
       (hUana.deriv.deriv.continuousAt).div hUana.continuousAt hU1
     exact h.tendsto.mono_left nhdsWithin_le_nhds
   have hmodel : Tendsto (fun z : ℂ =>
-      (z - 1) ^ 2 * (deriv (deriv (shellResidueUnit m)) z / shellResidueUnit m z)
+      (z - 1) ^ (2 : ℕ) * (deriv (deriv (shellResidueUnit m)) z / shellResidueUnit m z)
         - 2 * ((z - 1) * (deriv (shellResidueUnit m) z / shellResidueUnit m z)) + 2)
       (𝓝[≠] (1 : ℂ)) (𝓝 2) := by
     have hA : Tendsto (fun z : ℂ =>
-        (z - 1) ^ 2 * (deriv (deriv (shellResidueUnit m)) z / shellResidueUnit m z))
+        (z - 1) ^ (2 : ℕ) * (deriv (deriv (shellResidueUnit m)) z / shellResidueUnit m z))
         (𝓝[≠] (1 : ℂ)) (𝓝 0) := by
       have h := (hsub.pow 2).mul hratio2
-      rw [show (0 : ℂ) ^ 2 = 0 by ring, zero_mul] at h
+      rw [show (0 : ℂ) ^ (2 : ℕ) = 0 by ring, zero_mul] at h
       exact h
     have hB : Tendsto (fun z : ℂ =>
         2 * ((z - 1) * (deriv (shellResidueUnit m) z / shellResidueUnit m z)))

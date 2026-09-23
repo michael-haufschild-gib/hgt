@@ -27,8 +27,8 @@ theorem norm_sq_staticChoiAnchorResidual_eq_one_sub_norm_sq_component
     {d : ℕ} (hd : 0 < d) (energy : Fin d → ℝ) (anchor : ℝ)
     {target : EuclideanSpace ℂ (Fin d × Fin d)}
     (htarget : ‖target‖ = 1) :
-    ‖staticChoiAnchorResidual energy anchor target‖ ^ 2 =
-      1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ 2 := by
+    ‖staticChoiAnchorResidual energy anchor target‖ ^ (2 : ℕ) =
+      1 - ‖staticChoiAnchorComponent energy anchor target‖ ^ (2 : ℕ) := by
   let a := staticChoiAnchorComponent energy anchor target •
     staticSpectralChoiVector d anchor energy
   let z := staticChoiAnchorResidual energy anchor target
@@ -67,13 +67,13 @@ theorem norm_sq_staticChoiReturnShellResidualTarget_le
     (htarget : ∀ b c, ‖target b c‖ = 1)
     (radius : B → ℝ)
     (hradiusCap : ∀ b c,
-      1 - ‖staticChoiAnchorComponent energy (anchor b c) (target b c)‖ ^ 2 ≤
+      1 - ‖staticChoiAnchorComponent energy (anchor b c) (target b c)‖ ^ (2 : ℕ) ≤
         radius b)
     (b : B) (c : C b) :
     ‖WithLp.toLp 2
-      (staticChoiReturnShellResidualTarget C energy anchor target b c)‖ ^ 2 ≤
+      (staticChoiReturnShellResidualTarget C energy anchor target b c)‖ ^ (2 : ℕ) ≤
         radius b := by
-  change ‖staticChoiAnchorResidual energy (anchor b c) (target b c)‖ ^ 2 ≤
+  change ‖staticChoiAnchorResidual energy (anchor b c) (target b c)‖ ^ (2 : ℕ) ≤
     radius b
   rw [norm_sq_staticChoiAnchorResidual_eq_one_sub_norm_sq_component
     hd energy (anchor b c) (htarget b c)]
@@ -95,7 +95,7 @@ theorem measure_completeStaticChoiReturnShellCapture_le_projectionMoment
     (state : X → Fin d × Fin d → ℂ)
     (radius : B → ℝ) (hradius : ∀ b, 0 ≤ radius b)
     (hradiusCap : ∀ b c,
-      1 - ‖staticChoiAnchorComponent energy (anchor b c) (target b c)‖ ^ 2 ≤
+      1 - ‖staticChoiAnchorComponent energy (anchor b c) (target b c)‖ ^ (2 : ℕ) ≤
         radius b)
     (threshold : ℝ) (hthreshold : 0 < threshold)
     (hint : Integrable

@@ -359,14 +359,14 @@ theorem affinity_lt : finitePacketAffinity srcZero srcOne < finitePacketAffinity
   have hL : Real.sqrt (9/10) * Real.sqrt (1/10) + Real.sqrt (1/10) * Real.sqrt (9/10)
       = 3/5 := by
     rw [← Real.sqrt_mul (by norm_num), ← Real.sqrt_mul (by norm_num)]
-    rw [show (9:ℝ)/10 * (1/10) = (3/10)^2 by norm_num,
-      show (1:ℝ)/10 * (9/10) = (3/10)^2 by norm_num]
+    rw [show (9:ℝ)/10 * (1/10) = (3/10)^(2 : ℕ) by norm_num,
+      show (1:ℝ)/10 * (9/10) = (3/10)^(2 : ℕ) by norm_num]
     rw [Real.sqrt_sq (by norm_num)]
     norm_num
   rw [hL]
   have hR : (3:ℝ)/5 < Real.sqrt (99/100) * Real.sqrt (999/1000) := by
     rw [← Real.sqrt_mul (by norm_num)]
-    rw [show (3:ℝ)/5 = Real.sqrt ((3/5)^2) from (Real.sqrt_sq (by norm_num)).symm]
+    rw [show (3:ℝ)/5 = Real.sqrt ((3/5)^(2 : ℕ)) from (Real.sqrt_sq (by norm_num)).symm]
     refine Real.sqrt_lt_sqrt (by norm_num) ?_
     norm_num
   have hpos : (0:ℝ) ≤ Real.sqrt (1/100) * Real.sqrt (1/1000) := by positivity

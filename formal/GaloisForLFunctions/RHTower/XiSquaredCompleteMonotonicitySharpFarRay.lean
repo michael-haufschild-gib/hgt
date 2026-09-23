@@ -10,16 +10,16 @@ set_option maxHeartbeats 1000000
 
 /-- Sharpened degree-dependent squared-radius threshold. -/
 def xiSquaredSharpFarRayThreshold (n : ℕ) : ℝ :=
-  ((n : ℝ) + 1) ^ 2 / 9 + 1 / 4
+  ((n : ℝ) + 1) ^ (2 : ℕ) / 9 + 1 / 4
 
 /-- The shifted squared spectral point lies in a `3/(2(n+1))` tangent sector once the
 sharpened far-ray threshold is reached. -/
 theorem xiSpectralSq_add_abs_im_lt_sharpSector (n : ℕ) {X : ℝ}
     (hX : xiSquaredSharpFarRayThreshold n ≤ X) (q : XiZeroCopy) :
-    |(xiSpectralPoint q ^ 2 + (X : ℂ)).im| <
+    |(xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).im| <
       (3 / (2 * ((n : ℝ) + 1))) *
-        (xiSpectralPoint q ^ 2 + (X : ℂ)).re := by
-  have hgammaSq : 2 < (xiSpectralPoint q).re ^ 2 := by
+        (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).re := by
+  have hgammaSq : 2 < (xiSpectralPoint q).re ^ (2 : ℕ) := by
     have h := xiZeroCopy_two_lt_im_sq q
     rwa [← xiSpectralPoint_re_eq] at h
   have hb : |(xiSpectralPoint q).im| < 1 / 2 :=
@@ -36,38 +36,38 @@ theorem xiSpectralSq_add_abs_im_lt_sharpSector (n : ℕ) {X : ℝ}
     dsimp [gamma] at hzero
     rw [hzero] at hgammaSq
     norm_num at hgammaSq
-  have hbSq : b ^ 2 < 1 / 4 := by
+  have hbSq : b ^ (2 : ℕ) < 1 / 4 := by
     have hb' : |b| < 1 / 2 := by simpa [b] using hb
     nlinarith [sq_abs b, abs_nonneg b]
-  have him : (xiSpectralPoint q ^ 2 + (X : ℂ)).im = 2 * gamma * b := by
+  have him : (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).im = 2 * gamma * b := by
     rw [Complex.add_im, Complex.ofReal_im, sq, Complex.mul_im]
     simp only [add_zero]
     dsimp [gamma, b]
     ring
-  have hre : (xiSpectralPoint q ^ 2 + (X : ℂ)).re = gamma ^ 2 - b ^ 2 + X := by
+  have hre : (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).re = gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X := by
     rw [Complex.add_re, Complex.ofReal_re, sq, Complex.mul_re]
     dsimp [gamma, b]
     ring
   have hB : |2 * gamma * b| < |gamma| := by
     rw [abs_mul, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
     nlinarith [abs_nonneg b]
-  have hboost : gamma ^ 2 + m ^ 2 / 9 < gamma ^ 2 - b ^ 2 + X := by
+  have hboost : gamma ^ (2 : ℕ) + m ^ (2 : ℕ) / 9 < gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X := by
     unfold xiSquaredSharpFarRayThreshold at hX
     dsimp [m]
     nlinarith
-  have hAMGMraw : 2 * m * |gamma| ≤ 3 * (gamma ^ 2 + m ^ 2 / 9) := by
+  have hAMGMraw : 2 * m * |gamma| ≤ 3 * (gamma ^ (2 : ℕ) + m ^ (2 : ℕ) / 9) := by
     nlinarith [sq_nonneg (|gamma| - m / 3), sq_abs gamma]
-  have hAMGM : |gamma| ≤ t * (gamma ^ 2 + m ^ 2 / 9) := by
+  have hAMGM : |gamma| ≤ t * (gamma ^ (2 : ℕ) + m ^ (2 : ℕ) / 9) := by
     dsimp [t]
     rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity : 0 < 2 * m)]
     nlinarith
   rw [him, hre]
   calc
     |2 * gamma * b| < |gamma| := hB
-    _ ≤ t * (gamma ^ 2 + m ^ 2 / 9) := hAMGM
-    _ < t * (gamma ^ 2 - b ^ 2 + X) :=
+    _ ≤ t * (gamma ^ (2 : ℕ) + m ^ (2 : ℕ) / 9) := hAMGM
+    _ < t * (gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X) :=
       mul_lt_mul_of_pos_left hboost ht
-    _ = (3 / (2 * ((n : ℝ) + 1))) * (gamma ^ 2 - b ^ 2 + X) := by
+    _ = (3 / (2 * ((n : ℝ) + 1))) * (gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X) := by
       rfl
 
 /-- Every shifted resolvent atom has positive `(n+1)`-st power at the sharpened far-ray
@@ -75,7 +75,7 @@ threshold. -/
 theorem xiResolventPoint_pow_re_pos_sharpFarRay (n : ℕ) {X : ℝ}
     (hX : xiSquaredSharpFarRayThreshold n ≤ X) (q : XiZeroCopy) :
     0 < ((xiResolventPoint X q) ^ (n + 1)).re := by
-  let w := xiSpectralPoint q ^ 2 + (X : ℂ)
+  let w := xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)
   let A := w.re
   let B := -w.im
   let m : ℝ := (n : ℝ) + 1
@@ -145,7 +145,7 @@ theorem re_xiShiftedReciprocalMoment_pos_sharpFarRay {y : ℝ} {n : ℕ}
 
 /-- **Factor-nine contraction of the C1 complete-monotonicity wedge.**  The `n`-th alternating
 derivative of the exact squared-Xi radial field is positive already at
-`y >= (n+1)^2/9 + 1/4`, unconditionally. -/
+`y >= (n+1)^(2 : ℕ)/9 + 1/4`, unconditionally. -/
 theorem alternating_iteratedDeriv_squaredXiRadialField_pos_sharpFarRay
     {y : ℝ} {n : ℕ} (hy : xiSquaredSharpFarRayThreshold n ≤ y) :
     0 < (-1 : ℝ) ^ n * iteratedDeriv n squaredXiRadialField y := by

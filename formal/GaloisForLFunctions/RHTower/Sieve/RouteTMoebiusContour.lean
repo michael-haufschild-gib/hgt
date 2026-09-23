@@ -30,7 +30,7 @@ def routeTContourRight (A T : ℝ) : ℝ :=
   1 + routeTInverseDelta A T
 
 def routeTContourEdgeBound (A T : ℝ) : ℝ :=
-  Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight T) ^ 2)
+  Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight T) ^ (2 : ℕ))
 
 def routeTContourRightBound (A T : ℝ) : ℝ :=
   Real.exp (22 / 4) * (1 + 1 / routeTInverseDelta A T)
@@ -154,7 +154,7 @@ theorem routeT_contour_zero_free
     · exact riemannZeta_ne_zero_of_one_le_re hre.le
   · have himBase : routeTInverseBaseHeight ≤ |s.im| := le_of_lt (lt_of_not_ge hlow)
     have him100 : 100001 ≤ |s.im| := routeTInverseBaseHeight_ge.trans himBase
-    have hlarge : routeTBandDepthRootThreshold ^ 10 ≤
+    have hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤
         routeTBinaryHeight (|s.im| - 1) :=
       routeTInverseBaseDepth.trans
         (routeTBinaryHeight_mono (by linarith : routeTInverseBaseHeight - 1 ≤ |s.im| - 1))
@@ -176,7 +176,7 @@ theorem routeT_contour_zero_free
         have hreLeft := hs.1.1
         unfold routeTContourLeft at hreLeft
         linarith
-      have hlargePoint : routeTBandDepthRootThreshold ^ 10 ≤
+      have hlargePoint : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤
           routeTBinaryHeight |s.im| :=
         hlarge.trans (routeTBinaryHeight_mono (by linarith : |s.im| - 1 ≤ |s.im|))
       rcases le_or_gt 0 s.im with him | him
@@ -218,7 +218,7 @@ theorem norm_inv_riemannZeta_le_routeT_contour
     (hxhi : x ≤ routeTContourRight A T) :
     ‖(riemannZeta ((x : ℂ) + (y : ℂ) * Complex.I))⁻¹‖ ≤ routeTContourEdgeBound A T := by
   have hy100 : 100001 ≤ |y| := routeTInverseBaseHeight_ge.trans hy
-  have hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight (|y| - 1) :=
+  have hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight (|y| - 1) :=
     routeTInverseBaseDepth.trans
       (routeTBinaryHeight_mono (by linarith : routeTInverseBaseHeight - 1 ≤ |y| - 1))
   have hD := routeTInverseDelta_mono_upto (A := A) hy100 hyT
@@ -232,11 +232,11 @@ theorem norm_inv_riemannZeta_le_routeT_contour
   have hraw := norm_inv_riemannZeta_le_routeT_abs hA hy100 hlarge hσlo hσhi
   have hQ := routeTZeroFreeBudget_mono_upto (A := A) hy100 hyT
   have hQ0 := routeTZeroFreeBudget_pos A (routeTInverseHeight |y|)
-  have hQsq : routeTZeroFreeBudget A (routeTInverseHeight |y|) ^ 2 ≤
-      routeTZeroFreeBudget A (routeTInverseHeight T) ^ 2 :=
+  have hQsq : routeTZeroFreeBudget A (routeTInverseHeight |y|) ^ (2 : ℕ) ≤
+      routeTZeroFreeBudget A (routeTInverseHeight T) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hQ0.le hQ 2
   have hexp :
-      Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight |y|) ^ 2) ≤
+      Real.exp (400 * routeTZeroFreeBudget A (routeTInverseHeight |y|) ^ (2 : ℕ)) ≤
         routeTContourEdgeBound A T := by
     unfold routeTContourEdgeBound
     exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hQsq (by norm_num))
@@ -252,20 +252,20 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_routeT :
           (ArithmeticFunction.moebius n : ℂ) *
             ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
         ≤ 2 * (routeTContourRightBound A T *
-              (C / H ^ 2 * (N + H + 1) ^ 2 *
+              (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) *
                 (N + H + 1) ^ routeTContourRight A T)) / T
           + routeTContourEdgeBound A T *
-              (C' / H ^ 1 * (N + H + 1) ^ 1 *
+              (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) *
                 (N + H + 1) ^ routeTContourRight A T) /
               T ^ (0 + 1) * (routeTContourRight A T - routeTContourLeft A δ T)
           + routeTContourEdgeBound A T *
-              (C' / H ^ 1 * (N + H + 1) ^ 1 *
+              (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) *
                 (N + H + 1) ^ routeTContourRight A T) /
               T ^ (0 + 1) * (routeTContourRight A T - routeTContourLeft A δ T)
           + max M (routeTContourEdgeBound A T) *
               (2 * ((N + H) ^ routeTContourLeft A δ T /
                     routeTContourLeft A δ T)
-                + 2 * (C / H ^ 2 * (N + H + 1) ^ 2 *
+                + 2 * (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) *
                     (N + H + 1) ^ routeTContourLeft A δ T)) := by
   obtain ⟨A, hA⟩ := exists_pole_bound
   obtain ⟨C, hC, hdec1⟩ := exists_bound_mellin_smoothWeight_uniform_upto 1
@@ -416,16 +416,16 @@ theorem exists_norm_tsum_moebiusTwist_smoothWeight_le_routeT :
           moebiusTwist τ n *
             ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
         ≤ 2 * (routeTContourRightBound A (|τ| + U) *
-              (C / H ^ 2 * (N + H + 1) ^ 2 *
+              (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) *
                 (N + H + 1) ^ routeTContourRight A (|τ| + U))) / U
           + routeTContourEdgeBound A (|τ| + U) *
-              (C' / H ^ 1 * (N + H + 1) ^ 1 *
+              (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) *
                 (N + H + 1) ^ routeTContourRight A (|τ| + U)) /
               U ^ (0 + 1) *
                 (routeTContourRight A (|τ| + U) -
                   routeTContourLeft A δ (|τ| + U))
           + routeTContourEdgeBound A (|τ| + U) *
-              (C' / H ^ 1 * (N + H + 1) ^ 1 *
+              (C' / H ^ (1 : ℕ) * (N + H + 1) ^ (1 : ℕ) *
                 (N + H + 1) ^ routeTContourRight A (|τ| + U)) /
               U ^ (0 + 1) *
                 (routeTContourRight A (|τ| + U) -
@@ -433,7 +433,7 @@ theorem exists_norm_tsum_moebiusTwist_smoothWeight_le_routeT :
           + routeTContourEdgeBound A (|τ| + U) *
               (2 * ((N + H) ^ routeTContourLeft A δ (|τ| + U) /
                     routeTContourLeft A δ (|τ| + U))
-                + 2 * (C / H ^ 2 * (N + H + 1) ^ 2 *
+                + 2 * (C / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) *
                     (N + H + 1) ^ routeTContourLeft A δ (|τ| + U)) ) := by
   obtain ⟨A, hA⟩ := exists_pole_bound
   obtain ⟨C, hC, hdec1⟩ := exists_bound_mellin_smoothWeight_uniform_upto 1

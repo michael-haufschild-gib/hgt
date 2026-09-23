@@ -20,13 +20,13 @@ namespace Homological
 namespace BB
 namespace Z3Z6
 
-private theorem ker_fast : ∀ m : Fin (2 ^ 18),
+private theorem ker_fast : ∀ m : Fin (2 ^ (18 : ℕ)),
     bndMask m.val = 0 → m.val.testBit 0 = false → m.val.testBit 1 = false →
     m.val = 0 := by
   native_decide
 
 theorem ker_vanish_free_mask :
-    ∀ m : Fin (2 ^ 18),
+    ∀ m : Fin (2 ^ (18 : ℕ)),
       bbBoundary2Fn a36 b36 (chainOf m.val) = 0 →
       chainOf m.val (0, 0) = 0 → chainOf m.val (0, 1) = 0 →
       chainOf m.val = 0 := by

@@ -79,7 +79,7 @@ theorem gomesGaussianAdjointCharge_dual (a : ℝ) :
 /-- The charged potential contains a quadratic oscillator term and a linear charge shift. -/
 theorem gomesGaussianPotential_formula (a x : ℝ) :
     dilatonPotential (gomesGaussianLogWeight a) x =
-      4 * Real.pi ^ 2 * a ^ 2 * x ^ 2 - 2 * Real.pi * a := by
+      4 * Real.pi ^ (2 : ℕ) * a ^ (2 : ℕ) * x ^ (2 : ℕ) - 2 * Real.pi * a := by
   rw [dilatonPotential, gomesGaussianLogWeight_derivative_eval,
     gomesGaussianLogWeight_second_derivative_eval]
   ring

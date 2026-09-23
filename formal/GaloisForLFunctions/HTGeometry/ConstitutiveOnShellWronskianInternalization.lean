@@ -44,7 +44,7 @@ theorem equationWronskian_commutator (D : Derivation R A A) (a b x : A) :
 
 /-- Multiples of the equation are sent to multiples of its square. -/
 theorem equationWronskian_mul_equation (D : Derivation R A A) (a x : A) :
-    equationWronskian D a (a * x) = a ^ 2 * D x := by
+    equationWronskian D a (a * x) = a ^ (2 : ℕ) * D x := by
   rw [equationWronskian_apply, D.leibniz]
   simp only [smul_eq_mul]
   ring
@@ -131,7 +131,7 @@ theorem equationWronskianQuotient_apply
 theorem equationWronskianQuotient_sq
     (D : Derivation R A A) (a : A) (z : EquationFibre a) :
     equationWronskianQuotient D a (equationWronskianQuotient D a z) =
-      (Ideal.Quotient.mk (Ideal.span ({a} : Set A)) (D a)) ^ 2 * z := by
+      (Ideal.Quotient.mk (Ideal.span ({a} : Set A)) (D a)) ^ (2 : ℕ) * z := by
   rw [equationWronskianQuotient_apply, equationWronskianQuotient_apply]
   ring
 
@@ -351,18 +351,18 @@ theorem polynomialEquationWronskian_sq_zero (m : ℕ) (hm : 2 ≤ m) :
   rw [LinearMap.comp_apply, equationWronskianQuotient_sq]
   have hclass :
       (Ideal.Quotient.mk (Ideal.span ({X ^ m} : Set (Polynomial K)))
-        (Polynomial.derivative' (R := K) (X ^ m))) ^ 2 = 0 := by
+        (Polynomial.derivative' (R := K) (X ^ m))) ^ (2 : ℕ) = 0 := by
     rw [← map_pow, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
-    refine ⟨Polynomial.C (m : K) ^ 2 * X ^ (m - 2), ?_⟩
-    change (Polynomial.derivative (X ^ m)) ^ 2 =
-      X ^ m * (Polynomial.C (m : K) ^ 2 * X ^ (m - 2))
+    refine ⟨Polynomial.C (m : K) ^ (2 : ℕ) * X ^ (m - 2), ?_⟩
+    change (Polynomial.derivative (X ^ m)) ^ (2 : ℕ) =
+      X ^ m * (Polynomial.C (m : K) ^ (2 : ℕ) * X ^ (m - 2))
     rw [Polynomial.derivative_X_pow, mul_pow]
     have hexp : (m - 1) * 2 = m + (m - 2) := by omega
     calc
-      Polynomial.C (m : K) ^ 2 * (X ^ (m - 1)) ^ 2 =
-          Polynomial.C (m : K) ^ 2 * X ^ ((m - 1) * 2) := by rw [pow_mul]
-      _ = Polynomial.C (m : K) ^ 2 * X ^ (m + (m - 2)) := by rw [hexp]
-      _ = X ^ m * (Polynomial.C (m : K) ^ 2 * X ^ (m - 2)) := by
+      Polynomial.C (m : K) ^ (2 : ℕ) * (X ^ (m - 1)) ^ (2 : ℕ) =
+          Polynomial.C (m : K) ^ (2 : ℕ) * X ^ ((m - 1) * 2) := by rw [pow_mul]
+      _ = Polynomial.C (m : K) ^ (2 : ℕ) * X ^ (m + (m - 2)) := by rw [hexp]
+      _ = X ^ m * (Polynomial.C (m : K) ^ (2 : ℕ) * X ^ (m - 2)) := by
         rw [pow_add]
         ring
   rw [hclass, zero_mul, LinearMap.zero_apply]

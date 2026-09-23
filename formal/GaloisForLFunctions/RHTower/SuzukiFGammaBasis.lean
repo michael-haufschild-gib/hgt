@@ -108,13 +108,13 @@ theorem hasSum_normSq_inner_suzukiFGammaFamily_kernel (hRH : RiemannHypothesis) 
     (hw : 0 < w.im) :
     HasSum (fun ρ : XiDivisorSupport =>
         ‖(inner ℂ (suzukiFGammaFamily hRH ρ)
-          ((memLp_suzukiModelKernel hRH hw).toLp _) : ℂ)‖ ^ 2)
+          ((memLp_suzukiModelKernel hRH hw).toLp _) : ℂ)‖ ^ (2 : ℕ))
       (‖((memLp_suzukiModelKernel hRH hw).toLp
-        (fun x : ℝ => suzukiModelKernel w ((x : ℝ) : ℂ)) : Lp ℂ 2 (volume : Measure ℝ))‖ ^ 2) := by
+        (fun x : ℝ => suzukiModelKernel w ((x : ℝ) : ℂ)) : Lp ℂ 2 (volume : Measure ℝ))‖ ^ (2 : ℕ)) := by
   have hbase := hasSum_normSq_suzukiFGammaFun hRH hw
   have hself := inner_suzukiModelKernel_pair hRH hw hw
   have hnorm : ‖((memLp_suzukiModelKernel hRH hw).toLp
-      (fun x : ℝ => suzukiModelKernel w ((x : ℝ) : ℂ)) : Lp ℂ 2 (volume : Measure ℝ))‖ ^ 2
+      (fun x : ℝ => suzukiModelKernel w ((x : ℝ) : ℂ)) : Lp ℂ 2 (volume : Measure ℝ))‖ ^ (2 : ℕ)
       = (suzukiModelKernel w w).re := by
     rw [← hself, inner_self_eq_norm_sq_to_K]
     norm_cast
@@ -182,14 +182,14 @@ theorem coe_suzukiFGammaHilbertBasis (hRH : RiemannHypothesis) :
 theorem hasSum_normSq_inner_suzukiFGammaFamily (hRH : RiemannHypothesis)
     {y : Lp ℂ 2 (volume : Measure ℝ)} (hy : y ∈ suzukiModelSpace) :
     HasSum (fun ρ : XiDivisorSupport =>
-      ‖(inner ℂ (suzukiFGammaFamily hRH ρ) y : ℂ)‖ ^ 2) (‖y‖ ^ 2) := by
+      ‖(inner ℂ (suzukiFGammaFamily hRH ρ) y : ℂ)‖ ^ (2 : ℕ)) (‖y‖ ^ (2 : ℕ)) := by
   set Y : ↥(suzukiModelSpace : Submodule ℂ (Lp ℂ 2 (volume : Measure ℝ))) := ⟨y, hy⟩ with hY
   have hb := (suzukiFGammaHilbertBasis hRH).hasSum_inner_mul_inner Y Y
   have hcoe := coe_suzukiFGammaHilbertBasis hRH
   have hterm : ∀ ρ : XiDivisorSupport,
       (inner ℂ Y ((suzukiFGammaHilbertBasis hRH) ρ) : ℂ)
         * (inner ℂ ((suzukiFGammaHilbertBasis hRH) ρ) Y : ℂ)
-      = (((‖(inner ℂ (suzukiFGammaFamily hRH ρ) y : ℂ)‖ ^ 2 : ℝ)) : ℂ) := by
+      = (((‖(inner ℂ (suzukiFGammaFamily hRH ρ) y : ℂ)‖ ^ (2 : ℕ) : ℝ)) : ℂ) := by
     intro ρ
     rw [hcoe]
     have h1 : (inner ℂ ((suzukiFGammaVec hRH ρ)) Y : ℂ)
@@ -200,13 +200,13 @@ theorem hasSum_normSq_inner_suzukiFGammaFamily (hRH : RiemannHypothesis)
       exact (inner_conj_symm (𝕜 := ℂ) Y (suzukiFGammaVec hRH ρ)).symm
     rw [h1, h2, mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   have hb' : HasSum (fun ρ : XiDivisorSupport =>
-      (((‖(inner ℂ (suzukiFGammaFamily hRH ρ) y : ℂ)‖ ^ 2 : ℝ)) : ℂ))
+      (((‖(inner ℂ (suzukiFGammaFamily hRH ρ) y : ℂ)‖ ^ (2 : ℕ) : ℝ)) : ℂ))
       (inner ℂ Y Y : ℂ) := by
     refine hb.congr_fun ?_
     intro ρ
     exact (hterm ρ).symm
   have hre := Complex.hasSum_re hb'
-  have hval : (inner ℂ Y Y : ℂ).re = ‖y‖ ^ 2 := by
+  have hval : (inner ℂ Y Y : ℂ).re = ‖y‖ ^ (2 : ℕ) := by
     have h := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (x := Y)
     rw [h]
     have hn : ‖Y‖ = ‖y‖ := rfl

@@ -96,18 +96,18 @@ theorem tendsto_behind_harm (k : ℕ) :
 
 /-- `i²/((i-1-j)(i+j+1)) = i²/(i²-(j+1)²) → 1`. -/
 theorem tendsto_prod_ratio (j : ℕ) :
-    Tendsto (fun i : ℕ => (i:ℝ)^2/(((i:ℝ)-1-j)*((i:ℝ)+j+1))) atTop (𝓝 1) := by
-  have hden : Tendsto (fun i:ℕ => (i:ℝ)^2 - ((j:ℝ)+1)^2) atTop atTop :=
-    (tendsto_atTop_add_const_right _ (-((j:ℝ)+1)^2)
+    Tendsto (fun i : ℕ => (i:ℝ)^(2 : ℕ)/(((i:ℝ)-1-j)*((i:ℝ)+j+1))) atTop (𝓝 1) := by
+  have hden : Tendsto (fun i:ℕ => (i:ℝ)^(2 : ℕ) - ((j:ℝ)+1)^(2 : ℕ)) atTop atTop :=
+    (tendsto_atTop_add_const_right _ (-((j:ℝ)+1)^(2 : ℕ))
       (tendsto_pow_atTop (by norm_num)|>.comp tendsto_natCast_atTop_atTop))
-  have h : Tendsto (fun i:ℕ => 1 + ((j:ℝ)+1)^2/((i:ℝ)^2 - ((j:ℝ)+1)^2)) atTop (𝓝 (1+0)) :=
+  have h : Tendsto (fun i:ℕ => 1 + ((j:ℝ)+1)^(2 : ℕ)/((i:ℝ)^(2 : ℕ) - ((j:ℝ)+1)^(2 : ℕ))) atTop (𝓝 (1+0)) :=
     Tendsto.const_add _ (Tendsto.div_atTop tendsto_const_nhds hden)
   rw [add_zero] at h
   refine h.congr' ?_
   filter_upwards [eventually_gt_atTop (j+1)] with i hi
   have hj1 : ((j:ℝ)+1) < (i:ℝ) := by exact_mod_cast hi
-  have hlt : (0:ℝ) < (i:ℝ)^2 - ((j:ℝ)+1)^2 := by nlinarith [hj1]
-  have he : ((i:ℝ)-1-j)*((i:ℝ)+j+1) = (i:ℝ)^2 - ((j:ℝ)+1)^2 := by ring
+  have hlt : (0:ℝ) < (i:ℝ)^(2 : ℕ) - ((j:ℝ)+1)^(2 : ℕ) := by nlinarith [hj1]
+  have he : ((i:ℝ)-1-j)*((i:ℝ)+j+1) = (i:ℝ)^(2 : ℕ) - ((j:ℝ)+1)^(2 : ℕ) := by ring
   rw [he]; field_simp; ring
 
 /-- `i·aheadDist i k → 2k+1`. -/
@@ -139,10 +139,10 @@ theorem sum_two_jp2 (k : ℕ) : ∑ j ∈ Finset.range k, (2*(j:ℝ)+2) = (k:ℝ
 
 /-- `i²(behindDist − aheadDist) → 2k(k+1)`. -/
 theorem tendsto_i2_diff (k : ℕ) :
-    Tendsto (fun i : ℕ => (i:ℝ)^2 * (behindDist i k - aheadDist i k)) atTop
+    Tendsto (fun i : ℕ => (i:ℝ)^(2 : ℕ) * (behindDist i k - aheadDist i k)) atTop
       (𝓝 (2*(k:ℝ)*((k:ℝ)+1))) := by
   have h : Tendsto (fun i:ℕ => 2 * ∑ j ∈ Finset.range k,
-      (2*(j:ℝ)+2)*((i:ℝ)^2/(((i:ℝ)-1-j)*((i:ℝ)+j+1)))) atTop
+      (2*(j:ℝ)+2)*((i:ℝ)^(2 : ℕ)/(((i:ℝ)-1-j)*((i:ℝ)+j+1)))) atTop
       (𝓝 (2 * ((k:ℝ)*((k:ℝ)+1)))) := by
     rw [← sum_two_jp2 k]
     apply Tendsto.const_mul
@@ -157,9 +157,9 @@ theorem tendsto_i2_diff (k : ℕ) :
         - (1/(i:ℝ)+2*∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1))
       = 2 * ∑ j ∈ Finset.range k, (1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1)) from by
     rw [Finset.sum_sub_distrib]; ring]
-  rw [show (i:ℝ)^2 * (2 * ∑ j ∈ Finset.range k, (1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1)))
-      = 2 * ∑ j ∈ Finset.range k, ((i:ℝ)^2 * (1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1))) from by
-    rw [← mul_assoc, mul_comm ((i:ℝ)^2) 2, mul_assoc, Finset.mul_sum]]
+  rw [show (i:ℝ)^(2 : ℕ) * (2 * ∑ j ∈ Finset.range k, (1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1)))
+      = 2 * ∑ j ∈ Finset.range k, ((i:ℝ)^(2 : ℕ) * (1/((i:ℝ)-1-j) - 1/((i:ℝ)+j+1))) from by
+    rw [← mul_assoc, mul_comm ((i:ℝ)^(2 : ℕ)) 2, mul_assoc, Finset.mul_sum]]
   congr 1
   refine Finset.sum_congr rfl (fun j hj => ?_)
   rw [Finset.mem_range] at hj
@@ -257,8 +257,8 @@ imbalance converges to `2k(k+1)/(2k+1)² = ½ − 1/(2(2k+1)²)`. The `½` match
 the correction `−1/(2(2k+1)²)` sums over `k` to `−π²/16` (`oddBasel_correction_hasSum`). -/
 theorem poleModelTerm_rate (k : ℕ) :
     Tendsto (fun i : ℕ => poleExcess (aheadDist i k) - poleExcess (behindDist i k)) atTop
-      (𝓝 (1/2 - 1/(2*(2*(k:ℝ)+1)^2))) := by
-  have hval : (1:ℝ)/2 - 1/(2*(2*(k:ℝ)+1)^2)
+      (𝓝 (1/2 - 1/(2*(2*(k:ℝ)+1)^(2 : ℕ)))) := by
+  have hval : (1:ℝ)/2 - 1/(2*(2*(k:ℝ)+1)^(2 : ℕ))
       = 2*(k:ℝ)*((k:ℝ)+1)/((2*(k:ℝ)+1)*(2*(k:ℝ)+1)) := by
     have hk : (2*(k:ℝ)+1) ≠ 0 := by positivity
     field_simp; ring
@@ -272,13 +272,13 @@ theorem poleModelTerm_rate (k : ℕ) :
 /-- **The rate constant is `−½·(odd Basel) = −π²/16`.** The per-term correction `−1/(2(2k+1)²)` of
 `poleModelTerm_rate` sums over `k` to `−π²/16`, from `Σ_k 1/(2k+1)² = π²/8` (`hasSum_odd_basel`). -/
 theorem oddBasel_correction_hasSum :
-    HasSum (fun k : ℕ => -1/(2*(2*(k:ℝ)+1)^2)) (-(π^2/16)) := by
-  have hfun : (fun k : ℕ => -1/(2*(2*(k:ℝ)+1)^2))
-      = (fun k : ℕ => (-1/2) * (1/(2*(k:ℝ)+1)^2)) := by
+    HasSum (fun k : ℕ => -1/(2*(2*(k:ℝ)+1)^(2 : ℕ))) (-(π^(2 : ℕ)/16)) := by
+  have hfun : (fun k : ℕ => -1/(2*(2*(k:ℝ)+1)^(2 : ℕ)))
+      = (fun k : ℕ => (-1/2) * (1/(2*(k:ℝ)+1)^(2 : ℕ))) := by
     funext k
-    have hk : (2*(k:ℝ)+1)^2 ≠ 0 := by positivity
+    have hk : (2*(k:ℝ)+1)^(2 : ℕ) ≠ 0 := by positivity
     field_simp
-  have hval : -(π^2/16) = (-1/2) * (π^2/8) := by ring
+  have hval : -(π^(2 : ℕ)/16) = (-1/2) * (π^(2 : ℕ)/8) := by ring
   rw [hfun, hval]
   exact hasSum_odd_basel.mul_left (-(1:ℝ)/2)
 
@@ -289,20 +289,20 @@ layer of the matched interchange whose full form (uniform-in-`i` domination + th
 theorem tendsto_boundary_partial (K : ℕ) :
     Tendsto (fun i : ℕ => ∑ k ∈ Finset.range K,
         (poleExcess (aheadDist i k) - poleExcess (behindDist i k))) atTop
-      (𝓝 (∑ k ∈ Finset.range K, (1/2 - 1/(2*(2*(k:ℝ)+1)^2)))) :=
+      (𝓝 (∑ k ∈ Finset.range K, (1/2 - 1/(2*(2*(k:ℝ)+1)^(2 : ℕ))))) :=
   tendsto_finsetSum _ (fun k _ => poleModelTerm_rate k)
 
 /-- The partial sums of the boundary-layer corrections approach `π²/16`: `Σ_{k<K}1/(2(2k+1)²) → π²/16`.
 With `tendsto_boundary_partial` this is the boundary-layer half of the rate constant. -/
 theorem oddBasel_correction_partial_tendsto :
-    Tendsto (fun K : ℕ => ∑ k ∈ Finset.range K, 1/(2*(2*(k:ℝ)+1)^2)) atTop (𝓝 (π^2/16)) := by
+    Tendsto (fun K : ℕ => ∑ k ∈ Finset.range K, 1/(2*(2*(k:ℝ)+1)^(2 : ℕ))) atTop (𝓝 (π^(2 : ℕ)/16)) := by
   have h := (hasSum_odd_basel.mul_left ((1:ℝ)/2)).tendsto_sum_nat
-  have hval : (1:ℝ)/2 * (π^2/8) = π^2/16 := by ring
+  have hval : (1:ℝ)/2 * (π^(2 : ℕ)/8) = π^(2 : ℕ)/16 := by ring
   rw [hval] at h
   refine h.congr' ?_
   filter_upwards with K
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  have hk : (2*(k:ℝ)+1)^2 ≠ 0 := by positivity
+  have hk : (2*(k:ℝ)+1)^(2 : ℕ) ≠ 0 := by positivity
   field_simp
 
 end RHTower

@@ -8,8 +8,8 @@ import GaloisForLFunctions.RHTower.MobiusDivisorPositiveNormalizationCost
 Removing remaining isolated late singletons leaves absolute mass `U-r`
 and signed mass `S+r`. Corrected action is head mass times this retained
 conditional energy plus the exact late diagonal. Its unavoidable component
-is therefore `a*(S+r)^2/(U-r)`, with an exact nonnegative variance remainder.
-In particular consumed late mass `t` forces `t*(S+r)^2 ≤ U*H_corrected`.
+is therefore `a*(S+r)^(2 : ℕ)/(U-r)`, with an exact nonnegative variance remainder.
+In particular consumed late mass `t` forces `t*(S+r)^(2 : ℕ) ≤ U*H_corrected`.
 -/
 noncomputable section
 set_option autoImplicit false
@@ -109,12 +109,12 @@ theorem sum_mobiusDivisorRetainedCoarea_mass (M : ℕ) (P : Finset ℕ) :
 theorem mobiusDivisorCorrectedCoareaAction_eq_retained (M : ℕ) (P : Finset ℕ) :
     mobiusDivisorCorrectedCoareaAction M P = mobiusDivisorFibreAbsoluteMass M P ∅ *
       (∑ R ∈ mobiusDivisorRetainedCoareaLabels M P,
-        (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R) +
+        (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R) +
       mobiusDivisorRemainingLateEnergy M P := by
   have h := sum_split M P (fun R =>
-    (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R)
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R)
   have hl : (∑ p ∈ mobiusDivisorActiveLatePrimes M \ P,
-      (mobiusDivisorSelectionFibre M P {p})^2 / mobiusDivisorFibreAbsoluteMass M P {p}) =
+      (mobiusDivisorSelectionFibre M P {p})^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P {p}) =
       mobiusDivisorRemainingLateMass M P := sum_congr rfl (fun p hp =>
         mobiusDivisorCoarea_activeLate_singleton (mem_sdiff.mp hp).1 P (mem_sdiff.mp hp).2)
   rw [hl] at h
@@ -125,13 +125,13 @@ theorem mobiusDivisorCorrectedCoareaAction_eq_retained (M : ℕ) (P : Finset ℕ
 /-- The corrected action has an exact forced signed-mass term and nonnegative variance remainder. -/
 theorem mobiusDivisorCorrectedCoareaAction_eq_variance (M : ℕ) (P : Finset ℕ) :
     mobiusDivisorCorrectedCoareaAction M P = mobiusDivisorFibreAbsoluteMass M P ∅ *
-      (((∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)+mobiusDivisorRemainingLateMass M P)^2 /
+      (((∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)+mobiusDivisorRemainingLateMass M P)^(2 : ℕ) /
         (mobiusDivisorAbsoluteMass M-mobiusDivisorRemainingLateMass M P) +
        ∑ R ∈ mobiusDivisorRetainedCoareaLabels M P,
         (mobiusDivisorSelectionFibre M P R-
           (((∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)+mobiusDivisorRemainingLateMass M P) /
             (mobiusDivisorAbsoluteMass M-mobiusDivisorRemainingLateMass M P)) *
-              mobiusDivisorFibreAbsoluteMass M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R) +
+              mobiusDivisorFibreAbsoluteMass M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R) +
       mobiusDivisorRemainingLateEnergy M P := by
   rw [mobiusDivisorCorrectedCoareaAction_eq_retained,mobiusDivisorFibre_coarea_variance,
     sum_mobiusDivisorRetainedCoarea_signed,sum_mobiusDivisorRetainedCoarea_mass]
@@ -147,10 +147,10 @@ theorem mobiusDivisorCorrectedCoareaAction_nonneg (M : ℕ) (P : Finset ℕ) :
 /-- Mass conservation alone forces a lower bound on corrected action, irrespective of mixed cancellation. -/
 theorem mobiusDivisorCorrectedCoareaAction_mass_balance (M : ℕ) (P : Finset ℕ) :
     mobiusDivisorConsumedLateMass M P *
-      ((∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)+mobiusDivisorRemainingLateMass M P)^2 ≤
+      ((∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)+mobiusDivisorRemainingLateMass M P)^(2 : ℕ) ≤
       mobiusDivisorAbsoluteMass M * mobiusDivisorCorrectedCoareaAction M P := by
   let J := ∑ R ∈ mobiusDivisorRetainedCoareaLabels M P,
-    (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R
   have hJ : 0 ≤ J := sum_nonneg (fun R _ => div_nonneg (sq_nonneg _)
     (mobiusDivisorFibreAbsoluteMass_nonneg M P R))
   have hc := mobiusDivisorFibre_coarea_cauchy M P (mobiusDivisorRetainedCoareaLabels M P)
@@ -162,7 +162,7 @@ theorem mobiusDivisorCorrectedCoareaAction_mass_balance (M : ℕ) (P : Finset �
   have haction := mobiusDivisorCorrectedCoareaAction_eq_retained M P
   calc
     _ ≤ mobiusDivisorFibreAbsoluteMass M P ∅ *
-        ((∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)+mobiusDivisorRemainingLateMass M P)^2 :=
+        ((∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)+mobiusDivisorRemainingLateMass M P)^(2 : ℕ) :=
       mul_le_mul_of_nonneg_right (mobiusDivisorConsumedLateMass_le_headMass M P) (sq_nonneg _)
     _ ≤ mobiusDivisorFibreAbsoluteMass M P ∅ *
         ((mobiusDivisorAbsoluteMass M-mobiusDivisorRemainingLateMass M P)*J) :=

@@ -23,7 +23,7 @@ open Complex Metric
 
 /-- The growth bound on a wide disc centred right of the abscissa. -/
 theorem wide_ball_growth {γ δ h : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
-    (hL : (10 : ℝ) ^ 16 + 1 ≤ wideScale γ) (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16)
+    (hL : (10 : ℝ) ^ (16 : ℕ) + 1 ≤ wideScale γ) (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16)
     (hη : wideEta γ ≤ 1 / 1000) (hh1 : γ ≤ h) (hh2 : h ≤ 4 * γ) :
     ∀ w ∈ ball (((1 + δ : ℝ) : ℂ) + ((h : ℝ) : ℂ) * Complex.I) (wideEta γ),
       ‖riemannZeta w‖ < (wideScale γ + 3) ^ (34 : ℕ) + 6 := by
@@ -55,7 +55,7 @@ set_option maxHeartbeats 800000 in
 /-- **The logarithmic derivative on the wide strip.**  The remainder of Landau's estimate at radius
 `wideEta γ / 2`, with the polylogarithmic growth bound of the wide rectangle. -/
 theorem neg_re_logDeriv_le_wide {γ δ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
-    (hL : (10 : ℝ) ^ 16 + 1 ≤ wideScale γ) (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16) :
+    (hL : (10 : ℝ) ^ (16 : ℕ) + 1 ≤ wideScale γ) (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16) :
     -(logDeriv riemannZeta (((1 + δ : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).re
       ≤ 32 / wideEta γ
           * (5 / 4 * Real.log ((wideScale γ + 3) ^ (34 : ℕ) + 6)
@@ -64,13 +64,13 @@ theorem neg_re_logDeriv_le_wide {γ δ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
   have hπd : (3.14 : ℝ) < Real.pi := Real.pi_gt_d2
   have hγ3 : (3 : ℝ) ≤ γ := by nlinarith
   have hγ0 : (0 : ℝ) < γ := by linarith
-  have hL16 : (10 : ℝ) ^ 16 ≤ wideScale γ := by linarith
-  have hL12 : (10 : ℝ) ^ 12 ≤ wideScale γ := by nlinarith
+  have hL16 : (10 : ℝ) ^ (16 : ℕ) ≤ wideScale γ := by linarith
+  have hL12 : (10 : ℝ) ^ (12 : ℕ) ≤ wideScale γ := by nlinarith
   have hL0 : (0 : ℝ) < wideScale γ := by nlinarith
   -- the disc radius
   have hηpos : 0 < wideEta γ := by
     have hx := thirtyone_le_log_wideScale hL16
-    have h1 : (0 : ℝ) < 5 * Real.log (wideScale γ) ^ 2 / wideScale γ := by positivity
+    have h1 : (0 : ℝ) < 5 * Real.log (wideScale γ) ^ (2 : ℕ) / wideScale γ := by positivity
     have := wideEta_ge hL12
     linarith
   have hηsmall : wideEta γ ≤ 1 / 1000 := by
@@ -141,11 +141,11 @@ set_option maxHeartbeats 800000 in
 /-- **`−Re ζ'/ζ ≪ log γ / log log γ`.**  At the abscissa `1 + 1/L`, `L = log(γ/2π)`, the wide
 Landau remainder collapses to `288 L / log L` — the classical estimate is `≍ L`. -/
 theorem neg_re_logDeriv_le_wide_rate {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
-    (hL : (10 : ℝ) ^ 16 + 1 ≤ wideScale γ) :
+    (hL : (10 : ℝ) ^ (16 : ℕ) + 1 ≤ wideScale γ) :
     -(logDeriv riemannZeta (((1 + 1 / wideScale γ : ℝ) : ℂ) + (γ : ℂ) * Complex.I)).re
       ≤ 288 * wideScale γ / Real.log (wideScale γ) := by
-  have hL16 : (10 : ℝ) ^ 16 ≤ wideScale γ := by linarith
-  have hL12 : (10 : ℝ) ^ 12 ≤ wideScale γ := by nlinarith
+  have hL16 : (10 : ℝ) ^ (16 : ℕ) ≤ wideScale γ := by linarith
+  have hL12 : (10 : ℝ) ^ (12 : ℕ) ≤ wideScale γ := by nlinarith
   have hL0 : (0 : ℝ) < wideScale γ := by nlinarith
   set L : ℝ := wideScale γ with hLdef
   set x : ℝ := Real.log L with hxdef
@@ -200,11 +200,11 @@ theorem neg_re_logDeriv_le_wide_rate {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
   have hηge := wideEta_ge hL12
   rw [← hLdef, ← hxdef] at hηge
   have hηpos : 0 < wideEta γ := by
-    have : (0 : ℝ) < 5 * x ^ 2 / L := by positivity
+    have : (0 : ℝ) < 5 * x ^ (2 : ℕ) / L := by positivity
     linarith
-  have hfac : 32 / wideEta γ ≤ 32 * L / (5 * x ^ 2) := by
+  have hfac : 32 / wideEta γ ≤ 32 * L / (5 * x ^ (2 : ℕ)) := by
     rw [div_le_div_iff₀ hηpos (by positivity)]
-    have h3 : 5 * x ^ 2 ≤ wideEta γ * L := by
+    have h3 : 5 * x ^ (2 : ℕ) ≤ wideEta γ * L := by
       rw [div_le_iff₀ hL0] at hηge
       linarith
     nlinarith [h3, hL0, hxpos]
@@ -213,15 +213,15 @@ theorem neg_re_logDeriv_le_wide_rate {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
       ≤ 288 * L / x := by
     have hstep : 32 / wideEta γ
         * (5 / 4 * Real.log ((L + 3) ^ (34 : ℕ) + 6) + 3 / 4 * Real.log (1 + 1 / (1 / L)) + 6)
-        ≤ (32 * L / (5 * x ^ 2)) * (45 * x) := by
+        ≤ (32 * L / (5 * x ^ (2 : ℕ))) * (45 * x) := by
       have hR : (0 : ℝ) < 32 / wideEta γ := by positivity
       calc 32 / wideEta γ
             * (5 / 4 * Real.log ((L + 3) ^ (34 : ℕ) + 6)
               + 3 / 4 * Real.log (1 + 1 / (1 / L)) + 6)
           ≤ 32 / wideEta γ * (45 * x) := mul_le_mul_of_nonneg_left hX hR.le
-        _ ≤ (32 * L / (5 * x ^ 2)) * (45 * x) :=
+        _ ≤ (32 * L / (5 * x ^ (2 : ℕ))) * (45 * x) :=
             mul_le_mul_of_nonneg_right hfac (by positivity)
-    have heq : (32 * L / (5 * x ^ 2)) * (45 * x) = 288 * L / x := by
+    have heq : (32 * L / (5 * x ^ (2 : ℕ))) * (45 * x) = 288 * L / x := by
       field_simp
       ring
     linarith

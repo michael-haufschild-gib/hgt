@@ -119,7 +119,7 @@ theorem hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut_eq_neg_fzzForce_sq
     hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut n q =
       -((d4BMXiFZZInformationForceSquareToPeierlsOrbitSusceptibility n q *
         fzzCigarParityReflectedFermiInformationForce
-          (deningerDivisorThetaEigen q).re ^ 2 : ℝ) : ℂ) := by
+          (deningerDivisorThetaEigen q).re ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut_eq,
     d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_fzzForce_sq]
 
@@ -129,7 +129,7 @@ theorem hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut_eq_neg_pwImbalance_s
     hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut n q =
       -((d4BMXiPWImbalanceSquareToPeierlsOrbitSusceptibility n k q *
         schwarzschildParikhWilczekBorelPartnerRealImbalance
-          (deningerDivisorThetaEigen q) k ^ 2 : ℝ) : ℂ) := by
+          (deningerDivisorThetaEigen q) k ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut_eq,
     d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_pwImbalance_sq]
 
@@ -139,7 +139,7 @@ theorem hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut_eq_neg_rbhImbalance_
     hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut n
         (reflectedBiHeatFirstDivisorCopy rho) =
       -((d4BMXiRBHImbalanceSquareToPeierlsOrbitSusceptibility n rho *
-        reflectedBiHeatMultiplicityLeadingJetNormImbalance rho ^ 2 : ℝ) : ℂ) := by
+        reflectedBiHeatMultiplicityLeadingJetNormImbalance rho ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [hbXiPeierlsCanonicalFullCokernelUnitCarrierOrbitCut_eq,
     d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_rbhImbalance_sq]
 

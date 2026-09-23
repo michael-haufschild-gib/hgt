@@ -125,7 +125,7 @@ theorem not_fixedLatticeJets_determine_carrier :
     have hpt := pi_add_evenPhaseLattice k
     have hadd : HasDerivAt (fun y : ℝ => Real.pi + y) 1 (suzukiEvenPhaseLattice k) :=
       HasDerivAt.const_add Real.pi (hasDerivAt_id (suzukiEvenPhaseLattice k))
-    refine ⟨1 / (1 + ((k : ℝ) * (2 * Real.pi)) ^ 2) * 1, ?_, ?_⟩
+    refine ⟨1 / (1 + ((k : ℝ) * (2 * Real.pi)) ^ (2 : ℕ)) * 1, ?_, ?_⟩
     · have h := hadd.arctan
       rw [hpt] at h
       exact h
@@ -135,8 +135,8 @@ theorem not_fixedLatticeJets_determine_carrier :
         (hasDerivAt_latticeWobble _).comp _ hadd
       have h := hcomp.arctan
       rw [hpt, latticeWobble_int_mul_two_pi, sin_int_mul_two_pi] at h
-      have hval : 1 / (1 + ((k : ℝ) * (2 * Real.pi)) ^ 2) * ((1 + 0 / 2) * 1)
-          = 1 / (1 + ((k : ℝ) * (2 * Real.pi)) ^ 2) * 1 := by ring
+      have hval : 1 / (1 + ((k : ℝ) * (2 * Real.pi)) ^ (2 : ℕ)) * ((1 + 0 / 2) * 1)
+          = 1 / (1 + ((k : ℝ) * (2 * Real.pi)) ^ (2 : ℕ)) * 1 := by ring
       rw [hval] at h
       exact h
 
@@ -170,7 +170,7 @@ theorem strictMono_oddWobble : StrictMono oddWobble := by
   refine strictMono_of_deriv_pos ?_
   intro x
   rw [deriv_oddWobble]
-  have hpyth : Real.sin x ^ 2 + Real.cos x ^ 2 = 1 := Real.sin_sq_add_cos_sq x
+  have hpyth : Real.sin x ^ (2 : ℕ) + Real.cos x ^ (2 : ℕ) = 1 := Real.sin_sq_add_cos_sq x
   nlinarith [hpyth, Real.neg_one_le_cos x, Real.cos_le_one x, sq_nonneg (Real.cos x + 1 / 4)]
 
 theorem oddWobble_ge (x : ℝ) : x - 1 / 2 ≤ oddWobble x := by
@@ -304,7 +304,7 @@ theorem not_fixedLatticeJets_determine_reflectionNormalized_carrier :
     have hid : HasDerivAt (fun y : ℝ => Real.pi + y - Real.pi) 1 (suzukiEvenPhaseLattice k) := by
       have h := HasDerivAt.const_add Real.pi (hasDerivAt_id (suzukiEvenPhaseLattice k))
       simpa using h.sub_const Real.pi
-    refine ⟨1 / (1 + suzukiEvenPhaseLattice k ^ 2) * 1, ?_, ?_⟩
+    refine ⟨1 / (1 + suzukiEvenPhaseLattice k ^ (2 : ℕ)) * 1, ?_, ?_⟩
     · have h := hid.arctan
       rw [add_sub_cancel_left] at h
       exact h
@@ -318,9 +318,9 @@ theorem not_fixedLatticeJets_determine_reflectionNormalized_carrier :
       have h := hcomp.arctan
       rw [add_sub_cancel_left, oddWobble_evenPhaseLattice, sin_evenPhaseLattice,
         cos_evenPhaseLattice] at h
-      have hval : 1 / (1 + suzukiEvenPhaseLattice k ^ 2)
+      have hval : 1 / (1 + suzukiEvenPhaseLattice k ^ (2 : ℕ))
             * ((1 + (-1 * (1 + -1) + 0 * (0 + -0)) / 4) * 1)
-          = 1 / (1 + suzukiEvenPhaseLattice k ^ 2) * 1 := by ring
+          = 1 / (1 + suzukiEvenPhaseLattice k ^ (2 : ℕ)) * 1 := by ring
       rw [hval] at h
       exact h
 

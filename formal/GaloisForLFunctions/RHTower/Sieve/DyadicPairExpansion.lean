@@ -31,7 +31,7 @@ open Finset
 
 /-- A fixed-length window is an ordinary sum. -/
 theorem fixedWindowSq_eq (f : ℕ → ℝ) {ℓ : ℕ} (hℓ : 1 ≤ ℓ) (z : ℕ) :
-    fixedWindowSq f ℓ z = (∑ b ∈ Finset.Icc (z + 1) (z + ℓ), f b) ^ 2 := by
+    fixedWindowSq f ℓ z = (∑ b ∈ Finset.Icc (z + 1) (z + ℓ), f b) ^ (2 : ℕ) := by
   have hw := window_eq_partialSum f (y := z + 1) (by omega) (ℓ - 1)
   have hidx : z + 1 + (ℓ - 1) = z + ℓ := by omega
   have hidx2 : z + 1 - 1 = z := by omega

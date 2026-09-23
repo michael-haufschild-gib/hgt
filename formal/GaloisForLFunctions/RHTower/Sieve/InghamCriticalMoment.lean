@@ -11,7 +11,7 @@ height interval, put
 
 Then
 
-`∫ |f_X|^(4/3) ≤ 2^(1/3) (∫ |ζ|^4)^(1/3) (∫ |M_X|^2)^(2/3)
+`∫ |f_X|^(4/3) ≤ 2^(1/3) (∫ |ζ|^(4 : ℕ))^(1/3) (∫ |M_X|^(2 : ℕ))^(2/3)
                     + 2^(1/3) · length`.
 
 This file proves that inequality for the actual Riemann zeta function and the actual finite Möbius

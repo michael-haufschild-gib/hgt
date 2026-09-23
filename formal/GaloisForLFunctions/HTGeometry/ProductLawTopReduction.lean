@@ -28,7 +28,7 @@ theorem fact_linear {α β : ℂ} {k : ℕ} (hv : v k = Polynomial.C α * Polyno
     fact (v k) k = algebraMap ℂ CascadeField α * fx k + algebraMap ℂ CascadeField β := by
   rw [hv, fact_add, fact_C]
   congr 1
-  rw [show (Polynomial.C α * Polynomial.X : Polynomial ℂ) = Polynomial.C α * Polynomial.X ^ 1 by
+  rw [show (Polynomial.C α * Polynomial.X : Polynomial ℂ) = Polynomial.C α * Polynomial.X ^ (1 : ℕ) by
     rw [pow_one], fact_monomial, pow_one]
 
 /-- **The newest coordinate is driven affinely.** -/

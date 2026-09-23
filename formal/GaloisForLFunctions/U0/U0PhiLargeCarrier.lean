@@ -31,7 +31,7 @@ theorem zero_not_mem_filledJulia_large {b : ℂ} (hb : 2 < ‖b‖) : (0 : ℂ) 
   have h1 : (quadratic b)^[1] (0 : ℂ) ∈ filledJulia b := filledJulia_forward h0 1
   have hval : (quadratic b)^[1] (0 : ℂ) = b := by
     rw [Function.iterate_one]
-    show (0 : ℂ) ^ 2 + b = b
+    show (0 : ℂ) ^ (2 : ℕ) + b = b
     ring
   rw [hval] at h1
   exact not_mem_filledJulia (le_refl ‖b‖) hb h1
@@ -45,19 +45,19 @@ theorem filledJulia_exterior {b : ℂ} (hb : 4 ≤ ‖b‖) {z : ℂ} (hz : z �
   by_contra hle
   push Not at hle
   have hfz : ‖b‖ - 1 ≤ ‖quadratic b z‖ := by
-    have htri : ‖b‖ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := by
-      calc ‖b‖ = ‖z ^ 2 + b - z ^ 2‖ := by ring_nf
-        _ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := norm_sub_le _ _
-    have hp : ‖z ^ 2‖ = ‖z‖ ^ 2 := norm_pow z 2
-    show ‖b‖ - 1 ≤ ‖z ^ 2 + b‖
+    have htri : ‖b‖ ≤ ‖z ^ (2 : ℕ) + b‖ + ‖z ^ (2 : ℕ)‖ := by
+      calc ‖b‖ = ‖z ^ (2 : ℕ) + b - z ^ (2 : ℕ)‖ := by ring_nf
+        _ ≤ ‖z ^ (2 : ℕ) + b‖ + ‖z ^ (2 : ℕ)‖ := norm_sub_le _ _
+    have hp : ‖z ^ (2 : ℕ)‖ = ‖z‖ ^ (2 : ℕ) := norm_pow z 2
+    show ‖b‖ - 1 ≤ ‖z ^ (2 : ℕ) + b‖
     nlinarith [htri, hle, norm_nonneg z]
   have hffz : ‖b‖ ≤ ‖quadratic b (quadratic b z)‖ ∧ 2 < ‖quadratic b (quadratic b z)‖ := by
-    have htri : ‖(quadratic b z) ^ 2‖ ≤ ‖(quadratic b z) ^ 2 + b‖ + ‖b‖ :=
+    have htri : ‖(quadratic b z) ^ (2 : ℕ)‖ ≤ ‖(quadratic b z) ^ (2 : ℕ) + b‖ + ‖b‖ :=
       norm_le_add_norm_add _ _
-    have hp : ‖(quadratic b z) ^ 2‖ = ‖quadratic b z‖ ^ 2 := norm_pow _ 2
-    have hgoal : ‖b‖ ≤ ‖(quadratic b z) ^ 2 + b‖ := by
+    have hp : ‖(quadratic b z) ^ (2 : ℕ)‖ = ‖quadratic b z‖ ^ (2 : ℕ) := norm_pow _ 2
+    have hgoal : ‖b‖ ≤ ‖(quadratic b z) ^ (2 : ℕ) + b‖ := by
       nlinarith [htri, hfz, hb]
-    exact ⟨hgoal, by show (2 : ℝ) < ‖(quadratic b z) ^ 2 + b‖; nlinarith [hgoal, hb]⟩
+    exact ⟨hgoal, by show (2 : ℝ) < ‖(quadratic b z) ^ (2 : ℕ) + b‖; nlinarith [hgoal, hb]⟩
   have h2 : (quadratic b)^[2] z ∈ filledJulia b := filledJulia_forward hz 2
   have hval : (quadratic b)^[2] z = quadratic b (quadratic b z) := by
     rw [Function.iterate_succ_apply', Function.iterate_one]
@@ -182,9 +182,9 @@ theorem phiB_pow_pMapB_of_mem_annWB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (
   phiB_pow_pMapB ⟨b, hb⟩ m ⟨z, hz⟩
 
 theorem quadratic_analyticOnNhd_univ_B (b : ℂ) : AnalyticOnNhd ℂ (quadratic b) univ := by
-  have h : AnalyticOnNhd ℂ (fun z : ℂ => z ^ 2 + b) univ :=
+  have h : AnalyticOnNhd ℂ (fun z : ℂ => z ^ (2 : ℕ) + b) univ :=
     (analyticOnNhd_id.pow 2).add analyticOnNhd_const
-  have he : (quadratic b) = fun z : ℂ => z ^ 2 + b := by
+  have he : (quadratic b) = fun z : ℂ => z ^ (2 : ℕ) + b := by
     funext z; exact quadratic_apply b z
   rw [he]
   exact h
@@ -215,9 +215,9 @@ theorem pMapB_hasDerivAt_ne_zero {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m :
     simp at h1
     linarith
   have hq : HasDerivAt (quadratic b) (2 * z) z := by
-    have h : HasDerivAt (fun w : ℂ => w ^ 2 + b) ((2 : ℕ) * z ^ (2 - 1)) z :=
+    have h : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + b) ((2 : ℕ) * z ^ (2 - 1)) z :=
       (hasDerivAt_pow 2 z).add_const b
-    have he : (quadratic b) = fun w : ℂ => w ^ 2 + b := by
+    have he : (quadratic b) = fun w : ℂ => w ^ (2 : ℕ) + b := by
       funext w; exact quadratic_apply b w
     rw [he]
     convert h using 1
@@ -239,9 +239,9 @@ theorem pMapB_hasDerivAt_ne_zero {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m :
     have hfar : pMapB b m z ∈ farB b := pMapB_mem_farB hb m hz
     have hne : pMapB b m z ≠ 0 := farB_ne_zero (norm_gt_two hb) hfar
     have hqm : HasDerivAt (quadratic b) (2 * pMapB b m z) (pMapB b m z) := by
-      have h : HasDerivAt (fun w : ℂ => w ^ 2 + b) ((2 : ℕ) * (pMapB b m z) ^ (2 - 1))
+      have h : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + b) ((2 : ℕ) * (pMapB b m z) ^ (2 - 1))
           (pMapB b m z) := (hasDerivAt_pow 2 (pMapB b m z)).add_const b
-      have he : (quadratic b) = fun w : ℂ => w ^ 2 + b := by
+      have he : (quadratic b) = fun w : ℂ => w ^ (2 : ℕ) + b := by
         funext w; exact quadratic_apply b w
       rw [he]
       convert h using 1
@@ -299,20 +299,20 @@ theorem pMapB_image_infinite {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ
 `t ↦ t² − ‖b‖` from any starting level above the fixed point. -/
 theorem iterate_norm_ge {b : ℂ} (hb : 2 < ‖b‖) {s : ℝ} (hs : xStar ‖b‖ ≤ s)
     {w : ℂ} (hw : s ≤ ‖w‖) (m : ℕ) :
-    (fun t => t ^ 2 - ‖b‖)^[m] s ≤ ‖(quadratic b)^[m] w‖ := by
+    (fun t => t ^ (2 : ℕ) - ‖b‖)^[m] s ≤ ‖(quadratic b)^[m] w‖ := by
   induction m generalizing s w with
   | zero => simpa using hw
   | succ m ih =>
     rw [Function.iterate_succ_apply, Function.iterate_succ_apply]
     have hxs0 : (0 : ℝ) ≤ xStar ‖b‖ :=
       le_of_lt (lt_trans one_pos (one_lt_xStar (by linarith)))
-    have hgs : xStar ‖b‖ ≤ s ^ 2 - ‖b‖ := by
+    have hgs : xStar ‖b‖ ≤ s ^ (2 : ℕ) - ‖b‖ := by
       have := step_ge (show (0:ℝ) < ‖b‖ by linarith) hs
       linarith
-    have hstep : s ^ 2 - ‖b‖ ≤ ‖quadratic b w‖ := by
-      have htri : ‖w ^ 2‖ ≤ ‖w ^ 2 + b‖ + ‖b‖ := norm_le_add_norm_add _ _
-      have hp : ‖w ^ 2‖ = ‖w‖ ^ 2 := norm_pow w 2
-      show s ^ 2 - ‖b‖ ≤ ‖w ^ 2 + b‖
+    have hstep : s ^ (2 : ℕ) - ‖b‖ ≤ ‖quadratic b w‖ := by
+      have htri : ‖w ^ (2 : ℕ)‖ ≤ ‖w ^ (2 : ℕ) + b‖ + ‖b‖ := norm_le_add_norm_add _ _
+      have hp : ‖w ^ (2 : ℕ)‖ = ‖w‖ ^ (2 : ℕ) := norm_pow w 2
+      show s ^ (2 : ℕ) - ‖b‖ ≤ ‖w ^ (2 : ℕ) + b‖
       nlinarith [htri, hw, hs, hxs0,
         mul_nonneg (sub_nonneg.mpr hw) (show (0:ℝ) ≤ ‖w‖ + s by linarith)]
     exact ih hgs hstep
@@ -329,7 +329,7 @@ theorem exists_far_carrier_B {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
   have hb2 : 2 < ‖b‖ := norm_gt_two hb
   have hb0 : (0 : ℝ) < ‖b‖ := by linarith
   have hcl := xStar_lt_of_sharp hb
-  set s₀ : ℝ := ‖b‖ - rB b ^ 2 with hs₀
+  set s₀ : ℝ := ‖b‖ - rB b ^ (2 : ℕ) with hs₀
   have hs₀gt : xStar ‖b‖ < s₀ := by
     have hrsq := rB_sq_le hb
     rw [hs₀]
@@ -341,17 +341,17 @@ theorem exists_far_carrier_B {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
     have := annWB_subset_ball hz
     simpa [mem_ball, dist_zero_right] using this
   have hfirst : s₀ ≤ ‖quadratic b z‖ := by
-    have htri : ‖b‖ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := by
-      calc ‖b‖ = ‖z ^ 2 + b - z ^ 2‖ := by ring_nf
-        _ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := norm_sub_le _ _
-    have hp : ‖z ^ 2‖ = ‖z‖ ^ 2 := norm_pow z 2
-    have hzr : ‖z‖ ^ 2 ≤ rB b ^ 2 := by
+    have htri : ‖b‖ ≤ ‖z ^ (2 : ℕ) + b‖ + ‖z ^ (2 : ℕ)‖ := by
+      calc ‖b‖ = ‖z ^ (2 : ℕ) + b - z ^ (2 : ℕ)‖ := by ring_nf
+        _ ≤ ‖z ^ (2 : ℕ) + b‖ + ‖z ^ (2 : ℕ)‖ := norm_sub_le _ _
+    have hp : ‖z ^ (2 : ℕ)‖ = ‖z‖ ^ (2 : ℕ) := norm_pow z 2
+    have hzr : ‖z‖ ^ (2 : ℕ) ≤ rB b ^ (2 : ℕ) := by
       nlinarith [hz', norm_nonneg z, one_lt_rB hb]
-    show s₀ ≤ ‖z ^ 2 + b‖
+    show s₀ ≤ ‖z ^ (2 : ℕ) + b‖
     rw [hs₀]
     nlinarith [htri, hzr]
   have hcomp := iterate_norm_ge hb2 hs₀gt.le hfirst m
-  calc M < (fun t => t ^ 2 - ‖b‖)^[m] s₀ := hm
+  calc M < (fun t => t ^ (2 : ℕ) - ‖b‖)^[m] s₀ := hm
     _ ≤ ‖(quadratic b)^[m] (quadratic b z)‖ := hcomp
     _ = ‖pMapB b m z‖ := rfl
 

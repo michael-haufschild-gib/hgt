@@ -45,7 +45,7 @@ theorem norm_gammaSewnCriticalPhysicalPluckerSpectralOperator_le_nuclearTraceMas
     _ = ∑' idx : (ℕ × ℕ) × Fin 6,
         gammaSewnCriticalAdjacentPrime_PluckerBlockWeight idx.1 *
           gammaSewnCriticalAdjacentPrime_PluckerProbability idx.1 idx.2 *
-            ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ 2 := by
+            ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ (2 : ℕ) := by
       apply tsum_congr
       exact norm_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm
 
@@ -95,7 +95,7 @@ theorem gammaSewnCriticalPhysicalPlucker_canonicalBoundaryResolvent_cannot_rebal
     {v : GammaSewnCriticalPhysicalPluckerHilbert} (hv0 : v ≠ 0) :
     let w := routePPrimitiveBaseCauchyCubicWeight pe
     let c : ℝ := 8
-    w / 64 * c ^ 2 = w ∧
+    w / 64 * c ^ (2 : ℕ) = w ∧
       boundaryTransfer eps v ≠ (c : ℂ) • v ∧
       (eps • boundaryInverse eps) v ≠ (c : ℂ) • v ∧
       boundaryInverse eps v ≠ (c : ℂ) • v := by

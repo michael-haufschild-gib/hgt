@@ -32,7 +32,7 @@ theorem prolateWindowEpsP_nonneg {c mu K : ℝ} {n : ℕ} (hc : 0 < c) :
     0 ≤ prolateWindowEpsP c mu K n := by
   rw [prolateWindowEpsP]
   have h1 : (0 : ℝ) ≤ 2 * |mu - (2 * (n : ℝ) + 1)| := by positivity
-  have h2 : (0 : ℝ) ≤ 2 * (K ^ 2 * (K ^ 2 + (2 * (n : ℝ) + 1))) / c := by positivity
+  have h2 : (0 : ℝ) ≤ 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + (2 * (n : ℝ) + 1))) / c := by positivity
   linarith
 
 theorem prolateWindowEpsQ_nonneg {c K : ℝ} (hc : 0 < c) (hK : 0 < K) :
@@ -48,7 +48,7 @@ theorem hermiteWindowBound_nonneg (K : ℝ) (n : ℕ) : 0 ≤ hermiteWindowBound
 solution of the rescaled prolate equation is bounded on the window by a constant depending only on
 the window. -/
 theorem normalizedProlate_phase_le {c mu K : ℝ} {u u' u'' : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hu : ∀ x, HasDerivAt u (u' x) x) (hu' : ∀ x, HasDerivAt u' (u'' x) x)
     (hequ : ∀ x ∈ Icc (0 : ℝ) K,
       u'' x = rescaledProlateP c mu x * u x + rescaledProlateQ c x * u' x)
@@ -102,15 +102,15 @@ theorem tendsto_prolateWindowMassEnvelope {ι : Type*} {L : Filter ι} {mu c : �
 window mass by at most the envelope. -/
 theorem prolateGround_windowMass_bound
     {c mu chi lam K : ℝ} {Phi : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (hne : Phi ≠ 0) (heven : Function.Even Phi) (hlam : lam ≠ 0)
     (hband : ∀ x : ℝ, bandTransform c Phi x = lam * Phi x)
     (heig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
     (hmuval : mu = c * radialSeparationRatio c chi)
     (hP : prolateWindowEpsP c mu K 0 ≤ 1) (hQ : prolateWindowEpsQ c K ≤ 1) :
-    |(∫ x in (-K)..K, (normalizedProlateProfile c Phi x) ^ 2)
-        - ∫ x in (-K)..K, Real.exp (-(x ^ 2))|
+    |(∫ x in (-K)..K, (normalizedProlateProfile c Phi x) ^ (2 : ℕ))
+        - ∫ x in (-K)..K, Real.exp (-(x ^ (2 : ℕ)))|
       ≤ prolateWindowMassEnvelope c mu K := by
   obtain ⟨hu, hu', hequ0, hval0, hval0'⟩ :=
     normalizedProlate_window_package (K := K) hK hcK hsm hne heven hlam hband heig
@@ -150,23 +150,23 @@ theorem normalizedProlate_secondMoment_le
     {c chi : ℝ} {Phi : ℝ → ℝ} (hc : 0 < c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (heig : ∀ x ∈ Icc (-1 : ℝ) 1, prolateSLAction c Phi x = chi * Phi x) :
-    (∫ xi in (-Real.sqrt c)..(Real.sqrt c), xi ^ 2 * (normalizedProlateProfile c Phi xi) ^ 2)
+    (∫ xi in (-Real.sqrt c)..(Real.sqrt c), xi ^ (2 : ℕ) * (normalizedProlateProfile c Phi xi) ^ (2 : ℕ))
       ≤ (c * radialSeparationRatio c chi)
-        * ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ 2 := by
+        * ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ (2 : ℕ) := by
   have hkey := integral_rescaled_secondMoment_le hc hsm heig
-  have e1 : ∀ xi : ℝ, xi ^ 2 * (normalizedProlateProfile c Phi xi) ^ 2
-      = (1 / (Phi 0) ^ 2) * (xi ^ 2 * (prolateHermiteRescale c Phi xi) ^ 2) := by
+  have e1 : ∀ xi : ℝ, xi ^ (2 : ℕ) * (normalizedProlateProfile c Phi xi) ^ (2 : ℕ)
+      = (1 / (Phi 0) ^ (2 : ℕ)) * (xi ^ (2 : ℕ) * (prolateHermiteRescale c Phi xi) ^ (2 : ℕ)) := by
     intro xi
     rw [normalizedProlateProfile, div_pow]
     ring
-  have e2 : ∀ xi : ℝ, (normalizedProlateProfile c Phi xi) ^ 2
-      = (1 / (Phi 0) ^ 2) * (prolateHermiteRescale c Phi xi) ^ 2 := by
+  have e2 : ∀ xi : ℝ, (normalizedProlateProfile c Phi xi) ^ (2 : ℕ)
+      = (1 / (Phi 0) ^ (2 : ℕ)) * (prolateHermiteRescale c Phi xi) ^ (2 : ℕ) := by
     intro xi
     rw [normalizedProlateProfile, div_pow]
     ring
   simp_rw [e1, e2]
   rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
-  have hnn : (0 : ℝ) ≤ 1 / (Phi 0) ^ 2 := by positivity
+  have hnn : (0 : ℝ) ≤ 1 / (Phi 0) ^ (2 : ℕ) := by positivity
   nlinarith [hkey, hnn]
 
 /-- **Chebyshev bound on the normalized total mass.**  Outside the window at most the fraction
@@ -176,43 +176,43 @@ theorem normalizedProlate_chebyshev
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (heig : ∀ x ∈ Icc (-1 : ℝ) 1, prolateSLAction c Phi x = chi * Phi x)
     (hmuval : mu = c * radialSeparationRatio c chi) (hmu2 : mu ≤ 2) :
-    (∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ 2)
-        * (1 - 2 / K ^ 2)
-      ≤ ∫ xi in (-K)..K, (normalizedProlateProfile c Phi xi) ^ 2 := by
+    (∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ (2 : ℕ))
+        * (1 - 2 / K ^ (2 : ℕ))
+      ≤ ∫ xi in (-K)..K, (normalizedProlateProfile c Phi xi) ^ (2 : ℕ) := by
   have hcont : Continuous (normalizedProlateProfile c Phi) :=
     continuous_normalizedProlateProfile hsm
   have htail := window_tail_le_of_secondMoment (f := normalizedProlateProfile c Phi)
     (K := K) (R := Real.sqrt c) hK hKc hcont
   have hmom := normalizedProlate_secondMoment_le hc hsm heig
   have hNnn : (0 : ℝ) ≤ ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-      (normalizedProlateProfile c Phi xi) ^ 2 := by
+      (normalizedProlateProfile c Phi xi) ^ (2 : ℕ) := by
     refine intervalIntegral.integral_nonneg ?_ (fun x _ => sq_nonneg _)
     have : (0 : ℝ) ≤ Real.sqrt c := Real.sqrt_nonneg c
     linarith
-  have hKsq : (0 : ℝ) < 1 / K ^ 2 := by positivity
+  have hKsq : (0 : ℝ) < 1 / K ^ (2 : ℕ) := by positivity
   rw [hmuval] at hmu2
   have hchain : (∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-      xi ^ 2 * (normalizedProlateProfile c Phi xi) ^ 2)
-      ≤ 2 * ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ 2 := by
+      xi ^ (2 : ℕ) * (normalizedProlateProfile c Phi xi) ^ (2 : ℕ))
+      ≤ 2 * ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ (2 : ℕ) := by
     refine le_trans hmom ?_
     exact mul_le_mul_of_nonneg_right hmu2 hNnn
-  have hdiv : (2 : ℝ) / K ^ 2 = (1 / K ^ 2) * 2 := by ring
+  have hdiv : (2 : ℝ) / K ^ (2 : ℕ) = (1 / K ^ (2 : ℕ)) * 2 := by ring
   rw [hdiv]
   nlinarith [htail, hchain, hKsq]
 
 /-- The centre-mass ratio whose limit the card records. -/
 def prolateCentreMassRatio (c : ℝ) (Phi : ℝ → ℝ) : ℝ :=
-  Real.sqrt (Real.pi / c) * (Phi 0) ^ 2 / ∫ x in (-1 : ℝ)..1, (Phi x) ^ 2
+  Real.sqrt (Real.pi / c) * (Phi 0) ^ (2 : ℕ) / ∫ x in (-1 : ℝ)..1, (Phi x) ^ (2 : ℕ)
 
 /-- The centre-mass ratio is exactly `√π` divided by the normalized total mass. -/
 theorem prolateCentreMassRatio_mul_totalMass
     {c : ℝ} {Phi : ℝ → ℝ} (hc : 0 < c) (h0 : Phi 0 ≠ 0)
-    (hS : (∫ x in (-1 : ℝ)..1, (Phi x) ^ 2) ≠ 0) :
+    (hS : (∫ x in (-1 : ℝ)..1, (Phi x) ^ (2 : ℕ)) ≠ 0) :
     prolateCentreMassRatio c Phi
-        * ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ 2
+        * ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ (2 : ℕ)
       = Real.sqrt Real.pi := by
-  have e2 : ∀ xi : ℝ, (normalizedProlateProfile c Phi xi) ^ 2
-      = (1 / (Phi 0) ^ 2) * (prolateHermiteRescale c Phi xi) ^ 2 := by
+  have e2 : ∀ xi : ℝ, (normalizedProlateProfile c Phi xi) ^ (2 : ℕ)
+      = (1 / (Phi 0) ^ (2 : ℕ)) * (prolateHermiteRescale c Phi xi) ^ (2 : ℕ) := by
     intro xi
     rw [normalizedProlateProfile, div_pow]
     ring
@@ -228,16 +228,16 @@ theorem prolateCentreMassRatio_mul_totalMass
 plus the second-moment estimate caps the whole rescaled mass, with a constant depending only on the
 window and the separation bound. -/
 theorem normalizedProlate_total_mass_le {c mu chi lam K : ℝ} {Phi : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (hne : Phi ≠ 0) (heven : Function.Even Phi) (hlam : lam ≠ 0)
     (hband : ∀ x : ℝ, bandTransform c Phi x = lam * Phi x)
     (heig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
     (hmuval : mu = c * radialSeparationRatio c chi)
     (hP : prolateWindowEpsP c mu K 0 ≤ 1) (hQ : prolateWindowEpsQ c K ≤ 1) :
-    (∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ 2)
-        * (1 - mu / K ^ 2)
-      ≤ 2 * K * prolateWindowPhaseBound K ^ 2 := by
+    (∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ (2 : ℕ))
+        * (1 - mu / K ^ (2 : ℕ))
+      ≤ 2 * K * prolateWindowPhaseBound K ^ (2 : ℕ) := by
   have hc : 0 < c := pos_of_window hK hcK
   obtain ⟨hu, hu', hequ0, hval0, hval0'⟩ :=
     normalizedProlate_window_package (K := K) hK hcK hsm hne heven hlam hband heig
@@ -254,11 +254,11 @@ theorem normalizedProlate_total_mass_le {c mu chi lam K : ℝ} {Phi : ℝ → �
       |normalizedProlateProfile c Phi x| ≤ prolateWindowPhaseBound K :=
     abs_le_of_even_window heu (fun x hx => le_trans (le_max_left _ _) (hB0 x hx))
   have hKS : K ≤ Real.sqrt c := by
-    calc K = Real.sqrt (K ^ 2) := (Real.sqrt_sq hK.le).symm
+    calc K = Real.sqrt (K ^ (2 : ℕ)) := (Real.sqrt_sq hK.le).symm
       _ ≤ Real.sqrt c := Real.sqrt_le_sqrt (by nlinarith [sq_nonneg K])
   have hmom : (∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-      xi ^ 2 * (normalizedProlateProfile c Phi xi) ^ 2)
-      ≤ mu * ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ 2 := by
+      xi ^ (2 : ℕ) * (normalizedProlateProfile c Phi xi) ^ (2 : ℕ))
+      ≤ mu * ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ (2 : ℕ) := by
     rw [hmuval]
     exact normalizedProlate_secondMoment_le hc hsm (fun x _ => heig x)
   exact total_mass_le_of_window_bound hK hKS (continuous_normalizedProlateProfile hsm)
@@ -301,16 +301,16 @@ theorem tendsto_prolateGround_centreMass :
     exact hc.le
   have hsqrt : ∀ K : ℝ, 0 < K → ∀ᶠ c in atTop, K ≤ Real.sqrt c := by
     intro K hK
-    filter_upwards [eventually_ge_atTop (K ^ 2)] with c hc
-    calc K = Real.sqrt (K ^ 2) := (Real.sqrt_sq hK.le).symm
+    filter_upwards [eventually_ge_atTop (K ^ (2 : ℕ))] with c hc
+    calc K = Real.sqrt (K ^ (2 : ℕ)) := (Real.sqrt_sq hK.le).symm
       _ ≤ Real.sqrt c := Real.sqrt_le_sqrt hc
   -- the normalized total mass converges to the Gaussian mass
   have htotal : Tendsto
       (fun c => ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-        (normalizedProlateProfile c (Psi c) xi) ^ 2) atTop (𝓝 (Real.sqrt Real.pi)) := by
+        (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)) atTop (𝓝 (Real.sqrt Real.pi)) := by
     refine tendsto_total_of_window (M := 2)
-      (W := fun K c => ∫ x in (-K)..K, (normalizedProlateProfile c (Psi c) x) ^ 2)
-      (G := fun K => ∫ x in (-K)..K, Real.exp (-(x ^ 2))) (by norm_num) ?_ ?_ ?_
+      (W := fun K c => ∫ x in (-K)..K, (normalizedProlateProfile c (Psi c) x) ^ (2 : ℕ))
+      (G := fun K => ∫ x in (-K)..K, Real.exp (-(x ^ (2 : ℕ)))) (by norm_num) ?_ ?_ ?_
       tendsto_gaussianWindow
     · intro K hK _
       filter_upwards [eventually_gt_atTop (0 : ℝ), hsqrt K hK] with c hc hKc
@@ -324,19 +324,19 @@ theorem tendsto_prolateGround_centreMass :
       have henv := tendsto_prolateWindowMassEnvelope (mu := mu) (c := fun x : ℝ => x) (K := K)
         hmu tendsto_id
       have hbnd : ∀ᶠ c in atTop,
-          ‖(∫ x in (-K)..K, (normalizedProlateProfile c (Psi c) x) ^ 2)
-            - ∫ x in (-K)..K, Real.exp (-(x ^ 2))‖ ≤ prolateWindowMassEnvelope c (mu c) K := by
-        filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_ge_atTop (2 * K ^ 2),
+          ‖(∫ x in (-K)..K, (normalizedProlateProfile c (Psi c) x) ^ (2 : ℕ))
+            - ∫ x in (-K)..K, Real.exp (-(x ^ (2 : ℕ)))‖ ≤ prolateWindowMassEnvelope c (mu c) K := by
+        filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_ge_atTop (2 * K ^ (2 : ℕ)),
           hepsP K, hepsQ K] with c hc hcK hP hQ
         obtain ⟨lam, chi, hlam, hsm, hne, heven, hband, hprolate, hval, _⟩ := hfam c hc
         exact prolateGround_windowMass_bound hK hcK hsm hne heven hlam hband hprolate hval hP hQ
       have hzero := squeeze_zero_norm' hbnd henv
-      have hadd := hzero.add_const (∫ x in (-K)..K, Real.exp (-(x ^ 2)))
+      have hadd := hzero.add_const (∫ x in (-K)..K, Real.exp (-(x ^ (2 : ℕ))))
       simpa using hadd
   -- unwind the normalization
   have hpi : (0 : ℝ) < Real.sqrt Real.pi := Real.sqrt_pos.2 Real.pi_pos
   have hlim : Tendsto (fun c => Real.sqrt Real.pi
-      / ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c (Psi c) xi) ^ 2)
+      / ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ))
       atTop (𝓝 1) := by
     have := (tendsto_const_nhds (α := ℝ) (f := atTop (α := ℝ))
       (x := Real.sqrt Real.pi)).div htotal hpi.ne'

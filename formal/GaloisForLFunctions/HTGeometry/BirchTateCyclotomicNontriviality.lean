@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable (p : ℕ) [Fact p.Prime]
 variable (F : Type*) [Field F] [NumberField F]
 
-/-- Vanishing of `χ_p(g)^2 - 1` places every finite cyclotomic reduction of `g` in the
+/-- Vanishing of `χ_p(g)^(2 : ℕ) - 1` places every finite cyclotomic reduction of `g` in the
 square-one kernel. -/
 theorem modularCyclotomicCharacter_mem_squareOneKernel_of_cyclotomicSquare_eq_zero
     (g : Field.absoluteGaloisGroup F)

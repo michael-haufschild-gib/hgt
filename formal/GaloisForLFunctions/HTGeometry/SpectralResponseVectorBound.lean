@@ -65,9 +65,9 @@ theorem inner_spectralResponseVector {m : ℕ} (P : Fin m → (E →L[ℝ] E)) (
 theorem norm_le_sqrt_card_of_forall_abs_le {m : ℕ} (w : EuclideanSpace ℝ (Fin m))
     (hw : ∀ a, |w a| ≤ 1) : ‖w‖ ≤ Real.sqrt m := by
   classical
-  have hsq : ‖w‖ ^ 2 ≤ (m : ℝ) := by
+  have hsq : ‖w‖ ^ (2 : ℕ) ≤ (m : ℝ) := by
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
-    calc ∑ i : Fin m, ‖w i‖ ^ 2 ≤ ∑ _i : Fin m, (1 : ℝ) := by
+    calc ∑ i : Fin m, ‖w i‖ ^ (2 : ℕ) ≤ ∑ _i : Fin m, (1 : ℝ) := by
           refine Finset.sum_le_sum fun i _ => ?_
           have h := hw i
           rw [Real.norm_eq_abs]

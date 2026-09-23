@@ -105,17 +105,17 @@ lemma recoverVec_apply_other (w : ThreeQubitVec) {ijk}
 /-- The norm of `recoverVec v` equals 1 if and only if the sum of squared magnitudes
     of the majority amplitudes equals 1. -/
 lemma norm_recoverVec_eq_one_iff (v : ThreeQubitVec) :
-  norm (recoverVec v) = 1 ↔ ‖maj0_amp v‖^2 + ‖maj1_amp v‖^2 = 1 := by
+  norm (recoverVec v) = 1 ↔ ‖maj0_amp v‖^(2 : ℕ) + ‖maj1_amp v‖^(2 : ℕ) = 1 := by
   classical
   -- recoverVec v is only non-zero at (0,0,0) and (1,1,1)
-  -- So norm^2 = |maj0_amp v|^2 + |maj1_amp v|^2
-  have h_norm_sq : (norm (recoverVec v))^2 = ‖maj0_amp v‖^2 + ‖maj1_amp v‖^2 := by
+  -- So norm^(2 : ℕ) = |maj0_amp v|^(2 : ℕ) + |maj1_amp v|^(2 : ℕ)
+  have h_norm_sq : (norm (recoverVec v))^(2 : ℕ) = ‖maj0_amp v‖^(2 : ℕ) + ‖maj1_amp v‖^(2 : ℕ) := by
     rw [norm_sq_def]
     -- Sum over all basis states, but only (0,0,0) and (1,1,1) are non-zero
     -- Compute by splitting the sum
-    have h_split : (∑ ijk : ThreeQubitBasis, ‖recoverVec v ijk‖^2) =
-                   (∑ ijk : ThreeQubitBasis, if ijk = (0,0,0) then ‖maj0_amp v‖^2 else
-                    if ijk = (1,1,1) then ‖maj1_amp v‖^2 else 0) := by
+    have h_split : (∑ ijk : ThreeQubitBasis, ‖recoverVec v ijk‖^(2 : ℕ)) =
+                   (∑ ijk : ThreeQubitBasis, if ijk = (0,0,0) then ‖maj0_amp v‖^(2 : ℕ) else
+                    if ijk = (1,1,1) then ‖maj1_amp v‖^(2 : ℕ) else 0) := by
       refine Finset.sum_congr rfl ?_
       intro ijk _
       by_cases h0 : ijk = (0,0,0)
@@ -129,12 +129,12 @@ lemma norm_recoverVec_eq_one_iff (v : ThreeQubitVec) :
     simp [split_two_points, Finset.sum_add_distrib]
   constructor
   · intro h_norm
-    have h_norm_sq_eq : (norm (recoverVec v))^2 = 1^2 := by rw [h_norm]
+    have h_norm_sq_eq : (norm (recoverVec v))^(2 : ℕ) = 1^(2 : ℕ) := by rw [h_norm]
     rw [h_norm_sq] at h_norm_sq_eq
     norm_num at h_norm_sq_eq
     exact h_norm_sq_eq
   · intro h_sq
-    have h_norm_sq_eq : (norm (recoverVec v))^2 = 1 := by
+    have h_norm_sq_eq : (norm (recoverVec v))^(2 : ℕ) = 1 := by
       rw [h_norm_sq, h_sq]
     have h_nonneg : 0 ≤ norm (recoverVec v) := norm_nonneg
     rw [← Real.sqrt_inj h_nonneg (by norm_num), Real.sqrt_one]
@@ -144,13 +144,13 @@ lemma norm_recoverVec_eq_one_iff (v : ThreeQubitVec) :
 
 lemma norm_recoverVec_ket100 : norm (recoverVec ket100.val) = 1 := by
   -- maj0_amp ket100 = 1, maj1_amp ket100 = 0
-  -- So |1|^2 + |0|^2 = 1
+  -- So |1|^(2 : ℕ) + |0|^(2 : ℕ) = 1
   rw [norm_recoverVec_eq_one_iff]
   simp [maj0_amp, maj1_amp]
 
 lemma norm_recoverVec_ket011 : norm (recoverVec ket011.val) = 1 := by
   -- maj0_amp ket011 = 0, maj1_amp ket011 = 1
-  -- So |0|^2 + |1|^2 = 1
+  -- So |0|^(2 : ℕ) + |1|^(2 : ℕ) = 1
   rw [norm_recoverVec_eq_one_iff]
   simp [maj0_amp, maj1_amp]
 

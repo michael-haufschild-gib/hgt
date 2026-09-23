@@ -131,7 +131,7 @@ theorem tendsto_routeRCofinalSieveHarmonicReporter_of_residue
     hres).congr fun N => ?_
   exact profileAverage_routeRCofinalSieveProfile e N a
 
-/-- The sieve reporter also reads the enlarged domain `ell^1 + negligible`, which
+/-- The sieve reporter also reads the enlarged domain `ell^(1 : ℕ) + negligible`, which
 its own development does not cover. -/
 theorem tendsto_routeRCofinalSieveHarmonicReporter_of_residueMod
     (e : ℕ ≃ Nat.Primes) {a : Nat.Primes → ℂ} {c : ℂ}

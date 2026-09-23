@@ -39,7 +39,7 @@ def modularSpacetimeDifferential (A : SL(2,ℤ)) (z : UpperHalfPlane) :
 
 /-- The complexified Jacobian retains both real angular entries of the actual Mobius derivative. -/
 def modularJacobian (A : SL(2,ℤ)) (z : UpperHalfPlane) : Matrix (Fin 4) (Fin 4) ℂ :=
-  let c := 1/(denom A z)^2
+  let c := 1/(denom A z)^(2 : ℕ)
   !![1,0,0,0; 0,1,0,0; 0,0,c.re,-c.im; 0,0,c.im,c.re]
 
 /-- The actual modular action has exactly the displayed full coordinate differential. -/

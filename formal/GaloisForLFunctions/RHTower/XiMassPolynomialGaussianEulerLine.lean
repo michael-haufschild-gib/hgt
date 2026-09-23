@@ -33,7 +33,7 @@ theorem xiMassAnalyticSqrt_add_ne_zero {a : ℝ} (ha : 0 < a) (z : ℂ) :
 
 /-- Rest-energy renormalization of the analytic mass test at an arbitrary point. -/
 theorem exp_restEnergy_mul_xiMassAnalyticTest (a t : ℝ) (z : ℂ) :
-    Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+    Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
         xiMassAnalyticTest a (((2 * a * t : ℝ) : ℂ)) z =
       Complex.exp (-(t : ℂ) * xiMassPointParabolicExponent a z) := by
   rw [xiMassAnalyticTest, xiMassPointParabolicExponent, ← Complex.exp_add]
@@ -44,23 +44,23 @@ theorem exp_restEnergy_mul_xiMassAnalyticTest (a t : ℝ) (z : ℂ) :
 /-- Exact rational remainder of the renormalized exponent at an arbitrary point. -/
 theorem xiMassPointParabolicExponent_eq_sq_sub_remainder {a : ℝ} (ha : 0 < a) (z : ℂ) :
     xiMassPointParabolicExponent a z =
-      z ^ 2 - z ^ 4 / (xiMassAnalyticSqrt a z + (a : ℂ)) ^ 2 := by
+      z ^ (2 : ℕ) - z ^ (4 : ℕ) / (xiMassAnalyticSqrt a z + (a : ℂ)) ^ (2 : ℕ) := by
   let beta : ℂ := xiMassAnalyticSqrt a z
   have hden : beta + (a : ℂ) ≠ 0 := xiMassAnalyticSqrt_add_ne_zero ha z
-  have hsq : beta ^ 2 = z ^ 2 + ((a ^ 2 : ℝ) : ℂ) := by
+  have hsq : beta ^ (2 : ℕ) = z ^ (2 : ℕ) + ((a ^ (2 : ℕ) : ℝ) : ℂ) := by
     dsimp only [beta]
     rw [xiMassAnalyticSqrt_sq, xiMassAnalyticArg]
-  have hprod : (beta - (a : ℂ)) * (beta + (a : ℂ)) = z ^ 2 := by
-    calc (beta - (a : ℂ)) * (beta + (a : ℂ)) = beta ^ 2 - ((a : ℂ) ^ 2) := by ring
-      _ = z ^ 2 := by rw [hsq]; push_cast; ring
-  have hdiv : beta - (a : ℂ) = z ^ 2 / (beta + (a : ℂ)) := (eq_div_iff hden).2 hprod
-  change (((2 * a : ℝ) : ℂ)) * (beta - (a : ℂ)) = z ^ 2 - z ^ 4 / (beta + (a : ℂ)) ^ 2
-  calc (((2 * a : ℝ) : ℂ)) * (beta - (a : ℂ)) = z ^ 2 - (beta - (a : ℂ)) ^ 2 := by
+  have hprod : (beta - (a : ℂ)) * (beta + (a : ℂ)) = z ^ (2 : ℕ) := by
+    calc (beta - (a : ℂ)) * (beta + (a : ℂ)) = beta ^ (2 : ℕ) - ((a : ℂ) ^ (2 : ℕ)) := by ring
+      _ = z ^ (2 : ℕ) := by rw [hsq]; push_cast; ring
+  have hdiv : beta - (a : ℂ) = z ^ (2 : ℕ) / (beta + (a : ℂ)) := (eq_div_iff hden).2 hprod
+  change (((2 * a : ℝ) : ℂ)) * (beta - (a : ℂ)) = z ^ (2 : ℕ) - z ^ (4 : ℕ) / (beta + (a : ℂ)) ^ (2 : ℕ)
+  calc (((2 * a : ℝ) : ℂ)) * (beta - (a : ℂ)) = z ^ (2 : ℕ) - (beta - (a : ℂ)) ^ (2 : ℕ) := by
         rw [← hprod]; push_cast; ring
-    _ = z ^ 2 - z ^ 4 / (beta + (a : ℂ)) ^ 2 := by rw [hdiv]; field_simp [hden]
+    _ = z ^ (2 : ℕ) - z ^ (4 : ℕ) / (beta + (a : ℂ)) ^ (2 : ℕ) := by rw [hdiv]; field_simp [hden]
 
 theorem norm_xiMassPointParabolicExponent_sub_sq_le {a : ℝ} (ha : 0 < a) (z : ℂ) :
-    ‖xiMassPointParabolicExponent a z - z ^ 2‖ ≤ ‖z‖ ^ 4 / a ^ 2 := by
+    ‖xiMassPointParabolicExponent a z - z ^ (2 : ℕ)‖ ≤ ‖z‖ ^ (4 : ℕ) / a ^ (2 : ℕ) := by
   let beta : ℂ := xiMassAnalyticSqrt a z
   have hnn := xiMassAnalyticSqrt_re_nonneg a z
   have hdenNorm : a ≤ ‖beta + (a : ℂ)‖ := by
@@ -68,10 +68,10 @@ theorem norm_xiMassPointParabolicExponent_sub_sq_le {a : ℝ} (ha : 0 < a) (z : 
           simp only [Complex.add_re, Complex.ofReal_re]
           linarith
       _ ≤ ‖beta + (a : ℂ)‖ := Complex.re_le_norm _
-  have hdenSq : a ^ 2 ≤ ‖beta + (a : ℂ)‖ ^ 2 := by
+  have hdenSq : a ^ (2 : ℕ) ≤ ‖beta + (a : ℂ)‖ ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (beta + (a : ℂ))]
-  have herr : xiMassPointParabolicExponent a z - z ^ 2 =
-      -(z ^ 4 / (beta + (a : ℂ)) ^ 2) := by
+  have herr : xiMassPointParabolicExponent a z - z ^ (2 : ℕ) =
+      -(z ^ (4 : ℕ) / (beta + (a : ℂ)) ^ (2 : ℕ)) := by
     dsimp only [beta]
     rw [xiMassPointParabolicExponent_eq_sq_sub_remainder ha z]
     ring
@@ -79,26 +79,26 @@ theorem norm_xiMassPointParabolicExponent_sub_sq_le {a : ℝ} (ha : 0 < a) (z : 
   exact div_le_div_of_nonneg_left (by positivity) (sq_pos_of_pos ha) hdenSq
 
 theorem tendsto_xiMassPointParabolicExponent_atTop (z : ℂ) :
-    Tendsto (fun a : ℝ => xiMassPointParabolicExponent a z) atTop (𝓝 (z ^ 2)) := by
+    Tendsto (fun a : ℝ => xiMassPointParabolicExponent a z) atTop (𝓝 (z ^ (2 : ℕ))) := by
   rw [← tendsto_sub_nhds_zero_iff]
   have hb : ∀ᶠ a : ℝ in atTop,
-      ‖xiMassPointParabolicExponent a z - z ^ 2‖ ≤ ‖z‖ ^ 4 / a ^ 2 :=
+      ‖xiMassPointParabolicExponent a z - z ^ (2 : ℕ)‖ ≤ ‖z‖ ^ (4 : ℕ) / a ^ (2 : ℕ) :=
     eventually_atTop.2 ⟨1, fun a ha =>
       norm_xiMassPointParabolicExponent_sub_sq_le (by linarith) z⟩
-  have hbase : Tendsto (fun a : ℝ => a ^ 2) atTop atTop := by
+  have hbase : Tendsto (fun a : ℝ => a ^ (2 : ℕ)) atTop atTop := by
     simp
-  have hinv : Tendsto (fun a : ℝ => (a ^ 2)⁻¹) atTop (𝓝 0) := hbase.inv_tendsto_atTop
-  have hg : Tendsto (fun a : ℝ => ‖z‖ ^ 4 / a ^ 2) atTop (𝓝 0) := by
-    simpa [div_eq_mul_inv] using hinv.const_mul (‖z‖ ^ 4)
+  have hinv : Tendsto (fun a : ℝ => (a ^ (2 : ℕ))⁻¹) atTop (𝓝 0) := hbase.inv_tendsto_atTop
+  have hg : Tendsto (fun a : ℝ => ‖z‖ ^ (4 : ℕ) / a ^ (2 : ℕ)) atTop (𝓝 0) := by
+    simpa [div_eq_mul_inv] using hinv.const_mul (‖z‖ ^ (4 : ℕ))
   exact squeeze_zero_norm' hb hg
 
 /-- Pointwise rest-energy-renormalized parabolic limit at every point of the plane. -/
 theorem tendsto_exp_restEnergy_mul_xiMassAnalyticTest (t : ℝ) (z : ℂ) :
-    Tendsto (fun a : ℝ => Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+    Tendsto (fun a : ℝ => Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
         xiMassAnalyticTest a (((2 * a * t : ℝ) : ℂ)) z) atTop
-      (𝓝 (Complex.exp (-(t : ℂ) * z ^ 2))) := by
+      (𝓝 (Complex.exp (-(t : ℂ) * z ^ (2 : ℕ)))) := by
   have hexp := (tendsto_xiMassPointParabolicExponent_atTop z).const_mul (-(t : ℂ))
-  have hcomp := (Complex.continuous_exp.tendsto (-(t : ℂ) * z ^ 2)).comp hexp
+  have hcomp := (Complex.continuous_exp.tendsto (-(t : ℂ) * z ^ (2 : ℕ))).comp hexp
   refine hcomp.congr fun a => ?_
   exact (exp_restEnergy_mul_xiMassAnalyticTest a t z).symm
 
@@ -107,7 +107,7 @@ theorem tendsto_exp_restEnergy_mul_xiMassAnalyticTest (t : ℝ) (z : ℂ) :
 theorem re_xiMassPointParabolicExponent_bottom_bounds {a c : ℝ} (hc : 0 ≤ c) (hca : c < a)
     (x : ℝ) :
     0 ≤ (xiMassAnalyticSqrt a ((x : ℂ) - c * I)).re ∧
-      a ^ 2 + x ^ 2 - c ^ 2 ≤ (xiMassAnalyticSqrt a ((x : ℂ) - c * I)).re ^ 2 ∧
+      a ^ (2 : ℕ) + x ^ (2 : ℕ) - c ^ (2 : ℕ) ≤ (xiMassAnalyticSqrt a ((x : ℂ) - c * I)).re ^ (2 : ℕ) ∧
       (xiMassAnalyticSqrt a ((x : ℂ) - c * I)).re ≤ a + |x| + c ∧
       (xiMassPointParabolicExponent a ((x : ℂ) - c * I)).re =
         2 * a * ((xiMassAnalyticSqrt a ((x : ℂ) - c * I)).re - a) := by
@@ -115,18 +115,18 @@ theorem re_xiMassPointParabolicExponent_bottom_bounds {a c : ℝ} (hc : 0 ≤ c)
   set z : ℂ := (x : ℂ) - c * I with hzdef
   have hzre : z.re = x := by simp [hzdef]
   have hzim : z.im = -c := by simp [hzdef]
-  have hargre : (xiMassAnalyticArg a z).re = x ^ 2 - c ^ 2 + a ^ 2 := by
+  have hargre : (xiMassAnalyticArg a z).re = x ^ (2 : ℕ) - c ^ (2 : ℕ) + a ^ (2 : ℕ) := by
     rw [xiMassAnalyticArg_re, hzre, hzim]
     ring
   have hnormge : (xiMassAnalyticArg a z).re ≤ ‖xiMassAnalyticArg a z‖ :=
     Complex.re_le_norm _
-  have hznorm : ‖z‖ ^ 2 = x ^ 2 + c ^ 2 := by
+  have hznorm : ‖z‖ ^ (2 : ℕ) = x ^ (2 : ℕ) + c ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply, hzre, hzim]
     ring
-  have hnormle : ‖xiMassAnalyticArg a z‖ ≤ x ^ 2 + c ^ 2 + a ^ 2 := by
-    have h := norm_add_le (z ^ 2) (((a ^ 2 : ℝ) : ℂ))
+  have hnormle : ‖xiMassAnalyticArg a z‖ ≤ x ^ (2 : ℕ) + c ^ (2 : ℕ) + a ^ (2 : ℕ) := by
+    have h := norm_add_le (z ^ (2 : ℕ)) (((a ^ (2 : ℕ) : ℝ) : ℂ))
     rw [norm_pow] at h
-    have hreal : ‖(((a ^ 2 : ℝ) : ℂ))‖ = a ^ 2 := by
+    have hreal : ‖(((a ^ (2 : ℕ) : ℝ) : ℂ))‖ = a ^ (2 : ℕ) := by
       rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg a)]
     rw [hreal, hznorm] at h
     rw [xiMassAnalyticArg]
@@ -136,7 +136,7 @@ theorem re_xiMassPointParabolicExponent_bottom_bounds {a c : ℝ} (hc : 0 ≤ c)
   refine ⟨hnn, ?_, ?_, ?_⟩
   · rw [hsq, hargre] at *
     linarith [hnormge, hargre ▸ hnormge]
-  · have hupper : (xiMassAnalyticSqrt a z).re ^ 2 ≤ x ^ 2 + c ^ 2 + a ^ 2 := by
+  · have hupper : (xiMassAnalyticSqrt a z).re ^ (2 : ℕ) ≤ x ^ (2 : ℕ) + c ^ (2 : ℕ) + a ^ (2 : ℕ) := by
       rw [hsq, hargre]
       linarith
     nlinarith [abs_nonneg x, sq_abs x, hnn, hc, ha.le]
@@ -147,7 +147,7 @@ theorem re_xiMassPointParabolicExponent_bottom_bounds {a c : ℝ} (hc : 0 ≤ c)
 /-- Uniform-in-aperture linear lower bound for the renormalized exponent on the bottom line. -/
 theorem re_xiMassPointParabolicExponent_bottom_ge {a₀ c : ℝ} (hc : 0 ≤ c) (hca₀ : c < a₀)
     {a : ℝ} (ha : a₀ ≤ a) (x : ℝ) :
-    a₀ / 2 * |x| - (a₀ / 2 * (2 * a₀ + 2 * c + 2) + 2 * c ^ 2) ≤
+    a₀ / 2 * |x| - (a₀ / 2 * (2 * a₀ + 2 * c + 2) + 2 * c ^ (2 : ℕ)) ≤
       (xiMassPointParabolicExponent a ((x : ℂ) - c * I)).re := by
   have ha₀ : 0 < a₀ := lt_of_le_of_lt hc hca₀
   have haa : 0 < a := lt_of_lt_of_le ha₀ ha
@@ -157,35 +157,35 @@ theorem re_xiMassPointParabolicExponent_bottom_ge {a₀ c : ℝ} (hc : 0 ≤ c) 
   set R : ℝ := (xiMassAnalyticSqrt a ((x : ℂ) - c * I)).re with hRdef
   set X : ℝ := |x| with hXdef
   have hX0 : 0 ≤ X := abs_nonneg x
-  have hXsq : x ^ 2 = X ^ 2 := (sq_abs x).symm
+  have hXsq : x ^ (2 : ℕ) = X ^ (2 : ℕ) := (sq_abs x).symm
   rw [hXsq] at hlow
-  have hglobal : -2 * c ^ 2 ≤ 2 * a * (R - a) := by
+  have hglobal : -2 * c ^ (2 : ℕ) ≤ 2 * a * (R - a) := by
     rcases le_or_gt a R with h | h
     · nlinarith
-    · have h1 : 2 * a * (a - R) ≤ 2 * (a ^ 2 - R ^ 2) := by nlinarith [hnn]
-      have h2 : a ^ 2 - R ^ 2 ≤ c ^ 2 := by nlinarith [sq_nonneg X]
+    · have h1 : 2 * a * (a - R) ≤ 2 * (a ^ (2 : ℕ) - R ^ (2 : ℕ)) := by nlinarith [hnn]
+      have h2 : a ^ (2 : ℕ) - R ^ (2 : ℕ) ≤ c ^ (2 : ℕ) := by nlinarith [sq_nonneg X]
       nlinarith
   have hT₀ : 0 ≤ a₀ / 2 * (2 * a₀ + 2 * c + 2) := by positivity
   rcases le_or_gt (2 * a₀ + 2 * c + 2) X with hbig | hsmall
-  · have hxc : 2 * c ^ 2 ≤ X ^ 2 := by nlinarith
+  · have hxc : 2 * c ^ (2 : ℕ) ≤ X ^ (2 : ℕ) := by nlinarith
     have hRa : a ≤ R := by nlinarith
     have hden : 0 < 2 * a + X + c := by linarith
     have hpos : 0 ≤ 2 * a * (R - a) := by nlinarith
     have hRA : R + a ≤ 2 * a + X + c := by linarith
     have hmono : 2 * a * (R - a) * (R + a) ≤ 2 * a * (R - a) * (2 * a + X + c) :=
       mul_le_mul_of_nonneg_left hRA hpos
-    have hexpand : 2 * a * (R - a) * (R + a) = 2 * a * (R ^ 2 - a ^ 2) := by ring
-    have h2 : 2 * a * (X ^ 2 - c ^ 2) ≤ 2 * a * (R ^ 2 - a ^ 2) :=
+    have hexpand : 2 * a * (R - a) * (R + a) = 2 * a * (R ^ (2 : ℕ) - a ^ (2 : ℕ)) := by ring
+    have h2 : 2 * a * (X ^ (2 : ℕ) - c ^ (2 : ℕ)) ≤ 2 * a * (R ^ (2 : ℕ) - a ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left (by linarith) (by positivity)
-    have h3 : a * X ^ 2 ≤ 2 * a * (X ^ 2 - c ^ 2) := by nlinarith
-    have hbase : a * X ^ 2 ≤ 2 * a * (R - a) * (R + a) := by
+    have h3 : a * X ^ (2 : ℕ) ≤ 2 * a * (X ^ (2 : ℕ) - c ^ (2 : ℕ)) := by nlinarith
+    have hbase : a * X ^ (2 : ℕ) ≤ 2 * a * (R - a) * (R + a) := by
       rw [hexpand]; linarith
-    have hkey : a * X ^ 2 ≤ 2 * a * (R - a) * (2 * a + X + c) := by linarith
+    have hkey : a * X ^ (2 : ℕ) ≤ 2 * a * (R - a) * (2 * a + X + c) := by linarith
     have hstep1 : a₀ * a + a₀ * c / 2 ≤ a * (a₀ + c / 2) := by nlinarith
     have hstep2 : a * (a₀ + c / 2) ≤ a * (X / 2) := by nlinarith
     have hstep3 : X * (a / 2) ≤ X * (a - a₀ / 2) := by nlinarith
     have hinner : 0 ≤ a * X - a₀ * a - a₀ * X / 2 - a₀ * c / 2 := by nlinarith
-    have hlin : a₀ / 2 * X * (2 * a + X + c) ≤ a * X ^ 2 := by
+    have hlin : a₀ / 2 * X * (2 * a + X + c) ≤ a * X ^ (2 : ℕ) := by
       nlinarith [mul_nonneg hX0 hinner]
     have hconc : a₀ / 2 * X ≤ 2 * a * (R - a) :=
       le_of_mul_le_mul_right (by linarith) hden
@@ -238,23 +238,23 @@ theorem exists_global_norm_bottomSourceFactor_bound {c : ℝ} (hhalf : 1 / 2 < c
 
 /-- Gaussian limit integrand on the Euler bottom line. -/
 def xiMassPolyGaussianBottomIntegrand (P : Polynomial ℝ) (c t : ℝ) (x : ℝ) : ℂ :=
-  evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2 *
-    Complex.exp (-(t : ℂ) * ((x : ℂ) - c * I) ^ 2) *
+  evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ) *
+    Complex.exp (-(t : ℂ) * ((x : ℂ) - c * I) ^ (2 : ℕ)) *
     (-I * (LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
         (xiMassBottomEulerPoint c x) -
       logDeriv archFactor (xiMassBottomEulerPoint c x)))
 
 /-- Rest-energy-renormalized relativistic integrand on the Euler bottom line. -/
 def xiMassPolyParabolicBottomIntegrand (P : Polynomial ℝ) (a c t : ℝ) (x : ℝ) : ℂ :=
-  evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2 *
-    (Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+  evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ) *
+    (Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
       xiMassAnalyticTest a (((2 * a * t : ℝ) : ℂ)) ((x : ℂ) - c * I)) *
     (-I * (LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
         (xiMassBottomEulerPoint c x) -
       logDeriv archFactor (xiMassBottomEulerPoint c x)))
 
 private theorem continuous_bottomWeight (P : Polynomial ℝ) (c : ℝ) :
-    Continuous (fun x : ℝ => evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2) := by
+    Continuous (fun x : ℝ => evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   have hQ : Continuous (fun x : ℝ =>
       evalRealPolynomial (xiMassPolySquare P) ((x : ℂ) - c * I)) :=
     (continuous_evalRealPolynomial (xiMassPolySquare P)).comp (by fun_prop)
@@ -273,7 +273,7 @@ theorem continuous_xiMassPolyParabolicBottomIntegrand (P : Polynomial ℝ) {a c 
     (hhalf : 1 / 2 < c) (hca : c < a) (t : ℝ) :
     Continuous (xiMassPolyParabolicBottomIntegrand P a c t) := by
   have hmid : Continuous (fun x : ℝ =>
-      Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+      Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
         xiMassAnalyticTest a (((2 * a * t : ℝ) : ℂ)) ((x : ℂ) - c * I)) :=
     continuous_const.mul (continuous_xiMassBottomTest hhalf hca _)
   exact ((continuous_bottomWeight P c).mul hmid).mul (continuous_bottomSourceFactor hhalf)
@@ -282,14 +282,14 @@ theorem continuous_xiMassPolyGaussianBottomIntegrand (P : Polynomial ℝ) {c : �
     (hhalf : 1 / 2 < c) (t : ℝ) :
     Continuous (xiMassPolyGaussianBottomIntegrand P c t) := by
   have hmid : Continuous (fun x : ℝ =>
-      Complex.exp (-(t : ℂ) * ((x : ℂ) - c * I) ^ 2)) := by fun_prop
+      Complex.exp (-(t : ℂ) * ((x : ℂ) - c * I) ^ (2 : ℕ))) := by fun_prop
   exact ((continuous_bottomWeight P c).mul hmid).mul (continuous_bottomSourceFactor hhalf)
 
 theorem tendsto_xiMassPolyParabolicBottomIntegrand (P : Polynomial ℝ) (c t : ℝ) (x : ℝ) :
     Tendsto (fun a : ℝ => xiMassPolyParabolicBottomIntegrand P a c t x) atTop
       (𝓝 (xiMassPolyGaussianBottomIntegrand P c t x)) := by
   have hmid := tendsto_exp_restEnergy_mul_xiMassAnalyticTest t ((x : ℂ) - c * I)
-  exact (hmid.const_mul (evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2)).mul_const _
+  exact (hmid.const_mul (evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ))).mul_const _
 
 /-- **Dominated convergence on the Euler line.**  The rest-energy-renormalized relativistic
 integrals converge to the Gaussian one. -/
@@ -307,22 +307,22 @@ theorem tendsto_integral_xiMassPolyParabolicBottomIntegrand (P : Polynomial ℝ)
   have hG : 0 ≤ G := xiMassPolyWeightConstant_nonneg P hc0
   set kappa : ℝ := t * (a₀ / 2) with hkdef
   have hkappa : 0 < kappa := by rw [hkdef]; positivity
-  set C₀ : ℝ := Real.exp (t * (a₀ / 2 * (2 * a₀ + 2 * c + 2) + 2 * c ^ 2)) with hC₀def
+  set C₀ : ℝ := Real.exp (t * (a₀ / 2 * (2 * a₀ + 2 * c + 2) + 2 * c ^ (2 : ℕ))) with hC₀def
   have hC₀ : 0 < C₀ := Real.exp_pos _
   set bound : ℝ → ℝ := fun x =>
     (G * (1 + |x| ^ D)) * (C₀ * Real.exp (-kappa * |x|)) * (A + |x| / 2) with hbdef
   have hboundInt : Integrable bound := by
     have hexp : ∀ x : ℝ, bound x =
-        (G * C₀ * A) * (|x| ^ 0 * Real.exp (-kappa * |x|)) +
-        (G * C₀ / 2) * (|x| ^ 1 * Real.exp (-kappa * |x|)) +
+        (G * C₀ * A) * (|x| ^ (0 : ℕ) * Real.exp (-kappa * |x|)) +
+        (G * C₀ / 2) * (|x| ^ (1 : ℕ) * Real.exp (-kappa * |x|)) +
         (G * C₀ * A) * (|x| ^ D * Real.exp (-kappa * |x|)) +
         (G * C₀ / 2) * (|x| ^ (D + 1) * Real.exp (-kappa * |x|)) := by
       intro x
       rw [hbdef, pow_succ]
       ring
     have hsum : Integrable (fun x : ℝ =>
-        (G * C₀ * A) * (|x| ^ 0 * Real.exp (-kappa * |x|)) +
-        (G * C₀ / 2) * (|x| ^ 1 * Real.exp (-kappa * |x|)) +
+        (G * C₀ * A) * (|x| ^ (0 : ℕ) * Real.exp (-kappa * |x|)) +
+        (G * C₀ / 2) * (|x| ^ (1 : ℕ) * Real.exp (-kappa * |x|)) +
         (G * C₀ * A) * (|x| ^ D * Real.exp (-kappa * |x|)) +
         (G * C₀ / 2) * (|x| ^ (D + 1) * Real.exp (-kappa * |x|))) :=
       ((((HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0 hkappa).const_mul
@@ -341,7 +341,7 @@ theorem tendsto_integral_xiMassPolyParabolicBottomIntegrand (P : Polynomial ℝ)
       (lt_of_lt_of_le hca₀ ha) t).aestronglyMeasurable
   · filter_upwards [eventually_ge_atTop a₀] with a ha
     filter_upwards with x
-    have hmidNorm : ‖Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+    have hmidNorm : ‖Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
         xiMassAnalyticTest a (((2 * a * t : ℝ) : ℂ)) ((x : ℂ) - c * I)‖ ≤
         C₀ * Real.exp (-kappa * |x|) := by
       rw [exp_restEnergy_mul_xiMassAnalyticTest, Complex.norm_exp]

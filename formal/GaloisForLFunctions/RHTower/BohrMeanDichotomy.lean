@@ -86,13 +86,13 @@ theorem integral_exp_rate {a : ℝ} (ha : a ≠ 0) (X : ℝ) :
   ring
 
 /-- `e^t ≥ (1 + t/2)²` for `t ≥ 0`, hence `e^t - 1 ≥ t + t²/4`. -/
-theorem exp_ge_quadratic {t : ℝ} (ht : 0 ≤ t) : t + t ^ 2 / 4 ≤ Real.exp t - 1 := by
+theorem exp_ge_quadratic {t : ℝ} (ht : 0 ≤ t) : t + t ^ (2 : ℕ) / 4 ≤ Real.exp t - 1 := by
   have h : 1 + t / 2 ≤ Real.exp (t / 2) := by
     have := Real.add_one_le_exp (t / 2)
     linarith
-  have hsq : (1 + t / 2) ^ 2 ≤ Real.exp (t / 2) ^ 2 :=
+  have hsq : (1 + t / 2) ^ (2 : ℕ) ≤ Real.exp (t / 2) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (by linarith) h 2
-  have hexp : Real.exp (t / 2) ^ 2 = Real.exp t := by
+  have hexp : Real.exp (t / 2) ^ (2 : ℕ) = Real.exp t := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring

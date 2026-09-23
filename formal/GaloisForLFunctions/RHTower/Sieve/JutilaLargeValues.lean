@@ -38,7 +38,7 @@ theorem card_largeValues_pow_div_le_divisorBounded {ε : ℝ} (hε : 0 < ε) (N 
       ≤ (T + 4 * ((N ^ k : ℕ) : ℝ) * (1 + Real.log ((N ^ k : ℕ) : ℝ)))
             * (1 / δ + 2 * Real.log ((N ^ k : ℕ) : ℝ))
             * ((divisorBoundConst ε * (((N ^ k : ℕ) : ℝ)) ^ ε) ^ k
-                * (∑ m : Fin N, ‖a m‖ ^ 2) ^ k)
+                * (∑ m : Fin N, ‖a m‖ ^ (2 : ℕ)) ^ k)
           / V ^ (2 * k) := by
   classical
   have hVk : (0 : ℝ) < V ^ k := by positivity
@@ -49,7 +49,7 @@ theorem card_largeValues_pow_div_le_divisorBounded {ε : ℝ} (hε : 0 < ε) (N 
     exact pow_le_pow_left₀ hV.le (hbig r hr) k
   have hcount := card_largeValues_div_le (N ^ k) hNk (convPow N k a) hδ hT hVk hgap hlow R
     hhigh hbigk
-  have hVpow : (V ^ k) ^ 2 = V ^ (2 * k) := by
+  have hVpow : (V ^ k) ^ (2 : ℕ) = V ^ (2 * k) := by
     rw [← pow_mul, mul_comm]
   rw [hVpow] at hcount
   have hV2 : (0 : ℝ) < V ^ (2 * k) := by positivity

@@ -183,7 +183,7 @@ aperture defect mass, with the forced rank-two factor. -/
 theorem tsum_routePPrimitiveGammaFiniteApertureHiddenPairEnergy
     {c : ℝ} (hc : 0 ≤ c) :
     ∑' ij, routePPrimitiveGammaFiniteApertureHiddenPairEnergy c ij =
-      2 * routePPrimitiveBurnolApertureTotalDefectMass c ^ 2 := by
+      2 * routePPrimitiveBurnolApertureTotalDefectMass c ^ (2 : ℕ) := by
   have hmass := summable_routePPrimitiveBurnolApertureDefectMass hc
   have hnorm : Summable (fun pe =>
       ‖routePPrimitiveBurnolApertureDefectMass c pe‖) := by
@@ -214,7 +214,7 @@ theorem tsum_routePPrimitiveGammaFiniteApertureHiddenPairEnergy
     _ = 2 * ((∑' i, routePPrimitiveBurnolApertureDefectMass c i) *
         ∑' j, routePPrimitiveBurnolApertureDefectMass c j) := by
       rw [hmul]
-    _ = 2 * (∑' pe, routePPrimitiveBurnolApertureDefectMass c pe) ^ 2 := by ring
+    _ = 2 * (∑' pe, routePPrimitiveBurnolApertureDefectMass c pe) ^ (2 : ℕ) := by ring
 
 /-- Total retained hidden energy vanishes at the aperture wall. -/
 theorem tendsto_tsum_routePPrimitiveGammaFiniteApertureHiddenPairEnergy_zero :
@@ -224,7 +224,7 @@ theorem tendsto_tsum_routePPrimitiveGammaFiniteApertureHiddenPairEnergy_zero :
       (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
   have hmass := tendsto_routePPrimitiveBurnolApertureTotalDefectMass_zero
   have henergy : Tendsto
-      (fun c : ℝ => 2 * routePPrimitiveBurnolApertureTotalDefectMass c ^ 2)
+      (fun c : ℝ => 2 * routePPrimitiveBurnolApertureTotalDefectMass c ^ (2 : ℕ))
       (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
     simpa using (hmass.pow 2).const_mul 2
   refine henergy.congr' ?_

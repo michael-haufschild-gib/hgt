@@ -32,9 +32,9 @@ theorem IsHalfPlaneHardy.congr {F G : ℂ → ℂ} {M : ℝ} (hF : IsHalfPlaneHa
     exact h _ (by simpa using hσ)
   bound := by
     intro σ hσ
-    have hcongr : (∫ ξ : ℝ, ‖G (rayLine σ ξ)‖ ^ 2) = ∫ ξ : ℝ, ‖F (rayLine σ ξ)‖ ^ 2 := by
+    have hcongr : (∫ ξ : ℝ, ‖G (rayLine σ ξ)‖ ^ (2 : ℕ)) = ∫ ξ : ℝ, ‖F (rayLine σ ξ)‖ ^ (2 : ℕ) := by
       refine integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
-      show ‖G (rayLine σ ξ)‖ ^ 2 = ‖F (rayLine σ ξ)‖ ^ 2
+      show ‖G (rayLine σ ξ)‖ ^ (2 : ℕ) = ‖F (rayLine σ ξ)‖ ^ (2 : ℕ)
       rw [h _ (by simpa using hσ : (0:ℝ) < (rayLine σ ξ).re)]
     rw [hcongr]
     exact hF.bound σ hσ
@@ -89,14 +89,14 @@ theorem differentiableOn_inv_shift {c : ℂ} (hc : 0 < c.re) :
 Hardy space. -/
 theorem isHalfPlaneHardy_mul_inv_shift {F : ℂ → ℂ} {M : ℝ} (hF : IsHalfPlaneHardy F M) {c : ℂ}
     (hc : 0 < c.re) :
-    IsHalfPlaneHardy (fun w => F w * (w + c)⁻¹) ((c.re)⁻¹ ^ 2 * M) :=
+    IsHalfPlaneHardy (fun w => F w * (w + c)⁻¹) ((c.re)⁻¹ ^ (2 : ℕ) * M) :=
   isHalfPlaneHardy_mul_of_bounded hF (differentiableOn_inv_shift hc)
     (fun _ hw => norm_inv_shift_le hc hw)
 
 /-! ### Linear algebra of the Hardy space -/
 
 theorem isHalfPlaneHardy_const_mul {F : ℂ → ℂ} {M : ℝ} (hF : IsHalfPlaneHardy F M) (c : ℂ) :
-    IsHalfPlaneHardy (fun w => c * F w) (‖c‖ ^ 2 * M) := by
+    IsHalfPlaneHardy (fun w => c * F w) (‖c‖ ^ (2 : ℕ) * M) := by
   have h := isHalfPlaneHardy_mul_of_bounded hF (g := fun _ : ℂ => c)
     (differentiableOn_const c) (C := ‖c‖) (fun w _ => le_refl _)
   exact h.congr (fun w _ => by ring)
@@ -110,26 +110,26 @@ theorem isHalfPlaneHardy_add {F G : ℂ → ℂ} {M N : ℝ} (hF : IsHalfPlaneHa
     intro σ hσ
     have hmF := hF.memLp σ hσ
     have hmG := hG.memLp σ hσ
-    have hsqF : Integrable (fun ξ : ℝ => ‖F (rayLine σ ξ)‖ ^ 2) volume :=
+    have hsqF : Integrable (fun ξ : ℝ => ‖F (rayLine σ ξ)‖ ^ (2 : ℕ)) volume :=
       (memLp_two_iff_integrable_sq_norm hmF.aestronglyMeasurable).1 hmF
-    have hsqG : Integrable (fun ξ : ℝ => ‖G (rayLine σ ξ)‖ ^ 2) volume :=
+    have hsqG : Integrable (fun ξ : ℝ => ‖G (rayLine σ ξ)‖ ^ (2 : ℕ)) volume :=
       (memLp_two_iff_integrable_sq_norm hmG.aestronglyMeasurable).1 hmG
     have hsum := hmF.add hmG
-    have hsqS : Integrable (fun ξ : ℝ => ‖F (rayLine σ ξ) + G (rayLine σ ξ)‖ ^ 2) volume :=
+    have hsqS : Integrable (fun ξ : ℝ => ‖F (rayLine σ ξ) + G (rayLine σ ξ)‖ ^ (2 : ℕ)) volume :=
       (memLp_two_iff_integrable_sq_norm hsum.aestronglyMeasurable).1 hsum
-    have hptwise : ∀ ξ : ℝ, ‖F (rayLine σ ξ) + G (rayLine σ ξ)‖ ^ 2
-        ≤ 2 * ‖F (rayLine σ ξ)‖ ^ 2 + 2 * ‖G (rayLine σ ξ)‖ ^ 2 := by
+    have hptwise : ∀ ξ : ℝ, ‖F (rayLine σ ξ) + G (rayLine σ ξ)‖ ^ (2 : ℕ)
+        ≤ 2 * ‖F (rayLine σ ξ)‖ ^ (2 : ℕ) + 2 * ‖G (rayLine σ ξ)‖ ^ (2 : ℕ) := by
       intro ξ
       have h1 : ‖F (rayLine σ ξ) + G (rayLine σ ξ)‖
           ≤ ‖F (rayLine σ ξ)‖ + ‖G (rayLine σ ξ)‖ := norm_add_le _ _
-      have h2 : ‖F (rayLine σ ξ) + G (rayLine σ ξ)‖ ^ 2
-          ≤ (‖F (rayLine σ ξ)‖ + ‖G (rayLine σ ξ)‖) ^ 2 :=
+      have h2 : ‖F (rayLine σ ξ) + G (rayLine σ ξ)‖ ^ (2 : ℕ)
+          ≤ (‖F (rayLine σ ξ)‖ + ‖G (rayLine σ ξ)‖) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) h1 2
       nlinarith [sq_nonneg (‖F (rayLine σ ξ)‖ - ‖G (rayLine σ ξ)‖)]
-    calc (∫ ξ : ℝ, ‖F (rayLine σ ξ) + G (rayLine σ ξ)‖ ^ 2)
-        ≤ ∫ ξ : ℝ, (2 * ‖F (rayLine σ ξ)‖ ^ 2 + 2 * ‖G (rayLine σ ξ)‖ ^ 2) :=
+    calc (∫ ξ : ℝ, ‖F (rayLine σ ξ) + G (rayLine σ ξ)‖ ^ (2 : ℕ))
+        ≤ ∫ ξ : ℝ, (2 * ‖F (rayLine σ ξ)‖ ^ (2 : ℕ) + 2 * ‖G (rayLine σ ξ)‖ ^ (2 : ℕ)) :=
           integral_mono hsqS ((hsqF.const_mul 2).add (hsqG.const_mul 2)) hptwise
-      _ = 2 * (∫ ξ : ℝ, ‖F (rayLine σ ξ)‖ ^ 2) + 2 * ∫ ξ : ℝ, ‖G (rayLine σ ξ)‖ ^ 2 := by
+      _ = 2 * (∫ ξ : ℝ, ‖F (rayLine σ ξ)‖ ^ (2 : ℕ)) + 2 * ∫ ξ : ℝ, ‖G (rayLine σ ξ)‖ ^ (2 : ℕ) := by
           rw [MeasureTheory.integral_add (hsqF.const_mul 2) (hsqG.const_mul 2),
             MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
       _ ≤ 2 * M + 2 * N := by

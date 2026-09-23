@@ -32,35 +32,35 @@ noncomputable def tfHessXY (y fx fxy : ℂ) : ℂ := fxy + fx / y
 components are written through the jets of `f`, and the Christoffel terms `−2Γ^y_xx X_yx` and
 `−(Γ^y_yy + Γ^x_yx) X_yx` are `∓(2/y)X_xy`. -/
 noncomputable def tfHessDivX (y fx fxy fxxx fxyy : ℂ) : ℂ :=
-  y ^ 2 * (((1 / 2) * (fxxx - fxyy) - fxy / y - (2 / y) * tfHessXY y fx fxy) +
-    ((fxyy + fxy / y - fx / y ^ 2) + (2 / y) * tfHessXY y fx fxy))
+  y ^ (2 : ℕ) * (((1 / 2) * (fxxx - fxyy) - fxy / y - (2 / y) * tfHessXY y fx fxy) +
+    ((fxyy + fxy / y - fx / y ^ (2 : ℕ)) + (2 / y) * tfHessXY y fx fxy))
 
 /-- The covariant divergence `D_y = y²(∇_x X_xy + ∇_y X_yy)`, with the Christoffel terms
 `−Γ^y_xx X_yy − Γ^x_xy X_xx = (2/y)X_xx` and `−2Γ^y_yy X_yy = −(2/y)X_xx`. -/
 noncomputable def tfHessDivY (y fy fxx fyy fxxy fyyy : ℂ) : ℂ :=
-  y ^ 2 * (((fxxy + fxx / y) + (2 / y) * tfHessXX y fy fxx fyy) +
-    ((-((1 / 2) * (fxxy - fyyy) - fyy / y + fy / y ^ 2)) - (2 / y) * tfHessXX y fy fxx fyy))
+  y ^ (2 : ℕ) * (((fxxy + fxx / y) + (2 / y) * tfHessXX y fy fxx fyy) +
+    ((-((1 / 2) * (fxxy - fyyy) - fyy / y + fy / y ^ (2 : ℕ))) - (2 / y) * tfHessXX y fy fxx fyy))
 
 /-- `D_x` is the `x`-derivative of `½Δf − f`, `Δf = y²(f_xx + f_yy)`. -/
 theorem tfHessian_divergence_x (y fx fxy fxxx fxyy : ℂ) (hy : y ≠ 0) :
-    tfHessDivX y fx fxy fxxx fxyy = (1 / 2) * y ^ 2 * (fxxx + fxyy) - fx := by
+    tfHessDivX y fx fxy fxxx fxyy = (1 / 2) * y ^ (2 : ℕ) * (fxxx + fxyy) - fx := by
   unfold tfHessDivX tfHessXY
   field_simp
   ring
 
 /-- `D_y` is the `y`-derivative of `½Δf − f`. -/
 theorem tfHessian_divergence_y (y fy fxx fyy fxxy fyyy : ℂ) (hy : y ≠ 0) :
-    tfHessDivY y fy fxx fyy fxxy fyyy = y * (fxx + fyy) + (1 / 2) * y ^ 2 * (fxxy + fyyy) - fy := by
+    tfHessDivY y fy fxx fyy fxxy fyyy = y * (fxx + fyy) + (1 / 2) * y ^ (2 : ℕ) * (fxxy + fyyy) - fy := by
   unfold tfHessDivY tfHessXX
   field_simp
   ring
 
 /-- `∂_x D_y`, differentiating `tfHessian_divergence_y` in the jets of `f`. -/
-noncomputable def tfHessDivY_dx (y fxy fxxx fxyy fxxxy fxyyy : ℂ) : ℂ := (-1 : ℂ) * fxy + (1 : ℂ) * fxyy * y ^ 1 + (1 / 2 : ℂ) * fxyyy * y ^ 2 + (1 : ℂ) * fxxx * y ^ 1 + (1 / 2 : ℂ) * fxxxy * y ^ 2
+noncomputable def tfHessDivY_dx (y fxy fxxx fxyy fxxxy fxyyy : ℂ) : ℂ := (-1 : ℂ) * fxy + (1 : ℂ) * fxyy * y ^ (1 : ℕ) + (1 / 2 : ℂ) * fxyyy * y ^ (2 : ℕ) + (1 : ℂ) * fxxx * y ^ (1 : ℕ) + (1 / 2 : ℂ) * fxxxy * y ^ (2 : ℕ)
 
 /-- `∂_y D_x`, differentiating `tfHessian_divergence_x` in the jets of `f` (the explicit powers of `y`
 are differentiated as well). -/
-noncomputable def tfHessDivX_dy (y fxy fxxx fxyy fxxxy fxyyy : ℂ) : ℂ := (-1 : ℂ) * fxy + (1 : ℂ) * fxyy * y ^ 1 + (1 / 2 : ℂ) * fxyyy * y ^ 2 + (1 : ℂ) * fxxx * y ^ 1 + (1 / 2 : ℂ) * fxxxy * y ^ 2
+noncomputable def tfHessDivX_dy (y fxy fxxx fxyy fxxxy fxyyy : ℂ) : ℂ := (-1 : ℂ) * fxy + (1 : ℂ) * fxyy * y ^ (1 : ℕ) + (1 / 2 : ℂ) * fxyyy * y ^ (2 : ℕ) + (1 : ℂ) * fxxx * y ^ (1 : ℕ) + (1 / 2 : ℂ) * fxxxy * y ^ (2 : ℕ)
 
 /-- The curl of the divergence of the traceless Hessian vanishes. -/
 theorem tfHessian_divergence_curl (y fxy fxxx fxyy fxxxy fxyyy : ℂ) :

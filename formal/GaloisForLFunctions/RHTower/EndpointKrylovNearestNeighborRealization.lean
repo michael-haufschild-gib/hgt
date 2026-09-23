@@ -648,7 +648,7 @@ theorem exists_endpointN_every_future_probability_every_strict_window
   · calc
       interpolatedProbability
           (endpointN q) (Real.sqrt p) 1 =
-          (Real.sqrt p) ^ 2 :=
+          (Real.sqrt p) ^ (2 : ℕ) :=
         interpolatedProbability_target hn hθ0
       _ = p := Real.sq_sqrt hp.1
 

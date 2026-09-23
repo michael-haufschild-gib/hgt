@@ -17,7 +17,7 @@ namespace RHTower.Sieve
 noncomputable section
 
 def selbergCorrectionLogPowerNumerator (k p i j : ℕ) : ℝ :=
-  (Real.log (p : ℝ) ^ k / (p : ℝ) ^ 2) *
+  (Real.log (p : ℝ) ^ k / (p : ℝ) ^ (2 : ℕ)) *
     ((if i = 2 then (1 : ℝ) else 0) * (if j = 1 then (1 : ℝ) else 0) +
       (if i = 1 then (1 : ℝ) else 0) * (if j = 2 then (1 : ℝ) else 0) -
       (2 : ℝ) ^ k *
@@ -29,7 +29,7 @@ theorem additiveBivariateConvolution_selbergCorrectionLogPowerLocal_moebius
     additiveBivariateConvolution (selbergCorrectionLogPowerLocal k p)
         (localMoebiusPairFactor p) i j =
       selbergCorrectionLogPowerNumerator k p i j := by
-  let c : ℝ := Real.log (p : ℝ) ^ k / (p : ℝ) ^ 2
+  let c : ℝ := Real.log (p : ℝ) ^ k / (p : ℝ) ^ (2 : ℕ)
   have hdecomp : selbergCorrectionLogPowerLocal k p = fun a b =>
       c * (geomTailTwo p a * geomTailOne p b) +
         c * (geomTailOne p a * geomTailTwo p b) -

@@ -42,18 +42,18 @@ theorem egbFixedChargeAGibbsSpike_fisher_inputs_tendsto_zero (m : ℕ) :
 /-- The same normalization map reads a fixed positive value along each shrinking moment path. -/
 theorem egbFixedChargeAGibbsSpike_fisher_boundary_map_path (n m : ℕ) :
     egbFixedChargeAGibbsSpikeFisherBoundaryMap (egbFixedChargeAGibbsSpikeFisherMomentPath n m) =
-      (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ 2 := by
+      (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ (2 : ℕ) := by
   exact egbFixedChargeAGibbsSpike_fisher_formula n m
 
 /-- The dimensional Fisher limit is strictly positive even though every input vanishes. -/
 theorem egbFixedChargeAGibbsSpike_fisher_boundary_limit (m : ℕ) :
     Tendsto (fun n => egbFixedChargeAGibbsSpikeFisherBoundaryMap (egbFixedChargeAGibbsSpikeFisherMomentPath n m))
-      atTop (nhds ((25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ 2)) ∧
-    0 < (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ 2 := by
+      atTop (nhds ((25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ (2 : ℕ))) ∧
+    0 < (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ (2 : ℕ) := by
   constructor
   · simpa only [egbFixedChargeAGibbsSpike_fisher_boundary_map_path] using
       (tendsto_const_nhds : Tendsto (fun _ : ℕ =>
-        (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ 2) atTop (nhds _))
+        (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ (2 : ℕ)) atTop (nhds _))
   · positivity
 
 /-- The established pure-state normalization map is discontinuous at its zero-input convention. -/
@@ -88,7 +88,7 @@ theorem egbFixedChargeAGibbsSpike_rescaled_source_fisher_eq (n m : ℕ) :
 /-- The nonzero source recovered by rescaling supplies the exact limiting Fisher value. -/
 theorem egbFixedChargeAGibbsSpike_rescaled_source_fisher_formula (m : ℕ) :
     egbFixedChargeAGibbsSpikeRescaledSourceFisher m =
-      (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ 2 := by
+      (25 / 36 : ℝ) * (1 / 16 : ℝ) ^ (m + 1) / (1 + (1 / 16 : ℝ) ^ (m + 1)) ^ (2 : ℕ) := by
   rw [egbFixedChargeAGibbsSpike_rescaled_source_fisher_eq 0 m, egbFixedChargeAGibbsSpike_fisher_formula]
 
 end

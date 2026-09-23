@@ -26,7 +26,7 @@ theorem d_le_of_det_le {J J' : JacobiData n} {C : ℝ} (hC : 0 < C)
       (leadingBlock hk J.form).det ≤ C * (leadingBlock hk J'.form).det)
     (hge : ∀ (k : ℕ) (hk : k ≤ n),
       (leadingBlock hk J'.form).det ≤ C * (leadingBlock hk J.form).det)
-    (l : Fin n) : J.d l ≤ C ^ 2 * J'.d l := by
+    (l : Fin n) : J.d l ≤ C ^ (2 : ℕ) * J'.d l := by
   have hk1 : (l : ℕ) + 1 ≤ n := l.isLt
   have hk0 : (l : ℕ) ≤ n := Nat.le_of_succ_le hk1
   have hll : (⟨(l : ℕ), hk1⟩ : Fin n) = l := Fin.ext rfl
@@ -47,7 +47,7 @@ theorem d_le_of_det_le {J J' : JacobiData n} {C : ℝ} (hC : 0 < C)
       ≤ C * (C * (leadingBlock hk0 J.form).det) * J'.d l :=
     mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h2 hC.le) hdJ'
   have h4 : (leadingBlock hk0 J.form).det * J.d l
-      ≤ (leadingBlock hk0 J.form).det * (C ^ 2 * J'.d l) := by nlinarith [h1, h3]
+      ≤ (leadingBlock hk0 J.form).det * (C ^ (2 : ℕ) * J'.d l) := by nlinarith [h1, h3]
   exact le_of_mul_le_mul_left h4 hposJ
 
 end GaloisForLFunctions.HTGeometry

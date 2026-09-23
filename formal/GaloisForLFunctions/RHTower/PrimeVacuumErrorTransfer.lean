@@ -4,8 +4,8 @@ import GaloisForLFunctions.RHTower.ChebyshevPsiErrorInputs
 /-!
 # Transferring the Chebyshev error to the log-divided counting function
 
-Dividing by the logarithm is an integration against the kernel `1/(t log^2 t)`:
-`1/log n = 1/log X + ∫_n^X dt/(t log^2 t)` for `n ≤ X`.  Summing this identity against the von
+Dividing by the logarithm is an integration against the kernel `1/(t log^(2 : ℕ) t)`:
+`1/log n = 1/log X + ∫_n^X dt/(t log^(2 : ℕ) t)` for `n ≤ X`.  Summing this identity against the von
 Mangoldt weights, and integrating it against Lebesgue measure, expresses both the arithmetic and
 the continuous counting function through the same kernel, with `psi` respectively the identity in
 the integrand.  Their difference is therefore controlled by the Chebyshev error alone, and the
@@ -48,7 +48,7 @@ theorem intervalIntegrable_logSqKernel {a b : ℝ} (ha : 1 < a) (hb : 1 < b) :
     · exact lt_of_lt_of_le hb h.1
   exact (continuousAt_logSqKernel ht1).continuousWithinAt
 
-/-- **The division-by-logarithm identity.**  `1/log y = 1/log X + ∫_y^X dt/(t log^2 t)`. -/
+/-- **The division-by-logarithm identity.**  `1/log y = 1/log X + ∫_y^X dt/(t log^(2 : ℕ) t)`. -/
 theorem inv_log_eq_add_integral {y X : ℝ} (hy : 1 < y) (hyX : y ≤ X) :
     (Real.log y)⁻¹ = (Real.log X)⁻¹ + ∫ t in y..X, logSqKernel t := by
   have hX : 1 < X := lt_of_lt_of_le hy hyX
@@ -98,7 +98,7 @@ theorem integral_indicator_Ici_logSqKernel {n : ℕ} {X : ℝ} (hn : 2 ≤ n) (_
   rw [hset, MeasureTheory.integral_Icc_eq_integral_Ioc]
 
 /-- **The summatory identity.**  Dividing by the logarithm is integration of `psi` against the
-kernel `1/(t log^2 t)`. -/
+kernel `1/(t log^(2 : ℕ) t)`. -/
 theorem primeTailCount_eq_psi_integral {X : ℝ} (hX : 2 ≤ X) :
     primeTailCount X
       = chebyshevPsiReal X * (Real.log X)⁻¹

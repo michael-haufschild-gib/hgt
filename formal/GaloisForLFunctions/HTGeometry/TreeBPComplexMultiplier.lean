@@ -31,7 +31,7 @@ theorem hasDerivAt_treeBPC {p : ℕ} (hp : 0 < p) {u v z : ℂ}
     (hden : (1 + u * z) ^ p + (1 + v * z) ^ p ≠ 0) :
     HasDerivAt (treeBPC p u v)
       (2 * (p : ℂ) * (u - v) * (1 + u * z) ^ (p - 1) * (1 + v * z) ^ (p - 1) /
-        ((1 + u * z) ^ p + (1 + v * z) ^ p) ^ 2) z := by
+        ((1 + u * z) ^ p + (1 + v * z) ^ p) ^ (2 : ℕ)) z := by
   obtain ⟨q, rfl⟩ : ∃ q, p = q + 1 := ⟨p - 1, by omega⟩
   have hAaff : HasDerivAt (fun t : ℂ => 1 + u * t) u z := by
     simpa using ((hasDerivAt_id z).const_mul u).const_add (1 : ℂ)
@@ -89,20 +89,20 @@ theorem exists_treeBPC_nonsuper_nonrepelling_fixedPoint {p : ℕ} (hp : 2 ≤ p)
   · have hposr := treeBP_deriv_pos hp0 huv hAr hBr
     have hcast : (2 * (p : ℂ) * ((u : ℂ) - (v : ℂ)) * ((1 : ℂ) + (u : ℂ) * (c : ℂ)) ^ (p - 1) *
         ((1 : ℂ) + (v : ℂ) * (c : ℂ)) ^ (p - 1) /
-        (((1 : ℂ) + (u : ℂ) * (c : ℂ)) ^ p + ((1 : ℂ) + (v : ℂ) * (c : ℂ)) ^ p) ^ 2) =
+        (((1 : ℂ) + (u : ℂ) * (c : ℂ)) ^ p + ((1 : ℂ) + (v : ℂ) * (c : ℂ)) ^ p) ^ (2 : ℕ)) =
         ((2 * (p : ℝ) * (u - v) * (1 + u * c) ^ (p - 1) * (1 + v * c) ^ (p - 1) /
-          ((1 + u * c) ^ p + (1 + v * c) ^ p) ^ 2 : ℝ) : ℂ) := by push_cast; ring
+          ((1 + u * c) ^ p + (1 + v * c) ^ p) ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; ring
     rw [hcast]
     exact_mod_cast ne_of_gt hposr
   · have hderivEq : deriv (treeBP p u v) c =
         2 * (p : ℝ) * (u - v) * (1 + u * c) ^ (p - 1) * (1 + v * c) ^ (p - 1) /
-          ((1 + u * c) ^ p + (1 + v * c) ^ p) ^ 2 :=
+          ((1 + u * c) ^ p + (1 + v * c) ^ p) ^ (2 : ℕ) :=
       (hasDerivAt_treeBP hp0 hAr hBr).deriv
     have hcast : (2 * (p : ℂ) * ((u : ℂ) - (v : ℂ)) * ((1 : ℂ) + (u : ℂ) * (c : ℂ)) ^ (p - 1) *
         ((1 : ℂ) + (v : ℂ) * (c : ℂ)) ^ (p - 1) /
-        (((1 : ℂ) + (u : ℂ) * (c : ℂ)) ^ p + ((1 : ℂ) + (v : ℂ) * (c : ℂ)) ^ p) ^ 2) =
+        (((1 : ℂ) + (u : ℂ) * (c : ℂ)) ^ p + ((1 : ℂ) + (v : ℂ) * (c : ℂ)) ^ p) ^ (2 : ℕ)) =
         ((2 * (p : ℝ) * (u - v) * (1 + u * c) ^ (p - 1) * (1 + v * c) ^ (p - 1) /
-          ((1 + u * c) ^ p + (1 + v * c) ^ p) ^ 2 : ℝ) : ℂ) := by push_cast; ring
+          ((1 + u * c) ^ p + (1 + v * c) ^ p) ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; ring
     rw [hcast, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg]
     · rw [← hderivEq]; exact hle
     · have := treeBP_deriv_pos hp0 huv hAr hBr

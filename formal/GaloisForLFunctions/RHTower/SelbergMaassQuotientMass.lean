@@ -53,7 +53,7 @@ theorem cell_tail_curvature_eq (e : Ioi (0 : ℝ)) (Y : ℝ) :
       ∫ p in tailDomain Y, weightedRemainder N f e p := by
   have hmeas := isClosed_fd.measurableSet.diff (cellCore_compact Y).measurableSet
   have he (z : ℍ) :
-      z.im ^ 2 * (tailDomain Y).indicator (weightedRemainder N f e) (z.re, z.im) =
+      z.im ^ (2 : ℕ) * (tailDomain Y).indicator (weightedRemainder N f e) (z.re, z.im) =
         (fd \ cellCore Y).indicator (hyperbolicCurvature N f e) z := by
     by_cases hz : z ∈ fd \ cellCore Y
     · rw [Set.indicator_of_mem ((tailDomain_iff_cellTail z Y).mpr hz), Set.indicator_of_mem hz]

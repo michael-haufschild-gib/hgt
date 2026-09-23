@@ -105,7 +105,7 @@ private theorem corr_gap (T : E →L[ℂ] E) (ℓ : E →L[ℂ] ℂ) (N : ℕ) (
 
 private theorem norm_corr_gap_le (T : E →L[ℂ] E)
     (ht : ∀ n u, ‖(T ^ n) u‖ ≤ ‖u‖) (ℓ : E →L[ℂ] ℂ) (N : ℕ) (u v : E) :
-    ‖obsCorr T ℓ N u u - obsCorr T ℓ N u v‖ ≤ ‖ℓ‖ ^ 2 * ‖u‖ * ‖u - v‖ := by
+    ‖obsCorr T ℓ N u u - obsCorr T ℓ N u v‖ ≤ ‖ℓ‖ ^ (2 : ℕ) * ‖u‖ * ‖u - v‖ := by
   rw [corr_gap]
   apply norm_scalar_cesaro_le _ _ (by positivity)
   intro n
@@ -117,7 +117,7 @@ private theorem norm_corr_gap_le (T : E →L[ℂ] E)
     ‖ℓ ((T ^ n) u) * star (ℓ ((T ^ n) (u - v)))‖ =
         ‖ℓ ((T ^ n) u)‖ * ‖ℓ ((T ^ n) (u - v))‖ := by rw [norm_mul, norm_star]
     _ ≤ (‖ℓ‖ * ‖u‖) * (‖ℓ‖ * ‖u - v‖) := mul_le_mul ha hb (norm_nonneg _) (by positivity)
-    _ = ‖ℓ‖ ^ 2 * ‖u‖ * ‖u - v‖ := by ring
+    _ = ‖ℓ‖ ^ (2 : ℕ) * ‖u‖ * ‖u - v‖ := by ring
 
 private theorem self_corr_tendsto_zero (T : E →L[ℂ] E)
     (ht : ∀ n u, ‖(T ^ n) u‖ ≤ ‖u‖) (ℓ : E →L[ℂ] ℂ) (u : E) (A : Set E)
@@ -125,7 +125,7 @@ private theorem self_corr_tendsto_zero (T : E →L[ℂ] E)
     (hu : u ∈ closure A) : Tendsto (fun N : ℕ => obsCorr T ℓ N u u) atTop (𝓝 0) := by
   apply Metric.tendsto_nhds.mpr
   intro ε hε
-  let C : ℝ := ‖ℓ‖ ^ 2 * ‖u‖
+  let C : ℝ := ‖ℓ‖ ^ (2 : ℕ) * ‖u‖
   have hC : 0 ≤ C := by positivity
   obtain ⟨v, hv, huv⟩ := Metric.mem_closure_iff.mp hu (ε / (2 * (C + 1))) (by positivity)
   have hvn : ‖u - v‖ < ε / (2 * (C + 1)) := by simpa only [dist_eq_norm] using huv
@@ -141,14 +141,14 @@ private theorem self_corr_tendsto_zero (T : E →L[ℂ] E)
   simp only [dist_zero_right] at hN ⊢
   linarith
 
-private theorem complex_self_square (z : ℂ) : z * star z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+private theorem complex_self_square (z : ℂ) : z * star z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   change z * (starRingEnd ℂ) z = _
   rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
 
 private theorem corr_self_re (T : E →L[ℂ] E) (ℓ : E →L[ℂ] ℂ) (N : ℕ) (u : E) :
-    (obsCorr T ℓ N u u).re = (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ 2 := by
+    (obsCorr T ℓ N u u).re = (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ (2 : ℕ) := by
   have h : obsCorr T ℓ N u u =
-      (((N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ 2 : ℝ) : ℂ) := by
+      (((N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     simp only [obsCorr, complex_self_square, ← Complex.ofReal_sum]
     rw [Complex.ofReal_mul, Complex.ofReal_inv]
   rw [h, Complex.ofReal_re]
@@ -159,7 +159,7 @@ private theorem mean_square_zero_of_modes (T : E →L[ℂ] E)
     (he : ∀ i n, (T ^ n) (v i) = (z i) ^ n • v i)
     (hm : ∀ i, Tendsto (fun N : ℕ => rotatedMean T (z i) N u) atTop (𝓝 0))
     (hu : u ∈ closure (Submodule.span ℂ (Set.range v) : Set E)) :
-    Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ 2)
+    Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ (2 : ℕ))
       atTop (𝓝 0) := by
   have hc := self_corr_tendsto_zero T ht ℓ u (Submodule.span ℂ (Set.range v))
     (fun w hw => core_corr_tendsto T ℓ u v z hz he hm hw) hu

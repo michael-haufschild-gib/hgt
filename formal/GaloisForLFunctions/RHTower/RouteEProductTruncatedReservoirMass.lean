@@ -177,7 +177,7 @@ theorem pairCollisionMass_eq
     (∑ f : ι → α,
       if f (e (Sum.inl 0)) = f (e (Sum.inl 1))
       then ∏ i, w (f i) else 0) =
-      (∑ a, w a ^ 2) * (∑ a, w a) ^ n := by
+      (∑ a, w a ^ (2 : ℕ)) * (∑ a, w a) ^ n := by
   rw [Fintype.sum_equiv (functionPairRemainderEquiv n ι α e)
     (fun f : ι → α =>
       if f (e (Sum.inl 0)) = f (e (Sum.inl 1))
@@ -225,7 +225,7 @@ theorem pairCollisionMass_eq
               else 0 := by
                 apply Finset.sum_image
                 exact Set.injOn_of_injective fun a b h => congrFun h 0
-        _ = ∑ a : α, w a ^ 2 := by
+        _ = ∑ a : α, w a ^ (2 : ℕ) := by
               apply Finset.sum_congr rfl
               intro a ha
               simp [pow_two]
@@ -411,19 +411,19 @@ theorem sum_pairCollisionWeight
     (∑ U : BreadthSubset 2 (Fin b),
       ∑ f : Fin b → α, pairCollisionWeight b w U f) =
       ((b.choose 2 : ℕ) : ℝ) *
-        ((∑ a, w a ^ 2) * (∑ a, w a) ^ (b - 2)) := by
+        ((∑ a, w a ^ (2 : ℕ)) * (∑ a, w a) ^ (b - 2)) := by
   calc
     (∑ U : BreadthSubset 2 (Fin b),
         ∑ f : Fin b → α, pairCollisionWeight b w U f) =
         ∑ U : BreadthSubset 2 (Fin b),
-          ((∑ a, w a ^ 2) * (∑ a, w a) ^ (b - 2)) := by
+          ((∑ a, w a ^ (2 : ℕ)) * (∑ a, w a) ^ (b - 2)) := by
             apply Finset.sum_congr rfl
             intro U hU
             simpa [pairCollisionWeight, tupleWeight] using
               pairCollisionMass_eq (b - 2) (Fin b) α
                 (pairCoordinateEquiv b U) w
     _ = ((b.choose 2 : ℕ) : ℝ) *
-        ((∑ a, w a ^ 2) * (∑ a, w a) ^ (b - 2)) := by
+        ((∑ a, w a ^ (2 : ℕ)) * (∑ a, w a) ^ (b - 2)) := by
       simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
         card_breadthSubset]
       simp [Fintype.card_fin]
@@ -436,7 +436,7 @@ theorem weightedBirthdayCollisionBound
       (b.factorial : ℝ) *
           (∑ R : BreadthSubset b α, ∏ a ∈ R.1, w a) +
         ((b.choose 2 : ℕ) : ℝ) *
-          ((∑ a, w a ^ 2) * (∑ a, w a) ^ (b - 2)) := by
+          ((∑ a, w a ^ (2 : ℕ)) * (∑ a, w a) ^ (b - 2)) := by
   have hsum :
       (∑ f : Fin b → α, tupleWeight w f) ≤
         ∑ f : Fin b → α,
@@ -660,7 +660,7 @@ theorem weightedProductTruncationLowerBound
     weightedTruncatedPowersetMass Finset.univ b w energy L ≥
       ((∑ a, w a) ^ b -
           ((b.choose 2 : ℕ) : ℝ) *
-            ((∑ a, w a ^ 2) * (∑ a, w a) ^ (b - 2))) /
+            ((∑ a, w a ^ (2 : ℕ)) * (∑ a, w a) ^ (b - 2))) /
         (b.factorial : ℝ) -
       ((∑ a, w a * energy a) *
           ((∑ a, w a) ^ (b - 1) /
@@ -670,7 +670,7 @@ theorem weightedProductTruncationLowerBound
     Finset.univ b w energy L
   let tail := weightedPowersetTail Finset.univ b w energy L
   let collision := ((b.choose 2 : ℕ) : ℝ) *
-    ((∑ a, w a ^ 2) * (∑ a, w a) ^ (b - 2))
+    ((∑ a, w a ^ (2 : ℕ)) * (∑ a, w a) ^ (b - 2))
   have hfact : (0 : ℝ) < (b.factorial : ℕ) := by
     exact_mod_cast Nat.factorial_pos b
   have hcollision := weightedBirthdayCollisionBound b α w hw
@@ -707,7 +707,7 @@ theorem weightedProductTruncationLowerBound_normalized
     weightedTruncatedPowersetMass Finset.univ b w energy L ≥
       ((∑ a, w a) ^ b / (b.factorial : ℝ)) *
         (1 - ((b.choose 2 : ℕ) : ℝ) *
-            (∑ a, w a ^ 2) / (∑ a, w a) ^ 2 -
+            (∑ a, w a ^ (2 : ℕ)) / (∑ a, w a) ^ (2 : ℕ) -
           (b : ℝ) * (∑ a, w a * energy a) /
             ((∑ a, w a) * L)) := by
   have hbase := weightedProductTruncationLowerBound
@@ -715,12 +715,12 @@ theorem weightedProductTruncationLowerBound_normalized
   suffices hnormalize :
       ((∑ a, w a) ^ b / (b.factorial : ℝ)) *
           (1 - ((b.choose 2 : ℕ) : ℝ) *
-              (∑ a, w a ^ 2) / (∑ a, w a) ^ 2 -
+              (∑ a, w a ^ (2 : ℕ)) / (∑ a, w a) ^ (2 : ℕ) -
             (b : ℝ) * (∑ a, w a * energy a) /
               ((∑ a, w a) * L)) =
         ((∑ a, w a) ^ b -
             ((b.choose 2 : ℕ) : ℝ) *
-              ((∑ a, w a ^ 2) * (∑ a, w a) ^ (b - 2))) /
+              ((∑ a, w a ^ (2 : ℕ)) * (∑ a, w a) ^ (b - 2))) /
           (b.factorial : ℝ) -
         ((∑ a, w a * energy a) *
             ((∑ a, w a) ^ (b - 1) /
@@ -736,7 +736,7 @@ theorem weightedProductTruncationLowerBound_normalized
       obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hb)
       simp [Nat.factorial_succ]
     have hpow2 : (∑ a, w a) ^ b =
-        (∑ a, w a) ^ (b - 2) * (∑ a, w a) ^ 2 := by
+        (∑ a, w a) ^ (b - 2) * (∑ a, w a) ^ (2 : ℕ) := by
       rw [← pow_add]
       congr
       omega
@@ -779,7 +779,7 @@ def harmonicSum (d : RouteEProductTruncationData) : ℝ :=
   ∑ p : ↥d.P, d.harmonicWeight p
 
 def harmonicSquareSum (d : RouteEProductTruncationData) : ℝ :=
-  ∑ p : ↥d.P, d.harmonicWeight p ^ 2
+  ∑ p : ↥d.P, d.harmonicWeight p ^ (2 : ℕ)
 
 def harmonicLogMoment (d : RouteEProductTruncationData) : ℝ :=
   ∑ p : ↥d.P, d.harmonicWeight p * d.logEnergy p
@@ -863,7 +863,7 @@ theorem productTruncatedHarmonicMass_lowerBound
     d.productTruncatedHarmonicMass ≥
       (d.harmonicSum ^ d.b / (d.b.factorial : ℝ)) *
         (1 - ((d.b.choose 2 : ℕ) : ℝ) *
-            d.harmonicSquareSum / d.harmonicSum ^ 2 -
+            d.harmonicSquareSum / d.harmonicSum ^ (2 : ℕ) -
           (d.b : ℝ) * d.harmonicLogMoment /
             (d.harmonicSum * Real.log d.T)) := by
   rw [d.productTruncatedHarmonicMass_eq_weighted]
@@ -884,7 +884,7 @@ theorem productTruncatedHarmonicMass_lowerBound_of_normalizedLosses
     (d : RouteEProductTruncationData) {eta delta : ℝ}
     (hcollision :
       ((d.b.choose 2 : ℕ) : ℝ) * d.harmonicSquareSum /
-          d.harmonicSum ^ 2 ≤ eta)
+          d.harmonicSum ^ (2 : ℕ) ≤ eta)
     (htail :
       (d.b : ℝ) * d.harmonicLogMoment /
           (d.harmonicSum * Real.log d.T) ≤ delta) :
@@ -897,7 +897,7 @@ theorem productTruncatedHarmonicMass_lowerBound_of_normalizedLosses
   have hloss :
       1 - eta - delta ≤
         1 - ((d.b.choose 2 : ℕ) : ℝ) *
-            d.harmonicSquareSum / d.harmonicSum ^ 2 -
+            d.harmonicSquareSum / d.harmonicSum ^ (2 : ℕ) -
           (d.b : ℝ) * d.harmonicLogMoment /
             (d.harmonicSum * Real.log d.T) := by
     linarith
@@ -927,7 +927,7 @@ def harmonicSum (d : RouteEPrimeReservoirCofinalData) : ℝ :=
   ∑ p ∈ d.reservoir, 1 / (p : ℝ)
 
 def harmonicSquareSum (d : RouteEPrimeReservoirCofinalData) : ℝ :=
-  ∑ p ∈ d.reservoir, (1 / (p : ℝ)) ^ 2
+  ∑ p ∈ d.reservoir, (1 / (p : ℝ)) ^ (2 : ℕ)
 
 def harmonicLogMoment (d : RouteEPrimeReservoirCofinalData) : ℝ :=
   ∑ p ∈ d.reservoir, Real.log p / (p : ℝ)
@@ -1008,14 +1008,14 @@ theorem productTruncatedMass_lowerBound (d : RouteEPrimeReservoirCofinalData) :
     d.productTruncatedMass ≥
       (d.harmonicSum ^ d.b / (d.b.factorial : ℝ)) *
         (1 - ((d.b.choose 2 : ℕ) : ℝ) * d.harmonicSquareSum /
-            d.harmonicSum ^ 2 -
+            d.harmonicSum ^ (2 : ℕ) -
           (d.b : ℝ) * d.harmonicLogMoment /
             (d.harmonicSum * Real.log d.T)) := by
   have hsum :
       (∑ p : ↥d.reservoir, 1 / (p.1 : ℝ)) = d.harmonicSum := by
     rw [harmonicSum, Finset.sum_subtype d.reservoir (fun _ => Iff.rfl)]
   have hsquare :
-      (∑ p : ↥d.reservoir, (1 / (p.1 : ℝ)) ^ 2) =
+      (∑ p : ↥d.reservoir, (1 / (p.1 : ℝ)) ^ (2 : ℕ)) =
         d.harmonicSquareSum := by
     rw [harmonicSquareSum, Finset.sum_subtype d.reservoir (fun _ => Iff.rfl)]
   have hmoment :
@@ -1058,15 +1058,15 @@ theorem productTruncatedMass_ge_explicitMertens
   have hchoose : (0 : ℝ) ≤ ((d.b.choose 2 : ℕ) : ℝ) := by positivity
   have hcollision :
       ((d.b.choose 2 : ℕ) : ℝ) * d.harmonicSquareSum /
-          d.harmonicSum ^ 2 ≤
+          d.harmonicSum ^ (2 : ℕ) ≤
         ((d.b.choose 2 : ℕ) : ℝ) /
           ((d.W : ℝ) * d.harmonicSum) := by
     calc
       ((d.b.choose 2 : ℕ) : ℝ) * d.harmonicSquareSum /
-          d.harmonicSum ^ 2 ≤
+          d.harmonicSum ^ (2 : ℕ) ≤
         ((d.b.choose 2 : ℕ) : ℝ) *
             ((1 / (d.W : ℝ)) * d.harmonicSum) /
-              d.harmonicSum ^ 2 :=
+              d.harmonicSum ^ (2 : ℕ) :=
         div_le_div_of_nonneg_right
           (mul_le_mul_of_nonneg_left d.harmonicSquareSum_le hchoose)
           (sq_nonneg d.harmonicSum)
@@ -1087,7 +1087,7 @@ theorem productTruncatedMass_ge_explicitMertens
           (d.b : ℝ) * (Real.log d.U + Sieve.mertensFirstConst) /
             (d.harmonicSum * Real.log d.T) ≤
         1 - ((d.b.choose 2 : ℕ) : ℝ) * d.harmonicSquareSum /
-              d.harmonicSum ^ 2 -
+              d.harmonicSum ^ (2 : ℕ) -
           (d.b : ℝ) * d.harmonicLogMoment /
             (d.harmonicSum * Real.log d.T) := by
     linarith

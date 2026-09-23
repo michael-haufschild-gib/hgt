@@ -22,7 +22,7 @@ abbrev routePBurnolHalfLineL2 :=
 
 theorem memLp_routePBurnolHalfLine
     {f : ℝ → ℂ} (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
     MemLp f 2 (volume.restrict (Ioi (0 : ℝ))) := by
   exact (memLp_two_iff_integrable_sq_norm
     hfcont.aestronglyMeasurable.restrict).2 hf
@@ -30,11 +30,11 @@ theorem memLp_routePBurnolHalfLine
 theorem integrableOn_norm_sq_routePBurnolForwardDampingShift
     {c : ℝ} (hc : 0 ≤ c) {f : ℝ → ℂ}
     (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
     IntegrableOn
-      (fun u : ℝ => ‖routePBurnolForwardDampingShift c f u‖ ^ 2)
+      (fun u : ℝ => ‖routePBurnolForwardDampingShift c f u‖ ^ (2 : ℕ))
       (Ioi 0) := by
-  let g : ℝ → ℝ := fun u => ‖f u‖ ^ 2
+  let g : ℝ → ℝ := fun u => ‖f u‖ ^ (2 : ℕ)
   have hsub : Ioi c ⊆ Ioi (0 : ℝ) := by
     intro u hu
     exact mem_Ioi.mpr (lt_of_le_of_lt hc (mem_Ioi.mp hu))
@@ -49,7 +49,7 @@ theorem integrableOn_norm_sq_routePBurnolForwardDampingShift
       (measurableEmbedding_addRight c)).mpr htail
   apply Integrable.mono' hshift
   · have hm : Measurable
-        (fun u : ℝ => ‖routePBurnolForwardDampingShift c f u‖ ^ 2) := by
+        (fun u : ℝ => ‖routePBurnolForwardDampingShift c f u‖ ^ (2 : ℕ)) := by
       unfold routePBurnolForwardDampingShift
       fun_prop
     exact hm.aestronglyMeasurable.restrict
@@ -59,7 +59,7 @@ theorem integrableOn_norm_sq_routePBurnolForwardDampingShift
 theorem memLp_routePBurnolForwardDampingShift
     {c : ℝ} (hc : 0 ≤ c) {f : ℝ → ℂ}
     (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
     MemLp (routePBurnolForwardDampingShift c f) 2
       (volume.restrict (Ioi (0 : ℝ))) := by
   apply (memLp_two_iff_integrable_sq_norm ?_).2
@@ -71,7 +71,7 @@ theorem memLp_routePBurnolForwardDampingShift
 
 theorem memLp_routePBurnolApertureBoundaryDefect
     (c : ℝ) {f : ℝ → ℂ} (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
     MemLp (routePBurnolApertureBoundaryDefect c f) 2
       (volume.restrict (Ioi (0 : ℝ))) := by
   change MemLp ((Ioc (0 : ℝ) c).indicator f) 2
@@ -81,7 +81,7 @@ theorem memLp_routePBurnolApertureBoundaryDefect
 theorem memLp_routePBurnolApertureTailDefect
     {c : ℝ} (hc : 0 ≤ c) {f : ℝ → ℂ}
     (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
     MemLp (routePBurnolApertureTailDefect c f) 2
       (volume.restrict (Ioi (0 : ℝ))) := by
   apply (memLp_routePBurnolHalfLine hfcont hf).mono
@@ -109,13 +109,13 @@ theorem memLp_routePBurnolApertureTailDefect
 
 def routePBurnolHalfLineL2Of
     (f : ℝ → ℂ) (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
     routePBurnolHalfLineL2 :=
   (memLp_routePBurnolHalfLine hfcont hf).toLp f
 
 def routePBurnolApertureColligationChannels
     (c : ℝ) (hc : 0 ≤ c) (f : ℝ → ℂ) (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
     Fin 3 → routePBurnolHalfLineL2 :=
   ![(memLp_routePBurnolForwardDampingShift hc hfcont hf).toLp
       (routePBurnolForwardDampingShift c f),
@@ -126,14 +126,14 @@ def routePBurnolApertureColligationChannels
 
 def routePBurnolApertureColligationVector
     (c : ℝ) (hc : 0 ≤ c) (f : ℝ → ℂ) (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
     PiLp 2 (fun _ : Fin 3 => routePBurnolHalfLineL2) :=
   WithLp.toLp 2 (routePBurnolApertureColligationChannels c hc f hfcont hf)
 
 theorem norm_sq_routePBurnolHalfLineL2Of
     (f : ℝ → ℂ) (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
-    ‖routePBurnolHalfLineL2Of f hfcont hf‖ ^ 2 =
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
+    ‖routePBurnolHalfLineL2Of f hfcont hf‖ ^ (2 : ℕ) =
       routePBurnolApertureEnergy f := by
   rw [routePBurnolHalfLineL2Of,
     norm_sq_toLp_eq_integral_norm_sq,
@@ -141,12 +141,12 @@ theorem norm_sq_routePBurnolHalfLineL2Of
 
 theorem norm_sq_routePBurnolApertureColligationVector
     (c : ℝ) (hc : 0 ≤ c) (f : ℝ → ℂ) (hfcont : Continuous f)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0)) :
-    ‖routePBurnolApertureColligationVector c hc f hfcont hf‖ ^ 2 =
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0)) :
+    ‖routePBurnolApertureColligationVector c hc f hfcont hf‖ ^ (2 : ℕ) =
       routePBurnolApertureEnergy f := by
   have htransport :
       ‖(memLp_routePBurnolForwardDampingShift hc hfcont hf).toLp
-          (routePBurnolForwardDampingShift c f)‖ ^ 2 =
+          (routePBurnolForwardDampingShift c f)‖ ^ (2 : ℕ) =
         routePBurnolApertureEnergy
           (routePBurnolForwardDampingShift c f) := by
     simpa [routePBurnolApertureEnergy] using
@@ -154,7 +154,7 @@ theorem norm_sq_routePBurnolApertureColligationVector
         (memLp_routePBurnolForwardDampingShift hc hfcont hf)
   have hboundary :
       ‖(memLp_routePBurnolApertureBoundaryDefect c hfcont hf).toLp
-          (routePBurnolApertureBoundaryDefect c f)‖ ^ 2 =
+          (routePBurnolApertureBoundaryDefect c f)‖ ^ (2 : ℕ) =
         routePBurnolApertureEnergy
           (routePBurnolApertureBoundaryDefect c f) := by
     simpa [routePBurnolApertureEnergy] using
@@ -162,7 +162,7 @@ theorem norm_sq_routePBurnolApertureColligationVector
         (memLp_routePBurnolApertureBoundaryDefect c hfcont hf)
   have htail :
       ‖(memLp_routePBurnolApertureTailDefect hc hfcont hf).toLp
-          (routePBurnolApertureTailDefect c f)‖ ^ 2 =
+          (routePBurnolApertureTailDefect c f)‖ ^ (2 : ℕ) =
         routePBurnolApertureEnergy
           (routePBurnolApertureTailDefect c f) := by
     simpa [routePBurnolApertureEnergy] using
@@ -172,11 +172,11 @@ theorem norm_sq_routePBurnolApertureColligationVector
     PiLp.norm_sq_eq_of_L2, Fin.sum_univ_three]
   change
     ‖(memLp_routePBurnolForwardDampingShift hc hfcont hf).toLp
-        (routePBurnolForwardDampingShift c f)‖ ^ 2 +
+        (routePBurnolForwardDampingShift c f)‖ ^ (2 : ℕ) +
       ‖(memLp_routePBurnolApertureBoundaryDefect c hfcont hf).toLp
-        (routePBurnolApertureBoundaryDefect c f)‖ ^ 2 +
+        (routePBurnolApertureBoundaryDefect c f)‖ ^ (2 : ℕ) +
       ‖(memLp_routePBurnolApertureTailDefect hc hfcont hf).toLp
-        (routePBurnolApertureTailDefect c f)‖ ^ 2 = _
+        (routePBurnolApertureTailDefect c f)‖ ^ (2 : ℕ) = _
   rw [htransport, hboundary, htail]
   exact routePBurnolApertureDamping_energy_colligation hc hfcont hf
 
@@ -185,13 +185,13 @@ def routePBurnolHalfLinePairing (f g : ℝ → ℂ) : ℂ :=
 
 theorem integrableOn_star_mul_of_integrableOn_norm_sq
     {f g : ℝ → ℂ} (hfcont : Continuous f) (hgcont : Continuous g)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0))
-    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0))
+    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ (2 : ℕ)) (Ioi 0)) :
     IntegrableOn (fun u : ℝ => star (f u) * g u) (Ioi 0) := by
   apply Integrable.mono' (hf.add hg)
   · exact ((hfcont.star.mul hgcont).aestronglyMeasurable).restrict
   · filter_upwards with u
-    change ‖star (f u) * g u‖ ≤ ‖f u‖ ^ 2 + ‖g u‖ ^ 2
+    change ‖star (f u) * g u‖ ≤ ‖f u‖ ^ (2 : ℕ) + ‖g u‖ ^ (2 : ℕ)
     rw [norm_mul, norm_star]
     nlinarith [sq_nonneg (‖f u‖ - ‖g u‖), norm_nonneg (f u), norm_nonneg (g u)]
 
@@ -201,14 +201,14 @@ theorem routePBurnolHalfLinePairing_forwardDampingShift_eq_tail
         (routePBurnolForwardDampingShift c f)
         (routePBurnolForwardDampingShift c g) =
       ∫ u : ℝ in Ioi c,
-        (((u - c) / u) ^ 2 : ℂ) * (star (f u) * g u) := by
+        (((u - c) / u) ^ (2 : ℕ) : ℂ) * (star (f u) * g u) := by
   rw [routePBurnolHalfLinePairing]
   calc
     (∫ u : ℝ in Ioi 0,
         star (routePBurnolForwardDampingShift c f u) *
           routePBurnolForwardDampingShift c g u) =
         ∫ u : ℝ in Ioi 0,
-          (((u / (u + c)) ^ 2 : ℝ) : ℂ) *
+          (((u / (u + c)) ^ (2 : ℕ) : ℝ) : ℂ) *
             (star (f (u + c)) * g (u + c)) := by
       apply setIntegral_congr_fun measurableSet_Ioi
       intro u hu
@@ -222,15 +222,15 @@ theorem routePBurnolHalfLinePairing_forwardDampingShift_eq_tail
       push_cast
       ring
     _ = ∫ u : ℝ in Ioi 0,
-        (((((u + c) - c) / (u + c)) ^ 2 : ℝ) : ℂ) *
+        (((((u + c) - c) / (u + c)) ^ (2 : ℕ) : ℝ) : ℂ) *
           (star (f (u + c)) * g (u + c)) := by
       apply setIntegral_congr_fun measurableSet_Ioi
       intro u _hu
       ring_nf
     _ = ∫ u : ℝ in Ioi c,
-        (((u - c) / u) ^ 2 : ℂ) * (star (f u) * g u) := by
+        (((u - c) / u) ^ (2 : ℕ) : ℂ) * (star (f u) * g u) := by
       convert routePIntegral_Ioi_comp_add_eq
-        (fun u : ℝ => (((u - c) / u) ^ 2 : ℂ) *
+        (fun u : ℝ => (((u - c) / u) ^ (2 : ℕ) : ℂ) *
           (star (f u) * g u)) c using 1
       apply setIntegral_congr_fun measurableSet_Ioi
       intro u _hu
@@ -315,8 +315,8 @@ the full complex sesquilinear pairing, not merely diagonal energy. -/
 theorem routePBurnolApertureDamping_pairing_colligation
     {c : ℝ} (hc : 0 ≤ c) {f g : ℝ → ℂ}
     (hfcont : Continuous f) (hgcont : Continuous g)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0))
-    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0))
+    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ (2 : ℕ)) (Ioi 0)) :
     routePBurnolHalfLinePairing
         (routePBurnolForwardDampingShift c f)
         (routePBurnolForwardDampingShift c g) +
@@ -336,10 +336,10 @@ theorem routePBurnolApertureDamping_pairing_colligation
   have hhead : IntegrableOn h (Ioc 0 c) := hpair.mono_set Ioc_subset_Ioi_self
   have htail : IntegrableOn h (Ioi c) := hpair.mono_set hsubset
   have htransport : IntegrableOn
-      (fun u : ℝ => (((u - c) / u) ^ 2 : ℂ) * h u) (Ioi c) := by
+      (fun u : ℝ => (((u - c) / u) ^ (2 : ℕ) : ℂ) * h u) (Ioi c) := by
     apply Integrable.mono' htail.norm
     · have hm : Measurable
-          (fun u : ℝ => (((u - c) / u) ^ 2 : ℂ) * h u) := by
+          (fun u : ℝ => (((u - c) / u) ^ (2 : ℕ) : ℂ) * h u) := by
         dsimp [h]
         fun_prop
       exact hm.aestronglyMeasurable.restrict
@@ -367,7 +367,7 @@ theorem routePBurnolApertureDamping_pairing_colligation
       rw [norm_mul, norm_real, Real.norm_eq_abs, abs_of_nonneg hw0]
       exact mul_le_of_le_one_left (norm_nonneg _) hw1
   have htailComplete :
-      (∫ u : ℝ in Ioi c, (((u - c) / u) ^ 2 : ℂ) * h u) +
+      (∫ u : ℝ in Ioi c, (((u - c) / u) ^ (2 : ℕ) : ℂ) * h u) +
           ∫ u : ℝ in Ioi c,
             (routePBurnolApertureTailDefectWeight c u : ℂ) * h u =
         ∫ u : ℝ in Ioi c, h u := by
@@ -386,14 +386,14 @@ theorem routePBurnolApertureDamping_pairing_colligation
     routePBurnolHalfLinePairing_boundaryDefect,
     routePBurnolHalfLinePairing_tailDefect hc,
     routePBurnolHalfLinePairing]
-  change (∫ u : ℝ in Ioi c, (((u - c) / u) ^ 2 : ℂ) * h u) +
+  change (∫ u : ℝ in Ioi c, (((u - c) / u) ^ (2 : ℕ) : ℂ) * h u) +
       (∫ u : ℝ in Ioc 0 c, h u) +
       (∫ u : ℝ in Ioi c,
         (routePBurnolApertureTailDefectWeight c u : ℂ) * h u) =
     ∫ u : ℝ in Ioi 0, h u
   calc
     _ = (∫ u : ℝ in Ioc 0 c, h u) +
-        ((∫ u : ℝ in Ioi c, (((u - c) / u) ^ 2 : ℂ) * h u) +
+        ((∫ u : ℝ in Ioi c, (((u - c) / u) ^ (2 : ℕ) : ℂ) * h u) +
           ∫ u : ℝ in Ioi c,
             (routePBurnolApertureTailDefectWeight c u : ℂ) * h u) := by ring
     _ = (∫ u : ℝ in Ioc 0 c, h u) + ∫ u : ℝ in Ioi c, h u := by
@@ -416,8 +416,8 @@ theorem inner_toLp_routePBurnolHalfLine_eq_pairing
 theorem inner_routePBurnolApertureColligationVector_eq_source
     (c : ℝ) (hc : 0 ≤ c) (f g : ℝ → ℂ)
     (hfcont : Continuous f) (hgcont : Continuous g)
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0))
-    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0))
+    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ (2 : ℕ)) (Ioi 0)) :
     inner ℂ
         (routePBurnolApertureColligationVector c hc f hfcont hf)
         (routePBurnolApertureColligationVector c hc g hgcont hg) =

@@ -144,7 +144,7 @@ mass-and-barycenter cancellation. -/
 theorem unitRieszCesaroCompletedReporterSymbol_eq
     {a : ℝ} (ha : -(1 / 2 : ℝ) < a) :
     unitRieszCesaroCompletedReporterSymbol a =
-      -(3 / 32 : ℝ) * a ^ 2 / ((a + 1) * (2 * a + 1)) := by
+      -(3 / 32 : ℝ) * a ^ (2 : ℕ) / ((a + 1) * (2 * a + 1)) := by
   have hslow : 0 < a + 1 / 2 := by linarith
   have hfast : 0 < a + 1 := by linarith
   have hslow' : 0 < 2 * a + 1 := by linarith
@@ -214,7 +214,7 @@ theorem unitRieszCesaroCompletedReporterSymbol_eq_zero_iff
     rw [hzero] at hneg
     have hfast : 0 < a + 1 := by linarith
     have hslow : 0 < 2 * a + 1 := by linarith
-    have hstrict : -(3 / 32 : ℝ) * a ^ 2 / ((a + 1) * (2 * a + 1)) < 0 :=
+    have hstrict : -(3 / 32 : ℝ) * a ^ (2 : ℕ) / ((a + 1) * (2 * a + 1)) < 0 :=
       div_neg_of_neg_of_pos
         (mul_neg_of_neg_of_pos (by norm_num) (sq_pos_of_ne_zero ha0))
         (mul_pos hfast hslow)
@@ -286,7 +286,7 @@ escaped boundary jet.  The source-relative theorem below shows the jet retained 
 theorem unitRieszCesaroFiniteCompletedReporterSymbol_eq
     {t : ℝ} (ht : 0 < t) (a : ℝ) :
     unitRieszCesaroFiniteCompletedReporterSymbol t a =
-      -(Real.exp (t / 2) / t ^ 3) * a ^ 2 *
+      -(Real.exp (t / 2) / t ^ (3 : ℕ)) * a ^ (2 : ℕ) *
         ∫ s in (0 : ℝ)..t,
           Real.exp (-(a * (t - s))) * unitRieszCesaroTest t s := by
   let f : ℝ → ℝ := fun s => Real.exp (-(a * (t - s)))
@@ -306,19 +306,19 @@ theorem unitRieszCesaroFiniteCompletedReporterSymbol_eq
     exact hasDerivAt_unitRieszCesaroTestDeriv t s
   let F : ℝ → ℝ := fun s => f s * G' s - a * f s * G s
   have hF (s : ℝ) : HasDerivAt F
-      (f s * G'' s - a ^ 2 * f s * G s) s := by
+      (f s * G'' s - a ^ (2 : ℕ) * f s * G s) s := by
     have hleft := (hf s).mul (hG' s)
     have hright := ((hf s).mul (hG s)).const_mul a
     have hraw := hleft.sub hright
     have hderiv :
         a * f s * G' s + f s * G'' s -
             a * (a * f s * G s + f s * G' s) =
-          f s * G'' s - a ^ 2 * f s * G s := by
+          f s * G'' s - a ^ (2 : ℕ) * f s * G s := by
       ring
     have hraw' := hraw.congr_deriv hderiv
     change HasDerivAt
       (fun x => f x * G' x - a * f x * G x)
-      (f s * G'' s - a ^ 2 * f s * G s) s
+      (f s * G'' s - a ^ (2 : ℕ) * f s * G s) s
     apply hraw'.congr_of_eventuallyEq
     filter_upwards with x
     simp only [Pi.mul_apply, Pi.sub_apply, mul_assoc]
@@ -328,36 +328,36 @@ theorem unitRieszCesaroFiniteCompletedReporterSymbol_eq
     exact (by fun_prop : Continuous (fun s : ℝ => Real.exp (-(a * (t - s))))).mul
       (continuous_unitRieszCesaroTestSecondDeriv t)
   have hsecondInt : IntervalIntegrable
-      (fun s : ℝ => a ^ 2 * f s * G s) volume 0 t := by
+      (fun s : ℝ => a ^ (2 : ℕ) * f s * G s) volume 0 t := by
     apply Continuous.intervalIntegrable
     dsimp only [f, G]
     have hc := ((by fun_prop : Continuous (fun s : ℝ => Real.exp (-(a * (t - s))))).mul
-      (continuous_unitRieszCesaroTest t)).const_mul (a ^ 2)
+      (continuous_unitRieszCesaroTest t)).const_mul (a ^ (2 : ℕ))
     simpa only [Pi.mul_apply, mul_assoc] using hc
   have hderivInt : IntervalIntegrable
-      (fun s : ℝ => f s * G'' s - a ^ 2 * f s * G s) volume 0 t :=
+      (fun s : ℝ => f s * G'' s - a ^ (2 : ℕ) * f s * G s) volume 0 t :=
     hfirstInt.sub hsecondInt
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun s _ => hF s) hderivInt
   rw [intervalIntegral.integral_sub hfirstInt hsecondInt] at hftc
   have hsecondEq :
-      (∫ s in (0 : ℝ)..t, a ^ 2 * f s * G s) =
-        a ^ 2 * ∫ s in (0 : ℝ)..t, f s * G s := by
-    rw [show (fun s : ℝ => a ^ 2 * f s * G s) =
-        fun s : ℝ => a ^ 2 * (f s * G s) by funext s; ring,
+      (∫ s in (0 : ℝ)..t, a ^ (2 : ℕ) * f s * G s) =
+        a ^ (2 : ℕ) * ∫ s in (0 : ℝ)..t, f s * G s := by
+    rw [show (fun s : ℝ => a ^ (2 : ℕ) * f s * G s) =
+        fun s : ℝ => a ^ (2 : ℕ) * (f s * G s) by funext s; ring,
       intervalIntegral.integral_const_mul]
   rw [hsecondEq] at hftc
   have hGt : G t = 0 := by exact unitRieszCesaroTest_self t
   have hG0 : G 0 = 0 := by exact unitRieszCesaroTest_zero t
   have hG'0 : G' 0 = 0 := by exact unitRieszCesaroTestDeriv_zero t
-  have hG't : G' t = -(3 / 64) * t ^ 3 * Real.exp (-t / 2) := by
+  have hG't : G' t = -(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) := by
     exact unitRieszCesaroTestDeriv_endpoint t
   have hft : f t = 1 := by
     simp [f]
   have hftc' :
       (∫ s in (0 : ℝ)..t, f s * G'' s) =
-        -(3 / 64) * t ^ 3 * Real.exp (-t / 2) +
-          a ^ 2 * ∫ s in (0 : ℝ)..t, f s * G s := by
+        -(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2) +
+          a ^ (2 : ℕ) * ∫ s in (0 : ℝ)..t, f s * G s := by
     dsimp only [F] at hftc
     rw [hGt, hG0, hG'0, hG't, hft] at hftc
     simp only [mul_zero, sub_zero] at hftc
@@ -369,7 +369,7 @@ theorem unitRieszCesaroFiniteCompletedReporterSymbol_eq
     simpa using (intervalIntegral.integral_comp_sub_left
       (a := (0 : ℝ)) (b := t) H t).symm
   have hkernel : ∀ s : ℝ,
-      H (t - s) = -(Real.exp (t / 2) / t ^ 3) * (f s * G'' s) := by
+      H (t - s) = -(Real.exp (t / 2) / t ^ (3 : ℕ)) * (f s * G'' s) := by
     intro s
     dsimp only [H, f, G'']
     rw [unitRieszCesaroApertureKernel_eq_secondDeriv]
@@ -380,16 +380,16 @@ theorem unitRieszCesaroFiniteCompletedReporterSymbol_eq
   rw [hcv]
   simp_rw [hkernel]
   rw [intervalIntegral.integral_const_mul, hftc']
-  have ht3 : t ^ 3 ≠ 0 := by positivity
+  have ht3 : t ^ (3 : ℕ) ≠ 0 := by positivity
   have hexp : Real.exp (t / 2) * Real.exp (-t / 2) = 1 := by
     rw [← Real.exp_add, show t / 2 + -t / 2 = (0 : ℝ) by ring, Real.exp_zero]
   dsimp only [f, G]
   have hboundary :
-      -(Real.exp (t / 2) / t ^ 3) *
-          (-(3 / 64) * t ^ 3 * Real.exp (-t / 2)) = 3 / 64 := by
+      -(Real.exp (t / 2) / t ^ (3 : ℕ)) *
+          (-(3 / 64) * t ^ (3 : ℕ) * Real.exp (-t / 2)) = 3 / 64 := by
     calc
       _ = (3 / 64 : ℝ) *
-          (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ 3 / t ^ 3) := by ring
+          (Real.exp (t / 2) * Real.exp (-t / 2)) * (t ^ (3 : ℕ) / t ^ (3 : ℕ)) := by ring
       _ = _ := by rw [hexp, div_self ht3]; ring
   rw [mul_add, hboundary]
   ring
@@ -400,8 +400,8 @@ theorem unitRieszCesaroFiniteCompletedReporterSymbol_neg
     {t a : ℝ} (ht : 0 < t) (ha : a ≠ 0) :
     unitRieszCesaroFiniteCompletedReporterSymbol t a < 0 := by
   rw [unitRieszCesaroFiniteCompletedReporterSymbol_eq ht]
-  have hweight : 0 < Real.exp (t / 2) / t ^ 3 := by positivity
-  have ha2 : 0 < a ^ 2 := sq_pos_of_ne_zero ha
+  have hweight : 0 < Real.exp (t / 2) / t ^ (3 : ℕ) := by positivity
+  have ha2 : 0 < a ^ (2 : ℕ) := sq_pos_of_ne_zero ha
   have hint : 0 < ∫ s in (0 : ℝ)..t,
       Real.exp (-(a * (t - s))) * unitRieszCesaroTest t s := by
     refine intervalIntegral.intervalIntegral_pos_of_pos_on
@@ -424,7 +424,7 @@ contributions, not merely the real-exponent restriction. -/
 theorem unitRieszCesaroComplexCompletedReporterSymbol_eq
     {z : ℂ} (hz : -(1 / 2 : ℝ) < z.re) :
     unitRieszCesaroComplexCompletedReporterSymbol z =
-      -(3 / 32 : ℂ) * z ^ 2 / ((z + 1) * (2 * z + 1)) := by
+      -(3 / 32 : ℂ) * z ^ (2 : ℕ) / ((z + 1) * (2 * z + 1)) := by
   have hslow : 0 < (z + 1 / 2).re := by
     norm_num [Complex.add_re, Complex.div_re]
     linarith

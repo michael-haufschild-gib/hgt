@@ -135,21 +135,21 @@ theorem accelerationDensity_tendsto (z : ℂ) :
       (Real.sqrt_pos.mpr (lt_of_le_of_ne (density_nonneg N f _) (Ne.symm hz))).ne'
 
 private theorem sq_dir {F : ℂ → ℝ} {z : ℂ} (hF : DifferentiableAt ℝ F z) (v : ℂ) :
-    dir v (fun w => F w ^ 2) z = 2 * F z * dir v F z := by
+    dir v (fun w => F w ^ (2 : ℕ)) z = 2 * F z * dir v F z := by
   have h := congrArg (fun L => L v) (hF.hasFDerivAt.fun_mul hF.hasFDerivAt).fderiv
   change dir v (fun w => F w * F w) z = F z * dir v F z + F z * dir v F z at h
   simpa only [pow_two,two_mul,add_mul] using h
 
 private theorem sq_second_dir {F : ℂ → ℝ} {z : ℂ} (hF : ContDiffAt ℝ 2 F z) (v : ℂ) :
-    dir v (dir v (fun w => F w ^ 2)) z =
-      2 * (dir v F z ^ 2 + F z * dir v (dir v F) z) := by
-  have he : dir v (fun w => F w ^ 2) =ᶠ[𝓝 z] (fun w => 2 * F w * dir v F w) := by
+    dir v (dir v (fun w => F w ^ (2 : ℕ))) z =
+      2 * (dir v F z ^ (2 : ℕ) + F z * dir v (dir v F) z) := by
+  have he : dir v (fun w => F w ^ (2 : ℕ)) =ᶠ[𝓝 z] (fun w => 2 * F w * dir v F w) := by
     filter_upwards [hF.eventually (by norm_num)] with w hw
     exact sq_dir (hw.differentiableAt (by norm_num)) v
   have hd := (dir_contDiffAt hF v).differentiableAt (by norm_num)
   have hf := hF.differentiableAt (by norm_num : (2 : WithTop ℕ∞) ≠ 0)
   have hh := congrArg (fun L => L v) ((hf.hasFDerivAt.const_mul 2).mul hd.hasFDerivAt).fderiv
-  change fderiv ℝ (dir v (fun w => F w ^ 2)) z v = _
+  change fderiv ℝ (dir v (fun w => F w ^ (2 : ℕ))) z v = _
   rw [he.fderiv_eq]
   change dir v (fun w => 2 * F w * dir v F w) z = _
   change dir v (fun w => 2 * F w * dir v F w) z =
@@ -175,13 +175,13 @@ theorem radius_horizontal_second (e : Ioi (0:ℝ)) (z : ℍ) :
     dir 1 (dir 1 (radius N f e)) (z:ℂ)=
       horizontalCurrentDensity N f e (z:ℂ)+accelerationDensity N f e (z:ℂ) := by
   have hf := (radius_contDiffOn N f e).contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
-  have he : (fun w => radius N f e w^2)=(fun w => density N f (ofComplex w)+(e:ℝ)^2) :=
+  have he : (fun w => radius N f e w^(2 : ℕ))=(fun w => density N f (ofComplex w)+(e:ℝ)^(2 : ℕ)) :=
     funext (radius_sq N f e)
-  have hd : dir 1 (fun w => radius N f e w^2)=dir 1 (density N f ∘ ofComplex) := by
+  have hd : dir 1 (fun w => radius N f e w^(2 : ℕ))=dir 1 (density N f ∘ ofComplex) := by
     rw [he]
     funext w
     exact congrArg (fun L => L (1:ℂ)) (fderiv_add_const (𝕜:=ℝ)
-      (f:=density N f ∘ ofComplex) (x:=w) ((e:ℝ)^2))
+      (f:=density N f ∘ ofComplex) (x:=w) ((e:ℝ)^(2 : ℕ)))
   have hs := sq_second_dir hf (1:ℂ)
   rw [hd,density_horizontal_second N f z] at hs
   have hE := directionalEnergy_eq N f e 1 z
@@ -322,7 +322,7 @@ theorem density_le_mean_add_limiting_periods (z : ℍ)
     density N f z ≤ (Fintype.card (Deck N):ℝ)*normSq (sourceMean N f z)+
       16*density N f z*parameterMoment N*
         (limitingPeriodCost N f z.im+limitingPeriodCost N f (S⁻¹ • z).im) := by
-  have hm : Tendsto (fun e : Ioi (0:ℝ) => density N f z+(e:ℝ)^2) regulatorAtZero (𝓝 (density N f z)) := by
+  have hm : Tendsto (fun e : Ioi (0:ℝ) => density N f z+(e:ℝ)^(2 : ℕ)) regulatorAtZero (𝓝 (density N f z)) := by
     simpa using (tendsto_const_nhds (x:=density N f z)).add (regulator_coe_limit.pow 2)
   have h := (tendsto_const_nhds (x:=(Fintype.card (Deck N):ℝ)*normSq (sourceMean N f z))).add
     ((hm.const_mul 16).mul (blockPathCost_tendsto_of_zero_free N f z hp hq))

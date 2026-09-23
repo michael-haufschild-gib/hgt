@@ -29,15 +29,15 @@ theorem eventually_notMem_lattice (L : PeriodPair) (x : ℂ) :
 
 /-- The Weierstrass relation, as an identity of meromorphic germs. -/
 theorem weierstrass_relation_plane (L : PeriodPair) :
-    (derivWeierstrassPElement L) ^ 2
-      = 4 * (weierstrassPElement L) ^ 3
+    (derivWeierstrassPElement L) ^ (2 : ℕ)
+      = 4 * (weierstrassPElement L) ^ (3 : ℕ)
         - constPlane L.g₂ * weierstrassPElement L - constPlane L.g₃ := by
-  have hlhs : (derivWeierstrassPElement L) ^ 2
-      = ofMeromorphic (fun z => L.derivWeierstrassP z ^ 2)
+  have hlhs : (derivWeierstrassPElement L) ^ (2 : ℕ)
+      = ofMeromorphic (fun z => L.derivWeierstrassP z ^ (2 : ℕ))
         (fun z => (L.meromorphic_derivWeierstrassP z).pow 2) := rfl
-  have hrhs : 4 * (weierstrassPElement L) ^ 3
+  have hrhs : 4 * (weierstrassPElement L) ^ (3 : ℕ)
         - constPlane L.g₂ * weierstrassPElement L - constPlane L.g₃
-      = ofMeromorphic (fun z => 4 * L.weierstrassP z ^ 3 - L.g₂ * L.weierstrassP z - L.g₃)
+      = ofMeromorphic (fun z => 4 * L.weierstrassP z ^ (3 : ℕ) - L.g₂ * L.weierstrassP z - L.g₃)
         (fun z => (((MeromorphicAt.const (4 : ℂ) z).mul
             ((L.meromorphic_weierstrassP z).pow 3)).sub
           ((MeromorphicAt.const L.g₂ z).mul (L.meromorphic_weierstrassP z))).sub
@@ -74,8 +74,8 @@ theorem deriv_reparamWeierstrassP (L : PeriodPair) :
 
 /-- **The Weierstrass relation on the generic reparametrisation.** -/
 theorem weierstrass_relation_reparam (L : PeriodPair) :
-    (reparamDerivWeierstrassP L) ^ 2
-      = 4 * (reparamWeierstrassP L) ^ 3
+    (reparamDerivWeierstrassP L) ^ (2 : ℕ)
+      = 4 * (reparamWeierstrassP L) ^ (3 : ℕ)
         - algebraMap ℂ (ReparamField MeromorphicPlane) L.g₂ * reparamWeierstrassP L
         - algebraMap ℂ (ReparamField MeromorphicPlane) L.g₃ := by
   have hbase : ∀ c : ℂ, algebraMap ℂ (ReparamField MeromorphicPlane) c
@@ -92,11 +92,11 @@ theorem weierstrass_relation_reparam (L : PeriodPair) :
 /-- **The `(2,2,2,2)` transported current.**  The square of the velocity is the rational current of
 the Weierstrass coordinate. -/
 theorem weierstrass_square_current_reparam (L : PeriodPair) :
-    (Differential.deriv (reparamWeierstrassP L)) ^ 2
-      = (4 * (reparamWeierstrassP L) ^ 3
+    (Differential.deriv (reparamWeierstrassP L)) ^ (2 : ℕ)
+      = (4 * (reparamWeierstrassP L) ^ (3 : ℕ)
           - algebraMap ℂ (ReparamField MeromorphicPlane) L.g₂ * reparamWeierstrassP L
           - algebraMap ℂ (ReparamField MeromorphicPlane) L.g₃)
-        * (ReparamField.jet 0) ^ 2 := by
+        * (ReparamField.jet 0) ^ (2 : ℕ) := by
   rw [deriv_reparamWeierstrassP, mul_pow, weierstrass_relation_reparam]
 
 end GaloisForLFunctions.HTGeometry

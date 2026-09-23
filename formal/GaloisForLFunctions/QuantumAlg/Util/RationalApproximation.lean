@@ -106,23 +106,23 @@ The result uses Mathlib's `Real.convergent` API. -/
 theorem reducedFraction_eq_convergent_of_legendre {ξ : ℝ} {p q : ℕ}
     (hq : 0 < q) (hpq : Nat.Coprime p q)
     (happrox :
-      |ξ - (((p : ℚ) / (q : ℚ) : ℚ) : ℝ)| < 1 / (2 * (q : ℝ) ^ 2)) :
+      |ξ - (((p : ℚ) / (q : ℚ) : ℚ) : ℝ)| < 1 / (2 * (q : ℝ) ^ (2 : ℕ))) :
     ∃ n, (p : ℚ) / (q : ℚ) = ξ.convergent n := by
   have hden := reducedNatFraction_den (p := p) (q := q) hq hpq
   have happrox' :
       |ξ - (((p : ℚ) / (q : ℚ) : ℚ) : ℝ)| <
-        1 / (2 * (((p : ℚ) / (q : ℚ)).den : ℝ) ^ 2) := by
+        1 / (2 * (((p : ℚ) / (q : ℚ)).den : ℝ) ^ (2 : ℕ)) := by
     simpa [hden] using happrox
   exact Real.exists_rat_eq_convergent happrox'
 
 /-- Legendre recovery for the order-finding phase-estimate shape. If a dyadic
-or real phase estimate `ξ` is within `1/(2r^2)` of the reduced fraction `s/r`,
+or real phase estimate `ξ` is within `1/(2r^(2 : ℕ))` of the reduced fraction `s/r`,
 then `s/r` appears as a continued-fraction convergent of `ξ`, and the recovered
 convergent denominator is exactly `r`. -/
 theorem denominatorRecovery_of_phaseEstimate {ξ : ℝ} {s r : ℕ}
     (hr : 0 < r) (hsr : Nat.Coprime s r)
     (happrox :
-      |ξ - (((s : ℚ) / (r : ℚ) : ℚ) : ℝ)| < 1 / (2 * (r : ℝ) ^ 2)) :
+      |ξ - (((s : ℚ) / (r : ℚ) : ℚ) : ℝ)| < 1 / (2 * (r : ℝ) ^ (2 : ℕ))) :
     ∃ n, (s : ℚ) / (r : ℚ) = ξ.convergent n ∧
       (ξ.convergent n).den = r := by
   obtain ⟨n, hn⟩ :=
@@ -142,7 +142,7 @@ private theorem continuedFraction_denominatorRecovery_of_cleared_error_lt_one {�
     (hq : 0 < q) (hr : 0 < r)
     (hpq : Nat.Coprime p q) (hsr : Nat.Coprime s r)
     (happrox :
-      |ξ - (((p : ℚ) / (q : ℚ) : ℚ) : ℝ)| < 1 / (2 * (q : ℝ) ^ 2))
+      |ξ - (((p : ℚ) / (q : ℚ) : ℚ) : ℝ)| < 1 / (2 * (q : ℝ) ^ (2 : ℕ)))
     (hcleared : |((p * r : ℝ) - (s * q : ℝ))| < 1) :
     ∃ n, (p : ℚ) / (q : ℚ) = ξ.convergent n ∧ q = r := by
   obtain ⟨n, hn⟩ :=

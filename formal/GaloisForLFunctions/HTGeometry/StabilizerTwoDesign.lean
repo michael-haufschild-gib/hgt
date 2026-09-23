@@ -32,8 +32,8 @@ theorem sum_stabAmp_four (s : ℂ) (hs : s * s = 1 / 2) (hsc : (starRingEnd ℂ)
         (starRingEnd ℂ) (stabAmp s t y) * (starRingEnd ℂ) (stabAmp s t v)) =
       (if x = y then (1 : ℂ) else 0) * (if u = v then 1 else 0) +
         (if x = v then (1 : ℂ) else 0) * (if u = y then 1 else 0) := by
-  have hs4 : s ^ 4 = 1 / 4 := by
-    have h : s ^ 4 = (s * s) ^ 2 := by ring
+  have hs4 : s ^ (4 : ℕ) = 1 / 4 := by
+    have h : s ^ (4 : ℕ) = (s * s) ^ (2 : ℕ) := by ring
     rw [h, hs]
     norm_num
   fin_cases x <;> fin_cases u <;> fin_cases y <;> fin_cases v <;>
@@ -148,9 +148,9 @@ theorem mixSwap_involutive (A : Finset (Fin n)) : Function.Involutive (mixSwap A
 squared norm. -/
 theorem norm_mix_term_le (e : (Fin n → Fin 2) → ℂ) (A : Finset (Fin n)) :
     ‖∑ b, ∑ c, ((starRingEnd ℂ) (e b) * (starRingEnd ℂ) (e c) *
-        e (mixOn A b c) * e (mixOn A c b))‖ ≤ (∑ b, ‖e b‖ ^ 2) ^ 2 := by
+        e (mixOn A b c) * e (mixOn A c b))‖ ≤ (∑ b, ‖e b‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
   classical
-  set P : ℝ := ∑ b, ‖e b‖ ^ 2 with hP
+  set P : ℝ := ∑ b, ‖e b‖ ^ (2 : ℕ) with hP
   set F : ((Fin n → Fin 2) × (Fin n → Fin 2)) → ℝ := fun p => ‖e p.1‖ * ‖e p.2‖ with hF
   have hFnn : ∀ p, 0 ≤ F p := fun p => by positivity
   have hprod : ∀ p : (Fin n → Fin 2) × (Fin n → Fin 2),
@@ -160,22 +160,22 @@ theorem norm_mix_term_le (e : (Fin n → Fin 2) → ℂ) (A : Finset (Fin n)) :
     rw [norm_mul, norm_mul, norm_mul, RCLike.norm_conj, RCLike.norm_conj, hF]
     simp only [mixSwap]
     ring
-  have hsumF : (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p ^ 2) = P ^ 2 := by
+  have hsumF : (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p ^ (2 : ℕ)) = P ^ (2 : ℕ) := by
     rw [hF, Fintype.sum_prod_type]
     rw [hP, sq, Finset.sum_mul_sum]
     exact Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun c _ => by ring
-  have hsumG : (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F (mixSwap A p) ^ 2) = P ^ 2 := by
+  have hsumG : (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F (mixSwap A p) ^ (2 : ℕ)) = P ^ (2 : ℕ) := by
     rw [← hsumF]
     exact Fintype.sum_equiv ((mixSwap_involutive A).toPerm) _ _ fun p => rfl
-  have hcs : (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p * F (mixSwap A p)) ≤ P ^ 2 := by
-    have hbase : (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p * F (mixSwap A p)) ^ 2 ≤
-        (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p ^ 2) *
-          ∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F (mixSwap A p) ^ 2 :=
+  have hcs : (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p * F (mixSwap A p)) ≤ P ^ (2 : ℕ) := by
+    have hbase : (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p * F (mixSwap A p)) ^ (2 : ℕ) ≤
+        (∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p ^ (2 : ℕ)) *
+          ∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F (mixSwap A p) ^ (2 : ℕ) :=
       Finset.sum_mul_sq_le_sq_mul_sq _ _ _
     rw [hsumF, hsumG] at hbase
     have hnn : 0 ≤ ∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p * F (mixSwap A p) :=
       Finset.sum_nonneg fun p _ => mul_nonneg (hFnn p) (hFnn _)
-    nlinarith [hnn, sq_nonneg (P ^ 2)]
+    nlinarith [hnn, sq_nonneg (P ^ (2 : ℕ))]
   calc ‖∑ b, ∑ c, ((starRingEnd ℂ) (e b) * (starRingEnd ℂ) (e c) *
           e (mixOn A b c) * e (mixOn A c b))‖
       = ‖∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), ((starRingEnd ℂ) (e p.1) *
@@ -186,30 +186,30 @@ theorem norm_mix_term_le (e : (Fin n → Fin 2) → ℂ) (A : Finset (Fin n)) :
         norm_sum_le _ _
     _ = ∑ p : (Fin n → Fin 2) × (Fin n → Fin 2), F p * F (mixSwap A p) :=
         Finset.sum_congr rfl fun p _ => hprod p
-    _ ≤ P ^ 2 := hcs
+    _ ≤ P ^ (2 : ℕ) := hcs
 
 
 /-- **Local-Clifford collision law.**  The total fourth moment of the overlaps with the `6^n`
 product stabilizer states is at most `2^n` times the square of the squared norm. -/
 theorem sum_prodStab_fourth_le (s : ℂ) (hs : s * s = 1 / 2) (hsc : (starRingEnd ℂ) s = s)
     (e : (Fin n → Fin 2) → ℂ) :
-    (∑ σ : Fin n → Fin 6, ‖∑ b, (starRingEnd ℂ) (e b) * prodStabAmp s σ b‖ ^ 4) ≤
-      2 ^ n * (∑ b, ‖e b‖ ^ 2) ^ 2 := by
+    (∑ σ : Fin n → Fin 6, ‖∑ b, (starRingEnd ℂ) (e b) * prodStabAmp s σ b‖ ^ (4 : ℕ)) ≤
+      2 ^ n * (∑ b, ‖e b‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
   classical
-  set P : ℝ := ∑ b, ‖e b‖ ^ 2 with hP
+  set P : ℝ := ∑ b, ‖e b‖ ^ (2 : ℕ) with hP
   set W : (Fin n → Fin 6) → ℂ := fun σ => ∑ b, (starRingEnd ℂ) (e b) * prodStabAmp s σ b with hW
   set E : ((Fin n → Fin 2) × (Fin n → Fin 2)) → ℂ := fun p => e p.1 * e p.2 with hE
   set Φ : (Fin n → Fin 6) → ((Fin n → Fin 2) × (Fin n → Fin 2)) → ℂ :=
     fun σ p => prodStabAmp s σ p.1 * prodStabAmp s σ p.2 with hΦ
-  have hsq : ∀ σ, W σ ^ 2 = ∑ p, (starRingEnd ℂ) (E p) * Φ σ p := by
+  have hsq : ∀ σ, W σ ^ (2 : ℕ) = ∑ p, (starRingEnd ℂ) (E p) * Φ σ p := by
     intro σ
     rw [hW, sq, Finset.sum_mul_sum, Fintype.sum_prod_type]
     refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun c _ => ?_
     rw [hE, hΦ, map_mul]
     ring
-  have hpt : ∀ σ, ((‖W σ‖ ^ 4 : ℝ) : ℂ) = (W σ ^ 2) * (starRingEnd ℂ) (W σ ^ 2) := by
+  have hpt : ∀ σ, ((‖W σ‖ ^ (4 : ℕ) : ℝ) : ℂ) = (W σ ^ (2 : ℕ)) * (starRingEnd ℂ) (W σ ^ (2 : ℕ)) := by
     intro σ
-    have h2 : ((‖W σ ^ 2‖ ^ 2 : ℝ) : ℂ) = (W σ ^ 2) * (starRingEnd ℂ) (W σ ^ 2) := by
+    have h2 : ((‖W σ ^ (2 : ℕ)‖ ^ (2 : ℕ) : ℝ) : ℂ) = (W σ ^ (2 : ℕ)) * (starRingEnd ℂ) (W σ ^ (2 : ℕ)) := by
       rw [Complex.mul_conj]
       norm_cast
       exact Complex.sq_norm _
@@ -231,14 +231,14 @@ theorem sum_prodStab_fourth_le (s : ℂ) (hs : s * s = 1 / 2) (hsc : (starRingEn
     rw [prod_delta_eq A p.1 p.2 q.1 q.2]
     exact if_congr ⟨fun h => Prod.ext h.1 h.2,
       fun h => ⟨congrArg Prod.fst h, congrArg Prod.snd h⟩⟩ rfl rfl
-  have hstep : ∀ σ : Fin n → Fin 6, (W σ ^ 2) * (starRingEnd ℂ) (W σ ^ 2) =
+  have hstep : ∀ σ : Fin n → Fin 6, (W σ ^ (2 : ℕ)) * (starRingEnd ℂ) (W σ ^ (2 : ℕ)) =
       ∑ p, ∑ q, ((starRingEnd ℂ) (E p) * E q) * (Φ σ p * (starRingEnd ℂ) (Φ σ q)) := by
     intro σ
     rw [hsq σ, map_sum, Finset.sum_mul_sum]
     refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
     simp only [map_mul, Complex.conj_conj]
     ring
-  have hmain : ((∑ σ : Fin n → Fin 6, ‖W σ‖ ^ 4 : ℝ) : ℂ) =
+  have hmain : ((∑ σ : Fin n → Fin 6, ‖W σ‖ ^ (4 : ℕ) : ℝ) : ℂ) =
       ∑ A ∈ (Finset.univ : Finset (Fin n)).powerset,
         ∑ p, (starRingEnd ℂ) (E p) * E (mixSwap A p) := by
     rw [Complex.ofReal_sum, Finset.sum_congr rfl fun σ _ => hpt σ,
@@ -268,7 +268,7 @@ theorem sum_prodStab_fourth_le (s : ℂ) (hs : s * s = 1 / 2) (hsc : (starRingEn
     rw [Finset.sum_congr rfl fun p _ => hp2 p]
     exact Finset.sum_comm
   have hterm : ∀ A : Finset (Fin n),
-      ‖∑ p, (starRingEnd ℂ) (E p) * E (mixSwap A p)‖ ≤ P ^ 2 := by
+      ‖∑ p, (starRingEnd ℂ) (E p) * E (mixSwap A p)‖ ≤ P ^ (2 : ℕ) := by
     intro A
     have hrw : (∑ p, (starRingEnd ℂ) (E p) * E (mixSwap A p)) =
         ∑ b, ∑ c, ((starRingEnd ℂ) (e b) * (starRingEnd ℂ) (e c) *
@@ -280,19 +280,19 @@ theorem sum_prodStab_fourth_le (s : ℂ) (hs : s * s = 1 / 2) (hsc : (starRingEn
       ring
     rw [hrw, hP]
     exact norm_mix_term_le e A
-  have hnn : 0 ≤ ∑ σ : Fin n → Fin 6, ‖W σ‖ ^ 4 :=
+  have hnn : 0 ≤ ∑ σ : Fin n → Fin 6, ‖W σ‖ ^ (4 : ℕ) :=
     Finset.sum_nonneg fun σ _ => by positivity
-  have hbound : (∑ σ : Fin n → Fin 6, ‖W σ‖ ^ 4) ≤ 2 ^ n * P ^ 2 := by
-    have hcast : (∑ σ : Fin n → Fin 6, ‖W σ‖ ^ 4) =
-        ‖((∑ σ : Fin n → Fin 6, ‖W σ‖ ^ 4 : ℝ) : ℂ)‖ := by
+  have hbound : (∑ σ : Fin n → Fin 6, ‖W σ‖ ^ (4 : ℕ)) ≤ 2 ^ n * P ^ (2 : ℕ) := by
+    have hcast : (∑ σ : Fin n → Fin 6, ‖W σ‖ ^ (4 : ℕ)) =
+        ‖((∑ σ : Fin n → Fin 6, ‖W σ‖ ^ (4 : ℕ) : ℝ) : ℂ)‖ := by
       rw [Complex.norm_real, Real.norm_of_nonneg hnn]
     rw [hcast, hmain]
     refine le_trans (norm_sum_le _ _) ?_
     calc (∑ A ∈ (Finset.univ : Finset (Fin n)).powerset,
             ‖∑ p, (starRingEnd ℂ) (E p) * E (mixSwap A p)‖)
-        ≤ ∑ _A ∈ (Finset.univ : Finset (Fin n)).powerset, P ^ 2 :=
+        ≤ ∑ _A ∈ (Finset.univ : Finset (Fin n)).powerset, P ^ (2 : ℕ) :=
           Finset.sum_le_sum fun A _ => hterm A
-      _ = 2 ^ n * P ^ 2 := by
+      _ = 2 ^ n * P ^ (2 : ℕ) := by
           rw [Finset.sum_const, Finset.card_powerset, Finset.card_univ, Fintype.card_fin,
             nsmul_eq_mul]
           push_cast
@@ -305,14 +305,14 @@ orthonormal family over all product stabilizer inputs costs one factor of the fa
 qubit power of two; the normalized average is therefore at most the family size times three to the
 minus qubit number. -/
 theorem sum_collision_le (s : ℂ) (hs : s * s = 1 / 2) (hsc : (starRingEnd ℂ) s = s)
-    {D : Type*} [Fintype D] (e : D → (Fin n → Fin 2) → ℂ) (he : ∀ j, ∑ b, ‖e j b‖ ^ 2 = 1) :
+    {D : Type*} [Fintype D] (e : D → (Fin n → Fin 2) → ℂ) (he : ∀ j, ∑ b, ‖e j b‖ ^ (2 : ℕ) = 1) :
     (∑ σ : Fin n → Fin 6, ∑ j : D,
-        ‖∑ b, (starRingEnd ℂ) (e j b) * prodStabAmp s σ b‖ ^ 4) ≤
+        ‖∑ b, (starRingEnd ℂ) (e j b) * prodStabAmp s σ b‖ ^ (4 : ℕ)) ≤
       (Fintype.card D : ℝ) * 2 ^ n := by
   classical
   rw [Finset.sum_comm]
   calc (∑ j : D, ∑ σ : Fin n → Fin 6,
-        ‖∑ b, (starRingEnd ℂ) (e j b) * prodStabAmp s σ b‖ ^ 4)
+        ‖∑ b, (starRingEnd ℂ) (e j b) * prodStabAmp s σ b‖ ^ (4 : ℕ))
       ≤ ∑ _j : D, (2 : ℝ) ^ n := by
         refine Finset.sum_le_sum fun j _ => ?_
         have hbase := sum_prodStab_fourth_le s hs hsc (e j)

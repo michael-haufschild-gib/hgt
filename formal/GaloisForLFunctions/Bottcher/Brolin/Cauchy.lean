@@ -17,7 +17,7 @@ local instance cauchyLocalInst1 : Fact (0 < 2 * Real.pi) := ⟨Real.two_pi_pos�
 
 noncomputable def truncatedCauchyKernel (z : ℂ) (δ : ℝ) (w : ℂ) : ℂ :=
   (starRingEnd ℂ) (z - w) /
-    (((max (δ ^ 2) (‖z - w‖ ^ 2) : ℝ) : ℂ))
+    (((max (δ ^ (2 : ℕ)) (‖z - w‖ ^ (2 : ℕ)) : ℝ) : ℂ))
 
 theorem continuous_truncatedCauchyKernel {z : ℂ} {δ : ℝ} (hδ : 0 < δ) :
     Continuous (fun w : ℂ => truncatedCauchyKernel z δ w) := by
@@ -25,15 +25,15 @@ theorem continuous_truncatedCauchyKernel {z : ℂ} {δ : ℝ} (hδ : 0 < δ) :
   have hnum : Continuous fun w : ℂ => (starRingEnd ℂ) (z - w) := by
     fun_prop
   have hreal :
-      Continuous fun w : ℂ => max (δ ^ 2) (‖z - w‖ ^ 2) :=
+      Continuous fun w : ℂ => max (δ ^ (2 : ℕ)) (‖z - w‖ ^ (2 : ℕ)) :=
     continuous_const.max (((continuous_const.sub continuous_id).norm).pow 2)
   have hden :
       Continuous fun w : ℂ =>
-        (((max (δ ^ 2) (‖z - w‖ ^ 2) : ℝ) : ℂ)) := by
+        (((max (δ ^ (2 : ℕ)) (‖z - w‖ ^ (2 : ℕ)) : ℝ) : ℂ)) := by
     exact Complex.continuous_ofReal.comp hreal
   refine hnum.div hden ?_
   intro w
-  have hpos : 0 < max (δ ^ 2) (‖z - w‖ ^ 2) :=
+  have hpos : 0 < max (δ ^ (2 : ℕ)) (‖z - w‖ ^ (2 : ℕ)) :=
     lt_of_lt_of_le (sq_pos_of_pos hδ) (le_max_left _ _)
   exact_mod_cast (ne_of_gt hpos)
 
@@ -41,7 +41,7 @@ theorem truncatedCauchyKernel_eq_cauchyKernel_of_le_norm
     {z w : ℂ} {δ : ℝ} (hδ : 0 < δ) (hδw : δ ≤ ‖z - w‖) :
     truncatedCauchyKernel z δ w = (z - w)⁻¹ := by
   unfold truncatedCauchyKernel
-  have hsq : δ ^ 2 ≤ ‖z - w‖ ^ 2 := by
+  have hsq : δ ^ (2 : ℕ) ≤ ‖z - w‖ ^ (2 : ℕ) := by
     nlinarith [hδw, hδ, norm_nonneg (z - w)]
   rw [max_eq_right hsq]
   set x : ℂ := z - w
@@ -51,8 +51,8 @@ theorem truncatedCauchyKernel_eq_cauchyKernel_of_le_norm
       simpa [x] using congrArg norm hx0
     rw [hnorm] at hδw
     linarith
-  change (starRingEnd ℂ) x / (((‖x‖ ^ 2 : ℝ) : ℂ)) = x⁻¹
-  have hden : x * (starRingEnd ℂ) x = (((‖x‖ ^ 2 : ℝ) : ℂ)) := by
+  change (starRingEnd ℂ) x / (((‖x‖ ^ (2 : ℕ) : ℝ) : ℂ)) = x⁻¹
+  have hden : x * (starRingEnd ℂ) x = (((‖x‖ ^ (2 : ℕ) : ℝ) : ℂ)) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [← hden]
   field_simp [hx]
@@ -552,7 +552,7 @@ theorem finiteBrolinNormalizedLogDerivative_zero_shiftedSubseq_tendsto_gapAMu
   let η : ℕ → ℕ := shiftedBrolinLimitSubsequence c
   let nseq : ℕ → ℕ := fun k => brolinLimitSubsequence c (η k)
   let factor : ℕ → ℂ := fun k =>
-    ((quadratic c)^[nseq k] z) ^ 2 / (quadratic c)^[nseq k + 1] z
+    ((quadratic c)^[nseq k] z) ^ (2 : ℕ) / (quadratic c)^[nseq k + 1] z
   have hη : Tendsto η atTop atTop :=
     shiftedBrolinLimitSubsequence_tendsto_atTop c
   have hnseq : Tendsto nseq atTop atTop :=

@@ -10,8 +10,8 @@ The corpus's unconditional Mertens estimate has the zero-free-region saving
 
 `|M(N)| <= B N exp (-(log N)^(1/3) / 108)`.
 
-A stretched exponential beats `(log N)^4`.  The exact Abel tail identity and the integral-test
-bound for `sum 1/(n (log n)^4)` then give
+A stretched exponential beats `(log N)^(4 : ℕ)`.  The exact Abel tail identity and the integral-test
+bound for `sum 1/(n (log n)^(4 : ℕ))` then give
 
 `sum_{n <= N} mu(n)/n = O((log N)^(-3))`.
 

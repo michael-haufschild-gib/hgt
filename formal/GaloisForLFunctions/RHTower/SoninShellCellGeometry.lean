@@ -30,11 +30,11 @@ theorem shellRight_sub_shellLeft (a b : ℝ) (n : ℕ) :
 
 /-- The cells shrink: the width is at most `(b - a)/(n+2)²`. -/
 theorem shellRight_sub_shellLeft_le (a b : ℝ) (hab : a ≤ b) (n : ℕ) :
-    shellRight a b n - shellLeft a b n ≤ (b - a) / ((n : ℝ) + 2) ^ 2 := by
+    shellRight a b n - shellLeft a b n ≤ (b - a) / ((n : ℝ) + 2) ^ (2 : ℕ) := by
   rw [shellRight_sub_shellLeft a b n]
   have h2 : (0 : ℝ) < (n : ℝ) + 2 := by positivity
   have h3 : (0 : ℝ) < (n : ℝ) + 3 := by positivity
-  have hden : ((n : ℝ) + 2) ^ 2 ≤ ((n : ℝ) + 2) * ((n : ℝ) + 3) := by nlinarith
+  have hden : ((n : ℝ) + 2) ^ (2 : ℕ) ≤ ((n : ℝ) + 2) * ((n : ℝ) + 3) := by nlinarith
   have hnum : (0 : ℝ) ≤ b - a := sub_nonneg.mpr hab
   exact div_le_div_of_nonneg_left hnum (by positivity) hden
 

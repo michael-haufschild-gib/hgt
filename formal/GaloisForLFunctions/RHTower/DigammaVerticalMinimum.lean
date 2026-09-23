@@ -11,7 +11,7 @@ minimum at the real point:
 `psi(a) <= Re (psi (a + i y))`   for `a > 0` and every real `y`.
 
 The mechanism is the Gauss series `psi(s) = -gamma + sum_n [1/(n+1) - 1/(s+n)]`: each subtracted
-term contributes `Re (1/(a + n + i y)) = (a+n)/((a+n)^2 + y^2)`, which is largest at `y = 0`, so
+term contributes `Re (1/(a + n + i y)) = (a+n)/((a+n)^(2 : ℕ) + y^(2 : ℕ))`, which is largest at `y = 0`, so
 every summand of the series is smallest there.
 
 This is the archimedean primitive behind the large-time half of the completely-monotone question
@@ -50,14 +50,14 @@ theorem re_gaussDigammaSeriesTerm_real_le {a : ℝ} (ha : 0 < a) (y : ℝ) (n : 
     field_simp
     ring
   have hC : (1 / ((a : ℂ) + (y : ℂ) * Complex.I + (n : ℂ))).re =
-      (a + (n : ℝ)) / ((a + (n : ℝ)) ^ 2 + y ^ 2) := by
+      (a + (n : ℝ)) / ((a + (n : ℝ)) ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
     rw [one_div, Complex.inv_re, Complex.normSq_apply]
     simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
       Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.natCast_re,
       Complex.natCast_im]
     ring_nf
-  have hkey : (a + (n : ℝ)) / ((a + (n : ℝ)) ^ 2 + y ^ 2) ≤ 1 / (a + (n : ℝ)) := by
-    rw [div_le_div_iff₀ (by positivity : (0:ℝ) < (a + (n : ℝ)) ^ 2 + y ^ 2) hpos]
+  have hkey : (a + (n : ℝ)) / ((a + (n : ℝ)) ^ (2 : ℕ) + y ^ (2 : ℕ)) ≤ 1 / (a + (n : ℝ)) := by
+    rw [div_le_div_iff₀ (by positivity : (0:ℝ) < (a + (n : ℝ)) ^ (2 : ℕ) + y ^ (2 : ℕ)) hpos]
     nlinarith [sq_nonneg y, hpos]
   rw [gaussDigammaSeriesTerm, gaussDigammaSeriesTerm, Complex.sub_re, Complex.sub_re,
     hR, hC]
@@ -126,7 +126,7 @@ theorem re_logDeriv_Gammaℝ_real_le {σ : ℝ} (hσ : 0 < σ) (y : ℝ) :
 /-- Real part of the resolvent atom on a vertical line. -/
 theorem re_one_div_vertical (a y : ℝ) (n : ℕ) :
     (1 / ((a : ℂ) + (y : ℂ) * Complex.I + (n : ℂ))).re =
-      (a + (n : ℝ)) / ((a + (n : ℝ)) ^ 2 + y ^ 2) := by
+      (a + (n : ℝ)) / ((a + (n : ℝ)) ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
   rw [one_div, Complex.inv_re, Complex.normSq_apply]
   simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
     Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.natCast_re,
@@ -139,12 +139,12 @@ theorem re_gaussDigammaSeriesTerm_mono {a : ℝ} (ha : 0 < a) {y z : ℝ}
     (gaussDigammaSeriesTerm ((a : ℂ) + (y : ℂ) * Complex.I) n).re ≤
       (gaussDigammaSeriesTerm ((a : ℂ) + (z : ℂ) * Complex.I) n).re := by
   have hpos : 0 < a + (n : ℝ) := by positivity
-  have hsq : y ^ 2 ≤ z ^ 2 := by
+  have hsq : y ^ (2 : ℕ) ≤ z ^ (2 : ℕ) := by
     have := sq_abs y
     have := sq_abs z
     nlinarith [abs_nonneg y, abs_nonneg z, hyz]
-  have hcmp : (a + (n : ℝ)) / ((a + (n : ℝ)) ^ 2 + z ^ 2) ≤
-      (a + (n : ℝ)) / ((a + (n : ℝ)) ^ 2 + y ^ 2) := by
+  have hcmp : (a + (n : ℝ)) / ((a + (n : ℝ)) ^ (2 : ℕ) + z ^ (2 : ℕ)) ≤
+      (a + (n : ℝ)) / ((a + (n : ℝ)) ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
     apply div_le_div_of_nonneg_left hpos.le (by positivity)
     linarith
   rw [gaussDigammaSeriesTerm, gaussDigammaSeriesTerm, Complex.sub_re, Complex.sub_re,

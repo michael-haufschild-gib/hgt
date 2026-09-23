@@ -86,7 +86,7 @@ theorem exists_literalSourceAffinePower_uniformJet3 (α₀ B₀ B₁ : ℂ) :
     (fun α hα => hB0le)
     (fun α hα => by simpa only [norm_neg] using hB1le)
     (fun α hα => by simp; exact hM)
-  refine ⟨3 * M ^ 2 + CP * (3 * M + 0) + 3 * M * 0, by positivity, ?_⟩
+  refine ⟨3 * M ^ (2 : ℕ) + CP * (3 * M + 0) + 3 * M * 0, by positivity, ?_⟩
   intro α hα z hz
   have hj := literalSourceHorizonPower_zero_jets α
   have h := hprod α hα z hz

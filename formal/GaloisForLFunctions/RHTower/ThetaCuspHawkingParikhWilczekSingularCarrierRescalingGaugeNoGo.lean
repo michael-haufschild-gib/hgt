@@ -38,7 +38,7 @@ noncomputable section
 
 /-- Exact singular PW gain in the positive square-root coordinate. -/
 def pwSingularReflectionGain (x : ℝ) : ℝ :=
-  schwarzschildParikhWilczekSingularFlatMultiplier (x ^ 2)
+  schwarzschildParikhWilczekSingularFlatMultiplier (x ^ (2 : ℕ))
 
 theorem pwSingularReflectionGain_eq
     {x : ℝ} (hx : 0 < x) :
@@ -197,8 +197,8 @@ theorem no_pwChannelRescalingInvariant_singularWallSelector :
 
 /-- Source-adapted positive quadratic energy. -/
 def pwSingularReflectionEnergy (x : ℝ) (w : PWReflectionPair) : ℝ :=
-  (pwSingularReflectionGain x)⁻¹ * w.1 ^ 2 +
-    pwSingularReflectionGain x * w.2 ^ 2
+  (pwSingularReflectionGain x)⁻¹ * w.1 ^ (2 : ℕ) +
+    pwSingularReflectionGain x * w.2 ^ (2 : ℕ)
 
 theorem pwSingularReflectionEnergy_pos
     {x : ℝ} (hx : 0 < x) {w : PWReflectionPair} (hw : w ≠ 0) :
@@ -212,10 +212,10 @@ theorem pwSingularReflectionEnergy_pos
     simpa [pwSingularReflectionEnergy, hu] using
       mul_pos (pwSingularReflectionGain_pos hx) (sq_pos_of_ne_zero hv)
   · have hleft :
-        0 < (pwSingularReflectionGain x)⁻¹ * u ^ 2 :=
+        0 < (pwSingularReflectionGain x)⁻¹ * u ^ (2 : ℕ) :=
       mul_pos (inv_pos.mpr (pwSingularReflectionGain_pos hx))
         (sq_pos_of_ne_zero hu)
-    have hright : 0 ≤ pwSingularReflectionGain x * v ^ 2 :=
+    have hright : 0 ≤ pwSingularReflectionGain x * v ^ (2 : ℕ) :=
       mul_nonneg (pwSingularReflectionGain_pos hx).le (sq_nonneg v)
     exact add_pos_of_pos_of_nonneg hleft hright
 
@@ -229,7 +229,7 @@ theorem pwSingularReflectionEnergy_invariant
   ring
 
 def pwNeutralChannelEnergy (w : PWReflectionPair) : ℝ :=
-  w.1 ^ 2 + w.2 ^ 2
+  w.1 ^ (2 : ℕ) + w.2 ^ (2 : ℕ)
 
 theorem pwSingularReflectionGain_ne_one_of_one_lt
     {x : ℝ} (hx : 1 < x) :
@@ -295,18 +295,18 @@ theorem pwNeutralChannelEnergy_block_invariant_iff
 /-- Trivializing gauge vanishes at the singular Borel boundary. -/
 theorem tendsto_pwSingularReflectionGauge_zero :
     Tendsto pwSingularReflectionGauge (𝓝[>] 0) (𝓝 0) := by
-  have hsquareNhds : Tendsto (fun x : ℝ => x ^ 2) (𝓝 0) (𝓝 0) := by
-    have hcont : ContinuousAt (fun x : ℝ => x ^ 2) 0 :=
+  have hsquareNhds : Tendsto (fun x : ℝ => x ^ (2 : ℕ)) (𝓝 0) (𝓝 0) := by
+    have hcont : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ)) 0 :=
       continuousAt_id.pow 2
     simpa using hcont.tendsto
-  have hsquare : Tendsto (fun x : ℝ => x ^ 2) (𝓝[>] 0) (𝓝 0) :=
+  have hsquare : Tendsto (fun x : ℝ => x ^ (2 : ℕ)) (𝓝[>] 0) (𝓝 0) :=
     hsquareNhds.mono_left inf_le_left
   have hgain : Tendsto pwSingularReflectionGain (𝓝[>] 0) (𝓝 0) := by
     have h :=
       continuousAt_schwarzschildParikhWilczekSingularFlatMultiplier_zero.tendsto.comp
         hsquare
     change Tendsto
-      (fun x : ℝ => schwarzschildParikhWilczekSingularFlatMultiplier (x ^ 2))
+      (fun x : ℝ => schwarzschildParikhWilczekSingularFlatMultiplier (x ^ (2 : ℕ)))
       (𝓝[>] 0) (𝓝 0)
     simpa only [Function.comp_def,
       schwarzschildParikhWilczekSingularFlatMultiplier_zero] using h

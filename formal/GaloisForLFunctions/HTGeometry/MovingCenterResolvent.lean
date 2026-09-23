@@ -23,15 +23,15 @@ variable {n : ℕ}
 /-- The Hermite interpolant of `1/(1 + Δ X)` at the nodes. -/
 def resolventTest (x : Fin (n + 1) → ℝ) (Δ : ℝ) : Polynomial ℝ :=
   Polynomial.C Δ⁻¹ *
-    ((1 - Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ 2)⁻¹) * (nodePoly x) ^ 2) /ₘ
+    ((1 - Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ)) /ₘ
       (Polynomial.X - Polynomial.C (-Δ⁻¹)))
 
 theorem linear_mul_resolventTest (x : Fin (n + 1) → ℝ) {Δ : ℝ} (hΔ : Δ ≠ 0)
     (h0 : (nodePoly x).eval (-Δ⁻¹) ≠ 0) :
     (1 + Polynomial.C Δ * Polynomial.X) * resolventTest x Δ
-      = 1 - Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ 2)⁻¹) * (nodePoly x) ^ 2 := by
+      = 1 - Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ) := by
   obtain ⟨q, hq⟩ : ∃ q : Polynomial ℝ,
-      q = 1 - Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ 2)⁻¹) * (nodePoly x) ^ 2 := ⟨_, rfl⟩
+      q = 1 - Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ) := ⟨_, rfl⟩
   have hroot : q.IsRoot (-Δ⁻¹) := by
     rw [Polynomial.IsRoot, hq]
     simp only [Polynomial.eval_sub, Polynomial.eval_one, Polynomial.eval_mul, Polynomial.eval_C,
@@ -64,7 +64,7 @@ theorem eval_resolventTest (x : Fin (n + 1) → ℝ) {Δ : ℝ} (hΔ : Δ ≠ 0)
 
 theorem eval_derivative_resolventTest (x : Fin (n + 1) → ℝ) {Δ : ℝ} (hΔ : Δ ≠ 0)
     (h0 : (nodePoly x).eval (-Δ⁻¹) ≠ 0) (j : Fin (n + 1)) (hden : 1 + Δ * x j ≠ 0) :
-    (resolventTest x Δ).derivative.eval (x j) = -Δ / (1 + Δ * x j) ^ 2 := by
+    (resolventTest x Δ).derivative.eval (x j) = -Δ / (1 + Δ * x j) ^ (2 : ℕ) := by
   have hder := congrArg Polynomial.derivative (linear_mul_resolventTest x hΔ h0)
   rw [Polynomial.derivative_mul, Polynomial.derivative_add, Polynomial.derivative_one,
     Polynomial.derivative_C_mul, Polynomial.derivative_X, Polynomial.derivative_sub,
@@ -84,11 +84,11 @@ theorem natDegree_resolventTest_le (x : Fin (n + 1) → ℝ) (Δ : ℝ) :
   refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
   rw [Polynomial.natDegree_divByMonic _ (Polynomial.monic_X_sub_C (-Δ⁻¹)),
     Polynomial.natDegree_X_sub_C]
-  have hnum : (1 - Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ 2)⁻¹) * (nodePoly x) ^ 2).natDegree
+  have hnum : (1 - Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ)).natDegree
       ≤ 2 * n + 2 := by
     refine le_trans (Polynomial.natDegree_sub_le _ _) ?_
     have h1 : (1 : Polynomial ℝ).natDegree = 0 := Polynomial.natDegree_one
-    have h2 : (Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ 2)⁻¹) * (nodePoly x) ^ 2).natDegree
+    have h2 : (Polynomial.C ((((nodePoly x).eval (-Δ⁻¹)) ^ (2 : ℕ))⁻¹) * (nodePoly x) ^ (2 : ℕ)).natDegree
         ≤ 2 * n + 2 := by
       refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
       rw [Polynomial.natDegree_pow, natDegree_nodePoly]
@@ -99,7 +99,7 @@ theorem natDegree_resolventTest_le (x : Fin (n + 1) → ℝ) (Δ : ℝ) :
 theorem coeff_resolventTest_top (x : Fin (n + 1) → ℝ) {Δ : ℝ} (hΔ : Δ ≠ 0)
     (h0 : (nodePoly x).eval (-Δ⁻¹) ≠ 0) :
     Δ * (resolventTest x Δ).coeff (2 * n + 1)
-      = -((((nodePoly x).eval (-Δ⁻¹)) ^ 2)⁻¹) := by
+      = -((((nodePoly x).eval (-Δ⁻¹)) ^ (2 : ℕ))⁻¹) := by
   have hdegg := natDegree_resolventTest_le x Δ
   have hzero : (resolventTest x Δ).coeff (2 * n + 2) = 0 :=
     Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
@@ -114,9 +114,9 @@ theorem coeff_resolventTest_top (x : Fin (n + 1) → ℝ) {Δ : ℝ} (hΔ : Δ �
   have hCX : (Polynomial.C Δ * Polynomial.X * resolventTest x Δ).coeff (2 * n + 2)
       = Δ * (resolventTest x Δ).coeff (2 * n + 1) := by
     rw [mul_assoc, Polynomial.coeff_C_mul, hXg]
-  have hp2 : ((nodePoly x) ^ 2).coeff (2 * n + 2) = 1 := by
-    have hm : (((nodePoly x) ^ 2)).Monic := (monic_nodePoly x).pow 2
-    have hd : ((nodePoly x) ^ 2).natDegree = 2 * n + 2 := by
+  have hp2 : ((nodePoly x) ^ (2 : ℕ)).coeff (2 * n + 2) = 1 := by
+    have hm : (((nodePoly x) ^ (2 : ℕ))).Monic := (monic_nodePoly x).pow 2
+    have hd : ((nodePoly x) ^ (2 : ℕ)).natDegree = 2 * n + 2 := by
       rw [Polynomial.natDegree_pow, natDegree_nodePoly]
       ring
     have := hm.coeff_natDegree
@@ -141,17 +141,17 @@ theorem hasDerivAt_movingCenterResolvent {s : ℝ → ℕ → ℝ} {y Y : ℝ} {
     (h0 : (nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹) ≠ 0)
     (hden : ∀ i, 1 + (Y - y) * x i y ≠ 0) :
     HasDerivAt (fun t => ∑ i, w i t / (1 + (Y - t) * x i t))
-      (2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-        / ((Y - y) * ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ 2)) y := by
+      (2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+        / ((Y - y) * ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ (2 : ℕ))) y := by
   classical
   obtain ⟨X0, hX0⟩ : ∃ X0 : Fin (n + 1) → ℝ, X0 = fun j => x j y := ⟨_, rfl⟩
   have h0' : (nodePoly X0).eval (-(Y - y)⁻¹) ≠ 0 := by rw [hX0]; exact h0
   obtain ⟨G, hG⟩ : ∃ G : Polynomial ℝ, G = resolventTest X0 (Y - y) := ⟨_, rfl⟩
-  obtain ⟨hh, hhdef⟩ : ∃ hh : ℝ, hh = momentFunctional (s y) ((nodePoly X0) ^ 2) := ⟨_, rfl⟩
+  obtain ⟨hh, hhdef⟩ : ∃ hh : ℝ, hh = momentFunctional (s y) ((nodePoly X0) ^ (2 : ℕ)) := ⟨_, rfl⟩
   obtain ⟨gt, hgt⟩ : ∃ gt : ℝ, gt = G.coeff (2 * n + 1) := ⟨_, rfl⟩
   have hGdeg : G.natDegree ≤ 2 * n + 1 := by
     rw [hG]; exact natDegree_resolventTest_le X0 (Y - y)
-  have hgtop : (Y - y) * gt = -((((nodePoly X0).eval (-(Y - y)⁻¹)) ^ 2)⁻¹) := by
+  have hgtop : (Y - y) * gt = -((((nodePoly X0).eval (-(Y - y)⁻¹)) ^ (2 : ℕ))⁻¹) := by
     rw [hgt, hG]; exact coeff_resolventTest_top X0 hΔ h0'
   have hGeval : ∀ j, G.eval (X0 j) = (1 + (Y - y) * X0 j)⁻¹ := by
     intro j
@@ -159,7 +159,7 @@ theorem hasDerivAt_movingCenterResolvent {s : ℝ → ℕ → ℝ} {y Y : ℝ} {
     refine eval_resolventTest X0 hΔ h0' j ?_
     rw [hX0]
     exact hden j
-  have hGderiv : ∀ j, G.derivative.eval (X0 j) = -(Y - y) / (1 + (Y - y) * X0 j) ^ 2 := by
+  have hGderiv : ∀ j, G.derivative.eval (X0 j) = -(Y - y) / (1 + (Y - y) * X0 j) ^ (2 : ℕ) := by
     intro j
     rw [hG]
     refine eval_derivative_resolventTest X0 hΔ h0' j ?_
@@ -175,7 +175,7 @@ theorem hasDerivAt_movingCenterResolvent {s : ℝ → ℕ → ℝ} {y Y : ℝ} {
   have hterm : ∀ i : Fin (n + 1),
       HasDerivAt (fun t => w i t / (1 + (Y - t) * x i t))
         ((w' i * (1 + (Y - y) * x i y)
-            - w i y * (-x i y + (Y - y) * x' i)) / (1 + (Y - y) * x i y) ^ 2) y := by
+            - w i y * (-x i y + (Y - y) * x' i)) / (1 + (Y - y) * x i y) ^ (2 : ℕ)) y := by
     intro i
     have hd : HasDerivAt (fun t => 1 + (Y - t) * x i t) (-x i y + (Y - y) * x' i) y := by
       have h1 : HasDerivAt (fun t : ℝ => Y - t) (-1) y := by
@@ -188,10 +188,10 @@ theorem hasDerivAt_movingCenterResolvent {s : ℝ → ℕ → ℝ} {y Y : ℝ} {
     exact (hw i).div hd (hden i)
   have hsum0 : HasDerivAt (∑ i : Fin (n + 1), fun t : ℝ => w i t / (1 + (Y - t) * x i t))
       (∑ i : Fin (n + 1), (w' i * (1 + (Y - y) * x i y)
-          - w i y * (-x i y + (Y - y) * x' i)) / (1 + (Y - y) * x i y) ^ 2) y := by
+          - w i y * (-x i y + (Y - y) * x' i)) / (1 + (Y - y) * x i y) ^ (2 : ℕ)) y := by
     refine HasDerivAt.sum (A := fun i t => w i t / (1 + (Y - t) * x i t))
       (A' := fun i => (w' i * (1 + (Y - y) * x i y)
-        - w i y * (-x i y + (Y - y) * x' i)) / (1 + (Y - y) * x i y) ^ 2) fun i _ => ?_
+        - w i y * (-x i y + (Y - y) * x' i)) / (1 + (Y - y) * x i y) ^ (2 : ℕ)) fun i _ => ?_
     exact hterm i
   have hfun : (∑ i : Fin (n + 1), fun t : ℝ => w i t / (1 + (Y - t) * x i t))
       = fun t : ℝ => ∑ i : Fin (n + 1), w i t / (1 + (Y - t) * x i t) := by
@@ -201,13 +201,13 @@ theorem hasDerivAt_movingCenterResolvent {s : ℝ → ℕ → ℝ} {y Y : ℝ} {
   -- rewrite the derivative sum as the master sum plus the centre-motion sum
   have hsplit : ∀ i : Fin (n + 1),
       (w' i * (1 + (Y - y) * x i y) - w i y * (-x i y + (Y - y) * x' i))
-          / (1 + (Y - y) * x i y) ^ 2
+          / (1 + (Y - y) * x i y) ^ (2 : ℕ)
         = (w' i * G.eval (x i y) + w i y * (G.derivative.eval (x i y) * x' i))
-          + w i y * x i y / (1 + (Y - y) * x i y) ^ 2 := by
+          + w i y * x i y / (1 + (Y - y) * x i y) ^ (2 : ℕ) := by
     intro i
     have hev : G.eval (x i y) = (1 + (Y - y) * x i y)⁻¹ := by
       rw [← congrFun hX0 i]; exact hGeval i
-    have hdv : G.derivative.eval (x i y) = -(Y - y) / (1 + (Y - y) * x i y) ^ 2 := by
+    have hdv : G.derivative.eval (x i y) = -(Y - y) / (1 + (Y - y) * x i y) ^ (2 : ℕ) := by
       rw [← congrFun hX0 i]; exact hGderiv i
     rw [hev, hdv]
     have hne := hden i
@@ -244,12 +244,12 @@ theorem hasDerivAt_movingCenterResolvent {s : ℝ → ℕ → ℝ} {y Y : ℝ} {
       field_simp
     rw [Finset.sum_congr rfl fun i _ => hz i, Polynomial.coeff_X_mul, ← hgt, hhdef]
   have hval2 : momentFunctional (s y) (Polynomial.X * (Polynomial.X * G.derivative))
-      = (∑ i, w i y * X0 i ^ 2 * (-(Y - y) / (1 + (Y - y) * X0 i) ^ 2))
+      = (∑ i, w i y * X0 i ^ (2 : ℕ) * (-(Y - y) / (1 + (Y - y) * X0 i) ^ (2 : ℕ)))
         + (2 * (n : ℝ) + 1) * (gt * hh) := by
     rw [momentFunctional_eq_quadSum_add_top hquadY _ hdeg2]
     have hz : ∀ i : Fin (n + 1),
         w i y * (Polynomial.X * (Polynomial.X * G.derivative)).eval (X0 i)
-          = w i y * X0 i ^ 2 * (-(Y - y) / (1 + (Y - y) * X0 i) ^ 2) := by
+          = w i y * X0 i ^ (2 : ℕ) * (-(Y - y) / (1 + (Y - y) * X0 i) ^ (2 : ℕ)) := by
       intro i
       rw [Polynomial.eval_mul, Polynomial.eval_mul, Polynomial.eval_X, hGderiv i]
       ring
@@ -258,32 +258,32 @@ theorem hasDerivAt_movingCenterResolvent {s : ℝ → ℕ → ℝ} {y Y : ℝ} {
     push_cast
     ring
   have hsumzero : (∑ i, w i y * X0 i / (1 + (Y - y) * X0 i))
-      + (∑ i, w i y * X0 i ^ 2 * (-(Y - y) / (1 + (Y - y) * X0 i) ^ 2))
-      = ∑ i, w i y * X0 i / (1 + (Y - y) * X0 i) ^ 2 := by
+      + (∑ i, w i y * X0 i ^ (2 : ℕ) * (-(Y - y) / (1 + (Y - y) * X0 i) ^ (2 : ℕ)))
+      = ∑ i, w i y * X0 i / (1 + (Y - y) * X0 i) ^ (2 : ℕ) := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     have hne : 1 + (Y - y) * X0 i ≠ 0 := by rw [hX0]; exact hden i
     field_simp
     ring
   have hcancel : -(momentFunctional (s y) (momentFlowPoly G))
-      + ∑ i : Fin (n + 1), w i y * x i y / (1 + (Y - y) * x i y) ^ 2
+      + ∑ i : Fin (n + 1), w i y * x i y / (1 + (Y - y) * x i y) ^ (2 : ℕ)
       = -((2 * (n : ℝ) + 2) * (gt * hh)) := by
     rw [hflow, momentFunctional_add, hval1, hval2]
-    have hX : (∑ i : Fin (n + 1), w i y * x i y / (1 + (Y - y) * x i y) ^ 2)
-        = ∑ i : Fin (n + 1), w i y * X0 i / (1 + (Y - y) * X0 i) ^ 2 := by
+    have hX : (∑ i : Fin (n + 1), w i y * x i y / (1 + (Y - y) * x i y) ^ (2 : ℕ))
+        = ∑ i : Fin (n + 1), w i y * X0 i / (1 + (Y - y) * X0 i) ^ (2 : ℕ) := by
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [← congrFun hX0 i]
     rw [hX, ← hsumzero]
     ring
   rw [hcancel] at hsum0
-  have hp02 : ((nodePoly X0).eval (-(Y - y)⁻¹)) ^ 2 ≠ 0 := pow_ne_zero 2 h0'
-  have hgt' : gt = -((((nodePoly X0).eval (-(Y - y)⁻¹)) ^ 2)⁻¹) / (Y - y) := by
+  have hp02 : ((nodePoly X0).eval (-(Y - y)⁻¹)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 h0'
+  have hgt' : gt = -((((nodePoly X0).eval (-(Y - y)⁻¹)) ^ (2 : ℕ))⁻¹) / (Y - y) := by
     rw [← hgtop]
     field_simp
   have hnp : (nodePoly (fun j => x j y)) = nodePoly X0 := by rw [hX0]
   have hfinal : -((2 * (n : ℝ) + 2) * (gt * hh))
-      = 2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-        / ((Y - y) * ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ 2) := by
+      = 2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+        / ((Y - y) * ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ (2 : ℕ)) := by
     rw [hnp, ← hhdef, hgt']
     field_simp
   rw [hfinal] at hsum0
@@ -316,14 +316,14 @@ theorem hasDerivAt_movingCenterResolvent_prod {s : ℝ → ℕ → ℝ} {y Y : �
     (h0 : (nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹) ≠ 0)
     (hden : ∀ i, 1 + (Y - y) * x i y ≠ 0) :
     HasDerivAt (fun t => ∑ i, w i t / (1 + (Y - t) * x i t))
-      (2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-        * (Y - y) ^ (2 * n + 1) / (∏ i, (1 + (Y - y) * x i y)) ^ 2) y := by
+      (2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+        * (Y - y) ^ (2 * n + 1) / (∏ i, (1 + (Y - y) * x i y)) ^ (2 : ℕ)) y := by
   have hbase := hasDerivAt_movingCenterResolvent hs hx hw hquad hΔ h0 hden
   have hD := pow_mul_eval_nodePoly_neg_inv (fun j => x j y) hΔ
   have hDne : (∏ i, (1 + (Y - y) * x i y)) ≠ 0 :=
     Finset.prod_ne_zero_iff.2 fun i _ => hden i
-  have hDsq : (∏ i, (1 + (Y - y) * x i y)) ^ 2
-      = (Y - y) ^ (2 * n + 2) * ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ 2 := by
+  have hDsq : (∏ i, (1 + (Y - y) * x i y)) ^ (2 : ℕ)
+      = (Y - y) ^ (2 * n + 2) * ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ (2 : ℕ) := by
     rw [← hD, mul_pow, ← pow_mul]
     have hsign : ((-(Y - y)) ^ ((n + 1) * 2) : ℝ) = (Y - y) ^ (2 * n + 2) := by
       rw [neg_pow]
@@ -335,12 +335,12 @@ theorem hasDerivAt_movingCenterResolvent_prod {s : ℝ → ℕ → ℝ} {y Y : �
       ring
     rw [hsign]
 
-  have hval : 2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-      / ((Y - y) * ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ 2)
-      = 2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
-        * (Y - y) ^ (2 * n + 1) / (∏ i, (1 + (Y - y) * x i y)) ^ 2 := by
+  have hval : 2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+      / ((Y - y) * ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ (2 : ℕ))
+      = 2 * ((n : ℝ) + 1) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ (2 : ℕ))
+        * (Y - y) ^ (2 * n + 1) / (∏ i, (1 + (Y - y) * x i y)) ^ (2 : ℕ) := by
     rw [hDsq]
-    have hp2 : ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ 2 ≠ 0 := pow_ne_zero 2 h0
+    have hp2 : ((nodePoly (fun j => x j y)).eval (-(Y - y)⁻¹)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 h0
     have hpow : (Y - y) ^ (2 * n + 2) = (Y - y) * (Y - y) ^ (2 * n + 1) := by
       rw [← pow_succ']
     rw [hpow]

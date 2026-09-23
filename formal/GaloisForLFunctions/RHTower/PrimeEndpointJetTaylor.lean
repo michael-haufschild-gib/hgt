@@ -199,7 +199,7 @@ theorem abs_sub_jetTaylor_le {A : ℝ} (hA : 0 ≤ A) :
         simp only
         rw [hjt 0]
         ring
-      have hbnd : ∀ v ∈ Icc (0 : ℝ) 1, |f 1 v| ≤ A * v ^ 0 := by
+      have hbnd : ∀ v ∈ Icc (0 : ℝ) 1, |f 1 v| ≤ A * v ^ (0 : ℕ) := by
         intro v hv
         simpa using hbound v hv
       have h := abs_le_of_hasDerivAt_bound (g := fun w : ℝ => f 0 w - jetTaylor f 0 w)
@@ -289,7 +289,7 @@ theorem exists_abs_primeBoundaryDefect_taylor_jet_le (N : ℕ) (f : ℕ → ℝ 
     have hval : jetTaylor f (N + 1) u
         = ∑ k ∈ Finset.range (N + 2), f k 0 * u ^ k / ((k.factorial : ℕ) : ℝ) := rfl
     rw [hval, Finset.sum_range_succ']
-    have hfirst : f 0 0 * u ^ 0 / (((0 : ℕ).factorial : ℕ) : ℝ) = 0 := by
+    have hfirst : f 0 0 * u ^ (0 : ℕ) / (((0 : ℕ).factorial : ℕ) : ℝ) = 0 := by
       rw [hzero]
       norm_num
     rw [hfirst, add_zero]

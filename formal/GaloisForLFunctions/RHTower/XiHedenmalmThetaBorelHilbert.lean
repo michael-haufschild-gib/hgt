@@ -40,8 +40,8 @@ def hedenmalmBorelHolonomyFun (alpha : ℂ) (x t : ℝ) : ℂ :=
   simp [hedenmalmBorelHolonomyFun]
 
 theorem norm_sq_hedenmalmBorelHolonomyFun (alpha : ℂ) (x : ℝ) {t : ℝ} (ht : -1 < t) :
-    ‖hedenmalmBorelHolonomyFun alpha x t‖ ^ 2 =
-      ‖hedenmalmBorelCharacter alpha t‖ ^ 2 * hedenmalmBorelDensity x t := by
+    ‖hedenmalmBorelHolonomyFun alpha x t‖ ^ (2 : ℕ) =
+      ‖hedenmalmBorelCharacter alpha t‖ ^ (2 : ℕ) * hedenmalmBorelDensity x t := by
   rw [hedenmalmBorelHolonomyFun, hedenmalmBorelVectorFun, norm_mul, mul_pow,
     Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _),
     Real.sq_sqrt (hedenmalmBorelDensity_nonneg x ht)]
@@ -141,10 +141,10 @@ theorem inner_self_hedenmalmBorelVector (x : ℝ) :
   rw [← integral_Ioi_hedenmalmBorelDensity x, ← integral_complex_ofReal]
 
 theorem norm_sq_hedenmalmBorelVector (x : ℝ) :
-    ‖hedenmalmBorelVector x‖ ^ 2 = ∫ y in Ioi x, thetaCuspFullSource y := by
+    ‖hedenmalmBorelVector x‖ ^ (2 : ℕ) = ∫ y in Ioi x, thetaCuspFullSource y := by
   have h := inner_self_hedenmalmBorelVector x
   rw [inner_self_eq_norm_sq_to_K] at h
-  have h2 : ((‖hedenmalmBorelVector x‖ ^ 2 : ℝ) : ℂ) =
+  have h2 : ((‖hedenmalmBorelVector x‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       ((∫ y in Ioi x, thetaCuspFullSource y : ℝ) : ℂ) := by
     push_cast
     exact h
@@ -188,7 +188,7 @@ theorem norm_hedenmalmBorelHolonomyVector_of_im_eq_zero
       inner_hedenmalmBorelHolonomyVector, hconj]
     simp only [map_zero, sub_zero]
   rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at h
-  have h' : ‖hedenmalmBorelHolonomyVector ha x‖ ^ 2 = ‖hedenmalmBorelVector x‖ ^ 2 := by
+  have h' : ‖hedenmalmBorelHolonomyVector ha x‖ ^ (2 : ℕ) = ‖hedenmalmBorelVector x‖ ^ (2 : ℕ) := by
     exact_mod_cast h
   have hsqrt := congrArg Real.sqrt h'
   rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (norm_nonneg _)] at hsqrt

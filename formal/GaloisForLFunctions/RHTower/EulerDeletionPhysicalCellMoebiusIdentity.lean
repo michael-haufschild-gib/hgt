@@ -78,9 +78,9 @@ theorem hasSum_physical_moebius_truncated_divisor_energy (N : ℕ) :
       (fun i : ℕ =>
         ((((i + 1 : ℕ) : ℝ) *
           (∑ d ∈ Icc 1 N, ((μ d : ℤ) : ℝ) / (d : ℝ)) -
-          ∑ j ∈ Icc 1 (i + 1), truncMoebiusDivisorSum N j) ^ 2) /
+          ∑ j ∈ Icc 1 (i + 1), truncMoebiusDivisorSum N j) ^ (2 : ℕ)) /
           (((i : ℝ) + 1) * ((i : ℝ) + 2)))
-      (‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ 2) := by
+      (‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ (2 : ℕ)) := by
   convert hasSum_source_energy (fun d => ((μ d : ℤ) : ℝ)) N using 1
   funext i
   rw [physical_moebius_cell_eq_truncated_divisor_tail]
@@ -103,12 +103,12 @@ theorem truncated_divisor_accumulation_succ (N k : ℕ) :
 /-- Exact chronological energy increment of the literal physical source.  The middle term is
 the signed cross-time covariance that a multi-prime EDQ estimate must control. -/
 theorem physical_moebius_source_energy_succ (N : ℕ) :
-    ‖source (fun d => ((μ d : ℤ) : ℝ)) (N + 1)‖ ^ 2 =
-      ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ 2 +
+    ‖source (fun d => ((μ d : ℤ) : ℝ)) (N + 1)‖ ^ (2 : ℕ) =
+      ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ (2 : ℕ) +
         2 * Complex.re (inner ℂ
           (source (fun d => ((μ d : ℤ) : ℝ)) N)
           ((((μ (N + 1) : ℤ) : ℝ) : ℂ) • bdGen (1 / ((N + 1 : ℕ) : ℝ)))) +
-        ‖(((μ (N + 1) : ℤ) : ℝ) : ℂ) • bdGen (1 / ((N + 1 : ℕ) : ℝ))‖ ^ 2 := by
+        ‖(((μ (N + 1) : ℤ) : ℝ) : ℂ) • bdGen (1 / ((N + 1 : ℕ) : ℝ))‖ ^ (2 : ℕ) := by
   have hsource : source (fun d => ((μ d : ℤ) : ℝ)) (N + 1) =
       source (fun d => ((μ d : ℤ) : ℝ)) N +
         ((((μ (N + 1) : ℤ) : ℝ) : ℂ) • bdGen (1 / ((N + 1 : ℕ) : ℝ))) := by
@@ -188,14 +188,14 @@ theorem physical_moebius_source_block (N L : ℕ) :
 /-- Exact energy evolution over a complete cutoff block.  The first added term retains every
 old--new signed covariance; the final norm retains every new--new signed covariance. -/
 theorem physical_moebius_source_energy_block (N L : ℕ) :
-    ‖source (fun d => ((μ d : ℤ) : ℝ)) (N + L)‖ ^ 2 =
-      ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ 2 +
+    ‖source (fun d => ((μ d : ℤ) : ℝ)) (N + L)‖ ^ (2 : ℕ) =
+      ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ (2 : ℕ) +
         2 * Complex.re (inner ℂ
           (source (fun d => ((μ d : ℤ) : ℝ)) N)
           (∑ i ∈ range L, ((((μ (N + i + 1) : ℤ) : ℝ) : ℂ) •
             bdGen (1 / ((N + i + 1 : ℕ) : ℝ))))) +
         ‖∑ i ∈ range L, ((((μ (N + i + 1) : ℤ) : ℝ) : ℂ) •
-          bdGen (1 / ((N + i + 1 : ℕ) : ℝ)))‖ ^ 2 := by
+          bdGen (1 / ((N + i + 1 : ℕ) : ℝ)))‖ ^ (2 : ℕ) := by
   rw [physical_moebius_source_block]
   simpa using (norm_add_sq (𝕜 := ℂ) _ _)
 
@@ -228,14 +228,14 @@ Together with `physical_moebius_source_cross_block_eq_signed_gram`, this is the 
 content available before the required multi-prime cancellation estimate. -/
 theorem physical_moebius_source_block_norm_sq_eq_signed_gram_square (N L : ℕ) :
     ‖∑ i ∈ range L, ((((μ (N + i + 1) : ℤ) : ℝ) : ℂ) •
-        bdGen (1 / ((N + i + 1 : ℕ) : ℝ)))‖ ^ 2 =
+        bdGen (1 / ((N + i + 1 : ℕ) : ℝ)))‖ ^ (2 : ℕ) =
       ∑ j ∈ range L, ((μ (N + j + 1) : ℤ) : ℝ) *
         ∑ i ∈ range L, ((μ (N + i + 1) : ℤ) : ℝ) *
           bdGram (1 / ((N + i + 1 : ℕ) : ℝ))
             (1 / ((N + j + 1 : ℕ) : ℝ)) := by
   let B : BDCarrier := ∑ i ∈ range L, ((((μ (N + i + 1) : ℤ) : ℝ) : ℂ) •
     bdGen (1 / ((N + i + 1 : ℕ) : ℝ)))
-  have hself : Complex.re (inner ℂ B B) = ‖B‖ ^ 2 :=
+  have hself : Complex.re (inner ℂ B B) = ‖B‖ ^ (2 : ℕ) :=
     by simpa only [RCLike.re_to_complex] using
       (inner_self_eq_norm_sq (𝕜 := ℂ) B)
   rw [← hself]
@@ -268,9 +268,9 @@ private theorem sum_initial_cell_weight (N : ℕ) :
 
 private theorem initial_cell_energy_le_source_energy (N : ℕ) :
     (∑ i ∈ range N,
-      cell (fun d => ((μ d : ℤ) : ℝ)) N (i + 1) ^ 2 /
+      cell (fun d => ((μ d : ℤ) : ℝ)) N (i + 1) ^ (2 : ℕ) /
         (((i : ℝ) + 1) * ((i : ℝ) + 2))) ≤
-      ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ 2 := by
+      ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ (2 : ℕ) := by
   apply ge_of_tendsto
     (hasSum_source_energy (fun d => ((μ d : ℤ) : ℝ)) N).tendsto_sum_nat
   filter_upwards [Filter.eventually_atTop.2 ⟨N, fun K hNK => hNK⟩] with K hNK
@@ -281,17 +281,17 @@ private theorem initial_cell_energy_le_source_energy (N : ℕ) :
 /-- The literal physical source energy controls the reciprocal Möbius tail on its unmodified
 initial cells.  Thus every EDQ covariance ceiling must suppress this tail at the physical scale. -/
 theorem reciprocal_moebius_tail_sq_mul_le_physical_energy (N : ℕ) :
-    (N : ℝ) * (∑ d ∈ Icc 1 N, ((μ d : ℤ) : ℝ) / (d : ℝ)) ^ 2 ≤
-      4 * ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ 2 + 4 := by
+    (N : ℝ) * (∑ d ∈ Icc 1 N, ((μ d : ℤ) : ℝ) / (d : ℝ)) ^ (2 : ℕ) ≤
+      4 * ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ (2 : ℕ) + 4 := by
   let M : ℝ := ∑ d ∈ Icc 1 N, ((μ d : ℤ) : ℝ) / (d : ℝ)
   let f : ℕ → ℝ := fun i =>
-    cell (fun d => ((μ d : ℤ) : ℝ)) N (i + 1) ^ 2 /
+    cell (fun d => ((μ d : ℤ) : ℝ)) N (i + 1) ^ (2 : ℕ) /
       (((i : ℝ) + 1) * ((i : ℝ) + 2))
   have hfinite : (∑ i ∈ range N, f i) ≤
-      ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ 2 := by
+      ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ (2 : ℕ) := by
     exact initial_cell_energy_le_source_energy N
   have hterm (i : ℕ) (hi : i ∈ range N) :
-      M ^ 2 * (((i : ℝ) + 1) / ((i : ℝ) + 2)) ≤
+      M ^ (2 : ℕ) * (((i : ℝ) + 1) / ((i : ℝ) + 2)) ≤
         2 * f i + 2 / (((i : ℝ) + 1) * ((i : ℝ) + 2)) := by
     have hiN : i < N := mem_range.mp hi
     have hcell := physical_moebius_cell_eq_reciprocal_tail
@@ -299,18 +299,18 @@ theorem reciprocal_moebius_tail_sq_mul_le_physical_energy (N : ℕ) :
     have hcell' : cell (fun d => ((μ d : ℤ) : ℝ)) N (i + 1) =
         ((i : ℝ) + 1) * M - 1 := by
       simpa only [M, Nat.cast_add, Nat.cast_one] using hcell
-    have hsq : (((i : ℝ) + 1) * M) ^ 2 ≤
-        2 * ((((i : ℝ) + 1) * M - 1) ^ 2) + 2 := by
+    have hsq : (((i : ℝ) + 1) * M) ^ (2 : ℕ) ≤
+        2 * ((((i : ℝ) + 1) * M - 1) ^ (2 : ℕ)) + 2 := by
       nlinarith [sq_nonneg (((i : ℝ) + 1) * M - 2)]
     have hden : 0 < ((i : ℝ) + 1) * ((i : ℝ) + 2) := by positivity
     dsimp [f]
     rw [hcell']
     calc
-      M ^ 2 * (((i : ℝ) + 1) / ((i : ℝ) + 2)) =
-        (((i : ℝ) + 1) * M) ^ 2 /
+      M ^ (2 : ℕ) * (((i : ℝ) + 1) / ((i : ℝ) + 2)) =
+        (((i : ℝ) + 1) * M) ^ (2 : ℕ) /
           (((i : ℝ) + 1) * ((i : ℝ) + 2)) := by
           field_simp
-      _ ≤ (2 * ((((i : ℝ) + 1) * M - 1) ^ 2) + 2) /
+      _ ≤ (2 * ((((i : ℝ) + 1) * M - 1) ^ (2 : ℕ)) + 2) /
           (((i : ℝ) + 1) * ((i : ℝ) + 2)) :=
         div_le_div_of_nonneg_right hsq hden.le
       _ = _ := by ring
@@ -327,7 +327,7 @@ theorem reciprocal_moebius_tail_sq_mul_le_physical_energy (N : ℕ) :
       1 / (((i : ℝ) + 1) * ((i : ℝ) + 2)) : ℝ) ≤ 1 := by
     rw [sum_initial_cell_weight]
     linarith [show 0 ≤ 1 / ((N : ℝ) + 1) by positivity]
-  have hsum : M ^ 2 * ∑ i ∈ range N, ((i : ℝ) + 1) / ((i : ℝ) + 2) ≤
+  have hsum : M ^ (2 : ℕ) * ∑ i ∈ range N, ((i : ℝ) + 1) / ((i : ℝ) + 2) ≤
       2 * (∑ i ∈ range N, f i) +
         2 * ∑ i ∈ range N, 1 / (((i : ℝ) + 1) * ((i : ℝ) + 2)) := by
     calc
@@ -340,13 +340,13 @@ theorem reciprocal_moebius_tail_sq_mul_le_physical_energy (N : ℕ) :
         apply Finset.sum_congr rfl
         intro i _
         ring
-  have hleft : M ^ 2 * ((N : ℝ) / 2) ≤
-      M ^ 2 * ∑ i ∈ range N, ((i : ℝ) + 1) / ((i : ℝ) + 2) :=
+  have hleft : M ^ (2 : ℕ) * ((N : ℝ) / 2) ≤
+      M ^ (2 : ℕ) * ∑ i ∈ range N, ((i : ℝ) + 1) / ((i : ℝ) + 2) :=
     mul_le_mul_of_nonneg_left hratio_sum (sq_nonneg M)
-  change (N : ℝ) * M ^ 2 ≤ _
+  change (N : ℝ) * M ^ (2 : ℕ) ≤ _
   calc
-    (N : ℝ) * M ^ 2 = 2 * (M ^ 2 * ((N : ℝ) / 2)) := by ring
-    _ ≤ 2 * (M ^ 2 * ∑ i ∈ range N, ((i : ℝ) + 1) / ((i : ℝ) + 2)) :=
+    (N : ℝ) * M ^ (2 : ℕ) = 2 * (M ^ (2 : ℕ) * ((N : ℝ) / 2)) := by ring
+    _ ≤ 2 * (M ^ (2 : ℕ) * ∑ i ∈ range N, ((i : ℝ) + 1) / ((i : ℝ) + 2)) :=
       mul_le_mul_of_nonneg_left hleft (by positivity)
     _ ≤ 2 * (2 * (∑ i ∈ range N, f i) +
         2 * ∑ i ∈ range N, 1 / (((i : ℝ) + 1) * ((i : ℝ) + 2))) :=
@@ -356,13 +356,13 @@ theorem reciprocal_moebius_tail_sq_mul_le_physical_energy (N : ℕ) :
 /-- The EDQ predictable drift must control the reciprocal Möbius tail at the physical scale.
 This is an exact necessary demand on the remaining signed covariance theorem. -/
 theorem reciprocal_moebius_tail_sq_mul_le_predictable_drift (N : ℕ) :
-    (N : ℝ) * (∑ d ∈ Icc 1 N, ((μ d : ℤ) : ℝ) / (d : ℝ)) ^ 2 ≤
-      8 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ 2 + 20 := by
+    (N : ℝ) * (∑ d ∈ Icc 1 N, ((μ d : ℤ) : ℝ) / (d : ℝ)) ^ (2 : ℕ) ≤
+      8 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ (2 : ℕ) + 20 := by
   have hphysical := reciprocal_moebius_tail_sq_mul_le_physical_energy N
   have hgap := DeletionResidueMartingale.source_drift_norm_gap N
   rw [sq_abs] at hgap
-  have hsource : ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ 2 ≤
-      2 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ 2 + 4 := by
+  have hsource : ‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ ^ (2 : ℕ) ≤
+      2 * ‖DeletionResidueMartingale.predictableDrift N‖ ^ (2 : ℕ) + 4 := by
     nlinarith [sq_nonneg
       (‖source (fun d => ((μ d : ℤ) : ℝ)) N‖ -
         2 * ‖DeletionResidueMartingale.predictableDrift N‖)]

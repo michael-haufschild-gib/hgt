@@ -62,7 +62,7 @@ theorem scaledCuspCutoff_deriv (N y : ℝ) :
   ring
 
 theorem scaledCuspCutoff_second (N y : ℝ) :
-    deriv (deriv (scaledCuspCutoff N)) y = deriv (deriv baseCuspCutoff) (y/N)/N^2 := by
+    deriv (deriv (scaledCuspCutoff N)) y = deriv (deriv baseCuspCutoff) (y/N)/N^(2 : ℕ) := by
   have hd := (contDiff_infty_iff_deriv.mp baseCuspCutoff_smooth).2
   have h := (hd.differentiable (by simp)).differentiableAt.hasDerivAt (x := y/N)
   rw [show deriv (scaledCuspCutoff N) = fun z => deriv baseCuspCutoff (z/N)/N by
@@ -78,7 +78,7 @@ theorem scaledCuspCutoff_second (N y : ℝ) :
 theorem scaledCuspCutoff_derivative_bounds : ∃ C : ℝ, 0 ≤ C ∧
     ∀ (N y : ℝ),
       |y*deriv (scaledCuspCutoff N) y| ≤ C ∧
-      |y^2*deriv (deriv (scaledCuspCutoff N)) y| ≤ C := by
+      |y^(2 : ℕ)*deriv (deriv (scaledCuspCutoff N)) y| ≤ C := by
   have hd := (contDiff_infty_iff_deriv.mp baseCuspCutoff_smooth).2
   have hdd := (contDiff_infty_iff_deriv.mp hd).2
   obtain ⟨A,hA⟩ := isCompact_Icc.exists_bound_of_continuousOn
@@ -88,7 +88,7 @@ theorem scaledCuspCutoff_derivative_bounds : ∃ C : ℝ, 0 ≤ C ∧
   let C := max 0 (max A B)
   have hc : 0 ≤ C := le_max_left _ _
   have hb (x : ℝ) : |x*deriv baseCuspCutoff x| ≤ C ∧
-      |x^2*deriv (deriv baseCuspCutoff) x| ≤ C := by
+      |x^(2 : ℕ)*deriv (deriv baseCuspCutoff) x| ≤ C := by
     by_cases hx : x ∈ Icc (2:ℝ) 3
     · exact ⟨(hA x hx).trans ((le_max_left A B).trans (le_max_right 0 _)),
         (hB x hx).trans ((le_max_right A B).trans (le_max_right 0 _))⟩
@@ -98,8 +98,8 @@ theorem scaledCuspCutoff_derivative_bounds : ∃ C : ℝ, 0 ≤ C ∧
   intro N y
   rw [scaledCuspCutoff_deriv,scaledCuspCutoff_second]
   rw [show y*(deriv baseCuspCutoff (y/N)/N) = (y/N)*deriv baseCuspCutoff (y/N) by ring,
-    show y^2*(deriv (deriv baseCuspCutoff) (y/N)/N^2) =
-      (y/N)^2*deriv (deriv baseCuspCutoff) (y/N) by ring]
+    show y^(2 : ℕ)*(deriv (deriv baseCuspCutoff) (y/N)/N^(2 : ℕ)) =
+      (y/N)^(2 : ℕ)*deriv (deriv baseCuspCutoff) (y/N) by ring]
   exact hb (y/N)
 
 end

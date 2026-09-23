@@ -46,7 +46,7 @@ theorem rhLadder_one_iff_twinFactorization : RHLadder 1 ↔ TwinFactorization :=
     have h1 : analyticOrderAt xi ρ = analyticOrderAt a ρ + analyticOrderAt d ρ := by
       rw [analyticOrderAt_congr hev]
       exact analyticOrderAt_mul (ha ρ hρ) (hd ρ hρ)
-    have h2 : ((2 ^ 1 : ℕ) : ℕ∞) = 2 := by norm_num
+    have h2 : ((2 ^ (1 : ℕ) : ℕ) : ℕ∞) = 2 := by norm_num
     rw [h1, ← hord ρ hρ, h2, ← two_mul]
     exact dvd_mul_right 2 _
 

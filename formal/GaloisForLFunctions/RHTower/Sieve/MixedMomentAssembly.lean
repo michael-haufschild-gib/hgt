@@ -50,13 +50,13 @@ majorant (the shape of `(5.2)`), `B` an affine one (the shape of `(FS7)`). -/
 theorem integral_mixed_moment_perron_le {A B : ℝ → ℂ} (hA : Continuous A) (hB : Continuous B)
     {κA QB κB x h t₀ : ℝ} (hκA : 0 ≤ κA) (hQB : 0 ≤ QB) (hκB : 0 ≤ κB)
     (hx : 0 ≤ x) (ht₀ : 0 < t₀)
-    (hmsA : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ 2) ≤ κA * U)
-    (hmsB : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖B t‖ ^ 2) ≤ QB + κB * U) (M : ℕ) :
+    (hmsA : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ (2 : ℕ)) ≤ κA * U)
+    (hmsB : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖B t‖ ^ (2 : ℕ)) ≤ QB + κB * U) (M : ℕ) :
     (∫ t in t₀..(t₀ * 2 ^ M), (‖A t‖ * ‖B t‖) * perronTruncKernel x h t₀ t)
       ≤ (x * (Real.sqrt κA * Real.sqrt QB) * Real.sqrt 2 / Real.sqrt t₀)
             * (1 - Real.sqrt 2 / 2)⁻¹
         + 2 * x * (Real.sqrt κA * Real.sqrt κB) * M := by
-  have hmsA' : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ 2) ≤ 0 + κA * U := by
+  have hmsA' : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ (2 : ℕ)) ≤ 0 + κA * U := by
     intro U hU
     simpa using hmsA U hU
   have hmain := GaloisForLFunctions.HTGeometry.integral_norm_mul_norm_mul_kernel_le

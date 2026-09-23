@@ -21,7 +21,7 @@ noncomputable section
 
 /-- The canonical wall--Xi cubic Malgrange magnitude has an exact rational upper bound. -/
 theorem neg_normalizedPrimeArchMoment_two_sub_zero_cube_div_four_lt_one_div_tenThousand :
-    -(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) <
+    -(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) <
       (1 / 10000 : ℝ) := by
   let A := thetaCuspNormalizedEvenMoment 1
   let B := thetaCuspNormalizedEvenMoment 2
@@ -34,7 +34,7 @@ theorem neg_normalizedPrimeArchMoment_two_sub_zero_cube_div_four_lt_one_div_tenT
     dsimp only [C, thetaCuspNormalizedEvenMoment]
     exact div_nonneg (thetaCuspRawEvenMoment_nonneg 3) h0.le
   have hstrict := thetaCuspRawEvenMoment_two_mul_zero_lt_six_mul_one_sq
-  have hBA : B < 6 * A ^ 2 := by
+  have hBA : B < 6 * A ^ (2 : ℕ) := by
     dsimp only [A, B, thetaCuspNormalizedEvenMoment]
     field_simp [h0.ne']
     nlinarith
@@ -42,10 +42,10 @@ theorem neg_normalizedPrimeArchMoment_two_sub_zero_cube_div_four_lt_one_div_tenT
     dsimp only [A]
     rw [← normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
     nlinarith [normalizedPrimeArchMoment_zero_lt_twentyNine_over_sixHundredTwentyFive]
-  have hAB : A * B < 6 * A ^ 3 := by
+  have hAB : A * B < 6 * A ^ (3 : ℕ) := by
     have h := mul_lt_mul_of_pos_left hBA hApos
     nlinarith
-  have hApow : A ^ 3 < (1 / 20 : ℝ) ^ 3 := by
+  have hApow : A ^ (3 : ℕ) < (1 / 20 : ℝ) ^ (3 : ℕ) := by
     gcongr
   rw [normalizedPrimeArchMoment_two_eq_thetaCuspNormalizedEvenMoment,
     normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
@@ -55,7 +55,7 @@ theorem neg_normalizedPrimeArchMoment_two_sub_zero_cube_div_four_lt_one_div_tenT
 /-- Prime `2` gives an exact closed-form atom in the raw Euler/Gamma--Wold defect. -/
 theorem sourceHorizontalEulerGammaWoldCubicNaturalDefect_two_eq :
     sourceHorizontalEulerGammaWoldCubicNaturalDefect 2 =
-      (95 / 16 : ℝ) * Real.log 2 ^ 3 := by
+      (95 / 16 : ℝ) * Real.log 2 ^ (3 : ℕ) := by
   rw [sourceHorizontalEulerGammaWoldCubicNaturalDefect,
     dif_pos Nat.prime_two, sourceHorizontalEulerGammaWoldCubicDefect_eq]
   norm_num
@@ -74,9 +74,9 @@ theorem one_div_five_lt_tsum_sourceHorizontalEulerGammaWoldCubicNaturalDefect :
   have hlog := GaloisForLFunctions.RHTower.one_third_lt_log_two
   have hlogpos : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hfactor : 0 <
-      Real.log 2 ^ 2 + Real.log 2 * (1 / 3 : ℝ) + (1 / 3 : ℝ) ^ 2 := by
+      Real.log 2 ^ (2 : ℕ) + Real.log 2 * (1 / 3 : ℝ) + (1 / 3 : ℝ) ^ (2 : ℕ) := by
     positivity
-  have hcube : (1 / 3 : ℝ) ^ 3 < Real.log 2 ^ 3 := by
+  have hcube : (1 / 3 : ℝ) ^ (3 : ℕ) < Real.log 2 ^ (3 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hlog) hfactor]
   rw [sourceHorizontalEulerGammaWoldCubicNaturalDefect_two_eq] at hterm
   nlinarith
@@ -84,7 +84,7 @@ theorem one_div_five_lt_tsum_sourceHorizontalEulerGammaWoldCubicNaturalDefect :
 /-- Quantitative scale aperture: raw source magnitude exceeds `2000` times the canonical Xi cubic
 Malgrange magnitude. -/
 theorem twoThousand_mul_neg_xiCubicMalgrangeMagnitude_lt_rawSource :
-    2000 * (-(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4)) <
+    2000 * (-(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4)) <
       ∑' n : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect n := by
   nlinarith
     [neg_normalizedPrimeArchMoment_two_sub_zero_cube_div_four_lt_one_div_tenThousand,
@@ -94,22 +94,22 @@ theorem twoThousand_mul_neg_xiCubicMalgrangeMagnitude_lt_rawSource :
 negative than the wall--Xi cubic Malgrange residual, so identity-scale landing is impossible. -/
 theorem neg_tsum_sourceHorizontalEulerGammaWoldCubicNaturalDefect_lt_xiCubicResidual :
     -(∑' n : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect n) <
-      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4 := by
+      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4 := by
   have htarget := normalizedPrimeArchMoment_two_sub_zero_cube_div_four_neg
   have hgap := twoThousand_mul_neg_xiCubicMalgrangeMagnitude_lt_rawSource
   nlinarith
 
 /-- Complete raw-magnitude obstruction and surviving factor-`2000` contraction aperture. -/
 theorem routePPrimitiveGammaJuliaStokesPrimeGammaWallCubicRawMagnitudeOvershoot :
-    0 < -(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) ∧
-      -(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) <
+    0 < -(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) ∧
+      -(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) <
         (1 / 10000 : ℝ) ∧
       (1 / 5 : ℝ) <
         ∑' n : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect n ∧
-      2000 * (-(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4)) <
+      2000 * (-(normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4)) <
         ∑' n : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect n ∧
       -(∑' n : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect n) <
-        normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4 := by
+        normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4 := by
   exact ⟨neg_pos.mpr normalizedPrimeArchMoment_two_sub_zero_cube_div_four_neg,
     neg_normalizedPrimeArchMoment_two_sub_zero_cube_div_four_lt_one_div_tenThousand,
     one_div_five_lt_tsum_sourceHorizontalEulerGammaWoldCubicNaturalDefect,

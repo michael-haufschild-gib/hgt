@@ -83,10 +83,10 @@ theorem act_apply (h : V → ℝ) (v : V) :
 /-- **(AR.4).**  The reduced Laplacian form is edge differences plus sink squares. -/
 theorem two_mul_quadratic (x : V → ℝ) :
     2 * ∑ v, x v * L.act x v
-      = (∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ 2)
-        + 2 * ∑ v, (L.sinkEdge v : ℝ) * x v ^ 2 := by
+      = (∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ (2 : ℕ))
+        + 2 * ∑ v, (L.sinkEdge v : ℝ) * x v ^ (2 : ℕ) := by
   have hact : ∀ v, x v * L.act x v
-      = (∑ w, (L.edge v w : ℝ) * (x v * (x v - x w))) + (L.sinkEdge v : ℝ) * x v ^ 2 := by
+      = (∑ w, (L.edge v w : ℝ) * (x v * (x v - x w))) + (L.sinkEdge v : ℝ) * x v ^ (2 : ℕ) := by
     intro v
     rw [act_apply, mul_add, Finset.mul_sum]
     congr 1
@@ -95,7 +95,7 @@ theorem two_mul_quadratic (x : V → ℝ) :
     · ring
   rw [Finset.sum_congr rfl fun v _ => hact v, Finset.sum_add_distrib, mul_add]
   congr 1
-  have hexpand : ∀ v, ∀ w, (L.edge v w : ℝ) * (x v - x w) ^ 2
+  have hexpand : ∀ v, ∀ w, (L.edge v w : ℝ) * (x v - x w) ^ (2 : ℕ)
       = (L.edge v w : ℝ) * (x v * (x v - x w)) + (L.edge v w : ℝ) * (x w * (x w - x v)) := by
     intro v w
     ring
@@ -752,9 +752,9 @@ omit [Nonempty V] in
 /-- The reduced Laplacian form is nonnegative. -/
 theorem quadratic_nonneg (x : V → ℝ) : 0 ≤ ∑ v, x v * L.act x v := by
   have h := L.two_mul_quadratic x
-  have h1 : (0 : ℝ) ≤ ∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ 2 :=
+  have h1 : (0 : ℝ) ≤ ∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun v _ => Finset.sum_nonneg fun w _ => by positivity
-  have h2 : (0 : ℝ) ≤ ∑ v, (L.sinkEdge v : ℝ) * x v ^ 2 :=
+  have h2 : (0 : ℝ) ≤ ∑ v, (L.sinkEdge v : ℝ) * x v ^ (2 : ℕ) :=
     Finset.sum_nonneg fun v _ => by positivity
   linarith
 
@@ -774,9 +774,9 @@ omit [Nonempty V] in
 theorem quadratic_pos {x : V → ℝ} (hx : ∃ v, x v ≠ 0) : 0 < ∑ v, x v * L.act x v := by
   have hnn : 0 ≤ ∑ v, x v * L.act x v := by
     have h := L.two_mul_quadratic x
-    have h1 : (0 : ℝ) ≤ ∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ 2 :=
+    have h1 : (0 : ℝ) ≤ ∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun v _ => Finset.sum_nonneg fun w _ => by positivity
-    have h2 : (0 : ℝ) ≤ ∑ v, (L.sinkEdge v : ℝ) * x v ^ 2 :=
+    have h2 : (0 : ℝ) ≤ ∑ v, (L.sinkEdge v : ℝ) * x v ^ (2 : ℕ) :=
       Finset.sum_nonneg fun v _ => by positivity
     linarith
   rcases lt_or_eq_of_le hnn with h | h
@@ -785,21 +785,21 @@ theorem quadratic_pos {x : V → ℝ} (hx : ∃ v, x v ≠ 0) : 0 < ∑ v, x v *
     obtain ⟨v₀, hv₀⟩ := hx
     have hq := L.two_mul_quadratic x
     rw [← h] at hq
-    have h1 : (0 : ℝ) ≤ ∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ 2 :=
+    have h1 : (0 : ℝ) ≤ ∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun v _ => Finset.sum_nonneg fun w _ => by positivity
-    have h2 : (0 : ℝ) ≤ ∑ v, (L.sinkEdge v : ℝ) * x v ^ 2 :=
+    have h2 : (0 : ℝ) ≤ ∑ v, (L.sinkEdge v : ℝ) * x v ^ (2 : ℕ) :=
       Finset.sum_nonneg fun v _ => by positivity
-    have hz1 : (∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ 2) = 0 := by linarith
-    have hz2 : (∑ v, (L.sinkEdge v : ℝ) * x v ^ 2) = 0 := by linarith
+    have hz1 : (∑ v, ∑ w, (L.edge v w : ℝ) * (x v - x w) ^ (2 : ℕ)) = 0 := by linarith
+    have hz2 : (∑ v, (L.sinkEdge v : ℝ) * x v ^ (2 : ℕ)) = 0 := by linarith
     have hedge : ∀ v w, 0 < L.edge v w → x v = x w := by
       intro v w hvw
-      have hinner : (∑ w, (L.edge v w : ℝ) * (x v - x w) ^ 2) = 0 :=
+      have hinner : (∑ w, (L.edge v w : ℝ) * (x v - x w) ^ (2 : ℕ)) = 0 :=
         (Finset.sum_eq_zero_iff_of_nonneg (fun v _ =>
           Finset.sum_nonneg fun w _ => by positivity)).1 hz1 v (mem_univ v)
       have hterm := (Finset.sum_eq_zero_iff_of_nonneg (fun w _ => by positivity)).1 hinner w
         (mem_univ w)
       have hne : (L.edge v w : ℝ) ≠ 0 := by exact_mod_cast hvw.ne'
-      have hsq : (x v - x w) ^ 2 = 0 := by
+      have hsq : (x v - x w) ^ (2 : ℕ) = 0 := by
         rcases mul_eq_zero.1 hterm with hc | hc
         · exact absurd hc hne
         · exact hc
@@ -811,7 +811,7 @@ theorem quadratic_pos {x : V → ℝ} (hx : ∃ v, x v ≠ 0) : 0 < ∑ v, x v *
       have hterm := (Finset.sum_eq_zero_iff_of_nonneg (fun v _ => by positivity)).1 hz2 v
         (mem_univ v)
       have hne : (L.sinkEdge v : ℝ) ≠ 0 := by exact_mod_cast hv.ne'
-      have hsq : x v ^ 2 = 0 := by
+      have hsq : x v ^ (2 : ℕ) = 0 := by
         rcases mul_eq_zero.1 hterm with hc | hc
         · exact absurd hc hne
         · exact hc
@@ -908,7 +908,7 @@ theorem greenForm_add (b c : V → ℝ) :
     L.greenPair_symm c b, greenForm_eq_pair, greenForm_eq_pair]
   ring
 
-theorem greenForm_smul (t : ℝ) (b : V → ℝ) : L.greenForm (t • b) = t ^ 2 * L.greenForm b := by
+theorem greenForm_smul (t : ℝ) (b : V → ℝ) : L.greenForm (t • b) = t ^ (2 : ℕ) * L.greenForm b := by
   rw [greenForm_eq_pair, greenPair_smul_left, greenPair_smul_right, greenForm_eq_pair]
   ring
 
@@ -1002,7 +1002,7 @@ theorem chargeIter_decomp (n : ℕ) :
 /-- **(AR.21) expanded.**  Exact quadratic expansion of the lineage work. -/
 theorem workIter_expand (n : ℕ) :
     L.workIter η a n
-      = (n : ℝ) ^ 2 * L.greenForm (fun w => (a w : ℝ))
+      = (n : ℝ) ^ (2 : ℕ) * L.greenForm (fun w => (a w : ℝ))
         + 2 * ((n : ℝ) * L.greenPair (fun w => (a w : ℝ)) (L.residual η a n))
         + L.greenForm (L.residual η a n) := by
   rw [workIter_eq, chargeIter_decomp, greenForm_add, greenForm_smul, greenPair_smul_left]
@@ -1059,7 +1059,7 @@ theorem bddAbove_workIter_iff (hstab : L.Stable η) (hη : ∀ w, 0 ≤ η w) (h
       exact hne (funext fun v => by exact_mod_cast hcon v)
     have hα : 0 < L.greenForm (fun w => (a w : ℝ)) := L.greenForm_pos hex
     obtain ⟨M, hM0, hM⟩ := L.exists_residual_bound η a hη ha
-    have hlb : ∀ n : ℕ, (n : ℝ) ^ 2 * L.greenForm (fun w => (a w : ℝ)) - 2 * ((n : ℝ) * M) - M
+    have hlb : ∀ n : ℕ, (n : ℝ) ^ (2 : ℕ) * L.greenForm (fun w => (a w : ℝ)) - 2 * ((n : ℝ) * M) - M
         ≤ L.workIter η a n := by
       intro n
       rw [L.workIter_expand η a n]
@@ -1083,7 +1083,7 @@ theorem bddAbove_workIter_iff (hstab : L.Stable η) (hη : ∀ w, 0 ≤ η w) (h
       have hle := le_trans (le_max_right 1 ((B + M + 2 * M + 1) / α)) hN
       rw [div_le_iff₀ hα] at hle
       linarith
-    have hbig : B < (N : ℝ) ^ 2 * α - 2 * ((N : ℝ) * M) - M := by
+    have hbig : B < (N : ℝ) ^ (2 : ℕ) * α - 2 * ((N : ℝ) * M) - M := by
       have hstep : B + M + 1 ≤ (N : ℝ) * α - 2 * M := by linarith
       have hpos : (0 : ℝ) < (N : ℝ) * α - 2 * M := by linarith
       have hmul : (1 : ℝ) * ((N : ℝ) * α - 2 * M) ≤ (N : ℝ) * ((N : ℝ) * α - 2 * M) :=
@@ -1213,7 +1213,7 @@ theorem return_odometer {z : V → ℤ} {P : ℕ}
 theorem return_work {z : V → ℤ} {P : ℕ}
     (hret : L.stab (fun w => z w + (P : ℤ) * a w) = z) :
     L.lineageWork (L.stabOdo (fun w => z w + (P : ℤ) * a w))
-      = (P : ℝ) ^ 2 * L.greenForm (fun w => (a w : ℝ)) := by
+      = (P : ℝ) ^ (2 : ℕ) * L.greenForm (fun w => (a w : ℝ)) := by
   have hqr := L.return_odometer a hret
   have hpt : ∀ v, ((L.stabOdo (fun w => z w + (P : ℤ) * a w) v : ℤ) : ℝ)
       = (P : ℝ) * L.green (fun w => (a w : ℝ)) v := fun v => congrFun hqr v
@@ -1317,36 +1317,36 @@ theorem tendsto_odoIter_div (hη : ∀ w, 0 ≤ η w) (ha : ∀ w, 0 ≤ a w) (v
 
 /-- **(AR.22), second limit.**  The lineage work grows quadratically with the Green energy. -/
 theorem tendsto_workIter_div (hη : ∀ w, 0 ≤ η w) (ha : ∀ w, 0 ≤ a w) :
-    Tendsto (fun n : ℕ => L.workIter η a n / (n : ℝ) ^ 2) atTop
+    Tendsto (fun n : ℕ => L.workIter η a n / (n : ℝ) ^ (2 : ℕ)) atTop
       (𝓝 (L.greenForm (fun w => (a w : ℝ)))) := by
   obtain ⟨M, hM0, hM⟩ := L.exists_residual_bound η a hη ha
-  have hupper : Tendsto (fun n : ℕ => (2 * M) / (n : ℝ) + M / (n : ℝ) ^ 2) atTop (𝓝 0) := by
+  have hupper : Tendsto (fun n : ℕ => (2 * M) / (n : ℝ) + M / (n : ℝ) ^ (2 : ℕ)) atTop (𝓝 0) := by
     have h1 : Tendsto (fun n : ℕ => (2 * M) / (n : ℝ)) atTop (𝓝 0) :=
       tendsto_const_div_atTop_nhds_zero_nat (2 * M)
-    have h2 : Tendsto (fun n : ℕ => M / (n : ℝ) ^ 2) atTop (𝓝 0) := by
-      have hsq : Tendsto (fun n : ℕ => ((n : ℝ)) ^ 2) atTop atTop := by
+    have h2 : Tendsto (fun n : ℕ => M / (n : ℝ) ^ (2 : ℕ)) atTop (𝓝 0) := by
+      have hsq : Tendsto (fun n : ℕ => ((n : ℝ)) ^ (2 : ℕ)) atTop atTop := by
         have hb := (tendsto_natCast_atTop_atTop (R := ℝ))
         have := hb.atTop_mul_atTop₀ hb
         exact this.congr fun n => by ring
       have hinv := hsq.inv_tendsto_atTop.const_mul M
       rw [mul_zero] at hinv
       refine hinv.congr fun n => ?_
-      show M * ((n : ℝ) ^ 2)⁻¹ = M / (n : ℝ) ^ 2
+      show M * ((n : ℝ) ^ (2 : ℕ))⁻¹ = M / (n : ℝ) ^ (2 : ℕ)
       rw [div_eq_mul_inv]
     have := h1.add h2
     rwa [add_zero] at this
-  have hlower : Tendsto (fun n : ℕ => -((2 * M) / (n : ℝ) + M / (n : ℝ) ^ 2)) atTop (𝓝 0) := by
+  have hlower : Tendsto (fun n : ℕ => -((2 * M) / (n : ℝ) + M / (n : ℝ) ^ (2 : ℕ))) atTop (𝓝 0) := by
     have := hupper.neg
     rwa [neg_zero] at this
   have hb : ∀ n : ℕ, 1 ≤ n →
-      |L.workIter η a n / (n : ℝ) ^ 2 - L.greenForm (fun w => (a w : ℝ))|
-        ≤ (2 * M) / (n : ℝ) + M / (n : ℝ) ^ 2 := by
+      |L.workIter η a n / (n : ℝ) ^ (2 : ℕ) - L.greenForm (fun w => (a w : ℝ))|
+        ≤ (2 * M) / (n : ℝ) + M / (n : ℝ) ^ (2 : ℕ) := by
     intro n hn
     · have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
       have hexp := L.workIter_expand η a n
-      have hdiv : L.workIter η a n / (n : ℝ) ^ 2 - L.greenForm (fun w => (a w : ℝ))
+      have hdiv : L.workIter η a n / (n : ℝ) ^ (2 : ℕ) - L.greenForm (fun w => (a w : ℝ))
           = 2 * L.greenPair (fun w => (a w : ℝ)) (L.residual η a n) / (n : ℝ)
-            + L.greenForm (L.residual η a n) / (n : ℝ) ^ 2 := by
+            + L.greenForm (L.residual η a n) / (n : ℝ) ^ (2 : ℕ) := by
         rw [hexp]
         field_simp
         ring
@@ -1359,16 +1359,16 @@ theorem tendsto_workIter_div (hη : ∀ w, 0 ≤ η w) (ha : ∀ w, 0 ≤ a w) :
         rw [h2]
         gcongr
         exact (hM n).1
-      have hB : |L.greenForm (L.residual η a n) / (n : ℝ) ^ 2| ≤ M / (n : ℝ) ^ 2 := by
+      have hB : |L.greenForm (L.residual η a n) / (n : ℝ) ^ (2 : ℕ)| ≤ M / (n : ℝ) ^ (2 : ℕ) := by
         rw [abs_div, abs_pow, Nat.abs_cast]
         gcongr
         exact (hM n).2
       linarith
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
     (g := fun n : ℕ => L.greenForm (fun w => (a w : ℝ))
-      - ((2 * M) / (n : ℝ) + M / (n : ℝ) ^ 2))
+      - ((2 * M) / (n : ℝ) + M / (n : ℝ) ^ (2 : ℕ)))
     (h := fun n : ℕ => L.greenForm (fun w => (a w : ℝ))
-      + ((2 * M) / (n : ℝ) + M / (n : ℝ) ^ 2)) ?_ ?_ ?_ ?_
+      + ((2 * M) / (n : ℝ) + M / (n : ℝ) ^ (2 : ℕ))) ?_ ?_ ?_ ?_
   · have := (tendsto_const_nhds (x := L.greenForm (fun w => (a w : ℝ)))
       (f := (atTop : Filter ℕ))).add hlower
     rw [add_zero] at this

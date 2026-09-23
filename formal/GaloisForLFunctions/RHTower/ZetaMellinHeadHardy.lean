@@ -34,7 +34,7 @@ namespace RHTower
 open GaloisForLFunctions.HTGeometry
 
 /-- The analytic factor of `zetaHardyCore` at a zeta zero, in the half-plane variable. -/
-def zetaCoreFactor (g : ℂ → ℂ) (w : ℂ) : ℂ := (w - 1 / 2) * g (w + 1 / 2) / (w + 1 / 2) ^ 2
+def zetaCoreFactor (g : ℂ → ℂ) (w : ℂ) : ℂ := (w - 1 / 2) * g (w + 1 / 2) / (w + 1 / 2) ^ (2 : ℕ)
 
 theorem analyticAt_zetaCoreFactor {ρ : ℂ} (hρ0 : ρ ≠ 0) {g : ℂ → ℂ}
     (hg : AnalyticAt ℂ g ρ) : AnalyticAt ℂ (zetaCoreFactor g) (ρ - 1 / 2) := by
@@ -46,7 +46,7 @@ theorem analyticAt_zetaCoreFactor {ρ : ℂ} (hρ0 : ρ ≠ 0) {g : ℂ → ℂ}
     have hc := AnalyticAt.comp (g := g) (f := fun w : ℂ => w + 1 / 2)
       (x := (ρ : ℂ) - 1 / 2) hg' hshift
     exact hc
-  have hdenne : (((ρ : ℂ) - 1 / 2) + 1 / 2) ^ 2 ≠ 0 := by
+  have hdenne : (((ρ : ℂ) - 1 / 2) + 1 / 2) ^ (2 : ℕ) ≠ 0 := by
     rw [hval]; exact pow_ne_zero _ hρ0
   exact ((analyticAt_id.sub analyticAt_const).mul hcomp).div (hshift.pow 2) hdenne
 
@@ -66,7 +66,7 @@ theorem eventually_zetaHardyCore_factor {ρ : ℂ} {k : ℕ} {g : ℂ → ℂ}
   have hsub : (w + 1 / 2 - ρ) = w - (ρ - 1 / 2) := by ring
   have hs : (w + 1 / 2 - 1) = w - 1 / 2 := by ring
   rw [hsub, hs]
-  have hden : (w + 1 / 2) ^ 2 ≠ 0 := by
+  have hden : (w + 1 / 2) ^ (2 : ℕ) ≠ 0 := by
     refine pow_ne_zero _ ?_
     exact halfShift_ne_zero hre
   field_simp
@@ -156,7 +156,7 @@ theorem isMellinHeadHardy_zetaQuotient {ρ : ℂ} (hρ1 : ρ ≠ 1) (hρ0 : ρ �
     exact_mod_cast Nat.cast_le.2 (Nat.le_succ m)
   obtain ⟨Ha, Na, hHa, hHaeq⟩ := exists_isHalfPlaneHardy_zetaCore_div hρ1 hρ0 hordm
   set K : ℂ → ℂ := fun w => Ha w + ((ρ : ℂ) - 1 / 2 + 1 / 2) * Hb w with hKdef
-  have hK : IsHalfPlaneHardy K (2 * Na + 2 * (‖(ρ : ℂ) - 1 / 2 + 1 / 2‖ ^ 2 * Nb)) :=
+  have hK : IsHalfPlaneHardy K (2 * Na + 2 * (‖(ρ : ℂ) - 1 / 2 + 1 / 2‖ ^ (2 : ℕ) * Nb)) :=
     isHalfPlaneHardy_add hHa (isHalfPlaneHardy_const_mul hHb _)
   have hKval : ∀ w : ℂ, 0 < w.re → w ≠ (ρ : ℂ) - 1 / 2 → w ≠ 1 / 2 →
       K w = zetaHardyCore w * (w + 1 / 2) / (w - ((ρ : ℂ) - 1 / 2)) ^ (m + 1) := by

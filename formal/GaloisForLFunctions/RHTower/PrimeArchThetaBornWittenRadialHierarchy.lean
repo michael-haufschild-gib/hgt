@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaBornWittenSourceMoment
 
 Multiplication by `x ^ k` turns the exact theta-cusp Born/Witten state into a radial
 supersymmetric ground state.  Its superpotential acquires the centrifugal term `-k / x`, its
-curvature acquires `k / x ^ 2`, and its ordinary position moments are precisely the `k`-shifted
+curvature acquires `k / x ^ (2 : ℕ)`, and its ordinary position moments are precisely the `k`-shifted
 theta-cusp atom moments.
 
 Consequently every even central Xi jet is a countable sum of squared norms of radial zero modes.
@@ -30,11 +30,11 @@ def thetaCuspBornWittenRadialSuperpotential (k n : ℕ) (x : ℝ) : ℝ :=
 
 /-- Exact derivative of the radial superpotential on the open half-line. -/
 def thetaCuspBornWittenRadialCurvature (k n : ℕ) (x : ℝ) : ℝ :=
-  thetaCuspBornWittenCurvature n x + (k : ℝ) / x ^ 2
+  thetaCuspBornWittenCurvature n x + (k : ℝ) / x ^ (2 : ℕ)
 
 /-- Negative logarithm of the radial state density. -/
 def thetaCuspBornWittenRadialLogDensityPotential (k n : ℕ) (x : ℝ) : ℝ :=
-  -Real.log (thetaCuspBornWittenRadialAmplitude k n x ^ 2)
+  -Real.log (thetaCuspBornWittenRadialAmplitude k n x ^ (2 : ℕ))
 
 /-- Log-density curvature of the radial state. -/
 def thetaCuspBornWittenRadialLogCurvature (k n : ℕ) (x : ℝ) : ℝ :=
@@ -42,26 +42,26 @@ def thetaCuspBornWittenRadialLogCurvature (k n : ℕ) (x : ℝ) : ℝ :=
 
 /-- Lower factorized Hamiltonian potential of the radial state. -/
 def thetaCuspBornWittenRadialPotentialMinus (k n : ℕ) (x : ℝ) : ℝ :=
-  thetaCuspBornWittenRadialSuperpotential k n x ^ 2 -
+  thetaCuspBornWittenRadialSuperpotential k n x ^ (2 : ℕ) -
     thetaCuspBornWittenRadialCurvature k n x
 
 /-- Partner factorized Hamiltonian potential of the radial state. -/
 def thetaCuspBornWittenRadialPotentialPlus (k n : ℕ) (x : ℝ) : ℝ :=
-  thetaCuspBornWittenRadialSuperpotential k n x ^ 2 +
+  thetaCuspBornWittenRadialSuperpotential k n x ^ (2 : ℕ) +
     thetaCuspBornWittenRadialCurvature k n x
 
 /-- The `2j`-th position moment of the `k`-th radial state. -/
 def thetaCuspBornWittenRadialRawMoment (j k n : ℕ) : ℝ :=
   ∫ x : ℝ in Ioi 0,
-    x ^ (2 * j) * thetaCuspBornWittenRadialAmplitude k n x ^ 2
+    x ^ (2 * j) * thetaCuspBornWittenRadialAmplitude k n x ^ (2 : ℕ)
 
 /-- Total squared norm of the radial zero modes of index `j`. -/
 def thetaCuspBornWittenRadialNorm (j : ℕ) : ℝ :=
   ∑' n : ℕ, 2 * Real.pi * thetaCuspBornWittenRadialRawMoment 0 j n
 
 theorem thetaCuspBornWittenRadialAmplitude_sq (k n : ℕ) (x : ℝ) :
-    thetaCuspBornWittenRadialAmplitude k n x ^ 2 =
-      x ^ (2 * k) * thetaCuspBornWittenAmplitude n x ^ 2 := by
+    thetaCuspBornWittenRadialAmplitude k n x ^ (2 : ℕ) =
+      x ^ (2 * k) * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) := by
   simp only [thetaCuspBornWittenRadialAmplitude, mul_pow]
   rw [show 2 * k = k * 2 by omega, pow_mul]
 
@@ -70,7 +70,7 @@ wavefunction. -/
 theorem thetaCusp_pow_mul_sourceTerm_eq_pi_mul_radialAmplitude_sq
     (k : ℕ) {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
     x ^ (2 * k) * thetaCuspSourceTerm x n =
-      Real.pi * thetaCuspBornWittenRadialAmplitude k n x ^ 2 := by
+      Real.pi * thetaCuspBornWittenRadialAmplitude k n x ^ (2 : ℕ) := by
   rw [thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq hn hx,
     thetaCuspBornWittenRadialAmplitude_sq]
   ring
@@ -140,10 +140,10 @@ theorem deriv_thetaCuspBornWittenRadialSuperpotential
       thetaCuspBornWittenRadialCurvature k n x :=
   (hasDerivAt_thetaCuspBornWittenRadialSuperpotential hn hx).deriv
 
-/-- The radial state retains the source curvature floor and gains `k/x^2`. -/
+/-- The radial state retains the source curvature floor and gains `k/x^(2 : ℕ)`. -/
 theorem thetaCuspBornWittenRadialCurvature_floor
     {k n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
-    2 * Real.pi * (n : ℝ) ^ 2 + (k : ℝ) / x ^ 2 ≤
+    2 * Real.pi * (n : ℝ) ^ (2 : ℕ) + (k : ℝ) / x ^ (2 : ℕ) ≤
       thetaCuspBornWittenRadialCurvature k n x := by
   have h := thetaCuspBornWittenCurvature_floor hn hx.le
   simp only [thetaCuspBornWittenRadialCurvature]
@@ -173,15 +173,15 @@ theorem hasDerivAt_two_thetaCuspBornWittenRadialSuperpotential
   simpa only [thetaCuspBornWittenRadialLogCurvature] using
     (hasDerivAt_thetaCuspBornWittenRadialSuperpotential hn hx).const_mul 2
 
-/-- Log-density curvature gains the exact radial term `2k/x^2`. -/
+/-- Log-density curvature gains the exact radial term `2k/x^(2 : ℕ)`. -/
 theorem thetaCuspBornWittenRadialLogCurvature_floor
     {k n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
-    4 * Real.pi * (n : ℝ) ^ 2 + 2 * (k : ℝ) / x ^ 2 ≤
+    4 * Real.pi * (n : ℝ) ^ (2 : ℕ) + 2 * (k : ℝ) / x ^ (2 : ℕ) ≤
       thetaCuspBornWittenRadialLogCurvature k n x := by
   have h := thetaCuspBornWittenRadialCurvature_floor (k := k) hn hx
   calc
-    4 * Real.pi * (n : ℝ) ^ 2 + 2 * (k : ℝ) / x ^ 2 =
-        2 * (2 * Real.pi * (n : ℝ) ^ 2 + (k : ℝ) / x ^ 2) := by ring
+    4 * Real.pi * (n : ℝ) ^ (2 : ℕ) + 2 * (k : ℝ) / x ^ (2 : ℕ) =
+        2 * (2 * Real.pi * (n : ℝ) ^ (2 : ℕ) + (k : ℝ) / x ^ (2 : ℕ)) := by ring
     _ ≤ 2 * thetaCuspBornWittenRadialCurvature k n x :=
       mul_le_mul_of_nonneg_left h (by norm_num)
     _ = thetaCuspBornWittenRadialLogCurvature k n x := rfl
@@ -192,7 +192,7 @@ theorem thetaCuspBornWittenRadialPotentialMinus_eq
     thetaCuspBornWittenRadialPotentialMinus k n x =
       thetaCuspBornWittenPotentialMinus n x -
         2 * (k : ℝ) * thetaCuspBornWittenSuperpotential n x / x +
-        (k : ℝ) * ((k : ℝ) - 1) / x ^ 2 := by
+        (k : ℝ) * ((k : ℝ) - 1) / x ^ (2 : ℕ) := by
   simp only [thetaCuspBornWittenRadialPotentialMinus,
     thetaCuspBornWittenRadialSuperpotential,
     thetaCuspBornWittenRadialCurvature,
@@ -206,7 +206,7 @@ theorem thetaCuspBornWittenRadialPotentialPlus_eq
     thetaCuspBornWittenRadialPotentialPlus k n x =
       thetaCuspBornWittenPotentialPlus n x -
         2 * (k : ℝ) * thetaCuspBornWittenSuperpotential n x / x +
-        (k : ℝ) * ((k : ℝ) + 1) / x ^ 2 := by
+        (k : ℝ) * ((k : ℝ) + 1) / x ^ (2 : ℕ) := by
   simp only [thetaCuspBornWittenRadialPotentialPlus,
     thetaCuspBornWittenRadialSuperpotential,
     thetaCuspBornWittenRadialCurvature,
@@ -249,7 +249,7 @@ theorem thetaCuspBornWittenRadialRawMoment_eq_shifted
     (j k n : ℕ) :
     thetaCuspBornWittenRadialRawMoment j k n =
       ∫ x : ℝ in Ioi 0,
-        x ^ (2 * (j + k)) * thetaCuspBornWittenAmplitude n x ^ 2 := by
+        x ^ (2 * (j + k)) * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) := by
   unfold thetaCuspBornWittenRadialRawMoment
   apply MeasureTheory.integral_congr_ae
   filter_upwards [] with x
@@ -302,7 +302,7 @@ radial zero-mode norms. -/
 theorem thetaCuspBornWittenQuadraticSource_eq_radialNorm :
     thetaCuspBornWittenQuadraticSource =
       (thetaCuspBornWittenRadialNorm 1 /
-          thetaCuspBornWittenRadialNorm 0) ^ 2 / 2 -
+          thetaCuspBornWittenRadialNorm 0) ^ (2 : ℕ) / 2 -
         (thetaCuspBornWittenRadialNorm 2 /
           thetaCuspBornWittenRadialNorm 0) / 6 := by
   simp only [thetaCuspBornWittenQuadraticSource,
@@ -311,7 +311,7 @@ theorem thetaCuspBornWittenQuadraticSource_eq_radialNorm :
 theorem normalizedPrimeArchMoment_one_eq_radialBornWittenNorm :
     normalizedPrimeArchMoment 1 =
       (thetaCuspBornWittenRadialNorm 1 /
-          thetaCuspBornWittenRadialNorm 0) ^ 2 / 2 -
+          thetaCuspBornWittenRadialNorm 0) ^ (2 : ℕ) / 2 -
         (thetaCuspBornWittenRadialNorm 2 /
           thetaCuspBornWittenRadialNorm 0) / 6 := by
   rw [normalizedPrimeArchMoment_one_eq_bornWittenQuadraticSource,
@@ -338,7 +338,7 @@ is the corresponding `k=0` condition. -/
 theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_radialBornWittenAmplitude
     (hupper :
       14 * ((3005 / 2997 : ℝ) *
-          thetaCuspBornWittenRadialRawMoment 1 1 1) ^ 2 ≤
+          thetaCuspBornWittenRadialRawMoment 1 1 1) ^ (2 : ℕ) ≤
         9 * thetaCuspBornWittenRadialRawMoment 0 1 1 *
           thetaCuspBornWittenRadialRawMoment 2 1 1)
     (hrelaxed :
@@ -346,7 +346,7 @@ theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_radialBornWittenAmpli
           thetaCuspBornWittenRadialRawMoment 0 0 1) *
           ((3005 / 2997 : ℝ) *
             thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) :
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) :
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re := by
   apply forall_primeArchSourceTraceHankel_linear_nonneg_of_bornWittenAmplitude
   · rw [thetaCuspBornWittenRadialRawMoment_eq_shifted,

@@ -8,12 +8,12 @@ noncomputable section
 
 /-- The corrected ingoing tensor is polynomial in inverse radius before restoring its envelope. -/
 def compactMetric (s u B aS aV S Sx Sy : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  let C := aS^2*B^2*s^2*u^2*((s+1)^2*u^2-4)*S^2/8
-  let V := aS*aV*B^2*s*(s+1)*S/2
-  let T0 := V*u*(1-u^2)*Sy
-  let T1 := -V*u*(1-u^2)*Sx
-  let R0 := -V*u^3*Sy
-  let R1 := V*u^3*Sx
+  let C := aS^(2 : ℕ)*B^(2 : ℕ)*s^(2 : ℕ)*u^(2 : ℕ)*((s+1)^(2 : ℕ)*u^(2 : ℕ)-4)*S^(2 : ℕ)/8
+  let V := aS*aV*B^(2 : ℕ)*s*(s+1)*S/2
+  let T0 := V*u*(1-u^(2 : ℕ))*Sy
+  let T1 := -V*u*(1-u^(2 : ℕ))*Sx
+  let R0 := -V*u^(3 : ℕ)*Sy
+  let R1 := V*u^(3 : ℕ)*Sx
   fun i j => match i.val, j.val with
     | 0, 1 | 1, 0 => C
     | 0, 2 | 2, 0 => T0
@@ -23,19 +23,19 @@ def compactMetric (s u B aS aV S Sx Sy : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
     | _, _ => 0
 
 private def staticMetric (s r B aS aV S Sx Sy : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  let C := aS^2*B^2*s^2*((s+1)^2-4*r^2)*S^2/(8*r^4)
-  let V := aS*aV*B^2*s*(s+1)*(r^2-1)*S/(2*r^3)
-  !![0,C,V*Sy,-V*Sx; C,2*C/(r^2-1),0,0; V*Sy,0,0,0; -V*Sx,0,0,0]
+  let C := aS^(2 : ℕ)*B^(2 : ℕ)*s^(2 : ℕ)*((s+1)^(2 : ℕ)-4*r^(2 : ℕ))*S^(2 : ℕ)/(8*r^(4 : ℕ))
+  let V := aS*aV*B^(2 : ℕ)*s*(s+1)*(r^(2 : ℕ)-1)*S/(2*r^(3 : ℕ))
+  !![0,C,V*Sy,-V*Sx; C,2*C/(r^(2 : ℕ)-1),0,0; V*Sy,0,0,0; -V*Sx,0,0,0]
 
 set_option maxRecDepth 4096 in
 set_option maxHeartbeats 2000000 in
 private theorem metric_values (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     (D4BMQuadraticIngoingCorrection.correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy).metric =
       staticMetric s r B aS aV S Sx Sy := by
-  let C := (((aS^2*s^2/8)*B^2)*((s+1)^2+(-4)*(r*r)))*
+  let C := (((aS^(2 : ℕ)*s^(2 : ℕ)/8)*B^(2 : ℕ))*((s+1)^(2 : ℕ)+(-4)*(r*r)))*
     ((r⁻¹*r⁻¹)*(r⁻¹*r⁻¹))*(S*S)
-  let V := ((((aS*aV*s*(s+1)/2)*B^2)*(r*r+(-1)))*((r⁻¹*r⁻¹)*r⁻¹))*S
+  let V := ((((aS*aV*s*(s+1)/2)*B^(2 : ℕ))*(r*r+(-1)))*((r⁻¹*r⁻¹)*r⁻¹))*S
   have hm : (D4BMQuadraticIngoingCorrection.correctionJet
       s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy).metric =
       !![0,C,V*Sy,V*(-Sx); C,(2*C)*(r*r+(-1))⁻¹,0,0;
@@ -55,7 +55,7 @@ set_option maxHeartbeats 4000000 in
 /-- Applying the actual coordinate differential to the complete correction jet's metric
 removes every singular horizon denominator. -/
 theorem metric_pullback (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     pullback r (D4BMQuadraticIngoingCorrection.correctionJet
       s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy).metric =
       compactMetric s r⁻¹ B aS aV S Sx Sy := by
@@ -81,8 +81,8 @@ theorem field_eq_pullback (s aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
       aS aV S Sx Sy Sxx Sxy Sxxx Sxxy).metric =
       field s aS aV S Sx Sy (x 0) (x 1 : ℂ)⁻¹ := by
   have h0 : (x 1 : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt (lt_trans zero_lt_one hr))
-  have hf : (x 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (x 1)^2-1 ≠ 0 := by nlinarith
+  have hf : (x 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (x 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith
     exact_mod_cast h
   rw [metric_pullback _ _ _ _ _ _ _ _ _ _ _ _ _ h0 hf, envelope_staticPoint _ _ _ hr]
   rfl

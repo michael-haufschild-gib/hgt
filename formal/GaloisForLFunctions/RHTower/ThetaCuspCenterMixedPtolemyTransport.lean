@@ -50,7 +50,7 @@ theorem thetaCuspReflectedSourceOddParityWall_eq_dropProduct
     thetaCuspReflectedSourceOddParityWall u t =
       thetaCuspReflectedSourceFirstDrop u t *
           thetaCuspReflectedSourceFullDrop u t -
-        thetaCuspReflectedSourceMiddleDrop u t ^ 2 := by
+        thetaCuspReflectedSourceMiddleDrop u t ^ (2 : ℕ) := by
   unfold thetaCuspReflectedSourceOddParityWall toeplitzFourOddParityWall
     thetaCuspReflectedSourceFirstDrop thetaCuspReflectedSourceMiddleDrop
     thetaCuspReflectedSourceFullDrop
@@ -83,7 +83,7 @@ theorem thetaCuspReflectedSourcePtolemyPolarization_eq_defects_add_ratioSq
         (thetaCuspReflectedSourceMiddleDrop u t /
               thetaCuspReflectedSourceFirstDrop u t -
             thetaCuspReflectedSourceMiddleDrop v t /
-              thetaCuspReflectedSourceFirstDrop v t) ^ 2 := by
+              thetaCuspReflectedSourceFirstDrop v t) ^ (2 : ℕ) := by
   have hu := (thetaCuspReflectedSourceFirstDrop_pos u ht).ne'
   have hv := (thetaCuspReflectedSourceFirstDrop_pos v ht).ne'
   rw [thetaCuspReflectedSourceOddParityWall_eq_dropProduct,

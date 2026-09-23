@@ -21,7 +21,7 @@ namespace RHTower
 coordinate. -/
 theorem pair_correlation_cosine_affine_minorant {n : ℕ}
     (w gamma : Fin n → ℝ) (alpha t : ℝ) :
-    2 * t * (∑ j, w j * Real.cos (alpha * gamma j)) - t ^ 2 ≤
+    2 * t * (∑ j, w j * Real.cos (alpha * gamma j)) - t ^ (2 : ℕ) ≤
       ∑ j, ∑ k, w j * w k *
         Real.cos (alpha * (gamma j - gamma k)) := by
   rw [pair_correlation_eq_squares]
@@ -34,7 +34,7 @@ theorem pair_correlation_cosine_affine_minorant {n : ℕ}
 coordinate. -/
 theorem pair_correlation_sine_affine_minorant {n : ℕ}
     (w gamma : Fin n → ℝ) (alpha t : ℝ) :
-    2 * t * (∑ j, w j * Real.sin (alpha * gamma j)) - t ^ 2 ≤
+    2 * t * (∑ j, w j * Real.sin (alpha * gamma j)) - t ^ (2 : ℕ) ≤
       ∑ j, ∑ k, w j * w k *
         Real.cos (alpha * (gamma j - gamma k)) := by
   rw [pair_correlation_eq_squares]
@@ -51,7 +51,7 @@ theorem pair_correlation_rotated_affine_minorant {n : ℕ}
     2 * t *
         (Real.cos theta * (∑ j, w j * Real.cos (alpha * gamma j)) +
           Real.sin theta * (∑ j, w j * Real.sin (alpha * gamma j))) -
-        t ^ 2 ≤
+        t ^ (2 : ℕ) ≤
       ∑ j, ∑ k, w j * w k *
         Real.cos (alpha * (gamma j - gamma k)) := by
   rw [pair_correlation_eq_squares]

@@ -21,26 +21,26 @@ noncomputable section
 moving Cauchy resonance. -/
 theorem xiWardSchwarzCapDifference_resonant_re (s x : ℝ) :
     (xiWardSchwarzCapDifference x s x).re =
-      -(8 * x ^ 2) /
+      -(8 * x ^ (2 : ℕ)) /
         ((51 / 100 + xiWardTransverseLevel s) *
-          ((51 / 100 + xiWardTransverseLevel s) ^ 2 + 4 * x ^ 2)) := by
+          ((51 / 100 + xiWardTransverseLevel s) ^ (2 : ℕ) + 4 * x ^ (2 : ℕ))) := by
   let a : ℝ := 51 / 100 + xiWardTransverseLevel s
   have ha : 0 < a := by
     dsimp [a]
     have hlevel := xiWardTransverseLevel_mem_Ioo s
     linarith [hlevel.1]
   have ha0 : a ≠ 0 := ha.ne'
-  have hsum0 : a ^ 2 + 4 * x ^ 2 ≠ 0 := by
+  have hsum0 : a ^ (2 : ℕ) + 4 * x ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_nonneg x, sq_pos_of_pos ha]
   rw [xiWardSchwarzCapDifference_resonant]
   have hprod :
       (((a : ℂ) + I * ((2 * x : ℝ) : ℂ)) * (a : ℂ)) =
-        ((a ^ 2 : ℝ) : ℂ) + ((2 * a * x : ℝ) : ℂ) * I := by
+        ((a ^ (2 : ℕ) : ℝ) : ℂ) + ((2 * a * x : ℝ) : ℂ) * I := by
     push_cast
     ring
   change ((-4 * I * (x : ℂ)) *
       (((a : ℂ) + I * ((2 * x : ℝ) : ℂ)) * (a : ℂ))⁻¹).re =
-    -(8 * x ^ 2) / (a * (a ^ 2 + 4 * x ^ 2))
+    -(8 * x ^ (2 : ℕ)) / (a * (a ^ (2 : ℕ) + 4 * x ^ (2 : ℕ)))
   rw [hprod]
   rw [Complex.mul_re, Complex.inv_re, Complex.inv_im]
   simp only [Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.add_im,
@@ -56,17 +56,17 @@ its moving Cauchy resonance. -/
 theorem xiWardSchwarzCapDifference_resonant_im (s x : ℝ) :
     (xiWardSchwarzCapDifference x s x).im =
       -(4 * x) /
-        ((51 / 100 + xiWardTransverseLevel s) ^ 2 + 4 * x ^ 2) := by
+        ((51 / 100 + xiWardTransverseLevel s) ^ (2 : ℕ) + 4 * x ^ (2 : ℕ)) := by
   let a : ℝ := 51 / 100 + xiWardTransverseLevel s
   rw [xiWardSchwarzCapDifference_resonant]
   have hprod :
       (((a : ℂ) + I * ((2 * x : ℝ) : ℂ)) * (a : ℂ)) =
-        ((a ^ 2 : ℝ) : ℂ) + ((2 * a * x : ℝ) : ℂ) * I := by
+        ((a ^ (2 : ℕ) : ℝ) : ℂ) + ((2 * a * x : ℝ) : ℂ) * I := by
     push_cast
     ring
   change ((-4 * I * (x : ℂ)) *
       (((a : ℂ) + I * ((2 * x : ℝ) : ℂ)) * (a : ℂ))⁻¹).im =
-    -(4 * x) / (a ^ 2 + 4 * x ^ 2)
+    -(4 * x) / (a ^ (2 : ℕ) + 4 * x ^ (2 : ℕ))
   rw [hprod]
   rw [Complex.mul_im, Complex.inv_re]
   simp only [Complex.mul_re, Complex.mul_im, Complex.add_re,
@@ -78,7 +78,7 @@ theorem xiWardSchwarzCapDifference_resonant_im (s x : ℝ) :
     dsimp [a]
     have hlevel := xiWardTransverseLevel_mem_Ioo s
     linarith [hlevel.1]
-  have hsum0 : a ^ 2 + 4 * x ^ 2 ≠ 0 := by
+  have hsum0 : a ^ (2 : ℕ) + 4 * x ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_nonneg x, sq_pos_of_pos ha]
   field_simp [hsum0]
   ring
@@ -88,11 +88,11 @@ components of any complex source value. -/
 theorem xiWardSchwarzCapDifference_resonant_mul_re
     (s x : ℝ) (z : ℂ) :
     (xiWardSchwarzCapDifference x s x * z).re =
-      (-(8 * x ^ 2) /
+      (-(8 * x ^ (2 : ℕ)) /
         ((51 / 100 + xiWardTransverseLevel s) *
-          ((51 / 100 + xiWardTransverseLevel s) ^ 2 + 4 * x ^ 2))) * z.re +
+          ((51 / 100 + xiWardTransverseLevel s) ^ (2 : ℕ) + 4 * x ^ (2 : ℕ)))) * z.re +
       ((4 * x) /
-        ((51 / 100 + xiWardTransverseLevel s) ^ 2 + 4 * x ^ 2)) * z.im := by
+        ((51 / 100 + xiWardTransverseLevel s) ^ (2 : ℕ) + 4 * x ^ (2 : ℕ))) * z.im := by
   rw [Complex.mul_re, xiWardSchwarzCapDifference_resonant_re,
     xiWardSchwarzCapDifference_resonant_im]
   ring
@@ -102,12 +102,12 @@ resonant quadrature.  This retains its source value unaltered. -/
 theorem xiWardSchwarzCapFactorDensity_resonant_re (s x : ℝ) :
     (xiWardSchwarzCapDifference x s x *
       continuedPrimeArchSourceRelativeTrace (xiWardLowerCapPoint s x)).re =
-      (-(8 * x ^ 2) /
+      (-(8 * x ^ (2 : ℕ)) /
         ((51 / 100 + xiWardTransverseLevel s) *
-          ((51 / 100 + xiWardTransverseLevel s) ^ 2 + 4 * x ^ 2))) *
+          ((51 / 100 + xiWardTransverseLevel s) ^ (2 : ℕ) + 4 * x ^ (2 : ℕ)))) *
         (continuedPrimeArchSourceRelativeTrace (xiWardLowerCapPoint s x)).re +
       ((4 * x) /
-        ((51 / 100 + xiWardTransverseLevel s) ^ 2 + 4 * x ^ 2)) *
+        ((51 / 100 + xiWardTransverseLevel s) ^ (2 : ℕ) + 4 * x ^ (2 : ℕ))) *
         (continuedPrimeArchSourceRelativeTrace (xiWardLowerCapPoint s x)).im := by
   exact xiWardSchwarzCapDifference_resonant_mul_re s x
     (continuedPrimeArchSourceRelativeTrace (xiWardLowerCapPoint s x))
@@ -128,11 +128,11 @@ theorem xiWardSchwarzCapDifference_resonant_re_zero_or_neg (s x : ℝ) :
       have hlevel := xiWardTransverseLevel_mem_Ioo s
       linarith [hlevel.1]
     have hsum : 0 <
-        (51 / 100 + xiWardTransverseLevel s) ^ 2 + 4 * x ^ 2 := by
-      have hx2 : 0 < x ^ 2 := sq_pos_of_ne_zero hx
+        (51 / 100 + xiWardTransverseLevel s) ^ (2 : ℕ) + 4 * x ^ (2 : ℕ) := by
+      have hx2 : 0 < x ^ (2 : ℕ) := sq_pos_of_ne_zero hx
       nlinarith [sq_nonneg (51 / 100 + xiWardTransverseLevel s)]
     apply div_neg_of_neg_of_pos
-    · have hx2 : 0 < x ^ 2 := sq_pos_of_ne_zero hx
+    · have hx2 : 0 < x ^ (2 : ℕ) := sq_pos_of_ne_zero hx
       nlinarith
     · exact mul_pos ha hsum
 

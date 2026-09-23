@@ -11,7 +11,7 @@ The primitive-current common test has two reflected continuations
 difference is retained in both source channels.  Its Hardy-tail energy
 density is
 
-`(1 - exp (-t)) * (exp (a t) - exp (-a t))^2`.
+`(1 - exp (-t)) * (exp (a t) - exp (-a t))^(2 : ℕ)`.
 
 This module proves an exact source-side admission theorem:
 
@@ -40,7 +40,7 @@ noncomputable section
 def eulerPrimitiveBoundaryReflectionOddTailEnergyDensity
     (a t : ℝ) : ℝ :=
   eulerPrimitiveBoundaryTailWeight t *
-    (Real.exp (a * t) - Real.exp (-a * t)) ^ 2
+    (Real.exp (a * t) - Real.exp (-a * t)) ^ (2 : ℕ)
 
 /-- Difference of the two reflected common-test continuations before
 scalar trace. -/
@@ -154,7 +154,7 @@ private theorem
   have hsq :
       Tendsto
         (fun t : ℝ =>
-          (Real.exp (a * t) - Real.exp (-a * t)) ^ 2)
+          (Real.exp (a * t) - Real.exp (-a * t)) ^ (2 : ℕ))
         atTop atTop :=
     (tendsto_pow_atTop (α := ℝ) (n := 2) (by norm_num)).comp hdiff
   have htail :
@@ -317,12 +317,12 @@ theorem
         Complex.normSq
           ((xiGammaEulerPrimitivePolarizedReflectionOddCommonTest
             a i j).2 t) =
-      xiGammaEulerPrimitiveExteriorCell 0 i j ^ 2 *
+      xiGammaEulerPrimitiveExteriorCell 0 i j ^ (2 : ℕ) *
         eulerPrimitiveBoundaryReflectionOddTailEnergyDensity a t := by
   simp only [xiGammaEulerPrimitivePolarizedReflectionOddCommonTest,
     Complex.normSq_mul, Complex.normSq_ofReal]
   calc
-    _ = xiGammaEulerPrimitiveExteriorCell 0 i j ^ 2 *
+    _ = xiGammaEulerPrimitiveExteriorCell 0 i j ^ (2 : ℕ) *
         (eulerPrimitiveBoundaryTailWeight t *
           Complex.normSq
             ((eulerPrimitiveBoundaryPolarizedReflectionOddProfile a).2 t)) := by
@@ -368,7 +368,7 @@ theorem
   let c := xiGammaEulerPrimitiveExteriorCell 0 i j
   have hc : c ≠ 0 :=
     xiGammaEulerPrimitiveExteriorCell_ne_zero_of_halfHeight_ne i j hheight
-  have hc2 : c ^ 2 ≠ 0 := pow_ne_zero 2 hc
+  have hc2 : c ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hc
   rw [show
     (fun t : ℝ =>
       eulerPrimitiveBoundaryTailWeight t *
@@ -376,7 +376,7 @@ theorem
           ((xiGammaEulerPrimitivePolarizedReflectionOddCommonTest
             a i j).2 t)) =
       fun t : ℝ =>
-        c ^ 2 *
+        c ^ (2 : ℕ) *
           eulerPrimitiveBoundaryReflectionOddTailEnergyDensity a t by
       funext t
       exact
@@ -387,11 +387,11 @@ theorem
     apply
       (integrableOn_eulerPrimitiveBoundaryReflectionOddTailEnergyDensity_iff
         a).1
-    have hscaled := h.const_mul (c ^ 2)⁻¹
+    have hscaled := h.const_mul (c ^ (2 : ℕ))⁻¹
     change Integrable
       (fun t : ℝ =>
-        (c ^ 2)⁻¹ *
-          (c ^ 2 *
+        (c ^ (2 : ℕ))⁻¹ *
+          (c ^ (2 : ℕ) *
             eulerPrimitiveBoundaryReflectionOddTailEnergyDensity a t))
       (volume.restrict (Ioi 0)) at hscaled
     change Integrable
@@ -404,7 +404,7 @@ theorem
     have h :=
       (integrableOn_eulerPrimitiveBoundaryReflectionOddTailEnergyDensity_iff
         a).2 ha
-    exact h.const_mul (c ^ 2)
+    exact h.const_mul (c ^ (2 : ℕ))
 
 /-! ## Exact Xi-fracture landing boundary -/
 

@@ -136,7 +136,7 @@ theorem swap_d_lt {J J' : JacobiData n} {i j : Fin n} (hij : i ≠ j) (hji : i �
     (hred : ∀ a b : Fin n, a < b → |J.U a b| ≤ 1 / 2)
     (hfail : J.d j < 3 / 4 * J.d i) : J'.d i < J.d i := by
   rw [swap_d_eq_projNorm hij hji hform, J.projNorm_succ hjs]
-  have hb : (J.U i j) ^ 2 ≤ (1 / 2 : ℝ) ^ 2 := by
+  have hb : (J.U i j) ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := by
     have := hred i j (Fin.lt_def.2 (by omega))
     nlinarith [abs_nonneg (J.U i j), sq_abs (J.U i j)]
   nlinarith [hfail, hb, J.pos i]

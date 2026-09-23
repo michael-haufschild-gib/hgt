@@ -112,18 +112,18 @@ theorem four_mul_add_two_mul_le_tsum_of_quartet_and_criticalPair
   exact hle
 
 theorem orderTwentyFourReciprocalPower_re_pos_of_sectorRatio
-    {A B : ℝ} (hA : 0 < A) (hsector : 234 * B ^ 2 < A ^ 2) :
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 24).re :=
+    {A B : ℝ} (hA : 0 < A) (hsector : 234 * B ^ (2 : ℕ) < A ^ (2 : ℕ)) :
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ (24 : ℕ)).re :=
   GaloisForLFunctions.HTGeometry.re_inv_sub_mul_I_pow_pos_of_sq_lt
     (t := 327 / 5000) hA (by norm_num) (by norm_num) hsector
     (by norm_num; nlinarith [Real.pi_gt_d20])
 
 theorem xiCenteredOrderTwentyFourSectorRatio_of_offLine_inner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
-    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (2365 / 15008 : ℝ)) :
-    234 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
-  have hv : (2365 / 16 : ℝ) ≤ (q.1 : ℂ).im ^ 2 :=
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ≤ (2365 / 15008 : ℝ)) :
+    234 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
+  have hv : (2365 / 16 : ℝ) ≤ (q.1 : ℂ).im ^ (2 : ℕ) :=
     le_of_not_gt fun hvlt => hoff (xiZeroCopy_re_eq_half_of_im_sq_lt_2365_over_16 q hvlt)
   simpa only [add_zero] using
     GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 234)
@@ -131,9 +131,9 @@ theorem xiCenteredOrderTwentyFourSectorRatio_of_offLine_inner
       (by norm_num) le_rfl hinner hv (by norm_num) (by norm_num)
 
 theorem xiCenteredOrderTwentyFourSectorRatio_of_fourHundredSixtyNineHalves_le_im_sq
-    (q : XiZeroCopy) (hhigh : 469 / 2 ≤ (q.1 : ℂ).im ^ 2) :
-    234 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
+    (q : XiZeroCopy) (hhigh : 469 / 2 ≤ (q.1 : ℂ).im ^ (2 : ℕ)) :
+    234 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   simpa only [add_zero] using
     GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 234)
       (u₀ := 1 / 4) (v₀ := 469 / 2) (y₀ := 0) (y := 0)
@@ -143,16 +143,16 @@ theorem xiCenteredOrderTwentyFourSectorRatio_of_fourHundredSixtyNineHalves_le_im
 
 def XiCenteredOrderTwentyFourResidualAnnulus (q : XiZeroCopy) : Prop :=
   (q.1 : ℂ).re ≠ 1 / 2 ∧
-    (2365 / 15008 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-        2365 / 16 ≤ (q.1 : ℂ).im ^ 2 ∧
-          (q.1 : ℂ).im ^ 2 < 469 / 2
+    (2365 / 15008 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+        2365 / 16 ≤ (q.1 : ℂ).im ^ (2 : ℕ) ∧
+          (q.1 : ℂ).im ^ (2 : ℕ) < 469 / 2
 
 theorem xiCenteredOrderTwentyFourSectorFailure_mem_residualAnnulus
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
     (hfail :
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
-        234 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2) :
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+        234 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ)) :
     XiCenteredOrderTwentyFourResidualAnnulus q := by
   refine ⟨hoff, ?_, xi_divisor_support_centered_re_sq_lt_quarter q.1, ?_, ?_⟩
   · by_contra h
@@ -169,7 +169,7 @@ theorem xiCenteredOrderTwentyFourSectorFailure_mem_residualAnnulus
 
 theorem xiZeroCopyReciprocalSquare_pow_twentyFour_re_pos_of_not_mem_residualAnnulus
     (q : XiZeroCopy) (hnot : ¬ XiCenteredOrderTwentyFourResidualAnnulus q) :
-    0 < (xiZeroCopyReciprocalSquare q ^ 24).re :=
+    0 < (xiZeroCopyReciprocalSquare q ^ (24 : ℕ)).re :=
   xiZeroCopyReciprocalSquare_pow_re_pos_of_window_empty q
     (fun _ _ hA h => orderTwentyFourReciprocalPower_re_pos_of_sectorRatio hA h)
     (fun hoff hfail => xiCenteredOrderTwentyFourSectorFailure_mem_residualAnnulus q hoff hfail)
@@ -178,13 +178,13 @@ theorem xiZeroCopyReciprocalSquare_pow_twentyFour_re_pos_of_not_mem_residualAnnu
 /-- Every fourth-trace atom in the order-24 residual annulus exceeds `1 / 56000`. -/
 theorem one_over_fiftySixThousand_lt_xiFourthReciprocalTraceAtom_orderTwentyFour
     (q : XiZeroCopy)
-    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 469 / 2) :
-    (1 / 56000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 469 / 2) :
+    (1 / 56000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   let w : ℝ := u + v
   let W : ℝ := 939 / 4
   have hu0 : 0 < u := by simpa only [u] using huLower
@@ -196,19 +196,19 @@ theorem one_over_fiftySixThousand_lt_xiFourthReciprocalTraceAtom_orderTwentyFour
   have hwLower : 2365 / 16 < w := by dsimp only [w]; linarith
   have hwUpper : w < W := by dsimp only [w, W]; linarith
   have hW0 : 0 < W := by dsimp only [W]; norm_num
-  have hsqUpper : w ^ 2 < W ^ 2 :=
+  have hsqUpper : w ^ (2 : ℕ) < W ^ (2 : ℕ) :=
     (sq_lt_sq₀ hw0.le hW0.le).2 hwUpper
-  have hsqLower : (2365 / 16 : ℝ) ^ 2 < w ^ 2 :=
+  have hsqLower : (2365 / 16 : ℝ) ^ (2 : ℕ) < w ^ (2 : ℕ) :=
     (sq_lt_sq₀ (by norm_num) hw0.le).2 hwLower
-  have hsecond : 0 < W ^ 2 + w ^ 2 - 56000 := by
+  have hsecond : 0 < W ^ (2 : ℕ) + w ^ (2 : ℕ) - 56000 := by
     dsimp only [W] at hsqLower ⊢
     nlinarith
   have hshape :
-      56000 * W ^ 2 - W ^ 4 < 56000 * w ^ 2 - w ^ 4 := by
+      56000 * W ^ (2 : ℕ) - W ^ (4 : ℕ) < 56000 * w ^ (2 : ℕ) - w ^ (4 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr hsqUpper) hsecond
     have hid :
-        (56000 * w ^ 2 - w ^ 4) - (56000 * W ^ 2 - W ^ 4) =
-          (W ^ 2 - w ^ 2) * (W ^ 2 + w ^ 2 - 56000) := by
+        (56000 * w ^ (2 : ℕ) - w ^ (4 : ℕ)) - (56000 * W ^ (2 : ℕ) - W ^ (4 : ℕ)) =
+          (W ^ (2 : ℕ) - w ^ (2 : ℕ)) * (W ^ (2 : ℕ) + w ^ (2 : ℕ) - 56000) := by
       ring
     nlinarith
   have huv : u * v < 469 / 8 := by
@@ -218,61 +218,61 @@ theorem one_over_fiftySixThousand_lt_xiFourthReciprocalTraceAtom_orderTwentyFour
         mul_lt_mul_of_pos_left hvU (by norm_num)
       _ = 469 / 8 := by ring
   have hendpoint :
-      448000 * (469 / 8 : ℝ) < 56000 * W ^ 2 - W ^ 4 := by
+      448000 * (469 / 8 : ℝ) < 56000 * W ^ (2 : ℕ) - W ^ (4 : ℕ) := by
     norm_num [W]
   have huvScaled : 448000 * (u * v) < 448000 * (469 / 8 : ℝ) :=
     mul_lt_mul_of_pos_left huv (by norm_num)
-  have hchain : 448000 * (u * v) < 56000 * w ^ 2 - w ^ 4 :=
+  have hchain : 448000 * (u * v) < 56000 * w ^ (2 : ℕ) - w ^ (4 : ℕ) :=
     huvScaled.trans (hendpoint.trans hshape)
   have hG :
-      0 < 56000 * (v ^ 2 - 6 * u * v + u ^ 2) - w ^ 4 := by
-    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
+      0 < 56000 * (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) - w ^ (4 : ℕ) := by
+    have hN : v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ) = w ^ (2 : ℕ) - 8 * u * v := by
       dsimp only [w]
       ring
     rw [hN]
     nlinarith [hchain]
   have hformula :
-      (xiZeroCopyReciprocalSquare q ^ 2).re =
-        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
+        (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) / w ^ (4 : ℕ) := by
     simp only [u, v, w]
     exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]
   rw [div_lt_div_iff₀ (by norm_num : (0 : ℝ) < 56000) (pow_pos hw0 4)]
   nlinarith
 
-/-- A critical-line copy below squared height `383` contributes more than `1 / 383^2` to the
+/-- A critical-line copy below squared height `383` contributes more than `1 / 383^(2 : ℕ)` to the
 fourth reciprocal trace. -/
 theorem one_over_threeHundredEightyThree_sq_lt_xiFourthReciprocalTraceAtom_of_criticalLine
     (q0 : XiZeroCopy) (hline : (q0.1 : ℂ).re = 1 / 2)
-    (hheight : (q0.1 : ℂ).im ^ 2 < 383) :
-    (1 / (383 : ℝ) ^ 2) < (xiZeroCopyReciprocalSquare q0 ^ 2).re := by
-  let v : ℝ := (q0.1 : ℂ).im ^ 2
+    (hheight : (q0.1 : ℂ).im ^ (2 : ℕ) < 383) :
+    (1 / (383 : ℝ) ^ (2 : ℕ)) < (xiZeroCopyReciprocalSquare q0 ^ (2 : ℕ)).re := by
+  let v : ℝ := (q0.1 : ℂ).im ^ (2 : ℕ)
   have hv0 : 0 < v := by
     dsimp only [v]
     exact sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q0.1)
   have hvU : v < 383 := by simpa only [v] using hheight
   have hformula :
-      (xiZeroCopyReciprocalSquare q0 ^ 2).re = v ^ 2 / v ^ 4 := by
+      (xiZeroCopyReciprocalSquare q0 ^ (2 : ℕ)).re = v ^ (2 : ℕ) / v ^ (4 : ℕ) := by
     simp only [v]
     rw [xiZeroCopyReciprocalSquare_sq_re_formula, hline]
     norm_num
   rw [hformula]
-  have hvSq : v ^ 2 < (383 : ℝ) ^ 2 :=
+  have hvSq : v ^ (2 : ℕ) < (383 : ℝ) ^ (2 : ℕ) :=
     (sq_lt_sq₀ hv0.le (by norm_num)).2 hvU
-  rw [div_lt_div_iff₀ (by positivity : (0 : ℝ) < (383 : ℝ) ^ 2)
+  rw [div_lt_div_iff₀ (by positivity : (0 : ℝ) < (383 : ℝ) ^ (2 : ℕ))
     (pow_pos hv0 4)]
-  have hv2 : 0 < v ^ 2 := pow_pos hv0 2
+  have hv2 : 0 < v ^ (2 : ℕ) := pow_pos hv0 2
   nlinarith
 
 /-- An order-24 residual quartet cannot coexist with a critical-line pair below squared height
 `383`; the six atoms would overspend the exact fourth-trace source budget. -/
 theorem not_orderTwentyFourResidualAnnulus_of_criticalLine_below_threeHundredEightyThree
     (q0 : XiZeroCopy) (hline : (q0.1 : ℂ).re = 1 / 2)
-    (hheight : (q0.1 : ℂ).im ^ 2 < 383) :
+    (hheight : (q0.1 : ℂ).im ^ (2 : ℕ) < 383) :
     ¬ ∃ q : XiZeroCopy, XiCenteredOrderTwentyFourResidualAnnulus q := by
   rintro ⟨q, hq⟩
   have hsum : Summable
-      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 2).re) :=
+      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ (2 : ℕ)).re) :=
     (summable_xiZeroCopyReciprocalSquare_pow 1).mapL Complex.reCLM
   have hmass := four_mul_add_two_mul_le_tsum_of_quartet_and_criticalPair
     xiFourthReciprocalTraceAtom_nonneg hsum xiFourthReciprocalTraceAtom_lineConj
@@ -286,7 +286,7 @@ theorem not_orderTwentyFourResidualAnnulus_of_criticalLine_below_threeHundredEig
       q0 hline hheight
   have hupper := normalizedPrimeArchMoment_one_lt_seventeen_over_twoHundredThousand
   have hrat :
-      (17 / 200000 : ℝ) < 4 * (1 / 56000 : ℝ) + 2 * (1 / (383 : ℝ) ^ 2) := by
+      (17 / 200000 : ℝ) < 4 * (1 / 56000 : ℝ) + 2 * (1 / (383 : ℝ) ^ (2 : ℕ)) := by
     norm_num
   nlinarith
 
@@ -295,15 +295,15 @@ critical-line zero-free band through squared height `383`. -/
 theorem threeHundredEightyThree_le_criticalLine_im_sq_of_orderTwentyFourResidualAnnulus
     (q : XiZeroCopy) (hq : XiCenteredOrderTwentyFourResidualAnnulus q)
     (q0 : XiZeroCopy) (hline : (q0.1 : ℂ).re = 1 / 2) :
-    (383 : ℝ) ≤ (q0.1 : ℂ).im ^ 2 := by
+    (383 : ℝ) ≤ (q0.1 : ℂ).im ^ (2 : ℕ) := by
   by_contra hnot
   exact not_orderTwentyFourResidualAnnulus_of_criticalLine_below_threeHundredEightyThree
     q0 hline (lt_of_not_ge hnot) ⟨q, hq⟩
 
 theorem xiZeroCopyReciprocalSquare_pow_twentyFour_re_pos_of_criticalLine_below_threeHundredEightyThree
     (q0 : XiZeroCopy) (hline : (q0.1 : ℂ).re = 1 / 2)
-    (hheight : (q0.1 : ℂ).im ^ 2 < 383) (q : XiZeroCopy) :
-    0 < (xiZeroCopyReciprocalSquare q ^ 24).re :=
+    (hheight : (q0.1 : ℂ).im ^ (2 : ℕ) < 383) (q : XiZeroCopy) :
+    0 < (xiZeroCopyReciprocalSquare q ^ (24 : ℕ)).re :=
   xiZeroCopyReciprocalSquare_pow_twentyFour_re_pos_of_not_mem_residualAnnulus q
     (fun hq =>
       not_orderTwentyFourResidualAnnulus_of_criticalLine_below_threeHundredEightyThree
@@ -312,7 +312,7 @@ theorem xiZeroCopyReciprocalSquare_pow_twentyFour_re_pos_of_criticalLine_below_t
 /-- One low critical-line zero forces positivity of centered source moment 23. -/
 theorem normalizedPrimeArchMoment_twentyThree_pos_of_criticalLine_below_threeHundredEightyThree
     (q0 : XiZeroCopy) (hline : (q0.1 : ℂ).re = 1 / 2)
-    (hheight : (q0.1 : ℂ).im ^ 2 < 383) :
+    (hheight : (q0.1 : ℂ).im ^ (2 : ℕ) < 383) :
     0 < normalizedPrimeArchMoment 23 := by
   apply normalizedPrimeArchMoment_pos_of_atomwise_re_pos 23
   simpa using
@@ -322,7 +322,7 @@ theorem normalizedPrimeArchMoment_twentyThree_pos_of_criticalLine_below_threeHun
 /-- Hardy-route interface: any certified Hardy zero of squared height below `383` closes the
 order-24 centered source moment. -/
 theorem normalizedPrimeArchMoment_twentyThree_pos_of_hardyZ_zero_below_threeHundredEightyThree
-    {τ : ℝ} (hZ : hardyZ τ = 0) (hheight : τ ^ 2 < 383) :
+    {τ : ℝ} (hZ : hardyZ τ = 0) (hheight : τ ^ (2 : ℕ) < 383) :
     0 < normalizedPrimeArchMoment 23 := by
   have hxi : xi (linePt τ) = 0 := (xi_line_eq_zero_iff_hardyZ τ).2 hZ
   let rho : XiDivisorSupport :=
@@ -337,7 +337,7 @@ theorem normalizedPrimeArchMoment_twentyThree_pos_of_hardyZ_zero_below_threeHund
     q0
   · change (linePt τ).re = 1 / 2
     exact linePt_re τ
-  · change (linePt τ).im ^ 2 < 383
+  · change (linePt τ).im ^ (2 : ℕ) < 383
     simpa only [linePt_im] using hheight
 
 end

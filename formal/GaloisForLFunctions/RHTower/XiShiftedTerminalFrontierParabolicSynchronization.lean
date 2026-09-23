@@ -9,8 +9,8 @@ parabolic degree horizon is stronger: above one explicit quadratic mass threshol
 vector in the degree-matched shifted-Xi Hankel form strictly positive.
 
 This module connects that theorem to canonical terminal frontiers.  Every occupied degree-`n`
-frontier lies below `K (n+2)^2`; every actual strict successor lies strictly below
-`K (n+3)^2`.  Consequently false RH can only generate its cofinal source-adaptive strict-frontier
+frontier lies below `K (n+2)^(2 : ℕ)`; every actual strict successor lies strictly below
+`K (n+3)^(2 : ℕ)`.  Consequently false RH can only generate its cofinal source-adaptive strict-frontier
 phase inside the intrinsic parabolic cone `sqrt mass = O(degree)`.  Arbitrarily delayed positive
 schedules from fixed-degree recession are therefore not canonical-frontier countermodels.
 -/
@@ -25,7 +25,7 @@ noncomputable section
 positive definite. -/
 theorem xiShiftedMomentHankelMatrix_posDef_of_parabolicDegreeHorizon
     (n : ℕ) {y : ℝ}
-    (hy : routeUParabolicDegreeHorizon * (((n + 2 : ℕ) : ℝ) ^ 2) ≤ y) :
+    (hy : routeUParabolicDegreeHorizon * (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ y) :
     (xiShiftedMomentHankelMatrix y (n + 2)).PosDef := by
   rw [Matrix.posDef_iff_dotProduct_mulVec]
   refine ⟨xiShiftedMomentHankelMatrix_isHermitian y (n + 2), ?_⟩
@@ -38,9 +38,9 @@ theorem xiShiftedMomentHankelMatrix_posDef_of_parabolicDegreeHorizon
 /-- Every actual degree-`n` failure occurs strictly before its quadratic parabolic horizon. -/
 theorem lt_parabolicDegreeHorizon_of_mem_xiShiftedHigherBlockFailureSet
     (n : ℕ) {y : ℝ} (hy : y ∈ xiShiftedHigherBlockFailureSet n) :
-    y < routeUParabolicDegreeHorizon * (((n + 2 : ℕ) : ℝ) ^ 2) := by
+    y < routeUParabolicDegreeHorizon * (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   by_contra hnot
-  have hbound : routeUParabolicDegreeHorizon * (((n + 2 : ℕ) : ℝ) ^ 2) ≤ y :=
+  have hbound : routeUParabolicDegreeHorizon * (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ y :=
     le_of_not_gt hnot
   exact hy.2 (xiShiftedMomentHankelMatrix_posDef_of_parabolicDegreeHorizon n hbound)
 
@@ -49,7 +49,7 @@ preserves the corpus quadratic mass bound. -/
 theorem xiShiftedHigherBlockTerminalFrontier_le_parabolicDegreeHorizon
     (n : ℕ) (hne : (xiShiftedHigherBlockFailureSet n).Nonempty) :
     xiShiftedHigherBlockTerminalFrontier n ≤
-      routeUParabolicDegreeHorizon * (((n + 2 : ℕ) : ℝ) ^ 2) := by
+      routeUParabolicDegreeHorizon * (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   apply csSup_le hne
   intro y hy
   exact (lt_parabolicDegreeHorizon_of_mem_xiShiftedHigherBlockFailureSet n hy).le
@@ -72,8 +72,8 @@ theorem sqrt_xiShiftedHigherBlockTerminalFrontier_le_linearDegreeHorizon
   have hsqrtK0 := Real.sqrt_nonneg routeUParabolicDegreeHorizon
   have hn0 : 0 ≤ ((n + 2 : ℕ) : ℝ) := by positivity
   have hprodSq :
-      (Real.sqrt routeUParabolicDegreeHorizon * ((n + 2 : ℕ) : ℝ)) ^ 2 =
-        routeUParabolicDegreeHorizon * ((n + 2 : ℕ) : ℝ) ^ 2 := by
+      (Real.sqrt routeUParabolicDegreeHorizon * ((n + 2 : ℕ) : ℝ)) ^ (2 : ℕ) =
+        routeUParabolicDegreeHorizon * ((n + 2 : ℕ) : ℝ) ^ (2 : ℕ) := by
     rw [mul_pow, hKSq]
   by_contra hnot
   have hlt :
@@ -98,7 +98,7 @@ theorem xiShiftedHigherBlockTerminalFrontier_succ_lt_parabolicDegreeHorizon
     (hstrict : xiShiftedHigherBlockTerminalFrontier n <
       xiShiftedHigherBlockTerminalFrontier (n + 1)) :
     xiShiftedHigherBlockTerminalFrontier (n + 1) <
-      routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ 2) := by
+      routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
   have hface := xiShiftedHigherBlockTerminalFrontier_strict_step_effective hne hstrict
   dsimp only at hface
@@ -119,7 +119,7 @@ theorem exists_cofinal_sourceAdaptive_parabolicFrontierCertificate_of_not_rieman
       xiShiftedHigherBlockTerminalFrontier n <
         xiShiftedHigherBlockTerminalFrontier (n + 1) ∧
       xiShiftedHigherBlockTerminalFrontier (n + 1) <
-        routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ 2) := by
+        routeUParabolicDegreeHorizon * (((n + 3 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   obtain ⟨n, hne, hA, hstrict, _⟩ :=
     exists_cofinal_sourceAdaptive_frontierCertificate_of_not_riemannHypothesis hnot A
   exact ⟨n, hne, hA, hstrict,

@@ -31,7 +31,7 @@ noncomputable section
 
 /-- Complexified Mellin character of the normalized Gaussian heat step. -/
 def gaussianMellinCharacter (c s : ℂ) : ℂ :=
-  Complex.exp ((s - c) ^ 2 / (4 * (Real.pi : ℂ)))
+  Complex.exp ((s - c) ^ (2 : ℕ) / (4 * (Real.pi : ℂ)))
 
 /-- Resolvent denominator based at the spectral point `ρ`. -/
 def gaussianResolventDenominator (c rho s : ℂ) : ℂ :=
@@ -42,9 +42,9 @@ theorem hasDerivAt_gaussianMellinCharacter (c s : ℂ) :
       (gaussianMellinCharacter c s *
         ((s - c) / (2 * (Real.pi : ℂ)))) s := by
   change HasDerivAt (fun z : ℂ =>
-    Complex.exp ((z - c) ^ 2 / (4 * (Real.pi : ℂ)))) _ s
+    Complex.exp ((z - c) ^ (2 : ℕ) / (4 * (Real.pi : ℂ)))) _ s
   have hinner : HasDerivAt (fun z : ℂ =>
-      (z - c) ^ 2 / (4 * (Real.pi : ℂ)))
+      (z - c) ^ (2 : ℕ) / (4 * (Real.pi : ℂ)))
       ((s - c) / (2 * (Real.pi : ℂ))) s := by
     convert (((hasDerivAt_id s).sub_const c).pow 2).div_const
       (4 * (Real.pi : ℂ)) using 1 <;> try rfl

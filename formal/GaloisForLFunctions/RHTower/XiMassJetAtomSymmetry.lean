@@ -17,8 +17,8 @@ namespace RHTower
 noncomputable section
 
 theorem conj_jetPow_ofReal (a : ℝ) (k : ℕ) (x : ℝ) :
-    conj (((x : ℂ) ^ 2 + 4 * (a : ℂ) ^ 4) ^ k) = ((x : ℂ) ^ 2 + 4 * (a : ℂ) ^ 4) ^ k := by
-  have hcast : ((x : ℂ) ^ 2 + 4 * (a : ℂ) ^ 4) = ((x ^ 2 + 4 * a ^ 4 : ℝ) : ℂ) := by
+    conj (((x : ℂ) ^ (2 : ℕ) + 4 * (a : ℂ) ^ (4 : ℕ)) ^ k) = ((x : ℂ) ^ (2 : ℕ) + 4 * (a : ℂ) ^ (4 : ℕ)) ^ k := by
+  have hcast : ((x : ℂ) ^ (2 : ℕ) + 4 * (a : ℂ) ^ (4 : ℕ)) = ((x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ) : ℝ) : ℂ) := by
     push_cast
     ring
   rw [hcast, ← Complex.ofReal_pow, Complex.conj_ofReal]

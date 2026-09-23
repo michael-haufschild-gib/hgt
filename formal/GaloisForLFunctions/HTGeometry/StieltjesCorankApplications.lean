@@ -68,9 +68,9 @@ theorem trdeg_stieltjesField_single_eq_one {ℓ : ℝ} (hℓ : Transcendental �
 
 theorem coeff_two_beurlingBlock_pair :
     PowerSeries.coeff 2 (beurlingBlock 2)
-      = MvPolynomial.C (1/12 : ℚ) * (MvPolynomial.X 1) ^ 2
+      = MvPolynomial.C (1/12 : ℚ) * (MvPolynomial.X 1) ^ (2 : ℕ)
         + MvPolynomial.C (1/4 : ℚ) * (MvPolynomial.X 0) * (MvPolynomial.X 1)
-        + MvPolynomial.C (1/12 : ℚ) * (MvPolynomial.X 0) ^ 2 := by
+        + MvPolynomial.C (1/12 : ℚ) * (MvPolynomial.X 0) ^ (2 : ℕ) := by
   rw [beurlingBlock_eq_prod, Fin.prod_univ_two, PowerSeries.coeff_mul,
     Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
   rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_zero]
@@ -81,7 +81,7 @@ theorem coeff_two_beurlingBlock_pair :
   norm_num
 
 theorem blockCoeffVal_two_pair (L : Fin 2 → ℝ) :
-    blockCoeffVal L 2 = (L 0) ^ 2 / 12 + (L 0) * (L 1) / 4 + (L 1) ^ 2 / 12 := by
+    blockCoeffVal L 2 = (L 0) ^ (2 : ℕ) / 12 + (L 0) * (L 1) / 4 + (L 1) ^ (2 : ℕ) / 12 := by
   rw [blockCoeffVal, coeff_two_beurlingBlock_pair]
   simp only [map_add, map_mul, map_pow, MvPolynomial.aeval_C, MvPolynomial.aeval_X]
   push_cast
@@ -91,23 +91,23 @@ theorem blockCoeffVal_two_pair (L : Fin 2 → ℝ) :
 
 
 theorem isAlgebraic_of_quadratic_over_algebraic {s w : ℝ} (hs : IsAlgebraic ℚ s)
-    (hw : w ^ 2 - s * w + 1 = 0) : IsAlgebraic ℚ w := by
+    (hw : w ^ (2 : ℕ) - s * w + 1 = 0) : IsAlgebraic ℚ w := by
   have hsA : s ∈ algebraicClosure ℚ ℝ := mem_algebraicClosure_iff.mpr hs
   have hwA : IsAlgebraic ↥(algebraicClosure ℚ ℝ) w := by
-    refine ⟨Polynomial.X ^ 2
+    refine ⟨Polynomial.X ^ (2 : ℕ)
       - Polynomial.C (⟨s, hsA⟩ : ↥(algebraicClosure ℚ ℝ)) * Polynomial.X + 1, ?_, ?_⟩
     · intro h
       have hc := congrArg (fun p => Polynomial.coeff p 2) h
       simp [Polynomial.coeff_one] at hc
     · simp only [map_add, map_sub, map_mul, map_pow, Polynomial.aeval_X, Polynomial.aeval_C,
         map_one]
-      show w ^ 2 - s * w + 1 = 0
+      show w ^ (2 : ℕ) - s * w + 1 = 0
       exact hw
   haveI : Algebra.IsAlgebraic ℚ ↥(algebraicClosure ℚ ℝ) := algebraicClosure.isAlgebraic ℚ ℝ
   exact hwA.restrictScalars ℚ
 
 theorem stieltjesVal_two_pair {L : Fin 2 → ℝ} (h0 : L 0 ≠ 0) (h1 : L 1 ≠ 0) :
-    stieltjesVal L 2 = ((L 0) ^ 2 + (L 1) ^ 2) / (12 * (L 0) * (L 1)) + 1 / 4 := by
+    stieltjesVal L 2 = ((L 0) ^ (2 : ℕ) + (L 1) ^ (2 : ℕ)) / (12 * (L 0) * (L 1)) + 1 / 4 := by
   rw [stieltjesVal, blockCoeffVal_two_pair, Fin.prod_univ_two]
   field_simp
   ring
@@ -121,12 +121,12 @@ theorem transcendental_stieltjesVal_pair {p q : ℕ} (hp : p.Prime) (hq : q.Prim
   have h0 : (![Real.log p, Real.log q] : Fin 2 → ℝ) 0 = Real.log p := rfl
   have h1 : (![Real.log p, Real.log q] : Fin 2 → ℝ) 1 = Real.log q := rfl
   have hval : stieltjesVal ![Real.log p, Real.log q] 2
-      = ((Real.log p) ^ 2 + (Real.log q) ^ 2) / (12 * Real.log p * Real.log q) + 1 / 4 := by
+      = ((Real.log p) ^ (2 : ℕ) + (Real.log q) ^ (2 : ℕ)) / (12 * Real.log p * Real.log q) + 1 / 4 := by
     rw [stieltjesVal_two_pair (by rw [h0]; exact ne_of_gt hap)
       (by rw [h1]; exact ne_of_gt haq), h0, h1]
   intro hAlg
   rw [hval] at hAlg
-  have hγ : ((Real.log p) ^ 2 + (Real.log q) ^ 2) / (12 * Real.log p * Real.log q) + 1 / 4
+  have hγ : ((Real.log p) ^ (2 : ℕ) + (Real.log q) ^ (2 : ℕ)) / (12 * Real.log p * Real.log q) + 1 / 4
       ∈ algebraicClosure ℚ ℝ := mem_algebraicClosure_iff.mpr hAlg
   have h12 : ((12 : ℝ)) ∈ algebraicClosure ℚ ℝ := by
     have : ((12 : ℝ)) = ((12 : ℚ) : ℝ) := by norm_num
@@ -136,19 +136,19 @@ theorem transcendental_stieltjesVal_pair {p q : ℕ} (hp : p.Prime) (hq : q.Prim
     have : ((1 / 4 : ℝ)) = ((1 / 4 : ℚ) : ℝ) := by norm_num
     rw [this]
     exact (algebraicClosure ℚ ℝ).algebraMap_mem _
-  have hsA : ((Real.log p) ^ 2 + (Real.log q) ^ 2) / (Real.log p * Real.log q)
+  have hsA : ((Real.log p) ^ (2 : ℕ) + (Real.log q) ^ (2 : ℕ)) / (Real.log p * Real.log q)
       ∈ algebraicClosure ℚ ℝ := by
-    have heq : ((Real.log p) ^ 2 + (Real.log q) ^ 2) / (Real.log p * Real.log q)
-        = 12 * ((((Real.log p) ^ 2 + (Real.log q) ^ 2)
+    have heq : ((Real.log p) ^ (2 : ℕ) + (Real.log q) ^ (2 : ℕ)) / (Real.log p * Real.log q)
+        = 12 * ((((Real.log p) ^ (2 : ℕ) + (Real.log q) ^ (2 : ℕ))
             / (12 * Real.log p * Real.log q) + 1 / 4) - 1 / 4) := by
       field_simp
       ring
     rw [heq]
     exact (algebraicClosure ℚ ℝ).mul_mem h12 ((algebraicClosure ℚ ℝ).sub_mem hγ hq4)
-  have hs : IsAlgebraic ℚ (((Real.log p) ^ 2 + (Real.log q) ^ 2) / (Real.log p * Real.log q)) :=
+  have hs : IsAlgebraic ℚ (((Real.log p) ^ (2 : ℕ) + (Real.log q) ^ (2 : ℕ)) / (Real.log p * Real.log q)) :=
     mem_algebraicClosure_iff.mp hsA
-  have hw : (Real.log p / Real.log q) ^ 2
-      - (((Real.log p) ^ 2 + (Real.log q) ^ 2) / (Real.log p * Real.log q))
+  have hw : (Real.log p / Real.log q) ^ (2 : ℕ)
+      - (((Real.log p) ^ (2 : ℕ) + (Real.log q) ^ (2 : ℕ)) / (Real.log p * Real.log q))
         * (Real.log p / Real.log q) + 1 = 0 := by
     field_simp
     ring

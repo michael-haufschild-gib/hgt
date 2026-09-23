@@ -50,7 +50,7 @@ theorem xiFormationThreeSlotExchangeDefect_eq
     (q : XiZeroCopy) :
     finiteExchangeDefect (xiFormationForwardReporterLaw q)
         (xiFormationReflectedReporterLaw q) =
-      2 * primeDepthBVWoldXiCenteredRate q.1 ^ 2 := by
+      2 * primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) := by
   rw [xiFormationReflectedReporterLaw_eq_neg]
   simp [finiteExchangeDefect, threeSlotExchangeDefect_eq,
     xiFormationForwardReporterLaw]
@@ -64,7 +64,7 @@ def xiFormationIndependentWork (n : ℕ) (q : XiZeroCopy) : ℝ :=
 theorem xiFormationIndependentWork_eq
     (n : ℕ) (q : XiZeroCopy) :
     xiFormationIndependentWork n q =
-      2 * (n : ℝ) * primeDepthBVWoldXiCenteredRate q.1 ^ 2 := by
+      2 * (n : ℝ) * primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) := by
   rw [xiFormationIndependentWork, finiteExchangeWork,
     xiFormationThreeSlotExchangeDefect_eq]
   ring

@@ -19,7 +19,7 @@ noncomputable section
 
 /-- The corrected field itself, before taking any coordinate derivatives. -/
 def correctedMetric (h k l : MetricField) (ε : ℂ) : MetricField :=
-  fun x => metric (x 1) (x 3) + ε • h x + ε^2 • k x + ε^3 • l x
+  fun x => metric (x 1) (x 3) + ε • h x + ε^(2 : ℕ) • k x + ε^(3 : ℕ) • l x
 
 /-- Literal cosmological Einstein source of the corrected field's complete spatial jet. -/
 def source (p : ExteriorPoint) (h k l : MetricField) (i j : Fin 4) (ε : ℂ) : ℂ :=
@@ -57,15 +57,15 @@ theorem correctedMetric_jet (p : ExteriorPoint) (h k l : MetricField)
       ComplexCubicPath.path (backgroundSpace p) (fieldSpace p h) (fieldSpace p k) (fieldSpace p l) ε := by
   have ha (i j : Fin 4) : ContDiffAt ℝ 2 (fun x => perturbedMetric h ε x i j) p.val :=
     (exterior_metric_contDiffAt p i j).add (contDiffAt_const.mul (hh i j))
-  have hb (i j : Fin 4) : ContDiffAt ℝ 2 (fun x => (ε^2 • k x) i j) p.val :=
+  have hb (i j : Fin 4) : ContDiffAt ℝ 2 (fun x => (ε^(2 : ℕ) • k x) i j) p.val :=
     contDiffAt_const.mul (hk i j)
-  have hc (i j : Fin 4) : ContDiffAt ℝ 2 (fun x => (ε^3 • l x) i j) p.val :=
+  have hc (i j : Fin 4) : ContDiffAt ℝ 2 (fun x => (ε^(3 : ℕ) • l x) i j) p.val :=
     contDiffAt_const.mul (hl i j)
-  change toSpace (ofMetricField (fun x => (perturbedMetric h ε x + ε^2 • k x) + ε^3 • l x) p.val) = _
+  change toSpace (ofMetricField (fun x => (perturbedMetric h ε x + ε^(2 : ℕ) • k x) + ε^(3 : ℕ) • l x) p.val) = _
   rw [D4BMFullLinearEquation.fieldSpace_add p
-      (fun x => perturbedMetric h ε x + ε^2 • k x) (fun x => ε^3 • l x)
+      (fun x => perturbedMetric h ε x + ε^(2 : ℕ) • k x) (fun x => ε^(3 : ℕ) • l x)
       (fun i j => (ha i j).add (hb i j)) hc,
-    D4BMFullLinearEquation.fieldSpace_add p (perturbedMetric h ε) (fun x => ε^2 • k x) ha hb,
+    D4BMFullLinearEquation.fieldSpace_add p (perturbedMetric h ε) (fun x => ε^(2 : ℕ) • k x) ha hb,
     perturbedMetric_jet p h hh, fieldSpace_smul p k hk, fieldSpace_smul p l hl]
   rfl
 

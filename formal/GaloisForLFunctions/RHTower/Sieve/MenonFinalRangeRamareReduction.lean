@@ -19,18 +19,18 @@ theorem menonFinalRangePrimes_prime (x : ℝ) {p : ℕ}
 /-- Full Möbius polynomial energy on Menon's final frequency interval. -/
 def menonFinalRangeFullEnergy (x : ℝ) : ℝ :=
   ∫ w in Set.Icc (-x) x,
-    ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 (menonFinalRangeTopNat x)) w‖ ^ 2
+    ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 (menonFinalRangeTopNat x)) w‖ ^ (2 : ℕ)
 
 /-- Ramaré bilinear energy for Menon's literal final prime range. -/
 def menonFinalRangeBilinearEnergy (x : ℝ) : ℝ :=
   ∫ w in Set.Icc (-x) x,
-    ‖ramareBilinear (menonFinalRangePrimes x) (menonFinalRangeTopNat x) w‖ ^ 2
+    ‖ramareBilinear (menonFinalRangePrimes x) (menonFinalRangeTopNat x) w‖ ^ (2 : ℕ)
 
 /-- Rough Möbius energy left by Menon's literal final prime range. -/
 def menonFinalRangeRoughEnergy (x : ℝ) : ℝ :=
   ∫ w in Set.Icc (-x) x,
     ‖logPoly moebiusC
-      (supportMeanSquareRoughSet (menonFinalRangePrimes x) (menonFinalRangeTopNat x)) w‖ ^ 2
+      (supportMeanSquareRoughSet (menonFinalRangePrimes x) (menonFinalRangeTopNat x)) w‖ ^ (2 : ℕ)
 
 private theorem logPoly_moebiusC_eq_cast (s : Finset ℕ) (w : ℝ) :
     logPoly moebiusC s w = logPoly (fun n => ((μ n : ℤ) : ℂ)) s w := by
@@ -68,9 +68,9 @@ vanishes.  Thus the only surviving final-range task is the bilinear term itself.
 theorem tendsto_menonFinalRange_fullEnergy_sub_two_bilinear_posPart_zero :
     Tendsto (fun x : ℝ =>
       max (menonFinalRangeFullEnergy x - 2 * menonFinalRangeBilinearEnergy x) 0 *
-        (Real.log x) ^ 8 / x ^ 2) atTop (nhds 0) := by
+        (Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)) atTop (nhds 0) := by
   have hrough : Tendsto (fun x : ℝ =>
-      menonFinalRangeRoughEnergy x * (Real.log x) ^ 8 / x ^ 2) atTop (nhds 0) := by
+      menonFinalRangeRoughEnergy x * (Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa [menonFinalRangeRoughEnergy, menonFinalRangePrimes] using
       tendsto_menonFinalRange_roughMeanSquare_mul_logPow_div_zero
   have hmajor := hrough.const_mul (2 : ℝ)
@@ -95,15 +95,15 @@ theorem tendsto_menonFinalRange_fullEnergy_sub_two_bilinear_posPart_zero :
       constructor
       · linarith
       · positivity
-    have hfac0 : 0 ≤ (Real.log x) ^ 8 / x ^ 2 := by positivity
+    have hfac0 : 0 ≤ (Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ) := by positivity
     have hmul := mul_le_mul_of_nonneg_right hpos hfac0
     calc
       max (menonFinalRangeFullEnergy x - 2 * menonFinalRangeBilinearEnergy x) 0 *
-          (Real.log x) ^ 8 / x ^ 2
+          (Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)
           = max (menonFinalRangeFullEnergy x - 2 * menonFinalRangeBilinearEnergy x) 0 *
-              ((Real.log x) ^ 8 / x ^ 2) := by ring
-      _ ≤ (2 * menonFinalRangeRoughEnergy x) * ((Real.log x) ^ 8 / x ^ 2) := hmul
-      _ = 2 * (menonFinalRangeRoughEnergy x * (Real.log x) ^ 8 / x ^ 2) := by ring
+              ((Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)) := by ring
+      _ ≤ (2 * menonFinalRangeRoughEnergy x) * ((Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)) := hmul
+      _ = 2 * (menonFinalRangeRoughEnergy x * (Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)) := by ring
 
 end
 

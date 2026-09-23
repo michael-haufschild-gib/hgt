@@ -132,7 +132,7 @@ theorem exists_mem_real_localExtension_quadraticRate_ne_zero [Nonempty A]
         ((genericLocalExtensionMatrix (ρ := Bool) (fun a => (E a : ℂ)) M).map
           (MvPolynomial.eval₂Hom (RingHom.id ℂ) (fun t => (q t : ℂ))), energy i) = 0) →
       ∀ σ : Equiv.Perm (A × Bool),
-        (∑ j, c (σ.symm j) * energy j) ^ 2 - κ * ∑ j, energy j ^ 2 ≠ 0 := by
+        (∑ j, c (σ.symm j) * energy j) ^ (2 : ℕ) - κ * ∑ j, energy j ^ (2 : ℕ) ≠ 0 := by
   obtain ⟨q, hq, hqne⟩ := exists_mem_eval₂_ne_zero_of_exists _
     (exists_eval_localExtensionPullback_ne_zero hcard hE hgap hMherm hM hbase C c κ hzero hcne)
     hVopen hVne

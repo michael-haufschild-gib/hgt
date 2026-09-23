@@ -43,11 +43,11 @@ def vectorLawOffDiagonalWithinMass (a : A → ℝ) (X : A → E) (δ : ℝ) : �
 /-- **Chebyshev for a vector-valued finite law.**  At most a quarter of the mass sits beyond twice
 the root second moment. -/
 theorem vectorLaw_tail_le_quarter {a : A → ℝ} {X : A → E} (hnn : ∀ α, 0 ≤ a α) {c : E} {V : ℝ}
-    (hV : 0 ≤ V) (hmom : ∑ α, a α * ‖X α - c‖ ^ 2 ≤ V) :
+    (hV : 0 ≤ V) (hmom : ∑ α, a α * ‖X α - c‖ ^ (2 : ℕ) ≤ V) :
     ∑ α ∈ Finset.univ.filter fun α => ¬ (‖X α - c‖ ≤ 2 * Real.sqrt V), a α ≤ 1 / 4 := by
   classical
   set F := Finset.univ.filter fun α => ¬ (‖X α - c‖ ≤ 2 * Real.sqrt V) with hF
-  have hterms : ∀ β ∈ (Finset.univ : Finset A), 0 ≤ a β * ‖X β - c‖ ^ 2 :=
+  have hterms : ∀ β ∈ (Finset.univ : Finset A), 0 ≤ a β * ‖X β - c‖ ^ (2 : ℕ) :=
     fun β _ => mul_nonneg (hnn β) (sq_nonneg _)
   rcases eq_or_lt_of_le hV with hV0 | hVpos
   · have hzero : ∀ α ∈ F, a α = 0 := by
@@ -57,7 +57,7 @@ theorem vectorLaw_tail_le_quarter {a : A → ℝ} {X : A → E} (hnn : ∀ α, 0
         have hnot := hα.2
         rw [← hV0, Real.sqrt_zero, mul_zero] at hnot
         exact not_le.mp hnot
-      have hsum0 : ∑ β, a β * ‖X β - c‖ ^ 2 = 0 := by
+      have hsum0 : ∑ β, a β * ‖X β - c‖ ^ (2 : ℕ) = 0 := by
         refine le_antisymm ?_ (Finset.sum_nonneg hterms)
         rw [← hV0] at hmom
         exact hmom
@@ -67,21 +67,21 @@ theorem vectorLaw_tail_le_quarter {a : A → ℝ} {X : A → E} (hnn : ∀ α, 0
       · exact absurd (pow_eq_zero_iff (n := 2) (by norm_num) |>.mp h) hgt.ne'
     rw [Finset.sum_eq_zero hzero]
     norm_num
-  · have hstep : ∀ α ∈ F, a α * (4 * V) ≤ a α * ‖X α - c‖ ^ 2 := by
+  · have hstep : ∀ α ∈ F, a α * (4 * V) ≤ a α * ‖X α - c‖ ^ (2 : ℕ) := by
       intro α hα
       rw [hF, Finset.mem_filter] at hα
       have hgt : 2 * Real.sqrt V < ‖X α - c‖ := not_le.mp hα.2
       have hnn2 : 0 ≤ 2 * Real.sqrt V := by positivity
-      have hsq : (2 * Real.sqrt V) ^ 2 ≤ ‖X α - c‖ ^ 2 := by nlinarith
-      have hval : (2 * Real.sqrt V) ^ 2 = 4 * V := by
+      have hsq : (2 * Real.sqrt V) ^ (2 : ℕ) ≤ ‖X α - c‖ ^ (2 : ℕ) := by nlinarith
+      have hval : (2 * Real.sqrt V) ^ (2 : ℕ) = 4 * V := by
         rw [mul_pow, Real.sq_sqrt hV]
         ring
       rw [hval] at hsq
       exact mul_le_mul_of_nonneg_left hsq (hnn α)
     have hkey : (∑ α ∈ F, a α) * (4 * V) ≤ V := by
       calc (∑ α ∈ F, a α) * (4 * V) = ∑ α ∈ F, a α * (4 * V) := by rw [Finset.sum_mul]
-        _ ≤ ∑ α ∈ F, a α * ‖X α - c‖ ^ 2 := Finset.sum_le_sum hstep
-        _ ≤ ∑ α, a α * ‖X α - c‖ ^ 2 :=
+        _ ≤ ∑ α ∈ F, a α * ‖X α - c‖ ^ (2 : ℕ) := Finset.sum_le_sum hstep
+        _ ≤ ∑ α, a α * ‖X α - c‖ ^ (2 : ℕ) :=
             Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
               (fun i hi _ => hterms i hi)
         _ ≤ V := hmom
@@ -93,7 +93,7 @@ resolution `δ > 0`, the mass of ordered pairs whose observed vectors are closer
 least `9/(16 (1 + 8√V/δ)^d)`. -/
 theorem vectorLaw_crowding_floor (μ : Measure E) [μ.IsAddHaarMeasure]
     {a : A → ℝ} {X : A → E} (hnn : ∀ α, 0 ≤ a α) (hsum : ∑ α, a α = 1)
-    (c : E) {V : ℝ} (hV : 0 ≤ V) (hmom : ∑ α, a α * ‖X α - c‖ ^ 2 ≤ V) {δ : ℝ} (hδ : 0 < δ) :
+    (c : E) {V : ℝ} (hV : 0 ≤ V) (hmom : ∑ α, a α * ‖X α - c‖ ^ (2 : ℕ) ≤ V) {δ : ℝ} (hδ : 0 < δ) :
     (9 : ℝ) / 16 / (1 + 8 * Real.sqrt V / δ) ^ (Module.finrank ℝ E) ≤
       vectorLawWithinMass a X δ := by
   classical
@@ -124,7 +124,7 @@ theorem vectorLaw_crowding_floor (μ : Measure E) [μ.IsAddHaarMeasure]
     · rw [if_pos h]
       exact mul_nonneg (hnn α) (hnn β)
     · rw [if_neg h]
-  have hcell : ∀ t ∈ T, (b t) ^ 2 = ∑ α ∈ G.filter fun α => f α = t,
+  have hcell : ∀ t ∈ T, (b t) ^ (2 : ℕ) = ∑ α ∈ G.filter fun α => f α = t,
       ∑ β ∈ G.filter fun α => f α = t, g α β := by
     intro t ht
     rw [hb, sq, Finset.sum_mul_sum]
@@ -142,8 +142,8 @@ theorem vectorLaw_crowding_floor (μ : Measure E) [μ.IsAddHaarMeasure]
         _ = δ := by ring
     show a α * a β = if ‖X α - X β‖ < δ then a α * a β else 0
     rw [if_pos hdist]
-  have hpairs : ∑ t ∈ T, (b t) ^ 2 ≤ vectorLawWithinMass a X δ := by
-    calc ∑ t ∈ T, (b t) ^ 2
+  have hpairs : ∑ t ∈ T, (b t) ^ (2 : ℕ) ≤ vectorLawWithinMass a X δ := by
+    calc ∑ t ∈ T, (b t) ^ (2 : ℕ)
         = ∑ t ∈ T, ∑ α ∈ G.filter fun α => f α = t,
             ∑ β ∈ G.filter fun α => f α = t, g α β := Finset.sum_congr rfl hcell
       _ ≤ ∑ t ∈ T, ∑ α ∈ G.filter fun α => f α = t, ∑ β, g α β := by
@@ -159,8 +159,8 @@ theorem vectorLaw_crowding_floor (μ : Measure E) [μ.IsAddHaarMeasure]
   have hMpos : 0 < (T.card : ℝ) := by
     have hc := Finset.card_pos.mpr hTne
     exact_mod_cast hc
-  have hcs : (∑ t ∈ T, b t) ^ 2 ≤ (T.card : ℝ) * ∑ t ∈ T, (b t) ^ 2 := sq_sum_le_card_mul_sum_sq
-  have hsq : (9 : ℝ) / 16 ≤ (T.card : ℝ) * ∑ t ∈ T, (b t) ^ 2 := by
+  have hcs : (∑ t ∈ T, b t) ^ (2 : ℕ) ≤ (T.card : ℝ) * ∑ t ∈ T, (b t) ^ (2 : ℕ) := sq_sum_le_card_mul_sum_sq
+  have hsq : (9 : ℝ) / 16 ≤ (T.card : ℝ) * ∑ t ∈ T, (b t) ^ (2 : ℕ) := by
     have hsumb : (3 : ℝ) / 4 ≤ ∑ t ∈ T, b t := by
       rw [hbsum]
       exact hgood
@@ -181,12 +181,12 @@ theorem vectorLaw_crowding_floor (μ : Measure E) [μ.IsAddHaarMeasure]
       ring
     rw [hval] at hdiv
     exact hdiv
-  have hstep : (9 : ℝ) / 16 ≤ (1 + 8 * Real.sqrt V / δ) ^ d * ∑ t ∈ T, (b t) ^ 2 := by
-    have hSnn : (0 : ℝ) ≤ ∑ t ∈ T, (b t) ^ 2 :=
+  have hstep : (9 : ℝ) / 16 ≤ (1 + 8 * Real.sqrt V / δ) ^ d * ∑ t ∈ T, (b t) ^ (2 : ℕ) := by
+    have hSnn : (0 : ℝ) ≤ ∑ t ∈ T, (b t) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun t _ => sq_nonneg _
     nlinarith [hsq, hB, hSnn]
   rw [div_le_iff₀ hBpos]
-  calc (9 : ℝ) / 16 ≤ (1 + 8 * Real.sqrt V / δ) ^ d * ∑ t ∈ T, (b t) ^ 2 := hstep
+  calc (9 : ℝ) / 16 ≤ (1 + 8 * Real.sqrt V / δ) ^ d * ∑ t ∈ T, (b t) ^ (2 : ℕ) := hstep
     _ ≤ (1 + 8 * Real.sqrt V / δ) ^ d * vectorLawWithinMass a X δ := by
         exact mul_le_mul_of_nonneg_left hpairs hBpos.le
     _ = vectorLawWithinMass a X δ * (1 + 8 * Real.sqrt V / δ) ^ d := by ring
@@ -219,7 +219,7 @@ theorem vectorLawOffDiagonalWithinMass_eq (a : A → ℝ) (X : A → E) {δ : �
 than `δ` is at least `9/(16 (1 + 8√V/δ)^d)` minus the collision mass. -/
 theorem vectorLaw_offDiagonal_crowding_floor (μ : Measure E) [μ.IsAddHaarMeasure]
     {a : A → ℝ} {X : A → E} (hnn : ∀ α, 0 ≤ a α) (hsum : ∑ α, a α = 1)
-    (c : E) {V : ℝ} (hV : 0 ≤ V) (hmom : ∑ α, a α * ‖X α - c‖ ^ 2 ≤ V) {δ : ℝ} (hδ : 0 < δ) :
+    (c : E) {V : ℝ} (hV : 0 ≤ V) (hmom : ∑ α, a α * ‖X α - c‖ ^ (2 : ℕ) ≤ V) {δ : ℝ} (hδ : 0 < δ) :
     (9 : ℝ) / 16 / (1 + 8 * Real.sqrt V / δ) ^ (Module.finrank ℝ E) - vectorLawDiagonalMass a ≤
       vectorLawOffDiagonalWithinMass a X δ := by
   rw [vectorLawOffDiagonalWithinMass_eq a X hδ]
@@ -264,7 +264,7 @@ crowding floor minus the key collision mass. -/
 theorem vectorLaw_offKey_crowding_floor (μ : Measure E) [μ.IsAddHaarMeasure]
     {a : A → ℝ} {X : A → E} (key : A → K) (hnn : ∀ α, 0 ≤ a α) (hsum : ∑ α, a α = 1)
     (hfac : ∀ α β, key α = key β → X α = X β)
-    (c : E) {V : ℝ} (hV : 0 ≤ V) (hmom : ∑ α, a α * ‖X α - c‖ ^ 2 ≤ V) {δ : ℝ} (hδ : 0 < δ) :
+    (c : E) {V : ℝ} (hV : 0 ≤ V) (hmom : ∑ α, a α * ‖X α - c‖ ^ (2 : ℕ) ≤ V) {δ : ℝ} (hδ : 0 < δ) :
     (9 : ℝ) / 16 / (1 + 8 * Real.sqrt V / δ) ^ (Module.finrank ℝ E) -
         vectorLawKeyCollisionMass a key ≤
       vectorLawOffKeyWithinMass a X key δ := by

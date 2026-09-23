@@ -38,7 +38,7 @@ theorem connes_trace4_statement (s : Finset ι) (g : ι → 𝓢(ℝ, ℂ)) (qq 
     (h1 : ℂ) (hchart : ∀ i ∈ s, (g i) 0 = f (qq i))
     (hlift : (∑ i ∈ s, f (qq i)) = h1) (N : ℕ) :
     Tendsto (fun Λ : ℝ => Λ ^ N *
-        ‖(∑ i ∈ s, ∫ u in {u : ℝ | |u| ≤ Λ ^ 2},
+        ‖(∑ i ∈ s, ∫ u in {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)},
               (SchwartzMap.fourierTransformCLM ℂ (g i) : ℝ → ℂ) u
                 * (((2 * Real.log Λ - Real.log |u| : ℝ)) : ℂ))
             - (((2 * Real.log Λ : ℝ) : ℂ) * h1

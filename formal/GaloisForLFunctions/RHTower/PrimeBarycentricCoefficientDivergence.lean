@@ -11,11 +11,11 @@ exhaustion by primes `p ≤ x` can nevertheless converge coefficientwise.
 
 It cannot.  The factors contributed by primes above `p₀` are
 
-`(log p)^2 / ((log p)^2-(log p₀)^2) > 1 + (log p₀)^2/(log p)^2`.
+`(log p)^(2 : ℕ) / ((log p)^(2 : ℕ)-(log p₀)^(2 : ℕ)) > 1 + (log p₀)^(2 : ℕ)/(log p)^(2 : ℕ)`.
 
 The existing Chebyshev lower bound implies, without the prime number theorem,
 
-`∑_{p≤x} 1/(log p)^2 → +∞`.
+`∑_{p≤x} 1/(log p)^(2 : ℕ) → +∞`.
 
 Consequently the positive tail product, and hence the magnitude of the exact barycentric
 coefficient at every fixed prime, tends to infinity.  Thus even support-dependent recomputation
@@ -161,7 +161,7 @@ theorem chebyshevPrimeLower_div_log_cube_le_primeReciprocalLogSqSum
     _ = primeReciprocalLogSqSum x := rfl
 
 /-- **Unconditional reciprocal-log-square prime divergence.** Chebyshev density alone forces the
-prime mass `sum_{p≤x} 1/(log p)^2` to tend to infinity. -/
+prime mass `sum_{p≤x} 1/(log p)^(2 : ℕ)` to tend to infinity. -/
 theorem tendsto_primeReciprocalLogSqSum_atTop :
     Tendsto primeReciprocalLogSqSum atTop atTop := by
   refine tendsto_atTop_mono' atTop ?_

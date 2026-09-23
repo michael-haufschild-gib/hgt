@@ -177,7 +177,7 @@ theorem deningerArithmeticJetThetaValue_smul
     lp.coeFn_smul, Pi.smul_apply, smul_eq_mul]
   ring
 
-/-- Maximal `ell^2` domain of source jet Frobenius. -/
+/-- Maximal `ell^(2 : ℕ)` domain of source jet Frobenius. -/
 def deningerArithmeticJetThetaDomain :
     Submodule ℂ DeningerArithmeticJetHilbert where
   carrier := {a | Memℓp (deningerArithmeticJetThetaValue a) 2}

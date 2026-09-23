@@ -77,13 +77,13 @@ def glMaassCuspEigenspace (Γ : Subgroup (GL (Fin 2) ℝ)) (lam : ℝ) :
           hg.2.1.1.contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
         have he : positiveHyperbolicLaplacian (f + g) z =
             positiveHyperbolicLaplacian f z + positiveHyperbolicLaplacian g z := by
-          change -(z.im : ℂ) ^ 2 *
+          change -(z.im : ℂ) ^ (2 : ℕ) *
               (dir 1 (dir 1 ((f ∘ ofComplex) + (g ∘ ofComplex))) (z : ℂ) +
                 dir Complex.I (dir Complex.I ((f ∘ ofComplex) + (g ∘ ofComplex))) (z : ℂ)) =
-            -(z.im : ℂ) ^ 2 *
+            -(z.im : ℂ) ^ (2 : ℕ) *
               (dir 1 (dir 1 (f ∘ ofComplex)) (z : ℂ) +
                 dir Complex.I (dir Complex.I (f ∘ ofComplex)) (z : ℂ)) +
-            -(z.im : ℂ) ^ 2 *
+            -(z.im : ℂ) ^ (2 : ℕ) *
               (dir 1 (dir 1 (g ∘ ofComplex)) (z : ℂ) +
                 dir Complex.I (dir Complex.I (g ∘ ofComplex)) (z : ℂ))
           rw [second_dir_add hfz hgz, second_dir_add hfz hgz]
@@ -108,10 +108,10 @@ def glMaassCuspEigenspace (Γ : Subgroup (GL (Fin 2) ℝ)) (lam : ℝ) :
           hf.2.1.1.contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
         have he : positiveHyperbolicLaplacian (c • f) z =
             c • positiveHyperbolicLaplacian f z := by
-          change -(z.im : ℂ) ^ 2 *
+          change -(z.im : ℂ) ^ (2 : ℕ) *
               (dir 1 (dir 1 (c • (f ∘ ofComplex))) (z : ℂ) +
                 dir Complex.I (dir Complex.I (c • (f ∘ ofComplex))) (z : ℂ)) =
-            c • (-(z.im : ℂ) ^ 2 *
+            c • (-(z.im : ℂ) ^ (2 : ℕ) *
               (dir 1 (dir 1 (f ∘ ofComplex)) (z : ℂ) +
                 dir Complex.I (dir Complex.I (f ∘ ofComplex)) (z : ℂ)))
           rw [second_dir_const_smul hfz c, second_dir_const_smul hfz c]

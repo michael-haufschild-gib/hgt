@@ -171,7 +171,7 @@ theorem sum_divisors_moebius_mul_log {n : ℕ} (hn : n ≠ 0) :
     rw [logDerivation_apply, ArithmeticFunction.intCoe_apply]
 
 theorem sum_divisors_moebius_mul_log_sq {n : ℕ} (hn : n ≠ 0) :
-    ∑ d ∈ n.divisors, ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (Real.log d) ^ 2
+    ∑ d ∈ n.divisors, ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (Real.log d) ^ (2 : ℕ)
       = (Λ * Λ) n - Λ n * Real.log n := by
   have h := real_mul_coe_zeta_apply (logDerivation (logDerivation
     ((ArithmeticFunction.moebius : ArithmeticFunction ℤ) : ArithmeticFunction ℝ))) hn
@@ -188,7 +188,7 @@ theorem sum_divisors_moebius_mul_log_sq {n : ℕ} (hn : n ≠ 0) :
     ring
 
 theorem one_apply_mul_log_sq (n : ℕ) :
-    (1 : ArithmeticFunction ℝ) n * (Real.log n) ^ 2 = 0 := by
+    (1 : ArithmeticFunction ℝ) n * (Real.log n) ^ (2 : ℕ) = 0 := by
   rcases eq_or_ne n 1 with rfl | hn
   · simp
   · rw [ArithmeticFunction.one_apply_ne hn]
@@ -197,22 +197,22 @@ theorem one_apply_mul_log_sq (n : ℕ) :
 /-- **Equation (3).**  The exact second jet of the `a`-twisted Möbius boundary germ. -/
 theorem sum_divisors_moebius_twisted_sq (a : ℝ) {n : ℕ} (hn : n ≠ 0) :
     ∑ d ∈ n.divisors,
-        ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (a * Real.log n - Real.log d) ^ 2
+        ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (a * Real.log n - Real.log d) ^ (2 : ℕ)
       = (Λ * Λ) n + (2 * a - 1) * Λ n * Real.log n := by
   have hexp : ∀ d ∈ n.divisors,
-      ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (a * Real.log n - Real.log d) ^ 2
-        = (a * Real.log n) ^ 2 * ((ArithmeticFunction.moebius d : ℤ) : ℝ)
+      ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (a * Real.log n - Real.log d) ^ (2 : ℕ)
+        = (a * Real.log n) ^ (2 : ℕ) * ((ArithmeticFunction.moebius d : ℤ) : ℝ)
           - 2 * (a * Real.log n) * (((ArithmeticFunction.moebius d : ℤ) : ℝ) * Real.log d)
-          + ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (Real.log d) ^ 2 := by
+          + ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (Real.log d) ^ (2 : ℕ) := by
     intro d _
     ring
   rw [Finset.sum_congr rfl hexp, Finset.sum_add_distrib, Finset.sum_sub_distrib,
     ← Finset.mul_sum, ← Finset.mul_sum, sum_divisors_moebiusCast hn,
     sum_divisors_moebius_mul_log hn, sum_divisors_moebius_mul_log_sq hn]
-  have hzero : (a * Real.log n) ^ 2 * (1 : ArithmeticFunction ℝ) n = 0 := by
+  have hzero : (a * Real.log n) ^ (2 : ℕ) * (1 : ArithmeticFunction ℝ) n = 0 := by
     have hone := one_apply_mul_log_sq n
-    calc (a * Real.log n) ^ 2 * (1 : ArithmeticFunction ℝ) n
-        = a ^ 2 * ((1 : ArithmeticFunction ℝ) n * (Real.log n) ^ 2) := by ring
+    calc (a * Real.log n) ^ (2 : ℕ) * (1 : ArithmeticFunction ℝ) n
+        = a ^ (2 : ℕ) * ((1 : ArithmeticFunction ℝ) n * (Real.log n) ^ (2 : ℕ)) := by ring
       _ = 0 := by rw [hone]; ring
   rw [hzero]
   ring
@@ -228,7 +228,7 @@ theorem vonMangoldt_selfConv_two : (Λ * Λ) 2 = 0 := by
 jet is the pure von Mangoldt self-convolution. -/
 theorem twisted_second_jet_eq_selfConv_iff (a : ℝ) :
     (∀ n : ℕ, n ≠ 0 → ∑ d ∈ n.divisors,
-        ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (a * Real.log n - Real.log d) ^ 2
+        ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (a * Real.log n - Real.log d) ^ (2 : ℕ)
       = (Λ * Λ) n) ↔ a = 1 / 2 := by
   constructor
   · intro h
@@ -276,11 +276,11 @@ theorem sum_divisors_moebius_half {m : ℕ} (hm : m ≠ 0) :
 /-- **Equation (7), second jet.**  `e''_0 = Λ ⍟ Λ`. -/
 theorem sum_divisors_moebius_half_sq {m : ℕ} (hm : m ≠ 0) :
     ∑ d ∈ m.divisors, ((ArithmeticFunction.moebius d : ℤ) : ℝ)
-        * (Real.log m / 2 - Real.log d) ^ 2 = (Λ * Λ) m := by
+        * (Real.log m / 2 - Real.log d) ^ (2 : ℕ) = (Λ * Λ) m := by
   have h := sum_divisors_moebius_twisted_sq (1 / 2 : ℝ) hm
   have hcongr : ∀ d ∈ m.divisors,
-      ((ArithmeticFunction.moebius d : ℤ) : ℝ) * ((1 / 2 : ℝ) * Real.log m - Real.log d) ^ 2
-        = ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (Real.log m / 2 - Real.log d) ^ 2 := by
+      ((ArithmeticFunction.moebius d : ℤ) : ℝ) * ((1 / 2 : ℝ) * Real.log m - Real.log d) ^ (2 : ℕ)
+        = ((ArithmeticFunction.moebius d : ℤ) : ℝ) * (Real.log m / 2 - Real.log d) ^ (2 : ℕ) := by
     intro d _
     ring
   rw [Finset.sum_congr rfl hcongr] at h
@@ -329,7 +329,7 @@ theorem fibre_second_jet {R : ℕ} (hR : R ≠ 0) (W : ℝ → ℝ) (hW : ∀ x 
     -(1 / 2 : ℝ) * ∑ p ∈ R.divisorsAntidiagonal,
         (∑ d ∈ p.1.divisors, ∑ e ∈ p.2.divisors,
           ((ArithmeticFunction.moebius d : ℤ) : ℝ) * ((ArithmeticFunction.moebius e : ℤ) : ℝ)
-            * ((Real.log p.1 / 2 - Real.log d) - (Real.log p.2 / 2 - Real.log e)) ^ 2)
+            * ((Real.log p.1 / 2 - Real.log d) - (Real.log p.2 / 2 - Real.log e)) ^ (2 : ℕ))
           * W (Real.log p.1 - Real.log p.2)
       = (∑ p ∈ R.divisorsAntidiagonal, Λ p.1 * Λ p.2 * W (Real.log p.1 - Real.log p.2))
         - (Λ * Λ) R * W (Real.log R) := by
@@ -337,7 +337,7 @@ theorem fibre_second_jet {R : ℕ} (hR : R ≠ 0) (W : ℝ → ℝ) (hW : ∀ x 
   have hinner : ∀ p ∈ R.divisorsAntidiagonal,
       (∑ d ∈ p.1.divisors, ∑ e ∈ p.2.divisors,
           ((ArithmeticFunction.moebius d : ℤ) : ℝ) * ((ArithmeticFunction.moebius e : ℤ) : ℝ)
-            * ((Real.log p.1 / 2 - Real.log d) - (Real.log p.2 / 2 - Real.log e)) ^ 2)
+            * ((Real.log p.1 / 2 - Real.log d) - (Real.log p.2 / 2 - Real.log e)) ^ (2 : ℕ))
         = (Λ * Λ) p.1 * (1 : ArithmeticFunction ℝ) p.2
           - 2 * (Λ p.1 * Λ p.2)
           + (1 : ArithmeticFunction ℝ) p.1 * (Λ * Λ) p.2 := by
@@ -353,9 +353,9 @@ theorem fibre_second_jet {R : ℕ} (hR : R ≠ 0) (W : ℝ → ℝ) (hW : ∀ x 
       exact hR0 hpR.symm
     have hexp : ∀ d ∈ p.1.divisors, ∀ e ∈ p.2.divisors,
         ((ArithmeticFunction.moebius d : ℤ) : ℝ) * ((ArithmeticFunction.moebius e : ℤ) : ℝ)
-            * ((Real.log p.1 / 2 - Real.log d) - (Real.log p.2 / 2 - Real.log e)) ^ 2
+            * ((Real.log p.1 / 2 - Real.log d) - (Real.log p.2 / 2 - Real.log e)) ^ (2 : ℕ)
           = (((ArithmeticFunction.moebius d : ℤ) : ℝ)
-                * (Real.log p.1 / 2 - Real.log d) ^ 2)
+                * (Real.log p.1 / 2 - Real.log d) ^ (2 : ℕ))
               * ((ArithmeticFunction.moebius e : ℤ) : ℝ)
             - 2 * (((ArithmeticFunction.moebius d : ℤ) : ℝ)
                 * (Real.log p.1 / 2 - Real.log d))
@@ -363,15 +363,15 @@ theorem fibre_second_jet {R : ℕ} (hR : R ≠ 0) (W : ℝ → ℝ) (hW : ∀ x 
                 * (Real.log p.2 / 2 - Real.log e))
             + ((ArithmeticFunction.moebius d : ℤ) : ℝ)
               * (((ArithmeticFunction.moebius e : ℤ) : ℝ)
-                * (Real.log p.2 / 2 - Real.log e) ^ 2) := by
+                * (Real.log p.2 / 2 - Real.log e) ^ (2 : ℕ)) := by
       intro d _ e _
       ring
     calc (∑ d ∈ p.1.divisors, ∑ e ∈ p.2.divisors,
             ((ArithmeticFunction.moebius d : ℤ) : ℝ) * ((ArithmeticFunction.moebius e : ℤ) : ℝ)
-              * ((Real.log p.1 / 2 - Real.log d) - (Real.log p.2 / 2 - Real.log e)) ^ 2)
+              * ((Real.log p.1 / 2 - Real.log d) - (Real.log p.2 / 2 - Real.log e)) ^ (2 : ℕ))
         = ∑ d ∈ p.1.divisors, ∑ e ∈ p.2.divisors,
             ((((ArithmeticFunction.moebius d : ℤ) : ℝ)
-                * (Real.log p.1 / 2 - Real.log d) ^ 2)
+                * (Real.log p.1 / 2 - Real.log d) ^ (2 : ℕ))
               * ((ArithmeticFunction.moebius e : ℤ) : ℝ)
             - 2 * (((ArithmeticFunction.moebius d : ℤ) : ℝ)
                 * (Real.log p.1 / 2 - Real.log d))
@@ -379,7 +379,7 @@ theorem fibre_second_jet {R : ℕ} (hR : R ≠ 0) (W : ℝ → ℝ) (hW : ∀ x 
                 * (Real.log p.2 / 2 - Real.log e))
             + ((ArithmeticFunction.moebius d : ℤ) : ℝ)
               * (((ArithmeticFunction.moebius e : ℤ) : ℝ)
-                * (Real.log p.2 / 2 - Real.log e) ^ 2)) :=
+                * (Real.log p.2 / 2 - Real.log e) ^ (2 : ℕ))) :=
           Finset.sum_congr rfl fun d hd => Finset.sum_congr rfl fun e he => hexp d hd e he
       _ = (Λ * Λ) p.1 * (1 : ArithmeticFunction ℝ) p.2 - 2 * (Λ p.1 * Λ p.2)
             + (1 : ArithmeticFunction ℝ) p.1 * (Λ * Λ) p.2 := by
@@ -420,7 +420,7 @@ theorem fibre_second_jet {R : ℕ} (hR : R ≠ 0) (W : ℝ → ℝ) (hW : ∀ x 
 def triangularKernel (c x : ℝ) : ℝ := max (c - |x|) 0
 
 /-- The centred interior kernel `K^int_{A,c}(x) = T_c(x) − c²/A`, equation (11). -/
-def centredTriangularKernel (A c x : ℝ) : ℝ := triangularKernel c x - c ^ 2 / A
+def centredTriangularKernel (A c x : ℝ) : ℝ := triangularKernel c x - c ^ (2 : ℕ) / A
 
 theorem triangularKernel_even (c x : ℝ) : triangularKernel c (-x) = triangularKernel c x := by
   rw [triangularKernel, triangularKernel, abs_neg]
@@ -436,8 +436,8 @@ theorem triangularKernel_eq_zero_of_le {c x : ℝ} (h : c ≤ |x|) : triangularK
 theorem centredTriangularKernel_pos_iff {A c x : ℝ} (hc : 0 < c) (hcA : c < A) :
     0 < centredTriangularKernel A c x ↔ |x| < c * (1 - c / A) := by
   have hA : (0 : ℝ) < A := lt_trans hc hcA
-  have hquot : c ^ 2 / A > 0 := by positivity
-  have hthr : c * (1 - c / A) = c - c ^ 2 / A := by
+  have hquot : c ^ (2 : ℕ) / A > 0 := by positivity
+  have hthr : c * (1 - c / A) = c - c ^ (2 : ℕ) / A := by
     field_simp
   rw [centredTriangularKernel, triangularKernel, hthr]
   constructor
@@ -449,7 +449,7 @@ theorem centredTriangularKernel_pos_iff {A c x : ℝ} (hc : 0 < c) (hcA : c < A)
       linarith
   · intro h
     have hx : |x| < c := by
-      have : c ^ 2 / A > 0 := hquot
+      have : c ^ (2 : ℕ) / A > 0 := hquot
       linarith
     rw [max_eq_left (by linarith)]
     linarith
@@ -458,8 +458,8 @@ theorem centredTriangularKernel_pos_iff {A c x : ℝ} (hc : 0 < c) (hcA : c < A)
 theorem centredTriangularKernel_eq_zero_iff {A c x : ℝ} (hc : 0 < c) (hcA : c < A) :
     centredTriangularKernel A c x = 0 ↔ |x| = c * (1 - c / A) := by
   have hA : (0 : ℝ) < A := lt_trans hc hcA
-  have hquot : c ^ 2 / A > 0 := by positivity
-  have hthr : c * (1 - c / A) = c - c ^ 2 / A := by
+  have hquot : c ^ (2 : ℕ) / A > 0 := by positivity
+  have hthr : c * (1 - c / A) = c - c ^ (2 : ℕ) / A := by
     field_simp
   rw [centredTriangularKernel, triangularKernel, hthr]
   constructor
@@ -818,7 +818,7 @@ theorem localizedVonMangoldtPair_centredTriangular {A c : ℝ}
     {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) {a b : ℕ} (ha : a ≠ 0) (hb : b ≠ 0) :
     localizedVonMangoldtPair (centredTriangularKernel A c) (p ^ a * q ^ b)
       = 2 * Real.log p * Real.log q
-          * (triangularKernel c ((a : ℝ) * Real.log p - (b : ℝ) * Real.log q) - c ^ 2 / A) :=
+          * (triangularKernel c ((a : ℝ) * Real.log p - (b : ℝ) * Real.log q) - c ^ (2 : ℕ) / A) :=
   localizedVonMangoldtPair_two_prime _ (centredTriangularKernel_even A c) hp hq hpq ha hb
 
 /-- The positive amplitude of a two-prime product layer. -/
@@ -881,13 +881,13 @@ theorem localizedVonMangoldtPair_centredTriangular_neg_iff {A c : ℝ} (hc : 0 <
 `Λ`-supported factorizations, with phases `(2j-k) t log p`. -/
 theorem twistedFibre_primePow {t : ℝ} {p : ℕ} (hp : p.Prime) {k : ℕ} (hk : 2 ≤ k) :
     twistedFibre t (p ^ k)
-      = (Real.log p : ℂ) ^ 2 * ∑ j ∈ Finset.Ico 1 k,
+      = (Real.log p : ℂ) ^ (2 : ℕ) * ∑ j ∈ Finset.Ico 1 k,
           Complex.exp (Complex.I * (((2 * (j : ℝ) - (k : ℝ)) * (t * Real.log p) : ℝ) : ℂ)) := by
   classical
   have hppos : 0 < p := hp.pos
   have hterm : ∀ j ∈ Finset.Ico 1 k,
       twistedVonMangoldt t (p ^ j) * twistedVonMangoldt (-t) (p ^ k / p ^ j)
-        = (Real.log p : ℂ) ^ 2
+        = (Real.log p : ℂ) ^ (2 : ℕ)
             * Complex.exp (Complex.I
                 * (((2 * (j : ℝ) - (k : ℝ)) * (t * Real.log p) : ℝ) : ℂ)) := by
     intro j hj
@@ -1011,7 +1011,7 @@ theorem symmetricExpSum_recurrence (θ : ℂ) {k : ℕ} (hk : 1 ≤ k) :
   set C : ℂ := Complex.exp (-w)
   set D : ℂ := Complex.exp ((k : ℂ) * w)
   set Q : ℂ := ∑ j ∈ Finset.Ico 1 k, Complex.exp ((2 * (j : ℂ)) * w)
-  linear_combination (A * D ^ 2 * B * C - A * Q) * hbc
+  linear_combination (A * D ^ (2 : ℕ) * B * C - A * Q) * hbc
 
 /-- **Equation (20), Chebyshev form.**  The symmetric exponential sum of a one-prime layer is the
 Chebyshev polynomial of the second kind evaluated at `cos θ`. -/
@@ -1052,7 +1052,7 @@ theorem symmetricExpSum_eq_chebyshevU (θ : ℂ) {k : ℕ} (hk : 2 ≤ k) :
 /-- **Equation (20).**  The prime-power fibre is `(log p)² U_{k-2}(cos(t log p))`. -/
 theorem twistedFibre_primePow_chebyshevU {t : ℝ} {p : ℕ} (hp : p.Prime) {k : ℕ} (hk : 2 ≤ k) :
     twistedFibre t (p ^ k)
-      = (Real.log p : ℂ) ^ 2
+      = (Real.log p : ℂ) ^ (2 : ℕ)
           * Polynomial.eval (Complex.cos ((t * Real.log p : ℝ) : ℂ))
               (Polynomial.Chebyshev.U ℂ ((k : ℤ) - 2)) := by
   rw [twistedFibre_primePow hp hk,

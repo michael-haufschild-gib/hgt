@@ -187,7 +187,7 @@ private theorem pwGamma_log_half_scaled_source (t : ℝ) :
 
 theorem pwGammaInverseConnectionForcing_scaled_eq (z : ℂ) (t : ℝ) :
     (Real.exp (t/2) : ℂ)*pwGammaInverseConnectionForcing z t =
-      ((1/2 : ℂ) - (1/2 : ℂ)*(Real.exp t : ℂ)^2 - z*(Real.exp t : ℂ)) *
+      ((1/2 : ℂ) - (1/2 : ℂ)*(Real.exp t : ℂ)^(2 : ℕ) - z*(Real.exp t : ℂ)) *
         (Real.exp (-Real.exp t) : ℂ) := by
   unfold pwGammaInverseConnectionForcing
   calc
@@ -202,7 +202,7 @@ theorem pwGammaInverseConnectionForcing_scaled_eq (z : ℂ) (t : ℝ) :
 
 theorem pwGammaConnectionForcing_scaled_eq (z : ℂ) (t : ℝ) :
     (Real.exp (t/2) : ℂ)*pwGammaConnectionForcing z t =
-      ((-1/2 : ℂ) + (1-z)*(Real.exp t : ℂ) - (3/2 : ℂ)*(Real.exp t : ℂ)^2) *
+      ((-1/2 : ℂ) + (1-z)*(Real.exp t : ℂ) - (3/2 : ℂ)*(Real.exp t : ℂ)^(2 : ℕ)) *
         (Real.exp (-Real.exp t) : ℂ) := by
   unfold pwGammaConnectionForcing
   calc
@@ -226,7 +226,7 @@ theorem pwGammaInverseConnectionForcing_scaled_limit (z : ℂ) :
   have hp := ((tendsto_const_nhds (x := (1/2 : ℂ))).sub
     ((he.pow 2).const_mul (1/2 : ℂ))).sub (he.const_mul z)
   have hl : Tendsto (fun t : ℝ =>
-      ((1/2 : ℂ) - (1/2 : ℂ)*(Real.exp t : ℂ)^2 - z*(Real.exp t : ℂ)) *
+      ((1/2 : ℂ) - (1/2 : ℂ)*(Real.exp t : ℂ)^(2 : ℕ) - z*(Real.exp t : ℂ)) *
         (Real.exp (-Real.exp t) : ℂ)) atBot (𝓝 (1/2 : ℂ)) := by
     simpa using hp.mul hg
   exact hl.congr fun t => (pwGammaInverseConnectionForcing_scaled_eq z t).symm
@@ -242,7 +242,7 @@ theorem pwGammaConnectionForcing_scaled_limit (z : ℂ) :
   have hp := ((tendsto_const_nhds (x := (-1/2 : ℂ))).add
     (he.const_mul (1-z))).sub ((he.pow 2).const_mul (3/2 : ℂ))
   have hl : Tendsto (fun t : ℝ =>
-      ((-1/2 : ℂ) + (1-z)*(Real.exp t : ℂ) - (3/2 : ℂ)*(Real.exp t : ℂ)^2) *
+      ((-1/2 : ℂ) + (1-z)*(Real.exp t : ℂ) - (3/2 : ℂ)*(Real.exp t : ℂ)^(2 : ℕ)) *
         (Real.exp (-Real.exp t) : ℂ)) atBot (𝓝 (-1/2 : ℂ)) := by
     simpa using hp.mul hg
   exact hl.congr fun t => (pwGammaConnectionForcing_scaled_eq z t).symm

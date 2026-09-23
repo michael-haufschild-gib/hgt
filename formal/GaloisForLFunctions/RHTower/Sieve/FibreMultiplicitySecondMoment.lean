@@ -50,11 +50,11 @@ theorem card_upper_le_card_shifts {S : Finset ℕ} (f : ℕ → ℕ) (K : ℕ)
 /-- **The second moment of the fibre sizes.** -/
 theorem sum_sq_fibreCard_le {S : Finset ℕ} (f : ℕ → ℕ) (K : ℕ)
     (hsep : ∀ p ∈ S, ∀ q ∈ S, p < q → f q = f p → q ≤ p + K) :
-    ∑ t ∈ S.image f, ((S.filter (fun p => f p = t)).card) ^ 2
+    ∑ t ∈ S.image f, ((S.filter (fun p => f p = t)).card) ^ (2 : ℕ)
       ≤ S.card + 2 * ∑ d ∈ Finset.Icc 1 K, (S.filter (fun p => p + d ∈ S)).card := by
   classical
   set c : ℕ → ℕ := fun t => (S.filter (fun p => f p = t)).card with hc
-  have hfib : ∑ t ∈ S.image f, (c t) ^ 2 = ∑ p ∈ S, c (f p) := by
+  have hfib : ∑ t ∈ S.image f, (c t) ^ (2 : ℕ) = ∑ p ∈ S, c (f p) := by
     rw [← Finset.sum_fiberwise_of_maps_to (g := f)
       (fun p hp => Finset.mem_image_of_mem f hp) (fun p => c (f p))]
     refine Finset.sum_congr rfl fun t _ => ?_

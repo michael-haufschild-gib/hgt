@@ -114,20 +114,20 @@ private theorem predictorVec_ae (n L : ℕ) :
   MemLp.coeFn_toLp _
 
 private theorem norm_sq_integral (v : Lp ℝ 2 cellMeasure) :
-    ‖v‖^2 = ∫ j, v j^2 ∂cellMeasure := by
+    ‖v‖^(2 : ℕ) = ∫ j, v j^(2 : ℕ) ∂cellMeasure := by
   rw [← real_inner_self_eq_norm_sq, L2.inner_def]
   simp only [real_inner_self_eq_norm_sq,Real.norm_eq_abs,sq_abs]
 
 /-- The predictor agrees before `L`; its squared error costs at most the exact tail mass. -/
 theorem residue_prediction_error (n L : ℕ) :
-    ‖residueVec n - predictorVec n L‖^2 ≤ 1/((L : ℝ)+1) := by
+    ‖residueVec n - predictorVec n L‖^(2 : ℕ) ≤ 1/((L : ℝ)+1) := by
   have hmeas : MeasurableSet {j : ℕ | L ≤ j} := (Set.to_countable _).measurableSet
-  have hsq : Integrable (fun j => (residueVec n-predictorVec n L) j^2) cellMeasure := by
+  have hsq : Integrable (fun j => (residueVec n-predictorVec n L) j^(2 : ℕ)) cellMeasure := by
     simpa only [Real.norm_eq_abs,sq_abs] using
       (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable _)).mp
         (Lp.memLp (residueVec n-predictorVec n L))
   calc
-    _ = ∫ j, (residueVec n-predictorVec n L) j^2 ∂cellMeasure := norm_sq_integral _
+    _ = ∫ j, (residueVec n-predictorVec n L) j^(2 : ℕ) ∂cellMeasure := norm_sq_integral _
     _ ≤ ∫ j, ({j : ℕ | L ≤ j} : Set ℕ).indicator (fun _ => (1 : ℝ)) j ∂cellMeasure := by
       apply integral_mono_ae hsq ((integrable_const _).indicator hmeas)
       filter_upwards [Lp.coeFn_sub (residueVec n) (predictorVec n L),
@@ -240,7 +240,7 @@ theorem innovation_orthogonal {i j : ℕ} (h : i < j) :
     (historySpace_mono (by omega) (innovation_mem i))
 
 /-- Projection minimality bounds the actual innovation by the physical tail mass. -/
-theorem innovation_sq_le (n : ℕ) : ‖innovation n‖^2 ≤ 1/((clock n : ℝ)+1) := by
+theorem innovation_sq_le (n : ℕ) : ‖innovation n‖^(2 : ℕ) ≤ 1/((clock n : ℝ)+1) := by
   have h : ‖innovation n‖ ≤ ‖residueVec (n+1)-predictorVec (n+1) (clock n)‖ := by
     rw [innovation,Submodule.starProjection_minimal]
     change _ ≤ ‖residueVec (n+1) -
@@ -272,7 +272,7 @@ private theorem abs_moebius_real_le_one (n : ℕ) :
 
 /-- The actual Möbius innovation obeys the same tail-mass budget. -/
 theorem signedInnovation_sq_le (n : ℕ) :
-    ‖signedInnovation n‖^2 ≤ 1/((clock n : ℝ)+1) := by
+    ‖signedInnovation n‖^(2 : ℕ) ≤ 1/((clock n : ℝ)+1) := by
   have hn : ‖signedInnovation n‖ ≤ ‖innovation n‖ := by
     rw [signedInnovation,norm_smul,Real.norm_eq_abs]
     exact mul_le_of_le_one_left (norm_nonneg _) (abs_moebius_real_le_one _)
@@ -283,7 +283,7 @@ def martingalePart (N : ℕ) : Lp ℝ 2 cellMeasure := ∑ i ∈ range N,signedI
 
 /-- Exact Pythagoras for the complete cumulative innovation. -/
 theorem martingalePart_sq (N : ℕ) :
-    ‖martingalePart N‖^2 = ∑ i ∈ range N,‖signedInnovation i‖^2 := by
+    ‖martingalePart N‖^(2 : ℕ) = ∑ i ∈ range N,‖signedInnovation i‖^(2 : ℕ) := by
   induction N with
   | zero => simp [martingalePart]
   | succ N ih =>
@@ -294,12 +294,12 @@ theorem martingalePart_sq (N : ℕ) :
       simp only [signedInnovation,real_inner_smul_left,real_inner_smul_right,
         innovation_orthogonal (mem_range.mp hi),mul_zero]
     rw [martingalePart,sum_range_succ]
-    change ‖martingalePart N+signedInnovation N‖^2 = _
+    change ‖martingalePart N+signedInnovation N‖^(2 : ℕ) = _
     rw [add_comm]
     have hp := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero
       (signedInnovation N) (martingalePart N) ho
     rw [← pow_two,← pow_two,← pow_two,ih] at hp
-    rw [sum_range_succ,add_comm (∑ i ∈ range N,‖signedInnovation i‖^2)]
+    rw [sum_range_succ,add_comm (∑ i ∈ range N,‖signedInnovation i‖^(2 : ℕ))]
     exact hp
 
 private theorem sum_consecutive_reciprocal (N : ℕ) :
@@ -307,9 +307,9 @@ private theorem sum_consecutive_reciprocal (N : ℕ) :
   sum_cellWeight N
 
 /-- Unconditional cutoff-independent energy bound for the literal innovations. -/
-theorem martingalePart_sq_le_two (N : ℕ) : ‖martingalePart N‖^2 ≤ 2 := by
+theorem martingalePart_sq_le_two (N : ℕ) : ‖martingalePart N‖^(2 : ℕ) ≤ 2 := by
   rw [martingalePart_sq]
-  have ht : ∀ K, (∑ i ∈ range K,‖signedInnovation (i+2)‖^2) ≤ 1-1/((K : ℝ)+1) := by
+  have ht : ∀ K, (∑ i ∈ range K,‖signedInnovation (i+2)‖^(2 : ℕ)) ≤ 1-1/((K : ℝ)+1) := by
     intro K
     rw [← sum_consecutive_reciprocal]
     apply sum_le_sum
@@ -320,7 +320,7 @@ theorem martingalePart_sq_le_two (N : ℕ) : ‖martingalePart N‖^2 ≤ 2 := b
       exact_mod_cast consecutive_le_clock i
     linarith
   have h0 : signedInnovation 0 = 0 := by simp [signedInnovation,innovation_zero]
-  have h1 : ‖signedInnovation 1‖^2 ≤ 1 := by
+  have h1 : ‖signedInnovation 1‖^(2 : ℕ) ≤ 1 := by
     apply (signedInnovation_sq_le 1).trans
     apply (div_le_one (by positivity)).mpr
     linarith [Nat.cast_nonneg (α := ℝ) (clock 1)]
@@ -358,14 +358,14 @@ private theorem sourceVec_ae (a : ℕ → ℝ) (N : ℕ) :
 
 /-- The discrete probability-space norm equals the complete physical carrier energy. -/
 theorem sourceVec_energy (a : ℕ → ℝ) (N : ℕ) :
-    ‖sourceVec a N‖^2 = ‖DeletionCoefficientTransfer.source a N‖^2 := by
-  have hi : Integrable (fun j => (sourceVec a N) j^2) cellMeasure := by
+    ‖sourceVec a N‖^(2 : ℕ) = ‖DeletionCoefficientTransfer.source a N‖^(2 : ℕ) := by
+  have hi : Integrable (fun j => (sourceVec a N) j^(2 : ℕ)) cellMeasure := by
     simpa only [Real.norm_eq_abs,sq_abs] using
       (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable _)).mp
         (Lp.memLp (sourceVec a N))
   rw [norm_sq_integral,integral_countable hi]
   calc
-    _ = ∑' j,DeletionCoefficientTransfer.cell a N (j+1)^2/
+    _ = ∑' j,DeletionCoefficientTransfer.cell a N (j+1)^(2 : ℕ)/
         (((j : ℝ)+1)*((j : ℝ)+2)) := by
       apply tsum_congr
       intro j
@@ -396,7 +396,7 @@ theorem source_eq_martingale_add_drift (N : ℕ) :
 /-- All possible unbounded source growth remains in the predictable drift. -/
 theorem source_drift_norm_gap (N : ℕ) :
     |‖DeletionCoefficientTransfer.source (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) N‖ -
-      ‖predictableDrift N‖|^2 ≤ 2 := by
+      ‖predictableDrift N‖|^(2 : ℕ) ≤ 2 := by
   have he : ‖DeletionCoefficientTransfer.source
       (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) N‖ =
       ‖sourceVec (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) N‖ := by

@@ -34,12 +34,12 @@ theorem bgv_powerPoint_surjective [IsAlgClosed K] (p : ℕ) [CharP K p] (b : K) 
 
 /-- An exact quadratic fiber law, retaining the degree-drop case `b = 0`. -/
 theorem bgv_quadratic_zeroFiber (b : K) :
-    {x : K | x + b * x ^ 2 = 0} = {0, -b⁻¹} := by
+    {x : K | x + b * x ^ (2 : ℕ) = 0} = {0, -b⁻¹} := by
   ext x
   simp only [Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff]
   by_cases hb : b = 0
   · simp [hb]
-  · rw [show x + b * x ^ 2 = x * (1 + b * x) by ring, mul_eq_zero]
+  · rw [show x + b * x ^ (2 : ℕ) = x * (1 + b * x) by ring, mul_eq_zero]
     apply or_congr_right
     constructor
     · intro h
@@ -51,11 +51,11 @@ theorem bgv_quadratic_zeroFiber (b : K) :
 
 /-- In characteristic two every fiber is a translate of the exact kernel pair. -/
 theorem bgv_quadratic_imageFiber [CharP K 2] (b x : K) :
-    {y : K | y + b * y ^ 2 = x + b * x ^ 2} = {x, x - b⁻¹} := by
+    {y : K | y + b * y ^ (2 : ℕ) = x + b * x ^ (2 : ℕ)} = {x, x - b⁻¹} := by
   ext y
   have htwo : (2 : K) = 0 := CharP.cast_eq_zero K 2
-  have hdiff : (y - x) + b * (y - x) ^ 2 =
-      (y + b * y ^ 2) - (x + b * x ^ 2) := by
+  have hdiff : (y - x) + b * (y - x) ^ (2 : ℕ) =
+      (y + b * y ^ (2 : ℕ)) - (x + b * x ^ (2 : ℕ)) := by
     linear_combination b * x * (x - y) * htwo
   have h := Set.ext_iff.mp (bgv_quadratic_zeroFiber b) (y - x)
   simp only [Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff] at h ⊢
@@ -66,7 +66,7 @@ theorem bgv_quadratic_imageFiber [CharP K 2] (b x : K) :
 
 /-- Fiber size jumps from two to one exactly at the vanishing leading coefficient. -/
 theorem bgv_quadratic_imageFiber_ncard [CharP K 2] (b x : K) :
-    Set.ncard {y : K | y + b * y ^ 2 = x + b * x ^ 2} = if b = 0 then 1 else 2 := by
+    Set.ncard {y : K | y + b * y ^ (2 : ℕ) = x + b * x ^ (2 : ℕ)} = if b = 0 then 1 else 2 := by
   classical
   rw [bgv_quadratic_imageFiber]
   by_cases hb : b = 0
@@ -79,7 +79,7 @@ theorem bgv_quadratic_imageFiber_ncard [CharP K 2] (b x : K) :
 
 /-- The exact fiber cardinality holds over every target point, not only a chosen image. -/
 theorem bgv_quadratic_fiber_ncard [IsAlgClosed K] [CharP K 2] (b a : K) :
-    Set.ncard {y : K | y + b * y ^ 2 = a} = if b = 0 then 1 else 2 := by
+    Set.ncard {y : K | y + b * y ^ (2 : ℕ) = a} = if b = 0 then 1 else 2 := by
   obtain ⟨x, hx⟩ := bgv_powerPoint_surjective 2 b a
   rw [← hx]
   exact bgv_quadratic_imageFiber_ncard b x
@@ -93,23 +93,23 @@ theorem bgv_quadraticPlane_formallyEtale [CharP K 2] :
 theorem bgv_quadraticPlane_coordinates (x y : K) :
     (Polynomial.evalEval y x (bgvPowerMap (R := Polynomial K) 2 X X),
       Polynomial.evalEval y x (bgvPowerMap (R := Polynomial K) 2 X (C X))) =
-        (x + y * x ^ 2, y) := by
+        (x + y * x ^ (2 : ℕ), y) := by
   simp [bgvPowerMap, Polynomial.evalEval]
 
 /-- The degree-changing affine-plane point map is nevertheless surjective. -/
 theorem bgv_quadraticPlane_surjective [IsAlgClosed K] [CharP K 2] :
-    Function.Surjective (fun z : K × K => (z.1 + z.2 * z.1 ^ 2, z.2)) := by
+    Function.Surjective (fun z : K × K => (z.1 + z.2 * z.1 ^ (2 : ℕ), z.2)) := by
   rintro ⟨a, b⟩
   obtain ⟨x, hx⟩ := bgv_powerPoint_surjective 2 b a
   exact ⟨(x, b), Prod.ext hx rfl⟩
 
 /-- The same map identifies distinct points despite its etale local lifting property. -/
 theorem bgv_quadraticPlane_not_injective [CharP K 2] :
-    ¬ Function.Injective (fun z : K × K => (z.1 + z.2 * z.1 ^ 2, z.2)) := by
+    ¬ Function.Injective (fun z : K × K => (z.1 + z.2 * z.1 ^ (2 : ℕ), z.2)) := by
   intro h
   have htwo : (2 : K) = 0 := CharP.cast_eq_zero K 2
-  have he : (fun z : K × K => (z.1 + z.2 * z.1 ^ 2, z.2)) (0, 1) =
-      (fun z : K × K => (z.1 + z.2 * z.1 ^ 2, z.2)) (1, 1) := by
+  have he : (fun z : K × K => (z.1 + z.2 * z.1 ^ (2 : ℕ), z.2)) (0, 1) =
+      (fun z : K × K => (z.1 + z.2 * z.1 ^ (2 : ℕ), z.2)) (1, 1) := by
     apply Prod.ext <;> simp [one_add_one_eq_two, htwo]
   exact zero_ne_one (congrArg Prod.fst (h he))
 

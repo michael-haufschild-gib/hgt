@@ -45,10 +45,10 @@ def c5FixedActionRegularizedCenterExpression
   let d := iteratedDeriv 4 q t
   let h := b - 2 * A
   let n1 := -(9 / 4 : ℝ) * t * r -
-    (5 / 2 : ℝ) * t ^ 2 * a * r - 2 * t ^ 2 * a
-  let n2 := (5 / 4 : ℝ) * t ^ 2 * r
+    (5 / 2 : ℝ) * t ^ (2 : ℕ) * a * r - 2 * t ^ (2 : ℕ) * a
+  let n2 := (5 / 4 : ℝ) * t ^ (2 : ℕ) * r
   let nd := -(9 / 4 : ℝ) * a * r +
-    (5 / 2 : ℝ) * t * (b - a ^ 2) * r - 2 * t * a ^ 2
+    (5 / 2 : ℝ) * t * (b - a ^ (2 : ℕ)) * r - 2 * t * a ^ (2 : ℕ)
   n1 * (a * c - h * b) + n2 * (a * d - h * c) - h * nd
 
 /-- The division-free direct C5 centre expression is smooth whenever its action is smooth. -/

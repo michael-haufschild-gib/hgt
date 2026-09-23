@@ -33,10 +33,10 @@ theorem xiLogDerivReporter_boundedRecovery_sandwich
     ∀ N,
       HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi)
           (decode.toLinearMap.comp report) ≤
-          ‖decode‖ ^ 2 *
+          ‖decode‖ ^ (2 : ℕ) *
             HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi) report ∧
         HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi) report ≤
-          ‖recover‖ ^ 2 *
+          ‖recover‖ ^ (2 : ℕ) *
             HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi)
               (decode.toLinearMap.comp report) := by
   intro N
@@ -66,10 +66,10 @@ theorem xiLogDerivReporter_recoverableCapacityAndInformationProfile
             (HTGeometry.finiteDerivativeReporterMap N (logDeriv xi) report) ∧
         HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi)
             (decode.toLinearMap.comp report) ≤
-          ‖decode‖ ^ 2 *
+          ‖decode‖ ^ (2 : ℕ) *
             HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi) report ∧
         HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi) report ≤
-          ‖recover‖ ^ 2 *
+          ‖recover‖ ^ (2 : ℕ) *
             HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi)
               (decode.toLinearMap.comp report) := by
   intro N
@@ -89,7 +89,7 @@ theorem xiLogDerivReporter_div_recovery_bound_le
     {C : ℝ} (hC : 0 < C) (hrecoverNorm : ‖recover‖ ≤ C) :
     ∀ N,
       HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi) report /
-          C ^ 2 ≤
+          C ^ (2 : ℕ) ≤
         HTGeometry.finiteDerivativeReporterConditionalInformation N (logDeriv xi)
           (decode.toLinearMap.comp report) := by
   intro N

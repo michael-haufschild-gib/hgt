@@ -40,7 +40,7 @@ theorem powerCutoffHeight_smooth (k : ℂ) : ContDiff ℝ ∞ (powerCutoffHeight
     exact contDiffAt_const.congr_of_eventuallyEq he
 
 theorem cutoffCommutator_height (k : ℂ) (z : Fin 2 → ℝ) :
-    cutoffCommutator k z = (z 1:ℂ)^2*deriv (deriv (powerCutoffHeight k)) (z 1)-
+    cutoffCommutator k z = (z 1:ℂ)^(2 : ℕ)*deriv (deriv (powerCutoffHeight k)) (z 1)-
       k*(k-1)*powerCutoffHeight k (z 1) := by
   have he : cutoffPower k = fun w => powerCutoffHeight k (w 1) := rfl
   rw [cutoffCommutator,he,height_laplacian _ (powerCutoffHeight_smooth k)]
@@ -63,7 +63,7 @@ theorem cutoffCommutator_height_continuous (k : ℂ) :
   have hdd := (contDiff_infty_iff_deriv.mp
     (contDiff_infty_iff_deriv.mp (powerCutoffHeight_smooth k)).2).2.continuous
   have he : (fun y : ℝ => cutoffCommutator k ![0,y]) = fun y : ℝ =>
-      (y:ℂ)^2*deriv (deriv (powerCutoffHeight k)) y-k*(k-1)*powerCutoffHeight k y := by
+      (y:ℂ)^(2 : ℕ)*deriv (deriv (powerCutoffHeight k)) y-k*(k-1)*powerCutoffHeight k y := by
     funext y
     exact cutoffCommutator_height k ![0,y]
   rw [he]

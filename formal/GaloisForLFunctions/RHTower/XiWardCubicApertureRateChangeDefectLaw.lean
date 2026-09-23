@@ -42,7 +42,7 @@ theorem xiWardCubicRadialSecondDifference_mode_apply_zero_eq
   simp only [ofReal_zero, mul_zero, neg_zero, Complex.exp_zero, zero_mul,
     zero_add]
   have he : Complex.exp (-(w * (((2 * c : ℝ) : ℂ)))) =
-      Complex.exp (-(w * (c : ℂ))) ^ 2 := by
+      Complex.exp (-(w * (c : ℂ))) ^ (2 : ℕ) := by
     rw [pow_two, ← Complex.exp_add]
     congr 1
     push_cast
@@ -92,7 +92,7 @@ theorem xiWardCubicApertureCovarianceDefect_mode_landing_normSq
         (xiWardCubicApertureCovarianceDefect T c
           (Complex.exp (-(z * (c : ℂ))))
           (xiWardCubicRadialGeneralizedMode z) 0) =
-      4 * c ^ 2 * Real.exp (-2 * w.re * c) *
+      4 * c ^ (2 : ℕ) * Real.exp (-2 * w.re * c) *
         Complex.normSq
           (Complex.exp (-(z * (c : ℂ))) -
             Complex.exp (-(w * (c : ℂ)))) := by
@@ -109,7 +109,7 @@ theorem xiWardCubicApertureCovarianceDefect_mode_landing_normSq
   rw [hexp]
   have htwo : Complex.normSq (2 : ℂ) = 4 := by
     norm_num [Complex.normSq_apply]
-  have hcSq : Complex.normSq (c : ℂ) = c ^ 2 := by
+  have hcSq : Complex.normSq (c : ℂ) = c ^ (2 : ℕ) := by
     rw [Complex.normSq_ofReal]
     ring
   rw [htwo, hcSq]

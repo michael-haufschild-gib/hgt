@@ -155,7 +155,7 @@ theorem ExpSeriesNormallySummable.iteratedDeriv {a : ι → ℂ} {omega : ι →
   intro k
   induction k generalizing a with
   | zero =>
-      have hval : (fun i => a i * (Complex.I * (omega i : ℂ)) ^ 0) = a := by
+      have hval : (fun i => a i * (Complex.I * (omega i : ℂ)) ^ (0 : ℕ)) = a := by
         funext i
         ring
       rw [hval]

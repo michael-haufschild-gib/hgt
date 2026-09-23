@@ -208,14 +208,14 @@ theorem eval_modularThetaODEDerivation_iterate_one_sub_Z_sq
     (v : ModularThetaODEState → ℂ) (n : ℕ) :
     MvPolynomial.eval v
         ((⇑modularThetaODEDerivation)^[n]
-          (MvPolynomial.C 1 - MvPolynomial.X .Z ^ 2)) =
+          (MvPolynomial.C 1 - MvPolynomial.X .Z ^ (2 : ℕ))) =
       scalarJetUnit n -
         scalarJetConvolution
           (evalModularThetaODEFormalJet v .Z)
           (evalModularThetaODEFormalJet v .Z) n := by
   rw [eval_modularThetaODEDerivation_iterate_sub,
     eval_modularThetaODEDerivation_iterate_C,
-    show MvPolynomial.X ModularThetaODEState.Z ^ 2 =
+    show MvPolynomial.X ModularThetaODEState.Z ^ (2 : ℕ) =
       MvPolynomial.X .Z * MvPolynomial.X .Z by ring,
     eval_modularThetaODEDerivation_iterate_mul]
   simp only [one_mul]
@@ -233,10 +233,10 @@ theorem evalModularThetaODEFormalJet_Z_succ
   rw [evalModularThetaODEFormalJet, modularThetaODEFormalJet_succ]
   simp only [modularThetaODEVectorField]
   rw [show -MvPolynomial.X ModularThetaODEState.R *
-      (MvPolynomial.C 1 - MvPolynomial.X .Z ^ 2) =
+      (MvPolynomial.C 1 - MvPolynomial.X .Z ^ (2 : ℕ)) =
     MvPolynomial.C (-1 : ℂ) *
       (MvPolynomial.X .R *
-        (MvPolynomial.C 1 - MvPolynomial.X .Z ^ 2)) by simp]
+        (MvPolynomial.C 1 - MvPolynomial.X .Z ^ (2 : ℕ))) by simp]
   rw [eval_modularThetaODEDerivation_iterate_C_mul,
     eval_modularThetaODEDerivation_iterate_mul]
   rw [neg_one_mul]
@@ -268,11 +268,11 @@ theorem evalModularThetaODEFormalJet_R_succ
 theorem eval_modularThetaODEDerivation_iterate_P_sq
     (v : ModularThetaODEState → ℂ) (n : ℕ) :
     MvPolynomial.eval v
-        ((⇑modularThetaODEDerivation)^[n] (MvPolynomial.X .P ^ 2)) =
+        ((⇑modularThetaODEDerivation)^[n] (MvPolynomial.X .P ^ (2 : ℕ))) =
       scalarJetConvolution
         (evalModularThetaODEFormalJet v .P)
         (evalModularThetaODEFormalJet v .P) n := by
-  rw [show MvPolynomial.X ModularThetaODEState.P ^ 2 =
+  rw [show MvPolynomial.X ModularThetaODEState.P ^ (2 : ℕ) =
     MvPolynomial.X .P * MvPolynomial.X .P by ring,
     eval_modularThetaODEDerivation_iterate_mul]
   rfl
@@ -280,11 +280,11 @@ theorem eval_modularThetaODEDerivation_iterate_P_sq
 theorem eval_modularThetaODEDerivation_iterate_R_sq
     (v : ModularThetaODEState → ℂ) (n : ℕ) :
     MvPolynomial.eval v
-        ((⇑modularThetaODEDerivation)^[n] (MvPolynomial.X .R ^ 2)) =
+        ((⇑modularThetaODEDerivation)^[n] (MvPolynomial.X .R ^ (2 : ℕ))) =
       scalarJetConvolution
         (evalModularThetaODEFormalJet v .R)
         (evalModularThetaODEFormalJet v .R) n := by
-  rw [show MvPolynomial.X ModularThetaODEState.R ^ 2 =
+  rw [show MvPolynomial.X ModularThetaODEState.R ^ (2 : ℕ) =
     MvPolynomial.X .R * MvPolynomial.X .R by ring,
     eval_modularThetaODEDerivation_iterate_mul]
   rfl
@@ -293,14 +293,14 @@ theorem eval_modularThetaODEDerivation_iterate_three_add_Z_sq
     (v : ModularThetaODEState → ℂ) (n : ℕ) :
     MvPolynomial.eval v
         ((⇑modularThetaODEDerivation)^[n]
-          (MvPolynomial.C 3 + MvPolynomial.X .Z ^ 2)) =
+          (MvPolynomial.C 3 + MvPolynomial.X .Z ^ (2 : ℕ))) =
       3 * scalarJetUnit n +
         scalarJetConvolution
           (evalModularThetaODEFormalJet v .Z)
           (evalModularThetaODEFormalJet v .Z) n := by
   rw [eval_modularThetaODEDerivation_iterate_add,
     eval_modularThetaODEDerivation_iterate_C]
-  rw [show MvPolynomial.X ModularThetaODEState.Z ^ 2 =
+  rw [show MvPolynomial.X ModularThetaODEState.Z ^ (2 : ℕ) =
     MvPolynomial.X .Z * MvPolynomial.X .Z by ring,
     eval_modularThetaODEDerivation_iterate_mul]
   rfl
@@ -309,8 +309,8 @@ theorem eval_modularThetaODEDerivation_iterate_R_sq_mul_three_add_Z_sq
     (v : ModularThetaODEState → ℂ) (n : ℕ) :
     MvPolynomial.eval v
         ((⇑modularThetaODEDerivation)^[n]
-          (MvPolynomial.X .R ^ 2 *
-            (MvPolynomial.C 3 + MvPolynomial.X .Z ^ 2))) =
+          (MvPolynomial.X .R ^ (2 : ℕ) *
+            (MvPolynomial.C 3 + MvPolynomial.X .Z ^ (2 : ℕ)))) =
       scalarJetConvolution
         (scalarJetConvolution
           (evalModularThetaODEFormalJet v .R)
@@ -345,11 +345,11 @@ theorem evalModularThetaODEFormalJet_P_succ
   simp only [modularThetaODEVectorField]
   have hassoc :
       MvPolynomial.C (1 / 12 : ℂ) *
-          MvPolynomial.X ModularThetaODEState.R ^ 2 *
-            (MvPolynomial.C 3 + MvPolynomial.X ModularThetaODEState.Z ^ 2) =
+          MvPolynomial.X ModularThetaODEState.R ^ (2 : ℕ) *
+            (MvPolynomial.C 3 + MvPolynomial.X ModularThetaODEState.Z ^ (2 : ℕ)) =
         MvPolynomial.C (1 / 12 : ℂ) *
-          (MvPolynomial.X ModularThetaODEState.R ^ 2 *
-            (MvPolynomial.C 3 + MvPolynomial.X ModularThetaODEState.Z ^ 2)) := by
+          (MvPolynomial.X ModularThetaODEState.R ^ (2 : ℕ) *
+            (MvPolynomial.C 3 + MvPolynomial.X ModularThetaODEState.Z ^ (2 : ℕ))) := by
     rw [mul_assoc]
   rw [hassoc]
   rw [eval_modularThetaODEDerivation_iterate_add,
@@ -390,12 +390,12 @@ theorem eval_modularThetaODESourceJet_seam_elimination (R : ℂ) :
     let f : ℕ → ℂ := fun n =>
       MvPolynomial.eval v (modularThetaODESourceJet n)
     signedEvenHankelThreeDetC
-      (f 0 ^ 2)
+      (f 0 ^ (2 : ℕ))
       (2 * f 0 * f 2)
-      (2 * f 0 * f 4 + 6 * f 2 ^ 2)
+      (2 * f 0 * f 4 + 6 * f 2 ^ (2 : ℕ))
       (2 * f 0 * f 6 + 30 * f 2 * f 4)
-      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ 2) =
-      modularThetaReflectedEighthSeamPolynomial (R ^ 2) := by
+      (2 * f 0 * f 8 + 56 * f 2 * f 6 + 70 * f 4 ^ (2 : ℕ)) =
+      modularThetaReflectedEighthSeamPolynomial (R ^ (2 : ℕ)) := by
   let v := modularThetaODESeamState R
   let h := evalModularThetaODEFormalJet v .H
   let z := evalModularThetaODEFormalJet v .Z
@@ -533,7 +533,7 @@ theorem eval_modularThetaODESourceJet_seam_odd_zero (R : ℂ) (k : ℕ) :
 theorem eval_modularThetaReflectedEighthGeneralPolynomial_seam (R : ℂ) :
     MvPolynomial.eval (modularThetaODESeamState R)
         modularThetaReflectedEighthGeneralPolynomial =
-      modularThetaReflectedEighthSeamPolynomial (R ^ 2) := by
+      modularThetaReflectedEighthSeamPolynomial (R ^ (2 : ℕ)) := by
   have helim := eval_modularThetaODESourceJet_seam_elimination R
   have h1 := eval_modularThetaODESourceJet_seam_odd_zero R 0
   have h3 := eval_modularThetaODESourceJet_seam_odd_zero R 1
@@ -552,7 +552,7 @@ theorem eval_modularThetaReflectedEighthGeneralPolynomial_seam (R : ℂ) :
 theorem eval_modularThetaReflectedEighthNormalizedPolynomial_seam (R : ℂ) :
     MvPolynomial.eval (modularThetaODESeamState R)
         modularThetaReflectedEighthNormalizedPolynomial =
-      modularThetaReflectedEighthSeamPolynomial (R ^ 2) := by
+      modularThetaReflectedEighthSeamPolynomial (R ^ (2 : ℕ)) := by
   have hfac :=
     eval_modularThetaReflectedEighthGeneralPolynomial_eq_H_pow_six_mul_normalized
       (modularThetaODESeamState R)
@@ -563,8 +563,8 @@ theorem eval_modularThetaReflectedEighthNormalizedPolynomial_seam (R : ℂ) :
 def modularThetaGeneralLyapunovCoordinate :
     ModularThetaLyapunovState → ModularThetaODEPolynomial
   | .S => MvPolynomial.X .P + MvPolynomial.X .R * MvPolynomial.X .Z
-  | .A => MvPolynomial.X .R ^ 2 *
-      (MvPolynomial.C 1 - MvPolynomial.X .Z ^ 2)
+  | .A => MvPolynomial.X .R ^ (2 : ℕ) *
+      (MvPolynomial.C 1 - MvPolynomial.X .Z ^ (2 : ℕ))
   | .W => MvPolynomial.C (2 / 3 : ℂ) *
       (MvPolynomial.X .P + MvPolynomial.X .R * MvPolynomial.X .Z) -
         MvPolynomial.X .R * MvPolynomial.X .Z
@@ -622,9 +622,9 @@ theorem modularThetaGeneralLyapunov_vectorField
         modularThetaGeneralLyapunovPullback_C,
         modularThetaGeneralLyapunovPullback_X,
         modularThetaGeneralLyapunovCoordinate]
-      rw [show MvPolynomial.X ModularThetaODEState.R ^ 2 =
+      rw [show MvPolynomial.X ModularThetaODEState.R ^ (2 : ℕ) =
         MvPolynomial.X .R * MvPolynomial.X .R by ring]
-      rw [show MvPolynomial.X ModularThetaODEState.Z ^ 2 =
+      rw [show MvPolynomial.X ModularThetaODEState.Z ^ (2 : ℕ) =
         MvPolynomial.X .Z * MvPolynomial.X .Z by ring]
       rw [modularThetaODELie_mul, modularThetaODELie_mul,
         modularThetaODELie_X, modularThetaODELie_sub,
@@ -730,7 +730,7 @@ theorem modularThetaGeneralLyapunov_reflectedEighthPolynomial :
 def modularThetaLyapunovSeamState (R : ℂ) :
     ModularThetaLyapunovState → ℂ
   | .S => 0
-  | .A => R ^ 2
+  | .A => R ^ (2 : ℕ)
   | .W => 0
 
 /-- Evaluation commutes with four-state-to-Lyapunov quotient at seam. -/
@@ -755,7 +755,7 @@ theorem eval_modularThetaGeneralLyapunovPullback_seam
 theorem eval_modularThetaLyapunovReflectedEighthPolynomial_seam (R : ℂ) :
     MvPolynomial.eval (modularThetaLyapunovSeamState R)
         modularThetaLyapunovReflectedEighthPolynomial =
-      modularThetaReflectedEighthSeamPolynomial (R ^ 2) := by
+      modularThetaReflectedEighthSeamPolynomial (R ^ (2 : ℕ)) := by
   rw [← eval_modularThetaGeneralLyapunovPullback_seam]
   rw [modularThetaGeneralLyapunov_reflectedEighthPolynomial,
     eval_modularThetaReflectedEighthNormalizedPolynomial_seam]

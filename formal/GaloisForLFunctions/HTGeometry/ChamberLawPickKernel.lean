@@ -41,7 +41,7 @@ theorem totalGram_eq_smul_chamberPickKernel {d : ℕ} (ν : Measure ℝ) (a c : 
     (hy : y ≠ 0)
     (hreg : ∀ l : Fin d,
       Integrable (fun t => regularizedHerglotzKernel t (upperNode (a l) y)) ν) :
-    totalGram ν a c y = ((y : ℂ) ^ 2) • chamberPickKernel ν a c y := by
+    totalGram ν a c y = ((y : ℂ) ^ (2 : ℕ)) • chamberPickKernel ν a c y := by
   ext l m
   rw [Matrix.smul_apply, smul_eq_mul, chamberPickKernel, ← mul_div_assoc,
     eq_div_iff (sub_conj_upperNode_ne_zero hy (a l) (a m))]
@@ -50,11 +50,11 @@ theorem totalGram_eq_smul_chamberPickKernel {d : ℕ} (ν : Measure ℝ) (a c : 
 /-- A positive real scaling preserves the negative directions of a Hermitian form. -/
 theorem re_quadForm_smul_neg_iff {d : ℕ} (P : Matrix (Fin d) (Fin d) ℂ) {y : ℝ} (hy : y ≠ 0)
     (x : Fin d → ℂ) :
-    (star x ⬝ᵥ (((y : ℂ) ^ 2) • P).mulVec x).re < 0
+    (star x ⬝ᵥ (((y : ℂ) ^ (2 : ℕ)) • P).mulVec x).re < 0
       ↔ (star x ⬝ᵥ P.mulVec x).re < 0 := by
-  have hsq : (0 : ℝ) < y ^ 2 := by positivity
-  have hval : (star x ⬝ᵥ (((y : ℂ) ^ 2) • P).mulVec x)
-      = ((y ^ 2 : ℝ) : ℂ) * (star x ⬝ᵥ P.mulVec x) := by
+  have hsq : (0 : ℝ) < y ^ (2 : ℕ) := by positivity
+  have hval : (star x ⬝ᵥ (((y : ℂ) ^ (2 : ℕ)) • P).mulVec x)
+      = ((y ^ (2 : ℕ) : ℝ) : ℂ) * (star x ⬝ᵥ P.mulVec x) := by
     rw [Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul]
     push_cast
     ring

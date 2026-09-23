@@ -23,10 +23,10 @@ variable {X : Type*} [MeasurableSpace X] {μ : Measure X}
 
 /-- The `L²` pairing bound with a general second factor. -/
 theorem integral_norm_mul_le_half_add {f g : X → ℂ}
-    (hf : Integrable (fun z => ‖f z‖ ^ 2) μ) (hg : Integrable (fun z => ‖g z‖ ^ 2) μ)
+    (hf : Integrable (fun z => ‖f z‖ ^ (2 : ℕ)) μ) (hg : Integrable (fun z => ‖g z‖ ^ (2 : ℕ)) μ)
     (hfm : AEStronglyMeasurable f μ) (hgm : AEStronglyMeasurable g μ) :
-    ∫ z, ‖f z‖ * ‖g z‖ ∂μ ≤ ((∫ z, ‖f z‖ ^ 2 ∂μ) + ∫ z, ‖g z‖ ^ 2 ∂μ) / 2 := by
-  have hmaj : Integrable (fun z => (‖f z‖ ^ 2 + ‖g z‖ ^ 2) / 2) μ := (hf.add hg).div_const 2
+    ∫ z, ‖f z‖ * ‖g z‖ ∂μ ≤ ((∫ z, ‖f z‖ ^ (2 : ℕ) ∂μ) + ∫ z, ‖g z‖ ^ (2 : ℕ) ∂μ) / 2 := by
+  have hmaj : Integrable (fun z => (‖f z‖ ^ (2 : ℕ) + ‖g z‖ ^ (2 : ℕ)) / 2) μ := (hf.add hg).div_const 2
   have hint := integrable_norm_mul_norm hf hg hfm hgm
   refine le_trans (MeasureTheory.integral_mono hint hmaj
     (fun z => norm_mul_norm_le_half_add_sq _ _)) (le_of_eq ?_)
@@ -38,9 +38,9 @@ theorem integral_norm_mul_le_half_add {f g : X → ℂ}
 theorem integral_spectralHeatKernel_mul (lam : ℕ → ℝ) (φ : ℕ → X → ℂ) {t : ℝ} {x : X}
     (v : X → ℂ)
     (hmeas : ∀ n, AEStronglyMeasurable (φ n) μ) (hvm : AEStronglyMeasurable v μ)
-    (hsq : ∀ n, Integrable (fun z => ‖φ n z‖ ^ 2) μ)
-    (hvsq : Integrable (fun z => ‖v z‖ ^ 2) μ)
-    (hnorm : ∀ n, ∫ z, ‖φ n z‖ ^ 2 ∂μ = 1)
+    (hsq : ∀ n, Integrable (fun z => ‖φ n z‖ ^ (2 : ℕ)) μ)
+    (hvsq : Integrable (fun z => ‖v z‖ ^ (2 : ℕ)) μ)
+    (hnorm : ∀ n, ∫ z, ‖φ n z‖ ^ (2 : ℕ) ∂μ = 1)
     (hsx : Summable fun n => Real.exp (-(t * lam n)) * ‖φ n x‖) :
     (∫ y, spectralHeatKernel lam φ t x y * v y ∂μ)
       = ∑' n, (Real.exp (-(t * lam n)) : ℂ)
@@ -64,7 +64,7 @@ theorem integral_spectralHeatKernel_mul (lam : ℕ → ℝ) (φ : ℕ → X → 
   have hIint : ∀ n, Integrable (fun y => c n * ((starRingEnd ℂ) (φ n y) * v y)) μ := fun n =>
     (integrable_conj_mul (hsq n) hvsq (hmeas n) hvm).const_mul _
   have hbound : ∀ n, (∫ y, ‖c n * ((starRingEnd ℂ) (φ n y) * v y)‖ ∂μ)
-      ≤ ‖c n‖ * ((1 + ∫ z, ‖v z‖ ^ 2 ∂μ) / 2) := by
+      ≤ ‖c n‖ * ((1 + ∫ z, ‖v z‖ ^ (2 : ℕ) ∂μ) / 2) := by
     intro n
     have hcongr : ∀ y, ‖c n * ((starRingEnd ℂ) (φ n y) * v y)‖
         = ‖c n‖ * (‖φ n y‖ * ‖v y‖) := by

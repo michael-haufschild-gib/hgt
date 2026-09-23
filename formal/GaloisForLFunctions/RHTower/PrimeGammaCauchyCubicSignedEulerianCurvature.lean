@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.RoutePPrimitiveBaseCauchyCapacityReduction
 # Cauchy-cubic four-label curvature retained by the prime--Gamma source
 
 The zero-ordinate Route-P base kernel is the real Cauchy-cubic kernel
-`2 / (x + y)^3`.  Unlike the commutative physical word coefficient, this pair-incidence kernel
+`2 / (x + y)^(3 : ℕ)`.  Unlike the commutative physical word coefficient, this pair-incidence kernel
 has strictly positive four-label signed-Eulerian curvature on every strictly ordered positive
 four-packet.  Positive diagonal source transports preserve that curvature exactly.
 
@@ -22,7 +22,7 @@ open _root_.RHTower
 noncomputable section
 
 /-- Real zero-ordinate Cauchy-cubic edge underlying the Route-P primitive base kernel. -/
-def primeGammaCauchyCubicEdge (x y : ℝ) : ℝ := 2 / (x + y) ^ 3
+def primeGammaCauchyCubicEdge (x y : ℝ) : ℝ := 2 / (x + y) ^ (3 : ℕ)
 
 /-- Strict four-label curvature of the Cauchy-cubic edge on an ordered positive packet. -/
 theorem primeGammaCauchyCubic_fourLabelCurvature_pos
@@ -42,25 +42,25 @@ theorem primeGammaCauchyCubic_fourLabelCurvature_pos
   have hXY : X < Y := by
     dsimp [X, Y]
     nlinarith
-  have hpows : 0 < Y ^ 3 - X ^ 3 := by
-    rw [show Y ^ 3 - X ^ 3 = (Y - X) * (Y ^ 2 + Y * X + X ^ 2) by ring]
+  have hpows : 0 < Y ^ (3 : ℕ) - X ^ (3 : ℕ) := by
+    rw [show Y ^ (3 : ℕ) - X ^ (3 : ℕ) = (Y - X) * (Y ^ (2 : ℕ) + Y * X + X ^ (2 : ℕ)) by ring]
     apply mul_pos (by linarith)
     positivity
   have hleft : primeGammaCauchyCubicEdge c a * primeGammaCauchyCubicEdge d b =
-      4 / X ^ 3 := by
+      4 / X ^ (3 : ℕ) := by
     unfold primeGammaCauchyCubicEdge
     dsimp [X]
     field_simp
     ring
   have hright : primeGammaCauchyCubicEdge c b * primeGammaCauchyCubicEdge d a =
-      4 / Y ^ 3 := by
+      4 / Y ^ (3 : ℕ) := by
     unfold primeGammaCauchyCubicEdge
     dsimp [Y]
     field_simp
     ring
   rw [hleft, hright]
-  have hrewrite : 4 / X ^ 3 - 4 / Y ^ 3 =
-      4 * (Y ^ 3 - X ^ 3) / (X ^ 3 * Y ^ 3) := by
+  have hrewrite : 4 / X ^ (3 : ℕ) - 4 / Y ^ (3 : ℕ) =
+      4 * (Y ^ (3 : ℕ) - X ^ (3 : ℕ)) / (X ^ (3 : ℕ) * Y ^ (3 : ℕ)) := by
     field_simp [hX.ne', hY.ne']
   rw [hrewrite]
   exact div_pos (mul_pos (by norm_num) hpows)

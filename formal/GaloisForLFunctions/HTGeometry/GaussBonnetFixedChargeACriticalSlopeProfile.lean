@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeACriticalSlopeCoefficient (w φ : ℝ) : ℝ :=
   (1 - 2 * egbFixedChargeACriticalCouplingWeight φ) /
-    (3 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ 2)
+    (3 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ))
 
 theorem egbFixedChargeACriticalSlopeCoefficient_pos (w φ : ℝ) : 0 < egbFixedChargeACriticalSlopeCoefficient w φ := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
@@ -27,8 +27,8 @@ theorem egbFixedChargeACriticalSlopeCoefficient_pos (w φ : ℝ) : 0 < egbFixedC
 
 theorem egbFixedChargeAInterior_radial_slope_critical_profile (w φ ψ : ℝ) :
     Tendsto (fun τ => egbTemperatureARadialSlope (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ)
-      (egbFixedChargeAInteriorRadius w φ τ ψ) / egbCoexistenceASymmetricRatio τ ^ 2)
-      atBot (𝓝 (egbFixedChargeACriticalSlopeCoefficient w φ * (3 * sin ψ ^ 2 - 1) / 2)) := by
+      (egbFixedChargeAInteriorRadius w φ τ ψ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
+      atBot (𝓝 (egbFixedChargeACriticalSlopeCoefficient w φ * (3 * sin ψ ^ (2 : ℕ) - 1) / 2)) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
   have hpi := Real.pi_pos
@@ -46,14 +46,14 @@ theorem egbFixedChargeAInterior_radial_slope_critical_profile (w φ ψ : ℝ) :
 
 theorem egbFixedChargeAInterior_actual_slope_critical_profile (w φ ψ : ℝ) :
     Tendsto (fun τ => deriv (egbTemperatureA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ))
-      (egbFixedChargeAInteriorRadius w φ τ ψ) / egbCoexistenceASymmetricRatio τ ^ 2)
-      atBot (𝓝 (egbFixedChargeACriticalSlopeCoefficient w φ * (3 * sin ψ ^ 2 - 1) / 2)) := by
+      (egbFixedChargeAInteriorRadius w φ τ ψ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
+      atBot (𝓝 (egbFixedChargeACriticalSlopeCoefficient w φ * (3 * sin ψ ^ (2 : ℕ) - 1) / 2)) := by
   simp only [egbFixedChargeAInterior_temperature_derivative]
   exact egbFixedChargeAInterior_radial_slope_critical_profile w φ ψ
 
 theorem egbFixedChargeA_large_radial_slope_quadratic_limit (w φ : ℝ) :
     Tendsto (fun τ => egbTemperatureARadialSlope (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ)
-      (egbFixedChargeALargeRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2)
+      (egbFixedChargeALargeRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeACriticalSlopeCoefficient w φ)) := by
   have h := egbFixedChargeAInterior_radial_slope_critical_profile w φ (Real.pi / 2)
   simp only [egbFixedChargeAInteriorRadius_large, sin_pi_div_two] at h
@@ -61,7 +61,7 @@ theorem egbFixedChargeA_large_radial_slope_quadratic_limit (w φ : ℝ) :
 
 theorem egbFixedChargeA_small_radial_slope_quadratic_limit (w φ : ℝ) :
     Tendsto (fun τ => egbTemperatureARadialSlope (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ)
-      (egbFixedChargeASmallRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2)
+      (egbFixedChargeASmallRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeACriticalSlopeCoefficient w φ)) := by
   have hs : sin (-Real.pi / 2) = -1 := by rw [neg_div, sin_neg, sin_pi_div_two]
   have h := egbFixedChargeAInterior_radial_slope_critical_profile w φ (-Real.pi / 2)
@@ -70,7 +70,7 @@ theorem egbFixedChargeA_small_radial_slope_quadratic_limit (w φ : ℝ) :
 
 theorem egbFixedChargeA_mean_radial_slope_quadratic_limit (w φ : ℝ) :
     Tendsto (fun τ => egbTemperatureARadialSlope (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ)
-      (egbFixedChargeAMeanRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2)
+      (egbFixedChargeAMeanRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (-egbFixedChargeACriticalSlopeCoefficient w φ / 2)) := by
   have h := egbFixedChargeAInterior_radial_slope_critical_profile w φ 0
   simp only [egbFixedChargeAInteriorRadius_mean, sin_zero] at h
@@ -78,14 +78,14 @@ theorem egbFixedChargeA_mean_radial_slope_quadratic_limit (w φ : ℝ) :
 
 theorem egbFixedChargeA_large_actual_slope_quadratic_limit (w φ : ℝ) :
     Tendsto (fun τ => deriv (egbTemperatureA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ))
-      (egbFixedChargeALargeRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2)
+      (egbFixedChargeALargeRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeACriticalSlopeCoefficient w φ)) := by
   simp only [egbFixedChargeA_large_thermal_slope_formula]
   exact egbFixedChargeA_large_radial_slope_quadratic_limit w φ
 
 theorem egbFixedChargeA_small_actual_slope_quadratic_limit (w φ : ℝ) :
     Tendsto (fun τ => deriv (egbTemperatureA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ))
-      (egbFixedChargeASmallRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2)
+      (egbFixedChargeASmallRadius w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeACriticalSlopeCoefficient w φ)) := by
   simp only [egbFixedChargeA_small_thermal_slope_formula]
   exact egbFixedChargeA_small_radial_slope_quadratic_limit w φ

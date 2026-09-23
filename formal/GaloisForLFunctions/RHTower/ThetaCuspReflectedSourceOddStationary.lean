@@ -124,7 +124,7 @@ completed-source curvature at its center. -/
 theorem thetaCuspReflectedSourceProduct_secondSixthHankel_zero (u : ℝ) :
     iteratedDeriv 2 (thetaCuspReflectedSourceProduct u) 0 *
           iteratedDeriv 6 (thetaCuspReflectedSourceProduct u) 0 -
-        iteratedDeriv 4 (thetaCuspReflectedSourceProduct u) 0 ^ 2 =
+        iteratedDeriv 4 (thetaCuspReflectedSourceProduct u) 0 ^ (2 : ℕ) =
       thetaCuspFullSourceReflectionSecondSixthCurvature u := by
   rw [iteratedDeriv_two_thetaCuspReflectedSourceProduct_zero,
     iteratedDeriv_four_thetaCuspReflectedSourceProduct_zero,
@@ -151,7 +151,7 @@ theorem exists_thetaCuspReflectedSourceOddParityWall_pos_right (u : ℝ) :
   have h7 : iteratedDeriv 7 f 0 = 0 :=
     iteratedDeriv_zero_of_even_real_of_odd heven (by norm_num)
   have h6 : 0 < iteratedDeriv 2 f 0 * iteratedDeriv 6 f 0 -
-      iteratedDeriv 4 f 0 ^ 2 := by
+      iteratedDeriv 4 f 0 ^ (2 : ℕ) := by
     rw [thetaCuspReflectedSourceProduct_secondSixthHankel_zero]
     exact thetaCuspFullSourceReflectionSecondSixthCurvature_pos u
   rcases HilbertMetric.exists_fourPointOddWall_pos_right hf h1 h3 h5 h7 h6 with
@@ -257,7 +257,7 @@ theorem hasDerivAt_thetaCuspReflectedSourceOddParityWall (u t : ℝ) :
         ring)
   change HasDerivAt
     (fun s : ℝ => (f 0 - f (3 * s)) * (f 0 - f s) -
-      (f s - f (2 * s)) ^ 2) _ t
+      (f s - f (2 * s)) ^ (2 : ℕ)) _ t
   have hraw := ((h0.sub h3).mul (h0.sub h1)).sub ((h1.sub h2).pow 2)
   refine (hraw.congr_of_eventuallyEq
     (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
@@ -301,7 +301,7 @@ theorem tendsto_thetaCuspReflectedSourceProduct_atTop_zero (u : ℝ) :
 /-- The source-fibre odd wall returns to the strictly positive square of its central value. -/
 theorem tendsto_thetaCuspReflectedSourceOddParityWall_atTop (u : ℝ) :
     Tendsto (thetaCuspReflectedSourceOddParityWall u) atTop
-      (nhds (thetaCuspReflectedSourceProduct u 0 ^ 2)) := by
+      (nhds (thetaCuspReflectedSourceProduct u 0 ^ (2 : ℕ))) := by
   let f : ℝ → ℝ := thetaCuspReflectedSourceProduct u
   have hconst : Tendsto (fun _ : ℝ => f 0) atTop (nhds (f 0)) := tendsto_const_nhds
   have hf : Tendsto f atTop (nhds 0) :=
@@ -312,7 +312,7 @@ theorem tendsto_thetaCuspReflectedSourceOddParityWall_atTop (u : ℝ) :
     hf.comp (tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 3))
   change Tendsto
     (fun t : ℝ => (f 0 - f (3 * t)) * (f 0 - f t) -
-      (f t - f (2 * t)) ^ 2) atTop (nhds (f 0 ^ 2))
+      (f t - f (2 * t)) ^ (2 : ℕ)) atTop (nhds (f 0 ^ (2 : ℕ)))
   simpa [pow_two] using
     ((hconst.sub hf3).mul (hconst.sub hf)).sub ((hf.sub hf2).pow 2)
 
@@ -329,7 +329,7 @@ theorem exists_thetaCuspReflectedSourceOddParityWall_stationary_neg_of_neg
               2 * thetaCuspReflectedSourceMiddleDrop u t) +
           3 * thetaCuspReflectedSourceFirstDrop u t *
             thetaCuspReflectedSourceDecayFlux u (3 * t) := by
-  have hcenter : 0 < thetaCuspReflectedSourceProduct u 0 ^ 2 := by
+  have hcenter : 0 < thetaCuspReflectedSourceProduct u 0 ^ (2 : ℕ) := by
     simp only [thetaCuspReflectedSourceProduct, add_zero, sub_zero]
     exact pow_pos (mul_pos (thetaCuspFullSource_pos_all u)
       (thetaCuspFullSource_pos_all u)) 2
@@ -346,7 +346,7 @@ theorem exists_thetaCuspReflectedSourceOddParityWall_stationary_neg_of_neg
     let f : ℝ → ℝ := thetaCuspReflectedSourceProduct u
     have hf : Continuous f := (contDiff_thetaCuspReflectedSourceProduct u).continuous
     change Continuous (fun t : ℝ =>
-      (f 0 - f (3 * t)) * (f 0 - f t) - (f t - f (2 * t)) ^ 2)
+      (f 0 - f (3 * t)) * (f 0 - f t) - (f t - f (2 * t)) ^ (2 : ℕ))
     fun_prop
   have ht₀mem : t₀ ∈ Icc (0 : ℝ) T := ⟨ht₀.le, ht₀T.le⟩
   obtain ⟨t, htmem, hmin⟩ := isCompact_Icc.exists_isMinOn

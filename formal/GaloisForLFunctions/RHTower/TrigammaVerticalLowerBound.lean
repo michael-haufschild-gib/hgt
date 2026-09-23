@@ -26,7 +26,7 @@ namespace RHTower
 
 /-- The `n`-th term of the trigamma imaginary-part series, with its sign removed. -/
 def trigammaVerticalTerm (σ t : ℝ) (n : ℕ) : ℝ :=
-  2 * (σ + n) * t / (((σ + n) ^ 2 + t ^ 2) ^ 2)
+  2 * (σ + n) * t / (((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))
 
 theorem trigammaVerticalTerm_nonneg {σ t : ℝ} (hσ : 0 < σ) (ht : 0 < t) (n : ℕ) :
     0 ≤ trigammaVerticalTerm σ t n := by
@@ -35,7 +35,7 @@ theorem trigammaVerticalTerm_nonneg {σ t : ℝ} (hσ : 0 < σ) (ht : 0 < t) (n 
   positivity
 
 theorem im_inv_sq_eq {σ t : ℝ} (n : ℕ) :
-    (((((σ : ℂ) + (t : ℂ) * Complex.I) + (n : ℂ)) ^ 2)⁻¹).im
+    (((((σ : ℂ) + (t : ℂ) * Complex.I) + (n : ℂ)) ^ (2 : ℕ))⁻¹).im
       = -trigammaVerticalTerm σ t n := by
   have hzn : ((σ : ℂ) + (t : ℂ) * Complex.I) + (n : ℂ)
       = ((σ + n : ℝ) : ℂ) + (t : ℂ) * Complex.I := by
@@ -60,10 +60,10 @@ theorem partialSum_le_neg_im_deriv_digamma {σ t : ℝ} (hσ : 0 < σ) (ht : 0 <
     rw [hz]
     simpa using hσ
   have hlim := deriv_digamma_partialSum_tendsto hzre
-  have hlimim : Tendsto (fun M : ℕ => (∑ n ∈ Finset.range M, ((z + (n : ℂ)) ^ 2)⁻¹).im)
+  have hlimim : Tendsto (fun M : ℕ => (∑ n ∈ Finset.range M, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹).im)
       atTop (nhds (deriv Complex.digamma z).im) :=
     Complex.continuous_im.continuousAt.tendsto.comp hlim
-  have hsum : ∀ M : ℕ, (∑ n ∈ Finset.range M, ((z + (n : ℂ)) ^ 2)⁻¹).im
+  have hsum : ∀ M : ℕ, (∑ n ∈ Finset.range M, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹).im
       = -∑ n ∈ Finset.range M, trigammaVerticalTerm σ t n := by
     intro M
     rw [Complex.im_sum, ← Finset.sum_neg_distrib]
@@ -88,7 +88,7 @@ theorem neg_im_deriv_digamma_lower_bound {σ t : ℝ} (hσ : 0 < σ) (hσ1 : σ 
   have hNge : t ≤ (N : ℝ) := Nat.le_ceil t
   have hNlt : (N : ℝ) < t + 1 := Nat.ceil_lt_add_one htpos.le
   have hlow : ∀ n ∈ Finset.range N,
-      2 * (σ + n) / (25 * t ^ 3) ≤ trigammaVerticalTerm σ t n := by
+      2 * (σ + n) / (25 * t ^ (3 : ℕ)) ≤ trigammaVerticalTerm σ t n := by
     intro n hn
     have hnsucc : (n : ℝ) + 1 ≤ (N : ℝ) := by
       have hnat : n + 1 ≤ N := Finset.mem_range.mp hn
@@ -96,12 +96,12 @@ theorem neg_im_deriv_digamma_lower_bound {σ t : ℝ} (hσ : 0 < σ) (hσ1 : σ 
     have hnle : (n : ℝ) ≤ t := by linarith
     have hsnpos : (0 : ℝ) < σ + n := by positivity
     have hsn : σ + n ≤ 2 * t := by linarith
-    have hdpos : (0 : ℝ) < ((σ + n) ^ 2 + t ^ 2) ^ 2 := by positivity
-    have hsq : (σ + n) ^ 2 ≤ 4 * t ^ 2 := by nlinarith [hsnpos, hsn, htpos]
-    have hden : ((σ + n) ^ 2 + t ^ 2) ^ 2 ≤ 25 * t ^ 4 := by
+    have hdpos : (0 : ℝ) < ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
+    have hsq : (σ + n) ^ (2 : ℕ) ≤ 4 * t ^ (2 : ℕ) := by nlinarith [hsnpos, hsn, htpos]
+    have hden : ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ) ≤ 25 * t ^ (4 : ℕ) := by
       nlinarith [hsq, sq_nonneg t, htpos, sq_nonneg (σ + n)]
     have hnum : (0 : ℝ) ≤ 2 * (σ + n) * t := by positivity
-    have hstep : 2 * (σ + n) * t / (25 * t ^ 4) ≤ trigammaVerticalTerm σ t n := by
+    have hstep : 2 * (σ + n) * t / (25 * t ^ (4 : ℕ)) ≤ trigammaVerticalTerm σ t n := by
       rw [trigammaVerticalTerm]
       exact div_le_div_of_nonneg_left hnum hdpos hden
     refine le_trans (le_of_eq ?_) hstep
@@ -121,8 +121,8 @@ theorem neg_im_deriv_digamma_lower_bound {σ t : ℝ} (hσ : 0 < σ) (hσ1 : σ 
     linarith
   have hsum : (1 : ℝ) / (50 * t) ≤ ∑ n ∈ Finset.range N, trigammaVerticalTerm σ t n := by
     refine le_trans ?_ (Finset.sum_le_sum hlow)
-    have hid : ∑ n ∈ Finset.range N, (2 * (σ + n) / (25 * t ^ 3))
-        = (2 / (25 * t ^ 3)) * ∑ n ∈ Finset.range N, (σ + (n : ℝ)) := by
+    have hid : ∑ n ∈ Finset.range N, (2 * (σ + n) / (25 * t ^ (3 : ℕ)))
+        = (2 / (25 * t ^ (3 : ℕ))) * ∑ n ∈ Finset.range N, (σ + (n : ℝ)) := by
       rw [Finset.mul_sum]
       exact Finset.sum_congr rfl fun n _ => by ring
     rw [hid]
@@ -133,10 +133,10 @@ theorem neg_im_deriv_digamma_lower_bound {σ t : ℝ} (hσ : 0 < σ) (hσ1 : σ 
       refine le_trans ?_ hlin
       rw [hgauss]
       nlinarith [hNge, ht]
-    have hcoef : (0 : ℝ) < 2 / (25 * t ^ 3) := by positivity
+    have hcoef : (0 : ℝ) < 2 / (25 * t ^ (3 : ℕ)) := by positivity
     have hmul := mul_le_mul_of_nonneg_left hbig hcoef.le
     refine le_trans ?_ hmul
-    have hrhs : 2 / (25 * t ^ 3) * (t * (t - 1) / 2) = (t - 1) / (25 * t ^ 2) := by
+    have hrhs : 2 / (25 * t ^ (3 : ℕ)) * (t * (t - 1) / 2) = (t - 1) / (25 * t ^ (2 : ℕ)) := by
       field_simp
     rw [hrhs, div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [ht, htpos]

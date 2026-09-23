@@ -17,8 +17,8 @@ open CPV
 
 theorem egbCoexistenceALogKernel_tendsto_critical : Tendsto egbCoexistenceALogKernel atBot (𝓝 3) := by
   have hz := thermalRatio_tendsto_atBot_one
-  have hu : Tendsto (fun τ => (thermalRatio τ ^ 2 + thermalRatio τ + 1) / thermalRatio τ) atBot
-      (𝓝 (((1 : ℝ) ^ 2 + 1 + 1) / 1)) :=
+  have hu : Tendsto (fun τ => (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) / thermalRatio τ) atBot
+      (𝓝 (((1 : ℝ) ^ (2 : ℕ) + 1 + 1) / 1)) :=
     (((hz.pow 2).add hz).add tendsto_const_nhds).div hz one_ne_zero
   norm_num at hu
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hu
@@ -26,9 +26,9 @@ theorem egbCoexistenceALogKernel_tendsto_critical : Tendsto egbCoexistenceALogKe
 
 /-- Uniform control of the kernel combination that enters the cold discriminant. -/
 theorem egbCoexistenceALogKernel_weighted_bounds (τ : ℝ) :
-    0 ≤ egbCoexistenceALogKernel τ * thermalRatio τ ^ 2 ∧
-      egbCoexistenceALogKernel τ * thermalRatio τ ^ 2 ≤
-        thermalRatio τ * (thermalRatio τ ^ 2 + thermalRatio τ + 1) := by
+    0 ≤ egbCoexistenceALogKernel τ * thermalRatio τ ^ (2 : ℕ) ∧
+      egbCoexistenceALogKernel τ * thermalRatio τ ^ (2 : ℕ) ≤
+        thermalRatio τ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) := by
   have hz := thermalRatio_pos τ
   have hH := egbCoexistenceALogKernel_pos τ
   have h := (le_div_iff₀ hz).1 (egbCoexistenceALogKernel_upper_bound τ)
@@ -36,10 +36,10 @@ theorem egbCoexistenceALogKernel_weighted_bounds (τ : ℝ) :
   exact ⟨by positivity, by nlinarith⟩
 
 theorem egbCoexistenceALogKernel_weighted_cold_limit :
-    Tendsto (fun τ => egbCoexistenceALogKernel τ * thermalRatio τ ^ 2) atTop (𝓝 0) := by
+    Tendsto (fun τ => egbCoexistenceALogKernel τ * thermalRatio τ ^ (2 : ℕ)) atTop (𝓝 0) := by
   have hz := thermalRatio_tendsto_atTop_zero
-  have hu : Tendsto (fun τ => thermalRatio τ * (thermalRatio τ ^ 2 + thermalRatio τ + 1)) atTop
-      (𝓝 ((0 : ℝ) * (0 ^ 2 + 0 + 1))) := hz.mul (((hz.pow 2).add hz).add tendsto_const_nhds)
+  have hu : Tendsto (fun τ => thermalRatio τ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1)) atTop
+      (𝓝 ((0 : ℝ) * (0 ^ (2 : ℕ) + 0 + 1))) := hz.mul (((hz.pow 2).add hz).add tendsto_const_nhds)
   norm_num at hu
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hu
     (fun τ => (egbCoexistenceALogKernel_weighted_bounds τ).1)
@@ -47,21 +47,21 @@ theorem egbCoexistenceALogKernel_weighted_cold_limit :
 
 theorem egbCoexistenceAQuadraticA_critical_limit : Tendsto egbCoexistenceAQuadraticA atBot (𝓝 24) := by
   have hz := thermalRatio_tendsto_atBot_one
-  have h : Tendsto egbCoexistenceAQuadraticA atBot (𝓝 (4 * 3 * ((1 : ℝ) ^ 2 + 1))) :=
+  have h : Tendsto egbCoexistenceAQuadraticA atBot (𝓝 (4 * 3 * ((1 : ℝ) ^ (2 : ℕ) + 1))) :=
     (tendsto_const_nhds.mul egbCoexistenceALogKernel_tendsto_critical).mul ((hz.pow 2).add tendsto_const_nhds)
   norm_num at h
   exact h
 
 theorem egbCoexistenceAQuadraticC_critical_limit : Tendsto egbCoexistenceAQuadraticC atBot (𝓝 2) := by
   have hz := thermalRatio_tendsto_atBot_one
-  have h : Tendsto egbCoexistenceAQuadraticC atBot (𝓝 ((1 : ℝ) ^ 2 * (1 ^ 2 + 1))) :=
+  have h : Tendsto egbCoexistenceAQuadraticC atBot (𝓝 ((1 : ℝ) ^ (2 : ℕ) * (1 ^ (2 : ℕ) + 1))) :=
     (hz.pow 2).mul ((hz.pow 2).add tendsto_const_nhds)
   norm_num at h
   exact h
 
 theorem egbFixedChargeABase_critical_limit : Tendsto egbFixedChargeABase atBot (𝓝 12) := by
   have hz := thermalRatio_tendsto_atBot_one
-  have h : Tendsto egbFixedChargeABase atBot (𝓝 (6 * ((1 : ℝ) ^ 2 + 1))) :=
+  have h : Tendsto egbFixedChargeABase atBot (𝓝 (6 * ((1 : ℝ) ^ (2 : ℕ) + 1))) :=
     egbCoexistenceShape_tendsto_critical.mul ((hz.pow 2).add tendsto_const_nhds)
   norm_num at h
   exact h
@@ -69,7 +69,7 @@ theorem egbFixedChargeABase_critical_limit : Tendsto egbFixedChargeABase atBot (
 theorem egbFixedChargeALinearCorrection_critical_limit : Tendsto egbFixedChargeALinearCorrection atBot (𝓝 (-12)) := by
   have hz := thermalRatio_tendsto_atBot_one
   have h : Tendsto egbFixedChargeALinearCorrection atBot
-      (𝓝 (4 * (1 : ℝ) ^ 2 * 3 - 8 * 1 * (1 ^ 2 + 1 + 1))) :=
+      (𝓝 (4 * (1 : ℝ) ^ (2 : ℕ) * 3 - 8 * 1 * (1 ^ (2 : ℕ) + 1 + 1))) :=
     ((tendsto_const_nhds.mul (hz.pow 2)).mul egbCoexistenceALogKernel_tendsto_critical).sub
       ((tendsto_const_nhds.mul hz).mul (((hz.pow 2).add hz).add tendsto_const_nhds))
   norm_num at h
@@ -77,14 +77,14 @@ theorem egbFixedChargeALinearCorrection_critical_limit : Tendsto egbFixedChargeA
 
 theorem egbCoexistenceAQuadraticC_cold_limit : Tendsto egbCoexistenceAQuadraticC atTop (𝓝 0) := by
   have hz := thermalRatio_tendsto_atTop_zero
-  have h : Tendsto egbCoexistenceAQuadraticC atTop (𝓝 ((0 : ℝ) ^ 2 * (0 ^ 2 + 1))) :=
+  have h : Tendsto egbCoexistenceAQuadraticC atTop (𝓝 ((0 : ℝ) ^ (2 : ℕ) * (0 ^ (2 : ℕ) + 1))) :=
     (hz.pow 2).mul ((hz.pow 2).add tendsto_const_nhds)
   norm_num at h
   exact h
 
 theorem egbFixedChargeABase_cold_limit : Tendsto egbFixedChargeABase atTop (𝓝 1) := by
   have hz := thermalRatio_tendsto_atTop_zero
-  have h : Tendsto egbFixedChargeABase atTop (𝓝 (1 * ((0 : ℝ) ^ 2 + 1))) :=
+  have h : Tendsto egbFixedChargeABase atTop (𝓝 (1 * ((0 : ℝ) ^ (2 : ℕ) + 1))) :=
     egbCoexistenceShape_tendsto_cold.mul ((hz.pow 2).add tendsto_const_nhds)
   norm_num at h
   exact h
@@ -92,15 +92,15 @@ theorem egbFixedChargeABase_cold_limit : Tendsto egbFixedChargeABase atTop (𝓝
 theorem egbFixedChargeALinearCorrection_cold_limit : Tendsto egbFixedChargeALinearCorrection atTop (𝓝 0) := by
   have hz := thermalRatio_tendsto_atTop_zero
   have he : egbFixedChargeALinearCorrection = fun τ =>
-      4 * (egbCoexistenceALogKernel τ * thermalRatio τ ^ 2) -
-        8 * thermalRatio τ * (thermalRatio τ ^ 2 + thermalRatio τ + 1) := by
+      4 * (egbCoexistenceALogKernel τ * thermalRatio τ ^ (2 : ℕ)) -
+        8 * thermalRatio τ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) := by
     funext τ
     unfold egbFixedChargeALinearCorrection
     ring
   rw [he]
-  have h : Tendsto (fun τ => 4 * (egbCoexistenceALogKernel τ * thermalRatio τ ^ 2) -
-      8 * thermalRatio τ * (thermalRatio τ ^ 2 + thermalRatio τ + 1)) atTop
-      (𝓝 ((4 : ℝ) * 0 - 8 * 0 * (0 ^ 2 + 0 + 1))) :=
+  have h : Tendsto (fun τ => 4 * (egbCoexistenceALogKernel τ * thermalRatio τ ^ (2 : ℕ)) -
+      8 * thermalRatio τ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1)) atTop
+      (𝓝 ((4 : ℝ) * 0 - 8 * 0 * (0 ^ (2 : ℕ) + 0 + 1))) :=
     (tendsto_const_nhds.mul egbCoexistenceALogKernel_weighted_cold_limit).sub
       ((tendsto_const_nhds.mul hz).mul (((hz.pow 2).add hz).add tendsto_const_nhds))
   norm_num at h
@@ -109,7 +109,7 @@ theorem egbFixedChargeALinearCorrection_cold_limit : Tendsto egbFixedChargeALine
 /-- Exact cancellation isolates the only kernel combination needed in the cold discriminant. -/
 theorem egbCoexistenceA_quadratic_product (τ : ℝ) :
     egbCoexistenceAQuadraticA τ * egbCoexistenceAQuadraticC τ =
-      4 * (egbCoexistenceALogKernel τ * thermalRatio τ ^ 2) * (thermalRatio τ ^ 2 + 1) ^ 2 := by
+      4 * (egbCoexistenceALogKernel τ * thermalRatio τ ^ (2 : ℕ)) * (thermalRatio τ ^ (2 : ℕ) + 1) ^ (2 : ℕ) := by
   unfold egbCoexistenceAQuadraticA egbCoexistenceAQuadraticC
   ring
 
@@ -117,8 +117,8 @@ theorem egbCoexistenceA_quadratic_product_cold_limit :
     Tendsto (fun τ => egbCoexistenceAQuadraticA τ * egbCoexistenceAQuadraticC τ) atTop (𝓝 0) := by
   simp only [egbCoexistenceA_quadratic_product]
   have hz := thermalRatio_tendsto_atTop_zero
-  have h : Tendsto (fun τ => 4 * (egbCoexistenceALogKernel τ * thermalRatio τ ^ 2) * (thermalRatio τ ^ 2 + 1) ^ 2) atTop
-      (𝓝 ((4 : ℝ) * 0 * (0 ^ 2 + 1) ^ 2)) :=
+  have h : Tendsto (fun τ => 4 * (egbCoexistenceALogKernel τ * thermalRatio τ ^ (2 : ℕ)) * (thermalRatio τ ^ (2 : ℕ) + 1) ^ (2 : ℕ)) atTop
+      (𝓝 ((4 : ℝ) * 0 * (0 ^ (2 : ℕ) + 1) ^ (2 : ℕ))) :=
     (tendsto_const_nhds.mul egbCoexistenceALogKernel_weighted_cold_limit).mul
       (((hz.pow 2).add tendsto_const_nhds).pow 2)
   norm_num at h

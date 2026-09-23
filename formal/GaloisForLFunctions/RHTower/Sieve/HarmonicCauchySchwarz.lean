@@ -23,7 +23,7 @@ noncomputable section
 /-- **Cauchy–Schwarz with arbitrary positive weights.** -/
 theorem normSq_sum_le_weighted {ι : Type*} (I : Finset ι) (v : ι → ℝ) (hv : ∀ i ∈ I, 0 < v i)
     (F : ι → ℂ) :
-    ‖∑ i ∈ I, F i‖ ^ 2 ≤ (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * ‖F i‖ ^ 2 := by
+    ‖∑ i ∈ I, F i‖ ^ (2 : ℕ) ≤ (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * ‖F i‖ ^ (2 : ℕ) := by
   classical
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq I (fun i => Real.sqrt (1 / v i))
     (fun i => Real.sqrt (v i) * ‖F i‖)
@@ -36,10 +36,10 @@ theorem normSq_sum_le_weighted {ι : Type*} (I : Finset ι) (v : ι → ℝ) (hv
     calc Real.sqrt (1 / v i) * (Real.sqrt (v i) * ‖F i‖)
         = (Real.sqrt (1 / v i) * Real.sqrt (v i)) * ‖F i‖ := by ring
       _ = ‖F i‖ := by rw [hs, one_mul]
-  have hasq : (∑ i ∈ I, Real.sqrt (1 / v i) ^ 2) = ∑ i ∈ I, 1 / v i := by
+  have hasq : (∑ i ∈ I, Real.sqrt (1 / v i) ^ (2 : ℕ)) = ∑ i ∈ I, 1 / v i := by
     refine Finset.sum_congr rfl fun i hi => ?_
     exact Real.sq_sqrt (le_of_lt (div_pos one_pos (hv i hi)))
-  have hbsq : (∑ i ∈ I, (Real.sqrt (v i) * ‖F i‖) ^ 2) = ∑ i ∈ I, v i * ‖F i‖ ^ 2 := by
+  have hbsq : (∑ i ∈ I, (Real.sqrt (v i) * ‖F i‖) ^ (2 : ℕ)) = ∑ i ∈ I, v i * ‖F i‖ ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun i hi => ?_
     rw [mul_pow, Real.sq_sqrt (hv i hi).le]
   rw [hsum, hasq, hbsq] at hcs
@@ -51,8 +51,8 @@ theorem normSq_sum_le_weighted {ι : Type*} (I : Finset ι) (v : ι → ℝ) (hv
 mean square is controlled by the harmonic mass of the weights times the weighted mean squares. -/
 theorem normSq_sum_mul_le_weighted {ι : Type*} (I : Finset ι) (v : ι → ℝ) (hv : ∀ i ∈ I, 0 < v i)
     (R S : ι → ℂ) :
-    ‖∑ i ∈ I, R i * S i‖ ^ 2
-      ≤ (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * (‖R i‖ ^ 2 * ‖S i‖ ^ 2) := by
+    ‖∑ i ∈ I, R i * S i‖ ^ (2 : ℕ)
+      ≤ (∑ i ∈ I, 1 / v i) * ∑ i ∈ I, v i * (‖R i‖ ^ (2 : ℕ) * ‖S i‖ ^ (2 : ℕ)) := by
   refine (normSq_sum_le_weighted I v hv (fun i => R i * S i)).trans (le_of_eq ?_)
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_

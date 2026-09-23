@@ -51,7 +51,7 @@ theorem continuous_twoSidedExp (a : ℝ) : Continuous (twoSidedExp a) := by
   fun_prop
 
 theorem fourier_twoSidedExp {a : ℝ} (ha : 0 < a) (w : ℝ) :
-    𝓕 (twoSidedExp a) w = ((2 * a / (a ^ 2 + (2 * Real.pi * w) ^ 2) : ℝ) : ℂ) := by
+    𝓕 (twoSidedExp a) w = ((2 * a / (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ)) : ℝ) : ℂ) := by
   set b : ℝ := 2 * Real.pi * w with hb
   set c₁ : ℂ := -(a : ℂ) - (b : ℂ) * I with hc1
   set c₂ : ℂ := (a : ℂ) - (b : ℂ) * I with hc2
@@ -107,21 +107,21 @@ theorem fourier_twoSidedExp {a : ℝ} (ha : 0 < a) (w : ℝ) :
     simp only [Complex.sub_re, Complex.neg_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
       Complex.I_im, Complex.ofReal_im, mul_zero, zero_mul, sub_zero, Complex.zero_re] at hre
     linarith
-  have hdensum : ((a : ℂ) ^ 2 + (b : ℂ) ^ 2) ≠ 0 := by
+  have hdensum : ((a : ℂ) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ)) ≠ 0 := by
     intro h
     have hre := congrArg Complex.re h
     simp only [Complex.add_re, ← Complex.ofReal_pow, Complex.ofReal_re, Complex.zero_re] at hre
     nlinarith [sq_nonneg b, sq_nonneg a]
   have e2 : (1 : ℂ) / ((a : ℂ) - (b : ℂ) * I)
-      = ((a : ℂ) + (b : ℂ) * I) / ((a : ℂ) ^ 2 + (b : ℂ) ^ 2) := by
+      = ((a : ℂ) + (b : ℂ) * I) / ((a : ℂ) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ)) := by
     rw [div_eq_div_iff hden2 hdensum]
-    linear_combination ((b : ℂ) ^ 2) * Complex.I_sq
+    linear_combination ((b : ℂ) ^ (2 : ℕ)) * Complex.I_sq
   have e1 : (1 : ℂ) / (-(a : ℂ) - (b : ℂ) * I)
-      = (-(a : ℂ) + (b : ℂ) * I) / ((a : ℂ) ^ 2 + (b : ℂ) ^ 2) := by
+      = (-(a : ℂ) + (b : ℂ) * I) / ((a : ℂ) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ)) := by
     rw [div_eq_div_iff hden1 hdensum]
-    linear_combination ((b : ℂ) ^ 2) * Complex.I_sq
+    linear_combination ((b : ℂ) ^ (2 : ℕ)) * Complex.I_sq
   have key : (1 : ℂ) / ((a : ℂ) - (b : ℂ) * I) - 1 / (-(a : ℂ) - (b : ℂ) * I)
-      = ((2 * a / (a ^ 2 + b ^ 2) : ℝ) : ℂ) := by
+      = ((2 * a / (a ^ (2 : ℕ) + b ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [e2, e1, div_sub_div_same, Complex.ofReal_div]
     push_cast
     congr 1
@@ -132,21 +132,21 @@ theorem fourier_twoSidedExp {a : ℝ} (ha : 0 < a) (w : ℝ) :
 
 theorem integrable_fourier_twoSidedExp {a : ℝ} (ha : 0 < a) :
     Integrable (𝓕 (twoSidedExp a)) := by
-  have hbase : Integrable fun w : ℝ => (a ^ 2 + (2 * Real.pi * w) ^ 2)⁻¹ := by
+  have hbase : Integrable fun w : ℝ => (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ))⁻¹ := by
     have h := (GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq ha).comp_mul_left'
       (R := 2 * Real.pi) (by positivity)
     exact h
-  have h2 : Integrable fun w : ℝ => ((2 * a / (a ^ 2 + (2 * Real.pi * w) ^ 2) : ℝ) : ℂ) := by
+  have h2 : Integrable fun w : ℝ => ((2 * a / (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ)) : ℝ) : ℂ) := by
     refine (Integrable.ofReal (𝕜 := ℂ) ?_)
     refine (hbase.const_mul (2 * a)).congr ?_
     filter_upwards with w
-    exact (div_eq_mul_inv (2 * a) (a ^ 2 + (2 * Real.pi * w) ^ 2)).symm
+    exact (div_eq_mul_inv (2 * a) (a ^ (2 : ℕ) + (2 * Real.pi * w) ^ (2 : ℕ))).symm
   refine h2.congr ?_
   filter_upwards with w
   exact (fourier_twoSidedExp ha w).symm
 
 theorem integral_cexp_mul_inv_sq_add_sq {a : ℝ} (ha : 0 < a) (t : ℝ) :
-    (∫ x : ℝ, Complex.exp (((x * t : ℝ) : ℂ) * I) * ((a ^ 2 + x ^ 2 : ℝ) : ℂ)⁻¹)
+    (∫ x : ℝ, Complex.exp (((x * t : ℝ) : ℂ) * I) * ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ)⁻¹)
       = ((Real.pi / a * Real.exp (-(a * |t|)) : ℝ) : ℂ) := by
   have hinv := (integrable_twoSidedExp ha).fourierInv_fourier_eq
     (integrable_fourier_twoSidedExp ha) (v := t) (continuous_twoSidedExp a).continuousAt
@@ -155,29 +155,29 @@ theorem integral_cexp_mul_inv_sq_add_sq {a : ℝ} (ha : 0 < a) (t : ℝ) :
   have hTS : twoSidedExp a t = ((Real.exp (-(a * |t|)) : ℝ) : ℂ) := rfl
   rw [hTS] at hinv
   have hinv2 : (∫ v : ℝ, cexp ((↑(2 * Real.pi * (t * v)) : ℂ) * I)
-      * ((2 * a / (a ^ 2 + (2 * Real.pi * v) ^ 2) : ℝ) : ℂ))
+      * ((2 * a / (a ^ (2 : ℕ) + (2 * Real.pi * v) ^ (2 : ℕ)) : ℝ) : ℂ))
       = ((Real.exp (-(a * |t|)) : ℝ) : ℂ) := by
     rw [← hinv]
     refine integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
     show cexp ((↑(2 * Real.pi * (t * v)) : ℂ) * I)
-        * ((2 * a / (a ^ 2 + (2 * Real.pi * v) ^ 2) : ℝ) : ℂ)
+        * ((2 * a / (a ^ (2 : ℕ) + (2 * Real.pi * v) ^ (2 : ℕ)) : ℝ) : ℂ)
       = cexp ((↑(2 * Real.pi * (t * v)) : ℂ) * I) * 𝓕 (twoSidedExp a) v
     rw [fourier_twoSidedExp ha v]
   have hpi : (2 * Real.pi) ≠ 0 := by positivity
   have hscale := MeasureTheory.Measure.integral_comp_div
     (fun v : ℝ => cexp ((↑(2 * Real.pi * (t * v)) : ℂ) * I)
-      * ((2 * a / (a ^ 2 + (2 * Real.pi * v) ^ 2) : ℝ) : ℂ)) (2 * Real.pi)
+      * ((2 * a / (a ^ (2 : ℕ) + (2 * Real.pi * v) ^ (2 : ℕ)) : ℝ) : ℂ)) (2 * Real.pi)
   have hgdiv : ∀ x : ℝ, cexp ((↑(2 * Real.pi * (t * (x / (2 * Real.pi)))) : ℂ) * I)
-      * ((2 * a / (a ^ 2 + (2 * Real.pi * (x / (2 * Real.pi))) ^ 2) : ℝ) : ℂ)
-      = ((2 * a : ℝ) : ℂ) * (cexp ((↑(x * t) : ℂ) * I) * ((a ^ 2 + x ^ 2 : ℝ) : ℂ)⁻¹) := by
+      * ((2 * a / (a ^ (2 : ℕ) + (2 * Real.pi * (x / (2 * Real.pi))) ^ (2 : ℕ)) : ℝ) : ℂ)
+      = ((2 * a : ℝ) : ℂ) * (cexp ((↑(x * t) : ℂ) * I) * ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ)⁻¹) := by
     intro x
     have h1 : 2 * Real.pi * (t * (x / (2 * Real.pi))) = x * t := by
       field_simp
     have h2 : 2 * Real.pi * (x / (2 * Real.pi)) = x := by
       field_simp
     rw [h1, h2]
-    rw [show ((2 * a / (a ^ 2 + x ^ 2) : ℝ) : ℂ)
-        = ((2 * a : ℝ) : ℂ) * ((a ^ 2 + x ^ 2 : ℝ) : ℂ)⁻¹ by
+    rw [show ((2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) : ℝ) : ℂ)
+        = ((2 * a : ℝ) : ℂ) * ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ)⁻¹ by
       rw [Complex.ofReal_div, div_eq_mul_inv]]
     ring
   rw [hinv2, Complex.real_smul] at hscale
@@ -188,7 +188,7 @@ theorem integral_cexp_mul_inv_sq_add_sq {a : ℝ} (ha : 0 < a) (t : ℝ) :
   have hane : ((2 * a : ℝ) : ℂ) ≠ 0 := by
     refine Complex.ofReal_ne_zero.2 ?_
     positivity
-  have hfinal : (∫ x : ℝ, cexp ((↑(x * t) : ℂ) * I) * ((a ^ 2 + x ^ 2 : ℝ) : ℂ)⁻¹)
+  have hfinal : (∫ x : ℝ, cexp ((↑(x * t) : ℂ) * I) * ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ)⁻¹)
       = ((2 * Real.pi : ℝ) : ℂ) * ((Real.exp (-(a * |t|)) : ℝ) : ℂ) / ((2 * a : ℝ) : ℂ) := by
     rw [eq_div_iff hane]
     rw [← hscale]
@@ -200,14 +200,14 @@ theorem integral_cexp_mul_inv_sq_add_sq {a : ℝ} (ha : 0 < a) (t : ℝ) :
 
 /-- **The Cauchy kernel against a frequency**, in the sign convention of the completed source. -/
 theorem integral_inv_sq_add_sq_mul_cexp_neg {a : ℝ} (ha : 0 < a) (L : ℝ) :
-    (∫ x : ℝ, ((a ^ 2 + x ^ 2 : ℝ) : ℂ)⁻¹ * Complex.exp (((-(L * x) : ℝ) : ℂ) * I))
+    (∫ x : ℝ, ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ)⁻¹ * Complex.exp (((-(L * x) : ℝ) : ℂ) * I))
       = ((Real.pi / a * Real.exp (-(a * |L|)) : ℝ) : ℂ) := by
   have h := integral_cexp_mul_inv_sq_add_sq ha (-L)
   rw [abs_neg] at h
   rw [← h]
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  show ((a ^ 2 + x ^ 2 : ℝ) : ℂ)⁻¹ * Complex.exp (((-(L * x) : ℝ) : ℂ) * I)
-      = Complex.exp (((x * -L : ℝ) : ℂ) * I) * ((a ^ 2 + x ^ 2 : ℝ) : ℂ)⁻¹
+  show ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ)⁻¹ * Complex.exp (((-(L * x) : ℝ) : ℂ) * I)
+      = Complex.exp (((x * -L : ℝ) : ℂ) * I) * ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ)⁻¹
   rw [show (x * -L : ℝ) = -(L * x) by ring]
   ring
 

@@ -46,7 +46,7 @@ theorem integrable_kgFreq_mul_of_weight_bound {f : E → ℂ} {B : ℝ}
   rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hpos.le (norm_nonneg _))]
   calc kgFreq ξ * ‖f ξ‖
       ≤ kgFreq ξ * ((kgFreq ξ ^ N)⁻¹ * B) := mul_le_mul_of_nonneg_left (hb ξ) hpos.le
-    _ = kgFreq ξ ^ 1 * (kgFreq ξ ^ N)⁻¹ * B := by rw [pow_one]; ring
+    _ = kgFreq ξ ^ (1 : ℕ) * (kgFreq ξ ^ N)⁻¹ * B := by rw [pow_one]; ring
 
 /-! ## The family of the evolution -/
 
@@ -84,39 +84,39 @@ theorem norm_kgFlowDensityDeriv2_le_weight {K : ℕ} (hNK : N = K + 2) {T t : �
   have hone : (1 : ℝ) ≤ kgFreq ξ := one_le_kgFreq ξ
   have hbound := norm_deriv_deriv_kgPotentialFlow_apply_le_of_abs_le a G₀ ξ ht
   rw [norm_kgFlowDensityDeriv2]
-  have hsplit : (kgFreq ξ ^ (K + 2))⁻¹ = (kgFreq ξ ^ K)⁻¹ * (kgFreq ξ ^ 2)⁻¹ := by
+  have hsplit : (kgFreq ξ ^ (K + 2))⁻¹ = (kgFreq ξ ^ K)⁻¹ * (kgFreq ξ ^ (2 : ℕ))⁻¹ := by
     rw [pow_add, mul_inv]
   have hstep : (kgFreq ξ ^ (K + 2))⁻¹
       * ‖deriv (deriv fun r : ℝ => kgPotentialFlow a G₀ r ξ) t‖
       ≤ (kgFreq ξ ^ (K + 2))⁻¹
-        * (kgFreq ξ ^ 2 * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T) :=
+        * (kgFreq ξ ^ (2 : ℕ) * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T) :=
     mul_le_mul_of_nonneg_left hbound (inv_nonneg.mpr (pow_pos hpos (K + 2)).le)
   refine hstep.trans ?_
   rw [hsplit]
-  have hsq : (0 : ℝ) < kgFreq ξ ^ 2 := pow_pos hpos 2
-  have hsqone : (1 : ℝ) ≤ kgFreq ξ ^ 2 := one_le_pow₀ hone
+  have hsq : (0 : ℝ) < kgFreq ξ ^ (2 : ℕ) := pow_pos hpos 2
+  have hsqone : (1 : ℝ) ≤ kgFreq ξ ^ (2 : ℕ) := one_le_pow₀ hone
   have hKpos : (0 : ℝ) < (kgFreq ξ ^ K)⁻¹ := inv_pos.mpr (pow_pos hpos K)
   have hsize : (0 : ℝ) ≤ kgFlowSize a G₀ T := kgFlowSize_nonneg a G₀ T
   have hM : (0 : ℝ) ≤ kgFlowBoundConst a := kgFlowBoundConst_nonneg a
-  have hinner : (kgFreq ξ ^ 2)⁻¹
-      * (kgFreq ξ ^ 2 * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T)
+  have hinner : (kgFreq ξ ^ (2 : ℕ))⁻¹
+      * (kgFreq ξ ^ (2 : ℕ) * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T)
       ≤ kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T := by
-    have hone' : (kgFreq ξ ^ 2)⁻¹ ≤ 1 := by
+    have hone' : (kgFreq ξ ^ (2 : ℕ))⁻¹ ≤ 1 := by
       rw [inv_le_one_iff₀]
       right
       exact hsqone
-    have hexp : (kgFreq ξ ^ 2)⁻¹ * (kgFreq ξ ^ 2 * kgFlowSize a G₀ T)
+    have hexp : (kgFreq ξ ^ (2 : ℕ))⁻¹ * (kgFreq ξ ^ (2 : ℕ) * kgFlowSize a G₀ T)
         = kgFlowSize a G₀ T := by
       field_simp
     rw [mul_add, hexp]
-    have : (kgFreq ξ ^ 2)⁻¹ * (kgFlowBoundConst a * kgFlowSize a G₀ T)
+    have : (kgFreq ξ ^ (2 : ℕ))⁻¹ * (kgFlowBoundConst a * kgFlowSize a G₀ T)
         ≤ kgFlowBoundConst a * kgFlowSize a G₀ T := by
       nlinarith [mul_nonneg hM hsize]
     linarith
-  calc (kgFreq ξ ^ K)⁻¹ * (kgFreq ξ ^ 2)⁻¹
-        * (kgFreq ξ ^ 2 * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T)
-      = (kgFreq ξ ^ K)⁻¹ * ((kgFreq ξ ^ 2)⁻¹
-        * (kgFreq ξ ^ 2 * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T)) := by
+  calc (kgFreq ξ ^ K)⁻¹ * (kgFreq ξ ^ (2 : ℕ))⁻¹
+        * (kgFreq ξ ^ (2 : ℕ) * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T)
+      = (kgFreq ξ ^ K)⁻¹ * ((kgFreq ξ ^ (2 : ℕ))⁻¹
+        * (kgFreq ξ ^ (2 : ℕ) * kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T)) := by
         ring
     _ ≤ (kgFreq ξ ^ K)⁻¹ * (kgFlowSize a G₀ T + kgFlowBoundConst a * kgFlowSize a G₀ T) :=
         mul_le_mul_of_nonneg_left hinner hKpos.le
@@ -125,7 +125,7 @@ theorem continuous_kgFlowDensityDeriv2_time (ξ : E) :
     Continuous fun t : ℝ => kgFlowDensityDeriv2 a G₀ t ξ := by
   have hfun : (fun t : ℝ => kgFlowDensityDeriv2 a G₀ t ξ)
       = fun t : ℝ => ((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹
-        * (-(((kgFreq ξ : ℝ) : ℂ) ^ 2 * kgPotentialFlow a G₀ t ξ) + kgFlowSource a G₀ ξ t) := by
+        * (-(((kgFreq ξ : ℝ) : ℂ) ^ (2 : ℕ) * kgPotentialFlow a G₀ t ξ) + kgFlowSource a G₀ ξ t) := by
     funext t
     exact kgFlowDensityDeriv2_eq a G₀ t ξ
   rw [hfun]

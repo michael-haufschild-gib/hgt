@@ -67,7 +67,7 @@ theorem exists_positive_real_even_polynomial_critical_packet
     exists_real_even_polynomial_critical_packet negIdx conjIdx w hw f df hf
       hwneg hwconj hfneg hdfneg hfconj hdfconj
   have hreal := eval_real_of_conjEquivariant hQconj
-  have hvalx : ∀ x : ℝ, ∃ t : ℝ, (1 + Q * Q).eval (x : ℂ) = ((1 + t ^ 2 : ℝ) : ℂ) := by
+  have hvalx : ∀ x : ℝ, ∃ t : ℝ, (1 + Q * Q).eval (x : ℂ) = ((1 + t ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro x
     obtain ⟨t, ht⟩ := hreal x
     refine ⟨t, ?_⟩
@@ -82,11 +82,11 @@ theorem exists_positive_real_even_polynomial_critical_packet
       map_one, map_mul]
   · intro x
     obtain ⟨t, ht⟩ := hvalx x
-    exact ⟨1 + t ^ 2, ht, by nlinarith [sq_nonneg t]⟩
+    exact ⟨1 + t ^ (2 : ℕ), ht, by nlinarith [sq_nonneg t]⟩
   · intro x
     obtain ⟨t, ht⟩ := hvalx x
     rw [ht]
-    have hpos : (0 : ℝ) < 1 + t ^ 2 := by nlinarith [sq_nonneg t]
+    have hpos : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by nlinarith [sq_nonneg t]
     exact Complex.ofReal_ne_zero.mpr hpos.ne'
   · intro i
     obtain ⟨hQ1, hQ2⟩ := hQ i
@@ -225,8 +225,8 @@ theorem expGauge_affine_of_orderOne {Q F : ℂ → ℂ}
     (hQ : Differentiable ℂ Q) (hF : Differentiable ℂ F)
     (hFord : ∀ z, meromorphicOrderAt F z ≠ ⊤)
     (hGord : ∀ z, meromorphicOrderAt (fun w => Complex.exp (Q w) * F w) z ≠ ⊤)
-    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ 2)
-    (hproxG : proximity (fun w => Complex.exp (Q w) * F w) ⊤ =o[atTop] fun r : ℝ => r ^ 2) :
+    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ))
+    (hproxG : proximity (fun w => Complex.exp (Q w) * F w) ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ)) :
     ∃ a b : ℂ, ∀ z, Complex.exp (Q z) = Complex.exp (a * z + b) := by
   have hexp : Differentiable ℂ fun w => Complex.exp (Q w) := fun w => (hQ w).cexp
   have hG : Differentiable ℂ fun w => Complex.exp (Q w) * F w := hexp.mul hF

@@ -333,7 +333,7 @@ theorem exists_norm_digamma_vertical_unit_shift_le :
     congr 1
     field_simp
   have hrem := norm_log_one_add_sub_taylor_le' huhalf (n := 2) (by omega)
-  have hrem' : ‖Complex.log (1 + Complex.I / s) - Complex.I / s‖ ≤ ‖Complex.I / s‖ ^ 2 := by
+  have hrem' : ‖Complex.log (1 + Complex.I / s) - Complex.I / s‖ ≤ ‖Complex.I / s‖ ^ (2 : ℕ) := by
     simpa [Finset.sum_range_succ] using hrem
   have hlog : ‖Complex.log (s + Complex.I) - Complex.log s‖ ≤ 2 / ‖s‖ := by
     rw [hlogeq]
@@ -344,7 +344,7 @@ theorem exists_norm_digamma_vertical_unit_shift_le :
             ring
       _ ≤ ‖Complex.log (1 + Complex.I / s) - Complex.I / s‖ + ‖Complex.I / s‖ :=
         norm_add_le _ _
-      _ ≤ ‖Complex.I / s‖ ^ 2 + ‖Complex.I / s‖ := by gcongr
+      _ ≤ ‖Complex.I / s‖ ^ (2 : ℕ) + ‖Complex.I / s‖ := by gcongr
       _ ≤ 2 / ‖s‖ := by
         rw [hu]
         have hq0 : 0 ≤ 1 / ‖s‖ := by positivity
@@ -354,7 +354,7 @@ theorem exists_norm_digamma_vertical_unit_shift_le :
         have hqmul : (1 / ‖s‖) * (1 / ‖s‖) ≤ (1 / ‖s‖) * 1 :=
           mul_le_mul_of_nonneg_left hq1 hq0
         calc
-          (1 / ‖s‖) ^ 2 + 1 / ‖s‖ ≤ 1 / ‖s‖ + 1 / ‖s‖ := by
+          (1 / ‖s‖) ^ (2 : ℕ) + 1 / ‖s‖ ≤ 1 / ‖s‖ + 1 / ‖s‖ := by
             gcongr
             simpa [pow_two] using hqmul
           _ = 2 / ‖s‖ := by ring

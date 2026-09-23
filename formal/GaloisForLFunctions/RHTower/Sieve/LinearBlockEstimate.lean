@@ -23,8 +23,8 @@ open MeasureTheory Finset
 theorem normSq_linWindowSum_le_logWindowSum (a : ℕ → ℂ) (s : Finset ℕ) (hs : ∀ n ∈ s, 0 < n)
     (ha : ∀ n : ℕ, ‖a n‖ ≤ 1) {L Y ε u : ℝ} (hL : 0 ≤ L) (hY : 0 < Y) (hε : 0 ≤ ε)
     (hu₁ : Real.log Y < u) (hu₂ : u ≤ Real.log (Y * (1 + ε))) :
-    ‖linWindowSum a s L u‖ ^ 2
-      ≤ 2 * ‖logWindowSum a s (Real.log (1 + L / Y)) u‖ ^ 2 + 2 * (ε * L + 1) ^ 2 := by
+    ‖linWindowSum a s L u‖ ^ (2 : ℕ)
+      ≤ 2 * ‖logWindowSum a s (Real.log (1 + L / Y)) u‖ ^ (2 : ℕ) + 2 * (ε * L + 1) ^ (2 : ℕ) := by
   classical
   set δ : ℝ := Real.log (1 + L / Y) with hδdef
   have hratio : (0 : ℝ) < 1 + L / Y := by positivity
@@ -62,7 +62,7 @@ theorem normSq_linWindowSum_le_logWindowSum (a : ℕ → ℂ) (s : Finset ℕ) (
     rwa [hxdef, Real.log_exp] at h
   rw [hlin, hlog]
   refine le_trans (normSq_linear_le_multiplicative_length a s ha hx0.le hL hle) ?_
-  have hsq : (x * Real.exp δ - (x + L) + 1) ^ 2 ≤ (ε * L + 1) ^ 2 := by
+  have hsq : (x * Real.exp δ - (x + L) + 1) ^ (2 : ℕ) ≤ (ε * L + 1) ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ x * Real.exp δ - (x + L) + 1 := by linarith
     nlinarith [hexcess, h0]
   linarith
@@ -73,11 +73,11 @@ theorem setIntegral_normSq_linWindowSum_block_le (a : ℕ → ℂ) (s : Finset �
     (hs : ∀ n ∈ s, 0 < n) (ha : ∀ n : ℕ, ‖a n‖ ≤ 1)
     {L Y ε M₁ M₂ W : ℝ} (hL : 0 < L) (hY : 0 < Y) (hε : 0 ≤ ε) (hW : 0 < W)
     (hM₁ : 0 ≤ M₁) (hM₂ : 0 ≤ M₂)
-    (h₁ : ∀ w ∈ Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2 ≤ M₁)
-    (h₂ : ∀ w : ℝ, ‖logPoly a s w‖ ^ 2 ≤ M₂) :
-    (∫ u in Set.Ioc (Real.log Y) (Real.log (Y * (1 + ε))), ‖linWindowSum a s L u‖ ^ 2)
-      ≤ 2 * (M₁ * Real.log (1 + L / Y) + M₂ * (2 / (Real.pi ^ 2 * W)))
-        + 2 * (ε * L + 1) ^ 2
+    (h₁ : ∀ w ∈ Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ) ≤ M₁)
+    (h₂ : ∀ w : ℝ, ‖logPoly a s w‖ ^ (2 : ℕ) ≤ M₂) :
+    (∫ u in Set.Ioc (Real.log Y) (Real.log (Y * (1 + ε))), ‖linWindowSum a s L u‖ ^ (2 : ℕ))
+      ≤ 2 * (M₁ * Real.log (1 + L / Y) + M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)))
+        + 2 * (ε * L + 1) ^ (2 : ℕ)
             * volume.real (Set.Ioc (Real.log Y) (Real.log (Y * (1 + ε)))) := by
   classical
   set δ : ℝ := Real.log (1 + L / Y) with hδdef
@@ -90,14 +90,14 @@ theorem setIntegral_normSq_linWindowSum_block_le (a : ℕ → ℂ) (s : Finset �
   have hEfin : volume E ≠ ⊤ := by
     rw [hEdef]
     simp
-  have hLHS : IntegrableOn (fun u : ℝ => ‖linWindowSum a s L u‖ ^ 2) E :=
+  have hLHS : IntegrableOn (fun u : ℝ => ‖linWindowSum a s L u‖ ^ (2 : ℕ)) E :=
     integrableOn_normSq_linWindowSum a s L hEfin
   have hRHS : IntegrableOn
-      (fun u : ℝ => 2 * ‖logWindowSum a s δ u‖ ^ 2 + 2 * (ε * L + 1) ^ 2) E := by
+      (fun u : ℝ => 2 * ‖logWindowSum a s δ u‖ ^ (2 : ℕ) + 2 * (ε * L + 1) ^ (2 : ℕ)) E := by
     refine Integrable.add ?_ (integrableOn_const hEfin (by finiteness))
     exact ((integrable_normSq_logWindowSum a s δ).const_mul 2).integrableOn
-  have hstep : (∫ u in E, ‖linWindowSum a s L u‖ ^ 2)
-      ≤ ∫ u in E, (2 * ‖logWindowSum a s δ u‖ ^ 2 + 2 * (ε * L + 1) ^ 2) := by
+  have hstep : (∫ u in E, ‖linWindowSum a s L u‖ ^ (2 : ℕ))
+      ≤ ∫ u in E, (2 * ‖logWindowSum a s δ u‖ ^ (2 : ℕ) + 2 * (ε * L + 1) ^ (2 : ℕ)) := by
     refine setIntegral_mono_on hLHS hRHS measurableSet_Ioc fun u hu => ?_
     rw [hEdef, Set.mem_Ioc] at hu
     exact normSq_linWindowSum_le_logWindowSum a s hs ha hL.le hY hε hu.1 hu.2
@@ -105,8 +105,8 @@ theorem setIntegral_normSq_linWindowSum_block_le (a : ℕ → ℂ) (s : Finset �
   rw [MeasureTheory.integral_add
     (((integrable_normSq_logWindowSum a s δ).const_mul 2).integrableOn)
     (integrableOn_const hEfin (by finiteness)), integral_const_mul, setIntegral_const, smul_eq_mul]
-  have hmass : (∫ u in E, ‖logWindowSum a s δ u‖ ^ 2)
-      ≤ M₁ * δ + M₂ * (2 / (Real.pi ^ 2 * W)) :=
+  have hmass : (∫ u in E, ‖logWindowSum a s δ u‖ ^ (2 : ℕ))
+      ≤ M₁ * δ + M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)) :=
     setIntegral_normSq_logWindowSum_le a s hδ0 hW hM₁ hM₂ h₁ h₂ E
   have hvol : (0 : ℝ) ≤ volume.real E := measureReal_nonneg
   nlinarith [hmass, hvol, sq_nonneg (ε * L + 1)]

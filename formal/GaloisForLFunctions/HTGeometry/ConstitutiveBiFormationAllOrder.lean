@@ -201,7 +201,7 @@ theorem hadamardTensor_varianceNormalized_conservation (k : ℕ)
     (B : MultilinearMap ℝ (fun _ : HadamardCumulantIndex k => ℝ) ℝ)
     (a : ℝ) (m : ℕ) (hm : m ≠ 0) :
     (m : ℝ) ^ (k + 1) *
-        hadamardTensorDepthCurrent k B (a / (m : ℝ)) (m ^ 2) =
+        hadamardTensorDepthCurrent k B (a / (m : ℝ)) (m ^ (2 : ℕ)) =
       hadamardTensorResponse k B a := by
   rw [hadamardTensorResponse_eq, hadamardTensorDepthCurrent,
     hadamardTensorResponse_eq]

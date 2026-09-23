@@ -29,7 +29,7 @@ def pureStateDensity {ι : Type*} [Fintype ι]
 
 theorem norm_pureStateDensity_sq {ι : Type*} [Fintype ι]
     (ψ : EuclideanSpace ℂ ι) :
-    ‖pureStateDensity ψ‖ ^ 2 = ‖ψ‖ ^ 4 := by
+    ‖pureStateDensity ψ‖ ^ (2 : ℕ) = ‖ψ‖ ^ (4 : ℕ) := by
   rw [EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type]
   simp_rw [pureStateDensity_apply, norm_mul, RCLike.norm_conj, mul_pow]
   rw [← Fintype.sum_mul_sum, ← EuclideanSpace.norm_sq_eq]
@@ -38,7 +38,7 @@ theorem norm_pureStateDensity_sq {ι : Type*} [Fintype ι]
 theorem inner_pureStateDensity {ι : Type*} [Fintype ι]
     (ψ φ : EuclideanSpace ℂ ι) :
     inner ℂ (pureStateDensity ψ) (pureStateDensity φ) =
-      (‖inner ℂ ψ φ‖ ^ 2 : ℂ) := by
+      (‖inner ℂ ψ φ‖ ^ (2 : ℕ) : ℂ) := by
   rw [EuclideanSpace.inner_toLp_toLp]
   simp only [dotProduct, pureStateDensity_apply, Pi.star_apply]
   rw [Fintype.sum_prod_type]
@@ -51,7 +51,7 @@ theorem inner_pureStateDensity {ι : Type*} [Fintype ι]
     (∑ i, ∑ j,
       φ i * starRingEnd ℂ (φ j) *
         starRingEnd ℂ (ψ i * starRingEnd ℂ (ψ j))) =
-      (‖inner ℂ ψ φ‖ ^ 2 : ℂ)
+      (‖inner ℂ ψ φ‖ ^ (2 : ℕ) : ℂ)
   simp_rw [map_mul]
   simp_rw [starRingEnd_self_apply]
   simp_rw [hfactor]
@@ -60,7 +60,7 @@ theorem inner_pureStateDensity {ι : Type*} [Fintype ι]
   change
     (∑ i, φ i * starRingEnd ℂ (ψ i)) *
         (∑ j, ψ j * starRingEnd ℂ (φ j)) =
-      (‖∑ i, φ i * starRingEnd ℂ (ψ i)‖ ^ 2 : ℂ)
+      (‖∑ i, φ i * starRingEnd ℂ (ψ i)‖ ^ (2 : ℕ) : ℂ)
   rw [show (∑ j, ψ j * starRingEnd ℂ (φ j)) =
       starRingEnd ℂ (∑ i, φ i * starRingEnd ℂ (ψ i)) by
         rw [map_sum]
@@ -74,16 +74,16 @@ theorem inner_pureStateDensity {ι : Type*} [Fintype ι]
 /-- Trace distance between normalized pure states, in its fidelity form. -/
 def pureStateTraceDistance {ι : Type*} [Fintype ι]
     (ψ φ : EuclideanSpace ℂ ι) : ℝ :=
-  Real.sqrt (1 - ‖inner ℂ ψ φ‖ ^ 2)
+  Real.sqrt (1 - ‖inner ℂ ψ φ‖ ^ (2 : ℕ))
 
 theorem dist_pureStateDensity_sq {ι : Type*} [Fintype ι]
     (ψ φ : EuclideanSpace ℂ ι) (hψ : ‖ψ‖ = 1) (hφ : ‖φ‖ = 1) :
-    dist (pureStateDensity ψ) (pureStateDensity φ) ^ 2 =
-      2 * (1 - ‖inner ℂ ψ φ‖ ^ 2) := by
+    dist (pureStateDensity ψ) (pureStateDensity φ) ^ (2 : ℕ) =
+      2 * (1 - ‖inner ℂ ψ φ‖ ^ (2 : ℕ)) := by
   rw [dist_eq_norm, norm_sub_sq (𝕜 := ℂ), norm_pureStateDensity_sq,
     norm_pureStateDensity_sq, inner_pureStateDensity]
-  change ‖ψ‖ ^ 4 - 2 * (((‖inner ℂ ψ φ‖ : ℂ) ^ 2).re) + ‖φ‖ ^ 4 =
-    2 * (1 - ‖inner ℂ ψ φ‖ ^ 2)
+  change ‖ψ‖ ^ (4 : ℕ) - 2 * (((‖inner ℂ ψ φ‖ : ℂ) ^ (2 : ℕ)).re) + ‖φ‖ ^ (4 : ℕ) =
+    2 * (1 - ‖inner ℂ ψ φ‖ ^ (2 : ℕ))
   simp [hψ, hφ, pow_two, Complex.mul_re]
   ring
 
@@ -100,7 +100,7 @@ theorem dist_pureStateDensity_eq_sqrtTwo_mul_traceDistance
     dist (pureStateDensity ψ) (pureStateDensity φ) =
       Real.sqrt 2 * pureStateTraceDistance ψ φ := by
   have hid := dist_pureStateDensity_sq ψ φ hψ hφ
-  have hdeficit : 0 ≤ 1 - ‖inner ℂ ψ φ‖ ^ 2 := by
+  have hdeficit : 0 ≤ 1 - ‖inner ℂ ψ φ‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (dist (pureStateDensity ψ) (pureStateDensity φ))]
   apply (sq_eq_sq₀ dist_nonneg
     (mul_nonneg (Real.sqrt_nonneg _) (pureStateTraceDistance_nonneg ψ φ))).mp
@@ -144,8 +144,8 @@ theorem fullUniformPhaseChoiVector_norm
   simp only [norm_zero, mul_one, one_pow]
   have hsum (i : Fin d) :
       (∑ j : Fin d,
-        (if i = j then |Real.sqrt (d : ℝ)|⁻¹ else 0) ^ 2) =
-        |Real.sqrt (d : ℝ)|⁻¹ ^ 2 := by
+        (if i = j then |Real.sqrt (d : ℝ)|⁻¹ else 0) ^ (2 : ℕ)) =
+        |Real.sqrt (d : ℝ)|⁻¹ ^ (2 : ℕ) := by
     rw [Finset.sum_eq_single i]
     · simp
     · intro j _ hji
@@ -154,7 +154,7 @@ theorem fullUniformPhaseChoiVector_norm
   simp_rw [hsum]
   rw [Finset.sum_const, Finset.card_fin, nsmul_eq_mul]
   rw [abs_of_pos (Real.sqrt_pos.2 hdR), inv_pow]
-  rw [show (Real.sqrt (d : ℝ)) ^ 2 = (d : ℝ) by
+  rw [show (Real.sqrt (d : ℝ)) ^ (2 : ℕ) = (d : ℝ) by
     exact Real.sq_sqrt hdR.le]
   field_simp
 
@@ -209,7 +209,7 @@ theorem maximallyProjective_pureChoiTraceHardTimes_syndetic
       (Fintype.card gate : ℝ) ^ (s + 1) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
             Real.sqrt
-              (Real.pi * (2 * (Real.sqrt 2 * ε) ^ 2) / 2) ^
+              (Real.pi * (2 * (Real.sqrt 2 * ε) ^ (2 : ℕ)) / 2) ^
                 ((d + 1 : ℕ) - 1)) < 1) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ a : ℝ, ∃ t ∈ Set.Icc a (a + L),
       ∀ w : PaddedCircuitWord gate s,

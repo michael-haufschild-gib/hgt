@@ -61,7 +61,7 @@ theorem q8BiquadTwoAdicU_mul_conjugate :
       q8FirstConjugationSecond (q8BiquadTwoAdicU : K2) = -1 := by
   rw [q8FirstConjugationSecond_q8BiquadTwoAdicU]
   have hu := congrArg (fun x : 𝓞 K2 => (x : K2)) q8BiquadTwoAdicU_sq
-  change (q8BiquadTwoAdicU : K2) ^ 2 = (q8BiquadTwoAdicU : K2) + 1 at hu
+  change (q8BiquadTwoAdicU : K2) ^ (2 : ℕ) = (q8BiquadTwoAdicU : K2) + 1 at hu
   rw [mul_sub, mul_one, ← pow_two, hu]
   ring
 

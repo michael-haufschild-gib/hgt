@@ -61,7 +61,7 @@ theorem two_mul_X_mul_liEvenCrossPullbacks (n : ℕ) :
         xiHardEdgeReciprocalPolynomial (1 / 2) (liEvenCrossRightPolynomial n) =
       X * (C 4 - X) *
         ((Polynomial.Chebyshev.U ℝ (n : ℤ)).comp
-          (C 1 - C (1 / 2) * X)) ^ 2 := by
+          (C 1 - C (1 / 2) * X)) ^ (2 : ℕ) := by
   apply Polynomial.funext
   intro u
   simp only [Polynomial.eval_ofNat, Polynomial.eval_X, Polynomial.eval_sub,
@@ -71,7 +71,7 @@ theorem two_mul_X_mul_liEvenCrossPullbacks (n : ℕ) :
   norm_num
   rw [show (1 / 2 : ℝ) * u - 1 = -(1 - (1 / 2 : ℝ) * u) by ring]
   rw [Polynomial.Chebyshev.U_eval_neg ℝ n (1 - (1 / 2 : ℝ) * u)]
-  have hsign : (((n : ℤ).negOnePow : ℤ) : ℝ) ^ 2 = 1 := by
+  have hsign : (((n : ℤ).negOnePow : ℤ) : ℝ) ^ (2 : ℕ) = 1 := by
     have hsignInt : (n : ℤ).negOnePow * (n : ℤ).negOnePow = 1 := by
       rw [← Int.negOnePow_add]
       rw [show (n : ℤ) + (n : ℤ) = 2 * (n : ℤ) by ring,
@@ -81,14 +81,14 @@ theorem two_mul_X_mul_liEvenCrossPullbacks (n : ℕ) :
   linear_combination (norm := ring_nf)
     u * (4 - u) *
       (Polynomial.eval (1 - (1 / 2 : ℝ) * u)
-        (Polynomial.Chebyshev.U ℝ (n : ℤ))) ^ 2 * hsign
+        (Polynomial.Chebyshev.U ℝ (n : ℤ))) ^ (2 : ℕ) * hsign
 
 /-- The real even-Li square equals `X` times the reciprocal cross polynomial. -/
 theorem X_mul_liEvenCrossMomentPolynomial (n : ℕ) :
     X * liEvenCrossMomentPolynomial n =
       X * (C 4 - X) *
         ((Polynomial.Chebyshev.U ℝ (n : ℤ)).comp
-          (C 1 - C (1 / 2) * X)) ^ 2 := by
+          (C 1 - C (1 / 2) * X)) ^ (2 : ℕ) := by
   rw [liEvenCrossMomentPolynomial]
   simpa only [mul_assoc, mul_left_comm, mul_comm] using two_mul_X_mul_liEvenCrossPullbacks n
 
@@ -147,7 +147,7 @@ theorem re_liPrimeArchEvenSquareSource_eq_two_mul_crossBilinear (n : ℕ) :
 theorem xiPolynomialGaussianHeatTraceReal_cross_nonneg_of_rh
     (hRH : RiemannHypothesis) (P Q : Polynomial ℝ)
     {t : ℝ} (ht : 0 < t)
-    (hPQ : ∀ x : ℝ, 0 ≤ P.eval (x ^ 2) * Q.eval (x ^ 2)) :
+    (hPQ : ∀ x : ℝ, 0 ≤ P.eval (x ^ (2 : ℕ)) * Q.eval (x ^ (2 : ℕ))) :
     0 ≤ (xiPolynomialGaussianHeatTraceReal (P + Q) t -
       xiPolynomialGaussianHeatTraceReal (P - Q) t) / 4 := by
   have hsplus := summable_xiPolynomialGaussianHeatTerm ht (P + Q)
@@ -171,12 +171,12 @@ theorem xiPolynomialGaussianHeatTraceReal_cross_nonneg_of_rh
   obtain ⟨x, hcoord⟩ := xiSpectralPoint_real_of_rh hRH q
   rw [xiPolynomialGaussianHeatTerm, xiPolynomialGaussianHeatTerm,
     xiGaussianHeatTerm, hcoord]
-  have hsq : (x : ℂ) ^ 2 = ((x ^ 2 : ℝ) : ℂ) := by push_cast; rfl
+  have hsq : (x : ℂ) ^ (2 : ℕ) = ((x ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; rfl
   rw [hsq, evalRealPolynomial_ofReal, evalRealPolynomial_ofReal]
-  have hexpC : Complex.exp (-(t : ℂ) * ((x ^ 2 : ℝ) : ℂ)) =
-      ((Real.exp (-(t * x ^ 2)) : ℝ) : ℂ) := by
-    rw [show -(t : ℂ) * ((x ^ 2 : ℝ) : ℂ) =
-      ((-(t * x ^ 2) : ℝ) : ℂ) by push_cast; ring]
+  have hexpC : Complex.exp (-(t : ℂ) * ((x ^ (2 : ℕ) : ℝ) : ℂ)) =
+      ((Real.exp (-(t * x ^ (2 : ℕ))) : ℝ) : ℂ) := by
+    rw [show -(t : ℂ) * ((x ^ (2 : ℕ) : ℝ) : ℂ) =
+      ((-(t * x ^ (2 : ℕ)) : ℝ) : ℂ) by push_cast; ring]
     exact (Complex.ofReal_exp _).symm
   rw [hexpC]
   simp only [Polynomial.eval_add, Polynomial.eval_sub, pow_two,
@@ -205,38 +205,38 @@ theorem liEvenPrimeGammaCrossBalance_nonneg_of_rh
   let e := routeUHardEdgeCommonRightCoefficients (1 / 2) P Q
   let L := routeUHardEdgeCommonLeftReversedPolynomial (1 / 2) P Q
   let R := routeUHardEdgeCommonRightReversedPolynomial (1 / 2) P Q
-  have hLR : ∀ x : ℝ, 0 ≤ L.eval (x ^ 2) * R.eval (x ^ 2) := by
+  have hLR : ∀ x : ℝ, 0 ≤ L.eval (x ^ (2 : ℕ)) * R.eval (x ^ (2 : ℕ)) := by
     intro x
-    have hden : 0 < (1 / 2 : ℝ) ^ 2 + x ^ 2 := by positivity
+    have hden : 0 < (1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
     have hcoord : 0 ≤ 1 -
-        (((1 / 2 : ℝ) ^ 2 - x ^ 2) / ((1 / 2 : ℝ) ^ 2 + x ^ 2)) := by
+        (((1 / 2 : ℝ) ^ (2 : ℕ) - x ^ (2 : ℕ)) / ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ))) := by
       rw [show 1 -
-          (((1 / 2 : ℝ) ^ 2 - x ^ 2) / ((1 / 2 : ℝ) ^ 2 + x ^ 2)) =
-        2 * x ^ 2 / ((1 / 2 : ℝ) ^ 2 + x ^ 2) by
+          (((1 / 2 : ℝ) ^ (2 : ℕ) - x ^ (2 : ℕ)) / ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ))) =
+        2 * x ^ (2 : ℕ) / ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ)) by
           field_simp [hden.ne']; ring]
       positivity
-    rw [show L.eval (x ^ 2) =
-        ((1 / 2 : ℝ) ^ 2 + x ^ 2) ^ d *
-          P.eval (((1 / 2 : ℝ) ^ 2 - x ^ 2) /
-            ((1 / 2 : ℝ) ^ 2 + x ^ 2)) by
+    rw [show L.eval (x ^ (2 : ℕ)) =
+        ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ d *
+          P.eval (((1 / 2 : ℝ) ^ (2 : ℕ) - x ^ (2 : ℕ)) /
+            ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ))) by
           simpa only [L, d] using
             eval_routeUHardEdgeCommonLeftReversedPolynomial
               (1 / 2) P Q hden.ne',
-      show R.eval (x ^ 2) =
-        ((1 / 2 : ℝ) ^ 2 + x ^ 2) ^ d *
-          Q.eval (((1 / 2 : ℝ) ^ 2 - x ^ 2) /
-            ((1 / 2 : ℝ) ^ 2 + x ^ 2)) by
+      show R.eval (x ^ (2 : ℕ)) =
+        ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ d *
+          Q.eval (((1 / 2 : ℝ) ^ (2 : ℕ) - x ^ (2 : ℕ)) /
+            ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ))) by
           simpa only [R, d] using
             eval_routeUHardEdgeCommonRightReversedPolynomial
               (1 / 2) P Q hden.ne']
     simp only [Q, liEvenCrossRightPolynomial, Polynomial.eval_mul,
       Polynomial.eval_sub, Polynomial.eval_one, Polynomial.eval_X]
     have hnon : 0 ≤
-        (((1 / 2 : ℝ) ^ 2 + x ^ 2) ^ d) ^ 2 *
-          (1 - (((1 / 2 : ℝ) ^ 2 - x ^ 2) /
-            ((1 / 2 : ℝ) ^ 2 + x ^ 2))) *
-          (P.eval (((1 / 2 : ℝ) ^ 2 - x ^ 2) /
-            ((1 / 2 : ℝ) ^ 2 + x ^ 2))) ^ 2 :=
+        (((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ d) ^ (2 : ℕ) *
+          (1 - (((1 / 2 : ℝ) ^ (2 : ℕ) - x ^ (2 : ℕ)) /
+            ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ)))) *
+          (P.eval (((1 / 2 : ℝ) ^ (2 : ℕ) - x ^ (2 : ℕ)) /
+            ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ)))) ^ (2 : ℕ) :=
       mul_nonneg (mul_nonneg (sq_nonneg _) hcoord) (sq_nonneg _)
     convert hnon using 1
     ring
@@ -305,7 +305,7 @@ theorem riemannHypothesis_iff_liEvenPrimeGammaCrossBalanceNonnegative :
 theorem xiPolynomialGaussianHeatTraceReal_eq_momentFunctional_sq
     (P : Polynomial ℝ) {t : ℝ} (ht : 0 < t) :
     xiPolynomialGaussianHeatTraceReal P t =
-      HTGeometry.momentFunctional (fun k ↦ xiGaussianHeatMomentReal k t) (P ^ 2) := by
+      HTGeometry.momentFunctional (fun k ↦ xiGaussianHeatMomentReal k t) (P ^ (2 : ℕ)) := by
   let N := P.natDegree + 1
   let c : Fin N → ℝ := fun i ↦ P.coeff i
   have hof : Polynomial.ofFn N c = P := by
@@ -317,7 +317,7 @@ theorem xiPolynomialGaussianHeatTraceReal_eq_momentFunctional_sq
       congr 1
       exact routeUPolynomial_eq_coeff_rangeSum P
     _ = HTGeometry.momentFunctional
-          (fun k ↦ xiGaussianHeatMomentReal k t) ((Polynomial.ofFn N c) ^ 2) := by
+          (fun k ↦ xiGaussianHeatMomentReal k t) ((Polynomial.ofFn N c) ^ (2 : ℕ)) := by
       rw [← HTGeometry.dotProduct_mulVec_momentHankelMatrix]
       simp only [xiHeatHankelForm, dotProduct, mulVec,
         HTGeometry.momentHankelMatrix, c, Finset.mul_sum]
@@ -333,7 +333,7 @@ theorem xiPolynomialGaussianHeatTraceReal_eq_momentFunctional_sq
       intro k _
       ring
     _ = HTGeometry.momentFunctional
-          (fun k ↦ xiGaussianHeatMomentReal k t) (P ^ 2) := by rw [hof]
+          (fun k ↦ xiGaussianHeatMomentReal k t) (P ^ (2 : ℕ)) := by rw [hof]
 
 /-- Polarized real polynomial Xi heat trace. -/
 def xiPolynomialGaussianHeatCrossTraceReal
@@ -350,8 +350,8 @@ theorem xiPolynomialGaussianHeatCrossTraceReal_eq_momentFunctional_mul
     xiPolynomialGaussianHeatTraceReal_eq_momentFunctional_sq _ ht,
     xiPolynomialGaussianHeatTraceReal_eq_momentFunctional_sq _ ht]
   rw [← HTGeometry.momentFunctional_sub]
-  rw [show (P + Q) ^ 2 - (P - Q) ^ 2 = C 4 * (P * Q) by
-    change (P + Q) ^ 2 - (P - Q) ^ 2 = (4 : Polynomial ℝ) * (P * Q)
+  rw [show (P + Q) ^ (2 : ℕ) - (P - Q) ^ (2 : ℕ) = C 4 * (P * Q) by
+    change (P + Q) ^ (2 : ℕ) - (P - Q) ^ (2 : ℕ) = (4 : Polynomial ℝ) * (P * Q)
     ring]
   rw [HTGeometry.momentFunctional_C_mul]
   ring
@@ -452,7 +452,7 @@ theorem liEvenCross_leftReversedPolynomial_factor (n : ℕ) :
   apply (Set.Ioi_infinite (0 : ℝ)).mono
   intro W hW
   simp only [Set.mem_setOf_eq, Set.mem_Ioi] at hW ⊢
-  have hden : (1 / 2 : ℝ) ^ 2 + W ≠ 0 := by positivity
+  have hden : (1 / 2 : ℝ) ^ (2 : ℕ) + W ≠ 0 := by positivity
   rw [eval_routeUHardEdgeCommonLeftReversedPolynomial _ _ _ hden,
     liEvenCross_commonLiftDegree, Polynomial.eval_mul,
     liEvenCrossBaseReversedPolynomial,
@@ -473,7 +473,7 @@ theorem liEvenCross_rightReversedPolynomial_factor (n : ℕ) :
   apply (Set.Ioi_infinite (0 : ℝ)).mono
   intro W hW
   simp only [Set.mem_setOf_eq, Set.mem_Ioi] at hW ⊢
-  have hden : (1 / 2 : ℝ) ^ 2 + W ≠ 0 := by positivity
+  have hden : (1 / 2 : ℝ) ^ (2 : ℕ) + W ≠ 0 := by positivity
   rw [eval_routeUHardEdgeCommonRightReversedPolynomial _ _ _ hden,
     liEvenCross_commonLiftDegree, liEvenCrossRightPolynomial,
     Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_one,
@@ -490,63 +490,63 @@ theorem liEvenCross_rightReversedPolynomial_factor (n : ℕ) :
 /-- Completed Gaussian moment of the exact Stieltjes-localized LI-XP2 square. -/
 def liEvenStieltjesLocalizedHeatSource (n : ℕ) (t : ℝ) : ℝ :=
   HTGeometry.momentFunctional (fun k ↦ xiGaussianHeatMomentReal k t)
-    (X * (C (1 / 4) + X) * (liEvenCrossBaseReversedPolynomial n) ^ 2)
+    (X * (C (1 / 4) + X) * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ))
 
 /-- Unlocalized base-square heat energy whose first two derivatives generate the LI-XP2 source. -/
 def liEvenBaseHeatEnergy (n : ℕ) (t : ℝ) : ℝ :=
   HTGeometry.momentFunctional (fun k ↦ xiGaussianHeatMomentReal k t)
-    ((liEvenCrossBaseReversedPolynomial n) ^ 2)
+    ((liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ))
 
 /-- First heat derivative of the base square is the negative once-shifted square moment. -/
 theorem hasDerivAt_liEvenBaseHeatEnergy (n : ℕ) {t : ℝ} (ht : 0 < t) :
     HasDerivAt (liEvenBaseHeatEnergy n)
       (-HTGeometry.momentFunctional (fun k ↦ xiGaussianHeatMomentReal k t)
-        (X * (liEvenCrossBaseReversedPolynomial n) ^ 2)) t := by
+        (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ))) t := by
   change HasDerivAt
     (fun s : ℝ ↦ HTGeometry.momentFunctional
       (fun k ↦ xiGaussianHeatMomentReal k s)
-      ((liEvenCrossBaseReversedPolynomial n) ^ 2))
+      ((liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ)))
     (-HTGeometry.momentFunctional (fun k ↦ xiGaussianHeatMomentReal k t)
-      (X * (liEvenCrossBaseReversedPolynomial n) ^ 2)) t
+      (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ))) t
   exact hasDerivAt_xiGaussianMomentFunctional
-    ((liEvenCrossBaseReversedPolynomial n) ^ 2) ht
+    ((liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ)) ht
 
 /-- Pointwise first-derivative form of the LI-XP2 base energy. -/
 theorem deriv_liEvenBaseHeatEnergy (n : ℕ) {t : ℝ} (ht : 0 < t) :
     deriv (liEvenBaseHeatEnergy n) t =
       -HTGeometry.momentFunctional (fun k ↦ xiGaussianHeatMomentReal k t)
-        (X * (liEvenCrossBaseReversedPolynomial n) ^ 2) :=
+        (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ)) :=
   (hasDerivAt_liEvenBaseHeatEnergy n ht).deriv
 
 /-- The second derivative is the twice-shifted square moment, unconditionally on positive time. -/
 theorem secondDeriv_liEvenBaseHeatEnergy (n : ℕ) {t : ℝ} (ht : 0 < t) :
     deriv (fun s : ℝ ↦ deriv (liEvenBaseHeatEnergy n) s) t =
       HTGeometry.momentFunctional (fun k ↦ xiGaussianHeatMomentReal k t)
-        (X ^ 2 * (liEvenCrossBaseReversedPolynomial n) ^ 2) := by
+        (X ^ (2 : ℕ) * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ)) := by
   have hev :
       (fun s : ℝ ↦ deriv (liEvenBaseHeatEnergy n) s) =ᶠ[nhds t]
         fun s : ℝ ↦ -HTGeometry.momentFunctional
           (fun k ↦ xiGaussianHeatMomentReal k s)
-          (X * (liEvenCrossBaseReversedPolynomial n) ^ 2) := by
+          (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ)) := by
     filter_upwards [eventually_gt_nhds ht] with s hs
     exact deriv_liEvenBaseHeatEnergy n hs
   rw [hev.deriv_eq]
   have hneg := (hasDerivAt_xiGaussianMomentFunctional
-    (X * (liEvenCrossBaseReversedPolynomial n) ^ 2) ht).neg
+    (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ)) ht).neg
   have hderiv :
       deriv (fun s : ℝ ↦ -HTGeometry.momentFunctional
         (fun k ↦ xiGaussianHeatMomentReal k s)
-        (X * (liEvenCrossBaseReversedPolynomial n) ^ 2)) t =
+        (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ))) t =
         -(-HTGeometry.momentFunctional
           (fun k ↦ xiGaussianHeatMomentReal k t)
-          (X * (X * (liEvenCrossBaseReversedPolynomial n) ^ 2))) := by
+          (X * (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ)))) := by
     rw [show
       (fun s : ℝ ↦ -HTGeometry.momentFunctional
         (fun k ↦ xiGaussianHeatMomentReal k s)
-        (X * (liEvenCrossBaseReversedPolynomial n) ^ 2)) =
+        (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ))) =
       -(fun s : ℝ ↦ HTGeometry.momentFunctional
         (fun k ↦ xiGaussianHeatMomentReal k s)
-        (X * (liEvenCrossBaseReversedPolynomial n) ^ 2)) by
+        (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ))) by
         funext s
         rfl]
     exact hneg.deriv
@@ -565,10 +565,10 @@ theorem liEvenStieltjesLocalizedHeatSource_eq_secondDeriv_sub_quarter_deriv
   rw [secondDeriv_liEvenBaseHeatEnergy n ht,
     deriv_liEvenBaseHeatEnergy n ht, liEvenStieltjesLocalizedHeatSource]
   rw [show
-      X * (C (1 / 4) + X) * (liEvenCrossBaseReversedPolynomial n) ^ 2 =
-        X ^ 2 * (liEvenCrossBaseReversedPolynomial n) ^ 2 +
+      X * (C (1 / 4) + X) * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ) =
+        X ^ (2 : ℕ) * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ) +
           (1 / 4 : ℝ) •
-            (X * (liEvenCrossBaseReversedPolynomial n) ^ 2) by
+            (X * (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ)) by
       rw [Polynomial.smul_eq_C_mul]
       ring]
   rw [HTGeometry.momentFunctional_add, HTGeometry.momentFunctional_smul]
@@ -626,12 +626,12 @@ theorem liEvenPrimeGammaCrossBalance_eq_two_pi_mul_localizedHeatSource
       ((C (1 / 4) + X) * liEvenCrossBaseReversedPolynomial n) *
           (2 * X * liEvenCrossBaseReversedPolynomial n) =
         C 2 * (X * (C (1 / 4) + X) *
-          (liEvenCrossBaseReversedPolynomial n) ^ 2) by
+          (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ)) by
       change
         ((C (1 / 4) + X) * liEvenCrossBaseReversedPolynomial n) *
             ((2 : Polynomial ℝ) * X * liEvenCrossBaseReversedPolynomial n) =
           (2 : Polynomial ℝ) * (X * (C (1 / 4) + X) *
-            (liEvenCrossBaseReversedPolynomial n) ^ 2)
+            (liEvenCrossBaseReversedPolynomial n) ^ (2 : ℕ))
       ring]
   rw [HTGeometry.momentFunctional_C_mul, liEvenStieltjesLocalizedHeatSource]
   ring

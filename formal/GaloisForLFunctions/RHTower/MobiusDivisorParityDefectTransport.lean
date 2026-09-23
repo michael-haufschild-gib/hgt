@@ -18,18 +18,18 @@ def mobiusDivisorOrientedFibre (M : ℕ) (P R : Finset ℕ) : ℝ :=
 
 /-- Squared energy of retained coordinates whose signs reverse their original Möbius parity. -/
 def mobiusDivisorParityDefectEnergy (M : ℕ) (P : Finset ℕ) : ℝ :=
-  ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,(max (-mobiusDivisorOrientedFibre M P R) 0)^2
+  ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,(max (-mobiusDivisorOrientedFibre M P R) 0)^(2 : ℕ)
 
 /-- Squared energy of retained coordinates aligned with their original Möbius parity. -/
 def mobiusDivisorParityGoodEnergy (M : ℕ) (P : Finset ℕ) : ℝ :=
-  ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,(max (mobiusDivisorOrientedFibre M P R) 0)^2
+  ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,(max (mobiusDivisorOrientedFibre M P R) 0)^(2 : ℕ)
 
-private theorem parity_square (n : ℕ) : ((-1:ℝ)^n)^2=1 := by
+private theorem parity_square (n : ℕ) : ((-1:ℝ)^n)^(2 : ℕ)=1 := by
   calc
-    _ = ((-1:ℝ)^2)^n := by rw [← pow_mul,← pow_mul,Nat.mul_comm n 2]
+    _ = ((-1:ℝ)^(2 : ℕ))^n := by rw [← pow_mul,← pow_mul,Nat.mul_comm n 2]
     _ = 1 := by norm_num
 
-private theorem positive_negative_square (a : ℝ) : (max a 0)^2+(max (-a) 0)^2=a^2 := by
+private theorem positive_negative_square (a : ℝ) : (max a 0)^(2 : ℕ)+(max (-a) 0)^(2 : ℕ)=a^(2 : ℕ) := by
   by_cases ha : 0 ≤ a
   · simp [max_eq_left ha,max_eq_right (neg_nonpos.mpr ha)]
   · have ha' : a ≤ 0 := le_of_not_ge ha
@@ -55,7 +55,7 @@ private theorem opposite_product_le (a b : ℝ) :
 
 private theorem paired_cauchy {α : Type*} (T : Finset α) (a b c d : α → ℝ) :
     (∑ i ∈ T,(a i*d i+b i*c i)) ≤
-      Real.sqrt (∑ i ∈ T,((a i)^2+(b i)^2))*Real.sqrt (∑ i ∈ T,((c i)^2+(d i)^2)) := by
+      Real.sqrt (∑ i ∈ T,((a i)^(2 : ℕ)+(b i)^(2 : ℕ)))*Real.sqrt (∑ i ∈ T,((c i)^(2 : ℕ)+(d i)^(2 : ℕ))) := by
   have h := Real.sum_mul_le_sqrt_mul_sqrt (T ×ˢ (univ : Finset Bool))
     (fun x => if x.2 then a x.1 else b x.1)
     (fun x => if x.2 then d x.1 else c x.1)
@@ -78,7 +78,7 @@ private theorem prime_not_mem_label {M q : ℕ} {R : Finset ℕ}
 
 /-- Removing Möbius parity preserves the exact coordinate square. -/
 theorem mobiusDivisorOrientedFibre_sq (M : ℕ) (P R : Finset ℕ) :
-    (mobiusDivisorOrientedFibre M P R)^2=(mobiusDivisorSelectionFibre M P R)^2 := by
+    (mobiusDivisorOrientedFibre M P R)^(2 : ℕ)=(mobiusDivisorSelectionFibre M P R)^(2 : ℕ) := by
   rw [mobiusDivisorOrientedFibre,mul_pow,parity_square,one_mul]
 
 /-- Prime processing subtracts the partner in oriented coordinates. -/
@@ -96,7 +96,7 @@ theorem mobiusDivisorParityGoodEnergy_add_defect (M : ℕ) (P : Finset ℕ) :
   unfold mobiusDivisorParityGoodEnergy mobiusDivisorParityDefectEnergy
   rw [← sum_add_distrib]
   change (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,_)=
-    ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,(mobiusDivisorSelectionFibre M P R)^2
+    ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,(mobiusDivisorSelectionFibre M P R)^(2 : ℕ)
   exact sum_congr rfl (fun R _ => (positive_negative_square _).trans (mobiusDivisorOrientedFibre_sq M P R))
 
 /-- Reversed-sign energy is nonnegative at every actual retained state. -/
@@ -127,7 +127,7 @@ theorem mobiusDivisorSelectionEnergy_insert_le_parity_geometric
     dsimp [a,b,mobiusDivisorOrientedFibre]
     rw [card_insert_of_notMem (prime_not_mem_label hR),pow_succ]
     calc
-      _ = ((-1:ℝ)^R.card)^2*(mobiusDivisorSelectionFibre M P R*
+      _ = ((-1:ℝ)^R.card)^(2 : ℕ)*(mobiusDivisorSelectionFibre M P R*
         mobiusDivisorSelectionFibre M P (insert q R)) := by rw [parity_square,one_mul]
       _ = _ := by ring
   have hgain := mobiusDivisorSelectionEnergy_insert_cross hq M P hqM hqP
@@ -139,11 +139,11 @@ theorem mobiusDivisorSelectionEnergy_insert_le_parity_geometric
     rw [hprod R hR]
     exact opposite_product_le _ _
   have hG : mobiusDivisorParityGoodEnergy M P =
-      ∑ R ∈ T,((max (a R) 0)^2+(max (b R) 0)^2) := by
+      ∑ R ∈ T,((max (a R) 0)^(2 : ℕ)+(max (b R) 0)^(2 : ℕ)) := by
     unfold mobiusDivisorParityGoodEnergy
     rw [split_prime_labels hq hqM,← sum_add_distrib]
   have hD : mobiusDivisorParityDefectEnergy M P =
-      ∑ R ∈ T,((max (-a R) 0)^2+(max (-b R) 0)^2) := by
+      ∑ R ∈ T,((max (-a R) 0)^(2 : ℕ)+(max (-b R) 0)^(2 : ℕ)) := by
     unfold mobiusDivisorParityDefectEnergy
     rw [split_prime_labels hq hqM,← sum_add_distrib]
   have hcs := paired_cauchy T (fun R => max (a R) 0) (fun R => max (b R) 0)
@@ -160,11 +160,11 @@ theorem mobiusDivisorParityDefectEnergy_insert_le_packet
     (hparity : ∀ R : Finset ℕ,0 ≤ mobiusDivisorOrientedFibre M P R) :
     mobiusDivisorParityDefectEnergy M (insert q P) ≤
       ∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase q).powerset,
-        (mobiusDivisorSelectionFibre M P (insert q R))^2 := by
+        (mobiusDivisorSelectionFibre M P (insert q R))^(2 : ℕ) := by
   unfold mobiusDivisorParityDefectEnergy
   rw [split_prime_labels hq hqM]
   have hz : (∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase q).powerset,
-      (max (-mobiusDivisorOrientedFibre M (insert q P) (insert q R)) 0)^2)=0 := by
+      (max (-mobiusDivisorOrientedFibre M (insert q P) (insert q R)) 0)^(2 : ℕ))=0 := by
     apply sum_eq_zero
     intro R hR
     simp [mobiusDivisorOrientedFibre,mobiusDivisorSelectionFibre_insert]
@@ -199,7 +199,7 @@ theorem mobiusDivisorParityDefectEnergy_insert_le_adjacent
 theorem mobiusDivisorParityDefectEnergy_singleton_le_quadratic
     (M : ℕ) {q : ℕ} (hq : q.Prime) (hqM : q<M) :
     mobiusDivisorParityDefectEnergy M {q} ≤ (722:ℝ)*q*
-      ((1-divisorPrimeClipWeight M q)*(M/q:ℕ)^2+divisorPrimeClipWeight M q*(M/q+1:ℕ)^2) := by
+      ((1-divisorPrimeClipWeight M q)*(M/q:ℕ)^(2 : ℕ)+divisorPrimeClipWeight M q*(M/q+1:ℕ)^(2 : ℕ)) := by
   have h := mobiusDivisorParityDefectEnergy_insert_le_adjacent M ∅ hq hqM (by simp)
     (fun R => mobiusDivisorSelectionFibre_empty_parity_nonneg M R)
   have hA := sum_mobiusDivisorDilationChannel_sq_le_quadratic (M/q)

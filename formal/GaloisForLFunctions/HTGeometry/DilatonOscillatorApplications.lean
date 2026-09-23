@@ -20,12 +20,12 @@ open Polynomial MeasureTheory
 open scoped SchwartzMap
 namespace GaloisForLFunctions.HTGeometry
 
-def gaussianDilatonLogWeight : ℝ[X] := C (-2 * Real.pi) * X ^ 2
+def gaussianDilatonLogWeight : ℝ[X] := C (-2 * Real.pi) * X ^ (2 : ℕ)
 
-def quarticDilatonLogWeight (k : ℝ) : ℝ[X] := C (-Real.exp k) * X ^ 4
+def quarticDilatonLogWeight (k : ℝ) : ℝ[X] := C (-Real.exp k) * X ^ (4 : ℕ)
 
 theorem gaussianDilaton_potential (x : ℝ) :
-    dilatonPotential gaussianDilatonLogWeight x = 4 * Real.pi ^ 2 * x ^ 2 - 2 * Real.pi := by
+    dilatonPotential gaussianDilatonLogWeight x = 4 * Real.pi ^ (2 : ℕ) * x ^ (2 : ℕ) - 2 * Real.pi := by
   simp [dilatonPotential, gaussianDilatonLogWeight]
   ring
 
@@ -81,7 +81,7 @@ theorem reverseGaussianDilaton_shiftedNumber (ψ : 𝓢(ℝ, ℂ)) :
 
 theorem quarticDilaton_potential (k x : ℝ) :
     dilatonPotential (quarticDilatonLogWeight k) x =
-      4 * Real.exp k ^ 2 * x ^ 6 - 6 * Real.exp k * x ^ 2 := by
+      4 * Real.exp k ^ (2 : ℕ) * x ^ (6 : ℕ) - 6 * Real.exp k * x ^ (2 : ℕ) := by
   simp [dilatonPotential, quarticDilatonLogWeight]
   ring
 
@@ -89,13 +89,13 @@ theorem quarticDilaton_potential (k x : ℝ) :
 theorem quarticDilaton_negative_well (t : ℝ) :
     dilatonPotential (quarticDilatonLogWeight (-4 * t)) (Real.exp t) < 0 := by
   rw [quarticDilaton_potential]
-  have he : Real.exp (-4 * t) * Real.exp t ^ 4 = 1 := by
+  have he : Real.exp (-4 * t) * Real.exp t ^ (4 : ℕ) = 1 := by
     rw [show -4 * t = -(4 * t) by ring, Real.exp_neg, ← Real.exp_nat_mul t 4]
     norm_num
-  rw [show 4 * Real.exp (-4 * t) ^ 2 * Real.exp t ^ 6 -
-      6 * Real.exp (-4 * t) * Real.exp t ^ 2 =
-      (Real.exp (-4 * t) * Real.exp t ^ 2) *
-        (4 * (Real.exp (-4 * t) * Real.exp t ^ 4) - 6) by ring, he]
+  rw [show 4 * Real.exp (-4 * t) ^ (2 : ℕ) * Real.exp t ^ (6 : ℕ) -
+      6 * Real.exp (-4 * t) * Real.exp t ^ (2 : ℕ) =
+      (Real.exp (-4 * t) * Real.exp t ^ (2 : ℕ)) *
+        (4 * (Real.exp (-4 * t) * Real.exp t ^ (4 : ℕ)) - 6) by ring, he]
   exact mul_neg_of_pos_of_neg (by positivity) (by norm_num)
 
 /-- Negative potential does not imply a neutral growing mode, in the actual Schwartz domain. -/
@@ -104,7 +104,7 @@ theorem quarticDilaton_negative_potential_without_growing_modes (t : ℝ) :
       ∀ (ψ : 𝓢(ℝ, ℂ)) (u s : ℝ),
         (∀ x, dilatonRadialOperator (quarticDilatonLogWeight (-4 * t))
           (dilatonUndressed (quarticDilatonLogWeight (-4 * t)) ψ) x +
-          growingFrequency u s ^ 2 * dilatonUndressed (quarticDilatonLogWeight (-4 * t)) ψ x = 0) ↔
+          growingFrequency u s ^ (2 : ℕ) * dilatonUndressed (quarticDilatonLogWeight (-4 * t)) ψ x = 0) ↔
         ψ = 0 :=
   ⟨quarticDilaton_negative_well t, fun ψ u s => dilaton_neutral_radial_no_growing_mode _ ψ u s⟩
 

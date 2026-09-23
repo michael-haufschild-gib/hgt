@@ -24,7 +24,7 @@ theorem polynomialGaussianLatticeWeight_eq {d : ℕ} (A : Fin d → ℕ) (sigma 
     (k : Fin d → ℤ) :
     polynomialGaussianLatticeWeight (Fin d) A sigma k
       = (∏ i, (1 + ((k i).natAbs : ℝ)) ^ A i)
-        * Real.exp (-∑ i, sigma i * ((k i : ℝ)) ^ 2) := by
+        * Real.exp (-∑ i, sigma i * ((k i : ℝ)) ^ (2 : ℕ)) := by
   rw [polynomialGaussianLatticeWeight, Finset.prod_mul_distrib]
   congr 1
   rw [← Real.exp_sum]
@@ -69,16 +69,16 @@ theorem exists_norm_damping_lattice_le {d m : ℕ} (σ : Fin d → ℝ) (hσ : �
     (center : Fin d → ℂ) (hm : 0 < m) {K : Set (Fin d → ℂ)} (hK : IsCompact K) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (k : Fin d → ℤ) (x : Fin d → ℂ), x ∈ K →
       ‖(gaussianFlatSeedData σ center hm).damping.1 (x + integerCastVector k)‖
-        ≤ C * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ 2) := by
+        ≤ C * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ (2 : ℕ)) := by
   obtain ⟨C₀, hC₀, hC⟩ := exists_norm_centeredComplexGaussian_lattice_le σ hσ center hK
   refine ⟨C₀ * ∑ r ∈ Finset.range m, (1 + C₀) ^ r,
     mul_nonneg hC₀ (Finset.sum_nonneg fun r _ => pow_nonneg (by linarith) r),
     fun k x hx => ?_⟩
   set g : ℂ := (centeredComplexGaussian σ center).1 (x + integerCastVector k) with hgdef
-  have hdecay : ‖g‖ ≤ C₀ * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ 2) := hC k x hx
-  have hexple : Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ 2) ≤ 1 := by
+  have hdecay : ‖g‖ ≤ C₀ * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ (2 : ℕ)) := hC k x hx
+  have hexple : Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ (2 : ℕ)) ≤ 1 := by
     refine Real.exp_le_one_iff.mpr ?_
-    have : (0 : ℝ) ≤ ∑ i, σ i / 2 * ((k i : ℝ)) ^ 2 :=
+    have : (0 : ℝ) ≤ ∑ i, σ i / 2 * ((k i : ℝ)) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun i _ => mul_nonneg (by linarith [hσ i]) (sq_nonneg _)
     linarith
   have hbound : ‖g‖ ≤ C₀ := by
@@ -92,12 +92,12 @@ theorem exists_norm_damping_lattice_le {d m : ℕ} (σ : Fin d → ℝ) (hσ : �
     Finset.sum_nonneg fun r _ => by positivity
   calc ‖(gaussianFlatSeedData σ center hm).damping.1 (x + integerCastVector k)‖
       ≤ ‖g‖ * ∑ r ∈ Finset.range m, (1 + ‖g‖) ^ r := norm_damping_le σ center hm _
-    _ ≤ (C₀ * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ 2))
+    _ ≤ (C₀ * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ (2 : ℕ)))
         * ∑ r ∈ Finset.range m, (1 + C₀) ^ r := by
         refine mul_le_mul hdecay hgeom hgeom0 ?_
         exact mul_nonneg hC₀ (Real.exp_pos _).le
     _ = C₀ * (∑ r ∈ Finset.range m, (1 + C₀) ^ r)
-        * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ 2) := by ring
+        * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ (2 : ℕ)) := by ring
 
 /-! ## The full seed -/
 
@@ -147,7 +147,7 @@ theorem exists_norm_flatGaussianSeed_lattice_le {d : ℕ} {I : Type*} [Fintype I
       (x + integerCastVector k)‖ := norm_nonneg _
   have hstep : ‖(gaussianFlatSeedData σ (w target) hm).damping.1 (x + integerCastVector k)‖
       * ‖MvPolynomial.eval (x + integerCastVector k) P‖
-      ≤ (Cd * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ 2))
+      ≤ (Cd * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ (2 : ℕ)))
         * (Cp * ∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i)) := by
     refine mul_le_mul h2 h3 hp0 ?_
     exact mul_nonneg hCd0 (Real.exp_pos _).le
@@ -155,11 +155,11 @@ theorem exists_norm_flatGaussianSeed_lattice_le {d : ℕ} {I : Type*} [Fintype I
         (x + integerCastVector k)‖
       * (‖(gaussianFlatSeedData σ (w target) hm).damping.1 (x + integerCastVector k)‖
         * ‖MvPolynomial.eval (x + integerCastVector k) P‖)
-      ≤ Cb * ((Cd * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ 2))
+      ≤ Cb * ((Cd * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ (2 : ℕ)))
         * (Cp * ∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i))) := by
         refine mul_le_mul h1 hstep (mul_nonneg hd0 hp0) hCb0
     _ = Cb * (Cd * Cp) * ((∏ i, (1 + ((k i).natAbs : ℝ)) ^ (P.degreeOf i))
-        * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ 2)) := by ring
+        * Real.exp (-∑ i, σ i / 2 * ((k i : ℝ)) ^ (2 : ℕ))) := by ring
 
 end
 

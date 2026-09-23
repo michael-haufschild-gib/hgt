@@ -34,8 +34,8 @@ def twoModeTransportPencil {N : Type*} [Fintype N]
 /-- Exponential-memory reconstruction of a two-mode pencil, in dimensionless memory grade `x`. -/
 def exponentialMemoryTransportPencil {N : Type*} [Fintype N]
     (A B : Matrix N N ℂ) (x : ℝ) (c s : ℂ) : Matrix N N ℂ :=
-  ((c + (x : ℂ) * s) / (1 + (x : ℂ) ^ 2)) • A +
-    ((s - (x : ℂ) * c) / (1 + (x : ℂ) ^ 2)) • B
+  ((c + (x : ℂ) * s) / (1 + (x : ℂ) ^ (2 : ℕ))) • A +
+    ((s - (x : ℂ) * c) / (1 + (x : ℂ) ^ (2 : ℕ))) • B
 
 /-- Pure memory contribution after subtracting the instantaneous pencil. -/
 def exponentialMemoryTransportDefect {N : Type*} [Fintype N]
@@ -61,20 +61,20 @@ theorem matrixCommutator_twoModeTransportPencil
   module
 
 theorem complex_one_add_real_sq_ne_zero (x : ℝ) :
-    (1 + (x : ℂ) ^ 2) ≠ 0 := by
-  exact_mod_cast (show (1 + x ^ 2 : ℝ) ≠ 0 by positivity)
+    (1 + (x : ℂ) ^ (2 : ℕ)) ≠ 0 := by
+  exact_mod_cast (show (1 + x ^ (2 : ℕ) : ℝ) ≠ 0 by positivity)
 
 /-- Real signed response carried by the present-versus-memory lag. -/
 def exponentialMemoryLagResponse (x : ℝ) : ℝ :=
-  x / (1 + x ^ 2)
+  x / (1 + x ^ (2 : ℕ))
 
 /-- The repaired memory response is uniformly bounded, so the physical probe adds no large-grade
 amplification. -/
 theorem abs_exponentialMemoryLagResponse_le_half (x : ℝ) :
     |exponentialMemoryLagResponse x| ≤ 1 / 2 := by
   rw [exponentialMemoryLagResponse, abs_div,
-    abs_of_pos (by positivity : 0 < 1 + x ^ 2)]
-  rw [div_le_iff₀ (by positivity : 0 < 1 + x ^ 2)]
+    abs_of_pos (by positivity : 0 < 1 + x ^ (2 : ℕ))]
+  rw [div_le_iff₀ (by positivity : 0 < 1 + x ^ (2 : ℕ))]
   nlinarith [sq_nonneg (|x| - 1), sq_abs x]
 
 theorem exponentialMemoryLagResponse_neg (x : ℝ) :
@@ -97,15 +97,15 @@ theorem matrixCommutator_exponentialMemoryTransportPencil
     (A B : Matrix N N ℂ) (x : ℝ) (c₁ s₁ c₂ s₂ : ℂ) :
     matrixCommutator (exponentialMemoryTransportPencil A B x c₁ s₁)
         (exponentialMemoryTransportPencil A B x c₂ s₂) =
-      ((c₁ * s₂ - s₁ * c₂) / (1 + (x : ℂ) ^ 2)) •
+      ((c₁ * s₂ - s₁ * c₂) / (1 + (x : ℂ) ^ (2 : ℕ))) •
         matrixCommutator A B := by
   change matrixCommutator
       (twoModeTransportPencil A B
-        ((c₁ + (x : ℂ) * s₁) / (1 + (x : ℂ) ^ 2))
-        ((s₁ - (x : ℂ) * c₁) / (1 + (x : ℂ) ^ 2)))
+        ((c₁ + (x : ℂ) * s₁) / (1 + (x : ℂ) ^ (2 : ℕ)))
+        ((s₁ - (x : ℂ) * c₁) / (1 + (x : ℂ) ^ (2 : ℕ))))
       (twoModeTransportPencil A B
-        ((c₂ + (x : ℂ) * s₂) / (1 + (x : ℂ) ^ 2))
-        ((s₂ - (x : ℂ) * c₂) / (1 + (x : ℂ) ^ 2))) = _
+        ((c₂ + (x : ℂ) * s₂) / (1 + (x : ℂ) ^ (2 : ℕ)))
+        ((s₂ - (x : ℂ) * c₂) / (1 + (x : ℂ) ^ (2 : ℕ)))) = _
   rw [matrixCommutator_twoModeTransportPencil]
   congr 1
   field_simp [complex_one_add_real_sq_ne_zero x]
@@ -117,12 +117,12 @@ theorem exponentialMemoryLagCurvature_eq
     {N : Type*} [Fintype N]
     (A B : Matrix N N ℂ) (x : ℝ) (c s : ℂ) :
     exponentialMemoryLagCurvature A B x c s =
-      (((x : ℂ) * (c ^ 2 + s ^ 2)) / (1 + (x : ℂ) ^ 2)) •
+      (((x : ℂ) * (c ^ (2 : ℕ) + s ^ (2 : ℕ))) / (1 + (x : ℂ) ^ (2 : ℕ))) •
         matrixCommutator A B := by
   change matrixCommutator
       (twoModeTransportPencil A B
-        ((c + (x : ℂ) * s) / (1 + (x : ℂ) ^ 2))
-        ((s - (x : ℂ) * c) / (1 + (x : ℂ) ^ 2)))
+        ((c + (x : ℂ) * s) / (1 + (x : ℂ) ^ (2 : ℕ)))
+        ((s - (x : ℂ) * c) / (1 + (x : ℂ) ^ (2 : ℕ))))
       (twoModeTransportPencil A B c s) = _
   rw [matrixCommutator_twoModeTransportPencil]
   congr 1
@@ -133,7 +133,7 @@ theorem exponentialMemoryLagCurvature_axis_eq
     {N : Type*} [Fintype N]
     (A B : Matrix N N ℂ) (x : ℝ) :
     exponentialMemoryLagCurvature A B x 1 0 =
-      ((x : ℂ) / (1 + (x : ℂ) ^ 2)) • matrixCommutator A B := by
+      ((x : ℂ) / (1 + (x : ℂ) ^ (2 : ℕ))) • matrixCommutator A B := by
   simpa using exponentialMemoryLagCurvature_eq A B x 1 0
 
 /-- For noncommuting modes the repaired signed curvature has exactly the neutral radical. -/
@@ -144,7 +144,7 @@ theorem exponentialMemoryLagCurvature_axis_eq_zero_iff
   rw [exponentialMemoryLagCurvature_axis_eq]
   constructor
   · intro h
-    have hscalar : (x : ℂ) / (1 + (x : ℂ) ^ 2) = 0 :=
+    have hscalar : (x : ℂ) / (1 + (x : ℂ) ^ (2 : ℕ)) = 0 :=
       (smul_eq_zero.mp h).resolve_right hAB
     have hxC : (x : ℂ) = 0 :=
       (div_eq_zero_iff.mp hscalar).resolve_right (complex_one_add_real_sq_ne_zero x)
@@ -164,7 +164,7 @@ theorem exponentialMemoryLagCurvature_axis_reporter_eq_zero_iff
   rw [exponentialMemoryLagCurvature_axis_eq, LinearMap.map_smul]
   constructor
   · intro h
-    have hscalar : (x : ℂ) / (1 + (x : ℂ) ^ 2) = 0 :=
+    have hscalar : (x : ℂ) / (1 + (x : ℂ) ^ (2 : ℕ)) = 0 :=
       (smul_eq_zero.mp h).resolve_right hfaithful
     have hxC : (x : ℂ) = 0 :=
       (div_eq_zero_iff.mp hscalar).resolve_right (complex_one_add_real_sq_ne_zero x)
@@ -194,8 +194,8 @@ theorem exponentialMemoryTransportDefect_eq_twoModeTransportPencil
     (A B : Matrix N N ℂ) (x : ℝ) (c s : ℂ) :
     exponentialMemoryTransportDefect A B x c s =
       twoModeTransportPencil A B
-        (((-(x : ℂ) ^ 2) * c + (x : ℂ) * s) / (1 + (x : ℂ) ^ 2))
-        ((-(x : ℂ) * c - (x : ℂ) ^ 2 * s) / (1 + (x : ℂ) ^ 2)) := by
+        (((-(x : ℂ) ^ (2 : ℕ)) * c + (x : ℂ) * s) / (1 + (x : ℂ) ^ (2 : ℕ)))
+        ((-(x : ℂ) * c - (x : ℂ) ^ (2 : ℕ) * s) / (1 + (x : ℂ) ^ (2 : ℕ))) := by
   ext i j
   simp only [exponentialMemoryTransportDefect, exponentialMemoryTransportPencil,
     twoModeTransportPencil, Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply,
@@ -210,8 +210,8 @@ theorem matrixCommutator_exponentialMemoryTransportDefect
     (A B : Matrix N N ℂ) (x : ℝ) (c₁ s₁ c₂ s₂ : ℂ) :
     matrixCommutator (exponentialMemoryTransportDefect A B x c₁ s₁)
         (exponentialMemoryTransportDefect A B x c₂ s₂) =
-      (((x : ℂ) ^ 2 * (c₁ * s₂ - s₁ * c₂)) /
-          (1 + (x : ℂ) ^ 2)) • matrixCommutator A B := by
+      (((x : ℂ) ^ (2 : ℕ) * (c₁ * s₂ - s₁ * c₂)) /
+          (1 + (x : ℂ) ^ (2 : ℕ))) • matrixCommutator A B := by
   rw [exponentialMemoryTransportDefect_eq_twoModeTransportPencil,
     exponentialMemoryTransportDefect_eq_twoModeTransportPencil,
     matrixCommutator_twoModeTransportPencil]
@@ -224,7 +224,7 @@ theorem matrixCommutator_exponentialMemoryTransportPencil_axes
     (A B : Matrix N N ℂ) (x : ℝ) :
     matrixCommutator (exponentialMemoryTransportPencil A B x 1 0)
         (exponentialMemoryTransportPencil A B x 0 1) =
-      ((1 : ℂ) / (1 + (x : ℂ) ^ 2)) • matrixCommutator A B := by
+      ((1 : ℂ) / (1 + (x : ℂ) ^ (2 : ℕ))) • matrixCommutator A B := by
   simpa using matrixCommutator_exponentialMemoryTransportPencil A B x 1 0 0 1
 
 theorem matrixCommutator_exponentialMemoryTransportDefect_axes
@@ -232,7 +232,7 @@ theorem matrixCommutator_exponentialMemoryTransportDefect_axes
     (A B : Matrix N N ℂ) (x : ℝ) :
     matrixCommutator (exponentialMemoryTransportDefect A B x 1 0)
         (exponentialMemoryTransportDefect A B x 0 1) =
-      (((x : ℂ) ^ 2 / (1 + (x : ℂ) ^ 2))) • matrixCommutator A B := by
+      (((x : ℂ) ^ (2 : ℕ) / (1 + (x : ℂ) ^ (2 : ℕ)))) • matrixCommutator A B := by
   simpa using matrixCommutator_exponentialMemoryTransportDefect A B x 1 0 0 1
 
 /-- At zero memory the reconstructed two-time curvature is the original mode commutator, not zero. -/
@@ -252,10 +252,10 @@ theorem matrixCommutator_exponentialMemoryTransportDefect_axes_eq_zero_iff
   rw [matrixCommutator_exponentialMemoryTransportDefect_axes]
   constructor
   · intro h
-    have hscalar : ((x : ℂ) ^ 2 / (1 + (x : ℂ) ^ 2)) = 0 :=
+    have hscalar : ((x : ℂ) ^ (2 : ℕ) / (1 + (x : ℂ) ^ (2 : ℕ))) = 0 :=
       (smul_eq_zero.mp h).resolve_right hAB
     have hxC : (x : ℂ) = 0 := by
-      have hxSq : (x : ℂ) ^ 2 = 0 :=
+      have hxSq : (x : ℂ) ^ (2 : ℕ) = 0 :=
         (div_eq_zero_iff.mp hscalar).resolve_right (complex_one_add_real_sq_ne_zero x)
       have hxMul : (x : ℂ) * (x : ℂ) = 0 := by simpa [pow_two] using hxSq
       exact (mul_eq_zero.mp hxMul).elim id id

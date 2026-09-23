@@ -28,7 +28,7 @@ theorem limVec_one_top {n : ℕ} (hQ : ∀ j, Q j ≠ 0) (α : ℂ) {L : ℕ →
     limVec Q v (n + 1) α L (peelRes Q (n + 1)) 1 (n + 1)
       = prodHead Q (n + 1)
         * (fact (scaledLogWronskian (Q (n + 1)) (v (n + 1))) (n + 1)
-              / fact (Q (n + 1)) (n + 1) ^ 2
+              / fact (Q (n + 1)) (n + 1) ^ (2 : ℕ)
             + fact (Q (n + 1)).derivative (n + 1)
               * (algebraMap ℂ CascadeField α
                 * algebraMap ℂ CascadeField ((Q (n + 2)).natDegree : ℂ))) := by
@@ -69,7 +69,7 @@ theorem borderShape_rescaled {n : ℕ} (hQ : ∀ j, Q j ≠ 0)
         * limVec Q v (n + 1) α L (peelRes Q (n + 1)) 1 (n + 1)
       - logFactor (Q (n + 1)) (n + 1)
       = fact (scaledLogWronskian (Q (n + 1)) (v (n + 1))) (n + 1)
-        * ((fact (Q (n + 1)) (n + 1))⁻¹ ^ 3
+        * ((fact (Q (n + 1)) (n + 1))⁻¹ ^ (3 : ℕ)
           * (algebraMap ℂ CascadeField (α * ((Q (n + 2)).natDegree : ℂ)))⁻¹) := by
     rw [limVec_one_top hQ α hL, logFactor, map_mul]
     field_simp
@@ -85,9 +85,9 @@ theorem borderShape_rescaled {n : ℕ} (hQ : ∀ j, Q j ≠ 0)
   have h3 : TopDegLE (n + 1)
       (-((Q (n + 1)).natDegree : ℤ) + (-((Q (n + 1)).natDegree : ℤ)
         + -((Q (n + 1)).natDegree : ℤ)))
-      ((fact (Q (n + 1)) (n + 1))⁻¹ ^ 3) := by
+      ((fact (Q (n + 1)) (n + 1))⁻¹ ^ (3 : ℕ)) := by
     have h := TopDegLE.mul h2 (TopDegLE.mul h2 h2)
-    rw [show ((fact (Q (n + 1)) (n + 1))⁻¹ ^ 3)
+    rw [show ((fact (Q (n + 1)) (n + 1))⁻¹ ^ (3 : ℕ))
         = (fact (Q (n + 1)) (n + 1))⁻¹ * ((fact (Q (n + 1)) (n + 1))⁻¹
           * (fact (Q (n + 1)) (n + 1))⁻¹) by ring]
     exact h

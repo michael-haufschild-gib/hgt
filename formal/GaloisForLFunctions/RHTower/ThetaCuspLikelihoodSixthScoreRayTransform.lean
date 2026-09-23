@@ -11,7 +11,7 @@ coefficients.  Translation of an exponential ray then turns its integral into a 
 operator, with no absolute-value majorant and no lost coefficient interference.
 
 The rational envelopes at the physical seam `A > 157/50` are designed for the dominant square-gap
-atom `n = 2`.  They retain the cancellation which the crude bound by `z^6` destroys.
+atom `n = 2`.  They retain the cancellation which the crude bound by `z^(6 : ℕ)` destroys.
 -/
 
 namespace RHTower

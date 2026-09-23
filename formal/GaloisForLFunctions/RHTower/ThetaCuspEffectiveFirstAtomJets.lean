@@ -77,7 +77,7 @@ theorem abs_thetaCuspGaussianScaleJet_le (n m : ℕ) {x : ℝ}
   change |thetaCuspGaussianScaleJet n m x| ≤ (4*q)^n*(e*q^m)
   induction n generalizing m with
   | zero =>
-    change |e*q^m| ≤ (4*q)^0*(e*q^m)
+    change |e*q^m| ≤ (4*q)^(0 : ℕ)*(e*q^m)
     rw [pow_zero, one_mul, abs_of_nonneg (by positivity : 0 ≤ e*q^m)]
   | succ n ih =>
     have h0 := ih m (by push_cast at hq ⊢; linarith)
@@ -120,7 +120,7 @@ theorem abs_iteratedDeriv_firstAtom_le_effective (n : ℕ) {x : ℝ}
   have he0 : 0 ≤ e := (Real.exp_pos _).le
   have h2 := abs_thetaCuspGaussianScaleJet_le n 2 (x := x) (by push_cast; linarith)
   have h1 := abs_thetaCuspGaussianScaleJet_le n 1 (x := x) (by push_cast; linarith)
-  have hscalar : 4*q^2+6*q ≤ 3*(4*q^2-6*q) := by
+  have hscalar : 4*q^(2 : ℕ)+6*q ≤ 3*(4*q^(2 : ℕ)-6*q) := by
     nlinarith [mul_nonneg hq0 (sub_nonneg.mpr hq3)]
   rw [iteratedDeriv_firstAtom_eq_gaussianScaleJets]
   calc
@@ -130,11 +130,11 @@ theorem abs_iteratedDeriv_firstAtom_le_effective (n : ℕ) {x : ℝ}
         abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 4),
         abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 6)] using
         (abs_sub_le (4*thetaCuspGaussianScaleJet n 2 x) 0 (6*thetaCuspGaussianScaleJet n 1 x))
-    _ ≤ 4*((4*q)^n*(e*q^2))+6*((4*q)^n*(e*q^1)) :=
+    _ ≤ 4*((4*q)^n*(e*q^(2 : ℕ)))+6*((4*q)^n*(e*q^(1 : ℕ))) :=
       add_le_add (mul_le_mul_of_nonneg_left h2 (by norm_num))
         (mul_le_mul_of_nonneg_left h1 (by norm_num))
-    _ = (4*q)^n*e*(4*q^2+6*q) := by ring
-    _ ≤ (4*q)^n*e*(3*(4*q^2-6*q)) :=
+    _ = (4*q)^n*e*(4*q^(2 : ℕ)+6*q) := by ring
+    _ ≤ (4*q)^n*e*(3*(4*q^(2 : ℕ)-6*q)) :=
       mul_le_mul_of_nonneg_left hscalar (by positivity)
     _ = 3*(4*thetaCuspSingleAtomReflectionScale 1 x)^n*thetaCuspSourceTerm x 1 := by
       rw [thetaCuspSourceTerm_one_eq_scale_profile]

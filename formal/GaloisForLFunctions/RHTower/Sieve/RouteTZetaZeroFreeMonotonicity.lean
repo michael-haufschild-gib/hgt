@@ -16,7 +16,7 @@ noncomputable section
 theorem routeTGlobalMoment_mono {V W : ℕ} (hVW : V ≤ W) :
     routeTGlobalMoment V ≤ routeTGlobalMoment W := by
   unfold routeTGlobalMoment
-  have hpow : (V + 1) ^ 9 ≤ (W + 1) ^ 9 :=
+  have hpow : (V + 1) ^ (9 : ℕ) ≤ (W + 1) ^ (9 : ℕ) :=
     Nat.pow_le_pow_left (by omega) 9
   exact Nat.add_le_add_right (Nat.mul_le_mul_left _ hpow) 1
 
@@ -110,21 +110,21 @@ theorem routeTZeroFreeDelta_antitone {A s t : ℝ}
   have hQt := routeTZeroFreeBudget_pos A t
   have hQs := routeTZeroFreeBudget_pos A s
   have hQ := routeTZeroFreeBudget_mono (A := A) hs hst
-  have hQsq : routeTZeroFreeBudget A s ^ 2 ≤ routeTZeroFreeBudget A t ^ 2 :=
+  have hQsq : routeTZeroFreeBudget A s ^ (2 : ℕ) ≤ routeTZeroFreeBudget A t ^ (2 : ℕ) :=
     pow_le_pow_left₀ hQs.le hQ 2
-  have hDen : 10000 * routeTZeroFreeBudget A s ^ 2 ≤
-      10000 * routeTZeroFreeBudget A t ^ 2 := by
+  have hDen : 10000 * routeTZeroFreeBudget A s ^ (2 : ℕ) ≤
+      10000 * routeTZeroFreeBudget A t ^ (2 : ℕ) := by
     exact mul_le_mul_of_nonneg_left hQsq (by norm_num)
-  have hDenS : 0 < 10000 * routeTZeroFreeBudget A s ^ 2 :=
+  have hDenS : 0 < 10000 * routeTZeroFreeBudget A s ^ (2 : ℕ) :=
     mul_pos (by norm_num) (sq_pos_of_pos hQs)
-  have hDenT : 0 < 10000 * routeTZeroFreeBudget A t ^ 2 :=
+  have hDenT : 0 < 10000 * routeTZeroFreeBudget A t ^ (2 : ℕ) :=
     mul_pos (by norm_num) (sq_pos_of_pos hQt)
   unfold routeTZeroFreeDelta
   calc
-    routeTLandauRadius t / (10000 * routeTZeroFreeBudget A t ^ 2) ≤
-        routeTLandauRadius s / (10000 * routeTZeroFreeBudget A t ^ 2) :=
+    routeTLandauRadius t / (10000 * routeTZeroFreeBudget A t ^ (2 : ℕ)) ≤
+        routeTLandauRadius s / (10000 * routeTZeroFreeBudget A t ^ (2 : ℕ)) :=
       div_le_div_of_nonneg_right hR hDenT.le
-    _ ≤ routeTLandauRadius s / (10000 * routeTZeroFreeBudget A s ^ 2) := by
+    _ ≤ routeTLandauRadius s / (10000 * routeTZeroFreeBudget A s ^ (2 : ℕ)) := by
       exact div_le_div_of_nonneg_left hRs hDenS hDen
 
 /-- **The Route-T zero-free width decreases with height.** -/

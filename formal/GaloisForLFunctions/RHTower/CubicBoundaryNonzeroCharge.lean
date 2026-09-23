@@ -25,7 +25,7 @@ def cubicBloch (a b c : CubicSymbols) : Matrix (Fin 2) (Fin 2) CubicSymbols :=
     (1 / 2 : ℂ) • b + (I / 2) • c, (1 / 2 : ℂ) • (1 - a)]
 
 theorem cubicBloch_idempotent (a b c : CubicSymbols)
-    (h : ∀ t, a t ^ 2 + b t ^ 2 + c t ^ 2 = 1) :
+    (h : ∀ t, a t ^ (2 : ℕ) + b t ^ (2 : ℕ) + c t ^ (2 : ℕ) = 1) :
     IsIdempotentElem (cubicBloch a b c) := by
   change cubicBloch a b c * cubicBloch a b c = cubicBloch a b c
   apply Matrix.ext
@@ -35,10 +35,10 @@ theorem cubicBloch_idempotent (a b c : CubicSymbols)
   have hi := I_mul_I
   fin_cases i <;> fin_cases j <;>
     simp [cubicBloch, Matrix.mul_apply, Fin.sum_univ_two, smul_eq_mul]
-  · linear_combination (1 / 4 : ℂ) * h t - c t ^ 2 / 4 * hi
+  · linear_combination (1 / 4 : ℂ) * h t - c t ^ (2 : ℕ) / 4 * hi
   · ring
   · ring
-  · linear_combination (1 / 4 : ℂ) * h t - c t ^ 2 / 4 * hi
+  · linear_combination (1 / 4 : ℂ) * h t - c t ^ (2 : ℕ) / 4 * hi
 
 theorem cubicBloch_selfAdjoint (a b c : CubicSymbols)
     (ha : ∀ t, star (a t) = a t) (hb : ∀ t, star (b t) = b t)
@@ -77,28 +77,28 @@ theorem cubicSourceP_idempotent : IsIdempotentElem cubicSourceP := by
 theorem cubicSourceQ_idempotent : IsIdempotentElem cubicSourceQ := by
   apply cubicBloch_idempotent
   intro t
-  have h1 : (cubicLoopA t : ℂ) ^ 2 + (cubicLoopB t : ℂ) ^ 2 = 1 := by
+  have h1 : (cubicLoopA t : ℂ) ^ (2 : ℕ) + (cubicLoopB t : ℂ) ^ (2 : ℕ) = 1 := by
     exact_mod_cast cubicLoop_circle t
-  have h2 : (cubicLoopC t : ℂ) ^ 2 = (cubicLoopB t : ℂ) ^ 2 := by
+  have h2 : (cubicLoopC t : ℂ) ^ (2 : ℕ) = (cubicLoopB t : ℂ) ^ (2 : ℕ) := by
     exact_mod_cast cubicLoopC_sq t
-  have h3 : (Real.sqrt 3 : ℂ) ^ 2 = 3 := by
+  have h3 : (Real.sqrt 3 : ℂ) ^ (2 : ℕ) = 3 := by
     exact_mod_cast Real.sq_sqrt (show (0 : ℝ) ≤ 3 by norm_num)
   simp only [cubicSourceA_apply, BoundedContinuousFunction.smul_apply, smul_eq_mul,
     cubicSourceB_apply, cubicSourceC_apply]
-  linear_combination h1 + (3 / 4 : ℂ) * h2 + (cubicLoopC t : ℂ) ^ 2 / 4 * h3
+  linear_combination h1 + (3 / 4 : ℂ) * h2 + (cubicLoopC t : ℂ) ^ (2 : ℕ) / 4 * h3
 
 theorem cubicSourceR_idempotent : IsIdempotentElem cubicSourceR := by
   apply cubicBloch_idempotent
   intro t
-  have h1 : (cubicLoopA t : ℂ) ^ 2 + (cubicLoopB t : ℂ) ^ 2 = 1 := by
+  have h1 : (cubicLoopA t : ℂ) ^ (2 : ℕ) + (cubicLoopB t : ℂ) ^ (2 : ℕ) = 1 := by
     exact_mod_cast cubicLoop_circle t
-  have h2 : (cubicLoopC t : ℂ) ^ 2 = (cubicLoopB t : ℂ) ^ 2 := by
+  have h2 : (cubicLoopC t : ℂ) ^ (2 : ℕ) = (cubicLoopB t : ℂ) ^ (2 : ℕ) := by
     exact_mod_cast cubicLoopC_sq t
-  have h3 : (Real.sqrt 3 : ℂ) ^ 2 = 3 := by
+  have h3 : (Real.sqrt 3 : ℂ) ^ (2 : ℕ) = 3 := by
     exact_mod_cast Real.sq_sqrt (show (0 : ℝ) ≤ 3 by norm_num)
   simp only [cubicSourceA_apply, BoundedContinuousFunction.smul_apply, smul_eq_mul,
     cubicSourceB_apply, cubicSourceC_apply]
-  linear_combination h1 + (3 / 4 : ℂ) * h2 + (cubicLoopC t : ℂ) ^ 2 / 4 * h3
+  linear_combination h1 + (3 / 4 : ℂ) * h2 + (cubicLoopC t : ℂ) ^ (2 : ℕ) / 4 * h3
 
 theorem cubicSourceP_selfAdjoint : cubicSourceP.conjTranspose = cubicSourceP := by
   apply cubicBloch_selfAdjoint <;> intro t <;> simp

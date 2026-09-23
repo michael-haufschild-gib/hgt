@@ -41,10 +41,10 @@ theorem nativeSquareCutoffHeight_continuous (q : XiZeroCopy) : Continuous (nativ
 
 /-- The full original cutoff half-square has one explicit quadratic height envelope. -/
 theorem nativeSquareCutoffHeight_quadratic_bound (q : XiZeroCopy) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, ‖nativeSquareCutoffHeight q y‖ ≤ C*y^2 := by
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, ‖nativeSquareCutoffHeight q y‖ ≤ C*y^(2 : ℕ) := by
   let B : ℝ := ‖reflectedCompletedLambda (2*(q.1:ℂ)-1)‖+‖reflectedCompletedLambda (2*(q.1:ℂ))‖
   have hB : 0 ≤ B := add_nonneg (norm_nonneg _) (norm_nonneg _)
-  refine ⟨B^2/2,by positivity,?_⟩
+  refine ⟨B^(2 : ℕ)/2,by positivity,?_⟩
   intro y
   by_cases hy : y ≤ 2
   · rw [nativeSquareCutoffHeight_zero q y hy,norm_zero]
@@ -78,11 +78,11 @@ theorem nativeSquareCutoffHeight_quadratic_bound (q : XiZeroCopy) :
     rw [norm_mul,norm_div,norm_pow]
     norm_num only [Complex.norm_ofNat]
     calc
-      _ ≤ ‖principal (center q) ![0,y]‖^2/2 := by nlinarith [sq_nonneg ‖principal (center q) ![0,y]‖]
-      _ ≤ (B*y)^2/2 := by
+      _ ≤ ‖principal (center q) ![0,y]‖^(2 : ℕ)/2 := by nlinarith [sq_nonneg ‖principal (center q) ![0,y]‖]
+      _ ≤ (B*y)^(2 : ℕ)/2 := by
         apply div_le_div_of_nonneg_right _ (by norm_num)
         simpa only [pow_two] using mul_self_le_mul_self (norm_nonneg _) hprincipal
-      _ = B^2/2*y^2 := by ring
+      _ = B^(2 : ℕ)/2*y^(2 : ℕ) := by ring
 
 /-- The actual reflected cutoff moment is absolutely admitted in its common strict chamber. -/
 theorem nativeSquareCutoffHeight_reflected_mellin_integrable (q : XiZeroCopy) (s : ℂ)
@@ -102,7 +102,7 @@ theorem nativeSquareCutoffHeight_reflected_mellin_integrable (q : XiZeroCopy) (s
   have hy0 : 0 < y := lt_trans (by norm_num : (0:ℝ)<2) hy
   rw [norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos hy0]
   calc
-    _ ≤ y^(-s-1).re*(C*y^2) := mul_le_mul_of_nonneg_left (hb y) (Real.rpow_nonneg hy0.le _)
+    _ ≤ y^(-s-1).re*(C*y^(2 : ℕ)) := mul_le_mul_of_nonneg_left (hb y) (Real.rpow_nonneg hy0.le _)
     _ = C*y^(1-s.re) := by
       rw [show (-s-1).re = -s.re-1 by simp,← Real.rpow_two,← mul_assoc,mul_comm (y^(-s.re-1)) C,
         mul_assoc,← Real.rpow_add hy0]

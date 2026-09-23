@@ -57,7 +57,7 @@ def speQuantileRieszStrictCrossFiveChannelCentroidTranslatedProfile {ι : Type*}
       ccmActualHeadMatchedQuantilePolarDisplacement (atom i) *
       (ccmActualHeadMatchedPolarCentroid (atom i) + a) : ℝ) : ℂ),
     ((criticalMellinAtomWeight (atom i) *
-      ccmActualHeadMatchedQuantilePolarDisplacement (atom i) ^ 2 : ℝ) : ℂ)]
+      ccmActualHeadMatchedQuantilePolarDisplacement (atom i) ^ (2 : ℕ) : ℝ) : ℂ)]
 
 /-- Profile translation is exactly right multiplication by the unipotent gauge. -/
 theorem speQuantileRieszStrictCrossFiveChannelCentroidTranslatedProfile_eq

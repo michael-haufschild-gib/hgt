@@ -10,11 +10,11 @@ noncomputable section
 namespace RHTower
 
 lemma sinh_sq_le_mul_sinh_cosh (x : ℝ) :
-    Real.sinh x ^ 2 ≤ x * Real.sinh x * Real.cosh x := by
+    Real.sinh x ^ (2 : ℕ) ≤ x * Real.sinh x * Real.cosh x := by
   have h := abs_sinh_le_abs_mul_cosh (abs_nonneg x) (le_refl |x|)
   have hmul := mul_le_mul_of_nonneg_right h (abs_nonneg (Real.sinh x))
   calc
-    Real.sinh x ^ 2 = |Real.sinh x| * |Real.sinh x| := by
+    Real.sinh x ^ (2 : ℕ) = |Real.sinh x| * |Real.sinh x| := by
       rw [← pow_two, sq_abs]
     _ ≤ (|x| * Real.cosh |x|) * |Real.sinh x| := hmul
     _ = x * Real.sinh x * Real.cosh x := by
@@ -27,10 +27,10 @@ lemma sinh_sq_le_mul_sinh_cosh (x : ℝ) :
         ring
 
 private def scalingTest (N : ℕ) (c t : ℝ) : ℝ :=
-  4 * Real.sinh (c * Real.log t / Real.log N) ^ 2 / Real.log t
+  4 * Real.sinh (c * Real.log t / Real.log N) ^ (2 : ℕ) / Real.log t
 
 def primeClockScalingProfileIntegrand (c u : ℝ) : ℝ :=
-  4 * Real.sinh (c * u) ^ 2 / u
+  4 * Real.sinh (c * u) ^ (2 : ℕ) / u
 
 def primeClockUniversalProfile (c : ℝ) : ℝ :=
   ∫ u in (0 : ℝ)..1, primeClockScalingProfileIntegrand c u
@@ -43,8 +43,8 @@ private def scalingTestDeriv (N : ℕ) (c t : ℝ) : ℝ :=
   ((8 * Real.sinh (c * Real.log t / Real.log N) *
       Real.cosh (c * Real.log t / Real.log N) * (c / (Real.log N * t))) *
       Real.log t -
-    4 * Real.sinh (c * Real.log t / Real.log N) ^ 2 * t⁻¹) /
-    Real.log t ^ 2
+    4 * Real.sinh (c * Real.log t / Real.log N) ^ (2 : ℕ) * t⁻¹) /
+    Real.log t ^ (2 : ℕ)
 
 private def primeWeight (n : ℕ) : ℝ :=
   if n.Prime then Real.log n / n else 0
@@ -158,7 +158,7 @@ private theorem hasDerivAt_scalingTest (N : ℕ) (c : ℝ) (hN : 1 < N)
     simpa only [Pi.mul_apply, Pi.div_apply] using!
       hraw.congr_deriv (by field_simp)
   have hs := hz.sinh
-  have hsq : HasDerivAt (fun x => Real.sinh (c * Real.log x / Real.log N) ^ 2)
+  have hsq : HasDerivAt (fun x => Real.sinh (c * Real.log x / Real.log N) ^ (2 : ℕ))
       (2 * Real.sinh (c * Real.log t / Real.log N) *
         Real.cosh (c * Real.log t / Real.log N) * (c / (Real.log N * t))) t := by
     simpa only [Pi.pow_apply] using!
@@ -183,7 +183,7 @@ private theorem scalingTestDeriv_continuousOn (N : ℕ) (c : ℝ) (hN : 1 < N) :
     Real.continuous_sinh.continuousAt.comp hz
   have hc : ContinuousAt (fun x : ℝ => Real.cosh (c * Real.log x / Real.log N)) t :=
     Real.continuous_cosh.continuousAt.comp hz
-  have hden : ContinuousAt (fun x : ℝ => Real.log x ^ 2) t := hlog.pow 2
+  have hden : ContinuousAt (fun x : ℝ => Real.log x ^ (2 : ℕ)) t := hlog.pow 2
   have hinner : ContinuousAt (fun x : ℝ => Real.log N * x) t :=
     continuousAt_const.mul continuousAt_id
   have hfrac : ContinuousAt (fun x : ℝ => c / (Real.log N * x)) t :=
@@ -197,7 +197,7 @@ private theorem scalingTestDeriv_continuousOn (N : ℕ) (c : ℝ) (hN : 1 < N) :
         (c / (Real.log N * x)) * Real.log x) t :=
     (((h8.mul hs).mul hc).mul hfrac).mul hlog
   have hright : ContinuousAt (fun x : ℝ =>
-      4 * Real.sinh (c * Real.log x / Real.log N) ^ 2 * x⁻¹) t :=
+      4 * Real.sinh (c * Real.log x / Real.log N) ^ (2 : ℕ) * x⁻¹) t :=
     (h4.mul (hs.pow 2)).mul hinv
   simpa only [scalingTestDeriv] using!
     ((hleft.sub hright).div hden (pow_ne_zero 2 hlogt)).continuousWithinAt
@@ -209,7 +209,7 @@ private theorem scalingTestDeriv_nonneg (N : ℕ) (c : ℝ) (hN : 1 < N)
   have hlogt : 0 < Real.log t := Real.log_pos ht
   let x := c * Real.log t / Real.log N
   have hs := sinh_sq_le_mul_sinh_cosh x
-  have hbracket : 0 ≤ 2 * x * Real.sinh x * Real.cosh x - Real.sinh x ^ 2 := by
+  have hbracket : 0 ≤ 2 * x * Real.sinh x * Real.cosh x - Real.sinh x ^ (2 : ℕ) := by
     have hxprod : 0 ≤ x * Real.sinh x * Real.cosh x := by
       have hxs : 0 ≤ x * Real.sinh x := by
         by_cases hx : 0 ≤ x
@@ -220,11 +220,11 @@ private theorem scalingTestDeriv_nonneg (N : ℕ) (c : ℝ) (hN : 1 < N)
     linarith
   have hnum : 0 ≤
       (8 * Real.sinh x * Real.cosh x * (c / (Real.log N * t))) * Real.log t -
-        4 * Real.sinh x ^ 2 * t⁻¹ := by
+        4 * Real.sinh x ^ (2 : ℕ) * t⁻¹ := by
     calc
       (8 * Real.sinh x * Real.cosh x * (c / (Real.log N * t))) * Real.log t -
-          4 * Real.sinh x ^ 2 * t⁻¹ =
-        (4 / t) * (2 * x * Real.sinh x * Real.cosh x - Real.sinh x ^ 2) := by
+          4 * Real.sinh x ^ (2 : ℕ) * t⁻¹ =
+        (4 / t) * (2 * x * Real.sinh x * Real.cosh x - Real.sinh x ^ (2 : ℕ)) := by
           dsimp [x]
           field_simp
           ring
@@ -238,7 +238,7 @@ theorem continuous_primeClockScalingProfileIntegrand (c : ℝ) :
   intro u
   by_cases hu : u = 0
   · subst u
-    let F : ℝ → ℝ := fun x => 4 * Real.sinh (c * x) ^ 2
+    let F : ℝ → ℝ := fun x => 4 * Real.sinh (c * x) ^ (2 : ℕ)
     let q : ℝ → ℝ := fun x => x⁻¹ * (F (0 + x) - F 0)
     have hz : HasDerivAt (fun x : ℝ => c * x) c 0 := by
       simpa using (hasDerivAt_id (x := (0 : ℝ))).const_mul c
@@ -424,7 +424,7 @@ private theorem tendsto_scalingTest_self_zero (c : ℝ) :
   have hlog : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hzero : Tendsto (fun N : ℕ =>
-      (4 * Real.sinh c ^ 2) / Real.log N) atTop (𝓝 0) :=
+      (4 * Real.sinh c ^ (2 : ℕ)) / Real.log N) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop hlog
   apply hzero.congr'
   filter_upwards [eventually_ge_atTop 2] with N hN
@@ -597,7 +597,7 @@ private theorem tendsto_scalingMain_primeClockUniversalProfile (c : ℝ) :
   have harg : Tendsto (fun N : ℕ => c * (Real.log 2 / Real.log N)) atTop (𝓝 0) := by
     simpa using ha.const_mul c
   have hboundary0 : Tendsto (fun N : ℕ =>
-      4 * Real.sinh (c * (Real.log 2 / Real.log N)) ^ 2) atTop (𝓝 0) := by
+      4 * Real.sinh (c * (Real.log 2 / Real.log N)) ^ (2 : ℕ)) atTop (𝓝 0) := by
     have hs := Real.continuous_sinh.continuousAt.tendsto.comp harg
     simpa using (hs.pow 2).const_mul 4
   have hboundary0' : Tendsto (fun N : ℕ =>
@@ -660,22 +660,22 @@ lemma primeClockCutoffEnergy_scaled_lipschitz
     (hc₁ : |c₁| ≤ C) (hc₂ : |c₂| ≤ C) :
     |primeClockCutoffEnergy N (c₁ / Real.log N) -
         primeClockCutoffEnergy N (c₂ / Real.log N)| ≤
-      8 * C * Real.cosh C ^ 2 * |c₁ - c₂| *
-        (primeClockSusceptibility N / Real.log N ^ 2) := by
+      8 * C * Real.cosh C ^ (2 : ℕ) * |c₁ - c₂| *
+        (primeClockSusceptibility N / Real.log N ^ (2 : ℕ)) := by
   have hlogN : 0 < Real.log (N : ℝ) := Real.log_pos (by exact_mod_cast hN)
   rw [primeClockCutoffEnergy_eq_sinh, primeClockCutoffEnergy_eq_sinh,
     ← Finset.sum_sub_distrib]
   calc
     |∑ p ∈ Nat.primesLE N,
-        (4 * Real.sinh (c₁ / Real.log ↑N * Real.log ↑p) ^ 2 / ↑p -
-          4 * Real.sinh (c₂ / Real.log ↑N * Real.log ↑p) ^ 2 / ↑p)| ≤
+        (4 * Real.sinh (c₁ / Real.log ↑N * Real.log ↑p) ^ (2 : ℕ) / ↑p -
+          4 * Real.sinh (c₂ / Real.log ↑N * Real.log ↑p) ^ (2 : ℕ) / ↑p)| ≤
       ∑ p ∈ Nat.primesLE N,
-        |4 * Real.sinh (c₁ / Real.log ↑N * Real.log ↑p) ^ 2 / ↑p -
-          4 * Real.sinh (c₂ / Real.log ↑N * Real.log ↑p) ^ 2 / ↑p| :=
+        |4 * Real.sinh (c₁ / Real.log ↑N * Real.log ↑p) ^ (2 : ℕ) / ↑p -
+          4 * Real.sinh (c₂ / Real.log ↑N * Real.log ↑p) ^ (2 : ℕ) / ↑p| :=
         Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ p ∈ Nat.primesLE N,
-        (8 * C * Real.cosh C ^ 2 * |c₁ - c₂|) *
-          (Real.log p ^ 2 / (Real.log N ^ 2 * p)) := by
+        (8 * C * Real.cosh C ^ (2 : ℕ) * |c₁ - c₂|) *
+          (Real.log p ^ (2 : ℕ) / (Real.log N ^ (2 : ℕ) * p)) := by
       apply Finset.sum_le_sum
       intro p hp
       have hpdata := Nat.mem_primesLE.mp hp
@@ -721,15 +721,15 @@ lemma primeClockCutoffEnergy_scaled_lipschitz
             dsimp [x, y]
             rw [← sub_mul, abs_mul, abs_of_nonneg hu0]
             ring
-      have hprod : |Real.sinh x ^ 2 - Real.sinh y ^ 2| ≤
-          2 * C * Real.cosh C ^ 2 * |c₁ - c₂| * u ^ 2 := by
+      have hprod : |Real.sinh x ^ (2 : ℕ) - Real.sinh y ^ (2 : ℕ)| ≤
+          2 * C * Real.cosh C ^ (2 : ℕ) * |c₁ - c₂| * u ^ (2 : ℕ) := by
         rw [sq_sub_sq, abs_mul]
         calc
           |Real.sinh x + Real.sinh y| * |Real.sinh x - Real.sinh y| ≤
               (2 * C * u * Real.cosh C) *
                 (Real.cosh C * |c₁ - c₂| * u) :=
             mul_le_mul hsum hdiff' (abs_nonneg _) (by positivity)
-          _ = 2 * C * Real.cosh C ^ 2 * |c₁ - c₂| * u ^ 2 := by ring
+          _ = 2 * C * Real.cosh C ^ (2 : ℕ) * |c₁ - c₂| * u ^ (2 : ℕ) := by ring
       have hxy₁ : c₁ / Real.log N * Real.log p = x := by
         dsimp [x, u]
         ring
@@ -738,39 +738,39 @@ lemma primeClockCutoffEnergy_scaled_lipschitz
         ring
       rw [hxy₁, hxy₂, div_eq_mul_inv, div_eq_mul_inv, ← sub_mul, abs_mul,
         abs_inv, abs_of_pos hp0]
-      rw [show 4 * Real.sinh x ^ 2 - 4 * Real.sinh y ^ 2 =
-          4 * (Real.sinh x ^ 2 - Real.sinh y ^ 2) by ring,
+      rw [show 4 * Real.sinh x ^ (2 : ℕ) - 4 * Real.sinh y ^ (2 : ℕ) =
+          4 * (Real.sinh x ^ (2 : ℕ) - Real.sinh y ^ (2 : ℕ)) by ring,
         abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 4)]
       calc
-        4 * |Real.sinh x ^ 2 - Real.sinh y ^ 2| * (p : ℝ)⁻¹ ≤
-            4 * (2 * C * Real.cosh C ^ 2 * |c₁ - c₂| * u ^ 2) * (p : ℝ)⁻¹ := by
+        4 * |Real.sinh x ^ (2 : ℕ) - Real.sinh y ^ (2 : ℕ)| * (p : ℝ)⁻¹ ≤
+            4 * (2 * C * Real.cosh C ^ (2 : ℕ) * |c₁ - c₂| * u ^ (2 : ℕ)) * (p : ℝ)⁻¹ := by
           gcongr
-        _ = (8 * C * Real.cosh C ^ 2 * |c₁ - c₂|) *
-            (Real.log p ^ 2 / (Real.log N ^ 2 * p)) := by
+        _ = (8 * C * Real.cosh C ^ (2 : ℕ) * |c₁ - c₂|) *
+            (Real.log p ^ (2 : ℕ) / (Real.log N ^ (2 : ℕ) * p)) := by
           dsimp [u]
           field_simp
           ring
-    _ = 8 * C * Real.cosh C ^ 2 * |c₁ - c₂| *
-        (primeClockSusceptibility N / Real.log N ^ 2) := by
+    _ = 8 * C * Real.cosh C ^ (2 : ℕ) * |c₁ - c₂| *
+        (primeClockSusceptibility N / Real.log N ^ (2 : ℕ)) := by
       rw [primeClockSusceptibility]
-      let K : ℝ := 8 * C * Real.cosh C ^ 2 * |c₁ - c₂|
+      let K : ℝ := 8 * C * Real.cosh C ^ (2 : ℕ) * |c₁ - c₂|
       calc
         ∑ p ∈ Nat.primesLE N,
-            K * (Real.log p ^ 2 / (Real.log N ^ 2 * p)) =
+            K * (Real.log p ^ (2 : ℕ) / (Real.log N ^ (2 : ℕ) * p)) =
           ∑ p ∈ Nat.primesLE N,
-            (K * (Real.log p ^ 2 / p)) * (Real.log N ^ 2)⁻¹ := by
+            (K * (Real.log p ^ (2 : ℕ) / p)) * (Real.log N ^ (2 : ℕ))⁻¹ := by
             apply Finset.sum_congr rfl
             intro p hp
             field_simp
-        _ = (∑ p ∈ Nat.primesLE N, K * (Real.log p ^ 2 / p)) *
-            (Real.log N ^ 2)⁻¹ := by rw [Finset.sum_mul]
-        _ = (K * ∑ p ∈ Nat.primesLE N, Real.log p ^ 2 / p) *
-            (Real.log N ^ 2)⁻¹ := by rw [Finset.mul_sum]
-        _ = K * ((∑ p ∈ Nat.primesLE N, Real.log p ^ 2 / p) /
-            Real.log N ^ 2) := by rw [div_eq_mul_inv]; ring
-        _ = 8 * C * Real.cosh C ^ 2 * |c₁ - c₂| *
-            ((∑ p ∈ Nat.primesLE N, Real.log p ^ 2 / p) /
-              Real.log N ^ 2) := by rfl
+        _ = (∑ p ∈ Nat.primesLE N, K * (Real.log p ^ (2 : ℕ) / p)) *
+            (Real.log N ^ (2 : ℕ))⁻¹ := by rw [Finset.sum_mul]
+        _ = (K * ∑ p ∈ Nat.primesLE N, Real.log p ^ (2 : ℕ) / p) *
+            (Real.log N ^ (2 : ℕ))⁻¹ := by rw [Finset.mul_sum]
+        _ = K * ((∑ p ∈ Nat.primesLE N, Real.log p ^ (2 : ℕ) / p) /
+            Real.log N ^ (2 : ℕ)) := by rw [div_eq_mul_inv]; ring
+        _ = 8 * C * Real.cosh C ^ (2 : ℕ) * |c₁ - c₂| *
+            ((∑ p ∈ Nat.primesLE N, Real.log p ^ (2 : ℕ) / p) /
+              Real.log N ^ (2 : ℕ)) := by rfl
 
 /-- Moving critical-window crossover: if the scaled horizontal coordinate `c_N` tends to `c`,
 then the prime-clock energy at `ε_N = c_N / log N` tends to the same universal profile. -/
@@ -800,11 +800,11 @@ theorem tendsto_primeClockCutoffEnergy_critical_profile_of_tendsto
     simpa using hsub.abs
   have hratio := tendsto_primeClockSusceptibility_div_log_sq
   have hupper : Tendsto (fun N : ℕ =>
-      (8 * C * Real.cosh C ^ 2) *
-        (|cN N - c| * (primeClockSusceptibility N / Real.log N ^ 2)))
+      (8 * C * Real.cosh C ^ (2 : ℕ)) *
+        (|cN N - c| * (primeClockSusceptibility N / Real.log N ^ (2 : ℕ))))
       atTop (𝓝 0) := by
     have hprod := habsSub.mul hratio
-    simpa using hprod.const_mul (8 * C * Real.cosh C ^ 2)
+    simpa using hprod.const_mul (8 * C * Real.cosh C ^ (2 : ℕ))
   have hdiff : Tendsto (fun N : ℕ =>
       primeClockCutoffEnergy N (cN N / Real.log N) -
         primeClockCutoffEnergy N (c / Real.log N)) atTop (𝓝 0) := by
@@ -814,8 +814,8 @@ theorem tendsto_primeClockCutoffEnergy_critical_profile_of_tendsto
         (show ∀ᶠ N : ℕ in atTop,
           |primeClockCutoffEnergy N (cN N / Real.log N) -
             primeClockCutoffEnergy N (c / Real.log N)| ≤
-              8 * C * Real.cosh C ^ 2 * |cN N - c| *
-                (primeClockSusceptibility N / Real.log N ^ 2) by
+              8 * C * Real.cosh C ^ (2 : ℕ) * |cN N - c| *
+                (primeClockSusceptibility N / Real.log N ^ (2 : ℕ)) by
           filter_upwards [eventually_ge_atTop 2, hcNbound] with N hN hcNb
           exact primeClockCutoffEnergy_scaled_lipschitz N (cN N) c C hN hC hcNb hcC)
         (by simpa [mul_assoc] using hupper)

@@ -173,7 +173,7 @@ def IsUniversalPhaseCoherenceDeadline
 whenever its quadratic phase defect is at most the requested defect. -/
 theorem isUniversalPhaseCoherenceDeadline_recurrence
     {d Q : ℕ} (hd : 0 < d) {η : ℝ}
-    (hdefect : (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 / 2 ≤ η) :
+    (hdefect : (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) / 2 ≤ η) :
     IsUniversalPhaseCoherenceDeadline d η ((Q + 1) ^ d) := by
   intro ω
   obtain ⟨n, hn0, hnQ, hncoh⟩ :=

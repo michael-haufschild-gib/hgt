@@ -190,9 +190,9 @@ theorem deningerMode_chirality (μ : ℝ) (r : ℝ) :
   · show (deningerModeProfile μ r : ℂ)
         = Complex.I * (deningerFreqSign μ : ℂ)
             * (-(Complex.I * (deningerFreqSign μ : ℂ)) * (deningerModeProfile μ r : ℂ))
-    have hI : Complex.I ^ 2 = -1 := Complex.I_sq
+    have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
     calc (deningerModeProfile μ r : ℂ)
-        = (-(Complex.I ^ 2)) * ((deningerFreqSign μ : ℂ) * (deningerFreqSign μ : ℂ))
+        = (-(Complex.I ^ (2 : ℕ))) * ((deningerFreqSign μ : ℂ) * (deningerFreqSign μ : ℂ))
             * (deningerModeProfile μ r : ℂ) := by rw [hI, hsq]; ring
       _ = Complex.I * (deningerFreqSign μ : ℂ)
             * (-(Complex.I * (deningerFreqSign μ : ℂ)) * (deningerModeProfile μ r : ℂ)) := by
@@ -200,8 +200,8 @@ theorem deningerMode_chirality (μ : ℝ) (r : ℝ) :
 
 /-- The pointwise squared length of the mode is twice the squared profile. -/
 theorem deningerMode_pointwise_normSq (μ : ℝ) (r : ℝ) :
-    ‖(deningerMode μ r).1‖ ^ 2 + ‖(deningerMode μ r).2‖ ^ 2
-      = 2 * deningerModeProfile μ r ^ 2 := by
+    ‖(deningerMode μ r).1‖ ^ (2 : ℕ) + ‖(deningerMode μ r).2‖ ^ (2 : ℕ)
+      = 2 * deningerModeProfile μ r ^ (2 : ℕ) := by
   have hprof : ‖((deningerModeProfile μ r : ℝ) : ℂ)‖ = deningerModeProfile μ r := by
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (deningerModeProfile_pos μ r)]
   have hsign : ‖(deningerFreqSign μ : ℂ)‖ = 1 := by
@@ -213,9 +213,9 @@ theorem deningerMode_pointwise_normSq (μ : ℝ) (r : ℝ) :
 
 /-- The radial integral of the squared profile. -/
 theorem deningerModeProfile_integral {μ : ℝ} (hμ : μ ≠ 0) :
-    ∫ r in Ioi (0 : ℝ), deningerModeProfile μ r ^ 2 = 1 / (2 * |μ|) := by
+    ∫ r in Ioi (0 : ℝ), deningerModeProfile μ r ^ (2 : ℕ) = 1 / (2 * |μ|) := by
   have hpos : (0 : ℝ) < 2 * |μ| := by positivity
-  have hsq : ∀ r : ℝ, deningerModeProfile μ r ^ 2 = Real.exp (-((2 * |μ|) * r)) := by
+  have hsq : ∀ r : ℝ, deningerModeProfile μ r ^ (2 : ℕ) = Real.exp (-((2 * |μ|) * r)) := by
     intro r
     rw [deningerModeProfile, ← Real.exp_nat_mul]
     congr 1
@@ -229,7 +229,7 @@ theorem deningerModeProfile_integral {μ : ℝ} (hμ : μ ≠ 0) :
 
 /-- **The squared norm of the mode is `1 / |μ|`.** -/
 theorem deningerMode_normSq {μ : ℝ} (hμ : μ ≠ 0) :
-    ∫ r in Ioi (0 : ℝ), (‖(deningerMode μ r).1‖ ^ 2 + ‖(deningerMode μ r).2‖ ^ 2)
+    ∫ r in Ioi (0 : ℝ), (‖(deningerMode μ r).1‖ ^ (2 : ℕ) + ‖(deningerMode μ r).2‖ ^ (2 : ℕ))
       = 1 / |μ| := by
   rw [MeasureTheory.setIntegral_congr_fun measurableSet_Ioi
     fun r _ => deningerMode_pointwise_normSq μ r, integral_const_mul,

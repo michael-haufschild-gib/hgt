@@ -40,7 +40,7 @@ def shellLabelStarSquare (x : ℕ →₀ ℂ) : ℕ →₀ ℂ :=
 canonical Hilbert direct-sum norm squared. -/
 theorem shellLabelCountingTrace_starSquare (x : ℕ →₀ ℂ) :
     shellLabelCountingTrace (shellLabelStarSquare x) =
-      ((‖(codiagEmbed x : lp (fun _ : ℕ => ℂ) 2)‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖(codiagEmbed x : lp (fun _ : ℕ => ℂ) 2)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [shellLabelCountingTrace, codiag_apply, norm_codiagEmbed_sq]
   have hsupp : (shellLabelStarSquare x).support = x.support := by
     ext n
@@ -157,10 +157,10 @@ theorem thetaXiQuadraticGhostOrbitWeight_eq_zero_iff (rho : XiDivisorSupport) :
 
 /-- The constant orbit weight is square-summable exactly when its source ghost vanishes. -/
 theorem summable_thetaXiQuadraticGhostOrbitWeight_sq_iff (rho : XiDivisorSupport) :
-    Summable (fun n => ‖thetaXiQuadraticGhostOrbitWeight rho n‖ ^ 2) ↔
+    Summable (fun n => ‖thetaXiQuadraticGhostOrbitWeight rho n‖ ^ (2 : ℕ)) ↔
       (rho : ℂ).re = 1 / 2 := by
-  rw [show (fun n => ‖thetaXiQuadraticGhostOrbitWeight rho n‖ ^ 2) =
-      fun _ : ℕ => ‖(thetaXiIntegralQuadraticGhostCoefficient rho primeTwo : ℂ)‖ ^ 2 by
+  rw [show (fun n => ‖thetaXiQuadraticGhostOrbitWeight rho n‖ ^ (2 : ℕ)) =
+      fun _ : ℕ => ‖(thetaXiIntegralQuadraticGhostCoefficient rho primeTwo : ℂ)‖ ^ (2 : ℕ) by
         rfl,
     summable_const_iff]
   constructor
@@ -187,7 +187,7 @@ theorem thetaXiQuadraticGhostOrbitClosable_iff (rho : XiDivisorSupport) :
   constructor
   · intro hclose
     by_contra hoff
-    have hns : ¬ Summable (fun n => ‖thetaXiQuadraticGhostOrbitWeight rho n‖ ^ 2) :=
+    have hns : ¬ Summable (fun n => ‖thetaXiQuadraticGhostOrbitWeight rho n‖ ^ (2 : ℕ)) :=
       (summable_thetaXiQuadraticGhostOrbitWeight_sq_iff rho).not.mpr hoff
     exact (not_isSequentiallyClosableBetween_codiag hns pinnedOne_ne_zero) hclose
   · intro hline
@@ -273,26 +273,26 @@ theorem thetaXiQuadraticGhostOrbitGraphNullPacket_offCritical
         (fun N => codiag (thetaXiQuadraticGhostOrbitWeight rho)
           (thetaXiQuadraticGhostOrbitGraphNullPacket rho N))
         atTop (nhds pinnedOne) := by
-  have hns : ¬ Summable (fun n => ‖thetaXiQuadraticGhostOrbitWeight rho n‖ ^ 2) :=
+  have hns : ¬ Summable (fun n => ‖thetaXiQuadraticGhostOrbitWeight rho n‖ ^ (2 : ℕ)) :=
     (summable_thetaXiQuadraticGhostOrbitWeight_sq_iff rho).not.mpr hoff
   have htop : Tendsto
-      (fun N => ∑ m ∈ Finset.range N, ‖thetaXiQuadraticGhostOrbitWeight rho m‖ ^ 2)
+      (fun N => ∑ m ∈ Finset.range N, ‖thetaXiQuadraticGhostOrbitWeight rho m‖ ^ (2 : ℕ))
       atTop atTop :=
     (not_summable_iff_tendsto_nat_atTop_of_nonneg (fun _ => sq_nonneg _)).mp hns
   have hsqrt : Tendsto
       (fun N => Real.sqrt
-        (∑ m ∈ Finset.range N, ‖thetaXiQuadraticGhostOrbitWeight rho m‖ ^ 2))
+        (∑ m ∈ Finset.range N, ‖thetaXiQuadraticGhostOrbitWeight rho m‖ ^ (2 : ℕ)))
       atTop atTop :=
     Real.tendsto_sqrt_atTop.comp htop
   have heventually :
       ∀ᶠ N in atTop,
-        0 < ∑ m ∈ Finset.range N, ‖thetaXiQuadraticGhostOrbitWeight rho m‖ ^ 2 :=
+        0 < ∑ m ∈ Finset.range N, ‖thetaXiQuadraticGhostOrbitWeight rho m‖ ^ (2 : ℕ) :=
     htop.eventually_gt_atTop 0
   constructor
   · rw [tendsto_zero_iff_norm_tendsto_zero]
     have hzero : Tendsto
         (fun N => ‖pinnedOne‖ / Real.sqrt
-          (∑ m ∈ Finset.range N, ‖thetaXiQuadraticGhostOrbitWeight rho m‖ ^ 2))
+          (∑ m ∈ Finset.range N, ‖thetaXiQuadraticGhostOrbitWeight rho m‖ ^ (2 : ℕ)))
         atTop (nhds 0) :=
       Tendsto.div_atTop tendsto_const_nhds hsqrt
     refine hzero.congr' ?_
@@ -339,7 +339,7 @@ theorem thetaXiQuadraticGhostOrbit_sourceFormationPropernessLaw
     (rho : XiDivisorSupport) :
     (∀ x : ℕ →₀ ℂ,
       shellLabelCountingTrace (shellLabelStarSquare x) =
-        ((‖(codiagEmbed x : lp (fun _ : ℕ => ℂ) 2)‖ ^ 2 : ℝ) : ℂ)) ∧
+        ((‖(codiagEmbed x : lp (fun _ : ℕ => ℂ) 2)‖ ^ (2 : ℕ) : ℝ) : ℂ)) ∧
     (∀ x : ℕ →₀ ℂ,
       ‖(codiagEmbed (shellLabelShift x) : lp (fun _ : ℕ => ℂ) 2)‖ =
         ‖(codiagEmbed x : lp (fun _ : ℕ => ℂ) 2)‖) ∧

@@ -126,7 +126,7 @@ def pathPatchIsometry (n : ℕ) :
 theorem norm_pathHamiltonian_le (u : PathShell n) :
     ‖pathHamiltonian u‖ ≤ Real.sqrt (Fintype.card (PathLabel n)) * ‖u‖ := by
   classical
-  have hnorm : ‖u‖ = Real.sqrt (∑ l, (WithLp.ofLp u l) ^ 2) := by
+  have hnorm : ‖u‖ = Real.sqrt (∑ l, (WithLp.ofLp u l) ^ (2 : ℕ)) := by
     rw [EuclideanSpace.norm_eq]
     refine congrArg Real.sqrt (Finset.sum_congr rfl fun l _ => ?_)
     rw [Real.norm_eq_abs, sq_abs]

@@ -26,14 +26,14 @@ namespace RHTower
 coordinate. -/
 theorem routeUHardEdgeRationalTestSq_one_eq (a : ℝ) (q : XiZeroCopy) :
     routeUHardEdgeRationalTestSq a 1 (xiSpectralPoint q)
-      = ((a ^ 2 : ℝ) : ℂ) * xiResolventPoint (a ^ 2) q := by
+      = ((a ^ (2 : ℕ) : ℝ) : ℂ) * xiResolventPoint (a ^ (2 : ℕ)) q := by
   rw [routeUHardEdgeRationalTestSq, xiResolventPoint, evalRealPolynomial_one, one_pow, mul_one,
     add_comm]
 
 /-- The divisor form of the constant-polynomial test is the zeroth resolvent moment. -/
 theorem tsum_routeUHardEdgeRationalTestSq_one (a : ℝ) :
     (∑' q : XiZeroCopy, routeUHardEdgeRationalTestSq a 1 (xiSpectralPoint q))
-      = ((a ^ 2 : ℝ) : ℂ) * xiResolventMoment 0 (a ^ 2) := by
+      = ((a ^ (2 : ℕ) : ℝ) : ℂ) * xiResolventMoment 0 (a ^ (2 : ℕ)) := by
   rw [xiResolventMoment, ← tsum_mul_left]
   refine tsum_congr fun q => ?_
   rw [routeUHardEdgeRationalTestSq_one_eq, pow_one]
@@ -51,7 +51,7 @@ theorem tsum_routeUHardEdgeRationalTestSq_one_eq_arithmetic {a : ℝ} (ha : 1 / 
   rw [tsum_routeUHardEdgeRationalTestSq_one,
     ← xiWeilPolarization_cauchyTest_eq_resolventMoment,
     xiWeilPolarization_cauchyTest_eq_arithmetic ha]
-  have hsq : ((a ^ 2 : ℝ) : ℂ) = (a : ℂ) * (a : ℂ) := by
+  have hsq : ((a ^ (2 : ℕ) : ℝ) : ℂ) = (a : ℂ) * (a : ℂ) := by
     push_cast
     ring
   rw [hsq]
@@ -61,14 +61,14 @@ theorem tsum_routeUHardEdgeRationalTestSq_one_eq_arithmetic {a : ℝ} (ha : 1 / 
 /-! ## The finite reduction of the general completed source -/
 
 /-- The Weil polynomial of the rational hard-edge test: `R(t) = t·p(t)²`. -/
-def routeUHardEdgeWeilPoly (p : Polynomial ℝ) : Polynomial ℝ := Polynomial.X * p ^ 2
+def routeUHardEdgeWeilPoly (p : Polynomial ℝ) : Polynomial ℝ := Polynomial.X * p ^ (2 : ℕ)
 
 theorem routeUHardEdgeWeilPoly_coeff_zero (p : Polynomial ℝ) :
     (routeUHardEdgeWeilPoly p).coeff 0 = 0 := by
   rw [routeUHardEdgeWeilPoly, Polynomial.coeff_X_mul_zero]
 
 theorem evalRealPolynomial_routeUHardEdgeWeilPoly (p : Polynomial ℝ) (z : ℂ) :
-    evalRealPolynomial (routeUHardEdgeWeilPoly p) z = z * evalRealPolynomial p z ^ 2 := by
+    evalRealPolynomial (routeUHardEdgeWeilPoly p) z = z * evalRealPolynomial p z ^ (2 : ℕ) := by
   rw [routeUHardEdgeWeilPoly, evalRealPolynomial_mul, evalRealPolynomial_pow]
   congr 1
   simp [evalRealPolynomial]
@@ -77,8 +77,8 @@ theorem evalRealPolynomial_routeUHardEdgeWeilPoly (p : Polynomial ℝ) (z : ℂ)
 coordinate. -/
 theorem routeUHardEdgeRationalTestSq_eq_weilPoly (a : ℝ) (p : Polynomial ℝ) (q : XiZeroCopy) :
     routeUHardEdgeRationalTestSq a p (xiSpectralPoint q)
-      = ((a ^ 2 : ℝ) : ℂ)
-        * evalRealPolynomial (routeUHardEdgeWeilPoly p) (xiResolventPoint (a ^ 2) q) := by
+      = ((a ^ (2 : ℕ) : ℝ) : ℂ)
+        * evalRealPolynomial (routeUHardEdgeWeilPoly p) (xiResolventPoint (a ^ (2 : ℕ)) q) := by
   rw [routeUHardEdgeRationalTestSq, evalRealPolynomial_routeUHardEdgeWeilPoly, xiResolventPoint,
     add_comm]
   ring
@@ -92,15 +92,15 @@ theorem natDegree_map_routeUHardEdgeWeilPoly (p : Polynomial ℝ) :
 finite combination of resolvent moments, with no coefficient at the divergent zeroth power. -/
 theorem tsum_routeUHardEdgeRationalTestSq_eq_moments (a : ℝ) (p : Polynomial ℝ) :
     (∑' q : XiZeroCopy, routeUHardEdgeRationalTestSq a p (xiSpectralPoint q))
-      = ((a ^ 2 : ℝ) : ℂ)
+      = ((a ^ (2 : ℕ) : ℝ) : ℂ)
         * ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
-            (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventMoment (k - 1) (a ^ 2) := by
-  have hX : (0 : ℝ) ≤ a ^ 2 := sq_nonneg a
+            (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventMoment (k - 1) (a ^ (2 : ℕ)) := by
+  have hX : (0 : ℝ) ≤ a ^ (2 : ℕ) := sq_nonneg a
   obtain ⟨d, hd⟩ : ∃ d : ℕ, d = (routeUHardEdgeWeilPoly p).natDegree := ⟨_, rfl⟩
   have hexpand : ∀ q : XiZeroCopy,
-      evalRealPolynomial (routeUHardEdgeWeilPoly p) (xiResolventPoint (a ^ 2) q)
+      evalRealPolynomial (routeUHardEdgeWeilPoly p) (xiResolventPoint (a ^ (2 : ℕ)) q)
         = ∑ k ∈ Finset.range (d + 1),
-            (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventPoint (a ^ 2) q ^ k := by
+            (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventPoint (a ^ (2 : ℕ)) q ^ k := by
     intro q
     rw [evalRealPolynomial, Polynomial.eval_eq_sum_range' (n := d + 1)]
     · refine Finset.sum_congr rfl fun k _ => ?_
@@ -110,7 +110,7 @@ theorem tsum_routeUHardEdgeRationalTestSq_eq_moments (a : ℝ) (p : Polynomial �
       omega
   have hsumm : ∀ k ∈ Finset.range (d + 1),
       Summable fun q : XiZeroCopy =>
-        (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventPoint (a ^ 2) q ^ k := by
+        (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventPoint (a ^ (2 : ℕ)) q ^ k := by
     intro k _
     rcases Nat.eq_zero_or_pos k with rfl | hk
     · have hzero : (((routeUHardEdgeWeilPoly p).coeff 0 : ℝ) : ℂ) = 0 := by
@@ -124,10 +124,10 @@ theorem tsum_routeUHardEdgeRationalTestSq_eq_moments (a : ℝ) (p : Polynomial �
   rw [tsum_congr hexpand, Summable.tsum_finsetSum hsumm]
   have hrange : ∑ k ∈ Finset.range (d + 1),
       (∑' q : XiZeroCopy,
-        (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventPoint (a ^ 2) q ^ k)
+        (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventPoint (a ^ (2 : ℕ)) q ^ k)
       = ∑ k ∈ Finset.Icc 1 d,
         (∑' q : XiZeroCopy,
-          (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventPoint (a ^ 2) q ^ k) := by
+          (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ) * xiResolventPoint (a ^ (2 : ℕ)) q ^ k) := by
     rw [Finset.range_eq_Ico, show Finset.Ico 0 (d + 1) = insert 0 (Finset.Icc 1 d) by
       ext k
       simp only [Finset.mem_Ico, Finset.mem_insert, Finset.mem_Icc]

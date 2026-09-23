@@ -119,7 +119,7 @@ theorem card_sub_one_le_length_mul_orbit
     refine mul_ne_zero Complex.I_ne_zero ?_
     exact_mod_cast ht
   have hI : IsAlgebraic ℚ Complex.I := by
-    refine ⟨Polynomial.X ^ 2 + 1, ?_, ?_⟩
+    refine ⟨Polynomial.X ^ (2 : ℕ) + 1, ?_, ?_⟩
     · intro h0
       have hco := congrArg (fun p : ℚ[X] => Polynomial.coeff p 2) h0
       norm_num [Polynomial.coeff_one] at hco
@@ -240,7 +240,7 @@ theorem card_sub_one_le_trdeg_orbit
     refine mul_ne_zero Complex.I_ne_zero ?_
     exact_mod_cast ht
   have hI : IsAlgebraic ℚ Complex.I := by
-    refine ⟨Polynomial.X ^ 2 + 1, ?_, ?_⟩
+    refine ⟨Polynomial.X ^ (2 : ℕ) + 1, ?_, ?_⟩
     · intro h0
       have hco := congrArg (fun p : ℚ[X] => Polynomial.coeff p 2) h0
       norm_num [Polynomial.coeff_one] at hco

@@ -85,7 +85,7 @@ theorem exists_uniformSurvival_avoiding_return_through
       (N : ℝ) * ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
         Real.sqrt (Real.pi * η / 2) ^ (d - 1)) < 1) :
     ∃ energy : Fin d → ℝ, ∀ n : ℕ, 0 < n → n ≤ N →
-      1 - (1 - η) ^ 2 <
+      1 - (1 - η) ^ (2 : ℕ) <
         finiteSpectralSurvivalDeviation (uniformSurvivalWeight d)
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) := by
   obtain ⟨energy, henergy⟩ :=
@@ -96,7 +96,7 @@ theorem exists_uniformSurvival_avoiding_return_through
   have hnstep : n - 1 + 1 = n := by omega
   have hdistance := henergy ⟨n - 1, hnlt⟩
   have hdistance' :
-      2 * (1 - (1 - η) ^ 2) <
+      2 * (1 - (1 - η) ^ (2 : ℕ)) <
         finiteQuantumObserverDistanceSq uniformPureObserverWeight
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy)
           (uniformPureObserverBlock d) := by
@@ -127,7 +127,7 @@ theorem exists_rankSharp_uniformSurvival_avoiding_return_through
                 (uniformPureObserverBlock (r + 1))) ℝ)) =
         r ∧
       ∀ n : ℕ, 0 < n → n ≤ N →
-        1 - (1 - η) ^ 2 <
+        1 - (1 - η) ^ (2 : ℕ) <
           finiteSpectralSurvivalDeviation
             (uniformSurvivalWeight (r + 1))
             (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) := by
@@ -139,7 +139,7 @@ theorem exists_rankSharp_uniformSurvival_avoiding_return_through
   have hnstep : n - 1 + 1 = n := by omega
   have hdistance := henergy ⟨n - 1, hnlt⟩
   have hdistance' :
-      2 * (1 - (1 - η) ^ 2) <
+      2 * (1 - (1 - η) ^ (2 : ℕ)) <
         finiteQuantumObserverDistanceSq uniformPureObserverWeight
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy)
           (uniformPureObserverBlock (r + 1)) := by
@@ -161,7 +161,7 @@ theorem exists_uniformSurvival_rank_recurrence
       n ≤ (Q + 1) ^ (d - 1) ∧
       finiteSpectralSurvivalDeviation (uniformSurvivalWeight d)
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) ≤
-        2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 := by
+        2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) := by
   obtain ⟨n, hn0, hnQ, hdistance⟩ :=
     exists_uniformPureObserver_rank_recurrence hd energy Q
   refine ⟨n, hn0, hnQ, ?_⟩

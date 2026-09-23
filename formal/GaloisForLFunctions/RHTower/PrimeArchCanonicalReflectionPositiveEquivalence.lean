@@ -9,7 +9,7 @@ import GaloisForLFunctions.RHTower.XiReciprocalSquareSourceCore
 The normalized continued prime--Gamma moment sequence has a reflection-positive Gram realization
 if and only if RH holds.  The reverse implication is the static Osterwalder--Schrader/Hankel
 norm-square law.  Under RH, the converse is realized canonically on the multiplicity-exact Xi
-`ell^2` space: if `lambda_q` is the reciprocal square of the centered spectral coordinate, then
+`ell^(2 : ℕ)` space: if `lambda_q` is the reciprocal square of the centered spectral coordinate, then
 
 `v_n(q) = sqrt(lambda_q) * lambda_q^n`.
 
@@ -25,7 +25,7 @@ namespace RHTower
 
 noncomputable section
 
-/-- The canonical reciprocal-square moment coordinate.  Its `ell^2` membership is conditional on
+/-- The canonical reciprocal-square moment coordinate.  Its `ell^(2 : ℕ)` membership is conditional on
 RH, but the coordinate formula itself is unconditional. -/
 def primeArchReflectionCoordinate (n : ℕ) (q : XiZeroCopy) : ℂ :=
   ((Real.sqrt (xiZeroCopyReciprocalSquare q).re : ℝ) : ℂ) *
@@ -48,7 +48,7 @@ theorem primeArchReflectionCoordinate_eq_of_riemannHypothesis
 theorem summable_norm_sq_primeArchReflectionCoordinate_of_riemannHypothesis
     (hRH : RiemannHypothesis) (n : ℕ) :
     Summable (fun q : XiZeroCopy =>
-      ‖primeArchReflectionCoordinate n q‖ ^ 2) := by
+      ‖primeArchReflectionCoordinate n q‖ ^ (2 : ℕ)) := by
   have hp := (summable_xiZeroCopyReciprocalSquare_pow (2 * n)).norm
   apply hp.congr
   intro q
@@ -61,7 +61,7 @@ theorem summable_norm_sq_primeArchReflectionCoordinate_of_riemannHypothesis
   rw [mul_pow, Real.sq_sqrt hx.le]
   ring
 
-/-- Under RH, the `n`th canonical prime--archimedean reflection vector in the Xi `ell^2` space. -/
+/-- Under RH, the `n`th canonical prime--archimedean reflection vector in the Xi `ell^(2 : ℕ)` space. -/
 def primeArchReflectionVector
     (hRH : RiemannHypothesis) (n : ℕ) :
     lp (fun _ : XiZeroCopy => ℂ) 2 :=
@@ -106,7 +106,7 @@ theorem inner_primeArchReflectionVector_eq_normalizedMoment
       rw [Complex.conj_ofReal]
       norm_cast
       rw [show (Real.sqrt x * x ^ j) * (Real.sqrt x * x ^ i) =
-          (Real.sqrt x) ^ 2 * x ^ (i + j) by ring]
+          (Real.sqrt x) ^ (2 : ℕ) * x ^ (i + j) by ring]
       rw [Real.sq_sqrt hx.le]
       ring
     _ = xiCentralReciprocalMoment (i + j) := by

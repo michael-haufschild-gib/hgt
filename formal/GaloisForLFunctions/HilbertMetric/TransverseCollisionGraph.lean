@@ -80,7 +80,7 @@ theorem recombined_transverseCollisionGramEntry {d M : ℕ}
     (q r : GradedMultiIndex d M) :
     ∑ i, ∑ j, c q i * c r j * transverseCollisionGramEntry lam nodes i j =
       ∑ a : HomogeneousMultiIndex d M,
-        lam ^ 2 * fockMonomialWeight a *
+        lam ^ (2 : ℕ) * fockMonomialWeight a *
           (if q = gradedIndex (topDegreeIndex M) a then 1 else 0) *
           (if r = gradedIndex (topDegreeIndex M) a then 1 else 0) := by
   calc
@@ -117,14 +117,14 @@ theorem recombined_transverseCollisionGramEntry {d M : ℕ}
       intro a ha
       rw [recombined_transverseCollisionVector lam nodes c hdelta q a,
         recombined_transverseCollisionVector lam nodes c hdelta r a]
-      have hsqrt : Real.sqrt (fockMonomialWeight a) ^ 2 = fockMonomialWeight a := by
+      have hsqrt : Real.sqrt (fockMonomialWeight a) ^ (2 : ℕ) = fockMonomialWeight a := by
         rw [Real.sq_sqrt (le_of_lt (fockMonomialWeight_pos a))]
       calc
         (lam * Real.sqrt (fockMonomialWeight a) *
             (if q = gradedIndex (topDegreeIndex M) a then 1 else 0)) *
             (lam * Real.sqrt (fockMonomialWeight a) *
               (if r = gradedIndex (topDegreeIndex M) a then 1 else 0)) =
-          lam ^ 2 * Real.sqrt (fockMonomialWeight a) ^ 2 *
+          lam ^ (2 : ℕ) * Real.sqrt (fockMonomialWeight a) ^ (2 : ℕ) *
             (if q = gradedIndex (topDegreeIndex M) a then 1 else 0) *
             (if r = gradedIndex (topDegreeIndex M) a then 1 else 0) := by ring
         _ = _ := by rw [hsqrt]
@@ -141,17 +141,17 @@ theorem recombined_transverseCollisionGramEntry_top {d M : ℕ}
       c (gradedIndex (topDegreeIndex M) a) i *
         c (gradedIndex (topDegreeIndex M) b) j *
           transverseCollisionGramEntry lam nodes i j =
-      if a = b then lam ^ 2 * fockMonomialWeight a else 0 := by
+      if a = b then lam ^ (2 : ℕ) * fockMonomialWeight a else 0 := by
   rw [recombined_transverseCollisionGramEntry lam nodes c hdelta]
   by_cases hab : a = b
   · subst b
     rw [if_pos rfl]
     calc
       (∑ x : HomogeneousMultiIndex d M,
-        lam ^ 2 * fockMonomialWeight x *
+        lam ^ (2 : ℕ) * fockMonomialWeight x *
           (if gradedIndex (topDegreeIndex M) a = gradedIndex (topDegreeIndex M) x then 1 else 0) *
           (if gradedIndex (topDegreeIndex M) a = gradedIndex (topDegreeIndex M) x then 1 else 0)) =
-        lam ^ 2 * fockMonomialWeight a *
+        lam ^ (2 : ℕ) * fockMonomialWeight a *
           (if gradedIndex (topDegreeIndex M) a = gradedIndex (topDegreeIndex M) a then 1 else 0) *
           (if gradedIndex (topDegreeIndex M) a = gradedIndex (topDegreeIndex M) a then 1 else 0) := by
         apply Finset.sum_eq_single a
@@ -187,7 +187,7 @@ theorem recombined_transverseCollisionGramEntry_diagonal {d M : ℕ}
     (q r : GradedMultiIndex d M) :
     ∑ i, ∑ j, c q i * c r j * transverseCollisionGramEntry lam nodes i j =
       if q = r ∧ q.1 = topDegreeIndex M then
-        lam ^ 2 * fockMonomialWeight q.2 else 0 := by
+        lam ^ (2 : ℕ) * fockMonomialWeight q.2 else 0 := by
   by_cases hqr : q = r
   · subst r
     by_cases htop : q.1 = topDegreeIndex M

@@ -23,7 +23,7 @@ noncomputable section
 
 /-- Squaring preserves injectivity of cosine on the open quarter circle. -/
 theorem injOn_cos_sq_Ioo_zero_pi_div_two :
-    Set.InjOn (fun x : ℝ => Real.cos x ^ 2) (Set.Ioo 0 (Real.pi / 2)) := by
+    Set.InjOn (fun x : ℝ => Real.cos x ^ (2 : ℕ)) (Set.Ioo 0 (Real.pi / 2)) := by
   intro x hx y hy hxy
   have hcx : 0 < Real.cos x :=
     Real.cos_pos_of_mem_Ioo ⟨(neg_lt_zero.mpr (by positivity)).trans hx.1, hx.2⟩
@@ -36,18 +36,18 @@ theorem injOn_cos_sq_Ioo_zero_pi_div_two :
 
 /-- The image of the open quarter circle under `cos²` is infinite. -/
 theorem infinite_cos_sq_image_quarter :
-    (fun x : ℝ => Real.cos x ^ 2) '' Set.Ioo 0 (Real.pi / 2) |>.Infinite := by
+    (fun x : ℝ => Real.cos x ^ (2 : ℕ)) '' Set.Ioo 0 (Real.pi / 2) |>.Infinite := by
   exact (Set.Ioo_infinite (by positivity : (0 : ℝ) < Real.pi / 2)).image
     injOn_cos_sq_Ioo_zero_pi_div_two
 
 /-- A nonzero polynomial is nonzero after the `cos²` substitution at some point of the open
 quarter circle. -/
 theorem exists_quarter_eval_cos_sq_ne_zero {p : Polynomial ℝ} (hp : p ≠ 0) :
-    ∃ x ∈ Set.Ioo (0 : ℝ) (Real.pi / 2), p.eval (Real.cos x ^ 2) ≠ 0 := by
+    ∃ x ∈ Set.Ioo (0 : ℝ) (Real.pi / 2), p.eval (Real.cos x ^ (2 : ℕ)) ≠ 0 := by
   by_contra h
   push Not at h
   have hroot :
-      (fun x : ℝ => Real.cos x ^ 2) '' Set.Ioo 0 (Real.pi / 2) ⊆
+      (fun x : ℝ => Real.cos x ^ (2 : ℕ)) '' Set.Ioo 0 (Real.pi / 2) ⊆
         {x : ℝ | p.IsRoot x} := by
     rintro y ⟨x, hx, rfl⟩
     exact h x hx
@@ -57,8 +57,8 @@ theorem exists_quarter_eval_cos_sq_ne_zero {p : Polynomial ℝ} (hp : p ≠ 0) :
 /-- A nonzero polynomial square has strictly positive quarter-circle integral after the `cos²`
 substitution. -/
 theorem integral_quarter_eval_cos_sq_sq_pos {p : Polynomial ℝ} (hp : p ≠ 0) :
-    0 < ∫ x in (0 : ℝ)..Real.pi / 2, (p.eval (Real.cos x ^ 2)) ^ 2 := by
-  let f : ℝ → ℝ := fun x => (p.eval (Real.cos x ^ 2)) ^ 2
+    0 < ∫ x in (0 : ℝ)..Real.pi / 2, (p.eval (Real.cos x ^ (2 : ℕ))) ^ (2 : ℕ) := by
+  let f : ℝ → ℝ := fun x => (p.eval (Real.cos x ^ (2 : ℕ))) ^ (2 : ℕ)
   have hfcont : Continuous f := by
     dsimp only [f]
     fun_prop
@@ -68,7 +68,7 @@ theorem integral_quarter_eval_cos_sq_sq_pos {p : Polynomial ℝ} (hp : p ≠ 0) 
   rw [intervalIntegral.integral_pos_iff_support_of_nonneg_ae
     (Filter.Eventually.of_forall hfnn) hfint]
   refine ⟨by positivity, ?_⟩
-  let W : Set ℝ := Set.Ioo (0 : ℝ) (Real.pi / 2) ∩ {x : ℝ | p.eval (Real.cos x ^ 2) ≠ 0}
+  let W : Set ℝ := Set.Ioo (0 : ℝ) (Real.pi / 2) ∩ {x : ℝ | p.eval (Real.cos x ^ (2 : ℕ)) ≠ 0}
   have hWopen : IsOpen W := by
     exact isOpen_Ioo.inter (isOpen_ne.preimage (p.continuous.comp
       (Real.continuous_cos.pow 2)))
@@ -85,10 +85,10 @@ theorem integral_quarter_eval_cos_sq_sq_pos {p : Polynomial ℝ} (hp : p ≠ 0) 
 theorem momentFunctional_normalizedCentralBinom_eq_quarterIntegral (p : Polynomial ℝ) :
     _root_.HTGeometry.momentFunctional normalizedCentralBinom p =
       (2 / Real.pi) *
-        (∫ x in (0 : ℝ)..Real.pi / 2, p.eval (Real.cos x ^ 2)) := by
+        (∫ x in (0 : ℝ)..Real.pi / 2, p.eval (Real.cos x ^ (2 : ℕ))) := by
   rw [_root_.HTGeometry.momentFunctional_eq_support_sum]
   have heval (x : ℝ) :
-      p.eval (Real.cos x ^ 2) =
+      p.eval (Real.cos x ^ (2 : ℕ)) =
         ∑ k ∈ p.support, p.coeff k * Real.cos x ^ (2 * k) := by
     rw [Polynomial.eval_eq_sum, Polynomial.sum_def]
     apply Finset.sum_congr rfl

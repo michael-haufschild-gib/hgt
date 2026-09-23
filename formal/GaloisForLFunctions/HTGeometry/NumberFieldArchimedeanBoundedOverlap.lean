@@ -23,7 +23,7 @@ theorem real_congruence_entry_bound
     {c C : ℝ} (hc : 0 < c)
     {A A' G : Matrix (Fin n) (Fin n) ℝ}
     (hlow : ∀ v : Fin n → ℝ,
-      c * ∑ k, (v k) ^ 2 ≤ v ⬝ᵥ (A *ᵥ v))
+      c * ∑ k, (v k) ^ (2 : ℕ) ≤ v ⬝ᵥ (A *ᵥ v))
     (hdiag : ∀ i, A' i i ≤ C)
     (hform : A' = G * A * Gᵀ)
     (i j : Fin n) :
@@ -35,17 +35,17 @@ theorem real_congruence_entry_bound
     rw [hform]
     change (γᵀ * A * γ) i i = _
     exact congr_diag_eq_quadForm_col A γ i
-  have hsingle : (G i j) ^ 2 ≤ ∑ k, (v k) ^ 2 := by
+  have hsingle : (G i j) ^ (2 : ℕ) ≤ ∑ k, (v k) ^ (2 : ℕ) := by
     rw [← hv j]
     exact Finset.single_le_sum (fun k _ => sq_nonneg (v k)) (Finset.mem_univ j)
-  have hsqc : c * (G i j) ^ 2 ≤ C := by
+  have hsqc : c * (G i j) ^ (2 : ℕ) ≤ C := by
     calc
-      c * (G i j) ^ 2 ≤ c * ∑ k, (v k) ^ 2 :=
+      c * (G i j) ^ (2 : ℕ) ≤ c * ∑ k, (v k) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hsingle hc.le
       _ ≤ v ⬝ᵥ (A *ᵥ v) := hlow v
       _ = A' i i := hquad.symm
       _ ≤ C := hdiag i
-  have hsq : (G i j) ^ 2 ≤ C / c := by
+  have hsq : (G i j) ^ (2 : ℕ) ≤ C / c := by
     rw [le_div_iff₀ hc]
     nlinarith
   have hsqrt := Real.sqrt_le_sqrt hsq
@@ -57,7 +57,7 @@ theorem complex_congruence_entry_bound
     {c C : ℝ} (hc : 0 < c)
     {A A' G : Matrix (Fin n) (Fin n) ℂ}
     (hlow : ∀ v : Fin n → ℂ,
-      c * ∑ k, ‖v k‖ ^ 2 ≤ (star v ⬝ᵥ (A *ᵥ v)).re)
+      c * ∑ k, ‖v k‖ ^ (2 : ℕ) ≤ (star v ⬝ᵥ (A *ᵥ v)).re)
     (hdiag : ∀ i, (A' i i).re ≤ C)
     (hform : A' = G * A * Gᴴ)
     (i j : Fin n) :
@@ -69,19 +69,19 @@ theorem complex_congruence_entry_bound
   have hquad : A' i i = star v ⬝ᵥ (A *ᵥ v) := by
     rw [hform]
     simpa [γ, v] using conjCongr_diag_eq_quadForm_col A (Gᴴ) i
-  have hsingle : ‖G i j‖ ^ 2 ≤ ∑ k, ‖v k‖ ^ 2 := by
+  have hsingle : ‖G i j‖ ^ (2 : ℕ) ≤ ∑ k, ‖v k‖ ^ (2 : ℕ) := by
     calc
-      ‖G i j‖ ^ 2 = ‖v j‖ ^ 2 := by rw [hv j, norm_star]
-      _ ≤ ∑ k, ‖v k‖ ^ 2 :=
+      ‖G i j‖ ^ (2 : ℕ) = ‖v j‖ ^ (2 : ℕ) := by rw [hv j, norm_star]
+      _ ≤ ∑ k, ‖v k‖ ^ (2 : ℕ) :=
         Finset.single_le_sum (fun k _ => sq_nonneg ‖v k‖) (Finset.mem_univ j)
-  have hsqc : c * ‖G i j‖ ^ 2 ≤ C := by
+  have hsqc : c * ‖G i j‖ ^ (2 : ℕ) ≤ C := by
     calc
-      c * ‖G i j‖ ^ 2 ≤ c * ∑ k, ‖v k‖ ^ 2 :=
+      c * ‖G i j‖ ^ (2 : ℕ) ≤ c * ∑ k, ‖v k‖ ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hsingle hc.le
       _ ≤ (star v ⬝ᵥ (A *ᵥ v)).re := hlow v
       _ = (A' i i).re := congrArg Complex.re hquad.symm
       _ ≤ C := hdiag i
-  have hsq : ‖G i j‖ ^ 2 ≤ C / c := by
+  have hsq : ‖G i j‖ ^ (2 : ℕ) ≤ C / c := by
     rw [le_div_iff₀ hc]
     nlinarith
   have hsqrt := Real.sqrt_le_sqrt hsq
@@ -95,7 +95,7 @@ def NumberFieldRealCongruenceBound (c C : ℝ)
   ∀ w : {w : InfinitePlace K // IsReal w},
     ∃ A A' : Matrix (Fin n) (Fin n) ℝ,
       (∀ v : Fin n → ℝ,
-        c * ∑ k, (v k) ^ 2 ≤ v ⬝ᵥ (A *ᵥ v)) ∧
+        c * ∑ k, (v k) ^ (2 : ℕ) ≤ v ⬝ᵥ (A *ᵥ v)) ∧
       (∀ i, A' i i ≤ C) ∧
       A' = numberFieldRealOrderMatrixAt w N * A *
         (numberFieldRealOrderMatrixAt w N)ᵀ
@@ -106,7 +106,7 @@ def NumberFieldComplexCongruenceBound (c C : ℝ)
   ∀ w : {w : InfinitePlace K // IsComplex w},
     ∃ A A' : Matrix (Fin n) (Fin n) ℂ,
       (∀ v : Fin n → ℂ,
-        c * ∑ k, ‖v k‖ ^ 2 ≤ (star v ⬝ᵥ (A *ᵥ v)).re) ∧
+        c * ∑ k, ‖v k‖ ^ (2 : ℕ) ≤ (star v ⬝ᵥ (A *ᵥ v)).re) ∧
       (∀ i, (A' i i).re ≤ C) ∧
       A' = numberFieldComplexOrderMatrixAt w N * A *
         (numberFieldComplexOrderMatrixAt w N)ᴴ

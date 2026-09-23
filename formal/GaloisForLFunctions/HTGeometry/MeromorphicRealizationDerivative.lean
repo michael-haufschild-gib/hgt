@@ -35,7 +35,7 @@ theorem differential_deriv_mul {K : Type*} [CommRing K] [Differential K] (a b : 
 
 /-- **The quotient rule in a differential field.** -/
 theorem differential_deriv_div {K : Type*} [Field K] [Differential K] (a b : K) (hb : b ≠ 0) :
-    (a / b)′ = (a′ * b - a * b′) / b ^ 2 := by
+    (a / b)′ = (a′ * b - a * b′) / b ^ (2 : ℕ) := by
   have hbb : b * (a / b) = a := by field_simp
   have hd : (b * (a / b))′ = a′ := by rw [hbb]
   rw [differential_deriv_mul] at hd
@@ -117,7 +117,7 @@ theorem realizesMero_deriv {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ
     have hdeneq : algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField Set.univ)
           (entireElem (fun z ↦ B z * B z) hden)
         = algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField Set.univ)
-            (entireElem B hB) ^ 2 := by
+            (entireElem B hB) ^ (2 : ℕ) := by
       rw [pow_two, ← map_mul]
       rfl
     rw [hnumeq, hdeneq]

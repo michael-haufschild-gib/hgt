@@ -10,7 +10,7 @@ exponential.  The arbitrary-complex-order exterior envelope now removes this sou
 
 At every positive Fourier index and cusp height `Y >= 1`, the new envelope simplifies to
 
-`||K_nu(2*pi*n*Y)|| <= exp(||nu||^2/2) * exp(-n*Y)`.
+`||K_nu(2*pi*n*Y)|| <= exp(||nu||^(2 : ℕ)/2) * exp(-n*Y)`.
 
 Combining it with the actual divisor coefficient packet, polynomial absorption, and corpus Tannery
 proves that the full infinite Bessel-valued jet tail tends to zero for every complex arithmetic

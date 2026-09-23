@@ -20,7 +20,7 @@ namespace RHTower.Sieve
 /-- Short coefficient energy of the fixed-Weil-normalized opposite reciprocal pair. -/
 def levinsonSymmetricReciprocalShortEnergy (M : ℕ) : ℝ :=
   ∑ k ∈ Finset.Icc 2 M,
-    ‖levinsonSymmetricReciprocalRescaledCoeff M k‖ ^ 2
+    ‖levinsonSymmetricReciprocalRescaledCoeff M k‖ ^ (2 : ℕ)
 
 /-- The paired reciprocal energy is exactly the von Mangoldt harmonic square moment. -/
 theorem levinsonSymmetricReciprocalShortEnergy_eq_vonMangoldtHarmonicSquareSum
@@ -41,7 +41,7 @@ theorem levinsonSymmetricReciprocalShortEnergy_eq_vonMangoldtHarmonicSquareSum
 /-- Sharp normalized energy law for the fixed-Weil-normalized reciprocal pair. -/
 theorem tendsto_levinsonSymmetricReciprocalShortEnergy_div_logSquare :
     Tendsto (fun M : ℕ =>
-      levinsonSymmetricReciprocalShortEnergy M / Real.log M ^ 2)
+      levinsonSymmetricReciprocalShortEnergy M / Real.log M ^ (2 : ℕ))
       atTop (nhds (1 / 2 : ℝ)) := by
   refine tendsto_vonMangoldtHarmonicSquareSum_div_logSquare.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with M hM
@@ -52,7 +52,7 @@ theorem tendsto_levinsonSymmetricReciprocalShortEnergy_atTop :
     Tendsto levinsonSymmetricReciprocalShortEnergy atTop atTop := by
   have hlog : Tendsto (fun M : ℕ => Real.log M) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hlogSq : Tendsto (fun M : ℕ => Real.log M ^ 2) atTop atTop := by
+  have hlogSq : Tendsto (fun M : ℕ => Real.log M ^ (2 : ℕ)) atTop atTop := by
     simpa only [pow_two] using hlog.atTop_mul_atTop₀ hlog
   have hprod :=
     tendsto_levinsonSymmetricReciprocalShortEnergy_div_logSquare.pos_mul_atTop

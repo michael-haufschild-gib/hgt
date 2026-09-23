@@ -6,12 +6,12 @@ noncomputable section
 
 /-- Scalar determinant of the actual two-site wave residual. -/
 def chargedTwoSiteDeterminant (k m c d : ℝ) (ω : ℂ) : ℂ :=
-  (((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c + d : ℝ) : ℂ)) ^ 2) *
-    (((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c - d : ℝ) : ℂ)) ^ 2) - (Real.exp k : ℂ) ^ 2
+  (((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c + d : ℝ) : ℂ)) ^ (2 : ℕ)) *
+    (((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c - d : ℝ) : ℂ)) ^ (2 : ℕ)) - (Real.exp k : ℂ) ^ (2 : ℕ)
 
 /-- A canonical candidate whose first component never vanishes. -/
 def chargedTwoSiteModeVector (k m c d : ℝ) (ω : ℂ) : ℂ × ℂ :=
-  ((Real.exp k : ℂ), ((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c + d : ℝ) : ℂ)) ^ 2)
+  ((Real.exp k : ℂ), ((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c + d : ℝ) : ℂ)) ^ (2 : ℕ))
 
 /-- Actual mode existence, with a nonzero state required explicitly. -/
 def ChargedTwoSiteHasMode (k m c d : ℝ) (ω : ℂ) : Prop :=
@@ -53,7 +53,7 @@ theorem chargedTwoSiteHasMode_iff_determinant (k m c d : ℝ) (ω : ℂ) :
     have hd : chargedTwoSiteDeterminant k m c d ω * v.1 = 0 := by
       unfold chargedTwoSiteDeterminant
       linear_combination
-        (((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c - d : ℝ) : ℂ)) ^ 2) * h0 +
+        (((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c - d : ℝ) : ℂ)) ^ (2 : ℕ)) * h0 +
           (Real.exp k : ℂ) * h1
     exact (mul_eq_zero.mp hd).resolve_right hv0
   · intro hd
@@ -64,15 +64,15 @@ theorem chargedTwoSiteHasMode_iff_determinant (k m c d : ℝ) (ω : ℂ) :
 /-- Centering at the mean electrostatic frequency makes the determinant an even quartic. -/
 theorem chargedTwoSiteDeterminant_centered_square (k m c d : ℝ) (ω : ℂ) :
     chargedTwoSiteDeterminant k m c d ω =
-      ((ω - (c : ℂ)) ^ 2 - ((chargedTwoSiteBase k m + d ^ 2 : ℝ) : ℂ)) ^ 2 -
-        (((Real.exp k) ^ 2 + 4 * chargedTwoSiteBase k m * d ^ 2 : ℝ) : ℂ) := by
+      ((ω - (c : ℂ)) ^ (2 : ℕ) - ((chargedTwoSiteBase k m + d ^ (2 : ℕ) : ℝ) : ℂ)) ^ (2 : ℕ) -
+        (((Real.exp k) ^ (2 : ℕ) + 4 * chargedTwoSiteBase k m * d ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold chargedTwoSiteDeterminant
   push_cast
   ring
 
 /-- The centered quadratic discriminant is strictly positive even at zero charge and zero mass. -/
 theorem chargedTwoSiteDiscriminant_pos (k m d : ℝ) :
-    0 < (Real.exp k) ^ 2 + 4 * chargedTwoSiteBase k m * d ^ 2 := by
+    0 < (Real.exp k) ^ (2 : ℕ) + 4 * chargedTwoSiteBase k m * d ^ (2 : ℕ) := by
   have h := mul_nonneg (chargedTwoSiteBase_pos k m).le (sq_nonneg d)
   nlinarith [sq_pos_of_pos (Real.exp_pos k)]
 

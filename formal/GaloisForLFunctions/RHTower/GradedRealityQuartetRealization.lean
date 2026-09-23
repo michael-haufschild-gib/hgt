@@ -54,7 +54,7 @@ def gradedEnvelope (w : ℂ) : ℂ := coshQuartetEnvelope quartetShift w
 private def quartetPoint : ℂ := (Real.pi / 2 : ℝ) + (Real.pi / 2 : ℝ) * I
 
 /-- The real even quartet polynomial `w⁴ + π⁴/4`, whose four roots are the quartet. -/
-private def quartetPoly (w : ℂ) : ℂ := w ^ 4 + (Real.pi : ℂ) ^ 4 / 4
+private def quartetPoly (w : ℂ) : ℂ := w ^ (4 : ℕ) + (Real.pi : ℂ) ^ (4 : ℕ) / 4
 
 /-- The Hermite-flat multiplier of depth `N`. -/
 def flatMultiplier (N : ℕ) (w : ℂ) : ℂ := 1 + quartetPoly w ^ (2 * N + 1)
@@ -112,17 +112,17 @@ theorem gradedRealityXi_conj (N : ℕ) (s : ℂ) :
 
 /-! ## The quartet and its simplicity -/
 
-theorem quartetPoint_sq : quartetPoint ^ 2 = (Real.pi : ℂ) ^ 2 / 2 * I := by
+theorem quartetPoint_sq : quartetPoint ^ (2 : ℕ) = (Real.pi : ℂ) ^ (2 : ℕ) / 2 * I := by
   simp only [quartetPoint]
   push_cast
-  rw [show ((Real.pi : ℂ) / 2 + (Real.pi : ℂ) / 2 * I) ^ 2
-      = (Real.pi : ℂ) ^ 2 / 4 * (1 + I ^ 2 + 2 * I) by ring, Complex.I_sq]
+  rw [show ((Real.pi : ℂ) / 2 + (Real.pi : ℂ) / 2 * I) ^ (2 : ℕ)
+      = (Real.pi : ℂ) ^ (2 : ℕ) / 4 * (1 + I ^ (2 : ℕ) + 2 * I) by ring, Complex.I_sq]
   ring
 
 theorem quartetPoly_quartetPoint : quartetPoly quartetPoint = 0 := by
-  have h : quartetPoint ^ 4 = (quartetPoint ^ 2) ^ 2 := by ring
+  have h : quartetPoint ^ (4 : ℕ) = (quartetPoint ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
   rw [quartetPoly, h, quartetPoint_sq,
-    show ((Real.pi : ℂ) ^ 2 / 2 * I) ^ 2 = (Real.pi : ℂ) ^ 4 / 4 * I ^ 2 by ring,
+    show ((Real.pi : ℂ) ^ (2 : ℕ) / 2 * I) ^ (2 : ℕ) = (Real.pi : ℂ) ^ (4 : ℕ) / 4 * I ^ (2 : ℕ) by ring,
     Complex.I_sq]
   ring
 
@@ -389,22 +389,22 @@ theorem deriv_gradedEnvelope_add_pi_mul_I (w : ℂ) :
 /-! ## The zero-free real axis -/
 
 theorem quartetPoly_mul_I (y : ℝ) :
-    quartetPoly ((y : ℂ) * I) = ((y ^ 4 + Real.pi ^ 4 / 4 : ℝ) : ℂ) := by
+    quartetPoly ((y : ℂ) * I) = ((y ^ (4 : ℕ) + Real.pi ^ (4 : ℕ) / 4 : ℝ) : ℂ) := by
   simp only [quartetPoly]
   push_cast
-  linear_combination ((y : ℂ) ^ 4 * ((I : ℂ) ^ 2 - 1)) * Complex.I_sq
+  linear_combination ((y : ℂ) ^ (4 : ℕ) * ((I : ℂ) ^ (2 : ℕ) - 1)) * Complex.I_sq
 
 theorem flatMultiplier_mul_I (N : ℕ) (y : ℝ) :
     flatMultiplier N ((y : ℂ) * I)
-      = ((1 + (y ^ 4 + Real.pi ^ 4 / 4) ^ (2 * N + 1) : ℝ) : ℂ) := by
+      = ((1 + (y ^ (4 : ℕ) + Real.pi ^ (4 : ℕ) / 4) ^ (2 * N + 1) : ℝ) : ℂ) := by
   rw [flatMultiplier, quartetPoly_mul_I]
   push_cast
   ring
 
 theorem flatMultiplier_mul_I_ne_zero (N : ℕ) (y : ℝ) : flatMultiplier N ((y : ℂ) * I) ≠ 0 := by
   rw [flatMultiplier_mul_I]
-  have hpos : (0 : ℝ) < 1 + (y ^ 4 + Real.pi ^ 4 / 4) ^ (2 * N + 1) := by
-    have hbase : (0 : ℝ) < y ^ 4 + Real.pi ^ 4 / 4 := by positivity
+  have hpos : (0 : ℝ) < 1 + (y ^ (4 : ℕ) + Real.pi ^ (4 : ℕ) / 4) ^ (2 * N + 1) := by
+    have hbase : (0 : ℝ) < y ^ (4 : ℕ) + Real.pi ^ (4 : ℕ) / 4 := by positivity
     positivity
   rw [Ne, Complex.ofReal_eq_zero]
   exact hpos.ne'
@@ -429,7 +429,7 @@ theorem gradedRealityXi_ne_zero_of_real (N : ℕ) (t : ℝ) : gradedRealityXi N 
 
 /-- The multiplier as a genuine polynomial. -/
 def flatPolynomial (N : ℕ) : Polynomial ℂ :=
-  1 + (Polynomial.X ^ 4 + Polynomial.C ((Real.pi : ℂ) ^ 4 / 4)) ^ (2 * N + 1)
+  1 + (Polynomial.X ^ (4 : ℕ) + Polynomial.C ((Real.pi : ℂ) ^ (4 : ℕ) / 4)) ^ (2 * N + 1)
 
 theorem flatPolynomial_eval (N : ℕ) (w : ℂ) :
     (flatPolynomial N).eval w = flatMultiplier N w := by
@@ -437,13 +437,13 @@ theorem flatPolynomial_eval (N : ℕ) (w : ℂ) :
 
 theorem flatPolynomial_coeff (N : ℕ) :
     (flatPolynomial N).coeff (4 * (2 * N + 1)) = 1 := by
-  have hmonic : (Polynomial.X ^ 4 + Polynomial.C ((Real.pi : ℂ) ^ 4 / 4)).Monic :=
+  have hmonic : (Polynomial.X ^ (4 : ℕ) + Polynomial.C ((Real.pi : ℂ) ^ (4 : ℕ) / 4)).Monic :=
     Polynomial.monic_X_pow_add_C _ (by norm_num)
-  have hnd : (Polynomial.X ^ 4 + Polynomial.C ((Real.pi : ℂ) ^ 4 / 4)).natDegree = 4 :=
+  have hnd : (Polynomial.X ^ (4 : ℕ) + Polynomial.C ((Real.pi : ℂ) ^ (4 : ℕ) / 4)).natDegree = 4 :=
     Polynomial.natDegree_X_pow_add_C
-  have hpm : ((Polynomial.X ^ 4 + Polynomial.C ((Real.pi : ℂ) ^ 4 / 4)) ^ (2 * N + 1)).Monic :=
+  have hpm : ((Polynomial.X ^ (4 : ℕ) + Polynomial.C ((Real.pi : ℂ) ^ (4 : ℕ) / 4)) ^ (2 * N + 1)).Monic :=
     hmonic.pow _
-  have hpnd : ((Polynomial.X ^ 4 + Polynomial.C ((Real.pi : ℂ) ^ 4 / 4)) ^
+  have hpnd : ((Polynomial.X ^ (4 : ℕ) + Polynomial.C ((Real.pi : ℂ) ^ (4 : ℕ) / 4)) ^
       (2 * N + 1)).natDegree = 4 * (2 * N + 1) := by
     rw [Polynomial.natDegree_pow, hnd]
     ring
@@ -497,7 +497,7 @@ theorem gradedRealityFn_exact_order_one_bounds (N : ℕ) :
 /-! ## The delayed completed-flux defect -/
 
 /-- The shifted quartet polynomial: `quartetPoly (w + x) = x · quartetShiftPoly w x` at a root. -/
-def quartetShiftPoly (w x : ℂ) : ℂ := 4 * w ^ 3 + 6 * w ^ 2 * x + 4 * w * x ^ 2 + x ^ 3
+def quartetShiftPoly (w x : ℂ) : ℂ := 4 * w ^ (3 : ℕ) + 6 * w ^ (2 : ℕ) * x + 4 * w * x ^ (2 : ℕ) + x ^ (3 : ℕ)
 
 theorem quartetPoly_add (w x : ℂ) :
     quartetPoly (w + x) = x * quartetShiftPoly w x + quartetPoly w := by
@@ -512,7 +512,7 @@ theorem quartetPoly_add_of_root {w : ℂ} (hw : quartetPoly w = 0) (x : ℂ) :
 def multUnit (N : ℕ) (w x : ℂ) : ℂ := quartetShiftPoly w x ^ (2 * N + 1)
 
 @[simp] theorem multUnit_zero (N : ℕ) (w : ℂ) :
-    multUnit N w 0 = (4 * w ^ 3) ^ (2 * N + 1) := by
+    multUnit N w 0 = (4 * w ^ (3 : ℕ)) ^ (2 * N + 1) := by
   simp [multUnit, quartetShiftPoly]
 
 theorem analyticAt_multUnit (N : ℕ) (w : ℂ) : AnalyticAt ℂ (multUnit N w) 0 := by
@@ -571,17 +571,17 @@ theorem fluxGerm_gradedEnvelope_partners_eq :
       gradedEnvelope_add_pi_mul_I, deriv_gradedEnvelope_add_pi_mul_I]
 
 theorem four_mul_fePartnerCentre_cube :
-    4 * fePartnerCentre ^ 3 = (Real.pi : ℂ) ^ 3 * (1 - I) := by
+    4 * fePartnerCentre ^ (3 : ℕ) = (Real.pi : ℂ) ^ (3 : ℕ) * (1 - I) := by
   simp only [fePartnerCentre, quartetPoint]
   push_cast
-  linear_combination (-((Real.pi : ℂ) ^ 3 / 2) * (I + 3)) * Complex.I_sq
+  linear_combination (-((Real.pi : ℂ) ^ (3 : ℕ) / 2) * (I + 3)) * Complex.I_sq
 
 theorem four_mul_schwarzPartnerCentre_cube :
-    4 * schwarzPartnerCentre ^ 3 = (Real.pi : ℂ) ^ 3 * (1 + I) := by
+    4 * schwarzPartnerCentre ^ (3 : ℕ) = (Real.pi : ℂ) ^ (3 : ℕ) * (1 + I) := by
   simp only [schwarzPartnerCentre, quartetPoint, map_add, map_mul, Complex.conj_I,
     Complex.conj_ofReal]
   push_cast
-  linear_combination (((Real.pi : ℂ) ^ 3 / 2) * (I - 3)) * Complex.I_sq
+  linear_combination (((Real.pi : ℂ) ^ (3 : ℕ) / 2) * (I - 3)) * Complex.I_sq
 
 /-- **The two partner leading coefficients differ.**  This is the exact odd-order separation. -/
 theorem multUnit_zero_ne (N : ℕ) :
@@ -589,20 +589,20 @@ theorem multUnit_zero_ne (N : ℕ) :
   rw [multUnit_zero, multUnit_zero, four_mul_fePartnerCentre_cube,
     four_mul_schwarzPartnerCentre_cube]
   intro h
-  have hfac : (Real.pi : ℂ) ^ 3 * (1 - I) = (-I) * ((Real.pi : ℂ) ^ 3 * (1 + I)) := by
-    linear_combination ((Real.pi : ℂ) ^ 3) * Complex.I_sq
+  have hfac : (Real.pi : ℂ) ^ (3 : ℕ) * (1 - I) = (-I) * ((Real.pi : ℂ) ^ (3 : ℕ) * (1 + I)) := by
+    linear_combination ((Real.pi : ℂ) ^ (3 : ℕ)) * Complex.I_sq
   rw [hfac, mul_pow] at h
   have hpi : ((Real.pi : ℂ)) ≠ 0 := by
     simp [Real.pi_ne_zero]
   have hone : (1 + I : ℂ) ≠ 0 := by
     simp [Complex.ext_iff]
-  have hne : ((Real.pi : ℂ) ^ 3 * (1 + I)) ^ (2 * N + 1) ≠ 0 :=
+  have hne : ((Real.pi : ℂ) ^ (3 : ℕ) * (1 + I)) ^ (2 * N + 1) ≠ 0 :=
     pow_ne_zero _ (mul_ne_zero (pow_ne_zero _ hpi) hone)
-  have h1 : (-I : ℂ) ^ (2 * N + 1) * ((Real.pi : ℂ) ^ 3 * (1 + I)) ^ (2 * N + 1)
-      = 1 * ((Real.pi : ℂ) ^ 3 * (1 + I)) ^ (2 * N + 1) := by
+  have h1 : (-I : ℂ) ^ (2 * N + 1) * ((Real.pi : ℂ) ^ (3 : ℕ) * (1 + I)) ^ (2 * N + 1)
+      = 1 * ((Real.pi : ℂ) ^ (3 : ℕ) * (1 + I)) ^ (2 * N + 1) := by
     rw [one_mul]; exact h
   have hunit := mul_right_cancel₀ hne h1
-  have hsq : (-I : ℂ) ^ 2 = -1 := by linear_combination Complex.I_sq
+  have hsq : (-I : ℂ) ^ (2 : ℕ) = -1 := by linear_combination Complex.I_sq
   have hval : (-I : ℂ) ^ (2 * N + 1) = (-1 : ℂ) ^ N * (-I) := by
     rw [pow_add, pow_one, pow_mul, hsq]
   rw [hval] at hunit

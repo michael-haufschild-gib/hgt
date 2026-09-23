@@ -24,21 +24,21 @@ namespace RHTower
 noncomputable section
 /-- Exact first-atom curvature profile in Born--Witten weight coordinates. -/
 def thetaCuspFirstAtomCurvatureProfile (q : ℝ) : ℝ :=
-  4 * q + 6 + 6 / q + 9 / q ^ 2
+  4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ)
 
 /-- Exact first-atom fourth log-jet profile. -/
 def thetaCuspFirstAtomFourthProfile (q : ℝ) : ℝ :=
-  (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4)
+  (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ))
 
 /-- Exact first-atom sixth log-jet profile. -/
 def thetaCuspFirstAtomSixthProfile (q : ℝ) : ℝ :=
   let s := q + 3 / 2
-  64 * s + 96 * s / q ^ 2 + 4320 * s / q ^ 3 +
-    32400 * s / q ^ 4 + 77760 * s / q ^ 5 + 58320 * s / q ^ 6
+  64 * s + 96 * s / q ^ (2 : ℕ) + 4320 * s / q ^ (3 : ℕ) +
+    32400 * s / q ^ (4 : ℕ) + 77760 * s / q ^ (5 : ℕ) + 58320 * s / q ^ (6 : ℕ)
 
 /-- Quartic Bell remainder in reflected second--sixth curvature. -/
 def thetaCuspReflectedSixthBellRemainder (A B : ℝ) : ℝ :=
-  -B ^ 2 - 18 * A ^ 2 * B + 24 * A ^ 4
+  -B ^ (2 : ℕ) - 18 * A ^ (2 : ℕ) * B + 24 * A ^ (4 : ℕ)
 
 set_option maxHeartbeats 2000000 in
 /-- The exact worst likelihood-loss profile remains strictly positive from the support edge. -/
@@ -50,24 +50,24 @@ theorem thetaCuspFirstAtomWorstLikelihoodLossProfile_pos
   have hqpos : 0 < q := by linarith
   let y := q - 41 / 25
   have hy : 0 ≤ y := by dsimp [y]; linarith
-  have hy2 : 0 ≤ y ^ 2 := by positivity
-  have hy3 : 0 ≤ y ^ 3 := by positivity
-  have hy4 : 0 ≤ y ^ 4 := by positivity
-  have hy5 : 0 ≤ y ^ 5 := by positivity
-  have hy6 : 0 ≤ y ^ 6 := by positivity
-  have hy7 : 0 ≤ y ^ 7 := by positivity
-  have hy8 : 0 ≤ y ^ 8 := by positivity
-  have hy9 : 0 ≤ y ^ 9 := by positivity
-  have hy10 : 0 ≤ y ^ 10 := by positivity
-  have hy11 : 0 ≤ y ^ 11 := by positivity
-  have hy12 : 0 ≤ y ^ 12 := by positivity
+  have hy2 : 0 ≤ y ^ (2 : ℕ) := by positivity
+  have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+  have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
+  have hy5 : 0 ≤ y ^ (5 : ℕ) := by positivity
+  have hy6 : 0 ≤ y ^ (6 : ℕ) := by positivity
+  have hy7 : 0 ≤ y ^ (7 : ℕ) := by positivity
+  have hy8 : 0 ≤ y ^ (8 : ℕ) := by positivity
+  have hy9 : 0 ≤ y ^ (9 : ℕ) := by positivity
+  have hy10 : 0 ≤ y ^ (10 : ℕ) := by positivity
+  have hy11 : 0 ≤ y ^ (11 : ℕ) := by positivity
+  have hy12 : 0 ≤ y ^ (12 : ℕ) := by positivity
   let E :=
     (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) *
         (thetaCuspFirstAtomSixthProfile q - 63232) +
       thetaCuspReflectedSixthBellRemainder
         (thetaCuspFirstAtomCurvatureProfile q - 13 / 10)
         (thetaCuspFirstAtomFourthProfile q)
-  have hmul : 0 < q ^ 8 * E := by
+  have hmul : 0 < q ^ (8 : ℕ) * E := by
     dsimp [E, thetaCuspFirstAtomCurvatureProfile, thetaCuspFirstAtomFourthProfile,
       thetaCuspFirstAtomSixthProfile, thetaCuspReflectedSixthBellRemainder]
     field_simp [hqpos.ne']
@@ -77,7 +77,7 @@ theorem thetaCuspFirstAtomWorstLikelihoodLossProfile_pos
   dsimp only [E] at hmul
   dsimp only
   by_contra hE
-  have hnonpos : q ^ 8 *
+  have hnonpos : q ^ (8 : ℕ) *
       ((thetaCuspFirstAtomCurvatureProfile q - 13 / 10) *
           (thetaCuspFirstAtomSixthProfile q - 63232) +
         thetaCuspReflectedSixthBellRemainder
@@ -106,7 +106,7 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
     have hpi := Real.pi_gt_d2
     norm_num at hpi
     have he : 1 ≤ Real.exp x := Real.one_le_exp hx.le
-    have he2 : 1 ≤ Real.exp x ^ 2 := by nlinarith [Real.exp_pos x]
+    have he2 : 1 ≤ Real.exp x ^ (2 : ℕ) := by nlinarith [Real.exp_pos x]
     have hscale : Real.pi ≤ thetaCuspMorseScale 1 x := by
       rw [thetaCuspMorseScale]
       norm_num
@@ -124,8 +124,8 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
     rfl
   have hC0profile : C0 = thetaCuspFirstAtomSixthProfile q := by
     change
-      (2 * q + 3) * (32 + 48 / q ^ 2 + 2160 / q ^ 3 +
-        16200 / q ^ 4 + 38880 / q ^ 5 + 29160 / q ^ 6) =
+      (2 * q + 3) * (32 + 48 / q ^ (2 : ℕ) + 2160 / q ^ (3 : ℕ) +
+        16200 / q ^ (4 : ℕ) + 38880 / q ^ (5 : ℕ) + 29160 / q ^ (6 : ℕ)) =
         thetaCuspFirstAtomSixthProfile q
     dsimp only [thetaCuspFirstAtomSixthProfile]
     field_simp [hqpos.ne']
@@ -139,7 +139,7 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
   have hC0 : 0 < C0 := by
     simpa only [C0] using
       thetaCuspBornWittenLogSixthDerivative_pos (n := 1) (by norm_num) hx.le
-  have hB0upper : B0 ≤ (6 / 5 : ℝ) * A0 ^ 2 := by
+  have hB0upper : B0 ≤ (6 / 5 : ℝ) * A0 ^ (2 : ℕ) := by
     simpa only [A0, B0] using
       thetaCuspBornWittenLogFourthDerivative_le_sixFifths_curvature_sq
         (n := 1) (by norm_num) hx.le
@@ -165,8 +165,8 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
   have hAmin : (177 / 10 : ℝ) ≤ A := by
     dsimp only [A, Aw] at hAwA hAwpos ⊢
     linarith
-  have hBlower : -8 * A ^ 2 < B := by
-    have hAsq : (177 / 10 : ℝ) ^ 2 ≤ A ^ 2 :=
+  have hBlower : -8 * A ^ (2 : ℕ) < B := by
+    have hAsq : (177 / 10 : ℝ) ^ (2 : ℕ) ≤ A ^ (2 : ℕ) :=
       pow_le_pow_left₀ (by norm_num) hAmin 2
     dsimp only [B]
     nlinarith
@@ -175,7 +175,7 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
       thetaCuspReflectedSixthBellRemainder A B0 ≤
         thetaCuspReflectedSixthBellRemainder A B := by
     have hfactor1 : 0 < B0 - B := by linarith
-    have hfactor2 : 0 < B + B0 + 18 * A ^ 2 := by
+    have hfactor2 : 0 < B + B0 + 18 * A ^ (2 : ℕ) := by
       nlinarith [hB0]
     dsimp only [thetaCuspReflectedSixthBellRemainder]
     nlinarith [mul_pos hfactor1 hfactor2]
@@ -185,49 +185,49 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
   have hAwRatio : (177 / 190 : ℝ) * A0 ≤ Aw := by
     dsimp only [Aw]
     nlinarith
-  have hAwCube : (177 / 190 : ℝ) ^ 3 * A0 ^ 3 ≤ Aw ^ 3 := by
+  have hAwCube : (177 / 190 : ℝ) ^ (3 : ℕ) * A0 ^ (3 : ℕ) ≤ Aw ^ (3 : ℕ) := by
     have hpow := pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ (177 / 190) * A0)
       hAwRatio 3
     simpa only [mul_pow] using hpow
-  have hA0Cube : (19 : ℝ) ^ 3 ≤ A0 ^ 3 :=
+  have hA0Cube : (19 : ℝ) ^ (3 : ℕ) ≤ A0 ^ (3 : ℕ) :=
     pow_le_pow_left₀ (by norm_num) hA0 3
   have hsumUpper : A + Aw ≤ 2 * A0 := by linarith
-  have hnegBound : 18 * B0 * (A + Aw) ≤ (216 / 5 : ℝ) * A0 ^ 3 := by
+  have hnegBound : 18 * B0 * (A + Aw) ≤ (216 / 5 : ℝ) * A0 ^ (3 : ℕ) := by
     have hsumNonneg : 0 ≤ A + Aw := by positivity
     calc
-      18 * B0 * (A + Aw) ≤ 18 * ((6 / 5 : ℝ) * A0 ^ 2) * (A + Aw) := by
+      18 * B0 * (A + Aw) ≤ 18 * ((6 / 5 : ℝ) * A0 ^ (2 : ℕ)) * (A + Aw) := by
         gcongr
-      _ ≤ 18 * ((6 / 5 : ℝ) * A0 ^ 2) * (2 * A0) := by
+      _ ≤ 18 * ((6 / 5 : ℝ) * A0 ^ (2 : ℕ)) * (2 * A0) := by
         gcongr
-      _ = (216 / 5 : ℝ) * A0 ^ 3 := by ring
-  have hsumCubes : 4 * Aw ^ 3 ≤
-      A ^ 3 + A ^ 2 * Aw + A * Aw ^ 2 + Aw ^ 3 := by
+      _ = (216 / 5 : ℝ) * A0 ^ (3 : ℕ) := by ring
+  have hsumCubes : 4 * Aw ^ (3 : ℕ) ≤
+      A ^ (3 : ℕ) + A ^ (2 : ℕ) * Aw + A * Aw ^ (2 : ℕ) + Aw ^ (3 : ℕ) := by
     have hAwA2 := mul_le_mul_of_nonneg_left hAwA hAwpos.le
-    have hAw2A2 : Aw ^ 2 ≤ A ^ 2 := by nlinarith
-    have hAw3A3 : Aw ^ 3 ≤ A ^ 3 := by
+    have hAw2A2 : Aw ^ (2 : ℕ) ≤ A ^ (2 : ℕ) := by nlinarith
+    have hAw3A3 : Aw ^ (3 : ℕ) ≤ A ^ (3 : ℕ) := by
       exact pow_le_pow_left₀ hAwpos.le hAwA 3
-    have hAw3A2Aw : Aw ^ 3 ≤ A ^ 2 * Aw := by
+    have hAw3A2Aw : Aw ^ (3 : ℕ) ≤ A ^ (2 : ℕ) * Aw := by
       nlinarith [mul_nonneg (sub_nonneg.mpr hAw2A2) hAwpos.le]
-    have hAw3AAw2 : Aw ^ 3 ≤ A * Aw ^ 2 := by
+    have hAw3AAw2 : Aw ^ (3 : ℕ) ≤ A * Aw ^ (2 : ℕ) := by
       nlinarith [mul_nonneg (sub_nonneg.mpr hAwA) (sq_nonneg Aw)]
     linarith
   have hDpos :
       0 < (C0 - 63232) - 18 * B0 * (A + Aw) +
-        24 * (A ^ 3 + A ^ 2 * Aw + A * Aw ^ 2 + Aw ^ 3) := by
+        24 * (A ^ (3 : ℕ) + A ^ (2 : ℕ) * Aw + A * Aw ^ (2 : ℕ) + Aw ^ (3 : ℕ)) := by
     have hposBound :
-        96 * ((177 / 190 : ℝ) ^ 3 * A0 ^ 3) ≤
-          24 * (A ^ 3 + A ^ 2 * Aw + A * Aw ^ 2 + Aw ^ 3) := by
+        96 * ((177 / 190 : ℝ) ^ (3 : ℕ) * A0 ^ (3 : ℕ)) ≤
+          24 * (A ^ (3 : ℕ) + A ^ (2 : ℕ) * Aw + A * Aw ^ (2 : ℕ) + Aw ^ (3 : ℕ)) := by
       calc
-        96 * ((177 / 190 : ℝ) ^ 3 * A0 ^ 3) ≤ 96 * Aw ^ 3 := by gcongr
-        _ ≤ 24 * (A ^ 3 + A ^ 2 * Aw + A * Aw ^ 2 + Aw ^ 3) := by
+        96 * ((177 / 190 : ℝ) ^ (3 : ℕ) * A0 ^ (3 : ℕ)) ≤ 96 * Aw ^ (3 : ℕ) := by gcongr
+        _ ≤ 24 * (A ^ (3 : ℕ) + A ^ (2 : ℕ) * Aw + A * Aw ^ (2 : ℕ) + Aw ^ (3 : ℕ)) := by
           nlinarith
     have hnumeric :
-        (63232 : ℝ) + (216 / 5 : ℝ) * A0 ^ 3 <
-          96 * ((177 / 190 : ℝ) ^ 3 * A0 ^ 3) := by
-      have hcoef : (63232 : ℝ) + (216 / 5 : ℝ) * 19 ^ 3 <
-          96 * ((177 / 190 : ℝ) ^ 3 * 19 ^ 3) := by norm_num
+        (63232 : ℝ) + (216 / 5 : ℝ) * A0 ^ (3 : ℕ) <
+          96 * ((177 / 190 : ℝ) ^ (3 : ℕ) * A0 ^ (3 : ℕ)) := by
+      have hcoef : (63232 : ℝ) + (216 / 5 : ℝ) * 19 ^ (3 : ℕ) <
+          96 * ((177 / 190 : ℝ) ^ (3 : ℕ) * 19 ^ (3 : ℕ)) := by norm_num
       have hcoefpos : 0 <
-          96 * (177 / 190 : ℝ) ^ 3 - 216 / 5 := by norm_num
+          96 * (177 / 190 : ℝ) ^ (3 : ℕ) - 216 / 5 := by norm_num
       nlinarith
     linarith
   have hHmono :
@@ -237,7 +237,7 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
         (A * (C0 - 63232) + thetaCuspReflectedSixthBellRemainder A B0) -
             (Aw * (C0 - 63232) + thetaCuspReflectedSixthBellRemainder Aw B0) =
           (A - Aw) * ((C0 - 63232) - 18 * B0 * (A + Aw) +
-            24 * (A ^ 3 + A ^ 2 * Aw + A * Aw ^ 2 + Aw ^ 3)) := by
+            24 * (A ^ (3 : ℕ) + A ^ (2 : ℕ) * Aw + A * Aw ^ (2 : ℕ) + Aw ^ (3 : ℕ))) := by
       dsimp only [thetaCuspReflectedSixthBellRemainder]
       ring
     rw [← sub_nonneg]
@@ -257,9 +257,9 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
         linarith
       _ < A * C + thetaCuspReflectedSixthBellRemainder A B := by linarith
   dsimp only [thetaCuspReflectedSixthBellRemainder] at hactual
-  have hactual' : 0 < A * C - B ^ 2 - 18 * A ^ 2 * B + 24 * A ^ 4 := by
+  have hactual' : 0 < A * C - B ^ (2 : ℕ) - 18 * A ^ (2 : ℕ) * B + 24 * A ^ (4 : ℕ) := by
     linarith
-  change 0 < A * C - B ^ 2 - 18 * A ^ 2 * B + 24 * A ^ 4
+  change 0 < A * C - B ^ (2 : ℕ) - 18 * A ^ (2 : ℕ) * B + 24 * A ^ (4 : ℕ)
   exact hactual'
 
 /-- Strict raw reflected second--sixth curvature on the positive source half-line. -/

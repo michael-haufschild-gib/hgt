@@ -26,22 +26,22 @@ theorem cubicLogMomentHellingerCauchyKernel_self_ge_sevenTenthsShallow
     14375 / (864 * h) ≤
       cubicLogMomentHellingerCauchyKernel h a a 0 := by
   have hfactor :
-      0 ≤ (1 / 5 - a) * ((1 / 5 : ℝ) ^ 2 + (1 / 5 : ℝ) * a + a ^ 2) := by
+      0 ≤ (1 / 5 - a) * ((1 / 5 : ℝ) ^ (2 : ℕ) + (1 / 5 : ℝ) * a + a ^ (2 : ℕ)) := by
     apply mul_nonneg (sub_nonneg.mpr hshallow)
     nlinarith [sq_nonneg a]
-  have hcube : a ^ 3 ≤ (1 / 5 : ℝ) ^ 3 := by
+  have hcube : a ^ (3 : ℕ) ≤ (1 / 5 : ℝ) ^ (3 : ℕ) := by
     nlinarith
   have hhorizontal :
       14375 / 864 ≤ cubicLogMomentHellingerHorizontalKernel a a := by
     rw [cubicLogMomentHellingerHorizontalKernel_self ha]
-    have hden : 0 < 864 * a ^ 3 := by positivity
+    have hden : 0 < 864 * a ^ (3 : ℕ) := by positivity
     apply (le_div_iff₀ hden).2
     norm_num at hcube ⊢
     nlinarith
   have hinv : 0 ≤ 1 / h := (one_div_pos.mpr hh).le
   rw [cubicLogMomentHellingerCauchyKernel,
     dampedVerticalCauchyKernel]
-  have hvertical : h / (h ^ 2 + 0 ^ 2) = 1 / h := by
+  have hvertical : h / (h ^ (2 : ℕ) + 0 ^ (2 : ℕ)) = 1 / h := by
     norm_num
     field_simp [hh.ne']
   rw [hvertical]
@@ -53,11 +53,11 @@ theorem finiteCubicLogMomentHellingerCauchyEnergy_ge_sevenTenthsShallowDiagonal
     {n : ℕ} {h : ℝ} (hh : 0 < h)
     {a gamma : Fin n → ℝ} (m : Fin n → ℕ)
     (ha : ∀ j, 0 < a j) (hshallow : ∀ j, a j ≤ 1 / 5) :
-    (14375 / (864 * h)) * ∑ j, (m j : ℝ) ^ 2 ≤
+    (14375 / (864 * h)) * ∑ j, (m j : ℝ) ^ (2 : ℕ) ≤
       finiteCubicLogMomentHellingerCauchyEnergy h a gamma m := by
   rw [finiteCubicLogMomentHellingerCauchyEnergy]
   calc
-    (14375 / (864 * h)) * ∑ j, (m j : ℝ) ^ 2 =
+    (14375 / (864 * h)) * ∑ j, (m j : ℝ) ^ (2 : ℕ) =
         ∑ j, (m j : ℝ) * (m j : ℝ) * (14375 / (864 * h)) := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
@@ -99,7 +99,7 @@ theorem sum_multiplicity_le_finiteCubicLogMomentHellingerCauchyEnergy_sevenTenth
   have hdiag :=
     finiteCubicLogMomentHellingerCauchyEnergy_ge_sevenTenthsShallowDiagonal
       (gamma := gamma) hh m ha hshallow
-  have hmassSq : (∑ j, (m j : ℝ)) ≤ ∑ j, (m j : ℝ) ^ 2 := by
+  have hmassSq : (∑ j, (m j : ℝ)) ≤ ∑ j, (m j : ℝ) ^ (2 : ℕ) := by
     apply Finset.sum_le_sum
     intro j _
     by_cases hm0 : m j = 0

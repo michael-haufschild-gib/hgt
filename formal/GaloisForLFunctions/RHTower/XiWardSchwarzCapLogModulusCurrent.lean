@@ -67,12 +67,12 @@ theorem ae_forall_xiWardSchwarzCapFactorDensity_resonant_logModulus :
     ∀ᵐ s : ℝ ∂volume, ∀ x : ℝ,
       (xiWardSchwarzCapDifference x s x *
         continuedPrimeArchSourceRelativeTrace (xiWardLowerCapPoint s x)).re =
-        (-(8 * x ^ 2) /
+        (-(8 * x ^ (2 : ℕ)) /
           ((51 / 100 + xiWardTransverseLevel s) *
-            ((51 / 100 + xiWardTransverseLevel s) ^ 2 + 4 * x ^ 2))) *
+            ((51 / 100 + xiWardTransverseLevel s) ^ (2 : ℕ) + 4 * x ^ (2 : ℕ)))) *
           deriv (fun u : ℝ => Real.log ‖XiC (xiWardLowerCapPoint s u)‖) x +
         ((4 * x) /
-          ((51 / 100 + xiWardTransverseLevel s) ^ 2 + 4 * x ^ 2)) *
+          ((51 / 100 + xiWardTransverseLevel s) ^ (2 : ℕ) + 4 * x ^ (2 : ℕ))) *
           (continuedPrimeArchSourceRelativeTrace (xiWardLowerCapPoint s x)).im := by
   filter_upwards [ae_forall_hasDerivAt_log_norm_XiC_lowerCap] with s hs
   intro x

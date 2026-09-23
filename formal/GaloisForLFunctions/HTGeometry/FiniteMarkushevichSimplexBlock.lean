@@ -74,7 +74,7 @@ theorem inner_ones_ones :
 
 omit [DecidableEq ι] in
 theorem sqrt_card_sq :
-    Real.sqrt (Fintype.card ι : ℝ) ^ 2 = (Fintype.card ι : ℝ) := by
+    Real.sqrt (Fintype.card ι : ℝ) ^ (2 : ℕ) = (Fintype.card ι : ℝ) := by
   rw [Real.sq_sqrt]
   positivity
 
@@ -84,7 +84,7 @@ theorem sqrt_card_ne : Real.sqrt (Fintype.card ι : ℝ) ≠ 0 := by
 
 omit [DecidableEq ι] in
 theorem inv_sqrt_sq :
-    (Real.sqrt (Fintype.card ι : ℝ))⁻¹ ^ 2 =
+    (Real.sqrt (Fintype.card ι : ℝ))⁻¹ ^ (2 : ℕ) =
       (Fintype.card ι : ℝ)⁻¹ := by
   field_simp [sqrt_card_ne ι]
   nlinarith [sqrt_card_sq ι]
@@ -134,10 +134,10 @@ theorem inner_centered_centered (i j : ι) :
     inner_mean_e, inner_mean_mean]
   simp only [star_ofReal_local]
   ring_nf
-  have hc' : ((((Real.sqrt (Fintype.card ι : ℝ))⁻¹ : ℝ) : ℂ)) ^ 2 =
+  have hc' : ((((Real.sqrt (Fintype.card ι : ℝ))⁻¹ : ℝ) : ℂ)) ^ (2 : ℕ) =
       ((Fintype.card ι : ℝ) : ℂ)⁻¹ := by
     calc
-      _ = ((((Real.sqrt (Fintype.card ι : ℝ))⁻¹ : ℝ) ^ 2 : ℝ) : ℂ) := by
+      _ = ((((Real.sqrt (Fintype.card ι : ℝ))⁻¹ : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) := by
         norm_cast
       _ = (((Fintype.card ι : ℝ)⁻¹ : ℝ) : ℂ) := by
         exact congrArg (fun x : ℝ => (x : ℂ)) (inv_sqrt_sq ι)
@@ -145,7 +145,7 @@ theorem inner_centered_centered (i j : ι) :
   rw [hc']
 
 omit [DecidableEq ι] in
-theorem scale_sq : (scale ι) ^ 2 = 2 - (Fintype.card ι : ℝ)⁻¹ := by
+theorem scale_sq : (scale ι) ^ (2 : ℕ) = 2 - (Fintype.card ι : ℝ)⁻¹ := by
   rw [scale, Real.sq_sqrt]
   have hm : (1 : ℝ) ≤ Fintype.card ι := by exact_mod_cast card_pos ι
   have hi : (Fintype.card ι : ℝ)⁻¹ ≤ 1 := by
@@ -164,7 +164,7 @@ theorem scale_pos : 0 < scale ι := by
 
 theorem inner_raw_primal_self (i : ι) :
     inner ℂ (mean ι + centered ι i) (mean ι + centered ι i) =
-      ((scale ι) ^ 2 : ℝ) := by
+      ((scale ι) ^ (2 : ℕ) : ℝ) := by
   rw [inner_add_left, inner_add_right, inner_add_right,
     inner_mean_mean, inner_mean_centered, inner_centered_mean,
     inner_centered_centered, if_pos rfl]
@@ -336,7 +336,7 @@ theorem norm_phasePrimal
     (z : ι → ℂ) (hz : ∀ i, ‖z i‖ = 1) (i : ι) :
     ‖phasePrimal ι z i‖ = 1 := by
   rw [phasePrimal, norm_smul, hz]
-  have hn2 : ‖primal ι i‖ ^ 2 = 1 := by
+  have hn2 : ‖primal ι i‖ ^ (2 : ℕ) = 1 := by
     have h := inner_primal_primal ι i
     rw [inner_self_eq_norm_sq_to_K] at h
     have hre := congrArg Complex.re h
@@ -347,7 +347,7 @@ theorem norm_phasePrimal
 
 theorem inner_dual_dual (i : ι) :
     inner ℂ (dual ι i) (dual ι i) =
-      ((1 + (1 - (Fintype.card ι : ℝ)⁻¹) ^ 3 : ℝ) : ℂ) := by
+      ((1 + (1 - (Fintype.card ι : ℝ)⁻¹) ^ (3 : ℕ) : ℝ) : ℂ) := by
   rw [dual]
   simp only [inner_smul_left, inner_smul_right, inner_add_left, inner_add_right,
     star_ofReal_local, inner_mean_mean, inner_mean_centered,
@@ -358,31 +358,31 @@ theorem inner_dual_dual (i : ι) :
   ring
 
 theorem norm_dual_sq (i : ι) :
-    ‖dual ι i‖ ^ 2 = 1 + (1 - (Fintype.card ι : ℝ)⁻¹) ^ 3 := by
-  have h : ((‖dual ι i‖ ^ 2 : ℝ) : ℂ) =
-      ((1 + (1 - (Fintype.card ι : ℝ)⁻¹) ^ 3 : ℝ) : ℂ) := by
+    ‖dual ι i‖ ^ (2 : ℕ) = 1 + (1 - (Fintype.card ι : ℝ)⁻¹) ^ (3 : ℕ) := by
+  have h : ((‖dual ι i‖ ^ (2 : ℕ) : ℝ) : ℂ) =
+      ((1 + (1 - (Fintype.card ι : ℝ)⁻¹) ^ (3 : ℕ) : ℝ) : ℂ) := by
     calc
-      ((‖dual ι i‖ ^ 2 : ℝ) : ℂ) =
+      ((‖dual ι i‖ ^ (2 : ℕ) : ℝ) : ℂ) =
           inner ℂ (dual ι i) (dual ι i) := by
             rw [inner_self_eq_norm_sq_to_K]
             norm_cast
       _ = _ := inner_dual_dual ι i
   exact Complex.ofReal_injective h
 
-theorem norm_dual_sq_le_two (i : ι) : ‖dual ι i‖ ^ 2 ≤ 2 := by
+theorem norm_dual_sq_le_two (i : ι) : ‖dual ι i‖ ^ (2 : ℕ) ≤ 2 := by
   rw [norm_dual_sq]
   have hm : (1 : ℝ) ≤ Fintype.card ι := by exact_mod_cast card_pos ι
   have hq0 : 0 ≤ (Fintype.card ι : ℝ)⁻¹ := by positivity
   have hq1 : (Fintype.card ι : ℝ)⁻¹ ≤ 1 := by
     rw [inv_le_one₀ (by exact_mod_cast card_pos ι)]
     exact hm
-  have hpow : (1 - (Fintype.card ι : ℝ)⁻¹) ^ 3 ≤ 1 :=
+  have hpow : (1 - (Fintype.card ι : ℝ)⁻¹) ^ (3 : ℕ) ≤ 1 :=
     pow_le_one₀ (sub_nonneg.mpr hq1) (by linarith)
   linarith
 
 theorem norm_phaseDual_sq_le_two
     (z : ι → ℂ) (hz : ∀ i, ‖z i‖ = 1) (i : ι) :
-    ‖phaseDual ι z i‖ ^ 2 ≤ 2 := by
+    ‖phaseDual ι z i‖ ^ (2 : ℕ) ≤ 2 := by
   rw [phaseDual, norm_smul, hz, one_mul]
   exact norm_dual_sq_le_two ι i
 
@@ -538,21 +538,21 @@ theorem orthonormal_e : Orthonormal ℂ (e ι) := by
 
 omit [Nonempty ι] in
 theorem norm_deviation_sq (d : ι → ℂ) :
-    ‖deviation ι d‖ ^ 2 = ∑ i : ι, ‖d i - average ι d‖ ^ 2 := by
+    ‖deviation ι d‖ ^ (2 : ℕ) = ∑ i : ι, ‖d i - average ι d‖ ^ (2 : ℕ) := by
   simpa [deviation, LinearIsometry.toSpanSingleton_apply] using
     (orthonormal_e ι).orthogonalFamily.norm_sum
       (fun i => d i - average ι d) Finset.univ
 
 omit [DecidableEq ι] [Nonempty ι] in
 theorem norm_sum_sq_le_card_mul_sum_sq (w : ι → ℂ) :
-    ‖∑ i : ι, w i‖ ^ 2 ≤
-      (Fintype.card ι : ℝ) * ∑ i : ι, ‖w i‖ ^ 2 := by
+    ‖∑ i : ι, w i‖ ^ (2 : ℕ) ≤
+      (Fintype.card ι : ℝ) * ∑ i : ι, ‖w i‖ ^ (2 : ℕ) := by
   exact GaloisForLFunctions.HTGeometry.norm_sum_sq_le_card_mul w
 
 omit [DecidableEq ι] in
 theorem card_mul_norm_average_sq_le_sum (d : ι → ℂ) :
-    (Fintype.card ι : ℝ) * ‖average ι d‖ ^ 2 ≤
-      ∑ i : ι, ‖d i‖ ^ 2 := by
+    (Fintype.card ι : ℝ) * ‖average ι d‖ ^ (2 : ℕ) ≤
+      ∑ i : ι, ‖d i‖ ^ (2 : ℕ) := by
   have hm0 : (0 : ℝ) < Fintype.card ι := by exact_mod_cast card_pos ι
   have hsum := norm_sum_sq_le_card_mul_sum_sq ι d
   have hmnorm : ‖(Fintype.card ι : ℂ)‖ = (Fintype.card ι : ℝ) := by
@@ -560,35 +560,35 @@ theorem card_mul_norm_average_sq_le_sum (d : ι → ℂ) :
   rw [average, norm_mul, norm_inv, hmnorm]
   calc
     (Fintype.card ι : ℝ) *
-        ((Fintype.card ι : ℝ)⁻¹ * ‖∑ i : ι, d i‖) ^ 2 =
-      (Fintype.card ι : ℝ)⁻¹ * ‖∑ i : ι, d i‖ ^ 2 := by
+        ((Fintype.card ι : ℝ)⁻¹ * ‖∑ i : ι, d i‖) ^ (2 : ℕ) =
+      (Fintype.card ι : ℝ)⁻¹ * ‖∑ i : ι, d i‖ ^ (2 : ℕ) := by
         field_simp [hm0.ne']
     _ ≤ (Fintype.card ι : ℝ)⁻¹ *
-        ((Fintype.card ι : ℝ) * ∑ i : ι, ‖d i‖ ^ 2) :=
+        ((Fintype.card ι : ℝ) * ∑ i : ι, ‖d i‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hsum (inv_nonneg.mpr hm0.le)
-    _ = ∑ i : ι, ‖d i‖ ^ 2 := by field_simp [hm0.ne']
+    _ = ∑ i : ι, ‖d i‖ ^ (2 : ℕ) := by field_simp [hm0.ne']
 
 theorem norm_sub_sq_le_two (x y : ℂ) :
-    ‖x - y‖ ^ 2 ≤ 2 * (‖x‖ ^ 2 + ‖y‖ ^ 2) := by
+    ‖x - y‖ ^ (2 : ℕ) ≤ 2 * (‖x‖ ^ (2 : ℕ) + ‖y‖ ^ (2 : ℕ)) := by
   have h := norm_sub_le x y
   nlinarith [norm_nonneg x, norm_nonneg y, norm_nonneg (x - y),
     sq_nonneg (‖x‖ - ‖y‖)]
 
 omit [DecidableEq ι] in
 theorem sum_norm_sub_average_sq_le (d : ι → ℂ) :
-    ∑ i : ι, ‖d i - average ι d‖ ^ 2 ≤
-      4 * ∑ i : ι, ‖d i‖ ^ 2 := by
+    ∑ i : ι, ‖d i - average ι d‖ ^ (2 : ℕ) ≤
+      4 * ∑ i : ι, ‖d i‖ ^ (2 : ℕ) := by
   calc
-    _ ≤ ∑ i : ι, 2 * (‖d i‖ ^ 2 + ‖average ι d‖ ^ 2) :=
+    _ ≤ ∑ i : ι, 2 * (‖d i‖ ^ (2 : ℕ) + ‖average ι d‖ ^ (2 : ℕ)) :=
       Finset.sum_le_sum fun i _ => norm_sub_sq_le_two (d i) (average ι d)
-    _ = 2 * ∑ i : ι, ‖d i‖ ^ 2 +
-        2 * (Fintype.card ι : ℝ) * ‖average ι d‖ ^ 2 := by
+    _ = 2 * ∑ i : ι, ‖d i‖ ^ (2 : ℕ) +
+        2 * (Fintype.card ι : ℝ) * ‖average ι d‖ ^ (2 : ℕ) := by
       simp_rw [mul_add]
       rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ]
       simp only [nsmul_eq_mul]
       rw [← Finset.mul_sum]
       ring
-    _ ≤ 4 * ∑ i : ι, ‖d i‖ ^ 2 := by
+    _ ≤ 4 * ∑ i : ι, ‖d i‖ ^ (2 : ℕ) := by
       have hscaled := card_mul_norm_average_sq_le_sum ι d
       nlinarith
 
@@ -596,34 +596,34 @@ theorem norm_mean : ‖mean ι‖ = 1 := by
   have h := inner_mean_mean ι
   rw [inner_self_eq_norm_sq_to_K] at h
   have hre := congrArg Complex.re h
-  have hn2 : ‖mean ι‖ ^ 2 = 1 := by exact_mod_cast hre
+  have hn2 : ‖mean ι‖ ^ (2 : ℕ) = 1 := by exact_mod_cast hre
   nlinarith [norm_nonneg (mean ι)]
 
 omit [DecidableEq ι] in
-theorem scale_sq_le_two : (scale ι) ^ 2 ≤ 2 := by
+theorem scale_sq_le_two : (scale ι) ^ (2 : ℕ) ≤ 2 := by
   rw [scale_sq]
   exact sub_le_self _ (by positivity)
 
 theorem norm_solution_sq_le (d : ι → ℂ) :
-    ‖solution ι d‖ ^ 2 ≤ 20 * ∑ i : ι, ‖d i‖ ^ 2 := by
-  let S : ℝ := ∑ i : ι, ‖d i‖ ^ 2
+    ‖solution ι d‖ ^ (2 : ℕ) ≤ 20 * ∑ i : ι, ‖d i‖ ^ (2 : ℕ) := by
+  let S : ℝ := ∑ i : ι, ‖d i‖ ^ (2 : ℕ)
   have hS : 0 ≤ S := by
     dsimp [S]
     exact Finset.sum_nonneg fun i _ => sq_nonneg ‖d i‖
   have hm : (1 : ℝ) ≤ Fintype.card ι := by exact_mod_cast card_pos ι
   have havgScaled := card_mul_norm_average_sq_le_sum ι d
-  have havg : ‖average ι d‖ ^ 2 ≤ S := by
+  have havg : ‖average ι d‖ ^ (2 : ℕ) ≤ S := by
     have ha0 := sq_nonneg ‖average ι d‖
     dsimp [S] at havgScaled ⊢
     nlinarith
-  have hdev : ‖deviation ι d‖ ^ 2 ≤ 4 * S := by
+  have hdev : ‖deviation ι d‖ ^ (2 : ℕ) ≤ 4 * S := by
     rw [norm_deviation_sq]
     exact sum_norm_sub_average_sq_le ι d
   have hmeanNorm := norm_mean ι
   have hadd := norm_add_le (average ι d • mean ι) (deviation ι d)
   rw [norm_smul, hmeanNorm, mul_one] at hadd
   have hinside :
-      ‖average ι d • mean ι + deviation ι d‖ ^ 2 ≤ 10 * S := by
+      ‖average ι d • mean ι + deviation ι d‖ ^ (2 : ℕ) ≤ 10 * S := by
     nlinarith [norm_nonneg (average ι d), norm_nonneg (deviation ι d),
       norm_nonneg (average ι d • mean ι + deviation ι d),
       sq_nonneg (‖average ι d‖ - ‖deviation ι d‖)]

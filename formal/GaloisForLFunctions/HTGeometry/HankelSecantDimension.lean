@@ -61,7 +61,7 @@ theorem secantMomentHankel_eq (K : Type*) [CommRing K] (r : ℕ) :
 the product of the amplitudes. -/
 theorem det_secantMomentHankel (K : Type*) [CommRing K] (r : ℕ) :
     (secantMomentHankel K r).det
-      = (secantNodeVandermonde K r).det ^ 2
+      = (secantNodeVandermonde K r).det ^ (2 : ℕ)
         * ∏ l : Fin r, MvPolynomial.X (l, (0 : Fin 2)) := by
   classical
   rw [secantMomentHankel_eq, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose,

@@ -130,7 +130,7 @@ theorem gevreyWeightBound_jetMonomialValue_dvd {a M r : ℕ} (ha : 2 ≤ a) {A �
     (hdvd : ∀ j, (PowerSeries.X : PowerSeries ℂ) ^ M ∣ g j)
     (hg : ∀ j, GevreyWeightBound a ε A r (g j)) (α : ι →₀ ℕ) (hα : 2 ≤ jetDegree α) :
     GevreyWeightBound (a + M * r)
-      (((2 : ℝ) ^ (a + 2)) ^ (jetDegree α) * ((M ! : ℝ)) ^ r * 2 ^ (M * r) * ε ^ 2) A r
+      (((2 : ℝ) ^ (a + 2)) ^ (jetDegree α) * ((M ! : ℝ)) ^ r * 2 ^ (M * r) * ε ^ (2 : ℕ)) A r
       (jetMonomialValue g α) := by
   obtain ⟨d, hd⟩ : ∃ d, jetDegree α = d + 1 := ⟨jetDegree α - 1, by omega⟩
   obtain ⟨j, β, rfl, hβ⟩ := exists_jetDegree_pred hd
@@ -143,16 +143,16 @@ theorem gevreyWeightBound_jetMonomialValue_dvd {a M r : ℕ} (ha : 2 ≤ a) {A �
   have hmul := GevreyWeightBound.mul_of_dvd ha hA (by positivity) hε0 hdvdβ (hdvd j) h1 (hg j)
   rw [jetMonomialValue_add, jetMonomialValue_single]
   refine hmul.mono_const ?_ hA
-  have hεd : ε ^ (d + 1) ≤ ε ^ 2 := pow_le_pow_of_le_one hε0 hε1 (by omega)
+  have hεd : ε ^ (d + 1) ≤ ε ^ (2 : ℕ) := pow_le_pow_of_le_one hε0 hε1 (by omega)
   have hKpos : (0 : ℝ) ≤ ((2 : ℝ) ^ (a + 2)) ^ (d + 1) * ((M ! : ℝ)) ^ r * 2 ^ (M * r) := by
     positivity
   calc (2 : ℝ) ^ (a + 2) * ((M ! : ℝ)) ^ r * 2 ^ (M * r)
         * (((2 : ℝ) ^ (a + 2)) ^ d * ε ^ d) * ε
       = (((2 : ℝ) ^ (a + 2)) ^ (d + 1) * ((M ! : ℝ)) ^ r * 2 ^ (M * r)) * ε ^ (d + 1) := by ring
-    _ ≤ (((2 : ℝ) ^ (a + 2)) ^ (d + 1) * ((M ! : ℝ)) ^ r * 2 ^ (M * r)) * ε ^ 2 :=
+    _ ≤ (((2 : ℝ) ^ (a + 2)) ^ (d + 1) * ((M ! : ℝ)) ^ r * 2 ^ (M * r)) * ε ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hεd hKpos
     _ = ((2 : ℝ) ^ (a + 2)) ^ (jetDegree (β + Finsupp.single j 1)) * ((M ! : ℝ)) ^ r
-          * 2 ^ (M * r) * ε ^ 2 := by
+          * 2 ^ (M * r) * ε ^ (2 : ℕ) := by
         rw [hd]
 
 /-! ### Finite sums -/

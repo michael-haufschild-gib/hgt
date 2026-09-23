@@ -24,10 +24,10 @@ theorem exists_sum_normSq_moebius_window_le :
         Y + K + L < ⌊N⌋₊ + 1 → 0 < (L : ℝ) → 0 < (Y : ℝ) → 0 ≤ ε → 0 < W →
         8 * Real.pi * W + 5 ≤ ((contourParam (N + smoothWidth N) : ℕ) : ℝ) →
         (Y : ℝ) + K = (Y : ℝ) * (1 + ε) ^ J →
-        (∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), moebiusC n‖ ^ 2)
+        (∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), moebiusC n‖ ^ (2 : ℕ))
           ≤ ((Y : ℝ) * (1 + ε) ^ J)
-              * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε ((B N * N) ^ 2)
-                  ((((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ 2) W) := by
+              * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε ((B N * N) ^ (2 : ℕ))
+                  ((((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ (2 : ℕ)) W) := by
   obtain ⟨B, hB, hev⟩ := exists_bound_norm_sum_moebiusTwist_div
   refine ⟨B, hB, ?_⟩
   filter_upwards [hev, eventually_gt_atTop (0 : ℝ)] with N hN hN0

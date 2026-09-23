@@ -11,7 +11,7 @@ dressed-log response jet are the same positive moment sequence
 
 This file tests the canonical long edge proposed for a three-shell Hawking completion against
 that source-derived all-order clock.  At response depth `b`, the three moment features
-`1, x, x^2` give
+`1, x, x^(2 : ℕ)` give
 
 `K_01 = M_(b+1)`, `K_11 = K_02 = M_(b+2)`, `K_12 = M_(b+3)`.
 
@@ -22,7 +22,7 @@ Conditional independence through the middle feature would replace the actual rem
 The reciprocal-energy spectrum has infinitely many positive nodes and weights.  Its shifted
 two-by-two Hankel determinant is therefore strictly positive at every depth:
 
-`M_(b+1) M_(b+3) - M_(b+2)^2 > 0`.
+`M_(b+1) M_(b+3) - M_(b+2)^(2 : ℕ) > 0`.
 
 Consequently the actual black-hole edge is always strictly smaller than its canonical Markov
 completion.  The difference is an exact positive, nonzero remote-memory channel.  Through the

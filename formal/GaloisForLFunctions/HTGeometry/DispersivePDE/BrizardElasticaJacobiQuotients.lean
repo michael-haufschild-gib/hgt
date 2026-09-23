@@ -24,7 +24,7 @@ noncomputable def jacobiSc {m : ℝ} (J : JacobiEllipticSystem m) (x : ℝ) : �
   J.sn x / J.cn x
 
 noncomputable def jacobiScVelocity {m : ℝ} (J : JacobiEllipticSystem m) (x : ℝ) : ℝ :=
-  J.dn x / J.cn x ^ 2
+  J.dn x / J.cn x ^ (2 : ℕ)
 
 theorem jacobiSc_hasDerivAt {m : ℝ} (J : JacobiEllipticSystem m)
     (x : JacobiCnRegularPoint J) :
@@ -33,7 +33,7 @@ theorem jacobiSc_hasDerivAt {m : ℝ} (J : JacobiEllipticSystem m)
   have hderiv :
       ((J.cn x.val * J.dn x.val) * J.cn x.val -
           J.sn x.val * (-(J.sn x.val * J.dn x.val))) /
-          J.cn x.val ^ 2 = jacobiScVelocity J x.val := by
+          J.cn x.val ^ (2 : ℕ) = jacobiScVelocity J x.val := by
     rw [jacobiScVelocity]
     have hquad := J.sn_sq_add_cn_sq x.val
     field_simp [x.denominator_ne]
@@ -42,9 +42,9 @@ theorem jacobiSc_hasDerivAt {m : ℝ} (J : JacobiEllipticSystem m)
 
 theorem jacobiSc_firstIntegral {m : ℝ} (J : JacobiEllipticSystem m)
     (x : JacobiCnRegularPoint J) :
-    jacobiScVelocity J x.val ^ 2 =
-      (1 + jacobiSc J x.val ^ 2) *
-        (1 + (1 - m) * jacobiSc J x.val ^ 2) := by
+    jacobiScVelocity J x.val ^ (2 : ℕ) =
+      (1 + jacobiSc J x.val ^ (2 : ℕ)) *
+        (1 + (1 - m) * jacobiSc J x.val ^ (2 : ℕ)) := by
   rw [jacobiScVelocity, jacobiSc]
   have hcn := J.sn_sq_add_cn_sq x.val
   have hdn := J.dn_sq_add_m_sn_sq x.val
@@ -65,7 +65,7 @@ noncomputable def jacobiSd {m : ℝ} (J : JacobiEllipticSystem m) (x : ℝ) : �
   J.sn x / J.dn x
 
 noncomputable def jacobiSdVelocity {m : ℝ} (J : JacobiEllipticSystem m) (x : ℝ) : ℝ :=
-  J.cn x / J.dn x ^ 2
+  J.cn x / J.dn x ^ (2 : ℕ)
 
 theorem jacobiSd_hasDerivAt {m : ℝ} (J : JacobiEllipticSystem m)
     (x : JacobiDnRegularPoint J) :
@@ -74,7 +74,7 @@ theorem jacobiSd_hasDerivAt {m : ℝ} (J : JacobiEllipticSystem m)
   have hderiv :
       ((J.cn x.val * J.dn x.val) * J.dn x.val -
           J.sn x.val * (-(m * (J.sn x.val * J.cn x.val)))) /
-          J.dn x.val ^ 2 = jacobiSdVelocity J x.val := by
+          J.dn x.val ^ (2 : ℕ) = jacobiSdVelocity J x.val := by
     rw [jacobiSdVelocity]
     have hquad := J.dn_sq_add_m_sn_sq x.val
     field_simp [x.denominator_ne]
@@ -83,9 +83,9 @@ theorem jacobiSd_hasDerivAt {m : ℝ} (J : JacobiEllipticSystem m)
 
 theorem jacobiSd_firstIntegral {m : ℝ} (J : JacobiEllipticSystem m)
     (x : JacobiDnRegularPoint J) :
-    jacobiSdVelocity J x.val ^ 2 =
-      (1 - (1 - m) * jacobiSd J x.val ^ 2) *
-        (1 + m * jacobiSd J x.val ^ 2) := by
+    jacobiSdVelocity J x.val ^ (2 : ℕ) =
+      (1 - (1 - m) * jacobiSd J x.val ^ (2 : ℕ)) *
+        (1 + m * jacobiSd J x.val ^ (2 : ℕ)) := by
   rw [jacobiSdVelocity, jacobiSd]
   have hcn := J.sn_sq_add_cn_sq x.val
   have hdn := J.dn_sq_add_m_sn_sq x.val

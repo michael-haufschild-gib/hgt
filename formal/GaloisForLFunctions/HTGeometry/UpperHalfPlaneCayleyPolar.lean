@@ -18,10 +18,10 @@ coordinates.  The disk indicator is intentional: it is the literal image of
 the upper half-plane, before the radial `tanh` reparameterization. -/
 theorem integral_diskToUpper_hyperbolic_polar {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] (f : ℂ → E) :
-    (∫ z in {z : ℂ | 0 < z.im}, (z.im)⁻¹ ^ 2 • f z) =
+    (∫ z in {z : ℂ | 0 < z.im}, (z.im)⁻¹ ^ (2 : ℕ) • f z) =
       ∫ p in polarCoord.target, p.1 •
         (ball 0 1).indicator
-          (fun w : ℂ => (4 / (1 - Complex.normSq w) ^ 2) • f (diskToUpper w))
+          (fun w : ℂ => (4 / (1 - Complex.normSq w) ^ (2 : ℕ)) • f (diskToUpper w))
           (Complex.polarCoord.symm p) := by
   rw [integral_diskToUpper_hyperbolic]
   rw [← integral_indicator measurableSet_ball]
@@ -32,18 +32,18 @@ The positive half-line is sent bijectively to the literal open unit interval. -/
 theorem integral_tanh_half_Ioi {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f : ℝ → E) :
     (∫ r in Ioo (0 : ℝ) 1, f r) =
-      ∫ d in Ioi (0 : ℝ), (1 / (2 * Real.cosh (d / 2) ^ 2)) • f (Real.tanh (d / 2)) := by
+      ∫ d in Ioi (0 : ℝ), (1 / (2 * Real.cosh (d / 2) ^ (2 : ℕ))) • f (Real.tanh (d / 2)) := by
   have hderiv : ∀ d ∈ Ioi (0 : ℝ),
       HasDerivWithinAt (fun t : ℝ => Real.tanh (t / 2))
-        (1 / (2 * Real.cosh (d / 2) ^ 2)) (Ioi 0) d := by
+        (1 / (2 * Real.cosh (d / 2) ^ (2 : ℕ))) (Ioi 0) d := by
     intro d _
     have hd := (HTGeometry.hasDerivAt_tanh (d / 2)).comp d ((hasDerivAt_id d).div_const 2)
     have hfun : (fun t : ℝ => Real.tanh (t / 2)) =
         Real.tanh ∘ fun x : ℝ => id x / 2 := by
       funext t
       simp only [Function.comp_apply, id_eq]
-    have hcoef : 1 / Real.cosh (d / 2) ^ 2 * (1 / 2 : ℝ) =
-        1 / (2 * Real.cosh (d / 2) ^ 2) := by
+    have hcoef : 1 / Real.cosh (d / 2) ^ (2 : ℕ) * (1 / 2 : ℝ) =
+        1 / (2 * Real.cosh (d / 2) ^ (2 : ℕ)) := by
       rw [div_eq_mul_inv, div_eq_mul_inv]
       ring
     rw [← hfun, hcoef] at hd
@@ -82,7 +82,7 @@ theorem integral_tanh_half_Ioi {E : Type*} [NormedAddCommGroup E] [NormedSpace �
 /-- Exact disk-polar density, before the literal native-circle identification. -/
 def diskPolarDensity {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f : ℂ → E) (p : ℝ × ℝ) : E :=
-  p.1 • (4 / (1 - Complex.normSq (Complex.polarCoord.symm p)) ^ 2) •
+  p.1 • (4 / (1 - Complex.normSq (Complex.polarCoord.symm p)) ^ (2 : ℕ)) •
     f (diskToUpper (Complex.polarCoord.symm p))
 
 private theorem polarCoord_mem_ball_iff {p : ℝ × ℝ} (hp : p ∈ polarCoord.target) :
@@ -104,8 +104,8 @@ theorem integral_diskToUpper_hyperbolic_polar_tanh {E : Type*} [NormedAddCommGro
     [NormedSpace ℝ E] (f : ℂ → E)
     (hf : IntegrableOn (diskPolarDensity f)
       (Ioo (0 : ℝ) 1 ×ˢ Ioo (-Real.pi) Real.pi)) :
-    (∫ z in {z : ℂ | 0 < z.im}, (z.im)⁻¹ ^ 2 • f z) =
-      ∫ d in Ioi (0 : ℝ), (1 / (2 * Real.cosh (d / 2) ^ 2)) •
+    (∫ z in {z : ℂ | 0 < z.im}, (z.im)⁻¹ ^ (2 : ℕ) • f z) =
+      ∫ d in Ioi (0 : ℝ), (1 / (2 * Real.cosh (d / 2) ^ (2 : ℕ))) •
         ∫ theta in Ioo (-Real.pi) Real.pi,
           diskPolarDensity f (Real.tanh (d / 2), theta) := by
   let P : Set (ℝ × ℝ) := Ioo (0 : ℝ) 1 ×ˢ Ioo (-Real.pi) Real.pi
@@ -116,7 +116,7 @@ theorem integral_diskToUpper_hyperbolic_polar_tanh {E : Type*} [NormedAddCommGro
   have hpolar :
       (∫ p in polarCoord.target, p.1 •
         (ball 0 1).indicator
-          (fun w : ℂ => (4 / (1 - Complex.normSq w) ^ 2) • f (diskToUpper w))
+          (fun w : ℂ => (4 / (1 - Complex.normSq w) ^ (2 : ℕ)) • f (diskToUpper w))
           (Complex.polarCoord.symm p)) =
         ∫ p in P, diskPolarDensity f p := by
     rw [← integral_indicator polarCoord.open_target.measurableSet, ← integral_indicator hP]
@@ -134,17 +134,17 @@ theorem integral_diskToUpper_hyperbolic_polar_tanh {E : Type*} [NormedAddCommGro
     · have hnot : p ∉ P := fun h => hp (hsub h)
       rw [Set.indicator_of_notMem hp, Set.indicator_of_notMem hnot]
   calc
-    (∫ z in {z : ℂ | 0 < z.im}, (z.im)⁻¹ ^ 2 • f z) =
+    (∫ z in {z : ℂ | 0 < z.im}, (z.im)⁻¹ ^ (2 : ℕ) • f z) =
         ∫ p in polarCoord.target, p.1 •
           (ball 0 1).indicator
-            (fun w : ℂ => (4 / (1 - Complex.normSq w) ^ 2) • f (diskToUpper w))
+            (fun w : ℂ => (4 / (1 - Complex.normSq w) ^ (2 : ℕ)) • f (diskToUpper w))
             (Complex.polarCoord.symm p) := integral_diskToUpper_hyperbolic_polar f
     _ = ∫ p in P, diskPolarDensity f p := hpolar
     _ = ∫ r in Ioo (0 : ℝ) 1, ∫ theta in Ioo (-Real.pi) Real.pi,
         diskPolarDensity f (r, theta) := by
       rw [Measure.volume_eq_prod ℝ ℝ]
       exact setIntegral_prod (diskPolarDensity f) hf
-    _ = ∫ d in Ioi (0 : ℝ), (1 / (2 * Real.cosh (d / 2) ^ 2)) •
+    _ = ∫ d in Ioi (0 : ℝ), (1 / (2 * Real.cosh (d / 2) ^ (2 : ℕ))) •
         ∫ theta in Ioo (-Real.pi) Real.pi,
           diskPolarDensity f (Real.tanh (d / 2), theta) :=
       integral_tanh_half_Ioi fun r => ∫ theta in Ioo (-Real.pi) Real.pi,

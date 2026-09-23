@@ -87,9 +87,9 @@ private theorem physicalDiagonalCriticalInformationFactor_two_zero_lt :
   calc
     gammaSewnMobiusApertureStokesCriticalInformationFactor
         (RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 0) ≤
-      4 / 3 * ((Real.log 2 / 2) ^ 3 * Real.exp (-(Real.log 2 / 2))) := h
-    _ < 4 / 3 * ((7 / 20 : ℝ) ^ 3 * Real.exp (-(Real.log 2 / 2))) := by gcongr
-    _ ≤ 4 / 3 * ((7 / 20 : ℝ) ^ 3 * 1) := by gcongr
+      4 / 3 * ((Real.log 2 / 2) ^ (3 : ℕ) * Real.exp (-(Real.log 2 / 2))) := h
+    _ < 4 / 3 * ((7 / 20 : ℝ) ^ (3 : ℕ) * Real.exp (-(Real.log 2 / 2))) := by gcongr
+    _ ≤ 4 / 3 * ((7 / 20 : ℝ) ^ (3 : ℕ) * 1) := by gcongr
     _ < 3 / 10 := by norm_num
 
 theorem gammaSewnCriticalInformationDepletedPrimeTwoDepthZero_firstMoment_lower :
@@ -184,7 +184,7 @@ theorem not_gammaSewnCriticalPhysicalDiagonalMomentIdentification
       (by norm_num) pk).le
   have hfsum : Summable f := by
     refine Summable.of_nonneg_of_le hfnonneg (fun pk => ?_)
-      (hsummable.mul_left (((Real.log 2)⁻¹) ^ 2))
+      (hsummable.mul_left (((Real.log 2)⁻¹) ^ (2 : ℕ)))
     have hw : 0 ≤ gammaSewnCriticalPhysicalDiagonalTransferredWeight transfer pk :=
       mul_nonneg (htransfer pk)
         (gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight_pos pk).le

@@ -30,7 +30,7 @@ noncomputable section
 def gammaSewnMobiusJuliaCriticalHardCoefficient (x : ℝ) (n : ℕ) : ℝ :=
   if hpow : IsPrimePow n then
     gammaSewnMobiusJuliaHardHalfWeightTransport x (-1 / 2)
-      (Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩) ^ 2
+      (Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩) ^ (2 : ℕ)
   else 0
 
 /-- At critical damping, the Julia boundary amplitude is exactly the observer-free Suzuki wall
@@ -98,7 +98,7 @@ theorem tendsto_gammaSewnMobiusJuliaCriticalPrimeAutocorrelation_nhdsGT_zero
 def gammaSewnMobiusJuliaCriticalCompletedSource
     (x L a : ℝ) : ℝ :=
   -2 * gammaSewnMobiusJuliaCriticalPrimeAutocorrelation x L a +
-    2 * rectangularEvenPolarFeature L a ^ 2 +
+    2 * rectangularEvenPolarFeature L a ^ (2 : ℕ) +
       rectangularGammaPolarCorrection L a
 
 /-- **Julia-to-Xi transgression law.**  After canonical polar and Gamma completion, the singular
@@ -118,11 +118,11 @@ theorem tendsto_gammaSewnMobiusJuliaCriticalCompletedSource_nhdsGT_zero
       (tendsto_const_nhds :
         Tendsto
           (fun _ : ℝ =>
-            2 * rectangularEvenPolarFeature L a ^ 2 +
+            2 * rectangularEvenPolarFeature L a ^ (2 : ℕ) +
               rectangularGammaPolarCorrection L a)
           (nhdsWithin (0 : ℝ) (Ioi 0))
           (nhds
-            (2 * rectangularEvenPolarFeature L a ^ 2 +
+            (2 * rectangularEvenPolarFeature L a ^ (2 : ℕ) +
               rectangularGammaPolarCorrection L a)))
   have hsource := congrArg Complex.re
     (xiWeilPolarization_rectangular_eq_primePolarSource_add_gammaCorrection hL ha)

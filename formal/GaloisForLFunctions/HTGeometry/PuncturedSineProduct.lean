@@ -84,13 +84,13 @@ theorem puncturedRatio_self (j : ℕ) :
 /-- **The punctured Euler sine product at the base index.** -/
 theorem prod_punctured_sine_base (n : ℕ) :
     (∏ k ∈ Finset.range n,
-        (1 - (((n : ℕ) : ℝ) + 1) ^ 2 / ((k + 1 : ℕ) : ℝ) ^ 2)) =
+        (1 - (((n : ℕ) : ℝ) + 1) ^ (2 : ℕ) / ((k + 1 : ℕ) : ℝ) ^ (2 : ℕ))) =
       (-1) ^ n / 2 * puncturedRatio (n + 1) (n + 1) := by
   have hne : ∀ k ∈ Finset.range n, ((k + 1 : ℕ) : ℝ) ≠ 0 := by
     intro k _
     positivity
   have hsplit : ∀ k ∈ Finset.range n,
-      (1 - (((n : ℕ) : ℝ) + 1) ^ 2 / ((k + 1 : ℕ) : ℝ) ^ 2) =
+      (1 - (((n : ℕ) : ℝ) + 1) ^ (2 : ℕ) / ((k + 1 : ℕ) : ℝ) ^ (2 : ℕ)) =
         ((((k + 1 : ℕ) : ℝ) - (((n : ℕ) : ℝ) + 1)) *
           (((k + 1 : ℕ) : ℝ) + (((n : ℕ) : ℝ) + 1))) / (((k + 1 : ℕ) : ℝ) * ((k + 1 : ℕ) : ℝ)) := by
     intro k hk
@@ -232,7 +232,7 @@ theorem tendsto_puncturedRatio (j : ℕ) :
 theorem prod_punctured_sine (n : ℕ) :
     ∀ M : ℕ, n ≤ M →
       (∏ k ∈ (Finset.range (M + 1)).erase n,
-          (1 - (((n : ℕ) : ℝ) + 1) ^ 2 / ((k + 1 : ℕ) : ℝ) ^ 2)) =
+          (1 - (((n : ℕ) : ℝ) + 1) ^ (2 : ℕ) / ((k + 1 : ℕ) : ℝ) ^ (2 : ℕ))) =
         (-1) ^ n / 2 * puncturedRatio (n + 1) (M + 1) := by
   intro M
   induction M with
@@ -266,7 +266,7 @@ theorem prod_punctured_sine (n : ℕ) :
         intro _
         omega
       rw [hins, Finset.prod_insert hnotmem, ih hnM]
-      have hstep : (1 - (((n : ℕ) : ℝ) + 1) ^ 2 / ((M + 1 + 1 : ℕ) : ℝ) ^ 2) *
+      have hstep : (1 - (((n : ℕ) : ℝ) + 1) ^ (2 : ℕ) / ((M + 1 + 1 : ℕ) : ℝ) ^ (2 : ℕ)) *
           puncturedRatio (n + 1) (M + 1) = puncturedRatio (n + 1) (M + 2) := by
         have e1 : M + 1 - (n + 1) = M - n := by omega
         have e2 : M + 2 - (n + 1) = (M - n) + 1 := by omega

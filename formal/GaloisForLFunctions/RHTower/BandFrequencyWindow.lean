@@ -17,7 +17,7 @@ concentration of a function supported in `[-1, 1]`, and the leakage `1 - lambda`
 spectral tail.
 
 Two conversions are involved.  The first identifies the card's band moment
-`F_a psi = ∫_(-1)^1 psi(x) e^{i a x} dx` with mathlib's Fourier integral of the truncation of `psi`, at
+`F_a psi = ∫_(-1)^(1 : ℕ) psi(x) e^{i a x} dx` with mathlib's Fourier integral of the truncation of `psi`, at
 frequency `-a/(2 pi)` — the `2 pi` sits in mathlib's character.  The second is the change of variables
 `xi = -c t/(2 pi)` that turns the average over the band parameter `t` into an integral over the
 frequency window; the Jacobian cancels the factor `c/(2 pi)` of the energy identity exactly.
@@ -73,16 +73,16 @@ theorem bandFourier_eq_fourier (a : ℝ) (ψ : ℝ → ℝ) :
 `xi = -c t/(2 pi)` turns the band average into an integral over the window, and its Jacobian cancels
 the prefactor. -/
 theorem energy_eq_frequency_window {c : ℝ} (hc : 0 < c) (ψ : ℝ → ℝ) :
-    (c / (2 * Real.pi)) * ∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ 2
-      = ∫ ξ in -(c / (2 * Real.pi))..(c / (2 * Real.pi)), ‖𝓕 (bandTrunc ψ) ξ‖ ^ 2 := by
+    (c / (2 * Real.pi)) * ∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ (2 : ℕ)
+      = ∫ ξ in -(c / (2 * Real.pi))..(c / (2 * Real.pi)), ‖𝓕 (bandTrunc ψ) ξ‖ ^ (2 : ℕ) := by
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   set k : ℝ := c / (2 * Real.pi) with hk
   have hkpos : 0 < k := by
     rw [hk]
     positivity
   have hkne : k ≠ 0 := ne_of_gt hkpos
-  set g : ℝ → ℝ := fun ξ => ‖𝓕 (bandTrunc ψ) ξ‖ ^ 2 with hg
-  have hstep1 : (∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ 2)
+  set g : ℝ → ℝ := fun ξ => ‖𝓕 (bandTrunc ψ) ξ‖ ^ (2 : ℕ) with hg
+  have hstep1 : (∫ t in (-1 : ℝ)..1, ‖bandFourier (c * t) ψ‖ ^ (2 : ℕ))
       = ∫ t in (-1 : ℝ)..1, g (-(k * t)) := by
     refine intervalIntegral.integral_congr fun t _ => ?_
     rw [bandFourier_eq_fourier (c * t) ψ]
@@ -105,7 +105,7 @@ theorem energy_eq_frequency_window {c : ℝ} (hc : 0 < c) (ψ : ℝ → ℝ) :
 theorem double_integral_sincKernel_eq_frequency_energy {c : ℝ} (hc : 0 < c) {ψ : ℝ → ℝ}
     (hψ : Continuous ψ) :
     (∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, sincKernelSmooth c x y * (ψ x * ψ y))
-      = ∫ ξ in -(c / (2 * Real.pi))..(c / (2 * Real.pi)), ‖𝓕 (bandTrunc ψ) ξ‖ ^ 2 := by
+      = ∫ ξ in -(c / (2 * Real.pi))..(c / (2 * Real.pi)), ‖𝓕 (bandTrunc ψ) ξ‖ ^ (2 : ℕ) := by
   rw [double_integral_sincKernel_eq_energy c hψ, energy_eq_frequency_window hc ψ]
 
 end GaloisForLFunctions.RHTower

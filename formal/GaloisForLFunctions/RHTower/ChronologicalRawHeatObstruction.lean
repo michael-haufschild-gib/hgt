@@ -66,7 +66,7 @@ theorem chronologicalRaw_convergence_forces_critical_profile
   intro y hy
   have hL := chronologicalRaw_to_laplace_bound M hδ.le (Real.exp_pos (-y)) htail
   have hs : Real.sqrt (Real.exp (-y)) = Real.exp (-y/2) := by
-    have he : Real.exp (-y) = Real.exp (-y/2)^2 := by
+    have he : Real.exp (-y) = Real.exp (-y/2)^(2 : ℕ) := by
       rw [pow_two, ← Real.exp_add]
       congr 1
       ring

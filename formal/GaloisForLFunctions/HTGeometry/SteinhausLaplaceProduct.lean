@@ -279,11 +279,11 @@ antipodal values `1` and `-1` and positivity of Haar measure on nonempty open
 sets. -/
 theorem centered_tilted_projection_integral_pos (r c : ℝ) :
     0 < ∫ x : PhaseCircle,
-      (steinhausProjection x - c) ^ 2 *
+      (steinhausProjection x - c) ^ (2 : ℕ) *
         Real.exp (r * steinhausProjection x)
       ∂AddCircle.haarAddCircle := by
   let f : PhaseCircle → ℝ := fun x =>
-    (steinhausProjection x - c) ^ 2 *
+    (steinhausProjection x - c) ^ (2 : ℕ) *
       Real.exp (r * steinhausProjection x)
   have hfcont : Continuous f := by
     dsimp only [f]

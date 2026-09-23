@@ -186,6 +186,76 @@ theorem hypGradX_normSq_one_periodic {N : ℕ} (F : formPreDomain N)
       ‖hypGradX (F : ℍ → DeckSpace N) (ofComplex (point x y))‖ ^ 2 := by
   rw [hypGradX_norm_one_periodic F hy x]
 
+/-- The vertical hyperbolic derivative has the same literal unit-translation
+covariance as the value and horizontal derivative. -/
+theorem hypGradY_T_eq_regular {N : ℕ} (F : formPreDomain N)
+    {y : ℝ} (hy : 0 < y) (x : ℝ) :
+    hypGradY (F : ℍ → DeckSpace N) (ofComplex (point (x + 1) y)) =
+      finiteRegularUnitary (QuotientGroup.mk (ModularGroup.T ^ (1 : ℤ)) : Deck N)
+        (hypGradY (F : ℍ → DeckSpace N) (ofComplex (point x y))) := by
+  let U := finiteRegularUnitary (QuotientGroup.mk (ModularGroup.T ^ (1 : ℤ)) : Deck N)
+  let L : DeckSpace N →L[ℝ] DeckSpace N :=
+    (U.toContinuousLinearEquiv.toContinuousLinearMap).restrictScalars ℝ
+  have hpt : point x y ∈ GaloisForLFunctions.HTGeometry.upperSet := by
+    simpa [point, GaloisForLFunctions.HTGeometry.upperSet] using hy
+  have hdiff : DifferentiableAt ℝ (chartFun (F : ℍ → DeckSpace N)) (point x y) :=
+    ((formPreDomain.c1 F).differentiableOn one_ne_zero).differentiableAt
+      (GaloisForLFunctions.HTGeometry.isOpen_upperSet.mem_nhds hpt)
+  have hlocal : (fun w : ℂ => chartFun (F : ℍ → DeckSpace N) (w + 1)) =ᶠ[𝓝 (point x y)]
+      fun w => U (chartFun (F : ℍ → DeckSpace N) w) := by
+    filter_upwards [GaloisForLFunctions.HTGeometry.isOpen_upperSet.mem_nhds hpt] with w hw
+    exact chartFun_T_eq_regular F w hw
+  have hU : HasFDerivAt (fun w : ℂ => L (chartFun (F : ℍ → DeckSpace N) w))
+      (L.comp (fderiv ℝ (chartFun (F : ℍ → DeckSpace N)) (point x y))) (point x y) :=
+    L.hasFDerivAt.comp (point x y) hdiff.hasFDerivAt
+  have hshift : HasFDerivAt (fun w : ℂ => chartFun (F : ℍ → DeckSpace N) (w + 1))
+      (L.comp (fderiv ℝ (chartFun (F : ℍ → DeckSpace N)) (point x y))) (point x y) := by
+    apply hU.congr_of_eventuallyEq
+    exact hlocal
+  have hderiv : fderiv ℝ (chartFun (F : ℍ → DeckSpace N)) (point (x + 1) y) Complex.I =
+      L (fderiv ℝ (chartFun (F : ℍ → DeckSpace N)) (point x y) Complex.I) := by
+    rw [show point (x + 1) y = point x y + 1 by
+      simp [point]
+      ring]
+    rw [← fderiv_comp_add_right]
+    simpa only [ContinuousLinearMap.comp_apply] using
+      congrArg (fun D => D Complex.I) hshift.fderiv
+  unfold hypGradY chartDeriv
+  have hp0 : 0 < (point x y).im := by simpa [point] using hy
+  have hp1 : 0 < (point (x + 1) y).im := by simpa [point] using hy
+  have him0 : (ofComplex (point x y)).im = y := by
+    simpa [point] using congrArg UpperHalfPlane.im (ofComplex_apply_of_im_pos hp0)
+  have him1 : (ofComplex (point (x + 1) y)).im = y := by
+    simpa [point] using congrArg UpperHalfPlane.im (ofComplex_apply_of_im_pos hp1)
+  have hcoe0 : ((ofComplex (point x y) : ℍ) : ℂ) = point x y := by
+    rw [ofComplex_apply_of_im_pos hp0]
+  have hcoe1 : ((ofComplex (point (x + 1) y) : ℍ) : ℂ) = point (x + 1) y := by
+    rw [ofComplex_apply_of_im_pos hp1]
+  rw [him1, him0, hcoe1, hcoe0]
+  change (y : ℂ) • fderiv ℝ (chartFun (F : ℍ → DeckSpace N))
+      (point (x + 1) y) Complex.I =
+    U ((y : ℂ) • fderiv ℝ (chartFun (F : ℍ → DeckSpace N)) (point x y) Complex.I)
+  rw [hderiv]
+  change (y : ℂ) • U (fderiv ℝ (chartFun (F : ℍ → DeckSpace N))
+      (point x y) Complex.I) =
+    U ((y : ℂ) • fderiv ℝ (chartFun (F : ℍ → DeckSpace N)) (point x y) Complex.I)
+  exact (U.map_smul _ _).symm
+
+/-- The vertical hyperbolic-gradient norm is one-periodic on a finite-deck form. -/
+theorem hypGradY_norm_one_periodic {N : ℕ} (F : formPreDomain N)
+    {y : ℝ} (hy : 0 < y) (x : ℝ) :
+    ‖hypGradY (F : ℍ → DeckSpace N) (ofComplex (point (x + 1) y))‖ =
+      ‖hypGradY (F : ℍ → DeckSpace N) (ofComplex (point x y))‖ := by
+  rw [hypGradY_T_eq_regular F hy x]
+  exact (finiteRegularUnitary
+    (QuotientGroup.mk (ModularGroup.T ^ (1 : ℤ)) : Deck N)).norm_map _
+
+theorem hypGradY_normSq_one_periodic {N : ℕ} (F : formPreDomain N)
+    {y : ℝ} (hy : 0 < y) (x : ℝ) :
+    ‖hypGradY (F : ℍ → DeckSpace N) (ofComplex (point (x + 1) y))‖ ^ 2 =
+      ‖hypGradY (F : ℍ → DeckSpace N) (ofComplex (point x y))‖ ^ 2 := by
+  rw [hypGradY_norm_one_periodic F hy x]
+
 /-- The complete finite-deck value energy on a level period is exactly the
 level length times its unit-cell energy.  This converts the left side of the
 coordinate Poincaré estimate into the physical cusp-cell normalization. -/
@@ -257,6 +327,54 @@ theorem hypGradX_normSq_interval_level_period {N : ℕ} (F : formPreDomain N)
     intro x
     rw [hG]
     exact congrArg (fun r : ℝ => r ^ 2) (hypGradX_norm_one_periodic F hy x)
+  have hint : ∀ s t : ℝ, IntervalIntegrable G volume s t :=
+    fun s t => hcont.intervalIntegrable s t
+  have h := hper.intervalIntegral_add_zsmul_eq ((N + 1 : ℕ) : ℤ) a hint
+  simpa only [hG, Int.ofNat_eq_natCast, Int.cast_add, Int.cast_natCast,
+    Int.cast_one, Nat.cast_add, Nat.cast_one, zsmul_one, add_assoc] using h
+
+/-- The complete finite-deck vertical energy has the same exact
+level-period/unit-cell identity.  It is the vertical counterpart needed for
+the mixed cusp current. -/
+theorem hypGradY_normSq_interval_level_period {N : ℕ} (F : formPreDomain N)
+    {y : ℝ} (hy : 0 < y) (a : ℝ) :
+    (∫ x in a..a + (N + 1 : ℕ),
+      ‖hypGradY (F : ℍ → DeckSpace N) (ofComplex (point x y))‖ ^ 2)
+      = ((N + 1 : ℕ) : ℤ) •
+        ∫ x in a..a + 1,
+          ‖hypGradY (F : ℍ → DeckSpace N) (ofComplex (point x y))‖ ^ 2 := by
+  let G : ℝ → ℝ := fun x => ‖(y : ℂ) •
+    fderiv ℝ (chartFun (F : ℍ → DeckSpace N)) (point x y) Complex.I‖ ^ 2
+  have hG : G = fun x =>
+      ‖hypGradY (F : ℍ → DeckSpace N) (ofComplex (point x y))‖ ^ 2 := by
+    funext x
+    dsimp [G]
+    have hp : 0 < (point x y).im := by simpa [point] using hy
+    have him : (ofComplex (point x y)).im = y := by
+      simpa [point] using congrArg UpperHalfPlane.im (ofComplex_apply_of_im_pos hp)
+    have hcoe : ((ofComplex (point x y) : ℍ) : ℂ) = point x y := by
+      rw [ofComplex_apply_of_im_pos hp]
+    rw [hypGradY, chartDeriv, him, hcoe]
+    rw [RCLike.real_smul_eq_coe_smul (K := ℂ)]
+    rfl
+  have hderiv : ContinuousOn (fun w : ℂ =>
+      fderiv ℝ (chartFun (F : ℍ → DeckSpace N)) w Complex.I)
+      GaloisForLFunctions.HTGeometry.upperSet := by
+    have h := ContDiffOn.continuousOn_fderiv_of_isOpen (formPreDomain.c1 F)
+      GaloisForLFunctions.HTGeometry.isOpen_upperSet le_rfl
+    exact h.clm_apply continuousOn_const
+  have hcont : Continuous G := by
+    apply Continuous.pow
+    apply Continuous.norm
+    refine (hderiv.comp_continuous ?_ ?_).const_smul (y : ℂ)
+    · change Continuous fun x : ℝ => (x : ℂ) + (y : ℂ) * Complex.I
+      fun_prop
+    · intro x
+      simpa [point, GaloisForLFunctions.HTGeometry.upperSet] using hy
+  have hper : Function.Periodic G 1 := by
+    intro x
+    rw [hG]
+    exact congrArg (fun r : ℝ => r ^ 2) (hypGradY_norm_one_periodic F hy x)
   have hint : ∀ s t : ℝ, IntervalIntegrable G volume s t :=
     fun s t => hcont.intervalIntegrable s t
   have h := hper.intervalIntegral_add_zsmul_eq ((N + 1 : ℕ) : ℤ) a hint

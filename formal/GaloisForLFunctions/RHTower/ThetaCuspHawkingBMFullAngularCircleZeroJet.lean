@@ -17,7 +17,7 @@ Proof-chain role:
 namespace RHTower.D4BMFullAngularCircle
 
 open GaloisForLFunctions.HTGeometry
-open D4BMHorizon D4BMModularCore D4BMNativeCircle
+open D4BMHorizon D4BMModularCore D4BMNativeCircle D4BMGlobalAngularResponse
 
 noncomputable section
 set_option autoImplicit false

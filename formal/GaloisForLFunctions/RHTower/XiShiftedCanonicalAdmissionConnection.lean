@@ -216,7 +216,7 @@ theorem hasDerivAt_xiShiftedMomentInner_movingNorm
       (-HTGeometry.momentFunctional
           (fun k => (xiShiftedReciprocalMoment y k).re)
           (X * xiShiftedBoundaryShiftedEuler 1
-            ((finitePolynomialCurve c y) ^ 2)) +
+            ((finitePolynomialCurve c y) ^ (2 : ℕ))) +
         2 * HTGeometry.momentInner
           (fun k => (xiShiftedReciprocalMoment y k).re)
           (finitePolynomialVelocity dc) (finitePolynomialCurve c y)) y := by
@@ -286,11 +286,11 @@ theorem hasDerivAt_xiShiftedMomentInner_movingNorm
     rw [hfun] at hraw
     simpa only [s, md, fixed, Nat.cast_add, Finset.sum_apply] using hraw
   have hfixedSource := hasDerivAt_xiShiftedMomentFunctional_sourceConnection hy
-    ((finitePolynomialCurve c y) ^ 2)
+    ((finitePolynomialCurve c y) ^ (2 : ℕ))
   have hfixed : fixed =
       -HTGeometry.momentFunctional (s y)
         (X * xiShiftedBoundaryShiftedEuler 1
-          ((finitePolynomialCurve c y) ^ 2)) := by
+          ((finitePolynomialCurve c y) ^ (2 : ℕ))) := by
     apply hfixedDirect.unique
     simpa only [HTGeometry.momentInner_self] using hfixedSource
   have hmove : move = 2 * HTGeometry.momentInner (s y)
@@ -525,9 +525,9 @@ def xiShiftedCanonicalAdmissionCumulativeJacobiDissipation
     (y : ℝ) (n : ℕ) : ℝ :=
   2 * (∑ j ∈ Finset.range n,
       HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment y k).re) j ^ 2) +
+        (fun k => (xiShiftedReciprocalMoment y k).re) j ^ (2 : ℕ)) +
     HTGeometry.monicOrthoAlpha
-      (fun k => (xiShiftedReciprocalMoment y k).re) n ^ 2 +
+      (fun k => (xiShiftedReciprocalMoment y k).re) n ^ (2 : ℕ) +
     4 * (∑ j ∈ Finset.range n,
       HTGeometry.monicOrthoBeta
         (fun k => (xiShiftedReciprocalMoment y k).re) j) +
@@ -682,7 +682,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_normFlux_of_det
     HTGeometry.momentFunctional_X_shiftedEuler_one_sq_monicMomentAdmission hn hdet
   dsimp only at htransport
   have htransport' : HTGeometry.momentFunctional s
-      (X * xiShiftedBoundaryShiftedEuler 1 (P ^ 2)) =
+      (X * xiShiftedBoundaryShiftedEuler 1 (P ^ (2 : ℕ))) =
     ((2 * n + 1 : ℕ) : ℝ) * HTGeometry.momentInner s P (X * P) -
       2 * P.coeff (n - 1) * HTGeometry.momentInner s P P := by
     simpa only [xiShiftedBoundaryShiftedEuler, C_1, one_mul] using htransport
@@ -863,17 +863,17 @@ actual inverse-Hankel norm flux is the odd-contact factor times the literal comp
 arithmetic source formed from that admission before reflection aggregation. -/
 theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_arithmeticSource_of_flatTangent
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ
       HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0)
-    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ 2)
+    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ))
       (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) = 0) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionNormFlux v n)
       (((2 * n + 1 : ℕ) : ℝ) *
         xiShiftedAdaptiveMixedCompletedArithmeticSource w
           (HTGeometry.monicMomentAdmissionPolynomial
-            (xiShiftedRealMomentSequence w) n)) (w ^ 2) := by
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
+            (xiShiftedRealMomentSequence w) n)) (w ^ (2 : ℕ)) := by
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith : 0 < w)
   have hflux := hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_of_flatTangent
     hy hn hhead hflat htangent
   let P := HTGeometry.monicMomentAdmissionPolynomial
@@ -882,7 +882,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_arithmeticSource_of_fl
   change 2 * HTGeometry.momentInner (xiShiftedRealMomentSequence w)
       (X * P) (X * xiShiftedBoundaryShiftedEuler 1 P) =
     xiShiftedAdaptiveMixedCompletedArithmeticSource w P at hsource
-  have hshear : xiShiftedCanonicalAdmissionAdaptiveShear (w ^ 2) n =
+  have hshear : xiShiftedCanonicalAdmissionAdaptiveShear (w ^ (2 : ℕ)) n =
       HTGeometry.momentInner (xiShiftedRealMomentSequence w)
         (X * P) (X * xiShiftedBoundaryShiftedEuler 1 P) := by
     rfl
@@ -895,18 +895,18 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_arithmeticSource_of_fl
 /-- The same singular producer law stated for completed adaptive `P^sharp` packet itself. -/
 theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_completedAggregate_of_flatTangent
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ
       HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0)
-    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ 2)
+    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ))
       (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) = 0) :
     let P := HTGeometry.monicMomentAdmissionPolynomial
       (xiShiftedRealMomentSequence w) n
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionNormFlux v n)
       (((2 * n + 1 : ℕ) : ℝ) *
-        xiShiftedCompletedMomentAggregate (w ^ 2) 2
+        xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
           (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
-            (xiShiftedOddCrossingCoefficientPacket P))) (w ^ 2) := by
+            (xiShiftedOddCrossingCoefficientPacket P))) (w ^ (2 : ℕ)) := by
   dsimp only
   rw [xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_arithmeticSource hw]
   exact
@@ -920,32 +920,32 @@ block is not positive semidefinite.  If that remainder vanishes, the completed a
 choice and no fixed linear reporter is missing at the first singular face. -/
 theorem xiShiftedCanonicalAdmission_firstFace_preemption_or_completedSource
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ
       HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0) :
-    (¬ (xiShiftedMomentHankelMatrix (w ^ 2) (n + 2)).PosSemidef) ∨
+    (¬ (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 2)).PosSemidef) ∨
       HasDerivAt (fun v => xiShiftedCanonicalAdmissionNormFlux v n)
         (((2 * n + 1 : ℕ) : ℝ) *
-          xiShiftedCompletedMomentAggregate (w ^ 2) 2
+          xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
             (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
               (xiShiftedOddCrossingCoefficientPacket
                 (HTGeometry.monicMomentAdmissionPolynomial
-                  (xiShiftedRealMomentSequence w) n)))) (w ^ 2) := by
+                  (xiShiftedRealMomentSequence w) n)))) (w ^ (2 : ℕ)) := by
   let c := HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n
-  by_cases htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c = 0
+  by_cases htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c = 0
   · right
     exact
       hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_completedAggregate_of_flatTangent
         hw hn hhead hflat htangent
   · left
     apply xiShiftedMomentHankelMatrix_succ_not_posSemidef_of_kernel_of_coupling_ne_zero
-      (w ^ 2) (n + 1) c hflat
+      (w ^ (2 : ℕ)) (n + 1) c hflat
     have hterminal :=
       xiShiftedHankel_terminal_mul_coupling_eq_sq_mul_monicRemainder
-        (w ^ 2) c (by simp [c])
+        (w ^ (2 : ℕ)) c (by simp [c])
     have hcoupling :
-        xiShiftedHankelFirstOmittedCoupling (w ^ 2) (n + 1) c =
-          xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c := by
+        xiShiftedHankelFirstOmittedCoupling (w ^ (2 : ℕ)) (n + 1) c =
+          xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c := by
       simpa only [c, HTGeometry.monicMomentAdmissionVector_last,
         one_mul, one_pow] using hterminal
     rw [hcoupling]
@@ -981,7 +981,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_jacobiFlow_of_succ_posDef
     apply HTGeometry.monicOrtho_inner_eq_zero_of_degree_lt_below hbelow (by omega)
     exact lt_of_le_of_lt Polynomial.degree_le_natDegree (by exact_mod_cast hvelocity)
   have htransport : HTGeometry.momentFunctional s
-      (X * xiShiftedBoundaryShiftedEuler 1 ((HTGeometry.monicOrtho s n) ^ 2)) =
+      (X * xiShiftedBoundaryShiftedEuler 1 ((HTGeometry.monicOrtho s n) ^ (2 : ℕ))) =
       ((2 * n + 1 : ℕ) : ℝ) * HTGeometry.monicOrthoAlpha s n *
           HTGeometry.monicOrthoNormSq s n -
         2 * HTGeometry.monicOrthoFirstCoeff s n *
@@ -1071,7 +1071,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionAlpha_eq_sourceConnection
           xiShiftedCanonicalAdmissionNorm y n -
         xiShiftedCanonicalAdmissionOddCurrent y n *
           ((2 * aval - ((2 * n + 1 : ℕ) : ℝ) * alpha) * hval)) /
-          xiShiftedCanonicalAdmissionNorm y n ^ 2 =
+          xiShiftedCanonicalAdmissionNorm y n ^ (2 : ℕ) =
         -2 * energy + 2 * adot -
           alpha * (2 * aval - ((2 * n + 1 : ℕ) : ℝ) * alpha) := by
     rw [hNval, hBval]
@@ -1121,11 +1121,11 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux
     calc
       (-2 : ℝ) * adot +
           (-2 *
-              (HTGeometry.monicOrthoFirstCoeff s n ^ 2 -
+              (HTGeometry.monicOrthoFirstCoeff s n ^ (2 : ℕ) -
                 2 * HTGeometry.monicOrthoSecondCoeff s n -
                 HTGeometry.monicOrthoAlpha s n *
                   HTGeometry.monicOrthoFirstCoeff s n +
-                (n + 1 : ℝ) * HTGeometry.monicOrthoAlpha s n ^ 2 +
+                (n + 1 : ℝ) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
                 (n + 1 : ℝ) *
                   (HTGeometry.monicOrthoBeta s n +
                     HTGeometry.monicOrthoBeta s (n + 1))) +
@@ -1133,9 +1133,9 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux
             HTGeometry.monicOrthoAlpha s n *
               (2 * HTGeometry.monicOrthoFirstCoeff s n -
                 ((2 * n + 1 : ℕ) : ℝ) * HTGeometry.monicOrthoAlpha s n)) =
-          -2 * (HTGeometry.monicOrthoFirstCoeff s n ^ 2 -
+          -2 * (HTGeometry.monicOrthoFirstCoeff s n ^ (2 : ℕ) -
               2 * HTGeometry.monicOrthoSecondCoeff s n) -
-            HTGeometry.monicOrthoAlpha s n ^ 2 -
+            HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) -
             2 * (n + 1 : ℝ) *
               (HTGeometry.monicOrthoBeta s n +
                 HTGeometry.monicOrthoBeta s (n + 1)) := by
@@ -1175,7 +1175,7 @@ theorem xiShiftedCanonicalAdmissionCumulativeJacobiDissipation_pos
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
   have hsquares : 0 ≤ ∑ j ∈ Finset.range n,
-      HTGeometry.monicOrthoAlpha s j ^ 2 :=
+      HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n,
       HTGeometry.monicOrthoBeta s j := by
@@ -1238,7 +1238,7 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_canonicalAdmission_eq_ja
       2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
         HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n := by
   have heq := xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho
-    (y := w ^ 2) hH
+    (y := w ^ (2 : ℕ)) hH
   change HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n =
     HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n at heq
   rw [heq]
@@ -1266,7 +1266,7 @@ theorem xiShiftedCompletedMomentAggregate_canonicalAdaptiveOddPacket_eq_jacobiEn
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix (xiShiftedRealMomentSequence w)
       (n + 2)).PosDef) :
-    xiShiftedCompletedMomentAggregate (w ^ 2) 2
+    xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
         (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
           (xiShiftedOddCrossingCoefficientPacket
             (HTGeometry.monicMomentAdmissionPolynomial

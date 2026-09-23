@@ -11,7 +11,7 @@ finite-prime architecture:
 
 * an approximate eigenmode of a contraction has modulus at most its error above one;
 * uniformly bounded reciprocal radial modes over arbitrarily large scales have zero exponent;
-* if reflected prime-clock energy is `o((log N)^2)`, the horizontal displacement tends to zero.
+* if reflected prime-clock energy is `o((log N)^(2 : ℕ))`, the horizontal displacement tends to zero.
 
 The final theorem is the real-variable core of the analytic transfer principle: if holomorphic
 finite-prime approximants converge locally uniformly and their zero fibers have sub-log-square
@@ -75,7 +75,7 @@ namespace RHTower
 open Topology
 
 /-- Quantitative finite-cutoff pinning.  Once the normalized susceptibility is at least `1/4`,
-the squared horizontal displacement is bounded by reflected energy divided by `log(N)^2`. -/
+the squared horizontal displacement is bounded by reflected energy divided by `log(N)^(2 : ℕ)`. -/
 theorem horizontalDisplacement_sq_le_energy_div_log_sq
     (N : ℕ) (epsilon : ℝ) (hN : 2 ≤ N)
     (hsusceptibility :
@@ -97,7 +97,7 @@ theorem horizontalDisplacement_sq_le_energy_div_log_sq
 
 /-- **Cofinal logarithmic boundary transfer.**
 
-If reflected finite-prime energy is `o((log N)^2)`, then the associated horizontal displacement
+If reflected finite-prime energy is `o((log N)^(2 : ℕ))`, then the associated horizontal displacement
 tends to zero.  In an analytic approximation architecture, applying this theorem to approximant
 zeros supplied by locally uniform convergence pins every limiting zero to the critical line. -/
 theorem tendsto_horizontalDisplacement_zero_of_energy_div_log_sq_tendsto_zero

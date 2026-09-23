@@ -53,7 +53,7 @@ theorem fzzCigarParityDilatedFullHermitianRieszOperator_represents
     exact_mod_cast hE
   have hgapC :
       (fzzCigarParityDilatedTwoScaleKreinGap beta : ℂ) =
-        (fzzKreinQAt beta : ℂ) ^ 2 -
+        (fzzKreinQAt beta : ℂ) ^ (2 : ℕ) -
           (fzzKreinPAt beta : ℂ) * (fzzKreinRAt beta : ℂ) := by
     rw [fzzCigarParityDilatedTwoScaleKreinGap]
     push_cast
@@ -133,7 +133,7 @@ def fzzCigarParityDilatedFullHermitianRieszTrace
 /-- Real determinant exposed by `G(A+B)=G A+H`. -/
 def fzzCigarParityDilatedFullHermitianRieszDeterminant
     (beta a b c d : ℝ) : ℝ :=
-  (b ^ 2 + c ^ 2 -
+  (b ^ (2 : ℕ) + c ^ (2 : ℕ) -
       (a - fzzKreinPAt beta * fzzCigarParityDilatedTwoScaleKreinGap beta /
           fzzKreinRAt beta) *
         (d + fzzCigarParityDilatedTwoScaleKreinGap beta)) /
@@ -141,7 +141,7 @@ def fzzCigarParityDilatedFullHermitianRieszDeterminant
 
 def fzzCigarParityDilatedFullHermitianRieszCharacteristicDiscriminant
     (beta a b c d : ℝ) : ℝ :=
-  fzzCigarParityDilatedFullHermitianRieszTrace beta a b d ^ 2 -
+  fzzCigarParityDilatedFullHermitianRieszTrace beta a b d ^ (2 : ℕ) -
     4 * fzzCigarParityDilatedFullHermitianRieszDeterminant beta a b c d
 
 theorem fzzCigarParityDilatedFullHermitianRiesz_trace_eq
@@ -204,7 +204,7 @@ private theorem hc36_twoByTwoComplexEigenvalue_quadratic
     (hv : v ≠ 0)
     (heigen :
       (a * v.1 + b * v.2, c * v.1 + d * v.2) = lambda • v) :
-    lambda ^ 2 - (a + d) * lambda + (a * d - b * c) = 0 := by
+    lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c) = 0 := by
   rcases v with ⟨x, y⟩
   have hfirst := congrArg Prod.fst heigen
   have hsecond := congrArg Prod.snd heigen
@@ -212,16 +212,16 @@ private theorem hc36_twoByTwoComplexEigenvalue_quadratic
   have hfirstZero : a * x + b * y - lambda * x = 0 := sub_eq_zero.mpr hfirst
   have hsecondZero : c * x + d * y - lambda * y = 0 := sub_eq_zero.mpr hsecond
   have hxprod :
-      (lambda ^ 2 - (a + d) * lambda + (a * d - b * c)) * x = 0 := by
+      (lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c)) * x = 0 := by
     calc
-      (lambda ^ 2 - (a + d) * lambda + (a * d - b * c)) * x =
+      (lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c)) * x =
           -((lambda - d) * (a * x + b * y - lambda * x) +
             b * (c * x + d * y - lambda * y)) := by ring
       _ = 0 := by rw [hfirstZero, hsecondZero]; ring
   have hyprod :
-      (lambda ^ 2 - (a + d) * lambda + (a * d - b * c)) * y = 0 := by
+      (lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c)) * y = 0 := by
     calc
-      (lambda ^ 2 - (a + d) * lambda + (a * d - b * c)) * y =
+      (lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c)) * y =
           -(c * (a * x + b * y - lambda * x) +
             (lambda - a) * (c * x + d * y - lambda * y)) := by ring
       _ = 0 := by rw [hfirstZero, hsecondZero]; ring
@@ -235,7 +235,7 @@ private theorem hc36_twoByTwoComplexEigenvalue_quadratic
 
 private theorem hc36_twoByTwoComplex_eigenpair_of_quadratic_root
     {a b c d lambda : ℂ}
-    (hroot : lambda ^ 2 - (a + d) * lambda + (a * d - b * c) = 0) :
+    (hroot : lambda ^ (2 : ℕ) - (a + d) * lambda + (a * d - b * c) = 0) :
     (a * b + b * (lambda - a), c * b + d * (lambda - a)) =
       lambda • (b, lambda - a) := by
   apply Prod.ext
@@ -246,8 +246,8 @@ private theorem hc36_twoByTwoComplex_eigenpair_of_quadratic_root
 
 private theorem hc36_complexQuadraticRoot_eq_star_of_real_discriminant_nonneg
     {T D : ℝ} {lambda : ℂ}
-    (hdisc : 0 ≤ T ^ 2 - 4 * D)
-    (hroot : lambda ^ 2 - (T : ℂ) * lambda + (D : ℂ) = 0) :
+    (hdisc : 0 ≤ T ^ (2 : ℕ) - 4 * D)
+    (hroot : lambda ^ (2 : ℕ) - (T : ℂ) * lambda + (D : ℂ) = 0) :
     lambda = star lambda := by
   have hre := congrArg Complex.re hroot
   have him := congrArg Complex.im hroot
@@ -258,7 +258,7 @@ private theorem hc36_complexQuadraticRoot_eq_star_of_real_discriminant_nonneg
       have hfactor : (2 * lambda.re - T) * lambda.im = 0 := by nlinarith
       have := (mul_eq_zero.mp hfactor).resolve_right hli
       linarith
-    have hdiscEq : T ^ 2 - 4 * D = -4 * lambda.im ^ 2 := by nlinarith
+    have hdiscEq : T ^ (2 : ℕ) - 4 * D = -4 * lambda.im ^ (2 : ℕ) := by nlinarith
     nlinarith [sq_pos_of_ne_zero hli]
 
 theorem fzzCigarParityDilatedFullHermitianRiesz_eigenvalue_characteristic
@@ -267,7 +267,7 @@ theorem fzzCigarParityDilatedFullHermitianRiesz_eigenvalue_characteristic
     (heigen :
       fzzCigarParityDilatedFullHermitianRieszPerturbedKreinOperator beta a b c d v =
         lambda • v) :
-    lambda ^ 2 -
+    lambda ^ (2 : ℕ) -
         (fzzCigarParityDilatedFullHermitianRieszTrace beta a b d : ℂ) * lambda +
         (fzzCigarParityDilatedFullHermitianRieszDeterminant beta a b c d : ℂ) = 0 := by
   rw [fzzCigarParityDilatedFullHermitianRieszPerturbedKreinOperator_matrix] at heigen
@@ -316,7 +316,7 @@ theorem fzzCigarParityDilatedFullHermitianRieszInstabilityEigenvalue_root
     (hdisc :
       fzzCigarParityDilatedFullHermitianRieszCharacteristicDiscriminant
         beta a b c d < 0) :
-    fzzCigarParityDilatedFullHermitianRieszInstabilityEigenvalue beta a b c d ^ 2 -
+    fzzCigarParityDilatedFullHermitianRieszInstabilityEigenvalue beta a b c d ^ (2 : ℕ) -
         (fzzCigarParityDilatedFullHermitianRieszTrace beta a b d : ℂ) *
           fzzCigarParityDilatedFullHermitianRieszInstabilityEigenvalue beta a b c d +
         (fzzCigarParityDilatedFullHermitianRieszDeterminant beta a b c d : ℂ) = 0 := by
@@ -325,9 +325,9 @@ theorem fzzCigarParityDilatedFullHermitianRieszInstabilityEigenvalue_root
   let disc :=
     fzzCigarParityDilatedFullHermitianRieszCharacteristicDiscriminant beta a b c d
   let y := Real.sqrt (-disc) / 2
-  have hdiscEq : disc = T ^ 2 - 4 * D := by rfl
+  have hdiscEq : disc = T ^ (2 : ℕ) - 4 * D := by rfl
   have hnonneg : 0 ≤ -disc := by dsimp [disc]; linarith
-  have hy2 : y ^ 2 = -disc / 4 := by
+  have hy2 : y ^ (2 : ℕ) = -disc / 4 := by
     dsimp [y]
     rw [div_pow, Real.sq_sqrt hnonneg]
     norm_num
@@ -555,8 +555,8 @@ theorem fzzCigarParityDilatedFullHermitianRieszAnnihilatorFourth_ne_zero
 
 theorem fzzCigarParityDilatedFullHermitianRieszAnnihilator_strictCone
     {beta : ℝ} (hbeta : 0 < beta) :
-    (0 : ℝ) ^ 2 + 0 ^ 2 <
-      fzzCigarParityDilatedFullHermitianRieszAnnihilatorFourth beta ^ 2 := by
+    (0 : ℝ) ^ (2 : ℕ) + 0 ^ (2 : ℕ) <
+      fzzCigarParityDilatedFullHermitianRieszAnnihilatorFourth beta ^ (2 : ℕ) := by
   have hE := fzzCigarParityDilatedTwoScaleKreinGap_pos hbeta
   simp [fzzCigarParityDilatedFullHermitianRieszAnnihilatorFourth]
   positivity

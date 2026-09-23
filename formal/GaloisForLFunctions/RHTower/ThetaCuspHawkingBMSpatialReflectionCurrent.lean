@@ -241,7 +241,7 @@ not remove it. This expression includes the original hyperbolic inverse weights.
 def causalCoexactWork (v : ℂ) (q : XiZeroCopy) (s amplitude : ℂ)
     (p r X k : ℝ) : ℂ :=
   let C : ℝ × ℝ → ℂ := fun z => fullNullResponse q s amplitude p r z.1 z.2
-  (Real.exp k:ℂ)^2*dx (scalarLog v) X k*dx C X k+dk (scalarLog v) X k*dk C X k
+  (Real.exp k:ℂ)^(2 : ℕ)*dx (scalarLog v) X k*dx C X k+dk (scalarLog v) X k*dk C X k
 
 theorem causal_coexact_work_reflection (v : ℂ) (q : XiZeroCopy) (s amplitude : ℂ)
     (p r X k : ℝ) :

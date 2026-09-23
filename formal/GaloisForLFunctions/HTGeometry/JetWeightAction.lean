@@ -155,7 +155,7 @@ theorem weightScale_jetDerivation {lam : C} (h : lam ≠ 0) (v : JetField C Unit
       = algebraMap C (JetField C Unit) lam * JetField.jetDerivation (weightScale h v) := by
   have hquot : ∀ x y : JetField C Unit, y ≠ 0 →
       JetField.jetDerivation (x / y)
-        = (JetField.jetDerivation x * y - x * JetField.jetDerivation y) / y ^ 2 := by
+        = (JetField.jetDerivation x * y - x * JetField.jetDerivation y) / y ^ (2 : ℕ) := by
     intro x y hy
     have hl := (JetField.jetDerivation (C := C) (ι := Unit)).leibniz (x / y) y
     simp only [smul_eq_mul] at hl
@@ -195,7 +195,7 @@ theorem weightScale_jetDerivation {lam : C} (h : lam ≠ 0) (v : JetField C Unit
         - weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) a)
           * weightScale h (JetField.jetDerivation
             (algebraMap (JetPoly C Unit) (JetField C Unit) b)))
-        / (weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) b)) ^ 2 := by
+        / (weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) b)) ^ (2 : ℕ) := by
     rw [hquot _ _ hbne, map_div₀, map_sub, map_mul, map_mul, map_pow]
   have hRHS : JetField.jetDerivation (weightScale h
       (algebraMap (JetPoly C Unit) (JetField C Unit) a
@@ -206,7 +206,7 @@ theorem weightScale_jetDerivation {lam : C} (h : lam ≠ 0) (v : JetField C Unit
         - weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) a)
           * JetField.jetDerivation (weightScale h
             (algebraMap (JetPoly C Unit) (JetField C Unit) b)))
-        / (weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) b)) ^ 2 := by
+        / (weightScale h (algebraMap (JetPoly C Unit) (JetField C Unit) b)) ^ (2 : ℕ) := by
     rw [map_div₀]
     exact hquot _ _ hwb
   rw [← hab, hLHS, hRHS, hpoly a, hpoly b]

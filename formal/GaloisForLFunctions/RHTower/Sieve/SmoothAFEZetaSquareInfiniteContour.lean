@@ -47,7 +47,7 @@ theorem smoothAFEZetaSquareMellin_infinite_contour_shift_line
           smoothAFEZetaSquareMellinIntegrand (linePt tau) x
             (((-1 : ℝ) : ℂ) + (v : ℂ) * I)) =
       2 * Real.pi * I *
-        (riemannZeta (linePt tau) ^ 2 +
+        (riemannZeta (linePt tau) ^ (2 : ℕ) +
           confluentResidueCoeff
             (smoothAFEZetaSquarePoleNumerator (linePt tau) x)
             (1 - linePt tau)) := by
@@ -85,7 +85,7 @@ theorem smoothAFEZetaSquareMellin_infinite_contour_shift_line
         I • (∫ v : ℝ in (-T)..T,
           F (((-1 : ℝ) : ℂ) + (v : ℂ) * I)) =
         2 * Real.pi * I *
-          (riemannZeta (linePt tau) ^ 2 +
+          (riemannZeta (linePt tau) ^ (2 : ℕ) +
             confluentResidueCoeff
               (smoothAFEZetaSquarePoleNumerator (linePt tau) x)
               (1 - linePt tau)) := by
@@ -97,13 +97,13 @@ theorem smoothAFEZetaSquareMellin_infinite_contour_shift_line
   have hrhs : Tendsto
       (fun _T : ℝ =>
         2 * Real.pi * I *
-          (riemannZeta (linePt tau) ^ 2 +
+          (riemannZeta (linePt tau) ^ (2 : ℕ) +
             confluentResidueCoeff
               (smoothAFEZetaSquarePoleNumerator (linePt tau) x)
               (1 - linePt tau)))
       atTop
       (𝓝 (2 * Real.pi * I *
-        (riemannZeta (linePt tau) ^ 2 +
+        (riemannZeta (linePt tau) ^ (2 : ℕ) +
           confluentResidueCoeff
             (smoothAFEZetaSquarePoleNumerator (linePt tau) x)
             (1 - linePt tau)))) := tendsto_const_nhds

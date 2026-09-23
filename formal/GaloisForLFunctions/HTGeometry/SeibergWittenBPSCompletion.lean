@@ -22,7 +22,7 @@ namespace GaloisForLFunctions.HTGeometry
 def seibergWittenBPSEnergy
     (F : SeibergWittenCurvature) (psi : SeibergWittenSpinor) : ℝ :=
   ‖(EuclideanSpace.equiv (Fin 2 × Fin 2) ℂ).symm
-    (fun ij => (F - seibergWittenQuadraticMap psi) ij.1 ij.2)‖ ^ 2
+    (fun ij => (F - seibergWittenQuadraticMap psi) ij.1 ij.2)‖ ^ (2 : ℕ)
 
 /-- Topological-charge term of this residual completion; it is zero in the finite pointwise model. -/
 def seibergWittenBPSCharge
@@ -59,7 +59,7 @@ theorem seibergWittenBPSSaturation_iff
     seibergWittenBPSEnergy F psi = seibergWittenBPSCharge F psi ↔
       seibergWittenEquation F psi := by
   change ‖(EuclideanSpace.equiv (Fin 2 × Fin 2) ℂ).symm
-      (fun ij => (F - seibergWittenQuadraticMap psi) ij.1 ij.2)‖ ^ 2 = 0 ↔
+      (fun ij => (F - seibergWittenQuadraticMap psi) ij.1 ij.2)‖ ^ (2 : ℕ) = 0 ↔
     F = seibergWittenQuadraticMap psi
   constructor
   · intro h
@@ -74,7 +74,7 @@ theorem seibergWittenBPSSaturation_iff
   · intro h
     rw [h, sub_self]
     change ‖(EuclideanSpace.equiv (Fin 2 × Fin 2) ℂ).symm
-      (0 : Fin 2 × Fin 2 → ℂ)‖ ^ 2 = 0
+      (0 : Fin 2 × Fin 2 → ℂ)‖ ^ (2 : ℕ) = 0
     simp
 
 /-- The finite BPS energy is invariant under the existing common `U(1)` phase action. -/

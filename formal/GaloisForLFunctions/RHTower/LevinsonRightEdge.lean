@@ -8,7 +8,7 @@ import GaloisForLFunctions.HTGeometry.SegmentArgumentBound
 At abscissa `4` the two elementary bounds `‖ζ-1‖ ≤ 3/16` and `‖ζ'‖ ≤ 3/8` give
 `‖G - 1‖ ≤ 9/16 < 1` for every `‖λ‖ ≤ 1`, so `Re G > 0` on the whole vertical line.  A function
 with positive real part has argument variation at most `π`, so the right edge of the rectangle
-contributes `O(1)`, and passing to the entire detector `G♯ = (s-1)^2 G` only adds the explicit
+contributes `O(1)`, and passing to the entire detector `G♯ = (s-1)^(2 : ℕ) G` only adds the explicit
 rational term `2/(s-1)`.
 -/
 

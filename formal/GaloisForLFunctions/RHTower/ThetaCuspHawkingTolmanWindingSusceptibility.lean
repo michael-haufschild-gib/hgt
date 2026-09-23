@@ -8,12 +8,12 @@ zeta or Xi identity.  In Euclidean Rindler coordinates, smoothness at the horizo
 thermal-circle period by `beta * kappa = 2*pi`.  An `m`-winding worldsheet sector at fixed
 proper time therefore carries the dimensionless Gaussian profile
 
-`W_m(Theta) = exp (-pi * (m / Theta)^2)`,
+`W_m(Theta) = exp (-pi * (m / Theta)^(2 : ℕ))`,
 
 where `Theta` is local Tolman temperature and `1 / Theta` is proper thermal-circle radius.
 The scaled second temperature response is exactly
 
-`Theta^2 * d^2 W_m / dTheta^2 = thetaCuspSeed (m / Theta)`.
+`Theta^(2 : ℕ) * d^(2 : ℕ) W_m / dTheta^(2 : ℕ) = thetaCuspSeed (m / Theta)`.
 
 Worldsheet proper time and `alpha'` have been absorbed into the dimensionless radius.  We retain
 one winding orientation: the zero-winding response vanishes, while adjoining the opposite
@@ -22,7 +22,7 @@ orientation doubles every nonzero term and hence changes no Fourier zero.
 Thus the polynomial multiplying the theta Gaussian is not a KMS ansatz: it is the literal
 local-temperature susceptibility of the Hawking winding gas.  Removing the Rindler
 `sqrt(G_00)` measure gives the half-line thermal-scalar operator and its singular
-`-1/(4*rho^2)` horizon potential.  The subsequent unitary change to logarithmic redshift
+`-1/(4*rho^(2 : ℕ))` horizon potential.  The subsequent unitary change to logarithmic redshift
 `x = log (1 / Theta)` supplies the half-density `exp(x/2)`.  The result is exactly
 `thetaCuspSourceTerm`; summing all windings gives `thetaCuspFullSource`.
 
@@ -61,13 +61,13 @@ def thetaCuspHawkingTolmanWindingProfile (m Theta : ℝ) : ℝ :=
 
 /-- Closed first Tolman-temperature response of one winding sector. -/
 def thetaCuspHawkingTolmanWindingSlope (m Theta : ℝ) : ℝ :=
-  2 * Real.pi * m ^ 2 / Theta ^ 3 *
+  2 * Real.pi * m ^ (2 : ℕ) / Theta ^ (3 : ℕ) *
     thetaCuspHawkingTolmanWindingProfile m Theta
 
 /-- Closed second Tolman-temperature response of one winding sector. -/
 def thetaCuspHawkingTolmanWindingCurvature (m Theta : ℝ) : ℝ :=
-  (4 * Real.pi ^ 2 * m ^ 4 / Theta ^ 6 -
-      6 * Real.pi * m ^ 2 / Theta ^ 4) *
+  (4 * Real.pi ^ (2 : ℕ) * m ^ (4 : ℕ) / Theta ^ (6 : ℕ) -
+      6 * Real.pi * m ^ (2 : ℕ) / Theta ^ (4 : ℕ)) *
     thetaCuspHawkingTolmanWindingProfile m Theta
 
 theorem hasDerivAt_thetaCuspHawkingTolmanWindingProfile
@@ -75,7 +75,7 @@ theorem hasDerivAt_thetaCuspHawkingTolmanWindingProfile
     HasDerivAt (thetaCuspHawkingTolmanWindingProfile m)
       (thetaCuspHawkingTolmanWindingSlope m Theta) Theta := by
   have hquot : HasDerivAt (fun T : ℝ => m / T)
-      ((0 * Theta - m * 1) / Theta ^ 2) Theta :=
+      ((0 * Theta - m * 1) / Theta ^ (2 : ℕ)) Theta :=
     (hasDerivAt_const Theta m).div (hasDerivAt_id Theta) hTheta
   have hcomp := (hasDerivAt_thetaCuspGaussian (m / Theta)).comp Theta hquot
   change HasDerivAt (fun T : ℝ => thetaCuspGaussian (m / T)) _ Theta at hcomp
@@ -96,16 +96,16 @@ theorem hasDerivAt_thetaCuspHawkingTolmanWindingSlope
     {m Theta : ℝ} (hTheta : Theta ≠ 0) :
     HasDerivAt (thetaCuspHawkingTolmanWindingSlope m)
       (thetaCuspHawkingTolmanWindingCurvature m Theta) Theta := by
-  have hden : HasDerivAt (fun T : ℝ => T ^ 3) (3 * Theta ^ 2) Theta := by
+  have hden : HasDerivAt (fun T : ℝ => T ^ (3 : ℕ)) (3 * Theta ^ (2 : ℕ)) Theta := by
     simpa using hasDerivAt_pow 3 Theta
-  have hcoef : HasDerivAt (fun T : ℝ => 2 * Real.pi * m ^ 2 / T ^ 3)
-      ((0 * Theta ^ 3 - (2 * Real.pi * m ^ 2) * (3 * Theta ^ 2)) /
-        (Theta ^ 3) ^ 2) Theta :=
-    (hasDerivAt_const Theta (2 * Real.pi * m ^ 2)).div hden (pow_ne_zero 3 hTheta)
+  have hcoef : HasDerivAt (fun T : ℝ => 2 * Real.pi * m ^ (2 : ℕ) / T ^ (3 : ℕ))
+      ((0 * Theta ^ (3 : ℕ) - (2 * Real.pi * m ^ (2 : ℕ)) * (3 * Theta ^ (2 : ℕ))) /
+        (Theta ^ (3 : ℕ)) ^ (2 : ℕ)) Theta :=
+    (hasDerivAt_const Theta (2 * Real.pi * m ^ (2 : ℕ))).div hden (pow_ne_zero 3 hTheta)
   have hprod := hcoef.mul
     (hasDerivAt_thetaCuspHawkingTolmanWindingProfile (m := m) hTheta)
   change HasDerivAt
-    (fun T : ℝ => (2 * Real.pi * m ^ 2 / T ^ 3) *
+    (fun T : ℝ => (2 * Real.pi * m ^ (2 : ℕ) / T ^ (3 : ℕ)) *
       thetaCuspHawkingTolmanWindingProfile m T) _ Theta at hprod
   change HasDerivAt (thetaCuspHawkingTolmanWindingSlope m) _ Theta
   apply hprod.congr_deriv
@@ -137,7 +137,7 @@ theorem deriv_deriv_thetaCuspHawkingTolmanWindingProfile
 
 /-- Scaled local-temperature susceptibility of one Hawking winding sector. -/
 def thetaCuspHawkingTolmanWindingSusceptibility (m Theta : ℝ) : ℝ :=
-  Theta ^ 2 * deriv (deriv (thetaCuspHawkingTolmanWindingProfile m)) Theta
+  Theta ^ (2 : ℕ) * deriv (deriv (thetaCuspHawkingTolmanWindingProfile m)) Theta
 
 /-- Exact Hawking--Tolman origin of the theta-cusp polynomial Gaussian. -/
 theorem thetaCuspHawkingTolmanWindingSusceptibility_eq_thetaCuspSeed
@@ -151,7 +151,7 @@ theorem thetaCuspHawkingTolmanWindingSusceptibility_eq_thetaCuspSeed
   field_simp [hTheta]
   ring
 
-/-- Same response written as the exact scaling Hamiltonian `D^2 + D`. -/
+/-- Same response written as the exact scaling Hamiltonian `D^(2 : ℕ) + D`. -/
 theorem thetaCuspHawkingTolmanWindingSusceptibility_eq_multiplicativeDeriv
     {m Theta : ℝ} (hTheta : Theta ≠ 0) :
     thetaCuspHawkingTolmanWindingSusceptibility m Theta =
@@ -193,13 +193,13 @@ theorem thetaCuspHawkingTolmanFullWindingSource_eq_thetaCuspFullSource (x : ℝ)
   exact thetaCuspHawkingTolmanWindingSourceTerm_eq_thetaCuspSourceTerm x
 
 /-- The polynomial Gaussian has an unavoidable negative Tolman-response chamber. -/
-theorem thetaCuspSeed_neg {t : ℝ} (ht0 : t ≠ 0)
-    (ht : 2 * Real.pi * t ^ 2 < 3) :
+theorem thetaCuspSeed_neg_thetaCuspHawkingTolmanWindingSusceptibility {t : ℝ} (ht0 : t ≠ 0)
+    (ht : 2 * Real.pi * t ^ (2 : ℕ) < 3) :
     thetaCuspSeed t < 0 := by
-  have ht2 : 0 < t ^ 2 := sq_pos_of_ne_zero ht0
-  have hpoly : 2 * Real.pi * t ^ 4 - 3 * t ^ 2 < 0 := by
-    rw [show 2 * Real.pi * t ^ 4 - 3 * t ^ 2 =
-      t ^ 2 * (2 * Real.pi * t ^ 2 - 3) by ring]
+  have ht2 : 0 < t ^ (2 : ℕ) := sq_pos_of_ne_zero ht0
+  have hpoly : 2 * Real.pi * t ^ (4 : ℕ) - 3 * t ^ (2 : ℕ) < 0 := by
+    rw [show 2 * Real.pi * t ^ (4 : ℕ) - 3 * t ^ (2 : ℕ) =
+      t ^ (2 : ℕ) * (2 * Real.pi * t ^ (2 : ℕ) - 3) by ring]
     exact mul_neg_of_pos_of_neg ht2 (sub_neg.mpr ht)
   rw [thetaCuspSeed]
   exact mul_neg_of_neg_of_pos
@@ -210,9 +210,9 @@ theorem thetaCuspSeed_neg {t : ℝ} (ht0 : t ≠ 0)
 make this statement disappear. -/
 theorem thetaCuspHawkingTolmanWindingSusceptibility_neg
     {m Theta : ℝ} (hTheta : Theta ≠ 0) (hscale : m / Theta ≠ 0)
-    (hchamber : 2 * Real.pi * (m / Theta) ^ 2 < 3) :
+    (hchamber : 2 * Real.pi * (m / Theta) ^ (2 : ℕ) < 3) :
     thetaCuspHawkingTolmanWindingSusceptibility m Theta < 0 := by
   rw [thetaCuspHawkingTolmanWindingSusceptibility_eq_thetaCuspSeed hTheta]
-  exact thetaCuspSeed_neg hscale hchamber
+  exact thetaCuspSeed_neg_thetaCuspHawkingTolmanWindingSusceptibility hscale hchamber
 
 end RHTower

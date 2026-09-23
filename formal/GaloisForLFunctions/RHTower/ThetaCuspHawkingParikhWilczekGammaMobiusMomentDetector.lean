@@ -21,14 +21,14 @@ def pwGammaMobiusReciprocalNormalizedMoment (z : ℂ) (k : ℕ) : ℂ :=
   ∑' n, pwGammaMobiusReciprocalNormalizedMomentAtom z k n
 
 private theorem pwGammaMomentSeries_inv_square_summable :
-    Summable (fun n : ℕ => (1:ℝ)/((n:ℝ)+1)^2) := by
+    Summable (fun n : ℕ => (1:ℝ)/((n:ℝ)+1)^(2 : ℕ)) := by
   have ht := (Real.summable_one_div_nat_pow.mpr one_lt_two).comp_injective Nat.succ_injective
   simpa only [Function.comp_def, Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one] using ht
 
 theorem pwGammaMobiusReciprocalMomentAtom_norm_bound {N : ℕ} {z : ℂ}
     (hz : ‖z‖≤(N:ℝ)) (k n : ℕ) :
     ‖pwGammaMobiusReciprocalMomentAtom z k n‖ ≤
-      (2^(N+1)*((k+3+N).factorial:ℝ)*(N.factorial:ℝ))*(1/((n:ℝ)+1)^2) := by
+      (2^(N+1)*((k+3+N).factorial:ℝ)*(N.factorial:ℝ))*(1/((n:ℝ)+1)^(2 : ℕ)) := by
   have ha : (0:ℝ)<(n:ℝ)+1 := by positivity
   have ha1 : (1:ℝ)≤(n:ℝ)+1 := by linarith [Nat.cast_nonneg (α:=ℝ) n]
   rw [pwGammaMobiusReciprocalMomentAtom, norm_mul, Complex.norm_real,
@@ -83,7 +83,7 @@ theorem pwGammaMobiusReciprocalNormalizedMomentAtom_summable (z : ℂ) (k : ℕ)
 theorem pwGammaMobiusReciprocalNormalizedMomentAtom_norm_bound {N : ℕ} {z : ℂ}
     (hz : ‖z‖≤(N:ℝ)) {k : ℕ} (hk : N+1≤k) (n : ℕ) :
     ‖pwGammaMobiusReciprocalNormalizedMomentAtom z k n‖ ≤
-      2^(N+1)*(1/((n:ℝ)+1)^2) := by
+      2^(N+1)*(1/((n:ℝ)+1)^(2 : ℕ)) := by
   have ha : (0:ℝ)<(n:ℝ)+1 := by positivity
   have ha1 : (1:ℝ)≤(n:ℝ)+1 := by linarith [Nat.cast_nonneg (α:=ℝ) n]
   have hI := (pwGammaReciprocalMomentRatio_pos k ha).le
@@ -148,7 +148,7 @@ theorem pwGammaMobiusReciprocalNormalizedMoment_tendsto (z : ℂ) :
     (pwGammaMomentSeries_inv_square_summable.mul_left (2^(N+1)))
     (pwGammaMobiusReciprocalNormalizedMomentAtom_tendsto z)
     (show ∀ᶠ k : ℕ in atTop, ∀ n : ℕ,
-      ‖pwGammaMobiusReciprocalNormalizedMomentAtom z k n‖≤2^(N+1)*(1/((n:ℝ)+1)^2) from by
+      ‖pwGammaMobiusReciprocalNormalizedMomentAtom z k n‖≤2^(N+1)*(1/((n:ℝ)+1)^(2 : ℕ)) from by
         filter_upwards [eventually_ge_atTop (N+1)] with k hk n
         exact pwGammaMobiusReciprocalNormalizedMomentAtom_norm_bound hN hk n)
   change Tendsto (fun k => ∑' n, pwGammaMobiusReciprocalNormalizedMomentAtom z k n) atTop _

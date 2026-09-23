@@ -29,7 +29,7 @@ open Set
 namespace GaloisForLFunctions.HTGeometry
 
 /-- The Sturm amplitude at scale `K`: the solution squared plus the scaled flux squared. -/
-def sturmAmplitude (p R DR : ℝ → ℝ) (K : ℝ) (y : ℝ) : ℝ := R y ^ 2 + (p y * DR y) ^ 2 / K
+def sturmAmplitude (p R DR : ℝ → ℝ) (K : ℝ) (y : ℝ) : ℝ := R y ^ (2 : ℕ) + (p y * DR y) ^ (2 : ℕ) / K
 
 theorem sturmAmplitude_nonneg {p R DR : ℝ → ℝ} {K y : ℝ} (hK : 0 < K) :
     0 ≤ sturmAmplitude p R DR K y := by
@@ -42,11 +42,11 @@ theorem hasDerivAt_sturmAmplitude {p Q R DR : ℝ → ℝ} {K y : ℝ} (hK : K �
     (hflux : HasDerivAt (fun t => p t * DR t) (-(Q y * R y)) y) :
     HasDerivAt (sturmAmplitude p R DR K)
       (2 * R y * (p y * DR y) * (1 / p y - Q y / K)) y := by
-  have h1 : HasDerivAt (fun t => R t ^ 2) (2 * R y * DR y) y := by
+  have h1 : HasDerivAt (fun t => R t ^ (2 : ℕ)) (2 * R y * DR y) y := by
     have := hR.pow 2
     refine this.congr_deriv ?_
     ring
-  have h2 : HasDerivAt (fun t => (p t * DR t) ^ 2 / K)
+  have h2 : HasDerivAt (fun t => (p t * DR t) ^ (2 : ℕ) / K)
       (2 * (p y * DR y) * (-(Q y * R y)) / K) y := by
     have := (hflux.pow 2).div_const K
     refine this.congr_deriv ?_
@@ -62,8 +62,8 @@ theorem abs_two_mul_le_sqrt_mul_sturmAmplitude {p R DR : ℝ → ℝ} {K y : ℝ
   obtain ⟨S, hS0, hSK, hSeq⟩ : ∃ S : ℝ, 0 < S ∧ S * S = K ∧ Real.sqrt K = S :=
     ⟨Real.sqrt K, Real.sqrt_pos.2 hK, Real.mul_self_sqrt hK.le, rfl⟩
   rw [hSeq, sturmAmplitude, ← hSK]
-  have hval : S * (R y ^ 2 + (p y * DR y) ^ 2 / (S * S))
-      = (S ^ 2 * R y ^ 2 + (p y * DR y) ^ 2) / S := by
+  have hval : S * (R y ^ (2 : ℕ) + (p y * DR y) ^ (2 : ℕ) / (S * S))
+      = (S ^ (2 : ℕ) * R y ^ (2 : ℕ) + (p y * DR y) ^ (2 : ℕ)) / S := by
     field_simp
   rw [hval, abs_le]
   refine ⟨?_, ?_⟩
@@ -228,7 +228,7 @@ that is one power of the scale ratio, whereas a constant scale would pay the ful
 -/
 
 /-- The Sturm amplitude at a scale that varies along the interval. -/
-def sturmAmplitudeVar (p R DR K : ℝ → ℝ) (y : ℝ) : ℝ := R y ^ 2 + (p y * DR y) ^ 2 / K y
+def sturmAmplitudeVar (p R DR K : ℝ → ℝ) (y : ℝ) : ℝ := R y ^ (2 : ℕ) + (p y * DR y) ^ (2 : ℕ) / K y
 
 theorem sturmAmplitudeVar_eq (p R DR K : ℝ → ℝ) (y : ℝ) :
     sturmAmplitudeVar p R DR K y = sturmAmplitude p R DR (K y) y := rfl
@@ -237,13 +237,13 @@ theorem sturmAmplitudeVar_nonneg {p R DR K : ℝ → ℝ} {y : ℝ} (hK : 0 < K 
     0 ≤ sturmAmplitudeVar p R DR K y := sturmAmplitude_nonneg hK
 
 theorem sq_le_sturmAmplitudeVar {p R DR K : ℝ → ℝ} {y : ℝ} (hK : 0 < K y) :
-    R y ^ 2 ≤ sturmAmplitudeVar p R DR K y := by
+    R y ^ (2 : ℕ) ≤ sturmAmplitudeVar p R DR K y := by
   rw [sturmAmplitudeVar]
-  have : 0 ≤ (p y * DR y) ^ 2 / K y := by positivity
+  have : 0 ≤ (p y * DR y) ^ (2 : ℕ) / K y := by positivity
   linarith
 
 theorem flux_sq_div_le_sturmAmplitudeVar {p R DR K : ℝ → ℝ} {y : ℝ} :
-    (p y * DR y) ^ 2 / K y ≤ sturmAmplitudeVar p R DR K y := by
+    (p y * DR y) ^ (2 : ℕ) / K y ≤ sturmAmplitudeVar p R DR K y := by
   rw [sturmAmplitudeVar]
   nlinarith [sq_nonneg (R y)]
 
@@ -255,14 +255,14 @@ theorem hasDerivAt_sturmAmplitudeVar {p Q R DR K DK : ℝ → ℝ} {y : ℝ}
     (hKd : HasDerivAt K (DK y) y) :
     HasDerivAt (sturmAmplitudeVar p R DR K)
       (2 * R y * (p y * DR y) * (1 / p y - Q y / K y)
-        - (p y * DR y) ^ 2 * DK y / K y ^ 2) y := by
-  have h1 : HasDerivAt (fun t => R t ^ 2) (2 * R y * DR y) y := by
+        - (p y * DR y) ^ (2 : ℕ) * DK y / K y ^ (2 : ℕ)) y := by
+  have h1 : HasDerivAt (fun t => R t ^ (2 : ℕ)) (2 * R y * DR y) y := by
     have := hR.pow 2
     refine this.congr_deriv ?_
     ring
-  have h2 : HasDerivAt (fun t => (p t * DR t) ^ 2 / K t)
-      ((2 * (p y * DR y) * (-(Q y * R y)) * K y - (p y * DR y) ^ 2 * DK y) / K y ^ 2) y := by
-    have hnum : HasDerivAt (fun t => (p t * DR t) ^ 2) (2 * (p y * DR y) * (-(Q y * R y))) y := by
+  have h2 : HasDerivAt (fun t => (p t * DR t) ^ (2 : ℕ) / K t)
+      ((2 * (p y * DR y) * (-(Q y * R y)) * K y - (p y * DR y) ^ (2 : ℕ) * DK y) / K y ^ (2 : ℕ)) y := by
+    have hnum : HasDerivAt (fun t => (p t * DR t) ^ (2 : ℕ)) (2 * (p y * DR y) * (-(Q y * R y))) y := by
       have := hflux.pow 2
       refine this.congr_deriv ?_
       ring
@@ -276,13 +276,13 @@ theorem hasDerivAt_sturmAmplitudeVar {p Q R DR K DK : ℝ → ℝ} {y : ℝ}
 logarithmic variation of the scale. -/
 theorem abs_deriv_sturmAmplitudeVar_le {p Q R DR K DK : ℝ → ℝ} {y : ℝ} (hK : 0 < K y) :
     |2 * R y * (p y * DR y) * (1 / p y - Q y / K y)
-        - (p y * DR y) ^ 2 * DK y / K y ^ 2|
+        - (p y * DR y) ^ (2 : ℕ) * DK y / K y ^ (2 : ℕ)|
       ≤ (Real.sqrt (K y) * |1 / p y - Q y / K y| + |DK y| / K y)
           * sturmAmplitudeVar p R DR K y := by
   have hGnn : 0 ≤ sturmAmplitudeVar p R DR K y := sturmAmplitudeVar_nonneg hK
   have hcross : |2 * R y * (p y * DR y)| ≤ Real.sqrt (K y) * sturmAmplitudeVar p R DR K y :=
     abs_two_mul_le_sqrt_mul_sturmAmplitude hK
-  have hflux : (p y * DR y) ^ 2 / K y ≤ sturmAmplitudeVar p R DR K y :=
+  have hflux : (p y * DR y) ^ (2 : ℕ) / K y ≤ sturmAmplitudeVar p R DR K y :=
     flux_sq_div_le_sturmAmplitudeVar
   have hterm1 : |2 * R y * (p y * DR y) * (1 / p y - Q y / K y)|
       ≤ Real.sqrt (K y) * |1 / p y - Q y / K y| * sturmAmplitudeVar p R DR K y := by
@@ -291,21 +291,21 @@ theorem abs_deriv_sturmAmplitudeVar_le {p Q R DR K DK : ℝ → ℝ} {y : ℝ} (
         ≤ (Real.sqrt (K y) * sturmAmplitudeVar p R DR K y) * |1 / p y - Q y / K y| :=
           mul_le_mul_of_nonneg_right hcross (abs_nonneg _)
       _ = Real.sqrt (K y) * |1 / p y - Q y / K y| * sturmAmplitudeVar p R DR K y := by ring
-  have hterm2 : |(p y * DR y) ^ 2 * DK y / K y ^ 2|
+  have hterm2 : |(p y * DR y) ^ (2 : ℕ) * DK y / K y ^ (2 : ℕ)|
       ≤ |DK y| / K y * sturmAmplitudeVar p R DR K y := by
-    have hval : (p y * DR y) ^ 2 * DK y / K y ^ 2 = ((p y * DR y) ^ 2 / K y) * (DK y / K y) := by
+    have hval : (p y * DR y) ^ (2 : ℕ) * DK y / K y ^ (2 : ℕ) = ((p y * DR y) ^ (2 : ℕ) / K y) * (DK y / K y) := by
       field_simp
     have hDK : |DK y / K y| = |DK y| / K y := by
       rw [abs_div, abs_of_pos hK]
-    rw [hval, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ (p y * DR y) ^ 2 / K y), hDK]
-    calc (p y * DR y) ^ 2 / K y * (|DK y| / K y)
+    rw [hval, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ (p y * DR y) ^ (2 : ℕ) / K y), hDK]
+    calc (p y * DR y) ^ (2 : ℕ) / K y * (|DK y| / K y)
         ≤ sturmAmplitudeVar p R DR K y * (|DK y| / K y) :=
           mul_le_mul_of_nonneg_right hflux (by positivity)
       _ = |DK y| / K y * sturmAmplitudeVar p R DR K y := by ring
   calc |2 * R y * (p y * DR y) * (1 / p y - Q y / K y)
-          - (p y * DR y) ^ 2 * DK y / K y ^ 2|
+          - (p y * DR y) ^ (2 : ℕ) * DK y / K y ^ (2 : ℕ)|
       ≤ |2 * R y * (p y * DR y) * (1 / p y - Q y / K y)|
-          + |(p y * DR y) ^ 2 * DK y / K y ^ 2| := abs_sub _ _
+          + |(p y * DR y) ^ (2 : ℕ) * DK y / K y ^ (2 : ℕ)| := abs_sub _ _
     _ ≤ Real.sqrt (K y) * |1 / p y - Q y / K y| * sturmAmplitudeVar p R DR K y
           + |DK y| / K y * sturmAmplitudeVar p R DR K y := by linarith
     _ = (Real.sqrt (K y) * |1 / p y - Q y / K y| + |DK y| / K y)
@@ -329,7 +329,7 @@ theorem sturmAmplitudeVar_envelope {p Q R DR K DK m : ℝ → ℝ} {a b : ℝ} (
         ≤ sturmAmplitudeVar p R DR K a * Real.exp (∫ t in a..b, m t) := by
   set G : ℝ → ℝ := sturmAmplitudeVar p R DR K with hGdef
   set G' : ℝ → ℝ := fun y => 2 * R y * (p y * DR y) * (1 / p y - Q y / K y)
-    - (p y * DR y) ^ 2 * DK y / K y ^ 2 with hG'def
+    - (p y * DR y) ^ (2 : ℕ) * DK y / K y ^ (2 : ℕ) with hG'def
   have hGd : ∀ y ∈ Icc a b, HasDerivAt G (G' y) y := fun y hy =>
     hasDerivAt_sturmAmplitudeVar (Q := Q) (hKpos y hy).ne' (hp y hy) (hR y hy) (hfluxd y hy)
       (hKd y hy)

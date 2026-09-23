@@ -21,12 +21,12 @@ def egbCouplingConjugateA (P Q a l r : ℝ) : ℝ :=
 def egbCouplingConjugateB (r : ℝ) : ℝ := 1 / (2 * r)
 
 /-- Auxiliary work coefficient for changing the entropy's log reference length. -/
-def egbReferenceConjugateA (P Q a r : ℝ) : ℝ := 4 * Real.pi * a ^ 2 * egbTemperatureA P Q a r
+def egbReferenceConjugateA (P Q a r : ℝ) : ℝ := 4 * Real.pi * a ^ (2 : ℕ) * egbTemperatureA P Q a r
 
 theorem egbMass_charge_derivative (P Q a x : ℝ) :
     HasDerivAt (fun q => egbMass P q a (exp x)) (egbElectricPotential Q (exp x)) Q := by
-  have h := (((((hasDerivAt_id Q).pow 2).add_const (a ^ 2)).div_const (2 * exp x)).const_add (exp x / 2)).add_const
-    (4 * Real.pi * P * exp x ^ 3 / 3)
+  have h := (((((hasDerivAt_id Q).pow 2).add_const (a ^ (2 : ℕ))).div_const (2 * exp x)).const_add (exp x / 2)).add_const
+    (4 * Real.pi * P * exp x ^ (3 : ℕ) / 3)
   apply h.congr_deriv
   unfold egbElectricPotential
   norm_num only [Nat.cast_ofNat, pow_one, id_eq]
@@ -34,8 +34,8 @@ theorem egbMass_charge_derivative (P Q a x : ℝ) :
 
 theorem egbMass_coupling_derivative (P Q a x : ℝ) :
     HasDerivAt (fun b => egbMass P Q b (exp x)) (a / exp x) a := by
-  have h := (((((hasDerivAt_id a).pow 2).const_add (Q ^ 2)).div_const (2 * exp x)).const_add (exp x / 2)).add_const
-    (4 * Real.pi * P * exp x ^ 3 / 3)
+  have h := (((((hasDerivAt_id a).pow 2).const_add (Q ^ (2 : ℕ))).div_const (2 * exp x)).const_add (exp x / 2)).add_const
+    (4 * Real.pi * P * exp x ^ (3 : ℕ) / 3)
   apply h.congr_deriv
   norm_num only [Nat.cast_ofNat, pow_one, id_eq]
   field_simp
@@ -44,20 +44,20 @@ theorem egbEntropyA_coupling_derivative (a l x : ℝ) :
     HasDerivAt (fun b => egbEntropyA b l (exp x))
       (8 * Real.pi * a * log (exp x / exp l)) a := by
   have h := ((((hasDerivAt_id a).pow 2).const_mul (4 * Real.pi)).mul_const (log (exp x / exp l))).const_add
-    (Real.pi * exp x ^ 2)
+    (Real.pi * exp x ^ (2 : ℕ))
   apply h.congr_deriv
   norm_num only [Nat.cast_ofNat, pow_one, id_eq]
   ring
 
 /-- The scale derivative is computed from the logarithm, rather than postulated as a gauge rule. -/
 theorem egbEntropyA_reference_derivative (a l x : ℝ) :
-    HasDerivAt (fun c => egbEntropyA a c (exp x)) (-4 * Real.pi * a ^ 2) l := by
+    HasDerivAt (fun c => egbEntropyA a c (exp x)) (-4 * Real.pi * a ^ (2 : ℕ)) l := by
   have he : (fun c => egbEntropyA a c (exp x)) =
-      (fun c => Real.pi * exp x ^ 2 + 4 * Real.pi * a ^ 2 * (x - c)) := by
+      (fun c => Real.pi * exp x ^ (2 : ℕ) + 4 * Real.pi * a ^ (2 : ℕ) * (x - c)) := by
     funext c
     simp only [egbEntropyA, log_div (exp_ne_zero _) (exp_ne_zero _), log_exp]
   rw [he]
-  have h := (((hasDerivAt_id l).const_sub x).const_mul (4 * Real.pi * a ^ 2)).const_add (Real.pi * exp x ^ 2)
+  have h := (((hasDerivAt_id l).const_sub x).const_mul (4 * Real.pi * a ^ (2 : ℕ))).const_add (Real.pi * exp x ^ (2 : ℕ))
   apply h.congr_deriv
   ring
 

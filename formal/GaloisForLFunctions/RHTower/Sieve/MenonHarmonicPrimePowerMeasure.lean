@@ -54,36 +54,36 @@ theorem sum_normSq_harmonicPrimeBlockCoeff_le
     {B : Finset ℕ} {N : ℕ} {q : ℝ}
     (hB : B ⊆ Finset.Icc 1 N) (hBprime : ∀ p ∈ B, p.Prime)
     (hq : 0 < q) (hlower : ∀ p ∈ B, q < (p : ℝ)) :
-    ∑ n : Fin N, ‖restrictCoeff B harmonicMoebiusC ((n : ℕ) + 1)‖ ^ 2
-      ≤ (B.card : ℝ) / q ^ 2 := by
+    ∑ n : Fin N, ‖restrictCoeff B harmonicMoebiusC ((n : ℕ) + 1)‖ ^ (2 : ℕ)
+      ≤ (B.card : ℝ) / q ^ (2 : ℕ) := by
   rw [show
-    (∑ n : Fin N, ‖restrictCoeff B harmonicMoebiusC ((n : ℕ) + 1)‖ ^ 2) =
-      ∑ k ∈ Finset.Icc 1 N, ‖restrictCoeff B harmonicMoebiusC k‖ ^ 2 from
+    (∑ n : Fin N, ‖restrictCoeff B harmonicMoebiusC ((n : ℕ) + 1)‖ ^ (2 : ℕ)) =
+      ∑ k ∈ Finset.Icc 1 N, ‖restrictCoeff B harmonicMoebiusC k‖ ^ (2 : ℕ) from
         sum_fin_eq_sum_Icc N
-          (fun k => ‖restrictCoeff B harmonicMoebiusC k‖ ^ 2)]
+          (fun k => ‖restrictCoeff B harmonicMoebiusC k‖ ^ (2 : ℕ))]
   have hsum :
-      ∑ k ∈ Finset.Icc 1 N, ‖restrictCoeff B harmonicMoebiusC k‖ ^ 2 =
-        ∑ k ∈ B, ‖harmonicMoebiusC k‖ ^ 2 := by
+      ∑ k ∈ Finset.Icc 1 N, ‖restrictCoeff B harmonicMoebiusC k‖ ^ (2 : ℕ) =
+        ∑ k ∈ B, ‖harmonicMoebiusC k‖ ^ (2 : ℕ) := by
     calc
-      ∑ k ∈ Finset.Icc 1 N, ‖restrictCoeff B harmonicMoebiusC k‖ ^ 2 =
-          ∑ k ∈ B, ‖restrictCoeff B harmonicMoebiusC k‖ ^ 2 := by
+      ∑ k ∈ Finset.Icc 1 N, ‖restrictCoeff B harmonicMoebiusC k‖ ^ (2 : ℕ) =
+          ∑ k ∈ B, ‖restrictCoeff B harmonicMoebiusC k‖ ^ (2 : ℕ) := by
             symm
             exact Finset.sum_subset hB (by
               intro k hkIcc hkB
               simp [restrictCoeff, hkB])
-      _ = ∑ k ∈ B, ‖harmonicMoebiusC k‖ ^ 2 := by
+      _ = ∑ k ∈ B, ‖harmonicMoebiusC k‖ ^ (2 : ℕ) := by
         refine Finset.sum_congr rfl fun k hk => ?_
         simp [restrictCoeff, hk]
   rw [hsum]
   calc
-    ∑ k ∈ B, ‖harmonicMoebiusC k‖ ^ 2
-        = ∑ k ∈ B, (1 / (k : ℝ)) ^ 2 := by
+    ∑ k ∈ B, ‖harmonicMoebiusC k‖ ^ (2 : ℕ)
+        = ∑ k ∈ B, (1 / (k : ℝ)) ^ (2 : ℕ) := by
           refine Finset.sum_congr rfl fun k hk => ?_
           rw [norm_harmonicMoebiusC_prime (hBprime k hk)]
-    _ ≤ ∑ _k ∈ B, (1 / q) ^ 2 := by
+    _ ≤ ∑ _k ∈ B, (1 / q) ^ (2 : ℕ) := by
       gcongr with k hk
       exact (hlower k hk).le
-    _ = (B.card : ℝ) / q ^ 2 := by
+    _ = (B.card : ℝ) / q ^ (2 : ℕ) := by
       simp [Finset.sum_const, div_eq_mul_inv]
 
 /-- The adapted `2k`-th-moment bound for the actual harmonic prime block, in Menon's reflected
@@ -98,7 +98,7 @@ theorem volume_harmonicPrimeBlock_largeValues_pow_le
           V ≤ ‖harmonicPrimeBlockPoly B (-x / (2 * Real.pi))‖} ≤
       2 * ((T + 4 * ((N ^ k : ℕ) : ℝ) *
               (1 + Real.log ((N ^ k : ℕ) : ℝ))) *
-        ((k : ℝ) ^ k * ((B.card : ℝ) / q ^ 2) ^ k)) := by
+        ((k : ℝ) ^ k * ((B.card : ℝ) / q ^ (2 : ℕ)) ^ k)) := by
   let c : Fin N → ℂ :=
     fun n => restrictCoeff B harmonicMoebiusC ((n : ℕ) + 1)
   let cstar : Fin N → ℂ := fun n => (starRingEnd ℂ) (c n)
@@ -135,7 +135,7 @@ theorem volume_harmonicPrimeBlock_largeValues_pow_le
   have hbase := volume_largeValues_pow_symm_le_of_prime_support
     k N hk cstar hsupp hT hV
   refine hbase.trans ?_
-  have henergy : ∑ n : Fin N, ‖cstar n‖ ^ 2 ≤ (B.card : ℝ) / q ^ 2 := by
+  have henergy : ∑ n : Fin N, ‖cstar n‖ ^ (2 : ℕ) ≤ (B.card : ℝ) / q ^ (2 : ℕ) := by
     simpa only [cstar, RCLike.norm_conj, c] using
       sum_normSq_harmonicPrimeBlockCoeff_le hB hBprime hq hlower
   gcongr
@@ -152,7 +152,7 @@ theorem volume_harmonicGeomPrimeBlock_largeValues_pow_le
             (-x / (2 * Real.pi))‖} ≤
       2 * ((T + 4 * ((N ^ k : ℕ) : ℝ) *
               (1 + Real.log ((N ^ k : ℕ) : ℝ))) *
-        ((k : ℝ) ^ k * ((Qj * eta + 1) / Qj ^ 2) ^ k)) := by
+        ((k : ℝ) ^ k * ((Qj * eta + 1) / Qj ^ (2 : ℕ)) ^ k)) := by
   dsimp only
   let Qj : ℝ := Q * (1 + eta) ^ j
   have hQj : 0 < Qj := by
@@ -185,13 +185,13 @@ theorem card_primesRange_le_sub (a X : ℕ) :
 /-- Sixth-moment estimate for the actual complete prime interval selected in Menon's Case II. -/
 theorem volume_harmonicPrimesRange_largeValues_sixth_le
     {a X : ℕ} {T V : ℝ} (ha : 0 < a) (hX : 1 ≤ X) (hT : 0 ≤ T) (hV : 0 ≤ V) :
-    V ^ 6 * volume.real
+    V ^ (6 : ℕ) * volume.real
         {x ∈ Set.Icc (-T) T |
           V ≤ ‖harmonicPrimeBlockPoly (primesRange a X)
             (-x / (2 * Real.pi))‖} ≤
-      2 * ((T + 4 * ((X ^ 3 : ℕ) : ℝ) *
-              (1 + Real.log ((X ^ 3 : ℕ) : ℝ))) *
-        (27 * (((X - a : ℕ) : ℝ) / (a : ℝ) ^ 2) ^ 3)) := by
+      2 * ((T + 4 * ((X ^ (3 : ℕ) : ℕ) : ℝ) *
+              (1 + Real.log ((X ^ (3 : ℕ) : ℕ) : ℝ))) *
+        (27 * (((X - a : ℕ) : ℝ) / (a : ℝ) ^ (2 : ℕ)) ^ (3 : ℕ))) := by
   have hB : primesRange a X ⊆ Finset.Icc 1 X := by
     intro p hp
     have hmem := mem_primesRange.1 hp
@@ -214,13 +214,13 @@ theorem volume_harmonicPrimesRange_largeValues_sixth_le
 logarithm in the mean-value factor using only `log X ≤ X`. -/
 theorem volume_harmonicPrimesRange_largeValues_eighth_le
     {a X : ℕ} {T V : ℝ} (ha : 0 < a) (hX : 1 ≤ X) (hT : 0 ≤ T) (hV : 0 ≤ V) :
-    V ^ 8 * volume.real
+    V ^ (8 : ℕ) * volume.real
         {x ∈ Set.Icc (-T) T |
           V ≤ ‖harmonicPrimeBlockPoly (primesRange a X)
             (-x / (2 * Real.pi))‖} ≤
-      2 * ((T + 4 * ((X ^ 4 : ℕ) : ℝ) *
-              (1 + Real.log ((X ^ 4 : ℕ) : ℝ))) *
-        (256 * (((X - a : ℕ) : ℝ) / (a : ℝ) ^ 2) ^ 4)) := by
+      2 * ((T + 4 * ((X ^ (4 : ℕ) : ℕ) : ℝ) *
+              (1 + Real.log ((X ^ (4 : ℕ) : ℕ) : ℝ))) *
+        (256 * (((X - a : ℕ) : ℝ) / (a : ℝ) ^ (2 : ℕ)) ^ (4 : ℕ))) := by
   have hB : primesRange a X ⊆ Finset.Icc 1 X := by
     intro p hp
     have hmem := mem_primesRange.1 hp

@@ -31,12 +31,12 @@ theorem egbFixedChargeAAlignedForceRationalFamily_continuousOn (w φ : ℝ) :
   let y : EGBAlignedForceState × Icc (-1 : ℝ) 1 → ℝ :=
     fun z => ((z.2 : ℝ) + z.1.2.2.1) / (1 + z.1.2.2.1 * (z.2 : ℝ))
   let j : EGBAlignedForceState × Icc (-1 : ℝ) 1 → ℝ :=
-    fun z => (1 - z.1.2.2.1 ^ 2) / (1 + z.1.2.2.1 * (z.2 : ℝ)) ^ 2
+    fun z => (1 - z.1.2.2.1 ^ (2 : ℕ)) / (1 + z.1.2.2.1 * (z.2 : ℝ)) ^ (2 : ℕ)
   let y₁ : EGBAlignedForceState × Icc (-1 : ℝ) 1 → ℝ :=
-    fun z => z.1.2.1 * (1 - (z.2 : ℝ) ^ 2) / (1 + z.1.2.2.1 * (z.2 : ℝ))
+    fun z => z.1.2.1 * (1 - (z.2 : ℝ) ^ (2 : ℕ)) / (1 + z.1.2.2.1 * (z.2 : ℝ))
   let j₁ : EGBAlignedForceState × Icc (-1 : ℝ) 1 → ℝ :=
-    fun z => -z.1.2.1 * (2 * (z.2 : ℝ) + z.1.2.2.1 * (1 + (z.2 : ℝ) ^ 2)) /
-      (1 + z.1.2.2.1 * (z.2 : ℝ)) ^ 2
+    fun z => -z.1.2.1 * (2 * (z.2 : ℝ) + z.1.2.2.1 * (1 + (z.2 : ℝ) ^ (2 : ℕ))) /
+      (1 + z.1.2.2.1 * (z.2 : ℝ)) ^ (2 : ℕ)
   have hY : ContinuousAt y p := by dsimp [y]; fun_prop (disch := positivity)
   have hJ : ContinuousAt j p := by dsimp [j]; fun_prop (disch := positivity)
   have hY₁ : ContinuousAt y₁ p := by dsimp [y₁]; fun_prop (disch := positivity)
@@ -61,7 +61,7 @@ theorem egbFixedChargeAAlignedForceRationalFamily_continuousOn (w φ : ℝ) :
   have hB := egbFixedChargeAGibbsBarrierCoefficient_pos w φ
   change ContinuousAt (fun z =>
     (egbFixedChargeAGibbsOddRationalFamily w φ z.1.1 (y z) * j z +
-      4 * egbFixedChargeAGibbsBarrierCoefficient w φ * y₁ z * (y z ^ 2 + y z * (z.2 : ℝ) + (z.2 : ℝ) ^ 2 - 1) * j z +
+      4 * egbFixedChargeAGibbsBarrierCoefficient w φ * y₁ z * (y z ^ (2 : ℕ) + y z * (z.2 : ℝ) + (z.2 : ℝ) ^ (2 : ℕ) - 1) * j z +
       egbFixedChargeAGibbsLeadingKernel w φ z.2 * j₁ z -
       egbFixedChargeAGibbsLeadingKernel w φ z.2 / egbFixedChargeAGibbsBarrierCoefficient w φ * z.1.2.2.2.1) / z.1.2.2.2.2) p
   unfold egbFixedChargeAGibbsLeadingKernel
@@ -84,7 +84,7 @@ theorem egbFixedChargeAAlignedForceRationalFamily_uniform_limit (w φ : ℝ) :
   exact (egbFixedChargeAAlignedForceRationalFamily_continuousOn w φ).tendstoUniformly hU
 
 theorem egbFixedChargeAPeakNormalizedGibbsForce_uniform_first_zero_limit (w φ l : ℝ) :
-    TendstoUniformly (fun τ ψ => (egbFixedChargeAPeakNormalizedGibbsForce w φ τ l ψ + 4 * sin ψ * cos ψ ^ 3) /
+    TendstoUniformly (fun τ ψ => (egbFixedChargeAPeakNormalizedGibbsForce w φ τ l ψ + 4 * sin ψ * cos ψ ^ (3 : ℕ)) /
       egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε

@@ -3,9 +3,9 @@ Doc 40 §2 / doc 41 (task #147): the c = 2 closed form of the continuum
 reversal, machine-checked.
 
 The reversal integrand at c = 2, s = 0 is the rational function
-`8 x^2 / (4 - x^2)^2`; its antiderivative on (-2, 2) is
-`4 x / (4 - x^2) - (log (2+x) - log (2-x))`, so the edge reversal is
-`R(1/2, 2, 0) = ∫_0^1 = 4/3 - log 3`, and the march cushion survives:
+`8 x^(2 : ℕ) / (4 - x^(2 : ℕ))^(2 : ℕ)`; its antiderivative on (-2, 2) is
+`4 x / (4 - x^(2 : ℕ)) - (log (2+x) - log (2-x))`, so the edge reversal is
+`R(1/2, 2, 0) = ∫_0^(1 : ℕ) = 4/3 - log 3`, and the march cushion survives:
 `4/3 - log 3 < 1/4` (via `log 3 > 13/12`, i.e. `e^{13/12} < 3`).  These are
 the numerical capstones consumed by the Theorem B⁗ march shells
 (`LedgerConvex`): the reversal budget at the (F1) edge is below a quarter.
@@ -17,22 +17,22 @@ namespace RHTower
 open Real
 
 noncomputable def reversalAntideriv (x : ℝ) : ℝ :=
-  4 * x / (4 - x ^ 2) - (Real.log (2 + x) - Real.log (2 - x))
+  4 * x / (4 - x ^ (2 : ℕ)) - (Real.log (2 + x) - Real.log (2 - x))
 
 theorem reversalAntideriv_zero : reversalAntideriv 0 = 0 := by
   simp [reversalAntideriv]
 
 /-- The antiderivative identity behind doc 40 §2, on the open interval. -/
-theorem hasDerivAt_reversalAntideriv {x : ℝ} (hx2 : x ^ 2 < 4) :
-    HasDerivAt reversalAntideriv (8 * x ^ 2 / (4 - x ^ 2) ^ 2) x := by
-  have hden : 4 - x ^ 2 ≠ 0 := by nlinarith
+theorem hasDerivAt_reversalAntideriv {x : ℝ} (hx2 : x ^ (2 : ℕ) < 4) :
+    HasDerivAt reversalAntideriv (8 * x ^ (2 : ℕ) / (4 - x ^ (2 : ℕ)) ^ (2 : ℕ)) x := by
+  have hden : 4 - x ^ (2 : ℕ) ≠ 0 := by nlinarith
   have hp : 0 < 2 + x := by nlinarith
   have hm : 0 < 2 - x := by nlinarith
-  have h1 : HasDerivAt (fun y : ℝ => 4 * y / (4 - y ^ 2))
-      ((4 * (4 - x ^ 2) - 4 * x * (-(2 * x))) / (4 - x ^ 2) ^ 2) x := by
+  have h1 : HasDerivAt (fun y : ℝ => 4 * y / (4 - y ^ (2 : ℕ)))
+      ((4 * (4 - x ^ (2 : ℕ)) - 4 * x * (-(2 * x))) / (4 - x ^ (2 : ℕ)) ^ (2 : ℕ)) x := by
     have hu : HasDerivAt (fun y : ℝ => 4 * y) 4 x := by
       simpa using (hasDerivAt_id x).const_mul (4 : ℝ)
-    have hv : HasDerivAt (fun y : ℝ => 4 - y ^ 2) (-(2 * x)) x := by
+    have hv : HasDerivAt (fun y : ℝ => 4 - y ^ (2 : ℕ)) (-(2 * x)) x := by
       have := (hasDerivAt_pow 2 x).const_sub (4 : ℝ)
       simpa [pow_one] using this
     exact hu.div hv hden
@@ -46,9 +46,9 @@ theorem hasDerivAt_reversalAntideriv {x : ℝ} (hx2 : x ^ 2 < 4) :
     have := hin.log hm.ne'
     simpa [neg_div, one_div] using this
   have h := h1.sub (h2.sub h3)
-  have harith : (4 * (4 - x ^ 2) - 4 * x * (-(2 * x))) / (4 - x ^ 2) ^ 2
-      - (1 / (2 + x) - -(1 / (2 - x))) = 8 * x ^ 2 / (4 - x ^ 2) ^ 2 := by
-    have h4 : (4 : ℝ) - x ^ 2 = (2 + x) * (2 - x) := by ring
+  have harith : (4 * (4 - x ^ (2 : ℕ)) - 4 * x * (-(2 * x))) / (4 - x ^ (2 : ℕ)) ^ (2 : ℕ)
+      - (1 / (2 + x) - -(1 / (2 - x))) = 8 * x ^ (2 : ℕ) / (4 - x ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    have h4 : (4 : ℝ) - x ^ (2 : ℕ) = (2 + x) * (2 - x) := by ring
     field_simp
     ring
   rw [harith] at h
@@ -56,28 +56,28 @@ theorem hasDerivAt_reversalAntideriv {x : ℝ} (hx2 : x ^ 2 < 4) :
 
 /-- The reversal integrand is continuous away from the poles. -/
 theorem continuousOn_reversal_integrand :
-    ContinuousOn (fun x : ℝ => 8 * x ^ 2 / (4 - x ^ 2) ^ 2)
+    ContinuousOn (fun x : ℝ => 8 * x ^ (2 : ℕ) / (4 - x ^ (2 : ℕ)) ^ (2 : ℕ))
       (Set.Icc (0 : ℝ) 1) := by
   apply ContinuousOn.div
   · fun_prop
   · fun_prop
   · intro x hx
-    have h1 : x ^ 2 ≤ 1 := by
+    have h1 : x ^ (2 : ℕ) ≤ 1 := by
       rcases hx with ⟨h0, h1⟩
       nlinarith
-    have h2 : (0 : ℝ) < 4 - x ^ 2 := by nlinarith
+    have h2 : (0 : ℝ) < 4 - x ^ (2 : ℕ) := by nlinarith
     positivity
 
 /-- **Doc 40 §2, machine-checked**: the edge reversal in closed form. -/
 theorem reversal_integral_eq_closed_form :
-    (∫ x in (0 : ℝ)..1, 8 * x ^ 2 / (4 - x ^ 2) ^ 2) = 4 / 3 - Real.log 3 := by
+    (∫ x in (0 : ℝ)..1, 8 * x ^ (2 : ℕ) / (4 - x ^ (2 : ℕ)) ^ (2 : ℕ)) = 4 / 3 - Real.log 3 := by
   have hFTC :
-      (∫ x in (0 : ℝ)..1, 8 * x ^ 2 / (4 - x ^ 2) ^ 2)
+      (∫ x in (0 : ℝ)..1, 8 * x ^ (2 : ℕ) / (4 - x ^ (2 : ℕ)) ^ (2 : ℕ))
         = reversalAntideriv 1 - reversalAntideriv 0 := by
     apply intervalIntegral.integral_eq_sub_of_hasDerivAt
     · intro x hx
       rw [Set.uIcc_of_le (by norm_num : (0:ℝ) ≤ 1)] at hx
-      have hx2 : x ^ 2 < 4 := by
+      have hx2 : x ^ (2 : ℕ) < 4 := by
         rcases hx with ⟨h0, h1⟩
         nlinarith
       exact hasDerivAt_reversalAntideriv hx2
@@ -122,7 +122,7 @@ theorem reversal_edge_lt_quarter : (4 : ℝ) / 3 - Real.log 3 < 1 / 4 := by
 
 /-- Integral form of the capstone, as consumed by the B⁗ march shells. -/
 theorem reversal_integral_lt_quarter :
-    (∫ x in (0 : ℝ)..1, 8 * x ^ 2 / (4 - x ^ 2) ^ 2) < 1 / 4 := by
+    (∫ x in (0 : ℝ)..1, 8 * x ^ (2 : ℕ) / (4 - x ^ (2 : ℕ)) ^ (2 : ℕ)) < 1 / 4 := by
   rw [reversal_integral_eq_closed_form]
   exact reversal_edge_lt_quarter
 

@@ -10,7 +10,7 @@ The first nonlinear even rung squares the exact second-Cesaro/Mertens series.  I
 
 then
 
-`Phi(x)^4 = (1-exp(-x))^4 sum_N W(N) exp(-Nx)`.
+`Phi(x)^(4 : ℕ) = (1-exp(-x))^(4 : ℕ) sum_N W(N) exp(-Nx)`.
 
 A one-sided `W(N) <= N^(5+o(1))` estimate therefore gives every strict half-power bound for the
 Mobius--Laplace transform and hence RH.  Conversely, the classical all-strict-half-power Mertens

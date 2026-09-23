@@ -212,13 +212,13 @@ theorem hasDerivAt_hillPotentialFlow_apply (a : HillSpeed) (b : WienerFamily E N
 theorem hasDerivAt_hillFlowApplyDeriv (a : HillSpeed) (b : WienerFamily E N) (G₀ : E →ᵇ ℂ)
     (ξ : E) (t : ℝ) :
     HasDerivAt (hillFlowApplyDeriv a b G₀ ξ)
-      (-(((a.freq ξ t ^ 2 : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ +
+      (-(((a.freq ξ t ^ (2 : ℕ) : ℝ) : ℂ)) * hillPotentialFlow a b G₀ t ξ +
         hillFlowSource a b G₀ ξ t) t := by
   have hmain := hasDerivAt_duhamelPairDeriv
     (C := hillCos (a.freq ξ)) (dC := hillCosDeriv (a.freq ξ))
-    (ddC := fun r => -(a.freq ξ r ^ 2) * hillCos (a.freq ξ) r)
+    (ddC := fun r => -(a.freq ξ r ^ (2 : ℕ)) * hillCos (a.freq ξ) r)
     (S := hillSin (a.freq ξ)) (dS := hillSinDeriv (a.freq ξ))
-    (ddS := fun r => -(a.freq ξ r ^ 2) * hillSin (a.freq ξ) r)
+    (ddS := fun r => -(a.freq ξ r ^ (2 : ℕ)) * hillSin (a.freq ξ) r)
     (ω := a.freq ξ) (α := ((a.freq ξ 0 : ℝ) : ℂ)⁻¹ * G₀ ξ) (β := 0)
     (h := hillFlowSource a b G₀ ξ)
     (a.hasDerivAt_hillCosDeriv_freq ξ) (a.hasDerivAt_hillSinDeriv_freq ξ)

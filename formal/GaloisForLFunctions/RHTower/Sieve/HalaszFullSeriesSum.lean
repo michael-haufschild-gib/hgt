@@ -46,7 +46,7 @@ theorem norm_tsum_twistedSummand_le_of_far
     (hfar : δ ≤ Real.sqrt (mulDistSqPair f (charFn s.im) (Nat.primesLE z))) :
     ‖∑' n : ℕ, twistedSummand f s n‖ ≤
       (1 + 1 / (s.re - 1)) *
-        Real.exp (7 / 2 + 2 * (s.re - 1) * (Real.log z + Real.log 4) - δ ^ 2) := by
+        Real.exp (7 / 2 + 2 * (s.re - 1) * (Real.log z + Real.log 4) - δ ^ (2 : ℕ)) := by
   have hpos : 0 < 1 + 1 / (s.re - 1) := by
     have h1 : 0 < s.re - 1 := by linarith
     positivity
@@ -54,7 +54,7 @@ theorem norm_tsum_twistedSummand_le_of_far
     mulDistSqPair_nonneg_disc (fun p _ => hbdd p)
       (fun p _ => (norm_charFn s.im p).le)
       (fun p hp => (Nat.prime_of_mem_primesLE hp).pos)
-  have hsq : δ ^ 2 ≤ mulDistSqPair f (charFn s.im) (Nat.primesLE z) := by
+  have hsq : δ ^ (2 : ℕ) ≤ mulDistSqPair f (charFn s.im) (Nat.primesLE z) := by
     have hmono := pow_le_pow_left₀ hδ hfar 2
     rwa [Real.sq_sqrt hnn] at hmono
   refine le_trans (norm_tsum_twistedSummand_le_of_mulDistSqPair hf1 hmul hbdd hs hz)
@@ -87,7 +87,7 @@ theorem sum_norm_tsum_twistedSummand_le_of_card
     ∑ t ∈ S, ‖∑' n : ℕ, twistedSummand f (((σ : ℝ) : ℂ) + ((t : ℝ) : ℂ) * Complex.I) n‖ ≤
       (1 + 1 / (σ - 1)) *
         (Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4)) *
-          ((S.card : ℝ) * Real.exp (-(δ ^ 2)) + 1)) := by
+          ((S.card : ℝ) * Real.exp (-(δ ^ (2 : ℕ))) + 1)) := by
   classical
   have hpos : 0 < 1 + 1 / (σ - 1) := by
     have h1 : 0 < σ - 1 := by linarith
@@ -116,7 +116,7 @@ theorem sum_norm_tsum_twistedSummand_le_of_card
   -- the far points are damped
   have hfarbound : ∀ t : ℝ,
       ¬ (Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)) ≤ δ) →
-      F t ≤ (1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ 2))) := by
+      F t ≤ (1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ (2 : ℕ)))) := by
     intro t ht
     have hfar : δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)) :=
       le_of_lt (not_le.mp ht)
@@ -124,8 +124,8 @@ theorem sum_norm_tsum_twistedSummand_le_of_card
       (by rw [im_ofReal_add_mul_I]; exact hfar)
     rw [re_ofReal_add_mul_I] at h
     refine le_trans h (mul_le_mul_of_nonneg_left (le_of_eq ?_) hpos.le)
-    have harg : 7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2
-        = (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4)) + -(δ ^ 2) := by ring
+    have harg : 7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ (2 : ℕ)
+        = (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4)) + -(δ ^ (2 : ℕ)) := by ring
     rw [hE, harg, Real.exp_add]
   -- split and add
   have hsplit : ∑ t ∈ S, F t =
@@ -147,21 +147,21 @@ theorem sum_norm_tsum_twistedSummand_le_of_card
     nlinarith
   have hfarsum : (∑ t ∈ S.filter (fun t =>
       ¬ (Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)) ≤ δ)), F t)
-      ≤ (S.card : ℝ) * ((1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ 2)))) := by
+      ≤ (S.card : ℝ) * ((1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ (2 : ℕ))))) := by
     refine le_trans (Finset.sum_le_card_nsmul _ _
-      ((1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ 2)))) (fun t ht => ?_)) ?_
+      ((1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ (2 : ℕ))))) (fun t ht => ?_)) ?_
     · exact hfarbound t (Finset.mem_filter.mp ht).2
     · rw [nsmul_eq_mul]
       have hcard : ((S.filter (fun t =>
           ¬ (Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)) ≤ δ))).card : ℝ)
           ≤ (S.card : ℝ) := by
         exact_mod_cast Finset.card_le_card (Finset.filter_subset _ _)
-      have hnn : (0 : ℝ) ≤ (1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ 2))) := by positivity
+      have hnn : (0 : ℝ) ≤ (1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ (2 : ℕ)))) := by positivity
       exact mul_le_mul_of_nonneg_right hcard hnn
   rw [hsplit]
   have hfinal : (1 + 1 / (σ - 1)) * E +
-      (S.card : ℝ) * ((1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ 2)))) =
-      (1 + 1 / (σ - 1)) * (E * ((S.card : ℝ) * Real.exp (-(δ ^ 2)) + 1)) := by
+      (S.card : ℝ) * ((1 + 1 / (σ - 1)) * (E * Real.exp (-(δ ^ (2 : ℕ))))) =
+      (1 + 1 / (σ - 1)) * (E * ((S.card : ℝ) * Real.exp (-(δ ^ (2 : ℕ))) + 1)) := by
     ring
   linarith [hclosesum, hfarsum, hfinal]
 
@@ -172,7 +172,7 @@ theorem sum_norm_tsum_twistedSummand_le_of_spacing
     (hf1 : f 1 = 1) (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n)
     (hbdd : ∀ n, ‖f n‖ ≤ 1) {σ : ℝ} (hσ : 1 < σ) {z : ℕ} (hz : 1 ≤ z)
     {δ Δ : ℝ} (hδ : 0 ≤ δ) (hΔ0 : 0 ≤ Δ) (hW : 0 < logSqWeight z)
-    (hΔ : 2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z < Δ ^ 2)
+    (hΔ : 2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) / logSqWeight z < Δ ^ (2 : ℕ))
     (S : Finset ℝ)
     (hspace : ∀ t ∈ S, ∀ u ∈ S, t ≠ u → Δ ≤ |t - u|)
     (hsmall : ∀ t ∈ S, ∀ u ∈ S, ∀ p ∈ Nat.primesLE z,
@@ -180,7 +180,7 @@ theorem sum_norm_tsum_twistedSummand_le_of_spacing
     ∑ t ∈ S, ‖∑' n : ℕ, twistedSummand f (((σ : ℝ) : ℂ) + ((t : ℝ) : ℂ) * Complex.I) n‖ ≤
       (1 + 1 / (σ - 1)) *
         (Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4)) *
-          ((S.card : ℝ) * Real.exp (-(δ ^ 2)) + 1)) :=
+          ((S.card : ℝ) * Real.exp (-(δ ^ (2 : ℕ))) + 1)) :=
   sum_norm_tsum_twistedSummand_le_of_card hf1 hmul hbdd hσ hz hδ S
     (card_filter_close_le_one_of_spacing hz (fun p _ => hbdd p) hΔ0 hW hΔ S hspace hsmall)
 

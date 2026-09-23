@@ -7,7 +7,7 @@ Put A=R-Q and B=Q-P. For orthogonal projections it suffices that AB is
 nuclear; neither A nor B need be compact and P,Q need not commute.
 Adjoint factorization makes BA nuclear. All six mixed cubic words are then
 nuclear. Cyclicity groups their traces into three copies of
-Tr(A^2 B + A B^2)=Tr([AB,Q])=0.
+Tr(A^(2 : ℕ) B + A B^(2 : ℕ))=Tr([AB,Q])=0.
 
 The hypothesis concerns the adjacent product, not merely the combined
 cubic defect. The projections may be noncommuting.

@@ -411,7 +411,7 @@ theorem xiCentralReciprocalSquare_pos_iff {ρ : ℂ} (hρ : ρ - 1 / 2 ≠ 0) :
   set z : ℂ := w⁻¹ with hz
   have hzne : z ≠ 0 := inv_ne_zero hρ
   have hnormpos : 0 < Complex.normSq w := Complex.normSq_pos.mpr hρ
-  have hre : (xiCentralReciprocalSquare ρ).re = z.im ^ 2 - z.re ^ 2 := by
+  have hre : (xiCentralReciprocalSquare ρ).re = z.im ^ (2 : ℕ) - z.re ^ (2 : ℕ) := by
     rw [xiCentralReciprocalSquare, ← hw, ← hz]
     simp [Complex.neg_re, pow_two, Complex.mul_re]
   have him : (xiCentralReciprocalSquare ρ).im = -(2 * (z.re * z.im)) := by
@@ -445,7 +445,7 @@ theorem xiCentralReciprocalSquare_pos_iff {ρ : ℂ} (hρ : ρ - 1 / 2 ≠ 0) :
       exact hzne (Complex.ext hz0 hc)
     refine ⟨by rw [him, hz0]; ring, ?_⟩
     rw [hre, hz0]
-    have : 0 < z.im ^ 2 := by positivity
+    have : 0 < z.im ^ (2 : ℕ) := by positivity
     linarith
 
 /-! ### The pole ray, the reflected amplitude, and the RH equivalence -/
@@ -470,28 +470,28 @@ theorem poleAmplitude_inv {u : ℂ} (hu : u ≠ 0) :
 theorem poleAmplitude_eq_one_iff {P : ℂ} (hP : P ≠ 0) :
     poleAmplitude P = 1 ↔ (P.im = 0 ∧ 1 ≤ P.re) := by
   have hnP : (0 : ℝ) < ‖P‖ := norm_pos_iff.mpr hP
-  have hsq : ‖P‖ ^ 2 = P.re ^ 2 + P.im ^ 2 := by
+  have hsq : ‖P‖ ^ (2 : ℕ) = P.re ^ (2 : ℕ) + P.im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]; ring
-  have hsq1 : ‖P - 1‖ ^ 2 = (P.re - 1) ^ 2 + P.im ^ 2 := by
+  have hsq1 : ‖P - 1‖ ^ (2 : ℕ) = (P.re - 1) ^ (2 : ℕ) + P.im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im, sub_zero]
     ring
   rw [poleAmplitude, div_eq_one_iff_eq hnP.ne']
   constructor
   · intro h
-    have h2 : ‖P‖ ^ 2 = (1 + ‖P - 1‖) ^ 2 := by rw [h]
+    have h2 : ‖P‖ ^ (2 : ℕ) = (1 + ‖P - 1‖) ^ (2 : ℕ) := by rw [h]
     have h3 : P.re - 1 = ‖P - 1‖ := by nlinarith [norm_nonneg (P - 1)]
-    have h4 : P.im ^ 2 = 0 := by nlinarith [h3, hsq1]
+    have h4 : P.im ^ (2 : ℕ) = 0 := by nlinarith [h3, hsq1]
     have him : P.im = 0 := by nlinarith [sq_nonneg P.im]
     refine ⟨him, ?_⟩
     have := norm_nonneg (P - 1)
     linarith [h3]
   · rintro ⟨him, hre⟩
     have hPn : ‖P‖ = P.re := by
-      have h1 : ‖P‖ ^ 2 = P.re ^ 2 := by rw [hsq, him]; ring
+      have h1 : ‖P‖ ^ (2 : ℕ) = P.re ^ (2 : ℕ) := by rw [hsq, him]; ring
       nlinarith [hnP, hre]
     have hP1n : ‖P - 1‖ = P.re - 1 := by
-      have h1 : ‖P - 1‖ ^ 2 = (P.re - 1) ^ 2 := by rw [hsq1, him]; ring
+      have h1 : ‖P - 1‖ ^ (2 : ℕ) = (P.re - 1) ^ (2 : ℕ) := by rw [hsq1, him]; ring
       nlinarith [norm_nonneg (P - 1), hre]
     rw [hPn, hP1n]
     ring
@@ -578,16 +578,16 @@ theorem ncard_endpointFibre_conj (u : ℂ) :
 /-- **(8)** The half-order coefficient in the pole coordinate equals the normalized-coordinate
 diagonal coefficient. -/
 theorem halfOrderCoefficient_substitution {u C : ℂ} (hu : u ≠ 0) (hu1 : (1 : ℂ) - u ≠ 0) :
-    (‖C‖ / ‖u‖) ^ 2 * (1 + ‖u⁻¹ - 1‖) / (2 * ‖u⁻¹‖ ^ 2 * Real.sqrt ‖u⁻¹ - 1‖)
-      = ‖C‖ ^ 2 * (‖u‖ + ‖1 - u‖) / (2 * Real.sqrt (‖u‖ * ‖1 - u‖)) := by
+    (‖C‖ / ‖u‖) ^ (2 : ℕ) * (1 + ‖u⁻¹ - 1‖) / (2 * ‖u⁻¹‖ ^ (2 : ℕ) * Real.sqrt ‖u⁻¹ - 1‖)
+      = ‖C‖ ^ (2 : ℕ) * (‖u‖ + ‖1 - u‖) / (2 * Real.sqrt (‖u‖ * ‖1 - u‖)) := by
   have hnu : (0 : ℝ) < ‖u‖ := norm_pos_iff.mpr hu
   have hnu1 : (0 : ℝ) < ‖1 - u‖ := norm_pos_iff.mpr hu1
   obtain ⟨a, ha⟩ : ∃ a : ℝ, a = Real.sqrt ‖u‖ := ⟨_, rfl⟩
   obtain ⟨b, hb⟩ : ∃ b : ℝ, b = Real.sqrt ‖1 - u‖ := ⟨_, rfl⟩
   have hapos : 0 < a := by rw [ha]; exact Real.sqrt_pos.mpr hnu
   have hbpos : 0 < b := by rw [hb]; exact Real.sqrt_pos.mpr hnu1
-  have ha2 : a ^ 2 = ‖u‖ := by rw [ha]; exact Real.sq_sqrt hnu.le
-  have hb2 : b ^ 2 = ‖1 - u‖ := by rw [hb]; exact Real.sq_sqrt hnu1.le
+  have ha2 : a ^ (2 : ℕ) = ‖u‖ := by rw [ha]; exact Real.sq_sqrt hnu.le
+  have hb2 : b ^ (2 : ℕ) = ‖1 - u‖ := by rw [hb]; exact Real.sq_sqrt hnu1.le
   have h1 : ‖u⁻¹ - 1‖ = ‖1 - u‖ / ‖u‖ := by
     rw [show u⁻¹ - 1 = (1 - u) / u by field_simp, norm_div]
   have h2 : ‖u⁻¹‖ = ‖u‖⁻¹ := norm_inv u

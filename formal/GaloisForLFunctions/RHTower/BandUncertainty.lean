@@ -58,13 +58,13 @@ theorem bandFourierEntire_ofReal (Φ : ℝ → ℝ) (ξ : ℝ) :
 mass outside the frequency window vanishes is zero on the open band. -/
 theorem eqOn_zero_of_spectral_tail_eq_zero {c : ℝ} (hc : 0 < c) {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
     (htail : (∫ ξ in (Icc (-(c / (2 * Real.pi))) (c / (2 * Real.pi)))ᶜ,
-        ‖𝓕 (bandTrunc Φ) ξ‖ ^ 2) = 0) :
+        ‖𝓕 (bandTrunc Φ) ξ‖ ^ (2 : ℕ)) = 0) :
     ∀ x ∈ Ioo (-1 : ℝ) 1, Φ x = 0 := by
   have hkpos : 0 < c / (2 * Real.pi) := div_pos hc (by positivity)
   -- the spectral density vanishes almost everywhere outside the window
-  have hint : Integrable (fun ξ : ℝ => ‖𝓕 (bandTrunc Φ) ξ‖ ^ 2) volume :=
+  have hint : Integrable (fun ξ : ℝ => ‖𝓕 (bandTrunc Φ) ξ‖ ^ (2 : ℕ)) volume :=
     integrable_norm_sq_fourier_bandTrunc hΦ
-  have hae : (fun ξ : ℝ => ‖𝓕 (bandTrunc Φ) ξ‖ ^ 2)
+  have hae : (fun ξ : ℝ => ‖𝓕 (bandTrunc Φ) ξ‖ ^ (2 : ℕ))
       =ᵐ[volume.restrict (Icc (-(c / (2 * Real.pi))) (c / (2 * Real.pi)))ᶜ] 0 :=
     (integral_eq_zero_iff_of_nonneg (fun ξ => by positivity) hint.integrableOn).mp htail
   -- so it vanishes almost everywhere on an interval of frequencies beyond the band edge
@@ -82,7 +82,7 @@ theorem eqOn_zero_of_spectral_tail_eq_zero {c : ℝ} (hc : 0 < c) {Φ : ℝ → 
       bandFourierEntire Φ ((t : ℝ) : ℂ) = 0 := by
     filter_upwards [ae_mono hmono hae] with t ht
     rw [bandFourierEntire_ofReal]
-    have hsq : ‖𝓕 (bandTrunc Φ) t‖ ^ 2 = 0 := ht
+    have hsq : ‖𝓕 (bandTrunc Φ) t‖ ^ (2 : ℕ) = 0 := ht
     have hnorm : ‖𝓕 (bandTrunc Φ) t‖ = 0 := by
       nlinarith [norm_nonneg (𝓕 (bandTrunc Φ) t)]
     exact norm_eq_zero.mp hnorm

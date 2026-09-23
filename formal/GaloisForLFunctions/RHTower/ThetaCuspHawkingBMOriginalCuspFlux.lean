@@ -94,13 +94,13 @@ private theorem chart_second_zero {F : Field} (hF : ContDiff ℝ ∞ F)
 
 private theorem chart_second_one {F : Field} (hF : ContDiff ℝ ∞ F)
     {z : Point} (hz : 0 < z 1) :
-    (z 1:ℂ)^2*D 1 (D 1 (pull F)) z=D 1 (D 1 F) (chart z)-D 1 F (chart z) := by
+    (z 1:ℂ)^(2 : ℕ)*D 1 (D 1 (pull F)) z=D 1 (D 1 F) (chart z)-D 1 F (chart z) := by
   have he : D 1 (pull F)=ᶠ[𝓝 z] fun v => (v 1:ℂ)⁻¹*pull (D 1 F) v := by
     filter_upwards [positive_nhds hz] with v hv
     simpa only [show ¬(1:Fin 2)=0 by decide,if_false,pull] using chart_first hF hv 1
   have hn : (z 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hz.ne'
   have hi : HasFDerivAt (fun v : Point => (v 1:ℂ)⁻¹)
-      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-(z 1:ℂ)⁻¹^2)) z := by
+      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-(z 1:ℂ)⁻¹^(2 : ℕ))) z := by
     have hy := Complex.ofRealCLM.hasFDerivAt.comp z
       ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).hasFDerivAt)
     have h := (hasDerivAt_inv hn).comp_hasFDerivAt z hy
@@ -108,14 +108,14 @@ private theorem chart_second_one {F : Field} (hF : ContDiff ℝ ∞ F)
     ext v
     simp [Complex.real_smul,smul_eq_mul]
     ring
-  have hd : D 1 (fun v : Point => (v 1:ℂ)⁻¹) z= -(z 1:ℂ)⁻¹^2 := by
+  have hd : D 1 (fun v : Point => (v 1:ℂ)⁻¹) z= -(z 1:ℂ)⁻¹^(2 : ℕ) := by
     change fderiv ℝ _ z (Pi.single 1 1)=_
     rw [hi.fderiv]
     simp
   have hD := (pull_smooth (D_smooth hF 1) hz).differentiableAt (by simp)
-  change (z 1:ℂ)^2*fderiv ℝ (D 1 (pull F)) z (Pi.single 1 1)=_
+  change (z 1:ℂ)^(2 : ℕ)*fderiv ℝ (D 1 (pull F)) z (Pi.single 1 1)=_
   rw [he.fderiv_eq]
-  change (z 1:ℂ)^2*D 1 (fun v : Point => (v 1:ℂ)⁻¹*pull (D 1 F) v) z=_
+  change (z 1:ℂ)^(2 : ℕ)*D 1 (fun v : Point => (v 1:ℂ)⁻¹*pull (D 1 F) v) z=_
   have hp : D 1 (fun v : Point => (v 1:ℂ)⁻¹*pull (D 1 F) v) z=
       D 1 (fun v : Point => (v 1:ℂ)⁻¹) z*pull (D 1 F) z+(z 1:ℂ)⁻¹*D 1 (pull (D 1 F)) z :=
     coordDeriv_mul hi.differentiableAt hD 1
@@ -126,8 +126,8 @@ private theorem chart_second_one {F : Field} (hF : ContDiff ℝ ∞ F)
 
 /-- Genuine height-coordinate Laplacian of every smooth logarithmic source field. -/
 private theorem pull_laplacian {F : Field} (hF : ContDiff ℝ ∞ F) {z : Point} (hz : 0 < z 1) :
-    L (pull F) z=(z 1:ℂ)^2*D 0 (D 0 F) (chart z)+D 1 (D 1 F) (chart z)-D 1 F (chart z) := by
-  change (z 1:ℂ)^2*(D 0 (D 0 (pull F)) z+D 1 (D 1 (pull F)) z)=_
+    L (pull F) z=(z 1:ℂ)^(2 : ℕ)*D 0 (D 0 F) (chart z)+D 1 (D 1 F) (chart z)-D 1 F (chart z) := by
+  change (z 1:ℂ)^(2 : ℕ)*(D 0 (D 0 (pull F)) z+D 1 (D 1 (pull F)) z)=_
   rw [mul_add,chart_second_zero hF hz,chart_second_one hF hz]
   ring
 
@@ -182,7 +182,7 @@ private theorem reader_decomposition (r : XiZeroCopy) (z : Point) :
   rw [← hp]
   rfl
 private theorem reader_mu (r : XiZeroCopy) :
-    physicalAngularParameter r^2-1/4=readerExponent r*(readerExponent r-1) := by
+    physicalAngularParameter r^(2 : ℕ)-1/4=readerExponent r*(readerExponent r-1) := by
   rw [physicalAngularParameter_eq]
   unfold readerExponent
   ring
@@ -305,7 +305,7 @@ private theorem source_laplacian_rapid (q : XiZeroCopy) (branch : Bool) (amp : �
   intro z
   have hl := pull_laplacian (remainder_smooth q branch amp p v) (z := ![z 0,Real.exp (z 1)])
     (Real.exp_pos _)
-  have he : Complex.exp ((2:ℂ)*(z 1:ℂ))=(Real.exp (z 1):ℂ)^2 := by
+  have he : Complex.exp ((2:ℂ)*(z 1:ℂ))=(Real.exp (z 1):ℂ)^(2 : ℕ) := by
     rw [← exp_cpow,Complex.cpow_two]
   simpa only [atHeight,sourceRemainder,chart,Matrix.cons_val,Real.log_exp,E,he,
     D4BMSquareCuspJets.coordinateJet,point_eta] using hl.symm
@@ -335,7 +335,7 @@ private theorem power_laplacian_sum {ι : Type*} (s : Finset ι) (F : ι → Fie
   induction s using Finset.induction_on with
   | empty =>
     simp only [Finset.sum_empty]
-    change (z 1:ℂ)^2*(fderiv ℝ (fun x => fderiv ℝ (fun _ : Point => (0:ℂ)) x (Pi.single 0 1)) z (Pi.single 0 1)+
+    change (z 1:ℂ)^(2 : ℕ)*(fderiv ℝ (fun x => fderiv ℝ (fun _ : Point => (0:ℂ)) x (Pi.single 0 1)) z (Pi.single 0 1)+
       fderiv ℝ (fun x => fderiv ℝ (fun _ : Point => (0:ℂ)) x (Pi.single 1 1)) z (Pi.single 1 1))=0
     simp
   | @insert i s hi ih =>
@@ -400,7 +400,7 @@ private theorem reader_derivative (r : XiZeroCopy) {z : Point} (hz : 0 < z 1) :
 /-- The principal flux is formed by differentiating the original principal fields. -/
 def principalFlux (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ) (z : Point) : ℂ :=
   L (sourcePrincipal q branch amp p v) z*D 1 (readerPrincipal r) z-
-    (physicalAngularParameter r^2-1/4)*readerPrincipal r z*D 1 (sourcePrincipal q branch amp p v) z
+    (physicalAngularParameter r^(2 : ℕ)-1/4)*readerPrincipal r z*D 1 (sourcePrincipal q branch amp p v) z
 
 def fluxCoefficient (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ) (i : Fin 3) : ℂ :=
   coefficient q branch amp p v i*readerCoefficient r*principalExponent q i*readerExponent r*
@@ -442,7 +442,7 @@ theorem fluxRemainder_decomposition (q r : XiZeroCopy) (branch : Bool) (amp : �
       L (sourceRemainder q branch amp p v) z*D 1 (readerPrincipal r) z+
       L (sourcePrincipal q branch amp p v) z*D 1 (readerTail r) z+
       L (sourceRemainder q branch amp p v) z*D 1 (readerTail r) z-
-      (physicalAngularParameter r^2-1/4)*
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*
         (readerTail r z*D 1 (sourcePrincipal q branch amp p v) z+
           readerPrincipal r z*D 1 (sourceRemainder q branch amp p v) z+
           readerTail r z*D 1 (sourceRemainder q branch amp p v) z) := by
@@ -450,7 +450,7 @@ theorem fluxRemainder_decomposition (q r : XiZeroCopy) (branch : Bool) (amp : �
   unfold fluxRemainder D4BMOriginalAngularGreen.flux
   change L (D4BMOriginalAngularGreen.source q branch amp p v) z*
       D 1 (D4BMLiteralCusp.scalar (physicalAngularParameter r)) z-
-      (physicalAngularParameter r^2-1/4)*D4BMLiteralCusp.scalar (physicalAngularParameter r) z*
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar (physicalAngularParameter r) z*
         D 1 (D4BMOriginalAngularGreen.source q branch amp p v) z-principalFlux q r branch amp p v z=_
   rw [hd,hl,reader_derivative r hz,reader_decomposition,principalFlux]
   ring
@@ -493,7 +493,7 @@ private theorem fluxRemainder_rapid (q r : XiZeroCopy) (branch : Bool) (amp : �
   have h := (((hL.mul_moderate (readerPrincipal_derivative_moderate r)).add
     ((sourcePrincipal_laplacian_moderate q branch amp p v) _ hTd)).add (hL.mul hTd)).sub
       ((((hT.mul_moderate (sourcePrincipal_derivative_moderate q branch amp p v)).add
-        ((readerPrincipal_moderate r) _ hD)).add (hT.mul hD)).scale (physicalAngularParameter r^2-1/4))
+        ((readerPrincipal_moderate r) _ hD)).add (hT.mul hD)).scale (physicalAngularParameter r^(2 : ℕ)-1/4))
   apply h.congr
   intro z
   exact (fluxRemainder_decomposition q r branch amp p v (z := ![z 0,Real.exp (z 1)]) (Real.exp_pos _)).symm
@@ -1105,7 +1105,7 @@ theorem original_source_logarithmic_remainders (q : XiZeroCopy) (branch : Bool) 
       ← Complex.ofReal_exp,show ¬(1:Fin 2)=0 by decide,if_false,
       D4BMSquareCuspJets.coordinateJet] using
         chart_first (remainder_smooth q branch amp p v) hz 1
-  have he : Complex.exp (2*(k:ℂ))=(Real.exp k:ℂ)^2 := by
+  have he : Complex.exp (2*(k:ℂ))=(Real.exp k:ℂ)^(2 : ℕ) := by
     rw [← exp_cpow,Complex.cpow_two]
   have hl : L (sourceRemainder q branch amp p v) ![X,Real.exp k]=
       Complex.exp (2*(k:ℂ))*D4BMSquareCuspJets.coordinateJet [0,0] (remainder q branch amp p v) ![X,k]+

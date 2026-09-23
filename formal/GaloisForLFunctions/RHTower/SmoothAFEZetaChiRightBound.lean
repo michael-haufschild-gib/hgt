@@ -17,18 +17,18 @@ open Complex
 
 theorem zetaChi_large_height_condition {t : ℝ} (ht : 256 ≤ t) :
     Real.log Real.pi +
-        (1 / (t / 2) ^ 2 + Real.pi / (2 * (t / 2))) <
+        (1 / (t / 2) ^ (2 : ℕ) + Real.pi / (2 * (t / 2))) <
       Real.log (t / 2) := by
   have ht0 : 0 < t := by linarith
   have htHalf : 1 ≤ t / 2 := by linarith
-  have hfirst : 1 / (t / 2) ^ 2 ≤ 1 := by
+  have hfirst : 1 / (t / 2) ^ (2 : ℕ) ≤ 1 := by
     apply (div_le_one (by positivity)).2
     nlinarith
   have hsecond : Real.pi / (2 * (t / 2)) < 1 := by
     rw [show 2 * (t / 2) = t by ring, div_lt_one ht0]
     linarith [Real.pi_lt_four]
   have herror :
-      1 / (t / 2) ^ 2 + Real.pi / (2 * (t / 2)) < 2 := by
+      1 / (t / 2) ^ (2 : ℕ) + Real.pi / (2 * (t / 2)) < 2 := by
     linarith
   have hexpTwo : Real.exp 2 < 9 := by
     rw [show (2 : ℝ) = 1 + 1 by ring, Real.exp_add]
@@ -49,9 +49,9 @@ theorem zetaChi_large_height_condition {t : ℝ} (ht : 256 ≤ t) :
   rw [← sub_pos] at *
   rw [show Real.log (t / 2) -
       (Real.log Real.pi +
-        (1 / (t / 2) ^ 2 + Real.pi / (2 * (t / 2)))) =
+        (1 / (t / 2) ^ (2 : ℕ) + Real.pi / (2 * (t / 2)))) =
       (Real.log (t / 2) - Real.log Real.pi) -
-        (1 / (t / 2) ^ 2 + Real.pi / (2 * (t / 2))) by ring,
+        (1 / (t / 2) ^ (2 : ℕ) + Real.pi / (2 * (t / 2))) by ring,
     hlog]
   linarith
 

@@ -300,11 +300,11 @@ theorem controlled_mem_unitaryGroup {U : Gate (Qubits n)}
 
 /-- Sanity check: the controlled Pauli-X Gate (Qubits is) exactly `CNOT`. -/
 theorem controlled_X : controlled X = CNOT := by
-  have hX : ∀ i j : Fin (2 ^ 1), (X : HilbertOperator (Qubits 1)) i j
+  have hX : ∀ i j : Fin (2 ^ (1 : ℕ)), (X : HilbertOperator (Qubits 1)) i j
       = if i = Equiv.swap 0 1 j then 1 else 0 := by
     intro i j
     rw [← apply_ket X j i, X, ofPerm_apply_ket, Equiv.swap_inv, PureState.ket_apply]
-  have hC : ∀ i j : Fin (2 ^ 2), CNOT i j
+  have hC : ∀ i j : Fin (2 ^ (2 : ℕ)), CNOT i j
       = if i = Equiv.swap 2 3 j then 1 else 0 := by
     intro i j
     rw [← apply_ket CNOT j i, CNOT_apply_ket, PureState.ket_apply]

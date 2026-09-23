@@ -19,7 +19,7 @@ namespace RHTower
 private lemma gamma_lower : (0.5768:ℝ) ≤ Real.eulerMascheroniConstant := by
   have h := (harmonic_mascheroni_half_bounds (n := 16) (by norm_num)).2
   have hlog : Real.log (16:ℝ)=4*Real.log 2 := by
-    rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]
+    rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]
     norm_num
   norm_num [harmonic,Finset.sum_range_succ,hlog] at h
   linarith [Real.log_two_lt_d9]
@@ -30,14 +30,14 @@ private lemma defect_ten_lower : (-1:ℝ) ≤ primeFreeDivisorDefect 10 := by
     rw [← Real.log_mul (by norm_num : (2:ℝ)≠0) (by norm_num : (3:ℝ)≠0)]
     norm_num
   have h8 : Real.log 8 = 3*Real.log 2 := by
-    rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num
+    rw [show (8:ℝ)=2^(3 : ℕ) by norm_num,Real.log_pow]; norm_num
   have h9 : Real.log 9 = 2*Real.log 3 := by
-    rw [show (9:ℝ)=3^2 by norm_num,Real.log_pow]; norm_num
+    rw [show (9:ℝ)=3^(2 : ℕ) by norm_num,Real.log_pow]; norm_num
   have h10 : Real.log 10 = Real.log 2+Real.log 5 := by
     rw [← Real.log_mul (by norm_num : (2:ℝ)≠0) (by norm_num : (5:ℝ)≠0)]
     norm_num
-  have hp := Real.log_le_log (by norm_num : (0:ℝ)<2^13)
-    (by norm_num : (2:ℝ)^13≤3^4*5^2*7)
+  have hp := Real.log_le_log (by norm_num : (0:ℝ)<2^(13 : ℕ))
+    (by norm_num : (2:ℝ)^(13 : ℕ)≤3^(4 : ℕ)*5^(2 : ℕ)*7)
   rw [Real.log_mul (by norm_num) (by norm_num),Real.log_mul (by norm_num) (by norm_num)] at hp
   simp only [Real.log_pow,Nat.cast_ofNat] at hp
   norm_num [primeFreeDivisorDefect,sum_Icc_succ_top,h4,h6,h8,h9,h10]

@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.GammaDampedVerticalBound
 
 The Euler anchor `14/5 + iτ`, Jensen factorization, finite root separation, and conjugation
 produce one symmetric height whose two horizontal edges are zero-free and carry an unconditional
-`O((1 + log X)^2)` bound for the regularized zeta logarithmic derivative.
+`O((1 + log X)^(2 : ℕ))` bound for the regularized zeta logarithmic derivative.
 -/
 
 open Complex Filter Metric Set Finset
@@ -220,14 +220,14 @@ private theorem routeT_negativeHalf_horizontal_segment_norm_le_seventeen_fifths
   have hxabs : |x - 14 / 5| ≤ 33 / 10 := by
     rw [abs_of_nonpos (by linarith [hx.2])]
     linarith [hx.1]
-  have hsquares : ‖z - c0‖ ^ 2 = (x - 14 / 5) ^ 2 + (T - tau) ^ 2 := by
+  have hsquares : ‖z - c0‖ ^ (2 : ℕ) = (x - 14 / 5) ^ (2 : ℕ) + (T - tau) ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply, hre, him]
     ring
-  have hxSq : (x - 14 / 5) ^ 2 ≤ (33 / 10 : ℝ) ^ 2 := by
+  have hxSq : (x - 14 / 5) ^ (2 : ℕ) ≤ (33 / 10 : ℝ) ^ (2 : ℕ) := by
     have h := (sq_le_sq₀ (abs_nonneg (x - 14 / 5))
       (by norm_num : (0 : ℝ) ≤ 33 / 10)).2 hxabs
     simpa only [sq_abs] using h
-  have hTSq : (T - tau) ^ 2 ≤ ((1 : ℝ) / 2) ^ 2 := by
+  have hTSq : (T - tau) ^ (2 : ℕ) ≤ ((1 : ℝ) / 2) ^ (2 : ℕ) := by
     have h := (sq_le_sq₀ (abs_nonneg (T - tau))
       (by norm_num : (0 : ℝ) ≤ 1 / 2)).2 hT
     simpa only [sq_abs] using h
@@ -357,11 +357,11 @@ theorem exists_routeT_negativeHalf_two_horizontal_edges_polylog :
         (∀ x ∈ Icc (-1 / 2 : ℝ) 2,
           zetaResidueUnit ((x : ℂ) + (T : ℂ) * I) ≠ 0 ∧
           ‖zetaLogDerivReg ((x : ℂ) + (T : ℂ) * I)‖ ≤
-            K * (1 + Real.log X) ^ 2) ∧
+            K * (1 + Real.log X) ^ (2 : ℕ)) ∧
         (∀ x ∈ Icc (-1 / 2 : ℝ) 2,
           zetaResidueUnit ((x : ℂ) + ((-T : ℝ) : ℂ) * I) ≠ 0 ∧
           ‖zetaLogDerivReg ((x : ℂ) + ((-T : ℝ) : ℂ) * I)‖ ≤
-            K * (1 + Real.log X) ^ 2) := by
+            K * (1 + Real.log X) ^ (2 : ℕ)) := by
   obtain ⟨Ce, Qe, Cj, Qj, hCe, hCj, hcontrol⟩ :=
     exists_zetaResidueUnit_negativeHalf_horizontal_logDeriv_control
   let C : ℝ := inghamDetectorHorizontalPolylogConstant Ce Qe Cj Qj
@@ -383,11 +383,11 @@ theorem exists_routeT_negativeHalf_two_horizontal_edges_polylog :
     (Ce := Ce) (Cj := Cj) (Qe := Qe) (Qj := Qj) (X := X) (N := N)
     hCe hCj (show 1 ≤ X by omega) hNL
   have hCabs : C ≤ K := by dsimp only [K]; exact le_abs_self C
-  have hsq : 0 ≤ (1 + Real.log X) ^ 2 := sq_nonneg _
+  have hsq : 0 ≤ (1 + Real.log X) ^ (2 : ℕ) := sq_nonneg _
   have hraw : ∀ x ∈ Icc (-1 / 2 : ℝ) 2,
       zetaResidueUnit ((x : ℂ) + (T : ℂ) * I) ≠ 0 ∧
       ‖zetaLogDerivReg ((x : ℂ) + (T : ℂ) * I)‖ ≤
-        K * (1 + Real.log X) ^ 2 := by
+        K * (1 + Real.log X) ^ (2 : ℕ) := by
     intro x hx
     obtain ⟨hne, hb⟩ := hbound x hx
     refine ⟨hne, hb.trans (hpoly.trans ?_)⟩

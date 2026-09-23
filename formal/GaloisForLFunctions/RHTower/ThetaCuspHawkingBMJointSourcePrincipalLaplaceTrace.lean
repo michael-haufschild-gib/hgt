@@ -14,7 +14,7 @@ set_option backward.isDefEq.respectTransparency false
 theorem principalTimeLaplace_laplacian (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalResponseGrowth q i < w.re) :
     Δ ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ)) =
-      ((w^2 • principalTimeLaplace q branch a i w-
+      ((w^(2 : ℕ) • principalTimeLaplace q branch a i w-
         (∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • principalTimeForcing q branch a i t)-
           principalRadialPotentialOp q i (principalTimeLaplace q branch a i w) : FourierRealL2) : 𝓢'(ℝ,ℂ)) := by
   let D := Lp.toTemperedDistributionCLM ℂ (volume : Measure ℝ) 2
@@ -22,10 +22,10 @@ theorem principalTimeLaplace_laplacian (q : XiZeroCopy) (branch : Bool) (a : ℂ
   let F := ∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • principalTimeForcing q branch a i t
   let V := principalRadialPotentialOp q i U
   have h := principalTimeLaplace_distribution_equation q branch a i w hw
-  change w^2 • D U-Δ (D U) = D F+D V at h
-  change Δ (D U) = D (w^2 • U-F-V)
+  change w^(2 : ℕ) • D U-Δ (D U) = D F+D V at h
+  change Δ (D U) = D (w^(2 : ℕ) • U-F-V)
   rw [map_sub,map_sub,map_smul]
-  have he := congrArg (fun z : 𝓢'(ℝ,ℂ) => w^2 • D U-z) h
+  have he := congrArg (fun z : 𝓢'(ℝ,ℂ) => w^(2 : ℕ) • D U-z) h
   convert he using 1 <;> abel
 
 /-- Sobolev regularity belongs to the transformed response itself, before any trace is evaluated. -/

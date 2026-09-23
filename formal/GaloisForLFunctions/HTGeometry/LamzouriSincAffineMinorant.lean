@@ -19,16 +19,16 @@ namespace HTGeometry
 full coherent squared-sinc pair energy. -/
 theorem sincSq_anchorCorrelation_affineMinorant
     (A : ℝ) {N : ℕ} (x w : Fin N → ℝ) (t : ℝ) :
-    2 * t * (∑ i, w i * Real.sinc (A * x i) ^ 2) - t ^ 2 ≤
-      ∑ i, ∑ j, w i * Real.sinc (A * (x j - x i)) ^ 2 * w j := by
+    2 * t * (∑ i, w i * Real.sinc (A * x i) ^ (2 : ℕ)) - t ^ (2 : ℕ) ≤
+      ∑ i, ∑ j, w i * Real.sinc (A * (x j - x i)) ^ (2 : ℕ) * w j := by
   have hgram := anchorCorrelation_sq_le_gramEnergy_of_positiveDefinite
-    (fun y : ℝ => Real.sinc (A * y) ^ 2)
+    (fun y : ℝ => Real.sinc (A * y) ^ (2 : ℕ))
     (GaloisForLFunctions.HTGeometry.positiveDefiniteOnReal_sinc_sq A)
     (by simp)
     (by intro y; rw [mul_neg, Real.sinc_neg]) x w
   have hquad :=
     GaloisForLFunctions.HilbertMetric.lamzouriQuadratic_affineMinorant
-      (∑ i, w i * Real.sinc (A * x i) ^ 2) t
+      (∑ i, w i * Real.sinc (A * x i) ^ (2 : ℕ)) t
   simpa only [mul_assoc, mul_comm, mul_left_comm] using hquad.trans hgram
 
 end HTGeometry

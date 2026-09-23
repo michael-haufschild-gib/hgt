@@ -42,7 +42,7 @@ noncomputable section
 namespace RHTower
 
 /-- The pointwise step: `2|uv| ≤ u² + v²`. -/
-theorem two_abs_mul_le_sq_add_sq (u v : ℝ) : 2 * |u * v| ≤ u ^ 2 + v ^ 2 := by
+theorem two_abs_mul_le_sq_add_sq (u v : ℝ) : 2 * |u * v| ≤ u ^ (2 : ℕ) + v ^ (2 : ℕ) := by
   rcases abs_cases (u * v) with ⟨hc, _⟩ | ⟨hc, _⟩
   · rw [hc]; nlinarith [sq_nonneg (u - v)]
   · rw [hc]; nlinarith [sq_nonneg (u + v)]
@@ -74,7 +74,7 @@ integrand is dominated by the sum of the two squares, and both squares are suppo
 overlap. -/
 theorem two_abs_integrand_le {h : ℝ → ℝ} {L a : ℝ} (ha : 0 < a) (_haL : a ≤ L)
     (hsupp : ∀ y : ℝ, y < 0 ∨ L < y → h y = 0) (x : ℝ) :
-    2 * |h x * h (x - a)| ≤ h x ^ 2 + h (x - a) ^ 2 ∧
+    2 * |h x * h (x - a)| ≤ h x ^ (2 : ℕ) + h (x - a) ^ (2 : ℕ) ∧
       (x < a ∨ L < x → h x * h (x - a) = 0) := by
   exact ⟨two_abs_mul_le_sq_add_sq _ _, fun hx => autocorr_integrand_eq_zero ha hsupp hx⟩
 

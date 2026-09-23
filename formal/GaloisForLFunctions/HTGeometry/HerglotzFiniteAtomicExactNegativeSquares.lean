@@ -360,7 +360,7 @@ theorem chamberHerglotz_hasExactlyNegativeSquares
   · obtain ⟨δ, hδ, hc⟩ := exists_negativeCoefficientMargin c
     let R : ℝ := 1
     have hR : 0 < R := one_pos
-    have hweight : Integrable (fun t : ℝ => 1 / (1 + t ^ 2)) ν := by
+    have hweight : Integrable (fun t : ℝ => 1 / (1 + t ^ (2 : ℕ))) ν := by
       refine hH0.congr (Filter.Eventually.of_forall fun t => ?_)
       simp [nevanlinnaWeight, one_div]
     have hdom : ∀ j : Fin d,

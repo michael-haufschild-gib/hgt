@@ -72,9 +72,9 @@ theorem integral_symm_norm_perron_triple_twisted_le
     (hσ : 1 < σ) (hy : 0 < y) (ht₀ : 1 ≤ t₀) (hL : 1 ≤ L) (hVA : 0 ≤ VA) (hVB : 0 ≤ VB)
     (hQA : 0 ≤ QA) (hκA : 0 ≤ κA) (hQB : 0 ≤ QB) (hκB : 0 ≤ κB)
     (hmsA : ∀ U : ℝ, 1 ≤ U →
-      (∫ z in Set.Icc (-U) U, ‖LSeries A ((σ : ℂ) + (z : ℝ) * I)‖ ^ 2) ≤ QA + κA * U)
+      (∫ z in Set.Icc (-U) U, ‖LSeries A ((σ : ℂ) + (z : ℝ) * I)‖ ^ (2 : ℕ)) ≤ QA + κA * U)
     (hmsB : ∀ U : ℝ, 1 ≤ U →
-      (∫ z in Set.Icc (-U) U, ‖LSeries B ((σ : ℂ) + (z : ℝ) * I)‖ ^ 2) ≤ QB + κB * U)
+      (∫ z in Set.Icc (-U) U, ‖LSeries B ((σ : ℂ) + (z : ℝ) * I)‖ ^ (2 : ℕ)) ≤ QB + κB * U)
     (hβ : 0 < β) (hx : zetaHorizonLogThreshold ≤ Real.log x) (hx0 : 0 < x)
     (hτ : 1 < |τ|) (hhorizon : 2 * (|τ| + t₀ * 2 ^ M) ≤ x ^ β)
     (hAb : ∀ t : ℝ, ‖LSeries A ((σ : ℂ) + (t : ℝ) * I)‖ ≤ VA)

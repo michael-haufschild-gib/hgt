@@ -5,9 +5,9 @@ import GaloisForLFunctions.RHTower.SquaredXiChebyshevWindow
 
 Each leg of the reverse-Bessel radial mixture is the unnormalized Gamma density
 `t^j exp (-a t)` on `(0, infinity)`, with total mass `j!/a^(j+1)`, mean `(j+1)/a` and variance
-`(j+1)/a^2`.  The exact second-moment identity
+`(j+1)/a^(2 : ℕ)`.  The exact second-moment identity
 
-`∫_0^∞ (t - (j+1)/a)^2 t^j exp (-a t) dt = ((j+1)/a^2) * (j!/a^(j+1))`
+`∫_0^∞ (t - (j+1)/a)^(2 : ℕ) t^j exp (-a t) dt = ((j+1)/a^(2 : ℕ)) * (j!/a^(j+1))`
 
 gives Chebyshev's inequality for every measurable subset lying at distance at least `R` from the
 mean, with a bound uniform in the leg index once `j` is bounded.  This is the conditional step of
@@ -26,29 +26,29 @@ theorem integral_gammaLeg {a : ℝ} (ha : 0 < a) (j : ℕ) :
   integral_pow_mul_exp_neg_mul_Ioi ha j
 
 theorem integrableOn_sq_sub_mul_gammaLeg {a : ℝ} (ha : 0 < a) (j : ℕ) (c : ℝ) :
-    IntegrableOn (fun t : ℝ => (t - c) ^ 2 * (t ^ j * Real.exp (-(a * t)))) (Ioi (0:ℝ)) := by
+    IntegrableOn (fun t : ℝ => (t - c) ^ (2 : ℕ) * (t ^ j * Real.exp (-(a * t)))) (Ioi (0:ℝ)) := by
   have h0 := integrableOn_pow_mul_exp_neg_mul_Ioi ha j
   have h1 := integrableOn_pow_mul_exp_neg_mul_Ioi ha (j + 1)
   have h2 := integrableOn_pow_mul_exp_neg_mul_Ioi ha (j + 2)
   have hsum : IntegrableOn
       (fun t : ℝ => t ^ (j + 2) * Real.exp (-(a * t))
         + ((-(2 * c)) * (t ^ (j + 1) * Real.exp (-(a * t)))
-          + (c ^ 2) * (t ^ j * Real.exp (-(a * t))))) (Ioi (0:ℝ)) :=
+          + (c ^ (2 : ℕ)) * (t ^ j * Real.exp (-(a * t))))) (Ioi (0:ℝ)) :=
     h2.add ((h1.const_mul _).add (h0.const_mul _))
   refine MeasureTheory.IntegrableOn.congr_fun hsum ?_ measurableSet_Ioi
   intro t _
   ring
 
-/-- **Exact second moment about the mean.**  The Gamma leg has variance `(j+1)/a^2` times its
+/-- **Exact second moment about the mean.**  The Gamma leg has variance `(j+1)/a^(2 : ℕ)` times its
 total mass. -/
 theorem integral_sq_sub_mean_gammaLeg {a : ℝ} (ha : 0 < a) (j : ℕ) :
-    ∫ t in Ioi (0:ℝ), (t - ((j : ℝ) + 1) / a) ^ 2 * (t ^ j * Real.exp (-(a * t)))
-      = ((j : ℝ) + 1) / a ^ 2 * ((j.factorial : ℝ) / a ^ (j + 1)) := by
+    ∫ t in Ioi (0:ℝ), (t - ((j : ℝ) + 1) / a) ^ (2 : ℕ) * (t ^ j * Real.exp (-(a * t)))
+      = ((j : ℝ) + 1) / a ^ (2 : ℕ) * ((j.factorial : ℝ) / a ^ (j + 1)) := by
   have hane : a ≠ 0 := ne_of_gt ha
   set c : ℝ := ((j : ℝ) + 1) / a with hc
   set F2 : ℝ → ℝ := fun t : ℝ => t ^ (j + 2) * Real.exp (-(a * t)) with hF2
   set F1 : ℝ → ℝ := fun t : ℝ => (-(2 * c)) * (t ^ (j + 1) * Real.exp (-(a * t))) with hF1
-  set F0 : ℝ → ℝ := fun t : ℝ => (c ^ 2) * (t ^ j * Real.exp (-(a * t))) with hF0
+  set F0 : ℝ → ℝ := fun t : ℝ => (c ^ (2 : ℕ)) * (t ^ j * Real.exp (-(a * t))) with hF0
   have hI2 : IntegrableOn F2 (Ioi (0:ℝ)) := integrableOn_pow_mul_exp_neg_mul_Ioi ha (j + 2)
   have hI1 : IntegrableOn F1 (Ioi (0:ℝ)) :=
     (integrableOn_pow_mul_exp_neg_mul_Ioi ha (j + 1)).const_mul _
@@ -64,9 +64,9 @@ theorem integral_sq_sub_mean_gammaLeg {a : ℝ} (ha : 0 < a) (j : ℕ) :
   have hv1 : ∫ t in Ioi (0:ℝ), F1 t
       = (-(2 * c)) * (((j + 1).factorial : ℝ) / a ^ (j + 1 + 1)) := by
     rw [hF1, integral_const_mul, integral_pow_mul_exp_neg_mul_Ioi ha (j + 1)]
-  have hv0 : ∫ t in Ioi (0:ℝ), F0 t = (c ^ 2) * ((j.factorial : ℝ) / a ^ (j + 1)) := by
+  have hv0 : ∫ t in Ioi (0:ℝ), F0 t = (c ^ (2 : ℕ)) * ((j.factorial : ℝ) / a ^ (j + 1)) := by
     rw [hF0, integral_const_mul, integral_pow_mul_exp_neg_mul_Ioi ha j]
-  have hEq : ∫ t in Ioi (0:ℝ), (t - c) ^ 2 * (t ^ j * Real.exp (-(a * t)))
+  have hEq : ∫ t in Ioi (0:ℝ), (t - c) ^ (2 : ℕ) * (t ^ j * Real.exp (-(a * t)))
       = ∫ t in Ioi (0:ℝ), (F2 t + (F1 t + F0 t)) := by
     refine setIntegral_congr_fun measurableSet_Ioi (fun t _ => ?_)
     rw [hF2, hF1, hF0]
@@ -84,12 +84,12 @@ theorem integral_sq_sub_mean_gammaLeg {a : ℝ} (ha : 0 < a) (j : ℕ) :
   ring
 
 /-- **Chebyshev's inequality for a Gamma leg.**  Any measurable subset of the positive ray lying at
-distance at least `R` from the mean `(j+1)/a` carries at most `(j+1)/(a^2 R^2)` of the leg mass. -/
+distance at least `R` from the mean `(j+1)/a` carries at most `(j+1)/(a^(2 : ℕ) R^(2 : ℕ))` of the leg mass. -/
 theorem gammaLeg_chebyshev {a : ℝ} (ha : 0 < a) (j : ℕ) {R : ℝ} (hR : 0 < R)
     {S : Set ℝ} (hS : MeasurableSet S) (hSsub : S ⊆ Ioi (0:ℝ))
     (hSfar : ∀ t ∈ S, R ≤ |t - ((j : ℝ) + 1) / a|) :
     ∫ t in S, t ^ j * Real.exp (-(a * t))
-      ≤ ((j : ℝ) + 1) / (a ^ 2 * R ^ 2) * ((j.factorial : ℝ) / a ^ (j + 1)) := by
+      ≤ ((j : ℝ) + 1) / (a ^ (2 : ℕ) * R ^ (2 : ℕ)) * ((j.factorial : ℝ) / a ^ (j + 1)) := by
   set c : ℝ := ((j : ℝ) + 1) / a with hc
   set f : ℝ → ℝ := fun t => t ^ j * Real.exp (-(a * t)) with hf
   have hfnn : ∀ t ∈ Ioi (0:ℝ), 0 ≤ f t := by
@@ -101,9 +101,9 @@ theorem gammaLeg_chebyshev {a : ℝ} (ha : 0 < a) (j : ℕ) {R : ℝ} (hR : 0 < 
     positivity
   have hint : IntegrableOn f (Ioi (0:ℝ)) := integrableOn_pow_mul_exp_neg_mul_Ioi ha j
   have hindic : IntegrableOn (S.indicator f) (Ioi (0:ℝ)) := hint.indicator hS
-  have hmaj : IntegrableOn (fun t : ℝ => (t - c) ^ 2 / R ^ 2 * f t) (Ioi (0:ℝ)) := by
+  have hmaj : IntegrableOn (fun t : ℝ => (t - c) ^ (2 : ℕ) / R ^ (2 : ℕ) * f t) (Ioi (0:ℝ)) := by
     have h := integrableOn_sq_sub_mul_gammaLeg ha j c
-    have hcm := h.const_mul ((R ^ 2)⁻¹)
+    have hcm := h.const_mul ((R ^ (2 : ℕ))⁻¹)
     refine MeasureTheory.IntegrableOn.congr_fun hcm ?_ measurableSet_Ioi
     intro t _
     rw [hf]
@@ -111,25 +111,25 @@ theorem gammaLeg_chebyshev {a : ℝ} (ha : 0 < a) (j : ℕ) {R : ℝ} (hR : 0 < 
   have hsplit : ∫ t in S, f t = ∫ t in Ioi (0:ℝ), S.indicator f t := by
     rw [MeasureTheory.setIntegral_indicator hS, Set.inter_eq_self_of_subset_right hSsub]
   have hmono : ∫ t in Ioi (0:ℝ), S.indicator f t
-      ≤ ∫ t in Ioi (0:ℝ), (t - c) ^ 2 / R ^ 2 * f t := by
+      ≤ ∫ t in Ioi (0:ℝ), (t - c) ^ (2 : ℕ) / R ^ (2 : ℕ) * f t := by
     refine setIntegral_mono_on hindic hmaj measurableSet_Ioi (fun t ht => ?_)
     by_cases hmem : t ∈ S
     · rw [Set.indicator_of_mem hmem]
       have hfar : R ≤ |t - c| := hSfar t hmem
-      have hsq : R ^ 2 ≤ (t - c) ^ 2 := by
-        have habs : R ^ 2 ≤ |t - c| ^ 2 := by nlinarith [hR.le, abs_nonneg (t - c)]
+      have hsq : R ^ (2 : ℕ) ≤ (t - c) ^ (2 : ℕ) := by
+        have habs : R ^ (2 : ℕ) ≤ |t - c| ^ (2 : ℕ) := by nlinarith [hR.le, abs_nonneg (t - c)]
         rwa [sq_abs] at habs
-      have hone : (1:ℝ) ≤ (t - c) ^ 2 / R ^ 2 := by
+      have hone : (1:ℝ) ≤ (t - c) ^ (2 : ℕ) / R ^ (2 : ℕ) := by
         rw [le_div_iff₀ (by positivity)]
         linarith
       nlinarith [hfnn t ht, hone]
     · rw [Set.indicator_of_notMem hmem]
-      have hnn : (0:ℝ) ≤ (t - c) ^ 2 / R ^ 2 := by positivity
+      have hnn : (0:ℝ) ≤ (t - c) ^ (2 : ℕ) / R ^ (2 : ℕ) := by positivity
       exact mul_nonneg hnn (hfnn t ht)
-  have hval : ∫ t in Ioi (0:ℝ), (t - c) ^ 2 / R ^ 2 * f t
-      = ((j : ℝ) + 1) / (a ^ 2 * R ^ 2) * ((j.factorial : ℝ) / a ^ (j + 1)) := by
-    have hcongr : ∫ t in Ioi (0:ℝ), (t - c) ^ 2 / R ^ 2 * f t
-        = ∫ t in Ioi (0:ℝ), (R ^ 2)⁻¹ * ((t - c) ^ 2 * f t) := by
+  have hval : ∫ t in Ioi (0:ℝ), (t - c) ^ (2 : ℕ) / R ^ (2 : ℕ) * f t
+      = ((j : ℝ) + 1) / (a ^ (2 : ℕ) * R ^ (2 : ℕ)) * ((j.factorial : ℝ) / a ^ (j + 1)) := by
+    have hcongr : ∫ t in Ioi (0:ℝ), (t - c) ^ (2 : ℕ) / R ^ (2 : ℕ) * f t
+        = ∫ t in Ioi (0:ℝ), (R ^ (2 : ℕ))⁻¹ * ((t - c) ^ (2 : ℕ) * f t) := by
       refine setIntegral_congr_fun measurableSet_Ioi (fun t _ => ?_)
       field_simp
     rw [hcongr, integral_const_mul, hf, integral_sq_sub_mean_gammaLeg ha j]
@@ -684,13 +684,13 @@ theorem radialMixtureLeg_mass {n : ℕ} {s : ℝ} (hs : 1 < s) (j : ℕ) :
   ring
 
 /-- **Good-leg bound.**  A leg whose mean stays at distance `R` from the set contributes at most a
-`(n+1)/(a^2 R^2)` fraction of its own mass. -/
+`(n+1)/(a^(2 : ℕ) R^(2 : ℕ))` fraction of its own mass. -/
 theorem integral_radialMixtureLeg_good_le {n : ℕ} {s R : ℝ} (hs : 1 < s) (hR : 0 < R) (j : ℕ)
     (hjn : j ≤ n) {S : Set ℝ} (hS : MeasurableSet S) (hSsub : S ⊆ Ioi (0:ℝ))
     (hfar : ∀ t ∈ S, R ≤ |t - ((j : ℝ) + 1) / (s - 1)|) :
     ((squaredRadialJetWeight n j : ℝ) * (s - 1 / 2) ^ j) *
         ∫ t in S, t ^ j * Real.exp (-((s - 1) * t))
-      ≤ ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) * ((s - 1)⁻¹ * radialMixtureWeight n s j) := by
+      ≤ ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) * ((s - 1)⁻¹ * radialMixtureWeight n s j) := by
   have ha : (0:ℝ) < s - 1 := by linarith
   have hcoef : (0:ℝ) ≤ (squaredRadialJetWeight n j : ℝ) * (s - 1 / 2) ^ j := by
     have hb : (0:ℝ) ≤ (squaredRadialJetWeight n j : ℝ) := Nat.cast_nonneg _
@@ -700,25 +700,25 @@ theorem integral_radialMixtureLeg_good_le {n : ℕ} {s R : ℝ} (hs : 1 < s) (hR
     have : (j : ℝ) ≤ (n : ℝ) := by exact_mod_cast hjn
     linarith
   have hmass : (0:ℝ) ≤ (j.factorial : ℝ) / (s - 1) ^ (j + 1) := by positivity
-  have hden : (0:ℝ) < (s - 1) ^ 2 * R ^ 2 := by positivity
-  have hstep : ((j : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) * ((j.factorial : ℝ) / (s - 1) ^ (j + 1))
-      ≤ ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) * ((j.factorial : ℝ) / (s - 1) ^ (j + 1)) := by
+  have hden : (0:ℝ) < (s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ) := by positivity
+  have hstep : ((j : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) * ((j.factorial : ℝ) / (s - 1) ^ (j + 1))
+      ≤ ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) * ((j.factorial : ℝ) / (s - 1) ^ (j + 1)) := by
     refine mul_le_mul_of_nonneg_right ?_ hmass
     gcongr
   calc ((squaredRadialJetWeight n j : ℝ) * (s - 1 / 2) ^ j) *
         ∫ t in S, t ^ j * Real.exp (-((s - 1) * t))
       ≤ ((squaredRadialJetWeight n j : ℝ) * (s - 1 / 2) ^ j) *
-          (((j : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) *
+          (((j : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) *
             ((j.factorial : ℝ) / (s - 1) ^ (j + 1))) :=
         mul_le_mul_of_nonneg_left hcheb hcoef
     _ ≤ ((squaredRadialJetWeight n j : ℝ) * (s - 1 / 2) ^ j) *
-          (((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) *
+          (((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) *
             ((j.factorial : ℝ) / (s - 1) ^ (j + 1))) :=
         mul_le_mul_of_nonneg_left hstep hcoef
-    _ = ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) *
+    _ = ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) *
           (((squaredRadialJetWeight n j : ℝ) * (s - 1 / 2) ^ j) *
             ((j.factorial : ℝ) / (s - 1) ^ (j + 1))) := by ring
-    _ = ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) * ((s - 1)⁻¹ * radialMixtureWeight n s j) := by
+    _ = ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) * ((s - 1)⁻¹ * radialMixtureWeight n s j) := by
         rw [radialMixtureLeg_mass hs j]
 
 /-- **Block split of the radial mixture mass on a far set.**  The two outer index blocks are
@@ -731,7 +731,7 @@ theorem integral_radialMixtureDensity_le_blocks {n : ℕ} {s R : ℝ} (hs : 1 < 
       ≤ (s - 1)⁻¹ *
           (∑ j ∈ Finset.range (j₁ + 1), radialMixtureWeight n s j
             + ∑ j ∈ Finset.Icc j₀ n, radialMixtureWeight n s j)
-        + ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) *
+        + ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) *
             ((s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j) := by
   have ha : (0:ℝ) < s - 1 := by linarith
   have hainv : (0:ℝ) ≤ (s - 1)⁻¹ := le_of_lt (inv_pos.mpr ha)
@@ -769,16 +769,16 @@ theorem integral_radialMixtureDensity_le_blocks {n : ℕ} {s R : ℝ} (hs : 1 < 
         ((squaredRadialJetWeight n j : ℝ) * (s - 1 / 2) ^ j) *
           ∫ t in S, t ^ j * Real.exp (-((s - 1) * t))
       ≤ ∑ j ∈ Finset.Ico (j₁ + 1) j₀,
-          ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) * ((s - 1)⁻¹ * radialMixtureWeight n s j) := by
+          ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) * ((s - 1)⁻¹ * radialMixtureWeight n s j) := by
     refine Finset.sum_le_sum (fun j hj => ?_)
     obtain ⟨h1, h2⟩ := Finset.mem_Ico.mp hj
     refine integral_radialMixtureLeg_good_le hs hR j (by omega) hS hSsub ?_
     exact hgood j (by omega) h2
   have hmid' : ∑ j ∈ Finset.Ico (j₁ + 1) j₀,
-        ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) * ((s - 1)⁻¹ * radialMixtureWeight n s j)
-      ≤ ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) *
+        ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) * ((s - 1)⁻¹ * radialMixtureWeight n s j)
+      ≤ ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) *
           ((s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j) := by
-    have hfac : (0:ℝ) ≤ ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) := by positivity
+    have hfac : (0:ℝ) ≤ ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) := by positivity
     have hsub : Finset.Ico (j₁ + 1) j₀ ⊆ Finset.range (n + 1) := by
       intro m hm
       obtain ⟨_, h2⟩ := Finset.mem_Ico.mp hm
@@ -788,11 +788,11 @@ theorem integral_radialMixtureDensity_le_blocks {n : ℕ} {s R : ℝ} (hs : 1 < 
       Finset.sum_le_sum_of_subset_of_nonneg hsub
         (fun i _ _ => radialMixtureWeight_nonneg n hs i)
     calc ∑ j ∈ Finset.Ico (j₁ + 1) j₀,
-          ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) * ((s - 1)⁻¹ * radialMixtureWeight n s j)
-        = ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) *
+          ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) * ((s - 1)⁻¹ * radialMixtureWeight n s j)
+        = ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) *
             ((s - 1)⁻¹ * ∑ j ∈ Finset.Ico (j₁ + 1) j₀, radialMixtureWeight n s j) := by
           rw [Finset.mul_sum, Finset.mul_sum]
-      _ ≤ ((n : ℝ) + 1) / ((s - 1) ^ 2 * R ^ 2) *
+      _ ≤ ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * R ^ (2 : ℕ)) *
             ((s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j) := by
           refine mul_le_mul_of_nonneg_left ?_ hfac
           exact mul_le_mul_of_nonneg_left hpart hainv
@@ -831,7 +831,7 @@ theorem radialBadSet_mass_le {n : ℕ} {s ε : ℝ} (hs : 1 < s) (hε : 0 < ε)
               radialMixtureWeight n s j
             + ∑ j ∈ Finset.Icc ⌈(1 / s + ε * (s - 1) / 4) * (n : ℝ)⌉₊ n,
               radialMixtureWeight n s j)
-        + ((n : ℝ) + 1) / ((s - 1) ^ 2 * (ε * (n : ℝ) / 2) ^ 2) *
+        + ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * (ε * (n : ℝ) / 2) ^ (2 : ℕ)) *
             ((s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j) := by
   have ha : (0:ℝ) < s - 1 := by linarith
   have hs0 : (0:ℝ) < s := by linarith
@@ -888,15 +888,15 @@ theorem radialBadSet_mass_le {n : ℕ} {s ε : ℝ} (hs : 1 < s) (hε : 0 < ε)
 
 theorem tendsto_chebyshevTerm {s ε : ℝ} (hs : 1 < s) (hε : 0 < ε) :
     Filter.Tendsto
-      (fun n : ℕ => ((n : ℝ) + 1) / ((s - 1) ^ 2 * (ε * (n : ℝ) / 2) ^ 2))
+      (fun n : ℕ => ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * (ε * (n : ℝ) / 2) ^ (2 : ℕ)))
       Filter.atTop (nhds 0) := by
   have ha : (0:ℝ) < s - 1 := by linarith
   have hinv : Filter.Tendsto (fun n : ℕ => (1:ℝ) / (n : ℝ)) Filter.atTop (nhds 0) :=
     tendsto_one_div_atTop_nhds_zero_nat
   have hbase : Filter.Tendsto
-      (fun n : ℕ => (4 / ((s - 1) ^ 2 * ε ^ 2)) * ((1:ℝ) / (n : ℝ) + (1 / (n : ℝ)) * (1 / (n : ℝ))))
+      (fun n : ℕ => (4 / ((s - 1) ^ (2 : ℕ) * ε ^ (2 : ℕ))) * ((1:ℝ) / (n : ℝ) + (1 / (n : ℝ)) * (1 / (n : ℝ))))
       Filter.atTop (nhds 0) := by
-    have h := (hinv.add (hinv.mul hinv)).const_mul (4 / ((s - 1) ^ 2 * ε ^ 2))
+    have h := (hinv.add (hinv.mul hinv)).const_mul (4 / ((s - 1) ^ (2 : ℕ) * ε ^ (2 : ℕ)))
     simpa using h
   refine hbase.congr' ?_
   filter_upwards [Filter.eventually_gt_atTop 0] with n hn
@@ -964,14 +964,14 @@ theorem tendsto_radialBadSet_fraction {s ε : ℝ} (hs : 1 < s) (hε : 0 < ε)
         + (∑ j ∈ Finset.Icc ⌈(1 / s + ε * (s - 1) / 4) * (n : ℝ)⌉₊ n,
             radialMixtureWeight n s j) /
           ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j
-        + ((n : ℝ) + 1) / ((s - 1) ^ 2 * (ε * (n : ℝ) / 2) ^ 2)) *
+        + ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * (ε * (n : ℝ) / 2) ^ (2 : ℕ))) *
         ((s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j)
       = (s - 1)⁻¹ *
           (∑ j ∈ Finset.range (⌊(1 / s - ε * (s - 1) / 4) * (n : ℝ)⌋₊ + 1),
               radialMixtureWeight n s j
             + ∑ j ∈ Finset.Icc ⌈(1 / s + ε * (s - 1) / 4) * (n : ℝ)⌉₊ n,
               radialMixtureWeight n s j)
-        + ((n : ℝ) + 1) / ((s - 1) ^ 2 * (ε * (n : ℝ) / 2) ^ 2) *
+        + ((n : ℝ) + 1) / ((s - 1) ^ (2 : ℕ) * (ε * (n : ℝ) / 2) ^ (2 : ℕ)) *
             ((s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j) := by
       field_simp
     rw [hexp]

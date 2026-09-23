@@ -23,12 +23,12 @@ namespace RHTower
 threshold imposed by its canonical negative centering shift. -/
 theorem speQuantileRiesz_terminalCoefficient_nonpos_iff (M K : ℕ) :
     Real.sqrt (M : ℝ) + ccmActualHeadMatchedQuantileParabolicCenteredShift K ≤ 0 ↔
-      (M : ℝ) ≤ ccmActualHeadMatchedQuantileParabolicCenteredShift K ^ 2 := by
+      (M : ℝ) ≤ ccmActualHeadMatchedQuantileParabolicCenteredShift K ^ (2 : ℕ) := by
   let s : ℝ := ccmActualHeadMatchedQuantileParabolicCenteredShift K
   have hs : s < 0 := ccmActualHeadMatchedQuantileParabolicCenteredShift_neg K
   have hM : 0 ≤ (M : ℝ) := Nat.cast_nonneg M
-  have hroot : (Real.sqrt (M : ℝ)) ^ 2 = M := Real.sq_sqrt hM
-  change Real.sqrt (M : ℝ) + s ≤ 0 ↔ (M : ℝ) ≤ s ^ 2
+  have hroot : (Real.sqrt (M : ℝ)) ^ (2 : ℕ) = M := Real.sq_sqrt hM
+  change Real.sqrt (M : ℝ) + s ≤ 0 ↔ (M : ℝ) ≤ s ^ (2 : ℕ)
   constructor
   · intro h
     nlinarith [Real.sqrt_nonneg (M : ℝ)]
@@ -43,9 +43,9 @@ theorem speQuantileRiesz_terminalCoefficient_eventually_pos (K : ℕ) :
     ∀ᶠ M : ℕ in atTop,
       0 < Real.sqrt (M : ℝ) + ccmActualHeadMatchedQuantileParabolicCenteredShift K := by
   have hlarge : ∀ᶠ M : ℕ in Filter.atTop,
-      ccmActualHeadMatchedQuantileParabolicCenteredShift K ^ 2 < (M : ℝ) :=
+      ccmActualHeadMatchedQuantileParabolicCenteredShift K ^ (2 : ℕ) < (M : ℝ) :=
     tendsto_natCast_atTop_atTop.eventually
-      (Filter.eventually_gt_atTop (ccmActualHeadMatchedQuantileParabolicCenteredShift K ^ 2))
+      (Filter.eventually_gt_atTop (ccmActualHeadMatchedQuantileParabolicCenteredShift K ^ (2 : ℕ)))
   exact hlarge.mono fun M hM =>
     lt_of_not_ge fun hnonpos => not_lt_of_ge
       (speQuantileRiesz_terminalCoefficient_nonpos_iff M K |>.mp hnonpos) hM

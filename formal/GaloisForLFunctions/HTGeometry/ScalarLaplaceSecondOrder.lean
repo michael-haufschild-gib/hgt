@@ -39,7 +39,7 @@ theorem scalarLaplace_second_of_growth (f v g : ℝ → ℂ) (r A C : ℝ)
     (hgb : ∀ t : ℝ, 0 ≤ t → ‖g t‖ ≤ C*Real.exp (r*t))
     (w : ℂ) (hw : r < w.re) :
     (∫ t in Ioi (0:ℝ), scalarLaplaceDamp w g t) =
-      w^2*(∫ t in Ioi (0:ℝ), scalarLaplaceDamp w f t)-w*f 0-v 0 := by
+      w^(2 : ℕ)*(∫ t in Ioi (0:ℝ), scalarLaplaceDamp w f t)-w*f 0-v 0 := by
   apply scalarLaplace_second_derivative f v g w hf hv
   · exact scalarLaplaceDamp_integrable_of_linear_growth f (continuous_iff_continuousAt.mpr (fun t => (hf t).continuousAt)) A 0 r
       (by simpa using hfb) w hw

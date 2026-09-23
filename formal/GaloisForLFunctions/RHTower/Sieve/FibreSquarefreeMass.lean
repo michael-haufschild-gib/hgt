@@ -53,14 +53,14 @@ theorem fibre_squarefree_mass {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {R M M' 
     (hbig : ∀ a ∈ outerBlock x h, fibreStartIdx x a + fibreLen x h a ≤ M)
     (hMM : M' ≤ M)
     (hsq : ∀ a ∈ outerBlock x h,
-      fibreStartIdx x a + fibreLen x h a < (M' + 1) ^ 2)
+      fibreStartIdx x a + fibreLen x h a < (M' + 1) ^ (2 : ℕ))
     (hgap : ∀ a ∈ outerBlock x h,
       (R : ℝ) + (fibreLen x h a : ℝ) / (R : ℝ) + θ
         ≤ (1 / 2) * squarefreeDensity * (fibreLen x h a : ℝ)) :
     ∀ a ∈ outerBlock x h,
       windowTail (fibreStartIdx x a) (fibreLen x h a) R M' ≤ θ →
       (1 / 2) * squarefreeDensity * (fibreLen x h a : ℝ)
-        ≤ ∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ) ^ 2 := by
+        ≤ ∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ) ^ (2 : ℕ) := by
   intro a ha htail
   have hbase := squarefree_count_ge_trunc (fibreStartIdx x a) (fibreLen x h a) R M M' hR
     (hbig a ha) hMM (hsq a ha)
@@ -70,7 +70,7 @@ theorem fibre_squarefree_mass {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {R M M' 
   rw [hfib]
   have htw : ∑ d ∈ Finset.Icc (R + 1) M',
       ((#{n ∈ Finset.Ioc (fibreStartIdx x a)
-          (fibreStartIdx x a + fibreLen x h a) | d ^ 2 ∣ n} : ℕ) : ℝ)
+          (fibreStartIdx x a + fibreLen x h a) | d ^ (2 : ℕ) ∣ n} : ℕ) : ℝ)
       = windowTail (fibreStartIdx x a) (fibreLen x h a) R M' := rfl
   rw [htw] at hbase
   have hg := hgap a ha

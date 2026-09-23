@@ -31,9 +31,9 @@ theorem wardTriangularExpPairMixture_eq (k a : ℝ) :
     rw [wardTriangularExpPairMixture, wardRemovableExpPairQuotient_zero]
     simp only [mul_zero, neg_zero, Real.exp_zero]
     have haffine :
-        (∫ u in (0 : ℝ)..2 * k, (2 * k - u)) = 2 * k ^ 2 := by
+        (∫ u in (0 : ℝ)..2 * k, (2 * k - u)) = 2 * k ^ (2 : ℕ) := by
       rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
-        (f := fun u : ℝ => 2 * k * u - u ^ 2 / 2)]
+        (f := fun u : ℝ => 2 * k * u - u ^ (2 : ℕ) / 2)]
       · ring
       · intro u _hu
         have hraw := (((hasDerivAt_id u).const_mul (2 * k)).sub
@@ -51,15 +51,15 @@ theorem wardTriangularExpPairMixture_eq (k a : ℝ) :
   · have hplus (u : ℝ) :
         HasDerivAt
           (fun x : ℝ => Real.exp (x * a) *
-            ((2 * k - x) / a + 1 / a ^ 2))
+            ((2 * k - x) / a + 1 / a ^ (2 : ℕ)))
           ((2 * k - u) * Real.exp (u * a)) u := by
       have hraw := ((Real.hasDerivAt_exp (u * a)).comp u
           ((hasDerivAt_id u).mul_const a)).mul
         ((((hasDerivAt_const u (2 * k)).sub (hasDerivAt_id u)).div_const a).add_const
-          (1 / a ^ 2))
+          (1 / a ^ (2 : ℕ)))
       have hcalc :
           Real.exp (u * a) * (1 * a) *
-                (((fun x : ℝ => 2 * k) - (id : ℝ → ℝ)) u / a + 1 / a ^ 2) +
+                (((fun x : ℝ => 2 * k) - (id : ℝ → ℝ)) u / a + 1 / a ^ (2 : ℕ)) +
               (Real.exp ∘ fun y : ℝ => id y * a) u * ((0 - 1) / a) =
             (2 * k - u) * Real.exp (u * a) := by
         simp
@@ -67,7 +67,7 @@ theorem wardTriangularExpPairMixture_eq (k a : ℝ) :
         ring
       have hraw' : HasDerivAt
           ((Real.exp ∘ fun y : ℝ => id y * a) *
-            fun x : ℝ => ((fun _ : ℝ => 2 * k) - (id : ℝ → ℝ)) x / a + 1 / a ^ 2)
+            fun x : ℝ => ((fun _ : ℝ => 2 * k) - (id : ℝ → ℝ)) x / a + 1 / a ^ (2 : ℕ))
           ((2 * k - u) * Real.exp (u * a)) u := by
         rw [← hcalc]
         exact hraw
@@ -76,18 +76,18 @@ theorem wardTriangularExpPairMixture_eq (k a : ℝ) :
     have hminus (u : ℝ) :
         HasDerivAt
           (fun x : ℝ => Real.exp (-(x * a)) *
-            (-((2 * k - x) / a) + 1 / a ^ 2))
+            (-((2 * k - x) / a) + 1 / a ^ (2 : ℕ)))
           ((2 * k - u) * Real.exp (-(u * a))) u := by
       have hinner : HasDerivAt (fun x : ℝ => -x * a) (-a) u := by
         simpa [Function.comp_def] using
           ((hasDerivAt_neg (u * a)).comp u ((hasDerivAt_id u).mul_const a))
       have hraw := ((Real.hasDerivAt_exp (-u * a)).comp u hinner).mul
         (((((hasDerivAt_const u (2 * k)).sub (hasDerivAt_id u)).div_const a).neg).add_const
-          (1 / a ^ 2))
+          (1 / a ^ (2 : ℕ)))
       have hcalc :
           Real.exp (-u * a) * -a *
                 ((-fun x : ℝ => ((fun _ : ℝ => 2 * k) - (id : ℝ → ℝ)) x / a) u +
-                  1 / a ^ 2) +
+                  1 / a ^ (2 : ℕ)) +
               (Real.exp ∘ fun x : ℝ => -x * a) u * -((0 - 1) / a) =
             (2 * k - u) * Real.exp (-(u * a)) := by
         simp [neg_mul]
@@ -97,7 +97,7 @@ theorem wardTriangularExpPairMixture_eq (k a : ℝ) :
           ((Real.exp ∘ fun x : ℝ => -x * a) *
             fun x : ℝ =>
               (-fun y : ℝ => ((fun _ : ℝ => 2 * k) - (id : ℝ → ℝ)) y / a) x +
-                1 / a ^ 2)
+                1 / a ^ (2 : ℕ))
           ((2 * k - u) * Real.exp (-(u * a))) u := by
         rw [← hcalc]
         exact hraw

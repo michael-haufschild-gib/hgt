@@ -41,7 +41,7 @@ theorem sourceHorizontalGammaSixCurvature_mul_proofExchangeComplement
 /-- The exchange complement is the strictly positive logistic visibility square. -/
 theorem one_sub_two_mul_sourceHorizontalProofExchangeDefect_eq (a : ℝ) :
     1 - 2 * sourceHorizontalProofExchangeDefect a =
-      4 * Real.exp a / (1 + Real.exp a) ^ 2 := by
+      4 * Real.exp a / (1 + Real.exp a) ^ (2 : ℕ) := by
   simp only [sourceHorizontalProofExchangeDefect, threeSlotExchangeDefect_eq,
     coe_logisticPhase, Real.exp_neg]
   have hx : 0 < Real.exp a := Real.exp_pos a

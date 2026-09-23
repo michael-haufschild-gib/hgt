@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.PolylogLimits
 
 The polynomial-frequency sharp twisted Mertens estimate is transferred by Abel summation to the
 literal truncated Mobius atom in a Heath--Brown dyadic box.  At every Perron abscissa `c >= 1`,
-every fixed logarithmic power is saved uniformly for `|tau| <= N^24`, with exact Abel weight
+every fixed logarithmic power is saved uniformly for `|tau| <= N^(24 : ℕ)`, with exact Abel weight
 `N^(1-c)` retained.
 -/
 
@@ -20,7 +20,7 @@ noncomputable section
 set_option maxHeartbeats 1000000 in
 /-- Menon's literal medium-Mobius estimate on the Perron half-plane: every fixed logarithmic
 saving holds on sufficiently late dyadic blocks, uniformly through the full frequency range
-`|tau| <= N^24`, and Abel summation retains the exact factor `N^(1-c)`. -/
+`|tau| <= N^(24 : ℕ)`, and Abel summation retains the exact factor `N^(1-c)`. -/
 theorem eventually_norm_LSeries_truncatedMoebius_dyadic_le_rpow_mul_log_rpow_neg_pow_twentyFour
     (A : ℝ) :
     ∀ᶠ q : ℕ in atTop, ∀ (L : ℕ) (c tau : ℝ),

@@ -235,11 +235,11 @@ weighted aggregate on one scaled-Hausdorff diagonal of total depth `M+N+2`. -/
 theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_completeHausdorffDiagonal
     {w : ℝ} (hw : 1 / 2 < w) {A B : Polynomial ℝ} {M N : ℕ}
     (hA : A.natDegree ≤ M) (hB : B.natDegree ≤ N) :
-    let T := xiShiftedHardEdgeAdaptiveBilinearSource (w ^ 2) M N A B
+    let T := xiShiftedHardEdgeAdaptiveBilinearSource (w ^ (2 : ℕ)) M N A B
     xiShiftedAdaptiveBilinearCompletedArithmeticSource w A B =
       T.support.sum (fun j =>
-        T.coeff j * ((w ^ 2) ^ j *
-          scaledHausdorffMomentDifference (1 / (w ^ 2))
+        T.coeff j * ((w ^ (2 : ℕ)) ^ j *
+          scaledHausdorffMomentDifference (1 / (w ^ (2 : ℕ)))
             (xiShiftedRealMomentSequence w) (M + N + 2 - j) j)) := by
   dsimp only
   rw [xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_hardEdgeLanding
@@ -247,7 +247,7 @@ theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_completeHausdorffD
   exact momentFunctional_hardEdgeUnclearing_eq_completeHausdorffDiagonal
     (xiShiftedRealMomentSequence w)
     (sq_pos_of_pos (by linarith : 0 < w))
-    ((natDegree_xiShiftedHardEdgeAdaptiveBilinearSource_le hA hB (w ^ 2)).trans
+    ((natDegree_xiShiftedHardEdgeAdaptiveBilinearSource_le hA hB (w ^ (2 : ℕ))).trans
       (by omega))
 
 /-- **Adaptive mixed `P^sharp` complete-diagonal law.** The diagonal rational--Gamma/von
@@ -255,11 +255,11 @@ Mangoldt formation lands on the same cofinal scaled-Hausdorff diagonal. -/
 theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_eq_completeHausdorffDiagonal
     {w : ℝ} (hw : 1 / 2 < w) {A : Polynomial ℝ} {N : ℕ}
     (hA : A.natDegree ≤ N) :
-    let T := xiShiftedHardEdgeAdaptiveBilinearSource (w ^ 2) N N A A
+    let T := xiShiftedHardEdgeAdaptiveBilinearSource (w ^ (2 : ℕ)) N N A A
     xiShiftedAdaptiveMixedCompletedArithmeticSource w A =
       T.support.sum (fun j =>
-        T.coeff j * ((w ^ 2) ^ j *
-          scaledHausdorffMomentDifference (1 / (w ^ 2))
+        T.coeff j * ((w ^ (2 : ℕ)) ^ j *
+          scaledHausdorffMomentDifference (1 / (w ^ (2 : ℕ)))
             (xiShiftedRealMomentSequence w) (2 * N + 2 - j) j)) := by
   rw [← xiShiftedAdaptiveBilinearCompletedArithmeticSource_self_eq_mixed hw]
   simpa only [show N + N + 2 = 2 * N + 2 by omega] using

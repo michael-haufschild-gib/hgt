@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.DeningerFlowInvariance
 Averaging a closed periodic form over the periods of all coordinates in turn produces a form
 invariant under every period flow, hence with constant coefficients, and each averaging step changes
 the form only by an exact form with a periodic primitive.  So every closed periodic form of class
-`C^1` on the covering space is a constant form plus the exterior derivative of a periodic form.
+`C^(1 : ℕ)` on the covering space is a constant form plus the exterior derivative of a periodic form.
 
 * `DeningerAveragedData` : a form averaged over a list of directions, with its primitive.
 * `deningerAveragedData` : the averaged data, built by recursion over the list.
@@ -167,8 +167,8 @@ theorem deningerNegOneSmul {m : ℕ} (A : (Fin r → ℂ) [⋀^Fin m]→L[ℂ] �
   show (-1 : ℂ) • (A v) = (-A) v
   rw [show ((-A) v) = -(A v) from rfl, smul_eq_mul, neg_one_mul]
 
-/-- **A closed periodic form of class `C^1` on the covering space is a constant form plus the
-exterior derivative of a periodic form of class `C^1`.**  Averaging over every coordinate period in
+/-- **A closed periodic form of class `C^(1 : ℕ)` on the covering space is a constant form plus the
+exterior derivative of a periodic form of class `C^(1 : ℕ)`.**  Averaging over every coordinate period in
 turn makes the form invariant under all the period flows, hence constant, and each step changes it
 by an exact form with a periodic primitive. -/
 theorem deningerPeriodic_closed_eq_const_add_exact

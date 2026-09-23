@@ -27,8 +27,8 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 /-- **Two states close to one target are close to each other.** -/
 theorem norm_inner_ge_of_common_target {u v y : E} (hu : ‖u‖ = 1) (hv : ‖v‖ = 1) (hy : ‖y‖ = 1)
     {δ : ℝ} (hδ : 0 ≤ δ)
-    (h1 : 1 - δ ^ 2 ≤ ‖(inner ℂ y u : ℂ)‖ ^ 2) (h2 : 1 - δ ^ 2 ≤ ‖(inner ℂ y v : ℂ)‖ ^ 2) :
-    1 - 2 * δ ^ 2 ≤ ‖(inner ℂ u v : ℂ)‖ := by
+    (h1 : 1 - δ ^ (2 : ℕ) ≤ ‖(inner ℂ y u : ℂ)‖ ^ (2 : ℕ)) (h2 : 1 - δ ^ (2 : ℕ) ≤ ‖(inner ℂ y v : ℂ)‖ ^ (2 : ℕ)) :
+    1 - 2 * δ ^ (2 : ℕ) ≤ ‖(inner ℂ u v : ℂ)‖ := by
   set a : ℂ := inner ℂ y u with ha
   set b : ℂ := inner ℂ y v with hb
   set u' : E := u - a • y with hu'
@@ -46,22 +46,22 @@ theorem norm_inner_ge_of_common_target {u v y : E} (hu : ‖u‖ = 1) (hv : ‖v
   have hdecv : v = b • y + v' := by
     rw [hv']
     abel
-  have hnormu : ‖u‖ ^ 2 = ‖a‖ ^ 2 + ‖u'‖ ^ 2 := by
+  have hnormu : ‖u‖ ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) + ‖u'‖ ^ (2 : ℕ) := by
     have hortho : (inner ℂ (a • y) u' : ℂ) = 0 := by
       rw [inner_smul_left, hyu', mul_zero]
     have hpy := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (a • y) u' hortho
     rw [← hdecu, norm_smul, hy, mul_one] at hpy
     rw [pow_two, pow_two, pow_two, hpy]
-  have hnormv : ‖v‖ ^ 2 = ‖b‖ ^ 2 + ‖v'‖ ^ 2 := by
+  have hnormv : ‖v‖ ^ (2 : ℕ) = ‖b‖ ^ (2 : ℕ) + ‖v'‖ ^ (2 : ℕ) := by
     have hortho : (inner ℂ (b • y) v' : ℂ) = 0 := by
       rw [inner_smul_left, hyv', mul_zero]
     have hpy := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (b • y) v' hortho
     rw [← hdecv, norm_smul, hy, mul_one] at hpy
     rw [pow_two, pow_two, pow_two, hpy]
-  have hu'sq : ‖u'‖ ^ 2 ≤ δ ^ 2 := by
+  have hu'sq : ‖u'‖ ^ (2 : ℕ) ≤ δ ^ (2 : ℕ) := by
     rw [hu, one_pow] at hnormu
     linarith
-  have hv'sq : ‖v'‖ ^ 2 ≤ δ ^ 2 := by
+  have hv'sq : ‖v'‖ ^ (2 : ℕ) ≤ δ ^ (2 : ℕ) := by
     rw [hv, one_pow] at hnormv
     linarith
   have hu'le : ‖u'‖ ≤ δ := by
@@ -75,23 +75,23 @@ theorem norm_inner_ge_of_common_target {u v y : E} (hu : ‖u‖ = 1) (hv : ‖v
     simp only [inner_add_left, inner_add_right, inner_smul_left, inner_smul_right, hyy, hyv',
       hzero]
     ring
-  have hcross : ‖(inner ℂ u' v' : ℂ)‖ ≤ δ ^ 2 := by
+  have hcross : ‖(inner ℂ u' v' : ℂ)‖ ≤ δ ^ (2 : ℕ) := by
     calc ‖(inner ℂ u' v' : ℂ)‖ ≤ ‖u'‖ * ‖v'‖ := norm_inner_le_norm u' v'
       _ ≤ δ * δ := mul_le_mul hu'le hv'le (norm_nonneg v') hδ
-      _ = δ ^ 2 := by ring
-  have hab : (1 : ℝ) - δ ^ 2 ≤ ‖a‖ * ‖b‖ := by
-    rcases le_or_gt (1 - δ ^ 2) 0 with hneg | hpos
+      _ = δ ^ (2 : ℕ) := by ring
+  have hab : (1 : ℝ) - δ ^ (2 : ℕ) ≤ ‖a‖ * ‖b‖ := by
+    rcases le_or_gt (1 - δ ^ (2 : ℕ)) 0 with hneg | hpos
     · exact le_trans hneg (by positivity)
-    · have hprod : (1 - δ ^ 2) * (1 - δ ^ 2) ≤ ‖a‖ ^ 2 * ‖b‖ ^ 2 :=
+    · have hprod : (1 - δ ^ (2 : ℕ)) * (1 - δ ^ (2 : ℕ)) ≤ ‖a‖ ^ (2 : ℕ) * ‖b‖ ^ (2 : ℕ) :=
         mul_le_mul h1 h2 (le_of_lt hpos) (by positivity)
-      have hsq : (1 - δ ^ 2) ^ 2 ≤ (‖a‖ * ‖b‖) ^ 2 := by nlinarith [hprod]
-      have hrw1 : (1 : ℝ) - δ ^ 2 = Real.sqrt ((1 - δ ^ 2) ^ 2) :=
+      have hsq : (1 - δ ^ (2 : ℕ)) ^ (2 : ℕ) ≤ (‖a‖ * ‖b‖) ^ (2 : ℕ) := by nlinarith [hprod]
+      have hrw1 : (1 : ℝ) - δ ^ (2 : ℕ) = Real.sqrt ((1 - δ ^ (2 : ℕ)) ^ (2 : ℕ)) :=
         (Real.sqrt_sq (le_of_lt hpos)).symm
-      have hrw2 : ‖a‖ * ‖b‖ = Real.sqrt ((‖a‖ * ‖b‖) ^ 2) :=
+      have hrw2 : ‖a‖ * ‖b‖ = Real.sqrt ((‖a‖ * ‖b‖) ^ (2 : ℕ)) :=
         (Real.sqrt_sq (by positivity)).symm
       rw [hrw1, hrw2]
       exact Real.sqrt_le_sqrt hsq
-  calc (1 : ℝ) - 2 * δ ^ 2 = (1 - δ ^ 2) - δ ^ 2 := by ring
+  calc (1 : ℝ) - 2 * δ ^ (2 : ℕ) = (1 - δ ^ (2 : ℕ)) - δ ^ (2 : ℕ) := by ring
     _ ≤ ‖a‖ * ‖b‖ - ‖(inner ℂ u' v' : ℂ)‖ := by linarith
     _ = ‖(starRingEnd ℂ) a * b‖ - ‖(inner ℂ u' v' : ℂ)‖ := by
         rw [norm_mul, RCLike.norm_conj]
@@ -116,9 +116,9 @@ theorem norm_phaseRay {q : Fin D → ℂ} (hq : ∀ a, ‖q a‖ = 1) (hD : 0 < 
     ‖phaseRay q‖ = 1 := by
   have hDR : (0 : ℝ) < (D : ℝ) := by exact_mod_cast hD
   rw [EuclideanSpace.norm_eq]
-  have hterm : ∀ a : Fin D, ‖(phaseRay q).ofLp a‖ ^ 2 = ((D : ℝ))⁻¹ := by
+  have hterm : ∀ a : Fin D, ‖(phaseRay q).ofLp a‖ ^ (2 : ℕ) = ((D : ℝ))⁻¹ := by
     intro a
-    show ‖((Real.sqrt (D : ℝ))⁻¹ : ℂ) * q a‖ ^ 2 = ((D : ℝ))⁻¹
+    show ‖((Real.sqrt (D : ℝ))⁻¹ : ℂ) * q a‖ ^ (2 : ℕ) = ((D : ℝ))⁻¹
     rw [norm_mul, hq a, mul_one, norm_inv, Complex.norm_real,
       Real.norm_of_nonneg (Real.sqrt_nonneg _), inv_pow, Real.sq_sqrt (le_of_lt hDR)]
   rw [Finset.sum_congr rfl fun a _ => hterm a, Finset.sum_const, Finset.card_univ,
@@ -150,16 +150,16 @@ theorem inner_phaseRay (q r : Fin D → ℂ) (hD : 0 < D) :
 least `1 - δ²` with a common target have relative-phase sum of modulus at least `(1-2δ²)D`. -/
 theorem norm_sum_relative_phase_ge {q r : Fin D → ℂ} (hq : ∀ a, ‖q a‖ = 1) (hr : ∀ a, ‖r a‖ = 1)
     (hD : 0 < D) {y : EuclideanSpace ℂ (Fin D)} (hy : ‖y‖ = 1) {δ : ℝ} (hδ : 0 ≤ δ)
-    (h1 : 1 - δ ^ 2 ≤ ‖(inner ℂ y (phaseRay q) : ℂ)‖ ^ 2)
-    (h2 : 1 - δ ^ 2 ≤ ‖(inner ℂ y (phaseRay r) : ℂ)‖ ^ 2) :
-    (1 - 2 * δ ^ 2) * (D : ℝ) ≤ ‖∑ a, (starRingEnd ℂ) (q a) * r a‖ := by
+    (h1 : 1 - δ ^ (2 : ℕ) ≤ ‖(inner ℂ y (phaseRay q) : ℂ)‖ ^ (2 : ℕ))
+    (h2 : 1 - δ ^ (2 : ℕ) ≤ ‖(inner ℂ y (phaseRay r) : ℂ)‖ ^ (2 : ℕ)) :
+    (1 - 2 * δ ^ (2 : ℕ)) * (D : ℝ) ≤ ‖∑ a, (starRingEnd ℂ) (q a) * r a‖ := by
   have hDR : (0 : ℝ) < (D : ℝ) := by exact_mod_cast hD
   have hmain := norm_inner_ge_of_common_target (norm_phaseRay hq hD) (norm_phaseRay hr hD) hy hδ
     h1 h2
   rw [inner_phaseRay q r hD, norm_mul, norm_inv, Complex.norm_real,
     Real.norm_of_nonneg (le_of_lt hDR)] at hmain
   rw [← le_div_iff₀ hDR] at *
-  calc (1 : ℝ) - 2 * δ ^ 2 ≤ ((D : ℝ))⁻¹ * ‖∑ a, (starRingEnd ℂ) (q a) * r a‖ := hmain
+  calc (1 : ℝ) - 2 * δ ^ (2 : ℕ) ≤ ((D : ℝ))⁻¹ * ‖∑ a, (starRingEnd ℂ) (q a) * r a‖ := hmain
     _ = ‖∑ a, (starRingEnd ℂ) (q a) * r a‖ / (D : ℝ) := by
         rw [inv_mul_eq_div]
 

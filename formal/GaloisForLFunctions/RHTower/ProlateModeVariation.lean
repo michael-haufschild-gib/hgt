@@ -26,8 +26,8 @@ open HTGeometry
 
 /-- The quadratic `χ + c²y²` has finitely many zeros unless it is identically zero. -/
 theorem finite_zeros_prolate_quadratic {χ c : ℝ} (hcχ : χ ≠ 0 ∨ c ≠ 0) (a b : ℝ) :
-    {y | y ∈ Icc a b ∧ χ + c ^ 2 * y ^ 2 = 0}.Finite := by
-  rcases Set.eq_empty_or_nonempty {y | y ∈ Icc a b ∧ χ + c ^ 2 * y ^ 2 = 0} with h | ⟨y₀, hy₀⟩
+    {y | y ∈ Icc a b ∧ χ + c ^ (2 : ℕ) * y ^ (2 : ℕ) = 0}.Finite := by
+  rcases Set.eq_empty_or_nonempty {y | y ∈ Icc a b ∧ χ + c ^ (2 : ℕ) * y ^ (2 : ℕ) = 0} with h | ⟨y₀, hy₀⟩
   · rw [h]
     exact Set.finite_empty
   · have hc : c ≠ 0 := by
@@ -38,8 +38,8 @@ theorem finite_zeros_prolate_quadratic {χ c : ℝ} (hcχ : χ ≠ 0 ∨ c ≠ 0
     refine Set.Finite.subset (Set.toFinite ({y₀, -y₀} : Set ℝ)) ?_
     rintro y ⟨-, hy⟩
     have hsq : (y - y₀) * (y + y₀) = 0 := by
-      have hc2 : c ^ 2 ≠ 0 := pow_ne_zero 2 hc
-      have : c ^ 2 * (y ^ 2 - y₀ ^ 2) = 0 := by linarith [hy, hy₀.2]
+      have hc2 : c ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hc
+      have : c ^ (2 : ℕ) * (y ^ (2 : ℕ) - y₀ ^ (2 : ℕ)) = 0 := by linarith [hy, hy₀.2]
       have := (mul_eq_zero.mp this).resolve_left hc2
       linear_combination this
     rcases mul_eq_zero.mp hsq with h | h
@@ -59,9 +59,9 @@ theorem prolate_boundedVariationOn {c χ a b : ℝ} {ψ : ℝ → ℝ}
   have hzψ : {x | x ∈ Icc a b ∧ ψ x = 0}.Finite :=
     finite_zeros_of_deriv_ne_zero (fun x _ => h1 x)
       (fun x hx hzx => prolate_deriv_ne_zero_of_eq_zero h1 h2 he hnt (hIcc hx) hzx)
-  have hmul : {x | x ∈ Icc a b ∧ (χ + c ^ 2 * x ^ 2) * ψ x = 0}.Finite :=
+  have hmul : {x | x ∈ Icc a b ∧ (χ + c ^ (2 : ℕ) * x ^ (2 : ℕ)) * ψ x = 0}.Finite :=
     finite_zeros_mul (finite_zeros_prolate_quadratic hcχ a b) hzψ
-  have hS : {x | x ∈ Ioo a b ∧ (χ + c ^ 2 * x ^ 2) * ψ x = 0}.Finite := by
+  have hS : {x | x ∈ Ioo a b ∧ (χ + c ^ (2 : ℕ) * x ^ (2 : ℕ)) * ψ x = 0}.Finite := by
     refine hmul.subset ?_
     rintro x ⟨hx, hzx⟩
     exact ⟨Ioo_subset_Icc_self hx, hzx⟩

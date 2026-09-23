@@ -85,7 +85,7 @@ theorem primeLogWindowMass_uniform_asymptotic {ε : ℝ} (hε : 0 < ε) :
     ∃ X : ℝ, ∀ x : ℝ, X ≤ x → ∀ r : ℝ, 0 < r → r ≤ 1 →
       |primeLogWindowMass x r - 2 * x * r| < ε := by
   set C : ℝ := mertensLogPowConstantFull 1 with hC
-  have hT : Tendsto (fun X : ℝ => primeLogPowSum 2 X - (Real.log X) ^ 2 / 2) atTop (𝓝 C) := by
+  have hT : Tendsto (fun X : ℝ => primeLogPowSum 2 X - (Real.log X) ^ (2 : ℕ) / 2) atTop (𝓝 C) := by
     have h := tendsto_primeLogPowSum_sub 1
     refine h.congr fun X => ?_
     norm_num
@@ -106,15 +106,15 @@ theorem primeLogWindowMass_uniform_asymptotic {ε : ℝ} (hε : 0 < ε) :
   have hFm := hX₀ _ hminus
   rw [Real.dist_eq] at hFp hFm
   have hsplit : primeLogWindowMass x r - 2 * x * r
-      = (primeLogPowSum 2 (Real.exp (x + r)) - (Real.log (Real.exp (x + r))) ^ 2 / 2 - C)
-        - (primeLogPowSum 2 (Real.exp (x - r)) - (Real.log (Real.exp (x - r))) ^ 2 / 2 - C) := by
+      = (primeLogPowSum 2 (Real.exp (x + r)) - (Real.log (Real.exp (x + r))) ^ (2 : ℕ) / 2 - C)
+        - (primeLogPowSum 2 (Real.exp (x - r)) - (Real.log (Real.exp (x - r))) ^ (2 : ℕ) / 2 - C) := by
     rw [primeLogWindowMass, Real.log_exp, Real.log_exp]
     ring
   rw [hsplit]
-  calc |(primeLogPowSum 2 (Real.exp (x + r)) - (Real.log (Real.exp (x + r))) ^ 2 / 2 - C)
-        - (primeLogPowSum 2 (Real.exp (x - r)) - (Real.log (Real.exp (x - r))) ^ 2 / 2 - C)|
-      ≤ |primeLogPowSum 2 (Real.exp (x + r)) - (Real.log (Real.exp (x + r))) ^ 2 / 2 - C|
-        + |primeLogPowSum 2 (Real.exp (x - r)) - (Real.log (Real.exp (x - r))) ^ 2 / 2 - C| :=
+  calc |(primeLogPowSum 2 (Real.exp (x + r)) - (Real.log (Real.exp (x + r))) ^ (2 : ℕ) / 2 - C)
+        - (primeLogPowSum 2 (Real.exp (x - r)) - (Real.log (Real.exp (x - r))) ^ (2 : ℕ) / 2 - C)|
+      ≤ |primeLogPowSum 2 (Real.exp (x + r)) - (Real.log (Real.exp (x + r))) ^ (2 : ℕ) / 2 - C|
+        + |primeLogPowSum 2 (Real.exp (x - r)) - (Real.log (Real.exp (x - r))) ^ (2 : ℕ) / 2 - C| :=
         abs_sub _ _
     _ < ε := by linarith
 
@@ -124,7 +124,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 /-- **Equation (1).**  The squared normalized kernel coherence. -/
 def kernelCoherence (K : ℝ → ℝ → ℂ) (x y : ℝ) : ℝ :=
-  ‖K x y‖ ^ 2 / (‖K x x‖ * ‖K y y‖)
+  ‖K x y‖ ^ (2 : ℕ) / (‖K x x‖ * ‖K y y‖)
 
 /-- The coherence is unchanged by a nonvanishing gauge `K (x,y) ↦ G x * conj (G y) * K (x,y)`. -/
 theorem kernelCoherence_gauge (K : ℝ → ℝ → ℂ) {G : ℝ → ℂ} (hG : ∀ x, G x ≠ 0) (x y : ℝ) :
@@ -135,19 +135,19 @@ theorem kernelCoherence_gauge (K : ℝ → ℝ → ℂ) {G : ℝ → ℂ} (hG : 
   have hGx : ‖G x‖ ≠ 0 := norm_ne_zero_iff.mpr (hG x)
   have hGy : ‖G y‖ ≠ 0 := norm_ne_zero_iff.mpr (hG y)
   rw [kernelCoherence, kernelCoherence, hnorm, hnorm, hnorm]
-  rw [show (‖G x‖ * ‖G y‖ * ‖K x y‖) ^ 2
-      = (‖G x‖ ^ 2 * ‖G y‖ ^ 2) * ‖K x y‖ ^ 2 by ring,
+  rw [show (‖G x‖ * ‖G y‖ * ‖K x y‖) ^ (2 : ℕ)
+      = (‖G x‖ ^ (2 : ℕ) * ‖G y‖ ^ (2 : ℕ)) * ‖K x y‖ ^ (2 : ℕ) by ring,
     show ‖G x‖ * ‖G x‖ * ‖K x x‖ * (‖G y‖ * ‖G y‖ * ‖K y y‖)
-      = (‖G x‖ ^ 2 * ‖G y‖ ^ 2) * (‖K x x‖ * ‖K y y‖) by ring]
+      = (‖G x‖ ^ (2 : ℕ) * ‖G y‖ ^ (2 : ℕ)) * (‖K x x‖ * ‖K y y‖) by ring]
   exact mul_div_mul_left _ _ (by positivity)
 
 /-- The squared coherence of two normalized evaluation vectors. -/
-def unitCoherence (e : ℝ → H) (x y : ℝ) : ℝ := ‖⟪e y, e x⟫_ℂ‖ ^ 2
+def unitCoherence (e : ℝ → H) (x y : ℝ) : ℝ := ‖⟪e y, e x⟫_ℂ‖ ^ (2 : ℕ)
 
 theorem kernelCoherence_gram (k : ℝ → H) (x y : ℝ) :
     kernelCoherence (fun u v => ⟪k v, k u⟫_ℂ) x y
-      = ‖⟪k y, k x⟫_ℂ‖ ^ 2 / (‖k x‖ ^ 2 * ‖k y‖ ^ 2) := by
-  have hself : ∀ u : ℝ, ‖⟪k u, k u⟫_ℂ‖ = ‖k u‖ ^ 2 := by
+      = ‖⟪k y, k x⟫_ℂ‖ ^ (2 : ℕ) / (‖k x‖ ^ (2 : ℕ) * ‖k y‖ ^ (2 : ℕ)) := by
+  have hself : ∀ u : ℝ, ‖⟪k u, k u⟫_ℂ‖ = ‖k u‖ ^ (2 : ℕ) := by
     intro u
     rw [inner_self_eq_norm_sq_to_K]
     simp
@@ -184,7 +184,7 @@ theorem unitCoherence_nonneg (e : ℝ → H) (x y : ℝ) : 0 ≤ unitCoherence e
 /-- **Equation (4).**  The normalized critical-prime sampling operator is bounded by `B`. -/
 def PrimeSamplingBessel (e : ℝ → H) (B : ℝ) : Prop :=
   ∀ (S : Finset ℕ) (f : H),
-    ∑ n ∈ S, primeLogPowWeight 2 n * ‖⟪e (Real.log n), f⟫_ℂ‖ ^ 2 ≤ B ^ 2 * ‖f‖ ^ 2
+    ∑ n ∈ S, primeLogPowWeight 2 n * ‖⟪e (Real.log n), f⟫_ℂ‖ ^ (2 : ℕ) ≤ B ^ (2 : ℕ) * ‖f‖ ^ (2 : ℕ)
 
 theorem primeLogPowWeight_two_nonneg (n : ℕ) : 0 ≤ primeLogPowWeight 2 n := by
   rw [primeLogPowWeight]
@@ -195,7 +195,7 @@ theorem primeLogPowWeight_two_nonneg (n : ℕ) : 0 ≤ primeLogPowWeight 2 n := 
 /-- **Equation (5).**  Testing the Bessel bound on a normalized evaluation vector. -/
 theorem primeSampling_kernel_test {e : ℝ → H} {B : ℝ} (hunit : ∀ y, ‖e y‖ = 1)
     (hB : PrimeSamplingBessel e B) (S : Finset ℕ) (x : ℝ) :
-    ∑ n ∈ S, primeLogPowWeight 2 n * unitCoherence e x (Real.log n) ≤ B ^ 2 := by
+    ∑ n ∈ S, primeLogPowWeight 2 n * unitCoherence e x (Real.log n) ≤ B ^ (2 : ℕ) := by
   have h := hB S (e x)
   rw [hunit x] at h
   simpa only [unitCoherence, one_pow, mul_one] using h
@@ -205,7 +205,7 @@ prime mass. -/
 theorem primeLogWindowMass_le {e : ℝ → H} {B c : ℝ} (hunit : ∀ y, ‖e y‖ = 1)
     (hB : PrimeSamplingBessel e B) (x : ℝ) {r : ℝ} (hr : 0 ≤ r)
     (hcoh : ∀ y : ℝ, |y - x| ≤ r → c ≤ unitCoherence e x y) :
-    c * primeLogWindowMass x r ≤ B ^ 2 := by
+    c * primeLogWindowMass x r ≤ B ^ (2 : ℕ) := by
   have hstep : c * primeLogWindowMass x r
       ≤ ∑ n ∈ Finset.Ioc ⌊Real.exp (x - r)⌋₊ ⌊Real.exp (x + r)⌋₊,
           primeLogPowWeight 2 n * unitCoherence e x (Real.log n) := by
@@ -225,7 +225,7 @@ theorem prime_coherence_radius_bound {e : ℝ → H} {B c : ℝ} (hunit : ∀ y,
     (hr0 : ∀ x, 0 < r x) (hr1 : ∀ x, r x ≤ 1)
     (hcoh : ∀ x y : ℝ, |y - x| ≤ r x → c ≤ unitCoherence e x y)
     {ε : ℝ} (hε : 0 < ε) :
-    ∀ᶠ x : ℝ in atTop, x * r x ≤ B ^ 2 / (2 * c) + ε := by
+    ∀ᶠ x : ℝ in atTop, x * r x ≤ B ^ (2 : ℕ) / (2 * c) + ε := by
   obtain ⟨X, hX⟩ := primeLogWindowMass_uniform_asymptotic hε
   filter_upwards [eventually_ge_atTop X] with x hx
   have hw := hX x hx (r x) (hr0 x) (hr1 x)
@@ -233,8 +233,8 @@ theorem prime_coherence_radius_bound {e : ℝ → H} {B c : ℝ} (hunit : ∀ y,
   rw [abs_lt] at hw
   have h2 : c * (2 * x * r x - ε) < c * primeLogWindowMass x (r x) :=
     mul_lt_mul_of_pos_left (by linarith [hw.1]) hc
-  have h3 : c * (2 * x * r x - ε) < B ^ 2 := lt_of_lt_of_le h2 hbound
-  have hexp : B ^ 2 / (2 * c) * (2 * c) = B ^ 2 := by field_simp
+  have h3 : c * (2 * x * r x - ε) < B ^ (2 : ℕ) := lt_of_lt_of_le h2 hbound
+  have hexp : B ^ (2 : ℕ) / (2 * c) * (2 * c) = B ^ (2 : ℕ) := by field_simp
   nlinarith [h3, hexp, hc, hε]
 
 /-- **Equation (12).**  At the prime cutoff `N` the coherence radius is `O(1/log N)`. -/
@@ -244,7 +244,7 @@ theorem prime_coherence_radius_cutoff {e : ℝ → H} {B c : ℝ} (hunit : ∀ y
     (hcoh : ∀ x y : ℝ, |y - x| ≤ r x → c ≤ unitCoherence e x y)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ N : ℝ in atTop,
-      r (Real.log N) ≤ (B ^ 2 / (2 * c) + ε) / Real.log N := by
+      r (Real.log N) ≤ (B ^ (2 : ℕ) / (2 * c) + ε) / Real.log N := by
   have hmain := prime_coherence_radius_bound hunit hB hc hr0 hr1 hcoh hε
   have hlog : Tendsto (fun N : ℝ => Real.log N) atTop atTop := Real.tendsto_log_atTop
   filter_upwards [hlog.eventually hmain, hlog.eventually_gt_atTop 0] with N hN hpos
@@ -268,7 +268,7 @@ theorem abs_sin_ge_of_abs_le {u : ℝ} (h : |u| ≤ Real.pi / 2) :
     exact Real.mul_le_sin hu' hle
 
 theorem sq_sin_ge_of_abs_le {u : ℝ} (h : |u| ≤ Real.pi / 2) :
-    (2 / Real.pi) ^ 2 * u ^ 2 ≤ Real.sin u ^ 2 := by
+    (2 / Real.pi) ^ (2 : ℕ) * u ^ (2 : ℕ) ≤ Real.sin u ^ (2 : ℕ) := by
   have h1 := abs_sin_ge_of_abs_le h
   have h2 : (0 : ℝ) ≤ 2 / Real.pi * |u| := by positivity
   nlinarith [h1, h2, sq_abs u, sq_abs (Real.sin u)]
@@ -300,7 +300,7 @@ theorem exists_mvt_between {φ φ' : ℝ → ℝ} (hderiv : ∀ t, HasDerivAt φ
 
 /-- **Equation (13).**  The normalized coherence of a de Branges kernel through its phase. -/
 def phaseCoherence (φ φ' : ℝ → ℝ) (x y : ℝ) : ℝ :=
-  Real.sin (φ x - φ y) ^ 2 / ((x - y) ^ 2 * φ' x * φ' y)
+  Real.sin (φ x - φ y) ^ (2 : ℕ) / ((x - y) ^ (2 : ℕ) * φ' x * φ' y)
 
 /-- **Equation (15).**  Local phase regularity gives a uniform coherence floor on the radius
 `1 / (2 M φ'(x))`. -/
@@ -308,7 +308,7 @@ theorem phaseCoherence_ge {φ φ' : ℝ → ℝ} (hderiv : ∀ t, HasDerivAt φ 
     {M : ℝ} (hM : 1 ≤ M) {x : ℝ} (hx : 0 < φ' x)
     (hreg : ∀ t : ℝ, |t - x| ≤ 1 / (2 * M * φ' x) → φ' x / M ≤ φ' t ∧ φ' t ≤ M * φ' x)
     {y : ℝ} (hy : |y - x| ≤ 1 / (2 * M * φ' x)) (hne : y ≠ x) :
-    4 / (Real.pi ^ 2 * M ^ 3) ≤ phaseCoherence φ φ' x y := by
+    4 / (Real.pi ^ (2 : ℕ) * M ^ (3 : ℕ)) ≤ phaseCoherence φ φ' x y := by
   have hpi := Real.pi_pos
   have hM0 : (0 : ℝ) < M := lt_of_lt_of_le zero_lt_one hM
   obtain ⟨ξ, hξx, hval⟩ := exists_mvt_between hderiv hne
@@ -317,7 +317,7 @@ theorem phaseCoherence_ge {φ φ' : ℝ → ℝ} (hderiv : ∀ t, HasDerivAt φ 
   have hξpos : 0 < φ' ξ := lt_of_lt_of_le (by positivity) hξl
   have hypos : 0 < φ' y := lt_of_lt_of_le (by positivity) hyl
   have hxy : x - y ≠ 0 := sub_ne_zero.mpr (Ne.symm hne)
-  have hxy2 : (0 : ℝ) < (x - y) ^ 2 := by positivity
+  have hxy2 : (0 : ℝ) < (x - y) ^ (2 : ℕ) := by positivity
   have habs : |φ x - φ y| ≤ 1 / 2 := by
     have h1 : |x - y| ≤ 1 / (2 * M * φ' x) := by rwa [abs_sub_comm]
     have hcalc : φ' ξ * |x - y| ≤ M * φ' x * (1 / (2 * M * φ' x)) :=
@@ -329,22 +329,22 @@ theorem phaseCoherence_ge {φ φ' : ℝ → ℝ} (hderiv : ∀ t, HasDerivAt φ 
     have := Real.pi_gt_three
     linarith [habs]
   have hsin := sq_sin_ge_of_abs_le hpiub
-  have hnum : (φ' x / M) ^ 2 * (x - y) ^ 2 ≤ (φ x - φ y) ^ 2 := by
+  have hnum : (φ' x / M) ^ (2 : ℕ) * (x - y) ^ (2 : ℕ) ≤ (φ x - φ y) ^ (2 : ℕ) := by
     rw [hval, mul_pow]
     exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) hξl 2) (le_of_lt hxy2)
-  have hden : (x - y) ^ 2 * φ' x * φ' y ≤ (x - y) ^ 2 * φ' x * (M * φ' x) :=
+  have hden : (x - y) ^ (2 : ℕ) * φ' x * φ' y ≤ (x - y) ^ (2 : ℕ) * φ' x * (M * φ' x) :=
     mul_le_mul_of_nonneg_left hyu (by positivity)
-  have hden0 : (0 : ℝ) < (x - y) ^ 2 * φ' x * φ' y := by positivity
+  have hden0 : (0 : ℝ) < (x - y) ^ (2 : ℕ) * φ' x * φ' y := by positivity
   rw [phaseCoherence, le_div_iff₀ hden0]
-  calc 4 / (Real.pi ^ 2 * M ^ 3) * ((x - y) ^ 2 * φ' x * φ' y)
-      ≤ 4 / (Real.pi ^ 2 * M ^ 3) * ((x - y) ^ 2 * φ' x * (M * φ' x)) :=
+  calc 4 / (Real.pi ^ (2 : ℕ) * M ^ (3 : ℕ)) * ((x - y) ^ (2 : ℕ) * φ' x * φ' y)
+      ≤ 4 / (Real.pi ^ (2 : ℕ) * M ^ (3 : ℕ)) * ((x - y) ^ (2 : ℕ) * φ' x * (M * φ' x)) :=
         mul_le_mul_of_nonneg_left hden (by positivity)
-    _ = (2 / Real.pi) ^ 2 * ((φ' x / M) ^ 2 * (x - y) ^ 2) := by
+    _ = (2 / Real.pi) ^ (2 : ℕ) * ((φ' x / M) ^ (2 : ℕ) * (x - y) ^ (2 : ℕ)) := by
         field_simp
         ring
-    _ ≤ (2 / Real.pi) ^ 2 * (φ x - φ y) ^ 2 :=
+    _ ≤ (2 / Real.pi) ^ (2 : ℕ) * (φ x - φ y) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hnum (by positivity)
-    _ ≤ Real.sin (φ x - φ y) ^ 2 := hsin
+    _ ≤ Real.sin (φ x - φ y) ^ (2 : ℕ) := hsin
 
 /-- The off-diagonal real-axis de Branges kernel of `E = A - i B`, i.e.
 `K(x,y) = (B y * A x - A y * B x) / (π (y - x))`. -/
@@ -362,7 +362,7 @@ theorem deBrangesKernelOffDiag_polar (m φ : ℝ → ℝ) (x y : ℝ) :
 /-- The real-axis de Branges kernel of a structure function with modulus `m`, phase `φ` and phase
 derivative `φ'`.  The diagonal value `m² φ' / π` is the limit of the off-diagonal formula. -/
 def deBrangesRealKernel (m φ φ' : ℝ → ℝ) (x y : ℝ) : ℂ :=
-  if x = y then ((m x ^ 2 * φ' x / Real.pi : ℝ) : ℂ)
+  if x = y then ((m x ^ (2 : ℕ) * φ' x / Real.pi : ℝ) : ℂ)
   else ((deBrangesKernelOffDiag (fun t => m t * Real.cos (φ t))
     (fun t => m t * Real.sin (φ t)) x y : ℝ) : ℂ)
 
@@ -376,19 +376,19 @@ theorem kernelCoherence_deBranges {m φ φ' : ℝ → ℝ} (hm : ∀ t, 0 < m t)
   have hoff : deBrangesRealKernel m φ φ' x y
       = ((m x * m y * Real.sin (φ y - φ x) / (Real.pi * (y - x)) : ℝ) : ℂ) := by
     rw [deBrangesRealKernel, if_neg hne, deBrangesKernelOffDiag_polar]
-  have hdiag : ∀ t : ℝ, ‖deBrangesRealKernel m φ φ' t t‖ = m t ^ 2 * φ' t / Real.pi := by
+  have hdiag : ∀ t : ℝ, ‖deBrangesRealKernel m φ φ' t t‖ = m t ^ (2 : ℕ) * φ' t / Real.pi := by
     intro t
-    have hnn : (0 : ℝ) ≤ m t ^ 2 * φ' t / Real.pi :=
+    have hnn : (0 : ℝ) ≤ m t ^ (2 : ℕ) * φ' t / Real.pi :=
       div_nonneg (mul_nonneg (sq_nonneg _) (hφ t).le) hpi.le
     rw [deBrangesRealKernel, if_pos rfl, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg hnn]
-  have hN : ‖deBrangesRealKernel m φ φ' x y‖ ^ 2
-      = (m x * m y * Real.sin (φ y - φ x)) ^ 2 / (Real.pi * (y - x)) ^ 2 := by
+  have hN : ‖deBrangesRealKernel m φ φ' x y‖ ^ (2 : ℕ)
+      = (m x * m y * Real.sin (φ y - φ x)) ^ (2 : ℕ) / (Real.pi * (y - x)) ^ (2 : ℕ) := by
     rw [hoff, Complex.norm_real, Real.norm_eq_abs, sq_abs, div_pow]
-  have hsin : Real.sin (φ x - φ y) ^ 2 = Real.sin (φ y - φ x) ^ 2 := by
+  have hsin : Real.sin (φ x - φ y) ^ (2 : ℕ) = Real.sin (φ y - φ x) ^ (2 : ℕ) := by
     rw [show φ x - φ y = -(φ y - φ x) by ring, Real.sin_neg]
     ring
-  have hsq : (x - y) ^ 2 = (y - x) ^ 2 := by ring
+  have hsq : (x - y) ^ (2 : ℕ) = (y - x) ^ (2 : ℕ) := by ring
   have h1 : m x ≠ 0 := ne_of_gt (hm x)
   have h2 : m y ≠ 0 := ne_of_gt (hm y)
   have h3 : φ' x ≠ 0 := ne_of_gt (hφ x)
@@ -404,12 +404,12 @@ theorem phase_speed_ge {e : ℝ → H} {B : ℝ} {φ φ' : ℝ → ℝ} {M : ℝ
     (hM : 1 ≤ M) (hderiv : ∀ t, HasDerivAt φ (φ' t) t) (hpos : ∀ t, 0 < φ' t)
     (hreg : ∀ x t : ℝ, |t - x| ≤ 1 / (2 * M * φ' x) → φ' x / M ≤ φ' t ∧ φ' t ≤ M * φ' x)
     (hcoh : ∀ x y : ℝ, y ≠ x → unitCoherence e x y = phaseCoherence φ φ' x y)
-    {D : ℝ} (hD : Real.pi ^ 2 * M ^ 3 * B ^ 2 / 8 < D) :
+    {D : ℝ} (hD : Real.pi ^ (2 : ℕ) * M ^ (3 : ℕ) * B ^ (2 : ℕ) / 8 < D) :
     ∀ᶠ x : ℝ in atTop, 1 / (2 * M * D) ≤ φ' x / x := by
   have hpi := Real.pi_pos
   have hM0 : (0 : ℝ) < M := lt_of_lt_of_le zero_lt_one hM
   have hD0 : (0 : ℝ) < D := lt_of_le_of_lt (by positivity) hD
-  set c : ℝ := 4 / (Real.pi ^ 2 * M ^ 3) with hcdef
+  set c : ℝ := 4 / (Real.pi ^ (2 : ℕ) * M ^ (3 : ℕ)) with hcdef
   have hc : (0 : ℝ) < c := by rw [hcdef]; positivity
   have hcle : c ≤ 1 := by
     rw [hcdef, div_le_one (by positivity)]
@@ -427,9 +427,9 @@ theorem phase_speed_ge {e : ℝ → H} {B : ℝ} {φ φ' : ℝ → ℝ} {M : ℝ
     · rw [hcoh x y hne]
       exact phaseCoherence_ge hderiv hM (hpos x) (fun t ht => hreg x t ht)
         (le_trans hyx (hrle x)) hne
-  set ε : ℝ := D - Real.pi ^ 2 * M ^ 3 * B ^ 2 / 8 with hεdef
+  set ε : ℝ := D - Real.pi ^ (2 : ℕ) * M ^ (3 : ℕ) * B ^ (2 : ℕ) / 8 with hεdef
   have hε : 0 < ε := by rw [hεdef]; linarith
-  have hsum : B ^ 2 / (2 * c) + ε = D := by
+  have hsum : B ^ (2 : ℕ) / (2 * c) + ε = D := by
     rw [hcdef, hεdef]
     field_simp
     ring
@@ -461,18 +461,18 @@ theorem phase_speed_liminf {e : ℝ → H} {B : ℝ} {φ φ' : ℝ → ℝ} {M :
     (hreg : ∀ x t : ℝ, |t - x| ≤ 1 / (2 * M * φ' x) → φ' x / M ≤ φ' t ∧ φ' t ≤ M * φ' x)
     (hcoh : ∀ x y : ℝ, y ≠ x → unitCoherence e x y = phaseCoherence φ φ' x y)
     {ε : ℝ} (hε : 0 < ε) :
-    ∀ᶠ x : ℝ in atTop, 4 / (Real.pi ^ 2 * M ^ 4 * B ^ 2) - ε ≤ φ' x / x := by
+    ∀ᶠ x : ℝ in atTop, 4 / (Real.pi ^ (2 : ℕ) * M ^ (4 : ℕ) * B ^ (2 : ℕ)) - ε ≤ φ' x / x := by
   have hpi := Real.pi_pos
   have hM0 : (0 : ℝ) < M := lt_of_lt_of_le zero_lt_one hM
-  set D₀ : ℝ := Real.pi ^ 2 * M ^ 3 * B ^ 2 / 8 with hD₀def
+  set D₀ : ℝ := Real.pi ^ (2 : ℕ) * M ^ (3 : ℕ) * B ^ (2 : ℕ) / 8 with hD₀def
   have hD₀ : (0 : ℝ) < D₀ := by rw [hD₀def]; positivity
-  set δ : ℝ := min D₀ (2 * M * D₀ ^ 2 * ε) with hδdef
+  set δ : ℝ := min D₀ (2 * M * D₀ ^ (2 : ℕ) * ε) with hδdef
   have hδ : 0 < δ := lt_min hD₀ (by positivity)
-  have hδle : δ ≤ 2 * M * D₀ ^ 2 * ε := min_le_right _ _
+  have hδle : δ ≤ 2 * M * D₀ ^ (2 : ℕ) * ε := min_le_right _ _
   set D : ℝ := D₀ + δ with hDdef
   have hDgt : D₀ < D := by rw [hDdef]; linarith
   have hD0 : (0 : ℝ) < D := by linarith
-  have hbase : 4 / (Real.pi ^ 2 * M ^ 4 * B ^ 2) = 1 / (2 * M * D₀) := by
+  have hbase : 4 / (Real.pi ^ (2 : ℕ) * M ^ (4 : ℕ) * B ^ (2 : ℕ)) = 1 / (2 * M * D₀) := by
     rw [hD₀def]
     field_simp
     ring

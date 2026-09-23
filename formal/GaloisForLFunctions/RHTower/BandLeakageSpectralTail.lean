@@ -9,7 +9,7 @@ Plancherel turns the frequency-window reading of the band quadratic form into an
 *leakage* of a test function supported in `[-1, 1]`:
 
 ```text
-∫_(-1)^1 psi² - ∫∫ sinc_c(x-y) psi(x) psi(y) = ∫_(|xi| > c/(2 pi)) ‖𝓕 psi (xi)‖² d xi.
+∫_(-1)^(1 : ℕ) psi² - ∫∫ sinc_c(x-y) psi(x) psi(y) = ∫_(|xi| > c/(2 pi)) ‖𝓕 psi (xi)‖² d xi.
 ```
 
 The left side is the deficit of the Rayleigh quotient of the band operator at `psi`; the right side is

@@ -30,14 +30,14 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_ratio_factored {P : Finset 
           * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
         ≤ dampedCorrBound P (leftAbscissa K)
           * (2 * (invZetaRightBound K
-                * (C * (L + 2) ^ 2 * (N + H + 1) ^ rightAbscissa K)) / twistHeight K τ
+                * (C * (L + 2) ^ (2 : ℕ) * (N + H + 1) ^ rightAbscissa K)) / twistHeight K τ
             + invZetaEdgeBound K * (C' * (L + 2) * (N + H + 1) ^ rightAbscissa K)
                 / (twistHeight K τ) ^ (0 + 1) * (rightAbscissa K - leftAbscissa K)
             + invZetaEdgeBound K * (C' * (L + 2) * (N + H + 1) ^ rightAbscissa K)
                 / (twistHeight K τ) ^ (0 + 1) * (rightAbscissa K - leftAbscissa K)
             + max M₀ (invZetaEdgeBound K)
                 * (2 * ((N + H) ^ leftAbscissa K / leftAbscissa K)
-                    + 2 * (C * (L + 2) ^ 2 * (N + H + 1) ^ leftAbscissa K))) := by
+                    + 2 * (C * (L + 2) ^ (2 : ℕ) * (N + H + 1) ^ leftAbscissa K))) := by
   obtain ⟨C, C', M₀, K₀, hC, hC', hM₀, hmain⟩ :=
     exists_norm_tsum_dampedTwist_smoothWeight_le_ratio hPprime
   refine ⟨C, C', M₀, K₀, hC, hC', hM₀, fun t ht0 ht1 N H L hN hH1 hL τ K hKle hKτ => ?_⟩
@@ -57,7 +57,7 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_majorant_ratio {P : Finset 
           * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
         ≤ dampedCorrBound P (leftAbscissa (contourParam (N + H)))
           * (2 * ((N + H + 1)
-              * coeffMajorant (C * (L + 2) ^ 2) (C' * (L + 2)) M₀ (1024 / zeroFreeConst)
+              * coeffMajorant (C * (L + 2) ^ (2 : ℕ)) (C' * (L + 2)) M₀ (1024 / zeroFreeConst)
                   ((Real.log (N + H)) ^ ((1 : ℝ) / 10))
               * Real.exp (-(zeroFreeConst * (Real.log (N + H)) ^ ((1 : ℝ) / 10) / 8192)))) := by
   have hP2 : ∀ q ∈ P, 2 ≤ q := fun q hq => (hPprime q hq).two_le
@@ -69,7 +69,7 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_majorant_ratio {P : Finset 
   set x : ℝ := N + H with hxdef
   have hx0 : (0 : ℝ) < x := by rw [hxdef]; linarith
   have hL2 : (0 : ℝ) ≤ L + 2 := by linarith
-  have hĈ : (0 : ℝ) ≤ C * (L + 2) ^ 2 := by positivity
+  have hĈ : (0 : ℝ) ≤ C * (L + 2) ^ (2 : ℕ) := by positivity
   have hĈ' : (0 : ℝ) ≤ C' * (L + 2) := by positivity
   have ht : (2 : ℝ) ≤ (Real.log x) ^ ((1 : ℝ) / 10) := hlog2
   have ht1' : (1 : ℝ) ≤ (Real.log x) ^ ((1 : ℝ) / 10) := by linarith
@@ -78,10 +78,10 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_majorant_ratio {P : Finset 
     gap_le_one hL1
   have hA0 := zeroFreeConst_pos
   have hA1 := zeroFreeConst_le_one
-  have hL9 : (1 : ℝ) ≤ (Real.log (contourParam x)) ^ 9 := one_le_pow₀ hL1
-  have h16 : (0 : ℝ) < zeroFreeConst / (16 * (Real.log (contourParam x)) ^ 9) := by positivity
-  have h2p : (0 : ℝ) < zeroFreeConst / (2 * (Real.log (contourParam x)) ^ 9) := by positivity
-  have h16le : zeroFreeConst / (16 * (Real.log (contourParam x)) ^ 9) ≤ 1 / 16 := by
+  have hL9 : (1 : ℝ) ≤ (Real.log (contourParam x)) ^ (9 : ℕ) := one_le_pow₀ hL1
+  have h16 : (0 : ℝ) < zeroFreeConst / (16 * (Real.log (contourParam x)) ^ (9 : ℕ)) := by positivity
+  have h2p : (0 : ℝ) < zeroFreeConst / (2 * (Real.log (contourParam x)) ^ (9 : ℕ)) := by positivity
+  have h16le : zeroFreeConst / (16 * (Real.log (contourParam x)) ^ (9 : ℕ)) ≤ 1 / 16 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [hL9, hA1, hA0]
   have hcpos : 0 < leftAbscissa (contourParam x) := by rw [leftAbscissa]; linarith
@@ -97,27 +97,27 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_majorant_ratio {P : Finset 
       linarith
     linarith
   have hx1le : Real.log x ≤ Real.log (x + 1) := Real.log_le_log hx0 (by linarith)
-  have hsq : x + 1 ≤ x ^ 2 := by nlinarith [hxe]
+  have hsq : x + 1 ≤ x ^ (2 : ℕ) := by nlinarith [hxe]
   have hy : Real.log (x + 1) ≤ 2 * Real.log x := by
     have h := Real.log_le_log (by linarith) hsq
     rwa [Real.log_pow] at h
   have hbase := hmain t ht0 ht1 N H L hN hH1 hL τ (contourParam x) hK hKτ
-  have hcomb := combined_terms_twist_le (x := x) (C := C * (L + 2) ^ 2) (C' := C' * (L + 2))
+  have hcomb := combined_terms_twist_le (x := x) (C := C * (L + 2) ^ (2 : ℕ)) (C' := C' * (L + 2))
     (R := invZetaRightBound (contourParam x)) (E := invZetaEdgeBound (contourParam x))
     (M₀ := M₀) (τ := τ) hlog1 ht hx0 hy hx1le hĈ hĈ'
     (invZetaRightBound_nonneg _) (invZetaEdgeBound_nonneg _) hM₀ hgap hgapnn hcpos
     (abs_le_half_truncHeight hKτ)
-  have hcoeff := coeff_le_coeffMajorant (x := x) (C := C * (L + 2) ^ 2) (C' := C' * (L + 2))
+  have hcoeff := coeff_le_coeffMajorant (x := x) (C := C * (L + 2) ^ (2 : ℕ)) (C' := C' * (L + 2))
     hlog1 hĈ hĈ' hM₀
   have hSpos : (0 : ℝ) < Real.exp (-(zeroFreeConst * (Real.log x) ^ ((1 : ℝ) / 10) / 8192)) :=
     Real.exp_pos _
   have hfinal : (x + 1)
-      * (8 * invZetaRightBound (contourParam x) * (C * (L + 2) ^ 2)
+      * (8 * invZetaRightBound (contourParam x) * (C * (L + 2) ^ (2 : ℕ))
           + 8 * invZetaEdgeBound (contourParam x) * (C' * (L + 2))
-          + max M₀ (invZetaEdgeBound (contourParam x)) * (4 + 2 * (C * (L + 2) ^ 2)))
+          + max M₀ (invZetaEdgeBound (contourParam x)) * (4 + 2 * (C * (L + 2) ^ (2 : ℕ))))
       * Real.exp (-(zeroFreeConst * (Real.log x) ^ ((1 : ℝ) / 10) / 8192))
       ≤ (x + 1)
-          * coeffMajorant (C * (L + 2) ^ 2) (C' * (L + 2)) M₀ (1024 / zeroFreeConst)
+          * coeffMajorant (C * (L + 2) ^ (2 : ℕ)) (C' * (L + 2)) M₀ (1024 / zeroFreeConst)
               ((Real.log x) ^ ((1 : ℝ) / 10))
           * Real.exp (-(zeroFreeConst * (Real.log x) ^ ((1 : ℝ) / 10) / 8192)) := by
     have hx10 : (0 : ℝ) ≤ x + 1 := by linarith

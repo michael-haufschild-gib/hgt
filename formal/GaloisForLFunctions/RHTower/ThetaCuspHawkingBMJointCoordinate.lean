@@ -18,7 +18,7 @@ theorem tortoiseRadius_exterior (t : ℝ) (ht : t < 0) : 1 < tortoiseRadius t :=
 
 /-- Radial differentiation is the original vector field (r²−1)∂r. -/
 theorem tortoiseRadius_hasDerivAt (t : ℝ) (ht : t < 0) :
-    HasDerivAt tortoiseRadius ((tortoiseRadius t)^2-1) t := by
+    HasDerivAt tortoiseRadius ((tortoiseRadius t)^(2 : ℕ)-1) t := by
   have hs : Real.sinh t ≠ 0 := ne_of_lt (Real.sinh_neg_iff.mpr ht)
   have hc := Real.cosh_sq_sub_sinh_sq t
   convert! ((Real.hasDerivAt_cosh t).neg.div (Real.hasDerivAt_sinh t) hs) using 1
@@ -55,22 +55,22 @@ theorem tortoise_original_inverse (t : ℝ) (ht : t < 0) :
 theorem originalTortoise_radius_derivative (t : ℝ) (ht : t < 0) :
     HasDerivAt (fun x => D4BMIngoingCoordinates.tortoise (tortoiseRadius x)) 1 t := by
   have hr := tortoiseRadius_exterior t ht
-  have hn : (tortoiseRadius t)^2-1 ≠ 0 := by nlinarith
+  have hn : (tortoiseRadius t)^(2 : ℕ)-1 ≠ 0 := by nlinarith
   convert! (D4BMIngoingCoordinates.tortoise_hasDerivAt _ hr).comp t
     (tortoiseRadius_hasDerivAt t ht) using 1
   exact (inv_mul_cancel₀ hn).symm
 
 /-- The squared weight in the joint angular energy is exactly the original stream-wave coefficient. -/
 theorem angularWeight_original_coefficient (t : ℝ) (ht : t < 0) :
-    angularWeight t ^ 2 =
-      (((tortoiseRadius t : ℝ) : ℂ)^2-1) / ((tortoiseRadius t : ℝ) : ℂ)^2 := by
+    angularWeight t ^ (2 : ℕ) =
+      (((tortoiseRadius t : ℝ) : ℂ)^(2 : ℕ)-1) / ((tortoiseRadius t : ℝ) : ℂ)^(2 : ℕ) := by
   have hs : Real.sinh t ≠ 0 := ne_of_lt (Real.sinh_neg_iff.mpr ht)
   have hc : Real.cosh t ≠ 0 := ne_of_gt (Real.cosh_pos t)
-  have he : ((Real.cosh t)⁻¹)^2 = ((tortoiseRadius t)^2-1)/(tortoiseRadius t)^2 := by
+  have he : ((Real.cosh t)⁻¹)^(2 : ℕ) = ((tortoiseRadius t)^(2 : ℕ)-1)/(tortoiseRadius t)^(2 : ℕ) := by
     unfold tortoiseRadius
     field_simp
     nlinarith [Real.cosh_sq_sub_sinh_sq t]
-  change (((Real.cosh t)⁻¹ : ℝ) : ℂ)^2 = _
+  change (((Real.cosh t)⁻¹ : ℝ) : ℂ)^(2 : ℕ) = _
   exact_mod_cast he
 
 end

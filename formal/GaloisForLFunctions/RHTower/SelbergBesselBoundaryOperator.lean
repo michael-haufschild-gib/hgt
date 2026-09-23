@@ -37,7 +37,7 @@ def amplitude (b T : ℝ) (n : ℤ) : ℝ :=
 def uniformBound (T : ℝ) : ℝ := 1 / (2 * Real.exp T)
 
 /-- Constant in the inverse integer-frequency estimate. -/
-def tailConstant (b T : ℝ) : ℝ := Real.exp b / (16 * Real.pi * Real.exp T ^ 2)
+def tailConstant (b T : ℝ) : ℝ := Real.exp b / (16 * Real.pi * Real.exp T ^ (2 : ℕ))
 
 theorem uniformBound_pos (T : ℝ) : 0 < uniformBound T := by unfold uniformBound; positivity
 
@@ -81,7 +81,7 @@ theorem amplitude_index_bound (b T : ℝ) (n : ℤ) :
     rw [frequency_natAbs hn b] at hb
     rw [amplitude, if_neg hn]
     calc
-      _ < (n.natAbs : ℝ) * (1 / (8 * (2 * Real.pi * (n.natAbs : ℝ) / Real.exp b) * Real.exp T ^ 2)) :=
+      _ < (n.natAbs : ℝ) * (1 / (8 * (2 * Real.pi * (n.natAbs : ℝ) / Real.exp b) * Real.exp T ^ (2 : ℕ))) :=
         mul_lt_mul_of_pos_left hb hp
       _ = _ := by
         unfold tailConstant

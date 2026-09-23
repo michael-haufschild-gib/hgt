@@ -27,9 +27,9 @@ theorem sum_window_one (x L : ℕ) : ∑ _n ∈ Finset.Ioc x (x + L), (1 : ℂ) 
 
 /-- **The trivial variance bound is attained by the constant sequence.** -/
 theorem sum_normSq_window_one (X L : ℕ) :
-    ∑ x ∈ Finset.range X, ‖∑ _n ∈ Finset.Ioc x (x + L), (1 : ℂ)‖ ^ 2 = (X : ℝ) * (L : ℝ) ^ 2 := by
+    ∑ x ∈ Finset.range X, ‖∑ _n ∈ Finset.Ioc x (x + L), (1 : ℂ)‖ ^ (2 : ℕ) = (X : ℝ) * (L : ℝ) ^ (2 : ℕ) := by
   have hterm : ∀ x ∈ Finset.range X,
-      ‖∑ _n ∈ Finset.Ioc x (x + L), (1 : ℂ)‖ ^ 2 = (L : ℝ) ^ 2 := by
+      ‖∑ _n ∈ Finset.Ioc x (x + L), (1 : ℂ)‖ ^ (2 : ℕ) = (L : ℝ) ^ (2 : ℕ) := by
     intro x _
     rw [sum_window_one, Complex.norm_natCast]
   rw [Finset.sum_congr rfl hterm, Finset.sum_const, Finset.card_range, nsmul_eq_mul]

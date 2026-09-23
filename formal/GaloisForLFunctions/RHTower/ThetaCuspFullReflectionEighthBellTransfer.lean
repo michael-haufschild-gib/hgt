@@ -20,30 +20,30 @@ noncomputable section
 /-- Seventh real exponential Bell jet of the complete theta logarithmic source. -/
 def thetaCuspLogExponentialJetSeven (x : ℝ) : ℝ :=
   thetaCuspLogExponentialJetZero x *
-    (iteratedDeriv 1 thetaCuspLogSource x ^ 7 +
-      21 * iteratedDeriv 1 thetaCuspLogSource x ^ 5 *
+    (iteratedDeriv 1 thetaCuspLogSource x ^ (7 : ℕ) +
+      21 * iteratedDeriv 1 thetaCuspLogSource x ^ (5 : ℕ) *
         iteratedDeriv 2 thetaCuspLogSource x +
-      105 * iteratedDeriv 1 thetaCuspLogSource x ^ 3 *
-        iteratedDeriv 2 thetaCuspLogSource x ^ 2 +
+      105 * iteratedDeriv 1 thetaCuspLogSource x ^ (3 : ℕ) *
+        iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) +
       105 * iteratedDeriv 1 thetaCuspLogSource x *
-        iteratedDeriv 2 thetaCuspLogSource x ^ 3 +
-      35 * iteratedDeriv 1 thetaCuspLogSource x ^ 4 *
+        iteratedDeriv 2 thetaCuspLogSource x ^ (3 : ℕ) +
+      35 * iteratedDeriv 1 thetaCuspLogSource x ^ (4 : ℕ) *
         iteratedDeriv 3 thetaCuspLogSource x +
-      210 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
+      210 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 3 thetaCuspLogSource x +
-      105 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 *
+      105 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 3 thetaCuspLogSource x +
       70 * iteratedDeriv 1 thetaCuspLogSource x *
-        iteratedDeriv 3 thetaCuspLogSource x ^ 2 +
-      35 * iteratedDeriv 1 thetaCuspLogSource x ^ 3 *
+        iteratedDeriv 3 thetaCuspLogSource x ^ (2 : ℕ) +
+      35 * iteratedDeriv 1 thetaCuspLogSource x ^ (3 : ℕ) *
         iteratedDeriv 4 thetaCuspLogSource x +
       105 * iteratedDeriv 1 thetaCuspLogSource x *
         iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 4 thetaCuspLogSource x +
       35 * iteratedDeriv 3 thetaCuspLogSource x *
         iteratedDeriv 4 thetaCuspLogSource x +
-      21 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
+      21 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 5 thetaCuspLogSource x +
       21 * iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 5 thetaCuspLogSource x +
@@ -54,45 +54,45 @@ def thetaCuspLogExponentialJetSeven (x : ℝ) : ℝ :=
 /-- Eighth real exponential Bell jet of the complete theta logarithmic source. -/
 def thetaCuspLogExponentialJetEight (x : ℝ) : ℝ :=
   thetaCuspLogExponentialJetZero x *
-    (iteratedDeriv 1 thetaCuspLogSource x ^ 8 +
-      28 * iteratedDeriv 1 thetaCuspLogSource x ^ 6 *
+    (iteratedDeriv 1 thetaCuspLogSource x ^ (8 : ℕ) +
+      28 * iteratedDeriv 1 thetaCuspLogSource x ^ (6 : ℕ) *
         iteratedDeriv 2 thetaCuspLogSource x +
-      210 * iteratedDeriv 1 thetaCuspLogSource x ^ 4 *
-        iteratedDeriv 2 thetaCuspLogSource x ^ 2 +
-      420 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
-        iteratedDeriv 2 thetaCuspLogSource x ^ 3 +
-      105 * iteratedDeriv 2 thetaCuspLogSource x ^ 4 +
-      56 * iteratedDeriv 1 thetaCuspLogSource x ^ 5 *
+      210 * iteratedDeriv 1 thetaCuspLogSource x ^ (4 : ℕ) *
+        iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) +
+      420 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
+        iteratedDeriv 2 thetaCuspLogSource x ^ (3 : ℕ) +
+      105 * iteratedDeriv 2 thetaCuspLogSource x ^ (4 : ℕ) +
+      56 * iteratedDeriv 1 thetaCuspLogSource x ^ (5 : ℕ) *
         iteratedDeriv 3 thetaCuspLogSource x +
-      560 * iteratedDeriv 1 thetaCuspLogSource x ^ 3 *
+      560 * iteratedDeriv 1 thetaCuspLogSource x ^ (3 : ℕ) *
         iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 3 thetaCuspLogSource x +
       840 * iteratedDeriv 1 thetaCuspLogSource x *
-        iteratedDeriv 2 thetaCuspLogSource x ^ 2 *
+        iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 3 thetaCuspLogSource x +
-      280 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
-        iteratedDeriv 3 thetaCuspLogSource x ^ 2 +
+      280 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
+        iteratedDeriv 3 thetaCuspLogSource x ^ (2 : ℕ) +
       280 * iteratedDeriv 2 thetaCuspLogSource x *
-        iteratedDeriv 3 thetaCuspLogSource x ^ 2 +
-      70 * iteratedDeriv 1 thetaCuspLogSource x ^ 4 *
+        iteratedDeriv 3 thetaCuspLogSource x ^ (2 : ℕ) +
+      70 * iteratedDeriv 1 thetaCuspLogSource x ^ (4 : ℕ) *
         iteratedDeriv 4 thetaCuspLogSource x +
-      420 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
+      420 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 4 thetaCuspLogSource x +
-      210 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 *
+      210 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 4 thetaCuspLogSource x +
       280 * iteratedDeriv 1 thetaCuspLogSource x *
         iteratedDeriv 3 thetaCuspLogSource x *
         iteratedDeriv 4 thetaCuspLogSource x +
-      35 * iteratedDeriv 4 thetaCuspLogSource x ^ 2 +
-      56 * iteratedDeriv 1 thetaCuspLogSource x ^ 3 *
+      35 * iteratedDeriv 4 thetaCuspLogSource x ^ (2 : ℕ) +
+      56 * iteratedDeriv 1 thetaCuspLogSource x ^ (3 : ℕ) *
         iteratedDeriv 5 thetaCuspLogSource x +
       168 * iteratedDeriv 1 thetaCuspLogSource x *
         iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 5 thetaCuspLogSource x +
       56 * iteratedDeriv 3 thetaCuspLogSource x *
         iteratedDeriv 5 thetaCuspLogSource x +
-      28 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
+      28 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 6 thetaCuspLogSource x +
       28 * iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 6 thetaCuspLogSource x +
@@ -183,20 +183,20 @@ theorem iteratedDeriv_eight_thetaCuspFullSource_eq_logExponentialJet (x : ℝ) :
 curvature polynomial. -/
 theorem thetaCuspFullSourceReflectionEighthHankelCurvature_eq_logJets (x : ℝ) :
     thetaCuspFullSourceReflectionEighthHankelCurvature x =
-      4 * thetaCuspFullSource x ^ 6 *
+      4 * thetaCuspFullSource x ^ (6 : ℕ) *
         (iteratedDeriv 4 thetaCuspLogSource x *
               iteratedDeriv 8 thetaCuspLogSource x -
-            iteratedDeriv 6 thetaCuspLogSource x ^ 2 +
-          4 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 *
+            iteratedDeriv 6 thetaCuspLogSource x ^ (2 : ℕ) +
+          4 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) *
             iteratedDeriv 8 thetaCuspLogSource x +
-          128 * iteratedDeriv 2 thetaCuspLogSource x ^ 3 *
+          128 * iteratedDeriv 2 thetaCuspLogSource x ^ (3 : ℕ) *
             iteratedDeriv 6 thetaCuspLogSource x +
-          68 * iteratedDeriv 4 thetaCuspLogSource x ^ 3 +
-          304 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 *
-            iteratedDeriv 4 thetaCuspLogSource x ^ 2 +
-          1344 * iteratedDeriv 2 thetaCuspLogSource x ^ 4 *
+          68 * iteratedDeriv 4 thetaCuspLogSource x ^ (3 : ℕ) +
+          304 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) *
+            iteratedDeriv 4 thetaCuspLogSource x ^ (2 : ℕ) +
+          1344 * iteratedDeriv 2 thetaCuspLogSource x ^ (4 : ℕ) *
             iteratedDeriv 4 thetaCuspLogSource x +
-          768 * iteratedDeriv 2 thetaCuspLogSource x ^ 6) := by
+          768 * iteratedDeriv 2 thetaCuspLogSource x ^ (6 : ℕ)) := by
   have hsource : thetaCuspFullSource x = thetaCuspLogExponentialJetZero x := by
     rw [thetaCuspFullSource_eq_logExponentialJetZero]
   unfold thetaCuspFullSourceReflectionEighthHankelCurvature
@@ -230,7 +230,7 @@ sixth power times the native normalized D1 curvature. -/
 theorem thetaCuspFullSourceReflectionEighthHankelCurvature_eq_fullReflection
     {x : ℝ} (hx : 0 < x) :
     thetaCuspFullSourceReflectionEighthHankelCurvature x =
-      4 * thetaCuspFullSource x ^ 6 *
+      4 * thetaCuspFullSource x ^ (6 : ℕ) *
         thetaCuspFullReflectionEighthHankelCurvature x := by
   rw [thetaCuspFullSourceReflectionEighthHankelCurvature_eq_logJets,
     thetaCuspLogSource_eighthHankel_eq_fullReflectionEighthCurvature hx]

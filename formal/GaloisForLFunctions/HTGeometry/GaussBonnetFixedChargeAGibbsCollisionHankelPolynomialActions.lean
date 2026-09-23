@@ -62,9 +62,9 @@ theorem egbFixedChargeAGibbsCollisionHankelMatrix_quadratic_polynomial (n o d : 
     (E : Fin (2 ^ (n + 3)) → ℝ) (v : Fin d → ℝ) :
     dotProduct v ((egbFixedChargeAGibbsCollisionHankelMatrix n o d β E).mulVec v) =
       ((4 / 9 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E) *
-        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (4 / 9)) ^ 2 +
+        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (4 / 9)) ^ (2 : ℕ) +
       ((1 / 36 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) *
-        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (1 / 36)) ^ 2 := by
+        ((_root_.HTGeometry.finiteHankelNullPolynomial v).eval (1 / 36)) ^ (2 : ℕ) := by
   change (∑ i : Fin d, v i * (egbFixedChargeAGibbsCollisionHankelMatrix n o d β E).mulVec v i) = _
   simp_rw [egbFixedChargeAGibbsCollisionHankelMatrix_mulVec_polynomial]
   have hr (i : Fin d) : (4 / 9 : ℝ) ^ ((i : ℕ) + o + 1) =

@@ -113,7 +113,7 @@ moving-modulus dilation, then it is the inverse modulus times one constant.
 theorem deningerRectangularCoefficient_eq_const_div
     (c : ℝ → ℝ)
     (hscale : ∀ q r : ℝ, 0 < q → 0 < r →
-      c (q * r) * q ^ 2 = q * c r)
+      c (q * r) * q ^ (2 : ℕ) = q * c r)
     {r : ℝ} (hr : 0 < r) :
     c r = c 1 / r := by
   have h := hscale r 1 hr zero_lt_one

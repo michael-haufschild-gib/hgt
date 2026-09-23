@@ -55,8 +55,8 @@ theorem radialSlice_second (U : Point3 → ℂ) (t : ℝ) (z : Fin 2 → ℝ)
 theorem originalWave_coordinate (U : Point3 → ℂ) (w : ℂ) (t : ℝ) (z : Fin 2 → ℝ)
     (hz : 0 < z 1) (hU : ContDiffAt ℝ 2 U ![t,z 0,z 1]) :
     fieldWave w (angularSlice U) t z =
-      w^2*U ![t,z 0,z 1]-jointSpatial U ![t,z 0,z 1] := by
-  have hc : (horizonCoordinate t:ℂ) = (warp t:ℂ)^2 := by
+      w^(2 : ℕ)*U ![t,z 0,z 1]-jointSpatial U ![t,z 0,z 1] := by
+  have hc : (horizonCoordinate t:ℂ) = (warp t:ℂ)^(2 : ℕ) := by
     have hr := congrArg Complex.ofReal (warp_relation t)
     dsimp only [horizonCoordinate]
     push_cast at hr ⊢
@@ -74,8 +74,8 @@ theorem originalWave_coordinate (U : Point3 → ℂ) (w : ℂ) (t : ℝ) (z : Fi
 theorem originalWave_conjugation (F : Point3 → ℂ) (w : ℂ) (t : ℝ) (z : Fin 2 → ℝ)
     (hz : 0 < z 1) (hF : ContDiffAt ℝ 2 F (chart ![t,z 0,z 1])) :
     fieldWave w (angularSlice (liftedField F)) t z =
-      weight ![t,z 0,z 1]*((w^2-1/4)*F (chart ![t,z 0,z 1])-
-        (chart ![t,z 0,z 1] 1:ℂ)^2*flatLaplacian F (chart ![t,z 0,z 1])) := by
+      weight ![t,z 0,z 1]*((w^(2 : ℕ)-1/4)*F (chart ![t,z 0,z 1])-
+        (chart ![t,z 0,z 1] 1:ℂ)^(2 : ℕ)*flatLaplacian F (chart ![t,z 0,z 1])) := by
   rw [originalWave_coordinate _ w t z hz (liftedField_smooth F _ hz hF)]
   exact jointWave_conjugation F w _ hz hF
 

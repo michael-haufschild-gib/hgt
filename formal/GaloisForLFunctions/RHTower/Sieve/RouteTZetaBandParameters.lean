@@ -181,7 +181,7 @@ theorem routeTBandCanonicalDepth {t : ℝ} (ht : 2 < t)
   clear hlarge hE hshift
   omega
 
-/-- Any height whose binary height is below `V^10` lies in the receiver's upper shell. -/
+/-- Any height whose binary height is below `V^(10 : ℕ)` lies in the receiver's upper shell. -/
 theorem routeTHeight_upper_of_binaryHeight {t : ℝ} {V : ℕ}
     (_hV : 1 ≤ V) (hL : routeTBinaryHeight t ≤ V ^ 10) :
     t ≤ (((routeTLogRootBase (routeTGlobalStart V) ^ routeTLogCentreExponent) ^

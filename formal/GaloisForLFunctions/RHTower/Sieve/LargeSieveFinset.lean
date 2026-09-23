@@ -21,8 +21,8 @@ theorem largeSieve_gallagher_finset (N : ℕ) (hN : 0 < N) (c : Fin N → ℂ) (
     (hδ : 0 < δ) (hne : s.Nonempty)
     (hsep : ∀ x ∈ s, ∀ y ∈ s, x ≠ y → δ ≤ |x - y|)
     (hmem : ∀ x ∈ s, δ / 2 ≤ x ∧ x + δ / 2 ≤ 1) :
-    ∑ x ∈ s, ‖expSum N c x‖ ^ 2
-      ≤ (1 / δ + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ 2 := by
+    ∑ x ∈ s, ‖expSum N c x‖ ^ (2 : ℕ)
+      ≤ (1 / δ + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   classical
   obtain ⟨R, hR⟩ : ∃ R, s.card = R + 1 := by
     have hpos := Finset.card_pos.mpr hne
@@ -55,13 +55,13 @@ theorem largeSieve_gallagher_finset (N : ℕ) (hN : 0 < N) (c : Fin N → ℂ) (
   have hhigh : lam R + δ / 2 ≤ 1 := (hmem (lam R) (hlam_mem R (by omega))).2
   have hbase := largeSieve_gallagher_finite N hN c hδ R hgap hlow hhigh
   -- the enumeration exhausts the set
-  have hsum : ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ 2
-      = ∑ x ∈ s, ‖expSum N c x‖ ^ 2 := by
-    have hfin : ∑ i : Fin (R + 1), ‖expSum N c ((e i : s) : ℝ)‖ ^ 2
-        = ∑ x ∈ s, ‖expSum N c x‖ ^ 2 := by
-      rw [← Finset.sum_coe_sort s (fun x => ‖expSum N c x‖ ^ 2)]
-      exact Equiv.sum_comp e.toEquiv (fun y : s => ‖expSum N c ((y : ℝ))‖ ^ 2)
-    rw [← hfin, ← Fin.sum_univ_eq_sum_range (fun i => ‖expSum N c (lam i)‖ ^ 2) (R + 1)]
+  have hsum : ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ (2 : ℕ)
+      = ∑ x ∈ s, ‖expSum N c x‖ ^ (2 : ℕ) := by
+    have hfin : ∑ i : Fin (R + 1), ‖expSum N c ((e i : s) : ℝ)‖ ^ (2 : ℕ)
+        = ∑ x ∈ s, ‖expSum N c x‖ ^ (2 : ℕ) := by
+      rw [← Finset.sum_coe_sort s (fun x => ‖expSum N c x‖ ^ (2 : ℕ))]
+      exact Equiv.sum_comp e.toEquiv (fun y : s => ‖expSum N c ((y : ℝ))‖ ^ (2 : ℕ))
+    rw [← hfin, ← Fin.sum_univ_eq_sum_range (fun i => ‖expSum N c (lam i)‖ ^ (2 : ℕ)) (R + 1)]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hlam_eq (i : ℕ) i.isLt]
   rw [hsum] at hbase

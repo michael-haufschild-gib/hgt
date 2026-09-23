@@ -99,12 +99,12 @@ theorem highPass_add_lowPass (χ û e : ℝ → ℂ) (ξ : ℝ) (hcarrier : e ξ
 /-- **`(12)`: the weighted trace-zero target.**  The derivative of the cutoff defect profile,
 weighted by `e^{σL}`, is square integrable on the physical ray. -/
 def WeightedCarlemanTarget (D : ℝ → ℝ) (σ : ℝ) : Prop :=
-  IntegrableOn (fun L => (Real.exp (σ * L) * D L) ^ 2) (Ioi (0:ℝ)) volume
+  IntegrableOn (fun L => (Real.exp (σ * L) * D L) ^ (2 : ℕ)) (Ioi (0:ℝ)) volume
 
 /-- The target is a strip condition: it descends to every smaller weight on the ray. -/
 theorem weightedCarlemanTarget_mono {D : ℝ → ℝ} {σ τ : ℝ} (hτ : τ ≤ σ)
     (hmeas : Measurable D) (h : WeightedCarlemanTarget D σ) : WeightedCarlemanTarget D τ := by
-  have hmeas2 : Measurable fun L : ℝ => (Real.exp (τ * L) * D L) ^ 2 := by
+  have hmeas2 : Measurable fun L : ℝ => (Real.exp (τ * L) * D L) ^ (2 : ℕ) := by
     have hbase : Measurable fun L : ℝ => Real.exp (τ * L) * D L :=
       (Real.measurable_exp.comp (measurable_const.mul measurable_id)).mul hmeas
     exact hbase.pow_const 2
@@ -114,7 +114,7 @@ theorem weightedCarlemanTarget_mono {D : ℝ → ℝ} {σ τ : ℝ} (hτ : τ �
   have hexp : Real.exp (τ * L) ≤ Real.exp (σ * L) := by
     apply Real.exp_le_exp.mpr
     exact mul_le_mul_of_nonneg_right hτ hL0.le
-  have hsq : (Real.exp (τ * L) * D L) ^ 2 ≤ (Real.exp (σ * L) * D L) ^ 2 := by
+  have hsq : (Real.exp (τ * L) * D L) ^ (2 : ℕ) ≤ (Real.exp (σ * L) * D L) ^ (2 : ℕ) := by
     have h1 : |Real.exp (τ * L) * D L| ≤ |Real.exp (σ * L) * D L| := by
       rw [abs_mul, abs_mul, abs_of_pos (Real.exp_pos _), abs_of_pos (Real.exp_pos _)]
       exact mul_le_mul_of_nonneg_right hexp (abs_nonneg _)

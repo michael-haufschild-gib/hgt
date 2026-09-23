@@ -114,7 +114,7 @@ def pickUnit (K : X → X → ℂ) [Fact (IsPSDKernel (augmentKernel K))] :
 
 theorem norm_pickUnit : ‖(pickUnit K)‖ = 1 := by
   have h : ⟪pickUnit K, pickUnit K⟫_ℂ = 1 := inner_pickUnit_self
-  have h2 : ‖(pickUnit K)‖ ^ 2 = 1 := by
+  have h2 : ‖(pickUnit K)‖ ^ (2 : ℕ) = 1 := by
     have hx := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (pickUnit K)
     rw [h] at hx
     exact_mod_cast congrArg Complex.re hx.symm
@@ -173,7 +173,7 @@ theorem norm_pickRan_eq_norm_pickDom
   have h1 := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (pickDom K p c)
   have h2 := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (pickRan K hval c)
   rw [hin, h2] at h1
-  have h3 : ‖pickRan K hval c‖ ^ 2 = ‖pickDom K p c‖ ^ 2 := by
+  have h3 : ‖pickRan K hval c‖ ^ (2 : ℕ) = ‖pickDom K p c‖ ^ (2 : ℕ) := by
     exact_mod_cast h1
   nlinarith [norm_nonneg (pickRan K hval c), norm_nonneg (pickDom K p c)]
 

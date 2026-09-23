@@ -32,7 +32,7 @@ theorem evenCompactGapCorrectionPolynomial_reflect_coeff (u : ℝ) (n : ℕ) (hn
 
 /-- Reversal retains every source polynomial and the full correction. -/
 def evenCompactGapReversedDetPolynomial (u w : ℝ) : Polynomial ℝ :=
-  hankelFourDet ((Polynomial.reflect 1 (evenCompactGapSourceZeroPolynomial u))^2)
+  hankelFourDet ((Polynomial.reflect 1 (evenCompactGapSourceZeroPolynomial u))^(2 : ℕ))
     (-Polynomial.reflect 3 (evenCompactGapReflectedTwoPolynomial u w))
     (Polynomial.reflect 4 (evenCompactGapReflectedFourPolynomial u w))
     (-Polynomial.reflect 5 (evenCompactGapReflectedSixPolynomial u w))
@@ -40,7 +40,7 @@ def evenCompactGapReversedDetPolynomial (u w : ℝ) : Polynomial ℝ :=
     (-Polynomial.reflect 7 (evenCompactGapReflectedTenPolynomial u w))
     (Polynomial.reflect 8 (evenCompactGapReflectedTwelvePolynomial u w)+
       Polynomial.reflect 8 (evenCompactGapCorrectionPolynomial u)) *
-      Polynomial.C (((100 : ℝ)^12)⁻¹)
+      Polynomial.C (((100 : ℝ)^(12 : ℕ))⁻¹)
 
 /-- Degree bounds justify weighted entrywise reflection of the entire determinant. -/
 theorem evenCompactGapDetPolynomial_reflect (u w : ℝ) :
@@ -72,7 +72,7 @@ theorem evenCompactGapDetPolynomial_reflect (u w : ℝ) :
     ⟨(evenCompactGapCorrectionPolynomial_degree u).trans (by omega), rfl⟩
   have hdet := evenCompactGapReflection.hankel _ _ _ _ _ _ _ _ _ _ _ _ _ _
     (hQ.pow 2) htwo.neg hfour hsix.neg height hten.neg (htwelve.add hcorr)
-  have hfinal := hdet.mul (evenCompactGapReflection.constant (((100 : ℝ)^12)⁻¹))
+  have hfinal := hdet.mul (evenCompactGapReflection.constant (((100 : ℝ)^(12 : ℕ))⁻¹))
   exact hfinal.2
 
 /-- A coefficient near the top becomes a low coefficient in the reversed determinant. -/

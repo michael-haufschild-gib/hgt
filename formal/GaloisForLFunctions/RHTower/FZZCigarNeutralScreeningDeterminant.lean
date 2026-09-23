@@ -29,12 +29,12 @@ def fzzNeutralScreeningWithinDistance {n : ℕ} (z w : Fin n → ℂ) : ℝ :=
 
 /-- Literal neutral position kernel at level four, with every pair retained. -/
 def fzzNeutralCubicScreeningKernel {n : ℕ} (z w : Fin n → ℂ) : ℝ :=
-  (∏ i, ∏ j ∈ Finset.Ioi i, ‖z i-z j‖^2*‖w i-w j‖^2)*
-    ∏ i, ∏ j, (‖z i-w j‖^6)⁻¹
+  (∏ i, ∏ j ∈ Finset.Ioi i, ‖z i-z j‖^(2 : ℕ)*‖w i-w j‖^(2 : ℕ))*
+    ∏ i, ∏ j, (‖z i-w j‖^(6 : ℕ))⁻¹
 
 private theorem kernel_quotient {n : ℕ} (z w : Fin n → ℂ) :
     fzzNeutralCubicScreeningKernel z w =
-      (fzzNeutralScreeningWithinDistance z w)^2/(fzzNeutralScreeningCrossDistance z w)^6 := by
+      (fzzNeutralScreeningWithinDistance z w)^(2 : ℕ)/(fzzNeutralScreeningCrossDistance z w)^(6 : ℕ) := by
   unfold fzzNeutralCubicScreeningKernel fzzNeutralScreeningWithinDistance
     fzzNeutralScreeningCrossDistance
   simp only [← mul_pow,Finset.prod_pow,Finset.prod_inv_distrib,div_eq_mul_inv]
@@ -58,8 +58,8 @@ between every opposite-charge pair. The equality also covers totalized collision
 theorem fzzNeutralCubicScreeningKernel_eq_cauchy_interaction {n : ℕ}
     (z w : Fin n → ℂ) :
     fzzNeutralCubicScreeningKernel z w =
-      ‖(cauchyMatrix z (fun j => -w j)).det‖^2/
-        (fzzNeutralScreeningCrossDistance z w)^4 := by
+      ‖(cauchyMatrix z (fun j => -w j)).det‖^(2 : ℕ)/
+        (fzzNeutralScreeningCrossDistance z w)^(4 : ℕ) := by
   rw [kernel_quotient]
   by_cases h : fzzNeutralScreeningCrossDistance z w = 0
   · simp only [h,zero_pow,ne_eq,OfNat.ofNat_ne_zero,not_false_eq_true,div_zero]

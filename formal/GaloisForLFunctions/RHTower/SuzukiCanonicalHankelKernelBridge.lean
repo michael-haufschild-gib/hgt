@@ -81,7 +81,7 @@ theorem integral_suzukiCanonicalHankelContourIntegrand_shift
     have hM' : ‖deningerMeyerStrongLogMellin g (-Complex.I * z)‖ ≤
         ((∫ t : ℝ, deningerMeyerQuadraticStripMajorant0 c g t) +
           ∫ t : ℝ, deningerMeyerQuadraticStripMajorant2 c g t) *
-            (1 + z.re ^ 2)⁻¹ := by
+            (1 + z.re ^ (2 : ℕ))⁻¹ := by
       rw [hrot]
       simpa only [neg_sq] using hM
     rw [suzukiCanonicalHankelContourIntegrand]
@@ -104,7 +104,7 @@ theorem integral_suzukiCanonicalHankelContourIntegrand_shift
     have hright : 0 ≤
         ((∫ t : ℝ, deningerMeyerQuadraticStripMajorant0 c g t) +
           ∫ t : ℝ, deningerMeyerQuadraticStripMajorant2 c g t) *
-            (1 + z.re ^ 2)⁻¹ :=
+            (1 + z.re ^ (2 : ℕ))⁻¹ :=
       mul_nonneg hmajorant (by positivity)
     rw [norm_mul, norm_mul]
     calc
@@ -113,9 +113,9 @@ theorem integral_suzukiCanonicalHankelContourIntegrand_shift
           ‖Complex.exp (-Complex.I * z * (r : ℂ))‖ ≤
         1 * (((∫ t : ℝ, deningerMeyerQuadraticStripMajorant0 c g t) +
           ∫ t : ℝ, deningerMeyerQuadraticStripMajorant2 c g t) *
-            (1 + z.re ^ 2)⁻¹) * Real.exp (c * |r|) := by
+            (1 + z.re ^ (2 : ℕ))⁻¹) * Real.exp (c * |r|) := by
               gcongr
-      _ = C * (1 + z.re ^ 2)⁻¹ := by
+      _ = C * (1 + z.re ^ (2 : ℕ))⁻¹ := by
         dsimp only [C]
         ring
 

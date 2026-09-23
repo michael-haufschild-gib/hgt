@@ -95,7 +95,7 @@ theorem replicaPairCount_one (D : ℕ) : replicaPairCount D 1 = D := by
   · calc
       (∑ i : Fin D,
           (Nat.multinomial Finset.univ
-            (fun j : Fin D => if j = i then 1 else 0) : ℝ) ^ 2) =
+            (fun j : Fin D => if j = i then 1 else 0) : ℝ) ^ (2 : ℕ)) =
           ∑ _i : Fin D, (1 : ℝ) := by
             apply Finset.sum_congr rfl
             intro i hi
@@ -132,7 +132,7 @@ theorem factorial_lt_replicaPairCount_of_stableRange
     have hlower := le_replicaPairCount D m
     calc
       (Nat.factorial m : ℝ) <
-          (D.choose m : ℝ) * (Nat.factorial m : ℝ) ^ 2 := by nlinarith
+          (D.choose m : ℝ) * (Nat.factorial m : ℝ) ^ (2 : ℕ) := by nlinarith
       _ ≤ replicaPairCount D m := hlower
 
 /-- **All-stable-replica autonomous design obstruction.**  At every order

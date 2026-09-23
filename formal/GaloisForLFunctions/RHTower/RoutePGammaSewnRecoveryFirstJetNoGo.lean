@@ -117,13 +117,13 @@ theorem tendsto_norm_sq_div_aperture_gammaSewnRecoveredScalarXiPhase_unitaryDefe
     (P : Finset Nat.Primes) (c : ℝ → F)
     (hunit : ∀ a : ℝ,
       Complex.normSq (gammaSewnRecoveredScalarXiPhase nu P a) +
-        ‖c a‖ ^ 2 = 1) :
-    Tendsto (fun a : ℝ => ‖c a‖ ^ 2 / a)
+        ‖c a‖ ^ (2 : ℕ) = 1) :
+    Tendsto (fun a : ℝ => ‖c a‖ ^ (2 : ℕ) / a)
       (nhdsWithin 0 (Ioi 0))
       (nhds (2 *
         (continuedXiAntiCausalWardResponse (1 / 2 : ℂ)).re)) := by
   have hdefect : ∀ a : ℝ,
-      gammaSewnRecoveredScalarXiPhaseDefect nu P a = ‖c a‖ ^ 2 := by
+      gammaSewnRecoveredScalarXiPhaseDefect nu P a = ‖c a‖ ^ (2 : ℕ) := by
     intro a
     rw [gammaSewnRecoveredScalarXiPhaseDefect]
     linarith [hunit a]
@@ -142,17 +142,17 @@ theorem riemannHypothesis_of_differentiable_gammaSewnRecoveredScalarXiPhase_unit
     (hc0 : c 0 = 0) (hc : HasDerivAt c c' 0)
     (hunit : ∀ a : ℝ,
       Complex.normSq (gammaSewnRecoveredScalarXiPhase nu P a) +
-        ‖c a‖ ^ 2 = 1) :
+        ‖c a‖ ^ (2 : ℕ) = 1) :
     RiemannHypothesis := by
   have henergy :=
     tendsto_norm_sq_div_aperture_gammaSewnRecoveredScalarXiPhase_unitaryDefect
       nu hnu P c hunit
-  have hcNorm : HasDerivAt (fun a : ℝ => ‖c a‖ ^ 2) 0 0 := by
+  have hcNorm : HasDerivAt (fun a : ℝ => ‖c a‖ ^ (2 : ℕ)) 0 0 := by
     have h := hc.norm_sq
     rw [hc0, inner_zero_left, mul_zero] at h
     exact h
   have hzeroEnergy :
-      Tendsto (fun a : ℝ => ‖c a‖ ^ 2 / a)
+      Tendsto (fun a : ℝ => ‖c a‖ ^ (2 : ℕ) / a)
         (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
     have h := hcNorm.tendsto_slope_zero_right
     convert h using 1
@@ -177,7 +177,7 @@ theorem no_differentiable_gammaSewnRecoveredScalarXiPhase_unitaryDefect_of_not_r
     (P : Finset Nat.Primes) (c : ℝ → F) (hc0 : c 0 = 0)
     (hunit : ∀ a : ℝ,
       Complex.normSq (gammaSewnRecoveredScalarXiPhase nu P a) +
-        ‖c a‖ ^ 2 = 1) :
+        ‖c a‖ ^ (2 : ℕ) = 1) :
     ∀ c' : F, ¬ HasDerivAt c c' 0 := by
   intro c' hc
   exact hRH

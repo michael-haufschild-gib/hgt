@@ -112,15 +112,15 @@ theorem exists_long_approximant {ℓ : (P → ℤ) → ℝ} {f : ℕ → ℝ} {a
   exact ⟨ν, hlen, hlt.1, hlt.2⟩
 
 /-- The super-exponential rate of the Liouville stages. -/
-def liouvilleRate (N : ℕ) : ℝ := Real.exp (-((N : ℝ) ^ 2))
+def liouvilleRate (N : ℕ) : ℝ := Real.exp (-((N : ℝ) ^ (2 : ℕ)))
 
 theorem liouvilleRate_pos (N : ℕ) : 0 < liouvilleRate N := Real.exp_pos _
 
 /-- A super-exponentially close approximant is exponentially deep. -/
 theorem sq_lt_apertureDepth {ℓ : (P → ℤ) → ℝ} {a : ℝ} {ν : P → ℤ}
     (hpos : 0 < |2 * a - ℓ ν|) (hlt : |2 * a - ℓ ν| < liouvilleRate (orbitLength ν)) :
-    ((orbitLength ν : ℝ)) ^ 2 < apertureDepth a ℓ ν := by
-  have hlog : Real.log (apertureDefect a ℓ ν) < -((orbitLength ν : ℝ) ^ 2) := by
+    ((orbitLength ν : ℝ)) ^ (2 : ℕ) < apertureDepth a ℓ ν := by
+  have hlog : Real.log (apertureDefect a ℓ ν) < -((orbitLength ν : ℝ) ^ (2 : ℕ)) := by
     have hdef : apertureDefect a ℓ ν = |2 * a - ℓ ν| := rfl
     rw [hdef]
     have := Real.log_lt_log hpos hlt
@@ -130,7 +130,7 @@ theorem sq_lt_apertureDepth {ℓ : (P → ℤ) → ℝ} {a : ℝ} {ν : P → �
 
 /-- The exponential barrier grows without bound along the lattice. -/
 theorem tendsto_liouvilleBarrier {σ C w₀ : ℝ} (hσ : 0 < σ) (hC : 0 < C) (hw₀ : 0 < w₀) :
-    Filter.Tendsto (fun N : ℕ => w₀ * (Real.exp (σ * (N : ℝ) ^ 2) * C ^ N)) Filter.atTop
+    Filter.Tendsto (fun N : ℕ => w₀ * (Real.exp (σ * (N : ℝ) ^ (2 : ℕ)) * C ^ N)) Filter.atTop
       Filter.atTop := by
   have hcast : Filter.Tendsto (fun N : ℕ => (N : ℝ)) Filter.atTop Filter.atTop :=
     tendsto_natCast_atTop_atTop
@@ -259,14 +259,14 @@ theorem liouville_activation_unbounded {ℓ : (P → ℤ) → ℝ} {a σ C w₀ 
   refine ⟨ν, ?_⟩
   have hbar := hn (orbitLength ν) hlen
   have hdepth := sq_lt_apertureDepth hpos hlt
-  have hexp : Real.exp (σ * (orbitLength ν : ℝ) ^ 2)
+  have hexp : Real.exp (σ * (orbitLength ν : ℝ) ^ (2 : ℕ))
       ≤ Real.exp (σ * apertureDepth a ℓ ν) := by
     apply Real.exp_le_exp.mpr
     exact mul_le_mul_of_nonneg_left hdepth.le hσ.le
   have hwν : w₀ * C ^ orbitLength ν ≤ w ν := hw ν
   have hposC : (0:ℝ) < C ^ orbitLength ν := pow_pos hC _
-  calc M ≤ w₀ * (Real.exp (σ * (orbitLength ν : ℝ) ^ 2) * C ^ orbitLength ν) := hbar
-    _ = Real.exp (σ * (orbitLength ν : ℝ) ^ 2) * (w₀ * C ^ orbitLength ν) := by ring
+  calc M ≤ w₀ * (Real.exp (σ * (orbitLength ν : ℝ) ^ (2 : ℕ)) * C ^ orbitLength ν) := hbar
+    _ = Real.exp (σ * (orbitLength ν : ℝ) ^ (2 : ℕ)) * (w₀ * C ^ orbitLength ν) := by ring
     _ ≤ Real.exp (σ * apertureDepth a ℓ ν) * (w₀ * C ^ orbitLength ν) :=
         mul_le_mul_of_nonneg_right hexp (by positivity)
     _ ≤ Real.exp (σ * apertureDepth a ℓ ν) * w ν :=

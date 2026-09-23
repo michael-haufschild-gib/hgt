@@ -150,7 +150,7 @@ theorem not_exists_routePPrimitiveBurnolApertureConstantMixer_eq_strictRightCono
     xiRightCenteredZero_re_lt_primitiveBurnolLogFrequency pe q
   have hratio :=
     xiWardCubicConormalExponentialTail_ratio_tendsto_atTop hgap
-  have hlarge := hratio.eventually_ge_atTop (C ^ 2 + 1)
+  have hlarge := hratio.eventually_ge_atTop (C ^ (2 : ℕ) + 1)
   have hthreshold : ∀ᶠ L : ℝ in atTop, max c 0 + 1 ≤ L :=
     Filter.eventually_ge_atTop (max c 0 + 1)
   obtain ⟨L, hlargeL, hthresholdL⟩ := (hlarge.and hthreshold).exists
@@ -190,10 +190,10 @@ theorem not_exists_routePPrimitiveBurnolApertureConstantMixer_eq_strictRightCono
     apply (mul_le_mul_iff_left₀ hL).mp
     simpa [mul_assoc, mul_comm, mul_left_comm] using hbound
   have hsq :
-      Real.exp (-((xiRightCenteredZero q).re * L)) ^ 2 ≤
-        C ^ 2 *
+      Real.exp (-((xiRightCenteredZero q).re * L)) ^ (2 : ℕ) ≤
+        C ^ (2 : ℕ) *
           Real.exp
-            (-(xiGammaEulerPrimitiveLogFrequency pe * L)) ^ 2 := by
+            (-(xiGammaEulerPrimitiveLogFrequency pe * L)) ^ (2 : ℕ) := by
     have hleft : 0 ≤ Real.exp (-((xiRightCenteredZero q).re * L)) :=
       (Real.exp_pos _).le
     have hright : 0 ≤ C * Real.exp
@@ -202,18 +202,18 @@ theorem not_exists_routePPrimitiveBurnolApertureConstantMixer_eq_strictRightCono
     nlinarith
   have htailBound :
       xiWardCubicConormalExponentialTail (xiRightCenteredZero q).re L ≤
-        C ^ 2 *
+        C ^ (2 : ℕ) *
           xiWardCubicConormalExponentialTail
             (xiGammaEulerPrimitiveLogFrequency pe) L := by
     rw [xiWardCubicConormalExponentialTail,
       xiWardCubicConormalExponentialTail]
     rw [show Real.exp (-2 * (xiRightCenteredZero q).re * L) =
-        Real.exp (-((xiRightCenteredZero q).re * L)) ^ 2 by
+        Real.exp (-((xiRightCenteredZero q).re * L)) ^ (2 : ℕ) by
       rw [pow_two, ← Real.exp_add]
       congr 1
       ring,
       show Real.exp (-2 * xiGammaEulerPrimitiveLogFrequency pe * L) =
-        Real.exp (-(xiGammaEulerPrimitiveLogFrequency pe * L)) ^ 2 by
+        Real.exp (-(xiGammaEulerPrimitiveLogFrequency pe * L)) ^ (2 : ℕ) by
       rw [pow_two, ← Real.exp_add]
       congr 1
       ring]
@@ -224,7 +224,7 @@ theorem not_exists_routePPrimitiveBurnolApertureConstantMixer_eq_strictRightCono
   have hquot :
       xiWardCubicConormalExponentialTail (xiRightCenteredZero q).re L /
           xiWardCubicConormalExponentialTail
-            (xiGammaEulerPrimitiveLogFrequency pe) L ≤ C ^ 2 := by
+            (xiGammaEulerPrimitiveLogFrequency pe) L ≤ C ^ (2 : ℕ) := by
     exact (div_le_iff₀ hden).2 htailBound
   linarith
 

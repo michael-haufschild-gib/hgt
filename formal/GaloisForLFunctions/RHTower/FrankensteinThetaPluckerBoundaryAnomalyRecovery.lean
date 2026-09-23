@@ -199,7 +199,7 @@ theorem xiLower_boundaryMoment_tendsto (q : RHTower.XiZeroCopy) :
         (boundaryTransfer eps
           (frankensteinXiLowerPhysicalPluckerHilbertCarrier q)))
       (nhdsWithin 0 (Set.Ioi 0))
-      (nhds (‖frankensteinXiLowerPhysicalPluckerHilbertCarrier q‖ ^ 2 : ℂ)) := by
+      (nhds (‖frankensteinXiLowerPhysicalPluckerHilbertCarrier q‖ ^ (2 : ℕ) : ℂ)) := by
   have h := Filter.Tendsto.inner (𝕜 := ℂ)
     (f := fun _ : ℝ => frankensteinXiLowerPhysicalPluckerHilbertCarrier q)
     (g := fun eps : ℝ => boundaryTransfer eps
@@ -208,7 +208,7 @@ theorem xiLower_boundaryMoment_tendsto (q : RHTower.XiZeroCopy) :
   simpa [inner_self_eq_norm_sq_to_K] using h
 
 theorem xiLower_boundaryMoment_limit_pos_iff (q : RHTower.XiZeroCopy) :
-    0 < ‖frankensteinXiLowerPhysicalPluckerHilbertCarrier q‖ ^ 2 ↔
+    0 < ‖frankensteinXiLowerPhysicalPluckerHilbertCarrier q‖ ^ (2 : ℕ) ↔
       (q.1 : ℂ).re ≠ 1 / 2 := by
   rw [sq_pos_iff, norm_ne_zero_iff]
   exact not_congr

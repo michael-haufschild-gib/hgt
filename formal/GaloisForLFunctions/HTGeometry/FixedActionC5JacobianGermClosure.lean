@@ -102,8 +102,8 @@ theorem c5FixedActionRegularizedCenterJet_elimination
       realScalarJetConvolution e (fun k => q (k + 1)) n) :
     (∀ n < 9, c5FixedActionRegularizedCenterJet A q e n = 0) ∧
       c5FixedActionRegularizedCenterJet A q e 9 =
-        20160 * (A ^ 2 * D - 5 * A * B * C + 4 * B ^ 3 -
-          18 * A ^ 3 * C + 36 * A ^ 2 * B ^ 2) := by
+        20160 * (A ^ (2 : ℕ) * D - 5 * A * B * C + 4 * B ^ (3 : ℕ) -
+          18 * A ^ (3 : ℕ) * C + 36 * A ^ (2 : ℕ) * B ^ (2 : ℕ)) := by
   have he1 := he 0
   norm_num [realScalarJetConvolution, Finset.sum_range_succ, Nat.choose,
     he0, hq1] at he1

@@ -24,7 +24,7 @@ theorem hsNormSq_rankOne
     {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     [CompleteSpace E] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
     [CompleteSpace F] (x : E) (y : F) :
-    hsNormSq (rankOne ℂ x y) = ‖x‖ ^ 2 * ‖y‖ ^ 2 :=
+    hsNormSq (rankOne ℂ x y) = ‖x‖ ^ (2 : ℕ) * ‖y‖ ^ (2 : ℕ) :=
   GaloisForLFunctions.HTGeometry.hsNormSq_rankOne x y
 
 private theorem crossBoundary_rankOne_eq
@@ -40,7 +40,7 @@ private theorem norm_sq_projection_add_complement
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (e : H →L[ℂ] H) (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (psi : H) :
-    ‖e psi‖ ^ 2 + ‖(1 - e) psi‖ ^ 2 = ‖psi‖ ^ 2 := by
+    ‖e psi‖ ^ (2 : ℕ) + ‖(1 - e) psi‖ ^ (2 : ℕ) = ‖psi‖ ^ (2 : ℕ) := by
   have hstar : IsStarProjection e := by
     rw [isStarProjection_iff]
     exact ⟨he, by simpa [IsSelfAdjoint, star_eq_adjoint] using heAdj⟩
@@ -56,7 +56,7 @@ theorem hsNormSq_rankOneProjection_commutator
     (e : H →L[ℂ] H) (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (psi : H) (hpsi : ‖psi‖ = 1) :
     hsNormSq (ccmCommutator (rankOne ℂ psi psi) e) =
-      2 * ‖e psi‖ ^ 2 * (1 - ‖e psi‖ ^ 2) := by
+      2 * ‖e psi‖ ^ (2 : ℕ) * (1 - ‖e psi‖ ^ (2 : ℕ)) := by
   have hcross := crossBoundary_rankOne_eq e heAdj psi
   have hL : IsHilbertSchmidt (crossBoundary e (rankOne ℂ psi psi)) := by
     rw [hcross]
@@ -74,7 +74,7 @@ theorem hsNormSq_rankOneProjection_clockInvolution_commutator
     (e : H →L[ℂ] H) (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (psi : H) (hpsi : ‖psi‖ = 1) :
     hsNormSq (ccmCommutator (rankOne ℂ psi psi) ((2 : ℂ) • e - 1)) =
-      8 * ‖e psi‖ ^ 2 * (1 - ‖e psi‖ ^ 2) := by
+      8 * ‖e psi‖ ^ (2 : ℕ) * (1 - ‖e psi‖ ^ (2 : ℕ)) := by
   let P := rankOne ℂ psi psi
   have hP : IsHilbertSchmidt P := isHilbertSchmidt_rankOne psi psi
   have hcommHS : IsHilbertSchmidt (ccmCommutator P e) := by
@@ -86,9 +86,9 @@ theorem hsNormSq_rankOneProjection_clockInvolution_commutator
     simp only [two_smul]
     noncomm_ring
   rw [hcomm, hsNormSq_smul_eq hcommHS (2 : ℂ)]
-  change ‖(2 : ℂ)‖ ^ 2 * hsNormSq (ccmCommutator P e) = _
+  change ‖(2 : ℂ)‖ ^ (2 : ℕ) * hsNormSq (ccmCommutator P e) = _
   rw [show hsNormSq (ccmCommutator P e) =
-      2 * ‖e psi‖ ^ 2 * (1 - ‖e psi‖ ^ 2) by
+      2 * ‖e psi‖ ^ (2 : ℕ) * (1 - ‖e psi‖ ^ (2 : ℕ)) by
     simpa [P] using hsNormSq_rankOneProjection_commutator e he heAdj psi hpsi]
   norm_num
   ring

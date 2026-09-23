@@ -43,24 +43,24 @@ theorem continuous_pureImag_complexDampedLp
     rw [norm_infiniteMobiusCriticalComplexDampedSignedWeight]
     simp only [mul_re, I_re, ofReal_re, I_im, ofReal_im, zero_mul, one_mul, sub_zero]
     simp [infiniteMobiusCriticalDampedSignedWeight]
-  have hsq : Tendsto (fun t : ℝ => ‖D t - D t0‖ ^ 2) (𝓝 t0) (𝓝 0) := by
-    rw [show (fun t : ℝ => ‖D t - D t0‖ ^ 2) = fun t : ℝ =>
+  have hsq : Tendsto (fun t : ℝ => ‖D t - D t0‖ ^ (2 : ℕ)) (𝓝 t0) (𝓝 0) := by
+    rw [show (fun t : ℝ => ‖D t - D t0‖ ^ (2 : ℕ)) = fun t : ℝ =>
       ∑' n : ℕ, ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t) n -
-        infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t0) n‖ ^ 2 by
+        infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t0) n‖ ^ (2 : ℕ) by
       funext t
       rw [HilbertSchmidt.lp_norm_sq_eq, lp.coeFn_sub]
       rfl]
     have htsum : Tendsto (fun t : ℝ => ∑' n : ℕ,
         ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t) n -
-          infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t0) n‖ ^ 2)
+          infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t0) n‖ ^ (2 : ℕ))
         (𝓝 t0) (𝓝 (∑' _ : ℕ, (0 : ℝ))) := by
       apply tendsto_tsum_of_dominated_convergence
         (𝓕 := 𝓝 t0)
         (f := fun (t : ℝ) n =>
           ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t) n -
-            infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t0) n‖ ^ 2)
+            infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t0) n‖ ^ (2 : ℕ))
         (g := fun _ : ℕ => (0 : ℝ))
-        (bound := fun n => 4 * ‖infiniteMobiusSignedWeight sigma n‖ ^ 2)
+        (bound := fun n => 4 * ‖infiniteMobiusSignedWeight sigma n‖ ^ (2 : ℕ))
       · exact (summable_norm_sq_infiniteMobiusSignedWeight hsigma).mul_left 4
       · intro n
         have hcont : Continuous (fun t : ℝ =>
@@ -73,7 +73,7 @@ theorem continuous_pureImag_complexDampedLp
           fun_prop
         have hzero : ContinuousAt (fun t : ℝ =>
             ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t) n -
-              infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t0) n‖ ^ 2) t0 :=
+              infiniteMobiusCriticalComplexDampedSignedWeight sigma (I * t0) n‖ ^ (2 : ℕ)) t0 :=
           (hcont.continuousAt.sub continuousAt_const).norm.pow 2
         simpa using hzero.tendsto
       · filter_upwards with t n
@@ -91,11 +91,11 @@ theorem continuous_pureImag_complexDampedLp
         have hsquare := sq_le_sq₀ (norm_nonneg _) hright |>.mpr hsub'
         rw [Real.norm_of_nonneg (sq_nonneg _)]
         calc
-          _ ≤ (2 * ‖infiniteMobiusSignedWeight sigma n‖) ^ 2 := hsquare
-          _ = 4 * ‖infiniteMobiusSignedWeight sigma n‖ ^ 2 := by ring
+          _ ≤ (2 * ‖infiniteMobiusSignedWeight sigma n‖) ^ (2 : ℕ) := hsquare
+          _ = 4 * ‖infiniteMobiusSignedWeight sigma n‖ ^ (2 : ℕ) := by ring
     simpa using htsum
   have hnormZero : Tendsto (fun t : ℝ => ‖D t - D t0‖) (𝓝 t0) (𝓝 0) := by
-    have hsqrt : Tendsto (fun t : ℝ => Real.sqrt (‖D t - D t0‖ ^ 2))
+    have hsqrt : Tendsto (fun t : ℝ => Real.sqrt (‖D t - D t0‖ ^ (2 : ℕ)))
         (𝓝 t0) (𝓝 (Real.sqrt 0)) :=
       Real.continuous_sqrt.continuousAt.tendsto.comp hsq
     simpa only [Real.sqrt_sq_eq_abs, abs_of_nonneg (norm_nonneg _), Real.sqrt_zero]
@@ -183,7 +183,7 @@ theorem exists_soninCofinalCriticalComplexFisherScore_allPhase_diagonal
     ∃ Nseq : ℕ → ℕ, (∀ j, j < Nseq j) ∧ ∀ t : ℝ,
       Tendsto (fun j =>
         soninCofinalCriticalComplexFisherScore a c d r hc hcd hr (I * t) (by simp)
-          j (Nseq j)) atTop (nhds (2 * (I * t) / (1 + I * t) ^ 2)) := by
+          j (Nseq j)) atTop (nhds (2 * (I * t) / (1 + I * t) ^ (2 : ℕ))) := by
   let sigma : ℕ → ℝ := soninMobiusCriticalSigmaSequence
   let F : ℕ → MobiusClockSourceL2 := fun j =>
     infiniteMobiusCriticalFisherTangentLp (sigma j)
@@ -242,7 +242,7 @@ theorem exists_soninCofinalCriticalComplexFisherScore_allPhase_diagonal
   refine ⟨Nseq, hcofinal, ?_⟩
   intro t
   have hsource : Tendsto (fun j => inner ℂ (F j) (D j t)) atTop
-      (nhds (2 * (I * t) / (1 + I * t) ^ 2)) := by
+      (nhds (2 * (I * t) / (1 + I * t) ^ (2 : ℕ))) := by
     simpa only [F, D, sigma] using
       tendsto_inner_fisherTangent_complexDamped_criticalSequence (u := I * t) (by simp)
   rw [Metric.tendsto_atTop] at hsource ⊢
@@ -270,13 +270,13 @@ theorem exists_soninCofinalCriticalComplexFisherScore_allPhase_diagonal
       abs_of_nonneg (by positivity)] at hinvSmall
     exact hscore'.trans_le hinvSmall.le
   have hsourceSmall : dist (inner ℂ (F j) (D j t))
-      (2 * (I * t) / (1 + I * t) ^ 2) < epsilon / 2 := hsource j hjSource
+      (2 * (I * t) / (1 + I * t) ^ (2 : ℕ)) < epsilon / 2 := hsource j hjSource
   calc
     dist (soninCofinalCriticalComplexFisherScore a c d r hc hcd hr (I * t) (by simp)
-        j (Nseq j)) (2 * (I * t) / (1 + I * t) ^ 2) ≤
+        j (Nseq j)) (2 * (I * t) / (1 + I * t) ^ (2 : ℕ)) ≤
         dist (soninCofinalCriticalComplexFisherScore a c d r hc hcd hr (I * t) (by simp)
           j (Nseq j)) (inner ℂ (F j) (D j t)) +
-          dist (inner ℂ (F j) (D j t)) (2 * (I * t) / (1 + I * t) ^ 2) :=
+          dist (inner ℂ (F j) (D j t)) (2 * (I * t) / (1 + I * t) ^ (2 : ℕ)) :=
       dist_triangle _ _ _
     _ < epsilon / 2 + epsilon / 2 := add_lt_add hscoreSmall hsourceSmall
     _ = epsilon := by ring
@@ -301,7 +301,7 @@ theorem exists_soninCofinalCriticalComplexReporter_allPhase_diagonal
               a c d r hc hcd hr (Nseq j)
               (soninMobiusCriticalSigmaSequence j)
               (soninMobiusCriticalSigmaSequence_gt_one j))))
-        atTop (nhds (2 * (I * t) / (1 + I * t) ^ 2)) := by
+        atTop (nhds (2 * (I * t) / (1 + I * t) ^ (2 : ℕ))) := by
   let sigma : ℕ → ℝ := soninMobiusCriticalSigmaSequence
   let F : ℕ → MobiusClockSourceL2 := fun j =>
     infiniteMobiusCriticalFisherTangentLp (sigma j)
@@ -337,7 +337,7 @@ theorem exists_soninCofinalCriticalComplexReporter_allPhase_diagonal
     mobiusCriticalComplexClockDamping (sigma j) (I * t)
       (soninMobiusCriticalSigmaSequence_gt_one j) (by simp)
   have hsource : Tendsto (fun j => inner ℂ (F j) (S j (x j))) atTop
-      (nhds (2 * (I * t) / (1 + I * t) ^ 2)) := by
+      (nhds (2 * (I * t) / (1 + I * t) ^ (2 : ℕ))) := by
     change Tendsto (fun j => inner ℂ
       (infiniteMobiusCriticalFisherTangentLp (sigma j)
         (soninMobiusCriticalSigmaSequence_gt_one j))
@@ -413,16 +413,16 @@ theorem exists_soninCofinalCriticalComplexReporter_allPhase_diagonal
       abs_of_nonneg (by positivity)] at hinvSmall
     exact hsmall'.trans_le hinvSmall.le
   have hsourceSmall : dist (inner ℂ (F j) (S j (x j)))
-      (2 * (I * t) / (1 + I * t) ^ 2) < epsilon / 2 := hsource j hjSource
+      (2 * (I * t) / (1 + I * t) ^ (2 : ℕ)) < epsilon / 2 := hsource j hjSource
   calc
     dist (inner ℂ (F j) (S j
           (soninCofinalPositiveSourcePullback a c d r hc hcd hr (Nseq j) (x j))))
-        (2 * (I * t) / (1 + I * t) ^ 2) ≤
+        (2 * (I * t) / (1 + I * t) ^ (2 : ℕ)) ≤
         dist (inner ℂ (F j) (S j
           (soninCofinalPositiveSourcePullback a c d r hc hcd hr (Nseq j) (x j))))
           (inner ℂ (F j) (S j (x j))) +
         dist (inner ℂ (F j) (S j (x j)))
-          (2 * (I * t) / (1 + I * t) ^ 2) := dist_triangle _ _ _
+          (2 * (I * t) / (1 + I * t) ^ (2 : ℕ)) := dist_triangle _ _ _
     _ < epsilon / 2 + epsilon / 2 := add_lt_add hsmallEpsilon hsourceSmall
     _ = epsilon := by ring
 

@@ -5,12 +5,12 @@ import GaloisForLFunctions.RHTower.PrimeGammaCauchyCubicSignedEulerianCurvature
 # The SP-E codiagonal cancels the leading Route-P cubic Cauchy mode
 
 The finite matched-minus-quantile codiagonal is exactly mass neutral.  Pair it with the Route-P
-zero-ordinate Cauchy-cubic edge `2 / (x + y)^3`.  Its constant base mode `2 / x^3` cancels
+zero-ordinate Cauchy-cubic edge `2 / (x + y)^(3 : ℕ)`.  Its constant base mode `2 / x^(3 : ℕ)` cancels
 identically, leaving a kernel with an explicit factor of the literal polar coordinate `y`:
 
 ```text
-  2/(x+y)^3 - 2/x^3 =
-    -2y(3x^2 + 3xy + y^2) / (x^3 (x+y)^3).
+  2/(x+y)^(3 : ℕ) - 2/x^(3 : ℕ) =
+    -2y(3x^(2 : ℕ) + 3xy + y^(2 : ℕ)) / (x^(3 : ℕ) (x+y)^(3 : ℕ)).
 ```
 
 This is a source-faithful finite P/SP-E bridge.  Its exact tangent--remainder ledger separates
@@ -40,8 +40,8 @@ factor. -/
 theorem primeGammaCauchyCubicEdge_sub_base_factor
     {x y : ℝ} (hx : 0 < x) (hy : 0 ≤ y) :
     primeGammaCauchyCubicEdge x y - primeGammaCauchyCubicEdge x 0 =
-      -2 * y * (3 * x ^ 2 + 3 * x * y + y ^ 2) /
-        (x ^ 3 * (x + y) ^ 3) := by
+      -2 * y * (3 * x ^ (2 : ℕ) + 3 * x * y + y ^ (2 : ℕ)) /
+        (x ^ (3 : ℕ) * (x + y) ^ (3 : ℕ)) := by
   unfold primeGammaCauchyCubicEdge
   have hxy : x + y ≠ 0 := (add_pos_of_pos_of_nonneg hx hy).ne'
   field_simp [hx.ne', hxy]
@@ -54,14 +54,14 @@ theorem primeGammaCauchyCubicEdge_sub_base_nonpos
     {x y : ℝ} (hx : 0 < x) (hy : 0 ≤ y) :
     primeGammaCauchyCubicEdge x y - primeGammaCauchyCubicEdge x 0 ≤ 0 := by
   rw [primeGammaCauchyCubicEdge_sub_base_factor hx hy]
-  have hpoly : 0 ≤ 3 * x ^ 2 + 3 * x * y + y ^ 2 := by positivity
-  have hden : 0 < x ^ 3 * (x + y) ^ 3 := by positivity
-  have hnum : -2 * y * (3 * x ^ 2 + 3 * x * y + y ^ 2) ≤ 0 := by
+  have hpoly : 0 ≤ 3 * x ^ (2 : ℕ) + 3 * x * y + y ^ (2 : ℕ) := by positivity
+  have hden : 0 < x ^ (3 : ℕ) * (x + y) ^ (3 : ℕ) := by positivity
+  have hnum : -2 * y * (3 * x ^ (2 : ℕ) + 3 * x * y + y ^ (2 : ℕ)) ≤ 0 := by
     nlinarith [mul_nonneg hy hpoly]
   exact div_nonpos_of_nonpos_of_nonneg hnum hden.le
 
 /-- **Base-mode cancellation.**  The exact zero-mass SP-E codiagonal annihilates the leading
-`2/x^3` Route-P Cauchy mode. -/
+`2/x^(3 : ℕ)` Route-P Cauchy mode. -/
 theorem ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe_base_cancel
     (K : ℕ) {x : ℝ} (hx : 0 < x) :
     ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe K x =
@@ -147,8 +147,8 @@ theorem ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe_eq_firstMome
     ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe K x =
       ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K
         (fun y =>
-          -2 * y * (3 * x ^ 2 + 3 * x * y + y ^ 2) /
-            (x ^ 3 * (x + y) ^ 3)) := by
+          -2 * y * (3 * x ^ (2 : ℕ) + 3 * x * y + y ^ (2 : ℕ)) /
+            (x ^ (3 : ℕ) * (x + y) ^ (3 : ℕ))) := by
   rw [ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe_base_cancel K hx]
   have hlower (n : ℕ) : 0 < ccmActualHeadMatchedPolarLowerCoordinate n := by
     unfold ccmActualHeadMatchedPolarLowerCoordinate
@@ -163,8 +163,8 @@ theorem ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe_eq_firstMome
       (∫ y in a..b, primeGammaCauchyCubicEdge x y -
         primeGammaCauchyCubicEdge x 0) =
         ∫ y in a..b,
-          -2 * y * (3 * x ^ 2 + 3 * x * y + y ^ 2) /
-            (x ^ 3 * (x + y) ^ 3) := by
+          -2 * y * (3 * x ^ (2 : ℕ) + 3 * x * y + y ^ (2 : ℕ)) /
+            (x ^ (3 : ℕ) * (x + y) ^ (3 : ℕ)) := by
     apply intervalIntegral.integral_congr
     intro y hy
     apply primeGammaCauchyCubicEdge_sub_base_factor hx
@@ -182,8 +182,8 @@ theorem ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe_eq_firstMome
         ∑ n ∈ Finset.range K,
           ∫ y in ccmActualHeadMatchedPolarLowerCoordinate (n + 3)..
             ccmActualHeadMatchedPolarUpperCoordinate (n + 2),
-              -2 * y * (3 * x ^ 2 + 3 * x * y + y ^ 2) /
-                (x ^ 3 * (x + y) ^ 3) := by
+              -2 * y * (3 * x ^ (2 : ℕ) + 3 * x * y + y ^ (2 : ℕ)) /
+                (x ^ (3 : ℕ) * (x + y) ^ (3 : ℕ)) := by
     apply Finset.sum_congr rfl
     intro n hn
     exact hfactor _ _ (hlower _) (hupper _)
@@ -195,15 +195,15 @@ theorem ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe_eq_firstMome
 at its zero polar-coordinate basepoint. -/
 def ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder
     (x y : ℝ) : ℝ :=
-  2 * y ^ 2 * (6 * x ^ 2 + 8 * x * y + 3 * y ^ 2) /
-    (x ^ 4 * (x + y) ^ 3)
+  2 * y ^ (2 : ℕ) * (6 * x ^ (2 : ℕ) + 8 * x * y + 3 * y ^ (2 : ℕ)) /
+    (x ^ (4 : ℕ) * (x + y) ^ (3 : ℕ))
 
 /-- **Exact cubic Cauchy tangent--remainder identity.**  The residual after the leading
 first-coordinate term has an explicit quadratic-coordinate factor. -/
 theorem primeGammaCauchyCubicEdge_sub_base_taylor
     {x y : ℝ} (hx : 0 < x) (hy : 0 ≤ y) :
     primeGammaCauchyCubicEdge x y - primeGammaCauchyCubicEdge x 0 =
-      -6 * y / x ^ 4 +
+      -6 * y / x ^ (4 : ℕ) +
         ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder x y := by
   unfold primeGammaCauchyCubicEdge
     ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder
@@ -217,9 +217,9 @@ theorem ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder_no
     {x y : ℝ} (hx : 0 < x) (hy : 0 ≤ y) :
     0 ≤ ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder x y := by
   unfold ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder
-  have hnum : 0 ≤ 2 * y ^ 2 * (6 * x ^ 2 + 8 * x * y + 3 * y ^ 2) := by
+  have hnum : 0 ≤ 2 * y ^ (2 : ℕ) * (6 * x ^ (2 : ℕ) + 8 * x * y + 3 * y ^ (2 : ℕ)) := by
     positivity
-  have hden : 0 < x ^ 4 * (x + y) ^ 3 := by
+  have hden : 0 < x ^ (4 : ℕ) * (x + y) ^ (3 : ℕ) := by
     positivity
   exact div_nonneg hnum hden.le
 
@@ -326,9 +326,9 @@ No term is discarded and no cofinal bound is asserted. -/
 theorem ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe_taylor_ledger
     (K : ℕ) {x : ℝ} (hx : 0 < x) :
     ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe K x =
-      -6 / x ^ 4 *
+      -6 / x ^ (4 : ℕ) *
           ccmActualHeadMatchedPolarAdjacentCodiagonalEndpointRenormalizedFirstMoment K -
-        6 / x ^ 4 * ccmActualHeadMatchedPolarAdjacentCodiagonalEndpointCounterterm K +
+        6 / x ^ (4 : ℕ) * ccmActualHeadMatchedPolarAdjacentCodiagonalEndpointCounterterm K +
         ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K
           (ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder x) := by
   have hrem_cont : ContinuousOn
@@ -359,27 +359,27 @@ theorem ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe_taylor_ledge
           (fun y => primeGammaCauchyCubicEdge x y - primeGammaCauchyCubicEdge x 0) :=
       ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicProbe_base_cancel K hx
     _ = ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K
-          (fun y => -6 / x ^ 4 * y +
+          (fun y => -6 / x ^ (4 : ℕ) * y +
             ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder x y) := by
       apply ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_eq_of_forall_nonneg
       intro y hy
       calc
         primeGammaCauchyCubicEdge x y - primeGammaCauchyCubicEdge x 0 =
-            -6 * y / x ^ 4 +
+            -6 * y / x ^ (4 : ℕ) +
               ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder x y :=
           primeGammaCauchyCubicEdge_sub_base_taylor hx hy
-        _ = -6 / x ^ 4 * y +
+        _ = -6 / x ^ (4 : ℕ) * y +
             ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder x y := by
           ring
-    _ = -6 / x ^ 4 *
+    _ = -6 / x ^ (4 : ℕ) *
           ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K (fun y : ℝ => y) +
         ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K
           (ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder x) := by
       rw [ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_add K
-        (fun y : ℝ => -6 / x ^ 4 * y)
+        (fun y : ℝ => -6 / x ^ (4 : ℕ) * y)
         (ccmActualHeadMatchedPolarAdjacentCodiagonalCauchyCubicTaylorRemainder x)
         (fun a b ha hb => (hid a b ha hb).const_mul _) hrem,
-        ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_const_mul K (-6 / x ^ 4)
+        ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_const_mul K (-6 / x ^ (4 : ℕ))
           (fun y : ℝ => y)]
     _ = _ := by
       unfold ccmActualHeadMatchedPolarAdjacentCodiagonalEndpointRenormalizedFirstMoment

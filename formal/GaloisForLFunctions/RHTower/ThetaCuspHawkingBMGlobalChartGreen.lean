@@ -19,7 +19,7 @@ def PlanarChartTest.mulSmooth (g : PlanarChartTest) (a : ℂ → ℂ) (ha : Cont
 
 /-- One literal second derivative multiplied by the original squared height. -/
 def PlanarChartTest.secondTest (g : PlanarChartTest) (v : ℂ) : PlanarChartTest :=
-  ((g.derivative v).derivative v).mulSmooth (fun z => (z.im : ℂ)^2)
+  ((g.derivative v).derivative v).mulSmooth (fun z => (z.im : ℂ)^(2 : ℕ))
     ((Complex.ofRealCLM.contDiff.comp Complex.imCLM.contDiff).pow 2)
 
 private theorem PlanarChartTest.laplace_support (g : PlanarChartTest) :
@@ -32,7 +32,7 @@ private theorem PlanarChartTest.laplace_support (g : PlanarChartTest) :
         image_eq_zero_of_notMem_tsupport (fun hi => hn
           ((tsupport_fderiv_apply_subset ℝ (direction i)).trans
             (tsupport_fderiv_apply_subset ℝ (direction i)) hi))
-      change (z.im : ℂ)^2*((g.derivative (direction i)).derivative (direction i)).field z = 0
+      change (z.im : ℂ)^(2 : ℕ)*((g.derivative (direction i)).derivative (direction i)).field z = 0
       rw [hdd,mul_zero]
     exact hz (by simp only [he,Finset.sum_const_zero])
 
@@ -45,7 +45,7 @@ def PlanarChartTest.laplaceTest (g : PlanarChartTest) : PlanarChartTest where
 
 /-- The constructed test is exactly y² times the two original second derivatives. -/
 theorem PlanarChartTest.laplaceTest_field (g : PlanarChartTest) (z : ℂ) :
-    g.laplaceTest.field z = (z.im : ℂ)^2 *
+    g.laplaceTest.field z = (z.im : ℂ)^(2 : ℕ) *
       ∑ i : Fin 2, fderiv ℝ (fun w => fderiv ℝ g.field w (direction i)) z (direction i) := by
   simp only [PlanarChartTest.laplaceTest,PlanarChartTest.secondTest,PlanarChartTest.mulSmooth,
     PlanarChartTest.derivative,Finset.mul_sum]
@@ -89,7 +89,7 @@ theorem PlanarChartTest.directional_green (g : PlanarChartTest)
     rw [g.weightedDeriv_eq]
     simp only [map_mul,Complex.conj_ofReal,PlanarChartTest.conjugate,PlanarChartTest.derivative]
     ring
-  have hR : (∫ z : UpperHalfPlane, h z*((z.im : ℂ)^2*
+  have hR : (∫ z : UpperHalfPlane, h z*((z.im : ℂ)^(2 : ℕ)*
       fderiv ℝ (g.derivative v).conjugate.field (z:ℂ) v)) =
       ∫ z : UpperHalfPlane, conj ((g.secondTest v).field z)*h z := by
     apply integral_congr_ae

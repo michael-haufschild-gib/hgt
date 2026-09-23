@@ -53,7 +53,7 @@ def freeJetSchwarzian (C : Type*) [Field C] : FreeScalarJetField C :=
 theorem freeCoordinate_three_eq :
     freeCoordinate C ℕ 3 =
       freeCoordinate C ℕ 1 * freeJetSchwarzian C +
-        (3 / 2 : FreeScalarJetField C) * freeCoordinate C ℕ 2 ^ 2 / freeCoordinate C ℕ 1 := by
+        (3 / 2 : FreeScalarJetField C) * freeCoordinate C ℕ 2 ^ (2 : ℕ) / freeCoordinate C ℕ 1 := by
   have h1 : freeCoordinate C ℕ 1 ≠ 0 := freeScalarJetCoordinate_ne_zero 1
   rw [freeJetSchwarzian, schwarzian, freeJetBase_deriv3, freeJetBase_deriv2, freeJetBase_deriv]
   field_simp

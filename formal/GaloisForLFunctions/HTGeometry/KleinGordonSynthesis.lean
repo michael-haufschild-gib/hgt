@@ -80,7 +80,7 @@ theorem continuous_kgSinDeriv (t : ℝ) :
 
 omit [InnerProductSpace ℝ E] [MeasurableSpace E] [OpensMeasurableSpace E] in
 theorem continuous_kgCosSecond (t : ℝ) :
-    Continuous fun ξ : E => ((-(kgFreq ξ ^ 2) * Real.cos (t * kgFreq ξ) : ℝ) : ℂ) := by
+    Continuous fun ξ : E => ((-(kgFreq ξ ^ (2 : ℕ)) * Real.cos (t * kgFreq ξ) : ℝ) : ℂ) := by
   refine Complex.continuous_ofReal.comp ?_
   exact (continuous_kgFreq.pow 2).neg.mul
     (Real.continuous_cos.comp (continuous_const.mul continuous_kgFreq))
@@ -108,10 +108,10 @@ Klein–Gordon equation, with the mass-shifted Laplacian read on the frequency s
 theorem hasDerivAt_deriv_kgSynthesis {h : E → ℂ} (t : ℝ)
     (hmeas : AEStronglyMeasurable h μ)
     (hint : Integrable (fun ξ => ((-(kgFreq ξ * Real.sin (t * kgFreq ξ)) : ℝ) : ℂ) * h ξ) μ)
-    (hg : Integrable (fun ξ => kgFreq ξ ^ 2 * ‖h ξ‖) μ) :
+    (hg : Integrable (fun ξ => kgFreq ξ ^ (2 : ℕ) * ‖h ξ‖) μ) :
     HasDerivAt (fun r : ℝ => ∫ ξ, ((-(kgFreq ξ * Real.sin (r * kgFreq ξ)) : ℝ) : ℂ) * h ξ ∂μ)
-      (∫ ξ, ((-(kgFreq ξ ^ 2) * Real.cos (t * kgFreq ξ) : ℝ) : ℂ) * h ξ ∂μ) t := by
-  refine hasDerivAt_integral_symbol (g := fun ξ => kgFreq ξ ^ 2) t
+      (∫ ξ, ((-(kgFreq ξ ^ (2 : ℕ)) * Real.cos (t * kgFreq ξ) : ℝ) : ℂ) * h ξ ∂μ) t := by
+  refine hasDerivAt_integral_symbol (g := fun ξ => kgFreq ξ ^ (2 : ℕ)) t
     (fun r => ((continuous_kgSinDeriv r).aestronglyMeasurable).mul hmeas) hint
     (((continuous_kgCosSecond t).aestronglyMeasurable).mul hmeas)
     (fun r ξ => hasDerivAt_deriv_cosFreq ξ r |>.ofReal_comp) (fun r ξ => ?_) hg

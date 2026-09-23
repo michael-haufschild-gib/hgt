@@ -120,7 +120,7 @@ theorem thetaCuspCenterMixedDensity_eighthHankel_pos
     rw [hI0value]
     exact thetaCuspCenterMixedDensity_pos ha0 ha 0
   have hpoint : ∀ᵐ r : ℝ ∂volume.restrict (Ioi 0),
-      0 < p0 r ∧ 0 < p0 r*p4 r-p2 r^2 ∧
+      0 < p0 r ∧ 0 < p0 r*p4 r-p2 r^(2 : ℕ) ∧
         0 < HilbertMetric.signedEvenHankelThreeDet (p0 r) (p2 r) (p4 r) (p6 r) (p8 r) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
     have hweight : 0 < r * Real.sinh (a*r) :=
@@ -138,12 +138,12 @@ theorem thetaCuspCenterMixedDensity_eighthHankel_pos
     refine ⟨mul_pos hweight hp0, ?_, ?_⟩
     · change 0 < (r * Real.sinh (a*r) * thetaCuspSourceReflectionJetZero (r/2)) *
           (r * Real.sinh (a*r) * thetaCuspSourceReflectionJetFour (r/2)) -
-          (r * Real.sinh (a*r) * thetaCuspSourceReflectionJetTwo (r/2))^2
+          (r * Real.sinh (a*r) * thetaCuspSourceReflectionJetTwo (r/2))^(2 : ℕ)
       have h := mul_pos (sq_pos_of_pos hweight) hhead
       nlinarith only [h]
     · have heq : HilbertMetric.signedEvenHankelThreeDet
           (p0 r) (p2 r) (p4 r) (p6 r) (p8 r) =
-        (r * Real.sinh (a*r))^3 * thetaCuspFullSourceReflectionEighthHankelCurvature (r/2) := by
+        (r * Real.sinh (a*r))^(3 : ℕ) * thetaCuspFullSourceReflectionEighthHankelCurvature (r/2) := by
         dsimp only [p0,p2,p4,p6,p8,thetaCuspCenterMixedReflectionJetZeroIntegrand,
           thetaCuspCenterMixedReflectionJetTwoIntegrand,thetaCuspCenterMixedReflectionJetFourIntegrand,
           thetaCuspCenterMixedReflectionJetSixIntegrand,thetaCuspCenterMixedReflectionJetEightIntegrand,

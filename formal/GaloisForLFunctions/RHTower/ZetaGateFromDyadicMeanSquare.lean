@@ -27,7 +27,7 @@ def ZetaDyadicMeanSquareLaw (R c : ℝ) : Prop :=
       ∀ a v : ℝ, 20 ≤ a → a ≤ v → v ≤ 2 * a → v ≤ U →
         (∫ t in a..v,
           ‖riemannZeta ((σ₀ : ℂ) + (t : ℂ) * I) *
-            edPoly b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2)
+            edPoly b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ))
           ≤ (c + ε) * (v - a) + ε * (a + U / Real.log U)
 
 /-- **Item 7 for `ζΨ`.** A dyadic mean-square law yields the `ζΨ` gate of the single-input
@@ -143,7 +143,7 @@ theorem zetaMollifiedMeanSquareGate_of_dyadicLaw {R c : ℝ} (hR : 0 < R)
   -- the mean square via dyadic blocks
   set f : ℝ → ℝ := fun t =>
     ‖riemannZeta ((σ₀ : ℂ) + (t : ℂ) * I) *
-      edPoly b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2 with hfdef
+      edPoly b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ) with hfdef
   have hcont : ∀ t : ℝ, 20 ≤ t → ContinuousAt f t := by
     intro t ht
     have hz : ((σ₀ : ℂ) + (t : ℂ) * I) ≠ 1 := by

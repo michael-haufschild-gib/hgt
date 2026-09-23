@@ -7,11 +7,11 @@ Section 3 of Bourgain's proof.
 After the first- and second-spacing estimates have been combined, equation
 (3.18) gives two relevant bounds below `M = T^(3/7)`:
 
-* `A ≤ M^4 T^(1/2)` when `M ≥ T^(5/12)`;
-* `A ≤ M^2 T^(4/3)` when `M < T^(5/12)`.
+* `A ≤ M^(4 : ℕ) T^(1/2)` when `M ≥ T^(5/12)`;
+* `A ≤ M^(2 : ℕ) T^(4/3)` when `M < T^(5/12)`.
 
 Together with the lower endpoint `M ≥ T^(17/42)`, both imply
-`A ≤ M^3 T^(13/14)`.  Taking a sixth root then gives
+`A ≤ M^(3 : ℕ) T^(13/14)`.  Taking a sixth root then gives
 `|S| ≤ M^(1/2) T^(13/84)`.
 
 The analytic spacing estimates themselves are not asserted here.  The
@@ -22,7 +22,7 @@ import GaloisForLFunctions.RHTower.BourgainExponentEndgame
 
 namespace RHTower
 
-/-- In the middle range, `M^4 T^(1/2)` is at most Bourgain's target sixth
+/-- In the middle range, `M^(4 : ℕ) T^(1/2)` is at most Bourgain's target sixth
 power because `M ≤ T^(3/7)`. -/
 theorem bourgain_mid_spacing_power_le
     {T M : ℝ} (hT : 0 < T) (hM : 0 ≤ M)
@@ -44,7 +44,7 @@ theorem bourgain_mid_spacing_power_le
       norm_num
 
 /-- In the lower range, the endpoint `T^(17/42) ≤ M` absorbs the extra
-power in `M^2 T^(4/3)`. -/
+power in `M^(2 : ℕ) T^(4/3)`. -/
 theorem bourgain_low_spacing_power_le
     {T M : ℝ} (hT : 0 < T) (hM : 0 ≤ M)
     (hTM : T ^ (17 / 42 : ℝ) ≤ M) :

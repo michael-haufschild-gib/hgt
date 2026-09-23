@@ -43,17 +43,17 @@ theorem tendsto_mtTruncationLog_atTop :
         Real.exp_lt_exp.mpr (by norm_num : (0 : ℝ) < 1)
     exact hone.trans hX
   have htPos : 0 < Real.log (Real.log X) := lt_of_lt_of_le zero_lt_one ht
-  change Real.log X / (Real.log (Real.log X)) ^ 3 ≤
+  change Real.log X / (Real.log (Real.log X)) ^ (3 : ℕ) ≤
     Real.log X / Real.log (Real.log X)
   rw [div_le_div_iff₀ (pow_pos htPos 3) htPos]
-  have htSq : (1 : ℝ) ≤ (Real.log (Real.log X)) ^ 2 := by
+  have htSq : (1 : ℝ) ≤ (Real.log (Real.log X)) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (Real.log (Real.log X) - 1)]
-  have htCube : Real.log (Real.log X) ≤ (Real.log (Real.log X)) ^ 3 := by
+  have htCube : Real.log (Real.log X) ≤ (Real.log (Real.log X)) ^ (3 : ℕ) := by
     calc
       Real.log (Real.log X) = Real.log (Real.log X) * 1 := by ring
-      _ ≤ Real.log (Real.log X) * (Real.log (Real.log X)) ^ 2 :=
+      _ ≤ Real.log (Real.log X) * (Real.log (Real.log X)) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left htSq htPos.le
-      _ = (Real.log (Real.log X)) ^ 3 := by ring
+      _ = (Real.log (Real.log X)) ^ (3 : ℕ) := by ring
   exact mul_le_mul_of_nonneg_left htCube hL.le
 
 set_option maxHeartbeats 400000 in
@@ -62,7 +62,7 @@ theorem eventually_mtC1_integer_schedule :
     ∀ᶠ X : ℝ in atTop,
       2 ≤ mtLowerCutoffNat X ∧
       0 < mtTruncationNat X ∧
-      (Real.log (Real.log X)) ^ 2 / 4 ≤
+      (Real.log (Real.log X)) ^ (2 : ℕ) / 4 ≤
         Real.log (mtTruncationNat X : ℝ) /
           Real.log (mtLowerCutoffNat X : ℝ) ∧
       logLog (mtLowerCutoffNat X) ≤ Real.log (Real.log X) + 1 := by
@@ -146,7 +146,7 @@ theorem eventually_mtC1_integer_schedule :
   have hlogzPos : 0 < Real.log (mtLowerCutoffNat X : ℝ) :=
     log_pos_of_two_le hzTwo
   have hu0 : 0 < 2 * u := by positivity
-  have hratio : t ^ 2 / 4 ≤
+  have hratio : t ^ (2 : ℕ) / 4 ≤
       Real.log (mtTruncationNat X : ℝ) /
         Real.log (mtLowerCutoffNat X : ℝ) := by
     have hratioLower : (s / 2) / (2 * u) ≤
@@ -154,7 +154,7 @@ theorem eventually_mtC1_integer_schedule :
           Real.log (mtLowerCutoffNat X : ℝ) := by
       exact div_le_div₀ (le_trans (by positivity) hlogDHalf) hlogDHalf
         hlogzPos hlogzDouble
-    have hsu : (s / 2) / (2 * u) = t ^ 2 / 4 := by
+    have hsu : (s / 2) / (2 * u) = t ^ (2 : ℕ) / 4 := by
       dsimp [s, u, mtTruncationLog, mtLowerLogCutoff, t, L] at *
       field_simp
       ring
@@ -162,7 +162,7 @@ theorem eventually_mtC1_integer_schedule :
   have huLeL : u ≤ L := by
     dsimp [u, mtLowerLogCutoff, L, t] at *
     rw [div_le_iff₀ (pow_pos htPos 3)]
-    have htCube : (1 : ℝ) ≤ (Real.log (Real.log X)) ^ 3 := by
+    have htCube : (1 : ℝ) ≤ (Real.log (Real.log X)) ^ (3 : ℕ) := by
       simpa using pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1) htX 3
     nlinarith [mul_le_mul_of_nonneg_left htCube hLPos.le]
   have hlogTwoLeL : Real.log 2 ≤ L := by

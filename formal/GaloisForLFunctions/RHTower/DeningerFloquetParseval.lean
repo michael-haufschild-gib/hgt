@@ -84,9 +84,9 @@ theorem deningerFourierCoeffOn_periodization {f : 𝓢(ℝ, ℂ)} (hf : Integrab
 /-- **Parseval on the prime circle.** -/
 theorem deningerPeriodization_intervalIntegral_normSq {h : DeningerExpSchwartz} {L : ℝ}
     (hL : Real.log 2 ≤ L) :
-    (∫ t in (0 : ℝ)..L, ‖deningerPeriodizationSum ((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) L t‖ ^ 2)
+    (∫ t in (0 : ℝ)..L, ‖deningerPeriodizationSum ((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) L t‖ ^ (2 : ℕ))
       = L * ∑' m : ℤ, ‖(1 / L) • 𝓕 (((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)
-        ((1 / L) * (m : ℝ))‖ ^ 2 := by
+        ((1 / L) * (m : ℝ))‖ ^ (2 : ℕ) := by
   have hLpos : 0 < L := lt_of_lt_of_le (Real.log_pos one_lt_two) hL
   have hcont := deningerPeriodizationSum_continuous (h := h) hLpos
   have hbdd : ∀ᵐ t ∂(volume.restrict (Set.Ioc (0 : ℝ) L)),
@@ -108,17 +108,17 @@ theorem deningerPeriodization_intervalIntegral_normSq {h : DeningerExpSchwartz} 
     fun m => deningerFourierCoeffOn_periodization
       (SchwartzMap.integrable ((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ))) hLpos m
   simp only [sub_zero, smul_eq_mul] at hpars
-  rw [tsum_congr fun m => congrArg (fun z : ℂ => ‖z‖ ^ 2) (hcoef m)] at hpars
+  rw [tsum_congr fun m => congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) (hcoef m)] at hpars
   rw [hpars]
   field_simp
 
 /-- **The arithmetic lattice form of the half-density Floquet energy.** -/
 theorem deningerHalfDensityFloquetEnergy_eq_tsum (h : DeningerExpSchwartz) :
     deningerHalfDensityFloquetEnergy h
-      = ∑' q : Nat.Primes, ((((q : ℕ) : ℝ) ^ 2)⁻¹ * Real.log (q : ℕ))
+      = ∑' q : Nat.Primes, ((((q : ℕ) : ℝ) ^ (2 : ℕ))⁻¹ * Real.log (q : ℕ))
         * ∑' m : ℤ, ‖(1 / Real.log (q : ℕ))
           • 𝓕 (((deningerHalfDensityLift h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)
-            ((1 / Real.log (q : ℕ)) * (m : ℝ))‖ ^ 2 := by
+            ((1 / Real.log (q : ℕ)) * (m : ℝ))‖ ^ (2 : ℕ) := by
   rw [deningerHalfDensityFloquetEnergy, deningerFloquetEnergy]
   refine tsum_congr fun q => ?_
   have hqR : (2 : ℝ) ≤ ((q : ℕ) : ℝ) := by exact_mod_cast q.2.two_le

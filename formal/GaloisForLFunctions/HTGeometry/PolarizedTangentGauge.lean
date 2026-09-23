@@ -41,13 +41,13 @@ theorem norm_powerSum_le (ha : Summable fun i => ‖a i‖) (hb : ∀ i, ‖a i�
     _ ≤ ∑' i, ‖a i‖ := by
         refine Summable.tsum_le_tsum (fun i => ?_) hsn ha
         rw [norm_pow]
-        calc ‖a i‖ ^ k ≤ ‖a i‖ ^ 1 := pow_le_pow_of_le_one (norm_nonneg _) (hb i) hk
+        calc ‖a i‖ ^ k ≤ ‖a i‖ ^ (1 : ℕ) := pow_le_pow_of_le_one (norm_nonneg _) (hb i) hk
           _ = ‖a i‖ := pow_one _
 
 /-- **The tangent-normalized polarized logarithm vanishes to third order.** -/
 theorem norm_polarizedLog_add_tangent_le (ha : Summable fun i => ‖a i‖) (hb : ∀ i, ‖a i‖ ≤ 1)
     {t : ℂ} (ht : ‖t‖ ≤ 1 / 2) :
-    ‖polarizedLog a t + 2 * powerSum a 1 * t‖ ≤ 4 * (∑' i, ‖a i‖) * ‖t‖ ^ 3 := by
+    ‖polarizedLog a t + 2 * powerSum a 1 * t‖ ≤ 4 * (∑' i, ‖a i‖) * ‖t‖ ^ (3 : ℕ) := by
   have ht1 : ‖t‖ < 1 := lt_of_le_of_lt ht (by norm_num)
   have hsum := hasSum_logPolarizedPhase ha hb ht1
   set A : ℝ := ∑' i, ‖a i‖ with hA
@@ -55,7 +55,7 @@ theorem norm_polarizedLog_add_tangent_le (ha : Summable fun i => ‖a i‖) (hb 
   set f : ℕ → ℂ := fun j => -(2 * powerSum a (2 * (j + 1) + 1) * t ^ (2 * (j + 1) + 1)
       / ((2 * (j + 1) + 1 : ℕ) : ℂ)) with hf
   have htn : (0 : ℝ) ≤ ‖t‖ := norm_nonneg _
-  have hbound : ∀ j : ℕ, ‖f j‖ ≤ (2 * A * ‖t‖ ^ 3) * (‖t‖ ^ 2) ^ j := by
+  have hbound : ∀ j : ℕ, ‖f j‖ ≤ (2 * A * ‖t‖ ^ (3 : ℕ)) * (‖t‖ ^ (2 : ℕ)) ^ j := by
     intro j
     have hPk : ‖powerSum a (2 * (j + 1) + 1)‖ ≤ A := norm_powerSum_le ha hb (by omega)
     have hcast : ‖((2 * (j + 1) + 1 : ℕ) : ℂ)‖ = ((2 * (j + 1) + 1 : ℕ) : ℝ) := by
@@ -66,7 +66,7 @@ theorem norm_polarizedLog_add_tangent_le (ha : Summable fun i => ‖a i‖) (hb 
       rw [hf]
       simp only [norm_neg, norm_div, norm_mul, norm_pow, hcast]
       norm_num
-    have hpowsplit : ‖t‖ ^ (2 * (j + 1) + 1) = ‖t‖ ^ 3 * (‖t‖ ^ 2) ^ j := by
+    have hpowsplit : ‖t‖ ^ (2 * (j + 1) + 1) = ‖t‖ ^ (3 : ℕ) * (‖t‖ ^ (2 : ℕ)) ^ j := by
       rw [← pow_mul, ← pow_add]
       congr 1
       omega
@@ -84,36 +84,36 @@ theorem norm_polarizedLog_add_tangent_le (ha : Summable fun i => ‖a i‖) (hb 
               ≤ A * ‖t‖ ^ (2 * (j + 1) + 1) := by
             exact mul_le_mul_of_nonneg_right hPk (by positivity)
           nlinarith [this]
-      _ = (2 * A * ‖t‖ ^ 3) * (‖t‖ ^ 2) ^ j := by rw [hpowsplit]; ring
-  have hgeo : ‖t‖ ^ 2 < 1 := by
-    have : ‖t‖ ^ 2 ≤ (1 / 2 : ℝ) ^ 2 := by
+      _ = (2 * A * ‖t‖ ^ (3 : ℕ)) * (‖t‖ ^ (2 : ℕ)) ^ j := by rw [hpowsplit]; ring
+  have hgeo : ‖t‖ ^ (2 : ℕ) < 1 := by
+    have : ‖t‖ ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := by
       exact pow_le_pow_left₀ htn ht 2
     linarith [this]
-  have hsummable : Summable fun j : ℕ => (2 * A * ‖t‖ ^ 3) * (‖t‖ ^ 2) ^ j :=
+  have hsummable : Summable fun j : ℕ => (2 * A * ‖t‖ ^ (3 : ℕ)) * (‖t‖ ^ (2 : ℕ)) ^ j :=
     (summable_geometric_of_lt_one (by positivity) hgeo).mul_left _
   have hsn : Summable fun j => ‖f j‖ :=
     hsummable.of_nonneg_of_le (fun _ => norm_nonneg _) hbound
-  have hgeoval : ∑' j : ℕ, (2 * A * ‖t‖ ^ 3) * (‖t‖ ^ 2) ^ j
-      = (2 * A * ‖t‖ ^ 3) * (1 - ‖t‖ ^ 2)⁻¹ := by
+  have hgeoval : ∑' j : ℕ, (2 * A * ‖t‖ ^ (3 : ℕ)) * (‖t‖ ^ (2 : ℕ)) ^ j
+      = (2 * A * ‖t‖ ^ (3 : ℕ)) * (1 - ‖t‖ ^ (2 : ℕ))⁻¹ := by
     rw [tsum_mul_left, tsum_geometric_of_lt_one (by positivity) hgeo]
-  have hquarter : ‖t‖ ^ 2 ≤ 1 / 4 := by
-    have : ‖t‖ ^ 2 ≤ (1 / 2 : ℝ) ^ 2 := pow_le_pow_left₀ htn ht 2
+  have hquarter : ‖t‖ ^ (2 : ℕ) ≤ 1 / 4 := by
+    have : ‖t‖ ^ (2 : ℕ) ≤ (1 / 2 : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ htn ht 2
     linarith [this]
-  have hinv : (1 - ‖t‖ ^ 2)⁻¹ ≤ 4 / 3 := by
-    have hpos : (0 : ℝ) < 1 - ‖t‖ ^ 2 := by linarith
+  have hinv : (1 - ‖t‖ ^ (2 : ℕ))⁻¹ ≤ 4 / 3 := by
+    have hpos : (0 : ℝ) < 1 - ‖t‖ ^ (2 : ℕ) := by linarith
     rw [inv_le_iff_one_le_mul₀ hpos]
     linarith
   have hfsum : (∑' j, f j) = polarizedLog a t + 2 * powerSum a 1 * t := by
     rw [hsum.tsum_eq, polarizedLog]
   rw [← hfsum]
   calc ‖∑' j, f j‖ ≤ ∑' j, ‖f j‖ := norm_tsum_le_tsum_norm hsn
-    _ ≤ ∑' j : ℕ, (2 * A * ‖t‖ ^ 3) * (‖t‖ ^ 2) ^ j :=
+    _ ≤ ∑' j : ℕ, (2 * A * ‖t‖ ^ (3 : ℕ)) * (‖t‖ ^ (2 : ℕ)) ^ j :=
         Summable.tsum_le_tsum hbound hsn hsummable
-    _ = (2 * A * ‖t‖ ^ 3) * (1 - ‖t‖ ^ 2)⁻¹ := hgeoval
-    _ ≤ (2 * A * ‖t‖ ^ 3) * (4 / 3) := by
-        have hnn : (0 : ℝ) ≤ 2 * A * ‖t‖ ^ 3 := by positivity
+    _ = (2 * A * ‖t‖ ^ (3 : ℕ)) * (1 - ‖t‖ ^ (2 : ℕ))⁻¹ := hgeoval
+    _ ≤ (2 * A * ‖t‖ ^ (3 : ℕ)) * (4 / 3) := by
+        have hnn : (0 : ℝ) ≤ 2 * A * ‖t‖ ^ (3 : ℕ) := by positivity
         exact mul_le_mul_of_nonneg_left hinv hnn
-    _ ≤ 4 * A * ‖t‖ ^ 3 := by nlinarith [hA0, pow_nonneg htn 3]
+    _ ≤ 4 * A * ‖t‖ ^ (3 : ℕ) := by nlinarith [hA0, pow_nonneg htn 3]
 
 /-- **The first logarithmic trace of the polarized product is minus twice the first power sum.** -/
 theorem hasDerivAt_polarizedLog_zero (ha : Summable fun i => ‖a i‖) (hb : ∀ i, ‖a i‖ ≤ 1) :
@@ -128,7 +128,7 @@ theorem hasDerivAt_polarizedLog_zero (ha : Summable fun i => ‖a i‖) (hb : �
       linarith
     exact hball.filter_mono nhdsWithin_le_nhds
   have hbnd : ∀ᶠ t : ℂ in 𝓝[≠] (0 : ℂ),
-      ‖slope (polarizedLog a) 0 t - (-(2 * powerSum a 1))‖ ≤ 4 * A * ‖t‖ ^ 2 := by
+      ‖slope (polarizedLog a) 0 t - (-(2 * powerSum a 1))‖ ≤ 4 * A * ‖t‖ ^ (2 : ℕ) := by
     filter_upwards [hev, self_mem_nhdsWithin] with t ht htne
     have htne' : t ≠ 0 := htne
     have hslope : slope (polarizedLog a) 0 t = polarizedLog a t / t := by
@@ -144,10 +144,10 @@ theorem hasDerivAt_polarizedLog_zero (ha : Summable fun i => ‖a i‖) (hb : �
     have hnum := norm_polarizedLog_add_tangent_le ha hb ht
     have htpos : 0 < ‖t‖ := norm_pos_iff.2 htne'
     rw [div_le_iff₀ htpos]
-    calc ‖polarizedLog a t + 2 * powerSum a 1 * t‖ ≤ 4 * A * ‖t‖ ^ 3 := hnum
-      _ = 4 * A * ‖t‖ ^ 2 * ‖t‖ := by ring
-  have hzero : Tendsto (fun t : ℂ => 4 * A * ‖t‖ ^ 2) (𝓝[≠] (0 : ℂ)) (𝓝 0) := by
-    have hcont : Continuous fun t : ℂ => 4 * A * ‖t‖ ^ 2 := by fun_prop
+    calc ‖polarizedLog a t + 2 * powerSum a 1 * t‖ ≤ 4 * A * ‖t‖ ^ (3 : ℕ) := hnum
+      _ = 4 * A * ‖t‖ ^ (2 : ℕ) * ‖t‖ := by ring
+  have hzero : Tendsto (fun t : ℂ => 4 * A * ‖t‖ ^ (2 : ℕ)) (𝓝[≠] (0 : ℂ)) (𝓝 0) := by
+    have hcont : Continuous fun t : ℂ => 4 * A * ‖t‖ ^ (2 : ℕ) := by fun_prop
     have := (hcont.tendsto (0 : ℂ)).mono_left (nhdsWithin_le_nhds (s := ({(0 : ℂ)}ᶜ)))
     simpa using this
   have hkey : Tendsto (fun t : ℂ => slope (polarizedLog a) 0 t - (-(2 * powerSum a 1)))

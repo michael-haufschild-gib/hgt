@@ -236,7 +236,7 @@ theorem lowerConst_mul_le (θ : ℕ → ℝ) (n : ℕ) :
   (D.exists_uniform_lower_linear).choose_spec.2 θ n
 
 /-- The constant in the reciprocal-square majorant of the divisor. -/
-noncomputable def majorantConst : ℝ := 1 / D.lowerConst ^ 2
+noncomputable def majorantConst : ℝ := 1 / D.lowerConst ^ (2 : ℕ)
 
 theorem majorantConst_pos : 0 < D.majorantConst := by
   have h := D.lowerConst_pos
@@ -244,18 +244,18 @@ theorem majorantConst_pos : 0 < D.majorantConst := by
   positivity
 
 theorem inv_sq_le_majorant (θ : ℕ → ℝ) (a : ℕ) :
-    1 / ‖((D.zero θ a : ℝ) : ℂ)‖ ^ 2 ≤ D.majorantConst / ((a : ℝ) + 1) ^ 2 := by
+    1 / ‖((D.zero θ a : ℝ) : ℂ)‖ ^ (2 : ℕ) ≤ D.majorantConst / ((a : ℝ) + 1) ^ (2 : ℕ) := by
   have hc := D.lowerConst_pos
   have hzp := D.zero_pos θ a
   have hap : (0 : ℝ) < (a : ℝ) + 1 := by positivity
   rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hzp]
   have hl := D.lowerConst_mul_le θ a
-  have hsq : (D.lowerConst * ((a : ℝ) + 1)) ^ 2 ≤ (D.zero θ a) ^ 2 :=
+  have hsq : (D.lowerConst * ((a : ℝ) + 1)) ^ (2 : ℕ) ≤ (D.zero θ a) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (by positivity) hl 2
   rw [div_le_div_iff₀ (by positivity) (by positivity), majorantConst]
-  have hexp : D.lowerConst ^ 2 * ((a : ℝ) + 1) ^ 2 = (D.lowerConst * ((a : ℝ) + 1)) ^ 2 := by
+  have hexp : D.lowerConst ^ (2 : ℕ) * ((a : ℝ) + 1) ^ (2 : ℕ) = (D.lowerConst * ((a : ℝ) + 1)) ^ (2 : ℕ) := by
     ring
-  rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity : (0 : ℝ) < D.lowerConst ^ 2)]
+  rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity : (0 : ℝ) < D.lowerConst ^ (2 : ℕ))]
   nlinarith [hsq]
 
 end MovingDivisor
@@ -313,7 +313,7 @@ theorem exists_upper_linear : ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, D.zero θ n �
   · exact le_trans (le_of_lt (hN n (by omega))) (le_max_left _ _)
 
 /-- The speed of the coordinate displacement. -/
-noncomputable def coordinateSpeed (n : ℕ) (t : ℝ) : ℝ := D.radius n * (1 / Real.cosh t ^ 2)
+noncomputable def coordinateSpeed (n : ℕ) (t : ℝ) : ℝ := D.radius n * (1 / Real.cosh t ^ (2 : ℕ))
 
 /-- The coordinate displacement is a smooth strictly increasing reparametrization. -/
 theorem coordinate_hasDerivAt (n : ℕ) (t : ℝ) :
@@ -323,7 +323,7 @@ theorem coordinate_hasDerivAt (n : ℕ) (t : ℝ) :
 
 theorem coordinate_speed_pos (n : ℕ) (t : ℝ) : 0 < D.coordinateSpeed n t := by
   have h1 := D.radius_pos n
-  have h2 : (0 : ℝ) < Real.cosh t ^ 2 := by positivity
+  have h2 : (0 : ℝ) < Real.cosh t ^ (2 : ℕ) := by positivity
   rw [coordinateSpeed]
   positivity
 
@@ -334,15 +334,15 @@ theorem continuous_coordinateSpeed (n : ℕ) : Continuous (D.coordinateSpeed n) 
     positivity
 
 /-- The reciprocal squares of the displaced locations are summable. -/
-theorem summable_inv_sq : Summable (fun n : ℕ => (D.zero θ n)⁻¹ ^ 2) := by
+theorem summable_inv_sq : Summable (fun n : ℕ => (D.zero θ n)⁻¹ ^ (2 : ℕ)) := by
   obtain ⟨c, hc, hle⟩ := D.exists_lower_linear θ
-  have hcomp : Summable (fun n : ℕ => (c * ((n : ℝ) + 1))⁻¹ ^ 2) := by
-    have hbase : Summable (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + 1) ^ 2) := by
-      have h : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 2) := (Real.summable_one_div_nat_pow (p := 2)).2 one_lt_two
-      have hshift : Summable (fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ) ^ 2) :=
+  have hcomp : Summable (fun n : ℕ => (c * ((n : ℝ) + 1))⁻¹ ^ (2 : ℕ)) := by
+    have hbase : Summable (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + 1) ^ (2 : ℕ)) := by
+      have h : Summable (fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) := (Real.summable_one_div_nat_pow (p := 2)).2 one_lt_two
+      have hshift : Summable (fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ)) :=
         (summable_nat_add_iff 1).2 h
       exact hshift.congr fun n => by push_cast; ring
-    have := hbase.mul_left (c⁻¹ ^ 2)
+    have := hbase.mul_left (c⁻¹ ^ (2 : ℕ))
     refine this.congr fun n => ?_
     have hn : ((n : ℝ) + 1) ≠ 0 := by positivity
     field_simp

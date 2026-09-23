@@ -23,17 +23,17 @@ def kukolNilpotentMatrix (u : ℂ) : Matrix (Fin 3) (Fin 3) ℂ :=
 
 /-- The exact unipotent coordinate matrix. -/
 def kukolUnipotentMatrix (u : ℂ) : Matrix (Fin 3) (Fin 3) ℂ :=
-  !![1,0,0; u^2,1,2*u; u,0,1]
+  !![1,0,0; u^(2 : ℕ),1,2*u; u,0,1]
 
 theorem kukolNilpotentMatrix_square (u : ℂ) :
-    kukolNilpotentMatrix u ^ 2 = !![0,0,0; 2*u^2,0,0; 0,0,0] := by
+    kukolNilpotentMatrix u ^ (2 : ℕ) = !![0,0,0; 2*u^(2 : ℕ),0,0; 0,0,0] := by
   rw [pow_two]
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [kukolNilpotentMatrix, Matrix.mul_apply, Fin.sum_univ_succ]
   all_goals ring
 
-theorem kukolNilpotentMatrix_cube (u : ℂ) : kukolNilpotentMatrix u ^ 3 = 0 := by
+theorem kukolNilpotentMatrix_cube (u : ℂ) : kukolNilpotentMatrix u ^ (3 : ℕ) = 0 := by
   rw [pow_succ, kukolNilpotentMatrix_square]
   ext i j
   fin_cases i <;> fin_cases j <;>

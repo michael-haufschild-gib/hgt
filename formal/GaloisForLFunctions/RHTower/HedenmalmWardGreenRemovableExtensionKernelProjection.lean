@@ -48,10 +48,10 @@ theorem continuousAt_wardRemovableSinhc_zero :
 
 /-- Continuous extension of `a⁻² (exp(2ka)+exp(-2ka)-2)`. -/
 def wardRemovableExpPairQuotient (k a : ℝ) : ℝ :=
-  4 * k ^ 2 * wardRemovableSinhc (k * a) ^ 2
+  4 * k ^ (2 : ℕ) * wardRemovableSinhc (k * a) ^ (2 : ℕ)
 
 @[simp] theorem wardRemovableExpPairQuotient_zero (k : ℝ) :
-    wardRemovableExpPairQuotient k 0 = 4 * k ^ 2 := by
+    wardRemovableExpPairQuotient k 0 = 4 * k ^ (2 : ℕ) := by
   simp [wardRemovableExpPairQuotient]
 
 theorem continuousAt_wardRemovableExpPairQuotient_zero (k : ℝ) :
@@ -61,12 +61,12 @@ theorem continuousAt_wardRemovableExpPairQuotient_zero (k : ℝ) :
   have hsinc : ContinuousAt (fun a : ℝ => wardRemovableSinhc (k * a)) 0 := by
     have hcomp := continuousAt_wardRemovableSinhc_zero.comp_of_eq harg (by simp)
     simpa [Function.comp_def] using hcomp
-  exact (hsinc.pow 2).const_mul (4 * k ^ 2)
+  exact (hsinc.pow 2).const_mul (4 * k ^ (2 : ℕ))
 
 /-- Off the puncture, the removable quotient is exactly the totalized inverse-square defect. -/
 theorem invSq_expPairDefect_eq_wardRemovable
     {k a : ℝ} (ha : a ≠ 0) :
-    a⁻¹ ^ 2 *
+    a⁻¹ ^ (2 : ℕ) *
         (Real.exp (2 * k * a) + Real.exp (-2 * k * a) - 2) =
       wardRemovableExpPairQuotient k a := by
   by_cases hk : k = 0
@@ -108,10 +108,10 @@ def fiveShiftWardRemovableSourceScalar (a : ℝ) : ℝ :=
 
 /-- Missing quadratic jet at the Ward kernel. -/
 def fiveShiftWardKernelJump : ℝ :=
-  4 * (fiveShiftWardCoefficientOne * 1 ^ 2 -
-    fiveShiftWardCoefficientTwo * 2 ^ 2 +
-    fiveShiftWardCoefficientThree * 3 ^ 2 -
-    fiveShiftWardCoefficientFour * 4 ^ 2 + 5 ^ 2)
+  4 * (fiveShiftWardCoefficientOne * 1 ^ (2 : ℕ) -
+    fiveShiftWardCoefficientTwo * 2 ^ (2 : ℕ) +
+    fiveShiftWardCoefficientThree * 3 ^ (2 : ℕ) -
+    fiveShiftWardCoefficientFour * 4 ^ (2 : ℕ) + 5 ^ (2 : ℕ))
 
 @[simp] theorem fiveShiftWardRemovableSourceScalar_zero :
     fiveShiftWardRemovableSourceScalar 0 = fiveShiftWardKernelJump := by
@@ -151,28 +151,28 @@ theorem fiveShiftWardExpPairDefectCombination_eq_pairedFeature (a : ℝ) :
   norm_num only [one_mul, mul_one]
   unfold fiveShiftWardCoefficientOne fiveShiftWardCoefficientTwo
     fiveShiftWardCoefficientThree fiveShiftWardCoefficientFour
-  have hp2 : Real.exp (a * 4) = Real.exp (a * 2) ^ 2 := by
+  have hp2 : Real.exp (a * 4) = Real.exp (a * 2) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1 <;> ring
-  have hp3 : Real.exp (a * 6) = Real.exp (a * 2) ^ 3 := by
+  have hp3 : Real.exp (a * 6) = Real.exp (a * 2) ^ (3 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1 <;> ring
-  have hp4 : Real.exp (a * 8) = Real.exp (a * 2) ^ 4 := by
+  have hp4 : Real.exp (a * 8) = Real.exp (a * 2) ^ (4 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1 <;> ring
-  have hp5 : Real.exp (a * 10) = Real.exp (a * 2) ^ 5 := by
+  have hp5 : Real.exp (a * 10) = Real.exp (a * 2) ^ (5 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1 <;> ring
-  have hn2 : Real.exp (-(a * 4)) = Real.exp (-(a * 2)) ^ 2 := by
+  have hn2 : Real.exp (-(a * 4)) = Real.exp (-(a * 2)) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1 <;> ring
-  have hn3 : Real.exp (-(a * 6)) = Real.exp (-(a * 2)) ^ 3 := by
+  have hn3 : Real.exp (-(a * 6)) = Real.exp (-(a * 2)) ^ (3 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1 <;> ring
-  have hn4 : Real.exp (-(a * 8)) = Real.exp (-(a * 2)) ^ 4 := by
+  have hn4 : Real.exp (-(a * 8)) = Real.exp (-(a * 2)) ^ (4 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1 <;> ring
-  have hn5 : Real.exp (-(a * 10)) = Real.exp (-(a * 2)) ^ 5 := by
+  have hn5 : Real.exp (-(a * 10)) = Real.exp (-(a * 2)) ^ (5 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1 <;> ring
   ring_nf
@@ -183,7 +183,7 @@ theorem fiveShiftWardExpPairDefectCombination_eq_pairedFeature (a : ℝ) :
 theorem fiveShiftWardRemovableSourceScalar_eq_invSq_defect
     {a : ℝ} (ha : a ≠ 0) :
     fiveShiftWardRemovableSourceScalar a =
-      a⁻¹ ^ 2 * fiveShiftWardExpPairDefectCombination a := by
+      a⁻¹ ^ (2 : ℕ) * fiveShiftWardExpPairDefectCombination a := by
   rw [fiveShiftWardRemovableSourceScalar, fiveShiftWardExpPairDefectCombination]
   dsimp only
   rw [← invSq_expPairDefect_eq_wardRemovable (k := 1) ha,
@@ -303,7 +303,7 @@ theorem fiveShiftEulerGammaPairedFeature_eq_pairDefects (r a : ℝ) :
 theorem fiveShiftWardExponentialPairDefect_eq_four_sinh_sq
     (k : ℕ) (r a : ℝ) :
     fiveShiftWardExponentialPairDefect k r a =
-      4 * Real.sinh ((k : ℝ) * r * a) ^ 2 := by
+      4 * Real.sinh ((k : ℝ) * r * a) ^ (2 : ℕ) := by
   rw [fiveShiftWardExponentialPairDefect, ← Real.exp_nat_mul,
     ← Real.exp_nat_mul]
   rw [show (k : ℝ) * (-2 * a * r) = -2 * ((k : ℝ) * r * a) by ring,
@@ -313,24 +313,24 @@ theorem fiveShiftWardExponentialPairDefect_eq_four_sinh_sq
 
 def fiveShiftWardGreenRemovableExtension (r a : ℝ) : ℝ :=
   fiveShiftWardPairCoefficientOne r *
-      (4 * ((1 : ℝ) * r) ^ 2 * wardGreenSinhc ((1 : ℝ) * r * a) ^ 2) -
+      (4 * ((1 : ℝ) * r) ^ (2 : ℕ) * wardGreenSinhc ((1 : ℝ) * r * a) ^ (2 : ℕ)) -
     fiveShiftWardPairCoefficientTwo r *
-      (4 * ((2 : ℝ) * r) ^ 2 * wardGreenSinhc ((2 : ℝ) * r * a) ^ 2) +
+      (4 * ((2 : ℝ) * r) ^ (2 : ℕ) * wardGreenSinhc ((2 : ℝ) * r * a) ^ (2 : ℕ)) +
     fiveShiftWardPairCoefficientThree r *
-      (4 * ((3 : ℝ) * r) ^ 2 * wardGreenSinhc ((3 : ℝ) * r * a) ^ 2) -
+      (4 * ((3 : ℝ) * r) ^ (2 : ℕ) * wardGreenSinhc ((3 : ℝ) * r * a) ^ (2 : ℕ)) -
     fiveShiftWardPairCoefficientFour r *
-      (4 * ((4 : ℝ) * r) ^ 2 * wardGreenSinhc ((4 : ℝ) * r * a) ^ 2) +
-    4 * ((5 : ℝ) * r) ^ 2 * wardGreenSinhc ((5 : ℝ) * r * a) ^ 2
+      (4 * ((4 : ℝ) * r) ^ (2 : ℕ) * wardGreenSinhc ((4 : ℝ) * r * a) ^ (2 : ℕ)) +
+    4 * ((5 : ℝ) * r) ^ (2 : ℕ) * wardGreenSinhc ((5 : ℝ) * r * a) ^ (2 : ℕ)
 
 theorem continuous_fiveShiftWardGreenRemovableExtension (r : ℝ) :
     Continuous (fiveShiftWardGreenRemovableExtension r) := by
   have hterm (k : ℕ) : Continuous (fun a : ℝ =>
-      4 * ((k : ℝ) * r) ^ 2 * wardGreenSinhc ((k : ℝ) * r * a) ^ 2) := by
+      4 * ((k : ℝ) * r) ^ (2 : ℕ) * wardGreenSinhc ((k : ℝ) * r * a) ^ (2 : ℕ)) := by
     exact continuous_const.mul
       ((continuous_wardGreenSinhc.comp
         (continuous_const.mul continuous_id)).pow 2)
   have hscaled (c : ℝ) (k : ℕ) : Continuous (fun a : ℝ =>
-      c * (4 * ((k : ℝ) * r) ^ 2 * wardGreenSinhc ((k : ℝ) * r * a) ^ 2)) :=
+      c * (4 * ((k : ℝ) * r) ^ (2 : ℕ) * wardGreenSinhc ((k : ℝ) * r * a) ^ (2 : ℕ))) :=
     continuous_const.mul (hterm k)
   unfold fiveShiftWardGreenRemovableExtension
   have hcombined := ((((hscaled (fiveShiftWardPairCoefficientOne r) 1).sub
@@ -343,8 +343,8 @@ theorem continuous_fiveShiftWardGreenRemovableExtension (r : ℝ) :
 
 theorem fiveShiftWardExponentialPairDefect_div_sq_eq_removable
     (k : ℕ) (r : ℝ) {a : ℝ} (ha : a ≠ 0) :
-    a⁻¹ ^ 2 * fiveShiftWardExponentialPairDefect k r a =
-      4 * ((k : ℝ) * r) ^ 2 * wardGreenSinhc ((k : ℝ) * r * a) ^ 2 := by
+    a⁻¹ ^ (2 : ℕ) * fiveShiftWardExponentialPairDefect k r a =
+      4 * ((k : ℝ) * r) ^ (2 : ℕ) * wardGreenSinhc ((k : ℝ) * r * a) ^ (2 : ℕ) := by
   rw [fiveShiftWardExponentialPairDefect_eq_four_sinh_sq]
   have hs := wardGreenSinhc_mul ((k : ℝ) * r * a)
   rw [← hs]
@@ -356,21 +356,21 @@ theorem fiveShiftEulerGammaPairedRenormalizedFeature_eq_removableExtension
       fiveShiftWardGreenRemovableExtension r a := by
   rw [fiveShiftEulerGammaPairedRenormalizedFeature,
     fiveShiftEulerGammaPairedFeature_eq_pairDefects]
-  rw [show a⁻¹ ^ 2 *
+  rw [show a⁻¹ ^ (2 : ℕ) *
       (fiveShiftWardPairCoefficientOne r * fiveShiftWardExponentialPairDefect 1 r a -
               fiveShiftWardPairCoefficientTwo r * fiveShiftWardExponentialPairDefect 2 r a +
             fiveShiftWardPairCoefficientThree r * fiveShiftWardExponentialPairDefect 3 r a -
           fiveShiftWardPairCoefficientFour r * fiveShiftWardExponentialPairDefect 4 r a +
         fiveShiftWardExponentialPairDefect 5 r a) =
       fiveShiftWardPairCoefficientOne r *
-          (a⁻¹ ^ 2 * fiveShiftWardExponentialPairDefect 1 r a) -
+          (a⁻¹ ^ (2 : ℕ) * fiveShiftWardExponentialPairDefect 1 r a) -
         fiveShiftWardPairCoefficientTwo r *
-          (a⁻¹ ^ 2 * fiveShiftWardExponentialPairDefect 2 r a) +
+          (a⁻¹ ^ (2 : ℕ) * fiveShiftWardExponentialPairDefect 2 r a) +
         fiveShiftWardPairCoefficientThree r *
-          (a⁻¹ ^ 2 * fiveShiftWardExponentialPairDefect 3 r a) -
+          (a⁻¹ ^ (2 : ℕ) * fiveShiftWardExponentialPairDefect 3 r a) -
         fiveShiftWardPairCoefficientFour r *
-          (a⁻¹ ^ 2 * fiveShiftWardExponentialPairDefect 4 r a) +
-        a⁻¹ ^ 2 * fiveShiftWardExponentialPairDefect 5 r a by ring]
+          (a⁻¹ ^ (2 : ℕ) * fiveShiftWardExponentialPairDefect 4 r a) +
+        a⁻¹ ^ (2 : ℕ) * fiveShiftWardExponentialPairDefect 5 r a by ring]
   rw [fiveShiftWardExponentialPairDefect_div_sq_eq_removable 1 r ha,
     fiveShiftWardExponentialPairDefect_div_sq_eq_removable 2 r ha,
     fiveShiftWardExponentialPairDefect_div_sq_eq_removable 3 r ha,

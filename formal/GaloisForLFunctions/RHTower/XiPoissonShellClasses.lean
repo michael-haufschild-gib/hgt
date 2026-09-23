@@ -84,7 +84,7 @@ theorem xiShellClass_sum_neg (l : ℝ) (n : ℕ) :
 theorem norm_xiShellClass_sum (l : ℝ) (n : ℕ) :
     ‖∑ q ∈ xiShellClass l, xiPoissonPoint q ^ n‖ =
       ((xiShellClass l).card : ℝ) *
-        Real.sqrt (xiPoissonBottomHeight ^ 2 + l ^ 2) ^ n := by
+        Real.sqrt (xiPoissonBottomHeight ^ (2 : ℕ) + l ^ (2 : ℕ)) ^ n := by
   rw [xiShellClass_sum, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (Nat.cast_nonneg _)]
   congr 2

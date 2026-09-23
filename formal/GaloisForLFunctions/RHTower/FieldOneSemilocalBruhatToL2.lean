@@ -48,13 +48,13 @@ theorem fieldOneSemilocalPureTensorFun_memLp
       fieldOneSemilocalAddHaar := by
   apply MeasurableEquiv.prodComm.memLp_map_measure_iff.2
   have hf :
-      Integrable (fun x : ℝ => ‖f x‖ ^ 2) volume :=
+      Integrable (fun x : ℝ => ‖f x‖ ^ (2 : ℕ)) volume :=
     (memLp_two_iff_integrable_sq_norm
       f.continuous.aestronglyMeasurable).1
       (f.memLp 2 volume)
   have hg :
       Integrable
-        (fun x : FieldOneFiniteAdele => ‖g.1 x‖ ^ 2)
+        (fun x : FieldOneFiniteAdele => ‖g.1 x‖ ^ (2 : ℕ))
         fieldOneFiniteAdeleAddHaar :=
     (memLp_two_iff_integrable_sq_norm
       g.1.continuous.aestronglyMeasurable).1

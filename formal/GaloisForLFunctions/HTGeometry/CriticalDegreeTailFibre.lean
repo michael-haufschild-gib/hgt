@@ -397,7 +397,7 @@ def criticalSystemSolutionsCongrOne {U V V' : K[X]} (h : V.coeff n = V'.coeff n)
 arbitrary observed reciprocal tail.**  No separability and no algebraically closed field: the count
 is the number of distinct nonzero roots, whatever their multiplicities. -/
 theorem nat_card_criticalFibre_one_eq_of_tail (hn : 0 < n) {U V : K[X]}
-    (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ 1 ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ (1 : ℕ) ∣ U) (hV : (X : K[X]) ^ n ∣ V)
     (hVdeg : V.degree < ((1 + n : ℕ) : WithBot ℕ)) (hVn : V.coeff n ≠ 0) :
     Nat.card (criticalFibre K 1 n U V)
       = Nat.card {a : K // a ≠ 0 ∧ (oneDeepEquation U (V.coeff n) n).IsRoot a} := by
@@ -417,7 +417,7 @@ below the horizon are seen, so the degree bound of the previous statement can be
 the packet at the horizon changes neither the fibre nor the coefficient the depth-one equation
 reads. -/
 theorem nat_card_criticalFibre_one_eq_of_tail_of_dvd (hn : 0 < n) {U V : K[X]}
-    (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ 1 ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ (1 : ℕ) ∣ U) (hV : (X : K[X]) ^ n ∣ V)
     (hVn : V.coeff n ≠ 0) :
     Nat.card (criticalFibre K 1 n U V)
       = Nat.card {a : K // a ≠ 0 ∧ (oneDeepEquation U (V.coeff n) n).IsRoot a} := by
@@ -452,7 +452,7 @@ theorem nat_card_criticalFibre_one_eq_of_tail_of_dvd (hn : 0 < n) {U V : K[X]}
 exactly when the depth-one equation is separable and does not vanish at the origin — the two
 conditions the corpus's count assumes are together necessary as well as sufficient. -/
 theorem nat_card_criticalFibre_one_eq_iff [IsAlgClosed K] [DecidableEq K] (hn : 0 < n)
-    {U V : K[X]} (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ 1 ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    {U V : K[X]} (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ (1 : ℕ) ∣ U) (hV : (X : K[X]) ^ n ∣ V)
     (hVn : V.coeff n ≠ 0) :
     Nat.card (criticalFibre K 1 n U V) = criticalHorizonMultiplicity 1 n ↔
       ((oneDeepEquation U (V.coeff n) n).Separable ∧
@@ -497,7 +497,7 @@ theorem nat_card_criticalFibre_one_eq_iff [IsAlgClosed K] [DecidableEq K] (hn : 
 theorem is stated for a monomial tail; at depth one the system reads only the tail's coefficient at
 the reciprocal depth, so the count holds for every tail with that coefficient. -/
 theorem nat_card_criticalFibre_one_eq_multiplicity_of_tail [IsAlgClosed K] (hn : 0 < n)
-    {U V : K[X]} (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ 1 ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    {U V : K[X]} (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ (1 : ℕ) ∣ U) (hV : (X : K[X]) ^ n ∣ V)
     (hVdeg : V.degree < ((1 + n : ℕ) : WithBot ℕ)) (hVn : V.coeff n ≠ 0)
     (hsep : (oneDeepEquation U (V.coeff n) n).Separable)
     (hzero : ¬ (oneDeepEquation U (V.coeff n) n).IsRoot 0) :

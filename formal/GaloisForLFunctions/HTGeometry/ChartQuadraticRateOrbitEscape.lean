@@ -43,9 +43,9 @@ theorem analyticAt_localExtensionMatrix_entry (E : α → ℂ) (M : Matrix α α
 polynomial in the chart coordinates. -/
 theorem analyticOnNhd_chartQuadraticRate (E : α → ℂ) (M : Matrix α α ℂ) (κ : ℂ)
     (U : Set ((ρ → ℂ) × Matrix ρ ρ ℂ)) :
-    AnalyticOnNhd ℂ (fun p => κ * ((localExtensionMatrix E p.1 M p.2) ^ 2).trace) U := by
+    AnalyticOnNhd ℂ (fun p => κ * ((localExtensionMatrix E p.1 M p.2) ^ (2 : ℕ)).trace) U := by
   have hsum : (fun p : (ρ → ℂ) × Matrix ρ ρ ℂ =>
-      κ * ((localExtensionMatrix E p.1 M p.2) ^ 2).trace)
+      κ * ((localExtensionMatrix E p.1 M p.2) ^ (2 : ℕ)).trace)
       = fun p => κ * ∑ x, ∑ y,
           localExtensionMatrix E p.1 M p.2 x y * localExtensionMatrix E p.1 M p.2 y x := by
     funext p
@@ -73,14 +73,14 @@ theorem exists_chartQuadraticOrbit_ne_zero {A : Type*} [Fintype A] [DecidableEq 
     (C : LocalExtensionEigenbranchChart (fun a => (E a : ℂ)) (boolShift z₀) M)
     (c : A × Bool → ℂ) (κ : ℂ) (hzero : ∑ i, c i = 0) (hcne : c ≠ 0) :
     ∃ p ∈ C.U, (∏ σ : Equiv.Perm (A × Bool),
-        ((∑ i, c i * C.branch (σ i) p) ^ 2
-          - κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ 2).trace)) ≠ 0 := by
+        ((∑ i, c i * C.branch (σ i) p) ^ (2 : ℕ)
+          - κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ (2 : ℕ)).trace)) ≠ 0 := by
   classical
   by_contra hcon
   push Not at hcon
   set factor : Equiv.Perm (A × Bool) → ((Bool → ℂ) × Matrix Bool Bool ℂ) → ℂ :=
-    fun σ p => (∑ i, c i * C.branch (σ i) p) ^ 2
-      - κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ 2).trace with hfactor
+    fun σ p => (∑ i, c i * C.branch (σ i) p) ^ (2 : ℕ)
+      - κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ (2 : ℕ)).trace with hfactor
   have hanalytic : ∀ σ : Equiv.Perm (A × Bool), AnalyticOnNhd ℂ (factor σ) C.U := by
     intro σ
     refine AnalyticOnNhd.sub ?_ (analyticOnNhd_chartQuadraticRate _ M κ C.U)
@@ -103,8 +103,8 @@ theorem exists_chartQuadraticOrbit_ne_zero {A : Type*} [Fintype A] [DecidableEq 
     rw [hd]
     rw [Fintype.sum_equiv σ (fun i => c i) (fun j => c (σ.symm j)) fun i => by simp] at hzero
     exact hzero
-  have hident : ∀ p ∈ C.U, (∑ i, d i * C.branch i p) ^ 2
-      = κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ 2).trace := by
+  have hident : ∀ p ∈ C.U, (∑ i, d i * C.branch i p) ^ (2 : ℕ)
+      = κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ (2 : ℕ)).trace := by
     intro p hp
     have hswap : (∑ i, c i * C.branch (σ i) p) = ∑ j, d j * C.branch j p :=
       Fintype.sum_equiv σ _ _ fun i => by simp [hd]

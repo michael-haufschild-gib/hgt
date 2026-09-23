@@ -14,8 +14,8 @@ and original squared scalar, with both radial stream factors retained. -/
 def forcedMetricField (q : XiZeroCopy) (branch : Bool) (a : ℂ) (x : Fin 4 → ℝ) :
     Matrix (Fin 4) (Fin 4) ℂ :=
   let s := physicalRate q branch
-  fun i j => streamMetricField (2*s) (a^2) false (fullAngularCovector q branch) x i j-
-    (s*(s-1)/4)*streamMetricField (2*s) (a^2) true (fullSquareCovector q) x i j
+  fun i j => streamMetricField (2*s) (a^(2 : ℕ)) false (fullAngularCovector q branch) x i j-
+    (s*(s-1)/4)*streamMetricField (2*s) (a^(2 : ℕ)) true (fullSquareCovector q) x i j
 
 private theorem response_c2 (q : XiZeroCopy) (branch : Bool) (p : D4BMBackground.ExteriorPoint)
     (k : Fin 2) : ContDiffAt ℝ 2 (fullAngularCovector q branch k) (angularPoint p.val) := by
@@ -44,8 +44,8 @@ theorem forcedMetricField_einstein (q : XiZeroCopy) (branch : Bool) (a : ℂ)
         (D4BMFundamentalScalarMetric.envelope (physicalRate q branch) a p.val) (angularPoint p.val) i j = 0 := by
   have hr : (p.val 1 : ℂ) ≠ 0 := by exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
   have hy : (p.val 3 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
   have hJ : (D4BMBackground.jet (p.val 1) (p.val 3)).metric.det ≠ 0 := by
     change (D4BMBackground.metric (p.val 1) (p.val 3)).det ≠ 0
     rw [D4BMBackground.metric_det _ _ hf]

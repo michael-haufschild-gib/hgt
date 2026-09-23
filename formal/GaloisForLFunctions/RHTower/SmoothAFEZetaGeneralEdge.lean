@@ -35,7 +35,7 @@ theorem tendsto_smoothAFEZetaMellinIntegrand_horizontal_edge
     have hmax : (0 : ℝ) ≤ max x x⁻¹ := le_trans hx.le (le_max_left _ _)
     have := Real.exp_pos (1 : ℝ)
     positivity
-  have hlim : Tendsto (fun T : ℝ => 2 * (K * ((|s.im| + T) ^ N * Real.exp (-(T ^ 2)))))
+  have hlim : Tendsto (fun T : ℝ => 2 * (K * ((|s.im| + T) ^ N * Real.exp (-(T ^ (2 : ℕ))))))
       atTop (𝓝 0) := by
     have h := (tendsto_shifted_pow_mul_exp_neg_sq |s.im| N).const_mul K
     simpa using h.const_mul (2 : ℝ)
@@ -48,7 +48,7 @@ theorem tendsto_smoothAFEZetaMellinIntegrand_horizontal_edge
     rw [abs_mul, hε, one_mul, abs_of_pos hT0]
   have hpoint : ∀ u ∈ Set.uIoc (-c : ℝ) 1,
       ‖smoothAFEZetaMellinIntegrand s x ((u : ℂ) + ((ε * T : ℝ) : ℂ) * I)‖
-        ≤ K * ((|s.im| + T) ^ N * Real.exp (-(T ^ 2))) := by
+        ≤ K * ((|s.im| + T) ^ N * Real.exp (-(T ^ (2 : ℕ)))) := by
     intro u hu
     rw [Set.uIoc_of_le (by linarith : (-c : ℝ) ≤ 1)] at hu
     have hulow : (-1 : ℝ) ≤ u := by
@@ -57,9 +57,9 @@ theorem tendsto_smoothAFEZetaMellinIntegrand_horizontal_edge
     have hbound := norm_smoothAFEZetaMellinIntegrand_general_le hx s hC0 hC
       (u := u) (v := ε * T) hulow hu.2 (by rw [habsv]; linarith)
     rw [habsv] at hbound
-    have hsq : (ε * T) ^ 2 = T ^ 2 := by
-      have h1 : (ε * T) ^ 2 = ε ^ 2 * T ^ 2 := by ring
-      rw [h1, show ε ^ 2 = |ε| ^ 2 by rw [sq_abs], hε]
+    have hsq : (ε * T) ^ (2 : ℕ) = T ^ (2 : ℕ) := by
+      have h1 : (ε * T) ^ (2 : ℕ) = ε ^ (2 : ℕ) * T ^ (2 : ℕ) := by ring
+      rw [h1, show ε ^ (2 : ℕ) = |ε| ^ (2 : ℕ) by rw [sq_abs], hε]
       ring
     rw [hsq] at hbound
     exact hbound
@@ -69,15 +69,15 @@ theorem tendsto_smoothAFEZetaMellinIntegrand_horizontal_edge
     ring
   rw [habs] at h
   have hlen : (1 : ℝ) + c ≤ 2 := by linarith
-  have hnn : (0 : ℝ) ≤ K * ((|s.im| + T) ^ N * Real.exp (-(T ^ 2))) := by
+  have hnn : (0 : ℝ) ≤ K * ((|s.im| + T) ^ N * Real.exp (-(T ^ (2 : ℕ)))) := by
     have : (0 : ℝ) ≤ (|s.im| + T) ^ N := by positivity
     positivity
   calc ‖∫ u : ℝ in (-c : ℝ)..1,
         smoothAFEZetaMellinIntegrand s x ((u : ℂ) + ((ε * T : ℝ) : ℂ) * I)‖
-      ≤ K * ((|s.im| + T) ^ N * Real.exp (-(T ^ 2))) * (1 + c) := h
-    _ ≤ K * ((|s.im| + T) ^ N * Real.exp (-(T ^ 2))) * 2 :=
+      ≤ K * ((|s.im| + T) ^ N * Real.exp (-(T ^ (2 : ℕ)))) * (1 + c) := h
+    _ ≤ K * ((|s.im| + T) ^ N * Real.exp (-(T ^ (2 : ℕ)))) * 2 :=
         mul_le_mul_of_nonneg_left hlen hnn
-    _ = 2 * (K * ((|s.im| + T) ^ N * Real.exp (-(T ^ 2)))) := by ring
+    _ = 2 * (K * ((|s.im| + T) ^ N * Real.exp (-(T ^ (2 : ℕ))))) := by ring
 
 /-- **The finite two-pole rectangle identity with the left edge at `-c`.** -/
 theorem smoothAFEZetaMellin_finite_contour_shift_edge

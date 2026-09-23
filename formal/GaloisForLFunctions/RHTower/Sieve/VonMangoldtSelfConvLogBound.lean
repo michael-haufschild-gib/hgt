@@ -11,7 +11,7 @@ namespace RHTower.Sieve
 /-- Universal logarithmic envelope for the von Mangoldt self-convolution. -/
 theorem vonMangoldtSelfConv_le_two_mul_log_sq
     (n : ℕ) (hn : 1 ≤ n) :
-    (Λ * Λ) n ≤ 2 * Real.log n ^ 2 := by
+    (Λ * Λ) n ≤ 2 * Real.log n ^ (2 : ℕ) := by
   classical
   by_cases hcard0 : n.primeFactors.card = 0
   · have hempty : n.primeFactors = ∅ := Finset.card_eq_zero.mp hcard0
@@ -50,20 +50,20 @@ theorem vonMangoldtSelfConv_le_two_mul_log_sq
 
 theorem vonMangoldtSelfConv_sq_le_four_mul_log_four
     (n : ℕ) (hn : 1 ≤ n) :
-    ((Λ * Λ) n) ^ 2 ≤ 4 * Real.log n ^ 4 := by
+    ((Λ * Λ) n) ^ (2 : ℕ) ≤ 4 * Real.log n ^ (4 : ℕ) := by
   have hnonneg := vonMangoldtSelfConv_nonneg n
   have hupper := vonMangoldtSelfConv_le_two_mul_log_sq n hn
-  nlinarith [sq_nonneg (2 * Real.log (n : ℝ) ^ 2 - (Λ * Λ) n)]
+  nlinarith [sq_nonneg (2 * Real.log (n : ℝ) ^ (2 : ℕ) - (Λ * Λ) n)]
 
 /-- Coarse finite envelope for the remaining differentiated Barban--Vehov moment. -/
 theorem vonMangoldtSelfConvHarmonicSquareSum_le
     (N : ℕ) (hN : 1 ≤ N) :
     vonMangoldtSelfConvHarmonicSquareSum N ≤
-      4 * Real.log N ^ 4 * (1 + Real.log N) := by
+      4 * Real.log N ^ (4 : ℕ) * (1 + Real.log N) := by
   rw [vonMangoldtSelfConvHarmonicSquareSum]
   calc
-    ∑ k ∈ Finset.Icc 2 N, ((Λ * Λ) k) ^ 2 / (k : ℝ) ≤
-        ∑ k ∈ Finset.Icc 2 N, 4 * Real.log N ^ 4 / (k : ℝ) := by
+    ∑ k ∈ Finset.Icc 2 N, ((Λ * Λ) k) ^ (2 : ℕ) / (k : ℝ) ≤
+        ∑ k ∈ Finset.Icc 2 N, 4 * Real.log N ^ (4 : ℕ) / (k : ℝ) := by
       apply Finset.sum_le_sum
       intro k hk
       have hk2 : 2 ≤ k := (Finset.mem_Icc.mp hk).1
@@ -75,16 +75,16 @@ theorem vonMangoldtSelfConvHarmonicSquareSum_le
         Real.log_le_log hkR (by exact_mod_cast hkN)
       apply div_le_div_of_nonneg_right _ hkR.le
       calc
-        ((Λ * Λ) k) ^ 2 ≤ 4 * Real.log k ^ 4 :=
+        ((Λ * Λ) k) ^ (2 : ℕ) ≤ 4 * Real.log k ^ (4 : ℕ) :=
           vonMangoldtSelfConv_sq_le_four_mul_log_four k (by omega)
-        _ ≤ 4 * Real.log N ^ 4 :=
+        _ ≤ 4 * Real.log N ^ (4 : ℕ) :=
           mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hlogk0 hlogkN 4) (by norm_num)
-    _ = 4 * Real.log N ^ 4 * ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / k := by
+    _ = 4 * Real.log N ^ (4 : ℕ) * ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / k := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro k hk
       ring
-    _ ≤ 4 * Real.log N ^ 4 * (1 + Real.log N) := by
+    _ ≤ 4 * Real.log N ^ (4 : ℕ) * (1 + Real.log N) := by
       have hsum : ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / k ≤
           1 + Real.log N := by
         calc

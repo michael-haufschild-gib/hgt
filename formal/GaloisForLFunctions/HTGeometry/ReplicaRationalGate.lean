@@ -122,16 +122,16 @@ theorem square_expand
     Matrix.mul_smul, smul_smul, add_smul, mul_comm b a]
   abel
 
-theorem scale_prod (s : ℂ) : (s * Complex.I) * ((-s) * Complex.I) = s ^ 2 := by
+theorem scale_prod (s : ℂ) : (s * Complex.I) * ((-s) * Complex.I) = s ^ (2 : ℕ) := by
   calc (s * Complex.I) * ((-s) * Complex.I)
       = -(s * s) * (Complex.I * Complex.I) := by ring
     _ = -(s * s) * (-1) := by rw [Complex.I_mul_I]
-    _ = s ^ 2 := by ring
+    _ = s ^ (2 : ℕ) := by ring
 
 /-- Opposite scales of the gate are inverse up to the scalar `(1+s²)` per replica. -/
 theorem replicaGate_mul_neg (v : I) (c : Fin 3) (T : Finset R) (s : ℂ) :
     replicaGate I R v c T s * replicaGate I R v c T (-s) =
-      ((1 + s ^ 2) ^ T.card) •
+      ((1 + s ^ (2 : ℕ)) ^ T.card) •
         (1 : Matrix (FiniteQubitConfiguration (I × R)) (FiniteQubitConfiguration (I × R)) ℂ) := by
   classical
   induction T using Finset.induction_on with
@@ -146,7 +146,7 @@ theorem replicaGate_mul_neg (v : I) (c : Fin 3) (T : Finset R) (s : ℂ) :
           (Commute.smul_left (commute_pauli_replicaGate v c m T s) _)
       have hpair : (1 + (s * Complex.I) • finitePauliMatrix (siteLabel ((v, m) : I × R) c)) *
           (1 + ((-s) * Complex.I) • finitePauliMatrix (siteLabel ((v, m) : I × R) c)) =
-          (1 + s ^ 2) • (1 : Matrix (FiniteQubitConfiguration (I × R))
+          (1 + s ^ (2 : ℕ)) • (1 : Matrix (FiniteQubitConfiguration (I × R))
             (FiniteQubitConfiguration (I × R)) ℂ) := by
         rw [square_expand, finitePauliMatrix_mul_self, scale_prod]
         have hzero : (s * Complex.I) + ((-s) * Complex.I) = 0 := by ring
@@ -160,10 +160,10 @@ theorem replicaGate_mul_neg (v : I) (c : Fin 3) (T : Finset R) (s : ℂ) :
               (replicaGate I R v c T s * replicaGate I R v c T (-s)) := by
             rw [Matrix.mul_assoc, ← Matrix.mul_assoc (replicaGate I R v c T s), ← hcomm.eq,
               Matrix.mul_assoc, ← Matrix.mul_assoc]
-        _ = ((1 + s ^ 2) • (1 : Matrix (FiniteQubitConfiguration (I × R))
-              (FiniteQubitConfiguration (I × R)) ℂ)) * (((1 + s ^ 2) ^ T.card) • 1) := by
+        _ = ((1 + s ^ (2 : ℕ)) • (1 : Matrix (FiniteQubitConfiguration (I × R))
+              (FiniteQubitConfiguration (I × R)) ℂ)) * (((1 + s ^ (2 : ℕ)) ^ T.card) • 1) := by
             rw [hpair, ih]
-        _ = ((1 + s ^ 2) ^ (insert m T).card) • 1 := by
+        _ = ((1 + s ^ (2 : ℕ)) ^ (insert m T).card) • 1 := by
             rw [Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul, smul_smul,
               Finset.card_insert_of_notMem hm, ← pow_succ']
 
@@ -207,7 +207,7 @@ theorem replicaGate_conj_replicaLabel (v : I) (c : Fin 3) (s : ℂ) (p : I → O
     (m : R) :
     replicaGate I R v c Finset.univ s * finitePauliMatrix (replicaLabel I R p m) *
         replicaGate I R v c Finset.univ (-s) =
-      ((1 + s ^ 2) ^ (Fintype.card R - 1)) •
+      ((1 + s ^ (2 : ℕ)) ^ (Fintype.card R - 1)) •
         ((1 + (s * Complex.I) • finitePauliMatrix (siteLabel ((v, m) : I × R) c)) *
           finitePauliMatrix (replicaLabel I R p m) *
           (1 + ((-s) * Complex.I) • finitePauliMatrix (siteLabel ((v, m) : I × R) c))) := by
@@ -246,9 +246,9 @@ theorem replicaGate_conj_replicaLabel (v : I) (c : Fin 3) (s : ℂ) (p : I → O
     _ = (((1 + (s * Complex.I) • P) * W) * (1 + ((-s) * Complex.I) • P)) * (E1 * E2) :=
         (Matrix.mul_assoc _ _ _).symm
     _ = (((1 + (s * Complex.I) • P) * W) * (1 + ((-s) * Complex.I) • P)) *
-          (((1 + s ^ 2) ^ (Finset.univ.erase m).card) • 1) := by
+          (((1 + s ^ (2 : ℕ)) ^ (Finset.univ.erase m).card) • 1) := by
         rw [hE1, hE2, replicaGate_mul_neg]
-    _ = ((1 + s ^ 2) ^ (Fintype.card R - 1)) •
+    _ = ((1 + s ^ (2 : ℕ)) ^ (Fintype.card R - 1)) •
           ((1 + (s * Complex.I) • P) * W * (1 + ((-s) * Complex.I) • P)) := by
         rw [Matrix.mul_smul, Matrix.mul_one,
           Finset.card_erase_of_mem (Finset.mem_univ m), Finset.card_univ]
@@ -260,32 +260,32 @@ theorem replicaGate_conj_collectivePauliString (v : I) (c : Fin 3) (s : ℂ)
     (p : I → Option (Fin 3)) :
     replicaGate I R v c Finset.univ s * collectivePauliString I R p *
         replicaGate I R v c Finset.univ (-s) =
-      ((1 + s ^ 2) ^ (Fintype.card R - 1) *
-          (1 + s ^ 2 * boolPauliConjugationSign (some c) (p v))) •
+      ((1 + s ^ (2 : ℕ)) ^ (Fintype.card R - 1) *
+          (1 + s ^ (2 : ℕ) * boolPauliConjugationSign (some c) (p v))) •
           collectivePauliString I R p +
-        ((1 + s ^ 2) ^ (Fintype.card R - 1) * ((s * Complex.I) *
+        ((1 + s ^ (2 : ℕ)) ^ (Fintype.card R - 1) * ((s * Complex.I) *
             (optPhaseProd (siteLabel v c) p - optPhaseProd p (siteLabel v c)))) •
           collectivePauliString I R (optMulLabel (siteLabel v c) p) := by
   classical
   have hterm : ∀ m : R, replicaGate I R v c Finset.univ s *
       finitePauliMatrix (replicaLabel I R p m) * replicaGate I R v c Finset.univ (-s) =
-      ((1 + s ^ 2) ^ (Fintype.card R - 1)) •
+      ((1 + s ^ (2 : ℕ)) ^ (Fintype.card R - 1)) •
         (finitePauliMatrix (replicaLabel I R p m) +
           (s * Complex.I) •
             ringCommutator (finitePauliMatrix (replicaLabel I R (siteLabel v c) m))
               (finitePauliMatrix (replicaLabel I R p m)) +
-          s ^ 2 • (boolPauliConjugationSign (some c) (p v) •
+          s ^ (2 : ℕ) • (boolPauliConjugationSign (some c) (p v) •
             finitePauliMatrix (replicaLabel I R p m))) := by
     intro m
     rw [replicaGate_conj_replicaLabel v c s p m]
     congr 1
     have hneg : ((-s) * Complex.I) = -(s * Complex.I) := by ring
     rw [hneg, sandwich_expand, replicaLabel_siteLabel]
-    have hsq : -((s * Complex.I) * (s * Complex.I)) = s ^ 2 := by
+    have hsq : -((s * Complex.I) * (s * Complex.I)) = s ^ (2 : ℕ) := by
       calc -((s * Complex.I) * (s * Complex.I))
           = -((s * s) * (Complex.I * Complex.I)) := by ring
         _ = -((s * s) * (-1)) := by rw [Complex.I_mul_I]
-        _ = s ^ 2 := by ring
+        _ = s ^ (2 : ℕ) := by ring
     rw [hsq, finitePauliMatrix_conj, finitePauliConjugationSign_siteLabel_replicaLabel]
     rfl
   have hdistrib : replicaGate I R v c Finset.univ s * collectivePauliString I R p *

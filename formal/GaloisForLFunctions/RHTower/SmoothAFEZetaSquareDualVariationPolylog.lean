@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.SmoothAFEZetaSquareDualDerivativeSourceFieldP
 /-! # Polylogarithmic dyadic mean square for square-dual height variation
 
 The cumulative divisor-square average removes the fixed-power loss from the derivative source.
-After measurable Duhamel, the literal dual height variation costs only `N log^4 N`.
+After measurable Duhamel, the literal dual height variation costs only `N log^(4 : ℕ) N`.
 -/
 
 noncomputable section
@@ -17,12 +17,12 @@ theorem exists_integral_Icc_normSq_smoothAFEZetaSquareDualVariationSourceField_l
     ∃ A K : ℝ, 0 ≤ A ∧ 0 ≤ K ∧ ∀ {N : ℕ}, 4 ≤ N →
       (∫ t in Set.Icc (N : ℝ) (2 * N : ℝ),
         ‖smoothAFEZetaSquareDualVariationSourceField
-          (N : ℝ) (N : ℝ) t t‖ ^ 2) ≤
-        (N : ℝ) ^ 2 *
+          (N : ℝ) (N : ℝ) t t‖ ^ (2 : ℕ)) ≤
+        (N : ℝ) ^ (2 : ℕ) *
           (5 * Real.pi * Real.exp 1 *
-              (K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ)) +
+              (K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ)) +
             (5 * Real.pi / 2) *
-              (A * (1 + Real.log (N : ℝ)) ^ 4 / (N : ℝ) ^ 2) *
+              (A * (1 + Real.log (N : ℝ)) ^ (4 : ℕ) / (N : ℝ) ^ (2 : ℕ)) *
                 ((N : ℝ) / 2)) := by
   obtain ⟨A, K, hA, hK, hmv⟩ :=
     exists_integral_normSq_smoothAFEZetaSquareDualDerivativeSourceField_le_polylog
@@ -31,13 +31,13 @@ theorem exists_integral_Icc_normSq_smoothAFEZetaSquareDualVariationSourceField_l
   let S : Set ℝ := Set.Icc (N : ℝ) (2 * N : ℝ)
   let B : ℝ :=
     5 * Real.pi * Real.exp 1 *
-        (K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ)) +
+        (K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ)) +
       (5 * Real.pi / 2) *
-        (A * (1 + Real.log (N : ℝ)) ^ 4 / (N : ℝ) ^ 2) *
+        (A * (1 + Real.log (N : ℝ)) ^ (4 : ℕ) / (N : ℝ) ^ (2 : ℕ)) *
           ((N : ℝ) / 2)
   let g : ℝ × ℝ → ℝ := fun p =>
     ‖smoothAFEZetaSquareDualDerivativeSourceField
-      (N : ℝ) p.1 p.2‖ ^ 2
+      (N : ℝ) p.1 p.2‖ ^ (2 : ℕ)
   have hN0 : 0 < (N : ℝ) := by
     exact_mod_cast (show 0 < N by omega)
   have hH : (1 : ℝ) ≤ (N : ℝ) / 2 := by
@@ -84,30 +84,30 @@ theorem exists_integral_Icc_normSq_smoothAFEZetaSquareDualVariationSourceField_l
       (N : ℝ) *
           (∫ r in Set.Icc (N : ℝ) (2 * N : ℝ),
             ∫ t in Set.Icc (N : ℝ) (2 * N : ℝ),
-              ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ 2)
+              ‖smoothAFEZetaSquareDualDerivativeSourceField (N : ℝ) r t‖ ^ (2 : ℕ))
           ≤ (N : ℝ) * ((N : ℝ) *
               (5 * Real.pi * Real.exp 1 *
-                  (K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ)) +
+                  (K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ)) +
                 (5 * Real.pi / 2) *
-                  (A * (1 + Real.log (N : ℝ)) ^ 4 / (N : ℝ) ^ 2) *
+                  (A * (1 + Real.log (N : ℝ)) ^ (4 : ℕ) / (N : ℝ) ^ (2 : ℕ)) *
                     ((N : ℝ) / 2))) :=
         mul_le_mul_of_nonneg_left houter' hN0.le
-      _ = (N : ℝ) ^ 2 *
+      _ = (N : ℝ) ^ (2 : ℕ) *
           (5 * Real.pi * Real.exp 1 *
-              (K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ)) +
+              (K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ)) +
             (5 * Real.pi / 2) *
-              (A * (1 + Real.log (N : ℝ)) ^ 4 / (N : ℝ) ^ 2) *
+              (A * (1 + Real.log (N : ℝ)) ^ (4 : ℕ) / (N : ℝ) ^ (2 : ℕ)) *
                 ((N : ℝ) / 2)) := by ring)
 
 theorem exists_integral_Icc_normSq_smoothAFEZetaSquareDualVariationSourceField_le_polylog :
     ∃ A K : ℝ, 0 ≤ A ∧ 0 ≤ K ∧ ∀ {N : ℕ}, 4 ≤ N →
       (∫ t in Set.Icc (N : ℝ) (2 * N : ℝ),
         ‖smoothAFEZetaSquareDualVariationSourceField
-          (N : ℝ) (N : ℝ) t t‖ ^ 2) ≤
+          (N : ℝ) (N : ℝ) t t‖ ^ (2 : ℕ)) ≤
         5 * Real.pi * Real.exp 1 * K * (N : ℝ) *
-            (1 + Real.log (N : ℝ)) ^ 3 +
+            (1 + Real.log (N : ℝ)) ^ (3 : ℕ) +
           (5 * Real.pi / 4) * A * (N : ℝ) *
-            (1 + Real.log (N : ℝ)) ^ 4 := by
+            (1 + Real.log (N : ℝ)) ^ (4 : ℕ) := by
   obtain ⟨A, K, hA, hK, hraw⟩ :=
     exists_integral_Icc_normSq_smoothAFEZetaSquareDualVariationSourceField_le_dyadic_polylog
   refine ⟨A, K, hA, hK, ?_⟩
@@ -115,19 +115,19 @@ theorem exists_integral_Icc_normSq_smoothAFEZetaSquareDualVariationSourceField_l
   have hx : 0 < (N : ℝ) := by
     exact_mod_cast (show 0 < N by omega)
   have hfirst :
-      (N : ℝ) ^ 2 *
+      (N : ℝ) ^ (2 : ℕ) *
           (5 * Real.pi * Real.exp 1 *
-            (K * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ))) =
+            (K * (1 + Real.log (N : ℝ)) ^ (3 : ℕ) / (N : ℝ))) =
         5 * Real.pi * Real.exp 1 * K * (N : ℝ) *
-          (1 + Real.log (N : ℝ)) ^ 3 := by
+          (1 + Real.log (N : ℝ)) ^ (3 : ℕ) := by
     field_simp [hx.ne']
   have hsecond :
-      (N : ℝ) ^ 2 *
+      (N : ℝ) ^ (2 : ℕ) *
           ((5 * Real.pi / 2) *
-            (A * (1 + Real.log (N : ℝ)) ^ 4 / (N : ℝ) ^ 2) *
+            (A * (1 + Real.log (N : ℝ)) ^ (4 : ℕ) / (N : ℝ) ^ (2 : ℕ)) *
               ((N : ℝ) / 2)) =
         (5 * Real.pi / 4) * A * (N : ℝ) *
-          (1 + Real.log (N : ℝ)) ^ 4 := by
+          (1 + Real.log (N : ℝ)) ^ (4 : ℕ) := by
     field_simp [hx.ne']
     ring
   exact (hraw hN).trans_eq (by

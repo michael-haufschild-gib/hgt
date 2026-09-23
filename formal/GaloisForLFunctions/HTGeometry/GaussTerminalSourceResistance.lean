@@ -22,24 +22,24 @@ variable {s : ℕ → ℝ}
 /-- Terminal share of a current Gauss root, normalized by the preceding monic norm. -/
 noncomputable def gaussTerminalSourceResistance
     (s : ℕ → ℝ) (m : ℕ) (x : ℝ) : ℝ :=
-  christoffel s m x * (monicOrtho s m).eval x ^ 2 / monicOrthoNormSq s m
+  christoffel s m x * (monicOrtho s m).eval x ^ (2 : ℕ) / monicOrthoNormSq s m
 
 /-- **Terminal-share conservation.** All root shares of one finite positive admission sum to one. -/
 theorem sum_gaussTerminalSourceResistance_eq_one {N m : ℕ}
     (h : PositiveMomentFormBelow s N) (hmN : m + 1 < N) :
     ∑ x ∈ gaussNodes s m, gaussTerminalSourceResistance s m x = 1 := by
-  have hpdeg : ((monicOrtho s m) ^ 2).degree < ((2 * m + 2 : ℕ) : WithBot ℕ) := by
+  have hpdeg : ((monicOrtho s m) ^ (2 : ℕ)).degree < ((2 * m + 2 : ℕ) : WithBot ℕ) := by
     rw [Polynomial.degree_pow, monicOrtho_degree]
     norm_num
     exact_mod_cast (show 2 * m < 2 * m + 2 by omega)
   have hquad := momentFunctional_eq_gaussSum_below h m hmN
-    ((monicOrtho s m) ^ 2) hpdeg
+    ((monicOrtho s m) ^ (2 : ℕ)) hpdeg
   have hnorm : monicOrthoNormSq s m ≠ 0 :=
     ne_of_gt (monicOrthoNorm_pos_below h (show m < N by omega))
   have hsum :
       monicOrthoNormSq s m =
         ∑ x ∈ gaussNodes s m,
-          christoffel s m x * (monicOrtho s m).eval x ^ 2 := by
+          christoffel s m x * (monicOrtho s m).eval x ^ (2 : ℕ) := by
     rw [pow_two] at hquad
     simpa only [monicOrthoNormSq, momentInner_def, Polynomial.eval_mul, pow_two] using hquad
   simp_rw [gaussTerminalSourceResistance]
@@ -62,7 +62,7 @@ theorem gaussTerminalSourceResistance_eq_prev_div_derivative {N m : ℕ}
     exact hnorm hcd.symm
   apply (div_eq_div_iff hnorm hderiv).2
   calc
-    christoffel s m x * (monicOrtho s m).eval x ^ 2 *
+    christoffel s m x * (monicOrtho s m).eval x ^ (2 : ℕ) *
           (monicOrtho s (m + 1)).derivative.eval x =
         (monicOrtho s m).eval x *
           (christoffel s m x * (monicOrtho s (m + 1)).derivative.eval x *
@@ -88,7 +88,7 @@ theorem gaussTerminalSourceResistance_pos {N m : ℕ}
 /-- Adjacent-admission form of the same terminal share. -/
 noncomputable def gaussAdjacentTerminalSourceResistance
     (s : ℕ → ℝ) (m : ℕ) (x : ℝ) : ℝ :=
-  christoffel s m x * (monicOrtho s (m + 2)).eval x ^ 2 /
+  christoffel s m x * (monicOrtho s (m + 2)).eval x ^ (2 : ℕ) /
     (monicOrthoBeta s (m + 1) * monicOrthoNormSq s (m + 1))
 
 /-- At a current root, the adjacent admission is minus the current edge times the predecessor. -/

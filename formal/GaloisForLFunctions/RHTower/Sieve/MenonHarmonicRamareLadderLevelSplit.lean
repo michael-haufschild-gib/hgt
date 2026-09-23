@@ -35,22 +35,22 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_levelSplit_mass
     (hJ : ∀ j ∈ Finset.range L,
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ Finset.range L,
-          (2 * (V₀ j ^ 2 *
+          (2 * (V₀ j ^ (2 : ℕ) *
                 (∫ w in E, ‖logPoly (harmonicRamareCofactorCoeff P)
-                  (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ 2)
+                  (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ (2 : ℕ))
               + ∑ i ∈ Finset.range (J j),
-                  (2 ^ (i + 1) * V₀ j) ^ 2
+                  (2 ^ (i + 1) * V₀ j) ^ (2 : ℕ)
                     * ∫ w in E ∩ {w | 2 ^ i * V₀ j ≤
                           ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w‖},
                         ‖logPoly (harmonicRamareCofactorCoeff P)
-                          (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ 2)
+                          (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ (2 : ℕ))
             + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) *
                 ∑ p ∈ geomBlock P Q (1 + eta) j, (1 / (p : ℝ)) *
                   (∫ w in E, ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w
                     - logPoly (harmonicRamareCofactorCoeff P)
-                        (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ 2))
+                        (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ (2 : ℕ)))
           / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by
   classical
   have hr : 1 ≤ 1 + eta := by linarith

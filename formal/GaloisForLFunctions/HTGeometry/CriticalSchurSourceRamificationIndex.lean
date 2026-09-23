@@ -96,7 +96,7 @@ theorem criticalSchurSource_not_maximalIdeal_le_sq :
     ¬ (maximalIdeal (criticalSchurSourceValuationSubring K (Fact.out : 0 < m)
         (Fact.out : 0 < n))
       ≤ (maximalIdeal (criticalSchurSourceValuationSubring K (Fact.out : 0 < m)
-        (Fact.out : 0 < n))) ^ 2) := by
+        (Fact.out : 0 < n))) ^ (2 : ℕ)) := by
   intro h
   have hbot := Submodule.eq_bot_of_le_smul_of_le_jacobson_bot
     (maximalIdeal (criticalSchurSourceValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n)))
@@ -131,7 +131,7 @@ theorem criticalSchur_differentIdeal_not_le_sq :
     ¬ (differentIdeal
         (criticalSchurObservationValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n))
         (CriticalSchurSourceIntegralClosure K (Fact.out : 0 < m) (Fact.out : 0 < n))
-      ≤ (criticalSchurSourceIntegralClosurePrime K (Fact.out : 0 < m) (Fact.out : 0 < n)) ^ 2) := by
+      ≤ (criticalSchurSourceIntegralClosurePrime K (Fact.out : 0 < m) (Fact.out : 0 < n)) ^ (2 : ℕ)) := by
   intro hle
   have h1 := le_trans (criticalSchur_maximalIdeal_le_map_differentIdeal K) (Ideal.map_mono hle)
   rw [Ideal.map_pow, IsLocalization.AtPrime.map_eq_maximalIdeal] at h1

@@ -56,7 +56,7 @@ def d4BMPoleFillCasimirWeight (s : ℂ) : ℂ := s * (s - 1) / 2
 /-- Four-channel pole-fill multiplier forced by the diagonal triple-Eisenstein spectrum. -/
 def d4BMMixedCasimirPoleFillMultiplier (P Q : ℂ) : ℂ :=
   d4BMPoleFillCasimirWeight (2 * P + Q - 1) *
-    d4BMPoleFillCasimirWeight Q ^ 2 *
+    d4BMPoleFillCasimirWeight Q ^ (2 : ℕ) *
     d4BMPoleFillCasimirWeight (2 * P - Q)
 
 /-- Strict absolute-convergence chamber used by the repeated-leg unfolding. -/
@@ -73,19 +73,19 @@ theorem d4BMPoleFillCasimirWeight_eq_geometricEigenvalue (s : ℂ) :
 /-- Exact mixed-discriminant factorization of the forced four-channel multiplier. -/
 theorem d4BMMixedCasimirPoleFillMultiplier_eq_mixedDiscriminants (P Q : ℂ) :
     d4BMMixedCasimirPoleFillMultiplier P Q =
-      Q ^ 2 * (Q - 1) ^ 2 / 16 *
-        ((2 * P - 1) ^ 2 - Q ^ 2) *
-        ((2 * P - 1) ^ 2 - (Q - 1) ^ 2) := by
+      Q ^ (2 : ℕ) * (Q - 1) ^ (2 : ℕ) / 16 *
+        ((2 * P - 1) ^ (2 : ℕ) - Q ^ (2 : ℕ)) *
+        ((2 * P - 1) ^ (2 : ℕ) - (Q - 1) ^ (2 : ℕ)) := by
   simp only [d4BMMixedCasimirPoleFillMultiplier, d4BMPoleFillCasimirWeight]
   ring
 
 /-- Three separated source channels suffice for the forced mixed counterterm. -/
 theorem d4BMMixedCasimirPoleFillMultiplier_threeChannel (P Q : ℂ) :
     d4BMMixedCasimirPoleFillMultiplier P Q =
-      (2 * P - 1) ^ 4 * (Q ^ 2 * (Q - 1) ^ 2 / 16) +
-      (2 * P - 1) ^ 2 *
-        (-(Q ^ 2 * (Q - 1) ^ 2 / 16 * (Q ^ 2 + (Q - 1) ^ 2))) +
-      1 * (Q ^ 2 * (Q - 1) ^ 2 / 16 * (Q ^ 2 * (Q - 1) ^ 2)) := by
+      (2 * P - 1) ^ (4 : ℕ) * (Q ^ (2 : ℕ) * (Q - 1) ^ (2 : ℕ) / 16) +
+      (2 * P - 1) ^ (2 : ℕ) *
+        (-(Q ^ (2 : ℕ) * (Q - 1) ^ (2 : ℕ) / 16 * (Q ^ (2 : ℕ) + (Q - 1) ^ (2 : ℕ)))) +
+      1 * (Q ^ (2 : ℕ) * (Q - 1) ^ (2 : ℕ) / 16 * (Q ^ (2 : ℕ) * (Q - 1) ^ (2 : ℕ))) := by
   rw [d4BMMixedCasimirPoleFillMultiplier_eq_mixedDiscriminants]
   ring
 

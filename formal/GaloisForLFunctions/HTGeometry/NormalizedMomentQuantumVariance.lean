@@ -17,7 +17,7 @@ Letters 72 (1994), 3439--3443, DOI 10.1103/PhysRevLett.72.3439.
 
 Successive size-biased states are related by the likelihood ratio `X / E[X]`.  Hence the Pearson
 chi-square divergence from the next size-biased state to the current one is exactly the squared
-coefficient of variation `Var(X) / E[X]^2`.  Size biasing is surveyed by Arratia--Goldstein--
+coefficient of variation `Var(X) / E[X]^(2 : ℕ)`.  Size biasing is surveyed by Arratia--Goldstein--
 Kochman, Probability Surveys 16 (2019), 1--61, DOI 10.1214/13-PS221; the encompassing convex
 divergence class is due to Ali--Silvey, Journal of the Royal Statistical Society B 28 (1966),
 131--142, DOI 10.1111/j.2517-6161.1966.tb00626.x.  The finite-change chi-square variance bound is
@@ -43,7 +43,7 @@ def momentNormalizedExpectation (s : ℕ → ℝ) (p : Polynomial ℝ) : ℝ :=
 
 /-- Variance of a polynomial observable in the normalized moment state. -/
 def momentNormalizedVariance (s : ℕ → ℝ) (p : Polynomial ℝ) : ℝ :=
-  momentNormalizedExpectation s (p ^ 2) - momentNormalizedExpectation s p ^ 2
+  momentNormalizedExpectation s (p ^ (2 : ℕ)) - momentNormalizedExpectation s p ^ (2 : ℕ)
 
 /-- Covariance of two polynomial observables in the normalized moment state. -/
 def momentNormalizedCovariance
@@ -83,8 +83,8 @@ theorem momentNormalizedExpectation_one
 theorem momentNormalizedVariance_X_pow
     (s : ℕ → ℝ) (n : ℕ) :
     momentNormalizedVariance s (X ^ n) =
-      s (n + n) / s 0 - (s n / s 0) ^ 2 := by
-  have hpow : (X ^ n : Polynomial ℝ) ^ 2 = X ^ (n + n) := by
+      s (n + n) / s 0 - (s n / s 0) ^ (2 : ℕ) := by
+  have hpow : (X ^ n : Polynomial ℝ) ^ (2 : ℕ) = X ^ (n + n) := by
     rw [pow_two, ← pow_add]
   rw [momentNormalizedVariance, hpow, momentNormalizedExpectation_X_pow,
     momentNormalizedExpectation_X_pow]
@@ -108,7 +108,7 @@ theorem momentNormalizedExpectation_centered
 /-- The normalized square of the centered representative is exactly its variance. -/
 theorem momentNormalizedExpectation_centered_sq
     (s : ℕ → ℝ) (h0 : s 0 ≠ 0) (p : Polynomial ℝ) :
-    momentNormalizedExpectation s ((momentVacuumCenteredPolynomial s p) ^ 2) =
+    momentNormalizedExpectation s ((momentVacuumCenteredPolynomial s p) ^ (2 : ℕ)) =
       momentNormalizedVariance s p := by
   rw [momentNormalizedExpectation,
     momentFunctional_momentVacuumCenteredPolynomial_sq s h0 p,
@@ -119,7 +119,7 @@ theorem momentNormalizedExpectation_centered_sq
 theorem pureStateQuantumFisherValue_moment_eq_four_mul_normalizedVariance
     (s : ℕ → ℝ) (h0 : s 0 ≠ 0) (p : Polynomial ℝ) :
     pureStateQuantumFisherValue (s 0)
-        (momentFunctional s p) (momentFunctional s (p ^ 2)) =
+        (momentFunctional s p) (momentFunctional s (p ^ (2 : ℕ))) =
       4 * momentNormalizedVariance s p := by
   rw [pureStateQuantumFisherValue_moment_eq s h0 p,
     momentVacuumFeshbachRemainder_eq_mass_mul_normalizedVariance s h0 p]
@@ -137,7 +137,7 @@ theorem momentNormalizedVariance_nonneg_iff_feshbach
 theorem momentNormalizedVariance_le_secondMoment
     (s : ℕ → ℝ) (p : Polynomial ℝ) :
     momentNormalizedVariance s p ≤
-      momentNormalizedExpectation s (p ^ 2) := by
+      momentNormalizedExpectation s (p ^ (2 : ℕ)) := by
   unfold momentNormalizedVariance
   exact sub_le_self _ (sq_nonneg _)
 
@@ -169,16 +169,16 @@ response to a field coupled to `X`. -/
 theorem momentNormalizedVariance_X_sizeBiased
     (s : ℕ → ℝ) (k : ℕ) :
     momentNormalizedVariance (momentSizeBiasedSequence s k) X =
-      s (k + 2) / s k - (s (k + 1) / s k) ^ 2 := by
+      s (k + 2) / s k - (s (k + 1) / s k) ^ (2 : ℕ) := by
   simpa [momentSizeBiasedSequence] using
     momentNormalizedVariance_X_pow (momentSizeBiasedSequence s k) 1
 
 /-- Denominator-free fluctuation identity for a size-biased moment state. -/
 theorem sq_mass_mul_momentNormalizedVariance_X_sizeBiased
     (s : ℕ → ℝ) (k : ℕ) (hk : s k ≠ 0) :
-    s k ^ 2 *
+    s k ^ (2 : ℕ) *
         momentNormalizedVariance (momentSizeBiasedSequence s k) X =
-      s k * s (k + 2) - s (k + 1) ^ 2 := by
+      s k * s (k + 2) - s (k + 1) ^ (2 : ℕ) := by
   rw [momentNormalizedVariance_X_sizeBiased]
   field_simp [hk]
 
@@ -189,22 +189,22 @@ theorem sq_mass_mul_momentNormalizedVariance_X_sizeBiased
 `X / E_k[X]`, so this quotient is the literal Pearson chi-square divergence. -/
 def momentSizeBiasPearsonChiSq (s : ℕ → ℝ) (k : ℕ) : ℝ :=
   momentNormalizedVariance (momentSizeBiasedSequence s k) X /
-    momentNormalizedExpectation (momentSizeBiasedSequence s k) X ^ 2
+    momentNormalizedExpectation (momentSizeBiasedSequence s k) X ^ (2 : ℕ)
 
 /-- The Pearson value is the susceptibility-to-squared-signal ratio. -/
 theorem momentSizeBiasPearsonChiSq_eq_variance_div_mean_sq
     (s : ℕ → ℝ) (k : ℕ) :
     momentSizeBiasPearsonChiSq s k =
       momentNormalizedVariance (momentSizeBiasedSequence s k) X /
-        momentNormalizedExpectation (momentSizeBiasedSequence s k) X ^ 2 := by
+        momentNormalizedExpectation (momentSizeBiasedSequence s k) X ^ (2 : ℕ) := by
   rfl
 
 /-- Moment-ratio formula for the Pearson information between successive size biases. -/
 theorem momentSizeBiasPearsonChiSq_eq_momentRatios
     (s : ℕ → ℝ) (k : ℕ) :
     momentSizeBiasPearsonChiSq s k =
-      (s (k + 2) / s k - (s (k + 1) / s k) ^ 2) /
-        (s (k + 1) / s k) ^ 2 := by
+      (s (k + 2) / s k - (s (k + 1) / s k) ^ (2 : ℕ)) /
+        (s (k + 1) / s k) ^ (2 : ℕ) := by
   rw [momentSizeBiasPearsonChiSq,
     momentNormalizedVariance_X_sizeBiased,
     momentNormalizedExpectation_X_sizeBiased]
@@ -212,8 +212,8 @@ theorem momentSizeBiasPearsonChiSq_eq_momentRatios
 /-- Denominator-free Pearson identity: its numerator is the adjacent Hankel determinant. -/
 theorem sq_next_mul_momentSizeBiasPearsonChiSq
     (s : ℕ → ℝ) (k : ℕ) (hk : s k ≠ 0) (hk1 : s (k + 1) ≠ 0) :
-    s (k + 1) ^ 2 * momentSizeBiasPearsonChiSq s k =
-      s k * s (k + 2) - s (k + 1) ^ 2 := by
+    s (k + 1) ^ (2 : ℕ) * momentSizeBiasPearsonChiSq s k =
+      s k * s (k + 2) - s (k + 1) ^ (2 : ℕ) := by
   rw [momentSizeBiasPearsonChiSq_eq_momentRatios]
   field_simp [hk, hk1]
 
@@ -222,19 +222,19 @@ moments are positive. -/
 theorem momentSizeBiasPearsonChiSq_nonneg_iff_adjacentHankel
     (s : ℕ → ℝ) (k : ℕ) (hk : 0 < s k) (hk1 : 0 < s (k + 1)) :
     0 ≤ momentSizeBiasPearsonChiSq s k ↔
-      s (k + 1) ^ 2 ≤ s k * s (k + 2) := by
+      s (k + 1) ^ (2 : ℕ) ≤ s k * s (k + 2) := by
   have hid := sq_next_mul_momentSizeBiasPearsonChiSq s k hk.ne' hk1.ne'
-  have hsq : 0 < s (k + 1) ^ 2 := sq_pos_of_pos hk1
+  have hsq : 0 < s (k + 1) ^ (2 : ℕ) := sq_pos_of_pos hk1
   constructor
   · intro h
     have hprod : 0 ≤
-        s (k + 1) ^ 2 * momentSizeBiasPearsonChiSq s k :=
+        s (k + 1) ^ (2 : ℕ) * momentSizeBiasPearsonChiSq s k :=
       mul_nonneg hsq.le h
     nlinarith
   · intro h
     nlinarith
 
-/-- `1 + chi^2` is the multiplicative increment of adjacent moment ratios.  Thus Pearson
+/-- `1 + chi^(2 : ℕ)` is the multiplicative increment of adjacent moment ratios.  Thus Pearson
 information is the discrete projective curvature of the moment sequence. -/
 theorem momentSizeBiasPearsonChiSq_add_one_eq_adjacentRatioQuotient
     (s : ℕ → ℝ) (k : ℕ) (hk : s k ≠ 0) (hk1 : s (k + 1) ≠ 0) :
@@ -280,7 +280,7 @@ theorem momentNormalizedCovariance_X_X_pow_sizeBiased
 cross-Hankel minor comparing the moment ratios at indices `k` and `k+n`. -/
 theorem sq_mass_mul_momentNormalizedCovariance_X_X_pow_sizeBiased
     (s : ℕ → ℝ) (k n : ℕ) (hk : s k ≠ 0) :
-    s k ^ 2 *
+    s k ^ (2 : ℕ) *
         momentNormalizedCovariance (momentSizeBiasedSequence s k) X (X ^ n) =
       s k * s (k + n + 1) - s (k + 1) * s (k + n) := by
   rw [momentNormalizedCovariance_X_X_pow_sizeBiased]
@@ -294,10 +294,10 @@ theorem momentNormalizedCovariance_X_X_pow_sizeBiased_nonneg_iff_crossHankel
       s (k + 1) * s (k + n) ≤ s k * s (k + n + 1) := by
   have hid := sq_mass_mul_momentNormalizedCovariance_X_X_pow_sizeBiased
     s k n hk.ne'
-  have hsq : 0 < s k ^ 2 := sq_pos_of_pos hk
+  have hsq : 0 < s k ^ (2 : ℕ) := sq_pos_of_pos hk
   constructor
   · intro h
-    have hprod : 0 ≤ s k ^ 2 *
+    have hprod : 0 ≤ s k ^ (2 : ℕ) *
         momentNormalizedCovariance (momentSizeBiasedSequence s k) X (X ^ n) :=
       mul_nonneg hsq.le h
     nlinarith
@@ -355,7 +355,7 @@ cannot improve the moment problem without an independent bound on the mean lift.
 theorem momentSizeBiasPearsonChiSq_hcr_saturation
     (s : ℕ → ℝ) (k : ℕ) (hk : s k ≠ 0) (hk1 : s (k + 1) ≠ 0) :
     (momentNormalizedExpectation (momentSizeBiasedSequence s (k + 1)) X -
-        momentNormalizedExpectation (momentSizeBiasedSequence s k) X) ^ 2 =
+        momentNormalizedExpectation (momentSizeBiasedSequence s k) X) ^ (2 : ℕ) =
       momentNormalizedVariance (momentSizeBiasedSequence s k) X *
         momentSizeBiasPearsonChiSq s k := by
   have hmean :
@@ -373,7 +373,7 @@ theorem pureStateQuantumFisherValue_sizeBiased_X_eq_meanLift
     pureStateQuantumFisherValue
         (momentSizeBiasedSequence s k 0)
         (momentFunctional (momentSizeBiasedSequence s k) X)
-        (momentFunctional (momentSizeBiasedSequence s k) (X ^ 2)) =
+        (momentFunctional (momentSizeBiasedSequence s k) (X ^ (2 : ℕ))) =
       4 * momentNormalizedExpectation (momentSizeBiasedSequence s k) X *
         (momentNormalizedExpectation (momentSizeBiasedSequence s (k + 1)) X -
           momentNormalizedExpectation (momentSizeBiasedSequence s k) X) := by
@@ -393,9 +393,9 @@ theorem momentSizeBiasPearsonChiSq_eq_quantumFisher_signalRatio
       pureStateQuantumFisherValue
           (momentSizeBiasedSequence s k 0)
           (momentFunctional (momentSizeBiasedSequence s k) X)
-          (momentFunctional (momentSizeBiasedSequence s k) (X ^ 2)) /
+          (momentFunctional (momentSizeBiasedSequence s k) (X ^ (2 : ℕ))) /
         (4 * momentNormalizedExpectation
-          (momentSizeBiasedSequence s k) X ^ 2) := by
+          (momentSizeBiasedSequence s k) X ^ (2 : ℕ)) := by
   have hk' : momentSizeBiasedSequence s k 0 ≠ 0 := by
     simpa [momentSizeBiasedSequence] using hk
   rw [pureStateQuantumFisherValue_moment_eq_four_mul_normalizedVariance
@@ -431,7 +431,7 @@ theorem momentNormalizedCovariance_sequenceSum
     momentNormalizedCovariance (momentSequenceSum s t) p q =
       s 0 / (s 0 + t 0) * momentNormalizedCovariance s p q +
         t 0 / (s 0 + t 0) * momentNormalizedCovariance t p q +
-          (s 0 * t 0 / (s 0 + t 0) ^ 2) *
+          (s 0 * t 0 / (s 0 + t 0) ^ (2 : ℕ)) *
             (momentNormalizedExpectation s p -
               momentNormalizedExpectation t p) *
             (momentNormalizedExpectation s q -
@@ -453,9 +453,9 @@ theorem momentNormalizedVariance_sequenceSum
     momentNormalizedVariance (momentSequenceSum s t) p =
       s 0 / (s 0 + t 0) * momentNormalizedVariance s p +
         t 0 / (s 0 + t 0) * momentNormalizedVariance t p +
-          (s 0 * t 0 / (s 0 + t 0) ^ 2) *
+          (s 0 * t 0 / (s 0 + t 0) ^ (2 : ℕ)) *
             (momentNormalizedExpectation s p -
-              momentNormalizedExpectation t p) ^ 2 := by
+              momentNormalizedExpectation t p) ^ (2 : ℕ) := by
   unfold momentNormalizedVariance momentNormalizedExpectation
   rw [momentFunctional_sequenceSum, momentFunctional_sequenceSum]
   simp only [momentSequenceSum]
@@ -472,7 +472,7 @@ theorem weighted_left_variance_le_sequenceSum
   rw [momentNormalizedVariance_sequenceSum s t hs.ne' ht.ne' (add_pos hs ht).ne' p]
   have hweight : 0 ≤ t 0 / (s 0 + t 0) :=
     (div_nonneg ht.le (add_pos hs ht).le)
-  have hbetween : 0 ≤ s 0 * t 0 / (s 0 + t 0) ^ 2 := by positivity
+  have hbetween : 0 ≤ s 0 * t 0 / (s 0 + t 0) ^ (2 : ℕ) := by positivity
   nlinarith [mul_nonneg hweight hvart,
     mul_nonneg hbetween
       (sq_nonneg (momentNormalizedExpectation s p -

@@ -34,7 +34,7 @@ def stereoInvChart (v : EuclideanSpace ℝ (Fin 3)) : ℂ :=
 /-- The finite chart recovers a complex number from its stereographic image. -/
 theorem stereoFiniteChart_stereo (z : ℂ) :
     stereoFiniteChart (stereo z) = z := by
-  let A : ℝ := 2 / (1 + ‖z‖ ^ 2)
+  let A : ℝ := 2 / (1 + ‖z‖ ^ (2 : ℕ))
   have hApos : 0 < A := by
     dsimp [A]
     positivity
@@ -51,7 +51,7 @@ theorem stereoFiniteChart_stereo (z : ℂ) :
   have hdenR : (1 : ℝ) - (stereo z).ofLp (2 : Fin 3) = A := by
     dsimp [A]
     simp [stereo]
-    field_simp [show (1 : ℝ) + ‖z‖ ^ 2 ≠ 0 by positivity]
+    field_simp [show (1 : ℝ) + ‖z‖ ^ (2 : ℕ) ≠ 0 by positivity]
     ring
   have hden : (((1 : ℝ) - (stereo z).ofLp (2 : Fin 3) : ℝ) : ℂ) = (A : ℂ) := by
     exact_mod_cast hdenR
@@ -66,8 +66,8 @@ theorem stereoFiniteChart_stereo (z : ℂ) :
 /-- The inverse chart recovers `z⁻¹` from the stereographic image of a nonzero complex number. -/
 theorem stereoInvChart_stereo {z : ℂ} (hz : z ≠ 0) :
     stereoInvChart (stereo z) = z⁻¹ := by
-  let A : ℝ := 2 / (1 + ‖z‖ ^ 2)
-  let B : ℝ := A * ‖z‖ ^ 2
+  let A : ℝ := 2 / (1 + ‖z‖ ^ (2 : ℕ))
+  let B : ℝ := A * ‖z‖ ^ (2 : ℕ)
   have hApos : 0 < A := by
     dsimp [A]
     positivity
@@ -75,7 +75,7 @@ theorem stereoInvChart_stereo {z : ℂ} (hz : z ≠ 0) :
     exact_mod_cast (ne_of_gt hApos)
   have hBpos : 0 < B := by
     dsimp [B, A]
-    have hzpos : 0 < ‖z‖ ^ 2 := sq_pos_of_ne_zero (norm_ne_zero_iff.mpr hz)
+    have hzpos : 0 < ‖z‖ ^ (2 : ℕ) := sq_pos_of_ne_zero (norm_ne_zero_iff.mpr hz)
     positivity
   have hx : (stereo z).ofLp (0 : Fin 3) = A * z.re := by
     dsimp [A]
@@ -88,7 +88,7 @@ theorem stereoInvChart_stereo {z : ℂ} (hz : z ≠ 0) :
   have hdenR : (1 : ℝ) + (stereo z).ofLp (2 : Fin 3) = B := by
     dsimp [B, A]
     simp [stereo]
-    field_simp [show (1 : ℝ) + ‖z‖ ^ 2 ≠ 0 by positivity]
+    field_simp [show (1 : ℝ) + ‖z‖ ^ (2 : ℕ) ≠ 0 by positivity]
     ring
   have hden : (((1 : ℝ) + (stereo z).ofLp (2 : Fin 3) : ℝ) : ℂ) = (B : ℂ) := by
     exact_mod_cast hdenR
@@ -107,7 +107,7 @@ theorem stereoInvChart_stereo {z : ℂ} (hz : z ≠ 0) :
 /-- The third stereographic coordinate is always at most the north-pole coordinate. -/
 theorem stereo_third_le_one (z : ℂ) : (stereo z).ofLp (2 : Fin 3) ≤ 1 := by
   simp [stereo]
-  have hdenpos : 0 < (1 : ℝ) + ‖z‖ ^ 2 := by positivity
+  have hdenpos : 0 < (1 : ℝ) + ‖z‖ ^ (2 : ℕ) := by positivity
   rw [div_le_iff₀ hdenpos]
   ring_nf
   nlinarith [sq_nonneg ‖z‖]
@@ -115,7 +115,7 @@ theorem stereo_third_le_one (z : ℂ) : (stereo z).ofLp (2 : Fin 3) ≤ 1 := by
 /-- The third stereographic coordinate is always at least the south-pole coordinate. -/
 theorem neg_one_le_stereo_third (z : ℂ) : -1 ≤ (stereo z).ofLp (2 : Fin 3) := by
   simp [stereo]
-  have hdenpos : 0 < (1 : ℝ) + ‖z‖ ^ 2 := by positivity
+  have hdenpos : 0 < (1 : ℝ) + ‖z‖ ^ (2 : ℕ) := by positivity
   rw [le_div_iff₀ hdenpos]
   ring_nf
   nlinarith [sq_nonneg ‖z‖]

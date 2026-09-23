@@ -62,8 +62,8 @@ theorem vfDeriv_two : (d⁄dX K) (2 : PowerSeries K) = 0 := by
   rw [h, map_add, Derivation.map_one_eq_zero]
   simp
 
-theorem vfDeriv_X_sq : (d⁄dX K) ((X : PowerSeries K) ^ 2) = 2 * X := by
-  have h : ((X : PowerSeries K) ^ 2) = X * X := by ring
+theorem vfDeriv_X_sq : (d⁄dX K) ((X : PowerSeries K) ^ (2 : ℕ)) = 2 * X := by
+  have h : ((X : PowerSeries K) ^ (2 : ℕ)) = X * X := by ring
   rw [h, vfDeriv_mul]
   simp
   ring
@@ -262,7 +262,7 @@ theorem coeff_three_eq_zero_of_bracket {e₁ e₂ : PowerSeries K} {lam : K}
   obtain ⟨gt, hgt⟩ : (X : PowerSeries K) ∣ e₁ := by
     rw [PowerSeries.X_dvd_iff, ← coeff_zero_eq_constantCoeff_apply]
     exact h₁.2 0 (by norm_num)
-  obtain ⟨v, hv⟩ : (X : PowerSeries K) ^ 2 ∣ e₂ := by
+  obtain ⟨v, hv⟩ : (X : PowerSeries K) ^ (2 : ℕ) ∣ e₂ := by
     rw [PowerSeries.X_pow_dvd_iff]
     intro m hm
     exact h₂.2 m hm
@@ -278,20 +278,20 @@ theorem coeff_three_eq_zero_of_bracket {e₁ e₂ : PowerSeries K} {lam : K}
     rw [← this]; exact h₂.1
   have hv1 : coeff 1 v = 0 := by
     -- the bracket relation, with the two factorizations substituted and `X²` cancelled
-    have hDe₂ : (d⁄dX K) e₂ = X ^ 2 * (d⁄dX K) v + v * (2 * X) := by
+    have hDe₂ : (d⁄dX K) e₂ = X ^ (2 : ℕ) * (d⁄dX K) v + v * (2 * X) := by
       rw [hv, vfDeriv_mul, vfDeriv_X_sq]
     have hDe₁ : (d⁄dX K) e₁ = X * (d⁄dX K) gt + gt := by
       rw [hgt, vfDeriv_mul]
       simp
     have hexp : vfBracket e₁ e₂
-        = X ^ 2 * (gt * v + X * (gt * (d⁄dX K) v - v * (d⁄dX K) gt)) := by
+        = X ^ (2 : ℕ) * (gt * v + X * (gt * (d⁄dX K) v - v * (d⁄dX K) gt)) := by
       unfold vfBracket
       rw [hDe₂, hDe₁, hgt, hv]
       ring
-    have hexp2 : lam • e₂ = X ^ 2 * (lam • v) := by
+    have hexp2 : lam • e₂ = X ^ (2 : ℕ) * (lam • v) := by
       rw [hv, smul_eq_C_mul, smul_eq_C_mul]
       ring
-    have hXne : ((X : PowerSeries K) ^ 2) ≠ 0 := pow_ne_zero 2 PowerSeries.X_ne_zero
+    have hXne : ((X : PowerSeries K) ^ (2 : ℕ)) ≠ 0 := pow_ne_zero 2 PowerSeries.X_ne_zero
     have hR : gt * v + X * (gt * (d⁄dX K) v - v * (d⁄dX K) gt) = lam • v := by
       refine mul_left_cancel₀ hXne ?_
       rw [← hexp, ← hexp2, hrel]
@@ -352,8 +352,8 @@ theorem vfProjDefect_eq_zero_of_affine {f μ : PowerSeries K} (h : vfAffineDefec
 
 /-! ## The projective connection of a rank-three algebra -/
 
-theorem vfDeriv_X_cube : (d⁄dX K) ((X : PowerSeries K) ^ 3) = 3 * X ^ 2 := by
-  have h : ((X : PowerSeries K) ^ 3) = X * (X * X) := by ring
+theorem vfDeriv_X_cube : (d⁄dX K) ((X : PowerSeries K) ^ (3 : ℕ)) = 3 * X ^ (2 : ℕ) := by
+  have h : ((X : PowerSeries K) ^ (3 : ℕ)) = X * (X * X) := by ring
   rw [h, vfDeriv_mul, vfDeriv_mul]
   simp
   ring
@@ -410,7 +410,7 @@ theorem exists_projConnection_of_hasOrder_two [CharZero K]
     exact sub_eq_zero.mp (hsep _ hmem h0 h1 h2)
   have hc3 : coeff 3 e₂ = 0 := coeff_three_eq_zero_of_bracket hg he₂ hrel
   -- the factorization `e₂ = X² v` with `v` a unit and `v′ = X w`
-  obtain ⟨v, hv⟩ : (X : PowerSeries K) ^ 2 ∣ e₂ := by
+  obtain ⟨v, hv⟩ : (X : PowerSeries K) ^ (2 : ℕ) ∣ e₂ := by
     rw [PowerSeries.X_pow_dvd_iff]
     intro m hm
     exact he₂.2 m hm
@@ -426,16 +426,16 @@ theorem exists_projConnection_of_hasOrder_two [CharZero K]
     rw [PowerSeries.X_dvd_iff, ← coeff_zero_eq_constantCoeff_apply, coeff_derivative, hv1]
     ring
   -- the derivatives of `e₂`, written in the factorization
-  have hDe₂ : (d⁄dX K) e₂ = X ^ 3 * w + 2 * (X * v) := by
+  have hDe₂ : (d⁄dX K) e₂ = X ^ (3 : ℕ) * w + 2 * (X * v) := by
     rw [hv, vfDeriv_mul, vfDeriv_X_sq, hw]
     ring
-  have hD2e₂ : (d⁄dX K) ((d⁄dX K) e₂) = X ^ 3 * (d⁄dX K) w + 5 * (X ^ 2 * w) + 2 * v := by
+  have hD2e₂ : (d⁄dX K) ((d⁄dX K) e₂) = X ^ (3 : ℕ) * (d⁄dX K) w + 5 * (X ^ (2 : ℕ) * w) + 2 * v := by
     rw [hDe₂]
     simp only [map_add, vfDeriv_mul, vfDeriv_X_cube, vfDeriv_two,
       PowerSeries.derivative_X, mul_zero, add_zero, hw]
     ring
-  set G : PowerSeries K := X ^ 2 * (w * w) - 6 * (v * w) - 2 * (X * (v * (d⁄dX K) w)) with hGdef
-  have hQG : (d⁄dX K) e₂ * (d⁄dX K) e₂ - 2 * (e₂ * (d⁄dX K) ((d⁄dX K) e₂)) = X ^ 4 * G := by
+  set G : PowerSeries K := X ^ (2 : ℕ) * (w * w) - 6 * (v * w) - 2 * (X * (v * (d⁄dX K) w)) with hGdef
+  have hQG : (d⁄dX K) e₂ * (d⁄dX K) e₂ - 2 * (e₂ * (d⁄dX K) ((d⁄dX K) e₂)) = X ^ (4 : ℕ) * G := by
     rw [hD2e₂, hDe₂, hv, hGdef]
     ring
   have hvvunit : constantCoeff (v * v) ≠ (0 : K) := by
@@ -446,7 +446,7 @@ theorem exists_projConnection_of_hasOrder_two [CharZero K]
   have hq : q * (e₂ * e₂)
       = (d⁄dX K) e₂ * (d⁄dX K) e₂ - 2 * (e₂ * (d⁄dX K) ((d⁄dX K) e₂)) := by
     rw [hQG, hqdef, hv]
-    have h : G * (v * v)⁻¹ * (X ^ 2 * v * (X ^ 2 * v)) = X ^ 4 * G * ((v * v) * (v * v)⁻¹) := by
+    have h : G * (v * v)⁻¹ * (X ^ (2 : ℕ) * v * (X ^ (2 : ℕ) * v)) = X ^ (4 : ℕ) * G * ((v * v) * (v * v)⁻¹) := by
       ring
     rw [h, hvvinv, mul_one]
   have hpd₂ : vfProjDefect e₂ q = 0 := vfProjDefect_eq_zero_of_quotient he₂ne hq

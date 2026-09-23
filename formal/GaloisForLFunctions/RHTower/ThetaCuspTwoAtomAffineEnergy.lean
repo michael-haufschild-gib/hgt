@@ -37,9 +37,9 @@ private theorem atom_two_shift (x : ℝ) :
 /-- Exact shifted first-atom formula for the full pure second-atom reflection jet. -/
 theorem thetaCuspSecondPairReflectionJet_eq_shift (n : ℕ) (x : ℝ) :
     thetaCuspAtomPairReflectionJet n 2 2 x =
-      ((2 : ℝ)^(-(1/2 : ℝ)))^2*thetaCuspFirstAtomReflectionJet n (x+Real.log 2) := by
+      ((2 : ℝ)^(-(1/2 : ℝ)))^(2 : ℕ)*thetaCuspFirstAtomReflectionJet n (x+Real.log 2) := by
   have hf : (fun t : ℝ => thetaCuspSourceTerm (x+t) 2*thetaCuspSourceTerm (x-t) 2) =
-      fun t : ℝ => ((2 : ℝ)^(-(1/2 : ℝ)))^2*
+      fun t : ℝ => ((2 : ℝ)^(-(1/2 : ℝ)))^(2 : ℕ)*
         (thetaCuspSourceTerm ((x+Real.log 2)+t) 1*thetaCuspSourceTerm ((x+Real.log 2)-t) 1) := by
     funext t
     rw [atom_two_shift,atom_two_shift,
@@ -58,12 +58,12 @@ theorem thetaCuspSecondPairEvenEnergy_nonneg {x : ℝ}
     rw [shifted_second_scale]
     linarith
   have hE := firstAtomEvenEnergy_lower_of_seven_halves_le hscale c
-  have hnon : 0 ≤ (196 : ℝ)*thetaCuspSourceTerm (x+Real.log 2) 1^2*
-      (8*thetaCuspSingleAtomReflectionScale 1 (x+Real.log 2))^6*(c 3)^2 := by positivity
+  have hnon : 0 ≤ (196 : ℝ)*thetaCuspSourceTerm (x+Real.log 2) 1^(2 : ℕ)*
+      (8*thetaCuspSingleAtomReflectionScale 1 (x+Real.log 2))^(6 : ℕ)*(c 3)^(2 : ℕ) := by positivity
   have hn : 0 ≤ firstAtomEvenEnergy (x+Real.log 2) c := hnon.trans hE
   have he : (∑ i : Fin 4, ∑ j : Fin 4,
       c i*((-1 : ℝ)^(i.val+j.val)*thetaCuspAtomPairReflectionJet (2*(i.val+j.val)) 2 2 x)*c j) =
-      ((2 : ℝ)^(-(1/2 : ℝ)))^2*firstAtomEvenEnergy (x+Real.log 2) c := by
+      ((2 : ℝ)^(-(1/2 : ℝ)))^(2 : ℕ)*firstAtomEvenEnergy (x+Real.log 2) c := by
     unfold firstAtomEvenEnergy firstAtomSignedMoment
     simp only [thetaCuspSecondPairReflectionJet_eq_shift,Finset.mul_sum]
     apply Finset.sum_congr rfl
@@ -98,7 +98,7 @@ private theorem signed_pair_eq_radial (a b k : ℕ) (x : ℝ) :
 theorem thetaCuspTwoAtomSignedEvenJet_eq_affine_add_second (k : ℕ) (x : ℝ) :
     let q := thetaCuspSingleAtomReflectionScale 1 x
     (-1 : ℝ)^k*thetaCuspTwoAtomReflectionJet (2*k) x =
-      4*q^2*Real.exp (x-2*q)*thetaCuspTwoAtomAffineEvenMoment k q (Real.exp (-3*q))+
+      4*q^(2 : ℕ)*Real.exp (x-2*q)*thetaCuspTwoAtomAffineEvenMoment k q (Real.exp (-3*q))+
         (-1 : ℝ)^k*thetaCuspAtomPairReflectionJet (2*k) 2 2 x := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   have hs : thetaCuspSingleAtomReflectionScale 2 x = 4*q := by
@@ -115,10 +115,10 @@ theorem thetaCuspTwoAtomSignedEvenJet_eq_affine_add_second (k : ℕ) (x : ℝ) :
     4*(q*(4*q))*Real.exp (x-q-4*q)*(thetaPairRadialEvenPolynomial (q*(4*q)) k).eval (q+4*q) at h12
   change (-1 : ℝ)^k*thetaCuspAtomPairReflectionJet (2*k) 2 1 x =
     4*((4*q)*q)*Real.exp (x-4*q-q)*(thetaPairRadialEvenPolynomial ((4*q)*q) k).eval (4*q+q) at h21
-  rw [show q*q=q^2 by ring,show q+q=2*q by ring,show x-q-q=x-2*q by ring] at h11
-  rw [show q*(4*q)=4*q^2 by ring,show q+4*q=5*q by ring,
+  rw [show q*q=q^(2 : ℕ) by ring,show q+q=2*q by ring,show x-q-q=x-2*q by ring] at h11
+  rw [show q*(4*q)=4*q^(2 : ℕ) by ring,show q+4*q=5*q by ring,
     show x-q-4*q=x-5*q by ring] at h12
-  rw [show (4*q)*q=4*q^2 by ring,show 4*q+q=5*q by ring,
+  rw [show (4*q)*q=4*q^(2 : ℕ) by ring,show 4*q+q=5*q by ring,
     show x-4*q-q=x-5*q by ring] at h21
   have he : Real.exp (x-5*q) = Real.exp (x-2*q)*Real.exp (-3*q) := by
     rw [← Real.exp_add]
@@ -128,7 +128,7 @@ theorem thetaCuspTwoAtomSignedEvenJet_eq_affine_add_second (k : ℕ) (x : ℝ) :
   rw [thetaCuspTwoAtomReflectionJet_eq_pairs]
   simp only [mul_add]
   rw [h11,h12,h21,he]
-  change _ = 4*q^2*Real.exp (x-2*q)*thetaCuspTwoAtomAffineEvenMoment k q (Real.exp (-3*q))+_
+  change _ = 4*q^(2 : ℕ)*Real.exp (x-2*q)*thetaCuspTwoAtomAffineEvenMoment k q (Real.exp (-3*q))+_
   unfold thetaCuspTwoAtomAffineEvenMoment
   ring
 
@@ -136,15 +136,15 @@ theorem thetaCuspTwoAtomSignedEvenJet_eq_affine_add_second (k : ℕ) (x : ℝ) :
 /-- The Gaussian normalization times its seed square equals the literal first-atom mass. -/
 theorem thetaCuspAffineGaussian_mul_seedSquare (x : ℝ) :
     let q := thetaCuspSingleAtomReflectionScale 1 x
-    4*q^2*Real.exp (x-2*q)*(2*q-3)^2 = thetaCuspSourceTerm x 1^2 := by
+    4*q^(2 : ℕ)*Real.exp (x-2*q)*(2*q-3)^(2 : ℕ) = thetaCuspSourceTerm x 1^(2 : ℕ) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
-  have he : Real.exp (x/2-q)^2 = Real.exp (x-2*q) := by
+  have he : Real.exp (x/2-q)^(2 : ℕ) = Real.exp (x-2*q) := by
     rw [pow_two,← Real.exp_add]
     congr 1
     ring
   rw [thetaCuspSourceTerm_one_eq_scale_profile]
   dsimp only
-  change 4*q^2*Real.exp (x-2*q)*(2*q-3)^2 = (Real.exp (x/2-q)*(4*q^2-6*q))^2
+  change 4*q^(2 : ℕ)*Real.exp (x-2*q)*(2*q-3)^(2 : ℕ) = (Real.exp (x/2-q)*(4*q^(2 : ℕ)-6*q))^(2 : ℕ)
   rw [mul_pow,he]
   ring
 
@@ -152,14 +152,14 @@ theorem thetaCuspAffineGaussian_mul_seedSquare (x : ℝ) :
 theorem thetaCuspTwoAtomAffineCorrectedEnergy_le {x : ℝ}
     (hq : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x) (c : Fin 4 → ℝ) :
     let q := thetaCuspSingleAtomReflectionScale 1 x
-    4*q^2*Real.exp (x-2*q)*HTGeometry.twoAtomAffineEvenFourCorrectedQuadratic
+    4*q^(2 : ℕ)*Real.exp (x-2*q)*HTGeometry.twoAtomAffineEvenFourCorrectedQuadratic
       q (Real.exp (-3*q)) (c 0) (c 1) (c 2) (c 3) ≤
     (∑ i : Fin 4, ∑ j : Fin 4,
       c i*((-1 : ℝ)^(i.val+j.val)*thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x)*c j)+
-      1000000000000*(11/2-q)*thetaCuspSourceTerm x 1^2*(c 3)^2 := by
+      1000000000000*(11/2-q)*thetaCuspSourceTerm x 1^(2 : ℕ)*(c 3)^(2 : ℕ) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let z := Real.exp (-3*q)
-  let C := 4*q^2*Real.exp (x-2*q)
+  let C := 4*q^(2 : ℕ)*Real.exp (x-2*q)
   let S := ∑ i : Fin 4, ∑ j : Fin 4, c i*thetaCuspTwoAtomAffineEvenMoment (i.val+j.val) q z*c j
   let E := ∑ i : Fin 4, ∑ j : Fin 4,
     c i*((-1 : ℝ)^(i.val+j.val)*thetaCuspAtomPairReflectionJet (2*(i.val+j.val)) 2 2 x)*c j
@@ -181,7 +181,7 @@ theorem thetaCuspTwoAtomAffineCorrectedEnergy_le {x : ℝ}
         dsimp [S,E]
         simp only [Finset.sum_add_distrib,← Finset.mul_sum]
   have hQ : HTGeometry.twoAtomAffineEvenFourCorrectedQuadratic q z (c 0) (c 1) (c 2) (c 3) =
-      S+1000000000000*(11/2-q)*(2*q-3)^2*(c 3)^2 := by
+      S+1000000000000*(11/2-q)*(2*q-3)^(2 : ℕ)*(c 3)^(2 : ℕ) := by
     dsimp [S]
     norm_num [Fin.sum_univ_succ,HTGeometry.twoAtomAffineEvenFourCorrectedQuadratic,
       thetaCuspTwoAtomAffineEvenMoment_0_eq,thetaCuspTwoAtomAffineEvenMoment_1_eq,
@@ -190,13 +190,13 @@ theorem thetaCuspTwoAtomAffineCorrectedEnergy_le {x : ℝ}
       thetaCuspTwoAtomAffineEvenMoment_6_eq]
     simp only [show (Fin.succ (2 : Fin 3) : Fin 4) = 3 by rfl]
     ring
-  have hmass : C*(2*q-3)^2 = thetaCuspSourceTerm x 1^2 := thetaCuspAffineGaussian_mul_seedSquare x
+  have hmass : C*(2*q-3)^(2 : ℕ) = thetaCuspSourceTerm x 1^(2 : ℕ) := thetaCuspAffineGaussian_mul_seedSquare x
   dsimp only
   change C*HTGeometry.twoAtomAffineEvenFourCorrectedQuadratic q z (c 0) (c 1) (c 2) (c 3) ≤ _
   rw [hsplit,hQ]
   calc
-    _ = C*S+1000000000000*(11/2-q)*(C*(2*q-3)^2)*(c 3)^2 := by ring
-    _ = C*S+1000000000000*(11/2-q)*thetaCuspSourceTerm x 1^2*(c 3)^2 := by rw [hmass]
+    _ = C*S+1000000000000*(11/2-q)*(C*(2*q-3)^(2 : ℕ))*(c 3)^(2 : ℕ) := by ring
+    _ = C*S+1000000000000*(11/2-q)*thetaCuspSourceTerm x 1^(2 : ℕ)*(c 3)^(2 : ℕ) := by rw [hmass]
     _ ≤ _ := by nlinarith only [hE]
 
 end

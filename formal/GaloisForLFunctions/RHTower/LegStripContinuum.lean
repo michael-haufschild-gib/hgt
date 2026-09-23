@@ -16,7 +16,7 @@ Two continuum facts about the residue `Φ(c) = 1 − (π/c)cot(π/c)` of the inv
   (backward); the shell profiles `(1+x)^{−nc}` and `(1−x)^{nc}` Riemann sums converge by
   `tendsto_riemann_sum_antitone_Ioi` / `tendsto_riemann_sum_antitone`, with the improper integral
   `1/(nc−1)` evaluated through the reusable `Ioi`-translation lemmas (`setIntegral_Ioi_add_right`,
-  `integrableOn_Ioi_add_right_iff`) and `∫_0^1(1−x)^{nc} = 1/(nc+1)` by `integral_one_sub_rpow`.
+  `integrableOn_Ioi_add_right_iff`) and `∫_0^(1 : ℕ)(1−x)^{nc} = 1/(nc+1)` by `integral_one_sub_rpow`.
 -/
 import GaloisForLFunctions.RHTower.LegStripThreshold
 open MeasureTheory Real Set Filter Topology
@@ -25,30 +25,30 @@ namespace RHTower
 
 /-- Derivative of `cot` where `sin ≠ 0`: `(cot)' = −1/sin²`. -/
 theorem hasDerivAt_rcot {u : ℝ} (hsin : Real.sin u ≠ 0) :
-    HasDerivAt Real.cot (-1/(Real.sin u)^2) u := by
+    HasDerivAt Real.cot (-1/(Real.sin u)^(2 : ℕ)) u := by
   have hd := (Real.hasDerivAt_cos u).div (Real.hasDerivAt_sin u) hsin
-  have heq : ((-Real.sin u) * Real.sin u - Real.cos u * Real.cos u) / (Real.sin u)^2
-      = -1/(Real.sin u)^2 := by
+  have heq : ((-Real.sin u) * Real.sin u - Real.cos u * Real.cos u) / (Real.sin u)^(2 : ℕ)
+      = -1/(Real.sin u)^(2 : ℕ) := by
     rw [show (-Real.sin u) * Real.sin u - Real.cos u * Real.cos u
-          = -((Real.sin u)^2 + (Real.cos u)^2) by ring, Real.sin_sq_add_cos_sq]
+          = -((Real.sin u)^(2 : ℕ) + (Real.cos u)^(2 : ℕ)) by ring, Real.sin_sq_add_cos_sq]
   rw [heq] at hd
   have hcot : Real.cot = fun x => Real.cos x / Real.sin x := funext Real.cot_eq_cos_div_sin
   rw [hcot]; exact hd
 
 /-- **The continuum slope at the threshold: `Φ'(2) = −π²/8`.** -/
-theorem hasDerivAt_stripResidue_two : HasDerivAt stripResidue (-(π^2/8)) 2 := by
+theorem hasDerivAt_stripResidue_two : HasDerivAt stripResidue (-(π^(2 : ℕ)/8)) 2 := by
   have h2 : (2:ℝ) ≠ 0 := by norm_num
   have hsin : Real.sin (π/2) ≠ 0 := by rw [Real.sin_pi_div_two]; norm_num
-  have ha : HasDerivAt (fun c => π / c) ((0 * 2 - π * 1)/2^2) 2 :=
+  have ha : HasDerivAt (fun c => π / c) ((0 * 2 - π * 1)/2^(2 : ℕ)) 2 :=
     (hasDerivAt_const 2 π).div (hasDerivAt_id 2) h2
   have hphi : HasDerivAt (fun u => u * Real.cot u)
-      (1 * Real.cot (π/2) + (π/2) * (-1/(Real.sin (π/2))^2)) (π/2) :=
+      (1 * Real.cot (π/2) + (π/2) * (-1/(Real.sin (π/2))^(2 : ℕ))) (π/2) :=
     (hasDerivAt_id (π/2)).mul (hasDerivAt_rcot hsin)
   have hcomp : HasDerivAt (fun c => (π/c) * Real.cot (π/c))
-      ((1 * Real.cot (π/2) + (π/2) * (-1/(Real.sin (π/2))^2)) * ((0 * 2 - π * 1)/2^2)) 2 :=
+      ((1 * Real.cot (π/2) + (π/2) * (-1/(Real.sin (π/2))^(2 : ℕ))) * ((0 * 2 - π * 1)/2^(2 : ℕ))) 2 :=
     HasDerivAt.comp 2 hphi ha
   have hsr : HasDerivAt stripResidue
-      (0 - (1 * Real.cot (π/2) + (π/2) * (-1/(Real.sin (π/2))^2)) * ((0 * 2 - π * 1)/2^2)) 2 := by
+      (0 - (1 * Real.cot (π/2) + (π/2) * (-1/(Real.sin (π/2))^(2 : ℕ))) * ((0 * 2 - π * 1)/2^(2 : ℕ))) 2 := by
     have hf := (hasDerivAt_const (2:ℝ) (1:ℝ)).sub hcomp
     have hsreq : stripResidue = fun c => 1 - (π/c) * Real.cot (π/c) := by
       funext c; rw [stripResidue]
@@ -58,7 +58,7 @@ theorem hasDerivAt_stripResidue_two : HasDerivAt stripResidue (-(π^2/8)) 2 := b
   ring
 
 /-- `deriv` form of the threshold slope. -/
-theorem deriv_stripResidue_two : deriv stripResidue 2 = -(π^2/8) :=
+theorem deriv_stripResidue_two : deriv stripResidue 2 = -(π^(2 : ℕ)/8) :=
   hasDerivAt_stripResidue_two.deriv
 
 
@@ -270,7 +270,7 @@ theorem backward_harmonic (i : ℕ) (hi : 1 ≤ i) :
     rw [hlogsplit]
     exact ⟨by linarith [ihl, hstep.2], by linarith [ihu, hstep.1]⟩
 
-/-- `∫_0^1 (1-x)^r = 1/(r+1)` for `r > -1`. -/
+/-- `∫_0^(1 : ℕ) (1-x)^r = 1/(r+1)` for `r > -1`. -/
 theorem integral_one_sub_rpow {r : ℝ} (hr : -1 < r) :
     ∫ x in (0:ℝ)..1, (1 - x) ^ r = 1/(r+1) := by
   rw [intervalIntegral.integral_comp_sub_left (fun y => y ^ r) 1]
@@ -440,16 +440,16 @@ theorem tendsto_shellDiff {c : ℝ} (hc : 1 < c) (n : ℕ+) :
         Real.exp (-(n:ℝ) * (c/(2*(i:ℝ)) + c * ∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1)))
       - (1/(i:ℝ)) * ∑ k ∈ Finset.range i,
         Real.exp (-(n:ℝ) * (c/(2*(i:ℝ)) + c * ∑ j ∈ Finset.range k, 1/((i:ℝ)-1-j))))
-      atTop (𝓝 (2/(((n:ℝ)*c)^2 - 1))) := by
+      atTop (𝓝 (2/(((n:ℝ)*c)^(2 : ℕ) - 1))) := by
   have hn1 : (1:ℝ) ≤ (n:ℝ) := by exact_mod_cast n.pos
   have hc0 : 0 < c := by linarith
   have hnc : 1 < (n:ℝ)*c := by nlinarith [hn1, hc]
-  have heq : (1:ℝ)/((n:ℝ)*c - 1) - 1/((n:ℝ)*c + 1) = 2/(((n:ℝ)*c)^2 - 1) := by
+  have heq : (1:ℝ)/((n:ℝ)*c - 1) - 1/((n:ℝ)*c + 1) = 2/(((n:ℝ)*c)^(2 : ℕ) - 1) := by
     have h1 : (n:ℝ)*c - 1 ≠ 0 := ne_of_gt (by linarith)
     have h2 : (n:ℝ)*c + 1 ≠ 0 := ne_of_gt (by linarith)
     rw [div_sub_div _ _ h1 h2,
       show (1:ℝ)*((n:ℝ)*c+1) - ((n:ℝ)*c-1)*1 = 2 by ring,
-      show ((n:ℝ)*c-1)*((n:ℝ)*c+1) = ((n:ℝ)*c)^2-1 by ring]
+      show ((n:ℝ)*c-1)*((n:ℝ)*c+1) = ((n:ℝ)*c)^(2 : ℕ)-1 by ring]
   have h := (tendsto_aheadShell hc n).sub (tendsto_behindShell hc n)
   rw [heq] at h
   exact h

@@ -31,7 +31,7 @@ variable [CommRing R]
 
 /-- Exact finite generating-function identity, valid even at poles and outside the convergence disk. -/
 theorem quadraticResponseCoeff_finite_remainder (a b t : R) (n : ℕ) :
-    (1 + a * t + b * t ^ 2) *
+    (1 + a * t + b * t ^ (2 : ℕ)) *
         (∑ k ∈ Finset.range (n + 1), quadraticResponseCoeff a b k * t ^ k) =
       1 - quadraticResponseCoeff a b (n + 1) * t ^ (n + 1) +
         b * quadraticResponseCoeff a b n * t ^ (n + 2) := by
@@ -44,7 +44,7 @@ theorem quadraticResponseCoeff_finite_remainder (a b t : R) (n : ℕ) :
       ring
 /-- The determinant of adjacent coefficient windows is fixed by the quadratic term. -/
 theorem quadraticResponseCoeff_cassini (a b : R) (n : ℕ) :
-    quadraticResponseCoeff a b (n + 1) ^ 2 -
+    quadraticResponseCoeff a b (n + 1) ^ (2 : ℕ) -
       quadraticResponseCoeff a b n * quadraticResponseCoeff a b (n + 2) = b ^ (n + 1) := by
   induction n with
   | zero => simp [quadraticResponseCoeff]; ring
@@ -57,7 +57,7 @@ theorem quadraticResponseCoeff_cassini (a b : R) (n : ℕ) :
       linear_combination b * ih
 /-- The coefficient hierarchy scales homogeneously at every order. -/
 theorem quadraticResponseCoeff_scale (a b r : R) (n : ℕ) :
-    quadraticResponseCoeff (r * a) (r ^ 2 * b) n = r ^ n * quadraticResponseCoeff a b n := by
+    quadraticResponseCoeff (r * a) (r ^ (2 : ℕ) * b) n = r ^ n * quadraticResponseCoeff a b n := by
   induction n using Nat.twoStepInduction with
   | zero => simp
   | one => simp
@@ -79,10 +79,10 @@ theorem quadraticResponseCoeff_eq_chebyshev (x : R) (n : ℕ) :
       convert h.symm using 1 <;> simp [Nat.cast_add]
 /-- Damped Chebyshev coefficients are precisely the general quadratic-response hierarchy. -/
 theorem quadraticResponseCoeff_eq_scaled_chebyshev (x r : R) (n : ℕ) :
-    quadraticResponseCoeff (-(2 * x * r)) (r ^ 2) n =
+    quadraticResponseCoeff (-(2 * x * r)) (r ^ (2 : ℕ)) n =
       r ^ n * (Polynomial.Chebyshev.U R n).eval x := by
   rw [show -(2 * x * r) = r * -(2 * x) by ring,
-    show r ^ 2 = r ^ 2 * (1 : R) by ring,
+    show r ^ (2 : ℕ) = r ^ (2 : ℕ) * (1 : R) by ring,
     quadraticResponseCoeff_scale, quadraticResponseCoeff_eq_chebyshev]
 end
 end GaloisForLFunctions.HTGeometry

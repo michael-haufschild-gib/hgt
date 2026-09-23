@@ -33,7 +33,7 @@ def pureStateProjectorDifferenceCompression (u v : E) : Matrix (Fin 2) (Fin 2) �
 theorem det_pureStateProjectorDifferenceCompression_eq_neg_sq_det_gram
     (u v : E) :
     (pureStateProjectorDifferenceCompression u v).det =
-      -((Matrix.gram ℂ ![u, v]).det) ^ 2 := by
+      -((Matrix.gram ℂ ![u, v]).det) ^ (2 : ℕ) := by
   rw [Matrix.det_fin_two, Matrix.det_fin_two]
   simp only [pureStateProjectorDifferenceCompression, pureStateProjectorDifference,
     Matrix.of_apply, Matrix.gram_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
@@ -44,7 +44,7 @@ theorem det_pureStateProjectorDifferenceCompression_eq_neg_sq_det_gram
 theorem det_pureStateProjectorDifferenceCompression_eq_neg_projectiveEnergy_sq
     (u v : E) :
     (pureStateProjectorDifferenceCompression u v).det =
-      -((projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℂ) ^ 2) := by
+      -((projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℂ) ^ (2 : ℕ)) := by
   rw [det_pureStateProjectorDifferenceCompression_eq_neg_sq_det_gram,
     det_gram_pair_eq_projectiveGramTangentEnergy]
 
@@ -104,8 +104,8 @@ theorem pureStateProjectorDifferenceCompression_indefinite_of_linearIndependent
     rw [det_pureStateProjectorDifferenceCompression_eq_neg_projectiveEnergy_sq] at hnonneg
     have hre := (RCLike.nonneg_iff.mp hnonneg).1
     norm_num at hre
-    rw [show ((((projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℝ) : ℂ) ^ 2).re) =
-        projectiveGramTangentEnergy (𝕜 := ℂ) u v ^ 2 by
+    rw [show ((((projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℝ) : ℂ) ^ (2 : ℕ)).re) =
+        projectiveGramTangentEnergy (𝕜 := ℂ) u v ^ (2 : ℕ) by
       simp [pow_two, Complex.mul_re]] at hre
     nlinarith
   · intro hpsd
@@ -115,8 +115,8 @@ theorem pureStateProjectorDifferenceCompression_indefinite_of_linearIndependent
     rw [det_pureStateProjectorDifferenceCompression_eq_neg_projectiveEnergy_sq] at hnonneg
     have hre := (RCLike.nonneg_iff.mp hnonneg).1
     norm_num at hre
-    rw [show ((((projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℝ) : ℂ) ^ 2).re) =
-        projectiveGramTangentEnergy (𝕜 := ℂ) u v ^ 2 by
+    rw [show ((((projectiveGramTangentEnergy (𝕜 := ℂ) u v : ℝ) : ℂ) ^ (2 : ℕ)).re) =
+        projectiveGramTangentEnergy (𝕜 := ℂ) u v ^ (2 : ℕ) by
       simp [pow_two, Complex.mul_re]] at hre
     nlinarith
 

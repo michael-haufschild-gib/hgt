@@ -9,7 +9,7 @@ written in the Rees coordinates that divide out the divisor.
 Concretely, the ungraded Gram of the continued channel at a divisor point of multiplicity `d` is
 the graded Gram conjugated by the diagonal twist `diag(t ^ d, t⁻¹)`.  Conjugation is a congruence,
 so it transports positivity in both directions, and it exhibits the completion entry of the
-ungraded channel as the graded completion divided by `t ^ 2`.  That inverse square is exactly the
+ungraded channel as the graded completion divided by `t ^ (2 : ℕ)`.  That inverse square is exactly the
 blow-up that forbids a uniformly bounded ungraded completion, and it is exactly what the twist
 removes.
 -/
@@ -33,11 +33,11 @@ theorem divisorTwist_transpose (d : ℕ) (t : ℝ) :
   fin_cases i <;> fin_cases j <;> simp [divisorTwist]
 
 /-- **The continued channel is the graded symbol twisted by the divisor.**  The ungraded Gram at a
-divisor point, with completion entry `C / t ^ 2`, is the congruence of the graded Gram with
+divisor point, with completion entry `C / t ^ (2 : ℕ)`, is the congruence of the graded Gram with
 completion `C` by the divisor twist. -/
 theorem divisorReesGram_monomial_eq_twist_graded (d : ℕ) {t : ℝ} (ht : t ≠ 0) (C : ℝ) :
     divisorReesGram (monomialDivisorOverlap d t) (monomialDivisorFisherNumerator d t)
-        (C / t ^ 2)
+        (C / t ^ (2 : ℕ))
       = divisorTwist d t *
           divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t) C *
           divisorTwist d t := by
@@ -57,23 +57,23 @@ theorem divisorReesGram_monomial_eq_twist_graded (d : ℕ) {t : ℝ} (ht : t ≠
     field_simp
 
 /-- **Positivity transports along the twist.**  Whenever the graded Gram is positive, so is the
-ungraded Gram whose completion entry is the graded one divided by `t ^ 2`. -/
+ungraded Gram whose completion entry is the graded one divided by `t ^ (2 : ℕ)`. -/
 theorem divisorReesGram_monomial_posSemidef (d : ℕ) {t : ℝ} (ht : t ≠ 0) {C : ℝ}
     (hC : (divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t)
       C).PosSemidef) :
     (divisorReesGram (monomialDivisorOverlap d t) (monomialDivisorFisherNumerator d t)
-      (C / t ^ 2)).PosSemidef := by
+      (C / t ^ (2 : ℕ))).PosSemidef := by
   rw [divisorReesGram_monomial_eq_twist_graded d ht C]
   have h := hC.conjTranspose_mul_mul_same (divisorTwist d t)
   rwa [show (divisorTwist d t)ᴴ = divisorTwist d t from divisorTwist_transpose d t] at h
 
 /-- **The continued channel is positive at every point off the divisor.**  Taking the graded
 completion supplied by the graded metric, the ungraded channel is positive with completion
-`d ^ 2 / t ^ 2` — the inverse square that no uniform bound can absorb, and exactly the quantity the
+`d ^ (2 : ℕ) / t ^ (2 : ℕ)` — the inverse square that no uniform bound can absorb, and exactly the quantity the
 twist removes. -/
 theorem divisorReesGram_monomial_posSemidef_sq (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
     (divisorReesGram (monomialDivisorOverlap d t) (monomialDivisorFisherNumerator d t)
-      ((d : ℝ) ^ 2 / t ^ 2)).PosSemidef :=
+      ((d : ℝ) ^ (2 : ℕ) / t ^ (2 : ℕ))).PosSemidef :=
   divisorReesGram_monomial_posSemidef d ht (gradedDivisorReesGram_posSemidef d ht)
 
 end

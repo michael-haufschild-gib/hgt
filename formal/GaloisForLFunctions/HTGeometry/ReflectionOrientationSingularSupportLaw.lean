@@ -27,16 +27,16 @@ variable {A : Type*} [CommRing A]
 
 /-- The anti-invariant and invariant reflection factors annihilate each other. -/
 theorem reflectionOrientation_mul_hyperbolic_eq_zero
-    (epsilon : A) (hsquare : epsilon ^ 2 = 1) :
+    (epsilon : A) (hsquare : epsilon ^ (2 : ℕ) = 1) :
     (1 - epsilon) * (1 + epsilon) = 0 := by
   calc
-    (1 - epsilon) * (1 + epsilon) = 1 - epsilon ^ 2 := by ring
+    (1 - epsilon) * (1 + epsilon) = 1 - epsilon ^ (2 : ℕ) := by ring
     _ = 0 := by rw [hsquare, sub_self]
 
 /-- **Orientation--regularity law.**  A regular hyperbolic channel forces an involutive
 orientation to be trivial.  No positivity or inverse is assumed. -/
 theorem reflectionOrientation_eq_one_of_hyperbolic_regular
-    (epsilon : A) (hsquare : epsilon ^ 2 = 1)
+    (epsilon : A) (hsquare : epsilon ^ (2 : ℕ) = 1)
     (hregular : IsRegular (1 + epsilon)) :
     epsilon = 1 := by
   have hfactor := reflectionOrientation_mul_hyperbolic_eq_zero epsilon hsquare
@@ -48,7 +48,7 @@ theorem reflectionOrientation_eq_one_of_hyperbolic_regular
 /-- **Singular-support classification.**  If `2` is regular, nontrivial reflection
 orientation is equivalent to failure of regularity of the hyperbolic channel. -/
 theorem reflectionOrientation_ne_one_iff_hyperbolic_not_regular
-    (epsilon : A) (hsquare : epsilon ^ 2 = 1)
+    (epsilon : A) (hsquare : epsilon ^ (2 : ℕ) = 1)
     (htwo : IsRegular (2 : A)) :
     epsilon ≠ 1 ↔ ¬ IsRegular (1 + epsilon) := by
   constructor
@@ -65,7 +65,7 @@ theorem reflectionOrientation_ne_one_iff_hyperbolic_not_regular
 the orientation class. -/
 theorem map_reflectionOrientation_eq_one_of_hyperbolic_regular
     {B : Type*} [CommRing B] (f : A →+* B)
-    (epsilon : A) (hsquare : epsilon ^ 2 = 1)
+    (epsilon : A) (hsquare : epsilon ^ (2 : ℕ) = 1)
     (hregular : IsRegular (f (1 + epsilon))) :
     f epsilon = 1 := by
   apply reflectionOrientation_eq_one_of_hyperbolic_regular (f epsilon)

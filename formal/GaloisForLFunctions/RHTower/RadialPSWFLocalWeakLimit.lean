@@ -21,10 +21,10 @@ theorem abs_integral_weight_mul_cos_sq_radialPhase_add_sub_half_le
     (hs0 : 0 ≤ sigma) (hs1 : sigma ≤ 1)
     {w w' : ℝ → ℝ}
     (hw : ∀ x ∈ Icc a b, HasDerivAt w (w' x) x) (hw'c : ContinuousOn w' (Icc a b)) :
-    |(∫ t in a..b, w t * Real.cos (c * radialPSWFExteriorPhase sigma t + theta) ^ 2)
+    |(∫ t in a..b, w t * Real.cos (c * radialPSWFExteriorPhase sigma t + theta) ^ (2 : ℕ))
         - (1 / 2) * ∫ t in a..b, w t|
       ≤ (|w b| + |w a| + ∫ t in a..b, |w' t|) / c := by
-  have hsigma : sigma ^ 2 ≤ 1 := by nlinarith
+  have hsigma : sigma ^ (2 : ℕ) ≤ 1 := by nlinarith
   refine abs_integral_weight_mul_cos_sq_sub_half_le'
     (φ := fun t => c * radialPSWFExteriorPhase sigma t + theta)
     (φ' := fun t => c * radialPSWFExteriorSpeed sigma t)
@@ -50,7 +50,7 @@ theorem tendsto_integral_weight_mul_cos_sq_radialPhase_add
     (hw : ∀ x ∈ Icc a b, HasDerivAt w (w' x) x)
     (hw'c : ContinuousOn w' (Icc a b)) :
     Tendsto (fun i =>
-      ∫ t in a..b, w t * Real.cos (c i * radialPSWFExteriorPhase (sigma i) t + theta) ^ 2)
+      ∫ t in a..b, w t * Real.cos (c i * radialPSWFExteriorPhase (sigma i) t + theta) ^ (2 : ℕ))
       l (nhds ((1 / 2) * ∫ t in a..b, w t)) := by
   let B := |w b| + |w a| + ∫ t in a..b, |w' t|
   have hB0 : 0 ≤ B := by

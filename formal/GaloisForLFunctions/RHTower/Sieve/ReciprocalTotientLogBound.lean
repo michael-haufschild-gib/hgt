@@ -52,7 +52,7 @@ theorem sum_sqfreeTotientInv_div_le (N : ℕ) :
     ∑ d ∈ Finset.Icc 1 N, sqfreeTotientInv d / (d : ℝ) ≤ 4 := by
   classical
   have hbound : ∀ d ∈ Finset.Icc 1 N, sqfreeTotientInv d / (d : ℝ)
-      ≤ ∑ k ∈ d.divisors, sqfreeTotientInv k / (d : ℝ) ^ 2 := by
+      ≤ ∑ k ∈ d.divisors, sqfreeTotientInv k / (d : ℝ) ^ (2 : ℕ) := by
     intro d hd
     obtain ⟨hd1, -⟩ := Finset.mem_Icc.mp hd
     have hdR : (0 : ℝ) < (d : ℝ) := by exact_mod_cast (by omega : 0 < d)
@@ -60,7 +60,7 @@ theorem sum_sqfreeTotientInv_div_le (N : ℕ) :
       have := Nat.totient_pos.mpr (by omega : 0 < d)
       exact_mod_cast this
     rw [← Finset.sum_div, sum_divisors_sqfreeTotientInv']
-    have hrhs : (d : ℝ) / (Nat.totient d : ℝ) / (d : ℝ) ^ 2
+    have hrhs : (d : ℝ) / (Nat.totient d : ℝ) / (d : ℝ) ^ (2 : ℕ)
         = 1 / ((d : ℝ) * (Nat.totient d : ℝ)) := by
       field_simp
     rw [hrhs, sqfreeTotientInv_apply]
@@ -72,9 +72,9 @@ theorem sum_sqfreeTotientInv_div_le (N : ℕ) :
     · simp only [zero_div]
       positivity
   refine le_trans (Finset.sum_le_sum hbound) ?_
-  have hrw : ∀ d ∈ Finset.Icc 1 N, ∑ k ∈ d.divisors, sqfreeTotientInv k / (d : ℝ) ^ 2
+  have hrw : ∀ d ∈ Finset.Icc 1 N, ∑ k ∈ d.divisors, sqfreeTotientInv k / (d : ℝ) ^ (2 : ℕ)
       = ∑ k ∈ d.divisors,
-          sqfreeTotientInv k / ((k : ℝ) * ((d / k : ℕ) : ℝ)) ^ 2 := by
+          sqfreeTotientInv k / ((k : ℝ) * ((d / k : ℕ) : ℝ)) ^ (2 : ℕ) := by
     intro d hd
     obtain ⟨hd1, -⟩ := Finset.mem_Icc.mp hd
     refine Finset.sum_congr rfl fun k hk => ?_
@@ -84,31 +84,31 @@ theorem sum_sqfreeTotientInv_div_le (N : ℕ) :
       exact_mod_cast congrArg (fun t : ℕ => (t : ℝ)) hnat
     rw [this]
   rw [Finset.sum_congr rfl hrw]
-  rw [sum_divisors_swap N (fun k j => sqfreeTotientInv k / ((k : ℝ) * (j : ℝ)) ^ 2)]
+  rw [sum_divisors_swap N (fun k j => sqfreeTotientInv k / ((k : ℝ) * (j : ℝ)) ^ (2 : ℕ))]
   have hinner : ∀ k ∈ Finset.Icc 1 N,
-      ∑ j ∈ Finset.Icc 1 (N / k), sqfreeTotientInv k / ((k : ℝ) * (j : ℝ)) ^ 2
-        ≤ 2 * (1 / (k : ℝ) ^ 2) := by
+      ∑ j ∈ Finset.Icc 1 (N / k), sqfreeTotientInv k / ((k : ℝ) * (j : ℝ)) ^ (2 : ℕ)
+        ≤ 2 * (1 / (k : ℝ) ^ (2 : ℕ)) := by
     intro k hk
     obtain ⟨hk1, -⟩ := Finset.mem_Icc.mp hk
     have hkR : (0 : ℝ) < (k : ℝ) := by exact_mod_cast (by omega : 0 < k)
-    have hfac : ∀ j : ℕ, sqfreeTotientInv k / ((k : ℝ) * (j : ℝ)) ^ 2
-        = (sqfreeTotientInv k / (k : ℝ) ^ 2) * (1 / (j : ℝ) ^ 2) := by
+    have hfac : ∀ j : ℕ, sqfreeTotientInv k / ((k : ℝ) * (j : ℝ)) ^ (2 : ℕ)
+        = (sqfreeTotientInv k / (k : ℝ) ^ (2 : ℕ)) * (1 / (j : ℝ) ^ (2 : ℕ)) := by
       intro j
       rw [mul_pow]
       ring
     rw [Finset.sum_congr rfl (fun j _ => hfac j), ← Finset.mul_sum]
     have hsq := sum_inv_sq_le_two (N / k)
-    have hnn : (0 : ℝ) ≤ sqfreeTotientInv k / (k : ℝ) ^ 2 :=
+    have hnn : (0 : ℝ) ≤ sqfreeTotientInv k / (k : ℝ) ^ (2 : ℕ) :=
       div_nonneg (sqfreeTotientInv_nonneg k) (by positivity)
-    calc sqfreeTotientInv k / (k : ℝ) ^ 2 * ∑ j ∈ Finset.Icc 1 (N / k), 1 / (j : ℝ) ^ 2
-        ≤ sqfreeTotientInv k / (k : ℝ) ^ 2 * 2 := mul_le_mul_of_nonneg_left hsq hnn
-      _ ≤ (1 / (k : ℝ) ^ 2) * 2 := by
+    calc sqfreeTotientInv k / (k : ℝ) ^ (2 : ℕ) * ∑ j ∈ Finset.Icc 1 (N / k), 1 / (j : ℝ) ^ (2 : ℕ)
+        ≤ sqfreeTotientInv k / (k : ℝ) ^ (2 : ℕ) * 2 := mul_le_mul_of_nonneg_left hsq hnn
+      _ ≤ (1 / (k : ℝ) ^ (2 : ℕ)) * 2 := by
           have := sqfreeTotientInv_le_one k
-          have hpos : (0 : ℝ) < (k : ℝ) ^ 2 := by positivity
-          have hle : sqfreeTotientInv k / (k : ℝ) ^ 2 ≤ 1 / (k : ℝ) ^ 2 :=
+          have hpos : (0 : ℝ) < (k : ℝ) ^ (2 : ℕ) := by positivity
+          have hle : sqfreeTotientInv k / (k : ℝ) ^ (2 : ℕ) ≤ 1 / (k : ℝ) ^ (2 : ℕ) :=
             div_le_div_of_nonneg_right this hpos.le
           linarith
-      _ = 2 * (1 / (k : ℝ) ^ 2) := by ring
+      _ = 2 * (1 / (k : ℝ) ^ (2 : ℕ)) := by ring
   refine le_trans (Finset.sum_le_sum hinner) ?_
   rw [← Finset.mul_sum]
   have := sum_inv_sq_le_two N

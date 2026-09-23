@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.HTGeometry
 most `2(b-a)γ/π + 2`. -/
 theorem card_zeros_le {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hh : ∀ t, h t = fdd t + γ ^ 2 * f t)
+    (hh : ∀ t, h t = fdd t + γ ^ (2 : ℕ) * f t)
     (hhpos : ∀ t ∈ Ioo a b, 0 < h t)
     (Z : Finset ℝ) (hZmem : ∀ x ∈ Z, x ∈ Icc a b) (hZzero : ∀ x ∈ Z, f x = 0)
     (hZall : ∀ x ∈ Icc a b, f x = 0 → x ∈ Z) :
@@ -78,7 +78,7 @@ theorem card_zeros_le {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (
 /-- The same bound where the Sturm expression is negative, by negating `f`. -/
 theorem card_zeros_le_neg {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hh : ∀ t, h t = fdd t + γ ^ 2 * f t)
+    (hh : ∀ t, h t = fdd t + γ ^ (2 : ℕ) * f t)
     (hhneg : ∀ t ∈ Ioo a b, h t < 0)
     (Z : Finset ℝ) (hZmem : ∀ x ∈ Z, x ∈ Icc a b) (hZzero : ∀ x ∈ Z, f x = 0)
     (hZall : ∀ x ∈ Icc a b, f x = 0 → x ∈ Z) :
@@ -93,7 +93,7 @@ theorem card_zeros_le_neg {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < �
 /-- **The bound wherever the Sturm expression does not vanish** on the open interval. -/
 theorem card_zeros_le_of_ne {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a < b)
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hh : ∀ t, h t = fdd t + γ ^ 2 * f t) (hhcont : Continuous h)
+    (hh : ∀ t, h t = fdd t + γ ^ (2 : ℕ) * f t) (hhcont : Continuous h)
     (hhne : ∀ t ∈ Ioo a b, h t ≠ 0)
     (Z : Finset ℝ) (hZmem : ∀ x ∈ Z, x ∈ Icc a b) (hZzero : ∀ x ∈ Z, f x = 0)
     (hZall : ∀ x ∈ Icc a b, f x = 0 → x ∈ Z) :
@@ -141,7 +141,7 @@ theorem card_zeros_le_of_ne {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 <
 bounded by the interval length plus three times the number of Sturm zeros. -/
 theorem card_zeros_le_split {f fd fdd h : ℝ → ℝ} {γ : ℝ} (hγ : 0 < γ)
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hh : ∀ t, h t = fdd t + γ ^ 2 * f t) (hhcont : Continuous h) :
+    (hh : ∀ t, h t = fdd t + γ ^ (2 : ℕ) * f t) (hhcont : Continuous h) :
     ∀ (M : ℕ) (a b : ℝ) (Z W : Finset ℝ), a < b → W.card ≤ M →
       (∀ x ∈ W, x ∈ Ioo a b) → (∀ x ∈ Ioo a b, h x = 0 → x ∈ W) →
       (∀ x ∈ Z, x ∈ Icc a b) → (∀ x ∈ Z, f x = 0) → (∀ x ∈ Icc a b, f x = 0 → x ∈ Z) →

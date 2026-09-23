@@ -62,7 +62,7 @@ theorem re_mul_conj_affine (a₁ b₁ a₂ b₂ : ℝ) (z : ℂ) :
     ((((a₁ : ℝ) : ℂ) + z * ((b₁ : ℝ) : ℂ))
         * (starRingEnd ℂ) (((a₂ : ℝ) : ℂ) + z * ((b₂ : ℝ) : ℂ))).re
       = a₁ * a₂ + (a₁ * b₂ + a₂ * b₁) * z.re
-        + b₁ * b₂ * (z.re ^ 2 + z.im ^ 2) := by
+        + b₁ * b₂ * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
   simp only [map_add, map_mul, Complex.conj_ofReal, Complex.add_re, Complex.add_im,
     Complex.mul_re, Complex.mul_im, Complex.conj_re, Complex.conj_im,
     Complex.ofReal_re, Complex.ofReal_im]
@@ -101,7 +101,7 @@ theorem twoScalePositive_singleton (q : ℕ) (x y : ℝ) : TwoScalePositive {q} 
       + Real.exp (-y) * Real.exp (-((q : ℝ) * x))) * z.re :=
     mul_nonneg (by positivity) hz
   have t3 : 0 ≤ Real.exp (-((q : ℝ) * x)) * Real.exp (-((q : ℝ) * y))
-      * (z.re ^ 2 + z.im ^ 2) := by positivity
+      * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by positivity
   linarith [t1, t2, t3]
 
 /-- **Every level, at weak coupling**: the relative estimate makes the engine
@@ -142,7 +142,7 @@ theorem twoScalePositive_of_sigma (S : Finset ℕ) (x y : ℝ) (hx : 0 ≤ x) (h
           + E₁ * (starRingEnd ℂ) C + E₁ * (starRingEnd ℂ) E₂ from by ring]
     simp only [Complex.add_re]
   rw [hsplit]
-  have hCC : (C * (starRingEnd ℂ) C).re = ‖C‖ ^ 2 := by
+  have hCC : (C * (starRingEnd ℂ) C).re = ‖C‖ ^ (2 : ℕ) := by
     rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
   have hbound : ∀ u v : ℂ, -(‖u‖ * ‖v‖) ≤ (u * (starRingEnd ℂ) v).re := by
     intro u v
@@ -159,39 +159,39 @@ theorem twoScalePositive_of_sigma (S : Finset ℕ) (x y : ℝ) (hx : 0 ≤ x) (h
   have hE₂0 : (0 : ℝ) ≤ ‖E₂‖ := norm_nonneg E₂
   have hxs0 : (0 : ℝ) ≤ x * ∏ p ∈ S, (1 + (p : ℝ)) :=
     mul_nonneg hx (Finset.prod_nonneg fun q _ => by positivity)
-  have e1 : ‖C‖ * ‖E₂‖ ≤ (y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2 := by
+  have e1 : ‖C‖ * ‖E₂‖ ≤ (y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ) := by
     calc ‖C‖ * ‖E₂‖ ≤ ‖C‖ * ((y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖) :=
           mul_le_mul_of_nonneg_left hnE₂ hC0
-      _ = (y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2 := by ring
-  have e2 : ‖E₁‖ * ‖C‖ ≤ (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2 := by
+      _ = (y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ) := by ring
+  have e2 : ‖E₁‖ * ‖C‖ ≤ (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ) := by
     calc ‖E₁‖ * ‖C‖ ≤ ((x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖) * ‖C‖ :=
           mul_le_mul_of_nonneg_right hnE₁ hC0
-      _ = (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2 := by ring
+      _ = (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ) := by ring
   have e3 : ‖E₁‖ * ‖E₂‖
-      ≤ ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ 2 := by
+      ≤ ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ (2 : ℕ) := by
     calc ‖E₁‖ * ‖E₂‖
         ≤ ((x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖)
             * ((y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖) :=
           mul_le_mul hnE₁ hnE₂ hE₂0 (mul_nonneg hxs0 hC0)
-      _ = ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ 2 := by
+      _ = ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ (2 : ℕ) := by
           ring
-  have hK : (0 : ℝ) < ‖C‖ ^ 2 := by nlinarith [hnC1, hC0]
+  have hK : (0 : ℝ) < ‖C‖ ^ (2 : ℕ) := by nlinarith [hnC1, hC0]
   have hδ : (0 : ℝ) < 1 - (x * (∏ p ∈ S, (1 + (p : ℝ))) + y * (∏ p ∈ S, (1 + (p : ℝ)))
       + (x * (∏ p ∈ S, (1 + (p : ℝ)))) * (y * (∏ p ∈ S, (1 + (p : ℝ))))) := by linarith
-  have hlow : ‖C‖ ^ 2 - ((y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2
-        + (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2
-        + ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ 2)
+  have hlow : ‖C‖ ^ (2 : ℕ) - ((y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ)
+        + (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ)
+        + ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ (2 : ℕ))
       ≤ (C * (starRingEnd ℂ) C).re + (C * (starRingEnd ℂ) E₂).re
         + (E₁ * (starRingEnd ℂ) C).re + (E₁ * (starRingEnd ℂ) E₂).re := by
     rw [hCC]
     linarith [hb1, hb2, hb3, e1, e2, e3]
-  have hposK : (0 : ℝ) < ‖C‖ ^ 2 - ((y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2
-        + (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2
-        + ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ 2) := by
-    have hrw : ‖C‖ ^ 2 - ((y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2
-        + (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ 2
-        + ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ 2)
-        = ‖C‖ ^ 2 * (1 - (x * (∏ p ∈ S, (1 + (p : ℝ)))
+  have hposK : (0 : ℝ) < ‖C‖ ^ (2 : ℕ) - ((y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ)
+        + (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ)
+        + ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ (2 : ℕ)) := by
+    have hrw : ‖C‖ ^ (2 : ℕ) - ((y * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ)
+        + (x * ∏ p ∈ S, (1 + (p : ℝ))) * ‖C‖ ^ (2 : ℕ)
+        + ((x * ∏ p ∈ S, (1 + (p : ℝ))) * (y * ∏ p ∈ S, (1 + (p : ℝ)))) * ‖C‖ ^ (2 : ℕ))
+        = ‖C‖ ^ (2 : ℕ) * (1 - (x * (∏ p ∈ S, (1 + (p : ℝ)))
             + y * (∏ p ∈ S, (1 + (p : ℝ)))
             + (x * (∏ p ∈ S, (1 + (p : ℝ)))) * (y * (∏ p ∈ S, (1 + (p : ℝ)))))) := by
       ring

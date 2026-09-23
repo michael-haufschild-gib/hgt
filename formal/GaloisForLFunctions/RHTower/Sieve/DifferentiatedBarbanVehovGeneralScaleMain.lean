@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.BarbanVehovSharpSummatory
 
 If `log L = p log M`, the continuous harmonic-log kernels collapse exactly onto the three Selberg
 forms already present in the corpus.  This identifies the base, cross, and derivative moments with
-their polynomial main terms for every admissible logarithmic scale, rather than only `L = M^3`.
+their polynomial main terms for every admissible logarithmic scale, rather than only `L = M^(3 : ℕ)`.
 -/
 
 open Finset
@@ -64,7 +64,7 @@ theorem barbanVehovLongFirstLogKernelContinuous_eq
     barbanVehovLongFirstLogKernelContinuous L (L * M) q r =
       1 / (Nat.lcm q r : ℝ) *
         (Real.log M * Real.log ((M : ℝ) / (r : ℝ)) +
-          (p - 1 / 2) * Real.log M ^ 2) := by
+          (p - 1 / 2) * Real.log M ^ (2 : ℕ)) := by
   have he : 0 < Nat.lcm q r := Nat.lcm_pos hq hr
   have her := log_natDiv_of_dvd_general he hr (Nat.dvd_lcm_right q r)
   have hMr : Real.log ((M : ℝ) / (r : ℝ)) =
@@ -84,10 +84,10 @@ theorem barbanVehovLongSecondLogKernelContinuous_eq
       1 / (Nat.lcm q r : ℝ) *
         (Real.log M * Real.log ((M : ℝ) / (q : ℝ)) *
             Real.log ((M : ℝ) / (r : ℝ)) +
-          (p - 1 / 2) * Real.log M ^ 2 *
+          (p - 1 / 2) * Real.log M ^ (2 : ℕ) *
             (Real.log ((M : ℝ) / (q : ℝ)) +
               Real.log ((M : ℝ) / (r : ℝ))) +
-          (p ^ 2 - p + 1 / 3) * Real.log M ^ 3) := by
+          (p ^ (2 : ℕ) - p + 1 / 3) * Real.log M ^ (3 : ℕ)) := by
   have he : 0 < Nat.lcm q r := Nat.lcm_pos hq hr
   have heq := log_natDiv_of_dvd_general he hq (Nat.dvd_lcm_left q r)
   have her := log_natDiv_of_dvd_general he hr (Nat.dvd_lcm_right q r)
@@ -144,7 +144,7 @@ theorem barbanVehovFullLongCrossContinuous_eq_polynomialMain
         -(barbanVehovWeight M x.1 * barbanVehovWeight M x.2) *
           (1 / (Nat.lcm x.1 x.2 : ℝ) *
             (Real.log M * Real.log ((M : ℝ) / (x.2 : ℝ)) +
-              (p - 1 / 2) * Real.log M ^ 2)) := by
+              (p - 1 / 2) * Real.log M ^ (2 : ℕ))) := by
         rw [barbanVehovFullLongCrossContinuous]
         apply Finset.sum_congr rfl
         intro x hx
@@ -152,7 +152,7 @@ theorem barbanVehovFullLongCrossContinuous_eq_polynomialMain
         rw [barbanVehovLongFirstLogKernelContinuous_eq hL hM
           (Finset.mem_Icc.mp hx1).1 (Finset.mem_Icc.mp hx2).1 hlog]
     _ = -(Real.log M * barbanVehovSelbergMixedDiagonal M +
-          (p - 1 / 2) * Real.log M ^ 2 * barbanVehovSelbergDiagonal M) := by
+          (p - 1 / 2) * Real.log M ^ (2 : ℕ) * barbanVehovSelbergDiagonal M) := by
       rw [barbanVehovSelbergMixedDiagonal,
         barbanVehovSelbergDiagonal_eq_lcmQuadratic]
       rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib,
@@ -180,10 +180,10 @@ theorem barbanVehovFullLongDerivativeContinuous_eq_polynomialMain
           (1 / (Nat.lcm x.1 x.2 : ℝ) *
             (Real.log M * Real.log ((M : ℝ) / (x.1 : ℝ)) *
                 Real.log ((M : ℝ) / (x.2 : ℝ)) +
-              (p - 1 / 2) * Real.log M ^ 2 *
+              (p - 1 / 2) * Real.log M ^ (2 : ℕ) *
                 (Real.log ((M : ℝ) / (x.1 : ℝ)) +
                   Real.log ((M : ℝ) / (x.2 : ℝ))) +
-              (p ^ 2 - p + 1 / 3) * Real.log M ^ 3)) := by
+              (p ^ (2 : ℕ) - p + 1 / 3) * Real.log M ^ (3 : ℕ))) := by
         rw [barbanVehovFullLongDerivativeContinuous]
         apply Finset.sum_congr rfl
         intro x hx
@@ -191,9 +191,9 @@ theorem barbanVehovFullLongDerivativeContinuous_eq_polynomialMain
         rw [barbanVehovLongSecondLogKernelContinuous_eq hL hM
           (Finset.mem_Icc.mp hx1).1 (Finset.mem_Icc.mp hx2).1 hlog]
     _ = Real.log M * barbanVehovSelbergQuadraticLogDiagonal M +
-          (p - 1 / 2) * Real.log M ^ 2 *
+          (p - 1 / 2) * Real.log M ^ (2 : ℕ) *
             (leftMixed + barbanVehovSelbergMixedDiagonal M) +
-          (p ^ 2 - p + 1 / 3) * Real.log M ^ 3 *
+          (p ^ (2 : ℕ) - p + 1 / 3) * Real.log M ^ (3 : ℕ) *
             barbanVehovSelbergDiagonal M := by
       rw [barbanVehovSelbergQuadraticLogDiagonal,
         barbanVehovSelbergMixedDiagonal,
@@ -206,9 +206,9 @@ theorem barbanVehovFullLongDerivativeContinuous_eq_polynomialMain
       intro x hx
       ring
     _ = Real.log M * barbanVehovSelbergQuadraticLogDiagonal M +
-          (2 * p - 1) * Real.log M ^ 2 *
+          (2 * p - 1) * Real.log M ^ (2 : ℕ) *
             barbanVehovSelbergMixedDiagonal M +
-          (p ^ 2 - p + 1 / 3) * Real.log M ^ 3 *
+          (p ^ (2 : ℕ) - p + 1 / 3) * Real.log M ^ (3 : ℕ) *
             barbanVehovSelbergDiagonal M := by
       have hleft : leftMixed = barbanVehovSelbergMixedDiagonal M := by
         exact barbanVehovSelbergMixedDiagonal_left_eq M

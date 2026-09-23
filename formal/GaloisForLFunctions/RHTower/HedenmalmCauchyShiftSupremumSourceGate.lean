@@ -38,9 +38,9 @@ def finiteFibreOrderedClosePairMass {ι : Type*} [DecidableEq ι]
 private theorem one_sub_cauchyPairSaturation_eq
     (eps d : ℝ) (heps : eps ≠ 0) :
     1 - cauchyPairSaturation eps d =
-      eps ^ 2 / (d ^ 2 + eps ^ 2) := by
+      eps ^ (2 : ℕ) / (d ^ (2 : ℕ) + eps ^ (2 : ℕ)) := by
   rw [cauchyPairSaturation]
-  have hden : d ^ 2 + eps ^ 2 ≠ 0 := by
+  have hden : d ^ (2 : ℕ) + eps ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero heps, sq_nonneg d]
   field_simp [hden]
   ring
@@ -56,11 +56,11 @@ theorem monotone_cauchyPairSaturation_reciprocal (d : ℝ) :
     linarith
   have heps : 1 / ((b : ℝ) + 1) ≤ 1 / ((a : ℝ) + 1) :=
     one_div_le_one_div_of_le (by positivity) habR
-  have hepsSq : (1 / ((b : ℝ) + 1)) ^ 2 ≤
-      (1 / ((a : ℝ) + 1)) ^ 2 :=
+  have hepsSq : (1 / ((b : ℝ) + 1)) ^ (2 : ℕ) ≤
+      (1 / ((a : ℝ) + 1)) ^ (2 : ℕ) :=
     (sq_le_sq₀ (by positivity) (by positivity)).2 heps
-  have hden : d ^ 2 + (1 / ((b : ℝ) + 1)) ^ 2 ≤
-      d ^ 2 + (1 / ((a : ℝ) + 1)) ^ 2 := by
+  have hden : d ^ (2 : ℕ) + (1 / ((b : ℝ) + 1)) ^ (2 : ℕ) ≤
+      d ^ (2 : ℕ) + (1 / ((a : ℝ) + 1)) ^ (2 : ℕ) := by
     linarith
   exact div_le_div_of_nonneg_left (sq_nonneg d)
     (by positivity) hden
@@ -108,9 +108,9 @@ theorem finiteFibreOrderedOffDiagonalMass_sub_cauchyShift_eq
       ∑ p ∈ s.product s,
         if p.1 = p.2 then 0 else
           m p.1 * m p.2 *
-            ((1 / ((n : ℝ) + 1)) ^ 2 /
-              ((x p.1 - x p.2) ^ 2 +
-                (1 / ((n : ℝ) + 1)) ^ 2)) := by
+            ((1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+              ((x p.1 - x p.2) ^ (2 : ℕ) +
+                (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) := by
   rw [finiteFibreOrderedOffDiagonalMass,
     finiteCauchyShiftFibreCovariance, ← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
@@ -127,9 +127,9 @@ theorem finiteFibreOrderedOffDiagonalMass_sub_cauchyShift_eq
           (1 - cauchyPairSaturation (1 / ((n : ℝ) + 1))
             (x p.1 - x p.2)) := by ring
       _ = m p.1 * m p.2 *
-          ((1 / ((n : ℝ) + 1)) ^ 2 /
-            ((x p.1 - x p.2) ^ 2 +
-              (1 / ((n : ℝ) + 1)) ^ 2)) := by
+          ((1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+            ((x p.1 - x p.2) ^ (2 : ℕ) +
+              (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) := by
         rw [one_sub_cauchyPairSaturation_eq]
         positivity
 
@@ -142,8 +142,8 @@ theorem finiteFibreOrderedOffDiagonalMass_sub_cauchyShift_le_closePair_add_gapRa
     finiteFibreOrderedOffDiagonalMass s m -
         finiteCauchyShiftFibreCovariance s x m n ≤
       finiteFibreOrderedClosePairMass s x m delta +
-        ((1 / ((n : ℝ) + 1)) ^ 2 /
-          (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2)) *
+        ((1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+          (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) *
             finiteFibreOrderedOffDiagonalMass s m := by
   rw [finiteFibreOrderedOffDiagonalMass_sub_cauchyShift_eq,
     finiteFibreOrderedClosePairMass, finiteFibreOrderedOffDiagonalMass,
@@ -158,31 +158,31 @@ theorem finiteFibreOrderedOffDiagonalMass_sub_cauchyShift_le_closePair_add_gapRa
       mul_nonneg (hm p.1 hp1) (hm p.2 hp2)
     by_cases hclose : |x p.1 - x p.2| < delta
     · rw [if_pos hclose]
-      have hden : 0 < (x p.1 - x p.2) ^ 2 +
-          (1 / ((n : ℝ) + 1)) ^ 2 := by positivity
+      have hden : 0 < (x p.1 - x p.2) ^ (2 : ℕ) +
+          (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) := by positivity
       have hfrac :
-          (1 / ((n : ℝ) + 1)) ^ 2 /
-              ((x p.1 - x p.2) ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2) ≤ 1 := by
+          (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+              ((x p.1 - x p.2) ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)) ≤ 1 := by
         rw [div_le_one hden]
         exact le_add_of_nonneg_left (sq_nonneg _)
       have hratio : 0 ≤
-          (1 / ((n : ℝ) + 1)) ^ 2 /
-            (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2) := by positivity
+          (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+            (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)) := by positivity
       nlinarith [mul_le_mul_of_nonneg_left hfrac hmass,
         mul_nonneg hratio hmass]
     · rw [if_neg hclose]
       have hgap : delta ≤ |x p.1 - x p.2| := le_of_not_gt hclose
-      have hsq : delta ^ 2 ≤ (x p.1 - x p.2) ^ 2 := by
+      have hsq : delta ^ (2 : ℕ) ≤ (x p.1 - x p.2) ^ (2 : ℕ) := by
         rw [← sq_abs (x p.1 - x p.2)]
         exact (sq_le_sq₀ hdelta.le (abs_nonneg _)).2 hgap
-      have hden : delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2 ≤
-          (x p.1 - x p.2) ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2 := by
+      have hden : delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) ≤
+          (x p.1 - x p.2) ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) := by
         linarith
       have hfrac :
-          (1 / ((n : ℝ) + 1)) ^ 2 /
-              ((x p.1 - x p.2) ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2) ≤
-            (1 / ((n : ℝ) + 1)) ^ 2 /
-              (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2) := by
+          (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+              ((x p.1 - x p.2) ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)) ≤
+            (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+              (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)) := by
         exact div_le_div_of_nonneg_left (sq_nonneg _)
           (by positivity) hden
       simpa [mul_comm, mul_left_comm, mul_assoc] using
@@ -197,8 +197,8 @@ theorem finiteFibreOrderedOffDiagonalMass_sub_cauchyShift_le_gapRatio
     (hgap : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → delta ≤ |x i - x j|) :
     finiteFibreOrderedOffDiagonalMass s m -
         finiteCauchyShiftFibreCovariance s x m n ≤
-      ((1 / ((n : ℝ) + 1)) ^ 2 /
-          (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2)) *
+      ((1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+          (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) *
         finiteFibreOrderedOffDiagonalMass s m := by
   rw [finiteFibreOrderedOffDiagonalMass_sub_cauchyShift_eq,
     finiteFibreOrderedOffDiagonalMass, Finset.mul_sum]
@@ -209,31 +209,31 @@ theorem finiteFibreOrderedOffDiagonalMass_sub_cauchyShift_le_gapRatio
   · simp [hdiag]
   · rw [if_neg hdiag, if_neg hdiag]
     have hgap' := hgap p.1 hp1 p.2 hp2 hdiag
-    have hsq : delta ^ 2 ≤ (x p.1 - x p.2) ^ 2 := by
+    have hsq : delta ^ (2 : ℕ) ≤ (x p.1 - x p.2) ^ (2 : ℕ) := by
       rw [← sq_abs (x p.1 - x p.2)]
       exact (sq_le_sq₀ hdelta.le (abs_nonneg _)).2 hgap'
-    have hden : delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2 ≤
-        (x p.1 - x p.2) ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2 := by
+    have hden : delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) ≤
+        (x p.1 - x p.2) ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) := by
       linarith
     have hfrac :
-        (1 / ((n : ℝ) + 1)) ^ 2 /
-            ((x p.1 - x p.2) ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2) ≤
-          (1 / ((n : ℝ) + 1)) ^ 2 /
-            (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2) := by
+        (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+            ((x p.1 - x p.2) ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)) ≤
+          (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+            (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)) := by
       exact div_le_div_of_nonneg_left (sq_nonneg _)
         (by positivity) hden
     have hmass : 0 ≤ m p.1 * m p.2 :=
       mul_nonneg (hm p.1 hp1) (hm p.2 hp2)
     calc
       m p.1 * m p.2 *
-          ((1 / ((n : ℝ) + 1)) ^ 2 /
-            ((x p.1 - x p.2) ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2)) ≤
+          ((1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+            ((x p.1 - x p.2) ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) ≤
         m p.1 * m p.2 *
-          ((1 / ((n : ℝ) + 1)) ^ 2 /
-            (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2)) :=
+          ((1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+            (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) :=
         mul_le_mul_of_nonneg_left hfrac hmass
-      _ = ((1 / ((n : ℝ) + 1)) ^ 2 /
-          (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2)) *
+      _ = ((1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+          (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) *
             (m p.1 * m p.2) := by ring
 
 /-- A deterministic shift recovers the complementary fraction of off-diagonal mass controlled
@@ -243,19 +243,19 @@ theorem finiteCauchyShiftFibreCovariance_ge_gapRatio
     (s : Finset ι) (x m : ι → ℝ) (n : ℕ) {delta : ℝ}
     (hm : ∀ i ∈ s, 0 ≤ m i) (hdelta : 0 < delta)
     (hgap : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → delta ≤ |x i - x j|) :
-    (1 - (1 / ((n : ℝ) + 1)) ^ 2 /
-        (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2)) *
+    (1 - (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+        (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) *
         finiteFibreOrderedOffDiagonalMass s m ≤
       finiteCauchyShiftFibreCovariance s x m n := by
   have h := finiteFibreOrderedOffDiagonalMass_sub_cauchyShift_le_gapRatio
     s x m n hm hdelta hgap
   rw [show
-    (1 - (1 / ((n : ℝ) + 1)) ^ 2 /
-        (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2)) *
+    (1 - (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+        (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) *
         finiteFibreOrderedOffDiagonalMass s m =
       finiteFibreOrderedOffDiagonalMass s m -
-        ((1 / ((n : ℝ) + 1)) ^ 2 /
-          (delta ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2)) *
+        ((1 / ((n : ℝ) + 1)) ^ (2 : ℕ) /
+          (delta ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) *
           finiteFibreOrderedOffDiagonalMass s m by ring]
   linarith
 
@@ -354,7 +354,7 @@ theorem ofReal_finiteCauchyShiftFibreCovariance_eq_totalSquare_sub_centeredShift
     {ι : Type*} [DecidableEq ι]
     (s : Finset ι) (x m : ι → ℝ) (n : ℕ) :
     (finiteCauchyShiftFibreCovariance s x m n : ℂ) =
-      (∑ i ∈ s, (m i : ℂ)) ^ 2 -
+      (∑ i ∈ s, (m i : ℂ)) ^ (2 : ℕ) -
         finiteCenteredReciprocalShiftDiagonalCovariance s
           (fun i => I * (x i : ℂ)) (fun i => (m i : ℂ))
           (1 / ((n : ℝ) + 1)) := by

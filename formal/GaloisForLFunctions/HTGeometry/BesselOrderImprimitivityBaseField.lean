@@ -22,7 +22,7 @@ extension of its constant field. -/
 theorem orderBessel_no_imprimitive_pair {c : F} (hc : c ≠ 0) {e p : RatFunc F} (hp : p ≠ 0)
     (hE : ratShift e = e / p + 2 * orderShiftCoeff c)
     (hP : p * ratShift p =
-      1 + orderShiftCoeff c * e + orderShiftCoeff c ^ 2 * p) : False := by
+      1 + orderShiftCoeff c * e + orderShiftCoeff c ^ (2 : ℕ) * p) : False := by
   set b : RatFunc F := orderShiftCoeff c with hbdef
   have hb0 : b ≠ 0 := orderShiftCoeff_ne_zero hc
   have hbdeg : b.intDegree = 1 := intDegree_orderShiftCoeff hc
@@ -45,27 +45,27 @@ theorem orderBessel_no_imprimitive_pair {c : F} (hc : c ≠ 0) {e p : RatFunc F}
     rcases mul_eq_zero.mp hE.symm with h | h
     · exact h2 h
     · exact hb0 h
-  have hsp : ratShift p = (1 + b * e + b ^ 2 * p) / p := by
+  have hsp : ratShift p = (1 + b * e + b ^ (2 : ℕ) * p) / p := by
     field_simp
     linear_combination hP
   have h4s : ratShift (4 : RatFunc F) = 4 := by simpa using map_ofNat ratShift 4
   have h2s : ratShift (2 : RatFunc F) = 2 := by simpa using map_ofNat ratShift 2
-  have hkey : ratShift (e ^ 2 - 4 * p) * p ^ 2 = e ^ 2 - 4 * p := by
+  have hkey : ratShift (e ^ (2 : ℕ) - 4 * p) * p ^ (2 : ℕ) = e ^ (2 : ℕ) - 4 * p := by
     rw [map_sub, map_pow, map_mul, hE, hsp, h4s]
     field_simp
     ring
-  have hD0 : e ^ 2 - 4 * p ≠ 0 := by
+  have hD0 : e ^ (2 : ℕ) - 4 * p ≠ 0 := by
     intro h0
-    have hep : e ^ 2 = 4 * p := by linear_combination h0
+    have hep : e ^ (2 : ℕ) = 4 * p := by linear_combination h0
     have he2 : e / 2 ≠ 0 := div_ne_zero he0 h2
     refine hriccati (e / 2) he2 ?_
     rw [map_div₀, hE, h2s]
     field_simp
     linear_combination hep
-  have hsq : IsSquare (e ^ 2 - 4 * p) :=
+  have hsq : IsSquare (e ^ (2 : ℕ) - 4 * p) :=
     isSquare_of_ratShift_mul_sq hD0 hp hkey
   obtain ⟨k, hk⟩ := hsq
-  have hkk : e ^ 2 - k * k = 4 * p := by linear_combination hk
+  have hkk : e ^ (2 : ℕ) - k * k = 4 * p := by linear_combination hk
   set r₁ : RatFunc F := (e + k) / 2 with hr₁def
   set r₂ : RatFunc F := (e - k) / 2 with hr₂def
   have hsum : r₁ + r₂ = e := by rw [hr₁def, hr₂def]; field_simp; ring
@@ -81,14 +81,14 @@ theorem orderBessel_no_imprimitive_pair {c : F} (hc : c ≠ 0) {e p : RatFunc F}
     intro h0
     rw [h0, mul_zero] at hprod
     exact hp hprod.symm
-  have hsD : ratShift (e ^ 2 - 4 * p) ≠ 0 := fun h0 =>
+  have hsD : ratShift (e ^ (2 : ℕ) - 4 * p) ≠ 0 := fun h0 =>
     hD0 (ratShift_injective (by rw [h0, map_zero]))
   have hsp0 : ratShift p ≠ 0 := fun h0 =>
     hp (ratShift_injective (by rw [h0, map_zero]))
   have hpdeg : p.intDegree = 0 := by
     have h1 := congrArg RatFunc.intDegree hkey
     rw [RatFunc.intDegree_mul hsD (pow_ne_zero 2 hp), intDegree_ratShift,
-      show p ^ 2 = p * p from sq p, RatFunc.intDegree_mul hp hp] at h1
+      show p ^ (2 : ℕ) = p * p from sq p, RatFunc.intDegree_mul hp hp] at h1
     omega
   have h2bdeg : ((2 : RatFunc F) * b).intDegree = 1 := by
     rw [RatFunc.intDegree_mul h2 hb0, htwoDeg, hbdeg, zero_add]
@@ -105,20 +105,20 @@ theorem orderBessel_no_imprimitive_pair {c : F} (hc : c ≠ 0) {e p : RatFunc F}
       omega
     by_contra hne1
     have hgt : 1 < e.intDegree := by omega
-    have hb2p : (b ^ 2 * p).intDegree = 2 := by
-      rw [RatFunc.intDegree_mul (pow_ne_zero 2 hb0) hp, show b ^ 2 = b * b from sq b,
+    have hb2p : (b ^ (2 : ℕ) * p).intDegree = 2 := by
+      rw [RatFunc.intDegree_mul (pow_ne_zero 2 hb0) hp, show b ^ (2 : ℕ) = b * b from sq b,
         RatFunc.intDegree_mul hb0 hb0, hbdeg, hpdeg]
       norm_num
     have hone : ((1 : RatFunc F)).intDegree = 0 := by simp
     obtain ⟨hne1', hdeg1⟩ :=
-      intDegree_add_eq_left (u := b ^ 2 * p) (v := 1) (mul_ne_zero (pow_ne_zero 2 hb0) hp)
+      intDegree_add_eq_left (u := b ^ (2 : ℕ) * p) (v := 1) (mul_ne_zero (pow_ne_zero 2 hb0) hp)
         (Or.inr (by rw [hone, hb2p]; norm_num))
     have hbe : (b * e).intDegree = 1 + e.intDegree := by
       rw [RatFunc.intDegree_mul hb0 he0, hbdeg]
     obtain ⟨hne2, hdeg2⟩ :=
-      intDegree_add_eq_left (u := b * e) (v := b ^ 2 * p + 1) (mul_ne_zero hb0 he0)
+      intDegree_add_eq_left (u := b * e) (v := b ^ (2 : ℕ) * p + 1) (mul_ne_zero hb0 he0)
         (Or.inr (by rw [hdeg1, hb2p, hbe]; omega))
-    have hPP : (1 : RatFunc F) + b * e + b ^ 2 * p = b * e + (b ^ 2 * p + 1) := by ring
+    have hPP : (1 : RatFunc F) + b * e + b ^ (2 : ℕ) * p = b * e + (b ^ (2 : ℕ) * p + 1) := by ring
     have hlhs : (p * ratShift p).intDegree = 0 := by
       rw [RatFunc.intDegree_mul hp hsp0, intDegree_ratShift, hpdeg]
       norm_num

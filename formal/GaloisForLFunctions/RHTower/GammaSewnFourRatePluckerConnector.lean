@@ -33,8 +33,8 @@ def gammaSewnFourRateBoundaryPluckerFeature
     Fin 2 → Fin 4 → ℝ :=
   fun i j =>
     gammaSewnMobiusApertureBoundaryAmplitude (cell j).1 *
-      if i = 0 then 1 / (rate j ^ 2 - a ^ 2)
-      else -2 * a * rate j / (rate j ^ 2 - a ^ 2)
+      if i = 0 then 1 / (rate j ^ (2 : ℕ) - a ^ (2 : ℕ))
+      else -2 * a * rate j / (rate j ^ (2 : ℕ) - a ^ (2 : ℕ))
 
 /-- A scalar jet represented as a one-dimensional matrix jet. -/
 def boundaryPairPartitionScalarJetMatrix (z : ℝ) : Matrix (Fin 1) (Fin 1) ℝ :=
@@ -48,7 +48,7 @@ theorem gramLogCurvatureJet_boundaryPairPartitionScalarJetMatrix
         (boundaryPairPartitionScalarJetMatrix z)
         (boundaryPairPartitionScalarJetMatrix z₁)
         (boundaryPairPartitionScalarJetMatrix z₂) =
-      z₂ / z - (z₁ / z) ^ 2 := by
+      z₂ / z - (z₁ / z) ^ (2 : ℕ) := by
   simp [gramLogCurvatureJet, boundaryPairPartitionScalarJetMatrix,
     Matrix.trace, Matrix.mul_apply]
   ring
@@ -156,7 +156,7 @@ determinant is strictly positive. -/
 theorem gammaSewnFourRateBoundaryFeature_gramDet_pos
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 < (standardFeatureGram
       (gammaSewnFourRateBoundaryPluckerFeature a rate cell)).det := by
   rw [← gammaSewnFourRateBoundaryPairPartition_eq_gramDet]
@@ -166,7 +166,7 @@ theorem gammaSewnFourRateBoundaryFeature_gramDet_pos
 theorem gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     0 < canonicalFeatureVolume
       (gammaSewnFourRateBoundaryPluckerFeature a rate cell)
       (fun _ => 1) (fun _ => 0) 1 := by
@@ -222,7 +222,7 @@ theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPlucker_of_volume
 theorem gammaSewnFourRateSchurBoundaryLogCurvature_eq_canonicalPlucker
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     gammaSewnFourRateSchurBoundaryLogCurvature a rate cell =
       -2 * complementaryFisherMean
         (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
@@ -262,7 +262,7 @@ theorem gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker_of_volume_ne_z
 theorem gammaSewnFourRateSchurCorrectedFisher_eq_canonicalPlucker
     {a : ℝ} {rate : Fin 4 → ℝ} {cell : Fin 4 → Nat.Primes × ℕ}
     (ha : a ≠ 0) (hrate : Function.Injective rate)
-    (hboundary : ∀ i, rate i ^ 2 - a ^ 2 ≠ 0) :
+    (hboundary : ∀ i, rate i ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0) :
     gammaSewnFourRateSchurCorrectedFisher a rate cell =
       complementaryFisherMean
         (gammaSewnFourRateCanonicalPluckerProbability a rate cell)
@@ -336,8 +336,8 @@ theorem gammaSewnFourPrimeLogHarmonicAperture_lt_rate
 /-- No actual prime-log rate meets the canonical aperture boundary. -/
 theorem gammaSewnFourPrimeLogHarmonicAperture_boundary_ne
     (prime : Fin 4 ↪ Nat.Primes) (i : Fin 4) :
-    gammaSewnFourPrimeLogRate prime i ^ 2 -
-        gammaSewnFourPrimeLogHarmonicAperture prime ^ 2 ≠ 0 := by
+    gammaSewnFourPrimeLogRate prime i ^ (2 : ℕ) -
+        gammaSewnFourPrimeLogHarmonicAperture prime ^ (2 : ℕ) ≠ 0 := by
   apply sub_ne_zero.mpr
   exact ne_of_gt ((sq_lt_sq₀
     (gammaSewnFourPrimeLogHarmonicAperture_pos prime).le

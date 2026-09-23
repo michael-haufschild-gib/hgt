@@ -7,7 +7,7 @@ This endpoint isolates the first passivity law that is both coefficient-faithful
 theta/Xi divisor and attached to the actual causal Hardy Hawking scattering dilation.
 
 A selective Hawking modular gain reweights one real Xi resonance response by
-`lambda = cosh(r)^2 >= 1`.  Complete and selected-orbit radial responses both decrease strictly,
+`lambda = cosh(r)^(2 : ℕ) >= 1`.  Complete and selected-orbit radial responses both decrease strictly,
 while their radius-weighted responses increase strictly.  Hence every adjacent two-shell minor
 remains strictly positive at every rapidity, even when an off-critical orbit eventually drives the
 raw three-shell determinant negative.
@@ -24,7 +24,7 @@ Its quadratic energy is a sum of three nonnegative Schur squares, and its determ
 Thus a negative raw cubic cannot survive this completion.  More sharply, negative raw cubic forces
 `K_xz != K_xz^*`: any passive backreaction preserving the local and adjacent theta responses must
 create nonzero remote-sector mixing.  The determinant repair cost is exactly
-`K_yy (K_xz^* - K_xz)^2`.
+`K_yy (K_xz^* - K_xz)^(2 : ℕ)`.
 
 Generic KMS, CCR, group, inverse, and Krein identities enter only through the already-derived
 scattering dilation and do not imply this cubic sign.  Theta-divisor chamber inequalities supply
@@ -52,7 +52,7 @@ def xiSquaredEulerReweightedFullResponse
 
 def xiSquaredEulerReweightedFullQ
     (q : XiZeroCopy) (lambda x : ℝ) : ℝ :=
-  x * xiSquaredEulerReweightedFullResponse q lambda (x ^ 2)
+  x * xiSquaredEulerReweightedFullResponse q lambda (x ^ (2 : ℕ))
 
 theorem xiSquaredEulerReweightedFullKernel_eq_responseKernel
     (q : XiZeroCopy) (lambda : ℝ) :
@@ -114,9 +114,9 @@ theorem xiSquaredEulerReweightedFullKernel_twoPoint_det_pos
     (hx : 0 < x) (hxy : x < y) :
     0 < xiSquaredEulerReweightedFullKernel q lambda x x *
         xiSquaredEulerReweightedFullKernel q lambda y y -
-      xiSquaredEulerReweightedFullKernel q lambda x y ^ 2 := by
+      xiSquaredEulerReweightedFullKernel q lambda x y ^ (2 : ℕ) := by
   have hy : 0 < y := hx.trans hxy
-  have hsq : x ^ 2 < y ^ 2 := by nlinarith
+  have hsq : x ^ (2 : ℕ) < y ^ (2 : ℕ) := by nlinarith
   have hdecreaseProfile :=
     strictAntiOn_xiSquaredEulerReweightedFullResponse q hlambda
       (sq_nonneg x) (sq_nonneg y) hsq
@@ -142,7 +142,7 @@ def threePointPassiveLongEdge
 def symmetricThreePointLongEdgeDet
     (K : ℝ → ℝ → ℝ) (x y z r : ℝ) : ℝ :=
   K x x * K y y * K z z + 2 * K x y * r * K y z -
-    K x x * K y z ^ 2 - K y y * r ^ 2 - K z z * K x y ^ 2
+    K x x * K y z ^ (2 : ℕ) - K y y * r ^ (2 : ℕ) - K z z * K x y ^ (2 : ℕ)
 
 theorem symmetricThreePointDet_eq_longEdgeDet
     (K : ℝ → ℝ → ℝ) (x y z : ℝ) :
@@ -154,8 +154,8 @@ theorem symmetricThreePointLongEdgeDet_passive_factor
     (K : ℝ → ℝ → ℝ) {x y z : ℝ} (hy : K y y ≠ 0) :
     symmetricThreePointLongEdgeDet K x y z
         (threePointPassiveLongEdge K x y z) =
-      ((K x x * K y y - K x y ^ 2) *
-        (K y y * K z z - K y z ^ 2)) / K y y := by
+      ((K x x * K y y - K x y ^ (2 : ℕ)) *
+        (K y y * K z z - K y z ^ (2 : ℕ))) / K y y := by
   rw [symmetricThreePointLongEdgeDet, threePointPassiveLongEdge]
   field_simp [hy]
   ring
@@ -163,8 +163,8 @@ theorem symmetricThreePointLongEdgeDet_passive_factor
 theorem symmetricThreePointLongEdgeDet_passive_pos
     (K : ℝ → ℝ → ℝ) {x y z : ℝ}
     (hy : 0 < K y y)
-    (hxy : 0 < K x x * K y y - K x y ^ 2)
-    (hyz : 0 < K y y * K z z - K y z ^ 2) :
+    (hxy : 0 < K x x * K y y - K x y ^ (2 : ℕ))
+    (hyz : 0 < K y y * K z z - K y z ^ (2 : ℕ)) :
     0 < symmetricThreePointLongEdgeDet K x y z
       (threePointPassiveLongEdge K x y z) := by
   rw [symmetricThreePointLongEdgeDet_passive_factor K hy.ne']
@@ -172,16 +172,16 @@ theorem symmetricThreePointLongEdgeDet_passive_pos
 
 def symmetricThreePointLongEdgeEnergy
     (K : ℝ → ℝ → ℝ) (x y z r a b c : ℝ) : ℝ :=
-  K x x * a ^ 2 + K y y * b ^ 2 + K z z * c ^ 2 +
+  K x x * a ^ (2 : ℕ) + K y y * b ^ (2 : ℕ) + K z z * c ^ (2 : ℕ) +
     2 * K x y * a * b + 2 * K y z * b * c + 2 * r * a * c
 
 theorem symmetricThreePointLongEdgeEnergy_passive_factor
     (K : ℝ → ℝ → ℝ) {x y z a b c : ℝ} (hy : K y y ≠ 0) :
     symmetricThreePointLongEdgeEnergy K x y z
         (threePointPassiveLongEdge K x y z) a b c =
-      K y y * (b + K x y * a / K y y + K y z * c / K y y) ^ 2 +
-        (K x x - K x y ^ 2 / K y y) * a ^ 2 +
-        (K z z - K y z ^ 2 / K y y) * c ^ 2 := by
+      K y y * (b + K x y * a / K y y + K y z * c / K y y) ^ (2 : ℕ) +
+        (K x x - K x y ^ (2 : ℕ) / K y y) * a ^ (2 : ℕ) +
+        (K z z - K y z ^ (2 : ℕ) / K y y) * c ^ (2 : ℕ) := by
   rw [symmetricThreePointLongEdgeEnergy, threePointPassiveLongEdge]
   field_simp [hy]
   ring
@@ -189,18 +189,18 @@ theorem symmetricThreePointLongEdgeEnergy_passive_factor
 theorem symmetricThreePointLongEdgeEnergy_passive_nonneg
     (K : ℝ → ℝ → ℝ) {x y z a b c : ℝ}
     (hy : 0 < K y y)
-    (hxy : 0 < K x x * K y y - K x y ^ 2)
-    (hyz : 0 < K y y * K z z - K y z ^ 2) :
+    (hxy : 0 < K x x * K y y - K x y ^ (2 : ℕ))
+    (hyz : 0 < K y y * K z z - K y z ^ (2 : ℕ)) :
     0 ≤ symmetricThreePointLongEdgeEnergy K x y z
       (threePointPassiveLongEdge K x y z) a b c := by
   rw [symmetricThreePointLongEdgeEnergy_passive_factor K hy.ne']
-  have hleft : 0 < K x x - K x y ^ 2 / K y y := by
-    rw [show K x x - K x y ^ 2 / K y y =
-      (K x x * K y y - K x y ^ 2) / K y y by field_simp]
+  have hleft : 0 < K x x - K x y ^ (2 : ℕ) / K y y := by
+    rw [show K x x - K x y ^ (2 : ℕ) / K y y =
+      (K x x * K y y - K x y ^ (2 : ℕ)) / K y y by field_simp]
     exact div_pos hxy hy
-  have hright : 0 < K z z - K y z ^ 2 / K y y := by
-    rw [show K z z - K y z ^ 2 / K y y =
-      (K y y * K z z - K y z ^ 2) / K y y by field_simp]
+  have hright : 0 < K z z - K y z ^ (2 : ℕ) / K y y := by
+    rw [show K z z - K y z ^ (2 : ℕ) / K y y =
+      (K y y * K z z - K y z ^ (2 : ℕ)) / K y y by field_simp]
     exact div_pos hyz hy
   positivity
 
@@ -220,7 +220,7 @@ theorem symmetricThreePointLongEdgeDet_passive_sub_eq_sq
     symmetricThreePointLongEdgeDet K x y z
         (threePointPassiveLongEdge K x y z) -
       symmetricThreePointLongEdgeDet K x y z r =
-    K y y * (threePointPassiveLongEdge K x y z - r) ^ 2 := by
+    K y y * (threePointPassiveLongEdge K x y z - r) ^ (2 : ℕ) := by
   rw [symmetricThreePointLongEdgeDet, symmetricThreePointLongEdgeDet,
     threePointPassiveLongEdge]
   field_simp [hy]
@@ -241,7 +241,7 @@ theorem thetaCuspHawkingSelectiveModularGainKernel_twoPoint_det_pos
     (q : XiZeroCopy) (r : ℝ) {x y : ℝ} (hx : 0 < x) (hxy : x < y) :
     0 < thetaCuspHawkingSelectiveModularGainKernel q r x x *
         thetaCuspHawkingSelectiveModularGainKernel q r y y -
-      thetaCuspHawkingSelectiveModularGainKernel q r x y ^ 2 := by
+      thetaCuspHawkingSelectiveModularGainKernel q r x y ^ (2 : ℕ) := by
   exact xiSquaredEulerReweightedFullKernel_twoPoint_det_pos q
     (thetaCuspHawkingModularGain_one_le r) hx hxy
 
@@ -290,7 +290,7 @@ theorem thetaCuspHawking_negativeCubic_backreactionCost_pos
       (thetaCuspHawkingSelectiveModularGainKernel q r) x y z < 0) :
     0 < thetaCuspHawkingSelectiveModularGainKernel q r y y *
       (thetaCuspHawkingPassiveBackreactionEdge q r x y z -
-        thetaCuspHawkingSelectiveModularGainKernel q r x z) ^ 2 := by
+        thetaCuspHawkingSelectiveModularGainKernel q r x z) ^ (2 : ℕ) := by
   have hypos := xiSquaredEulerReweightedFullKernel_diag_pos q
     (thetaCuspHawkingModularGain_one_le r) (hx.trans hxy)
   have hne :=

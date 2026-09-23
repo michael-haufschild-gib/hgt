@@ -29,7 +29,7 @@ of the transformed relation. -/
 theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat_isMaximumOnCircle
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
@@ -49,7 +49,7 @@ theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat_isMaximum
           (centralIndex a (Real.exp (x n)) : ℂ)‖
         ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
       (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-        ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+        ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ)) ∧
       (∀ᶠ n : ℕ in atTop,
         ‖MvPolynomial.eval₂ (Polynomial.evalRingHom (z n))
           ![eulerLogDeriv (coeffFun a) (z n),
@@ -116,10 +116,10 @@ theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat_isMaximum
         rw [Complex.norm_natCast, hνdef]
       rw [hcast] at htri
       linarith
-    have hVnorm : ‖V‖ ≤ r ^ 2 := by
-      have hfirst : ‖V‖ ≤ (1 / ((n : ℝ) + 1)) * ν ^ 2 := by
+    have hVnorm : ‖V‖ ≤ r ^ (2 : ℕ) := by
+      have hfirst : ‖V‖ ≤ (1 / ((n : ℝ) + 1)) * ν ^ (2 : ℕ) := by
         simpa [V, r, ν] using hv n
-      have hsecond : (1 / ((n : ℝ) + 1)) * ν ^ 2 ≤ ν ^ 2 :=
+      have hsecond : (1 / ((n : ℝ) + 1)) * ν ^ (2 : ℕ) ≤ ν ^ (2 : ℕ) :=
         mul_le_of_le_one_left (sq_nonneg ν) hfrac
       exact le_trans (le_trans hfirst hsecond)
         (pow_le_pow_left₀ hνnonneg hνr 2)
@@ -149,7 +149,7 @@ nonzero logarithmic-jet coefficient and exact Wiman roots satisfying
 theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
@@ -169,7 +169,7 @@ theorem exists_strelitzLeadingMaximumTermBound_of_order_two_entireHeat
           (centralIndex a (Real.exp (x n)) : ℂ)‖
         ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
       (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-        ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+        ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ)) ∧
       ∀ᶠ n : ℕ in atTop,
         ‖MvPolynomial.eval₂ (Polynomial.evalRingHom (z n))
           ![eulerLogDeriv (coeffFun a) (z n),

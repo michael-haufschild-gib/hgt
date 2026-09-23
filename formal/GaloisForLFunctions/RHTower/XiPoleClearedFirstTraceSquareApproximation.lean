@@ -27,16 +27,16 @@ theorem rhLadder_one_iff_poleClearedFirstTrace_locallyUniform_square_approximant
     RHLadder 1 ↔
       ∃ G F : ℕ → ℂ → ℂ,
         (∀ n, AnalyticOnNhd ℂ (G n) rightHalf) ∧
-        (∀ n, F n = fun z => G n z ^ 2) ∧
+        (∀ n, F n = fun z => G n z ^ (2 : ℕ)) ∧
         TendstoLocallyUniformlyOn F poleClearedFirstTraceExponentialContinuation
           atTop rightHalf := by
   constructor
   · rw [rhLadder_one_iff_poleClearedFirstTrace_sqrt]
     rintro ⟨e, he, hesq⟩
-    refine ⟨fun _ => e, fun _ z => e z ^ 2, fun _ => he, fun _ => rfl, ?_⟩
+    refine ⟨fun _ => e, fun _ z => e z ^ (2 : ℕ), fun _ => he, fun _ => rfl, ?_⟩
     intro u hu x hx
     refine ⟨rightHalf, self_mem_nhdsWithin, Eventually.of_forall fun _ y hy => ?_⟩
-    change (poleClearedFirstTraceExponentialContinuation y, e y ^ 2) ∈ u
+    change (poleClearedFirstTraceExponentialContinuation y, e y ^ (2 : ℕ)) ∈ u
     rw [hesq y hy]
     exact refl_mem_uniformity hu
   · rintro ⟨G, F, hG, hF, hconv⟩

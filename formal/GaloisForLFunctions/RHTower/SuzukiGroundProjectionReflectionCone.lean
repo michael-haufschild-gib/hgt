@@ -40,9 +40,9 @@ theorem target_lt_suzukiGroundProjectionAngle_iff_reflectionCone
     (hnorm : ‖vm‖ = ‖vp‖) (hvp : vp ≠ 0) :
     target <
         suzukiGroundResidueAngle
-          (‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2)
-          (‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2) ↔
-      target * ‖vp‖ ^ 2 < inner ℝ vm vp := by
+          (‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ))
+          (‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ)) ↔
+      target * ‖vp‖ ^ (2 : ℕ) < inner ℝ vm vp := by
   rw [suzukiGroundResidueAngle,
     GaloisForLFunctions.RHTower.suzukiDefectAngle,
     ← GaloisForLFunctions.HTGeometry.inner_div_norm_sq_eq_imbalance hnorm]
@@ -53,15 +53,15 @@ reflection-fidelity cone. -/
 theorem primeArchSuzukiGroundProjection_admitted_iff_reflectionCone
     {vp vm : H} (hnorm : ‖vm‖ = ‖vp‖) (hvp : vp ≠ 0) :
     (1 + primeArchSuzukiFirstDefectCalibration) *
-          ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 <
+          ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) <
         (1 - primeArchSuzukiFirstDefectCalibration) *
-          ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2 ↔
-      primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ 2 <
+          ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ) ↔
+      primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ (2 : ℕ) <
         inner ℝ vm vp := by
   let evenMass :=
-    ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2
+    ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ)
   let oddMass :=
-    ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2
+    ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ)
   have hsum : 0 < evenMass + oddMass := by
     rw [← GaloisForLFunctions.HTGeometry.norm_sq_eq_evenPart_sq_add_oddPart_sq hnorm]
     exact sq_pos_of_pos (norm_pos_iff.mpr hvp)
@@ -74,38 +74,38 @@ theorem primeArchSuzukiGroundProjection_admitted_iff_reflectionCone
 division and remains meaningful at the boundary. -/
 theorem primeArchSuzukiGroundProjection_reflectionCone_iff_oddMass
     {vp vm : H} (hnorm : ‖vm‖ = ‖vp‖) :
-    primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ 2 <
+    primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ (2 : ℕ) <
           inner ℝ vm vp ↔
-      2 * ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 <
-        (1 - primeArchSuzukiFirstDefectCalibration) * ‖vp‖ ^ 2 := by
+      2 * ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) <
+        (1 - primeArchSuzukiFirstDefectCalibration) * ‖vp‖ ^ (2 : ℕ) := by
   rw [GaloisForLFunctions.HTGeometry.inner_eq_evenPart_sq_sub_oddPart_sq,
     GaloisForLFunctions.HTGeometry.norm_sq_eq_evenPart_sq_add_oddPart_sq hnorm]
   constructor <;> intro h
   · calc
-      2 * ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2
+      2 * ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ)
           < (1 - primeArchSuzukiFirstDefectCalibration) *
-              ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2
+              ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ)
             + (1 - primeArchSuzukiFirstDefectCalibration) *
-              ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 := by
+              ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) := by
               nlinarith
       _ = (1 - primeArchSuzukiFirstDefectCalibration) *
-            (‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2 +
-              ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2) := by ring
+            (‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ) +
+              ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ)) := by ring
   · calc
       primeArchSuzukiFirstDefectCalibration *
-            (‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2 +
-              ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2)
-          < ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2 -
-              ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 := by
+            (‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ) +
+              ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ))
+          < ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ) -
+              ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) := by
               nlinarith
 
 /-- The same cone is exactly a relative-distance ball around the reflection-fixed ray. -/
 theorem primeArchSuzukiGroundProjection_reflectionCone_iff_distance
     {vp vm : H} (hnorm : ‖vm‖ = ‖vp‖) :
-    primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ 2 <
+    primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ (2 : ℕ) <
           inner ℝ vm vp ↔
-      ‖vp - vm‖ ^ 2 <
-        2 * (1 - primeArchSuzukiFirstDefectCalibration) * ‖vp‖ ^ 2 := by
+      ‖vp - vm‖ ^ (2 : ℕ) <
+        2 * (1 - primeArchSuzukiFirstDefectCalibration) * ‖vp‖ ^ (2 : ℕ) := by
   rw [primeArchSuzukiGroundProjection_reflectionCone_iff_oddMass hnorm,
     GaloisForLFunctions.HTGeometry.oddPart, norm_smul]
   norm_num
@@ -119,22 +119,22 @@ theorem
     primeArchSuzukiGroundProjection_reflectionCorrelation_gt_seventySeven_div_eightyFive
     {vp vm : H} (hvp : vp ≠ 0)
     (hcone :
-      primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ 2 <
+      primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ (2 : ℕ) <
         inner ℝ vm vp) :
-    ((77 : ℝ) / 85) * ‖vp‖ ^ 2 < inner ℝ vm vp := by
+    ((77 : ℝ) / 85) * ‖vp‖ ^ (2 : ℕ) < inner ℝ vm vp := by
   have hk := primeArchSuzukiFirstDefectCalibration_mem_Ioo.1
-  have hnormSq : 0 < ‖vp‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hvp)
+  have hnormSq : 0 < ‖vp‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hvp)
   nlinarith
 
 /-- Every admitted Suzuki bottom projection has odd source share strictly below `4/85`. -/
 theorem primeArchSuzukiGroundProjection_oddShare_lt_four_div_eightyFive
     {vp vm : H} (hnorm : ‖vm‖ = ‖vp‖) (hvp : vp ≠ 0)
     (hcone :
-      primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ 2 <
+      primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ (2 : ℕ) <
         inner ℝ vm vp) :
-    ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 / ‖vp‖ ^ 2 <
+    ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) / ‖vp‖ ^ (2 : ℕ) <
       (4 : ℝ) / 85 := by
-  have hnormSq : 0 < ‖vp‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hvp)
+  have hnormSq : 0 < ‖vp‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hvp)
   have hcorr :=
     primeArchSuzukiGroundProjection_reflectionCorrelation_gt_seventySeven_div_eightyFive
       hvp hcone
@@ -150,13 +150,13 @@ of radius `16/85`. -/
 theorem primeArchSuzukiGroundProjection_reflectionDistance_sq_lt
     {vp vm : H} (hnorm : ‖vm‖ = ‖vp‖) (hvp : vp ≠ 0)
     (hcone :
-      primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ 2 <
+      primeArchSuzukiFirstDefectCalibration * ‖vp‖ ^ (2 : ℕ) <
         inner ℝ vm vp) :
-    ‖vp - vm‖ ^ 2 < ((16 : ℝ) / 85) * ‖vp‖ ^ 2 := by
+    ‖vp - vm‖ ^ (2 : ℕ) < ((16 : ℝ) / 85) * ‖vp‖ ^ (2 : ℕ) := by
   have hodd :=
     primeArchSuzukiGroundProjection_oddShare_lt_four_div_eightyFive
       hnorm hvp hcone
-  have hnormSq : 0 < ‖vp‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hvp)
+  have hnormSq : 0 < ‖vp‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hvp)
   rw [div_lt_iff₀ hnormSq] at hodd
   rw [GaloisForLFunctions.HTGeometry.oddPart, norm_smul] at hodd
   norm_num at hodd ⊢
@@ -169,17 +169,17 @@ theorem primeArchSuzukiGroundProjection_evenMass_gt_eightyOne_div_four_mul_oddMa
     {vp vm : H}
     (hadmitted :
       (1 + primeArchSuzukiFirstDefectCalibration) *
-            ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 <
+            ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) <
           (1 - primeArchSuzukiFirstDefectCalibration) *
-            ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2) :
+            ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ)) :
     ((81 : ℝ) / 4) *
-          ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 <
-        ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2 := by
+          ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) <
+        ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ) := by
   have hk := primeArchSuzukiFirstDefectCalibration_mem_Ioo.1
   have heven :
-      0 ≤ ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2 := sq_nonneg _
+      0 ≤ ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ) := sq_nonneg _
   have hodd :
-      0 ≤ ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 := sq_nonneg _
+      0 ≤ ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) := sq_nonneg _
   nlinarith
 
 /-! ## Pure-parity boundary classification -/
@@ -188,14 +188,14 @@ theorem primeArchSuzukiGroundProjection_evenMass_gt_eightyOne_div_four_mul_oddMa
 theorem primeArchSuzukiGroundProjection_admitted_of_reflection_fixed
     {vp vm : H} (hvp : vp ≠ 0) (hfixed : vm = vp) :
     (1 + primeArchSuzukiFirstDefectCalibration) *
-          ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 <
+          ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) <
         (1 - primeArchSuzukiFirstDefectCalibration) *
-          ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2 := by
+          ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ) := by
   have hnorm : ‖vm‖ = ‖vp‖ := by rw [hfixed]
   rw [primeArchSuzukiGroundProjection_admitted_iff_reflectionCone hnorm hvp,
     hfixed, real_inner_self_eq_norm_sq]
   have hk := primeArchSuzukiFirstDefectCalibration_mem_Ioo.2
-  have hnormSq : 0 < ‖vp‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hvp)
+  have hnormSq : 0 < ‖vp‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hvp)
   nlinarith
 
 /-- A nonzero reflection-antifixed bottom source, hence a pure-odd bottom source, is never
@@ -203,14 +203,14 @@ admitted. -/
 theorem primeArchSuzukiGroundProjection_not_admitted_of_reflection_antifixed
     {vp vm : H} (hvp : vp ≠ 0) (hfixed : vm = -vp) :
     ¬ (1 + primeArchSuzukiFirstDefectCalibration) *
-          ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ 2 <
+          ‖GaloisForLFunctions.HTGeometry.oddPart vp vm‖ ^ (2 : ℕ) <
         (1 - primeArchSuzukiFirstDefectCalibration) *
-          ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ 2 := by
+          ‖GaloisForLFunctions.HTGeometry.evenPart vp vm‖ ^ (2 : ℕ) := by
   have hnorm : ‖vm‖ = ‖vp‖ := by rw [hfixed, norm_neg]
   rw [primeArchSuzukiGroundProjection_admitted_iff_reflectionCone hnorm hvp,
     hfixed, inner_neg_left, real_inner_self_eq_norm_sq]
   have hk := primeArchSuzukiFirstDefectCalibration_mem_Ioo.1
-  have hnormSq : 0 < ‖vp‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hvp)
+  have hnormSq : 0 < ‖vp‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hvp)
   nlinarith
 
 end

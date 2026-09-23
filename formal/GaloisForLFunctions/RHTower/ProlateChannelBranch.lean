@@ -22,8 +22,8 @@ def branchAmplitude (s c k : ℝ) (A : ℝ → ℝ) (x : ℝ) : ℝ :=
 
 /-- Its derivative, in terms of the coefficient's derivative. -/
 def branchAmplitudeDeriv (s c k : ℝ) (A A' : ℝ → ℝ) (x : ℝ) : ℝ :=
-  k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-      / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))
+  k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+      / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))
     * A (c * xiEndpointPhase s (k * x))
   + ampFourth s (k * x)
     * (A' (c * xiEndpointPhase s (k * x)) * (c * (k * xiSpeed s (k * x))))
@@ -39,13 +39,13 @@ theorem hasDerivAt_branchAmplitude {s c k x : ℝ} {A A' : ℝ → ℝ}
   have hlin : HasDerivAt (fun u : ℝ => k * u) k x := by
     simpa using (hasDerivAt_id x).const_mul k
   have hamp : HasDerivAt (fun u : ℝ => ampFourth s (k * u))
-      (k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-        / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))) x := by
+      (k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+        / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))) x := by
     have h := (hasDerivAt_ampFourth hs1 hkx).comp x hlin
-    have hv : -(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-        / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x) * k
-        = k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-          / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x)) := by ring
+    have hv : -(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+        / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x) * k
+        = k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+          / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x)) := by ring
     rwa [hv] at h
   exact hamp.mul ((hA _ hu).comp x (hasDerivAt_scaled_dilated_phase hs0 hkx))
 
@@ -69,9 +69,9 @@ theorem abs_branchAmplitude_le {s c k x M : ℝ} {A : ℝ → ℝ}
 theorem abs_branch_drift_le {s c k x M : ℝ} {A' : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hx : 2 ≤ x) (hM : 0 ≤ M)
     (hA'b : |A' (c * xiEndpointPhase s (k * x))|
-      ≤ 1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2) * M) :
+      ≤ 1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ)) * M) :
     |A' (c * xiEndpointPhase s (k * x)) * (c * (k * xiSpeed s (k * x)))|
-      ≤ 2 * M / (c * k * x ^ 2) := by
+      ≤ 2 * M / (c * k * x ^ (2 : ℕ)) := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hx0 : (0 : ℝ) < x := by linarith
   have hkx2 : (2 : ℝ) ≤ k * x := by nlinarith [hk, hx]
@@ -95,25 +95,25 @@ theorem abs_branch_drift_le {s c k x M : ℝ} {A' : ℝ → ℝ}
     have := mul_le_mul_of_nonneg_left hspeed hk0.le
     nlinarith [this, hc.le]
   have hstep : |A' u| * |c * (k * xiSpeed s (k * x))|
-      ≤ (1 / (4 * u ^ 2) * M) * (c * (k * 2)) :=
+      ≤ (1 / (4 * u ^ (2 : ℕ)) * M) * (c * (k * 2)) :=
     mul_le_mul hA'b hfac (abs_nonneg _) (by positivity)
   refine le_trans hstep ?_
-  have hq : 1 / (4 * u ^ 2) ≤ 1 / (c ^ 2 * (k * x) ^ 2) := by
+  have hq : 1 / (4 * u ^ (2 : ℕ)) ≤ 1 / (c ^ (2 : ℕ) * (k * x) ^ (2 : ℕ)) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [hulow, hulow0, hu]
-  have hfin : 1 / (c ^ 2 * (k * x) ^ 2) * M * (c * (k * 2))
-      = 2 * M / (c * k * x ^ 2) := by field_simp
-  calc 1 / (4 * u ^ 2) * M * (c * (k * 2))
-      ≤ 1 / (c ^ 2 * (k * x) ^ 2) * M * (c * (k * 2)) := by gcongr
-    _ = 2 * M / (c * k * x ^ 2) := hfin
+  have hfin : 1 / (c ^ (2 : ℕ) * (k * x) ^ (2 : ℕ)) * M * (c * (k * 2))
+      = 2 * M / (c * k * x ^ (2 : ℕ)) := by field_simp
+  calc 1 / (4 * u ^ (2 : ℕ)) * M * (c * (k * 2))
+      ≤ 1 / (c ^ (2 : ℕ) * (k * x) ^ (2 : ℕ)) * M * (c * (k * 2)) := by gcongr
+    _ = 2 * M / (c * k * x ^ (2 : ℕ)) := hfin
 
 /-- **The branch amplitude's derivative also carries the `1/k`.** -/
 theorem abs_branchAmplitudeDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 1 ≤ k) (hx : 2 ≤ x) (hM : 0 ≤ M)
     (hAb : |A (c * xiEndpointPhase s (k * x))| ≤ M)
     (hA'b : |A' (c * xiEndpointPhase s (k * x))|
-      ≤ 1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2) * M) :
-    |branchAmplitudeDeriv s c k A A' x| ≤ 36 * M / k / x ^ 2 := by
+      ≤ 1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ)) * M) :
+    |branchAmplitudeDeriv s c k A A' x| ≤ 36 * M / k / x ^ (2 : ℕ) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hx0 : (0 : ℝ) < x := by linarith
@@ -124,33 +124,33 @@ theorem abs_branchAmplitudeDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ}
   have hdrift := abs_branch_drift_le hs0 hs1 hc0 hk hx hM hA'b
   rw [branchAmplitudeDeriv]
   refine le_trans (abs_add_le _ _) ?_
-  have h1 : |k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-        / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))
+  have h1 : |k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+        / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))
       * A (c * xiEndpointPhase s (k * x))|
-      ≤ 32 * M / (k * x ^ 2) := by
+      ≤ 32 * M / (k * x ^ (2 : ℕ)) := by
     rw [abs_mul]
-    calc |k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-            / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))|
+    calc |k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+            / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))|
           * |A (c * xiEndpointPhase s (k * x))|
-        ≤ 32 / (k * x ^ 2) * M := mul_le_mul hampd hAb (abs_nonneg _) (by positivity)
-      _ = 32 * M / (k * x ^ 2) := by ring
+        ≤ 32 / (k * x ^ (2 : ℕ)) * M := mul_le_mul hampd hAb (abs_nonneg _) (by positivity)
+      _ = 32 * M / (k * x ^ (2 : ℕ)) := by ring
   have h2 : |ampFourth s (k * x)
       * (A' (c * xiEndpointPhase s (k * x)) * (c * (k * xiSpeed s (k * x))))|
-      ≤ 4 * M / (k * x ^ 2) := by
+      ≤ 4 * M / (k * x ^ (2 : ℕ)) := by
     rw [abs_mul, abs_of_pos hamp0]
     have hstep : ampFourth s (k * x)
         * |A' (c * xiEndpointPhase s (k * x)) * (c * (k * xiSpeed s (k * x)))|
-        ≤ 2 / (k * x) * (2 * M / (c * k * x ^ 2)) :=
+        ≤ 2 / (k * x) * (2 * M / (c * k * x ^ (2 : ℕ))) :=
       mul_le_mul hampb hdrift (abs_nonneg _) (by positivity)
     refine le_trans hstep ?_
-    have hval : 2 / (k * x) * (2 * M / (c * k * x ^ 2)) = 4 * M / (c * k ^ 2 * x ^ 3) := by
+    have hval : 2 / (k * x) * (2 * M / (c * k * x ^ (2 : ℕ))) = 4 * M / (c * k ^ (2 : ℕ) * x ^ (3 : ℕ)) := by
       field_simp
       ring
     rw [hval, div_le_div_iff₀ (by positivity) (by positivity)]
     have hckx : (1 : ℝ) ≤ c * k * x := by nlinarith [hc, hk, hx]
     nlinarith [mul_nonneg (mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * M) hk0.le)
       (sq_nonneg x)) (by linarith : (0 : ℝ) ≤ c * k * x - 1)]
-  have hsum : 32 * M / (k * x ^ 2) + 4 * M / (k * x ^ 2) = 36 * M / k / x ^ 2 := by
+  have hsum : 32 * M / (k * x ^ (2 : ℕ)) + 4 * M / (k * x ^ (2 : ℕ)) = 36 * M / k / x ^ (2 : ℕ) := by
     field_simp
     ring
   linarith [h1, h2, hsum]
@@ -193,13 +193,13 @@ theorem abs_branchAmpDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 1 ≤ k) (hx : 2 ≤ x) (hM : 0 ≤ M)
     (hAb : |A (c * xiEndpointPhase s (k * x))| ≤ M)
     (hA'b : |A' (c * xiEndpointPhase s (k * x))|
-      ≤ 1 / (4 * (c * xiEndpointPhase s (k * x)) ^ 2) * M) :
+      ≤ 1 / (4 * (c * xiEndpointPhase s (k * x)) ^ (2 : ℕ)) * M) :
     |branchAmpDeriv s c k A A' x| ≤ 37 * M / k / (x * Real.sqrt x) := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hx0 : (0 : ℝ) < x := by linarith
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
   have hss : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx0.le
-  have hsq2 : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx0.le
+  have hsq2 : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx0.le
   have hb := abs_branchAmplitude_le hs0 hs1 hk hx hAb
   have hd := abs_branchAmplitudeDeriv_le hs0 hs1 hc hk hx hM hAb hA'b
   rw [branchAmpDeriv]
@@ -216,7 +216,7 @@ theorem abs_branchAmpDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ}
       ≤ 36 * M / k / (x * Real.sqrt x) := by
     rw [abs_mul, abs_of_pos hsx]
     have hstep : Real.sqrt x * |branchAmplitudeDeriv s c k A A' x|
-        ≤ Real.sqrt x * (36 * M / k / x ^ 2) :=
+        ≤ Real.sqrt x * (36 * M / k / x ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hd hsx.le
     refine le_trans hstep (le_of_eq ?_)
     field_simp
@@ -255,19 +255,19 @@ theorem continuousOn_branchAmplitudeDeriv {s c k X : ℝ} {A A' : ℝ → ℝ}
       (Set.uIcc (2 : ℝ) X) := hA'c.comp hphc hphmaps
   have hspc : ContinuousOn (fun x : ℝ => xiSpeed s (k * x)) (Set.uIcc (2 : ℝ) X) :=
     (continuousOn_xiSpeed s).comp hlin hmaps
-  have hratc : ContinuousOn (fun x : ℝ => -(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-      / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s)))) (Set.uIcc (2 : ℝ) X) := by
+  have hratc : ContinuousOn (fun x : ℝ => -(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+      / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s)))) (Set.uIcc (2 : ℝ) X) := by
     refine ContinuousOn.div (by fun_prop) (by fun_prop) ?_
     intro x hx
     have h1 : (1 : ℝ) < k * x := hkx x hx
-    have hd : (0 : ℝ) < (k * x) ^ 2 - 1 := by nlinarith
-    have hn : (0 : ℝ) < (k * x) ^ 2 - s := by nlinarith
+    have hd : (0 : ℝ) < (k * x) ^ (2 : ℕ) - 1 := by nlinarith
+    have hn : (0 : ℝ) < (k * x) ^ (2 : ℕ) - s := by nlinarith
     positivity
   have hAcomp : ContinuousOn (fun x : ℝ => A (c * xiEndpointPhase s (k * x)))
       (Set.uIcc (2 : ℝ) X) := hAc.comp hphc hphmaps
   rw [show branchAmplitudeDeriv s c k A A' = fun x : ℝ =>
-      k * (-(2 * (k * x) * (2 * (k * x) ^ 2 - s - 1))
-        / (4 * (((k * x) ^ 2 - 1) * ((k * x) ^ 2 - s))) * ampFourth s (k * x))
+      k * (-(2 * (k * x) * (2 * (k * x) ^ (2 : ℕ) - s - 1))
+        / (4 * (((k * x) ^ (2 : ℕ) - 1) * ((k * x) ^ (2 : ℕ) - s))) * ampFourth s (k * x))
       * A (c * xiEndpointPhase s (k * x))
     + ampFourth s (k * x)
       * (A' (c * xiEndpointPhase s (k * x)) * (c * (k * xiSpeed s (k * x)))) from rfl]
@@ -299,10 +299,10 @@ theorem continuousOn_branchAmpDeriv {s c k X : ℝ} {A A' : ℝ → ℝ}
     (continuousOn_branchAmplitudeDeriv hs0 hs1 hc hk hX hAc hA'c))
 
 /-- The derivative of the cosine coefficient, named for reuse. -/
-def besselCosCoeffDeriv (u : ℝ) : ℝ := 1 / (4 * u ^ 2) * besselNormalForm u * Real.sin u
+def besselCosCoeffDeriv (u : ℝ) : ℝ := 1 / (4 * u ^ (2 : ℕ)) * besselNormalForm u * Real.sin u
 
 /-- The derivative of the sine coefficient. -/
-def besselSinCoeffDeriv (u : ℝ) : ℝ := -(1 / (4 * u ^ 2) * besselNormalForm u * Real.cos u)
+def besselSinCoeffDeriv (u : ℝ) : ℝ := -(1 / (4 * u ^ (2 : ℕ)) * besselNormalForm u * Real.cos u)
 
 theorem hasDerivAt_besselCosCoeff' {u : ℝ} (hu : 0 < u) :
     HasDerivAt besselCosCoeff (besselCosCoeffDeriv u) u := hasDerivAt_besselCosCoeff hu
@@ -569,7 +569,7 @@ full profile: both branches of the exact two-branch representation, not a leadin
 theorem norm_integral_dilated_profile_le {s c k X : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 1 ≤ c) (hk : 1 ≤ k) (hX : 2 ≤ X) :
     ‖∫ t in (2 : ℝ)..X, ((radialProlateBesselProfile s c (k * t) : ℝ) : ℂ)‖
-      ≤ 222 * channelEnergyConstant s c / (c * k ^ 2) := by
+      ≤ 222 * channelEnergyConstant s c / (c * k ^ (2 : ℕ)) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hbpos : 0 < channelBase s c k := channelBase_pos hs0 hs1 hc0 hk
@@ -621,12 +621,12 @@ theorem norm_integral_dilated_profile_le {s c k X : ℝ} (hs0 : 0 ≤ s) (hs1 : 
   have h1 := hbranch 1 (by norm_num)
   have h2 := hbranch (-1) (by norm_num)
   have hsum : 3 * (37 * M / k) / (c * k) + 3 * (37 * M / k) / (c * k)
-      = 222 * M / (c * k ^ 2) := by
+      = 222 * M / (c * k ^ (2 : ℕ)) := by
     field_simp
     ring
   have hEle : M ≤ channelEnergyConstant s c := channelEnergy_le hs0 hs1 hc0 hk
-  have hden : (0 : ℝ) < c * k ^ 2 := by positivity
-  have hfin : 222 * M / (c * k ^ 2) ≤ 222 * channelEnergyConstant s c / (c * k ^ 2) := by
+  have hden : (0 : ℝ) < c * k ^ (2 : ℕ) := by positivity
+  have hfin : 222 * M / (c * k ^ (2 : ℕ)) ≤ 222 * channelEnergyConstant s c / (c * k ^ (2 : ℕ)) := by
     gcongr
   linarith [h1, h2, hsum, hfin]
 

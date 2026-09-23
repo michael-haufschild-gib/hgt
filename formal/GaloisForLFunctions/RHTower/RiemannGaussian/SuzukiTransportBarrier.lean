@@ -341,7 +341,7 @@ theorem half_le_suzukiSmoothCurvature_of_log_two_le
       2 = Real.exp (Real.log 2) :=
         (Real.exp_log (by norm_num : (0 : ℝ) < 2)).symm
       _ ≤ Real.exp t := Real.exp_le_exp.mpr ht
-  have hxpoly : 2 + x ≤ x ^ 3 := by
+  have hxpoly : 2 + x ≤ x ^ (3 : ℕ) := by
     nlinarith [sq_nonneg (x - 2), mul_nonneg hxpos.le (sq_nonneg x)]
   have hleftScale :
       (2 * Real.exp (-(5 * t) / 2) + Real.exp (-(3 * t) / 2)) *
@@ -351,7 +351,7 @@ theorem half_le_suzukiSmoothCurvature_of_log_two_le
     ring_nf
     simp
   have hrightScale :
-      Real.exp (t / 2) * Real.exp ((5 * t) / 2) = x ^ 3 := by
+      Real.exp (t / 2) * Real.exp ((5 * t) / 2) = x ^ (3 : ℕ) := by
     rw [← Real.exp_add, ← Real.exp_nat_mul]
     congr 1
     ring

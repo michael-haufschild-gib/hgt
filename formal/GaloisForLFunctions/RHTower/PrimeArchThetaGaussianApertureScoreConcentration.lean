@@ -286,7 +286,7 @@ theorem thetaCuspGaussianApertureLeadingChannelScoreCorrelation_pos
       (thetaCuspGaussianApertureTailChannelMoment_pos hlambda 4 j))
     (thetaCuspGaussianApertureTailChannelMoment_pos hlambda 4 (j + k))
 
-/-- Residual score after subtracting the global triple-Gaussian curvature floor `3*pi*x^2`. -/
+/-- Residual score after subtracting the global triple-Gaussian curvature floor `3*pi*x^(2 : ℕ)`. -/
 def thetaCuspGaussianApertureLeadingChannelScoreResidual
     (lambda x : ℝ) : ℝ :=
   thetaCuspGaussianApertureExactTailSaddleDegree lambda x - 3 * Real.pi * x ^ 2

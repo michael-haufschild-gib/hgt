@@ -20,15 +20,15 @@ open MeasureTheory
 
 /-- Zeroth, first, and half-second mass moments of an oriented interval. -/
 def ccmParabolicMoment (a b : ℝ) : Fin 3 → ℝ :=
-  ![b - a, (b ^ 2 - a ^ 2) / 2, (b ^ 3 - a ^ 3) / 6]
+  ![b - a, (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / 2, (b ^ (3 : ℕ) - a ^ (3 : ℕ)) / 6]
 
 /-- Parabolic translation on the moment carrier. -/
 def ccmParabolicShift (d : ℝ) (v : Fin 3 → ℝ) : Fin 3 → ℝ :=
-  ![v 0, d * v 0 + v 1, d ^ 2 / 2 * v 0 + d * v 1 + v 2]
+  ![v 0, d * v 0 + v 1, d ^ (2 : ℕ) / 2 * v 0 + d * v 1 + v 2]
 
 /-- Lorentz form preserved by one common parabolic translation. -/
 def ccmParabolicForm (v : Fin 3 → ℝ) : ℝ :=
-  2 * v 0 * v 2 - (v 1) ^ 2
+  2 * v 0 * v 2 - (v 1) ^ (2 : ℕ)
 
 /-- Polarization of `ccmParabolicForm`; this is the cross-cell channel. -/
 def ccmParabolicPairing (v w : Fin 3 → ℝ) : ℝ :=
@@ -46,7 +46,7 @@ theorem ccmParabolicForm_shift (d : ℝ) (v : Fin 3 → ℝ) :
   ring
 
 theorem ccmParabolicForm_moment (a b : ℝ) :
-    ccmParabolicForm (ccmParabolicMoment a b) = (b - a) ^ 4 / 12 := by
+    ccmParabolicForm (ccmParabolicMoment a b) = (b - a) ^ (4 : ℕ) / 12 := by
   simp [ccmParabolicForm, ccmParabolicMoment]
   ring
 
@@ -59,7 +59,7 @@ theorem ccmParabolicPairing_shift (d e : ℝ) (v w : Fin 3 → ℝ) :
     ccmParabolicPairing (ccmParabolicShift d v) (ccmParabolicShift e w) =
       ccmParabolicPairing v w +
         (e - d) * (v 0 * w 1 - v 1 * w 0) +
-          (e - d) ^ 2 / 2 * (v 0 * w 0) := by
+          (e - d) ^ (2 : ℕ) / 2 * (v 0 * w 0) := by
   simp [ccmParabolicPairing, ccmParabolicShift]
   ring
 
@@ -107,14 +107,14 @@ theorem ccmParabolicMoment_one_eq_intervalIntegral_id (a b : ℝ) :
   simp [ccmParabolicMoment]
 
 theorem ccmParabolicMoment_two_eq_half_intervalIntegral_sq (a b : ℝ) :
-    ccmParabolicMoment a b 2 = (∫ y in a..b, y ^ 2) / 2 := by
-  let P : ℝ → ℝ := fun y => y ^ 3 / 3
-  have hderiv (x : ℝ) : HasDerivAt P (x ^ 2) x := by
+    ccmParabolicMoment a b 2 = (∫ y in a..b, y ^ (2 : ℕ)) / 2 := by
+  let P : ℝ → ℝ := fun y => y ^ (3 : ℕ) / 3
+  have hderiv (x : ℝ) : HasDerivAt P (x ^ (2 : ℕ)) x := by
     dsimp only [P]
     simpa using ((hasDerivAt_id x).pow 3).div_const (3 : ℝ)
-  have hint (x y : ℝ) : IntervalIntegrable (fun z : ℝ => z ^ 2) volume x y :=
-    (by fun_prop : Continuous fun z : ℝ => z ^ 2).intervalIntegrable _ _
-  have hab : (∫ y in a..b, y ^ 2) = P b - P a :=
+  have hint (x y : ℝ) : IntervalIntegrable (fun z : ℝ => z ^ (2 : ℕ)) volume x y :=
+    (by fun_prop : Continuous fun z : ℝ => z ^ (2 : ℕ)).intervalIntegrable _ _
+  have hab : (∫ y in a..b, y ^ (2 : ℕ)) = P b - P a :=
     intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hderiv x) (hint a b)
   rw [hab]
   simp [ccmParabolicMoment, P]
@@ -123,16 +123,16 @@ theorem ccmParabolicMoment_two_eq_half_intervalIntegral_sq (a b : ℝ) :
 theorem ccmActualHeadMatchedQuantilePolar_sum_sq (K : ℕ) :
     (∑ n ∈ Finset.range (K + 1),
       ∫ y in ccmActualHeadQuantilePolarCoordinate (n + 2)..
-          ccmActualHeadQuantilePolarCoordinate (n + 3), y ^ 2) =
+          ccmActualHeadQuantilePolarCoordinate (n + 3), y ^ (2 : ℕ)) =
       ∫ y in ccmActualHeadQuantilePolarCoordinate 2..
-          ccmActualHeadQuantilePolarCoordinate (K + 3), y ^ 2 := by
+          ccmActualHeadQuantilePolarCoordinate (K + 3), y ^ (2 : ℕ) := by
   induction K with
   | zero => simp
   | succ K ih =>
       rw [Finset.sum_range_succ, ih]
       exact intervalIntegral.integral_add_adjacent_intervals
-        ((by fun_prop : Continuous fun y : ℝ => y ^ 2).intervalIntegrable _ _)
-        ((by fun_prop : Continuous fun y : ℝ => y ^ 2).intervalIntegrable _ _)
+        ((by fun_prop : Continuous fun y : ℝ => y ^ (2 : ℕ)).intervalIntegrable _ _)
+        ((by fun_prop : Continuous fun y : ℝ => y ^ (2 : ℕ)).intervalIntegrable _ _)
 
 /-- Finite literal matched-minus-quantile source vector before scalarization. -/
 def ccmActualHeadMatchedQuantileParabolicCodiagonal (K : ℕ) : Fin 3 → ℝ :=
@@ -165,7 +165,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCodiagonal_one_eq_profile (K : ℕ)
 
 theorem ccmActualHeadMatchedQuantileParabolicCodiagonal_two_eq_half_profile (K : ℕ) :
     ccmActualHeadMatchedQuantileParabolicCodiagonal K 2 =
-      ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K (fun y : ℝ => y ^ 2) / 2 := by
+      ccmActualHeadMatchedPolarAdjacentCodiagonalProfile K (fun y : ℝ => y ^ (2 : ℕ)) / 2 := by
   simp only [ccmActualHeadMatchedQuantileParabolicCodiagonal,
     Finset.sum_apply, Pi.sub_apply]
   simp_rw [ccmActualHeadMatchedParabolicMoment,
@@ -175,9 +175,9 @@ theorem ccmActualHeadMatchedQuantileParabolicCodiagonal_two_eq_half_profile (K :
   rw [← Finset.sum_div, ← Finset.sum_div, ← sub_div,
     ccmActualHeadMatchedQuantilePolar_sum_sq]
   rw [← ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_eq_cells_sub_quantile K
-    (fun y : ℝ => y ^ 2)]
+    (fun y : ℝ => y ^ (2 : ℕ))]
   intro x y hx hy
-  exact (by fun_prop : Continuous fun z : ℝ => z ^ 2).intervalIntegrable x y
+  exact (by fun_prop : Continuous fun z : ℝ => z ^ (2 : ℕ)).intervalIntegrable x y
 
 /-- The literal second parabolic source coordinate retains both completed linear charge and
 its full squared displacement term. -/
@@ -195,7 +195,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCodiagonal_two_eq_error_charge_sub_
           criticalMellinAtomWeight (n + 2) *
             (ccmActualHeadOutgoingNodeError (n + 2) +
               (ccmActualHeadMatchedPolarUpperCoordinate (n + 2) -
-                2 * Real.exp (Real.log (n + 2) / 2))) ^ 2) / 2 := by
+                2 * Real.exp (Real.log (n + 2) / 2))) ^ (2 : ℕ)) / 2 := by
   rw [ccmActualHeadMatchedQuantileParabolicCodiagonal_two_eq_half_profile,
     ccmActualHeadMatchedPolarAdjacentCodiagonalProfile_sq_eq_error_charge_sub_debt]
 
@@ -213,7 +213,7 @@ theorem ccmActualHeadQuantileParabolicPairing_transport (m n : ℕ) :
             ccmActualHeadMatchedParabolicMoment m 1 *
               ccmActualHeadMatchedParabolicMoment n 0) +
         (ccmActualHeadMatchedQuantilePolarDisplacement n -
-            ccmActualHeadMatchedQuantilePolarDisplacement m) ^ 2 / 2 *
+            ccmActualHeadMatchedQuantilePolarDisplacement m) ^ (2 : ℕ) / 2 *
           (criticalMellinAtomWeight m * criticalMellinAtomWeight n) := by
   rw [ccmActualHeadQuantileParabolicMoment_eq_shift_matched,
     ccmActualHeadQuantileParabolicMoment_eq_shift_matched,

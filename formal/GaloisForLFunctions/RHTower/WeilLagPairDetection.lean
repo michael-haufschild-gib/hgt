@@ -28,27 +28,27 @@ namespace RHTower.LagPairDetection
 noncomputable section
 
 def response (X a γ σ A : ℝ) : ℝ :=
-  (X * (σ - a) + 2 * a * γ * A) / ((σ - a) ^ 2 + A ^ 2) +
-  (X * (σ + a) - 2 * a * γ * A) / ((σ + a) ^ 2 + A ^ 2)
+  (X * (σ - a) + 2 * a * γ * A) / ((σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ)) +
+  (X * (σ + a) - 2 * a * γ * A) / ((σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ))
 
 def quadratic (X a γ σ A : ℝ) : ℝ :=
-  X * (σ ^ 2 - a ^ 2 + A ^ 2) + 4 * a ^ 2 * γ * A
+  X * (σ ^ (2 : ℕ) - a ^ (2 : ℕ) + A ^ (2 : ℕ)) + 4 * a ^ (2 : ℕ) * γ * A
 
 theorem denominator_pos {a σ A : ℝ} (ha : |a| < σ) :
-    0 < ((σ - a) ^ 2 + A ^ 2) * ((σ + a) ^ 2 + A ^ 2) := by
+    0 < ((σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ)) * ((σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ)) := by
   obtain ⟨hl, hr⟩ := abs_lt.mp ha
   apply mul_pos <;> nlinarith [sq_nonneg A, sq_pos_of_pos (show 0 < σ - a by linarith),
     sq_pos_of_pos (show 0 < σ + a by linarith)]
 
 theorem response_mul_den {X a γ σ A : ℝ} (ha : |a| < σ) :
     response X a γ σ A *
-      (((σ - a) ^ 2 + A ^ 2) * ((σ + a) ^ 2 + A ^ 2)) =
+      (((σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ)) * ((σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ))) =
         2 * σ * quadratic X a γ σ A := by
   obtain ⟨hl, hr⟩ := abs_lt.mp ha
-  have h1 : (σ - a) ^ 2 + A ^ 2 ≠ 0 := by
+  have h1 : (σ - a) ^ (2 : ℕ) + A ^ (2 : ℕ) ≠ 0 := by
     have := sq_pos_of_pos (show 0 < σ - a by linarith)
     nlinarith [sq_nonneg A]
-  have h2 : (σ + a) ^ 2 + A ^ 2 ≠ 0 := by
+  have h2 : (σ + a) ^ (2 : ℕ) + A ^ (2 : ℕ) ≠ 0 := by
     have := sq_pos_of_pos (show 0 < σ + a by linarith)
     nlinarith [sq_nonneg A]
   unfold response quadratic
@@ -57,15 +57,15 @@ theorem response_mul_den {X a γ σ A : ℝ} (ha : |a| < σ) :
 
 theorem square_identity (X a γ σ A : ℝ) :
     X * quadratic X a γ σ A =
-      (X * A + 2 * a ^ 2 * γ) ^ 2 +
-        X ^ 2 * (σ ^ 2 - a ^ 2) - 4 * a ^ 4 * γ ^ 2 := by
+      (X * A + 2 * a ^ (2 : ℕ) * γ) ^ (2 : ℕ) +
+        X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) - 4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ) := by
   unfold quadratic
   ring
 
 theorem response_nonneg_iff {X a γ σ A : ℝ} (hX : 0 < X) (ha : |a| < σ) :
     0 ≤ response X a γ σ A ↔
-      4 * a ^ 4 * γ ^ 2 ≤ (X * A + 2 * a ^ 2 * γ) ^ 2 +
-        X ^ 2 * (σ ^ 2 - a ^ 2) := by
+      4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ) ≤ (X * A + 2 * a ^ (2 : ℕ) * γ) ^ (2 : ℕ) +
+        X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) := by
   have hσ : 0 < 2 * σ := by linarith [abs_nonneg a]
   rw [← mul_nonneg_iff_of_pos_right (denominator_pos ha), response_mul_den ha,
     mul_nonneg_iff_of_pos_left hσ, ← mul_nonneg_iff_of_pos_left hX,
@@ -75,8 +75,8 @@ theorem response_nonneg_iff {X a γ σ A : ℝ} (hX : 0 < X) (ha : |a| < σ) :
 /-- Exact negative-frequency region, not only a sufficient positivity test. -/
 theorem response_neg_iff {X a γ σ A : ℝ} (hX : 0 < X) (ha : |a| < σ) :
     response X a γ σ A < 0 ↔
-      (X * A + 2 * a ^ 2 * γ) ^ 2 <
-        4 * a ^ 4 * γ ^ 2 - X ^ 2 * (σ ^ 2 - a ^ 2) := by
+      (X * A + 2 * a ^ (2 : ℕ) * γ) ^ (2 : ℕ) <
+        4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ) - X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) := by
   have h := response_nonneg_iff (γ := γ) (A := A) hX ha
   constructor <;> intro hh
   · by_contra hn
@@ -89,32 +89,32 @@ theorem response_neg_iff {X a γ σ A : ℝ} (hX : 0 < X) (ha : |a| < σ) :
 /-- The all-frequency threshold is necessary and sufficient. -/
 theorem all_nonneg_iff {X a γ σ : ℝ} (hX : 0 < X) (ha : |a| < σ) :
     (∀ A : ℝ, 0 ≤ response X a γ σ A) ↔
-      4 * a ^ 4 * γ ^ 2 ≤ X ^ 2 * (σ ^ 2 - a ^ 2) := by
+      4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ) ≤ X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) := by
   constructor
   · intro h
-    have hstar := (response_nonneg_iff hX ha).mp (h (-2 * a ^ 2 * γ / X))
-    have he : X * (-2 * a ^ 2 * γ / X) + 2 * a ^ 2 * γ = 0 := by
+    have hstar := (response_nonneg_iff hX ha).mp (h (-2 * a ^ (2 : ℕ) * γ / X))
+    have he : X * (-2 * a ^ (2 : ℕ) * γ / X) + 2 * a ^ (2 : ℕ) * γ = 0 := by
       field_simp [hX.ne']
       ring
     rw [he, zero_pow (by decide), zero_add] at hstar
     exact hstar
   · intro h A
-    exact (response_nonneg_iff hX ha).mpr (by nlinarith [sq_nonneg (X * A + 2 * a ^ 2 * γ)])
+    exact (response_nonneg_iff hX ha).mpr (by nlinarith [sq_nonneg (X * A + 2 * a ^ (2 : ℕ) * γ)])
 
 /-- A synthetic shallow off-line pair, at depth 1/10 and arbitrary large height,
 passes the damping gate.
 This is a model of the pair geometry, not a claim that these points are zeta zeros. -/
-theorem offLine_model_nonneg {γ σ : ℝ} (hγ : 25 ≤ γ ^ 2)
+theorem offLine_model_nonneg {γ σ : ℝ} (hγ : 25 ≤ γ ^ (2 : ℕ))
     (hσ : 13 / 25 ≤ σ) (A : ℝ) :
-    0 ≤ response (γ ^ 2 + 6 / 25) (1 / 10) γ σ A := by
-  apply (all_nonneg_iff (by nlinarith : (0 : ℝ) < γ ^ 2 + 6 / 25)
+    0 ≤ response (γ ^ (2 : ℕ) + 6 / 25) (1 / 10) γ σ A := by
+  apply (all_nonneg_iff (by nlinarith : (0 : ℝ) < γ ^ (2 : ℕ) + 6 / 25)
     (show |(1 / 10 : ℝ)| < σ by norm_num; linarith)).mpr ?_ A
-  have hs : (13 / 25 : ℝ) ^ 2 ≤ σ ^ 2 := by nlinarith
-  have hX : γ ^ 2 ≤ (γ ^ 2 + 6 / 25) ^ 2 := by
-    nlinarith [sq_nonneg (γ ^ 2 - 1)]
+  have hs : (13 / 25 : ℝ) ^ (2 : ℕ) ≤ σ ^ (2 : ℕ) := by nlinarith
+  have hX : γ ^ (2 : ℕ) ≤ (γ ^ (2 : ℕ) + 6 / 25) ^ (2 : ℕ) := by
+    nlinarith [sq_nonneg (γ ^ (2 : ℕ) - 1)]
   have hp := mul_le_mul_of_nonneg_left
-    (show (13 / 25 : ℝ) ^ 2 - (1 / 10) ^ 2 ≤ σ ^ 2 - (1 / 10) ^ 2 by linarith)
-    (sq_nonneg (γ ^ 2 + 6 / 25))
+    (show (13 / 25 : ℝ) ^ (2 : ℕ) - (1 / 10) ^ (2 : ℕ) ≤ σ ^ (2 : ℕ) - (1 / 10) ^ (2 : ℕ) by linarith)
+    (sq_nonneg (γ ^ (2 : ℕ) + 6 / 25))
   norm_num at hp ⊢
   nlinarith
 
@@ -126,53 +126,53 @@ theorem response_neg_height (X a γ σ A : ℝ) :
 /-- The conjugation-completed quartet also passes. Arbitrary replication preserves the sign;
 positivity at fixed damping therefore does not restrict its off-line proportion. -/
 theorem offLine_quartet_nonneg (m : ℕ) {γ σ t : ℝ}
-    (hγ : 25 ≤ γ ^ 2) (hσ : 13 / 25 ≤ σ) :
+    (hγ : 25 ≤ γ ^ (2 : ℕ)) (hσ : 13 / 25 ≤ σ) :
     0 ≤ (m : ℝ) *
-      (response (γ ^ 2 + 6 / 25) (1 / 10) γ σ (t - γ) +
-        response (γ ^ 2 + 6 / 25) (1 / 10) (-γ) σ (t + γ)) := by
+      (response (γ ^ (2 : ℕ) + 6 / 25) (1 / 10) γ σ (t - γ) +
+        response (γ ^ (2 : ℕ) + 6 / 25) (1 / 10) (-γ) σ (t + γ)) := by
   rw [response_neg_height]
   exact mul_nonneg (Nat.cast_nonneg m)
     (add_nonneg (offLine_model_nonneg hγ hσ _) (offLine_model_nonneg hγ hσ _))
 
 /-- The exact witness exposed by failure of the sharp threshold. -/
 theorem response_at_witness_neg {X a γ σ : ℝ} (hX : 0 < X) (ha : |a| < σ)
-    (hgap : X ^ 2 * (σ ^ 2 - a ^ 2) < 4 * a ^ 4 * γ ^ 2) :
-    response X a γ σ (-2 * a ^ 2 * γ / X) < 0 := by
+    (hgap : X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) < 4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ)) :
+    response X a γ σ (-2 * a ^ (2 : ℕ) * γ / X) < 0 := by
   rw [response_neg_iff hX ha]
-  have he : X * (-2 * a ^ 2 * γ / X) + 2 * a ^ 2 * γ = 0 := by
+  have he : X * (-2 * a ^ (2 : ℕ) * γ / X) + 2 * a ^ (2 : ℕ) * γ = 0 := by
     field_simp [hX.ne']
     ring
   rw [he, zero_pow (by decide)]
   linarith
 
 /-- In physical lag coordinates, detecting a pair from the right of its pole requires
-radial resolution finer than `2 a^3 / γ^2`. This is an exact inequality, not asymptotic
+radial resolution finer than `2 a^(3 : ℕ) / γ^(2 : ℕ)`. This is an exact inequality, not asymptotic
 or numerical evidence. It concerns this pair detector, not every possible aggregate test. -/
 theorem radial_resolution_of_neg {a γ σ A : ℝ}
-    (ha : 0 < a) (haHalf : a < 1 / 2) (hγ : 0 < γ ^ 2) (hσ : a < σ)
-    (hneg : response (γ ^ 2 + 1 / 4 - a ^ 2) a γ σ A < 0) :
-    (σ - a) * γ ^ 2 < 2 * a ^ 3 := by
-  let X := γ ^ 2 + 1 / 4 - a ^ 2
-  have hXa : γ ^ 2 ≤ X := by dsimp [X]; nlinarith
+    (ha : 0 < a) (haHalf : a < 1 / 2) (hγ : 0 < γ ^ (2 : ℕ)) (hσ : a < σ)
+    (hneg : response (γ ^ (2 : ℕ) + 1 / 4 - a ^ (2 : ℕ)) a γ σ A < 0) :
+    (σ - a) * γ ^ (2 : ℕ) < 2 * a ^ (3 : ℕ) := by
+  let X := γ ^ (2 : ℕ) + 1 / 4 - a ^ (2 : ℕ)
+  have hXa : γ ^ (2 : ℕ) ≤ X := by dsimp [X]; nlinarith
   have hX : 0 < X := lt_of_lt_of_le hγ hXa
   have hσabs : |a| < σ := by rw [abs_of_pos ha]; exact hσ
   have hn := (response_neg_iff hX hσabs).mp hneg
-  have hgap : X ^ 2 * (σ ^ 2 - a ^ 2) < 4 * a ^ 4 * γ ^ 2 := by
-    nlinarith [sq_nonneg (X * A + 2 * a ^ 2 * γ)]
-  have hD : 0 < σ ^ 2 - a ^ 2 := by nlinarith
-  have hX2 : γ ^ 2 * γ ^ 2 ≤ X ^ 2 := by nlinarith
+  have hgap : X ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) < 4 * a ^ (4 : ℕ) * γ ^ (2 : ℕ) := by
+    nlinarith [sq_nonneg (X * A + 2 * a ^ (2 : ℕ) * γ)]
+  have hD : 0 < σ ^ (2 : ℕ) - a ^ (2 : ℕ) := by nlinarith
+  have hX2 : γ ^ (2 : ℕ) * γ ^ (2 : ℕ) ≤ X ^ (2 : ℕ) := by nlinarith
   have hcmp := mul_le_mul_of_nonneg_right hX2 hD.le
-  have hmid : γ ^ 2 * (σ ^ 2 - a ^ 2) < 4 * a ^ 4 := by
+  have hmid : γ ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) < 4 * a ^ (4 : ℕ) := by
     by_contra hn
     have hp := mul_nonneg hγ.le
-      (show 0 ≤ γ ^ 2 * (σ ^ 2 - a ^ 2) - 4 * a ^ 4 by linarith)
+      (show 0 ≤ γ ^ (2 : ℕ) * (σ ^ (2 : ℕ) - a ^ (2 : ℕ)) - 4 * a ^ (4 : ℕ) by linarith)
     nlinarith
-  have hsmall : 2 * a * (σ - a) ≤ σ ^ 2 - a ^ 2 := by
+  have hsmall : 2 * a * (σ - a) ≤ σ ^ (2 : ℕ) - a ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (σ - a)]
   have hsmallg := mul_le_mul_of_nonneg_left hsmall hγ.le
   by_contra hn
   have hp := mul_nonneg ha.le
-    (show 0 ≤ (σ - a) * γ ^ 2 - 2 * a ^ 3 by linarith)
+    (show 0 ≤ (σ - a) * γ ^ (2 : ℕ) - 2 * a ^ (3 : ℕ) by linarith)
   nlinarith
 
 end

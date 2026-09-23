@@ -84,25 +84,25 @@ theorem hasDerivAt_F (θ : ℝ) : HasDerivAt A.F (A.R1 θ * A.Fr θ + A.Fth θ) 
   simpa using hasDerivAt_comp_curve C.smooth (A.hasDerivAt_R θ) (hasDerivAt_id θ)
 
 /-- The Riemannian speed of the arc, `ds/dθ = √(R'² + F²)`. -/
-noncomputable def speed (θ : ℝ) : ℝ := Real.sqrt (A.R1 θ ^ 2 + A.F θ ^ 2)
+noncomputable def speed (θ : ℝ) : ℝ := Real.sqrt (A.R1 θ ^ (2 : ℕ) + A.F θ ^ (2 : ℕ))
 
 theorem speed_pos (θ : ℝ) : 0 < A.speed θ := by
   have := A.F_pos θ
   exact Real.sqrt_pos.mpr (by positivity)
 
-theorem speed_sq (θ : ℝ) : A.speed θ ^ 2 = A.R1 θ ^ 2 + A.F θ ^ 2 := by
+theorem speed_sq (θ : ℝ) : A.speed θ ^ (2 : ℕ) = A.R1 θ ^ (2 : ℕ) + A.F θ ^ (2 : ℕ) := by
   have := A.F_pos θ
   exact Real.sq_sqrt (by positivity)
 
 /-- **Liouville's geodesic curvature** of the radial graph. -/
 noncomputable def kappa (θ : ℝ) : ℝ :=
-  (2 * A.Fr θ * A.R1 θ ^ 2 + A.R1 θ * A.Fth θ - A.F θ * A.R2 θ + A.F θ ^ 2 * A.Fr θ)
-    / A.speed θ ^ 3
+  (2 * A.Fr θ * A.R1 θ ^ (2 : ℕ) + A.R1 θ * A.Fth θ - A.F θ * A.R2 θ + A.F θ ^ (2 : ℕ) * A.Fr θ)
+    / A.speed θ ^ (3 : ℕ)
 
 /-- The arclength density of the geodesic curvature, `κ_g ds/dθ`. -/
 noncomputable def kappaDs (θ : ℝ) : ℝ :=
-  (2 * A.Fr θ * A.R1 θ ^ 2 + A.R1 θ * A.Fth θ - A.F θ * A.R2 θ + A.F θ ^ 2 * A.Fr θ)
-    / (A.R1 θ ^ 2 + A.F θ ^ 2)
+  (2 * A.Fr θ * A.R1 θ ^ (2 : ℕ) + A.R1 θ * A.Fth θ - A.F θ * A.R2 θ + A.F θ ^ (2 : ℕ) * A.Fr θ)
+    / (A.R1 θ ^ (2 : ℕ) + A.F θ ^ (2 : ℕ))
 
 theorem kappa_mul_speed (θ : ℝ) : A.kappa θ * A.speed θ = A.kappaDs θ := by
   have hs : A.speed θ ≠ 0 := (A.speed_pos θ).ne'
@@ -119,14 +119,14 @@ the radial derivative of the warping function plus the turning rate of the tange
 theorem hasDerivAt_turn (θ : ℝ) : HasDerivAt A.turn (A.Fr θ - A.kappaDs θ) θ := by
   have hF : A.F θ ≠ 0 := (A.F_pos θ).ne'
   have hq : HasDerivAt (fun t : ℝ => A.R1 t / A.F t)
-      ((A.R2 θ * A.F θ - A.R1 θ * (A.R1 θ * A.Fr θ + A.Fth θ)) / A.F θ ^ 2) θ :=
+      ((A.R2 θ * A.F θ - A.R1 θ * (A.R1 θ * A.Fr θ + A.Fth θ)) / A.F θ ^ (2 : ℕ)) θ :=
     (A.hasDerivAt_R1 θ).div (A.hasDerivAt_F θ) hF
   have harctan := hq.arctan
-  have hval : 1 / (1 + (A.R1 θ / A.F θ) ^ 2)
-      * ((A.R2 θ * A.F θ - A.R1 θ * (A.R1 θ * A.Fr θ + A.Fth θ)) / A.F θ ^ 2)
+  have hval : 1 / (1 + (A.R1 θ / A.F θ) ^ (2 : ℕ))
+      * ((A.R2 θ * A.F θ - A.R1 θ * (A.R1 θ * A.Fr θ + A.Fth θ)) / A.F θ ^ (2 : ℕ))
       = A.Fr θ - A.kappaDs θ := by
     unfold kappaDs
-    have hden : A.R1 θ ^ 2 + A.F θ ^ 2 ≠ 0 := by
+    have hden : A.R1 θ ^ (2 : ℕ) + A.F θ ^ (2 : ℕ) ≠ 0 := by
       have := A.F_pos θ; positivity
     field_simp
     ring
@@ -134,7 +134,7 @@ theorem hasDerivAt_turn (θ : ℝ) : HasDerivAt A.turn (A.Fr θ - A.kappaDs θ) 
   exact harctan
 
 theorem continuous_kappaDs : Continuous A.kappaDs := by
-  have hden : ∀ θ : ℝ, A.R1 θ ^ 2 + A.F θ ^ 2 ≠ 0 := fun θ => by
+  have hden : ∀ θ : ℝ, A.R1 θ ^ (2 : ℕ) + A.F θ ^ (2 : ℕ) ≠ 0 := fun θ => by
     have := A.F_pos θ; positivity
   unfold kappaDs
   exact (((continuous_const.mul A.continuous_Fr).mul (A.continuous_R1.pow 2)).add

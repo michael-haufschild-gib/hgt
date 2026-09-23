@@ -29,10 +29,10 @@ theorem fejer_pointwise_bound {β : ℝ} (hβ : β ≠ 0)
     (hmod : ∀ x y : ℝ, |x - y| ≤ ρ → ‖f x - f y‖ ≤ ω)
     {c : ℝ} (hc : 0 < c) (hcρ : Real.pi * Real.sqrt (c / 2) ≤ |β| * ρ)
     (N : ℕ) (t u : ℝ) :
-    (‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)) * ‖f (t + u) - f t‖
-      ≤ (‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)) * (2 * ε + ω)
+    (‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)) * ‖f (t + u) - f t‖
+      ≤ (‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)) * (2 * ε + ω)
         + 2 * ‖f‖ * (2 / (((N : ℝ) + 1) * c)) := by
-  have hKnn : 0 ≤ ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1) := fejerKernel_nonneg β N u
+  have hKnn : 0 ≤ ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1) := fejerKernel_nonneg β N u
   have hfnorm : ∀ x : ℝ, ‖f x‖ ≤ ‖f‖ := fun x => f.norm_coe_le_norm x
   have hboundnn : 0 ≤ 2 * ‖f‖ * (2 / (((N : ℝ) + 1) * c)) := by
     have h1 : (0 : ℝ) ≤ ‖f‖ := norm_nonneg f
@@ -40,16 +40,16 @@ theorem fejer_pointwise_bound {β : ℝ} (hβ : β ≠ 0)
     positivity
   by_cases hcos : Real.cos (β * u) ≤ 1 - c
   · -- away from the peaks: the kernel is small
-    have hK : ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1) ≤ 2 / (((N : ℝ) + 1) * c) :=
+    have hK : ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1) ≤ 2 / (((N : ℝ) + 1) * c) :=
       fejerKernel_norm_le_of_cos_le β N hc hcos
     have hincr : ‖f (t + u) - f t‖ ≤ 2 * ‖f‖ := by
       calc ‖f (t + u) - f t‖ ≤ ‖f (t + u)‖ + ‖f t‖ := norm_sub_le _ _
         _ ≤ ‖f‖ + ‖f‖ := add_le_add (hfnorm _) (hfnorm _)
         _ = 2 * ‖f‖ := by ring
-    have hprod : (‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)) * ‖f (t + u) - f t‖
+    have hprod : (‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)) * ‖f (t + u) - f t‖
         ≤ (2 / (((N : ℝ) + 1) * c)) * (2 * ‖f‖) := by
       refine mul_le_mul hK hincr (norm_nonneg _) (by positivity)
-    have hrest : (0 : ℝ) ≤ (‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)) * (2 * ε + ω) := by
+    have hrest : (0 : ℝ) ≤ (‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)) * (2 * ε + ω) := by
       have hω : 0 ≤ 2 * ε + ω := by
         have h0 := hmod 0 0 (by simpa using hρ.le)
         have : ‖f 0 - f 0‖ = 0 := by simp
@@ -86,8 +86,8 @@ theorem fejer_pointwise_bound {β : ℝ} (hβ : β ≠ 0)
             exact norm_add_le _ _
         _ ≤ ω + 2 * ε := add_le_add hstep1 hstep2
         _ = 2 * ε + ω := by ring
-    have hprod : (‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)) * ‖f (t + u) - f t‖
-        ≤ (‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)) * (2 * ε + ω) :=
+    have hprod : (‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)) * ‖f (t + u) - f t‖
+        ≤ (‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)) * (2 * ε + ω) :=
       mul_le_mul_of_nonneg_left hincr hKnn
     linarith [hprod, hboundnn]
 

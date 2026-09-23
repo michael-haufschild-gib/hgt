@@ -110,24 +110,24 @@ theorem riemannHypothesis_of_forall_re_xiLiPaired_nonneg
     rw [norm_xiRootV (hne0 ρ) (hne1 ρ)]
     exact hMb ρ
   have hsum : Summable fun ρ : XiDivisorSupport =>
-      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ 2 := by
+      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ (2 : ℕ) := by
     refine Summable.of_nonneg_of_le (fun ρ => by nlinarith [hmult ρ, sq_nonneg ‖xiRootV (ρ:ℂ) - 1‖])
-      (fun ρ => ?_) (xi_zero_multiplicity_inv_sq_summable.mul_left (M ^ 2))
+      (fun ρ => ?_) (xi_zero_multiplicity_inv_sq_summable.mul_left (M ^ (2 : ℕ)))
     have hb := norm_xiRootV_sub_one_le (hne0 ρ) (hne1 ρ) hM1 (hMb ρ)
     have hw1 : ‖xiRootW (ρ : ℂ) - 1‖ = 1 / ‖(ρ : ℂ)‖ := norm_xiRootW_sub_one _
     rw [hw1] at hb
     have hnn : (0 : ℝ) ≤ ‖xiRootV (ρ : ℂ) - 1‖ := norm_nonneg _
-    have hsq : ‖xiRootV (ρ : ℂ) - 1‖ ^ 2 ≤ M ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2) := by
+    have hsq : ‖xiRootV (ρ : ℂ) - 1‖ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
       have hM0 : (0 : ℝ) ≤ M := by linarith
-      have hmul : (M * (1 / ‖(ρ : ℂ)‖)) ^ 2 = M ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2) := by
+      have hmul : (M * (1 / ‖(ρ : ℂ)‖)) ^ (2 : ℕ) = M ^ (2 : ℕ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
         rw [mul_pow, div_pow, one_pow]
       rw [← hmul]
       nlinarith [mul_nonneg hM0 (by positivity : (0:ℝ) ≤ 1 / ‖(ρ : ℂ)‖)]
-    calc ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ 2
-        ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * (M ^ 2 * (1 / ‖(ρ : ℂ)‖ ^ 2)) := by
+    calc ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * ‖xiRootV (ρ : ℂ) - 1‖ ^ (2 : ℕ)
+        ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * (M ^ (2 : ℕ) * (1 / ‖(ρ : ℂ)‖ ^ (2 : ℕ))) := by
           have := hmult ρ
           nlinarith
-      _ = M ^ 2 * (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ 2) := by
+      _ = M ^ (2 : ℕ) * (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) / ‖(ρ : ℂ)‖ ^ (2 : ℕ)) := by
           ring
   -- the bad zero
   have hbad : 1 < ‖xiRootV ((ρ₀ : XiDivisorSupport) : ℂ)‖ := by

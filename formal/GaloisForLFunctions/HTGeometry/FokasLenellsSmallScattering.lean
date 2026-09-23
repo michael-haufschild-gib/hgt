@@ -72,8 +72,8 @@ theorem rightAsymptoticMatrix_entry_displacement (q : SchwartzMap ℝ ℂ) (κ :
 
 /-- Reverse-space symmetry expresses all independent amplitudes quadratically in one endpoint basis. -/
 theorem scattering_amplitudes_right_quadratic (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
-    transmission q κ = (rightAsymptoticMatrix q κ 0 0)^2-(rightAsymptoticMatrix q κ 0 1)^2 ∧
-    reverseTransmission q κ = (rightAsymptoticMatrix q κ 1 1)^2-(rightAsymptoticMatrix q κ 1 0)^2 ∧
+    transmission q κ = (rightAsymptoticMatrix q κ 0 0)^(2 : ℕ)-(rightAsymptoticMatrix q κ 0 1)^(2 : ℕ) ∧
+    reverseTransmission q κ = (rightAsymptoticMatrix q κ 1 1)^(2 : ℕ)-(rightAsymptoticMatrix q κ 1 0)^(2 : ℕ) ∧
     reflectionAmplitude q κ = rightAsymptoticMatrix q κ 0 0*rightAsymptoticMatrix q κ 1 0-
       rightAsymptoticMatrix q κ 0 1*rightAsymptoticMatrix q κ 1 1 := by
   simp [transmission, reverseTransmission, reflectionAmplitude,
@@ -102,7 +102,7 @@ theorem scattering_amplitudes_displacement (q : SchwartzMap ℝ ℂ) (κ : ℝ) 
   have hn : 0 ≤ δ := scatteringDisplacement_nonneg q κ
   rcases rightAsymptoticMatrix_entry_displacement q κ with ⟨h00,h10,h01,h11⟩
   rcases scattering_amplitudes_right_quadratic q κ with ⟨ha,hac,hb⟩
-  have hdiag : ∀ a b : ℂ, ‖a-1‖ ≤ δ → ‖b‖ ≤ δ → ‖a^2-b^2-1‖ ≤ δ*(2+2*δ) := by
+  have hdiag : ∀ a b : ℂ, ‖a-1‖ ≤ δ → ‖b‖ ≤ δ → ‖a^(2 : ℕ)-b^(2 : ℕ)-1‖ ≤ δ*(2+2*δ) := by
     intro a b h0 h1
     have ha1 : ‖a+1‖ ≤ δ+2 := by
       calc
@@ -110,9 +110,9 @@ theorem scattering_amplitudes_displacement (q : SchwartzMap ℝ ℂ) (κ : ℝ) 
         _ ≤ ‖a-1‖+‖(1:ℂ)+(1:ℂ)‖ := norm_add_le _ _
         _ ≤ δ+2 := by simpa only [norm_one, one_add_one_eq_two] using add_le_add h0 (norm_add_le (1:ℂ) 1)
     calc
-      ‖a^2-b^2-1‖ = ‖(a-1)*(a+1)-b^2‖ := by congr 1; ring
-      _ ≤ ‖a-1‖*‖a+1‖+‖b‖^2 := by simpa only [pow_two, norm_mul] using norm_sub_le ((a-1)*(a+1)) (b*b)
-      _ ≤ δ*(δ+2)+δ^2 := by
+      ‖a^(2 : ℕ)-b^(2 : ℕ)-1‖ = ‖(a-1)*(a+1)-b^(2 : ℕ)‖ := by congr 1; ring
+      _ ≤ ‖a-1‖*‖a+1‖+‖b‖^(2 : ℕ) := by simpa only [pow_two, norm_mul] using norm_sub_le ((a-1)*(a+1)) (b*b)
+      _ ≤ δ*(δ+2)+δ^(2 : ℕ) := by
         apply add_le_add (mul_le_mul h0 ha1 (norm_nonneg _) hn)
         nlinarith [norm_nonneg b]
       _ = _ := by ring
@@ -256,7 +256,7 @@ theorem energy_norm_lower_bound (a b u v : ℂ) :
       Complex.conj_re, Complex.conj_im]
     ring
   have hr : -‖e‖ ≤ e.re := (abs_le.mp (Complex.abs_re_le_norm e)).1
-  have hn : ‖e‖ ≤ ‖b‖*‖u‖*‖v‖+‖a‖*‖u‖*‖v‖+‖a‖*‖b‖*‖v‖^2 := by
+  have hn : ‖e‖ ≤ ‖b‖*‖u‖*‖v‖+‖a‖*‖u‖*‖v‖+‖a‖*‖b‖*‖v‖^(2 : ℕ) := by
     calc
       ‖e‖ ≤ ‖star u*b*v-star v*a*u‖+‖star v*a*b*v‖ := norm_sub_le _ _
       _ ≤ ‖star u*b*v‖+‖star v*a*u‖+‖star v*a*b*v‖ :=

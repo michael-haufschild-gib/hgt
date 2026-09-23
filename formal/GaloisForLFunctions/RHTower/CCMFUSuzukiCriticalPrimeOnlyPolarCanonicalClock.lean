@@ -27,14 +27,14 @@ def ccmFUCriticalPrimeOnlyPolarStaticAction (N : ℕ) : ℝ :=
   ∑ j ∈ Finset.range (N - 2),
     suzukiCheckpointCriticalPrimeOnlyPolarCell (j + 3) *
       (32 * Real.sqrt ((j + 3 : ℕ) : ℝ) /
-        Real.log ((j + 3 : ℕ) : ℝ) ^ 3)
+        Real.log ((j + 3 : ℕ) : ℝ) ^ (3 : ℕ))
 
 /-- Reciprocal-wall component of the same literal codiagonal. -/
 def ccmFUCriticalPrimeOnlyPolarSlopeAction (N : ℕ) : ℝ :=
   ∑ j ∈ Finset.range (N - 2),
     suzukiCheckpointCriticalPrimeOnlyPolarCell (j + 3) *
       (32 * Real.sqrt ((j + 3 : ℕ) : ℝ) /
-        Real.log ((j + 3 : ℕ) : ℝ) ^ 2)
+        Real.log ((j + 3 : ℕ) : ℝ) ^ (2 : ℕ))
 
 /-- The actual floor clock is constant on each half-open logarithmic arithmetic cell. -/
 theorem suzukiCheckpointEventIndex_eq_of_log_cell
@@ -73,10 +73,10 @@ theorem ccmFUCriticalPrimeOnlyPolarAction_eq_static_sub_slope_div
     _ = ∑ j ∈ Finset.range (N - 2),
         (suzukiCheckpointCriticalPrimeOnlyPolarCell (j + 3) *
           (32 * Real.sqrt ((j + 3 : ℕ) : ℝ) /
-            Real.log ((j + 3 : ℕ) : ℝ) ^ 3) -
+            Real.log ((j + 3 : ℕ) : ℝ) ^ (3 : ℕ)) -
         (suzukiCheckpointCriticalPrimeOnlyPolarCell (j + 3) *
           (32 * Real.sqrt ((j + 3 : ℕ) : ℝ) /
-            Real.log ((j + 3 : ℕ) : ℝ) ^ 2)) / H) := by
+            Real.log ((j + 3 : ℕ) : ℝ) ^ (2 : ℕ))) / H) := by
           apply Finset.sum_congr rfl
           intro j _hj
           have hn : (1 : ℝ) < ((j + 3 : ℕ) : ℝ) := by
@@ -110,10 +110,10 @@ theorem ccmFUCriticalPrimeOnlyPolarStatic_succ_sub_slope_div
   have hlast :
       suzukiCheckpointCriticalPrimeOnlyPolarCell (N + 1) *
           (32 * Real.sqrt ((N + 1 : ℕ) : ℝ) /
-            Real.log ((N + 1 : ℕ) : ℝ) ^ 3) =
+            Real.log ((N + 1 : ℕ) : ℝ) ^ (3 : ℕ)) =
         (suzukiCheckpointCriticalPrimeOnlyPolarCell (N + 1) *
           (32 * Real.sqrt ((N + 1 : ℕ) : ℝ) /
-            Real.log ((N + 1 : ℕ) : ℝ) ^ 2)) /
+            Real.log ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ))) /
           Real.log ((N + 1 : ℕ) : ℝ) := by
     field_simp [hlog]
   rw [hlast, add_div]

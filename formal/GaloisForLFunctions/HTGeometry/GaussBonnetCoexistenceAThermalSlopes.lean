@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 open CPV
 
 def egbCoexistenceARadialPolynomialSlope (τ θ v : ℝ) : ℝ :=
-  4 * egbCoexistenceAPressureWeight τ θ * v ^ 3 - 3 * egbCoexistenceATemperatureWeight τ θ * v ^ 2 +
+  4 * egbCoexistenceAPressureWeight τ θ * v ^ (3 : ℕ) - 3 * egbCoexistenceATemperatureWeight τ θ * v ^ (2 : ℕ) +
     2 * v - 2 * egbCoexistenceACouplingWeight τ θ * egbCoexistenceATemperatureWeight τ θ
 
 theorem egbCoexistenceARadialPolynomial_hasDerivAt (τ θ v : ℝ) :
@@ -79,9 +79,9 @@ theorem egbCoexistenceARadialPolynomialSlope_middle_neg (τ θ : ℝ) :
 theorem egbCoexistenceA_thermal_slope_scaling (k τ θ u : ℝ) :
     deriv (egbTemperatureA (egbCoexistenceAPressure k τ θ) (egbCoexistenceACharge k τ θ)
       (egbCoexistenceACouplingRoot k τ θ)) (exp k * exp u) =
-    (egbCoexistenceARadialPolynomialSlope τ θ (exp u) * exp u * (exp u ^ 2 + 2 * egbCoexistenceACouplingWeight τ θ) -
-      egbCoexistenceARadialPolynomial τ θ (exp u) * (3 * exp u ^ 2 + 2 * egbCoexistenceACouplingWeight τ θ)) /
-    (4 * Real.pi * exp k ^ 2 * exp u ^ 2 * (exp u ^ 2 + 2 * egbCoexistenceACouplingWeight τ θ) ^ 2) := by
+    (egbCoexistenceARadialPolynomialSlope τ θ (exp u) * exp u * (exp u ^ (2 : ℕ) + 2 * egbCoexistenceACouplingWeight τ θ) -
+      egbCoexistenceARadialPolynomial τ θ (exp u) * (3 * exp u ^ (2 : ℕ) + 2 * egbCoexistenceACouplingWeight τ θ)) /
+    (4 * Real.pi * exp k ^ (2 : ℕ) * exp u ^ (2 : ℕ) * (exp u ^ (2 : ℕ) + 2 * egbCoexistenceACouplingWeight τ θ) ^ (2 : ℕ)) := by
   have h := (egbTemperatureA_hasDerivAt (egbCoexistenceAPressure k τ θ) (egbCoexistenceACharge k τ θ)
     (egbCoexistenceACouplingRoot k τ θ) (k + u)).deriv
   rw [exp_add] at h

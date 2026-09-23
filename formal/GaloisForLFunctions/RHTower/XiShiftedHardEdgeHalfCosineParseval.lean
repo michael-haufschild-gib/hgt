@@ -115,9 +115,9 @@ private theorem integral_halfPoly_sq_aux (M : ℕ) (w : ℕ → ℝ)
     (φ : ℕ → ℝ → ℝ) (hφ : ∀ j, Continuous (φ j))
     (horth : ∀ j k, (∫ θ in (-Real.pi)..Real.pi, φ j θ * φ k θ)
       = if j = k then Real.pi else 0) :
-    (∫ θ in (-Real.pi)..Real.pi, (∑ j ∈ Finset.range (M + 1), w j * φ j θ) ^ 2)
-      = Real.pi * ∑ j ∈ Finset.range (M + 1), w j ^ 2 := by
-  have hexpand : ∀ θ : ℝ, (∑ j ∈ Finset.range (M + 1), w j * φ j θ) ^ 2
+    (∫ θ in (-Real.pi)..Real.pi, (∑ j ∈ Finset.range (M + 1), w j * φ j θ) ^ (2 : ℕ))
+      = Real.pi * ∑ j ∈ Finset.range (M + 1), w j ^ (2 : ℕ) := by
+  have hexpand : ∀ θ : ℝ, (∑ j ∈ Finset.range (M + 1), w j * φ j θ) ^ (2 : ℕ)
       = ∑ j ∈ Finset.range (M + 1), ∑ k ∈ Finset.range (M + 1),
         (w j * w k) * (φ j θ * φ k θ) := by
     intro θ
@@ -155,16 +155,16 @@ private theorem integral_halfPoly_sq_aux (M : ℕ) (w : ℕ → ℝ)
 
 /-- **Parseval for half-integer cosine polynomials.** -/
 theorem integral_halfCosPoly_sq (M : ℕ) (c : ℕ → ℝ) :
-    (∫ θ in (-Real.pi)..Real.pi, halfCosPoly M c θ ^ 2)
-      = Real.pi * ∑ j ∈ Finset.range (M + 1), c j ^ 2 :=
+    (∫ θ in (-Real.pi)..Real.pi, halfCosPoly M c θ ^ (2 : ℕ))
+      = Real.pi * ∑ j ∈ Finset.range (M + 1), c j ^ (2 : ℕ) :=
   integral_halfPoly_sq_aux M c (fun j θ => Real.cos (((j : ℝ) + 1 / 2) * θ))
     (fun _ => Real.continuous_cos.comp (continuous_const.mul continuous_id))
     integral_halfCos_mul_halfCos
 
 /-- **Parseval for the derivative.** -/
 theorem integral_halfCosPolyDeriv_sq (M : ℕ) (c : ℕ → ℝ) :
-    (∫ θ in (-Real.pi)..Real.pi, halfCosPolyDeriv M c θ ^ 2)
-      = Real.pi * ∑ j ∈ Finset.range (M + 1), (c j * ((j : ℝ) + 1 / 2)) ^ 2 := by
+    (∫ θ in (-Real.pi)..Real.pi, halfCosPolyDeriv M c θ ^ (2 : ℕ))
+      = Real.pi * ∑ j ∈ Finset.range (M + 1), (c j * ((j : ℝ) + 1 / 2)) ^ (2 : ℕ) := by
   have h := integral_halfPoly_sq_aux M (fun j => -(c j * ((j : ℝ) + 1 / 2)))
     (fun j θ => Real.sin (((j : ℝ) + 1 / 2) * θ))
     (fun _ => Real.continuous_sin.comp (continuous_const.mul continuous_id))
@@ -177,11 +177,11 @@ theorem integral_halfCosPolyDeriv_sq (M : ℕ) (c : ℕ → ℝ) :
 
 /-- **The `L²` Bernstein inequality for half-integer cosine polynomials.** -/
 theorem integral_halfCosPolyDeriv_sq_le (M : ℕ) (c : ℕ → ℝ) :
-    (∫ θ in (-Real.pi)..Real.pi, halfCosPolyDeriv M c θ ^ 2)
-      ≤ ((M : ℝ) + 1 / 2) ^ 2 * ∫ θ in (-Real.pi)..Real.pi, halfCosPoly M c θ ^ 2 := by
+    (∫ θ in (-Real.pi)..Real.pi, halfCosPolyDeriv M c θ ^ (2 : ℕ))
+      ≤ ((M : ℝ) + 1 / 2) ^ (2 : ℕ) * ∫ θ in (-Real.pi)..Real.pi, halfCosPoly M c θ ^ (2 : ℕ) := by
   rw [integral_halfCosPolyDeriv_sq, integral_halfCosPoly_sq]
-  have hinner : ∑ j ∈ Finset.range (M + 1), (c j * ((j : ℝ) + 1 / 2)) ^ 2
-      ≤ ((M : ℝ) + 1 / 2) ^ 2 * ∑ j ∈ Finset.range (M + 1), c j ^ 2 := by
+  have hinner : ∑ j ∈ Finset.range (M + 1), (c j * ((j : ℝ) + 1 / 2)) ^ (2 : ℕ)
+      ≤ ((M : ℝ) + 1 / 2) ^ (2 : ℕ) * ∑ j ∈ Finset.range (M + 1), c j ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_le_sum fun j hj => ?_
     simp only [Finset.mem_range] at hj
@@ -189,14 +189,14 @@ theorem integral_halfCosPolyDeriv_sq_le (M : ℕ) (c : ℕ → ℝ) :
       have hjr : (j : ℝ) ≤ (M : ℝ) := by exact_mod_cast Nat.lt_succ_iff.1 hj
       linarith
     have hj0 : (0 : ℝ) ≤ (j : ℝ) + 1 / 2 := by positivity
-    have hsq : ((j : ℝ) + 1 / 2) ^ 2 ≤ ((M : ℝ) + 1 / 2) ^ 2 := by nlinarith [hj0, hjM]
-    calc (c j * ((j : ℝ) + 1 / 2)) ^ 2 = c j ^ 2 * ((j : ℝ) + 1 / 2) ^ 2 := by ring
-      _ ≤ c j ^ 2 * ((M : ℝ) + 1 / 2) ^ 2 := mul_le_mul_of_nonneg_left hsq (sq_nonneg _)
-      _ = ((M : ℝ) + 1 / 2) ^ 2 * c j ^ 2 := by ring
-  calc Real.pi * ∑ j ∈ Finset.range (M + 1), (c j * ((j : ℝ) + 1 / 2)) ^ 2
-      ≤ Real.pi * (((M : ℝ) + 1 / 2) ^ 2 * ∑ j ∈ Finset.range (M + 1), c j ^ 2) :=
+    have hsq : ((j : ℝ) + 1 / 2) ^ (2 : ℕ) ≤ ((M : ℝ) + 1 / 2) ^ (2 : ℕ) := by nlinarith [hj0, hjM]
+    calc (c j * ((j : ℝ) + 1 / 2)) ^ (2 : ℕ) = c j ^ (2 : ℕ) * ((j : ℝ) + 1 / 2) ^ (2 : ℕ) := by ring
+      _ ≤ c j ^ (2 : ℕ) * ((M : ℝ) + 1 / 2) ^ (2 : ℕ) := mul_le_mul_of_nonneg_left hsq (sq_nonneg _)
+      _ = ((M : ℝ) + 1 / 2) ^ (2 : ℕ) * c j ^ (2 : ℕ) := by ring
+  calc Real.pi * ∑ j ∈ Finset.range (M + 1), (c j * ((j : ℝ) + 1 / 2)) ^ (2 : ℕ)
+      ≤ Real.pi * (((M : ℝ) + 1 / 2) ^ (2 : ℕ) * ∑ j ∈ Finset.range (M + 1), c j ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hinner Real.pi_pos.le
-    _ = ((M : ℝ) + 1 / 2) ^ 2 * (Real.pi * ∑ j ∈ Finset.range (M + 1), c j ^ 2) := by ring
+    _ = ((M : ℝ) + 1 / 2) ^ (2 : ℕ) * (Real.pi * ∑ j ∈ Finset.range (M + 1), c j ^ (2 : ℕ)) := by ring
 
 end RHTower
 

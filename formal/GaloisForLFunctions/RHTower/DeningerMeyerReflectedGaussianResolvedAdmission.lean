@@ -14,7 +14,7 @@ cross-prime incidence witness.  Before codiagonalization it is the unsquared
 antidiagonal defect; direct codiagonalization kills it, while the provenance
 quotient has a left inverse and retains a nonzero class at every displacement.
 
-This closes source grading, singular `ell^2` admission, coefficient-faithful
+This closes source grading, singular `ell^(2 : ℕ)` admission, coefficient-faithful
 incidence, and resolved-coface conservativity for this fixed source.  It does
 not identify the resulting completed vector with the actual global Green
 resolved range or prove the remaining Hermitian Gram domination.

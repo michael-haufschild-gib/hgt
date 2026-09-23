@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.GeomBlockPrimesRange
 # Exact geometric schedule for Menon's final prime range
 
 The distinguished final range is divided into the paper's `H`-adic blocks with
-`H = (log X)^10`.  The natural depth is the ceiling of the exact logarithmic endpoint ratio.
+`H = (log X)^(10 : ℕ)`.  The natural depth is the ceiling of the exact logarithmic endpoint ratio.
 This file proves literal coverage and both cofactor-endpoint conditions used by the harmonic
 Ramaré ladder.
 -/

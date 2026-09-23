@@ -24,16 +24,16 @@ theorem egbFixedChargeACriticalMixedProfile_centered (n : ℕ) (a b : ℝ) :
 
 /-- The two profile coefficients are exact Euclidean energy coordinates. -/
 theorem egbFixedChargeACriticalMixedProfile_energy (n : ℕ) (a b : ℝ) :
-    egbFixedChargeACriticalCenteredEnergy n (egbFixedChargeACriticalMixedProfile n a b) = a ^ 2 + b ^ 2 := by
-  have hs : (∑ i, egbFixedChargeACriticalUnitSlow n i ^ 2) = 1 := by
+    egbFixedChargeACriticalCenteredEnergy n (egbFixedChargeACriticalMixedProfile n a b) = a ^ (2 : ℕ) + b ^ (2 : ℕ) := by
+  have hs : (∑ i, egbFixedChargeACriticalUnitSlow n i ^ (2 : ℕ)) = 1 := by
     simpa only [egbFixedChargeACriticalCenteredEnergy, (egbFixedChargeACriticalUnitModes_centered n).1] using
       (egbFixedChargeACriticalUnitModes_energy_one n).1
-  have hf : (∑ i, egbFixedChargeACriticalUnitFast n i ^ 2) = 1 := by
+  have hf : (∑ i, egbFixedChargeACriticalUnitFast n i ^ (2 : ℕ)) = 1 := by
     simpa only [egbFixedChargeACriticalCenteredEnergy, (egbFixedChargeACriticalUnitModes_centered n).2] using
       (egbFixedChargeACriticalUnitModes_energy_one n).2
   have hp (i : Fin (2 ^ (n + 3))) :
-      (a * egbFixedChargeACriticalUnitSlow n i + b * egbFixedChargeACriticalUnitFast n i) ^ 2 =
-        a ^ 2 * egbFixedChargeACriticalUnitSlow n i ^ 2 + b ^ 2 * egbFixedChargeACriticalUnitFast n i ^ 2 +
+      (a * egbFixedChargeACriticalUnitSlow n i + b * egbFixedChargeACriticalUnitFast n i) ^ (2 : ℕ) =
+        a ^ (2 : ℕ) * egbFixedChargeACriticalUnitSlow n i ^ (2 : ℕ) + b ^ (2 : ℕ) * egbFixedChargeACriticalUnitFast n i ^ (2 : ℕ) +
         (2 * a * b) * (egbFixedChargeACriticalUnitSlow n i * egbFixedChargeACriticalUnitFast n i) := by ring
   rw [egbFixedChargeACriticalCenteredEnergy, egbFixedChargeACriticalMixedProfile_centered]
   simp only [egbFixedChargeACriticalMixedProfile, hp, Finset.sum_add_distrib, ← Finset.mul_sum,
@@ -60,12 +60,12 @@ theorem egbFixedChargeACriticalMixedProfile_evolved_energy (n m : ℕ) (a b : �
     egbFixedChargeACriticalCenteredEnergy n
       ((egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal
         (egbFixedChargeACriticalMixedProfile n a b)) =
-      (4 / 9 : ℝ) ^ m * a ^ 2 + (1 / 36 : ℝ) ^ m * b ^ 2 := by
+      (4 / 9 : ℝ) ^ m * a ^ (2 : ℕ) + (1 / 36 : ℝ) ^ m * b ^ (2 : ℕ) := by
   rw [egbFixedChargeACriticalMixedProfile_evolution, egbFixedChargeACriticalMixedProfile_energy]
-  have hs : ((2 / 3 : ℝ) ^ m) ^ 2 = (4 / 9 : ℝ) ^ m := by
+  have hs : ((2 / 3 : ℝ) ^ m) ^ (2 : ℕ) = (4 / 9 : ℝ) ^ m := by
     rw [pow_two, ← mul_pow]
     norm_num
-  have hf : ((1 / 6 : ℝ) ^ m) ^ 2 = (1 / 36 : ℝ) ^ m := by
+  have hf : ((1 / 6 : ℝ) ^ m) ^ (2 : ℕ) = (1 / 36 : ℝ) ^ m := by
     rw [pow_two, ← mul_pow]
     norm_num
   rw [mul_pow, mul_pow, hs, hf]

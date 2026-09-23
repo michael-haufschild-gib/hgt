@@ -25,7 +25,7 @@ theorem norm_suzukiAllAngleCarrier_secondJet_le_schurSlack
     let f : ℂ → ℂ := fun w =>
       GaloisForLFunctions.RHTower.suzukiLivsicQuotient A E
         (GaloisForLFunctions.RHTower.suzukiUpperCayleyInv w)
-    ‖iteratedDeriv 2 f 0‖ ≤ 2 * (1 - ‖deriv f 0‖ ^ 2) := by
+    ‖iteratedDeriv 2 f 0‖ ≤ 2 * (1 - ‖deriv f 0‖ ^ (2 : ℕ)) := by
   let f : ℂ → ℂ := fun w =>
     GaloisForLFunctions.RHTower.suzukiLivsicQuotient A E
       (GaloisForLFunctions.RHTower.suzukiUpperCayleyInv w)

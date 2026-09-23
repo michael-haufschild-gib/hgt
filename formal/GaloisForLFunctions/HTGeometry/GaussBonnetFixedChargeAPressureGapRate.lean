@@ -13,7 +13,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAPressureGapCoefficient (w φ : ℝ) : ℝ :=
   (1 - 2 * egbFixedChargeACriticalCouplingWeight φ) /
-    (12 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2 * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ))
+    (12 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ))
 
 theorem egbFixedChargeAPressureGapCoefficient_pos (w φ : ℝ) : 0 < egbFixedChargeAPressureGapCoefficient w φ := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
@@ -40,10 +40,10 @@ theorem egbFixedChargeAPressureGapCoefficient_formula (w φ : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeAPressureGap_normalized_formula (w φ τ : ℝ) :
-    (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2 =
+    (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) =
       egbFixedChargeACriticalTemperature w φ *
-        ((egbFixedChargeACriticalPressure w φ / egbFixedChargeACriticalTemperature w φ - egbFixedChargeAPressure w φ τ / egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2) +
-      ((egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2) *
+        ((egbFixedChargeACriticalPressure w φ / egbFixedChargeACriticalTemperature w φ - egbFixedChargeAPressure w φ τ / egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) +
+      ((egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) *
         (egbFixedChargeAPressure w φ τ / egbFixedChargeATemperature w φ τ) := by
   have hT := egbFixedChargeATemperature_pos w φ τ
   have hr := egbFixedChargeACriticalRadius_pos w φ
@@ -54,7 +54,7 @@ theorem egbFixedChargeAPressureGap_normalized_formula (w φ τ : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeAPressureGap_quadratic_critical_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeAPressureGapCoefficient w φ)) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1

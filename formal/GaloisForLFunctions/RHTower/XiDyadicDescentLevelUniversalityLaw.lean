@@ -22,25 +22,25 @@ noncomputable section
 /-- Existence of a level-`k` analytic Xi root on the open right half-plane. -/
 def XiDyadicRightHalfRoot (k : ℕ) : Prop :=
   ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g rightHalf ∧
-    ∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s
+    ∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s
 
 /-- Existence of a level-`k` analytic root of the FE-descended Xi function on the slit plane. -/
 def XiDyadicSlitPlaneRoot (k : ℕ) : Prop :=
   ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g slitPlane ∧
-    ∀ w ∈ slitPlane, g w ^ 2 ^ k = xiDescent w
+    ∀ w ∈ slitPlane, g w ^ (2 : ℕ) ^ k = xiDescent w
 
 /-- Every unconditional Euler-side level-`k` root germ extends across the strip. -/
 def XiDyadicEulerGermExtends (k : ℕ) : Prop :=
   ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-    (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+    (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
     ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g rightHalf ∧
-      (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧ Set.EqOn g g₁ farHalf
+      (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧ Set.EqOn g g₁ farHalf
 
 /-- Every positive truncated half-band carries a level-`k` analytic Xi root. -/
 def XiDyadicAllBandRoots (k : ℕ) : Prop :=
   ∀ T : ℝ, 0 < T → ∃ g : ℂ → ℂ,
     AnalyticOnNhd ℂ g (halfBand T) ∧
-      ∀ s ∈ halfBand T, g s ^ 2 ^ k = xi s
+      ∀ s ∈ halfBand T, g s ^ (2 : ℕ) ^ k = xi s
 
 /-- The local two-circle modulus monodromy is trivial at every right-half Xi zero. -/
 def XiDyadicCircleMonodromyTrivial (k : ℕ) : Prop :=
@@ -68,15 +68,15 @@ def XiDyadicAllWindowDecksTrivial (k : ℕ) : Prop :=
   ∀ T : ℝ, ∀ ρ ∈ boxZeros T, ∃ R₀ > 0, ∀ R : ℝ, 0 < R → R ≤ R₀ →
     ∃ G₁ G₂ : ℂ → ℂ,
       AnalyticOnNhd ℂ G₁ (chartR ρ R) ∧ AnalyticOnNhd ℂ G₂ (chartL ρ R) ∧
-      (∀ z ∈ chartR ρ R, G₁ z ^ 2 ^ k = xi z) ∧
-      (∀ z ∈ chartL ρ R, G₂ z ^ 2 ^ k = xi z) ∧
+      (∀ z ∈ chartR ρ R, G₁ z ^ (2 : ℕ) ^ k = xi z) ∧
+      (∀ z ∈ chartL ρ R, G₂ z ^ (2 : ℕ) ^ k = xi z) ∧
       deckClass G₁ G₂ (ρ + ((R / 2 : ℝ) : ℂ) * I)
         (ρ - ((R / 2 : ℝ) : ℂ) * I) = 1
 
 /-- A Schwarz-equivariant level-`k` Xi root exists off the critical line. -/
 def XiDyadicOfflineEquivariantRoot (k : ℕ) : Prop :=
   ∃ h : ℂ → ℂ, AnalyticOnNhd ℂ h {s : ℂ | s.re ≠ 1 / 2} ∧
-    (∀ s ∈ {s : ℂ | s.re ≠ 1 / 2}, h s ^ 2 ^ k = xi s) ∧
+    (∀ s ∈ {s : ℂ | s.re ≠ 1 / 2}, h s ^ (2 : ℕ) ^ k = xi s) ∧
     ∀ s ∈ {s : ℂ | s.re ≠ 1 / 2}, mirrorRoot h s = h s
 
 /-- All faithful level-`k` realizations of the Xi dyadic descent obstruction. -/

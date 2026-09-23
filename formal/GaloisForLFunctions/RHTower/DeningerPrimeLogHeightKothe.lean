@@ -85,7 +85,7 @@ theorem deningerHeightKotheData_isNuclear : deningerHeightKotheData.IsNuclear :=
   refine ⟨k + 2, by omega, ?_⟩
   refine deningerHeight_summable_inv_sq.congr fun m => ?_
   have hpos : (0 : ℝ) < deningerHeight m := deningerHeight_pos m
-  show (deningerHeight m)⁻¹ ^ 2
+  show (deningerHeight m)⁻¹ ^ (2 : ℕ)
       = deningerHeight m ^ k / deningerHeight m ^ (k + 2)
   rw [pow_add, inv_pow]
   rw [eq_div_iff (by positivity)]
@@ -222,7 +222,7 @@ theorem deningerHeightSeminorm_star (k : ℕ) (a : DeningerHeightKothe) :
 
 /-! ## The zero-character sector -/
 
-/-- **The sector of vanishing total character** `𝒦_H^0 = {a : a_0 = 0}`. -/
+/-- **The sector of vanishing total character** `𝒦_H^(0 : ℕ) = {a : a_0 = 0}`. -/
 def deningerHeightKotheZero : Submodule ℂ DeningerHeightKothe :=
   LinearMap.ker (deningerKotheCoeffLinear (𝕜 := ℂ) deningerHeightKotheData 0)
 

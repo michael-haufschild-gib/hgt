@@ -11,7 +11,7 @@ frequency. At the reflection center, its first jet vanishes and its second jet i
 a canonical positive source coefficient:
 
 ```text
--2 gauge(n)^2 * (polar cosine moment(n) + 4π log(n) * oriented first moment(n)).
+-2 gauge(n)^(2 : ℕ) * (polar cosine moment(n) + 4π log(n) * oriented first moment(n)).
 ```
 
 Both source terms are strictly positive at every actual prime-power wall. Consequently every
@@ -35,13 +35,13 @@ def ccmActualHeadMatchedCosinePhaseFirstJet (n : ℕ) (xi : ℝ) : ℝ :=
 /-- Second spectral jet of the even matched polar cosine profile. -/
 def ccmActualHeadMatchedCosinePhaseSecondJet (n : ℕ) (xi : ℝ) : ℝ :=
   ∫ r in (0 : ℝ)..ccmActualHeadMatchedPrimePolarRadius n,
-    8 * Real.pi ^ 2 * r ^ 2 * Real.exp (Real.log n / 2) * Real.cosh (r / 2) *
+    8 * Real.pi ^ (2 : ℕ) * r ^ (2 : ℕ) * Real.exp (Real.log n / 2) * Real.cosh (r / 2) *
       Real.cos (2 * Real.pi * r * xi)
 
 /-- Positive polar contribution to center-frequency curvature. -/
 def ccmActualHeadMatchedCosinePhaseQuadraticMoment (n : ℕ) : ℝ :=
   ∫ r in (0 : ℝ)..ccmActualHeadMatchedPrimePolarRadius n,
-    8 * Real.pi ^ 2 * r ^ 2 * Real.exp (Real.log n / 2) * Real.cosh (r / 2)
+    8 * Real.pi ^ (2 : ℕ) * r ^ (2 : ℕ) * Real.exp (Real.log n / 2) * Real.cosh (r / 2)
 
 theorem hasDerivAt_ccmActualHeadMatchedCosinePhase_integrand
     (n : ℕ) (r xi : ℝ) :
@@ -66,7 +66,7 @@ theorem hasDerivAt_ccmActualHeadMatchedCosinePhaseFirstJet_integrand
       (fun x : ℝ =>
         4 * Real.pi * r * Real.exp (Real.log n / 2) * Real.cosh (r / 2) *
           Real.sin (2 * Real.pi * r * x))
-      (8 * Real.pi ^ 2 * r ^ 2 * Real.exp (Real.log n / 2) * Real.cosh (r / 2) *
+      (8 * Real.pi ^ (2 : ℕ) * r ^ (2 : ℕ) * Real.exp (Real.log n / 2) * Real.cosh (r / 2) *
         Real.cos (2 * Real.pi * r * xi)) xi := by
   have hlin : HasDerivAt (fun x : ℝ => 2 * Real.pi * r * x)
       (2 * Real.pi * r) xi := by
@@ -134,10 +134,10 @@ theorem hasDerivAt_ccmActualHeadMatchedCosinePhaseFirstJet
     4 * Real.pi * r * Real.exp (Real.log n / 2) * Real.cosh (r / 2) *
       Real.sin (2 * Real.pi * r * x)
   let F' : ℝ → ℝ → ℝ := fun x r =>
-    8 * Real.pi ^ 2 * r ^ 2 * Real.exp (Real.log n / 2) * Real.cosh (r / 2) *
+    8 * Real.pi ^ (2 : ℕ) * r ^ (2 : ℕ) * Real.exp (Real.log n / 2) * Real.cosh (r / 2) *
       Real.cos (2 * Real.pi * r * x)
   let bound : ℝ → ℝ := fun r =>
-    |8 * Real.pi ^ 2 * r ^ 2 * Real.exp (Real.log n / 2) * Real.cosh (r / 2)|
+    |8 * Real.pi ^ (2 : ℕ) * r ^ (2 : ℕ) * Real.exp (Real.log n / 2) * Real.cosh (r / 2)|
   have hFmeas : ∀ᶠ x : ℝ in nhds xi,
       AEStronglyMeasurable (F x) (volume.restrict (uIoc (0 : ℝ) rho)) :=
     Filter.Eventually.of_forall fun x =>
@@ -156,7 +156,7 @@ theorem hasDerivAt_ccmActualHeadMatchedCosinePhaseFirstJet
     simpa only [mul_one] using
       mul_le_mul_of_nonneg_left (Real.abs_cos_le_one _)
         (abs_nonneg
-          (8 * Real.pi ^ 2 * r ^ 2 * Real.exp (Real.log n / 2) * Real.cosh (r / 2)))
+          (8 * Real.pi ^ (2 : ℕ) * r ^ (2 : ℕ) * Real.exp (Real.log n / 2) * Real.cosh (r / 2)))
   have hboundint : IntervalIntegrable bound volume 0 rho :=
     (by fun_prop : Continuous bound).intervalIntegrable _ _
   have hdiff : ∀ᵐ r : ℝ ∂volume, r ∈ uIoc (0 : ℝ) rho →
@@ -302,9 +302,9 @@ theorem deriv_deriv_det_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCross
     (n : ℕ) :
     deriv (deriv (fun xi : ℝ =>
       (ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily xi n 1).det.re)) 0 =
-      -2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      -2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         ccmActualHeadMatchedNodalSourceFrequencyCurvature n := by
-  let A := -2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2
+  let A := -2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ)
   have hfun :
       (fun xi : ℝ =>
         (ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily xi n 1).det.re) =
@@ -329,9 +329,9 @@ theorem hasDerivAt_det_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossi
     HasDerivAt
       (fun x : ℝ =>
         (ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily x n 1).det.re)
-      (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2 *
+      (-2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ) *
         ccmActualHeadMatchedOrientedPhaseSymbolRealFirstJet n xi) xi := by
-  let A := -2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2
+  let A := -2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ)
   have hfun :
       (fun x : ℝ =>
         (ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily x n 1).det.re) =
@@ -363,7 +363,7 @@ theorem deriv_det_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFam
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingCurvature_primePower_neg
     (p : Nat.Primes) (e : ℕ) :
     -2 * ccmActualHeadMatchedPhaseProjectiveGauge
-        (xiGammaEulerValuationNat (p, e)) ^ 2 *
+        (xiGammaEulerValuationNat (p, e)) ^ (2 : ℕ) *
       ccmActualHeadMatchedNodalSourceFrequencyCurvature
         (xiGammaEulerValuationNat (p, e)) < 0 := by
   have hw : 0 < criticalMellinAtomWeight (xiGammaEulerValuationNat (p, e)) := by
@@ -374,7 +374,7 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingCurvature_pri
       (xiGammaEulerValuationNat (p, e)) hw.ne'
   have hsq :
       0 < ccmActualHeadMatchedPhaseProjectiveGauge
-          (xiGammaEulerValuationNat (p, e)) ^ 2 :=
+          (xiGammaEulerValuationNat (p, e)) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero hgauge
   have hcurv := ccmActualHeadMatchedNodalSourceFrequencyCurvature_primePower_pos p e
   exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos (by norm_num) hsq) hcurv
@@ -395,7 +395,7 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily_one_pr
         (ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily xi
           (xiGammaEulerValuationNat (p, e)) 1).det.re) 0 := by
   let n := xiGammaEulerValuationNat (p, e)
-  let A := -2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ 2
+  let A := -2 * ccmActualHeadMatchedPhaseProjectiveGauge n ^ (2 : ℕ)
   have hfun :
       (fun xi : ℝ =>
         (ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily xi n 1).det.re) =
@@ -444,14 +444,14 @@ def ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFinitePrimePowerR
 def ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFinitePrimePowerFirstJet
     (S : Finset (Nat.Primes × ℕ)) (xi : ℝ) : ℝ :=
   ∑ pe ∈ S,
-    -2 * ccmActualHeadMatchedPhaseProjectiveGauge (xiGammaEulerValuationNat pe) ^ 2 *
+    -2 * ccmActualHeadMatchedPhaseProjectiveGauge (xiGammaEulerValuationNat pe) ^ (2 : ℕ) *
       ccmActualHeadMatchedOrientedPhaseSymbolRealFirstJet
         (xiGammaEulerValuationNat pe) xi
 
 def ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFinitePrimePowerCurvature
     (S : Finset (Nat.Primes × ℕ)) : ℝ :=
   ∑ pe ∈ S,
-    -2 * ccmActualHeadMatchedPhaseProjectiveGauge (xiGammaEulerValuationNat pe) ^ 2 *
+    -2 * ccmActualHeadMatchedPhaseProjectiveGauge (xiGammaEulerValuationNat pe) ^ (2 : ℕ) *
       ccmActualHeadMatchedNodalSourceFrequencyCurvature (xiGammaEulerValuationNat pe)
 
 theorem hasDerivAt_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFinitePrimePowerResponse
@@ -482,7 +482,7 @@ theorem hasDerivAt_ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFi
     (hasDerivAt_ccmActualHeadMatchedOrientedPhaseSymbolRealFirstJet_zero
       (xiGammaEulerValuationNat pe)).const_mul
         (-2 * ccmActualHeadMatchedPhaseProjectiveGauge
-          (xiGammaEulerValuationNat pe) ^ 2)
+          (xiGammaEulerValuationNat pe) ^ (2 : ℕ))
 
 @[simp]
 theorem ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFinitePrimePowerFirstJet_zero
@@ -515,7 +515,7 @@ theorem ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFinitePrimePo
   unfold ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFinitePrimePowerCurvature
   have hlt :
       (∑ pe ∈ S,
-        -2 * ccmActualHeadMatchedPhaseProjectiveGauge (xiGammaEulerValuationNat pe) ^ 2 *
+        -2 * ccmActualHeadMatchedPhaseProjectiveGauge (xiGammaEulerValuationNat pe) ^ (2 : ℕ) *
           ccmActualHeadMatchedNodalSourceFrequencyCurvature (xiGammaEulerValuationNat pe)) <
         ∑ _pe ∈ S, (0 : ℝ) := by
     apply Finset.sum_lt_sum

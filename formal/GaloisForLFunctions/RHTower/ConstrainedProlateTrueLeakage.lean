@@ -48,7 +48,7 @@ theorem evenProlateLeakageValue_le_of_trial (a : ℝ) (n : ℕ)
 /-- The concentration form is exactly the Fourier mass retained inside the aperture. -/
 theorem inner_evenProlateConcentration_eq (a : ℝ) (f : evenSubspace) :
     inner ℂ (evenProlateConcentration a f) f
-      = ((‖evenTimeBandFourier a f‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖evenTimeBandFourier a f‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have h := evenProlateLeakage_inner_eq a f
   have hsub : evenProlateLeakage a f = f - evenProlateConcentration a f := by
     rw [evenProlateLeakage, _root_.sub_apply, one_apply_eq_self]
@@ -59,7 +59,7 @@ theorem inner_evenProlateConcentration_eq (a : ℝ) (f : evenSubspace) :
 /-- Cauchy–Schwarz turns the retained-Fourier-mass form estimate into the operator bound the
 greedy value consumes. -/
 theorem norm_evenProlateConcentration_ge_of_form (a : ℝ) {M : ℝ} {f : evenSubspace}
-    (hf : M * ‖f‖ ^ 2 ≤ ‖evenTimeBandFourier a f‖ ^ 2) :
+    (hf : M * ‖f‖ ^ (2 : ℕ) ≤ ‖evenTimeBandFourier a f‖ ^ (2 : ℕ)) :
     M * ‖f‖ ≤ ‖evenProlateConcentration a f‖ := by
   rcases eq_or_ne f 0 with rfl | hf0
   · simp
@@ -77,7 +77,7 @@ the aperture caps the `n`-th leakage at `ε`.  This is the exact interface betwe
 concentration estimate and the constrained transfer contract. -/
 theorem evenProlateLeakageValue_le_of_form_trial (a : ℝ) (n : ℕ)
     (V : Submodule ℂ evenSubspace) (hV : n < Module.finrank ℂ V)
-    {ε : ℝ} (hV2 : ∀ f ∈ V, (1 - ε) * ‖f‖ ^ 2 ≤ ‖evenTimeBandFourier a f‖ ^ 2) :
+    {ε : ℝ} (hV2 : ∀ f ∈ V, (1 - ε) * ‖f‖ ^ (2 : ℕ) ≤ ‖evenTimeBandFourier a f‖ ^ (2 : ℕ)) :
     evenProlateLeakageValue a n ≤ ε := by
   have h := evenProlateLeakageValue_le_of_trial a n V hV
     (M := 1 - ε) fun f hf => norm_evenProlateConcentration_ge_of_form a (hV2 f hf)

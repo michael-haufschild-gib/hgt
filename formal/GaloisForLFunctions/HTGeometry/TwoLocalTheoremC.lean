@@ -49,7 +49,7 @@ theorem exists_integer_twoLocal_hardWindow (m : ℕ) :
           0 < 2 * ((2 ^ (m + 1) - 1 : ℕ) : ℝ) * (N : ℝ) * R → 0 < T → 0 < a →
           (Fintype.card C : ℝ) * (r.factorial : ℝ)
               * (16 * spectralCollision (hermitianEigenBasis _ hH)
-                  (Walsh.zeroState (m + 1)) / a ^ 2) ^ r < 1 →
+                  (Walsh.zeroState (m + 1)) / a ^ (2 : ℕ)) ^ r < 1 →
           8 * Real.pi * ((2 ^ (m + 1) - 1 : ℕ) : ℝ)
             ≤ ρ * (ρ / (2 * Real.pi)) ^ (2 ^ (m + 1) - 1) * Real.sqrt ((N : ℝ) + 1) →
           8 * ((N : ℝ) + 1) ^ (2 ^ (m + 1) - 1)

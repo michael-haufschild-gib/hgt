@@ -50,7 +50,7 @@ theorem gamma_inverse_left
     {weight weightInv : A} (hinv : weight * weightInv = 1)
     (u : A) :
     C.gamma weightInv u =
-      -(weightInv ^ 2) * C.gamma weight u := by
+      -(weightInv ^ (2 : ℕ)) * C.gamma weight u := by
   have hinv' : weightInv * weight = 1 := by
     simpa [mul_comm] using hinv
   have hproduct := C.gamma_mul_left weight weightInv u
@@ -64,7 +64,7 @@ theorem gamma_inverse_left
         (weightInv * weight) * C.gamma weightInv u := by simp [hinv']
     _ = weightInv * (weight * C.gamma weightInv u) := by ring
     _ = weightInv * (-weightInv * C.gamma weight u) := by rw [hsolve]
-    _ = -(weightInv ^ 2) * C.gamma weight u := by ring
+    _ = -(weightInv ^ (2 : ℕ)) * C.gamma weight u := by ring
 
 /-- Algebraic inverse rule for the second argument of the carré du champ. -/
 theorem gamma_inverse_right
@@ -72,7 +72,7 @@ theorem gamma_inverse_right
     {weight weightInv : A} (hinv : weight * weightInv = 1)
     (u : A) :
     C.gamma u weightInv =
-      -(weightInv ^ 2) * C.gamma u weight := by
+      -(weightInv ^ (2 : ℕ)) * C.gamma u weight := by
   have hinv' : weightInv * weight = 1 := by
     simpa [mul_comm] using hinv
   have hproduct := C.gamma_mul_right u weight weightInv
@@ -86,15 +86,15 @@ theorem gamma_inverse_right
         (weightInv * weight) * C.gamma u weightInv := by simp [hinv']
     _ = weightInv * (weight * C.gamma u weightInv) := by ring
     _ = weightInv * (-weightInv * C.gamma u weight) := by rw [hsolve]
-    _ = -(weightInv ^ 2) * C.gamma u weight := by ring
+    _ = -(weightInv ^ (2 : ℕ)) * C.gamma u weight := by ring
 
 /-- Algebraic inverse rule for a second-order operator. -/
 theorem laplacian_inverse
     (C : SecondOrderClockCalculus A)
     {weight weightInv : A} (hinv : weight * weightInv = 1) :
     C.laplacian weightInv =
-      -(weightInv ^ 2) * C.laplacian weight +
-        2 * weightInv ^ 3 * C.gamma weight weight := by
+      -(weightInv ^ (2 : ℕ)) * C.laplacian weight +
+        2 * weightInv ^ (3 : ℕ) * C.gamma weight weight := by
   have hinv' : weightInv * weight = 1 := by
     simpa [mul_comm] using hinv
   have hproduct := C.laplacian_mul weight weightInv
@@ -102,7 +102,7 @@ theorem laplacian_inverse
   have hsolve :
       weight * C.laplacian weightInv =
         -weightInv * C.laplacian weight +
-          2 * weightInv ^ 2 * C.gamma weight weight := by
+          2 * weightInv ^ (2 : ℕ) * C.gamma weight weight := by
     linear_combination -hproduct
   calc
     C.laplacian weightInv =
@@ -110,15 +110,15 @@ theorem laplacian_inverse
     _ = weightInv * (weight * C.laplacian weightInv) := by ring
     _ = weightInv *
         (-weightInv * C.laplacian weight +
-          2 * weightInv ^ 2 * C.gamma weight weight) := by rw [hsolve]
-    _ = -(weightInv ^ 2) * C.laplacian weight +
-        2 * weightInv ^ 3 * C.gamma weight weight := by ring
+          2 * weightInv ^ (2 : ℕ) * C.gamma weight weight) := by rw [hsolve]
+    _ = -(weightInv ^ (2 : ℕ)) * C.laplacian weight +
+        2 * weightInv ^ (3 : ℕ) * C.gamma weight weight := by ring
 
 /-- Four-dimensional conformal transform of the scalar second-order operator. -/
 def conformalWave
     (C : SecondOrderClockCalculus A)
     (weight weightInv f : A) : A :=
-  weightInv ^ 2 *
+  weightInv ^ (2 : ℕ) *
     (C.laplacian f + 2 * weightInv * C.gamma weight f)
 
 /-- **Four-dimensional conformal clock conjugation.**
@@ -131,13 +131,13 @@ theorem conformalWave_conjugation
     (C : SecondOrderClockCalculus A)
     {weight weightInv : A} (hinv : weight * weightInv = 1)
     (u : A) :
-    weight ^ 3 * C.conformalWave weight weightInv (weightInv * u) =
+    weight ^ (3 : ℕ) * C.conformalWave weight weightInv (weightInv * u) =
       C.laplacian u -
         (weightInv * C.laplacian weight) * u := by
-  have hscale : weight ^ 3 * weightInv ^ 2 = weight := by
+  have hscale : weight ^ (3 : ℕ) * weightInv ^ (2 : ℕ) = weight := by
     calc
-      weight ^ 3 * weightInv ^ 2 =
-          weight * (weight * weightInv) ^ 2 := by ring
+      weight ^ (3 : ℕ) * weightInv ^ (2 : ℕ) =
+          weight * (weight * weightInv) ^ (2 : ℕ) := by ring
       _ = weight := by rw [hinv]; ring
   rw [conformalWave, ← mul_assoc, hscale, C.laplacian_mul,
     C.gamma_mul_right, C.laplacian_inverse hinv,
@@ -146,21 +146,21 @@ theorem conformalWave_conjugation
     weight *
         (weightInv * C.laplacian u +
           u *
-            (-(weightInv ^ 2) * C.laplacian weight +
-              2 * weightInv ^ 3 * C.gamma weight weight) +
-          2 * (-(weightInv ^ 2) * C.gamma weight u) +
+            (-(weightInv ^ (2 : ℕ)) * C.laplacian weight +
+              2 * weightInv ^ (3 : ℕ) * C.gamma weight weight) +
+          2 * (-(weightInv ^ (2 : ℕ)) * C.gamma weight u) +
           2 * weightInv *
             (weightInv * C.gamma weight u +
-              u * (-(weightInv ^ 2) * C.gamma weight weight))) =
+              u * (-(weightInv ^ (2 : ℕ)) * C.gamma weight weight))) =
         weight *
           (weightInv * C.laplacian u -
-            weightInv ^ 2 * C.laplacian weight * u) := by ring
+            weightInv ^ (2 : ℕ) * C.laplacian weight * u) := by ring
     _ = C.laplacian u -
         (weightInv * C.laplacian weight) * u := by
       calc
         weight *
             (weightInv * C.laplacian u -
-              weightInv ^ 2 * C.laplacian weight * u) =
+              weightInv ^ (2 : ℕ) * C.laplacian weight * u) =
             (weight * weightInv) * C.laplacian u -
               (weight * weightInv) * weightInv *
                 C.laplacian weight * u := by ring
@@ -176,20 +176,20 @@ theorem conformalKleinGordon_conjugation
     (C : SecondOrderClockCalculus A)
     {weight weightInv : A} (hinv : weight * weightInv = 1)
     (massSq u : A) :
-    weight ^ 3 *
+    weight ^ (3 : ℕ) *
         (C.conformalWave weight weightInv (weightInv * u) +
           massSq * (weightInv * u)) =
       C.laplacian u +
-        (massSq * weight ^ 2 -
+        (massSq * weight ^ (2 : ℕ) -
           weightInv * C.laplacian weight) * u := by
   rw [mul_add, C.conformalWave_conjugation hinv]
   have hmass :
-      weight ^ 3 * (massSq * (weightInv * u)) =
-        massSq * weight ^ 2 * u := by
+      weight ^ (3 : ℕ) * (massSq * (weightInv * u)) =
+        massSq * weight ^ (2 : ℕ) * u := by
     calc
-      weight ^ 3 * (massSq * (weightInv * u)) =
-          massSq * weight ^ 2 * (weight * weightInv) * u := by ring
-      _ = massSq * weight ^ 2 * u := by rw [hinv]; ring
+      weight ^ (3 : ℕ) * (massSq * (weightInv * u)) =
+          massSq * weight ^ (2 : ℕ) * (weight * weightInv) * u := by ring
+      _ = massSq * weight ^ (2 : ℕ) * u := by rw [hinv]; ring
   rw [hmass]
   ring
 
@@ -207,7 +207,7 @@ structure ExponentialSecondOrderClockCalculus
     toSecondOrder.laplacian (expSmul c sigma) =
       expSmul c sigma *
         (c • toSecondOrder.laplacian sigma +
-          c ^ 2 • toSecondOrder.gamma sigma sigma)
+          c ^ (2 : ℕ) • toSecondOrder.gamma sigma sigma)
   gamma_expSmul_left : ∀ c sigma u,
     toSecondOrder.gamma (expSmul c sigma) u =
       expSmul c sigma * (c • toSecondOrder.gamma sigma u)
@@ -244,7 +244,7 @@ theorem conformalWaveSigma_conjugation
         C.conformalWaveSigma a sigma (C.expSmul (-a) sigma * u) =
       C.toSecondOrder.laplacian u +
         ((-a) • C.toSecondOrder.laplacian sigma -
-          a ^ 2 • C.toSecondOrder.gamma sigma sigma) * u := by
+          a ^ (2 : ℕ) • C.toSecondOrder.gamma sigma sigma) * u := by
   rw [conformalWaveSigma, C.toSecondOrder.laplacian_mul,
     C.toSecondOrder.gamma_mul_right, C.laplacian_expSmul,
     C.gamma_expSmul_left, C.gamma_expSmul_right]
@@ -257,7 +257,7 @@ theorem conformalWaveSigma_conjugation
             u *
               (C.expSmul (-a) sigma *
                 ((algebraMap ℝ A (-a)) * C.toSecondOrder.laplacian sigma +
-                  algebraMap ℝ A ((-a) ^ 2) *
+                  algebraMap ℝ A ((-a) ^ (2 : ℕ)) *
                     C.toSecondOrder.gamma sigma sigma)) +
             2 *
               (C.expSmul (-a) sigma *
@@ -272,7 +272,7 @@ theorem conformalWaveSigma_conjugation
           C.expSmul (-a) sigma) *
         (C.toSecondOrder.laplacian u +
           (algebraMap ℝ A (-a) * C.toSecondOrder.laplacian sigma -
-            algebraMap ℝ A (a ^ 2) * C.toSecondOrder.gamma sigma sigma) * u) := by
+            algebraMap ℝ A (a ^ (2 : ℕ)) * C.toSecondOrder.gamma sigma sigma) * u) := by
       push_cast
       ring
     _ = _ := by rw [hweight, one_mul]
@@ -287,7 +287,7 @@ theorem conformalKleinGordonSigma_conjugation
       C.toSecondOrder.laplacian u +
         (massSq • C.expSmul 2 sigma +
           (-a) • C.toSecondOrder.laplacian sigma -
-          a ^ 2 • C.toSecondOrder.gamma sigma sigma) * u := by
+          a ^ (2 : ℕ) • C.toSecondOrder.gamma sigma sigma) * u := by
   rw [mul_add, C.conformalWaveSigma_conjugation]
   have hmassWeight :
       C.expSmul (a + 2) sigma * C.expSmul (-a) sigma =
@@ -299,12 +299,12 @@ theorem conformalKleinGordonSigma_conjugation
   calc
     C.toSecondOrder.laplacian u +
           ((algebraMap ℝ A) (-a) * C.toSecondOrder.laplacian sigma -
-            (algebraMap ℝ A) (a ^ 2) * C.toSecondOrder.gamma sigma sigma) * u +
+            (algebraMap ℝ A) (a ^ (2 : ℕ)) * C.toSecondOrder.gamma sigma sigma) * u +
         C.expSmul (a + 2) sigma *
           ((algebraMap ℝ A) massSq * (C.expSmul (-a) sigma * u)) =
       C.toSecondOrder.laplacian u +
           ((algebraMap ℝ A) (-a) * C.toSecondOrder.laplacian sigma -
-            (algebraMap ℝ A) (a ^ 2) * C.toSecondOrder.gamma sigma sigma) * u +
+            (algebraMap ℝ A) (a ^ (2 : ℕ)) * C.toSecondOrder.gamma sigma sigma) * u +
         (algebraMap ℝ A) massSq *
           (C.expSmul (a + 2) sigma * C.expSmul (-a) sigma) * u := by ring
     _ = _ := by rw [hmassWeight]; ring
@@ -322,7 +322,7 @@ theorem conformalWaveSigma_dimension_conjugation
           (C.expSmul (-conformalDimensionWeight d) sigma * u) =
       C.toSecondOrder.laplacian u +
         ((-conformalDimensionWeight d) • C.toSecondOrder.laplacian sigma -
-          conformalDimensionWeight d ^ 2 •
+          conformalDimensionWeight d ^ (2 : ℕ) •
             C.toSecondOrder.gamma sigma sigma) * u :=
   C.conformalWaveSigma_conjugation (conformalDimensionWeight d) sigma u
 
@@ -337,7 +337,7 @@ theorem conformalKleinGordonSigma_dimension_conjugation
       C.toSecondOrder.laplacian u +
         (massSq • C.expSmul 2 sigma +
           (-conformalDimensionWeight d) • C.toSecondOrder.laplacian sigma -
-          conformalDimensionWeight d ^ 2 •
+          conformalDimensionWeight d ^ (2 : ℕ) •
             C.toSecondOrder.gamma sigma sigma) * u :=
   C.conformalKleinGordonSigma_conjugation
     (conformalDimensionWeight d) massSq sigma u

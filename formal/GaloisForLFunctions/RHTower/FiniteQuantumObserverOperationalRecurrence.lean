@@ -19,7 +19,7 @@ namespace RHTower
 
 /-- Squared Hilbert--Schmidt energy of a finite complex matrix. -/
 def finiteMatrixHSEnergy {d : ℕ} (A : Fin d → Fin d → ℂ) : ℝ :=
-  ∑ i, ∑ j, ‖A i j‖ ^ 2
+  ∑ i, ∑ j, ‖A i j‖ ^ (2 : ℕ)
 
 /-- Hilbert--Schmidt linear probe `⟨sigma,A⟩`. -/
 def finiteMatrixHSFunctional {d : ℕ}
@@ -35,7 +35,7 @@ theorem finiteMatrixHSEnergy_nonneg {d : ℕ}
 /-- Finite Hilbert--Schmidt Cauchy--Schwarz, in squared form. -/
 theorem finiteMatrixHSFunctional_sq_le {d : ℕ}
     (sigma A : Fin d → Fin d → ℂ) :
-    ‖finiteMatrixHSFunctional sigma A‖ ^ 2 ≤
+    ‖finiteMatrixHSFunctional sigma A‖ ^ (2 : ℕ) ≤
       finiteMatrixHSEnergy sigma * finiteMatrixHSEnergy A := by
   let s : Finset (Fin d × Fin d) := Finset.univ
   let f : Fin d × Fin d → ℝ := fun x => ‖sigma x.1 x.2‖
@@ -56,34 +56,34 @@ theorem finiteMatrixHSFunctional_sq_le {d : ℕ}
                 (Finset.univ : Finset (Fin d))
                 (fun i j => ‖sigma i j‖ * ‖A i j‖)).symm
   have hcs :
-      (∑ x ∈ s, f x * g x) ^ 2 ≤
-        (∑ x ∈ s, f x ^ 2) * ∑ x ∈ s, g x ^ 2 :=
+      (∑ x ∈ s, f x * g x) ^ (2 : ℕ) ≤
+        (∑ x ∈ s, f x ^ (2 : ℕ)) * ∑ x ∈ s, g x ^ (2 : ℕ) :=
     Finset.sum_mul_sq_le_sq_mul_sq s f g
   have hsigma :
-      ∑ x ∈ s, f x ^ 2 = finiteMatrixHSEnergy sigma := by
+      ∑ x ∈ s, f x ^ (2 : ℕ) = finiteMatrixHSEnergy sigma := by
     simpa only [s, f, Finset.univ_product_univ,
       finiteMatrixHSEnergy] using
       (Finset.sum_product'
         (Finset.univ : Finset (Fin d))
         (Finset.univ : Finset (Fin d))
-        (fun i j => ‖sigma i j‖ ^ 2))
+        (fun i j => ‖sigma i j‖ ^ (2 : ℕ)))
   have hA :
-      ∑ x ∈ s, g x ^ 2 = finiteMatrixHSEnergy A := by
+      ∑ x ∈ s, g x ^ (2 : ℕ) = finiteMatrixHSEnergy A := by
     simpa only [s, g, Finset.univ_product_univ,
       finiteMatrixHSEnergy] using
       (Finset.sum_product'
         (Finset.univ : Finset (Fin d))
         (Finset.univ : Finset (Fin d))
-        (fun i j => ‖A i j‖ ^ 2))
+        (fun i j => ‖A i j‖ ^ (2 : ℕ)))
   rw [hsigma, hA] at hcs
   exact le_trans ((sq_le_sq₀ (norm_nonneg _) (by positivity)).2 hnorm) hcs
 
 theorem finiteMatrixHSFunctional_sq_le_of_normalized {d : ℕ}
     (sigma A : Fin d → Fin d → ℂ)
     (hsigma : finiteMatrixHSEnergy sigma ≤ 1) :
-    ‖finiteMatrixHSFunctional sigma A‖ ^ 2 ≤ finiteMatrixHSEnergy A := by
+    ‖finiteMatrixHSFunctional sigma A‖ ^ (2 : ℕ) ≤ finiteMatrixHSEnergy A := by
   calc
-    ‖finiteMatrixHSFunctional sigma A‖ ^ 2 ≤
+    ‖finiteMatrixHSFunctional sigma A‖ ^ (2 : ℕ) ≤
         finiteMatrixHSEnergy sigma * finiteMatrixHSEnergy A :=
       finiteMatrixHSFunctional_sq_le sigma A
     _ ≤ 1 * finiteMatrixHSEnergy A :=
@@ -97,7 +97,7 @@ theorem finiteMatrixHSFunctional_norm_le_sqrt {d : ℕ}
       Real.sqrt (finiteMatrixHSEnergy A) := by
   calc
     ‖finiteMatrixHSFunctional sigma A‖ =
-        Real.sqrt (‖finiteMatrixHSFunctional sigma A‖ ^ 2) :=
+        Real.sqrt (‖finiteMatrixHSFunctional sigma A‖ ^ (2 : ℕ)) :=
       (Real.sqrt_sq (norm_nonneg _)).symm
     _ ≤ Real.sqrt (finiteMatrixHSEnergy A) :=
       Real.sqrt_le_sqrt
@@ -116,13 +116,13 @@ theorem finiteMatrixHSFunctional_add_sub {d : ℕ}
 theorem finiteMatrixHSFunctional_norm_le_of_energy_le_sq {d : ℕ}
     (sigma A : Fin d → Fin d → ℂ) (ν : ℝ)
     (hsigma : finiteMatrixHSEnergy sigma ≤ 1)
-    (hν : 0 ≤ ν) (hA : finiteMatrixHSEnergy A ≤ ν ^ 2) :
+    (hν : 0 ≤ ν) (hA : finiteMatrixHSEnergy A ≤ ν ^ (2 : ℕ)) :
     ‖finiteMatrixHSFunctional sigma A‖ ≤ ν := by
   calc
     ‖finiteMatrixHSFunctional sigma A‖ ≤
         Real.sqrt (finiteMatrixHSEnergy A) :=
       finiteMatrixHSFunctional_norm_le_sqrt sigma A hsigma
-    _ ≤ Real.sqrt (ν ^ 2) := Real.sqrt_le_sqrt hA
+    _ ≤ Real.sqrt (ν ^ (2 : ℕ)) := Real.sqrt_le_sqrt hA
     _ = ν := Real.sqrt_sq hν
 
 /-- For a self-adjoint probe, the Hilbert--Schmidt functional is the
@@ -165,18 +165,18 @@ theorem finiteQuantumObserver_operational_sq_le
     (hsigma : finiteMatrixHSEnergy sigma ≤ 1) :
     lam a *
         ‖finiteMatrixHSFunctional sigma
-          (finiteQuantumObserverDisplacement z block a)‖ ^ 2 ≤
+          (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ) ≤
       finiteQuantumObserverDistanceSq lam z block := by
   have hprobe :
       ‖finiteMatrixHSFunctional sigma
-          (finiteQuantumObserverDisplacement z block a)‖ ^ 2 ≤
+          (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ) ≤
         finiteMatrixHSEnergy
           (finiteQuantumObserverDisplacement z block a) :=
     finiteMatrixHSFunctional_sq_le_of_normalized _ _ hsigma
   calc
     lam a *
         ‖finiteMatrixHSFunctional sigma
-          (finiteQuantumObserverDisplacement z block a)‖ ^ 2
+          (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ)
         ≤ lam a *
           finiteMatrixHSEnergy
             (finiteQuantumObserverDisplacement z block a) :=
@@ -207,7 +207,7 @@ theorem finiteQuantumObserver_operational_norm_le
         (finiteQuantumObserverDistanceSq lam z block / lam a) := by
   have hsq :
       ‖finiteMatrixHSFunctional sigma
-          (finiteQuantumObserverDisplacement z block a)‖ ^ 2 ≤
+          (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ) ≤
         finiteQuantumObserverDistanceSq lam z block / lam a := by
     rw [le_div_iff₀ ha]
     simpa only [mul_comm] using
@@ -218,7 +218,7 @@ theorem finiteQuantumObserver_operational_norm_le
         (finiteQuantumObserverDisplacement z block a)‖ =
         Real.sqrt
           (‖finiteMatrixHSFunctional sigma
-            (finiteQuantumObserverDisplacement z block a)‖ ^ 2) :=
+            (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ)) :=
       (Real.sqrt_sq (norm_nonneg _)).symm
     _ ≤ Real.sqrt
         (finiteQuantumObserverDistanceSq lam z block / lam a) :=
@@ -234,8 +234,8 @@ theorem finiteQuantumObserver_operational_noise_le
     (sigma E₁ E₀ : Fin d → Fin d → ℂ)
     (hsigma : finiteMatrixHSEnergy sigma ≤ 1)
     (ν₁ ν₀ : ℝ) (hν₁ : 0 ≤ ν₁) (hν₀ : 0 ≤ ν₀)
-    (hE₁ : finiteMatrixHSEnergy E₁ ≤ ν₁ ^ 2)
-    (hE₀ : finiteMatrixHSEnergy E₀ ≤ ν₀ ^ 2) :
+    (hE₁ : finiteMatrixHSEnergy E₁ ≤ ν₁ ^ (2 : ℕ))
+    (hE₀ : finiteMatrixHSEnergy E₀ ≤ ν₀ ^ (2 : ℕ)) :
     ‖finiteMatrixHSFunctional sigma
         (fun i j =>
           finiteQuantumObserverDisplacement z block a i j +
@@ -272,7 +272,7 @@ operator norm at most one. -/
 def finiteMatrixOperatorContraction {d : ℕ}
     (sigma : Fin d → Fin d → ℂ) : Prop :=
   ∀ x : Fin d → ℂ,
-    (∑ i, ‖∑ j, sigma i j * x j‖ ^ 2) ≤ ∑ j, ‖x j‖ ^ 2
+    (∑ i, ‖∑ j, sigma i j * x j‖ ^ (2 : ℕ)) ≤ ∑ j, ‖x j‖ ^ (2 : ℕ)
 
 /-- Every operator contraction has Hilbert--Schmidt energy at most the matrix
 dimension. -/
@@ -281,11 +281,11 @@ theorem finiteMatrixHSEnergy_le_dimension_of_operatorContraction {d : ℕ}
     (hsigma : finiteMatrixOperatorContraction sigma) :
     finiteMatrixHSEnergy sigma ≤ d := by
   classical
-  have hcol : ∀ j : Fin d, (∑ i, ‖sigma i j‖ ^ 2) ≤ 1 := by
+  have hcol : ∀ j : Fin d, (∑ i, ‖sigma i j‖ ^ (2 : ℕ)) ≤ 1 := by
     intro j
     have h := hsigma (fun k => if k = j then 1 else 0)
     have hrhs :
-        (∑ k : Fin d, ‖if k = j then (1 : ℂ) else 0‖ ^ 2) = 1 := by
+        (∑ k : Fin d, ‖if k = j then (1 : ℂ) else 0‖ ^ (2 : ℕ)) = 1 := by
       rw [Finset.sum_eq_single j]
       · simp
       · intro b _hb hbj
@@ -296,7 +296,7 @@ theorem finiteMatrixHSEnergy_le_dimension_of_operatorContraction {d : ℕ}
   unfold finiteMatrixHSEnergy
   rw [Finset.sum_comm]
   calc
-    (∑ j, ∑ i, ‖sigma i j‖ ^ 2) ≤ ∑ _j : Fin d, (1 : ℝ) :=
+    (∑ j, ∑ i, ‖sigma i j‖ ^ (2 : ℕ)) ≤ ∑ _j : Fin d, (1 : ℝ) :=
       Finset.sum_le_sum fun j _hj => hcol j
     _ = d := by simp
 
@@ -315,7 +315,7 @@ theorem finiteMatrixHSEnergy_identity {d : ℕ} :
     finiteMatrixHSEnergy (finiteIdentityMatrix (d := d)) = d := by
   classical
   have hrow : ∀ i : Fin d,
-      (∑ j, ‖finiteIdentityMatrix i j‖ ^ 2) = 1 := by
+      (∑ j, ‖finiteIdentityMatrix i j‖ ^ (2 : ℕ)) = 1 := by
     intro i
     rw [Finset.sum_eq_single i]
     · simp [finiteIdentityMatrix]
@@ -324,7 +324,7 @@ theorem finiteMatrixHSEnergy_identity {d : ℕ} :
     · simp
   unfold finiteMatrixHSEnergy
   calc
-    (∑ i, ∑ j, ‖finiteIdentityMatrix i j‖ ^ 2) =
+    (∑ i, ∑ j, ‖finiteIdentityMatrix i j‖ ^ (2 : ℕ)) =
         ∑ _i : Fin d, (1 : ℝ) := by
       apply Finset.sum_congr rfl
       intro i _hi
@@ -341,7 +341,7 @@ theorem finiteMatrixHSFunctional_identity {d : ℕ} :
 attained by the identity pairing. -/
 theorem finiteMatrix_operatorContraction_dimension_factor_attained {d : ℕ} :
     ‖finiteMatrixHSFunctional
-        (finiteIdentityMatrix (d := d)) finiteIdentityMatrix‖ ^ 2 =
+        (finiteIdentityMatrix (d := d)) finiteIdentityMatrix‖ ^ (2 : ℕ) =
       d * finiteMatrixHSEnergy (finiteIdentityMatrix (d := d)) := by
   rw [finiteMatrixHSFunctional_identity, finiteMatrixHSEnergy_identity]
   simp [sq]
@@ -351,10 +351,10 @@ the unavoidable conversion from operator norm to Hilbert--Schmidt norm. -/
 theorem finiteMatrixHSFunctional_sq_le_of_operatorContraction {d : ℕ}
     (sigma A : Fin d → Fin d → ℂ)
     (hsigma : finiteMatrixOperatorContraction sigma) :
-    ‖finiteMatrixHSFunctional sigma A‖ ^ 2 ≤
+    ‖finiteMatrixHSFunctional sigma A‖ ^ (2 : ℕ) ≤
       d * finiteMatrixHSEnergy A := by
   calc
-    ‖finiteMatrixHSFunctional sigma A‖ ^ 2 ≤
+    ‖finiteMatrixHSFunctional sigma A‖ ^ (2 : ℕ) ≤
         finiteMatrixHSEnergy sigma * finiteMatrixHSEnergy A :=
       finiteMatrixHSFunctional_sq_le sigma A
     _ ≤ d * finiteMatrixHSEnergy A :=
@@ -369,7 +369,7 @@ theorem finiteMatrixHSFunctional_norm_le_sqrt_of_operatorContraction {d : ℕ}
       Real.sqrt (d * finiteMatrixHSEnergy A) := by
   calc
     ‖finiteMatrixHSFunctional sigma A‖ =
-        Real.sqrt (‖finiteMatrixHSFunctional sigma A‖ ^ 2) :=
+        Real.sqrt (‖finiteMatrixHSFunctional sigma A‖ ^ (2 : ℕ)) :=
       (Real.sqrt_sq (norm_nonneg _)).symm
     _ ≤ Real.sqrt (d * finiteMatrixHSEnergy A) :=
       Real.sqrt_le_sqrt
@@ -380,20 +380,20 @@ theorem finiteMatrixHSFunctional_norm_le_of_operatorContraction_energy_le_sq
     {d : ℕ}
     (sigma A : Fin d → Fin d → ℂ) (ν : ℝ)
     (hsigma : finiteMatrixOperatorContraction sigma)
-    (hA : finiteMatrixHSEnergy A ≤ ν ^ 2) :
+    (hA : finiteMatrixHSEnergy A ≤ ν ^ (2 : ℕ)) :
     ‖finiteMatrixHSFunctional sigma A‖ ≤
-      Real.sqrt (d * ν ^ 2) := by
+      Real.sqrt (d * ν ^ (2 : ℕ)) := by
   calc
     ‖finiteMatrixHSFunctional sigma A‖ ≤
         Real.sqrt (d * finiteMatrixHSEnergy A) :=
       finiteMatrixHSFunctional_norm_le_sqrt_of_operatorContraction
         sigma A hsigma
-    _ ≤ Real.sqrt (d * ν ^ 2) := by
+    _ ≤ Real.sqrt (d * ν ^ (2 : ℕ)) := by
       exact Real.sqrt_le_sqrt
         (mul_le_mul_of_nonneg_left hA (Nat.cast_nonneg d))
 
 theorem sqrt_natCast_mul_sq (d : ℕ) (ν : ℝ) (hν : 0 ≤ ν) :
-    Real.sqrt (d * ν ^ 2) = Real.sqrt d * ν := by
+    Real.sqrt (d * ν ^ (2 : ℕ)) = Real.sqrt d * ν := by
   rw [Real.sqrt_mul (Nat.cast_nonneg d), Real.sqrt_sq hν]
 
 /-- Every operator-normalized probe is controlled by the complete observer
@@ -407,18 +407,18 @@ theorem finiteQuantumObserver_operator_operational_sq_le
     (hsigma : finiteMatrixOperatorContraction sigma) :
     lam a *
         ‖finiteMatrixHSFunctional sigma
-          (finiteQuantumObserverDisplacement z block a)‖ ^ 2 ≤
+          (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ) ≤
       d * finiteQuantumObserverDistanceSq lam z block := by
   have hprobe :
       ‖finiteMatrixHSFunctional sigma
-          (finiteQuantumObserverDisplacement z block a)‖ ^ 2 ≤
+          (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ) ≤
         d * finiteMatrixHSEnergy
           (finiteQuantumObserverDisplacement z block a) :=
     finiteMatrixHSFunctional_sq_le_of_operatorContraction _ _ hsigma
   calc
     lam a *
         ‖finiteMatrixHSFunctional sigma
-          (finiteQuantumObserverDisplacement z block a)‖ ^ 2
+          (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ)
         ≤ lam a * (d *
           finiteMatrixHSEnergy
             (finiteQuantumObserverDisplacement z block a)) :=
@@ -453,7 +453,7 @@ theorem finiteQuantumObserver_operator_operational_norm_le
         (d * finiteQuantumObserverDistanceSq lam z block / lam a) := by
   have hsq :
       ‖finiteMatrixHSFunctional sigma
-          (finiteQuantumObserverDisplacement z block a)‖ ^ 2 ≤
+          (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ) ≤
         d * finiteQuantumObserverDistanceSq lam z block / lam a := by
     rw [le_div_iff₀ ha]
     simpa only [mul_comm, mul_left_comm] using
@@ -464,7 +464,7 @@ theorem finiteQuantumObserver_operator_operational_norm_le
         (finiteQuantumObserverDisplacement z block a)‖ =
         Real.sqrt
           (‖finiteMatrixHSFunctional sigma
-            (finiteQuantumObserverDisplacement z block a)‖ ^ 2) :=
+            (finiteQuantumObserverDisplacement z block a)‖ ^ (2 : ℕ)) :=
       (Real.sqrt_sq (norm_nonneg _)).symm
     _ ≤ Real.sqrt
         (d * finiteQuantumObserverDistanceSq lam z block / lam a) :=
@@ -482,15 +482,15 @@ theorem finiteQuantumObserver_operator_operational_noise_le
     (sigma E₁ E₀ : Fin d → Fin d → ℂ)
     (hsigma : finiteMatrixOperatorContraction sigma)
     (ν₁ ν₀ : ℝ)
-    (hE₁ : finiteMatrixHSEnergy E₁ ≤ ν₁ ^ 2)
-    (hE₀ : finiteMatrixHSEnergy E₀ ≤ ν₀ ^ 2) :
+    (hE₁ : finiteMatrixHSEnergy E₁ ≤ ν₁ ^ (2 : ℕ))
+    (hE₀ : finiteMatrixHSEnergy E₀ ≤ ν₀ ^ (2 : ℕ)) :
     ‖finiteMatrixHSFunctional sigma
         (fun i j =>
           finiteQuantumObserverDisplacement z block a i j +
             E₁ i j - E₀ i j)‖ ≤
       Real.sqrt
           (d * finiteQuantumObserverDistanceSq lam z block / lam a) +
-        Real.sqrt (d * ν₁ ^ 2) + Real.sqrt (d * ν₀ ^ 2) := by
+        Real.sqrt (d * ν₁ ^ (2 : ℕ)) + Real.sqrt (d * ν₀ ^ (2 : ℕ)) := by
   rw [finiteMatrixHSFunctional_add_sub]
   calc
     ‖finiteMatrixHSFunctional sigma
@@ -505,7 +505,7 @@ theorem finiteQuantumObserver_operator_operational_noise_le
         (add_le_add (norm_add_le _ _) le_rfl)
     _ ≤ Real.sqrt
           (d * finiteQuantumObserverDistanceSq lam z block / lam a) +
-        Real.sqrt (d * ν₁ ^ 2) + Real.sqrt (d * ν₀ ^ 2) := by
+        Real.sqrt (d * ν₁ ^ (2 : ℕ)) + Real.sqrt (d * ν₀ ^ (2 : ℕ)) := by
       gcongr
       · exact finiteQuantumObserver_operator_operational_norm_le
           lam z block hlam a ha sigma hsigma
@@ -527,8 +527,8 @@ theorem finiteQuantumObserver_operator_operational_noise_le_sqrt_dimension
     (sigma E₁ E₀ : Fin d → Fin d → ℂ)
     (hsigma : finiteMatrixOperatorContraction sigma)
     (ν₁ ν₀ : ℝ) (hν₁ : 0 ≤ ν₁) (hν₀ : 0 ≤ ν₀)
-    (hE₁ : finiteMatrixHSEnergy E₁ ≤ ν₁ ^ 2)
-    (hE₀ : finiteMatrixHSEnergy E₀ ≤ ν₀ ^ 2) :
+    (hE₁ : finiteMatrixHSEnergy E₁ ≤ ν₁ ^ (2 : ℕ))
+    (hE₀ : finiteMatrixHSEnergy E₀ ≤ ν₀ ^ (2 : ℕ)) :
     ‖finiteMatrixHSFunctional sigma
         (fun i j =>
           finiteQuantumObserverDisplacement z block a i j +

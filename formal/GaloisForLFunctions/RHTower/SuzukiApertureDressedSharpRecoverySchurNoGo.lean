@@ -36,7 +36,7 @@ theorem suzukiCriticalApertureDressedSharpRecoveryTax_eq_sq
     (h t : ℝ) (aperture gain : Nat.Primes → ℝ) (p : Nat.Primes) :
     suzukiCriticalApertureDressedSharpRecoveryTax h t aperture gain p =
       (gain p * ‖suzukiCriticalApertureBoundaryAtom
-        h (aperture p) t p 0‖) ^ 2 := by
+        h (aperture p) t p 0‖) ^ (2 : ℕ) := by
   rw [suzukiCriticalApertureDressedSharpRecoveryTax,
     suzukiCriticalApertureDressedScalarSchurTax,
     Complex.normSq_eq_norm_sq]

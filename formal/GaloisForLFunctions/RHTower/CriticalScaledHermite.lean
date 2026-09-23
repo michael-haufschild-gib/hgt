@@ -73,13 +73,13 @@ theorem criticalScaledHermite_ode (a : ℝ) {m : ℕ} (hm : 0 < m) (w : ℝ) :
         - (criticalScale a m (hermiteR m)).eval w := by
   have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
   set s : ℝ := (Real.sqrt m)⁻¹ with hs
-  have hs2 : s ^ 2 = (m : ℝ)⁻¹ := by
+  have hs2 : s ^ (2 : ℕ) = (m : ℝ)⁻¹ := by
     rw [hs, inv_pow, Real.sq_sqrt hmR.le]
   have hd1 : (criticalScale a m (hermiteR m)).derivative
       = Polynomial.C s * criticalScale a m (hermiteR m).derivative :=
     derivative_criticalScale a m (hermiteR m)
   have hd2 : (criticalScale a m (hermiteR m)).derivative.derivative
-      = Polynomial.C (s ^ 2) * criticalScale a m (hermiteR m).derivative.derivative := by
+      = Polynomial.C (s ^ (2 : ℕ)) * criticalScale a m (hermiteR m).derivative.derivative := by
     rw [hd1, Polynomial.derivative_C_mul, derivative_criticalScale, ← mul_assoc,
       ← Polynomial.C_mul, ← hs, ← sq]
   have hode := aeval_hermite_ode m (s * w)

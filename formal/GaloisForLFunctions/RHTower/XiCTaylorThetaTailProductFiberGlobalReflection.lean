@@ -87,9 +87,9 @@ theorem integral_thetaCuspTailSecondDensity_mul_cos_eq_tail_add_fullSource
 density phase is an elementary affine multiplier of `XiC`. -/
 theorem thetaCuspTailSecondDensityPhaseValue_re_ofReal_crossed
     (t : ℝ) :
-    (t ^ 2 + 1 / 4) *
+    (t ^ (2 : ℕ) + 1 / 4) *
         (thetaCuspTailSecondDensityPhaseValue (t : ℂ)).re =
-      1 / 4 + 2 * t ^ 2 * (XiC (t : ℂ)).re := by
+      1 / 4 + 2 * t ^ (2 : ℕ) * (XiC (t : ℂ)).re := by
   let A : ℝ := ∫ x : ℝ in Ioi 0,
     thetaCuspTailDerivative 0 x * Real.cos (t * x)
   let B : ℝ := ∫ x : ℝ in Ioi 0,
@@ -100,7 +100,7 @@ theorem thetaCuspTailSecondDensityPhaseValue_re_ofReal_crossed
     dsimp only [R, A, B]
     rw [thetaCuspTailSecondDensityPhaseValue_re_ofReal_eq_cosine,
       integral_thetaCuspTailSecondDensity_mul_cos_eq_tail_add_fullSource]
-  have hB : B = 1 / 4 - (t ^ 2 + 1 / 4) * A := by
+  have hB : B = 1 / 4 - (t ^ (2 : ℕ) + 1 / 4) * A := by
     dsimp only [B, A]
     exact integral_Ioi_thetaCuspFullSource_mul_cos t
   have hX : X = 2 * B := by
@@ -108,7 +108,7 @@ theorem thetaCuspTailSecondDensityPhaseValue_re_ofReal_crossed
     rw [XiC_ofReal_eq_two_mul_thetaCuspCosine]
     norm_num
   dsimp only [R, X] at hR hX ⊢
-  linear_combination (t ^ 2 + 1 / 4) * hR - 2 * t ^ 2 * hX + hB
+  linear_combination (t ^ (2 : ℕ) + 1 / 4) * hR - 2 * t ^ (2 : ℕ) * hX + hB
 
 end
 

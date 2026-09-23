@@ -282,8 +282,8 @@ theorem continuous_complex_bandEigen_proportional
 complex line. -/
 theorem evenProlateSignedUnitExtension_proportional_of_sq_eq
     {a : ℝ} (ha : 0 < a) {m n : ℕ}
-    (hsq : evenProlateSignedValue a m ^ 2 =
-      evenProlateSignedValue a n ^ 2) :
+    (hsq : evenProlateSignedValue a m ^ (2 : ℕ) =
+      evenProlateSignedValue a n ^ (2 : ℕ)) :
     ∃ z : ℂ, ∀ x : ℝ,
       evenProlateSignedUnitExtension a n (evenProlateSignedValue_ne_zero ha n) x =
         z * evenProlateSignedUnitExtension a m
@@ -300,8 +300,8 @@ theorem evenProlateSignedUnitExtension_proportional_of_sq_eq
     change evenProlateSignedUnitExtension a m hm x = 0 at hxzero
     rw [evenProlateSignedUnitExtension_eq_source ha m hm hx] at hxzero
     exact hxne hxzero
-  have hc : 0 < 2 * Real.pi * a ^ 2 := by positivity
-  have hlam : evenProlateSignedValue a m ^ 2 ≠ 0 := pow_ne_zero 2 hm
+  have hc : 0 < 2 * Real.pi * a ^ (2 : ℕ) := by positivity
+  have hlam : evenProlateSignedValue a m ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hm
   obtain ⟨z, hz⟩ := continuous_complex_bandEigen_proportional hc hlam
     (continuous_evenProlateSignedUnitExtension a m hm)
     (continuous_evenProlateSignedUnitExtension a n hn) hqNe
@@ -319,8 +319,8 @@ theorem evenProlateSignedUnitExtension_proportional_of_sq_eq
 complex scalar almost everywhere. -/
 theorem evenProlateSignedPointwiseSource_ae_proportional_of_sq_eq
     {a : ℝ} (ha : 0 < a) {m n : ℕ}
-    (hsq : evenProlateSignedValue a m ^ 2 =
-      evenProlateSignedValue a n ^ 2) :
+    (hsq : evenProlateSignedValue a m ^ (2 : ℕ) =
+      evenProlateSignedValue a n ^ (2 : ℕ)) :
     ∃ z : ℂ,
       evenProlateSignedPointwiseSource a n (evenProlateSignedValue_ne_zero ha n)
         =ᵐ[volume] fun y => z *
@@ -350,8 +350,8 @@ theorem evenProlateSignedPointwiseSource_ae_proportional_of_sq_eq
 /-- Equal squared signed values force the original physical modes onto one complex line. -/
 theorem evenProlateSignedMode_proportional_of_sq_eq
     {a : ℝ} (ha : 0 < a) {m n : ℕ}
-    (hsq : evenProlateSignedValue a m ^ 2 =
-      evenProlateSignedValue a n ^ 2) :
+    (hsq : evenProlateSignedValue a m ^ (2 : ℕ) =
+      evenProlateSignedValue a n ^ (2 : ℕ)) :
     ∃ z : ℂ, evenProlateSignedMode a n = z • evenProlateSignedMode a m := by
   let hm := evenProlateSignedValue_ne_zero ha m
   let hn := evenProlateSignedValue_ne_zero ha n
@@ -370,7 +370,7 @@ theorem evenProlateSignedMode_proportional_of_sq_eq
 
 /-- The squared signed prolate spectrum is simple at every positive aperture. -/
 theorem evenProlateSignedValue_sq_injective {a : ℝ} (ha : 0 < a) :
-    Function.Injective (fun n => evenProlateSignedValue a n ^ 2) := by
+    Function.Injective (fun n => evenProlateSignedValue a n ^ (2 : ℕ)) := by
   intro m n hsq
   by_contra hmn
   obtain ⟨z, hmode⟩ := evenProlateSignedMode_proportional_of_sq_eq ha hsq
@@ -391,10 +391,10 @@ theorem evenProlateSignedValue_sq_injective {a : ℝ} (ha : 0 < a) :
 
 /-- Global cross-rung ordering of the actual squared finite-Fourier spectrum. -/
 theorem evenProlateSignedValue_sq_strictAnti {a : ℝ} (ha : 0 < a) :
-    StrictAnti (fun n => evenProlateSignedValue a n ^ 2) := by
-  have hant : Antitone (fun n => evenProlateSignedValue a n ^ 2) := by
+    StrictAnti (fun n => evenProlateSignedValue a n ^ (2 : ℕ)) := by
+  have hant : Antitone (fun n => evenProlateSignedValue a n ^ (2 : ℕ)) := by
     intro m n hmn
-    change evenProlateSignedValue a n ^ 2 ≤ evenProlateSignedValue a m ^ 2
+    change evenProlateSignedValue a n ^ (2 : ℕ) ≤ evenProlateSignedValue a m ^ (2 : ℕ)
     rw [← evenProlateConcentrationValue_eq_signedValue_sq a ha m,
       ← evenProlateConcentrationValue_eq_signedValue_sq a ha n]
     exact evenProlateConcentrationValue_antitone a hmn

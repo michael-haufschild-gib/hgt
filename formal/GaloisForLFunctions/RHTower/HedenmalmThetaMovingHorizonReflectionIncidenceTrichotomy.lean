@@ -62,10 +62,10 @@ theorem thetaPhysicalEndpointCompletedResponseMixedReflectionBudget_eq_neg_packe
 reflected-copy channels, including both ordered mixed incidences. -/
 def thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget
     (P : Finset Nat.Primes) (q : XiZeroCopy) (α β : ℝ) : ℝ :=
-  α ^ 2 *
+  α ^ (2 : ℕ) *
       (thetaPhysicalEndpointCompletedResponsePairing P q +
         (1 / 2 : ℝ) * thetaPhysicalEndpointCompletedResponseDirichletEnergy P q) +
-    β ^ 2 *
+    β ^ (2 : ℕ) *
       (thetaPhysicalEndpointCompletedResponsePairing P (xiZeroCopyReflectEquiv q) +
         (1 / 2 : ℝ) * thetaPhysicalEndpointCompletedResponseDirichletEnergy P
           (xiZeroCopyReflectEquiv q)) +
@@ -76,7 +76,7 @@ the antisymmetric copy-space coordinate. -/
 theorem thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget_eq_sub_sq_mul_packetEnergy
     (P : Finset Nat.Primes) (q : XiZeroCopy) (α β : ℝ) :
     thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget P q α β =
-      (α - β) ^ 2 * thetaMobiusPrimeNormalProfilePacketEnergy q P := by
+      (α - β) ^ (2 : ℕ) * thetaMobiusPrimeNormalProfilePacketEnergy q P := by
   rw [thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget,
     thetaPhysicalEndpointCompletedResponsePairing_copyReflect,
     thetaPhysicalEndpointCompletedResponseDirichletEnergy_copyReflect,
@@ -95,7 +95,7 @@ theorem thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget_self_eq_zero
 theorem thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget_neg_eq_four_mul_sq
     (P : Finset Nat.Primes) (q : XiZeroCopy) (α : ℝ) :
     thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget P q α (-α) =
-      4 * α ^ 2 * thetaMobiusPrimeNormalProfilePacketEnergy q P := by
+      4 * α ^ (2 : ℕ) * thetaMobiusPrimeNormalProfilePacketEnergy q P := by
   rw [thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget_eq_sub_sq_mul_packetEnergy]
   ring
 
@@ -110,19 +110,19 @@ theorem thetaPhysicalEndpointCompletedResponseCopyIncidenceWardBoundAt_iff
     {α β : ℝ} (hαβ : α ≠ β) (q : XiZeroCopy) :
     ThetaPhysicalEndpointCompletedResponseCopyIncidenceWardBoundAt α β q ↔
       ThetaMobiusPrimeNormalWardBoundAt q := by
-  have hk : 0 < (α - β) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hαβ)
+  have hk : 0 < (α - β) ^ (2 : ℕ) := sq_pos_of_ne_zero (sub_ne_zero.mpr hαβ)
   constructor
   · rintro ⟨C, hC⟩
-    refine ⟨C / (α - β) ^ 2, fun P => ?_⟩
+    refine ⟨C / (α - β) ^ (2 : ℕ), fun P => ?_⟩
     apply (le_div_iff₀ hk).2
     calc
-      thetaMobiusPrimeNormalProfilePacketEnergy q P * (α - β) ^ 2 =
+      thetaMobiusPrimeNormalProfilePacketEnergy q P * (α - β) ^ (2 : ℕ) =
           thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget P q α β := by
             rw [thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget_eq_sub_sq_mul_packetEnergy]
             ring
       _ ≤ C := hC P
   · rintro ⟨C, hC⟩
-    refine ⟨(α - β) ^ 2 * C, fun P => ?_⟩
+    refine ⟨(α - β) ^ (2 : ℕ) * C, fun P => ?_⟩
     rw [thetaPhysicalEndpointCompletedResponseCopyIncidenceBudget_eq_sub_sq_mul_packetEnergy]
     exact mul_le_mul_of_nonneg_left (hC P) hk.le
 

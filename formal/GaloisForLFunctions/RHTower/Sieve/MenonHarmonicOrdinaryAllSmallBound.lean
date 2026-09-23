@@ -29,7 +29,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_ordinary_allSmall
     let E := allBlocksSmall P Q eta L
       (fun j => ((geomBlock P Q (1 + eta) j).card : ℝ) * theta) W
     (∫ w in E,
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) ≤
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤
       2 * (L : ℝ) * ∑ j ∈ Finset.range L,
         menonHarmonicProductCostVolume P A₀ B₀ Q eta W
           (((geomBlock P Q (1 + eta) j).card : ℝ) * (theta + eta) /

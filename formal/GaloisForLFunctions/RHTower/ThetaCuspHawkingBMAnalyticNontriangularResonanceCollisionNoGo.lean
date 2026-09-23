@@ -113,7 +113,7 @@ theorem exists_unique_d4BMXiGaugeFixedTotalPeriodAllOrderReturnedJostPoleGermMin
     d4BMXiGaugeFixedTotalPeriodTargetNumeratorMinus
       n k conservativeFinitePart amplitude orthogonalMixing q omega
   let F : ℂ × ℂ → ℂ := fun p =>
-    D p.2 + p.1 * K p.2 + p.1 ^ 2 * higher p
+    D p.2 + p.1 * K p.2 + p.1 ^ (2 : ℕ) * higher p
   have htarget : target =
       d4BMCausalQNMMinus N (d4BMXiMixedHorizonAngularMomentum q) := by
     exact (d4BMXiCausalQNMMinus_eq_topologicalBlackHoleQNMMinus N q).symm

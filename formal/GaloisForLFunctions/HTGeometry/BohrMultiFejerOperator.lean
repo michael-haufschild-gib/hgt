@@ -52,7 +52,7 @@ theorem isBohrAlmostPeriodic_of_ofReal {g : ℝ → ℝ}
 
 /-- The real form of the multi-dimensional Fejér kernel. -/
 def multiFejerKernelReal {ι : Type*} [Fintype ι] (β : ι → ℝ) (N : ι → ℕ) (u : ℝ) : ℝ :=
-  ∏ j : ι, ‖fejerSum (β j) (N j) u‖ ^ 2 / ((N j : ℝ) + 1)
+  ∏ j : ι, ‖fejerSum (β j) (N j) u‖ ^ (2 : ℕ) / ((N j : ℝ) + 1)
 
 theorem multiFejerKernel_eq_real {ι : Type*} [Fintype ι] (β : ι → ℝ) (N : ι → ℕ) (u : ℝ) :
     multiFejerKernel β N u = ((multiFejerKernelReal β N u : ℝ) : ℂ) :=

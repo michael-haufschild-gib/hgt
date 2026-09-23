@@ -153,7 +153,7 @@ theorem integrable_xiMassBottomPrimeIntegrand {a c : ℝ}
   let E : ℝ := Real.exp (|τ.im| * c)
   have hmajor : Integrable (fun x : ℝ =>
       (E * |B|) * Real.exp (-(τ.re * |x|))) :=
-    (integrable_exp_neg_mul_abs hτ).const_mul (E * |B|)
+    (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hτ).const_mul (E * |B|)
   refine hmajor.mono'
     (continuous_xiMassBottomPrimeIntegrand hhalf hca τ).aestronglyMeasurable ?_
   filter_upwards with x
@@ -354,8 +354,8 @@ theorem integrable_xiMassBottomArchIntegrand {a c : ℝ}
   have hmajor : Integrable (fun x : ℝ =>
       (E * C) * Real.exp (-(τ.re * |x|)) +
         (E / 2) * (|x| * Real.exp (-(τ.re * |x|)))) :=
-    ((integrable_exp_neg_mul_abs hτ).const_mul (E * C)).add
-      ((integrable_abs_mul_exp_neg_mul_abs hτ).const_mul (E / 2))
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hτ).const_mul (E * C)).add
+      ((integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hτ).const_mul (E / 2))
   have hS : MeasurableSet S := by
     dsimp only [S]
     exact measurableSet_le measurable_const continuous_abs.measurable

@@ -106,17 +106,17 @@ private theorem routeUCompletedPrimeGammaRadius_increment_pos :
 def routeUGammaLeakageBudget : ℝ :=
   (gammaHardyPhaseRate routeUCompletedPrimeGammaRadius /
     (72 * routeUCompletedPrimeGammaRadius *
-      (gammaHardyPhaseRate routeUCompletedPrimeGammaRadius - gammaHardyPhaseRate 0))) ^ 2
+      (gammaHardyPhaseRate routeUCompletedPrimeGammaRadius - gammaHardyPhaseRate 0))) ^ (2 : ℕ)
 
 /-- Heat--degree budget making the complete absolute prime tail at most one quarter of the
 canonical positive Gamma rate times mass. -/
 def routeUPrimeSuppressionBudget : ℝ :=
-  gammaHardyPhaseRate routeUCompletedPrimeGammaRadius * Real.log 2 ^ 2 /
+  gammaHardyPhaseRate routeUCompletedPrimeGammaRadius * Real.log 2 ^ (2 : ℕ) /
     (64 * (routeUVonMangoldtSquareMass + 1))
 
 /-- Canonical positive aperture simultaneously satisfying Fourier, Gamma, and prime budgets. -/
 def routeUCompletedPrimeGammaAperture : ℝ :=
-  min (Real.log 2 ^ 2 / 256)
+  min (Real.log 2 ^ (2 : ℕ) / 256)
     (min routeUGammaLeakageBudget routeUPrimeSuppressionBudget)
 
 theorem routeUCompletedPrimeGammaAperture_pos :
@@ -170,12 +170,12 @@ private theorem routeUGammaPenalty_le_quarter
   have hz : 0 ≤ t.1 * (Q.natDegree + 1) :=
     mul_nonneg t.property.1.le
       (add_nonneg (Nat.cast_nonneg Q.natDegree) zero_le_one)
-  have hzle : t.1 * (Q.natDegree + 1) ≤ B ^ 2 := by
+  have hzle : t.1 * (Q.natDegree + 1) ≤ B ^ (2 : ℕ) := by
     calc
       t.1 * (Q.natDegree + 1) ≤ routeUCompletedPrimeGammaAperture := t.property.2
       _ ≤ routeUGammaLeakageBudget :=
         le_trans (min_le_right _ _) (min_le_left _ _)
-      _ = B ^ 2 := rfl
+      _ = B ^ (2 : ℕ) := rfl
   have hsqrt : Real.sqrt (t.1 * (Q.natDegree + 1)) ≤ B := by
     apply (sq_le_sq₀ (Real.sqrt_nonneg _) hB.le).mp
     rw [Real.sq_sqrt hz]
@@ -199,14 +199,14 @@ private theorem routeUGammaPenalty_le_quarter
 private theorem routeUPrimeCoefficient_le_quarter
     (Q : Polynomial ℝ) (t : routeUCompletedPrimeGammaWedge Q) :
     routeUVonMangoldtSquareMass *
-        Real.exp (-(Real.log 2 ^ 2 / (16 * t.1))) ≤
+        Real.exp (-(Real.log 2 ^ (2 : ℕ) / (16 * t.1))) ≤
       gammaHardyPhaseRate routeUCompletedPrimeGammaRadius / 4 := by
   have hlog : 0 < Real.log 2 := Real.log_pos one_lt_two
-  have hlogSq : 0 < Real.log 2 ^ 2 := sq_pos_of_pos hlog
+  have hlogSq : 0 < Real.log 2 ^ (2 : ℕ) := sq_pos_of_pos hlog
   have hExpRaw := exp_neg_div_le_div
-    (A := Real.log 2 ^ 2 / 16) (t := t.1) (div_pos hlogSq (by norm_num)) t.property.1
-  have hExp : Real.exp (-(Real.log 2 ^ 2 / (16 * t.1))) ≤
-      16 * t.1 / Real.log 2 ^ 2 := by
+    (A := Real.log 2 ^ (2 : ℕ) / 16) (t := t.1) (div_pos hlogSq (by norm_num)) t.property.1
+  have hExp : Real.exp (-(Real.log 2 ^ (2 : ℕ) / (16 * t.1))) ≤
+      16 * t.1 / Real.log 2 ^ (2 : ℕ) := by
     convert hExpRaw using 1 <;> field_simp [hlog.ne']
   have htFactor : t.1 ≤ t.1 * (Q.natDegree + 1) := by
     have hOne : (1 : ℝ) ≤ Q.natDegree + 1 :=
@@ -220,19 +220,19 @@ private theorem routeUPrimeCoefficient_le_quarter
         le_trans (min_le_right _ _) (min_le_right _ _)
   have hC : 0 ≤ routeUVonMangoldtSquareMass := routeUVonMangoldtSquareMass_nonneg
   have hCOne : 0 < routeUVonMangoldtSquareMass + 1 := by linarith
-  have hLinearNonneg : 0 ≤ 16 * t.1 / Real.log 2 ^ 2 :=
+  have hLinearNonneg : 0 ≤ 16 * t.1 / Real.log 2 ^ (2 : ℕ) :=
     div_nonneg (mul_nonneg (by norm_num) t.property.1.le) hlogSq.le
   calc
     routeUVonMangoldtSquareMass *
-          Real.exp (-(Real.log 2 ^ 2 / (16 * t.1))) ≤
-        routeUVonMangoldtSquareMass * (16 * t.1 / Real.log 2 ^ 2) :=
+          Real.exp (-(Real.log 2 ^ (2 : ℕ) / (16 * t.1))) ≤
+        routeUVonMangoldtSquareMass * (16 * t.1 / Real.log 2 ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hExp hC
     _ ≤ (routeUVonMangoldtSquareMass + 1) *
-          (16 * t.1 / Real.log 2 ^ 2) := by
+          (16 * t.1 / Real.log 2 ^ (2 : ℕ)) := by
       exact mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one)
         hLinearNonneg
     _ ≤ (routeUVonMangoldtSquareMass + 1) *
-          (16 * routeUPrimeSuppressionBudget / Real.log 2 ^ 2) := by
+          (16 * routeUPrimeSuppressionBudget / Real.log 2 ^ (2 : ℕ)) := by
       gcongr
     _ = gammaHardyPhaseRate routeUCompletedPrimeGammaRadius / 4 := by
       unfold routeUPrimeSuppressionBudget
@@ -279,9 +279,9 @@ theorem routeUPolynomialGaussianCompletedPrimeGammaGap_ge
     calc
       routeUVonMangoldtSquareMass *
             routeUPolynomialGaussianMass Q t.prime.heat *
-            Real.exp (-(Real.log 2 ^ 2 / (16 * t.prime.1))) =
+            Real.exp (-(Real.log 2 ^ (2 : ℕ) / (16 * t.prime.1))) =
           (routeUVonMangoldtSquareMass *
-              Real.exp (-(Real.log 2 ^ 2 / (16 * t.1)))) *
+              Real.exp (-(Real.log 2 ^ (2 : ℕ) / (16 * t.1)))) *
             routeUPolynomialGaussianMass Q t.heat := by
         simp only [routeUCompletedPrimeGammaWedge.prime,
           routeUPrimeGaussianWedge.heat,

@@ -25,7 +25,7 @@ noncomputable section
 
 private theorem singleOrbitBranch_localWittForm_eq_two_rank_sq
     {K N : ℕ} (d : PuiseuxOrbitCoareaDatum 1 1 K N) (x : Fin 1 → ℝ) :
-    localWittForm d x = 2 * localRankLinear d x ^ 2 := by
+    localWittForm d x = 2 * localRankLinear d x ^ (2 : ℕ) := by
   have horbit : d.orbit 0 = 0 := Subsingleton.elim _ _
   have hcontact : d.toOrbitCoareaDatum.cuts.contact 0 0 = 0 := by
     change d.branches.canonicalCuts.contact 0 0 = 0
@@ -48,7 +48,7 @@ theorem routePPrimitiveGammaJuliaStokesSingleOrbitBranchUnitReesWittForm_eulerCo
     (d : LocalData p (fun _ => 1) (fun _ => 1) K N)
     (x : compatibleCharges d) :
     globalReesWittForm genus d (fun _ _ => 1) x =
-      2 * (1 - (genus : ℝ)) * commonRankLinear d x ^ 2 := by
+      2 * (1 - (genus : ℝ)) * commonRankLinear d x ^ (2 : ℕ) := by
   rw [globalReesWittForm_one, globalWittForm, QuadraticMap.add_apply,
     QuadraticMap.sum_apply, QuadraticMap.smul_apply, QuadraticMap.comp_apply,
     QuadraticMap.sq_apply]
@@ -76,7 +76,7 @@ theorem not_nonempty_routePPrimitiveGammaJuliaStokesCubicSphereUnitLandingFiber_
   have hrank_ne :=
     routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_commonRank_ne_zero
       (fun _ _ => zero_le_one) x
-  have hrank_pos : 0 < commonRankLinear d x.1 ^ 2 := sq_pos_of_ne_zero hrank_ne
+  have hrank_pos : 0 < commonRankLinear d x.1 ^ (2 : ℕ) := sq_pos_of_ne_zero hrank_ne
   norm_num at hneg
   nlinarith
 

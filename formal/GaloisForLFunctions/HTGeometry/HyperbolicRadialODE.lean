@@ -37,8 +37,8 @@ private theorem energy_deriv (hu : ContDiff ℝ ∞ u)
     (hODE : ∀ r, 0 < r → (Real.sinh r : ℂ) * deriv (deriv u) r +
       (Real.cosh r : ℂ) * deriv u r + (lam : ℂ) * (Real.sinh r : ℂ) * u r = 0)
     {r : ℝ} (hr : 0 < r) :
-    deriv (fun t => ‖deriv u t‖^2 + lam * ‖u t‖^2) r =
-      -2 * (Real.cosh r / Real.sinh r) * ‖deriv u r‖^2 := by
+    deriv (fun t => ‖deriv u t‖^(2 : ℕ) + lam * ‖u t‖^(2 : ℕ)) r =
+      -2 * (Real.cosh r / Real.sinh r) * ‖deriv u r‖^(2 : ℕ) := by
   have hu1 := (contDiff_infty_iff_deriv.mp hu).2
   have hs : (Real.sinh r : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr hr).ne'
@@ -62,9 +62,9 @@ theorem eq_zero_of_initial (hlam : 0 < lam) (hu : ContDiff ℝ ∞ u)
       (Real.cosh r : ℂ) * deriv u r + (lam : ℂ) * (Real.sinh r : ℂ) * u r = 0)
     (hzero : u 0 = 0) : ∀ r, 0 ≤ r → u r = 0 := by
   have hu1 := (contDiff_infty_iff_deriv.mp hu).2
-  have hE : ContDiff ℝ ∞ (fun t => ‖deriv u t‖^2 + lam * ‖u t‖^2) :=
+  have hE : ContDiff ℝ ∞ (fun t => ‖deriv u t‖^(2 : ℕ) + lam * ‖u t‖^(2 : ℕ)) :=
     (hu1.norm_sq ℝ).add (contDiff_const.mul (hu.norm_sq ℝ))
-  have hanti : AntitoneOn (fun t => ‖deriv u t‖^2 + lam * ‖u t‖^2) (Ici 0) := by
+  have hanti : AntitoneOn (fun t => ‖deriv u t‖^(2 : ℕ) + lam * ‖u t‖^(2 : ℕ)) (Ici 0) := by
     apply antitoneOn_of_deriv_nonpos (convex_Ici 0) hE.continuous.continuousOn
       (hE.differentiable (by simp)).differentiableOn
     intro r hr
@@ -78,7 +78,7 @@ theorem eq_zero_of_initial (hlam : 0 < lam) (hu : ContDiff ℝ ∞ u)
   dsimp only at hle
   rw [deriv_initial hu hODE, hzero, norm_zero, zero_pow (by norm_num : (2 : ℕ) ≠ 0),
     mul_zero, zero_add] at hle
-  have hsq : ‖u r‖^2 ≤ 0 := (mul_le_mul_iff_left₀ hlam).mp (by
+  have hsq : ‖u r‖^(2 : ℕ) ≤ 0 := (mul_le_mul_iff_left₀ hlam).mp (by
     nlinarith [sq_nonneg ‖deriv u r‖])
   have hn : ‖u r‖ = 0 := by nlinarith [norm_nonneg (u r)]
   exact norm_eq_zero.mp hn

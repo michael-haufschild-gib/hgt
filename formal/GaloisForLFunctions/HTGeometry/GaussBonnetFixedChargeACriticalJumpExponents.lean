@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 open CPV
 
 theorem egbFixedChargeA_entropy_asymmetry_critical_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAEntropyJump w φ τ) / egbCoexistenceASymmetricRatio τ) atBot (𝓝 (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ))) := by
+    Tendsto (fun τ => (egbFixedChargeAEntropyJump w φ τ) / egbCoexistenceASymmetricRatio τ) atBot (𝓝 (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ))) := by
   have h := (egbFixedChargeAEntropyJump_scaled_critical_limit w φ).mul
     ((tendsto_const_nhds (x := (1 : ℝ))).add thermalRatio_tendsto_atBot_one)
   convert h using 1
@@ -27,7 +27,7 @@ theorem egbFixedChargeA_entropy_asymmetry_critical_limit (w φ : ℝ) :
   · ring
 
 theorem egbFixedChargeA_volume_asymmetry_critical_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAVolumeJump w φ τ) / egbCoexistenceASymmetricRatio τ) atBot (𝓝 (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 3)) := by
+    Tendsto (fun τ => (egbFixedChargeAVolumeJump w φ τ) / egbCoexistenceASymmetricRatio τ) atBot (𝓝 (8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (3 : ℕ))) := by
   have h := (egbFixedChargeAVolumeJump_scaled_critical_limit w φ).mul
     ((tendsto_const_nhds (x := (1 : ℝ))).add thermalRatio_tendsto_atBot_one)
   convert h using 1
@@ -53,7 +53,7 @@ theorem egbFixedChargeA_latent_heat_asymmetry_critical_limit (w φ : ℝ) :
 theorem egbFixedChargeA_entropy_temperature_square_root_limit (w φ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAEntropyJump w φ τ) /
       sqrt (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ))
-      atBot (𝓝 ((4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ)) / sqrt (egbFixedChargeATemperatureGapCoefficient w φ))) := by
+      atBot (𝓝 ((4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ)) / sqrt (egbFixedChargeATemperatureGapCoefficient w φ))) := by
   have hc := sqrt_pos.mpr (egbFixedChargeATemperatureGapCoefficient_pos w φ)
   have h := (egbFixedChargeA_entropy_asymmetry_critical_limit w φ).div
     (egbFixedChargeA_temperature_gap_sqrt_asymmetry_limit w φ) hc.ne'
@@ -67,7 +67,7 @@ theorem egbFixedChargeA_entropy_temperature_square_root_limit (w φ : ℝ) :
 theorem egbFixedChargeA_volume_temperature_square_root_limit (w φ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAVolumeJump w φ τ) /
       sqrt (egbFixedChargeACriticalTemperature w φ - egbFixedChargeATemperature w φ τ))
-      atBot (𝓝 ((8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 3) / sqrt (egbFixedChargeATemperatureGapCoefficient w φ))) := by
+      atBot (𝓝 ((8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (3 : ℕ)) / sqrt (egbFixedChargeATemperatureGapCoefficient w φ))) := by
   have hc := sqrt_pos.mpr (egbFixedChargeATemperatureGapCoefficient_pos w φ)
   have h := (egbFixedChargeA_volume_asymmetry_critical_limit w φ).div
     (egbFixedChargeA_temperature_gap_sqrt_asymmetry_limit w φ) hc.ne'
@@ -95,7 +95,7 @@ theorem egbFixedChargeA_latent_heat_temperature_square_root_limit (w φ : ℝ) :
 theorem egbFixedChargeA_entropy_pressure_square_root_limit (w φ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAEntropyJump w φ τ) /
       sqrt (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ))
-      atBot (𝓝 ((4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 2 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ)) / sqrt (egbFixedChargeAPressureGapCoefficient w φ))) := by
+      atBot (𝓝 ((4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ)) / sqrt (egbFixedChargeAPressureGapCoefficient w φ))) := by
   have hc := sqrt_pos.mpr (egbFixedChargeAPressureGapCoefficient_pos w φ)
   have h := (egbFixedChargeA_entropy_asymmetry_critical_limit w φ).div
     (egbFixedChargeA_pressure_gap_sqrt_asymmetry_limit w φ) hc.ne'
@@ -109,7 +109,7 @@ theorem egbFixedChargeA_entropy_pressure_square_root_limit (w φ : ℝ) :
 theorem egbFixedChargeA_volume_pressure_square_root_limit (w φ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAVolumeJump w φ τ) /
       sqrt (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ))
-      atBot (𝓝 ((8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 3) / sqrt (egbFixedChargeAPressureGapCoefficient w φ))) := by
+      atBot (𝓝 ((8 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (3 : ℕ)) / sqrt (egbFixedChargeAPressureGapCoefficient w φ))) := by
   have hc := sqrt_pos.mpr (egbFixedChargeAPressureGapCoefficient_pos w φ)
   have h := (egbFixedChargeA_volume_asymmetry_critical_limit w φ).div
     (egbFixedChargeA_pressure_gap_sqrt_asymmetry_limit w φ) hc.ne'

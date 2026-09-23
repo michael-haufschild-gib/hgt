@@ -26,13 +26,13 @@ noncomputable def finiteCoordinateCovariance
 noncomputable def finiteCoordinatePairKernel
     {X ι : Type*} [Fintype ι]
     (a : X → ι → ℂ) (p : X × X) : ℝ :=
-  ‖∑ i, star (a p.1 i) * a p.2 i‖ ^ 2
+  ‖∑ i, star (a p.1 i) * a p.2 i‖ ^ (2 : ℕ)
 
 theorem finiteCoordinatePairKernel_integrable
     {X ι : Type*} [MeasurableSpace X] [Fintype ι]
     (μ : Measure X) [SFinite μ] (a : X → ι → ℂ)
     (hmeas : ∀ i, AEStronglyMeasurable (fun x => a x i) μ)
-    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ 2) μ) :
+    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ (2 : ℕ)) μ) :
     Integrable (finiteCoordinatePairKernel a) (μ.prod μ) := by
   have hL2 (i : ι) : MemLp (fun x => a x i) 2 μ :=
     (memLp_two_iff_integrable_sq_norm (hmeas i)).2 (hsq i)
@@ -76,7 +76,7 @@ theorem finiteCoordinatePairKernel_integrable
   apply hcplx.re.congr
   exact Filter.Eventually.of_forall fun p => by
     let z : ℂ := ∑ i, star (a p.1 i) * a p.2 i
-    change (star z * z).re = ‖z‖ ^ 2
+    change (star z * z).re = ‖z‖ ^ (2 : ℕ)
     rw [show star z = conj z from rfl,
       ← Complex.normSq_eq_conj_mul_self]
     norm_cast
@@ -86,15 +86,15 @@ theorem finiteCoordinate_covarianceCollision_eq_pairKernel
     {X ι : Type*} [MeasurableSpace X] [Fintype ι]
     (μ : Measure X) [SFinite μ] (a : X → ι → ℂ)
     (hmeas : ∀ i, AEStronglyMeasurable (fun x => a x i) μ)
-    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ 2) μ) :
-    (∑ i, ∑ j, ‖(finiteCoordinateCovariance μ a) i j‖ ^ 2) =
+    (hsq : ∀ i, Integrable (fun x => ‖a x i‖ ^ (2 : ℕ)) μ) :
+    (∑ i, ∑ j, ‖(finiteCoordinateCovariance μ a) i j‖ ^ (2 : ℕ)) =
       ∫ p, finiteCoordinatePairKernel a p ∂(μ.prod μ) := by
   unfold finiteCoordinateCovariance finiteCoordinatePairKernel
   have hc :
-      ((∑ i, ∑ j, ‖∫ x, star (a x i) * a x j ∂μ‖ ^ 2 : ℝ) : ℂ) =
-        ∫ p, ((‖∑ i, star (a p.1 i) * a p.2 i‖ ^ 2 : ℝ) : ℂ)
+      ((∑ i, ∑ j, ‖∫ x, star (a x i) * a x j ∂μ‖ ^ (2 : ℕ) : ℝ) : ℂ) =
+        ∫ p, ((‖∑ i, star (a p.1 i) * a p.2 i‖ ^ (2 : ℕ) : ℝ) : ℂ)
           ∂(μ.prod μ) := by
-    have hnorm (z : ℂ) : ((‖z‖ ^ 2 : ℝ) : ℂ) = star z * z := by
+    have hnorm (z : ℂ) : ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) = star z * z := by
       rw [← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
       rfl
     have hL2 (i : ι) : MemLp (fun x => a x i) 2 μ :=
@@ -184,12 +184,12 @@ theorem finiteCoordinate_covarianceCollision_eq_pairKernel
         apply integral_congr_ae
         exact Filter.Eventually.of_forall fun p => (hkernel p).symm
   have ho :
-      (∫ p, ((‖∑ i, star (a p.1 i) * a p.2 i‖ ^ 2 : ℝ) : ℂ)
+      (∫ p, ((‖∑ i, star (a p.1 i) * a p.2 i‖ ^ (2 : ℕ) : ℝ) : ℂ)
           ∂(μ.prod μ)) =
-        ((∫ p, ‖∑ i, star (a p.1 i) * a p.2 i‖ ^ 2
+        ((∫ p, ‖∑ i, star (a p.1 i) * a p.2 i‖ ^ (2 : ℕ)
           ∂(μ.prod μ) : ℝ) : ℂ) :=
     @integral_ofReal (X × X) _ (μ.prod μ) ℂ _
-      (fun p => ‖∑ i, star (a p.1 i) * a p.2 i‖ ^ 2)
+      (fun p => ‖∑ i, star (a p.1 i) * a p.2 i‖ ^ (2 : ℕ))
   exact Complex.ofReal_injective (hc.trans ho)
 
 /-- Pair-overlap kernel after compressing both replica endpoints to one subspace. -/
@@ -242,7 +242,7 @@ theorem integrable_replicaSubspacePairIncidenceKernel
     (hmeas : ∀ i, AEStronglyMeasurable
       (fun x => replicaSubspaceCoordinate r S (state x) i) μ)
     (hsq : ∀ i, Integrable
-      (fun x => ‖replicaSubspaceCoordinate r S (state x) i‖ ^ 2) μ) :
+      (fun x => ‖replicaSubspaceCoordinate r S (state x) i‖ ^ (2 : ℕ)) μ) :
     Integrable (replicaSubspacePairIncidenceKernel r S state) (μ.prod μ) := by
   exact finiteCoordinatePairKernel_integrable μ
     (fun x i => replicaSubspaceCoordinate r S (state x) i) hmeas hsq
@@ -255,7 +255,7 @@ theorem replicaSubspaceIncidenceCollision_eq_integral_pairKernel
     (hmeas : ∀ i, AEStronglyMeasurable
       (fun x => replicaSubspaceCoordinate r S (state x) i) μ)
     (hsq : ∀ i, Integrable
-      (fun x => ‖replicaSubspaceCoordinate r S (state x) i‖ ^ 2) μ) :
+      (fun x => ‖replicaSubspaceCoordinate r S (state x) i‖ ^ (2 : ℕ)) μ) :
     replicaSubspaceIncidenceCollision μ r S state =
       ∫ p, replicaSubspacePairIncidenceKernel r S state p ∂(μ.prod μ) := by
   simpa [replicaSubspaceIncidenceCollision,
@@ -271,7 +271,7 @@ theorem replicaTargetIncidenceCollision_eq_integral_pairKernel
     (hmeas : ∀ i, AEStronglyMeasurable
       (fun x => replicaTargetCoordinate r target (state x) i) μ)
     (hsq : ∀ i, Integrable
-      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ 2) μ) :
+      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ (2 : ℕ)) μ) :
     replicaTargetIncidenceCollision μ r target state =
       ∫ p, replicaTargetPairIncidenceKernel r target state p ∂(μ.prod μ) := by
   exact replicaSubspaceIncidenceCollision_eq_integral_pairKernel μ r
@@ -284,7 +284,7 @@ theorem integral_replicaTargetPairIncidenceKernel_add_compl
     (hmeas : ∀ i, AEStronglyMeasurable
       (fun x => replicaTargetCoordinate r target (state x) i) μ)
     (hsq : ∀ i, Integrable
-      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ 2) μ)
+      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ (2 : ℕ)) μ)
     (R : Set (X × X)) (hR : MeasurableSet R) :
     (∫ p in R, replicaTargetPairIncidenceKernel r target state p ∂(μ.prod μ)) +
         (∫ p in Rᶜ, replicaTargetPairIncidenceKernel r target state p ∂(μ.prod μ)) =
@@ -305,11 +305,11 @@ theorem quenchedReplica_pairIncidenceCut_bound
     (hmeas : ∀ i, AEStronglyMeasurable
       (fun x => replicaTargetCoordinate r target (state x) i) μ)
     (hcoord : ∀ i, Integrable
-      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ 2) μ)
+      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ (2 : ℕ)) μ)
     (R : Set (X × X)) (hR : MeasurableSet R) :
     (μ.real {x | ∃ c,
         threshold ≤ finitePureStateFidelity (state x) (target c)} *
-      threshold ^ r) ^ 2 ≤
+      threshold ^ r) ^ (2 : ℕ) ≤
       (replicaTargetHilbertNumber r target : ℝ) *
         ((∫ p in R,
             replicaTargetPairIncidenceKernel r target state p ∂(μ.prod μ)) +

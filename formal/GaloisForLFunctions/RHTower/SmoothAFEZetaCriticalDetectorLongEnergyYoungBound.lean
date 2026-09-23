@@ -16,32 +16,32 @@ namespace RHTower
 
 open Complex Finset
 
-/-- Divisor-free `ell^2`--`ell^1` cap for the exact long convolution energy. -/
+/-- Divisor-free `ell^(2 : ℕ)`--`ell^(1 : ℕ)` cap for the exact long convolution energy. -/
 theorem levinsonCriticalDetectorLongEnergy_le_l2_l1
     (lam : ℝ) (L M : ℕ) :
     levinsonCriticalDetectorLongEnergy lam L M ≤
       (∑ n : Fin L,
-          ‖Sieve.levinsonCriticalDetectorHeadCoeff lam ((n : ℕ) + 1)‖ ^ 2) *
-        (∑ m : Fin M, ‖levinsonLinearMollifierFinCoeff M m‖) ^ 2 := by
+          ‖Sieve.levinsonCriticalDetectorHeadCoeff lam ((n : ℕ) + 1)‖ ^ (2 : ℕ)) *
+        (∑ m : Fin M, ‖levinsonLinearMollifierFinCoeff M m‖) ^ (2 : ℕ) := by
   refine (levinsonCriticalDetectorLongEnergy_le_fullEnergy lam L M).trans ?_
   simpa only [levinsonCriticalDetectorMollifiedFinCoeff] using
     Sieve.sum_norm_sq_dirConv_le_l2_l1 L M
       (fun n : Fin L => Sieve.levinsonCriticalDetectorHeadCoeff lam ((n : ℕ) + 1))
       (levinsonLinearMollifierFinCoeff M)
 
-/-- Explicit divisor-free cap using the linear mollifier's square-root `ell^1` mass. -/
+/-- Explicit divisor-free cap using the linear mollifier's square-root `ell^(1 : ℕ)` mass. -/
 theorem levinsonCriticalDetectorLongEnergy_le_four_mul_M_mul_headEnergy
     (lam : ℝ) (L : ℕ) {M : ℕ} (hM : 1 < M) :
     levinsonCriticalDetectorLongEnergy lam L M ≤
       4 * M *
         ∑ n : Fin L,
-          ‖Sieve.levinsonCriticalDetectorHeadCoeff lam ((n : ℕ) + 1)‖ ^ 2 := by
+          ‖Sieve.levinsonCriticalDetectorHeadCoeff lam ((n : ℕ) + 1)‖ ^ (2 : ℕ) := by
   let A : ℝ := ∑ n : Fin L,
-    ‖Sieve.levinsonCriticalDetectorHeadCoeff lam ((n : ℕ) + 1)‖ ^ 2
+    ‖Sieve.levinsonCriticalDetectorHeadCoeff lam ((n : ℕ) + 1)‖ ^ (2 : ℕ)
   let B : ℝ := ∑ m : Fin M, ‖levinsonLinearMollifierFinCoeff M m‖
   have hA : 0 ≤ A := by positivity
   have hB : 0 ≤ B := by positivity
-  have hsqrtM : Real.sqrt (M : ℝ) ^ 2 = M := Real.sq_sqrt (by positivity)
+  have hsqrtM : Real.sqrt (M : ℝ) ^ (2 : ℕ) = M := Real.sq_sqrt (by positivity)
   have hB_le : B ≤ 2 * Real.sqrt M :=
     sum_norm_levinsonLinearMollifierFinCoeff_le hM
   have hBsq := pow_le_pow_left₀ hB hB_le 2
@@ -53,7 +53,7 @@ theorem levinsonCriticalDetectorLongEnergy_le_four_mul_M_mul_headEnergy
 theorem levinsonCriticalDetectorLongEnergy_le_four_mul_M_mul_explicit
     (lam : ℝ) {L M : ℕ} (hL : 1 ≤ L) (hM : 1 < M) :
     levinsonCriticalDetectorLongEnergy lam L M ≤
-      4 * M * ((1 + |lam| * Real.log L) ^ 2 * (1 + Real.log L)) := by
+      4 * M * ((1 + |lam| * Real.log L) ^ (2 : ℕ) * (1 + Real.log L)) := by
   refine (levinsonCriticalDetectorLongEnergy_le_four_mul_M_mul_headEnergy lam L hM).trans ?_
   exact mul_le_mul_of_nonneg_left
     (sum_normSq_levinsonCriticalDetectorHeadCoeff_le lam hL) (by positivity)

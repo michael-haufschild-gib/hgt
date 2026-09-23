@@ -42,13 +42,13 @@ theorem coeFn_sum_smul_circleMonomialLp (mu : Measure Circle) [IsFiniteMeasure m
 abstract Hilbert-space norm of a monomial combination into the concrete integral `∫ |p|² dμ` that the
 classical Szegő lower bound bounds below. -/
 theorem norm_sq_eq_integral_norm_sq (mu : Measure Circle) [IsFiniteMeasure mu] (f : Lp ℂ 2 mu) :
-    ‖f‖ ^ 2 = ∫ z : Circle, ‖f z‖ ^ 2 ∂mu := by
-  have hint : (inner ℂ f f : ℂ) = ((∫ z : Circle, ‖f z‖ ^ 2 ∂mu : ℝ) : ℂ) := by
+    ‖f‖ ^ (2 : ℕ) = ∫ z : Circle, ‖f z‖ ^ (2 : ℕ) ∂mu := by
+  have hint : (inner ℂ f f : ℂ) = ((∫ z : Circle, ‖f z‖ ^ (2 : ℕ) ∂mu : ℝ) : ℂ) := by
     rw [L2.inner_def, ← integral_complex_ofReal]
     refine integral_congr_ae (Filter.Eventually.of_forall (fun z => ?_))
     simp only [inner_self_eq_norm_sq_to_K]
     norm_cast
-  rw [show ‖f‖ ^ 2 = RCLike.re (inner ℂ f f) from (inner_self_eq_norm_sq f).symm, hint]
+  rw [show ‖f‖ ^ (2 : ℕ) = RCLike.re (inner ℂ f f) from (inner_self_eq_norm_sq f).symm, hint]
   simp
 
 /-- **The monic OPUC element is a concrete monic polynomial.**  The Gram–Schmidt vector of the
@@ -92,8 +92,8 @@ theorem gramSchmidt_circleMonomial_coeFn_poly (mu : Measure Circle) [IsFiniteMea
 bound operates. -/
 theorem normSq_gramSchmidt_circleMonomial_eq_integral
     (mu : Measure Circle) [IsFiniteMeasure mu] (N : ℕ) :
-    ∃ c : ℕ → ℂ, ‖gramSchmidt ℂ (circleMonomialLp mu) N‖ ^ 2
-      = ∫ z : Circle, ‖(z : ℂ) ^ N - ∑ i ∈ Finset.range N, c i * (z : ℂ) ^ i‖ ^ 2 ∂mu := by
+    ∃ c : ℕ → ℂ, ‖gramSchmidt ℂ (circleMonomialLp mu) N‖ ^ (2 : ℕ)
+      = ∫ z : Circle, ‖(z : ℂ) ^ N - ∑ i ∈ Finset.range N, c i * (z : ℂ) ^ i‖ ^ (2 : ℕ) ∂mu := by
   obtain ⟨c, hc⟩ := gramSchmidt_circleMonomial_coeFn_poly mu N
   refine ⟨c, ?_⟩
   rw [norm_sq_eq_integral_norm_sq]
@@ -146,8 +146,8 @@ polynomial.**  This is the form on which the classical Szegő inequality `∫|q*
 operates (Jensen against the absolutely continuous part). -/
 theorem normSq_gramSchmidt_circleMonomial_eq_integral_revPoly
     (mu : Measure Circle) [IsFiniteMeasure mu] (N : ℕ) :
-    ∃ c : ℕ → ℂ, ‖gramSchmidt ℂ (circleMonomialLp mu) N‖ ^ 2
-      = ∫ z : Circle, ‖revPoly c N (z : ℂ)‖ ^ 2 ∂mu := by
+    ∃ c : ℕ → ℂ, ‖gramSchmidt ℂ (circleMonomialLp mu) N‖ ^ (2 : ℕ)
+      = ∫ z : Circle, ‖revPoly c N (z : ℂ)‖ ^ (2 : ℕ) ∂mu := by
   obtain ⟨c, hc⟩ := normSq_gramSchmidt_circleMonomial_eq_integral mu N
   refine ⟨c, ?_⟩
   rw [hc]

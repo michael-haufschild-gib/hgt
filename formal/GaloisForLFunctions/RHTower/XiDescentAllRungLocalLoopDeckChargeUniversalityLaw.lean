@@ -22,12 +22,12 @@ theorem deckChar_loopCharge_xiDescent_center_sq {ρ : ℂ} (hρ : ρ ∈ rightHa
     ∃ R₀ > 0, ∀ r : ℝ, 0 < r → r < R₀ →
       deckChar (2 ^ k)
           (loopCharge k
-            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
               (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) =
-        carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ 2) ∧
+        carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)) ∧
       deckChar (2 ^ k)
           (loopCharge k
-            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
               (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) =
         carrierCharge xi k ρ := by
   haveI : NeZero (2 ^ k) := ⟨pow_ne_zero k (by norm_num)⟩
@@ -36,7 +36,7 @@ theorem deckChar_loopCharge_xiDescent_center_sq {ρ : ℂ} (hρ : ρ ∈ rightHa
   have hloop :
       deckChar (2 ^ k)
           (loopCharge k
-            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
               (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) =
         carrierCharge xi k ρ := by
     rw [loopCharge, hwind r hr hrR, deckChar_wCharge]

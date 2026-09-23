@@ -59,7 +59,7 @@ theorem abs_iterated_integral_le {m : ℕ} {c x y : ℝ} (hx : 0 ≤ x) (hy : 0 
     {F : ℝ → ℝ → ℝ} (hFc : Continuous fun p : ℝ × ℝ => F p.1 p.2)
     (hFb : ∀ s ∈ Icc (0 : ℝ) x, ∀ t ∈ Icc (0 : ℝ) y, |F s t| ≤ c * s ^ m * t ^ m) :
     |∫ s in (0 : ℝ)..x, ∫ t in (0 : ℝ)..y, F s t|
-      ≤ c * (x ^ (m + 1) * y ^ (m + 1)) / ((m : ℝ) + 1) ^ 2 := by
+      ≤ c * (x ^ (m + 1) * y ^ (m + 1)) / ((m : ℝ) + 1) ^ (2 : ℕ) := by
   have hm1 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
   have hslice : ∀ s : ℝ, Continuous fun t => F s t :=
     fun s => hFc.comp (continuous_const.prodMk continuous_id)
@@ -81,7 +81,7 @@ theorem abs_iterated_integral_le {m : ℕ} {c x y : ℝ} (hx : 0 ≤ x) (hy : 0 
     calc |∫ t in (0 : ℝ)..y, F s t| ≤ c * s ^ m * y ^ (m + 1) / ((m : ℝ) + 1) := h
       _ = c * y ^ (m + 1) / ((m : ℝ) + 1) * s ^ m := by ring
   have hval : (∫ s in (0 : ℝ)..x, c * y ^ (m + 1) / ((m : ℝ) + 1) * s ^ m)
-      = c * (x ^ (m + 1) * y ^ (m + 1)) / ((m : ℝ) + 1) ^ 2 := by
+      = c * (x ^ (m + 1) * y ^ (m + 1)) / ((m : ℝ) + 1) ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_const_mul, integral_pow_zero_left]
     field_simp
   linarith [habs, hmono, hval.le, hval.ge]
@@ -117,7 +117,7 @@ theorem norm_iterated_integral_le {m : ℕ} {c x y : ℝ} (hx : 0 ≤ x) (hy : 0
     {F : ℝ → ℝ → E} (hFc : Continuous fun p : ℝ × ℝ => F p.1 p.2)
     (hFb : ∀ s ∈ Icc (0 : ℝ) x, ∀ t ∈ Icc (0 : ℝ) y, ‖F s t‖ ≤ c * s ^ m * t ^ m) :
     ‖∫ s in (0 : ℝ)..x, ∫ t in (0 : ℝ)..y, F s t‖
-      ≤ c * (x ^ (m + 1) * y ^ (m + 1)) / ((m : ℝ) + 1) ^ 2 := by
+      ≤ c * (x ^ (m + 1) * y ^ (m + 1)) / ((m : ℝ) + 1) ^ (2 : ℕ) := by
   have hm1 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
   have hslice : ∀ s : ℝ, Continuous fun t => F s t :=
     fun s => hFc.comp (continuous_const.prodMk continuous_id)
@@ -139,7 +139,7 @@ theorem norm_iterated_integral_le {m : ℕ} {c x y : ℝ} (hx : 0 ≤ x) (hy : 0
     calc ‖∫ t in (0 : ℝ)..y, F s t‖ ≤ c * s ^ m * y ^ (m + 1) / ((m : ℝ) + 1) := h
       _ = c * y ^ (m + 1) / ((m : ℝ) + 1) * s ^ m := by ring
   have hval : (∫ s in (0 : ℝ)..x, c * y ^ (m + 1) / ((m : ℝ) + 1) * s ^ m)
-      = c * (x ^ (m + 1) * y ^ (m + 1)) / ((m : ℝ) + 1) ^ 2 := by
+      = c * (x ^ (m + 1) * y ^ (m + 1)) / ((m : ℝ) + 1) ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_const_mul, integral_pow_zero_left]
     field_simp
   linarith [hnorm, hmono, hval.le, hval.ge]
@@ -209,7 +209,7 @@ theorem norm_iterated_integral_le_abs {E : Type*} [NormedAddCommGroup E] [Normed
     (hFc : Continuous fun p : ℝ × ℝ => F p.1 p.2)
     (hFb : ∀ s ∈ uIcc (0 : ℝ) x, ∀ t ∈ uIcc (0 : ℝ) y, ‖F s t‖ ≤ c * |s| ^ m * |t| ^ m) :
     ‖∫ s in (0 : ℝ)..x, ∫ t in (0 : ℝ)..y, F s t‖
-      ≤ c * (|x| ^ (m + 1) * |y| ^ (m + 1)) / ((m : ℝ) + 1) ^ 2 := by
+      ≤ c * (|x| ^ (m + 1) * |y| ^ (m + 1)) / ((m : ℝ) + 1) ^ (2 : ℕ) := by
   have hm1 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
   have hslice : ∀ s : ℝ, Continuous fun t => F s t :=
     fun s => hFc.comp (continuous_const.prodMk continuous_id)
@@ -241,7 +241,7 @@ theorem norm_iterated_integral_le_abs {E : Type*} [NormedAddCommGroup E] [Normed
           ≤ c * |s| ^ m * (|y| ^ (m + 1) / ((m : ℝ) + 1)) := hb
         _ = c * (|y| ^ (m + 1) / ((m : ℝ) + 1)) * |s| ^ m := by ring)
   have hval2 : |∫ s in (0 : ℝ)..x, c * (|y| ^ (m + 1) / ((m : ℝ) + 1)) * |s| ^ m|
-      = c * (|x| ^ (m + 1) * |y| ^ (m + 1)) / ((m : ℝ) + 1) ^ 2 := by
+      = c * (|x| ^ (m + 1) * |y| ^ (m + 1)) / ((m : ℝ) + 1) ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_const_mul, abs_mul, abs_integral_abs_pow,
       abs_of_nonneg (by positivity)]
     field_simp

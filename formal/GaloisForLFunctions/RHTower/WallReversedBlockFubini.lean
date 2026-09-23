@@ -45,7 +45,7 @@ omit [Nontrivial X] in
 /-- **The position average of the block phase integral is integrable, in either orientation.** -/
 theorem integrableOn_blockPhaseIntegral'
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m : ℝ} (hg : IntegrableOn g (Icc m (m + 1))) (a b : ℝ) :
@@ -63,7 +63,7 @@ omit [Nontrivial X] in
 /-- **The block source's Fubini, in either orientation.** -/
 theorem integral_blockSource_swap'
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m : ℝ} (hg : IntegrableOn g (Icc m (m + 1))) (a b : ℝ) :

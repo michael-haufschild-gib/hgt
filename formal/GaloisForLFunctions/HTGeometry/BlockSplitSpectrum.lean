@@ -58,7 +58,7 @@ theorem matrixCharpolyRelation_blockSplitMatrix (m d : Z → ℝ) (u : ℂ) (w :
 /-- The block characteristic factor. -/
 theorem det_scalar_sub_splitBlock (m d : ℝ) (u : ℂ) (w : ℂ) :
     (Matrix.scalar (Fin 2) w - splitBlock m d u).det
-      = (w - (m : ℂ)) ^ 2 - (((d ^ 2 : ℝ) : ℂ) + u ^ 2) := by
+      = (w - (m : ℂ)) ^ (2 : ℕ) - (((d ^ (2 : ℕ) : ℝ) : ℂ) + u ^ (2 : ℕ)) := by
   have hmat : (Matrix.scalar (Fin 2) w - splitBlock m d u)
       = Matrix.of ![![w - ((m + d : ℝ) : ℂ), -u],
           ![-u, w - ((m - d : ℝ) : ℂ)]] := by
@@ -74,23 +74,23 @@ theorem det_scalar_sub_splitBlock (m d : ℝ) (u : ℂ) (w : ℂ) :
 /-- **The exact block-split spectrum.**  Both block roots satisfy the characteristic relation. -/
 theorem matrixCharpolyRelation_blockSplitMatrix_root (m d : Z → ℝ) (u : ℝ) (z : Z) (ε : Bool) :
     matrixCharpolyRelation (blockSplitMatrix m d (u : ℂ),
-        ((m z + (if ε then -1 else 1) * Real.sqrt (d z ^ 2 + u ^ 2) : ℝ) : ℂ)) = 0 := by
+        ((m z + (if ε then -1 else 1) * Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ)) : ℝ) : ℂ)) = 0 := by
   classical
   rw [matrixCharpolyRelation_blockSplitMatrix]
   refine Finset.prod_eq_zero (Finset.mem_univ z) ?_
   rw [det_scalar_sub_splitBlock]
-  have hnn : (0 : ℝ) ≤ d z ^ 2 + u ^ 2 := by positivity
-  have hshift : ((m z + (if ε then -1 else 1) * Real.sqrt (d z ^ 2 + u ^ 2) : ℝ) : ℂ)
+  have hnn : (0 : ℝ) ≤ d z ^ (2 : ℕ) + u ^ (2 : ℕ) := by positivity
+  have hshift : ((m z + (if ε then -1 else 1) * Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ)) : ℝ) : ℂ)
       - ((m z : ℝ) : ℂ)
-      = (((if ε then -1 else 1) * Real.sqrt (d z ^ 2 + u ^ 2) : ℝ) : ℂ) := by
+      = (((if ε then -1 else 1) * Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ)) : ℝ) : ℂ) := by
     push_cast
     ring
   rw [hshift, ← Complex.ofReal_pow]
-  have hcast : (((d z ^ 2 : ℝ) : ℂ) + (u : ℂ) ^ 2) = (((d z ^ 2 + u ^ 2 : ℝ)) : ℂ) := by
+  have hcast : (((d z ^ (2 : ℕ) : ℝ) : ℂ) + (u : ℂ) ^ (2 : ℕ)) = (((d z ^ (2 : ℕ) + u ^ (2 : ℕ) : ℝ)) : ℂ) := by
     push_cast
     ring
   rw [hcast, ← Complex.ofReal_sub, Complex.ofReal_eq_zero]
-  have hsq : Real.sqrt (d z ^ 2 + u ^ 2) ^ 2 = d z ^ 2 + u ^ 2 := Real.sq_sqrt hnn
+  have hsq : Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ)) ^ (2 : ℕ) = d z ^ (2 : ℕ) + u ^ (2 : ℕ) := Real.sq_sqrt hnn
   cases ε with
   | false =>
       rw [if_neg (by decide : ¬ (false = true))]
@@ -98,26 +98,26 @@ theorem matrixCharpolyRelation_blockSplitMatrix_root (m d : Z → ℝ) (u : ℝ)
       ring
   | true =>
       rw [if_pos rfl]
-      have hneg : ((-1 : ℝ) * Real.sqrt (d z ^ 2 + u ^ 2)) ^ 2
-          = Real.sqrt (d z ^ 2 + u ^ 2) ^ 2 := by ring
+      have hneg : ((-1 : ℝ) * Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ))) ^ (2 : ℕ)
+          = Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
       rw [hneg, hsq]
       ring
 
 omit [Fintype Z] [DecidableEq Z] in
 /-- At the unsplit point the block spectrum is the diagonal spectrum. -/
 theorem blockSplitRoot_zero (m d : Z → ℝ) (z : Z) (ε : Bool) (hd : 0 < d z) :
-    (m z + (if ε then -1 else 1) * Real.sqrt (d z ^ 2 + 0 ^ 2) : ℝ)
+    (m z + (if ε then -1 else 1) * Real.sqrt (d z ^ (2 : ℕ) + 0 ^ (2 : ℕ)) : ℝ)
       = m z + (if ε then -1 else 1) * d z := by
-  have hsq : Real.sqrt (d z ^ 2 + 0 ^ 2) = d z := by
-    rw [show d z ^ 2 + 0 ^ 2 = d z ^ 2 by ring, Real.sqrt_sq hd.le]
+  have hsq : Real.sqrt (d z ^ (2 : ℕ) + 0 ^ (2 : ℕ)) = d z := by
+    rw [show d z ^ (2 : ℕ) + 0 ^ (2 : ℕ) = d z ^ (2 : ℕ) by ring, Real.sqrt_sq hd.le]
   rw [hsq]
 
 omit [Fintype Z] [DecidableEq Z] in
 /-- The block root paths are continuous in the splitting parameter. -/
 theorem continuous_blockSplitRoot (m d : Z → ℝ) (z : Z) (ε : Bool) :
     Continuous fun u : ℝ =>
-      ((m z + (if ε then -1 else 1) * Real.sqrt (d z ^ 2 + u ^ 2) : ℝ) : ℂ) := by
-  have hsqrt : Continuous fun u : ℝ => Real.sqrt (d z ^ 2 + u ^ 2) :=
+      ((m z + (if ε then -1 else 1) * Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ)) : ℝ) : ℂ) := by
+  have hsqrt : Continuous fun u : ℝ => Real.sqrt (d z ^ (2 : ℕ) + u ^ (2 : ℕ)) :=
     Real.continuous_sqrt.comp (by fun_prop)
   exact Complex.continuous_ofReal.comp (by fun_prop)
 

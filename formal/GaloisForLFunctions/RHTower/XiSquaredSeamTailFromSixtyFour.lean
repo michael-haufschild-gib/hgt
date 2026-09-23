@@ -22,22 +22,22 @@ noncomputable section
 itself real.  This is the only non-square step in the tail-from-64 descent. -/
 theorem complex_im_eq_zero_of_re_pos_of_pow_four_nonnegativeReal
     {z : ℂ} (hre : 0 < z.re)
-    (hpowIm : (z ^ 4).im = 0) (hpowRe : 0 ≤ (z ^ 4).re) :
+    (hpowIm : (z ^ (4 : ℕ)).im = 0) (hpowRe : 0 ≤ (z ^ (4 : ℕ)).re) :
     z.im = 0 := by
   by_contra him
   have hfactor :
-      4 * z.re * z.im * (z.re ^ 2 - z.im ^ 2) = 0 := by
+      4 * z.re * z.im * (z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ)) = 0 := by
     rw [← hpowIm]
     simp [pow_succ, Complex.mul_im]
     ring
   have hleft : 4 * z.re * z.im ≠ 0 := by
     exact mul_ne_zero (mul_ne_zero (by norm_num) hre.ne') him
-  have hsq : z.im ^ 2 = z.re ^ 2 := by
+  have hsq : z.im ^ (2 : ℕ) = z.re ^ (2 : ℕ) := by
     have hdiff := (mul_eq_zero.mp hfactor).resolve_left hleft
     linarith
   have hformula :
-      (z ^ 4).re =
-        (z.re ^ 2) ^ 2 - 6 * z.re ^ 2 * z.im ^ 2 + (z.im ^ 2) ^ 2 := by
+      (z ^ (4 : ℕ)).re =
+        (z.re ^ (2 : ℕ)) ^ (2 : ℕ) - 6 * z.re ^ (2 : ℕ) * z.im ^ (2 : ℕ) + (z.im ^ (2 : ℕ)) ^ (2 : ℕ) := by
     simp [pow_succ, Complex.mul_re, Complex.mul_im]
     ring
   rw [hformula, hsq] at hpowRe
@@ -46,7 +46,7 @@ theorem complex_im_eq_zero_of_re_pos_of_pow_four_nonnegativeReal
 /-- If a square is real and the chosen square root lies in the open right half-plane, that root
 is real. -/
 theorem complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
-    {z : ℂ} (hre : 0 < z.re) (hsq : (z ^ 2).im = 0) :
+    {z : ℂ} (hre : 0 < z.re) (hsq : (z ^ (2 : ℕ)).im = 0) :
     z.im = 0 := by
   rw [pow_two, Complex.mul_im] at hsq
   have hprod : z.re * z.im = 0 := by linarith
@@ -59,7 +59,7 @@ theorem xiSquaredSeamDyadicHalfPlane_of_tailFromSix
     XiSquaredSeamDyadicHalfPlane := by
   intro q
   let z : ℂ := xiSquaredSeamOneCoordinate q
-  have h64tail : GaloisForLFunctions.ComplexDyadicHalfPlane (z ^ 64) := by
+  have h64tail : GaloisForLFunctions.ComplexDyadicHalfPlane (z ^ (64 : ℕ)) := by
     intro k
     have hk := h q (k + 6) (by omega)
     have hexp : 64 * 2 ^ k = 2 ^ (k + 6) := by
@@ -69,25 +69,25 @@ theorem xiSquaredSeamDyadicHalfPlane_of_tailFromSix
     simpa only [z, ← pow_mul, hexp] using hk
   have h64real :=
     (GaloisForLFunctions.complexDyadicHalfPlane_iff_nonnegativeReal
-      (z ^ 64)).mp h64tail
-  have h16re : 0 < (z ^ 16).re := by
+      (z ^ (64 : ℕ))).mp h64tail
+  have h16re : 0 < (z ^ (16 : ℕ)).re := by
     have hr := xiSquaredSeamDyadic_rung_four_pos q; norm_num at hr; simpa only [z] using hr
-  have h16im : (z ^ 16).im = 0 := by
+  have h16im : (z ^ (16 : ℕ)).im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_pow_four_nonnegativeReal h16re
-    · simpa only [show (z ^ 16) ^ 4 = z ^ 64 by ring] using h64real.1
-    · simpa only [show (z ^ 16) ^ 4 = z ^ 64 by ring] using h64real.2
-  have h8im : (z ^ 8).im = 0 := by
+    · simpa only [show (z ^ (16 : ℕ)) ^ (4 : ℕ) = z ^ (64 : ℕ) by ring] using h64real.1
+    · simpa only [show (z ^ (16 : ℕ)) ^ (4 : ℕ) = z ^ (64 : ℕ) by ring] using h64real.2
+  have h8im : (z ^ (8 : ℕ)).im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
       (by have hr := xiSquaredSeamDyadic_rung_three_pos q; norm_num at hr; simpa only [z] using hr)
-    simpa only [show (z ^ 8) ^ 2 = z ^ 16 by ring] using h16im
-  have h4im : (z ^ 4).im = 0 := by
+    simpa only [show (z ^ (8 : ℕ)) ^ (2 : ℕ) = z ^ (16 : ℕ) by ring] using h16im
+  have h4im : (z ^ (4 : ℕ)).im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
       (by have hr := xiSquaredSeamDyadic_rung_two_pos q; norm_num at hr; simpa only [z] using hr)
-    simpa only [show (z ^ 4) ^ 2 = z ^ 8 by ring] using h8im
-  have h2im : (z ^ 2).im = 0 := by
+    simpa only [show (z ^ (4 : ℕ)) ^ (2 : ℕ) = z ^ (8 : ℕ) by ring] using h8im
+  have h2im : (z ^ (2 : ℕ)).im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
       (by have hr := xiSquaredSeamDyadic_rung_one_pos q; norm_num at hr; simpa only [z] using hr)
-    simpa only [show (z ^ 2) ^ 2 = z ^ 4 by ring] using h4im
+    simpa only [show (z ^ (2 : ℕ)) ^ (2 : ℕ) = z ^ (4 : ℕ) by ring] using h4im
   have him : z.im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
       (by simpa [z] using xiSquaredSeamDyadic_rung_zero_pos q)

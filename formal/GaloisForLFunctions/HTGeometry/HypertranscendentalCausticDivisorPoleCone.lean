@@ -502,7 +502,7 @@ theorem binomialUnitPowerSeries_eq_one_add_X_pow (r : ℕ) :
   | succ r ih =>
       rw [binomialUnitPowerSeries_succ, ih, pow_succ]
 
-theorem rescale_neg_one_one_sub_X :
+theorem rescale_neg_one_one_sub_X_hypertranscendentalCausticDivisorPoleCone :
     PowerSeries.rescale (-1 : ℂ) (1 - PowerSeries.X) = 1 + PowerSeries.X := by
   rw [map_sub, map_one, PowerSeries.rescale_X]
   norm_num
@@ -520,7 +520,7 @@ theorem invOneSubPow_val_eq_inv_pow (p : ℕ) :
 theorem inv_pow_one_add_X_eq_rescale_invOneSubPow (p : ℕ) :
     (1 + PowerSeries.X : PowerSeries ℂ)⁻¹ ^ p =
       PowerSeries.rescale (-1 : ℂ) (↑(PowerSeries.invOneSubPow ℂ p) : PowerSeries ℂ) := by
-  rw [← rescale_neg_one_one_sub_X]
+  rw [← rescale_neg_one_one_sub_X_hypertranscendentalCausticDivisorPoleCone]
   rw [← PowerSeries.rescale_inv (-1 : ℂ) (1 - PowerSeries.X) (by simp), ← map_pow,
     invOneSubPow_val_eq_inv_pow]
 

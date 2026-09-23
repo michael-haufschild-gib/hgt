@@ -26,7 +26,7 @@ namespace Complement.Interval.Certificate
 /-- The interval square decomposition promised by [GSLW19,
 BlockHam.tex:436-480]:
 
-`A = B^2 + (1 - X^2) * C^2`.
+`A = B^(2 : ℕ) + (1 - X^(2 : ℕ)) * C^(2 : ℕ)`.
 
 The source proof also tracks degree and parity bounds; they are fields here so
 later QSP/QSVT modules can consume the certificate without re-reading the root
@@ -34,9 +34,9 @@ classification proof. -/
 structure SquareCertificate (A : ℝ[X]) where
   /-- First real-polynomial square factor in the interval decomposition. -/
   B : ℝ[X]
-  /-- Second real-polynomial square factor multiplied by `1 - X^2`. -/
+  /-- Second real-polynomial square factor multiplied by `1 - X^(2 : ℕ)`. -/
   C : ℝ[X]
-  eq_decomposition : A = B ^ 2 + (1 - X ^ 2) * C ^ 2
+  eq_decomposition : A = B ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * C ^ (2 : ℕ)
 
 /-- The full degree/parity certificate promised by Gilyen--Su--Low--Wiebe
 [GSLW19, BlockHam.tex:436-480].
@@ -50,7 +50,7 @@ structure DegreeParityCertificate (A : ℝ[X]) (k : ℕ) where
   B : ℝ[X]
   /-- Second square factor with opposite parity and interval endpoint factor. -/
   C : ℝ[X]
-  eq_decomposition : A = B ^ 2 + (1 - X ^ 2) * C ^ 2
+  eq_decomposition : A = B ^ (2 : ℕ) + (1 - X ^ (2 : ℕ)) * C ^ (2 : ℕ)
   degree_B : B.natDegree ≤ k
   degree_C : C.natDegree ≤ k
   parity_B : Complement.Interval.HasRealParity B k

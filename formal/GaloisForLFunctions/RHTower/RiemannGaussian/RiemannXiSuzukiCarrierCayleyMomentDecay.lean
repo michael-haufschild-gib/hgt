@@ -25,7 +25,7 @@ namespace RiemannGaussian
 
 noncomputable section
 
-local instance : Fact (0 < Real.pi) := ⟨Real.pi_pos⟩
+local instance riemannXiSuzukiCarrierCayleyMomentDecayInst1 : Fact (0 < Real.pi) := ⟨Real.pi_pos⟩
 
 /-- The arithmetic carrier density in the angular coordinate
 `y = arctan x`. -/

@@ -16,7 +16,7 @@ noncomputable section
 
 /-- The type-II energy of the block. -/
 def typeIIEnergy (T r : ℝ) (A B L U V : ℕ) : ℝ :=
-  (∑ d ∈ Finset.Ico 1 (L + 1), ‖((typeIILong U d : ℝ) : ℂ)‖ ^ 2)
+  (∑ d ∈ Finset.Ico 1 (L + 1), ‖((typeIILong U d : ℝ) : ℂ)‖ ^ (2 : ℕ))
     * ∑ m₁ ∈ Finset.Icc 1 L, ∑ m₂ ∈ Finset.Icc 1 L,
         ‖((typeIIShort V m₁ : ℝ) : ℂ)‖ * ‖((typeIIShort V m₂ : ℝ) : ℂ)‖
           * ‖∑ d ∈ Finset.Ico 1 (L + 1),

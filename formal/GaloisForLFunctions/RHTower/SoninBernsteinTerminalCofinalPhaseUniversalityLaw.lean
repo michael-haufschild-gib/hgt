@@ -34,7 +34,7 @@ def SoninCoupledBernsteinCofinalControl
     bernsteinCoefficientSquareDiscrepancyAtDefectDegree
       (radiusNormalizedMoment primeArchEndpointHausdorffRadius
         normalizedPrimeArchMoment)
-      (soninAllPrimeCoupledRenyiReplicaMoment (a j)) (d j) ≤ C ^ 2)
+      (soninAllPrimeCoupledRenyiReplicaMoment (a j)) (d j) ≤ C ^ (2 : ℕ))
 
 /-- Simultaneous realization of the terminal analytic-source atlas, exact orientation phase, and
 all cofinal prime--archimedean thermal regimes. -/

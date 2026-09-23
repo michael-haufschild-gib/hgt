@@ -28,7 +28,7 @@ private def reader (r : XiZeroCopy) : Point → ℂ :=
 
 /-- Original source current exposed by compact angular transposition of the leading cap. -/
 def angularFlux (q r : XiZeroCopy) (j : Fin 2) (z : Point) : ℂ :=
-  (physicalAngularParameter r^2-1/4)*reader r z*coordDeriv j (fullSquarePotential q) z-
+  (physicalAngularParameter r^(2 : ℕ)-1/4)*reader r z*coordDeriv j (fullSquarePotential q) z-
     scalarLaplacian (fullSquarePotential q) z*coordDeriv j (reader r) z
 
 /-- Public expansion of the literal cap source flux.  It exposes the exact
@@ -36,7 +36,7 @@ reader and square-potential slots needed by the same-branch cyclic cap
 current, without suppressing the scalar action in the reader derivative. -/
 theorem angularFlux_eq (q r : XiZeroCopy) (j : Fin 2) (z : Point) :
     angularFlux q r j z =
-      (physicalAngularParameter r^2 - 1 / 4) *
+      (physicalAngularParameter r^(2 : ℕ) - 1 / 4) *
         D4BMLiteralCusp.scalar (physicalAngularParameter r) z *
           coordDeriv j (fullSquarePotential q) z -
         scalarLaplacian (fullSquarePotential q) z *
@@ -59,7 +59,7 @@ private theorem square_first (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) (j : Fi
 theorem angularFlux_original_source (q r : XiZeroCopy) (branch : Bool)
     (z : {z : Point // 0 < z 1}) (j : Fin 2) :
     angularFlux q r j z.val=
-      (physicalAngularParameter r^2-1/4)*reader r z.val*scalar (center q) z.val*
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*reader r z.val*scalar (center q) z.val*
         coordDeriv j (scalar (center q)) z.val-
       (2*(physicalRate q branch+1)*(physicalRate q branch+2)*fullSquarePotential q z.val+
         fullGradientEnergy q z.val)*coordDeriv j (reader r) z.val := by
@@ -73,15 +73,15 @@ def constantVerticalFlux (u v : ℂ) (Y : ℝ) : ℂ :=
   let S := d4BMCompletedEisensteinCuspConstantPart .scalar v Y
   let Fy := d4BMCanonicalCuspConstantVerticalFirstJet u Y
   let Sy := d4BMCanonicalCuspConstantVerticalFirstJet v Y
-  (v^2-1/4)*S*F*Fy-((u^2-1/4)*F^2+(Y:ℂ)^2*Fy^2)*Sy
+  (v^(2 : ℕ)-1/4)*S*F*Fy-((u^(2 : ℕ)-1/4)*F^(2 : ℕ)+(Y:ℂ)^(2 : ℕ)*Fy^(2 : ℕ))*Sy
 
 /-- Actual coefficient of each ordered source/source/reader Weyl term. -/
 def constantCoefficient (u v : ℂ) (e1 e2 e3 : Bool) : ℂ :=
   d4BMCompletedEisensteinCuspConstantCoefficient u e1*
     d4BMCompletedEisensteinCuspConstantCoefficient u e2*
     d4BMCompletedEisensteinCuspConstantCoefficient v e3*
-      ((v^2-1/4)*d4BMCompletedEisensteinCuspWeylExponent u e2-
-        (u^2-1/4)*d4BMCompletedEisensteinCuspWeylExponent v e3-
+      ((v^(2 : ℕ)-1/4)*d4BMCompletedEisensteinCuspWeylExponent u e2-
+        (u^(2 : ℕ)-1/4)*d4BMCompletedEisensteinCuspWeylExponent v e3-
         d4BMCompletedEisensteinCuspWeylExponent u e1*
           d4BMCompletedEisensteinCuspWeylExponent u e2*
           d4BMCompletedEisensteinCuspWeylExponent v e3)
@@ -149,7 +149,7 @@ def fullVerticalFlux (u v : ℂ) (x Y : ℝ) : ℂ :=
   let Fx := d4BMCompletedEisensteinCuspHorizontalFirstJetTail u x Y
   let Fy := verticalFirst u x Y
   let Sy := verticalFirst v x Y
-  (v^2-1/4)*S*F*Fy-((u^2-1/4)*F^2+(Y:ℂ)^2*(Fx^2+Fy^2))*Sy
+  (v^(2 : ℕ)-1/4)*S*F*Fy-((u^(2 : ℕ)-1/4)*F^(2 : ℕ)+(Y:ℂ)^(2 : ℕ)*(Fx^(2 : ℕ)+Fy^(2 : ℕ)))*Sy
 
 private theorem scalar_partials (u : ℂ) (x : ℝ) (Y : Ici (1:ℝ)) :
     coordDeriv 0 (scalar u) ![x,Y.val]=d4BMCompletedEisensteinCuspHorizontalFirstJetTail u x Y.val ∧
@@ -185,21 +185,21 @@ theorem angularFlux_full_cusp (q r : XiZeroCopy) (x : ℝ) (Y : Ici (1:ℝ)) :
   have hz : 0 < (![x,Y.val] : Point) 1 := zero_lt_one.trans_le Y.property
   have hq := scalar_partials (center q) x Y
   have hr := scalar_partials (physicalAngularParameter r) x Y
-  have hl : (physicalRate q true+1)*(physicalRate q true+2)=center q^2-1/4 := by
+  have hl : (physicalRate q true+1)*(physicalRate q true+2)=center q^(2 : ℕ)-1/4 := by
     dsimp [physicalRate,D4BMGlobalAngularResponse.center]
     ring
   rw [angularFlux_original_source q r true ⟨![x,Y.val],hz⟩ 1]
-  change (physicalAngularParameter r^2-1/4)*scalar (physicalAngularParameter r) ![x,Y.val]*
+  change (physicalAngularParameter r^(2 : ℕ)-1/4)*scalar (physicalAngularParameter r) ![x,Y.val]*
       scalar (center q) ![x,Y.val]*coordDeriv 1 (scalar (center q)) ![x,Y.val]-
       (2*(physicalRate q true+1)*(physicalRate q true+2)*fullSquarePotential q ![x,Y.val]+
         fullGradientEnergy q ![x,Y.val])*coordDeriv 1 (scalar (physicalAngularParameter r)) ![x,Y.val]=_
-  rw [show 2*(physicalRate q true+1)*(physicalRate q true+2)=2*(center q^2-1/4) by rw [mul_assoc,hl]]
+  rw [show 2*(physicalRate q true+1)*(physicalRate q true+2)=2*(center q^(2 : ℕ)-1/4) by rw [mul_assoc,hl]]
   simp only [fullSquarePotential,fullGradientEnergy,hq.1,hq.2,hr.2,Matrix.cons_val_one]
-  change (physicalAngularParameter r^2-1/4)*scalar (physicalAngularParameter r) ![x,Y.val]*
+  change (physicalAngularParameter r^(2 : ℕ)-1/4)*scalar (physicalAngularParameter r) ![x,Y.val]*
       scalar (center q) ![x,Y.val]*verticalFirst (center q) x Y.val-
-      (2*(center q^2-1/4)*(1/2*(scalar (center q) ![x,Y.val]*scalar (center q) ![x,Y.val]))+
-        (Y.val:ℂ)^2*(d4BMCompletedEisensteinCuspHorizontalFirstJetTail (center q) x Y.val^2+
-          verticalFirst (center q) x Y.val^2))*verticalFirst (physicalAngularParameter r) x Y.val=_
+      (2*(center q^(2 : ℕ)-1/4)*(1/2*(scalar (center q) ![x,Y.val]*scalar (center q) ![x,Y.val]))+
+        (Y.val:ℂ)^(2 : ℕ)*(d4BMCompletedEisensteinCuspHorizontalFirstJetTail (center q) x Y.val^(2 : ℕ)+
+          verticalFirst (center q) x Y.val^(2 : ℕ)))*verticalFirst (physicalAngularParameter r) x Y.val=_
   dsimp only [fullVerticalFlux,scalar]
   simp only [Matrix.cons_val_zero,Matrix.cons_val_one]
   ring
@@ -241,17 +241,17 @@ theorem fullVerticalFlux_remainder_rapid (u v : ℂ) (x : ℝ) :
   have hD := mSy _ (d4BMCuspRapidDecay_mul (d4BMCuspRapidDecay_horizontalFirstJetTail u x)
     (d4BMCuspRapidDecay_horizontalFirstJetTail u x))
   have h := d4BMCuspRapidDecay_sub
-    (d4BMCuspRapidDecay_sub (d4BMCuspRapidDecay_const_mul hA (v^2-1/4))
-      (d4BMCuspRapidDecay_const_mul hB (u^2-1/4)))
+    (d4BMCuspRapidDecay_sub (d4BMCuspRapidDecay_const_mul hA (v^(2 : ℕ)-1/4))
+      (d4BMCuspRapidDecay_const_mul hB (u^(2 : ℕ)-1/4)))
     (d4BMCuspRapidDecay_add (d4BMCuspRapidDecay_mul_cpow hC 2)
       (d4BMCuspRapidDecay_mul_cpow hD 2))
   apply d4BMCuspRapidDecay_congr h
   intro Y
   simp only [Complex.cpow_two]
-  change (v^2-1/4)*(S Y*F Y*Fy Y-Sc Y*Fc Y*Fyc Y)-
-      (u^2-1/4)*(F Y*F Y*Sy Y-Fc Y*Fc Y*Syc Y)-
-      ((Fy Y*Fy Y*Sy Y-Fyc Y*Fyc Y*Syc Y)*(Y:ℂ)^2+
-        (Fx Y*Fx Y*Sy Y)*(Y:ℂ)^2)=_
+  change (v^(2 : ℕ)-1/4)*(S Y*F Y*Fy Y-Sc Y*Fc Y*Fyc Y)-
+      (u^(2 : ℕ)-1/4)*(F Y*F Y*Sy Y-Fc Y*Fc Y*Syc Y)-
+      ((Fy Y*Fy Y*Sy Y-Fyc Y*Fyc Y*Syc Y)*(Y:ℂ)^(2 : ℕ)+
+        (Fx Y*Fx Y*Sy Y)*(Y:ℂ)^(2 : ℕ))=_
   dsimp only [fullVerticalFlux,constantVerticalFlux,F,S,Fc,Sc,Fy,Sy,Fyc,Syc,Fx]
   ring
 

@@ -24,7 +24,7 @@ theorem ofReal_eulerSquareResidualLogMoment_one_eq_infinitePrimeFlux
   rw [eulerSquareResidualLogMoment, Complex.ofReal_tsum]
   rw [show (fun n : ℕ =>
       ((eulerSquareResidualProbability sigma n *
-        Real.log n ^ 1 : ℝ) : ℂ)) =
+        Real.log n ^ (1 : ℕ) : ℝ) : ℂ)) =
       fun n : ℕ =>
         ((Real.log n : ℝ) : ℂ) /
           (n : ℂ) ^ ((2 * sigma : ℝ) : ℂ) /

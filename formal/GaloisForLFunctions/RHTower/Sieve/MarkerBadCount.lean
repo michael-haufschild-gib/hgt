@@ -24,7 +24,7 @@ theorem sq_card_marker_bad_le {S B : Finset ℕ} (f : ℕ → ℕ) (K : ℕ)
     (hB : B ⊆ S.image f)
     (hsep : ∀ p ∈ S, ∀ q ∈ S, p < q → f q = f p → q ≤ p + K) {Pi : ℝ}
     (hpair : ∑ d ∈ Finset.Icc 1 K, (((S.filter (fun p => p + d ∈ S)).card : ℕ) : ℝ) ≤ Pi) :
-    ((((S.filter (fun p => f p ∈ B)).card : ℕ) : ℝ)) ^ 2
+    ((((S.filter (fun p => f p ∈ B)).card : ℕ) : ℝ)) ^ (2 : ℕ)
       ≤ (B.card : ℝ) * ((S.card : ℝ) + 2 * Pi) := by
   classical
   set c : ℕ → ℕ := fun t => (S.filter (fun p => f p = t)).card with hc
@@ -45,12 +45,12 @@ theorem sq_card_marker_bad_le {S B : Finset ℕ} (f : ℕ → ℕ) (K : ℕ)
   -- Cauchy–Schwarz against the second moment
   have hcs := sq_sum_subset_le_card_mul_sumSq (S := S.image f) (B := B) hB
     (fun t => ((c t : ℕ) : ℝ))
-  have hsm : ∑ t ∈ S.image f, (((c t : ℕ) : ℝ)) ^ 2
+  have hsm : ∑ t ∈ S.image f, (((c t : ℕ) : ℝ)) ^ (2 : ℕ)
       ≤ (S.card : ℝ) + 2 * Pi := by
     have hnat := sum_sq_fibreCard_le (S := S) f K hsep
-    have hcast : ((∑ t ∈ S.image f, (c t) ^ 2 : ℕ) : ℝ)
-        = ∑ t ∈ S.image f, (((c t : ℕ) : ℝ)) ^ 2 := by push_cast; ring
-    have hmono : ((∑ t ∈ S.image f, (c t) ^ 2 : ℕ) : ℝ)
+    have hcast : ((∑ t ∈ S.image f, (c t) ^ (2 : ℕ) : ℕ) : ℝ)
+        = ∑ t ∈ S.image f, (((c t : ℕ) : ℝ)) ^ (2 : ℕ) := by push_cast; ring
+    have hmono : ((∑ t ∈ S.image f, (c t) ^ (2 : ℕ) : ℕ) : ℝ)
         ≤ ((S.card + 2 * ∑ d ∈ Finset.Icc 1 K, (S.filter (fun p => p + d ∈ S)).card : ℕ) : ℝ) :=
       Nat.cast_le.2 hnat
     rw [hcast] at hmono
@@ -58,9 +58,9 @@ theorem sq_card_marker_bad_le {S B : Finset ℕ} (f : ℕ → ℕ) (K : ℕ)
     push_cast
     linarith [hpair]
   have hB0 : (0 : ℝ) ≤ (B.card : ℝ) := Nat.cast_nonneg _
-  calc ((((S.filter (fun p => f p ∈ B)).card : ℕ) : ℝ)) ^ 2
-      = (∑ t ∈ B, ((c t : ℕ) : ℝ)) ^ 2 := by rw [hcount]; push_cast; ring
-    _ ≤ (B.card : ℝ) * ∑ t ∈ S.image f, (((c t : ℕ) : ℝ)) ^ 2 := hcs
+  calc ((((S.filter (fun p => f p ∈ B)).card : ℕ) : ℝ)) ^ (2 : ℕ)
+      = (∑ t ∈ B, ((c t : ℕ) : ℝ)) ^ (2 : ℕ) := by rw [hcount]; push_cast; ring
+    _ ≤ (B.card : ℝ) * ∑ t ∈ S.image f, (((c t : ℕ) : ℝ)) ^ (2 : ℕ) := hcs
     _ ≤ (B.card : ℝ) * ((S.card : ℝ) + 2 * Pi) := mul_le_mul_of_nonneg_left hsm hB0
 
 end RHTower.Sieve

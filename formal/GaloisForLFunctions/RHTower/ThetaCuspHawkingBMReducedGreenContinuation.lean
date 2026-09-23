@@ -50,8 +50,8 @@ theorem continuedReducedGreen_hasDerivAt (w chi s a J : ℂ) (hw : w.im ≠ 0)
 /-- The continued family solves its actual reduced-source equation away from the original connection zeros. -/
 theorem continuedReducedGreen_equation (w chi s a J : ℂ) (hw : w.im ≠ 0)
     (hwr : -2 < w.re) (hc : connection w chi ≠ 0) (t : ℝ) (ht : t < 0) :
-    w^2*continuedReducedGreen w chi s a J t-continuedReducedGreenSecond w chi s a J t+
-      (horizonCoordinate t:ℂ)*(1/4+chi^2)*continuedReducedGreen w chi s a J t =
+    w^(2 : ℕ)*continuedReducedGreen w chi s a J t-continuedReducedGreenSecond w chi s a J t+
+      (horizonCoordinate t:ℂ)*(1/4+chi^(2 : ℕ))*continuedReducedGreen w chi s a J t =
         reducedCoefficient s w a (continuedOnset s w) t*J := by
   have he := continuedTortoiseGreen_equation w chi s a J (reducedGreenGradient chi s J) hw hwr hc t ht
   dsimp only [continuedReducedGreen,continuedReducedGreenSecond]

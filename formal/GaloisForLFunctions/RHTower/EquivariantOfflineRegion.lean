@@ -115,16 +115,16 @@ theorem mirrorGlue_eq_offline {f g : ℂ → ℂ} {U : Set ℂ}
 /-- The mirror gluing intertwines squaring on a symmetric off-line region. -/
 theorem mirrorGlue_sq_offline {g₁ g₂ : ℂ → ℂ} {U : Set ℂ}
     (hUsym : lineReflect ⁻¹' U = U) (hUoff : ∀ s ∈ U, s.re ≠ 1 / 2)
-    (h : ∀ s ∈ U ∩ rightHalf, g₂ s ^ 2 = g₁ s) :
-    ∀ s ∈ U, mirrorGlue g₂ s ^ 2 = mirrorGlue g₁ s := by
+    (h : ∀ s ∈ U ∩ rightHalf, g₂ s ^ (2 : ℕ) = g₁ s) :
+    ∀ s ∈ U, mirrorGlue g₂ s ^ (2 : ℕ) = mirrorGlue g₁ s := by
   intro s hs
-  show (if 1 / 2 < s.re then g₂ s else mirrorRoot g₂ s) ^ 2 =
+  show (if 1 / 2 < s.re then g₂ s else mirrorRoot g₂ s) ^ (2 : ℕ) =
     (if 1 / 2 < s.re then g₁ s else mirrorRoot g₁ s)
   rcases lt_or_gt_of_ne (Ne.symm (hUoff s hs)) with hgt | hlt
   · rw [if_pos hgt, if_pos hgt]
     exact h s ⟨hs, hgt⟩
   · rw [if_neg (by linarith : ¬(1 / 2 < s.re)), if_neg (by linarith : ¬(1 / 2 < s.re))]
-    show ((starRingEnd ℂ) (g₂ (lineReflect s))) ^ 2 = (starRingEnd ℂ) (g₁ (lineReflect s))
+    show ((starRingEnd ℂ) (g₂ (lineReflect s))) ^ (2 : ℕ) = (starRingEnd ℂ) (g₁ (lineReflect s))
     rw [← map_pow]
     congr 1
     refine h _ ⟨(mem_of_lineReflect_symm hUsym).mpr hs, ?_⟩

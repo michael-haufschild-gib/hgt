@@ -11,7 +11,7 @@ continuously differentiable on the same open planar set, then every `coordPartia
 function is differentiable there and the iterated `coordPartial`s are the iterated bivariate partial
 derivatives.
 
-The bookkeeping is carried by `chartFun`, which reads a bivariate function as a function on a
+The bookkeeping is carried by `clockChartFun`, which reads a bivariate function as a function on a
 two-dimensional coordinate space, and by `chartBox`, the coordinate preimage of a planar set. Both
 are transparent, so a chart identity proved on `chartBox Ω` transports back to the plane unchanged.
 -/
@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 open Set Filter
 
 /-- A bivariate function read as a function on a two-dimensional coordinate space. -/
-noncomputable def chartFun (u : ℝ → ℝ → ℝ) : (Fin (1 + 1) → ℝ) → ℝ := fun y => u (y 0) (y 1)
+noncomputable def clockChartFun (u : ℝ → ℝ → ℝ) : (Fin (1 + 1) → ℝ) → ℝ := fun y => u (y 0) (y 1)
 
 /-- The coordinate preimage of a planar set. -/
 def chartBox (Ω : Set (ℝ × ℝ)) : Set (Fin (1 + 1) → ℝ) := {y | (y 0, y 1) ∈ Ω}
@@ -65,7 +65,7 @@ theorem hasFDerivAt_uncurry_isC1On (h : IsC1On u A B Ω) {p : ℝ × ℝ} (hp : 
 
 /-- **A continuously differentiable bivariate function is a differentiable chart function.** -/
 theorem hasFDerivAt_chartFun (h : IsC1On u A B Ω) (hx : x ∈ chartBox Ω) :
-    HasFDerivAt (chartFun u)
+    HasFDerivAt (clockChartFun u)
       (((toCLM (A (x 0) (x 1))).coprod (toCLM (B (x 0) (x 1)))).comp pairCLM) x :=
   hasFDerivAt_bivariateChart
     (Filter.eventually_of_mem (h.isOpen.mem_nhds hx) fun v hv => h.hasDerivFst v hv)
@@ -73,18 +73,18 @@ theorem hasFDerivAt_chartFun (h : IsC1On u A B Ω) (hx : x ∈ chartBox Ω) :
     h.contFst.continuousAt h.contSnd.continuousAt
 
 theorem differentiableAt_chartFun (h : IsC1On u A B Ω) (hx : x ∈ chartBox Ω) :
-    DifferentiableAt ℝ (chartFun u) x :=
+    DifferentiableAt ℝ (clockChartFun u) x :=
   (hasFDerivAt_chartFun h hx).differentiableAt
 
 theorem coordPartial_chartFun_zero (h : IsC1On u A B Ω) (hx : x ∈ chartBox Ω) :
-    coordPartial 0 (chartFun u) x = A (x 0) (x 1) :=
+    coordPartial 0 (clockChartFun u) x = A (x 0) (x 1) :=
   coordPartial_bivariateChart_zero
     (Filter.eventually_of_mem (h.isOpen.mem_nhds hx) fun v hv => h.hasDerivFst v hv)
     (Filter.eventually_of_mem (h.isOpen.mem_nhds hx) fun v hv => h.hasDerivSnd v hv)
     h.contFst.continuousAt h.contSnd.continuousAt
 
 theorem coordPartial_chartFun_one (h : IsC1On u A B Ω) (hx : x ∈ chartBox Ω) :
-    coordPartial 1 (chartFun u) x = B (x 0) (x 1) :=
+    coordPartial 1 (clockChartFun u) x = B (x 0) (x 1) :=
   coordPartial_bivariateChart_one
     (Filter.eventually_of_mem (h.isOpen.mem_nhds hx) fun v hv => h.hasDerivFst v hv)
     (Filter.eventually_of_mem (h.isOpen.mem_nhds hx) fun v hv => h.hasDerivSnd v hv)
@@ -92,12 +92,12 @@ theorem coordPartial_chartFun_one (h : IsC1On u A B Ω) (hx : x ∈ chartBox Ω)
 
 /-- **The first chart partial derivative is the first bivariate one, near the point.** -/
 theorem eventuallyEq_coordPartial_chartFun_zero (h : IsC1On u A B Ω) (hx : x ∈ chartBox Ω) :
-    coordPartial 0 (chartFun u) =ᶠ[nhds x] chartFun A :=
+    coordPartial 0 (clockChartFun u) =ᶠ[nhds x] clockChartFun A :=
   Filter.eventually_of_mem ((isOpen_chartBox h.isOpen).mem_nhds hx)
     fun _ hy => coordPartial_chartFun_zero h hy
 
 theorem eventuallyEq_coordPartial_chartFun_one (h : IsC1On u A B Ω) (hx : x ∈ chartBox Ω) :
-    coordPartial 1 (chartFun u) =ᶠ[nhds x] chartFun B :=
+    coordPartial 1 (clockChartFun u) =ᶠ[nhds x] clockChartFun B :=
   Filter.eventually_of_mem ((isOpen_chartBox h.isOpen).mem_nhds hx)
     fun _ hy => coordPartial_chartFun_one h hy
 
@@ -109,7 +109,7 @@ variable {Aa Ab Ba Bb : ℝ → ℝ → ℝ}
 derivatives.** -/
 theorem differentiableAt_coordPartial_chartFun (h : IsC1On u A B Ω) (hA : IsC1On A Aa Ab Ω)
     (hB : IsC1On B Ba Bb Ω) (k : Fin (1 + 1)) (hx : x ∈ chartBox Ω) :
-    DifferentiableAt ℝ (coordPartial k (chartFun u)) x := by
+    DifferentiableAt ℝ (coordPartial k (clockChartFun u)) x := by
   fin_cases k
   · exact (differentiableAt_chartFun hA hx).congr_of_eventuallyEq
       (eventuallyEq_coordPartial_chartFun_zero h hx)
@@ -119,25 +119,25 @@ theorem differentiableAt_coordPartial_chartFun (h : IsC1On u A B Ω) (hA : IsC1O
 /-- **The iterated chart partial derivatives are the iterated bivariate ones.** -/
 theorem coordPartial_coordPartial_chartFun_zero_zero (h : IsC1On u A B Ω) (hA : IsC1On A Aa Ab Ω)
     (hx : x ∈ chartBox Ω) :
-    coordPartial 0 (coordPartial 0 (chartFun u)) x = Aa (x 0) (x 1) := by
+    coordPartial 0 (coordPartial 0 (clockChartFun u)) x = Aa (x 0) (x 1) := by
   rw [coordPartial_congr (eventuallyEq_coordPartial_chartFun_zero h hx) 0,
     coordPartial_chartFun_zero hA hx]
 
 theorem coordPartial_coordPartial_chartFun_zero_one (h : IsC1On u A B Ω) (hA : IsC1On A Aa Ab Ω)
     (hx : x ∈ chartBox Ω) :
-    coordPartial 1 (coordPartial 0 (chartFun u)) x = Ab (x 0) (x 1) := by
+    coordPartial 1 (coordPartial 0 (clockChartFun u)) x = Ab (x 0) (x 1) := by
   rw [coordPartial_congr (eventuallyEq_coordPartial_chartFun_zero h hx) 1,
     coordPartial_chartFun_one hA hx]
 
 theorem coordPartial_coordPartial_chartFun_one_zero (h : IsC1On u A B Ω) (hB : IsC1On B Ba Bb Ω)
     (hx : x ∈ chartBox Ω) :
-    coordPartial 0 (coordPartial 1 (chartFun u)) x = Ba (x 0) (x 1) := by
+    coordPartial 0 (coordPartial 1 (clockChartFun u)) x = Ba (x 0) (x 1) := by
   rw [coordPartial_congr (eventuallyEq_coordPartial_chartFun_one h hx) 0,
     coordPartial_chartFun_zero hB hx]
 
 theorem coordPartial_coordPartial_chartFun_one_one (h : IsC1On u A B Ω) (hB : IsC1On B Ba Bb Ω)
     (hx : x ∈ chartBox Ω) :
-    coordPartial 1 (coordPartial 1 (chartFun u)) x = Bb (x 0) (x 1) := by
+    coordPartial 1 (coordPartial 1 (clockChartFun u)) x = Bb (x 0) (x 1) := by
   rw [coordPartial_congr (eventuallyEq_coordPartial_chartFun_one h hx) 1,
     coordPartial_chartFun_one hB hx]
 

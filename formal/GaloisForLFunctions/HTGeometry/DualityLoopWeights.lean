@@ -57,7 +57,7 @@ the loop is proper, and its weight is `1`. -/
 theorem dualityLoop_two :
     cStep 2 ((1 : ℚ) + 0) = 1 / 2 ∧
       cStep 2 ((1 / 2 : ℚ) + (-1)) = -1 ∧
-      tStep (tStep 1 ((1 : ℚ) + 0)) ((1 / 2 : ℚ) + (-1)) / 2 ^ 1 = 1 := by
+      tStep (tStep 1 ((1 : ℚ) + 0)) ((1 / 2 : ℚ) + (-1)) / 2 ^ (1 : ℕ) = 1 := by
   refine ⟨?_, ?_, ?_⟩ <;> norm_num [cStep, tStep]
 
 /-- **The conductor-three loop.**  `1 → 1/3 → -1/2 → 2/3 → -1` with shifts `0, -1, 1, -1`; all
@@ -68,7 +68,7 @@ theorem dualityLoop_three :
       cStep 3 ((-1 / 2 : ℚ) + 1) = 2 / 3 ∧
       cStep 3 ((2 / 3 : ℚ) + (-1)) = -1 ∧
       tStep (tStep (tStep (tStep 1 ((1 : ℚ) + 0)) ((1 / 3 : ℚ) + (-1))) ((-1 / 2 : ℚ) + 1))
-          ((2 / 3 : ℚ) + (-1)) / 3 ^ 2 = 1 := by
+          ((2 / 3 : ℚ) + (-1)) / 3 ^ (2 : ℕ) = 1 := by
   refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> norm_num [cStep, tStep]
 
 /-- **No proper length-two loop at conductor four.**  Starting from `c = 1`, one duality step gives

@@ -5,7 +5,7 @@ import Mathlib.LinearAlgebra.Lagrange
 # Barycentric nonlocality of FE-paired prime jets
 
 The FE-paired interpolation theorem gives a unique finite coefficient packet but does not identify
-its coefficients.  This file computes them.  For squared nodes `x_i = (log p_i)^2`, evaluation at
+its coefficients.  This file computes them.  For squared nodes `x_i = (log p_i)^(2 : ℕ)`, evaluation at
 zero has the Lagrange weights
 
 `b_i = ∏_{j ≠ i} (-x_j)/(x_i-x_j)`,
@@ -125,37 +125,37 @@ theorem neg_div_sub_ne_one {x y : ℂ} (hx : x ≠ 0) (hxy : x ≠ y) :
 
 /-- The explicit reflected-pair coefficient obtained from barycentric evaluation at zero. -/
 def fePairedOriginCoefficient {k : ℕ} (r : Fin k → ℂ) (i : Fin k) : ℂ :=
-  originInterpolationWeight (fun j => r j ^ 2) i / (2 * r i)
+  originInterpolationWeight (fun j => r j ^ (2 : ℕ)) i / (2 * r i)
 
 /-- The barycentric reflected-pair coefficients match the origin derivation at all available odd
 degrees. -/
 theorem fePairedOriginCoefficient_odd_match {k : ℕ} (r : Fin k → ℂ)
-    (hr2inj : Function.Injective (fun i => r i ^ 2))
+    (hr2inj : Function.Injective (fun i => r i ^ (2 : ℕ)))
     (hr0 : ∀ i, r i ≠ 0) (j : Fin k) :
     fePairedMoment r (fePairedOriginCoefficient r) (2 * (j : ℕ) + 1) =
       archimedeanDerivationMoment (2 * (j : ℕ) + 1) := by
   rw [fePairedMoment_odd_eq]
   calc
     (∑ i : Fin k, (2 * fePairedOriginCoefficient r i * r i) *
-        (r i ^ 2) ^ (j : ℕ)) =
-        ∑ i : Fin k, originInterpolationWeight (fun q => r q ^ 2) i *
-          (r i ^ 2) ^ (j : ℕ) := by
+        (r i ^ (2 : ℕ)) ^ (j : ℕ)) =
+        ∑ i : Fin k, originInterpolationWeight (fun q => r q ^ (2 : ℕ)) i *
+          (r i ^ (2 : ℕ)) ^ (j : ℕ) := by
       apply Finset.sum_congr rfl
       intro i _
       dsimp [fePairedOriginCoefficient]
       field_simp [hr0 i]
     _ = originValueMoment (j : ℕ) :=
-      originInterpolationWeight_moments (fun i => r i ^ 2) hr2inj j
+      originInterpolationWeight_moments (fun i => r i ^ (2 : ℕ)) hr2inj j
     _ = archimedeanDerivationMoment (2 * (j : ℕ) + 1) :=
       (archimedeanDerivationMoment_odd_eq_originValueMoment (j : ℕ)).symm
 
 /-- Every explicit reflected-pair coefficient is nonzero. -/
 theorem fePairedOriginCoefficient_ne_zero {k : ℕ} (r : Fin k → ℂ)
-    (hr2inj : Function.Injective (fun i => r i ^ 2))
+    (hr2inj : Function.Injective (fun i => r i ^ (2 : ℕ)))
     (hr0 : ∀ i, r i ≠ 0) (i : Fin k) :
     fePairedOriginCoefficient r i ≠ 0 := by
   exact div_ne_zero
-    (originInterpolationWeight_ne_zero (fun j => r j ^ 2) hr2inj
+    (originInterpolationWeight_ne_zero (fun j => r j ^ (2 : ℕ)) hr2inj
       (fun j => pow_ne_zero 2 (hr0 j)) i)
     (mul_ne_zero (by norm_num) (hr0 i))
 
@@ -164,8 +164,8 @@ theorem fePairedOriginCoefficient_castSucc_eq {k : ℕ} (r : Fin (k + 1) → ℂ
     (i : Fin k) :
     fePairedOriginCoefficient r i.castSucc =
       fePairedOriginCoefficient (fun j : Fin k => r j.castSucc) i *
-        ((-(r (Fin.last k) ^ 2)) /
-          (r i.castSucc ^ 2 - r (Fin.last k) ^ 2)) := by
+        ((-(r (Fin.last k) ^ (2 : ℕ))) /
+          (r i.castSucc ^ (2 : ℕ) - r (Fin.last k) ^ (2 : ℕ))) := by
   rw [fePairedOriginCoefficient, fePairedOriginCoefficient,
     originInterpolationWeight_castSucc]
   simp only [div_eq_mul_inv]
@@ -174,12 +174,12 @@ theorem fePairedOriginCoefficient_castSucc_eq {k : ℕ} (r : Fin (k + 1) → ℂ
 /-- **Barycentric nonlocality.** Adding one nonzero squared-distinct reflected node changes every
 old explicit interpolation coefficient. -/
 theorem fePairedOriginCoefficient_castSucc_ne {k : ℕ} (r : Fin (k + 1) → ℂ)
-    (hr2inj : Function.Injective (fun i => r i ^ 2))
+    (hr2inj : Function.Injective (fun i => r i ^ (2 : ℕ)))
     (hr0 : ∀ i, r i ≠ 0) (i : Fin k) :
     fePairedOriginCoefficient r i.castSucc ≠
       fePairedOriginCoefficient (fun j : Fin k => r j.castSucc) i := by
   intro hcoeff
-  let x : Fin (k + 1) → ℂ := fun q => r q ^ 2
+  let x : Fin (k + 1) → ℂ := fun q => r q ^ (2 : ℕ)
   let xold : Fin k → ℂ := fun q => x q.castSucc
   let W : ℂ := originInterpolationWeight xold i
   let c : ℂ := (-x (Fin.last k)) / (x i.castSucc - x (Fin.last k))
@@ -258,8 +258,8 @@ theorem fePairedOriginCoefficient_castSucc_norm_lt {k : ℕ} (r : Fin (k + 1) �
       (fun j : Fin k => (r j.castSucc : ℂ)) i ≠ 0) :
     ‖fePairedOriginCoefficient (fun j : Fin k => (r j.castSucc : ℂ)) i‖ <
       ‖fePairedOriginCoefficient (fun j => (r j : ℂ)) i.castSucc‖ := by
-  let x : ℝ := r i.castSucc ^ 2
-  let y : ℝ := r (Fin.last k) ^ 2
+  let x : ℝ := r i.castSucc ^ (2 : ℕ)
+  let y : ℝ := r (Fin.last k) ^ (2 : ℕ)
   let c : ℝ := (-y) / (x - y)
   have hrn : 0 < r (Fin.last k) := lt_trans hri hir
   have hx : 0 < x := sq_pos_of_pos hri
@@ -276,8 +276,8 @@ theorem fePairedOriginCoefficient_castSucc_norm_lt {k : ℕ} (r : Fin (k + 1) �
     rw [hc, lt_div_iff₀ hyx]
     linarith
   have hfactor :
-      ((-((r (Fin.last k) : ℂ) ^ 2)) /
-          ((r i.castSucc : ℂ) ^ 2 - (r (Fin.last k) : ℂ) ^ 2)) = (c : ℂ) := by
+      ((-((r (Fin.last k) : ℂ) ^ (2 : ℕ))) /
+          ((r i.castSucc : ℂ) ^ (2 : ℕ) - (r (Fin.last k) : ℂ) ^ (2 : ℕ))) = (c : ℂ) := by
     norm_num [c, x, y]
   rw [fePairedOriginCoefficient_castSucc_eq]
   rw [hfactor, norm_mul, Complex.norm_real, Real.norm_eq_abs,

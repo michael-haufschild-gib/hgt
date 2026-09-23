@@ -16,17 +16,17 @@ open Polynomial Filter Real
 open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
-def polynomialRadialCoreMetric (a : ℝ) (B : ℝ[X]) (r : ℝ) : ℝ := 1 + a * r + r ^ 2 * B.eval r
+def polynomialRadialCoreMetric (a : ℝ) (B : ℝ[X]) (r : ℝ) : ℝ := 1 + a * r + r ^ (2 : ℕ) * B.eval r
 
 def polynomialRadialCoreSlope (a : ℝ) (B : ℝ[X]) (r : ℝ) : ℝ :=
-  a + 2 * r * B.eval r + r ^ 2 * B.derivative.eval r
+  a + 2 * r * B.eval r + r ^ (2 : ℕ) * B.derivative.eval r
 
 def polynomialRadialCoreSecond (B : ℝ[X]) (r : ℝ) : ℝ :=
-  2 * B.eval r + 4 * r * B.derivative.eval r + r ^ 2 * B.derivative.derivative.eval r
+  2 * B.eval r + 4 * r * B.derivative.eval r + r ^ (2 : ℕ) * B.derivative.derivative.eval r
 
 /-- The complete curvature polynomial after removing the linear metric mode. -/
 def polynomialRadialRegularKretschmann (B : ℝ[X]) (r : ℝ) : ℝ :=
-  polynomialRadialCoreSecond B r ^ 2 + 4 * (2 * B.eval r + r * B.derivative.eval r) ^ 2 + 4 * B.eval r ^ 2
+  polynomialRadialCoreSecond B r ^ (2 : ℕ) + 4 * (2 * B.eval r + r * B.derivative.eval r) ^ (2 : ℕ) + 4 * B.eval r ^ (2 : ℕ)
 
 theorem polynomialRadialCoreMetric_hasDerivAt (a : ℝ) (B : ℝ[X]) (r : ℝ) :
     HasDerivAt (polynomialRadialCoreMetric a B) (polynomialRadialCoreSlope a B r) r := by
@@ -62,7 +62,7 @@ theorem polynomialRadialCoreMetric_second_derivative (a : ℝ) (B : ℝ[X]) :
 /-- Exact Laurent decomposition of the actual curvature, separating every singular term. -/
 theorem polynomialRadialCoreMetric_kretschmann (a : ℝ) (B : ℝ[X]) (t : ℝ) :
     radialKretschmannScalar (polynomialRadialCoreMetric a B) (exp t) =
-      8 * a ^ 2 / exp t ^ 2 + 24 * a * B.eval (exp t) / exp t +
+      8 * a ^ (2 : ℕ) / exp t ^ (2 : ℕ) + 24 * a * B.eval (exp t) / exp t +
         8 * a * B.derivative.eval (exp t) + polynomialRadialRegularKretschmann B (exp t) := by
   unfold radialKretschmannScalar
   rw [polynomialRadialCoreMetric_second_derivative, polynomialRadialCoreMetric_derivative]
@@ -79,17 +79,17 @@ theorem polynomialRadialRegularKretschmann_continuous (B : ℝ[X]) :
   fun_prop
 
 theorem polynomialRadialRegularKretschmann_core (B : ℝ[X]) :
-    polynomialRadialRegularKretschmann B 0 = 24 * B.eval 0 ^ 2 := by
+    polynomialRadialRegularKretschmann B 0 = 24 * B.eval 0 ^ (2 : ℕ) := by
   unfold polynomialRadialRegularKretschmann polynomialRadialCoreSecond
   ring
 
 /-- Every nonlinear polynomial term drops out of the leading curvature pole. -/
 theorem polynomialRadialCoreMetric_scaled_curvature_limit (a : ℝ) (B : ℝ[X]) :
-    Tendsto (fun t => exp t ^ 2 * radialKretschmannScalar (polynomialRadialCoreMetric a B) (exp t)) atBot
-      (𝓝 (8 * a ^ 2)) := by
-  have he : (fun t => exp t ^ 2 * radialKretschmannScalar (polynomialRadialCoreMetric a B) (exp t)) =
-      (fun t => 8 * a ^ 2 + 24 * a * exp t * B.eval (exp t) +
-        8 * a * exp t ^ 2 * B.derivative.eval (exp t) + exp t ^ 2 * polynomialRadialRegularKretschmann B (exp t)) := by
+    Tendsto (fun t => exp t ^ (2 : ℕ) * radialKretschmannScalar (polynomialRadialCoreMetric a B) (exp t)) atBot
+      (𝓝 (8 * a ^ (2 : ℕ))) := by
+  have he : (fun t => exp t ^ (2 : ℕ) * radialKretschmannScalar (polynomialRadialCoreMetric a B) (exp t)) =
+      (fun t => 8 * a ^ (2 : ℕ) + 24 * a * exp t * B.eval (exp t) +
+        8 * a * exp t ^ (2 : ℕ) * B.derivative.eval (exp t) + exp t ^ (2 : ℕ) * polynomialRadialRegularKretschmann B (exp t)) := by
     funext t
     rw [polynomialRadialCoreMetric_kretschmann]
     field_simp
@@ -97,8 +97,8 @@ theorem polynomialRadialCoreMetric_scaled_curvature_limit (a : ℝ) (B : ℝ[X])
   have h0 := B.continuous
   have h1 := B.derivative.continuous
   have hK := polynomialRadialRegularKretschmann_continuous B
-  have hc : Continuous (fun r : ℝ => 8 * a ^ 2 + 24 * a * r * B.eval r +
-      8 * a * r ^ 2 * B.derivative.eval r + r ^ 2 * polynomialRadialRegularKretschmann B r) := by
+  have hc : Continuous (fun r : ℝ => 8 * a ^ (2 : ℕ) + 24 * a * r * B.eval r +
+      8 * a * r ^ (2 : ℕ) * B.derivative.eval r + r ^ (2 : ℕ) * polynomialRadialRegularKretschmann B r) := by
     fun_prop
   simpa [Function.comp_def] using hc.continuousAt.tendsto.comp tendsto_exp_atBot
 
@@ -111,7 +111,7 @@ theorem polynomialRadialCoreMetric_zero_linear_curvature (B : ℝ[X]) (t : ℝ) 
 /-- A nontrivial regular core survives, with a sharp central invariant. -/
 theorem polynomialRadialCoreMetric_regular_limit (B : ℝ[X]) :
     Tendsto (fun t => radialKretschmannScalar (polynomialRadialCoreMetric 0 B) (exp t)) atBot
-      (𝓝 (24 * B.eval 0 ^ 2)) := by
+      (𝓝 (24 * B.eval 0 ^ (2 : ℕ))) := by
   have he : (fun t => radialKretschmannScalar (polynomialRadialCoreMetric 0 B) (exp t)) =
       (fun t => polynomialRadialRegularKretschmann B (exp t)) := by
     funext t
@@ -126,16 +126,16 @@ theorem polynomialRadialCoreMetric_diverges_iff (a : ℝ) (B : ℝ[X]) :
   · intro h ha
     subst a
     have hf := polynomialRadialCoreMetric_regular_limit B
-    have hgt := h.eventually_gt_atTop (24 * B.eval 0 ^ 2 + 1)
-    have hlt := hf.eventually (eventually_lt_nhds (by linarith : 24 * B.eval 0 ^ 2 < 24 * B.eval 0 ^ 2 + 1))
+    have hgt := h.eventually_gt_atTop (24 * B.eval 0 ^ (2 : ℕ) + 1)
+    have hlt := hf.eventually (eventually_lt_nhds (by linarith : 24 * B.eval 0 ^ (2 : ℕ) < 24 * B.eval 0 ^ (2 : ℕ) + 1))
     obtain ⟨t, ht, ht'⟩ := (hgt.and hlt).exists
     linarith
   · intro ha
-    have hi : Tendsto (fun t : ℝ => exp (-t) ^ 2) atBot atTop :=
+    have hi : Tendsto (fun t : ℝ => exp (-t) ^ (2 : ℕ)) atBot atTop :=
       (tendsto_pow_atTop (by norm_num : (2 : ℕ) ≠ 0)).comp (tendsto_exp_atTop.comp tendsto_neg_atBot_atTop)
     have h := (polynomialRadialCoreMetric_scaled_curvature_limit a B).pos_mul_atTop
       (mul_pos (by norm_num) (sq_pos_of_ne_zero ha)) hi
-    have he : (fun t => (exp t ^ 2 * radialKretschmannScalar (polynomialRadialCoreMetric a B) (exp t)) * exp (-t) ^ 2) =
+    have he : (fun t => (exp t ^ (2 : ℕ) * radialKretschmannScalar (polynomialRadialCoreMetric a B) (exp t)) * exp (-t) ^ (2 : ℕ)) =
         (fun t => radialKretschmannScalar (polynomialRadialCoreMetric a B) (exp t)) := by
       funext t
       rw [exp_neg]
@@ -145,7 +145,7 @@ theorem polynomialRadialCoreMetric_diverges_iff (a : ℝ) (B : ℝ[X]) :
 /-- Complete finite-limit classification, including the value forced by regularity. -/
 theorem polynomialRadialCoreMetric_finite_limit_iff (a k : ℝ) (B : ℝ[X]) :
     Tendsto (fun t => radialKretschmannScalar (polynomialRadialCoreMetric a B) (exp t)) atBot (𝓝 k) ↔
-      a = 0 ∧ k = 24 * B.eval 0 ^ 2 := by
+      a = 0 ∧ k = 24 * B.eval 0 ^ (2 : ℕ) := by
   constructor
   · intro h
     have ha : a = 0 := by

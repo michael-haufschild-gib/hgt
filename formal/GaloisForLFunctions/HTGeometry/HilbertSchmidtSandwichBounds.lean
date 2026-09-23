@@ -26,32 +26,32 @@ variable {𝕜 E F G : Type*} [RCLike 𝕜]
 omit [CompleteSpace F] [CompleteSpace G] in
 /-- **Upper bound for a left composition.** -/
 theorem hsNormSq_comp_left_le_of_bound {S : F →L[𝕜] G} {Y : E →L[𝕜] F} (hY : IsHilbertSchmidt Y)
-    {C : ℝ} (hC : ∀ y : F, ‖S y‖ ^ 2 ≤ C * ‖y‖ ^ 2) :
+    {C : ℝ} (hC : ∀ y : F, ‖S y‖ ^ (2 : ℕ) ≤ C * ‖y‖ ^ (2 : ℕ)) :
     hsNormSq (S ∘L Y) ≤ C * hsNormSq Y := by
-  have hsum1 : Summable (fun i => ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ 2) := hY.comp_left S
-  have hsum2 : Summable (fun i => C * ‖Y (hsBasis 𝕜 E i)‖ ^ 2) := hY.mul_left C
-  have hle : ∀ i, ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ 2 ≤ C * ‖Y (hsBasis 𝕜 E i)‖ ^ 2 := fun i => by
+  have hsum1 : Summable (fun i => ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ (2 : ℕ)) := hY.comp_left S
+  have hsum2 : Summable (fun i => C * ‖Y (hsBasis 𝕜 E i)‖ ^ (2 : ℕ)) := hY.mul_left C
+  have hle : ∀ i, ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) ≤ C * ‖Y (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) := fun i => by
     rw [comp_apply]; exact hC _
-  calc hsNormSq (S ∘L Y) = ∑' i, ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ 2 := rfl
-    _ ≤ ∑' i, C * ‖Y (hsBasis 𝕜 E i)‖ ^ 2 := Summable.tsum_mono hsum1 hsum2 hle
+  calc hsNormSq (S ∘L Y) = ∑' i, ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) := rfl
+    _ ≤ ∑' i, C * ‖Y (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) := Summable.tsum_mono hsum1 hsum2 hle
     _ = C * hsNormSq Y := (tsum_mul_left).trans rfl
 
 omit [CompleteSpace F] [CompleteSpace G] in
 /-- **Lower bound for a left composition.** -/
 theorem le_hsNormSq_comp_left {S : F →L[𝕜] G} {Y : E →L[𝕜] F} (hY : IsHilbertSchmidt Y)
-    {c : ℝ} (hc : ∀ y : F, c * ‖y‖ ^ 2 ≤ ‖S y‖ ^ 2) :
+    {c : ℝ} (hc : ∀ y : F, c * ‖y‖ ^ (2 : ℕ) ≤ ‖S y‖ ^ (2 : ℕ)) :
     c * hsNormSq Y ≤ hsNormSq (S ∘L Y) := by
-  have hsum1 : Summable (fun i => ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ 2) := hY.comp_left S
-  have hsum2 : Summable (fun i => c * ‖Y (hsBasis 𝕜 E i)‖ ^ 2) := hY.mul_left c
-  have hle : ∀ i, c * ‖Y (hsBasis 𝕜 E i)‖ ^ 2 ≤ ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ 2 := fun i => by
+  have hsum1 : Summable (fun i => ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ (2 : ℕ)) := hY.comp_left S
+  have hsum2 : Summable (fun i => c * ‖Y (hsBasis 𝕜 E i)‖ ^ (2 : ℕ)) := hY.mul_left c
+  have hle : ∀ i, c * ‖Y (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) ≤ ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) := fun i => by
     rw [comp_apply]; exact hc _
-  calc c * hsNormSq Y = ∑' i, c * ‖Y (hsBasis 𝕜 E i)‖ ^ 2 := (tsum_mul_left).symm
-    _ ≤ ∑' i, ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ 2 := Summable.tsum_mono hsum2 hsum1 hle
+  calc c * hsNormSq Y = ∑' i, c * ‖Y (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) := (tsum_mul_left).symm
+    _ ≤ ∑' i, ‖(S ∘L Y) (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) := Summable.tsum_mono hsum2 hsum1 hle
     _ = hsNormSq (S ∘L Y) := rfl
 
 /-- **Upper bound for a right composition**, via adjoints. -/
 theorem hsNormSq_comp_right_le_of_bound {Y : F →L[𝕜] G} {T : E →L[𝕜] F} (hY : IsHilbertSchmidt Y)
-    {C : ℝ} (hC : ∀ y : F, ‖adjoint T y‖ ^ 2 ≤ C * ‖y‖ ^ 2) :
+    {C : ℝ} (hC : ∀ y : F, ‖adjoint T y‖ ^ (2 : ℕ) ≤ C * ‖y‖ ^ (2 : ℕ)) :
     hsNormSq (Y ∘L T) ≤ C * hsNormSq Y := by
   have hYT : IsHilbertSchmidt (Y ∘L T) := hY.comp_right T
   have hadj : hsNormSq (Y ∘L T) = hsNormSq (adjoint T ∘L adjoint Y) := by
@@ -61,7 +61,7 @@ theorem hsNormSq_comp_right_le_of_bound {Y : F →L[𝕜] G} {T : E →L[𝕜] F
 
 /-- **Lower bound for a right composition**, via adjoints. -/
 theorem le_hsNormSq_comp_right {Y : F →L[𝕜] G} {T : E →L[𝕜] F} (hY : IsHilbertSchmidt Y)
-    {c : ℝ} (hc : ∀ y : F, c * ‖y‖ ^ 2 ≤ ‖adjoint T y‖ ^ 2) :
+    {c : ℝ} (hc : ∀ y : F, c * ‖y‖ ^ (2 : ℕ) ≤ ‖adjoint T y‖ ^ (2 : ℕ)) :
     c * hsNormSq Y ≤ hsNormSq (Y ∘L T) := by
   have hYT : IsHilbertSchmidt (Y ∘L T) := hY.comp_right T
   have hadj : hsNormSq (Y ∘L T) = hsNormSq (adjoint T ∘L adjoint Y) := by
@@ -71,28 +71,28 @@ theorem le_hsNormSq_comp_right {Y : F →L[𝕜] G} {T : E →L[𝕜] F} (hY : I
 
 /-- **Operator-norm upper bound for a sandwich.** -/
 theorem hsNormSq_sandwich_le {S T Y : E →L[𝕜] E} (hY : IsHilbertSchmidt Y) :
-    hsNormSq (S ∘L (Y ∘L T)) ≤ (‖S‖ ^ 2 * ‖T‖ ^ 2) * hsNormSq Y := by
+    hsNormSq (S ∘L (Y ∘L T)) ≤ (‖S‖ ^ (2 : ℕ) * ‖T‖ ^ (2 : ℕ)) * hsNormSq Y := by
   have hYT : IsHilbertSchmidt (Y ∘L T) := hY.comp_right T
-  have h1 : hsNormSq (S ∘L (Y ∘L T)) ≤ ‖S‖ ^ 2 * hsNormSq (Y ∘L T) :=
+  have h1 : hsNormSq (S ∘L (Y ∘L T)) ≤ ‖S‖ ^ (2 : ℕ) * hsNormSq (Y ∘L T) :=
     hsNormSq_comp_left_le_of_bound hYT (fun v => by
-      calc ‖S v‖ ^ 2 ≤ (‖S‖ * ‖v‖) ^ 2 := by
+      calc ‖S v‖ ^ (2 : ℕ) ≤ (‖S‖ * ‖v‖) ^ (2 : ℕ) := by
             gcongr; exact S.le_opNorm v
-        _ = ‖S‖ ^ 2 * ‖v‖ ^ 2 := by ring)
-  have h2 : hsNormSq (Y ∘L T) ≤ ‖T‖ ^ 2 * hsNormSq Y :=
+        _ = ‖S‖ ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ) := by ring)
+  have h2 : hsNormSq (Y ∘L T) ≤ ‖T‖ ^ (2 : ℕ) * hsNormSq Y :=
     hsNormSq_comp_right_le_of_bound hY (fun v => by
-      calc ‖adjoint T v‖ ^ 2 ≤ (‖adjoint T‖ * ‖v‖) ^ 2 := by
+      calc ‖adjoint T v‖ ^ (2 : ℕ) ≤ (‖adjoint T‖ * ‖v‖) ^ (2 : ℕ) := by
             gcongr; exact (adjoint T).le_opNorm v
-        _ = ‖T‖ ^ 2 * ‖v‖ ^ 2 := by rw [adjoint.norm_map]; ring)
-  calc hsNormSq (S ∘L (Y ∘L T)) ≤ ‖S‖ ^ 2 * hsNormSq (Y ∘L T) := h1
-    _ ≤ ‖S‖ ^ 2 * (‖T‖ ^ 2 * hsNormSq Y) := by
+        _ = ‖T‖ ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ) := by rw [adjoint.norm_map]; ring)
+  calc hsNormSq (S ∘L (Y ∘L T)) ≤ ‖S‖ ^ (2 : ℕ) * hsNormSq (Y ∘L T) := h1
+    _ ≤ ‖S‖ ^ (2 : ℕ) * (‖T‖ ^ (2 : ℕ) * hsNormSq Y) := by
         exact mul_le_mul_of_nonneg_left h2 (by positivity)
-    _ = (‖S‖ ^ 2 * ‖T‖ ^ 2) * hsNormSq Y := by ring
+    _ = (‖S‖ ^ (2 : ℕ) * ‖T‖ ^ (2 : ℕ)) * hsNormSq Y := by ring
 
 /-- **Lower Hilbert–Schmidt bound for a sandwich.** -/
 theorem le_hsNormSq_sandwich {S T Y : E →L[𝕜] E} (hY : IsHilbertSchmidt Y)
     {c d : ℝ} (hc0 : 0 ≤ c)
-    (hc : ∀ y : E, c * ‖y‖ ^ 2 ≤ ‖S y‖ ^ 2)
-    (hd : ∀ y : E, d * ‖y‖ ^ 2 ≤ ‖adjoint T y‖ ^ 2) :
+    (hc : ∀ y : E, c * ‖y‖ ^ (2 : ℕ) ≤ ‖S y‖ ^ (2 : ℕ))
+    (hd : ∀ y : E, d * ‖y‖ ^ (2 : ℕ) ≤ ‖adjoint T y‖ ^ (2 : ℕ)) :
     (c * d) * hsNormSq Y ≤ hsNormSq (S ∘L (Y ∘L T)) := by
   have hYT : IsHilbertSchmidt (Y ∘L T) := hY.comp_right T
   calc (c * d) * hsNormSq Y = c * (d * hsNormSq Y) := by ring
@@ -103,9 +103,9 @@ theorem le_hsNormSq_sandwich {S T Y : E →L[𝕜] E} (hY : IsHilbertSchmidt Y)
 /-- **Two-sided Hilbert–Schmidt bounds for a sandwich** (Kim–Mer–Pálfia, Lemma 3.10). -/
 theorem hsNormSq_sandwich_bounds {S T Y : E →L[𝕜] E} (hY : IsHilbertSchmidt Y)
     {c C d D : ℝ} (hc0 : 0 ≤ c) (hC0 : 0 ≤ C)
-    (hc : ∀ y : E, c * ‖y‖ ^ 2 ≤ ‖S y‖ ^ 2) (hC : ∀ y : E, ‖S y‖ ^ 2 ≤ C * ‖y‖ ^ 2)
-    (hd : ∀ y : E, d * ‖y‖ ^ 2 ≤ ‖adjoint T y‖ ^ 2)
-    (hD : ∀ y : E, ‖adjoint T y‖ ^ 2 ≤ D * ‖y‖ ^ 2) :
+    (hc : ∀ y : E, c * ‖y‖ ^ (2 : ℕ) ≤ ‖S y‖ ^ (2 : ℕ)) (hC : ∀ y : E, ‖S y‖ ^ (2 : ℕ) ≤ C * ‖y‖ ^ (2 : ℕ))
+    (hd : ∀ y : E, d * ‖y‖ ^ (2 : ℕ) ≤ ‖adjoint T y‖ ^ (2 : ℕ))
+    (hD : ∀ y : E, ‖adjoint T y‖ ^ (2 : ℕ) ≤ D * ‖y‖ ^ (2 : ℕ)) :
     (c * d) * hsNormSq Y ≤ hsNormSq (S ∘L (Y ∘L T))
       ∧ hsNormSq (S ∘L (Y ∘L T)) ≤ (C * D) * hsNormSq Y := by
   have hYT : IsHilbertSchmidt (Y ∘L T) := hY.comp_right T

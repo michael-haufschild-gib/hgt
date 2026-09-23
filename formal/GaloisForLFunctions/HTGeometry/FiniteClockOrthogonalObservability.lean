@@ -37,7 +37,7 @@ theorem sum_pow_period_sub_eq
         ∑ k ∈ Finset.range N, U ^ k := by
     have hsame :
         (∑ k ∈ Finset.range N, U ^ k) + U ^ N =
-          (∑ k ∈ Finset.range N, U ^ (k + 1)) + U ^ 0 := by
+          (∑ k ∈ Finset.range N, U ^ (k + 1)) + U ^ (0 : ℕ) := by
       rw [← Finset.sum_range_succ, ← Finset.sum_range_succ']
     rw [hperiod, pow_zero] at hsame
     exact (add_right_cancel hsame).symm
@@ -181,8 +181,8 @@ every vector orthogonally into its stationary component and the component erased
 theorem norm_finiteCyclicGaugeAverage_sq_add_complement_sq_of_periodic_isometry
     (U : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1) (ψ : E) :
-    ‖finiteCyclicGaugeAverage U N ψ‖ ^ 2 +
-        ‖(1 - finiteCyclicGaugeAverage U N) ψ‖ ^ 2 = ‖ψ‖ ^ 2 := by
+    ‖finiteCyclicGaugeAverage U N ψ‖ ^ (2 : ℕ) +
+        ‖(1 - finiteCyclicGaugeAverage U N) ψ‖ ^ (2 : ℕ) = ‖ψ‖ ^ (2 : ℕ) := by
   let P : E →L[𝕜] E := finiteCyclicGaugeAverage U N
   have hPAdj : P.adjoint = P := by
     simpa only [P, ContinuousLinearMap.star_eq_adjoint] using
@@ -203,7 +203,7 @@ theorem norm_finiteCyclicGaugeAverage_sq_add_complement_sq_of_periodic_isometry
   have hsum : P ψ + (1 - P) ψ = ψ := by simp
   have hpyth :=
     norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (P ψ) ((1 - P) ψ) horth
-  change ‖P ψ‖ ^ 2 + ‖(1 - P) ψ‖ ^ 2 = ‖ψ‖ ^ 2
+  change ‖P ψ‖ ^ (2 : ℕ) + ‖(1 - P) ψ‖ ^ (2 : ℕ) = ‖ψ‖ ^ (2 : ℕ)
   simp only [pow_two]
   calc
     ‖P ψ‖ * ‖P ψ‖ + ‖(1 - P) ψ‖ * ‖(1 - P) ψ‖ =
@@ -264,7 +264,7 @@ theorem re_inner_finiteCyclicObservableTwirlKadisonDefect_eq_erasedNormSq
     (hX : IsSelfAdjoint X) {ψ : E} (hψ : U ψ = ψ) :
     RCLike.re
         (inner 𝕜 ψ (finiteCyclicObservableTwirlKadisonDefect U X N ψ)) =
-      ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2 := by
+      ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ) := by
   let Φ : E →L[𝕜] E := finiteCyclicObservableTwirl U X N
   let B : E →L[𝕜] E := X - Φ
   have hUadj := adjoint_eq_pow_pred_of_periodic_isometry
@@ -299,8 +299,8 @@ theorem re_inner_finiteCyclicObservableTwirlKadisonDefect_eq_erasedNormSq
           exact congrArg RCLike.re hvalue
     _ = RCLike.re (inner 𝕜 ψ (B.adjoint (B ψ))) := by
       rw [mul_apply_eq_comp, hBadj]
-    _ = ‖B ψ‖ ^ 2 := (B.apply_norm_sq_eq_inner_adjoint_right ψ).symm
-    _ = ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2 := by rw [hBapply]
+    _ = ‖B ψ‖ ^ (2 : ℕ) := (B.apply_norm_sq_eq_inner_adjoint_right ψ).symm
+    _ = ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ) := by rw [hBapply]
 
 /-- **Clock-observable value partition.**  The observed vector energy is the sum of its retained
 stationary value and the complete conditional-variance defect. -/
@@ -308,10 +308,10 @@ theorem finiteClock_observableValue_energy_partition
     (U X : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0)
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     (hX : IsSelfAdjoint X) {ψ : E} (hψ : U ψ = ψ) :
-    ‖finiteCyclicObservableTwirl U X N ψ‖ ^ 2 +
+    ‖finiteCyclicObservableTwirl U X N ψ‖ ^ (2 : ℕ) +
         RCLike.re
           (inner 𝕜 ψ (finiteCyclicObservableTwirlKadisonDefect U X N ψ)) =
-      ‖X ψ‖ ^ 2 := by
+      ‖X ψ‖ ^ (2 : ℕ) := by
   have hsplit :=
     norm_finiteCyclicGaugeAverage_sq_add_complement_sq_of_periodic_isometry
       U N hN hadjoint_mul hperiod (X ψ)

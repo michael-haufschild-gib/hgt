@@ -72,9 +72,9 @@ theorem not_memLp_riemannZeta_criticalLine :
   have hc : (2 * Real.pi) ≠ 0 := by positivity
   have hsq := (memLp_two_iff_integrable_sq_norm h.aestronglyMeasurable).mp h
   have hcomp : Integrable
-      (fun xi : ℝ => ‖riemannZeta (criticalLineCoordinate (2 * Real.pi * xi))‖ ^ 2) volume :=
+      (fun xi : ℝ => ‖riemannZeta (criticalLineCoordinate (2 * Real.pi * xi))‖ ^ (2 : ℕ)) volume :=
     (integrable_comp_mul_left_iff
-      (fun t : ℝ => ‖riemannZeta (criticalLineCoordinate t)‖ ^ 2) hc).mpr hsq
+      (fun t : ℝ => ‖riemannZeta (criticalLineCoordinate t)‖ ^ (2 : ℕ)) hc).mpr hsq
   have hmeas : AEStronglyMeasurable
       (fun xi : ℝ => riemannZeta (criticalAbscissa xi)) volume := by
     have hq := h.aestronglyMeasurable.comp_quasiMeasurePreserving

@@ -38,10 +38,10 @@ theorem adaptiveOrthoJacobiEnergy_gt_succ_mul_nextBeta
       HTGeometry.adaptiveOrthoJacobiEnergy s n := by
   have hsquares :
       0 ≤ ∑ j ∈ Finset.range n,
-        (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ 2 :=
+        (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hdiag :
-      0 ≤ (3 * (n : ℝ) / 4 + 1) * HTGeometry.monicOrthoAlpha s n ^ 2 := by
+      0 ≤ (3 * (n : ℝ) / 4 + 1) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) := by
     positivity
   have hinterior :
       0 ≤ 2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) := by
@@ -203,18 +203,18 @@ theorem tendsto_admissionChristoffelScaleSq
       (nhds (16 *
         (HTGeometry.momentFunctional
             GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-            ((Arc.amplitude (n + 1)) ^ 2) /
+            ((Arc.amplitude (n + 1)) ^ (2 : ℕ)) /
           HTGeometry.momentFunctional
             GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-            ((Arc.amplitude n) ^ 2)))))
+            ((Arc.amplitude n) ^ (2 : ℕ))))))
   have hlimit :
       16 *
           (HTGeometry.momentFunctional
               GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-              ((Arc.amplitude (n + 1)) ^ 2) /
+              ((Arc.amplitude (n + 1)) ^ (2 : ℕ)) /
             HTGeometry.momentFunctional
               GaloisForLFunctions.HTGeometry.normalizedCentralBinom
-              ((Arc.amplitude n) ^ 2)) = 1 := by
+              ((Arc.amplitude n) ^ (2 : ℕ))) = 1 := by
     rw [XiShiftedArcsineAdmission.momentFunctional_amplitude_sq (by omega),
       XiShiftedArcsineAdmission.momentFunctional_amplitude_sq hn]
     simp only [XiShiftedArcsineAdmission.monicScale]
@@ -261,14 +261,14 @@ namespace XiShiftedArcsineAdmission
 def coordinateDilatedAdmissionChristoffelScaleSq (r : ℝ) (n : ℕ) : ℝ :=
   16 *
       HTGeometry.momentFunctional (coordinateDilatedMoment r)
-        ((coordinateDilatedAmplitude r (n + 1)) ^ 2) /
+        ((coordinateDilatedAmplitude r (n + 1)) ^ (2 : ℕ)) /
     HTGeometry.momentFunctional (coordinateDilatedMoment r)
-      ((coordinateDilatedAmplitude r n) ^ 2)
+      ((coordinateDilatedAmplitude r n) ^ (2 : ℕ))
 
 /-- The current Christoffel scale recovers exactly the missing coordinate weight `r²`. -/
 theorem coordinateDilatedAdmissionChristoffelScaleSq_eq
     {r : ℝ} (hr : r ≠ 0) {n : ℕ} (hn : n ≠ 0) :
-    coordinateDilatedAdmissionChristoffelScaleSq r n = r ^ 2 := by
+    coordinateDilatedAdmissionChristoffelScaleSq r n = r ^ (2 : ℕ) := by
   rw [coordinateDilatedAdmissionChristoffelScaleSq,
     momentFunctional_coordinateDilatedAmplitude_sq hr (n + 1),
     momentFunctional_coordinateDilatedAmplitude_sq hr n,
@@ -290,7 +290,7 @@ theorem coordinateDilated_scaleCompletedSource_eq
           (xiShiftedBoundaryAdaptiveShearPolynomial
             (coordinateDilatedAmplitude r n)) /
         HTGeometry.momentFunctional (coordinateDilatedMoment r)
-          ((coordinateDilatedAmplitude r n) ^ 2)) /
+          ((coordinateDilatedAmplitude r n) ^ (2 : ℕ))) /
       coordinateDilatedAdmissionChristoffelScaleSq r n =
         (n : ℝ) + 3 / 8 := by
   rw [coordinateDilated_adaptiveShear_div_norm hr hn,

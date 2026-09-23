@@ -65,7 +65,7 @@ theorem kgFreqInvSq_kgShiftedFreqSqLow (hb1 : b < 1) (hpb : ∀ ξ : E, |p ξ| �
   have hinv : kgFreqInv ξ = ((kgFreq ξ : ℝ) : ℂ)⁻¹ := by
     rw [kgFreqInv, Complex.ofReal_inv]
   have hgen : kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ
-      = (((kgFreq ξ ^ 2 : ℝ) : ℂ) - kgRealPotSymbol p ξ) * kgLowPass R ξ := by
+      = (((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) - kgRealPotSymbol p ξ) * kgLowPass R ξ := by
     rw [kgShiftedFreqSqLow, hsq, kgRealPotSymbol]
     push_cast
     ring
@@ -73,12 +73,12 @@ theorem kgFreqInvSq_kgShiftedFreqSqLow (hb1 : b < 1) (hpb : ∀ ξ : E, |p ξ| �
     rw [kgLowPass]
     split <;> simp
   rw [hgen, hinv]
-  have hfsq : ((kgFreq ξ : ℝ) : ℂ)⁻¹ * (((kgFreq ξ : ℝ) : ℂ)⁻¹ * ((kgFreq ξ ^ 2 : ℝ) : ℂ)) = 1 := by
+  have hfsq : ((kgFreq ξ : ℝ) : ℂ)⁻¹ * (((kgFreq ξ : ℝ) : ℂ)⁻¹ * ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ)) = 1 := by
     push_cast
     field_simp
   calc ((kgFreq ξ : ℝ) : ℂ)⁻¹ * (((kgFreq ξ : ℝ) : ℂ)⁻¹
-        * ((((kgFreq ξ ^ 2 : ℝ) : ℂ) - kgRealPotSymbol p ξ) * kgLowPass R ξ * kgLowPass R ξ))
-      = (((kgFreq ξ : ℝ) : ℂ)⁻¹ * (((kgFreq ξ : ℝ) : ℂ)⁻¹ * ((kgFreq ξ ^ 2 : ℝ) : ℂ)))
+        * ((((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) - kgRealPotSymbol p ξ) * kgLowPass R ξ * kgLowPass R ξ))
+      = (((kgFreq ξ : ℝ) : ℂ)⁻¹ * (((kgFreq ξ : ℝ) : ℂ)⁻¹ * ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ)))
           * (kgLowPass R ξ * kgLowPass R ξ)
         - ((kgFreq ξ : ℝ) : ℂ)⁻¹ * (((kgFreq ξ : ℝ) : ℂ)⁻¹
             * (kgRealPotSymbol p ξ * (kgLowPass R ξ * kgLowPass R ξ))) := by ring

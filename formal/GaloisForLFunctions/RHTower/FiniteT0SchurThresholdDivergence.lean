@@ -166,7 +166,7 @@ theorem exists_tsum_telescopeValue_gt [Infinite ι] (hR : 0 < R) (hy : ∀ i, 0 
 /-- The regularized unshifted quadratic form: the zeroth moment is replaced by the finite part `a`,
 and the remaining moments come from the atoms. -/
 def regularizedUnshiftedForm (y : ι → ℝ) (a : ℝ) (c : ℝ) (Q : Polynomial ℝ) : ℝ :=
-  c ^ 2 * a + 2 * c * (∑' i, y i * Q.eval (y i)) + ∑' i, (y i * Q.eval (y i)) ^ 2
+  c ^ (2 : ℕ) * a + 2 * c * (∑' i, y i * Q.eval (y i)) + ∑' i, (y i * Q.eval (y i)) ^ (2 : ℕ)
 
 /-- **No finite zeroth moment repairs the unshifted tower.** -/
 theorem not_forall_regularizedUnshiftedForm_nonneg [Infinite ι] (hR : 0 < R)
@@ -176,12 +176,12 @@ theorem not_forall_regularizedUnshiftedForm_nonneg [Infinite ι] (hR : 0 < R)
   have hval : ∀ i, y i * (telescopeTest R n).eval (y i) = telescopeValue R n (y i) :=
     fun i => eval_telescope R n (y i)
   have hsummable := summable_telescopeValue hR (fun i => (hy i).le) hyR hsum n
-  have hsq : Summable (fun i => (telescopeValue R n (y i)) ^ 2) := by
+  have hsq : Summable (fun i => (telescopeValue R n (y i)) ^ (2 : ℕ)) := by
     refine Summable.of_nonneg_of_le (fun i => sq_nonneg _) (fun i => ?_) hsummable
     have h0 := telescopeValue_nonneg hR (hy i).le (hyR i) n
     have h1 := telescopeValue_le_one hR (hyR i) n
     nlinarith
-  have hsqle : (∑' i, (telescopeValue R n (y i)) ^ 2) ≤ ∑' i, telescopeValue R n (y i) := by
+  have hsqle : (∑' i, (telescopeValue R n (y i)) ^ (2 : ℕ)) ≤ ∑' i, telescopeValue R n (y i) := by
     refine hsq.tsum_le_tsum (fun i => ?_) hsummable
     have h0 := telescopeValue_nonneg hR (hy i).le (hyR i) n
     have h1 := telescopeValue_le_one hR (hyR i) n
@@ -190,8 +190,8 @@ theorem not_forall_regularizedUnshiftedForm_nonneg [Infinite ι] (hR : 0 < R)
   rw [regularizedUnshiftedForm] at hform
   have hA : (∑' i, y i * (telescopeTest R n).eval (y i)) = ∑' i, telescopeValue R n (y i) :=
     tsum_congr hval
-  have hB : (∑' i, (y i * (telescopeTest R n).eval (y i)) ^ 2)
-      = ∑' i, (telescopeValue R n (y i)) ^ 2 :=
+  have hB : (∑' i, (y i * (telescopeTest R n).eval (y i)) ^ (2 : ℕ))
+      = ∑' i, (telescopeValue R n (y i)) ^ (2 : ℕ) :=
     tsum_congr (fun i => by rw [hval i])
   rw [hA, hB] at hform
   simp only [neg_one_sq, one_mul, mul_neg, mul_one] at hform
@@ -251,7 +251,7 @@ theorem hankelForm_eq_regularized (hy0 : ∀ i, 0 ≤ y i) (hyR : ∀ i, y i ≤
     refine Summable.congr ?_ (fun i => (this i).symm)
     refine summable_sum (fun k _ => ?_)
     exact (summable_pow_of_pos hy0 hyR hsum (by omega)).mul_left _
-  have hexpand : ∀ i : ι, (y i * p.divX.eval (y i)) ^ 2
+  have hexpand : ∀ i : ι, (y i * p.divX.eval (y i)) ^ (2 : ℕ)
       = ∑ k ∈ Finset.range d, ∑ l ∈ Finset.range d,
           p.coeff (k + 1) * p.coeff (l + 1) * (y i) ^ (k + l + 2) := by
     intro i
@@ -259,7 +259,7 @@ theorem hankelForm_eq_regularized (hy0 : ∀ i, 0 ≤ y i) (hyR : ∀ i, y i ≤
     refine Finset.sum_congr rfl (fun k _ => ?_)
     refine Finset.sum_congr rfl (fun l _ => ?_)
     ring
-  have hsumB : Summable (fun i => (y i * p.divX.eval (y i)) ^ 2) := by
+  have hsumB : Summable (fun i => (y i * p.divX.eval (y i)) ^ (2 : ℕ)) := by
     refine Summable.congr ?_ (fun i => (hexpand i).symm)
     refine summable_sum (fun k _ => summable_sum (fun l _ => ?_))
     exact (summable_pow_of_pos hy0 hyR hsum (by omega)).mul_left _
@@ -285,7 +285,7 @@ theorem hankelForm_eq_regularized (hy0 : ∀ i, 0 ≤ y i) (hyR : ∀ i, y i ≤
   -- identify the three surviving blocks
   have hA : (∑ i ∈ Finset.range d, ∑ j ∈ Finset.range d,
       p.coeff (i + 1) * p.coeff (j + 1) * unshiftedTower y a (i + j + 2))
-      = ∑' i, (y i * p.divX.eval (y i)) ^ 2 := by
+      = ∑' i, (y i * p.divX.eval (y i)) ^ (2 : ℕ) := by
     rw [tsum_congr hexpand]
     rw [Summable.tsum_finsetSum (fun k _ => summable_sum (fun l _ =>
       (summable_pow_of_pos hy0 hyR hsum (by omega)).mul_left _))]
@@ -312,9 +312,9 @@ theorem hankelForm_eq_regularized (hy0 : ∀ i, 0 ≤ y i) (hyR : ∀ i, y i ≤
     rw [show (0 : ℕ) + (j + 1) = j + 1 from by omega]
     ring
   rw [hA, hC, hB]
-  show _ = p.coeff 0 ^ 2 * a + 2 * p.coeff 0 * (∑' i, y i * p.divX.eval (y i))
-    + ∑' i, (y i * p.divX.eval (y i)) ^ 2
-  have hzero : p.coeff 0 * p.coeff 0 * unshiftedTower y a (0 + 0) = p.coeff 0 ^ 2 * a := by
+  show _ = p.coeff 0 ^ (2 : ℕ) * a + 2 * p.coeff 0 * (∑' i, y i * p.divX.eval (y i))
+    + ∑' i, (y i * p.divX.eval (y i)) ^ (2 : ℕ)
+  have hzero : p.coeff 0 * p.coeff 0 * unshiftedTower y a (0 + 0) = p.coeff 0 ^ (2 : ℕ) * a := by
     show p.coeff 0 * p.coeff 0 * a = _
     ring
   rw [hzero]

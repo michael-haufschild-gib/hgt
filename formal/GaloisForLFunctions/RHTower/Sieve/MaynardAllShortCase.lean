@@ -25,7 +25,7 @@ theorem huxley_heathBrown_grouped_large_values
     (G : ℝ)
     (henergy : ∑ j : Fin ((groupedDyadicUpper q) ^ ell),
       ‖convPow (groupedDyadicUpper q) ell
-        (groupedDyadicCoeffVector (fun i => heathBrownFactorBase L X (kind i)) q) j‖ ^ 2 ≤ G)
+        (groupedDyadicCoeffVector (fun i => heathBrownFactorBase L X (kind i)) q) j‖ ^ (2 : ℕ) ≤ G)
     (U B : Fin (Fintype.card ι * ell + 1) → ℝ)
     {lam : ℕ → ℝ} {delta T V : ℝ}
     (hdelta : 0 < delta) (hV : 0 < V)
@@ -49,8 +49,8 @@ theorem huxley_heathBrown_grouped_large_values
           (heathBrownFactorBase L X (kind i)) (q i)))
           ((sigma : ℂ) + (lam r : ℝ) * Complex.I)) ^ ell‖)
     (habsorb : ((Fintype.card ι * ell + 1 : ℕ) : ℝ) *
-      ∑ r : Fin (Fintype.card ι * ell + 1), G * B r ≤ V ^ 2 / 2) :
-    ((R : ℝ) + 1) * V ^ 2
+      ∑ r : Fin (Fintype.card ι * ell + 1), G * B r ≤ V ^ (2 : ℕ) / 2) :
+    ((R : ℝ) + 1) * V ^ (2 : ℕ)
       ≤ 2 * ((Fintype.card ι * ell + 1 : ℕ) : ℝ) *
         ∑ r : Fin (Fintype.card ι * ell + 1),
           G * (((((groupedDyadicLower q) ^ ell * 2 ^ (r : ℕ) : ℕ) : ℝ)) +

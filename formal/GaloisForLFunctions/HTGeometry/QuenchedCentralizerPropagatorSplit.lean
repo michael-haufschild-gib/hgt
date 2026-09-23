@@ -183,7 +183,7 @@ theorem hsNorm_unitary_conj [Nonempty d] {V : Matrix d d ℂ} (hV : V ∈ unitar
         rw [star_star]; exact hVnorm
 
 theorem hsNorm_sq_diagonal (f : d → ℂ) :
-    hsNorm (Matrix.diagonal f) ^ 2 = ∑ i, ‖f i‖ ^ 2 := by
+    hsNorm (Matrix.diagonal f) ^ (2 : ℕ) = ∑ i, ‖f i‖ ^ (2 : ℕ) := by
   classical
   rw [hsNorm_sq]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -199,7 +199,7 @@ theorem hsNorm_sq_diagonal (f : d → ℂ) :
 propagator is the number of nonzero eigenvalues of the generator, at every time. -/
 theorem hsNorm_sq_unitaryEvolution_sub_spectralKernelProjector [Nonempty d] (hL : L.IsHermitian)
     (t : ℝ) :
-    hsNorm (unitaryEvolution L t - spectralKernelProjector hL) ^ 2 =
+    hsNorm (unitaryEvolution L t - spectralKernelProjector hL) ^ (2 : ℕ) =
       ((Finset.univ.filter fun i => hL.eigenvalues i ≠ 0).card : ℝ) := by
   classical
   rw [unitaryEvolution_sub_spectralKernelProjector_eq hL,
@@ -236,7 +236,7 @@ theorem card_filter_eigenvalues_ne_zero (hL : L.IsHermitian) :
 propagator is the total dimension minus the dimension of the centralizer. -/
 theorem hsNorm_sq_unitaryEvolution_sub_spectralKernelProjector_eq_codim [Nonempty d]
     (hL : L.IsHermitian) (t : ℝ) :
-    hsNorm (unitaryEvolution L t - spectralKernelProjector hL) ^ 2 =
+    hsNorm (unitaryEvolution L t - spectralKernelProjector hL) ^ (2 : ℕ) =
       ((Fintype.card d : ℝ) - Module.finrank ℂ (LinearMap.ker (Matrix.mulVecLin L))) := by
   classical
   have hle : Module.finrank ℂ (LinearMap.ker (Matrix.mulVecLin L)) ≤ Fintype.card d := by

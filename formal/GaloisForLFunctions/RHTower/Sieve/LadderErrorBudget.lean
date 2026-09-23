@@ -91,7 +91,7 @@ theorem card_ladderGapSet_le {P : Finset ℕ} (M : ℕ) {Q η : ℝ} (hQ : 0 < Q
     (hPprime : ∀ q ∈ P, q.Prime) :
     ((ladderGapSet M Q η x).card : ℝ)
       ≤ (((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ x.1) + 4
-        + (((M : ℕ) : ℝ) / (Q * (1 + η) ^ x.1) ^ 2 + 1) := by
+        + (((M : ℕ) : ℝ) / (Q * (1 + η) ^ x.1) ^ (2 : ℕ) + 1) := by
   classical
   set Qj : ℝ := Q * (1 + η) ^ x.1 with hQj
   have hr1 : (1 : ℝ) ≤ 1 + η := by linarith
@@ -122,11 +122,11 @@ theorem sum_card_ladderGapSet_le {P : Finset ℕ} (M : ℕ) {Q η : ℝ} (hQ : 0
     (∑ x ∈ ladderIndex P Q η L, ((ladderGapSet M Q η x).card : ℝ))
       ≤ ∑ j ∈ Finset.range L, ((geomBlock P Q (1 + η) j).card : ℝ)
           * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-            + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2) := by
+            + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by
   classical
   have hstep : ∀ x ∈ ladderIndex P Q η L, ((ladderGapSet M Q η x).card : ℝ)
       ≤ (((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ x.1) + 5
-        + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ x.1) ^ 2 := by
+        + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ x.1) ^ (2 : ℕ) := by
     intro x hx
     have h := card_ladderGapSet_le M hQ hη hx hPprime
     linarith
@@ -135,7 +135,7 @@ theorem sum_card_ladderGapSet_le {P : Finset ℕ} (M : ℕ) {Q η : ℝ} (hQ : 0
   refine Finset.sum_congr rfl fun j _ => ?_
   show (∑ _p ∈ geomBlock P Q (1 + η) j,
       ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-        + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2)) = _
+        + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ))) = _
   rw [Finset.sum_const, nsmul_eq_mul]
 
 /-- **The ladder gap budget, with the step sizes evaluated.** -/
@@ -144,15 +144,15 @@ theorem sum_card_ladderGapSet_le_explicit {P : Finset ℕ} (M : ℕ) {Q η : ℝ
     (∑ x ∈ ladderIndex P Q η L, ((ladderGapSet M Q η x).card : ℝ))
       ≤ ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
           * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-            + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2) := by
+            + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by
   refine (sum_card_ladderGapSet_le M hQ hη L hPprime).trans (Finset.sum_le_sum fun j _ => ?_)
   have hQj0 : (0 : ℝ) < Q * (1 + η) ^ j := by
     have : (0 : ℝ) < (1 + η) ^ j := by positivity
     positivity
   have hfac : (0 : ℝ) ≤ (((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-      + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2 := by
+      + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ) := by
     have h1 : (0 : ℝ) ≤ (((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) := by positivity
-    have h2 : (0 : ℝ) ≤ ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2 := by positivity
+    have h2 : (0 : ℝ) ≤ ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ) := by positivity
     linarith
   exact mul_le_mul_of_nonneg_right (card_geomBlock_le P hQ hη j) hfac
 
@@ -163,12 +163,12 @@ theorem sum_card_ladderGapSet_le_explicit {P : Finset ℕ} (M : ℕ) {Q η : ℝ
 theorem integral_normSq_ramareLadderError_le_closed {P : Finset ℕ} (M : ℕ) {Q η W : ℝ}
     (hQ : 1 < Q) (hη : 0 ≤ η) (hW : 1 ≤ W) {L : ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (hPge : ∀ p ∈ P, Q ≤ (p : ℝ)) :
-    (∫ w in Set.Icc (-W) W, ‖ramareLadderError P M Q η L w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖ramareLadderError P M Q η L w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
           * (Real.log ((⌊(M : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
             * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
                 * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                  + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2)) := by
+                  + ((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ))) := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_trans zero_lt_one hQ
   have hlogQ : 0 < Real.log Q := Real.log_pos hQ

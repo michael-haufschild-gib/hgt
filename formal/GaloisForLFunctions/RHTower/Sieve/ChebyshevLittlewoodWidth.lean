@@ -64,22 +64,22 @@ theorem one_le_chebWidthLw {A N : ℝ} (hAN : A ≤ Real.log N) (hN0 : 0 < N)
 
 /-- The square of the smoothing ratio, as an exponential. -/
 theorem sq_chebRatioLw_le (A N : ℝ) :
-    (chebRatioLw A N + 2) ^ 2
+    (chebRatioLw A N + 2) ^ (2 : ℕ)
       ≤ 9 * Real.exp (Real.sqrt A * Real.sqrt (Real.log N) / 6) := by
   have h1 : (1 : ℝ) ≤ chebRatioLw A N := one_le_chebRatioLw A N
-  have hsq : chebRatioLw A N ^ 2
+  have hsq : chebRatioLw A N ^ (2 : ℕ)
       = Real.exp (Real.sqrt A * Real.sqrt (Real.log N) / 6) := by
     rw [chebRatioLw, sq, ← Real.exp_add]
     ring_nf
-  calc (chebRatioLw A N + 2) ^ 2 ≤ (3 * chebRatioLw A N) ^ 2 := by nlinarith
-    _ = 9 * chebRatioLw A N ^ 2 := by ring
+  calc (chebRatioLw A N + 2) ^ (2 : ℕ) ≤ (3 * chebRatioLw A N) ^ (2 : ℕ) := by nlinarith
+    _ = 9 * chebRatioLw A N ^ (2 : ℕ) := by ring
     _ = 9 * Real.exp (Real.sqrt A * Real.sqrt (Real.log N) / 6) := by rw [hsq]
 
 /-- **The price of the smoothing, against an arbitrary bound on the ratio.**  `width_price_le` is
 the case where the bound is the exponent-one exponential. -/
 theorem width_price_le_gen {N H L Cm B : ℝ} (hH1 : 1 ≤ H) (hN0 : 0 ≤ N) (hL : N / H ≤ L)
-    (hCm : 0 ≤ Cm) (hLb : (L + 2) ^ 2 ≤ B) :
-    Cm / H ^ 2 * (N + H + 1) ^ 2 ≤ Cm * B := by
+    (hCm : 0 ≤ Cm) (hLb : (L + 2) ^ (2 : ℕ) ≤ B) :
+    Cm / H ^ (2 : ℕ) * (N + H + 1) ^ (2 : ℕ) ≤ Cm * B := by
   refine le_trans (sq_width_factor_le hH1 hN0 hL hCm) ?_
   exact mul_le_mul_of_nonneg_left hLb hCm
 

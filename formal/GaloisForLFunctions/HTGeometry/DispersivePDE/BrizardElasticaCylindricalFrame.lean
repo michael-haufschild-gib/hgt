@@ -16,8 +16,8 @@ structure RegularVerticalCoefficients where
   A : ℝ
   B : ℝ
   C : ℝ
-  unitSphere : A ^ 2 + B ^ 2 + C ^ 2 = 1
-  cylindricalRegular : C ^ 2 < 1
+  unitSphere : A ^ (2 : ℕ) + B ^ (2 : ℕ) + C ^ (2 : ℕ) = 1
+  cylindricalRegular : C ^ (2 : ℕ) < 1
 
 @[ext]
 structure FrenetCoordinates where
@@ -34,7 +34,7 @@ def frenetCross (u v : FrenetCoordinates) : FrenetCoordinates where
   binormal := u.tangent * v.normal - u.normal * v.tangent
 
 noncomputable def cylindricalDenominator (P : RegularVerticalCoefficients) : ℝ :=
-  Real.sqrt (1 - P.C ^ 2)
+  Real.sqrt (1 - P.C ^ (2 : ℕ))
 
 theorem cylindricalDenominator_pos (P : RegularVerticalCoefficients) :
     0 < cylindricalDenominator P := by
@@ -42,7 +42,7 @@ theorem cylindricalDenominator_pos (P : RegularVerticalCoefficients) :
   exact Real.sqrt_pos.2 (sub_pos.2 P.cylindricalRegular)
 
 theorem cylindricalDenominator_sq (P : RegularVerticalCoefficients) :
-    cylindricalDenominator P ^ 2 = 1 - P.C ^ 2 := by
+    cylindricalDenominator P ^ (2 : ℕ) = 1 - P.C ^ (2 : ℕ) := by
   rw [cylindricalDenominator, Real.sq_sqrt]
   exact le_of_lt (sub_pos.2 P.cylindricalRegular)
 
@@ -65,7 +65,7 @@ theorem verticalInFrenet_unit (P : RegularVerticalCoefficients) :
 theorem radialInFrenet_unit (P : RegularVerticalCoefficients) :
     frenetDot (radialInFrenet P) (radialInFrenet P) = 1 := by
   have hden := cylindricalDenominator_sq P
-  have hsum : P.A ^ 2 + P.B ^ 2 = 1 - P.C ^ 2 := by
+  have hsum : P.A ^ (2 : ℕ) + P.B ^ (2 : ℕ) = 1 - P.C ^ (2 : ℕ) := by
     linarith [P.unitSphere]
   rw [frenetDot, radialInFrenet]
   field_simp [ne_of_gt (cylindricalDenominator_pos P)]
@@ -89,7 +89,7 @@ theorem azimuthalInFrenet_eq (P : RegularVerticalCoefficients) :
     ring
   · rw [azimuthalInFrenet, frenetCross, verticalInFrenet, radialInFrenet]
     have hden := cylindricalDenominator_sq P
-    have hsum : P.A ^ 2 + P.B ^ 2 = 1 - P.C ^ 2 := by
+    have hsum : P.A ^ (2 : ℕ) + P.B ^ (2 : ℕ) = 1 - P.C ^ (2 : ℕ) := by
       linarith [P.unitSphere]
     field_simp [ne_of_gt (cylindricalDenominator_pos P)]
     nlinarith
@@ -98,7 +98,7 @@ theorem azimuthalInFrenet_unit (P : RegularVerticalCoefficients) :
     frenetDot (azimuthalInFrenet P) (azimuthalInFrenet P) = 1 := by
   rw [azimuthalInFrenet_eq, frenetDot]
   have hden := cylindricalDenominator_sq P
-  have hsum : P.A ^ 2 + P.B ^ 2 = 1 - P.C ^ 2 := by
+  have hsum : P.A ^ (2 : ℕ) + P.B ^ (2 : ℕ) = 1 - P.C ^ (2 : ℕ) := by
     linarith [P.unitSphere]
   field_simp [ne_of_gt (cylindricalDenominator_pos P)]
   nlinarith [sq_nonneg P.C]
@@ -114,14 +114,14 @@ theorem radial_cross_azimuthal (P : RegularVerticalCoefficients) :
     field_simp [ne_of_gt (cylindricalDenominator_pos P)]
   · simp [frenetCross, radialInFrenet, verticalInFrenet]
     have hden := cylindricalDenominator_sq P
-    have hsum : P.A ^ 2 + P.B ^ 2 = 1 - P.C ^ 2 := by
+    have hsum : P.A ^ (2 : ℕ) + P.B ^ (2 : ℕ) = 1 - P.C ^ (2 : ℕ) := by
       linarith [P.unitSphere]
     field_simp [ne_of_gt (cylindricalDenominator_pos P)]
     calc
-      P.C * (P.B ^ 2 - -P.A ^ 2) =
-          P.C * (P.A ^ 2 + P.B ^ 2) := by ring
-      _ = P.C * (1 - P.C ^ 2) := by rw [hsum]
-      _ = cylindricalDenominator P ^ 2 * P.C := by rw [hden]; ring
+      P.C * (P.B ^ (2 : ℕ) - -P.A ^ (2 : ℕ)) =
+          P.C * (P.A ^ (2 : ℕ) + P.B ^ (2 : ℕ)) := by ring
+      _ = P.C * (1 - P.C ^ (2 : ℕ)) := by rw [hsum]
+      _ = cylindricalDenominator P ^ (2 : ℕ) * P.C := by rw [hden]; ring
 
 /-- Equation (80): radial component of the unit tangent. -/
 theorem tangent_radial_component (P : RegularVerticalCoefficients) :

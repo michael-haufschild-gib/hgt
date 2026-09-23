@@ -31,7 +31,7 @@ noncomputable section
 /-- Derivative of one quarter of the balanced external-Gamma phase lift. -/
 def fzzHJBalancedExternalGammaPhaseSlope (y : ℝ) : ℝ :=
   (Complex.digamma ((1 / 2 : ℝ) + (y : ℂ) * Complex.I)).re
-    + 2 / (1 + 4 * y ^ 2) + 6 / (9 + 4 * y ^ 2)
+    + 2 / (1 + 4 * y ^ (2 : ℕ)) + 6 / (9 + 4 * y ^ (2 : ℕ))
 
 /-- The balanced phase slope is positive at the zero-momentum wall. -/
 theorem fzzHJBalancedExternalGammaPhaseSlope_zero_pos :
@@ -67,23 +67,23 @@ theorem fzzHJBalancedExternalGammaPhaseSlope_zero_le (y : ℝ) :
   have hpartial := hsumdiff.sum_le_tsum (Finset.range 2) (fun n _ => hterm n)
   have hfinite :
       ∑ n ∈ Finset.range 2, (termy n - term0 n) =
-        (2 - 2 / (1 + 4 * y ^ 2)) + (2 / 3 - 6 / (9 + 4 * y ^ 2)) := by
+        (2 - 2 / (1 + 4 * y ^ (2 : ℕ))) + (2 / 3 - 6 / (9 + 4 * y ^ (2 : ℕ))) := by
     simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add]
     dsimp [termy, term0]
     rw [re_gaussDigammaSeriesTerm_vertical, re_gaussDigammaSeriesTerm_vertical]
     have hzero0 :
         (gaussDigammaSeriesTerm ((1 / 2 : ℝ) : ℂ) 0).re =
           1 / ((0 : ℝ) + 1) - ((1 / 2 : ℝ) + 0) /
-            (((1 / 2 : ℝ) + 0) ^ 2 + (0 : ℝ) ^ 2) := by
+            (((1 / 2 : ℝ) + 0) ^ (2 : ℕ) + (0 : ℝ) ^ (2 : ℕ)) := by
       simpa using re_gaussDigammaSeriesTerm_vertical (1 / 2) 0 0
     have hzero1 :
         (gaussDigammaSeriesTerm ((1 / 2 : ℝ) : ℂ) 1).re =
           1 / ((1 : ℝ) + 1) - ((1 / 2 : ℝ) + 1) /
-            (((1 / 2 : ℝ) + 1) ^ 2 + (0 : ℝ) ^ 2) := by
+            (((1 / 2 : ℝ) + 1) ^ (2 : ℕ) + (0 : ℝ) ^ (2 : ℕ)) := by
       simpa using re_gaussDigammaSeriesTerm_vertical (1 / 2) 0 1
     rw [hzero0, hzero1]
-    have hden1 : 0 < 1 + 4 * y ^ 2 := by positivity
-    have hden9 : 0 < 9 + 4 * y ^ 2 := by positivity
+    have hden1 : 0 < 1 + 4 * y ^ (2 : ℕ) := by positivity
+    have hden9 : 0 < 9 + 4 * y ^ (2 : ℕ) := by positivity
     norm_num
     field_simp [hden1.ne', hden9.ne']
     ring
@@ -114,14 +114,14 @@ theorem hasDerivAt_fzzHJBalancedExternalGammaPhaseLift (y : ℝ) :
   have hphase := hasDerivAt_gammaVerticalPhase
     (show (0 : ℝ) < 1 / 2 by norm_num) y
   have htwo : HasDerivAt (fun x : ℝ => Real.arctan (2 * x))
-      (2 / (1 + 4 * y ^ 2)) y := by
+      (2 / (1 + 4 * y ^ (2 : ℕ))) y := by
     convert ((hasDerivAt_id y).const_mul 2).arctan using 1
     · funext x
       simp only [id_eq]
     · simp only [id_eq]
       ring
   have htwoThirds : HasDerivAt (fun x : ℝ => Real.arctan (2 * x / 3))
-      (6 / (9 + 4 * y ^ 2)) y := by
+      (6 / (9 + 4 * y ^ (2 : ℕ))) y := by
     convert ((hasDerivAt_id y).const_mul (2 / 3)).arctan using 1
     · funext x
       simp only [id_eq]

@@ -19,7 +19,7 @@ private theorem tail_gamma_box :
     (0.5768:ℝ) ≤ Real.eulerMascheroniConstant ∧ Real.eulerMascheroniConstant ≤ 0.57722 := by
   have h := (harmonic_mascheroni_half_bounds (n := 16) (by norm_num)).2
   have hlog : Real.log (16:ℝ)=4*Real.log 2 := by
-    rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]
+    rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]
     norm_num
   norm_num [harmonic,Finset.sum_range_succ,hlog] at h
   constructor
@@ -50,7 +50,7 @@ private theorem tail_roots :
     ((4.472:ℝ) ≤ Real.sqrt 20 ∧ Real.sqrt 20 ≤ 4.473) ∧
     ((4.582:ℝ) ≤ Real.sqrt 21 ∧ Real.sqrt 21 ≤ 4.583) := by
   have h (n l u : ℝ) (hn : 0 ≤ n) (hl : 0 ≤ l) (hu : 0 ≤ u)
-      (hlo : l^2 ≤ n) (hhi : n ≤ u^2) : l ≤ Real.sqrt n ∧ Real.sqrt n ≤ u := by
+      (hlo : l^(2 : ℕ) ≤ n) (hhi : n ≤ u^(2 : ℕ)) : l ≤ Real.sqrt n ∧ Real.sqrt n ≤ u := by
     have hs := Real.sq_sqrt hn
     have hp := Real.sqrt_nonneg n
     constructor <;> nlinarith
@@ -230,7 +230,7 @@ theorem mobiusDivisorSelectionFibre_twentyOne_three_gt :
 theorem mobiusDivisorNonemptyEnergy_twentyOne_step :
     mobiusDivisorNonemptyEnergy 21 (insert 5 {2})-mobiusDivisorNonemptyEnergy 21 {2} =
       2*mobiusDivisorSelectionFibre 21 {2} {3}*mobiusDivisorDilationChannel 21 15-
-        (mobiusDivisorDilationChannel 21 5+mobiusDivisorDilationChannel 21 10)^2 := by
+        (mobiusDivisorDilationChannel 21 5+mobiusDivisorDilationChannel 21 10)^(2 : ℕ) := by
   rw [mobiusDivisorNonemptyEnergy_insert_cross Nat.prime_five 21 {2} (by omega) (by simp)]
   have h5 := tail_five_fibre ∅ (by simp)
   simp only [insert_empty_eq,if_true] at h5
@@ -264,7 +264,7 @@ theorem mobiusDivisorNonemptyEnergy_twentyOne_strict_growth :
   have ha := mobiusDivisorSelectionFibre_twentyOne_three_gt
   obtain ⟨hb,hc⟩ := mobiusDivisorDilationChannel_twentyOne_tail_box
   have hprod := mul_lt_mul_of_pos_left hc (show 0 < mobiusDivisorSelectionFibre 21 {2} {3} by linarith)
-  have hbsq : (mobiusDivisorDilationChannel 21 5+mobiusDivisorDilationChannel 21 10)^2 < (0.08:ℝ)^2 := by
+  have hbsq : (mobiusDivisorDilationChannel 21 5+mobiusDivisorDilationChannel 21 10)^(2 : ℕ) < (0.08:ℝ)^(2 : ℕ) := by
     have h := mul_pos (show 0 < mobiusDivisorDilationChannel 21 5+mobiusDivisorDilationChannel 21 10+0.08 by linarith)
       (show 0 < 0.08-(mobiusDivisorDilationChannel 21 5+mobiusDivisorDilationChannel 21 10) by linarith)
     nlinarith only [h]

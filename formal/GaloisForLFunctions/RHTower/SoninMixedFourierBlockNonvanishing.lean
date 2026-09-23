@@ -86,19 +86,19 @@ theorem eq_zero_of_evenIndicatorCutoff_eq_self_of_fourierShell_apply_eq_zero
 
 /-- A vector killed by the dilation sum is a `(-1)`-eigenvector of the square dilation. -/
 theorem evenDilationCLM_sq_apply_eq_neg_of_evenDilationSum_apply_eq_zero
-    {r : ℝ} (hr : 1 < r) (hs : 0 < r ^ 2) {v : evenSubspace}
+    {r : ℝ} (hr : 1 < r) (hs : 0 < r ^ (2 : ℕ)) {v : evenSubspace}
     (hD : evenDilationSum r hr v = 0) :
-    evenDilationCLM (r ^ 2) hs v = -v := by
-  have hsinv : (0 : ℝ) < (r ^ 2)⁻¹ := inv_pos.mpr hs
+    evenDilationCLM (r ^ (2 : ℕ)) hs v = -v := by
+  have hsinv : (0 : ℝ) < (r ^ (2 : ℕ))⁻¹ := inv_pos.mpr hs
   have hinv := evenDilationCLM_inv_sq_apply_eq_neg_of_evenDilationSum_apply_eq_zero hr hsinv hD
-  have h := DFunLike.congr_fun (evenDilationCLM_mul (r ^ 2) ((r ^ 2)⁻¹) hs hsinv) v
+  have h := DFunLike.congr_fun (evenDilationCLM_mul (r ^ (2 : ℕ)) ((r ^ (2 : ℕ))⁻¹) hs hsinv) v
   rw [mul_apply_eq_comp, hinv, map_neg,
     DFunLike.congr_fun (evenDilationCLM_congr (mul_pos hs hsinv)
       (mul_inv_cancel₀ hs.ne')) v] at h
   have hone : evenDilationCLM (1 : ℝ) (mul_inv_cancel₀ hs.ne' ▸ mul_pos hs hsinv) =
       (1 : evenSubspace →L[ℂ] evenSubspace) := evenDilationCLM_one
   rw [hone] at h
-  have h' : -evenDilationCLM (r ^ 2) hs v = v := h
+  have h' : -evenDilationCLM (r ^ (2 : ℕ)) hs v = v := h
   linear_combination (norm := module) -h'
 
 /-- **Injectivity of the dilation sum on a physical annulus.** -/
@@ -109,23 +109,23 @@ theorem eq_zero_of_evenDilationSum_apply_eq_zero_of_physicalAnnulus
     (hbv : evenIndicatorCutoff b v = 0) :
     v = 0 := by
   have hr0 : (0 : ℝ) < r := zero_lt_one.trans hr
-  have hr2 : (1 : ℝ) < r ^ 2 := by nlinarith
-  have hsq : (0 : ℝ) < r ^ 2 := by positivity
-  have hspos : (0 : ℝ) < (r ^ 2)⁻¹ := inv_pos.mpr hsq
-  set s : ℝ := (r ^ 2)⁻¹ with hsdef
+  have hr2 : (1 : ℝ) < r ^ (2 : ℕ) := by nlinarith
+  have hsq : (0 : ℝ) < r ^ (2 : ℕ) := by positivity
+  have hspos : (0 : ℝ) < (r ^ (2 : ℕ))⁻¹ := inv_pos.mpr hsq
+  set s : ℝ := (r ^ (2 : ℕ))⁻¹ with hsdef
   have hs0 : 0 < s := hspos
   have hs1 : s < 1 := by
     rw [hsdef]
     exact inv_lt_one_of_one_lt₀ hr2
-  have hUs : evenDilationCLM (r ^ 2) hsq v = -v :=
+  have hUs : evenDilationCLM (r ^ (2 : ℕ)) hsq v = -v :=
     evenDilationCLM_sq_apply_eq_neg_of_evenDilationSum_apply_eq_zero hr hsq hD
   have hiter : ∀ n : ℕ, evenIndicatorCutoff (s ^ n * c) v = v := by
     intro n
     induction n with
     | zero => simpa using hcv
     | succ n ih =>
-      have hcov := evenIndicatorCutoff_mul_evenDilationCLM (s * (s ^ n * c)) (r ^ 2) hsq
-      rw [show r ^ 2 * (s * (s ^ n * c)) = s ^ n * c by
+      have hcov := evenIndicatorCutoff_mul_evenDilationCLM (s * (s ^ n * c)) (r ^ (2 : ℕ)) hsq
+      rw [show r ^ (2 : ℕ) * (s * (s ^ n * c)) = s ^ n * c by
         rw [hsdef]; exact mul_inv_cancel_left₀ hsq.ne' _] at hcov
       have happ := DFunLike.congr_fun hcov v
       rw [mul_apply_eq_comp, mul_apply_eq_comp, ih, hUs, map_neg] at happ

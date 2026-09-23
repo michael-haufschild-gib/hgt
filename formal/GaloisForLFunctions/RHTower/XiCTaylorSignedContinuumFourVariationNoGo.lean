@@ -34,7 +34,7 @@ def routeJExpHermiteCombinationDeriv
 
 def routeJExpHermiteCombinationSecondDeriv
     (lam A B t : ℝ) : ℝ :=
-  Real.exp (lam * t) * (2 * lam * B + lam ^ 2 * (A + B * t))
+  Real.exp (lam * t) * (2 * lam * B + lam ^ (2 : ℕ) * (A + B * t))
 
 theorem hasDerivAt_routeJExpHermiteCombination
     (lam A B C D t : ℝ) :
@@ -121,29 +121,29 @@ theorem routeJExpHermiteCombination_four_roots_rigid
       (fun x _ => hasDerivAt_routeJExpHermiteCombinationDeriv lam A B D x)
   have hy₁y₂ : y₁ < y₂ := hy₁mem.2.trans hy₂mem.1
   have hy₁aff :
-      2 * lam * B + lam ^ 2 * (A + B * y₁) = 0 := by
+      2 * lam * B + lam ^ (2 : ℕ) * (A + B * y₁) = 0 := by
     dsimp [F2, routeJExpHermiteCombinationSecondDeriv] at hy₁
     exact (mul_eq_zero.mp hy₁).resolve_left (Real.exp_ne_zero _)
   have hy₂aff :
-      2 * lam * B + lam ^ 2 * (A + B * y₂) = 0 := by
+      2 * lam * B + lam ^ (2 : ℕ) * (A + B * y₂) = 0 := by
     dsimp [F2, routeJExpHermiteCombinationSecondDeriv] at hy₂
     exact (mul_eq_zero.mp hy₂).resolve_left (Real.exp_ne_zero _)
   have hB : B = 0 := by
     have hdiff :
-        (lam ^ 2 * B) * (y₁ - y₂) = 0 := by
+        (lam ^ (2 : ℕ) * B) * (y₁ - y₂) = 0 := by
       calc
-        (lam ^ 2 * B) * (y₁ - y₂) =
-            (2 * lam * B + lam ^ 2 * (A + B * y₁)) -
-              (2 * lam * B + lam ^ 2 * (A + B * y₂)) := by ring
+        (lam ^ (2 : ℕ) * B) * (y₁ - y₂) =
+            (2 * lam * B + lam ^ (2 : ℕ) * (A + B * y₁)) -
+              (2 * lam * B + lam ^ (2 : ℕ) * (A + B * y₂)) := by ring
         _ = 0 := by rw [hy₁aff, hy₂aff]; ring
     have hyne : y₁ - y₂ ≠ 0 := sub_ne_zero.mpr hy₁y₂.ne
-    have hlamSq : lam ^ 2 ≠ 0 := pow_ne_zero 2 hlam
-    have hleft : lam ^ 2 * B = 0 :=
+    have hlamSq : lam ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hlam
+    have hleft : lam ^ (2 : ℕ) * B = 0 :=
       (mul_eq_zero.mp hdiff).resolve_right hyne
     exact (mul_eq_zero.mp hleft).resolve_left hlamSq
   have hA : A = 0 := by
-    have hlamSq : lam ^ 2 ≠ 0 := pow_ne_zero 2 hlam
-    have hAeq : lam ^ 2 * A = 0 := by
+    have hlamSq : lam ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hlam
+    have hAeq : lam ^ (2 : ℕ) * A = 0 := by
       simpa [hB] using hy₁aff
     exact (mul_eq_zero.mp hAeq).resolve_left hlamSq
   have hD : D = 0 := by
@@ -205,26 +205,26 @@ theorem routeJExpHermiteCombination_coeff_zero_of_second_two_roots
     (hy : routeJExpHermiteCombinationSecondDeriv lam A B y = 0) :
     A = 0 ∧ B = 0 := by
   have hxaff :
-      2 * lam * B + lam ^ 2 * (A + B * x) = 0 := by
+      2 * lam * B + lam ^ (2 : ℕ) * (A + B * x) = 0 := by
     unfold routeJExpHermiteCombinationSecondDeriv at hx
     exact (mul_eq_zero.mp hx).resolve_left (Real.exp_ne_zero _)
   have hyaff :
-      2 * lam * B + lam ^ 2 * (A + B * y) = 0 := by
+      2 * lam * B + lam ^ (2 : ℕ) * (A + B * y) = 0 := by
     unfold routeJExpHermiteCombinationSecondDeriv at hy
     exact (mul_eq_zero.mp hy).resolve_left (Real.exp_ne_zero _)
-  have hlamSq : lam ^ 2 ≠ 0 := pow_ne_zero 2 hlam
-  have hdiff : (lam ^ 2 * B) * (x - y) = 0 := by
+  have hlamSq : lam ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hlam
+  have hdiff : (lam ^ (2 : ℕ) * B) * (x - y) = 0 := by
     calc
-      (lam ^ 2 * B) * (x - y) =
-          (2 * lam * B + lam ^ 2 * (A + B * x)) -
-            (2 * lam * B + lam ^ 2 * (A + B * y)) := by ring
+      (lam ^ (2 : ℕ) * B) * (x - y) =
+          (2 * lam * B + lam ^ (2 : ℕ) * (A + B * x)) -
+            (2 * lam * B + lam ^ (2 : ℕ) * (A + B * y)) := by ring
       _ = 0 := by rw [hxaff, hyaff]; ring
   have hB : B = 0 := by
     have hxy' : x - y ≠ 0 := sub_ne_zero.mpr hxy
-    have hleft : lam ^ 2 * B = 0 :=
+    have hleft : lam ^ (2 : ℕ) * B = 0 :=
       (mul_eq_zero.mp hdiff).resolve_right hxy'
     exact (mul_eq_zero.mp hleft).resolve_left hlamSq
-  have hAeq : lam ^ 2 * A = 0 := by
+  have hAeq : lam ^ (2 : ℕ) * A = 0 := by
     simpa [hB] using hxaff
   exact ⟨(mul_eq_zero.mp hAeq).resolve_left hlamSq, hB⟩
 
@@ -854,12 +854,12 @@ theorem routeJ_nonAtomicContinuum_sineRows_atMostThreeChanges_ae_zero
         · exact Or.inr (Or.inr (sub_eq_zero.mp hdroot))
       have hJt : J t = 0 := (hJzero t).2 hroot
       simp [W, hJt]
-    · have hPsq : 0 < P t ^ 2 := sq_pos_of_ne_zero hPt
+    · have hPsq : 0 < P t ^ (2 : ℕ) := sq_pos_of_ne_zero hPt
       have hprod : 0 ≤ (P t * J t) * (P t * p t) :=
         mul_nonneg hPJ hPp
       have hJp : 0 ≤ J t * p t := by
         rw [show (P t * J t) * (P t * p t) =
-            P t ^ 2 * (J t * p t) by ring] at hprod
+            P t ^ (2 : ℕ) * (J t * p t) by ring] at hprod
         exact nonneg_of_mul_nonneg_left
           (by simpa [mul_comm] using hprod) hPsq
       dsimp [W]
@@ -880,12 +880,12 @@ theorem routeJ_nonAtomicContinuum_sineRows_atMostThreeChanges_ae_zero
         · exact Or.inr (Or.inr (sub_eq_zero.mp hdroot))
       have hJt : J t = 0 := (hJzero t).2 hroot
       simp [W, hJt]
-    · have hPsq : 0 < P t ^ 2 := sq_pos_of_ne_zero hPt
+    · have hPsq : 0 < P t ^ (2 : ℕ) := sq_pos_of_ne_zero hPt
       have hprod : (P t * J t) * (P t * p t) ≤ 0 :=
         mul_nonpos_of_nonneg_of_nonpos hPJ hPp
       have hJp : J t * p t ≤ 0 := by
         rw [show (P t * J t) * (P t * p t) =
-            P t ^ 2 * (J t * p t) by ring] at hprod
+            P t ^ (2 : ℕ) * (J t * p t) by ring] at hprod
         exact nonpos_of_mul_nonpos_left
           (by simpa [mul_comm] using hprod) hPsq
       dsimp [W]
@@ -906,12 +906,12 @@ theorem routeJ_nonAtomicContinuum_sineRows_atMostThreeChanges_ae_zero
         · exact Or.inr (Or.inr (sub_eq_zero.mp hdroot))
       have hJt : J t = 0 := (hJzero t).2 hroot
       simp [W, hJt]
-    · have hPsq : 0 < P t ^ 2 := sq_pos_of_ne_zero hPt
+    · have hPsq : 0 < P t ^ (2 : ℕ) := sq_pos_of_ne_zero hPt
       have hprod : 0 ≤ (P t * J t) * (P t * p t) :=
         mul_nonneg_of_nonpos_of_nonpos hPJ hPp
       have hJp : 0 ≤ J t * p t := by
         rw [show (P t * J t) * (P t * p t) =
-            P t ^ 2 * (J t * p t) by ring] at hprod
+            P t ^ (2 : ℕ) * (J t * p t) by ring] at hprod
         exact nonneg_of_mul_nonneg_left
           (by simpa [mul_comm] using hprod) hPsq
       dsimp [W]
@@ -932,12 +932,12 @@ theorem routeJ_nonAtomicContinuum_sineRows_atMostThreeChanges_ae_zero
         · exact Or.inr (Or.inr (sub_eq_zero.mp hdroot))
       have hJt : J t = 0 := (hJzero t).2 hroot
       simp [W, hJt]
-    · have hPsq : 0 < P t ^ 2 := sq_pos_of_ne_zero hPt
+    · have hPsq : 0 < P t ^ (2 : ℕ) := sq_pos_of_ne_zero hPt
       have hprod : (P t * J t) * (P t * p t) ≤ 0 :=
         mul_nonpos_of_nonpos_of_nonneg hPJ hPp
       have hJp : J t * p t ≤ 0 := by
         rw [show (P t * J t) * (P t * p t) =
-            P t ^ 2 * (J t * p t) by ring] at hprod
+            P t ^ (2 : ℕ) * (J t * p t) by ring] at hprod
         exact nonpos_of_mul_nonpos_left
           (by simpa [mul_comm] using hprod) hPsq
       dsimp [W]

@@ -32,8 +32,8 @@ variable {S A : Type*} [Fintype S] [Fintype A] [DecidableEq A]
 
 /-- The squared modulus of one matrix element of a real combination of probes. -/
 def realProbeModulusForm (M : S → Matrix A A ℂ) (α β : A) : MvPolynomial S ℝ :=
-  (∑ s, MvPolynomial.C (M s α β).re * MvPolynomial.X s) ^ 2
-    + (∑ s, MvPolynomial.C (M s α β).im * MvPolynomial.X s) ^ 2
+  (∑ s, MvPolynomial.C (M s α β).re * MvPolynomial.X s) ^ (2 : ℕ)
+    + (∑ s, MvPolynomial.C (M s α β).im * MvPolynomial.X s) ^ (2 : ℕ)
 
 omit [Fintype A] [DecidableEq A] in
 theorem eval_realProbeModulusForm (M : S → Matrix A A ℂ) (α β : A) (t : S → ℝ) :

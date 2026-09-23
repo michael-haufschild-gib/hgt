@@ -29,7 +29,7 @@ theorem diskPoint_norm_lt_one (v s : ℝ) : ‖diskPoint v s‖ < 1 := by
     using Real.exp_pos s
 
 /-- Positive common denominator of the disk coordinates. -/
-def diskDenominator (v s : ℝ) : ℝ := v ^ 2 + (Real.exp s + 1) ^ 2
+def diskDenominator (v s : ℝ) : ℝ := v ^ (2 : ℕ) + (Real.exp s + 1) ^ (2 : ℕ)
 
 theorem diskDenominator_pos (v s : ℝ) : 0 < diskDenominator v s := by
   unfold diskDenominator
@@ -43,7 +43,7 @@ theorem diskPoint_re (v s : ℝ) : (diskPoint v s).re = 2 * v / diskDenominator 
 
 /-- Cartesian formula for the imaginary disk coordinate. -/
 theorem diskPoint_im (v s : ℝ) :
-    (diskPoint v s).im = (v ^ 2 + Real.exp s ^ 2 - 1) / diskDenominator v s := by
+    (diskPoint v s).im = (v ^ (2 : ℕ) + Real.exp s ^ (2 : ℕ) - 1) / diskDenominator v s := by
   simp [diskPoint, upperPoint, Complex.div_re, Complex.div_im, Complex.normSq_apply,
     diskDenominator, -Complex.ofReal_exp]
   ring
@@ -51,7 +51,7 @@ theorem diskPoint_im (v s : ℝ) :
 /-- Squared coherent-state radius in the half-plane variables. -/
 theorem diskPoint_normSq (v s : ℝ) :
     Complex.normSq (diskPoint v s) =
-      (v ^ 2 + (Real.exp s - 1) ^ 2) / diskDenominator v s := by
+      (v ^ (2 : ℕ) + (Real.exp s - 1) ^ (2 : ℕ)) / diskDenominator v s := by
   rw [diskPoint, Complex.normSq_mul, Complex.normSq_I, one_mul, Complex.normSq_div]
   simp [upperPoint, Complex.normSq_apply, diskDenominator, -Complex.ofReal_exp]
   ring
@@ -97,13 +97,13 @@ def frequencyFactor (v s : ℝ) : ℝ :=
 
 /-- Radiation frequency is a simple half-plane radial function. -/
 theorem frequencyFactor_eq (v s : ℝ) :
-    frequencyFactor v s = 2 / (v ^ 2 + Real.exp s ^ 2 + 1) := by
+    frequencyFactor v s = 2 / (v ^ (2 : ℕ) + Real.exp s ^ (2 : ℕ) + 1) := by
   unfold frequencyFactor
   rw [diskPoint_im, diskPoint_normSq]
   have hd := ne_of_gt (diskDenominator_pos v s)
-  have hn : v ^ 2 + Real.exp s ^ 2 + 1 ≠ 0 := by positivity
-  have hs : 1 + (v ^ 2 + (Real.exp s - 1) ^ 2) / diskDenominator v s =
-      2 * (v ^ 2 + Real.exp s ^ 2 + 1) / diskDenominator v s := by
+  have hn : v ^ (2 : ℕ) + Real.exp s ^ (2 : ℕ) + 1 ≠ 0 := by positivity
+  have hs : 1 + (v ^ (2 : ℕ) + (Real.exp s - 1) ^ (2 : ℕ)) / diskDenominator v s =
+      2 * (v ^ (2 : ℕ) + Real.exp s ^ (2 : ℕ) + 1) / diskDenominator v s := by
     field_simp
     unfold diskDenominator
     ring
@@ -119,7 +119,7 @@ theorem frequencyFactor_pos (v s : ℝ) : 0 < frequencyFactor v s := by
 /-- Frequency stays strictly below twice the microscopic coupling per mode. -/
 theorem frequencyFactor_lt_two (v s : ℝ) : frequencyFactor v s < 2 := by
   rw [frequencyFactor_eq]
-  apply (div_lt_iff₀ (by positivity : 0 < v ^ 2 + Real.exp s ^ 2 + 1)).mpr
+  apply (div_lt_iff₀ (by positivity : 0 < v ^ (2 : ℕ) + Real.exp s ^ (2 : ℕ) + 1)).mpr
   nlinarith [sq_nonneg v, sq_pos_of_pos (Real.exp_pos s)]
 
 /-- Clock-time reversal leaves the single-mode radiation frequency unchanged. -/
@@ -134,7 +134,7 @@ theorem frequencyFactor_energy_balance (v s : ℝ) :
         (Real.exp s)⁻¹ := by
   rw [frequencyFactor_eq, diskPoint_defect, diskPoint_normSq]
   have hd := ne_of_gt (diskDenominator_pos v s)
-  have hn : v ^ 2 + Real.exp s ^ 2 + 1 ≠ 0 := by positivity
+  have hn : v ^ (2 : ℕ) + Real.exp s ^ (2 : ℕ) + 1 ≠ 0 := by positivity
   field_simp
   unfold diskDenominator
   ring

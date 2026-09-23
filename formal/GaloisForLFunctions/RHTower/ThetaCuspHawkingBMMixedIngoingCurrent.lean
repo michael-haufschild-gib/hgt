@@ -35,7 +35,7 @@ private theorem compactEnvelope_time (s a u : ℂ) (t : ℝ) :
   ring
 
 private theorem current_scale (s r B J K c : ℂ) :
-    current s r (c*B) J K = c^2*current s r B J K := by
+    current s r (c*B) J K = c^(2 : ℕ)*current s r B J K := by
   unfold current
   ring
 

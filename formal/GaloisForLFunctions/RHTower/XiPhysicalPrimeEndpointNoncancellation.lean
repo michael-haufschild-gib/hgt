@@ -155,9 +155,9 @@ theorem xiPhysicalPrimeLogCenteredApertureCarrier_ne_zero_of_active
   rw [hzero, inner_zero_left,
     xiPhysicalPrimeLogApertureFusionKernel_diagonal] at hinner
   have hpos : 0 < xiPhysicalPrimeLogApertureLength A m k p -
-      xiPhysicalPrimeLogApertureLength A m k p ^ 2 / A := by
+      xiPhysicalPrimeLogApertureLength A m k p ^ (2 : ℕ) / A := by
     have hfactor : xiPhysicalPrimeLogApertureLength A m k p -
-        xiPhysicalPrimeLogApertureLength A m k p ^ 2 / A =
+        xiPhysicalPrimeLogApertureLength A m k p ^ (2 : ℕ) / A =
       xiPhysicalPrimeLogApertureLength A m k p *
         (A - xiPhysicalPrimeLogApertureLength A m k p) / A := by
       field_simp [hA.ne']

@@ -30,7 +30,7 @@ def fibreWinHi (x h : ℝ) : ℕ := ⌈Real.sqrt x + h⌉₊ + 3
 
 theorem eight_le_sqrt {x : ℝ} (hx : 64 ≤ x) : (8 : ℝ) ≤ Real.sqrt x := by
   have h64 : Real.sqrt 64 = 8 := by
-    rw [show (64 : ℝ) = 8 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 8)]
+    rw [show (64 : ℝ) = 8 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 8)]
   rw [← h64]
   exact Real.sqrt_le_sqrt hx
 
@@ -42,8 +42,8 @@ theorem fibreSmooth_eq_zero_of_small {x h : ℝ} {n : ℕ} (hn : 1 ≤ n) (k : �
   have hdiv : 2 * Real.sqrt x + 1 ≤ x / (n : ℝ) := by
     rw [le_div_iff₀ hn0]
     linarith [hsmall]
-  have hlow : 2 * Real.sqrt x + 1 ≤ fibreLow x n := le_trans hdiv (div_le_fibreLow x n)
-  have hhigh : fibreHigh x h (n + k) ≤ 2 * Real.sqrt x := fibreHigh_le_two_sqrt x h (n + k)
+  have hlow : 2 * Real.sqrt x + 1 ≤ fibreLow_fibreKernelExact x n := le_trans hdiv (div_le_fibreLow x n)
+  have hhigh : fibreHigh_fibreKernelExact x h (n + k) ≤ 2 * Real.sqrt x := fibreHigh_le_two_sqrt x h (n + k)
   rw [fibreSmooth, kernelSmooth, max_eq_right (by linarith)]
 
 /-- **The smooth model vanishes when the inner variable is large.** -/
@@ -60,11 +60,11 @@ theorem fibreSmooth_eq_zero_of_ge {x h : ℝ} (hx : 64 ≤ x) (hh : 0 ≤ h)
   have hkey : x + h * Real.sqrt x ≤ (Real.sqrt x - 1) * ((n + k : ℕ) : ℝ) := by
     have hnk : Real.sqrt x + h + 6 ≤ ((n + k : ℕ) : ℝ) := by push_cast; linarith
     nlinarith [hnk, hs8, hsq, hhx, hh]
-  have hhigh : fibreHigh x h (n + k) ≤ Real.sqrt x - 1 := by
+  have hhigh : fibreHigh_fibreKernelExact x h (n + k) ≤ Real.sqrt x - 1 := by
     refine le_trans (fibreHigh_le_div x h (n + k)) ?_
     rw [div_le_iff₀ hden]
     exact hkey
-  have hlow : Real.sqrt x ≤ fibreLow x n := sqrt_le_fibreLow x n
+  have hlow : Real.sqrt x ≤ fibreLow_fibreKernelExact x n := sqrt_le_fibreLow x n
   rw [fibreSmooth, kernelSmooth, max_eq_right (by linarith)]
 
 /-- **Below the window the smooth model is constantly zero.** -/

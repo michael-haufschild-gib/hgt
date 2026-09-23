@@ -54,7 +54,7 @@ theorem norm_rot (w : ℂ) : ‖-(Complex.I * w)‖ = ‖w‖ := by
 theorem exists_expTestTransform_decay {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ)
     (hs : HasCompactSupport ψ) (c d : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ w : ℂ, w.re ∈ uIcc c d →
-      ‖expTestTransform ψ w‖ ≤ C / (1 + w.im ^ 2) := by
+      ‖expTestTransform ψ w‖ ≤ C / (1 + w.im ^ (2 : ℕ)) := by
   obtain ⟨C, hC0, hC⟩ := exists_testTransform_decay hψ hs (-c) (-d)
   refine ⟨C, hC0, fun w hw => ?_⟩
   have hmem : (-(Complex.I * w)).im ∈ uIcc (-c) (-d) := by
@@ -66,13 +66,13 @@ theorem exists_expTestTransform_decay {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞
   rw [norm_rot] at hb
   refine le_trans hb ?_
   refine div_le_div_of_nonneg_left hC0 (by positivity) ?_
-  have hsq : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
+  have hsq : ‖w‖ ^ (2 : ℕ) = w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     ring
   nlinarith [sq_nonneg w.re]
 
 theorem integrable_one_div_one_add_sq (C : ℝ) :
-    Integrable (fun y : ℝ => C / (1 + y ^ 2)) := by
+    Integrable (fun y : ℝ => C / (1 + y ^ (2 : ℕ))) := by
   simpa [div_eq_mul_inv] using (integrable_inv_one_add_sq).const_mul C
 
 /-- The exponential transform is integrable along every vertical line. -/
@@ -103,7 +103,7 @@ theorem memLp_two_expTestTransform_line {ψ : ℝ → ℂ} (hψ : ContDiff ℝ �
     refine ((differentiable_expTestTransform hψ.continuous hs).continuous).comp ?_
     fun_prop
   refine (memLp_two_iff_integrable_sq_norm hcont.aestronglyMeasurable).2 ?_
-  refine Integrable.mono' (integrable_one_div_one_add_sq (C ^ 2)) ?_ ?_
+  refine Integrable.mono' (integrable_one_div_one_add_sq (C ^ (2 : ℕ))) ?_ ?_
   · exact (hcont.norm.pow 2).aestronglyMeasurable
   · filter_upwards with y
     have hre : ((σ : ℂ) + (y : ℝ) * Complex.I).re = σ := by simp
@@ -113,11 +113,11 @@ theorem memLp_two_expTestTransform_line {ψ : ℝ → ℂ} (hψ : ContDiff ℝ �
       simp
     have h := hC _ hmem
     rw [him] at h
-    have hpos : (0 : ℝ) < 1 + y ^ 2 := by positivity
+    have hpos : (0 : ℝ) < 1 + y ^ (2 : ℕ) := by positivity
     have hnn : (0 : ℝ) ≤ ‖expTestTransform ψ ((σ : ℂ) + (y : ℝ) * Complex.I)‖ := norm_nonneg _
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-    have hsq : ‖expTestTransform ψ ((σ : ℂ) + (y : ℝ) * Complex.I)‖ ^ 2
-        ≤ (C / (1 + y ^ 2)) ^ 2 := by
+    have hsq : ‖expTestTransform ψ ((σ : ℂ) + (y : ℝ) * Complex.I)‖ ^ (2 : ℕ)
+        ≤ (C / (1 + y ^ (2 : ℕ))) ^ (2 : ℕ) := by
       exact pow_le_pow_left₀ hnn h 2
     refine le_trans hsq ?_
     rw [div_pow]

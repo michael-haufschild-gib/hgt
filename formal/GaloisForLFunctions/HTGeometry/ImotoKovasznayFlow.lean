@@ -11,12 +11,12 @@ noncomputable section
 def kovasznayFrequency : ℝ := 2 * Real.pi
 
 def kovasznayLambda : ℝ :=
-  1 / 2 - Real.sqrt (1 / 4 + kovasznayFrequency ^ 2)
+  1 / 2 - Real.sqrt (1 / 4 + kovasznayFrequency ^ (2 : ℕ))
 
 theorem kovasznayLambda_relation :
-    kovasznayLambda ^ 2 - kovasznayLambda - kovasznayFrequency ^ 2 = 0 := by
-  have hs : Real.sqrt (1 / 4 + kovasznayFrequency ^ 2) ^ 2 =
-      1 / 4 + kovasznayFrequency ^ 2 := Real.sq_sqrt (by positivity)
+    kovasznayLambda ^ (2 : ℕ) - kovasznayLambda - kovasznayFrequency ^ (2 : ℕ) = 0 := by
+  have hs : Real.sqrt (1 / 4 + kovasznayFrequency ^ (2 : ℕ)) ^ (2 : ℕ) =
+      1 / 4 + kovasznayFrequency ^ (2 : ℕ) := Real.sq_sqrt (by positivity)
   rw [kovasznayLambda]
   nlinarith
 
@@ -37,7 +37,7 @@ def kovasznayUy (x y : ℝ) : ℝ :=
   kovasznayFrequency * Real.exp (kovasznayLambda * x) * Real.sin (kovasznayFrequency * y)
 
 def kovasznayVx (x y : ℝ) : ℝ :=
-  kovasznayLambda ^ 2 / kovasznayFrequency * Real.exp (kovasznayLambda * x) *
+  kovasznayLambda ^ (2 : ℕ) / kovasznayFrequency * Real.exp (kovasznayLambda * x) *
     Real.sin (kovasznayFrequency * y)
 
 def kovasznayVy (x y : ℝ) : ℝ :=
@@ -49,15 +49,15 @@ def kovasznayPx (x _y : ℝ) : ℝ :=
 def kovasznayPy (_x _y : ℝ) : ℝ := 0
 
 def kovasznayUxx (x y : ℝ) : ℝ :=
-  -kovasznayLambda ^ 2 * Real.exp (kovasznayLambda * x) *
+  -kovasznayLambda ^ (2 : ℕ) * Real.exp (kovasznayLambda * x) *
     Real.cos (kovasznayFrequency * y)
 
 def kovasznayUyy (x y : ℝ) : ℝ :=
-  kovasznayFrequency ^ 2 * Real.exp (kovasznayLambda * x) *
+  kovasznayFrequency ^ (2 : ℕ) * Real.exp (kovasznayLambda * x) *
     Real.cos (kovasznayFrequency * y)
 
 def kovasznayVxx (x y : ℝ) : ℝ :=
-  kovasznayLambda ^ 3 / kovasznayFrequency * Real.exp (kovasznayLambda * x) *
+  kovasznayLambda ^ (3 : ℕ) / kovasznayFrequency * Real.exp (kovasznayLambda * x) *
     Real.sin (kovasznayFrequency * y)
 
 def kovasznayVyy (x y : ℝ) : ℝ :=
@@ -170,7 +170,7 @@ def kovasznayJet : SteadyNavierStokesJet2 where
     unfold kovasznayVx kovasznayVxx
     have hlin := (hasDerivAt_id x).const_mul kovasznayLambda
     have hE := (Real.hasDerivAt_exp (kovasznayLambda * x)).comp x hlin
-    exact ((hE.const_mul (kovasznayLambda ^ 2 / kovasznayFrequency)).mul_const
+    exact ((hE.const_mul (kovasznayLambda ^ (2 : ℕ) / kovasznayFrequency)).mul_const
       (Real.sin (kovasznayFrequency * y))).congr_deriv (by ring)
   hasDerivAt_vy_y := by
     intro x y
@@ -207,15 +207,15 @@ theorem kovasznay_solves_reynolds_one :
           -kovasznayLambda *
               (Real.exp (kovasznayLambda * x) * Real.exp (kovasznayLambda * x)) -
           1 *
-            (-kovasznayLambda ^ 2 * Real.exp (kovasznayLambda * x) *
+            (-kovasznayLambda ^ (2 : ℕ) * Real.exp (kovasznayLambda * x) *
                 Real.cos (kovasznayFrequency * y) +
-              kovasznayFrequency ^ 2 * Real.exp (kovasznayLambda * x) *
+              kovasznayFrequency ^ (2 : ℕ) * Real.exp (kovasznayLambda * x) *
                 Real.cos (kovasznayFrequency * y)) =
           Real.exp (kovasznayLambda * x) * Real.cos (kovasznayFrequency * y) *
-              (kovasznayLambda ^ 2 - kovasznayLambda - kovasznayFrequency ^ 2) +
-            kovasznayLambda * Real.exp (kovasznayLambda * x) ^ 2 *
-              (Real.sin (kovasznayFrequency * y) ^ 2 +
-                Real.cos (kovasznayFrequency * y) ^ 2 - 1) := by
+              (kovasznayLambda ^ (2 : ℕ) - kovasznayLambda - kovasznayFrequency ^ (2 : ℕ)) +
+            kovasznayLambda * Real.exp (kovasznayLambda * x) ^ (2 : ℕ) *
+              (Real.sin (kovasznayFrequency * y) ^ (2 : ℕ) +
+                Real.cos (kovasznayFrequency * y) ^ (2 : ℕ) - 1) := by
             field_simp [hw]
             ring
       _ = 0 := by rw [hlam, htrig]; ring
@@ -226,20 +226,20 @@ theorem kovasznay_solves_reynolds_one :
     have hlam := kovasznayLambda_relation
     calc
       (1 - Real.exp (kovasznayLambda * x) * Real.cos (kovasznayFrequency * y)) *
-            (kovasznayLambda ^ 2 / kovasznayFrequency *
+            (kovasznayLambda ^ (2 : ℕ) / kovasznayFrequency *
               Real.exp (kovasznayLambda * x) * Real.sin (kovasznayFrequency * y)) +
           (kovasznayLambda / kovasznayFrequency * Real.exp (kovasznayLambda * x) *
               Real.sin (kovasznayFrequency * y)) *
             (kovasznayLambda * Real.exp (kovasznayLambda * x) *
               Real.cos (kovasznayFrequency * y)) +
           0 - 1 *
-            (kovasznayLambda ^ 3 / kovasznayFrequency *
+            (kovasznayLambda ^ (3 : ℕ) / kovasznayFrequency *
                 Real.exp (kovasznayLambda * x) * Real.sin (kovasznayFrequency * y) +
               -kovasznayLambda * kovasznayFrequency *
                 Real.exp (kovasznayLambda * x) * Real.sin (kovasznayFrequency * y)) =
           -(kovasznayLambda / kovasznayFrequency * Real.exp (kovasznayLambda * x) *
             Real.sin (kovasznayFrequency * y)) *
-              (kovasznayLambda ^ 2 - kovasznayLambda - kovasznayFrequency ^ 2) := by
+              (kovasznayLambda ^ (2 : ℕ) - kovasznayLambda - kovasznayFrequency ^ (2 : ℕ)) := by
             field_simp [hw]
             ring
       _ = 0 := by rw [hlam]; ring

@@ -10,7 +10,7 @@ This module extracts the first coefficient that is not fixed by that orbit.
 At every finite Euler parameter, the square of the actual normalized source inner product is the
 three-point squarefree-partition Gram.  Removing the pole from `ζ(s)/ζ(2s)` factors this Gram into
 the universal P-G38 Hardy kernel and a regular arithmetic quotient.  The regular quotient has no
-linear midpoint defect.  Its exact quadratic defect is the transverse square `(x-z)^2` times the
+linear midpoint defect.  Its exact quadratic defect is the transverse square `(x-z)^(2 : ℕ)` times the
 derivative of the regular squarefree current.
 
 This is an unconditional discriminator, not an RH proof: it identifies and orients the first
@@ -35,20 +35,20 @@ def squarefreeMobiusCriticalRegularCurrent (s : ℂ) : ℂ :=
 /-- Squared finite three-point Gram of the squarefree partition. -/
 def squarefreeMobiusFiniteUnitHardyGramSq (epsilon x z : ℂ) : ℂ :=
   let y := (x + z) / 2
-  _root_.GaloisForLFunctions.squarefreePartition (1 + y * epsilon) ^ 2 /
+  _root_.GaloisForLFunctions.squarefreePartition (1 + y * epsilon) ^ (2 : ℕ) /
     (_root_.GaloisForLFunctions.squarefreePartition (1 + x * epsilon) *
       _root_.GaloisForLFunctions.squarefreePartition (1 + z * epsilon))
 
 /-- Regular arithmetic correction to the universal critical Hardy Gram. -/
 def squarefreeMobiusPoleUnitCorrection (epsilon x z : ℂ) : ℂ :=
   let y := (x + z) / 2
-  squarefreeMobiusCriticalPoleUnit (1 + y * epsilon) ^ 2 /
+  squarefreeMobiusCriticalPoleUnit (1 + y * epsilon) ^ (2 : ℕ) /
     (squarefreeMobiusCriticalPoleUnit (1 + x * epsilon) *
       squarefreeMobiusCriticalPoleUnit (1 + z * epsilon))
 
 /-- Division-free midpoint defect of the pole-unit correction. -/
 def squarefreeMobiusPoleUnitMidpointDefect (x z epsilon : ℂ) : ℂ :=
-  squarefreeMobiusCriticalPoleUnit (1 + ((x + z) / 2) * epsilon) ^ 2 -
+  squarefreeMobiusCriticalPoleUnit (1 + ((x + z) / 2) * epsilon) ^ (2 : ℕ) -
     squarefreeMobiusCriticalPoleUnit (1 + x * epsilon) *
       squarefreeMobiusCriticalPoleUnit (1 + z * epsilon)
 
@@ -68,7 +68,7 @@ theorem squarefreeMobiusFiniteUnitHardyGramSq_eq_universal_mul_poleUnitCorrectio
     {epsilon x z : ℂ} (hepsilon : epsilon ≠ 0) (hx : x ≠ 0) (hz : z ≠ 0)
     (hy : (x + z) / 2 ≠ 0) :
     squarefreeMobiusFiniteUnitHardyGramSq epsilon x z =
-      x * z / (((x + z) / 2) ^ 2) *
+      x * z / (((x + z) / 2) ^ (2 : ℕ)) *
         squarefreeMobiusPoleUnitCorrection epsilon x z := by
   let y := (x + z) / 2
   have hxe : x * epsilon ≠ 0 := mul_ne_zero hx hepsilon
@@ -96,11 +96,11 @@ theorem squarefreeMobiusFiniteUnitHardyGramSq_eq_universal_mul_poleUnitCorrectio
     squarefreeMobiusCriticalPoleUnit_eq_sub_one_mul_squarefreePartition hzarg
   have hFy :=
     squarefreeMobiusCriticalPoleUnit_eq_sub_one_mul_squarefreePartition hyarg
-  change _root_.GaloisForLFunctions.squarefreePartition (1 + y * epsilon) ^ 2 /
+  change _root_.GaloisForLFunctions.squarefreePartition (1 + y * epsilon) ^ (2 : ℕ) /
       (_root_.GaloisForLFunctions.squarefreePartition (1 + x * epsilon) *
         _root_.GaloisForLFunctions.squarefreePartition (1 + z * epsilon)) = _
-  change _ = x * z / y ^ 2 *
-    (squarefreeMobiusCriticalPoleUnit (1 + y * epsilon) ^ 2 /
+  change _ = x * z / y ^ (2 : ℕ) *
+    (squarefreeMobiusCriticalPoleUnit (1 + y * epsilon) ^ (2 : ℕ) /
       (squarefreeMobiusCriticalPoleUnit (1 + x * epsilon) *
         squarefreeMobiusCriticalPoleUnit (1 + z * epsilon)))
   rw [hFx, hFz, hFy]
@@ -114,7 +114,7 @@ theorem inner_infiniteMobiusCriticalTwoSidedUnitSignedWeightLp_sq_eq_finiteUnitH
     (hu : -(1 / 2 : ℝ) < u) (hv : -(1 / 2 : ℝ) < v) :
     inner ℂ
         (infiniteMobiusCriticalTwoSidedUnitSignedWeightLp sigma u hsigma hu)
-        (infiniteMobiusCriticalTwoSidedUnitSignedWeightLp sigma v hsigma hv) ^ 2 =
+        (infiniteMobiusCriticalTwoSidedUnitSignedWeightLp sigma v hsigma hv) ^ (2 : ℕ) =
       squarefreeMobiusFiniteUnitHardyGramSq
         (sigma - 1) (1 + 2 * u) (1 + 2 * v) := by
   let sx := mobiusCriticalBoundaryParameter sigma (2 * u)
@@ -150,12 +150,12 @@ theorem inner_infiniteMobiusCriticalTwoSidedUnitSignedWeightLp_sq_eq_finiteUnitH
   have hNv := mobiusCriticalTwoSidedUnitNormalization_sq hsigma hv
   change (((mobiusCriticalTwoSidedUnitNormalization sigma u : ℂ) *
     (mobiusCriticalTwoSidedUnitNormalization sigma v : ℂ) *
-      ((squarefreeMobiusTotal sy : ℂ) / (squarefreeMobiusTotal sigma : ℂ))) ^ 2) = _
+      ((squarefreeMobiusTotal sy : ℂ) / (squarefreeMobiusTotal sigma : ℂ))) ^ (2 : ℕ)) = _
   simp only [mul_pow]
-  rw [show (mobiusCriticalTwoSidedUnitNormalization sigma u : ℂ) ^ 2 =
+  rw [show (mobiusCriticalTwoSidedUnitNormalization sigma u : ℂ) ^ (2 : ℕ) =
       (squarefreeMobiusTotal sigma : ℂ) / (squarefreeMobiusTotal sx : ℂ) by
         exact_mod_cast hNu,
-    show (mobiusCriticalTwoSidedUnitNormalization sigma v : ℂ) ^ 2 =
+    show (mobiusCriticalTwoSidedUnitNormalization sigma v : ℂ) ^ (2 : ℕ) =
       (squarefreeMobiusTotal sigma : ℂ) / (squarefreeMobiusTotal sz : ℂ) by
         exact_mod_cast hNv]
   rw [hsigZ, hsxZ, hszZ, hsyZ]
@@ -303,14 +303,14 @@ theorem deriv_squarefreeMobiusCriticalRegularCurrent_eq_pole_curvature_add_euler
   ring
 
 private def analyticMidpointDefect (f : ℂ → ℂ) (x z epsilon : ℂ) : ℂ :=
-  f (1 + ((x + z) / 2) * epsilon) ^ 2 -
+  f (1 + ((x + z) / 2) * epsilon) ^ (2 : ℕ) -
     f (1 + x * epsilon) * f (1 + z * epsilon)
 
 private theorem analyticMidpointDefect_iteratedDeriv_two
     {f : ℂ → ℂ} (hf : AnalyticAt ℂ f 1) (x z : ℂ) :
     iteratedDeriv 2 (analyticMidpointDefect f x z) 0 =
-      ((x - z) ^ 2 / 2) *
-        ((deriv f 1) ^ 2 - f 1 * deriv (deriv f) 1) := by
+      ((x - z) ^ (2 : ℕ) / 2) *
+        ((deriv f 1) ^ (2 : ℕ) - f 1 * deriv (deriv f) 1) := by
   let h : ℂ → ℂ → ℂ := fun a => f ∘ fun epsilon => 1 + a * epsilon
   have hcont (a : ℂ) : ContDiffAt ℂ 2 (h a) 0 := by
     have hf' : ContDiffAt ℂ 2 f (1 + a * (0 : ℂ)) := by
@@ -327,7 +327,7 @@ private theorem analyticMidpointDefect_iteratedDeriv_two
     change deriv (f ∘ fun epsilon : ℂ => 1 + a * epsilon) 0 = _
     exact (hf'.comp 0 haff).deriv
   have hsecond (a : ℂ) :
-      iteratedDeriv 2 (h a) 0 = iteratedDeriv 2 f 1 * a ^ 2 := by
+      iteratedDeriv 2 (h a) 0 = iteratedDeriv 2 f 1 * a ^ (2 : ℕ) := by
     have hf' : ContDiffAt ℂ 2 f (1 + a * (0 : ℂ)) := by
       simpa using (hf.contDiffAt : ContDiffAt ℂ 2 f 1)
     have hc := iteratedDeriv_comp_two (g := f)
@@ -386,8 +386,8 @@ private theorem analyticMidpointDefect_iteratedDeriv_two
 /-- Quotient differentiation converts the Laguerre numerator into regular-current curvature. -/
 theorem deriv_squarefreeMobiusCriticalRegularCurrent_mul_poleUnit_sq :
     deriv squarefreeMobiusCriticalRegularCurrent 1 *
-        squarefreeMobiusCriticalPoleUnit 1 ^ 2 =
-      deriv squarefreeMobiusCriticalPoleUnit 1 ^ 2 -
+        squarefreeMobiusCriticalPoleUnit 1 ^ (2 : ℕ) =
+      deriv squarefreeMobiusCriticalPoleUnit 1 ^ (2 : ℕ) -
         squarefreeMobiusCriticalPoleUnit 1 *
           deriv (deriv squarefreeMobiusCriticalPoleUnit) 1 := by
   have hquot :=
@@ -399,7 +399,7 @@ theorem deriv_squarefreeMobiusCriticalRegularCurrent_mul_poleUnit_sq :
           squarefreeMobiusCriticalPoleUnit 1 -
         (-deriv squarefreeMobiusCriticalPoleUnit 1) *
           deriv squarefreeMobiusCriticalPoleUnit 1) /
-        squarefreeMobiusCriticalPoleUnit 1 ^ 2 := by
+        squarefreeMobiusCriticalPoleUnit 1 ^ (2 : ℕ) := by
     unfold squarefreeMobiusCriticalRegularCurrent
     rw [show (fun s => -logDeriv squarefreeMobiusCriticalPoleUnit s) =
         fun z => -deriv squarefreeMobiusCriticalPoleUnit z /
@@ -456,7 +456,7 @@ theorem squarefreeMobiusPoleUnitMidpointDefect_iteratedDeriv_one (x z : ℂ) :
 the first surviving coefficient is the regular-current curvature times the transverse square. -/
 theorem squarefreeMobiusPoleUnitMidpointDefect_iteratedDeriv_two (x z : ℂ) :
     iteratedDeriv 2 (squarefreeMobiusPoleUnitMidpointDefect x z) 0 =
-      ((x - z) ^ 2 / 2) * squarefreeMobiusCriticalPoleUnit 1 ^ 2 *
+      ((x - z) ^ (2 : ℕ) / 2) * squarefreeMobiusCriticalPoleUnit 1 ^ (2 : ℕ) *
         deriv squarefreeMobiusCriticalRegularCurrent 1 := by
   have hgeneric := analyticMidpointDefect_iteratedDeriv_two
     squarefreeMobiusCriticalPoleUnit_analyticAt_one x z

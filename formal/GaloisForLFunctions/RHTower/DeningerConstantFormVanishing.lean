@@ -22,7 +22,7 @@ section ConstantVanishing
 
 variable {r : ℕ}
 
-/-- **A constant form that is the exterior derivative of a periodic `C^1` form vanishes.** -/
+/-- **A constant form that is the exterior derivative of a periodic `C^(1 : ℕ)` form vanishes.** -/
 theorem deningerConstantForm_eq_zero : ∀ (n : ℕ) (α : (Fin r → ℂ) [⋀^Fin (n + 1)]→L[ℂ] ℂ)
     (β : (Fin r → ℂ) → (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ), Differentiable ℂ β →
     Continuous (fderiv ℂ β) →

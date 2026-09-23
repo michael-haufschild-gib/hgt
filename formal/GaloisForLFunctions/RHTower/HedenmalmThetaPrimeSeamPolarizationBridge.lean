@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.HedenmalmThetaKakutaniHarmonicCoercivity
 
 The literal FE--Schwarz seam charge already carries the positive Route P current.  For horizontal
 centered grade `a = 2 Re(rho) - 1`, its squared norm is the local Hellinger/theta polarization
-multiplied by the forced positive source scale `(log p)^2 p^|a|`.
+multiplied by the forced positive source scale `(log p)^(2 : ℕ) p^|a|`.
 
 This is a coefficient-faithful source-to-theta transport, not a zero-set comparison.  It leaves
 one precise producer estimate: uniformly bound the normalized finite-prime seam energy on actual

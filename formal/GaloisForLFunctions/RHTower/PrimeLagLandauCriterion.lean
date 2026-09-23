@@ -255,7 +255,7 @@ theorem landauG_ray_lower_bound {θ η M : ℝ} (hθ : ∀ q : XiZeroCopy, (q.1 
     exact (continuousAt_const.mul hcomp.neg).continuousWithinAt
   obtain ⟨B₂, hB₂⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := 1 / 4)).exists_bound_of_continuousOn hMc
   -- the non-aliased near terms on the closed segment
-  have hN'c : ContinuousOn (fun t : ℝ => ∑ q ∈ N', landauTerm q (ρ₀ - 1 / 2 + t))
+  have hN'c : ContinuousOn (fun t : ℝ => ∑ q ∈ N', landauTerm_primeLagLandauContinuation q (ρ₀ - 1 / 2 + t))
       (Icc (0 : ℝ) (1 / 4)) := by
     apply continuousOn_finsetSum
     intro q hq t ht
@@ -296,20 +296,20 @@ theorem landauG_ray_lower_bound {θ η M : ℝ} (hθ : ∀ q : XiZeroCopy, (q.1 
   rw [landauG_eq, tsum_landauTerm_split hθ hθ34 hη le_rfl hs]
   rw [← Finset.sum_filter_add_sum_filter_not N (fun q => (q.1 : ℂ) = ρ₀)]
   -- the aliased part is the residue term
-  have hal : ∑ q ∈ N.filter (fun q => (q.1 : ℂ) = ρ₀), landauTerm q (ρ₀ - 1 / 2 + t)
+  have hal : ∑ q ∈ N.filter (fun q => (q.1 : ℂ) = ρ₀), landauTerm_primeLagLandauContinuation q (ρ₀ - 1 / 2 + t)
       = aliasedWeight q₀ * (-logDeriv riemannZeta (1 + t)) := by
     unfold aliasedWeight
     rw [Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro q hq
     rw [Finset.mem_filter] at hq
-    unfold landauTerm
+    unfold landauTerm_primeLagLandauContinuation
     rw [hq.2]
     congr 2
     ring
   rw [hal]
   -- the far part
-  have hfar : ‖∑' q : ↑(nearSet γ₀)ᶜ, landauTerm q (ρ₀ - 1 / 2 + t)‖ ≤ B₄ := by
+  have hfar : ‖∑' q : ↑(nearSet γ₀)ᶜ, landauTerm_primeLagLandauContinuation q (ρ₀ - 1 / 2 + t)‖ ≤ B₄ := by
     have hmaj := summable_far_majorant γ₀
     have hmaj0 : ∀ q : XiZeroCopy, 0 ≤ ‖lagWeight q‖
         * (5 * logDerivZetaConstant * Real.log (2 + |zeroOrdinate q - γ₀|)) := by
@@ -318,13 +318,13 @@ theorem landauG_ray_lower_bound {θ η M : ℝ} (hθ : ∀ q : XiZeroCopy, (q.1 
         Real.log_nonneg (by linarith [abs_nonneg (zeroOrdinate q - γ₀)])
       have : 0 ≤ logDerivZetaConstant := by unfold logDerivZetaConstant; positivity
       positivity
-    have hle : ∀ q : ↑(nearSet γ₀)ᶜ, ‖landauTerm q (ρ₀ - 1 / 2 + t)‖
+    have hle : ∀ q : ↑(nearSet γ₀)ᶜ, ‖landauTerm_primeLagLandauContinuation q (ρ₀ - 1 / 2 + t)‖
         ≤ ‖lagWeight q‖ * (5 * logDerivZetaConstant * Real.log (2 + |zeroOrdinate q - γ₀|)) :=
       fun q => norm_landauTerm_le_far hθ hθ34 hη le_rfl hs (five_le_of_mem_compl_nearSet q.2)
-    have hsn : Summable fun q : ↑(nearSet γ₀)ᶜ => ‖landauTerm q (ρ₀ - 1 / 2 + t)‖ :=
+    have hsn : Summable fun q : ↑(nearSet γ₀)ᶜ => ‖landauTerm_primeLagLandauContinuation q (ρ₀ - 1 / 2 + t)‖ :=
       Summable.of_nonneg_of_le (fun q => norm_nonneg _) hle (hmaj.subtype _)
-    calc ‖∑' q : ↑(nearSet γ₀)ᶜ, landauTerm q (ρ₀ - 1 / 2 + t)‖
-        ≤ ∑' q : ↑(nearSet γ₀)ᶜ, ‖landauTerm q (ρ₀ - 1 / 2 + t)‖ := norm_tsum_le_tsum_norm hsn
+    calc ‖∑' q : ↑(nearSet γ₀)ᶜ, landauTerm_primeLagLandauContinuation q (ρ₀ - 1 / 2 + t)‖
+        ≤ ∑' q : ↑(nearSet γ₀)ᶜ, ‖landauTerm_primeLagLandauContinuation q (ρ₀ - 1 / 2 + t)‖ := norm_tsum_le_tsum_norm hsn
       _ ≤ ∑' q : ↑(nearSet γ₀)ᶜ, ‖lagWeight q‖
             * (5 * logDerivZetaConstant * Real.log (2 + |zeroOrdinate q - γ₀|)) :=
           hsn.tsum_le_tsum hle (hmaj.subtype _)
@@ -350,8 +350,8 @@ theorem landauG_ray_lower_bound {θ η M : ℝ} (hθ : ∀ q : XiZeroCopy, (q.1 
   -- assemble
   set A := (M : ℂ) * (-logDeriv riemannZeta (1 + (ρ₀ - 1 / 2 + t))) with hA
   set Al := aliasedWeight q₀ * (-logDeriv riemannZeta (1 + t)) with hAl
-  set Nt := ∑ q ∈ N.filter (fun q => ¬ (q.1 : ℂ) = ρ₀), landauTerm q (ρ₀ - 1 / 2 + t) with hNt
-  set Fa := ∑' q : ↑(nearSet γ₀)ᶜ, landauTerm q (ρ₀ - 1 / 2 + t) with hFa
+  set Nt := ∑ q ∈ N.filter (fun q => ¬ (q.1 : ℂ) = ρ₀), landauTerm_primeLagLandauContinuation q (ρ₀ - 1 / 2 + t) with hNt
+  set Fa := ∑' q : ↑(nearSet γ₀)ᶜ, landauTerm_primeLagLandauContinuation q (ρ₀ - 1 / 2 + t) with hFa
   have hNt' : ‖Nt‖ ≤ B₃ := hN't
   have key : ‖Al‖ ≤ ‖A‖ + ‖A - (Al + Nt + Fa)‖ + ‖Nt‖ + ‖Fa‖ := by
     have e : Al = A - (A - (Al + Nt + Fa)) - Nt - Fa := by ring
@@ -416,14 +416,14 @@ theorem riemannHypothesis_of_primePowerLag_le {M : ℝ}
   set ρ₁ : ℂ := (q₁.1 : ℂ) with hρ₁
   set K : Set ℂ := Set.Icc ρ₁.re 1 ×ℂ Set.Icc ρ₁.im ρ₁.im with hK
   have hKc : IsCompact K := isCompact_Icc.reProdIm isCompact_Icc
-  have hfin : (xiZeroSet ∩ K).Finite := finite_xiZeroSet_inter hKc
-  have hmem₁ : ρ₁ ∈ xiZeroSet ∩ K := by
+  have hfin : (xiZeroSet_weilLagFunctionCriterion ∩ K).Finite := finite_xiZeroSet_inter hKc
+  have hmem₁ : ρ₁ ∈ xiZeroSet_weilLagFunctionCriterion ∩ K := by
     refine ⟨xi_xiZeroCopy_eq_zero q₁, ?_⟩
     rw [hK, Complex.mem_reProdIm]
     exact ⟨⟨le_rfl, (xiZeroCopy_re_lt_one q₁).le⟩, ⟨le_rfl, le_rfl⟩⟩
   obtain ⟨ρ₀, hρ₀⟩ := hfin.exists_maximalFor Complex.re _ ⟨ρ₁, hmem₁⟩
-  have hρ₀mem : ρ₀ ∈ xiZeroSet ∩ K := hρ₀.1
-  have hmax : ∀ z ∈ xiZeroSet ∩ K, ρ₀.re ≤ z.re → z.re ≤ ρ₀.re := fun z hz h => hρ₀.2 hz h
+  have hρ₀mem : ρ₀ ∈ xiZeroSet_weilLagFunctionCriterion ∩ K := hρ₀.1
+  have hmax : ∀ z ∈ xiZeroSet_weilLagFunctionCriterion ∩ K, ρ₀.re ≤ z.re → z.re ≤ ρ₀.re := fun z hz h => hρ₀.2 hz h
   obtain ⟨q₀, hq₀⟩ := exists_xiZeroCopy_of_xi_eq_zero hρ₀mem.1
   have hρ₀K := hρ₀mem.2
   rw [hK, Complex.mem_reProdIm] at hρ₀K
@@ -436,7 +436,7 @@ theorem riemannHypothesis_of_primePowerLag_le {M : ℝ}
     rw [hq₀]
     by_contra hlt
     push Not at hlt
-    have hmemK : (q.1 : ℂ) ∈ xiZeroSet ∩ K := by
+    have hmemK : (q.1 : ℂ) ∈ xiZeroSet_weilLagFunctionCriterion ∩ K := by
       refine ⟨xi_xiZeroCopy_eq_zero q, ?_⟩
       rw [hK, Complex.mem_reProdIm]
       refine ⟨⟨by linarith [hρ₀K.1.1], (xiZeroCopy_re_lt_one q).le⟩, ?_⟩

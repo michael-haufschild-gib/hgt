@@ -45,7 +45,7 @@ def energyMatchedEigenframeAmplitude [Fintype ι]
             pauliEigenframeSign (label output) b *
               pauliEigenframeExpectation U (label input) (label output) b) /
           (Fintype.card (σ → Bool) : ℝ))) /
-    (finiteCoefficientL1Mass h) ^ 2
+    (finiteCoefficientL1Mass h) ^ (2 : ℕ)
 
 /-- Signed eigenframe extraction turns the physical randomized mean into the coefficient quadratic
 form of the exact Pauli-transfer compression. -/
@@ -55,7 +55,7 @@ theorem energyMatchedEigenframeAmplitude_eq_transfer [Fintype ι]
     energyMatchedEigenframeAmplitude label h U =
       (∑ output : ι, ∑ input : ι,
         h output * h input * dictionaryPauliTransfer label U output input) /
-        (finiteCoefficientL1Mass h) ^ 2 := by
+        (finiteCoefficientL1Mass h) ^ (2 : ℕ) := by
   unfold energyMatchedEigenframeAmplitude dictionaryPauliTransfer
   simp_rw [average_pauliEigenframeExpectation_eq_transfer]
 
@@ -66,7 +66,7 @@ theorem energyMatchedEigenframeAmplitude_eq_of_fixed [Fintype ι]
     (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ)
     (hfix : dictionaryPauliTransfer label U *ᵥ h = h) :
     energyMatchedEigenframeAmplitude label h U =
-      (∑ i, (h i) ^ 2) / (finiteCoefficientL1Mass h) ^ 2 := by
+      (∑ i, (h i) ^ (2 : ℕ)) / (finiteCoefficientL1Mass h) ^ (2 : ℕ) := by
   rw [energyMatchedEigenframeAmplitude_eq_transfer]
   congr 1
   calc
@@ -81,7 +81,7 @@ theorem energyMatchedEigenframeAmplitude_eq_of_fixed [Fintype ι]
             intro input _hinput
             ring
     _ = ∑ output : ι, h output * h output := by rw [hfix]
-    _ = ∑ output : ι, (h output) ^ 2 := by
+    _ = ∑ output : ι, (h output) ^ (2 : ℕ) := by
       apply Finset.sum_congr rfl
       intro output _houtput
       ring
@@ -91,13 +91,13 @@ support cardinality.  Equality is attained by equal-magnitude coefficients. -/
 theorem one_div_card_le_coefficientL2Sq_div_l1Sq
     [Fintype ι] [Nonempty ι] (h : ι → ℝ) (hh : h ≠ 0) :
     1 / (Fintype.card ι : ℝ) ≤
-      (∑ i, (h i) ^ 2) / (finiteCoefficientL1Mass h) ^ 2 := by
+      (∑ i, (h i) ^ (2 : ℕ)) / (finiteCoefficientL1Mass h) ^ (2 : ℕ) := by
   have hl1pos : 0 < finiteCoefficientL1Mass h := finiteCoefficientL1Mass_pos h hh
   have hcard : 0 < (Fintype.card ι : ℝ) := by positivity
   have hCS := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ
     (fun _ : ι => (1 : ℝ)) (fun j => |h j|)
-  have hCS' : (finiteCoefficientL1Mass h) ^ 2 ≤
-      (Fintype.card ι : ℝ) * ∑ j, (h j) ^ 2 := by
+  have hCS' : (finiteCoefficientL1Mass h) ^ (2 : ℕ) ≤
+      (Fintype.card ι : ℝ) * ∑ j, (h j) ^ (2 : ℕ) := by
     simpa [finiteCoefficientL1Mass, sq_abs] using hCS
   apply (div_le_div_iff₀ hcard (sq_pos_of_pos hl1pos)).2
   simpa [mul_comm] using hCS'
@@ -124,8 +124,8 @@ theorem autonomous_energyMatchedEigenframeAmplitude_eq
         (exp (t • ((-Complex.I) •
           (H : Matrix (FiniteQubitConfiguration σ)
             (FiniteQubitConfiguration σ) ℂ)))) =
-      (∑ P, (pauliDictionaryEnergyCoordinates p H P) ^ 2) /
-        (finiteCoefficientL1Mass (pauliDictionaryEnergyCoordinates p H)) ^ 2 := by
+      (∑ P, (pauliDictionaryEnergyCoordinates p H P) ^ (2 : ℕ)) /
+        (finiteCoefficientL1Mass (pauliDictionaryEnergyCoordinates p H)) ^ (2 : ℕ) := by
   apply energyMatchedEigenframeAmplitude_eq_of_fixed
   exact autonomousDictionaryPauliTransfer_fixes_energy p H hsupport t
 
@@ -438,7 +438,7 @@ theorem energyMatchedEigenframeAmplitude_eq_energyAutocorrelation
     (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) :
     energyMatchedEigenframeAmplitude label h U =
       matrixEnergyAdjointAutocorrelation (pauliDictionaryHamiltonian label h) U /
-        (((2 : ℝ) ^ Fintype.card σ) * (finiteCoefficientL1Mass h) ^ 2) := by
+        (((2 : ℝ) ^ Fintype.card σ) * (finiteCoefficientL1Mass h) ^ (2 : ℕ)) := by
   rw [energyMatchedEigenframeAmplitude_eq_transfer]
   have henergy := pauliDictionaryHamiltonian_energy_transfer label h U
   unfold matrixEnergyAdjointAutocorrelation
@@ -460,7 +460,7 @@ theorem energyMatchedEigenframeAmplitude_eq_energyAutocorrelation_of_support
       matrixEnergyAdjointAutocorrelation
           (H : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) U /
         (((2 : ℝ) ^ Fintype.card σ) *
-          (finiteCoefficientL1Mass (pauliDictionaryEnergyCoordinates p H)) ^ 2) := by
+          (finiteCoefficientL1Mass (pauliDictionaryEnergyCoordinates p H)) ^ (2 : ℕ)) := by
   rw [energyMatchedEigenframeAmplitude_eq_energyAutocorrelation]
   rw [pauliDictionaryHamiltonian_energyCoordinates_eq p H hsupport]
 
@@ -483,7 +483,7 @@ theorem matrixEnergyAdjointAutocorrelation_eq_sum_sq_eigenvalues_of_fixed
     (H U : Matrix κ κ ℂ) (hH : H.IsHermitian)
     (hfix : star U * H * U = H) :
     matrixEnergyAdjointAutocorrelation H U =
-      ∑ i, (hH.eigenvalues i) ^ 2 := by
+      ∑ i, (hH.eigenvalues i) ^ (2 : ℕ) := by
   calc
     matrixEnergyAdjointAutocorrelation H U = (Matrix.trace (H * H)).re :=
       matrixEnergyAdjointAutocorrelation_eq_trace_mul_self_of_fixed H U hfix
@@ -517,7 +517,7 @@ theorem autonomous_energyMatchedEigenframeAmplitude_eq_trace_normalized
           (H : Matrix (FiniteQubitConfiguration σ)
             (FiniteQubitConfiguration σ) ℂ))).re /
         (((2 : ℝ) ^ Fintype.card σ) *
-          (finiteCoefficientL1Mass (pauliDictionaryEnergyCoordinates p H)) ^ 2) := by
+          (finiteCoefficientL1Mass (pauliDictionaryEnergyCoordinates p H)) ^ (2 : ℕ)) := by
   rw [energyMatchedEigenframeAmplitude_eq_energyAutocorrelation_of_support
     p H hsupport]
   rw [autonomous_matrixEnergyAdjointAutocorrelation_eq H t]
@@ -527,7 +527,7 @@ theorem finiteUnitaryAdjointAutocorrelationIntegrand_eq_energy_sq
     {κ : Type*} [Fintype κ] [DecidableEq κ]
     (H : Matrix κ κ ℂ) (U : Matrix.unitaryGroup κ ℂ) :
     finiteUnitaryAdjointAutocorrelationIntegrand H U =
-      matrixEnergyAdjointAutocorrelation H (U : Matrix κ κ ℂ) ^ 2 := by
+      matrixEnergyAdjointAutocorrelation H (U : Matrix κ κ ℂ) ^ (2 : ℕ) := by
   rfl
 
 /-- **Permanent autonomous-source versus Haar separation on qubits.** Every nonzero traceless
@@ -558,14 +558,14 @@ theorem autonomous_full_energy_and_haar_half_energy_separation
               ((H : Matrix (FiniteQubitConfiguration (Fin n))
                   (FiniteQubitConfiguration (Fin n)) ℂ) *
                 (H : Matrix (FiniteQubitConfiguration (Fin n))
-                  (FiniteQubitConfiguration (Fin n)) ℂ))).re / 2) ^ 2 ≤
+                  (FiniteQubitConfiguration (Fin n)) ℂ))).re / 2) ^ (2 : ℕ) ≤
             finiteUnitaryAdjointAutocorrelationIntegrand
               (H : Matrix (FiniteQubitConfiguration (Fin n))
                 (FiniteQubitConfiguration (Fin n)) ℂ) U} ≤
-        4 / ((((2 ^ n : ℕ) : ℝ) ^ 2) - 1) := by
+        4 / ((((2 ^ n : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
   have hpow : 2 ≤ 2 ^ n := by
     calc
-      2 = 2 ^ 1 := by norm_num
+      2 = 2 ^ (1 : ℕ) := by norm_num
       _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hn
   have hcard :
       Fintype.card (FiniteQubitConfiguration (Fin n)) =
@@ -617,19 +617,19 @@ theorem haar_measureReal_half_autonomous_energyMatchedAmplitude_le
                   (FiniteQubitConfiguration (Fin n)) ℂ))).re /
               (((2 ^ n : ℕ) : ℝ) *
                 (finiteCoefficientL1Mass
-                  (pauliDictionaryEnergyCoordinates p H)) ^ 2)) / 2) ^ 2 ≤
+                  (pauliDictionaryEnergyCoordinates p H)) ^ (2 : ℕ))) / 2) ^ (2 : ℕ) ≤
           (energyMatchedEigenframeAmplitude (fun P : {P // p P} => P.1)
             (pauliDictionaryEnergyCoordinates p H)
             (U : Matrix (FiniteQubitConfiguration (Fin n))
-              (FiniteQubitConfiguration (Fin n)) ℂ)) ^ 2} ≤
-      4 / ((((2 ^ n : ℕ) : ℝ) ^ 2) - 1) := by
+              (FiniteQubitConfiguration (Fin n)) ℂ)) ^ (2 : ℕ)} ≤
+      4 / ((((2 ^ n : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
   let h := pauliDictionaryEnergyCoordinates p H
   let S : ℝ := (Matrix.trace
     ((H : Matrix (FiniteQubitConfiguration (Fin n))
         (FiniteQubitConfiguration (Fin n)) ℂ) *
       (H : Matrix (FiniteQubitConfiguration (Fin n))
         (FiniteQubitConfiguration (Fin n)) ℂ))).re
-  let c : ℝ := ((2 ^ n : ℕ) : ℝ) * (finiteCoefficientL1Mass h) ^ 2
+  let c : ℝ := ((2 ^ n : ℕ) : ℝ) * (finiteCoefficientL1Mass h) ^ (2 : ℕ)
   have hh : h ≠ 0 := pauliDictionaryEnergyCoordinates_ne_zero p H hzero hsupport
   have hL : 0 < finiteCoefficientL1Mass h := finiteCoefficientL1Mass_pos h hh
   have hD : 0 < ((2 ^ n : ℕ) : ℝ) := by positivity
@@ -638,11 +638,11 @@ theorem haar_measureReal_half_autonomous_energyMatchedAmplitude_le
     hn H htrace hzero 0).2
   have hset :
       {U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ |
-        ((S / c) / 2) ^ 2 ≤
+        ((S / c) / 2) ^ (2 : ℕ) ≤
           (energyMatchedEigenframeAmplitude (fun P : {P // p P} => P.1) h
             (U : Matrix (FiniteQubitConfiguration (Fin n))
-              (FiniteQubitConfiguration (Fin n)) ℂ)) ^ 2} =
-      {U | (S / 2) ^ 2 ≤
+              (FiniteQubitConfiguration (Fin n)) ℂ)) ^ (2 : ℕ)} =
+      {U | (S / 2) ^ (2 : ℕ) ≤
         finiteUnitaryAdjointAutocorrelationIntegrand
           (H : Matrix (FiniteQubitConfiguration (Fin n))
             (FiniteQubitConfiguration (Fin n)) ℂ) U} := by
@@ -654,14 +654,14 @@ theorem haar_measureReal_half_autonomous_energyMatchedAmplitude_le
     simp only [Fintype.card_fin]
     have hdimreal : (2 : ℝ) ^ n = ((2 ^ n : ℕ) : ℝ) := by norm_cast
     rw [hdimreal]
-    change ((S / c) / 2) ^ 2 ≤
+    change ((S / c) / 2) ^ (2 : ℕ) ≤
         (matrixEnergyAdjointAutocorrelation
           (H : Matrix (FiniteQubitConfiguration (Fin n))
-            (FiniteQubitConfiguration (Fin n)) ℂ) U / c) ^ 2 ↔
-      (S / 2) ^ 2 ≤
+            (FiniteQubitConfiguration (Fin n)) ℂ) U / c) ^ (2 : ℕ) ↔
+      (S / 2) ^ (2 : ℕ) ≤
         matrixEnergyAdjointAutocorrelation
           (H : Matrix (FiniteQubitConfiguration (Fin n))
-            (FiniteQubitConfiguration (Fin n)) ℂ) U ^ 2
+            (FiniteQubitConfiguration (Fin n)) ℂ) U ^ (2 : ℕ)
     rw [show S / c / 2 = (S / 2) / c by ring,
       div_pow (S / 2) c 2,
       div_pow (matrixEnergyAdjointAutocorrelation
@@ -669,10 +669,10 @@ theorem haar_measureReal_half_autonomous_energyMatchedAmplitude_le
           (FiniteQubitConfiguration (Fin n)) ℂ) U) c 2]
     exact div_le_div_iff_of_pos_right (sq_pos_of_pos hc)
   change (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
-      {U | ((S / c) / 2) ^ 2 ≤
+      {U | ((S / c) / 2) ^ (2 : ℕ) ≤
         (energyMatchedEigenframeAmplitude (fun P : {P // p P} => P.1) h
           (U : Matrix (FiniteQubitConfiguration (Fin n))
-            (FiniteQubitConfiguration (Fin n)) ℂ)) ^ 2} ≤ _
+            (FiniteQubitConfiguration (Fin n)) ℂ)) ^ (2 : ℕ)} ≤ _
   rw [hset]
   exact htail
 
@@ -700,11 +700,11 @@ theorem autonomous_dictionary_energyMatched_and_haar_separation
               ((H : Matrix (FiniteQubitConfiguration (Fin n))
                   (FiniteQubitConfiguration (Fin n)) ℂ) *
                 (H : Matrix (FiniteQubitConfiguration (Fin n))
-                  (FiniteQubitConfiguration (Fin n)) ℂ))).re / 2) ^ 2 ≤
+                  (FiniteQubitConfiguration (Fin n)) ℂ))).re / 2) ^ (2 : ℕ) ≤
             finiteUnitaryAdjointAutocorrelationIntegrand
               (H : Matrix (FiniteQubitConfiguration (Fin n))
                 (FiniteQubitConfiguration (Fin n)) ℂ) U} ≤
-        4 / ((((2 ^ n : ℕ) : ℝ) ^ 2) - 1) := by
+        4 / ((((2 ^ n : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
   constructor
   · exact autonomous_energyMatchedEigenframeAmplitude_ge p H hzero hsupport t
   · exact (autonomous_full_energy_and_haar_half_energy_separation

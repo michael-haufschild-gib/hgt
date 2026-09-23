@@ -47,12 +47,12 @@ theorem one_div_four_mul_le_primeActivationOccupancyFisherDensity (p : Nat.Prime
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   nlinarith
 
-theorem log_prime_pos (p : Nat.Primes) : 0 < Real.log ((p : ℕ) : ℝ) :=
+theorem log_prime_pos_routeRReciprocalLogFisherEntranceWall (p : Nat.Primes) : 0 < Real.log ((p : ℕ) : ℝ) :=
   Real.log_pos (by exact_mod_cast p.2.one_lt)
 
 theorem routeRFisherLogPotential_nonneg (p : Nat.Primes) :
     0 ≤ routeRFisherLogPotential p :=
-  div_nonneg (Real.sqrt_nonneg _) (log_prime_pos p).le
+  div_nonneg (Real.sqrt_nonneg _) (log_prime_pos_routeRReciprocalLogFisherEntranceWall p).le
 
 /-- The squared potential is the Fisher density damped by the squared prime logarithm. -/
 theorem routeRFisherLogPotential_sq (p : Nat.Primes) :
@@ -72,10 +72,10 @@ theorem summable_fisher_fractional_logDomain {α : ℝ} (hα : α < 1) :
   have hs : 0 < 2 - 2 * α := by linarith
   refine Summable.of_nonneg_of_le (fun p => ?_) (fun p => ?_)
     (Sieve.summable_primes_one_div_mul_log_rpow hs)
-  · have hlog := Real.rpow_pos_of_pos (log_prime_pos p) (2 - 2 * α)
+  · have hlog := Real.rpow_pos_of_pos (log_prime_pos_routeRReciprocalLogFisherEntranceWall p) (2 - 2 * α)
     have hF := (primeActivationOccupancyFisherDensity_pos p).le
     positivity
-  · have hlog := Real.rpow_pos_of_pos (log_prime_pos p) (2 - 2 * α)
+  · have hlog := Real.rpow_pos_of_pos (log_prime_pos_routeRReciprocalLogFisherEntranceWall p) (2 - 2 * α)
     have hp : (0 : ℝ) < ((p : ℕ) : ℝ) := by exact_mod_cast p.2.pos
     rw [show 1 / (((p : ℕ) : ℝ) * Real.log ((p : ℕ) : ℝ) ^ (2 - 2 * α)) =
         (1 / ((p : ℕ) : ℝ)) / Real.log ((p : ℕ) : ℝ) ^ (2 - 2 * α) by field_simp]
@@ -204,7 +204,7 @@ theorem summable_physical_transport_sq_iff (t : ℝ) :
       have hrle : ((p : ℕ) : ℝ) ^ t ≤ 1 :=
         Real.rpow_le_one_of_one_le_of_nonpos hp1 ht
       have hFpos := primeActivationOccupancyFisherDensity_pos p
-      have hlogpos := log_prime_pos p
+      have hlogpos := log_prime_pos_routeRReciprocalLogFisherEntranceWall p
       have hquot : (0 : ℝ) ≤ primeActivationOccupancyFisherDensity p /
           Real.log ((p : ℕ) : ℝ) ^ 2 := by positivity
       calc ((p : ℕ) : ℝ) ^ t *

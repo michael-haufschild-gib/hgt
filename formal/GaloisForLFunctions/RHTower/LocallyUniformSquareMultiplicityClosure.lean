@@ -35,7 +35,7 @@ theorem exists_even_zeroSumBall_of_tendstoLocallyUniformly_squares
     {α : Type*} {p : Filter α} [NeBot p]
     {G F : α → ℂ → ℂ} {f : ℂ → ℂ}
     (hG : ∀ a, Differentiable ℂ (G a))
-    (hF : ∀ a, F a = fun z => G a z ^ 2)
+    (hF : ∀ a, F a = fun z => G a z ^ (2 : ℕ))
     (hf : Differentiable ℂ f)
     (huniform : TendstoLocallyUniformly F f p)
     {c : ℂ} {r R : ℝ} (hr : 0 < r) (hrR : r < R)
@@ -59,7 +59,7 @@ theorem exists_even_zeroSumBall_of_tendstoLocallyUniformly_squares
     intro z hz hzero
     apply ha z hz
     rw [hF a]
-    change G a z ^ 2 = 0
+    change G a z ^ (2 : ℕ) = 0
     rw [hzero]
     norm_num
   obtain ⟨a, hstablea, hGboundarya⟩ := (hstable.and hGboundary).exists
@@ -76,7 +76,7 @@ theorem even_analyticOrderAt_of_tendstoLocallyUniformly_squares
     {α : Type*} {p : Filter α} [NeBot p]
     {G F : α → ℂ → ℂ} {f : ℂ → ℂ}
     (hG : ∀ a, Differentiable ℂ (G a))
-    (hF : ∀ a, F a = fun z => G a z ^ 2)
+    (hF : ∀ a, F a = fun z => G a z ^ (2 : ℕ))
     (hf : Differentiable ℂ f)
     (huniform : TendstoLocallyUniformly F f p)
     {c : ℂ} {d : ℕ} (hord : analyticOrderAt f c = (d : ℕ∞))
@@ -153,7 +153,7 @@ theorem exists_even_zeroSumBall_of_tendstoLocallyUniformlyOn_squares
     {U : Set ℂ} (hU : IsOpen U)
     {G F : α → ℂ → ℂ} {f : ℂ → ℂ}
     (hG : ∀ a, DifferentiableOn ℂ (G a) U)
-    (hF : ∀ a, F a = fun z => G a z ^ 2)
+    (hF : ∀ a, F a = fun z => G a z ^ (2 : ℕ))
     (hf : DifferentiableOn ℂ f U)
     (huniform : TendstoLocallyUniformlyOn F f p U)
     {c : ℂ} {r R : ℝ} (hr : 0 < r) (hrR : r < R)
@@ -180,7 +180,7 @@ theorem exists_even_zeroSumBall_of_tendstoLocallyUniformlyOn_squares
     intro z hz hzero
     apply ha z hz
     rw [hF a]
-    change G a z ^ 2 = 0
+    change G a z ^ (2 : ℕ) = 0
     rw [hzero]
     norm_num
   obtain ⟨a, hstablea, hGboundarya⟩ := (hstable.and hGboundary).exists
@@ -257,7 +257,7 @@ theorem even_analyticOrderAt_of_tendstoLocallyUniformlyOn_squares
     {U : Set ℂ} (hU : IsOpen U)
     {G F : α → ℂ → ℂ} {f : ℂ → ℂ}
     (hG : ∀ a, AnalyticOnNhd ℂ (G a) U)
-    (hF : ∀ a, F a = fun z => G a z ^ 2)
+    (hF : ∀ a, F a = fun z => G a z ^ (2 : ℕ))
     (hf : AnalyticOnNhd ℂ f U)
     (huniform : TendstoLocallyUniformlyOn F f p U)
     {c : ℂ} (hcU : c ∈ U) {d : ℕ}
@@ -292,7 +292,7 @@ theorem even_analyticOrderAt_of_tendstoLocallyUniformlyOn_squares_of_order
     {U : Set ℂ} (hU : IsOpen U)
     {G F : α → ℂ → ℂ} {f : ℂ → ℂ}
     (hG : ∀ a, AnalyticOnNhd ℂ (G a) U)
-    (hF : ∀ a, F a = fun z => G a z ^ 2)
+    (hF : ∀ a, F a = fun z => G a z ^ (2 : ℕ))
     (hf : AnalyticOnNhd ℂ f U)
     (huniform : TendstoLocallyUniformlyOn F f p U)
     {c : ℂ} (hcU : c ∈ U) {d : ℕ}

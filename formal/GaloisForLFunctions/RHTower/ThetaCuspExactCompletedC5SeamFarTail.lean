@@ -15,7 +15,7 @@ The first Born--Witten atom has normalized logarithmic jets tending to
 `4, 8, 16, 32, 64, 128`. Substitution into the exact completed C5 orientation cancels every
 cubic contribution after fourth-scale normalization and leaves
 
-`-18 * 4^3 * 32 + 36 * 4^2 * 16 * 8 = 36864`.
+`-18 * 4^(3 : ℕ) * 32 + 36 * 4^(2 : ℕ) * 16 * 8 = 36864`.
 
 Thus the literal physical C5 orientation is strictly positive on a cofinal source tail. This
 removes the entire noncompact part of the C5 orbit-first-contact burden: only a compact physical
@@ -145,7 +145,7 @@ theorem thetaCuspC5FarTail_scale_eq_coordinate_add (x : ℝ) :
       thetaCuspLikelihoodCoordinate x + 3 / 2 := by
   unfold thetaCuspSingleAtomReflectionScale thetaCuspLikelihoodCoordinate
   norm_num
-  rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+  rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring_nf]
@@ -479,7 +479,7 @@ theorem thetaCuspC5FarTail_morseScale_one_eq_reflectionScale (x : ℝ) :
     thetaCuspMorseScale 1 x = thetaCuspSingleAtomReflectionScale 1 x := by
   unfold thetaCuspMorseScale thetaCuspSingleAtomReflectionScale
   norm_num
-  rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+  rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring_nf]
@@ -508,7 +508,7 @@ theorem thetaCuspC5FarTail_bornWittenLogCurvature_div_scale_tendsto_four :
     tendsto_const_nhds
   have h := hc.add (h2.const_mul 6)
   have h0 : Tendsto (fun x : ℝ =>
-      4 + 6 * (1 / thetaCuspLikelihoodCoordinate x ^ 2))
+      4 + 6 * (1 / thetaCuspLikelihoodCoordinate x ^ (2 : ℕ)))
       atTop (nhds 4) := by simpa using h
   refine h0.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
@@ -531,8 +531,8 @@ theorem thetaCuspC5FarTail_bornWittenLogThirdDerivative_div_scale_tendsto_eight 
     tendsto_const_nhds
   have h := (hc.sub (h2.const_mul 12)).sub (h3.const_mul 36)
   have h0 : Tendsto (fun x : ℝ =>
-      8 - 12 * (1 / thetaCuspLikelihoodCoordinate x ^ 2) -
-        36 * (1 / thetaCuspLikelihoodCoordinate x ^ 3))
+      8 - 12 * (1 / thetaCuspLikelihoodCoordinate x ^ (2 : ℕ)) -
+        36 * (1 / thetaCuspLikelihoodCoordinate x ^ (3 : ℕ)))
       atTop (nhds 8) := by simpa using h
   refine h0.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
@@ -557,9 +557,9 @@ theorem thetaCuspC5FarTail_bornWittenLogFourthDerivative_div_scale_tendsto_sixte
   have h := ((hc.add (h2.const_mul 24)).add
     (h3.const_mul 216)).add (h4.const_mul 324)
   have h0 : Tendsto (fun x : ℝ =>
-      16 + 24 * (1 / thetaCuspLikelihoodCoordinate x ^ 2) +
-        216 * (1 / thetaCuspLikelihoodCoordinate x ^ 3) +
-        324 * (1 / thetaCuspLikelihoodCoordinate x ^ 4))
+      16 + 24 * (1 / thetaCuspLikelihoodCoordinate x ^ (2 : ℕ)) +
+        216 * (1 / thetaCuspLikelihoodCoordinate x ^ (3 : ℕ)) +
+        324 * (1 / thetaCuspLikelihoodCoordinate x ^ (4 : ℕ)))
       atTop (nhds 16) := by simpa using h
   refine h0.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
@@ -586,10 +586,10 @@ theorem thetaCuspC5FarTail_bornWittenLogFifthDerivative_div_scale_tendsto_thirty
     (h3.const_mul 1008)).sub (h4.const_mul 3888)).sub
     (h5.const_mul 3888))
   have h0 : Tendsto (fun x : ℝ =>
-      32 - 48 * (1 / thetaCuspLikelihoodCoordinate x ^ 2) -
-        1008 * (1 / thetaCuspLikelihoodCoordinate x ^ 3) -
-        3888 * (1 / thetaCuspLikelihoodCoordinate x ^ 4) -
-        3888 * (1 / thetaCuspLikelihoodCoordinate x ^ 5))
+      32 - 48 * (1 / thetaCuspLikelihoodCoordinate x ^ (2 : ℕ)) -
+        1008 * (1 / thetaCuspLikelihoodCoordinate x ^ (3 : ℕ)) -
+        3888 * (1 / thetaCuspLikelihoodCoordinate x ^ (4 : ℕ)) -
+        3888 * (1 / thetaCuspLikelihoodCoordinate x ^ (5 : ℕ)))
       atTop (nhds 32) := by simpa using h
   refine h0.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
@@ -617,11 +617,11 @@ theorem thetaCuspC5FarTail_bornWittenLogSixthDerivative_div_scale_tendsto_sixtyf
     (h3.const_mul 4320)).add (h4.const_mul 32400)).add
     (h5.const_mul 77760)).add (h6.const_mul 58320))
   have h0 : Tendsto (fun x : ℝ =>
-      64 + 96 * (1 / thetaCuspLikelihoodCoordinate x ^ 2) +
-        4320 * (1 / thetaCuspLikelihoodCoordinate x ^ 3) +
-        32400 * (1 / thetaCuspLikelihoodCoordinate x ^ 4) +
-        77760 * (1 / thetaCuspLikelihoodCoordinate x ^ 5) +
-        58320 * (1 / thetaCuspLikelihoodCoordinate x ^ 6))
+      64 + 96 * (1 / thetaCuspLikelihoodCoordinate x ^ (2 : ℕ)) +
+        4320 * (1 / thetaCuspLikelihoodCoordinate x ^ (3 : ℕ)) +
+        32400 * (1 / thetaCuspLikelihoodCoordinate x ^ (4 : ℕ)) +
+        77760 * (1 / thetaCuspLikelihoodCoordinate x ^ (5 : ℕ)) +
+        58320 * (1 / thetaCuspLikelihoodCoordinate x ^ (6 : ℕ)))
       atTop (nhds 64) := by simpa using h
   refine h0.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
@@ -653,12 +653,12 @@ theorem thetaCuspC5FarTail_bornWittenLogSeventhDerivative_div_scale_tendsto_oneT
   have h5' := h4'.sub (h6.const_mul 1749600)
   have h := h5'.sub (h7.const_mul 1049760)
   have h0 : Tendsto (fun x : ℝ =>
-      128 - 192 * (1 / thetaCuspLikelihoodCoordinate x ^ 2) -
-        17856 * (1 / thetaCuspLikelihoodCoordinate x ^ 3) -
-        233280 * (1 / thetaCuspLikelihoodCoordinate x ^ 4) -
-        1010880 * (1 / thetaCuspLikelihoodCoordinate x ^ 5) -
-        1749600 * (1 / thetaCuspLikelihoodCoordinate x ^ 6) -
-        1049760 * (1 / thetaCuspLikelihoodCoordinate x ^ 7))
+      128 - 192 * (1 / thetaCuspLikelihoodCoordinate x ^ (2 : ℕ)) -
+        17856 * (1 / thetaCuspLikelihoodCoordinate x ^ (3 : ℕ)) -
+        233280 * (1 / thetaCuspLikelihoodCoordinate x ^ (4 : ℕ)) -
+        1010880 * (1 / thetaCuspLikelihoodCoordinate x ^ (5 : ℕ)) -
+        1749600 * (1 / thetaCuspLikelihoodCoordinate x ^ (6 : ℕ)) -
+        1049760 * (1 / thetaCuspLikelihoodCoordinate x ^ (7 : ℕ)))
       atTop (nhds 128) := by simpa using h
   refine h0.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
@@ -802,7 +802,7 @@ while surviving quartic first-atom terms have constant `36864`. -/
 theorem tendsto_thetaCuspC5ExactCompletedSeamOrientation_div_scale_four_atTop :
     Tendsto (fun x : ℝ =>
       thetaCuspC5ExactCompletedSeamOrientation x /
-        thetaCuspSingleAtomReflectionScale 1 x ^ 4)
+        thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ))
       atTop (nhds 36864) := by
   have hs := thetaCuspC5FarTail_reflectionScale_inv_tendsto_zero
   have hA := thetaCuspC5FarTail_neg_logJetTwo_div_scale_tendsto_four
@@ -830,7 +830,7 @@ theorem eventually_thetaCuspC5ExactCompletedSeamOrientation_pos :
   have hnormalized := tendsto_thetaCuspC5ExactCompletedSeamOrientation_div_scale_four_atTop
   have hpositive : ∀ᶠ x : ℝ in atTop,
       0 < thetaCuspC5ExactCompletedSeamOrientation x /
-        thetaCuspSingleAtomReflectionScale 1 x ^ 4 :=
+        thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) :=
     (tendsto_order.1 hnormalized).1 0 (by norm_num)
   filter_upwards [hpositive] with x hx
   have hs : 0 < thetaCuspSingleAtomReflectionScale 1 x := by

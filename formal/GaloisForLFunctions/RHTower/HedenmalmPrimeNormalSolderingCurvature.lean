@@ -51,7 +51,7 @@ def hedenmalmPrimeOddSolder (v : ℂ × ℂ) : ℂ := -Complex.I * (v.1 - v.2)
 def hedenmalmPrimeOddSolderKernelVector : ℂ × ℂ := (1, 1)
 
 /-- Euclidean squared energy of a marked two-component value. -/
-def hedenmalmMarkedPrimeEnergy (v : ℂ × ℂ) : ℝ := ‖v.1‖ ^ 2 + ‖v.2‖ ^ 2
+def hedenmalmMarkedPrimeEnergy (v : ℂ × ℂ) : ℝ := ‖v.1‖ ^ (2 : ℕ) + ‖v.2‖ ^ (2 : ℕ)
 
 theorem hasDerivAt_hedenmalmMarkedPrimeHalfCharacter_fst (p : ℕ) (z : ℂ) :
     HasDerivAt (fun w : ℂ => (hedenmalmMarkedPrimeHalfCharacter p w).1)
@@ -125,11 +125,11 @@ theorem hedenmalmMarkedPrime_firstJetEnergy_eq (p : Nat.Primes) (x : ℝ) :
     hedenmalmMarkedPrimeEnergy
       (hedenmalmMarkedPrimeGenerator p
         (hedenmalmMarkedPrimeHalfCharacter p (x : ℂ))) =
-      Real.log (p : ℕ) ^ 2 / (2 * (p : ℕ)) := by
+      Real.log (p : ℕ) ^ (2 : ℕ) / (2 * (p : ℕ)) := by
   have hp0 : (0 : ℝ) < (p : ℕ) := by exact_mod_cast p.2.pos
   have hp1 : (1 : ℝ) < (p : ℕ) := by exact_mod_cast p.2.one_lt
   have hlog0 : 0 ≤ Real.log ((p : ℕ) : ℝ) := (Real.log_pos hp1).le
-  have hsqrt : Real.sqrt ((p : ℕ) : ℝ) ^ 2 = (p : ℕ) := Real.sq_sqrt hp0.le
+  have hsqrt : Real.sqrt ((p : ℕ) : ℝ) ^ (2 : ℕ) = (p : ℕ) := Real.sq_sqrt hp0.le
   simp only [hedenmalmMarkedPrimeEnergy, hedenmalmMarkedPrimeGenerator,
     hedenmalmMarkedPrimeHalfCharacter, hedenmalmPrimeHalfDensity, norm_mul,
     Complex.norm_I, one_mul, Complex.norm_real, norm_inv, Complex.norm_exp]
@@ -143,7 +143,7 @@ theorem hedenmalmMarkedPrime_firstJetEnergy_eq (p : Nat.Primes) (x : ℝ) :
 /-- **Cofinal log-square curvature wall.** The ordinary first marked jet already has a uniform
 log-square lower bound on every real spectral fibre. -/
 theorem sum_hedenmalmMarkedPrime_firstJetEnergy_ge (N : ℕ) (hN : 1 ≤ N) (x : ℝ) :
-    Real.log N ^ 2 / 4 - (39 / 2 : ℝ) * Real.log N - 25 / 2 ≤
+    Real.log N ^ (2 : ℕ) / 4 - (39 / 2 : ℝ) * Real.log N - 25 / 2 ≤
       ∑ p ∈ Nat.primesLE N,
         hedenmalmMarkedPrimeEnergy
           (hedenmalmMarkedPrimeGenerator p
@@ -154,13 +154,13 @@ theorem sum_hedenmalmMarkedPrime_firstJetEnergy_ge (N : ℕ) (hN : 1 ≤ N) (x :
         (hedenmalmMarkedPrimeGenerator p
           (hedenmalmMarkedPrimeHalfCharacter p (x : ℂ)))) =
       (1 / 2 : ℝ) *
-        ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ 2 / (p : ℝ) := by
+        ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun p hp => ?_
     rw [show hedenmalmMarkedPrimeEnergy
         (hedenmalmMarkedPrimeGenerator p
           (hedenmalmMarkedPrimeHalfCharacter p (x : ℂ))) =
-          Real.log (p : ℕ) ^ 2 / (2 * (p : ℕ)) from
+          Real.log (p : ℕ) ^ (2 : ℕ) / (2 * (p : ℕ)) from
       hedenmalmMarkedPrime_firstJetEnergy_eq
         (⟨p, Nat.prime_of_mem_primesLE hp⟩ : Nat.Primes) x]
     have hp0 : (0 : ℝ) < p := by exact_mod_cast (Nat.prime_of_mem_primesLE hp).pos
@@ -170,7 +170,7 @@ theorem sum_hedenmalmMarkedPrime_firstJetEnergy_ge (N : ℕ) (hN : 1 ≤ N) (x :
 
 /-- The even/odd endpoint transform is a scaled unitary change of marked coordinates. -/
 theorem hedenmalmPrime_evenOdd_energy_eq (v : ℂ × ℂ) :
-    ‖hedenmalmPrimeEvenSolder v‖ ^ 2 + ‖hedenmalmPrimeOddSolder v‖ ^ 2 =
+    ‖hedenmalmPrimeEvenSolder v‖ ^ (2 : ℕ) + ‖hedenmalmPrimeOddSolder v‖ ^ (2 : ℕ) =
       2 * hedenmalmMarkedPrimeEnergy v := by
   simp only [hedenmalmPrimeEvenSolder, hedenmalmPrimeOddSolder,
     hedenmalmMarkedPrimeEnergy, Complex.sq_norm, Complex.normSq_mul, Complex.normSq_neg,
@@ -183,12 +183,12 @@ theorem hedenmalmMarkedPrime_energy_eq_cosh (p : Nat.Primes) (z : ℂ) :
     hedenmalmMarkedPrimeEnergy (hedenmalmMarkedPrimeHalfCharacter p.1 z) =
       2 / (p.1 : ℕ) * Real.cosh (z.im * Real.log (p.1 : ℕ)) := by
   have hp0 : (0 : ℝ) < (p.1 : ℕ) := by exact_mod_cast p.2.pos
-  have hsqrt : Real.sqrt ((p.1 : ℕ) : ℝ) ^ 2 = (p.1 : ℕ) := Real.sq_sqrt hp0.le
+  have hsqrt : Real.sqrt ((p.1 : ℕ) : ℝ) ^ (2 : ℕ) = (p.1 : ℕ) := Real.sq_sqrt hp0.le
   have hshape :
       hedenmalmMarkedPrimeEnergy (hedenmalmMarkedPrimeHalfCharacter p.1 z) =
-        (Real.sqrt ((p.1 : ℕ) : ℝ))⁻¹ ^ 2 *
+        (Real.sqrt ((p.1 : ℕ) : ℝ))⁻¹ ^ (2 : ℕ) *
             Real.exp (-(z.im * Real.log (p.1 : ℕ))) +
-          (Real.sqrt ((p.1 : ℕ) : ℝ))⁻¹ ^ 2 *
+          (Real.sqrt ((p.1 : ℕ) : ℝ))⁻¹ ^ (2 : ℕ) *
             Real.exp (z.im * Real.log (p.1 : ℕ)) := by
     simp only [hedenmalmMarkedPrimeEnergy, hedenmalmMarkedPrimeHalfCharacter,
       hedenmalmPrimeHalfDensity, norm_mul, Complex.norm_real, norm_inv,
@@ -203,7 +203,7 @@ theorem hedenmalmMarkedPrime_energy_eq_cosh (p : Nat.Primes) (z : ℂ) :
       congr 1
       ring_nf
   rw [hshape]
-  have hc : (Real.sqrt ((p.1 : ℕ) : ℝ))⁻¹ ^ 2 = 1 / (p.1 : ℕ) := by
+  have hc : (Real.sqrt ((p.1 : ℕ) : ℝ))⁻¹ ^ (2 : ℕ) = 1 / (p.1 : ℕ) := by
     rw [inv_pow, hsqrt]
     simp [div_eq_mul_inv]
   rw [hc]
@@ -212,8 +212,8 @@ theorem hedenmalmMarkedPrime_energy_eq_cosh (p : Nat.Primes) (z : ℂ) :
 
 /-- Source-normal even/odd endpoint energy in its exact radial form. -/
 theorem hedenmalmPrime_evenOdd_character_energy_eq_cosh (p : Nat.Primes) (z : ℂ) :
-    ‖hedenmalmPrimeEvenSolder (hedenmalmMarkedPrimeHalfCharacter p.1 z)‖ ^ 2 +
-        ‖hedenmalmPrimeOddSolder (hedenmalmMarkedPrimeHalfCharacter p.1 z)‖ ^ 2 =
+    ‖hedenmalmPrimeEvenSolder (hedenmalmMarkedPrimeHalfCharacter p.1 z)‖ ^ (2 : ℕ) +
+        ‖hedenmalmPrimeOddSolder (hedenmalmMarkedPrimeHalfCharacter p.1 z)‖ ^ (2 : ℕ) =
       4 / (p.1 : ℕ) * Real.cosh (z.im * Real.log (p.1 : ℕ)) := by
   rw [hedenmalmPrime_evenOdd_energy_eq, hedenmalmMarkedPrime_energy_eq_cosh]
   ring

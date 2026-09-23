@@ -415,7 +415,7 @@ theorem ccmRationalFiniteBruhatIntegral_integralFiniteAdelesBruhat :
 /-- The total mass of the Gaussian. -/
 theorem ccmRationalArchimedeanSchwartzIntegral_gaussianSchwartz :
     ccmRationalArchimedeanSchwartzIntegral gaussianSchwartz = 1 := by
-  have h : ∀ x : ℝ, (gaussianSchwartz x) = ((Real.exp (-Real.pi * x ^ 2) : ℝ) : ℂ) := by
+  have h : ∀ x : ℝ, (gaussianSchwartz x) = ((Real.exp (-Real.pi * x ^ (2 : ℕ)) : ℝ) : ℂ) := by
     intro x
     rw [gaussianSchwartz_apply]
     norm_num [gaussReal]

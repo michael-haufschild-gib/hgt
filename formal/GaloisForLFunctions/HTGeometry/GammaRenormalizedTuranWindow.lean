@@ -52,12 +52,12 @@ noncomputable def jensenGamma (m : ℕ → ℝ) (n : ℕ) : ℝ := (n ! : ℝ) /
 
 /-- The relative dispersion `m n · m (n+2)/m (n+1)² − 1`.  For `m k = ∫ sᵏ dμ` this is the squared
 coefficient of variation of the tilted probability measure with density proportional to `sⁿ`. -/
-noncomputable def dispersion (m : ℕ → ℝ) (n : ℕ) : ℝ := m n * m (n + 2) / m (n + 1) ^ 2 - 1
+noncomputable def dispersion (m : ℕ → ℝ) (n : ℕ) : ℝ := m n * m (n + 2) / m (n + 1) ^ (2 : ℕ) - 1
 
 /-- The exact rational content of the Gamma renormalization: the ratio of the squared middle factor
 to the product of the outer factors is `(2n+3)/(2n+1)`. -/
 theorem gammaFactor_relation (n : ℕ) :
-    (((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ 2 * (2 * (n : ℝ) + 1)
+    (((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ (2 : ℕ) * (2 * (n : ℝ) + 1)
       = ((n ! : ℝ) / ((2 * n)! : ℝ)) * (((n + 2)! : ℝ) / ((2 * n + 4)! : ℝ))
           * (2 * (n : ℝ) + 3) := by
   have h0 : ((2 * n)! : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
@@ -91,8 +91,8 @@ theorem gammaFactor_relation (n : ℕ) :
 sequence, log-concavity of the Gamma renormalization is exactly the bound
 `(2n+1)·m n·m (n+2) ≤ (2n+3)·m (n+1)²`. -/
 theorem turan_iff_weighted (m : ℕ → ℝ) (n : ℕ) :
-    jensenGamma m n * jensenGamma m (n + 2) ≤ jensenGamma m (n + 1) ^ 2
-      ↔ (2 * (n : ℝ) + 1) * (m n * m (n + 2)) ≤ (2 * (n : ℝ) + 3) * m (n + 1) ^ 2 := by
+    jensenGamma m n * jensenGamma m (n + 2) ≤ jensenGamma m (n + 1) ^ (2 : ℕ)
+      ↔ (2 * (n : ℝ) + 1) * (m n * m (n + 2)) ≤ (2 * (n : ℝ) + 3) * m (n + 1) ^ (2 : ℕ) := by
   have hA : (0 : ℝ) < (n ! : ℝ) / ((2 * n)! : ℝ) := by
     apply div_pos <;> exact_mod_cast Nat.factorial_pos _
   have hB : (0 : ℝ) < ((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ) := by
@@ -110,12 +110,12 @@ theorem turan_iff_weighted (m : ℕ → ℝ) (n : ℕ) :
         (((n ! : ℝ) / ((2 * n)! : ℝ)) * (((n + 2)! : ℝ) / ((2 * n + 4)! : ℝ))
           * (m n * m (n + 2)))
         ≤ (2 * (n : ℝ) + 1) *
-        ((((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ 2 * m (n + 1) ^ 2) := by
+        ((((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ (2 : ℕ) * m (n + 1) ^ (2 : ℕ)) := by
       have := mul_le_mul_of_nonneg_left h (le_of_lt hpos1)
       nlinarith [this]
     rw [show (2 * (n : ℝ) + 1) *
-        ((((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ 2 * m (n + 1) ^ 2)
-        = ((((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ 2 * (2 * (n : ℝ) + 1)) * m (n + 1) ^ 2 by ring,
+        ((((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ (2 : ℕ) * m (n + 1) ^ (2 : ℕ))
+        = ((((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ (2 : ℕ) * (2 * (n : ℝ) + 1)) * m (n + 1) ^ (2 : ℕ) by ring,
       hrel] at h'
     have hD : (0 : ℝ) < ((n ! : ℝ) / ((2 * n)! : ℝ)) * (((n + 2)! : ℝ) / ((2 * n + 4)! : ℝ)) :=
       mul_pos hA hC
@@ -126,13 +126,13 @@ theorem turan_iff_weighted (m : ℕ → ℝ) (n : ℕ) :
       mul_pos hA hC
     have h' := mul_le_mul_of_nonneg_left h (le_of_lt hD)
     have hkey : ((n ! : ℝ) / ((2 * n)! : ℝ)) * (((n + 2)! : ℝ) / ((2 * n + 4)! : ℝ))
-        * ((2 * (n : ℝ) + 3) * m (n + 1) ^ 2)
+        * ((2 * (n : ℝ) + 3) * m (n + 1) ^ (2 : ℕ))
         = (2 * (n : ℝ) + 1) *
-          ((((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ 2 * m (n + 1) ^ 2) := by
+          ((((n + 1)! : ℝ) / ((2 * n + 2)! : ℝ)) ^ (2 : ℕ) * m (n + 1) ^ (2 : ℕ)) := by
       rw [show ((n ! : ℝ) / ((2 * n)! : ℝ)) * (((n + 2)! : ℝ) / ((2 * n + 4)! : ℝ))
-          * ((2 * (n : ℝ) + 3) * m (n + 1) ^ 2)
+          * ((2 * (n : ℝ) + 3) * m (n + 1) ^ (2 : ℕ))
           = (((n ! : ℝ) / ((2 * n)! : ℝ)) * (((n + 2)! : ℝ) / ((2 * n + 4)! : ℝ))
-              * (2 * (n : ℝ) + 3)) * m (n + 1) ^ 2 by ring, ← hrel]
+              * (2 * (n : ℝ) + 3)) * m (n + 1) ^ (2 : ℕ) by ring, ← hrel]
       ring
     rw [hkey] at h'
     nlinarith [h', hpos1]
@@ -141,10 +141,10 @@ theorem turan_iff_weighted (m : ℕ → ℝ) (n : ℕ) :
 dispersion.  The lower end `0 ≤ D n` is free for every positive measure; this equivalence isolates
 the upper end as the whole content of the inequality. -/
 theorem turan_iff_dispersion_le (m : ℕ → ℝ) (n : ℕ) (h1 : 0 < m (n + 1)) :
-    jensenGamma m n * jensenGamma m (n + 2) ≤ jensenGamma m (n + 1) ^ 2
+    jensenGamma m n * jensenGamma m (n + 2) ≤ jensenGamma m (n + 1) ^ (2 : ℕ)
       ↔ dispersion m n ≤ 2 / (2 * (n : ℝ) + 1) := by
   rw [turan_iff_weighted m n]
-  have hsq : (0 : ℝ) < m (n + 1) ^ 2 := by positivity
+  have hsq : (0 : ℝ) < m (n + 1) ^ (2 : ℕ) := by positivity
   have hpos1 : (0 : ℝ) < 2 * (n : ℝ) + 1 := by positivity
   have hne : (2 * (n : ℝ) + 1) ≠ 0 := ne_of_gt hpos1
   have hrw : (2 : ℝ) / (2 * (n : ℝ) + 1) + 1 = (2 * (n : ℝ) + 3) / (2 * (n : ℝ) + 1) := by
@@ -158,11 +158,11 @@ theorem turan_iff_dispersion_le (m : ℕ → ℝ) (n : ℕ) (h1 : 0 < m (n + 1))
 + m (n+2)` is nonnegative — which holds for the moments of any positive measure, being
 `∫ sⁿ (s − c)² dμ` — then the dispersion is nonnegative. -/
 theorem dispersion_nonneg (m : ℕ → ℝ) (n : ℕ) (h0 : 0 < m n) (h1 : 0 < m (n + 1))
-    (hpsd : ∀ c : ℝ, 0 ≤ m n * c ^ 2 - 2 * m (n + 1) * c + m (n + 2)) :
+    (hpsd : ∀ c : ℝ, 0 ≤ m n * c ^ (2 : ℕ) - 2 * m (n + 1) * c + m (n + 2)) :
     0 ≤ dispersion m n := by
   have hdisc := hpsd (m (n + 1) / m n)
-  have hsq : (0 : ℝ) < m (n + 1) ^ 2 := by positivity
-  have hkey : m (n + 1) ^ 2 ≤ m n * m (n + 2) := by
+  have hsq : (0 : ℝ) < m (n + 1) ^ (2 : ℕ) := by positivity
+  have hkey : m (n + 1) ^ (2 : ℕ) ≤ m n * m (n + 2) := by
     have hne : m n ≠ 0 := ne_of_gt h0
     field_simp at hdisc
     nlinarith [hdisc, h0]
@@ -173,8 +173,8 @@ theorem dispersion_nonneg (m : ℕ → ℝ) (n : ℕ) (h0 : 0 < m n) (h1 : 0 < m
 /-- **The window, both ends.**  Under the free Hankel positivity, Turán at `n` is exactly the
 statement that the dispersion lies in `[0, 2/(2n+1)]`. -/
 theorem turan_iff_dispersion_mem_window (m : ℕ → ℝ) (n : ℕ) (h0 : 0 < m n) (h1 : 0 < m (n + 1))
-    (hpsd : ∀ c : ℝ, 0 ≤ m n * c ^ 2 - 2 * m (n + 1) * c + m (n + 2)) :
-    jensenGamma m n * jensenGamma m (n + 2) ≤ jensenGamma m (n + 1) ^ 2
+    (hpsd : ∀ c : ℝ, 0 ≤ m n * c ^ (2 : ℕ) - 2 * m (n + 1) * c + m (n + 2)) :
+    jensenGamma m n * jensenGamma m (n + 2) ≤ jensenGamma m (n + 1) ^ (2 : ℕ)
       ↔ dispersion m n ∈ Set.Icc 0 (2 / (2 * (n : ℝ) + 1)) := by
   rw [turan_iff_dispersion_le m n h1, Set.mem_Icc]
   exact ⟨fun h => ⟨dispersion_nonneg m n h0 h1 hpsd, h⟩, fun h => h.2⟩
@@ -186,20 +186,20 @@ theorem hankel_nonneg_of_measure {μ : MeasureTheory.Measure ℝ} (n : ℕ)
     (hi1 : MeasureTheory.Integrable (fun s : ℝ => s ^ (n + 1)) μ)
     (hi2 : MeasureTheory.Integrable (fun s : ℝ => s ^ (n + 2)) μ)
     (hsupp : ∀ᵐ s ∂μ, 0 ≤ s ^ n) (c : ℝ) :
-    0 ≤ (∫ s, s ^ n ∂μ) * c ^ 2 - 2 * (∫ s, s ^ (n + 1) ∂μ) * c + (∫ s, s ^ (n + 2) ∂μ) := by
-  have hexp : ∀ s : ℝ, s ^ n * (s - c) ^ 2
-      = s ^ (n + 2) - 2 * c * s ^ (n + 1) + c ^ 2 * s ^ n := by
+    0 ≤ (∫ s, s ^ n ∂μ) * c ^ (2 : ℕ) - 2 * (∫ s, s ^ (n + 1) ∂μ) * c + (∫ s, s ^ (n + 2) ∂μ) := by
+  have hexp : ∀ s : ℝ, s ^ n * (s - c) ^ (2 : ℕ)
+      = s ^ (n + 2) - 2 * c * s ^ (n + 1) + c ^ (2 : ℕ) * s ^ n := by
     intro s; ring
   have hB' : MeasureTheory.Integrable (fun s : ℝ => 2 * c * s ^ (n + 1)) μ := hi1.const_mul _
-  have hC' : MeasureTheory.Integrable (fun s : ℝ => c ^ 2 * s ^ n) μ := hi0.const_mul _
+  have hC' : MeasureTheory.Integrable (fun s : ℝ => c ^ (2 : ℕ) * s ^ n) μ := hi0.const_mul _
   have hA' : MeasureTheory.Integrable (fun s : ℝ => s ^ (n + 2) - 2 * c * s ^ (n + 1)) μ :=
     hi2.sub hB'
-  have hnn : 0 ≤ ∫ s, s ^ n * (s - c) ^ 2 ∂μ := by
+  have hnn : 0 ≤ ∫ s, s ^ n * (s - c) ^ (2 : ℕ) ∂μ := by
     refine MeasureTheory.integral_nonneg_of_ae ?_
     filter_upwards [hsupp] with s hs
     exact mul_nonneg hs (sq_nonneg _)
-  have hval : (∫ s, s ^ n * (s - c) ^ 2 ∂μ)
-      = (∫ s, s ^ (n + 2) ∂μ) - 2 * c * (∫ s, s ^ (n + 1) ∂μ) + c ^ 2 * (∫ s, s ^ n ∂μ) := by
+  have hval : (∫ s, s ^ n * (s - c) ^ (2 : ℕ) ∂μ)
+      = (∫ s, s ^ (n + 2) ∂μ) - 2 * c * (∫ s, s ^ (n + 1) ∂μ) + c ^ (2 : ℕ) * (∫ s, s ^ n ∂μ) := by
     rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hexp),
       MeasureTheory.integral_add hA' hC', MeasureTheory.integral_sub hi2 hB',
       MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]

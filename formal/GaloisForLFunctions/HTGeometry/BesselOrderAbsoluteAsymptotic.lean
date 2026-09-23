@@ -30,44 +30,44 @@ def besselLaplaceDefect (v : ℝ) : ℝ := besselLaplaceProfile v - 1 / Real.sqr
 def besselLaplaceRatio (v : ℝ) : ℝ := besselLaplaceDefect v / v
 
 /-- The derivative of the Schläfli profile. -/
-def besselLaplaceProfileDeriv (v : ℝ) : ℝ := v * (3 + v ^ 2) / Real.sqrt (2 + v ^ 2) ^ 3
+def besselLaplaceProfileDeriv (v : ℝ) : ℝ := v * (3 + v ^ (2 : ℕ)) / Real.sqrt (2 + v ^ (2 : ℕ)) ^ (3 : ℕ)
 
 /-- The derivative of the difference quotient. -/
 def besselLaplaceRatioDeriv (v : ℝ) : ℝ :=
-  besselLaplaceProfileDeriv v / v - besselLaplaceDefect v / v ^ 2
+  besselLaplaceProfileDeriv v / v - besselLaplaceDefect v / v ^ (2 : ℕ)
 
-theorem two_add_sq_pos (v : ℝ) : (0 : ℝ) < 2 + v ^ 2 := by positivity
+theorem two_add_sq_pos (v : ℝ) : (0 : ℝ) < 2 + v ^ (2 : ℕ) := by positivity
 
-theorem sqrt_two_add_sq_pos (v : ℝ) : (0 : ℝ) < Real.sqrt (2 + v ^ 2) :=
+theorem sqrt_two_add_sq_pos (v : ℝ) : (0 : ℝ) < Real.sqrt (2 + v ^ (2 : ℕ)) :=
   Real.sqrt_pos.2 (two_add_sq_pos v)
 
-theorem sq_sqrt_two_add_sq (v : ℝ) : Real.sqrt (2 + v ^ 2) ^ 2 = 2 + v ^ 2 :=
+theorem sq_sqrt_two_add_sq (v : ℝ) : Real.sqrt (2 + v ^ (2 : ℕ)) ^ (2 : ℕ) = 2 + v ^ (2 : ℕ) :=
   Real.sq_sqrt (two_add_sq_pos v).le
 
 theorem besselLaplaceDefect_nonneg (v : ℝ) : 0 ≤ besselLaplaceDefect v :=
   besselLaplaceProfile_sub_nonneg v
 
-theorem besselLaplaceDefect_le (v : ℝ) : besselLaplaceDefect v ≤ v ^ 2 / Real.sqrt 2 :=
+theorem besselLaplaceDefect_le (v : ℝ) : besselLaplaceDefect v ≤ v ^ (2 : ℕ) / Real.sqrt 2 :=
   besselLaplaceProfile_sub_le v
 
 theorem hasDerivAt_besselLaplaceProfile (v : ℝ) :
     HasDerivAt besselLaplaceProfile (besselLaplaceProfileDeriv v) v := by
-  have hg : HasDerivAt (fun y : ℝ => Real.sqrt (2 + y ^ 2))
-      (2 * v / (2 * Real.sqrt (2 + v ^ 2))) v := by
-    have hbase : HasDerivAt (fun y : ℝ => 2 + y ^ 2) (2 * v) v := by
+  have hg : HasDerivAt (fun y : ℝ => Real.sqrt (2 + y ^ (2 : ℕ)))
+      (2 * v / (2 * Real.sqrt (2 + v ^ (2 : ℕ)))) v := by
+    have hbase : HasDerivAt (fun y : ℝ => 2 + y ^ (2 : ℕ)) (2 * v) v := by
       simpa using ((hasDerivAt_pow 2 v).const_add (2 : ℝ))
     simpa using hbase.sqrt (ne_of_gt (two_add_sq_pos v))
-  have hf : HasDerivAt (fun y : ℝ => 1 + y ^ 2) (2 * v) v := by
+  have hf : HasDerivAt (fun y : ℝ => 1 + y ^ (2 : ℕ)) (2 * v) v := by
     simpa using ((hasDerivAt_pow 2 v).const_add (1 : ℝ))
   have hdiv := hf.div hg (ne_of_gt (sqrt_two_add_sq_pos v))
-  have hval : (2 * v * Real.sqrt (2 + v ^ 2) -
-        (1 + v ^ 2) * (2 * v / (2 * Real.sqrt (2 + v ^ 2)))) / Real.sqrt (2 + v ^ 2) ^ 2
+  have hval : (2 * v * Real.sqrt (2 + v ^ (2 : ℕ)) -
+        (1 + v ^ (2 : ℕ)) * (2 * v / (2 * Real.sqrt (2 + v ^ (2 : ℕ))))) / Real.sqrt (2 + v ^ (2 : ℕ)) ^ (2 : ℕ)
       = besselLaplaceProfileDeriv v := by
     rw [besselLaplaceProfileDeriv, sq_sqrt_two_add_sq]
-    have hs : Real.sqrt (2 + v ^ 2) ≠ 0 := ne_of_gt (sqrt_two_add_sq_pos v)
-    have hcube : Real.sqrt (2 + v ^ 2) ^ 3
-        = Real.sqrt (2 + v ^ 2) * (2 + v ^ 2) := by
-      rw [pow_succ' (Real.sqrt (2 + v ^ 2)) 2, sq_sqrt_two_add_sq]
+    have hs : Real.sqrt (2 + v ^ (2 : ℕ)) ≠ 0 := ne_of_gt (sqrt_two_add_sq_pos v)
+    have hcube : Real.sqrt (2 + v ^ (2 : ℕ)) ^ (3 : ℕ)
+        = Real.sqrt (2 + v ^ (2 : ℕ)) * (2 + v ^ (2 : ℕ)) := by
+      rw [pow_succ' (Real.sqrt (2 + v ^ (2 : ℕ))) 2, sq_sqrt_two_add_sq]
     rw [hcube]
     field_simp
     simp only [sq_sqrt_two_add_sq]
@@ -82,7 +82,7 @@ theorem hasDerivAt_besselLaplaceDefect (v : ℝ) :
 theorem hasDerivAt_besselLaplaceRatio {v : ℝ} (hv : v ≠ 0) :
     HasDerivAt besselLaplaceRatio (besselLaplaceRatioDeriv v) v := by
   have hdiv := (hasDerivAt_besselLaplaceDefect v).div (hasDerivAt_id v) hv
-  have hval : (besselLaplaceProfileDeriv v * v - besselLaplaceDefect v * 1) / v ^ 2
+  have hval : (besselLaplaceProfileDeriv v * v - besselLaplaceDefect v * 1) / v ^ (2 : ℕ)
       = besselLaplaceRatioDeriv v := by
     rw [besselLaplaceRatioDeriv]
     field_simp
@@ -94,44 +94,44 @@ theorem hasDerivAt_besselLaplaceRatio {v : ℝ} (hv : v ≠ 0) :
 theorem besselLaplaceProfileDeriv_div_nonneg {v : ℝ} (hv : 0 < v) :
     0 ≤ besselLaplaceProfileDeriv v / v := by
   rw [besselLaplaceProfileDeriv]
-  have h1 : (0 : ℝ) < Real.sqrt (2 + v ^ 2) ^ 3 := by positivity
+  have h1 : (0 : ℝ) < Real.sqrt (2 + v ^ (2 : ℕ)) ^ (3 : ℕ) := by positivity
   positivity
 
 theorem besselLaplaceProfileDeriv_div_le {v : ℝ} (hv : 0 < v) :
     besselLaplaceProfileDeriv v / v ≤ 3 / (2 * Real.sqrt 2) := by
-  have hs : (0 : ℝ) < Real.sqrt (2 + v ^ 2) := sqrt_two_add_sq_pos v
+  have hs : (0 : ℝ) < Real.sqrt (2 + v ^ (2 : ℕ)) := sqrt_two_add_sq_pos v
   have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
-  have hge : Real.sqrt 2 ≤ Real.sqrt (2 + v ^ 2) := sqrt_two_le_sqrt_two_add_sq v
-  have hcube : Real.sqrt (2 + v ^ 2) ^ 3 = Real.sqrt (2 + v ^ 2) * (2 + v ^ 2) := by
-    rw [pow_succ' (Real.sqrt (2 + v ^ 2)) 2, sq_sqrt_two_add_sq]
+  have hge : Real.sqrt 2 ≤ Real.sqrt (2 + v ^ (2 : ℕ)) := sqrt_two_le_sqrt_two_add_sq v
+  have hcube : Real.sqrt (2 + v ^ (2 : ℕ)) ^ (3 : ℕ) = Real.sqrt (2 + v ^ (2 : ℕ)) * (2 + v ^ (2 : ℕ)) := by
+    rw [pow_succ' (Real.sqrt (2 + v ^ (2 : ℕ))) 2, sq_sqrt_two_add_sq]
   have hquot : besselLaplaceProfileDeriv v / v
-      = (3 + v ^ 2) / Real.sqrt (2 + v ^ 2) ^ 3 := by
+      = (3 + v ^ (2 : ℕ)) / Real.sqrt (2 + v ^ (2 : ℕ)) ^ (3 : ℕ) := by
     rw [besselLaplaceProfileDeriv]
     field_simp
   rw [hquot, hcube]
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
-  have hkey : (3 + v ^ 2) * (2 * Real.sqrt 2) ≤ 3 * (Real.sqrt 2 * (2 + v ^ 2)) := by
+  have hkey : (3 + v ^ (2 : ℕ)) * (2 * Real.sqrt 2) ≤ 3 * (Real.sqrt 2 * (2 + v ^ (2 : ℕ))) := by
     nlinarith [sq_nonneg v, h2.le, hge]
   nlinarith [hkey, h2.le, hge, sq_nonneg v]
 
 theorem besselLaplaceDefect_div_sq_le {v : ℝ} (hv : 0 < v) :
-    besselLaplaceDefect v / v ^ 2 ≤ 1 / Real.sqrt 2 := by
-  have hpos : (0 : ℝ) < v ^ 2 := by positivity
+    besselLaplaceDefect v / v ^ (2 : ℕ) ≤ 1 / Real.sqrt 2 := by
+  have hpos : (0 : ℝ) < v ^ (2 : ℕ) := by positivity
   rw [div_le_div_iff₀ hpos (Real.sqrt_pos.2 (by norm_num))]
   have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
-  have h' : besselLaplaceDefect v * Real.sqrt 2 ≤ v ^ 2 :=
+  have h' : besselLaplaceDefect v * Real.sqrt 2 ≤ v ^ (2 : ℕ) :=
     (le_div_iff₀ h2).mp (besselLaplaceDefect_le v)
   linarith
 
 theorem besselLaplaceDefect_div_sq_nonneg {v : ℝ} (hv : 0 < v) :
-    0 ≤ besselLaplaceDefect v / v ^ 2 :=
+    0 ≤ besselLaplaceDefect v / v ^ (2 : ℕ) :=
   div_nonneg (besselLaplaceDefect_nonneg v) (by positivity)
 
 /-- The derivative of the difference quotient is bounded by two. -/
 theorem abs_besselLaplaceRatioDeriv_le {v : ℝ} (hv : 0 < v) :
     |besselLaplaceRatioDeriv v| ≤ 2 := by
   have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
-  have h2sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have h2sq : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hone : (1 : ℝ) ≤ Real.sqrt 2 := by nlinarith [h2, h2sq]
   have h1 := besselLaplaceProfileDeriv_div_nonneg hv
   have h2' := besselLaplaceProfileDeriv_div_le hv
@@ -151,30 +151,30 @@ theorem abs_besselLaplaceRatioDeriv_le {v : ℝ} (hv : 0 < v) :
 /-- The difference quotient is bounded by two. -/
 theorem abs_besselLaplaceRatio_le {v : ℝ} (hv : 0 < v) : |besselLaplaceRatio v| ≤ 2 := by
   have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
-  have h2sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have h2sq : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hone : (1 : ℝ) ≤ Real.sqrt 2 := by nlinarith [h2, h2sq]
   have hnn : 0 ≤ besselLaplaceRatio v :=
     div_nonneg (besselLaplaceDefect_nonneg v) hv.le
   rw [abs_of_nonneg hnn, besselLaplaceRatio, div_le_iff₀ hv]
   rcases le_or_gt v 1 with hle | hlt
   · have h := besselLaplaceDefect_le v
-    have : v ^ 2 / Real.sqrt 2 ≤ 2 * v := by
+    have : v ^ (2 : ℕ) / Real.sqrt 2 ≤ 2 * v := by
       rw [div_le_iff₀ h2]
       nlinarith [hv.le, hle, hone]
     linarith
-  · have hs : Real.sqrt (2 + v ^ 2) ≠ 0 := ne_of_gt (sqrt_two_add_sq_pos v)
-    have hsge : v ≤ Real.sqrt (2 + v ^ 2) := by
-      have : v ^ 2 ≤ 2 + v ^ 2 := by linarith
+  · have hs : Real.sqrt (2 + v ^ (2 : ℕ)) ≠ 0 := ne_of_gt (sqrt_two_add_sq_pos v)
+    have hsge : v ≤ Real.sqrt (2 + v ^ (2 : ℕ)) := by
+      have : v ^ (2 : ℕ) ≤ 2 + v ^ (2 : ℕ) := by linarith
       nlinarith [sq_sqrt_two_add_sq v, sqrt_two_add_sq_pos v, hv.le]
-    have hprof : besselLaplaceProfile v ≤ (1 + v ^ 2) / v := by
+    have hprof : besselLaplaceProfile v ≤ (1 + v ^ (2 : ℕ)) / v := by
       rw [besselLaplaceProfile]
       exact div_le_div_of_nonneg_left (by positivity) hv hsge
-    have hdef : besselLaplaceDefect v ≤ (1 + v ^ 2) / v := by
+    have hdef : besselLaplaceDefect v ≤ (1 + v ^ (2 : ℕ)) / v := by
       have := besselLaplaceDefect
       rw [besselLaplaceDefect]
       have : (0:ℝ) ≤ 1 / Real.sqrt 2 := by positivity
       linarith [hprof]
-    have hfin : (1 + v ^ 2) / v ≤ 2 * v := by
+    have hfin : (1 + v ^ (2 : ℕ)) / v ≤ 2 * v := by
       rw [div_le_iff₀ hv]
       nlinarith [hlt]
     linarith
@@ -187,7 +187,7 @@ theorem abs_besselLaplaceRatio_le_linear {v : ℝ} (hv : 0 < v) :
     div_nonneg (besselLaplaceDefect_nonneg v) hv.le
   rw [abs_of_nonneg hnn, besselLaplaceRatio, div_le_iff₀ hv]
   have h := besselLaplaceDefect_le v
-  have hval : v ^ 2 / Real.sqrt 2 = v / Real.sqrt 2 * v := by
+  have hval : v ^ (2 : ℕ) / Real.sqrt 2 = v / Real.sqrt 2 * v := by
     field_simp
   linarith [h, hval]
 
@@ -202,7 +202,7 @@ theorem continuous_besselLaplaceDefect : Continuous besselLaplaceDefect :=
 
 theorem continuous_besselLaplaceProfileDeriv : Continuous besselLaplaceProfileDeriv := by
   refine Continuous.div (by fun_prop) (by fun_prop) fun v => ?_
-  exact ne_of_gt (by positivity : (0:ℝ) < Real.sqrt (2 + v ^ 2) ^ 3)
+  exact ne_of_gt (by positivity : (0:ℝ) < Real.sqrt (2 + v ^ (2 : ℕ)) ^ (3 : ℕ))
 
 theorem continuousOn_besselLaplaceRatioDeriv :
     ContinuousOn besselLaplaceRatioDeriv (Ioi 0) := by
@@ -218,7 +218,7 @@ theorem continuousOn_besselLaplaceRatio : ContinuousOn besselLaplaceRatio (Ioi 0
   continuous_besselLaplaceDefect.continuousOn.div continuousOn_id fun _x hx => ne_of_gt hx
 
 theorem norm_cexp_neg_mul_sq (w : ℂ) (v : ℝ) :
-    ‖Complex.exp (-w * (v : ℂ) ^ 2)‖ = Real.exp (-(w.re * v ^ 2)) := by
+    ‖Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))‖ = Real.exp (-(w.re * v ^ (2 : ℕ))) := by
   rw [Complex.norm_exp]
   congr 1
   rw [← Complex.ofReal_pow]
@@ -229,29 +229,29 @@ theorem norm_cexp_neg_mul_sq (w : ℂ) (v : ℝ) :
 /-! ## The antiderivative of the Gaussian weight -/
 
 /-- The antiderivative of `v ↦ v e^{-w v²}`. -/
-def besselGaussAnti (w : ℂ) (v : ℝ) : ℂ := -(1 / (2 * w)) * Complex.exp (-w * (v : ℂ) ^ 2)
+def besselGaussAnti (w : ℂ) (v : ℝ) : ℂ := -(1 / (2 * w)) * Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))
 
 theorem hasDerivAt_cexp_neg_mul_sq (w : ℂ) (v : ℝ) :
-    HasDerivAt (fun x : ℝ => Complex.exp (-w * (x : ℂ) ^ 2))
-      (Complex.exp (-w * (v : ℂ) ^ 2) * (-w * (2 * (v : ℂ)))) v := by
-  have hz : HasDerivAt (fun z : ℂ => Complex.exp (-w * z ^ 2))
-      (Complex.exp (-w * (v : ℂ) ^ 2) * (-w * (2 * (v : ℂ)))) (v : ℂ) := by
-    have h1 : HasDerivAt (fun z : ℂ => -w * z ^ 2) (-w * (2 * (v : ℂ))) (v : ℂ) := by
+    HasDerivAt (fun x : ℝ => Complex.exp (-w * (x : ℂ) ^ (2 : ℕ)))
+      (Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (-w * (2 * (v : ℂ)))) v := by
+  have hz : HasDerivAt (fun z : ℂ => Complex.exp (-w * z ^ (2 : ℕ)))
+      (Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (-w * (2 * (v : ℂ)))) (v : ℂ) := by
+    have h1 : HasDerivAt (fun z : ℂ => -w * z ^ (2 : ℕ)) (-w * (2 * (v : ℂ))) (v : ℂ) := by
       simpa using (hasDerivAt_pow 2 (v : ℂ)).const_mul (-w)
     exact h1.cexp
   exact hz.comp_ofReal
 
 theorem hasDerivAt_besselGaussAnti {w : ℂ} (hw : w ≠ 0) (v : ℝ) :
-    HasDerivAt (besselGaussAnti w) ((v : ℂ) * Complex.exp (-w * (v : ℂ) ^ 2)) v := by
+    HasDerivAt (besselGaussAnti w) ((v : ℂ) * Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))) v := by
   have h := (hasDerivAt_cexp_neg_mul_sq w v).const_mul (-(1 / (2 * w)))
-  have hval : -(1 / (2 * w)) * (Complex.exp (-w * (v : ℂ) ^ 2) * (-w * (2 * (v : ℂ))))
-      = (v : ℂ) * Complex.exp (-w * (v : ℂ) ^ 2) := by
+  have hval : -(1 / (2 * w)) * (Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (-w * (2 * (v : ℂ))))
+      = (v : ℂ) * Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) := by
     field_simp
   rw [← hval]
   exact h
 
 theorem norm_besselGaussAnti (w : ℂ) (v : ℝ) :
-    ‖besselGaussAnti w v‖ = Real.exp (-(w.re * v ^ 2)) / (2 * ‖w‖) := by
+    ‖besselGaussAnti w v‖ = Real.exp (-(w.re * v ^ (2 : ℕ))) / (2 * ‖w‖) := by
   rw [besselGaussAnti, norm_mul, norm_neg, norm_div, norm_mul, norm_cexp_neg_mul_sq]
   simp
   ring
@@ -264,52 +264,52 @@ theorem ne_zero_of_re_pos {w : ℂ} (hw : 0 < w.re) : w ≠ 0 := by
   simp at hw
 
 theorem integrableOn_defect_gauss {w : ℂ} (hw : 0 < w.re) :
-    IntegrableOn (fun v : ℝ => Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceDefect v : ℂ))
+    IntegrableOn (fun v : ℝ => Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceDefect v : ℂ))
       (Ioi 0) := by
   refine Integrable.mono' (((integrable_sq_mul_exp_neg_mul_sq hw).const_mul
     ((Real.sqrt 2)⁻¹)).integrableOn) ?_ ?_
-  · exact ((by fun_prop : Continuous fun v : ℝ => Complex.exp (-w * (v : ℂ) ^ 2)).mul
+  · exact ((by fun_prop : Continuous fun v : ℝ => Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))).mul
       (Complex.continuous_ofReal.comp continuous_besselLaplaceDefect)).aestronglyMeasurable
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with v _
     rw [norm_mul, norm_cexp_neg_mul_sq, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (besselLaplaceDefect_nonneg v)]
     have hbound := besselLaplaceDefect_le v
     have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
-    have hexp : (0 : ℝ) < Real.exp (-(w.re * v ^ 2)) := Real.exp_pos _
-    have heq : Real.exp (-(w.re * v ^ 2)) = Real.exp (-w.re * v ^ 2) := by ring_nf
-    calc Real.exp (-(w.re * v ^ 2)) * besselLaplaceDefect v
-        ≤ Real.exp (-(w.re * v ^ 2)) * (v ^ 2 / Real.sqrt 2) :=
+    have hexp : (0 : ℝ) < Real.exp (-(w.re * v ^ (2 : ℕ))) := Real.exp_pos _
+    have heq : Real.exp (-(w.re * v ^ (2 : ℕ))) = Real.exp (-w.re * v ^ (2 : ℕ)) := by ring_nf
+    calc Real.exp (-(w.re * v ^ (2 : ℕ))) * besselLaplaceDefect v
+        ≤ Real.exp (-(w.re * v ^ (2 : ℕ))) * (v ^ (2 : ℕ) / Real.sqrt 2) :=
           mul_le_mul_of_nonneg_left hbound hexp.le
-      _ = (Real.sqrt 2)⁻¹ * (v ^ 2 * Real.exp (-w.re * v ^ 2)) := by
+      _ = (Real.sqrt 2)⁻¹ * (v ^ (2 : ℕ) * Real.exp (-w.re * v ^ (2 : ℕ))) := by
           rw [heq, div_eq_mul_inv]
           ring
 
 theorem integrableOn_ratioDeriv_gauss {w : ℂ} (hw : 0 < w.re) :
-    IntegrableOn (fun v : ℝ => Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceRatioDeriv v : ℂ))
+    IntegrableOn (fun v : ℝ => Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceRatioDeriv v : ℂ))
       (Ioi 0) := by
   refine Integrable.mono' (((integrable_exp_neg_mul_sq hw).const_mul (2 : ℝ)).integrableOn) ?_ ?_
   · refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
     exact ((by fun_prop : Continuous fun v : ℝ =>
-      Complex.exp (-w * (v : ℂ) ^ 2)).continuousOn).mul
+      Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))).continuousOn).mul
       (Complex.continuous_ofReal.continuousOn.comp continuousOn_besselLaplaceRatioDeriv
         (fun x hx => Set.mem_univ _))
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with v hv
     rw [norm_mul, norm_cexp_neg_mul_sq, Complex.norm_real, Real.norm_eq_abs]
     have hbound := abs_besselLaplaceRatioDeriv_le hv
-    have hexp : (0 : ℝ) < Real.exp (-(w.re * v ^ 2)) := Real.exp_pos _
-    have heq : Real.exp (-(w.re * v ^ 2)) = Real.exp (-w.re * v ^ 2) := by ring_nf
-    calc Real.exp (-(w.re * v ^ 2)) * |besselLaplaceRatioDeriv v|
-        ≤ Real.exp (-(w.re * v ^ 2)) * 2 := mul_le_mul_of_nonneg_left hbound hexp.le
-      _ = 2 * Real.exp (-w.re * v ^ 2) := by rw [heq]; ring
+    have hexp : (0 : ℝ) < Real.exp (-(w.re * v ^ (2 : ℕ))) := Real.exp_pos _
+    have heq : Real.exp (-(w.re * v ^ (2 : ℕ))) = Real.exp (-w.re * v ^ (2 : ℕ)) := by ring_nf
+    calc Real.exp (-(w.re * v ^ (2 : ℕ))) * |besselLaplaceRatioDeriv v|
+        ≤ Real.exp (-(w.re * v ^ (2 : ℕ))) * 2 := mul_le_mul_of_nonneg_left hbound hexp.le
+      _ = 2 * Real.exp (-w.re * v ^ (2 : ℕ)) := by rw [heq]; ring
 
 /-- The integration-by-parts identity on a compact subinterval of the open half line. -/
 theorem integral_defect_gauss_interval {w : ℂ} (hw : 0 < w.re) {ε T : ℝ} (hε : 0 < ε)
     (hεT : ε ≤ T) :
-    (∫ v in ε..T, Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceDefect v : ℂ))
+    (∫ v in ε..T, Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceDefect v : ℂ))
       = (besselLaplaceRatio T : ℂ) * besselGaussAnti w T
         - (besselLaplaceRatio ε : ℂ) * besselGaussAnti w ε
         + (1 / (2 * w)) *
-          ∫ v in ε..T, Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceRatioDeriv v : ℂ) := by
+          ∫ v in ε..T, Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceRatioDeriv v : ℂ) := by
   have hwne : w ≠ 0 := ne_zero_of_re_pos hw
   have hsub : Set.uIcc ε T ⊆ Ioi (0 : ℝ) := by
     rw [Set.uIcc_of_le hεT]
@@ -320,20 +320,20 @@ theorem integral_defect_gauss_interval {w : ℂ} (hw : 0 < w.re) {ε T : ℝ} (h
         ((besselLaplaceRatioDeriv x : ℂ)) x := fun x hx =>
     (hasDerivAt_besselLaplaceRatio (ne_of_gt (hsub hx))).ofReal_comp
   have hv : ∀ x ∈ Set.uIcc ε T,
-      HasDerivAt (besselGaussAnti w) ((x : ℂ) * Complex.exp (-w * (x : ℂ) ^ 2)) x :=
+      HasDerivAt (besselGaussAnti w) ((x : ℂ) * Complex.exp (-w * (x : ℂ) ^ (2 : ℕ))) x :=
     fun x _ => hasDerivAt_besselGaussAnti hwne x
   have hu' : IntervalIntegrable (fun x : ℝ => (besselLaplaceRatioDeriv x : ℂ)) volume ε T := by
     refine ContinuousOn.intervalIntegrable ?_
     exact Complex.continuous_ofReal.continuousOn.comp
       (continuousOn_besselLaplaceRatioDeriv.mono hsub) (fun x hx => Set.mem_univ _)
   have hv' : IntervalIntegrable
-      (fun x : ℝ => (x : ℂ) * Complex.exp (-w * (x : ℂ) ^ 2)) volume ε T :=
+      (fun x : ℝ => (x : ℂ) * Complex.exp (-w * (x : ℂ) ^ (2 : ℕ))) volume ε T :=
     (by fun_prop : Continuous fun x : ℝ =>
-      (x : ℂ) * Complex.exp (-w * (x : ℂ) ^ 2)).intervalIntegrable _ _
+      (x : ℂ) * Complex.exp (-w * (x : ℂ) ^ (2 : ℕ))).intervalIntegrable _ _
   have hIBP := intervalIntegral.integral_mul_deriv_eq_deriv_mul hu hv hu' hv'
   have hleft : (∫ x in ε..T, (besselLaplaceRatio x : ℂ) *
-      ((x : ℂ) * Complex.exp (-w * (x : ℂ) ^ 2)))
-      = ∫ v in ε..T, Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceDefect v : ℂ) := by
+      ((x : ℂ) * Complex.exp (-w * (x : ℂ) ^ (2 : ℕ))))
+      = ∫ v in ε..T, Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceDefect v : ℂ) := by
     rw [intervalIntegral.integral_of_le hεT, intervalIntegral.integral_of_le hεT]
     refine setIntegral_congr_fun measurableSet_Ioc fun x hx => ?_
     have hx0 : x ≠ 0 := ne_of_gt (lt_trans hε hx.1)
@@ -342,7 +342,7 @@ theorem integral_defect_gauss_interval {w : ℂ} (hw : 0 < w.re) {ε T : ℝ} (h
     ring
   have hright : (∫ x in ε..T, (besselLaplaceRatioDeriv x : ℂ) * besselGaussAnti w x)
       = -(1 / (2 * w)) *
-        ∫ v in ε..T, Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceRatioDeriv v : ℂ) := by
+        ∫ v in ε..T, Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceRatioDeriv v : ℂ) := by
     rw [← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr fun x _ => ?_
     rw [besselGaussAnti]
@@ -393,18 +393,18 @@ theorem exp_neg_le_one_div {y : ℝ} (hy : 0 < y) : Real.exp (-y) ≤ 1 / y := b
 
 /-- **The integration-by-parts identity on the half line.** -/
 theorem integral_defect_gauss_eq {w : ℂ} (hw : 0 < w.re) :
-    (∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceDefect v : ℂ))
+    (∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceDefect v : ℂ))
       = (1 / (2 * w)) *
-        ∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ 2)
+        ∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))
           * (besselLaplaceRatioDeriv v : ℂ) := by
   have hwne : w ≠ 0 := ne_zero_of_re_pos hw
   have hwnorm : (0 : ℝ) < ‖w‖ := norm_pos_iff.2 hwne
   set L : ℕ → ℂ := fun n =>
     ∫ v in Ioc (1 / ((n : ℝ) + 1)) ((n : ℝ) + 1),
-      Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceDefect v : ℂ) with hL
+      Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceDefect v : ℂ) with hL
   set R : ℕ → ℂ := fun n =>
     ∫ v in Ioc (1 / ((n : ℝ) + 1)) ((n : ℝ) + 1),
-      Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceRatioDeriv v : ℂ) with hR
+      Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceRatioDeriv v : ℂ) with hR
   have hstep : ∀ n : ℕ, L n =
       (besselLaplaceRatio ((n : ℝ) + 1) : ℂ) * besselGaussAnti w ((n : ℝ) + 1)
         - (besselLaplaceRatio (1 / ((n : ℝ) + 1)) : ℂ) * besselGaussAnti w (1 / ((n : ℝ) + 1))
@@ -428,17 +428,17 @@ theorem integral_defect_gauss_eq {w : ℂ} (hw : 0 < w.re) :
     have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_besselGaussAnti]
     have h1 : |besselLaplaceRatio ((n : ℝ) + 1)| ≤ 2 := abs_besselLaplaceRatio_le hn
-    have h2 : Real.exp (-(w.re * ((n : ℝ) + 1) ^ 2)) ≤ 1 / (w.re * ((n : ℝ) + 1) ^ 2) :=
+    have h2 : Real.exp (-(w.re * ((n : ℝ) + 1) ^ (2 : ℕ))) ≤ 1 / (w.re * ((n : ℝ) + 1) ^ (2 : ℕ)) :=
       exp_neg_le_one_div (by positivity)
     have hge1 : (1 : ℝ) ≤ (n : ℝ) + 1 := by
       have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
       linarith
-    have hsq : ((n : ℝ) + 1) ≤ ((n : ℝ) + 1) ^ 2 := by nlinarith [hge1]
-    have h3 : (1 : ℝ) / (w.re * ((n : ℝ) + 1) ^ 2) ≤ 1 / (w.re * ((n : ℝ) + 1)) := by
+    have hsq : ((n : ℝ) + 1) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) := by nlinarith [hge1]
+    have h3 : (1 : ℝ) / (w.re * ((n : ℝ) + 1) ^ (2 : ℕ)) ≤ 1 / (w.re * ((n : ℝ) + 1)) := by
       refine one_div_le_one_div_of_le (by positivity) ?_
       exact mul_le_mul_of_nonneg_left hsq hw.le
     calc |besselLaplaceRatio ((n : ℝ) + 1)| *
-          (Real.exp (-(w.re * ((n : ℝ) + 1) ^ 2)) / (2 * ‖w‖))
+          (Real.exp (-(w.re * ((n : ℝ) + 1) ^ (2 : ℕ))) / (2 * ‖w‖))
         ≤ 2 * ((1 / (w.re * ((n : ℝ) + 1))) / (2 * ‖w‖)) := by
           gcongr
           exact le_trans h2 h3
@@ -456,12 +456,12 @@ theorem integral_defect_gauss_eq {w : ℂ} (hw : 0 < w.re) :
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_besselGaussAnti]
     have h1 : |besselLaplaceRatio (1 / ((n : ℝ) + 1))| ≤ (1 / ((n : ℝ) + 1)) / Real.sqrt 2 :=
       abs_besselLaplaceRatio_le_linear hn
-    have hexple : Real.exp (-(w.re * (1 / ((n : ℝ) + 1)) ^ 2)) ≤ 1 := by
+    have hexple : Real.exp (-(w.re * (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) ≤ 1 := by
       rw [Real.exp_le_one_iff]
-      have hnn : (0 : ℝ) ≤ w.re * (1 / ((n : ℝ) + 1)) ^ 2 := by positivity
+      have hnn : (0 : ℝ) ≤ w.re * (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) := by positivity
       linarith
     calc |besselLaplaceRatio (1 / ((n : ℝ) + 1))| *
-          (Real.exp (-(w.re * (1 / ((n : ℝ) + 1)) ^ 2)) / (2 * ‖w‖))
+          (Real.exp (-(w.re * (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))) / (2 * ‖w‖))
         ≤ ((1 / ((n : ℝ) + 1)) / Real.sqrt 2) * (1 / (2 * ‖w‖)) := by
           gcongr
       _ = 1 / (Real.sqrt 2 * (2 * ‖w‖)) * (1 / ((n : ℝ) + 1)) := by
@@ -470,7 +470,7 @@ theorem integral_defect_gauss_eq {w : ℂ} (hw : 0 < w.re) :
   have hRlim := tendsto_setIntegral_Ioc_atTop (integrableOn_ratioDeriv_gauss hw)
   have hcomb : Tendsto L atTop
       (𝓝 (0 - 0 + (1 / (2 * w)) *
-        ∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ 2)
+        ∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))
           * (besselLaplaceRatioDeriv v : ℂ))) := by
     refine Tendsto.congr (fun n => (hstep n).symm) ?_
     exact (hTop.sub hBot).add (hRlim.const_mul _)
@@ -492,30 +492,30 @@ theorem norm_besselK1C_sub_leading_le_norm {w : ℂ} (hw : 0 < w.re) :
       = (besselLaplaceDefect v : ℂ) := fun v => rfl
   simp only [hid] at hsplit
   rw [hsplit, integral_defect_gauss_eq hw]
-  have hbound : ‖∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ 2)
+  have hbound : ‖∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))
       * (besselLaplaceRatioDeriv v : ℂ)‖ ≤ Real.sqrt (Real.pi / w.re) := by
     have hnorm := MeasureTheory.norm_integral_le_integral_norm
       (μ := volume.restrict (Ioi (0 : ℝ)))
-      (f := fun v : ℝ => Complex.exp (-w * (v : ℂ) ^ 2) * (besselLaplaceRatioDeriv v : ℂ))
+      (f := fun v : ℝ => Complex.exp (-w * (v : ℂ) ^ (2 : ℕ)) * (besselLaplaceRatioDeriv v : ℂ))
     refine le_trans hnorm ?_
-    have hmono : (∫ v in Ioi (0 : ℝ), ‖Complex.exp (-w * (v : ℂ) ^ 2)
+    have hmono : (∫ v in Ioi (0 : ℝ), ‖Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))
         * (besselLaplaceRatioDeriv v : ℂ)‖)
-        ≤ ∫ v in Ioi (0 : ℝ), 2 * Real.exp (-w.re * v ^ 2) := by
+        ≤ ∫ v in Ioi (0 : ℝ), 2 * Real.exp (-w.re * v ^ (2 : ℕ)) := by
       refine setIntegral_mono_on ((integrableOn_ratioDeriv_gauss hw).norm)
         ((integrable_exp_neg_mul_sq hw).const_mul (2 : ℝ)).integrableOn measurableSet_Ioi ?_
       intro v hv
       rw [norm_mul, norm_cexp_neg_mul_sq, Complex.norm_real, Real.norm_eq_abs]
       have hbd := abs_besselLaplaceRatioDeriv_le hv
-      have hexp : (0 : ℝ) < Real.exp (-(w.re * v ^ 2)) := Real.exp_pos _
-      have heq : Real.exp (-(w.re * v ^ 2)) = Real.exp (-w.re * v ^ 2) := by ring_nf
-      calc Real.exp (-(w.re * v ^ 2)) * |besselLaplaceRatioDeriv v|
-          ≤ Real.exp (-(w.re * v ^ 2)) * 2 := mul_le_mul_of_nonneg_left hbd hexp.le
-        _ = 2 * Real.exp (-w.re * v ^ 2) := by rw [heq]; ring
+      have hexp : (0 : ℝ) < Real.exp (-(w.re * v ^ (2 : ℕ))) := Real.exp_pos _
+      have heq : Real.exp (-(w.re * v ^ (2 : ℕ))) = Real.exp (-w.re * v ^ (2 : ℕ)) := by ring_nf
+      calc Real.exp (-(w.re * v ^ (2 : ℕ))) * |besselLaplaceRatioDeriv v|
+          ≤ Real.exp (-(w.re * v ^ (2 : ℕ))) * 2 := mul_le_mul_of_nonneg_left hbd hexp.le
+        _ = 2 * Real.exp (-w.re * v ^ (2 : ℕ)) := by rw [heq]; ring
     refine le_trans hmono (le_of_eq ?_)
     rw [MeasureTheory.integral_const_mul, integral_gaussian_Ioi]
     ring
   have hre : (-w).re = -w.re := by simp
-  set X : ℂ := ∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ 2)
+  set X : ℂ := ∫ v in Ioi (0 : ℝ), Complex.exp (-w * (v : ℂ) ^ (2 : ℕ))
     * (besselLaplaceRatioDeriv v : ℂ) with hX
   have hassoc : (2 : ℂ) * Complex.exp (-w) * ((1 / (2 * w)) * X)
       = ((2 : ℂ) * Complex.exp (-w) * (1 / (2 * w))) * X := by ring

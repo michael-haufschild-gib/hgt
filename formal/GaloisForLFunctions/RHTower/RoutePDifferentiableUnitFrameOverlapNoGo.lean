@@ -76,8 +76,8 @@ theorem re_overlap_deriv_eq_zero_of_unit_paths
     {x y : ℝ → F} {x' y' e : F}
     (hx : HasDerivAt x x' 0) (hy : HasDerivAt y y' 0)
     (hx0 : x 0 = e) (hy0 : y 0 = e)
-    (hunitx : ∀ a : ℝ, ‖x a‖ ^ 2 = 1)
-    (hunity : ∀ a : ℝ, ‖y a‖ ^ 2 = 1) :
+    (hunitx : ∀ a : ℝ, ‖x a‖ ^ (2 : ℕ) = 1)
+    (hunity : ∀ a : ℝ, ‖y a‖ ^ (2 : ℕ) = 1) :
     ((inner ℂ (x 0) y' + inner ℂ x' (y 0) : ℂ)).re = 0 := by
   have hnx := GaloisForLFunctions.HTGeometry.hasDerivAt_normSq_path hx
   have hny := GaloisForLFunctions.HTGeometry.hasDerivAt_normSq_path hy
@@ -101,8 +101,8 @@ theorem riemannHypothesis_of_differentiable_unitFrame_scalarXiPhase
     (x y : ℝ → F) (x' y' e : F)
     (hx : HasDerivAt x x' 0) (hy : HasDerivAt y y' 0)
     (hx0 : x 0 = e) (hy0 : y 0 = e)
-    (hunitx : ∀ a : ℝ, ‖x a‖ ^ 2 = 1)
-    (hunity : ∀ a : ℝ, ‖y a‖ ^ 2 = 1)
+    (hunitx : ∀ a : ℝ, ‖x a‖ ^ (2 : ℕ) = 1)
+    (hunity : ∀ a : ℝ, ‖y a‖ ^ (2 : ℕ) = 1)
     (hoverlap : ∀ a : ℝ,
       inner ℂ (x a) (y a) =
         xiRightWardBoundarySourcePhaseCrossRatio
@@ -131,8 +131,8 @@ theorem no_differentiable_unitFrame_scalarXiPhase_of_not_rh
     (hRH : ¬ RiemannHypothesis)
     (x y : ℝ → F) (e : F)
     (hx0 : x 0 = e) (hy0 : y 0 = e)
-    (hunitx : ∀ a : ℝ, ‖x a‖ ^ 2 = 1)
-    (hunity : ∀ a : ℝ, ‖y a‖ ^ 2 = 1)
+    (hunitx : ∀ a : ℝ, ‖x a‖ ^ (2 : ℕ) = 1)
+    (hunity : ∀ a : ℝ, ‖y a‖ ^ (2 : ℕ) = 1)
     (hoverlap : ∀ a : ℝ,
       inner ℂ (x a) (y a) =
         xiRightWardBoundarySourcePhaseCrossRatio

@@ -53,7 +53,7 @@ theorem physicalOvertoneSource_rodrigues (q : XiZeroCopy) (branch side : Bool)
       (normalizable (physicalOvertoneFrequency q side n) (physicalRadialFrequency q) z*
         sourceProfile (physicalRate q branch) (physicalOvertoneFrequency q side n) a 1
           (reducedGreenGradient (physicalRadialFrequency q) (physicalRate q branch) 1) T z)=
-      a^2*physicalOvertoneSourceCore q branch side n (1-z)*T*
+      a^(2 : ℕ)*physicalOvertoneSourceCore q branch side n (1-z)*T*
         iteratedDeriv n (bmJacobiSeed n (3/2) (physicalOvertoneFrequency q side n)) (1-z) := by
   let w := physicalOvertoneFrequency q side n
   let w₀ := physicalFundamentalFrequency q side
@@ -74,15 +74,15 @@ theorem physicalOvertoneSource_rodrigues (q : XiZeroCopy) (branch side : Bool)
     congr 1
     ring
   have hsource : sourceRemainder s w a 1 (reducedGreenGradient chi s 1) T z=
-      a^2*physicalOvertoneSourceCore q branch side n (1-z)*T := by
+      a^(2 : ℕ)*physicalOvertoneSourceCore q branch side n (1-z)*T := by
     rw [reducedGreenGradient_fundamental w₀ chi s hf]
     dsimp only [sourceRemainder,physicalOvertoneSourceCore,fundamentalMomentConstant,
       fundamentalMomentQuadratic]
-    change power (2*s-w) (1+Real.sqrt (1-z))*a^2*
-      (((5*s^2+15*s+4)/4)*1+(1-(z:ℂ))*s*(s-1)/4*
-        ((s+2)^2*1-((w₀+1)*(w₀+2)/2-(s+1)*(s+2))))*T =
-      a^2*(power (2*s-w) (1+Real.sqrt (1-z))*
-        ((5*s^2+15*s+4)/4+s*(s-1)*((s+2)*(2*s+3)-(w₀+1)*(w₀+2)/2)/4*((1-z:ℝ):ℂ)))*T
+    change power (2*s-w) (1+Real.sqrt (1-z))*a^(2 : ℕ)*
+      (((5*s^(2 : ℕ)+15*s+4)/4)*1+(1-(z:ℂ))*s*(s-1)/4*
+        ((s+2)^(2 : ℕ)*1-((w₀+1)*(w₀+2)/2-(s+1)*(s+2))))*T =
+      a^(2 : ℕ)*(power (2*s-w) (1+Real.sqrt (1-z))*
+        ((5*s^(2 : ℕ)+15*s+4)/4+s*(s-1)*((s+2)*(2*s+3)-(w₀+1)*(w₀+2)/2)/4*((1-z:ℝ):ℂ)))*T
     push_cast
     ring
   change (ascPochhammer ℂ n).eval (3/2)*(normalizable w chi z*
@@ -95,7 +95,7 @@ theorem physicalOvertoneSource_rodrigues (q : XiZeroCopy) (branch side : Bool)
   push_cast
   linear_combination (ascPochhammer ℂ n).eval (3/2)*power (1/2) (1-z)*
     bmJacobiFactor n (3/2) w (1-(z:ℂ))*
-    (a^2*physicalOvertoneSourceCore q branch side n (1-z)*T)*hp
+    (a^(2 : ℕ)*physicalOvertoneSourceCore q branch side n (1-z)*T)*hp
 
 end
 end RHTower.D4BMJointSource

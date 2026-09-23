@@ -12,7 +12,7 @@ half-plane.  If
 
 then `d_x q = r_x`.  The interior Jacobi coefficient is consequently forced to be
 
-`b_x(p) = d_x(p)^2 = p * r_x(p)^2`.
+`b_x(p) = d_x(p)^(2 : ℕ) = p * r_x(p)^(2 : ℕ)`.
 
 With these coefficients, the Pascal-normalized Gamma-sewn ray at aperture `x`, together with the
 same Gamma vacuum used at the critical aperture, recovers the complete shifted von Mangoldt
@@ -23,7 +23,7 @@ prime-power stream
 For `x > 1/2`, both source multipliers lie strictly between zero and one and the recovered stream
 is a genuine square-summable all-prime/all-valuation vector.  At `x = 1/2` the multipliers become
 one, the asymmetric operator becomes the critical symmetric Jacobi operator, and the recovered
-stream leaves `ell^2`.  Thus the critical line is the exact lossless boundary of this source
+stream leaves `ell^(2 : ℕ)`.  Thus the critical line is the exact lossless boundary of this source
 recovery, not an exponent inserted after the fact.
 
 This is a fixed source map, not an existence interface and not an RH criterion.  It supplies the
@@ -457,7 +457,7 @@ theorem not_summable_xiSafeHalfPlanePrimePowerCoefficient_sq_of_le_half
   have hhalf := (summable_primeClockScaleMetric_iff x).1 hclock
   linarith
 
-/-- **Sharp Hilbert boundary.**  The recovered source stream belongs to `ell^2` exactly in the
+/-- **Sharp Hilbert boundary.**  The recovered source stream belongs to `ell^(2 : ℕ)` exactly in the
 open safe half-plane. -/
 theorem summable_xiSafeHalfPlanePrimePowerCoefficient_sq_iff
     (x : ℝ) :

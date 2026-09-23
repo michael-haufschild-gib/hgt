@@ -100,7 +100,7 @@ line (`BBDeckTower`, which consumes the full `EpsFree`) and the OQ2
 element-form line (`BocksteinLift`) rest on the *same* ring input, and
 `epsFree_quotXpow`/`epsFree_of_free` discharge it uniformly. -/
 theorem hann_of_epsFree {S : Type*} [CommRing S] {ε : S} (h : EpsFree ε 4) :
-    ∀ w : S, ε * w = 0 → ∃ v, w = ε ^ 3 * v := by
+    ∀ w : S, ε * w = 0 → ∃ v, w = ε ^ (3 : ℕ) * v := by
   intro w hw
   have h1 := h 1 le_rfl (by norm_num) w (by rw [pow_one]; exact hw)
   simpa using h1

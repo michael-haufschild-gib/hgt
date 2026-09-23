@@ -28,7 +28,7 @@ theorem uniformizedOrbitDerivative_joint_bound (f g h : SchwartzMap ℝ ℂ)
 
 /-- A single finite first-moment budget controls frequency changes on both infinite half-lines. -/
 def uniformizedFrequencyBudget (f g h : SchwartzMap ℝ ℂ) : ℝ :=
-  2*Real.exp (effectiveMass f g h)^2*effectiveMoment f g h 1
+  2*Real.exp (effectiveMass f g h)^(2 : ℕ)*effectiveMoment f g h 1
 
 theorem uniformizedFrequencyBudget_nonneg (f g h : SchwartzMap ℝ ℂ) :
     0 ≤ uniformizedFrequencyBudget f g h := by

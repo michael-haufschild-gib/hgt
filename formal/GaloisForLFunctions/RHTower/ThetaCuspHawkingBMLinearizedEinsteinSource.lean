@@ -54,7 +54,7 @@ theorem source_first_zero_iff (p : ExteriorPoint) (h : MetricField)
 theorem reconstructed_source_hasDerivAt (p : ExteriorPoint) (omega q : ℂ)
     (a : Primitive → (Fin 4 → ℝ) → ℂ)
     (ha : ∀ b, ContDiffAt ℝ 2 (a b) p.val)
-    (hr : a .radius p.val ≠ 0) (hf : (a .radius p.val)^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : a .radius p.val ≠ 0) (hf : (a .radius p.val)^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     HasDerivAt (source p (fun x => covariantMetric omega q (fun b => a b x)) i j)
       (residual p (metricJet omega q (fun b => ScalarTwoJet.ofField (a b) p.val)) i j) 0 := by
   rw [metricJet_correct omega q ha hr hf]
@@ -78,8 +78,8 @@ theorem fundamental_source_hasDerivAt (p : ExteriorPoint) (omega q aS aV : ℂ)
       (residual p (D4BMFundamentalMetric.fullJet p omega q aS aV S V) i j) 0 := by
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (lt_trans zero_lt_one p.property.1))
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have hfR : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have hfR : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast hfR
   exact reconstructed_source_hasDerivAt p omega q
     (D4BMFundamentalMetric.primitives omega aS aV S V)

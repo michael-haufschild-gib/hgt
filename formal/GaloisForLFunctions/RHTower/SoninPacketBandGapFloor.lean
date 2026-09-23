@@ -30,11 +30,11 @@ theorem exists_pos_eventually_le_fourier_band_gap
     (hT : Tendsto (fun i => T i - |A i|) atTop atTop) :
     ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ᶠ i in atTop,
       c₀ ≤ ‖evenFourierCutoff (T i) (soninPacketEven b c hb hbc (2 * Real.pi * A i)) -
-            evenFourierCutoff s (soninPacketEven b c hb hbc (2 * Real.pi * A i))‖ ^ 2 -
+            evenFourierCutoff s (soninPacketEven b c hb hbc (2 * Real.pi * A i))‖ ^ (2 : ℕ) -
           ‖evenFourierCutoff (t i) (soninPacketEven b c hb hbc (2 * Real.pi * A i)) -
-            evenFourierCutoff s (soninPacketEven b c hb hbc (2 * Real.pi * A i))‖ ^ 2 := by
+            evenFourierCutoff s (soninPacketEven b c hb hbc (2 * Real.pi * A i))‖ ^ (2 : ℕ) := by
   set w : ℕ → evenSubspace := fun i => soninPacketEven b c hb hbc (2 * Real.pi * A i) with hw
-  set Λ : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) with hΛ
+  set Λ : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) with hΛ
   have hΛpos : 0 < Λ := sqrt_half_energy_pos b c hb hbc
   have hgapS : Tendsto (fun i => |A i| - s) atTop atTop := by
     have h := hAabs.atTop_add (tendsto_const_nhds (x := -s) (f := atTop (α := ℕ)))
@@ -48,7 +48,7 @@ theorem exists_pos_eventually_le_fourier_band_gap
     tendsto_norm_sub_evenFourierCutoff_soninPacketEven_gap b c hb hbc T A hT hA
   have hnorm : Tendsto (fun i => ‖w i‖) atTop (𝓝 Λ) :=
     tendsto_norm_soninPacketEven b c hb hbc (fun i => 2 * Real.pi * A i) hA
-  refine ⟨(Λ / 2) ^ 2 - (Λ / 4) ^ 2, by nlinarith, ?_⟩
+  refine ⟨(Λ / 2) ^ (2 : ℕ) - (Λ / 4) ^ (2 : ℕ), by nlinarith, ?_⟩
   have hsmallFixed : ∀ᶠ i in atTop, ‖evenFourierCutoff s (w i)‖ < Λ / 8 :=
     hfixed.eventually_lt_const (by linarith)
   have hsmallInner : ∀ᶠ i in atTop, ‖evenFourierCutoff (t i) (w i)‖ < Λ / 8 :=

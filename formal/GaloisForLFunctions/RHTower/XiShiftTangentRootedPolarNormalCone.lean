@@ -48,7 +48,7 @@ noncomputable section
 /-- Pseudohyperbolic separation of two inverse-prime source nodes. -/
 def xiShiftTangentBoundaryDelta (p q : Nat.Primes) : ℝ :=
   ((((p : ℝ)⁻¹ - (q : ℝ)⁻¹) /
-    (1 - (p : ℝ)⁻¹ * (q : ℝ)⁻¹)) ^ 2)
+    (1 - (p : ℝ)⁻¹ * (q : ℝ)⁻¹)) ^ (2 : ℕ))
 
 /-- Universal normalized Xi-shift tangent response at squared separation `δ`. -/
 def xiShiftTangentBoundaryResponse (δ : ℝ) : ℝ :=
@@ -56,30 +56,30 @@ def xiShiftTangentBoundaryResponse (δ : ℝ) : ℝ :=
 
 /-- Exact second-order remainder of the boundary response defect. -/
 def xiShiftTangentBoundaryNormalRemainder (δ : ℝ) : ℝ :=
-  1 / (2 * (1 + Real.sqrt (1 - δ)) ^ 2) -
+  1 / (2 * (1 + Real.sqrt (1 - δ)) ^ (2 : ℕ)) -
     2 / (1 + Real.sqrt (1 - δ))
 
 /-- Polar lag variable at two positive multiplicative nodes. -/
 def xiShiftPolarLag (p q : ℝ) : ℝ :=
-  (p - q) ^ 2 / (p * q)
+  (p - q) ^ (2 : ℕ) / (p * q)
 
 /-- Second rooted normal coefficient after removal of the polar tangent. -/
 def xiShiftPolarSecondNormalCoefficient (A : ℝ) : ℝ :=
-  5 * A - (7 / 8 : ℝ) * A ^ 2
+  5 * A - (7 / 8 : ℝ) * A ^ (2 : ℕ)
 
 /-- Continuous extension of the first rooted polar quotient. -/
 def xiShiftPolarFirstNormalExtension (A u : ℝ) : ℝ :=
-  (5 / 2 : ℝ) * A / (1 - u) ^ 2 +
-    A ^ 2 * u / (1 - u) ^ 4 *
+  (5 / 2 : ℝ) * A / (1 - u) ^ (2 : ℕ) +
+    A ^ (2 : ℕ) * u / (1 - u) ^ (4 : ℕ) *
       xiShiftTangentBoundaryNormalRemainder
-        (A * u / (1 - u) ^ 2)
+        (A * u / (1 - u) ^ (2 : ℕ))
 
 /-- Continuous extension of the second rooted normal quotient. -/
 def xiShiftPolarSecondNormalExtension (A u : ℝ) : ℝ :=
-  (5 / 2 : ℝ) * A * (2 - u) / (1 - u) ^ 2 +
-    A ^ 2 / (1 - u) ^ 4 *
+  (5 / 2 : ℝ) * A * (2 - u) / (1 - u) ^ (2 : ℕ) +
+    A ^ (2 : ℕ) / (1 - u) ^ (4 : ℕ) *
       xiShiftTangentBoundaryNormalRemainder
-        (A * u / (1 - u) ^ 2)
+        (A * u / (1 - u) ^ (2 : ℕ))
 
 theorem xiShiftTangentBoundaryDelta_nonneg (p q : Nat.Primes) :
     0 ≤ xiShiftTangentBoundaryDelta p q := by
@@ -90,7 +90,7 @@ prime-pair separation. -/
 theorem xiShiftTangentBoundaryDelta_eq_primeRatio
     (p q : Nat.Primes) :
     xiShiftTangentBoundaryDelta p q =
-      (((p : ℝ) - q) / ((p : ℝ) * q - 1)) ^ 2 := by
+      (((p : ℝ) - q) / ((p : ℝ) * q - 1)) ^ (2 : ℕ) := by
   have hp : (p : ℝ) ≠ 0 := by exact_mod_cast p.2.ne_zero
   have hq : (q : ℝ) ≠ 0 := by exact_mod_cast q.2.ne_zero
   have hpq : (p : ℝ) * q - 1 ≠ 0 := by
@@ -112,7 +112,7 @@ theorem gammaSewnXiShiftEndpointUnitTangentKernel_eq_boundaryResponse
   let b := (q : ℝ)⁻¹
   let d := 1 - a * b
   let k := gammaXiFisherBaseCorrelation p q
-  let δ := ((a - b) / d) ^ 2
+  let δ := ((a - b) / d) ^ (2 : ℕ)
   have hp0 : (0 : ℝ) < p := by exact_mod_cast p.2.pos
   have hq0 : (0 : ℝ) < q := by exact_mod_cast q.2.pos
   have ha0 : 0 < a := by
@@ -132,13 +132,13 @@ theorem gammaSewnXiShiftEndpointUnitTangentKernel_eq_boundaryResponse
   have hd : 0 < d := by
     dsimp only [d]
     nlinarith [mul_lt_one_of_nonneg_of_lt_one_left ha0.le ha1 hb1.le]
-  have hA : 0 ≤ (1 - a ^ 2) * (1 - b ^ 2) := by
+  have hA : 0 ≤ (1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ)) := by
     exact mul_nonneg (by nlinarith [sq_nonneg (a - 1)])
       (by nlinarith [sq_nonneg (b - 1)])
-  have hkSq : k ^ 2 = 1 - δ := by
+  have hkSq : k ^ (2 : ℕ) = 1 - δ := by
     change
-      (Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) / d) ^ 2 =
-        1 - ((a - b) / d) ^ 2
+      (Real.sqrt ((1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))) / d) ^ (2 : ℕ) =
+        1 - ((a - b) / d) ^ (2 : ℕ)
     rw [div_pow, Real.sq_sqrt hA, div_pow]
     field_simp [hd.ne']
     ring
@@ -148,7 +148,7 @@ theorem gammaSewnXiShiftEndpointUnitTangentKernel_eq_boundaryResponse
   rw [gammaSewnXiShiftEndpointUnitTangentKernel_eq_responseFromBase]
   unfold xiShiftTangentBoundaryResponse xiShiftTangentBoundaryDelta
     xiShiftTangentResponseFromBase
-  change k * (2 * k ^ 2 - 1) =
+  change k * (2 * k ^ (2 : ℕ) - 1) =
     Real.sqrt (1 - δ) * (1 - 2 * δ)
   rw [hsqrt, hkSq]
   ring
@@ -169,15 +169,15 @@ theorem xiShiftTangentBoundaryDelta_lt_one (p q : Nat.Primes) :
   have hd : 0 < d := by
     dsimp only [d]
     nlinarith [mul_lt_one_of_nonneg_of_lt_one_left ha0.le ha1 hb1.le]
-  have hdiff : (a - b) ^ 2 < d ^ 2 := by
-    have haSq : 0 < 1 - a ^ 2 := by
+  have hdiff : (a - b) ^ (2 : ℕ) < d ^ (2 : ℕ) := by
+    have haSq : 0 < 1 - a ^ (2 : ℕ) := by
       nlinarith [sq_lt_sq₀ ha0.le (by norm_num) |>.2 ha1]
-    have hbSq : 0 < 1 - b ^ 2 := by
+    have hbSq : 0 < 1 - b ^ (2 : ℕ) := by
       nlinarith [sq_lt_sq₀ hb0.le (by norm_num) |>.2 hb1]
     have hprod := mul_pos haSq hbSq
     dsimp only [d]
     nlinarith
-  change ((a - b) / d) ^ 2 < 1
+  change ((a - b) / d) ^ (2 : ℕ) < 1
   rw [div_pow, div_lt_one (sq_pos_of_pos hd)]
   exact hdiff
 
@@ -186,16 +186,16 @@ theorem one_sub_xiShiftTangentBoundaryResponse_eq
     {δ : ℝ} (hδ : δ ≤ 1) :
     1 - xiShiftTangentBoundaryResponse δ =
       (5 / 2 : ℝ) * δ +
-        δ ^ 2 * xiShiftTangentBoundaryNormalRemainder δ := by
+        δ ^ (2 : ℕ) * xiShiftTangentBoundaryNormalRemainder δ := by
   let s := Real.sqrt (1 - δ)
   have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-  have hsSq : s ^ 2 = 1 - δ := Real.sq_sqrt (by linarith)
+  have hsSq : s ^ (2 : ℕ) = 1 - δ := Real.sq_sqrt (by linarith)
   have hden : 1 + s ≠ 0 := by positivity
   unfold xiShiftTangentBoundaryResponse
     xiShiftTangentBoundaryNormalRemainder
   change 1 - s * (1 - 2 * δ) =
     (5 / 2 : ℝ) * δ +
-      δ ^ 2 * (1 / (2 * (1 + s) ^ 2) - 2 / (1 + s))
+      δ ^ (2 : ℕ) * (1 / (2 * (1 + s) ^ (2 : ℕ)) - 2 / (1 + s))
   rw [show δ = (1 - s) * (1 + s) by nlinarith [hsSq]]
   field_simp [hden]
   ring
@@ -233,7 +233,7 @@ theorem xiShiftTangentBoundaryDelta_eq_polarLag_mul_root
     xiShiftTangentBoundaryDelta p q =
       xiShiftPolarLag (p : ℝ) (q : ℝ) *
           (((p : ℝ) * q)⁻¹) /
-        (1 - ((p : ℝ) * q)⁻¹) ^ 2 := by
+        (1 - ((p : ℝ) * q)⁻¹) ^ (2 : ℕ) := by
   have hp : (p : ℝ) ≠ 0 := by exact_mod_cast p.2.ne_zero
   have hq : (q : ℝ) ≠ 0 := by exact_mod_cast q.2.ne_zero
   have hpq : (p : ℝ) * q - 1 ≠ 0 := by
@@ -248,23 +248,23 @@ theorem xiShiftTangentBoundaryDelta_eq_polarLag_mul_root
 `δ = A u/(1-u)²`. -/
 theorem rooted_xiShiftTangentBoundaryResponse_expansion
     {A u : ℝ} (hu : u ≠ 0) (hu1 : u ≠ 1)
-    (hδ : A * u / (1 - u) ^ 2 ≤ 1) :
+    (hδ : A * u / (1 - u) ^ (2 : ℕ) ≤ 1) :
     (1 / u) *
         (1 - xiShiftTangentBoundaryResponse
-          (A * u / (1 - u) ^ 2)) =
-      (5 / 2 : ℝ) * A / (1 - u) ^ 2 +
-        A ^ 2 * u / (1 - u) ^ 4 *
+          (A * u / (1 - u) ^ (2 : ℕ))) =
+      (5 / 2 : ℝ) * A / (1 - u) ^ (2 : ℕ) +
+        A ^ (2 : ℕ) * u / (1 - u) ^ (4 : ℕ) *
           xiShiftTangentBoundaryNormalRemainder
-            (A * u / (1 - u) ^ 2) := by
+            (A * u / (1 - u) ^ (2 : ℕ)) := by
   rw [one_sub_xiShiftTangentBoundaryResponse_eq hδ]
   field_simp [hu, sub_ne_zero.mpr hu1]
 
 theorem rooted_xiShiftTangentBoundaryResponse_eq_firstNormalExtension
     {A u : ℝ} (hu : u ≠ 0) (hu1 : u ≠ 1)
-    (hδ : A * u / (1 - u) ^ 2 ≤ 1) :
+    (hδ : A * u / (1 - u) ^ (2 : ℕ) ≤ 1) :
     (1 / u) *
         (1 - xiShiftTangentBoundaryResponse
-          (A * u / (1 - u) ^ 2)) =
+          (A * u / (1 - u) ^ (2 : ℕ))) =
       xiShiftPolarFirstNormalExtension A u := by
   rw [rooted_xiShiftTangentBoundaryResponse_expansion hu hu1 hδ]
   rfl
@@ -276,10 +276,10 @@ theorem primeRooted_xiShiftTangentKernel_defect_expansion
     (p : ℝ) * q *
         (1 - gammaSewnXiShiftEndpointUnitTangentKernel p q) =
       (5 / 2 : ℝ) * xiShiftPolarLag (p : ℝ) q /
-          (1 - ((p : ℝ) * q)⁻¹) ^ 2 +
-        xiShiftPolarLag (p : ℝ) q ^ 2 *
+          (1 - ((p : ℝ) * q)⁻¹) ^ (2 : ℕ) +
+        xiShiftPolarLag (p : ℝ) q ^ (2 : ℕ) *
             (((p : ℝ) * q)⁻¹) /
-          (1 - ((p : ℝ) * q)⁻¹) ^ 4 *
+          (1 - ((p : ℝ) * q)⁻¹) ^ (4 : ℕ) *
             xiShiftTangentBoundaryNormalRemainder
               (xiShiftTangentBoundaryDelta p q) := by
   let u := (((p : ℝ) * q)⁻¹)
@@ -295,10 +295,10 @@ theorem primeRooted_xiShiftTangentKernel_defect_expansion
     have hq2 : (2 : ℝ) ≤ q := by exact_mod_cast q.2.two_le
     nlinarith
   have hsub :
-      xiShiftTangentBoundaryDelta p q = A * u / (1 - u) ^ 2 := by
+      xiShiftTangentBoundaryDelta p q = A * u / (1 - u) ^ (2 : ℕ) := by
     simpa only [A, u] using
       xiShiftTangentBoundaryDelta_eq_polarLag_mul_root p q
-  have hδ : A * u / (1 - u) ^ 2 ≤ 1 := by
+  have hδ : A * u / (1 - u) ^ (2 : ℕ) ≤ 1 := by
     rw [← hsub]
     exact (xiShiftTangentBoundaryDelta_lt_one p q).le
   have hmain :=
@@ -315,11 +315,11 @@ theorem primeRooted_xiShiftTangentKernel_defect_expansion
 the singular quotient equals its explicit continuous extension. -/
 theorem rooted_xiShiftTangentBoundaryResponse_secondNormal_eq
     {A u : ℝ} (hu : u ≠ 0) (hu1 : u ≠ 1)
-    (hδ : A * u / (1 - u) ^ 2 ≤ 1) :
+    (hδ : A * u / (1 - u) ^ (2 : ℕ) ≤ 1) :
     (1 / u) *
         ((1 / u) *
             (1 - xiShiftTangentBoundaryResponse
-              (A * u / (1 - u) ^ 2)) -
+              (A * u / (1 - u) ^ (2 : ℕ))) -
           (5 / 2 : ℝ) * A) =
       xiShiftPolarSecondNormalExtension A u := by
   rw [rooted_xiShiftTangentBoundaryResponse_expansion hu hu1 hδ]
@@ -350,10 +350,10 @@ theorem primeRooted_xiShiftTangentKernel_secondNormal_eq
     have hq2 : (2 : ℝ) ≤ q := by exact_mod_cast q.2.two_le
     nlinarith
   have hsub :
-      xiShiftTangentBoundaryDelta p q = A * u / (1 - u) ^ 2 := by
+      xiShiftTangentBoundaryDelta p q = A * u / (1 - u) ^ (2 : ℕ) := by
     simpa only [A, u] using
       xiShiftTangentBoundaryDelta_eq_polarLag_mul_root p q
-  have hδ : A * u / (1 - u) ^ 2 ≤ 1 := by
+  have hδ : A * u / (1 - u) ^ (2 : ℕ) ≤ 1 := by
     rw [← hsub]
     exact (xiShiftTangentBoundaryDelta_lt_one p q).le
   have hmain :=
@@ -374,28 +374,28 @@ theorem continuousAt_xiShiftPolarFirstNormalExtension_zero (A : ℝ) :
     ContinuousAt (xiShiftPolarFirstNormalExtension A) 0 := by
   unfold xiShiftPolarFirstNormalExtension
   have hinner :
-      ContinuousAt (fun u : ℝ => A * u / (1 - u) ^ 2) 0 := by
+      ContinuousAt (fun u : ℝ => A * u / (1 - u) ^ (2 : ℕ)) 0 := by
     fun_prop (disch := norm_num)
   have hrem :
       ContinuousAt
         (fun u : ℝ =>
           xiShiftTangentBoundaryNormalRemainder
-            (A * u / (1 - u) ^ 2)) 0 := by
+            (A * u / (1 - u) ^ (2 : ℕ))) 0 := by
     change ContinuousAt
       (xiShiftTangentBoundaryNormalRemainder ∘
-        fun u : ℝ => A * u / (1 - u) ^ 2) 0
+        fun u : ℝ => A * u / (1 - u) ^ (2 : ℕ)) 0
     apply ContinuousAt.comp
-      (f := fun u : ℝ => A * u / (1 - u) ^ 2)
+      (f := fun u : ℝ => A * u / (1 - u) ^ (2 : ℕ))
       (g := xiShiftTangentBoundaryNormalRemainder)
     · simpa using
         continuousAt_xiShiftTangentBoundaryNormalRemainder_zero
     · exact hinner
   have hfirst :
       ContinuousAt
-        (fun u : ℝ => (5 / 2 : ℝ) * A / (1 - u) ^ 2) 0 := by
+        (fun u : ℝ => (5 / 2 : ℝ) * A / (1 - u) ^ (2 : ℕ)) 0 := by
     fun_prop (disch := norm_num)
   have hfactor :
-      ContinuousAt (fun u : ℝ => A ^ 2 * u / (1 - u) ^ 4) 0 := by
+      ContinuousAt (fun u : ℝ => A ^ (2 : ℕ) * u / (1 - u) ^ (4 : ℕ)) 0 := by
     fun_prop (disch := norm_num)
   exact hfirst.add (hfactor.mul hrem)
 
@@ -418,28 +418,28 @@ theorem continuousAt_xiShiftPolarSecondNormalExtension_zero (A : ℝ) :
     ContinuousAt (xiShiftPolarSecondNormalExtension A) 0 := by
   unfold xiShiftPolarSecondNormalExtension
   have hinner :
-      ContinuousAt (fun u : ℝ => A * u / (1 - u) ^ 2) 0 := by
+      ContinuousAt (fun u : ℝ => A * u / (1 - u) ^ (2 : ℕ)) 0 := by
     fun_prop (disch := norm_num)
   have hrem :
       ContinuousAt
         (fun u : ℝ =>
           xiShiftTangentBoundaryNormalRemainder
-            (A * u / (1 - u) ^ 2)) 0 := by
+            (A * u / (1 - u) ^ (2 : ℕ))) 0 := by
     change ContinuousAt
       (xiShiftTangentBoundaryNormalRemainder ∘
-        fun u : ℝ => A * u / (1 - u) ^ 2) 0
+        fun u : ℝ => A * u / (1 - u) ^ (2 : ℕ)) 0
     apply ContinuousAt.comp
-      (f := fun u : ℝ => A * u / (1 - u) ^ 2)
+      (f := fun u : ℝ => A * u / (1 - u) ^ (2 : ℕ))
       (g := xiShiftTangentBoundaryNormalRemainder)
     · simpa using
         continuousAt_xiShiftTangentBoundaryNormalRemainder_zero
     · exact hinner
   have hfirst :
       ContinuousAt
-        (fun u : ℝ => (5 / 2 : ℝ) * A * (2 - u) / (1 - u) ^ 2) 0 := by
+        (fun u : ℝ => (5 / 2 : ℝ) * A * (2 - u) / (1 - u) ^ (2 : ℕ)) 0 := by
     fun_prop (disch := norm_num)
   have hfactor :
-      ContinuousAt (fun u : ℝ => A ^ 2 / (1 - u) ^ 4) 0 := by
+      ContinuousAt (fun u : ℝ => A ^ (2 : ℕ) / (1 - u) ^ (4 : ℕ)) 0 := by
     fun_prop (disch := norm_num)
   exact hfirst.add (hfactor.mul hrem)
 

@@ -81,22 +81,22 @@ theorem mul_log_inv_le {q : ℝ} (hq : 0 < q) : q * Real.log (1 / q) ≤ 1 / Rea
 /-- **The extremal family.**  With mass `q` placed at `b_q`, the second-moment constraint is met with
 equality. -/
 theorem atom_second_moment {Ξ q b : ℝ} (hq : 0 < q) (hΞ : 0 < Ξ)
-    (hb : b ^ 2 = Ξ ^ 2 * (1 - (1 - q) ^ 3 / 3) / q) :
-    (1 - q) ^ 3 * Ξ ^ 2 / 3 + q * b ^ 2 = Ξ ^ 2 := by
+    (hb : b ^ (2 : ℕ) = Ξ ^ (2 : ℕ) * (1 - (1 - q) ^ (3 : ℕ) / 3) / q) :
+    (1 - q) ^ (3 : ℕ) * Ξ ^ (2 : ℕ) / 3 + q * b ^ (2 : ℕ) = Ξ ^ (2 : ℕ) := by
   rw [hb]
   field_simp
   ring
 
 /-- The atom sits above the uniform block, so the band constraint is respected. -/
 theorem atom_above_block {Ξ q b : ℝ} (hq : 0 < q) (hq1 : q < 1) (hΞ : 0 < Ξ)
-    (hb : b ^ 2 = Ξ ^ 2 * (1 - (1 - q) ^ 3 / 3) / q) (hbpos : 0 < b) :
+    (hb : b ^ (2 : ℕ) = Ξ ^ (2 : ℕ) * (1 - (1 - q) ^ (3 : ℕ) / 3) / q) (hbpos : 0 < b) :
     (1 - q) * Ξ ≤ b := by
   have h1q : (0 : ℝ) < 1 - q := by linarith
   have h1qle : (1 : ℝ) - q ≤ 1 := by linarith
-  have hcube : (1 - q) ^ 3 ≤ 1 := pow_le_one₀ h1q.le h1qle
-  have hsq : (1 - q) ^ 2 ≤ 1 := pow_le_one₀ h1q.le h1qle
-  have hcube0 : (0 : ℝ) ≤ (1 - q) ^ 3 := by positivity
-  have hkey : ((1 - q) * Ξ) ^ 2 ≤ b ^ 2 := by
+  have hcube : (1 - q) ^ (3 : ℕ) ≤ 1 := pow_le_one₀ h1q.le h1qle
+  have hsq : (1 - q) ^ (2 : ℕ) ≤ 1 := pow_le_one₀ h1q.le h1qle
+  have hcube0 : (0 : ℝ) ≤ (1 - q) ^ (3 : ℕ) := by positivity
+  have hkey : ((1 - q) * Ξ) ^ (2 : ℕ) ≤ b ^ (2 : ℕ) := by
     rw [hb, le_div_iff₀ hq]
     nlinarith [hsq, hcube0, sq_nonneg Ξ, h1q]
   have hposprod : 0 < (1 - q) * Ξ := mul_pos h1q hΞ

@@ -15,7 +15,7 @@ namespace RHTower
 
 /-- **Termwise reduction of the square weight to the Mertens weight.** -/
 theorem sum_vonMangoldt_sq_div_le_log_mul_sum (N : ℕ) :
-    ∑ k ∈ Finset.Icc 1 N, (vonMangoldt k) ^ 2 / (k : ℝ)
+    ∑ k ∈ Finset.Icc 1 N, (vonMangoldt k) ^ (2 : ℕ) / (k : ℝ)
       ≤ Real.log (N : ℝ) * ∑ k ∈ Finset.Icc 1 N, (vonMangoldt k) / (k : ℝ) := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun k hk => ?_
@@ -34,7 +34,7 @@ theorem sum_vonMangoldt_sq_div_le_log_mul_sum (N : ℕ) :
 `∑_{k ≤ N} Λ(k)²/k ≤ log N · (log N + C)` for every `N`. -/
 theorem exists_sum_vonMangoldt_sq_div_le :
     ∃ C : ℝ, ∀ N : ℕ, 1 ≤ N →
-      ∑ k ∈ Finset.Icc 1 N, (vonMangoldt k) ^ 2 / (k : ℝ)
+      ∑ k ∈ Finset.Icc 1 N, (vonMangoldt k) ^ (2 : ℕ) / (k : ℝ)
         ≤ Real.log (N : ℝ) * (Real.log (N : ℝ) + C) := by
   have hconv := tendsto_sum_vonMangoldt_div_sub_log
   obtain ⟨C, hC⟩ := hconv.bddAbove_range

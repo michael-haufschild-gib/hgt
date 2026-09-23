@@ -100,7 +100,7 @@ theorem four_mul_transverseQuantum_le_twoOrientationLandingEnergy_of_boundaryFlu
     (hq : q.1 ∈ S)
     (ht : |(xiSpectralPoint q).re - t| ≤ 1 / 2)
     (hflux : thetaXiRankTwoBoundaryFlux q ≠ 0) :
-    4 * (96 / 145 : ℝ) ^ 2 ≤
+    4 * (96 / 145 : ℝ) ^ (2 : ℕ) ≤
       xiPrimeWardExteriorTwoOrientationLandingEnergy S t := by
   have him : (xiSpectralPoint q).im ≠ 0 := by
     intro him
@@ -124,7 +124,7 @@ theorem thetaXiRankTwoBoundaryFlux_eq_zero_of_twoOrientationLandingEnergy_lt_qua
     (hq : q.1 ∈ S)
     (ht : |(xiSpectralPoint q).re - t| ≤ 1 / 2)
     (hsub : xiPrimeWardExteriorTwoOrientationLandingEnergy S t <
-      4 * (96 / 145 : ℝ) ^ 2) :
+      4 * (96 / 145 : ℝ) ^ (2 : ℕ)) :
     thetaXiRankTwoBoundaryFlux q = 0 := by
   by_contra hflux
   exact (not_lt_of_ge
@@ -156,7 +156,7 @@ theorem tendsto_coefficientFaithfulTwoOrientationSourceCesaro_and_quantum_of_bou
         atTop
         (nhds ((xiPrimeWardExteriorTwoOrientationLandingEnergy
           (xiDivisorSupportClosedRectangle z₁ z₂) t : ℝ) : ℂ)) ∧
-      4 * (96 / 145 : ℝ) ^ 2 ≤
+      4 * (96 / 145 : ℝ) ^ (2 : ℕ) ≤
         xiPrimeWardExteriorTwoOrientationLandingEnergy
           (xiDivisorSupportClosedRectangle z₁ z₂) t := by
   constructor

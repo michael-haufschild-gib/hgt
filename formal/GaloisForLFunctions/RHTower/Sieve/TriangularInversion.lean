@@ -57,9 +57,9 @@ theorem continuous_fourier_triC {δ : ℝ} (hδ : 0 ≤ δ) : Continuous (𝓕 (
 /-- The transform is dominated by a Lorentzian: the interval-length bound and the `L^{-2}` bound
 combine into an integrable majorant. -/
 theorem norm_fourier_triC_le {δ : ℝ} (hδ : 0 < δ) (w : ℝ) :
-    ‖𝓕 (triC δ) w‖ ≤ 2 * δ ^ 2 / (1 + (δ * Real.pi * w) ^ 2) := by
+    ‖𝓕 (triC δ) w‖ ≤ 2 * δ ^ (2 : ℕ) / (1 + (δ * Real.pi * w) ^ (2 : ℕ)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hden : (0 : ℝ) < 1 + (δ * Real.pi * w) ^ 2 := by positivity
+  have hden : (0 : ℝ) < 1 + (δ * Real.pi * w) ^ (2 : ℕ) := by positivity
   rw [fourier_triC hδ, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hδ,
     le_div_iff₀ hden]
   rcases eq_or_ne w 0 with rfl | hw
@@ -76,15 +76,15 @@ theorem norm_fourier_triC_le {δ : ℝ} (hδ : 0 < δ) (w : ℝ) :
       rcases mul_eq_zero.1 this with h' | h'
       · exact absurd h' (ne_of_gt hpi)
       · exact hw h'
-    have hLsq : L ^ 2 = 4 * Real.pi ^ 2 * w ^ 2 := by rw [hLdef]; ring
-    have hLsqpos : (0 : ℝ) < L ^ 2 := by positivity
-    have h1 : ‖fejerWeightAt δ L‖ ≤ 4 / (δ * L ^ 2) := norm_fejerWeightAt_le hδ hL0
+    have hLsq : L ^ (2 : ℕ) = 4 * Real.pi ^ (2 : ℕ) * w ^ (2 : ℕ) := by rw [hLdef]; ring
+    have hLsqpos : (0 : ℝ) < L ^ (2 : ℕ) := by positivity
+    have h1 : ‖fejerWeightAt δ L‖ ≤ 4 / (δ * L ^ (2 : ℕ)) := norm_fejerWeightAt_le hδ hL0
     have h2 : ‖fejerWeightAt δ L‖ ≤ δ := by
       rw [fejerWeightAt]
       exact norm_integral_fejer_symm_le_len L hL0 hδ
     have hx0 : (0 : ℝ) ≤ ‖fejerWeightAt δ L‖ := norm_nonneg _
-    have hkey : ‖fejerWeightAt δ L‖ * (δ * Real.pi ^ 2 * w ^ 2) ≤ 1 := by
-      have hstep : ‖fejerWeightAt δ L‖ * (δ * L ^ 2) ≤ 4 := by
+    have hkey : ‖fejerWeightAt δ L‖ * (δ * Real.pi ^ (2 : ℕ) * w ^ (2 : ℕ)) ≤ 1 := by
+      have hstep : ‖fejerWeightAt δ L‖ * (δ * L ^ (2 : ℕ)) ≤ 4 := by
         rw [← le_div_iff₀ (by positivity)]
         exact h1
       rw [hLsq] at hstep
@@ -94,9 +94,9 @@ theorem norm_fourier_triC_le {δ : ℝ} (hδ : 0 < δ) (w : ℝ) :
 theorem integrable_fourier_triC {δ : ℝ} (hδ : 0 < δ) : Integrable (𝓕 (triC δ)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hne : δ * Real.pi ≠ 0 := by positivity
-  have hlor : Integrable fun w : ℝ => (1 + (δ * Real.pi * w) ^ 2)⁻¹ :=
+  have hlor : Integrable fun w : ℝ => (1 + (δ * Real.pi * w) ^ (2 : ℕ))⁻¹ :=
     integrable_inv_one_add_sq.comp_mul_left' hne
-  have hmaj : Integrable fun w : ℝ => 2 * δ ^ 2 * (1 + (δ * Real.pi * w) ^ 2)⁻¹ :=
+  have hmaj : Integrable fun w : ℝ => 2 * δ ^ (2 : ℕ) * (1 + (δ * Real.pi * w) ^ (2 : ℕ))⁻¹ :=
     hlor.const_mul _
   refine Integrable.mono' hmaj (continuous_fourier_triC hδ.le).aestronglyMeasurable ?_
   refine Filter.Eventually.of_forall fun w => ?_

@@ -25,16 +25,16 @@ def ccmActualHeadQuantilePolarCentroid (n : ℕ) : ℝ :=
 def ccmActualHeadParabolicCentroidVariance (K : ℕ) (c : ℕ → ℝ) : ℝ :=
   ccmActualHeadParabolicMass K *
       (∑ n ∈ Finset.range (K + 1),
-        criticalMellinAtomWeight (n + 2) * c (n + 2) ^ 2) -
+        criticalMellinAtomWeight (n + 2) * c (n + 2) ^ (2 : ℕ)) -
     (∑ n ∈ Finset.range (K + 1),
-      criticalMellinAtomWeight (n + 2) * c (n + 2)) ^ 2
+      criticalMellinAtomWeight (n + 2) * c (n + 2)) ^ (2 : ℕ)
 
 /-- Common cubic-width contribution to a parabolic aggregate form.  It cancels between the
 literal matched and equal-mass quantile heads. -/
 def ccmActualHeadParabolicCubicWidthCorrection (K : ℕ) : ℝ :=
   ccmActualHeadParabolicMass K *
     (∑ n ∈ Finset.range (K + 1),
-      criticalMellinAtomWeight (n + 2) ^ 3) / 12
+      criticalMellinAtomWeight (n + 2) ^ (3 : ℕ)) / 12
 
 theorem ccmActualHeadQuantilePolarCentroid_eq_matched_add_displacement (n : ℕ) :
     ccmActualHeadQuantilePolarCentroid n =
@@ -48,15 +48,15 @@ theorem ccmActualHeadQuantilePolarCentroid_eq_matched_add_displacement (n : ℕ)
 private theorem ccmParabolicMoment_two_eq_centroid_sq_add_cubic
     (a b : ℝ) :
     ccmParabolicMoment a b 2 =
-      (b - a) * ((a + b) / 2) ^ 2 / 2 + (b - a) ^ 3 / 24 := by
+      (b - a) * ((a + b) / 2) ^ (2 : ℕ) / 2 + (b - a) ^ (3 : ℕ) / 24 := by
   simp [ccmParabolicMoment]
   ring
 
 private theorem ccmActualHeadMatchedParabolicMoment_two_eq_centroid_sq_add_cubic
     (n : ℕ) :
     ccmActualHeadMatchedParabolicMoment n 2 =
-      criticalMellinAtomWeight n * ccmActualHeadMatchedPolarCentroid n ^ 2 / 2 +
-        criticalMellinAtomWeight n ^ 3 / 24 := by
+      criticalMellinAtomWeight n * ccmActualHeadMatchedPolarCentroid n ^ (2 : ℕ) / 2 +
+        criticalMellinAtomWeight n ^ (3 : ℕ) / 24 := by
   rw [ccmActualHeadMatchedParabolicMoment,
     ccmParabolicMoment_two_eq_centroid_sq_add_cubic,
     ccmActualHeadMatchedPolarUpper_sub_lower_eq_atomWeight]
@@ -66,8 +66,8 @@ private theorem ccmActualHeadQuantileParabolicMoment_one_eq_weight_mul_centroid
     (n : ℕ) :
     ccmActualHeadQuantileParabolicMoment n 1 =
       criticalMellinAtomWeight n * ccmActualHeadQuantilePolarCentroid n := by
-  change (ccmActualHeadQuantilePolarCoordinate (n + 1) ^ 2 -
-      ccmActualHeadQuantilePolarCoordinate n ^ 2) / 2 =
+  change (ccmActualHeadQuantilePolarCoordinate (n + 1) ^ (2 : ℕ) -
+      ccmActualHeadQuantilePolarCoordinate n ^ (2 : ℕ)) / 2 =
     criticalMellinAtomWeight n *
       ((ccmActualHeadQuantilePolarCoordinate n +
         ccmActualHeadQuantilePolarCoordinate (n + 1)) / 2)
@@ -77,8 +77,8 @@ private theorem ccmActualHeadQuantileParabolicMoment_one_eq_weight_mul_centroid
 private theorem ccmActualHeadQuantileParabolicMoment_two_eq_centroid_sq_add_cubic
     (n : ℕ) :
     ccmActualHeadQuantileParabolicMoment n 2 =
-      criticalMellinAtomWeight n * ccmActualHeadQuantilePolarCentroid n ^ 2 / 2 +
-        criticalMellinAtomWeight n ^ 3 / 24 := by
+      criticalMellinAtomWeight n * ccmActualHeadQuantilePolarCentroid n ^ (2 : ℕ) / 2 +
+        criticalMellinAtomWeight n ^ (3 : ℕ) / 24 := by
   rw [ccmActualHeadQuantileParabolicMoment,
     ccmParabolicMoment_two_eq_centroid_sq_add_cubic]
   rw [show ccmActualHeadQuantilePolarCoordinate (n + 1) -
@@ -96,8 +96,8 @@ private theorem ccmActualHeadMatchedParabolicAggregate_one (K : ℕ) :
 private theorem ccmActualHeadMatchedParabolicAggregate_two (K : ℕ) :
     ccmActualHeadMatchedParabolicAggregate K 2 =
       ∑ n ∈ Finset.range (K + 1),
-        (criticalMellinAtomWeight (n + 2) * ccmActualHeadMatchedPolarCentroid (n + 2) ^ 2 / 2 +
-          criticalMellinAtomWeight (n + 2) ^ 3 / 24) := by
+        (criticalMellinAtomWeight (n + 2) * ccmActualHeadMatchedPolarCentroid (n + 2) ^ (2 : ℕ) / 2 +
+          criticalMellinAtomWeight (n + 2) ^ (3 : ℕ) / 24) := by
   simp only [ccmActualHeadMatchedParabolicAggregate, Finset.sum_apply]
   simp_rw [ccmActualHeadMatchedParabolicMoment_two_eq_centroid_sq_add_cubic]
 
@@ -111,8 +111,8 @@ private theorem ccmActualHeadQuantileParabolicAggregate_one (K : ℕ) :
 private theorem ccmActualHeadQuantileParabolicAggregate_two (K : ℕ) :
     ccmActualHeadQuantileParabolicAggregate K 2 =
       ∑ n ∈ Finset.range (K + 1),
-        (criticalMellinAtomWeight (n + 2) * ccmActualHeadQuantilePolarCentroid (n + 2) ^ 2 / 2 +
-          criticalMellinAtomWeight (n + 2) ^ 3 / 24) := by
+        (criticalMellinAtomWeight (n + 2) * ccmActualHeadQuantilePolarCentroid (n + 2) ^ (2 : ℕ) / 2 +
+          criticalMellinAtomWeight (n + 2) ^ (3 : ℕ) / 24) := by
   simp only [ccmActualHeadQuantileParabolicAggregate, Finset.sum_apply]
   simp_rw [ccmActualHeadQuantileParabolicMoment_two_eq_centroid_sq_add_cubic]
 
@@ -120,11 +120,11 @@ private theorem sum_weight_centroid_sq_add_cubic
     (K : ℕ) (c : ℕ → ℝ) :
     2 * ccmActualHeadParabolicMass K *
         (∑ n ∈ Finset.range (K + 1),
-          (criticalMellinAtomWeight (n + 2) * c (n + 2) ^ 2 / 2 +
-            criticalMellinAtomWeight (n + 2) ^ 3 / 24)) =
+          (criticalMellinAtomWeight (n + 2) * c (n + 2) ^ (2 : ℕ) / 2 +
+            criticalMellinAtomWeight (n + 2) ^ (3 : ℕ) / 24)) =
       ccmActualHeadParabolicMass K *
         (∑ n ∈ Finset.range (K + 1),
-          criticalMellinAtomWeight (n + 2) * c (n + 2) ^ 2) +
+          criticalMellinAtomWeight (n + 2) * c (n + 2) ^ (2 : ℕ)) +
       ccmActualHeadParabolicCubicWidthCorrection K := by
   rw [Finset.sum_add_distrib]
   rw [← Finset.sum_div, ← Finset.sum_div]

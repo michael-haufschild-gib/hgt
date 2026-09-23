@@ -12,7 +12,7 @@ Fixing total positive frequency `w` and integrating the emitted pair intensity o
 split `u + v = w` gives an exact continuum spectral law.  No KMS, passivity, minimum-phase, or RH
 hypothesis enters the calculation:
 
-`integral from 0 to w of normSq(K(u,w-u)) du = (2/15) w^5 Xi(w)^2`.
+`integral from 0 to w of normSq(K(u,w-u)) du = (2/15) w^(5 : ℕ) Xi(w)^(2 : ℕ)`.
 
 **[LITERATURE]** Perturbative moving-mirror influence-functional calculations derive particle
 creation, colored noise, and nonlocal dissipation from quadratic convolution integrals over two
@@ -55,7 +55,7 @@ def thetaCuspHawkingPhaseDressedPairEmissionDensity
 /-- Entire form factor continuing the exact physical pair-emission density.  The fifth-order zero
 at the origin is universal pair phase space; every other zero comes from the theta source. -/
 def thetaCuspHawkingAnalyticPairEmissionFormFactor (z : ℂ) : ℂ :=
-  (2 / 15 : ℂ) * z ^ 5 * XiC z ^ 2
+  (2 / 15 : ℂ) * z ^ (5 : ℕ) * XiC z ^ (2 : ℕ)
 
 /-- The continued theta Hawking pair-emission form factor is entire. -/
 theorem thetaCuspHawkingAnalyticPairEmissionFormFactor_differentiable :
@@ -66,11 +66,11 @@ theorem thetaCuspHawkingAnalyticPairEmissionFormFactor_differentiable :
 
 /-- **[PAPER-PROVED] [LEAN-PROVED] Pair-shell intensity.**  On the total-frequency shell
 `u + (w-u) = w`, the exact theta Hawking kernel has polynomial split weight and coefficient
-`Xi(w)^2`. -/
+`Xi(w)^(2 : ℕ)`. -/
 theorem thetaCuspHawkingBornPairKernel_normSq_totalSplit (w u : ℝ) :
     Complex.normSq
         (thetaCuspHawkingBornPairKernel (u : ℂ) ((w - u : ℝ) : ℂ)) =
-      4 * u ^ 2 * (w - u) ^ 2 * Xi w ^ 2 := by
+      4 * u ^ (2 : ℕ) * (w - u) ^ (2 : ℕ) * Xi w ^ (2 : ℕ) := by
   rw [thetaCuspHawkingBornPairKernel]
   push_cast
   rw [show (u : ℂ) + ((w : ℂ) - (u : ℂ)) = (w : ℂ) by ring,
@@ -81,27 +81,27 @@ theorem thetaCuspHawkingBornPairKernel_normSq_totalSplit (w u : ℝ) :
 
 /-- Exact beta-function integral of the theta Hawking pair-shell intensity. -/
 private theorem integral_thetaCuspHawkingBornPairKernel_normSq (w : ℝ) :
-    ∫ u in 0..w, 4 * u ^ 2 * (w - u) ^ 2 * Xi w ^ 2 =
-      (2 / 15 : ℝ) * w ^ 5 * Xi w ^ 2 := by
+    ∫ u in 0..w, 4 * u ^ (2 : ℕ) * (w - u) ^ (2 : ℕ) * Xi w ^ (2 : ℕ) =
+      (2 / 15 : ℝ) * w ^ (5 : ℕ) * Xi w ^ (2 : ℕ) := by
   have h2 := integral_pow (a := (0 : ℝ)) (b := w) (n := 2)
   have h3 := integral_pow (a := (0 : ℝ)) (b := w) (n := 3)
   have h4 := integral_pow (a := (0 : ℝ)) (b := w) (n := 4)
   have hi2 : IntervalIntegrable
-      (fun u : ℝ => (4 * w ^ 2 * Xi w ^ 2) * u ^ 2) volume 0 w :=
+      (fun u : ℝ => (4 * w ^ (2 : ℕ) * Xi w ^ (2 : ℕ)) * u ^ (2 : ℕ)) volume 0 w :=
     (by fun_prop : Continuous
-      (fun u : ℝ => (4 * w ^ 2 * Xi w ^ 2) * u ^ 2)).intervalIntegrable _ _
+      (fun u : ℝ => (4 * w ^ (2 : ℕ) * Xi w ^ (2 : ℕ)) * u ^ (2 : ℕ))).intervalIntegrable _ _
   have hi3 : IntervalIntegrable
-      (fun u : ℝ => (-8 * w * Xi w ^ 2) * u ^ 3) volume 0 w :=
+      (fun u : ℝ => (-8 * w * Xi w ^ (2 : ℕ)) * u ^ (3 : ℕ)) volume 0 w :=
     (by fun_prop : Continuous
-      (fun u : ℝ => (-8 * w * Xi w ^ 2) * u ^ 3)).intervalIntegrable _ _
+      (fun u : ℝ => (-8 * w * Xi w ^ (2 : ℕ)) * u ^ (3 : ℕ))).intervalIntegrable _ _
   have hi4 : IntervalIntegrable
-      (fun u : ℝ => (4 * Xi w ^ 2) * u ^ 4) volume 0 w :=
+      (fun u : ℝ => (4 * Xi w ^ (2 : ℕ)) * u ^ (4 : ℕ)) volume 0 w :=
     (by fun_prop : Continuous
-      (fun u : ℝ => (4 * Xi w ^ 2) * u ^ 4)).intervalIntegrable _ _
-  rw [show (fun u : ℝ => 4 * u ^ 2 * (w - u) ^ 2 * Xi w ^ 2) =
-      fun u : ℝ => (4 * w ^ 2 * Xi w ^ 2) * u ^ 2 +
-        (-8 * w * Xi w ^ 2) * u ^ 3 +
-        (4 * Xi w ^ 2) * u ^ 4 by
+      (fun u : ℝ => (4 * Xi w ^ (2 : ℕ)) * u ^ (4 : ℕ))).intervalIntegrable _ _
+  rw [show (fun u : ℝ => 4 * u ^ (2 : ℕ) * (w - u) ^ (2 : ℕ) * Xi w ^ (2 : ℕ)) =
+      fun u : ℝ => (4 * w ^ (2 : ℕ) * Xi w ^ (2 : ℕ)) * u ^ (2 : ℕ) +
+        (-8 * w * Xi w ^ (2 : ℕ)) * u ^ (3 : ℕ) +
+        (4 * Xi w ^ (2 : ℕ)) * u ^ (4 : ℕ) by
     funext u
     ring]
   rw [intervalIntegral.integral_add (hi2.add hi3) hi4,
@@ -115,12 +115,12 @@ private theorem integral_thetaCuspHawkingBornPairKernel_normSq (w : ℝ) :
 /-- **[PAPER-PROVED] [LEAN-PROVED] Exact theta Hawking emission law.** -/
 theorem thetaCuspHawkingBornPairEmissionDensity_eq (w : ℝ) :
     thetaCuspHawkingBornPairEmissionDensity w =
-      (2 / 15 : ℝ) * w ^ 5 * Xi w ^ 2 := by
+      (2 / 15 : ℝ) * w ^ (5 : ℕ) * Xi w ^ (2 : ℕ) := by
   rw [thetaCuspHawkingBornPairEmissionDensity]
   calc
     (∫ u in 0..w, Complex.normSq
         (thetaCuspHawkingBornPairKernel (u : ℂ) ((w - u : ℝ) : ℂ))) =
-        ∫ u in 0..w, 4 * u ^ 2 * (w - u) ^ 2 * Xi w ^ 2 := by
+        ∫ u in 0..w, 4 * u ^ (2 : ℕ) * (w - u) ^ (2 : ℕ) * Xi w ^ (2 : ℕ) := by
       apply intervalIntegral.integral_congr
       intro u _hu
       exact thetaCuspHawkingBornPairKernel_normSq_totalSplit w u
@@ -137,10 +137,10 @@ zero emitted pair flux is equivalent to a real zero of the completed Xi function
 theorem thetaCuspHawkingBornPairEmissionDensity_eq_zero_iff {w : ℝ} (hw : 0 < w) :
     thetaCuspHawkingBornPairEmissionDensity w = 0 ↔ Xi w = 0 := by
   rw [thetaCuspHawkingBornPairEmissionDensity_eq]
-  have hfac : (2 / 15 : ℝ) * w ^ 5 ≠ 0 := by positivity
+  have hfac : (2 / 15 : ℝ) * w ^ (5 : ℕ) ≠ 0 := by positivity
   constructor
   · intro h
-    have hs : Xi w ^ 2 = 0 := (mul_eq_zero.mp h).resolve_left hfac
+    have hs : Xi w ^ (2 : ℕ) = 0 := (mul_eq_zero.mp h).resolve_left hfac
     exact sq_eq_zero_iff.mp hs
   · intro h
     simp [h]

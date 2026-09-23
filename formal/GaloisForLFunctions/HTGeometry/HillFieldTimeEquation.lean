@@ -32,7 +32,7 @@ theorem hillSynthesis_kgChar (m : ℝ) (c : ℝ → ℝ) (G₀ : E → ℂ) (x :
 /-- **The field is differentiable in time.** -/
 theorem hasDerivAt_hillEvolutionField_time (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) (volume : Measure E))
     (x : E) {t : ℝ} (ht0 : 0 < t) (htb : t < b) :
@@ -46,17 +46,17 @@ theorem hasDerivAt_hillEvolutionField_time (hm : 0 < m) (hc : Continuous c)
 /-- **The second time derivative of the field is the spatial operator applied to it.** -/
 theorem hasDerivAt_deriv_hillEvolutionField_time {cmin : ℝ} (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) (volume : Measure E))
-    (hweight2 : Integrable (fun ξ : E => (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * ‖G₀ ξ‖) (volume : Measure E))
-    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ 2 * ‖G₀ ξ‖) (volume : Measure E))
+    (hweight2 : Integrable (fun ξ : E => (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * ‖G₀ ξ‖) (volume : Measure E))
+    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ (2 : ℕ) * ‖G₀ ξ‖) (volume : Measure E))
     (bas : OrthonormalBasis ι ℝ E) (x : E) {t : ℝ} (ht0 : 0 < t) (htb : t < b) :
     HasDerivAt (fun r => deriv (fun q => hillEvolutionField m c G₀ q x) r)
-      (((c t ^ 2 / (2 * Real.pi) ^ 2 : ℝ) : ℂ) *
-          (∑ i, (∫ ξ, (2 * Real.pi * Complex.I * ((⟪ξ, bas i⟫ : ℝ) : ℂ)) ^ 2 * kgChar x ξ *
+      (((c t ^ (2 : ℕ) / (2 * Real.pi) ^ (2 : ℕ) : ℝ) : ℂ) *
+          (∑ i, (∫ ξ, (2 * Real.pi * Complex.I * ((⟪ξ, bas i⟫ : ℝ) : ℂ)) ^ (2 : ℕ) * kgChar x ξ *
             hillDensity m c G₀ t ξ)) -
-        ((m ^ 2 : ℝ) : ℂ) * hillEvolutionField m c G₀ t x) t := by
+        ((m ^ (2 : ℕ) : ℝ) : ℂ) * hillEvolutionField m c G₀ t x) t := by
   have hderiv : ∀ r ∈ Ioo (0 : ℝ) b,
       deriv (fun q => hillEvolutionField m c G₀ q x) r
         = hillSynthesisDeriv m c G₀ (kgChar x) (volume : Measure E) r := by

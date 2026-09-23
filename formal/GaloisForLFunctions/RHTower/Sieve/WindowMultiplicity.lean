@@ -70,29 +70,29 @@ theorem sum_window_sum_le (X L : ℕ) (w : ℕ → ℝ) (hw : ∀ n, 0 ≤ w n) 
 
 /-- **The trivial short-interval variance bound.** -/
 theorem sum_normSq_window_le (a : ℕ → ℂ) (X L : ℕ) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
-      ≤ (L : ℝ) ^ 2 * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ 2 := by
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
+      ≤ (L : ℝ) ^ (2 : ℕ) * ∑ n ∈ Finset.range (X + L + 1), ‖a n‖ ^ (2 : ℕ) := by
   classical
-  have hcs : ∀ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
-      ≤ (L : ℝ) * ∑ n ∈ Finset.Ioc x (x + L), ‖a n‖ ^ 2 := by
+  have hcs : ∀ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
+      ≤ (L : ℝ) * ∑ n ∈ Finset.Ioc x (x + L), ‖a n‖ ^ (2 : ℕ) := by
     intro x _
     have htri : ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ≤ ∑ n ∈ Finset.Ioc x (x + L), ‖a n‖ :=
       norm_sum_le _ _
     have hcard : ((Finset.Ioc x (x + L)).card : ℝ) = (L : ℝ) := by
       rw [Nat.card_Ioc]
       simp
-    have hcauchy : (∑ n ∈ Finset.Ioc x (x + L), ‖a n‖) ^ 2
-        ≤ ((Finset.Ioc x (x + L)).card : ℝ) * ∑ n ∈ Finset.Ioc x (x + L), ‖a n‖ ^ 2 :=
+    have hcauchy : (∑ n ∈ Finset.Ioc x (x + L), ‖a n‖) ^ (2 : ℕ)
+        ≤ ((Finset.Ioc x (x + L)).card : ℝ) * ∑ n ∈ Finset.Ioc x (x + L), ‖a n‖ ^ (2 : ℕ) :=
       sq_sum_le_card_mul_sum_sq
     rw [hcard] at hcauchy
     have hnn : (0 : ℝ) ≤ ∑ n ∈ Finset.Ioc x (x + L), ‖a n‖ :=
       Finset.sum_nonneg fun n _ => norm_nonneg _
-    calc ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ 2
-        ≤ (∑ n ∈ Finset.Ioc x (x + L), ‖a n‖) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) htri 2
-      _ ≤ (L : ℝ) * ∑ n ∈ Finset.Ioc x (x + L), ‖a n‖ ^ 2 := hcauchy
+    calc ‖∑ n ∈ Finset.Ioc x (x + L), a n‖ ^ (2 : ℕ)
+        ≤ (∑ n ∈ Finset.Ioc x (x + L), ‖a n‖) ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg _) htri 2
+      _ ≤ (L : ℝ) * ∑ n ∈ Finset.Ioc x (x + L), ‖a n‖ ^ (2 : ℕ) := hcauchy
   refine le_trans (Finset.sum_le_sum hcs) ?_
   rw [← Finset.mul_sum, sq, mul_assoc]
   refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg L)
-  exact sum_window_sum_le X L (fun n => ‖a n‖ ^ 2) fun n => sq_nonneg _
+  exact sum_window_sum_le X L (fun n => ‖a n‖ ^ (2 : ℕ)) fun n => sq_nonneg _
 
 end RHTower.Sieve

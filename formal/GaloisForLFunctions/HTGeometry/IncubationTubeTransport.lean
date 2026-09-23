@@ -122,15 +122,15 @@ variable {ι : Type*} [Fintype ι] {E : Type*} [NormedAddCommGroup E] [NormedSpa
 
 /-- The discrete Cauchy--Schwarz bound behind the shell Lipschitz constant. -/
 theorem sq_sum_abs_le_card_mul_sum_sq (c : ι → ℝ) :
-    (∑ i, |c i|) ^ 2 ≤ (Fintype.card ι : ℝ) * ∑ i, c i ^ 2 := by
+    (∑ i, |c i|) ^ (2 : ℕ) ≤ (Fintype.card ι : ℝ) * ∑ i, c i ^ (2 : ℕ) := by
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset ι) (fun _ => (1 : ℝ))
     fun i => |c i|
   have hone : ∑ i : ι, (1 : ℝ) * |c i| = ∑ i, |c i| := by
     simp
-  have hcard : ∑ _i : ι, (1 : ℝ) ^ 2 = (Fintype.card ι : ℝ) := by
+  have hcard : ∑ _i : ι, (1 : ℝ) ^ (2 : ℕ) = (Fintype.card ι : ℝ) := by
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     norm_num
-  have habs : ∑ i, |c i| ^ 2 = ∑ i, c i ^ 2 :=
+  have habs : ∑ i, |c i| ^ (2 : ℕ) = ∑ i, c i ^ (2 : ℕ) :=
     Finset.sum_congr rfl fun i _ => sq_abs (c i)
   rw [hone, hcard, habs] at hcs
   exact hcs

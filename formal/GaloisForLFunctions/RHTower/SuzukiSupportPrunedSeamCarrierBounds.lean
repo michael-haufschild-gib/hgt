@@ -156,7 +156,7 @@ private theorem norm_apply_le_of_idempotent_selfAdjoint
     have h := ContinuousLinearMap.adjoint_inner_left P (P f) f
     rw [hsa, hPP] at h
     exact h
-  have h2 : ‖P f‖ ^ 2 = ‖(inner ℂ (P f) (P f) : ℂ)‖ := by
+  have h2 : ‖P f‖ ^ (2 : ℕ) = ‖(inner ℂ (P f) (P f) : ℂ)‖ := by
     rw [inner_self_eq_norm_sq_to_K]; simp
   have h3 : ‖(inner ℂ f (P f) : ℂ)‖ ≤ ‖f‖ * ‖P f‖ := norm_inner_le_norm _ _
   rw [h1] at h2

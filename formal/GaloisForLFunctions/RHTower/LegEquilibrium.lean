@@ -41,10 +41,10 @@ theorem lattice_constraint_hasDerivAt {δ : ℝ} (hδ0 : 0 < δ) (M N : ℕ) {ϑ
     (hϑ0 : 0 < ϑ) (hϑ1 : ϑ < 1) :
     HasDerivAt (fun y => (∑ k ∈ range N, rcoth ((1 - y + k) * (δ / 2)))
         - ∑ k ∈ range M, rcoth ((y + k) * (δ / 2)))
-      ((δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ϑ + k) * (δ / 2))) ^ 2)
-        + ∑ k ∈ range M, (rcsch ((ϑ + k) * (δ / 2))) ^ 2)) ϑ := by
+      ((δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ϑ + k) * (δ / 2))) ^ (2 : ℕ))
+        + ∑ k ∈ range M, (rcsch ((ϑ + k) * (δ / 2))) ^ (2 : ℕ))) ϑ := by
   have hb : ∀ k ∈ range N, HasDerivAt (fun y => rcoth ((1 - y + (k : ℝ)) * (δ / 2)))
-      ((δ / 2) * (rcsch ((1 - ϑ + (k : ℝ)) * (δ / 2))) ^ 2) ϑ := by
+      ((δ / 2) * (rcsch ((1 - ϑ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)) ϑ := by
     intro k _
     have harg : 0 < (1 - ϑ + (k : ℝ)) * (δ / 2) := by
       have : (0 : ℝ) ≤ (k : ℝ) := by positivity
@@ -55,7 +55,7 @@ theorem lattice_constraint_hasDerivAt {δ : ℝ} (hδ0 : 0 < δ) (M N : ℕ) {ϑ
     apply hcomp.congr_deriv
     ring
   have ha : ∀ k ∈ range M, HasDerivAt (fun y => rcoth ((y + (k : ℝ)) * (δ / 2)))
-      (-((δ / 2) * (rcsch ((ϑ + (k : ℝ)) * (δ / 2))) ^ 2)) ϑ := by
+      (-((δ / 2) * (rcsch ((ϑ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ))) ϑ := by
     intro k _
     have harg : 0 < (ϑ + (k : ℝ)) * (δ / 2) := by positivity
     have hin : HasDerivAt (fun y : ℝ => (y + (k : ℝ)) * (δ / 2)) (1 * (δ / 2)) ϑ :=
@@ -88,14 +88,14 @@ theorem equilibrium_theta_gap {θ δ : ℝ} {M N : ℕ} (hM1 : 1 ≤ M) (hMN : M
     have h2 : y < 1 := lt_of_le_of_lt hy.2 (by norm_num)
     exact (lattice_constraint_hasDerivAt hδ0 M N h1 h2).continuousAt.continuousWithinAt
   have hderiv : ∀ y ∈ Set.Ioo θ (1 / 2),
-      HasDerivAt g ((fun y => (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - y + k) * (δ / 2))) ^ 2)
-        + ∑ k ∈ range M, (rcsch ((y + k) * (δ / 2))) ^ 2)) y) y := by
+      HasDerivAt g ((fun y => (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - y + k) * (δ / 2))) ^ (2 : ℕ))
+        + ∑ k ∈ range M, (rcsch ((y + k) * (δ / 2))) ^ (2 : ℕ))) y) y := by
     intro y hy
     exact lattice_constraint_hasDerivAt hδ0 M N (lt_trans hθ0 hy.1)
       (lt_trans hy.2 (by norm_num))
   obtain ⟨ξ, hξ, hslope⟩ := exists_hasDerivAt_eq_slope g
-    (fun y => (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - y + k) * (δ / 2))) ^ 2)
-      + ∑ k ∈ range M, (rcsch ((y + k) * (δ / 2))) ^ 2)) hθhalf hcont hderiv
+    (fun y => (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - y + k) * (δ / 2))) ^ (2 : ℕ))
+      + ∑ k ∈ range M, (rcsch ((y + k) * (δ / 2))) ^ (2 : ℕ))) hθhalf hcont hderiv
   have hgap : (0 : ℝ) < 1 / 2 - θ := by linarith
   rw [eq_div_iff hgap.ne'] at hslope
   -- the value at the midpoint: the two trains coincide, only the unpaired tail remains
@@ -120,21 +120,21 @@ theorem equilibrium_theta_gap {θ δ : ℝ} {M N : ℕ} (hM1 : 1 ≤ M) (hMN : M
           rw [Nat.cast_sub hMN]
       _ ≤ _ := hcard
   -- the slope beats 2N
-  have h2N : 2 * (N : ℝ) ≤ (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ξ + k) * (δ / 2))) ^ 2)
-      + ∑ k ∈ range M, (rcsch ((ξ + k) * (δ / 2))) ^ 2) * (1 / 2 - θ) := by
+  have h2N : 2 * (N : ℝ) ≤ (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ξ + k) * (δ / 2))) ^ (2 : ℕ))
+      + ∑ k ∈ range M, (rcsch ((ξ + k) * (δ / 2))) ^ (2 : ℕ)) * (1 / 2 - θ) := by
     have hgθ : g θ = -((N : ℝ) + M) := hEq
     linarith [hslope, hg12lb, hgθ]
   -- the derivative is at most 156/δ on (θ, 1/2), via csch² ≤ 1/s² and the telescopes
   have hξ0 : (1 : ℝ) / 8 < ξ := lt_of_le_of_lt hθ8 hξ.1
   have hξhalf : ξ < 1 / 2 := hξ.2
-  have hbterm : ∀ k ∈ range N, (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ 2
-      ≤ (4 / δ ^ 2) * (1 / (1 / 2 + (k : ℝ)) ^ 2) := by
+  have hbterm : ∀ k ∈ range N, (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
+      ≤ (4 / δ ^ (2 : ℕ)) * (1 / (1 / 2 + (k : ℝ)) ^ (2 : ℕ)) := by
     intro k _
     have hk0 : (0 : ℝ) ≤ (k : ℝ) := by positivity
     have hpos2 : 0 < (1 / 2 + (k : ℝ)) * (δ / 2) := by positivity
     have hle : (1 / 2 + (k : ℝ)) * (δ / 2) ≤ (1 - ξ + (k : ℝ)) * (δ / 2) := by nlinarith
-    have hmono : (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ 2
-        ≤ (rcsch ((1 / 2 + (k : ℝ)) * (δ / 2))) ^ 2 := by
+    have hmono : (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
+        ≤ (rcsch ((1 / 2 + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ) := by
       rcases eq_or_lt_of_le hle with h | h
       · rw [← h]
       · have h1 : rcsch ((1 - ξ + (k : ℝ)) * (δ / 2)) ≤ rcsch ((1 / 2 + (k : ℝ)) * (δ / 2)) :=
@@ -143,21 +143,21 @@ theorem equilibrium_theta_gap {θ δ : ℝ} {M N : ℕ} (hM1 : 1 ≤ M) (hMN : M
         exact pow_le_pow_left₀
           (rcsch_pos_of_pos (lt_of_lt_of_le hpos2 hle)).le h1 2
     have hinv := rcsch_sq_le_inv_sq hpos2
-    have heq : 1 / ((1 / 2 + (k : ℝ)) * (δ / 2)) ^ 2
-        = (4 / δ ^ 2) * (1 / (1 / 2 + (k : ℝ)) ^ 2) := by
+    have heq : 1 / ((1 / 2 + (k : ℝ)) * (δ / 2)) ^ (2 : ℕ)
+        = (4 / δ ^ (2 : ℕ)) * (1 / (1 / 2 + (k : ℝ)) ^ (2 : ℕ)) := by
       rw [mul_pow]
-      have hknz : ((1 : ℝ) / 2 + (k : ℝ)) ^ 2 ≠ 0 := by positivity
+      have hknz : ((1 : ℝ) / 2 + (k : ℝ)) ^ (2 : ℕ) ≠ 0 := by positivity
       field_simp
       ring
     linarith [hmono, hinv, heq.ge]
-  have haterm : ∀ k ∈ range M, (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ 2
-      ≤ (4 / δ ^ 2) * (1 / (1 / 8 + (k : ℝ)) ^ 2) := by
+  have haterm : ∀ k ∈ range M, (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
+      ≤ (4 / δ ^ (2 : ℕ)) * (1 / (1 / 8 + (k : ℝ)) ^ (2 : ℕ)) := by
     intro k _
     have hk0 : (0 : ℝ) ≤ (k : ℝ) := by positivity
     have hpos2 : 0 < (1 / 8 + (k : ℝ)) * (δ / 2) := by positivity
     have hle : (1 / 8 + (k : ℝ)) * (δ / 2) ≤ (ξ + (k : ℝ)) * (δ / 2) := by nlinarith
-    have hmono : (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ 2
-        ≤ (rcsch ((1 / 8 + (k : ℝ)) * (δ / 2))) ^ 2 := by
+    have hmono : (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
+        ≤ (rcsch ((1 / 8 + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ) := by
       rcases eq_or_lt_of_le hle with h | h
       · rw [← h]
       · have h1 : rcsch ((ξ + (k : ℝ)) * (δ / 2)) ≤ rcsch ((1 / 8 + (k : ℝ)) * (δ / 2)) :=
@@ -166,76 +166,76 @@ theorem equilibrium_theta_gap {θ δ : ℝ} {M N : ℕ} (hM1 : 1 ≤ M) (hMN : M
         exact pow_le_pow_left₀
           (rcsch_pos_of_pos (lt_of_lt_of_le hpos2 hle)).le h1 2
     have hinv := rcsch_sq_le_inv_sq hpos2
-    have heq : 1 / ((1 / 8 + (k : ℝ)) * (δ / 2)) ^ 2
-        = (4 / δ ^ 2) * (1 / (1 / 8 + (k : ℝ)) ^ 2) := by
+    have heq : 1 / ((1 / 8 + (k : ℝ)) * (δ / 2)) ^ (2 : ℕ)
+        = (4 / δ ^ (2 : ℕ)) * (1 / (1 / 8 + (k : ℝ)) ^ (2 : ℕ)) := by
       rw [mul_pow]
-      have hknz : ((1 : ℝ) / 8 + (k : ℝ)) ^ 2 ≠ 0 := by positivity
+      have hknz : ((1 : ℝ) / 8 + (k : ℝ)) ^ (2 : ℕ) ≠ 0 := by positivity
       field_simp
       ring
     linarith [hmono, hinv, heq.ge]
   -- behind inverse-square sum ≤ 4 + 2 = 6
-  have hsum6 : ∑ k ∈ range N, 1 / ((1 : ℝ) / 2 + (k : ℝ)) ^ 2 ≤ 6 := by
+  have hsum6 : ∑ k ∈ range N, 1 / ((1 : ℝ) / 2 + (k : ℝ)) ^ (2 : ℕ) ≤ 6 := by
     have hsplit := Finset.sum_range_add_sum_Ico
-      (fun k => 1 / ((1 : ℝ) / 2 + (k : ℝ)) ^ 2) h1N
+      (fun k => 1 / ((1 : ℝ) / 2 + (k : ℝ)) ^ (2 : ℕ)) h1N
     have htel := inv_sq_telescope (a := 1 / 2) (M := 1) (N := N) h1N
       (by norm_num : (0 : ℝ) < 1 / 2 + (1 : ℕ) - 1)
-    have h0 : ∑ k ∈ range 1, 1 / ((1 : ℝ) / 2 + (k : ℝ)) ^ 2 = 4 := by
+    have h0 : ∑ k ∈ range 1, 1 / ((1 : ℝ) / 2 + (k : ℝ)) ^ (2 : ℕ) = 4 := by
       rw [Finset.sum_range_one]
       norm_num
     have htelval : (1 : ℝ) / (1 / 2 + (1 : ℕ) - 1) = 2 := by norm_num
     rw [htelval] at htel
     linarith [hsplit, htel, h0]
   -- ahead inverse-square sum ≤ 64 + 8 = 72
-  have hsum72 : ∑ k ∈ range M, 1 / ((1 : ℝ) / 8 + (k : ℝ)) ^ 2 ≤ 72 := by
+  have hsum72 : ∑ k ∈ range M, 1 / ((1 : ℝ) / 8 + (k : ℝ)) ^ (2 : ℕ) ≤ 72 := by
     have hsplit := Finset.sum_range_add_sum_Ico
-      (fun k => 1 / ((1 : ℝ) / 8 + (k : ℝ)) ^ 2) hM1
+      (fun k => 1 / ((1 : ℝ) / 8 + (k : ℝ)) ^ (2 : ℕ)) hM1
     have htel := inv_sq_telescope (a := 1 / 8) (M := 1) (N := M) hM1
       (by norm_num : (0 : ℝ) < 1 / 8 + (1 : ℕ) - 1)
-    have h0 : ∑ k ∈ range 1, 1 / ((1 : ℝ) / 8 + (k : ℝ)) ^ 2 = 64 := by
+    have h0 : ∑ k ∈ range 1, 1 / ((1 : ℝ) / 8 + (k : ℝ)) ^ (2 : ℕ) = 64 := by
       rw [Finset.sum_range_one]
       norm_num
     have htelval : (1 : ℝ) / (1 / 8 + (1 : ℕ) - 1) = 8 := by norm_num
     rw [htelval] at htel
     linarith [hsplit, htel, h0]
-  have hδ2 : (0 : ℝ) < δ ^ 2 := by positivity
-  have hbsum : ∑ k ∈ range N, (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ 2 ≤ 24 / δ ^ 2 := by
-    calc ∑ k ∈ range N, (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ 2
-        ≤ ∑ k ∈ range N, (4 / δ ^ 2) * (1 / (1 / 2 + (k : ℝ)) ^ 2) :=
+  have hδ2 : (0 : ℝ) < δ ^ (2 : ℕ) := by positivity
+  have hbsum : ∑ k ∈ range N, (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ) ≤ 24 / δ ^ (2 : ℕ) := by
+    calc ∑ k ∈ range N, (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
+        ≤ ∑ k ∈ range N, (4 / δ ^ (2 : ℕ)) * (1 / (1 / 2 + (k : ℝ)) ^ (2 : ℕ)) :=
           Finset.sum_le_sum hbterm
-      _ = (4 / δ ^ 2) * ∑ k ∈ range N, 1 / (1 / 2 + (k : ℝ)) ^ 2 := by
+      _ = (4 / δ ^ (2 : ℕ)) * ∑ k ∈ range N, 1 / (1 / 2 + (k : ℝ)) ^ (2 : ℕ) := by
           rw [Finset.mul_sum]
-      _ ≤ (4 / δ ^ 2) * 6 := by
+      _ ≤ (4 / δ ^ (2 : ℕ)) * 6 := by
           apply mul_le_mul_of_nonneg_left hsum6 (by positivity)
-      _ = 24 / δ ^ 2 := by ring
-  have hasum : ∑ k ∈ range M, (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ 2 ≤ 288 / δ ^ 2 := by
-    calc ∑ k ∈ range M, (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ 2
-        ≤ ∑ k ∈ range M, (4 / δ ^ 2) * (1 / (1 / 8 + (k : ℝ)) ^ 2) :=
+      _ = 24 / δ ^ (2 : ℕ) := by ring
+  have hasum : ∑ k ∈ range M, (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ) ≤ 288 / δ ^ (2 : ℕ) := by
+    calc ∑ k ∈ range M, (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
+        ≤ ∑ k ∈ range M, (4 / δ ^ (2 : ℕ)) * (1 / (1 / 8 + (k : ℝ)) ^ (2 : ℕ)) :=
           Finset.sum_le_sum haterm
-      _ = (4 / δ ^ 2) * ∑ k ∈ range M, 1 / (1 / 8 + (k : ℝ)) ^ 2 := by
+      _ = (4 / δ ^ (2 : ℕ)) * ∑ k ∈ range M, 1 / (1 / 8 + (k : ℝ)) ^ (2 : ℕ) := by
           rw [Finset.mul_sum]
-      _ ≤ (4 / δ ^ 2) * 72 := by
+      _ ≤ (4 / δ ^ (2 : ℕ)) * 72 := by
           apply mul_le_mul_of_nonneg_left hsum72 (by positivity)
-      _ = 288 / δ ^ 2 := by ring
+      _ = 288 / δ ^ (2 : ℕ) := by ring
   -- assemble: 2N ≤ (156/δ)(1/2 − θ)
-  have hDbound : (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ξ + k) * (δ / 2))) ^ 2)
-      + ∑ k ∈ range M, (rcsch ((ξ + k) * (δ / 2))) ^ 2) ≤ 156 / δ := by
-    have hsum312 : (∑ k ∈ range N, (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ 2)
-        + ∑ k ∈ range M, (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ 2 ≤ 312 / δ ^ 2 := by
-      have h312 : (24 : ℝ) / δ ^ 2 + 288 / δ ^ 2 = 312 / δ ^ 2 := by ring
+  have hDbound : (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ξ + k) * (δ / 2))) ^ (2 : ℕ))
+      + ∑ k ∈ range M, (rcsch ((ξ + k) * (δ / 2))) ^ (2 : ℕ)) ≤ 156 / δ := by
+    have hsum312 : (∑ k ∈ range N, (rcsch ((1 - ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ))
+        + ∑ k ∈ range M, (rcsch ((ξ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ) ≤ 312 / δ ^ (2 : ℕ) := by
+      have h312 : (24 : ℝ) / δ ^ (2 : ℕ) + 288 / δ ^ (2 : ℕ) = 312 / δ ^ (2 : ℕ) := by ring
       linarith [hbsum, hasum, h312]
-    have hfin : (δ / 2) * (312 / δ ^ 2) = 156 / δ := by
+    have hfin : (δ / 2) * (312 / δ ^ (2 : ℕ)) = 156 / δ := by
       field_simp
       ring
-    calc (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ξ + k) * (δ / 2))) ^ 2)
-        + ∑ k ∈ range M, (rcsch ((ξ + k) * (δ / 2))) ^ 2)
-        ≤ (δ / 2) * (312 / δ ^ 2) := by
+    calc (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ξ + k) * (δ / 2))) ^ (2 : ℕ))
+        + ∑ k ∈ range M, (rcsch ((ξ + k) * (δ / 2))) ^ (2 : ℕ))
+        ≤ (δ / 2) * (312 / δ ^ (2 : ℕ)) := by
           apply mul_le_mul_of_nonneg_left hsum312 (by positivity)
       _ = 156 / δ := hfin
   -- conclude: Nδ/78 ≤ 1/2 − θ
   have hchain : 2 * (N : ℝ) ≤ (156 / δ) * (1 / 2 - θ) := by
     calc 2 * (N : ℝ)
-        ≤ (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ξ + k) * (δ / 2))) ^ 2)
-          + ∑ k ∈ range M, (rcsch ((ξ + k) * (δ / 2))) ^ 2) * (1 / 2 - θ) := h2N
+        ≤ (δ / 2) * ((∑ k ∈ range N, (rcsch ((1 - ξ + k) * (δ / 2))) ^ (2 : ℕ))
+          + ∑ k ∈ range M, (rcsch ((ξ + k) * (δ / 2))) ^ (2 : ℕ)) * (1 / 2 - θ) := h2N
       _ ≤ (156 / δ) * (1 / 2 - θ) := by
           apply mul_le_mul_of_nonneg_right hDbound hgap.le
   have hmul := mul_le_mul_of_nonneg_right hchain hδ0.le

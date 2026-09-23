@@ -57,9 +57,9 @@ theorem twoLocalPauliGaussianHermitianPencil_stableRatio
     {n : ℕ}
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ) :
     ((∑ i : Fin (Module.finrank ℝ (TwoLocalPauliCoefficientSpace n)),
-        ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ 2) ^ 2 /
+        ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ) /
       ∑ i : Fin (Module.finrank ℝ (TwoLocalPauliCoefficientSpace n)),
-        ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ 4) =
+        ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ (4 : ℕ)) =
       twoLocalPauliUnitaryCommutatorGramStableRatio U := by
   rw [twoLocalPauliGaussianHermitianPencil_commutatorMap]
   rw [show Module.finrank ℝ (TwoLocalPauliCoefficientSpace n) =
@@ -73,7 +73,7 @@ def unitaryProjectiveTraceDeficit
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ) : ℝ :=
   1 - ‖Matrix.trace
       (U : Matrix (FiniteQubitConfiguration (Fin n))
-        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 / ((2 : ℝ) ^ n) ^ 2
+        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) / ((2 : ℝ) ^ n) ^ (2 : ℕ)
 
 /-- Dimension-linear stable-rank floor, expressed only through physical
 distance from projective scalar recurrence. -/
@@ -82,9 +82,9 @@ theorem twoLocalPauliGaussianHermitianPencil_stableRatio_ge_projectiveTraceDefic
     (U : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ) :
     ((6 * n - 4 : ℕ) : ℝ) * unitaryProjectiveTraceDeficit U ≤
       ((∑ i : Fin (Module.finrank ℝ (TwoLocalPauliCoefficientSpace n)),
-          ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ 2) ^ 2 /
+          ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ) /
         ∑ i : Fin (Module.finrank ℝ (TwoLocalPauliCoefficientSpace n)),
-          ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ 4) := by
+          ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ (4 : ℕ)) := by
   rw [twoLocalPauliGaussianHermitianPencil_stableRatio]
   exact twoLocalPauliUnitaryCommutatorGramStableRatio_ge_sixNSubFour_normalizedTraceDeficit U
 
@@ -116,7 +116,7 @@ theorem stdGaussian_measure_optimalDesignAffineTwoLocalNearAction_gap_le_traceDe
                     (Fin (Fintype.card (FiniteQubitConfiguration (Fin n)))) ℂ))
               ((twoLocalPauliGaussianHermitianPencil n).affineSpectralEnergy hH₀ x) r δ} ≤
       (∑ c, finiteUnitaryChoiOptimalDesignWeight r U c *
-        Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((6 * n - 4 : ℕ) : ℝ) * unitaryProjectiveTraceDeficit (U c)))) / κ := by
   have hbase :=
     FiniteGaussianHermitianPencil.stdGaussian_measure_optimalDesignAffineNearAction_gap_le
@@ -153,7 +153,7 @@ theorem stdGaussian_measure_optimalDesignScaledAffineTwoLocalNearAction_gap_le_t
               ((twoLocalPauliGaussianHermitianPencil n).scaledAffineSpectralEnergy
                 hH₀ scale x)
               ((Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                (scale ^ 2 *
+                (scale ^ (2 : ℕ) *
                   (twoLocalPauliGaussianHermitianPencil n).commutatorActivation
                     (U c))) ^ r) + κ ≤
           ∑ c, finiteUnitaryChoiOptimalDesignWeight r U c *
@@ -166,7 +166,7 @@ theorem stdGaussian_measure_optimalDesignScaledAffineTwoLocalNearAction_gap_le_t
               ((twoLocalPauliGaussianHermitianPencil n).scaledAffineSpectralEnergy
                 hH₀ scale x) r δ} ≤
       (∑ c, finiteUnitaryChoiOptimalDesignWeight r U c *
-        Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) *
+        Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
           (((6 * n - 4 : ℕ) : ℝ) * unitaryProjectiveTraceDeficit (U c)))) / κ := by
   have hbase :=
     FiniteGaussianHermitianPencil.stdGaussian_measure_optimalDesignScaledAffineNearAction_gap_le

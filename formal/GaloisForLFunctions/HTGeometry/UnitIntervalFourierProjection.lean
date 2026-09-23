@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- The squared `L²` norm on the unit interval. -/
-def l2NormSq (f : ℝ → ℂ) : ℝ := ∫ x in (0 : ℝ)..1, ‖f x‖ ^ 2
+def l2NormSq (f : ℝ → ℂ) : ℝ := ∫ x in (0 : ℝ)..1, ‖f x‖ ^ (2 : ℕ)
 
 theorem l2Pair_self (f : ℝ → ℂ) : l2Pair f f = ((l2NormSq f : ℝ) : ℂ) := by
   rw [l2Pair, l2NormSq, ← intervalIntegral.integral_ofReal]
@@ -85,7 +85,7 @@ theorem l2Pair_congr_right {f g g' : ℝ → ℂ} (h : ∀ x ∈ Set.Icc (0 : �
   rw [h x hx]
 
 theorem l2NormSq_const_mul (c : ℂ) (f : ℝ → ℂ) :
-    l2NormSq (fun x => c * f x) = ‖c‖ ^ 2 * l2NormSq f := by
+    l2NormSq (fun x => c * f x) = ‖c‖ ^ (2 : ℕ) * l2NormSq f := by
   rw [l2NormSq, l2NormSq, ← intervalIntegral.integral_const_mul]
   refine intervalIntegral.integral_congr fun x _ => ?_
   rw [norm_mul, mul_pow]
@@ -94,7 +94,7 @@ theorem l2NormSq_add_le {f g : ℝ → ℂ} (hf : Continuous f) (hg : Continuous
     l2NormSq (fun x => f x + g x) ≤ 2 * l2NormSq f + 2 * l2NormSq g := by
   have h01 : (0 : ℝ) ≤ 1 := by norm_num
   have hpt : ∀ x ∈ Set.Icc (0 : ℝ) 1,
-      ‖f x + g x‖ ^ 2 ≤ 2 * ‖f x‖ ^ 2 + 2 * ‖g x‖ ^ 2 := by
+      ‖f x + g x‖ ^ (2 : ℕ) ≤ 2 * ‖f x‖ ^ (2 : ℕ) + 2 * ‖g x‖ ^ (2 : ℕ) := by
     intro x _
     have htri : ‖f x + g x‖ ≤ ‖f x‖ + ‖g x‖ := norm_add_le _ _
     nlinarith [norm_nonneg (f x), norm_nonneg (g x), sq_nonneg (‖f x‖ - ‖g x‖),
@@ -106,8 +106,8 @@ theorem l2NormSq_add_le {f g : ℝ → ℂ} (hf : Continuous f) (hg : Continuous
   rw [l2NormSq]
   refine hmono.trans ?_
   simp only [Pi.add_apply, Pi.mul_apply, Pi.pow_apply]
-  have hadd : (∫ u in (0 : ℝ)..1, (2 * ‖f u‖ ^ 2 + 2 * ‖g u‖ ^ 2))
-      = (∫ u in (0 : ℝ)..1, 2 * ‖f u‖ ^ 2) + ∫ u in (0 : ℝ)..1, 2 * ‖g u‖ ^ 2 :=
+  have hadd : (∫ u in (0 : ℝ)..1, (2 * ‖f u‖ ^ (2 : ℕ) + 2 * ‖g u‖ ^ (2 : ℕ)))
+      = (∫ u in (0 : ℝ)..1, 2 * ‖f u‖ ^ (2 : ℕ)) + ∫ u in (0 : ℝ)..1, 2 * ‖g u‖ ^ (2 : ℕ) :=
     intervalIntegral.integral_add
       ((continuous_const.mul (hf.norm.pow 2)).intervalIntegrable _ _)
       ((continuous_const.mul (hg.norm.pow 2)).intervalIntegrable _ _)
@@ -144,11 +144,11 @@ theorem continuous_fourierPartialSum (f : ℝ → ℂ) (N : ℕ) :
 /-- **The mean-square error of the Fourier partial sum is the Parseval tail.** -/
 theorem l2NormSq_sub_fourierPartialSum {f : ℝ → ℂ} (hf : Continuous f) (N : ℕ) :
     l2NormSq (fun x => f x - fourierPartialSum f N x)
-      = l2NormSq f - ∑ n ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), ‖l2Pair (fourierChar n) f‖ ^ 2 := by
+      = l2NormSq f - ∑ n ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), ‖l2Pair (fourierChar n) f‖ ^ (2 : ℕ) := by
   set s : Finset ℤ := Finset.Icc (-(N : ℤ)) (N : ℤ) with hs
   set c : ℤ → ℂ := fun n => l2Pair (fourierChar n) f with hc
   have hPcont : Continuous (fourierPartialSum f N) := continuous_fourierPartialSum f N
-  have hfP : l2Pair f (fourierPartialSum f N) = ∑ n ∈ s, ((‖c n‖ ^ 2 : ℝ) : ℂ) := by
+  have hfP : l2Pair f (fourierPartialSum f N) = ∑ n ∈ s, ((‖c n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [fourierPartialSum_eq,
       l2Pair_sum_right hf s (fun n x => c n * fourierChar n x)
         (fun n => continuous_const.mul (continuous_fourierChar n))]
@@ -157,7 +157,7 @@ theorem l2NormSq_sub_fourierPartialSum {f : ℝ → ℂ} (hf : Continuous f) (N 
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
     ring
   have hPP : l2Pair (fourierPartialSum f N) (fourierPartialSum f N)
-      = ∑ n ∈ s, ((‖c n‖ ^ 2 : ℝ) : ℂ) := by
+      = ∑ n ∈ s, ((‖c n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     have hexp : ∀ x : ℝ, (starRingEnd ℂ) (fourierPartialSum f N x) * fourierPartialSum f N x
         = ∑ i ∈ s, ∑ j ∈ s, ((starRingEnd ℂ) (c i) * c j) *
             (fourierChar (-i) x * fourierChar j x) := by
@@ -185,12 +185,12 @@ theorem l2NormSq_sub_fourierPartialSum {f : ℝ → ℂ} (hf : Continuous f) (N 
       refine Continuous.intervalIntegrable ?_ _ _
       refine continuous_finsetSum _ fun j _ => ?_
       exact continuous_const.mul ((continuous_fourierChar _).mul (continuous_fourierChar _))
-  have hPf : l2Pair (fourierPartialSum f N) f = ∑ n ∈ s, ((‖c n‖ ^ 2 : ℝ) : ℂ) := by
+  have hPf : l2Pair (fourierPartialSum f N) f = ∑ n ∈ s, ((‖c n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [← l2Pair_conj f (fourierPartialSum f N), hfP, map_sum]
     exact Finset.sum_congr rfl fun n _ => Complex.conj_ofReal _
   have hmain : l2Pair (fun x => f x - fourierPartialSum f N x)
       (fun x => f x - fourierPartialSum f N x)
-      = l2Pair f f - ∑ n ∈ s, ((‖c n‖ ^ 2 : ℝ) : ℂ) := by
+      = l2Pair f f - ∑ n ∈ s, ((‖c n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [l2Pair_sub_left hf hPcont (by fun_prop), l2Pair_sub_right hf hf hPcont,
       l2Pair_sub_right hPcont hf hPcont, hfP, hPP, hPf]
     ring
@@ -213,7 +213,7 @@ theorem tendsto_l2NormSq_sub_fourierPartialSum {f : ℝ → ℂ} (hf : Continuou
     exact hC x (Set.Ioc_subset_Icc_self hx)
   have hsum := hasSum_sq_fourierCoeffOn h01 hmem
   simp only [sub_zero, inv_one, one_smul] at hsum
-  have hsum' : HasSum (fun n : ℤ => ‖l2Pair (fourierChar n) f‖ ^ 2) (l2NormSq f) := by
+  have hsum' : HasSum (fun n : ℤ => ‖l2Pair (fourierChar n) f‖ ^ (2 : ℕ)) (l2NormSq f) := by
     simpa only [fourierCoeffOn_eq_l2Pair, l2NormSq] using hsum
   have hmono : Monotone fun N : ℕ => Finset.Icc (-(N : ℤ)) (N : ℤ) := by
     intro a b hab
@@ -224,12 +224,12 @@ theorem tendsto_l2NormSq_sub_fourierPartialSum {f : ℝ → ℂ} (hf : Continuou
     rw [Finset.mem_Icc]
     omega
   have hpart : Tendsto
-      (fun N : ℕ => ∑ n ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), ‖l2Pair (fourierChar n) f‖ ^ 2)
+      (fun N : ℕ => ∑ n ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), ‖l2Pair (fourierChar n) f‖ ^ (2 : ℕ))
       atTop (𝓝 (l2NormSq f)) :=
     hsum'.comp (Filter.tendsto_atTop_finset_of_monotone hmono hex)
   have hlim : Tendsto
       (fun N : ℕ => l2NormSq f
-        - ∑ n ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), ‖l2Pair (fourierChar n) f‖ ^ 2)
+        - ∑ n ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), ‖l2Pair (fourierChar n) f‖ ^ (2 : ℕ))
       atTop (𝓝 0) := by
     have := tendsto_const_nhds (x := l2NormSq f) (f := (atTop : Filter ℕ)) |>.sub hpart
     simpa using this

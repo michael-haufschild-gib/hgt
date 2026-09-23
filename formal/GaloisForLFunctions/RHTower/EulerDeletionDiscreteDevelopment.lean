@@ -50,7 +50,7 @@ theorem eulerDeletionDiscreteDevelopment_converges
     rw [← map_sub]
     exact L.le_opNorm _
   · apply Summable.of_nonneg_of_le (fun n => sq_nonneg _) (fun n => ?_)
-      ((arithmeticDirichletWeight_summable_sq hs).mul_left (‖L‖^2))
+      ((arithmeticDirichletWeight_summable_sq hs).mul_left (‖L‖^(2 : ℕ)))
     rw [← mul_pow]
     exact (sq_le_sq₀ (norm_nonneg _) (by positivity)).2 (L.le_opNorm _)
 

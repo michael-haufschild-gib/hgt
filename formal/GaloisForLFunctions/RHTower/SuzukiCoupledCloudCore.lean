@@ -23,12 +23,12 @@ namespace GaloisForLFunctions.RHTower
 
 /-- **`(416)`: the ridge penalty pins the coefficient norm to the scale `1/√r`.** -/
 theorem coefficient_norm_lt_of_objective {r cn : ℝ} (hr : 0 < r)
-    (hJ : r * cn ^ 2 < 1 / 16) : cn < 1 / (4 * Real.sqrt r) := by
+    (hJ : r * cn ^ (2 : ℕ) < 1 / 16) : cn < 1 / (4 * Real.sqrt r) := by
   have hsr : 0 < Real.sqrt r := Real.sqrt_pos.mpr hr
-  have hsq : (1 / (4 * Real.sqrt r)) ^ 2 = 1 / (16 * r) := by
+  have hsq : (1 / (4 * Real.sqrt r)) ^ (2 : ℕ) = 1 / (16 * r) := by
     rw [div_pow, one_pow, mul_pow, Real.sq_sqrt hr.le]
     norm_num
-  have h1 : cn ^ 2 < (1 / (4 * Real.sqrt r)) ^ 2 := by
+  have h1 : cn ^ (2 : ℕ) < (1 / (4 * Real.sqrt r)) ^ (2 : ℕ) := by
     rw [hsq, lt_div_iff₀ (by positivity)]
     nlinarith [hJ]
   exact lt_of_pow_lt_pow_left₀ 2 (by positivity) h1
@@ -46,7 +46,7 @@ theorem highSide_pairing_le {uH cn C logH H r : ℝ} (hr : 0 < r) (hH : 0 < H)
       = Real.sqrt (C * logH / H) / (4 * Real.sqrt r) := by
     have hrw : C * logH / (16 * r * H) = (C * logH / H) / (16 * r) := by
       field_simp
-    rw [hrw, Real.sqrt_div hquot, show (16 : ℝ) * r = 4 ^ 2 * r by norm_num,
+    rw [hrw, Real.sqrt_div hquot, show (16 : ℝ) * r = 4 ^ (2 : ℕ) * r by norm_num,
       Real.sqrt_mul (by positivity), Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 4)]
   rw [hkey]
   have hmul : uH * cn ≤ Real.sqrt (C * logH / H) * (1 / (4 * Real.sqrt r)) := by

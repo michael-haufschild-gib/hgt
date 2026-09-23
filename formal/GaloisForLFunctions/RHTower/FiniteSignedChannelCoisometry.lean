@@ -22,17 +22,17 @@ def finiteSignedChannelProjection {ι : Type*} [Fintype ι]
   finiteSignedChannelAnalysis w (finiteSignedChannelSynthesis w f) i
 
 theorem finiteSignedChannelSynthesis_analysis {ι : Type*} [Fintype ι]
-    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ 2 = 1) (c : ℂ) :
+    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ (2 : ℕ) = 1) (c : ℂ) :
     finiteSignedChannelSynthesis w (finiteSignedChannelAnalysis w c) = c := by
   simp only [finiteSignedChannelSynthesis, finiteSignedChannelAnalysis]
   simp_rw [← mul_assoc, Complex.conj_mul']
   rw [← Finset.sum_mul]
-  have hwc : ∑ i, ((‖w i‖ : ℂ) ^ 2) = 1 := by
+  have hwc : ∑ i, ((‖w i‖ : ℂ) ^ (2 : ℕ)) = 1 := by
     exact_mod_cast hw
   rw [hwc, one_mul]
 
 theorem finiteSignedChannelProjection_idempotent {ι : Type*} [Fintype ι]
-    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ 2 = 1) (f : ι → ℂ) :
+    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ (2 : ℕ) = 1) (f : ι → ℂ) :
     finiteSignedChannelProjection w (finiteSignedChannelProjection w f) =
       finiteSignedChannelProjection w f := by
   funext i
@@ -43,7 +43,7 @@ theorem finiteSignedChannelProjection_idempotent {ι : Type*} [Fintype ι]
   rw [finiteSignedChannelSynthesis_analysis hw]
 
 theorem finiteSignedChannelSynthesis_projection {ι : Type*} [Fintype ι]
-    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ 2 = 1) (f : ι → ℂ) :
+    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ (2 : ℕ) = 1) (f : ι → ℂ) :
     finiteSignedChannelSynthesis w (finiteSignedChannelProjection w f) =
       finiteSignedChannelSynthesis w f := by
   change finiteSignedChannelSynthesis w
@@ -51,7 +51,7 @@ theorem finiteSignedChannelSynthesis_projection {ι : Type*} [Fintype ι]
   rw [finiteSignedChannelSynthesis_analysis hw]
 
 theorem finiteSignedChannelProjection_analysis {ι : Type*} [Fintype ι]
-    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ 2 = 1) (c : ℂ) :
+    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ (2 : ℕ) = 1) (c : ℂ) :
     finiteSignedChannelProjection w (finiteSignedChannelAnalysis w c) =
       finiteSignedChannelAnalysis w c := by
   funext i
@@ -62,7 +62,7 @@ theorem finiteSignedChannelProjection_analysis {ι : Type*} [Fintype ι]
 
 /-- Exact incidence factorization: a coupled scalar feature sees only the signed projection. -/
 theorem finiteSignedChannel_incidence_factorization {ι : Type*} [Fintype ι]
-    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ 2 = 1)
+    {w : ι → ℂ} (hw : ∑ i, ‖w i‖ ^ (2 : ℕ) = 1)
     (Z : ℂ) (f : ι → ℂ) :
     Z * finiteSignedChannelSynthesis w f =
       Z * finiteSignedChannelSynthesis w (finiteSignedChannelProjection w f) := by

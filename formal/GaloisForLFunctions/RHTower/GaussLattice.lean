@@ -23,9 +23,9 @@ import Mathlib
 namespace RHTower
 
 /-- `m² − m` is always even: the `πm²` lattice phase alternates `0, π, 0, π…`. -/
-theorem pi_msq_phase_alternates (m : ℤ) : Even (m ^ 2 - m) := by
+theorem pi_msq_phase_alternates (m : ℤ) : Even (m ^ (2 : ℕ) - m) := by
   have h := Int.even_mul_succ_self (m - 1)
-  have : (m - 1) * (m - 1 + 1) = m ^ 2 - m := by ring
+  have : (m - 1) * (m - 1 + 1) = m ^ (2 : ℕ) - m := by ring
   rwa [this] at h
 
 /-- **The quarter-phase coherence law**: the lattice increment `m(m + a)` is

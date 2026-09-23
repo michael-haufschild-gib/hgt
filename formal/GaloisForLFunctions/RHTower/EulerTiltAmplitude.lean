@@ -51,28 +51,28 @@ theorem seven_lt_exp_two : (7 : ℝ) < Real.exp 2 := by
 /-- The quadratic head of the defect is bounded once the split point is `e^{1/t}`. -/
 theorem quadraticHead_le {t Z : ℝ} (ht0 : 0 < t) (ht1 : t ≤ 1 / 2)
     (hZ2 : 2 ≤ Z) (hlogZ : Real.log Z = 1 / t) :
-    t ^ 2 / 2 * primeLogSqSumLE Z ≤ 1 / 4 + mertensLogSqConst + Real.log 2 ^ 2 / 2 := by
+    t ^ (2 : ℕ) / 2 * primeLogSqSumLE Z ≤ 1 / 4 + mertensLogSqConst + Real.log 2 ^ (2 : ℕ) / 2 := by
   have hlogsq := abs_primeLogSqSumLE_sub_le hZ2
   have hMnn : 0 ≤ mertensLogSqConst := mertensLogSqConst_nonneg
   have hb := abs_le.mp hlogsq
   have hupper : primeLogSqSumLE Z
-      ≤ Real.log Z ^ 2 / 2 + mertensLogSqConst * (1 + Real.log Z) + Real.log 2 ^ 2 / 2 := by
+      ≤ Real.log Z ^ (2 : ℕ) / 2 + mertensLogSqConst * (1 + Real.log Z) + Real.log 2 ^ (2 : ℕ) / 2 := by
     linarith [hb.2]
-  have hstep := mul_le_mul_of_nonneg_left hupper (by positivity : (0 : ℝ) ≤ t ^ 2 / 2)
+  have hstep := mul_le_mul_of_nonneg_left hupper (by positivity : (0 : ℝ) ≤ t ^ (2 : ℕ) / 2)
   refine le_trans hstep ?_
   rw [hlogZ]
-  have hval : t ^ 2 / 2 * ((1 / t) ^ 2 / 2 + mertensLogSqConst * (1 + 1 / t)
-      + Real.log 2 ^ 2 / 2)
-      = 1 / 4 + mertensLogSqConst * (t ^ 2 / 2 + t / 2) + t ^ 2 * Real.log 2 ^ 2 / 4 := by
+  have hval : t ^ (2 : ℕ) / 2 * ((1 / t) ^ (2 : ℕ) / 2 + mertensLogSqConst * (1 + 1 / t)
+      + Real.log 2 ^ (2 : ℕ) / 2)
+      = 1 / 4 + mertensLogSqConst * (t ^ (2 : ℕ) / 2 + t / 2) + t ^ (2 : ℕ) * Real.log 2 ^ (2 : ℕ) / 4 := by
     field_simp
     ring
   rw [hval]
-  have hfac : t ^ 2 / 2 + t / 2 ≤ 1 := by nlinarith [ht0, ht1]
-  have h1 : mertensLogSqConst * (t ^ 2 / 2 + t / 2) ≤ mertensLogSqConst := by
+  have hfac : t ^ (2 : ℕ) / 2 + t / 2 ≤ 1 := by nlinarith [ht0, ht1]
+  have h1 : mertensLogSqConst * (t ^ (2 : ℕ) / 2 + t / 2) ≤ mertensLogSqConst := by
     have := mul_le_mul_of_nonneg_left hfac hMnn
     linarith [this]
-  have hsq : t ^ 2 ≤ 2 := by nlinarith [ht0, ht1]
-  have h2 : t ^ 2 * Real.log 2 ^ 2 / 4 ≤ Real.log 2 ^ 2 / 2 := by
+  have hsq : t ^ (2 : ℕ) ≤ 2 := by nlinarith [ht0, ht1]
+  have h2 : t ^ (2 : ℕ) * Real.log 2 ^ (2 : ℕ) / 4 ≤ Real.log 2 ^ (2 : ℕ) / 2 := by
     have := mul_le_mul_of_nonneg_right hsq (sq_nonneg (Real.log 2))
     linarith [this]
   linarith
@@ -132,7 +132,7 @@ theorem harmonicTail_le {t Y Z : ℝ} (ht0 : 0 < t) (hY : Real.exp 2 ≤ Y)
 theorem abs_primeCosineDefect_le_const {σ t Y : ℝ} (hσ : 1 ≤ σ) (ht0 : 0 < t) (ht1 : t ≤ 1 / 2)
     (hY : Real.exp 2 ≤ Y) (htY : 1 ≤ t * Real.log Y) :
     |primeCosineDefect σ t Y|
-      ≤ (1 / 4 + mertensLogSqConst + Real.log 2 ^ 2 / 2)
+      ≤ (1 / 4 + mertensLogSqConst + Real.log 2 ^ (2 : ℕ) / 2)
         + 2 * (Real.log (t * Real.log Y) + 3 + 4 * Sieve.mertensFirstConst) := by
   have hexp2 := seven_lt_exp_two
   have hY7 : (7 : ℝ) < Y := lt_of_lt_of_le hexp2 hY
@@ -168,7 +168,7 @@ theorem exists_bound_primeCosineDefect :
     have hcont : ContinuousAt Real.log (2 * Real.pi) :=
       Real.continuousAt_log (by positivity)
     exact hcont.tendsto.comp hmul
-  refine ⟨(1 / 4 + mertensLogSqConst + Real.log 2 ^ 2 / 2)
+  refine ⟨(1 / 4 + mertensLogSqConst + Real.log 2 ^ (2 : ℕ) / 2)
     + 2 * ((Real.log (2 * Real.pi) + 1) + 3 + 4 * Sieve.mertensFirstConst), ?_⟩
   filter_upwards [hfreq.eventually (gt_mem_nhds (show (0 : ℝ) < 1 / 2 by norm_num)),
     hmul.eventually (lt_mem_nhds (show (1 : ℝ) < 2 * Real.pi by

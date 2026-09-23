@@ -17,26 +17,26 @@ excess is dominated: `5|G| < 12Φ(−H)`. -/
 theorem growthBound_of_frozenJets_sharp {u t S₄ S₅ : ℝ} (ht : 0 < t)
     (hS₄ : ∀ x ∈ Icc (u - t) (u + t), |thetaCuspLogCurvatureJetFour x| ≤ S₄)
     (hS₅ : ∀ x ∈ Icc (u - t) (u + t), |thetaCuspLogCurvatureJetFive x| ≤ S₅)
-    (hElow : 0 ≤ thetaCuspLogCurvature u * t + thetaCuspLogCurvatureJetTwo u * t ^ 3 / 6 -
-      S₄ * t ^ 5 / 120)
-    (hOlow : 0 ≤ thetaCuspLogCurvatureJet u * t ^ 2 / 2 + thetaCuspLogCurvatureJetThree u * t ^ 4 / 24 -
-      S₅ * t ^ 6 / 720)
-    (hYlow : 0 ≤ thetaCuspLogCurvatureJetTwo u * t ^ 3 / 3 - S₄ * t ^ 5 / 30)
-    (hΛup : 0 ≤ thetaCuspLogCurvatureJetThree u * t ^ 4 / 12 + S₅ * t ^ 6 / 180)
-    (hΦlow : 0 ≤ thetaCuspLogCurvature u * t ^ 2 + thetaCuspLogCurvatureJetTwo u * t ^ 4 / 12 -
-      S₄ * t ^ 6 / 360)
-    (hkey : 5 * ((thetaCuspLogCurvature u * t + |thetaCuspLogCurvatureJetTwo u| * t ^ 3 / 6 +
-          S₄ * t ^ 5 / 120) * (S₅ * t ^ 6 / 90) +
-        (thetaCuspLogCurvatureJet u * t ^ 2 / 2 + |thetaCuspLogCurvatureJetThree u| * t ^ 4 / 24 +
-          S₅ * t ^ 6 / 720) * (S₄ * t ^ 5 / 15)) <
-      12 * (thetaCuspLogCurvature u * t ^ 2 + thetaCuspLogCurvatureJetTwo u * t ^ 4 / 12 -
-          S₄ * t ^ 6 / 360) *
-        ((thetaCuspLogCurvatureJet u * t ^ 2 / 2 + thetaCuspLogCurvatureJetThree u * t ^ 4 / 24 -
-            S₅ * t ^ 6 / 720) *
-          (thetaCuspLogCurvatureJetTwo u * t ^ 3 / 3 - S₄ * t ^ 5 / 30) -
-        (thetaCuspLogCurvature u * t + |thetaCuspLogCurvatureJetTwo u| * t ^ 3 / 6 +
-            S₄ * t ^ 5 / 120) *
-          (thetaCuspLogCurvatureJetThree u * t ^ 4 / 12 + S₅ * t ^ 6 / 180))) :
+    (hElow : 0 ≤ thetaCuspLogCurvature u * t + thetaCuspLogCurvatureJetTwo u * t ^ (3 : ℕ) / 6 -
+      S₄ * t ^ (5 : ℕ) / 120)
+    (hOlow : 0 ≤ thetaCuspLogCurvatureJet u * t ^ (2 : ℕ) / 2 + thetaCuspLogCurvatureJetThree u * t ^ (4 : ℕ) / 24 -
+      S₅ * t ^ (6 : ℕ) / 720)
+    (hYlow : 0 ≤ thetaCuspLogCurvatureJetTwo u * t ^ (3 : ℕ) / 3 - S₄ * t ^ (5 : ℕ) / 30)
+    (hΛup : 0 ≤ thetaCuspLogCurvatureJetThree u * t ^ (4 : ℕ) / 12 + S₅ * t ^ (6 : ℕ) / 180)
+    (hΦlow : 0 ≤ thetaCuspLogCurvature u * t ^ (2 : ℕ) + thetaCuspLogCurvatureJetTwo u * t ^ (4 : ℕ) / 12 -
+      S₄ * t ^ (6 : ℕ) / 360)
+    (hkey : 5 * ((thetaCuspLogCurvature u * t + |thetaCuspLogCurvatureJetTwo u| * t ^ (3 : ℕ) / 6 +
+          S₄ * t ^ (5 : ℕ) / 120) * (S₅ * t ^ (6 : ℕ) / 90) +
+        (thetaCuspLogCurvatureJet u * t ^ (2 : ℕ) / 2 + |thetaCuspLogCurvatureJetThree u| * t ^ (4 : ℕ) / 24 +
+          S₅ * t ^ (6 : ℕ) / 720) * (S₄ * t ^ (5 : ℕ) / 15)) <
+      12 * (thetaCuspLogCurvature u * t ^ (2 : ℕ) + thetaCuspLogCurvatureJetTwo u * t ^ (4 : ℕ) / 12 -
+          S₄ * t ^ (6 : ℕ) / 360) *
+        ((thetaCuspLogCurvatureJet u * t ^ (2 : ℕ) / 2 + thetaCuspLogCurvatureJetThree u * t ^ (4 : ℕ) / 24 -
+            S₅ * t ^ (6 : ℕ) / 720) *
+          (thetaCuspLogCurvatureJetTwo u * t ^ (3 : ℕ) / 3 - S₄ * t ^ (5 : ℕ) / 30) -
+        (thetaCuspLogCurvature u * t + |thetaCuspLogCurvatureJetTwo u| * t ^ (3 : ℕ) / 6 +
+            S₄ * t ^ (5 : ℕ) / 120) *
+          (thetaCuspLogCurvatureJetThree u * t ^ (4 : ℕ) / 12 + S₅ * t ^ (6 : ℕ) / 180))) :
     5 * |c5CompletedScalingExcess u t| <
       12 * thetaCuspReflectedLogAction u t *
         (-thetaCuspReflectedActionVelocityFixedActionCenterNumerator u t) := by
@@ -52,10 +52,10 @@ theorem growthBound_of_frozenJets_sharp {u t S₄ S₅ : ℝ} (ht : 0 < t)
   rw [scalingExcess_eq_four, centerNumerator_eq_four_fjN, fj_excess_eq, fjN_eq]
   have hS₄0 : 0 ≤ S₄ := le_trans (abs_nonneg _) (hS₄ u ⟨by linarith, by linarith⟩)
   have hS₅0 : 0 ≤ S₅ := le_trans (abs_nonneg _) (hS₅ u ⟨by linarith, by linarith⟩)
-  have ht3 : 0 ≤ t ^ 3 := by positivity
-  have ht4 : 0 ≤ t ^ 4 := by positivity
-  have ht5 : 0 ≤ t ^ 5 := by positivity
-  have ht6 : 0 ≤ t ^ 6 := by positivity
+  have ht3 : 0 ≤ t ^ (3 : ℕ) := by positivity
+  have ht4 : 0 ≤ t ^ (4 : ℕ) := by positivity
+  have ht5 : 0 ≤ t ^ (5 : ℕ) := by positivity
+  have ht6 : 0 ≤ t ^ (6 : ℕ) := by positivity
   have hc₂abs := mul_le_mul_of_nonneg_right (le_abs_self (thetaCuspLogCurvatureJetTwo u)) ht3
   have hc₂abs' := mul_le_mul_of_nonneg_right (neg_abs_le (thetaCuspLogCurvatureJetTwo u)) ht3
   have hc₃abs := mul_le_mul_of_nonneg_right (le_abs_self (thetaCuspLogCurvatureJetThree u)) ht4
@@ -78,12 +78,12 @@ theorem growthBound_of_frozenJets_sharp {u t S₄ S₅ : ℝ} (ht : 0 < t)
   have hΛ' := abs_le.mp hΛ
   have hY' := abs_le.mp hY
   have hΦ' := abs_le.mp hΦ
-  generalize hEup : c₀ * t + |c₂| * t ^ 3 / 6 + S₄ * t ^ 5 / 120 = Eup at *
-  generalize hOup : c₁ * t ^ 2 / 2 + |c₃| * t ^ 4 / 24 + S₅ * t ^ 6 / 720 = Oup at *
-  generalize hOlowE : c₁ * t ^ 2 / 2 + c₃ * t ^ 4 / 24 - S₅ * t ^ 6 / 720 = Olow at *
-  generalize hYlowE : c₂ * t ^ 3 / 3 - S₄ * t ^ 5 / 30 = Ylow at *
-  generalize hΛupE : c₃ * t ^ 4 / 12 + S₅ * t ^ 6 / 180 = Λup at *
-  generalize hΦlowE : c₀ * t ^ 2 + c₂ * t ^ 4 / 12 - S₄ * t ^ 6 / 360 = Φlow at *
+  generalize hEup : c₀ * t + |c₂| * t ^ (3 : ℕ) / 6 + S₄ * t ^ (5 : ℕ) / 120 = Eup at *
+  generalize hOup : c₁ * t ^ (2 : ℕ) / 2 + |c₃| * t ^ (4 : ℕ) / 24 + S₅ * t ^ (6 : ℕ) / 720 = Oup at *
+  generalize hOlowE : c₁ * t ^ (2 : ℕ) / 2 + c₃ * t ^ (4 : ℕ) / 24 - S₅ * t ^ (6 : ℕ) / 720 = Olow at *
+  generalize hYlowE : c₂ * t ^ (3 : ℕ) / 3 - S₄ * t ^ (5 : ℕ) / 30 = Ylow at *
+  generalize hΛupE : c₃ * t ^ (4 : ℕ) / 12 + S₅ * t ^ (6 : ℕ) / 180 = Λup at *
+  generalize hΦlowE : c₀ * t ^ (2 : ℕ) + c₂ * t ^ (4 : ℕ) / 12 - S₄ * t ^ (6 : ℕ) / 360 = Φlow at *
   have hEle : E ≤ Eup := by linarith only [hE'.2, hc₂abs, hEup]
   have hEge : 0 ≤ E := by linarith only [hE'.1, hc₂abs', hElow]
   have hOle : O ≤ Oup := by linarith only [hO'.2, hc₃abs, hOup]
@@ -102,17 +102,17 @@ theorem growthBound_of_frozenJets_sharp {u t S₄ S₅ : ℝ} (ht : 0 < t)
       _ ≤ Eup * Λup := mul_le_mul_of_nonneg_right hEle hΛup
   have hN : Olow * Ylow - Eup * Λup ≤ O * Y - E * Λ := by linarith only [h1, h2]
   -- `|ε| ≤ Eup·(2/45)S₅t⁶ + Oup·(2/15)S₄t⁵`
-  have hb1 : 0 ≤ S₅ * t ^ 6 / 90 := by positivity
-  have hb2 : 0 ≤ S₄ * t ^ 5 / 15 := by positivity
-  have hεK₁ : E * |K₁| ≤ Eup * (S₅ * t ^ 6 / 90) := mul_le_mul hEle hK₁ (abs_nonneg _) hEup0
-  have hεK₂ : O * |K₂| ≤ Oup * (S₄ * t ^ 5 / 15) := mul_le_mul hOle hK₂ (abs_nonneg _) hOup0
-  have hε : |E * K₁ + O * K₂| ≤ Eup * (S₅ * t ^ 6 / 90) + Oup * (S₄ * t ^ 5 / 15) := by
+  have hb1 : 0 ≤ S₅ * t ^ (6 : ℕ) / 90 := by positivity
+  have hb2 : 0 ≤ S₄ * t ^ (5 : ℕ) / 15 := by positivity
+  have hεK₁ : E * |K₁| ≤ Eup * (S₅ * t ^ (6 : ℕ) / 90) := mul_le_mul hEle hK₁ (abs_nonneg _) hEup0
+  have hεK₂ : O * |K₂| ≤ Oup * (S₄ * t ^ (5 : ℕ) / 15) := mul_le_mul hOle hK₂ (abs_nonneg _) hOup0
+  have hε : |E * K₁ + O * K₂| ≤ Eup * (S₅ * t ^ (6 : ℕ) / 90) + Oup * (S₄ * t ^ (5 : ℕ) / 15) := by
     calc |E * K₁ + O * K₂| ≤ |E * K₁| + |O * K₂| := abs_add_le _ _
       _ = E * |K₁| + O * |K₂| := by rw [abs_mul, abs_mul, abs_of_nonneg hEge, abs_of_nonneg hOge0]
-      _ ≤ Eup * (S₅ * t ^ 6 / 90) + Oup * (S₄ * t ^ 5 / 15) := by
+      _ ≤ Eup * (S₅ * t ^ (6 : ℕ) / 90) + Oup * (S₄ * t ^ (5 : ℕ) / 15) := by
           linarith only [hεK₁, hεK₂]
   -- assemble
-  have hεnn : 0 ≤ Eup * (S₅ * t ^ 6 / 90) + Oup * (S₄ * t ^ 5 / 15) := by positivity
+  have hεnn : 0 ≤ Eup * (S₅ * t ^ (6 : ℕ) / 90) + Oup * (S₄ * t ^ (5 : ℕ) / 15) := by positivity
   have hNlow : 0 < Olow * Ylow - Eup * Λup := by
     by_contra hcon
     have hcon' : Olow * Ylow - Eup * Λup ≤ 0 := not_lt.mp hcon

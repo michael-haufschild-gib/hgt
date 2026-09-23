@@ -99,7 +99,7 @@ theorem hasDerivAt_thetaCuspTailSecondCoreAtomSourceSpectralDerivative_zero
     hasDerivAt_thetaCuspTailSecondSectionSourceSpectralDerivative_zero d z
   unfold thetaCuspTailSecondCoreAtomSourceSpectralDerivative
   convert (hsource.const_mul (-2 * z)).sub
-    (hspectral.const_mul (z ^ 2 + 1 / 4)) using 1
+    (hspectral.const_mul (z ^ (2 : ℕ) + 1 / 4)) using 1
   · rfl
   · rfl
   · ring
@@ -164,15 +164,15 @@ theorem thetaCuspPrimitiveRayArithmeticPolar_birthEndpoints_eq
   rw [thetaCuspPrimitiveRayCorePolarLowerEndpoint_neg_log_nat ha,
     thetaCuspPrimitiveRayCorePolarUpperEndpoint_neg_log_nat hb,
     thetaCuspPrimitiveRayRadialLog_zero_zero]
-  let S : ℝ := (a : ℝ) ^ 2 + (b : ℝ) ^ 2
+  let S : ℝ := (a : ℝ) ^ (2 : ℕ) + (b : ℝ) ^ (2 : ℕ)
   have hS : 0 < S := by
     dsimp only [S]
     positivity
   have hexp : Real.exp (-2 * ((1 / 2 : ℝ) * Real.log S)) = S⁻¹ := by
     rw [show -2 * ((1 / 2 : ℝ) * Real.log S) = -Real.log S by ring,
       Real.exp_neg, Real.exp_log hS]
-  change (a : ℝ) ^ 2 * Real.exp (-2 * ((1 / 2 : ℝ) * Real.log S)) =
-    1 - (b : ℝ) ^ 2 * Real.exp (-2 * ((1 / 2 : ℝ) * Real.log S))
+  change (a : ℝ) ^ (2 : ℕ) * Real.exp (-2 * ((1 / 2 : ℝ) * Real.log S)) =
+    1 - (b : ℝ) ^ (2 : ℕ) * Real.exp (-2 * ((1 / 2 : ℝ) * Real.log S))
   rw [hexp]
   dsimp only [S]
   field_simp [hS.ne']

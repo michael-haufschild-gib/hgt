@@ -10,7 +10,7 @@ A positive Laplace clock `t` generates the half-density history
 Integrating over every positive aperture normalizes each clock to unit mass.  Two clocks `t,u`
 have the exact cross-history Gram coefficient
 
-`4tu/(t+u)^2 = 1/cosh((log t-log u)/2)^2`.
+`4tu/(t+u)^(2 : ℕ) = 1/cosh((log t-log u)/2)^(2 : ℕ)`.
 
 This is a source-only cross-aperture law.  No zero, divisor, RH premise, or numerical computation
 enters.  It does not construct the signed theta relative completion needed for RH.
@@ -50,7 +50,7 @@ private theorem poissonScaleHistory_mul {t u a : ℝ} (ha : 0 < a) :
 
 /-- Full Poisson scale histories have the exact Cauchy-square Gram kernel. -/
 theorem poissonScaleHistoryGram_eq {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
-    poissonScaleHistoryGram t u = 4 * t * u / (t + u) ^ 2 := by
+    poissonScaleHistoryGram t u = 4 * t * u / (t + u) ^ (2 : ℕ) := by
   have htu : 0 < t + u := add_pos ht hu
   rw [poissonScaleHistoryGram]
   have hcongr :
@@ -74,7 +74,7 @@ theorem poissonScaleHistoryGram_self {t : ℝ} (ht : 0 < t) :
 theorem poissonScaleHistoryGram_le_one {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
     poissonScaleHistoryGram t u ≤ 1 := by
   rw [poissonScaleHistoryGram_eq ht hu]
-  have hsq : 0 < (t + u) ^ 2 := sq_pos_of_pos (add_pos ht hu)
+  have hsq : 0 < (t + u) ^ (2 : ℕ) := sq_pos_of_pos (add_pos ht hu)
   rw [div_le_one hsq]
   nlinarith [sq_nonneg (t - u)]
 
@@ -85,7 +85,7 @@ theorem poissonScaleHistoryGram_eq_one_iff {t u : ℝ} (ht : 0 < t) (hu : 0 < u)
   have hsum : t + u ≠ 0 := ne_of_gt (add_pos ht hu)
   constructor
   · intro h
-    have hcross : 4 * t * u = (t + u) ^ 2 := by
+    have hcross : 4 * t * u = (t + u) ^ (2 : ℕ) := by
       apply (div_eq_one_iff_eq (pow_ne_zero 2 hsum)).mp
       exact h
     nlinarith [sq_nonneg (t - u)]
@@ -97,7 +97,7 @@ theorem poissonScaleHistoryGram_eq_one_iff {t u : ℝ} (ht : 0 < t) (hu : 0 < u)
 /-- Log-clock coordinates identify the Gram coefficient with squared hyperbolic visibility. -/
 theorem poissonScaleHistoryGram_eq_inv_cosh_sq {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
     poissonScaleHistoryGram t u =
-      1 / Real.cosh ((Real.log t - Real.log u) / 2) ^ 2 := by
+      1 / Real.cosh ((Real.log t - Real.log u) / 2) ^ (2 : ℕ) := by
   rw [poissonScaleHistoryGram_eq ht hu]
   have hcosh : Real.cosh (Real.log t - Real.log u) = (t / u + u / t) / 2 := by
     rw [Real.cosh_eq, Real.exp_sub,
@@ -106,7 +106,7 @@ theorem poissonScaleHistoryGram_eq_inv_cosh_sq {t u : ℝ} (ht : 0 < t) (hu : 0 
   have htwo := Real.cosh_two_mul ((Real.log t - Real.log u) / 2)
   rw [show 2 * ((Real.log t - Real.log u) / 2) = Real.log t - Real.log u by ring,
     hcosh] at htwo
-  have hhalf : Real.cosh ((Real.log t - Real.log u) / 2) ^ 2 =
+  have hhalf : Real.cosh ((Real.log t - Real.log u) / 2) ^ (2 : ℕ) =
       (((t / u + u / t) / 2) + 1) / 2 := by
     nlinarith [Real.cosh_sq_sub_sinh_sq ((Real.log t - Real.log u) / 2)]
   have ht0 : t ≠ 0 := ne_of_gt ht
@@ -129,14 +129,14 @@ theorem poissonLogScaleHistory_eq_translate {t : ℝ} (ht : 0 < t) (x : ℝ) :
   rw [poissonLogScaleHistory, poissonScaleHistory, poissonLogScaleMother,
     ← Real.exp_half, Real.exp_add, Real.exp_log ht]
   rw [show -(t * Real.exp x) = -(Real.exp x * t) by ring]
-  have hexpSq : Real.exp (x / 2) ^ 2 = Real.exp x := by
+  have hexpSq : Real.exp (x / 2) ^ (2 : ℕ) = Real.exp x := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
   calc
     Real.exp (x / 2) *
         (2 * t * Real.exp (x / 2) * Real.exp (-(Real.exp x * t))) =
-      2 * t * Real.exp (x / 2) ^ 2 * Real.exp (-(Real.exp x * t)) := by ring
+      2 * t * Real.exp (x / 2) ^ (2 : ℕ) * Real.exp (-(Real.exp x * t)) := by ring
     _ = 2 * (Real.exp x * t) * Real.exp (-(Real.exp x * t)) := by
       rw [hexpSq]
       ring

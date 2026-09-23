@@ -80,8 +80,8 @@ theorem abs_re_digamma_vertical_le {c : ℝ} (hc : 0 < c) (y : ℝ) :
     have habs := re_digamma_vertical_abs hc y
     have hb := re_digamma_vertical_bound_uncond (σ := c) (t := |y|) hc.le hy0
     have hb' := abs_le.mp hb
-    have herr : 1 / |y| ^ 2 + Real.pi / (2 * |y|) ≤ 1 + Real.pi / 2 := by
-      have h1 : 1 / |y| ^ 2 ≤ 1 := by
+    have herr : 1 / |y| ^ (2 : ℕ) + Real.pi / (2 * |y|) ≤ 1 + Real.pi / 2 := by
+      have h1 : 1 / |y| ^ (2 : ℕ) ≤ 1 := by
         rw [div_le_one (by positivity)]
         nlinarith
       have h2 : Real.pi / (2 * |y|) ≤ Real.pi / 2 := by
@@ -89,17 +89,17 @@ theorem abs_re_digamma_vertical_le {c : ℝ} (hc : 0 < c) (y : ℝ) :
         linarith
       linarith
     -- the logarithm of the modulus is controlled by `log (c+1) + log (2+|y|)`
-    have hmodub : (1 / 2) * Real.log (c ^ 2 + |y| ^ 2) ≤ Real.log (c + 1) + Real.log (2 + |y|) := by
-      have hprod : c ^ 2 + |y| ^ 2 ≤ ((c + 1) * (2 + |y|)) ^ 2 := by
+    have hmodub : (1 / 2) * Real.log (c ^ (2 : ℕ) + |y| ^ (2 : ℕ)) ≤ Real.log (c + 1) + Real.log (2 + |y|) := by
+      have hprod : c ^ (2 : ℕ) + |y| ^ (2 : ℕ) ≤ ((c + 1) * (2 + |y|)) ^ (2 : ℕ) := by
         nlinarith [abs_nonneg y, sq_nonneg (c + |y|)]
       have hpos : (0 : ℝ) < (c + 1) * (2 + |y|) := by positivity
-      have hlogle : Real.log (c ^ 2 + |y| ^ 2) ≤ Real.log (((c + 1) * (2 + |y|)) ^ 2) := by
+      have hlogle : Real.log (c ^ (2 : ℕ) + |y| ^ (2 : ℕ)) ≤ Real.log (((c + 1) * (2 + |y|)) ^ (2 : ℕ)) := by
         refine Real.log_le_log (by positivity) hprod
       rw [Real.log_pow, Real.log_mul (by positivity) (by positivity)] at hlogle
       push_cast at hlogle
       linarith
-    have hmodlb : (0 : ℝ) ≤ (1 / 2) * Real.log (c ^ 2 + |y| ^ 2) := by
-      have h1 : (1 : ℝ) ≤ c ^ 2 + |y| ^ 2 := by nlinarith
+    have hmodlb : (0 : ℝ) ≤ (1 / 2) * Real.log (c ^ (2 : ℕ) + |y| ^ (2 : ℕ)) := by
+      have h1 : (1 : ℝ) ≤ c ^ (2 : ℕ) + |y| ^ (2 : ℕ) := by nlinarith
       have := Real.log_nonneg h1
       linarith
     rw [habs, abs_le]

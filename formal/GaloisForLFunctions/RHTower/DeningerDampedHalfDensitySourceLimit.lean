@@ -133,7 +133,7 @@ private theorem deningerUnitaryDefect_norm_bounds
 
 theorem deningerHalfDensityPairedPrime_norm_bounds
     (L a : ℝ) (hw : Real.exp (-(a+1/2)*L) ≤ 1) (f : DeningerHalfDensityL2) :
-    (1-Real.exp (-(a+1/2)*L))^2 * ‖f‖ ≤ ‖deningerHalfDensityPairedPrime L a f‖ ∧
+    (1-Real.exp (-(a+1/2)*L))^(2 : ℕ) * ‖f‖ ≤ ‖deningerHalfDensityPairedPrime L a f‖ ∧
     ‖deningerHalfDensityPairedPrime L a f‖ ≤ Real.exp (2*Real.exp (-(a+1/2)*L)) * ‖f‖ := by
   let w := Real.exp (-(a+1/2)*L)
   have hw0 : 0 ≤ w := (Real.exp_pos _).le
@@ -146,7 +146,7 @@ theorem deningerHalfDensityPairedPrime_norm_bounds
     ‖deningerHalfDensityPairedPrime L a f‖ ≤ (1+w)*‖deningerHalfDensityPrimeMate L a f‖ at hD
   constructor
   · calc
-      (1-w)^2 * ‖f‖ = (1-w)*((1-w)*‖f‖) := by ring
+      (1-w)^(2 : ℕ) * ‖f‖ = (1-w)*((1-w)*‖f‖) := by ring
       _ ≤ (1-w)*‖deningerHalfDensityPrimeMate L a f‖ :=
         mul_le_mul_of_nonneg_left hM.1 (sub_nonneg.mpr hw)
       _ ≤ _ := hD.1
@@ -268,7 +268,7 @@ theorem deningerDampedHalfDensityPrefix_step (a : ℝ) (n : ℕ) :
 
 
 private theorem deningerDampedHalfDensityPrefix_step_bounds {a : ℝ} (ha : 1/2 < a) (n : ℕ) :
-    (1-deningerHalfDensityPrimeStepWeight a (n+1))^2 * ‖deningerDampedHalfDensityPrefix a n‖ ≤
+    (1-deningerHalfDensityPrimeStepWeight a (n+1))^(2 : ℕ) * ‖deningerDampedHalfDensityPrefix a n‖ ≤
       ‖deningerDampedHalfDensityPrefix a (n+1)‖ ∧
     ‖deningerDampedHalfDensityPrefix a (n+1)‖ ≤
       Real.exp (2*deningerHalfDensityPrimeStepWeight a (n+1)) * ‖deningerDampedHalfDensityPrefix a n‖ := by
@@ -360,17 +360,17 @@ theorem deningerDampedHalfDensityPrefix_error_bound (a : {a : ℝ // 1/2 < a}) (
   · exact deningerDampedHalfDensityPrefix_tendsto a
 
 private theorem deningerDampedHalfDensityPrefix_norm_lower {a : ℝ} (ha : 1/2 < a) (n : ℕ) :
-    (∏ k ∈ Finset.range n, (1-deningerHalfDensityPrimeStepWeight a (k+1)))^2 *
+    (∏ k ∈ Finset.range n, (1-deningerHalfDensityPrimeStepWeight a (k+1)))^(2 : ℕ) *
       ‖deningerDampedHalfDensityPrefix a 0‖ ≤ ‖deningerDampedHalfDensityPrefix a n‖ := by
   induction n with
   | zero => simp
   | succ n ih =>
     rw [Finset.prod_range_succ, mul_pow]
     calc
-      _ = (1-deningerHalfDensityPrimeStepWeight a (n+1))^2 *
-          ((∏ k ∈ Finset.range n, (1-deningerHalfDensityPrimeStepWeight a (k+1)))^2 *
+      _ = (1-deningerHalfDensityPrimeStepWeight a (n+1))^(2 : ℕ) *
+          ((∏ k ∈ Finset.range n, (1-deningerHalfDensityPrimeStepWeight a (k+1)))^(2 : ℕ) *
             ‖deningerDampedHalfDensityPrefix a 0‖) := by ring
-      _ ≤ (1-deningerHalfDensityPrimeStepWeight a (n+1))^2 * ‖deningerDampedHalfDensityPrefix a n‖ :=
+      _ ≤ (1-deningerHalfDensityPrimeStepWeight a (n+1))^(2 : ℕ) * ‖deningerDampedHalfDensityPrefix a n‖ :=
         mul_le_mul_of_nonneg_left ih (sq_nonneg _)
       _ ≤ _ := (deningerDampedHalfDensityPrefix_step_bounds ha n).1
 
@@ -471,7 +471,7 @@ theorem deningerHalfDensityPrimeMate_eq_adjoint (L a : ℝ) :
 
 theorem deningerHalfDensityPairedPrime_energy (L a : ℝ) (f : DeningerHalfDensityL2) :
     (inner ℂ f (deningerHalfDensityPairedPrime L a f)).re =
-      ‖deningerHalfDensityPrimeMate L a f‖^2 := by
+      ‖deningerHalfDensityPrimeMate L a f‖^(2 : ℕ) := by
   rw [ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right]
   have hD : (deningerHalfDensityPrimeMate L a).adjoint = deningerHalfDensityPrimeFactor L a := by
     rw [deningerHalfDensityPrimeMate_eq_adjoint,ContinuousLinearMap.adjoint_adjoint]

@@ -71,7 +71,7 @@ theorem coordPartial_axisExponential (i i₀ : Fin d) (s c : ℝ) (x : Fin d →
 /-- The axis exponential is an eigenfunction of the second partial derivative. -/
 theorem coordPartial_coordPartial_axisExponential (i i₀ : Fin d) (s c : ℝ) (x : Fin d → ℝ) :
     coordPartial i (coordPartial i (axisExponential i₀ s c)) x =
-      (if i₀ = i then s ^ 2 else 0) * axisExponential i₀ s c x := by
+      (if i₀ = i then s ^ (2 : ℕ) else 0) * axisExponential i₀ s c x := by
   have hrw : coordPartial i (axisExponential i₀ s c) =
       axisExponential i₀ s ((if i₀ = i then s else 0) * c) := by
     funext y
@@ -85,10 +85,10 @@ theorem coordPartial_coordPartial_axisExponential (i i₀ : Fin d) (s c : ℝ) (
 theorem dalembert_axisExponential (eps : Fin d → ℝ) (heps : ∀ i, eps i ≠ 0)
     (i₀ : Fin d) (s c : ℝ) (x : Fin d → ℝ) :
     (SmoothPseudoMetric.ofSignature eps heps).chart.dalembert (axisExponential i₀ s c) x =
-      (eps i₀)⁻¹ * s ^ 2 * axisExponential i₀ s c x := by
+      (eps i₀)⁻¹ * s ^ (2 : ℕ) * axisExponential i₀ s c x := by
   rw [SmoothPseudoMetric.ofSignature_dalembert eps heps (contDiff_axisExponential i₀ s c) x]
   rw [Finset.sum_eq_single i₀]
-  · have hif : (if i₀ = i₀ then s ^ 2 else 0) = s ^ 2 := if_pos rfl
+  · have hif : (if i₀ = i₀ then s ^ (2 : ℕ) else 0) = s ^ (2 : ℕ) := if_pos rfl
     rw [coordPartial_coordPartial_axisExponential, hif]
     ring
   · intro j _ hj
@@ -100,7 +100,7 @@ theorem dalembert_axisExponential (eps : Fin d → ℝ) (heps : ∀ i, eps i ≠
 
 /-- The constant potential solved by an axis exponential. -/
 noncomputable def axisPotential (eps : Fin d → ℝ) (i₀ : Fin d) (s : ℝ) : (Fin d → ℝ) → ℝ :=
-  fun _ => -((eps i₀)⁻¹ * s ^ 2)
+  fun _ => -((eps i₀)⁻¹ * s ^ (2 : ℕ))
 
 theorem solvesPotentialWave_axisExponential (eps : Fin d → ℝ) (heps : ∀ i, eps i ≠ 0)
     (i₀ : Fin d) (s c : ℝ) :

@@ -34,20 +34,20 @@ namespace RHTower
 
 /-- The product form of the seam bracket is minimized at the midpoint. -/
 theorem seam_product_ge {d η s : ℝ} (hd : 0 < d) (hη : 0 < η) (hs0 : 0 < s) (hs : s < η) :
-    (1 + 2 * d / η) ^ 2 ≤ (1 + d / s) * (1 + d / (η - s)) := by
+    (1 + 2 * d / η) ^ (2 : ℕ) ≤ (1 + d / s) * (1 + d / (η - s)) := by
   have hηs : (0 : ℝ) < η - s := by linarith
   have hu : (0 : ℝ) < s * (η - s) := by positivity
-  have hamgm : s * (η - s) ≤ η ^ 2 / 4 := by nlinarith [sq_nonneg (s - (η - s))]
+  have hamgm : s * (η - s) ≤ η ^ (2 : ℕ) / 4 := by nlinarith [sq_nonneg (s - (η - s))]
   have hprod : (1 + d / s) * (1 + d / (η - s))
-      = 1 + (d * η + d ^ 2) / (s * (η - s)) := by
+      = 1 + (d * η + d ^ (2 : ℕ)) / (s * (η - s)) := by
     field_simp
     ring
-  have hsq : (1 + 2 * d / η) ^ 2 = 1 + (d * η + d ^ 2) / (η ^ 2 / 4) := by
+  have hsq : (1 + 2 * d / η) ^ (2 : ℕ) = 1 + (d * η + d ^ (2 : ℕ)) / (η ^ (2 : ℕ) / 4) := by
     field_simp
     ring
   rw [hprod, hsq]
-  have hnum : (0 : ℝ) < d * η + d ^ 2 := by positivity
-  have hstep : (d * η + d ^ 2) / (η ^ 2 / 4) ≤ (d * η + d ^ 2) / (s * (η - s)) :=
+  have hnum : (0 : ℝ) < d * η + d ^ (2 : ℕ) := by positivity
+  have hstep : (d * η + d ^ (2 : ℕ)) / (η ^ (2 : ℕ) / 4) ≤ (d * η + d ^ (2 : ℕ)) / (s * (η - s)) :=
     div_le_div_of_nonneg_left hnum.le hu hamgm
   linarith
 
@@ -59,7 +59,7 @@ theorem seam_bracket_ge {d η s : ℝ} (hd : 0 < d) (hη : 0 < η) (hs0 : 0 < s)
   have h2 : (0 : ℝ) < 1 + d / (η - s) := by positivity
   have h0 : (0 : ℝ) < 1 + 2 * d / η := by positivity
   have hprod := seam_product_ge hd hη hs0 hs
-  have hlog : Real.log ((1 + 2 * d / η) ^ 2) ≤ Real.log ((1 + d / s) * (1 + d / (η - s))) :=
+  have hlog : Real.log ((1 + 2 * d / η) ^ (2 : ℕ)) ≤ Real.log ((1 + d / s) * (1 + d / (η - s))) :=
     Real.log_le_log (by positivity) hprod
   rwa [Real.log_pow, Real.log_mul (ne_of_gt h1) (ne_of_gt h2)] at hlog
 

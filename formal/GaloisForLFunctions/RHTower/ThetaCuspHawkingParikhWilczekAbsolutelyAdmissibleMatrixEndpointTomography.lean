@@ -77,7 +77,7 @@ theorem summable_pwMatrixEndpointEnergy_of_absoluteAdmissible
     dsimp [q, schwarzschildParikhWilczekEndpointTomographyNode]
     positivity
   have hqle : q ≤ q0 := schwarzschildParikhWilczekEndpointTomographyNode_le_zero j
-  have hmajor : Summable fun n : ℕ => (|a n| * q0 ^ n) * q ^ 2 := by
+  have hmajor : Summable fun n : ℕ => (|a n| * q0 ^ n) * q ^ (2 : ℕ) := by
     exact hadm.mul_right _
   refine Summable.of_norm_bounded hmajor ?_
   intro n
@@ -85,9 +85,9 @@ theorem summable_pwMatrixEndpointEnergy_of_absoluteAdmissible
   dsimp [a]
   have hqpow : q ^ n ≤ q0 ^ n := (pow_le_pow_left₀ hqpos.le hqle) n
   calc
-    |pwMatrixEndpointAntidiagonalCoefficient K n| * (q ^ n * q ^ 2) =
-        (|pwMatrixEndpointAntidiagonalCoefficient K n| * q ^ n) * q ^ 2 := by ring
-    _ ≤ (|pwMatrixEndpointAntidiagonalCoefficient K n| * q0 ^ n) * q ^ 2 := by
+    |pwMatrixEndpointAntidiagonalCoefficient K n| * (q ^ n * q ^ (2 : ℕ)) =
+        (|pwMatrixEndpointAntidiagonalCoefficient K n| * q ^ n) * q ^ (2 : ℕ) := by ring
+    _ ≤ (|pwMatrixEndpointAntidiagonalCoefficient K n| * q0 ^ n) * q ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hqpow (abs_nonneg _)) (sq_nonneg q)
 
@@ -129,7 +129,7 @@ theorem pwMatrixEndpointAntidiagonalCoefficient_eq_zero_of_absoluteAdmissible_da
     let q := schwarzschildParikhWilczekEndpointTomographyNode (j + 1)
     have hfac :
         (∑' n : ℕ, a n * q ^ (n + 2)) =
-          q ^ 2 * ∑' n : ℕ, a n * q ^ n := by
+          q ^ (2 : ℕ) * ∑' n : ℕ, a n * q ^ n := by
       rw [← tsum_mul_left]
       apply tsum_congr
       intro n

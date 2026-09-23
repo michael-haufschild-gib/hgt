@@ -194,8 +194,8 @@ theorem gramOperator_nullity (A : V →L[ℂ] W) :
 
 omit [FiniteDimensional ℂ W] in
 theorem gramOperator_det_eq_normDet_sq (A : V →L[ℂ] W) :
-    (gramOperator A).det = ((A.normDet ^ 2 : ℝ) : ℂ) := by
-  change (A.adjoint.comp A).det = ((A.normDet ^ 2 : ℝ) : ℂ)
+    (gramOperator A).det = ((A.normDet ^ (2 : ℕ) : ℝ) : ℂ) := by
+  change (A.adjoint.comp A).det = ((A.normDet ^ (2 : ℕ) : ℝ) : ℂ)
   exact A.normDet_sq.symm
 
 omit [FiniteDimensional ℂ W] in
@@ -225,7 +225,7 @@ theorem normDet_eq_norm_framedDet {ι : Type*} [Fintype ι] [DecidableEq ι]
 omit [FiniteDimensional ℂ W] in
 theorem gramOperator_det_eq_norm_framedDet_sq {ι : Type*} [Fintype ι] [DecidableEq ι]
     (A : V →L[ℂ] W) (bV : OrthonormalBasis ι ℂ V) (bW : OrthonormalBasis ι ℂ W) :
-    (gramOperator A).det = ((‖framedDet A bV bW‖ ^ 2 : ℝ) : ℂ) := by
+    (gramOperator A).det = ((‖framedDet A bV bW‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   letI := bW.toBasis.finiteDimensional_of_finite
   rw [gramOperator_det_eq_normDet_sq,
     normDet_eq_norm_framedDet A bV bW]
@@ -306,7 +306,7 @@ theorem inverseLiftCost_tendsto_atTop
     {α : Type*} {l : Filter α} {A : α → V →L[ℂ] W} {A0 : V →L[ℂ] W}
     {x : α → V} {y : W} (hA : Tendsto A l (𝓝 A0))
     (hlift : ∀ᶠ t in l, A t (x t) = y) (hy : y ∉ A0.range) :
-    Tendsto (fun t => ‖x t‖ ^ 2) l atTop := by
+    Tendsto (fun t => ‖x t‖ ^ (2 : ℕ)) l atTop := by
   let z : W := transverseComponent A0 y
   have hz : 0 < ‖z‖ := norm_pos_iff.mpr (transverseComponent_ne_zero hy)
   rw [Filter.tendsto_atTop]
@@ -338,7 +338,7 @@ theorem inverseLiftCost_tendsto_atTop
   have hone : 1 ≤ ‖x t‖ := by
     dsimp [c] at hc_lt
     linarith [le_max_left (1 : ℝ) b]
-  have hx_le_sq : ‖x t‖ ≤ ‖x t‖ ^ 2 := by nlinarith
+  have hx_le_sq : ‖x t‖ ≤ ‖x t‖ ^ (2 : ℕ) := by nlinarith
   exact hb_le_c.trans (hc_lt.le.trans hx_le_sq)
 
 abbrev LiftFiber (A : V →L[ℂ] W) (y : W) := { x : V // A x = y }
@@ -534,7 +534,7 @@ theorem positiveInverseLift_minimal (A : ℝ → V →L[ℂ] W)
 def positiveInverseLiftCost (A : ℝ → V →L[ℂ] W)
     (hinv : ∀ {t : ℝ}, 0 < t → Function.Bijective (A t))
     (y : W) (t : ℝ) : ℝ :=
-  ‖positiveInverseLift A hinv y t‖ ^ 2
+  ‖positiveInverseLift A hinv y t‖ ^ (2 : ℕ)
 
 omit [CompleteSpace V] [CompleteSpace W] [FiniteDimensional ℂ W] in
 theorem positiveInverseLiftCost_tendsto_atTop
@@ -559,7 +559,7 @@ theorem finiteLawRelationWall_fiveShadows
     0 < r ∧
     (gramOperator (A 0)).IsPositive ∧
     Module.finrank ℂ (gramOperator (A 0)).ker = r ∧
-    (∀ t : ℝ, (gramOperator (A t)).det = (((A t).normDet ^ 2 : ℝ) : ℂ)) ∧
+    (∀ t : ℝ, (gramOperator (A t)).det = (((A t).normDet ^ (2 : ℕ) : ℝ) : ℂ)) ∧
     Tendsto (fun t => (A t).normDet) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
     Tendsto (fun t => (gramOperator (A t)).det) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
     Tendsto (fun t => inverseGraphGrassmannian (A t)) (𝓝[>] (0 : ℝ))
@@ -608,7 +608,7 @@ theorem onePortMatrix_det (n : ℕ) (t : ℂ) :
 
 theorem onePortMatrix_gram (n : ℕ) (t : ℝ) :
     Matrix.conjTranspose (onePortMatrix n (t : ℂ)) * onePortMatrix n (t : ℂ) =
-      onePortMatrix n ((t ^ 2 : ℝ) : ℂ) := by
+      onePortMatrix n ((t ^ (2 : ℕ) : ℝ) : ℂ) := by
   simp only [onePortMatrix, Matrix.diagonal_conjTranspose,
     Matrix.diagonal_mul_diagonal]
   congr 1
@@ -659,7 +659,7 @@ theorem onePortInverseLift_exact (n : ℕ) {t : ℂ} (ht : t ≠ 0) :
       onePortMatrix, onePortWeight, hi]
 
 theorem onePortInverseLift_cost (n : ℕ) (t : ℂ) :
-    ‖onePortInverseLift n t‖ ^ 2 = ‖t‖⁻¹ ^ 2 := by
+    ‖onePortInverseLift n t‖ ^ (2 : ℕ) = ‖t‖⁻¹ ^ (2 : ℕ) := by
   simp [onePortInverseLift, norm_inv]
 
 end

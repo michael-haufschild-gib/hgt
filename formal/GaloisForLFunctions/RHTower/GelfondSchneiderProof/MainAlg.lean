@@ -26,7 +26,7 @@ order at several algebraic points.
 
 This specific file handles the foundational algebraic setup:
 1. Constructing a common number field `K` of degree `h` containing `α, β, γ`.
-2. Defining the structural parameters `m = 2h + 2` and `n = q^2 / (2m)`.
+2. Defining the structural parameters `m = 2h + 2` and `n = q^(2 : ℕ) / (2m)`.
 3. Establishing the common denominator scaling factor `c₁` such that `c₁α`, `c₁β`, and `c₁γ`
    are all algebraic integers in `K`.
 4. Formulating the homogeneous linear system matrix `A` with scaled entries residing strictly
@@ -194,7 +194,7 @@ lemma isIntegral_c₁γ : IsIntegral ℤ (h7.c₁ • h7.γ') := by
   · rw [H2]; rw [← IsIntegral.neg_iff, neg_smul, neg_neg]; exact h
 
 /-!
-Let `m = 2h + 2`, and `n = q^ 2 / (2 * h7.m)`, where $q^2 = t $ is a square of a natural number
+Let `m = 2h + 2`, and `n = q^ (2 : ℕ) / (2 * h7.m)`, where $q^(2 : ℕ) = t $ is a square of a natural number
 and is a multiple of $2m.$  -/
 
 /-- The finrank of the field extension `h7.K` -/
@@ -208,7 +208,7 @@ lemma one_le_m : 1 ≤ h7.m := Nat.succ_le_succ (Nat.zero_le (2 * h7.h + 1))
 variable (q : ℕ) (hq0 : 0 < q)
 
 /-- A target bound parameter `n` dependent on a free parameter `q`. -/
-def n : ℕ := q ^ 2 / (2 * h7.m)
+def n : ℕ := q ^ (2 : ℕ) / (2 * h7.m)
 
 variable (u : Fin (h7.m * h7.n q)) (t : Fin (q * q))
 
@@ -253,7 +253,7 @@ of the auxiliary function at point `l`. Evaluates to `(a + bβ')^k * α'^(al) * 
 abbrev systemCoeffs : h7.K :=
   (a q t + b q t • h7.β') ^ (h7.k q u) * h7.α' ^ (a q t * h7.l q u) * h7.γ' ^ (b q t * h7.l q u)
 
-variable (h2mq : 2 * h7.m ∣ q ^ 2)
+variable (h2mq : 2 * h7.m ∣ q ^ (2 : ℕ))
 
 include hq0 h2mq in
 lemma one_le_n : 1 ≤ h7.n q := by
@@ -343,7 +343,7 @@ lemma c₁IsInt : IsIntegral ℤ (h7.c_coeffs q • h7.systemCoeffs q u t) := by
   · exact h7.isIntegral_c₁_pow_smul_add_smul_pow (h7.n q) (h7.k q u)
       (le_sub_one_of_lt (finProdFinEquiv.symm.1 u).2.isLt) (a q t) (b q t)
 
-/-- The matrix representing the homogeneous linear system of `mn` equations in `q^2` unknowns.
+/-- The matrix representing the homogeneous linear system of `mn` equations in `q^(2 : ℕ)` unknowns.
 Its entries are scaled to strictly reside in the ring of integers `𝓞 K`. -/
 def A : Matrix (Fin (h7.m * h7.n q)) (Fin (q * q)) (𝓞 h7.K) :=
   fun i j ↦ RingOfIntegers.restrict _ (fun _ ↦ (h7.c₁IsInt q i j)) ℤ

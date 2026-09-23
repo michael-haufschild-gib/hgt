@@ -159,12 +159,12 @@ def eulerLaurentHalfDensityAmplitude (epsilon lambda q : ℝ) : ℝ :=
 
 /-- The one-prime Fisher energy in source frequency and occupation coordinates. -/
 def eulerFisherModeEnergy (epsilon lambda q : ℝ) : ℝ :=
-  4 * epsilon ^ 2 * lambda ^ 2 * q / (1 + q) ^ 2
+  4 * epsilon ^ (2 : ℕ) * lambda ^ (2 : ℕ) * q / (1 + q) ^ (2 : ℕ)
 
 /-- The source half-density turns the frequency-weighted residue norm into the Fisher norm. -/
 theorem eulerLaurentResidue_halfDensity_isometry
     (epsilon lambda q : ℝ) (hlambda : 0 ≤ lambda) (hq : 0 ≤ q) :
-    lambda * eulerLaurentHalfDensityAmplitude epsilon lambda q ^ 2 =
+    lambda * eulerLaurentHalfDensityAmplitude epsilon lambda q ^ (2 : ℕ) =
       eulerFisherModeEnergy epsilon lambda q := by
   have hden : 1 + q ≠ 0 := by linarith
   rw [eulerLaurentHalfDensityAmplitude, eulerFisherModeEnergy, div_pow]

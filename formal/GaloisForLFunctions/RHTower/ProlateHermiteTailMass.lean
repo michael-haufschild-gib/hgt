@@ -31,26 +31,26 @@ theorem exists_bound_abs_hermiteFun_inv_pow (m k : ℕ) :
 
 /-- The elementary inverse-fourth-power mass. -/
 theorem integral_inv_pow_four_le {a b : ℝ} (ha : 1 ≤ a) (hab : a ≤ b) :
-    (∫ x in a..b, 1 / x ^ 4) ≤ 1 / (3 * a ^ 3) := by
+    (∫ x in a..b, 1 / x ^ (4 : ℕ)) ≤ 1 / (3 * a ^ (3 : ℕ)) := by
   have ha0 : (0 : ℝ) < a := lt_of_lt_of_le one_pos ha
   have hderiv : ∀ x ∈ Set.uIcc a b,
-      HasDerivAt (fun t : ℝ => -(3 * t ^ 3)⁻¹) (1 / x ^ 4) x := by
+      HasDerivAt (fun t : ℝ => -(3 * t ^ (3 : ℕ))⁻¹) (1 / x ^ (4 : ℕ)) x := by
     intro x hx
     have hx0 : (0 : ℝ) < x := by
       rcases Set.mem_uIcc.1 hx with h | h
       · exact lt_of_lt_of_le ha0 h.1
       · exact lt_of_lt_of_le ha0 (le_trans hab h.1)
-    have hpow : HasDerivAt (fun t : ℝ => 3 * t ^ 3) (9 * x ^ 2) x := by
+    have hpow : HasDerivAt (fun t : ℝ => 3 * t ^ (3 : ℕ)) (9 * x ^ (2 : ℕ)) x := by
       have h := (hasDerivAt_pow 3 x).const_mul (3 : ℝ)
       refine h.congr_deriv ?_
       push_cast
       ring
-    have hne : (3 : ℝ) * x ^ 3 ≠ 0 := by positivity
+    have hne : (3 : ℝ) * x ^ (3 : ℕ) ≠ 0 := by positivity
     have hinv := (hpow.inv hne).neg
     refine hinv.congr_deriv ?_
     field_simp
     ring
-  have hcont : ContinuousOn (fun x : ℝ => 1 / x ^ 4) (Set.uIcc a b) := by
+  have hcont : ContinuousOn (fun x : ℝ => 1 / x ^ (4 : ℕ)) (Set.uIcc a b) := by
     refine ContinuousOn.div continuousOn_const ((continuous_pow 4).continuousOn) fun x hx => ?_
     have hx0 : (0 : ℝ) < x := by
       rcases Set.mem_uIcc.1 hx with h | h
@@ -61,8 +61,8 @@ theorem integral_inv_pow_four_le {a b : ℝ} (ha : 1 ≤ a) (hab : a ≤ b) :
     (hcont.intervalIntegrable)
   rw [hFTC]
   have hb0 : (0 : ℝ) < b := lt_of_lt_of_le ha0 hab
-  have hpos : (0 : ℝ) < ((3 : ℝ) * b ^ 3)⁻¹ := by positivity
-  have hid : ((3 : ℝ) * a ^ 3)⁻¹ = 1 / (3 * a ^ 3) := by
+  have hpos : (0 : ℝ) < ((3 : ℝ) * b ^ (3 : ℕ))⁻¹ := by positivity
+  have hid : ((3 : ℝ) * a ^ (3 : ℕ))⁻¹ = 1 / (3 * a ^ (3 : ℕ)) := by
     rw [inv_eq_one_div]
   linarith [hpos, hid.le, hid.ge]
 
@@ -70,13 +70,13 @@ theorem integral_inv_pow_four_le {a b : ℝ} (ha : 1 ≤ a) (hab : a ≤ b) :
 uniformly in the far endpoint. -/
 theorem exists_bound_integral_abs_hermiteFun_tail (m : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ a b : ℝ, 1 ≤ a → a ≤ b →
-      (∫ x in a..b, |hermiteFun m x|) ≤ C / (3 * a ^ 3) := by
+      (∫ x in a..b, |hermiteFun m x|) ≤ C / (3 * a ^ (3 : ℕ)) := by
   obtain ⟨C, hC0, hC⟩ := exists_bound_abs_hermiteFun_inv_pow m 4
   refine ⟨C, hC0, fun a b ha hab => ?_⟩
   have ha0 : (0 : ℝ) < a := lt_of_lt_of_le one_pos ha
   have hint1 : IntervalIntegrable (fun x : ℝ => |hermiteFun m x|) volume a b :=
     (continuous_hermiteFun m).abs.intervalIntegrable _ _
-  have hint2 : IntervalIntegrable (fun x : ℝ => C * (1 / x ^ 4)) volume a b := by
+  have hint2 : IntervalIntegrable (fun x : ℝ => C * (1 / x ^ (4 : ℕ))) volume a b := by
     refine (ContinuousOn.intervalIntegrable ?_)
     refine ContinuousOn.mul continuousOn_const (ContinuousOn.div continuousOn_const
       ((continuous_pow 4).continuousOn) fun x hx => ?_)
@@ -85,28 +85,28 @@ theorem exists_bound_integral_abs_hermiteFun_tail (m : ℕ) :
       · exact lt_of_lt_of_le ha0 h.1
       · exact lt_of_lt_of_le ha0 (le_trans hab h.1)
     positivity
-  have hmono : (∫ x in a..b, |hermiteFun m x|) ≤ ∫ x in a..b, C * (1 / x ^ 4) := by
+  have hmono : (∫ x in a..b, |hermiteFun m x|) ≤ ∫ x in a..b, C * (1 / x ^ (4 : ℕ)) := by
     refine intervalIntegral.integral_mono_on hab hint1 hint2 fun x hx => ?_
     have hx1 : 1 ≤ |x| := by
       rw [abs_of_pos (lt_of_lt_of_le ha0 hx.1)]
       exact le_trans ha hx.1
     have h := hC x hx1
     rw [abs_of_pos (lt_of_lt_of_le ha0 hx.1)] at h
-    calc |hermiteFun m x| ≤ C / x ^ 4 := h
-      _ = C * (1 / x ^ 4) := by ring
+    calc |hermiteFun m x| ≤ C / x ^ (4 : ℕ) := h
+      _ = C * (1 / x ^ (4 : ℕ)) := by ring
   rw [intervalIntegral.integral_const_mul] at hmono
-  have hstep : C * (∫ x in a..b, 1 / x ^ 4) ≤ C * (1 / (3 * a ^ 3)) :=
+  have hstep : C * (∫ x in a..b, 1 / x ^ (4 : ℕ)) ≤ C * (1 / (3 * a ^ (3 : ℕ))) :=
     mul_le_mul_of_nonneg_left (integral_inv_pow_four_le ha hab) hC0
-  calc (∫ x in a..b, |hermiteFun m x|) ≤ C * ∫ x in a..b, 1 / x ^ 4 := hmono
-    _ ≤ C * (1 / (3 * a ^ 3)) := hstep
-    _ = C / (3 * a ^ 3) := by ring
+  calc (∫ x in a..b, |hermiteFun m x|) ≤ C * ∫ x in a..b, 1 / x ^ (4 : ℕ) := hmono
+    _ ≤ C * (1 / (3 * a ^ (3 : ℕ))) := hstep
+    _ = C / (3 * a ^ (3 : ℕ)) := by ring
 
 
 /-- The inverse-fourth-power mass on the negative side. -/
 theorem integral_inv_pow_four_le_neg {a b : ℝ} (ha : 1 ≤ a) (hab : a ≤ b) :
-    (∫ x in (-b)..(-a), 1 / x ^ 4) ≤ 1 / (3 * a ^ 3) := by
-  have hcomp : (∫ x in (-b)..(-a), (1 : ℝ) / x ^ 4) = ∫ x in a..b, 1 / x ^ 4 := by
-    rw [← intervalIntegral.integral_comp_neg (fun x : ℝ => 1 / x ^ 4)]
+    (∫ x in (-b)..(-a), 1 / x ^ (4 : ℕ)) ≤ 1 / (3 * a ^ (3 : ℕ)) := by
+  have hcomp : (∫ x in (-b)..(-a), (1 : ℝ) / x ^ (4 : ℕ)) = ∫ x in a..b, 1 / x ^ (4 : ℕ) := by
+    rw [← intervalIntegral.integral_comp_neg (fun x : ℝ => 1 / x ^ (4 : ℕ))]
     refine intervalIntegral.integral_congr fun x _ => ?_
     norm_num
   rw [hcomp]
@@ -115,7 +115,7 @@ theorem integral_inv_pow_four_le_neg {a b : ℝ} (ha : 1 ≤ a) (hab : a ≤ b) 
 /-- **Tail mass of a Hermite function on the negative side.** -/
 theorem exists_bound_integral_abs_hermiteFun_tail_neg (m : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ a b : ℝ, 1 ≤ a → a ≤ b →
-      (∫ x in (-b)..(-a), |hermiteFun m x|) ≤ C / (3 * a ^ 3) := by
+      (∫ x in (-b)..(-a), |hermiteFun m x|) ≤ C / (3 * a ^ (3 : ℕ)) := by
   obtain ⟨C, hC0, hC⟩ := exists_bound_abs_hermiteFun_inv_pow m 4
   refine ⟨C, hC0, fun a b ha hab => ?_⟩
   have ha0 : (0 : ℝ) < a := lt_of_lt_of_le one_pos ha
@@ -129,16 +129,16 @@ theorem exists_bound_integral_abs_hermiteFun_tail_neg (m : ℕ) :
       linarith
     · have := h.1
       linarith
-  have hint2 : IntervalIntegrable (fun x : ℝ => C * (1 / x ^ 4)) volume (-b) (-a) := by
+  have hint2 : IntervalIntegrable (fun x : ℝ => C * (1 / x ^ (4 : ℕ))) volume (-b) (-a) := by
     refine (ContinuousOn.intervalIntegrable ?_)
     refine ContinuousOn.mul continuousOn_const (ContinuousOn.div continuousOn_const
       ((continuous_pow 4).continuousOn) fun x hx => ?_)
     have h := hneg x hx
-    have hx4 : x ^ 4 = (-x) ^ 4 := by ring
+    have hx4 : x ^ (4 : ℕ) = (-x) ^ (4 : ℕ) := by ring
     rw [hx4]
     positivity
   have hmono : (∫ x in (-b)..(-a), |hermiteFun m x|)
-      ≤ ∫ x in (-b)..(-a), C * (1 / x ^ 4) := by
+      ≤ ∫ x in (-b)..(-a), C * (1 / x ^ (4 : ℕ)) := by
     refine intervalIntegral.integral_mono_on hba hint1 hint2 fun x hx => ?_
     have hx0 : (0 : ℝ) < -x := by
       have h1 := hx.1
@@ -149,18 +149,18 @@ theorem exists_bound_integral_abs_hermiteFun_tail_neg (m : ℕ) :
       have := hx.2
       linarith
     have h := hC x hx1
-    have habs : |x| ^ 4 = x ^ 4 := by
+    have habs : |x| ^ (4 : ℕ) = x ^ (4 : ℕ) := by
       rw [abs_of_neg (by linarith : x < 0)]
       ring
     rw [habs] at h
-    calc |hermiteFun m x| ≤ C / x ^ 4 := h
-      _ = C * (1 / x ^ 4) := by ring
+    calc |hermiteFun m x| ≤ C / x ^ (4 : ℕ) := h
+      _ = C * (1 / x ^ (4 : ℕ)) := by ring
   rw [intervalIntegral.integral_const_mul] at hmono
-  have hstep : C * (∫ x in (-b)..(-a), 1 / x ^ 4) ≤ C * (1 / (3 * a ^ 3)) :=
+  have hstep : C * (∫ x in (-b)..(-a), 1 / x ^ (4 : ℕ)) ≤ C * (1 / (3 * a ^ (3 : ℕ))) :=
     mul_le_mul_of_nonneg_left (integral_inv_pow_four_le_neg ha hab) hC0
-  calc (∫ x in (-b)..(-a), |hermiteFun m x|) ≤ C * ∫ x in (-b)..(-a), 1 / x ^ 4 := hmono
-    _ ≤ C * (1 / (3 * a ^ 3)) := hstep
-    _ = C / (3 * a ^ 3) := by ring
+  calc (∫ x in (-b)..(-a), |hermiteFun m x|) ≤ C * ∫ x in (-b)..(-a), 1 / x ^ (4 : ℕ) := hmono
+    _ ≤ C * (1 / (3 * a ^ (3 : ℕ))) := hstep
+    _ = C / (3 * a ^ (3 : ℕ)) := by ring
 
 
 /-- **The whole-line pairing differs from the symmetric window pairing by the tail mass.**  For a
@@ -169,7 +169,7 @@ theorem exists_bound_abs_integral_sub_window (m : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (v : ℝ → ℝ) (B a : ℝ), 1 ≤ a → 0 ≤ B → Continuous v →
       (∀ x, |v x| ≤ B) → Integrable (fun x => v x * hermiteFun m x) →
       |(∫ x, v x * hermiteFun m x) - ∫ x in (-a)..a, v x * hermiteFun m x|
-        ≤ B * (2 * C / (3 * a ^ 3)) := by
+        ≤ B * (2 * C / (3 * a ^ (3 : ℕ))) := by
   obtain ⟨C₁, hC₁0, hC₁⟩ := exists_bound_integral_abs_hermiteFun_tail m
   obtain ⟨C₂, hC₂0, hC₂⟩ := exists_bound_integral_abs_hermiteFun_tail_neg m
   refine ⟨max C₁ C₂, le_trans hC₁0 (le_max_left _ _), fun v B a ha hB0 hv hB hint => ?_⟩
@@ -180,7 +180,7 @@ theorem exists_bound_abs_integral_sub_window (m : ℕ) :
   -- the finite-window estimate, uniform in the far endpoint
   have hfin : ∀ R : ℝ, a ≤ R →
       |(∫ x in (-R)..R, v x * hermiteFun m x) - ∫ x in (-a)..a, v x * hermiteFun m x|
-        ≤ B * (2 * C / (3 * a ^ 3)) := by
+        ≤ B * (2 * C / (3 * a ^ (3 : ℕ))) := by
     intro R hR
     have hsplit1 : (∫ x in (-R)..(-a), v x * hermiteFun m x)
         + ∫ x in (-a)..a, v x * hermiteFun m x = ∫ x in (-R)..a, v x * hermiteFun m x :=
@@ -194,7 +194,7 @@ theorem exists_bound_abs_integral_sub_window (m : ℕ) :
         = (∫ x in (-R)..(-a), v x * hermiteFun m x) + ∫ x in a..R, v x * hermiteFun m x := by
       linarith [hsplit1, hsplit2]
     rw [hdiff]
-    have hright : |∫ x in a..R, v x * hermiteFun m x| ≤ B * (C / (3 * a ^ 3)) := by
+    have hright : |∫ x in a..R, v x * hermiteFun m x| ≤ B * (C / (3 * a ^ (3 : ℕ))) := by
       have habs := intervalIntegral.abs_integral_le_integral_abs
         (f := fun x : ℝ => v x * hermiteFun m x) (μ := volume) hR
       refine le_trans habs ?_
@@ -209,7 +209,7 @@ theorem exists_bound_abs_integral_sub_window (m : ℕ) :
       refine le_trans hmono ?_
       refine mul_le_mul_of_nonneg_left ?_ hB0
       exact le_trans (hC₁ a R ha hR) (by gcongr; exact le_max_left _ _)
-    have hleft : |∫ x in (-R)..(-a), v x * hermiteFun m x| ≤ B * (C / (3 * a ^ 3)) := by
+    have hleft : |∫ x in (-R)..(-a), v x * hermiteFun m x| ≤ B * (C / (3 * a ^ (3 : ℕ))) := by
       have hRa : (-R : ℝ) ≤ -a := by linarith
       have habs := intervalIntegral.abs_integral_le_integral_abs
         (f := fun x : ℝ => v x * hermiteFun m x) (μ := volume) hRa
@@ -227,7 +227,7 @@ theorem exists_bound_abs_integral_sub_window (m : ℕ) :
       exact le_trans (hC₂ a R ha hR) (by gcongr; exact le_max_right _ _)
     have habs2 := abs_add_le (∫ x in (-R)..(-a), v x * hermiteFun m x)
       (∫ x in a..R, v x * hermiteFun m x)
-    have hsum : B * (C / (3 * a ^ 3)) + B * (C / (3 * a ^ 3)) = B * (2 * C / (3 * a ^ 3)) := by
+    have hsum : B * (C / (3 * a ^ (3 : ℕ))) + B * (C / (3 * a ^ (3 : ℕ))) = B * (2 * C / (3 * a ^ (3 : ℕ))) := by
       ring
     linarith [habs2, hleft, hright, hsum.le, hsum.ge]
   -- pass to the whole line

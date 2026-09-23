@@ -51,7 +51,7 @@ theorem stringBlackHoleTemperature_vacuum (ell tau : ℝ) :
   simp [stringBlackHoleTemperature, radiationMass, canonicalThermalMass]
 
 theorem stringBlackHole_charge_temperature (ell tau : ℝ) :
-    coherentRadius tau ^ 2 + 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell = 1 := by
+    coherentRadius tau ^ (2 : ℕ) + 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell = 1 := by
   rw [coherentRadius_sq, stringBlackHoleTemperature]
   field_simp
   ring
@@ -60,10 +60,10 @@ theorem stringBlackHole_charge_from_temperature (ell tau : ℝ) :
     coherentRadius tau = Real.sqrt (1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell) := by
   have h := stringBlackHole_charge_temperature ell tau
   rw [show 1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell =
-    coherentRadius tau ^ 2 by linarith, Real.sqrt_sq_eq_abs, abs_of_pos (coherentRadius_pos tau)]
+    coherentRadius tau ^ (2 : ℕ) by linarith, Real.sqrt_sq_eq_abs, abs_of_pos (coherentRadius_pos tau)]
 
 theorem stringBlackHole_thermal_purity (ell tau : ℝ) :
-    (∑' n, radiationMass tau n ^ 2) =
+    (∑' n, radiationMass tau n ^ (2 : ℕ)) =
       (4 * Real.pi * stringBlackHoleTemperature ell tau) /
         (2 * Real.exp ell - 4 * Real.pi * stringBlackHoleTemperature ell tau) := by
   rw [radiationMass_purity, stringBlackHoleTemperature]

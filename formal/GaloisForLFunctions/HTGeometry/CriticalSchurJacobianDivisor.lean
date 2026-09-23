@@ -159,9 +159,9 @@ theorem criticalSourceNormalizedReciprocalPolynomial_coeff
 theorem criticalSourceNormalizedReciprocalPolynomial_sq_coeff
     (K : Type*) [Field K] [CharZero K]
     {m n k : ℕ} (hm : 0 < m) (hn : 0 < n) (hk : k < m + n) :
-    ((criticalSourceNormalizedReciprocalPolynomial K hm hn) ^ 2).coeff k =
-      (criticalSourceScale K hm hn) ^ 2 *
-        ((criticalSourceReciprocalPolynomial K m n) ^ 2).coeff k := by
+    ((criticalSourceNormalizedReciprocalPolynomial K hm hn) ^ (2 : ℕ)).coeff k =
+      (criticalSourceScale K hm hn) ^ (2 : ℕ) *
+        ((criticalSourceReciprocalPolynomial K m n) ^ (2 : ℕ)).coeff k := by
   simp only [pow_two, Polynomial.coeff_mul]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
@@ -180,7 +180,7 @@ theorem unitConstantSeries_criticalSourceReciprocalSquarePositive
     (K : Type*) [Field K] [CharZero K]
     {m n k : ℕ} (hm : 0 < m) (hn : 0 < n) (hk : k < m + n) :
     unitConstantSeries (criticalSourceReciprocalSquarePositive K hm hn) k =
-      ((criticalSourceNormalizedReciprocalPolynomial K hm hn) ^ 2).coeff k := by
+      ((criticalSourceNormalizedReciprocalPolynomial K hm hn) ^ (2 : ℕ)).coeff k := by
   rcases k with _ | k
   · simp [criticalSourceNormalizedReciprocalPolynomial, pow_two]
   · have hk' : k < m + n - 1 := by omega
@@ -193,8 +193,8 @@ theorem unitConstantSeries_criticalSourceReciprocalSquarePositive_eq_scale
     (K : Type*) [Field K] [CharZero K]
     {m n k : ℕ} (hm : 0 < m) (hn : 0 < n) (hk : k < m + n) :
     unitConstantSeries (criticalSourceReciprocalSquarePositive K hm hn) k =
-      (criticalSourceScale K hm hn) ^ 2 *
-        ((criticalSourceReciprocalPolynomial K m n) ^ 2).coeff k := by
+      (criticalSourceScale K hm hn) ^ (2 : ℕ) *
+        ((criticalSourceReciprocalPolynomial K m n) ^ (2 : ℕ)).coeff k := by
   rw [unitConstantSeries_criticalSourceReciprocalSquarePositive K hm hn hk,
     criticalSourceNormalizedReciprocalPolynomial_sq_coeff K hm hn hk]
 
@@ -205,9 +205,9 @@ theorem rectangularSchurToeplitz_normalized_eq_scale_smul_actual
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     rectangularSchurToeplitz
         (unitConstantSeries (criticalSourceReciprocalSquarePositive K hm hn)) n m =
-      (criticalSourceScale K hm hn) ^ 2 •
+      (criticalSourceScale K hm hn) ^ (2 : ℕ) •
         rectangularSchurToeplitz
-          (fun k => ((criticalSourceReciprocalPolynomial K m n) ^ 2).coeff k) n m := by
+          (fun k => ((criticalSourceReciprocalPolynomial K m n) ^ (2 : ℕ)).coeff k) n m := by
   apply Matrix.ext
   intro r i
   rw [Matrix.smul_apply]
@@ -224,8 +224,8 @@ theorem rectangularSchurToeplitz_actual_eq_invScale_smul_normalized
     (K : Type*) [Field K] [CharZero K]
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     rectangularSchurToeplitz
-        (fun k => ((criticalSourceReciprocalPolynomial K m n) ^ 2).coeff k) n m =
-      ((criticalSourceScale K hm hn) ^ 2)⁻¹ •
+        (fun k => ((criticalSourceReciprocalPolynomial K m n) ^ (2 : ℕ)).coeff k) n m =
+      ((criticalSourceScale K hm hn) ^ (2 : ℕ))⁻¹ •
         rectangularSchurToeplitz
           (unitConstantSeries (criticalSourceReciprocalSquarePositive K hm hn)) n m := by
   rw [rectangularSchurToeplitz_normalized_eq_scale_smul_actual K hm hn,
@@ -240,14 +240,14 @@ theorem criticalSourceReciprocalJacobian_det_eq_schurRamification
     (criticalReciprocalJacobian
         (criticalSourceReciprocalPolynomial K m n) n m).det =
       (-1 : criticalSourceField K m n) ^ m *
-        (((criticalSourceScale K hm hn) ^ 2)⁻¹) ^ m *
+        (((criticalSourceScale K hm hn) ^ (2 : ℕ))⁻¹) ^ m *
           MvPolynomial.aeval (criticalSourceSchurCoordinates K hm hn)
             (criticalSourceSchurRamificationPolynomial K m n) := by
   rw [criticalReciprocalJacobian_det_eq_rectangularSchur,
     show (fun k =>
       (criticalSourceReciprocalPolynomial K m n *
         criticalSourceReciprocalPolynomial K m n).coeff k) =
-      (fun k => ((criticalSourceReciprocalPolynomial K m n) ^ 2).coeff k) by
+      (fun k => ((criticalSourceReciprocalPolynomial K m n) ^ (2 : ℕ)).coeff k) by
         simp [pow_two],
     rectangularSchurToeplitz_actual_eq_invScale_smul_normalized K hm hn,
     Matrix.det_smul, aeval_criticalSourceSchurRamificationPolynomial K hm hn]

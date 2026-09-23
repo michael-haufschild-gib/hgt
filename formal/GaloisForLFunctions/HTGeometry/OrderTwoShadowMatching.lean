@@ -79,7 +79,7 @@ theorem shadowD_sq_y (hzv : dz v = 0) (hxv : dx v = 0) (hvv : dv v = 1) (hyv : d
     (hzy : dz y = 0) (hxy : dx y = 0) (hvy : dv y = 0) (hyy : dy y = 1)
     (hzA : dz A = 0) (hvA : dv A = 0) :
     shadowD dz dx dv dy v A R (shadowD dz dx dv dy v A R y)
-      = shadowC dx dy A * v ^ 2 + A * R := by
+      = shadowC dx dy A * v ^ (2 : ℕ) + A * R := by
   rw [shadowD_y dz dx dv dy v y A R hzy hxy hvy hyy]
   have hprod : ∀ d : Derivation ℤ K K, d (A * v) = A * d v + v * d A := fun d => der_mul d A v
   simp only [shadowD, hprod]
@@ -97,11 +97,11 @@ theorem shadow_determinant
     Matrix.det
       !![dx y, dv y, dy y;
          dx (A * v), dv (A * v), dy (A * v);
-         dx (shadowC dx dy A * v ^ 2 + A * R), dv (shadowC dx dy A * v ^ 2 + A * R),
-           dy (shadowC dx dy A * v ^ 2 + A * R)]
-      = v ^ 2 * (2 * dx A * shadowC dx dy A - A * dx (shadowC dx dy A))
-        + A * dx A * (v * dv R - R) - A ^ 2 * dx R := by
-  have hsq : ∀ d : Derivation ℤ K K, d (v ^ 2) = 2 * v * d v := by
+         dx (shadowC dx dy A * v ^ (2 : ℕ) + A * R), dv (shadowC dx dy A * v ^ (2 : ℕ) + A * R),
+           dy (shadowC dx dy A * v ^ (2 : ℕ) + A * R)]
+      = v ^ (2 : ℕ) * (2 * dx A * shadowC dx dy A - A * dx (shadowC dx dy A))
+        + A * dx A * (v * dv R - R) - A ^ (2 : ℕ) * dx R := by
+  have hsq : ∀ d : Derivation ℤ K K, d (v ^ (2 : ℕ)) = 2 * v * d v := by
     intro d
     rw [sq, der_mul d v v]
     ring
@@ -109,13 +109,13 @@ theorem shadow_determinant
   have hCv : dv (shadowC dx dy A) = 0 := by
     rw [shadowC, map_add, hvAx, der_mul dv (dy A) A, hvA, hvAy]
     ring
-  have hrow3x : dx (shadowC dx dy A * v ^ 2 + A * R)
-      = dx (shadowC dx dy A) * v ^ 2 + dx A * R + A * dx R := by
-    rw [map_add, der_mul dx _ (v ^ 2), der_mul dx A R, hsq dx, hxv]
+  have hrow3x : dx (shadowC dx dy A * v ^ (2 : ℕ) + A * R)
+      = dx (shadowC dx dy A) * v ^ (2 : ℕ) + dx A * R + A * dx R := by
+    rw [map_add, der_mul dx _ (v ^ (2 : ℕ)), der_mul dx A R, hsq dx, hxv]
     ring
-  have hrow3v : dv (shadowC dx dy A * v ^ 2 + A * R)
+  have hrow3v : dv (shadowC dx dy A * v ^ (2 : ℕ) + A * R)
       = 2 * shadowC dx dy A * v + A * dv R := by
-    rw [map_add, der_mul dv _ (v ^ 2), der_mul dv A R, hsq dv, hvv, hCv, hvA]
+    rw [map_add, der_mul dv _ (v ^ (2 : ℕ)), der_mul dv A R, hsq dv, hvv, hCv, hvA]
     ring
   have hrow2x : dx (A * v) = v * dx A := by rw [hAv dx, hxv]; ring
   have hrow2v : dv (A * v) = A := by rw [hAv dv, hvv, hvA]; ring
@@ -129,20 +129,20 @@ section Field
 variable [Field K]
 
 /-- The derivative of a reciprocal. -/
-theorem der_inv (d : Derivation ℤ K K) {a : K} (ha : a ≠ 0) : d a⁻¹ = -(d a) / a ^ 2 := by
+theorem der_inv (d : Derivation ℤ K K) {a : K} (ha : a ≠ 0) : d a⁻¹ = -(d a) / a ^ (2 : ℕ) := by
   have h : a * a⁻¹ = 1 := mul_inv_cancel₀ ha
   have hd : a * d a⁻¹ + a⁻¹ * d a = 0 := by
     have hcon : d (a * a⁻¹) = d 1 := by rw [h]
     rw [der_mul d a a⁻¹] at hcon
     simpa using hcon
-  have ha2 : (a : K) ^ 2 ≠ 0 := pow_ne_zero 2 ha
+  have ha2 : (a : K) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 ha
   rw [eq_div_iff ha2]
   linear_combination a * hd - (d a) * h
 
 /-- The quotient rule. -/
 theorem der_div (d : Derivation ℤ K K) (a : K) {b : K} (hb : b ≠ 0) :
-    d (a / b) = (b * d a - a * d b) / b ^ 2 := by
-  have hb2 : (b : K) ^ 2 ≠ 0 := pow_ne_zero 2 hb
+    d (a / b) = (b * d a - a * d b) / b ^ (2 : ℕ) := by
+  have hb2 : (b : K) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hb
   rw [div_eq_mul_inv, der_mul d a b⁻¹, der_inv d hb, eq_div_iff hb2]
   field_simp
   ring
@@ -152,32 +152,32 @@ def shadowU (dx : Derivation ℤ K K) (A : K) : K := dx A / A
 
 /-- The branch curvature `Ω = u² − u_x − A u_y`. -/
 def shadowOmega (dx dy : Derivation ℤ K K) (A : K) : K :=
-  shadowU dx A ^ 2 - dx (shadowU dx A) - A * dy (shadowU dx A)
+  shadowU dx A ^ (2 : ℕ) - dx (shadowU dx A) - A * dy (shadowU dx A)
 
 /-- **The curvature identity.**  `A²·Ω = 2 A_x C − A C_x`: the coefficient of `v²` in the
 observation determinant is exactly `A²` times the branch curvature. -/
 theorem shadowOmega_mul_sq (dx dy : Derivation ℤ K K) (A : K) (hA : A ≠ 0)
     (hcomm : dx (dy A) = dy (dx A)) :
-    A ^ 2 * shadowOmega dx dy A
+    A ^ (2 : ℕ) * shadowOmega dx dy A
       = 2 * dx A * shadowC dx dy A - A * dx (shadowC dx dy A) := by
-  have hA2 : (A : K) ^ 2 ≠ 0 := pow_ne_zero 2 hA
+  have hA2 : (A : K) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hA
   simp only [shadowOmega, shadowU, shadowC]
   rw [der_div dx (dx A) hA, der_div dy (dx A) hA, map_add, der_mul dx (dy A) A]
   field_simp
-  linear_combination (A ^ 2) * hcomm
+  linear_combination (A ^ (2 : ℕ)) * hcomm
 
 /-- **The matching PDE.**  The three-jet observation determinant vanishes exactly when
 `R_x − u (v R_v − R) = v² Ω`. -/
 theorem shadow_determinant_eq_zero_iff (dx dv dy : Derivation ℤ K K) (v A R : K)
     (hA : A ≠ 0) (hcomm : dx (dy A) = dy (dx A)) :
-    (v ^ 2 * (2 * dx A * shadowC dx dy A - A * dx (shadowC dx dy A))
-        + A * dx A * (v * dv R - R) - A ^ 2 * dx R = 0)
-      ↔ dx R - shadowU dx A * (v * dv R - R) = v ^ 2 * shadowOmega dx dy A := by
-  have hu : A * dx A = A ^ 2 * shadowU dx A := by
+    (v ^ (2 : ℕ) * (2 * dx A * shadowC dx dy A - A * dx (shadowC dx dy A))
+        + A * dx A * (v * dv R - R) - A ^ (2 : ℕ) * dx R = 0)
+      ↔ dx R - shadowU dx A * (v * dv R - R) = v ^ (2 : ℕ) * shadowOmega dx dy A := by
+  have hu : A * dx A = A ^ (2 : ℕ) * shadowU dx A := by
     rw [shadowU]; field_simp
-  have hkey : v ^ 2 * (2 * dx A * shadowC dx dy A - A * dx (shadowC dx dy A))
-      + A * dx A * (v * dv R - R) - A ^ 2 * dx R
-      = A ^ 2 * (v ^ 2 * shadowOmega dx dy A
+  have hkey : v ^ (2 : ℕ) * (2 * dx A * shadowC dx dy A - A * dx (shadowC dx dy A))
+      + A * dx A * (v * dv R - R) - A ^ (2 : ℕ) * dx R
+      = A ^ (2 : ℕ) * (v ^ (2 : ℕ) * shadowOmega dx dy A
           + shadowU dx A * (v * dv R - R) - dx R) := by
     rw [← shadowOmega_mul_sq dx dy A hA hcomm, hu]
     ring
@@ -188,7 +188,7 @@ theorem shadow_determinant_eq_zero_iff (dx dv dy : Derivation ℤ K K) (v A R : 
     · exact absurd ((pow_eq_zero_iff (n := 2) (by norm_num)).mp h2) hA
     · linear_combination -h2
   · intro h
-    linear_combination (-(A ^ 2)) * h
+    linear_combination (-(A ^ (2 : ℕ))) * h
 
 /-! ## The separable normal form -/
 
@@ -204,7 +204,7 @@ theorem shadowU_separable (dx : Derivation ℤ K K) (A α β : K)
 theorem shadowOmega_separable (dx dy : Derivation ℤ K K) (A α β : K)
     (hA : A = α * β) (hα : α ≠ 0) (hβ : β ≠ 0) (hxβ : dx β = 0)
     (hyα : dy α = 0) (hyαx : dy (dx α) = 0) :
-    shadowOmega dx dy A = shadowU dx A ^ 2 - dx (shadowU dx A) := by
+    shadowOmega dx dy A = shadowU dx A ^ (2 : ℕ) - dx (shadowU dx A) := by
   have hu := shadowU_separable dx A α β hA hα hβ hxβ
   have hdy : dy (shadowU dx A) = 0 := by
     rw [hu, der_div dy (dx α) hα, hyα, hyαx]
@@ -220,25 +220,25 @@ theorem separable_normalForm_solves (dx dv dy : Derivation ℤ K K) (v A R α β
     (hxv : dx v = 0) (hvv : dv v = 1) (hvα : dv α = 0) (hvαx : dv (dx α) = 0)
     (Fval Fw : K)
     (hFx : dx Fval = Fw * dx α * v) (hFv : dv Fval = Fw * α)
-    (hR : R = -(shadowU dx A) * v ^ 2 + α⁻¹ * Fval) :
-    dx R - shadowU dx A * (v * dv R - R) = v ^ 2 * shadowOmega dx dy A := by
+    (hR : R = -(shadowU dx A) * v ^ (2 : ℕ) + α⁻¹ * Fval) :
+    dx R - shadowU dx A * (v * dv R - R) = v ^ (2 : ℕ) * shadowOmega dx dy A := by
   have hu := shadowU_separable dx A α β hA hα hβ hxβ
   have hαx : dx α = shadowU dx A * α := by rw [hu]; field_simp
   have hdvu : dv (shadowU dx A) = 0 := by
     rw [hu, der_div dv (dx α) hα, hvα, hvαx]
     simp
-  have hsqx : dx (v ^ 2) = 0 := by rw [sq, der_mul dx v v, hxv]; ring
-  have hsqv : dv (v ^ 2) = 2 * v := by rw [sq, der_mul dv v v, hvv]; ring
+  have hsqx : dx (v ^ (2 : ℕ)) = 0 := by rw [sq, der_mul dx v v, hxv]; ring
+  have hsqv : dv (v ^ (2 : ℕ)) = 2 * v := by rw [sq, der_mul dv v v, hvv]; ring
   have hdvnu : dv (-(shadowU dx A)) = 0 := by rw [map_neg, hdvu, neg_zero]
   have hdxnu : dx (-(shadowU dx A)) = -(dx (shadowU dx A)) := map_neg dx _
-  have hRx : dx R = -(dx (shadowU dx A)) * v ^ 2 - shadowU dx A * α⁻¹ * Fval
+  have hRx : dx R = -(dx (shadowU dx A)) * v ^ (2 : ℕ) - shadowU dx A * α⁻¹ * Fval
       + shadowU dx A * v * Fw := by
-    rw [hR, map_add, der_mul dx (-(shadowU dx A)) (v ^ 2), der_mul dx α⁻¹ Fval,
+    rw [hR, map_add, der_mul dx (-(shadowU dx A)) (v ^ (2 : ℕ)), der_mul dx α⁻¹ Fval,
       der_inv dx hα, hsqx, hFx, hαx, hdxnu]
     field_simp
     ring
   have hRv : dv R = -(2 * shadowU dx A * v) + Fw := by
-    rw [hR, map_add, der_mul dv (-(shadowU dx A)) (v ^ 2), der_mul dv α⁻¹ Fval,
+    rw [hR, map_add, der_mul dv (-(shadowU dx A)) (v ^ (2 : ℕ)), der_mul dv α⁻¹ Fval,
       der_inv dv hα, hsqv, hFv, hvα, hdvnu]
     field_simp
     ring
@@ -253,19 +253,19 @@ theorem separable_firstIntegral_identity (dx dv dy : Derivation ℤ K K) (v A R 
     (hα : α ≠ 0) (hβ : β ≠ 0) (hA : A = α * β) (hxβ : dx β = 0)
     (hyα : dy α = 0) (hyαx : dy (dx α) = 0)
     (hxv : dx v = 0) (hvv : dv v = 1) (hvα : dv α = 0) (hvαx : dv (dx α) = 0) :
-    dx (α * (R + shadowU dx A * v ^ 2))
-        - shadowU dx A * v * dv (α * (R + shadowU dx A * v ^ 2))
-      = α * (dx R - shadowU dx A * (v * dv R - R) - v ^ 2 * shadowOmega dx dy A) := by
+    dx (α * (R + shadowU dx A * v ^ (2 : ℕ)))
+        - shadowU dx A * v * dv (α * (R + shadowU dx A * v ^ (2 : ℕ)))
+      = α * (dx R - shadowU dx A * (v * dv R - R) - v ^ (2 : ℕ) * shadowOmega dx dy A) := by
   have hu := shadowU_separable dx A α β hA hα hβ hxβ
   have hαx : dx α = shadowU dx A * α := by rw [hu]; field_simp
   have hdvu : dv (shadowU dx A) = 0 := by
     rw [hu, der_div dv (dx α) hα, hvα, hvαx]
     simp
-  have hsqx : dx (v ^ 2) = 0 := by rw [sq, der_mul dx v v, hxv]; ring
-  have hsqv : dv (v ^ 2) = 2 * v := by rw [sq, der_mul dv v v, hvv]; ring
+  have hsqx : dx (v ^ (2 : ℕ)) = 0 := by rw [sq, der_mul dx v v, hxv]; ring
+  have hsqv : dv (v ^ (2 : ℕ)) = 2 * v := by rw [sq, der_mul dv v v, hvv]; ring
   rw [shadowOmega_separable dx dy A α β hA hα hβ hxβ hyα hyαx]
-  rw [der_mul dx α _, der_mul dv α _, map_add, map_add, der_mul dx (shadowU dx A) (v ^ 2),
-    der_mul dv (shadowU dx A) (v ^ 2), hsqx, hsqv, hαx, hvα, hdvu]
+  rw [der_mul dx α _, der_mul dv α _, map_add, map_add, der_mul dx (shadowU dx A) (v ^ (2 : ℕ)),
+    der_mul dv (shadowU dx A) (v ^ (2 : ℕ)), hsqx, hsqv, hαx, hvα, hdvu]
   ring
 
 /-- The matching PDE is exactly the vanishing of the characteristic derivative of the first
@@ -274,9 +274,9 @@ theorem separable_pde_iff_firstIntegral (dx dv dy : Derivation ℤ K K) (v A R �
     (hα : α ≠ 0) (hβ : β ≠ 0) (hA : A = α * β) (hxβ : dx β = 0)
     (hyα : dy α = 0) (hyαx : dy (dx α) = 0)
     (hxv : dx v = 0) (hvv : dv v = 1) (hvα : dv α = 0) (hvαx : dv (dx α) = 0) :
-    (dx (α * (R + shadowU dx A * v ^ 2))
-        - shadowU dx A * v * dv (α * (R + shadowU dx A * v ^ 2)) = 0)
-      ↔ dx R - shadowU dx A * (v * dv R - R) = v ^ 2 * shadowOmega dx dy A := by
+    (dx (α * (R + shadowU dx A * v ^ (2 : ℕ)))
+        - shadowU dx A * v * dv (α * (R + shadowU dx A * v ^ (2 : ℕ))) = 0)
+      ↔ dx R - shadowU dx A * (v * dv R - R) = v ^ (2 : ℕ) * shadowOmega dx dy A := by
   rw [separable_firstIntegral_identity dx dv dy v A R α β hα hβ hA hxβ hyα hyαx hxv hvv hvα hvαx]
   constructor
   · intro h

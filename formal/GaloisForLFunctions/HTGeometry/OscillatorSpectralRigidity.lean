@@ -20,12 +20,12 @@ namespace GaloisForLFunctions.HTGeometry
 right of it. -/
 theorem eq_zero_of_phase_zero_right {mu : ℝ} {v v' : ℝ → ℝ} {y0 : ℝ}
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
     (h0 : v y0 = 0) (h0' : v' y0 = 0) : ∀ x, y0 ≤ x → v x = 0 := by
   intro x hx
-  have hbound := phasePair_norm_le (u := v) (u' := v') (u'' := fun t => (t ^ 2 - mu) * v t)
-    (P := fun t => t ^ 2 - mu) (Q := fun _ => (0 : ℝ)) (a := y0) (b := x)
-    (Lp := max (y0 ^ 2) (x ^ 2) + |mu|) (Lq := 0) (δ := 0) hx hv hv' ?_ ?_ ?_ ?_ x ⟨hx, le_rfl⟩
+  have hbound := phasePair_norm_le (u := v) (u' := v') (u'' := fun t => (t ^ (2 : ℕ) - mu) * v t)
+    (P := fun t => t ^ (2 : ℕ) - mu) (Q := fun _ => (0 : ℝ)) (a := y0) (b := x)
+    (Lp := max (y0 ^ (2 : ℕ)) (x ^ (2 : ℕ)) + |mu|) (Lq := 0) (δ := 0) hx hv hv' ?_ ?_ ?_ ?_ x ⟨hx, le_rfl⟩
   · have hb2 : v x = 0 ∧ v' x = 0 := by simpa using hbound
     exact hb2.1
   · intro t _
@@ -33,15 +33,15 @@ theorem eq_zero_of_phase_zero_right {mu : ℝ} {v v' : ℝ → ℝ} {y0 : ℝ}
   · intro t ht
     have ht1 : y0 ≤ t := ht.1
     have ht2 : t ≤ x := ht.2
-    have hts : t ^ 2 ≤ max (y0 ^ 2) (x ^ 2) := by
+    have hts : t ^ (2 : ℕ) ≤ max (y0 ^ (2 : ℕ)) (x ^ (2 : ℕ)) := by
       rcases le_total t 0 with h | h
-      · have hy : t ^ 2 ≤ y0 ^ 2 := by nlinarith
+      · have hy : t ^ (2 : ℕ) ≤ y0 ^ (2 : ℕ) := by nlinarith
         exact le_trans hy (le_max_left _ _)
-      · have hxx : t ^ 2 ≤ x ^ 2 := by nlinarith
+      · have hxx : t ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by nlinarith
         exact le_trans hxx (le_max_right _ _)
     rw [abs_le]
     constructor
-    · linarith [sq_nonneg t, le_abs_self mu, sq_nonneg y0, le_max_left (y0 ^ 2) (x ^ 2)]
+    · linarith [sq_nonneg t, le_abs_self mu, sq_nonneg y0, le_max_left (y0 ^ (2 : ℕ)) (x ^ (2 : ℕ))]
     · linarith [hts, neg_abs_le mu]
   · intro t _
     simp
@@ -51,7 +51,7 @@ theorem eq_zero_of_phase_zero_right {mu : ℝ} {v v' : ℝ → ℝ} {y0 : ℝ}
 /-- **Uniqueness.**  A solution with vanishing phase vector at a point vanishes identically. -/
 theorem eq_zero_of_phase_zero {mu : ℝ} {v v' : ℝ → ℝ} {y0 : ℝ}
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
     (h0 : v y0 = 0) (h0' : v' y0 = 0) : ∀ x, v x = 0 := by
   intro x
   rcases le_total y0 x with h | h
@@ -66,17 +66,17 @@ theorem eq_zero_of_phase_zero {mu : ℝ} {v v' : ℝ → ℝ} {y0 : ℝ}
 theorem integral_sq_pos_of_nontrivial {v v' : ℝ → ℝ}
     (hv : ∀ x, HasDerivAt v (v' x) x)
     (hnt : ∀ y, v y ≠ 0 ∨ v' y ≠ 0)
-    (hint : Integrable (fun x => v x ^ 2)) : 0 < ∫ x, v x ^ 2 := by
-  have hnn : (0 : ℝ) ≤ ∫ x, v x ^ 2 := integral_nonneg fun x => sq_nonneg _
+    (hint : Integrable (fun x => v x ^ (2 : ℕ))) : 0 < ∫ x, v x ^ (2 : ℕ) := by
+  have hnn : (0 : ℝ) ≤ ∫ x, v x ^ (2 : ℕ) := integral_nonneg fun x => sq_nonneg _
   rcases lt_or_eq_of_le hnn with h | h
   · exact h
   · exfalso
-    have hzero : (fun x => v x ^ 2) =ᵐ[volume] 0 := by
+    have hzero : (fun x => v x ^ (2 : ℕ)) =ᵐ[volume] 0 := by
       rw [← integral_eq_zero_iff_of_nonneg (fun x => sq_nonneg _) hint]
       exact h.symm
-    have hcont : Continuous fun x => v x ^ 2 := (continuous_of_hasDerivAt hv).pow 2
+    have hcont : Continuous fun x => v x ^ (2 : ℕ) := (continuous_of_hasDerivAt hv).pow 2
     have heqfun := (hcont.ae_eq_iff_eq volume continuous_const).1 hzero
-    have hall : ∀ x, v x ^ 2 = 0 := fun x => congrFun heqfun x
+    have hall : ∀ x, v x ^ (2 : ℕ) = 0 := fun x => congrFun heqfun x
     have hv0 : ∀ x, v x = 0 := fun x => pow_eq_zero_iff (n := 2) (by norm_num) |>.1 (hall x)
     have hv'0 : v' 0 = 0 := by
       have hd : HasDerivAt v (v' 0) 0 := hv 0
@@ -93,9 +93,9 @@ theorem integral_sq_pos_of_nontrivial {v v' : ℝ → ℝ}
 theorem exists_rung_aux : ∀ (n : ℕ) (mu : ℝ) (v v' : ℝ → ℝ),
     mu ≤ 2 * (n : ℝ) + 1 →
     (∀ x, HasDerivAt v (v' x) x) →
-    (∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) →
+    (∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x) →
     (∀ y, v y ≠ 0 ∨ v' y ≠ 0) →
-    Integrable (fun x => v x ^ 2) →
+    Integrable (fun x => v x ^ (2 : ℕ)) →
     ∃ k : ℕ, mu = 2 * (k : ℝ) + 1 := by
   intro n
   induction n with
@@ -104,7 +104,7 @@ theorem exists_rung_aux : ∀ (n : ℕ) (mu : ℝ) (v v' : ℝ → ℝ),
     set a : ℝ := max 1 (|mu| + 1) with hadef
     have ha : 0 < a := lt_of_lt_of_le one_pos (le_max_left _ _)
     have ha1 : (1 : ℝ) ≤ a := le_max_left _ _
-    have hmu : mu < a ^ 2 := by
+    have hmu : mu < a ^ (2 : ℕ) := by
       have h1 : |mu| + 1 ≤ a := le_max_right _ _
       have h2 : mu ≤ |mu| := le_abs_self mu
       nlinarith
@@ -121,7 +121,7 @@ theorem exists_rung_aux : ∀ (n : ℕ) (mu : ℝ) (v v' : ℝ → ℝ),
     set a : ℝ := max 1 (|mu| + 1) with hadef
     have ha : 0 < a := lt_of_lt_of_le one_pos (le_max_left _ _)
     have ha1 : (1 : ℝ) ≤ a := le_max_left _ _
-    have hmu : mu < a ^ 2 := by
+    have hmu : mu < a ^ (2 : ℕ) := by
       have h1 : |mu| + 1 ≤ a := le_max_right _ _
       have h2 : mu ≤ |mu| := le_abs_self mu
       nlinarith
@@ -145,8 +145,8 @@ theorem exists_rung_aux : ∀ (n : ℕ) (mu : ℝ) (v v' : ℝ → ℝ),
       have hzero : ∀ x, oscLower v v' x = 0 :=
         eq_zero_of_phase_zero (mu := mu - 2) (fun x => hasDerivAt_oscLower hv hv' x)
           (fun x => hasDerivAt_oscLowerDeriv hv hv' x) hy0 hy0'
-      have hintzero : (∫ x, oscLower v v' x ^ 2) = 0 := by
-        have : (fun x => oscLower v v' x ^ 2) = fun _ => (0 : ℝ) := by
+      have hintzero : (∫ x, oscLower v v' x ^ (2 : ℕ)) = 0 := by
+        have : (fun x => oscLower v v' x ^ (2 : ℕ)) = fun _ => (0 : ℝ) := by
           funext x
           rw [hzero x]
           ring
@@ -161,9 +161,9 @@ theorem exists_rung_aux : ∀ (n : ℕ) (mu : ℝ) (v v' : ℝ → ℝ),
 `v″ = (ξ² − μ)v` forces `μ` onto the oscillator ladder. -/
 theorem exists_rung_of_integrable {mu : ℝ} {v v' : ℝ → ℝ}
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
     (hnt : ∀ y, v y ≠ 0 ∨ v' y ≠ 0)
-    (hint : Integrable (fun x => v x ^ 2)) :
+    (hint : Integrable (fun x => v x ^ (2 : ℕ))) :
     ∃ n : ℕ, mu = 2 * (n : ℝ) + 1 := by
   obtain ⟨N, hN⟩ := exists_nat_gt mu
   exact exists_rung_aux N mu v v' (by linarith) hv hv' hnt hint

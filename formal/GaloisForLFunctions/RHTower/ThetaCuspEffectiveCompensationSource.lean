@@ -22,27 +22,27 @@ theorem abs_deriv_firstAtom_le_two_scale {x : ℝ}
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let e := Real.exp (x/2-q)
   have hqp : 0 ≤ q := by dsimp [q]; linarith
-  have hq2 : 30*q ≤ q^2 := by
+  have hq2 : 30*q ≤ q^(2 : ℕ) := by
     have h := mul_le_mul_of_nonneg_right hq hqp
     change 30*q ≤ q*q at h
     nlinarith only [h]
-  have hq3 : 30*q^2 ≤ q^3 := by
+  have hq3 : 30*q^(2 : ℕ) ≤ q^(3 : ℕ) := by
     have h := mul_le_mul_of_nonneg_right hq (sq_nonneg q)
-    change 30*q^2 ≤ q*q^2 at h
+    change 30*q^(2 : ℕ) ≤ q*q^(2 : ℕ) at h
     nlinarith only [h]
   have he : 0 < e := Real.exp_pos _
   have hd : deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x =
-      e*(-8*q^3+30*q^2-15*q) := by
+      e*(-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q) := by
     have h := iteratedDeriv_firstAtom_eq_gaussianScaleJets 1 x
     rw [iteratedDeriv_one] at h
     rw [h]
     dsimp [thetaCuspGaussianScaleJet, thetaCuspGaussianScaleMoment, e, q]
     ring
-  have hpoly : |-8*q^3+30*q^2-15*q| ≤ 2*q*(4*q^2-6*q) := by
+  have hpoly : |-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q| ≤ 2*q*(4*q^(2 : ℕ)-6*q) := by
     apply abs_le.mpr
     constructor <;> nlinarith only [hq2, hq3, hqp]
   rw [hd, abs_mul, abs_of_pos he, thetaCuspSourceTerm_one_eq_scale_profile]
-  change e*|-8*q^3+30*q^2-15*q| ≤ 2*q*(e*(4*q^2-6*q))
+  change e*|-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q| ≤ 2*q*(e*(4*q^(2 : ℕ)-6*q))
   have hm := mul_le_mul_of_nonneg_left hpoly he.le
   nlinarith only [hm]
 
@@ -87,8 +87,8 @@ theorem thetaCuspFullSource_mass_slope_le_effective {x : ℝ}
 /-- The potentially negative compensation source has a uniform normalized lower bound. -/
 theorem thetaCuspCenterCompensationSource_normalized_lower {x : ℝ}
     (hq : 30 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    -(2 : ℝ)/30^3 ≤ thetaCuspCenterCompensationSource x /
-      (thetaCuspSourceTerm x 1^2 * thetaCuspSingleAtomReflectionScale 1 x^5) := by
+    -(2 : ℝ)/30^(3 : ℕ) ≤ thetaCuspCenterCompensationSource x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ) * thetaCuspSingleAtomReflectionScale 1 x^(5 : ℕ)) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let f := thetaCuspSourceTerm x 1
   let F := thetaCuspFullSource x
@@ -103,21 +103,21 @@ theorem thetaCuspCenterCompensationSource_normalized_lower {x : ℝ}
   have hprod' := mul_le_mul_of_nonneg_left hprod (by positivity : (0 : ℝ) ≤ 2*x)
   have hxd := six_mul_center_le_firstAtomScale x
   change 6*x ≤ q at hxd
-  have hscale := mul_le_mul_of_nonneg_right hxd (by positivity : (0 : ℝ) ≤ 2*q*f^2)
+  have hscale := mul_le_mul_of_nonneg_right hxd (by positivity : (0 : ℝ) ≤ 2*q*f^(2 : ℕ))
   have hd := (abs_le.mp (le_refl |d|)).1
   have hneg := mul_le_mul_of_nonneg_left hd (by positivity : (0 : ℝ) ≤ 2*x*F)
-  have hraw : -2*q^2*f^2 ≤ thetaCuspCenterCompensationSource x := by
-    change -2*q^2*f^2 ≤ 3*F^2+2*x*F*d
+  have hraw : -2*q^(2 : ℕ)*f^(2 : ℕ) ≤ thetaCuspCenterCompensationSource x := by
+    change -2*q^(2 : ℕ)*f^(2 : ℕ) ≤ 3*F^(2 : ℕ)+2*x*F*d
     nlinarith only [hprod', hscale, hneg, sq_nonneg F]
-  have hp3 : (30 : ℝ)^3 ≤ q^3 := pow_le_pow_left₀ (by norm_num) hq 3
-  have hnorm : -(2 : ℝ)/q^3 ≤ thetaCuspCenterCompensationSource x/(f^2*q^5) := by
-    apply (le_div_iff₀ (by positivity : 0 < f^2*q^5)).mpr
+  have hp3 : (30 : ℝ)^(3 : ℕ) ≤ q^(3 : ℕ) := pow_le_pow_left₀ (by norm_num) hq 3
+  have hnorm : -(2 : ℝ)/q^(3 : ℕ) ≤ thetaCuspCenterCompensationSource x/(f^(2 : ℕ)*q^(5 : ℕ)) := by
+    apply (le_div_iff₀ (by positivity : 0 < f^(2 : ℕ)*q^(5 : ℕ))).mpr
     calc
-      (-(2 : ℝ)/q^3)*(f^2*q^5) = -2*q^2*f^2 := by field_simp
+      (-(2 : ℝ)/q^(3 : ℕ))*(f^(2 : ℕ)*q^(5 : ℕ)) = -2*q^(2 : ℕ)*f^(2 : ℕ) := by field_simp
       _ ≤ thetaCuspCenterCompensationSource x := hraw
-  have hi : (1 : ℝ)/q^3 ≤ 1/(30 : ℝ)^3 :=
+  have hi : (1 : ℝ)/q^(3 : ℕ) ≤ 1/(30 : ℝ)^(3 : ℕ) :=
     one_div_le_one_div_of_le (by norm_num) hp3
-  change -(2 : ℝ)/30^3 ≤ thetaCuspCenterCompensationSource x/(f^2*q^5)
+  change -(2 : ℝ)/30^(3 : ℕ) ≤ thetaCuspCenterCompensationSource x/(f^(2 : ℕ)*q^(5 : ℕ))
   simp only [div_eq_mul_inv] at hi hnorm ⊢
   linarith only [hi, hnorm]
 

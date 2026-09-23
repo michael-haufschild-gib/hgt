@@ -201,14 +201,14 @@ theorem mem_of_irreducibleAction [IsAlgClosed U]
     have h1 := congrFun hc 1
     simp at h1
   obtain ⟨lam, hlam⟩ : ∃ lam : U, (a₀ - lam • (1 : Matrix (Fin 2) (Fin 2) U)).det = 0 := by
-    set p : Polynomial U := Polynomial.C 1 * Polynomial.X ^ 2
+    set p : Polynomial U := Polynomial.C 1 * Polynomial.X ^ (2 : ℕ)
       + Polynomial.C (-a₀.trace) * Polynomial.X + Polynomial.C a₀.det with hp
     have hdeg : p.degree ≠ 0 := by
       rw [hp, Polynomial.degree_quadratic (one_ne_zero)]
       norm_num
     obtain ⟨lam, hroot⟩ := IsAlgClosed.exists_root p hdeg
     refine ⟨lam, ?_⟩
-    have heval : lam ^ 2 - a₀.trace * lam + a₀.det = 0 := by
+    have heval : lam ^ (2 : ℕ) - a₀.trace * lam + a₀.det = 0 := by
       have hval := hroot
       rw [Polynomial.IsRoot, hp] at hval
       simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_C,

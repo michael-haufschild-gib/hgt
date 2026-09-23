@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Channel-reduced separated spin-torsion correlator. -/
 def vacuumSpinTorsionCorrelator (dR family volume separation : ℝ) : ℝ :=
-  -12 * dR * family ^ 2 / (Real.pi ^ 4 * volume * separation ^ 6)
+  -12 * dR * family ^ (2 : ℕ) / (Real.pi ^ (4 : ℕ) * volume * separation ^ (6 : ℕ))
 
 /-- The separated correlator is strictly negative for positive dimension, family scale, volume,
 and separation. -/
@@ -24,7 +24,7 @@ theorem vacuumSpinTorsionCorrelator_exp_neg (d n v r : ℝ) :
     vacuumSpinTorsionCorrelator (Real.exp d) (Real.exp n) (Real.exp v) (Real.exp r) < 0 := by
   unfold vacuumSpinTorsionCorrelator
   apply div_neg_of_neg_of_pos
-  · have h : 0 < 12 * Real.exp d * Real.exp n ^ 2 := by positivity
+  · have h : 0 < 12 * Real.exp d * Real.exp n ^ (2 : ℕ) := by positivity
     nlinarith
   · positivity
 
@@ -43,7 +43,7 @@ theorem vacuumSpinTorsionCorrelator_neg_family (dR family volume separation : �
 theorem vacuumSpinTorsionCorrelator_family_scale
     (dR family volume separation scale : ℝ) :
     vacuumSpinTorsionCorrelator dR (scale * family) volume separation =
-      scale ^ 2 * vacuumSpinTorsionCorrelator dR family volume separation := by
+      scale ^ (2 : ℕ) * vacuumSpinTorsionCorrelator dR family volume separation := by
   unfold vacuumSpinTorsionCorrelator
   ring
 
@@ -71,28 +71,28 @@ theorem vacuumSpinTorsionCorrelator_logSeparationShift
         vacuumSpinTorsionCorrelator dR family volume (Real.exp r) := by
   unfold vacuumSpinTorsionCorrelator
   rw [Real.exp_add, mul_pow]
-  rw [show Real.exp shift ^ 6 = Real.exp (6 * shift) by
+  rw [show Real.exp shift ^ (6 : ℕ) = Real.exp (6 * shift) by
     simpa using (Real.exp_nat_mul shift 6).symm]
   rw [show -6 * shift = -(6 * shift) by ring, Real.exp_neg]
   field_simp [Real.exp_ne_zero]
 
 /-- Radius dependence of the six-dimensional product volume, up to its fixed geometric constant. -/
-def compactificationVolumeShape (a1 a2 : ℝ) : ℝ := a1 ^ 2 * a2 ^ 4
+def compactificationVolumeShape (a1 a2 : ℝ) : ℝ := a1 ^ (2 : ℕ) * a2 ^ (4 : ℕ)
 
 /-- Independent radius dilations have bidegree `(2,4)`. -/
 theorem compactificationVolumeShape_scale (a1 a2 s t : ℝ) :
     compactificationVolumeShape (s * a1) (t * a2) =
-      s ^ 2 * t ^ 4 * compactificationVolumeShape a1 a2 := by
+      s ^ (2 : ℕ) * t ^ (4 : ℕ) * compactificationVolumeShape a1 a2 := by
   unfold compactificationVolumeShape
   ring
 
 /-- Family-weighted inverse-volume binding term in the radion potential. -/
 def spinTorsionRadionTerm (C family a1 a2 : ℝ) : ℝ :=
-  -C * family ^ 2 / compactificationVolumeShape a1 a2
+  -C * family ^ (2 : ℕ) / compactificationVolumeShape a1 a2
 
 /-- On the isotropic ray the torsion term has inverse-sixth homogeneity. -/
 theorem spinTorsionRadionTerm_isotropic (C family d : ℝ) :
-    spinTorsionRadionTerm C family d d = -C * family ^ 2 / d ^ 6 := by
+    spinTorsionRadionTerm C family d d = -C * family ^ (2 : ℕ) / d ^ (6 : ℕ) := by
   unfold spinTorsionRadionTerm compactificationVolumeShape
   ring
 
@@ -104,14 +104,14 @@ theorem spinTorsionRadionTerm_logDiagonalShift (C family x y shift : ℝ) :
   unfold spinTorsionRadionTerm compactificationVolumeShape
   simp only [Real.exp_add, mul_pow]
   rw [show -6 * shift = -(6 * shift) by ring, Real.exp_neg]
-  rw [show Real.exp (6 * shift) = Real.exp shift ^ 6 by
+  rw [show Real.exp (6 * shift) = Real.exp shift ^ (6 : ℕ) by
     simpa using Real.exp_nat_mul shift 6]
   field_simp [Real.exp_ne_zero]
 
 /-- Dimensionless finite-density correction from the two radial Wightman blocks. -/
 def finiteDensityCorrectionShape (x : ℝ) : ℝ :=
-  ((Real.sin x - x * Real.cos x) ^ 2 -
-    (2 - 2 * Real.cos x - x * Real.sin x) ^ 2) / 4
+  ((Real.sin x - x * Real.cos x) ^ (2 : ℕ) -
+    (2 - 2 * Real.cos x - x * Real.sin x) ^ (2 : ℕ)) / 4
 
 /-- Density correction vanishes at zero occupation scale. -/
 theorem finiteDensityCorrectionShape_zero : finiteDensityCorrectionShape 0 = 0 := by

@@ -46,9 +46,9 @@ theorem exists_numberFieldInteger_minimalPrimitiveVector_posDef
   calc
     c (numberFieldIntegerVectorEmbedding K a) ⬝ᵥ
         A.mulVec (c (numberFieldIntegerVectorEmbedding K a)) =
-        ‖e (numberFieldIntegerVectorEmbedding K a)‖ ^ 2 := by
+        ‖e (numberFieldIntegerVectorEmbedding K a)‖ ^ (2 : ℕ) := by
           simpa [e] using (hnorm (c (numberFieldIntegerVectorEmbedding K a))).symm
-    _ ≤ ‖e (numberFieldIntegerVectorEmbedding K b)‖ ^ 2 := by
+    _ ≤ ‖e (numberFieldIntegerVectorEmbedding K b)‖ ^ (2 : ℕ) := by
       gcongr
     _ = c (numberFieldIntegerVectorEmbedding K b) ⬝ᵥ
         A.mulVec (c (numberFieldIntegerVectorEmbedding K b)) := by

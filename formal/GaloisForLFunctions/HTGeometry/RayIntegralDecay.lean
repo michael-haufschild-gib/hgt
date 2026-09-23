@@ -19,14 +19,14 @@ noncomputable section
 
 /-- The elementary tail integral. -/
 theorem integral_inv_sq_shift_le {a X : ℝ} (ha : 0 < a) (hX : 0 ≤ X) :
-    ∫ x in (0:ℝ)..X, ((a + x) ^ 2)⁻¹ ≤ 1 / a := by
+    ∫ x in (0:ℝ)..X, ((a + x) ^ (2 : ℕ))⁻¹ ≤ 1 / a := by
   have huIcc : Set.uIcc (0:ℝ) X = Set.Icc 0 X := Set.uIcc_of_le hX
   have hpos : ∀ x ∈ Set.Icc (0:ℝ) X, 0 < a + x := by
     intro x hx
     have := hx.1
     linarith
   have hder : ∀ x ∈ Set.uIcc (0:ℝ) X,
-      HasDerivAt (fun y : ℝ => -(a + y)⁻¹) (((a + x) ^ 2)⁻¹) x := by
+      HasDerivAt (fun y : ℝ => -(a + y)⁻¹) (((a + x) ^ (2 : ℕ))⁻¹) x := by
     intro x hx
     rw [huIcc] at hx
     have hne : a + x ≠ 0 := ne_of_gt (hpos x hx)
@@ -36,9 +36,9 @@ theorem integral_inv_sq_shift_le {a X : ℝ} (ha : 0 < a) (hX : 0 ≤ X) :
     have hfun : (-(fun y : ℝ => a + y)⁻¹) = fun y : ℝ => -(a + y)⁻¹ := by
       funext y; simp
     rw [hfun] at h2
-    have hval : -(-1 / (a + x) ^ 2) = ((a + x) ^ 2)⁻¹ := by ring
+    have hval : -(-1 / (a + x) ^ (2 : ℕ)) = ((a + x) ^ (2 : ℕ))⁻¹ := by ring
     rwa [hval] at h2
-  have hcont : ContinuousOn (fun x : ℝ => ((a + x) ^ 2)⁻¹) (Set.uIcc 0 X) := by
+  have hcont : ContinuousOn (fun x : ℝ => ((a + x) ^ (2 : ℕ))⁻¹) (Set.uIcc 0 X) := by
     rw [huIcc]
     refine ContinuousOn.inv₀ (by fun_prop) fun x hx => ?_
     have := hpos x hx
@@ -56,7 +56,7 @@ theorem integral_inv_sq_shift_le {a X : ℝ} (ha : 0 < a) (hX : 0 ≤ X) :
 theorem norm_add_real_ge_half {s : ℂ} (hs : 0 < s.re) {x : ℝ} (hx : 0 ≤ x) :
     (‖s‖ + x) / 2 ≤ ‖s + (x : ℂ)‖ := by
   have h1 : ‖s‖ ≤ ‖s + (x : ℂ)‖ := by
-    have hre : ‖s‖ ^ 2 ≤ ‖s + (x : ℂ)‖ ^ 2 := by
+    have hre : ‖s‖ ^ (2 : ℕ) ≤ ‖s + (x : ℂ)‖ ^ (2 : ℕ) := by
       rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
       simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im, add_zero]
       nlinarith [hs, hx]
@@ -124,7 +124,7 @@ theorem norm_le_of_deriv_decay {R₀ A : ℝ} (hR₀ : 0 ≤ R₀) (hA : 0 ≤ A
     have hzero : f (s + (((0 : ℝ)) : ℂ)) = f s := by norm_num
     rw [hzero] at hval
     have hnormb : ∀ x ∈ Set.Icc (0 : ℝ) X,
-        ‖deriv f (s + (x : ℂ))‖ ≤ C * (((‖s‖ + x)) ^ 2)⁻¹ := by
+        ‖deriv f (s + (x : ℂ))‖ ≤ C * (((‖s‖ + x)) ^ (2 : ℕ))⁻¹ := by
       intro x hx
       have hx0 : (0 : ℝ) ≤ x := hx.1
       have hbx := hb _ (hray x hx0)
@@ -138,37 +138,37 @@ theorem norm_le_of_deriv_decay {R₀ A : ℝ} (hR₀ : 0 ≤ R₀) (hA : 0 ≤ A
       have hlow : (‖s‖ + x) ^ (k + 2) / 2 ^ (k + 2) ≤ ‖s + (x : ℂ)‖ ^ (k + 2) := by
         rw [div_pow] at hpow
         exact hpow
-      have hbig : ‖s‖ ^ k * (‖s‖ + x) ^ 2 ≤ (‖s‖ + x) ^ (k + 2) := by
+      have hbig : ‖s‖ ^ k * (‖s‖ + x) ^ (2 : ℕ) ≤ (‖s‖ + x) ^ (k + 2) := by
         have h1 : ‖s‖ ^ k ≤ (‖s‖ + x) ^ k := pow_le_pow_left₀ (le_of_lt hspos) (by linarith) _
-        have h2 : (‖s‖ + x) ^ (k + 2) = (‖s‖ + x) ^ k * (‖s‖ + x) ^ 2 := by ring
+        have h2 : (‖s‖ + x) ^ (k + 2) = (‖s‖ + x) ^ k * (‖s‖ + x) ^ (2 : ℕ) := by ring
         rw [h2]
         exact mul_le_mul_of_nonneg_right h1 (by positivity)
-      have hstep : A / ‖s + (x : ℂ)‖ ^ (k + 2) ≤ C * ((‖s‖ + x) ^ 2)⁻¹ := by
+      have hstep : A / ‖s + (x : ℂ)‖ ^ (k + 2) ≤ C * ((‖s‖ + x) ^ (2 : ℕ))⁻¹ := by
         rw [hC]
         rw [div_le_iff₀ (by positivity)]
         have hden : (0 : ℝ) < (‖s‖ + x) ^ (k + 2) := by positivity
-        have hfrac : 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ 2)⁻¹ * ‖s + (x : ℂ)‖ ^ (k + 2)
-            ≥ 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ 2)⁻¹
+        have hfrac : 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ (2 : ℕ))⁻¹ * ‖s + (x : ℂ)‖ ^ (k + 2)
+            ≥ 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ (2 : ℕ))⁻¹
               * ((‖s‖ + x) ^ (k + 2) / 2 ^ (k + 2)) := by
-          have hnn : (0 : ℝ) ≤ 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ 2)⁻¹ := by positivity
+          have hnn : (0 : ℝ) ≤ 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ (2 : ℕ))⁻¹ := by positivity
           exact mul_le_mul_of_nonneg_left hlow hnn
-        have hval2 : 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ 2)⁻¹
+        have hval2 : 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ (2 : ℕ))⁻¹
               * ((‖s‖ + x) ^ (k + 2) / 2 ^ (k + 2))
-            = A * ((‖s‖ + x) ^ (k + 2) / (‖s‖ ^ k * (‖s‖ + x) ^ 2)) := by
+            = A * ((‖s‖ + x) ^ (k + 2) / (‖s‖ ^ k * (‖s‖ + x) ^ (2 : ℕ))) := by
           field_simp
-        have hAle : A ≤ A * ((‖s‖ + x) ^ (k + 2) / (‖s‖ ^ k * (‖s‖ + x) ^ 2)) := by
-          have hratio : (1 : ℝ) ≤ (‖s‖ + x) ^ (k + 2) / (‖s‖ ^ k * (‖s‖ + x) ^ 2) := by
+        have hAle : A ≤ A * ((‖s‖ + x) ^ (k + 2) / (‖s‖ ^ k * (‖s‖ + x) ^ (2 : ℕ))) := by
+          have hratio : (1 : ℝ) ≤ (‖s‖ + x) ^ (k + 2) / (‖s‖ ^ k * (‖s‖ + x) ^ (2 : ℕ)) := by
             rw [le_div_iff₀ (by positivity)]
             linarith [hbig]
           nlinarith [hA, hratio]
-        calc A ≤ A * ((‖s‖ + x) ^ (k + 2) / (‖s‖ ^ k * (‖s‖ + x) ^ 2)) := hAle
-          _ = 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ 2)⁻¹
+        calc A ≤ A * ((‖s‖ + x) ^ (k + 2) / (‖s‖ ^ k * (‖s‖ + x) ^ (2 : ℕ))) := hAle
+          _ = 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ (2 : ℕ))⁻¹
                 * ((‖s‖ + x) ^ (k + 2) / 2 ^ (k + 2)) := hval2.symm
-          _ ≤ 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ 2)⁻¹ * ‖s + (x : ℂ)‖ ^ (k + 2) := hfrac
+          _ ≤ 2 ^ (k + 2) * A / ‖s‖ ^ k * ((‖s‖ + x) ^ (2 : ℕ))⁻¹ * ‖s + (x : ℂ)‖ ^ (k + 2) := hfrac
       exact le_trans hbx hstep
     have hintnorm : IntervalIntegrable (fun x : ℝ => ‖deriv f (s + (x : ℂ))‖) volume 0 X :=
       hint.norm
-    have hintmaj : IntervalIntegrable (fun x : ℝ => C * (((‖s‖ + x)) ^ 2)⁻¹) volume 0 X := by
+    have hintmaj : IntervalIntegrable (fun x : ℝ => C * (((‖s‖ + x)) ^ (2 : ℕ))⁻¹) volume 0 X := by
       refine ContinuousOn.intervalIntegrable ?_
       rw [huIcc]
       refine ContinuousOn.mul continuousOn_const (ContinuousOn.inv₀ (by fun_prop) ?_)
@@ -178,9 +178,9 @@ theorem norm_le_of_deriv_decay {R₀ A : ℝ} (hR₀ : 0 ≤ R₀) (hA : 0 ≤ A
     calc ‖f (s + (X : ℂ)) - f s‖ = ‖∫ x in (0:ℝ)..X, deriv f (s + (x : ℂ))‖ := by rw [hval]
       _ ≤ ∫ x in (0:ℝ)..X, ‖deriv f (s + (x : ℂ))‖ :=
           intervalIntegral.norm_integral_le_integral_norm hX
-      _ ≤ ∫ x in (0:ℝ)..X, C * (((‖s‖ + x)) ^ 2)⁻¹ :=
+      _ ≤ ∫ x in (0:ℝ)..X, C * (((‖s‖ + x)) ^ (2 : ℕ))⁻¹ :=
           intervalIntegral.integral_mono_on hX hintnorm hintmaj hnormb
-      _ = C * ∫ x in (0:ℝ)..X, (((‖s‖ + x)) ^ 2)⁻¹ := intervalIntegral.integral_const_mul _ _
+      _ = C * ∫ x in (0:ℝ)..X, (((‖s‖ + x)) ^ (2 : ℕ))⁻¹ := intervalIntegral.integral_const_mul _ _
       _ ≤ C * (1 / ‖s‖) := mul_le_mul_of_nonneg_left (integral_inv_sq_shift_le hspos hX) hC0
       _ = 2 ^ (k + 2) * A / ‖s‖ ^ (k + 1) := by
           rw [hC]

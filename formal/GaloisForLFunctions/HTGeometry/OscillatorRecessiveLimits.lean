@@ -76,9 +76,9 @@ theorem sign_locally_const_of_ne_zero {v : ℝ → ℝ} {b : ℝ} (hc : Continuo
 /-- **The product tends to zero.**  It is nondecreasing and negative, and if it stayed below `−ε`
 the square would be driven negative. -/
 theorem tendsto_oscProduct_zero {mu : ℝ} {v v' : ℝ → ℝ} {a b : ℝ}
-    (ha : 0 < a) (hmu : mu ≤ a ^ 2) (hab : a ≤ b)
+    (ha : 0 < a) (hmu : mu ≤ a ^ (2 : ℕ)) (hab : a ≤ b)
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
     (hneg : ∀ x ∈ Ici b, oscProduct v v' x < 0) :
     Tendsto (oscProduct v v') atTop (𝓝 0) := by
   rw [Metric.tendsto_atTop]
@@ -90,13 +90,13 @@ theorem tendsto_oscProduct_zero {mu : ℝ} {v v' : ℝ → ℝ} {a b : ℝ}
       intro x hx
       by_contra h
       exact hcon ⟨x, hx, lt_of_not_ge h⟩
-    have hsqderiv : ∀ x, HasDerivAt (fun y => v y ^ 2) (2 * oscProduct v v' x) x := by
+    have hsqderiv : ∀ x, HasDerivAt (fun y => v y ^ (2 : ℕ)) (2 * oscProduct v v' x) x := by
       intro x
       refine ((hv x).pow 2).congr_deriv ?_
       rw [oscProduct]
       push_cast
       ring
-    refine not_deriv_le_neg_of_nonneg (f := fun x => v x ^ 2)
+    refine not_deriv_le_neg_of_nonneg (f := fun x => v x ^ (2 : ℕ))
       (f' := fun x => 2 * oscProduct v v' x) (b := b) (eps := 2 * eps) (by linarith)
       hsqderiv (fun x _ => sq_nonneg _) ?_
     intro x hx
@@ -114,9 +114,9 @@ theorem tendsto_oscProduct_zero {mu : ℝ} {v v' : ℝ → ℝ} {a b : ℝ}
 
 /-- **The derivative tends to zero** for a positive solution with negative product: it is
 nondecreasing and negative, and if it stayed below `−ε` the solution itself would go negative. -/
-theorem tendsto_deriv_zero_of_pos {mu : ℝ} {v v' : ℝ → ℝ} {b : ℝ} (hb : 0 < b) (hmu : mu ≤ b ^ 2)
+theorem tendsto_deriv_zero_of_pos {mu : ℝ} {v v' : ℝ → ℝ} {b : ℝ} (hb : 0 < b) (hmu : mu ≤ b ^ (2 : ℕ))
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
     (hpos : ∀ x ∈ Ici b, 0 < v x)
     (hneg : ∀ x ∈ Ici b, oscProduct v v' x < 0) :
     Tendsto v' atTop (𝓝 0) := by
@@ -135,7 +135,7 @@ theorem tendsto_deriv_zero_of_pos {mu : ℝ} {v v' : ℝ → ℝ} {b : ℝ} (hb 
       have hxm : x ∈ Ici b := le_of_lt (Set.mem_Ioi.1 hx)
       rw [(hv' x).deriv]
       have hbx : b ≤ x := Set.mem_Ici.1 hxm
-      have hxsq : mu ≤ x ^ 2 := by nlinarith
+      have hxsq : mu ≤ x ^ (2 : ℕ) := by nlinarith
       have := hpos x hxm
       nlinarith
   rw [Metric.tendsto_atTop]
@@ -159,10 +159,10 @@ theorem tendsto_deriv_zero_of_pos {mu : ℝ} {v v' : ℝ → ℝ} {b : ℝ} (hb 
 /-- **The weighted square tends to zero.**  Nonnegative energy bounds `(ξ² − μ)v²` by `v′²`. -/
 theorem tendsto_weighted_sq_zero {mu : ℝ} {v v' : ℝ → ℝ} {b : ℝ}
     (hE : ∀ x ∈ Ici b, 0 ≤ oscillatorMonotoneEnergy mu v v' x)
-    (hmu : ∀ x ∈ Ici b, mu ≤ x ^ 2)
+    (hmu : ∀ x ∈ Ici b, mu ≤ x ^ (2 : ℕ))
     (hv'0 : Tendsto v' atTop (𝓝 0)) :
-    Tendsto (fun x => (x ^ 2 - mu) * v x ^ 2) atTop (𝓝 0) := by
-  have hsq : Tendsto (fun x => v' x ^ 2) atTop (𝓝 0) := by
+    Tendsto (fun x => (x ^ (2 : ℕ) - mu) * v x ^ (2 : ℕ)) atTop (𝓝 0) := by
+  have hsq : Tendsto (fun x => v' x ^ (2 : ℕ)) atTop (𝓝 0) := by
     have := hv'0.pow 2
     simpa using this
   refine squeeze_zero' ?_ ?_ hsq
@@ -176,8 +176,8 @@ theorem tendsto_weighted_sq_zero {mu : ℝ} {v v' : ℝ → ℝ} {b : ℝ}
 
 /-- The linear moment of the square tends to zero. -/
 theorem tendsto_mul_sq_zero {mu : ℝ} {v : ℝ → ℝ}
-    (hw : Tendsto (fun x => (x ^ 2 - mu) * v x ^ 2) atTop (𝓝 0)) :
-    Tendsto (fun x => x * v x ^ 2) atTop (𝓝 0) := by
+    (hw : Tendsto (fun x => (x ^ (2 : ℕ) - mu) * v x ^ (2 : ℕ)) atTop (𝓝 0)) :
+    Tendsto (fun x => x * v x ^ (2 : ℕ)) atTop (𝓝 0) := by
   refine squeeze_zero' ?_ ?_ hw
   · filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
     positivity
@@ -185,7 +185,7 @@ theorem tendsto_mul_sq_zero {mu : ℝ} {v : ℝ → ℝ}
     have h1 : (1 : ℝ) ≤ x := le_trans (le_max_left _ _) hx
     have h2 : |mu| + 1 ≤ x := le_trans (le_max_right _ _) hx
     have hmu' : mu ≤ |mu| := le_abs_self mu
-    have hstep : x ≤ x ^ 2 - mu := by nlinarith
+    have hstep : x ≤ x ^ (2 : ℕ) - mu := by nlinarith
     nlinarith [sq_nonneg (v x)]
 
 end GaloisForLFunctions.HTGeometry

@@ -40,7 +40,7 @@ def deningerGammaSixCommonCofacePolynomial :
 
 theorem deningerGammaSixCommonCofacePolynomial_expansion :
     deningerGammaSixCommonCofacePolynomial =
-      Polynomial.X ^ 2 -
+      Polynomial.X ^ (2 : ℕ) -
         Polynomial.C
           (deningerGammaSixForwardCofaceRoot +
             deningerGammaSixReflectedCofaceRoot) * Polynomial.X +

@@ -122,15 +122,15 @@ theorem routeU_re_div_two (z : ℂ) : (z / 2).re = z.re / 2 := by
 
 /-- **The archimedean term of the completed source in density coordinates.** -/
 theorem routeUArchimedeanMoment_zero_eq {a : ℝ} (ha : 0 < a) :
-    routeUArchimedeanMoment 0 (a ^ 2)
+    routeUArchimedeanMoment 0 (a ^ (2 : ℕ))
       = ((Real.pi / a * (logDeriv Complex.Gammaℝ (((1 / 2 + a : ℝ)) : ℂ)).re : ℝ) : ℂ) := by
   have hane : a ≠ 0 := ne_of_gt ha
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hkernel : ∀ x : ℝ, ((a ^ 2 + x ^ 2 : ℝ))⁻¹ = (Real.pi / a) * poissonWeight a x := by
+  have hkernel : ∀ x : ℝ, ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ))⁻¹ = (Real.pi / a) * poissonWeight a x := by
     intro x
     rw [poissonWeight_eq]
     field_simp
-  have hrewrite : routeUArchimedeanMoment 0 (a ^ 2)
+  have hrewrite : routeUArchimedeanMoment 0 (a ^ (2 : ℕ))
       = ((Real.pi / a : ℝ) : ℂ)
         * ((∫ x : ℝ, poissonWeight a x * routeUArchimedeanRate x : ℝ) : ℂ) := by
     have hcast : ((∫ x : ℝ, poissonWeight a x * routeUArchimedeanRate x : ℝ) : ℂ)
@@ -138,7 +138,7 @@ theorem routeUArchimedeanMoment_zero_eq {a : ℝ} (ha : 0 < a) :
       (_root_.integral_ofReal).symm
     rw [hcast, routeUArchimedeanMoment, massPairing, ← MeasureTheory.integral_const_mul]
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    have hx : ((a ^ 2 + x ^ 2 : ℝ)) ≠ 0 := by positivity
+    have hx : ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ)) ≠ 0 := by positivity
     simp only [routeUArchimedeanWeight]
     rw [pow_one, ← Complex.ofReal_inv, hkernel x]
     push_cast

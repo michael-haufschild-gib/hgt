@@ -14,7 +14,7 @@ open D4BMAngularSeries D4BMGlobalAngularResponse D4BMQuadraticMixedSource
 noncomputable section
 
 /-- The squared norm density of a literal cusp height power in native hyperbolic measure. -/
-def powerDensity (p : ℂ) (y : ℝ) : ℝ := ‖(y:ℂ)^p‖^2/y^2
+def powerDensity (p : ℂ) (y : ℝ) : ℝ := ‖(y:ℂ)^p‖^(2 : ℕ)/y^(2 : ℕ)
 
 private theorem powerDensity_eq (p : ℂ) {y : ℝ} (hy : 0 < y) :
     powerDensity p y = y^(2*p.re-2) := by

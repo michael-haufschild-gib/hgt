@@ -12,7 +12,7 @@ noncomputable section
 /-- Principal harmonic model of the Barban--Vehov two-variable Euler kernel. -/
 def selbergPrincipalHarmonicModel (N : ℕ) : ℝ :=
   harmonicQuotientMean
-    (fun m : ℕ => (coprimeLogMoebius 1 (m : ℝ)) ^ 2) N
+    (fun m : ℕ => (coprimeLogMoebius 1 (m : ℝ)) ^ (2 : ℕ)) N
 
 /-- The principal Barban--Vehov Euler factor has logarithmic residue one. -/
 theorem tendsto_selbergPrincipalHarmonicModel_div_log_one :
@@ -20,10 +20,10 @@ theorem tendsto_selbergPrincipalHarmonicModel_div_log_one :
       atTop (𝓝 1) := by
   have hone : Tendsto (fun m : ℕ => coprimeLogMoebius 1 (m : ℝ)) atTop (𝓝 1) :=
     tendsto_coprimeLogMoebius_one.comp tendsto_natCast_atTop_atTop
-  have hsq : Tendsto (fun m : ℕ => (coprimeLogMoebius 1 (m : ℝ)) ^ 2)
+  have hsq : Tendsto (fun m : ℕ => (coprimeLogMoebius 1 (m : ℝ)) ^ (2 : ℕ))
       atTop (𝓝 1) := by simpa using hone.pow 2
-  have hbound : ∀ m : ℕ, |(coprimeLogMoebius 1 (m : ℝ)) ^ 2| ≤
-      coprimeLogMoebiusConst ^ 2 := by
+  have hbound : ∀ m : ℕ, |(coprimeLogMoebius 1 (m : ℝ)) ^ (2 : ℕ)| ≤
+      coprimeLogMoebiusConst ^ (2 : ℕ) := by
     intro m
     have h := abs_coprimeLogMoebius_le 1 (by simp) (m : ℝ)
     norm_num at h
@@ -32,8 +32,8 @@ theorem tendsto_selbergPrincipalHarmonicModel_div_log_one :
       coprimeLogMoebiusConst_nonneg]
   simpa only [selbergPrincipalHarmonicModel] using
     tendsto_harmonicQuotientMean_div_log
-      (fun m : ℕ => (coprimeLogMoebius 1 (m : ℝ)) ^ 2)
-      1 (coprimeLogMoebiusConst ^ 2) hsq hbound
+      (fun m : ℕ => (coprimeLogMoebius 1 (m : ℝ)) ^ (2 : ℕ))
+      1 (coprimeLogMoebiusConst ^ (2 : ℕ)) hsq hbound
 
 end
 

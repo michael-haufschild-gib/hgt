@@ -100,7 +100,7 @@ theorem adamsPowerSum_comp {ι : Type*} [Fintype ι] (α : ι → ℂ) (k m : �
 identity on secular data: `p_m(ψ¹π) = p_m(π)`. -/
 @[aesop safe]
 theorem adamsPowerSum_one {ι : Type*} [Fintype ι] (α : ι → ℂ) (m : ℕ) :
-    adamsPowerSum (fun i => (α i) ^ 1) m = adamsPowerSum α m := by
+    adamsPowerSum (fun i => (α i) ^ (1 : ℕ)) m = adamsPowerSum α m := by
   rw [adamsPowerSum_comp, one_mul]
 
 /-- **B30 §2 (prime-side Weil positivity is free).** Any explicit-formula pairing

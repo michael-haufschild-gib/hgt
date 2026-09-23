@@ -52,16 +52,16 @@ namespace RHTower
 /-- **Refined pointwise Fourier bound.**  From `|ĥ(ξ)| ≤ R + Dξ` with `R = |ĥ(0)|` and
 `D = ℓ‖h‖₁`, squaring gives `|ĥ(ξ)|² ≤ 2R² + 2D²ξ²`. -/
 theorem fourier_sq_bound {R D ξ F : ℝ} (hR : 0 ≤ R) (hD : 0 ≤ D)
-    (hF : |F| ≤ R + D * |ξ|) : F ^ 2 ≤ 2 * R ^ 2 + 2 * D ^ 2 * ξ ^ 2 := by
-  have habs : F ^ 2 = |F| ^ 2 := (sq_abs F).symm
+    (hF : |F| ≤ R + D * |ξ|) : F ^ (2 : ℕ) ≤ 2 * R ^ (2 : ℕ) + 2 * D ^ (2 : ℕ) * ξ ^ (2 : ℕ) := by
+  have habs : F ^ (2 : ℕ) = |F| ^ (2 : ℕ) := (sq_abs F).symm
   have hnn : 0 ≤ R + D * |ξ| := by
     have : 0 ≤ D * |ξ| := mul_nonneg hD (abs_nonneg ξ)
     linarith
-  have hsq : |F| ^ 2 ≤ (R + D * |ξ|) ^ 2 := by
+  have hsq : |F| ^ (2 : ℕ) ≤ (R + D * |ξ|) ^ (2 : ℕ) := by
     have := abs_nonneg F
     nlinarith [hF, this, hnn]
-  have hexp : (R + D * |ξ|) ^ 2 ≤ 2 * R ^ 2 + 2 * D ^ 2 * ξ ^ 2 := by
-    have hxi : |ξ| ^ 2 = ξ ^ 2 := sq_abs ξ
+  have hexp : (R + D * |ξ|) ^ (2 : ℕ) ≤ 2 * R ^ (2 : ℕ) + 2 * D ^ (2 : ℕ) * ξ ^ (2 : ℕ) := by
+    have hxi : |ξ| ^ (2 : ℕ) = ξ ^ (2 : ℕ) := sq_abs ξ
     nlinarith [sq_nonneg (R - D * |ξ|), hxi]
   linarith [habs ▸ hsq]
 
@@ -74,33 +74,33 @@ theorem fourier_zero_of_pole_zero {R P dev L1 : ℝ} (hP : P = 0) (_hdev : 0 ≤
 
 /-- `cosh(ℓ/2) - 1 ≤ (ℓ²/8)·cosh(ℓ/2)`, the deviation estimate. -/
 theorem cosh_half_dev {ℓ : ℝ} (hℓ : 0 ≤ ℓ) :
-    Real.cosh (ℓ / 2) - 1 ≤ ℓ ^ 2 / 8 * Real.cosh (ℓ / 2) := by
+    Real.cosh (ℓ / 2) - 1 ≤ ℓ ^ (2 : ℕ) / 8 * Real.cosh (ℓ / 2) := by
   have h := cosh_sub_one_le (show (0:ℝ) ≤ ℓ / 2 by linarith)
-  have hrw : (ℓ / 2) ^ 2 / 2 = ℓ ^ 2 / 8 := by ring
+  have hrw : (ℓ / 2) ^ (2 : ℕ) / 2 = ℓ ^ (2 : ℕ) / 8 := by ring
   linarith [hrw ▸ h]
 
 /-- **Band integral of the refined bound.**  `(1/2π)∫_{-Ξ}^{Ξ}(2R² + 2D²ξ²)dξ = 2R²Ξ/π + 2D²Ξ³/(3π)`,
 the cubic-start dominating function. -/
 theorem band_integral_refined {R D Ξ : ℝ} (_hΞ : 0 ≤ Ξ) :
-    1 / (2 * Real.pi) * (2 * (2 * R ^ 2) * Ξ + 2 * (2 * D ^ 2) * Ξ ^ 3 / 3)
-      = 2 * R ^ 2 * Ξ / Real.pi + 2 * D ^ 2 * Ξ ^ 3 / (3 * Real.pi) := by
+    1 / (2 * Real.pi) * (2 * (2 * R ^ (2 : ℕ)) * Ξ + 2 * (2 * D ^ (2 : ℕ)) * Ξ ^ (3 : ℕ) / 3)
+      = 2 * R ^ (2 : ℕ) * Ξ / Real.pi + 2 * D ^ (2 : ℕ) * Ξ ^ (3 : ℕ) / (3 * Real.pi) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   field_simp
 
 /-- **Crossover.**  The cubic branch `4ℓ³Ξ³/(3π)` is below the flat branch `2ℓΞ/π` exactly for
 `Ξ ≤ √(3/2)/ℓ`, so the refined dominating function is genuinely better on that range. -/
-theorem cubic_below_flat {ℓ Ξ : ℝ} (hℓ : 0 < ℓ) (hΞ : 0 ≤ Ξ) (hcross : ℓ ^ 2 * Ξ ^ 2 ≤ 3 / 2) :
-    4 * ℓ ^ 3 * Ξ ^ 3 / (3 * Real.pi) ≤ 2 * ℓ * Ξ / Real.pi := by
+theorem cubic_below_flat {ℓ Ξ : ℝ} (hℓ : 0 < ℓ) (hΞ : 0 ≤ Ξ) (hcross : ℓ ^ (2 : ℕ) * Ξ ^ (2 : ℕ) ≤ 3 / 2) :
+    4 * ℓ ^ (3 : ℕ) * Ξ ^ (3 : ℕ) / (3 * Real.pi) ≤ 2 * ℓ * Ξ / Real.pi := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hprod : 0 ≤ ℓ * Ξ := mul_nonneg hℓ.le hΞ
-  have ht : (ℓ * Ξ) ^ 2 ≤ 3 / 2 := by nlinarith [hcross]
-  have hkey : 4 * ℓ ^ 3 * Ξ ^ 3 ≤ 6 * ℓ * Ξ := by nlinarith [hprod, ht]
+  have ht : (ℓ * Ξ) ^ (2 : ℕ) ≤ 3 / 2 := by nlinarith [hcross]
+  have hkey : 4 * ℓ ^ (3 : ℕ) * Ξ ^ (3 : ℕ) ≤ 6 * ℓ * Ξ := by nlinarith [hprod, ht]
   rw [div_le_div_iff₀ (by positivity) hpi]
   nlinarith [hkey, hpi]
 
 /-- The refined dominating function, as the minimum of the cubic branch, the flat branch, and one. -/
 def refinedDominator (R D ℓ Ξ : ℝ) : ℝ :=
-  min (min (2 * R ^ 2 * Ξ / Real.pi + 2 * D ^ 2 * Ξ ^ 3 / (3 * Real.pi)) (2 * ℓ * Ξ / Real.pi)) 1
+  min (min (2 * R ^ (2 : ℕ) * Ξ / Real.pi + 2 * D ^ (2 : ℕ) * Ξ ^ (3 : ℕ) / (3 * Real.pi)) (2 * ℓ * Ξ / Real.pi)) 1
 
 theorem refinedDominator_le_flat (R D ℓ Ξ : ℝ) :
     refinedDominator R D ℓ Ξ ≤ 2 * ℓ * Ξ / Real.pi :=

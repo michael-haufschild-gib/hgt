@@ -198,7 +198,7 @@ def RHLadder (k : ℕ) : Prop :=
 half-plane. -/
 theorem rhLadder_iff_root (k : ℕ) :
     RHLadder k ↔
-      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s :=
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s :=
   (exists_root_iff_orders_dvd (pow_pos two_pos k) isOpen_rightHalf convex_rightHalf
     two_mem_rightHalf (xi_analyticOnNhd _) xi_two_ne_zero xi_zeros_finite_in_ball).symm
 
@@ -333,7 +333,7 @@ uses the levelwise-root obstruction: roots at all dyadic levels force `ξ` to be
 zero-free on the right half-plane, hence RH. -/
 theorem rh_iff_exists_roots_all_two_powers :
     RiemannHypothesis ↔
-      ∀ k : ℕ, ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s := by
+      ∀ k : ℕ, ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s := by
   constructor
   · intro hRH k
     exact (rhLadder_iff_root k).mp ((rh_iff_forall_ladder.mp hRH) k)

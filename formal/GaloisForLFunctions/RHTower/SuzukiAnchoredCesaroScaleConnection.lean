@@ -192,7 +192,7 @@ theorem suzukiTransitionCoreAlignedGammaCompletedEnergy_succ_eq_scaleConnection
             (suzukiCheckpointAffineSlopeCesaroPotential (N + 1) -
               suzukiCheckpointAffineSlopeCesaroPotential N) +
             suzukiTransitionCoreCesaroTerminalCorrection N) /
-          unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ 2 := by
+          unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ (2 : ℕ) := by
   rw [suzukiTransitionCoreAlignedGammaCompletedEnergy_succ_eq_affineSlopeCesaro
       hN hcharge,
     suzukiTransitionCoreAffineSlopeCesaroSource_eq_scaleConnection hN]
@@ -209,7 +209,7 @@ theorem suzukiTransitionCoreAlignedXiSharedOrientationShortEnergy_succ_eq_scaleC
               (suzukiCheckpointAffineSlopeCesaroPotential (N + 1) -
                 suzukiCheckpointAffineSlopeCesaroPotential N) +
               suzukiTransitionCoreCesaroTerminalCorrection N) /
-            unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ 2) *
+            unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ (2 : ℕ)) *
           Complex.normSq (routePXiBaseConormalResidueFeature (rho : ℂ) r) := by
   rw [suzukiTransitionCoreAlignedXiSharedOrientationShortEnergy_succ_eq_affineSlopeCesaro
       hN hcharge,
@@ -222,7 +222,7 @@ def suzukiCorrectedScaleConnectionAction (N : ℕ) : ℝ :=
           (suzukiCheckpointAffineSlopeCesaroPotential N -
             suzukiCheckpointAffineSlopeCesaroPotential (N - 1)) +
         suzukiTransitionCoreCesaroTerminalCorrection (N - 1)) /
-      unitRieszCoherentPrimeOutgoingCharge N) ^ 2
+      unitRieszCoherentPrimeOutgoingCharge N) ^ (2 : ℕ)
 
 /-- The divisor-free corrected formation action and aligned Gamma energy are eventually the same
 quantity. -/

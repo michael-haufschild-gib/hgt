@@ -44,22 +44,22 @@ theorem sqrt_one_sub_re_triangle {u v w : ℂ} (hu : ‖u‖ ≤ 1) (hv : ‖v�
   set X := ‖u - v‖ with hXdef
   set Y := ‖v - w‖ with hYdef
   set Z := ‖u - w‖ with hZdef
-  set a := 1 - ‖u‖ ^ 2 with hadef
-  set b := 1 - ‖v‖ ^ 2 with hbdef
-  set c := 1 - ‖w‖ ^ 2 with hcdef
+  set a := 1 - ‖u‖ ^ (2 : ℕ) with hadef
+  set b := 1 - ‖v‖ ^ (2 : ℕ) with hbdef
+  set c := 1 - ‖w‖ ^ (2 : ℕ) with hcdef
   have ha : 0 ≤ a := by rw [hadef]; nlinarith
   have hb : 0 ≤ b := by rw [hbdef]; nlinarith
   have hc : 0 ≤ c := by rw [hcdef]; nlinarith
   have hX0 : 0 ≤ X := norm_nonneg _
   have hY0 : 0 ≤ Y := norm_nonneg _
   have hZ0 : 0 ≤ Z := norm_nonneg _
-  have h2A : 2 * A = X ^ 2 + a + b := by
+  have h2A : 2 * A = X ^ (2 : ℕ) + a + b := by
     have h := normSq_sub_eq u v
     rw [hAdef, hXdef, hadef, hbdef]; linarith [h]
-  have h2B : 2 * B = Y ^ 2 + b + c := by
+  have h2B : 2 * B = Y ^ (2 : ℕ) + b + c := by
     have h := normSq_sub_eq v w
     rw [hBdef, hYdef, hbdef, hcdef]; linarith [h]
-  have h2C : 2 * C = Z ^ 2 + a + c := by
+  have h2C : 2 * C = Z ^ (2 : ℕ) + a + c := by
     have h := normSq_sub_eq u w
     rw [hCdef, hZdef, hadef, hcdef]; linarith [h]
   have hZle : Z ≤ X + Y := by
@@ -72,21 +72,21 @@ theorem sqrt_one_sub_re_triangle {u v w : ℂ} (hu : ‖u‖ ≤ 1) (hv : ‖v�
   set sB := Real.sqrt B with hsBdef
   have hsA0 : 0 ≤ sA := Real.sqrt_nonneg _
   have hsB0 : 0 ≤ sB := Real.sqrt_nonneg _
-  have hsA : sA ^ 2 = A := Real.sq_sqrt hA0
-  have hsB : sB ^ 2 = B := Real.sq_sqrt hB0
-  have hfac1 : (0 : ℝ) ≤ X ^ 2 + b := by linarith [sq_nonneg X]
-  have hfac2 : (0 : ℝ) ≤ Y ^ 2 + b := by linarith [sq_nonneg Y]
+  have hsA : sA ^ (2 : ℕ) = A := Real.sq_sqrt hA0
+  have hsB : sB ^ (2 : ℕ) = B := Real.sq_sqrt hB0
+  have hfac1 : (0 : ℝ) ≤ X ^ (2 : ℕ) + b := by linarith [sq_nonneg X]
+  have hfac2 : (0 : ℝ) ≤ Y ^ (2 : ℕ) + b := by linarith [sq_nonneg Y]
   -- the slack `b (X - Y)²` is what pays for the cross term
-  have hstep2 : (X * Y + b) ^ 2 ≤ (X ^ 2 + b) * (Y ^ 2 + b) := by
+  have hstep2 : (X * Y + b) ^ (2 : ℕ) ≤ (X ^ (2 : ℕ) + b) * (Y ^ (2 : ℕ) + b) := by
     linarith [mul_nonneg hb (sq_nonneg (X - Y))]
-  have hstep1 : (X ^ 2 + b) * (Y ^ 2 + b) ≤ (X ^ 2 + a + b) * (Y ^ 2 + b + c) := by
+  have hstep1 : (X ^ (2 : ℕ) + b) * (Y ^ (2 : ℕ) + b) ≤ (X ^ (2 : ℕ) + a + b) * (Y ^ (2 : ℕ) + b + c) := by
     linarith [mul_nonneg ha hfac2, mul_nonneg hc hfac1, mul_nonneg ha hc]
-  have h4AB : 4 * (A * B) = (X ^ 2 + a + b) * (Y ^ 2 + b + c) := by
+  have h4AB : 4 * (A * B) = (X ^ (2 : ℕ) + a + b) * (Y ^ (2 : ℕ) + b + c) := by
     calc 4 * (A * B) = (2 * A) * (2 * B) := by ring
-      _ = (X ^ 2 + a + b) * (Y ^ 2 + b + c) := by rw [h2A, h2B]
-  have hkey : (X * Y + b) ^ 2 ≤ (2 * sA * sB) ^ 2 := by
-    have hexp : (2 * sA * sB) ^ 2 = 4 * (A * B) := by
-      calc (2 * sA * sB) ^ 2 = 4 * (sA ^ 2 * sB ^ 2) := by ring
+      _ = (X ^ (2 : ℕ) + a + b) * (Y ^ (2 : ℕ) + b + c) := by rw [h2A, h2B]
+  have hkey : (X * Y + b) ^ (2 : ℕ) ≤ (2 * sA * sB) ^ (2 : ℕ) := by
+    have hexp : (2 * sA * sB) ^ (2 : ℕ) = 4 * (A * B) := by
+      calc (2 * sA * sB) ^ (2 : ℕ) = 4 * (sA ^ (2 : ℕ) * sB ^ (2 : ℕ)) := by ring
         _ = 4 * (A * B) := by rw [hsA, hsB]
     rw [hexp, h4AB]
     linarith [hstep1, hstep2]
@@ -95,26 +95,26 @@ theorem sqrt_one_sub_re_triangle {u v w : ℂ} (hu : ‖u‖ ≤ 1) (hv : ‖v�
     have h2 : (0 : ℝ) ≤ 2 * sA * sB := by linarith [mul_nonneg hsA0 hsB0]
     have h3 := Real.sqrt_le_sqrt hkey
     rwa [Real.sqrt_sq h1, Real.sqrt_sq h2] at h3
-  have hZsq : Z ^ 2 ≤ (X + Y) ^ 2 := pow_le_pow_left₀ hZ0 hZle 2
+  have hZsq : Z ^ (2 : ℕ) ≤ (X + Y) ^ (2 : ℕ) := pow_le_pow_left₀ hZ0 hZle 2
   have hCle : C ≤ A + B + 2 * sA * sB := by linarith [hZsq, h2A, h2B, h2C, hcross, hb]
-  have hsC : Real.sqrt C ^ 2 = C := Real.sq_sqrt hC0
+  have hsC : Real.sqrt C ^ (2 : ℕ) = C := Real.sq_sqrt hC0
   have hsC0 : (0 : ℝ) ≤ Real.sqrt C := Real.sqrt_nonneg _
   have hsum0 : (0 : ℝ) ≤ sA + sB := by linarith
-  have hsq : Real.sqrt C ^ 2 ≤ (sA + sB) ^ 2 := by linarith [hsC, hCle, hsA, hsB]
+  have hsq : Real.sqrt C ^ (2 : ℕ) ≤ (sA + sB) ^ (2 : ℕ) := by linarith [hsC, hCle, hsA, hsB]
   have h4 := Real.sqrt_le_sqrt hsq
   rwa [Real.sqrt_sq hsC0, Real.sqrt_sq hsum0] at h4
 
 /-- **Minkowski's inequality for a finite sum of squares.** -/
 theorem sqrt_sum_sq_add_le (P : Finset ℕ) (x y : ℕ → ℝ) :
-    Real.sqrt (∑ p ∈ P, (x p + y p) ^ 2)
-      ≤ Real.sqrt (∑ p ∈ P, x p ^ 2) + Real.sqrt (∑ p ∈ P, y p ^ 2) := by
+    Real.sqrt (∑ p ∈ P, (x p + y p) ^ (2 : ℕ))
+      ≤ Real.sqrt (∑ p ∈ P, x p ^ (2 : ℕ)) + Real.sqrt (∑ p ∈ P, y p ^ (2 : ℕ)) := by
   have hnorm : ∀ z : ℕ → ℝ,
       ‖(WithLp.toLp 2 (fun p : {q // q ∈ P} => z p.1) : EuclideanSpace ℝ {q // q ∈ P})‖
-        = Real.sqrt (∑ p ∈ P, z p ^ 2) := by
+        = Real.sqrt (∑ p ∈ P, z p ^ (2 : ℕ)) := by
     intro z
     rw [EuclideanSpace.norm_eq]
     congr 1
-    rw [← Finset.sum_coe_sort P fun p => z p ^ 2]
+    rw [← Finset.sum_coe_sort P fun p => z p ^ (2 : ℕ)]
     refine Finset.sum_congr rfl fun p _ => ?_
     simp [Real.norm_eq_abs, sq_abs]
   have hadd :
@@ -144,7 +144,7 @@ theorem sqrt_mulDistSqPair_triangle_disc {f g h : ℕ → ℂ} {P : Finset ℕ}
     with hxdef
   set y : ℕ → ℝ := fun p => Real.sqrt ((1 - (g p * (starRingEnd ℂ) (h p)).re) / (p : ℝ))
     with hydef
-  have hpt : ∀ p ∈ P, (1 - (f p * (starRingEnd ℂ) (h p)).re) / (p : ℝ) ≤ (x p + y p) ^ 2 := by
+  have hpt : ∀ p ∈ P, (1 - (f p * (starRingEnd ℂ) (h p)).re) / (p : ℝ) ≤ (x p + y p) ^ (2 : ℕ) := by
     intro p hp
     have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hP p hp
     have hAn := one_sub_re_mul_conj_nonneg hf hg hp
@@ -156,26 +156,26 @@ theorem sqrt_mulDistSqPair_triangle_disc {f g h : ℕ → ℂ} {P : Finset ℕ}
       simp only [hxdef, hydef]
       rw [Real.sqrt_div hCn, Real.sqrt_div hAn, Real.sqrt_div hBn, ← add_div]
       gcongr
-    have hsq : Real.sqrt ((1 - (f p * (starRingEnd ℂ) (h p)).re) / (p : ℝ)) ^ 2
+    have hsq : Real.sqrt ((1 - (f p * (starRingEnd ℂ) (h p)).re) / (p : ℝ)) ^ (2 : ℕ)
         = (1 - (f p * (starRingEnd ℂ) (h p)).re) / (p : ℝ) := Real.sq_sqrt hCq
     rw [← hsq]
     exact pow_le_pow_left₀ (Real.sqrt_nonneg _) hdiv 2
-  have hsum : mulDistSqPair f h P ≤ ∑ p ∈ P, (x p + y p) ^ 2 := Finset.sum_le_sum hpt
-  have hx2 : ∑ p ∈ P, x p ^ 2 = mulDistSqPair f g P := by
+  have hsum : mulDistSqPair f h P ≤ ∑ p ∈ P, (x p + y p) ^ (2 : ℕ) := Finset.sum_le_sum hpt
+  have hx2 : ∑ p ∈ P, x p ^ (2 : ℕ) = mulDistSqPair f g P := by
     refine Finset.sum_congr rfl fun p hp => ?_
     simp only [hxdef]
     exact Real.sq_sqrt (by have := one_sub_re_mul_conj_nonneg hf hg hp
                            have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hP p hp
                            positivity)
-  have hy2 : ∑ p ∈ P, y p ^ 2 = mulDistSqPair g h P := by
+  have hy2 : ∑ p ∈ P, y p ^ (2 : ℕ) = mulDistSqPair g h P := by
     refine Finset.sum_congr rfl fun p hp => ?_
     simp only [hydef]
     exact Real.sq_sqrt (by have := one_sub_re_mul_conj_nonneg hg hh hp
                            have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hP p hp
                            positivity)
   calc Real.sqrt (mulDistSqPair f h P)
-      ≤ Real.sqrt (∑ p ∈ P, (x p + y p) ^ 2) := Real.sqrt_le_sqrt hsum
-    _ ≤ Real.sqrt (∑ p ∈ P, x p ^ 2) + Real.sqrt (∑ p ∈ P, y p ^ 2) := sqrt_sum_sq_add_le P x y
+      ≤ Real.sqrt (∑ p ∈ P, (x p + y p) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsum
+    _ ≤ Real.sqrt (∑ p ∈ P, x p ^ (2 : ℕ)) + Real.sqrt (∑ p ∈ P, y p ^ (2 : ℕ)) := sqrt_sum_sq_add_le P x y
     _ = Real.sqrt (mulDistSqPair f g P) + Real.sqrt (mulDistSqPair g h P) := by rw [hx2, hy2]
 
 /-- The distance between functions bounded by one is nonnegative. -/

@@ -29,7 +29,7 @@ theorem norm_schwartzJet_le (f : SchwartzMap ℝ ℂ) (k n : ℕ) :
 /-- A single theorem covers every physical-space moment and derivative order. -/
 theorem schwartz_jet_energy_le (f : SchwartzMap ℝ ℂ) (k n : ℕ) (d t : ℝ) :
     energy d t (fun s => (s ^ k : ℝ) • iteratedDeriv n (f : ℝ → ℂ) s) ≤
-      (SchwartzMap.seminorm ℝ k n f) ^ 2 / (2 * Real.exp d) := by
+      (SchwartzMap.seminorm ℝ k n f) ^ (2 : ℕ) / (2 * Real.exp d) := by
   exact (energy_le d t (schwartzJet f k n)).trans (div_le_div_of_nonneg_right
     ((sq_le_sq₀ (norm_nonneg _) (by positivity)).mpr (norm_schwartzJet_le f k n)) (by positivity))
 
@@ -37,13 +37,13 @@ theorem schwartz_jet_energy_le (f : SchwartzMap ℝ ℂ) (k n : ℕ) (d t : ℝ)
 theorem fourier_schwartz_jet_energy_le (f : SchwartzMap ℝ ℂ) (k n : ℕ) (d t : ℝ) :
     energy d t (fun s => (s ^ k : ℝ) •
       iteratedDeriv n (SchwartzMap.fourierTransformCLM ℂ f : ℝ → ℂ) s) ≤
-      (SchwartzMap.seminorm ℝ k n (SchwartzMap.fourierTransformCLM ℂ f)) ^ 2 /
+      (SchwartzMap.seminorm ℝ k n (SchwartzMap.fourierTransformCLM ℂ f)) ^ (2 : ℕ) /
         (2 * Real.exp d) :=
   schwartz_jet_energy_le _ k n d t
 
 /-- A two-variable Schwartz field inherits the full characteristic rectangle gain. -/
 theorem schwartz_rectangle_energy_le (f : SchwartzMap (ℝ × ℝ) ℂ) (d u v : ℝ) :
-    rectangleEnergy d u v f ≤ (SchwartzMap.seminorm ℝ 0 0 f) ^ 2 / (2 * Real.exp d) ^ 2 := by
+    rectangleEnergy d u v f ≤ (SchwartzMap.seminorm ℝ 0 0 f) ^ (2 : ℕ) / (2 * Real.exp d) ^ (2 : ℕ) := by
   exact (rectangleEnergy_le d u v f.toBoundedContinuousFunction).trans
     (div_le_div_of_nonneg_right
       ((sq_le_sq₀ (norm_nonneg _) (by positivity)).mpr f.norm_toBoundedContinuousFunction_le)

@@ -35,7 +35,7 @@ theorem rankOneFiniteWard_eq_bernoulli
     finiteRankCutoffWardForm e
         (fun _ : Fin 1 => (1 : ℂ)) (fun _ => psi) (fun _ => psi)
         (fun _ : Fin 1 => (1 : ℂ)) (fun _ => psi) (fun _ => psi) =
-      ((2 * ‖e psi‖ ^ 2 * (1 - ‖e psi‖ ^ 2) : ℝ) : ℂ) := by
+      ((2 * ‖e psi‖ ^ (2 : ℕ) * (1 - ‖e psi‖ ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [finiteRankCutoffWardForm_self_eq_hsNormSq,
     finiteRankProbe_finOne_eq_rankOne]
   exact congrArg (fun r : ℝ => (r : ℂ))
@@ -50,17 +50,17 @@ theorem rankOneWard_bernoulliClockUniversality
     let W := finiteRankCutoffWardForm e
       (fun _ : Fin 1 => (1 : ℂ)) (fun _ => psi) (fun _ => psi)
       (fun _ : Fin 1 => (1 : ℂ)) (fun _ => psi) (fun _ => psi)
-    W = ((2 * ‖e psi‖ ^ 2 * (1 - ‖e psi‖ ^ 2) : ℝ) : ℂ) ∧
+    W = ((2 * ‖e psi‖ ^ (2 : ℕ) * (1 - ‖e psi‖ ^ (2 : ℕ)) : ℝ) : ℂ) ∧
       hsNormSq (ccmCommutator (rankOne ℂ psi psi) e) = W.re ∧
       hsNormSq (ccmCommutator (rankOne ℂ psi psi) ((2 : ℂ) • e - 1)) = 4 * W.re ∧
-      (W = 0 ↔ ‖e psi‖ ^ 2 = 0 ∨ ‖e psi‖ ^ 2 = 1) := by
+      (W = 0 ↔ ‖e psi‖ ^ (2 : ℕ) = 0 ∨ ‖e psi‖ ^ (2 : ℕ) = 1) := by
   dsimp only
   have hW := rankOneFiniteWard_eq_bernoulli e he heAdj psi hpsi
   have hWre :
       (finiteRankCutoffWardForm e
         (fun _ : Fin 1 => (1 : ℂ)) (fun _ => psi) (fun _ => psi)
         (fun _ : Fin 1 => (1 : ℂ)) (fun _ => psi) (fun _ => psi)).re =
-        2 * ‖e psi‖ ^ 2 * (1 - ‖e psi‖ ^ 2) := by
+        2 * ‖e psi‖ ^ (2 : ℕ) * (1 - ‖e psi‖ ^ (2 : ℕ)) := by
     rw [hW]
     rw [Complex.ofReal_re]
   refine ⟨hW, ?_, ?_, ?_⟩

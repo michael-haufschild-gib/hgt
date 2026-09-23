@@ -178,7 +178,7 @@ def bourgainA6BlockPhaseDeterminant
 
 /-- A pair of length-`M` blocks, separated by at least one block and lying
 inside `[1,N]`, has combined phase determinant at least
-`(3/512)(M/N)^10`. -/
+`(3/512)(M/N)^(10 : ℕ)`. -/
 theorem bourgainA6BlockPhaseDeterminant_ge
     {N M q₁ q₂ : ℕ} (hN : 0 < N) (hM : 0 < M)
     (hq₁ : 0 < q₁) (hq : q₁ + M ≤ q₂) (hq₂N : q₂ ≤ N) :
@@ -299,7 +299,7 @@ def bourgainA6BlockSharpCellMainTerm
         (C * (M : ℝ) ^ (ε / 2) * (M : ℝ) ^ (3 : ℕ))))
 
 /-- The determinant bound gives the sharp one-cell main-term scale
-`N^10 M^(2+ε)`.  After division by physical volume `N^6`, this is exactly
+`N^(10 : ℕ) M^(2+ε)`.  After division by physical volume `N^(6 : ℕ)`, this is exactly
 Bourgain's `N^(4+ε)M²` scale, before Taylor-error absorption. -/
 theorem bourgainA6BlockSharpCellMainTerm_le
     {N M q₁ q₂ : ℕ} {C ε : ℝ}

@@ -42,7 +42,7 @@ theorem universalStationarySurvivalRecurrenceLaw
                 oneSpectralReturnFidelity) ∧
         ((pointSpectrumFidelityScale (mu : Measure ℝ)
             oneSpectralReturnFidelity : SpectralReturnFidelityInterval) : ℝ) =
-          pointSpectrumMassReal (mu : Measure ℝ) ^ 2 ∧
+          pointSpectrumMassReal (mu : Measure ℝ) ^ (2 : ℕ) ∧
         pointSpectrumMassReal (mu : Measure ℝ) =
           Real.sqrt
             ((pointSpectrumFidelityScale (mu : Measure ℝ)

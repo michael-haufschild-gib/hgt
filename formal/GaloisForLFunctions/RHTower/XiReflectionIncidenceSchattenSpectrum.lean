@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.PrimeGammaCofinalBocksteinSchattenWall
 # Schatten spectrum of literal Xi reflection incidence
 
 The canonical horizontal reflection charge has a literal multiplicity-copy incidence carrier.
-This module weights every one of its `m_rho^2` incidences by the exact cofinal Gamma Bockstein
+This module weights every one of its `m_rho^(2 : ℕ)` incidences by the exact cofinal Gamma Bockstein
 `q`-mass.  No divisor copy, prime label, or reflection orientation is discarded.
 
 At `q = 2`, this mass is exactly the quadratic source-incidence energy.  At variable order, its
@@ -25,7 +25,7 @@ namespace RHTower
 noncomputable section
 
 /-- Coefficient-faithful `q`-mass of one Xi reflection-incidence fibre at prime `p`.
-The cardinal factor is literal `m_rho^2`, not a synthetic amplification parameter. -/
+The cardinal factor is literal `m_rho^(2 : ℕ)`, not a synthetic amplification parameter. -/
 def xiZeroCopyLineReflectionPrimeIncidenceSchattenMass
     (q : ℝ) (rho : XiDivisorSupport) (p : Nat.Primes) : ℝ :=
   ((xiZeroCopyLineReflectionIncidence rho).card : ℝ) *

@@ -13,7 +13,7 @@ the P-G172 collision kernel.
 
 Schur positivity and compression therefore prove unconditional positive semidefiniteness for
 arbitrary collision frequencies, including repeated frequencies.  No zero-spacing hypothesis is
-needed.  Its diagonal is the exact scale-free mass `115 / (864 a^3)`, independent of boundary
+needed.  Its diagonal is the exact scale-free mass `115 / (864 a^(3 : ℕ))`, independent of boundary
 clock `R` and collision ordinate.  Thus mesoscopic clustering is not a positivity obstruction:
 the remaining height-local problem is purely a trace/source-mass problem weighted by `a^{-3}`.
 -/
@@ -77,7 +77,7 @@ def routePCollisionDoubledCubicGram {N : ℕ}
     (R : ℝ) (a kappa : Fin N → ℝ) :
     Matrix (Fin N ⊕ Fin N) (Fin N ⊕ Fin N) ℂ :=
   let G := routePCollisionDoubledCauchyGram R a kappa
-  (((2 * R ^ 3 : ℝ) : ℂ)) • ((G ⊙ G) ⊙ G)
+  (((2 * R ^ (3 : ℕ) : ℝ) : ℂ)) • ((G ⊙ G) ⊙ G)
 
 theorem routePCollisionDoubledCubicGram_posSemidef
     {N : ℕ} {R : ℝ} {a kappa : Fin N → ℝ}
@@ -91,9 +91,9 @@ theorem routePCollisionDoubledCubicGram_posSemidef
 theorem routePCollisionDoubledCubicGram_apply
     {N : ℕ} (R : ℝ) (a kappa : Fin N → ℝ) (x y : Fin N ⊕ Fin N) :
     routePCollisionDoubledCubicGram R a kappa x y =
-      2 * (R : ℂ) ^ 3 /
+      2 * (R : ℂ) ^ (3 : ℕ) /
         (routePCollisionDoubledNode R a kappa x +
-          star (routePCollisionDoubledNode R a kappa y)) ^ 3 := by
+          star (routePCollisionDoubledNode R a kappa y)) ^ (3 : ℕ) := by
   simp only [routePCollisionDoubledCubicGram, Matrix.smul_apply, smul_eq_mul,
     Matrix.hadamard_apply, routePCollisionDoubledCauchyGram]
   push_cast
@@ -196,7 +196,7 @@ theorem routePCollisionCubicKernelMatrix_posSemidef
 theorem routePCollisionCubicKernel_diagonal
     {R a : ℝ} (hR : 0 < R) (ha : 0 < a) :
     routePCollisionCubicKernel R a a 0 =
-      (((115 : ℝ) / (864 * a ^ 3) : ℝ) : ℂ) := by
+      (((115 : ℝ) / (864 * a ^ (3 : ℕ)) : ℝ) : ℂ) := by
   simp only [routePCollisionCubicKernel, routePCollisionPairFrequency]
   push_cast
   field_simp [hR.ne', ha.ne']
@@ -207,7 +207,7 @@ theorem trace_routePCollisionCubicKernelMatrix
     {N : ℕ} {R : ℝ} {a kappa : Fin N → ℝ}
     (hR : 0 < R) (ha : ∀ i, 0 < a i) :
     (routePCollisionCubicKernelMatrix R a kappa).trace =
-      ∑ i : Fin N, (((115 : ℝ) / (864 * (a i) ^ 3) : ℝ) : ℂ) := by
+      ∑ i : Fin N, (((115 : ℝ) / (864 * (a i) ^ (3 : ℕ)) : ℝ) : ℂ) := by
   apply Finset.sum_congr rfl
   intro i hi
   change routePCollisionCubicKernel R (a i) (a i) (kappa i - kappa i) = _

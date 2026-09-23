@@ -61,7 +61,7 @@ theorem four_pi_mul_pos (j : ℕ) : 0 < 4 * π * ((j : ℝ) + 1) := by
 theorem schwartzSeminorm_hermiteTerm_le (k n : ℕ) (f : 𝓢(ℝ, ℂ)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ j : ℕ,
       SchwartzMap.seminorm ℂ k n (hermiteCoeff f j • hermiteUnit j)
-        ≤ C * ((4 * π * ((j : ℝ) + 1)) ^ 2)⁻¹ := by
+        ≤ C * ((4 * π * ((j : ℝ) + 1)) ^ (2 : ℕ))⁻¹ := by
   obtain ⟨C₁, hC₁, hgrow⟩ := schwartzSeminorm_hermiteUnit_le k n
   obtain ⟨C₂, hC₂, hdecay⟩ := hermiteCoeff_decay_shift (k + n + 4) f
   refine ⟨C₁ * C₂, by positivity, fun j => ?_⟩
@@ -82,7 +82,7 @@ theorem schwartzSeminorm_hermiteTerm_le (k n : ℕ) (f : 𝓢(ℝ, ℂ)) :
       ≤ (C₂ * ((4 * π * ((j : ℝ) + 1)) ^ (k + n + 4))⁻¹)
         * (C₁ * (4 * π * ((j : ℝ) + 1)) ^ (k + n + 2)) := by
         refine mul_le_mul_of_nonneg_right hdec (by positivity)
-    _ = C₁ * C₂ * ((4 * π * ((j : ℝ) + 1)) ^ 2)⁻¹ := by
+    _ = C₁ * C₂ * ((4 * π * ((j : ℝ) + 1)) ^ (2 : ℕ))⁻¹ := by
         rw [show k + n + 4 = (k + n + 2) + 2 by omega, pow_add]
         field_simp
 
@@ -92,11 +92,11 @@ theorem summable_schwartzSeminorm_hermiteTerm (k n : ℕ) (f : 𝓢(ℝ, ℂ)) :
       SchwartzMap.seminorm ℂ k n (hermiteCoeff f j • hermiteUnit j) := by
   obtain ⟨C, hC, hbound⟩ := schwartzSeminorm_hermiteTerm_le k n f
   refine Summable.of_nonneg_of_le (fun j => apply_nonneg _ _) hbound ?_
-  have h1 : Summable fun j : ℕ => 1 / ((j : ℝ) ^ 2) :=
+  have h1 : Summable fun j : ℕ => 1 / ((j : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
-  have h2 : Summable fun j : ℕ => 1 / ((((j + 1 : ℕ)) : ℝ) ^ 2) := (summable_nat_add_iff 1).mpr h1
-  have hfun : (fun j : ℕ => C * ((4 * π * ((j : ℝ) + 1)) ^ 2)⁻¹)
-      = fun j : ℕ => (C * ((4 * π) ^ 2)⁻¹) * (1 / ((((j + 1 : ℕ)) : ℝ) ^ 2)) := by
+  have h2 : Summable fun j : ℕ => 1 / ((((j + 1 : ℕ)) : ℝ) ^ (2 : ℕ)) := (summable_nat_add_iff 1).mpr h1
+  have hfun : (fun j : ℕ => C * ((4 * π * ((j : ℝ) + 1)) ^ (2 : ℕ))⁻¹)
+      = fun j : ℕ => (C * ((4 * π) ^ (2 : ℕ))⁻¹) * (1 / ((((j + 1 : ℕ)) : ℝ) ^ (2 : ℕ))) := by
     funext j
     have hpi : (π : ℝ) ≠ 0 := Real.pi_ne_zero
     push_cast

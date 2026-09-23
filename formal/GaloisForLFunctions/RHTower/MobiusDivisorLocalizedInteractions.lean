@@ -94,7 +94,7 @@ private lemma sum_abs_product_bound (T : Finset (Finset ℕ)) (N : ℕ)
     (hT : ∀ R∈T,∀ p∈R,p.Prime) (f g : Finset ℕ → ℝ) (H : ℝ)
     (hf : ∀ R∈T,|f R|≤H) (hg : ∀ R∈T,|g R|≤H)
     (hz : ∀ R∈T,N<∏ p∈R,p → f R*g R=0) :
-    (∑ R∈T,|f R*g R|)≤(N:ℝ)*H^2 := by
+    (∑ R∈T,|f R*g R|)≤(N:ℝ)*H^(2 : ℕ) := by
   let S := T.filter (fun R => (∏ p∈R,p)≤N)
   have he : (∑ R∈T,|f R*g R|)=∑ R∈S,|f R*g R| := by
     symm
@@ -104,19 +104,19 @@ private lemma sum_abs_product_bound (T : Finset (Finset ℕ)) (N : ℕ)
     rw [hz R hR hlt,abs_zero]
   rw [he]
   calc
-    _ ≤ ∑ _R∈S,H^2 := by
+    _ ≤ ∑ _R∈S,H^(2 : ℕ) := by
       apply sum_le_sum
       intro R hR
       have hRt := (mem_filter.mp hR).1
       rw [abs_mul,pow_two]
       exact mul_le_mul (hf R hRt) (hg R hRt) (abs_nonneg _) ((abs_nonneg _).trans (hf R hRt))
-    _ = (S.card:ℝ)*H^2 := by simp
-    _ ≤ (N:ℝ)*H^2 := mul_le_mul_of_nonneg_right
+    _ = (S.card:ℝ)*H^(2 : ℕ) := by simp
+    _ ≤ (N:ℝ)*H^(2 : ℕ) := mul_le_mul_of_nonneg_right
       (by exact_mod_cast product_label_count T N hT) (sq_nonneg H)
 
 private lemma source_amplitude_square (M k : ℕ) :
-    ((3/5:ℝ)*2^k*Real.sqrt M)^2=(9/25:ℝ)*4^k*(M:ℝ) := by
-  have hp : ((2:ℝ)^k)^2=4^k := by
+    ((3/5:ℝ)*2^k*Real.sqrt M)^(2 : ℕ)=(9/25:ℝ)*4^k*(M:ℝ) := by
+  have hp : ((2:ℝ)^k)^(2 : ℕ)=4^k := by
     rw [← pow_mul,Nat.mul_comm,pow_mul]
     norm_num
   rw [mul_pow,mul_pow,hp,Real.sq_sqrt (Nat.cast_nonneg M)]
@@ -160,7 +160,7 @@ theorem abs_mobiusDivisorSelectionEnergy_insert_le_source_support
     _ ≤ 2*(∑ R∈T,|mobiusDivisorSelectionFibre M P R*
         mobiusDivisorSelectionFibre M P (insert q R)|) :=
       mul_le_mul_of_nonneg_left (abs_sum_le_sum_abs _ _) (by norm_num)
-    _ ≤ 2*(((M-1)/q:ℕ):ℝ)*H^2 := by linarith only [hb]
+    _ ≤ 2*(((M-1)/q:ℕ):ℝ)*H^(2 : ℕ) := by linarith only [hb]
     _ = _ := by dsimp [H]; rw [source_amplitude_square]; ring
 
 private def mixedOverlap (M : ℕ) (P : Finset ℕ) (p q : ℕ) : ℝ :=
@@ -288,7 +288,7 @@ private lemma mixed_overlap_bound (M : ℕ) (P : Finset ℕ) (hP : ∀ r∈P,r.P
       sum_le_sum (fun R _ => abs_add_le _ _)
     _ = (∑ R∈T,|f R*f (insert p (insert q R))|)+
         ∑ R∈T,|f (insert p R)*f (insert q R)| := sum_add_distrib
-    _ ≤ (((M-1)/(p*q):ℕ):ℝ)*H^2+(((M-1)/max p q:ℕ):ℝ)*H^2 := add_le_add h1 h2
+    _ ≤ (((M-1)/(p*q):ℕ):ℝ)*H^(2 : ℕ)+(((M-1)/max p q:ℕ):ℝ)*H^(2 : ℕ) := add_le_add h1 h2
     _ = _ := by dsimp [H]; rw [source_amplitude_square]; ring
 
 /-- The exact mixed second energy difference has separate joint-child and
@@ -337,7 +337,7 @@ theorem exists_mobiusDivisor_two_prime_separation_ceiling :
     have h1 := mul_le_mul_of_nonneg_left hqp hN0
     have h2 := mul_le_mul_of_nonneg_left hNM hc.le
     nlinarith only [h1,h2]
-  have hpay : (M:ℝ)*(N:ℝ)≤c*(M:ℝ)^2/(q:ℝ) := by
+  have hpay : (M:ℝ)*(N:ℝ)≤c*(M:ℝ)^(2 : ℕ)/(q:ℝ) := by
     apply (le_div_iff₀ hq0).mpr
     have h := mul_le_mul_of_nonneg_left hNq hM0
     nlinarith only [h]

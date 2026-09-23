@@ -19,7 +19,7 @@ def rotatingNullOverlap (s t : ℝ) : ℝ :=
   ∑ i, HTGeometry.rotatingNullDirection s i * HTGeometry.rotatingNullDirection t i
 
 /-- Numerically stable squared sine of the one-dimensional principal angle. -/
-def rotatingNullSineDiagnostic (s t : ℝ) : ℝ := 1 - rotatingNullOverlap s t ^ 2
+def rotatingNullSineDiagnostic (s t : ℝ) : ℝ := 1 - rotatingNullOverlap s t ^ (2 : ℕ)
 
 theorem rotatingNullOverlap_eq_cos_sub (s t : ℝ) :
     rotatingNullOverlap s t = Real.cos (t - s) := by
@@ -27,14 +27,14 @@ theorem rotatingNullOverlap_eq_cos_sub (s t : ℝ) :
   ring
 
 theorem rotatingNullSineDiagnostic_eq_sin_sq (s t : ℝ) :
-    rotatingNullSineDiagnostic s t = Real.sin (t - s) ^ 2 := by
+    rotatingNullSineDiagnostic s t = Real.sin (t - s) ^ (2 : ℕ) := by
   rw [rotatingNullSineDiagnostic, rotatingNullOverlap_eq_cos_sub]
   nlinarith [Real.sin_sq_add_cos_sq (t - s)]
 
 /-- Stable principal-angle diagnostic is the exact old-null activation energy. -/
 theorem rotatingNullSineDiagnostic_eq_activation_energy (s t : ℝ) :
     rotatingNullSineDiagnostic s t =
-      ‖HTGeometry.rotatingObservation t (HTGeometry.rotatingNullDirection s)‖ ^ 2 := by
+      ‖HTGeometry.rotatingObservation t (HTGeometry.rotatingNullDirection s)‖ ^ (2 : ℕ) := by
   rw [rotatingNullSineDiagnostic_eq_sin_sq, HTGeometry.rotatingObservation_null_energy]
 
 /-- Collision QGT energy separates null-space rotation from feature distinguishability. -/
@@ -42,9 +42,9 @@ theorem collisionRotatingTangent_projective_energy_eq_sineDiagnostic
     (a e x y s t : ℝ) :
     HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ)
       (collisionLaplaceAtom a e x) (collisionRotatingTangent a e y s t) =
-      rotatingNullSineDiagnostic s t * (Real.Gamma (Real.exp a) ^ 2 *
+      rotatingNullSineDiagnostic s t * (Real.Gamma (Real.exp a) ^ (2 : ℕ) *
         (collisionFractionalKernel a e x x * collisionFractionalKernel a e y y -
-          collisionFractionalKernel a e x y ^ 2)) := by
+          collisionFractionalKernel a e x y ^ (2 : ℕ))) := by
   rw [collisionRotatingTangent_projective_energy,
     rotatingNullSineDiagnostic_eq_sin_sq]
 

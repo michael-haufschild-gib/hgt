@@ -14,7 +14,7 @@ def suzukiCriticalChordConnectedThirdRenormalization (ω : ℝ) (n : ℕ) : ℝ 
   12 * ((suzukiCriticalChordCoefficient ω n -
       ArithmeticFunction.vonMangoldt n -
         ω * ((ArithmeticFunction.vonMangoldt *
-          ArithmeticFunction.vonMangoldt) n)) / ω ^ 2) -
+          ArithmeticFunction.vonMangoldt) n)) / ω ^ (2 : ℕ)) -
     8 * (((ArithmeticFunction.vonMangoldt *
       ArithmeticFunction.vonMangoldt) *
         ArithmeticFunction.vonMangoldt) n)
@@ -35,7 +35,7 @@ theorem suzukiCriticalThirdGrade_connectedRenormalization_eq (n : ℕ) :
 
 theorem shiftedEulerConnectedThirdTangentArithmetic_re_eq (n : ℕ) :
     (shiftedEulerConnectedThirdTangentArithmetic n).re =
-      2 * ArithmeticFunction.vonMangoldt n * Real.log n ^ 2 := by
+      2 * ArithmeticFunction.vonMangoldt n * Real.log n ^ (2 : ℕ) := by
   rw [← suzukiCriticalThirdGrade_connectedRenormalization_eq,
     suzukiCriticalThirdGradeCoefficient]
   ring
@@ -84,7 +84,7 @@ theorem tendsto_suzukiCriticalChordConnectedThirdRenormalization (n : ℕ) :
 
 def ccmFUSuzukiConnectedChordPrimeEntryApprox (ω : ℝ) (n : ℕ) : ℝ :=
   16 * suzukiCriticalChordConnectedThirdRenormalization ω n /
-    (Real.sqrt n * Real.log n ^ 5)
+    (Real.sqrt n * Real.log n ^ (5 : ℕ))
 
 theorem tendsto_ccmFUSuzukiConnectedChordPrimeEntryApprox (n : ℕ) :
     Tendsto (fun ω : ℝ =>
@@ -92,7 +92,7 @@ theorem tendsto_ccmFUSuzukiConnectedChordPrimeEntryApprox (n : ℕ) :
       (𝓝[>] 0) (𝓝 (ccmGuinandWeilPrimeEntryThirdJetScale (n + 2))) := by
   have hbase := tendsto_suzukiCriticalChordConnectedThirdRenormalization (n + 1)
   have h := (hbase.const_mul (16 : ℝ)).div_const
-    (Real.sqrt ((n + 2 : ℕ) : ℝ) * Real.log ((n + 2 : ℕ) : ℝ) ^ 5)
+    (Real.sqrt ((n + 2 : ℕ) : ℝ) * Real.log ((n + 2 : ℕ) : ℝ) ^ (5 : ℕ))
   rw [ccmGuinandWeilPrimeEntryThirdJetScale_eq_connectedSuzukiThirdTangent n]
   simpa only [ccmFUSuzukiConnectedChordPrimeEntryApprox, Nat.add_assoc,
     Nat.reduceAdd] using h
@@ -109,7 +109,7 @@ private theorem ccmGuinandWeilPrimeEntryThirdJetScale_eq_connectedSuzukiThirdTan
     {n : ℕ} (hn : 2 ≤ n) :
     ccmGuinandWeilPrimeEntryThirdJetScale n =
       16 * (shiftedEulerConnectedThirdTangentArithmetic n).re /
-        (Real.sqrt n * Real.log n ^ 5) := by
+        (Real.sqrt n * Real.log n ^ (5 : ℕ)) := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
   simpa only [Nat.add_comm] using
     ccmGuinandWeilPrimeEntryThirdJetScale_eq_connectedSuzukiThirdTangent m

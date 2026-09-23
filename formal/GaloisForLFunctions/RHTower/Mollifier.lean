@@ -208,8 +208,8 @@ theorem mollifier_eq_dpoly (y : ℕ) (t : ℝ) :
 /-- **The mollifier's second moment** over a window `[T, T+U]` is the Montgomery–Vaughan mean value
 with squarefree-supported diagonal `∑_{m≤y} μ(m)² m^{0}` plus the explicit off-diagonal remainder. -/
 theorem mollifier_secondMoment (y : ℕ) (T U : ℝ) :
-    (∫ t in T..T + U, ‖mollifier y t‖ ^ 2)
-      = U * (∑ m ∈ Finset.Icc 1 y, (moebiusCoeff m) ^ 2)
+    (∫ t in T..T + U, ‖mollifier y t‖ ^ (2 : ℕ))
+      = U * (∑ m ∈ Finset.Icc 1 y, (moebiusCoeff m) ^ (2 : ℕ))
         + ∑ m ∈ Finset.Icc 1 y, ∑ n ∈ (Finset.Icc 1 y).erase m,
             moebiusCoeff m * moebiusCoeff n * cosInt (Real.log n - Real.log m) T U := by
   simp only [mollifier]

@@ -16,7 +16,7 @@ public import Mathlib.Analysis.SpecialFunctions.Sqrt
 For a state `ρ` whose dynamical-Lie-algebra projection lies in a Cartan sub-basis, the
 `g`-purity is the squared length of the corresponding weight vector. Combining this
 with the proved Ragone variance formula gives the weight-state variance
-`Var = ‖λ‖² * Tr[O^2] / dim g` for an observable `O` whose projection is itself.
+`Var = ‖λ‖² * Tr[O^(2 : ℕ)] / dim g` for an observable `O` whose projection is itself.
 
 For classical families, the coroot and highest-weight estimate is carried as an
 explicit weight-scaling hypothesis. From that estimate and exponential growth of
@@ -58,7 +58,7 @@ variable {gens : Set (Matrix (Fin N) (Fin N) ℂ)} {b : DLAHermBasis gens}
 
 /-- For a weight state, `g`-purity is the squared length of the weight vector. -/
 theorem gPurity_eq (w : WeightStateData b ρ) (hρ : ρᴴ = ρ) :
-    b.gPurity ρ = ((∑ j, (w.lam j) ^ 2 : ℝ) : ℂ) := by
+    b.gPurity ρ = ((∑ j, (w.lam j) ^ (2 : ℕ) : ℝ) : ℂ) := by
   have htr : ∀ j k, (w.H j * w.H k).trace = if j = k then (1 : ℂ) else 0 := by
     intro j k
     have h := w.H_ortho j k
@@ -67,7 +67,7 @@ theorem gPurity_eq (w : WeightStateData b ρ) (hρ : ρᴴ = ρ) :
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Matrix.mul_sum, Matrix.trace_sum]
   have hk : ∀ k, (((w.lam j : ℂ) • w.H j) * ((w.lam k : ℂ) • w.H k)).trace
-      = if j = k then ((w.lam k : ℂ)) ^ 2 else 0 := by
+      = if j = k then ((w.lam k : ℂ)) ^ (2 : ℕ) else 0 := by
     intro k
     rw [Matrix.smul_mul, Matrix.mul_smul, Matrix.trace_smul, Matrix.trace_smul,
       smul_eq_mul, smul_eq_mul, htr j k]
@@ -81,11 +81,11 @@ theorem gPurity_eq (w : WeightStateData b ρ) (hρ : ρᴴ = ρ) :
   simp
 
 /-- Weight-state variance: with `ρ` a weight state and `O` already in the DLA projection,
-the Ragone variance formula becomes `‖λ‖² * Tr[O^2] / dim g`. -/
+the Ragone variance formula becomes `‖λ‖² * Tr[O^(2 : ℕ)] / dim g`. -/
 theorem variance_eq (w : WeightStateData b ρ) (M : RagoneSecondMoment b ρ O)
     (hρ : ρᴴ = ρ) (hO : Oᴴ = O) (hdimpos : 0 < b.dim) (hO_in_g : b.gProj O = O) :
     (M.variance : ℂ)
-      = ((∑ j, (w.lam j) ^ 2 : ℝ) : ℂ) * (O * O).trace / (b.dim : ℂ) := by
+      = ((∑ j, (w.lam j) ^ (2 : ℕ) : ℝ) : ℂ) * (O * O).trace / (b.dim : ℂ) := by
   rw [M.variance_eq_gPurity hρ hO hdimpos, w.gPurity_eq hρ, b.gPurity_eq_trace hO, hO_in_g]
 
 end WeightStateData
@@ -104,7 +104,7 @@ theorem hasBarrenPlateau_of_weightScale_of_expDim {sz : ℕ → ℕ}
     (hρ : ∀ n, (ρ n)ᴴ = ρ n) (hO : ∀ n, (O n)ᴴ = O n) (hdimpos : ∀ n, 0 < (b n).dim)
     (hOnorm : ∀ n, (hsInner (O n) (O n)).re ≤ (2 : ℝ) ^ n)
     {C : ℝ} (hC : 0 ≤ C)
-    (hweightscale : ∀ n, (∑ j, ((w n).lam j) ^ 2) ≤ C * Real.sqrt ((b n).dim) / 2 ^ n)
+    (hweightscale : ∀ n, (∑ j, ((w n).lam j) ^ (2 : ℕ)) ≤ C * Real.sqrt ((b n).dim) / 2 ^ n)
     {base : ℝ} (hbase : 1 < base) (hexp : ∀ n, base ^ n ≤ ((b n).dim : ℝ)) :
     HasBarrenPlateau (fun n => (M n).variance) := by
   have hbase0 : (0 : ℝ) < base := lt_trans zero_lt_one hbase
@@ -115,16 +115,16 @@ theorem hasBarrenPlateau_of_weightScale_of_expDim {sz : ℕ → ℕ}
   have hdimC : (0 : ℝ) < ((b n).dim : ℝ) := by exact_mod_cast hdimpos n
   have hsdpos : 0 < Real.sqrt ((b n).dim) := Real.sqrt_pos.mpr hdimC
   have h2n : (0 : ℝ) < 2 ^ n := by positivity
-  have hρeq : ‖(b n).gPurity (ρ n)‖ = ∑ j, ((w n).lam j) ^ 2 := by
+  have hρeq : ‖(b n).gPurity (ρ n)‖ = ∑ j, ((w n).lam j) ^ (2 : ℕ) := by
     rw [(b n).norm_gPurity_eq_re, (w n).gPurity_eq (hρ n), Complex.ofReal_re]
   have hOle : ‖(b n).gPurity (O n)‖ ≤ (2 : ℝ) ^ n := by
     rw [(b n).norm_gPurity_eq_re]
     exact ((b n).gPurity_le_normSq (O n)).trans (hOnorm n)
-  have hscale : (∑ j, ((w n).lam j) ^ 2) ≤ C * Real.sqrt ((b n).dim) / 2 ^ n :=
+  have hscale : (∑ j, ((w n).lam j) ^ (2 : ℕ)) ≤ C * Real.sqrt ((b n).dim) / 2 ^ n :=
     hweightscale n
   have hsqrtdim : (Real.sqrt base) ^ n ≤ Real.sqrt ((b n).dim) := by
     rw [Real.le_sqrt (by positivity) (by positivity)]
-    calc ((Real.sqrt base) ^ n) ^ 2 = (Real.sqrt base ^ 2) ^ n := by
+    calc ((Real.sqrt base) ^ n) ^ (2 : ℕ) = (Real.sqrt base ^ (2 : ℕ)) ^ n := by
           rw [← pow_mul, Nat.mul_comm, pow_mul]
       _ = base ^ n := by rw [Real.sq_sqrt hbase0.le]
       _ ≤ ((b n).dim : ℝ) := hexp n
@@ -137,7 +137,7 @@ theorem hasBarrenPlateau_of_weightScale_of_expDim {sz : ℕ → ℕ}
     (M n).variance_eq_gPurity (hρ n) (hO n) (hdimpos n)
   have hcast : |(M n).variance| = ‖((M n).variance : ℂ)‖ := (RCLike.norm_ofReal (K := ℂ) _).symm
   rw [sub_zero, hcast, hv, norm_div, norm_mul, RCLike.norm_natCast, hρeq]
-  calc (∑ j, ((w n).lam j) ^ 2) * ‖(b n).gPurity (O n)‖ / ((b n).dim : ℝ)
+  calc (∑ j, ((w n).lam j) ^ (2 : ℕ)) * ‖(b n).gPurity (O n)‖ / ((b n).dim : ℝ)
       ≤ (C * Real.sqrt ((b n).dim) / 2 ^ n) * (2 : ℝ) ^ n / ((b n).dim : ℝ) := by
         gcongr
     _ = C * (Real.sqrt ((b n).dim) / ((b n).dim : ℝ)) := by

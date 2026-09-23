@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaAtomMoments
 The positive theta-cusp source is uniformly dominated by its first integer atom.  The exact
 polynomial comparison gives a relative weight
 
-`2 n^4 exp (-π (n^2 - 1))`
+`2 n^(4 : ℕ) exp (-π (n^(2 : ℕ) - 1))`
 
 for the `n`th atom.  An elementary geometric estimate proves that the complete `n ≥ 2` tail has
 total relative weight at most `8 / 2997`.  Consequently every even raw moment of the full source
@@ -26,67 +26,67 @@ noncomputable section
 theorem thetaCuspSourceTerm_le_first
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspSourceTerm x n ≤
-      (2 * (n : ℝ) ^ 4 *
-        Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) *
+      (2 * (n : ℝ) ^ (4 : ℕ) *
+        Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))) *
           thetaCuspSourceTerm x 1 := by
   let u : ℝ := Real.exp x
   have hu : 1 ≤ u := by
     dsimp [u]
     simpa using Real.exp_le_exp.mpr hx
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
-  have hnSq : 1 ≤ (n : ℝ) ^ 2 := by nlinarith
-  have huSq : 1 ≤ u ^ 2 := by nlinarith [sq_nonneg u]
-  have hprod : 0 ≤ ((n : ℝ) ^ 2 - 1) * (u ^ 2 - 1) :=
+  have hnSq : 1 ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith
+  have huSq : 1 ≤ u ^ (2 : ℕ) := by nlinarith [sq_nonneg u]
+  have hprod : 0 ≤ ((n : ℝ) ^ (2 : ℕ) - 1) * (u ^ (2 : ℕ) - 1) :=
     mul_nonneg (sub_nonneg.mpr hnSq) (sub_nonneg.mpr huSq)
   have hexponent :
-      -Real.pi * ((n : ℝ) * u) ^ 2 ≤
-        -Real.pi * ((n : ℝ) ^ 2 - 1) + (-Real.pi * u ^ 2) := by
+      -Real.pi * ((n : ℝ) * u) ^ (2 : ℕ) ≤
+        -Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) + (-Real.pi * u ^ (2 : ℕ)) := by
     nlinarith [Real.pi_pos]
   have hgauss :
-      Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2) ≤
-        Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) *
-          Real.exp (-Real.pi * u ^ 2) := by
+      Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ)) ≤
+        Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) *
+          Real.exp (-Real.pi * u ^ (2 : ℕ)) := by
     rw [← Real.exp_add]
     exact Real.exp_le_exp.mpr hexponent
   have hpoly_u :
-      0 ≤ 2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2) := by
-    have hcore : 0 ≤ 2 * Real.pi * u ^ 2 - 3 := by
+      0 ≤ 2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ)) := by
+    have hcore : 0 ≤ 2 * Real.pi * u ^ (2 : ℕ) - 3 := by
       nlinarith [Real.pi_gt_three]
-    rw [show 2 * Real.pi * u ^ 4 - 3 * u ^ 2 =
-      u ^ 2 * (2 * Real.pi * u ^ 2 - 3) by ring]
+    rw [show 2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ) =
+      u ^ (2 : ℕ) * (2 * Real.pi * u ^ (2 : ℕ) - 3) by ring]
     positivity
   have hpoly_nu :
       0 ≤ 2 * Real.pi *
-        (2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-          3 * ((n : ℝ) * u) ^ 2) := by
+        (2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+          3 * ((n : ℝ) * u) ^ (2 : ℕ)) := by
     have hnu : 1 ≤ (n : ℝ) * u := by nlinarith [Real.exp_pos x]
-    have hnuSq : 1 ≤ ((n : ℝ) * u) ^ 2 := by nlinarith
-    have hcore : 0 ≤ 2 * Real.pi * ((n : ℝ) * u) ^ 2 - 3 := by
+    have hnuSq : 1 ≤ ((n : ℝ) * u) ^ (2 : ℕ) := by nlinarith
+    have hcore : 0 ≤ 2 * Real.pi * ((n : ℝ) * u) ^ (2 : ℕ) - 3 := by
       nlinarith [Real.pi_gt_three]
-    rw [show 2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-        3 * ((n : ℝ) * u) ^ 2 =
-      ((n : ℝ) * u) ^ 2 *
-        (2 * Real.pi * ((n : ℝ) * u) ^ 2 - 3) by ring]
+    rw [show 2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+        3 * ((n : ℝ) * u) ^ (2 : ℕ) =
+      ((n : ℝ) * u) ^ (2 : ℕ) *
+        (2 * Real.pi * ((n : ℝ) * u) ^ (2 : ℕ) - 3) by ring]
     positivity
   have hpolyUpper :
       2 * Real.pi *
-          (2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-            3 * ((n : ℝ) * u) ^ 2) ≤
-        2 * (n : ℝ) ^ 4 *
-          (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2)) := by
-    have hcore : 0 ≤ 2 * Real.pi * u ^ 2 - 6 := by
+          (2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+            3 * ((n : ℝ) * u) ^ (2 : ℕ)) ≤
+        2 * (n : ℝ) ^ (4 : ℕ) *
+          (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ))) := by
+    have hcore : 0 ≤ 2 * Real.pi * u ^ (2 : ℕ) - 6 := by
       nlinarith [Real.pi_gt_three]
     have hbracket :
-        0 ≤ (n : ℝ) ^ 2 * (2 * Real.pi * u ^ 2 - 6) + 3 := by
+        0 ≤ (n : ℝ) ^ (2 : ℕ) * (2 * Real.pi * u ^ (2 : ℕ) - 6) + 3 := by
       positivity
     have hid :
-        2 * (n : ℝ) ^ 4 *
-              (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2)) -
+        2 * (n : ℝ) ^ (4 : ℕ) *
+              (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ))) -
             2 * Real.pi *
-              (2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-                3 * ((n : ℝ) * u) ^ 2) =
-          2 * Real.pi * (n : ℝ) ^ 2 * u ^ 2 *
-            ((n : ℝ) ^ 2 * (2 * Real.pi * u ^ 2 - 6) + 3) := by
+              (2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+                3 * ((n : ℝ) * u) ^ (2 : ℕ)) =
+          2 * Real.pi * (n : ℝ) ^ (2 : ℕ) * u ^ (2 : ℕ) *
+            ((n : ℝ) ^ (2 : ℕ) * (2 * Real.pi * u ^ (2 : ℕ) - 6) + 3) := by
       ring
     apply sub_nonneg.mp
     rw [hid]
@@ -95,31 +95,31 @@ theorem thetaCuspSourceTerm_le_first
   simp only [Nat.cast_one, one_mul]
   change Real.exp (x / 2) *
       (2 * Real.pi *
-        (2 * Real.pi * ((n : ℝ) * u) ^ 4 -
-          3 * ((n : ℝ) * u) ^ 2) *
-            Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2)) ≤ _
-  change _ ≤ (2 * (n : ℝ) ^ 4 *
-      Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) *
+        (2 * Real.pi * ((n : ℝ) * u) ^ (4 : ℕ) -
+          3 * ((n : ℝ) * u) ^ (2 : ℕ)) *
+            Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ))) ≤ _
+  change _ ≤ (2 * (n : ℝ) ^ (4 : ℕ) *
+      Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))) *
         (Real.exp (x / 2) *
-          (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2) *
-            Real.exp (-Real.pi * u ^ 2)))
+          (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ)) *
+            Real.exp (-Real.pi * u ^ (2 : ℕ))))
   calc
     _ ≤ Real.exp (x / 2) *
-        ((2 * (n : ℝ) ^ 4 *
-          (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2))) *
-            Real.exp (-Real.pi * ((n : ℝ) * u) ^ 2)) := by
+        ((2 * (n : ℝ) ^ (4 : ℕ) *
+          (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ)))) *
+            Real.exp (-Real.pi * ((n : ℝ) * u) ^ (2 : ℕ))) := by
       gcongr
     _ ≤ Real.exp (x / 2) *
-        ((2 * (n : ℝ) ^ 4 *
-          (2 * Real.pi * (2 * Real.pi * u ^ 4 - 3 * u ^ 2))) *
-            (Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1)) *
-              Real.exp (-Real.pi * u ^ 2))) := by
+        ((2 * (n : ℝ) ^ (4 : ℕ) *
+          (2 * Real.pi * (2 * Real.pi * u ^ (4 : ℕ) - 3 * u ^ (2 : ℕ)))) *
+            (Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1)) *
+              Real.exp (-Real.pi * u ^ (2 : ℕ)))) := by
       gcongr
     _ = _ := by ring
 
 /-- The universal Gaussian weight controlling the `n`th source atom by the first. -/
 def thetaCuspSourceAtomDominationWeight (n : ℕ) : ℝ :=
-  2 * (n : ℝ) ^ 4 * Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))
+  2 * (n : ℝ) ^ (4 : ℕ) * Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1))
 
 theorem thetaCuspSourceAtomDominationWeight_nonneg (n : ℕ) :
     0 ≤ thetaCuspSourceAtomDominationWeight n := by
@@ -132,8 +132,8 @@ theorem summable_thetaCuspSourceAtomDominationWeight :
     (2 * Real.exp Real.pi)
   refine hs.congr (fun n => ?_)
   unfold thetaCuspSourceAtomDominationWeight
-  rw [show -Real.pi * ((n : ℝ) ^ 2 - 1) =
-    Real.pi + (-Real.pi * (n : ℝ) ^ 2) by ring, Real.exp_add]
+  rw [show -Real.pi * ((n : ℝ) ^ (2 : ℕ) - 1) =
+    Real.pi + (-Real.pi * (n : ℝ) ^ (2 : ℕ)) by ring, Real.exp_add]
   ring
 
 /-- The total relative higher-atom weight. -/
@@ -266,19 +266,19 @@ theorem thetaCusp_twelve_thousand_lt_exp_three_pi :
     have h := Real.exp_one_gt_d9
     norm_num at h ⊢
     linarith
-  have he9 : (1359 / 500 : ℝ) ^ 9 < Real.exp 9 := by
+  have he9 : (1359 / 500 : ℝ) ^ (9 : ℕ) < Real.exp 9 := by
     rw [show (9 : ℝ) = (9 : ℕ) * 1 by norm_num, Real.exp_nat_mul]
     exact pow_lt_pow_left₀ he1 (by norm_num) (by norm_num)
   have hefrac0 := Real.sum_le_exp_of_nonneg
     (show (0 : ℝ) ≤ 21 / 50 by norm_num) 3
   have hefrac :
-      (1 + (21 : ℝ) / 50 + ((21 : ℝ) / 50) ^ 2 / 2) ≤
+      (1 + (21 : ℝ) / 50 + ((21 : ℝ) / 50) ^ (2 : ℕ) / 2) ≤
         Real.exp ((21 : ℝ) / 50) := by
     norm_num [Finset.sum_range_succ] at hefrac0 ⊢
     exact hefrac0
   calc
-    (12000 : ℝ) < (1359 / 500 : ℝ) ^ 9 *
-        (1 + (21 : ℝ) / 50 + ((21 : ℝ) / 50) ^ 2 / 2) := by norm_num
+    (12000 : ℝ) < (1359 / 500 : ℝ) ^ (9 : ℕ) *
+        (1 + (21 : ℝ) / 50 + ((21 : ℝ) / 50) ^ (2 : ℕ) / 2) := by norm_num
     _ < Real.exp 9 * Real.exp ((21 : ℝ) / 50) := by
       exact (mul_lt_mul_of_pos_right he9 (by norm_num)).trans_le
         (mul_le_mul_of_nonneg_left hefrac (Real.exp_pos 9).le)
@@ -333,31 +333,31 @@ theorem thetaCuspSourceAtomDominationWeight_add_two_le_geometric
   have hnat := thetaCusp_nat_add_two_le_two_pow_succ k
   have hcast : ((k + 2 : ℕ) : ℝ) ≤ (2 ^ (k + 1) : ℕ) := by
     exact_mod_cast hnat
-  have hpow : (((k + 2 : ℕ) : ℝ) ^ 4) ≤
+  have hpow : (((k + 2 : ℕ) : ℝ) ^ (4 : ℕ)) ≤
       16 * (16 : ℝ) ^ k := by
     calc
-      (((k + 2 : ℕ) : ℝ) ^ 4) ≤ ((2 ^ (k + 1) : ℕ) : ℝ) ^ 4 := by
+      (((k + 2 : ℕ) : ℝ) ^ (4 : ℕ)) ≤ ((2 ^ (k + 1) : ℕ) : ℝ) ^ (4 : ℕ) := by
         gcongr
       _ = 16 * (16 : ℝ) ^ k := by
         push_cast
         calc
-          ((2 : ℝ) ^ (k + 1)) ^ 4 =
+          ((2 : ℝ) ^ (k + 1)) ^ (4 : ℕ) =
               (2 : ℝ) ^ ((k + 1) * 4) := by rw [pow_mul]
           _ = (2 : ℝ) ^ (4 * (k + 1)) := by rw [Nat.mul_comm]
-          _ = ((2 : ℝ) ^ 4) ^ (k + 1) := by rw [pow_mul]
+          _ = ((2 : ℝ) ^ (4 : ℕ)) ^ (k + 1) := by rw [pow_mul]
           _ = 16 * 16 ^ k := by rw [pow_succ']; norm_num
   have hsquare :
-      (3 : ℝ) + 5 * k ≤ ((k + 2 : ℕ) : ℝ) ^ 2 - 1 := by
+      (3 : ℝ) + 5 * k ≤ ((k + 2 : ℕ) : ℝ) ^ (2 : ℕ) - 1 := by
     rcases k with _ | k
     · norm_num
     · push_cast
       nlinarith [sq_nonneg (k : ℝ)]
   have hexponent :
-      -Real.pi * (((k + 2 : ℕ) : ℝ) ^ 2 - 1) ≤
+      -Real.pi * (((k + 2 : ℕ) : ℝ) ^ (2 : ℕ) - 1) ≤
         -3 * Real.pi + (k : ℕ) * (-5 * Real.pi) := by
     nlinarith [Real.pi_pos]
   have hexp :
-      Real.exp (-Real.pi * (((k + 2 : ℕ) : ℝ) ^ 2 - 1)) ≤
+      Real.exp (-Real.pi * (((k + 2 : ℕ) : ℝ) ^ (2 : ℕ) - 1)) ≤
         Real.exp (-3 * Real.pi) * (Real.exp (-5 * Real.pi)) ^ k := by
     calc
       _ ≤ Real.exp (-3 * Real.pi + (k : ℕ) * (-5 * Real.pi)) :=
@@ -369,8 +369,8 @@ theorem thetaCuspSourceAtomDominationWeight_add_two_le_geometric
     thetaCusp_sixteen_mul_exp_neg_five_pi_lt.le
   unfold thetaCuspSourceAtomDominationWeight
   calc
-    2 * (((k + 2 : ℕ) : ℝ) ^ 4) *
-        Real.exp (-Real.pi * (((k + 2 : ℕ) : ℝ) ^ 2 - 1)) ≤
+    2 * (((k + 2 : ℕ) : ℝ) ^ (4 : ℕ)) *
+        Real.exp (-Real.pi * (((k + 2 : ℕ) : ℝ) ^ (2 : ℕ) - 1)) ≤
       2 * (16 * (16 : ℝ) ^ k) *
         (Real.exp (-3 * Real.pi) * (Real.exp (-5 * Real.pi)) ^ k) := by
       gcongr
@@ -430,7 +430,7 @@ theorem thetaCuspRawEvenMoment_le_first_atom_factor (j : ℕ) :
 
 theorem thetaCuspUpperAdjacentRatioSeparation_of_first_atom
     (hfirst :
-      14 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ^ 2 ≤
+      14 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ^ (2 : ℕ) ≤
         9 * thetaCuspAtomRawEvenMoment 1 1 *
           thetaCuspAtomRawEvenMoment 3 1) :
     ThetaCuspUpperAdjacentRatioSeparation := by
@@ -445,8 +445,8 @@ theorem thetaCuspUpperAdjacentRatioSeparation_of_first_atom
   have hab1non := thetaCuspAtomRawEvenMoment_nonneg 1 1
   have hab3non := thetaCuspAtomRawEvenMoment_nonneg 3 1
   calc
-    14 * thetaCuspRawEvenMoment 2 ^ 2 ≤
-        14 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ^ 2 := by
+    14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ) ≤
+        14 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ^ (2 : ℕ) := by
       gcongr
     _ ≤ 9 * thetaCuspAtomRawEvenMoment 1 1 *
         thetaCuspAtomRawEvenMoment 3 1 := hfirst
@@ -457,7 +457,7 @@ theorem thetaCuspRelaxedFourthMomentConcentration_of_first_atom
     (hfirst :
       16 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 0 1) *
           ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ≤
-        45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2) :
+        45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ)) :
     ThetaCuspRelaxedFourthMomentConcentration := by
   rw [ThetaCuspRelaxedFourthMomentConcentration]
   have hm0 := thetaCuspRawEvenMoment_le_first_atom_factor 0
@@ -473,19 +473,19 @@ theorem thetaCuspRelaxedFourthMomentConcentration_of_first_atom
         16 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 0 1) *
           ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) := by
       gcongr
-    _ ≤ 45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2 := hfirst
-    _ ≤ 45 * thetaCuspRawEvenMoment 1 ^ 2 := by
+    _ ≤ 45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ) := hfirst
+    _ ≤ 45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) := by
       gcongr
 
 theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_first_atom
     (hupper :
-      14 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ^ 2 ≤
+      14 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ^ (2 : ℕ) ≤
         9 * thetaCuspAtomRawEvenMoment 1 1 *
           thetaCuspAtomRawEvenMoment 3 1)
     (hrelaxed :
       16 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 0 1) *
           ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ≤
-        45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2) :
+        45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ)) :
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re :=
   forall_primeArchSourceTraceHankel_linear_nonneg_of_ratioSplit
     (thetaCuspUpperAdjacentRatioSeparation_of_first_atom hupper)

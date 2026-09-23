@@ -339,7 +339,7 @@ certificate holds iff ξ admits an analytic `2^k`-th root on the truncated half-
 bounded-region root obstruction is exactly the window's finitely many divisibility clauses. -/
 theorem windowCertificate_iff_bandRoot {T : ℝ} (hT : 0 < T) (k : ℕ) :
     WindowCertificate k T ↔
-      ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ 2 ^ k = xi s := by
+      ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ (2 : ℕ) ^ k = xi s := by
   rw [← forall_band_dvd_iff_windowCertificate k T]
   exact (exists_root_iff_orders_dvd (pow_pos two_pos k) (isOpen_halfBand T) (convex_halfBand T)
     (two_mem_halfBand hT) (xi_analyticOnNhd _) xi_two_ne_zero
@@ -348,24 +348,24 @@ theorem windowCertificate_iff_bandRoot {T : ℝ} (hT : 0 < T) (k : ℕ) :
 /-- The level-`1` certificate is a square root of ξ on the truncated half-band. -/
 theorem windowCertificate_one_iff_band_sqrt {T : ℝ} (hT : 0 < T) :
     WindowCertificate 1 T ↔
-      ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ 2 = xi s := by
+      ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ (2 : ℕ) = xi s := by
   rw [windowCertificate_iff_bandRoot hT 1]
   simp only [pow_one]
 
 /-- Band-root nesting: a `2^{k+1}`-th root on a half-band squares to a `2^k`-th root. -/
 theorem bandRoot_of_succ {T : ℝ} {k : ℕ}
-    (h : ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ 2 ^ (k + 1) = xi s) :
-    ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ 2 ^ k = xi s := by
+    (h : ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ (2 : ℕ) ^ (k + 1) = xi s) :
+    ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ (2 : ℕ) ^ k = xi s := by
   obtain ⟨g, hg, hgpow⟩ := h
-  refine ⟨fun s => g s ^ 2, hg.pow 2, fun s hs => ?_⟩
-  calc (g s ^ 2) ^ 2 ^ k = g s ^ (2 * 2 ^ k) := by rw [← pow_mul]
-    _ = g s ^ 2 ^ (k + 1) := by rw [← pow_succ']
+  refine ⟨fun s => g s ^ (2 : ℕ), hg.pow 2, fun s hs => ?_⟩
+  calc (g s ^ (2 : ℕ)) ^ (2 : ℕ) ^ k = g s ^ (2 * 2 ^ k) := by rw [← pow_mul]
+    _ = g s ^ (2 : ℕ) ^ (k + 1) := by rw [← pow_succ']
     _ = xi s := hgpow s hs
 
 /-- Band-root restriction: a root on a taller band restricts to every lower band. -/
 theorem bandRoot_mono {T₁ T₂ : ℝ} (h : T₁ ≤ T₂) {k : ℕ}
-    (hr : ∃ g, AnalyticOnNhd ℂ g (halfBand T₂) ∧ ∀ s ∈ halfBand T₂, g s ^ 2 ^ k = xi s) :
-    ∃ g, AnalyticOnNhd ℂ g (halfBand T₁) ∧ ∀ s ∈ halfBand T₁, g s ^ 2 ^ k = xi s := by
+    (hr : ∃ g, AnalyticOnNhd ℂ g (halfBand T₂) ∧ ∀ s ∈ halfBand T₂, g s ^ (2 : ℕ) ^ k = xi s) :
+    ∃ g, AnalyticOnNhd ℂ g (halfBand T₁) ∧ ∀ s ∈ halfBand T₁, g s ^ (2 : ℕ) ^ k = xi s := by
   obtain ⟨g, hg, hgpow⟩ := hr
   exact ⟨g, hg.mono (halfBand_mono h), fun s hs => hgpow s (halfBand_mono h hs)⟩
 
@@ -373,7 +373,7 @@ theorem bandRoot_mono {T₁ T₂ : ℝ} (h : T₁ ≤ T₂) {k : ℕ}
 half-plane — holds iff ξ has a `2^k`-th root on every truncated half-band. -/
 theorem rhLadder_iff_forall_bandRoot (k : ℕ) :
     RHLadder k ↔ ∀ T : ℝ, 0 < T →
-      ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ 2 ^ k = xi s := by
+      ∃ g, AnalyticOnNhd ℂ g (halfBand T) ∧ ∀ s ∈ halfBand T, g s ^ (2 : ℕ) ^ k = xi s := by
   rw [rhLadder_iff_forall_windowCertificate]
   constructor
   · intro h T hT
@@ -554,8 +554,8 @@ theorem rhLadder_of_ball_online_covers (k : ℕ)
 that agree at the anchor `2` agree on the whole band. -/
 theorem bandRoot_unique {T : ℝ} (hT : 0 < T) {k : ℕ} {g₁ g₂ : ℂ → ℂ}
     (h₁ : AnalyticOnNhd ℂ g₁ (halfBand T)) (h₂ : AnalyticOnNhd ℂ g₂ (halfBand T))
-    (hp₁ : ∀ s ∈ halfBand T, g₁ s ^ 2 ^ k = xi s)
-    (hp₂ : ∀ s ∈ halfBand T, g₂ s ^ 2 ^ k = xi s)
+    (hp₁ : ∀ s ∈ halfBand T, g₁ s ^ (2 : ℕ) ^ k = xi s)
+    (hp₂ : ∀ s ∈ halfBand T, g₂ s ^ (2 : ℕ) ^ k = xi s)
     (hval : g₁ 2 = g₂ 2) : Set.EqOn g₁ g₂ (halfBand T) :=
   pow_root_unique (pow_pos two_pos k) (isOpen_halfBand T) (convex_halfBand T).isPreconnected
     h₁ h₂ hp₁ hp₂ (two_mem_halfBand hT) xi_two_ne_zero hval
@@ -641,8 +641,8 @@ over the height exhaustion, whose totality is the half-plane root of `rhLadder_i
 theorem bandRoot_restrict_eq {T₁ T₂ : ℝ} (hT₁ : 0 < T₁) (h : T₁ ≤ T₂) {k : ℕ}
     {g₁ g₂ : ℂ → ℂ}
     (h₁ : AnalyticOnNhd ℂ g₁ (halfBand T₁)) (h₂ : AnalyticOnNhd ℂ g₂ (halfBand T₂))
-    (hp₁ : ∀ s ∈ halfBand T₁, g₁ s ^ 2 ^ k = xi s)
-    (hp₂ : ∀ s ∈ halfBand T₂, g₂ s ^ 2 ^ k = xi s)
+    (hp₁ : ∀ s ∈ halfBand T₁, g₁ s ^ (2 : ℕ) ^ k = xi s)
+    (hp₂ : ∀ s ∈ halfBand T₂, g₂ s ^ (2 : ℕ) ^ k = xi s)
     (hval : g₁ 2 = g₂ 2) : Set.EqOn g₁ g₂ (halfBand T₁) :=
   bandRoot_unique hT₁ h₁ (h₂.mono (halfBand_mono h)) hp₁
     (fun s hs => hp₂ s (halfBand_mono h hs)) hval

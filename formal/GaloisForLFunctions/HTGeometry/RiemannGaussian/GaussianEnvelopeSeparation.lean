@@ -25,7 +25,7 @@ open Filter Topology
 /-- Envelope exponent of the packet `γ ± ia` at a fixed real observation
 center `t`. -/
 def offAxisEnvelopeExponent (t γ a : ℝ) : ℝ :=
-  a ^ 2 - (γ - t) ^ 2
+  a ^ (2 : ℕ) - (γ - t) ^ (2 : ℕ)
 
 /-- Target envelope minus competing envelope at the same fixed center. -/
 def fixedCenterPacketGap (t γ a η b : ℝ) : ℝ :=
@@ -138,9 +138,9 @@ theorem offAxisPacketContribution_at_oddPiWidth
   unfold offAxisPacketContribution offAxisEnvelopeExponent
   rw [offAxisOddPiWidth_phase t γ a hslope n,
     Real.cos_nat_mul_two_pi_add_pi]
-  rw [show offAxisOddPiWidth t γ a n * a ^ 2 -
-      offAxisOddPiWidth t γ a n * (γ - t) ^ 2 =
-      offAxisOddPiWidth t γ a n * (a ^ 2 - (γ - t) ^ 2) by ring]
+  rw [show offAxisOddPiWidth t γ a n * a ^ (2 : ℕ) -
+      offAxisOddPiWidth t γ a n * (γ - t) ^ (2 : ℕ) =
+      offAxisOddPiWidth t γ a n * (a ^ (2 : ℕ) - (γ - t) ^ (2 : ℕ)) by ring]
   ring
 
 /-- Finite upper-envelope separation at a fixed observation center.

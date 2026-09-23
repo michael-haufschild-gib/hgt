@@ -78,12 +78,12 @@ source products, with their physical radius, time and height factors. -/
 theorem physical_source_transfer_products (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hwi : w.im≠0)
     (p L x k : ℝ) (hp : 0<p) (hL : 0<L) :
     transferCut q br amp w 0 p L x k=
-      (tortoiseRadius (-L/2):ℂ)^2*Complex.exp (-w*(p:ℂ))*angularProduct q br amp w 0 true p L x k ∧
+      (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)*Complex.exp (-w*(p:ℂ))*angularProduct q br amp w 0 true p L x k ∧
     transferCut q br amp w 1 p L x k=
-      (tortoiseRadius (-L/2):ℂ)^2*Complex.exp (-w*(p:ℂ))*Complex.exp (-(k:ℂ))*
+      (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)*Complex.exp (-w*(p:ℂ))*Complex.exp (-(k:ℂ))*
         angularProduct q br amp w 1 false p L x k ∧
     transferCut q br amp w 2 p L x k=
-      (tortoiseRadius (-L/2):ℂ)^2*Complex.exp (-w*(p:ℂ))*
+      (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)*Complex.exp (-w*(p:ℂ))*
         (Complex.exp (2*(k:ℂ))*angularProduct q br amp w 2 true p L x k+
           angularProduct q br amp w 3 true p L x k-angularProduct q br amp w 1 true p L x k) := by
   have hs := physical_source_operations q br amp p L x k hp hL
@@ -100,21 +100,21 @@ theorem physical_source_transfer_products (q : XiZeroCopy) (br : Bool) (amp w : 
     simp only [modeTransferCoefficient,Matrix.cons_val,source_coefficient_collar q br amp p L hL,
       mode_amplitude_collar q w p L hL,angularProduct,D4BMOriginalAngularProducts.principalJet,jetMultiplier,mul_one]
     simp only [Fin.sum_univ_three] at hP0 ⊢
-    linear_combination (tortoiseRadius (-L/2):ℂ)^2*Complex.exp (-w*(p:ℂ))*reader q w L*hP0
+    linear_combination (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)*Complex.exp (-w*(p:ℂ))*reader q w L*hP0
   · unfold transferCut transfer
     simp only [Matrix.cons_val,angularIndex]
     rw [hm.1,hs.2.1]
     simp only [modeTransferCoefficient,Matrix.cons_val,source_coefficient_collar q br amp p L hL,
       mode_amplitude_collar q w p L hL,angularProduct,D4BMOriginalAngularProducts.principalJet,jetMultiplier]
     simp only [Fin.sum_univ_three] at hP1 ⊢
-    linear_combination (tortoiseRadius (-L/2):ℂ)^2*Complex.exp (-w*(p:ℂ))*reader q w L*hP1
+    linear_combination (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)*Complex.exp (-w*(p:ℂ))*reader q w L*hP1
   · unfold transferCut transfer
     simp only [Matrix.cons_val,angularIndex]
     rw [hs.2.2,hm.2]
     simp only [modeTransferCoefficient,Matrix.cons_val,source_coefficient_collar q br amp p L hL,
       mode_amplitude_collar q w p L hL,angularProduct,D4BMOriginalAngularProducts.principalJet,jetMultiplier]
     simp only [Fin.sum_univ_three] at hP2 ⊢
-    linear_combination (tortoiseRadius (-L/2):ℂ)^2*Complex.exp (-w*(p:ℂ))*reader q w L*hP2
+    linear_combination (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)*Complex.exp (-w*(p:ℂ))*reader q w L*hP2
 
 /-- The fourth member is exactly the previously matched original forcing transfer. -/
 theorem physical_forcing_transfer_product (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hwi : w.im≠0)

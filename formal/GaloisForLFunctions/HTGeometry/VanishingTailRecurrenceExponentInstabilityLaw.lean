@@ -243,7 +243,7 @@ theorem orbitFidelityDeficit_anchorDopedState_le [NeZero D]
     (heb : IsOrthoEigenBasis H e E) (a : Fin D) {η : ℝ}
     (hη : 0 < η) (hη1 : η < 1) (t : ℝ) :
     1 - ‖finiteComplexInner (spectralStateOfWeights e (anchorDopedWeights a η))
-        (unitaryEvolution H t *ᵥ spectralStateOfWeights e (anchorDopedWeights a η))‖ ^ 2
+        (unitaryEvolution H t *ᵥ spectralStateOfWeights e (anchorDopedWeights a η))‖ ^ (2 : ℕ)
       ≤ 4 * η := by
   have hbridge := spectralReturnDeficit_eq_orbit_deficit (Equiv.refl (Fin D)) heb
     (spectralStateOfWeights e (anchorDopedWeights a η)) t
@@ -303,7 +303,7 @@ theorem ae_vanishingTailPreparationInstability_sortedSpectrum [NeZero N] [NeZero
         1 - η ≤ finitePureStateFidelity (e a) Ω ∧
         (∀ t : ℝ,
           1 - ‖finiteComplexInner Ω
-            (unitaryEvolution (spectralEnsembleMatrix P θ) t *ᵥ Ω)‖ ^ 2 ≤ 4 * η) ∧
+            (unitaryEvolution (spectralEnsembleMatrix P θ) t *ᵥ Ω)‖ ^ (2 : ℕ) ≤ 4 * η) ∧
         (∀ (t₀ δ : ℝ), 4 * η < δ →
           orbitFidelityReturnTime (spectralEnsembleMatrix P θ) Ω t₀ δ = t₀) ∧
         (∀ {t₀ : ℝ}, 0 < t₀ →
@@ -351,7 +351,7 @@ def VanishingTailPreparationInstabilityOnChart [NeZero D]
       1 - η ≤ finitePureStateFidelity (e a) Ω ∧
       (∀ t : ℝ,
         1 - ‖finiteComplexInner Ω
-          (unitaryEvolution (spectralEnsembleMatrix P θ) t *ᵥ Ω)‖ ^ 2 ≤ 4 * η) ∧
+          (unitaryEvolution (spectralEnsembleMatrix P θ) t *ᵥ Ω)‖ ^ (2 : ℕ) ≤ 4 * η) ∧
       (∀ (t₀ δ : ℝ), 4 * η < δ →
         orbitFidelityReturnTime (spectralEnsembleMatrix P θ) Ω t₀ δ = t₀) ∧
       (∀ {t₀ : ℝ}, 0 < t₀ →

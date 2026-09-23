@@ -63,11 +63,11 @@ theorem ne_zero_of_quasiperiods_lattice {f : ℂ → ℂ} (hd : Differentiable �
     have hns : (0 : ℝ) ≤ (N : ℝ) * (‖w₁‖ + ‖w₂‖) := by positivity
     linarith
   have hup := hlinear (1 + ‖z₀ - c‖ + (N : ℝ) * (‖w₁‖ + ‖w₂‖)) hr1
-  have hlow : (((2 * N + 1) ^ 2 : ℕ) : ℝ) ≤
+  have hlow : (((2 * N + 1) ^ (2 : ℕ) : ℕ) : ℝ) ≤
       (↑(∑ᶠ u, (MeromorphicOn.divisor f
         (closedBall c (1 + ‖z₀ - c‖ + (N : ℝ) * (‖w₁‖ + ‖w₂‖)))) u) : ℝ) := by
     exact_mod_cast hcount
-  have hcomb : (((2 * N + 1) ^ 2 : ℕ) : ℝ)
+  have hcomb : (((2 * N + 1) ^ (2 : ℕ) : ℕ) : ℝ)
       ≤ K * (1 + (1 + ‖z₀ - c‖ + (N : ℝ) * (‖w₁‖ + ‖w₂‖))) := le_trans hlow hup
   push_cast at hcomb
   have hKD : K * (2 + ‖z₀ - c‖) < (N : ℝ) := by nlinarith

@@ -189,7 +189,7 @@ theorem xiTransverseApertureBrownianMetric_twoPoint_det_pos
     {a b : ℕ} (ha : 0 < a) (hab : a < b) :
     0 < xiTransverseApertureBrownianMetric a a *
         xiTransverseApertureBrownianMetric b b -
-      xiTransverseApertureBrownianMetric a b ^ 2 := by
+      xiTransverseApertureBrownianMetric a b ^ (2 : ℕ) := by
   simp only [xiTransverseApertureBrownianMetric, min_self, min_eq_left hab.le]
   have haR : (0 : ℝ) < a := by exact_mod_cast ha
   have habR : (a : ℝ) < b := by exact_mod_cast hab
@@ -246,11 +246,11 @@ theorem xiTransversePrimePowerBrownianLaplaceSample_eq
 
 /-- **Brownian--Laplace factorization of the actual Xi transverse source.**  After dividing the
 valuation-`e` prime-power coefficient by its forced clock factor
-`(e+1) * log(p)^2`, the source is exactly the Laplace sample of `1_[0,a]`. -/
+`(e+1) * log(p)^(2 : ℕ)`, the source is exactly the Laplace sample of `1_[0,a]`. -/
 theorem xiTransverseShiftArithmetic_primePow_normalized_eq_brownianLaplace
     (a e : ℕ) (p : Nat.Primes) :
     xiTransverseShiftArithmetic a ((p : ℕ) ^ (e + 1)) /
-        (((e + 1 : ℕ) : ℂ) * (Real.log (p : ℕ) : ℂ) ^ 2) =
+        (((e + 1 : ℕ) : ℂ) * (Real.log (p : ℕ) : ℂ) ^ (2 : ℕ)) =
       xiTransversePrimePowerBrownianLaplaceSample a e p := by
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.one_lt
   have hlog : (Real.log (p : ℕ) : ℂ) ≠ 0 := by

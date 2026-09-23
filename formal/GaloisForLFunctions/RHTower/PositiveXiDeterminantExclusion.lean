@@ -62,8 +62,8 @@ theorem positiveOperator_not_exactXiSpectralZeroFunction
   rw [inv_neg] at hquad
   norm_num at hquad
   have hainv : 0 < a⁻¹ := inv_pos.mpr ha
-  have hwnorm : 0 < ‖w‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hw0)
-  have hcast : ((↑‖w‖ ^ 2 : ℂ)).re = ‖w‖ ^ 2 := by
+  have hwnorm : 0 < ‖w‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hw0)
+  have hcast : ((↑‖w‖ ^ (2 : ℕ) : ℂ)).re = ‖w‖ ^ (2 : ℕ) := by
     rw [← Complex.ofReal_pow]
     rfl
   rw [hcast] at hquad
@@ -108,8 +108,8 @@ theorem positiveOperator_not_exactXiDeterminant
   rw [inv_neg] at hquad
   norm_num at hquad
   have hainv : 0 < a⁻¹ := inv_pos.mpr ha
-  have hwnorm : 0 < ‖w‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hw0)
-  have hcast : ((↑‖w‖ ^ 2 : ℂ)).re = ‖w‖ ^ 2 := by
+  have hwnorm : 0 < ‖w‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hw0)
+  have hcast : ((↑‖w‖ ^ (2 : ℕ) : ℂ)).re = ‖w‖ ^ (2 : ℕ) := by
     rw [← Complex.ofReal_pow]
     rfl
   rw [hcast] at hquad

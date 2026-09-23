@@ -48,7 +48,7 @@ def sourcePairPositiveQuarticGradedAnomaly (n : ℕ) (a b : ℝ) : ℂ :=
 
 /-- Real positive quartic orientation charge. -/
 def sourcePairPositiveQuarticCharge (a b : ℝ) : ℝ :=
-  100 * b ^ 2 * (6 * a ^ 2 + 23 * b ^ 2)
+  100 * b ^ (2 : ℕ) * (6 * a ^ (2 : ℕ) + 23 * b ^ (2 : ℕ))
 
 theorem sourcePairPositiveQuarticRealEvenBlock_trace_pow (n : ℕ) (a b : ℝ) :
     (sourcePairPositiveQuarticRealEvenBlock a b ^ n).trace =
@@ -104,8 +104,8 @@ theorem sourcePairPositiveQuarticCharge_eq_zero_iff (a b : ℝ) :
   constructor
   · intro h
     by_contra hb
-    have hb2 : 0 < b ^ 2 := sq_pos_of_ne_zero hb
-    have hfactor : 0 < 6 * a ^ 2 + 23 * b ^ 2 := by positivity
+    have hb2 : 0 < b ^ (2 : ℕ) := sq_pos_of_ne_zero hb
+    have hfactor : 0 < 6 * a ^ (2 : ℕ) + 23 * b ^ (2 : ℕ) := by positivity
     have hcharge : 0 < sourcePairPositiveQuarticCharge a b := by
       simp only [sourcePairPositiveQuarticCharge]
       positivity
@@ -127,9 +127,9 @@ theorem sourcePairPositiveQuarticGradedAnomaly_four_re_nonneg (a b : ℝ) :
 /-- Quartic anomaly is literally the signed difference of the three matrix power traces. -/
 theorem sourcePairPositiveQuarticGradedAnomaly_four_eq_matrixTrace (a b : ℝ) :
     sourcePairPositiveQuarticGradedAnomaly 4 a b =
-      (sourcePairPositiveQuarticRealEvenBlock a b ^ 4).trace -
-        (sourcePairPositiveQuarticRealOddBlock b ^ 4).trace -
-          (sourcePairBlock a b ^ 4).trace := by
+      (sourcePairPositiveQuarticRealEvenBlock a b ^ (4 : ℕ)).trace -
+        (sourcePairPositiveQuarticRealOddBlock b ^ (4 : ℕ)).trace -
+          (sourcePairBlock a b ^ (4 : ℕ)).trace := by
   rw [sourcePairPositiveQuarticRealEvenBlock_trace_pow,
     sourcePairPositiveQuarticRealOddBlock_trace_pow,
     sourcePairBlock_trace_pow_four]
@@ -163,7 +163,7 @@ theorem sourcePair_real_or_positiveQuarticGradedAnomaly_moves_divisor (a b : ℝ
       fun z hz => sourcePairPositiveQuarticRealEvenDivisor_zero_im a b hz, ?_⟩
     simpa [sourcePair_upper_im] using hb
     rw [sourcePairPositiveQuarticGradedAnomaly_four]
-    have hb2 : 0 < b ^ 2 := sq_pos_of_ne_zero hb
+    have hb2 : 0 < b ^ (2 : ℕ) := sq_pos_of_ne_zero hb
     simp only [Complex.ofReal_re, sourcePairPositiveQuarticCharge]
     positivity
 

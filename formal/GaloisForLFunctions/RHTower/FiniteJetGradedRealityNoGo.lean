@@ -34,7 +34,7 @@ def flatLocalFactor (N : ℕ) (α x : ℂ) : ℂ :=
 
 /-- The explicit globally even multiplier, flat at `z=α` to order `2N+1`. -/
 def flatEvenMultiplier (N : ℕ) (α z : ℂ) : ℂ :=
-  1 + (z ^ 2 - α ^ 2) ^ finiteJetEscapeOrder N
+  1 + (z ^ (2 : ℕ) - α ^ (2 : ℕ)) ^ finiteJetEscapeOrder N
 
 /-- The analytic unit carrying the first nonzero logarithmic-flux correction. -/
 def flatLogFluxUnit (N : ℕ) (α x : ℂ) : ℂ :=

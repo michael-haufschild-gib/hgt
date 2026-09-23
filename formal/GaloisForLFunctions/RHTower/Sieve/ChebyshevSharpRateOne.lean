@@ -44,17 +44,17 @@ theorem norm_mul_sub_mul_ofReal (M : ℂ) (a b : ℝ) :
 
 /-- **A square is absorbed at the contour's own rate**, halving the exponent once more. -/
 theorem sq_mul_exp_neg_le' {s : ℝ} (hs : 0 ≤ s) :
-    s ^ 2 * Real.exp (-(s / 480000)) ≤ 4 * 960000 ^ 2 * Real.exp (-(s / 960000)) := by
+    s ^ (2 : ℕ) * Real.exp (-(s / 480000)) ≤ 4 * 960000 ^ (2 : ℕ) * Real.exp (-(s / 960000)) := by
   have hbound := sq_le_exp_div_gen hs (k := 960000) (by norm_num)
   have hexp : Real.exp (s / 960000) * Real.exp (-(s / 480000))
       = Real.exp (-(s / 960000)) := by
     rw [← Real.exp_add]
     ring_nf
   have hpos : (0 : ℝ) < Real.exp (-(s / 480000)) := Real.exp_pos _
-  calc s ^ 2 * Real.exp (-(s / 480000))
-      ≤ 4 * 960000 ^ 2 * Real.exp (s / 960000) * Real.exp (-(s / 480000)) :=
+  calc s ^ (2 : ℕ) * Real.exp (-(s / 480000))
+      ≤ 4 * 960000 ^ (2 : ℕ) * Real.exp (s / 960000) * Real.exp (-(s / 480000)) :=
         mul_le_mul_of_nonneg_right hbound hpos.le
-    _ = 4 * 960000 ^ 2 * (Real.exp (s / 960000) * Real.exp (-(s / 480000))) := by ring
-    _ = 4 * 960000 ^ 2 * Real.exp (-(s / 960000)) := by rw [hexp]
+    _ = 4 * 960000 ^ (2 : ℕ) * (Real.exp (s / 960000) * Real.exp (-(s / 480000))) := by ring
+    _ = 4 * 960000 ^ (2 : ℕ) * Real.exp (-(s / 960000)) := by rw [hexp]
 
 end RHTower.Sieve

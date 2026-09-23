@@ -18,7 +18,7 @@ free of P-256 constants and signed-window coefficients: it asks only for
 logical qubits bounded by a linear polynomial in the field bit size and
 quantum/classical work bounded by explicit polynomial envelopes.  This matches
 the Proos--Zalka source-level summary that elliptic-curve DLP uses `O(n)`
-qubits and `O(n^3)` gates/time [PZ03, ecc.tex:331-338, 1463-1468], with
+qubits and `O(n^(3 : ℕ))` gates/time [PZ03, ecc.tex:331-338, 1463-1468], with
 failure-budget retry support following Shor's repeated discrete-logarithm
 sampling route [Sho95, source.tex:1924-1987].
 -/
@@ -103,7 +103,7 @@ def linearRetry (coefficient intercept : Nat) : BivariatePolynomialEnvelope wher
 @[simp] theorem eval_cubicBitSizeLinearRetry
     (coefficient intercept bitSize retryUpperBound : Nat) :
     (cubicBitSizeLinearRetry coefficient intercept).eval bitSize retryUpperBound =
-      coefficient * bitSize ^ 3 * retryUpperBound + intercept := by
+      coefficient * bitSize ^ (3 : ℕ) * retryUpperBound + intercept := by
   simp [cubicBitSizeLinearRetry, eval]
 
 @[simp] theorem eval_linearRetry
@@ -305,7 +305,7 @@ theorem bounds_supportsEnvelope
 /-- Strong public-polynomial support theorem for ECC scalar recovery.  This is
 the exported implication: the success-accounted private fields discharge a
 source-bit-size public polynomial envelope whose degree shape is the coarse
-`O(n)`/`O(n^3)` ECC statement. -/
+`O(n)`/`O(n^(3 : ℕ))` ECC statement. -/
 theorem bounds_supportsPublicPolynomial
     (target : QuantumAlg.EllipticCurve.Haner2020.OptimizationTarget)
     (params : QuantumAlg.EllipticCurve.Haner2020.FormulaParameters)

@@ -22,7 +22,7 @@ theorem exists_evenProlateSignedValue_sq_eq_of_bandEigen_evenProjection_ne
     {psi : RealIntervalL2 (-1 : ℝ) 1}
     (hproj : unitBandEvenProjection psi ≠ 0)
     (heig : bandOperatorL2 (signedModeRadialBandwidth a) psi = lam • psi) :
-    ∃ n : ℕ, evenProlateSignedValue a n ^ 2 = lam := by
+    ∃ n : ℕ, evenProlateSignedValue a n ^ (2 : ℕ) = lam := by
   let u : unitBandEvenSubspace :=
     ⟨unitBandEvenProjection psi,
       (mem_unitBandEvenSubspace_iff _).2 (unitBandReflection_evenProjection psi)⟩
@@ -57,12 +57,12 @@ theorem eventually_bandEigenbranch_eq_evenProlateSignedValue_sq
     (hpsiUnit : (inner ℝ (psi (signedModeRadialBandwidth a₀))
       (psi (signedModeRadialBandwidth a₀)) : ℝ) = 1)
     (hnu₀ : nu (signedModeRadialBandwidth a₀) =
-      evenProlateSignedValue a₀ m ^ 2)
+      evenProlateSignedValue a₀ m ^ (2 : ℕ))
     (heig : ∀ᶠ c in 𝓝 (signedModeRadialBandwidth a₀),
       bandOperatorL2 c (psi c) = nu c • psi c ∧
         (inner ℝ (psi c) (psi c) : ℝ) = 1) :
     ∀ᶠ a in 𝓝 a₀,
-      nu (signedModeRadialBandwidth a) = evenProlateSignedValue a m ^ 2 := by
+      nu (signedModeRadialBandwidth a) = evenProlateSignedValue a m ^ (2 : ℕ) := by
   let bw : ℝ → ℝ := fun a => signedModeRadialBandwidth a
   have hbw : Continuous bw := by
     dsimp only [bw, signedModeRadialBandwidth]
@@ -102,28 +102,28 @@ theorem eventually_bandEigenbranch_eq_evenProlateSignedValue_sq
     hbwt.eventually (by simpa only [bw] using heig)
   have haPos : ∀ᶠ a in 𝓝 a₀, 0 < a := Ioi_mem_nhds ha₀
   have hspec : ∀ᶠ a in 𝓝 a₀,
-      ∃ k : ℕ, evenProlateSignedValue a k ^ 2 = nu (bw a) := by
+      ∃ k : ℕ, evenProlateSignedValue a k ^ (2 : ℕ) = nu (bw a) := by
     filter_upwards [haPos, hnuNe, hprojNe, heigA]
       with a ha hlam hproj heigNow
     exact exists_evenProlateSignedValue_sq_eq_of_bandEigen_evenProjection_ne
       ha hlam hproj (by simpa only [bw] using heigNow.1)
   have hcontValue (k : ℕ) :
-      ContinuousAt (fun a => evenProlateSignedValue a k ^ 2) a₀ :=
+      ContinuousAt (fun a => evenProlateSignedValue a k ^ (2 : ℕ)) a₀ :=
     (continuousOn_evenProlateSignedValue_sq k).continuousAt (Ioi_mem_nhds ha₀)
   cases m with
   | zero =>
-      let mid := (evenProlateSignedValue a₀ 0 ^ 2 +
-        evenProlateSignedValue a₀ 1 ^ 2) / 2
+      let mid := (evenProlateSignedValue a₀ 0 ^ (2 : ℕ) +
+        evenProlateSignedValue a₀ 1 ^ (2 : ℕ)) / 2
       have hgap := evenProlateSignedValue_sq_strictAnti ha₀ (show 0 < 1 by omega)
-      have hmid : evenProlateSignedValue a₀ 1 ^ 2 < mid ∧
-          mid < evenProlateSignedValue a₀ 0 ^ 2 := by
+      have hmid : evenProlateSignedValue a₀ 1 ^ (2 : ℕ) < mid ∧
+          mid < evenProlateSignedValue a₀ 0 ^ (2 : ℕ) := by
         dsimp only [mid]
         constructor <;> linarith
       have hnuLower : ∀ᶠ a in 𝓝 a₀, mid < nu (bw a) := by
         apply hnuA.eventually_const_lt
         simpa only [bw, hnu₀] using hmid.2
       have honeUpper : ∀ᶠ a in 𝓝 a₀,
-          evenProlateSignedValue a 1 ^ 2 < mid :=
+          evenProlateSignedValue a 1 ^ (2 : ℕ) < mid :=
         (hcontValue 1).eventually_lt_const hmid.1
       filter_upwards [haPos, hspec, hnuLower, honeUpper]
         with a ha hka hnuLo honeHi
@@ -131,53 +131,53 @@ theorem eventually_bandEigenbranch_eq_evenProlateSignedValue_sq
       cases k with
       | zero => exact hk.symm
       | succ k =>
-          have hle : evenProlateSignedValue a (k + 1) ^ 2 ≤
-              evenProlateSignedValue a 1 ^ 2 :=
+          have hle : evenProlateSignedValue a (k + 1) ^ (2 : ℕ) ≤
+              evenProlateSignedValue a 1 ^ (2 : ℕ) :=
             (evenProlateSignedValue_sq_strictAnti ha).antitone (by omega)
           rw [hk] at hle
           linarith
   | succ p =>
-      let upper := (evenProlateSignedValue a₀ p ^ 2 +
-        evenProlateSignedValue a₀ (p + 1) ^ 2) / 2
-      let lower := (evenProlateSignedValue a₀ (p + 1) ^ 2 +
-        evenProlateSignedValue a₀ (p + 2) ^ 2) / 2
+      let upper := (evenProlateSignedValue a₀ p ^ (2 : ℕ) +
+        evenProlateSignedValue a₀ (p + 1) ^ (2 : ℕ)) / 2
+      let lower := (evenProlateSignedValue a₀ (p + 1) ^ (2 : ℕ) +
+        evenProlateSignedValue a₀ (p + 2) ^ (2 : ℕ)) / 2
       have hgapUp := evenProlateSignedValue_sq_strictAnti ha₀
         (show p < p + 1 by omega)
       have hgapDown := evenProlateSignedValue_sq_strictAnti ha₀
         (show p + 1 < p + 2 by omega)
-      have hupper : evenProlateSignedValue a₀ (p + 1) ^ 2 < upper ∧
-          upper < evenProlateSignedValue a₀ p ^ 2 := by
+      have hupper : evenProlateSignedValue a₀ (p + 1) ^ (2 : ℕ) < upper ∧
+          upper < evenProlateSignedValue a₀ p ^ (2 : ℕ) := by
         dsimp only [upper]
         constructor <;> linarith
-      have hlower : evenProlateSignedValue a₀ (p + 2) ^ 2 < lower ∧
-          lower < evenProlateSignedValue a₀ (p + 1) ^ 2 := by
+      have hlower : evenProlateSignedValue a₀ (p + 2) ^ (2 : ℕ) < lower ∧
+          lower < evenProlateSignedValue a₀ (p + 1) ^ (2 : ℕ) := by
         dsimp only [lower]
         constructor <;> linarith
       have hnuUpper : ∀ᶠ a in 𝓝 a₀, nu (bw a) < upper := by
         apply hnuA.eventually_lt_const
         simpa only [bw, hnu₀] using hupper.1
       have hpredLower : ∀ᶠ a in 𝓝 a₀,
-          upper < evenProlateSignedValue a p ^ 2 :=
+          upper < evenProlateSignedValue a p ^ (2 : ℕ) :=
         (hcontValue p).eventually_const_lt hupper.2
       have hnuLower : ∀ᶠ a in 𝓝 a₀, lower < nu (bw a) := by
         apply hnuA.eventually_const_lt
         simpa only [bw, hnu₀] using hlower.2
       have hsuccUpper : ∀ᶠ a in 𝓝 a₀,
-          evenProlateSignedValue a (p + 2) ^ 2 < lower :=
+          evenProlateSignedValue a (p + 2) ^ (2 : ℕ) < lower :=
         (hcontValue (p + 2)).eventually_lt_const hlower.1
       filter_upwards [haPos, hspec, hnuUpper, hpredLower, hnuLower, hsuccUpper]
         with a ha hka hnuHi hpredLo hnuLo hsuccHi
       obtain ⟨k, hk⟩ := hka
       rcases lt_trichotomy k (p + 1) with hlt | heq | hgt
-      · have hle : evenProlateSignedValue a p ^ 2 ≤
-            evenProlateSignedValue a k ^ 2 :=
+      · have hle : evenProlateSignedValue a p ^ (2 : ℕ) ≤
+            evenProlateSignedValue a k ^ (2 : ℕ) :=
           (evenProlateSignedValue_sq_strictAnti ha).antitone (by omega)
         rw [hk] at hle
         linarith
       · subst k
         simpa only [bw] using hk.symm
-      · have hle : evenProlateSignedValue a k ^ 2 ≤
-            evenProlateSignedValue a (p + 2) ^ 2 :=
+      · have hle : evenProlateSignedValue a k ^ (2 : ℕ) ≤
+            evenProlateSignedValue a (p + 2) ^ (2 : ℕ) :=
           (evenProlateSignedValue_sq_strictAnti ha).antitone (by omega)
         rw [hk] at hle
         linarith
@@ -194,8 +194,8 @@ theorem normalizedSecondPairingL2_smul_smul
 theorem normalizedSecondPairingL2_eq_signedMode_of_bandEigen
     {a nuM nuN : ℝ} (ha : 0 < a) (m n : ℕ)
     {psiM psiN : RealIntervalL2 (-1 : ℝ) 1}
-    (hnuM : nuM = evenProlateSignedValue a m ^ 2)
-    (hnuN : nuN = evenProlateSignedValue a n ^ 2)
+    (hnuM : nuM = evenProlateSignedValue a m ^ (2 : ℕ))
+    (hnuN : nuN = evenProlateSignedValue a n ^ (2 : ℕ))
     (hpsiMEig : bandOperatorL2 (signedModeRadialBandwidth a) psiM = nuM • psiM)
     (hpsiNEig : bandOperatorL2 (signedModeRadialBandwidth a) psiN = nuN • psiN)
     (hpsiMUnit : (inner ℝ psiM psiM : ℝ) = 1)
@@ -214,20 +214,20 @@ theorem normalizedSecondPairingL2_eq_signedMode_of_bandEigen
     _, _, _, _, _⟩
   let fm := bandClass Dm.R hmRSmooth.continuous
   let fn := bandClass Dn.R hnRSmooth.continuous
-  let lamM := evenProlateSignedValue a m ^ 2
-  let lamN := evenProlateSignedValue a n ^ 2
+  let lamM := evenProlateSignedValue a m ^ (2 : ℕ)
+  let lamN := evenProlateSignedValue a n ^ (2 : ℕ)
   have hmBandR : ∀ x : ℝ, bandTransform (signedModeRadialBandwidth a) Dm.R x =
       lamM * Dm.R x := by
     change ∀ x : ℝ,
       bandTransform (signedModeRadialBandwidth a) (signedModeRadialData a m).R x =
-        evenProlateSignedValue a m ^ 2 * (signedModeRadialData a m).R x
+        evenProlateSignedValue a m ^ (2 : ℕ) * (signedModeRadialData a m).R x
     rw [hmRdef]
     exact bandTransform_endpointNormalize_eigen hmBand
   have hnBandR : ∀ x : ℝ, bandTransform (signedModeRadialBandwidth a) Dn.R x =
       lamN * Dn.R x := by
     change ∀ x : ℝ,
       bandTransform (signedModeRadialBandwidth a) (signedModeRadialData a n).R x =
-        evenProlateSignedValue a n ^ 2 * (signedModeRadialData a n).R x
+        evenProlateSignedValue a n ^ (2 : ℕ) * (signedModeRadialData a n).R x
     rw [hnRdef]
     exact bandTransform_endpointNormalize_eigen hnBand
   have hlamM : lamM ≠ 0 := pow_ne_zero 2 (evenProlateSignedValue_ne_zero ha m)
@@ -388,7 +388,7 @@ theorem eventually_signedModeRadialData_s_strictMono
   have hmS := hmExact.2.2.2.2.2.2.2.2.2.2.1
   have hnS := hnExact.2.2.2.2.2.2.2.2.2.2.1
   rw [hmS, hnS, radialSeparationRatio]
-  have hcSq : 0 < signedModeRadialBandwidth a ^ 2 := by
+  have hcSq : 0 < signedModeRadialBandwidth a ^ (2 : ℕ) := by
     dsimp only [signedModeRadialBandwidth]
     positivity
   exact (div_lt_div_iff_of_pos_right hcSq).2 (by linarith)
@@ -458,14 +458,14 @@ theorem signedModeRadialData_chi_strictAnti
   have hnS := (signedModeRadialData_isExact_of_pos ha n).2.2.2.2.2.2.2.2.2.2.1
   rw [hmS, hnS] at hs
   simp only [radialSeparationRatio] at hs
-  have hcSq : 0 < signedModeRadialBandwidth a ^ 2 := by
+  have hcSq : 0 < signedModeRadialBandwidth a ^ (2 : ℕ) := by
     dsimp only [signedModeRadialBandwidth]
     positivity
-  have hdiv : (signedModeRadialData a n).chi / signedModeRadialBandwidth a ^ 2 <
-      (signedModeRadialData a m).chi / signedModeRadialBandwidth a ^ 2 := by
+  have hdiv : (signedModeRadialData a n).chi / signedModeRadialBandwidth a ^ (2 : ℕ) <
+      (signedModeRadialData a m).chi / signedModeRadialBandwidth a ^ (2 : ℕ) := by
     calc
-      _ = -(-(signedModeRadialData a n).chi / signedModeRadialBandwidth a ^ 2) := by ring
-      _ < -(-(signedModeRadialData a m).chi / signedModeRadialBandwidth a ^ 2) := neg_lt_neg hs
+      _ = -(-(signedModeRadialData a n).chi / signedModeRadialBandwidth a ^ (2 : ℕ)) := by ring
+      _ < -(-(signedModeRadialData a m).chi / signedModeRadialBandwidth a ^ (2 : ℕ)) := neg_lt_neg hs
       _ = _ := by ring
   exact (div_lt_div_iff_of_pos_right hcSq).1 hdiv
 

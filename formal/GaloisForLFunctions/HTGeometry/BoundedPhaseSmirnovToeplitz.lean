@@ -41,12 +41,12 @@ theorem exists_circleCayley_eq_of_ne_one
     (z : Circle) (hz : (z : ℂ) ≠ 1) :
     ∃ x : ℝ, circleCayley x = z := by
   let x : ℝ := -(z : ℂ).im / (1 - (z : ℂ).re)
-  have hnormSq : (z : ℂ).re ^ 2 + (z : ℂ).im ^ 2 = 1 := by
+  have hnormSq : (z : ℂ).re ^ (2 : ℕ) + (z : ℂ).im ^ (2 : ℕ) = 1 := by
     calc
-      (z : ℂ).re ^ 2 + (z : ℂ).im ^ 2 = Complex.normSq (z : ℂ) := by
+      (z : ℂ).re ^ (2 : ℕ) + (z : ℂ).im ^ (2 : ℕ) = Complex.normSq (z : ℂ) := by
         rw [Complex.normSq_apply]
         ring
-      _ = ‖(z : ℂ)‖ ^ 2 := (Complex.sq_norm _).symm
+      _ = ‖(z : ℂ)‖ ^ (2 : ℕ) := (Complex.sq_norm _).symm
       _ = 1 := by rw [Circle.norm_coe]; norm_num
   have hre : 1 - (z : ℂ).re ≠ 0 := by
     intro hzero
@@ -144,7 +144,7 @@ private theorem continuousAt_sectorCayleyValue {w : ℂ}
     unfold sectorExponential
     fun_prop
   have hden : sectorExponential w + 1 ≠ 0 :=
-    add_one_ne_zero_of_re_nonneg (sectorExponential_re_nonneg hw)
+    add_one_ne_zero_of_re_nonneg_sectorCayleyMultiplier (sectorExponential_re_nonneg hw)
   exact (he.sub continuousAt_const).div (he.add continuousAt_const) hden
 
 /-- Boundary functional calculus for the sector Cayley multiplier. -/
@@ -194,9 +194,9 @@ theorem diskMultiplierLineBoundary_sectorCayleyMultiplier_ae
 /-- The fourth disk monomial has its literal Cayley boundary on the real line. -/
 theorem diskMultiplierLineBoundary_diskMonomialMultiplier_four_ae :
     diskMultiplierLineBoundary (diskMonomialMultiplier 4) =ᵐ[volume]
-      fun x => (circleCayley x : ℂ) ^ 4 := by
+      fun x => (circleCayley x : ℂ) ^ (4 : ℕ) := by
   have hcircle : diskMultiplierBoundaryFun (diskMonomialMultiplier 4) =ᵐ[
-      circleLebesgue] fun z => (z : ℂ) ^ 4 := by
+      circleLebesgue] fun z => (z : ℂ) ^ (4 : ℕ) := by
     rw [diskMultiplierBoundaryFun, hardyOf_diskMonomialMultiplier,
       hardyDiskBoundary_single]
     exact circleMonomialLp_coeFn_ae circleLebesgue 4
@@ -309,7 +309,7 @@ theorem boundedPhaseOuterQuotient_phase_ae
 
 /-- Toeplitz symbol carrying bounded phase `2b`, with the fixed fourth Cayley monomial removed. -/
 def boundedPhaseToeplitzSymbol (b : Circle → ℝ) (x : ℝ) : ℂ :=
-  (starRingEnd ℂ) ((realCayley x) ^ 4) *
+  (starRingEnd ℂ) ((realCayley x) ^ (4 : ℕ)) *
     Complex.exp (2 * I * (b (circleCayley x) : ℂ))
 
 theorem measurable_boundedPhaseToeplitzSymbol
@@ -370,9 +370,9 @@ def boundedPhaseSmirnovToeplitzElement
           (diskMultiplierLineBoundary (B.mul D) x /
             diskMultiplierLineBoundary P x)
     rw [hxMul, hxB, circleCayley_coe, boundedPhaseToeplitzSymbol, ← hxPhase]
-    let z : ℂ := (realCayley x) ^ 4
+    let z : ℂ := (realCayley x) ^ (4 : ℕ)
     have hzUnit : (starRingEnd ℂ) z * z = 1 := by
-      change (starRingEnd ℂ) ((realCayley x) ^ 4) * (realCayley x) ^ 4 = 1
+      change (starRingEnd ℂ) ((realCayley x) ^ (4 : ℕ)) * (realCayley x) ^ (4 : ℕ) = 1
       rw [Complex.conj_mul', norm_pow, norm_realCayley]
       norm_num
     have hz : z ≠ 0 := by
@@ -399,7 +399,7 @@ def boundedPhaseSmirnovToeplitzElement
   forward_nonzero := by
     refine ⟨(1 / 2 : ℂ), ?_, ?_⟩
     · norm_num [Metric.mem_ball, dist_zero_right]
-    · change (1 / 2 : ℂ) ^ 4 *
+    · change (1 / 2 : ℂ) ^ (4 : ℕ) *
           (1 - sectorCayleyValue
             (hardyFun (boundedPhaseHardy b hb hbound) (1 / 2 : ℂ))) ≠ 0
       apply mul_ne_zero

@@ -49,7 +49,7 @@ def schafferExlFermiPairField (w u v : ℝ) : ℝ × ℝ :=
 theorem schafferExlFermiPair_power (w u v : ℝ) :
     schafferExlFermiForce u * (schafferExlFermiPairField w u v).1 +
       schafferExlFermiForce v * (schafferExlFermiPairField w u v).2 =
-      -(schafferExlFermiForce u) ^ 2 - (schafferExlFermiForce v) ^ 2 := by
+      -(schafferExlFermiForce u) ^ (2 : ℕ) - (schafferExlFermiForce v) ^ (2 : ℕ) := by
   simp only [schafferExlFermiPairField]
   ring
 
@@ -58,7 +58,7 @@ theorem hasDerivAt_schafferExlFermiPairEnergy (w u v : ℝ) :
     HasDerivAt
       (fun t => schafferExlFermiEnergy (u + t * (schafferExlFermiPairField w u v).1) +
         schafferExlFermiEnergy (v + t * (schafferExlFermiPairField w u v).2))
-      (-(schafferExlFermiForce u) ^ 2 - (schafferExlFermiForce v) ^ 2) 0 := by
+      (-(schafferExlFermiForce u) ^ (2 : ℕ) - (schafferExlFermiForce v) ^ (2 : ℕ)) 0 := by
   have hu : HasDerivAt (fun t => u + t * (schafferExlFermiPairField w u v).1)
       (schafferExlFermiPairField w u v).1 0 := by
     simpa using ((hasDerivAt_id (0 : ℝ)).mul_const (schafferExlFermiPairField w u v).1).const_add u

@@ -420,11 +420,11 @@ theorem parityAmplitude_norm_le_one {n : ℕ} (hn : 0 < n) (t : ℝ) :
 
 /-- Directly observable return probability for the full-binomial clock. -/
 def fullProbability (n : ℕ) (t : ℝ) : ℝ :=
-  ‖fullAmplitude n t‖ ^ 2
+  ‖fullAmplitude n t‖ ^ (2 : ℕ)
 
 /-- Directly observable return probability for the parity clock. -/
 def parityProbability (n : ℕ) (t : ℝ) : ℝ :=
-  ‖parityAmplitude n t‖ ^ 2
+  ‖parityAmplitude n t‖ ^ (2 : ℕ)
 
 /-- Convex spectral interpolation from the full clock to the parity clock. -/
 def interpolatedWeight
@@ -437,7 +437,7 @@ def interpolatedAmplitude (n : ℕ) (θ t : ℝ) : ℂ :=
 
 /-- Its directly observable return probability. -/
 def interpolatedProbability (n : ℕ) (θ t : ℝ) : ℝ :=
-  ‖interpolatedAmplitude n θ t‖ ^ 2
+  ‖interpolatedAmplitude n θ t‖ ^ (2 : ℕ)
 
 theorem interpolatedWeight_nonneg
     (n : ℕ) {θ : ℝ} (hθ0 : 0 ≤ θ) (hθ1 : θ ≤ 1)
@@ -518,7 +518,7 @@ theorem interpolatedAmplitude_target
 
 theorem interpolatedProbability_target
     {n : ℕ} (hn : 0 < n) {θ : ℝ} (hθ0 : 0 ≤ θ) :
-    interpolatedProbability n θ 1 = θ ^ 2 := by
+    interpolatedProbability n θ 1 = θ ^ (2 : ℕ) := by
   rw [interpolatedProbability, interpolatedAmplitude_target hn,
     norm_mul, norm_pow]
   simp [Real.norm_eq_abs, abs_of_nonneg hθ0]
@@ -572,8 +572,8 @@ theorem interpolated_probability_difference_le_amplitude
     rw [abs_of_nonneg (add_nonneg (norm_nonneg _) (norm_nonneg _))]
     linarith
   rw [interpolatedProbability, fullProbability,
-    show ‖interpolatedAmplitude n θ t‖ ^ 2 -
-        ‖fullAmplitude n t‖ ^ 2 =
+    show ‖interpolatedAmplitude n θ t‖ ^ (2 : ℕ) -
+        ‖fullAmplitude n t‖ ^ (2 : ℕ) =
       (‖a‖ - ‖b‖) * (‖a‖ + ‖b‖) by
         dsimp [a, b]
         ring,
@@ -695,7 +695,7 @@ theorem probability_difference_le_amplitude
     rw [abs_of_nonneg (add_nonneg (norm_nonneg _) (norm_nonneg _))]
     linarith
   rw [parityProbability, fullProbability,
-    show ‖parityAmplitude n t‖ ^ 2 - ‖fullAmplitude n t‖ ^ 2 =
+    show ‖parityAmplitude n t‖ ^ (2 : ℕ) - ‖fullAmplitude n t‖ ^ (2 : ℕ) =
       (‖a‖ - ‖b‖) * (‖a‖ + ‖b‖) by
         dsimp [a, b]
         ring,
@@ -1112,7 +1112,7 @@ theorem scaled_interpolated_energyMoment_eq
 @[simp] theorem scaledInterpolatedProbability_target
     {T : ℝ} (hT : 0 < T) {n : ℕ} (hn : 0 < n)
     {θ : ℝ} (hθ0 : 0 ≤ θ) :
-    scaledInterpolatedProbability T n θ T = θ ^ 2 := by
+    scaledInterpolatedProbability T n θ T = θ ^ (2 : ℕ) := by
   rw [scaledInterpolatedProbability, div_self hT.ne',
     interpolatedProbability_target hn hθ0]
 
@@ -1613,7 +1613,7 @@ def fixedProtocolProbability
     (T : ℝ) (n : ℕ) (θ t : ℝ)
     (U : ClockSpace n ≃ₗᵢ[ℂ] ClockSpace n) : ℝ :=
   ‖inner ℂ (fixedClock n)
-      (fixedProtocolClockAt T n θ t U)‖ ^ 2
+      (fixedProtocolClockAt T n θ t U)‖ ^ (2 : ℕ)
 
 theorem fixedProtocolProbability_eq
     {T : ℝ} (hT : 0 < T) (n : ℕ)

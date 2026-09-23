@@ -151,7 +151,7 @@ theorem posSemidef_bezoutian_of_imaginary_zeros {C : ℝ} (hC : 0 ≤ C)
   set P : ℂ → ℂ := hadamardProduct g with hP
   set a : ZeroCopy g → ℂ := zeroCopyPoint g with ha
   have hane : ∀ q, a q ≠ 0 := zeroCopyPoint_ne_zero hg hg0
-  have hsum : Summable (fun q : ZeroCopy g => 1 / ‖a q‖ ^ 2) :=
+  have hsum : Summable (fun q : ZeroCopy g => 1 / ‖a q‖ ^ (2 : ℕ)) :=
     summable_inv_sq_zeroCopyPoint hC' hg hg0 hgbound
   have hazero : ∀ q, g (a q) = 0 := by
     intro q

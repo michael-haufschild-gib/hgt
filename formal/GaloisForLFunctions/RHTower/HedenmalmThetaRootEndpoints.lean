@@ -99,13 +99,13 @@ theorem continuous_sourceModeU {z : ℂ} (hz : |z.im| < 1) :
 
 theorem norm_sq_sourceModeU_le {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource z = 0)
     (x : ℝ) :
-    ‖sourceModeU thetaSource z x‖ ^ 2
-      ≤ (thetaBound / (1 - |z.im|)) ^ 2 * Real.exp (-(2 * |x|)) := by
+    ‖sourceModeU thetaSource z x‖ ^ (2 : ℕ)
+      ≤ (thetaBound / (1 - |z.im|)) ^ (2 : ℕ) * Real.exp (-(2 * |x|)) := by
   have hgap : (0 : ℝ) < 1 - |z.im| := by linarith
   have hC : 0 ≤ thetaBound / (1 - |z.im|) := div_nonneg thetaBound_nonneg hgap.le
   have h := norm_sourceModeU_le hz hzero x
-  have hsq : ‖sourceModeU thetaSource z x‖ ^ 2
-      ≤ (thetaBound / (1 - |z.im|) * Real.exp (-|x|)) ^ 2 := by
+  have hsq : ‖sourceModeU thetaSource z x‖ ^ (2 : ℕ)
+      ≤ (thetaBound / (1 - |z.im|) * Real.exp (-|x|)) ^ (2 : ℕ) := by
     have hnn := norm_nonneg (sourceModeU thetaSource z x)
     nlinarith [h, hnn]
   refine le_trans hsq (le_of_eq ?_)
@@ -116,22 +116,22 @@ theorem norm_sq_sourceModeU_le {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSou
 
 theorem integrable_norm_sq_sourceModeU {z : ℂ} (hz : |z.im| < 1)
     (hzero : xiC thetaSource z = 0) :
-    Integrable (fun x : ℝ => ‖sourceModeU thetaSource z x‖ ^ 2) (volume : Measure ℝ) := by
+    Integrable (fun x : ℝ => ‖sourceModeU thetaSource z x‖ ^ (2 : ℕ)) (volume : Measure ℝ) := by
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs (by norm_num : (0:ℝ) < 2)).const_mul
-      ((thetaBound / (1 - |z.im|)) ^ 2)) ?_ ?_
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (by norm_num : (0:ℝ) < 2)).const_mul
+      ((thetaBound / (1 - |z.im|)) ^ (2 : ℕ))) ?_ ?_
   · exact ((continuous_sourceModeU hz).norm.pow 2).aestronglyMeasurable
   · filter_upwards with x
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     exact norm_sq_sourceModeU_le hz hzero x
 
 theorem tendsto_norm_sq_sourceModeU {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource z = 0) :
-    Tendsto (fun x : ℝ => ‖sourceModeU thetaSource z x‖ ^ 2) atBot (𝓝 0)
-      ∧ Tendsto (fun x : ℝ => ‖sourceModeU thetaSource z x‖ ^ 2) atTop (𝓝 0) := by
+    Tendsto (fun x : ℝ => ‖sourceModeU thetaSource z x‖ ^ (2 : ℕ)) atBot (𝓝 0)
+      ∧ Tendsto (fun x : ℝ => ‖sourceModeU thetaSource z x‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
   have hdom : ∀ l : Filter ℝ, Tendsto (fun x : ℝ => -(2 * |x|)) l atBot →
-      Tendsto (fun x : ℝ => (thetaBound / (1 - |z.im|)) ^ 2 * Real.exp (-(2 * |x|))) l (𝓝 0) := by
+      Tendsto (fun x : ℝ => (thetaBound / (1 - |z.im|)) ^ (2 : ℕ) * Real.exp (-(2 * |x|))) l (𝓝 0) := by
     intro l hl
-    simpa using (Real.tendsto_exp_atBot.comp hl).const_mul ((thetaBound / (1 - |z.im|)) ^ 2)
+    simpa using (Real.tendsto_exp_atBot.comp hl).const_mul ((thetaBound / (1 - |z.im|)) ^ (2 : ℕ))
   have hbot : Tendsto (fun x : ℝ => -(2 * |x|)) atBot atBot :=
     tendsto_neg_atTop_atBot.comp (tendsto_abs_atBot_atTop.const_mul_atTop (by norm_num : (0:ℝ) < 2))
   have htop : Tendsto (fun x : ℝ => -(2 * |x|)) atTop atBot :=
@@ -151,39 +151,39 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
   obtain ⟨hbot, htop⟩ := tendsto_norm_sq_sourceModeU hz hzero
   have hIoo : Ioo (0 : ℝ) 1 ∈ 𝓝[>] (0 : ℝ) := Ioo_mem_nhdsGT one_pos
   have hIoo' : Ioo (0 : ℝ) 1 ∈ 𝓝[<] (1 : ℝ) := Ioo_mem_nhdsLT one_pos
-  have hnormsq : ∀ t ∈ Ioo (0 : ℝ) 1, ‖rootH thetaSource z t‖ ^ 2
-      = ‖sourceModeU thetaSource z (thetaSource.quantileFun t)‖ ^ 2 / thetaSource.mass ^ 2 := by
+  have hnormsq : ∀ t ∈ Ioo (0 : ℝ) 1, ‖rootH thetaSource z t‖ ^ (2 : ℕ)
+      = ‖sourceModeU thetaSource z (thetaSource.quantileFun t)‖ ^ (2 : ℕ) / thetaSource.mass ^ (2 : ℕ) := by
     intro t ht
     rw [norm_rootH_eq thetaSource z ht, div_pow]
   refine ⟨?_, ?_, ?_, ?_⟩
   · -- energy
     have hmeas : AEStronglyMeasurable
-        (fun x : ℝ => ‖sourceModeU thetaSource z x‖ ^ 2 / (thetaSource.mass * thetaSource.k x))
+        (fun x : ℝ => ‖sourceModeU thetaSource z x‖ ^ (2 : ℕ) / (thetaSource.mass * thetaSource.k x))
         (volume : Measure ℝ) := by
       refine ((hcont.norm.pow 2).div (continuous_const.mul thetaSource.continuous_k)
         fun x => ?_).aestronglyMeasurable
       exact mul_ne_zero hMne (thetaSource.pos_k x).ne'
     have hiff := thetaSource.integrableOn_comp_quantileFun_iff (g := fun x : ℝ =>
-      ‖sourceModeU thetaSource z x‖ ^ 2 / (thetaSource.mass * thetaSource.k x)) hmeas
+      ‖sourceModeU thetaSource z x‖ ^ (2 : ℕ) / (thetaSource.mass * thetaSource.k x)) hmeas
     have hright : Integrable (fun x : ℝ => thetaSource.normalized x •
-        (‖sourceModeU thetaSource z x‖ ^ 2 / (thetaSource.mass * thetaSource.k x)))
+        (‖sourceModeU thetaSource z x‖ ^ (2 : ℕ) / (thetaSource.mass * thetaSource.k x)))
         (volume : Measure ℝ) := by
       refine ((integrable_norm_sq_sourceModeU hz hzero).div_const
-        (thetaSource.mass ^ 2)).congr ?_
+        (thetaSource.mass ^ (2 : ℕ))).congr ?_
       filter_upwards with x
       have hk : thetaSource.k x ≠ 0 := (thetaSource.pos_k x).ne'
-      show ‖sourceModeU thetaSource z x‖ ^ 2 / thetaSource.mass ^ 2
+      show ‖sourceModeU thetaSource z x‖ ^ (2 : ℕ) / thetaSource.mass ^ (2 : ℕ)
         = thetaSource.normalized x •
-          (‖sourceModeU thetaSource z x‖ ^ 2 / (thetaSource.mass * thetaSource.k x))
-      show ‖sourceModeU thetaSource z x‖ ^ 2 / thetaSource.mass ^ 2
+          (‖sourceModeU thetaSource z x‖ ^ (2 : ℕ) / (thetaSource.mass * thetaSource.k x))
+      show ‖sourceModeU thetaSource z x‖ ^ (2 : ℕ) / thetaSource.mass ^ (2 : ℕ)
         = (thetaSource.k x / thetaSource.mass) *
-          (‖sourceModeU thetaSource z x‖ ^ 2 / (thetaSource.mass * thetaSource.k x))
+          (‖sourceModeU thetaSource z x‖ ^ (2 : ℕ) / (thetaSource.mass * thetaSource.k x))
       field_simp
     refine MeasureTheory.IntegrableOn.congr_fun (hiff.mpr hright) (fun t ht => ?_)
       measurableSet_Ioo
-    show ‖sourceModeU thetaSource z (thetaSource.quantileFun t)‖ ^ 2
+    show ‖sourceModeU thetaSource z (thetaSource.quantileFun t)‖ ^ (2 : ℕ)
         / (thetaSource.mass * thetaSource.k (thetaSource.quantileFun t))
-      = quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ 2
+      = quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ (2 : ℕ)
     rw [hnormsq t ht, quantileSpeed]
     have hk : thetaSource.k (thetaSource.quantileFun t) ≠ 0 :=
       (thetaSource.pos_k _).ne'
@@ -196,7 +196,7 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
       (-Complex.I / (thetaSource.mass : ℂ)) * sourceModeU thetaSource z x) hmeas
     have hbdd : ∀ x : ℝ, ‖thetaSource.normalized x •
         ((-Complex.I / (thetaSource.mass : ℂ)) * sourceModeU thetaSource z x)‖
-        ≤ thetaBound / (1 - |z.im|) / thetaSource.mass ^ 2 * thetaSource.k x := by
+        ≤ thetaBound / (1 - |z.im|) / thetaSource.mass ^ (2 : ℕ) * thetaSource.k x := by
       intro x
       have hgap : (0 : ℝ) < 1 - |z.im| := by linarith
       have hCnn : 0 ≤ thetaBound / (1 - |z.im|) := div_nonneg thetaBound_nonneg hgap.le
@@ -217,7 +217,7 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
       calc thetaSource.normalized x * (‖sourceModeU thetaSource z x‖ / thetaSource.mass)
           ≤ thetaSource.normalized x * ((thetaBound / (1 - |z.im|)) / thetaSource.mass) :=
             mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hu' hM.le) hn
-        _ = thetaBound / (1 - |z.im|) / thetaSource.mass ^ 2 * thetaSource.k x := by
+        _ = thetaBound / (1 - |z.im|) / thetaSource.mass ^ (2 : ℕ) * thetaSource.k x := by
             show thetaSource.k x / thetaSource.mass * _ = _
             field_simp
     have hright : Integrable (fun x : ℝ => thetaSource.normalized x •
@@ -225,7 +225,7 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
         (volume : Measure ℝ) := by
       refine Integrable.mono'
         (thetaSource.integrable_k.const_mul
-          (thetaBound / (1 - |z.im|) / thetaSource.mass ^ 2)) ?_ ?_
+          (thetaBound / (1 - |z.im|) / thetaSource.mass ^ (2 : ℕ))) ?_ ?_
       · refine (Continuous.aestronglyMeasurable ?_)
         have h1 : Continuous thetaSource.normalized :=
           thetaSource.continuous_k.div_const thetaSource.mass
@@ -240,21 +240,21 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
     exact (rootH_eq_sourceModeU thetaSource z ht).symm
   · -- left endpoint
     have hbase : Tendsto (fun t : ℝ =>
-        ‖sourceModeU thetaSource z (thetaSource.quantileFun t)‖ ^ 2 / thetaSource.mass ^ 2)
+        ‖sourceModeU thetaSource z (thetaSource.quantileFun t)‖ ^ (2 : ℕ) / thetaSource.mass ^ (2 : ℕ))
         (𝓝[>] (0 : ℝ)) (𝓝 0) := by
       simpa using
         (hbot.comp (tendsto_quantileFun_nhdsGT_zero thetaSource)).div_const
-          (thetaSource.mass ^ 2)
+          (thetaSource.mass ^ (2 : ℕ))
     refine hbase.congr' ?_
     filter_upwards [hIoo] with t ht
     exact (hnormsq t ht).symm
   · -- right endpoint
     have hbase : Tendsto (fun t : ℝ =>
-        ‖sourceModeU thetaSource z (thetaSource.quantileFun t)‖ ^ 2 / thetaSource.mass ^ 2)
+        ‖sourceModeU thetaSource z (thetaSource.quantileFun t)‖ ^ (2 : ℕ) / thetaSource.mass ^ (2 : ℕ))
         (𝓝[<] (1 : ℝ)) (𝓝 0) := by
       simpa using
         (htop.comp (tendsto_quantileFun_nhdsLT_one thetaSource)).div_const
-          (thetaSource.mass ^ 2)
+          (thetaSource.mass ^ (2 : ℕ))
     refine hbase.congr' ?_
     filter_upwards [hIoo'] with t ht
     exact (hnormsq t ht).symm
@@ -266,7 +266,7 @@ theorem rootFlux_identity_thetaSource {z : ℂ} (hz : |z.im| < 1)
     (hzero : xiC thetaSource z = 0) :
     (∫ t in Ioo (0 : ℝ) 1, -(rootH thetaSource z t)).re
       = -(z.im) * ∫ t in Ioo (0 : ℝ) 1,
-          quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ 2 :=
+          quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ (2 : ℕ) :=
   rootFlux_identity thetaSource (hasShiftedTail_thetaSource hz)
     (rootModeEndpoints_thetaSource hz hzero)
 
@@ -277,7 +277,7 @@ theorem integrable_sourceModeU {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSou
     Integrable (sourceModeU thetaSource z) (volume : Measure ℝ) := by
   have hgap : (0 : ℝ) < 1 - |z.im| := by linarith
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs (by norm_num : (0:ℝ) < 1)).const_mul
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (by norm_num : (0:ℝ) < 1)).const_mul
       (thetaBound / (1 - |z.im|))) (continuous_sourceModeU hz).aestronglyMeasurable ?_
   filter_upwards with x
   rw [one_mul]

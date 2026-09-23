@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiHurwitzOrientationSourceSequenceGate
 # The Xi orientation vector lies in the absolute-Euler paired real closure
 
 The Schwarz-fixed fibre-constant vectors form a closed real subspace of the multiplicity-exact Xi
-`ell^2` carrier.  It contains every absolute-Euler Schwarz-paired Cauchy vector and the canonical
+`ell^(2 : ℕ)` carrier.  It contains every absolute-Euler Schwarz-paired Cauchy vector and the canonical
 Xi--Hurwitz orientation vector.  Absolute-Euler paired completeness says that the only vector of
 that sector orthogonal to all paired vectors is zero, so the orthogonal projection of the
 orientation vector onto the closed real span of the paired vectors is the orientation vector

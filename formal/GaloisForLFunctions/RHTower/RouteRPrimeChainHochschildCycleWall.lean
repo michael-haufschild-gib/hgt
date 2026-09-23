@@ -99,7 +99,7 @@ theorem gaussReal_prime_inv_ne_prime (p : Nat.Primes) :
     Real.exp_injective.ne_iff]
   have hp : (1 : ℝ) < p := by exact_mod_cast p.2.one_lt
   have hp0 : (0 : ℝ) < p := lt_trans zero_lt_one hp
-  have hsquare : (p : ℝ)⁻¹ ^ 2 < (p : ℝ) ^ 2 := by
+  have hsquare : (p : ℝ)⁻¹ ^ (2 : ℕ) < (p : ℝ) ^ (2 : ℕ) := by
     nlinarith [inv_pos.mpr hp0, inv_lt_one_of_one_lt₀ hp]
   nlinarith [Real.pi_pos]
 

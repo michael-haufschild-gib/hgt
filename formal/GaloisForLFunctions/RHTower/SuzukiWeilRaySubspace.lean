@@ -33,8 +33,8 @@ def suzukiWeilRay (t : ℝ) : Submodule ℂ SuzukiHW :=
 isometrically up to the constant `π`. -/
 theorem norm_sq_suzukiWeilRay {t : ℝ} (G : ↥(suzukiModelRaySub t)) :
     ‖((G : ↥(suzukiModelSpace : Submodule ℂ (Lp ℂ 2 (volume : Measure ℝ)))) :
-        Lp ℂ 2 (volume : Measure ℝ))‖ ^ 2
-      = Real.pi * ‖suzukiModelWeilEquiv (G : _)‖ ^ 2 :=
+        Lp ℂ 2 (volume : Measure ℝ))‖ ^ (2 : ℕ)
+      = Real.pi * ‖suzukiModelWeilEquiv (G : _)‖ ^ (2 : ℕ) :=
   norm_sq_suzukiModelWeilEquiv _
 
 theorem suzukiWeilRay_eq_map (t : ℝ) :

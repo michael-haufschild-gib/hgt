@@ -7,7 +7,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 
 The natural affine coordinate
 
-`B(x) = π exp(x)^2 - 3/2`
+`B(x) = π exp(x)^(2 : ℕ) - 3/2`
 
 turns every higher-to-first theta-atom likelihood ratio into the Laplace transform of one positive
 Dirac mass plus one positive Lebesgue ray.  Summing over all higher atoms gives a canonical positive

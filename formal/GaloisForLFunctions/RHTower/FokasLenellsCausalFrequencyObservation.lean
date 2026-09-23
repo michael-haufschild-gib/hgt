@@ -25,7 +25,7 @@ private theorem norm_pow_isometric_restriction (T : E →L[ℂ] E) (D : Submodul
 private theorem compact_finite_norming (K : Set E) (hK : IsCompact K) (δ : ℝ)
     (hδ : 0 < δ) (hlow : ∀ v ∈ K, δ ≤ ‖v‖) :
     ∃ s : Finset (E →L[ℂ] ℂ), (∀ ℓ ∈ s, ‖ℓ‖ ≤ 1) ∧
-      ∀ v ∈ K, δ ^ 2 / 4 ≤ ∑ ℓ ∈ s, ‖ℓ v‖ ^ 2 := by
+      ∀ v ∈ K, δ ^ (2 : ℕ) / 4 ≤ ∑ ℓ ∈ s, ‖ℓ v‖ ^ (2 : ℕ) := by
   classical
   let J := {ℓ : E →L[ℂ] ℂ // ‖ℓ‖ ≤ 1}
   let U : J → Set E := fun ℓ => {v | δ / 2 < ‖ℓ.val v‖}
@@ -48,7 +48,7 @@ private theorem compact_finite_norming (K : Set E) (hK : IsCompact K) (δ : ℝ)
     simp only [Set.mem_iUnion] at hmem
     obtain ⟨ℓ, hℓ, hobs⟩ := hmem
     have hobs' : δ / 2 < ‖ℓ.val v‖ := hobs
-    have hsq : δ ^ 2 / 4 ≤ ‖ℓ.val v‖ ^ 2 := by
+    have hsq : δ ^ (2 : ℕ) / 4 ≤ ‖ℓ.val v‖ ^ (2 : ℕ) := by
       have hp : 0 ≤ (‖ℓ.val v‖ - δ / 2) * (‖ℓ.val v‖ + δ / 2) :=
         mul_nonneg (by linarith) (by positivity)
       nlinarith
@@ -65,28 +65,28 @@ private theorem le_cesaro_of_pointwise (f : ℕ → ℝ) (r : ℝ) (hf : ∀ n, 
     inv_mul_cancel₀ hn, one_mul] using hm
 
 private theorem sum_observation_means (s : Finset (E →L[ℂ] ℂ)) (x : ℕ → E) (N : ℕ) :
-    (∑ ℓ ∈ s, (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ 2) =
-      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ 2 := by
+    (∑ ℓ ∈ s, (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ (2 : ℕ)) =
+      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ (2 : ℕ) := by
   rw [← Finset.mul_sum, Finset.sum_comm]
 
 private theorem finite_mean_square_floor (s : Finset (E →L[ℂ] ℂ)) (x : ℕ → E) (r : ℝ)
-    (hf : ∀ n, r ≤ ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ 2)
+    (hf : ∀ n, r ≤ ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ (2 : ℕ))
     (hm : ∀ ℓ ∈ s, Tendsto (fun N : ℕ => (N : ℝ)⁻¹ *
-      ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ 2) atTop (𝓝 0)) : r ≤ 0 := by
+      ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ (2 : ℕ)) atTop (𝓝 0)) : r ≤ 0 := by
   have hsum : Tendsto (fun N : ℕ => ∑ ℓ ∈ s, (N : ℝ)⁻¹ *
-      ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ 2) atTop (𝓝 0) := by
+      ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     simpa only [Finset.sum_const_zero] using tendsto_finsetSum s hm
   apply ge_of_tendsto hsum
   apply Filter.eventually_atTop.mpr
   refine ⟨1, ?_⟩
   intro N hN
-  exact (le_cesaro_of_pointwise (fun n => ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ 2)
+  exact (le_cesaro_of_pointwise (fun n => ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ (2 : ℕ))
     r hf N (by omega)).trans_eq (sum_observation_means s x N).symm
 
 private theorem orbit_finite_norming (x : ℕ → E) (r : ℝ) (hr : 0 ≤ r)
     (hcpt : IsCompact (closure (Set.range x))) (hnorm : ∀ n, ‖x n‖ = r) :
     ∃ s : Finset (E →L[ℂ] ℂ), (∀ ℓ ∈ s, ‖ℓ‖ ≤ 1) ∧
-      ∀ n : ℕ, r ^ 2 / 4 ≤ ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ 2 := by
+      ∀ n : ℕ, r ^ (2 : ℕ) / 4 ≤ ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ (2 : ℕ) := by
   classical
   by_cases hz : r = 0
   · subst r
@@ -105,7 +105,7 @@ private theorem orbit_finite_norming (x : ℕ → E) (r : ℝ) (hr : 0 ≤ r)
 
 private theorem zero_observation_mean_tendsto (T : E →L[ℂ] E) (ℓ : E →L[ℂ] ℂ) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖ℓ ((T ^ n) 0)‖ ^ 2) atTop (𝓝 0) := by
+      ‖ℓ ((T ^ n) 0)‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
   simp only [map_zero, norm_zero, pow_two, mul_zero, Finset.sum_const_zero]
   exact tendsto_const_nhds
 end GenericObservation
@@ -122,7 +122,7 @@ theorem causalBoundedChainShift_pow_frequency_norm (b : ℝ) (n : ℕ) (u : caus
 actual shift orbit with a uniform mean-square floor, including the zero-vector case. -/
 theorem causalFrequencyOrbit_finite_norming (b : ℝ) (u : causalFrequencySpace b) :
     ∃ s : Finset (causalBoundedChain →L[ℂ] ℂ), (∀ ℓ ∈ s, ‖ℓ‖ ≤ 1) ∧
-      ∀ n : ℕ, ‖u‖ ^ 2 / 4 ≤ ∑ ℓ ∈ s, ‖ℓ ((causalBoundedChainShift ^ n) u.val)‖ ^ 2 := by
+      ∀ n : ℕ, ‖u‖ ^ (2 : ℕ) / 4 ≤ ∑ ℓ ∈ s, ‖ℓ ((causalBoundedChainShift ^ n) u.val)‖ ^ (2 : ℕ) := by
   exact orbit_finite_norming (fun n : ℕ => (causalBoundedChainShift ^ n) u.val) ‖u‖
     (norm_nonneg u) (causalFrequencySpace_compact_orbit b u)
     (fun n => causalBoundedChainShift_pow_frequency_norm b n u)
@@ -131,7 +131,7 @@ theorem causalFrequencyOrbit_finite_norming (b : ℝ) (u : causalFrequencySpace 
 actual derivative-shift orbit. -/
 def causalFrequencyObservationMeanSquare (b : ℝ) (u : causalFrequencySpace b)
     (ℓ : causalBoundedChain →L[ℂ] ℂ) (N : ℕ) : ℝ :=
-  (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((causalBoundedChainShift ^ n) u.val)‖ ^ 2
+  (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((causalBoundedChainShift ^ n) u.val)‖ ^ (2 : ℕ)
 
 /-- The zero vector is exactly the vector invisible in mean square to every
 bounded ambient linear observation of its actual shift orbit. -/
@@ -143,9 +143,9 @@ theorem causalFrequencyObservationMeanSquare_vanish_iff (b : ℝ) (u : causalFre
     by_contra hu
     obtain ⟨s, _, hf⟩ := causalFrequencyOrbit_finite_norming b u
     have h := finite_mean_square_floor s
-      (fun n : ℕ => (causalBoundedChainShift ^ n) u.val) (‖u‖ ^ 2 / 4) hf
+      (fun n : ℕ => (causalBoundedChainShift ^ n) u.val) (‖u‖ ^ (2 : ℕ) / 4) hf
       (fun ℓ _ => hm ℓ)
-    have hp : 0 < ‖u‖ ^ 2 := pow_pos (norm_pos_iff.mpr hu) 2
+    have hp : 0 < ‖u‖ ^ (2 : ℕ) := pow_pos (norm_pos_iff.mpr hu) 2
     linarith
   · rintro rfl ℓ
     exact zero_observation_mean_tendsto causalBoundedChainShift ℓ

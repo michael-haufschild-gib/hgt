@@ -18,20 +18,20 @@ the exact factor `1 / 8`. -/
 theorem summable_routePPrimitiveDepthSquare_cubicWeightedEnergy
     (f : Nat.Primes × ℕ → ℝ)
     (hf : Summable (fun pe =>
-      xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ 2)) :
+      xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ (2 : ℕ))) :
     Summable (fun pe =>
       xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveDepthSquare pe) *
-        (routePPrimitiveDepthSquareModularGain pe * f pe) ^ 2) := by
+        (routePPrimitiveDepthSquareModularGain pe * f pe) ^ (2 : ℕ)) := by
   apply (hf.div_const 8).congr
   intro pe
   calc
-    (xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ 2) / 8 =
+    (xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ (2 : ℕ)) / 8 =
         (xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveDepthSquare pe) *
-          routePPrimitiveDepthSquareModularGain pe ^ 2) * f pe ^ 2 := by
+          routePPrimitiveDepthSquareModularGain pe ^ (2 : ℕ)) * f pe ^ (2 : ℕ) := by
       rw [routePPrimitiveDepthSquare_cubicWeight_modularGain_sq]
       ring
     _ = xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveDepthSquare pe) *
-        (routePPrimitiveDepthSquareModularGain pe * f pe) ^ 2 := by
+        (routePPrimitiveDepthSquareModularGain pe * f pe) ^ (2 : ℕ) := by
       ring
 
 /-- The total cubic energy of a summable source is exactly divided by eight under literal
@@ -40,25 +40,25 @@ theorem tsum_routePPrimitiveDepthSquare_cubicWeightedEnergy
     (f : Nat.Primes × ℕ → ℝ) :
     ∑' pe,
       xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveDepthSquare pe) *
-        (routePPrimitiveDepthSquareModularGain pe * f pe) ^ 2 =
-      (∑' pe, xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ 2) / 8 := by
+        (routePPrimitiveDepthSquareModularGain pe * f pe) ^ (2 : ℕ) =
+      (∑' pe, xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ (2 : ℕ)) / 8 := by
   rw [div_eq_mul_inv, ← tsum_mul_right]
   apply tsum_congr
   intro pe
   calc
     xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveDepthSquare pe) *
-        (routePPrimitiveDepthSquareModularGain pe * f pe) ^ 2 =
-        (xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ 2) / 8 := by
+        (routePPrimitiveDepthSquareModularGain pe * f pe) ^ (2 : ℕ) =
+        (xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ (2 : ℕ)) / 8 := by
       calc
         xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveDepthSquare pe) *
-            (routePPrimitiveDepthSquareModularGain pe * f pe) ^ 2 =
+            (routePPrimitiveDepthSquareModularGain pe * f pe) ^ (2 : ℕ) =
             (xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveDepthSquare pe) *
-              routePPrimitiveDepthSquareModularGain pe ^ 2) * f pe ^ 2 := by
+              routePPrimitiveDepthSquareModularGain pe ^ (2 : ℕ)) * f pe ^ (2 : ℕ) := by
                 ring
-        _ = (xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ 2) / 8 := by
+        _ = (xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ (2 : ℕ)) / 8 := by
           rw [routePPrimitiveDepthSquare_cubicWeight_modularGain_sq]
           ring
-    _ = (xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ 2) * (8 : ℝ)⁻¹ := by
+    _ = (xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ (2 : ℕ)) * (8 : ℝ)⁻¹ := by
       rw [div_eq_mul_inv]
 
 end

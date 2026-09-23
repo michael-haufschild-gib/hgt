@@ -34,7 +34,7 @@ noncomputable section
 
 /-- The normalized squared deviation of one divisor copy. -/
 def xiDeviationMassDensity (q : XiZeroCopy) : ℝ :=
-  (xiSpectralPoint q).im ^ 2 / ‖xiSpectralPoint q‖ ^ 2
+  (xiSpectralPoint q).im ^ (2 : ℕ) / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
 
 /-- The total normalized deviation mass of the multiplicity-exact Xi divisor. -/
 def xiTotalDeviationMass : ℝ :=
@@ -47,12 +47,12 @@ theorem xiDeviationMassDensity_nonneg (q : XiZeroCopy) :
 
 /-- The strip dominates each density by a quarter of the Hadamard density. -/
 theorem xiDeviationMassDensity_le (q : XiZeroCopy) :
-    xiDeviationMassDensity q ≤ (1 / 4) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
-  have him : (xiSpectralPoint q).im ^ 2 ≤ 1 / 4 := by
+    xiDeviationMassDensity q ≤ (1 / 4) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
+  have him : (xiSpectralPoint q).im ^ (2 : ℕ) ≤ 1 / 4 := by
     have h := abs_xiSpectralPoint_im_lt_half q
     nlinarith [abs_nonneg ((xiSpectralPoint q).im), sq_abs ((xiSpectralPoint q).im)]
-  have hrw : (1 / 4 : ℝ) * (1 / ‖xiSpectralPoint q‖ ^ 2) =
-      (1 / 4) / ‖xiSpectralPoint q‖ ^ 2 := by ring
+  have hrw : (1 / 4 : ℝ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) =
+      (1 / 4) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by ring
   rw [xiDeviationMassDensity, hrw, div_eq_mul_inv, div_eq_mul_inv]
   exact mul_le_mul_of_nonneg_right him (inv_nonneg.mpr (sq_nonneg _))
 
@@ -66,7 +66,7 @@ theorem xiDeviationMassDensity_summable :
 /-- The total deviation mass is at most a quarter of the Hadamard sum. -/
 theorem xiTotalDeviationMass_le_quarter :
     xiTotalDeviationMass ≤
-      (1 / 4) * ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+      (1 / 4) * ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   rw [xiTotalDeviationMass, ← tsum_mul_left]
   exact xiDeviationMassDensity_summable.tsum_le_tsum xiDeviationMassDensity_le
     (xiSpectralPoint_inv_sq_summable.mul_left (1 / 4))
@@ -97,12 +97,12 @@ theorem riemannHypothesis_iff_totalDeviationMass_eq_zero :
       le_antisymm (hmass ▸ hle) (xiDeviationMassDensity_nonneg q)
     have him : (xiSpectralPoint q).im = 0 := by
       rw [xiDeviationMassDensity] at hdens
-      by_cases hnorm : ‖xiSpectralPoint q‖ ^ 2 = 0
+      by_cases hnorm : ‖xiSpectralPoint q‖ ^ (2 : ℕ) = 0
       · have : xiSpectralPoint q = 0 :=
           norm_eq_zero.mp (pow_eq_zero_iff two_ne_zero |>.mp hnorm)
         rw [this]
         simp
-      · have hsq : (xiSpectralPoint q).im ^ 2 = 0 :=
+      · have hsq : (xiSpectralPoint q).im ^ (2 : ℕ) = 0 :=
           (div_eq_zero_iff.mp hdens).resolve_right hnorm
         exact pow_eq_zero_iff two_ne_zero |>.mp hsq
     refine ⟨(xiSpectralPoint q).re, ?_⟩
@@ -116,7 +116,7 @@ theorem riemannHypothesis_iff_totalDeviationMass_eq_zero :
 Vallée-Poussin margin above. -/
 def xiArithmeticDeviationCeiling (δ A : ℝ) (q : XiZeroCopy) : ℝ :=
   if |(xiSpectralPoint q).re| ≤ 3 then 1 / 4 - δ
-  else 1 / 4 - A / Real.log |(xiSpectralPoint q).re| ^ 9 / 2
+  else 1 / 4 - A / Real.log |(xiSpectralPoint q).re| ^ (9 : ℕ) / 2
 
 /-- **The all-heights arithmetic weight profile.**  There are arithmetic constants `δ, A` for
 which the ceiling bounds every squared deviation, sits strictly below `1/4` at every divisor
@@ -125,14 +125,14 @@ convergent divided-difference energy — no support restriction. -/
 theorem exists_arithmetic_weighted_moment_bound :
     ∃ δ A : ℝ, 0 < δ ∧ A ∈ Set.Ioc 0 (1 / 2) ∧
       (∀ q : XiZeroCopy,
-        (xiSpectralPoint q).im ^ 2 ≤ xiArithmeticDeviationCeiling δ A q) ∧
+        (xiSpectralPoint q).im ^ (2 : ℕ) ≤ xiArithmeticDeviationCeiling δ A q) ∧
       (∀ q : XiZeroCopy, xiArithmeticDeviationCeiling δ A q < 1 / 4) ∧
       ∀ F : ℂ → ℂ, XiWeilSquareSummable F →
         Summable (fun q : XiZeroCopy =>
-          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2) →
-        (∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ 2) -
+          ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ)) →
+        (∑' q : XiZeroCopy, ‖xiWeilEvenPart F (xiSpectralPoint q)‖ ^ (2 : ℕ)) -
             ∑' q : XiZeroCopy, xiArithmeticDeviationCeiling δ A q *
-              ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 ≤
+              ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
           (xiWeilPolarization F F).re := by
   obtain ⟨δ₀, hδ₀, hlow⟩ := exists_xiSpectralPoint_deviation_gap_low
   obtain ⟨A, hA, hhigh⟩ := exists_xiSpectralPoint_deviation_gap_high
@@ -145,7 +145,7 @@ theorem exists_arithmetic_weighted_moment_bound :
     rw [Real.lt_log_iff_exp_lt (by linarith)]
     linarith [Real.exp_one_lt_d9]
   have hpoint : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q).im ^ 2 ≤ xiArithmeticDeviationCeiling δ A q := by
+      (xiSpectralPoint q).im ^ (2 : ℕ) ≤ xiArithmeticDeviationCeiling δ A q := by
     intro q
     rw [xiArithmeticDeviationCeiling]
     by_cases hq : |(xiSpectralPoint q).re| ≤ 3
@@ -163,7 +163,7 @@ theorem exists_arithmetic_weighted_moment_bound :
       linarith
     · rw [if_neg hq]
       have hl := hlog q (not_le.mp hq)
-      have : 0 < A / Real.log |(xiSpectralPoint q).re| ^ 9 / 2 := by
+      have : 0 < A / Real.log |(xiSpectralPoint q).re| ^ (9 : ℕ) / 2 := by
         apply div_pos (div_pos hA.1 (pow_pos (by linarith) 9))
         norm_num
       linarith
@@ -175,22 +175,22 @@ theorem exists_arithmetic_weighted_moment_bound :
       linarith
     · rw [if_neg hq]
       have hl := hlog q (not_le.mp hq)
-      have hpow : 1 ≤ Real.log |(xiSpectralPoint q).re| ^ 9 := one_le_pow₀ hl.le
-      have hεle : A / Real.log |(xiSpectralPoint q).re| ^ 9 ≤ 1 / 2 :=
+      have hpow : 1 ≤ Real.log |(xiSpectralPoint q).re| ^ (9 : ℕ) := one_le_pow₀ hl.le
+      have hεle : A / Real.log |(xiSpectralPoint q).re| ^ (9 : ℕ) ≤ 1 / 2 :=
         le_trans (div_le_self hA.1.le hpow) hA.2
       linarith
   refine ⟨δ, A, hδpos, hA, hpoint, hlt, ?_⟩
   intro F hF hD
   rw [xiWeilPolarization_re_eq_deviation_moment hF]
   have hwsum : Summable (fun q : XiZeroCopy => xiArithmeticDeviationCeiling δ A q *
-      ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2) := by
+      ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ)) := by
     refine Summable.of_nonneg_of_le
       (fun q => mul_nonneg (hnonneg q) (sq_nonneg _)) (fun q => ?_) (hD.mul_left (1 / 4))
     exact mul_le_mul_of_nonneg_right (le_of_lt (hlt q)) (sq_nonneg _)
-  have hmoment : (∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ 2 *
-        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2) ≤
+  have hmoment : (∑' q : XiZeroCopy, (xiSpectralPoint q).im ^ (2 : ℕ) *
+        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ)) ≤
       ∑' q : XiZeroCopy, xiArithmeticDeviationCeiling δ A q *
-        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ 2 :=
+        ‖dslope F ((starRingEnd ℂ) (xiSpectralPoint q)) (xiSpectralPoint q)‖ ^ (2 : ℕ) :=
     (deviation_dslope_energy_summable hF).tsum_le_tsum
       (fun q => mul_le_mul_of_nonneg_right (hpoint q) (sq_nonneg _)) hwsum
   linarith
@@ -202,12 +202,12 @@ theorem xiTotalDeviationMass_le_arithmetic_ceiling :
       (∀ q : XiZeroCopy, xiArithmeticDeviationCeiling δ A q < 1 / 4) ∧
       xiTotalDeviationMass ≤
         ∑' q : XiZeroCopy,
-          xiArithmeticDeviationCeiling δ A q * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          xiArithmeticDeviationCeiling δ A q * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   obtain ⟨δ, A, hδ, hA, hpoint, hlt, -⟩ := exists_arithmetic_weighted_moment_bound
   have hnonneg : ∀ q : XiZeroCopy, 0 ≤ xiArithmeticDeviationCeiling δ A q :=
     fun q => le_trans (sq_nonneg _) (hpoint q)
   have hwsum : Summable (fun q : XiZeroCopy =>
-      xiArithmeticDeviationCeiling δ A q * (1 / ‖xiSpectralPoint q‖ ^ 2)) := by
+      xiArithmeticDeviationCeiling δ A q * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) := by
     refine Summable.of_nonneg_of_le
       (fun q => mul_nonneg (hnonneg q) (by positivity)) (fun q => ?_)
       (xiSpectralPoint_inv_sq_summable.mul_left (1 / 4))

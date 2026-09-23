@@ -50,7 +50,7 @@ theorem xiThetaReciprocalNumericalValue_eq_of_deriv_ne_zero
     (q : XiZeroCopy) (hderiv : deriv XiC (xiSpectralPoint q) ≠ 0) :
     xiThetaReciprocalNumericalValue q =
       (xiSpectralPoint q)⁻¹ *
-        Complex.ofReal (‖xiThetaEigenEvaluationLp q‖ ^ 2) := by
+        Complex.ofReal (‖xiThetaEigenEvaluationLp q‖ ^ (2 : ℕ)) := by
   rw [xiThetaReciprocalNumericalValue,
     xiReciprocalOperator_thetaEigen_of_deriv_ne_zero q hderiv,
     inner_smul_right, inner_self_eq_norm_sq_to_K]
@@ -61,11 +61,11 @@ theorem xiThetaReciprocalNumericalValue_eq_of_deriv_ne_zero
 theorem xiThetaReciprocalNumericalValue_im_eq_of_deriv_ne_zero
     (q : XiZeroCopy) (hderiv : deriv XiC (xiSpectralPoint q) ≠ 0) :
     (xiThetaReciprocalNumericalValue q).im =
-      (xiSpectralPoint q)⁻¹.im * ‖xiThetaEigenEvaluationLp q‖ ^ 2 := by
+      (xiSpectralPoint q)⁻¹.im * ‖xiThetaEigenEvaluationLp q‖ ^ (2 : ℕ) := by
   rw [xiThetaReciprocalNumericalValue_eq_of_deriv_ne_zero q hderiv, mul_im]
-  have hre : (Complex.ofReal (‖xiThetaEigenEvaluationLp q‖ ^ 2)).re =
-      ‖xiThetaEigenEvaluationLp q‖ ^ 2 := Complex.ofReal_re _
-  have him : (Complex.ofReal (‖xiThetaEigenEvaluationLp q‖ ^ 2)).im = 0 :=
+  have hre : (Complex.ofReal (‖xiThetaEigenEvaluationLp q‖ ^ (2 : ℕ))).re =
+      ‖xiThetaEigenEvaluationLp q‖ ^ (2 : ℕ) := Complex.ofReal_re _
+  have him : (Complex.ofReal (‖xiThetaEigenEvaluationLp q‖ ^ (2 : ℕ))).im = 0 :=
     Complex.ofReal_im _
   rw [hre, him]
   ring
@@ -124,15 +124,15 @@ theorem xiSpectralPoint_real_of_numericalUpperSector_of_deriv_ne_zero
   rw [xiThetaReciprocalNumericalValue_im_eq_of_deriv_ne_zero q hderiv] at hq
   rw [xiThetaReciprocalNumericalValue_im_eq_of_deriv_ne_zero qr hderivR,
     xiSpectralPoint_reflect q] at hr
-  have hnq : 0 < ‖xiThetaEigenEvaluationLp q‖ ^ 2 :=
+  have hnq : 0 < ‖xiThetaEigenEvaluationLp q‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr
       (xiThetaEigenEvaluationLp_ne_zero_of_deriv_ne_zero q hderiv))
-  have hnr : 0 < ‖xiThetaEigenEvaluationLp qr‖ ^ 2 :=
+  have hnr : 0 < ‖xiThetaEigenEvaluationLp qr‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr
       (xiThetaEigenEvaluationLp_ne_zero_of_deriv_ne_zero qr hderivR))
   have himInv : (xiSpectralPoint q)⁻¹.im = 0 := by
     have hr' : 0 ≤ -(xiSpectralPoint q)⁻¹.im *
-        ‖xiThetaEigenEvaluationLp qr‖ ^ 2 := by
+        ‖xiThetaEigenEvaluationLp qr‖ ^ (2 : ℕ) := by
       simpa using hr
     nlinarith
   have hnorm : 0 < normSq (xiSpectralPoint q) :=

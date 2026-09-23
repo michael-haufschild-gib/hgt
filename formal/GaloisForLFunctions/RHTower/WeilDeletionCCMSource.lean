@@ -74,7 +74,7 @@ theorem rayCoef_product_derivative_eq_paperFT_autocorr {a : SuzukiPositiveApertu
     (hg : ContDiff ℝ (⊤ : ℕ∞) g) {c d : ℝ} (hgs : Function.support g ⊆ Icc c d) (q : XiZeroCopy) :
     suzukiTestRayCoefBar u.toSuzukiSmoothCompactTest.toDerivativeZeroMean q *
         suzukiTestRayCoef u.toSuzukiSmoothCompactTest.toDerivativeZeroMean q /
-          xiSpectralPoint q ^ 2 =
+          xiSpectralPoint q ^ (2 : ℕ) =
       Zeta23.paperFT (fun x => (autocorr g x : ℂ)) (xiSpectralPoint q) := by
   set γ : ℂ := xiSpectralPoint q with hγ
   have hγ0 : γ ≠ 0 := xiSpectralPoint_ne_zero q
@@ -148,7 +148,7 @@ theorem ccmRestrictedWeilSourceQuadratic_twoBumpSource_eq_tsum (n : ℕ) {u₀ :
 /-! ## Spectral points have modulus squared above `41/2` -/
 
 theorem fortyOne_div_two_lt_normSq_spectralPoint (q : XiZeroCopy) :
-    (41 / 2 : ℝ) < ‖xiSpectralPoint q‖ ^ 2 := by
+    (41 / 2 : ℝ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have him := xiZeroCopy_fortyOne_div_two_lt_im_sq q
   have hre : (xiSpectralPoint q).re = ((q.1 : ℂ)).im := by
     simp [xiSpectralPoint, Complex.mul_re]
@@ -169,18 +169,18 @@ theorem abs_ccmRestrictedWeilSourceQuadratic_twoBumpSource_le (n : ℕ) {u₀ p 
   have hC0 : 0 ≤ C := by rw [hC]; positivity
   set F : XiZeroCopy → ℂ := fun q =>
     Zeta23.paperFT (fun x => (autocorr (twoBump (phiN n) u₀) x : ℂ)) (xiSpectralPoint q) with hF
-  have hterm : ∀ q : XiZeroCopy, ‖F q‖ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ 2) := fun q =>
+  have hterm : ∀ q : XiZeroCopy, ‖F q‖ ≤ C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := fun q =>
     norm_paperFT_autocorr_twoBump_le n hu hexp_half (xiSpectralPoint_ne_zero q)
       (abs_xiSpectralPoint_im_lt_half q).le (fortyOne_div_two_lt_normSq_spectralPoint q)
-  have hg_summ : Summable (fun q : XiZeroCopy => C * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
+  have hg_summ : Summable (fun q : XiZeroCopy => C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
     xiSpectralPoint_inv_sq_summable.mul_left _
   have hnorm_summ : Summable (fun q : XiZeroCopy => ‖F q‖) :=
     Summable.of_nonneg_of_le (fun q => norm_nonneg _) hterm hg_summ
   have h1 : |(∑' q, F q).re| ≤ ‖∑' q, F q‖ := Complex.abs_re_le_norm _
   have h2 : ‖∑' q, F q‖ ≤ ∑' q, ‖F q‖ := norm_tsum_le_tsum_norm hnorm_summ
-  have h3 : ∑' q, ‖F q‖ ≤ ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ 2) :=
+  have h3 : ∑' q, ‖F q‖ ≤ ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     hnorm_summ.tsum_le_tsum hterm hg_summ
-  have h4 : ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ 2) ≤ C * (33 / 100) := by
+  have h4 : ∑' q : XiZeroCopy, C * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) ≤ C * (33 / 100) := by
     rw [tsum_mul_left]
     exact mul_le_mul_of_nonneg_left tsum_inv_normSq_spectralPoint_lt.le hC0
   linarith

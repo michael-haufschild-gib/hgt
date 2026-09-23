@@ -21,7 +21,7 @@ the completed functional equation `ξ(1 − s) = ξ(s)` (`xi_one_sub`).  The `1`
 invariant under `s ↦ 1 − s` (its coefficient is anti-invariant, cancelling the `ds ↦ −ds` pullback);
 `boundary_flux_reciprocity` exhibits the same anti-invariance for the boundary pair in isolation.
 
-The remaining positivity object `H_Δ^1` is a Hilbert quotient of the completed seam space by the
+The remaining positivity object `H_Δ^(1 : ℕ)` is a Hilbert quotient of the completed seam space by the
 boundary subspace; its norm is nonnegative because a quotient seminorm of a positive space is
 (`seam_H1_seminorm_nonneg`).  The determinant identification of that quotient's spectral divisor with
 the `ξ`-divisor stays the final RH-strength step (`SeamCrossingTower.seam_spectral_iff_rh`).
@@ -118,13 +118,13 @@ theorem seam_determinant_divisor_of_const_mul (C : ℂ) (hC : C ≠ 0) (ρ : ℂ
 
 /-! ### §5 The middle seam cohomology is positive -/
 
-/-- **`H_Δ^1` positivity.**  The completed seam space is a positive Hilbert space; the middle
-cohomology `H_Δ^1` is its quotient by the boundary subspace, whose seminorm — the infimum of the
+/-- **`H_Δ^(1 : ℕ)` positivity.**  The completed seam space is a positive Hilbert space; the middle
+cohomology `H_Δ^(1 : ℕ)` is its quotient by the boundary subspace, whose seminorm — the infimum of the
 positive norm over boundary representatives — is nonnegative.  So the seam quadratic form
-`W_Δ(h) = ‖[𝔖_Δ(h)]‖²_{H^1} ≥ 0`, unconditionally.  (The identification of this quotient's spectral
+`W_Δ(h) = ‖[𝔖_Δ(h)]‖²_{H^(1 : ℕ)} ≥ 0`, unconditionally.  (The identification of this quotient's spectral
 divisor with the `ξ`-divisor remains the RH-strength step, `seam_spectral_iff_rh`.) -/
 theorem seam_H1_seminorm_nonneg {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
-    (B : Submodule ℂ E) (v : E) : 0 ≤ ⨅ β : B, ‖v + (β : E)‖ ^ 2 :=
+    (B : Submodule ℂ E) (v : E) : 0 ≤ ⨅ β : B, ‖v + (β : E)‖ ^ (2 : ℕ) :=
   le_ciInf fun β => by positivity
 
 end RHTower

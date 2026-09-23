@@ -21,7 +21,7 @@ open SelbergMaassCongruenceTrace SelbergMaassMean SelbergMaassTraceEnergy Selber
 noncomputable section
 
 /-- Height of the unit-circle boundary in the modular strip. -/
-def arcHeight (x : ℝ) : ℝ := Real.sqrt (1 - x ^ 2)
+def arcHeight (x : ℝ) : ℝ := Real.sqrt (1 - x ^ (2 : ℕ))
 
 /-- The circular boundary stays strictly above the real axis on the modular strip. -/
 theorem arcHeight_pos {x : ℝ} (hx : x ∈ Icc (-(1 / 2 : ℝ)) (1 / 2)) : 0 < arcHeight x := by
@@ -30,7 +30,7 @@ theorem arcHeight_pos {x : ℝ} (hx : x ∈ Icc (-(1 / 2 : ℝ)) (1 / 2)) : 0 < 
 
 /-- Exact squared height of the circular boundary. -/
 theorem arcHeight_sq {x : ℝ} (hx : x ∈ Icc (-(1 / 2 : ℝ)) (1 / 2)) :
-    arcHeight x ^ 2 = 1 - x ^ 2 :=
+    arcHeight x ^ (2 : ℕ) = 1 - x ^ (2 : ℕ) :=
   Real.sq_sqrt (Real.sqrt_pos.mp (arcHeight_pos hx)).le
 
 /-- Vertical FTC for an actual first directional trace current. -/

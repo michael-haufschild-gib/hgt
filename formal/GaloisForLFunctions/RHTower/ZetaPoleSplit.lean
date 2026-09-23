@@ -95,12 +95,12 @@ theorem neg_zeta_logDeriv_eq {s : ℂ} (hs : s ≠ 1)
       div_self (sub_ne_zero.2 hv), mul_one]
   have hqd : HasDerivAt (fun w : ℂ => zetaPoleUnit w / (w - 1))
       ((deriv zetaPoleUnit s * (s - 1) - zetaPoleUnit s * 1)
-        / (s - 1) ^ 2) s :=
+        / (s - 1) ^ (2 : ℕ)) s :=
     (differentiable_zetaPoleUnit s).hasDerivAt.div
       ((hasDerivAt_id s).sub_const 1) hs1
   have hd : deriv riemannZeta s
       = (deriv zetaPoleUnit s * (s - 1) - zetaPoleUnit s * 1)
-        / (s - 1) ^ 2 := by
+        / (s - 1) ^ (2 : ℕ) := by
     rw [heq.deriv_eq]
     exact hqd.deriv
   have hζs : riemannZeta s = zetaPoleUnit s / (s - 1) := by

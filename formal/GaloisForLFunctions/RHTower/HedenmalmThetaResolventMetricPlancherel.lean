@@ -92,8 +92,8 @@ theorem memLp_two_thetaEsscherSourceProfile_zero (u : SourceSpace thetaSource) :
 
 /-- Zero-tilt physical energy is the ordinary source energy divided by total theta mass. -/
 theorem integral_norm_sq_thetaEsscherSourceProfile_zero (u : SourceSpace thetaSource) :
-    (∫ x : ℝ, ‖thetaEsscherSourceProfile 0 u x‖ ^ 2) =
-      (∫ x : ℝ, ‖(u x : ℂ)‖ ^ 2) / thetaSource.mass := by
+    (∫ x : ℝ, ‖thetaEsscherSourceProfile 0 u x‖ ^ (2 : ℕ)) =
+      (∫ x : ℝ, ‖(u x : ℂ)‖ ^ (2 : ℕ)) / thetaSource.mass := by
   rw [← MeasureTheory.integral_div]
   apply integral_congr_ae
   filter_upwards with x
@@ -176,17 +176,17 @@ theorem integral_norm_sq_thetaComplexResolventMoment_quantileUnitary
     (hL2 : MemLp (thetaEsscherSourceProfile h u) 2 (volume : Measure ℝ)) :
     (∫ tau : ℝ,
         ‖thetaComplexResolventMoment (thetaEsscherResolventParameter h tau)
-          (quantileUnitary thetaSource u)‖ ^ 2) =
-      2 * Real.pi * ∫ x : ℝ, ‖thetaEsscherSourceProfile h u x‖ ^ 2 := by
+          (quantileUnitary thetaSource u)‖ ^ (2 : ℕ)) =
+      2 * Real.pi * ∫ x : ℝ, ‖thetaEsscherSourceProfile h u x‖ ^ (2 : ℕ) := by
   have hline : (fun tau : ℝ =>
       ‖thetaComplexResolventMoment (thetaEsscherResolventParameter h tau)
-        (quantileUnitary thetaSource u)‖ ^ 2) =
+        (quantileUnitary thetaSource u)‖ ^ (2 : ℕ)) =
       fun tau : ℝ => ‖𝓕 (thetaEsscherSourceProfile h u)
-        (tau / (2 * Real.pi))‖ ^ 2 := by
+        (tau / (2 * Real.pi))‖ ^ (2 : ℕ) := by
     funext tau
     rw [thetaComplexResolventMoment_quantileUnitary_eq_fourier]
   rw [hline]
-  let H : ℝ → ℝ := fun xi => ‖𝓕 (thetaEsscherSourceProfile h u) xi‖ ^ 2
+  let H : ℝ → ℝ := fun xi => ‖𝓕 (thetaEsscherSourceProfile h u) xi‖ ^ (2 : ℕ)
   have hscale := MeasureTheory.Measure.integral_comp_div H (2 * Real.pi)
   rw [hscale, abs_of_pos (mul_pos (by norm_num) Real.pi_pos)]
   simp only [smul_eq_mul]
@@ -274,12 +274,12 @@ theorem integral_conj_mul_criticalMoment_eq_sourcePairing
 line.  This is the precise algebraic source of divisor blindness in positive row energies. -/
 theorem norm_rootA_sq_mul_norm_pinnedMean_resolvent_sq
     {h : ℝ} (hh : 1 / 2 ≤ |h|) (tau : ℝ) (u : SourceSpace thetaSource) :
-    ‖rootA thetaSource (thetaEsscherResolventParameter h tau) 1‖ ^ 2 *
+    ‖rootA thetaSource (thetaEsscherResolventParameter h tau) 1‖ ^ (2 : ℕ) *
         ‖pinnedMean
           (thetaComplexResolvent (thetaEsscherResolventParameter h tau)
-            (quantileUnitary thetaSource u))‖ ^ 2 =
+            (quantileUnitary thetaSource u))‖ ^ (2 : ℕ) =
       ‖thetaComplexResolventMoment (thetaEsscherResolventParameter h tau)
-        (quantileUnitary thetaSource u)‖ ^ 2 := by
+        (quantileUnitary thetaSource u)‖ ^ (2 : ℕ) := by
   have hz :=
     isUnit_thetaSourcePencil_thetaEsscherResolventParameter_of_half_le_abs hh tau
   have hA : rootA thetaSource (thetaEsscherResolventParameter h tau) 1 ≠ 0 :=
@@ -291,7 +291,7 @@ theorem norm_rootA_sq_mul_norm_pinnedMean_resolvent_sq
 determinant weighting.  No diagonalization or absolute value is used here. -/
 theorem norm_rootA_sq_mul_conj_pinnedMean_mul_pinnedMean
     {h : ℝ} (hh : 1 / 2 ≤ |h|) (tau : ℝ) (u v : SourceSpace thetaSource) :
-    ((‖rootA thetaSource (thetaEsscherResolventParameter h tau) 1‖ ^ 2 : ℝ) : ℂ) *
+    ((‖rootA thetaSource (thetaEsscherResolventParameter h tau) 1‖ ^ (2 : ℕ) : ℝ) : ℂ) *
         (starRingEnd ℂ)
           (pinnedMean
             (thetaComplexResolvent (thetaEsscherResolventParameter h tau)
@@ -311,7 +311,7 @@ theorem norm_rootA_sq_mul_conj_pinnedMean_mul_pinnedMean
   have hstarA : (starRingEnd ℂ) A ≠ 0 := by simpa using hA
   rw [pinnedMean_thetaComplexResolvent_eq hz,
     pinnedMean_thetaComplexResolvent_eq hz, map_div₀]
-  change ((‖A‖ ^ 2 : ℝ) : ℂ) *
+  change ((‖A‖ ^ (2 : ℕ) : ℝ) : ℂ) *
       ((starRingEnd ℂ)
           (thetaComplexResolventMoment (thetaEsscherResolventParameter h tau)
             (quantileUnitary thetaSource u)) /
@@ -329,24 +329,24 @@ theorem integral_detWeighted_resolventRow_eq_sourceEnergy
     (hL1 : Integrable (thetaEsscherSourceProfile h u) (volume : Measure ℝ))
     (hL2 : MemLp (thetaEsscherSourceProfile h u) 2 (volume : Measure ℝ)) :
     (∫ tau : ℝ,
-        ‖rootA thetaSource (thetaEsscherResolventParameter h tau) 1‖ ^ 2 *
+        ‖rootA thetaSource (thetaEsscherResolventParameter h tau) 1‖ ^ (2 : ℕ) *
           ‖pinnedMean
             (thetaComplexResolvent (thetaEsscherResolventParameter h tau)
-              (quantileUnitary thetaSource u))‖ ^ 2) =
-      2 * Real.pi * ∫ x : ℝ, ‖thetaEsscherSourceProfile h u x‖ ^ 2 := by
+              (quantileUnitary thetaSource u))‖ ^ (2 : ℕ)) =
+      2 * Real.pi * ∫ x : ℝ, ‖thetaEsscherSourceProfile h u x‖ ^ (2 : ℕ) := by
   calc
     (∫ tau : ℝ,
-        ‖rootA thetaSource (thetaEsscherResolventParameter h tau) 1‖ ^ 2 *
+        ‖rootA thetaSource (thetaEsscherResolventParameter h tau) 1‖ ^ (2 : ℕ) *
           ‖pinnedMean
             (thetaComplexResolvent (thetaEsscherResolventParameter h tau)
-              (quantileUnitary thetaSource u))‖ ^ 2) =
+              (quantileUnitary thetaSource u))‖ ^ (2 : ℕ)) =
         ∫ tau : ℝ,
           ‖thetaComplexResolventMoment (thetaEsscherResolventParameter h tau)
-            (quantileUnitary thetaSource u)‖ ^ 2 := by
+            (quantileUnitary thetaSource u)‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards with tau
       exact norm_rootA_sq_mul_norm_pinnedMean_resolvent_sq hh tau u
-    _ = 2 * Real.pi * ∫ x : ℝ, ‖thetaEsscherSourceProfile h u x‖ ^ 2 :=
+    _ = 2 * Real.pi * ∫ x : ℝ, ‖thetaEsscherSourceProfile h u x‖ ^ (2 : ℕ) :=
       integral_norm_sq_thetaComplexResolventMoment_quantileUnitary h u hL1 hL2
 
 /-- **Unconditional metric synthesis.**  Total critical-line source-character row energy is
@@ -355,7 +355,7 @@ theorem integral_norm_sq_criticalMoment_eq_thetaMetric
     (u : SourceSpace thetaSource) :
     (∫ tau : ℝ,
         ‖thetaComplexResolventMoment (thetaEsscherResolventParameter 0 tau)
-          (quantileUnitary thetaSource u)‖ ^ 2) =
+          (quantileUnitary thetaSource u)‖ ^ (2 : ℕ)) =
       2 * Real.pi *
         (inner ℂ (thetaMetricOperator (quantileUnitary thetaSource u))
           (quantileUnitary thetaSource u) : ℂ).re := by
@@ -364,17 +364,17 @@ theorem integral_norm_sq_criticalMoment_eq_thetaMetric
   have hmetricReal :
       (inner ℂ (thetaMetricOperator (quantileUnitary thetaSource u))
         (quantileUnitary thetaSource u) : ℂ).re =
-        (∫ x : ℝ, ‖(u x : ℂ)‖ ^ 2) / thetaSource.mass := by
+        (∫ x : ℝ, ‖(u x : ℂ)‖ ^ (2 : ℕ)) / thetaSource.mass := by
     simpa using hmetric
   calc
     (∫ tau : ℝ,
         ‖thetaComplexResolventMoment (thetaEsscherResolventParameter 0 tau)
-          (quantileUnitary thetaSource u)‖ ^ 2) =
-        2 * Real.pi * ∫ x : ℝ, ‖thetaEsscherSourceProfile 0 u x‖ ^ 2 :=
+          (quantileUnitary thetaSource u)‖ ^ (2 : ℕ)) =
+        2 * Real.pi * ∫ x : ℝ, ‖thetaEsscherSourceProfile 0 u x‖ ^ (2 : ℕ) :=
       integral_norm_sq_thetaComplexResolventMoment_quantileUnitary 0 u
         (integrable_thetaEsscherSourceProfile_zero u)
         (memLp_two_thetaEsscherSourceProfile_zero u)
-    _ = 2 * Real.pi * ((∫ x : ℝ, ‖(u x : ℂ)‖ ^ 2) / thetaSource.mass) := by
+    _ = 2 * Real.pi * ((∫ x : ℝ, ‖(u x : ℂ)‖ ^ (2 : ℕ)) / thetaSource.mass) := by
       rw [integral_norm_sq_thetaEsscherSourceProfile_zero]
     _ = 2 * Real.pi *
         (inner ℂ (thetaMetricOperator (quantileUnitary thetaSource u))

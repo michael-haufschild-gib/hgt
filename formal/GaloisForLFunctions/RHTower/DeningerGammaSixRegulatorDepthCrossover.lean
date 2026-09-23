@@ -641,7 +641,7 @@ theorem tendsto_deningerGammaSixIntegralTailOperator_crossover_deattenuated
   have hresult := ht.congr' (f₂ := fun M =>
     (mobiusThetaSuccessorSpectralNormalizer ⟨6, by omega⟩ M (mobiusThetaCenteredParameter w) *
       deningerOrdinaryIntegerAbelDefect (ε M) (6 : PNat)
-        (deningerGammaSixIntegralTailOperator k l M w) / (ε M : ℂ)^2) /
+        (deningerGammaSixIntegralTailOperator k l M w) / (ε M : ℂ)^(2 : ℕ)) /
           (Complex.ofReal ((6 : ℝ) ^ (-(M : ℝ) * ε M)))) (by
     filter_upwards [hpos, eventually_deningerGammaSixSourceDepth_admitted hrw hrw] with M he had
     rw [deningerGammaSixIntegralTailOperator_regulated_factor k l M hw hrw

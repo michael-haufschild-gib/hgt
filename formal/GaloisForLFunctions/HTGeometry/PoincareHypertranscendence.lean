@@ -99,7 +99,7 @@ theorem AlgebraicWitness.const_mul {L K : Type*} [Field L] [Field K] [Algebra K 
       _ = MvPolynomial.aeval b (P i) * y ^ i := by rw [hinv, one_mul]
 
 
-theorem contDiff_of_entire {f : ℂ → ℂ} (hf : Differentiable ℂ f) (n : ℕ) : ContDiff ℂ n f := by
+theorem contDiff_of_entire_poincareHypertranscendence {f : ℂ → ℂ} (hf : Differentiable ℂ f) (n : ℕ) : ContDiff ℂ n f := by
   have hana : AnalyticOnNhd ℂ f (Set.univ : Set ℂ) :=
     Complex.analyticOnNhd_univ_iff_differentiable.mpr hf
   refine contDiff_iff_contDiffAt.mpr fun z => ?_
@@ -120,7 +120,7 @@ theorem exists_dilate_jet_algebraicWitness {φ : ℂ → ℂ} (hφ : Differentia
           (differentiable_iteratedDeriv_of_entire (hφ.comp (differentiable_id.const_mul c)) j))) := by
   have hjetfun : iteratedDeriv j (fun z => φ (c * z))
       = fun z => c ^ j * iteratedDeriv j φ (c * z) :=
-    iteratedDeriv_comp_const_mul (contDiff_of_entire hφ j) c
+    iteratedDeriv_comp_const_mul (contDiff_of_entire_poincareHypertranscendence hφ j) c
   have hshift : AnalyticOnNhd ℂ (fun z => iteratedDeriv j φ (c * z)) (Set.univ : Set ℂ) :=
     Complex.analyticOnNhd_univ_iff_differentiable.mpr
       ((differentiable_iteratedDeriv_of_entire hφ j).comp (differentiable_id.const_mul c))

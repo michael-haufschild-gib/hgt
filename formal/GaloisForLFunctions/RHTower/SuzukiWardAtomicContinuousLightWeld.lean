@@ -26,7 +26,7 @@ open _root_.RHTower
 /-- Suzuki's regular screw sign threshold lies strictly below the unit-Riesz base aperture. -/
 theorem screwSignThreshold_lt_unitRieszSuzukiBase :
     screwSignThreshold < unitRieszSuzukiBase := by
-  have hcubic : 0 < (3 / 2 : ℝ) ^ 3 - 3 / 2 - 1 := by norm_num
+  have hcubic : 0 < (3 / 2 : ℝ) ^ (3 : ℕ) - 3 / 2 - 1 := by norm_num
   have hroot : plasticRoot < (3 / 2 : ℝ) :=
     (cubic_pos_iff_plasticRoot_lt (by norm_num)).mp hcubic
   have hlog : Real.log plasticRoot < Real.log (3 / 2 : ℝ) :=
@@ -551,7 +551,7 @@ theorem normSq_suzukiCriticalWallPositiveLightAmplitude_eq_sine
   have hsquare := congrArg Complex.im
     (sq_suzukiCriticalWallField_eq_farHingeNumerator t p e)
   have him :
-      ((suzukiCriticalWallField t p e) ^ 2).im =
+      ((suzukiCriticalWallField t p e) ^ (2 : ℕ)).im =
         (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
           Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ)) *
             Real.sin (t * Real.log (xiGammaEulerValuationNat (p, e) : ℝ)) := by

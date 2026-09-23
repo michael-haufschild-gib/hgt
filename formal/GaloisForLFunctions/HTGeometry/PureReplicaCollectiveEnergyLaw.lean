@@ -71,7 +71,7 @@ theorem quadForm_replicaSlot_gram_centered
       apply Finset.prod_eq_one
       intro x hx
       have hxi : x ≠ i := by simpa using hx
-      simp [replicaSlotFactors, hxi, quadForm_one, hv]
+      simp [replicaSlotFactors, hxi, quadForm_one_boundedReplicaThresholdProjector, hv]
     rw [hprod, mul_one]
     simp [replicaSlotFactors]
   · rw [if_neg hij]
@@ -107,7 +107,7 @@ theorem quadForm_replicaSlot_gram_centered_unnormalized
           apply Finset.prod_congr rfl
           intro x hx
           have hxi : x ≠ i := by simpa using hx
-          simp [replicaSlotFactors, hxi, quadForm_one]
+          simp [replicaSlotFactors, hxi, quadForm_one_boundedReplicaThresholdProjector]
         _ = hermInner v v ^ (r - 1) := by
           rw [Finset.prod_const, Finset.card_compl]
           simp

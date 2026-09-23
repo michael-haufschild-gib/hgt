@@ -208,7 +208,7 @@ theorem finiteHardyCrossAngleComplementGramOperator_sqrt_det_re_lt_quartetBound
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A η).toLinearMap).re <
-      m ^ 2 / (m ^ 2 + a ^ 2) := by
+      m ^ (2 : ℕ) / (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hwPlus : 0 < (symmetricPickPole x v).im := by
     simpa using hv
   have hwMinus : 0 < (symmetricPickPole (-x) v).im := by
@@ -303,7 +303,7 @@ theorem finiteNegativeLogDerivativeValue_eq_neg_I_iff
     rw [mul_assoc, hderiv, ← mul_assoc]
     have hII : Complex.I * Complex.I = (-1 : ℂ) := by
       calc
-        Complex.I * Complex.I = Complex.I ^ 2 := by ring
+        Complex.I * Complex.I = Complex.I ^ (2 : ℕ) := by ring
         _ = -1 := Complex.I_sq
     rw [hII]
     ring
@@ -324,7 +324,7 @@ theorem finiteNegativeLogDerivativeValue_eq_neg_I_iff
               rw [← mul_assoc]
               have hnegII : (-Complex.I) * Complex.I = (1 : ℂ) := by
                 calc
-                  (-Complex.I) * Complex.I = -(Complex.I ^ 2) := by ring
+                  (-Complex.I) * Complex.I = -(Complex.I ^ (2 : ℕ)) := by ring
                   _ = -(-1) := by rw [Complex.I_sq]
                   _ = 1 := by ring
               rw [hnegII, one_mul]
@@ -481,7 +481,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A η).toLinearMap).re <
-      m ^ 2 / (m ^ 2 + a ^ 2) := by
+      m ^ (2 : ℕ) / (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hfinitePlus :
       finiteNegativeLogDerivativeValue A η (symmetricPickPole x v) =
         -Complex.I := by
@@ -572,7 +572,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A η).toLinearMap).re <
-      m ^ 2 / (m ^ 2 + a ^ 2) := by
+      m ^ (2 : ℕ) / (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hfinitePlus :
       finiteNegativeLogDerivativeValue A η (symmetricPickPole x v) =
         -Complex.I := by
@@ -747,7 +747,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A η).toLinearMap).re <
-      m ^ 2 / (m ^ 2 + a ^ 2) := by
+      m ^ (2 : ℕ) / (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hdegree :
       (upperRootFactor (finiteEPolynomial A η)).natDegree = 2 := by
     rw [upperRootFactor_natDegree,
@@ -781,7 +781,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A η).toLinearMap).re <
-      m ^ 2 / (m ^ 2 + a ^ 2) := by
+      m ^ (2 : ℕ) / (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hbaseCount :
       upperHalfPlaneRootCount (finiteEPolynomial A 0) = 2 :=
     finiteEPolynomial_zero_upperRootCount_eq_two_of_quartic_even_root
@@ -813,7 +813,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A η).toLinearMap).re <
-      m ^ 2 / (m ^ 2 + a ^ 2) := by
+      m ^ (2 : ℕ) / (m ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hAPole : A.eval₂ Complex.ofRealHom
       (symmetricPickPole x v) ≠ 0 :=
     finiteE_root_base_eval_ne_zero hA hη.ne' hroot

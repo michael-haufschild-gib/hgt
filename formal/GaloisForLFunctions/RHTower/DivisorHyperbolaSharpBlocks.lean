@@ -13,7 +13,7 @@ open Finset
 namespace RHTower
 private def smoothBlock (s k : ℕ) : ℝ :=
   (∑ m ∈ Icc 1 k, Real.log m)-(2*(k:ℝ)+1)*((harmonic s:ℚ):ℝ)+
-    (s:ℝ)^2+s+2*Real.eulerMascheroniConstant*k
+    (s:ℝ)^(2 : ℕ)+s+2*Real.eulerMascheroniConstant*k
 private theorem smoothBlock_eq {s k : ℕ} (h : Nat.sqrt k=s) :
     smoothBlock s k=divisorHyperbolaSmoothRemainder k := by
   simp only [smoothBlock,divisorHyperbolaSmoothRemainder,h]
@@ -111,7 +111,7 @@ theorem divisorHyperbolaSmoothRemainder_nonneg_of_twentyFive {N : ℕ} (hN : 25 
   rwa [smoothBlock_eq rfl] at h
 
 private theorem smoothBlock_pair {s j : ℕ} (hs : 1 ≤ s) (hj : j ≤ s) :
-    (j:ℝ)^2/((s:ℝ)+1)^2 ≤
+    (j:ℝ)^(2 : ℕ)/((s:ℝ)+1)^(2 : ℕ) ≤
       smoothBlock s (s*(s+1)-j)+smoothBlock s (s*(s+1)+j)-2*smoothBlock s (s*(s+1)) := by
   let c := s*(s+1)
   induction j with
@@ -134,18 +134,18 @@ private theorem smoothBlock_pair {s j : ℕ} (hs : 1 ≤ s) (hj : j ≤ s) :
     have hlog' : (2*(j:ℝ)+1)/(c+j+1:ℕ) ≤ Real.log (c+j+1:ℕ)-Real.log (c-j:ℕ) := by
       rw [← hratio]
       linarith only [hlog]
-    have hden : ((c+j+1:ℕ):ℝ) ≤ ((s:ℝ)+1)^2 := by
+    have hden : ((c+j+1:ℕ):ℝ) ≤ ((s:ℝ)+1)^(2 : ℕ) := by
       have hjR : (j:ℝ)+1 ≤ s := by exact_mod_cast hj
       dsimp [c]
       push_cast
       nlinarith only [hjR]
     have hfrac := div_le_div_of_nonneg_left (show (0:ℝ) ≤ 2*j+1 by positivity)
       (show (0:ℝ)<(c+j+1:ℕ) by positivity) hden
-    have hpoly : ((j+1:ℕ):ℝ)^2/((s:ℝ)+1)^2 =
-        (j:ℝ)^2/((s:ℝ)+1)^2+(2*(j:ℝ)+1)/((s:ℝ)+1)^2 := by push_cast; ring
+    have hpoly : ((j+1:ℕ):ℝ)^(2 : ℕ)/((s:ℝ)+1)^(2 : ℕ) =
+        (j:ℝ)^(2 : ℕ)/((s:ℝ)+1)^(2 : ℕ)+(2*(j:ℝ)+1)/((s:ℝ)+1)^(2 : ℕ) := by push_cast; ring
     change _ ≤ smoothBlock s (c-(j+1))+smoothBlock s (c+(j+1))-2*smoothBlock s c
     rw [hpoly]
-    change (j:ℝ)^2/((s:ℝ)+1)^2 ≤ smoothBlock s (c-j)+smoothBlock s (c+j)-2*smoothBlock s c at ih'
+    change (j:ℝ)^(2 : ℕ)/((s:ℝ)+1)^(2 : ℕ) ≤ smoothBlock s (c-j)+smoothBlock s (c+j)-2*smoothBlock s c at ih'
     rw [show c+(j+1)=c+j+1 by omega]
     linarith only [ih',hleft,hright,hlog',hfrac]
 
@@ -164,7 +164,7 @@ private theorem sum_symmetric_interval (f : ℕ → ℝ) {c s : ℕ} (hs : s ≤
   ring
 
 private theorem sum_sq_Icc (s : ℕ) :
-    (∑ j ∈ Icc 1 s, (j:ℝ)^2) = (s:ℝ)*(s+1)*(2*s+1)/6 := by
+    (∑ j ∈ Icc 1 s, (j:ℝ)^(2 : ℕ)) = (s:ℝ)*(s+1)*(2*s+1)/6 := by
   induction s with
   | zero => simp
   | succ s ih => rw [sum_Icc_succ_top (by omega : 1 ≤ s+1),ih]; push_cast; ring
@@ -175,7 +175,7 @@ theorem sum_divisorHyperbolaSmoothRemainder_square_block_ge_sharp {s : ℕ} (hs 
   let c := s*(s+1)
   have hc : 0 ≤ smoothBlock s c := smoothBlock_center_nonneg hs
   have hpoint (j : ℕ) (hj : j ∈ Icc 1 s) :
-      (j:ℝ)^2/((s:ℝ)+1)^2 ≤ smoothBlock s (c-j)+smoothBlock s (c+j) := by
+      (j:ℝ)^(2 : ℕ)/((s:ℝ)+1)^(2 : ℕ) ≤ smoothBlock s (c-j)+smoothBlock s (c+j) := by
     have h := smoothBlock_pair (by omega : 1 ≤ s) (mem_Icc.mp hj).2
     change _ ≤ smoothBlock s (c-j)+smoothBlock s (c+j)-2*smoothBlock s c at h
     linarith only [h,hc]
@@ -192,7 +192,7 @@ theorem sum_divisorHyperbolaSmoothRemainder_square_block_ge_sharp {s : ℕ} (hs 
     apply sum_congr rfl
     intro k hk
     exact (smoothBlock_eq (Nat.eq_sqrt.mpr (mem_Ico.mp hk)).symm).symm
-  have hpoly : ((s:ℝ)+1)/4 ≤ ((s:ℝ)*(s+1)*(2*s+1)/6)/((s:ℝ)+1)^2 := by
+  have hpoly : ((s:ℝ)+1)/4 ≤ ((s:ℝ)*(s+1)*(2*s+1)/6)/((s:ℝ)+1)^(2 : ℕ) := by
     have hsR : (5:ℝ) ≤ s := by exact_mod_cast hs
     field_simp
     nlinarith [mul_nonneg (show 0 ≤ (s:ℝ)-5 by linarith) (show 0 ≤ (s:ℝ)+1 by positivity)]

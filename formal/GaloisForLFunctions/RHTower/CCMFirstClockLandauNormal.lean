@@ -20,11 +20,11 @@ private theorem cubic_sine_integral_ibp
     (hden : ∀ u : ℝ, u ∈ Set.Icc (0 : ℝ) 1 → s - lam * (u : ℂ) ≠ 0) :
     (∫ u : ℝ in (0 : ℝ)..1,
       Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
-        (s - lam * (u : ℂ)) ^ 3) =
-      1 / (2 * lam ^ 2) *
+        (s - lam * (u : ℂ)) ^ (3 : ℕ)) =
+      1 / (2 * lam ^ (2 : ℕ)) *
         ((2 * (Real.pi : ℂ)) *
             (1 / s - 1 / (s - lam)) -
-          (2 * (Real.pi : ℂ)) ^ 2 *
+          (2 * (Real.pi : ℂ)) ^ (2 : ℕ) *
             ∫ u : ℝ in (0 : ℝ)..1,
               Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
                 (s - lam * (u : ℂ))) := by
@@ -32,11 +32,11 @@ private theorem cubic_sine_integral_ibp
   let f : ℝ → ℂ := fun u => Complex.sin (c * (u : ℂ))
   let g : ℝ → ℂ := fun u => 1 / (s - lam * (u : ℂ))
   let J : ℝ → ℂ := fun u =>
-    f u * (lam / (s - lam * (u : ℂ)) ^ 2) -
+    f u * (lam / (s - lam * (u : ℂ)) ^ (2 : ℕ)) -
       (c * Complex.cos (c * (u : ℂ))) * g u
   let J' : ℝ → ℂ := fun u =>
-    2 * lam ^ 2 * (f u / (s - lam * (u : ℂ)) ^ 3) +
-      c ^ 2 * (f u / (s - lam * (u : ℂ)))
+    2 * lam ^ (2 : ℕ) * (f u / (s - lam * (u : ℂ)) ^ (3 : ℕ)) +
+      c ^ (2 : ℕ) * (f u / (s - lam * (u : ℂ)))
   have hJderiv : ∀ u ∈ Set.uIcc (0 : ℝ) 1, HasDerivAt J (J' u) u := by
     intro u hu
     have huIcc : u ∈ Set.Icc (0 : ℝ) 1 := by simpa using hu
@@ -59,21 +59,21 @@ private theorem cubic_sine_integral_ibp
         (fun v : ℝ => s - lam * (v : ℂ)) (-lam) u := by
       convert (hasDerivAt_const u s).sub (hcast.const_mul lam) using 1 <;> first | rfl | ring
     have hdenSqInv : HasDerivAt
-        (fun v : ℝ => 1 / (s - lam * (v : ℂ)) ^ 2)
-        (2 * lam / (s - lam * (u : ℂ)) ^ 3) u := by
+        (fun v : ℝ => 1 / (s - lam * (v : ℂ)) ^ (2 : ℕ))
+        (2 * lam / (s - lam * (u : ℂ)) ^ (3 : ℕ)) u := by
       have hout : HasDerivAt
-          (fun z : ℂ => 1 / z ^ 2)
-          (-2 / (s - lam * (u : ℂ)) ^ 3)
+          (fun z : ℂ => 1 / z ^ (2 : ℕ))
+          (-2 / (s - lam * (u : ℂ)) ^ (3 : ℕ))
           (s - lam * (u : ℂ)) := by
         have hp := hasDerivAt_id (s - lam * (u : ℂ)) |>.pow 2
         have hi := hp.inv (pow_ne_zero 2 hne)
-        have hi' : HasDerivAt (fun z : ℂ => 1 / z ^ 2)
+        have hi' : HasDerivAt (fun z : ℂ => 1 / z ^ (2 : ℕ))
             (-(2 * (s - lam * (u : ℂ))) /
-              ((s - lam * (u : ℂ)) ^ 2) ^ 2)
+              ((s - lam * (u : ℂ)) ^ (2 : ℕ)) ^ (2 : ℕ))
             (s - lam * (u : ℂ)) := by
           have hi' := hi
           norm_num [Pi.inv_apply, Pi.pow_apply, id_eq] at hi'
-          have hfun : (fun z : ℂ => 1 / z ^ 2) = fun z : ℂ => (z ^ 2)⁻¹ := by
+          have hfun : (fun z : ℂ => 1 / z ^ (2 : ℕ)) = fun z : ℂ => (z ^ (2 : ℕ))⁻¹ := by
             funext z
             rw [one_div]
           rw [hfun]
@@ -84,10 +84,10 @@ private theorem cubic_sine_integral_ibp
       all_goals first | rfl | (field_simp [hne]; try ring)
     have hdenInv : HasDerivAt
         (fun v : ℝ => 1 / (s - lam * (v : ℂ)))
-        (lam / (s - lam * (u : ℂ)) ^ 2) u := by
+        (lam / (s - lam * (u : ℂ)) ^ (2 : ℕ)) u := by
       have hout : HasDerivAt
           (fun z : ℂ => 1 / z)
-          (-1 / (s - lam * (u : ℂ)) ^ 2)
+          (-1 / (s - lam * (u : ℂ)) ^ (2 : ℕ))
           (s - lam * (u : ℂ)) := by
         have hi := (hasDerivAt_id (s - lam * (u : ℂ))).inv hne
         have hfun : (fun z : ℂ => 1 / z) = fun z : ℂ => z⁻¹ := by
@@ -114,7 +114,7 @@ private theorem cubic_sine_integral_ibp
         s - lam * (u : ℂ)) := by fun_prop
     have hcubic : IntervalIntegrable
         (fun u : ℝ => Complex.sin (c * (u : ℂ)) /
-          (s - lam * (u : ℂ)) ^ 3) volume 0 1 := by
+          (s - lam * (u : ℂ)) ^ (3 : ℕ)) volume 0 1 := by
       apply ContinuousOn.intervalIntegrable
       exact hsinCont.continuousOn.div
         (hdenCont.continuousOn.pow 3)
@@ -152,7 +152,7 @@ private theorem cubic_sine_integral_ibp
       s - lam * (u : ℂ)) := by fun_prop
   have hcubic : IntervalIntegrable
       (fun u : ℝ => Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
-        (s - lam * (u : ℂ)) ^ 3) volume 0 1 := by
+        (s - lam * (u : ℂ)) ^ (3 : ℕ)) volume 0 1 := by
     apply ContinuousOn.intervalIntegrable
     exact hsinCont.continuousOn.div
       (hdenCont.continuousOn.pow 3)
@@ -168,29 +168,29 @@ private theorem cubic_sine_integral_ibp
     intervalIntegral.integral_const_mul,
     intervalIntegral.integral_const_mul] at hFTC
   have hFTC' :
-      2 * lam ^ 2 *
+      2 * lam ^ (2 : ℕ) *
           (∫ u : ℝ in (0 : ℝ)..1,
             Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
-              (s - lam * (u : ℂ)) ^ 3) +
-        (2 * (Real.pi : ℂ)) ^ 2 *
+              (s - lam * (u : ℂ)) ^ (3 : ℕ)) +
+        (2 * (Real.pi : ℂ)) ^ (2 : ℕ) *
           (∫ u : ℝ in (0 : ℝ)..1,
             Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
               (s - lam * (u : ℂ))) =
         (2 * (Real.pi : ℂ)) * (1 / s - 1 / (s - lam)) := by
     convert hFTC using 1 ; ring
-  have hcoef : 2 * lam ^ 2 ≠ 0 :=
+  have hcoef : 2 * lam ^ (2 : ℕ) ≠ 0 :=
     mul_ne_zero (by norm_num) (pow_ne_zero 2 hlam)
-  rw [show 1 / (2 * lam ^ 2) *
+  rw [show 1 / (2 * lam ^ (2 : ℕ)) *
       ((2 * (Real.pi : ℂ)) * (1 / s - 1 / (s - lam)) -
-        (2 * (Real.pi : ℂ)) ^ 2 *
+        (2 * (Real.pi : ℂ)) ^ (2 : ℕ) *
           ∫ u : ℝ in (0 : ℝ)..1,
             Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
               (s - lam * (u : ℂ))) =
       ((2 * (Real.pi : ℂ)) * (1 / s - 1 / (s - lam)) -
-        (2 * (Real.pi : ℂ)) ^ 2 *
+        (2 * (Real.pi : ℂ)) ^ (2 : ℕ) *
           ∫ u : ℝ in (0 : ℝ)..1,
             Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
-              (s - lam * (u : ℂ))) / (2 * lam ^ 2) by
+              (s - lam * (u : ℂ))) / (2 * lam ^ (2 : ℕ)) by
     field_simp [hcoef]]
   apply (eq_div_iff hcoef).2
   linear_combination hFTC'
@@ -200,8 +200,8 @@ def ccmFirstClockLaplaceContinuationAtom (s z : ℂ) : ℂ :=
   -(1 / (2 * (Real.pi : ℂ))) *
     ∫ u : ℝ in (0 : ℝ)..1,
       Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) *
-        (1 / (s - I * z * (u : ℂ)) ^ 3 +
-          1 / (s + I * z * (u : ℂ)) ^ 3)
+        (1 / (s - I * z * (u : ℂ)) ^ (3 : ℕ) +
+          1 / (s + I * z * (u : ℂ)) ^ (3 : ℕ))
 
 /-- **First-clock endpoint-cancellation law.**  Two integrations by parts factor one full
 reciprocal square of the spectral point out of every cubic continuation atom. -/
@@ -209,12 +209,12 @@ theorem ccmFirstClockLaplaceContinuationAtom_ibp
     {s : ℂ} (hsre : 0 < s.re) (hscone : |s.im| ≤ 8 * s.re)
     (q : XiZeroCopy) :
     ccmFirstClockLaplaceContinuationAtom s (xiSpectralPoint q) =
-      1 / (4 * (Real.pi : ℂ) * xiSpectralPoint q ^ 2) *
+      1 / (4 * (Real.pi : ℂ) * xiSpectralPoint q ^ (2 : ℕ)) *
         ((2 * (Real.pi : ℂ)) *
             (2 / s -
               1 / (s - I * xiSpectralPoint q) -
               1 / (s + I * xiSpectralPoint q)) -
-          (2 * (Real.pi : ℂ)) ^ 2 *
+          (2 * (Real.pi : ℂ)) ^ (2 : ℕ) *
             ∫ u : ℝ in (0 : ℝ)..1,
               Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) *
                 (1 / (s - I * xiSpectralPoint q * (u : ℂ)) +
@@ -238,38 +238,38 @@ theorem ccmFirstClockLaplaceContinuationAtom_ibp
   have hminusInt : IntervalIntegrable
       (fun u : ℝ =>
         Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
-          (s - I * z * (u : ℂ)) ^ 3) volume 0 1 := by
+          (s - I * z * (u : ℂ)) ^ (3 : ℕ)) volume 0 1 := by
     apply ContinuousOn.intervalIntegrable
     exact (by fun_prop : Continuous
       (fun u : ℝ =>
         Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)))).continuousOn.div
       (by fun_prop : Continuous
-        (fun u : ℝ => (s - I * z * (u : ℂ)) ^ 3)).continuousOn
+        (fun u : ℝ => (s - I * z * (u : ℂ)) ^ (3 : ℕ))).continuousOn
       (fun u hu => pow_ne_zero 3 (hminusDen u (by simpa using hu)))
   have hplusInt : IntervalIntegrable
       (fun u : ℝ =>
         Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
-          (s + I * z * (u : ℂ)) ^ 3) volume 0 1 := by
+          (s + I * z * (u : ℂ)) ^ (3 : ℕ)) volume 0 1 := by
     apply ContinuousOn.intervalIntegrable
     exact (by fun_prop : Continuous
       (fun u : ℝ =>
         Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)))).continuousOn.div
       (by fun_prop : Continuous
-        (fun u : ℝ => (s + I * z * (u : ℂ)) ^ 3)).continuousOn
+        (fun u : ℝ => (s + I * z * (u : ℂ)) ^ (3 : ℕ))).continuousOn
       (fun u hu => pow_ne_zero 3
         (ccmFirstClockLaplaceCone_add_ne_zero hsre hscone q
           (show 0 ≤ u by simpa using hu.1)))
   have hsplit :
       (∫ u : ℝ in (0 : ℝ)..1,
         Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) *
-          (1 / (s - I * z * (u : ℂ)) ^ 3 +
-            1 / (s + I * z * (u : ℂ)) ^ 3)) =
+          (1 / (s - I * z * (u : ℂ)) ^ (3 : ℕ) +
+            1 / (s + I * z * (u : ℂ)) ^ (3 : ℕ))) =
         (∫ u : ℝ in (0 : ℝ)..1,
           Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
-            (s - I * z * (u : ℂ)) ^ 3) +
+            (s - I * z * (u : ℂ)) ^ (3 : ℕ)) +
         ∫ u : ℝ in (0 : ℝ)..1,
           Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
-            (s + I * z * (u : ℂ)) ^ 3 := by
+            (s + I * z * (u : ℂ)) ^ (3 : ℕ) := by
     rw [← intervalIntegral.integral_add hminusInt hplusInt]
     apply intervalIntegral.integral_congr
     intro u hu
@@ -280,11 +280,11 @@ theorem ccmFirstClockLaplaceContinuationAtom_ibp
   have hplus' :
       (∫ u : ℝ in (0 : ℝ)..1,
         Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
-          (s + I * z * (u : ℂ)) ^ 3) =
-      1 / (2 * (-I * z) ^ 2) *
+          (s + I * z * (u : ℂ)) ^ (3 : ℕ)) =
+      1 / (2 * (-I * z) ^ (2 : ℕ)) *
         ((2 * (Real.pi : ℂ)) *
             (1 / s - 1 / (s + I * z)) -
-          (2 * (Real.pi : ℂ)) ^ 2 *
+          (2 * (Real.pi : ℂ)) ^ (2 : ℕ) *
             ∫ u : ℝ in (0 : ℝ)..1,
               Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
                 (s + I * z * (u : ℂ))) := by
@@ -333,12 +333,12 @@ theorem ccmFirstClockLaplaceContinuationAtom_ibp
     ring
   rw [hlinearSplit]
   have hfacMinus :
-      1 / (2 * (I * z) ^ 2) = -(1 / (2 * z ^ 2)) := by
+      1 / (2 * (I * z) ^ (2 : ℕ)) = -(1 / (2 * z ^ (2 : ℕ))) := by
     field_simp [hz]
     rw [I_sq]
     ring
   have hfacPlus :
-      1 / (2 * (-I * z) ^ 2) = -(1 / (2 * z ^ 2)) := by
+      1 / (2 * (-I * z) ^ (2 : ℕ)) = -(1 / (2 * z ^ (2 : ℕ))) := by
     field_simp [hz]
     rw [I_sq]
     ring
@@ -378,8 +378,8 @@ theorem norm_ccmFirstClockLaplaceContinuationAtom_le
     ‖ccmFirstClockLaplaceContinuationAtom s (xiSpectralPoint q)‖ ≤
       (‖1 / (4 * (Real.pi : ℂ))‖ *
           (‖(2 * (Real.pi : ℂ))‖ * (22 / s.re) +
-            ‖(2 * (Real.pi : ℂ)) ^ 2‖ * (20 / s.re))) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+            ‖(2 * (Real.pi : ℂ)) ^ (2 : ℕ)‖ * (20 / s.re))) *
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   rw [ccmFirstClockLaplaceContinuationAtom_ibp hsre hscone q]
   have hsinNorm (u : ℝ) :
       ‖Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ))‖ ≤ 1 := by
@@ -473,18 +473,18 @@ theorem norm_ccmFirstClockLaplaceContinuationAtom_le
             (2 / s -
               1 / (s - I * xiSpectralPoint q) -
               1 / (s + I * xiSpectralPoint q)) -
-          (2 * (Real.pi : ℂ)) ^ 2 *
+          (2 * (Real.pi : ℂ)) ^ (2 : ℕ) *
             ∫ u : ℝ in (0 : ℝ)..1,
               Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) *
                 (1 / (s - I * xiSpectralPoint q * (u : ℂ)) +
                   1 / (s + I * xiSpectralPoint q * (u : ℂ)))‖ ≤
         ‖(2 * (Real.pi : ℂ))‖ * (22 / s.re) +
-          ‖(2 * (Real.pi : ℂ)) ^ 2‖ * (20 / s.re) := by
+          ‖(2 * (Real.pi : ℂ)) ^ (2 : ℕ)‖ * (20 / s.re) := by
     calc
       _ ≤ ‖(2 * (Real.pi : ℂ)) *
             (2 / s - 1 / (s - I * xiSpectralPoint q) -
               1 / (s + I * xiSpectralPoint q))‖ +
-            ‖(2 * (Real.pi : ℂ)) ^ 2 *
+            ‖(2 * (Real.pi : ℂ)) ^ (2 : ℕ) *
               ∫ u : ℝ in (0 : ℝ)..1,
                 Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) *
                   (1 / (s - I * xiSpectralPoint q * (u : ℂ)) +
@@ -493,7 +493,7 @@ theorem norm_ccmFirstClockLaplaceContinuationAtom_le
       _ = ‖(2 * (Real.pi : ℂ))‖ * ‖2 / s -
               1 / (s - I * xiSpectralPoint q) -
               1 / (s + I * xiSpectralPoint q)‖ +
-            ‖(2 * (Real.pi : ℂ)) ^ 2‖ *
+            ‖(2 * (Real.pi : ℂ)) ^ (2 : ℕ)‖ *
               ‖∫ u : ℝ in (0 : ℝ)..1,
                 Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) *
                   (1 / (s - I * xiSpectralPoint q * (u : ℂ)) +
@@ -503,27 +503,27 @@ theorem norm_ccmFirstClockLaplaceContinuationAtom_le
         gcongr
   have houter :
       1 / (‖(4 : ℂ)‖ * ‖(Real.pi : ℂ)‖ *
-          ‖xiSpectralPoint q‖ ^ 2) =
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ)) =
         ‖1 / (4 * (Real.pi : ℂ))‖ *
-          (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
     rw [norm_div, norm_one, norm_mul, norm_ofNat]
     field_simp [Real.pi_ne_zero, hzNorm.ne']
   rw [houter]
   calc
     ‖1 / (4 * (Real.pi : ℂ))‖ *
-          (1 / ‖xiSpectralPoint q‖ ^ 2) *
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) *
         ‖(2 * (Real.pi : ℂ)) *
             (2 / s - 1 / (s - I * xiSpectralPoint q) -
               1 / (s + I * xiSpectralPoint q)) -
-          (2 * (Real.pi : ℂ)) ^ 2 *
+          (2 * (Real.pi : ℂ)) ^ (2 : ℕ) *
             ∫ u : ℝ in (0 : ℝ)..1,
               Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) *
                 (1 / (s - I * xiSpectralPoint q * (u : ℂ)) +
                   1 / (s + I * xiSpectralPoint q * (u : ℂ)))‖ ≤
         ‖1 / (4 * (Real.pi : ℂ))‖ *
-          (1 / ‖xiSpectralPoint q‖ ^ 2) *
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) *
           (‖(2 * (Real.pi : ℂ))‖ * (22 / s.re) +
-            ‖(2 * (Real.pi : ℂ)) ^ 2‖ * (20 / s.re)) := by
+            ‖(2 * (Real.pi : ℂ)) ^ (2 : ℕ)‖ * (20 / s.re)) := by
       gcongr
     _ = _ := by ring
 

@@ -28,7 +28,7 @@ def productAFEIntegrand (s₁ s₂ : ℂ) (x : ℝ) (w : ℂ) : ℂ :=
 
 /-- The entire numerator `x^w e^{w²} ((s₁+w−1)ζ(s₁+w)) ((s₂+w−1)ζ(s₂+w))`. -/
 def productAFEPoleNumerator (s₁ s₂ : ℂ) (x : ℝ) (w : ℂ) : ℂ :=
-  (x : ℂ) ^ w * Complex.exp (w ^ 2) * regularizedRiemannZeta (s₁ + w) *
+  (x : ℂ) ^ w * Complex.exp (w ^ (2 : ℕ)) * regularizedRiemannZeta (s₁ + w) *
     regularizedRiemannZeta (s₂ + w)
 
 /-- The entire remainder: the third divided difference of the numerator at `0, 1−s₁, 1−s₂`. -/
@@ -37,7 +37,7 @@ def productAFEPoleRemainder (s₁ s₂ : ℂ) (x : ℝ) : ℂ → ℂ :=
 
 /-- The residue at `w = 1 − s₁`: `x^{1−s₁} e^{(1−s₁)²} ζ(s₂ + 1 − s₁)/(1 − s₁)`. -/
 def productAFEShiftedResidue (s₁ s₂ : ℂ) (x : ℝ) : ℂ :=
-  (x : ℂ) ^ (1 - s₁) * Complex.exp ((1 - s₁) ^ 2) * riemannZeta (s₂ + (1 - s₁)) / (1 - s₁)
+  (x : ℂ) ^ (1 - s₁) * Complex.exp ((1 - s₁) ^ (2 : ℕ)) * riemannZeta (s₂ + (1 - s₁)) / (1 - s₁)
 
 theorem differentiable_productAFEPoleNumerator {x : ℝ} (hx : 0 < x) (s₁ s₂ : ℂ) :
     Differentiable ℂ (productAFEPoleNumerator s₁ s₂ x) := by
@@ -64,16 +64,16 @@ theorem productAFEPoleNumerator_zero {s₁ s₂ : ℂ} (h₁ : s₁ ≠ 1) (h₂
       (s₁ - 1) * riemannZeta s₁ * ((s₂ - 1) * riemannZeta s₂) := by
   rw [productAFEPoleNumerator, add_zero, add_zero, regularizedRiemannZeta_of_ne_one h₁,
     regularizedRiemannZeta_of_ne_one h₂]
-  have h0 : (x : ℂ) ^ (0 : ℂ) * Complex.exp ((0 : ℂ) ^ 2) = 1 := by simp
-  calc (x : ℂ) ^ (0 : ℂ) * Complex.exp ((0 : ℂ) ^ 2) * ((s₁ - 1) * riemannZeta s₁)
+  have h0 : (x : ℂ) ^ (0 : ℂ) * Complex.exp ((0 : ℂ) ^ (2 : ℕ)) = 1 := by simp
+  calc (x : ℂ) ^ (0 : ℂ) * Complex.exp ((0 : ℂ) ^ (2 : ℕ)) * ((s₁ - 1) * riemannZeta s₁)
         * ((s₂ - 1) * riemannZeta s₂)
-      = ((x : ℂ) ^ (0 : ℂ) * Complex.exp ((0 : ℂ) ^ 2))
+      = ((x : ℂ) ^ (0 : ℂ) * Complex.exp ((0 : ℂ) ^ (2 : ℕ)))
         * ((s₁ - 1) * riemannZeta s₁ * ((s₂ - 1) * riemannZeta s₂)) := by ring
     _ = _ := by rw [h0, one_mul]
 
 theorem productAFEPoleNumerator_shiftedPole {s₁ s₂ : ℂ} (hne : s₁ ≠ s₂) (x : ℝ) :
     productAFEPoleNumerator s₁ s₂ x (1 - s₁) =
-      (x : ℂ) ^ (1 - s₁) * Complex.exp ((1 - s₁) ^ 2)
+      (x : ℂ) ^ (1 - s₁) * Complex.exp ((1 - s₁) ^ (2 : ℕ))
         * ((s₂ - s₁) * riemannZeta (s₂ + (1 - s₁))) := by
   have h : s₂ + (1 - s₁) ≠ 1 := by
     intro h
@@ -84,7 +84,7 @@ theorem productAFEPoleNumerator_shiftedPole {s₁ s₂ : ℂ} (hne : s₁ ≠ s�
 
 theorem productAFEPoleNumerator_shiftedPole' {s₁ s₂ : ℂ} (hne : s₁ ≠ s₂) (x : ℝ) :
     productAFEPoleNumerator s₁ s₂ x (1 - s₂) =
-      (x : ℂ) ^ (1 - s₂) * Complex.exp ((1 - s₂) ^ 2)
+      (x : ℂ) ^ (1 - s₂) * Complex.exp ((1 - s₂) ^ (2 : ℕ))
         * ((s₁ - s₂) * riemannZeta (s₁ + (1 - s₂))) := by
   have h : s₁ + (1 - s₂) ≠ 1 := by
     intro h

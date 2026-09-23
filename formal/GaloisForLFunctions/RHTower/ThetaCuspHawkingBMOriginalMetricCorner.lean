@@ -33,7 +33,7 @@ attribute [-instance] RCLike.toInnerProductSpaceReal
 attribute [-instance] NormedSpace.complexToReal
 attribute [-instance] RCLike.innerProductSpace
 
-private abbrev mu (q : XiZeroCopy) : ℂ := physicalAngularParameter q^2-1/4
+private abbrev mu (q : XiZeroCopy) : ℂ := physicalAngularParameter q^(2 : ℕ)-1/4
 private abbrev gradient (q : XiZeroCopy) (br : Bool) : ℂ :=
   reducedGreenGradient (physicalRadialFrequency q) (physicalRate q br) 1
 
@@ -48,7 +48,7 @@ def collarDensity (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (v : ℝ×ℝ) : �
 
 private theorem coordinate_factor (L : ℝ) (hL : 0<L) :
     (horizonCoordinate (-L/2):ℂ)=
-      (((tortoiseRadius (-L/2):ℂ)^2-1)/(tortoiseRadius (-L/2):ℂ)^2) := by
+      (((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)/(tortoiseRadius (-L/2):ℂ)^(2 : ℕ)) := by
   have hr := tortoiseRadius_exterior (-L/2) (show -L/2<0 by linarith)
   have hn : (tortoiseRadius (-L/2):ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
   simp only [horizonCoordinate,radialUnit_inverse_radius,Complex.ofReal_sub,Complex.ofReal_one,
@@ -60,7 +60,7 @@ private theorem coordinate_factor (L : ℝ) (hL : 0<L) :
 extra metric radius factors before any limiting argument. -/
 theorem original_metric_collar_period (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
     (L a b : ℝ) (hL : 0<L) :
-    ((tortoiseRadius (-L/2):ℂ)^2-1)*
+    ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*
         restoredMetricTime q br true amp w a b (tortoiseRadius (-L/2))=
       mu q*reader w (physicalRadialFrequency q) L*
         ((mu q-2)*(Complex.exp (-w*(b:ℂ))*scalar q br amp L b-
@@ -71,8 +71,8 @@ theorem original_metric_collar_period (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
   have hx : -L/2<0 := by linarith
   have hr := tortoiseRadius_exterior (-L/2) hx
   have hn : (tortoiseRadius (-L/2):ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hf : (tortoiseRadius (-L/2):ℂ)^2-1≠0 := by
-    exact_mod_cast (show (tortoiseRadius (-L/2))^2-1≠0 by nlinarith)
+  have hf : (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1≠0 := by
+    exact_mod_cast (show (tortoiseRadius (-L/2))^(2 : ℕ)-1≠0 by nlinarith)
   have hs (p : ℝ) : originalRadialPeriod q br amp p (p-2*(-L/2))=scalar q br amp L p := by
     rw [show p-2*(-L/2)=p+L by ring]
     rfl
@@ -86,7 +86,7 @@ theorem original_metric_collar_period (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
 /-- The complete original metric angular finite part, in the true collar coordinate. -/
 theorem original_metric_collar_finitePart (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
     (hw : w.im≠0) (L a b : ℝ) (hL : 0<L) (ha : 0<a) (hab : a≤b) :
-    Tendsto (fun k : ℝ => ((tortoiseRadius (-L/2):ℂ)^2-1)*
+    Tendsto (fun k : ℝ => ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*
       metricTimeCut q br true amp w a b (tortoiseRadius (-L/2)) (Real.exp k)) atTop
       (𝓝 (mu q*reader w (physicalRadialFrequency q) L*
         ((mu q-2)*(Complex.exp (-w*(b:ℂ))*scalar q br amp L b-
@@ -95,7 +95,7 @@ theorem original_metric_collar_finitePart (q : XiZeroCopy) (br : Bool) (amp w : 
         w*physicalSelfSourceCoefficient q*collarProfile q br amp L*
           ∫ p in a..b,Complex.exp (-w*(p:ℂ))*timeOnset (2*physicalRate q br) p))) := by
   have h := (original_metric_time_finitePart q br true amp w hw a b (tortoiseRadius (-L/2)) ha hab
-    (tortoiseRadius_exterior (-L/2) (by linarith))).const_mul ((tortoiseRadius (-L/2):ℂ)^2-1)
+    (tortoiseRadius_exterior (-L/2) (by linarith))).const_mul ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)
   rwa [original_metric_collar_period q br amp w L a b hL] at h
 
 private theorem unit_collar_limit :
@@ -258,7 +258,7 @@ private theorem null_density_continuous (nu s amp : ℂ) :
     (show Continuous (fun z : ℝ×ℝ => ((z.1+z.2)/2,min (-((z.1-z.2)/2)) 0)) by fun_prop)
   have hV := (D4BMNativeResponse.radialResponse_continuous nu s amp).comp
     (show Continuous (fun z : ℝ×ℝ => ((z.1+z.2)/2,(z.1-z.2)/2)) by fun_prop)
-  have hv : Continuous (fun z : ℝ×ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^2)) := by
+  have hv : Continuous (fun z : ℝ×ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^(2 : ℕ))) := by
     apply Continuous.div continuous_const (by fun_prop)
     intro z
     exact mul_ne_zero (by norm_num) (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.cosh_pos _).ne'))
@@ -332,7 +332,7 @@ original metric period, before the unbounded collar limits are taken. -/
 theorem original_metric_collar_integral (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
     (L a b : ℝ) (hL : 0<L) (ha : 0<a) (hab : a≤b) :
     (∫ p in a..b,collarDensity q br amp w (L,p))=
-      ((tortoiseRadius (-L/2):ℂ)^2-1)*restoredMetricTime q br true amp w a b (tortoiseRadius (-L/2)) := by
+      ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*restoredMetricTime q br true amp w a b (tortoiseRadius (-L/2)) := by
   have he : Continuous (fun p : ℝ => Complex.exp (-w*(p:ℂ))) := by fun_prop
   have hc := compact_admission (he.continuousOn.mul
     ((scalar_slope_continuousOn q br amp L hL).add ((scalar_continuousOn q br amp L hL).const_mul w))) a b ha hab
@@ -484,7 +484,7 @@ private theorem remainder_cutoff_difference {f : ℝ×ℝ→ℂ} {L0 : ℝ}
 /-- The original radial Jacobian in collar length, including its factor one-half. -/
 theorem original_collar_jacobian (L : ℝ) (hL : 0<L) :
     HasDerivAt (fun L : ℝ => tortoiseRadius (-L/2))
-      (-((tortoiseRadius (-L/2))^2-1)/2) L := by
+      (-((tortoiseRadius (-L/2))^(2 : ℕ)-1)/2) L := by
   apply ((tortoiseRadius_hasDerivAt (-L/2) (by linarith)).comp L
     ((hasDerivAt_id L).neg.div_const 2)).congr_deriv
   ring
@@ -558,11 +558,11 @@ theorem original_metric_collar_cutoff_difference (q : XiZeroCopy) (br : Bool) (a
 density used in the unbounded cutoff comparison. All original cusp counterterms remain. -/
 theorem original_metric_current_finitePart (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
     (hw : w.im≠0) (L a b : ℝ) (hL : 0<L) (ha : 0<a) (hab : a≤b) :
-    Tendsto (fun k : ℝ => ((tortoiseRadius (-L/2):ℂ)^2-1)*
+    Tendsto (fun k : ℝ => ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*
       metricTimeCut q br true amp w a b (tortoiseRadius (-L/2)) (Real.exp k)) atTop
       (𝓝 (∫ p in a..b,collarDensity q br amp w (L,p))) := by
   have h := (original_metric_time_finitePart q br true amp w hw a b (tortoiseRadius (-L/2)) ha hab
-    (tortoiseRadius_exterior (-L/2) (by linarith))).const_mul ((tortoiseRadius (-L/2):ℂ)^2-1)
+    (tortoiseRadius_exterior (-L/2) (by linarith))).const_mul ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)
   rwa [← original_metric_collar_integral q br amp w L a b hL ha hab] at h
 
 end

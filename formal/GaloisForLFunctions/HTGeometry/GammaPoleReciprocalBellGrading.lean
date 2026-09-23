@@ -76,7 +76,7 @@ theorem bellCore_isWeightedHomogeneous (k : ℕ) :
 
 /-- Substitution by generators of their matching weights preserves weighted
 homogeneity. -/
-theorem isWeightedHomogeneous_eval₂_of_weighted_generators
+theorem isWeightedHomogeneous_eval₂_of_weighted
     {σ τ : Type*} {wσ : σ → ℕ} {wτ : τ → ℕ} {W : ℕ}
     {P : MvPolynomial σ ℂ} (hP : P.IsWeightedHomogeneous wσ W)
     (g : σ → MvPolynomial τ ℂ)
@@ -126,7 +126,7 @@ theorem eval₂_weightedHomogeneousComponent
   have himg : (MvPolynomial.eval₂ MvPolynomial.C g
       (MvPolynomial.monomial m (P.coeff m))).IsWeightedHomogeneous
         wτ (Finsupp.weight wσ m) :=
-    isWeightedHomogeneous_eval₂_of_weighted_generators hsrc g hg
+    isWeightedHomogeneous_eval₂_of_weighted hsrc g hg
   by_cases hW : Finsupp.weight wσ m = W
   · change MvPolynomial.weightedHomogeneousComponent wτ W
         (MvPolynomial.eval₂ MvPolynomial.C g
@@ -161,7 +161,7 @@ theorem bellCoefficientMap_preserves_weight
     {n W : ℕ} {P : MvPolynomial (Fin (n + 1)) ℂ}
     (hP : P.IsWeightedHomogeneous (bellJetWeight (n + 1)) W) :
     (bellCoefficientMap n P).IsWeightedHomogeneous (bellJetWeight (n + 1)) W := by
-  exact isWeightedHomogeneous_eval₂_of_weighted_generators hP _
+  exact isWeightedHomogeneous_eval₂_of_weighted hP _
     (bellAt_isWeightedHomogeneous n)
 
 theorem bellCoefficientMap_weightedHomogeneousComponent
@@ -213,7 +213,7 @@ theorem simpleZeroDehomogenize_preserves_derivativeWeight
     (hP : P.IsWeightedHomogeneous (inverseJetDerivativeWeight n) W) :
     (HTGeometry.simpleZeroDehomogenize (n + 1) P).IsWeightedHomogeneous
       (bellJetWeight (n + 1)) W := by
-  apply isWeightedHomogeneous_eval₂_of_weighted_generators hP
+  apply isWeightedHomogeneous_eval₂_of_weighted hP
   intro j
   induction j using Fin.cases with
   | zero =>
@@ -230,7 +230,7 @@ theorem negativeRawJetMap_preserves_weight
     {n W : ℕ} {P : MvPolynomial (Fin (n + 1)) ℂ}
     (hP : P.IsWeightedHomogeneous (bellJetWeight (n + 1)) W) :
     (negativeRawJetMap n P).IsWeightedHomogeneous (bellJetWeight (n + 1)) W := by
-  apply isWeightedHomogeneous_eval₂_of_weighted_generators hP
+  apply isWeightedHomogeneous_eval₂_of_weighted hP
   intro j
   simpa [negativeRawJetMap, diagonalCoordinateMap] using
     (MvPolynomial.isWeightedHomogeneous_C (bellJetWeight (n + 1)) (-1 : ℂ)).mul
@@ -296,7 +296,7 @@ theorem simpleZeroDehomogenize_residualWeight
     (HTGeometry.simpleZeroDehomogenize n P).IsWeightedHomogeneous
       (bellJetWeight n) (W - E) := by
   have hadjusted := isWeightedHomogeneous_bellJetWeight_sub_totalDegree hE hW
-  apply isWeightedHomogeneous_eval₂_of_weighted_generators hadjusted
+  apply isWeightedHomogeneous_eval₂_of_weighted hadjusted
   intro i
   induction i using Fin.cases with
   | zero =>

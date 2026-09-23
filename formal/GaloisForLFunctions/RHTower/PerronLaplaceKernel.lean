@@ -22,13 +22,13 @@ open MeasureTheory Set Filter
 theorem le_exp_half {v : ℝ} (hv : 0 ≤ v) : v ≤ Real.exp (v / 2) := by
   have h1 : v / 4 + 1 ≤ Real.exp (v / 4) := by
     linarith [Real.add_one_le_exp (v / 4)]
-  have h2 : (v / 4 + 1) ^ 2 ≤ Real.exp (v / 4) ^ 2 := by
+  have h2 : (v / 4 + 1) ^ (2 : ℕ) ≤ Real.exp (v / 4) ^ (2 : ℕ) := by
     apply pow_le_pow_left₀ (by linarith) h1
-  have h3 : Real.exp (v / 4) ^ 2 = Real.exp (v / 2) := by
+  have h3 : Real.exp (v / 4) ^ (2 : ℕ) = Real.exp (v / 2) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
-  have h4 : v ≤ (v / 4 + 1) ^ 2 := by nlinarith [sq_nonneg (v / 4 - 1)]
+  have h4 : v ≤ (v / 4 + 1) ^ (2 : ℕ) := by nlinarith [sq_nonneg (v / 4 - 1)]
   linarith
 
 /-- Integrability of the tent integrand. -/
@@ -94,11 +94,11 @@ set_option maxHeartbeats 1600000 in
 `Re c > 0`. -/
 theorem integral_mul_exp_neg_mul_Ioi {c : ℂ} (hc : 0 < c.re) :
     ∫ t in Set.Ioi (0 : ℝ), (t : ℂ) * Complex.exp (-(c * t))
-      = 1 / c ^ 2 := by
+      = 1 / c ^ (2 : ℕ) := by
   have hcne : c ≠ 0 := fun h => by rw [h] at hc; simp at hc
   -- the antiderivative
   have hF : ∀ t : ℝ, HasDerivAt
-      (fun s : ℝ => -(((s : ℂ) / c + 1 / c ^ 2)
+      (fun s : ℝ => -(((s : ℂ) / c + 1 / c ^ (2 : ℕ))
         * Complex.exp (-(c * s))))
       ((t : ℂ) * Complex.exp (-(c * t))) t := by
     intro t
@@ -118,16 +118,16 @@ theorem integral_mul_exp_neg_mul_Ioi {c : ℂ} (hc : 0 < c.re) :
         exact (Complex.hasDerivAt_exp (-(c * (t : ℂ)))).comp
           ((t : ℝ) : ℂ) h2
       exact h1.comp_ofReal
-    have hA : HasDerivAt (fun s : ℝ => (s : ℂ) / c + 1 / c ^ 2)
+    have hA : HasDerivAt (fun s : ℝ => (s : ℂ) / c + 1 / c ^ (2 : ℕ))
         (1 / c) t := by
       have h1 : HasDerivAt (fun s : ℝ => (s : ℂ)) 1 t :=
         (hasDerivAt_id ((t : ℝ) : ℂ)).comp_ofReal
-      simpa using (h1.div_const c).add_const (1 / c ^ 2)
+      simpa using (h1.div_const c).add_const (1 / c ^ (2 : ℕ))
     have hprod := (hA.mul hE).neg
     have hfun :
-        -((fun s : ℝ => (s : ℂ) / c + 1 / c ^ 2) *
+        -((fun s : ℝ => (s : ℂ) / c + 1 / c ^ (2 : ℕ)) *
           (fun s : ℝ => Complex.exp (-(c * s)))) =
-        (fun s : ℝ => -(((s : ℂ) / c + 1 / c ^ 2) *
+        (fun s : ℝ => -(((s : ℂ) / c + 1 / c ^ (2 : ℕ)) *
           Complex.exp (-(c * s)))) := by
       funext s
       rfl
@@ -137,28 +137,28 @@ theorem integral_mul_exp_neg_mul_Ioi {c : ℂ} (hc : 0 < c.re) :
     ring
   -- continuity at the origin
   have hcont : ContinuousWithinAt
-      (fun s : ℝ => -(((s : ℂ) / c + 1 / c ^ 2)
+      (fun s : ℝ => -(((s : ℂ) / c + 1 / c ^ (2 : ℕ))
         * Complex.exp (-(c * s)))) (Set.Ici 0) 0 := by
     apply Continuous.continuousWithinAt
     fun_prop
   -- vanishing at infinity
   have htend : Tendsto
-      (fun s : ℝ => -(((s : ℂ) / c + 1 / c ^ 2)
+      (fun s : ℝ => -(((s : ℂ) / c + 1 / c ^ (2 : ℕ))
         * Complex.exp (-(c * s)))) atTop (nhds 0) := by
     apply squeeze_zero_norm'
-      (a := fun s : ℝ => (s / ‖c‖ + 1 / ‖c‖ ^ 2) * Real.exp (-(c.re * s)))
+      (a := fun s : ℝ => (s / ‖c‖ + 1 / ‖c‖ ^ (2 : ℕ)) * Real.exp (-(c.re * s)))
     · filter_upwards [eventually_ge_atTop (0 : ℝ)] with s hs
       rw [norm_neg, norm_mul, Complex.norm_exp]
       have h1 : (-(c * (s : ℂ))).re = -(c.re * s) := by
         simp [Complex.mul_re]
       rw [h1]
       apply mul_le_mul_of_nonneg_right _ (Real.exp_nonneg _)
-      calc ‖(s : ℂ) / c + 1 / c ^ 2‖
-          ≤ ‖(s : ℂ) / c‖ + ‖(1 : ℂ) / c ^ 2‖ := norm_add_le _ _
-        _ ≤ |s| / ‖c‖ + 1 / ‖c‖ ^ 2 := by
+      calc ‖(s : ℂ) / c + 1 / c ^ (2 : ℕ)‖
+          ≤ ‖(s : ℂ) / c‖ + ‖(1 : ℂ) / c ^ (2 : ℕ)‖ := norm_add_le _ _
+        _ ≤ |s| / ‖c‖ + 1 / ‖c‖ ^ (2 : ℕ) := by
             rw [norm_div, norm_div, norm_one, norm_pow, Complex.norm_real,
               Real.norm_eq_abs]
-        _ ≤ s / ‖c‖ + 1 / ‖c‖ ^ 2 := by
+        _ ≤ s / ‖c‖ + 1 / ‖c‖ ^ (2 : ℕ) := by
             rw [abs_of_nonneg hs]
     · have h1 : Tendsto (fun s : ℝ => s * Real.exp (-(c.re * s)))
           atTop (nhds 0) := by
@@ -166,7 +166,7 @@ theorem integral_mul_exp_neg_mul_Ioi {c : ℂ} (hc : 0 < c.re) :
         have h3 : Tendsto (fun s : ℝ => c.re * s) atTop atTop :=
           Tendsto.const_mul_atTop hc tendsto_id
         have h4 := (h2.comp h3)
-        have h5 : (fun s : ℝ => ((c.re * s) ^ 1
+        have h5 : (fun s : ℝ => ((c.re * s) ^ (1 : ℕ)
             * Real.exp (-(c.re * s)))) = fun s : ℝ =>
             c.re * (s * Real.exp (-(c.re * s))) := by
           funext s
@@ -180,10 +180,10 @@ theorem integral_mul_exp_neg_mul_Ioi {c : ℂ} (hc : 0 < c.re) :
           (Tendsto.const_mul_atTop hc tendsto_id)
         simpa [Function.comp_def] using h8
       have h9 := (h1.const_mul (1 / ‖c‖)).add
-        (h7.const_mul (1 / ‖c‖ ^ 2))
+        (h7.const_mul (1 / ‖c‖ ^ (2 : ℕ)))
       have h10 : (fun s : ℝ => 1 / ‖c‖ * (s * Real.exp (-(c.re * s)))
-          + 1 / ‖c‖ ^ 2 * Real.exp (-(c.re * s)))
-          = fun s : ℝ => (s / ‖c‖ + 1 / ‖c‖ ^ 2)
+          + 1 / ‖c‖ ^ (2 : ℕ) * Real.exp (-(c.re * s)))
+          = fun s : ℝ => (s / ‖c‖ + 1 / ‖c‖ ^ (2 : ℕ))
             * Real.exp (-(c.re * s)) := by
         funext s
         ring

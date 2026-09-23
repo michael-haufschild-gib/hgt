@@ -29,7 +29,7 @@ def diffuseFisherOffDiagonalCodiagonalOn
 
 def diffuseFisherCollisionResidualOn
     {ι : Type*} (p a d : ι → ℝ) : ℝ :=
-  ∑' i : ι, p i ^ 2 * a i * d i
+  ∑' i : ι, p i ^ (2 : ℕ) * a i * d i
 
 private theorem tsum_ite_eq_zero_of_eq_sub_on
     {ι : Type*} [DecidableEq ι] {f : ι → ℝ}
@@ -51,7 +51,7 @@ theorem diffuseFisherOffDiagonalCodiagonalOn_eq_score_sub_collision
     (hp : Summable p)
     (hpa : Summable (fun i => p i * a i))
     (hpad : Summable (fun i => p i * a i * d i))
-    (hcollision : Summable (fun i => p i ^ 2 * a i * d i))
+    (hcollision : Summable (fun i => p i ^ (2 : ℕ) * a i * d i))
     (hp_one : ∑' i, p i = 1)
     (hpa_zero : ∑' i, p i * a i = 0) :
     diffuseFisherOffDiagonalCodiagonalOn p a d =
@@ -77,7 +77,7 @@ theorem diffuseFisherOffDiagonalCodiagonalOn_eq_score_sub_collision
   simp_rw [tsum_ite_eq_zero_of_eq_sub_on (hinner _) _, hinnerValue]
   rw [show (fun i : ι =>
       p i * a i * d i - p i * p i * (a i + a i) * d i) =
-      fun i => p i * a i * d i - 2 * (p i ^ 2 * a i * d i) by
+      fun i => p i * a i * d i - 2 * (p i ^ (2 : ℕ) * a i * d i) by
     funext i
     ring]
   rw [Summable.tsum_sub hpad (hcollision.mul_left 2),
@@ -263,7 +263,7 @@ private theorem tsum_cofinalReplica
 
 private theorem collision_cofinalReplica
     {k : ℕ} (hk : 0 < k) {p a d : ℕ → ℝ}
-    (hcollision : Summable (fun n => p n ^ 2 * a n * d n)) :
+    (hcollision : Summable (fun n => p n ^ (2 : ℕ) * a n * d n)) :
     diffuseFisherCollisionResidualOn
         (cofinalReplicaProbability k p)
         (cofinalReplicaCoordinate a)
@@ -273,16 +273,16 @@ private theorem collision_cofinalReplica
     diffuseFisherCollisionResidual]
   have hrep :
       Summable (fun q : Fin k × ℕ =>
-        (p q.2 ^ 2 * a q.2 * d q.2) / (k : ℝ) ^ 2) := by
+        (p q.2 ^ (2 : ℕ) * a q.2 * d q.2) / (k : ℝ) ^ (2 : ℕ)) := by
     convert summable_cofinalReplica
       (k := k) (hcollision.div_const k) using 1
     funext q
     ring
   rw [show (fun q : Fin k × ℕ =>
-      cofinalReplicaProbability k p q ^ 2 *
+      cofinalReplicaProbability k p q ^ (2 : ℕ) *
         cofinalReplicaCoordinate a q *
           cofinalReplicaCoordinate d q) =
-      fun q => (p q.2 ^ 2 * a q.2 * d q.2) / (k : ℝ) ^ 2 by
+      fun q => (p q.2 ^ (2 : ℕ) * a q.2 * d q.2) / (k : ℝ) ^ (2 : ℕ) by
     funext q
     simp only [cofinalReplicaProbability, cofinalReplicaCoordinate]
     ring]
@@ -302,7 +302,7 @@ theorem cofinalReplicaFisherOneCornerCodiagonal_eq_score_sub_collision
     (hpa : Summable (fun n => p n * a n))
     (hpd : Summable (fun n => p n * d n))
     (hpad : Summable (fun n => p n * a n * d n))
-    (hcollision : Summable (fun n => p n ^ 2 * a n * d n))
+    (hcollision : Summable (fun n => p n ^ (2 : ℕ) * a n * d n))
     (hp_one : ∑' n, p n = 1)
     (hpa_zero : ∑' n, p n * a n = 0) :
     cofinalReplicaFisherOneCornerCodiagonal k p a d =
@@ -341,12 +341,12 @@ theorem cofinalReplicaFisherOneCornerCodiagonal_eq_score_sub_collision
     ring
   have hcollisionR :
       Summable (fun q : Fin k × ℕ =>
-        cofinalReplicaProbability k p q ^ 2 *
+        cofinalReplicaProbability k p q ^ (2 : ℕ) *
           cofinalReplicaCoordinate a q *
             cofinalReplicaCoordinate d q) := by
     have hbase :
         Summable (fun q : Fin k × ℕ =>
-          (p q.2 ^ 2 * a q.2 * d q.2) / (k : ℝ) ^ 2) := by
+          (p q.2 ^ (2 : ℕ) * a q.2 * d q.2) / (k : ℝ) ^ (2 : ℕ)) := by
       convert summable_cofinalReplica
         (k := k) (hcollision.div_const k) using 1
       funext q
@@ -411,7 +411,7 @@ theorem tendsto_cofinalReplicaFisherOneCornerCodiagonal
     (hpa : Summable (fun n => p n * a n))
     (hpd : Summable (fun n => p n * d n))
     (hpad : Summable (fun n => p n * a n * d n))
-    (hcollision : Summable (fun n => p n ^ 2 * a n * d n))
+    (hcollision : Summable (fun n => p n ^ (2 : ℕ) * a n * d n))
     (hp_one : ∑' n, p n = 1)
     (hpa_zero : ∑' n, p n * a n = 0) :
     Tendsto

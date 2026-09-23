@@ -36,7 +36,7 @@ variable {K : Type*} [Field K] [CharZero K]
 /-- **The rational affine-connection equation** `a(R)·(R')² = R'·a − R''` of a polynomial map. -/
 def IsAffineConnection (R : K[X])
     (hR : ¬ ∃ c : K, (algebraMap K[X] (RatFunc K) R) = RatFunc.C c) (a : RatFunc K) : Prop :=
-  algebraMap K[X] (RatFunc K) (derivative R ^ 2)
+  algebraMap K[X] (RatFunc K) (derivative R ^ (2 : ℕ))
       * ratFuncSubstitutionAlgHom (algebraMap K[X] (RatFunc K) R) hR a
     = algebraMap K[X] (RatFunc K) (derivative R) * a
       - algebraMap K[X] (RatFunc K) (derivative (derivative R))
@@ -45,7 +45,7 @@ omit [CharZero K] in
 theorem isAffineConnection_def {R : K[X]}
     {hR : ¬ ∃ c : K, (algebraMap K[X] (RatFunc K) R) = RatFunc.C c} {a : RatFunc K}
     (h : IsAffineConnection R hR a) :
-    algebraMap K[X] (RatFunc K) (derivative R ^ 2)
+    algebraMap K[X] (RatFunc K) (derivative R ^ (2 : ℕ))
         * ratFuncSubstitutionAlgHom (algebraMap K[X] (RatFunc K) R) hR a
       = algebraMap K[X] (RatFunc K) (derivative R) * a
         - algebraMap K[X] (RatFunc K) (derivative (derivative R)) := h
@@ -100,7 +100,7 @@ omit [CharZero K] in
 theorem affineSide_eq_lhs
     {hR : ¬ ∃ c : K, (algebraMap K[X] (RatFunc K) R) = RatFunc.C c} {a : RatFunc K}
     (heq : IsAffineConnection R hR a) :
-    affineSide R a = algebraMap K[X] (RatFunc K) (derivative R ^ 2)
+    affineSide R a = algebraMap K[X] (RatFunc K) (derivative R ^ (2 : ℕ))
       * ratFuncSubstitutionAlgHom (algebraMap K[X] (RatFunc K) R) hR a := by
   rw [affineSide, isAffineConnection_def heq]
   ring
@@ -124,7 +124,7 @@ theorem ratOrder_affineSide
       = ratOrder a (R.eval c) * (rootMultiplicity c (R - Polynomial.C (R.eval c)) : ℤ)
         + 2 * (rootMultiplicity c (derivative R) : ℤ) := by
   have hRd := derivative_ne_zero_of_natDegree_ne_zero hRdeg
-  have hAsq : algebraMap K[X] (RatFunc K) (derivative R ^ 2) ≠ 0 :=
+  have hAsq : algebraMap K[X] (RatFunc K) (derivative R ^ (2 : ℕ)) ≠ 0 :=
     algebraMap_ne_zero_of_ne_zero (pow_ne_zero 2 hRd)
   rw [affineSide_eq_lhs heq, ratOrder_mul hAsq (substitution_ne_zero ha), ratOrder_algebraMap,
     rootMultiplicity_pow hRd 2 c, ratOrder_ratFuncSubstitution hRdeg hR ha c]

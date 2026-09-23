@@ -57,7 +57,7 @@ theorem two_mul_logLog_sub_le_mulDistSqPair {f : ℕ → ℂ} {z : ℕ} (hz : 2 
 
 /-- The Mertens three-four-one weight is a square. -/
 theorem three_add_four_cos_add_cos_two (x : ℝ) :
-    3 + 4 * Real.cos x + Real.cos (2 * x) = 2 * (1 + Real.cos x) ^ 2 := by
+    3 + 4 * Real.cos x + Real.cos (2 * x) = 2 * (1 + Real.cos x) ^ (2 : ℕ) := by
   rw [Real.cos_two_mul]
   ring
 
@@ -82,7 +82,7 @@ theorem two_mul_sum_inv_le_four_mul_dist_add_dist {f : ℕ → ℂ} {P : Finset 
     have hrw : 2 * t * Real.log (p : ℝ) = 2 * (t * Real.log (p : ℝ)) := by ring
     rw [hrw]
     have hsq := three_add_four_cos_add_cos_two (t * Real.log (p : ℝ))
-    have hnn : 0 ≤ 2 * (1 + Real.cos (t * Real.log (p : ℝ))) ^ 2 := by positivity
+    have hnn : 0 ≤ 2 * (1 + Real.cos (t * Real.log (p : ℝ))) ^ (2 : ℕ) := by positivity
     have hnum : (2 : ℝ)
         ≤ 4 * (1 + Real.cos (t * Real.log (p : ℝ)))
           + (1 + Real.cos (2 * (t * Real.log (p : ℝ)))) := by linarith
@@ -117,7 +117,7 @@ theorem norm_smoothMulSum_zero_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1
     (hmul : ∀ a b : ℕ, Nat.Coprime a b → f (a * b) = f a * f b) (h1 : f 1 = 1)
     {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) (hneg : ∀ p ∈ P, f p = -1) :
     ‖smoothMulSum f P 0‖
-      ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ) ^ 2) - ∑ p ∈ P, 1 / (p : ℝ)) := by
+      ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ)) - ∑ p ∈ P, 1 / (p : ℝ)) := by
   rw [smoothMulSum]
   refine le_trans (norm_sum_smooth_le_exp hf hmul h1 0 hP) (Real.exp_le_exp.mpr ?_)
   have hdist : mulDistSq f 0 P = 2 * ∑ p ∈ P, 1 / (p : ℝ) := by

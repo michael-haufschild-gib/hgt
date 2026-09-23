@@ -49,13 +49,13 @@ private theorem hasSum_reciprocal_telescope (m : ℕ) (hm : 1 ≤ m) :
 
 /-- The reciprocal-square tail beginning after `m` is at most `1/m`. -/
 theorem tsum_reciprocal_square_tail_le {m : ℕ} (hm : 1 ≤ m) :
-    ∑' k : ℕ, 1 / (((m + k : ℕ) : ℝ) + 1) ^ 2 ≤ 1 / (m : ℝ) := by
-  let f : ℕ → ℝ := fun k => 1 / (((m + k : ℕ) : ℝ) + 1) ^ 2
+    ∑' k : ℕ, 1 / (((m + k : ℕ) : ℝ) + 1) ^ (2 : ℕ) ≤ 1 / (m : ℝ) := by
+  let f : ℕ → ℝ := fun k => 1 / (((m + k : ℕ) : ℝ) + 1) ^ (2 : ℕ)
   let g : ℕ → ℝ := fun k =>
     1 / ((m + k : ℕ) : ℝ) - 1 / ((m + k + 1 : ℕ) : ℝ)
   have hgHas : HasSum g (1 / (m : ℝ)) := hasSum_reciprocal_telescope m hm
   have hfSum : Summable f := by
-    have hp : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 2) :=
+    have hp : Summable (fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) :=
       Real.summable_one_div_nat_pow.mpr (by norm_num)
     simpa [f, add_comm, add_left_comm, add_assoc] using
       (summable_nat_add_iff (m + 1)).2 hp
@@ -69,7 +69,7 @@ theorem tsum_reciprocal_square_tail_le {m : ℕ} (hm : 1 ≤ m) :
     have hid : 1 / a - 1 / (a + 1) = 1 / (a * (a + 1)) := by
       field_simp [ha.ne', ha1.ne', mul_ne_zero ha.ne' ha1.ne']
       ring
-    change 1 / (a + 1) ^ 2 ≤ 1 / a - 1 / (a + 1)
+    change 1 / (a + 1) ^ (2 : ℕ) ≤ 1 / a - 1 / (a + 1)
     rw [hid]
     apply one_div_le_one_div_of_le (mul_pos ha ha1)
     nlinarith
@@ -80,7 +80,7 @@ def gammaWeierstrassFactor (s : ℂ) (k : ℕ) : ℂ :=
   (1 + s / ((k : ℂ) + 1)) * Complex.exp (-(s / ((k : ℂ) + 1)))
 
 private theorem norm_regularized_exp_sub_one_le {w : ℂ} (hw : ‖w‖ ≤ 1) :
-    ‖(1 + w) * Complex.exp (-w) - 1‖ ≤ 3 * ‖w‖ ^ 2 := by
+    ‖(1 + w) * Complex.exp (-w) - 1‖ ≤ 3 * ‖w‖ ^ (2 : ℕ) := by
   have hnx : ‖(-w)‖ ≤ 1 := by rwa [norm_neg]
   have hdecomp : (1 + w) * Complex.exp (-w) - 1
       = (Complex.exp (-w) - 1 - (-w)) - (-w) * (Complex.exp (-w) - 1) := by ring
@@ -89,13 +89,13 @@ private theorem norm_regularized_exp_sub_one_le {w : ℂ} (hw : ‖w‖ ≤ 1) :
     ‖(Complex.exp (-w) - 1 - (-w)) - (-w) * (Complex.exp (-w) - 1)‖
         ≤ ‖Complex.exp (-w) - 1 - (-w)‖ + ‖(-w) * (Complex.exp (-w) - 1)‖ :=
           norm_sub_le _ _
-    _ ≤ ‖(-w)‖ ^ 2 + ‖(-w)‖ * (2 * ‖(-w)‖) := by
+    _ ≤ ‖(-w)‖ ^ (2 : ℕ) + ‖(-w)‖ * (2 * ‖(-w)‖) := by
       gcongr
       · exact Complex.norm_exp_sub_one_sub_id_le hnx
       · rw [norm_mul]
         gcongr
         exact Complex.norm_exp_sub_one_le hnx
-    _ = 3 * ‖w‖ ^ 2 := by rw [norm_neg]; ring
+    _ = 3 * ‖w‖ ^ (2 : ℕ) := by rw [norm_neg]; ring
 
 private theorem norm_gammaWeierstrassFactor_le_initial (s : ℂ) (k : ℕ) :
     ‖gammaWeierstrassFactor s k‖ ≤
@@ -127,7 +127,7 @@ private theorem norm_gammaWeierstrassFactor_le_initial (s : ℂ) (k : ℕ) :
 private theorem norm_gammaWeierstrassFactor_le_tail {s : ℂ} {k : ℕ}
     (hk : ⌈‖s‖⌉₊ ≤ k) :
     ‖gammaWeierstrassFactor s k‖ ≤
-      Real.exp (3 * ‖s‖ ^ 2 / ((k : ℝ) + 1) ^ 2) := by
+      Real.exp (3 * ‖s‖ ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
   have hkpos : (0 : ℝ) < (k : ℝ) + 1 := by positivity
   have hden : ‖(k : ℂ) + 1‖ = (k : ℝ) + 1 := by
     rw [Complex.norm_def]
@@ -147,12 +147,12 @@ private theorem norm_gammaWeierstrassFactor_le_tail {s : ℂ} {k : ℕ}
         ≤ 1 + ‖gammaWeierstrassFactor s k - 1‖ := by
           have := norm_add_le (1 : ℂ) (gammaWeierstrassFactor s k - 1)
           simpa [add_sub_cancel] using this
-    _ ≤ 1 + 3 * ‖w‖ ^ 2 := by
+    _ ≤ 1 + 3 * ‖w‖ ^ (2 : ℕ) := by
       gcongr
       exact norm_regularized_exp_sub_one_le hw
-    _ ≤ Real.exp (3 * ‖s‖ ^ 2 / ((k : ℝ) + 1) ^ 2) := by
+    _ ≤ Real.exp (3 * ‖s‖ ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
       rw [hwn, div_pow]
-      have h := Real.add_one_le_exp (3 * ‖s‖ ^ 2 / ((k : ℝ) + 1) ^ 2)
+      have h := Real.add_one_le_exp (3 * ‖s‖ ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ))
       ring_nf at h ⊢
       exact h
 
@@ -200,18 +200,18 @@ private theorem prod_gammaWeierstrassFactor_norm_le_initial
 private theorem prod_gammaWeierstrassFactor_norm_le_tail
     (s : ℂ) {n m : ℕ} (hmceil : ⌈‖s‖⌉₊ ≤ m) (hm : 1 ≤ m) :
     (∏ j ∈ Finset.range n, ‖gammaWeierstrassFactor s (m + j)‖) ≤
-      Real.exp (3 * ‖s‖ ^ 2 / (m : ℝ)) := by
-  let q : ℕ → ℝ := fun j => 1 / (((m + j : ℕ) : ℝ) + 1) ^ 2
+      Real.exp (3 * ‖s‖ ^ (2 : ℕ) / (m : ℝ)) := by
+  let q : ℕ → ℝ := fun j => 1 / (((m + j : ℕ) : ℝ) + 1) ^ (2 : ℕ)
   have hq0 : ∀ j, 0 ≤ q j := fun j => by dsimp [q]; positivity
   have hqsum : Summable q := by
-    have hp : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 2) :=
+    have hp : Summable (fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) :=
       Real.summable_one_div_nat_pow.mpr (by norm_num)
     simpa [q, add_comm, add_left_comm, add_assoc] using
       (summable_nat_add_iff (m + 1)).2 hp
   have hqtsum : ∑' j, q j ≤ 1 / (m : ℝ) := by
     exact tsum_reciprocal_square_tail_le hm
   have hpoint : ∀ j ∈ Finset.range n,
-      ‖gammaWeierstrassFactor s (m + j)‖ ≤ Real.exp (3 * ‖s‖ ^ 2 * q j) := by
+      ‖gammaWeierstrassFactor s (m + j)‖ ≤ Real.exp (3 * ‖s‖ ^ (2 : ℕ) * q j) := by
     intro j _
     have htail := norm_gammaWeierstrassFactor_le_tail
       (s := s) (k := m + j) (hmceil.trans (Nat.le_add_right m j))
@@ -222,19 +222,19 @@ private theorem prod_gammaWeierstrassFactor_norm_le_tail
     (fun j (_hj : j ∈ Finset.range n) => norm_nonneg (gammaWeierstrassFactor s (m + j))) hpoint
   calc
     ∏ j ∈ Finset.range n, ‖gammaWeierstrassFactor s (m + j)‖
-        ≤ ∏ j ∈ Finset.range n, Real.exp (3 * ‖s‖ ^ 2 * q j) := hprod
-    _ = Real.exp (3 * ‖s‖ ^ 2 * ∑ j ∈ Finset.range n, q j) := by
+        ≤ ∏ j ∈ Finset.range n, Real.exp (3 * ‖s‖ ^ (2 : ℕ) * q j) := hprod
+    _ = Real.exp (3 * ‖s‖ ^ (2 : ℕ) * ∑ j ∈ Finset.range n, q j) := by
       rw [← Real.exp_sum, ← Finset.mul_sum]
-    _ ≤ Real.exp (3 * ‖s‖ ^ 2 * ∑' j, q j) := by
+    _ ≤ Real.exp (3 * ‖s‖ ^ (2 : ℕ) * ∑' j, q j) := by
       apply Real.exp_le_exp.mpr
       gcongr
       exact hqsum.sum_le_tsum (Finset.range n) (fun i _ => hq0 i)
-    _ ≤ Real.exp (3 * ‖s‖ ^ 2 / (m : ℝ)) := by
+    _ ≤ Real.exp (3 * ‖s‖ ^ (2 : ℕ) / (m : ℝ)) := by
       apply Real.exp_le_exp.mpr
       calc
-        3 * ‖s‖ ^ 2 * ∑' j, q j ≤ 3 * ‖s‖ ^ 2 * (1 / (m : ℝ)) := by
+        3 * ‖s‖ ^ (2 : ℕ) * ∑' j, q j ≤ 3 * ‖s‖ ^ (2 : ℕ) * (1 / (m : ℝ)) := by
           gcongr
-        _ = 3 * ‖s‖ ^ 2 / (m : ℝ) := by ring
+        _ = 3 * ‖s‖ ^ (2 : ℕ) / (m : ℝ) := by ring
 
 /-- Natural splitting depth for the reciprocal-Gamma Weierstrass product. -/
 def gammaGrowthIndex (s : ℂ) : ℕ := ⌈‖s‖⌉₊ + 1
@@ -251,7 +251,7 @@ theorem norm_tprod_gammaWeierstrassFactor_le (s : ℂ) :
   have hmceil : ⌈‖s‖⌉₊ ≤ m := by dsimp [m, gammaGrowthIndex]; omega
   have hrm : ‖s‖ ≤ (m : ℝ) :=
     (Nat.le_ceil ‖s‖).trans (by exact_mod_cast hmceil)
-  have hrdiv : ‖s‖ ^ 2 / (m : ℝ) ≤ ‖s‖ := by
+  have hrdiv : ‖s‖ ^ (2 : ℕ) / (m : ℝ) ≤ ‖s‖ := by
     rw [div_le_iff₀ hmpos]
     nlinarith [norm_nonneg s]
   have hmult : Multipliable (gammaWeierstrassFactor s) := by
@@ -278,14 +278,14 @@ theorem norm_tprod_gammaWeierstrassFactor_le (s : ℂ) :
       (∏ x ∈ Finset.range m, ‖gammaWeierstrassFactor s x‖) *
           ∏ x ∈ Finset.range (n - m), ‖gammaWeierstrassFactor s (m + x)‖
           ≤ ((1 + ‖s‖) ^ m * Real.exp (‖s‖ * (1 + Real.log m))) *
-              Real.exp (3 * ‖s‖ ^ 2 / (m : ℝ)) :=
+              Real.exp (3 * ‖s‖ ^ (2 : ℕ) / (m : ℝ)) :=
             mul_le_mul hi ht (by positivity) (by positivity)
       _ ≤ (1 + ‖s‖) ^ m *
           Real.exp (‖s‖ * (1 + Real.log m) + 3 * ‖s‖) := by
         rw [mul_assoc, ← Real.exp_add]
         gcongr
         calc
-          3 * ‖s‖ ^ 2 / (m : ℝ) = 3 * (‖s‖ ^ 2 / (m : ℝ)) := by ring
+          3 * ‖s‖ ^ (2 : ℕ) / (m : ℝ) = 3 * (‖s‖ ^ (2 : ℕ) / (m : ℝ)) := by ring
           _ ≤ 3 * ‖s‖ :=
             mul_le_mul_of_nonneg_left hrdiv (by norm_num : (0 : ℝ) ≤ 3)
       _ = (1 + ‖s‖) ^ (gammaGrowthIndex s) *

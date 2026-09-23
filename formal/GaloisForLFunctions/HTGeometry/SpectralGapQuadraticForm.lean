@@ -70,12 +70,12 @@ theorem cnormSq_le_of_eigenvalue_gap
     have hj0 : ((mu j : ℝ) : ℂ) = 0 := by rw [hj]; simp
     rw [hmv j, hj0, zero_smul]
   have hrepr : ∀ j, (b.repr x).ofLp j = c j := fun j => b.repr_apply_apply x j
-  have hpar : cnormSq z = ∑ j, ‖c j‖ ^ 2 := by
+  have hpar : cnormSq z = ∑ j, ‖c j‖ ^ (2 : ℕ) := by
     have h4 : cinner z z = ((cnormSq z : ℝ) : ℂ) := cinner_self z
     have h1 : cinner z z = inner ℂ x x := by rw [cinner_eq_inner]
     have h2 : inner ℂ x x = inner ℂ (b.repr x) (b.repr x) :=
       (LinearIsometryEquiv.inner_map_map b.repr x x).symm
-    have h3 : inner ℂ (b.repr x) (b.repr x) = ((∑ j, ‖c j‖ ^ 2 : ℝ) : ℂ) := by
+    have h3 : inner ℂ (b.repr x) (b.repr x) = ((∑ j, ‖c j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [PiLp.inner_apply, Complex.ofReal_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [hrepr j]
@@ -83,10 +83,10 @@ theorem cnormSq_le_of_eigenvalue_gap
       rw [Complex.mul_conj']
       push_cast
       ring
-    have h5 : ((cnormSq z : ℝ) : ℂ) = ((∑ j, ‖c j‖ ^ 2 : ℝ) : ℂ) := by
+    have h5 : ((cnormSq z : ℝ) : ℂ) = ((∑ j, ‖c j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [← h4, h1, h2, h3]
     exact_mod_cast h5
-  have hform : (cinner z (T *ᵥ z)).re = ∑ j, mu j * ‖c j‖ ^ 2 := by
+  have hform : (cinner z (T *ᵥ z)).re = ∑ j, mu j * ‖c j‖ ^ (2 : ℕ) := by
     have hsym : (Matrix.toEuclideanLin T).IsSymmetric :=
       Matrix.isSymmetric_toEuclideanLin_iff.mpr hT
     have hTx : Matrix.toEuclideanLin T x = WithLp.toLp 2 (T *ᵥ z) := toEuclideanLin_toLp T z
@@ -107,7 +107,7 @@ theorem cnormSq_le_of_eigenvalue_gap
         = inner ℂ (b.repr x) (b.repr (Matrix.toEuclideanLin T x)) :=
       (LinearIsometryEquiv.inner_map_map b.repr _ _).symm
     have h3 : inner ℂ (b.repr x) (b.repr (Matrix.toEuclideanLin T x))
-        = ((∑ j, mu j * ‖c j‖ ^ 2 : ℝ) : ℂ) := by
+        = ((∑ j, mu j * ‖c j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [PiLp.inner_apply, Complex.ofReal_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [hrepr j, hreprT j]

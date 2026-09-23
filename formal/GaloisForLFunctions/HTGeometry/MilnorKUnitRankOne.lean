@@ -31,7 +31,7 @@ private theorem nsmul_of_zsmul {A : Type*} [AddCommGroup A] {n : ℕ} {x : A}
     (h : ((n : ℤ)) • x = 0) : n • x = 0 := by
   rwa [natCast_zsmul] at h
 
-/-- `{a, a} = {-1, a}` is killed by two, because `{(-1)^2, a} = {1, a} = 0`. -/
+/-- `{a, a} = {-1, a}` is killed by two, because `{(-1)^(2 : ℕ), a} = {1, a} = 0`. -/
 theorem milnorSym2_two_zsmul_self (a : Fˣ) : (2 : ℤ) • milnorSym2 F a a = 0 := by
   have hzpow : milnorSym2 F ((-1 : Fˣ) ^ (2 : ℤ)) a = (2 : ℤ) • milnorSym2 F (-1) a :=
     milnorSym2_zpow_left (-1) a 2

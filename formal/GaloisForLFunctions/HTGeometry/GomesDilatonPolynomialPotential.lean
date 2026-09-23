@@ -97,7 +97,7 @@ theorem gomesDilatonHamiltonian_derivative_fibers (H K : ℝ[X]) :
 theorem gomesDilatonHamiltonian_parts_iff (H K : ℝ[X]) :
     dilatonHamiltonianCLM H = dilatonHamiltonianCLM K ↔
       H.derivative.derivative = K.derivative.derivative ∧
-        H.derivative ^ 2 = K.derivative ^ 2 := by
+        H.derivative ^ (2 : ℕ) = K.derivative ^ (2 : ℕ) := by
   constructor
   · intro h
     have hp := (gomesDilatonPotential_polynomial_eq_iff H K).mp

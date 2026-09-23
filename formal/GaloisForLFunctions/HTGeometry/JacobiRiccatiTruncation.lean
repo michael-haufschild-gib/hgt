@@ -118,7 +118,7 @@ theorem jacobiCompression_riccati_truncation (a b : ℕ → ℝ) (m : ℕ) (j k 
       = (jacobiCompression a b (m + 1) * connectionCompression a (m + 1)
           - connectionCompression a (m + 1) * jacobiCompression a b (m + 1)
           - jacobiCompression a b (m + 1) * jacobiCompression a b (m + 1)) j k
-        - 2 * ((m : ℝ) + 1) * a (m + 1) ^ 2 *
+        - 2 * ((m : ℝ) + 1) * a (m + 1) ^ (2 : ℕ) *
             (if (j : ℕ) = m ∧ (k : ℕ) = m then 1 else 0) := by
   have hjle : (j : ℕ) ≤ m := Nat.lt_succ_iff.mp j.isLt
   have hkle : (k : ℕ) ≤ m := Nat.lt_succ_iff.mp k.isLt
@@ -147,7 +147,7 @@ theorem jacobiCompression_riccati_matrix (a b : ℕ → ℝ) (m : ℕ) :
       = jacobiCompression a b (m + 1) * connectionCompression a (m + 1)
         - connectionCompression a (m + 1) * jacobiCompression a b (m + 1)
         - jacobiCompression a b (m + 1) * jacobiCompression a b (m + 1)
-        - (2 * ((m : ℝ) + 1) * a (m + 1) ^ 2) •
+        - (2 * ((m : ℝ) + 1) * a (m + 1) ^ (2 : ℕ)) •
             Matrix.vecMulVec (fun i : Fin (m + 1) => if (i : ℕ) = m then (1 : ℝ) else 0)
               (fun i : Fin (m + 1) => if (i : ℕ) = m then (1 : ℝ) else 0) := by
   ext j k

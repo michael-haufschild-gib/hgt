@@ -35,7 +35,7 @@ theorem circleExtremalRate_le_one (ξ ζ : Circle) : circleExtremalRate ξ ζ �
 
 /-- The strict-rate gap is exactly half the squared chordal distance. -/
 theorem circleExtremalRate_distance (ξ ζ : Circle) :
-    ‖(ζ : ℂ)-(ξ : ℂ)‖^2 = 2*(1-circleExtremalRate ξ ζ) := by
+    ‖(ζ : ℂ)-(ξ : ℂ)‖^(2 : ℕ) = 2*(1-circleExtremalRate ξ ζ) := by
   have hξ := Complex.sq_norm (ξ : ℂ)
   have hζ := Complex.sq_norm (ζ : ℂ)
   rw [Circle.norm_coe] at hξ hζ
@@ -47,7 +47,7 @@ theorem circleExtremalRate_distance (ξ ζ : Circle) :
 
 /-- Mean deficit is an exact transport-cost integral for every circle law. -/
 theorem circleExtremalMean_distance (μ : ProbabilityMeasure Circle) (ξ : Circle) :
-    (∫ ζ : Circle, ‖(ζ : ℂ)-(ξ : ℂ)‖^2 ∂(μ : Measure Circle)) =
+    (∫ ζ : Circle, ‖(ζ : ℂ)-(ξ : ℂ)‖^(2 : ℕ) ∂(μ : Measure Circle)) =
       2*(1-circleExtremalMean μ ξ) := by
   simp_rw [circleExtremalRate_distance]
   rw [integral_const_mul, integral_sub (integrable_const 1)
@@ -57,7 +57,7 @@ theorem circleExtremalMean_distance (μ : ProbabilityMeasure Circle) (ξ : Circl
 
 theorem circleExtremalMean_le_one (μ : ProbabilityMeasure Circle) (ξ : Circle) :
     circleExtremalMean μ ξ ≤ 1 := by
-  have h : 0 ≤ ∫ ζ : Circle, ‖(ζ : ℂ)-(ξ : ℂ)‖^2 ∂(μ : Measure Circle) :=
+  have h : 0 ≤ ∫ ζ : Circle, ‖(ζ : ℂ)-(ξ : ℂ)‖^(2 : ℕ) ∂(μ : Measure Circle) :=
     integral_nonneg (fun _ => sq_nonneg _)
   rw [circleExtremalMean_distance] at h
   linarith
@@ -67,10 +67,10 @@ theorem circleExtremalMean_eq_one_iff (μ : ProbabilityMeasure Circle) (ξ : Cir
     circleExtremalMean μ ξ = 1 ↔ (μ : Measure Circle) = Measure.dirac ξ := by
   constructor
   · intro h
-    have hz : (∫ ζ : Circle, ‖(ζ : ℂ)-(ξ : ℂ)‖^2 ∂(μ : Measure Circle)) = 0 := by
+    have hz : (∫ ζ : Circle, ‖(ζ : ℂ)-(ξ : ℂ)‖^(2 : ℕ) ∂(μ : Measure Circle)) = 0 := by
       rw [circleExtremalMean_distance, h]
       ring
-    have hc : Continuous (fun ζ : Circle => ‖(ζ : ℂ)-(ξ : ℂ)‖^2) := by fun_prop
+    have hc : Continuous (fun ζ : Circle => ‖(ζ : ℂ)-(ξ : ℂ)‖^(2 : ℕ)) := by fun_prop
     have hae := (integral_eq_zero_iff_of_nonneg (fun _ => sq_nonneg _)
       (hc.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))).mp hz
     have he : (fun ζ : Circle => ζ) =ᵐ[(μ : Measure Circle)] (fun _ => ξ) := by
@@ -89,13 +89,13 @@ theorem circleExtremalMean_eq_one_iff (μ : ProbabilityMeasure Circle) (ξ : Cir
 theorem circleExtremalMean_concentration (μ : ProbabilityMeasure Circle) (ξ : Circle) (r : ℝ) :
     Real.exp r ^ 2 * (μ : Measure Circle).real {ζ : Circle | Real.exp r ≤ ‖(ζ : ℂ)-(ξ : ℂ)‖} ≤
       2*(1-circleExtremalMean μ ξ) := by
-  have hc : Continuous (fun ζ : Circle => ‖(ζ : ℂ)-(ξ : ℂ)‖^2) := by fun_prop
+  have hc : Continuous (fun ζ : Circle => ‖(ζ : ℂ)-(ξ : ℂ)‖^(2 : ℕ)) := by fun_prop
   have h := mul_meas_ge_le_integral_of_nonneg
     (Eventually.of_forall (fun ζ : Circle => sq_nonneg ‖(ζ : ℂ)-(ξ : ℂ)‖))
     (hc.integrable_of_hasCompactSupport (μ := (μ : Measure Circle))
       (HasCompactSupport.of_compactSpace _)) (Real.exp r ^ 2)
   rw [circleExtremalMean_distance] at h
-  have hs : {ζ : Circle | Real.exp r^2 ≤ ‖(ζ : ℂ)-(ξ : ℂ)‖^2} =
+  have hs : {ζ : Circle | Real.exp r^(2 : ℕ) ≤ ‖(ζ : ℂ)-(ξ : ℂ)‖^(2 : ℕ)} =
       {ζ : Circle | Real.exp r ≤ ‖(ζ : ℂ)-(ξ : ℂ)‖} := by
     ext ζ
     exact sq_le_sq₀ (Real.exp_pos r).le (norm_nonneg _)

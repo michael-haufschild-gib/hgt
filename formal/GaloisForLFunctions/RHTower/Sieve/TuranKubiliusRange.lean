@@ -65,9 +65,9 @@ theorem sum_inv_primesRange {z₀ z : ℕ} (hz : z₀ ≤ z) :
 of integers is at most twice the variance at each end. -/
 theorem sum_variance_primesRange_le {z₀ z : ℕ} (hz : z₀ ≤ z) (a b : ℕ) (hab : a ≤ b) :
     ∑ n ∈ Finset.Ioc a b,
-        (((primeFactorsIn (primesRange z₀ z) n).card : ℝ) - (mertensS z - mertensS z₀)) ^ 2
+        (((primeFactorsIn (primesRange z₀ z) n).card : ℝ) - (mertensS z - mertensS z₀)) ^ (2 : ℕ)
       ≤ 4 * ((b : ℝ) - a) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-        + 8 * ((Nat.primesLE z).card : ℝ) ^ 2 := by
+        + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ) := by
   classical
   have hpi : ((Nat.primesLE z₀).card : ℝ) ≤ ((Nat.primesLE z).card : ℝ) := by
     exact_mod_cast Finset.card_le_card (primesLE_subset hz)
@@ -84,9 +84,9 @@ theorem sum_variance_primesRange_le {z₀ z : ℕ} (hz : z₀ ≤ z) (a b : ℕ)
     have : (a : ℝ) ≤ (b : ℝ) := by exact_mod_cast hab
     linarith
   have hterm : ∀ n ∈ Finset.Ioc a b,
-      (((primeFactorsIn (primesRange z₀ z) n).card : ℝ) - (mertensS z - mertensS z₀)) ^ 2
-        ≤ 2 * ((omegaCount z n : ℝ) - mertensS z) ^ 2
-          + 2 * ((omegaCount z₀ n : ℝ) - mertensS z₀) ^ 2 := by
+      (((primeFactorsIn (primesRange z₀ z) n).card : ℝ) - (mertensS z - mertensS z₀)) ^ (2 : ℕ)
+        ≤ 2 * ((omegaCount z n : ℝ) - mertensS z) ^ (2 : ℕ)
+          + 2 * ((omegaCount z₀ n : ℝ) - mertensS z₀) ^ (2 : ℕ) := by
     intro n _
     rw [card_primeFactorsIn_primesRange hz n]
     nlinarith [sq_nonneg (((omegaCount z n : ℝ) - mertensS z)

@@ -110,10 +110,10 @@ theorem deningerFloquetDiagonalDefect_of_three_le (v : DeningerMeyerStrongLogTar
 
 /-- The zero-lag autocorrelation is the real energy. -/
 theorem deningerMeyerStrongLogAutocorrelation_zero_re (v : DeningerMeyerStrongLogTarget) :
-    (deningerMeyerStrongLogAutocorrelation v 0).re = ∫ x : ℝ, ‖(v : ℝ → ℂ) x‖ ^ 2 := by
+    (deningerMeyerStrongLogAutocorrelation v 0).re = ∫ x : ℝ, ‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
   rw [deningerMeyerStrongLogAutocorrelation]
   have hfun : (fun x : ℝ => (v : ℝ → ℂ) x * (starRingEnd ℂ) ((v : ℝ → ℂ) (x + 0)))
-      = fun x : ℝ => ((‖(v : ℝ → ℂ) x‖ ^ 2 : ℝ) : ℂ) := by
+      = fun x : ℝ => ((‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     funext x
     rw [add_zero, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [hfun, integral_complex_ofReal, Complex.ofReal_re]
@@ -122,28 +122,28 @@ theorem deningerMeyerStrongLogAutocorrelation_zero_re (v : DeningerMeyerStrongLo
 theorem deningerMeyerStrongLogAutocorrelation_zero_re_pos {v : DeningerMeyerStrongLogTarget}
     (hv : (v : ℝ → ℂ) ≠ 0) : 0 < (deningerMeyerStrongLogAutocorrelation v 0).re := by
   have hint := integrable_deningerMeyerStrongLogAutocorrelationIntegrand v 0
-  have hintSq : Integrable (fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ 2) := by
+  have hintSq : Integrable (fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ)) := by
     have hre := hint.re
     have hfun : (fun x : ℝ =>
         RCLike.re ((v : ℝ → ℂ) x * (starRingEnd ℂ) ((v : ℝ → ℂ) (x + 0))))
-        = fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ 2 := by
+        = fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
       funext x
       rw [add_zero, Complex.mul_conj]
       simp [Complex.normSq_eq_norm_sq, ← Complex.ofReal_pow]
     rwa [hfun] at hre
   rw [deningerMeyerStrongLogAutocorrelation_zero_re]
   obtain ⟨x₀, hx₀⟩ := Function.ne_iff.1 hv
-  have hcont : Continuous fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ 2 :=
+  have hcont : Continuous fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ) :=
     ((v.2.smooth.continuous).norm.pow 2)
-  have hpos : 0 < ‖(v : ℝ → ℂ) x₀‖ ^ 2 := by
+  have hpos : 0 < ‖(v : ℝ → ℂ) x₀‖ ^ (2 : ℕ) := by
     have : 0 < ‖(v : ℝ → ℂ) x₀‖ := norm_pos_iff.2 (by simpa using hx₀)
     positivity
   rw [integral_pos_iff_support_of_nonneg (fun x => by positivity) hintSq]
-  have hUopen : IsOpen ((fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ 2) ⁻¹' Ioi 0) :=
+  have hUopen : IsOpen ((fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ)) ⁻¹' Ioi 0) :=
     hcont.isOpen_preimage _ isOpen_Ioi
-  have hUne : ((fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ 2) ⁻¹' Ioi 0).Nonempty := ⟨x₀, hpos⟩
-  have hUsub : (fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ 2) ⁻¹' Ioi 0
-      ⊆ Function.support fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ 2 := fun x hx => ne_of_gt hx
+  have hUne : ((fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ)) ⁻¹' Ioi 0).Nonempty := ⟨x₀, hpos⟩
+  have hUsub : (fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ)) ⁻¹' Ioi 0
+      ⊆ Function.support fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ) := fun x hx => ne_of_gt hx
   exact lt_of_lt_of_le (hUopen.measure_pos volume hUne) (measure_mono hUsub)
 
 /-! ## The negative witness is a Floquet Euler coboundary -/

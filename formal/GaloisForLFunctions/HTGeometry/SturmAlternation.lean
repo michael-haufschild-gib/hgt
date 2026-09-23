@@ -34,7 +34,7 @@ theorem monicOrtho_eval_mul_neg_of_root (h : PositiveMomentForm s) (n : ℕ) {x 
     (monicOrtho s (n + 2)).eval x * (monicOrtho s n).eval x < 0 := by
   have hne : (monicOrtho s n).eval x ≠ 0 := fun h0 =>
     monicOrtho_succ_no_common_root h n h0 hx
-  have hsq : 0 < (monicOrtho s n).eval x ^ 2 :=
+  have hsq : 0 < (monicOrtho s n).eval x ^ (2 : ℕ) :=
     lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hne))
   rw [monicOrtho_eval_succ_succ_of_root h n hx]
   nlinarith [mul_pos (recurOff_pos h n) hsq]

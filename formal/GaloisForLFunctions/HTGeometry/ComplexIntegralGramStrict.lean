@@ -29,7 +29,7 @@ theorem complexFeatureGram_posDef_of_support
   rw [complexFeatureGram_quadratic mu f hprod x]
   have hcast : ∀ omega, complexFeatureCombination f x omega *
       (starRingEnd ℂ) (complexFeatureCombination f x omega) =
-      ((‖complexFeatureCombination f x omega‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖complexFeatureCombination f x omega‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro omega
     rw [Complex.mul_conj, ← Complex.sq_norm]
   have hint : Integrable (fun omega => complexFeatureCombination f x omega *
@@ -40,7 +40,7 @@ theorem complexFeatureGram_posDef_of_support
           (hprod l m).const_mul ((starRingEnd ℂ) (x l) * x m)) ?_
     exact Filter.Eventually.of_forall fun omega =>
       (complexFeatureCombination_mul_conj f x omega).symm
-  have hnormInt : Integrable (fun omega => ‖complexFeatureCombination f x omega‖ ^ 2) mu := by
+  have hnormInt : Integrable (fun omega => ‖complexFeatureCombination f x omega‖ ^ (2 : ℕ)) mu := by
     have hre : Integrable (fun omega => (complexFeatureCombination f x omega *
         (starRingEnd ℂ) (complexFeatureCombination f x omega)).re) mu := hint.re
     refine hre.congr (Filter.Eventually.of_forall fun omega => ?_)
@@ -48,7 +48,7 @@ theorem complexFeatureGram_posDef_of_support
     rw [hcast omega, Complex.ofReal_re]
   have hval : (∫ omega, complexFeatureCombination f x omega *
       (starRingEnd ℂ) (complexFeatureCombination f x omega) ∂mu) =
-      ((∫ omega, ‖complexFeatureCombination f x omega‖ ^ 2 ∂mu : ℝ) : ℂ) := by
+      ((∫ omega, ‖complexFeatureCombination f x omega‖ ^ (2 : ℕ) ∂mu : ℝ) : ℂ) := by
     rw [integral_congr_ae (Filter.Eventually.of_forall hcast)]
     exact Complex.ofRealCLM.integral_comp_comm hnormInt
   rw [hval]

@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.GeometricAmplitudeDominance
 
 For a displacement `l` of maximal modulus the shell is the disjoint union of the class at `l`, the
 class at `-l`, and a remainder whose copies have strictly smaller `|Im alpha^|`.  Since all heights on
-a shell agree, `‖alpha^‖ = sqrt (g_1^2 + (Im alpha^)^2)` is strictly increasing in `|Im alpha^|`, so
+a shell agree, `‖alpha^‖ = sqrt (g_1^(2 : ℕ) + (Im alpha^)^(2 : ℕ))` is strictly increasing in `|Im alpha^|`, so
 the remainder's moduli are strictly below the class modulus -- the gap that
 `GeometricAmplitudeDominance` needs.
 -/
@@ -33,7 +33,7 @@ theorem xiPoissonBottomHeight_pos : 0 < xiPoissonBottomHeight := by
 /-- On the bottom shell the Poisson modulus is determined by the displacement. -/
 theorem norm_xiPoissonPoint_of_mem_bottomShell {q : XiZeroCopy} (hq : q ∈ xiPoissonBottomShell) :
     ‖xiPoissonPoint q‖ =
-      Real.sqrt (xiPoissonBottomHeight ^ 2 + (xiPoissonPoint q).im ^ 2) := by
+      Real.sqrt (xiPoissonBottomHeight ^ (2 : ℕ) + (xiPoissonPoint q).im ^ (2 : ℕ)) := by
   have hre : (xiPoissonPoint q).re = xiPoissonBottomHeight := mem_xiPoissonBottomShell.mp hq
   rw [Complex.norm_def, Complex.normSq_apply, hre]
   congr 1
@@ -90,7 +90,7 @@ theorem xiPoissonBottomShell_split {l : ℝ} (hl : l ≠ 0) (f : XiZeroCopy → 
 theorem norm_lt_of_mem_xiShellRest {l : ℝ}
     (hmax : ∀ q ∈ xiPoissonBottomShell, |(xiPoissonPoint q).im| ≤ |l|)
     {q : XiZeroCopy} (hq : q ∈ xiShellRest l) :
-    ‖xiPoissonPoint q‖ < Real.sqrt (xiPoissonBottomHeight ^ 2 + l ^ 2) := by
+    ‖xiPoissonPoint q‖ < Real.sqrt (xiPoissonBottomHeight ^ (2 : ℕ) + l ^ (2 : ℕ)) := by
   classical
   have hmem : q ∈ xiPoissonBottomShell ∧
       ((xiPoissonPoint q).im ≠ l ∧ (xiPoissonPoint q).im ≠ -l) := by
@@ -104,9 +104,9 @@ theorem norm_lt_of_mem_xiShellRest {l : ℝ}
       rcases abs_eq_abs.mp h with h' | h'
       · exact hne₁ h'
       · exact hne₂ h'
-  have hsq : (xiPoissonPoint q).im ^ 2 < l ^ 2 := by
+  have hsq : (xiPoissonPoint q).im ^ (2 : ℕ) < l ^ (2 : ℕ) := by
     have habs : 0 ≤ |(xiPoissonPoint q).im| := abs_nonneg _
-    have h1 : |(xiPoissonPoint q).im| ^ 2 < |l| ^ 2 := by nlinarith [hlt, habs]
+    have h1 : |(xiPoissonPoint q).im| ^ (2 : ℕ) < |l| ^ (2 : ℕ) := by nlinarith [hlt, habs]
     rwa [sq_abs, sq_abs] at h1
   rw [norm_xiPoissonPoint_of_mem_bottomShell hs]
   exact Real.sqrt_lt_sqrt (by positivity) (by linarith)

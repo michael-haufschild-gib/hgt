@@ -39,7 +39,7 @@ def xiResolventNormMass (X : ℝ) : ℝ := ∑' q : XiZeroCopy, ‖xiResolventPo
 def xiResolventImMass (X : ℝ) : ℝ := ∑' q : XiZeroCopy, |(xiResolventPoint X q).im|
 
 /-- The `ℓ²` mass of the imaginary parts of the resolvent coordinates. -/
-def xiResolventImSqMass (X : ℝ) : ℝ := ∑' q : XiZeroCopy, (xiResolventPoint X q).im ^ 2
+def xiResolventImSqMass (X : ℝ) : ℝ := ∑' q : XiZeroCopy, (xiResolventPoint X q).im ^ (2 : ℕ)
 
 theorem summable_abs_im_xiResolventPoint {X : ℝ} (hX : 0 ≤ X) :
     Summable (fun q : XiZeroCopy => |(xiResolventPoint X q).im|) :=
@@ -47,14 +47,14 @@ theorem summable_abs_im_xiResolventPoint {X : ℝ} (hX : 0 ≤ X) :
     (fun _ => Complex.abs_im_le_norm _) (summable_norm_xiResolventPoint hX)
 
 theorem summable_im_sq_xiResolventPoint {X : ℝ} (hX : 0 ≤ X) :
-    Summable (fun q : XiZeroCopy => (xiResolventPoint X q).im ^ 2) := by
+    Summable (fun q : XiZeroCopy => (xiResolventPoint X q).im ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_)
     (summable_norm_xiResolventPoint hX)
   have h1 : |(xiResolventPoint X q).im| ≤ ‖xiResolventPoint X q‖ :=
     Complex.abs_im_le_norm _
   have h2 : ‖xiResolventPoint X q‖ ≤ 1 := norm_xiResolventPoint_le_one hX q
-  calc (xiResolventPoint X q).im ^ 2 = |(xiResolventPoint X q).im| ^ 2 := (sq_abs _).symm
-    _ ≤ ‖xiResolventPoint X q‖ ^ 2 :=
+  calc (xiResolventPoint X q).im ^ (2 : ℕ) = |(xiResolventPoint X q).im| ^ (2 : ℕ) := (sq_abs _).symm
+    _ ≤ ‖xiResolventPoint X q‖ ^ (2 : ℕ) :=
         pow_le_pow_left₀ (abs_nonneg _) h1 2
     _ ≤ ‖xiResolventPoint X q‖ := by nlinarith [norm_nonneg (xiResolventPoint X q)]
 
@@ -64,14 +64,14 @@ theorem summable_im_sq_xiResolventPoint {X : ℝ} (hX : 0 ≤ X) :
 variance pair term is bounded below by its real-part bulk minus an explicit product-form
 error. -/
 theorem re_pair_ge_bulk_sub_err {u v : ℂ} (hu : ‖u‖ ≤ 1) (hv : ‖v‖ ≤ 1) :
-    u.re * v.re * (u.re - v.re) ^ 2 -
-        (4 * (|u.im| * |v.im|) + (2 * (u.im ^ 2 * ‖v‖) + 2 * (v.im ^ 2 * ‖u‖)) +
+    u.re * v.re * (u.re - v.re) ^ (2 : ℕ) -
+        (4 * (|u.im| * |v.im|) + (2 * (u.im ^ (2 : ℕ) * ‖v‖) + 2 * (v.im ^ (2 : ℕ) * ‖u‖)) +
           (4 * (|u.im| * ‖v‖) + 4 * (‖u‖ * |v.im|))) ≤
-      (u * v * (u - v) ^ 2).re := by
-  have hkey : (u * v * (u - v) ^ 2).re =
-      u.re * v.re * (u.re - v.re) ^ 2 -
-        (u.im * v.im * (u.re - v.re) ^ 2 +
-          (u.re * v.re - u.im * v.im) * (u.im - v.im) ^ 2 +
+      (u * v * (u - v) ^ (2 : ℕ)).re := by
+  have hkey : (u * v * (u - v) ^ (2 : ℕ)).re =
+      u.re * v.re * (u.re - v.re) ^ (2 : ℕ) -
+        (u.im * v.im * (u.re - v.re) ^ (2 : ℕ) +
+          (u.re * v.re - u.im * v.im) * (u.im - v.im) ^ (2 : ℕ) +
           2 * (u.re * v.im + u.im * v.re) * (u.re - v.re) * (u.im - v.im)) := by
     simp [sq, Complex.mul_re, Complex.mul_im, Complex.sub_re, Complex.sub_im]
     ring
@@ -79,10 +79,10 @@ theorem re_pair_ge_bulk_sub_err {u v : ℂ} (hu : ‖u‖ ≤ 1) (hv : ‖v‖ �
   have hcre : |v.re| ≤ 1 := le_trans (Complex.abs_re_le_norm v) hv
   have haim : |u.im| ≤ ‖u‖ := Complex.abs_im_le_norm u
   have hcim : |v.im| ≤ ‖v‖ := Complex.abs_im_le_norm v
-  have hsub : (u.re - v.re) ^ 2 ≤ 4 := by
+  have hsub : (u.re - v.re) ^ (2 : ℕ) ≤ 4 := by
     nlinarith [abs_nonneg u.re, abs_nonneg v.re, le_abs_self u.re, neg_abs_le u.re,
       le_abs_self v.re, neg_abs_le v.re]
-  have hT1 : |u.im * v.im * (u.re - v.re) ^ 2| ≤ 4 * (|u.im| * |v.im|) := by
+  have hT1 : |u.im * v.im * (u.re - v.re) ^ (2 : ℕ)| ≤ 4 * (|u.im| * |v.im|) := by
     rw [abs_mul, abs_mul]
     rw [abs_of_nonneg (sq_nonneg (u.re - v.re))]
     nlinarith [abs_nonneg u.im, abs_nonneg v.im, mul_nonneg (abs_nonneg u.im) (abs_nonneg v.im)]
@@ -96,19 +96,19 @@ theorem re_pair_ge_bulk_sub_err {u v : ℂ} (hu : ‖u‖ ≤ 1) (hv : ‖v‖ �
     rw [Complex.mul_im] at h
     rw [norm_mul] at h
     exact h
-  have hT2 : |(u.re * v.re - u.im * v.im) * (u.im - v.im) ^ 2| ≤
-      2 * (u.im ^ 2 * ‖v‖) + 2 * (v.im ^ 2 * ‖u‖) := by
+  have hT2 : |(u.re * v.re - u.im * v.im) * (u.im - v.im) ^ (2 : ℕ)| ≤
+      2 * (u.im ^ (2 : ℕ) * ‖v‖) + 2 * (v.im ^ (2 : ℕ) * ‖u‖) := by
     rw [abs_mul, abs_of_nonneg (sq_nonneg (u.im - v.im))]
-    have hd2 : (u.im - v.im) ^ 2 ≤ 2 * u.im ^ 2 + 2 * v.im ^ 2 := by
+    have hd2 : (u.im - v.im) ^ (2 : ℕ) ≤ 2 * u.im ^ (2 : ℕ) + 2 * v.im ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (u.im + v.im)]
     have hnu : 0 ≤ ‖u‖ := norm_nonneg u
     have hnv : 0 ≤ ‖v‖ := norm_nonneg v
-    have habs2 : |u.re * v.re - u.im * v.im| * (u.im - v.im) ^ 2 ≤
-        (‖u‖ * ‖v‖) * (2 * u.im ^ 2 + 2 * v.im ^ 2) := by
+    have habs2 : |u.re * v.re - u.im * v.im| * (u.im - v.im) ^ (2 : ℕ) ≤
+        (‖u‖ * ‖v‖) * (2 * u.im ^ (2 : ℕ) + 2 * v.im ^ (2 : ℕ)) := by
       apply mul_le_mul hprod_re hd2 (sq_nonneg _) (by positivity)
-    calc |u.re * v.re - u.im * v.im| * (u.im - v.im) ^ 2 ≤
-        (‖u‖ * ‖v‖) * (2 * u.im ^ 2 + 2 * v.im ^ 2) := habs2
-      _ ≤ 2 * (u.im ^ 2 * ‖v‖) + 2 * (v.im ^ 2 * ‖u‖) := by
+    calc |u.re * v.re - u.im * v.im| * (u.im - v.im) ^ (2 : ℕ) ≤
+        (‖u‖ * ‖v‖) * (2 * u.im ^ (2 : ℕ) + 2 * v.im ^ (2 : ℕ)) := habs2
+      _ ≤ 2 * (u.im ^ (2 : ℕ) * ‖v‖) + 2 * (v.im ^ (2 : ℕ) * ‖u‖) := by
           nlinarith [sq_nonneg u.im, sq_nonneg v.im, hnu, hnv, hu, hv,
             mul_nonneg hnu hnv, mul_nonneg (sq_nonneg u.im) hnv,
             mul_nonneg (sq_nonneg v.im) hnu]
@@ -163,8 +163,8 @@ theorem re_pair_ge_bulk_sub_err {u v : ℂ} (hu : ‖u‖ ≤ 1) (hv : ‖v‖ �
 /-- The product-form error of one ordered pair. -/
 def xiResolventPairErr (X : ℝ) (z : XiZeroCopy × XiZeroCopy) : ℝ :=
   4 * (|(xiResolventPoint X z.1).im| * |(xiResolventPoint X z.2).im|) +
-    (2 * ((xiResolventPoint X z.1).im ^ 2 * ‖xiResolventPoint X z.2‖) +
-      2 * ((xiResolventPoint X z.2).im ^ 2 * ‖xiResolventPoint X z.1‖)) +
+    (2 * ((xiResolventPoint X z.1).im ^ (2 : ℕ) * ‖xiResolventPoint X z.2‖) +
+      2 * ((xiResolventPoint X z.2).im ^ (2 : ℕ) * ‖xiResolventPoint X z.1‖)) +
     (4 * (|(xiResolventPoint X z.1).im| * ‖xiResolventPoint X z.2‖) +
       4 * (‖xiResolventPoint X z.1‖ * |(xiResolventPoint X z.2).im|))
 
@@ -194,7 +194,7 @@ theorem summable_xiResolventPairErr {X : ℝ} (hX : 0 ≤ X) :
 /-- The error masses evaluate in closed form. -/
 theorem tsum_xiResolventPairErr {X : ℝ} (hX : 0 ≤ X) :
     ∑' z : XiZeroCopy × XiZeroCopy, xiResolventPairErr X z =
-      4 * xiResolventImMass X ^ 2 +
+      4 * xiResolventImMass X ^ (2 : ℕ) +
         4 * (xiResolventImSqMass X * xiResolventNormMass X) +
         8 * (xiResolventImMass X * xiResolventNormMass X) := by
   have h₁ := summable_abs_im_xiResolventPoint hX
@@ -220,8 +220,8 @@ theorem tsum_xiResolventPairErr {X : ℝ} (hX : 0 ≤ X) :
   have hsE := summable_mul_of_summable_norm h₀n h₁n
   have hsplit : ∀ z : XiZeroCopy × XiZeroCopy, xiResolventPairErr X z =
       (4 * (|(xiResolventPoint X z.1).im| * |(xiResolventPoint X z.2).im|) +
-        (2 * ((xiResolventPoint X z.1).im ^ 2 * ‖xiResolventPoint X z.2‖) +
-          2 * (‖xiResolventPoint X z.1‖ * (xiResolventPoint X z.2).im ^ 2))) +
+        (2 * ((xiResolventPoint X z.1).im ^ (2 : ℕ) * ‖xiResolventPoint X z.2‖) +
+          2 * (‖xiResolventPoint X z.1‖ * (xiResolventPoint X z.2).im ^ (2 : ℕ)))) +
       (4 * (|(xiResolventPoint X z.1).im| * ‖xiResolventPoint X z.2‖) +
         4 * (‖xiResolventPoint X z.1‖ * |(xiResolventPoint X z.2).im|)) := by
     intro z
@@ -242,11 +242,11 @@ theorem tsum_xiResolventPairErr {X : ℝ} (hX : 0 ≤ X) :
 below by an explicit combination of the imaginary masses: the entire possible failure of the
 order-two Hankel inequality is carried by the deviation of the divisor from the real axis. -/
 theorem two_mul_xiResolventTuranMinor_re_ge {X : ℝ} (hX : 0 ≤ X) :
-    -(4 * xiResolventImMass X ^ 2 +
+    -(4 * xiResolventImMass X ^ (2 : ℕ) +
         4 * (xiResolventImSqMass X * xiResolventNormMass X) +
         8 * (xiResolventImMass X * xiResolventNormMass X)) ≤
       (2 * (xiResolventMoment 0 X * xiResolventMoment 2 X -
-        xiResolventMoment 1 X ^ 2)).re := by
+        xiResolventMoment 1 X ^ (2 : ℕ))).re := by
   rw [two_mul_xiResolventTuranMinor_eq_tsum_pair hX]
   have h₀ := summable_norm_xiResolventPoint hX
   have hpair_bound : ∀ z : XiZeroCopy × XiZeroCopy,
@@ -259,7 +259,7 @@ theorem two_mul_xiResolventTuranMinor_re_ge {X : ℝ} (hX : 0 ≤ X) :
       calc ‖xiResolventPoint X z.1 - xiResolventPoint X z.2‖ ≤
           ‖xiResolventPoint X z.1‖ + ‖xiResolventPoint X z.2‖ := norm_sub_le _ _
         _ ≤ 2 := by linarith
-    have hsq : ‖xiResolventPoint X z.1 - xiResolventPoint X z.2‖ ^ 2 ≤ 4 := by
+    have hsq : ‖xiResolventPoint X z.1 - xiResolventPoint X z.2‖ ^ (2 : ℕ) ≤ 4 := by
       nlinarith [norm_nonneg (xiResolventPoint X z.1 - xiResolventPoint X z.2)]
     nlinarith [norm_nonneg (xiResolventPoint X z.1), norm_nonneg (xiResolventPoint X z.2),
       mul_nonneg (norm_nonneg (xiResolventPoint X z.1)) (norm_nonneg (xiResolventPoint X z.2))]
@@ -278,7 +278,7 @@ theorem two_mul_xiResolventTuranMinor_re_ge {X : ℝ} (hX : 0 ≤ X) :
       hpair.map Complex.reCLM Complex.reCLM.continuous
   have hbulk : Summable (fun z : XiZeroCopy × XiZeroCopy =>
       (xiResolventPoint X z.1).re * (xiResolventPoint X z.2).re *
-        ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ 2) := by
+        ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ (2 : ℕ)) := by
     refine Summable.of_nonneg_of_le (fun z => ?_) (fun z => ?_) hnormprod
     · have ha := xiResolventPoint_re_pos hX z.1
       have hb := xiResolventPoint_re_pos hX z.2
@@ -289,7 +289,7 @@ theorem two_mul_xiResolventTuranMinor_re_ge {X : ℝ} (hX : 0 ≤ X) :
         Complex.abs_re_le_norm _
       have h1 : ‖xiResolventPoint X z.1‖ ≤ 1 := norm_xiResolventPoint_le_one hX z.1
       have h2 : ‖xiResolventPoint X z.2‖ ≤ 1 := norm_xiResolventPoint_le_one hX z.2
-      have hd : ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ 2 ≤ 4 := by
+      have hd : ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ (2 : ℕ) ≤ 4 := by
         nlinarith [abs_nonneg (xiResolventPoint X z.1).re,
           abs_nonneg (xiResolventPoint X z.2).re,
           le_abs_self (xiResolventPoint X z.1).re, neg_abs_le (xiResolventPoint X z.1).re,
@@ -303,7 +303,7 @@ theorem two_mul_xiResolventTuranMinor_re_ge {X : ℝ} (hX : 0 ≤ X) :
         have hrb := xiResolventPoint_re_pos hX z.2
         positivity
       calc (xiResolventPoint X z.1).re * (xiResolventPoint X z.2).re *
-          ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ 2 ≤
+          ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ (2 : ℕ) ≤
           (xiResolventPoint X z.1).re * (xiResolventPoint X z.2).re * 4 :=
             mul_le_mul_of_nonneg_left hd hpp
         _ ≤ ‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖ * 4 :=
@@ -311,7 +311,7 @@ theorem two_mul_xiResolventTuranMinor_re_ge {X : ℝ} (hX : 0 ≤ X) :
         _ = 4 * (‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖) := by ring
   have hpt : ∀ z : XiZeroCopy × XiZeroCopy,
       (xiResolventPoint X z.1).re * (xiResolventPoint X z.2).re *
-          ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ 2 -
+          ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ (2 : ℕ) -
         xiResolventPairErr X z ≤ (xiResolventPairTerm X z).re := by
     intro z
     have h := re_pair_ge_bulk_sub_err (norm_xiResolventPoint_le_one hX z.1)
@@ -324,22 +324,22 @@ theorem two_mul_xiResolventTuranMinor_re_ge {X : ℝ} (hX : 0 ≤ X) :
   rw [hre]
   have hlower : (∑' z : XiZeroCopy × XiZeroCopy,
       ((xiResolventPoint X z.1).re * (xiResolventPoint X z.2).re *
-        ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ 2 -
+        ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ (2 : ℕ) -
         xiResolventPairErr X z)) ≤
       ∑' z : XiZeroCopy × XiZeroCopy, (xiResolventPairTerm X z).re :=
     (hbulk.sub (summable_xiResolventPairErr hX)).tsum_le_tsum hpt hpair_re
   have hsplit : (∑' z : XiZeroCopy × XiZeroCopy,
       ((xiResolventPoint X z.1).re * (xiResolventPoint X z.2).re *
-        ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ 2 -
+        ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ (2 : ℕ) -
         xiResolventPairErr X z)) =
       (∑' z : XiZeroCopy × XiZeroCopy,
         (xiResolventPoint X z.1).re * (xiResolventPoint X z.2).re *
-          ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ 2) -
+          ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ (2 : ℕ)) -
         ∑' z : XiZeroCopy × XiZeroCopy, xiResolventPairErr X z :=
     hbulk.tsum_sub (summable_xiResolventPairErr hX)
   have hbulk_nonneg : (0 : ℝ) ≤ ∑' z : XiZeroCopy × XiZeroCopy,
       (xiResolventPoint X z.1).re * (xiResolventPoint X z.2).re *
-        ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ 2 := by
+        ((xiResolventPoint X z.1).re - (xiResolventPoint X z.2).re) ^ (2 : ℕ) := by
     apply tsum_nonneg
     intro z
     have ha := xiResolventPoint_re_pos hX z.1
@@ -357,7 +357,7 @@ theorem riemannHypothesis_iff_xiResolventImSqMass_eq_zero {X : ℝ} (hX : 0 ≤ 
   constructor
   · intro hRH
     rw [xiResolventImSqMass]
-    have hzero : ∀ q : XiZeroCopy, (xiResolventPoint X q).im ^ 2 = 0 := by
+    have hzero : ∀ q : XiZeroCopy, (xiResolventPoint X q).im ^ (2 : ℕ) = 0 := by
       intro q
       obtain ⟨v, hv, hveq⟩ := exists_pos_ofReal_xiResolventPoint_of_rh hRH hX q
       rw [hveq]
@@ -366,24 +366,24 @@ theorem riemannHypothesis_iff_xiResolventImSqMass_eq_zero {X : ℝ} (hX : 0 ≤ 
   · intro hmass
     apply riemannHypothesis_of_xiSpectralPoint_real
     intro q
-    have hle : (xiResolventPoint X q).im ^ 2 ≤ xiResolventImSqMass X :=
+    have hle : (xiResolventPoint X q).im ^ (2 : ℕ) ≤ xiResolventImSqMass X :=
       (summable_im_sq_xiResolventPoint hX).le_tsum q fun r _ => sq_nonneg _
     have hzero : (xiResolventPoint X q).im = 0 := by
-      have h2 : (xiResolventPoint X q).im ^ 2 ≤ 0 := hmass ▸ hle
-      have h3 : (xiResolventPoint X q).im ^ 2 = 0 :=
+      have h2 : (xiResolventPoint X q).im ^ (2 : ℕ) ≤ 0 := hmass ▸ hle
+      have h3 : (xiResolventPoint X q).im ^ (2 : ℕ) = 0 :=
         le_antisymm h2 (sq_nonneg _)
       exact pow_eq_zero_iff two_ne_zero |>.mp h3
     have hne := xiSpectralSq_add_ofReal_ne_zero hX q
     rw [xiResolventPoint, Complex.inv_im] at hzero
-    have hnormSq : Complex.normSq (xiSpectralPoint q ^ 2 + (X : ℂ)) ≠ 0 :=
+    have hnormSq : Complex.normSq (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)) ≠ 0 :=
       fun hc => hne (Complex.normSq_eq_zero.mp hc)
-    have him2 : (xiSpectralPoint q ^ 2 + (X : ℂ)).im = 0 := by
+    have him2 : (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)).im = 0 := by
       rw [div_eq_zero_iff] at hzero
       rcases hzero with h | h
       · linarith [neg_eq_zero.mp h]
       · exact absurd h hnormSq
     simp only [Complex.add_im, Complex.ofReal_im, add_zero] at him2
-    have hsq : (xiSpectralPoint q ^ 2).im =
+    have hsq : (xiSpectralPoint q ^ (2 : ℕ)).im =
         2 * (xiSpectralPoint q).re * (xiSpectralPoint q).im := by
       simp [sq, Complex.mul_im]
       ring

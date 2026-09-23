@@ -27,7 +27,7 @@ theorem opTrace_energyOp_pow_eq_approxNumber_moments
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     {A : H →L[ℂ] H} (hA : A.IsHilbertSchmidt) (r : ℕ) :
     opTrace (energyOp A ^ (r + 1)) =
-      ∑' n : ℕ, (((approxNumber A n ^ 2 : ℝ) : ℂ) ^ (r + 1)) := by
+      ∑' n : ℕ, (((approxNumber A n ^ (2 : ℕ) : ℝ) : ℂ) ^ (r + 1)) := by
   have hpos : (energyOp A).IsPositive := isPositive_adjoint_comp_self A
   have hsplit : energyOp A ^ (r + 1) =
       A.adjoint ∘L (A ∘L energyOp A ^ r) := by
@@ -37,7 +37,7 @@ theorem opTrace_energyOp_pow_eq_approxNumber_moments
     hpos.isSymmetric (Nat.succ_pos r) hA.adjoint (hA.comp_right _) hsplit]
   apply tsum_congr
   intro n
-  have hs : sgVal (energyOp A) n = approxNumber A n ^ 2 := by
+  have hs : sgVal (energyOp A) n = approxNumber A n ^ (2 : ℕ) := by
     rw [approxNumber_sq_eq_approxNumber_energyOp hA.isCompactOperator,
       approxNumber_eq_singVal (energyOp_compact hA.isCompactOperator),
       ← abs_sgVal_eq_singVal (energyOp_compact hA.isCompactOperator) hpos.isSymmetric,
@@ -76,7 +76,7 @@ theorem soninAllPrimeEnergyMoment_eq_opTrace_energyOp_pow
 theorem soninAllPrimeEnergyMoment_eq_approxNumber_moments
     (a : ℝ) (ha : 0 < a) (r : ℕ) :
     soninAllPrimeEnergyMoment a r =
-      ∑' n : ℕ, (((approxNumber (soninAllPrimeResidualOperator a ha) n ^ 2 : ℝ) : ℂ) ^
+      ∑' n : ℕ, (((approxNumber (soninAllPrimeResidualOperator a ha) n ^ (2 : ℕ) : ℝ) : ℂ) ^
         (r + 1)) := by
   rw [soninAllPrimeEnergyMoment_eq_opTrace_energyOp_pow]
   exact opTrace_energyOp_pow_eq_approxNumber_moments
@@ -85,7 +85,7 @@ theorem soninAllPrimeEnergyMoment_eq_approxNumber_moments
 theorem xiZeroCopyReciprocalSquare_orderedPrime_eq_norm_sq_of_rh
     (hRH : RiemannHypothesis) (i : RouteKSignedPrimeIndex) :
     xiZeroCopyReciprocalSquare (xiOrderedSignedPrimeZeroCopyEquiv i) =
-      ((‖xiOrderedSignedPrimeMultiplier i‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖xiOrderedSignedPrimeMultiplier i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [xiZeroCopyReciprocalSquare,
     xiSpectralPoint_orderedSignedPrimeZeroCopyEquiv_eq_of_rh hRH, inv_inv]
   cases i <;> simp [xiOrderedSignedPrimeMultiplier, Complex.norm_real, Real.norm_eq_abs,
@@ -94,7 +94,7 @@ theorem xiZeroCopyReciprocalSquare_orderedPrime_eq_norm_sq_of_rh
 theorem normalizedPrimeArchMoment_eq_orderedXi_approxNumber_moments_of_rh
     (hRH : RiemannHypothesis) (r : ℕ) :
     (normalizedPrimeArchMoment r : ℂ) =
-      ∑' n : ℕ, (((approxNumber xiOrderedSignedPrimeOperator n ^ 2 : ℝ) : ℂ) ^
+      ∑' n : ℕ, (((approxNumber xiOrderedSignedPrimeOperator n ^ (2 : ℕ) : ℝ) : ℂ) ^
         (r + 1)) := by
   let e := routeKSignedPrimeEquiv.trans xiOrderedSignedPrimeZeroCopyEquiv
   rw [normalizedPrimeArchMoment_coe_eq_xiCentralReciprocalMoment,

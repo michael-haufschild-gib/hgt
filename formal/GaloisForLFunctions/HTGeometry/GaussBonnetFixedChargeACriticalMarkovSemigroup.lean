@@ -13,7 +13,7 @@ theorem egbFixedChargeACriticalMarkovIteratedKernel_zero
     (n : ℕ) (f : Fin (2 ^ (n + 3)) → ℝ) :
     (egbFixedChargeACriticalMarkovIteratedKernel n 0).toFinitePositiveKernel.applyReal f = f := by
   funext i
-  change (∑ j, ((egbFixedChargeACriticalMarkovMatrix n ^ 0) i j).re * f j) = f i
+  change (∑ j, ((egbFixedChargeACriticalMarkovMatrix n ^ (0 : ℕ)) i j).re * f j) = f i
   simp [Matrix.one_apply, apply_ite]
 
 /-- One transition is the original critical Gibbs Markov action. -/
@@ -22,7 +22,7 @@ theorem egbFixedChargeACriticalMarkovIteratedKernel_one
     (egbFixedChargeACriticalMarkovIteratedKernel n 1).toFinitePositiveKernel.applyReal f =
       (egbFixedChargeACriticalMarkovKernel n).toFinitePositiveKernel.applyReal f := by
   funext i
-  change (∑ j, ((egbFixedChargeACriticalMarkovMatrix n ^ 1) i j).re * f j) = _
+  change (∑ j, ((egbFixedChargeACriticalMarkovMatrix n ^ (1 : ℕ)) i j).re * f j) = _
   simp only [pow_one, egbFixedChargeACriticalMarkovMatrix, Matrix.of_apply, Complex.ofReal_re]
   rfl
 

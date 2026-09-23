@@ -19,27 +19,27 @@ noncomputable section
 
 /-- The caustic-null jet written as a real polynomial in the squared spatial frequency. -/
 def xiMassJetPoly (a : ℝ) (N : ℕ) : Polynomial ℝ :=
-  (Polynomial.X + Polynomial.C (4 * a ^ 4)) ^ N
+  (Polynomial.X + Polynomial.C (4 * a ^ (4 : ℕ))) ^ N
 
 theorem evalRealPolynomial_xiMassJetPoly (a : ℝ) (N : ℕ) (w : ℂ) :
-    evalRealPolynomial (xiMassJetPoly a N) w = (w + ((4 * a ^ 4 : ℝ) : ℂ)) ^ N := by
+    evalRealPolynomial (xiMassJetPoly a N) w = (w + ((4 * a ^ (4 : ℕ) : ℝ) : ℂ)) ^ N := by
   rw [xiMassJetPoly, evalRealPolynomial]
   simp
 
 /-- **The jet-modified test is the polynomial-filtered test of `(X + 4a⁴)^N`.** -/
 theorem xiMassJetAnalyticTest_eq_poly {a : ℝ} (ha : 1 / 2 < a) (N : ℕ) (τ z : ℂ) :
     xiMassJetAnalyticTest a N τ z = xiMassPolyAnalyticTest (xiMassJetPoly a N) a τ z := by
-  have hfreq : (a ^ 2 : ℝ) + xiMassCausticFrequency a ^ 2 = 4 * a ^ 4 := by
+  have hfreq : (a ^ (2 : ℕ) : ℝ) + xiMassCausticFrequency a ^ (2 : ℕ) = 4 * a ^ (4 : ℕ) := by
     rw [xiMassCausticFrequency_sq ha]
     ring
-  have hbase : z ^ 2 + ((a ^ 2 : ℝ) : ℂ) + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ 2
-      = z ^ 2 + ((4 * a ^ 4 : ℝ) : ℂ) := by
-    have hc : ((a ^ 2 : ℝ) : ℂ) + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ 2
-        = ((4 * a ^ 4 : ℝ) : ℂ) := by
+  have hbase : z ^ (2 : ℕ) + ((a ^ (2 : ℕ) : ℝ) : ℂ) + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ (2 : ℕ)
+      = z ^ (2 : ℕ) + ((4 * a ^ (4 : ℕ) : ℝ) : ℂ) := by
+    have hc : ((a ^ (2 : ℕ) : ℝ) : ℂ) + ((xiMassCausticFrequency a : ℝ) : ℂ) ^ (2 : ℕ)
+        = ((4 * a ^ (4 : ℕ) : ℝ) : ℂ) := by
       rw [← Complex.ofReal_pow, ← Complex.ofReal_add, hfreq]
     linear_combination hc
   have hjet : xiMassCausticJet a N (xiMassAnalyticSqrt a z)
-      = (z ^ 2 + ((4 * a ^ 4 : ℝ) : ℂ)) ^ (2 * N) := by
+      = (z ^ (2 : ℕ) + ((4 * a ^ (4 : ℕ) : ℝ) : ℂ)) ^ (2 * N) := by
     rw [xiMassCausticJet, xiMassAnalyticSqrt_sq, xiMassAnalyticArg, hbase]
   rw [xiMassJetAnalyticTest, xiMassPolyAnalyticTest, hjet,
     evalRealPolynomial_xiMassJetPoly, ← pow_mul]

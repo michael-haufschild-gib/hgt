@@ -56,10 +56,10 @@ theorem egbFixedChargeAGibbsCollisionSeriesRapidity_kernel_conditions (t : ℝ) 
   have he := Real.exp_lt_exp.mpr (egbFixedChargeAGibbsCollisionSeriesRapidity_abs_lt t)
   rw [Real.exp_log (by norm_num : (0 : ℝ) < 3 / 2)] at he
   have hr : Real.sqrt (4 / 9 : ℝ) = 2 / 3 := by
-    rw [show (4 / 9 : ℝ) = (2 / 3 : ℝ) ^ 2 by norm_num,
+    rw [show (4 / 9 : ℝ) = (2 / 3 : ℝ) ^ (2 : ℕ) by norm_num,
       Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 2 / 3)]
   have hs : Real.sqrt (1 / 36 : ℝ) = 1 / 6 := by
-    rw [show (1 / 36 : ℝ) = (1 / 6 : ℝ) ^ 2 by norm_num,
+    rw [show (1 / 36 : ℝ) = (1 / 6 : ℝ) ^ (2 : ℕ) by norm_num,
       Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 1 / 6)]
   rw [hr, hs]
   constructor <;> nlinarith

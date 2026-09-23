@@ -51,9 +51,9 @@ theorem contractionGramDefect_posSemidef
     {ι : Type*} [Finite ι]
     (T : H →L[ℂ] K) (hT : ‖T‖ ≤ 1) (v : ι → H) :
     (contractionGramDefect T v).PosSemidef := by
-  have hnormsq : ‖T‖ ^ 2 ≤ 1 := by
+  have hnormsq : ‖T‖ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [norm_nonneg T]
-  let c : ℝ := 1 - ‖T‖ ^ 2
+  let c : ℝ := 1 - ‖T‖ ^ (2 : ℕ)
   have hcR : 0 ≤ c := by
     dsimp [c]
     exact sub_nonneg.mpr hnormsq
@@ -65,7 +65,7 @@ theorem contractionGramDefect_posSemidef
   have hsum := hsource.add hop
   have heq : contractionGramDefect T v =
       (c : ℂ) • Matrix.gram ℂ v +
-        (((‖T‖ ^ 2 : ℝ) : ℂ) • Matrix.gram ℂ v -
+        (((‖T‖ ^ (2 : ℕ) : ℝ) : ℂ) • Matrix.gram ℂ v -
           Matrix.gram ℂ (T ∘ v)) := by
     ext i j
     simp [contractionGramDefect, c]
@@ -88,18 +88,18 @@ theorem adjoint_apply_apply_eq_of_contraction_saturates
       _ ≤ 1 * ‖d‖ :=
         mul_le_mul_of_nonneg_right hT (norm_nonneg d)
       _ = ‖d‖ := one_mul _
-  have hvnormsq : ‖v‖ ^ 2 ≤ ‖d‖ ^ 2 :=
+  have hvnormsq : ‖v‖ ^ (2 : ℕ) ≤ ‖d‖ ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg v) hvnorm 2
-  have hinner : RCLike.re (inner ℂ v d) = ‖d‖ ^ 2 := by
+  have hinner : RCLike.re (inner ℂ v d) = ‖d‖ ^ (2 : ℕ) := by
     change RCLike.re
         (inner ℂ (ContinuousLinearMap.adjoint T (T d)) d) =
-      ‖d‖ ^ 2
+      ‖d‖ ^ (2 : ℕ)
     rw [ContinuousLinearMap.adjoint_inner_left]
     calc
-      RCLike.re (inner ℂ (T d) (T d)) = ‖T d‖ ^ 2 :=
+      RCLike.re (inner ℂ (T d) (T d)) = ‖T d‖ ^ (2 : ℕ) :=
         inner_self_eq_norm_sq _
-      _ = ‖d‖ ^ 2 := by rw [hsat]
-  have hdist : ‖v - d‖ ^ 2 ≤ 0 := by
+      _ = ‖d‖ ^ (2 : ℕ) := by rw [hsat]
+  have hdist : ‖v - d‖ ^ (2 : ℕ) ≤ 0 := by
     rw [norm_sub_sq (𝕜 := ℂ), hinner]
     linarith
   have hz : ‖v - d‖ = 0 := by
@@ -119,8 +119,8 @@ theorem inner_map_detail_eq_of_contraction_saturates
 adjoint defect image is at most the norm-square lost by `d`. -/
 theorem norm_adjoint_apply_apply_sub_sq_le_detail_loss
     (T : H →L[ℂ] K) (hT : ‖T‖ ≤ 1) (d : H) :
-    ‖ContinuousLinearMap.adjoint T (T d) - d‖ ^ 2 ≤
-      ‖d‖ ^ 2 - ‖T d‖ ^ 2 := by
+    ‖ContinuousLinearMap.adjoint T (T d) - d‖ ^ (2 : ℕ) ≤
+      ‖d‖ ^ (2 : ℕ) - ‖T d‖ ^ (2 : ℕ) := by
   let v : H := ContinuousLinearMap.adjoint T (T d)
   have hvnorm : ‖v‖ ≤ ‖T d‖ := by
     calc
@@ -131,12 +131,12 @@ theorem norm_adjoint_apply_apply_sub_sq_le_detail_loss
       _ ≤ 1 * ‖T d‖ :=
         mul_le_mul_of_nonneg_right hT (norm_nonneg (T d))
       _ = ‖T d‖ := one_mul _
-  have hvnormsq : ‖v‖ ^ 2 ≤ ‖T d‖ ^ 2 :=
+  have hvnormsq : ‖v‖ ^ (2 : ℕ) ≤ ‖T d‖ ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg v) hvnorm 2
-  have hinner : RCLike.re (inner ℂ v d) = ‖T d‖ ^ 2 := by
+  have hinner : RCLike.re (inner ℂ v d) = ‖T d‖ ^ (2 : ℕ) := by
     change RCLike.re
         (inner ℂ (ContinuousLinearMap.adjoint T (T d)) d) =
-      ‖T d‖ ^ 2
+      ‖T d‖ ^ (2 : ℕ)
     rw [ContinuousLinearMap.adjoint_inner_left]
     exact inner_self_eq_norm_sq _
   rw [norm_sub_sq (𝕜 := ℂ), hinner]
@@ -148,7 +148,7 @@ singular/cofinal boundary lifts. -/
 theorem norm_codiagonal_defect_le
     (T : H →L[ℂ] K) (hT : ‖T‖ ≤ 1) (x d : H) :
     ‖inner ℂ (T x) (T d) - inner ℂ x d‖ ≤
-      ‖x‖ * Real.sqrt (‖d‖ ^ 2 - ‖T d‖ ^ 2) := by
+      ‖x‖ * Real.sqrt (‖d‖ ^ (2 : ℕ) - ‖T d‖ ^ (2 : ℕ)) := by
   have hdist :=
     norm_adjoint_apply_apply_sub_sq_le_detail_loss T hT d
   calc
@@ -157,7 +157,7 @@ theorem norm_codiagonal_defect_le
       rw [inner_sub_right, ContinuousLinearMap.adjoint_inner_right]
     _ ≤ ‖x‖ * ‖ContinuousLinearMap.adjoint T (T d) - d‖ :=
       norm_inner_le_norm _ _
-    _ ≤ ‖x‖ * Real.sqrt (‖d‖ ^ 2 - ‖T d‖ ^ 2) :=
+    _ ≤ ‖x‖ * Real.sqrt (‖d‖ ^ (2 : ℕ) - ‖T d‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left
         (Real.le_sqrt_of_sq_le hdist) (norm_nonneg x)
 
@@ -171,7 +171,7 @@ theorem codiagonal_tendsto_zero_of_cofinal_contractions
     (hbound : ∀ n, ‖x n‖ ≤ B)
     (horth : ∀ n, inner ℂ (x n) (d n) = 0)
     (hloss : Filter.Tendsto
-      (fun n => ‖d n‖ ^ 2 - ‖T n (d n)‖ ^ 2)
+      (fun n => ‖d n‖ ^ (2 : ℕ) - ‖T n (d n)‖ ^ (2 : ℕ))
       Filter.atTop (nhds 0)) :
     Filter.Tendsto
       (fun n => inner ℂ (T n (x n)) (T n (d n)))
@@ -180,7 +180,7 @@ theorem codiagonal_tendsto_zero_of_cofinal_contractions
     (norm_nonneg (x 0)).trans (hbound 0)
   have hsqrt :
       Filter.Tendsto
-        (fun n => Real.sqrt (‖d n‖ ^ 2 - ‖T n (d n)‖ ^ 2))
+        (fun n => Real.sqrt (‖d n‖ ^ (2 : ℕ) - ‖T n (d n)‖ ^ (2 : ℕ)))
         Filter.atTop (nhds 0) := by
     simpa using hloss.sqrt
   have hnorm :
@@ -214,7 +214,7 @@ theorem codiagonal_limit_eq_zero_of_cofinal_contractions
     (hbound : ∀ n, ‖x n‖ ≤ B)
     (horth : ∀ n, inner ℂ (x n) (d n) = 0)
     (hloss : Filter.Tendsto
-      (fun n => ‖d n‖ ^ 2 - ‖T n (d n)‖ ^ 2)
+      (fun n => ‖d n‖ ^ (2 : ℕ) - ‖T n (d n)‖ ^ (2 : ℕ))
       Filter.atTop (nhds 0))
     (hcolumn : Filter.Tendsto
       (fun n => inner ℂ (T n (x n)) (T n (d n)))
@@ -235,7 +235,7 @@ theorem connection_codiagonal_tendsto_of_cofinal_contractions
     (hbound : ∀ n, ‖x n‖ ≤ B)
     (horth : ∀ n, inner ℂ (x n) (d n) = 0)
     (hloss : Filter.Tendsto
-      (fun n => ‖d n‖ ^ 2 - ‖T n (d n)‖ ^ 2)
+      (fun n => ‖d n‖ ^ (2 : ℕ) - ‖T n (d n)‖ ^ (2 : ℕ))
       Filter.atTop (nhds 0))
     (htarget : Filter.Tendsto
       (fun n => inner ℂ (T n (x n)) (e n))
@@ -345,10 +345,10 @@ theorem norm_infiniteMobiusDoubledParityFather_zero
   rw [inner_self_eq_norm_sq_to_K, hlaplace] at hinner
   have hsq :
       ‖infiniteMobiusDoubledParityFather
-        sigma 0 hsigma (le_refl 0)‖ ^ 2 = 1 := by
+        sigma 0 hsigma (le_refl 0)‖ ^ (2 : ℕ) = 1 := by
     have hc :
         ((‖infiniteMobiusDoubledParityFather
-          sigma 0 hsigma (le_refl 0)‖ ^ 2 : ℝ) : ℂ) = 1 := by
+          sigma 0 hsigma (le_refl 0)‖ ^ (2 : ℕ) : ℝ) : ℂ) = 1 := by
       rw [Complex.ofReal_pow]
       exact hinner
     exact Complex.ofReal_injective (by
@@ -400,9 +400,9 @@ def ContinuedXiWardCofinalMobiusParityRealization
       Filter.Tendsto
         (fun n =>
           ‖infiniteMobiusDoubledParityFisherDetail
-            (sigma n) (hsigma n)‖ ^ 2 -
+            (sigma n) (hsigma n)‖ ^ (2 : ℕ) -
           ‖T n (infiniteMobiusDoubledParityFisherDetail
-            (sigma n) (hsigma n))‖ ^ 2)
+            (sigma n) (hsigma n))‖ ^ (2 : ℕ))
         Filter.atTop (nhds 0) ∧
       Filter.Tendsto
         (fun n =>
@@ -493,9 +493,9 @@ theorem cofinalMobiusParityRealization_of_riemannHypothesis
   · have hloss :
         (fun n =>
           ‖infiniteMobiusDoubledParityFisherDetail
-            (sigma n) (hsigma n)‖ ^ 2 -
+            (sigma n) (hsigma n)‖ ^ (2 : ℕ) -
           ‖T n (infiniteMobiusDoubledParityFisherDetail
-            (sigma n) (hsigma n))‖ ^ 2) =
+            (sigma n) (hsigma n))‖ ^ (2 : ℕ)) =
           fun _ => 0 := by
       funext n
       simp [T]

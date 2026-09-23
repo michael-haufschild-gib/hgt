@@ -182,7 +182,7 @@ theorem xiPhysicalPrimeLogComplexAggregateApertureCarrier_coeFn_eq
 /-- Fusion energy is exact aperture variance of scalar centered prime-log flux. -/
 theorem intervalIntegral_sq_xiPhysicalPrimeLogCenteredWindowFlux_eq_energy
     (P : Finset Nat.Primes) {A : ℝ} (hA : 0 < A) (m k : ℝ) :
-    (∫ u : ℝ in 0..A, xiPhysicalPrimeLogCenteredWindowFlux P A m k u ^ 2) =
+    (∫ u : ℝ in 0..A, xiPhysicalPrimeLogCenteredWindowFlux P A m k u ^ (2 : ℕ)) =
       xiPhysicalPrimeLogApertureFusionEnergy P A m k := by
   rw [← intervalIntegral_norm_sq_xiPhysicalPrimeLogComplexAggregateApertureCarrier
     P hA m k]
@@ -204,11 +204,11 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_eq_mertensCoboundaryVariance
     xiPhysicalPrimeLogApertureFusionEnergy P A m k =
       ∫ u : ℝ in 0..A,
         (xiPhysicalPrimeLogMertensCoboundary P m k u -
-          (xiPhysicalPrimeLogApertureWeightedLengthMass P A m k / A - (k - m))) ^ 2 := by
+          (xiPhysicalPrimeLogApertureWeightedLengthMass P A m k / A - (k - m))) ^ (2 : ℕ) := by
   rw [← intervalIntegral_sq_xiPhysicalPrimeLogCenteredWindowFlux_eq_energy P hA m k]
   apply intervalIntegral.integral_congr
   intro u hu
-  change xiPhysicalPrimeLogCenteredWindowFlux P A m k u ^ 2 = _
+  change xiPhysicalPrimeLogCenteredWindowFlux P A m k u ^ (2 : ℕ) = _
   rw [xiPhysicalPrimeLogCenteredWindowFlux_eq_centered_mertensCoboundary P A hmk]
 
 /-- Fixed-ratio specialization at physical scale `X`: only two-endpoint Mertens discrepancy
@@ -220,7 +220,7 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_logScale_eq_mertensCoboundaryVari
       ∫ u : ℝ in 0..A,
         (xiPhysicalPrimeLogMertensCoboundary P (Real.log X) (Real.log X + c) u -
           (xiPhysicalPrimeLogApertureWeightedLengthMass
-              P A (Real.log X) (Real.log X + c) / A - c)) ^ 2 := by
+              P A (Real.log X) (Real.log X + c) / A - c)) ^ (2 : ℕ) := by
   simpa only [add_sub_cancel_left] using
     xiPhysicalPrimeLogApertureFusionEnergy_eq_mertensCoboundaryVariance
       P hA (m := Real.log X) (k := Real.log X + c) (by linarith)
@@ -234,7 +234,7 @@ theorem xiPhysicalPrimeLogApertureFusionEnergy_logScale_le_iff
       (∫ u : ℝ in 0..A,
         (xiPhysicalPrimeLogMertensCoboundary P (Real.log X) (Real.log X + c) u -
           (xiPhysicalPrimeLogApertureWeightedLengthMass
-              P A (Real.log X) (Real.log X + c) / A - c)) ^ 2) ≤ B := by
+              P A (Real.log X) (Real.log X + c) / A - c)) ^ (2 : ℕ)) ≤ B := by
   rw [xiPhysicalPrimeLogApertureFusionEnergy_logScale_eq_mertensCoboundaryVariance
     P hA X hc]
 

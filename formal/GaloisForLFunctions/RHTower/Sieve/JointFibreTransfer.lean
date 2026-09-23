@@ -38,7 +38,7 @@ theorem sum_variance_joint_fibreDyadicIndex_le {x : ℝ} (hx : 4 ≤ x) (h : ℝ
     (hP : ∀ p ∈ P, p.Prime) (hQ : ∀ q ∈ Q, q.Prime) (hPQ : Disjoint P Q) :
     (∑ b ∈ fibreDyadicIndex x h,
         (((primeFactorsIn P b).card : ℝ) * ((primeFactorsIn Q b).card : ℝ)
-          - (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ 2)
+          - (∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ (2 : ℕ))
       ≤ ((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ)
             * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)))
             * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) + (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) + 1)
@@ -55,11 +55,11 @@ block. -/
 theorem sum_sq_fibreSum_le_jointWeighted {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {x h : ℝ}
     (hx : 4 ≤ x) (hh0 : 0 ≤ h) {P Q : Finset ℕ}
     (hP : ∀ p ∈ P, p.Prime) (hQ : ∀ q ∈ Q, q.Prime) (hPQ : Disjoint P Q) :
-    ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ 2
-        * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
+    ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ (2 : ℕ)
+        * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
       ≤ 2 * ∑ a ∈ outerBlock x h,
             (∑ b ∈ innerFibre x h a,
-              f b * (((primeFactorsIn P b).card : ℝ) * ((primeFactorsIn Q b).card : ℝ))) ^ 2
+              f b * (((primeFactorsIn P b).card : ℝ) * ((primeFactorsIn Q b).card : ℝ))) ^ (2 : ℕ)
         + 2 * (h + 1) * (2 * h + 1)
             * (((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ)
                   * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)))

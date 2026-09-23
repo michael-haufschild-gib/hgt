@@ -10,19 +10,19 @@ open HedenmalmThetaSource
 
 /-- Source-only Abel weight built from Ward mass and Euclidean Ward energy. -/
 def thetaXiWardKernelAbelWeight (n : ℕ) (q : XiZeroCopy) : ℝ :=
-  2 * thetaXiWardRealificationMass q ^ 2 /
-    (2 * thetaXiWardRealificationMass q ^ 2 +
+  2 * thetaXiWardRealificationMass q ^ (2 : ℕ) /
+    (2 * thetaXiWardRealificationMass q ^ (2 : ℕ) +
       n * thetaXiWardEuclideanEnergy q)
 
 /-- Exact scalar normal form of the source-only Abel weight. -/
 theorem thetaXiWardKernelAbelWeight_eq (n : ℕ) (q : XiZeroCopy) :
     thetaXiWardKernelAbelWeight n q =
-      (1 + (n : ℝ) * (xiSpectralPoint q).im ^ 2)⁻¹ := by
+      (1 + (n : ℝ) * (xiSpectralPoint q).im ^ (2 : ℕ))⁻¹ := by
   rw [thetaXiWardKernelAbelWeight,
     thetaXiWardEuclideanEnergy_eq_transverse_sq_mul_mass_sq]
   have hm : thetaXiWardRealificationMass q ≠ 0 :=
     (thetaXiWardRealificationMass_pos q).ne'
-  have hden : 0 < 1 + (n : ℝ) * (xiSpectralPoint q).im ^ 2 := by
+  have hden : 0 < 1 + (n : ℝ) * (xiSpectralPoint q).im ^ (2 : ℕ) := by
     positivity
   field_simp [hm, hden.ne']
 
@@ -54,9 +54,9 @@ theorem tendsto_thetaXiWardKernelAbelWeight (q : XiZeroCopy) :
       apply hq
       linarith
     rw [if_neg hq]
-    have himsq : 0 < (xiSpectralPoint q).im ^ 2 := sq_pos_of_ne_zero him
+    have himsq : 0 < (xiSpectralPoint q).im ^ (2 : ℕ) := sq_pos_of_ne_zero him
     have htop : Tendsto
-        (fun n : ℕ => 1 + (n : ℝ) * (xiSpectralPoint q).im ^ 2)
+        (fun n : ℕ => 1 + (n : ℝ) * (xiSpectralPoint q).im ^ (2 : ℕ))
         atTop atTop := by
       have hmul := tendsto_natCast_atTop_atTop.atTop_mul_const himsq
       simpa [add_comm] using hmul.atTop_add

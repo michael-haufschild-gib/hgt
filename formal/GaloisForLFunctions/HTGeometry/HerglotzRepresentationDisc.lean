@@ -29,7 +29,7 @@ theorem continuous_poissonKernel_circle {w : ℂ} (hw : w ∈ ball (0 : ℂ) 1) 
     rw [hnorm] at hw
     exact absurd hw (lt_irrefl 1)
   unfold _root_.poissonKernel
-  have hden : ∀ ζ : Circle, ‖((ζ : ℂ) - 0) - (w - 0)‖ ^ 2 ≠ 0 := fun ζ =>
+  have hden : ∀ ζ : Circle, ‖((ζ : ℂ) - 0) - (w - 0)‖ ^ (2 : ℕ) ≠ 0 := fun ζ =>
     pow_ne_zero 2 (norm_ne_zero_iff.mpr (hne ζ))
   fun_prop (disch := exact hden _)
 

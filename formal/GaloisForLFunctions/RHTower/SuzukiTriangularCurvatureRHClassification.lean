@@ -46,12 +46,12 @@ theorem suzukiPsiUniformBound_of_riemannHypothesis
       (summable_xiCriticalScrewWeight_of_rh hRH) t
 
 /-- At every positive lower wall, RH uniformly bounds the full marked positive FU mixture.  The
-bound is the screw-hull maximum times the exact mass budget `96 / b^4`. -/
+bound is the screw-hull maximum times the exact mass budget `96 / b^(4 : ℕ)`. -/
 theorem ccmFUCentralXiScrewPositiveMixtureBound_of_riemannHypothesis
     {b : ℝ} (hb : 0 < b) (hRH : RiemannHypothesis) :
     GaloisForLFunctions.RHTower.CCMFUCentralXiScrewPositiveMixtureBound b := by
   obtain ⟨M, hM0, hM⟩ := suzukiPsiUniformBound_of_riemannHypothesis hRH
-  refine ⟨(96 / b ^ 4) * M, mul_nonneg (by positivity) hM0, ?_⟩
+  refine ⟨(96 / b ^ (4 : ℕ)) * M, mul_nonneg (by positivity) hM0, ?_⟩
   intro H hbH
   have hbHle : b ≤ H := hbH.le
   have hH0 : 0 < H := hb.trans hbH
@@ -96,11 +96,11 @@ theorem ccmFUCentralXiScrewPositiveMixtureBound_of_riemannHypothesis
       _ = M * ∫ t in b..H, ρ t := by
         rw [intervalIntegral.integral_mul_const]
         ring
-  have hcoeff0 : 0 ≤ 32 / H ^ 4 := by positivity
-  have hendpoint0 : 0 ≤ (32 / H ^ 4) * suzukiPsi H :=
+  have hcoeff0 : 0 ≤ 32 / H ^ (4 : ℕ) := by positivity
+  have hendpoint0 : 0 ≤ (32 / H ^ (4 : ℕ)) * suzukiPsi H :=
     mul_nonneg hcoeff0 (hψnonneg H hH0.le)
-  have hendpointLe : (32 / H ^ 4) * suzukiPsi H ≤
-      (32 / H ^ 4) * M :=
+  have hendpointLe : (32 / H ^ (4 : ℕ)) * suzukiPsi H ≤
+      (32 / H ^ (4 : ℕ)) * M :=
     mul_le_mul_of_nonneg_left ((le_abs_self (suzukiPsi H)).trans (hM H)) hcoeff0
   have hmass := GaloisForLFunctions.RHTower.rectangularMixDensity_totalMass_le
     (b := b) (H := H) hb hbHle
@@ -111,16 +111,16 @@ theorem ccmFUCentralXiScrewPositiveMixtureBound_of_riemannHypothesis
   rw [abs_of_nonneg hmixture0]
   unfold GaloisForLFunctions.RHTower.ccmFUCentralXiScrewPositiveMixture
   change (∫ t in b..H, ρ t * suzukiPsi t) +
-      (32 / H ^ 4) * suzukiPsi H ≤ (96 / b ^ 4) * M
+      (32 / H ^ (4 : ℕ)) * suzukiPsi H ≤ (96 / b ^ (4 : ℕ)) * M
   calc
     (∫ t in b..H, ρ t * suzukiPsi t) +
-        (32 / H ^ 4) * suzukiPsi H ≤
-      M * (∫ t in b..H, ρ t) + (32 / H ^ 4) * M :=
+        (32 / H ^ (4 : ℕ)) * suzukiPsi H ≤
+      M * (∫ t in b..H, ρ t) + (32 / H ^ (4 : ℕ)) * M :=
         add_le_add hbulkLe hendpointLe
-    _ = M * ((∫ t in b..H, ρ t) + 32 / H ^ 4) := by ring
-    _ ≤ M * (96 / b ^ 4) := by
+    _ = M * ((∫ t in b..H, ρ t) + 32 / H ^ (4 : ℕ)) := by ring
+    _ ≤ M * (96 / b ^ (4 : ℕ)) := by
       exact mul_le_mul_of_nonneg_left hmass hM0
-    _ = (96 / b ^ 4) * M := by ring
+    _ = (96 / b ^ (4 : ℕ)) * M := by ring
 
 /-- RH supplies the formerly open signed triangular-curvature bound.  The passage uses no
 weighted-first-moment estimate: that stronger shortcut is known to fail under RH. -/

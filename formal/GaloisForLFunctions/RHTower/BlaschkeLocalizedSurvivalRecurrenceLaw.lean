@@ -31,7 +31,7 @@ theorem summablePurePointSurvivalTail_blaschkeLocalizedWeight
     (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
     (M : ℕ) (hM : 1 ≤ M) :
     summablePurePointSurvivalTail (blaschkeLocalizedWeight a) M =
-      (1 - a ^ 2) * (a ^ 2) ^ (M - 1) := by
+      (1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1) := by
   rw [summablePurePointSurvivalTail]
   calc
     (∑' j : ℕ, blaschkeLocalizedWeight a (M + j)) =
@@ -40,7 +40,7 @@ theorem summablePurePointSurvivalTail_blaschkeLocalizedWeight
           intro j
           congr 1
           omega
-    _ = (1 - a ^ 2) * (a ^ 2) ^ (M - 1) :=
+    _ = (1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1) :=
       blaschkeLocalizedWeight_tail a ha0 ha1 (M - 1)
 
 /-- Exact visible-head mass of the countable Blaschke local-weight packet. -/
@@ -48,7 +48,7 @@ theorem summableWeightedHeadMass_blaschkeLocalizedWeight
     (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
     (M : ℕ) (hM : 1 ≤ M) :
     summableWeightedHeadMass (blaschkeLocalizedWeight a) M =
-      1 - (1 - a ^ 2) * (a ^ 2) ^ (M - 1) := by
+      1 - (1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1) := by
   have hsplit :=
     summableWeightedHeadMass_add_tail
       (blaschkeLocalizedWeight a)
@@ -56,7 +56,7 @@ theorem summableWeightedHeadMass_blaschkeLocalizedWeight
       (blaschkeLocalizedWeight_tsum a ha0 ha1) M
   have htail :
       (∑' j, blaschkeLocalizedWeight a (M + j)) =
-        (1 - a ^ 2) * (a ^ 2) ^ (M - 1) := by
+        (1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1) := by
     simpa only [summablePurePointSurvivalTail] using
       summablePurePointSurvivalTail_blaschkeLocalizedWeight
         a ha0 ha1 M hM
@@ -96,14 +96,14 @@ theorem exists_blaschkeLocalizedSurvival_recurrence
           (blaschkeLocalizedWeight a) omega n ≤
         summableLocalizedSurvivalRecurrenceBudget
           (blaschkeLocalizedWeight a) M Q
-          ((1 - a ^ 2) * (a ^ 2) ^ (M - 1)) := by
+          ((1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1)) := by
   apply exists_summableLocalizedSurvival_recurrence
     (blaschkeLocalizedWeight a) omega
       (fun k => sq_nonneg (blaschkeLocalizedKernel a k))
       (blaschkeLocalizedKernel_sq_summable a ha0 ha1)
       (blaschkeLocalizedWeight_tsum a ha0 ha1)
       M Q hM
-      ((1 - a ^ 2) * (a ^ 2) ^ (M - 1))
+      ((1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1))
   exact le_of_eq
     (summablePurePointSurvivalTail_blaschkeLocalizedWeight
       a ha0 ha1 M hM)
@@ -123,13 +123,13 @@ theorem blaschkeLocalizedSurvival_neverExits_or_postExit_return
           (blaschkeLocalizedWeight a) omega t ≤
         summableLocalizedSurvivalRecurrenceBudget
           (blaschkeLocalizedWeight a) M Q
-          ((1 - a ^ 2) * (a ^ 2) ^ (M - 1))) ∨
+          ((1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1))) ∨
     ∃ exitTime : ℝ, ∃ n : ℕ,
       0 ≤ exitTime ∧
       0 < n ∧ n ≤ (Q + 1) ^ (V - 1) ∧
       summableLocalizedSurvivalRecurrenceBudget
           (blaschkeLocalizedWeight a) M Q
-          ((1 - a ^ 2) * (a ^ 2) ^ (M - 1)) <
+          ((1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1)) <
         summablePurePointSurvivalDeviation
           (blaschkeLocalizedWeight a) omega exitTime ∧
       exitTime < (n : ℝ) * (exitTime + guardTime) ∧
@@ -138,14 +138,14 @@ theorem blaschkeLocalizedSurvival_neverExits_or_postExit_return
           ((n : ℝ) * (exitTime + guardTime)) ≤
         summableLocalizedSurvivalRecurrenceBudget
           (blaschkeLocalizedWeight a) M Q
-          ((1 - a ^ 2) * (a ^ 2) ^ (M - 1)) := by
+          ((1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1)) := by
   apply summableLocalizedSurvival_neverExits_or_postExit_return
     (blaschkeLocalizedWeight a) omega
       (fun k => sq_nonneg (blaschkeLocalizedKernel a k))
       (blaschkeLocalizedKernel_sq_summable a ha0 ha1)
       (blaschkeLocalizedWeight_tsum a ha0 ha1)
       M Q V hM hMV
-      ((1 - a ^ 2) * (a ^ 2) ^ (M - 1))
+      ((1 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ)) ^ (M - 1))
       (le_of_eq
         (summablePurePointSurvivalTail_blaschkeLocalizedWeight
           a ha0 ha1 M hM))

@@ -23,7 +23,7 @@ set_option autoImplicit false
 
 /-- The first coordinate of the trace-free quadratic differential. -/
 def componentA (S U : Field) (μ : ℂ) (z : Point) : ℂ :=
-  (coordDeriv 0 S z^2-coordDeriv 1 S z^2)/2 +
+  (coordDeriv 0 S z^(2 : ℕ)-coordDeriv 1 S z^(2 : ℕ))/2 +
     μ*((coordDeriv 0 (coordDeriv 0 U) z-coordDeriv 1 (coordDeriv 1 U) z)/2-
       (z 1 : ℂ)⁻¹*coordDeriv 1 U z)
 
@@ -56,7 +56,7 @@ private theorem partial_const_mul {f : Field} {z : Point}
 
 private theorem inv_height_hasFDerivAt (z : Point) (hz : 0 < z 1) :
     HasFDerivAt (fun q : Point => (q 1 : ℂ)⁻¹)
-      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-(z 1 : ℂ)⁻¹ ^ 2)) z := by
+      ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).smulRight (-(z 1 : ℂ)⁻¹ ^ (2 : ℕ))) z := by
   have hY := Complex.ofRealCLM.hasFDerivAt.comp z
     ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).hasFDerivAt)
   have h := (hasDerivAt_inv (Complex.ofReal_ne_zero.mpr hz.ne')).comp_hasFDerivAt z hY
@@ -68,7 +68,7 @@ private theorem inv_height_hasFDerivAt (z : Point) (hz : 0 < z 1) :
 private theorem inv_mul_partial {f : Field} {z : Point}
     (hz : 0 < z 1) (hf : DifferentiableAt ℝ f z) (i : Fin 2) :
     coordDeriv i (fun q => (q 1 : ℂ)⁻¹*f q) z =
-      (if i = 1 then -(z 1 : ℂ)⁻¹^2 else 0)*f z+(z 1 : ℂ)⁻¹*coordDeriv i f z := by
+      (if i = 1 then -(z 1 : ℂ)⁻¹^(2 : ℕ) else 0)*f z+(z 1 : ℂ)⁻¹*coordDeriv i f z := by
   change fderiv ℝ ((fun q : Point => (q 1 : ℂ)⁻¹)*f) z (Pi.single i 1) = _
   rw [((inv_height_hasFDerivAt z hz).mul hf.hasFDerivAt).fderiv]
   fin_cases i <;> simp [coordDeriv,smul_eq_mul]
@@ -98,7 +98,7 @@ private theorem componentA_partial (S U : Field) (μ : ℂ) (z : Point) (hz : 0 
       coordDeriv 1 S z*coordDeriv i (coordDeriv 1 S) z+
       μ*((coordDeriv i (coordDeriv 0 (coordDeriv 0 U)) z-
         coordDeriv i (coordDeriv 1 (coordDeriv 1 U)) z)/2-
-        ((if i = 1 then -(z 1 : ℂ)⁻¹^2 else 0)*coordDeriv 1 U z+
+        ((if i = 1 then -(z 1 : ℂ)⁻¹^(2 : ℕ) else 0)*coordDeriv 1 U z+
           (z 1 : ℂ)⁻¹*coordDeriv i (coordDeriv 1 U) z)) := by
   have hS0 := (coordDeriv_hasFDerivAt hS 0).differentiableAt
   have hS1 := (coordDeriv_hasFDerivAt hS 1).differentiableAt
@@ -131,7 +131,7 @@ private theorem componentB_partial (S U : Field) (μ : ℂ) (z : Point) (hz : 0 
       coordDeriv i (coordDeriv 0 S) z*coordDeriv 1 S z+
       coordDeriv 0 S z*coordDeriv i (coordDeriv 1 S) z+
       μ*(coordDeriv i (coordDeriv 0 (coordDeriv 1 U)) z+
-        ((if i = 1 then -(z 1 : ℂ)⁻¹^2 else 0)*coordDeriv 0 U z+
+        ((if i = 1 then -(z 1 : ℂ)⁻¹^(2 : ℕ) else 0)*coordDeriv 0 U z+
           (z 1 : ℂ)⁻¹*coordDeriv i (coordDeriv 0 U) z)) := by
   have hS0 := (coordDeriv_hasFDerivAt hS 0).differentiableAt
   have hS1 := (coordDeriv_hasFDerivAt hS 1).differentiableAt
@@ -151,7 +151,7 @@ private theorem componentB_partial (S U : Field) (μ : ℂ) (z : Point) (hz : 0 
 /-- Exact horizontal divergence of the actual coordinate tensor, retaining curvature. -/
 theorem components_divergence_x (S U : Field) (μ : ℂ) (z : Point) (hz : 0 < z 1)
     (hS : ContDiffAt ℝ 2 S z) (hU : ContDiffAt ℝ 3 U z) :
-    2*(z 1 : ℂ)^2*(coordDeriv 0 (componentA S U μ) z+coordDeriv 1 (componentB S U μ) z) =
+    2*(z 1 : ℂ)^(2 : ℕ)*(coordDeriv 0 (componentA S U μ) z+coordDeriv 1 (componentB S U μ) z) =
       2*coordDeriv 0 S z*scalarLaplacian S z+
         μ*(coordDeriv 0 (scalarLaplacian U) z-2*coordDeriv 0 U z) := by
   rw [componentA_partial S U μ z hz hS hU,componentB_partial S U μ z hz hS hU,
@@ -167,7 +167,7 @@ theorem components_divergence_x (S U : Field) (μ : ℂ) (z : Point) (hz : 0 < z
 /-- Exact vertical divergence of the actual coordinate tensor, retaining curvature. -/
 theorem components_divergence_y (S U : Field) (μ : ℂ) (z : Point) (hz : 0 < z 1)
     (hS : ContDiffAt ℝ 2 S z) (hU : ContDiffAt ℝ 3 U z) :
-    2*(z 1 : ℂ)^2*(coordDeriv 0 (componentB S U μ) z-coordDeriv 1 (componentA S U μ) z) =
+    2*(z 1 : ℂ)^(2 : ℕ)*(coordDeriv 0 (componentB S U μ) z-coordDeriv 1 (componentA S U μ) z) =
       2*coordDeriv 1 S z*scalarLaplacian S z+
         μ*(coordDeriv 1 (scalarLaplacian U) z-2*coordDeriv 1 U z) := by
   rw [componentB_partial S U μ z hz hS hU,componentA_partial S U μ z hz hS hU,
@@ -199,12 +199,12 @@ private theorem source_eigen (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
   D4BMLiteralCusp.scalar_equation _ z hz
 
 private theorem response_equation (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
-    scalarLaplacian (coordinateResponse q) z = 2*coordinateResponse q z-source q z^2 := by
+    scalarLaplacian (coordinateResponse q) z = 2*coordinateResponse q z-source q z^(2 : ℕ) := by
   have he := coordinateResponse_equation q z hz
   rw [scalarLaplacian_eq _ z hz]
   change D4BMAngularSeries.hyperbolicLaplacian (coordinateResponse q) z = _
   change 2*coordinateResponse q z-D4BMAngularSeries.hyperbolicLaplacian (coordinateResponse q) z =
-    source q z^2 at he
+    source q z^(2 : ℕ) at he
   linear_combination -he
 
 private theorem response_laplacian_partial (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) (i : Fin 2) :
@@ -230,8 +230,8 @@ theorem defect_cauchyRiemann_x (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
     (D4BMLiteralCusp.scalar_contDiffAt _ 2 z hz)
     ((contDiffAt_infty.mp (coordinateResponse_smooth q z hz)) 3)
   rw [source_eigen q z hz,response_laplacian_partial q z hz] at he
-  have hzero : 2*(z 1 : ℂ)^2*(coordDeriv 0 (defectA q) z+coordDeriv 1 (defectB q) z) = 0 := by
-    change 2*(z 1 : ℂ)^2*(coordDeriv 0 (componentA _ _ _) z+coordDeriv 1 (componentB _ _ _) z) = 0
+  have hzero : 2*(z 1 : ℂ)^(2 : ℕ)*(coordDeriv 0 (defectA q) z+coordDeriv 1 (defectB q) z) = 0 := by
+    change 2*(z 1 : ℂ)^(2 : ℕ)*(coordDeriv 0 (componentA _ _ _) z+coordDeriv 1 (componentB _ _ _) z) = 0
     rw [he]
     ring
   exact (mul_eq_zero.mp hzero).resolve_left
@@ -244,8 +244,8 @@ theorem defect_cauchyRiemann_y (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
     (D4BMLiteralCusp.scalar_contDiffAt _ 2 z hz)
     ((contDiffAt_infty.mp (coordinateResponse_smooth q z hz)) 3)
   rw [source_eigen q z hz,response_laplacian_partial q z hz] at he
-  have hzero : 2*(z 1 : ℂ)^2*(coordDeriv 0 (defectB q) z-coordDeriv 1 (defectA q) z) = 0 := by
-    change 2*(z 1 : ℂ)^2*(coordDeriv 0 (componentB _ _ _) z-coordDeriv 1 (componentA _ _ _) z) = 0
+  have hzero : 2*(z 1 : ℂ)^(2 : ℕ)*(coordDeriv 0 (defectB q) z-coordDeriv 1 (defectA q) z) = 0 := by
+    change 2*(z 1 : ℂ)^(2 : ℕ)*(coordDeriv 0 (componentB _ _ _) z-coordDeriv 1 (componentA _ _ _) z) = 0
     rw [he]
     ring
   exact (mul_eq_zero.mp hzero).resolve_left

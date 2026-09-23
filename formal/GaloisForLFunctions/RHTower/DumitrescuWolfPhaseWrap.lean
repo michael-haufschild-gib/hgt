@@ -50,11 +50,11 @@ def verticalChannelGap (α β : ℝ) : ℝ := β - α
 
 /-- The incoming (`γ - T`) channel increment `h₋ k = c (γ k - T)/(A + (γ k - T)²)`. -/
 def verticalLowerIncrement (α β T : ℝ) (γ : ℕ → ℝ) (k : ℕ) : ℝ :=
-  verticalChannelGap α β * (γ k - T) / (verticalChannelOffset α β + (γ k - T) ^ 2)
+  verticalChannelGap α β * (γ k - T) / (verticalChannelOffset α β + (γ k - T) ^ (2 : ℕ))
 
 /-- The outgoing (`T + γ`) channel increment `h₊ k = -c (T + γ k)/(A + (T + γ k)²)`. -/
 def verticalUpperIncrement (α β T : ℝ) (γ : ℕ → ℝ) (k : ℕ) : ℝ :=
-  -(verticalChannelGap α β * (T + γ k)) / (verticalChannelOffset α β + (T + γ k) ^ 2)
+  -(verticalChannelGap α β * (T + γ k)) / (verticalChannelOffset α β + (T + γ k) ^ (2 : ℕ))
 
 variable {α β T : ℝ} {γ : ℕ → ℝ}
 
@@ -72,20 +72,20 @@ theorem verticalChannelGap_pos (hαβ : α < β) : 0 < verticalChannelGap α β 
 
 /-- A Cauchy-type channel term is bounded by `c/x`. -/
 theorem abs_channelTerm_le {A c x : ℝ} (hA : 0 < A) (hc : 0 < c) (hx : 0 < x) :
-    |c * x / (A + x ^ 2)| ≤ c / x := by
-  have hden : 0 < A + x ^ 2 := by positivity
+    |c * x / (A + x ^ (2 : ℕ))| ≤ c / x := by
+  have hden : 0 < A + x ^ (2 : ℕ) := by positivity
   rw [abs_of_nonneg (by positivity)]
   rw [div_le_div_iff₀ hden hx]
   nlinarith [hA, hx.le, sq_nonneg x]
 
 /-- A Cauchy-type channel term is at least `c/(4 y)` once `y/2 ≤ x ≤ y` and `A ≤ y²`. -/
 theorem channelTerm_ge {A c x y : ℝ} (hA : 0 < A) (hc : 0 < c) (hy : 0 < y)
-    (hAy : A ≤ y ^ 2) (hlow : y / 2 ≤ x) (hhigh : x ≤ y) :
-    c / (4 * y) ≤ c * x / (A + x ^ 2) := by
+    (hAy : A ≤ y ^ (2 : ℕ)) (hlow : y / 2 ≤ x) (hhigh : x ≤ y) :
+    c / (4 * y) ≤ c * x / (A + x ^ (2 : ℕ)) := by
   have hx : 0 < x := by linarith
-  have hden : 0 < A + x ^ 2 := by positivity
-  have hx2 : x ^ 2 ≤ y ^ 2 := by nlinarith
-  have hxy : 2 * y ^ 2 ≤ 4 * x * y := by nlinarith
+  have hden : 0 < A + x ^ (2 : ℕ) := by positivity
+  have hx2 : x ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := by nlinarith
+  have hxy : 2 * y ^ (2 : ℕ) ≤ 4 * x * y := by nlinarith
   rw [div_le_div_iff₀ (by positivity) hden]
   nlinarith [hc.le, hAy, hx2, hxy]
 
@@ -106,7 +106,7 @@ theorem verticalUpperIncrement_neg (hα : 1 / 2 < α) (hαβ : α < β)
   have hA := verticalChannelOffset_pos hα hαβ
   have hc := verticalChannelGap_pos hαβ
   have hx : 0 < T + γ k := by linarith
-  have hden : 0 < verticalChannelOffset α β + (T + γ k) ^ 2 := by positivity
+  have hden : 0 < verticalChannelOffset α β + (T + γ k) ^ (2 : ℕ) := by positivity
   simp only [verticalUpperIncrement]
   apply div_neg_of_neg_of_pos _ hden
   nlinarith
@@ -147,7 +147,7 @@ theorem tendsto_verticalUpperIncrement (hα : 1 / 2 < α) (hαβ : α < β)
 
 /-- Once `γ k ≥ 2T` and `A ≤ γ k²` the lower channel dominates `c/(4 γ k)`. -/
 theorem verticalLowerIncrement_ge (hα : 1 / 2 < α) (hαβ : α < β) (hT : 0 < T)
-    {k : ℕ} (hk : 2 * T ≤ γ k) (hAk : verticalChannelOffset α β ≤ γ k ^ 2) :
+    {k : ℕ} (hk : 2 * T ≤ γ k) (hAk : verticalChannelOffset α β ≤ γ k ^ (2 : ℕ)) :
     verticalChannelGap α β / (4 * γ k) ≤ verticalLowerIncrement α β T γ k := by
   have hA := verticalChannelOffset_pos hα hαβ
   have hc := verticalChannelGap_pos hαβ
@@ -156,16 +156,16 @@ theorem verticalLowerIncrement_ge (hα : 1 / 2 < α) (hαβ : α < β) (hT : 0 <
 
 /-- Once `γ k ≥ T` and `A ≤ γ k²` the negated upper channel dominates `c/(8 γ k)`. -/
 theorem neg_verticalUpperIncrement_ge (hα : 1 / 2 < α) (hαβ : α < β) (hT : 0 < T)
-    {k : ℕ} (hk : T ≤ γ k) (hAk : verticalChannelOffset α β ≤ γ k ^ 2) :
+    {k : ℕ} (hk : T ≤ γ k) (hAk : verticalChannelOffset α β ≤ γ k ^ (2 : ℕ)) :
     verticalChannelGap α β / (8 * γ k) ≤ -verticalUpperIncrement α β T γ k := by
   have hA := verticalChannelOffset_pos hα hαβ
   have hc := verticalChannelGap_pos hαβ
   have hγpos : 0 < γ k := by linarith
   have hneg : -verticalUpperIncrement α β T γ k
       = verticalChannelGap α β * (T + γ k)
-        / (verticalChannelOffset α β + (T + γ k) ^ 2) := by
+        / (verticalChannelOffset α β + (T + γ k) ^ (2 : ℕ)) := by
     simp only [verticalUpperIncrement, neg_div, neg_neg]
-  have hAk2 : verticalChannelOffset α β ≤ (2 * γ k) ^ 2 := by nlinarith
+  have hAk2 : verticalChannelOffset α β ≤ (2 * γ k) ^ (2 : ℕ) := by nlinarith
   have hstep := channelTerm_ge (A := verticalChannelOffset α β) (c := verticalChannelGap α β)
     (x := T + γ k) (y := 2 * γ k) hA hc (by linarith) hAk2 (by linarith) (by linarith)
   rw [hneg]
@@ -191,8 +191,8 @@ theorem tendsto_arctanPartialSum_verticalLower
       hγ.eventually_ge_atTop (Real.sqrt (verticalChannelOffset α β)),
       hzero.eventually_lt_const (by norm_num : (0:ℝ) < 1)] with k hk1 hk2 hk3
     have hγk : 0 < γ k := hγpos k
-    have hAk : verticalChannelOffset α β ≤ γ k ^ 2 := by
-      have hs : Real.sqrt (verticalChannelOffset α β) ^ 2 = verticalChannelOffset α β :=
+    have hAk : verticalChannelOffset α β ≤ γ k ^ (2 : ℕ) := by
+      have hs : Real.sqrt (verticalChannelOffset α β) ^ (2 : ℕ) = verticalChannelOffset α β :=
         Real.sq_sqrt hA.le
       nlinarith [Real.sqrt_nonneg (verticalChannelOffset α β)]
     have hlow := verticalLowerIncrement_ge hα hαβ hT hk1 hAk
@@ -202,8 +202,8 @@ theorem tendsto_arctanPartialSum_verticalLower
     have harc : verticalLowerIncrement α β T γ k / 2
         ≤ Real.arctan (verticalLowerIncrement α β T γ k) := by
       have hcube := sub_arctan_le_cube_div_three hposk
-      have hx2 : verticalLowerIncrement α β T γ k ^ 2 ≤ 1 := by nlinarith [hposk, hk3.le]
-      have hx3 : verticalLowerIncrement α β T γ k ^ 3 ≤ verticalLowerIncrement α β T γ k := by
+      have hx2 : verticalLowerIncrement α β T γ k ^ (2 : ℕ) ≤ 1 := by nlinarith [hposk, hk3.le]
+      have hx3 : verticalLowerIncrement α β T γ k ^ (3 : ℕ) ≤ verticalLowerIncrement α β T γ k := by
         nlinarith [mul_nonneg hposk (sub_nonneg.mpr hx2)]
       linarith
     have hhalf : verticalChannelGap α β / 8 * (γ k)⁻¹
@@ -234,8 +234,8 @@ theorem tendsto_arctanPartialSum_verticalUpper
       hγ.eventually_ge_atTop (Real.sqrt (verticalChannelOffset α β)),
       hzeroneg.eventually_lt_const (by norm_num : (0:ℝ) < 1)] with k hk1 hk2 hk3
     have hγk : 0 < γ k := hγpos k
-    have hAk : verticalChannelOffset α β ≤ γ k ^ 2 := by
-      have hs : Real.sqrt (verticalChannelOffset α β) ^ 2 = verticalChannelOffset α β :=
+    have hAk : verticalChannelOffset α β ≤ γ k ^ (2 : ℕ) := by
+      have hs : Real.sqrt (verticalChannelOffset α β) ^ (2 : ℕ) = verticalChannelOffset α β :=
         Real.sq_sqrt hA.le
       nlinarith [Real.sqrt_nonneg (verticalChannelOffset α β)]
     have hlow := neg_verticalUpperIncrement_ge hα hαβ hT hk1 hAk
@@ -247,8 +247,8 @@ theorem tendsto_arctanPartialSum_verticalUpper
     have harc : (-verticalUpperIncrement α β T γ k) / 2
         ≤ Real.arctan (-verticalUpperIncrement α β T γ k) := by
       have hcube := sub_arctan_le_cube_div_three hposk
-      have hy2 : (-verticalUpperIncrement α β T γ k) ^ 2 ≤ 1 := by nlinarith [hposk, hle1]
-      have hy3 : (-verticalUpperIncrement α β T γ k) ^ 3
+      have hy2 : (-verticalUpperIncrement α β T γ k) ^ (2 : ℕ) ≤ 1 := by nlinarith [hposk, hle1]
+      have hy3 : (-verticalUpperIncrement α β T γ k) ^ (3 : ℕ)
           ≤ -verticalUpperIncrement α β T γ k := by
         nlinarith [mul_nonneg hposk (sub_nonneg.mpr hy2)]
       linarith

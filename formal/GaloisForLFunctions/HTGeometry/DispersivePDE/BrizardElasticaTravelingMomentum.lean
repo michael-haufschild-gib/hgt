@@ -13,18 +13,18 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 
 noncomputable def travelingHydroVelocityT
     (D k₀ τ₀ c : ℝ) (K : CurvatureProfileJet) (t s : ℝ) : ℝ :=
-  4 * c * D * k₀ ^ 2 * τ₀ * K.κ₁ (s - c * t) /
-    (K.κ (s - c * t) : ℝ) ^ 3
+  4 * c * D * k₀ ^ (2 : ℕ) * τ₀ * K.κ₁ (s - c * t) /
+    (K.κ (s - c * t) : ℝ) ^ (3 : ℕ)
 
 noncomputable def travelingHydroVelocityX
     (D k₀ τ₀ c : ℝ) (K : CurvatureProfileJet) (t s : ℝ) : ℝ :=
-  -4 * D * k₀ ^ 2 * τ₀ * K.κ₁ (s - c * t) /
-    (K.κ (s - c * t) : ℝ) ^ 3
+  -4 * D * k₀ ^ (2 : ℕ) * τ₀ * K.κ₁ (s - c * t) /
+    (K.κ (s - c * t) : ℝ) ^ (3 : ℕ)
 
 noncomputable def travelingHydroAccelerationForce
     (D k₀ τ₀ c : ℝ) (K : CurvatureProfileJet) (t s : ℝ) : ℝ :=
-  -8 * D ^ 2 * k₀ ^ 4 * τ₀ ^ 2 * K.κ₁ (s - c * t) /
-    (K.κ (s - c * t) : ℝ) ^ 5
+  -8 * D ^ (2 : ℕ) * k₀ ^ (4 : ℕ) * τ₀ ^ (2 : ℕ) * K.κ₁ (s - c * t) /
+    (K.κ (s - c * t) : ℝ) ^ (5 : ℕ)
 
 theorem hasDerivAt_travelingHydroVelocity_space
     (D k₀ τ₀ c : ℝ) (K : CurvatureProfileJet) (t s : ℝ) :
@@ -34,19 +34,19 @@ theorem hasDerivAt_travelingHydroVelocity_space
     (hasDerivAt_id s).sub_const _
   have hκ := (K.hasDerivAt (s - c * t)).scomp s hinner
   have hsq := hκ.pow 2
-  have hdiv := (hasDerivAt_const s (2 * D * (k₀ ^ 2 * τ₀))).div hsq
+  have hdiv := (hasDerivAt_const s (2 * D * (k₀ ^ (2 : ℕ) * τ₀))).div hsq
     (pow_ne_zero 2 (K.κ (s - c * t)).ne_zero)
   have h := hdiv.const_add c
   change HasDerivAt
-    (fun y : ℝ => c + 2 * D * (k₀ ^ 2 * τ₀ /
-      (K.κ (y - c * t) : ℝ) ^ 2))
+    (fun y : ℝ => c + 2 * D * (k₀ ^ (2 : ℕ) * τ₀ /
+      (K.κ (y - c * t) : ℝ) ^ (2 : ℕ)))
     (travelingHydroVelocityX D k₀ τ₀ c K t s) s
   have hfun :
-      (fun y : ℝ => c + 2 * D * (k₀ ^ 2 * τ₀ /
-        (K.κ (y - c * t) : ℝ) ^ 2)) =
+      (fun y : ℝ => c + 2 * D * (k₀ ^ (2 : ℕ) * τ₀ /
+        (K.κ (y - c * t) : ℝ) ^ (2 : ℕ))) =
         fun y : ℝ => c +
-          (2 * D * (k₀ ^ 2 * τ₀)) /
-            (((fun z : ℝ => (K.κ z : ℝ)) ∘ fun z : ℝ => z - c * t) y) ^ 2 := by
+          (2 * D * (k₀ ^ (2 : ℕ) * τ₀)) /
+            (((fun z : ℝ => (K.κ z : ℝ)) ∘ fun z : ℝ => z - c * t) y) ^ (2 : ℕ) := by
     funext y
     simp only [Function.comp_apply]
     ring
@@ -65,19 +65,19 @@ theorem hasDerivAt_travelingHydroVelocity_time
     simpa using! ((hasDerivAt_id t).const_mul c).const_sub s
   have hκ := (K.hasDerivAt (s - c * t)).scomp t hinner
   have hsq := hκ.pow 2
-  have hdiv := (hasDerivAt_const t (2 * D * (k₀ ^ 2 * τ₀))).div hsq
+  have hdiv := (hasDerivAt_const t (2 * D * (k₀ ^ (2 : ℕ) * τ₀))).div hsq
     (pow_ne_zero 2 (K.κ (s - c * t)).ne_zero)
   have h := hdiv.const_add c
   change HasDerivAt
-    (fun r : ℝ => c + 2 * D * (k₀ ^ 2 * τ₀ /
-      (K.κ (s - c * r) : ℝ) ^ 2))
+    (fun r : ℝ => c + 2 * D * (k₀ ^ (2 : ℕ) * τ₀ /
+      (K.κ (s - c * r) : ℝ) ^ (2 : ℕ)))
     (travelingHydroVelocityT D k₀ τ₀ c K t s) t
   have hfun :
-      (fun r : ℝ => c + 2 * D * (k₀ ^ 2 * τ₀ /
-        (K.κ (s - c * r) : ℝ) ^ 2)) =
+      (fun r : ℝ => c + 2 * D * (k₀ ^ (2 : ℕ) * τ₀ /
+        (K.κ (s - c * r) : ℝ) ^ (2 : ℕ))) =
         fun r : ℝ => c +
-          (2 * D * (k₀ ^ 2 * τ₀)) /
-            (((fun z : ℝ => (K.κ z : ℝ)) ∘ fun z : ℝ => s - c * z) r) ^ 2 := by
+          (2 * D * (k₀ ^ (2 : ℕ) * τ₀)) /
+            (((fun z : ℝ => (K.κ z : ℝ)) ∘ fun z : ℝ => s - c * z) r) ^ (2 : ℕ) := by
     funext r
     simp only [Function.comp_apply]
     ring
@@ -117,27 +117,27 @@ noncomputable def travelingMomentumDensityT
 
 noncomputable def travelingMomentumFlux
     (D k₀ τ₀ c : ℝ) (K : CurvatureProfileJet) (t s : ℝ) : ℝ :=
-  travelingDensity K c t s * travelingHydroVelocity D k₀ τ₀ c K t s ^ 2
+  travelingDensity K c t s * travelingHydroVelocity D k₀ τ₀ c K t s ^ (2 : ℕ)
 
 noncomputable def travelingQuantumStress
     (D k₀ τ₀ c : ℝ) (K : CurvatureProfileJet) (t s : ℝ) : ℝ :=
-  4 * D ^ 2 * k₀ ^ 4 * τ₀ ^ 2 /
-    (K.κ (s - c * t) : ℝ) ^ 2
+  4 * D ^ (2 : ℕ) * k₀ ^ (4 : ℕ) * τ₀ ^ (2 : ℕ) /
+    (K.κ (s - c * t) : ℝ) ^ (2 : ℕ)
 
 noncomputable def travelingQuantumStressX
     (D k₀ τ₀ c : ℝ) (K : CurvatureProfileJet) (t s : ℝ) : ℝ :=
-  -8 * D ^ 2 * k₀ ^ 4 * τ₀ ^ 2 * K.κ₁ (s - c * t) /
-    (K.κ (s - c * t) : ℝ) ^ 3
+  -8 * D ^ (2 : ℕ) * k₀ ^ (4 : ℕ) * τ₀ ^ (2 : ℕ) * K.κ₁ (s - c * t) /
+    (K.κ (s - c * t) : ℝ) ^ (3 : ℕ)
 
 noncomputable def travelingMomentumFluxX
     (D k₀ τ₀ c : ℝ) (K : CurvatureProfileJet) (t s : ℝ) : ℝ :=
-  c ^ 2 * travelingDensityX K c t s + travelingQuantumStressX D k₀ τ₀ c K t s
+  c ^ (2 : ℕ) * travelingDensityX K c t s + travelingQuantumStressX D k₀ τ₀ c K t s
 
 theorem travelingMomentumFlux_eq
     (D k₀ τ₀ c : ℝ) (K : CurvatureProfileJet) (t s : ℝ) :
     travelingMomentumFlux D k₀ τ₀ c K t s =
-      c ^ 2 * travelingDensity K c t s +
-        4 * c * D * k₀ ^ 2 * τ₀ +
+      c ^ (2 : ℕ) * travelingDensity K c t s +
+        4 * c * D * k₀ ^ (2 : ℕ) * τ₀ +
         travelingQuantumStress D k₀ τ₀ c K t s := by
   rw [travelingMomentumFlux, travelingHydroVelocity,
     travelingDensity, travelingQuantumStress]
@@ -145,13 +145,13 @@ theorem travelingMomentumFlux_eq
   have hmom := density_mul_fluidSpeed_sq D k₀ τ₀ (K.κ (s - c * t))
   simp only [density] at hmass hmom
   calc
-    (K.κ (s - c * t) : ℝ) ^ 2 *
-        (c + fluidSpeed D k₀ τ₀ (K.κ (s - c * t))) ^ 2 =
-      c ^ 2 * (K.κ (s - c * t) : ℝ) ^ 2 +
-        2 * c * ((K.κ (s - c * t) : ℝ) ^ 2 *
+    (K.κ (s - c * t) : ℝ) ^ (2 : ℕ) *
+        (c + fluidSpeed D k₀ τ₀ (K.κ (s - c * t))) ^ (2 : ℕ) =
+      c ^ (2 : ℕ) * (K.κ (s - c * t) : ℝ) ^ (2 : ℕ) +
+        2 * c * ((K.κ (s - c * t) : ℝ) ^ (2 : ℕ) *
           fluidSpeed D k₀ τ₀ (K.κ (s - c * t))) +
-        (K.κ (s - c * t) : ℝ) ^ 2 *
-          fluidSpeed D k₀ τ₀ (K.κ (s - c * t)) ^ 2 := by ring
+        (K.κ (s - c * t) : ℝ) ^ (2 : ℕ) *
+          fluidSpeed D k₀ τ₀ (K.κ (s - c * t)) ^ (2 : ℕ) := by ring
     _ = _ := by rw [hmass, hmom]; ring
 
 theorem hasDerivAt_travelingMomentumDensity_time
@@ -159,7 +159,7 @@ theorem hasDerivAt_travelingMomentumDensity_time
     HasDerivAt (fun r : ℝ => travelingMomentumDensity D k₀ τ₀ c K r s)
       (travelingMomentumDensityT K c t s) t := by
   have hfun : (fun r : ℝ => travelingMomentumDensity D k₀ τ₀ c K r s) =
-      fun r : ℝ => c * travelingDensity K c r s + 2 * D * k₀ ^ 2 * τ₀ := by
+      fun r : ℝ => c * travelingDensity K c r s + 2 * D * k₀ ^ (2 : ℕ) * τ₀ := by
     funext r
     exact travelingMassCurrent_eq D k₀ τ₀ c K r s
   rw [hfun, travelingMomentumDensityT]
@@ -173,11 +173,11 @@ theorem hasDerivAt_travelingQuantumStress_space
     (hasDerivAt_id s).sub_const _
   have hκ := (K.hasDerivAt (s - c * t)).scomp s hinner
   have hsq := hκ.pow 2
-  have hdiv := (hasDerivAt_const s (4 * D ^ 2 * k₀ ^ 4 * τ₀ ^ 2)).div hsq
+  have hdiv := (hasDerivAt_const s (4 * D ^ (2 : ℕ) * k₀ ^ (4 : ℕ) * τ₀ ^ (2 : ℕ))).div hsq
     (pow_ne_zero 2 (K.κ (s - c * t)).ne_zero)
   change HasDerivAt
-    (fun y : ℝ => 4 * D ^ 2 * k₀ ^ 4 * τ₀ ^ 2 /
-      (K.κ (y - c * t) : ℝ) ^ 2)
+    (fun y : ℝ => 4 * D ^ (2 : ℕ) * k₀ ^ (4 : ℕ) * τ₀ ^ (2 : ℕ) /
+      (K.κ (y - c * t) : ℝ) ^ (2 : ℕ))
     (travelingQuantumStressX D k₀ τ₀ c K t s) s
   apply hdiv.congr_deriv
   rw [travelingQuantumStressX]
@@ -190,12 +190,12 @@ theorem hasDerivAt_travelingMomentumFlux_space
     HasDerivAt (travelingMomentumFlux D k₀ τ₀ c K t)
       (travelingMomentumFluxX D k₀ τ₀ c K t s) s := by
   have hfun : travelingMomentumFlux D k₀ τ₀ c K t =
-      fun y : ℝ => c ^ 2 * travelingDensity K c t y +
-        4 * c * D * k₀ ^ 2 * τ₀ + travelingQuantumStress D k₀ τ₀ c K t y := by
+      fun y : ℝ => c ^ (2 : ℕ) * travelingDensity K c t y +
+        4 * c * D * k₀ ^ (2 : ℕ) * τ₀ + travelingQuantumStress D k₀ τ₀ c K t y := by
     funext y
     exact travelingMomentumFlux_eq D k₀ τ₀ c K t y
   rw [hfun, travelingMomentumFluxX]
-  exact (((hasDerivAt_travelingDensity_space K c t s).const_mul (c ^ 2)).add_const _).add
+  exact (((hasDerivAt_travelingDensity_space K c t s).const_mul (c ^ (2 : ℕ))).add_const _).add
     (hasDerivAt_travelingQuantumStress_space D k₀ τ₀ c K t s)
 
 /-- Paper equation (56), upgraded to the Galilean-complete traveling flow. -/

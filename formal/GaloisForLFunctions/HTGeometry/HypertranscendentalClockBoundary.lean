@@ -93,7 +93,7 @@ observable. -/
 theorem ratFuncCoordinateDerivation_apply
     {K : Type*} [Field K] (z : RatFunc K) :
     ratFuncCoordinateDerivation K z =
-      (algebraMap K[X] (RatFunc K) z.denom)⁻¹ ^ 2 *
+      (algebraMap K[X] (RatFunc K) z.denom)⁻¹ ^ (2 : ℕ) *
         (algebraMap K[X] (RatFunc K) z.denom *
             algebraMap K[X] (RatFunc K) z.num.derivative -
           algebraMap K[X] (RatFunc K) z.num *
@@ -349,10 +349,10 @@ theorem simpleTranscendental_clock_internal_iff
     let Bc : E := PolynomialModule.eval t
       (PolynomialModule.map E LinearMap.id
         (((Differential.deriv : Derivation ℤ E E).compAlgebraMap P).mapCoeffs w.denom))
-    let boundary : E := B⁻¹ ^ 2 *
+    let boundary : E := B⁻¹ ^ (2 : ℕ) *
       (B * Polynomial.aeval t w.num.derivative -
         A * Polynomial.aeval t w.denom.derivative)
-    let internal : E := B⁻¹ ^ 2 * (B * Ac - A * Bc)
+    let internal : E := B⁻¹ ^ (2 : ℕ) * (B * Ac - A * Bc)
     have hnum := Derivation.apply_aeval_eq
       (Differential.deriv : Derivation ℤ E E) t w.num
     have hden := Derivation.apply_aeval_eq

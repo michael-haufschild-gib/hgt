@@ -132,7 +132,7 @@ theorem thetaSourceConormalCurrent_at_simple_XiSupport_eq_one
 /-- At a multiple Xi zero, source conormal current is nonzero and square-zero. -/
 theorem thetaSourceConormalCurrent_at_multiple_XiSupport_sq_eq_zero
     (rho : XiDivisorSupport) (hmultiple : 2 ≤ xiSupportMultiplicity rho) :
-    thetaSourceConormalCurrent (thetaSpectrumOfXiSupport rho) ^ 2 = 0 := by
+    thetaSourceConormalCurrent (thetaSpectrumOfXiSupport rho) ^ (2 : ℕ) = 0 := by
   apply nilpotentSocleCurrent_sq_eq_zero _
     (thetaRootNilpotentPart_isNilpotent (thetaSpectrumOfXiSupport rho))
   rw [finrank_thetaRootBlock_at_XiSupport]

@@ -34,7 +34,7 @@ theorem cglLemma45_cubicDiagonal_eq_card_mul_diagonalPoissonMass_cube
     (rows : Fin R → CGLCharacterDyadicRowData Q.value) :
     cglCharacterDyadicWeightedGramCubicDiagonal N.value Q.value R
       (cglSmoothBumpDyadicWeight w.toCGLSmoothBump N) rows =
-      (R : ℂ) * cglLemma45DiagonalPoissonMass w N Q ^ 3 := by
+      (R : ℂ) * cglLemma45DiagonalPoissonMass w N Q ^ (3 : ℕ) := by
   by_cases hR : R = 0
   · subst R
     simp [cglCharacterDyadicWeightedGramCubicDiagonal_eq_card_mul_unitWeightMass_cube]
@@ -68,7 +68,7 @@ theorem cglLemma45_cubicTrace_eq_diagonalPoisson_add_offDiagonal
     (rows : Fin R → CGLCharacterDyadicRowData Q.value) :
     cglCharacterDyadicWeightedGramCubicTrace N.value Q.value R
       (cglSmoothBumpDyadicWeight w.toCGLSmoothBump N) rows =
-      (R : ℂ) * cglLemma45DiagonalPoissonMass w N Q ^ 3 +
+      (R : ℂ) * cglLemma45DiagonalPoissonMass w N Q ^ (3 : ℕ) +
         cglCharacterDyadicWeightedGramCubicOffDiagonal N.value Q.value R
           (cglSmoothBumpDyadicWeight w.toCGLSmoothBump N) rows := by
   rw [cglCharacterDyadicWeightedGramCubicTrace_eq_diagonal_add_offDiagonal,

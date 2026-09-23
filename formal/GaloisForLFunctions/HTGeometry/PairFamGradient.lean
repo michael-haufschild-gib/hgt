@@ -291,7 +291,7 @@ theorem jetMix_top (m : ℕ) (Φ : CascadeField) :
 /-- **The scalar operator on a logarithmic derivative is a Wronskian over a square.** -/
 theorem topShift_logDeriv {m : ℕ} {Φ : CascadeField} (hmem : Φ ∈ coordField m) (hΦ : Φ ≠ 0) :
     F.topShift m (fpderiv m Φ / Φ)
-      = (fpderiv m (F.law Φ) * Φ - fpderiv m Φ * F.law Φ) / Φ ^ 2 := by
+      = (fpderiv m (F.law Φ) * Φ - fpderiv m Φ * F.law Φ) / Φ ^ (2 : ℕ) := by
   have hmix := F.fpderiv_law_mixed (m := m) (k := m) hmem
   rw [F.jetMix_top] at hmix
   have hsub : F.law (fpderiv m Φ)

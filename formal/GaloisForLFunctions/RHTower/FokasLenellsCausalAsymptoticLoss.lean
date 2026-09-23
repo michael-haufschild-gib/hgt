@@ -7,7 +7,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalAsymptoticLossInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- Both the state and its actual generator derivative decay in the full graph norm. -/
 theorem causalGeneratorGraphEvolution_strong_tendsto (p : causalGeneratorGraph) :

@@ -34,7 +34,7 @@ def selectorChannelMemory
 
 /-- Quadratic load of the occupied observer-channel partition. -/
 def selectorLoadEnergy (chosen : J → C) (w : J → ℝ) : ℝ :=
-  ∑ c, selectorChannelWeight chosen w c ^ 2
+  ∑ c, selectorChannelWeight chosen w c ^ (2 : ℕ)
 
 /-- Recurrence energy after preserving the selected observer-channel label. -/
 def selectorRecurrenceEnergy (r : J → F) (chosen : J → C) (w : J → ℝ) : ℝ :=
@@ -62,8 +62,8 @@ theorem selectorMargins_sq_load_le_recurrenceEnergy
     (hmargin : ∀ c, 0 ≤ margin c)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, margin (chosen j) ≤ inner ℝ (r j) (q (chosen j))) :
-    (∑ c, margin c ^ 2 * selectorChannelWeight chosen w c ^ 2) ≤
-      ∑ c, ‖q c‖ ^ 2 *
+    (∑ c, margin c ^ (2 : ℕ) * selectorChannelWeight chosen w c ^ (2 : ℕ)) ≤
+      ∑ c, ‖q c‖ ^ (2 : ℕ) *
         weightedRecurrenceEnergy r (selectorMaskedWeight chosen w c) := by
   apply Finset.sum_le_sum
   intro c hc
@@ -87,14 +87,14 @@ theorem selectorMargins_sq_load_le_recurrenceEnergy
       0 ≤ weightedAlignment r (q c) (selectorMaskedWeight chosen w c) :=
     le_trans hleft hlin
   have hsq :
-      (margin c * selectorChannelWeight chosen w c) ^ 2 ≤
-        weightedAlignment r (q c) (selectorMaskedWeight chosen w c) ^ 2 := by
+      (margin c * selectorChannelWeight chosen w c) ^ (2 : ℕ) ≤
+        weightedAlignment r (q c) (selectorMaskedWeight chosen w c) ^ (2 : ℕ) := by
     nlinarith
   calc
-    margin c ^ 2 * selectorChannelWeight chosen w c ^ 2 =
-        (margin c * selectorChannelWeight chosen w c) ^ 2 := by ring
-    _ ≤ weightedAlignment r (q c) (selectorMaskedWeight chosen w c) ^ 2 := hsq
-    _ ≤ ‖q c‖ ^ 2 *
+    margin c ^ (2 : ℕ) * selectorChannelWeight chosen w c ^ (2 : ℕ) =
+        (margin c * selectorChannelWeight chosen w c) ^ (2 : ℕ) := by ring
+    _ ≤ weightedAlignment r (q c) (selectorMaskedWeight chosen w c) ^ (2 : ℕ) := hsq
+    _ ≤ ‖q c‖ ^ (2 : ℕ) *
         weightedRecurrenceEnergy r (selectorMaskedWeight chosen w c) :=
       weightedAlignment_sq_le_recurrenceEnergy r (q c)
         (selectorMaskedWeight chosen w c)
@@ -106,16 +106,16 @@ theorem selectorThreshold_sq_load_le_recurrenceEnergy
     (heta : 0 ≤ eta)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B) :
-    eta ^ 2 * selectorLoadEnergy chosen w ≤
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B) :
+    eta ^ (2 : ℕ) * selectorLoadEnergy chosen w ≤
       B * selectorRecurrenceEnergy r chosen w := by
   have hmain := selectorMargins_sq_load_le_recurrenceEnergy
     r q chosen w (fun _ => eta) (fun _ => heta) hw halign
   calc
-    eta ^ 2 * selectorLoadEnergy chosen w =
-        ∑ c, eta ^ 2 * selectorChannelWeight chosen w c ^ 2 := by
+    eta ^ (2 : ℕ) * selectorLoadEnergy chosen w =
+        ∑ c, eta ^ (2 : ℕ) * selectorChannelWeight chosen w c ^ (2 : ℕ) := by
       simp [selectorLoadEnergy, Finset.mul_sum]
-    _ ≤ ∑ c, ‖q c‖ ^ 2 *
+    _ ≤ ∑ c, ‖q c‖ ^ (2 : ℕ) *
         weightedRecurrenceEnergy r (selectorMaskedWeight chosen w c) := hmain
     _ ≤ ∑ c, B * weightedRecurrenceEnergy r
         (selectorMaskedWeight chosen w c) := by
@@ -173,7 +173,7 @@ theorem selectorRecurrenceEnergy_injective
     (r : J → F) (chosen : J → C) (w : J → ℝ)
     (hinjective : Function.Injective chosen) :
     selectorRecurrenceEnergy r chosen w =
-      ∑ j, w j ^ 2 * ‖r j‖ ^ 2 := by
+      ∑ j, w j ^ (2 : ℕ) * ‖r j‖ ^ (2 : ℕ) := by
   rw [selectorRecurrenceEnergy_eq_pairSum]
   apply Finset.sum_congr rfl
   intro i hi
@@ -192,7 +192,7 @@ theorem selectorRecurrenceEnergy_injective
           simp [hneq]
         · simp
       simpa using hsingle
-    _ = w i ^ 2 * ‖r i‖ ^ 2 := by
+    _ = w i ^ (2 : ℕ) * ‖r i‖ ^ (2 : ℕ) := by
       rw [real_inner_self_eq_norm_sq]
       ring
 
@@ -202,7 +202,7 @@ theorem selectorRecurrenceEnergy_flow_injective
     (chosen : J → C) (w : J → ℝ)
     (hinjective : Function.Injective chosen) :
     selectorRecurrenceEnergy (fun j => U.op (time j) z) chosen w =
-      ‖z‖ ^ 2 * ∑ j, w j ^ 2 := by
+      ‖z‖ ^ (2 : ℕ) * ∑ j, w j ^ (2 : ℕ) := by
   rw [selectorRecurrenceEnergy_injective _ _ _ hinjective]
   simp only [LinearIsometryEquiv.norm_map]
   rw [Finset.mul_sum]
@@ -215,9 +215,9 @@ preparation memory is the sampled memory, then the channel-resolved observer--sp
 is an equality for arbitrary weights and vectors. No orthogonality, phase separation, or spectral
 assumption can remove this diagonal cost. -/
 theorem selectorIdentity_selfTarget_saturation (r : C → F) (w : C → ℝ) :
-    (∑ c, (‖r c‖ ^ 2) ^ 2 *
-        selectorChannelWeight (fun j : C => j) w c ^ 2) =
-      ∑ c, ‖r c‖ ^ 2 *
+    (∑ c, (‖r c‖ ^ (2 : ℕ)) ^ (2 : ℕ) *
+        selectorChannelWeight (fun j : C => j) w c ^ (2 : ℕ)) =
+      ∑ c, ‖r c‖ ^ (2 : ℕ) *
         weightedRecurrenceEnergy r
           (selectorMaskedWeight (fun j : C => j) w c) := by
   apply Finset.sum_congr rfl
@@ -256,8 +256,8 @@ theorem adaptive_selected_shortcuts_force_channel_recurrence
             (preparationMemory PiOp x (target (chosen j))) +
           margin (chosen j) ≤
         inner ℝ (U.op (time j) x) (target (chosen j))) :
-    (∑ c, margin c ^ 2 * selectorChannelWeight chosen w c ^ 2) ≤
-      ∑ c, ‖preparationMemory PiOp x (target c)‖ ^ 2 *
+    (∑ c, margin c ^ (2 : ℕ) * selectorChannelWeight chosen w c ^ (2 : ℕ)) ≤
+      ∑ c, ‖preparationMemory PiOp x (target c)‖ ^ (2 : ℕ) *
         (∑ i, ∑ j,
           selectorMaskedWeight chosen w c i *
             selectorMaskedWeight chosen w c j *

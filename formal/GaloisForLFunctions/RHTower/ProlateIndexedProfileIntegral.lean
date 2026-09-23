@@ -38,12 +38,12 @@ theorem indexedRungAmplitude_ne_zero (n : ℕ) : indexedRungAmplitude n ≠ 0 :=
   intro h
   have hlim := tendsto_indexedRung_totalMass n
   have hfun : (fun a : ProlatePositiveAperture =>
-      indexedRungAmplitude n ^ 2 * indexedOscillatorTotalMass n a) = fun _ => (0 : ℝ) := by
+      indexedRungAmplitude n ^ (2 : ℕ) * indexedOscillatorTotalMass n a) = fun _ => (0 : ℝ) := by
     funext a
     rw [h]
     ring
   rw [hfun] at hlim
-  have heq : (0 : ℝ) = ∫ x, hermiteFun (2 * n) x ^ 2 :=
+  have heq : (0 : ℝ) = ∫ x, hermiteFun (2 * n) x ^ (2 : ℕ) :=
     tendsto_nhds_unique tendsto_const_nhds hlim
   exact absurd heq.symm (integral_hermiteFun_sq_pos_line (2 * n)).ne'
 
@@ -105,8 +105,8 @@ theorem tendsto_indexedRung_profileIntegral (n : ℕ) :
       ∀ᶠ a in (atTop : Filter ProlatePositiveAperture),
         K ≤ Real.sqrt (indexedOscillatorBandwidth a) := by
     intro K hK
-    filter_upwards [tendsto_indexedOscillatorBandwidth_atTop.eventually_ge_atTop (K ^ 2)] with a ha
-    calc K = Real.sqrt (K ^ 2) := (Real.sqrt_sq hK.le).symm
+    filter_upwards [tendsto_indexedOscillatorBandwidth_atTop.eventually_ge_atTop (K ^ (2 : ℕ))] with a ha
+    calc K = Real.sqrt (K ^ (2 : ℕ)) := (Real.sqrt_sq hK.le).symm
       _ ≤ Real.sqrt (indexedOscillatorBandwidth a) := Real.sqrt_le_sqrt ha
   have hmuM : ∀ᶠ a in (atTop : Filter ProlatePositiveAperture),
       indexedOscillatorSeparation n a ≤ M := by
@@ -114,24 +114,24 @@ theorem tendsto_indexedRung_profileIntegral (n : ℕ) :
       (eventually_lt_nhds (by rw [hM]; linarith : 4 * (n : ℝ) + 1 < M))] with a ha
     exact ha.le
   -- a second moment bounded uniformly in the aperture
-  set Mphi : ℝ := ∫ x, hermiteFun (2 * n) x ^ 2 with hMphi
-  set N₀ : ℝ := M * ((Mphi + 1) / κ ^ 2) + 1 with hN₀
+  set Mphi : ℝ := ∫ x, hermiteFun (2 * n) x ^ (2 : ℕ) with hMphi
+  set N₀ : ℝ := M * ((Mphi + 1) / κ ^ (2 : ℕ)) + 1 with hN₀
   have hMphi0 : 0 < Mphi := integral_hermiteFun_sq_pos_line (2 * n)
-  have hκsq : 0 < κ ^ 2 := by positivity
+  have hκsq : 0 < κ ^ (2 : ℕ) := by positivity
   have hN₀pos : 0 < N₀ := by
-    have : 0 ≤ M * ((Mphi + 1) / κ ^ 2) := by positivity
+    have : 0 ≤ M * ((Mphi + 1) / κ ^ (2 : ℕ)) := by positivity
     rw [hN₀]; linarith
   have hmom : ∀ᶠ a in (atTop : Filter ProlatePositiveAperture),
       indexedOscillatorSecondMoment n a ≤ N₀ := by
     filter_upwards [hmuM, (tendsto_indexedRung_totalMass n).eventually
       (eventually_lt_nhds (by linarith : Mphi < Mphi + 1))] with a hmu htm
     have hTM0 := indexedOscillatorTotalMass_nonneg n a
-    have hTMle : indexedOscillatorTotalMass n a ≤ (Mphi + 1) / κ ^ 2 := by
+    have hTMle : indexedOscillatorTotalMass n a ≤ (Mphi + 1) / κ ^ (2 : ℕ) := by
       rw [le_div_iff₀ hκsq]
       nlinarith [htm]
     have h1 := indexedOscillatorSecondMoment_le n a
     have h2 : indexedOscillatorSeparation n a * indexedOscillatorTotalMass n a
-        ≤ M * ((Mphi + 1) / κ ^ 2) := by
+        ≤ M * ((Mphi + 1) / κ ^ (2 : ℕ)) := by
       have hnn : 0 ≤ M := hMpos.le
       nlinarith [hmu, hTM0, hTMle]
     rw [hN₀]
@@ -148,11 +148,11 @@ theorem tendsto_indexedRung_profileIntegral (n : ℕ) :
   · exact tendsto_intervalIntegral_hermiteFun (2 * n)
   · exact hsqrt
   · intro δ hδ
-    refine ⟨N₀ / (δ / (|κ| + 1)) ^ 2 + 1, by positivity, ?_⟩
+    refine ⟨N₀ / (δ / (|κ| + 1)) ^ (2 : ℕ) + 1, by positivity, ?_⟩
     intro K hK0
     have hδ' : 0 < δ / (|κ| + 1) := by positivity
     have hKpos : 0 < K := lt_of_lt_of_le (by positivity) hK0
-    have hcut : N₀ / (δ / (|κ| + 1)) ^ 2 < K := lt_of_lt_of_le (by linarith) hK0
+    have hcut : N₀ / (δ / (|κ| + 1)) ^ (2 : ℕ) < K := lt_of_lt_of_le (by linarith) hK0
     filter_upwards [hsqrt K hKpos, hmom] with a hKa hmoma
     have hD := signedModeRadialData_isExact_of_pos a.property n
     have hcpos : 0 < indexedOscillatorBandwidth a := indexedOscillatorBandwidth_pos a
@@ -160,11 +160,11 @@ theorem tendsto_indexedRung_profileIntegral (n : ℕ) :
       hD.2.2.2.2.2.1
     have hmomrw : (∫ ξ in (-Real.sqrt (indexedOscillatorBandwidth a))..
         (Real.sqrt (indexedOscillatorBandwidth a)),
-        ξ ^ 2 * (normalizedProlateProfile (indexedOscillatorBandwidth a)
-          (signedModeRadialData (a : ℝ) n).R ξ) ^ 2) ≤ N₀ := by
-      rw [show (fun ξ : ℝ => ξ ^ 2 * (normalizedProlateProfile (indexedOscillatorBandwidth a)
-        (signedModeRadialData (a : ℝ) n).R ξ) ^ 2)
-          = fun ξ : ℝ => ξ ^ 2 * (indexedOscillatorProfile n a ξ) ^ 2 from rfl]
+        ξ ^ (2 : ℕ) * (normalizedProlateProfile (indexedOscillatorBandwidth a)
+          (signedModeRadialData (a : ℝ) n).R ξ) ^ (2 : ℕ)) ≤ N₀ := by
+      rw [show (fun ξ : ℝ => ξ ^ (2 : ℕ) * (normalizedProlateProfile (indexedOscillatorBandwidth a)
+        (signedModeRadialData (a : ℝ) n).R ξ) ^ (2 : ℕ))
+          = fun ξ : ℝ => ξ ^ (2 : ℕ) * (indexedOscillatorProfile n a ξ) ^ (2 : ℕ) from rfl]
       exact hmoma
     have htail := normalizedProlate_tail_lt hcpos hKpos hKa hN₀pos hδ' hcut hsm hmomrw
     have htailP : |∫ ξ in K..(Real.sqrt (indexedOscillatorBandwidth a)),
@@ -198,13 +198,13 @@ the Hermite shape ratio at the `2n`-th rung. -/
 theorem tendsto_indexedRung_shapeRatio (n : ℕ) :
     Tendsto (fun a : ProlatePositiveAperture =>
         (∫ x in (-Real.sqrt (indexedOscillatorBandwidth a))..
-            (Real.sqrt (indexedOscillatorBandwidth a)), indexedOscillatorProfile n a x) ^ 2
+            (Real.sqrt (indexedOscillatorBandwidth a)), indexedOscillatorProfile n a x) ^ (2 : ℕ)
           / ∫ x in (-Real.sqrt (indexedOscillatorBandwidth a))..
               (Real.sqrt (indexedOscillatorBandwidth a)),
-            (indexedOscillatorProfile n a x) ^ 2)
-      atTop (𝓝 ((∫ x, hermiteFun (2 * n) x) ^ 2 / ∫ x, hermiteFun (2 * n) x ^ 2)) := by
+            (indexedOscillatorProfile n a x) ^ (2 : ℕ))
+      atTop (𝓝 ((∫ x, hermiteFun (2 * n) x) ^ (2 : ℕ) / ∫ x, hermiteFun (2 * n) x ^ (2 : ℕ))) := by
   have hκne : indexedRungAmplitude n ≠ 0 := indexedRungAmplitude_ne_zero n
-  have hMphi0 : 0 < ∫ x, hermiteFun (2 * n) x ^ 2 := integral_hermiteFun_sq_pos_line (2 * n)
+  have hMphi0 : 0 < ∫ x, hermiteFun (2 * n) x ^ (2 : ℕ) := integral_hermiteFun_sq_pos_line (2 * n)
   have hnum := (tendsto_indexedRung_profileIntegral n).pow 2
   have hden := tendsto_indexedRung_totalMass n
   have hdiv := hnum.div hden hMphi0.ne'

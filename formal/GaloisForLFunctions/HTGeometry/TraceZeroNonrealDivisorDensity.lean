@@ -43,7 +43,7 @@ theorem isHS_imaginaryPairBlock (a b : ι) (r : ℝ) :
   exact fun p hp => imaginaryPairBlock_eq_zero_of_notMem r hp
 
 theorem hsNormSq_imaginaryPairBlock {a b : ι} (hab : a ≠ b) (r : ℝ) :
-    hsNormSq (imaginaryPairBlock a b r) = 2 * r ^ 2 := by
+    hsNormSq (imaginaryPairBlock a b r) = 2 * r ^ (2 : ℕ) := by
   rw [hsNormSq, tsum_eq_sum
     (s := ({(a, a), (b, b)} : Finset (ι × ι))) (fun p hp => ?_)]
   · simp [imaginaryPairBlock, hab, Ne.symm hab, Complex.norm_real]
@@ -134,13 +134,13 @@ theorem exists_finiteSupport_traceZero_nonrealDivisor_close
     have hB : hsNorm B < ε / 2 := by
       rw [show B = imaginaryPairBlock a b r from rfl, hsNorm,
         hsNormSq_imaginaryPairBlock (Ne.symm hba)]
-      have hsqrt : Real.sqrt (2 * r ^ 2) ≤ 2 * r := by
+      have hsqrt : Real.sqrt (2 * r ^ (2 : ℕ)) ≤ 2 * r := by
         apply (Real.sqrt_le_iff).2
         constructor
         · positivity
         · nlinarith
       calc
-        Real.sqrt (2 * r ^ 2) ≤ 2 * r := hsqrt
+        Real.sqrt (2 * r ^ (2 : ℕ)) ≤ 2 * r := hsqrt
         _ < ε / 2 := by dsimp [r]; linarith
     have hadd := hsNorm_add_le (isHS_sub hTHS hK)
       (isHS_imaginaryPairBlock a b r)

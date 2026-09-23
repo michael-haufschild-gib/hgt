@@ -110,12 +110,12 @@ theorem twoCylDerivation_ratFuncScale (lam : K) {s : K} (hsne : s ≠ 0) (hs : s
   rw [← hA] at hpA
   rw [← hB] at hpB
   have hpush : ratFuncScale s hsne
-        ((twoCylDerivation lam A * B - A * twoCylDerivation lam B) / B ^ 2)
+        ((twoCylDerivation lam A * B - A * twoCylDerivation lam B) / B ^ (2 : ℕ))
       = (ratFuncScale s hsne (twoCylDerivation lam A) * ratFuncScale s hsne B
           - ratFuncScale s hsne A * ratFuncScale s hsne (twoCylDerivation lam B))
-        / (ratFuncScale s hsne B) ^ 2 := by
+        / (ratFuncScale s hsne B) ^ (2 : ℕ) := by
     rw [map_div₀ (ratFuncScale s hsne)
-      (twoCylDerivation lam A * B - A * twoCylDerivation lam B) (B ^ 2), map_sub, map_mul,
+      (twoCylDerivation lam A * B - A * twoCylDerivation lam B) (B ^ (2 : ℕ)), map_sub, map_mul,
       map_mul, map_pow]
   rw [hdiv, leibniz_div (twoCylDerivation lam) hD hSB,
     leibniz_div (twoCylDerivation lam) hD hBne, hpA, hpB, hpush]

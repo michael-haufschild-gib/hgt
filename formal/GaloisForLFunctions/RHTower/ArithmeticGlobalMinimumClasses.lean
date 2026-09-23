@@ -150,7 +150,7 @@ theorem not_minimumProfile_minimum_of_gt {s:ℂ} (hs:0 < s.re) (hs1:s≠1)
   exact (not_lt_of_ge (hp.2.2 q hq)) hlt
 
 private theorem tailCoefficient_on_line {s:ℂ} (hs:s.re=1/2) :
-    minimumTailCoefficient s = reciprocalSquareMass/(8*(s.im^2+9/4)) := by
+    minimumTailCoefficient s = reciprocalSquareMass/(8*(s.im^(2 : ℕ)+9/4)) := by
   have hS : (∑' n:ℕ+, (n:ℝ)^(-2*s.re-1)) = reciprocalSquareMass := by
     apply tsum_congr
     intro n

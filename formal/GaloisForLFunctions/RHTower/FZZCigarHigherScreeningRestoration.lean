@@ -30,26 +30,26 @@ private theorem cosine_first : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ) = 0 :
   rw [integral_cos]
   simp
 
-private theorem cosine_second : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^2) = Real.pi := by
+private theorem cosine_second : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(2 : ℕ)) = Real.pi := by
   rw [integral_cos_sq]
   simp
 
-private theorem cosine_third : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^3) = 0 := by
+private theorem cosine_third : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(3 : ℕ)) = 0 := by
   rw [integral_cos_pow_three]
   simp
 
-private theorem cosine_fourth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^4) = 3*Real.pi/4 := by
+private theorem cosine_fourth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(4 : ℕ)) = 3*Real.pi/4 := by
   rw [show (4:ℕ)=2+2 by rfl, integral_cos_pow, cosine_second]
   simp
   ring
 
-private theorem cosine_fifth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^5) = 0 := by
+private theorem cosine_fifth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(5 : ℕ)) = 0 := by
   rw [show (5:ℕ)=3+2 by rfl, integral_cos_pow, cosine_third]
   simp
 
 private theorem quintic_cosine_integral (a b c d e f : ℝ) :
     (∫ θ : ℝ in 0..2*Real.pi,
-      a+b*Real.cos θ+c*Real.cos θ^2+d*Real.cos θ^3+e*Real.cos θ^4+f*Real.cos θ^5) =
+      a+b*Real.cos θ+c*Real.cos θ^(2 : ℕ)+d*Real.cos θ^(3 : ℕ)+e*Real.cos θ^(4 : ℕ)+f*Real.cos θ^(5 : ℕ)) =
         2*Real.pi*a+Real.pi*c+(3*Real.pi/4)*e := by
   have hi (n : ℕ) : IntervalIntegrable (fun θ : ℝ => Real.cos θ^n) volume 0 (2*Real.pi) :=
     (show Continuous _ by fun_prop).intervalIntegrable _ _
@@ -71,47 +71,47 @@ private theorem quintic_cosine_integral (a b c d e f : ℝ) :
   ring
 
 private theorem q_first (r : ℝ) :
-    (∫ θ : ℝ in 0..2*Real.pi, (r^2-2*r*Real.cos θ)) = 2*Real.pi*r^2 := by
-  have h := quintic_cosine_integral (r^2) (-2*r) 0 0 0 0
+    (∫ θ : ℝ in 0..2*Real.pi, (r^(2 : ℕ)-2*r*Real.cos θ)) = 2*Real.pi*r^(2 : ℕ) := by
+  have h := quintic_cosine_integral (r^(2 : ℕ)) (-2*r) 0 0 0 0
   simpa only [zero_mul, add_zero, neg_mul, sub_eq_add_neg, mul_zero] using h
 
 private theorem q_second (r : ℝ) :
-    (∫ θ : ℝ in 0..2*Real.pi, (r^2-2*r*Real.cos θ)^2) =
-      2*Real.pi*(r^4+2*r^2) := by
-  have h := quintic_cosine_integral (r^4) (-4*r^3) (4*r^2) 0 0 0
-  have he : (fun θ : ℝ => (r^2-2*r*Real.cos θ)^2) =
-      (fun θ : ℝ => r^4+(-4*r^3)*Real.cos θ+(4*r^2)*Real.cos θ^2+
-        0*Real.cos θ^3+0*Real.cos θ^4+0*Real.cos θ^5) := by funext θ; ring
+    (∫ θ : ℝ in 0..2*Real.pi, (r^(2 : ℕ)-2*r*Real.cos θ)^(2 : ℕ)) =
+      2*Real.pi*(r^(4 : ℕ)+2*r^(2 : ℕ)) := by
+  have h := quintic_cosine_integral (r^(4 : ℕ)) (-4*r^(3 : ℕ)) (4*r^(2 : ℕ)) 0 0 0
+  have he : (fun θ : ℝ => (r^(2 : ℕ)-2*r*Real.cos θ)^(2 : ℕ)) =
+      (fun θ : ℝ => r^(4 : ℕ)+(-4*r^(3 : ℕ))*Real.cos θ+(4*r^(2 : ℕ))*Real.cos θ^(2 : ℕ)+
+        0*Real.cos θ^(3 : ℕ)+0*Real.cos θ^(4 : ℕ)+0*Real.cos θ^(5 : ℕ)) := by funext θ; ring
   rw [he,h]
   ring
 
 private theorem q_third (r : ℝ) :
-    (∫ θ : ℝ in 0..2*Real.pi, (r^2-2*r*Real.cos θ)^3) =
-      2*Real.pi*(r^6+6*r^4) := by
-  have h := quintic_cosine_integral (r^6) (-6*r^5) (12*r^4) (-8*r^3) 0 0
-  have he : (fun θ : ℝ => (r^2-2*r*Real.cos θ)^3) =
-      (fun θ : ℝ => r^6+(-6*r^5)*Real.cos θ+(12*r^4)*Real.cos θ^2+
-        (-8*r^3)*Real.cos θ^3+0*Real.cos θ^4+0*Real.cos θ^5) := by funext θ; ring
+    (∫ θ : ℝ in 0..2*Real.pi, (r^(2 : ℕ)-2*r*Real.cos θ)^(3 : ℕ)) =
+      2*Real.pi*(r^(6 : ℕ)+6*r^(4 : ℕ)) := by
+  have h := quintic_cosine_integral (r^(6 : ℕ)) (-6*r^(5 : ℕ)) (12*r^(4 : ℕ)) (-8*r^(3 : ℕ)) 0 0
+  have he : (fun θ : ℝ => (r^(2 : ℕ)-2*r*Real.cos θ)^(3 : ℕ)) =
+      (fun θ : ℝ => r^(6 : ℕ)+(-6*r^(5 : ℕ))*Real.cos θ+(12*r^(4 : ℕ))*Real.cos θ^(2 : ℕ)+
+        (-8*r^(3 : ℕ))*Real.cos θ^(3 : ℕ)+0*Real.cos θ^(4 : ℕ)+0*Real.cos θ^(5 : ℕ)) := by funext θ; ring
   rw [he,h]
   ring
 
 private theorem q_fourth (r : ℝ) :
-    (∫ θ : ℝ in 0..2*Real.pi, (r^2-2*r*Real.cos θ)^4) =
-      2*Real.pi*(r^8+12*r^6+6*r^4) := by
-  have h := quintic_cosine_integral (r^8) (-8*r^7) (24*r^6) (-32*r^5) (16*r^4) 0
-  have he : (fun θ : ℝ => (r^2-2*r*Real.cos θ)^4) =
-      (fun θ : ℝ => r^8+(-8*r^7)*Real.cos θ+(24*r^6)*Real.cos θ^2+
-        (-32*r^5)*Real.cos θ^3+(16*r^4)*Real.cos θ^4+0*Real.cos θ^5) := by funext θ; ring
+    (∫ θ : ℝ in 0..2*Real.pi, (r^(2 : ℕ)-2*r*Real.cos θ)^(4 : ℕ)) =
+      2*Real.pi*(r^(8 : ℕ)+12*r^(6 : ℕ)+6*r^(4 : ℕ)) := by
+  have h := quintic_cosine_integral (r^(8 : ℕ)) (-8*r^(7 : ℕ)) (24*r^(6 : ℕ)) (-32*r^(5 : ℕ)) (16*r^(4 : ℕ)) 0
+  have he : (fun θ : ℝ => (r^(2 : ℕ)-2*r*Real.cos θ)^(4 : ℕ)) =
+      (fun θ : ℝ => r^(8 : ℕ)+(-8*r^(7 : ℕ))*Real.cos θ+(24*r^(6 : ℕ))*Real.cos θ^(2 : ℕ)+
+        (-32*r^(5 : ℕ))*Real.cos θ^(3 : ℕ)+(16*r^(4 : ℕ))*Real.cos θ^(4 : ℕ)+0*Real.cos θ^(5 : ℕ)) := by funext θ; ring
   rw [he,h]
   ring
 
 private theorem q_fifth (r : ℝ) :
-    (∫ θ : ℝ in 0..2*Real.pi, (r^2-2*r*Real.cos θ)^5) =
-      2*Real.pi*(r^10+20*r^8+30*r^6) := by
-  have h := quintic_cosine_integral (r^10) (-10*r^9) (40*r^8) (-80*r^7) (80*r^6) (-32*r^5)
-  have he : (fun θ : ℝ => (r^2-2*r*Real.cos θ)^5) =
-      (fun θ : ℝ => r^10+(-10*r^9)*Real.cos θ+(40*r^8)*Real.cos θ^2+
-        (-80*r^7)*Real.cos θ^3+(80*r^6)*Real.cos θ^4+(-32*r^5)*Real.cos θ^5) :=
+    (∫ θ : ℝ in 0..2*Real.pi, (r^(2 : ℕ)-2*r*Real.cos θ)^(5 : ℕ)) =
+      2*Real.pi*(r^(10 : ℕ)+20*r^(8 : ℕ)+30*r^(6 : ℕ)) := by
+  have h := quintic_cosine_integral (r^(10 : ℕ)) (-10*r^(9 : ℕ)) (40*r^(8 : ℕ)) (-80*r^(7 : ℕ)) (80*r^(6 : ℕ)) (-32*r^(5 : ℕ))
+  have he : (fun θ : ℝ => (r^(2 : ℕ)-2*r*Real.cos θ)^(5 : ℕ)) =
+      (fun θ : ℝ => r^(10 : ℕ)+(-10*r^(9 : ℕ))*Real.cos θ+(40*r^(8 : ℕ))*Real.cos θ^(2 : ℕ)+
+        (-80*r^(7 : ℕ))*Real.cos θ^(3 : ℕ)+(80*r^(6 : ℕ))*Real.cos θ^(4 : ℕ)+(-32*r^(5 : ℕ))*Real.cos θ^(5 : ℕ)) :=
     by funext θ; ring
   rw [he,h]
   ring
@@ -149,7 +149,7 @@ private theorem binomial_succ (β : ℝ) (n : ℕ) :
 
 /-- The second radial coefficient is derived from the complete pointwise polynomial. -/
 theorem fzzScreeningFifthAngularCoefficient_one (β : ℝ) :
-    fzzScreeningFifthAngularCoefficient β 1 = β^2/4 := by
+    fzzScreeningFifthAngularCoefficient β 1 = β^(2 : ℕ)/4 := by
   simp only [fzzScreeningFifthAngularCoefficient]
   simp only [binomial_succ β 1, binomial_succ β 0, binomial_zero]
   norm_num
@@ -157,7 +157,7 @@ theorem fzzScreeningFifthAngularCoefficient_one (β : ℝ) :
 
 /-- The fourth-degree coefficient produces the third collision pole. -/
 theorem fzzScreeningFifthAngularCoefficient_two (β : ℝ) :
-    fzzScreeningFifthAngularCoefficient β 2 = β^2*(β-2)^2/64 := by
+    fzzScreeningFifthAngularCoefficient β 2 = β^(2 : ℕ)*(β-2)^(2 : ℕ)/64 := by
   simp only [fzzScreeningFifthAngularCoefficient]
   simp only [binomial_succ β 3, binomial_succ β 2, binomial_succ β 1,
     binomial_succ β 0, binomial_zero]
@@ -169,7 +169,7 @@ private theorem taylor_circle_integral (β r : ℝ) :
       2*Real.pi*fzzScreeningFifthAngularPolynomial β r := by
   have he : (fun θ : ℝ => fzzScreeningFifthTaylor β (circleMap 0 r θ)) =
       (fun θ : ℝ => ∑ j ∈ Finset.range 6,
-        fzzScreeningFifthBinomial β j * (r^2-2*r*Real.cos θ)^j) := by
+        fzzScreeningFifthBinomial β j * (r^(2 : ℕ)-2*r*Real.cos θ)^j) := by
     funext θ
     unfold fzzScreeningFifthTaylor fzzScreeningFifthBinomial
     simp only [norm_circleMap_zero, sq_abs, circleMap_zero_re]
@@ -178,7 +178,7 @@ private theorem taylor_circle_integral (β r : ℝ) :
     ring
   rw [he, intervalIntegral.integral_finsetSum (fun j _ =>
     (show Continuous (fun θ : ℝ => fzzScreeningFifthBinomial β j *
-      (r^2-2*r*Real.cos θ)^j) by fun_prop).intervalIntegrable _ _)]
+      (r^(2 : ℕ)-2*r*Real.cos θ)^j) by fun_prop).intervalIntegrable _ _)]
   simp_rw [intervalIntegral.integral_const_mul]
   simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
     pow_zero, pow_one, intervalIntegral.integral_const, sub_zero, smul_eq_mul,

@@ -37,7 +37,7 @@ theorem response_eq_outgoing {k y : ℝ} (hk : 0 < k) (hy : 0 < y) :
 
 /-- Exact physical-height Riccati equation of the actual critical Bessel response. -/
 theorem response_hasDerivAt {k y : ℝ} (hk : 0 < k) (hy : 0 < y) :
-    HasDerivAt (response k) (response k y ^ 2 - k ^ 2 + 1 / (4 * y ^ 2)) y := by
+    HasDerivAt (response k) (response k y ^ (2 : ℕ) - k ^ (2 : ℕ) + 1 / (4 * y ^ (2 : ℕ))) y := by
   have h := ((slope_hasDerivAt (mul_pos hk hy)).comp y ((hasDerivAt_id y).const_mul k)).sub_const (1 / 2)
   apply (h.div (hasDerivAt_id y) hy.ne').congr_deriv
   simp only [id_eq, mul_one, response, Function.comp_apply]
@@ -93,7 +93,7 @@ def remainder (k : ℝ) (a : ℝ → ℂ) (y : ℝ) : ℝ :=
   Complex.normSq (deriv a y + (response k y : ℂ) * a y)
 /-- Physical nonzero-mode Dirichlet energy minus quarter hyperbolic mass. -/
 def energy (k : ℝ) (a : ℝ → ℂ) (y : ℝ) : ℝ :=
-  Complex.normSq (deriv a y) + (k ^ 2 - 1 / (4 * y ^ 2)) * Complex.normSq (a y)
+  Complex.normSq (deriv a y) + (k ^ (2 : ℕ) - 1 / (4 * y ^ (2 : ℕ))) * Complex.normSq (a y)
 
 private theorem boundaryCurrent_hasDerivAt {k y : ℝ} (hk : 0 < k) (hy : 0 < y)
     {a : ℝ → ℂ} (ha : HasDerivAt a (deriv a y) y) :
@@ -122,7 +122,7 @@ theorem modeRate_pos (N : ℕ) {n : ℤ} (hn : n ≠ 0) : 0 < modeRate N n := by
   exact_mod_cast hn
 
 /-- The squared magnitude is the literal squared signed Fourier frequency. -/
-theorem modeRate_sq (N : ℕ) (n : ℤ) : modeRate N n ^ 2 = signedFrequency (N + 1 : ℕ) n ^ 2 := sq_abs _
+theorem modeRate_sq (N : ℕ) (n : ℤ) : modeRate N n ^ (2 : ℕ) = signedFrequency (N + 1 : ℕ) n ^ (2 : ℕ) := sq_abs _
 
 private theorem mode_continuousOn (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) (n : ℤ) :
@@ -185,13 +185,13 @@ theorem mode_deriv_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
 theorem mode_hyperbolicMass_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ)) (n : ℤ)
     {Y : ℝ} (hY : 0 < Y) :
-    IntegrableOn (fun y => Complex.normSq (maassCoefficient N f n y) / y ^ 2) (Ioi Y) := by
+    IntegrableOn (fun y => Complex.normSq (maassCoefficient N f n y) / y ^ (2 : ℕ)) (Ioi Y) := by
   have hc := (Complex.continuous_normSq.comp_continuousOn (mode_continuousOn N f n)).div
     (continuous_id.pow 2).continuousOn (fun y hy => (sq_pos_of_pos (show 0 < y from hy)).ne')
   apply (hyperbolicMass_tail_integrable N lam f hY).mono'
     ((hc.mono (Ioi_subset_Ioi hY.le)).aestronglyMeasurable measurableSet_Ioi)
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
-  change ‖Complex.normSq (maassCoefficient N f n y) / y ^ 2‖ ≤ mass N f y / y ^ 2
+  change ‖Complex.normSq (maassCoefficient N f n y) / y ^ (2 : ℕ)‖ ≤ mass N f y / y ^ (2 : ℕ)
   rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (Complex.normSq_nonneg _) (sq_nonneg _))]
   exact div_le_div_of_nonneg_right (mode_normSq_le_mass N f n (hY.trans hy)) (sq_nonneg _)
 
@@ -201,7 +201,7 @@ theorem mode_energy_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     {Y : ℝ} (hY : 0 < Y) :
     IntegrableOn (energy (modeRate N n) (maassCoefficient N f n)) (Ioi Y) := by
   apply (((mode_deriv_integrable N lam f n hY).add
-    ((mode_mass_integrable N lam f n hY).const_mul (modeRate N n ^ 2))).sub
+    ((mode_mass_integrable N lam f n hY).const_mul (modeRate N n ^ (2 : ℕ)))).sub
     ((mode_hyperbolicMass_integrable N lam f n hY).const_mul (1 / 4 : ℝ))).congr
   filter_upwards with y
   simp only [Pi.sub_apply, Pi.add_apply, energy]
@@ -222,20 +222,20 @@ theorem mode_remainder_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
       ((Complex.continuous_ofReal.comp_continuousOn (response_continuousOn (modeRate_pos N hn))).mul
         (mode_continuousOn N f n)))
   apply (((mode_deriv_integrable N lam f n hY).const_mul 2).add
-    ((mode_mass_integrable N lam f n hY).const_mul (2 * C ^ 2))).mono'
+    ((mode_mass_integrable N lam f n hY).const_mul (2 * C ^ (2 : ℕ)))).mono'
       ((hc.mono (Ioi_subset_Ioi hY.le)).aestronglyMeasurable measurableSet_Ioi)
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
   change ‖remainder (modeRate N n) (maassCoefficient N f n) y‖ ≤ _
   rw [remainder, Real.norm_eq_abs, abs_of_nonneg (Complex.normSq_nonneg _)]
   have hB := response_abs_bound (modeRate_pos N hn) hY hy.le
-  have hB2 : response (modeRate N n) y ^ 2 ≤ C ^ 2 := by
+  have hB2 : response (modeRate N n) y ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
     simpa only [← pow_two, sq_abs] using mul_self_le_mul_self (abs_nonneg _) hB
   have hb := normSq_add_bound (deriv (maassCoefficient N f n) y)
     ((response (modeRate N n) y : ℂ) * maassCoefficient N f n y)
   rw [Complex.normSq_mul, Complex.normSq_ofReal] at hb
   have hh := mul_le_mul_of_nonneg_right hB2 (Complex.normSq_nonneg (maassCoefficient N f n y))
   change _ ≤ 2 * Complex.normSq (deriv (maassCoefficient N f n) y) +
-    (2 * C ^ 2) * Complex.normSq (maassCoefficient N f n y)
+    (2 * C ^ (2 : ℕ)) * Complex.normSq (maassCoefficient N f n y)
   nlinarith
 
 /-- The source coefficient limit and Bessel envelope kill the upper boundary current. -/

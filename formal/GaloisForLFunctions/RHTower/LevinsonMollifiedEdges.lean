@@ -46,7 +46,7 @@ theorem abs_im_two_div_sub_one_le {x T : ℝ} (hT : 0 < T) :
 /-- The weighted pole-gauge edge is `O(1/T)`. -/
 theorem abs_integral_weighted_im_pole_le {c T : ℝ} (hc4 : c ≤ 4) (hT : 0 < T) :
     |∫ x in c..(4 : ℝ), (x - c) * (2 / ((x : ℂ) + (T : ℂ) * I - 1)).im|
-      ≤ (4 - c) ^ 2 * (2 / T) := by
+      ≤ (4 - c) ^ (2 : ℕ) * (2 / T) := by
   have hcont : Continuous fun x : ℝ => (x - c) * (2 / ((x : ℂ) + (T : ℂ) * I - 1)).im := by
     have hden : ∀ x : ℝ, ((x : ℂ) + (T : ℂ) * I - 1) ≠ 0 := by
       intro x h0

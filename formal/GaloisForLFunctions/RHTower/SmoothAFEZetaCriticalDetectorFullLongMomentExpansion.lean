@@ -22,7 +22,7 @@ def Sieve.barbanVehovDifferentiatedCoeff (M k : ℕ) : ℝ :=
 /-- Base harmonic energy on the exact long product range. -/
 def levinsonCriticalDetectorFullLongBaseMoment (L M : ℕ) : ℝ :=
   ∑ k ∈ Finset.Ioc L (L * M),
-    Sieve.barbanVehovCoeff M k ^ 2 / (k : ℝ)
+    Sieve.barbanVehovCoeff M k ^ (2 : ℕ) / (k : ℝ)
 
 /-- Mixed base/derivative harmonic moment on the exact long product range. -/
 def levinsonCriticalDetectorFullLongCrossMoment (L M : ℕ) : ℝ :=
@@ -32,7 +32,7 @@ def levinsonCriticalDetectorFullLongCrossMoment (L M : ℕ) : ℝ :=
 /-- Differentiated harmonic energy on the exact long product range. -/
 def levinsonCriticalDetectorFullLongDerivativeMoment (L M : ℕ) : ℝ :=
   ∑ k ∈ Finset.Ioc L (L * M),
-    Sieve.barbanVehovDifferentiatedCoeff M k ^ 2 / (k : ℝ)
+    Sieve.barbanVehovDifferentiatedCoeff M k ^ (2 : ℕ) / (k : ℝ)
 
 /-- The full differentiated long energy is exactly a quadratic form in three arithmetic moments. -/
 theorem levinsonCriticalDetectorFullLongEnergy_eq_momentQuadratic
@@ -40,8 +40,8 @@ theorem levinsonCriticalDetectorFullLongEnergy_eq_momentQuadratic
     levinsonCriticalDetectorFullLongEnergy lam L M =
       (levinsonCriticalDetectorFullLongBaseMoment L M +
           2 * lam * levinsonCriticalDetectorFullLongCrossMoment L M +
-          lam ^ 2 * levinsonCriticalDetectorFullLongDerivativeMoment L M) /
-        Real.log M ^ 2 := by
+          lam ^ (2 : ℕ) * levinsonCriticalDetectorFullLongDerivativeMoment L M) /
+        Real.log M ^ (2 : ℕ) := by
   rw [levinsonCriticalDetectorFullLongEnergy_eq_sum_Ioc]
   rw [levinsonCriticalDetectorFullLongBaseMoment,
     levinsonCriticalDetectorFullLongCrossMoment,

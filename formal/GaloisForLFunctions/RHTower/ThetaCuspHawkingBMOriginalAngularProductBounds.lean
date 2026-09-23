@@ -121,7 +121,7 @@ open D4BMJointSource D4BMModularCore D4BMOriginalBaseCircleJets D4BMOriginalCaus
 noncomputable section
 set_option autoImplicit false
 
-def jetMultiplier (j : Fin 5) (a : ℂ) : ℂ := ![1,a,0,a^2,0] j
+def jetMultiplier (j : Fin 5) (a : ℂ) : ℂ := ![1,a,0,a^(2 : ℕ),0] j
 
 private theorem principal_base_jet (j : Fin 5) (a c : ℂ) (x k : ℝ) :
     baseOperator j (fun _ k => c*Complex.exp (a*(k:ℂ))) x k=
@@ -134,7 +134,7 @@ private theorem principal_base_jet (j : Fin 5) (a c : ℂ) (x k : ℝ) :
   have he : deriv (fun k : ℝ => c*Complex.exp (a*(k:ℂ)))=
       fun k : ℝ => (c*a)*Complex.exp (a*(k:ℂ)) := funext (fun k => (hd k).deriv)
   have hd2 (k : ℝ) : HasDerivAt (fun t : ℝ => (c*a)*Complex.exp (a*(t:ℂ)))
-      (c*a^2*Complex.exp (a*(k:ℂ))) k := by
+      (c*a^(2 : ℕ)*Complex.exp (a*(k:ℂ))) k := by
     apply (((hasDerivAt_id k).ofReal_comp.const_mul a).cexp.const_mul (c*a)).congr_deriv
     simp only [id_eq,Complex.ofReal_one,mul_one]
     ring
@@ -331,7 +331,7 @@ noncomputable section
 set_option autoImplicit false
 
 private theorem geometric_collar_bound (L : ℝ) (hL : 0 < L) :
-    Real.exp (-L) ≤ (tortoiseRadius (-L/2))^2-1 := by
+    Real.exp (-L) ≤ (tortoiseRadius (-L/2))^(2 : ℕ)-1 := by
   let R := tortoiseRadius (-L/2)
   have hR : 1 < R := tortoiseRadius_exterior (-L/2) (by linarith)
   have hR0 : R ≠ 0 := by linarith
@@ -343,9 +343,9 @@ private theorem geometric_collar_bound (L : ℝ) (hL : 0 < L) :
     field_simp [hR0] at hh
     nlinarith
   calc
-    _ ≤ Real.exp (-L)*(R+1)^2 := le_mul_of_one_le_right (Real.exp_nonneg _) (by nlinarith)
+    _ ≤ Real.exp (-L)*(R+1)^(2 : ℕ) := le_mul_of_one_le_right (Real.exp_nonneg _) (by nlinarith)
     _ = (Real.exp (-L)*(R+1))*(R+1) := by ring
-    _ = R^2-1 := by rw [← he]; ring
+    _ = R^(2 : ℕ)-1 := by rw [← he]; ring
 
 /-- The actual singular metric factor consumes one geometric horizon order.
 After this loss, every cusp order remains uniform in both cutoff lengths. -/
@@ -354,7 +354,7 @@ theorem metric_angular_product_time_error (q : XiZeroCopy) (br : Bool) (amp : �
     ∃ G : ℝ, 0 ≤ G ∧ ∀ w : ℂ, w.im ≠ 0 → G+1 ≤ w.re →
       ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ L : ℝ in atTop, ∀ T x k : ℝ, 0 ≤ T → 0 ≤ k →
       ‖(∫ p in (0:ℝ)..T,Complex.exp (-w*(p:ℂ))*(angularProduct q br amp w j d p L x k-
-        horizonAngularProduct q br amp w j d p x k))/((tortoiseRadius (-L/2):ℂ)^2-1)‖ ≤
+        horizonAngularProduct q br amp w j d p x k))/((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)‖ ≤
         B*Real.exp (-(N:ℝ)*k) := by
   obtain ⟨G,hG,h⟩ := original_angular_product_time_error q br amp j d N
   refine ⟨G,hG,?_⟩
@@ -364,20 +364,20 @@ theorem metric_angular_product_time_error (q : XiZeroCopy) (br : Bool) (amp : �
   filter_upwards [h,eventually_gt_atTop (0:ℝ)] with L hL hpos T x k hT hk
   let R := tortoiseRadius (-L/2)
   have hR : 1 < R := tortoiseRadius_exterior (-L/2) (by linarith)
-  have hf : 0 < R^2-1 := by nlinarith
-  have hgeo : Real.exp (-L) ≤ R^2-1 := geometric_collar_bound L hpos
+  have hf : 0 < R^(2 : ℕ)-1 := by nlinarith
+  have hgeo : Real.exp (-L) ≤ R^(2 : ℕ)-1 := geometric_collar_bound L hpos
   have hdec : Real.exp (-w.re*L) ≤ Real.exp (-L) := by
     apply Real.exp_le_exp.mpr
     nlinarith
-  have hS : Real.exp (-L)+Real.exp (-w.re*L) ≤ 2*(R^2-1) := by linarith
-  have hn : ‖(R:ℂ)^2-1‖=R^2-1 := by
+  have hS : Real.exp (-L)+Real.exp (-w.re*L) ≤ 2*(R^(2 : ℕ)-1) := by linarith
+  have hn : ‖(R:ℂ)^(2 : ℕ)-1‖=R^(2 : ℕ)-1 := by
     rw [← Complex.ofReal_pow,← Complex.ofReal_one,← Complex.ofReal_sub,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hf]
-  change ‖_/( (R:ℂ)^2-1)‖ ≤ _
+  change ‖_/( (R:ℂ)^(2 : ℕ)-1)‖ ≤ _
   rw [norm_div,hn]
   apply (div_le_iff₀ hf).mpr
   calc
     _ ≤ B*(Real.exp (-L)+Real.exp (-w.re*L))*Real.exp (-(N:ℝ)*k) := hL T x k hT hk
-    _ ≤ B*(2*(R^2-1))*Real.exp (-(N:ℝ)*k) := by gcongr
+    _ ≤ B*(2*(R^(2 : ℕ)-1))*Real.exp (-(N:ℝ)*k) := by gcongr
     _ = _ := by ring
 
 /-- Independent horizon and cusp restoration of the metric-weighted difference
@@ -388,7 +388,7 @@ theorem metric_angular_product_joint_limit (q : XiZeroCopy) (br : Bool) (amp : �
       ∀ (T : ℝ × ℝ → Ici (0:ℝ)) (X : ℝ × ℝ → ℝ),
       Tendsto (fun z : ℝ × ℝ =>
         (∫ p in (0:ℝ)..(T z:ℝ),Complex.exp (-w*(p:ℂ))*(angularProduct q br amp w j d p z.1 (X z) z.2-
-          horizonAngularProduct q br amp w j d p (X z) z.2))/((tortoiseRadius (-z.1/2):ℂ)^2-1))
+          horizonAngularProduct q br amp w j d p (X z) z.2))/((tortoiseRadius (-z.1/2):ℂ)^(2 : ℕ)-1))
         ((atTop : Filter ℝ) ×ˢ (atTop : Filter ℝ)) (𝓝 0) := by
   obtain ⟨G,hG,h⟩ := metric_angular_product_time_error q br amp j d 1
   refine ⟨G,hG,?_⟩

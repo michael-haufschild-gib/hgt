@@ -82,11 +82,11 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_concrete {P : Finset ℕ}
   obtain ⟨δ₂, hδ₂, M₀, hM₀, hbdbox⟩ := exists_bound_invZeta_low_box 2 (by norm_num)
   have hlog : Tendsto (fun n : ℕ => Real.log n) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hpow : Tendsto (fun n : ℕ => (Real.log n) ^ 9) atTop atTop :=
+  have hpow : Tendsto (fun n : ℕ => (Real.log n) ^ (9 : ℕ)) atTop atTop :=
     (tendsto_pow_atTop (by norm_num)).comp hlog
   have h1 : ∀ᶠ n : ℕ in atTop, (3 : ℝ) ≤ Real.log n := hlog.eventually_ge_atTop 3
   have h2 : ∀ᶠ n : ℕ in atTop,
-      zeroFreeConst / (16 * min δ₁ δ₂) ≤ (Real.log n) ^ 9 := hpow.eventually_ge_atTop _
+      zeroFreeConst / (16 * min δ₁ δ₂) ≤ (Real.log n) ^ (9 : ℕ) := hpow.eventually_ge_atTop _
   obtain ⟨K₁, hK₁⟩ := eventually_atTop.1 (h1.and h2)
   refine ⟨C, M₀, max K₁ 5, hC, hM₀, fun τ K hKle hKτ => ?_⟩
   obtain ⟨hlogK, hfitpow⟩ := hK₁ K (le_trans (le_max_left _ _) hKle)
@@ -94,7 +94,7 @@ theorem exists_norm_tsum_dampedTwist_smoothWeight_le_concrete {P : Finset ℕ}
   have hK2 : 2 ≤ K := by omega
   have hδ0 : (0 : ℝ) < min δ₁ δ₂ := lt_min hδ₁ hδ₂
   have hL9 := twentySeven_le_log_pow hlogK
-  have hfit : zeroFreeConst / (16 * (Real.log K) ^ 9) ≤ min δ₁ δ₂ := by
+  have hfit : zeroFreeConst / (16 * (Real.log K) ^ (9 : ℕ)) ≤ min δ₁ δ₂ := by
     rw [div_le_iff₀ (by positivity)]
     rw [div_le_iff₀ (by positivity)] at hfitpow
     linarith

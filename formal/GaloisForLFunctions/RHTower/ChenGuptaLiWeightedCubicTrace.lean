@@ -31,7 +31,7 @@ theorem cglCharacterDyadicWeightedGramCubicTrace_eq_trace (N q R : ℕ) (weight 
 theorem cglCharacterDyadicWeightedGramCubicTrace_eq_trace_pow (N q R : ℕ) (weight : Fin N → ℂ)
     (w : Fin R → CGLCharacterDyadicRowData q) :
     cglCharacterDyadicWeightedGramCubicTrace N q R weight w =
-      ((cglCharacterDyadicWeightedGram N q R weight w) ^ 3).trace := by
+      ((cglCharacterDyadicWeightedGram N q R weight w) ^ (3 : ℕ)).trace := by
   rw [pow_three]
   calc
     cglCharacterDyadicWeightedGramCubicTrace N q R weight w =

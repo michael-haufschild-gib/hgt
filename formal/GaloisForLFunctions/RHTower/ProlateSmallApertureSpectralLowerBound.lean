@@ -40,8 +40,7 @@ open GaloisForLFunctions.HTGeometry
 
 attribute [local instance] Measure.Subtype.measureSpace
 
-noncomputable local instance :
-    (volume : Measure UnitPhysicalInterval).IsOpenPosMeasure :=
+noncomputable local instance prolateSmallApertureSpectralLowerBoundInst1 : (volume : Measure UnitPhysicalInterval).IsOpenPosMeasure :=
   unitPhysicalInterval_volume_isOpenPosMeasure
 
 /-- Polynomial evaluation as a continuous function on the physical interval. -/

@@ -190,7 +190,7 @@ theorem source_cubic (p : ExteriorPoint) (h : MetricField)
 private theorem reconstructedField_contDiffAt (p : ExteriorPoint) (omega kSq : ℂ)
     (a : Primitive → (Fin 4 → ℝ) → ℂ)
     (ha : ∀ b, ContDiffAt ℝ 2 (a b) p.val)
-    (hr : a .radius p.val ≠ 0) (hf : (a .radius p.val)^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : a .radius p.val ≠ 0) (hf : (a .radius p.val)^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     ContDiffAt ℝ 2 (fun x => covariantMetric omega kSq (fun b => a b x) i j) p.val := by
   have hs := ((covariantMetricExpression omega kSq i j).eval_jet_correct ha
     (covariantMetricExpression_regular omega kSq (fun b => a b p.val) hr hf i j)).1
@@ -207,7 +207,7 @@ enter through the literal reconstruction; no independent source tensor is suppli
 theorem reconstructed_source_coefficients (p : ExteriorPoint) (omega kSq : ℂ)
     (a : Primitive → (Fin 4 → ℝ) → ℂ)
     (ha : ∀ b, ContDiffAt ℝ 2 (a b) p.val)
-    (hr : a .radius p.val ≠ 0) (hf : (a .radius p.val)^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : a .radius p.val ≠ 0) (hf : (a .radius p.val)^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     let h : MetricField := fun x => covariantMetric omega kSq (fun b => a b x)
     let u := toSpace (metricJet omega kSq (fun b => ScalarTwoJet.ofField (a b) p.val))
     (iteratedDeriv 2 (source p h i j) 0 / 2 = secondVariation (backgroundSpace p) i j u u / 2) ∧

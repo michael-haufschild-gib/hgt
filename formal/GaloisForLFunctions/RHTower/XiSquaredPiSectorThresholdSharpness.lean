@@ -13,9 +13,9 @@ theorem exists_xiPiSector_closedStripWitness_of_lt_threshold
     {n : ℕ} (hn : 1 ≤ n) {X : ℝ} (hX0 : 0 ≤ X)
     (hX : X < xiSquaredPiFarRayThreshold n) :
     ∃ gamma b : ℝ,
-      0 < gamma ∧ |b| ≤ 1 / 2 ∧ 0 < gamma ^ 2 - b ^ 2 + X ∧
+      0 < gamma ∧ |b| ≤ 1 / 2 ∧ 0 < gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X ∧
         (Real.pi / (2 * ((n : ℝ) + 1))) *
-            (gamma ^ 2 - b ^ 2 + X) < |2 * gamma * b| := by
+            (gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X) < |2 * gamma * b| := by
   let m : ℝ := (n : ℝ) + 1
   let gamma : ℝ := m / Real.pi
   let b : ℝ := 1 / 2
@@ -29,21 +29,21 @@ theorem exists_xiPiSector_closedStripWitness_of_lt_threshold
     dsimp [gamma]
     rw [lt_div_iff₀ Real.pi_pos]
     nlinarith [Real.pi_lt_four]
-  have hlong : 0 < gamma ^ 2 - b ^ 2 + X := by
+  have hlong : 0 < gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X := by
     dsimp [b]
     nlinarith [sq_nonneg (gamma - 1 / 2)]
-  have hcore : gamma ^ 2 - b ^ 2 + X < 2 * gamma ^ 2 := by
+  have hcore : gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X < 2 * gamma ^ (2 : ℕ) := by
     unfold xiSquaredPiFarRayThreshold at hX
-    have hgammaSq : gamma ^ 2 = m ^ 2 / Real.pi ^ 2 := by
+    have hgammaSq : gamma ^ (2 : ℕ) = m ^ (2 : ℕ) / Real.pi ^ (2 : ℕ) := by
       dsimp [gamma]
       field_simp [Real.pi_ne_zero]
     dsimp [b]
     rw [hgammaSq]
     nlinarith
   have ht : 0 < t := by dsimp [t]; positivity
-  have hscaled : t * (gamma ^ 2 - b ^ 2 + X) < t * (2 * gamma ^ 2) :=
+  have hscaled : t * (gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X) < t * (2 * gamma ^ (2 : ℕ)) :=
     mul_lt_mul_of_pos_left hcore ht
-  have hright : t * (2 * gamma ^ 2) = gamma := by
+  have hright : t * (2 * gamma ^ (2 : ℕ)) = gamma := by
     dsimp [t, gamma]
     field_simp [Real.pi_ne_zero, ne_of_gt hm]
   have habs : |2 * gamma * b| = gamma := by
@@ -52,7 +52,7 @@ theorem exists_xiPiSector_closedStripWitness_of_lt_threshold
   refine ⟨gamma, b, hgamma, ?_, hlong, ?_⟩
   · dsimp [b]
     norm_num
-  · change t * (gamma ^ 2 - b ^ 2 + X) < |2 * gamma * b|
+  · change t * (gamma ^ (2 : ℕ) - b ^ (2 : ℕ) + X) < |2 * gamma * b|
     exact hscaled.trans_eq (hright.trans habs.symm)
 
 end

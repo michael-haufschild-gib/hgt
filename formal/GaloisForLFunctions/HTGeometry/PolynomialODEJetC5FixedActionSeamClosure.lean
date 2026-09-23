@@ -9,7 +9,7 @@ center seam.  Its first center coefficient has a further cancellation at displac
 known sixth-jet action-velocity obstruction disappears, and the first surviving coefficient is
 the eighth-log-jet polynomial
 
-`A^2 D - 5 A B C + 4 B^3 - 18 A^3 C + 36 A^2 B^2`.
+`A^(2 : ℕ) D - 5 A B C + 4 B^(3 : ℕ) - 18 A^(3 : ℕ) C + 36 A^(2 : ℕ) B^(2 : ℕ)`.
 
 This file performs the exact modular ODE elimination of that polynomial.  It also proves that the
 resulting degree-twelve seam polynomial is positive throughout the already established physical
@@ -28,21 +28,21 @@ set_option maxHeartbeats 4000000
 /-- Degree-twelve modular polynomial selected by the first nonzero direct fixed-action C5 seam
 coefficient. -/
 def modularThetaC5FixedActionSeamPolynomial (X : ℂ) : ℂ :=
-  -5740875 / 262144 + 220066875 / 1048576 * X + 2460375 / 65536 * X ^ 2 -
-    739953225 / 8388608 * X ^ 3 - 4809734235 / 67108864 * X ^ 4 +
-    16101161775 / 268435456 * X ^ 5 - 3626353395 / 536870912 * X ^ 6 +
-    1026844047 / 1073741824 * X ^ 7 - 345880233 / 4294967296 * X ^ 8 -
-    89154405 / 17179869184 * X ^ 9 + 3449799 / 8589934592 * X ^ 10 +
-    216621 / 68719476736 * X ^ 11 - 9975 / 68719476736 * X ^ 12
+  -5740875 / 262144 + 220066875 / 1048576 * X + 2460375 / 65536 * X ^ (2 : ℕ) -
+    739953225 / 8388608 * X ^ (3 : ℕ) - 4809734235 / 67108864 * X ^ (4 : ℕ) +
+    16101161775 / 268435456 * X ^ (5 : ℕ) - 3626353395 / 536870912 * X ^ (6 : ℕ) +
+    1026844047 / 1073741824 * X ^ (7 : ℕ) - 345880233 / 4294967296 * X ^ (8 : ℕ) -
+    89154405 / 17179869184 * X ^ (9 : ℕ) + 3449799 / 8589934592 * X ^ (10 : ℕ) +
+    216621 / 68719476736 * X ^ (11 : ℕ) - 9975 / 68719476736 * X ^ (12 : ℕ)
 
 /-- Real form of the direct fixed-action C5 seam polynomial. -/
 def modularThetaC5FixedActionSeamPolynomialReal (X : ℝ) : ℝ :=
-  -5740875 / 262144 + 220066875 / 1048576 * X + 2460375 / 65536 * X ^ 2 -
-    739953225 / 8388608 * X ^ 3 - 4809734235 / 67108864 * X ^ 4 +
-    16101161775 / 268435456 * X ^ 5 - 3626353395 / 536870912 * X ^ 6 +
-    1026844047 / 1073741824 * X ^ 7 - 345880233 / 4294967296 * X ^ 8 -
-    89154405 / 17179869184 * X ^ 9 + 3449799 / 8589934592 * X ^ 10 +
-    216621 / 68719476736 * X ^ 11 - 9975 / 68719476736 * X ^ 12
+  -5740875 / 262144 + 220066875 / 1048576 * X + 2460375 / 65536 * X ^ (2 : ℕ) -
+    739953225 / 8388608 * X ^ (3 : ℕ) - 4809734235 / 67108864 * X ^ (4 : ℕ) +
+    16101161775 / 268435456 * X ^ (5 : ℕ) - 3626353395 / 536870912 * X ^ (6 : ℕ) +
+    1026844047 / 1073741824 * X ^ (7 : ℕ) - 345880233 / 4294967296 * X ^ (8 : ℕ) -
+    89154405 / 17179869184 * X ^ (9 : ℕ) + 3449799 / 8589934592 * X ^ (10 : ℕ) +
+    216621 / 68719476736 * X ^ (11 : ℕ) - 9975 / 68719476736 * X ^ (12 : ℕ)
 
 /-- Exact tenth-mass-jet elimination for the direct fixed-action C5 seam polynomial. -/
 theorem modularThetaC5FixedActionSeamJetElimination
@@ -70,12 +70,12 @@ theorem modularThetaC5FixedActionSeamJetElimination
     let f : ℕ → ℂ :=
       fun n => (h (n + 2) - (1 / 4 : ℂ) * h n) / 2
     let a := -f 2
-    let b := 3 * f 2 ^ 2 - f 0 * f 4
-    let c := -f 0 ^ 2 * f 6 + 15 * f 0 * f 2 * f 4 - 30 * f 2 ^ 3
-    let d := -f 0 ^ 3 * f 8 + 28 * f 0 ^ 2 * f 2 * f 6 +
-      35 * f 0 ^ 2 * f 4 ^ 2 - 420 * f 0 * f 2 ^ 2 * f 4 + 630 * f 2 ^ 4
-    a ^ 2 * d - 5 * a * b * c + 4 * b ^ 3 - 18 * a ^ 3 * c +
-      36 * a ^ 2 * b ^ 2 = M ^ 6 * modularThetaC5FixedActionSeamPolynomial (R ^ 2) := by
+    let b := 3 * f 2 ^ (2 : ℕ) - f 0 * f 4
+    let c := -f 0 ^ (2 : ℕ) * f 6 + 15 * f 0 * f 2 * f 4 - 30 * f 2 ^ (3 : ℕ)
+    let d := -f 0 ^ (3 : ℕ) * f 8 + 28 * f 0 ^ (2 : ℕ) * f 2 * f 6 +
+      35 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) - 420 * f 0 * f 2 ^ (2 : ℕ) * f 4 + 630 * f 2 ^ (4 : ℕ)
+    a ^ (2 : ℕ) * d - 5 * a * b * c + 4 * b ^ (3 : ℕ) - 18 * a ^ (3 : ℕ) * c +
+      36 * a ^ (2 : ℕ) * b ^ (2 : ℕ) = M ^ (6 : ℕ) * modularThetaC5FixedActionSeamPolynomial (R ^ (2 : ℕ)) := by
   have hh1 := hh 0
   have hz1 := hz 0
   have hr1 := hr 0
@@ -182,41 +182,41 @@ theorem modularThetaC5FixedActionSeamJetElimination
 def modularThetaODENormalizedC5FixedActionSeamPolynomial : ModularThetaODEPolynomial :=
   let f := modularThetaODENormalizedSourceJet
   let a := -f 2
-  let b := MvPolynomial.C 3 * f 2 ^ 2 - f 0 * f 4
-  let c := -f 0 ^ 2 * f 6 + MvPolynomial.C 15 * f 0 * f 2 * f 4 -
-    MvPolynomial.C 30 * f 2 ^ 3
-  let d := -f 0 ^ 3 * f 8 + MvPolynomial.C 28 * f 0 ^ 2 * f 2 * f 6 +
-    MvPolynomial.C 35 * f 0 ^ 2 * f 4 ^ 2 -
-    MvPolynomial.C 420 * f 0 * f 2 ^ 2 * f 4 + MvPolynomial.C 630 * f 2 ^ 4
-  a ^ 2 * d - MvPolynomial.C 5 * a * b * c + MvPolynomial.C 4 * b ^ 3 -
-    MvPolynomial.C 18 * a ^ 3 * c + MvPolynomial.C 36 * a ^ 2 * b ^ 2
+  let b := MvPolynomial.C 3 * f 2 ^ (2 : ℕ) - f 0 * f 4
+  let c := -f 0 ^ (2 : ℕ) * f 6 + MvPolynomial.C 15 * f 0 * f 2 * f 4 -
+    MvPolynomial.C 30 * f 2 ^ (3 : ℕ)
+  let d := -f 0 ^ (3 : ℕ) * f 8 + MvPolynomial.C 28 * f 0 ^ (2 : ℕ) * f 2 * f 6 +
+    MvPolynomial.C 35 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) -
+    MvPolynomial.C 420 * f 0 * f 2 ^ (2 : ℕ) * f 4 + MvPolynomial.C 630 * f 2 ^ (4 : ℕ)
+  a ^ (2 : ℕ) * d - MvPolynomial.C 5 * a * b * c + MvPolynomial.C 4 * b ^ (3 : ℕ) -
+    MvPolynomial.C 18 * a ^ (3 : ℕ) * c + MvPolynomial.C 36 * a ^ (2 : ℕ) * b ^ (2 : ℕ)
 
 /-- Direct fixed-action C5 seam polynomial in Lyapunov coordinates. -/
 def modularThetaLyapunovC5FixedActionSeamPolynomial : ModularThetaLyapunovPolynomial :=
   let f := modularThetaLyapunovNormalizedSourceJet
   let a := -f 2
-  let b := MvPolynomial.C 3 * f 2 ^ 2 - f 0 * f 4
-  let c := -f 0 ^ 2 * f 6 + MvPolynomial.C 15 * f 0 * f 2 * f 4 -
-    MvPolynomial.C 30 * f 2 ^ 3
-  let d := -f 0 ^ 3 * f 8 + MvPolynomial.C 28 * f 0 ^ 2 * f 2 * f 6 +
-    MvPolynomial.C 35 * f 0 ^ 2 * f 4 ^ 2 -
-    MvPolynomial.C 420 * f 0 * f 2 ^ 2 * f 4 + MvPolynomial.C 630 * f 2 ^ 4
-  a ^ 2 * d - MvPolynomial.C 5 * a * b * c + MvPolynomial.C 4 * b ^ 3 -
-    MvPolynomial.C 18 * a ^ 3 * c + MvPolynomial.C 36 * a ^ 2 * b ^ 2
+  let b := MvPolynomial.C 3 * f 2 ^ (2 : ℕ) - f 0 * f 4
+  let c := -f 0 ^ (2 : ℕ) * f 6 + MvPolynomial.C 15 * f 0 * f 2 * f 4 -
+    MvPolynomial.C 30 * f 2 ^ (3 : ℕ)
+  let d := -f 0 ^ (3 : ℕ) * f 8 + MvPolynomial.C 28 * f 0 ^ (2 : ℕ) * f 2 * f 6 +
+    MvPolynomial.C 35 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) -
+    MvPolynomial.C 420 * f 0 * f 2 ^ (2 : ℕ) * f 4 + MvPolynomial.C 630 * f 2 ^ (4 : ℕ)
+  a ^ (2 : ℕ) * d - MvPolynomial.C 5 * a * b * c + MvPolynomial.C 4 * b ^ (3 : ℕ) -
+    MvPolynomial.C 18 * a ^ (3 : ℕ) * c + MvPolynomial.C 36 * a ^ (2 : ℕ) * b ^ (2 : ℕ)
 
 /-- Direct fixed-action C5 seam polynomial in source-positive coordinates. -/
 def modularThetaSourcePositiveC5FixedActionSeamPolynomial :
     ModularThetaSourcePositivePolynomial :=
   let f := modularThetaSourcePositiveNormalizedSourceJet
   let a := -f 2
-  let b := MvPolynomial.C 3 * f 2 ^ 2 - f 0 * f 4
-  let c := -f 0 ^ 2 * f 6 + MvPolynomial.C 15 * f 0 * f 2 * f 4 -
-    MvPolynomial.C 30 * f 2 ^ 3
-  let d := -f 0 ^ 3 * f 8 + MvPolynomial.C 28 * f 0 ^ 2 * f 2 * f 6 +
-    MvPolynomial.C 35 * f 0 ^ 2 * f 4 ^ 2 -
-    MvPolynomial.C 420 * f 0 * f 2 ^ 2 * f 4 + MvPolynomial.C 630 * f 2 ^ 4
-  a ^ 2 * d - MvPolynomial.C 5 * a * b * c + MvPolynomial.C 4 * b ^ 3 -
-    MvPolynomial.C 18 * a ^ 3 * c + MvPolynomial.C 36 * a ^ 2 * b ^ 2
+  let b := MvPolynomial.C 3 * f 2 ^ (2 : ℕ) - f 0 * f 4
+  let c := -f 0 ^ (2 : ℕ) * f 6 + MvPolynomial.C 15 * f 0 * f 2 * f 4 -
+    MvPolynomial.C 30 * f 2 ^ (3 : ℕ)
+  let d := -f 0 ^ (3 : ℕ) * f 8 + MvPolynomial.C 28 * f 0 ^ (2 : ℕ) * f 2 * f 6 +
+    MvPolynomial.C 35 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) -
+    MvPolynomial.C 420 * f 0 * f 2 ^ (2 : ℕ) * f 4 + MvPolynomial.C 630 * f 2 ^ (4 : ℕ)
+  a ^ (2 : ℕ) * d - MvPolynomial.C 5 * a * b * c + MvPolynomial.C 4 * b ^ (3 : ℕ) -
+    MvPolynomial.C 18 * a ^ (3 : ℕ) * c + MvPolynomial.C 36 * a ^ (2 : ℕ) * b ^ (2 : ℕ)
 
 /-- Four-state-to-Lyapunov transport preserves the direct fixed-action seam polynomial. -/
 theorem modularThetaGeneralLyapunov_c5FixedActionSeamPolynomial :
@@ -253,7 +253,7 @@ theorem modularThetaSourcePositiveChart_c5FixedActionSeamPolynomial :
 /-- Source-positive and Lyapunov chart evaluation agree on every real algebraic seam. -/
 theorem eval_modularThetaSourcePositiveChartPullback_seam
     (R : ℝ) (P : ModularThetaLyapunovPolynomial) :
-    MvPolynomial.eval (modularThetaSourcePositiveSeamState (R ^ 2))
+    MvPolynomial.eval (modularThetaSourcePositiveSeamState (R ^ (2 : ℕ)))
         (modularThetaSourcePositiveChartPullback P) =
       MvPolynomial.eval (modularThetaLyapunovSeamState (R : ℂ)) P := by
   induction P using MvPolynomial.induction_on with
@@ -279,7 +279,7 @@ theorem eval_modularThetaODENormalizedC5FixedActionSeamPolynomial_seam
     (R : ℂ) :
     MvPolynomial.eval (modularThetaODESeamState R)
         modularThetaODENormalizedC5FixedActionSeamPolynomial =
-      modularThetaC5FixedActionSeamPolynomial (R ^ 2) := by
+      modularThetaC5FixedActionSeamPolynomial (R ^ (2 : ℕ)) := by
   let v := modularThetaODESeamState R
   let h := evalModularThetaODEFormalJet v .H
   let z := evalModularThetaODEFormalJet v .Z
@@ -315,7 +315,7 @@ theorem eval_modularThetaLyapunovC5FixedActionSeamPolynomial_seam
     (R : ℝ) :
     MvPolynomial.eval (modularThetaLyapunovSeamState (R : ℂ))
         modularThetaLyapunovC5FixedActionSeamPolynomial =
-      modularThetaC5FixedActionSeamPolynomial ((R : ℂ) ^ 2) := by
+      modularThetaC5FixedActionSeamPolynomial ((R : ℂ) ^ (2 : ℕ)) := by
   rw [← eval_modularThetaGeneralLyapunovPullback_seam]
   rw [modularThetaGeneralLyapunov_c5FixedActionSeamPolynomial,
     eval_modularThetaODENormalizedC5FixedActionSeamPolynomial_seam]
@@ -323,9 +323,9 @@ theorem eval_modularThetaLyapunovC5FixedActionSeamPolynomial_seam
 /-- The source-positive C5 polynomial has the exact physical seam restriction. -/
 theorem eval_modularThetaSourcePositiveC5FixedActionSeamPolynomial_seam
     (R : ℝ) :
-    MvPolynomial.eval (modularThetaSourcePositiveSeamState (R ^ 2))
+    MvPolynomial.eval (modularThetaSourcePositiveSeamState (R ^ (2 : ℕ)))
         modularThetaSourcePositiveC5FixedActionSeamPolynomial =
-      modularThetaC5FixedActionSeamPolynomial ((R : ℂ) ^ 2) := by
+      modularThetaC5FixedActionSeamPolynomial ((R : ℂ) ^ (2 : ℕ)) := by
   rw [← modularThetaSourcePositiveChart_c5FixedActionSeamPolynomial,
     eval_modularThetaSourcePositiveChartPullback_seam,
     eval_modularThetaLyapunovC5FixedActionSeamPolynomial_seam]
@@ -342,13 +342,13 @@ theorem modularThetaSourcePositiveC5FixedActionClosure_of_ode
     (x : ℝ) :
     let f : ℕ → ℂ := fun n => iteratedDeriv n F x
     let a := -f 2
-    let b := 3 * f 2 ^ 2 - f 0 * f 4
-    let c := -f 0 ^ 2 * f 6 + 15 * f 0 * f 2 * f 4 - 30 * f 2 ^ 3
-    let d := -f 0 ^ 3 * f 8 + 28 * f 0 ^ 2 * f 2 * f 6 +
-      35 * f 0 ^ 2 * f 4 ^ 2 - 420 * f 0 * f 2 ^ 2 * f 4 + 630 * f 2 ^ 4
-    a ^ 2 * d - 5 * a * b * c + 4 * b ^ 3 - 18 * a ^ 3 * c +
-      36 * a ^ 2 * b ^ 2 =
-        H x ^ 6 * MvPolynomial.eval (fun j => v j x)
+    let b := 3 * f 2 ^ (2 : ℕ) - f 0 * f 4
+    let c := -f 0 ^ (2 : ℕ) * f 6 + 15 * f 0 * f 2 * f 4 - 30 * f 2 ^ (3 : ℕ)
+    let d := -f 0 ^ (3 : ℕ) * f 8 + 28 * f 0 ^ (2 : ℕ) * f 2 * f 6 +
+      35 * f 0 ^ (2 : ℕ) * f 4 ^ (2 : ℕ) - 420 * f 0 * f 2 ^ (2 : ℕ) * f 4 + 630 * f 2 ^ (4 : ℕ)
+    a ^ (2 : ℕ) * d - 5 * a * b * c + 4 * b ^ (3 : ℕ) - 18 * a ^ (3 : ℕ) * c +
+      36 * a ^ (2 : ℕ) * b ^ (2 : ℕ) =
+        H x ^ (6 : ℕ) * MvPolynomial.eval (fun j => v j x)
           modularThetaSourcePositiveC5FixedActionSeamPolynomial := by
   have hfun : F = fun y => H y * v .Q y := by
     funext y
@@ -379,17 +379,17 @@ theorem modularThetaC5FixedActionSeamPolynomialReal_pos_of_mem_physicalChamber
   rw [show modularThetaC5FixedActionSeamPolynomialReal ((191 / 10 : ℝ) + y) =
       2214487347729023423585466546267 / 13743895347200000000000 +
         y * (139404590908346178051518476161 / 687194767360000000000) +
-        y ^ 2 * (520266231757268288453249577 / 6871947673600000000) +
-        y ^ 3 * (19514476745470064741023743 / 1374389534720000000) +
-        y ^ 4 * (433287597527691694530507 / 274877906944000000) +
-        y ^ 5 * (3763259996955415498701 / 34359738368000000) +
-        y ^ 6 * (2008074101656444857 / 429496729600000) +
-        y ^ 7 * (7044599770834311 / 68719476736000) -
-        y ^ 8 * (8740226080539 / 27487790694400) -
-        y ^ 9 * (120598295439 / 1374389534720) -
-        y ^ 10 * (835310997 / 343597383680) -
-        y ^ 11 * (2069649 / 68719476736) -
-        y ^ 12 * (9975 / 68719476736) by
+        y ^ (2 : ℕ) * (520266231757268288453249577 / 6871947673600000000) +
+        y ^ (3 : ℕ) * (19514476745470064741023743 / 1374389534720000000) +
+        y ^ (4 : ℕ) * (433287597527691694530507 / 274877906944000000) +
+        y ^ (5 : ℕ) * (3763259996955415498701 / 34359738368000000) +
+        y ^ (6 : ℕ) * (2008074101656444857 / 429496729600000) +
+        y ^ (7 : ℕ) * (7044599770834311 / 68719476736000) -
+        y ^ (8 : ℕ) * (8740226080539 / 27487790694400) -
+        y ^ (9 : ℕ) * (120598295439 / 1374389534720) -
+        y ^ (10 : ℕ) * (835310997 / 343597383680) -
+        y ^ (11 : ℕ) * (2069649 / 68719476736) -
+        y ^ (12 : ℕ) * (9975 / 68719476736) by
       unfold modularThetaC5FixedActionSeamPolynomialReal
       ring]
   nlinarith [hp0 1, hp0 2, hp0 3, hp0 4, hp0 5, hp0 6, hp0 7,

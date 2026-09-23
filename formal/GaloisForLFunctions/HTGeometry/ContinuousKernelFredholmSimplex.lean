@@ -187,11 +187,11 @@ theorem summable_succ_hadamard_majorant (c : ℝ) (hc : 0 ≤ c) :
     Summable (fun n : ℕ =>
       (Real.sqrt (n + 1) * c) ^ (n + 1) / (n.factorial : ℝ)) := by
   have hgeom : Summable (fun n : ℕ =>
-      2 * c * ((n : ℝ) ^ 1 * ((1 : ℝ) / 2) ^ n)) :=
+      2 * c * ((n : ℝ) ^ (1 : ℕ) * ((1 : ℝ) / 2) ^ n)) :=
     (summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) 1
       (by norm_num : ‖(1 : ℝ) / 2‖ < 1)).mul_left (2 * c)
   apply hgeom.of_norm_bounded_eventually_nat
-  obtain ⟨N, hN⟩ := exists_nat_ge ((4 * Real.exp 1 * c) ^ 2)
+  obtain ⟨N, hN⟩ := exists_nat_ge ((4 * Real.exp 1 * c) ^ (2 : ℕ))
   rw [Filter.eventually_atTop]
   refine ⟨max N 1, fun n hnmax => ?_⟩
   have hnN : N ≤ n := le_trans (le_max_left N 1) hnmax
@@ -247,7 +247,7 @@ theorem summable_succ_hadamard_majorant (c : ℝ) (hc : 0 ≤ c) :
       field_simp [hbase.ne']
     _ ≤ 2 * Real.sqrt n * c * ((1 : ℝ) / 2) ^ n := by
       gcongr
-    _ ≤ 2 * c * ((n : ℝ) ^ 1 * ((1 : ℝ) / 2) ^ n) := by
+    _ ≤ 2 * c * ((n : ℝ) ^ (1 : ℕ) * ((1 : ℝ) / 2) ^ n) := by
       have hsqrtn_le : Real.sqrt n ≤ n := by
         rw [Real.sqrt_le_left hnreal.le]
         nlinarith

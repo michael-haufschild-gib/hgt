@@ -759,7 +759,7 @@ theorem matchgateSO_polyDLA_family_dichotomy
         ≤ ‖((R m).basis (j0 m)).gPurity (ρ m)
             * ((R m).basis (j0 m)).gPurity (O m)‖) :
     ¬ HasBarrenPlateau (fun m => (R m).variance)
-      ∧ (∀ m, (((F m).matchgateSOHermBasis.dim : ℝ) ≤ 100 * (((m : ℝ) + 1) ^ 2)))
+      ∧ (∀ m, (((F m).matchgateSOHermBasis.dim : ℝ) ≤ 100 * (((m : ℝ) + 1) ^ (2 : ℕ))))
       ∧ ∀ m (Gs : List (Matrix (Fin (2 ^ (m + 3))) (Fin (2 ^ (m + 3))) ℂ)),
           (∀ A ∈ Gs, A ∈ (dynamicalLieAlgebra (F m).matchgateSOGens).toSubmodule) →
           ((Gs.map NormedSpace.exp).prod * ρ m
@@ -767,7 +767,7 @@ theorem matchgateSO_polyDLA_family_dichotomy
             = ∑ j, hsInner ((F m).matchgateSOHermBasis.B j) (gsimEvolved Gs (O m))
                 * (ρ m * (F m).matchgateSOHermBasis.B j).trace := by
   have hwhole_dim :
-      ∀ m, (((F m).matchgateSOHermBasis.dim : ℝ) ≤ 100 * (((m : ℝ) + 1) ^ 2)) := by
+      ∀ m, (((F m).matchgateSOHermBasis.dim : ℝ) ≤ 100 * (((m : ℝ) + 1) ^ (2 : ℕ))) := by
     intro m
     rw [(F m).matchgateSOHermBasis_dim_closedForm]
     norm_num

@@ -33,7 +33,7 @@ theorem hsTraceDiag_traceZeroImaginaryMicrokernel (a : ℝ) :
   simp [traceZeroImaginaryMicrokernel, traceZeroImaginaryMicroblock]
 
 theorem hsNormSq_traceZeroImaginaryMicrokernel (a : ℝ) :
-    HilbertSchmidt.hsNormSq (traceZeroImaginaryMicrokernel a) = 2 * a ^ 2 := by
+    HilbertSchmidt.hsNormSq (traceZeroImaginaryMicrokernel a) = 2 * a ^ (2 : ℕ) := by
   rw [HilbertSchmidt.hsNormSq, tsum_fintype]
   simp [Fintype.sum_prod_type, Fin.sum_univ_two, traceZeroImaginaryMicrokernel,
     traceZeroImaginaryMicroblock, Complex.norm_real]
@@ -76,13 +76,13 @@ theorem exists_arbitrarilySmall_traceZero_nonrealDivisorMicroblock :
   constructor
   · change HilbertSchmidt.hsNorm (traceZeroImaginaryMicrokernel a) < ε
     rw [HilbertSchmidt.hsNorm, hsNormSq_traceZeroImaginaryMicrokernel]
-    have hsqrt : Real.sqrt (2 * a ^ 2) ≤ 2 * a := by
+    have hsqrt : Real.sqrt (2 * a ^ (2 : ℕ)) ≤ 2 * a := by
       apply (Real.sqrt_le_iff).2
       constructor
       · positivity
       · nlinarith
     calc
-      Real.sqrt (2 * a ^ 2) ≤ 2 * a := hsqrt
+      Real.sqrt (2 * a ^ (2 : ℕ)) ≤ 2 * a := hsqrt
       _ < ε := by dsimp [a]; linarith
   constructor
   · exact traceZeroImaginaryMicroblock_det_zero ha.ne'

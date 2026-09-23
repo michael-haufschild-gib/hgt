@@ -30,21 +30,21 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The two tail ratios are at most one once the sampling scale is large. -/
 theorem wv_tail_ratios_le_one {N : ℕ} {L s K : ℝ} (hs : (100 : ℝ) ≤ s)
-    (hK : K = 3 * Real.log s) (hL : L = s ^ 2 / K)
+    (hK : K = 3 * Real.log s) (hL : L = s ^ (2 : ℕ) / K)
     (hN2 : 2 * s ≤ (N : ℝ)) (hN4 : (N : ℝ) ≤ 4 * s) :
     0 < 1 - Real.exp (-((N : ℝ) / (4 * L)))
       ∧ Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1) / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ≤ 1
       ∧ Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-          / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3 ≤ 1 := by
+          / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ) ≤ 1 := by
   have hs0 : (0 : ℝ) < s := by linarith
   have hlog : Real.log 100 ≤ Real.log s := Real.log_le_log (by norm_num) hs
   have hlog100 : (4 : ℝ) ≤ Real.log 100 := by
     have h := Real.add_one_le_exp (4 : ℝ)
     have he : Real.exp 4 ≤ 100 := by
       have h2 : Real.exp 1 ≤ 2.7182818286 := Real.exp_one_lt_d9.le
-      calc Real.exp 4 = (Real.exp 1) ^ 4 := by
+      calc Real.exp 4 = (Real.exp 1) ^ (4 : ℕ) := by
             rw [← Real.exp_nat_mul]; norm_num
-        _ ≤ (2.7182818286 : ℝ) ^ 4 := by
+        _ ≤ (2.7182818286 : ℝ) ^ (4 : ℕ) := by
             refine pow_le_pow_left₀ (Real.exp_pos 1).le h2 4
         _ ≤ 100 := by norm_num
     have := Real.log_le_log (Real.exp_pos 4) he
@@ -53,7 +53,7 @@ theorem wv_tail_ratios_le_one {N : ℕ} {L s K : ℝ} (hs : (100 : ℝ) ≤ s)
   have hK0 : (0 : ℝ) < K := by linarith
   have hL0 : (0 : ℝ) < L := by rw [hL]; positivity
   set x : ℝ := (N : ℝ) / (4 * L) with hx
-  have hxval : x = (N : ℝ) * K / (4 * s ^ 2) := by
+  have hxval : x = (N : ℝ) * K / (4 * s ^ (2 : ℕ)) := by
     rw [hx, hL]
     field_simp
   have hxlow : K / (2 * s) ≤ x := by
@@ -87,21 +87,21 @@ theorem wv_tail_ratios_le_one {N : ℕ} {L s K : ℝ} (hs : (100 : ℝ) ≤ s)
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [hxK]
   have hden0 : (0 : ℝ) < 1 - Real.exp (-x) := lt_of_lt_of_le (by positivity) hden
-  have hexpK : Real.exp (-K) ≤ 1 / s ^ 3 := by
+  have hexpK : Real.exp (-K) ≤ 1 / s ^ (3 : ℕ) := by
     rw [hK, ← Real.exp_log hs0]
     rw [Real.log_exp]
-    rw [show -(3 * Real.log s) = Real.log (s ^ 3)⁻¹ by
+    rw [show -(3 * Real.log s) = Real.log (s ^ (3 : ℕ))⁻¹ by
       rw [Real.log_inv, Real.log_pow]; push_cast; ring]
     rw [Real.exp_log (by positivity)]
     rw [one_div]
     rw [Real.exp_log hs0]
   have hKs : K ≤ s := by
     set u : ℝ := Real.sqrt s with hu
-    have hu2 : u ^ 2 = s := Real.sq_sqrt hs0.le
+    have hu2 : u ^ (2 : ℕ) = s := Real.sq_sqrt hs0.le
     have hu10 : (10 : ℝ) ≤ u := by
       rw [hu]
       have : Real.sqrt 100 ≤ Real.sqrt s := Real.sqrt_le_sqrt hs
-      rwa [show (100 : ℝ) = 10 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)] at this
+      rwa [show (100 : ℝ) = 10 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)] at this
     have hupos : (0 : ℝ) < u := by linarith
     have hlogu : Real.log u ≤ u - 1 := Real.log_le_sub_one_of_pos hupos
     have hhalf : Real.log s = 2 * Real.log u := by
@@ -115,9 +115,9 @@ theorem wv_tail_ratios_le_one {N : ℕ} {L s K : ℝ} (hs : (100 : ℝ) ≤ s)
     refine le_trans ?_ hden
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [hKs, hK0, hs0]
-  have hs3 : s ≤ s ^ 3 := by nlinarith [hs0, hs]
-  have hK3 : (27 : ℝ) ≤ K ^ 3 := by
-    have h : (12 : ℝ) ^ 3 ≤ K ^ 3 := pow_le_pow_left₀ (by norm_num) hK4 3
+  have hs3 : s ≤ s ^ (3 : ℕ) := by nlinarith [hs0, hs]
+  have hK3 : (27 : ℝ) ≤ K ^ (3 : ℕ) := by
+    have h : (12 : ℝ) ^ (3 : ℕ) ≤ K ^ (3 : ℕ) := pow_le_pow_left₀ (by norm_num) hK4 3
     nlinarith [h]
   refine ⟨hden0, ?_, ?_⟩
   · rw [div_le_one hden0]
@@ -127,7 +127,7 @@ theorem wv_tail_ratios_le_one {N : ℕ} {L s K : ℝ} (hs : (100 : ℝ) ≤ s)
     nlinarith [hK4, hs, hs3, hs0]
   · rw [div_le_one (by positivity)]
     refine le_trans hpow (le_trans hexpK ?_)
-    have hcube : (K / (3 * s)) ^ 3 ≤ (1 - Real.exp (-x)) ^ 3 :=
+    have hcube : (K / (3 * s)) ^ (3 : ℕ) ≤ (1 - Real.exp (-x)) ^ (3 : ℕ) :=
       pow_le_pow_left₀ (by positivity) hdenlow 3
     refine le_trans ?_ hcube
     rw [div_pow, div_le_div_iff₀ (by positivity) (by positivity)]
@@ -137,16 +137,16 @@ set_option maxHeartbeats 2000000 in
 /-- **The explicit Wiman--Valiron right-hand side, at a small window.**  With the sampling scale
 tied to the spread by `K = 3 log s`, the bound collapses to `s^{3/2}` times a logarithmic ratio. -/
 theorem wv_rhs_le {N : ℕ} {L h s K nu : ℝ} (hs : (100 : ℝ) ≤ s)
-    (hK : K = 3 * Real.log s) (hL : L = s ^ 2 / K) (hh : h = K / s)
+    (hK : K = 3 * Real.log s) (hL : L = s ^ (2 : ℕ) / K) (hh : h = K / s)
     (hN2 : 2 * s ≤ (N : ℝ)) (hN4 : (N : ℝ) ≤ 4 * s) (hnu : 0 ≤ nu) :
     (Real.sqrt (2 * (N : ℝ) + 1)
         + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
             / (1 - Real.exp (-((N : ℝ) / (4 * L))))))
         * (2 * L * h
           + 2 * Real.log (nu + 2 * L * h + 1 + 1 / (Real.exp h - 1)) / h)
-      + Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-            + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-                / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3))
+      + Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+            + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+                / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ)))
           * (Real.sqrt (2 * (N : ℝ) + 1)
             + 2 * (Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
                 / (1 - Real.exp (-((N : ℝ) / (4 * L)))))))
@@ -154,19 +154,19 @@ theorem wv_rhs_le {N : ℕ} {L h s K nu : ℝ} (hs : (100 : ℝ) ≤ s)
   obtain ⟨hden0, hQ1, hQ3⟩ := wv_tail_ratios_le_one hs hK hL hN2 hN4
   have hs0 : (0 : ℝ) < s := by linarith
   set u : ℝ := Real.sqrt s with hu
-  have hu2 : u ^ 2 = s := Real.sq_sqrt hs0.le
+  have hu2 : u ^ (2 : ℕ) = s := Real.sq_sqrt hs0.le
   have hu10 : (10 : ℝ) ≤ u := by
     rw [hu]
     have h := Real.sqrt_le_sqrt hs
-    rwa [show (100 : ℝ) = 10 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)] at h
+    rwa [show (100 : ℝ) = 10 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)] at h
   have hupos : (0 : ℝ) < u := by linarith
   have hlogs : (4 : ℝ) ≤ Real.log s := by
     have hlog : Real.log 100 ≤ Real.log s := Real.log_le_log (by norm_num) hs
     have hlog100 : (4 : ℝ) ≤ Real.log 100 := by
       have he : Real.exp 4 ≤ 100 := by
         have h2 : Real.exp 1 ≤ 2.7182818286 := Real.exp_one_lt_d9.le
-        calc Real.exp 4 = (Real.exp 1) ^ 4 := by rw [← Real.exp_nat_mul]; norm_num
-          _ ≤ (2.7182818286 : ℝ) ^ 4 := pow_le_pow_left₀ (Real.exp_pos 1).le h2 4
+        calc Real.exp 4 = (Real.exp 1) ^ (4 : ℕ) := by rw [← Real.exp_nat_mul]; norm_num
+          _ ≤ (2.7182818286 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ (Real.exp_pos 1).le h2 4
           _ ≤ 100 := by norm_num
       have := Real.log_le_log (Real.exp_pos 4) he
       rwa [Real.log_exp] at this
@@ -176,7 +176,7 @@ theorem wv_rhs_le {N : ℕ} {L h s K nu : ℝ} (hs : (100 : ℝ) ≤ s)
   set Q₁ : ℝ := Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
     / (1 - Real.exp (-((N : ℝ) / (4 * L)))) with hQ1def
   set Q₃ : ℝ := Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-    / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3 with hQ3def
+    / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ) with hQ3def
   have hQ1nn : 0 ≤ Q₁ := by rw [hQ1def]; positivity
   have hQ3nn : 0 ≤ Q₃ := by
     rw [hQ3def]
@@ -187,7 +187,7 @@ theorem wv_rhs_le {N : ℕ} {L h s K nu : ℝ} (hs : (100 : ℝ) ≤ s)
     calc Real.sqrt (2 * (N : ℝ) + 1) ≤ Real.sqrt (9 * s) := Real.sqrt_le_sqrt hle
       _ = 3 * u := by
           rw [Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 9), hu,
-            show (9 : ℝ) = 3 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]
+            show (9 : ℝ) = 3 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]
   have hrootnn : (0 : ℝ) ≤ Real.sqrt (2 * (N : ℝ) + 1) := Real.sqrt_nonneg _
   have hA : Real.sqrt (2 * (N : ℝ) + 1) + 2 * Q₁ ≤ 3.2 * u := by nlinarith [hroot, hQ1, hu10]
   have hAnn : (0 : ℝ) ≤ Real.sqrt (2 * (N : ℝ) + 1) + 2 * Q₁ := by linarith
@@ -249,46 +249,46 @@ theorem wv_rhs_le {N : ℕ} {L h s K nu : ℝ} (hs : (100 : ℝ) ≤ s)
       ≤ (3.2 * u) * (2 * s + (2 / 3) * s * (Real.log (nu + 4 * s) / Real.log s)) :=
     mul_le_mul hA hB hLHSnn (by linarith)
   -- the second term
-  have hC₂ : (N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-      + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Q₃) ≤ 55 * (s * s * u) := by
-    have h1 : (N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1) ≤ (4 * s) ^ 2 * (3 * u) := by
+  have hC₂ : (N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+      + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Q₃) ≤ 55 * (s * s * u) := by
+    have h1 : (N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1) ≤ (4 * s) ^ (2 : ℕ) * (3 * u) := by
       refine mul_le_mul ?_ hroot hrootnn (by positivity)
       nlinarith [hN4, hs0, Nat.cast_nonneg (α := ℝ) N]
-    have h2 : 2 * (2 * ((N : ℝ) + 1) ^ 2 * Q₃) ≤ 4 * (4 * s + 1) ^ 2 := by
-      have hsq : ((N : ℝ) + 1) ^ 2 ≤ (4 * s + 1) ^ 2 := by
+    have h2 : 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Q₃) ≤ 4 * (4 * s + 1) ^ (2 : ℕ) := by
+      have hsq : ((N : ℝ) + 1) ^ (2 : ℕ) ≤ (4 * s + 1) ^ (2 : ℕ) := by
         refine pow_le_pow_left₀ (by positivity) (by linarith) 2
       nlinarith [hQ3, hQ3nn, hsq]
-    have h3 : 4 * (4 * s + 1) ^ 2 ≤ 7 * (s * s * u) := by nlinarith [hs, hu10, hu2, hs0]
-    have h4 : (4 * s) ^ 2 * (3 * u) = 48 * (s * s * u) := by ring
+    have h3 : 4 * (4 * s + 1) ^ (2 : ℕ) ≤ 7 * (s * s * u) := by nlinarith [hs, hu10, hu2, hs0]
+    have h4 : (4 * s) ^ (2 : ℕ) * (3 * u) = 48 * (s * s * u) := by ring
     linarith
-  have hC₂nn : (0 : ℝ) ≤ (N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-      + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Q₃) := by positivity
-  have hsecond : Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-        + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Q₃))
+  have hC₂nn : (0 : ℝ) ≤ (N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+      + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Q₃) := by positivity
+  have hsecond : Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+        + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Q₃))
       * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * Q₁)) ≤ 21 * (s * u) := by
-    have hprod : 2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-          + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Q₃))
-        * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * Q₁) ≤ (21 * (s * u)) ^ 2 := by
-      have hstep : 2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-            + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Q₃))
+    have hprod : 2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+          + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Q₃))
+        * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * Q₁) ≤ (21 * (s * u)) ^ (2 : ℕ) := by
+      have hstep : 2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+            + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Q₃))
           * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * Q₁)
           ≤ 2 * (55 * (s * s * u)) * (3.2 * u) :=
         mul_le_mul (by linarith [hC₂]) hA hAnn (by positivity)
-      have hcalc : 2 * (55 * (s * s * u)) * (3.2 * u) = 352 * (s * s * u ^ 2) := by ring
-      have hval : 352 * (s * s * u ^ 2) = 352 * (s * s * s) := by rw [hu2]
-      have hgoal : (21 * (s * u)) ^ 2 = 441 * (s * s * u ^ 2) := by ring
+      have hcalc : 2 * (55 * (s * s * u)) * (3.2 * u) = 352 * (s * s * u ^ (2 : ℕ)) := by ring
+      have hval : 352 * (s * s * u ^ (2 : ℕ)) = 352 * (s * s * s) := by rw [hu2]
+      have hgoal : (21 * (s * u)) ^ (2 : ℕ) = 441 * (s * s * u ^ (2 : ℕ)) := by ring
       rw [hgoal, hu2]
       have hsss : (0 : ℝ) ≤ s * s * s := by positivity
       linarith [hstep, hcalc, hval, hsss]
-    calc Real.sqrt (2 * ((N : ℝ) ^ 2 * Real.sqrt (2 * (N : ℝ) + 1)
-            + 2 * (2 * ((N : ℝ) + 1) ^ 2 * Q₃))
+    calc Real.sqrt (2 * ((N : ℝ) ^ (2 : ℕ) * Real.sqrt (2 * (N : ℝ) + 1)
+            + 2 * (2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Q₃))
           * (Real.sqrt (2 * (N : ℝ) + 1) + 2 * Q₁))
-        ≤ Real.sqrt ((21 * (s * u)) ^ 2) := Real.sqrt_le_sqrt hprod
+        ≤ Real.sqrt ((21 * (s * u)) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hprod
       _ = 21 * (s * u) := Real.sqrt_sq (by positivity)
   -- assemble
   have hsu : s * Real.sqrt s = s * u := by rw [hu]
-  have hgoalrw : 2 * ((N : ℝ) + 1) ^ 2 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
-      / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ 3 = 2 * ((N : ℝ) + 1) ^ 2 * Q₃ := by
+  have hgoalrw : 2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1)
+      / (1 - Real.exp (-((N : ℝ) / (4 * L)))) ^ (3 : ℕ) = 2 * ((N : ℝ) + 1) ^ (2 : ℕ) * Q₃ := by
     rw [hQ3def]
     ring
   rw [hsu, hgoalrw]
@@ -323,8 +323,8 @@ theorem exists_radius_point_wiman_valiron_small_window
     have hlog100 : (4 : ℝ) ≤ Real.log 100 := by
       have he : Real.exp 4 ≤ 100 := by
         have h2 : Real.exp 1 ≤ 2.7182818286 := Real.exp_one_lt_d9.le
-        calc Real.exp 4 = (Real.exp 1) ^ 4 := by rw [← Real.exp_nat_mul]; norm_num
-          _ ≤ (2.7182818286 : ℝ) ^ 4 := pow_le_pow_left₀ (Real.exp_pos 1).le h2 4
+        calc Real.exp 4 = (Real.exp 1) ^ (4 : ℕ) := by rw [← Real.exp_nat_mul]; norm_num
+          _ ≤ (2.7182818286 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ (Real.exp_pos 1).le h2 4
           _ ≤ 100 := by norm_num
       have := Real.log_le_log (Real.exp_pos 4) he
       rwa [Real.log_exp] at this
@@ -342,7 +342,7 @@ theorem exists_radius_point_wiman_valiron_small_window
   obtain ⟨x, hx, z, hz, hfz, hbound⟩ :=
     exists_radius_point_wiman_valiron_bound ha hn₀ hcd hH hs0 rfl rfl hsmall hN2 hN4
   refine ⟨x, hx, z, hz, hfz, le_trans hbound ?_⟩
-  have hL : 2 * s / H = s ^ 2 / K := by
+  have hL : 2 * s / H = s ^ (2 : ℕ) / K := by
     rw [hHdef]
     field_simp
   have hh : H / 2 = K / s := by

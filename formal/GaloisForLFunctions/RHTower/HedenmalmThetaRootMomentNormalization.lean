@@ -39,7 +39,7 @@ theorem quantileTransform_sourceModeF_eq_rootG {z : ℂ} {t : ℝ}
     exact_mod_cast (thetaSource.pos_k _).ne'
   push_cast
   field_simp
-  rw [show Complex.I ^ 2 = -1 by rw [pow_two, Complex.I_mul_I]]
+  rw [show Complex.I ^ (2 : ℕ) = -1 by rw [pow_two, Complex.I_mul_I]]
   ring
 
 /-- **Canonical monopole.**  Every theta-source divisor root mode has total quantile mass one. -/
@@ -220,12 +220,12 @@ theorem integral_centered_rootG_thetaSource_eq_neg_rootH {z : ℂ}
       intervalIntegral.integral_of_le (by linarith [interiorSeq_le_half n])] at h
     exact h
   have hsqL : Tendsto
-      (fun n : ℕ => ‖rootH thetaSource z (interiorSeq n)‖ ^ 2) atTop (𝓝 0) := by
+      (fun n : ℕ => ‖rootH thetaSource z (interiorSeq n)‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     refine he.tendstoLeft.comp ?_
     exact tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ tendsto_interiorSeq
       (Filter.Eventually.of_forall fun n => interiorSeq_pos n)
   have hsqR : Tendsto
-      (fun n : ℕ => ‖rootH thetaSource z (1 - interiorSeq n)‖ ^ 2) atTop (𝓝 0) := by
+      (fun n : ℕ => ‖rootH thetaSource z (1 - interiorSeq n)‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     refine he.tendstoRight.comp ?_
     refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_
       (Filter.Eventually.of_forall fun n => by
@@ -293,7 +293,7 @@ theorem rootBoundaryMomentPairing_thetaSource {z : ℂ}
     let c := (∫ t in Ioo (0 : ℝ) 1,
       (((t : ℝ) : ℂ) - 1 / 2) * rootG thetaSource z t)
     let e : ℝ := (∫ t in Ioo (0 : ℝ) 1,
-      quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ 2)
+      quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ (2 : ℕ))
     0 - ((starRingEnd ℂ) m * c + (starRingEnd ℂ) c * m) =
       Complex.ofReal (2 * z.im * e) := by
   dsimp only

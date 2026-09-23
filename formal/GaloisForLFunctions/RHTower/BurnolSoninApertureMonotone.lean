@@ -51,7 +51,7 @@ theorem burnolExtendedSoninEvaluationVector_eq_zero_iff
     set k := burnolExtendedSoninEvaluationVector w a hlo hhi ha with hk
     have hkk := h k
     rw [← inner_burnolExtendedSoninEvaluationVector w a hlo hhi ha] at hkk
-    have hself : ‖(inner ℂ k k : ℂ)‖ = ‖k‖ ^ 2 := by
+    have hself : ‖(inner ℂ k k : ℂ)‖ = ‖k‖ ^ (2 : ℕ) := by
       rw [inner_self_eq_norm_sq_to_K, norm_pow, RCLike.norm_ofReal,
         abs_of_nonneg (norm_nonneg k)]
     rw [hkk, norm_zero] at hself

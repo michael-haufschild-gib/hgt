@@ -41,7 +41,7 @@ namespace RHTower
 /-! ## The three block types -/
 
 /-- Critical orbit block: `2|Ĥ(iγ)|²` in the real and imaginary parts of `Ĥ(iγ)`. -/
-def criticalBlock (X Y : ℝ) : ℝ := 2 * (X ^ 2 + Y ^ 2)
+def criticalBlock (X Y : ℝ) : ℝ := 2 * (X ^ (2 : ℕ) + Y ^ (2 : ℕ))
 
 /-- Real orbit block: the hyperbolic form `2XY` in `X = Ĥ(a)`, `Y = Ĥ(-a)`. -/
 def realBlock (X Y : ℝ) : ℝ := 2 * X * Y
@@ -59,7 +59,7 @@ theorem criticalBlock_nonneg (X Y : ℝ) : 0 ≤ criticalBlock X Y := by
 
 /-- Diagonalization of the hyperbolic block. -/
 theorem realBlock_diagonalize (X Y : ℝ) :
-    realBlock X Y = ((X + Y) ^ 2 - (X - Y) ^ 2) / 2 := by
+    realBlock X Y = ((X + Y) ^ (2 : ℕ) - (X - Y) ^ (2 : ℕ)) / 2 := by
   unfold realBlock; ring
 
 /-- The hyperbolic block is positive semidefinite on the explicit half-dimensional subspace
@@ -72,7 +72,7 @@ theorem realBlock_nonneg_on_diag (X : ℝ) : 0 ≤ realBlock X X := by
 negative index is exactly one: a real orbit costs one unit. -/
 theorem realBlock_neg_on_antidiag {X : ℝ} (hX : X ≠ 0) : realBlock X (-X) < 0 := by
   unfold realBlock
-  have : 0 < X ^ 2 := by positivity
+  have : 0 < X ^ (2 : ℕ) := by positivity
   nlinarith
 
 /-! ## Generic orbits: signature `(2,2)` -/
@@ -80,7 +80,7 @@ theorem realBlock_neg_on_antidiag {X : ℝ} (hX : X ≠ 0) : realBlock X (-X) < 
 /-- Diagonalization of the generic block into two hyperbolic pairs. -/
 theorem genericBlock_diagonalize (Z₁ Z₂ W₁ W₂ : ℝ) :
     genericBlock Z₁ Z₂ W₁ W₂
-      = ((Z₁ + W₁) ^ 2 - (Z₁ - W₁) ^ 2) - ((Z₂ + W₂) ^ 2 - (Z₂ - W₂) ^ 2) := by
+      = ((Z₁ + W₁) ^ (2 : ℕ) - (Z₁ - W₁) ^ (2 : ℕ)) - ((Z₂ + W₂) ^ (2 : ℕ) - (Z₂ - W₂) ^ (2 : ℕ)) := by
   unfold genericBlock; ring
 
 /-- The generic block is positive semidefinite on the explicit half-dimensional subspace
@@ -88,7 +88,7 @@ theorem genericBlock_diagonalize (Z₁ Z₂ W₁ W₂ : ℝ) :
 theorem genericBlock_nonneg_on_reflected (Z₁ Z₂ : ℝ) :
     0 ≤ genericBlock Z₁ Z₂ Z₁ (-Z₂) := by
   unfold genericBlock
-  have h : Z₁ * Z₁ - Z₂ * -Z₂ = Z₁ ^ 2 + Z₂ ^ 2 := by ring
+  have h : Z₁ * Z₁ - Z₂ * -Z₂ = Z₁ ^ (2 : ℕ) + Z₂ ^ (2 : ℕ) := by ring
   rw [h]
   positivity
 
@@ -98,11 +98,11 @@ units. -/
 theorem genericBlock_neg_on_antireflected {Z₁ Z₂ : ℝ} (h : Z₁ ≠ 0 ∨ Z₂ ≠ 0) :
     genericBlock Z₁ Z₂ (-Z₁) Z₂ < 0 := by
   unfold genericBlock
-  have hpos : 0 < Z₁ ^ 2 + Z₂ ^ 2 := by
+  have hpos : 0 < Z₁ ^ (2 : ℕ) + Z₂ ^ (2 : ℕ) := by
     rcases h with h | h
-    · have : 0 < Z₁ ^ 2 := by positivity
+    · have : 0 < Z₁ ^ (2 : ℕ) := by positivity
       nlinarith [sq_nonneg Z₂]
-    · have : 0 < Z₂ ^ 2 := by positivity
+    · have : 0 < Z₂ ^ (2 : ℕ) := by positivity
       nlinarith [sq_nonneg Z₁]
   nlinarith [hpos]
 

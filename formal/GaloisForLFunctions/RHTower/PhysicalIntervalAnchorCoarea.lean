@@ -515,7 +515,7 @@ theorem physWeight_two_lt_three : physWeight 2 < physWeight 3 := by
   rw [e8, e9] at h8
   linarith
 
-/-- `2 log 3 / 3 < 3 log 2 / 2`, equivalently `3^4 < 2^9`. -/
+/-- `2 log 3 / 3 < 3 log 2 / 2`, equivalently `3^(4 : ℕ) < 2^(9 : ℕ)`. -/
 theorem two_physWeight_three_lt_three_physWeight_two :
     2 * physWeight 3 < 3 * physWeight 2 := by
   have h : Real.log 81 < Real.log 512 := Real.log_lt_log (by norm_num) (by norm_num)

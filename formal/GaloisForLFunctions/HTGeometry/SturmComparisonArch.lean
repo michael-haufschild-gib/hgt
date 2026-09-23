@@ -25,7 +25,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- **Sturm comparison on a short arch.** -/
 theorem exists_sturm_neg {g gd gdd h : ℝ → ℝ} {γ p q : ℝ} (hγ : 0 < γ)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
-    (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
+    (hh : ∀ t, h t = gdd t + γ ^ (2 : ℕ) * g t)
     (hpq : p < q) (hlen : q - p < π / γ)
     (hgp : g p = 0) (hgq : g q = 0) (hpos : ∀ t ∈ Ioo p q, 0 < g t) :
     ∃ ξ ∈ Ioo p q, h ξ < 0 := by
@@ -42,7 +42,7 @@ theorem exists_sturm_neg {g gd gdd h : ℝ → ℝ} {γ p q : ℝ} (hγ : 0 < γ
     refine ((hin t).sin).congr_deriv ?_
     rw [hwd]
     ring
-  have hwdderiv : ∀ t, HasDerivAt wd (-(γ ^ 2) * w t) t := by
+  have hwdderiv : ∀ t, HasDerivAt wd (-(γ ^ (2 : ℕ)) * w t) t := by
     intro t
     refine (((hin t).cos).const_mul γ).congr_deriv ?_
     rw [hw]
@@ -122,12 +122,12 @@ theorem exists_sturm_neg {g gd gdd h : ℝ → ℝ} {γ p q : ℝ} (hγ : 0 < γ
     have huniq := (hφderiv t).unique h0
     exact (mul_eq_zero.mp huniq).resolve_right (ne_of_gt (hwpos t ⟨ht.1, le_of_lt ht.2⟩))
   -- the energy is constant and vanishes
-  set E : ℝ → ℝ := fun t => gd t ^ 2 + γ ^ 2 * g t ^ 2 with hE
+  set E : ℝ → ℝ := fun t => gd t ^ (2 : ℕ) + γ ^ (2 : ℕ) * g t ^ (2 : ℕ) with hE
   have hEderiv : ∀ t, HasDerivAt E (2 * gd t * h t) t := by
     intro t
-    have h1 : HasDerivAt (fun s => gd s ^ 2) (2 * gd t ^ 1 * gdd t) t := (hgd t).pow 2
-    have h2 : HasDerivAt (fun s => γ ^ 2 * g s ^ 2) (γ ^ 2 * (2 * g t ^ 1 * gd t)) t :=
-      ((hg t).pow 2).const_mul (γ ^ 2)
+    have h1 : HasDerivAt (fun s => gd s ^ (2 : ℕ)) (2 * gd t ^ (1 : ℕ) * gdd t) t := (hgd t).pow 2
+    have h2 : HasDerivAt (fun s => γ ^ (2 : ℕ) * g s ^ (2 : ℕ)) (γ ^ (2 : ℕ) * (2 * g t ^ (1 : ℕ) * gd t)) t :=
+      ((hg t).pow 2).const_mul (γ ^ (2 : ℕ))
     refine (h1.add h2).congr_deriv ?_
     rw [hh]
     ring
@@ -148,7 +148,7 @@ theorem exists_sturm_neg {g gd gdd h : ℝ → ℝ} {γ p q : ℝ} (hγ : 0 < γ
     rw [(hEderiv t).deriv, hhzero t ht]
     simp
   have hEq : E q = 0 := by
-    show gd q ^ 2 + γ ^ 2 * g q ^ 2 = 0
+    show gd q ^ (2 : ℕ) + γ ^ (2 : ℕ) * g q ^ (2 : ℕ) = 0
     rw [hgq, hgdqz]
     ring
   have hmid : (p + q) / 2 ∈ Ioo p q := ⟨by linarith, by linarith⟩
@@ -157,8 +157,8 @@ theorem exists_sturm_neg {g gd gdd h : ℝ → ℝ} {γ p q : ℝ} (hγ : 0 < γ
   rw [hEq] at h1 h2
   have hEmid : E ((p + q) / 2) = 0 := le_antisymm h1 h2
   have hgmid : 0 < g ((p + q) / 2) := hpos _ hmid
-  have hEmid' : gd ((p + q) / 2) ^ 2 + γ ^ 2 * g ((p + q) / 2) ^ 2 = 0 := hEmid
-  have hpos1 : 0 < γ ^ 2 * g ((p + q) / 2) ^ 2 :=
+  have hEmid' : gd ((p + q) / 2) ^ (2 : ℕ) + γ ^ (2 : ℕ) * g ((p + q) / 2) ^ (2 : ℕ) = 0 := hEmid
+  have hpos1 : 0 < γ ^ (2 : ℕ) * g ((p + q) / 2) ^ (2 : ℕ) :=
     mul_pos (pow_pos hγ 2) (pow_pos hgmid 2)
   linarith [sq_nonneg (gd ((p + q) / 2))]
 
@@ -166,7 +166,7 @@ theorem exists_sturm_neg {g gd gdd h : ℝ → ℝ} {γ p q : ℝ} (hγ : 0 < γ
 /-- The mirrored statement for a negative arch. -/
 theorem exists_sturm_pos {g gd gdd h : ℝ → ℝ} {γ p q : ℝ} (hγ : 0 < γ)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
-    (hh : ∀ t, h t = gdd t + γ ^ 2 * g t)
+    (hh : ∀ t, h t = gdd t + γ ^ (2 : ℕ) * g t)
     (hpq : p < q) (hlen : q - p < π / γ)
     (hgp : g p = 0) (hgq : g q = 0) (hneg : ∀ t ∈ Ioo p q, g t < 0) :
     ∃ ξ ∈ Ioo p q, 0 < h ξ := by
@@ -181,7 +181,7 @@ theorem exists_sturm_pos {g gd gdd h : ℝ → ℝ} {γ p q : ℝ} (hγ : 0 < γ
 opposite sign, each shorter than `π/γ`, force `g'' + γ² g` to change sign, hence to vanish. -/
 theorem exists_sturm_zero {g gd gdd h : ℝ → ℝ} {γ p q s : ℝ} (hγ : 0 < γ)
     (hg : ∀ t, HasDerivAt g (gd t) t) (hgd : ∀ t, HasDerivAt gd (gdd t) t)
-    (hh : ∀ t, h t = gdd t + γ ^ 2 * g t) (hhcont : Continuous h)
+    (hh : ∀ t, h t = gdd t + γ ^ (2 : ℕ) * g t) (hhcont : Continuous h)
     (hpq : p < q) (hqs : q < s)
     (hlen1 : q - p < π / γ) (hlen2 : s - q < π / γ)
     (hgp : g p = 0) (hgq : g q = 0) (hgs : g s = 0)

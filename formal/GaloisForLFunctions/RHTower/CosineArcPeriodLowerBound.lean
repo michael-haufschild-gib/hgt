@@ -260,13 +260,13 @@ theorem integral_indicator_cos_period_nonneg {lam : ℝ} (hlam : 0 < lam) {E : S
   · rw [Set.indicator_of_mem hEu]
     have h := houter u hu hEu
     -- `cos(λu) = 2cos²(λu/2) − 1 ≥ 0`
-    have hsq : (Real.sqrt 2 / 2) ^ 2 ≤ Real.cos (lam * u / 2) ^ 2 := by
-      calc (Real.sqrt 2 / 2) ^ 2 ≤ |Real.cos (lam * u / 2)| ^ 2 :=
+    have hsq : (Real.sqrt 2 / 2) ^ (2 : ℕ) ≤ Real.cos (lam * u / 2) ^ (2 : ℕ) := by
+      calc (Real.sqrt 2 / 2) ^ (2 : ℕ) ≤ |Real.cos (lam * u / 2)| ^ (2 : ℕ) :=
             pow_le_pow_left₀ (by positivity) h 2
-        _ = Real.cos (lam * u / 2) ^ 2 := sq_abs _
-    have h2 : (Real.sqrt 2 / 2) ^ 2 = 1 / 2 := by
+        _ = Real.cos (lam * u / 2) ^ (2 : ℕ) := sq_abs _
+    have h2 : (Real.sqrt 2 / 2) ^ (2 : ℕ) = 1 / 2 := by
       rw [div_pow, Real.sq_sqrt (by norm_num)]; norm_num
-    have hc : Real.cos (lam * u) = 2 * Real.cos (lam * u / 2) ^ 2 - 1 := by
+    have hc : Real.cos (lam * u) = 2 * Real.cos (lam * u / 2) ^ (2 : ℕ) - 1 := by
       rw [Real.cos_sq]
       rw [show 2 * (lam * u / 2) = lam * u by ring]; ring
     rw [hc]; linarith

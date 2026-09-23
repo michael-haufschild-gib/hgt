@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.CompactFourierIntegrableEntire
 # Suzuki, Lemma 3.2: definiteness of the norm
 
 Masatoshi Suzuki, arXiv:2301.00421v3, Lemma 3.2 (`lem_301`): eq. (3.9),
-`‖psi‖_0 = pi^{-1/2} ‖Phat_{D psi}‖_{L^2}`, defines a norm on the test space.  Homogeneity and the
+`‖psi‖_0 = pi^{-1/2} ‖Phat_{D psi}‖_{L^(2 : ℕ)}`, defines a norm on the test space.  Homogeneity and the
 triangle inequality are formal consequences of linearity of `Phat_D`; the content is definiteness,
 proved here as `eq_zero_of_suzukiPHat_D_ae_zero`.
 

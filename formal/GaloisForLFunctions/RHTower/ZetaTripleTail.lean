@@ -91,7 +91,7 @@ theorem exists_isHalfPlaneHardy_zetaTriple {ρ₁ ρ₂ ρ : ℂ} {l m₁ m₂ m
     (hb₂ : (if ρ = ρ₂ then (l : ℤ) else 0) + 1 + (if ρ₁ = ρ₂ then 1 else 0) ≤ (m₂ : ℤ)) :
     ∃ (K : ℂ → ℂ) (M : ℝ), IsHalfPlaneHardy K M ∧
       ∀ w : ℂ, w ≠ -(1 / 2) → w ≠ ρ - 1 / 2 → w ≠ ρ₁ - 1 / 2 → w ≠ ρ₂ - 1 / 2 →
-        K w = (w + 1 / 2) ^ 3 * zetaShiftCoreNF w
+        K w = (w + 1 / 2) ^ (3 : ℕ) * zetaShiftCoreNF w
           / ((w - (ρ₁ - 1 / 2)) * ((w - (ρ₂ - 1 / 2)) * (w - (ρ - 1 / 2)) ^ l)) := by
   classical
   obtain ⟨MC, hMC⟩ := isHalfPlaneHardy_zetaShiftCoreNF

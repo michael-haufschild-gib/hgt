@@ -128,7 +128,7 @@ theorem xiNatHeightAdaptiveLinearQuadraticCensus_of_riemannHypothesis
     XiNatHeightAdaptiveLinearQuadraticCensus C := by
   intro n _hn
   obtain ⟨k, hk⟩ := exists_nat_two_pow_gt_real
-    ((C * (1 + ((n : ℝ) + 2)) * Real.log (2 + ((n : ℝ) + 2))) ^ 2)
+    ((C * (1 + ((n : ℝ) + 2)) * Real.log (2 + ((n : ℝ) + 2))) ^ (2 : ℕ))
   have hsum : boxOrderSum (n : ℝ) = 0 :=
     (boxOrderSum_eq_zero_iff_boxZeros_empty _).2
       ((rh_iff_forall_boxZeros_empty.mp hRH) _)

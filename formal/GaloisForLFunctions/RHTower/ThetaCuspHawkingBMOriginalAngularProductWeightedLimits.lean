@@ -7,7 +7,7 @@ noncomputable section
 set_option autoImplicit false
 
 private theorem collar_exp_le_metric (L : ℝ) (hL : 0 < L) :
-    Real.exp (-L) ≤ (tortoiseRadius (-L/2))^2-1 := by
+    Real.exp (-L) ≤ (tortoiseRadius (-L/2))^(2 : ℕ)-1 := by
   let R := tortoiseRadius (-L/2)
   have hR : 1 < R := tortoiseRadius_exterior (-L/2) (by linarith)
   have hR0 : R ≠ 0 := by linarith
@@ -19,10 +19,10 @@ private theorem collar_exp_le_metric (L : ℝ) (hL : 0 < L) :
     field_simp [hR0] at hh
     nlinarith
   calc
-    _ ≤ Real.exp (-L)*(R+1)^2 :=
+    _ ≤ Real.exp (-L)*(R+1)^(2 : ℕ) :=
       le_mul_of_one_le_right (Real.exp_nonneg _) (by nlinarith)
     _ = (Real.exp (-L)*(R+1))*(R+1) := by ring
-    _ = R^2-1 := by rw [← he]; ring
+    _ = R^(2 : ℕ)-1 := by rw [← he]; ring
 
 private theorem iterated_period_norm_le {f : ℝ → ℝ → ℂ} {C T : ℝ}
     (hC : 0 ≤ C) (hT : 0 ≤ T)
@@ -57,7 +57,7 @@ theorem metric_angular_product_weighted_period_joint_limit
           ((∫ p in (0:ℝ)..(T z:ℝ),Complex.exp (-w*(p:ℂ))*
             (angularProduct q br amp w j d p z.1 x z.2-
               horizonAngularProduct q br amp w j d p x z.2))/
-            ((tortoiseRadius (-z.1/2):ℂ)^2-1)))
+            ((tortoiseRadius (-z.1/2):ℂ)^(2 : ℕ)-1)))
         ((atTop : Filter ℝ) ×ˢ (atTop : Filter ℝ)) (𝓝 0) := by
   obtain ⟨N,hN⟩ := exists_nat_gt a
   obtain ⟨G,hG,h⟩ := metric_angular_product_time_error q br amp j d N
@@ -77,7 +77,7 @@ theorem metric_angular_product_weighted_period_joint_limit
         ((∫ p in (0:ℝ)..(T z:ℝ),Complex.exp (-w*(p:ℂ))*
           (angularProduct q br amp w j d p z.1 x z.2-
             horizonAngularProduct q br amp w j d p x z.2))/
-          ((tortoiseRadius (-z.1/2):ℂ)^2-1))‖ ≤
+          ((tortoiseRadius (-z.1/2):ℂ)^(2 : ℕ)-1))‖ ≤
         B*Real.exp ((a-(N:ℝ))*z.2) := by
     rw [norm_mul,Complex.norm_exp]
     simp only [Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
@@ -104,7 +104,7 @@ theorem metric_angular_product_weighted_time_period_joint_limit
         ((∫ p in (0:ℝ)..(T z:ℝ), ∫ x in (-1/2:ℝ)..1/2,
           Complex.exp (-w*(p:ℂ))*(angularProduct q br amp w j d p z.1 x z.2-
             horizonAngularProduct q br amp w j d p x z.2))/
-          ((tortoiseRadius (-z.1/2):ℂ)^2-1)))
+          ((tortoiseRadius (-z.1/2):ℂ)^(2 : ℕ)-1)))
         ((atTop : Filter ℝ) ×ˢ (atTop : Filter ℝ)) (𝓝 0) := by
   obtain ⟨N,hN⟩ := exists_nat_gt a
   obtain ⟨G,hG,h⟩ := original_angular_product_error q br amp j d N
@@ -124,13 +124,13 @@ theorem metric_angular_product_weighted_time_period_joint_limit
   let S := Real.exp (-z.1)+Real.exp (-w.re*z.1)
   let C := B*S*Real.exp (-(N:ℝ)*z.2)
   have hR : 1 < R := tortoiseRadius_exterior (-z.1/2) (by linarith)
-  have hf : 0 < R^2-1 := by nlinarith
-  have hgeo : Real.exp (-z.1) ≤ R^2-1 := collar_exp_le_metric z.1 hz.1.2
+  have hf : 0 < R^(2 : ℕ)-1 := by nlinarith
+  have hgeo : Real.exp (-z.1) ≤ R^(2 : ℕ)-1 := collar_exp_le_metric z.1 hz.1.2
   have hdec : Real.exp (-w.re*z.1) ≤ Real.exp (-z.1) := by
     apply Real.exp_le_exp.mpr
     have hw1 : 1≤w.re := by linarith
     nlinarith
-  have hS : S ≤ 2*(R^2-1) := by dsimp [S]; linarith
+  have hS : S ≤ 2*(R^(2 : ℕ)-1) := by dsimp [S]; linarith
   have hC : 0 ≤ C := by dsimp [C,S]; positivity
   have ht : ‖∫ p in (0:ℝ)..(T z:ℝ), ∫ x in (-1/2:ℝ)..1/2,
       Complex.exp (-w*(p:ℂ))*(angularProduct q br amp w j d p z.1 x z.2-
@@ -138,7 +138,7 @@ theorem metric_angular_product_weighted_time_period_joint_limit
     apply iterated_period_norm_le hC (T z).property
     intro p hp x
     simpa only [C,S,mul_assoc] using hz.1.1 p x z.2 hp.1 hz.2
-  have hn : ‖(R:ℂ)^2-1‖=R^2-1 := by
+  have hn : ‖(R:ℂ)^(2 : ℕ)-1‖=R^(2 : ℕ)-1 := by
     rw [← Complex.ofReal_pow,← Complex.ofReal_one,← Complex.ofReal_sub,
       Complex.norm_real,Real.norm_eq_abs,abs_of_pos hf]
   rw [norm_mul,Complex.norm_exp,norm_div,hn]
@@ -148,18 +148,18 @@ theorem metric_angular_product_weighted_time_period_joint_limit
   calc
     _ ≤ Real.exp (a*z.2)*C := mul_le_mul_of_nonneg_left ht (Real.exp_nonneg _)
     _ = Real.exp (a*z.2)*(B*S*Real.exp (-(N:ℝ)*z.2)) := rfl
-    _ ≤ Real.exp (a*z.2)*(B*(2*(R^2-1))*Real.exp (-(N:ℝ)*z.2)) := by
+    _ ≤ Real.exp (a*z.2)*(B*(2*(R^(2 : ℕ)-1))*Real.exp (-(N:ℝ)*z.2)) := by
       exact mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hS hB)
           (Real.exp_nonneg _)) (Real.exp_nonneg _)
-    _ = (2*B)*Real.exp ((a-(N:ℝ))*z.2)*(R^2-1) := by
+    _ = (2*B)*Real.exp ((a-(N:ℝ))*z.2)*(R^(2 : ℕ)-1) := by
       have hexp_mul : Real.exp (a*z.2)*Real.exp (-(N:ℝ)*z.2) =
           Real.exp ((a-(N:ℝ))*z.2) := by
         rw [← Real.exp_add]
         congr 1
         ring
       calc
-        _ = (2*B)*(Real.exp (a*z.2)*Real.exp (-(N:ℝ)*z.2))*(R^2-1) := by ring
+        _ = (2*B)*(Real.exp (a*z.2)*Real.exp (-(N:ℝ)*z.2))*(R^(2 : ℕ)-1) := by ring
         _ = _ := by rw [hexp_mul]
 
 /-- The two actual temporal endpoint products obey the same weighted,
@@ -173,7 +173,7 @@ theorem metric_angular_product_weighted_endpoint_period_joint_limit
           (Complex.exp (-w*((P z:ℝ):ℂ))*
             (angularProduct q br amp w j d (P z) z.1 x z.2-
               horizonAngularProduct q br amp w j d (P z) x z.2)/
-            ((tortoiseRadius (-z.1/2):ℂ)^2-1)))
+            ((tortoiseRadius (-z.1/2):ℂ)^(2 : ℕ)-1)))
         ((atTop : Filter ℝ) ×ˢ (atTop : Filter ℝ)) (𝓝 0) := by
   obtain ⟨N,hN⟩ := exists_nat_gt a
   obtain ⟨G,hG,h⟩ := original_angular_product_error q br amp j d N
@@ -191,17 +191,17 @@ theorem metric_angular_product_weighted_endpoint_period_joint_limit
   filter_upwards [hL.prod_mk (eventually_ge_atTop (0:ℝ))] with z hz
   let R := tortoiseRadius (-z.1/2)
   have hR : 1 < R := tortoiseRadius_exterior (-z.1/2) (by linarith)
-  have hf : 0 < R^2-1 := by nlinarith
-  have hgeo : Real.exp (-z.1) ≤ R^2-1 := collar_exp_le_metric z.1 hz.1.2
+  have hf : 0 < R^(2 : ℕ)-1 := by nlinarith
+  have hgeo : Real.exp (-z.1) ≤ R^(2 : ℕ)-1 := collar_exp_le_metric z.1 hz.1.2
   have hdec : Real.exp (-w.re*z.1) ≤ Real.exp (-z.1) := by
     apply Real.exp_le_exp.mpr
     have hw1 : 1≤w.re := by linarith
     nlinarith
-  have hS : Real.exp (-z.1)+Real.exp (-w.re*z.1) ≤ 2*(R^2-1) := by linarith
+  have hS : Real.exp (-z.1)+Real.exp (-w.re*z.1) ≤ 2*(R^(2 : ℕ)-1) := by linarith
   have hPexp : Real.exp (-(P z:ℝ)) ≤ 1 := by
     rw [← Real.exp_zero]
     exact Real.exp_le_exp.mpr (neg_nonpos.mpr (P z).property.le)
-  have hn : ‖(R:ℂ)^2-1‖=R^2-1 := by
+  have hn : ‖(R:ℂ)^(2 : ℕ)-1‖=R^(2 : ℕ)-1 := by
     rw [← Complex.ofReal_pow,← Complex.ofReal_one,← Complex.ofReal_sub,
       Complex.norm_real,Real.norm_eq_abs,abs_of_pos hf]
   have hx (x : ℝ) :
@@ -209,7 +209,7 @@ theorem metric_angular_product_weighted_endpoint_period_joint_limit
         (Complex.exp (-w*((P z:ℝ):ℂ))*
           (angularProduct q br amp w j d (P z) z.1 x z.2-
             horizonAngularProduct q br amp w j d (P z) x z.2)/
-          ((R:ℂ)^2-1))‖ ≤
+          ((R:ℂ)^(2 : ℕ)-1))‖ ≤
         (2*B)*Real.exp ((a-(N:ℝ))*z.2) := by
     rw [norm_mul,Complex.norm_exp,norm_div,hn]
     simp only [Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
@@ -221,20 +221,20 @@ theorem metric_angular_product_weighted_endpoint_period_joint_limit
             Real.exp (-(N:ℝ)*z.2)*Real.exp (-(P z:ℝ))) := by
         gcongr
         exact hz.1.1 (P z) x z.2 (P z).property hz.2
-      _ ≤ Real.exp (a*z.2)*(B*(2*(R^2-1))*
+      _ ≤ Real.exp (a*z.2)*(B*(2*(R^(2 : ℕ)-1))*
             Real.exp (-(N:ℝ)*z.2)*Real.exp (-(P z:ℝ))) := by
         gcongr
-      _ ≤ Real.exp (a*z.2)*(B*(2*(R^2-1))*
+      _ ≤ Real.exp (a*z.2)*(B*(2*(R^(2 : ℕ)-1))*
             Real.exp (-(N:ℝ)*z.2)*1) := by
         gcongr
-      _ = (2*B)*Real.exp ((a-(N:ℝ))*z.2)*(R^2-1) := by
+      _ = (2*B)*Real.exp ((a-(N:ℝ))*z.2)*(R^(2 : ℕ)-1) := by
         have hexp_mul : Real.exp (a*z.2)*Real.exp (-(N:ℝ)*z.2) =
             Real.exp ((a-(N:ℝ))*z.2) := by
           rw [← Real.exp_add]
           congr 1
           ring
         calc
-          _ = (2*B)*(Real.exp (a*z.2)*Real.exp (-(N:ℝ)*z.2))*(R^2-1) := by ring
+          _ = (2*B)*(Real.exp (a*z.2)*Real.exp (-(N:ℝ)*z.2))*(R^(2 : ℕ)-1) := by ring
           _ = _ := by rw [hexp_mul]
   have hi := intervalIntegral.norm_integral_le_of_norm_le_const
     (a:=(-1/2:ℝ)) (b:=(1/2:ℝ)) (fun x _ => hx x)

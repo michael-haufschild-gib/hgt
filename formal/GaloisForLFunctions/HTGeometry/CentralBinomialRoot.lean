@@ -9,7 +9,7 @@ The classical two-sided bound `4^m/(2m) ≤ C(2m,m) ≤ 4^m` says that the quoti
 a rescaled root, so `(4^m / C(2m,m))^{1/(2m+b)} → 1`.
 
 This is what the degree-two shift lattice needs: the factorial ratio
-`(m!)^2/(2m)!` is the reciprocal of the central binomial coefficient, so after
+`(m!)^(2 : ℕ)/(2m)!` is the reciprocal of the central binomial coefficient, so after
 extracting the geometric factor `4^{-m}` nothing is left for the root to see.
 -/
 

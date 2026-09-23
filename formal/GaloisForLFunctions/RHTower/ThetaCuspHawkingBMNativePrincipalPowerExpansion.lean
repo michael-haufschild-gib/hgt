@@ -9,9 +9,9 @@ noncomputable section
 
 /-- The three literal coefficients of the original principal half-square. -/
 def nativePrincipalPowerCoefficient (q : XiZeroCopy) : Fin 3 → ℂ :=
-  ![reflectedCompletedLambda (2*(q.1:ℂ)-1)^2/2,
+  ![reflectedCompletedLambda (2*(q.1:ℂ)-1)^(2 : ℕ)/2,
     reflectedCompletedLambda (2*(q.1:ℂ)-1)*reflectedCompletedLambda (2*(q.1:ℂ)),
-    reflectedCompletedLambda (2*(q.1:ℂ))^2/2]
+    reflectedCompletedLambda (2*(q.1:ℂ))^(2 : ℕ)/2]
 
 /-- The unchanged three height powers of the original principal half-square. -/
 def nativePrincipalPowerExponent (q : XiZeroCopy) : Fin 3 → ℂ :=
@@ -36,21 +36,21 @@ theorem nativePrincipalSquare_eq_power_sum (q : XiZeroCopy) {y : ℝ} (hy : 0 < 
     principalSquare q ![0,y] = ∑ j : Fin 3, nativePrincipalPowerCoefficient q j*
       (y:ℂ)^(nativePrincipalPowerExponent q j) := by
   have hn : (y:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hy.ne'
-  change (principal ((q.1:ℂ)-1/2) ![0,y])^2/2 = _
+  change (principal ((q.1:ℂ)-1/2) ![0,y])^(2 : ℕ)/2 = _
   rw [principal_shift,Fin.sum_univ_three]
   simp only [nativePrincipalPowerCoefficient,nativePrincipalPowerExponent,
     Matrix.cons_val_zero,Matrix.cons_val_one,Matrix.cons_val_two]
-  have hm : ((y:ℂ)^(1-(q.1:ℂ)))^2=(y:ℂ)^(2-2*(q.1:ℂ)) := by
+  have hm : ((y:ℂ)^(1-(q.1:ℂ)))^(2 : ℕ)=(y:ℂ)^(2-2*(q.1:ℂ)) := by
     rw [pow_two,← Complex.cpow_add _ _ hn]; congr 1; ring
-  have hp : ((y:ℂ)^(q.1:ℂ))^2=(y:ℂ)^(2*(q.1:ℂ)) := by
+  have hp : ((y:ℂ)^(q.1:ℂ))^(2 : ℕ)=(y:ℂ)^(2*(q.1:ℂ)) := by
     rw [pow_two,← Complex.cpow_add _ _ hn]; congr 1; ring
   have hx : (y:ℂ)^(1-(q.1:ℂ))*(y:ℂ)^(q.1:ℂ)=(y:ℂ)^(1:ℂ) := by
     rw [← Complex.cpow_add _ _ hn]; congr 1; ring
   calc
-    _ = reflectedCompletedLambda (2*(q.1:ℂ)-1)^2/2*((y:ℂ)^(1-(q.1:ℂ)))^2+
+    _ = reflectedCompletedLambda (2*(q.1:ℂ)-1)^(2 : ℕ)/2*((y:ℂ)^(1-(q.1:ℂ)))^(2 : ℕ)+
         (reflectedCompletedLambda (2*(q.1:ℂ)-1)*reflectedCompletedLambda (2*(q.1:ℂ)))*
           ((y:ℂ)^(1-(q.1:ℂ))*(y:ℂ)^(q.1:ℂ))+
-        reflectedCompletedLambda (2*(q.1:ℂ))^2/2*((y:ℂ)^(q.1:ℂ))^2 := by ring
+        reflectedCompletedLambda (2*(q.1:ℂ))^(2 : ℕ)/2*((y:ℂ)^(q.1:ℂ))^(2 : ℕ) := by ring
     _ = _ := by rw [hm,hp,hx]; rfl
 
 /-- Every original principal power lies strictly between zero and two in real part. -/

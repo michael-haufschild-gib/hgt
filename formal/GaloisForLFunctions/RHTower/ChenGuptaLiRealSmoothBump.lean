@@ -23,14 +23,14 @@ theorem CGLRealSmoothBump.value_eq_realValue (w : CGLRealSmoothBump) (x : ℝ) :
 /-- The Hilbert--Schmidt cutoff factor is exactly the square of CGL's real bump. -/
 theorem CGLRealSmoothBump.normSq_value_eq_realValue_sq
     (w : CGLRealSmoothBump) (x : ℝ) :
-    ‖w.toCGLSmoothBump.value x‖ ^ 2 = w.realValue x ^ 2 := by
+    ‖w.toCGLSmoothBump.value x‖ ^ (2 : ℕ) = w.realValue x ^ (2 : ℕ) := by
   rw [w.value_eq_realValue]
   simpa only [Complex.norm_real, Real.norm_eq_abs] using sq_abs (w.realValue x)
 
 /-- CGL's Poisson kernel `w²` is the complexification of the real squared cutoff. -/
 theorem CGLRealSmoothBump.value_mul_self_eq_realValue_sq
     (w : CGLRealSmoothBump) (x : ℝ) :
-    w.toCGLSmoothBump.value x * w.toCGLSmoothBump.value x = (w.realValue x ^ 2 : ℂ) := by
+    w.toCGLSmoothBump.value x * w.toCGLSmoothBump.value x = (w.realValue x ^ (2 : ℕ) : ℂ) := by
   rw [w.value_eq_realValue]
   ring
 

@@ -55,7 +55,7 @@ theorem eq_hellingerMid_mul_exp (hb : ∀ x, 0 < b x) (x : X) :
     rw [Real.log_sqrt (le_of_lt (div_pos h1 h2))]]
   rw [Real.exp_log (Real.sqrt_pos.2 (div_pos h1 h2))]
   rw [← Real.sqrt_mul (le_of_lt (mul_pos h1 h2))]
-  rw [show b x * b (R x) * (b x / b (R x)) = b x ^ 2 by field_simp]
+  rw [show b x * b (R x) * (b x / b (R x)) = b x ^ (2 : ℕ) by field_simp]
   exact (Real.sqrt_sq h1.le).symm
 
 /-- The reflected base density factors with the opposite cocycle. -/

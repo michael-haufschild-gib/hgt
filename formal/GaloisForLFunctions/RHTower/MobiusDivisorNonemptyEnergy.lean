@@ -16,18 +16,18 @@ namespace RHTower
 
 /-- Energy outside the empty-cofactor head, with the literal source retained. -/
 def mobiusDivisorNonemptyEnergy (M : ℕ) (P : Finset ℕ) : ℝ :=
-  mobiusDivisorSelectionEnergy M P-(mobiusDivisorSelectionFibre M P ∅)^2
+  mobiusDivisorSelectionEnergy M P-(mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)
 
 /-- Removing the head square is exactly summation over the nonempty source labels. -/
 theorem mobiusDivisorNonemptyEnergy_eq_sum (M : ℕ) (P : Finset ℕ) :
     mobiusDivisorNonemptyEnergy M P =
       ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset.erase ∅,
-        (mobiusDivisorSelectionFibre M P R)^2 := by
+        (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) := by
   have h := sum_erase_add (s := (mobiusDivisorSelectionPrimes M).powerset)
-    (f := fun R => (mobiusDivisorSelectionFibre M P R)^2) (a := ∅) (by simp)
+    (f := fun R => (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)) (a := ∅) (by simp)
   unfold mobiusDivisorNonemptyEnergy
   change (∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-    (mobiusDivisorSelectionFibre M P R)^2)-(mobiusDivisorSelectionFibre M P ∅)^2=_
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ))-(mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)=_
   linarith only [h]
 
 /-- Nonempty retained energy is nonnegative at every cutoff and processed state. -/
@@ -58,7 +58,7 @@ theorem mobiusDivisorNonemptyEnergy_insert_cross {p : ℕ} (hp : p.Prime)
     mobiusDivisorNonemptyEnergy M (insert p P)-mobiusDivisorNonemptyEnergy M P =
       2*(∑ R ∈ (((mobiusDivisorSelectionPrimes M).erase p).powerset.erase ∅),
         mobiusDivisorSelectionFibre M P R*mobiusDivisorSelectionFibre M P (insert p R))-
-      (mobiusDivisorSelectionFibre M P {p})^2 := by
+      (mobiusDivisorSelectionFibre M P {p})^(2 : ℕ) := by
   have h := mobiusDivisorSelectionEnergy_insert_cross hp M P hpM hpP
   have hs := sum_erase_add (s := ((mobiusDivisorSelectionPrimes M).erase p).powerset)
     (f := fun R => mobiusDivisorSelectionFibre M P R*mobiusDivisorSelectionFibre M P (insert p R))
@@ -73,7 +73,7 @@ theorem mobiusDivisorNonemptyEnergy_insert_cross {p : ℕ} (hp : p.Prime)
 theorem mobiusDivisorNonemptyEnergy_union_late_primes (M : ℕ) (P L : Finset ℕ)
     (hL : ∀ p ∈ L,p.Prime ∧ p<M ∧ M≤2*p) (hfree : ∀ p ∈ L,p ∉ P) :
     mobiusDivisorNonemptyEnergy M (P ∪ L) = mobiusDivisorNonemptyEnergy M P-
-      ∑ p ∈ L,(mobiusDivisorDilationChannel M p)^2 := by
+      ∑ p ∈ L,(mobiusDivisorDilationChannel M p)^(2 : ℕ) := by
   unfold mobiusDivisorNonemptyEnergy
   rw [mobiusDivisorSelectionEnergy_union_late_primes M P L hL hfree,
     mobiusDivisorSelectionHead_union_late_primes M P L hL hfree]

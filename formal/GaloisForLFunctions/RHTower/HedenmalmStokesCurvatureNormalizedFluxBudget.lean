@@ -9,7 +9,7 @@ import GaloisForLFunctions.RHTower.CCMCompletedPrimeGammaAccretivityCriterion
 P-G143 removes the universal first-trace residue.  The remaining completed flux still has a
 zero-free functional-equation gauge:
 
-`xi(s) -> exp(c (s - 1/2)^2) xi(s)`.
+`xi(s) -> exp(c (s - 1/2)^(2 : ℕ)) xi(s)`.
 
 This multiplier preserves the Xi divisor and functional equation, but shifts the completed seam
 flux by `-2 c (s - 1/2)`.  Therefore an uncalibrated sign of the raw completed flux cannot follow
@@ -43,7 +43,7 @@ noncomputable section
 
 /-- Zero-free quadratic gauge centered at the functional-equation fixed point. -/
 def hedenmalmQuadraticFEGauge (c : ℝ) (s : ℂ) : ℂ :=
-  Complex.exp ((c : ℂ) * (s - 1 / 2) ^ 2)
+  Complex.exp ((c : ℂ) * (s - 1 / 2) ^ (2 : ℕ))
 
 /-- Xi multiplied by the centered quadratic zero-free gauge. -/
 def hedenmalmQuadraticGaugedXi (c : ℝ) (s : ℂ) : ℂ :=
@@ -85,22 +85,22 @@ theorem differentiableAt_hedenmalmQuadraticFEGauge (c : ℝ) (s : ℂ) :
 theorem logDeriv_hedenmalmQuadraticFEGauge (c : ℝ) (s : ℂ) :
     logDeriv (hedenmalmQuadraticFEGauge c) s =
       2 * (c : ℂ) * (s - 1 / 2) := by
-  have hinner : HasDerivAt (fun z : ℂ => (c : ℂ) * (z - 1 / 2) ^ 2)
+  have hinner : HasDerivAt (fun z : ℂ => (c : ℂ) * (z - 1 / 2) ^ (2 : ℕ))
       (2 * (c : ℂ) * (s - 1 / 2)) s := by
     have hsub : HasDerivAt (fun z : ℂ => z - 1 / 2) 1 s := by
       convert! (hasDerivAt_id (𝕜 := ℂ) s).sub
         (hasDerivAt_const (x := s) (c := (1 / 2 : ℂ))) using 1 <;> ring
-    have hsq : HasDerivAt ((fun z : ℂ => z - 1 / 2) ^ 2)
+    have hsq : HasDerivAt ((fun z : ℂ => z - 1 / 2) ^ (2 : ℕ))
         (2 * (s - 1 / 2)) s := by
       exact (hsub.pow 2).congr_deriv (by norm_num)
     change HasDerivAt
-      (fun z : ℂ => (c : ℂ) * (((fun w : ℂ => w - 1 / 2) ^ 2) z))
+      (fun z : ℂ => (c : ℂ) * (((fun w : ℂ => w - 1 / 2) ^ (2 : ℕ)) z))
       (2 * (c : ℂ) * (s - 1 / 2)) s
     exact (hsq.const_mul (c : ℂ)).congr_deriv (by ring)
   have hexp := hinner.cexp
   rw [logDeriv_apply]
-  change deriv (fun z => Complex.exp ((c : ℂ) * (z - 1 / 2) ^ 2)) s /
-      Complex.exp ((c : ℂ) * (s - 1 / 2) ^ 2) = _
+  change deriv (fun z => Complex.exp ((c : ℂ) * (z - 1 / 2) ^ (2 : ℕ))) s /
+      Complex.exp ((c : ℂ) * (s - 1 / 2) ^ (2 : ℕ)) = _
   rw [hexp.deriv]
   field_simp [Complex.exp_ne_zero]
 
@@ -303,11 +303,11 @@ theorem hedenmalmCurvatureNormalizedSeamFlux_ofReal_eq_response_loss
     (hedenmalmCurvatureNormalizedSeamFlux
         ((1 / 2 : ℂ) + (x : ℂ))).re =
       x * (xiSquaredEulerFullResponse 0 -
-        xiSquaredEulerFullResponse (x ^ 2)) := by
+        xiSquaredEulerFullResponse (x ^ (2 : ℕ))) := by
   have hlog := xiSquaredEulerFullQ_eq_logDeriv_re hx
   have hseam :
       (seamFluxCochain ((1 / 2 : ℂ) + (x : ℂ))).re =
-        -x * xiSquaredEulerFullResponse (x ^ 2) := by
+        -x * xiSquaredEulerFullResponse (x ^ (2 : ℕ)) := by
     rw [seamFluxCochain, Complex.neg_re]
     rw [← hlog]
     simp [xiSquaredEulerFullQ]
@@ -329,10 +329,10 @@ theorem hedenmalmCurvatureNormalizedSeamFlux_ofReal_strict_budget
       (hedenmalmCurvatureNormalizedSeamFlux
           ((1 / 2 : ℂ) + (x : ℂ))).re <
         -x * (deriv seamFluxCochain (1 / 2)).re := by
-  have hx2 : 0 < x ^ 2 := sq_pos_of_pos hx
+  have hx2 : 0 < x ^ (2 : ℕ) := sq_pos_of_pos hx
   have hdrop := strictAntiOn_xiSquaredEulerFullResponse
     (show (0 : ℝ) ∈ Ici 0 by simp)
-    (show x ^ 2 ∈ Ici 0 by simp [sq_nonneg]) hx2
+    (show x ^ (2 : ℕ) ∈ Ici 0 by simp [sq_nonneg]) hx2
   have hpos := xiSquaredEulerFullResponse_pos (sq_nonneg x)
   have hzero := xiSquaredEulerFullResponse_zero_eq_normalizedPrimeArchMoment_zero
   have hslope := deriv_seamFluxCochain_one_half_eq_neg_normalizedPrimeArchMoment_zero

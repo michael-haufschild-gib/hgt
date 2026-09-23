@@ -427,7 +427,7 @@ lemma house_eta_le_c₄_pow : house (algebraMap (𝓞 h7.K) h7.K (h7.η q hq0 h2
     h7.K (h7.A q) (h7.hM_ne_zero q hq0 h2mq) (mul_pos (Nat.zero_lt_succ (2 * h7.h + 1))
     (h7.one_le_n q hq0 h2mq)) (h7.m_mul_n_lt_q_mul_q q hq0 h2mq) (Fintype.card_fin _)
     (fun u t ↦ h7.house_matrixA_le q hq0 u t h2mq) (Fintype.card_fin _)).choose_spec).2.2 t
-  · have : (q * q : ℝ) = q^2 := mod_cast (pow_two ↑q).symm
+  · have : (q * q : ℝ) = q^(2 : ℕ) := mod_cast (pow_two ↑q).symm
     rw [← pow_two q, this, h7.q_sq_eq_two_mn q h2mq]
     have : (q ^ 2 : ℝ) = 2 * h7.m * h7.n q := mod_cast (h7.q_sq_eq_two_mn q h2mq)
     rw [this]

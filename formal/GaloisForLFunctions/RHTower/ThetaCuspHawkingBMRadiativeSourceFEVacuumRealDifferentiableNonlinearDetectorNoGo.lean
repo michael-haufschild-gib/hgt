@@ -158,7 +158,7 @@ theorem hbXiRadiativeRealDetectorScalarizes_quadratic_annihilates
   apply hfaithful
   rw [map_add, map_sub, map_smul, map_smul, map_zero,
     hscalar, hscalar]
-  have hc : c ^ 2 - (2 * c.re : ℝ) * c + Complex.normSq c = 0 := by
+  have hc : c ^ (2 : ℕ) - (2 * c.re : ℝ) * c + Complex.normSq c = 0 := by
     rw [← Complex.add_conj c, ← Complex.mul_conj c]
     ring
   apply Prod.ext
@@ -170,7 +170,7 @@ theorem hbXiRadiativeRealDetectorScalarizes_quadratic_annihilates
       c * (c * (linearization x).1) -
           ((2 * c.re : ℝ) : ℂ) * (c * (linearization x).1) +
             (Complex.normSq c : ℂ) * (linearization x).1 =
-        (c ^ 2 - (2 * c.re : ℝ) * c + Complex.normSq c) *
+        (c ^ (2 : ℕ) - (2 * c.re : ℝ) * c + Complex.normSq c) *
           (linearization x).1 := by ring
       _ = 0 := by rw [hc, zero_mul]
   · simp only [Prod.snd_sub, Prod.snd_add, Prod.smul_snd, Prod.snd_zero]
@@ -181,7 +181,7 @@ theorem hbXiRadiativeRealDetectorScalarizes_quadratic_annihilates
       c * (c * (linearization x).2) -
           ((2 * c.re : ℝ) : ℂ) * (c * (linearization x).2) +
             (Complex.normSq c : ℂ) * (linearization x).2 =
-        (c ^ 2 - (2 * c.re : ℝ) * c + Complex.normSq c) *
+        (c ^ (2 : ℕ) - (2 * c.re : ℝ) * c + Complex.normSq c) *
           (linearization x).2 := by ring
       _ = 0 := by rw [hc, zero_mul]
 
@@ -198,7 +198,7 @@ theorem hbXiRadiativeRealDetectorScalarizes_horizonGain_eq_or_conj
     (hbXiRadiativeRealDetectorScalarizes_quadratic_annihilates
       linearization hfaithful c q hscalar hbXiRadiativeHorizonDetectorBasis)
   have hfactor :
-      hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q ^ 2 -
+      hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q ^ (2 : ℕ) -
           (2 * c.re : ℝ) * hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q +
             Complex.normSq c =
         (hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q - c) *
@@ -208,7 +208,7 @@ theorem hbXiRadiativeRealDetectorScalarizes_horizonGain_eq_or_conj
     ring
   dsimp [hbXiRadiativeHorizonBoundaryDetectorCocycle,
     hbXiRadiativeHorizonDetectorBasis] at hpoly
-  have hpoly' : hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q ^ 2 -
+  have hpoly' : hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q ^ (2 : ℕ) -
       (2 * c.re : ℝ) * hbXiPhaseSensitiveUnitRadiativeSourceFECocycle q +
         Complex.normSq c = 0 := by
     simpa [pow_two] using hpoly
@@ -230,7 +230,7 @@ theorem hbXiRadiativeRealDetectorScalarizes_boundaryGain_eq_or_conj
     (hbXiRadiativeRealDetectorScalarizes_quadratic_annihilates
       linearization hfaithful c q hscalar hbXiRadiativeBoundaryDetectorBasis)
   have hfactor :
-      hbXiPhaseSensitiveUnitRadiativeSourceFEBoundaryCocycle q ^ 2 -
+      hbXiPhaseSensitiveUnitRadiativeSourceFEBoundaryCocycle q ^ (2 : ℕ) -
           (2 * c.re : ℝ) * hbXiPhaseSensitiveUnitRadiativeSourceFEBoundaryCocycle q +
             Complex.normSq c =
         (hbXiPhaseSensitiveUnitRadiativeSourceFEBoundaryCocycle q - c) *
@@ -240,7 +240,7 @@ theorem hbXiRadiativeRealDetectorScalarizes_boundaryGain_eq_or_conj
     ring
   dsimp [hbXiRadiativeHorizonBoundaryDetectorCocycle,
     hbXiRadiativeBoundaryDetectorBasis] at hpoly
-  have hpoly' : hbXiPhaseSensitiveUnitRadiativeSourceFEBoundaryCocycle q ^ 2 -
+  have hpoly' : hbXiPhaseSensitiveUnitRadiativeSourceFEBoundaryCocycle q ^ (2 : ℕ) -
       (2 * c.re : ℝ) * hbXiPhaseSensitiveUnitRadiativeSourceFEBoundaryCocycle q +
         Complex.normSq c = 0 := by
     simpa [pow_two] using hpoly

@@ -67,29 +67,29 @@ theorem eventually_signedLeakage_le_div_sqrt (m n : ℕ) (hmn : m < n) :
   have hS : 0 < S := prolateRatioScale_pos hc0
   set Rm : ℝ := (signedModeRadialData a m).R 0 with hRm
   set Rn : ℝ := (signedModeRadialData a n).R 0 with hRn
-  have hRm2 : 0 < Rm ^ 2 := by positivity
-  have hRn2 : 0 < Rn ^ 2 := by positivity
+  have hRm2 : 0 < Rm ^ (2 : ℕ) := by positivity
+  have hRn2 : 0 < Rn ^ (2 : ℕ) := by positivity
   have hCnn : 0 ≤ centreRatioConst m n := centreRatioConst_nonneg m n
   -- the centre comparison, in reciprocal form
-  have hrecip : 1 / Rm ^ 2 ≤ centreRatioConst m n / S / Rn ^ 2 := by
+  have hrecip : 1 / Rm ^ (2 : ℕ) ≤ centreRatioConst m n / S / Rn ^ (2 : ℕ) := by
     rcases eq_or_lt_of_le hCnn with hC0 | hCpos
     · exfalso
       rw [← hC0] at hcentre
       simp only [zero_div, zero_mul] at hcentre
       linarith [hRn2, hcentre]
     · rw [div_le_div_iff₀ hRm2 (by positivity)]
-      have hstep : Rn ^ 2 * 1 ≤ centreRatioConst m n / S * Rm ^ 2 := by simpa using hcentre
+      have hstep : Rn ^ (2 : ℕ) * 1 ≤ centreRatioConst m n / S * Rm ^ (2 : ℕ) := by simpa using hcentre
       nlinarith [hstep]
   -- the leakage of the higher rung, from below
-  have hinv : 1 / (sc * Rn ^ 2)
+  have hinv : 1 / (sc * Rn ^ (2 : ℕ))
       ≤ 1728 * sharpInteriorLimit n / besselEnergyFloor * evenProlateSignedLeakage a n := by
-    have hval : besselEnergyFloor / 1728 / sharpInteriorLimit n / (sc * Rn ^ 2)
-        = besselEnergyFloor / (1728 * sharpInteriorLimit n) * (1 / (sc * Rn ^ 2)) := by
+    have hval : besselEnergyFloor / 1728 / sharpInteriorLimit n / (sc * Rn ^ (2 : ℕ))
+        = besselEnergyFloor / (1728 * sharpInteriorLimit n) * (1 / (sc * Rn ^ (2 : ℕ))) := by
       field_simp
     rw [hval] at hnlow
     have hcoef : (0 : ℝ) < besselEnergyFloor / (1728 * sharpInteriorLimit n) := by positivity
     rw [← le_div_iff₀' hcoef] at hnlow
-    calc 1 / (sc * Rn ^ 2)
+    calc 1 / (sc * Rn ^ (2 : ℕ))
         ≤ evenProlateSignedLeakage a n / (besselEnergyFloor / (1728 * sharpInteriorLimit n)) :=
           hnlow
       _ = 1728 * sharpInteriorLimit n / besselEnergyFloor * evenProlateSignedLeakage a n := by
@@ -97,19 +97,19 @@ theorem eventually_signedLeakage_le_div_sqrt (m n : ℕ) (hmn : m < n) :
   -- chain the three estimates
   have hmup' : evenProlateSignedLeakage a m
       ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m
-        * (1 / sc) * (1 / Rm ^ 2) := by
+        * (1 / sc) * (1 / Rm ^ (2 : ℕ)) := by
     refine le_trans hmup (le_of_eq ?_)
     field_simp
   have hcoefm : (0 : ℝ) ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m
       * (1 / sc) := by positivity
   have hstep1 : evenProlateSignedLeakage a m
       ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m * (1 / sc)
-        * (centreRatioConst m n / S / Rn ^ 2) :=
+        * (centreRatioConst m n / S / Rn ^ (2 : ℕ)) :=
     le_trans hmup' (mul_le_mul_of_nonneg_left hrecip hcoefm)
   have hstep2 : 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m * (1 / sc)
-        * (centreRatioConst m n / S / Rn ^ 2)
+        * (centreRatioConst m n / S / Rn ^ (2 : ℕ))
       = 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m * centreRatioConst m n
-        * (1 / S) * (1 / (sc * Rn ^ 2)) := by
+        * (1 / S) * (1 / (sc * Rn ^ (2 : ℕ))) := by
     field_simp
   have hcoef2 : (0 : ℝ) ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit m
       * centreRatioConst m n * (1 / S) := by positivity

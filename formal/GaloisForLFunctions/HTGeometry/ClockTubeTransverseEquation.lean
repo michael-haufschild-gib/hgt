@@ -23,7 +23,7 @@ theorem sliceHolo_clampedTubeStepFun {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1) (s t : ℝ) :
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1) (s t : ℝ) :
     SliceHolo (fun w : Fin k → ℂ => clampedTubeStep V T w s t) ρ := by
   have hcont : ContinuousOn
       (tubeSolution V (boxClamp T s) (boxClamp T t)) (tube k ρ) := by
@@ -46,7 +46,7 @@ theorem continuousOn_clampedTubeStep_joint {ρ₀ Mv ρ ρ₁ T : ℝ} (hρ₀ :
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) :
     ContinuousOn (fun r : (ℝ × ℝ) × (Fin k → ℂ) => clampedTubeStep V T r.2 r.1.1 r.1.2)
       (univ ×ˢ tube k ρ₁) := fun _ hq =>
@@ -59,7 +59,7 @@ theorem continuousOn_clampedTubeStep_slice {ρ₀ Mv ρ ρ₁ T : ℝ} (hρ₀ :
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (s : ℝ) {z : Fin k → ℂ} (hz : z ∈ tube k ρ₁) (i : Fin k) :
     ContinuousOn (fun q : ℝ × ℂ => clampedTubeStep V T (Function.update z i q.2) s q.1)
       (univ ×ˢ imStrip ρ₁) := by
@@ -81,7 +81,7 @@ theorem hasDerivAt_clampedTubeInner_transverse {ρ₀ Mv ρ ρ₁ ρ₂ T : ℝ}
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂ : ρ₂ < ρ₁) (s η : ℝ)
     {z : Fin k → ℂ} (hz : z ∈ tube k ρ₂) (i : Fin k) :
     HasDerivAt (fun ζ : ℂ => ∫ t in (0 : ℝ)..η, clampedTubeStep V T (Function.update z i ζ) s t)
@@ -100,7 +100,7 @@ theorem differentiableOn_clampedTubeInner {ρ₀ Mv ρ ρ₁ T : ℝ} (hρ₀ : 
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (s η : ℝ) {z : Fin k → ℂ} (hz : z ∈ tube k ρ₁) (i : Fin k) :
     DifferentiableOn ℂ
       (fun ζ : ℂ => ∫ t in (0 : ℝ)..η, clampedTubeStep V T (Function.update z i ζ) s t)
@@ -116,7 +116,7 @@ theorem hasDerivAt_clampedTubeBox_transverse {ρ₀ Mv ρ ρ₁ ρ₂ T : ℝ} (
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 < ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂ : ρ₂ < ρ₁) (ξ η : ℝ)
     {z : Fin k → ℂ} (hz : z ∈ tube k ρ₂) (i : Fin k) :
     HasDerivAt
@@ -159,7 +159,7 @@ theorem hasDerivAt_tubeSolution_transverse {ρ₀ Mv ρ ρ₁ ρ₂ T : ℝ} (h�
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 < ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂ : ρ₂ < ρ₁)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T)
     {z : Fin k → ℂ} (hz : z ∈ tube k ρ₂) (i : Fin k) :

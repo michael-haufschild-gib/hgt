@@ -47,7 +47,7 @@ private theorem positive_chart_laplacian (F : ℂ → ℂ)
   simpa only [planarLaplacian,Fin.sum_univ_two,direction,Matrix.cons_val_zero,Matrix.cons_val_one] using congrArg₂ (·+·) hx hy
 
 private theorem log_second (f : ℝ → ℂ) (hf : ContDiff ℝ ∞ f) (y : ℝ) (hy : 0 < y) :
-    (y:ℂ)^2*deriv (deriv (fun r => f (Real.log r))) y =
+    (y:ℂ)^(2 : ℕ)*deriv (deriv (fun r => f (Real.log r))) y =
       deriv (deriv f) (Real.log y)-deriv f (Real.log y) := by
   have hf' : ContDiff ℝ ∞ (deriv f) := (contDiff_infty_iff_deriv.mp hf).2
   have hfirst (r : ℝ) (hr : 0 < r) :
@@ -80,7 +80,7 @@ private theorem log_chart_smooth (f : ℝ × ℝ → ℂ) (hf : ContDiff ℝ ∞
 private theorem log_chart_laplacian (f : ℝ × ℝ → ℂ) (hf : ContDiff ℝ ∞ f)
     (z : UpperHalfPlane) :
     chartLaplacian (fun w => f (w.re,Real.log w.im)) z =
-      (z.im:ℂ)^2*deriv (deriv (fun X => f (X,Real.log z.im))) z.re +
+      (z.im:ℂ)^(2 : ℕ)*deriv (deriv (fun X => f (X,Real.log z.im))) z.re +
       deriv (deriv (fun k => f (z.re,k))) (Real.log z.im) -
       deriv (fun k => f (z.re,k)) (Real.log z.im) := by
   let F : ℂ → ℂ := fun w => f (w.re,Real.log w.im)
@@ -97,7 +97,7 @@ private theorem log_chart_laplacian (f : ℝ × ℝ → ℂ) (hf : ContDiff ℝ 
       filter_upwards [hd] with w hw
       rw [hw]
     rw [hv.fderiv_eq]
-  have hL : chartLaplacian (fun w => f (w.re,Real.log w.im)) z = (z.im:ℂ)^2*planarLaplacian F z := by
+  have hL : chartLaplacian (fun w => f (w.re,Real.log w.im)) z = (z.im:ℂ)^(2 : ℕ)*planarLaplacian F z := by
     unfold chartLaplacian planarLaplacian
     simp_rw [hsecond]
   rw [hL,positive_chart_laplacian F (log_chart_smooth f hf) z z.im_pos]
@@ -107,7 +107,7 @@ private theorem log_chart_laplacian (f : ℝ × ℝ → ℂ) (hf : ContDiff ℝ 
   have hY : (fun Y : ℝ => F ((z.re:ℂ)+(Y:ℂ)*Complex.I)) = fun Y => f (z.re,Real.log Y) := by
     funext Y
     simp [F]
-  change (z.im:ℂ)^2*(deriv (deriv (fun X : ℝ => F ((X:ℂ)+(z.im:ℂ)*Complex.I))) z.re +
+  change (z.im:ℂ)^(2 : ℕ)*(deriv (deriv (fun X : ℝ => F ((X:ℂ)+(z.im:ℂ)*Complex.I))) z.re +
     deriv (deriv (fun Y : ℝ => F ((z.re:ℂ)+(Y:ℂ)*Complex.I))) z.im) = _
   have hfY : ContDiff ℝ ∞ (fun k => f (z.re,k)) := hf.comp (contDiff_const.prodMk contDiff_id)
   rw [hX,hY,mul_add,log_second (fun k => f (z.re,k)) hfY z.im z.im_pos]
@@ -178,7 +178,7 @@ actual horizontal/log-height derivative expression, including every closed-cell 
 theorem nativeTimePrimitive_chart_laplacian (q : XiZeroCopy) (s amplitude : ℂ)
     (t x : ℝ) (z : UpperHalfPlane) (hz : z ∈ ModularGroup.fd) :
     chartLaplacian (globalNativeTimePrimitive q s amplitude t x) z =
-      (z.im:ℂ)^2*deriv (deriv (fun X => nativeResidualTimePrimitive q s amplitude t x X (Real.log z.im))) z.re +
+      (z.im:ℂ)^(2 : ℕ)*deriv (deriv (fun X => nativeResidualTimePrimitive q s amplitude t x X (Real.log z.im))) z.re +
       deriv (deriv (fun k => nativeResidualTimePrimitive q s amplitude t x z.re k)) (Real.log z.im) -
       deriv (fun k => nativeResidualTimePrimitive q s amplitude t x z.re k) (Real.log z.im) := by
   rw [chartLaplacian_congr (globalNativeTimePrimitive_germ q s amplitude t x z hz)]
@@ -189,7 +189,7 @@ the already admitted literal joint forcing, with no form-domain premise. -/
 theorem nativeTimePrimitive_original_elliptic_equation (q : XiZeroCopy) (s amplitude : ℂ)
     (t x : ℝ) (z : UpperHalfPlane) (hz : z ∈ ModularGroup.fd) :
     -deriv (deriv (fun r => nativeResidualTimePrimitive q s amplitude t r z.re (Real.log z.im))) x -
-      chartLaplacian (globalNativeTimePrimitive q s amplitude t x) z/(Real.cosh x:ℂ)^2 =
+      chartLaplacian (globalNativeTimePrimitive q s amplitude t x) z/(Real.cosh x:ℂ)^(2 : ℕ) =
       nativeJointEllipticForcing q s amplitude t (x,z) := by
   rw [nativeTimePrimitive_chart_laplacian q s amplitude t x z hz]
   simpa only [Real.exp_log z.im_pos,nativeJointEllipticForcing,nativeJointIntegratedForcing,
@@ -210,7 +210,7 @@ private abbrev heightJet (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ)
   deriv (fun k => nativeResidualTimePrimitive q s amplitude t p.1 p.2.re k) (Real.log p.2.im)
 private abbrev laplacianJet (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ)
     (p : ℝ × UpperHalfPlane) : ℂ :=
-  (p.2.im:ℂ)^2*deriv (deriv (fun X => nativeResidualTimePrimitive q s amplitude t p.1 X (Real.log p.2.im))) p.2.re +
+  (p.2.im:ℂ)^(2 : ℕ)*deriv (deriv (fun X => nativeResidualTimePrimitive q s amplitude t p.1 X (Real.log p.2.im))) p.2.re +
     deriv (deriv (fun k => nativeResidualTimePrimitive q s amplitude t p.1 p.2.re k)) (Real.log p.2.im) -
     heightJet q s amplitude t p
 
@@ -295,13 +295,13 @@ private theorem cutoff_high_zero (N : ℝ) (hN : 1 ≤ N) (z : UpperHalfPlane)
 def nativeJointRadialCutoffEnergy (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
     (p : ℝ × UpperHalfPlane) : ℝ :=
   ‖modularCuspCutoff ((n:ℝ)+1) p.2 *
-    deriv (fun x => nativeResidualTimePrimitive q s amplitude t x p.2.re (Real.log p.2.im)) p.1‖^2
+    deriv (fun x => nativeResidualTimePrimitive q s amplitude t x p.2.re (Real.log p.2.im)) p.1‖^(2 : ℕ)
 
 /-- Original angular contribution, including the exact physical radial weight. -/
 def nativeJointAngularCutoffEnergy (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
     (p : ℝ × UpperHalfPlane) : ℝ :=
   (∑ i : Fin 2, ‖weightedDeriv (direction i)
-    (nativeTimePrimitiveCutoff q s amplitude t p.1 n 0).field p.2‖^2) / Real.cosh p.1^2
+    (nativeTimePrimitiveCutoff q s amplitude t p.1 n 0).field p.2‖^(2 : ℕ)) / Real.cosh p.1^(2 : ℕ)
 
 private theorem native_joint_radial_energy_integrable (q : XiZeroCopy) (s amplitude : ℂ)
     (t : ℝ) (n : ℕ) : Integrable (nativeJointRadialCutoffEnergy q s amplitude t n)
@@ -316,14 +316,14 @@ private theorem native_joint_radial_energy_integrable (q : XiZeroCopy) (s amplit
   apply compact_cell_integrable _ hC t ((n:ℝ)+1)
   intro p hp hz hh
   rcases hh with hleft|hhigh
-  · change ‖modularCuspCutoff ((n:ℝ)+1) p.2*radialJet q s amplitude t p‖^2=0
+  · change ‖modularCuspCutoff ((n:ℝ)+1) p.2*radialJet q s amplitude t p‖^(2 : ℕ)=0
     rw [(native_left_jets_zero q s amplitude t p hleft).2.1,mul_zero,norm_zero,zero_pow (by simp : (2:ℕ)≠0)]
   · simp only [nativeJointRadialCutoffEnergy,(cutoff_high_zero _ hN p.2 hz hhigh).1,zero_mul,
       norm_zero,zero_pow (by simp : (2:ℕ)≠0)]
 
 private theorem native_joint_cutoff_pairing_integrable (q : XiZeroCopy) (s amplitude : ℂ)
     (t : ℝ) (n : ℕ) (f : ℝ × UpperHalfPlane → ℂ) (hf : Continuous f) :
-    Integrable (fun p => conj (f p)*modularCuspCutoff ((n:ℝ)+1) p.2^2*
+    Integrable (fun p => conj (f p)*modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*
       nativeJointTimePrimitiveField q s amplitude t p)
       (radialMeasure.prod D4BMModularCore.measure) := by
   have hN : (1:ℝ) ≤ (n:ℝ)+1 := by
@@ -331,7 +331,7 @@ private theorem native_joint_cutoff_pairing_integrable (q : XiZeroCopy) (s ampli
     linarith
   have hη := (ChartSmooth.continuous (modularCuspCutoff_smooth _ hN)).comp
     (continuous_snd : Continuous (fun p : ℝ × UpperHalfPlane => p.2))
-  have hC : Continuous (fun p : ℝ × UpperHalfPlane => conj (f p)*modularCuspCutoff ((n:ℝ)+1) p.2^2*
+  have hC : Continuous (fun p : ℝ × UpperHalfPlane => conj (f p)*modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*
       nativeJointTimePrimitiveField q s amplitude t p) :=
     ((Complex.conjCLE.continuous.comp hf).mul (hη.pow 2)).mul (jointJets_continuous q s amplitude t).1
   apply compact_cell_integrable _ hC t ((n:ℝ)+1)
@@ -372,8 +372,8 @@ private theorem native_joint_angular_energy_integrable (q : XiZeroCopy) (s ampli
   let eta := modularCuspCutoff ((n:ℝ)+1)
   let W := nativeJointTimePrimitiveField q s amplitude t
   let E : ℝ × UpperHalfPlane → ℝ := fun p =>
-    (‖weightedDeriv 1 eta p.2*W p+eta p.2*horizontalJet q s amplitude t p‖^2+
-      ‖weightedDeriv Complex.I eta p.2*W p+eta p.2*heightJet q s amplitude t p‖^2)/Real.cosh p.1^2
+    (‖weightedDeriv 1 eta p.2*W p+eta p.2*horizontalJet q s amplitude t p‖^(2 : ℕ)+
+      ‖weightedDeriv Complex.I eta p.2*W p+eta p.2*heightJet q s amplitude t p‖^(2 : ℕ))/Real.cosh p.1^(2 : ℕ)
   have hη := (ChartSmooth.continuous (modularCuspCutoff_smooth _ hN)).comp
     (continuous_snd : Continuous (fun p : ℝ × UpperHalfPlane => p.2))
   have hd (v : ℂ) : Continuous (fun p : ℝ × UpperHalfPlane => weightedDeriv v eta p.2) :=
@@ -436,15 +436,15 @@ private theorem complex_integral_re {X : Type*} [MeasurableSpace X] {μ : Measur
 
 private abbrev radialPair (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
     (p : ℝ × UpperHalfPlane) : ℝ :=
-  (conj (radialSecondJet q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^2*
+  (conj (radialSecondJet q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*
     nativeJointTimePrimitiveField q s amplitude t p).re
 private abbrev angularPair (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
     (p : ℝ × UpperHalfPlane) : ℝ :=
-  (conj (laplacianJet q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^2*
-    nativeJointTimePrimitiveField q s amplitude t p).re/Real.cosh p.1^2
+  (conj (laplacianJet q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*
+    nativeJointTimePrimitiveField q s amplitude t p).re/Real.cosh p.1^(2 : ℕ)
 
 private theorem real_cutoff_pair (c a b : ℂ) (hc : conj c = c) :
-    (conj b*c^2*a).re = ‖c‖^2*(conj a*b).re := by
+    (conj b*c^(2 : ℕ)*a).re = ‖c‖^(2 : ℕ)*(conj a*b).re := by
   have hc0 : c.im = 0 := by
     have h := congrArg Complex.im hc
     simp only [Complex.conj_im] at h
@@ -475,19 +475,19 @@ private theorem native_radial_row_energy (q : XiZeroCopy) (s amplitude : ℂ) (t
   have hR : Continuous (fun x => nativeJointRadialCutoffEnergy q s amplitude t n (x,z)) :=
     (hx.const_mul c).norm.pow 2
   have hP : Continuous (fun x => radialPair q s amplitude t n (x,z)) :=
-    Complex.continuous_re.comp (((Complex.conjCLE.continuous.comp hxx).mul_const (c^2)).mul hw)
+    Complex.continuous_re.comp (((Complex.conjCLE.continuous.comp hxx).mul_const (c^(2 : ℕ))).mul hw)
   have hRl : ∀ x < -max t 0-1, nativeJointRadialCutoffEnergy q s amplitude t n (x,z)=0 := by
     intro x hxl
-    change ‖modularCuspCutoff ((n:ℝ)+1) z*radialJet q s amplitude t (x,z)‖^2=0
+    change ‖modularCuspCutoff ((n:ℝ)+1) z*radialJet q s amplitude t (x,z)‖^(2 : ℕ)=0
     rw [(native_left_jets_zero q s amplitude t (x,z) hxl).2.1,mul_zero,norm_zero,zero_pow (by simp : (2:ℕ)≠0)]
   have hPl : ∀ x < -max t 0-1, radialPair q s amplitude t n (x,z)=0 := by
     intro x hxl
     simp only [radialPair,(native_left_jets_zero q s amplitude t (x,z) hxl).1,mul_zero,Complex.zero_re]
   rw [(radial_integral_from_interval hR t hRl).2,(radial_integral_from_interval hP t hPl).2]
-  have hRP (x : ℝ) : radialPair q s amplitude t n (x,z) = ‖c‖^2*(conj (W x)*deriv (deriv W) x).re :=
+  have hRP (x : ℝ) : radialPair q s amplitude t n (x,z) = ‖c‖^(2 : ℕ)*(conj (W x)*deriv (deriv W) x).re :=
     real_cutoff_pair c (W x) (deriv (deriv W) x) hc
-  have hRE (x : ℝ) : nativeJointRadialCutoffEnergy q s amplitude t n (x,z) = ‖c‖^2*‖deriv W x‖^2 := by
-    change ‖c*deriv W x‖^2 = ‖c‖^2*‖deriv W x‖^2
+  have hRE (x : ℝ) : nativeJointRadialCutoffEnergy q s amplitude t n (x,z) = ‖c‖^(2 : ℕ)*‖deriv W x‖^(2 : ℕ) := by
+    change ‖c*deriv W x‖^(2 : ℕ) = ‖c‖^(2 : ℕ)*‖deriv W x‖^(2 : ℕ)
     rw [norm_mul,mul_pow]
   simp_rw [hRE,hRP]
   rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_const_mul]
@@ -496,7 +496,7 @@ private theorem native_radial_row_energy (q : XiZeroCopy) (s amplitude : ℂ) (t
   change (∫ x in (-max t 0-1)..0, (conj (W x)*deriv (deriv W) x).re) =
     (∫ x in (-max t 0-1)..0, conj (W x)*deriv (deriv W) x).re at hr
   have hE := nativeResidualTimePrimitive_radial_energy q s amplitude t z.re (Real.log z.im)
-  change (∫ x in (-max t 0-1)..0, ‖deriv W x‖^2) =
+  change (∫ x in (-max t 0-1)..0, ‖deriv W x‖^(2 : ℕ)) =
     -(∫ x in (-max t 0-1)..0, conj (W x)*deriv (deriv W) x).re at hE
   rw [hr,hE]
   ring
@@ -509,34 +509,34 @@ private theorem native_radial_pair_integrable (q : XiZeroCopy) (s amplitude : �
 private theorem native_angular_pair_integrable (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ) :
     Integrable (angularPair q s amplitude t n) (radialMeasure.prod D4BMModularCore.measure) := by
   have hC : Continuous (fun p : ℝ × UpperHalfPlane =>
-      laplacianJet q s amplitude t p/((Real.cosh p.1^2:ℝ):ℂ)) :=
+      laplacianJet q s amplitude t p/((Real.cosh p.1^(2 : ℕ):ℝ):ℂ)) :=
     (jointJets_continuous q s amplitude t).2.2.2.2.2.div (by fun_prop)
       (fun p => by exact_mod_cast pow_ne_zero 2 (Real.cosh_pos p.1).ne')
   apply (native_joint_cutoff_pairing_integrable q s amplitude t n _ hC).re.congr
   filter_upwards [] with p
-  change (conj (laplacianJet q s amplitude t p/((Real.cosh p.1^2:ℝ):ℂ))*
-    modularCuspCutoff ((n:ℝ)+1) p.2^2*nativeJointTimePrimitiveField q s amplitude t p).re = _
+  change (conj (laplacianJet q s amplitude t p/((Real.cosh p.1^(2 : ℕ):ℝ):ℂ))*
+    modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*nativeJointTimePrimitiveField q s amplitude t p).re = _
   rw [map_div₀,Complex.conj_ofReal,div_mul_eq_mul_div,div_mul_eq_mul_div,Complex.div_ofReal_re]
 
 private theorem native_angular_row_energy (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
     (x : ℝ) :
     (∫ z, nativeJointAngularCutoffEnergy q s amplitude t n (x,z) ∂D4BMModularCore.measure) =
       -(∫ z, angularPair q s amplitude t n (x,z) ∂D4BMModularCore.measure) +
-      ∫ z, nativeJointCutoffError q s amplitude t n (x,z)/Real.cosh x^2 ∂D4BMModularCore.measure := by
+      ∫ z, nativeJointCutoffError q s amplitude t n (x,z)/Real.cosh x^(2 : ℕ) ∂D4BMModularCore.measure := by
   let W := globalNativeTimePrimitive q s amplitude t x
   let g := nativeTimePrimitiveCutoff q s amplitude t x n 1
   let P := fun z => conj (chartLaplacian W z)*g.field z
   let err := fun z : UpperHalfPlane => ∑ i : Fin 2,
-    ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) z*W z‖^2
+    ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) z*W z‖^(2 : ℕ)
   obtain ⟨hE,herr,henergy⟩ := nativeTimePrimitive_compact_angular_localization q s amplitude t x n
   have hP := (nativeTimePrimitive_compact_angular_green q s amplitude t x n).2.1
   have heP : (fun z => angularPair q s amplitude t n (x,z)) =ᵐ[D4BMModularCore.measure]
-      (fun z => (P z).re/Real.cosh x^2) := by
+      (fun z => (P z).re/Real.cosh x^(2 : ℕ)) := by
     filter_upwards [ae_restrict_mem ModularGroup.isClosed_fd.measurableSet] with z hz
     have hW := (globalNativeTimePrimitive_germ q s amplitude t x z hz).eq_of_nhds
     have hL := nativeTimePrimitive_chart_laplacian q s amplitude t x z hz
-    change (conj (laplacianJet q s amplitude t (x,z))*modularCuspCutoff ((n:ℝ)+1) z^2*
-      nativeJointTimePrimitiveField q s amplitude t (x,z)).re/Real.cosh x^2 = _
+    change (conj (laplacianJet q s amplitude t (x,z))*modularCuspCutoff ((n:ℝ)+1) z^(2 : ℕ)*
+      nativeJointTimePrimitiveField q s amplitude t (x,z)).re/Real.cosh x^(2 : ℕ) = _
     dsimp only [P,g,nativeTimePrimitiveCutoff,W]
     rw [hL,hW]
     simp only [Nat.reduceAdd,nativeJointTimePrimitiveField]
@@ -548,18 +548,18 @@ private theorem native_angular_row_energy (q : XiZeroCopy) (s amplitude : ℂ) (
     rw [show W z = nativeJointTimePrimitiveField q s amplitude t (x,z) from
       (globalNativeTimePrimitive_germ q s amplitude t x z hz).eq_of_nhds]
     rfl
-  have heEw : (fun z => nativeJointCutoffError q s amplitude t n (x,z)/Real.cosh x^2) =ᵐ[D4BMModularCore.measure]
-      (fun z => err z/Real.cosh x^2) := by
+  have heEw : (fun z => nativeJointCutoffError q s amplitude t n (x,z)/Real.cosh x^(2 : ℕ)) =ᵐ[D4BMModularCore.measure]
+      (fun z => err z/Real.cosh x^(2 : ℕ)) := by
     filter_upwards [heE] with z hz
     rw [hz]
   have hPr := complex_integral_re (f := P) hP
   change (∫ z, (∑ i : Fin 2, ‖weightedDeriv (direction i)
-    (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z‖^2)/Real.cosh x^2
+    (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z‖^(2 : ℕ))/Real.cosh x^(2 : ℕ)
       ∂D4BMModularCore.measure) = _
   rw [integral_div,integral_congr_ae heP,integral_div,
     integral_congr_ae heEw,integral_div,hPr]
-  change _ = -((∫ z, P z ∂D4BMModularCore.measure).re/Real.cosh x^2) +
-    (∫ z, err z ∂D4BMModularCore.measure)/Real.cosh x^2
+  change _ = -((∫ z, P z ∂D4BMModularCore.measure).re/Real.cosh x^(2 : ℕ)) +
+    (∫ z, err z ∂D4BMModularCore.measure)/Real.cosh x^(2 : ℕ)
   rw [henergy]
   ring
 
@@ -579,24 +579,24 @@ theorem nativeTimePrimitive_compact_joint_energy (q : XiZeroCopy) (s amplitude :
     Integrable (nativeJointAngularCutoffEnergy q s amplitude t n)
       (radialMeasure.prod D4BMModularCore.measure) ∧
     Integrable (fun p : ℝ × UpperHalfPlane => conj (nativeJointEllipticForcing q s amplitude t p)*
-      modularCuspCutoff ((n:ℝ)+1) p.2^2*nativeJointTimePrimitiveField q s amplitude t p)
+      modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*nativeJointTimePrimitiveField q s amplitude t p)
       (radialMeasure.prod D4BMModularCore.measure) ∧
     (∫ p, nativeJointRadialCutoffEnergy q s amplitude t n p+
       nativeJointAngularCutoffEnergy q s amplitude t n p
       ∂radialMeasure.prod D4BMModularCore.measure) =
       (∫ p : ℝ × UpperHalfPlane, conj (nativeJointEllipticForcing q s amplitude t p)*
-        modularCuspCutoff ((n:ℝ)+1) p.2^2*nativeJointTimePrimitiveField q s amplitude t p
+        modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*nativeJointTimePrimitiveField q s amplitude t p
         ∂radialMeasure.prod D4BMModularCore.measure).re +
-      ∫ p : ℝ × UpperHalfPlane, nativeJointCutoffError q s amplitude t n p/Real.cosh p.1^2
+      ∫ p : ℝ × UpperHalfPlane, nativeJointCutoffError q s amplitude t n p/Real.cosh p.1^(2 : ℕ)
         ∂radialMeasure.prod D4BMModularCore.measure := by
   let μ := radialMeasure.prod D4BMModularCore.measure
   let R := nativeJointRadialCutoffEnergy q s amplitude t n
   let A := nativeJointAngularCutoffEnergy q s amplitude t n
   let P := radialPair q s amplitude t n
   let Q := angularPair q s amplitude t n
-  let err := fun p : ℝ × UpperHalfPlane => nativeJointCutoffError q s amplitude t n p/Real.cosh p.1^2
+  let err := fun p : ℝ × UpperHalfPlane => nativeJointCutoffError q s amplitude t n p/Real.cosh p.1^(2 : ℕ)
   let S := fun p : ℝ × UpperHalfPlane => conj (nativeJointEllipticForcing q s amplitude t p)*
-    modularCuspCutoff ((n:ℝ)+1) p.2^2*nativeJointTimePrimitiveField q s amplitude t p
+    modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*nativeJointTimePrimitiveField q s amplitude t p
   have hR := native_joint_radial_energy_integrable q s amplitude t n
   have hA := native_joint_angular_energy_integrable q s amplitude t n
   have hP := native_radial_pair_integrable q s amplitude t n
@@ -605,13 +605,13 @@ theorem nativeTimePrimitive_compact_joint_energy (q : XiZeroCopy) (s amplitude :
   have hfd : ∀ᵐ p : ℝ × UpperHalfPlane ∂μ, p.2 ∈ ModularGroup.fd :=
     Measure.quasiMeasurePreserving_snd.ae (ae_restrict_mem ModularGroup.isClosed_fd.measurableSet)
   have hG (p : ℝ × UpperHalfPlane) (hp : p.2 ∈ ModularGroup.fd) :
-      -radialSecondJet q s amplitude t p-laplacianJet q s amplitude t p/((Real.cosh p.1^2:ℝ):ℂ) =
+      -radialSecondJet q s amplitude t p-laplacianJet q s amplitude t p/((Real.cosh p.1^(2 : ℕ):ℝ):ℂ) =
         nativeJointEllipticForcing q s amplitude t p := by
     have h := nativeTimePrimitive_original_elliptic_equation q s amplitude t p.1 p.2 hp
     rw [nativeTimePrimitive_chart_laplacian q s amplitude t p.1 p.2 hp] at h
     simpa only [Complex.ofReal_pow] using h
   have hC : Continuous (fun p : ℝ × UpperHalfPlane =>
-      -radialSecondJet q s amplitude t p-laplacianJet q s amplitude t p/((Real.cosh p.1^2:ℝ):ℂ)) :=
+      -radialSecondJet q s amplitude t p-laplacianJet q s amplitude t p/((Real.cosh p.1^(2 : ℕ):ℝ):ℂ)) :=
     (jointJets_continuous q s amplitude t).2.2.1.neg.sub
       ((jointJets_continuous q s amplitude t).2.2.2.2.2.div (by fun_prop)
         (fun p => by exact_mod_cast pow_ne_zero 2 (Real.cosh_pos p.1).ne'))
@@ -638,13 +638,13 @@ theorem nativeTimePrimitive_compact_joint_energy (q : XiZeroCopy) (s amplitude :
     filter_upwards [hfd] with p hp
     dsimp only [S]
     rw [← hG p hp]
-    change -((conj (radialSecondJet q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^2*
+    change -((conj (radialSecondJet q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*
       nativeJointTimePrimitiveField q s amplitude t p).re+
-      (conj (laplacianJet q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^2*
-        nativeJointTimePrimitiveField q s amplitude t p).re/Real.cosh p.1^2) = _
+      (conj (laplacianJet q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*
+        nativeJointTimePrimitiveField q s amplitude t p).re/Real.cosh p.1^(2 : ℕ)) = _
     simp only [mul_assoc]
     have hh := real_elliptic_pair (radialSecondJet q s amplitude t p) (laplacianJet q s amplitude t p)
-      (modularCuspCutoff ((n:ℝ)+1) p.2^2*nativeJointTimePrimitiveField q s amplitude t p) (Real.cosh p.1^2)
+      (modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*nativeJointTimePrimitiveField q s amplitude t p) (Real.cosh p.1^(2 : ℕ))
     linarith only [hh]
   have hi := integral_congr_ae he
   rw [integral_neg,integral_add hP hQ,complex_integral_re hS] at hi
@@ -658,14 +658,14 @@ theorem nativeTimePrimitive_forcing_pairing_limit (q : XiZeroCopy) (s amplitude 
     Integrable (fun p : ℝ × UpperHalfPlane => conj (nativeJointEllipticForcing q s amplitude t p)*
       nativeJointTimePrimitiveField q s amplitude t p) (radialMeasure.prod D4BMModularCore.measure) ∧
     Tendsto (fun n : ℕ => ∫ p : ℝ × UpperHalfPlane,
-      conj (nativeJointEllipticForcing q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^2*
+      conj (nativeJointEllipticForcing q s amplitude t p)*modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*
       nativeJointTimePrimitiveField q s amplitude t p ∂radialMeasure.prod D4BMModularCore.measure)
       atTop (𝓝 (∫ p : ℝ × UpperHalfPlane, conj (nativeJointEllipticForcing q s amplitude t p)*
         nativeJointTimePrimitiveField q s amplitude t p ∂radialMeasure.prod D4BMModularCore.measure)) := by
   let μ := radialMeasure.prod D4BMModularCore.measure
   let W := nativeJointTimePrimitiveField q s amplitude t
   let G := nativeJointEllipticForcing q s amplitude t
-  let M := fun p => ‖G p‖^2+‖W p‖^2
+  let M := fun p => ‖G p‖^(2 : ℕ)+‖W p‖^(2 : ℕ)
   have hW := nativeJointTimePrimitiveField_memLp q s amplitude t
   have hG := nativeJointEllipticForcing_memLp q s amplitude t
   have hM : Integrable M μ := hG.norm.integrable_sq.add hW.norm.integrable_sq
@@ -673,10 +673,10 @@ theorem nativeTimePrimitive_forcing_pairing_limit (q : XiZeroCopy) (s amplitude 
     dsimp only [M]
     nlinarith [sq_nonneg (‖G p‖-‖W p‖),sq_nonneg ‖G p‖,sq_nonneg ‖W p‖]
   have hb (n : ℕ) (p : ℝ × UpperHalfPlane) :
-      ‖conj (G p)*modularCuspCutoff ((n:ℝ)+1) p.2^2*W p‖ ≤ M p := by
+      ‖conj (G p)*modularCuspCutoff ((n:ℝ)+1) p.2^(2 : ℕ)*W p‖ ≤ M p := by
     rw [norm_mul,norm_mul,norm_pow,Complex.norm_conj]
     have he := modularCuspCutoff_norm_le_one ((n:ℝ)+1) p.2
-    have he2 : ‖modularCuspCutoff ((n:ℝ)+1) p.2‖^2 ≤ 1 := by
+    have he2 : ‖modularCuspCutoff ((n:ℝ)+1) p.2‖^(2 : ℕ) ≤ 1 := by
       nlinarith [norm_nonneg (modularCuspCutoff ((n:ℝ)+1) p.2)]
     calc
       _ ≤ ‖G p‖*1*‖W p‖ := mul_le_mul_of_nonneg_right
@@ -748,14 +748,14 @@ private theorem nonnegative_integral_limit {α : Type*} [MeasurableSpace α] {μ
 primitive, with the original sech² radial weight. -/
 def nativeJointGradientEnergy (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ)
     (p : ℝ × UpperHalfPlane) : ℝ :=
-  ‖deriv (fun x => nativeResidualTimePrimitive q s amplitude t x p.2.re (Real.log p.2.im)) p.1‖^2 +
+  ‖deriv (fun x => nativeResidualTimePrimitive q s amplitude t x p.2.re (Real.log p.2.im)) p.1‖^(2 : ℕ) +
     (∑ i : Fin 2, ‖weightedDeriv (direction i)
-      (globalNativeTimePrimitive q s amplitude t p.1) p.2‖^2)/Real.cosh p.1^2
+      (globalNativeTimePrimitive q s amplitude t p.1) p.2‖^(2 : ℕ))/Real.cosh p.1^(2 : ℕ)
 
 private theorem gradient_energy_chart (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ)
     (p : ℝ × UpperHalfPlane) (hp : p.2 ∈ ModularGroup.fd) :
-    nativeJointGradientEnergy q s amplitude t p = ‖radialJet q s amplitude t p‖^2+
-      (‖horizontalJet q s amplitude t p‖^2+‖heightJet q s amplitude t p‖^2)/Real.cosh p.1^2 := by
+    nativeJointGradientEnergy q s amplitude t p = ‖radialJet q s amplitude t p‖^(2 : ℕ)+
+      (‖horizontalJet q s amplitude t p‖^(2 : ℕ)+‖heightJet q s amplitude t p‖^(2 : ℕ))/Real.cosh p.1^(2 : ℕ) := by
   unfold nativeJointGradientEnergy
   simp only [Fin.sum_univ_two,direction,Matrix.cons_val_zero,Matrix.cons_val_one]
   rw [(nativeTimePrimitive_frame_derivatives q s amplitude t p.1 p.2 hp).1,
@@ -765,8 +765,8 @@ private theorem gradient_energy_measurable (q : XiZeroCopy) (s amplitude : ℂ) 
     AEStronglyMeasurable (nativeJointGradientEnergy q s amplitude t)
       (radialMeasure.prod D4BMModularCore.measure) := by
   have hj := jointJets_continuous q s amplitude t
-  have hc : Continuous (fun p => ‖radialJet q s amplitude t p‖^2+
-      (‖horizontalJet q s amplitude t p‖^2+‖heightJet q s amplitude t p‖^2)/Real.cosh p.1^2) :=
+  have hc : Continuous (fun p => ‖radialJet q s amplitude t p‖^(2 : ℕ)+
+      (‖horizontalJet q s amplitude t p‖^(2 : ℕ)+‖heightJet q s amplitude t p‖^(2 : ℕ))/Real.cosh p.1^(2 : ℕ)) :=
     (hj.2.1.norm.pow 2).add (((hj.2.2.2.1.norm.pow 2).add (hj.2.2.2.2.1.norm.pow 2)).div
       (by fun_prop) (fun p => pow_ne_zero 2 (Real.cosh_pos p.1).ne'))
   apply hc.aestronglyMeasurable.congr
@@ -819,7 +819,7 @@ theorem nativeTimePrimitive_gradient_energy_integrable (q : XiZeroCopy) (s ampli
   exact hn.symm
 
 private theorem square_cutoff_product_bound (c a b : ℂ) (hc : ‖c‖ ≤ 1) :
-    ‖a+c*b‖^2 ≤ 2*‖a‖^2+2*‖b‖^2 := by
+    ‖a+c*b‖^(2 : ℕ) ≤ 2*‖a‖^(2 : ℕ)+2*‖b‖^(2 : ℕ) := by
   have hcb : ‖c*b‖ ≤ ‖b‖ := by
     rw [norm_mul]
     simpa only [one_mul] using mul_le_mul_of_nonneg_right hc (norm_nonneg b)
@@ -832,7 +832,7 @@ private theorem cutoff_energy_complement_nonnegative (q : XiZeroCopy) (s amplitu
     nativeJointRadialCutoffEnergy q s amplitude t n p+
       nativeJointAngularCutoffEnergy q s amplitude t n p ≤
       2*nativeJointGradientEnergy q s amplitude t p+
-        2*(nativeJointCutoffError q s amplitude t n p/Real.cosh p.1^2) := by
+        2*(nativeJointCutoffError q s amplitude t n p/Real.cosh p.1^(2 : ℕ)) := by
   let c := modularCuspCutoff ((n:ℝ)+1) p.2
   let a := weightedDeriv 1 (modularCuspCutoff ((n:ℝ)+1)) p.2*
     nativeJointTimePrimitiveField q s amplitude t p
@@ -841,11 +841,11 @@ private theorem cutoff_energy_complement_nonnegative (q : XiZeroCopy) (s amplitu
   let h := horizontalJet q s amplitude t p
   let k := heightJet q s amplitude t p
   let r := radialJet q s amplitude t p
-  let d := Real.cosh p.1^2
+  let d := Real.cosh p.1^(2 : ℕ)
   have hc : ‖c‖ ≤ 1 := modularCuspCutoff_norm_le_one _ _
-  have hr : ‖c*r‖^2 ≤ ‖r‖^2 := by
+  have hr : ‖c*r‖^(2 : ℕ) ≤ ‖r‖^(2 : ℕ) := by
     rw [norm_mul,mul_pow]
-    have hc2 : ‖c‖^2 ≤ 1 := by nlinarith [norm_nonneg c]
+    have hc2 : ‖c‖^(2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg c]
     simpa only [one_mul] using mul_le_mul_of_nonneg_right hc2 (sq_nonneg ‖r‖)
   have ha := square_cutoff_product_bound c a h hc
   have hb := square_cutoff_product_bound c b k hc
@@ -855,14 +855,14 @@ private theorem cutoff_energy_complement_nonnegative (q : XiZeroCopy) (s amplitu
     Matrix.cons_val_zero,Matrix.cons_val_one]
   rw [(native_cutoff_frame q s amplitude t p.1 n p.2 hp).1,
     (native_cutoff_frame q s amplitude t p.1 n p.2 hp).2]
-  change ‖c*r‖^2+(‖a+c*h‖^2+‖b+c*k‖^2)/d ≤
-    2*(‖r‖^2+(‖h‖^2+‖k‖^2)/d)+2*((‖a‖^2+‖b‖^2)/d)
+  change ‖c*r‖^(2 : ℕ)+(‖a+c*h‖^(2 : ℕ)+‖b+c*k‖^(2 : ℕ))/d ≤
+    2*(‖r‖^(2 : ℕ)+(‖h‖^(2 : ℕ)+‖k‖^(2 : ℕ))/d)+2*((‖a‖^(2 : ℕ)+‖b‖^(2 : ℕ))/d)
   calc
-    _ ≤ ‖r‖^2+((2*‖a‖^2+2*‖h‖^2)+(2*‖b‖^2+2*‖k‖^2))/d :=
+    _ ≤ ‖r‖^(2 : ℕ)+((2*‖a‖^(2 : ℕ)+2*‖h‖^(2 : ℕ))+(2*‖b‖^(2 : ℕ)+2*‖k‖^(2 : ℕ)))/d :=
       add_le_add hr (div_le_div_of_nonneg_right (add_le_add ha hb) hd)
     _ ≤ _ := by
-      have he : ‖r‖^2+((2*‖a‖^2+2*‖h‖^2)+(2*‖b‖^2+2*‖k‖^2))/d =
-          2*(‖r‖^2+(‖h‖^2+‖k‖^2)/d)+2*((‖a‖^2+‖b‖^2)/d)-‖r‖^2 := by ring
+      have he : ‖r‖^(2 : ℕ)+((2*‖a‖^(2 : ℕ)+2*‖h‖^(2 : ℕ))+(2*‖b‖^(2 : ℕ)+2*‖k‖^(2 : ℕ)))/d =
+          2*(‖r‖^(2 : ℕ)+(‖h‖^(2 : ℕ)+‖k‖^(2 : ℕ))/d)+2*((‖a‖^(2 : ℕ)+‖b‖^(2 : ℕ))/d)-‖r‖^(2 : ℕ) := by ring
       rw [he]
       exact sub_le_self _ (sq_nonneg _)
 
@@ -877,7 +877,7 @@ theorem nativeTimePrimitive_global_energy (q : XiZeroCopy) (s amplitude : ℂ) (
   let E := nativeJointGradientEnergy q s amplitude t
   let F := fun n p => nativeJointRadialCutoffEnergy q s amplitude t n p+
     nativeJointAngularCutoffEnergy q s amplitude t n p
-  let e := fun n (p : ℝ × UpperHalfPlane) => nativeJointCutoffError q s amplitude t n p/Real.cosh p.1^2
+  let e := fun n (p : ℝ × UpperHalfPlane) => nativeJointCutoffError q s amplitude t n p/Real.cosh p.1^(2 : ℕ)
   let L := (∫ p : ℝ × UpperHalfPlane, conj (nativeJointEllipticForcing q s amplitude t p)*
     nativeJointTimePrimitiveField q s amplitude t p ∂μ).re
   have hE : Integrable E μ := (nativeTimePrimitive_gradient_energy_integrable q s amplitude t).1

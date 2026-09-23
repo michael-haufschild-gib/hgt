@@ -161,8 +161,8 @@ theorem thetaSourceArithmeticHermiteStage_of_realDivisor
   intro p
   change 0 ≤ (finiteMatrixUnweightedTraceHankel M p).re
   rw [finiteMatrixUnweightedTraceHankel_eq_schur hU1 hU2 hT hMT]
-  have hsum : (∑ i, evalRealPolynomial p (T i i) ^ 2).re =
-      ∑ i, (evalRealPolynomial p (T i i) ^ 2).re := by simp
+  have hsum : (∑ i, evalRealPolynomial p (T i i) ^ (2 : ℕ)).re =
+      ∑ i, (evalRealPolynomial p (T i i) ^ (2 : ℕ)).re := by simp
   rw [hsum]
   apply Finset.sum_nonneg
   intro i hi
@@ -205,8 +205,8 @@ theorem thetaSourceArithmeticHermiteWindowStage_iff_hermiteStage (k : ℕ) :
     intro p
     change 0 ≤ (finiteMatrixUnweightedTraceHankel M p).re
     rw [finiteMatrixUnweightedTraceHankel_eq_schur hU1 hU2 hT hMT]
-    have hsum : (∑ i, evalRealPolynomial p (T i i) ^ 2).re =
-        ∑ i, (evalRealPolynomial p (T i i) ^ 2).re := by simp
+    have hsum : (∑ i, evalRealPolynomial p (T i i) ^ (2 : ℕ)).re =
+        ∑ i, (evalRealPolynomial p (T i i) ^ (2 : ℕ)).re := by simp
     rw [hsum]
     apply Finset.sum_nonneg
     intro i hi

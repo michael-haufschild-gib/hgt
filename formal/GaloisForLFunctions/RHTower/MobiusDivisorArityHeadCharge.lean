@@ -16,7 +16,7 @@ namespace RHTower
 
 /-- Arity energy completed by the literal signed head square. -/
 def mobiusDivisorArityHeadEnergy (M : ℕ) (P : Finset ℕ) : ℝ :=
-  mobiusDivisorArityEnergy M P + (mobiusDivisorSelectionFibre M P ∅)^2
+  mobiusDivisorArityEnergy M P + (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)
 
 /-- The signed arity charge coupled to the literal head--singleton interaction. -/
 def mobiusDivisorArityHeadCharge (M : ℕ) (P : Finset ℕ) (p : ℕ) : ℝ :=
@@ -30,7 +30,7 @@ theorem mobiusDivisorArityHeadEnergy_insert (M : ℕ) (P : Finset ℕ) {p : ℕ}
     mobiusDivisorArityHeadEnergy M (insert p P) - mobiusDivisorArityHeadEnergy M P =
       mobiusDivisorArityHeadCharge M P p -
         ∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase p).powerset.erase ∅,
-          (mobiusDivisorSelectionFibre M P (insert p R))^2 := by
+          (mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ) := by
   have harity := mobiusDivisorArityEnergy_insert M P hp
   have hhead : mobiusDivisorSelectionFibre M (insert p P) ∅ =
       mobiusDivisorSelectionFibre M P ∅ + mobiusDivisorSelectionFibre M P {p} := by
@@ -38,7 +38,7 @@ theorem mobiusDivisorArityHeadEnergy_insert (M : ℕ) (P : Finset ℕ) {p : ℕ}
     simp
   have hsplit := sum_erase_add
     (s := ((mobiusDivisorSelectionPrimes M).erase p).powerset)
-    (f := fun R => (mobiusDivisorSelectionFibre M P (insert p R))^2)
+    (f := fun R => (mobiusDivisorSelectionFibre M P (insert p R))^(2 : ℕ))
     (a := ∅) (by simp)
   simp only [insert_empty_eq] at hsplit
   unfold mobiusDivisorArityHeadEnergy mobiusDivisorArityHeadCharge
@@ -53,7 +53,7 @@ theorem mobiusDivisorArityHeadEnergy_history_balance (M : ℕ) (P : Finset ℕ)
     (∑ k ∈ range n,
       ∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase (q k)).powerset.erase ∅,
         (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q k)
-          (insert (q k) R))^2) =
+          (insert (q k) R))^(2 : ℕ)) =
       mobiusDivisorArityHeadEnergy M P -
         mobiusDivisorArityHeadEnergy M (mobiusDivisorArityHistory P q n) +
       ∑ k ∈ range n,
@@ -69,7 +69,7 @@ theorem mobiusDivisorArityHeadEnergy_history_balance (M : ℕ) (P : Finset ℕ)
         ∑ k ∈ range n,
           ∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase (q k)).powerset.erase ∅,
             (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q k)
-              (insert (q k) R))^2 := by
+              (insert (q k) R))^(2 : ℕ) := by
     rw [← Finset.sum_sub_distrib]
     apply sum_congr rfl
     intro k hk
@@ -82,7 +82,7 @@ theorem mobiusDivisorArityHeadEnergy_history_balance (M : ℕ) (P : Finset ℕ)
 terminal signed head square. -/
 theorem mobiusDivisorArityHeadEnergy_of_complete (M : ℕ) (P : Finset ℕ)
     (hP : mobiusDivisorSelectionPrimes M ⊆ P) :
-    mobiusDivisorArityHeadEnergy M P = (mobiusDivisorSelectionFibre M P ∅)^2 := by
+    mobiusDivisorArityHeadEnergy M P = (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ) := by
   unfold mobiusDivisorArityHeadEnergy
   rw [mobiusDivisorArityEnergy_of_complete M P hP]
   ring
@@ -93,11 +93,11 @@ the accumulated coupled signed charge. -/
 theorem mobiusDivisorArityHeadEnergy_complete_history_balance (M : ℕ) (P : Finset ℕ)
     (q : ℕ → ℕ) (n : ℕ) (hq : ∀ k < n, q k ∈ mobiusDivisorSelectionPrimes M)
     (hcomplete : mobiusDivisorSelectionPrimes M ⊆ mobiusDivisorArityHistory P q n) :
-    (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q n) ∅)^2 +
+    (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q n) ∅)^(2 : ℕ) +
       (∑ k ∈ range n,
         ∑ R ∈ ((mobiusDivisorSelectionPrimes M).erase (q k)).powerset.erase ∅,
           (mobiusDivisorSelectionFibre M (mobiusDivisorArityHistory P q k)
-            (insert (q k) R))^2) =
+            (insert (q k) R))^(2 : ℕ)) =
       mobiusDivisorArityHeadEnergy M P +
         ∑ k ∈ range n,
           mobiusDivisorArityHeadCharge M (mobiusDivisorArityHistory P q k) (q k) := by

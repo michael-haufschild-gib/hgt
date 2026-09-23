@@ -43,7 +43,7 @@ theorem cuspHorizontalNormMean_measurable (F : UpperHalfPlane → ℂ) (hf : Mea
 theorem modularStrip_integrable_of_norm_mean (F : UpperHalfPlane → ℂ) (hf : Measurable F)
     (hline : ∀ y : ℝ, 0 < y →
       IntegrableOn (fun x : ℝ => F (ofComplex (⟨x,y⟩:ℂ))) (Ico (0:ℝ) 1))
-    (hmean : IntegrableOn (fun y : ℝ => (y^2)⁻¹*
+    (hmean : IntegrableOn (fun y : ℝ => (y^(2 : ℕ))⁻¹*
       ∫ x in Ico (0:ℝ) 1, ‖F (ofComplex (⟨x,y⟩:ℂ))‖) (Ioi (0:ℝ))) :
     IntegrableOn F modularStrip volume := by
   rw [integrableOn_modularStrip_iff,Measure.volume_eq_prod,IntegrableOn,← Measure.prod_restrict]
@@ -51,11 +51,11 @@ theorem modularStrip_integrable_of_norm_mean (F : UpperHalfPlane → ℂ) (hf : 
   constructor
   · apply ae_restrict_of_forall_mem measurableSet_Ioi
     intro y hy
-    exact (hline y hy).smul ((y^2)⁻¹)
+    exact (hline y hy).smul ((y^(2 : ℕ))⁻¹)
   · apply hmean.congr_fun _ measurableSet_Ioi
     intro y _
     simp only [stripChartIntegrand,norm_smul,Real.norm_eq_abs,
-      abs_of_nonneg (by positivity : (0:ℝ) ≤ (y^2)⁻¹),integral_const_mul]
+      abs_of_nonneg (by positivity : (0:ℝ) ≤ (y^(2 : ℕ))⁻¹),integral_const_mul]
 
 end
 end RHTower.D4BMModularCore

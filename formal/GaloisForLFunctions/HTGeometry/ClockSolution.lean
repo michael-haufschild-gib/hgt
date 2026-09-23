@@ -29,13 +29,13 @@ theorem summable_clockIterate {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : �
     (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / (ρ₀ - ρ) ^ 2 < 1)
+    (hsmall : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / (ρ₀ - ρ) ^ (2 : ℕ) < 1)
     {s t : ℝ} (hsT : |s| ≤ T) (htT : |t| ≤ T)
     {z : ℂ} (hz : |z.im| ≤ ρ) :
     Summable fun m : ℕ => clockIterate V m s t z := by
-  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hG : (0 : ℝ) < ρ₀ - ρ := by linarith
-  have hmaj := summable_ovsyannikov_bound (K := 4 + Mv * ρ₀ ^ 2 / 4) (G := ρ₀ - ρ) (T := T)
+  have hmaj := summable_ovsyannikov_bound (K := 4 + Mv * ρ₀ ^ (2 : ℕ) / 4) (G := ρ₀ - ρ) (T := T)
     hK0 hG hT hsmall
   refine Summable.of_norm_bounded hmaj fun m => ?_
   have hbase := clockIterate_norm_le hρ₀ hV hMv0 hMv m ρ hρ0 hρ s t hsT htT z hz

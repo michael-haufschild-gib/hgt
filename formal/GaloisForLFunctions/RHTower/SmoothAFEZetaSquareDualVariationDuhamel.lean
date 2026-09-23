@@ -541,7 +541,7 @@ theorem exists_integral_Icc_normSq_smoothAFEZetaSquareDualVariationSourceField_l
                 ((N : ℝ) / 2)) := by ring)
 
 /-- Exponent-normalized source law. The literal square-dual variation contributes only
-`N log^3 N + N^(201/200)` to the dyadic fourth-moment scale. -/
+`N log^(3 : ℕ) N + N^(201/200)` to the dyadic fourth-moment scale. -/
 theorem exists_integral_Icc_normSq_smoothAFEZetaSquareDualVariationSourceField_le_logCube_add_rpow :
     ∃ A K : ℝ, 0 ≤ A ∧ 0 ≤ K ∧ ∀ {N : ℕ}, 4 ≤ N →
       (∫ t in Set.Icc (N : ℝ) (2 * N : ℝ),

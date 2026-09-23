@@ -48,7 +48,7 @@ theorem gomesSSHAdjointMass_kernel (u v theta : ℝ) (x : Fin 3 → ℝ) :
 theorem gomesSSHAdjointMass_characteristic (u v theta mu : ℝ) :
     Matrix.det (mu • (1 : Matrix (Fin 3) (Fin 3) ℝ) -
       gomesPauliAdjointMass (gomesSSHCarrier u v theta)) =
-        mu * (mu - coppoSSHGapSq u v theta)^2 := by
+        mu * (mu - coppoSSHGapSq u v theta)^(2 : ℕ) := by
   rw [gomesPauliAdjointMass_characteristic,gomesSSHCarrier_norm]
 
 /-- All adjoint masses vanish exactly when the SSH band gap closes. -/
@@ -67,7 +67,7 @@ theorem gomesSSHBloch_full_stabilizer (u v theta : ℝ) :
 theorem gomesSSHAdjointMass_boundary (u v : ℝ) :
     gomesPauliAdjointMass (gomesSSHCarrier u v Real.pi) = 0 ↔ u = v := by
   rw [gomesSSHAdjointMass_zero_iff]
-  have hgap : coppoSSHGapSq u v Real.pi = (u-v)^2 := by
+  have hgap : coppoSSHGapSq u v Real.pi = (u-v)^(2 : ℕ) := by
     simp [coppoSSHGapSq,Real.cos_pi]
     ring
   rw [hgap,sq_eq_zero_iff,sub_eq_zero]
@@ -88,7 +88,7 @@ theorem gomesQubitHamiltonian_carrier (b t : ℝ) :
 
 /-- Its spectral radius supplies the same squared carrier norm without positivity premises. -/
 theorem gomesQubitHamiltonian_carrier_norm (b t : ℝ) :
-    (![b,0,t] : Fin 3 → ℝ) ⬝ᵥ ![b,0,t] = qubitRadius b t ^ 2 := by
+    (![b,0,t] : Fin 3 → ℝ) ⬝ᵥ ![b,0,t] = qubitRadius b t ^ (2 : ℕ) := by
   rw [qubitRadius,Real.sq_sqrt (add_nonneg (sq_nonneg t) (sq_nonneg b))]
   simp [dotProduct,Fin.sum_univ_three]
   ring
@@ -102,7 +102,7 @@ theorem gomesQubitHamiltonian_mass_kernel (b t : ℝ) (x : Fin 3 → ℝ) :
 /-- The exact mass characteristic determinant is controlled by the existing qubit radius. -/
 theorem gomesQubitHamiltonian_mass_characteristic (b t mu : ℝ) :
     Matrix.det (mu • (1 : Matrix (Fin 3) (Fin 3) ℝ) - gomesPauliAdjointMass ![b,0,t]) =
-      mu * (mu - qubitRadius b t ^ 2)^2 := by
+      mu * (mu - qubitRadius b t ^ (2 : ℕ))^(2 : ℕ) := by
   rw [gomesPauliAdjointMass_characteristic,gomesQubitHamiltonian_carrier_norm]
 
 /-- Full infinitesimal qubit symmetry returns exactly when both Hamiltonian coordinates vanish. -/
@@ -115,7 +115,7 @@ theorem gomesQubitHamiltonian_full_stabilizer (b t : ℝ) :
 /-- The missing Y-axis is an explicit transverse mass mode of the XZ-plane Hamiltonian. -/
 theorem gomesQubitHamiltonian_mass_transverse (b t : ℝ) :
     gomesPauliAdjointMass ![b,0,t] *ᵥ ![0,1,0] =
-      qubitRadius b t ^ 2 • ![0,1,0] := by
+      qubitRadius b t ^ (2 : ℕ) • ![0,1,0] := by
   rw [gomesPauliAdjointMass_mulVec,gomesQubitHamiltonian_carrier_norm]
   have horth : (![b,0,t] : Fin 3 → ℝ) ⬝ᵥ ![0,1,0] = 0 := by
     simp [dotProduct,Fin.sum_univ_three]

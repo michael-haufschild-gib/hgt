@@ -148,14 +148,14 @@ theorem testTransform_ibp {ψ : ℝ → ℂ} (hψ : ContDiff ℝ 1 ψ) (hs : Has
 derivative. -/
 theorem testTransform_ibp_two {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ) (hs : HasCompactSupport ψ)
     (z : ℂ) :
-    testTransform ψ z * (Complex.I * z) ^ 2 = testTransform (deriv (deriv ψ)) z := by
+    testTransform ψ z * (Complex.I * z) ^ (2 : ℕ) = testTransform (deriv (deriv ψ)) z := by
   have hle : (1 : ℕ∞ω) ≤ ∞ := by exact_mod_cast le_top
   have hψ1 : ContDiff ℝ 1 ψ := hψ.of_le hle
   have hdψ : ContDiff ℝ ∞ (deriv ψ) := (contDiff_infty_iff_deriv.mp hψ).2
   have hdψ1 : ContDiff ℝ 1 (deriv ψ) := hdψ.of_le hle
   have e1 := testTransform_ibp hψ1 hs z
   have e2 := testTransform_ibp hdψ1 hs.deriv z
-  calc testTransform ψ z * (Complex.I * z) ^ 2
+  calc testTransform ψ z * (Complex.I * z) ^ (2 : ℕ)
       = testTransform ψ z * (Complex.I * z) * (Complex.I * z) := by ring
     _ = -testTransform (deriv ψ) z * (Complex.I * z) := by rw [e1]
     _ = -(testTransform (deriv ψ) z * (Complex.I * z)) := by ring
@@ -196,7 +196,7 @@ on each horizontal strip. -/
 theorem exists_testTransform_decay {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ) (hs : HasCompactSupport ψ)
     (a b : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ z : ℂ, z.im ∈ uIcc a b →
-      ‖testTransform ψ z‖ ≤ C / (1 + ‖z‖ ^ 2) := by
+      ‖testTransform ψ z‖ ≤ C / (1 + ‖z‖ ^ (2 : ℕ)) := by
   classical
   obtain ⟨r, hr⟩ := (Metric.isBounded_iff_subset_closedBall (0 : ℝ)).mp
     hs.isCompact.isBounded
@@ -244,15 +244,15 @@ theorem exists_testTransform_decay {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ
     have hb2 : ‖testTransform (deriv (deriv ψ)) z‖
         ≤ Real.exp (M * K) * ∫ L : ℝ, ‖deriv (deriv ψ) L‖ :=
       norm_testTransform_le_exp hgc hgs hM0 (hMsupp hgsub) z hzK
-    have hsq : ‖z‖ ^ 2 * ‖testTransform ψ z‖ = ‖testTransform (deriv (deriv ψ)) z‖ := by
+    have hsq : ‖z‖ ^ (2 : ℕ) * ‖testTransform ψ z‖ = ‖testTransform (deriv (deriv ψ)) z‖ := by
       have hkey := testTransform_ibp_two hψ hs z
-      have hnorm : ‖testTransform ψ z * (Complex.I * z) ^ 2‖
+      have hnorm : ‖testTransform ψ z * (Complex.I * z) ^ (2 : ℕ)‖
           = ‖testTransform (deriv (deriv ψ)) z‖ := by rw [hkey]
       rw [norm_mul, norm_pow, norm_mul, Complex.norm_I, one_mul] at hnorm
       rw [← hnorm]; ring
     rw [le_div_iff₀ (by positivity)]
-    calc ‖testTransform ψ z‖ * (1 + ‖z‖ ^ 2)
-        = ‖testTransform ψ z‖ + ‖z‖ ^ 2 * ‖testTransform ψ z‖ := by ring
+    calc ‖testTransform ψ z‖ * (1 + ‖z‖ ^ (2 : ℕ))
+        = ‖testTransform ψ z‖ + ‖z‖ ^ (2 : ℕ) * ‖testTransform ψ z‖ := by ring
       _ = ‖testTransform ψ z‖ + ‖testTransform (deriv (deriv ψ)) z‖ := by rw [hsq]
       _ ≤ (Real.exp (M * K) * ∫ L : ℝ, ‖ψ L‖)
             + Real.exp (M * K) * ∫ L : ℝ, ‖deriv (deriv ψ) L‖ := add_le_add hb1 hb2
@@ -301,7 +301,7 @@ theorem testTransformTwoPi_ofReal_line {ψ : ℝ → ℂ} (σ x : ℝ) :
 theorem exists_testTransformTwoPi_decay {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ)
     (hs : HasCompactSupport ψ) (a b : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ z : ℂ, z.im ∈ uIcc a b →
-      ‖testTransformTwoPi ψ z‖ ≤ C / (1 + ‖z‖ ^ 2) := by
+      ‖testTransformTwoPi ψ z‖ ≤ C / (1 + ‖z‖ ^ (2 : ℕ)) := by
   obtain ⟨C, hC0, hC⟩ := exists_testTransform_decay hψ hs (2 * Real.pi * a) (2 * Real.pi * b)
   refine ⟨C, hC0, fun z hz => ?_⟩
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity

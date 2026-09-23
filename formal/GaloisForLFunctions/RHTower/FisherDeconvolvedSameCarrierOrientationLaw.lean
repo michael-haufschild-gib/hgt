@@ -8,7 +8,7 @@ The ordinary comparison coefficient factors as
 `r_t(p) = d(p) * (1 + p^(-t))`,
 
 where `d` is the source-selected Euler--Fisher density.  This module moves `d` into one fixed
-weighted `ell^1` ideal.  The remaining normalized multiplier is then a coefficient-faithful
+weighted `ell^(1 : ℕ)` ideal.  The remaining normalized multiplier is then a coefficient-faithful
 quotient automorphism exactly in one horizontal chamber; its reflected multiplier is an
 automorphism in the opposite chamber.  Both descend on the same fixed carrier exactly at neutral
 grade.
@@ -24,7 +24,7 @@ noncomputable section
 
 /-! ## Fixed Fisher-weighted carrier -/
 
-/-- Preimage of literal prime `ell^1` under multiplication by the source Euler--Fisher density. -/
+/-- Preimage of literal prime `ell^(1 : ℕ)` under multiplication by the source Euler--Fisher density. -/
 def fisherWeightedPrimeL1Submodule : Submodule ℂ AllPrimeComplexSequence :=
   Submodule.comap
     (primeDiagonalMultiplier
@@ -47,7 +47,7 @@ theorem primeActivationOccupancyFisherDensity_pos' (p : Nat.Primes) :
   exact div_pos (by exact_mod_cast p.2.pos) (sq_pos_of_pos (by positivity))
 
 /-- Moving the nowhere-zero Fisher density into the ideal does not change the diagonal
-multiplier criterion: preservation is still exactly preservation of every `ell^1` sequence. -/
+multiplier criterion: preservation is still exactly preservation of every `ell^(1 : ℕ)` sequence. -/
 theorem primeDiagonalPreservesFisherWeightedL1_iff_preservesL1
     (m : AllPrimeComplexSequence) :
     PrimeDiagonalPreservesFisherWeightedL1 m ↔ PrimeDiagonalPreservesL1 m := by
@@ -111,7 +111,7 @@ theorem primeDiagonalPreservesFisherWeightedL1_iff_isBounded
 
 /-! ## Canonical Fisher deconvolution equivalence -/
 
-/-- Multiplication by Fisher density sends the deconvolved carrier to the ordinary `ell^1`
+/-- Multiplication by Fisher density sends the deconvolved carrier to the ordinary `ell^(1 : ℕ)`
 quotient. -/
 def fisherDensityPrimeCarrierMap :
     FisherDeconvolvedPrimeCarrier →ₗ[ℂ] AllPrimeL1Quotient :=
@@ -421,7 +421,7 @@ theorem reciprocal_fisherDeconvolvedComparisonWeight_preserves (t : ℝ) :
 
 /-- Whenever the normalized transport descends, its canonical quotient map is bijective. This is
 the coefficient-faithfulness statement: Fisher deconvolution turns the comparison into an actual
-automorphism, not the surjective noninjective map on `S / ell^1`. -/
+automorphism, not the surjective noninjective map on `S / ell^(1 : ℕ)`. -/
 theorem fisherDeconvolvedComparisonWeight_quotientMap_bijective
     {t : ℝ} (ht : 0 ≤ t) :
     Function.Bijective

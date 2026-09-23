@@ -11,7 +11,7 @@ produces exactly the base residue feature of the completed-Xi logarithmic conorm
 
 Functional-equation reflection supplies the adjoint mate rather than a second positive-half-line
 copy.  Their aperture pairing is therefore the cubic Ward self-charge
-`1 / (4 * (rho.re - 1 / 2)^3)`.  This closes support-level incidence between source-defined
+`1 / (4 * (rho.re - 1 / 2)^(3 : ℕ))`.  This closes support-level incidence between source-defined
 Burnol aperture tomography and the completed-Xi conormal residue; no norm contraction from the
 Euler source is asserted here.
 -/
@@ -94,7 +94,7 @@ theorem integral_xiWardCubicBurnolWindowConormalFeature_mul_reflectedMate
     (∫ L : ℝ in Ioi 0,
       xiWardCubicBurnolWindowConormalFeature L rho *
         xiWardCubicBurnolReflectedWindowMate L rho) =
-      (((1 : ℝ) / (4 * (rho.re - 1 / 2) ^ 3) : ℝ) : ℂ) := by
+      (((1 : ℝ) / (4 * (rho.re - 1 / 2) ^ (3 : ℕ)) : ℝ) : ℂ) := by
   rw [show (fun L : ℝ =>
       xiWardCubicBurnolWindowConormalFeature L rho *
         xiWardCubicBurnolReflectedWindowMate L rho) =

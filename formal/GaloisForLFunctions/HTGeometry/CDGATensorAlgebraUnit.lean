@@ -81,7 +81,7 @@ noncomputable def tensorCDGAUnit (u : CDGAUnit A) (v : CDGAUnit B) :
             have hR : tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) 0
                 (tensorAlgOne A B u v) ⟨(0, 0 + 1), hp⟩ = 0 := by
               rw [tensorDR_succ]
-              show ((-1 : R)) ^ 0 • TensorProduct.map LinearMap.id (B.dₗ 0)
+              show ((-1 : R)) ^ (0 : ℕ) • TensorProduct.map LinearMap.id (B.dₗ 0)
                 (tensorAlgOne A B u v ⟨(0, 0), hzero⟩) = 0
               rw [hone, pow_zero, one_smul, TensorProduct.map_tmul]
               show (LinearMap.id u.one : X 0) ⊗ₜ[R] B.d 0 v.one = 0

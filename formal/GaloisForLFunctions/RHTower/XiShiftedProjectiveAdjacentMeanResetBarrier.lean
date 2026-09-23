@@ -39,8 +39,8 @@ def projectiveAdmissionPacketMean (s : ℕ → ℝ) (n : ℕ) : ℝ :=
 /-- Centered square sum of the weighted packet. -/
 def projectiveAdmissionPacketEnergy (s : ℕ → ℝ) (n : ℕ) : ℝ :=
   2 * (∑ j ∈ Finset.range n,
-      (HTGeometry.monicOrthoAlpha s j - projectiveAdmissionPacketMean s n) ^ 2) +
-    (HTGeometry.monicOrthoAlpha s n - projectiveAdmissionPacketMean s n) ^ 2
+      (HTGeometry.monicOrthoAlpha s j - projectiveAdmissionPacketMean s n) ^ (2 : ℕ)) +
+    (HTGeometry.monicOrthoAlpha s n - projectiveAdmissionPacketMean s n) ^ (2 : ℕ)
 
 /-- Scalar projective clock of the packet. -/
 def projectiveAdmissionScalarClock (y : ℝ) (s : ℕ → ℝ) (n : ℕ) : ℝ :=
@@ -49,7 +49,7 @@ def projectiveAdmissionScalarClock (y : ℝ) (s : ℕ → ℝ) (n : ℕ) : ℝ :
 /-- Hyperbolic reset action: the energy increment in the reciprocal-mean metric. -/
 def projectiveAdmissionHyperbolicResetAction (s : ℕ → ℝ) (n : ℕ) : ℝ :=
   (projectiveAdmissionPacketEnergy s (n + 1) - projectiveAdmissionPacketEnergy s n) /
-    (projectiveAdmissionPacketMean s n ^ 2 * projectiveAdmissionPacketMean s (n + 1) ^ 2)
+    (projectiveAdmissionPacketMean s n ^ (2 : ℕ) * projectiveAdmissionPacketMean s (n + 1) ^ (2 : ℕ))
 
 theorem projectiveAdmissionPacketFlux_succ (s : ℕ → ℝ) (n : ℕ) :
     projectiveAdmissionPacketFlux s (n + 1) =
@@ -62,16 +62,16 @@ theorem projectiveAdmissionPacketFlux_succ (s : ℕ → ℝ) (n : ℕ) :
 /-- Raw form of the packet energy: square sum minus squared flux over total mass. -/
 theorem projectiveAdmissionPacketEnergy_eq (s : ℕ → ℝ) (n : ℕ) :
     projectiveAdmissionPacketEnergy s n =
-      (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-        HTGeometry.monicOrthoAlpha s n ^ 2) -
-      projectiveAdmissionPacketFlux s n ^ 2 / (2 * (n : ℝ) + 1) := by
+      (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+        HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ)) -
+      projectiveAdmissionPacketFlux s n ^ (2 : ℕ) / (2 * (n : ℝ) + 1) := by
   have hc : (2 * (n : ℝ) + 1) ≠ 0 := by positivity
   have hexpand : (∑ j ∈ Finset.range n,
-      (HTGeometry.monicOrthoAlpha s j - projectiveAdmissionPacketMean s n) ^ 2) =
-      (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) -
+      (HTGeometry.monicOrthoAlpha s j - projectiveAdmissionPacketMean s n) ^ (2 : ℕ)) =
+      (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) -
         2 * projectiveAdmissionPacketMean s n *
           (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-        (n : ℝ) * projectiveAdmissionPacketMean s n ^ 2 := by
+        (n : ℝ) * projectiveAdmissionPacketMean s n ^ (2 : ℕ) := by
     simp_rw [sub_sq]
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
     have hmid : (∑ x ∈ Finset.range n,
@@ -104,10 +104,10 @@ theorem projectiveAdmissionPacketMean_succ_sub (s : ℕ → ℝ) (n : ℕ) :
 is an exact two-point dispersion plus a between-packet term. -/
 theorem projectiveAdmissionPacketEnergy_succ_sub (s : ℕ → ℝ) (n : ℕ) :
     projectiveAdmissionPacketEnergy s (n + 1) - projectiveAdmissionPacketEnergy s n =
-      (HTGeometry.monicOrthoAlpha s n - HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 / 2 +
+      (HTGeometry.monicOrthoAlpha s n - HTGeometry.monicOrthoAlpha s (n + 1)) ^ (2 : ℕ) / 2 +
         2 * (2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 3) *
           ((HTGeometry.monicOrthoAlpha s n + HTGeometry.monicOrthoAlpha s (n + 1)) / 2 -
-            projectiveAdmissionPacketMean s n) ^ 2 := by
+            projectiveAdmissionPacketMean s n) ^ (2 : ℕ) := by
   have h1 : (2 * (n : ℝ) + 1) ≠ 0 := by positivity
   have h2 : (2 * (n : ℝ) + 3) ≠ 0 := by positivity
   rw [projectiveAdmissionPacketEnergy_eq, projectiveAdmissionPacketEnergy_eq,
@@ -120,19 +120,19 @@ theorem projectiveAdmissionPacketEnergy_succ_sub (s : ℕ → ℝ) (n : ℕ) :
 /-- Euclidean variance controls Euclidean mean displacement. -/
 theorem projectiveAdmissionPacketEnergy_succ_sub_ge (s : ℕ → ℝ) (n : ℕ) :
     (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) / 2 *
-      (projectiveAdmissionPacketMean s (n + 1) - projectiveAdmissionPacketMean s n) ^ 2 ≤
+      (projectiveAdmissionPacketMean s (n + 1) - projectiveAdmissionPacketMean s n) ^ (2 : ℕ) ≤
     projectiveAdmissionPacketEnergy s (n + 1) - projectiveAdmissionPacketEnergy s n := by
   have h2 : (0 : ℝ) < 2 * (n : ℝ) + 3 := by positivity
   rw [projectiveAdmissionPacketEnergy_succ_sub, projectiveAdmissionPacketMean_succ_sub]
   set q := (HTGeometry.monicOrthoAlpha s n + HTGeometry.monicOrthoAlpha s (n + 1)) / 2 -
     projectiveAdmissionPacketMean s n with hq
   have hkey : (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) / 2 *
-      (2 * q / (2 * (n : ℝ) + 3)) ^ 2 =
-      2 * (2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 3) * q ^ 2 := by
+      (2 * q / (2 * (n : ℝ) + 3)) ^ (2 : ℕ) =
+      2 * (2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 3) * q ^ (2 : ℕ) := by
     field_simp
   rw [hkey]
   have hdisp : 0 ≤ (HTGeometry.monicOrthoAlpha s n -
-      HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 / 2 := by positivity
+      HTGeometry.monicOrthoAlpha s (n + 1)) ^ (2 : ℕ) / 2 := by positivity
   linarith
 
 /-- The clock step is the negative mean displacement in the reciprocal-mean metric. -/
@@ -164,19 +164,19 @@ theorem projectiveAdmissionScalarClock_reset_barrier (y : ℝ) (s : ℕ → ℝ)
   gcongr
   have hc : (0 : ℝ) < (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) := by positivity
   have hE := projectiveAdmissionPacketEnergy_succ_sub_ge s n
-  have hsq : δ ^ 2 ≤ 2 * (projectiveAdmissionPacketEnergy s (n + 1) -
+  have hsq : δ ^ (2 : ℕ) ≤ 2 * (projectiveAdmissionPacketEnergy s (n + 1) -
       projectiveAdmissionPacketEnergy s n) / ((2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3)) := by
-    have h2 : δ ^ 2 * ((2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3)) ≤
+    have h2 : δ ^ (2 : ℕ) * ((2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3)) ≤
         2 * (projectiveAdmissionPacketEnergy s (n + 1) -
           projectiveAdmissionPacketEnergy s n) := by
       nlinarith [hE]
-    calc δ ^ 2 = δ ^ 2 * ((2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3)) /
+    calc δ ^ (2 : ℕ) = δ ^ (2 : ℕ) * ((2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3)) /
         ((2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3)) := by field_simp
       _ ≤ 2 * (projectiveAdmissionPacketEnergy s (n + 1) -
           projectiveAdmissionPacketEnergy s n) /
           ((2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3)) := by gcongr
   calc δ ≤ |δ| := le_abs_self δ
-    _ = Real.sqrt (δ ^ 2) := (Real.sqrt_sq_eq_abs δ).symm
+    _ = Real.sqrt (δ ^ (2 : ℕ)) := (Real.sqrt_sq_eq_abs δ).symm
     _ ≤ _ := Real.sqrt_le_sqrt hsq
 
 /-- The reset barrier in hyperbolic-action form: the negative clock reset is controlled by the
@@ -195,7 +195,7 @@ theorem projectiveAdmissionScalarClock_reset_barrier_action (y : ℝ) (s : ℕ �
       ((2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3)) := by
     have hge := projectiveAdmissionPacketEnergy_succ_sub_ge s n
     have hsqnn : 0 ≤ (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) / 2 *
-        (projectiveAdmissionPacketMean s (n + 1) - projectiveAdmissionPacketMean s n) ^ 2 := by
+        (projectiveAdmissionPacketMean s (n + 1) - projectiveAdmissionPacketMean s n) ^ (2 : ℕ) := by
       positivity
     have hnum : 0 ≤ projectiveAdmissionPacketEnergy s (n + 1) -
         projectiveAdmissionPacketEnergy s n := le_trans hsqnn hge
@@ -207,7 +207,7 @@ theorem projectiveAdmissionScalarClock_reset_barrier_action (y : ℝ) (s : ℕ �
       Real.sqrt (2 * (projectiveAdmissionPacketEnergy s (n + 1) -
         projectiveAdmissionPacketEnergy s n) /
       ((2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3)) /
-      (projectiveAdmissionPacketMean s n * projectiveAdmissionPacketMean s (n + 1)) ^ 2) by
+      (projectiveAdmissionPacketMean s n * projectiveAdmissionPacketMean s (n + 1)) ^ (2 : ℕ)) by
     rw [Real.sqrt_div hE, Real.sqrt_sq hprod.le]]
   congr 1
   rw [projectiveAdmissionHyperbolicResetAction]
@@ -231,7 +231,7 @@ def resetCounterAlpha (a ε : ℝ) : ℕ → ℝ
 def resetCounterBeta (b ε : ℝ) : ℕ → ℝ
   | 0 => 0
   | 1 => b
-  | 2 => ε ^ 2
+  | 2 => ε ^ (2 : ℕ)
   | _ + 3 => 1
 
 @[simp] theorem resetCounterAlpha_zero (a ε : ℝ) : resetCounterAlpha a ε 0 = a := rfl
@@ -239,7 +239,7 @@ def resetCounterBeta (b ε : ℝ) : ℕ → ℝ
 @[simp] theorem resetCounterAlpha_two (a ε : ℝ) : resetCounterAlpha a ε 2 = ε / 2 := rfl
 @[simp] theorem resetCounterAlpha_three (a ε : ℝ) : resetCounterAlpha a ε 3 = ε / 2 := rfl
 @[simp] theorem resetCounterBeta_one (b ε : ℝ) : resetCounterBeta b ε 1 = b := rfl
-@[simp] theorem resetCounterBeta_two (b ε : ℝ) : resetCounterBeta b ε 2 = ε ^ 2 := rfl
+@[simp] theorem resetCounterBeta_two (b ε : ℝ) : resetCounterBeta b ε 2 = ε ^ (2 : ℕ) := rfl
 
 theorem resetCounterBeta_pos {b ε : ℝ} (hb : 0 < b) (hε : 0 < ε) (n : ℕ) :
     0 < resetCounterBeta b ε (n + 1) := by
@@ -299,7 +299,7 @@ theorem resetCounter_clock_step (a y : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 <
 /-- Exact energy increment of the counterfamily. -/
 theorem resetCounter_energy_step (a : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 < ε) :
     projectiveAdmissionPacketEnergy (resetCounterMoment a b ε) 3 -
-      projectiveAdmissionPacketEnergy (resetCounterMoment a b ε) 2 = 9 * ε ^ 2 / 70 := by
+      projectiveAdmissionPacketEnergy (resetCounterMoment a b ε) 2 = 9 * ε ^ (2 : ℕ) / 70 := by
   rw [projectiveAdmissionPacketEnergy_succ_sub (resetCounterMoment a b ε) 2]
   unfold projectiveAdmissionPacketMean
   rw [resetCounter_flux_two a hb hε]
@@ -312,7 +312,7 @@ theorem resetCounter_energy_step (a : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 < 
 /-- Exact total energy account of the counterfamily at degree two. -/
 theorem resetCounter_energy_two (a : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 < ε) :
     projectiveAdmissionPacketEnergy (resetCounterMoment a b ε) 2 =
-      2 * ((a - ε / 5) ^ 2 + (ε / 4 - a - ε / 5) ^ 2) + (ε / 2 - ε / 5) ^ 2 := by
+      2 * ((a - ε / 5) ^ (2 : ℕ) + (ε / 4 - a - ε / 5) ^ (2 : ℕ)) + (ε / 2 - ε / 5) ^ (2 : ℕ) := by
   unfold projectiveAdmissionPacketEnergy projectiveAdmissionPacketMean
   rw [resetCounter_flux_two a hb hε, Finset.sum_range_succ, Finset.sum_range_one]
   simp only [resetCounterMoment_alpha a hb hε, resetCounterAlpha_zero,
@@ -323,7 +323,7 @@ theorem resetCounter_energy_two (a : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 < �
 /-- Exact Gauss-spread increment of the counterfamily. -/
 theorem resetCounter_spread_step (a : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 < ε) :
     projectiveGaussRootSpread (resetCounterMoment a b ε) 3 -
-      projectiveGaussRootSpread (resetCounterMoment a b ε) 2 = 67 * ε ^ 2 / 32 := by
+      projectiveGaussRootSpread (resetCounterMoment a b ε) 2 = 67 * ε ^ (2 : ℕ) / 32 := by
   rw [projectiveGaussRootSpread_succ_sub (resetCounterMoment_formBelow a hb hε 4)
     (le_refl 2) (by omega : 2 + 1 < 4)]
   rw [Finset.sum_range_succ, Finset.sum_range_one]
@@ -336,7 +336,7 @@ theorem resetCounter_spread_step (a : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 < 
 /-- Exact total Gauss-spread account of the counterfamily at degree two. -/
 theorem resetCounter_spread_two (a : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 < ε) :
     projectiveGaussRootSpread (resetCounterMoment a b ε) 2 =
-      a ^ 2 + (ε / 4 - a) ^ 2 - (ε / 4) ^ 2 / 2 + 2 * b := by
+      a ^ (2 : ℕ) + (ε / 4 - a) ^ (2 : ℕ) - (ε / 4) ^ (2 : ℕ) / 2 + 2 * b := by
   rw [projectiveGaussRootSpread_eq_alphaDispersion_add_betaInventory
     (resetCounterMoment_formBelow a hb hε 4) (le_refl 2) (by omega : (2 : ℕ) < 4)]
   unfold projectiveJacobiLowerAlphaDispersion
@@ -367,13 +367,13 @@ theorem resetCounter_tendsto_reset_atTop (a : ℝ) {b : ℝ} (hb : 0 < b) (y : �
 /-- The degree-two energy account converges along the counterfamily. -/
 theorem resetCounter_tendsto_energy_two (a : ℝ) {b : ℝ} (hb : 0 < b) :
     Tendsto (fun ε : ℝ => projectiveAdmissionPacketEnergy (resetCounterMoment a b ε) 2)
-      (nhdsWithin 0 (Set.Ioi 0)) (nhds (4 * a ^ 2)) := by
+      (nhdsWithin 0 (Set.Ioi 0)) (nhds (4 * a ^ (2 : ℕ))) := by
   have hcont : ContinuousAt (fun ε : ℝ =>
-      2 * ((a - ε / 5) ^ 2 + (ε / 4 - a - ε / 5) ^ 2) + (ε / 2 - ε / 5) ^ 2) 0 := by
+      2 * ((a - ε / 5) ^ (2 : ℕ) + (ε / 4 - a - ε / 5) ^ (2 : ℕ)) + (ε / 2 - ε / 5) ^ (2 : ℕ)) 0 := by
     fun_prop
   have hf := hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0 : ℝ)))
-  rw [show (2 * ((a - (0 : ℝ) / 5) ^ 2 + ((0 : ℝ) / 4 - a - (0 : ℝ) / 5) ^ 2) +
-      ((0 : ℝ) / 2 - (0 : ℝ) / 5) ^ 2) = 4 * a ^ 2 by ring] at hf
+  rw [show (2 * ((a - (0 : ℝ) / 5) ^ (2 : ℕ) + ((0 : ℝ) / 4 - a - (0 : ℝ) / 5) ^ (2 : ℕ)) +
+      ((0 : ℝ) / 2 - (0 : ℝ) / 5) ^ (2 : ℕ)) = 4 * a ^ (2 : ℕ) by ring] at hf
   refine hf.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with ε hε
   exact (resetCounter_energy_two a hb (Set.mem_Ioi.mp hε)).symm
@@ -381,13 +381,13 @@ theorem resetCounter_tendsto_energy_two (a : ℝ) {b : ℝ} (hb : 0 < b) :
 /-- The degree-three energy account converges along the counterfamily. -/
 theorem resetCounter_tendsto_energy_three (a : ℝ) {b : ℝ} (hb : 0 < b) :
     Tendsto (fun ε : ℝ => projectiveAdmissionPacketEnergy (resetCounterMoment a b ε) 3)
-      (nhdsWithin 0 (Set.Ioi 0)) (nhds (4 * a ^ 2)) := by
+      (nhdsWithin 0 (Set.Ioi 0)) (nhds (4 * a ^ (2 : ℕ))) := by
   have h2 := resetCounter_tendsto_energy_two a hb
-  have hq : Tendsto (fun ε : ℝ => 9 * ε ^ 2 / 70) (nhdsWithin (0 : ℝ) (Set.Ioi 0))
+  have hq : Tendsto (fun ε : ℝ => 9 * ε ^ (2 : ℕ) / 70) (nhdsWithin (0 : ℝ) (Set.Ioi 0))
       (nhds 0) := by
-    have hcont : ContinuousAt (fun ε : ℝ => 9 * ε ^ 2 / 70) 0 := by fun_prop
+    have hcont : ContinuousAt (fun ε : ℝ => 9 * ε ^ (2 : ℕ) / 70) 0 := by fun_prop
     have hf := hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0 : ℝ)))
-    rwa [show (9 * (0 : ℝ) ^ 2 / 70) = 0 by norm_num] at hf
+    rwa [show (9 * (0 : ℝ) ^ (2 : ℕ) / 70) = 0 by norm_num] at hf
   have hsum := h2.add hq
   rw [add_zero] at hsum
   refine hsum.congr' ?_
@@ -398,12 +398,12 @@ theorem resetCounter_tendsto_energy_three (a : ℝ) {b : ℝ} (hb : 0 < b) :
 /-- The degree-two Gauss-spread account converges along the counterfamily. -/
 theorem resetCounter_tendsto_spread_two (a : ℝ) {b : ℝ} (hb : 0 < b) :
     Tendsto (fun ε : ℝ => projectiveGaussRootSpread (resetCounterMoment a b ε) 2)
-      (nhdsWithin 0 (Set.Ioi 0)) (nhds (2 * a ^ 2 + 2 * b)) := by
+      (nhdsWithin 0 (Set.Ioi 0)) (nhds (2 * a ^ (2 : ℕ) + 2 * b)) := by
   have hcont : ContinuousAt (fun ε : ℝ =>
-      a ^ 2 + (ε / 4 - a) ^ 2 - (ε / 4) ^ 2 / 2 + 2 * b) 0 := by fun_prop
+      a ^ (2 : ℕ) + (ε / 4 - a) ^ (2 : ℕ) - (ε / 4) ^ (2 : ℕ) / 2 + 2 * b) 0 := by fun_prop
   have hf := hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0 : ℝ)))
-  rw [show (a ^ 2 + ((0 : ℝ) / 4 - a) ^ 2 - ((0 : ℝ) / 4) ^ 2 / 2 + 2 * b) =
-      2 * a ^ 2 + 2 * b by ring] at hf
+  rw [show (a ^ (2 : ℕ) + ((0 : ℝ) / 4 - a) ^ (2 : ℕ) - ((0 : ℝ) / 4) ^ (2 : ℕ) / 2 + 2 * b) =
+      2 * a ^ (2 : ℕ) + 2 * b by ring] at hf
   refine hf.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with ε hε
   exact (resetCounter_spread_two a hb (Set.mem_Ioi.mp hε)).symm
@@ -411,13 +411,13 @@ theorem resetCounter_tendsto_spread_two (a : ℝ) {b : ℝ} (hb : 0 < b) :
 /-- The degree-three Gauss-spread account converges along the counterfamily. -/
 theorem resetCounter_tendsto_spread_three (a : ℝ) {b : ℝ} (hb : 0 < b) :
     Tendsto (fun ε : ℝ => projectiveGaussRootSpread (resetCounterMoment a b ε) 3)
-      (nhdsWithin 0 (Set.Ioi 0)) (nhds (2 * a ^ 2 + 2 * b)) := by
+      (nhdsWithin 0 (Set.Ioi 0)) (nhds (2 * a ^ (2 : ℕ) + 2 * b)) := by
   have h2 := resetCounter_tendsto_spread_two a hb
-  have hq : Tendsto (fun ε : ℝ => 67 * ε ^ 2 / 32) (nhdsWithin (0 : ℝ) (Set.Ioi 0))
+  have hq : Tendsto (fun ε : ℝ => 67 * ε ^ (2 : ℕ) / 32) (nhdsWithin (0 : ℝ) (Set.Ioi 0))
       (nhds 0) := by
-    have hcont : ContinuousAt (fun ε : ℝ => 67 * ε ^ 2 / 32) 0 := by fun_prop
+    have hcont : ContinuousAt (fun ε : ℝ => 67 * ε ^ (2 : ℕ) / 32) 0 := by fun_prop
     have hf := hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0 : ℝ)))
-    rwa [show (67 * (0 : ℝ) ^ 2 / 32) = 0 by norm_num] at hf
+    rwa [show (67 * (0 : ℝ) ^ (2 : ℕ) / 32) = 0 by norm_num] at hf
   have hsum := h2.add hq
   rw [add_zero] at hsum
   refine hsum.congr' ?_
@@ -441,7 +441,7 @@ theorem resetCounter_no_locally_bounded_reset_charge (a : ℝ) {b : ℝ} (hb : 0
             (projectiveGaussRootSpread (resetCounterMoment a b ε) 2)
             (projectiveGaussRootSpread (resetCounterMoment a b ε) 3)) := by
   rintro ⟨Φ, hloc, hbound⟩
-  set R : ℝ := |4 * a ^ 2| + |2 * a ^ 2 + 2 * b| + 1 with hR
+  set R : ℝ := |4 * a ^ (2 : ℕ)| + |2 * a ^ (2 : ℕ) + 2 * b| + 1 with hR
   have hRpos : 0 < R := by positivity
   obtain ⟨M, hM⟩ := hloc R hRpos
   have habs_bound : ∀ (f : ℝ → ℝ) (L : ℝ), |L| + 1 ≤ R →
@@ -454,13 +454,13 @@ theorem resetCounter_no_locally_bounded_reset_charge (a : ℝ) {b : ℝ} (hb : 0
       calc |f ε| = |(f ε - L) + L| := by rw [sub_add_cancel]
         _ ≤ |f ε - L| + |L| := abs_add_le _ _
     linarith
-  have hL1 : |4 * a ^ 2| + 1 ≤ R := by
+  have hL1 : |4 * a ^ (2 : ℕ)| + 1 ≤ R := by
     rw [hR]
-    have := abs_nonneg (2 * a ^ 2 + 2 * b)
+    have := abs_nonneg (2 * a ^ (2 : ℕ) + 2 * b)
     linarith
-  have hL2 : |2 * a ^ 2 + 2 * b| + 1 ≤ R := by
+  have hL2 : |2 * a ^ (2 : ℕ) + 2 * b| + 1 ≤ R := by
     rw [hR]
-    have := abs_nonneg (4 * a ^ 2)
+    have := abs_nonneg (4 * a ^ (2 : ℕ))
     linarith
   have hbndE2 := habs_bound _ _ hL1 (resetCounter_tendsto_energy_two a hb)
   have hbndE3 := habs_bound _ _ hL1 (resetCounter_tendsto_energy_three a hb)

@@ -25,10 +25,10 @@ noncomputable section
 /-! ## The weight and the frequency constant -/
 
 /-- The pole-vanishing weight `(z_q² + ¼)²`. -/
-def dWeight (q : XiZeroCopy) : ℂ := (xiSpectralPoint q ^ 2 + 1 / 4) ^ 2
+def dWeight (q : XiZeroCopy) : ℂ := (xiSpectralPoint q ^ (2 : ℕ) + 1 / 4) ^ (2 : ℕ)
 
 theorem norm_dWeight_le (q : XiZeroCopy) :
-    ‖dWeight q‖ ≤ (‖xiSpectralPoint q‖ ^ 2 + 1 / 4) ^ 2 := by
+    ‖dWeight q‖ ≤ (‖xiSpectralPoint q‖ ^ (2 : ℕ) + 1 / 4) ^ (2 : ℕ) := by
   unfold dWeight
   rw [norm_pow]
   refine pow_le_pow_left₀ (norm_nonneg _) ?_ 2
@@ -36,24 +36,24 @@ theorem norm_dWeight_le (q : XiZeroCopy) :
   rw [norm_pow, norm_div, norm_one, Complex.norm_ofNat]
 
 theorem quarter_le_norm_sq_xiSpectralPoint (q : XiZeroCopy) :
-    (1 / 4 : ℝ) ≤ ‖xiSpectralPoint q‖ ^ 2 := by
+    (1 / 4 : ℝ) ≤ ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have h := nine_halves_le_abs_re_xiSpectralPoint q
   have h2 : (9 / 2 : ℝ) ≤ ‖xiSpectralPoint q‖ := h.trans (Complex.abs_re_le_norm _)
   nlinarith
 
-theorem norm_dWeight_le' (q : XiZeroCopy) : ‖dWeight q‖ ≤ 4 * ‖xiSpectralPoint q‖ ^ 4 := by
+theorem norm_dWeight_le' (q : XiZeroCopy) : ‖dWeight q‖ ≤ 4 * ‖xiSpectralPoint q‖ ^ (4 : ℕ) := by
   have h := norm_dWeight_le q
   have h2 := quarter_le_norm_sq_xiSpectralPoint q
-  have h3 : (‖xiSpectralPoint q‖ ^ 2 + 1 / 4) ^ 2 ≤ (2 * ‖xiSpectralPoint q‖ ^ 2) ^ 2 :=
+  have h3 : (‖xiSpectralPoint q‖ ^ (2 : ℕ) + 1 / 4) ^ (2 : ℕ) ≤ (2 * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (by positivity) (by linarith) 2
-  calc ‖dWeight q‖ ≤ (‖xiSpectralPoint q‖ ^ 2 + 1 / 4) ^ 2 := h
-    _ ≤ (2 * ‖xiSpectralPoint q‖ ^ 2) ^ 2 := h3
-    _ = 4 * ‖xiSpectralPoint q‖ ^ 4 := by ring
+  calc ‖dWeight q‖ ≤ (‖xiSpectralPoint q‖ ^ (2 : ℕ) + 1 / 4) ^ (2 : ℕ) := h
+    _ ≤ (2 * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) ^ (2 : ℕ) := h3
+    _ = 4 * ‖xiSpectralPoint q‖ ^ (4 : ℕ) := by ring
 
 /-- `κ_q = 1/‖c₁‖² + 1/‖c₂‖²`, with vanishing frequencies contributing `0`. -/
 def freqConst (γ : ℝ) (q : XiZeroCopy) : ℝ :=
-  (if rayFreq₁ γ q = 0 then 0 else 1 / ‖rayFreq₁ γ q‖ ^ 2)
-    + (if rayFreq₂ γ q = 0 then 0 else 1 / ‖rayFreq₂ γ q‖ ^ 2)
+  (if rayFreq₁ γ q = 0 then 0 else 1 / ‖rayFreq₁ γ q‖ ^ (2 : ℕ))
+    + (if rayFreq₂ γ q = 0 then 0 else 1 / ‖rayFreq₂ γ q‖ ^ (2 : ℕ))
 
 theorem freqConst_nonneg (γ : ℝ) (q : XiZeroCopy) : 0 ≤ freqConst γ q := by
   unfold freqConst
@@ -63,12 +63,12 @@ theorem freqConst_nonneg (γ : ℝ) (q : XiZeroCopy) : 0 ≤ freqConst γ q := b
 
 /-- Second-order bound on the twisted moments of the plateau profile. -/
 theorem norm_twistedMoment_plateau_le₂ {M Θ : ℝ} (hM : 0 ≤ M)
-    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2
-      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2)
+    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ)
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ))
     (hΘ : 0 ≤ Θ) {a : ℝ} (ha : 1 / 2 ≤ a) (ha0 : 0 ≤ a) {b μ : ℝ} (hb : |b| ≤ Θ) :
     ‖twistedMoment (plateauProfile a ha0) b μ‖
       ≤ 4 * M * Real.exp (Θ / 4) * Real.exp (a * Θ)
-          * (if (b : ℂ) + I * (μ : ℂ) = 0 then 0 else 1 / ‖(b : ℂ) + I * (μ : ℂ)‖ ^ 2) := by
+          * (if (b : ℂ) + I * (μ : ℂ) = 0 then 0 else 1 / ‖(b : ℂ) + I * (μ : ℂ)‖ ^ (2 : ℕ)) := by
   by_cases hc : (b : ℂ) + I * (μ : ℂ) = 0
   · have hb0 : b = 0 := by
       have := congrArg Complex.re hc
@@ -103,14 +103,14 @@ theorem norm_twistedMoment_plateau_le₂ {M Θ : ℝ} (hM : 0 ≤ M)
     have hρ' := (hMb (-c) (neg_ne_zero.mpr hc)).2
     rw [Complex.neg_re, abs_neg, norm_neg] at hκ' hρ'
     rw [hcre] at hκ hρ hκ' hρ'
-    have hK : ∀ x : ℂ, ‖x‖ ≤ M * Real.exp (|b| / 4) / ‖c‖ ^ 2 →
-        ‖x‖ ≤ M * Real.exp (Θ / 4) / ‖c‖ ^ 2 := by
+    have hK : ∀ x : ℂ, ‖x‖ ≤ M * Real.exp (|b| / 4) / ‖c‖ ^ (2 : ℕ) →
+        ‖x‖ ≤ M * Real.exp (Θ / 4) / ‖c‖ ^ (2 : ℕ) := by
       intro x hx
       refine hx.trans ?_
       gcongr
     have hb1 := hexp b hb
     have hb2 := hexp (-b) (by rw [abs_neg]; exact hb)
-    have hbase : 0 ≤ M * Real.exp (Θ / 4) / ‖c‖ ^ 2 := by positivity
+    have hbase : 0 ≤ M * Real.exp (Θ / 4) / ‖c‖ ^ (2 : ℕ) := by positivity
     calc ‖Complex.exp (c * (a : ℂ)) * plateauKappa c + plateauRho c
           - (Complex.exp (-c * (a : ℂ)) * plateauKappa (-c) + plateauRho (-c))‖
         ≤ ‖Complex.exp (c * (a : ℂ)) * plateauKappa c + plateauRho c‖
@@ -118,10 +118,10 @@ theorem norm_twistedMoment_plateau_le₂ {M Θ : ℝ} (hM : 0 ≤ M)
       _ ≤ (‖Complex.exp (c * (a : ℂ))‖ * ‖plateauKappa c‖ + ‖plateauRho c‖)
           + (‖Complex.exp (-c * (a : ℂ))‖ * ‖plateauKappa (-c)‖ + ‖plateauRho (-c)‖) := by
           gcongr <;> exact (norm_add_le _ _).trans (by rw [norm_mul])
-      _ ≤ (Real.exp (a * Θ) * (M * Real.exp (Θ / 4) / ‖c‖ ^ 2)
-            + Real.exp (a * Θ) * (M * Real.exp (Θ / 4) / ‖c‖ ^ 2))
-          + (Real.exp (a * Θ) * (M * Real.exp (Θ / 4) / ‖c‖ ^ 2)
-            + Real.exp (a * Θ) * (M * Real.exp (Θ / 4) / ‖c‖ ^ 2)) := by
+      _ ≤ (Real.exp (a * Θ) * (M * Real.exp (Θ / 4) / ‖c‖ ^ (2 : ℕ))
+            + Real.exp (a * Θ) * (M * Real.exp (Θ / 4) / ‖c‖ ^ (2 : ℕ)))
+          + (Real.exp (a * Θ) * (M * Real.exp (Θ / 4) / ‖c‖ ^ (2 : ℕ))
+            + Real.exp (a * Θ) * (M * Real.exp (Θ / 4) / ‖c‖ ^ (2 : ℕ))) := by
           rw [hnormexp, hnormexp']
           have k1 := hK _ hκ
           have k2 := hK _ hρ
@@ -130,12 +130,12 @@ theorem norm_twistedMoment_plateau_le₂ {M Θ : ℝ} (hM : 0 ≤ M)
           have := mul_le_mul hb1 k1 (norm_nonneg _) (Real.exp_pos _).le
           have := mul_le_mul hb2 k3 (norm_nonneg _) (Real.exp_pos _).le
           nlinarith [mul_le_mul_of_nonneg_right hE1 hbase]
-      _ = 4 * M * Real.exp (Θ / 4) * Real.exp (a * Θ) * (1 / ‖c‖ ^ 2) := by ring
+      _ = 4 * M * Real.exp (Θ / 4) * Real.exp (a * Θ) * (1 / ‖c‖ ^ (2 : ℕ)) := by ring
 
 /-- Second-order bound on the pair moment. -/
 theorem norm_twistedPairMoment_plateau_le₂ {M Θ : ℝ} (hM : 0 ≤ M)
-    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2
-      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2)
+    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ)
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ))
     (hΘ : 0 ≤ Θ) {a : ℝ} (ha : 1 / 2 ≤ a) (ha0 : 0 ≤ a) (γ : ℝ) {q : XiZeroCopy}
     (hq : |(xiSpectralPoint q).im| ≤ Θ) :
     ‖twistedPairMoment (plateauProfile a ha0) γ q‖
@@ -150,7 +150,7 @@ theorem norm_twistedPairMoment_plateau_le₂ {M Θ : ℝ} (hM : 0 ≤ M)
 
 /-- **Uniform bound on the weighted normalised ray term.** -/
 def rayMajorant (M Θ γ : ℝ) (q : XiZeroCopy) : ℝ :=
-  4 * M ^ 2 * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2)
+  4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))
 
 theorem rayMajorant_nonneg (M Θ γ : ℝ) (q : XiZeroCopy) :
     0 ≤ rayMajorant M Θ γ q := by
@@ -159,33 +159,33 @@ theorem rayMajorant_nonneg (M Θ γ : ℝ) (q : XiZeroCopy) :
   positivity
 
 theorem norm_twistedRayTerm_plateau_le₂ {M Θ : ℝ} (hM : 0 ≤ M)
-    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2
-      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2)
+    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ)
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ))
     (hΘ : 0 ≤ Θ) {a : ℝ} (ha : 1 / 2 ≤ a) (ha0 : 0 ≤ a) (γ : ℝ) {q : XiZeroCopy}
     (hq : |(xiSpectralPoint q).im| ≤ Θ) :
     ‖twistedRayTerm (plateauProfile a ha0) γ q‖
-      ≤ 4 * M ^ 2 * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ 2
-          * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+      ≤ 4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ (2 : ℕ)
+          * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   unfold twistedRayTerm
   rw [norm_div, norm_mul, norm_pow, norm_pow, norm_neg, norm_div, norm_one, Complex.norm_ofNat]
   have hz : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hP := norm_twistedPairMoment_plateau_le₂ hM hMb hΘ ha ha0 γ hq
   have hP0 : 0 ≤ ‖twistedPairMoment (plateauProfile a ha0) γ q‖ := norm_nonneg _
   have hsq := pow_le_pow_left₀ hP0 hP 2
-  have hexp : (4 * M * Real.exp (Θ / 4) * Real.exp (a * Θ) * freqConst γ q) ^ 2
-      = 16 * M ^ 2 * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ 2 := by
-    have e1 : Real.exp (Θ / 4) ^ 2 = Real.exp (Θ / 2) := by
+  have hexp : (4 * M * Real.exp (Θ / 4) * Real.exp (a * Θ) * freqConst γ q) ^ (2 : ℕ)
+      = 16 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ (2 : ℕ) := by
+    have e1 : Real.exp (Θ / 4) ^ (2 : ℕ) = Real.exp (Θ / 2) := by
       rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
-    have e2 : Real.exp (a * Θ) ^ 2 = Real.exp (2 * a * Θ) := by
+    have e2 : Real.exp (a * Θ) ^ (2 : ℕ) = Real.exp (2 * a * Θ) := by
       rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
     rw [mul_pow, mul_pow, mul_pow, mul_pow, e1, e2]
     norm_num
   rw [div_le_iff₀ (by positivity)]
-  calc 1 / 4 * ‖twistedPairMoment (plateauProfile a ha0) γ q‖ ^ 2
-      ≤ 1 / 4 * (16 * M ^ 2 * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ 2) := by
+  calc 1 / 4 * ‖twistedPairMoment (plateauProfile a ha0) γ q‖ ^ (2 : ℕ)
+      ≤ 1 / 4 * (16 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ (2 : ℕ)) := by
         rw [← hexp]; exact mul_le_mul_of_nonneg_left hsq (by norm_num)
-    _ = 4 * M ^ 2 * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ 2
-          * (1 / ‖xiSpectralPoint q‖ ^ 2) * ‖xiSpectralPoint q‖ ^ 2 := by
+    _ = 4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ (2 : ℕ)
+          * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         field_simp
         ring
 
@@ -218,8 +218,8 @@ theorem decayNorm_weightedRayPoly (Θ γ : ℝ) (q : XiZeroCopy) :
 
 /-- **Uniform bound.** -/
 theorem norm_re_eval_weightedRayPoly_le {M Θ : ℝ} (hM : 0 ≤ M)
-    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2
-      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2)
+    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ)
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ))
     (hΘ : 0 ≤ Θ) {a : ℝ} (ha : 1 / 2 ≤ a) (γ : ℝ) {q : XiZeroCopy}
     (hq : |(xiSpectralPoint q).im| ≤ Θ) :
     ‖(ExpPoly.eval (weightedRayPoly Θ γ q) a).re‖ ≤ rayMajorant M Θ γ q := by
@@ -234,14 +234,14 @@ theorem norm_re_eval_weightedRayPoly_le {M Θ : ℝ} (hM : 0 ≤ M)
   unfold rayMajorant
   calc ‖dWeight q‖ * (Real.exp (-(2 * Θ) * a) * ‖twistedRayTerm (plateauProfile a ha0) γ q‖)
       ≤ ‖dWeight q‖ * (Real.exp (-(2 * Θ) * a)
-          * (4 * M ^ 2 * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ 2
-            * (1 / ‖xiSpectralPoint q‖ ^ 2))) := by
+          * (4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * Real.exp (2 * a * Θ) * freqConst γ q ^ (2 : ℕ)
+            * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))) := by
         gcongr
     _ = (Real.exp (-(2 * Θ) * a) * Real.exp (2 * a * Θ))
-          * (4 * M ^ 2 * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ 2
-            * (1 / ‖xiSpectralPoint q‖ ^ 2)) := by ring
-    _ = 4 * M ^ 2 * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ 2
-          * (1 / ‖xiSpectralPoint q‖ ^ 2) := by rw [hprod, one_mul]
+          * (4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ (2 : ℕ)
+            * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) := by ring
+    _ = 4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ (2 : ℕ)
+          * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by rw [hprod, one_mul]
 
 /-! ## Summability of the majorant -/
 
@@ -271,17 +271,17 @@ theorem norm_rayFreq_ge_of_farBig (γ : ℝ) {q : XiZeroCopy} (hfar : FarBig γ 
     linarith
 
 theorem freqConst_le_of_farBig (γ : ℝ) {q : XiZeroCopy} (hfar : FarBig γ q) :
-    freqConst γ q ≤ 16 / ‖xiSpectralPoint q‖ ^ 2 := by
+    freqConst γ q ≤ 16 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   obtain ⟨h1, h2⟩ := norm_rayFreq_ge_of_farBig γ hfar
   have hre := nine_halves_le_abs_re_xiSpectralPoint q
-  have hre2 : ‖xiSpectralPoint q‖ ^ 2 / 2 ≤ (xiSpectralPoint q).re ^ 2 := by
+  have hre2 : ‖xiSpectralPoint q‖ ^ (2 : ℕ) / 2 ≤ (xiSpectralPoint q).re ^ (2 : ℕ) := by
     have hh := abs_im_xiSpectralPoint_lt_half q
-    have hsq : ‖xiSpectralPoint q‖ ^ 2 = (xiSpectralPoint q).re ^ 2 + (xiSpectralPoint q).im ^ 2 := by
+    have hsq : ‖xiSpectralPoint q‖ ^ (2 : ℕ) = (xiSpectralPoint q).re ^ (2 : ℕ) + (xiSpectralPoint q).im ^ (2 : ℕ) := by
       rw [Complex.sq_norm, Complex.normSq_apply]; ring
-    have him : (xiSpectralPoint q).im ^ 2 < 1 / 4 := by
+    have him : (xiSpectralPoint q).im ^ (2 : ℕ) < 1 / 4 := by
       have := abs_lt.mp hh
       nlinarith [abs_nonneg (xiSpectralPoint q).im, sq_abs (xiSpectralPoint q).im]
-    have hre' : (81 / 4 : ℝ) ≤ (xiSpectralPoint q).re ^ 2 := by
+    have hre' : (81 / 4 : ℝ) ≤ (xiSpectralPoint q).re ^ (2 : ℕ) := by
       have := pow_le_pow_left₀ (by norm_num) hre 2
       rw [sq_abs] at this
       linarith
@@ -292,37 +292,37 @@ theorem freqConst_le_of_farBig (γ : ℝ) {q : XiZeroCopy} (hfar : FarBig γ q) 
   have hne2 : rayFreq₂ γ q ≠ 0 := norm_pos_iff.mp hpos2
   unfold freqConst
   rw [if_neg hne1, if_neg hne2]
-  have hz : 0 < ‖xiSpectralPoint q‖ ^ 2 := by
+  have hz : 0 < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     have := quarter_le_norm_sq_xiSpectralPoint q; linarith
-  have hb1 : 1 / ‖rayFreq₁ γ q‖ ^ 2 ≤ 8 / ‖xiSpectralPoint q‖ ^ 2 := by
+  have hb1 : 1 / ‖rayFreq₁ γ q‖ ^ (2 : ℕ) ≤ 8 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     rw [div_le_div_iff₀ (by positivity) hz]
     have := pow_le_pow_left₀ (by positivity) h1 2
     rw [div_pow, sq_abs] at this
     nlinarith
-  have hb2 : 1 / ‖rayFreq₂ γ q‖ ^ 2 ≤ 8 / ‖xiSpectralPoint q‖ ^ 2 := by
+  have hb2 : 1 / ‖rayFreq₂ γ q‖ ^ (2 : ℕ) ≤ 8 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     rw [div_le_div_iff₀ (by positivity) hz]
     have := pow_le_pow_left₀ (by positivity) h2 2
     rw [div_pow, sq_abs] at this
     nlinarith
-  calc 1 / ‖rayFreq₁ γ q‖ ^ 2 + 1 / ‖rayFreq₂ γ q‖ ^ 2
-      ≤ 8 / ‖xiSpectralPoint q‖ ^ 2 + 8 / ‖xiSpectralPoint q‖ ^ 2 := add_le_add hb1 hb2
-    _ = 16 / ‖xiSpectralPoint q‖ ^ 2 := by ring
+  calc 1 / ‖rayFreq₁ γ q‖ ^ (2 : ℕ) + 1 / ‖rayFreq₂ γ q‖ ^ (2 : ℕ)
+      ≤ 8 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) + 8 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := add_le_add hb1 hb2
+    _ = 16 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by ring
 
 theorem rayMajorant_le_of_farBig (M Θ γ : ℝ) {q : XiZeroCopy}
     (hfar : FarBig γ q) :
-    rayMajorant M Θ γ q ≤ 4096 * M ^ 2 * Real.exp (Θ / 2) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+    rayMajorant M Θ γ q ≤ 4096 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   unfold rayMajorant
   have hw := norm_dWeight_le' q
   have hk := freqConst_le_of_farBig γ hfar
   have hk0 := freqConst_nonneg γ q
   have hz : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
-  have hk2 : freqConst γ q ^ 2 ≤ (16 / ‖xiSpectralPoint q‖ ^ 2) ^ 2 := pow_le_pow_left₀ hk0 hk 2
-  have hE : 0 ≤ 4 * M ^ 2 * Real.exp (Θ / 2) := by positivity
-  calc 4 * M ^ 2 * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2)
-      ≤ 4 * M ^ 2 * Real.exp (Θ / 2) * (4 * ‖xiSpectralPoint q‖ ^ 4)
-          * (16 / ‖xiSpectralPoint q‖ ^ 2) ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+  have hk2 : freqConst γ q ^ (2 : ℕ) ≤ (16 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) ^ (2 : ℕ) := pow_le_pow_left₀ hk0 hk 2
+  have hE : 0 ≤ 4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) := by positivity
+  calc 4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))
+      ≤ 4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * (4 * ‖xiSpectralPoint q‖ ^ (4 : ℕ))
+          * (16 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         gcongr
-    _ = 4096 * M ^ 2 * Real.exp (Θ / 2) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+    _ = 4096 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         field_simp
         ring
 
@@ -332,7 +332,7 @@ theorem summable_rayMajorant (M Θ γ : ℝ) :
   classical
   set F : Finset XiZeroCopy := (finite_not_farBig γ).toFinset with hF
   have hsum1 : Summable (fun q : XiZeroCopy =>
-      4096 * M ^ 2 * Real.exp (Θ / 2) * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
+      4096 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
     xiSpectralPoint_inv_sq_summable.mul_left _
   have hsum2 : Summable (fun q : XiZeroCopy => if q ∈ F then rayMajorant M Θ γ q else 0) := by
     refine summable_of_ne_finset_zero (s := F) fun q hq => ?_
@@ -349,15 +349,15 @@ theorem summable_rayMajorant (M Θ γ : ℝ) :
       simp only [hF, Set.Finite.mem_toFinset, mem_setOf_eq]
       exact hfar
     rw [if_pos hqF]
-    have : 0 ≤ 4096 * M ^ 2 * Real.exp (Θ / 2) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by positivity
+    have : 0 ≤ 4096 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by positivity
     linarith
 
 /-! ## Decay norms of the weighted polynomials -/
 
 /-- Second-order coefficient sum for a far copy: `≤ 4 M₂ e^{Θ/4} κ_q`. -/
 theorem coeffSum_shiftedPairPoly_le₂ {Θ M : ℝ} (hM : 0 ≤ M)
-    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2
-      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2)
+    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ)
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ))
     (γ : ℝ) {q : XiZeroCopy} (hq : |(xiSpectralPoint q).im| ≤ Θ) (hfar : FarFromCentre γ q) :
     ExpPoly.coeffSum (shiftedPairPoly Θ γ q) ≤ 4 * (M * Real.exp (Θ / 4)) * freqConst γ q := by
   have h1 := norm_rayFreq₁_ge_one γ hfar
@@ -371,8 +371,8 @@ theorem coeffSum_shiftedPairPoly_le₂ {Θ M : ℝ} (hM : 0 ≤ M)
   have hE : ∀ c : ℂ, |c.re| ≤ Θ → Real.exp (|c.re| / 4) ≤ Real.exp (Θ / 4) :=
     fun c hc => Real.exp_le_exp.mpr (by linarith)
   have key : ∀ c : ℂ, c ≠ 0 → |c.re| ≤ Θ →
-      ‖plateauKappa c‖ ≤ M * Real.exp (Θ / 4) / ‖c‖ ^ 2
-      ∧ ‖plateauRho c‖ ≤ M * Real.exp (Θ / 4) / ‖c‖ ^ 2 := by
+      ‖plateauKappa c‖ ≤ M * Real.exp (Θ / 4) / ‖c‖ ^ (2 : ℕ)
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (Θ / 4) / ‖c‖ ^ (2 : ℕ) := by
     intro c hc hcre
     have hE' := hE c hcre
     obtain ⟨k1, k2⟩ := hMb c hc
@@ -388,18 +388,18 @@ theorem coeffSum_shiftedPairPoly_le₂ {Θ M : ℝ} (hM : 0 ≤ M)
   simp only [ExpPoly.coeffSum, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, norm_neg]
   unfold freqConst
   rw [if_neg hc₁, if_neg hc₂]
-  have e1 : M * Real.exp (Θ / 4) / ‖rayFreq₁ γ q‖ ^ 2
-      = M * Real.exp (Θ / 4) * (1 / ‖rayFreq₁ γ q‖ ^ 2) := by ring
-  have e2 : M * Real.exp (Θ / 4) / ‖rayFreq₂ γ q‖ ^ 2
-      = M * Real.exp (Θ / 4) * (1 / ‖rayFreq₂ γ q‖ ^ 2) := by ring
+  have e1 : M * Real.exp (Θ / 4) / ‖rayFreq₁ γ q‖ ^ (2 : ℕ)
+      = M * Real.exp (Θ / 4) * (1 / ‖rayFreq₁ γ q‖ ^ (2 : ℕ)) := by ring
+  have e2 : M * Real.exp (Θ / 4) / ‖rayFreq₂ γ q‖ ^ (2 : ℕ)
+      = M * Real.exp (Θ / 4) * (1 / ‖rayFreq₂ γ q‖ ^ (2 : ℕ)) := by ring
   rw [e1] at b1 b2
   rw [e2] at b3 b4
   linarith [b1.1, b1.2, b2.1, b2.2, b3.1, b3.2, b4.1, b4.2]
 
 /-- Decay norm of a weighted far copy: `≤ rayMajorant_q / m₀`. -/
 theorem decayNorm_weightedRayPoly_le_far {Θ g γ M : ℝ} (hΘ : 0 < Θ) (hg : 0 < g) (hM : 0 ≤ M)
-    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2
-      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2)
+    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ)
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ))
     {q : XiZeroCopy} (hq : |(xiSpectralPoint q).im| ≤ Θ) (hz : g ≤ |(xiSpectralPoint q).re|)
     (hγ : g ≤ |γ|) (hfar : FarFromCentre γ q) :
     ExpPoly.decayNorm (weightedRayPoly Θ γ q) ≤ rayMajorant M Θ γ q / min 1 (min Θ g) := by
@@ -409,40 +409,40 @@ theorem decayNorm_weightedRayPoly_le_far {Θ g γ M : ℝ} (hΘ : 0 < Θ) (hg : 
   have hmul := ExpPoly.decayNorm_mul_le (shiftedPairPoly Θ γ q) (shiftedPairPoly Θ γ q) hm0 hpair
   have hcs := coeffSum_shiftedPairPoly_le₂ hM hMb γ hq hfar
   have hcs0 := ExpPoly.coeffSum_nonneg (shiftedPairPoly Θ γ q)
-  have hw : ‖-(1 / 4 : ℂ) / xiSpectralPoint q ^ 2‖ = 1 / (4 * ‖xiSpectralPoint q‖ ^ 2) := by
+  have hw : ‖-(1 / 4 : ℂ) / xiSpectralPoint q ^ (2 : ℕ)‖ = 1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
     rw [norm_div, norm_neg, norm_div, norm_one, norm_pow, Complex.norm_ofNat]
     ring
   rw [hw]
   have hsq : ExpPoly.coeffSum (shiftedPairPoly Θ γ q) * ExpPoly.coeffSum (shiftedPairPoly Θ γ q)
-      ≤ (4 * (M * Real.exp (Θ / 4)) * freqConst γ q) ^ 2 := by
+      ≤ (4 * (M * Real.exp (Θ / 4)) * freqConst γ q) ^ (2 : ℕ) := by
     rw [← sq]
     exact pow_le_pow_left₀ hcs0 hcs 2
-  have hexp : (4 * (M * Real.exp (Θ / 4)) * freqConst γ q) ^ 2
-      = 16 * M ^ 2 * Real.exp (Θ / 2) * freqConst γ q ^ 2 := by
-    have e1 : Real.exp (Θ / 4) ^ 2 = Real.exp (Θ / 2) := by
+  have hexp : (4 * (M * Real.exp (Θ / 4)) * freqConst γ q) ^ (2 : ℕ)
+      = 16 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * freqConst γ q ^ (2 : ℕ) := by
+    have e1 : Real.exp (Θ / 4) ^ (2 : ℕ) = Real.exp (Θ / 2) := by
       rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
     rw [mul_pow, mul_pow, mul_pow, e1]
     ring
   have hz0 : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hwn : 0 ≤ ‖dWeight q‖ := norm_nonneg _
   unfold rayMajorant
-  calc ‖dWeight q‖ * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2)
+  calc ‖dWeight q‖ * (1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ))
         * ExpPoly.decayNorm (ExpPoly.mul (shiftedPairPoly Θ γ q) (shiftedPairPoly Θ γ q)))
-      ≤ ‖dWeight q‖ * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2)
+      ≤ ‖dWeight q‖ * (1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ))
         * (ExpPoly.coeffSum (shiftedPairPoly Θ γ q) * ExpPoly.coeffSum (shiftedPairPoly Θ γ q)
           / min 1 (min Θ g))) := by gcongr
-    _ ≤ ‖dWeight q‖ * (1 / (4 * ‖xiSpectralPoint q‖ ^ 2)
-        * ((16 * M ^ 2 * Real.exp (Θ / 2) * freqConst γ q ^ 2) / min 1 (min Θ g))) := by
+    _ ≤ ‖dWeight q‖ * (1 / (4 * ‖xiSpectralPoint q‖ ^ (2 : ℕ))
+        * ((16 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * freqConst γ q ^ (2 : ℕ)) / min 1 (min Θ g))) := by
         rw [← hexp]; gcongr
-    _ = 4 * M ^ 2 * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ 2
-          * (1 / ‖xiSpectralPoint q‖ ^ 2) / min 1 (min Θ g) := by
+    _ = 4 * M ^ (2 : ℕ) * Real.exp (Θ / 2) * ‖dWeight q‖ * freqConst γ q ^ (2 : ℕ)
+          * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) / min 1 (min Θ g) := by
         field_simp
         ring
 
 /-- **Summability of the weighted decay norms.** -/
 theorem summable_decayNorm_weightedRayPoly {Θ γ M : ℝ} (hΘ : 0 < Θ) (hM : 0 ≤ M)
-    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2
-      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ 2)
+    (hMb : ∀ c : ℂ, c ≠ 0 → ‖plateauKappa c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ)
+      ∧ ‖plateauRho c‖ ≤ M * Real.exp (|c.re| / 4) / ‖c‖ ^ (2 : ℕ))
     (hall : ∀ q : XiZeroCopy, |(xiSpectralPoint q).im| ≤ Θ) (hγ : 9 / 2 ≤ |γ|) :
     Summable (fun q : XiZeroCopy => ExpPoly.decayNorm (weightedRayPoly Θ γ q)) := by
   classical

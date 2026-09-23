@@ -326,7 +326,7 @@ theorem rhLadder_xi_equivariant_window_root {k : ℕ} (hlad : RHLadder k)
     (hΩsym : lineReflect ⁻¹' Ω = Ω) (hhalf : ((1 / 2 : ℝ) : ℂ) ∈ Ω)
     (hline : ∀ ρ ∈ Ω, ρ.re = 1 / 2 → xi ρ = 0 →
       ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt xi ρ) :
-    ∃ h : ℂ → ℂ, AnalyticOnNhd ℂ h Ω ∧ (∀ s ∈ Ω, h s ^ 2 ^ k = xi s) ∧
+    ∃ h : ℂ → ℂ, AnalyticOnNhd ℂ h Ω ∧ (∀ s ∈ Ω, h s ^ (2 : ℕ) ^ k = xi s) ∧
       ∀ s ∈ Ω, mirrorRoot h s = h s := by
   rcases Nat.eq_zero_or_pos k with rfl | hk
   · -- level 0: ξ itself is its own equivariant first root
@@ -361,7 +361,7 @@ and on symmetric boundaries it adds exactly one sign bit. -/
 theorem rhLadder_iff_equivariant_offline_root (k : ℕ) :
     RHLadder k ↔
       ∃ h : ℂ → ℂ, AnalyticOnNhd ℂ h {s : ℂ | s.re ≠ 1 / 2} ∧
-        (∀ s ∈ {s : ℂ | s.re ≠ 1 / 2}, h s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ {s : ℂ | s.re ≠ 1 / 2}, h s ^ (2 : ℕ) ^ k = xi s) ∧
         ∀ s ∈ {s : ℂ | s.re ≠ 1 / 2}, mirrorRoot h s = h s := by
   constructor
   · intro hlad
@@ -386,7 +386,7 @@ theorem rhLadder_iff_equivariant_offline_root (k : ℕ) :
           rw [lineReflect_re] at this; linarith
         simp only [if_neg hzlt]
     · intro s hs
-      show (if 1 / 2 < s.re then g s else mirrorRoot g s) ^ 2 ^ k = xi s
+      show (if 1 / 2 < s.re then g s else mirrorRoot g s) ^ (2 : ℕ) ^ k = xi s
       rcases lt_or_gt_of_ne (Ne.symm hs) with hgt | hlt
       · rw [if_pos hgt]
         exact hgp s (mem_rightHalf.mpr hgt)
@@ -472,16 +472,16 @@ theorem mirrorGlue_equivariant (g : ℂ → ℂ) :
 
 /-- The mirror gluing intertwines squaring: gluing the squares is squaring the
 gluing. -/
-theorem mirrorGlue_sq {g₁ g₂ : ℂ → ℂ} (h : ∀ s ∈ rightHalf, g₂ s ^ 2 = g₁ s) :
-    ∀ s ∈ {s : ℂ | s.re ≠ 1 / 2}, mirrorGlue g₂ s ^ 2 = mirrorGlue g₁ s := by
+theorem mirrorGlue_sq {g₁ g₂ : ℂ → ℂ} (h : ∀ s ∈ rightHalf, g₂ s ^ (2 : ℕ) = g₁ s) :
+    ∀ s ∈ {s : ℂ | s.re ≠ 1 / 2}, mirrorGlue g₂ s ^ (2 : ℕ) = mirrorGlue g₁ s := by
   intro s hs
-  show (if 1 / 2 < s.re then g₂ s else mirrorRoot g₂ s) ^ 2 =
+  show (if 1 / 2 < s.re then g₂ s else mirrorRoot g₂ s) ^ (2 : ℕ) =
     (if 1 / 2 < s.re then g₁ s else mirrorRoot g₁ s)
   rcases lt_or_gt_of_ne (Ne.symm hs) with hgt | hlt
   · rw [if_pos hgt, if_pos hgt]
     exact h s (mem_rightHalf.mpr hgt)
   · rw [if_neg (by linarith : ¬(1 / 2 < s.re)), if_neg (by linarith : ¬(1 / 2 < s.re))]
-    show ((starRingEnd ℂ) (g₂ (lineReflect s))) ^ 2 = (starRingEnd ℂ) (g₁ (lineReflect s))
+    show ((starRingEnd ℂ) (g₂ (lineReflect s))) ^ (2 : ℕ) = (starRingEnd ℂ) (g₁ (lineReflect s))
     rw [← map_pow]
     congr 1
     refine h _ ?_
@@ -531,10 +531,10 @@ theorem exists_equivariant_coherentTower_of_anchor_pos {f : ℂ → ℂ} {U : Se
   -- the canonical coherent rescaling constants
   set c : ℕ → ℂ := fun k => (starRingEnd ℂ) (T.level k a) / ((‖T.level k a‖ : ℝ) : ℂ)
     with hc
-  have hcsq : ∀ k, c (k + 1) ^ 2 = c k := by
+  have hcsq : ∀ k, c (k + 1) ^ (2 : ℕ) = c k := by
     intro k
     rw [hc]
-    show ((starRingEnd ℂ) (T.level (k + 1) a) / ((‖T.level (k + 1) a‖ : ℝ) : ℂ)) ^ 2 =
+    show ((starRingEnd ℂ) (T.level (k + 1) a) / ((‖T.level (k + 1) a‖ : ℝ) : ℂ)) ^ (2 : ℕ) =
       (starRingEnd ℂ) (T.level k a) / ((‖T.level k a‖ : ℝ) : ℂ)
     rw [div_pow, ← map_pow, ← Complex.ofReal_pow, ← norm_pow, T.sq k a haU]
   have hc0 : c 0 = 1 := by
@@ -562,7 +562,7 @@ theorem exists_equivariant_coherentTower_of_anchor_pos {f : ℂ → ℂ} {U : Se
   · intro k
     exact fun z hz => analyticAt_const.mul (T.analytic k z hz)
   · intro k s hs
-    show (c (k + 1) * T.level (k + 1) s) ^ 2 = c k * T.level k s
+    show (c (k + 1) * T.level (k + 1) s) ^ (2 : ℕ) = c k * T.level k s
     rw [mul_pow, hcsq k, T.sq k s hs]
   · intro k s hs
     obtain ⟨-, hEq⟩ := mirrorRoot_ratio (n := 2 ^ k) (pow_pos two_pos k) hU hUc hUsym

@@ -16,7 +16,7 @@ def InteriorTest.mulHeight (g : InteriorTest) : InteriorTest :=
 
 private theorem mulHeight_divHeight_field (g : InteriorTest) (z : ℂ) :
     (g.mulHeight.divHeight 1).field z = g.field z := by
-  change (g.field z*(z.im:ℂ))/(z.im:ℂ)^1 = g.field z
+  change (g.field z*(z.im:ℂ))/(z.im:ℂ)^(1 : ℕ) = g.field z
   by_cases hz : (z.im:ℂ) = 0
   · have hg : g.field z = 0 := by
       apply image_eq_zero_of_notMem_tsupport

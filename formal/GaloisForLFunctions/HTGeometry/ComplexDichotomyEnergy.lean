@@ -8,10 +8,10 @@ noncomputable section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-def dichotomyEnergy (P M : ℝ → ℂ) (t : ℝ) : ℝ := ‖P t‖^2+‖M t‖^2
+def dichotomyEnergy (P M : ℝ → ℂ) (t : ℝ) : ℝ := ‖P t‖^(2 : ℕ)+‖M t‖^(2 : ℕ)
 
 def dichotomyEnergyRate (w p m g : ℂ) : ℝ :=
-  -4*w.re*‖m‖^2+2*((g*(starRingEnd ℂ) p).re+(g*(starRingEnd ℂ) m).re)
+  -4*w.re*‖m‖^(2 : ℕ)+2*((g*(starRingEnd ℂ) p).re+(g*(starRingEnd ℂ) m).re)
 
 /-- The real part of the free frequency is the exact growth rate in the two free-mode channels. -/
 theorem dichotomyEnergy_hasDerivAt {P M : ℝ → ℂ} {w g : ℂ} {t : ℝ}
@@ -28,18 +28,18 @@ theorem dichotomyEnergy_hasDerivAt {P M : ℝ → ℂ} {w g : ℂ} {t : ℝ}
 theorem dichotomyEnergyRate_bounds (w p m g : ℂ) (hw : w.re ≤ 0) (A B e : ℝ)
     (hA : 0 ≤ A) (hB : 0 ≤ B) (he : 0 ≤ e) (he1 : e ≤ 1)
     (hg : ‖g‖ ≤ e*(A*(‖p‖+‖m‖)+B)) :
-    -(4*A+2*B)*e*(‖p‖^2+‖m‖^2+1) ≤ dichotomyEnergyRate w p m g ∧
-    dichotomyEnergyRate w p m g ≤ (-4*w.re+4*A+2*B)*(‖p‖^2+‖m‖^2+1) := by
+    -(4*A+2*B)*e*(‖p‖^(2 : ℕ)+‖m‖^(2 : ℕ)+1) ≤ dichotomyEnergyRate w p m g ∧
+    dichotomyEnergyRate w p m g ≤ (-4*w.re+4*A+2*B)*(‖p‖^(2 : ℕ)+‖m‖^(2 : ℕ)+1) := by
   let N := ‖p‖+‖m‖
-  let E := ‖p‖^2+‖m‖^2
+  let E := ‖p‖^(2 : ℕ)+‖m‖^(2 : ℕ)
   have hN : 0 ≤ N := by dsimp [N]; positivity
   have hE : 0 ≤ E := by dsimp [E]; positivity
-  have hN2 : N^2 ≤ 2*E := by dsimp [N,E]; nlinarith [sq_nonneg (‖p‖-‖m‖)]
+  have hN2 : N^(2 : ℕ) ≤ 2*E := by dsimp [N,E]; nlinarith [sq_nonneg (‖p‖-‖m‖)]
   have hN1 : N ≤ E+1 := by dsimp [N,E]; nlinarith [sq_nonneg (‖p‖-1),sq_nonneg (‖m‖-1)]
   have hb : 2*N*‖g‖ ≤ (4*A+2*B)*e*(E+1) := by
     calc
       _ ≤ 2*N*(e*(A*N+B)) := mul_le_mul_of_nonneg_left hg (by positivity)
-      _ = e*(2*A*N^2+2*B*N) := by ring
+      _ = e*(2*A*N^(2 : ℕ)+2*B*N) := by ring
       _ ≤ e*(2*A*(2*E)+2*B*(E+1)) := by gcongr
       _ ≤ (4*A+2*B)*e*(E+1) := by nlinarith [mul_nonneg hA he]
   have hp := Complex.abs_re_le_norm (g*(starRingEnd ℂ) p)
@@ -52,8 +52,8 @@ theorem dichotomyEnergyRate_bounds (w p m g : ℂ) (hw : w.re ≤ 0) (A B e : �
   have hh : 2*((g*(starRingEnd ℂ) p).re+(g*(starRingEnd ℂ) m).re) ≤ (4*A+2*B)*e*(E+1) := by
     dsimp [N] at hb
     nlinarith [hp.2,hm.2]
-  have hfree : 0 ≤ -4*w.re*‖m‖^2 := mul_nonneg (by linarith) (sq_nonneg _)
-  have hfree' : -4*w.re*‖m‖^2 ≤ -4*w.re*E := by
+  have hfree : 0 ≤ -4*w.re*‖m‖^(2 : ℕ) := mul_nonneg (by linarith) (sq_nonneg _)
+  have hfree' : -4*w.re*‖m‖^(2 : ℕ) ≤ -4*w.re*E := by
     apply mul_le_mul_of_nonneg_left ?_ (by linarith)
     dsimp [E]
     nlinarith [sq_nonneg ‖p‖]

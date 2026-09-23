@@ -164,7 +164,7 @@ theorem norm_semilocalEulerMultiplier_apply_ge (t p : ℝ) (hp : 1 < p) (f : Son
   calc (1 - |t| / Real.sqrt p) * ‖f‖ = ‖f‖ - |t| / Real.sqrt p * ‖f‖ := by ring
     _ ≤ ‖f - ((t / Real.sqrt p : ℝ) : ℂ) • (V f)‖ := hsub
 
-theorem isSelfAdjoint_centralSoninProjection (a : ℝ) :
+theorem isSelfAdjoint_centralSoninProjection_semilocalEulerKernelChart (a : ℝ) :
     IsSelfAdjoint (centralSoninProjection a) :=
   isSelfAdjoint_starProjection (centralSoninCarrier a)
 
@@ -186,7 +186,7 @@ theorem isUnit_semilocalEulerGram (a t p : ℝ) (hp : 1 < p) (ht : |t| < Real.sq
   have hcpos : 0 < 1 - |t| / Real.sqrt p := by
     have : |t| / Real.sqrt p < 1 := (div_lt_one hsqrt).mpr ht
     linarith
-  exact HTGeometry.isUnit_rangeProjectionGram (isSelfAdjoint_centralSoninProjection a)
+  exact HTGeometry.isUnit_rangeProjectionGram (isSelfAdjoint_centralSoninProjection_semilocalEulerKernelChart a)
     (isIdempotentElem_centralSoninProjection a) hcpos
     (fun x => norm_semilocalEulerMultiplier_apply_ge t p hp _)
 
@@ -215,7 +215,7 @@ theorem starProjection_eq_semilocalEulerProjection (a t p : ℝ) (hp : 1 < p)
     have : |t| / Real.sqrt p < 1 := (div_lt_one hsqrt).mpr ht
     linarith
   exact HTGeometry.starProjection_eq_rangeProjection
-    (isSelfAdjoint_centralSoninProjection a) (isIdempotentElem_centralSoninProjection a) hcpos
+    (isSelfAdjoint_centralSoninProjection_semilocalEulerKernelChart a) (isIdempotentElem_centralSoninProjection a) hcpos
     (fun x => norm_semilocalEulerMultiplier_apply_ge t p hp _)
     (by rw [hK, ← range_semilocalEulerChart])
 

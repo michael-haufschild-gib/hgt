@@ -97,7 +97,7 @@ theorem gomesCompletedFockFrame_positive_metric_iff {d k : ℕ} (B : Fin k → M
     (∃ M : Matrix (Fin 2) (Fin 2) ℝ, M.PosDef ∧
       (gomesJacobiStep (recurDiag (gomesCompletedFockMoment B) n) (recurOff (gomesCompletedFockMoment B) n) x)ᵀ * M *
         gomesJacobiStep (recurDiag (gomesCompletedFockMoment B) n) (recurOff (gomesCompletedFockMoment B) n) x = recurOff (gomesCompletedFockMoment B) n • M) ↔
-      (x-recurDiag (gomesCompletedFockMoment B) n)^2 < 4*recurOff (gomesCompletedFockMoment B) n :=
+      (x-recurDiag (gomesCompletedFockMoment B) n)^(2 : ℕ) < 4*recurOff (gomesCompletedFockMoment B) n :=
   gomesJacobiStep_exists_positive_metric_iff _ _ _
 
 /-- The completed free-Fock complex step's Hermitian defect detects exactly the closed upper half-plane. -/

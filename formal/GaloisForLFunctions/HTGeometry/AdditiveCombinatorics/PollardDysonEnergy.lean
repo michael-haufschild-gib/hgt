@@ -76,7 +76,7 @@ theorem repSum_ge_min_dyson {A B : Finset G} {x₀ : G} {t : ℕ} (ht : 1 ≤ t)
         (dysonSmall A B y).card ≤ (dysonSmall A B x₀).card) :
     min ((t : ℝ) * ((A.card : ℝ) * B.card)
           / ((t : ℝ) + Real.sqrt ((t : ℝ) * ((t : ℝ) - 1))))
-        ((t : ℝ) * (A.card : ℝ) ^ 2 * (B.card : ℝ)
+        ((t : ℝ) * (A.card : ℝ) ^ (2 : ℕ) * (B.card : ℝ)
           / ((((dysonSmall A B x₀).card : ℕ) : ℝ) * A.card
              + ((dysonFull A B).card : ℝ)
                * ((B.card : ℝ) - (((dysonSmall A B x₀).card : ℕ) : ℝ))))

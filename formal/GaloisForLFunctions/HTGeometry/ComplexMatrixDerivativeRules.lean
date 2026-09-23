@@ -8,12 +8,12 @@ noncomputable section
 variable {d n : ℕ}
 
 /-- Actual entrywise matrix differentiation commutes with transpose. -/
-theorem matrixPartial_transpose (M : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
+theorem matrixPartial_transpose_complexMatrixDerivativeRules (M : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
     (x : Fin d → ℝ) (k : Fin d) :
     matrixPartial (fun y => (M y).transpose) x k = (matrixPartial M x k).transpose := rfl
 
 /-- Matrix differentiation of an actual sum of differentiable fields. -/
-theorem matrixPartial_add (M N : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
+theorem matrixPartial_add_complexMatrixDerivativeRules (M N : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
     (x : Fin d → ℝ) (hM : ∀ u v, DifferentiableAt ℝ (fun y => M y u v) x)
     (hN : ∀ u v, DifferentiableAt ℝ (fun y => N y u v) x) (k : Fin d) :
     matrixPartial (fun y => M y + N y) x k = matrixPartial M x k + matrixPartial N x k := by
@@ -29,7 +29,7 @@ theorem matrixPartial_sub (M N : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
   exact coordDeriv_sub (hM u v) (hN u v) k
 
 /-- Noncommutative product rule for actual complex matrix fields on real coordinates. -/
-theorem matrixPartial_mul (M N : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
+theorem matrixPartial_mul_complexMatrixDerivativeRules (M N : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
     (x : Fin d → ℝ) (hM : ∀ u v, DifferentiableAt ℝ (fun y => M y u v) x)
     (hN : ∀ u v, DifferentiableAt ℝ (fun y => N y u v) x) (k : Fin d) :
     matrixPartial (fun y => M y * N y) x k = matrixPartial M x k * N x + M x * matrixPartial N x k := by
@@ -41,7 +41,7 @@ theorem matrixPartial_mul (M N : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
   exact Finset.sum_add_distrib
 
 /-- Equality on a neighborhood identifies the actual matrix coordinate derivatives. -/
-theorem matrixPartial_congr (M N : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
+theorem matrixPartial_congr_complexMatrixDerivativeRules (M N : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ)
     (x : Fin d → ℝ) (he : M =ᶠ[𝓝 x] N) (k : Fin d) : matrixPartial M x k = matrixPartial N x k := by
   ext u v
   have hc : (fun y => M y u v) =ᶠ[𝓝 x] (fun y => N y u v) :=

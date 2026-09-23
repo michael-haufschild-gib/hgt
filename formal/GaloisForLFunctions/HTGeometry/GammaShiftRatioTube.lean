@@ -73,14 +73,14 @@ theorem abs_arg_vertical_sub_le {M : ℝ} {σ t : ℝ} (hσ : 0 < σ) (hσM : σ
 
 /-- **The modulus of the vertical argument is its height up to `O(1/t)`, uniformly on a tube.** -/
 theorem abs_log_norm_vertical_sub_le {M : ℝ} {σ t : ℝ} (hσ : 0 < σ) (hσM : σ ≤ M) (ht : 1 ≤ t) :
-    |Real.log ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ - Real.log t| ≤ M ^ 2 / t := by
+    |Real.log ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ - Real.log t| ≤ M ^ (2 : ℕ) / t := by
   have htpos : (0 : ℝ) < t := lt_of_lt_of_le zero_lt_one ht
   have hts : t ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ := norm_vertical_ge_height σ t
   have hsnorm : (0 : ℝ) < ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ := lt_of_lt_of_le htpos hts
-  have hsq : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ^ 2 = σ ^ 2 + t ^ 2 := by
+  have hsq : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ^ (2 : ℕ) = σ ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     rw [Complex.norm_add_mul_I, Real.sq_sqrt (by positivity)]
   have hM0 : 0 ≤ M := le_trans (le_of_lt hσ) hσM
-  have hle : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ≤ t + M ^ 2 := by
+  have hle : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ≤ t + M ^ (2 : ℕ) := by
     nlinarith [hsq, hsnorm, hσ, hσM, ht, hM0]
   have hratio : 1 ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ / t := (one_le_div htpos).mpr hts
   have hlogdiv : Real.log ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ - Real.log t
@@ -90,7 +90,7 @@ theorem abs_log_norm_vertical_sub_le {M : ℝ} {σ t : ℝ} (hσ : 0 < σ) (hσM
   have hstep : Real.log (‖(σ : ℂ) + (t : ℂ) * Complex.I‖ / t)
       ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ / t - 1 :=
     Real.log_le_sub_one_of_pos (by positivity)
-  have hfrac : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ / t - 1 ≤ M ^ 2 / t := by
+  have hfrac : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ / t - 1 ≤ M ^ (2 : ℕ) / t := by
     have heq : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ / t - 1
         = (‖(σ : ℂ) + (t : ℂ) * Complex.I‖ - t) / t := by
       field_simp
@@ -104,7 +104,7 @@ on a tube.** -/
 theorem norm_log_vertical_sub_vertLog_le {M : ℝ} {σ t : ℝ} (hσ : 0 < σ) (hσM : σ ≤ M)
     (ht : 1 ≤ t) :
     ‖Complex.log ((σ : ℂ) + (t : ℂ) * Complex.I) - vertLog t‖
-      ≤ (M ^ 2 + (Real.pi / 2) * M) / t := by
+      ≤ (M ^ (2 : ℕ) + (Real.pi / 2) * M) / t := by
   have htpos : (0 : ℝ) < t := lt_of_lt_of_le zero_lt_one ht
   set z : ℂ := Complex.log ((σ : ℂ) + (t : ℂ) * Complex.I) - vertLog t with hz
   have hre : z.re = Real.log ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ - Real.log t := by
@@ -113,15 +113,15 @@ theorem norm_log_vertical_sub_vertLog_le {M : ℝ} {σ t : ℝ} (hσ : 0 < σ) (
   have him : z.im = Complex.arg ((σ : ℂ) + (t : ℂ) * Complex.I) - Real.pi / 2 := by
     rw [hz, vertLog]
     simp [Complex.log_im]
-  have h1 : |z.re| ≤ M ^ 2 / t := by
+  have h1 : |z.re| ≤ M ^ (2 : ℕ) / t := by
     rw [hre]
     exact abs_log_norm_vertical_sub_le hσ hσM ht
   have h2 : |z.im| ≤ (Real.pi / 2) * (M / t) := by
     rw [him, abs_sub_comm]
     exact abs_arg_vertical_sub_le hσ hσM ht
   calc ‖z‖ ≤ |z.re| + |z.im| := Complex.norm_le_abs_re_add_abs_im _
-    _ ≤ M ^ 2 / t + (Real.pi / 2) * (M / t) := by linarith
-    _ = (M ^ 2 + (Real.pi / 2) * M) / t := by ring
+    _ ≤ M ^ (2 : ℕ) / t + (Real.pi / 2) * (M / t) := by linarith
+    _ = (M ^ (2 : ℕ) + (Real.pi / 2) * M) / t := by ring
 
 /-- The ratio of two translates is the exponential of the integrated digamma against the
 logarithm. -/
@@ -163,7 +163,7 @@ theorem tubeLimit_gammaShift_ratio {M lam : ℝ} (hM : 0 < M) (hlam : 0 ≤ lam)
       / (gammaLine σ t * ((σ : ℂ) + (t : ℂ) * Complex.I) ^ (lam : ℂ))) 1 := by
   classical
   obtain ⟨C₁, hC₁, hdig⟩ := exists_uniform_bound_digamma_sub_vertLog (M := M + lam) (by linarith)
-  set C₂ : ℝ := M ^ 2 + (Real.pi / 2) * M with hC₂def
+  set C₂ : ℝ := M ^ (2 : ℕ) + (Real.pi / 2) * M with hC₂def
   have hC₂ : 0 ≤ C₂ := by
     have : 0 ≤ M := le_of_lt hM
     have hpi : 0 < Real.pi := Real.pi_pos

@@ -96,11 +96,11 @@ def edgeNewB (s : ℝ) : ℕ → ℝ := fun _ => 1 - s
 /-- **The exponential of a marched ahead distance dominates a rational square**: from the
 harmonic-log bound and `e^s ≥ 1 + s ≥ 8/5`. -/
 theorem exp_edgeNewA_ge (k : ℕ) {s : ℝ} (hs : 3 / 5 ≤ s) :
-    8 / 5 * ((((k : ℝ) + 4) / 3) ^ 2) ≤ Real.exp (edgeNewA s k) := by
+    8 / 5 * ((((k : ℝ) + 4) / 3) ^ (2 : ℕ)) ≤ Real.exp (edgeNewA s k) := by
   have hx : (0 : ℝ) < ((k : ℝ) + 4) / 3 := by positivity
   have hslice := harmT_slice_ge_log k
-  have hsq : ((((k : ℝ) + 4) / 3) ^ 2) ≤ Real.exp (harmT (3 + k) - 3) := by
-    calc ((((k : ℝ) + 4) / 3) ^ 2)
+  have hsq : ((((k : ℝ) + 4) / 3) ^ (2 : ℕ)) ≤ Real.exp (harmT (3 + k) - 3) := by
+    calc ((((k : ℝ) + 4) / 3) ^ (2 : ℕ))
         = Real.exp (2 * Real.log (((k : ℝ) + 4) / 3)) := by
           rw [show (2 : ℝ) * Real.log (((k : ℝ) + 4) / 3)
               = Real.log (((k : ℝ) + 4) / 3) + Real.log (((k : ℝ) + 4) / 3) by ring,
@@ -113,13 +113,13 @@ theorem exp_edgeNewA_ge (k : ℕ) {s : ℝ} (hs : 3 / 5 ≤ s) :
   have hexp_s : (8 : ℝ) / 5 ≤ Real.exp s := by
     have := Real.add_one_le_exp s
     linarith
-  have hmul : 8 / 5 * ((((k : ℝ) + 4) / 3) ^ 2)
+  have hmul : 8 / 5 * ((((k : ℝ) + 4) / 3) ^ (2 : ℕ))
       ≤ Real.exp (harmT (3 + k) - 3) * Real.exp s := by
-    calc 8 / 5 * ((((k : ℝ) + 4) / 3) ^ 2)
-        = ((((k : ℝ) + 4) / 3) ^ 2) * (8 / 5) := by ring
+    calc 8 / 5 * ((((k : ℝ) + 4) / 3) ^ (2 : ℕ))
+        = ((((k : ℝ) + 4) / 3) ^ (2 : ℕ)) * (8 / 5) := by ring
       _ ≤ Real.exp (harmT (3 + k) - 3) * Real.exp s :=
           mul_le_mul hsq hexp_s (by norm_num) (Real.exp_pos _).le
-  calc 8 / 5 * ((((k : ℝ) + 4) / 3) ^ 2)
+  calc 8 / 5 * ((((k : ℝ) + 4) / 3) ^ (2 : ℕ))
       ≤ Real.exp (harmT (3 + k) - 3) * Real.exp s := hmul
     _ = Real.exp (edgeNewA s k) := by rw [← Real.exp_add, edgeNewA]
 
@@ -129,7 +129,7 @@ theorem exp_edgeNewA_ge (k : ℕ) {s : ℝ} (hs : 3 / 5 ≤ s) :
 rational. -/
 theorem edge_loss_le (k : ℕ) {s : ℝ} (hs : 3 / 5 ≤ s) :
     rcoth (edgeNewA s k / 2) - rcoth (edgeOldA s k / 2)
-      ≤ 90 / (8 * ((k : ℝ) + 4) ^ 2 - 45) := by
+      ≤ 90 / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45) := by
   have hs0 : (0 : ℝ) < s := by linarith
   have hnewA : (0 : ℝ) < edgeNewA s k := by
     have h1 : harmT 3 ≤ harmT (3 + k) := harmT_mono (by omega)
@@ -144,18 +144,18 @@ theorem edge_loss_le (k : ℕ) {s : ℝ} (hs : 3 / 5 ≤ s) :
     have := harmT_two
     linarith
   have hone : 1 < rcoth (edgeOldA s k / 2) := one_lt_rcoth_of_pos (by positivity)
-  have hden : (0 : ℝ) < 8 * ((k : ℝ) + 4) ^ 2 - 45 := by
-    have hk : (16 : ℝ) ≤ ((k : ℝ) + 4) ^ 2 := by nlinarith [show (0 : ℝ) ≤ (k : ℝ) from Nat.cast_nonneg k]
+  have hden : (0 : ℝ) < 8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45 := by
+    have hk : (16 : ℝ) ≤ ((k : ℝ) + 4) ^ (2 : ℕ) := by nlinarith [show (0 : ℝ) ≤ (k : ℝ) from Nat.cast_nonneg k]
     linarith
   have hexp := exp_edgeNewA_ge k hs
   have hE1 : (0 : ℝ) < Real.exp (edgeNewA s k) - 1 := by
-    have hk : (16 : ℝ) ≤ ((k : ℝ) + 4) ^ 2 := by nlinarith [show (0 : ℝ) ≤ (k : ℝ) from Nat.cast_nonneg k]
+    have hk : (16 : ℝ) ≤ ((k : ℝ) + 4) ^ (2 : ℕ) := by nlinarith [show (0 : ℝ) ≤ (k : ℝ) from Nat.cast_nonneg k]
     nlinarith
   have hsub : rcoth (edgeNewA s k / 2) - 1 = 2 / (Real.exp (edgeNewA s k) - 1) := by
     have := rcoth_sub_one (show (0 : ℝ) < edgeNewA s k / 2 by positivity)
     rw [show 2 * (edgeNewA s k / 2) = edgeNewA s k by ring] at this
     exact this
-  have henv : 2 / (Real.exp (edgeNewA s k) - 1) ≤ 90 / (8 * ((k : ℝ) + 4) ^ 2 - 45) := by
+  have henv : 2 / (Real.exp (edgeNewA s k) - 1) ≤ 90 / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45) := by
     rw [div_le_div_iff₀ hE1 hden]
     nlinarith [hexp]
   linarith
@@ -163,15 +163,15 @@ theorem edge_loss_le (k : ℕ) {s : ℝ} (hs : 3 / 5 ≤ s) :
 /-- **Telescoping tail for the rational envelope**: from rank `K ≥ 2` on, each envelope term is
 below `(45/4)(1/(k+3) − 1/(k+4))`, so every partial tail sum is below `45/(4(K+3))`. -/
 theorem edge_env_tail {K R : ℕ} (hK : 2 ≤ K) (hKR : K ≤ R) :
-    (∑ k ∈ Finset.Ico K R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45))
+    (∑ k ∈ Finset.Ico K R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45))
       ≤ 45 / (4 * ((K : ℝ) + 3)) := by
   have hterm : ∀ k ∈ Finset.Ico K R,
-      (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45)
+      (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45)
         ≤ 45 / 4 * (1 / ((k : ℝ) + 3) - 1 / ((k : ℝ) + 4)) := by
     intro k hk
     have hk2 : 2 ≤ k := le_trans hK (Finset.mem_Ico.mp hk).1
     have hk2' : (2 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk2
-    have hden : (0 : ℝ) < 8 * ((k : ℝ) + 4) ^ 2 - 45 := by nlinarith
+    have hden : (0 : ℝ) < 8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45 := by nlinarith
     have hgap : 45 / 4 * (1 / ((k : ℝ) + 3) - 1 / ((k : ℝ) + 4))
         = 45 / 4 * (1 / (((k : ℝ) + 3) * ((k : ℝ) + 4))) := by
       congr 1
@@ -179,11 +179,11 @@ theorem edge_env_tail {K R : ℕ} (hK : 2 ≤ K) (hKR : K ≤ R) :
       ring
     rw [hgap, div_le_iff₀ hden]
     have hprod : (0 : ℝ) < ((k : ℝ) + 3) * ((k : ℝ) + 4) := by positivity
-    rw [show (45 : ℝ) / 4 * (1 / (((k : ℝ) + 3) * ((k : ℝ) + 4))) * (8 * ((k : ℝ) + 4) ^ 2 - 45)
-        = 45 / 4 * (8 * ((k : ℝ) + 4) ^ 2 - 45) / (((k : ℝ) + 3) * ((k : ℝ) + 4)) by ring]
+    rw [show (45 : ℝ) / 4 * (1 / (((k : ℝ) + 3) * ((k : ℝ) + 4))) * (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45)
+        = 45 / 4 * (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45) / (((k : ℝ) + 3) * ((k : ℝ) + 4)) by ring]
     rw [le_div_iff₀ hprod]
     nlinarith
-  calc (∑ k ∈ Finset.Ico K R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45))
+  calc (∑ k ∈ Finset.Ico K R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45))
       ≤ ∑ k ∈ Finset.Ico K R, (45 : ℝ) / 4 * (1 / ((k : ℝ) + 3) - 1 / ((k : ℝ) + 4)) :=
         Finset.sum_le_sum hterm
     _ = 45 / 4 * ∑ k ∈ Finset.Ico K R, (1 / ((k : ℝ) + 3) - 1 / ((k : ℝ) + 4)) := by
@@ -219,34 +219,34 @@ six explicit envelope terms plus the telescoping tail give `3.89 < 4`, uniformly
 number of ahead poles and over all offsets `s ≥ 3/5`. -/
 theorem edge_loss_sum_lt_four (R : ℕ) {s : ℝ} (hs : 3 / 5 ≤ s) :
     (∑ k ∈ range R, (rcoth (edgeNewA s k / 2) - rcoth (edgeOldA s k / 2))) < 4 := by
-  have henv_nonneg : ∀ k : ℕ, (0 : ℝ) ≤ 90 / (8 * ((k : ℝ) + 4) ^ 2 - 45) := by
+  have henv_nonneg : ∀ k : ℕ, (0 : ℝ) ≤ 90 / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45) := by
     intro k
-    have hden : (0 : ℝ) < 8 * ((k : ℝ) + 4) ^ 2 - 45 := by
+    have hden : (0 : ℝ) < 8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45 := by
       nlinarith [show (0 : ℝ) ≤ (k : ℝ) from Nat.cast_nonneg k]
     positivity
   have hbound : (∑ k ∈ range R, (rcoth (edgeNewA s k / 2) - rcoth (edgeOldA s k / 2)))
-      ≤ ∑ k ∈ range R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45) :=
+      ≤ ∑ k ∈ range R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45) :=
     Finset.sum_le_sum (fun k _ => edge_loss_le k hs)
-  have hsix : (∑ k ∈ range 6, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45)) + 45 / 36 < 4 := by
+  have hsix : (∑ k ∈ range 6, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45)) + 45 / 36 < 4 := by
     simp only [Finset.sum_range_succ, Finset.sum_range_zero]
     norm_num
   rcases le_total R 6 with hR | hR
-  · have hsub : (∑ k ∈ range R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45))
-        ≤ ∑ k ∈ range 6, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45) :=
+  · have hsub : (∑ k ∈ range R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45))
+        ≤ ∑ k ∈ range 6, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45) :=
       Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_subset_range.mpr hR)
         (fun k _ _ => henv_nonneg k)
     have htail : (0 : ℝ) ≤ 45 / 36 := by norm_num
     linarith
-  · have hsplit : (∑ k ∈ range R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45))
-        = (∑ k ∈ range 6, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45))
-          + ∑ k ∈ Finset.Ico 6 R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45) := by
+  · have hsplit : (∑ k ∈ range R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45))
+        = (∑ k ∈ range 6, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45))
+          + ∑ k ∈ Finset.Ico 6 R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45) := by
       rw [Finset.range_eq_Ico, Finset.range_eq_Ico,
         ← Finset.sum_Ico_consecutive _ (Nat.zero_le 6) hR]
     have htail := edge_env_tail (K := 6) (R := R) (by norm_num) hR
     have h36 : (45 : ℝ) / (4 * ((6 : ℕ) : ℝ) + 12) = 45 / 36 := by norm_num
-    have htail' : (∑ k ∈ Finset.Ico 6 R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45))
+    have htail' : (∑ k ∈ Finset.Ico 6 R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45))
         ≤ 45 / 36 := by
-      calc (∑ k ∈ Finset.Ico 6 R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ 2 - 45))
+      calc (∑ k ∈ Finset.Ico 6 R, (90 : ℝ) / (8 * ((k : ℝ) + 4) ^ (2 : ℕ) - 45))
           ≤ 45 / (4 * (((6 : ℕ) : ℝ) + 3)) := htail
         _ = 45 / 36 := by norm_num
     linarith

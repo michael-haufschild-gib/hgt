@@ -71,9 +71,9 @@ def thetaCuspCompletedProductFiberHigherTailLikelihoodDriftFifthRootCurvatureNum
   let F := thetaCuspCompletedProductFiberAmplitude 1 0 t
   let L := thetaCuspCompletedProductFiberCofinalLikelihoodFactor t
   let L₁ := thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t
-  24 * b ^ 2 - 9 * t * b * (d * L - F * L₁) +
-    t ^ 2 * (5 * b * (j * L + 2 * d * L₁) -
-      4 * d ^ 2 * L ^ 2 + 8 * d * L * F * L₁)
+  24 * b ^ (2 : ℕ) - 9 * t * b * (d * L - F * L₁) +
+    t ^ (2 : ℕ) * (5 * b * (j * L + 2 * d * L₁) -
+      4 * d ^ (2 : ℕ) * L ^ (2 : ℕ) + 8 * d * L * F * L₁)
 
 /-- Cofinal drift budget after both pure likelihood-curvature and
 likelihood-slope-square terms are removed. -/
@@ -92,16 +92,16 @@ def thetaCuspCompletedProductFiberCofinalLikelihoodDriftAbsorptionBudgetAtZero
     a * A *
       thetaCuspCompletedProductFiberHigherTailLikelihoodDriftFifthRootCurvatureNumeratorAtZero
         t +
-    4 * t ^ 2 * (M₀ ^ 2 - 2 * a * F * M₀ * L₁)
+    4 * t ^ (2 : ℕ) * (M₀ ^ (2 : ℕ) - 2 * a * F * M₀ * L₁)
 
 /-- Pure likelihood-slope-square contribution to the cofinal budget. -/
 def thetaCuspCompletedProductFiberCofinalLikelihoodSlopeSquareTaxAtZero
     (t : ℝ) : ℝ :=
-  -4 * t ^ 2 *
+  -4 * t ^ (2 : ℕ) *
     thetaCuspCompletedProductFiberFirstDrop 0 t *
     thetaCuspCompletedProductFiberHigherTailDrop 0 t *
-    thetaCuspCompletedProductFiberAmplitude 1 0 t ^ 2 *
-    thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ 2
+    thetaCuspCompletedProductFiberAmplitude 1 0 t ^ (2 : ℕ) *
+    thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ (2 : ℕ)
 
 /-- Exact split of likelihood-base budget into drift plus slope-square tax. -/
 theorem thetaCuspCompletedProductFiberCofinalLikelihoodBaseBudget_eq_drift_add_slopeSquareTax
@@ -141,20 +141,20 @@ theorem thetaCuspCompletedProductFiberCofinalLikelihoodSlopeSquareTaxAtZero_pos
   have hLone :=
     thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne_neg ht
   have hLsq :
-      0 < thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ 2 :=
+      0 < thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ (2 : ℕ) :=
     sq_pos_of_neg hLone
   have hminus : 0 < -thetaCuspCompletedProductFiberFirstDrop 0 t :=
     neg_pos.mpr ha
   unfold thetaCuspCompletedProductFiberCofinalLikelihoodSlopeSquareTaxAtZero
   rw [show
-    -4 * t ^ 2 * thetaCuspCompletedProductFiberFirstDrop 0 t *
+    -4 * t ^ (2 : ℕ) * thetaCuspCompletedProductFiberFirstDrop 0 t *
           thetaCuspCompletedProductFiberHigherTailDrop 0 t *
-          thetaCuspCompletedProductFiberAmplitude 1 0 t ^ 2 *
-          thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ 2 =
-      4 * t ^ 2 * (-thetaCuspCompletedProductFiberFirstDrop 0 t) *
+          thetaCuspCompletedProductFiberAmplitude 1 0 t ^ (2 : ℕ) *
+          thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ (2 : ℕ) =
+      4 * t ^ (2 : ℕ) * (-thetaCuspCompletedProductFiberFirstDrop 0 t) *
           thetaCuspCompletedProductFiberHigherTailDrop 0 t *
-          thetaCuspCompletedProductFiberAmplitude 1 0 t ^ 2 *
-          thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ 2 by ring]
+          thetaCuspCompletedProductFiberAmplitude 1 0 t ^ (2 : ℕ) *
+          thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ (2 : ℕ) by ring]
   positivity
 
 /-- Functional budget is drift plus two exact likelihood taxes. -/

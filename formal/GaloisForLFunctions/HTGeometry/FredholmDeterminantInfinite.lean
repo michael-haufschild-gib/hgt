@@ -35,24 +35,24 @@ variable {ι : Type*} [DecidableEq ι]
 /-- A diagonal operator with summable energies `∑ᵢ ‖g i‖² < ∞` is Hilbert–Schmidt: its kernel is supported
 on the diagonal, an injective copy of the index set, so the two-dimensional energy sum collapses to the
 one-dimensional summable series. -/
-theorem isHS_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i => ‖g i‖ ^ 2)) :
+theorem isHS_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i => ‖g i‖ ^ (2 : ℕ))) :
     IsHS (diagMul g) := by
   have hinj : Function.Injective (fun i : ι => (i, i)) := fun a b h => (Prod.ext_iff.mp h).1
-  have hzero : ∀ p ∉ Set.range (fun i : ι => (i, i)), ‖diagMul g p‖ ^ 2 = 0 := by
+  have hzero : ∀ p ∉ Set.range (fun i : ι => (i, i)), ‖diagMul g p‖ ^ (2 : ℕ) = 0 := by
     intro p hp
     have hpp : p.1 ≠ p.2 := fun h => hp ⟨p.1, by rw [Prod.ext_iff]; exact ⟨rfl, h⟩⟩
     simp [diagMul, hpp]
   rw [IsHS, ← hinj.summable_iff hzero]
-  have hcomp : ((fun p : ι × ι => ‖diagMul g p‖ ^ 2) ∘ (fun i : ι => (i, i)))
-      = fun i => ‖g i‖ ^ 2 := by funext i; simp [Function.comp, diagMul]
+  have hcomp : ((fun p : ι × ι => ‖diagMul g p‖ ^ (2 : ℕ)) ∘ (fun i : ι => (i, i)))
+      = fun i => ‖g i‖ ^ (2 : ℕ) := by funext i; simp [Function.comp, diagMul]
   rw [hcomp]; exact hs
 
 /-- The Hilbert–Schmidt norm squared of a countable diagonal operator is the sum of its entry energies,
 `‖diagMul g‖_HS² = ∑ᵢ ‖g i‖²` (the diagonal support collapses the `ι × ι` energy sum). -/
 theorem hsNormSq_diagMul_infinite (g : ι → ℂ) :
-    hsNormSq (diagMul g) = ∑' i, ‖g i‖ ^ 2 := by
+    hsNormSq (diagMul g) = ∑' i, ‖g i‖ ^ (2 : ℕ) := by
   have hinj : Function.Injective (fun i : ι => (i, i)) := fun a b h => (Prod.ext_iff.mp h).1
-  have hsupp : Function.support (fun p : ι × ι => ‖diagMul g p‖ ^ 2)
+  have hsupp : Function.support (fun p : ι × ι => ‖diagMul g p‖ ^ (2 : ℕ))
       ⊆ Set.range (fun i : ι => (i, i)) := by
     intro p hp; rw [Function.mem_support] at hp
     have hpp : p.1 = p.2 := by by_contra hne; exact hp (by simp [diagMul, hne])
@@ -62,10 +62,10 @@ theorem hsNormSq_diagMul_infinite (g : ι → ℂ) :
 
 /-- Every diagonal entry is bounded by the Hilbert–Schmidt norm: `‖g i‖ ≤ ‖diagMul g‖_HS`, since `‖g i‖²`
 is a single term of the summable energy series `∑ⱼ ‖g j‖²`. -/
-theorem norm_le_hsNorm_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i => ‖g i‖ ^ 2)) (i : ι) :
+theorem norm_le_hsNorm_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i => ‖g i‖ ^ (2 : ℕ))) (i : ι) :
     ‖g i‖ ≤ hsNorm (diagMul g) := by
   rw [hsNorm, hsNormSq_diagMul_infinite g,
-    show ‖g i‖ = Real.sqrt (‖g i‖ ^ 2) from (Real.sqrt_sq (norm_nonneg _)).symm]
+    show ‖g i‖ = Real.sqrt (‖g i‖ ^ (2 : ℕ)) from (Real.sqrt_sq (norm_nonneg _)).symm]
   exact Real.sqrt_le_sqrt (Summable.le_tsum hs i (fun j _ => sq_nonneg _))
 
 /-- **The resolvent trace of a countable diagonal Hilbert–Schmidt operator** is the convergent series over
@@ -74,9 +74,9 @@ all diagonal entries, `resolventTrace (diagMul g) z = ∑ᵢ z·(g i)²/(1 − z
 by absolute convergence — each entry `‖z‖^{n+1}·‖g i‖^{n+2}` is dominated by `‖z‖^{n+1}·M^n·‖g i‖²`
 (`M = ‖diagMul g‖_HS`), a geometric-in-`n` times summable-in-`i` bound — and Tonelli's theorem for `tsum`
 lets the sums be exchanged; the inner geometric series in `n` sums to `z·(g i)²/(1 − z·g i)`. -/
-theorem resolventTrace_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i => ‖g i‖ ^ 2))
+theorem resolventTrace_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i => ‖g i‖ ^ (2 : ℕ)))
     (r : ℝ) (hr : r * hsNorm (diagMul g) < 1) (z : ℂ) (hz : z ∈ Metric.ball (0 : ℂ) r) :
-    resolventTrace (diagMul g) z = ∑' i, z * g i ^ 2 / (1 - z * g i) := by
+    resolventTrace (diagMul g) z = ∑' i, z * g i ^ (2 : ℕ) / (1 - z * g i) := by
   set M := hsNorm (diagMul g) with hM
   have hM0 : 0 ≤ M := hsNorm_nonneg _
   have hzr : ‖z‖ < r := by rwa [mem_ball_zero_iff] at hz
@@ -84,14 +84,14 @@ theorem resolventTrace_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i =
   have hgle : ∀ i, ‖g i‖ ≤ M := fun i => norm_le_hsNorm_diagMul_infinite g hs i
   have hzgi : ∀ i, ‖z * g i‖ < 1 := fun i => by
     rw [norm_mul]; exact lt_of_le_of_lt (mul_le_mul_of_nonneg_left (hgle i) (norm_nonneg z)) hzM
-  have hpow : ∀ (n : ℕ) (i : ι), ‖g i‖ ^ (n + 2) ≤ M ^ n * ‖g i‖ ^ 2 := by
+  have hpow : ∀ (n : ℕ) (i : ι), ‖g i‖ ^ (n + 2) ≤ M ^ n * ‖g i‖ ^ (2 : ℕ) := by
     intro n i; rw [pow_add]; gcongr; exact hgle i
   have hbound_i : ∀ (n : ℕ) (i : ι),
-      ‖z‖ ^ (n + 1) * ‖g i‖ ^ (n + 2) ≤ ‖z‖ ^ (n + 1) * M ^ n * ‖g i‖ ^ 2 := by
+      ‖z‖ ^ (n + 1) * ‖g i‖ ^ (n + 2) ≤ ‖z‖ ^ (n + 1) * M ^ n * ‖g i‖ ^ (2 : ℕ) := by
     intro n i
     calc ‖z‖ ^ (n + 1) * ‖g i‖ ^ (n + 2)
-        ≤ ‖z‖ ^ (n + 1) * (M ^ n * ‖g i‖ ^ 2) := mul_le_mul_of_nonneg_left (hpow n i) (by positivity)
-      _ = ‖z‖ ^ (n + 1) * M ^ n * ‖g i‖ ^ 2 := by ring
+        ≤ ‖z‖ ^ (n + 1) * (M ^ n * ‖g i‖ ^ (2 : ℕ)) := mul_le_mul_of_nonneg_left (hpow n i) (by positivity)
+      _ = ‖z‖ ^ (n + 1) * M ^ n * ‖g i‖ ^ (2 : ℕ) := by ring
   have hsum_i : ∀ n : ℕ, Summable (fun i => ‖z‖ ^ (n + 1) * ‖g i‖ ^ (n + 2)) := fun n =>
     Summable.of_nonneg_of_le (fun i => by positivity) (fun i => hbound_i n i)
       (hs.mul_left (‖z‖ ^ (n + 1) * M ^ n))
@@ -103,7 +103,7 @@ theorem resolventTrace_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i =
     rw [summable_prod_of_nonneg (fun p => by positivity)]
     refine ⟨hsum_i, ?_⟩
     apply Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_)
-      (hgeom.mul_right (∑' i, ‖g i‖ ^ 2))
+      (hgeom.mul_right (∑' i, ‖g i‖ ^ (2 : ℕ)))
     conv_rhs => rw [← tsum_mul_left]
     exact Summable.tsum_mono (hsum_i n) (hs.mul_left _) (fun i => hbound_i n i)
   have huncurry :
@@ -128,9 +128,9 @@ theorem resolventTrace_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i =
 `logDeriv det₂(1 − z·diagMul g) = −∑ᵢ z·(g i)²/(1 − z·g i)`, the negative of the countable resolvent
 trace, for any summable-energy diagonal `g` and `z` on the disk `|z|·‖diagMul g‖_HS < 1`.  This is
 `logDeriv Λ = −tr` at the level of an operator with infinitely many eigenvalues — past finite rank. -/
-theorem logDeriv_fredholmDet_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i => ‖g i‖ ^ 2))
+theorem logDeriv_fredholmDet_diagMul_infinite (g : ι → ℂ) (hs : Summable (fun i => ‖g i‖ ^ (2 : ℕ)))
     (r : ℝ) (hr : r * hsNorm (diagMul g) < 1) (z : ℂ) (hz : z ∈ Metric.ball (0 : ℂ) r) :
-    logDeriv (fun w => fredholmDet (diagMul g) w) z = -∑' i, z * g i ^ 2 / (1 - z * g i) := by
+    logDeriv (fun w => fredholmDet (diagMul g) w) z = -∑' i, z * g i ^ (2 : ℕ) / (1 - z * g i) := by
   rw [logDeriv_fredholmDet (isHS_diagMul_infinite g hs) r hr z hz,
     resolventTrace_diagMul_infinite g hs r hr z hz]
 

@@ -17,10 +17,11 @@ Proof-chain role:
 
 namespace RHTower.D4BMLiteralCyclicPeierlsPolarizedContactCurrent
 
+open Set
 open GaloisForLFunctions.HTGeometry
 open D4BMHorizon D4BMModularCore D4BMJointWave D4BMFundamentalScalarMetric
 open D4BMLeftModeRadialEquation D4BMMixedQuadraticClosure
-open D4BMMixedQuadraticCurrent D4BMMixedActionCurrent
+open D4BMMixedQuadraticCurrent D4BMMixedActionCurrent D4BMMetricReconstruction D4BMPhysicalModeAction
 
 noncomputable section
 set_option autoImplicit false
@@ -33,11 +34,11 @@ def polarizedContactRadialCurrent (q : XiZeroCopy) (branch : Bool) (a d : ℂ)
     (z : {z : Point // 0 < z 1}) : ℂ :=
   let p := modePoint t z.val z.property
   (4 : ℂ)⁻¹ *
-    ((p.val 1 : ℂ) ^ 2 / (p.val 3 : ℂ) ^ 2 * actionSymplectic
+    ((p.val 1 : ℂ) ^ (2 : ℕ) / (p.val 3 : ℂ) ^ (2 : ℕ) * actionSymplectic
         (D4BMBackground.jet (p.val 1) (p.val 3))
         (ofMetricField (contactField q branch (a + d)) p.val)
         (ofMetricField (metricField reader side outer) p.val) 1 -
-      (p.val 1 : ℂ) ^ 2 / (p.val 3 : ℂ) ^ 2 * actionSymplectic
+      (p.val 1 : ℂ) ^ (2 : ℕ) / (p.val 3 : ℂ) ^ (2 : ℕ) * actionSymplectic
         (D4BMBackground.jet (p.val 1) (p.val 3))
         (ofMetricField (contactField q branch (a - d)) p.val)
         (ofMetricField (metricField reader side outer) p.val) 1)
@@ -59,8 +60,9 @@ theorem polarizedContactRadialCurrent_eq (q : XiZeroCopy) (branch : Bool)
         D4BMLiteralCusp.vector (D4BMJointSource.physicalAngularParameter reader) k z.val := by
   dsimp only
   unfold polarizedContactRadialCurrent
+  simp only []
   rw [contact_radial_current, contact_radial_current]
-  simp only [envelope]
+  simp only [envelope, contactRadialCoefficient]
   ring
 
 end

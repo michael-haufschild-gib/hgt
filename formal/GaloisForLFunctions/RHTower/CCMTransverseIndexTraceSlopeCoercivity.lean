@@ -21,23 +21,23 @@ theorem complexConj_two : (starRingEnd ℂ) (2 : ℂ) = 2 := by
 
 /-- The `L²` energy of a divisor packet profile: the negative initial trace slope. -/
 def divisorPacketEnergy {r : ℕ} (lam : Fin r → ℂ) (m : Fin r → ℕ) : ℝ :=
-  ∫ t in Ioi (0 : ℝ), ‖divisorPacketProfile lam m t‖ ^ 2
+  ∫ t in Ioi (0 : ℝ), ‖divisorPacketProfile lam m t‖ ^ (2 : ℕ)
 
 /-- The positive Cauchy weight of a pair of divisor points. -/
 def cauchyWeight (u v : ℂ) : ℝ :=
-  (u.re + v.re) / ((u.re + v.re) ^ 2 + (u.im - v.im) ^ 2)
+  (u.re + v.re) / ((u.re + v.re) ^ (2 : ℕ) + (u.im - v.im) ^ (2 : ℕ))
 
 theorem cauchyWeight_pos {u v : ℂ} (hu : 0 < u.re) (hv : 0 < v.re) : 0 < cauchyWeight u v := by
   unfold cauchyWeight
   have hnum : 0 < u.re + v.re := by linarith
-  have hden : 0 < (u.re + v.re) ^ 2 + (u.im - v.im) ^ 2 := by positivity
+  have hden : 0 < (u.re + v.re) ^ (2 : ℕ) + (u.im - v.im) ^ (2 : ℕ) := by positivity
   positivity
 
 theorem cauchyWeight_self (u : ℂ) (hu : 0 < u.re) : cauchyWeight u u = 1 / (2 * u.re) := by
   unfold cauchyWeight
   have h : (u.im - u.im) = 0 := by ring
   rw [h]
-  have h2 : (u.re + u.re) ^ 2 + (0 : ℝ) ^ 2 = (2 * u.re) ^ 2 := by ring
+  have h2 : (u.re + u.re) ^ (2 : ℕ) + (0 : ℝ) ^ (2 : ℕ) = (2 * u.re) ^ (2 : ℕ) := by ring
   rw [h2]
   field_simp
   ring
@@ -67,7 +67,7 @@ theorem ofReal_divisorPacketEnergy {r : ℕ} {lam : Fin r → ℂ} {m : Fin r �
     have := hlam j
     have := hlam k
     linarith
-  have hpt : ∀ t : ℝ, ((‖divisorPacketProfile lam m t‖ ^ 2 : ℝ) : ℂ)
+  have hpt : ∀ t : ℝ, ((‖divisorPacketProfile lam m t‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ j, ∑ k, 4 * (m j : ℂ) * (m k : ℂ)
           * Complex.exp (-((lam j + (starRingEnd ℂ) (lam k)) * (t : ℂ))) := by
     intro t
@@ -81,7 +81,7 @@ theorem ofReal_divisorPacketEnergy {r : ℕ} {lam : Fin r → ℂ} {m : Fin r �
       congr 1
       · simp
       · rw [map_neg, map_mul, Complex.conj_ofReal]
-    have hsq : ((‖divisorPacketProfile lam m t‖ ^ 2 : ℝ) : ℂ)
+    have hsq : ((‖divisorPacketProfile lam m t‖ ^ (2 : ℕ) : ℝ) : ℂ)
         = divisorPacketProfile lam m t * (starRingEnd ℂ) (divisorPacketProfile lam m t) := by
       rw [Complex.mul_conj']
       push_cast
@@ -108,7 +108,7 @@ theorem ofReal_divisorPacketEnergy {r : ℕ} {lam : Fin r → ℂ} {m : Fin r �
       (Ioi (0 : ℝ)) volume :=
     fun j k => (integrableOn_Ioi_cexp_neg_mul (hre j k)).const_mul _
   calc ((divisorPacketEnergy lam m : ℝ) : ℂ)
-      = ∫ t in Ioi (0 : ℝ), ((‖divisorPacketProfile lam m t‖ ^ 2 : ℝ) : ℂ) :=
+      = ∫ t in Ioi (0 : ℝ), ((‖divisorPacketProfile lam m t‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
         (integral_complex_ofReal).symm
     _ = ∫ t in Ioi (0 : ℝ), ∑ j, ∑ k, 4 * (m j : ℂ) * (m k : ℂ)
           * Complex.exp (-((lam j + (starRingEnd ℂ) (lam k)) * (t : ℂ))) :=
@@ -142,11 +142,11 @@ theorem divisorPacketEnergy_eq {r : ℕ} {lam : Fin r → ℂ} {m : Fin r → �
 /-- **Equation (7), second half.**  The energy dominates its own diagonal. -/
 theorem diagonal_le_divisorPacketEnergy {r : ℕ} {lam : Fin r → ℂ} {m : Fin r → ℕ}
     (hlam : ∀ j, 0 < (lam j).re) :
-    ∑ j, 2 * (m j : ℝ) ^ 2 / (lam j).re ≤ divisorPacketEnergy lam m := by
+    ∑ j, 2 * (m j : ℝ) ^ (2 : ℕ) / (lam j).re ≤ divisorPacketEnergy lam m := by
   rw [divisorPacketEnergy_eq hlam]
   refine Finset.sum_le_sum fun j _ => ?_
   have hdiag : 4 * (m j : ℝ) * (m j : ℝ) * cauchyWeight (lam j) (lam j)
-      = 2 * (m j : ℝ) ^ 2 / (lam j).re := by
+      = 2 * (m j : ℝ) ^ (2 : ℕ) / (lam j).re := by
     rw [cauchyWeight_self _ (hlam j)]
     have hne : (lam j).re ≠ 0 := ne_of_gt (hlam j)
     field_simp
@@ -163,7 +163,7 @@ theorem four_mul_multiplicity_lt_divisorPacketEnergy {r : ℕ} {lam : Fin r → 
     (j₀ : Fin r) :
     4 * ((divisorPacketMultiplicity m : ℕ) : ℝ) < divisorPacketEnergy lam m := by
   have hdiag := diagonal_le_divisorPacketEnergy (m := m) hlam
-  have hterm : ∀ j : Fin r, 4 * (m j : ℝ) < 2 * (m j : ℝ) ^ 2 / (lam j).re := by
+  have hterm : ∀ j : Fin r, 4 * (m j : ℝ) < 2 * (m j : ℝ) ^ (2 : ℕ) / (lam j).re := by
     intro j
     have ha := hlam j
     have hs := hstrip j
@@ -171,7 +171,7 @@ theorem four_mul_multiplicity_lt_divisorPacketEnergy {r : ℕ} {lam : Fin r → 
     rw [lt_div_iff₀ ha]
     nlinarith
   have hne : (Finset.univ : Finset (Fin r)).Nonempty := ⟨j₀, Finset.mem_univ j₀⟩
-  have hsum : ∑ j, 4 * (m j : ℝ) < ∑ j, 2 * (m j : ℝ) ^ 2 / (lam j).re :=
+  have hsum : ∑ j, 4 * (m j : ℝ) < ∑ j, 2 * (m j : ℝ) ^ (2 : ℕ) / (lam j).re :=
     Finset.sum_lt_sum_of_nonempty hne fun j _ => hterm j
   have hcast : 4 * ((divisorPacketMultiplicity m : ℕ) : ℝ) = ∑ j, 4 * (m j : ℝ) := by
     unfold divisorPacketMultiplicity
@@ -183,11 +183,11 @@ theorem four_mul_multiplicity_lt_divisorPacketEnergy {r : ℕ} {lam : Fin r → 
 /-! ## The incoming pole saturates the unit cost -/
 
 /-- The `L²` energy of the incoming pole profile. -/
-def polePacketEnergy : ℝ := ∫ t in Ioi (0 : ℝ), ‖polePacketProfile t‖ ^ 2
+def polePacketEnergy : ℝ := ∫ t in Ioi (0 : ℝ), ‖polePacketProfile t‖ ^ (2 : ℕ)
 
 /-- **Equation (11).**  The incoming pole at transverse depth `1/2` costs exactly four units. -/
 theorem polePacketEnergy_eq_four : polePacketEnergy = 4 := by
-  have hpt : ∀ t : ℝ, ((‖polePacketProfile t‖ ^ 2 : ℝ) : ℂ)
+  have hpt : ∀ t : ℝ, ((‖polePacketProfile t‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = 4 * Complex.exp (-((1 : ℂ) * (t : ℂ))) := by
     intro t
     have hconj : (starRingEnd ℂ) (polePacketProfile t)
@@ -196,7 +196,7 @@ theorem polePacketEnergy_eq_four : polePacketEnergy = 4 := by
       rw [map_mul, ← Complex.exp_conj, complexConj_two, map_neg, map_mul, Complex.conj_ofReal,
         map_div₀, complexConj_two]
       simp
-    have hsq : ((‖polePacketProfile t‖ ^ 2 : ℝ) : ℂ)
+    have hsq : ((‖polePacketProfile t‖ ^ (2 : ℕ) : ℝ) : ℂ)
         = polePacketProfile t * (starRingEnd ℂ) (polePacketProfile t) := by
       rw [Complex.mul_conj']
       push_cast
@@ -211,7 +211,7 @@ theorem polePacketEnergy_eq_four : polePacketEnergy = 4 := by
   have hone : (0 : ℝ) < (1 : ℂ).re := by norm_num
   have hcast : ((polePacketEnergy : ℝ) : ℂ) = 4 := by
     calc ((polePacketEnergy : ℝ) : ℂ)
-        = ∫ t in Ioi (0 : ℝ), ((‖polePacketProfile t‖ ^ 2 : ℝ) : ℂ) :=
+        = ∫ t in Ioi (0 : ℝ), ((‖polePacketProfile t‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
           (integral_complex_ofReal).symm
       _ = ∫ t in Ioi (0 : ℝ), 4 * Complex.exp (-((1 : ℂ) * (t : ℂ))) :=
           setIntegral_congr_fun measurableSet_Ioi fun t _ => hpt t

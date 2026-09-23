@@ -269,7 +269,7 @@ theorem finiteComplexInner_pureTensorPower
 /-- Squared pure-state fidelity in finite coordinates. -/
 def finitePureStateFidelity
     {α : Type*} [Fintype α] (ψ φ : α → ℂ) : ℝ :=
-  ‖finiteComplexInner ψ φ‖ ^ 2
+  ‖finiteComplexInner ψ φ‖ ^ (2 : ℕ)
 
 /-- Fidelity of `r` identical pure-state copies is the `r`th power of
 one-copy fidelity. -/

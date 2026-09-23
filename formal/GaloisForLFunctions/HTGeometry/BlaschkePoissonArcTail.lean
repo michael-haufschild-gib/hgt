@@ -30,16 +30,16 @@ open Complex
 /-- **Radial split of the boundary distance.**  For unit `ζ` and `z` the squared distance from `z`
 to the radial point `r ζ` is the radial defect plus `r` times the boundary separation. -/
 theorem norm_sub_radial_sq {ζ z : ℂ} (hζ : ‖ζ‖ = 1) (hz : ‖z‖ = 1) (r : ℝ) :
-    ‖z - (r : ℂ) * ζ‖ ^ 2 = (1 - r) ^ 2 + r * ‖z - ζ‖ ^ 2 := by
+    ‖z - (r : ℂ) * ζ‖ ^ (2 : ℕ) = (1 - r) ^ (2 : ℕ) + r * ‖z - ζ‖ ^ (2 : ℕ) := by
   have hnz : Complex.normSq z = 1 := by
     rw [Complex.normSq_eq_norm_sq, hz]; norm_num
   have hnζ : Complex.normSq ζ = 1 := by
     rw [Complex.normSq_eq_norm_sq, hζ]; norm_num
-  have hL : ‖z - (r : ℂ) * ζ‖ ^ 2 = Complex.normSq (z - (r : ℂ) * ζ) :=
+  have hL : ‖z - (r : ℂ) * ζ‖ ^ (2 : ℕ) = Complex.normSq (z - (r : ℂ) * ζ) :=
     (Complex.normSq_eq_norm_sq _).symm
-  have hR : ‖z - ζ‖ ^ 2 = Complex.normSq (z - ζ) := (Complex.normSq_eq_norm_sq _).symm
+  have hR : ‖z - ζ‖ ^ (2 : ℕ) = Complex.normSq (z - ζ) := (Complex.normSq_eq_norm_sq _).symm
   rw [hL, hR, Complex.normSq_sub, Complex.normSq_sub, hnz, hnζ]
-  have hmul : Complex.normSq ((r : ℂ) * ζ) = r ^ 2 := by
+  have hmul : Complex.normSq ((r : ℂ) * ζ) = r ^ (2 : ℕ) := by
     rw [Complex.normSq_mul, hnζ, Complex.normSq_ofReal]
     ring
   have hre : (z * (starRingEnd ℂ) ((r : ℂ) * ζ)).re = r * (z * (starRingEnd ℂ) ζ).re := by
@@ -53,7 +53,7 @@ theorem norm_sub_radial_sq {ζ z : ℂ} (hζ : ‖ζ‖ = 1) (hz : ‖z‖ = 1) 
 /-- The Poisson kernel of a radial disc point at a boundary point, in split form. -/
 theorem poissonKernel_radial_eq {ζ z : ℂ} (hζ : ‖ζ‖ = 1) (hz : ‖z‖ = 1)
     {r : ℝ} (hr : 0 ≤ r) :
-    poissonKernel 0 ((r : ℂ) * ζ) z = (1 - r ^ 2) / ((1 - r) ^ 2 + r * ‖z - ζ‖ ^ 2) := by
+    poissonKernel 0 ((r : ℂ) * ζ) z = (1 - r ^ (2 : ℕ)) / ((1 - r) ^ (2 : ℕ) + r * ‖z - ζ‖ ^ (2 : ℕ)) := by
   have hw : ‖(r : ℂ) * ζ‖ = r := by
     rw [norm_mul, hζ, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr, mul_one]
   rw [poissonKernel_def]
@@ -65,11 +65,11 @@ theorem poissonKernel_radial_eq {ζ z : ℂ} (hζ : ‖ζ‖ = 1) (hz : ‖z‖ 
 is controlled by the radial depth alone. -/
 theorem poissonKernel_radial_le {ζ z : ℂ} (hζ : ‖ζ‖ = 1) (hz : ‖z‖ = 1)
     {r d : ℝ} (hr0 : 0 < r) (hr1 : r ≤ 1) (hd : 0 < d) (hzd : d ≤ ‖z - ζ‖) :
-    poissonKernel 0 ((r : ℂ) * ζ) z ≤ (1 - r ^ 2) / (r * d ^ 2) := by
+    poissonKernel 0 ((r : ℂ) * ζ) z ≤ (1 - r ^ (2 : ℕ)) / (r * d ^ (2 : ℕ)) := by
   rw [poissonKernel_radial_eq hζ hz hr0.le]
-  have hnum : 0 ≤ 1 - r ^ 2 := by nlinarith
-  have hd2 : d ^ 2 ≤ ‖z - ζ‖ ^ 2 := by nlinarith [norm_nonneg (z - ζ)]
-  have hden : 0 < r * d ^ 2 := by positivity
+  have hnum : 0 ≤ 1 - r ^ (2 : ℕ) := by nlinarith
+  have hd2 : d ^ (2 : ℕ) ≤ ‖z - ζ‖ ^ (2 : ℕ) := by nlinarith [norm_nonneg (z - ζ)]
+  have hden : 0 < r * d ^ (2 : ℕ) := by positivity
   refine div_le_div_of_nonneg_left hnum hden ?_
   nlinarith [sq_nonneg (1 - r)]
 
@@ -77,9 +77,9 @@ theorem poissonKernel_radial_le {ζ z : ℂ} (hζ : ‖ζ‖ = 1) (hz : ‖z‖ 
 `2 (1 - r) / (r d²)` of its boundary phase rate at separation `d`. -/
 theorem poissonKernel_radial_le_depth {ζ z : ℂ} (hζ : ‖ζ‖ = 1) (hz : ‖z‖ = 1)
     {r d : ℝ} (hr0 : 0 < r) (hr1 : r ≤ 1) (hd : 0 < d) (hzd : d ≤ ‖z - ζ‖) :
-    poissonKernel 0 ((r : ℂ) * ζ) z ≤ 2 * (1 - r) / (r * d ^ 2) := by
+    poissonKernel 0 ((r : ℂ) * ζ) z ≤ 2 * (1 - r) / (r * d ^ (2 : ℕ)) := by
   refine (poissonKernel_radial_le hζ hz hr0 hr1 hd hzd).trans ?_
-  have hden : 0 < r * d ^ 2 := by positivity
+  have hden : 0 < r * d ^ (2 : ℕ) := by positivity
   refine div_le_div_of_nonneg_right ?_ hden.le
   nlinarith
 

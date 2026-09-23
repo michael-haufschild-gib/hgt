@@ -25,12 +25,12 @@ theorem exists_phaseClockPivot_halfEntropy_quantitative
       0 < n ∧ n ≤ (Q + 1) ^ d ∧
         ∑ j : Fin d,
           ‖Complex.exp (Complex.I * (((n : ℝ) * ω j : ℝ) : ℂ)) -
-            Complex.exp (Complex.I * (((n : ℝ) * ω k : ℝ) : ℂ))‖ ^ 2 ≤
-          8 * Real.pi ^ 2 * (d : ℝ) / (Q + 1 : ℝ) ^ 2 := by
+            Complex.exp (Complex.I * (((n : ℝ) * ω k : ℝ) : ℂ))‖ ^ (2 : ℕ) ≤
+          8 * Real.pi ^ (2 : ℕ) * (d : ℝ) / (Q + 1 : ℝ) ^ (2 : ℕ) := by
   letI : NeZero d := ⟨hd.ne'⟩
   let phase : ℕ → Fin d → ℂ := fun n i =>
     Complex.exp (Complex.I * (((n : ℝ) * ω i : ℝ) : ℂ))
-  let η : ℝ := (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 / 2
+  let η : ℝ := (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) / 2
   obtain ⟨n, hnpos, hnQ, hcoh⟩ :=
     exists_phaseClockAmplitude_coherence_quantitative (Q := Q) hd ω
   have hphase : ∀ i, ‖phase n i‖ = 1 := by
@@ -44,10 +44,10 @@ theorem exists_phaseClockPivot_halfEntropy_quantitative
   obtain ⟨k, hk⟩ :=
     exists_phasePivot_sum_norm_sub_sq_le (phase n) hphase hcoh'
   refine ⟨n, k, hnpos, hnQ, ?_⟩
-  change (∑ j : Fin d, ‖phase n j - phase n k‖ ^ 2) ≤ _
+  change (∑ j : Fin d, ‖phase n j - phase n k‖ ^ (2 : ℕ)) ≤ _
   calc
     _ ≤ 4 * η * (Fintype.card (Fin d) : ℝ) := hk
-    _ = 8 * Real.pi ^ 2 * (d : ℝ) / (Q + 1 : ℝ) ^ 2 := by
+    _ = 8 * Real.pi ^ (2 : ℕ) * (d : ℝ) / (Q + 1 : ℝ) ^ (2 : ℕ) := by
       simp only [η, Fintype.card_fin]
       field_simp
       ring

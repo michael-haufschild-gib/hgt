@@ -47,7 +47,7 @@ theorem gomesJacobiTwoStepGram_posDef_iff (a b d : ℝ) (z : ℂ) :
       exact hb (Complex.ofReal_eq_zero.mp (by simpa using h0))
     have hq := h.dotProduct_mulVec_pos hv
     have hqeq : star (![(b : ℂ),z-a] : Fin 2 → ℂ) ⬝ᵥ
-        (gomesJacobiTwoStepGram a b d z *ᵥ ![(b : ℂ),z-a]) = ((d*b^2 : ℝ) : ℂ) := by
+        (gomesJacobiTwoStepGram a b d z *ᵥ ![(b : ℂ),z-a]) = ((d*b^(2 : ℕ) : ℝ) : ℂ) := by
       apply Complex.ext <;>
         simp [gomesJacobiTwoStepGram,gomesJacobiComplexStep,gomesJacobiSource,
           Matrix.mul_apply,Matrix.mulVec,dotProduct,Fin.sum_univ_two,Matrix.conjTranspose_apply,pow_two] <;> ring
@@ -101,7 +101,7 @@ theorem gomesJacobiTwoStep_flux_posDef_iff (a b c d : ℝ) (z : ℂ) :
   · intro h
     have h11 := h.diag_pos (i := (1 : Fin 2))
     have he : ((2*z.im : ℝ) • gomesJacobiTwoStepGram a b d z) 1 1 =
-        ((2*z.im*b^2 : ℝ) : ℂ) := by
+        ((2*z.im*b^(2 : ℕ) : ℝ) : ℂ) := by
       apply Complex.ext <;>
         simp [gomesJacobiTwoStepGram,gomesJacobiComplexStep,gomesJacobiSource,
           Matrix.mul_apply,Fin.sum_univ_two,pow_two]

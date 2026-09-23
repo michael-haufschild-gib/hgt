@@ -44,7 +44,7 @@ theorem egbFixedChargeAGibbsTunable_collision_tendsto_zero (n m l : ℕ) (t : �
     Tendsto (fun k => egbFixedChargeAGibbsCollisionExcess n l 1
       (egbFixedChargeAGibbsTunableEnergy n k m t)) atTop (nhds 0) := by
   have h := ((egbFixedChargeAGibbsTunableAmplitude_tendsto_zero n m t).pow 2).mul_const
-    ((4 / 9 : ℝ) ^ l + (1 / 36 : ℝ) ^ l * (16 : ℝ) ^ (m + 1) * t ^ 2)
+    ((4 / 9 : ℝ) ^ l + (1 / 36 : ℝ) ^ l * (16 : ℝ) ^ (m + 1) * t ^ (2 : ℕ))
   simpa only [egbFixedChargeAGibbsTunable_collision, zero_pow (by omega : (2 : ℕ) ≠ 0), zero_mul] using h
 
 /-- The actual three observations used by Fisher normalization approach the origin jointly. -/

@@ -74,7 +74,7 @@ theorem suzukiTaV2EndpointSecondTorque_eq_completedCovarianceIntegral
             suzukiTaV2CompletedCovarianceFourier a (-I) +
           suzukiTaV2CompletedCovarianceFourier a I *
             suzukiTaV2CompletedCovarianceFirstMoment a (-I)) /
-        suzukiTaV2CompletedCovarianceFourier a (-I) ^ 2 := by
+        suzukiTaV2CompletedCovarianceFourier a (-I) ^ (2 : ℕ) := by
   rw [suzukiTaV2EndpointSecondTorque]
   simp only
     [deriv_suzukiTaPhysicalFourier_plus_eq_completedCovarianceFirstMoment,
@@ -88,7 +88,7 @@ theorem norm_suzukiTaV2_completedCovarianceIntegral_le_two
             suzukiTaV2CompletedCovarianceFourier a (-I) +
           suzukiTaV2CompletedCovarianceFourier a I *
             suzukiTaV2CompletedCovarianceFirstMoment a (-I)) /
-        suzukiTaV2CompletedCovarianceFourier a (-I) ^ 2‖ ≤ 2 := by
+        suzukiTaV2CompletedCovarianceFourier a (-I) ^ (2 : ℕ)‖ ≤ 2 := by
   rw [← suzukiTaV2EndpointSecondTorque_eq_completedCovarianceIntegral]
   exact norm_suzukiTaV2EndpointSecondTorque_le_two a
 

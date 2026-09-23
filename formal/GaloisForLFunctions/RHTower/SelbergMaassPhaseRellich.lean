@@ -42,15 +42,15 @@ theorem phaseReadout_apply (N : ℕ) (r s a b c : ZMod (N+1)) (q : Deck N)
 
 /-- Actual normalized average over all phases and coordinates. -/
 def phaseAverage (N : ℕ) (H : PhaseIndex N → ℝ) : ℝ :=
-  ((((N+1 : ℕ) : ℝ)⁻¹)^3/2)*∑ i, H i
+  ((((N+1 : ℕ) : ℝ)⁻¹)^(3 : ℕ)/2)*∑ i, H i
 
 /-- The full squared observation average is exactly the original inversion-transfer loss. -/
 theorem phaseAverage_norm (N : ℕ) (r s : ZMod (N+1)) (v : EuclideanSpace ℂ (Deck N)) :
     phaseAverage N (fun i => normSq (phaseReadout N r s i v)) =
-      ‖v‖^2-‖inversionTransfer N r s v‖^2 := by
+      ‖v‖^(2 : ℕ)-‖inversionTransfer N r s v‖^(2 : ℕ) := by
   have he (a b c : ZMod (N+1)) :
       (∑ q : Deck N, normSq (phaseReadout N r s (a,b,c,q) v)) =
-      ‖v-tripleMotion N r s a b c v‖^2 := by
+      ‖v-tripleMotion N r s a b c v‖^(2 : ℕ) := by
     rw [EuclideanSpace.norm_sq_eq]
     simp only [Complex.sq_norm]
     rfl
@@ -73,8 +73,8 @@ theorem phaseReadout_dir (i : PhaseIndex N) (v : ℂ) (z : ℍ) :
 /-- Complete physical derivative loss is the exact same arithmetic phase energy. -/
 theorem phaseAverage_dir (v : ℂ) (z : ℍ) :
     phaseAverage N (fun i => normSq (dir v (observedField N f (phaseReadout N r s i)) (z : ℂ))) =
-      ‖sourceDerivative N f v z‖^2-
-        ‖inversionTransfer N r s (sourceDerivative N f v z)‖^2 := by
+      ‖sourceDerivative N f v z‖^(2 : ℕ)-
+        ‖inversionTransfer N r s (sourceDerivative N f v z)‖^(2 : ℕ) := by
   simp_rw [phaseReadout_dir]
   exact phaseAverage_norm N r s _
 
@@ -97,9 +97,9 @@ theorem phase_rellich_identity {Y : ℝ} (hY : 1 ≤ Y) :
     (fun i _ => radial_potential_boundary_identity N f (phaseReadout N r s i) hY)
   simp only [Finset.sum_add_distrib,← Finset.mul_sum] at h
   unfold radialPhaseBoundary angularPhaseBoundary massPhaseBoundary sidePhaseFlux topPhaseFlux phaseAverage
-  rw [show ((((N+1 : ℕ) : ℝ)⁻¹)^3/2)*(∑ i, radialBoundary N f (phaseReadout N r s i))+
-      lam*(((((N+1 : ℕ) : ℝ)⁻¹)^3/2)*(∑ i, massBoundary N f (phaseReadout N r s i))) =
-      ((((N+1 : ℕ) : ℝ)⁻¹)^3/2)*((∑ i, radialBoundary N f (phaseReadout N r s i))+
+  rw [show ((((N+1 : ℕ) : ℝ)⁻¹)^(3 : ℕ)/2)*(∑ i, radialBoundary N f (phaseReadout N r s i))+
+      lam*(((((N+1 : ℕ) : ℝ)⁻¹)^(3 : ℕ)/2)*(∑ i, massBoundary N f (phaseReadout N r s i))) =
+      ((((N+1 : ℕ) : ℝ)⁻¹)^(3 : ℕ)/2)*((∑ i, radialBoundary N f (phaseReadout N r s i))+
         lam*(∑ i, massBoundary N f (phaseReadout N r s i))) by ring,h]
   ring
 
@@ -179,8 +179,8 @@ private theorem phaseAverage_div (N : ℕ) (H : PhaseIndex N → ℝ) (c : ℝ) 
 
 private theorem phaseAverage_dir_chart (v w : ℂ) (hw : 0 < w.im) :
     phaseAverage N (fun i => normSq (dir v (observedField N f (phaseReadout N r s i)) w)) =
-      ‖dir v (fun t => sourceVector N f (ofComplex t)) w‖^2-
-        ‖inversionTransfer N r s (dir v (fun t => sourceVector N f (ofComplex t)) w)‖^2 := by
+      ‖dir v (fun t => sourceVector N f (ofComplex t)) w‖^(2 : ℕ)-
+        ‖inversionTransfer N r s (dir v (fun t => sourceVector N f (ofComplex t)) w)‖^(2 : ℕ) := by
   simpa only [sourceDerivative_eq_dir,ofComplex_apply_of_im_pos hw] using
     phaseAverage_dir N f r s v (ofComplex w)
 
@@ -188,18 +188,18 @@ private theorem phaseAverage_dir_chart (v w : ℂ) (hw : 0 < w.im) :
 def radialPhaseDensity (x : ℝ) : ℝ :=
   let w := point x (arcHeight x)
   let v := dir w (fun t => sourceVector N f (ofComplex t)) w
-  (‖v‖^2-‖inversionTransfer N r s v‖^2)/arcHeight x
+  (‖v‖^(2 : ℕ)-‖inversionTransfer N r s v‖^(2 : ℕ))/arcHeight x
 
 /-- Actual inversion-transfer loss of the full original angular derivative. -/
 def angularPhaseDensity (x : ℝ) : ℝ :=
   let w := point x (arcHeight x)
   let v := dir (Complex.I*w) (fun t => sourceVector N f (ofComplex t)) w
-  (‖v‖^2-‖inversionTransfer N r s v‖^2)/arcHeight x
+  (‖v‖^(2 : ℕ)-‖inversionTransfer N r s v‖^(2 : ℕ))/arcHeight x
 
 /-- Actual inversion-transfer loss of source mass with the original potential's arc weight. -/
 def massPhaseDensity (x : ℝ) : ℝ :=
   let v := sourceVector N f (ofComplex (point x (arcHeight x)))
-  (‖v‖^2-‖inversionTransfer N r s v‖^2)/(arcHeight x)^3
+  (‖v‖^(2 : ℕ)-‖inversionTransfer N r s v‖^(2 : ℕ))/(arcHeight x)^(3 : ℕ)
 
 /-- Every original radial phase displacement is retained in the exact transfer-loss density. -/
 theorem radialPhaseDensity_eq_average {x : ℝ} (hx : x ∈ Icc (-(1/2 : ℝ)) (1/2)) :

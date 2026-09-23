@@ -49,9 +49,9 @@ theorem ofFn_routeUHardEdgeCommonRightCoefficients
 
 theorem routeUHardEdgeCommonLeftQuadratic_eq_trace_re
     (a : ℝ) (P Q : Polynomial ℝ) :
-    xiShiftedReciprocalHankelQuadratic (a ^ 2)
+    xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ))
         (routeUHardEdgeCommonLeftCoefficients a P Q) =
-      (xiShiftedReciprocalTraceHankel (a ^ 2)
+      (xiShiftedReciprocalTraceHankel (a ^ (2 : ℕ))
         (xiHardEdgeReciprocalPolynomial a P)).re := by
   have htrace := xiShiftedReciprocalTraceHankel_X_pow_mul_ofFn
     (sq_nonneg a) 0 (routeUHardEdgeCommonLiftDegree a P Q + 1)
@@ -64,9 +64,9 @@ theorem routeUHardEdgeCommonLeftQuadratic_eq_trace_re
 
 theorem routeUHardEdgeCommonRightQuadratic_eq_trace_re
     (a : ℝ) (P Q : Polynomial ℝ) :
-    xiShiftedReciprocalHankelQuadratic (a ^ 2)
+    xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ))
         (routeUHardEdgeCommonRightCoefficients a P Q) =
-      (xiShiftedReciprocalTraceHankel (a ^ 2)
+      (xiShiftedReciprocalTraceHankel (a ^ (2 : ℕ))
         (xiHardEdgeReciprocalPolynomial a Q)).re := by
   have htrace := xiShiftedReciprocalTraceHankel_X_pow_mul_ofFn
     (sq_nonneg a) 0 (routeUHardEdgeCommonLiftDegree a P Q + 1)
@@ -80,14 +80,14 @@ theorem routeUHardEdgeCommonRightQuadratic_eq_trace_re
 /-- Literal completed prime--Gamma capital of the left channel, padded to the common degree. -/
 def routeUHardEdgeCommonLeftPrimeGammaCapital
     (a : RouteUPositiveHardEdgeMass) (P Q : Polynomial ℝ) : ℝ :=
-  routeUShiftedFilteredCompletedSourceCapital (a.1 ^ 2)
+  routeUShiftedFilteredCompletedSourceCapital (a.1 ^ (2 : ℕ))
     (routeUHardEdgeCommonLiftDegree a.1 P Q)
     (routeUHardEdgeCommonLeftCoefficients a.1 P Q)
 
 /-- Literal completed prime--Gamma capital of the right channel, with the same source filter. -/
 def routeUHardEdgeCommonRightPrimeGammaCapital
     (a : RouteUPositiveHardEdgeMass) (P Q : Polynomial ℝ) : ℝ :=
-  routeUShiftedFilteredCompletedSourceCapital (a.1 ^ 2)
+  routeUShiftedFilteredCompletedSourceCapital (a.1 ^ (2 : ℕ))
     (routeUHardEdgeCommonLiftDegree a.1 P Q)
     (routeUHardEdgeCommonRightCoefficients a.1 P Q)
 
@@ -96,7 +96,7 @@ theorem routeUHardEdgeCommonLeftPrimeGammaCapital_eq
     routeUHardEdgeCommonLeftPrimeGammaCapital a P Q =
       Real.pi *
           ((2 * routeUHardEdgeCommonLiftDegree a.1 P Q).factorial : ℝ) *
-        xiShiftedReciprocalHankelQuadratic (a.1 ^ 2)
+        xiShiftedReciprocalHankelQuadratic (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonLeftCoefficients a.1 P Q) := by
   exact routeUShiftedFilteredCompletedSourceCapital_eq_hankelQuadratic
     (sq_pos_of_pos a.2) _ _
@@ -106,7 +106,7 @@ theorem routeUHardEdgeCommonRightPrimeGammaCapital_eq
     routeUHardEdgeCommonRightPrimeGammaCapital a P Q =
       Real.pi *
           ((2 * routeUHardEdgeCommonLiftDegree a.1 P Q).factorial : ℝ) *
-        xiShiftedReciprocalHankelQuadratic (a.1 ^ 2)
+        xiShiftedReciprocalHankelQuadratic (a.1 ^ (2 : ℕ))
           (routeUHardEdgeCommonRightCoefficients a.1 P Q) := by
   exact routeUShiftedFilteredCompletedSourceCapital_eq_hankelQuadratic
     (sq_pos_of_pos a.2) _ _
@@ -119,11 +119,11 @@ def routeUHardEdgePolynomialNyquistFluxTerm
 theorem routeUHardEdgePolynomialNyquistFluxTerm_eq
     (a : ℝ) (P Q : Polynomial ℝ) (q : XiZeroCopy) :
     routeUHardEdgePolynomialNyquistFluxTerm a P Q q =
-      (((a ^ 2 : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ 2) q) *
+      (((a ^ (2 : ℕ) : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q) *
         (evalRealPolynomial P
-              (xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)) ^ 2 -
+              (xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)) ^ (2 : ℕ) -
           evalRealPolynomial Q
-              (xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)) ^ 2) := by
+              (xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)) ^ (2 : ℕ)) := by
   rw [routeUHardEdgePolynomialNyquistFluxTerm,
     xiHardEdgeDivisorPacketTerm, xiHardEdgeDivisorPacketTerm]
   ring
@@ -136,7 +136,7 @@ theorem summable_routeUHardEdgePolynomialNyquistFluxTerm
 
 theorem routeUHardEdgeCommonLeftQuadratic_eq_divisorPacket
     (a : ℝ) (P Q : Polynomial ℝ) :
-    a ^ 2 * xiShiftedReciprocalHankelQuadratic (a ^ 2)
+    a ^ (2 : ℕ) * xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ))
         (routeUHardEdgeCommonLeftCoefficients a P Q) =
       (∑' q : XiZeroCopy, xiHardEdgeDivisorPacketTerm a P q).re := by
   rw [routeUHardEdgeCommonLeftQuadratic_eq_trace_re,
@@ -145,7 +145,7 @@ theorem routeUHardEdgeCommonLeftQuadratic_eq_divisorPacket
 
 theorem routeUHardEdgeCommonRightQuadratic_eq_divisorPacket
     (a : ℝ) (P Q : Polynomial ℝ) :
-    a ^ 2 * xiShiftedReciprocalHankelQuadratic (a ^ 2)
+    a ^ (2 : ℕ) * xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ))
         (routeUHardEdgeCommonRightCoefficients a P Q) =
       (∑' q : XiZeroCopy, xiHardEdgeDivisorPacketTerm a Q q).re := by
   rw [routeUHardEdgeCommonRightQuadratic_eq_trace_re,
@@ -155,10 +155,10 @@ theorem routeUHardEdgeCommonRightQuadratic_eq_divisorPacket
 theorem re_tsum_routeUHardEdgePolynomialNyquistFluxTerm_eq
     (a : ℝ) (P Q : Polynomial ℝ) :
     (∑' q : XiZeroCopy, routeUHardEdgePolynomialNyquistFluxTerm a P Q q).re =
-      a ^ 2 *
-        (xiShiftedReciprocalHankelQuadratic (a ^ 2)
+      a ^ (2 : ℕ) *
+        (xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ))
             (routeUHardEdgeCommonLeftCoefficients a P Q) -
-          xiShiftedReciprocalHankelQuadratic (a ^ 2)
+          xiShiftedReciprocalHankelQuadratic (a ^ (2 : ℕ))
             (routeUHardEdgeCommonRightCoefficients a P Q)) := by
   rw [show (∑' q : XiZeroCopy, routeUHardEdgePolynomialNyquistFluxTerm a P Q q) =
       (∑' q : XiZeroCopy, xiHardEdgeDivisorPacketTerm a P q) -
@@ -176,7 +176,7 @@ The oriented polynomial channel divisor current is exactly the difference of two
 completed prime--Gamma source capitals with one common positive Laplace filter. -/
 theorem routeUHardEdgePrimeGammaNyquistFlux_identity
     (a : RouteUPositiveHardEdgeMass) (P Q : Polynomial ℝ) :
-    a.1 ^ 2 *
+    a.1 ^ (2 : ℕ) *
         (routeUHardEdgeCommonLeftPrimeGammaCapital a P Q -
           routeUHardEdgeCommonRightPrimeGammaCapital a P Q) =
       Real.pi *
@@ -506,7 +506,7 @@ theorem tsum_routeUDyadicPolynomialNyquistFluxTerm_eq_weightedCurrent
 /-- Exact literal prime--Gamma identity for the actual Route-U even/odd source channels. -/
 theorem routeUDyadicPrimeGammaNyquistFlux_identity
     (n : ℕ) (g : SchwartzMap ℝ ℝ) (k : ℕ) :
-    (routeUDyadicPositiveFineMass k).1 ^ 2 *
+    (routeUDyadicPositiveFineMass k).1 ^ (2 : ℕ) *
         (routeUHardEdgeCommonLeftPrimeGammaCapital
             (routeUDyadicPositiveFineMass k)
             (routeUDyadicFineEvenSourcePolynomial n g k)
@@ -531,7 +531,7 @@ theorem routeUDyadicPrimeGammaNyquistFlux_identity
 /-- Factorial- and mass-renormalized literal source flux. -/
 def routeUDyadicRenormalizedPrimeGammaNyquistFlux
     (n : ℕ) (g : SchwartzMap ℝ ℝ) (k : ℕ) : ℝ :=
-  (routeUDyadicPositiveFineMass k).1 ^ 2 *
+  (routeUDyadicPositiveFineMass k).1 ^ (2 : ℕ) *
       (routeUHardEdgeCommonLeftPrimeGammaCapital
           (routeUDyadicPositiveFineMass k)
           (routeUDyadicFineEvenSourcePolynomial n g k)

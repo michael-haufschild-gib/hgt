@@ -64,8 +64,8 @@ theorem ae_retractedDeckField_sub_deckGridStep_eq_cell {N M K : ℕ}
     ∀ᵐ z ∂cellMeasure, z ∈ upperChartGridCell a c hx hy i →
       ‖retractedDeckField ε F (z.re, z.im) -
           ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-            ℍ → DeckSpace N) z‖ ^ 2 =
-        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2 := by
+            ℍ → DeckSpace N) z‖ ^ (2 : ℕ) =
+        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ) := by
   filter_upwards [deckGridStep_ae_eq_cell_value hhx hhy C i] with z hstep
   intro hz
   rw [hstep hz]
@@ -79,8 +79,8 @@ theorem ae_form_sub_deckGridStep_eq_cell {N M K : ℕ}
     ∀ᵐ z ∂cellMeasure, z ∈ upperChartGridCell a c hx hy i →
       ‖(F : ℍ → DeckSpace N) z -
           ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-            ℍ → DeckSpace N) z‖ ^ 2 =
-        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2 := by
+            ℍ → DeckSpace N) z‖ ^ (2 : ℕ) =
+        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ) := by
   filter_upwards [ae_retractedDeckField_sub_deckGridStep_eq_cell hhx hhy F C i] with z hstep
   intro hz
   rw [form_eq_retractedDeckField_on_upperChartGridCell hε hεc hhy.le F i hz]
@@ -96,11 +96,11 @@ Keeping this region in the coordinate plane is essential: the grid witness is
 Euclidean, while the `DeckL2` representative is only defined modulo the
 measure restricted to the fundamental domain. -/
 def fundamentalChartRegion : Set (ℝ × ℝ) :=
-  {p | 1 ≤ p.1 ^ 2 + p.2 ^ 2 ∧ |p.1| ≤ (1 : ℝ) / 2}
+  {p | 1 ≤ p.1 ^ (2 : ℕ) + p.2 ^ (2 : ℕ) ∧ |p.1| ≤ (1 : ℝ) / 2}
 
 /-- The fundamental chart region is measurable. -/
 theorem measurableSet_fundamentalChartRegion : MeasurableSet fundamentalChartRegion := by
-  change MeasurableSet {p : ℝ × ℝ | 1 ≤ p.1 ^ 2 + p.2 ^ 2 ∧
+  change MeasurableSet {p : ℝ × ℝ | 1 ≤ p.1 ^ (2 : ℕ) + p.2 ^ (2 : ℕ) ∧
     |p.1| ≤ (1 : ℝ) / 2}
   exact
     (measurableSet_le measurable_const
@@ -112,7 +112,7 @@ real-chart description. -/
 theorem mem_fd_iff_mem_fundamentalChartRegion (z : ℍ) :
     z ∈ ModularGroup.fd ↔ (z.re, z.im) ∈ fundamentalChartRegion := by
   change (1 ≤ Complex.normSq (z : ℂ) ∧ |z.re| ≤ (1 : ℝ) / 2) ↔
-    (1 ≤ z.re ^ 2 + z.im ^ 2 ∧ |z.re| ≤ (1 : ℝ) / 2)
+    (1 ≤ z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) ∧ |z.re| ≤ (1 : ℝ) / 2)
   rw [Complex.normSq_apply]
   simp only [UpperHalfPlane.coe_re, UpperHalfPlane.coe_im, pow_two]
 
@@ -139,8 +139,8 @@ theorem ae_form_sub_deckGridStep_eq_cell_on_fd_inter {N M K : ℕ}
     ∀ᵐ z ∂volume, z ∈ ModularGroup.fd ∩ upperChartGridCell a c hx hy i →
       ‖(F : ℍ → DeckSpace N) z -
           ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-            ℍ → DeckSpace N) z‖ ^ 2 =
-        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2 := by
+            ℍ → DeckSpace N) z‖ ^ (2 : ℕ) =
+        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ) := by
   have h := ae_form_sub_deckGridStep_eq_cell
     (a := a) (c := c) (hx := hx) (hy := hy) hε hεc hhx hhy F C i
   change ∀ᵐ z ∂volume.restrict ModularGroup.fd,
@@ -154,9 +154,9 @@ theorem ae_form_sub_deckGridStep_eq_cell_on_fd_inter {N M K : ℕ}
 finite retracted coordinate rectangle. -/
 theorem integrableOn_retractedDeckField_error {N : ℕ} {ε a b c d : ℝ}
     (hε : 0 < ε) (F : formPreDomain N) (v : DeckSpace N) :
-    IntegrableOn (fun p => ‖retractedDeckField ε F p - v‖ ^ 2)
+    IntegrableOn (fun p => ‖retractedDeckField ε F p - v‖ ^ (2 : ℕ))
       (Set.Ioc a b ×ˢ Set.Ioc c d) := by
-  have hcont : Continuous (fun p => ‖retractedDeckField ε F p - v‖ ^ 2) :=
+  have hcont : Continuous (fun p => ‖retractedDeckField ε F p - v‖ ^ (2 : ℕ)) :=
     ((continuous_retractedDeckField hε F).sub continuous_const).norm.pow 2
   have hcompact : IsCompact (Set.Icc a b ×ˢ Set.Icc c d) :=
     isCompact_Icc.prod isCompact_Icc
@@ -168,7 +168,7 @@ theorem integrableOn_retractedDeckField_error {N : ℕ} {ε a b c d : ℝ}
 weighting on every rectangle whose lower height is positive. -/
 theorem integrableOn_retractedDeckField_error_div_sq {N : ℕ} {ε a b c d : ℝ}
     (hε : 0 < ε) (hc : 0 < c) (F : formPreDomain N) (v : DeckSpace N) :
-    IntegrableOn (fun p => ‖retractedDeckField ε F p - v‖ ^ 2 / p.2 ^ 2)
+    IntegrableOn (fun p => ‖retractedDeckField ε F p - v‖ ^ (2 : ℕ) / p.2 ^ (2 : ℕ))
       (Set.Ioc a b ×ˢ Set.Ioc c d) := by
   let K : Set (ℝ × ℝ) := Set.Icc a b ×ˢ Set.Icc c d
   let A : Set (ℝ × ℝ) := Set.Ioc a b ×ˢ Set.Ioc c d
@@ -177,11 +177,11 @@ theorem integrableOn_retractedDeckField_error_div_sq {N : ℕ} {ε a b c d : ℝ
   have hAK : A ⊆ K := by
     rintro p ⟨hp1, hp2⟩
     exact ⟨⟨hp1.1.le, hp1.2⟩, ⟨hp2.1.le, hp2.2⟩⟩
-  have hweight : ContinuousOn (fun p : ℝ × ℝ => (p.2 ^ 2)⁻¹) K := by
+  have hweight : ContinuousOn (fun p : ℝ × ℝ => (p.2 ^ (2 : ℕ))⁻¹) K := by
     apply (continuous_snd.pow 2).continuousOn.inv₀
     rintro p ⟨_, hp2⟩
     exact pow_ne_zero 2 (ne_of_gt (hc.trans_le hp2.1))
-  have herror : IntegrableOn (fun p => ‖retractedDeckField ε F p - v‖ ^ 2) A :=
+  have herror : IntegrableOn (fun p => ‖retractedDeckField ε F p - v‖ ^ (2 : ℕ)) A :=
     integrableOn_retractedDeckField_error hε F v
   simpa only [A, div_eq_mul_inv, mul_comm] using
     herror.continuousOn_mul_of_subset hweight hK hA hAK
@@ -201,25 +201,25 @@ weight `y⁻²` costs at most `c⁻²` in a nonnegative integrable error integra
 theorem setIntegral_div_sq_le_of_height {A : Set (ℝ × ℝ)} {c : ℝ}
     {f : ℝ × ℝ → ℝ} (hA : MeasurableSet A) (hc : 0 < c)
     (hheight : ∀ p ∈ A, c ≤ p.2) (hf0 : ∀ p ∈ A, 0 ≤ f p)
-    (hf : IntegrableOn f A) (hweighted : IntegrableOn (fun p => f p / p.2 ^ 2) A) :
-    ∫ p in A, f p / p.2 ^ 2 ≤ (c ^ 2)⁻¹ * ∫ p in A, f p := by
-  have hconst : IntegrableOn (fun p => (c ^ 2)⁻¹ * f p) A := by
-    change Integrable (fun p => (c ^ 2)⁻¹ * f p) (volume.restrict A)
-    exact hf.const_mul ((c ^ 2)⁻¹)
+    (hf : IntegrableOn f A) (hweighted : IntegrableOn (fun p => f p / p.2 ^ (2 : ℕ)) A) :
+    ∫ p in A, f p / p.2 ^ (2 : ℕ) ≤ (c ^ (2 : ℕ))⁻¹ * ∫ p in A, f p := by
+  have hconst : IntegrableOn (fun p => (c ^ (2 : ℕ))⁻¹ * f p) A := by
+    change Integrable (fun p => (c ^ (2 : ℕ))⁻¹ * f p) (volume.restrict A)
+    exact hf.const_mul ((c ^ (2 : ℕ))⁻¹)
   calc
-    ∫ p in A, f p / p.2 ^ 2 ≤ ∫ p in A, (c ^ 2)⁻¹ * f p := by
+    ∫ p in A, f p / p.2 ^ (2 : ℕ) ≤ ∫ p in A, (c ^ (2 : ℕ))⁻¹ * f p := by
       apply setIntegral_mono_on hweighted hconst hA
       intro p hp
       have hypos : 0 < p.2 := hc.trans_le (hheight p hp)
-      have hsquares : c ^ 2 ≤ p.2 ^ 2 := by
+      have hsquares : c ^ (2 : ℕ) ≤ p.2 ^ (2 : ℕ) := by
         exact pow_le_pow_left₀ hc.le (hheight p hp) 2
-      have hinv : (p.2 ^ 2)⁻¹ ≤ (c ^ 2)⁻¹ :=
+      have hinv : (p.2 ^ (2 : ℕ))⁻¹ ≤ (c ^ (2 : ℕ))⁻¹ :=
         (inv_le_inv₀ (sq_pos_of_pos hypos) (sq_pos_of_pos hc)).2 hsquares
       calc
-        f p / p.2 ^ 2 = (p.2 ^ 2)⁻¹ * f p := by
+        f p / p.2 ^ (2 : ℕ) = (p.2 ^ (2 : ℕ))⁻¹ * f p := by
           rw [div_eq_mul_inv, mul_comm]
-        _ ≤ (c ^ 2)⁻¹ * f p := mul_le_mul_of_nonneg_right hinv (hf0 p hp)
-    _ = (c ^ 2)⁻¹ * ∫ p in A, f p := by
+        _ ≤ (c ^ (2 : ℕ))⁻¹ * f p := mul_le_mul_of_nonneg_right hinv (hf0 p hp)
+    _ = (c ^ (2 : ℕ))⁻¹ * ∫ p in A, f p := by
       rw [integral_const_mul]
 
 /-- Coordinate transport followed by the bounded-height estimate.  This is the
@@ -227,9 +227,9 @@ hyperbolic-to-Euclidean error conversion used on every compact core cell. -/
 theorem setIntegral_coord_le_of_height {A : Set (ℝ × ℝ)} {c : ℝ}
     {f : ℝ × ℝ → ℝ} (hA : MeasurableSet A) (hc : 0 < c)
     (hheight : ∀ p ∈ A, c ≤ p.2) (hf0 : ∀ p ∈ A, 0 ≤ f p)
-    (hf : IntegrableOn f A) (hweighted : IntegrableOn (fun p => f p / p.2 ^ 2) A) :
+    (hf : IntegrableOn f A) (hweighted : IntegrableOn (fun p => f p / p.2 ^ (2 : ℕ)) A) :
     ∫ z in {z : ℍ | (z.re, z.im) ∈ A}, f (z.re, z.im) ≤
-      (c ^ 2)⁻¹ * ∫ p in A, f p := by
+      (c ^ (2 : ℕ))⁻¹ * ∫ p in A, f p := by
   rw [RHTower.setIntegral_coord_eq_real hA (fun p hp => hc.trans_le (hheight p hp)) f]
   exact setIntegral_div_sq_le_of_height hA hc hheight hf0 hf hweighted
 
@@ -238,12 +238,12 @@ positive coordinate rectangle is controlled by its Euclidean squared error. -/
 theorem setIntegral_retractedDeckField_error_le_of_rect {N : ℕ} {ε a b c d : ℝ}
     (hε : 0 < ε) (hc : 0 < c) (F : formPreDomain N) (v : DeckSpace N) :
     ∫ z in {z : ℍ | (z.re, z.im) ∈ Set.Ioc a b ×ˢ Set.Ioc c d},
-        ‖retractedDeckField ε F (z.re, z.im) - v‖ ^ 2 ≤
-      (c ^ 2)⁻¹ * ∫ p in Set.Ioc a b ×ˢ Set.Ioc c d,
-        ‖retractedDeckField ε F p - v‖ ^ 2 := by
+        ‖retractedDeckField ε F (z.re, z.im) - v‖ ^ (2 : ℕ) ≤
+      (c ^ (2 : ℕ))⁻¹ * ∫ p in Set.Ioc a b ×ˢ Set.Ioc c d,
+        ‖retractedDeckField ε F p - v‖ ^ (2 : ℕ) := by
   refine setIntegral_coord_le_of_height
     (A := Set.Ioc a b ×ˢ Set.Ioc c d) (c := c)
-    (f := fun p => ‖retractedDeckField ε F p - v‖ ^ 2)
+    (f := fun p => ‖retractedDeckField ε F p - v‖ ^ (2 : ℕ))
     (measurableSet_Ioc.prod measurableSet_Ioc) hc ?_ ?_ ?_ ?_
   · rintro p ⟨_, hp2⟩
     exact hp2.1.le
@@ -258,11 +258,11 @@ theorem upperChartGridCell_retractedDeckField_error_le {N M K : ℕ}
     {ε a c hx hy : ℝ} (hε : 0 < ε) (hc : 0 < c) (hhy : 0 ≤ hy)
     (F : formPreDomain N) (C : ℕ → ℕ → DeckSpace N) (i : Fin K × Fin M) :
     ∫ z in upperChartGridCell a c hx hy i,
-        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2 ≤
-      (c ^ 2)⁻¹ *
+        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ) ≤
+      (c ^ (2 : ℕ))⁻¹ *
         ∫ y in Set.Ioc (c + (i.1 : ℝ) * hy) (c + ((i.1 : ℕ) + 1 : ℝ) * hy),
           ∫ x in Set.Ioc (a + (i.2 : ℝ) * hx) (a + ((i.2 : ℕ) + 1 : ℝ) * hx),
-            ‖retractedDeckField ε F (x, y) - C i.1 i.2‖ ^ 2 := by
+            ‖retractedDeckField ε F (x, y) - C i.1 i.2‖ ^ (2 : ℕ) := by
   let x0 : ℝ := a + (i.2 : ℝ) * hx
   let x1 : ℝ := a + ((i.2 : ℕ) + 1 : ℝ) * hx
   let y0 : ℝ := c + (i.1 : ℝ) * hy
@@ -277,17 +277,17 @@ theorem upperChartGridCell_retractedDeckField_error_le {N M K : ℕ}
     have hp2 : y0 < p.2 := hp.2.1
     dsimp only [y0] at hp2
     linarith
-  have herror : IntegrableOn (fun p => ‖retractedDeckField ε F p - C i.1 i.2‖ ^ 2) A := by
+  have herror : IntegrableOn (fun p => ‖retractedDeckField ε F p - C i.1 i.2‖ ^ (2 : ℕ)) A := by
     simpa only [A] using
       (integrableOn_retractedDeckField_error (a := x0) (b := x1) (c := y0) (d := y1)
         hε F (C i.1 i.2))
   have hweighted : IntegrableOn
-      (fun p => ‖retractedDeckField ε F p - C i.1 i.2‖ ^ 2 / p.2 ^ 2) A := by
+      (fun p => ‖retractedDeckField ε F p - C i.1 i.2‖ ^ (2 : ℕ) / p.2 ^ (2 : ℕ)) A := by
     simpa only [A] using
       (integrableOn_retractedDeckField_error_div_sq (a := x0) (b := x1) (c := y0) (d := y1)
         hε hcy0 F (C i.1 i.2))
   have hcell := setIntegral_coord_le_of_height (A := A) (c := c)
-    (f := fun p => ‖retractedDeckField ε F p - C i.1 i.2‖ ^ 2)
+    (f := fun p => ‖retractedDeckField ε F p - C i.1 i.2‖ ^ (2 : ℕ))
     (by simpa only [A] using (measurableSet_Ioc.prod measurableSet_Ioc)) hc hheight
     (fun _ _ => sq_nonneg _) herror hweighted
   rw [setIntegral_prod_eq_iterated herror] at hcell
@@ -295,7 +295,7 @@ theorem upperChartGridCell_retractedDeckField_error_le {N M K : ℕ}
     ∫ z in {z : ℍ | (z.re, z.im) ∈
       Set.Ioc (a + (i.2 : ℝ) * hx) (a + ((i.2 : ℕ) + 1 : ℝ) * hx) ×ˢ
         Set.Ioc (c + (i.1 : ℝ) * hy) (c + ((i.1 : ℕ) + 1 : ℝ) * hy)},
-      ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2 ≤ _
+      ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ) ≤ _
   simpa only [A, x0, x1, y0, y1] using hcell
 
 /-- On the fundamental-domain portion of a positive grid cell, the actual
@@ -309,12 +309,12 @@ theorem setIntegral_fd_inter_upperChartGridCell_form_sub_deckGridStep_le {N M K 
     ∫ z in ModularGroup.fd ∩ upperChartGridCell a c hx hy i,
       ‖(F : ℍ → DeckSpace N) z -
           ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-            ℍ → DeckSpace N) z‖ ^ 2 ≤
+            ℍ → DeckSpace N) z‖ ^ (2 : ℕ) ≤
       ∫ z in upperChartGridCell a c hx hy i,
-        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2 := by
+        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ) := by
   let R : Set (ℝ × ℝ) := upperChartGridRect a c hx hy i
   let A : Set (ℝ × ℝ) := fundamentalChartRegion ∩ R
-  let E : ℝ × ℝ → ℝ := fun p => ‖retractedDeckField ε F p - C i.1 i.2‖ ^ 2
+  let E : ℝ × ℝ → ℝ := fun p => ‖retractedDeckField ε F p - C i.1 i.2‖ ^ (2 : ℕ)
   have hR : MeasurableSet R := by
     dsimp only [R, upperChartGridRect]
     exact measurableSet_Ioc.prod measurableSet_Ioc
@@ -329,13 +329,13 @@ theorem setIntegral_fd_inter_upperChartGridCell_form_sub_deckGridStep_le {N M K 
   have hcy0 : 0 < c + (i.1 : ℝ) * hy := by
     have hk : 0 ≤ (i.1 : ℝ) * hy := mul_nonneg (Nat.cast_nonneg _) hhy.le
     linarith
-  have hweighted : IntegrableOn (fun p => E p / p.2 ^ 2) R := by
+  have hweighted : IntegrableOn (fun p => E p / p.2 ^ (2 : ℕ)) R := by
     dsimp only [E, R, upperChartGridRect]
     exact integrableOn_retractedDeckField_error_div_sq
       (a := a + (i.2 : ℝ) * hx) (b := a + ((i.2 : ℕ) + 1 : ℝ) * hx)
       (c := c + (i.1 : ℝ) * hy) (d := c + ((i.1 : ℕ) + 1 : ℝ) * hy)
       hε hcy0 F (C i.1 i.2)
-  have hmono : (∫ p in A, E p / p.2 ^ 2) ≤ ∫ p in R, E p / p.2 ^ 2 := by
+  have hmono : (∫ p in A, E p / p.2 ^ (2 : ℕ)) ≤ ∫ p in R, E p / p.2 ^ (2 : ℕ) := by
     apply setIntegral_mono_set hweighted
     · exact Eventually.of_forall fun p => div_nonneg (sq_nonneg _) (sq_nonneg _)
     · exact Eventually.of_forall fun _ hp => hp.2
@@ -352,22 +352,22 @@ theorem setIntegral_fd_inter_upperChartGridCell_form_sub_deckGridStep_le {N M K 
     ∫ z in ModularGroup.fd ∩ upperChartGridCell a c hx hy i,
         ‖(F : ℍ → DeckSpace N) z -
             ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-              ℍ → DeckSpace N) z‖ ^ 2 =
+              ℍ → DeckSpace N) z‖ ^ (2 : ℕ) =
         ∫ z in ModularGroup.fd ∩ upperChartGridCell a c hx hy i, E (z.re, z.im) := by
           apply setIntegral_congr_ae hfdcell
           simpa only [E] using
             ae_form_sub_deckGridStep_eq_cell_on_fd_inter hε hεc hhx hhy F C i
     _ = ∫ z in {z : ℍ | (z.re, z.im) ∈ A}, E (z.re, z.im) := by rw [hset]
-    _ = ∫ p in A, E p / p.2 ^ 2 :=
+    _ = ∫ p in A, E p / p.2 ^ (2 : ℕ) :=
       RHTower.setIntegral_coord_eq_real hA (fun p hp => hc.trans_le (hheightA p hp)) E
-    _ ≤ ∫ p in R, E p / p.2 ^ 2 := hmono
+    _ ≤ ∫ p in R, E p / p.2 ^ (2 : ℕ) := hmono
     _ = ∫ z in {z : ℍ | (z.re, z.im) ∈ R}, E (z.re, z.im) :=
       (RHTower.setIntegral_coord_eq_real hR
         (fun p hp => hc.trans_le (hheightR p hp)) E).symm
     _ = ∫ z in upperChartGridCell a c hx hy i, E (z.re, z.im) := by
       rw [upperChartGridCell_eq_setOf_mem_rect]
     _ = ∫ z in upperChartGridCell a c hx hy i,
-        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2 := by rfl
+        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ) := by rfl
 
 /-- Summing the one-cell transport bound over a finite product grid gives the
 hyperbolic core error budget before the Euclidean Poincaré estimate is used. -/
@@ -376,12 +376,12 @@ theorem sum_upperChartGridCell_retractedDeckField_error_le {N M K : ℕ}
     (F : formPreDomain N) (C : ℕ → ℕ → DeckSpace N) :
     (∑ i : Fin K × Fin M,
       ∫ z in upperChartGridCell a c hx hy i,
-        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2) ≤
+        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ)) ≤
       ∑ i : Fin K × Fin M,
-        (c ^ 2)⁻¹ *
+        (c ^ (2 : ℕ))⁻¹ *
           ∫ y in Set.Ioc (c + (i.1 : ℝ) * hy) (c + ((i.1 : ℕ) + 1 : ℝ) * hy),
             ∫ x in Set.Ioc (a + (i.2 : ℝ) * hx) (a + ((i.2 : ℕ) + 1 : ℝ) * hx),
-              ‖retractedDeckField ε F (x, y) - C i.1 i.2‖ ^ 2 := by
+              ‖retractedDeckField ε F (x, y) - C i.1 i.2‖ ^ (2 : ℕ) := by
   apply Finset.sum_le_sum
   intro i _
   exact upperChartGridCell_retractedDeckField_error_le hε hc hhy F C i
@@ -396,10 +396,10 @@ theorem sum_fd_inter_upperChartGridCell_form_sub_deckGridStep_le {N M K : ℕ}
       ∫ z in ModularGroup.fd ∩ upperChartGridCell a c hx hy i,
         ‖(F : ℍ → DeckSpace N) z -
             ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-              ℍ → DeckSpace N) z‖ ^ 2) ≤
+              ℍ → DeckSpace N) z‖ ^ (2 : ℕ)) ≤
       ∑ i : Fin K × Fin M,
         ∫ z in upperChartGridCell a c hx hy i,
-          ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2 := by
+          ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ) := by
   apply Finset.sum_le_sum
   intro i _
   exact setIntegral_fd_inter_upperChartGridCell_form_sub_deckGridStep_le
@@ -425,13 +425,13 @@ theorem exists_grid_hyperbolic_error_le {N : ℕ} {ε a c hx hy : ℝ}
     ∃ C : ℕ → ℕ → DeckSpace N,
       (∑ i : Fin K × Fin M,
         ∫ z in upperChartGridCell a c hx hy i,
-          ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2) ≤
-        (c ^ 2)⁻¹ *
-          (8 * hx ^ 2 *
+          ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ)) ≤
+        (c ^ (2 : ℕ))⁻¹ *
+          (8 * hx ^ (2 : ℕ) *
             (∫ y in Set.Ioc c (c + (K : ℝ) * hy),
               ∫ x in Set.Ioc a (a + (M : ℝ) * hx),
                 retractedDeckEnergyX ε F (x, y)) +
-          2 * hy ^ 2 *
+          2 * hy ^ (2 : ℕ) *
             (∫ x in Set.Ioc a (a + (M : ℝ) * hx),
               ∫ y in Set.Ioc c (c + (K : ℝ) * hy),
                 retractedDeckEnergyY ε F (x, y))) := by
@@ -440,29 +440,29 @@ theorem exists_grid_hyperbolic_error_le {N : ℕ} {ε a c hx hy : ℝ}
   calc
     (∑ i : Fin K × Fin M,
       ∫ z in upperChartGridCell a c hx hy i,
-        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ 2) ≤
+        ‖retractedDeckField ε F (z.re, z.im) - C i.1 i.2‖ ^ (2 : ℕ)) ≤
         ∑ i : Fin K × Fin M,
-          (c ^ 2)⁻¹ *
+          (c ^ (2 : ℕ))⁻¹ *
             ∫ y in Set.Ioc (c + (i.1 : ℝ) * hy) (c + ((i.1 : ℕ) + 1 : ℝ) * hy),
               ∫ x in Set.Ioc (a + (i.2 : ℝ) * hx) (a + ((i.2 : ℕ) + 1 : ℝ) * hx),
-                ‖retractedDeckField ε F (x, y) - C i.1 i.2‖ ^ 2 :=
+                ‖retractedDeckField ε F (x, y) - C i.1 i.2‖ ^ (2 : ℕ) :=
       sum_upperChartGridCell_retractedDeckField_error_le hε hc hhy F C
-    _ = (c ^ 2)⁻¹ *
+    _ = (c ^ (2 : ℕ))⁻¹ *
           (∑ k ∈ Finset.range K, ∑ j ∈ Finset.range M,
             ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
               ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
-                ‖retractedDeckField ε F (x, y) - C k j‖ ^ 2) := by
+                ‖retractedDeckField ε F (x, y) - C k j‖ ^ (2 : ℕ)) := by
           simpa only [Nat.cast_add, Nat.cast_one] using
-            (sum_fin_product_mul_eq (K := K) (M := M) (c ^ 2)⁻¹ (fun k j =>
+            (sum_fin_product_mul_eq (K := K) (M := M) (c ^ (2 : ℕ))⁻¹ (fun k j =>
               ∫ y in Set.Ioc (c + (k : ℝ) * hy) (c + ((k + 1 : ℕ) : ℝ) * hy),
                 ∫ x in Set.Ioc (a + (j : ℝ) * hx) (a + ((j + 1 : ℕ) : ℝ) * hx),
-                  ‖retractedDeckField ε F (x, y) - C k j‖ ^ 2))
-    _ ≤ (c ^ 2)⁻¹ *
-          (8 * hx ^ 2 *
+                  ‖retractedDeckField ε F (x, y) - C k j‖ ^ (2 : ℕ)))
+    _ ≤ (c ^ (2 : ℕ))⁻¹ *
+          (8 * hx ^ (2 : ℕ) *
             (∫ y in Set.Ioc c (c + (K : ℝ) * hy),
               ∫ x in Set.Ioc a (a + (M : ℝ) * hx),
                 retractedDeckEnergyX ε F (x, y)) +
-          2 * hy ^ 2 *
+          2 * hy ^ (2 : ℕ) *
             (∫ x in Set.Ioc a (a + (M : ℝ) * hx),
               ∫ y in Set.Ioc c (c + (K : ℝ) * hy),
                 retractedDeckEnergyY ε F (x, y))) :=
@@ -478,13 +478,13 @@ theorem exists_grid_fd_hyperbolic_error_le {N : ℕ} {ε a c hx hy : ℝ}
         ∫ z in ModularGroup.fd ∩ upperChartGridCell a c hx hy i,
           ‖(F : ℍ → DeckSpace N) z -
               ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-                ℍ → DeckSpace N) z‖ ^ 2) ≤
-        (c ^ 2)⁻¹ *
-          (8 * hx ^ 2 *
+                ℍ → DeckSpace N) z‖ ^ (2 : ℕ)) ≤
+        (c ^ (2 : ℕ))⁻¹ *
+          (8 * hx ^ (2 : ℕ) *
             (∫ y in Set.Ioc c (c + (K : ℝ) * hy),
               ∫ x in Set.Ioc a (a + (M : ℝ) * hx),
                 retractedDeckEnergyX ε F (x, y)) +
-          2 * hy ^ 2 *
+          2 * hy ^ (2 : ℕ) *
             (∫ x in Set.Ioc a (a + (M : ℝ) * hx),
               ∫ y in Set.Ioc c (c + (K : ℝ) * hy),
                 retractedDeckEnergyY ε F (x, y))) := by
@@ -520,29 +520,29 @@ theorem setIntegral_fdUpperChartGridCore_form_sub_deckGridStep_eq {N M K : ℕ}
     ∫ z in fdUpperChartGridCore (M := M) (K := K) a c hx hy,
       ‖(F : ℍ → DeckSpace N) z -
           ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-            ℍ → DeckSpace N) z‖ ^ 2 =
+            ℍ → DeckSpace N) z‖ ^ (2 : ℕ) =
       ∑ i : Fin K × Fin M,
         ∫ z in ModularGroup.fd ∩ upperChartGridCell a c hx hy i,
           ‖(F : ℍ → DeckSpace N) z -
               ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-                ℍ → DeckSpace N) z‖ ^ 2 := by
+                ℍ → DeckSpace N) z‖ ^ (2 : ℕ) := by
   have hmem : MemLp (fun z => (F : ℍ → DeckSpace N) z -
       ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
         ℍ → DeckSpace N) z) 2 cellMeasure :=
     (formPreDomain.memLp F).sub (Lp.memLp _)
   have hsq : Integrable (fun z => ‖(F : ℍ → DeckSpace N) z -
       ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-        ℍ → DeckSpace N) z‖ ^ 2) cellMeasure :=
+        ℍ → DeckSpace N) z‖ ^ (2 : ℕ)) cellMeasure :=
     (memLp_two_iff_integrable_sq_norm hmem.aestronglyMeasurable).mp hmem
   have hsqfd : IntegrableOn (fun z => ‖(F : ℍ → DeckSpace N) z -
       ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-        ℍ → DeckSpace N) z‖ ^ 2) ModularGroup.fd := by
+        ℍ → DeckSpace N) z‖ ^ (2 : ℕ)) ModularGroup.fd := by
     exact hsq
   change (∫ z in ⋃ i : Fin K × Fin M,
       ModularGroup.fd ∩ upperChartGridCell a c hx hy i,
       ‖(F : ℍ → DeckSpace N) z -
           ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-            ℍ → DeckSpace N) z‖ ^ 2) = _
+            ℍ → DeckSpace N) z‖ ^ (2 : ℕ)) = _
   exact integral_iUnion_fintype
     (fun i => ModularGroup.isClosed_fd.measurableSet.inter
       (measurableSet_upperChartGridCell a c hx hy i))
@@ -563,13 +563,13 @@ theorem exists_grid_fdUpperChartGridCore_hyperbolic_error_le {N : ℕ} {ε a c h
       ∫ z in fdUpperChartGridCore (M := M) (K := K) a c hx hy,
         ‖(F : ℍ → DeckSpace N) z -
             ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-              ℍ → DeckSpace N) z‖ ^ 2 ≤
-        (c ^ 2)⁻¹ *
-          (8 * hx ^ 2 *
+              ℍ → DeckSpace N) z‖ ^ (2 : ℕ) ≤
+        (c ^ (2 : ℕ))⁻¹ *
+          (8 * hx ^ (2 : ℕ) *
             (∫ y in Set.Ioc c (c + (K : ℝ) * hy),
               ∫ x in Set.Ioc a (a + (M : ℝ) * hx),
                 retractedDeckEnergyX ε F (x, y)) +
-          2 * hy ^ 2 *
+          2 * hy ^ (2 : ℕ) *
             (∫ x in Set.Ioc a (a + (M : ℝ) * hx),
               ∫ y in Set.Ioc c (c + (K : ℝ) * hy),
                 retractedDeckEnergyY ε F (x, y))) := by

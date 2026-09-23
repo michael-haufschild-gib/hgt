@@ -34,40 +34,40 @@ noncomputable def hillSin (ω : ℝ → ℝ) : ℝ → ℝ := hillSolution ω (0
 /-- Its velocity. -/
 noncomputable def hillSinDeriv (ω : ℝ → ℝ) : ℝ → ℝ := hillSolutionDeriv ω (0, 1)
 
-theorem hasDerivAt_hillCos (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) (t : ℝ) :
+theorem hasDerivAt_hillCos (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) (t : ℝ) :
     HasDerivAt (hillCos ω) (hillCosDeriv ω t) t :=
   hasDerivAt_hillSolution hω hM1 hM (1, 0) t
 
-theorem hasDerivAt_hillCosDeriv (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M)
-    (t : ℝ) : HasDerivAt (hillCosDeriv ω) (-(ω t ^ 2) * hillCos ω t) t :=
+theorem hasDerivAt_hillCosDeriv (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M)
+    (t : ℝ) : HasDerivAt (hillCosDeriv ω) (-(ω t ^ (2 : ℕ)) * hillCos ω t) t :=
   hasDerivAt_hillSolutionDeriv hω hM1 hM (1, 0) t
 
-theorem hasDerivAt_hillSin (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) (t : ℝ) :
+theorem hasDerivAt_hillSin (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) (t : ℝ) :
     HasDerivAt (hillSin ω) (hillSinDeriv ω t) t :=
   hasDerivAt_hillSolution hω hM1 hM (0, 1) t
 
-theorem hasDerivAt_hillSinDeriv (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M)
-    (t : ℝ) : HasDerivAt (hillSinDeriv ω) (-(ω t ^ 2) * hillSin ω t) t :=
+theorem hasDerivAt_hillSinDeriv (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M)
+    (t : ℝ) : HasDerivAt (hillSinDeriv ω) (-(ω t ^ (2 : ℕ)) * hillSin ω t) t :=
   hasDerivAt_hillSolutionDeriv hω hM1 hM (0, 1) t
 
-theorem continuous_hillCos (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) :
+theorem continuous_hillCos (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) :
     Continuous (hillCos ω) :=
   continuous_iff_continuousAt.mpr fun t => (hasDerivAt_hillCos hω hM1 hM t).continuousAt
 
-theorem continuous_hillSin (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) :
+theorem continuous_hillSin (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) :
     Continuous (hillSin ω) :=
   continuous_iff_continuousAt.mpr fun t => (hasDerivAt_hillSin hω hM1 hM t).continuousAt
 
-theorem hillCos_zero (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) :
+theorem hillCos_zero (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) :
     hillCos ω 0 = 1 := hillSolution_zero hω hM1 hM (1, 0)
 
-theorem hillCosDeriv_zero (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) :
+theorem hillCosDeriv_zero (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) :
     hillCosDeriv ω 0 = 0 := hillSolutionDeriv_zero hω hM1 hM (1, 0)
 
-theorem hillSin_zero (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) :
+theorem hillSin_zero (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) :
     hillSin ω 0 = 0 := hillSolution_zero hω hM1 hM (0, 1)
 
-theorem hillSinDeriv_zero (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) :
+theorem hillSinDeriv_zero (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) :
     hillSinDeriv ω 0 = 1 := hillSolutionDeriv_zero hω hM1 hM (0, 1)
 
 /-! ## The Wronskian -/
@@ -82,7 +82,7 @@ theorem const_of_hasDerivAt_zero {f : ℝ → ℝ} (h : ∀ x : ℝ, HasDerivAt 
   simp
 
 /-- **The Wronskian of the fundamental pair is one.** -/
-theorem hillWronskian_eq_one (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) (t : ℝ) :
+theorem hillWronskian_eq_one (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) (t : ℝ) :
     hillCos ω t * hillSinDeriv ω t - hillSin ω t * hillCosDeriv ω t = 1 := by
   have hderiv : ∀ r : ℝ,
       HasDerivAt (fun q : ℝ => hillCos ω q * hillSinDeriv ω q - hillSin ω q * hillCosDeriv ω q)
@@ -110,7 +110,7 @@ theorem hillProp_self (ω : ℝ → ℝ) (t : ℝ) : hillProp ω t t = 0 := by
   rw [hillProp]
   ring
 
-theorem hillProp_zero_right (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) (t : ℝ) :
+theorem hillProp_zero_right (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ (2 : ℕ) ≤ M) (t : ℝ) :
     hillProp ω t 0 = hillSin ω t := by
   rw [hillProp, hillCos_zero hω hM1 hM, hillSin_zero hω hM1 hM]
   ring
@@ -126,10 +126,10 @@ variable {c dc : ℝ → ℝ} {m K C S s : ℝ}
 /-- **The sine member gains one power of the frequency**, uniformly in it. -/
 theorem mul_abs_hillSin_massive_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hs : s ^ 2 ≤ S ^ 2) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hs : s ^ (2 : ℕ) ≤ S ^ (2 : ℕ)) (t : ℝ) :
     massiveFreq m c s t * |hillSin (massiveFreq m c s) t| ≤ Real.exp (K * |t|) := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c s r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c s r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC hs r).trans (le_max_right _ _)
   have hcont := continuous_massiveFreq (m := m) hc s
   have hsplit := mul_abs_le_sqrt_hillEnergy
@@ -147,10 +147,10 @@ theorem mul_abs_hillSin_massive_le (hm : 0 < m) (hc : Continuous c)
 /-- **Its velocity is bounded, uniformly in the frequency.** -/
 theorem abs_hillSinDeriv_massive_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hs : s ^ 2 ≤ S ^ 2) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hs : s ^ (2 : ℕ) ≤ S ^ (2 : ℕ)) (t : ℝ) :
     |hillSinDeriv (massiveFreq m c s) t| ≤ Real.exp (K * |t|) := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c s r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c s r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC hs r).trans (le_max_right _ _)
   have hcont := continuous_massiveFreq (m := m) hc s
   have hsplit := abs_deriv_le_sqrt_hillEnergy
@@ -167,7 +167,7 @@ theorem abs_hillSinDeriv_massive_le (hm : 0 < m) (hc : Continuous c)
 /-- **The sine member itself**, bounded by the reciprocal of the frequency. -/
 theorem abs_hillSin_massive_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hs : s ^ 2 ≤ S ^ 2) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hs : s ^ (2 : ℕ) ≤ S ^ (2 : ℕ)) (t : ℝ) :
     |hillSin (massiveFreq m c s) t| ≤ (massiveFreq m c s t)⁻¹ * Real.exp (K * |t|) := by
   have hpos := massiveFreq_pos hm c s t
   have hmain := mul_abs_hillSin_massive_le hm hc hcd hcpos hK hC hs (S := S) t
@@ -178,14 +178,14 @@ theorem abs_hillSin_massive_le (hm : 0 < m) (hc : Continuous c)
 /-- **The cosine member**, bounded by the ratio of the speeds. -/
 theorem abs_hillCos_massive_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hs : s ^ 2 ≤ S ^ 2) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hs : s ^ (2 : ℕ) ≤ S ^ (2 : ℕ)) (t : ℝ) :
     |hillCos (massiveFreq m c s) t| ≤ max 1 (c 0 / c t) * Real.exp (K * |t|) :=
   abs_hillSolution_massive_le_abs (S := S) hm hc hcd hcpos hK hC hs t
 
 /-- **Its velocity costs one power of the frequency.** -/
 theorem abs_hillCosDeriv_massive_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hs : s ^ 2 ≤ S ^ 2) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hs : s ^ (2 : ℕ) ≤ S ^ (2 : ℕ)) (t : ℝ) :
     |hillCosDeriv (massiveFreq m c s) t| ≤ massiveFreq m c s 0 * Real.exp (K * |t|) :=
   abs_hillSolutionDeriv_massive_le_abs (S := S) hm hc hcd hcpos hK hC hs t
 

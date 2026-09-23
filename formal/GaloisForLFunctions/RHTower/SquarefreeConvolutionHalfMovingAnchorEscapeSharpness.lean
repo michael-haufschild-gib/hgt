@@ -26,14 +26,14 @@ open GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- Far-right anchor supporting an increasing-order zero. -/
-def farRightFlatEscapeAnchor (n : ℕ) : ℂ := ((n + 1 : ℕ) : ℂ) ^ 2
+def farRightFlatEscapeAnchor (n : ℕ) : ℂ := ((n + 1 : ℕ) : ℂ) ^ (2 : ℕ)
 
 /-- Normalized entire gauge with a zero of order `n + 1` at `farRightFlatEscapeAnchor n`. -/
 def farRightFlatEscapeGauge (n : ℕ) (s : ℂ) : ℂ :=
   (1 - s / farRightFlatEscapeAnchor n) ^ (n + 1)
 
 private theorem farRightFlatEscape_ratio_tendsto_zero :
-    Tendsto (fun n : ℕ => ((n + 1 : ℕ) : ℝ) / (((n + 1 : ℕ) : ℝ) ^ 2))
+    Tendsto (fun n : ℕ => ((n + 1 : ℕ) : ℝ) / (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ)))
       atTop (nhds 0) := by
   convert (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)) using 1
   funext n
@@ -51,8 +51,8 @@ theorem farRightFlatEscapeGauge_tendstoLocallyUniformly_one :
   have hcomp := hbase.comp (fun s : ℂ => -s) (by fun_prop)
   convert hcomp using 1
   · funext n s
-    change (1 - s / (((n + 1 : ℕ) : ℂ) ^ 2)) ^ (n + 1) =
-      (1 + (-s) / (((((n + 1 : ℕ) : ℝ) : ℂ)) ^ 2)) ^ (n + 1)
+    change (1 - s / (((n + 1 : ℕ) : ℂ) ^ (2 : ℕ))) ^ (n + 1) =
+      (1 + (-s) / (((((n + 1 : ℕ) : ℝ) : ℂ)) ^ (2 : ℕ))) ^ (n + 1)
     norm_num
     congr 1
     ring
@@ -77,7 +77,7 @@ theorem farRightFlatEscapeGauge_jet_zero
       unfold farRightFlatEscapeAnchor
       have hnbase : (n : ℂ) + 1 ≠ 0 := by
         exact_mod_cast Nat.succ_ne_zero n
-      have hn : ((n : ℂ) + 1) ^ 2 ≠ 0 := pow_ne_zero 2 hnbase
+      have hn : ((n : ℂ) + 1) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hnbase
       field_simp
       ring)
     (n + 1) j
@@ -87,7 +87,7 @@ theorem farRightFlatEscapeGauge_jet_zero
 theorem farRightFlatEscapeAnchor_mem_rightHalf (n : ℕ) :
     farRightFlatEscapeAnchor n ∈ rightHalf := by
   rw [mem_rightHalf]
-  have hre : (farRightFlatEscapeAnchor n).re = (((n + 1 : ℕ) : ℝ) ^ 2) := by
+  have hre : (farRightFlatEscapeAnchor n).re = (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
     simp [farRightFlatEscapeAnchor, pow_two, Complex.mul_re]
   rw [hre]
   have hn : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by

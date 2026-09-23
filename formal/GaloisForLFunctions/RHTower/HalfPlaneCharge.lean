@@ -109,7 +109,7 @@ theorem mod4_aggregate_eq_zero_iff_upper_even {S : Finset ℂ} (ord : ℂ → �
     wCharge 4 ((∑ w ∈ S, ord w : ℕ) : ℤ) = 0 ↔ Even (upperOrder S ord) := by
   have h := aggregate_charge_succ_eq_zero_iff_halfCharge ord hSconj hnofix hord 1
   rw [show (2 : ℕ) ^ (1 + 1) = 4 from by norm_num] at h
-  rw [h, show (2 : ℕ) ^ 1 = 2 from by norm_num, halfCharge_two_eq_zero_iff_even]
+  rw [h, show (2 : ℕ) ^ (1 : ℕ) = 2 from by norm_num, halfCharge_two_eq_zero_iff_even]
 
 /-! ### §5 Non-automaticity: reality does not kill the half charge -/
 

@@ -40,7 +40,7 @@ theorem differentialJet_succ_apply (n : ℕ) (a : R) :
   rw [differentialJet_add n 1]
   rfl
 
-@[simp] theorem differentialJet_zero_elt (n : ℕ) : differentialJet n (0 : R) = 0 := by
+@[simp] theorem differentialJet_zero_elt_differentialTaylorMorphism (n : ℕ) : differentialJet n (0 : R) = 0 := by
   induction n with
   | zero => rfl
   | succ n ih => rw [differentialJet_succ, ih, map_zero]
@@ -48,7 +48,7 @@ theorem differentialJet_succ_apply (n : ℕ) (a : R) :
 theorem differentialJet_eq_zero_of_deriv_eq_zero {a : R} (ha : a′ = 0) {n : ℕ} (hn : 0 < n) :
     differentialJet n a = 0 := by
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  rw [differentialJet_succ_apply, ha, differentialJet_zero_elt]
+  rw [differentialJet_succ_apply, ha, differentialJet_zero_elt_differentialTaylorMorphism]
 
 /-- Once a jet vanishes every later jet vanishes. -/
 theorem differentialJet_eq_zero_of_le {a : R} {n : ℕ} (h : differentialJet n a = 0) {m : ℕ}

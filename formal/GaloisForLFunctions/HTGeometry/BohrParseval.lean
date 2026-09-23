@@ -317,10 +317,10 @@ theorem bohrMean_mul_conj_re_nonneg {h : ℝ → ℂ} (hhc : Continuous h)
     (Complex.continuous_re.tendsto _).comp hlim
   refine ge_of_tendsto hre ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
-  have hval : (fun t => h t * conj (h t)) = fun t => ((‖h t‖ ^ 2 : ℝ) : ℂ) := by
+  have hval : (fun t => h t * conj (h t)) = fun t => ((‖h t‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     funext t
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
-  have hnn : 0 ≤ ∫ t in (0 : ℝ)..T, ‖h t‖ ^ 2 :=
+  have hnn : 0 ≤ ∫ t in (0 : ℝ)..T, ‖h t‖ ^ (2 : ℕ) :=
     intervalIntegral.integral_nonneg hT.le (fun u _ => by positivity)
   simp only [windowAverage, hval, intervalIntegral.integral_ofReal, Complex.real_smul]
   rw [← Complex.ofReal_mul, Complex.ofReal_re]
@@ -340,7 +340,7 @@ theorem bohrCoefficient_bohrExp (mu lam : ℝ) :
 /-- **Bessel's inequality.**  The squared Bohr coefficients over any finite set of frequencies are
 dominated by the mean of `|f|²`. -/
 theorem bohr_bessel {f : ℝ → ℂ} (hfc : Continuous f) (hfa : IsBohrAlmostPeriodic f) (S : Finset ℝ) :
-    ∑ i ∈ S, ‖bohrCoefficient f i‖ ^ 2 ≤ (bohrMean (fun t => f t * conj (f t))).re := by
+    ∑ i ∈ S, ‖bohrCoefficient f i‖ ^ (2 : ℕ) ≤ (bohrMean (fun t => f t * conj (f t))).re := by
   classical
   set a : ℝ → ℂ := bohrCoefficient f with hadef
   obtain ⟨p, hpdef⟩ : ∃ p : ℝ → ℂ, ∀ t, p t = ∑ i ∈ S, a i * bohrExp i t :=
@@ -498,10 +498,10 @@ theorem bohr_bessel {f : ℝ → ℂ} (hfc : Continuous f) (hfa : IsBohrAlmostPe
   have hnn := bohrMean_mul_conj_re_nonneg (h := fun t => f t - p t) (hfc.sub hpc)
     (isBohrAlmostPeriodic_sub hfc hfa hpc hpa)
   rw [hMdiff, hMfp, hMpf, hMpp] at hnn
-  have hreal : ∀ i : ℝ, conj (a i) * a i = ((‖a i‖ ^ 2 : ℝ) : ℂ) := by
+  have hreal : ∀ i : ℝ, conj (a i) * a i = ((‖a i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro i
     rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-  have hreal' : ∀ i : ℝ, a i * conj (a i) = ((‖a i‖ ^ 2 : ℝ) : ℂ) := by
+  have hreal' : ∀ i : ℝ, a i * conj (a i) = ((‖a i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro i
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [Finset.sum_congr rfl (fun i _ => hreal i), Finset.sum_congr rfl (fun i _ => hreal' i),

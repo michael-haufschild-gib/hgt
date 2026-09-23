@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.EisensteinLineTailParseval
 
 For every parameter `u ∈ ℂ` and every height `Y > 0`, the nonconstant part of the completed
 Eisenstein Fourier model has zero mean in `x` over one period:
-`∫_0^1 tail_u(x, Y) dx = 0`, hence `∫_0^1 E*(u; x, Y) dx = c_u(Y)` (the Weyl constant part).
+`∫_0^(1 : ℕ) tail_u(x, Y) dx = 0`, hence `∫_0^(1 : ℕ) E*(u; x, Y) dx = c_u(Y)` (the Weyl constant part).
 This generalises `setIntegral_Ioc_cuspTailPart` (which was stated on the line `u = it`) using the
 uniform majorant `eisensteinTailMajorant` of the line-invariance module.
 -/

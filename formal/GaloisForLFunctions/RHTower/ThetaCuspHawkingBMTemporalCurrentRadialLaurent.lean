@@ -77,7 +77,7 @@ theorem clearedTemporalDensity_fundamental (q : XiZeroCopy) (branch side : Bool)
     clearedTemporalDensity q branch a zang (physicalFundamentalFrequency q side) t =
       clearingSlope q branch side (physicalFundamentalFrequency q side) *
         (physicalRadialResidueFactor q branch side a zang *
-          mode (physicalFundamentalFrequency q side) t ^ 2) := by
+          mode (physicalFundamentalFrequency q side) t ^ (2 : ℕ)) := by
   have hw := physicalFundamentalFrequency_strip q side
   have hwr : -2 < (physicalFundamentalFrequency q side).re := (abs_lt.mp hw.2).1
   have hs0 := physicalFundamentalFrequency_sub_sourceRate_ne_zero q branch side
@@ -85,18 +85,18 @@ theorem clearedTemporalDensity_fundamental (q : XiZeroCopy) (branch side : Bool)
   have hκ := clearingSlope_analyticAt q branch side
   have hres := continuedPhysicalTimeAction_residue q branch side a false t ht zang
   have h1 : Tendsto (fun u => clearingSlope q branch side u *
-      (((tortoiseRadius t:ℂ) ^ 2 - 1) * ((u - physicalFundamentalFrequency q side) *
+      (((tortoiseRadius t:ℂ) ^ (2 : ℕ) - 1) * ((u - physicalFundamentalFrequency q side) *
         continuedPhysicalTimeAction q branch u a false t zang)))
       (𝓝[≠] physicalFundamentalFrequency q side)
       (𝓝 (clearingSlope q branch side (physicalFundamentalFrequency q side) *
-        (((tortoiseRadius t:ℂ) ^ 2 - 1) * physicalTimeResidue q branch side a false t zang))) :=
+        (((tortoiseRadius t:ℂ) ^ (2 : ℕ) - 1) * physicalTimeResidue q branch side a false t zang))) :=
     (hκ.continuousAt.tendsto.mono_left nhdsWithin_le_nhds).mul (hres.const_mul _)
   have hsev : ∀ᶠ u in 𝓝[≠] physicalFundamentalFrequency q side,
       u - 2 * physicalRate q branch ≠ 0 :=
     ((continuous_id.sub continuous_const).continuousAt.eventually_ne hs0).filter_mono
       nhdsWithin_le_nhds
   have h2 : ∀ᶠ u in 𝓝[≠] physicalFundamentalFrequency q side,
-      clearingSlope q branch side u * (((tortoiseRadius t:ℂ) ^ 2 - 1) *
+      clearingSlope q branch side u * (((tortoiseRadius t:ℂ) ^ (2 : ℕ) - 1) *
         ((u - physicalFundamentalFrequency q side) *
           continuedPhysicalTimeAction q branch u a false t zang)) =
         clearedTemporalDensity q branch a zang u t := by
@@ -137,7 +137,7 @@ theorem jet_coefficients_fundamental (q : XiZeroCopy) (branch side : Bool) (a : 
     (zang : D4BMHorizon.Point) {b C : ℝ} (hb : 0 < b) (hbh : b ≤ 1 / 2) {c₀ c₁ : ℂ}
     (hjet : ∀ z ∈ Ioc (0:ℝ) b,
       ‖clearedDensityProfile q branch a zang (physicalFundamentalFrequency q side) z - c₀ - c₁ * z‖ ≤
-        C * z ^ 2) :
+        C * z ^ (2 : ℕ)) :
     c₀ = clearingSlope q branch side (physicalFundamentalFrequency q side) *
         physicalRadialResidueFactor q branch side a zang / 2 ∧
       c₁ = -(clearingSlope q branch side (physicalFundamentalFrequency q side) *
@@ -155,7 +155,7 @@ theorem jet_coefficients_fundamental (q : XiZeroCopy) (branch side : Bool) (a : 
   have hsq := abs_sqrt_one_sub_sub_le hz.1.le (hz.2.trans hbh)
   have hcast : ((Real.sqrt (1 - z) : ℂ) - (1 - (z:ℂ) / 2)) =
       ((Real.sqrt (1 - z) - (1 - z / 2) : ℝ) : ℂ) := by push_cast; ring
-  have hsqn : ‖(Real.sqrt (1 - z) : ℂ) - (1 - (z:ℂ) / 2)‖ ≤ z ^ 2 / 4 := by
+  have hsqn : ‖(Real.sqrt (1 - z) : ℂ) - (1 - (z:ℂ) / 2)‖ ≤ z ^ (2 : ℕ) / 4 := by
     rw [hcast, Complex.norm_real, Real.norm_eq_abs]
     exact hsq
   have hj := hjet z hz
@@ -172,8 +172,8 @@ theorem jet_coefficients_fundamental (q : XiZeroCopy) (branch side : Bool) (a : 
   rw [hid]
   refine (norm_sub_le _ _).trans ?_
   rw [norm_mul]
-  calc _ ≤ C * z ^ 2 + ‖clearingSlope q branch side (physicalFundamentalFrequency q side) *
-        physicalRadialResidueFactor q branch side a zang / 2‖ * (z ^ 2 / 4) :=
+  calc _ ≤ C * z ^ (2 : ℕ) + ‖clearingSlope q branch side (physicalFundamentalFrequency q side) *
+        physicalRadialResidueFactor q branch side a zang / 2‖ * (z ^ (2 : ℕ) / 4) :=
         add_le_add hj (mul_le_mul_of_nonneg_left hsqn (norm_nonneg _))
     _ = _ := by ring
 
@@ -191,7 +191,7 @@ theorem mode_square_weight_continuousOn (w : ℂ) {c : ℝ} (hc : 0 < c) :
 /-- The horizon-mode square integrated from `L` to the tortoise time of `b`. -/
 theorem mode_square_integral_upto (w : ℂ) {b : ℝ} (hb : b ∈ Ioo (0:ℝ) 1) {L : ℝ}
     (hL : L < tortoiseOf b) :
-    (∫ t in L..tortoiseOf b, mode w t ^ 2) =
+    (∫ t in L..tortoiseOf b, mode w t ^ (2 : ℕ)) =
       (1 / 2 : ℂ) * ∫ z in Ioc (horizonCoordinate L) b, (z:ℂ) ^ (w - 1) * (Real.sqrt (1 - z) : ℂ) := by
   have hTb : tortoiseOf b < 0 := tortoiseOf_neg hb
   have hL0 : L < 0 := hL.trans hTb
@@ -203,8 +203,8 @@ theorem mode_square_integral_upto (w : ℂ) {b : ℝ} (hb : b ∈ Ioo (0:ℝ) 1)
   have h1 := mode_square_integral w L hL0
   have h2 := mode_square_integral w (tortoiseOf b) hTb
   rw [horizonCoordinate_tortoiseOf hb] at h2
-  have hsplit : (∫ t in L..0, mode w t ^ 2) =
-      (∫ t in L..tortoiseOf b, mode w t ^ 2) + ∫ t in tortoiseOf b..0, mode w t ^ 2 := by
+  have hsplit : (∫ t in L..0, mode w t ^ (2 : ℕ)) =
+      (∫ t in L..tortoiseOf b, mode w t ^ (2 : ℕ)) + ∫ t in tortoiseOf b..0, mode w t ^ (2 : ℕ) := by
     refine (intervalIntegral.integral_add_adjacent_intervals ?_ ?_).symm
     · exact (mode_square_intervalIntegrable w L hL0).mono_set
         (uIcc_subset_uIcc_left (by rw [uIcc_of_le hL0.le]; exact ⟨hL.le, hTb.le⟩))
@@ -239,7 +239,7 @@ theorem mellin_fundamental (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
     Mw = clearingSlope q branch side (physicalFundamentalFrequency q side) *
       physicalRadialResidueFactor q branch side a zang *
       (normFinitePart (physicalFundamentalFrequency q side) -
-        ∫ t in tortoiseOf b..0, mode (physicalFundamentalFrequency q side) t ^ 2) := by
+        ∫ t in tortoiseOf b..0, mode (physicalFundamentalFrequency q side) t ^ (2 : ℕ)) := by
   have hw := physicalFundamentalFrequency_strip q side
   have hwr : -2 < (physicalFundamentalFrequency q side).re := (abs_lt.mp hw.2).1
   have hw0 : physicalFundamentalFrequency q side ≠ 0 := by
@@ -252,15 +252,15 @@ theorem mellin_fundamental (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
   have hA := hT.comp horizonCoordinate_tendsto_positive
   have hB := ((mode_square_cutoff_tendsto (physicalFundamentalFrequency q side) hwr hw0 hw1).sub
     (tendsto_const_nhds (x := ∫ t in tortoiseOf b..0,
-      mode (physicalFundamentalFrequency q side) t ^ 2))).const_mul
+      mode (physicalFundamentalFrequency q side) t ^ (2 : ℕ)))).const_mul
     (clearingSlope q branch side (physicalFundamentalFrequency q side) *
       physicalRadialResidueFactor q branch side a zang)
   refine tendsto_nhds_unique hA (hB.congr' ?_)
   filter_upwards [eventually_lt_atBot (tortoiseOf b)] with L hL
   have hL0 : L < 0 := hL.trans hTb
-  have hsplit : (∫ t in L..0, mode (physicalFundamentalFrequency q side) t ^ 2) =
-      (∫ t in L..tortoiseOf b, mode (physicalFundamentalFrequency q side) t ^ 2) +
-        ∫ t in tortoiseOf b..0, mode (physicalFundamentalFrequency q side) t ^ 2 := by
+  have hsplit : (∫ t in L..0, mode (physicalFundamentalFrequency q side) t ^ (2 : ℕ)) =
+      (∫ t in L..tortoiseOf b, mode (physicalFundamentalFrequency q side) t ^ (2 : ℕ)) +
+        ∫ t in tortoiseOf b..0, mode (physicalFundamentalFrequency q side) t ^ (2 : ℕ) := by
     refine (intervalIntegral.integral_add_adjacent_intervals ?_ ?_).symm
     · exact (mode_square_intervalIntegrable _ L hL0).mono_set
         (uIcc_subset_uIcc_left (by rw [uIcc_of_le hL0.le]; exact ⟨hL.le, hTb.le⟩))
@@ -299,9 +299,9 @@ theorem continuedPhysicalTimeAction_horizon_radial_laurent (q : XiZeroCopy) (bra
       AnalyticAt ℂ c₁ (physicalFundamentalFrequency q side) ∧
       (∃ b C : ℝ, 0 < b ∧ 0 ≤ C ∧ ∀ᶠ u in 𝓝 (physicalFundamentalFrequency q side),
         ∀ z ∈ Ioc (0:ℝ) b,
-          ‖clearedDensityProfile q branch a zang u z - c₀ u - c₁ u * z‖ ≤ C * z ^ 2) ∧
+          ‖clearedDensityProfile q branch a zang u z - c₀ u - c₁ u * z‖ ≤ C * z ^ (2 : ℕ)) ∧
       (∀ᶠ u in 𝓝[≠] (physicalFundamentalFrequency q side), Tendsto (fun L : ℝ =>
-        (∫ t in L..0, ((tortoiseRadius t:ℂ) ^ 2 - 1) *
+        (∫ t in L..0, ((tortoiseRadius t:ℂ) ^ (2 : ℕ) - 1) *
           continuedPhysicalTimeAction q branch u a false t zang) +
           (c₀ u * (horizonCoordinate L:ℂ) ^ u / u + c₁ u * (horizonCoordinate L:ℂ) ^ (u + 1) / (u + 1)) /
             reducedGreenClearingFactor u (physicalRadialFrequency q) (physicalRate q branch))
@@ -344,7 +344,7 @@ theorem continuedPhysicalTimeAction_horizon_radial_laurent (q : XiZeroCopy) (bra
   have hcp0 : compactPart q branch a zang b (physicalFundamentalFrequency q side) =
       clearingSlope q branch side (physicalFundamentalFrequency q side) *
         physicalRadialResidueFactor q branch side a zang *
-        ∫ t in tortoiseOf b..0, mode (physicalFundamentalFrequency q side) t ^ 2 := by
+        ∫ t in tortoiseOf b..0, mode (physicalFundamentalFrequency q side) t ^ (2 : ℕ) := by
     unfold compactPart
     rw [intervalIntegral.integral_of_le hTb.le, ← setIntegral_congr_set Ioo_ae_eq_Ioc,
       ← integral_const_mul]

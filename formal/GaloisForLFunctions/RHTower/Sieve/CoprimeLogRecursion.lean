@@ -21,7 +21,7 @@ noncomputable section
 theorem log_div_sq_le_inv_sqrt_cube {n : ℕ} (hn : 1 ≤ n) :
     Real.log n / (n : ℝ) ^ 2 ≤ 2 * (1 / Real.sqrt ((n : ℝ) ^ 3)) := by
   have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
-  have hlog := RHTower.log_le_two_sqrt hn0
+  have hlog := RHTower.log_le_two_sqrt_psiRatioImprove hn0
   have hs0 : (0 : ℝ) < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hn0
   have hsq : Real.sqrt (n : ℝ) * Real.sqrt (n : ℝ) = (n : ℝ) := Real.mul_self_sqrt hn0.le
   have hcube : Real.sqrt ((n : ℝ) ^ 3) = (n : ℝ) * Real.sqrt (n : ℝ) := by

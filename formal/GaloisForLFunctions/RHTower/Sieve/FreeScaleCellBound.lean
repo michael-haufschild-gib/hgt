@@ -16,7 +16,7 @@ open Finset ArithmeticFunction
 noncomputable section
 
 /-- The cofactor scale of the `k`-th free block. -/
-def freeScale (m k : ℕ) : ℝ := ((freeStart m k : ℕ) : ℝ) ^ 2
+def freeScale (m k : ℕ) : ℝ := ((freeStart m k : ℕ) : ℝ) ^ (2 : ℕ)
 
 theorem sqrt_freeScale (m k : ℕ) :
     Real.sqrt (freeScale m k) = ((freeStart m k : ℕ) : ℝ) := by

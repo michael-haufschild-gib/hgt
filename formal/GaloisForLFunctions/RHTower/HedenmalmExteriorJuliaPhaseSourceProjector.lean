@@ -44,8 +44,8 @@ theorem xiPrimeWardJuliaOverlap_nonneg
 /-- Fixed-source Ward displacement and normalized Hardy overlap are one Julia unit vector. -/
 theorem xiPrimeWardTranslationCoordinate_sq_add_JuliaOverlap_sq
     (p : Nat.Primes) (rho : XiDivisorSupport) :
-    xiPrimeWardTranslationCoordinate p rho ^ 2 +
-      xiPrimeWardJuliaOverlap p rho ^ 2 = 1 := by
+    xiPrimeWardTranslationCoordinate p rho ^ (2 : ℕ) +
+      xiPrimeWardJuliaOverlap p rho ^ (2 : ℕ) = 1 := by
   rw [xiPrimeWardTranslationCoordinate_eq_fixedSource]
   exact sq_mobiusCriticalTwoSidedCayleyDiscrepancy_add_sq_unitHardyGram
     (burnolXiPrimeCayleyAperture_gt_neg_half
@@ -192,20 +192,20 @@ theorem tendsto_xiPrimeWardJuliaExteriorReflectionDeterminant
     (hclosed : ∀ rho ∈ S, xiZeroLineConjEquiv rho ∈ S)
     (r f g : XiDivisorSupport → ℂ) :
     Tendsto
-      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ 3) *
+      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           xiPrimeWardJuliaExteriorReflectionDeterminant p S r f g a b c)
       atTop
       (nhds ((1 / 2 : ℂ) * ∑ rho ∈ S,
         r rho * r (xiZeroLineConjEquiv rho) *
           (f rho * g (xiZeroLineConjEquiv rho) -
-            f (xiZeroLineConjEquiv rho) * g rho) ^ 2)) := by
+            f (xiZeroLineConjEquiv rho) * g rho) ^ (2 : ℕ))) := by
   let C : XiDivisorSupport → XiDivisorSupport → ℂ := fun rho sigma =>
     r rho * r sigma * (f rho * g sigma) *
       (f rho * g sigma - f sigma * g rho)
   have hprojector := tendsto_xiPrimeWardJuliaExteriorReflectionProjector p S C
   have hdet : Tendsto
-      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ 3) *
+      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           xiPrimeWardJuliaExteriorReflectionDeterminant p S r f g a b c)
       atTop
@@ -223,7 +223,7 @@ theorem tendsto_xiPrimeWardJuliaExteriorReflectionDeterminant
         (1 / 2 : ℂ) * ∑ rho ∈ S,
           r rho * r (xiZeroLineConjEquiv rho) *
             (f rho * g (xiZeroLineConjEquiv rho) -
-              f (xiZeroLineConjEquiv rho) * g rho) ^ 2 := by
+              f (xiZeroLineConjEquiv rho) * g rho) ^ (2 : ℕ) := by
     simpa only [C] using hsym
   rw [hlimitEq] at hdet
   exact hdet
@@ -243,7 +243,7 @@ theorem tendsto_xiPrimeWardJuliaExteriorAbelDeterminant_one
     (hclosed : ∀ rho ∈ S, xiZeroLineConjEquiv rho ∈ S)
     (t : ℝ) :
     Tendsto
-      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ 3) *
+      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           xiPrimeWardJuliaExteriorAbelDeterminant p S 1 t a b c)
       atTop

@@ -299,13 +299,13 @@ lemma continuousOn_log1 : ContinuousOn (fun x ↦ (log x ^ 2)⁻¹ * x⁻¹) {0,
 lemma integral_log_inv (a b : ℝ) (ha : 2 ≤ a) (hb : a ≤ b) :
     ∫ t in a..b, (log t)⁻¹ =
     ((log b)⁻¹ * b) - ((log a)⁻¹ * a) +
-      ∫ t in a..b, ((log t)^2)⁻¹ := by
+      ∫ t in a..b, ((log t)^(2 : ℕ))⁻¹ := by
   rw [le_iff_lt_or_eq] at hb
   rcases hb with hb | rfl; swap
   · simp only [intervalIntegral.integral_same, sub_self, add_zero]
   · have := intervalIntegral.integral_mul_deriv_eq_deriv_mul
       (u := fun x => (log x)⁻¹)
-      (u' := fun x => -1 / (x * (log x)^2))
+      (u' := fun x => -1 / (x * (log x)^(2 : ℕ)))
       (v := fun x => x)
       (v' := fun _ => 1) (a := a) (b := b)
       (fun x hx => by
@@ -350,7 +350,7 @@ lemma integral_log_inv (a b : ℝ) (ha : 2 ≤ a) (hb : a ≤ b) :
 lemma integral_log_inv' (a b : ℝ) (ha : 2 ≤ a) (hb : a ≤ b) :
     ∫ t in Set.Icc a b, (log t)⁻¹ =
     ((log b)⁻¹ * b) - ((log a)⁻¹ * a) +
-      ∫ t in Set.Icc a b, ((log t)^2)⁻¹ := by
+      ∫ t in Set.Icc a b, ((log t)^(2 : ℕ))⁻¹ := by
   have := integral_log_inv a b ha hb
   simp only [intervalIntegral.intervalIntegral_eq_integral_uIoc, if_pos hb, Set.uIoc_of_le hb,
     smul_eq_mul, one_mul] at this
@@ -359,7 +359,7 @@ lemma integral_log_inv' (a b : ℝ) (ha : 2 ≤ a) (hb : a ≤ b) :
 
 lemma integral_log_inv'' (a b : ℝ) (ha : 2 ≤ a) (hb : a ≤ b) :
     (log a)⁻¹ * a + ∫ t in Set.Icc a b, (log t)⁻¹ =
-    ((log b)⁻¹ * b) + ∫ t in Set.Icc a b, ((log t)^2)⁻¹ := by
+    ((log b)⁻¹ * b) + ∫ t in Set.Icc a b, ((log t)^(2 : ℕ))⁻¹ := by
   rw [integral_log_inv' a b ha hb]
   group
 
@@ -1826,20 +1826,20 @@ theorem mu_pnt : (fun x : ℝ ↦ ∑ n ∈ range ⌊x⌋₊, μ n) =o[atTop] fu
 
 
 lemma lambda_eq_sum_sq_dvd_mu (n : ℕ) (hn : n ≠ 0) :
-    ((-1 : ℝ) ^ (Ω n)) = ∑ d ∈ (Icc 1 n).filter (fun d => d^2 ∣ n), (μ (n / d^2) : ℝ) := by
+    ((-1 : ℝ) ^ (Ω n)) = ∑ d ∈ (Icc 1 n).filter (fun d => d^(2 : ℕ) ∣ n), (μ (n / d^(2 : ℕ)) : ℝ) := by
       set a : ℕ → ℕ := fun p => Nat.factorization n p with ha
       have hn_factor : n = ∏ p ∈ Nat.primeFactors n, p ^ a p := by
         exact Eq.symm ( Nat.prod_factorization_pow_eq_self hn );
-      have h_sum_factor : (∑ d ∈ Finset.filter (fun d => d^2 ∣ n) (Finset.Icc 1 n), (μ (n / d^2) : ℝ)) = (∏ p ∈ Nat.primeFactors n, (∑ d ∈ Finset.range (a p / 2 + 1), (μ (p^(a p - 2 * d)) : ℝ))) := by
-        have h_mult : ∀ {m n : ℕ}, Nat.gcd m n = 1 → (∑ d ∈ Finset.filter (fun d => d^2 ∣ m * n) (Finset.Icc 1 (m * n)), (μ (m * n / d^2) : ℝ)) = (∑ d ∈ Finset.filter (fun d => d^2 ∣ m) (Finset.Icc 1 m), (μ (m / d^2) : ℝ)) * (∑ d ∈ Finset.filter (fun d => d^2 ∣ n) (Finset.Icc 1 n), (μ (n / d^2) : ℝ)) := by
+      have h_sum_factor : (∑ d ∈ Finset.filter (fun d => d^(2 : ℕ) ∣ n) (Finset.Icc 1 n), (μ (n / d^(2 : ℕ)) : ℝ)) = (∏ p ∈ Nat.primeFactors n, (∑ d ∈ Finset.range (a p / 2 + 1), (μ (p^(a p - 2 * d)) : ℝ))) := by
+        have h_mult : ∀ {m n : ℕ}, Nat.gcd m n = 1 → (∑ d ∈ Finset.filter (fun d => d^(2 : ℕ) ∣ m * n) (Finset.Icc 1 (m * n)), (μ (m * n / d^(2 : ℕ)) : ℝ)) = (∑ d ∈ Finset.filter (fun d => d^(2 : ℕ) ∣ m) (Finset.Icc 1 m), (μ (m / d^(2 : ℕ)) : ℝ)) * (∑ d ∈ Finset.filter (fun d => d^(2 : ℕ) ∣ n) (Finset.Icc 1 n), (μ (n / d^(2 : ℕ)) : ℝ)) := by
           intros m n h_coprime
-          have h_filter : Finset.filter (fun d => d^2 ∣ m * n) (Finset.Icc 1 (m * n)) = Finset.image (fun (d : ℕ × ℕ) => d.1 * d.2) (Finset.filter (fun d => d^2 ∣ m) (Finset.Icc 1 m) ×ˢ Finset.filter (fun d => d^2 ∣ n) (Finset.Icc 1 n)) := by
+          have h_filter : Finset.filter (fun d => d^(2 : ℕ) ∣ m * n) (Finset.Icc 1 (m * n)) = Finset.image (fun (d : ℕ × ℕ) => d.1 * d.2) (Finset.filter (fun d => d^(2 : ℕ) ∣ m) (Finset.Icc 1 m) ×ˢ Finset.filter (fun d => d^(2 : ℕ) ∣ n) (Finset.Icc 1 n)) := by
             ext d
             simp only [mem_filter, mem_Icc, mem_image, mem_product, Prod.exists]
             constructor
             · intro h
-              obtain ⟨d1, d2, hd1, hd2, hd⟩ : ∃ d1 d2 : ℕ, d1^2 ∣ m ∧ d2^2 ∣ n ∧ d = d1 * d2 := by
-                have h_factor : d^2 ∣ m * n → ∃ d1 d2 : ℕ, d1^2 ∣ m ∧ d2^2 ∣ n ∧ d = d1 * d2 := by
+              obtain ⟨d1, d2, hd1, hd2, hd⟩ : ∃ d1 d2 : ℕ, d1^(2 : ℕ) ∣ m ∧ d2^(2 : ℕ) ∣ n ∧ d = d1 * d2 := by
+                have h_factor : d^(2 : ℕ) ∣ m * n → ∃ d1 d2 : ℕ, d1^(2 : ℕ) ∣ m ∧ d2^(2 : ℕ) ∣ n ∧ d = d1 * d2 := by
                   intro h_div
                   obtain ⟨d1, d2, hd1, hd2, hd⟩ : ∃ d1 d2 : ℕ, d1 ∣ m ∧ d2 ∣ n ∧ d = d1 * d2 := by
                     exact Exists.imp ( by tauto ) ( Nat.dvd_mul.mp ( dvd_of_mul_left_dvd h_div ) );
@@ -1878,15 +1878,15 @@ lemma lambda_eq_sum_sq_dvd_mu (n : ℕ) (hn : n ≠ 0) :
             have h_eq2 : x.2 = y.2 := by
               nlinarith
             exact Prod.ext h_eq1 h_eq2;
-        have h_prod : (∑ d ∈ Finset.filter (fun d => d^2 ∣ n) (Finset.Icc 1 n), (μ (n / d^2) : ℝ)) = (∏ p ∈ Nat.primeFactors n, (∑ d ∈ Finset.filter (fun d => d^2 ∣ p^(a p)) (Finset.Icc 1 (p^(a p))), (μ (p^(a p) / d^2) : ℝ))) := by
-          have h_prod : ∀ {S : Finset ℕ}, (∀ p ∈ S, Nat.Prime p) → (∑ d ∈ Finset.filter (fun d => d^2 ∣ ∏ p ∈ S, p^(a p)) (Finset.Icc 1 (∏ p ∈ S, p^(a p))), (μ ((∏ p ∈ S, p^(a p)) / d^2) : ℝ)) = (∏ p ∈ S, (∑ d ∈ Finset.filter (fun d => d^2 ∣ p^(a p)) (Finset.Icc 1 (p^(a p))), (μ (p^(a p) / d^2) : ℝ))) := by
+        have h_prod : (∑ d ∈ Finset.filter (fun d => d^(2 : ℕ) ∣ n) (Finset.Icc 1 n), (μ (n / d^(2 : ℕ)) : ℝ)) = (∏ p ∈ Nat.primeFactors n, (∑ d ∈ Finset.filter (fun d => d^(2 : ℕ) ∣ p^(a p)) (Finset.Icc 1 (p^(a p))), (μ (p^(a p) / d^(2 : ℕ)) : ℝ))) := by
+          have h_prod : ∀ {S : Finset ℕ}, (∀ p ∈ S, Nat.Prime p) → (∑ d ∈ Finset.filter (fun d => d^(2 : ℕ) ∣ ∏ p ∈ S, p^(a p)) (Finset.Icc 1 (∏ p ∈ S, p^(a p))), (μ ((∏ p ∈ S, p^(a p)) / d^(2 : ℕ)) : ℝ)) = (∏ p ∈ S, (∑ d ∈ Finset.filter (fun d => d^(2 : ℕ) ∣ p^(a p)) (Finset.Icc 1 (p^(a p))), (μ (p^(a p) / d^(2 : ℕ)) : ℝ))) := by
             intro S hS; induction S using Finset.induction <;> norm_num at *;
             · norm_num [ Finset.sum_filter ];
             · rw [ Finset.prod_insert ‹_›, h_mult ];
               · rw [ Finset.prod_insert ‹_›, ‹ ( ∀ p ∈ _, Nat.Prime p ) → ∑ d ∈ Finset.Icc 1 ( ∏ p ∈ _, p ^ a p ) with d ^ 2 ∣ ∏ p ∈ _, p ^ a p, ( μ ( ( ∏ p ∈ _, p ^ a p ) / d ^ 2 ) : ℝ ) = ∏ p ∈ _, ∑ d ∈ Finset.Icc 1 ( p ^ a p ) with d ^ 2 ∣ p ^ a p, ( μ ( p ^ a p / d ^ 2 ) : ℝ ) › hS.2 ];
               · exact Nat.Coprime.prod_right fun p hp => Nat.coprime_pow_primes _ _ hS.1 ( hS.2 p hp ) <| by rintro rfl; exact ‹¬_› hp;
           convert h_prod fun p hp => Nat.prime_of_mem_primeFactors hp;
-        have h_divisors : ∀ p ∈ Nat.primeFactors n, Finset.filter (fun d => d^2 ∣ p^(a p)) (Finset.Icc 1 (p^(a p))) = Finset.image (fun k => p^k) (Finset.Icc 0 (a p / 2)) := by
+        have h_divisors : ∀ p ∈ Nat.primeFactors n, Finset.filter (fun d => d^(2 : ℕ) ∣ p^(a p)) (Finset.Icc 1 (p^(a p))) = Finset.image (fun k => p^k) (Finset.Icc 0 (a p / 2)) := by
           intro p hp
           ext d
           simp only [mem_filter, mem_Icc, mem_image, _root_.zero_le, true_and]
@@ -1950,11 +1950,11 @@ lemma lambda_eq_sum_sq_dvd_mu (n : ℕ) (hn : n ≠ 0) :
 
 lemma sum_lambda_eq_sum_mu_div_sq (N : ℕ) :
     ∑ n ∈ Finset.Icc 1 N, ((-1 : ℝ) ^ (Ω n)) =
-    ∑ d ∈ Finset.Icc 1 (Nat.sqrt N), ∑ k ∈ Finset.Icc 1 (N / d^2), (μ k : ℝ) := by
-      have h_sum_rewrite : ∑ n ∈ Finset.Icc 1 N, (-1 : ℝ) ^ (Ω n) = ∑ n ∈ Finset.Icc 1 N, ∑ d ∈ (Finset.Icc 1 N).filter (fun d => d^2 ∣ n), (μ (n / d^2) : ℝ) := by
-        have h_sum_rewrite : ∀ n ∈ Finset.Icc 1 N, (-1 : ℝ) ^ (Ω n) = ∑ d ∈ (Finset.Icc 1 N).filter (fun d => d^2 ∣ n), (μ (n / d^2) : ℝ) := by
+    ∑ d ∈ Finset.Icc 1 (Nat.sqrt N), ∑ k ∈ Finset.Icc 1 (N / d^(2 : ℕ)), (μ k : ℝ) := by
+      have h_sum_rewrite : ∑ n ∈ Finset.Icc 1 N, (-1 : ℝ) ^ (Ω n) = ∑ n ∈ Finset.Icc 1 N, ∑ d ∈ (Finset.Icc 1 N).filter (fun d => d^(2 : ℕ) ∣ n), (μ (n / d^(2 : ℕ)) : ℝ) := by
+        have h_sum_rewrite : ∀ n ∈ Finset.Icc 1 N, (-1 : ℝ) ^ (Ω n) = ∑ d ∈ (Finset.Icc 1 N).filter (fun d => d^(2 : ℕ) ∣ n), (μ (n / d^(2 : ℕ)) : ℝ) := by
           intro n hn
-          have h_lambda_eq : ((-1 : ℝ) ^ (Ω n)) = ∑ d ∈ (Finset.Icc 1 n).filter (fun d => d^2 ∣ n), (μ (n / d^2) : ℝ) := by
+          have h_lambda_eq : ((-1 : ℝ) ^ (Ω n)) = ∑ d ∈ (Finset.Icc 1 n).filter (fun d => d^(2 : ℕ) ∣ n), (μ (n / d^(2 : ℕ)) : ℝ) := by
             convert lambda_eq_sum_sq_dvd_mu n ( by linarith [ Finset.mem_Icc.mp hn ] ) using 1;
           rw [ h_lambda_eq, Finset.sum_subset ];
           · exact fun x hx => Finset.mem_filter.mpr ⟨ Finset.mem_Icc.mpr ⟨ Finset.mem_Icc.mp ( Finset.mem_filter.mp hx |>.1 ) |>.1, by linarith [ Finset.mem_Icc.mp ( Finset.mem_filter.mp hx |>.1 ) |>.2, Finset.mem_Icc.mp hn |>.2 ] ⟩, Finset.mem_filter.mp hx |>.2 ⟩;
@@ -1985,15 +1985,15 @@ lemma sum_lambda_eq_sum_mu_div_sq (N : ℕ) :
       convert h_reindex using 1
 
 
-lemma sum_mu_div_sq_isLittleO : (fun N : ℕ ↦ ∑ d ∈ Finset.Icc 1 (Nat.sqrt N), ∑ k ∈ Finset.Icc 1 (N / d^2), (μ k : ℝ)) =o[atTop] (fun N ↦ (N : ℝ)) := by
-  have h_sum_rewrite : ∀ N : ℕ, (∑ d ∈ Finset.Icc 1 (Nat.sqrt N), (∑ k ∈ Finset.Icc 1 (N / d^2), (μ k : ℝ))) = (∑ d ∈ Finset.Icc 1 (Nat.sqrt N), (M (N / d^2) : ℝ)) := by
+lemma sum_mu_div_sq_isLittleO : (fun N : ℕ ↦ ∑ d ∈ Finset.Icc 1 (Nat.sqrt N), ∑ k ∈ Finset.Icc 1 (N / d^(2 : ℕ)), (μ k : ℝ)) =o[atTop] (fun N ↦ (N : ℝ)) := by
+  have h_sum_rewrite : ∀ N : ℕ, (∑ d ∈ Finset.Icc 1 (Nat.sqrt N), (∑ k ∈ Finset.Icc 1 (N / d^(2 : ℕ)), (μ k : ℝ))) = (∑ d ∈ Finset.Icc 1 (Nat.sqrt N), (M (N / d^(2 : ℕ)) : ℝ)) := by
     intro N
     simp only [M]
     refine Finset.sum_congr rfl ?_
     intro x hx
     erw [ Finset.sum_Ico_eq_sub _ ] <;> norm_num [ Finset.sum_range_succ' ];
     rw [ show ⌊ ( N : ℝ ) / x ^ 2⌋₊ = N / x ^ 2 from Nat.floor_eq_iff ( by positivity ) |>.2 ⟨ by rw [ le_div_iff₀ ( by norm_cast; nlinarith [ Finset.mem_Icc.mp hx ] ) ] ; norm_cast; linarith [ Nat.div_mul_le_self N ( x ^ 2 ) ], by rw [ div_lt_iff₀ ( by norm_cast; nlinarith [ Finset.mem_Icc.mp hx ] ) ] ; norm_cast; linarith [ Nat.div_add_mod N ( x ^ 2 ), Nat.mod_lt N ( show x ^ 2 > 0 by nlinarith [ Finset.mem_Icc.mp hx ] ) ] ⟩ ] ; erw [ Finset.sum_Ico_eq_sub _ ] <;> norm_num [ Finset.sum_range_succ' ] ;
-  have h_bound : ∀ ε > 0, ∃ N₀ : ℕ, ∀ N ≥ N₀, ∀ d ∈ Finset.Icc 1 (Nat.sqrt N), |M (N / d^2)| ≤ ε * (N / d^2) + N₀ := by
+  have h_bound : ∀ ε > 0, ∃ N₀ : ℕ, ∀ N ≥ N₀, ∀ d ∈ Finset.Icc 1 (Nat.sqrt N), |M (N / d^(2 : ℕ))| ≤ ε * (N / d^(2 : ℕ)) + N₀ := by
     have h_bound : ∀ ε > 0, ∃ C : ℝ, ∀ x : ℝ, 1 ≤ x → |M x| ≤ ε * x + C := by
       have h_bound : ∀ ε > 0, ∃ C : ℝ, ∀ x : ℝ, 1 ≤ x → |M x| ≤ ε * x + C := by
         intro ε hε
@@ -2028,12 +2028,12 @@ lemma sum_mu_div_sq_isLittleO : (fun N : ℕ ↦ ∑ d ∈ Finset.Icc 1 (Nat.sqr
                 rw [le_div_iff₀ <| by positivity]
                 nlinarith [show (d : ℝ) ^ 2 ≤ N by norm_cast; nlinarith [Nat.sqrt_le N]])
           (by linarith [Nat.le_ceil C])
-  have h_sum_bound : ∀ ε > 0, ∃ N₀ : ℕ, ∀ N ≥ N₀, |∑ d ∈ Finset.Icc 1 (Nat.sqrt N), M (N / d^2)| ≤ ε * N * (∑' k : ℕ, (1 : ℝ) / (k^2)) + N₀ * Nat.sqrt N := by
+  have h_sum_bound : ∀ ε > 0, ∃ N₀ : ℕ, ∀ N ≥ N₀, |∑ d ∈ Finset.Icc 1 (Nat.sqrt N), M (N / d^(2 : ℕ))| ≤ ε * N * (∑' k : ℕ, (1 : ℝ) / (k^(2 : ℕ))) + N₀ * Nat.sqrt N := by
     intros ε hε_pos
     obtain ⟨N₀, hN₀⟩ := h_bound ε hε_pos
     use N₀
     intro N hN
-    have h_sum_bound : |∑ d ∈ Finset.Icc 1 (Nat.sqrt N), M (N / d^2)| ≤ ∑ d ∈ Finset.Icc 1 (Nat.sqrt N), (ε * (N / d^2) + N₀) := by
+    have h_sum_bound : |∑ d ∈ Finset.Icc 1 (Nat.sqrt N), M (N / d^(2 : ℕ))| ≤ ∑ d ∈ Finset.Icc 1 (Nat.sqrt N), (ε * (N / d^(2 : ℕ)) + N₀) := by
       exact le_trans ( Finset.abs_sum_le_sum_abs _ _ ) ( Finset.sum_le_sum fun x hx => hN₀ N hN x hx );
     refine le_trans h_sum_bound ?_;
     norm_num [ Finset.sum_add_distrib, Finset.mul_sum _ _ _, mul_assoc, mul_comm, mul_left_comm, div_eq_mul_inv ];
@@ -2041,7 +2041,7 @@ lemma sum_mu_div_sq_isLittleO : (fun N : ℕ ↦ ∑ d ∈ Finset.Icc 1 (Nat.sqr
     exact mul_le_mul_of_nonneg_left ( mul_le_mul_of_nonneg_left ( Summable.sum_le_tsum ( Finset.Icc 1 N.sqrt ) ( fun _ _ => by positivity ) ( by simp ) ) ( Nat.cast_nonneg _ ) ) hε_pos.le;
   rw [ Asymptotics.isLittleO_iff ];
   intro c hc
-  obtain ⟨ε, hε_pos, hε⟩ : ∃ ε > 0, ε * (∑' k : ℕ, (1 : ℝ) / (k^2)) < c / 2 := by
+  obtain ⟨ε, hε_pos, hε⟩ : ∃ ε > 0, ε * (∑' k : ℕ, (1 : ℝ) / (k^(2 : ℕ))) < c / 2 := by
     exact ⟨ ( c / 2 ) / ( ∑' k : ℕ, 1 / ( k : ℝ ) ^ 2 + 1 ), div_pos ( half_pos hc ) ( add_pos_of_nonneg_of_pos ( tsum_nonneg fun _ => by positivity ) zero_lt_one ), by rw [ div_mul_eq_mul_div, div_lt_iff₀ ] <;> nlinarith [ show 0 ≤ ∑' k : ℕ, 1 / ( k : ℝ ) ^ 2 from tsum_nonneg fun _ => by positivity ] ⟩;
   obtain ⟨ N₀, hN₀ ⟩ := h_sum_bound ε hε_pos;
   obtain ⟨N₁, hN₁⟩ : ∃ N₁ : ℕ, ∀ N ≥ N₁, N₀ * Nat.sqrt N ≤ (c / 2) * N := by
@@ -2056,7 +2056,7 @@ lemma sum_mu_div_sq_isLittleO : (fun N : ℕ ↦ ∑ d ∈ Finset.Icc 1 (Nat.sqr
 theorem lambda_pnt : (fun x : ℝ ↦ ∑ n ∈ range ⌊x⌋₊, (-1)^(Ω n)) =o[atTop] fun x ↦ x := by
   have h_lambda_pnt : (fun N : ℕ => ∑ n ∈ Finset.range N, (-1 : ℝ) ^ (Nat.factorization n).sum (fun p k => k)) =o[Filter.atTop] (fun N : ℕ => (N : ℝ)) := by
     have h_lambda_pnt : (fun N : ℕ => ∑ n ∈ Finset.Icc 1 N, (-1 : ℝ) ^ (Nat.factorization n).sum (fun p k => k)) =o[Filter.atTop] (fun N : ℕ => (N : ℝ)) := by
-      have h_lambda_pnt : (fun N : ℕ => ∑ d ∈ Finset.Icc 1 (Nat.sqrt N), ∑ k ∈ Finset.Icc 1 (N / d^2), (μ k : ℝ)) =o[Filter.atTop] (fun N : ℕ => (N : ℝ)) := by
+      have h_lambda_pnt : (fun N : ℕ => ∑ d ∈ Finset.Icc 1 (Nat.sqrt N), ∑ k ∈ Finset.Icc 1 (N / d^(2 : ℕ)), (μ k : ℝ)) =o[Filter.atTop] (fun N : ℕ => (N : ℝ)) := by
         exact sum_mu_div_sq_isLittleO
       convert h_lambda_pnt using 2;
       convert sum_lambda_eq_sum_mu_div_sq _;

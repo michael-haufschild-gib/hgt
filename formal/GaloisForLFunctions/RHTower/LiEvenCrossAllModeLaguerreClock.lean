@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.VanDerCorput
 
 Corpus search linked the all-mode Chebyshev square defect from
 `LiEvenCrossCayleySquareDefectPrimeSignWall` to the exact Cayley cosine-square transform in
-`CayleyLaguerreFourier`. Multiplication by the residual `1+x^2` is transferred through the
+`CayleyLaguerreFourier`. Multiplication by the residual `1+x^(2 : ℕ)` is transferred through the
 Fourier integral by two dominated frequency derivatives. The result is one explicit finite
 polynomial clock for every LI mode:
 
@@ -35,13 +35,13 @@ def liUnitEvenCrossCauchyDensity (n : ℕ) (x : ℝ) : ℝ :=
 
 theorem liUnitEvenCrossCauchyDensity_eq_cos (n : ℕ) (x : ℝ) :
     liUnitEvenCrossCauchyDensity n x =
-      (1 - Real.cos (2 * ((n + 1 : ℕ) : ℝ) * Real.arctan x) ^ 2) / 2 := by
+      (1 - Real.cos (2 * ((n + 1 : ℕ) : ℝ) * Real.arctan x) ^ (2 : ℕ)) / 2 := by
   rw [liUnitEvenCrossCauchyDensity,
     liCriticalEvenCrossCauchyDensity_eq_chebyshevSquareDefect]
   have hcoord : liCriticalCayleyCoordinate (x / 2) =
-      (1 ^ 2 - x ^ 2) / (1 ^ 2 + x ^ 2) := by
+      (1 ^ (2 : ℕ) - x ^ (2 : ℕ)) / (1 ^ (2 : ℕ) + x ^ (2 : ℕ)) := by
     rw [liCriticalCayleyCoordinate]
-    have h : (1 / 2 : ℝ) ^ 2 + (x / 2) ^ 2 ≠ 0 := by positivity
+    have h : (1 / 2 : ℝ) ^ (2 : ℕ) + (x / 2) ^ (2 : ℕ) ≠ 0 := by positivity
     field_simp [h]
   rw [hcoord]
   have hphase := chebyshevT_eval_xiHardEdgeCayleyCoordinate_real
@@ -51,13 +51,13 @@ theorem liUnitEvenCrossCauchyDensity_eq_cos (n : ℕ) (x : ℝ) :
 
 theorem liUnitEvenCrossCauchyDensity_eq_kernelDefect (n : ℕ) (x : ℝ) :
     (liUnitEvenCrossCauchyDensity n x : ℂ) =
-      ((1 + x ^ 2 : ℝ) : ℂ) / 2 *
+      ((1 + x ^ (2 : ℕ) : ℝ) : ℂ) / 2 *
         (routeUCauchyKernel x -
           routeUCayleyCosineSquareKernel (2 * (n + 1)) x) := by
   rw [liUnitEvenCrossCauchyDensity_eq_cos,
     routeUCauchyKernel, routeUCayleyCosineSquareKernel_eq]
   norm_cast
-  have h : (1 : ℝ) + x ^ 2 ≠ 0 := by positivity
+  have h : (1 : ℝ) + x ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp [h]
 
 def polynomialCoefficientMass (P : Polynomial ℝ) : ℝ :=
@@ -85,18 +85,18 @@ theorem polynomialCoefficientMass_nonneg (P : Polynomial ℝ) :
 
 theorem liUnitEvenCrossCauchyDensity_le_cauchyMajorant (n : ℕ) (x : ℝ) :
     liUnitEvenCrossCauchyDensity n x ≤
-      (2 * polynomialCoefficientMass (liEvenCrossLeftPolynomial n) ^ 2) *
-        (1 + x ^ 2)⁻¹ := by
+      (2 * polynomialCoefficientMass (liEvenCrossLeftPolynomial n) ^ (2 : ℕ)) *
+        (1 + x ^ (2 : ℕ))⁻¹ := by
   let u := liCriticalCayleyCoordinate (x / 2)
   let C := polynomialCoefficientMass (liEvenCrossLeftPolynomial n)
-  have huSq : u ^ 2 ≤ 1 := liCriticalCayleyCoordinate_square_le_one (x / 2)
+  have huSq : u ^ (2 : ℕ) ≤ 1 := liCriticalCayleyCoordinate_square_le_one (x / 2)
   have huLower : -1 ≤ u := by nlinarith [sq_nonneg (u + 1)]
   have huUpper : u ≤ 1 := by nlinarith [sq_nonneg (u - 1)]
   have huAbs : |u| ≤ 1 := abs_le.mpr ⟨huLower, huUpper⟩
   have hEvalAbs : |(liEvenCrossLeftPolynomial n).eval u| ≤ C :=
     abs_eval_le_polynomialCoefficientMass _ huAbs
   have hC : 0 ≤ C := polynomialCoefficientMass_nonneg _
-  have hEvalSq : ((liEvenCrossLeftPolynomial n).eval u) ^ 2 ≤ C ^ 2 := by
+  have hEvalSq : ((liEvenCrossLeftPolynomial n).eval u) ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
     rw [← sq_abs]
     have hprod : 0 ≤
         (C - |(liEvenCrossLeftPolynomial n).eval u|) *
@@ -104,46 +104,46 @@ theorem liUnitEvenCrossCauchyDensity_le_cauchyMajorant (n : ℕ) (x : ℝ) :
       mul_nonneg (sub_nonneg.mpr hEvalAbs)
         (add_nonneg hC (abs_nonneg _))
     nlinarith
-  have hfactor : (1 - u ^ 2) / 2 = 2 * x ^ 2 / (1 + x ^ 2) ^ 2 := by
+  have hfactor : (1 - u ^ (2 : ℕ)) / 2 = 2 * x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) ^ (2 : ℕ) := by
     dsimp only [u]
     rw [liCriticalCayleyCoordinate]
-    have h : (1 / 2 : ℝ) ^ 2 + (x / 2) ^ 2 ≠ 0 := by positivity
-    have h' : (1 : ℝ) + x ^ 2 ≠ 0 := by positivity
+    have h : (1 / 2 : ℝ) ^ (2 : ℕ) + (x / 2) ^ (2 : ℕ) ≠ 0 := by positivity
+    have h' : (1 : ℝ) + x ^ (2 : ℕ) ≠ 0 := by positivity
     field_simp [h, h']
     ring
-  have hbase : 0 ≤ 2 * x ^ 2 / (1 + x ^ 2) ^ 2 := by positivity
+  have hbase : 0 ≤ 2 * x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
   rw [liUnitEvenCrossCauchyDensity,
     liCriticalEvenCrossCauchyDensity_eq_squareDefect]
-  change (1 - u ^ 2) / 2 * ((liEvenCrossLeftPolynomial n).eval u) ^ 2 ≤ _
+  change (1 - u ^ (2 : ℕ)) / 2 * ((liEvenCrossLeftPolynomial n).eval u) ^ (2 : ℕ) ≤ _
   rw [hfactor]
   calc
-    2 * x ^ 2 / (1 + x ^ 2) ^ 2 *
-        ((liEvenCrossLeftPolynomial n).eval u) ^ 2 ≤
-        (2 * x ^ 2 / (1 + x ^ 2) ^ 2) * C ^ 2 :=
+    2 * x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) ^ (2 : ℕ) *
+        ((liEvenCrossLeftPolynomial n).eval u) ^ (2 : ℕ) ≤
+        (2 * x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) ^ (2 : ℕ)) * C ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hEvalSq hbase
-    _ ≤ (2 * C ^ 2) * (1 + x ^ 2)⁻¹ := by
-      have hden : 0 < 1 + x ^ 2 := by positivity
-      have hxratio : x ^ 2 / (1 + x ^ 2) ≤ 1 :=
+    _ ≤ (2 * C ^ (2 : ℕ)) * (1 + x ^ (2 : ℕ))⁻¹ := by
+      have hden : 0 < 1 + x ^ (2 : ℕ) := by positivity
+      have hxratio : x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) ≤ 1 :=
         (div_le_one hden).2 (by linarith)
       calc
-        2 * x ^ 2 / (1 + x ^ 2) ^ 2 * C ^ 2 =
-            ((2 * C ^ 2) * (1 + x ^ 2)⁻¹) *
-              (x ^ 2 / (1 + x ^ 2)) := by
+        2 * x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) ^ (2 : ℕ) * C ^ (2 : ℕ) =
+            ((2 * C ^ (2 : ℕ)) * (1 + x ^ (2 : ℕ))⁻¹) *
+              (x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ))) := by
           rw [inv_eq_one_div]
           field_simp [hden.ne']
-        _ ≤ ((2 * C ^ 2) * (1 + x ^ 2)⁻¹) * 1 :=
+        _ ≤ ((2 * C ^ (2 : ℕ)) * (1 + x ^ (2 : ℕ))⁻¹) * 1 :=
           mul_le_mul_of_nonneg_left hxratio (by positivity)
         _ = _ := by ring
 
 theorem integrable_liUnitEvenCrossCauchyDensity (n : ℕ) :
     Integrable (liUnitEvenCrossCauchyDensity n) := by
-  let C := 2 * polynomialCoefficientMass (liEvenCrossLeftPolynomial n) ^ 2
-  have hmajor : Integrable (fun x : ℝ => C * (1 + x ^ 2)⁻¹) :=
+  let C := 2 * polynomialCoefficientMass (liEvenCrossLeftPolynomial n) ^ (2 : ℕ)
+  have hmajor : Integrable (fun x : ℝ => C * (1 + x ^ (2 : ℕ))⁻¹) :=
     integrable_inv_one_add_sq.const_mul C
   refine Integrable.mono' hmajor ?_ ?_
   · apply Continuous.aestronglyMeasurable
     have hcont : Continuous (fun x : ℝ =>
-        (1 - Real.cos (2 * ((n + 1 : ℕ) : ℝ) * Real.arctan x) ^ 2) / 2) := by
+        (1 - Real.cos (2 * ((n + 1 : ℕ) : ℝ) * Real.arctan x) ^ (2 : ℕ)) / 2) := by
       fun_prop
     exact hcont.congr fun x => (liUnitEvenCrossCauchyDensity_eq_cos n x).symm
   filter_upwards with x
@@ -173,7 +173,7 @@ theorem integrable_liUnitEvenCrossKernelDefect (n : ℕ) :
     (integrable_routeUCayleyCosineSquareKernel_all (by omega))
 
 theorem liUnitEvenCrossKernelDefect_weighted_eq (n : ℕ) (x : ℝ) :
-    (x : ℂ) ^ 2 * liUnitEvenCrossKernelDefect n x =
+    (x : ℂ) ^ (2 : ℕ) * liUnitEvenCrossKernelDefect n x =
       2 * (liUnitEvenCrossCauchyDensity n x : ℂ) -
         liUnitEvenCrossKernelDefect n x := by
   rw [liUnitEvenCrossCauchyDensity_eq_kernelDefect]
@@ -183,7 +183,7 @@ theorem liUnitEvenCrossKernelDefect_weighted_eq (n : ℕ) (x : ℝ) :
 
 theorem integrable_sq_mul_liUnitEvenCrossKernelDefect (n : ℕ) :
     Integrable (fun x : ℝ =>
-      (x : ℂ) ^ 2 * liUnitEvenCrossKernelDefect n x) := by
+      (x : ℂ) ^ (2 : ℕ) * liUnitEvenCrossKernelDefect n x) := by
   have hD : Integrable (fun x : ℝ =>
       (liUnitEvenCrossCauchyDensity n x : ℂ)) :=
     (integrable_liUnitEvenCrossCauchyDensity n).ofReal
@@ -295,11 +295,11 @@ theorem hasDerivAt_routeUFourierIntegral_eq
 
 theorem hasDerivAt_routeUFourierIntegral_firstWeighted
     {f : ℝ → ℂ} (hxf : Integrable (fun x : ℝ => (x : ℂ) * f x))
-    (hx2f : Integrable (fun x : ℝ => (x : ℂ) ^ 2 * f x)) (ξ : ℝ) :
+    (hx2f : Integrable (fun x : ℝ => (x : ℂ) ^ (2 : ℕ) * f x)) (ξ : ℝ) :
     HasDerivAt
       (fun η : ℝ => routeUFourierIntegral
         (fun x : ℝ => f x * (-I * (x : ℂ))) η)
-      (-routeUFourierIntegral (fun x : ℝ => (x : ℂ) ^ 2 * f x) ξ) ξ := by
+      (-routeUFourierIntegral (fun x : ℝ => (x : ℂ) ^ (2 : ℕ) * f x) ξ) ξ := by
   have hg : Integrable (fun x : ℝ => f x * (-I * (x : ℂ))) := by
     have h := hxf.const_mul (-I)
     convert h using 1
@@ -319,29 +319,29 @@ theorem hasDerivAt_routeUFourierIntegral_firstWeighted
   have hi : (-I : ℂ) * (-I) = -1 := by
     rw [neg_mul_neg, ← pow_two, Complex.I_sq]
   calc
-    -((x : ℂ) ^ 2 * f x * Complex.exp (-I * ((ξ * x : ℝ) : ℂ))) =
-        f x * (((-I) * (-I)) * (x : ℂ) ^ 2) *
+    -((x : ℂ) ^ (2 : ℕ) * f x * Complex.exp (-I * ((ξ * x : ℝ) : ℂ))) =
+        f x * (((-I) * (-I)) * (x : ℂ) ^ (2 : ℕ)) *
           Complex.exp (-I * ((ξ * x : ℝ) : ℂ)) := by rw [hi]; ring
     _ = f x * (-I * (x : ℂ)) * (-I * (x : ℂ)) *
           Complex.exp (-I * ((ξ * x : ℝ) : ℂ)) := by ring
 
 theorem integrable_mul_of_integrable_sq_mul
     {f : ℝ → ℂ} (hf : Integrable f)
-    (hx2f : Integrable (fun x : ℝ => (x : ℂ) ^ 2 * f x)) :
+    (hx2f : Integrable (fun x : ℝ => (x : ℂ) ^ (2 : ℕ) * f x)) :
     Integrable (fun x : ℝ => (x : ℂ) * f x) := by
-  have hmajor : Integrable (fun x : ℝ => ‖f x‖ + ‖(x : ℂ) ^ 2 * f x‖) :=
+  have hmajor : Integrable (fun x : ℝ => ‖f x‖ + ‖(x : ℂ) ^ (2 : ℕ) * f x‖) :=
     hf.norm.add hx2f.norm
   refine Integrable.mono' hmajor ?_ ?_
   · exact ((Complex.continuous_ofReal.comp continuous_id).aestronglyMeasurable.mul
       hf.aestronglyMeasurable)
   filter_upwards with x
   rw [norm_mul, norm_real, Real.norm_eq_abs]
-  have hx : |x| ≤ 1 + x ^ 2 := by
+  have hx : |x| ≤ 1 + x ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (|x| - 1 / 2), sq_abs x]
   calc
-    |x| * ‖f x‖ ≤ (1 + x ^ 2) * ‖f x‖ :=
+    |x| * ‖f x‖ ≤ (1 + x ^ (2 : ℕ)) * ‖f x‖ :=
       mul_le_mul_of_nonneg_right hx (norm_nonneg _)
-    _ = ‖f x‖ + ‖(x : ℂ) ^ 2 * f x‖ := by
+    _ = ‖f x‖ + ‖(x : ℂ) ^ (2 : ℕ) * f x‖ := by
       rw [norm_mul, norm_pow, norm_real, Real.norm_eq_abs, sq_abs]
       ring
 
@@ -557,7 +557,7 @@ theorem routeUFourierIntegral_liUnitEvenCrossKernelDefect_firstWeighted_eq_profi
 theorem routeUFourierIntegral_sq_mul_liUnitEvenCrossKernelDefect_eq_profile_of_pos
     (n : ℕ) {ξ : ℝ} (hξ : 0 < ξ) :
     routeUFourierIntegral (fun x : ℝ =>
-      (x : ℂ) ^ 2 * liUnitEvenCrossKernelDefect n x) ξ =
+      (x : ℂ) ^ (2 : ℕ) * liUnitEvenCrossKernelDefect n x) ξ =
       -(liUnitEvenCrossKernelDefectFourierProfileSecondDeriv n ξ : ℂ) := by
   have hWeighted := hasDerivAt_routeUFourierIntegral_firstWeighted
     (integrable_mul_liUnitEvenCrossKernelDefect n)
@@ -583,7 +583,7 @@ theorem routeUFourierIntegral_liUnitEvenCrossCauchyDensity_eq_half_sum
       (1 / 2 : ℂ) *
         (routeUFourierIntegral (liUnitEvenCrossKernelDefect n) ξ +
           routeUFourierIntegral (fun x : ℝ =>
-            (x : ℂ) ^ 2 * liUnitEvenCrossKernelDefect n x) ξ) := by
+            (x : ℂ) ^ (2 : ℕ) * liUnitEvenCrossKernelDefect n x) ξ) := by
   rw [routeUFourierIntegral, routeUFourierIntegral, routeUFourierIntegral]
   have hH := integrable_routeUFourierIntegrand_all
     (integrable_liUnitEvenCrossKernelDefect n) ξ

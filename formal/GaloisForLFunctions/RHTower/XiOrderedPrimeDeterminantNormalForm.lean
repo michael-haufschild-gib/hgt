@@ -19,7 +19,7 @@ def xiOrderedSignedPrimeDiagonalKernel :
 theorem summable_norm_xiOrderedSignedPrimeMultiplier_sq_of_rh
     (hRH : RiemannHypothesis) :
     Summable (fun i : RouteKSignedPrimeIndex =>
-      ‖xiOrderedSignedPrimeMultiplier i‖ ^ 2) := by
+      ‖xiOrderedSignedPrimeMultiplier i‖ ^ (2 : ℕ)) := by
   have h := xiOrderedSignedPrimeZeroCopyEquiv.summable_iff.mpr
     summable_norm_xiSpectralPoint_inv_sq
   exact h.congr fun i => by

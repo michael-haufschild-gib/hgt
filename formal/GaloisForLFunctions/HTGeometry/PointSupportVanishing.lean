@@ -68,7 +68,7 @@ theorem exists_order_apply_eq_zero (u : SchwartzMap ℝ ℂ →L[ℂ] X)
         hple hε hε1
       have hpow : ε ^ (p.1 + (N - p.2 + 1)) ≤ ε := by
         have h1 : (1:ℕ) ≤ p.1 + (N - p.2 + 1) := by omega
-        calc ε ^ (p.1 + (N - p.2 + 1)) ≤ ε ^ 1 := pow_le_pow_of_le_one hε.le hε01 h1
+        calc ε ^ (p.1 + (N - p.2 + 1)) ≤ ε ^ (1 : ℕ) := pow_le_pow_of_le_one hε.le hε01 h1
           _ = ε := pow_one ε
       have hcoef : (0:ℝ) ≤ (2:ℝ) ^ p.1 * cutoffProductConst M N p.2 :=
         mul_nonneg (by positivity) (cutoffProductConst_nonneg hMnn N p.2)

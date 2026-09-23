@@ -29,12 +29,12 @@ noncomputable section
 
 /-- The real quadratic whose complex roots are `u` and `conj u`. -/
 def conjugatePhaseRealQuadratic (u : ℂ) : ℝ[X] :=
-  X ^ 2 - C (2 * u.re) * X + C (Complex.normSq u)
+  X ^ (2 : ℕ) - C (2 * u.re) * X + C (Complex.normSq u)
 
 /-- Evaluation on the real line is the squared Euclidean distance from the chosen phase. -/
 theorem conjugatePhaseRealQuadratic_eval_real (u : ℂ) (q : ℝ) :
     (conjugatePhaseRealQuadratic u).eval q =
-      (q - u.re) ^ 2 + u.im ^ 2 := by
+      (q - u.re) ^ (2 : ℕ) + u.im ^ (2 : ℕ) := by
   simp [conjugatePhaseRealQuadratic, Complex.normSq_apply]
   ring
 
@@ -72,7 +72,7 @@ theorem conjugatePhaseRealQuadratic_map_eval_eq_zero (u : ℂ) :
     eval_sub, eval_add, eval_pow, eval_X, eval_C, eval_mul]
   rw [hre]
   calc
-    u ^ 2 - (u + (starRingEnd ℂ) u) * u +
+    u ^ (2 : ℕ) - (u + (starRingEnd ℂ) u) * u +
           (algebraMap ℝ ℂ) (Complex.normSq u) =
         (algebraMap ℝ ℂ) (Complex.normSq u) -
           u * (starRingEnd ℂ) u := by ring
@@ -80,7 +80,7 @@ theorem conjugatePhaseRealQuadratic_map_eval_eq_zero (u : ℂ) :
 
 /-- Thue--Morse flatness with one prescribed conjugate phase pair inserted to multiplicity two. -/
 def phaseAdaptedProuhetBase (m : ℕ) (u : ℂ) : ℝ[X] :=
-  thueMorseRealPolynomial m * conjugatePhaseRealQuadratic u ^ 2
+  thueMorseRealPolynomial m * conjugatePhaseRealQuadratic u ^ (2 : ℕ)
 
 theorem phaseAdaptedProuhetBase_eval_ne_zero
     (m : ℕ) (u : ℂ) (q : ℝ)
@@ -169,7 +169,7 @@ theorem phaseAdaptedTwoEndpointProuhetPolynomial_phaseDerivativeRoot
     (m : ℕ) (u : ℂ) (q r tau : ℝ) :
     ((phaseAdaptedTwoEndpointProuhetPolynomial m u q r tau).map
       (algebraMap ℝ ℂ)).derivative.eval u = 0 := by
-  have hdiv : conjugatePhaseRealQuadratic u ^ 2 ∣
+  have hdiv : conjugatePhaseRealQuadratic u ^ (2 : ℕ) ∣
       phaseAdaptedTwoEndpointProuhetPolynomial m u q r tau := by
     unfold phaseAdaptedTwoEndpointProuhetPolynomial phaseAdaptedProuhetBase
     dsimp only

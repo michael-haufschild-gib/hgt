@@ -127,7 +127,7 @@ theorem heisenbergDependenceHorizon_eq
 /-- The exterior commutator symbol after the faithful Heisenberg operator embedding. -/
 def heisenbergLawCommutatorMap
     (ρ : V →ₗ[K] Derivation K L L) :
-    (⋀[K]^2 V) →ₗ[K] Module.End K L :=
+    (⋀[K]^(2 : ℕ) V) →ₗ[K] Module.End K L :=
   (derivationEndomorphism (K := K) (L := L)).comp
     (derivationCommutatorMap ρ)
 

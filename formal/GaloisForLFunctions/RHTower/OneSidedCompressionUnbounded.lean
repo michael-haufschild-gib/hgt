@@ -22,22 +22,22 @@ open scoped BigOperators
 /-- The negative diagonal form is bounded above by the norm form on every finitely supported
 vector, because it is nonpositive. -/
 theorem negDiagonalForm_le_normForm (S : Finset ℕ) (v : ℕ → ℂ) :
-    -∑ n ∈ S, (n : ℝ) * ‖v n‖ ^ 2 ≤ ∑ n ∈ S, ‖v n‖ ^ 2 := by
-  have hneg : -∑ n ∈ S, (n : ℝ) * ‖v n‖ ^ 2 ≤ 0 := by
+    -∑ n ∈ S, (n : ℝ) * ‖v n‖ ^ (2 : ℕ) ≤ ∑ n ∈ S, ‖v n‖ ^ (2 : ℕ) := by
+  have hneg : -∑ n ∈ S, (n : ℝ) * ‖v n‖ ^ (2 : ℕ) ≤ 0 := by
     rw [neg_nonpos]
     exact Finset.sum_nonneg fun n _ => mul_nonneg (Nat.cast_nonneg n) (sq_nonneg _)
-  have hpos : (0 : ℝ) ≤ ∑ n ∈ S, ‖v n‖ ^ 2 :=
+  have hpos : (0 : ℝ) ≤ ∑ n ∈ S, ‖v n‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun n _ => sq_nonneg _
   linarith
 
 /-- Every finite compression of the diagonal form satisfies the same one-sided inequality. -/
 theorem negDiagonalCompression_le_normForm (d : ℕ) (v : Fin d → ℂ) :
-    -∑ i : Fin d, ((i : ℕ) + 1 : ℝ) * ‖v i‖ ^ 2 ≤ ∑ i : Fin d, ‖v i‖ ^ 2 := by
-  have hneg : -∑ i : Fin d, ((i : ℕ) + 1 : ℝ) * ‖v i‖ ^ 2 ≤ 0 := by
+    -∑ i : Fin d, ((i : ℕ) + 1 : ℝ) * ‖v i‖ ^ (2 : ℕ) ≤ ∑ i : Fin d, ‖v i‖ ^ (2 : ℕ) := by
+  have hneg : -∑ i : Fin d, ((i : ℕ) + 1 : ℝ) * ‖v i‖ ^ (2 : ℕ) ≤ 0 := by
     rw [neg_nonpos]
     refine Finset.sum_nonneg fun i _ => mul_nonneg ?_ (sq_nonneg _)
     positivity
-  have hpos : (0 : ℝ) ≤ ∑ i : Fin d, ‖v i‖ ^ 2 :=
+  have hpos : (0 : ℝ) ≤ ∑ i : Fin d, ‖v i‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun i _ => sq_nonneg _
   linarith
 

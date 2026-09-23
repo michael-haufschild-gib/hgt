@@ -23,12 +23,12 @@ variable {R : Type*} [CommRing R] {a : R} {m : ℕ} [IsDomain R] [Invertible ((m
 
 omit [IsDomain R] in
 /-- The trace-law defect is annihilated by `a²`. -/
-theorem sq_smul_traceDefect (ℓ : traceDefect a m) : (a ^ 2) • ℓ = 0 := by
+theorem sq_smul_traceDefect (ℓ : traceDefect a m) : (a ^ (2 : ℕ)) • ℓ = 0 := by
   refine (traceDefectModelEquiv a m).injective ?_
   rw [map_smul, map_zero]
   funext j
   rw [Pi.smul_apply, Pi.zero_apply]
-  obtain ⟨r, hr⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a ^ 2} : Set R))
+  obtain ⟨r, hr⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a ^ (2 : ℕ)} : Set R))
     (traceDefectModelEquiv a m ℓ j)
   rw [← hr, ← Submodule.Quotient.mk_smul, smul_eq_mul, Submodule.Quotient.mk_eq_zero]
   exact Ideal.mem_span_singleton.2 ⟨r, rfl⟩
@@ -117,7 +117,7 @@ variable {a : R}
 
 /-- The `a`-multiples in `R/a²`, as the image of `R`. -/
 noncomputable def aMulSqMap (a : R) :
-    R →ₗ[R] ↥(aMul a (R ⧸ Ideal.span ({a ^ 2} : Set R))) where
+    R →ₗ[R] ↥(aMul a (R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R))) where
   toFun r := ⟨a • Submodule.Quotient.mk r, ⟨Submodule.Quotient.mk r, rfl⟩⟩
   map_add' r r' := by
     refine Subtype.ext ?_
@@ -136,7 +136,7 @@ noncomputable def aMulSqMap (a : R) :
 theorem aMulSqMap_surjective (a : R) : Function.Surjective (aMulSqMap a) := by
   rintro ⟨x, hx⟩
   obtain ⟨u, rfl⟩ := mem_aMul.1 hx
-  obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a ^ 2} : Set R)) u
+  obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a ^ (2 : ℕ)} : Set R)) u
   exact ⟨r, rfl⟩
 
 variable [IsDomain R]
@@ -147,7 +147,7 @@ theorem ker_aMulSqMap (ha : a ≠ 0) :
   rw [LinearMap.mem_ker, Ideal.mem_span_singleton]
   constructor
   · intro h
-    have h' : a • (Submodule.Quotient.mk r : R ⧸ Ideal.span ({a ^ 2} : Set R)) = 0 :=
+    have h' : a • (Submodule.Quotient.mk r : R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) = 0 :=
       congrArg Subtype.val h
     rw [← Submodule.Quotient.mk_smul, smul_eq_mul, Submodule.Quotient.mk_eq_zero,
       Ideal.mem_span_singleton] at h'
@@ -155,14 +155,14 @@ theorem ker_aMulSqMap (ha : a ≠ 0) :
     exact ⟨c, mul_left_cancel₀ ha (by linear_combination hc)⟩
   · rintro ⟨c, rfl⟩
     refine Subtype.ext ?_
-    show a • (Submodule.Quotient.mk (a * c) : R ⧸ Ideal.span ({a ^ 2} : Set R)) = 0
+    show a • (Submodule.Quotient.mk (a * c) : R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) = 0
     rw [← Submodule.Quotient.mk_smul, smul_eq_mul, Submodule.Quotient.mk_eq_zero,
       Ideal.mem_span_singleton]
     exact ⟨c, by ring⟩
 
 /-- The `a`-multiples in `R/a²` form a copy of the residue ring. -/
 noncomputable def aMulSqEquiv (ha : a ≠ 0) :
-    ↥(aMul a (R ⧸ Ideal.span ({a ^ 2} : Set R))) ≃ₗ[R] (R ⧸ Ideal.span ({a} : Set R)) :=
+    ↥(aMul a (R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R))) ≃ₗ[R] (R ⧸ Ideal.span ({a} : Set R)) :=
   (LinearMap.quotKerEquivOfSurjective _ (aMulSqMap_surjective a)).symm.trans
     (Submodule.quotEquivOfEq _ _ (ker_aMulSqMap ha))
 
@@ -181,7 +181,7 @@ noncomputable def aMulTraceDefectEquiv (ha : a ≠ 0) :
       (traceDefectModelEquiv a m).injective (aMul a (traceDefect a m))).trans
     ((LinearEquiv.ofEq _ _ (map_aMul (traceDefectModelEquiv a m))).trans
       ((LinearEquiv.ofEq _ _
-          (aMul_pi a fun _ : Fin m => R ⧸ Ideal.span ({a ^ 2} : Set R))).trans
+          (aMul_pi a fun _ : Fin m => R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R))).trans
         ((submodulePiEquiv _).trans (LinearEquiv.piCongrRight fun _ => aMulSqEquiv ha))))
 
 /-- The evaluation of a coefficient vector against a family of defect classes. -/

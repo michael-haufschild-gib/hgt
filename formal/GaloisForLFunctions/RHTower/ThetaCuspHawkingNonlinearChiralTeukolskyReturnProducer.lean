@@ -13,7 +13,7 @@ Kodama--Ishibashi gravitational mode
 
 Phi_0(y) = y^alpha (1-y)^(1/2)
 
-on the fundamental plus QNM branch. Here y=1-l^2/r^2 and alpha=-i omega l/2. The Hodge-paired
+on the fundamental plus QNM branch. Here y=1-l^(2 : ℕ)/r^(2 : ℕ) and alpha=-i omega l/2. The Hodge-paired
 scalar and vector modes have the same massless radial function. Therefore all common first
 variations--kinetic operator, tortoise coordinate, moving horizon, and boundary normalization--
 cancel from the scalar-minus-vector channel. The surviving variation is exactly the
@@ -23,9 +23,9 @@ d(B_S-B_V)/dx|_0 = 12/(Q+2).
 
 The conserved QNM bilinear formula of Lestingi--Sberna--Green, arXiv:2607.19492, projects this
 source directly, without a QNM completeness assumption. In dimensionless normalization
-omega_4/l^2=1,
+omega_4/l^(2 : ℕ)=1,
 
-integral Phi_0^2 dr/r^3 = (1/2) B(2 alpha+1,2).
+integral Phi_0^(2 : ℕ) dr/r^(3 : ℕ) = (1/2) B(2 alpha+1,2).
 
 The meromorphic Euler continuation is elementary:
 
@@ -51,12 +51,12 @@ Every actual Xi divisor has 0 < re rho < 1; hence neither Q nor Q+2 vanishes the
 Absorbed horizon mass is quadratic in a normalized ingoing amplitude A. Its action on the
 surviving seed is therefore the cubic AIME source
 
-A |A|^2 K_cross.
+A |A|^(2 : ℕ) K_cross.
 
 This is the background-mass insertion component of nonlinear gravitational return. The common
 horizon frequency jet produces the complex QNM phase
 
-exp(-i v |A|^2 deltaOmega_H).
+exp(-i v |A|^(2 : ℕ) deltaOmega_H).
 
 The jet remains quantified because the parity-difference calculation deliberately cancels the
 common operator variation. No property of that phase is assumed: at the old Jost zero it cancels

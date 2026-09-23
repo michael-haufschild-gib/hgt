@@ -285,21 +285,21 @@ arbitrary bounded perturbation and arbitrary `L²` data, obeys
 with constant one and rate exactly `‖W‖`. -/
 theorem kgFieldEnergy_le (hb0 : 0 ≤ b) (hW : ‖W‖ ≤ b) (g h : Lp ℂ 2 (volume : Measure E))
     (t : ℝ) :
-    ‖kgFieldGrad W g h t‖ ^ 2 + ‖kgFieldVel W g h t‖ ^ 2
-      ≤ (‖g‖ ^ 2 + ‖h‖ ^ 2) * Real.exp (2 * (b * |t|)) := by
+    ‖kgFieldGrad W g h t‖ ^ (2 : ℕ) + ‖kgFieldVel W g h t‖ ^ (2 : ℕ)
+      ≤ (‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)) * Real.exp (2 * (b * |t|)) := by
   have hnorm : ‖kgFieldState W g h t‖ ≤ ‖kgPair E (g, h)‖ * Real.exp (b * |t|) := by
     rw [kgFieldState_eq_kgStateMild hb0 hW g h]
     exact norm_kgStateMild_le hb0 hW g h t
-  have hsqL : ‖kgFieldState W g h t‖ ^ 2
-      = ‖kgFieldGrad W g h t‖ ^ 2 + ‖kgFieldVel W g h t‖ ^ 2 := by
+  have hsqL : ‖kgFieldState W g h t‖ ^ (2 : ℕ)
+      = ‖kgFieldGrad W g h t‖ ^ (2 : ℕ) + ‖kgFieldVel W g h t‖ ^ (2 : ℕ) := by
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgFieldState, kgPair_fst, kgPair_snd]
-  have hsqR : ‖kgPair E (g, h)‖ ^ 2 = ‖g‖ ^ 2 + ‖h‖ ^ 2 := by
+  have hsqR : ‖kgPair E (g, h)‖ ^ (2 : ℕ) = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ) := by
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgPair_fst, kgPair_snd]
   have hnn : (0 : ℝ) ≤ ‖kgFieldState W g h t‖ := norm_nonneg _
   have hR : (0 : ℝ) ≤ ‖kgPair E (g, h)‖ * Real.exp (b * |t|) := by positivity
   have hsq := mul_self_le_mul_self hnn hnorm
   rw [← sq, ← sq, mul_pow, hsqL, hsqR] at hsq
-  have hexp : Real.exp (b * |t|) ^ 2 = Real.exp (2 * (b * |t|)) := by
+  have hexp : Real.exp (b * |t|) ^ (2 : ℕ) = Real.exp (2 * (b * |t|)) := by
     rw [two_mul, Real.exp_add, sq]
   rwa [hexp] at hsq
 

@@ -157,20 +157,20 @@ continuation theorem must transport to the divisor. -/
 theorem exists_sum_normSq_criticalFeatureVerticalUnitSourceIncrement_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : Finset ℝ) (h : ℝ), 0 ≤ h → h ≤ 1 →
       (∀ t ∈ S, 2 ≤ t) →
-        ∑ t ∈ S, ‖criticalFeatureVerticalUnitSourceIncrement t h‖ ^ 2 ≤ C ^ 2 * S.card := by
+        ∑ t ∈ S, ‖criticalFeatureVerticalUnitSourceIncrement t h‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) * S.card := by
   obtain ⟨C, hC, hbound⟩ :=
     exists_norm_criticalFeatureVerticalUnitSourceIncrement_le
   refine ⟨C, hC, ?_⟩
   intro S h hh0 hh1 hS
   calc
-    ∑ t ∈ S, ‖criticalFeatureVerticalUnitSourceIncrement t h‖ ^ 2 ≤
-        ∑ _t ∈ S, C ^ 2 := by
+    ∑ t ∈ S, ‖criticalFeatureVerticalUnitSourceIncrement t h‖ ^ (2 : ℕ) ≤
+        ∑ _t ∈ S, C ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro t ht
       have htbound := hbound t h (hS t ht) hh0 hh1
       rw [pow_two, pow_two]
       exact mul_self_le_mul_self (norm_nonneg _) htbound
-    _ = C ^ 2 * S.card := by simp [mul_comm]
+    _ = C ^ (2 : ℕ) * S.card := by simp [mul_comm]
 
 end
 

@@ -52,7 +52,7 @@ theorem approxNumber_eq_svVal_of_isPositive
       exact Finset.sum_congr rfl fun m _ => by
         rw [smulRight_apply, innerSL_apply_apply, map_smul]
     have hunit_sq : ∀ m,
-        (inner ℂ (e m) x) * ((‖e m‖ : ℂ)) ^ 2 = inner ℂ (e m) x := by
+        (inner ℂ (e m) x) * ((‖e m‖ : ℂ)) ^ (2 : ℕ) = inner ℂ (e m) x := by
       intro m
       rcases eq_or_ne (svVal S m) 0 with h0 | hne0
       · rw [he, svVec_eq_zero_of_svVal_eq_zero S h0]
@@ -131,8 +131,8 @@ theorem approxNumber_eq_svVal_of_isPositive
       rw [← hc, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_smul, apply_svVec, smul_smul]
-    have hnormSz : ‖S z‖ ^ 2 =
-        ∑ i : Fin (n + 1), ‖c i‖ ^ 2 * svVal S i ^ 2 := by
+    have hnormSz : ‖S z‖ ^ (2 : ℕ) =
+        ∑ i : Fin (n + 1), ‖c i‖ ^ (2 : ℕ) * svVal S i ^ (2 : ℕ) := by
       rw [← inner_self_eq_norm_sq (𝕜 := ℂ), hSz,
         horth.inner_sum (fun i => c i * (svVal S i : ℂ))
           (fun i => c i * (svVal S i : ℂ)) Finset.univ,
@@ -141,22 +141,22 @@ theorem approxNumber_eq_svVal_of_isPositive
       rw [RCLike.conj_mul, ← RCLike.ofReal_pow, RCLike.ofReal_re,
         norm_mul, Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (svVal_nonneg S i), mul_pow]
-    have hnormz : ‖z‖ ^ 2 = ∑ i : Fin (n + 1), ‖c i‖ ^ 2 := by
+    have hnormz : ‖z‖ ^ (2 : ℕ) = ∑ i : Fin (n + 1), ‖c i‖ ^ (2 : ℕ) := by
       rw [← inner_self_eq_norm_sq (𝕜 := ℂ), ← hc,
         horth.inner_sum c c Finset.univ, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [RCLike.conj_mul, ← RCLike.ofReal_pow, RCLike.ofReal_re]
-    have hsq : (svVal S n * ‖z‖) ^ 2 ≤ ‖S z‖ ^ 2 := by
+    have hsq : (svVal S n * ‖z‖) ^ (2 : ℕ) ≤ ‖S z‖ ^ (2 : ℕ) := by
       rw [hnormSz, mul_pow, hnormz, Finset.mul_sum]
       refine Finset.sum_le_sum fun i _ => ?_
       have hmono : svVal S n ≤ svVal S i :=
         svVal_antitone S (Nat.lt_succ_iff.mp i.2)
-      have hsquare : svVal S n ^ 2 ≤ svVal S i ^ 2 :=
+      have hsquare : svVal S n ^ (2 : ℕ) ≤ svVal S i ^ (2 : ℕ) :=
         pow_le_pow_left₀ (svVal_nonneg S n) hmono 2
       calc
-        svVal S n ^ 2 * ‖c i‖ ^ 2 ≤ svVal S i ^ 2 * ‖c i‖ ^ 2 :=
+        svVal S n ^ (2 : ℕ) * ‖c i‖ ^ (2 : ℕ) ≤ svVal S i ^ (2 : ℕ) * ‖c i‖ ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hsquare (sq_nonneg _)
-        _ = ‖c i‖ ^ 2 * svVal S i ^ 2 := by ring
+        _ = ‖c i‖ ^ (2 : ℕ) * svVal S i ^ (2 : ℕ) := by ring
     have hnonneg : 0 ≤ svVal S n * ‖z‖ :=
       mul_nonneg (svVal_nonneg S n) (norm_nonneg z)
     nlinarith [norm_nonneg (S z)]
@@ -165,7 +165,7 @@ theorem approxNumber_eq_svVal_of_isPositive
 positive Gram operator. -/
 theorem approxNumber_sq_eq_approxNumber_energyOp
     {T : H →L[ℂ] H} (hcpt : IsCompactOperator T) (n : ℕ) :
-    approxNumber T n ^ 2 = approxNumber (energyOp T) n := by
+    approxNumber T n ^ (2 : ℕ) = approxNumber (energyOp T) n := by
   rw [approxNumber_eq_singVal hcpt n, singVal_sq,
     approxNumber_eq_svVal_of_isPositive (energyOp_compact hcpt)]
   simpa [energyOp] using ContinuousLinearMap.isPositive_adjoint_comp_self T
@@ -195,7 +195,7 @@ theorem HasRectRankLE.isCompactOperator
 /-- Exact rectangular Gram-square law, retaining every zero and multiplicity. -/
 theorem rectApproxNumber_sq_eq_approxNumber_adjoint_comp_self
     (T : E →L[ℂ] F) (hcpt : IsCompactOperator T) (n : ℕ) :
-    rectApproxNumber T n ^ 2 = approxNumber (adjoint T ∘L T) n := by
+    rectApproxNumber T n ^ (2 : ℕ) = approxNumber (adjoint T ∘L T) n := by
   let R : E →L[ℂ] E := rangeCovarianceRoot (adjoint T)
   obtain ⟨A, hA, hAdj⟩ := exists_factor_through_rangeCovarianceRoot (adjoint T)
   obtain ⟨B, hB, hR⟩ := exists_rangeCovarianceRoot_factor_through (adjoint T)
@@ -230,11 +230,11 @@ theorem rectApproxNumber_sq_eq_approxNumber_adjoint_comp_self
       rangeCovarianceRoot_comp_self, rangeCovariance, adjoint_adjoint]
   have hrectR : rectApproxNumber R n = approxNumber R n := rfl
   calc
-    rectApproxNumber T n ^ 2 = rectApproxNumber (adjoint T) n ^ 2 := by
+    rectApproxNumber T n ^ (2 : ℕ) = rectApproxNumber (adjoint T) n ^ (2 : ℕ) := by
       rw [rectApproxNumber_adjoint T n]
-    _ = rectApproxNumber R n ^ 2 :=
-      congrArg (fun x : ℝ => x ^ 2) hprofile
-    _ = approxNumber R n ^ 2 := by rw [hrectR]
+    _ = rectApproxNumber R n ^ (2 : ℕ) :=
+      congrArg (fun x : ℝ => x ^ (2 : ℕ)) hprofile
+    _ = approxNumber R n ^ (2 : ℕ) := by rw [hrectR]
     _ = approxNumber (energyOp R) n :=
       approxNumber_sq_eq_approxNumber_energyOp hRcpt n
     _ = approxNumber (adjoint T ∘L T) n := by rw [henergy]

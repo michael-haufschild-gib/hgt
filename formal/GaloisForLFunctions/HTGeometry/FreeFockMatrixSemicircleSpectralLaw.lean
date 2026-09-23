@@ -257,7 +257,7 @@ theorem exists_freeFockTraceSpectralLaw_carried [Nonempty I]
     (freeFockTraceMoment_zero A)
   let R := freeFockSpectralRadius A
   have hR : 0 < R := freeFockSpectralRadius_pos A
-  let f : ℝ → ℝ := fun x => (x / R) ^ 2
+  let f : ℝ → ℝ := fun x => (x / R) ^ (2 : ℕ)
   have hfmeas : Measurable f := by fun_prop
   have hfnn : ∀ x, 0 ≤ f x := fun x => sq_nonneg _
   have hfeq (x : ℝ) (n : ℕ) : f x ^ n = R⁻¹ ^ (2 * n) * x ^ (2 * n) := by

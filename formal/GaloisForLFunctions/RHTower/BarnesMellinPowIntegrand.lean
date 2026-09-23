@@ -106,7 +106,7 @@ theorem continuous_barnesIntegrandPow_vertical {s x σ : ℝ} (hx : 0 < x) (m : 
 theorem eventually_norm_horizontal_pow_le {s x σ₀ σ₁ : ℝ} (hs : 0 < s) (hx : 0 < x) (m : ℕ) :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ y : ℝ, 1 + 1 / s ≤ |y| →
       ‖∫ u in σ₀..σ₁, barnesIntegrandPow s x m ((u : ℂ) + (y : ℂ) * I)‖
-        ≤ (D * |σ₁ - σ₀|) * (1 + y ^ 2)⁻¹ := by
+        ≤ (D * |σ₁ - σ₀|) * (1 + y ^ (2 : ℕ))⁻¹ := by
   obtain ⟨C, N, hC0, hC⟩ :=
     exists_bound_norm_barnesIntegrandPow hs hx m (min σ₀ σ₁) (max σ₀ σ₁)
   refine ⟨C * Real.exp Real.pi * (((N + 2).factorial : ℝ) / Real.pi ^ (N + 2)), by positivity,
@@ -131,17 +131,17 @@ theorem eventually_norm_horizontal_pow_le {s x σ₀ σ₁ : ℝ} (hs : 0 < s) (
   have hdom := GaloisForLFunctions.HTGeometry.polyExp_le_inv_one_add_sq hC0 Real.pi_pos N y
   calc C * |y| ^ N * Real.exp (-(Real.pi * |y|)) * |σ₁ - σ₀|
       ≤ (C * Real.exp Real.pi * (((N + 2).factorial : ℝ) / Real.pi ^ (N + 2)))
-          * (1 + y ^ 2)⁻¹ * |σ₁ - σ₀| :=
+          * (1 + y ^ (2 : ℕ))⁻¹ * |σ₁ - σ₀| :=
         mul_le_mul_of_nonneg_right hdom (abs_nonneg _)
     _ = (C * Real.exp Real.pi * (((N + 2).factorial : ℝ) / Real.pi ^ (N + 2)) * |σ₁ - σ₀|)
-          * (1 + y ^ 2)⁻¹ := by ring
+          * (1 + y ^ (2 : ℕ))⁻¹ := by ring
 
 theorem tendsto_horizontal_barnesIntegrandPow_atTop {s x σ₀ σ₁ : ℝ} (hs : 0 < s) (hx : 0 < x)
     (m : ℕ) :
     Filter.Tendsto (fun y : ℝ => ∫ u in σ₀..σ₁, barnesIntegrandPow s x m ((u : ℂ) + (y : ℂ) * I))
       atTop (nhds 0) := by
   obtain ⟨D, hD0, hD⟩ := eventually_norm_horizontal_pow_le (σ₀ := σ₀) (σ₁ := σ₁) hs hx m
-  have hg : Filter.Tendsto (fun y : ℝ => (D * |σ₁ - σ₀|) * (1 + y ^ 2)⁻¹) atTop (nhds 0) := by
+  have hg : Filter.Tendsto (fun y : ℝ => (D * |σ₁ - σ₀|) * (1 + y ^ (2 : ℕ))⁻¹) atTop (nhds 0) := by
     simpa using tendsto_inv_one_add_sq_atTop.const_mul (D * |σ₁ - σ₀|)
   refine squeeze_zero_norm' ?_ hg
   filter_upwards [Filter.eventually_ge_atTop (1 + 1 / s)] with y hy
@@ -154,7 +154,7 @@ theorem tendsto_horizontal_barnesIntegrandPow_atBot {s x σ₀ σ₁ : ℝ} (hs 
     Filter.Tendsto (fun y : ℝ => ∫ u in σ₀..σ₁, barnesIntegrandPow s x m ((u : ℂ) + (y : ℂ) * I))
       atBot (nhds 0) := by
   obtain ⟨D, hD0, hD⟩ := eventually_norm_horizontal_pow_le (σ₀ := σ₀) (σ₁ := σ₁) hs hx m
-  have hg : Filter.Tendsto (fun y : ℝ => (D * |σ₁ - σ₀|) * (1 + y ^ 2)⁻¹) atBot (nhds 0) := by
+  have hg : Filter.Tendsto (fun y : ℝ => (D * |σ₁ - σ₀|) * (1 + y ^ (2 : ℕ))⁻¹) atBot (nhds 0) := by
     simpa using tendsto_inv_one_add_sq_atBot.const_mul (D * |σ₁ - σ₀|)
   refine squeeze_zero_norm' ?_ hg
   filter_upwards [Filter.eventually_le_atBot (-(1 + 1 / s))] with y hy
@@ -175,12 +175,12 @@ theorem integrable_barnesIntegrandPow_vertical {s x σ : ℝ} (hs : 0 < s) (hx :
     hcont.continuousOn
   set K : ℝ := C * Real.exp Real.pi * (((N + 2).factorial : ℝ) / Real.pi ^ (N + 2)) with hK
   have hK0 : 0 ≤ K := by rw [hK]; positivity
-  set D : ℝ := max K (max C₂ 0 * (1 + T ^ 2)) with hD
+  set D : ℝ := max K (max C₂ 0 * (1 + T ^ (2 : ℕ))) with hD
   have hD0 : 0 ≤ D := le_trans hK0 (le_max_left _ _)
-  refine MeasureTheory.Integrable.mono' (g := fun t : ℝ => D * (1 + t ^ 2)⁻¹)
+  refine MeasureTheory.Integrable.mono' (g := fun t : ℝ => D * (1 + t ^ (2 : ℕ))⁻¹)
     (integrable_inv_one_add_sq.const_mul D) hcont.aestronglyMeasurable ?_
   refine Filter.Eventually.of_forall fun t => ?_
-  have hden : (0 : ℝ) < 1 + t ^ 2 := by positivity
+  have hden : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
   rcases le_or_gt T |t| with hbig | hsmall
   · have hb := hC σ t le_rfl le_rfl (by rw [← hT]; exact hbig)
     have hdom := GaloisForLFunctions.HTGeometry.polyExp_le_inv_one_add_sq hC0 Real.pi_pos N t
@@ -195,12 +195,12 @@ theorem integrable_barnesIntegrandPow_vertical {s x σ : ℝ} (hs : 0 < s) (hx :
     have hb := hC₂ t hmem
     have hb' : ‖barnesIntegrandPow s x m ((σ : ℂ) + (t : ℂ) * I)‖ ≤ max C₂ 0 :=
       hb.trans (le_max_left _ _)
-    have hsq : 1 + t ^ 2 ≤ 1 + T ^ 2 := by
+    have hsq : 1 + t ^ (2 : ℕ) ≤ 1 + T ^ (2 : ℕ) := by
       have habs : |t| ≤ T := le_of_lt hsmall
       nlinarith [abs_nonneg t, sq_abs t]
-    have hstep : max C₂ 0 ≤ D * (1 + t ^ 2)⁻¹ := by
+    have hstep : max C₂ 0 ≤ D * (1 + t ^ (2 : ℕ))⁻¹ := by
       rw [le_mul_inv_iff₀ hden]
-      calc max C₂ 0 * (1 + t ^ 2) ≤ max C₂ 0 * (1 + T ^ 2) :=
+      calc max C₂ 0 * (1 + t ^ (2 : ℕ)) ≤ max C₂ 0 * (1 + T ^ (2 : ℕ)) :=
             mul_le_mul_of_nonneg_left hsq (le_max_right _ _)
         _ ≤ D := le_max_right _ _
     exact hb'.trans hstep

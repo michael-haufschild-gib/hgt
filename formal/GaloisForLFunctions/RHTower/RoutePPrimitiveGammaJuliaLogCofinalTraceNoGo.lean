@@ -32,14 +32,14 @@ noncomputable section
 
 /-- Diagonal trace density after literal prime-log congruence of the P-G186 source Gram. -/
 def routePPrimitiveGammaJuliaLogCofinalTraceWeight (pe : Nat.Primes × ℕ) : ℝ :=
-  Real.log (pe.1 : ℝ) ^ 2 * routePPrimitiveBaseCauchyCubicWeight pe
+  Real.log (pe.1 : ℝ) ^ (2 : ℕ) * routePPrimitiveBaseCauchyCubicWeight pe
 
 /-- Exact cancellation of both source logarithmic regularizers. -/
 theorem routePPrimitiveGammaJuliaLogCofinalTraceWeight_eq
     (pe : Nat.Primes × ℕ) :
     routePPrimitiveGammaJuliaLogCofinalTraceWeight pe =
       (1 / 4 : ℝ) * ((pe.1 : ℝ)⁻¹) ^ (pe.2 + 1) *
-        (((pe.2 : ℝ) + 1) ^ 3)⁻¹ := by
+        (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹ := by
   rw [routePPrimitiveGammaJuliaLogCofinalTraceWeight,
     routePPrimitiveBaseCauchyCubicWeight,
     xiGammaEulerPrimitiveCubicLogMomentWeight, invNatLogSq]

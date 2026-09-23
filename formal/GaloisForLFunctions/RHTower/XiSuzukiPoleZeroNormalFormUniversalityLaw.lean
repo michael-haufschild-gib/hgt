@@ -52,22 +52,22 @@ structure XiSuzukiPoleZeroNormalFormUniversalCertificate
       ((-2 : ℤ) : WithTop ℤ)
   targetCoefficient :
     meromorphicTrailingCoeffAt (suzukiShiftedXiTarget eta) z =
-      z ^ 2 / ((analyticOrderAt XiC z).toNat : ℂ)
+      z ^ (2 : ℕ) / ((analyticOrderAt XiC z).toNat : ℂ)
   crossSewnCoefficient :
     meromorphicTrailingCoeffAt
         (suzukiCrossSewnNormalizedExterior eta
           WAlpha WBeta intervalAlpha intervalBeta) z =
-      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2
+      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ)
   affineSewnCoefficient :
     meromorphicTrailingCoeffAt
         (suzukiAffineSewnNormalizedExterior alpha beta gamma
           WAlpha WBeta intervalAlpha intervalBeta) z =
-      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2
+      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ)
   exteriorWeylCoefficient :
     meromorphicTrailingCoeffAt
         (suzukiAffineSewnExteriorWeylQuotient alpha beta
           WAlpha WBeta rightAlpha rightBeta) z =
-      -((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2
+      -((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ)
   crossAffineCoefficientAgreement :
     meromorphicTrailingCoeffAt
         (suzukiCrossSewnNormalizedExterior eta

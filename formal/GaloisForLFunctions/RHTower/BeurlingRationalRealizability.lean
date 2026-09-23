@@ -27,7 +27,7 @@ This module settles the two natural guesses about that inequality.
   and zeros `{2, 2, -1}` majorization fails at the second partial sum (`3 + 0 < 2 + 2`), yet
 
   ```
-     e^{3t} + 2 - 2 e^{2t} - e^{-t}  =  (e^t - 1)^3 (e^t + 1) / e^t  ≥  0.
+     e^{3t} + 2 - 2 e^{2t} - e^{-t}  =  (e^t - 1)^(3 : ℕ) (e^t + 1) / e^t  ≥  0.
   ```
 
   The identity is exact, so the example is unconditional.  Rescaling `t ↦ t/3` puts the top pole at
@@ -87,15 +87,15 @@ theorem factorNumerator_nonneg_of_powerSum_le {P Z : ℕ} (p : Fin P → ℝ) (z
 
 /-- **The realizability inequality holds for a non-majorizing configuration.**  Poles `{3, 0, 0}`
 against zeros `{2, 2, -1}`: the exponential difference factors exactly as
-`(e^t - 1)^3 (e^t + 1) / e^t`. -/
+`(e^t - 1)^(3 : ℕ) (e^t + 1) / e^t`. -/
 theorem exp_difference_factorization (t : ℝ) :
     Real.exp (3 * t) + 2 - 2 * Real.exp (2 * t) - Real.exp (-t) =
-      (Real.exp t - 1) ^ 3 * (Real.exp t + 1) / Real.exp t := by
+      (Real.exp t - 1) ^ (3 : ℕ) * (Real.exp t + 1) / Real.exp t := by
   have hx : (0 : ℝ) < Real.exp t := Real.exp_pos t
-  have h3 : Real.exp (3 * t) = Real.exp t ^ 3 := by
+  have h3 : Real.exp (3 * t) = Real.exp t ^ (3 : ℕ) := by
     rw [show (3 : ℝ) * t = t + t + t by ring, Real.exp_add, Real.exp_add]
     ring
-  have h2 : Real.exp (2 * t) = Real.exp t ^ 2 := by
+  have h2 : Real.exp (2 * t) = Real.exp t ^ (2 : ℕ) := by
     rw [show (2 : ℝ) * t = t + t by ring, Real.exp_add]
     ring
   have hm : Real.exp (-t) = 1 / Real.exp t := by

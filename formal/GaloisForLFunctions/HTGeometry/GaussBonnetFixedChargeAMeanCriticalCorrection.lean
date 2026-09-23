@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAMeanCriticalCorrection (φ : ℝ) : ℝ :=
   -(1 + (4 + 4 * egbFixedChargeAFraction φ / 5) * egbFixedChargeACriticalWeight φ +
-    (92 * egbFixedChargeAFraction φ / 5) * egbFixedChargeACriticalWeight φ ^ 2) /
+    (92 * egbFixedChargeAFraction φ / 5) * egbFixedChargeACriticalWeight φ ^ (2 : ℕ)) /
     (24 * egbFixedChargeAFraction φ * egbFixedChargeACriticalWeight φ + 6 * (1 + egbFixedChargeAFraction φ))
 
 theorem egbFixedChargeAMeanCriticalCorrection_denominator_pos (φ : ℝ) :
@@ -39,10 +39,10 @@ theorem egbFixedChargeAMeanWeight_secant_denominator_limit (φ : ℝ) :
   convert h using 1 <;> ring
 
 theorem egbFixedChargeAMeanWeight_normalized_difference (τ φ : ℝ) :
-    (egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) / egbCoexistenceASymmetricRatio τ ^ 2 =
-    ((egbFixedChargeAMeanQuadraticC τ - 1) / egbCoexistenceASymmetricRatio τ ^ 2 -
-      ((egbFixedChargeAMeanQuadraticA τ φ - 12 * egbFixedChargeAFraction φ) / egbCoexistenceASymmetricRatio τ ^ 2) * egbFixedChargeACriticalWeight φ ^ 2 -
-      ((egbFixedChargeAMeanQuadraticB τ φ - 6 * (1 + egbFixedChargeAFraction φ)) / egbCoexistenceASymmetricRatio τ ^ 2) * egbFixedChargeACriticalWeight φ) /
+    (egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) =
+    ((egbFixedChargeAMeanQuadraticC τ - 1) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) -
+      ((egbFixedChargeAMeanQuadraticA τ φ - 12 * egbFixedChargeAFraction φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) * egbFixedChargeACriticalWeight φ ^ (2 : ℕ) -
+      ((egbFixedChargeAMeanQuadraticB τ φ - 6 * (1 + egbFixedChargeAFraction φ)) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) * egbFixedChargeACriticalWeight φ) /
       (egbFixedChargeAMeanQuadraticA τ φ * (egbFixedChargeAMeanWeight τ φ + egbFixedChargeACriticalWeight φ) + egbFixedChargeAMeanQuadraticB τ φ) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hden := egbFixedChargeAMeanWeight_secant_denominator_pos τ φ
@@ -50,25 +50,25 @@ theorem egbFixedChargeAMeanWeight_normalized_difference (τ φ : ℝ) :
   have h := egbFixedChargeAMeanWeight_critical_difference τ φ
   calc
     _ = ((egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) *
-      (egbFixedChargeAMeanQuadraticA τ φ * (egbFixedChargeAMeanWeight τ φ + egbFixedChargeACriticalWeight φ) + egbFixedChargeAMeanQuadraticB τ φ)) / egbCoexistenceASymmetricRatio τ ^ 2 := by ring
+      (egbFixedChargeAMeanQuadraticA τ φ * (egbFixedChargeAMeanWeight τ φ + egbFixedChargeACriticalWeight φ) + egbFixedChargeAMeanQuadraticB τ φ)) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by ring
     _ = _ := by rw [h]; ring
 
 theorem egbFixedChargeAMeanWeight_quadratic_critical_limit (φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeAMeanCriticalCorrection φ)) := by
   simp only [egbFixedChargeAMeanWeight_normalized_difference]
-  have hn : Tendsto (fun τ => (egbFixedChargeAMeanQuadraticC τ - 1) / egbCoexistenceASymmetricRatio τ ^ 2 -
-      ((egbFixedChargeAMeanQuadraticA τ φ - 12 * egbFixedChargeAFraction φ) / egbCoexistenceASymmetricRatio τ ^ 2) * egbFixedChargeACriticalWeight φ ^ 2 -
-      ((egbFixedChargeAMeanQuadraticB τ φ - 6 * (1 + egbFixedChargeAFraction φ)) / egbCoexistenceASymmetricRatio τ ^ 2) * egbFixedChargeACriticalWeight φ)
-      atBot (𝓝 (-(1 + (4 + 4 * egbFixedChargeAFraction φ / 5) * egbFixedChargeACriticalWeight φ + (92 * egbFixedChargeAFraction φ / 5) * egbFixedChargeACriticalWeight φ ^ 2))) := by
+  have hn : Tendsto (fun τ => (egbFixedChargeAMeanQuadraticC τ - 1) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) -
+      ((egbFixedChargeAMeanQuadraticA τ φ - 12 * egbFixedChargeAFraction φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) * egbFixedChargeACriticalWeight φ ^ (2 : ℕ) -
+      ((egbFixedChargeAMeanQuadraticB τ φ - 6 * (1 + egbFixedChargeAFraction φ)) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) * egbFixedChargeACriticalWeight φ)
+      atBot (𝓝 (-(1 + (4 + 4 * egbFixedChargeAFraction φ / 5) * egbFixedChargeACriticalWeight φ + (92 * egbFixedChargeAFraction φ / 5) * egbFixedChargeACriticalWeight φ ^ (2 : ℕ)))) := by
     convert (egbFixedChargeAMeanQuadraticC_remainder_limit.sub
-      ((egbFixedChargeAMeanQuadraticA_remainder_limit φ).mul (tendsto_const_nhds (x := egbFixedChargeACriticalWeight φ ^ 2)))).sub
+      ((egbFixedChargeAMeanQuadraticA_remainder_limit φ).mul (tendsto_const_nhds (x := egbFixedChargeACriticalWeight φ ^ (2 : ℕ))))).sub
         ((egbFixedChargeAMeanQuadraticB_remainder_limit φ).mul (tendsto_const_nhds (x := egbFixedChargeACriticalWeight φ))) using 1 <;> ring
   exact hn.div (egbFixedChargeAMeanWeight_secant_denominator_limit φ)
     (egbFixedChargeAMeanCriticalCorrection_denominator_pos φ).ne'
 
 theorem egbFixedChargeAMeanCoupling_quadratic_critical_limit (φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAMeanCoupling τ φ - egbFixedChargeACriticalCouplingWeight φ) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeAMeanCoupling τ φ - egbFixedChargeACriticalCouplingWeight φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeAFraction φ * egbFixedChargeAMeanCriticalCorrection φ)) := by
   have h := (tendsto_const_nhds (x := egbFixedChargeAFraction φ)).mul (egbFixedChargeAMeanWeight_quadratic_critical_limit φ)
   convert h using 1

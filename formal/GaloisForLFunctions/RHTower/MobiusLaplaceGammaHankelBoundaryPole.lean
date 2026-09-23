@@ -30,8 +30,8 @@ def boundaryPoleApproachProfile (gamma : ℝ) (c : ℂ) (n : ℕ) (t : ℝ) : �
 /-- Exact inverse-distance energy of the boundary-pole principal part. -/
 theorem integral_norm_sq_boundaryPoleApproachProfile
     (gamma : ℝ) (c : ℂ) (n : ℕ) :
-    (∫ t : ℝ, ‖boundaryPoleApproachProfile gamma c n t‖ ^ 2) =
-      Real.pi * ‖c‖ ^ 2 * (n + 1) := by
+    (∫ t : ℝ, ‖boundaryPoleApproachProfile gamma c n t‖ ^ (2 : ℕ)) =
+      Real.pi * ‖c‖ ^ (2 : ℕ) * (n + 1) := by
   simp_rw [boundaryPoleApproachProfile]
   rw [integral_norm_sq_fixedLinePoleProfile
     (by positivity : (0 : ℝ) < (((n + 1 : ℕ) : ℝ)⁻¹))]
@@ -43,9 +43,9 @@ theorem integral_norm_sq_boundaryPoleApproachProfile
 theorem tendsto_integral_norm_sq_boundaryPoleApproachProfile
     (gamma : ℝ) {c : ℂ} (hc : c ≠ 0) :
     Tendsto (fun n : ℕ =>
-      ∫ t : ℝ, ‖boundaryPoleApproachProfile gamma c n t‖ ^ 2) atTop atTop := by
+      ∫ t : ℝ, ‖boundaryPoleApproachProfile gamma c n t‖ ^ (2 : ℕ)) atTop atTop := by
   simp_rw [integral_norm_sq_boundaryPoleApproachProfile]
-  have hscale : 0 < Real.pi * ‖c‖ ^ 2 :=
+  have hscale : 0 < Real.pi * ‖c‖ ^ (2 : ℕ) :=
     mul_pos Real.pi_pos (sq_pos_of_pos (norm_pos_iff.mpr hc))
   have hcast : Tendsto (fun n : ℕ => ((n : ℝ) + 1)) atTop atTop :=
     tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds
@@ -54,7 +54,7 @@ theorem tendsto_integral_norm_sq_boundaryPoleApproachProfile
 /-- Any proposed finite line-energy ceiling is crossed by a sufficiently close pole line. -/
 theorem exists_integral_norm_sq_boundaryPoleApproachProfile_gt
     (gamma : ℝ) {c : ℂ} (hc : c ≠ 0) (C : ℝ) :
-    ∃ n : ℕ, C < ∫ t : ℝ, ‖boundaryPoleApproachProfile gamma c n t‖ ^ 2 := by
+    ∃ n : ℕ, C < ∫ t : ℝ, ‖boundaryPoleApproachProfile gamma c n t‖ ^ (2 : ℕ) := by
   exact Filter.Eventually.exists
     ((tendsto_integral_norm_sq_boundaryPoleApproachProfile gamma hc).eventually_gt_atTop C)
 
@@ -62,7 +62,7 @@ theorem exists_integral_norm_sq_boundaryPoleApproachProfile_gt
 theorem not_exists_uniform_boundaryPoleApproachEnergy_bound
     (gamma : ℝ) {c : ℂ} (hc : c ≠ 0) :
     ¬ ∃ C : ℝ, ∀ n : ℕ,
-      (∫ t : ℝ, ‖boundaryPoleApproachProfile gamma c n t‖ ^ 2) ≤ C := by
+      (∫ t : ℝ, ‖boundaryPoleApproachProfile gamma c n t‖ ^ (2 : ℕ)) ≤ C := by
   rintro ⟨C, hC⟩
   obtain ⟨n, hn⟩ :=
     exists_integral_norm_sq_boundaryPoleApproachProfile_gt gamma hc C

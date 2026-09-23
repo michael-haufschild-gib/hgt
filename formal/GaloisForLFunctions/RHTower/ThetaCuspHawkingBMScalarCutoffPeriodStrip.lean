@@ -36,7 +36,7 @@ theorem mean_scalar_cutoffCommutator (u k : ℂ) {y : ℝ} (hy : 0 < y) :
 /-- The original modular integral is exactly the finite transition-strip integral. -/
 theorem scalarCutoffPeriod_eq_strip (u k : ℂ) :
     scalarCutoffPeriod u k = ∫ y in (1:ℝ)..4,
-      principal u ![0,y]*cutoffCommutator k ![0,y]/(y:ℂ)^2 := by
+      principal u ![0,y]*cutoffCommutator k ![0,y]/(y:ℂ)^(2 : ℕ) := by
   let F (z : ℂ) := scalar u ![z.re,z.im]*cutoffCommutator k ![z.re,z.im]
   have hi : Integrable (fun z : UpperHalfPlane => F z) measure :=
     scalar_cutoffCommutator_integrable u k
@@ -46,11 +46,11 @@ theorem scalarCutoffPeriod_eq_strip (u k : ℂ) :
   have h := integral_cusp_field_from 1 (by norm_num) F hi hz
   change scalarCutoffPeriod u k = _ at h
   rw [h]
-  have he : (∫ y in Ioi (1:ℝ), mean (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^2) =
-      ∫ y in Ioi (1:ℝ), principal u ![0,y]*cutoffCommutator k ![0,y]/(y:ℂ)^2 := by
+  have he : (∫ y in Ioi (1:ℝ), mean (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^(2 : ℕ)) =
+      ∫ y in Ioi (1:ℝ), principal u ![0,y]*cutoffCommutator k ![0,y]/(y:ℂ)^(2 : ℕ) := by
     apply setIntegral_congr_fun measurableSet_Ioi
     intro y hy
-    change mean (fun x => scalar u ![x,y]*cutoffCommutator k ![x,y])/(y:ℂ)^2 = _
+    change mean (fun x => scalar u ![x,y]*cutoffCommutator k ![x,y])/(y:ℂ)^(2 : ℕ) = _
     rw [mean_scalar_cutoffCommutator u k (by change 1<y at hy; linarith)]
   rw [he,intervalIntegral.integral_of_le (show (1:ℝ)≤4 by norm_num)]
   apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi
@@ -73,7 +73,7 @@ theorem scalarCutoffPeriod_eq_moments (u k : ℂ) :
   let cm := d4BMCompletedEisensteinCuspConstantCoefficient u false
   let cp := d4BMCompletedEisensteinCuspConstantCoefficient u true
   rw [scalarCutoffPeriod_eq_strip]
-  have he : (∫ y in (1:ℝ)..4, principal u ![0,y]*cutoffCommutator k ![0,y]/(y:ℂ)^2) =
+  have he : (∫ y in (1:ℝ)..4, principal u ![0,y]*cutoffCommutator k ![0,y]/(y:ℂ)^(2 : ℕ)) =
       ∫ y in (1:ℝ)..4, cm*((y:ℂ)^(dm-2)*cutoffCommutator k ![0,y])+
         cp*((y:ℂ)^(dp-2)*cutoffCommutator k ![0,y]) := by
     apply intervalIntegral.integral_congr
@@ -83,7 +83,7 @@ theorem scalarCutoffPeriod_eq_moments (u k : ℂ) :
       norm_num only [uIcc_of_le (show (1:ℝ)≤4 by norm_num),mem_Icc] at hy
       linarith [hy.1]
     have hn : (y:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hp.ne'
-    have htwo : (y:ℂ)^(2:ℂ) = (y:ℂ)^2 := by norm_cast
+    have htwo : (y:ℂ)^(2:ℂ) = (y:ℂ)^(2 : ℕ) := by norm_cast
     rw [Complex.cpow_sub dm 2 hn,Complex.cpow_sub dp 2 hn]
     rw [htwo]
     dsimp [D4BMGlobalAngularResponse.principal,d4BMCompletedEisensteinCuspConstantPart,d4BMCompletedEisensteinCuspConstantTerm,

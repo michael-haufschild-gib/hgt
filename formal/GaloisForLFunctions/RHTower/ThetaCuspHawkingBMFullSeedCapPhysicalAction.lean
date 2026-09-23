@@ -13,13 +13,14 @@ open Filter Topology
 namespace RHTower.D4BMFullSeedCapPhysicalAction
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.ScalarTwoJet
 open D4BMFutureSeedHorizon D4BMFutureHorizon D4BMFullSeedCapRadialMemory
-open D4BMHorizon D4BMModularCore
+open D4BMHorizon D4BMModularCore D4BMGlobalAngularResponse D4BMCapRadialMemory
+  D4BMCapNormalTrace
 noncomputable section
 set_option autoImplicit false
 
 /-- Physical scalar action in the original upper-half-plane chart. -/
 def physicalScalarAction (S : Point → ℂ) (z : Point) : ℂ :=
-  (z 1 : ℂ)^2 *
+  (z 1 : ℂ)^(2 : ℕ) *
     (coordDeriv 0 (coordDeriv 0 S) z + coordDeriv 1 (coordDeriv 1 S) z)
 
 /-- Coordinate expansion of the actual inverse-metric scalar action. -/
@@ -55,18 +56,19 @@ This is the existing two-arm, seed-minus-source cap limit rewritten only through
 the physical `(X,Y)` scalar action. -/
 theorem combinedCap_ingoing_normal_div_scale_physical_action
     (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (v X k : ℝ) :
-    Tendsto (fun x =>
-      (seedCapField q branch amp (v-x) x X k -
-        parameter q branch * capBoundaryField q branch amp (v-x) x X k) /
+    Tendsto (fun x => deriv (fun y =>
+      seedCapField q branch amp (v-y) y X k -
+        parameter q branch * capBoundaryField q branch amp (v-y) y X k) x /
           (capScale x : ℂ)) atBot
       (𝓝 (combinedCapPhysicalNormalCoefficient q branch amp v X k)) := by
+  have h := combinedCap_ingoing_normal_div_scale q branch amp v X k
   have hH := physicalScalarAction_eq (fullAngularField q branch) ![X, Real.exp k]
     (Real.exp_pos k)
   have hQ := physicalScalarAction_eq (fullSquarePotential q) ![X, Real.exp k]
     (Real.exp_pos k)
   rw [combinedCapPhysicalNormalCoefficient, hH, hQ,
     fullAngularField_equation q branch _ (Real.exp_pos k)]
-  have h := combinedCap_ingoing_normal_div_scale q branch amp v X k
+  simp only [fullSquarePotential] at h ⊢
   convert h using 1 <;> ring
 
 end

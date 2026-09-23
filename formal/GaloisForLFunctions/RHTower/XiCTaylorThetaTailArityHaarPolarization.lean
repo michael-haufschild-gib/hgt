@@ -249,7 +249,7 @@ theorem thetaSquareIndexScaleHaarLayer_reflected_polarization
     ring
   field_simp
   ring_nf
-  have hsquare' : Real.exp (L * (1 / 2)) ^ 2 = Real.exp L := by
+  have hsquare' : Real.exp (L * (1 / 2)) ^ (2 : ℕ) = Real.exp L := by
     rw [pow_two]
     convert hsquare using 1 ; congr 1 <;> ring
   rw [hsquare']

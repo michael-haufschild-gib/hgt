@@ -97,7 +97,7 @@ theorem norm_fourierCoeffOn_le_of_periodic_two {a b : ℝ} (hab : a < b) {f f' f
     (hf : ∀ x ∈ uIcc a b, HasDerivAt f (f' x) x) (hf' : ∀ x ∈ uIcc a b, HasDerivAt f' (f'' x) x)
     (hf'i : IntervalIntegrable f' volume a b) (hf''i : IntervalIntegrable f'' volume a b)
     (hf''b : ∀ x, ‖f'' x‖ ≤ C) (hper : f b = f a) (hper' : f' b = f' a) {n : ℤ} (hn : n ≠ 0) :
-    ‖fourierCoeffOn hab f n‖ ≤ ((b - a) / (2 * Real.pi)) ^ 2 * C * (1 / (n : ℝ) ^ 2) := by
+    ‖fourierCoeffOn hab f n‖ ≤ ((b - a) / (2 * Real.pi)) ^ (2 : ℕ) * C * (1 / (n : ℝ) ^ (2 : ℕ)) := by
   have hba : (0 : ℝ) < b - a := by linarith
   have hnabs : (0 : ℝ) < |(n : ℝ)| := by
     have : ((n : ℝ)) ≠ 0 := Int.cast_ne_zero.mpr hn
@@ -110,24 +110,24 @@ theorem norm_fourierCoeffOn_le_of_periodic_two {a b : ℝ} (hab : a < b) {f f' f
     have := Real.pi_pos
     positivity
   have hchain : ‖fourierCoeffOn hab f n‖
-      = ((b - a) / (2 * Real.pi * |(n : ℝ)|)) ^ 2 * ‖fourierCoeffOn hab f'' n‖ := by
+      = ((b - a) / (2 * Real.pi * |(n : ℝ)|)) ^ (2 : ℕ) * ‖fourierCoeffOn hab f'' n‖ := by
     rw [hstep1, hstep2]
     ring
-  have hsq : ((b - a) / (2 * Real.pi * |(n : ℝ)|)) ^ 2
-      = ((b - a) / (2 * Real.pi)) ^ 2 * (1 / (n : ℝ) ^ 2) := by
-    have hn2 : |(n : ℝ)| ^ 2 = (n : ℝ) ^ 2 := sq_abs _
+  have hsq : ((b - a) / (2 * Real.pi * |(n : ℝ)|)) ^ (2 : ℕ)
+      = ((b - a) / (2 * Real.pi)) ^ (2 : ℕ) * (1 / (n : ℝ) ^ (2 : ℕ)) := by
+    have hn2 : |(n : ℝ)| ^ (2 : ℕ) = (n : ℝ) ^ (2 : ℕ) := sq_abs _
     have hpine : Real.pi ≠ 0 := Real.pi_ne_zero
     have hnne : |(n : ℝ)| ≠ 0 := ne_of_gt hnabs
     field_simp
     rw [hn2]
   rw [hchain, hsq]
-  have hnn : (0 : ℝ) ≤ ((b - a) / (2 * Real.pi)) ^ 2 * (1 / (n : ℝ) ^ 2) := by
+  have hnn : (0 : ℝ) ≤ ((b - a) / (2 * Real.pi)) ^ (2 : ℕ) * (1 / (n : ℝ) ^ (2 : ℕ)) := by
     have := Real.pi_pos
     positivity
-  calc ((b - a) / (2 * Real.pi)) ^ 2 * (1 / (n : ℝ) ^ 2) * ‖fourierCoeffOn hab f'' n‖
-      ≤ ((b - a) / (2 * Real.pi)) ^ 2 * (1 / (n : ℝ) ^ 2) * C :=
+  calc ((b - a) / (2 * Real.pi)) ^ (2 : ℕ) * (1 / (n : ℝ) ^ (2 : ℕ)) * ‖fourierCoeffOn hab f'' n‖
+      ≤ ((b - a) / (2 * Real.pi)) ^ (2 : ℕ) * (1 / (n : ℝ) ^ (2 : ℕ)) * C :=
         mul_le_mul_of_nonneg_left hbnd hnn
-    _ = ((b - a) / (2 * Real.pi)) ^ 2 * C * (1 / (n : ℝ) ^ 2) := by ring
+    _ = ((b - a) / (2 * Real.pi)) ^ (2 : ℕ) * C * (1 / (n : ℝ) ^ (2 : ℕ)) := by ring
 
 /-- **The Fourier coefficients of a periodic `C²` function are absolutely summable.**  This is the
 input that mathlib's `hasSum_fourier_series_of_summable` needs in order to convert the `L²` theory into
@@ -137,10 +137,10 @@ theorem summable_fourierCoeffOn_of_periodic_two {a b : ℝ} (hab : a < b) {f f' 
     (hf'i : IntervalIntegrable f' volume a b) (hf''i : IntervalIntegrable f'' volume a b)
     (hf''b : ∀ x, ‖f'' x‖ ≤ C) (hper : f b = f a) (hper' : f' b = f' a) :
     Summable (fun n : ℤ => fourierCoeffOn hab f n) := by
-  have hbase : Summable fun n : ℤ => 1 / (n : ℝ) ^ 2 :=
+  have hbase : Summable fun n : ℤ => 1 / (n : ℝ) ^ (2 : ℕ) :=
     Real.summable_one_div_int_pow.mpr (by norm_num)
   refine Summable.of_norm_bounded_eventually
-    (g := fun n : ℤ => ((b - a) / (2 * Real.pi)) ^ 2 * C * (1 / (n : ℝ) ^ 2))
+    (g := fun n : ℤ => ((b - a) / (2 * Real.pi)) ^ (2 : ℕ) * C * (1 / (n : ℝ) ^ (2 : ℕ)))
     (hbase.mul_left _) ?_
   have hcof : ({(0 : ℤ)}ᶜ : Set ℤ) ∈ Filter.cofinite := by
     rw [Filter.mem_cofinite, compl_compl]

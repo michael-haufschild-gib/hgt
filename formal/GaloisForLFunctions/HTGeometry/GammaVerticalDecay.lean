@@ -42,7 +42,7 @@ theorem Gamma_conj_vertical (σ t : ℝ) :
 
 /-- **The squared modulus of Gamma on a vertical line is a Beta integral.** -/
 theorem normSq_Gamma_vertical {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
-    ((‖Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ^ 2 : ℝ) : ℂ)
+    ((‖Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = Complex.Gamma ((2 * σ : ℝ) : ℂ)
         * Complex.betaIntegral ((σ : ℂ) + (t : ℂ) * Complex.I)
           ((σ : ℂ) - (t : ℂ) * Complex.I) := by
@@ -83,7 +83,7 @@ theorem one_sub_sigmoid (v : ℝ) : 1 - sigmoid v = 1 / (1 + Real.exp v) := by
   ring
 
 theorem hasDerivAt_sigmoid (v : ℝ) :
-    HasDerivAt sigmoid (Real.exp v / (1 + Real.exp v) ^ 2) v := by
+    HasDerivAt sigmoid (Real.exp v / (1 + Real.exp v) ^ (2 : ℕ)) v := by
   have hexp : HasDerivAt Real.exp (Real.exp v) v := Real.hasDerivAt_exp v
   have hden : HasDerivAt (fun u => 1 + Real.exp u) (Real.exp v) v := by
     simpa using hexp.const_add 1
@@ -94,7 +94,7 @@ theorem hasDerivAt_sigmoid (v : ℝ) :
 
 theorem sigmoid_strictMono : StrictMono sigmoid := by
   intro a b hab
-  have h : ∀ v : ℝ, 0 < Real.exp v / (1 + Real.exp v) ^ 2 := by
+  have h : ∀ v : ℝ, 0 < Real.exp v / (1 + Real.exp v) ^ (2 : ℕ) := by
     intro v
     positivity
   exact strictMono_of_deriv_pos (fun v => by

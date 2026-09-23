@@ -83,7 +83,7 @@ theorem preDivisorRiggedPrimeWittPairing_atMostOneNegativeSquare_left
   have hformula (a : DeningerHeightKothe) :
       preDivisorRiggedPrimeWittPairing s a a =
         preDivisorRiggedPrimeDiagonal s a a -
-          preDivisorRiggedPrimeLinear s a ^ 2 := by
+          preDivisorRiggedPrimeLinear s a ^ (2 : ℕ) := by
     rw [preDivisorRiggedPrimeWittPairing,
       preDivisorOrientation_eq_one_of_left s hleft]
     ring
@@ -126,7 +126,7 @@ theorem preDivisorRiggedPrimeWittPairing_atMostOnePositiveSquare_right
   have hformula (a : DeningerHeightKothe) :
       preDivisorRiggedPrimeWittPairing s a a =
         -(preDivisorRiggedPrimeDiagonal s a a -
-          preDivisorRiggedPrimeLinear s a ^ 2) := by
+          preDivisorRiggedPrimeLinear s a ^ (2 : ℕ)) := by
     rw [preDivisorRiggedPrimeWittPairing,
       PreDivisorReflectionDefectStabilization.preDivisorOrientation_eq_neg_one_of_right
         s hright]
@@ -310,22 +310,22 @@ theorem prime_re_eq_zero_of_preDivisorRiggedPrimeRadical_left
     dsimp [L]
     linarith
   have hterm (p : Nat.Primes) :
-      preDivisorRiggedPrimeDiagonalTerm s a a p = L ^ 2 := by
+      preDivisorRiggedPrimeDiagonalTerm s a a p = L ^ (2 : ℕ) := by
     have hw : 0 < preDivisorRiggedPrimeWeight s p :=
       preDivisorRiggedPrimeWeight_pos_of_offWall s (ne_of_lt hleft) p
     have hsqrt := Real.sq_sqrt hw.le
-    have hsq := congrArg (fun t : ℝ => t ^ 2) (hcoordinate p)
+    have hsq := congrArg (fun t : ℝ => t ^ (2 : ℕ)) (hcoordinate p)
     rw [mul_pow, mul_pow, hsqrt] at hsq
     rw [preDivisorRiggedPrimeDiagonalTerm]
     nlinarith [hsq]
-  have hconst : Summable (fun _ : Nat.Primes => L ^ 2) := by
+  have hconst : Summable (fun _ : Nat.Primes => L ^ (2 : ℕ)) := by
     have hsum := summable_preDivisorRiggedPrimeDiagonalTerm hs a a
     exact hsum.congr hterm
   have hL : L = 0 := by
     by_contra hL0
-    have hLsq : L ^ 2 ≠ 0 := pow_ne_zero 2 hL0
+    have hLsq : L ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hL0
     have hone : Summable (fun _ : Nat.Primes => (1 : ℝ)) := by
-      have hscaled := hconst.mul_left (L ^ 2)⁻¹
+      have hscaled := hconst.mul_left (L ^ (2 : ℕ))⁻¹
       simpa [hLsq] using hscaled
     exact GaloisForLFunctions.RHTower.not_summable_constant_one_on_primes hone
   intro p

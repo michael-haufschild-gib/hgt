@@ -64,7 +64,7 @@ theorem inner_parityEven_parityOdd (J : V →ₗ[ℂ] V) (hJJ : ∀ v, J (J v) =
 
 theorem norm_sq_parity_split (J : V →ₗ[ℂ] V) (hJJ : ∀ v, J (J v) = v)
     (hJsym : ∀ x y : V, ⟪J x, y⟫_ℂ = ⟪x, J y⟫_ℂ) (v : V) :
-    ‖v‖ ^ 2 = ‖parityEven J v‖ ^ 2 + ‖parityOdd J v‖ ^ 2 := by
+    ‖v‖ ^ (2 : ℕ) = ‖parityEven J v‖ ^ (2 : ℕ) + ‖parityOdd J v‖ ^ (2 : ℕ) := by
   have h := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero
     (𝕜 := ℂ) (parityEven J v) (parityOdd J v) (inner_parityEven_parityOdd J hJJ hJsym v)
   rw [parityEven_add_parityOdd] at h
@@ -72,7 +72,7 @@ theorem norm_sq_parity_split (J : V →ₗ[ℂ] V) (hJJ : ∀ v, J (J v) = v)
 
 /-- The Rayleigh quotient values of `Q` over the nonzero vectors of a set. -/
 def rayleighSetOn (Q : V → ℝ) (S : Set V) : Set ℝ :=
-  {r | ∃ v ∈ S, v ≠ 0 ∧ r = Q v / ‖v‖ ^ 2}
+  {r | ∃ v ∈ S, v ≠ 0 ∧ r = Q v / ‖v‖ ^ (2 : ℕ)}
 
 theorem parity_form_zero {Q : V → ℝ} {J : V →ₗ[ℂ] V}
     (hsplit : ∀ v, Q v = Q (parityEven J v) + Q (parityOdd J v)) :
@@ -88,15 +88,15 @@ below by `lp` (resp. `lm`) on the even (resp. odd) subspace, then it is bounded 
 theorem parity_rayleigh_lower_bound {Q : V → ℝ} {J : V →ₗ[ℂ] V} {lp lm : ℝ}
     (hJJ : ∀ v, J (J v) = v) (hJsym : ∀ x y : V, ⟪J x, y⟫_ℂ = ⟪x, J y⟫_ℂ)
     (hsplit : ∀ v, Q v = Q (parityEven J v) + Q (parityOdd J v))
-    (hlp : ∀ w : V, J w = w → lp * ‖w‖ ^ 2 ≤ Q w)
-    (hlm : ∀ w : V, J w = -w → lm * ‖w‖ ^ 2 ≤ Q w)
+    (hlp : ∀ w : V, J w = w → lp * ‖w‖ ^ (2 : ℕ) ≤ Q w)
+    (hlm : ∀ w : V, J w = -w → lm * ‖w‖ ^ (2 : ℕ) ≤ Q w)
     (v : V) :
-    min lp lm * ‖v‖ ^ 2 ≤ Q v := by
+    min lp lm * ‖v‖ ^ (2 : ℕ) ≤ Q v := by
   have hp := hlp (parityEven J v) (parityEven_mem J hJJ v)
   have hm := hlm (parityOdd J v) (parityOdd_mem J hJJ v)
-  have hminp : min lp lm * ‖parityEven J v‖ ^ 2 ≤ lp * ‖parityEven J v‖ ^ 2 :=
+  have hminp : min lp lm * ‖parityEven J v‖ ^ (2 : ℕ) ≤ lp * ‖parityEven J v‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_right (min_le_left _ _) (by positivity)
-  have hminm : min lp lm * ‖parityOdd J v‖ ^ 2 ≤ lm * ‖parityOdd J v‖ ^ 2 :=
+  have hminm : min lp lm * ‖parityOdd J v‖ ^ (2 : ℕ) ≤ lm * ‖parityOdd J v‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_right (min_le_right _ _) (by positivity)
   rw [hsplit v, norm_sq_parity_split J hJJ hJsym v, mul_add]
   linarith
@@ -111,27 +111,27 @@ theorem isGLB_rayleigh_min_parity {Q : V → ℝ} {J : V →ₗ[ℂ] V} {lp lm :
     (hm : IsGLB (rayleighSetOn Q {w : V | J w = -w}) lm) :
     IsGLB (rayleighSetOn Q Set.univ) (min lp lm) := by
   have hQzero : Q 0 = 0 := parity_form_zero hsplit
-  have hlp : ∀ w : V, J w = w → lp * ‖w‖ ^ 2 ≤ Q w := by
+  have hlp : ∀ w : V, J w = w → lp * ‖w‖ ^ (2 : ℕ) ≤ Q w := by
     intro w hw
     rcases eq_or_ne w 0 with rfl | hw0
     · simp [hQzero]
-    · have hmem : Q w / ‖w‖ ^ 2 ∈ rayleighSetOn Q {w : V | J w = w} := ⟨w, hw, hw0, rfl⟩
+    · have hmem : Q w / ‖w‖ ^ (2 : ℕ) ∈ rayleighSetOn Q {w : V | J w = w} := ⟨w, hw, hw0, rfl⟩
       have hle := hp.1 hmem
-      have hpos : (0 : ℝ) < ‖w‖ ^ 2 := by positivity
+      have hpos : (0 : ℝ) < ‖w‖ ^ (2 : ℕ) := by positivity
       rw [le_div_iff₀ hpos] at hle
       linarith
-  have hlm : ∀ w : V, J w = -w → lm * ‖w‖ ^ 2 ≤ Q w := by
+  have hlm : ∀ w : V, J w = -w → lm * ‖w‖ ^ (2 : ℕ) ≤ Q w := by
     intro w hw
     rcases eq_or_ne w 0 with rfl | hw0
     · simp [hQzero]
-    · have hmem : Q w / ‖w‖ ^ 2 ∈ rayleighSetOn Q {w : V | J w = -w} := ⟨w, hw, hw0, rfl⟩
+    · have hmem : Q w / ‖w‖ ^ (2 : ℕ) ∈ rayleighSetOn Q {w : V | J w = -w} := ⟨w, hw, hw0, rfl⟩
       have hle := hm.1 hmem
-      have hpos : (0 : ℝ) < ‖w‖ ^ 2 := by positivity
+      have hpos : (0 : ℝ) < ‖w‖ ^ (2 : ℕ) := by positivity
       rw [le_div_iff₀ hpos] at hle
       linarith
   constructor
   · rintro r ⟨v, -, hv0, rfl⟩
-    have hpos : (0 : ℝ) < ‖v‖ ^ 2 := by positivity
+    have hpos : (0 : ℝ) < ‖v‖ ^ (2 : ℕ) := by positivity
     rw [le_div_iff₀ hpos]
     exact parity_rayleigh_lower_bound hJJ hJsym hsplit hlp hlm v
   · intro b hb

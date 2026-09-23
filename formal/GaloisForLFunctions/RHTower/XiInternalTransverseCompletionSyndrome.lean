@@ -68,7 +68,7 @@ theorem xiDivisor_internal_nonzero_transverse_stationary_squareZero
       GaloisForLFunctions.RHTower.eulerWickCompletedJetExtension (rho : ℂ) n ≠ 0 ∧
       GaloisForLFunctions.RHTower.eulerWickCompletedJetExtension (rho : ℂ) n *
         GaloisForLFunctions.RHTower.eulerWickCompletedJetExtension (rho : ℂ) n = 0) ∧
-    xiTransverseCompletionDefect rho ^ 2 = 0 ∧
+    xiTransverseCompletionDefect rho ^ (2 : ℕ) = 0 ∧
     routeRSummableHadamardShiftEquiv (xiTransverseCompletionDefect rho) =
       xiTransverseCompletionDefect rho := by
   refine
@@ -82,7 +82,7 @@ class and fail EWQ orientation, while retaining the internal square-zero divisor
 theorem xiDivisor_offLine_transverse_completion_defect
     (rho : XiDivisorSupport) (hoff : (rho : ℂ).re ≠ 1 / 2) :
     xiTransverseCompletionDefect rho ≠ 0 ∧
-    xiTransverseCompletionDefect rho ^ 2 = 0 ∧
+    xiTransverseCompletionDefect rho ^ (2 : ℕ) = 0 ∧
     routeRSummableHadamardShiftEquiv (xiTransverseCompletionDefect rho) =
       xiTransverseCompletionDefect rho ∧
     ¬ GaloisForLFunctions.RHTower.EulerWickPrimitiveCompletedJetGradedRealAt

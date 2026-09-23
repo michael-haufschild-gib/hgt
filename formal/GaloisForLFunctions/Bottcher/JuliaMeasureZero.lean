@@ -20,7 +20,7 @@ namespace Bottcher
 
 noncomputable section
 
-/-- The standard escape radius for `f_c(z)=z^2+c`. -/
+/-- The standard escape radius for `f_c(z)=z^(2 : ℕ)+c`. -/
 def quadraticEscapeRadius (c : ℂ) : ℝ := max 2 ‖c‖
 
 /-- The standard closed escape disk is backward-trapping for the quadratic map. -/
@@ -773,7 +773,7 @@ theorem volume_quadratic_preimage_eq_lintegral_kernel_of_boundary_avoid
           intro w _hw
           exact quadratic_two_kernel4_eq_kernel2 c w
 
-/-- The critical value `c` has the unique preimage `0` under `z ↦ z^2+c`. -/
+/-- The critical value `c` has the unique preimage `0` under `z ↦ z^(2 : ℕ)+c`. -/
 theorem quadratic_preimage_singleton_criticalValue (c : ℂ) :
     (quadratic c) ⁻¹' ({c} : Set ℂ) = ({0} : Set ℂ) := by
   ext z

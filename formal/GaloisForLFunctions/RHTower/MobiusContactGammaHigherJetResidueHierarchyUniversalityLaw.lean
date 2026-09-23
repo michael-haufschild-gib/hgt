@@ -47,23 +47,23 @@ theorem mobiusContactGammaHigherJet_completeResidueHierarchyUniversality :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetDefect n x /
           mobiusContactGammaHigherJetHarmonicScale n)
-        atTop (𝓝 (6 / x ^ 2)) ∧
+        atTop (𝓝 (6 / x ^ (2 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetProjectiveDefect n x /
           mobiusContactGammaHigherJetHarmonicScale n)
-        atTop (𝓝 (2 / x ^ 3)) ∧
+        atTop (𝓝 (2 / x ^ (3 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialThirdJetProjectiveDefect n x /
-          mobiusContactGammaHigherJetHarmonicScale n ^ 2)
-        atTop (𝓝 (-6 / x ^ 4)) ∧
+          mobiusContactGammaHigherJetHarmonicScale n ^ (2 : ℕ))
+        atTop (𝓝 (-6 / x ^ (4 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
-          mobiusContactGammaHigherJetFactorialScale n ^ 2)
-        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ 2 / x ^ 4)) ∧
+          mobiusContactGammaHigherJetFactorialScale n ^ (2 : ℕ))
+        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (4 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x /
-          mobiusContactGammaHigherJetFactorialScale n ^ 2)
-        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ 2 / x ^ 10)) := by
+          mobiusContactGammaHigherJetFactorialScale n ^ (2 : ℕ))
+        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (10 : ℕ))) := by
   intro x hx
   exact ⟨by
       simpa only [mobiusContactGammaHigherJetHarmonicScale_eq] using

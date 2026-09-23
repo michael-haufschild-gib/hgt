@@ -30,8 +30,8 @@ theorem einastoCore_amplitude (d l a r : ℝ) :
     einastoCore d l a r = exp d * einastoCore 0 l a r := by
   unfold einastoCore
   simp only [einastoDensity_amplitude d l a]
-  have he : (fun u : ℝ => u ^ 2 * (exp d * einastoDensity 0 l a (r * u))) =
-      (fun u => exp d * (u ^ 2 * einastoDensity 0 l a (r * u))) := by
+  have he : (fun u : ℝ => u ^ (2 : ℕ) * (exp d * einastoDensity 0 l a (r * u))) =
+      (fun u => exp d * (u ^ (2 : ℕ) * einastoDensity 0 l a (r * u))) := by
     funext u
     ring
   rw [he, intervalIntegral.integral_const_mul]
@@ -45,11 +45,11 @@ theorem einastoMetric_asymptotically_flat (d l a : ℝ) :
 
 /-- The density placing the lapse at any prescribed negative depth and positive radius. -/
 def einastoTwoHorizonDensity (l a t v : ℝ) : ℝ :=
-  log ((1 + exp v) / (2 * exp t ^ 2 * einastoCore 0 l a (exp t)))
+  log ((1 + exp v) / (2 * exp t ^ (2 : ℕ) * einastoCore 0 l a (exp t)))
 
 theorem einastoTwoHorizonDensity_negative_lapse (l a t v : ℝ) :
     einastoMetric (einastoTwoHorizonDensity l a t v) l a (exp t) = -exp v := by
-  have hp : 0 < (1 + exp v) / (2 * exp t ^ 2 * einastoCore 0 l a (exp t)) :=
+  have hp : 0 < (1 + exp v) / (2 * exp t ^ (2 : ℕ) * einastoCore 0 l a (exp t)) :=
     div_pos (by positivity) (mul_pos (by positivity) (einastoCore_pos 0 l a t))
   rw [einastoMetric_core, einastoCore_amplitude, einastoTwoHorizonDensity, exp_log hp]
   have hn := (einastoCore_pos 0 l a t).ne'
@@ -128,7 +128,7 @@ theorem einastoSelectedHorizon_mass (l a t v : ℝ) (inner : Bool) :
 /-- The information-curvature formula specializes at actual regular-source horizons. -/
 theorem einastoSelectedHorizon_curvature (l a t v : ℝ) (inner : Bool) :
     einastoInformationCurvature (einastoTwoHorizonDensity l a t v) l a
-      (einastoSelectedHorizon l a t v inner) = 1 / einastoSelectedHorizon l a t v inner ^ 2 := by
+      (einastoSelectedHorizon l a t v inner) = 1 / einastoSelectedHorizon l a t v inner ^ (2 : ℕ) := by
   obtain ⟨hp, hf⟩ := einastoSelectedHorizon_spec l a t v inner
   simpa only [exp_log hp, hf, sub_zero] using
     einastoInformationCurvature_metric (einastoTwoHorizonDensity l a t v) l a
@@ -163,7 +163,7 @@ theorem einastoSelectedHorizon_temperature (l a t v : ℝ) (inner : Bool) :
 
 /-- Regular-source curvature at either horizon is strictly below the central ceiling. -/
 theorem einastoSelectedHorizon_central_bound (l a t v : ℝ) (inner : Bool) :
-    1 / einastoSelectedHorizon l a t v inner ^ 2 <
+    1 / einastoSelectedHorizon l a t v inner ^ (2 : ℕ) <
       8 * Real.pi * exp (einastoTwoHorizonDensity l a t v) / 3 := by
   have hp := (einastoSelectedHorizon_spec l a t v inner).1
   have h := (einastoInformationCurvature_global_bounds (einastoTwoHorizonDensity l a t v) l a

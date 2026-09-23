@@ -39,7 +39,7 @@ theorem trace_mul_eq_ofReal_re {A B : Matrix I I ℂ}
 theorem eq_zero_of_hilbertSchmidt_trace {A : Matrix I I ℂ}
     (h : (Aᴴ * A).trace = 0) : A = 0 := by
   rw [trace_conjTranspose_mul_self] at h
-  have hreal : (∑ i, ∑ j, ‖A j i‖ ^ 2 : ℝ) = 0 := by exact_mod_cast h
+  have hreal : (∑ i, ∑ j, ‖A j i‖ ^ (2 : ℕ) : ℝ) = 0 := by exact_mod_cast h
   ext j i
   have h1 := (Finset.sum_eq_zero_iff_of_nonneg
     (fun i _ => Finset.sum_nonneg fun j _ => sq_nonneg ‖A j i‖)).mp hreal i

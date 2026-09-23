@@ -5,7 +5,7 @@ import Mathlib.Analysis.Calculus.Deriv.MeanValue
 /-!
 # Exact signs of constant-speed Bernoulli phase prefixes
 
-For the actual periodic quadratic `b(x)=(fract(x)^2-fract(x))/2`, every
+For the actual periodic quadratic `b(x)=(fract(x)^(2 : ℕ)-fract(x))/2`, every
 constant-speed prefix `integral_0^A b(x) sin(lam*x) dx` is nonpositive when
 `0 < lam < 2*pi` and `A >= 0`. At a complete phase turn its value is an exact
 function of the fractional endpoint; equality holds precisely at integer endpoints.
@@ -27,18 +27,18 @@ def linearPhasePrefix (lam A : ℝ) : ℝ :=
   ∫ x in (0:ℝ)..A, RHTower.bernoulliPeriodic x * Real.sin (lam*x)
 
 private def phasePrimitive (lam m x : ℝ) : ℝ :=
-  -((x-m)^2-(x-m))/2 * Real.cos (lam*x)/lam +
-    (x-m-1/2)*Real.sin (lam*x)/lam^2 + Real.cos (lam*x)/lam^3
+  -((x-m)^(2 : ℕ)-(x-m))/2 * Real.cos (lam*x)/lam +
+    (x-m-1/2)*Real.sin (lam*x)/lam^(2 : ℕ) + Real.cos (lam*x)/lam^(3 : ℕ)
 
 private theorem phasePrimitive_deriv {lam : ℝ} (hlam : lam ≠ 0) (m x : ℝ) :
     HasDerivAt (phasePrimitive lam m)
-      (((x-m)^2-(x-m))/2 * Real.sin (lam*x)) x := by
+      (((x-m)^(2 : ℕ)-(x-m))/2 * Real.sin (lam*x)) x := by
   have hy := (hasDerivAt_id x).sub_const m
   have hb := ((hy.pow 2).sub hy).neg.div_const 2
   have hc := (Real.hasDerivAt_cos (lam*x)).comp x ((hasDerivAt_id x).const_mul lam)
   have hs := (Real.hasDerivAt_sin (lam*x)).comp x ((hasDerivAt_id x).const_mul lam)
   have h := (((hb.mul hc).div_const lam).add
-    (((hy.sub_const (1/2)).mul hs).div_const (lam^2))).add (hc.div_const (lam^3))
+    (((hy.sub_const (1/2)).mul hs).div_const (lam^(2 : ℕ)))).add (hc.div_const (lam^(3 : ℕ)))
   convert! h using 1
   dsimp [phasePrimitive]
   norm_num
@@ -49,7 +49,7 @@ private theorem phase_integrable (lam a b : ℝ) :
     IntervalIntegrable (fun x : ℝ => RHTower.bernoulliPeriodic x * Real.sin (lam*x))
       volume a b := by
   have hc : Continuous RHTower.bernoulliPeriodic :=
-    (show Continuous (fun x : ℝ => (x^2-x)/2) by fun_prop).continuousOn.comp_fract'' (by norm_num)
+    (show Continuous (fun x : ℝ => (x^(2 : ℕ)-x)/2) by fun_prop).continuousOn.comp_fract'' (by norm_num)
   exact (hc.mul (by fun_prop)).intervalIntegrable a b
 
 private theorem phase_cell_eq {lam r : ℝ} (hlam : lam ≠ 0) (m : ℕ)
@@ -59,7 +59,7 @@ private theorem phase_cell_eq {lam r : ℝ} (hlam : lam ≠ 0) (m : ℕ)
   have he : (∫ x in (m:ℝ)..((m:ℝ)+r),
       RHTower.bernoulliPeriodic x * Real.sin (lam*x)) =
       ∫ x in (m:ℝ)..((m:ℝ)+r),
-        (((x-(m:ℝ))^2-(x-(m:ℝ)))/2) * Real.sin (lam*x) := by
+        (((x-(m:ℝ))^(2 : ℕ)-(x-(m:ℝ)))/2) * Real.sin (lam*x) := by
     apply intervalIntegral.integral_congr
     intro x hx
     rw [uIcc_of_le (by linarith)] at hx
@@ -77,8 +77,8 @@ private theorem phase_cell_eq {lam r : ℝ} (hlam : lam ≠ 0) (m : ℕ)
 
 private theorem phase_prefix_nat {lam : ℝ} (hlam : lam ≠ 0) (m : ℕ) :
     linearPhasePrefix lam m =
-      -(1/2)*Real.sin (lam*(m:ℝ))/lam^2 + (Real.cos (lam*(m:ℝ))-1)/lam^3 +
-        (∑ j ∈ Finset.range m, Real.sin (lam*((j:ℝ)+1)))/lam^2 := by
+      -(1/2)*Real.sin (lam*(m:ℝ))/lam^(2 : ℕ) + (Real.cos (lam*(m:ℝ))-1)/lam^(3 : ℕ) +
+        (∑ j ∈ Finset.range m, Real.sin (lam*((j:ℝ)+1)))/lam^(2 : ℕ) := by
   induction m with
   | zero => simp [linearPhasePrefix]
   | succ m ih =>
@@ -95,10 +95,10 @@ private theorem phase_prefix_nat {lam : ℝ} (hlam : lam ≠ 0) (m : ℕ) :
 theorem linearPhasePrefix_eq_finite_endpoint {lam r : ℝ} (hlam : lam ≠ 0)
     (m : ℕ) (hr0 : 0 ≤ r) (hr1 : r ≤ 1) :
     linearPhasePrefix lam ((m:ℝ)+r) =
-      -(r^2-r)/2 * Real.cos (lam*((m:ℝ)+r))/lam +
-        (r-1/2)*Real.sin (lam*((m:ℝ)+r))/lam^2 +
-        (Real.cos (lam*((m:ℝ)+r))-1)/lam^3 +
-        (∑ j ∈ Finset.range m, Real.sin (lam*((j:ℝ)+1)))/lam^2 := by
+      -(r^(2 : ℕ)-r)/2 * Real.cos (lam*((m:ℝ)+r))/lam +
+        (r-1/2)*Real.sin (lam*((m:ℝ)+r))/lam^(2 : ℕ) +
+        (Real.cos (lam*((m:ℝ)+r))-1)/lam^(3 : ℕ) +
+        (∑ j ∈ Finset.range m, Real.sin (lam*((j:ℝ)+1)))/lam^(2 : ℕ) := by
   have h := intervalIntegral.integral_add_adjacent_intervals
     (phase_integrable lam 0 m) (phase_integrable lam m ((m:ℝ)+r))
   change linearPhasePrefix lam m + _ = linearPhasePrefix lam ((m:ℝ)+r) at h
@@ -131,7 +131,7 @@ theorem linearPhasePrefix_eq_complete_turn {lam r : ℝ}
     (hlam : 0 < lam) (hlam' : lam < 2*Real.pi) (m K : ℕ)
     (hr0 : 0 ≤ r) (hr1 : r ≤ 1) (hturn : lam*((m:ℝ)+r)=2*Real.pi*K) :
     linearPhasePrefix lam ((m:ℝ)+r) = r*(1-r)/(2*lam) -
-      Real.sin (r*lam/2)*Real.sin ((1-r)*lam/2)/(lam^2*Real.sin (lam/2)) := by
+      Real.sin (r*lam/2)*Real.sin ((1-r)*lam/2)/(lam^(2 : ℕ)*Real.sin (lam/2)) := by
   have hsin : Real.sin (lam*((m:ℝ)+r))=0 := by
     rw [hturn]
     simpa [mul_comm, mul_left_comm, mul_assoc] using Real.sin_add_nat_mul_two_pi 0 K
@@ -208,7 +208,7 @@ theorem linearPhasePrefix_complete_turn_neg {lam r : ℝ}
     (by linarith : lam/2<Real.pi) hr0 hr1
   have hs := Real.sin_pos_of_pos_of_lt_pi (by linarith : 0<lam/2)
     (by linarith : lam/2<Real.pi)
-  have hd : 0 < lam^2*Real.sin (lam/2) := mul_pos (sq_pos_of_pos hlam) hs
+  have hd : 0 < lam^(2 : ℕ)*Real.sin (lam/2) := mul_pos (sq_pos_of_pos hlam) hs
   apply sub_neg.mpr
   apply (lt_div_iff₀ hd).mpr
   convert! hi using 1 <;> field_simp [hlam.ne']
@@ -250,7 +250,7 @@ theorem linearPhasePrefix_at_turn {lam : ℝ} (hlam : 0 < lam)
     let A := 2*Real.pi*K/lam
     let r := Int.fract A
     linearPhasePrefix lam A = r*(1-r)/(2*lam) -
-      Real.sin (r*lam/2)*Real.sin ((1-r)*lam/2)/(lam^2*Real.sin (lam/2)) := by
+      Real.sin (r*lam/2)*Real.sin ((1-r)*lam/2)/(lam^(2 : ℕ)*Real.sin (lam/2)) := by
   dsimp only
   let A := 2*Real.pi*K/lam
   have ha : 0 ≤ A := by dsimp [A]; positivity

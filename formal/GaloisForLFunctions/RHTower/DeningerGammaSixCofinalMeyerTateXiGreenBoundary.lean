@@ -21,7 +21,7 @@ vertical generator.
 Finally the chains are weighted by the already constructed reflected-Gaussian
 completed Green coefficient at an actual Xi divisor copy.  Their completed
 differentials converge to a vertical class whose graph trace is exactly that
-existing Green fibre and whose ambient `ell^2` projection is zero.  Actual
+existing Green fibre and whose ambient `ell^(2 : ℕ)` projection is zero.  Actual
 Gamma/Sonin transport of every finite chain and of its limit is the same
 fixed physical receiver with that coefficient.
 
@@ -267,7 +267,7 @@ completed Xi Green fibre, not a newly declared quotient coefficient. -/
   simp [deningerGammaSixCofinalXiGreenVerticalBoundary]
 
 /-- The same completed boundary is invisible in the old ambient cofinal
-`ell^2` carrier. -/
+`ell^(2 : ℕ)` carrier. -/
 @[simp] theorem
     deningerGammaSixCofinalGraphAmbientProjection_xiGreenVerticalBoundary
     (q : XiZeroCopy) :

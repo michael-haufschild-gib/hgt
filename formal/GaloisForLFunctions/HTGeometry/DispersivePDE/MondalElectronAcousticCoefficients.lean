@@ -38,7 +38,7 @@ theorem mondalGamma_closed_form (q p s : ℝ) :
 
 theorem mondalBeta_closed_form (q p s : ℝ) :
     mondalBeta q p s =
-      -1 / (2 * mondalPhaseSpeed q p s * mondalA1 q ^ 2) := by
+      -1 / (2 * mondalPhaseSpeed q p s * mondalA1 q ^ (2 : ℕ)) := by
   have hspeed : mondalPhaseSpeed q p s ≠ 0 := ne_of_gt (mondalPhaseSpeed_pos q p s)
   have hA1 : mondalA1 q ≠ 0 := ne_of_gt (mondalA1_pos q)
   have hp : mondalHotConcentration p ≠ 0 := by
@@ -49,7 +49,7 @@ theorem mondalBeta_closed_form (q p s : ℝ) :
 
 theorem mondalPhysicalLumpOffset_closed_form (q p s : ℝ) :
     mondalPhysicalLumpOffset q p s =
-      -3 / (mondalPhaseSpeedSq q p s * mondalA1 q ^ 2) := by
+      -3 / (mondalPhaseSpeedSq q p s * mondalA1 q ^ (2 : ℕ)) := by
   unfold mondalPhysicalLumpOffset
   rw [show 3 * mondalBeta q p s / mondalGamma q p s =
       3 * (mondalBeta q p s / mondalGamma q p s) by ring,
@@ -58,8 +58,8 @@ theorem mondalPhysicalLumpOffset_closed_form (q p s : ℝ) :
 
 noncomputable def mondalE (q p s : ℝ) : ℝ :=
   2 * mondalHotConcentration p * mondalB1 q / mondalA1 q
-    + mondalHotConcentration p ^ 2 * mondalA1 q
-    - mondalPhaseSpeedSq q p s * mondalA1 q ^ 2 * mondalHotConcentration p ^ 2
+    + mondalHotConcentration p ^ (2 : ℕ) * mondalA1 q
+    - mondalPhaseSpeedSq q p s * mondalA1 q ^ (2 : ℕ) * mondalHotConcentration p ^ (2 : ℕ)
 
 noncomputable def mondalF (q p s : ℝ) : ℝ :=
   4 * mondalPhaseSpeedSq q p s * mondalA1 q * mondalHotConcentration p
@@ -67,7 +67,7 @@ noncomputable def mondalF (q p s : ℝ) : ℝ :=
 theorem mondalE_reduced (q p s : ℝ) :
     mondalE q p s =
       2 * mondalHotConcentration p * mondalB1 q / mondalA1 q
-        - mondalA1 q ^ 2 * mondalHotConcentration p ^ 3 * mondalTemperatureRatio s := by
+        - mondalA1 q ^ (2 : ℕ) * mondalHotConcentration p ^ (3 : ℕ) * mondalTemperatureRatio s := by
   have hA1 : mondalA1 q ≠ 0 := ne_of_gt (mondalA1_pos q)
   unfold mondalE mondalPhaseSpeedSq
   field_simp [hA1]
@@ -78,7 +78,7 @@ theorem mondalF_pos (q p s : ℝ) : 0 < mondalF q p s := by
   positivity [mondalPhaseSpeedSq_pos q p s, mondalA1_pos q]
 
 noncomputable def mondalCriticalTemperatureRatio (q p : ℝ) : ℝ :=
-  2 * mondalB1 q / (mondalA1 q ^ 3 * mondalHotConcentration p ^ 2)
+  2 * mondalB1 q / (mondalA1 q ^ (3 : ℕ) * mondalHotConcentration p ^ (2 : ℕ))
 
 theorem mondalCriticalTemperatureRatio_pos (q p : ℝ) :
     0 < mondalCriticalTemperatureRatio q p := by
@@ -88,7 +88,7 @@ theorem mondalCriticalTemperatureRatio_pos (q p : ℝ) :
 
 theorem mondalE_critical_factor (q p s : ℝ) :
     mondalE q p s =
-      mondalA1 q ^ 2 * mondalHotConcentration p ^ 3 *
+      mondalA1 q ^ (2 : ℕ) * mondalHotConcentration p ^ (3 : ℕ) *
         (mondalCriticalTemperatureRatio q p - mondalTemperatureRatio s) := by
   have hA1 : mondalA1 q ≠ 0 := ne_of_gt (mondalA1_pos q)
   have hp : mondalHotConcentration p ≠ 0 := by
@@ -146,7 +146,7 @@ theorem mondalSupercriticalTemperatureAmplitude_sq (q p r : ℝ) :
 theorem mondalE_supercritical_neg (q p r : ℝ) :
     mondalE q p (mondalSupercriticalTemperatureAmplitude q p r) < 0 := by
   rw [mondalE_critical_factor, mondalSupercriticalTemperatureAmplitude_sq]
-  have hfactor : 0 < mondalA1 q ^ 2 * mondalHotConcentration p ^ 3 := by
+  have hfactor : 0 < mondalA1 q ^ (2 : ℕ) * mondalHotConcentration p ^ (3 : ℕ) := by
     unfold mondalHotConcentration
     positivity [mondalA1_pos q]
   have hexp : 0 < Real.exp r := Real.exp_pos r
@@ -157,8 +157,8 @@ theorem mondalE_supercritical_neg (q p r : ℝ) :
 theorem mondalB_reduced (q p s : ℝ) :
     mondalB q p s =
       2 * mondalA1 q - 1
-        + 3 * mondalA1 q * mondalHotConcentration p ^ 2
-        + 2 * mondalA1 q ^ 2 * mondalHotConcentration p ^ 3 *
+        + 3 * mondalA1 q * mondalHotConcentration p ^ (2 : ℕ)
+        + 2 * mondalA1 q ^ (2 : ℕ) * mondalHotConcentration p ^ (3 : ℕ) *
           mondalTemperatureRatio s := by
   have hA1 : mondalA1 q ≠ 0 := ne_of_gt (mondalA1_pos q)
   unfold mondalB
@@ -170,8 +170,8 @@ theorem mondalB_reduced (q p s : ℝ) :
 noncomputable def mondalAmplitudeDenominator (q s concentration : ℝ) : ℝ :=
   mondalA1 q *
     (2 * mondalA1 q - 1
-      + 3 * mondalA1 q * concentration ^ 2
-      + 2 * mondalA1 q ^ 2 * concentration ^ 3 * mondalTemperatureRatio s)
+      + 3 * mondalA1 q * concentration ^ (2 : ℕ)
+      + 2 * mondalA1 q ^ (2 : ℕ) * concentration ^ (3 : ℕ) * mondalTemperatureRatio s)
 
 noncomputable def mondalAmplitudeAtConcentration (q s concentration : ℝ) : ℝ :=
   concentration / mondalAmplitudeDenominator q s concentration
@@ -188,20 +188,20 @@ theorem mondalBeta_div_alpha_eq_amplitudeAtConcentration (q p s : ℝ) :
 noncomputable def mondalAmplitudeConcentrationSlope (q s concentration : ℝ) : ℝ :=
   mondalA1 q *
       (2 * mondalA1 q - 1
-        - 3 * mondalA1 q * concentration ^ 2
-        - 4 * mondalA1 q ^ 2 * concentration ^ 3 * mondalTemperatureRatio s) /
-    mondalAmplitudeDenominator q s concentration ^ 2
+        - 3 * mondalA1 q * concentration ^ (2 : ℕ)
+        - 4 * mondalA1 q ^ (2 : ℕ) * concentration ^ (3 : ℕ) * mondalTemperatureRatio s) /
+    mondalAmplitudeDenominator q s concentration ^ (2 : ℕ)
 
 theorem hasDerivAt_mondalAmplitudeDenominator (q s concentration : ℝ) :
     HasDerivAt (mondalAmplitudeDenominator q s)
       (mondalA1 q *
         (6 * mondalA1 q * concentration
-          + 6 * mondalA1 q ^ 2 * concentration ^ 2 * mondalTemperatureRatio s))
+          + 6 * mondalA1 q ^ (2 : ℕ) * concentration ^ (2 : ℕ) * mondalTemperatureRatio s))
       concentration := by
   have hzero := hasDerivAt_const concentration (2 * mondalA1 q - 1)
   have htwo := ((hasDerivAt_id concentration).pow 2).const_mul (3 * mondalA1 q)
   have hthree := (((hasDerivAt_id concentration).pow 3).const_mul
-    (2 * mondalA1 q ^ 2)).mul_const (mondalTemperatureRatio s)
+    (2 * mondalA1 q ^ (2 : ℕ))).mul_const (mondalTemperatureRatio s)
   have h := ((hzero.add htwo).add hthree).const_mul (mondalA1 q)
   apply (h.congr_deriv (by
     norm_num
@@ -226,11 +226,11 @@ theorem mondalAmplitudeDenominator_one_pos (q s : ℝ) :
   rw [show mondalAmplitudeDenominator q s 1 =
       mondalA1 q *
         (5 * mondalA1 q - 1 +
-          2 * mondalA1 q ^ 2 * mondalTemperatureRatio s) by
+          2 * mondalA1 q ^ (2 : ℕ) * mondalTemperatureRatio s) by
     unfold mondalAmplitudeDenominator
     ring]
   have hinner : 0 < 5 * mondalA1 q - 1 +
-      2 * mondalA1 q ^ 2 * mondalTemperatureRatio s := by
+      2 * mondalA1 q ^ (2 : ℕ) * mondalTemperatureRatio s := by
     nlinarith [sq_nonneg (mondalA1 q)]
   exact mul_pos (mondalA1_pos q) hinner
 
@@ -288,7 +288,7 @@ theorem mondalAmplitudeConcentrationSlope_one_neg (q s : ℝ) :
   unfold mondalAmplitudeConcentrationSlope
   norm_num
   have hnum : 2 * mondalA1 q - 1 - 3 * mondalA1 q -
-      4 * mondalA1 q ^ 2 * mondalTemperatureRatio s < 0 := by
+      4 * mondalA1 q ^ (2 : ℕ) * mondalTemperatureRatio s < 0 := by
     nlinarith [sq_nonneg (mondalA1 q)]
   exact div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (mondalA1_pos q) hnum)
     (sq_pos_of_pos hden)
@@ -328,13 +328,13 @@ theorem mondalAmplitudeDenominator_raisedTemperature
   have hr := Real.exp_pos r
   apply sub_pos.mp
   rw [show mondalA1 q *
-        (2 * mondalA1 q - 1 + 3 * mondalA1 q * Real.exp p ^ 2 +
-          2 * mondalA1 q ^ 2 * Real.exp p ^ 3 *
+        (2 * mondalA1 q - 1 + 3 * mondalA1 q * Real.exp p ^ (2 : ℕ) +
+          2 * mondalA1 q ^ (2 : ℕ) * Real.exp p ^ (3 : ℕ) *
             (mondalTemperatureRatio s + Real.exp r)) -
       mondalA1 q *
-        (2 * mondalA1 q - 1 + 3 * mondalA1 q * Real.exp p ^ 2 +
-          2 * mondalA1 q ^ 2 * Real.exp p ^ 3 * mondalTemperatureRatio s) =
-      2 * mondalA1 q ^ 3 * Real.exp p ^ 3 * Real.exp r by ring]
+        (2 * mondalA1 q - 1 + 3 * mondalA1 q * Real.exp p ^ (2 : ℕ) +
+          2 * mondalA1 q ^ (2 : ℕ) * Real.exp p ^ (3 : ℕ) * mondalTemperatureRatio s) =
+      2 * mondalA1 q ^ (3 : ℕ) * Real.exp p ^ (3 : ℕ) * Real.exp r by ring]
   positivity
 
 theorem mondalAmplitude_raisedTemperature_decreases
@@ -388,9 +388,9 @@ theorem mondalAmplitudeDenominator_raisedKappa
     positivity
   have hfactor :
       0 < 2 * (largeA + smallA) - 1
-        + 3 * concentration ^ 2 * (largeA + smallA)
-        + 2 * concentration ^ 3 * temperature *
-          (largeA ^ 2 + largeA * smallA + smallA ^ 2) := by
+        + 3 * concentration ^ (2 : ℕ) * (largeA + smallA)
+        + 2 * concentration ^ (3 : ℕ) * temperature *
+          (largeA ^ (2 : ℕ) + largeA * smallA + smallA ^ (2 : ℕ)) := by
     have hbase : 0 < 2 * (largeA + smallA) - 1 := by linarith
     positivity
   apply sub_pos.mp
@@ -399,9 +399,9 @@ theorem mondalAmplitudeDenominator_raisedKappa
         (mondalHotConcentration p) =
       (largeA - smallA) *
         (2 * (largeA + smallA) - 1
-          + 3 * concentration ^ 2 * (largeA + smallA)
-          + 2 * concentration ^ 3 * temperature *
-            (largeA ^ 2 + largeA * smallA + smallA ^ 2)) by
+          + 3 * concentration ^ (2 : ℕ) * (largeA + smallA)
+          + 2 * concentration ^ (3 : ℕ) * temperature *
+            (largeA ^ (2 : ℕ) + largeA * smallA + smallA ^ (2 : ℕ))) by
     unfold mondalAmplitudeDenominator smallA largeA concentration temperature
     ring]
   exact mul_pos (sub_pos.mpr horder) hfactor

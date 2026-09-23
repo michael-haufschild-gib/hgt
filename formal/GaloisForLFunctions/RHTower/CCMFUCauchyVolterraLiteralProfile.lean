@@ -17,24 +17,24 @@ noncomputable section
 
 /-- Literal third-grade FU coefficient in square-root coordinate. -/
 def cauchyVolterraFUProfile (H y : ℝ) : ℝ :=
-  4 / (y * Real.log y ^ 3) * (1 - 2 * Real.log y / H)
+  4 / (y * Real.log y ^ (3 : ℕ)) * (1 - 2 * Real.log y / H)
 
 def cauchyVolterraFUProfileDeriv (H y : ℝ) : ℝ :=
-  4 / y ^ 2 *
-    (-3 / Real.log y ^ 4 + (4 / H - 1) / Real.log y ^ 3 + 2 / (H * Real.log y ^ 2))
+  4 / y ^ (2 : ℕ) *
+    (-3 / Real.log y ^ (4 : ℕ) + (4 / H - 1) / Real.log y ^ (3 : ℕ) + 2 / (H * Real.log y ^ (2 : ℕ)))
 
 def cauchyVolterraFUProfileDerivTwo (H y : ℝ) : ℝ :=
-  4 / y ^ 3 *
-    (12 / Real.log y ^ 5 + (9 - 12 / H) / Real.log y ^ 4 +
-      (2 - 12 / H) / Real.log y ^ 3 - 4 / (H * Real.log y ^ 2))
+  4 / y ^ (3 : ℕ) *
+    (12 / Real.log y ^ (5 : ℕ) + (9 - 12 / H) / Real.log y ^ (4 : ℕ) +
+      (2 - 12 / H) / Real.log y ^ (3 : ℕ) - 4 / (H * Real.log y ^ (2 : ℕ)))
 
 def cauchyVolterraFUDensityNumerator (H t : ℝ) : ℝ :=
-  H * (12 + 9 * t + 2 * t ^ 2) - 12 * t - 12 * t ^ 2 - 4 * t ^ 3
+  H * (12 + 9 * t + 2 * t ^ (2 : ℕ)) - 12 * t - 12 * t ^ (2 : ℕ) - 4 * t ^ (3 : ℕ)
 
 /-- Square-root-coordinate curvature of the literal FU profile. -/
 def cauchyVolterraFUCurvature (H y : ℝ) : ℝ :=
   4 * cauchyVolterraFUDensityNumerator H (Real.log y) /
-    (y * H * Real.log y ^ 5)
+    (y * H * Real.log y ^ (5 : ℕ))
 
 theorem hasDerivAt_cauchyVolterraFUProfile
     {H y : ℝ} (hH : H ≠ 0) (hy : y ≠ 0) (hlog : Real.log y ≠ 0) :
@@ -42,7 +42,7 @@ theorem hasDerivAt_cauchyVolterraFUProfile
   have hlog' := Real.hasDerivAt_log hy
   have hlog3 := hlog'.pow 3
   have hden := (hasDerivAt_id (x := y)).mul hlog3
-  have hden0 : y * Real.log y ^ 3 ≠ 0 := mul_ne_zero hy (pow_ne_zero _ hlog)
+  have hden0 : y * Real.log y ^ (3 : ℕ) ≠ 0 := mul_ne_zero hy (pow_ne_zero _ hlog)
   have hquot := (hasDerivAt_const (x := y) (c := (4 : ℝ))).div hden hden0
   have hfactor := (hasDerivAt_const (x := y) (c := (1 : ℝ))).sub
     (((hasDerivAt_const (x := y) (c := (2 : ℝ))).mul hlog').div_const H)
@@ -64,7 +64,7 @@ theorem hasDerivAt_cauchyVolterraFUProfileDeriv
   have hterm2 := (hasDerivAt_const (x := y) (c := 4 / H - 1)).div hlog3
     (pow_ne_zero _ hlog)
   have hden3 := (hasDerivAt_const (x := y) (c := H)).mul hlog2
-  have hden3ne : H * Real.log y ^ 2 ≠ 0 := mul_ne_zero hH (pow_ne_zero _ hlog)
+  have hden3ne : H * Real.log y ^ (2 : ℕ) ≠ 0 := mul_ne_zero hH (pow_ne_zero _ hlog)
   have hterm3 := (hasDerivAt_const (x := y) (c := (2 : ℝ))).div hden3 hden3ne
   have hbracket := (hterm1.add hterm2).add hterm3
   have hy2 := (hasDerivAt_id (x := y)).pow 2
@@ -92,7 +92,7 @@ theorem cauchyVolterraFUProfile_terminal
 theorem cauchyVolterraFUProfile_endpointJet
     {H : ℝ} (hH : H ≠ 0) :
     -Real.exp (H / 2) * cauchyVolterraFUProfileDeriv H (Real.exp (H / 2)) =
-      64 / (Real.exp (H / 2) * H ^ 4) := by
+      64 / (Real.exp (H / 2) * H ^ (4 : ℕ)) := by
   unfold cauchyVolterraFUProfileDeriv
   rw [Real.log_exp]
   field_simp [hH, (Real.exp_pos (H / 2)).ne']
@@ -101,7 +101,7 @@ theorem cauchyVolterraFUProfile_endpointJet
 theorem cauchyVolterraFUCurvature_eq_profileDerivTwo
     {H y : ℝ} (hH : H ≠ 0) (hy : y ≠ 0) (hlog : Real.log y ≠ 0) :
     cauchyVolterraFUCurvature H y =
-      y ^ 2 * cauchyVolterraFUProfileDerivTwo H y := by
+      y ^ (2 : ℕ) * cauchyVolterraFUProfileDerivTwo H y := by
   unfold cauchyVolterraFUCurvature cauchyVolterraFUDensityNumerator
     cauchyVolterraFUProfileDerivTwo
   field_simp [hH, hy, hlog]
@@ -110,10 +110,10 @@ theorem cauchyVolterraFUCurvature_eq_profileDerivTwo
 theorem cauchyVolterraFUDensityNumerator_pos
     {H t : ℝ} (ht : 0 < t) (htH : 2 * t ≤ H) :
     0 < cauchyVolterraFUDensityNumerator H t := by
-  have hfactor : 0 < 12 + 9 * t + 2 * t ^ 2 := by positivity
+  have hfactor : 0 < 12 + 9 * t + 2 * t ^ (2 : ℕ) := by positivity
   have hscale :
-      2 * t * (12 + 9 * t + 2 * t ^ 2) ≤
-        H * (12 + 9 * t + 2 * t ^ 2) :=
+      2 * t * (12 + 9 * t + 2 * t ^ (2 : ℕ)) ≤
+        H * (12 + 9 * t + 2 * t ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_right htH hfactor.le
   unfold cauchyVolterraFUDensityNumerator
   nlinarith
@@ -144,17 +144,17 @@ theorem cauchyVolterraFUCurvature_mul_kernel_intervalIntegrable
     have hy0 : y ≠ 0 := ne_of_gt (by linarith)
     have hlog0 : Real.log y ≠ 0 := ne_of_gt (Real.log_pos hy1)
     have hlogcont : ContinuousAt Real.log y := (Real.hasDerivAt_log hy0).continuousAt
-    have hpre : ContinuousAt (fun z : ℝ => 4 / z ^ 3) y :=
+    have hpre : ContinuousAt (fun z : ℝ => 4 / z ^ (3 : ℕ)) y :=
       continuousAt_const.div (continuousAt_id.pow 3) (pow_ne_zero _ hy0)
-    have hterm1 : ContinuousAt (fun z : ℝ => 12 / Real.log z ^ 5) y :=
+    have hterm1 : ContinuousAt (fun z : ℝ => 12 / Real.log z ^ (5 : ℕ)) y :=
       continuousAt_const.div (hlogcont.pow 5) (pow_ne_zero _ hlog0)
-    have hterm2 : ContinuousAt (fun z : ℝ => (9 - 12 / H) / Real.log z ^ 4) y :=
+    have hterm2 : ContinuousAt (fun z : ℝ => (9 - 12 / H) / Real.log z ^ (4 : ℕ)) y :=
       continuousAt_const.div (hlogcont.pow 4) (pow_ne_zero _ hlog0)
-    have hterm3 : ContinuousAt (fun z : ℝ => (2 - 12 / H) / Real.log z ^ 3) y :=
+    have hterm3 : ContinuousAt (fun z : ℝ => (2 - 12 / H) / Real.log z ^ (3 : ℕ)) y :=
       continuousAt_const.div (hlogcont.pow 3) (pow_ne_zero _ hlog0)
-    have hden : ContinuousAt (fun z : ℝ => H * Real.log z ^ 2) y :=
+    have hden : ContinuousAt (fun z : ℝ => H * Real.log z ^ (2 : ℕ)) y :=
       continuousAt_const.mul (hlogcont.pow 2)
-    have hterm4 : ContinuousAt (fun z : ℝ => 4 / (H * Real.log z ^ 2)) y :=
+    have hterm4 : ContinuousAt (fun z : ℝ => 4 / (H * Real.log z ^ (2 : ℕ))) y :=
       continuousAt_const.div hden (mul_ne_zero hHne (pow_ne_zero _ hlog0))
     exact (hpre.mul (((hterm1.add hterm2).add hterm3).sub hterm4)).continuousWithinAt
   have hcurv : ContinuousOn (fun y : ℝ => cauchyVolterraFUCurvature H y) (Set.Icc x Y) := by
@@ -207,17 +207,17 @@ theorem cauchyVolterraFUProfile_reconstruction
     have hy0 : y ≠ 0 := ne_of_gt (by linarith)
     have hlog0 : Real.log y ≠ 0 := ne_of_gt (Real.log_pos hy1)
     have hlogcont : ContinuousAt Real.log y := (Real.hasDerivAt_log hy0).continuousAt
-    have hpre : ContinuousAt (fun z : ℝ => 4 / z ^ 3) y :=
+    have hpre : ContinuousAt (fun z : ℝ => 4 / z ^ (3 : ℕ)) y :=
       continuousAt_const.div (continuousAt_id.pow 3) (pow_ne_zero _ hy0)
-    have hterm1 : ContinuousAt (fun z : ℝ => 12 / Real.log z ^ 5) y :=
+    have hterm1 : ContinuousAt (fun z : ℝ => 12 / Real.log z ^ (5 : ℕ)) y :=
       continuousAt_const.div (hlogcont.pow 5) (pow_ne_zero _ hlog0)
-    have hterm2 : ContinuousAt (fun z : ℝ => (9 - 12 / H) / Real.log z ^ 4) y :=
+    have hterm2 : ContinuousAt (fun z : ℝ => (9 - 12 / H) / Real.log z ^ (4 : ℕ)) y :=
       continuousAt_const.div (hlogcont.pow 4) (pow_ne_zero _ hlog0)
-    have hterm3 : ContinuousAt (fun z : ℝ => (2 - 12 / H) / Real.log z ^ 3) y :=
+    have hterm3 : ContinuousAt (fun z : ℝ => (2 - 12 / H) / Real.log z ^ (3 : ℕ)) y :=
       continuousAt_const.div (hlogcont.pow 3) (pow_ne_zero _ hlog0)
-    have hden : ContinuousAt (fun z : ℝ => H * Real.log z ^ 2) y :=
+    have hden : ContinuousAt (fun z : ℝ => H * Real.log z ^ (2 : ℕ)) y :=
       continuousAt_const.mul (hlogcont.pow 2)
-    have hterm4 : ContinuousAt (fun z : ℝ => 4 / (H * Real.log z ^ 2)) y :=
+    have hterm4 : ContinuousAt (fun z : ℝ => 4 / (H * Real.log z ^ (2 : ℕ))) y :=
       continuousAt_const.div hden (mul_ne_zero hHne (pow_ne_zero _ hlog0))
     exact (hpre.mul (((hterm1.add hterm2).add hterm3).sub hterm4)).continuousWithinAt
   have hint : IntervalIntegrable (cauchyVolterraFUProfileDeriv H) volume x
@@ -235,7 +235,7 @@ theorem cauchyVolterraFUProfile_reconstruction
   intro y hy
   rw [Set.uIcc_of_le hxY] at hy
   have hy1 : 1 < y := hx.trans_le hy.1
-  change y ^ 2 * cauchyVolterraFUProfileDerivTwo H y * (1 / y - x / y ^ 2) =
+  change y ^ (2 : ℕ) * cauchyVolterraFUProfileDerivTwo H y * (1 / y - x / y ^ (2 : ℕ)) =
     cauchyVolterraFUCurvature H y * cauchyVolterraKernel x y
   rw [← cauchyVolterraFUCurvature_eq_profileDerivTwo hHne
     (ne_of_gt (by linarith)) (ne_of_gt (Real.log_pos hy1))]

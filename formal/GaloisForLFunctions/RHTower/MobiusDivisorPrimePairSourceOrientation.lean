@@ -26,7 +26,7 @@ private lemma source_density_pos (P : Finset ℕ) (hP : ∀p∈P,p.Prime) :
     exact div_pos (by exact_mod_cast (hP p hp).pos) (by positivity)
 
 private lemma ratio_lower {p q U : ℝ} (hp : 0<p) (hpq : p≤q) (hU : 1≤U)
-    (hqU : q≤U*p) : 1/U^2≤(p/q)*Real.sqrt (p/q) := by
+    (hqU : q≤U*p) : 1/U^(2 : ℕ)≤(p/q)*Real.sqrt (p/q) := by
   have hq : 0<q := hp.trans_le hpq
   have hU0 : 0<U := lt_of_lt_of_le zero_lt_one hU
   have ha : 0<p/q := div_pos hp hq
@@ -70,9 +70,9 @@ theorem exists_mobiusDivisorPrime_pair_tail_orientation (P : Finset ℕ)
   intro L hL
   have hL1 : 1≤L := (le_max_left _ _).trans hL
   have hLU : 0<L+1 := by linarith
-  let c := ρ*a/(L+1)^2
+  let c := ρ*a/(L+1)^(2 : ℕ)
   have hc : 0<c := by dsimp [c]; positivity
-  refine ⟨c,(C/c+1)^2,hc,?_⟩
+  refine ⟨c,(C/c+1)^(2 : ℕ),hc,?_⟩
   intro p q hp hq hpP hqP hqp hpT hqlo hqhi
   have hpR : (0:ℝ)<p := by exact_mod_cast hp.pos
   have hpqR : (p:ℝ)≤q := calc
@@ -86,7 +86,7 @@ theorem exists_mobiusDivisorPrime_pair_tail_orientation (P : Finset ℕ)
   have hw := (hΛ ((q:ℝ)/p) hratio).le
   let τ := ((p:ℝ)/q)*Real.sqrt ((p:ℝ)/q)
   have hτ : 0≤τ := by dsimp [τ]; positivity
-  have hτlo : 1/(L+1)^2≤τ := ratio_lower hpR hpqR (by linarith) hqhi
+  have hτlo : 1/(L+1)^(2 : ℕ)≤τ := ratio_lower hpR hpqR (by linarith) hqhi
   let E := (∑'n,mobiusDivisorFixedCoreBlockMass (insert q (insert p P)) n)-
     ∑'n,mobiusDivisorFixedCoreBlockMass P n
   have herror := hprofile p q hp hq hpP hqP hqp hpq
@@ -104,7 +104,7 @@ theorem exists_mobiusDivisorPrime_pair_tail_orientation (P : Finset ℕ)
   have hmain : 2*ρ*τ*(s*mobiusDivisorDilationMean P ((q:ℝ)/p))≤-4*c := by
     have hm := mul_le_mul_of_nonneg_left hw (show 0≤2*ρ*τ by positivity)
     have hl := mul_le_mul_of_nonneg_left hτlo (show 0≤4*ρ*a by positivity)
-    have he : 4*c=4*ρ*a*(1/(L+1)^2) := by dsimp [c]; ring
+    have he : 4*c=4*ρ*a*(1/(L+1)^(2 : ℕ)) := by dsimp [c]; ring
     rw [← he] at hl
     nlinarith only [hm,hl]
   have hu := (abs_le.mp herr).2

@@ -104,7 +104,7 @@ theorem rhLadder_one_of_poleClearedFirstTraceScheduledLocallyBounded
     exact tendsto_nhds_unique
       (hGlim.tendsto_at (farHalf_subset_rightHalf hs))
       ((tendstoLocallyUniformlyOn_poleClearedFirstTraceScheduledApprox hkappa).tendsto_at hs)
-  let H : ℂ → ℂ := fun s => G s ^ 2 - poleClearedFirstTraceExponentialContinuation s
+  let H : ℂ → ℂ := fun s => G s ^ (2 : ℕ) - poleClearedFirstTraceExponentialContinuation s
   have hHana : AnalyticOnNhd ℂ H rightHalf :=
     ((hGdiff.analyticOnNhd isOpen_rightHalf).pow 2).sub
       analyticOnNhd_poleClearedFirstTraceExponentialContinuation_rightHalf
@@ -118,7 +118,7 @@ theorem rhLadder_one_of_poleClearedFirstTraceScheduledLocallyBounded
     convex_rightHalf.isPreconnected (farHalf_subset_rightHalf two_mem_farHalf) hfreq
   intro s hs
   have hzero := hHall hs
-  change G s ^ 2 - poleClearedFirstTraceExponentialContinuation s = 0 at hzero
+  change G s ^ (2 : ℕ) - poleClearedFirstTraceExponentialContinuation s = 0 at hzero
   exact sub_eq_zero.mp hzero
 
 /-- Explicit logarithmic Cayley degree, offset so every degree is at least three. -/

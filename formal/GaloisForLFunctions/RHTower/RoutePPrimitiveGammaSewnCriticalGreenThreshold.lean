@@ -23,7 +23,7 @@ def routePPrimitiveGammaSewnCriticalQuadraticGreenFlux
     (pe : Nat.Primes × ℕ) : ℝ :=
   (1 / 2 : ℝ) *
     gammaSewnMobiusApertureStokesFirstTracePositiveMoment 1 pe /
-      deningerFreq (gammaSewnMobiusApertureStokesPrimePowerAxis pe) ^ 2
+      deningerFreq (gammaSewnMobiusApertureStokesPrimePowerAxis pe) ^ (2 : ℕ)
 
 private theorem criticalPositiveMoment_eq
     (pe : Nat.Primes × ℕ) :

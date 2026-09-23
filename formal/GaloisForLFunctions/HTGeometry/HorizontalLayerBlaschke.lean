@@ -83,7 +83,7 @@ theorem horizontalLayerFactorRaw_normalized_sub {a ω : ℝ} (ha : a ≠ 0)
     (horizontalLayerFactorRaw a ω x - 1) / (ω : ℂ) -
         horizontalLayerFullInfinitesimalSymbol a x =
       (-4 * I * (x : ℂ)) *
-        (((ω : ℂ) ^ 2 - 2 * I * (ω : ℂ) * (x : ℂ)) /
+        (((ω : ℂ) ^ (2 : ℕ) - 2 * I * (ω : ℂ) * (x : ℂ)) /
           (horizontalLayerDenominator a ω x * horizontalLayerDenominator a 0 x)) := by
   rw [horizontalLayerFactorRaw_normalized hω hplus hminus,
     horizontalLayerFullInfinitesimalSymbol_eq ha]
@@ -105,14 +105,14 @@ theorem horizontalLayerFactorRaw_normalized_sub {a ω : ℝ} (ha : a ≠ 0)
   ring
 
 theorem norm_horizontalLayerDenominator_zero (a x : ℝ) :
-    ‖horizontalLayerDenominator a 0 x‖ = x ^ 2 + a ^ 2 := by
+    ‖horizontalLayerDenominator a 0 x‖ = x ^ (2 : ℕ) + a ^ (2 : ℕ) := by
   have hmul :
       (((x : ℂ) + (a : ℂ) * I) * ((x : ℂ) - (a : ℂ) * I)) =
-        ((x ^ 2 + a ^ 2 : ℝ) : ℂ) := by
+        ((x ^ (2 : ℕ) + a ^ (2 : ℕ) : ℝ) : ℂ) := by
     calc
       ((x : ℂ) + (a : ℂ) * I) * ((x : ℂ) - (a : ℂ) * I) =
-          (x : ℂ) ^ 2 - ((a : ℂ) * I) ^ 2 := by ring
-      _ = ((x ^ 2 + a ^ 2 : ℝ) : ℂ) := by
+          (x : ℂ) ^ (2 : ℕ) - ((a : ℂ) * I) ^ (2 : ℕ) := by ring
+      _ = ((x ^ (2 : ℕ) + a ^ (2 : ℕ) : ℝ) : ℂ) := by
         rw [mul_pow, Complex.I_sq]
         push_cast
         ring
@@ -123,7 +123,7 @@ theorem norm_horizontalLayerDenominator_zero (a x : ℝ) :
 
 theorem norm_horizontalLayerDenominator_lower {a ω : ℝ} (ha : 0 < a)
     (hsmall : |ω| ≤ a / 2) (x : ℝ) :
-    a ^ 2 / 4 ≤ ‖horizontalLayerDenominator a ω x‖ := by
+    a ^ (2 : ℕ) / 4 ≤ ‖horizontalLayerDenominator a ω x‖ := by
   have hω := (abs_le.mp hsmall)
   have hplus : a / 2 ≤ a + ω := by linarith
   have hminus : a / 2 ≤ a - ω := by linarith
@@ -144,24 +144,24 @@ theorem norm_horizontalLayerDenominator_lower {a ω : ℝ} (ha : 0 < a)
   rw [horizontalLayerDenominator, norm_mul]
   push_cast
   calc
-    a ^ 2 / 4 = (a / 2) * (a / 2) := by ring
+    a ^ (2 : ℕ) / 4 = (a / 2) * (a / 2) := by ring
     _ ≤ ‖(x : ℂ) + (a + ω : ℂ) * I‖ *
         ‖(x : ℂ) - (a - ω : ℂ) * I‖ :=
       mul_le_mul hp hm (by linarith) (norm_nonneg _)
 
 theorem norm_horizontalLayerRemainderNumerator_le (ω x : ℝ) :
-    ‖(ω : ℂ) ^ 2 - 2 * I * (ω : ℂ) * (x : ℂ)‖ ≤
+    ‖(ω : ℂ) ^ (2 : ℕ) - 2 * I * (ω : ℂ) * (x : ℂ)‖ ≤
       |ω| * (|ω| + 2 * |x|) := by
   calc
-    ‖(ω : ℂ) ^ 2 - 2 * I * (ω : ℂ) * (x : ℂ)‖ ≤
-        ‖(ω : ℂ) ^ 2‖ + ‖2 * I * (ω : ℂ) * (x : ℂ)‖ := norm_sub_le _ _
+    ‖(ω : ℂ) ^ (2 : ℕ) - 2 * I * (ω : ℂ) * (x : ℂ)‖ ≤
+        ‖(ω : ℂ) ^ (2 : ℕ)‖ + ‖2 * I * (ω : ℂ) * (x : ℂ)‖ := norm_sub_le _ _
     _ = |ω| * (|ω| + 2 * |x|) := by
       simp only [norm_pow, norm_real, norm_mul, norm_ofNat, norm_I, Real.norm_eq_abs]
       ring
 
 lemma abs_mul_horizontalLayerRemainder_le {a ω : ℝ} (ha : 0 < a)
     (hsmall : |ω| ≤ a / 2) (x : ℝ) :
-    |x| * (|ω| + 2 * |x|) ≤ 3 * (x ^ 2 + a ^ 2) := by
+    |x| * (|ω| + 2 * |x|) ≤ 3 * (x ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
   have hωa : |ω| ≤ a := hsmall.trans (by linarith)
   have hx0 : 0 ≤ |x| := abs_nonneg x
   have hω0 : 0 ≤ |ω| := abs_nonneg ω
@@ -172,14 +172,14 @@ theorem norm_horizontalLayerFactorRaw_normalized_sub_le {a ω : ℝ} (ha : 0 < a
     (hω : ω ≠ 0) (hsmall : |ω| ≤ a / 2) (x : ℝ) :
     ‖(horizontalLayerFactorRaw a ω x - 1) / (ω : ℂ) -
         horizontalLayerFullInfinitesimalSymbol a x‖ ≤
-      48 * |ω| / a ^ 2 := by
+      48 * |ω| / a ^ (2 : ℕ) := by
   have hωbounds := abs_le.mp hsmall
   have hplus : 0 < a + ω := by linarith
   have hminus : 0 < a - ω := by linarith
   have hDω := norm_horizontalLayerDenominator_lower ha hsmall x
   have hDωpos : 0 < ‖horizontalLayerDenominator a ω x‖ :=
-    lt_of_lt_of_le (by positivity : 0 < a ^ 2 / 4) hDω
-  have hSpos : 0 < x ^ 2 + a ^ 2 := by nlinarith [sq_nonneg x, sq_pos_of_pos ha]
+    lt_of_lt_of_le (by positivity : 0 < a ^ (2 : ℕ) / 4) hDω
+  have hSpos : 0 < x ^ (2 : ℕ) + a ^ (2 : ℕ) := by nlinarith [sq_nonneg x, sq_pos_of_pos ha]
   have hD0pos : 0 < ‖horizontalLayerDenominator a 0 x‖ := by
     rw [norm_horizontalLayerDenominator_zero]
     exact hSpos
@@ -188,39 +188,39 @@ theorem norm_horizontalLayerFactorRaw_normalized_sub_le {a ω : ℝ} (ha : 0 < a
     rw [norm_mul]
     positivity
   have hden :
-      (a ^ 2 / 4) * (x ^ 2 + a ^ 2) ≤
+      (a ^ (2 : ℕ) / 4) * (x ^ (2 : ℕ) + a ^ (2 : ℕ)) ≤
         ‖horizontalLayerDenominator a ω x * horizontalLayerDenominator a 0 x‖ := by
     rw [norm_mul, norm_horizontalLayerDenominator_zero]
     exact mul_le_mul_of_nonneg_right hDω (le_of_lt hSpos)
   have hnum := norm_horizontalLayerRemainderNumerator_le ω x
   have hreal := abs_mul_horizontalLayerRemainder_le ha hsmall x
   have htop :
-      4 * |x| * ‖(ω : ℂ) ^ 2 - 2 * I * (ω : ℂ) * (x : ℂ)‖ ≤
-        12 * |ω| * (x ^ 2 + a ^ 2) := by
+      4 * |x| * ‖(ω : ℂ) ^ (2 : ℕ) - 2 * I * (ω : ℂ) * (x : ℂ)‖ ≤
+        12 * |ω| * (x ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
     calc
-      4 * |x| * ‖(ω : ℂ) ^ 2 - 2 * I * (ω : ℂ) * (x : ℂ)‖ ≤
+      4 * |x| * ‖(ω : ℂ) ^ (2 : ℕ) - 2 * I * (ω : ℂ) * (x : ℂ)‖ ≤
           4 * |x| * (|ω| * (|ω| + 2 * |x|)) := by gcongr
-      _ ≤ 12 * |ω| * (x ^ 2 + a ^ 2) := by
+      _ ≤ 12 * |ω| * (x ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
         have h := mul_le_mul_of_nonneg_left hreal
           (mul_nonneg (by norm_num : (0 : ℝ) ≤ 4) (abs_nonneg ω))
         nlinarith
   rw [horizontalLayerFactorRaw_normalized_sub ha.ne' hω hplus.ne' hminus.ne']
   calc
     ‖(-4 * I * (x : ℂ)) *
-        (((ω : ℂ) ^ 2 - 2 * I * (ω : ℂ) * (x : ℂ)) /
+        (((ω : ℂ) ^ (2 : ℕ) - 2 * I * (ω : ℂ) * (x : ℂ)) /
           (horizontalLayerDenominator a ω x * horizontalLayerDenominator a 0 x))‖ =
-        (4 * |x| * ‖(ω : ℂ) ^ 2 - 2 * I * (ω : ℂ) * (x : ℂ)‖) /
+        (4 * |x| * ‖(ω : ℂ) ^ (2 : ℕ) - 2 * I * (ω : ℂ) * (x : ℂ)‖) /
           ‖horizontalLayerDenominator a ω x * horizontalLayerDenominator a 0 x‖ := by
       rw [norm_mul, norm_div]
       simp only [norm_neg, norm_mul, norm_ofNat, norm_I, norm_real, Real.norm_eq_abs]
       ring
-    _ ≤ (12 * |ω| * (x ^ 2 + a ^ 2)) /
+    _ ≤ (12 * |ω| * (x ^ (2 : ℕ) + a ^ (2 : ℕ))) /
           ‖horizontalLayerDenominator a ω x * horizontalLayerDenominator a 0 x‖ := by
       exact (div_le_div_iff_of_pos_right hdenpos).2 htop
-    _ ≤ (12 * |ω| * (x ^ 2 + a ^ 2)) /
-          ((a ^ 2 / 4) * (x ^ 2 + a ^ 2)) := by
+    _ ≤ (12 * |ω| * (x ^ (2 : ℕ) + a ^ (2 : ℕ))) /
+          ((a ^ (2 : ℕ) / 4) * (x ^ (2 : ℕ) + a ^ (2 : ℕ))) := by
       gcongr
-    _ = 48 * |ω| / a ^ 2 := by
+    _ = 48 * |ω| / a ^ (2 : ℕ) := by
       field_simp [ne_of_gt ha, ne_of_gt hSpos]
       ring
 

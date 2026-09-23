@@ -60,22 +60,22 @@ theorem exists_bound_mobiusDivisorDilationMean_insert_ratio (P : Finset ℕ)
   have hp0 : (0:ℝ)<p := by exact_mod_cast hp.pos
   have hpY : 1≤(p:ℝ)*Y := by nlinarith
   have hdiv : (1:ℝ)/(p:ℝ)≤1 := (div_le_one hp0).mpr hp1
-  have hs : Real.sqrt (p:ℝ)≤(p:ℝ)^2 := by
+  have hs : Real.sqrt (p:ℝ)≤(p:ℝ)^(2 : ℕ) := by
     have hh := Real.sq_sqrt hp0.le
-    have hp2 : (p:ℝ)≤(p:ℝ)^2 := by nlinarith
+    have hp2 : (p:ℝ)≤(p:ℝ)^(2 : ℕ) := by nlinarith
     have hs1 : Real.sqrt (p:ℝ)≤(p:ℝ) := by nlinarith [Real.sqrt_nonneg (p:ℝ)]
     exact hs1.trans hp2
-  have hcoef : Real.sqrt (p:ℝ)/(p:ℝ)^2≤1 := (div_le_one (pow_pos hp0 2)).mpr hs
+  have hcoef : Real.sqrt (p:ℝ)/(p:ℝ)^(2 : ℕ)≤1 := (div_le_one (pow_pos hp0 2)).mpr hs
   rw [mobiusDivisorDilationMean_insert P hprime hp hpP (lt_of_lt_of_le zero_lt_one hY)]
   rw [sub_add_cancel]
   calc
     _ ≤ |(1+1/(p:ℝ))*mobiusDivisorDilationMean P Y|+
-        |Real.sqrt p/(p:ℝ)^2*mobiusDivisorDilationMean P ((p:ℝ)*Y)| := abs_sub _ _
+        |Real.sqrt p/(p:ℝ)^(2 : ℕ)*mobiusDivisorDilationMean P ((p:ℝ)*Y)| := abs_sub _ _
     _ = (1+1/(p:ℝ))*|mobiusDivisorDilationMean P Y|+
-        (Real.sqrt p/(p:ℝ)^2)*|mobiusDivisorDilationMean P ((p:ℝ)*Y)| := by
+        (Real.sqrt p/(p:ℝ)^(2 : ℕ))*|mobiusDivisorDilationMean P ((p:ℝ)*Y)| := by
       rw [abs_mul,abs_mul,abs_of_nonneg (by positivity : 0≤1+1/(p:ℝ)),
-        abs_of_nonneg (by positivity : 0≤Real.sqrt p/(p:ℝ)^2)]
-    _ ≤ (1+1/(p:ℝ))*B+(Real.sqrt p/(p:ℝ)^2)*B :=
+        abs_of_nonneg (by positivity : 0≤Real.sqrt p/(p:ℝ)^(2 : ℕ))]
+    _ ≤ (1+1/(p:ℝ))*B+(Real.sqrt p/(p:ℝ)^(2 : ℕ))*B :=
       add_le_add (mul_le_mul_of_nonneg_left (hbound Y hY) (by positivity))
         (mul_le_mul_of_nonneg_left (hbound _ hpY) (by positivity))
     _ ≤ 3*B := by nlinarith [mul_le_mul_of_nonneg_right hdiv hB,
@@ -134,7 +134,7 @@ theorem mobiusDivisorDilationMean_one_pos (P : Finset ℕ)
   have hi := integrable_mobiusDivisorDilationMean_kernel P zero_lt_one
   simp only [one_mul] at hi
   have hn : ∀ᵐx ∂volume.restrict (Ioi (1:ℝ)),
-      0 ≤ mobiusDivisorContinuousHead P x*mobiusDivisorContinuousHead P x/x^3 := by
+      0 ≤ mobiusDivisorContinuousHead P x*mobiusDivisorContinuousHead P x/x^(3 : ℕ) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     have hx0 : 0<x := lt_trans zero_lt_one hx
     exact div_nonneg (mul_self_nonneg _) (by positivity)
@@ -144,7 +144,7 @@ theorem mobiusDivisorDilationMean_one_pos (P : Finset ℕ)
   intro hz
   have he := (integral_eq_zero_iff_of_nonneg_ae hn hi).mp
     (by simpa [mobiusDivisorDilationMean] using hz.symm)
-  have hm : (∫x in Ioi (1:ℝ),mobiusDivisorContinuousHead P x/x^3)=0 := by
+  have hm : (∫x in Ioi (1:ℝ),mobiusDivisorContinuousHead P x/x^(3 : ℕ))=0 := by
     apply integral_eq_zero_of_ae
     filter_upwards [he,ae_restrict_mem measurableSet_Ioi] with x hx hxx
     have hx0 : x≠0 := ne_of_gt (lt_trans zero_lt_one hxx)
@@ -176,7 +176,7 @@ theorem exists_mobiusDivisorDilationMean_insert_negative_band (P : Finset ℕ)
   obtain ⟨C,hC,hbound⟩ := exists_bound_mobiusDivisorDilationMean_insert_ratio P hP hprime
   let c := mobiusDivisorDilationMean P 1/4
   have hc0 : 0<c := by dsimp [c]; linarith
-  refine ⟨ε/2,c,(C/c+1)^2,by positivity,hc0,?_⟩
+  refine ⟨ε/2,c,(C/c+1)^(2 : ℕ),by positivity,hc0,?_⟩
   intro p hp hpP hpT Y hYlo hYhi
   have hp0 : (0:ℝ)<p := by exact_mod_cast hp.pos
   have hp1 : (1:ℝ)≤p := by exact_mod_cast hp.one_lt.le

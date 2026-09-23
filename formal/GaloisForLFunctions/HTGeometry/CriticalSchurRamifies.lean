@@ -75,7 +75,7 @@ theorem criticalSchur_map_maximalIdeal_le_sq :
         (criticalSchurObservationValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n))
         (criticalSchurSourceValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n)))
       ≤ (maximalIdeal
-        (criticalSchurSourceValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n))) ^ 2 :=
+        (criticalSchurSourceValuationSubring K (Fact.out : 0 < m) (Fact.out : 0 < n))) ^ (2 : ℕ) :=
   map_maximalIdeal_le_sq_of_factorized_jacobian
     (criticalSchurBlockCotangentBasis K)
     (criticalObservationBlockCoord K)

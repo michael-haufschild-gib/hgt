@@ -17,7 +17,7 @@ noncomputable section
 /-- Exact logarithmic linearization remainder on a symmetric subunit interval. -/
 theorem routeE_abs_log_one_add_sub_self_le
     (u h : ℝ) (hh : 0 ≤ h) (hh1 : h < 1) (hu : |u| ≤ h) :
-    |Real.log (1 + u) - u| ≤ u ^ 2 / (2 * (1 - h)) := by
+    |Real.log (1 + u) - u| ≤ u ^ (2 : ℕ) / (2 * (1 - h)) := by
   let F : ℝ → ℝ := fun t => t - Real.log (1 + t)
   let dF : ℝ → ℝ := fun t => t / (1 + t)
   have hone : 0 < 1 - h := sub_pos.mpr hh1
@@ -85,7 +85,7 @@ theorem routeE_abs_log_one_add_sub_self_le
       (∫ t in 0..u, dF t) ≤ ∫ t in 0..u, g t :=
         intervalIntegral.integral_mono_on hu0 hdFint
           (hgcont.intervalIntegrable 0 u) hpoint
-      _ = u ^ 2 / (2 * (1 - h)) := by
+      _ = u ^ (2 : ℕ) / (2 * (1 - h)) := by
         dsimp [g]
         rw [intervalIntegral.integral_div, integral_id]
         field_simp [ne_of_gt hone]
@@ -117,7 +117,7 @@ theorem routeE_abs_log_one_add_sub_self_le
       (∫ t in u..0, -dF t) ≤ ∫ t in u..0, g t :=
         intervalIntegral.integral_mono_on hu0' hdFint.neg
           (hgcont.intervalIntegrable u 0) hpoint
-      _ = u ^ 2 / (2 * (1 - h)) := by
+      _ = u ^ (2 : ℕ) / (2 * (1 - h)) := by
         dsimp [g]
         rw [intervalIntegral.integral_div, intervalIntegral.integral_neg, integral_id]
         field_simp [ne_of_gt hone]
@@ -125,7 +125,7 @@ theorem routeE_abs_log_one_add_sub_self_le
 
 private theorem routeE_abs_physicalLogRemainder_le
     (X H A : ℝ) (hX : 0 < X) (hH : 0 ≤ H) (hHX : H < X) (hA : |A| ≤ H) :
-    |Real.log (1 + A / X) - A / X| ≤ H ^ 2 / (2 * X * (X - H)) := by
+    |Real.log (1 + A / X) - A / X| ≤ H ^ (2 : ℕ) / (2 * X * (X - H)) := by
   have hratio : 0 ≤ H / X := div_nonneg hH hX.le
   have hratioOne : H / X < 1 := (div_lt_one hX).2 hHX
   have hu : |A / X| ≤ H / X := by
@@ -133,16 +133,16 @@ private theorem routeE_abs_physicalLogRemainder_le
     exact div_le_div_of_nonneg_right hA hX.le
   have hraw := routeE_abs_log_one_add_sub_self_le
     (A / X) (H / X) hratio hratioOne hu
-  have hsq : (A / X) ^ 2 ≤ (H / X) ^ 2 := by
+  have hsq : (A / X) ^ (2 : ℕ) ≤ (H / X) ^ (2 : ℕ) := by
     rw [← sq_abs]
     exact (sq_le_sq₀ (abs_nonneg _) hratio).2 hu
   have hden : 0 < 2 * (1 - H / X) := mul_pos (by norm_num) (sub_pos.mpr hratioOne)
   calc
     |Real.log (1 + A / X) - A / X| ≤
-        (A / X) ^ 2 / (2 * (1 - H / X)) := hraw
-    _ ≤ (H / X) ^ 2 / (2 * (1 - H / X)) :=
+        (A / X) ^ (2 : ℕ) / (2 * (1 - H / X)) := hraw
+    _ ≤ (H / X) ^ (2 : ℕ) / (2 * (1 - H / X)) :=
       div_le_div_of_nonneg_right hsq hden.le
-    _ = H ^ 2 / (2 * X * (X - H)) := by
+    _ = H ^ (2 : ℕ) / (2 * X * (X - H)) := by
       field_simp [ne_of_gt hX, ne_of_gt (sub_pos.mpr hHX)]
 
 /-- **All-order product-history sum stability.**  Equal products inside one common aperture force
@@ -155,11 +155,11 @@ theorem routeEProductHistory_sum_stability
     (hn' : ∀ r, n' r ∈ Set.Icc (X - H) (X + H))
     (hprod : ∏ r, n r = ∏ r, n' r) :
     |(∑ r, n r) - ∑ r, n' r| ≤
-      (Fintype.card R : ℝ) * H ^ 2 / (X - H) := by
+      (Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X - H) := by
   classical
   let A : R → ℝ := fun r => n r - X
   let B : R → ℝ := fun r => n' r - X
-  let q : ℝ := H ^ 2 / (2 * X * (X - H))
+  let q : ℝ := H ^ (2 : ℕ) / (2 * X * (X - H))
   let eA : R → ℝ := fun r => Real.log (1 + A r / X) - A r / X
   let eB : R → ℝ := fun r => Real.log (1 + B r / X) - B r / X
   have hXH : 0 < X - H := sub_pos.mpr hHX
@@ -252,14 +252,14 @@ theorem routeEProductHistory_sum_stability
     rw [← Finset.sum_div, ← Finset.sum_div]
     ring
   have hoffset : |(∑ r, A r) - ∑ r, B r| ≤
-      (Fintype.card R : ℝ) * H ^ 2 / (X - H) := by
+      (Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X - H) := by
     rw [← hoffsetNormalized] at hnormalizedBound
     rw [abs_div, abs_of_pos hX] at hnormalizedBound
     calc
       |(∑ r, A r) - ∑ r, B r| ≤
           2 * (Fintype.card R : ℝ) * q * X :=
         (div_le_iff₀ hX).mp hnormalizedBound
-      _ = (Fintype.card R : ℝ) * H ^ 2 / (X - H) := by
+      _ = (Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X - H) := by
         dsimp [q]
         field_simp [ne_of_gt hX, ne_of_gt hXH]
   convert hoffset using 1
@@ -291,7 +291,7 @@ theorem routeEProductHistory_abs_log_gibbs_ratio_le
     (hprod : ∏ r, n r = ∏ r, n' r) :
     |Real.log (routeEProductHistoryGibbsWeight X n /
         routeEProductHistoryGibbsWeight X n')| ≤
-      (Fintype.card R : ℝ) * H ^ 2 / (X * (X - H)) := by
+      (Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X * (X - H)) := by
   have hsum := routeEProductHistory_sum_stability X H n n' hX hH hHX hn hn' hprod
   rw [routeEProductHistoryGibbsWeight_eq_exp_sum,
     routeEProductHistoryGibbsWeight_eq_exp_sum,
@@ -302,9 +302,9 @@ theorem routeEProductHistory_abs_log_gibbs_ratio_le
   rw [abs_div, abs_neg, abs_of_pos hX]
   calc
     |(∑ r, n r) - ∑ r, n' r| / X ≤
-        ((Fintype.card R : ℝ) * H ^ 2 / (X - H)) / X :=
+        ((Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X - H)) / X :=
       div_le_div_of_nonneg_right hsum hX.le
-    _ = (Fintype.card R : ℝ) * H ^ 2 / (X * (X - H)) := by
+    _ = (Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X * (X - H)) := by
       field_simp [ne_of_gt hX, ne_of_gt (sub_pos.mpr hHX)]
 
 end

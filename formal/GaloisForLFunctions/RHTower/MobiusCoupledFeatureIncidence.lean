@@ -18,8 +18,8 @@ B_{omega,d} = V_{log d} k - c_omega (I - P_d) 1 .
 Its two terms have disjoint supports, so
 
 ```text
-||B_{omega,d}||^2 = ||k||^2 + c_omega^2 log d ,                              (15)
-||Y_omega||^2     = ||k||^2 + c_omega^2 E_{P_omega}[log d] ,                 (17)
+||B_{omega,d}||^(2 : ℕ) = ||k||^(2 : ℕ) + c_omega^(2 : ℕ) log d ,                              (15)
+||Y_omega||^(2 : ℕ)     = ||k||^(2 : ℕ) + c_omega^(2 : ℕ) E_{P_omega}[log d] ,                 (17)
 ```
 
 and the exact logarithmic moment is the squarefree fixed current

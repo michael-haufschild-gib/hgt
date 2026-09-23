@@ -64,8 +64,8 @@ theorem eventually_abs_xiCTaylorThetaTailCoreCurrent_lt_scaled_normSq_of_riemann
     eventually_xiC_anisotropic_deriv_upper sigma
   let K : ℝ := (Cder + 2) * (Cval + 2)
   have hnLarge : ∀ᶠ n : ℕ in atTop,
-      K < epsilon * ((n + 1 : ℕ) : ℝ) * c ^ 2 := by
-    have hslope : 0 < epsilon * c ^ 2 := mul_pos hepsilon (sq_pos_of_pos hc)
+      K < epsilon * ((n + 1 : ℕ) : ℝ) * c ^ (2 : ℕ) := by
+    have hslope : 0 < epsilon * c ^ (2 : ℕ) := mul_pos hepsilon (sq_pos_of_pos hc)
     have hq : Tendsto (fun n : ℕ => (((n + 1 : ℕ) : ℝ))) atTop atTop :=
       tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1)
     have hprod := hq.atTop_mul_const hslope
@@ -138,12 +138,12 @@ theorem eventually_abs_xiCTaylorThetaTailCoreCurrent_lt_scaled_normSq_of_riemann
       _ ≤ (Cder + 2) * (Cval + 2) :=
         mul_le_mul hUderUpper hUUpper (norm_nonneg _) (by positivity)
       _ = K := rfl
-  have hnormSq : c ^ 2 < Complex.normSq (P.eval z) := by
+  have hnormSq : c ^ (2 : ℕ) < Complex.normSq (P.eval z) := by
     rw [Complex.normSq_eq_norm_sq]
     nlinarith [norm_nonneg (P.eval z)]
   calc
     |orientedPolynomialCurrent U z| ≤ K := hcurrent
-    _ < epsilon * ((n + 1 : ℕ) : ℝ) * c ^ 2 := hnK
+    _ < epsilon * ((n + 1 : ℕ) : ℝ) * c ^ (2 : ℕ) := hnK
     _ < (epsilon * ((n + 1 : ℕ) : ℝ)) * Complex.normSq (P.eval z) := by
       gcongr
 

@@ -137,7 +137,7 @@ def primeOrientationHadamardTail
 /-- Every Boolean orientation tail is an involution of the Hadamard reduced product. -/
 theorem primeOrientationHadamardTail_sq
     {P : Type*} (ε : P → Bool) :
-    primeOrientationHadamardTail ε ^ 2 = 1 := by
+    primeOrientationHadamardTail ε ^ (2 : ℕ) = 1 := by
   rw [pow_two]
   change tailHadamardClass
       (fun p => GaloisForLFunctions.HTGeometry.primeDirichletRealSign (ε p)) *

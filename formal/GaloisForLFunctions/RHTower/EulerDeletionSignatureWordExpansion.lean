@@ -390,39 +390,39 @@ theorem coef_y (n : ℕ) : pathCoef x y n [true] = prefixSum y n := by
   | zero => simp [pathCoef, prefixSum]
   | succ n ih => rw [pathCoef_succ_one, ih, prefixSum_succ, letterVal_true]; ring
 
-theorem coef_xx (n : ℕ) : pathCoef x y n [false, false] = (prefixSum x n)^2/2 := by
+theorem coef_xx (n : ℕ) : pathCoef x y n [false, false] = (prefixSum x n)^(2 : ℕ)/2 := by
   induction n with
   | zero => simp [pathCoef, prefixSum]
   | succ n ih =>
     rw [pathCoef_succ_two, ih, coef_x, prefixSum_succ, letterVal_false]; ring
 
-theorem coef_yy (n : ℕ) : pathCoef x y n [true, true] = (prefixSum y n)^2/2 := by
+theorem coef_yy (n : ℕ) : pathCoef x y n [true, true] = (prefixSum y n)^(2 : ℕ)/2 := by
   induction n with
   | zero => simp [pathCoef, prefixSum]
   | succ n ih =>
     rw [pathCoef_succ_two, ih, coef_y, prefixSum_succ, letterVal_true]; ring
 
-theorem coef_xxx (n : ℕ) : pathCoef x y n [false, false, false] = (prefixSum x n)^3/6 := by
+theorem coef_xxx (n : ℕ) : pathCoef x y n [false, false, false] = (prefixSum x n)^(3 : ℕ)/6 := by
   induction n with
   | zero => simp [pathCoef, prefixSum]
   | succ n ih =>
     rw [pathCoef_succ_three, ih, coef_x, coef_xx, prefixSum_succ, letterVal_false]; ring
 
-theorem coef_yyy (n : ℕ) : pathCoef x y n [true, true, true] = (prefixSum y n)^3/6 := by
+theorem coef_yyy (n : ℕ) : pathCoef x y n [true, true, true] = (prefixSum y n)^(3 : ℕ)/6 := by
   induction n with
   | zero => simp [pathCoef, prefixSum]
   | succ n ih =>
     rw [pathCoef_succ_three, ih, coef_y, coef_yy, prefixSum_succ, letterVal_true]; ring
 
 theorem coef_xxxx (n : ℕ) :
-    pathCoef x y n [false, false, false, false] = (prefixSum x n)^4/24 := by
+    pathCoef x y n [false, false, false, false] = (prefixSum x n)^(4 : ℕ)/24 := by
   induction n with
   | zero => simp [pathCoef, prefixSum]
   | succ n ih =>
     rw [pathCoef_succ_four, ih, coef_x, coef_xx, coef_xxx, prefixSum_succ, letterVal_false]; ring
 
 theorem coef_yyyy (n : ℕ) :
-    pathCoef x y n [true, true, true, true] = (prefixSum y n)^4/24 := by
+    pathCoef x y n [true, true, true, true] = (prefixSum y n)^(4 : ℕ)/24 := by
   induction n with
   | zero => simp [pathCoef, prefixSum]
   | succ n ih =>
@@ -461,7 +461,7 @@ theorem shuffle_x_yx (n : ℕ) :
 theorem shuffle_y_xx (n : ℕ) :
     pathCoef x y n [true, false, false] + pathCoef x y n [false, true, false] +
         pathCoef x y n [false, false, true] =
-      prefixSum y n * ((prefixSum x n)^2/2) := by
+      prefixSum y n * ((prefixSum x n)^(2 : ℕ)/2) := by
   induction n with
   | zero => simp [pathCoef, prefixSum]
   | succ n ih =>
@@ -492,7 +492,7 @@ theorem shuffle_y_xy (n : ℕ) :
 theorem shuffle_x_yy (n : ℕ) :
     pathCoef x y n [false, true, true] + pathCoef x y n [true, false, true] +
         pathCoef x y n [true, true, false] =
-      prefixSum x n * ((prefixSum y n)^2/2) := by
+      prefixSum x n * ((prefixSum y n)^(2 : ℕ)/2) := by
   induction n with
   | zero => simp [pathCoef, prefixSum]
   | succ n ih =>
@@ -531,7 +531,7 @@ theorem shuffle_x_yxx (n : ℕ) :
   | succ n ih =>
     simp only [pathCoef_succ_four, pathCoef_succ_three, coef_x, coef_y, coef_xx, coef_xxx,
       prefixSum_succ, letterVal_false, letterVal_true]
-    linear_combination ih + x n * shuffle_x_yx x y n + ((x n)^2/2) * shuffle_x_y x y n
+    linear_combination ih + x n * shuffle_x_yx x y n + ((x n)^(2 : ℕ)/2) * shuffle_x_y x y n
 
 theorem shuffle_y_yyx (n : ℕ) :
     3 * pathCoef x y n [true, true, true, false] +
@@ -564,7 +564,7 @@ theorem shuffle_y_xyy (n : ℕ) :
   | succ n ih =>
     simp only [pathCoef_succ_four, pathCoef_succ_three, coef_x, coef_y, coef_yy, coef_yyy,
       prefixSum_succ, letterVal_false, letterVal_true]
-    linear_combination ih + y n * shuffle_y_xy x y n + ((y n)^2/2) * shuffle_x_y x y n
+    linear_combination ih + y n * shuffle_y_xy x y n + ((y n)^(2 : ℕ)/2) * shuffle_x_y x y n
 
 theorem shuffle_xy_xy (n : ℕ) :
     2 * pathCoef x y n [false, true, false, true] +
@@ -805,11 +805,11 @@ private theorem factorial_shift_le (n : ℕ) :
   linarith
 
 /-- The explicit fifth-order remainder bound for a chronological exponential product whose
-jets vanish through order four: `‖B(z)-1‖ ≤ (M‖z‖)^5 exp(M‖z‖)/5!`. -/
+jets vanish through order four: `‖B(z)-1‖ ≤ (M‖z‖)^(5 : ℕ) exp(M‖z‖)/5!`. -/
 theorem norm_exponentialWord_sub_one_le (vs : List A)
     (h : ∀ n, 1 ≤ n → n ≤ 4 → PowerSeries.coeff n ((vs.map expSeries).prod) = 0) (z : ℂ) :
     ‖exponentialWord vs z - 1‖ ≤
-      (velocityMass vs * ‖z‖)^5 * Real.exp (velocityMass vs * ‖z‖) / 120 := by
+      (velocityMass vs * ‖z‖)^(5 : ℕ) * Real.exp (velocityMass vs * ‖z‖) / 120 := by
   have hM : 0 ≤ velocityMass vs := velocityMass_nonneg vs
   have hnorm := summable_norm_wordSeries vs z
   have hsum : Summable (fun n => z^n • PowerSeries.coeff n ((vs.map expSeries).prod)) :=
@@ -836,7 +836,7 @@ theorem norm_exponentialWord_sub_one_le (vs : List A)
     (summable_nat_add_iff 5).mpr hnorm
   have hbound : ∀ n : ℕ,
       ‖z^(n+5) • PowerSeries.coeff (n+5) ((vs.map expSeries).prod)‖
-        ≤ ((velocityMass vs * ‖z‖)^5 / 120) *
+        ≤ ((velocityMass vs * ‖z‖)^(5 : ℕ) / 120) *
           ((velocityMass vs * ‖z‖)^n / (n.factorial : ℝ)) := by
     intro n
     rw [norm_smul, norm_pow]
@@ -851,7 +851,7 @@ theorem norm_exponentialWord_sub_one_le (vs : List A)
         = (velocityMass vs * ‖z‖)^(n+5) / (((n+5).factorial : ℕ) : ℝ) := by
       rw [mul_pow]
       ring
-    have hrhs : ((velocityMass vs * ‖z‖)^5 / 120) *
+    have hrhs : ((velocityMass vs * ‖z‖)^(5 : ℕ) / 120) *
           ((velocityMass vs * ‖z‖)^n / (n.factorial : ℝ))
         = (velocityMass vs * ‖z‖)^(n+5) / (120 * (n.factorial : ℝ)) := by
       rw [pow_add]
@@ -862,13 +862,13 @@ theorem norm_exponentialWord_sub_one_le (vs : List A)
       = ‖∑' n, z^(n+5) • PowerSeries.coeff (n+5) ((vs.map expSeries).prod)‖ := by rw [hval]
     _ ≤ ∑' n, ‖z^(n+5) • PowerSeries.coeff (n+5) ((vs.map expSeries).prod)‖ :=
         norm_tsum_le_tsum_norm hshift
-    _ ≤ ∑' n, ((velocityMass vs * ‖z‖)^5 / 120) *
+    _ ≤ ∑' n, ((velocityMass vs * ‖z‖)^(5 : ℕ) / 120) *
           ((velocityMass vs * ‖z‖)^n / (n.factorial : ℝ)) :=
         Summable.tsum_le_tsum hbound hshift
           ((Real.summable_pow_div_factorial (velocityMass vs * ‖z‖)).mul_left _)
-    _ = ((velocityMass vs * ‖z‖)^5 / 120) * Real.exp (velocityMass vs * ‖z‖) := by
+    _ = ((velocityMass vs * ‖z‖)^(5 : ℕ) / 120) * Real.exp (velocityMass vs * ‖z‖) := by
         rw [tsum_mul_left, ← real_exp_tsum]
-    _ = (velocityMass vs * ‖z‖)^5 * Real.exp (velocityMass vs * ‖z‖) / 120 := by ring
+    _ = (velocityMass vs * ‖z‖)^(5 : ℕ) * Real.exp (velocityMass vs * ‖z‖) / 120 := by ring
 
 end RemainderBound
 

@@ -30,8 +30,8 @@ theorem norm_apply_le_hsNorm {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T) (x :
     have h := T.hasSum hrepr
     refine h.congr_fun fun i => ?_
     rw [T.map_smul]
-  have hsq1 : Summable (fun i => ‖(inner 𝕜 (b i) x : 𝕜)‖ ^ 2) := HilbertBasis.summable_norm_inner_sq b x
-  have hsq2 : Summable (fun i => ‖T (b i)‖ ^ 2) := hT.summable b
+  have hsq1 : Summable (fun i => ‖(inner 𝕜 (b i) x : 𝕜)‖ ^ (2 : ℕ)) := HilbertBasis.summable_norm_inner_sq b x
+  have hsq2 : Summable (fun i => ‖T (b i)‖ ^ (2 : ℕ)) := hT.summable b
   have hsummable : Summable (fun i => ‖(inner 𝕜 (b i) x : 𝕜)‖ * ‖T (b i)‖) := by
     refine Summable.of_nonneg_of_le (fun i => by positivity) (fun i => ?_)
       ((hsq1.add hsq2).div_const 2)
@@ -43,7 +43,7 @@ theorem norm_apply_le_hsNorm {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T) (x :
     _ ≤ ∑' i, ‖(inner 𝕜 (b i) x : 𝕜) • T (b i)‖ := norm_tsum_le_tsum_norm hnormsum
     _ = ∑' i, ‖(inner 𝕜 (b i) x : 𝕜)‖ * ‖T (b i)‖ := by
         exact tsum_congr fun i => by rw [norm_smul]
-    _ ≤ Real.sqrt (∑' i, ‖T (b i)‖ ^ 2) * Real.sqrt (∑' i, ‖(inner 𝕜 (b i) x : 𝕜)‖ ^ 2) := by
+    _ ≤ Real.sqrt (∑' i, ‖T (b i)‖ ^ (2 : ℕ)) * Real.sqrt (∑' i, ‖(inner 𝕜 (b i) x : 𝕜)‖ ^ (2 : ℕ)) := by
         rw [show (fun i => ‖(inner 𝕜 (b i) x : 𝕜)‖ * ‖T (b i)‖)
           = fun i => ‖T (b i)‖ * ‖(inner 𝕜 (b i) x : 𝕜)‖ from funext fun i => mul_comm _ _]
         exact tsum_mul_le_sqrt_mul_sqrt hsq2 hsq1
@@ -58,12 +58,12 @@ theorem norm_le_hsNorm {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T) : ‖T‖ 
 omit [CompleteSpace F] in
 /-- The Hilbert–Schmidt norm is absolutely homogeneous. -/
 theorem hsNorm_smul (c : 𝕜) (T : E →L[𝕜] F) : hsNorm (c • T) = ‖c‖ * hsNorm T := by
-  have hfun : (fun i => ‖(c • T) (hsBasis 𝕜 E i)‖ ^ 2)
-      = fun i => ‖c‖ ^ 2 * ‖T (hsBasis 𝕜 E i)‖ ^ 2 := by
+  have hfun : (fun i => ‖(c • T) (hsBasis 𝕜 E i)‖ ^ (2 : ℕ))
+      = fun i => ‖c‖ ^ (2 : ℕ) * ‖T (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) := by
     funext i
     rw [smul_apply, norm_smul, mul_pow]
-  have hsq : hsNormSq (c • T) = ‖c‖ ^ 2 * hsNormSq T := by
-    show ∑' i, ‖(c • T) (hsBasis 𝕜 E i)‖ ^ 2 = ‖c‖ ^ 2 * ∑' i, ‖T (hsBasis 𝕜 E i)‖ ^ 2
+  have hsq : hsNormSq (c • T) = ‖c‖ ^ (2 : ℕ) * hsNormSq T := by
+    show ∑' i, ‖(c • T) (hsBasis 𝕜 E i)‖ ^ (2 : ℕ) = ‖c‖ ^ (2 : ℕ) * ∑' i, ‖T (hsBasis 𝕜 E i)‖ ^ (2 : ℕ)
     rw [hfun, tsum_mul_left]
   show Real.sqrt (hsNormSq (c • T)) = ‖c‖ * Real.sqrt (hsNormSq T)
   rw [hsq, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg c)]
@@ -72,7 +72,7 @@ theorem hsNorm_smul (c : 𝕜) (T : E →L[𝕜] F) : hsNorm (c • T) = ‖c‖
 theorem hsNorm_sandwich_le {S T Y : E →L[𝕜] E} (hY : IsHilbertSchmidt Y) :
     hsNorm (S ∘L (Y ∘L T)) ≤ ‖S‖ * ‖T‖ * hsNorm Y := by
   have h := Real.sqrt_le_sqrt (hsNormSq_sandwich_le (S := S) (T := T) hY)
-  rw [Real.sqrt_mul (by positivity), show ‖S‖ ^ 2 * ‖T‖ ^ 2 = (‖S‖ * ‖T‖) ^ 2 by ring,
+  rw [Real.sqrt_mul (by positivity), show ‖S‖ ^ (2 : ℕ) * ‖T‖ ^ (2 : ℕ) = (‖S‖ * ‖T‖) ^ (2 : ℕ) by ring,
     Real.sqrt_sq (by positivity)] at h
   exact h
 
@@ -160,15 +160,15 @@ theorem exists_hsNorm_limit {Tn : ℕ → E →L[𝕜] F} (hHS : ∀ n, IsHilber
     linarith
   obtain ⟨T, hTlim⟩ := cauchySeq_tendsto_of_complete hopCauchy
   have hkey : ∀ ε > 0, ∃ N, ∀ n ≥ N,
-      IsHilbertSchmidt (Tn n - T) ∧ hsNormSq (Tn n - T) ≤ ε ^ 2 := by
+      IsHilbertSchmidt (Tn n - T) ∧ hsNormSq (Tn n - T) ≤ ε ^ (2 : ℕ) := by
     intro ε hε
     obtain ⟨N, hN⟩ := hcauchy ε hε
     refine ⟨N, fun n hn => ?_⟩
-    have hbd : ∀ k : ℕ, hsNormSq (Tn n - Tn (k + N)) ≤ ε ^ 2 := by
+    have hbd : ∀ k : ℕ, hsNormSq (Tn n - Tn (k + N)) ≤ ε ^ (2 : ℕ) := by
       intro k
       have h := hN n hn (k + N) (Nat.le_add_left N k)
-      calc hsNormSq (Tn n - Tn (k + N)) = (hsNorm (Tn n - Tn (k + N))) ^ 2 := (sq_hsNorm _).symm
-        _ ≤ ε ^ 2 := pow_le_pow_left₀ (hsNorm_nonneg _) h 2
+      calc hsNormSq (Tn n - Tn (k + N)) = (hsNorm (Tn n - Tn (k + N))) ^ (2 : ℕ) := (sq_hsNorm _).symm
+        _ ≤ ε ^ (2 : ℕ) := pow_le_pow_left₀ (hsNorm_nonneg _) h 2
     have hptw : ∀ x : E, Tendsto (fun k => (Tn n - Tn (k + N)) x) atTop
         (nhds ((Tn n - T) x)) := by
       intro x
@@ -193,7 +193,7 @@ theorem exists_hsNorm_limit {Tn : ℕ → E →L[𝕜] F} (hHS : ∀ n, IsHilber
     refine ⟨N, fun n hn => ?_⟩
     have h := (hN n hn).2
     have hnn : 0 ≤ hsNorm (Tn n - T) := hsNorm_nonneg _
-    have hsq : (hsNorm (Tn n - T)) ^ 2 ≤ (ε/2) ^ 2 := by rw [sq_hsNorm]; exact h
+    have hsq : (hsNorm (Tn n - T)) ^ (2 : ℕ) ≤ (ε/2) ^ (2 : ℕ) := by rw [sq_hsNorm]; exact h
     have hle : hsNorm (Tn n - T) ≤ ε/2 := by nlinarith
     rw [Real.dist_eq, sub_zero, abs_of_nonneg hnn]
     linarith

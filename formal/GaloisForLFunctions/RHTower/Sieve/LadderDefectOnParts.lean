@@ -21,17 +21,17 @@ theorem setIntegral_normSq_ladderProductDefect_le_closed_on {P : Finset ℕ} {A�
     (hA : 0 < A₀) {Q η W : ℝ} (hQ : 1 < Q) (hη : 0 ≤ η) (hW : 1 ≤ W) {L : ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (hPge : ∀ p ∈ P, Q ≤ (p : ℝ))
     {S : Set ℝ} (hSs : S ⊆ Set.Icc (-W) W) :
-    (∫ w in S, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2)
+    (∫ w in S, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
           * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
             * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
                 * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                  + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2)) := by
+                  + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ))) := by
   classical
-  have hcont : Continuous fun w : ℝ => ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ) :=
     ((continuous_ladderProductDefect' P A₀ B₀ Q η L).norm).pow 2
-  have hmono : (∫ w in S, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2)
-      ≤ ∫ w in Set.Icc (-W) W, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2 := by
+  have hmono : (∫ w in S, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
+      ≤ ∫ w in Set.Icc (-W) W, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_mono_set
       (hcont.integrableOn_Icc (a := -W) (b := W)) ?_ (Filter.Eventually.of_forall hSs)
     exact Filter.Eventually.of_forall fun w => by positivity

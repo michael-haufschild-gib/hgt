@@ -403,7 +403,7 @@ theorem integrableOn_digammaGaussIntegrand {s : ℂ} (hs : 0 < s.re) :
   intro t ht
   exact (digammaGaussIntegrand_eq s ht).symm
 
-theorem div_ofReal_re (w : ℂ) (r : ℝ) : (w / ((r : ℝ) : ℂ)).re = w.re / r := by
+theorem div_ofReal_re_digammaIntegralRepresentation (w : ℂ) (r : ℝ) : (w / ((r : ℝ) : ℂ)).re = w.re / r := by
   rcases eq_or_ne r 0 with rfl | hr
   · simp
   · simp only [Complex.div_re, Complex.normSq_ofReal, Complex.ofReal_re, Complex.ofReal_im]
@@ -432,7 +432,7 @@ theorem integral_archimedean_eulerMascheroniIntegrand (z : ℝ) :
     intro t ht
     have ht0 : 0 < t := ht
     rw [digammaGaussIntegrand, Complex.sub_re, Complex.ofReal_re,
-      one_sub_exp_neg_ofReal_eq, div_ofReal_re, Complex.exp_re]
+      one_sub_exp_neg_ofReal_eq, div_ofReal_re_digammaIntegralRepresentation, Complex.exp_re]
     have hmulre : (-s * (t : ℂ)).re = -t / 4 := by
       simp only [Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
         Complex.ofReal_im, hsre, hsim]
@@ -472,7 +472,7 @@ theorem digammaGaussIntegrand_archimedean_re (z : ℝ) (t : ℝ) :
   have hsre : s.re = 1 / 4 := by rw [hs_def]; simp
   have hsim : s.im = z / 2 := by rw [hs_def]; simp
   rw [digammaGaussIntegrand, Complex.sub_re, Complex.ofReal_re,
-    one_sub_exp_neg_ofReal_eq, div_ofReal_re, Complex.exp_re]
+    one_sub_exp_neg_ofReal_eq, div_ofReal_re_digammaIntegralRepresentation, Complex.exp_re]
   have hmulre : (-s * (t : ℂ)).re = -t / 4 := by
     simp only [Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
       Complex.ofReal_im, hsre, hsim]

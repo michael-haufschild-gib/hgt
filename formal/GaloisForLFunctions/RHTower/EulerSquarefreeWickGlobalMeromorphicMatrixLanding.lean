@@ -242,15 +242,15 @@ theorem complexReflectionMeroEquiv_one_globalEigenMatrix_one_one :
 
 /-- Exact determinant identity in the global meromorphic field. -/
 theorem det_eulerWickReplicaGlobalCompletedEigenMatrix :
-    eulerWickReplicaGlobalCompletedEigenMatrix.det = ewqXiGlobalMero ^ 2 := by
+    eulerWickReplicaGlobalCompletedEigenMatrix.det = ewqXiGlobalMero ^ (2 : ℕ) := by
   rw [eulerWickReplicaGlobalCompletedEigenMatrix, Matrix.det_diagonal,
     Fin.prod_univ_two]
   calc
     (ewqXiGlobalMero * ewqPrimitiveInteractionGlobalMero) *
         (ewqXiGlobalMero * ewqPrimitiveInteractionGlobalMero⁻¹) =
-        ewqXiGlobalMero ^ 2 *
+        ewqXiGlobalMero ^ (2 : ℕ) *
           (ewqPrimitiveInteractionGlobalMero * ewqPrimitiveInteractionGlobalMero⁻¹) := by ring
-    _ = ewqXiGlobalMero ^ 2 := by
+    _ = ewqXiGlobalMero ^ (2 : ℕ) := by
       rw [mul_inv_cancel₀ ewqPrimitiveInteractionGlobalMero_ne_zero, mul_one]
 
 end GaloisForLFunctions.RHTower

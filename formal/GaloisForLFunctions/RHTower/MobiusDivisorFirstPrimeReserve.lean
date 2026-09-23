@@ -55,10 +55,10 @@ private lemma coprime_squarefree_density_ge_quarter {p : ℕ} (hp : p.Prime) :
   rw [Sieve.coprime_density_eq hp, Sieve.squarefreeDensity_eq]
   have hp2 : (2:ℝ) ≤ p := by exact_mod_cast hp.two_le
   have hpp : (0:ℝ) < (p:ℝ)+1 := by positivity
-  have hpi : 0 < Real.pi^2 := sq_pos_of_pos Real.pi_pos
-  have hpi16 : Real.pi^2 ≤ 16 := by nlinarith [Real.pi_pos, Real.pi_lt_four]
+  have hpi : 0 < Real.pi^(2 : ℕ) := sq_pos_of_pos Real.pi_pos
+  have hpi16 : Real.pi^(2 : ℕ) ≤ 16 := by nlinarith [Real.pi_pos, Real.pi_lt_four]
   apply (le_div_iff₀ hpp).mpr
-  rw [show (6/Real.pi^2)*(p:ℝ) = 6*(p:ℝ)/Real.pi^2 by ring]
+  rw [show (6/Real.pi^(2 : ℕ))*(p:ℝ) = 6*(p:ℝ)/Real.pi^(2 : ℕ) by ring]
   apply (le_div_iff₀ hpi).mpr
   have hmul := mul_le_mul_of_nonneg_left hpi16
     (show (0:ℝ) ≤ (1/4)*((p:ℝ)+1) by positivity)
@@ -66,15 +66,15 @@ private lemma coprime_squarefree_density_ge_quarter {p : ℕ} (hp : p.Prime) :
 
 private lemma coprime_squarefree_prefix_ge_eighth {p N : ℕ}
     (hp : p.Prime) (hN : 1024 ≤ N) :
-    (N:ℝ)/8 ≤ ∑ n ∈ Ioc 0 N, if p ∣ n then 0 else ((μ n : ℤ):ℝ)^2 := by
+    (N:ℝ)/8 ≤ ∑ n ∈ Ioc 0 N, if p ∣ n then 0 else ((μ n : ℤ):ℝ)^(2 : ℕ) := by
   let R := N/32+1
   have hR32 : 32 ≤ R := by dsimp [R]; omega
   have hNR : N ≤ 32*R := by dsimp [R]; omega
-  have hNRsq : N ≤ R^2 := by
+  have hNRsq : N ≤ R^(2 : ℕ) := by
     calc
       N ≤ 32*R := hNR
       _ ≤ R*R := Nat.mul_le_mul_right R hR32
-      _ = R^2 := by ring
+      _ = R^(2 : ℕ) := by ring
   have hcount := Sieve.abs_window_coprime_squarefree_sub_le
     (t:=0) (L:=N) (R:=R) hp (by omega) (by simpa using hNRsq)
   simp only [Nat.zero_add] at hcount
@@ -99,9 +99,9 @@ private lemma coprime_squarefree_prefix_ge_eighth {p N : ℕ}
 pairing. The threshold applies to the quotient `M / p`. -/
 theorem exists_mobiusDivisorFirstPrime_quadratic_release :
     ∃ c : ℝ, 0 < c ∧ ∃ T : ℕ, 1 ≤ T ∧ ∀ M p : ℕ, p.Prime → T ≤ M/p →
-      c*(M:ℝ)^2/(p:ℝ) ≤
-        (∑ d ∈ Icc 1 M, (mobiusDivisorDilationChannel M d)^2) -
-          ∑ d ∈ (Icc 1 M).filter (fun d => ¬p ∣ d), (mobiusDivisorPrimePair M p d)^2 := by
+      c*(M:ℝ)^(2 : ℕ)/(p:ℝ) ≤
+        (∑ d ∈ Icc 1 M, (mobiusDivisorDilationChannel M d)^(2 : ℕ)) -
+          ∑ d ∈ (Icc 1 M).filter (fun d => ¬p ∣ d), (mobiusDivisorPrimePair M p d)^(2 : ℕ) := by
   obtain ⟨A, hA, hchannel⟩ := exists_divisorUnsignedDilationChannel_quotient_lower
   have hApos : 0 < A := by omega
   have hAreal : (0:ℝ) < A := by exact_mod_cast hApos
@@ -114,12 +114,12 @@ theorem exists_mobiusDivisorFirstPrime_quadratic_release :
     nlinarith only [h]
   have hN : 1024 ≤ N := (Nat.le_div_iff_mul_le hden).mpr hbound
   have hNM : N ≤ M := Nat.div_le_self _ _
-  let F : ℕ → ℝ := fun d => ((μ d : ℤ):ℝ)^2 *
+  let F : ℕ → ℝ := fun d => ((μ d : ℤ):ℝ)^(2 : ℕ) *
     divisorUnsignedDilationChannel M d * divisorUnsignedDilationChannel M (p*d)
   have hF (d : ℕ) : 0 ≤ F d := mul_nonneg
     (mul_nonneg (sq_nonneg _) (divisorUnsignedDilationChannel_nonneg M d))
     (divisorUnsignedDilationChannel_nonneg M (p*d))
-  have hpoint (d : ℕ) (hd : d ∈ Icc 1 N) : ((μ d : ℤ):ℝ)^2*((M:ℝ)/1024) ≤ F d := by
+  have hpoint (d : ℕ) (hd : d ∈ Icc 1 N) : ((μ d : ℤ):ℝ)^(2 : ℕ)*((M:ℝ)/1024) ≤ F d := by
     obtain ⟨hd1, hdN⟩ := mem_Icc.mp hd
     have hdpos : 0 < d := by omega
     have hprod : d*(p*A) ≤ M := (Nat.le_div_iff_mul_le hden).mp hdN
@@ -142,7 +142,7 @@ theorem exists_mobiusDivisorFirstPrime_quadratic_release :
   have hcount := coprime_squarefree_prefix_ge_eighth hp hN
   rw [hI] at hcount
   have hweighted : (M:ℝ)/1024 *
-      (∑ d ∈ Icc 1 N, if p ∣ d then 0 else ((μ d : ℤ):ℝ)^2) ≤
+      (∑ d ∈ Icc 1 N, if p ∣ d then 0 else ((μ d : ℤ):ℝ)^(2 : ℕ)) ≤
         ∑ d ∈ (Icc 1 N).filter (fun d => ¬p ∣ d), F d := by
     rw [mul_sum, sum_filter]
     apply sum_le_sum
@@ -165,9 +165,9 @@ theorem exists_mobiusDivisorFirstPrime_quadratic_release :
     have h := hlt.le.trans (Nat.mul_le_mul_right (p*A) htwo)
     exact_mod_cast (show M ≤ 2*p*A*N by nlinarith only [h])
   have hpReal : (0:ℝ) < p := by exact_mod_cast hp.pos
-  have hscale : (1/(8192*(A:ℝ)))*(M:ℝ)^2/(p:ℝ) ≤ (M:ℝ)*(N:ℝ)/4096 := by
+  have hscale : (1/(8192*(A:ℝ)))*(M:ℝ)^(2 : ℕ)/(p:ℝ) ≤ (M:ℝ)*(N:ℝ)/4096 := by
     apply (div_le_iff₀ hpReal).mpr
-    rw [show (1/(8192*(A:ℝ)))*(M:ℝ)^2 = (M:ℝ)^2/(8192*(A:ℝ)) by ring]
+    rw [show (1/(8192*(A:ℝ)))*(M:ℝ)^(2 : ℕ) = (M:ℝ)^(2 : ℕ)/(8192*(A:ℝ)) by ring]
     apply (div_le_iff₀ (by positivity : (0:ℝ) < 8192*(A:ℝ))).mpr
     have h := mul_le_mul_of_nonneg_left hMscale (Nat.cast_nonneg (α:=ℝ) M)
     nlinarith only [h]
@@ -183,7 +183,7 @@ private lemma unsigned_channel_zero_of_le {M d : ℕ} (hd : 0<d) (hM : M≤d) :
 the coprime cofactor pairing sum, also when the prime is outside the cutoff. -/
 theorem mobiusDivisorSelectionEnergy_singleton_eq_primePair (M : ℕ) {p : ℕ} (hp : p.Prime) :
     mobiusDivisorSelectionEnergy M {p} =
-      ∑ d ∈ (Icc 1 M).filter (fun d => ¬p ∣ d), (mobiusDivisorPrimePair M p d)^2 := by
+      ∑ d ∈ (Icc 1 M).filter (fun d => ¬p ∣ d), (mobiusDivisorPrimePair M p d)^(2 : ℕ) := by
   let U := (mobiusDivisorSelectionPrimes M).erase p
   have hprimes (R : Finset ℕ) (hR : R ∈ U.powerset) : ∀ r ∈ R, r.Prime := by
     intro r hr
@@ -194,7 +194,7 @@ theorem mobiusDivisorSelectionEnergy_singleton_eq_primePair (M : ℕ) {p : ℕ} 
   have henergy : mobiusDivisorSelectionEnergy M {p} =
       ∑ R ∈ U.powerset,
         (divisorUnsignedDilationChannel M (∏ r ∈ R, r) -
-          divisorUnsignedDilationChannel M (p*(∏ r ∈ R, r)))^2 := by
+          divisorUnsignedDilationChannel M (p*(∏ r ∈ R, r)))^(2 : ℕ) := by
     unfold mobiusDivisorSelectionEnergy
     rw [subsetLabelEnergy_remaining]
     have hset : mobiusDivisorSelectionPrimes M \ {p} = U := by
@@ -203,9 +203,9 @@ theorem mobiusDivisorSelectionEnergy_singleton_eq_primePair (M : ℕ) {p : ℕ} 
     rw [hset]
     apply sum_congr rfl
     intro R hR
-    change (mobiusDivisorSelectionFibre M {p} R)^2 = _
+    change (mobiusDivisorSelectionFibre M {p} R)^(2 : ℕ) = _
     rw [← mobiusDivisorOrientedFibre_sq]
-    change (mobiusDivisorOrientedFibre M (insert p ∅) R)^2 = _
+    change (mobiusDivisorOrientedFibre M (insert p ∅) R)^(2 : ℕ) = _
     rw [mobiusDivisorOrientedFibre_insert M ∅ R p (hnot R hR),
       mobiusDivisorOrientedFibre_empty_eq_unsigned_product R (hprimes R hR) M,
       mobiusDivisorOrientedFibre_empty_eq_unsigned_product (insert p R) (by
@@ -258,7 +258,7 @@ theorem mobiusDivisorSelectionEnergy_singleton_eq_primePair (M : ℕ) {p : ℕ} 
         exact hpd (he ▸ hrd)
       · exact (Nat.le_of_mem_primeFactors hr).trans_lt hdlt
     have hNZ : (divisorUnsignedDilationChannel M (∏ r ∈ d.primeFactors, r) -
-        divisorUnsignedDilationChannel M (p*(∏ r ∈ d.primeFactors, r)))^2 ≠ 0 := by
+        divisorUnsignedDilationChannel M (p*(∏ r ∈ d.primeFactors, r)))^(2 : ℕ) ≠ 0 := by
       rw [Nat.prod_primeFactors_of_squarefree hsf]
       intro hz
       apply hne
@@ -266,7 +266,7 @@ theorem mobiusDivisorSelectionEnergy_singleton_eq_primePair (M : ℕ) {p : ℕ} 
     exact ⟨d.primeFactors, hR, hNZ, Nat.prod_primeFactors_of_squarefree hsf⟩
   · intro R hR _
     have hsf := GibbsGas.squarefree_prod_primes (hprimes R hR)
-    have hmu : (((μ (∏ r ∈ R, r) : ℤ):ℝ))^2 = 1 := by
+    have hmu : (((μ (∏ r ∈ R, r) : ℤ):ℝ))^(2 : ℕ) = 1 := by
       exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree hsf
     rw [mobiusDivisorPrimePair, mul_pow, hmu, one_mul]
 
@@ -274,7 +274,7 @@ theorem mobiusDivisorSelectionEnergy_singleton_eq_primePair (M : ℕ) {p : ℕ} 
 `M² / p` at all sufficiently large quotient scales. -/
 theorem exists_mobiusDivisorSelectionEnergy_first_prime_reserve :
     ∃ c : ℝ, 0 < c ∧ ∃ T : ℕ, 1 ≤ T ∧ ∀ M p : ℕ, p.Prime → T ≤ M/p →
-      c*(M:ℝ)^2/(p:ℝ) ≤ mobiusDivisorSelectionEnergy M ∅ - mobiusDivisorSelectionEnergy M {p} := by
+      c*(M:ℝ)^(2 : ℕ)/(p:ℝ) ≤ mobiusDivisorSelectionEnergy M ∅ - mobiusDivisorSelectionEnergy M {p} := by
   obtain ⟨c, hc, T, hT, h⟩ := exists_mobiusDivisorFirstPrime_quadratic_release
   refine ⟨c, hc, T, hT, ?_⟩
   intro M p hp hMp

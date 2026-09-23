@@ -207,7 +207,7 @@ theorem primeDepthBVWoldSourcePolarizationStokesExcess_eq
     primeDepthBVWoldSourcePolarizationStokesExcess a i j c =
       (a * primeDepthBVWoldConnection i j /
           (xiGammaEulerPrimitivePrimeDepthLogClock i *
-            xiGammaEulerPrimitivePrimeDepthLogClock j)) ^ 2 *
+            xiGammaEulerPrimitivePrimeDepthLogClock j)) ^ (2 : ℕ) *
         Complex.normSq c := by
   rw [primeDepthBVWoldSourcePolarizationStokesExcess_eq_normSq,
     Complex.normSq_mul, Complex.normSq_ofReal]

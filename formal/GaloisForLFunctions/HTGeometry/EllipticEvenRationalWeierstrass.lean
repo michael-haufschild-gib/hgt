@@ -38,7 +38,7 @@ theorem le_meromorphicOrderAt_pow_of_analyticAt_eq_zero {h : ℂ → ℂ} {z : �
     ((m : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt (fun w => h w ^ m) z := by
   induction m with
   | zero =>
-      have hfun : (fun w : ℂ => h w ^ 0) = fun _ : ℂ => (1 : ℂ) := by funext w; simp
+      have hfun : (fun w : ℂ => h w ^ (0 : ℕ)) = fun _ : ℂ => (1 : ℂ) := by funext w; simp
       have hord0 : analyticOrderAt (fun _ : ℂ => (1 : ℂ)) z = 0 :=
         analyticOrderAt_eq_zero.mpr (Or.inr one_ne_zero)
       rw [hfun, (analyticAt_const (v := (1 : ℂ)) (x := z)).meromorphicOrderAt_eq, hord0]

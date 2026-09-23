@@ -34,7 +34,7 @@ def cubicCriticalShiftLebesgueDefectDensity (L x : ℝ) : ℝ :=
 /-- Radon--Nikodym density, relative to the critical Haar model, of one prime-normalized critical
 shift energy pulled back to its input coordinate. -/
 def primeNormalizedCriticalShiftPulledDensity (L x : ℝ) : ℝ :=
-  Real.exp L * ‖criticalShiftSymbol L (x - L)‖ ^ 2
+  Real.exp L * ‖criticalShiftSymbol L (x - L)‖ ^ (2 : ℕ)
 
 /-- Exact critical half-density formula for a pulled prime-normalized shift. -/
 theorem primeNormalizedCriticalShiftPulledDensity_eq

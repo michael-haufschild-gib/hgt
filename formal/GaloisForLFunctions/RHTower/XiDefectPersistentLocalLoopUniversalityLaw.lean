@@ -21,7 +21,7 @@ def PersistentXiDefectLoop (ρ : ℂ) : Prop :=
   ∃ R₀ > 0, ∀ r : ℝ, 0 < r → r < R₀ →
     deckChar 2
       (loopCharge 1
-        (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+        (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
           (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) ≠ 1
 
 /-- Point charge and persistent descended small-loop charge are equivalent once the right-half
@@ -38,7 +38,7 @@ theorem xiDefect_iff_rightHalfZero_persistentLoop (ρ : ℂ) :
     have heq :
         deckChar 2
           (loopCharge 1
-            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
               (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) =
           carrierCharge xi 1 ρ := by
       simpa using (hloop r hr hrR).2
@@ -64,7 +64,7 @@ theorem xiDefect_iff_rightHalfZero_persistentLoop (ρ : ℂ) :
     have heq :
         deckChar 2
           (loopCharge 1
-            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
               (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) =
           carrierCharge xi 1 ρ := by
       simpa using (hloop r hr hrR₁).2

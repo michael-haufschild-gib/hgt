@@ -257,7 +257,7 @@ theorem orientedPhaseCurrent_sub_boundary_identity
   simpa only [sub_eq_add_neg, map_neg, neg_mul, mul_neg, Complex.neg_im, neg_neg] using h
 
 /-- Exact one-atom current decomposition.  Translation contributes the favorable drift
-`-log(n)|tail|^2`; all failure of a pure phase sign is confined to the swept-window self-current
+`-log(n)|tail|^(2 : ℕ)`; all failure of a pure phase sign is confined to the swept-window self-current
 and its two mixed currents with the common first-atom phase. -/
 theorem thetaCuspTailSecondDensityAtomPhase_current_eq_full_window
     {n : ℕ} (hn : 0 < n) (z : ℂ) (hz : 0 ≤ z.im) :

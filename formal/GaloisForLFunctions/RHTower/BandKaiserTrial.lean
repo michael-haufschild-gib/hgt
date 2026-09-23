@@ -12,7 +12,7 @@ K_c(x) = sum_k (c² (1-x²)/4)^k/(k!)²      (= I_0(c sqrt(1-x²))),
 a nonnegative weight on `[-1, 1]`, and its finite-Fourier transform is the odd-factorial series
 
 ```text
-∫_(-1)^1 K_c(x) cos(omega x) dx = sum_m 2 (c² - omega²)^m/(2m+1)!.
+∫_(-1)^(1 : ℕ) K_c(x) cos(omega x) dx = sum_m 2 (c² - omega²)^m/(2m+1)!.
 ```
 
 Inside the band every term of the right-hand series is positive, so a single term bounds the transform

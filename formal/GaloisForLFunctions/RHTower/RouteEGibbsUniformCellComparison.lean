@@ -134,7 +134,7 @@ two even for large likelihood-ratio oscillation. -/
 theorem routeE_abs_weightedMean_sub_uniformMean_le_sqrtRatioDefect
     (weight observable : Ω → ℝ) (s : ℝ)
     (hweight : ∀ x, 0 < weight x) (hs : 1 ≤ s)
-    (hratio : ∀ x y, weight x ≤ s ^ 2 * weight y)
+    (hratio : ∀ x y, weight x ≤ s ^ (2 : ℕ) * weight y)
     (hobservable : ∀ x, |observable x| ≤ 1) :
     |(∑ x, weight x * observable x) / (∑ x, weight x) -
         (∑ x, observable x) / (Fintype.card Ω : ℝ)| ≤
@@ -156,7 +156,7 @@ theorem routeE_abs_weightedMean_sub_uniformMean_le_sqrtRatioDefect
     intro x
     exact Finset.min'_le values (weight x)
       (Finset.mem_image.mpr ⟨x, Finset.mem_univ x, rfl⟩)
-  let U : ℝ := s ^ 2 * L
+  let U : ℝ := s ^ (2 : ℕ) * L
   have hweightU : ∀ x, weight x ≤ U := by
     intro x
     dsimp [U]
@@ -195,7 +195,7 @@ theorem routeE_abs_weightedMean_sub_uniformMean_le_sqrtRatioDefect
     exact le_of_mul_le_mul_left hsum hN
   have hUL : 0 < U - L := by
     dsimp [U]
-    have hsSq : 1 < s ^ 2 := by nlinarith
+    have hsSq : 1 < s ^ (2 : ℕ) := by nlinarith
     nlinarith
   let kappa : ℝ := (U - a) / (U - L)
   have hkappa : 0 ≤ kappa := div_nonneg (sub_nonneg.mpr haU) hUL.le
@@ -269,9 +269,9 @@ theorem routeE_abs_weightedMean_sub_uniformMean_le_sqrtRatioDefect
         intro x _hx
         rw [abs_mul]
         simpa using mul_le_of_le_one_right (abs_nonneg (weight x - a)) (hobservable x)
-  have hcore : (U - a) * (a - L) ≤ a * L * (s - 1) ^ 2 := by
-    have hid : a * L * (s - 1) ^ 2 - (U - a) * (a - L) =
-        (a - s * L) ^ 2 := by
+  have hcore : (U - a) * (a - L) ≤ a * L * (s - 1) ^ (2 : ℕ) := by
+    have hid : a * L * (s - 1) ^ (2 : ℕ) - (U - a) * (a - L) =
+        (a - s * L) ^ (2 : ℕ) := by
       dsimp [U]
       ring
     nlinarith [sq_nonneg (a - s * L)]
@@ -280,7 +280,7 @@ theorem routeE_abs_weightedMean_sub_uniformMean_le_sqrtRatioDefect
     apply (div_le_div_iff₀ (mul_pos haPos hUL) (by positivity : 0 < s + 1)).2
     calc
       (U - a) * (a - L) * (s + 1) ≤
-          (a * L * (s - 1) ^ 2) * (s + 1) :=
+          (a * L * (s - 1) ^ (2 : ℕ)) * (s + 1) :=
         mul_le_mul_of_nonneg_right hcore (by positivity)
       _ = (s - 1) * (a * (U - L)) := by
         dsimp [U]
@@ -331,7 +331,7 @@ theorem routeE_abs_weightedMean_sub_uniformMean_le_tanhDefect
         (∑ x, observable x) / (Fintype.card Ω : ℝ)| ≤
       2 * Real.tanh (eta / 4) := by
   have hs : 1 ≤ Real.exp (eta / 2) := Real.one_le_exp (by positivity)
-  have hsq : Real.exp (eta / 2) ^ 2 = Real.exp eta := by
+  have hsq : Real.exp (eta / 2) ^ (2 : ℕ) = Real.exp eta := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -377,8 +377,8 @@ theorem routeE_productHistoryGibbsMean_sub_uniformMean_le
     |(∑ ω, routeEProductHistoryGibbsWeight X (history ω) * observable ω) /
           (∑ ω, routeEProductHistoryGibbsWeight X (history ω)) -
         (∑ ω, observable ω) / (Fintype.card Ω : ℝ)| ≤
-      Real.exp ((Fintype.card R : ℝ) * H ^ 2 / (X * (X - H))) - 1 := by
-  let eta := (Fintype.card R : ℝ) * H ^ 2 / (X * (X - H))
+      Real.exp ((Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X * (X - H))) - 1 := by
+  let eta := (Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X * (X - H))
   have hXH : 0 < X - H := sub_pos.mpr hHX
   have heta : 0 ≤ eta := by
     dsimp [eta]
@@ -406,8 +406,8 @@ theorem routeE_productHistoryGibbsMean_sub_uniformMean_le_tanh
           (∑ ω, routeEProductHistoryGibbsWeight X (history ω)) -
         (∑ ω, observable ω) / (Fintype.card Ω : ℝ)| ≤
       2 * Real.tanh
-        (((Fintype.card R : ℝ) * H ^ 2 / (X * (X - H))) / 4) := by
-  let eta := (Fintype.card R : ℝ) * H ^ 2 / (X * (X - H))
+        (((Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X * (X - H))) / 4) := by
+  let eta := (Fintype.card R : ℝ) * H ^ (2 : ℕ) / (X * (X - H))
   have hXH : 0 < X - H := sub_pos.mpr hHX
   have heta : 0 ≤ eta := by
     dsimp [eta]
@@ -518,7 +518,7 @@ theorem abs_mean_le_uniformReferenceEnergy_add_expDefect
     (hcompare : ∀ l,
       |D.conditionalMean l - D.uniformFibreMean l| ≤ delta) :
     |∑ ω, D.mass ω * D.observable ω| ≤
-      Real.sqrt (2 * D.referenceFibreEnergy D.uniformFibreMean + 2 * delta ^ 2) :=
+      Real.sqrt (2 * D.referenceFibreEnergy D.uniformFibreMean + 2 * delta ^ (2 : ℕ)) :=
   D.abs_mean_le_sqrt_two_reference_add_two_defect_sq
     D.uniformFibreMean delta hdelta hcompare
 
@@ -531,7 +531,7 @@ theorem abs_mean_le_uniformReferenceEnergy_of_logOscillation
     (hobservable : ∀ ω, |D.observable ω| ≤ 1) :
     |∑ ω, D.mass ω * D.observable ω| ≤
       Real.sqrt (2 * D.referenceFibreEnergy D.uniformFibreMean +
-        2 * (Real.exp eta - 1) ^ 2) := by
+        2 * (Real.exp eta - 1) ^ (2 : ℕ)) := by
   apply D.abs_mean_le_uniformReferenceEnergy_add_expDefect (Real.exp eta - 1)
   · exact sub_nonneg.mpr (Real.one_le_exp heta)
   · intro l
@@ -548,7 +548,7 @@ theorem abs_mean_le_uniformReferenceEnergy_of_logOscillation_tanh
     (hobservable : ∀ ω, |D.observable ω| ≤ 1) :
     |∑ ω, D.mass ω * D.observable ω| ≤
       Real.sqrt (2 * D.referenceFibreEnergy D.uniformFibreMean +
-        2 * (2 * Real.tanh (eta / 4)) ^ 2) := by
+        2 * (2 * Real.tanh (eta / 4)) ^ (2 : ℕ)) := by
   apply D.abs_mean_le_uniformReferenceEnergy_add_expDefect (2 * Real.tanh (eta / 4))
   · exact routeE_two_tanh_quarter_nonneg heta
   · intro l

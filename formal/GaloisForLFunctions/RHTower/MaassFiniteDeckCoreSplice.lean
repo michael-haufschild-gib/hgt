@@ -81,10 +81,10 @@ theorem normSq_finiteGridCoreProjection_sub_deckGridStep {N M K : ℕ}
     {a c hx hy : ℝ} (F : ℍ → DeckSpace N) (hF : MemLp F 2 cellMeasure)
     (C : ℕ → ℕ → DeckSpace N) :
     ‖finiteGridCoreProjection (N := N) (M := M) (K := K) a c hx hy
-        (toDeckL2 F hF) - deckGridStep (N := N) (M := M) (K := K) a c hx hy C‖ ^ 2 =
+        (toDeckL2 F hF) - deckGridStep (N := N) (M := M) (K := K) a c hx hy C‖ ^ (2 : ℕ) =
       ∫ z in fdUpperChartGridCore (M := M) (K := K) a c hx hy,
         ‖F z - ((deckGridStep (N := N) (M := M) (K := K) a c hx hy C : DeckL2 N) :
-          ℍ → DeckSpace N) z‖ ^ 2 := by
+          ℍ → DeckSpace N) z‖ ^ (2 : ℕ) := by
   conv_lhs => rw [← finiteGridCoreProjection_apply_deckGridStep C]
   rw [← map_sub,
     ← toDeckL2_sub_deckGridStep F hF C]
@@ -100,13 +100,13 @@ theorem exists_grid_coreProjection_hyperbolic_error_le {N : ℕ} {ε a c hx hy :
     ∃ C : ℕ → ℕ → DeckSpace N,
       ‖finiteGridCoreProjection (N := N) (M := M) (K := K) a c hx hy
           (toDeckL2 (F : ℍ → DeckSpace N) (formPreDomain.memLp F)) -
-        deckGridStep (N := N) (M := M) (K := K) a c hx hy C‖ ^ 2 ≤
-        (c ^ 2)⁻¹ *
-          (8 * hx ^ 2 *
+        deckGridStep (N := N) (M := M) (K := K) a c hx hy C‖ ^ (2 : ℕ) ≤
+        (c ^ (2 : ℕ))⁻¹ *
+          (8 * hx ^ (2 : ℕ) *
             (∫ y in Set.Ioc c (c + (K : ℝ) * hy),
               ∫ x in Set.Ioc a (a + (M : ℝ) * hx),
                 retractedDeckEnergyX ε F (x, y)) +
-          2 * hy ^ 2 *
+          2 * hy ^ (2 : ℕ) *
             (∫ x in Set.Ioc a (a + (M : ℝ) * hx),
               ∫ y in Set.Ioc c (c + (K : ℝ) * hy),
                 retractedDeckEnergyY ε F (x, y))) := by

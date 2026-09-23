@@ -50,7 +50,7 @@ theorem deriv_realFourierBandTransform (hΦ : Continuous Φ) :
 
 theorem hasDerivAt_deriv_realFourierBandTransform (hΦ : Continuous Φ) (x : ℝ) :
     HasDerivAt (deriv (realFourierBandTransform c Φ))
-      ((∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) *
+      ((∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) *
         ((Φ t : ℝ) : ℂ)).re) x := by
   rw [deriv_realFourierBandTransform hΦ]
   have h := hasDerivAt_bandTransformDeriv (c := c) (intervalIntegrable_ofReal hΦ) x
@@ -58,7 +58,7 @@ theorem hasDerivAt_deriv_realFourierBandTransform (hΦ : Continuous Φ) (x : ℝ
 
 theorem deriv2_realFourierBandTransform (hΦ : Continuous Φ) :
     deriv (deriv (realFourierBandTransform c Φ))
-      = fun x => (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) *
+      = fun x => (∫ t in (-1 : ℝ)..1, bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) *
           ((Φ t : ℝ) : ℂ)).re :=
   funext fun x => (hasDerivAt_deriv_realFourierBandTransform hΦ x).deriv
 
@@ -91,7 +91,7 @@ theorem prolateSLAction_realFourierBandTransform {eta : ℝ}
   have hleft : IntervalIntegrable
       (fun t : ℝ => prolateActionC c (fun s => bandKernel c x s)
           (fun s => bandKernel c x s * (Complex.I * ((c * x : ℝ) : ℂ)))
-          (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ 2)) t * f t)
+          (fun s => bandKernel c x s * (-(((c * x : ℝ) : ℂ)) ^ (2 : ℕ))) t * f t)
       volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     unfold prolateActionC bandKernel
@@ -112,9 +112,9 @@ theorem prolateSLAction_realFourierBandTransform {eta : ℝ}
     push_cast
     ring
   rw [hrhs] at hcomm
-  have hcast1 : (1 - ((x : ℝ) : ℂ) ^ 2) = (((1 - x ^ 2 : ℝ)) : ℂ) := by push_cast; ring
+  have hcast1 : (1 - ((x : ℝ) : ℂ) ^ (2 : ℕ)) = (((1 - x ^ (2 : ℕ) : ℝ)) : ℂ) := by push_cast; ring
   have hcast2 : (2 : ℂ) * ((x : ℝ) : ℂ) = (((2 * x : ℝ)) : ℂ) := by push_cast; ring
-  have hcast3 : ((c : ℝ) : ℂ) ^ 2 * ((x : ℝ) : ℂ) ^ 2 = (((c ^ 2 * x ^ 2 : ℝ)) : ℂ) := by
+  have hcast3 : ((c : ℝ) : ℂ) ^ (2 : ℕ) * ((x : ℝ) : ℂ) ^ (2 : ℕ) = (((c ^ (2 : ℕ) * x ^ (2 : ℕ) : ℝ)) : ℂ) := by
     push_cast; ring
   rw [hcast1, hcast2, hcast3] at hcomm
   have hre := congrArg Complex.re hcomm
@@ -339,7 +339,7 @@ theorem exists_realFourierBandTransform_eigen {eta lam κ : ℝ} (hκ : 0 < κ)
     (hlam : lam ≠ 0)
     (hband : ∀ x : ℝ, bandTransform (2 * Real.pi * κ) Φ x = lam * Φ x)
     (heig : ∀ x : ℝ, prolateSLAction (2 * Real.pi * κ) Φ x = eta * Φ x) :
-    ∃ mu : ℝ, mu ≠ 0 ∧ κ * mu ^ 2 = lam ∧
+    ∃ mu : ℝ, mu ≠ 0 ∧ κ * mu ^ (2 : ℕ) = lam ∧
       ∀ x : ℝ, realFourierBandTransform (2 * Real.pi * κ) Φ x = mu * Φ x := by
   have hΦc : Continuous Φ := hsm.continuous
   have hΦ0 : Φ 0 ≠ 0 :=
@@ -375,10 +375,10 @@ theorem exists_realFourierBandTransform_eigen {eta lam κ : ℝ} (hκ : 0 < κ)
     simp only [Pi.zero_apply]
     exact (mul_eq_zero.mp h).resolve_left hlam
   have hΨ0 : Ψ 0 = mu * Φ 0 := hIcc (by norm_num)
-  have hsq : κ * mu ^ 2 = lam := by
+  have hsq : κ * mu ^ (2 : ℕ) = lam := by
     have h := hkey 0
     rw [hΨ0] at h
-    have hcancel : lam * Φ 0 = κ * mu ^ 2 * Φ 0 := by
+    have hcancel : lam * Φ 0 = κ * mu ^ (2 : ℕ) * Φ 0 := by
       rw [h]
       ring
     exact (mul_right_cancel₀ hΦ0 hcancel).symm
@@ -387,7 +387,7 @@ theorem exists_realFourierBandTransform_eigen {eta lam κ : ℝ} (hκ : 0 < κ)
   rw [← hsq] at h
   have hκmu : κ * mu ≠ 0 := mul_ne_zero hκ.ne' hmu
   have hstep : (κ * mu) * (mu * Φ x) = (κ * mu) * Ψ x := by
-    calc (κ * mu) * (mu * Φ x) = κ * mu ^ 2 * Φ x := by ring
+    calc (κ * mu) * (mu * Φ x) = κ * mu ^ (2 : ℕ) * Φ x := by ring
       _ = κ * (mu * Ψ x) := h
       _ = (κ * mu) * Ψ x := by ring
   exact (mul_left_cancel₀ hκmu hstep).symm

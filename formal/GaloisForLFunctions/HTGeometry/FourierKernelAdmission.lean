@@ -19,7 +19,7 @@ open Finset
 
 /-- Quadratic kernel test of a signed finite carrier. -/
 def finiteKernelQuadratic {n : ℕ} (ν f : Fin n → ℝ) : ℝ :=
-  ∑ x, ν x * f x ^ 2
+  ∑ x, ν x * f x ^ (2 : ℕ)
 
 /-- Coordinate packet used to prove that the full quadratic family reflects source order. -/
 def finiteCoordinatePacket {n : ℕ} (x : Fin n) : Fin n → ℝ :=
@@ -86,12 +86,12 @@ theorem dominatedAt_iff_finiteKernelPencil_nonneg {n : ℕ}
 /-- Penalty carried by a declared region separated from the spectral contact set. -/
 def finiteContactPenalty {n : ℕ} (μ f : Fin n → ℝ) (S : Finset (Fin n))
     (δ : ℝ) : ℝ :=
-  ∑ x, if x ∈ S then δ * (μ x * f x ^ 2) else 0
+  ∑ x, if x ∈ S then δ * (μ x * f x ^ (2 : ℕ)) else 0
 
 /-- Quadratic energy above a declared lower spectral floor. -/
 def finiteSpectralExcess {n : ℕ} (μ h : Fin n → ℝ) (α : ℝ)
     (f : Fin n → ℝ) : ℝ :=
-  ∑ x, μ x * (h x - α) * f x ^ 2
+  ∑ x, μ x * (h x - α) * f x ^ (2 : ℕ)
 
 /-- Finite contact localization: energy above the floor controls all mass separated from the
 contact set by a gap `δ`. -/
@@ -107,11 +107,11 @@ theorem finiteContactPenalty_le_spectralExcess {n : ℕ}
   by_cases hx : x ∈ S
   · rw [if_pos hx]
     have hgap : δ ≤ h x - α := by linarith [hcontact x hx]
-    have hweight : 0 ≤ μ x * f x ^ 2 := mul_nonneg (hμ x) (sq_nonneg _)
+    have hweight : 0 ≤ μ x * f x ^ (2 : ℕ) := mul_nonneg (hμ x) (sq_nonneg _)
     calc
-      δ * (μ x * f x ^ 2) ≤ (h x - α) * (μ x * f x ^ 2) :=
+      δ * (μ x * f x ^ (2 : ℕ)) ≤ (h x - α) * (μ x * f x ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_right hgap hweight
-      _ = μ x * (h x - α) * f x ^ 2 := by ring
+      _ = μ x * (h x - α) * f x ^ (2 : ℕ) := by ring
   · rw [if_neg hx]
     exact mul_nonneg (mul_nonneg (hμ x) (sub_nonneg.mpr (hfloor x))) (sq_nonneg _)
 

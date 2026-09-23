@@ -28,13 +28,13 @@ lemma xiEndpointCrossCharge_lineConj (q : XiZeroCopy) :
   rw [xiEndpointCrossCharge, xiEndpointCrossCharge, endpoint_cross_term_re_eq,
     endpoint_cross_term_re_eq]
   change
-    ((1 - (starRingEnd ℂ) (q.1 : ℂ)).im ^ 2 +
+    ((1 - (starRingEnd ℂ) (q.1 : ℂ)).im ^ (2 : ℕ) +
         (1 - (starRingEnd ℂ) (q.1 : ℂ)).re *
           (1 - (1 - (starRingEnd ℂ) (q.1 : ℂ)).re)) /
-      (((1 - (starRingEnd ℂ) (q.1 : ℂ)).re ^ 2 +
-          (1 - (starRingEnd ℂ) (q.1 : ℂ)).im ^ 2) *
-        ((1 - (1 - (starRingEnd ℂ) (q.1 : ℂ)).re) ^ 2 +
-          (1 - (starRingEnd ℂ) (q.1 : ℂ)).im ^ 2)) = _
+      (((1 - (starRingEnd ℂ) (q.1 : ℂ)).re ^ (2 : ℕ) +
+          (1 - (starRingEnd ℂ) (q.1 : ℂ)).im ^ (2 : ℕ)) *
+        ((1 - (1 - (starRingEnd ℂ) (q.1 : ℂ)).re) ^ (2 : ℕ) +
+          (1 - (starRingEnd ℂ) (q.1 : ℂ)).im ^ (2 : ℕ))) = _
   simp only [sub_re, sub_im, one_re, one_im, conj_re, conj_im]
   ring
 
@@ -45,13 +45,13 @@ lemma xiEndpointCrossCharge_conj (q : XiZeroCopy) :
   rw [xiEndpointCrossCharge, xiEndpointCrossCharge, endpoint_cross_term_re_eq,
     endpoint_cross_term_re_eq]
   change
-    (((starRingEnd ℂ) (q.1 : ℂ)).im ^ 2 +
+    (((starRingEnd ℂ) (q.1 : ℂ)).im ^ (2 : ℕ) +
         ((starRingEnd ℂ) (q.1 : ℂ)).re *
           (1 - ((starRingEnd ℂ) (q.1 : ℂ)).re)) /
-      ((((starRingEnd ℂ) (q.1 : ℂ)).re ^ 2 +
-          ((starRingEnd ℂ) (q.1 : ℂ)).im ^ 2) *
-        ((1 - ((starRingEnd ℂ) (q.1 : ℂ)).re) ^ 2 +
-          ((starRingEnd ℂ) (q.1 : ℂ)).im ^ 2)) = _
+      ((((starRingEnd ℂ) (q.1 : ℂ)).re ^ (2 : ℕ) +
+          ((starRingEnd ℂ) (q.1 : ℂ)).im ^ (2 : ℕ)) *
+        ((1 - ((starRingEnd ℂ) (q.1 : ℂ)).re) ^ (2 : ℕ) +
+          ((starRingEnd ℂ) (q.1 : ℂ)).im ^ (2 : ℕ))) = _
   simp only [conj_re, conj_im]
   ring
 
@@ -184,19 +184,19 @@ theorem four_mul_xiEndpointCrossCharge_le_curvature_of_offLine
 every off-critical FE--Schwarz orbit. -/
 theorem four_le_curvature_mul_one_add_im_sq_of_offLine
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ 2 + 1) := by
+    4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ (2 : ℕ) + 1) := by
   have hlower := endpoint_cross_term_re_ge_inv_one_add_im_sq q
   have horbit :=
     four_mul_xiEndpointCrossCharge_le_curvature_of_offLine q hoff
-  have hden : 0 < (q.1 : ℂ).im ^ 2 + 1 := by positivity
-  have hcharge : 4 / ((q.1 : ℂ).im ^ 2 + 1) ≤
+  have hden : 0 < (q.1 : ℂ).im ^ (2 : ℕ) + 1 := by positivity
+  have hcharge : 4 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ≤
       4 * xiEndpointCrossCharge q := by
     calc
-      4 / ((q.1 : ℂ).im ^ 2 + 1) =
-          4 * (1 / ((q.1 : ℂ).im ^ 2 + 1)) := by ring
+      4 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) =
+          4 * (1 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1)) := by ring
       _ ≤ 4 * xiEndpointCrossCharge q :=
         mul_le_mul_of_nonneg_left hlower (by norm_num)
-  have hbudget : 4 / ((q.1 : ℂ).im ^ 2 + 1) ≤
+  have hbudget : 4 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) ≤
       xiEndpointCompletedCurvature := hcharge.trans horbit
   rwa [div_le_iff₀ hden] at hbudget
 
@@ -204,22 +204,22 @@ theorem four_le_curvature_mul_one_add_im_sq_of_offLine
 strictly greater than `85`. -/
 theorem xiZeroCopy_offLine_eightyFive_lt_im_sq (q : XiZeroCopy)
     (hoff : (q.1 : ℂ).re ≠ 1 / 2) :
-    85 < (q.1 : ℂ).im ^ 2 := by
+    85 < (q.1 : ℂ).im ^ (2 : ℕ) := by
   have hbudget := four_le_curvature_mul_one_add_im_sq_of_offLine q hoff
   have hC := xiEndpointCompletedCurvature_lt_two_over_fortyThree
   nlinarith
 
 /-- **A sector failure is confined to an edge corner.**  A sector certificate `P < A` that holds
-both on the inner width region `(Re - 1/2)^2 ≤ c` and above the height `K` leaves only the
+both on the inner width region `(Re - 1/2)^(2 : ℕ) ≤ c` and above the height `K` leaves only the
 complementary window: a point where the certificate fails has width square strictly between `c`
 and `1/4`, and ordinate square strictly between `85` and `K`.  The certificate itself is abstract
 here, so the same law serves every order and every choice of the auxiliary coordinate. -/
 theorem xiZeroCopy_sectorFailure_mem_edgeCorner {P A c K : ℝ} (q : XiZeroCopy)
     (hoff : (q.1 : ℂ).re ≠ 1 / 2)
-    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ c → P < A)
-    (hhigh : K ≤ (q.1 : ℂ).im ^ 2 → P < A) (hfail : A ≤ P) :
-    c < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧ ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-      85 < (q.1 : ℂ).im ^ 2 ∧ (q.1 : ℂ).im ^ 2 < K := by
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ≤ c → P < A)
+    (hhigh : K ≤ (q.1 : ℂ).im ^ (2 : ℕ) → P < A) (hfail : A ≤ P) :
+    c < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧ ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ (2 : ℕ) ∧ (q.1 : ℂ).im ^ (2 : ℕ) < K := by
   refine ⟨?_, xi_divisor_support_centered_re_sq_lt_quarter q.1,
     xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff, ?_⟩
   · by_contra h

@@ -75,7 +75,7 @@ theorem hasDerivAt_gammaOddJacobiLogHead (K : ℕ) (t : ℝ) :
   have hraw :=
     (Real.hasDerivAt_half_log_one_add_div_one_sub_sub_sum_range K
       hxmem.1 hxmem.2).comp t (hasDerivAt_tanh_one_sub_sq t)
-  have hden : 1 - Real.tanh t ^ 2 ≠ 0 := by
+  have hden : 1 - Real.tanh t ^ (2 : ℕ) ≠ 0 := by
     nlinarith [Real.neg_one_lt_tanh t, Real.tanh_lt_one t]
   have hfun :
       ((fun x => 1 / 2 * Real.log ((1 + x) / (1 - x)) -
@@ -90,8 +90,8 @@ theorem hasDerivAt_gammaOddJacobiLogHead (K : ℕ) (t : ℝ) :
       Real.artanh_tanh]
   rw [hfun] at hraw
   have hscalar :
-      (Real.tanh t ^ 2) ^ K / (1 - Real.tanh t ^ 2) *
-          (1 - Real.tanh t ^ 2) = Real.tanh t ^ (2 * K) := by
+      (Real.tanh t ^ (2 : ℕ)) ^ K / (1 - Real.tanh t ^ (2 : ℕ)) *
+          (1 - Real.tanh t ^ (2 : ℕ)) = Real.tanh t ^ (2 * K) := by
     rw [pow_mul]
     field_simp [hden]
   rw [hscalar] at hraw
@@ -110,7 +110,7 @@ theorem tendsto_gammaOddJacobiLogHead (t : ℝ) :
     abs_lt.2 ⟨Real.neg_one_lt_tanh t, Real.tanh_lt_one t⟩
   have hbound (K : ℕ) :
       |t - gammaOddJacobiLogHead K t| ≤
-        |Real.tanh t| ^ (2 * K + 1) / (1 - Real.tanh t ^ 2) := by
+        |Real.tanh t| ^ (2 * K + 1) / (1 - Real.tanh t ^ (2 : ℕ)) := by
     rw [gammaOddJacobiLogHead_eq]
     calc
       |t - ∑ k ∈ Finset.range K,
@@ -128,7 +128,7 @@ theorem tendsto_gammaOddJacobiLogHead (t : ℝ) :
           Real.sum_range_sub_log_div_le hx K
   apply Metric.tendsto_atTop.2
   intro ε hε
-  have hden : 0 < 1 - Real.tanh t ^ 2 :=
+  have hden : 0 < 1 - Real.tanh t ^ (2 : ℕ) :=
     sub_pos.mpr ((sq_lt_one_iff_abs_lt_one _).2 hx)
   have hpow : Tendsto (fun K : ℕ => |Real.tanh t| ^ (2 * K + 1)) atTop (nhds 0) := by
     have hbase := tendsto_pow_atTop_nhds_zero_of_lt_one (abs_nonneg _) hx
@@ -137,9 +137,9 @@ theorem tendsto_gammaOddJacobiLogHead (t : ℝ) :
       intro b
       exact eventually_atTop.2 ⟨b, fun K hK => by omega⟩
     exact hbase.comp hindex
-  have hdiv := hpow.div_const (1 - Real.tanh t ^ 2)
+  have hdiv := hpow.div_const (1 - Real.tanh t ^ (2 : ℕ))
   have hevent : ∀ᶠ K : ℕ in atTop,
-      |Real.tanh t| ^ (2 * K + 1) / (1 - Real.tanh t ^ 2) < ε := by
+      |Real.tanh t| ^ (2 * K + 1) / (1 - Real.tanh t ^ (2 : ℕ)) < ε := by
     have := (Metric.tendsto_nhds.1 hdiv) ε hε
     filter_upwards [this] with K hK
     simpa [Real.dist_eq, abs_of_nonneg (div_nonneg (pow_nonneg (abs_nonneg _) _)
@@ -357,8 +357,8 @@ def gammaOddJacobiLogPrimeNormalization (p : Nat.Primes) : ℝ :=
 /-- Exact singularity law for the common-coordinate connector. -/
 theorem gammaOddJacobiLogPrimeNormalization_sq_eq
     (p : Nat.Primes) :
-    gammaOddJacobiLogPrimeNormalization p ^ 2 =
-      ((p : ℝ) ^ 2 + 1) / (2 * (p : ℝ)) := by
+    gammaOddJacobiLogPrimeNormalization p ^ (2 : ℕ) =
+      ((p : ℝ) ^ (2 : ℕ) + 1) / (2 * (p : ℝ)) := by
   rw [gammaOddJacobiLogPrimeNormalization, inv_pow,
     semilocalArchimedeanCharacteristic_log_prime_sq]
   have hp0 : (p : ℝ) ≠ 0 := by exact_mod_cast p.prop.ne_zero
@@ -367,7 +367,7 @@ theorem gammaOddJacobiLogPrimeNormalization_sq_eq
 /-- The normalization grows at least like the square root of the prime label. -/
 theorem gammaOddJacobiLogPrimeNormalization_sq_ge
     (p : Nat.Primes) :
-    (p : ℝ) / 2 ≤ gammaOddJacobiLogPrimeNormalization p ^ 2 := by
+    (p : ℝ) / 2 ≤ gammaOddJacobiLogPrimeNormalization p ^ (2 : ℕ) := by
   rw [gammaOddJacobiLogPrimeNormalization_sq_eq]
   have hp0 : (0 : ℝ) < p := by exact_mod_cast p.prop.pos
   rw [div_le_div_iff₀ (by positivity : (0 : ℝ) < 2)
@@ -377,7 +377,7 @@ theorem gammaOddJacobiLogPrimeNormalization_sq_ge
 /-- No bounded diagonal map can perform the common-coordinate normalization on all primes. -/
 theorem exists_prime_gammaOddJacobiLogPrimeNormalization_sq_gt
     (B : ℝ) :
-    ∃ p : Nat.Primes, B < gammaOddJacobiLogPrimeNormalization p ^ 2 := by
+    ∃ p : Nat.Primes, B < gammaOddJacobiLogPrimeNormalization p ^ (2 : ℕ) := by
   obtain ⟨n : ℕ, hn⟩ := exists_nat_gt (2 * B)
   obtain ⟨p : ℕ, hnp, hp⟩ := Nat.exists_infinite_primes n
   let q : Nat.Primes := ⟨p, hp⟩

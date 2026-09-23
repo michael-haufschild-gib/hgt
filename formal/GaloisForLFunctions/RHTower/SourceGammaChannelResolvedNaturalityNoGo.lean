@@ -13,7 +13,7 @@ escape is to retain the two prime labels in separate output channels before scal
 
 This file classifies that escape on the genuine Calderon--Witt prime--archimedean Green
 boundaries.  Pair the two canonical scalar reporters, fitting the first archimedean component at
-prime two and the second at prime three.  The resulting `C^2`-valued reporter is separately natural
+prime two and the second at prime three.  The resulting `C^(2 : ℕ)`-valued reporter is separately natural
 after projecting each boundary to its matching channel at every horizontal grade.  Its cross-channel
 leaks are exact opposites:
 

@@ -46,7 +46,7 @@ theorem divisorHyperbolaSmoothAbel_le_exact_mean_sqrt (M : ℕ) :
   have hnext : M ≤ (s+1)*(s+1) := (Nat.lt_succ_sqrt M).le
   have h := (smooth_abel_monotone hnext).trans (smooth_square_prefix s)
   have hs : (s:ℝ) ≤ Real.sqrt M := by
-    have hsq : (s:ℝ)^2 ≤ M := by rw [pow_two]; exact_mod_cast Nat.sqrt_le M
+    have hsq : (s:ℝ)^(2 : ℕ) ≤ M := by rw [pow_two]; exact_mod_cast Nat.sqrt_le M
     have hroot := Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) M)
     have hs0 := Nat.cast_nonneg (α:=ℝ) s
     have hr0 := Real.sqrt_nonneg (M:ℝ)
@@ -97,7 +97,7 @@ private lemma smooth_mean_lt_nine_fiftieths : divisorHyperbolaSmoothMean < (9/50
     (by linarith [Real.pi_lt_d2] : 2*Real.pi ≤ (63/10:ℝ))
   have hl := Real.log_le_sub_one_of_pos (x:=(126/125:ℝ)) (by norm_num)
   have he : Real.log (63/10:ℝ)=2*Real.log 5-2*Real.log 2+Real.log (126/125:ℝ) := by
-    rw [show (63/10:ℝ)=(5^2/2^2)*(126/125) by norm_num,
+    rw [show (63/10:ℝ)=(5^(2 : ℕ)/2^(2 : ℕ))*(126/125) by norm_num,
       Real.log_mul (by norm_num) (by norm_num),Real.log_div (by norm_num) (by norm_num),Real.log_pow,Real.log_pow]
     norm_num
   rw [he] at hp
@@ -112,7 +112,7 @@ private lemma unit_mean_gt_nine_hundredths : (9/100:ℝ) <
   have he : Real.log (157/25:ℝ)+Real.log (625/628:ℝ)=2*Real.log 5-2*Real.log 2 := by
     rw [← Real.log_mul (by norm_num) (by norm_num)]
     norm_num
-    rw [show (25/4:ℝ)=5^2/2^2 by norm_num,Real.log_div (by norm_num) (by norm_num),Real.log_pow,Real.log_pow]
+    rw [show (25/4:ℝ)=5^(2 : ℕ)/2^(2 : ℕ) by norm_num,Real.log_div (by norm_num) (by norm_num),Real.log_pow,Real.log_pow]
     norm_num
   have hg := eulerMascheroniConstant_lt_fiveHundredSeventySevenThousandTwoHundredSixteen_over_oneMillion
   linarith only [hlog,hr,he,hg,Real.log_five_gt_d9,Real.log_two_lt_d9]

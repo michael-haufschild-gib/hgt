@@ -124,7 +124,7 @@ theorem thetaCuspCompletedProductFiberAmplitude_one (u t : ℝ) :
 
 theorem thetaCuspCompletedProductFiberAmplitude_one_zero (t : ℝ) :
     thetaCuspCompletedProductFiberAmplitude 1 0 t =
-      thetaCuspSourceTerm |t| 1 ^ 2 := by
+      thetaCuspSourceTerm |t| 1 ^ (2 : ℕ) := by
   rw [thetaCuspCompletedProductFiberAmplitude_one]
   simp only [zero_add, zero_sub, abs_neg]
   ring
@@ -164,7 +164,7 @@ theorem strictConcave_crossing_forces_oddParityWall_neg
     (hrise : f 0 < f a) (hfall : f b < f 0) :
     ∃ t : ℝ, 0 < t ∧
       toeplitzFourOddParityWall
-        (f 0 ^ 2) (f t ^ 2) (f (2 * t) ^ 2) (f (3 * t) ^ 2) < 0 := by
+        (f 0 ^ (2 : ℕ)) (f t ^ (2 : ℕ)) (f (2 * t) ^ (2 : ℕ)) (f (3 * t) ^ (2 : ℕ)) < 0 := by
   have htarget : f 0 ∈ Icc (f b) (f a) := ⟨hfall.le, hrise.le⟩
   obtain ⟨T, hTmem, hT⟩ :=
     (intermediate_value_Icc' hab.le hcont.continuousOn htarget)
@@ -224,9 +224,9 @@ theorem strictConcave_crossing_forces_oddParityWall_neg
     exact mul_lt_mul_of_pos_left (Real.exp_lt_exp.mpr htailLog) Real.pi_pos
   refine ⟨t, ht, ?_⟩
   unfold toeplitzFourOddParityWall
-  have hsqmid : f 0 ^ 2 < f t ^ 2 := by nlinarith
-  have hsqthree : f (3 * t) ^ 2 < f 0 ^ 2 := by nlinarith
-  nlinarith [sq_nonneg (f t ^ 2 - f (2 * t) ^ 2)]
+  have hsqmid : f 0 ^ (2 : ℕ) < f t ^ (2 : ℕ) := by nlinarith
+  have hsqthree : f (3 * t) ^ (2 : ℕ) < f 0 ^ (2 : ℕ) := by nlinarith
+  nlinarith [sq_nonneg (f t ^ (2 : ℕ) - f (2 * t) ^ (2 : ℕ))]
 
 /-- The first completed product fibre rises strictly away from the modular seam. -/
 theorem exists_thetaCuspCompletedProductFiberAmplitude_one_rise :

@@ -17,59 +17,59 @@ namespace RHTower
 private lemma paired_log_bound {s j : ℝ} (hs : 1 ≤ s) (hj0 : 0 ≤ j) (hjs : j ≤ s) :
     let c := s*(s+1)
     (c-j+1/2)*Real.log ((c-j)/c)+(c+j+1/2)*Real.log ((c+j)/c) ≤
-      j^2*(1/c-1/(2*c^2)+1/(6*c*s*(s+2))) := by
+      j^(2 : ℕ)*(1/c-1/(2*c^(2 : ℕ))+1/(6*c*s*(s+2))) := by
   let c := s*(s+1)
   have hs0 : 0 < s := by linarith
   have hc : 0 < c := by dsimp [c]; positivity
   have hjc : j < c := by dsimp [c]; nlinarith
-  have hsq : j^2 ≤ s^2 := by nlinarith [mul_self_le_mul_self hj0 hjs]
-  have hmin : 0 < c^2-s^2 := by dsimp [c]; nlinarith [sq_nonneg s]
-  have hden : 0 < c^2-j^2 := by linarith
+  have hsq : j^(2 : ℕ) ≤ s^(2 : ℕ) := by nlinarith [mul_self_le_mul_self hj0 hjs]
+  have hmin : 0 < c^(2 : ℕ)-s^(2 : ℕ) := by dsimp [c]; nlinarith [sq_nonneg s]
+  have hden : 0 < c^(2 : ℕ)-j^(2 : ℕ) := by linarith
   let t := j/c
   have ht0 : 0 ≤ t := by dsimp [t]; positivity
   have ht1 : t < 1 := by dsimp [t]; rwa [div_lt_one hc]
   have hpos : 0 < 1+t := by linarith
   have hneg : 0 < 1-t := by linarith
-  have htden : 0 < 1-t^2 := by nlinarith
+  have htden : 0 < 1-t^(2 : ℕ) := by nlinarith
   have he := log_symmetric_entropy_le_quartic ht0 ht1
   have hl := Real.log_le_sub_one_of_pos htden
-  have hlog : Real.log (1-t^2)=Real.log (1+t)+Real.log (1-t) := by
-    rw [show 1-t^2=(1+t)*(1-t) by ring,Real.log_mul hpos.ne' hneg.ne']
+  have hlog : Real.log (1-t^(2 : ℕ))=Real.log (1+t)+Real.log (1-t) := by
+    rw [show 1-t^(2 : ℕ)=(1+t)*(1-t) by ring,Real.log_mul hpos.ne' hneg.ne']
   have hminus : (c-j)/c=1-t := by dsimp [t]; field_simp
   have hplus : (c+j)/c=1+t := by dsimp [t]; field_simp
   have hid : (c-j+1/2)*Real.log ((c-j)/c)+(c+j+1/2)*Real.log ((c+j)/c)=
-      c*((1+t)*Real.log (1+t)+(1-t)*Real.log (1-t))+Real.log (1-t^2)/2 := by
+      c*((1+t)*Real.log (1+t)+(1-t)*Real.log (1-t))+Real.log (1-t^(2 : ℕ))/2 := by
     rw [hminus,hplus,hlog]
     dsimp [t]
     field_simp
     ring
   have hu := add_le_add (mul_le_mul_of_nonneg_left he hc.le)
     (div_le_div_of_nonneg_right hl (by norm_num : (0:ℝ) ≤ 2))
-  have hpoly : c*(t^2+t^4/(6*(1-t^2)))+(1-t^2-1)/2=
-      (c-1/2)*j^2/c^2+j^4/(6*c*(c^2-j^2)) := by
-    have ht : 1-(j/c)^2=(c^2-j^2)/c^2 := by field_simp
+  have hpoly : c*(t^(2 : ℕ)+t^(4 : ℕ)/(6*(1-t^(2 : ℕ))))+(1-t^(2 : ℕ)-1)/2=
+      (c-1/2)*j^(2 : ℕ)/c^(2 : ℕ)+j^(4 : ℕ)/(6*c*(c^(2 : ℕ)-j^(2 : ℕ))) := by
+    have ht : 1-(j/c)^(2 : ℕ)=(c^(2 : ℕ)-j^(2 : ℕ))/c^(2 : ℕ) := by field_simp
     dsimp [t]
     rw [ht]
     field_simp [hc.ne',hden.ne']
     ring
   rw [hpoly] at hu
-  have hb : j^2/(c^2-j^2) ≤ s^2/(c^2-s^2) :=
+  have hb : j^(2 : ℕ)/(c^(2 : ℕ)-j^(2 : ℕ)) ≤ s^(2 : ℕ)/(c^(2 : ℕ)-s^(2 : ℕ)) :=
     (div_le_div_of_nonneg_right hsq hden.le).trans
       (div_le_div_of_nonneg_left (sq_nonneg s) hmin (by linarith))
-  have hr : s^2/(c^2-s^2)=1/(s*(s+2)) := by
+  have hr : s^(2 : ℕ)/(c^(2 : ℕ)-s^(2 : ℕ))=1/(s*(s+2)) := by
     dsimp [c]
-    have hd : (s*(s+1))^2-s^2=s^3*(s+2) := by ring
+    have hd : (s*(s+1))^(2 : ℕ)-s^(2 : ℕ)=s^(3 : ℕ)*(s+2) := by ring
     rw [hd]
     field_simp
   rw [hr] at hb
-  have hb' := mul_le_mul_of_nonneg_left hb (show 0 ≤ j^2/(6*c) by positivity)
-  have hpoly2 : j^2/(6*c)*(j^2/(c^2-j^2))=j^4/(6*c*(c^2-j^2)) := by field_simp [hc.ne',hden.ne']
+  have hb' := mul_le_mul_of_nonneg_left hb (show 0 ≤ j^(2 : ℕ)/(6*c) by positivity)
+  have hpoly2 : j^(2 : ℕ)/(6*c)*(j^(2 : ℕ)/(c^(2 : ℕ)-j^(2 : ℕ)))=j^(4 : ℕ)/(6*c*(c^(2 : ℕ)-j^(2 : ℕ))) := by field_simp [hc.ne',hden.ne']
   rw [hpoly2] at hb'
   change (c-j+1/2)*Real.log ((c-j)/c)+(c+j+1/2)*Real.log ((c+j)/c) ≤ _
   rw [hid]
   calc
-    _  ≤  (c-1/2)*j^2/c^2+j^4/(6*c*(c^2-j^2)) := hu
-    _  ≤  (c-1/2)*j^2/c^2+j^2/(6*c)*(1/(s*(s+2))) := add_le_add_right hb' _
+    _  ≤  (c-1/2)*j^(2 : ℕ)/c^(2 : ℕ)+j^(4 : ℕ)/(6*c*(c^(2 : ℕ)-j^(2 : ℕ))) := hu
+    _  ≤  (c-1/2)*j^(2 : ℕ)/c^(2 : ℕ)+j^(2 : ℕ)/(6*c)*(1/(s*(s+2))) := add_le_add_right hb' _
     _ = _ := by field_simp; ring
 
 private lemma smooth_upper {s n : ℕ} (hs : 1 ≤ s)
@@ -78,7 +78,7 @@ private lemma smooth_upper {s n : ℕ} (hs : 1 ≤ s)
     divisorHyperbolaSmoothRemainder n ≤
       Real.log (2*Real.pi)/2-Real.eulerMascheroniConstant+
         ((n:ℝ)+1/2)*Real.log ((n:ℝ)/c)-(n:ℝ)+c-
-        (2*(n:ℝ)+1)*(1/(6*c)-1/(30*c^2))+1/(12*(n:ℝ)) := by
+        (2*(n:ℝ)+1)*(1/(6*c)-1/(30*c^(2 : ℕ)))+1/(12*(n:ℝ)) := by
   have hs0 : (0:ℝ) < s := by positivity
   have hn1 : 1 ≤ n := by have := (mem_Ico.mp hn).1; nlinarith
   have hn0 : (0:ℝ) < n := by positivity
@@ -99,14 +99,14 @@ private lemma smooth_center_upper {s : ℕ} (hs : 1 ≤ s) :
     let c : ℝ := s*(s+1)
     divisorHyperbolaSmoothRemainder (s*(s+1)) ≤
       Real.log (2*Real.pi)/2-Real.eulerMascheroniConstant-
-        (2*c+1)*(1/(6*c)-1/(30*c^2))+1/(12*(s:ℝ)^2) := by
+        (2*c+1)*(1/(6*c)-1/(30*c^(2 : ℕ)))+1/(12*(s:ℝ)^(2 : ℕ)) := by
   have hm : s*(s+1) ∈ Ico (s*s) ((s+1)*(s+1)) := mem_Ico.mpr ⟨by nlinarith,by nlinarith⟩
   have h := smooth_upper hs hm
   dsimp only at h ⊢
   have hc : (s:ℝ)*(s+1)≠0 := by positivity
   push_cast at h
   rw [div_self hc,Real.log_one,mul_zero] at h
-  have hf : 1/(12*((s:ℝ)*(s+1))) ≤ 1/(12*(s:ℝ)^2) := by
+  have hf : 1/(12*((s:ℝ)*(s+1))) ≤ 1/(12*(s:ℝ)^(2 : ℕ)) := by
     apply one_div_le_one_div_of_le (by positivity)
     nlinarith
   linarith only [h,hf]
@@ -119,8 +119,8 @@ theorem divisorHyperbolaSmoothRemainder_pair_le_geometric_quadratic
     divisorHyperbolaSmoothRemainder (s*(s+1)-j)+
       divisorHyperbolaSmoothRemainder (s*(s+1)+j) ≤
         2*(Real.log (2*Real.pi)/2-Real.eulerMascheroniConstant-
-          (2*c+1)*(1/(6*c)-1/(30*c^2))+1/(12*(s:ℝ)^2))+
-        (j:ℝ)^2*(1/c-1/(2*c^2)+1/(6*c*s*(s+2))) := by
+          (2*c+1)*(1/(6*c)-1/(30*c^(2 : ℕ)))+1/(12*(s:ℝ)^(2 : ℕ)))+
+        (j:ℝ)^(2 : ℕ)*(1/c-1/(2*c^(2 : ℕ))+1/(6*c*s*(s+2))) := by
   have hjc : j ≤ s*(s+1) := by nlinarith
   have hmul : s*(s+1)=s*s+s := by ring
   have hsub : s*(s+1)-j ≤ s*(s+1) := Nat.sub_le _ _
@@ -130,13 +130,13 @@ theorem divisorHyperbolaSmoothRemainder_pair_le_geometric_quadratic
   have hR := smooth_upper hs hr
   have hp := paired_log_bound (show (1:ℝ) ≤ s by exact_mod_cast hs)
     (Nat.cast_nonneg j) (show (j:ℝ) ≤ s by exact_mod_cast hj)
-  have h0 : 0 < (s:ℝ)^2 := by positivity
-  have hlow : (s:ℝ)^2 ≤ (s*(s+1)-j:ℕ) := by rw [pow_two]; exact_mod_cast (mem_Ico.mp hl).1
-  have hhigh : (s:ℝ)^2 ≤ (s*(s+1)+j:ℕ) := by rw [pow_two]; exact_mod_cast (mem_Ico.mp hr).1
-  have hfracL := one_div_le_one_div_of_le (show (0:ℝ) < 12*(s:ℝ)^2 by positivity)
-    (show 12*(s:ℝ)^2 ≤ 12*(s*(s+1)-j:ℕ) by nlinarith)
-  have hfracR := one_div_le_one_div_of_le (show (0:ℝ) < 12*(s:ℝ)^2 by positivity)
-    (show 12*(s:ℝ)^2 ≤ 12*(s*(s+1)+j:ℕ) by nlinarith)
+  have h0 : 0 < (s:ℝ)^(2 : ℕ) := by positivity
+  have hlow : (s:ℝ)^(2 : ℕ) ≤ (s*(s+1)-j:ℕ) := by rw [pow_two]; exact_mod_cast (mem_Ico.mp hl).1
+  have hhigh : (s:ℝ)^(2 : ℕ) ≤ (s*(s+1)+j:ℕ) := by rw [pow_two]; exact_mod_cast (mem_Ico.mp hr).1
+  have hfracL := one_div_le_one_div_of_le (show (0:ℝ) < 12*(s:ℝ)^(2 : ℕ) by positivity)
+    (show 12*(s:ℝ)^(2 : ℕ) ≤ 12*(s*(s+1)-j:ℕ) by nlinarith)
+  have hfracR := one_div_le_one_div_of_le (show (0:ℝ) < 12*(s:ℝ)^(2 : ℕ) by positivity)
+    (show 12*(s:ℝ)^(2 : ℕ) ≤ 12*(s*(s+1)+j:ℕ) by nlinarith)
   dsimp only at hL hR hp ⊢
   rw [Nat.cast_sub hjc] at hL hfracL
   push_cast at hL hR hfracL hfracR
@@ -156,20 +156,20 @@ private lemma sum_symmetric (f : ℕ → ℝ) {c s : ℕ} (hs : s ≤ c) :
   ring
 
 private lemma sum_sq (s : ℕ) :
-    (∑ j ∈ Icc 1 s,(j:ℝ)^2)=(s:ℝ)*(s+1)*(2*s+1)/6 := by
+    (∑ j ∈ Icc 1 s,(j:ℝ)^(2 : ℕ))=(s:ℝ)*(s+1)*(2*s+1)/6 := by
   induction s with
   | zero => simp
   | succ s ih => rw [sum_Icc_succ_top (by omega : 1 ≤ s+1),ih]; push_cast; ring
 
 private lemma correction_nonpos {s : ℝ} (hs : 2 ≤ s) :
     let c := s*(s+1);
-    -1/(4*c)+(2*c+1)/(30*c^2)+1/(12*s^2)+1/(36*s*(s+2)) ≤ 0 := by
+    -1/(4*c)+(2*c+1)/(30*c^(2 : ℕ))+1/(12*s^(2 : ℕ))+1/(36*s*(s+2)) ≤ 0 := by
   have hs0 : 0 < s := by linarith
   have ht : 0 ≤ s-2 := by linarith
   dsimp only
-  have he : -1/(4*(s*(s+1)))+(2*(s*(s+1))+1)/(30*(s*(s+1))^2)+
-      1/(12*s^2)+1/(36*s*(s+2))=
-      -(13*(s-2)^3+107*(s-2)^2+252*(s-2)+138)/(180*s^2*(s+1)^2*(s+2)) := by
+  have he : -1/(4*(s*(s+1)))+(2*(s*(s+1))+1)/(30*(s*(s+1))^(2 : ℕ))+
+      1/(12*s^(2 : ℕ))+1/(36*s*(s+2))=
+      -(13*(s-2)^(3 : ℕ)+107*(s-2)^(2 : ℕ)+252*(s-2)+138)/(180*s^(2 : ℕ)*(s+1)^(2 : ℕ)*(s+2)) := by
     field_simp
     ring
   rw [he]
@@ -200,10 +200,10 @@ private lemma block_upper_of_two {s : ℕ} (hs : 2 ≤ s) :
   dsimp [divisorHyperbolaSmoothMean]
   have hs0 : (0:ℝ) < s := by positivity
   have he : (2*(s:ℝ)+1)*(Real.log (2*Real.pi)/2-Real.eulerMascheroniConstant-
-      (2*(s*(s+1))+1)*(1/(6*(s*(s+1)))-1/(30*(s*(s+1))^2))+1/(12*s^2))+
-      ((s:ℝ)*(s+1)*(2*s+1)/6)*(1/(s*(s+1))-1/(2*(s*(s+1))^2)+1/(6*(s*(s+1))*s*(s+2))) =
+      (2*(s*(s+1))+1)*(1/(6*(s*(s+1)))-1/(30*(s*(s+1))^(2 : ℕ)))+1/(12*s^(2 : ℕ)))+
+      ((s:ℝ)*(s+1)*(2*s+1)/6)*(1/(s*(s+1))-1/(2*(s*(s+1))^(2 : ℕ))+1/(6*(s*(s+1))*s*(s+2))) =
       (2*s+1)*(Real.log (2*Real.pi)/2-Real.eulerMascheroniConstant-1/6)+
-      (2*s+1)*(-1/(4*(s*(s+1)))+(2*(s*(s+1))+1)/(30*(s*(s+1))^2)+1/(12*s^2)+1/(36*s*(s+2))) := by
+      (2*s+1)*(-1/(4*(s*(s+1)))+(2*(s*(s+1))+1)/(30*(s*(s+1))^(2 : ℕ))+1/(12*s^(2 : ℕ))+1/(36*s*(s+2))) := by
     field_simp
     ring
   nlinarith only [hsum,hmul,he]

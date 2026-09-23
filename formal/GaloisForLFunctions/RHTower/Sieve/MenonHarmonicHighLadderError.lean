@@ -46,7 +46,7 @@ theorem harmonicLadderProductDefect_eq_add_Ico
 /-- Closed high-suffix mean-square budget. -/
 def menonHarmonicHighLadderErrorBudget
     (A₀ B₀ : ℕ) (eta U W : ℝ) : ℝ :=
-  ((1 + eta) / (A₀ : ℝ)) ^ 2 *
+  ((1 + eta) / (A₀ : ℝ)) ^ (2 : ℕ) *
     ((5 * Real.pi / 2 * W +
         5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + eta)⌋₊ : ℕ) : ℝ)) *
       (((A₀ : ℝ) + (B₀ : ℝ)) * eta *
@@ -61,9 +61,9 @@ theorem integral_Icc_normSq_harmonicLadderProductDefectIco_le_closed
     {Q eta U W : ℝ} (hQ : 1 ≤ Q) (heta : 0 ≤ eta) (hW : 1 ≤ W)
     {J L : ℕ} (hPprime : ∀ p ∈ P, p.Prime)
     (hJU : U ≤ Q * (1 + eta) ^ J) (hU : 0 < U)
-    (hU2 : (B₀ : ℝ) < U ^ 2) :
+    (hU2 : (B₀ : ℝ) < U ^ (2 : ℕ)) :
     (∫ w in Set.Icc (-W) W,
-      ‖harmonicLadderProductDefectIco P A₀ B₀ Q eta J L w‖ ^ 2) ≤
+      ‖harmonicLadderProductDefectIco P A₀ B₀ Q eta J L w‖ ^ (2 : ℕ)) ≤
         menonHarmonicHighLadderErrorBudget A₀ B₀ eta U W := by
   classical
   set N : ℕ := ⌊(B₀ : ℝ) * (1 + eta)⌋₊ with hN
@@ -144,11 +144,11 @@ theorem integral_Icc_normSq_harmonicLadderProductDefectIco_le_closed
       (harmonicRamareCofactorCoeff P) (hDpos x hx) w
   have hcongr :
       (∫ w in Set.Icc (-W) W,
-        ‖harmonicLadderProductDefectIco P A₀ B₀ Q eta J L w‖ ^ 2) =
+        ‖harmonicLadderProductDefectIco P A₀ B₀ Q eta J L w‖ ^ (2 : ℕ)) =
       ∫ w in Set.Icc (-W) W,
         ‖∑ x ∈ ladderIndexIco P Q eta J L,
           logPoly (harmonicPrimeShiftCoeff x.2 (harmonicRamareCofactorCoeff P))
-            ((ladderGapSetAt A₀ B₀ Q eta x).image (fun m => x.2 * m)) w‖ ^ 2 := by
+            ((ladderGapSetAt A₀ B₀ Q eta x).image (fun m => x.2 * m)) w‖ ^ (2 : ℕ) := by
     exact MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => by rw [hrep w]
   rw [hcongr]
   have hmain := integral_Icc_normSq_sum_logPoly_le_support_bound
@@ -180,7 +180,7 @@ theorem integral_Icc_normSq_harmonicLadderProductDefectIco_le_closed
   dsimp only [Omega, N] at hmain ⊢
   have hmean0 : 0 ≤ 5 * Real.pi / 2 * W +
       5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + eta)⌋₊ : ℕ) : ℝ) := by positivity
-  have hscale0 : 0 ≤ ((1 + eta) / (A₀ : ℝ)) ^ 2 := sq_nonneg _
+  have hscale0 : 0 ≤ ((1 + eta) / (A₀ : ℝ)) ^ (2 : ℕ) := sq_nonneg _
   have hmean := mul_le_mul_of_nonneg_left hgap hmean0
   simpa only [one_mul] using mul_le_mul_of_nonneg_left hmean hscale0
 
@@ -191,9 +191,9 @@ theorem integral_Icc_normSq_harmonicLadderProductDefect_le_prefix_add_high
     {J L : ℕ} (hJL : J ≤ L) (hPprime : ∀ p ∈ P, p.Prime)
     (hPge : ∀ p ∈ P, Q ≤ (p : ℝ))
     (hJU : U ≤ Q * (1 + eta) ^ J) (hU : 0 < U)
-    (hU2 : (B₀ : ℝ) < U ^ 2) :
+    (hU2 : (B₀ : ℝ) < U ^ (2 : ℕ)) :
     (∫ w in Set.Icc (-W) W,
-      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2) ≤
+      ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ)) ≤
       2 * menonHarmonicLadderErrorBudget A₀ B₀ Q eta W J +
         2 * menonHarmonicHighLadderErrorBudget A₀ B₀ eta U W := by
   have hsplit := setIntegral_normSq_add_le
@@ -202,10 +202,10 @@ theorem integral_Icc_normSq_harmonicLadderProductDefect_le_prefix_add_high
     measurableSet_Icc (Set.Subset.rfl : Set.Icc (-W) W ⊆ Set.Icc (-W) W)
   have hrewrite :
       (∫ w in Set.Icc (-W) W,
-        ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ 2) =
+        ‖harmonicLadderProductDefect P A₀ B₀ Q eta L w‖ ^ (2 : ℕ)) =
       ∫ w in Set.Icc (-W) W,
         ‖harmonicLadderProductDefect P A₀ B₀ Q eta J w +
-          harmonicLadderProductDefectIco P A₀ B₀ Q eta J L w‖ ^ 2 := by
+          harmonicLadderProductDefectIco P A₀ B₀ Q eta J L w‖ ^ (2 : ℕ) := by
     exact MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => by
       rw [harmonicLadderProductDefect_eq_add_Ico P A₀ B₀ Q eta hJL w]
   rw [hrewrite]

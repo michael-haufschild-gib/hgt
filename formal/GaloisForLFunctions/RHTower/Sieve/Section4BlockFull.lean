@@ -45,15 +45,15 @@ theorem section4_block_full {B Q : Finset ℕ} {A₁ B₁ : ℕ}
       ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ≤ Vk k)
     (hIk : ∀ k ∈ Finset.range L,
       (∫ w in shortExceptional B W VP,
-          ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2) ≤ Ik k) :
+          ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ)) ≤ Ik k) :
     (∫ w in Set.Icc (-W) W,
-        ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
-      ≤ VP ^ 2 * (∫ w in Set.Icc (-W) W, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
-        + (B.card : ℝ) ^ 2
+        ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
+      ≤ VP ^ (2 : ℕ) * (∫ w in Set.Icc (-W) W, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
+        + (B.card : ℝ) ^ (2 : ℕ)
           * (2 * ((∑ k ∈ Finset.range L, 1 / v k)
-                * ∑ k ∈ Finset.range L, v k * (Vk k ^ 2 * Ik k))
+                * ∑ k ∈ Finset.range L, v k * (Vk k ^ (2 : ℕ) * Ik k))
             + 2 * ∫ w in shortExceptional B W VP,
-                ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ 2) := by
+                ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ (2 : ℕ)) := by
   classical
   have hBf : ∀ w : ℝ, ‖primeBlockPoly B w‖ ≤ (B.card : ℝ) := by
     intro w
@@ -70,7 +70,7 @@ theorem section4_block_full {B Q : Finset ℕ} {A₁ B₁ : ℕ}
   have hchain := setIntegral_normSq_omegaWeighted_le_blocks (Q := Q) (A₁ := A₁) (B₁ := B₁)
     (W := W) hR hη hL hQprime hQrange v hv Vk Ik
     (measurableSet_shortExceptional B W VP) (shortExceptional_subset B W VP) hVk hIk
-  have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ 2 := sq_nonneg _
+  have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ (2 : ℕ) := sq_nonneg _
   have hmul := mul_le_mul_of_nonneg_left hchain hB2
   exact hsplit.trans (by linarith [hmul])
 
@@ -100,15 +100,15 @@ theorem section4_block_full_on {B Q : Finset ℕ} {A₁ B₁ : ℕ}
       ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ≤ Vk k)
     (hIk : ∀ k ∈ Finset.range L,
       (∫ w in shortExceptionalOn S B VP,
-          ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2) ≤ Ik k) :
+          ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ)) ≤ Ik k) :
     (∫ w in S,
-        ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
-      ≤ VP ^ 2 * (∫ w in S, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
-        + (B.card : ℝ) ^ 2
+        ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
+      ≤ VP ^ (2 : ℕ) * (∫ w in S, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
+        + (B.card : ℝ) ^ (2 : ℕ)
           * (2 * ((∑ k ∈ Finset.range L, 1 / v k)
-                * ∑ k ∈ Finset.range L, v k * (Vk k ^ 2 * Ik k))
+                * ∑ k ∈ Finset.range L, v k * (Vk k ^ (2 : ℕ) * Ik k))
             + 2 * ∫ w in shortExceptionalOn S B VP,
-                ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ 2) := by
+                ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ (2 : ℕ)) := by
   classical
   have hBf : ∀ w : ℝ, ‖primeBlockPoly B w‖ ≤ (B.card : ℝ) := by
     intro w
@@ -125,7 +125,7 @@ theorem section4_block_full_on {B Q : Finset ℕ} {A₁ B₁ : ℕ}
   have hchain := setIntegral_normSq_omegaWeighted_le_blocks (Q := Q) (A₁ := A₁) (B₁ := B₁)
     (W := W) hR hη hL hQprime hQrange v hv Vk Ik
     (measurableSet_shortExceptionalOn hSm B VP) (shortExceptionalOn_subset hSs B VP) hVk hIk
-  have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ 2 := sq_nonneg _
+  have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ (2 : ℕ) := sq_nonneg _
   have hmul := mul_le_mul_of_nonneg_left hchain hB2
   exact hsplit.trans (by linarith [hmul])
 

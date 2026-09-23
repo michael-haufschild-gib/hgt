@@ -323,7 +323,7 @@ theorem ccmFiniteSemilocalHarmonic_scaled_integral (ell m : ℕ) :
 theorem ccmFiniteSemilocalHarmonic_sigma_integral (ell m : ℕ) :
     CCMRationalIntegral
       ((Nat.centralBinom ell : ℚ) * (Nat.centralBinom m : ℚ) *
-        ccmFiniteSemilocalHarmonic ell m ^ 2) :=
+        ccmFiniteSemilocalHarmonic ell m ^ (2 : ℕ)) :=
   ccmFiniteSemilocalHarmonic_sigma_integral_of_scaled_integral
     ccmFiniteSemilocalHarmonic_scaled_integral ell m
 

@@ -25,7 +25,7 @@ noncomputable section
 /-- Bilinear two-feature determinant with independently weighted rows. -/
 def finiteOrientedExteriorDeterminant
     {ι : Type*} (s : Finset ι) (f g left right : ι → ℂ) : ℂ :=
-  (∑ i ∈ s, left i * f i ^ 2) * (∑ j ∈ s, right j * g j ^ 2) -
+  (∑ i ∈ s, left i * f i ^ (2 : ℕ)) * (∑ j ∈ s, right j * g j ^ (2 : ℕ)) -
     (∑ i ∈ s, left i * f i * g i) *
       (∑ j ∈ s, right j * f j * g j)
 
@@ -132,7 +132,7 @@ theorem finiteExteriorReflectionProjector_eq_detCesaro
     finiteExteriorReflectionProjector s
         (fun i j => r i * r j * (f i * g j) * (f i * g j - f j * g i))
         z w u N =
-      (((N : ℝ)⁻¹ : ℂ) ^ 3) *
+      (((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           finiteExteriorReflectionDeterminant s r f g z w u a b c := by
   classical
@@ -146,13 +146,13 @@ theorem finiteExteriorReflectionProjector_eq_detCesaro
       C i j * (K * ∑ a ∈ Finset.range N, Z i j ^ a) *
           (K * ∑ b ∈ Finset.range N, W i j ^ b) *
           (K * ∑ c ∈ Finset.range N, U i j ^ c) =
-        K ^ 3 * ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N,
+        K ^ (3 : ℕ) * ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N,
           ∑ c ∈ Finset.range N,
             C i j * Z i j ^ a * W i j ^ b * U i j ^ c := by
     rw [show C i j * (K * ∑ a ∈ Finset.range N, Z i j ^ a) *
         (K * ∑ b ∈ Finset.range N, W i j ^ b) *
         (K * ∑ c ∈ Finset.range N, U i j ^ c) =
-      K ^ 3 * ((C i j * ∑ a ∈ Finset.range N, Z i j ^ a) *
+      K ^ (3 : ℕ) * ((C i j * ∑ a ∈ Finset.range N, Z i j ^ a) *
         (∑ b ∈ Finset.range N, W i j ^ b) *
         (∑ c ∈ Finset.range N, U i j ^ c)) by ring]
     congr 1
@@ -190,10 +190,10 @@ theorem finiteExteriorReflectionProjector_eq_detCesaro
         (K * ∑ c ∈ Finset.range N, U i j ^ c)) = _
   simp_rw [hfactor]
   calc
-    (∑ i ∈ s, ∑ j ∈ s, K ^ 3 * ∑ a ∈ Finset.range N,
+    (∑ i ∈ s, ∑ j ∈ s, K ^ (3 : ℕ) * ∑ a ∈ Finset.range N,
         ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           C i j * Z i j ^ a * W i j ^ b * U i j ^ c) =
-      K ^ 3 * ∑ i ∈ s, ∑ j ∈ s, ∑ a ∈ Finset.range N,
+      K ^ (3 : ℕ) * ∑ i ∈ s, ∑ j ∈ s, ∑ a ∈ Finset.range N,
         ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           C i j * Z i j ^ a * W i j ^ b * U i j ^ c := by
         rw [Finset.mul_sum]
@@ -387,7 +387,7 @@ theorem xiReflectionOrientedMinor_sum_eq_half_square
       (1 / 2 : ℂ) * ∑ rho ∈ S,
         r rho * r (xiZeroLineConjEquiv rho) *
           (f rho * g (xiZeroLineConjEquiv rho) -
-            f (xiZeroLineConjEquiv rho) * g rho) ^ 2 := by
+            f (xiZeroLineConjEquiv rho) * g rho) ^ (2 : ℕ) := by
   let A : XiDivisorSupport → ℂ := fun rho =>
     r rho * r (xiZeroLineConjEquiv rho) *
       (f rho * g (xiZeroLineConjEquiv rho)) *
@@ -396,7 +396,7 @@ theorem xiReflectionOrientedMinor_sum_eq_half_square
   let Q : XiDivisorSupport → ℂ := fun rho =>
     r rho * r (xiZeroLineConjEquiv rho) *
       (f rho * g (xiZeroLineConjEquiv rho) -
-        f (xiZeroLineConjEquiv rho) * g rho) ^ 2
+        f (xiZeroLineConjEquiv rho) * g rho) ^ (2 : ℕ)
   have hreindex : (∑ rho ∈ S, A (xiZeroLineConjEquiv rho)) =
       ∑ rho ∈ S, A rho :=
     sum_comp_xiZeroLineConjEquiv_eq S hclosed A
@@ -436,20 +436,20 @@ theorem tendsto_xiPrimeCayleyExteriorReflectionDeterminant
     (hclosed : ∀ rho ∈ S, xiZeroLineConjEquiv rho ∈ S)
     (r f g : XiDivisorSupport → ℂ) :
     Tendsto
-      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ 3) *
+      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           xiPrimeCayleyExteriorReflectionDeterminant S r f g a b c)
       atTop
       (nhds ((1 / 2 : ℂ) * ∑ rho ∈ S,
         r rho * r (xiZeroLineConjEquiv rho) *
           (f rho * g (xiZeroLineConjEquiv rho) -
-            f (xiZeroLineConjEquiv rho) * g rho) ^ 2)) := by
+            f (xiZeroLineConjEquiv rho) * g rho) ^ (2 : ℕ))) := by
   let C : XiDivisorSupport → XiDivisorSupport → ℂ := fun rho sigma =>
     r rho * r sigma * (f rho * g sigma) *
       (f rho * g sigma - f sigma * g rho)
   have hprojector := tendsto_xiPrimeCayleyExteriorReflectionProjector S C
   have hdet : Tendsto
-      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ 3) *
+      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           xiPrimeCayleyExteriorReflectionDeterminant S r f g a b c)
       atTop
@@ -467,7 +467,7 @@ theorem tendsto_xiPrimeCayleyExteriorReflectionDeterminant
         (1 / 2 : ℂ) * ∑ rho ∈ S,
           r rho * r (xiZeroLineConjEquiv rho) *
             (f rho * g (xiZeroLineConjEquiv rho) -
-              f (xiZeroLineConjEquiv rho) * g rho) ^ 2 := by
+              f (xiZeroLineConjEquiv rho) * g rho) ^ (2 : ℕ) := by
     simpa only [C] using hsym
   rw [hlimitEq] at hdet
   exact hdet
@@ -577,7 +577,7 @@ theorem star_xiExteriorAbelRowWeight_one (rho : XiDivisorSupport) :
 
 /-- Square of an anti-Hermitian two-feature Pluecker coordinate is negative norm square. -/
 theorem sq_conj_wedge_eq_neg_normSq (a b : ℂ) :
-    (a * star b - star a * b) ^ 2 =
+    (a * star b - star a * b) ^ (2 : ℕ) =
       -((Complex.normSq (a * star b - star a * b) : ℝ) : ℂ) := by
   rw [Complex.normSq_eq_conj_mul_self]
   simp only [starRingEnd_apply, star_sub, star_mul, star_star]
@@ -591,7 +591,7 @@ theorem xiExteriorBoundaryReflectedMinor_eq_normSq
         (xiCriticalFeatureSpectralValue t rho *
               xiCriticalFeatureSpectralValue (t + 1) (xiZeroLineConjEquiv rho) -
             xiCriticalFeatureSpectralValue t (xiZeroLineConjEquiv rho) *
-              xiCriticalFeatureSpectralValue (t + 1) rho) ^ 2 =
+              xiCriticalFeatureSpectralValue (t + 1) rho) ^ (2 : ℕ) =
       ((Complex.normSq
         (xiExteriorAbelRowWeight 1 rho *
           (xiCriticalFeatureSpectralValue t rho *
@@ -649,7 +649,7 @@ theorem tendsto_xiPrimeGammaExteriorAbelDeterminant_one
     (hclosed : ∀ rho ∈ S, xiZeroLineConjEquiv rho ∈ S)
     (t : ℝ) :
     Tendsto
-      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ 3) *
+      (fun N : ℕ => (((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           xiPrimeGammaExteriorAbelDeterminant S 1 t a b c)
       atTop
@@ -732,7 +732,7 @@ theorem sum_xiExteriorCayleyAbelFixedPacketEnergy_eq_packetEnergy
             xiExteriorCayleyAbelFixedCoefficient 1 t rho)) =
       ∑ rho ∈ S,
         ‖((xiSupportMultiplicity rho : ℕ) : ℂ) *
-          xiWardGreenExteriorCoefficient true rho‖ ^ 2
+          xiWardGreenExteriorCoefficient true rho‖ ^ (2 : ℕ)
     calc
       _ = ∑ t ∈ G, ∑ rho ∈ S.filter
           (fun rho => xiExteriorReporterCenter rho = t),
@@ -768,7 +768,7 @@ theorem sum_xiExteriorCayleyAbelFixedPacketEnergy_eq_packetEnergy
             xiExteriorCayleyAbelFixedCoefficient 1 (t - 1) rho)) =
       ∑ rho ∈ S,
         ‖((xiSupportMultiplicity rho : ℕ) : ℂ) *
-          xiWardGreenExteriorCoefficient false rho‖ ^ 2
+          xiWardGreenExteriorCoefficient false rho‖ ^ (2 : ℕ)
     calc
       _ = ∑ t ∈ G, ∑ rho ∈ S.filter
           (fun rho => xiExteriorReporterCenter rho = t),
@@ -801,11 +801,11 @@ factor two restoring ordered reflection-pair counting. -/
 def xiPrimeGammaExteriorAbelPacketCesaro
     (S : Finset XiDivisorSupport) (R : ℝ) (N : ℕ) : ℂ :=
   2 * ∑ t ∈ S.image xiExteriorReporterCenter,
-    ((((N : ℝ)⁻¹ : ℂ) ^ 3) *
+    ((((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           xiPrimeGammaExteriorAbelDeterminant
             (xiExteriorReporterBlock S t) R t a b c +
-      (((N : ℝ)⁻¹ : ℂ) ^ 3) *
+      (((N : ℝ)⁻¹ : ℂ) ^ (3 : ℕ)) *
         ∑ a ∈ Finset.range N, ∑ b ∈ Finset.range N, ∑ c ∈ Finset.range N,
           xiPrimeGammaExteriorAbelDeterminant
             (xiExteriorReporterBlock S t) R (t - 1) a b c)

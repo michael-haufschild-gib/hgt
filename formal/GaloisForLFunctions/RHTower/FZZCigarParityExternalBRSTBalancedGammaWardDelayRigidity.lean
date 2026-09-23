@@ -47,9 +47,9 @@ theorem fzzHJBalancedExternalGammaPhaseSlope_zero_lt
   have hpartial := hsumdiff.sum_le_tsum (Finset.range 3) (fun n _ => hterm n)
   have hfinite :
       ∑ n ∈ Finset.range 3, (termy n - term0 n) =
-        (2 - 2 / (1 + 4 * y ^ 2)) +
-          (2 / 3 - 6 / (9 + 4 * y ^ 2)) +
-            8 * y ^ 2 / (5 * (25 + 4 * y ^ 2)) := by
+        (2 - 2 / (1 + 4 * y ^ (2 : ℕ))) +
+          (2 / 3 - 6 / (9 + 4 * y ^ (2 : ℕ))) +
+            8 * y ^ (2 : ℕ) / (5 * (25 + 4 * y ^ (2 : ℕ))) := by
     simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add]
     dsimp [termy, term0]
     rw [re_gaussDigammaSeriesTerm_vertical, re_gaussDigammaSeriesTerm_vertical,
@@ -57,26 +57,26 @@ theorem fzzHJBalancedExternalGammaPhaseSlope_zero_lt
     have hzero0 :
         (gaussDigammaSeriesTerm ((1 / 2 : ℝ) : ℂ) 0).re =
           1 / ((0 : ℝ) + 1) - ((1 / 2 : ℝ) + 0) /
-            (((1 / 2 : ℝ) + 0) ^ 2 + (0 : ℝ) ^ 2) := by
+            (((1 / 2 : ℝ) + 0) ^ (2 : ℕ) + (0 : ℝ) ^ (2 : ℕ)) := by
       simpa using re_gaussDigammaSeriesTerm_vertical (1 / 2) 0 0
     have hzero1 :
         (gaussDigammaSeriesTerm ((1 / 2 : ℝ) : ℂ) 1).re =
           1 / ((1 : ℝ) + 1) - ((1 / 2 : ℝ) + 1) /
-            (((1 / 2 : ℝ) + 1) ^ 2 + (0 : ℝ) ^ 2) := by
+            (((1 / 2 : ℝ) + 1) ^ (2 : ℕ) + (0 : ℝ) ^ (2 : ℕ)) := by
       simpa using re_gaussDigammaSeriesTerm_vertical (1 / 2) 0 1
     have hzero2 :
         (gaussDigammaSeriesTerm ((1 / 2 : ℝ) : ℂ) 2).re =
           1 / ((2 : ℝ) + 1) - ((1 / 2 : ℝ) + 2) /
-            (((1 / 2 : ℝ) + 2) ^ 2 + (0 : ℝ) ^ 2) := by
+            (((1 / 2 : ℝ) + 2) ^ (2 : ℕ) + (0 : ℝ) ^ (2 : ℕ)) := by
       simpa using re_gaussDigammaSeriesTerm_vertical (1 / 2) 0 2
     rw [hzero0, hzero1, hzero2]
-    have hden1 : 0 < 1 + 4 * y ^ 2 := by positivity
-    have hden9 : 0 < 9 + 4 * y ^ 2 := by positivity
-    have hden25 : 0 < 25 + 4 * y ^ 2 := by positivity
+    have hden1 : 0 < 1 + 4 * y ^ (2 : ℕ) := by positivity
+    have hden9 : 0 < 9 + 4 * y ^ (2 : ℕ) := by positivity
+    have hden25 : 0 < 25 + 4 * y ^ (2 : ℕ) := by positivity
     norm_num
     field_simp [hden1.ne', hden9.ne', hden25.ne']
     ring
-  have hstrict : 0 < 8 * y ^ 2 / (5 * (25 + 4 * y ^ 2)) := by
+  have hstrict : 0 < 8 * y ^ (2 : ℕ) / (5 * (25 + 4 * y ^ (2 : ℕ))) := by
     positivity
   have hdiff : ∑' n : ℕ, (termy n - term0 n) =
       (∑' n : ℕ, termy n) - ∑' n : ℕ, term0 n :=

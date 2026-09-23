@@ -21,9 +21,9 @@ def rawQuinticEndpointMatrix (q : SchwartzMap ℝ ℂ) (k : ℝ) (left : Bool) :
 
 theorem rawCubicEndpointMatrix_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (left : Bool) :
     rawCubicEndpointMatrix q k left = rawCubicEndpointMatrix q 0 left+
-      (k : ℂ) • rawQuarticEndpointMatrix q left+(k : ℂ)^2 • rawQuinticEndpointMatrix q k left := by
+      (k : ℂ) • rawQuarticEndpointMatrix q left+(k : ℂ)^(2 : ℕ) • rawQuinticEndpointMatrix q k left := by
   have h (v : SpectralVector) : rawThirdEndpoint q k v left = rawThirdEndpoint q 0 v left+
-      (k : ℂ) • rawFourthEndpoint q 0 v left+(k : ℂ)^2 • rawFifthEndpoint q k v left := by
+      (k : ℂ) • rawFourthEndpoint q 0 v left+(k : ℂ)^(2 : ℕ) • rawFifthEndpoint q k v left := by
     rw [rawThirdEndpoint_fourth_factor,rawFourthEndpoint_fifth_factor]
     module
   ext i j
@@ -36,8 +36,8 @@ theorem rawCubicEndpointMatrix_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) 
 /-- All five orders belong to the actual infinite endpoint matrix. -/
 theorem rawAsymptoticMatrix_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (left : Bool) :
     rawAsymptoticMatrix q k left = 1+(k : ℂ) • rawFirstCoefficientMatrix q+
-      (k : ℂ)^2 • rawQuadraticEndpointMatrix q left+(k : ℂ)^3 • rawCubicEndpointMatrix q 0 left+
-      (k : ℂ)^4 • rawQuarticEndpointMatrix q left+(k : ℂ)^5 • rawQuinticEndpointMatrix q k left := by
+      (k : ℂ)^(2 : ℕ) • rawQuadraticEndpointMatrix q left+(k : ℂ)^(3 : ℕ) • rawCubicEndpointMatrix q 0 left+
+      (k : ℂ)^(4 : ℕ) • rawQuarticEndpointMatrix q left+(k : ℂ)^(5 : ℕ) • rawQuinticEndpointMatrix q k left := by
   rw [rawAsymptoticMatrix_cubic_factor,rawCubicEndpointMatrix_fifth_factor]
   module
 
@@ -51,10 +51,10 @@ theorem rawQuinticEndpointMatrix_tendsto_zero (q : SchwartzMap ℝ ℂ) (left : 
 /-- No inverse regularity premise is needed: determinant one and the linear adjugate suffice. -/
 theorem rawAsymptoticMatrix_inverse_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (left : Bool) :
     (rawAsymptoticMatrix q k left)⁻¹ = 1-(k : ℂ) • rawFirstCoefficientMatrix q+
-      (k : ℂ)^2 • (rawQuadraticEndpointMatrix q left).adjugate+
-      (k : ℂ)^3 • (rawCubicEndpointMatrix q 0 left).adjugate+
-      (k : ℂ)^4 • (rawQuarticEndpointMatrix q left).adjugate+
-      (k : ℂ)^5 • (rawQuinticEndpointMatrix q k left).adjugate := by
+      (k : ℂ)^(2 : ℕ) • (rawQuadraticEndpointMatrix q left).adjugate+
+      (k : ℂ)^(3 : ℕ) • (rawCubicEndpointMatrix q 0 left).adjugate+
+      (k : ℂ)^(4 : ℕ) • (rawQuarticEndpointMatrix q left).adjugate+
+      (k : ℂ)^(5 : ℕ) • (rawQuinticEndpointMatrix q k left).adjugate := by
   rw [Matrix.inv_def,rawAsymptoticMatrix_det]
   simp only [Ring.inverse_one,one_smul]
   rw [rawAsymptoticMatrix_fifth_factor]

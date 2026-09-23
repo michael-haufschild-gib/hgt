@@ -49,11 +49,11 @@ theorem finiteSpikeSecularProfile_eq_zero_of_notMem
 /-- The secular equation is exactly the canonical carrier normalization. -/
 theorem finiteSpikeSecularProfile_carrierPairing
     (s : Finset ι) (w d : ι → ℝ) (lam : ℝ)
-    (hsec : ∑ i ∈ s, w i ^ 2 / (lam + d i) = 1) :
+    (hsec : ∑ i ∈ s, w i ^ (2 : ℕ) / (lam + d i) = 1) :
     (∑ i ∈ s, w i * finiteSpikeSecularProfile s w d lam i) = 1 := by
   calc
     (∑ i ∈ s, w i * finiteSpikeSecularProfile s w d lam i) =
-        ∑ i ∈ s, w i ^ 2 / (lam + d i) := by
+        ∑ i ∈ s, w i ^ (2 : ℕ) / (lam + d i) := by
       apply Finset.sum_congr rfl
       intro i hi
       simp only [finiteSpikeSecularProfile, hi, if_true]
@@ -65,7 +65,7 @@ theorem finiteSpikeSecularProfile_carrierPairing
 theorem finiteSpikeSecularProfile_eigen
     (s : Finset ι) (w d : ι → ℝ) (lam : ℝ)
     (hden : ∀ i ∈ s, lam + d i ≠ 0)
-    (hsec : ∑ i ∈ s, w i ^ 2 / (lam + d i) = 1)
+    (hsec : ∑ i ∈ s, w i ^ (2 : ℕ) / (lam + d i) = 1)
     {i : ι} (hi : i ∈ s) :
     finiteRankOneMinusDiagonal s w d (finiteSpikeSecularProfile s w d lam) i =
       lam * finiteSpikeSecularProfile s w d lam i := by
@@ -81,7 +81,7 @@ coprime plateau. -/
 theorem finiteSpikeSecularProfile_alignedTrace
     (s : Finset ι) (w d unitTrace : ι → ℝ) (lam scale : ℝ)
     (halign : ∀ i ∈ s, unitTrace i = scale * w i)
-    (hsec : ∑ i ∈ s, w i ^ 2 / (lam + d i) = 1) :
+    (hsec : ∑ i ∈ s, w i ^ (2 : ℕ) / (lam + d i) = 1) :
     (∑ i ∈ s, unitTrace i * finiteSpikeSecularProfile s w d lam i) = scale := by
   calc
     (∑ i ∈ s, unitTrace i * finiteSpikeSecularProfile s w d lam i) =
@@ -127,7 +127,7 @@ theorem gradeResolventTrace_eq_scale
 
 /-- Squared carrier mass of a Boolean ANOVA grade in the sieve normalization. -/
 def booleanGradeMass (volume : ℝ) (phi : ι → ℝ) (i : ι) : ℝ :=
-  volume ^ 2 / phi i
+  volume ^ (2 : ℕ) / phi i
 
 /-- Inverse CRT Fourier value of the canonical grade carrier at any coprime residue. -/
 def booleanGradeCoprimeValue
@@ -314,8 +314,8 @@ theorem lowHighCounterflow_realInner
     (hX : X = headMass • primeCarrier + counterflow)
     (hY : Y = (1 - headMass) • primeCarrier - counterflow) :
     inner ℝ X Y =
-      (1 / 4 : ℝ) * ‖primeCarrier‖ ^ 2 -
-        ‖counterflow - (1 / 2 - headMass) • primeCarrier‖ ^ 2 := by
+      (1 / 4 : ℝ) * ‖primeCarrier‖ ^ (2 : ℕ) -
+        ‖counterflow - (1 / 2 - headMass) • primeCarrier‖ ^ (2 : ℕ) := by
   rw [hX, hY,
     ← real_inner_self_eq_norm_sq
       (counterflow - (1 / 2 - headMass) • primeCarrier)]

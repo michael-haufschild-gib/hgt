@@ -539,7 +539,7 @@ theorem eventually_scaled_deriv_variation_of_eventual_second_deriv_bound_center_
 /-- Scalar fixed-tail estimate for the normalized second-derivative term at the pre-hit base point.
 
 The exact fixed-tail second-derivative decomposition has a leading term of size
-`C * ‖2α‖^(2m) * ‖(f^[n])' z‖^2` and a lower-order term of size `‖2α‖^m`.  After the two
+`C * ‖2α‖^(2m) * ‖(f^[n])' z‖^(2 : ℕ)` and a lower-order term of size `‖2α‖^m`.  After the two
 inverse-multiplier normalizations in the scaled Newton window, the leading term contributes
 `C * r` and the lower-order term tends to zero. -/
 theorem eventually_scaled_base_second_deriv_term_le_of_repelling_hit

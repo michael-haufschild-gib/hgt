@@ -502,7 +502,7 @@ theorem norm_routeTLogPhaseBlock_le_powerSaving
   exact norm_routeTLogPhasePartialBlock_le_powerSaving hu hC
     (by omega) (by omega) ht hbottom htop
 
-/-- Same saving in the natural one-dimensional scale `N=(2C)^200`; its exponent is strictly
+/-- Same saving in the natural one-dimensional scale `N=(2C)^(200 : ℕ)`; its exponent is strictly
 below one by `routeTLogOneDimensionalSavingExponent_pos`. -/
 theorem norm_routeTLogPhasePartialBlock_le_rpow
     {u C N' : ℕ} {t : ℝ} (hu : 141 ≤ u)

@@ -88,10 +88,10 @@ average (BLGHT) that converges to it is not formalized. -/
 @[aesop safe]
 theorem satoTate_moment (k : ℕ) :
     ∫ θ in (0:ℝ)..Real.pi,
-        (Polynomial.Chebyshev.U ℝ (k : ℤ)).eval (Real.cos θ) * (2 / Real.pi * Real.sin θ ^ 2)
+        (Polynomial.Chebyshev.U ℝ (k : ℤ)).eval (Real.cos θ) * (2 / Real.pi * Real.sin θ ^ (2 : ℕ))
       = if k = 0 then 1 else 0 := by
   have hpt : ∀ θ : ℝ,
-      (Polynomial.Chebyshev.U ℝ (k : ℤ)).eval (Real.cos θ) * (2 / Real.pi * Real.sin θ ^ 2)
+      (Polynomial.Chebyshev.U ℝ (k : ℤ)).eval (Real.cos θ) * (2 / Real.pi * Real.sin θ ^ (2 : ℕ))
         = (2 / Real.pi) * (Real.sin (((k : ℝ) + 1) * θ) * Real.sin θ) := by
     intro θ
     have hU := Polynomial.Chebyshev.U_real_cos θ (k : ℤ)
@@ -158,11 +158,11 @@ underlying the moment/Weyl criterion for equidistribution. Generalizes
 theorem satoTate_orthonormal (j k : ℕ) :
     ∫ θ in (0:ℝ)..Real.pi,
         (Polynomial.Chebyshev.U ℝ (j : ℤ)).eval (Real.cos θ)
-          * (Polynomial.Chebyshev.U ℝ (k : ℤ)).eval (Real.cos θ) * (2 / Real.pi * Real.sin θ ^ 2)
+          * (Polynomial.Chebyshev.U ℝ (k : ℤ)).eval (Real.cos θ) * (2 / Real.pi * Real.sin θ ^ (2 : ℕ))
       = if j = k then 1 else 0 := by
   have hpt : ∀ θ : ℝ,
       (Polynomial.Chebyshev.U ℝ (j : ℤ)).eval (Real.cos θ)
-          * (Polynomial.Chebyshev.U ℝ (k : ℤ)).eval (Real.cos θ) * (2 / Real.pi * Real.sin θ ^ 2)
+          * (Polynomial.Chebyshev.U ℝ (k : ℤ)).eval (Real.cos θ) * (2 / Real.pi * Real.sin θ ^ (2 : ℕ))
         = (2 / Real.pi) * (Real.sin (((j + 1 : ℕ) : ℝ) * θ) * Real.sin (((k + 1 : ℕ) : ℝ) * θ)) := by
     intro θ
     have hUj := Polynomial.Chebyshev.U_real_cos θ (j : ℤ)

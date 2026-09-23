@@ -161,7 +161,7 @@ theorem finrank_inf_orthogonal_sub_sup_eq_two {A B : Submodule 𝕜 H}
       have hperp : ⟪u, p⟫_𝕜 = 0 :=
         (Submodule.mem_orthogonal_singleton_iff_inner_right).1 hp.2
       rw [← hup, inner_smul_right, inner_self_eq_norm_sq_to_K] at hperp
-      have hun : ((‖u‖ : 𝕜)) ^ 2 ≠ 0 := pow_ne_zero 2 (by simpa using hu0)
+      have hun : ((‖u‖ : 𝕜)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (by simpa using hu0)
       exact (mul_eq_zero.1 hperp).resolve_right hun
     have hvq : lv • v = q := by
       have : q - lv • v = 0 := by rw [← hsplit, hzero2]
@@ -170,7 +170,7 @@ theorem finrank_inf_orthogonal_sub_sup_eq_two {A B : Submodule 𝕜 H}
       have hperp : ⟪v, q⟫_𝕜 = 0 :=
         (Submodule.mem_orthogonal_singleton_iff_inner_right).1 hq.2
       rw [← hvq, inner_smul_right, inner_self_eq_norm_sq_to_K] at hperp
-      have hvn : ((‖v‖ : 𝕜)) ^ 2 ≠ 0 := pow_ne_zero 2 (by simpa using hv0)
+      have hvn : ((‖v‖ : 𝕜)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (by simpa using hv0)
       exact (mul_eq_zero.1 hperp).resolve_right hvn
     exact ⟨hlu, hlv⟩
   have hrange : Set.range ![w₁, w₂] = {w₁, w₂} := by

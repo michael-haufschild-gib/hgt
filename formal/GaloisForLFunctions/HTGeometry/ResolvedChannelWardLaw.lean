@@ -296,16 +296,16 @@ def resolvedChannelWeightedCoherence
 
 /-- Squared off-diagonal energy of a real channel matrix. -/
 def resolvedChannelRealOffDiagonalEnergy (K : Matrix ι ι ℝ) : ℝ :=
-  ∑ i, ∑ j ∈ Finset.univ.erase i, (K i j) ^ 2
+  ∑ i, ∑ j ∈ Finset.univ.erase i, (K i j) ^ (2 : ℕ)
 
 /-- Off-diagonal pair energy of a channel weight vector. -/
 def resolvedChannelOffDiagonalWeightEnergy (u : ι → ℝ) : ℝ :=
-  ∑ i, ∑ j ∈ Finset.univ.erase i, (u i * u j) ^ 2
+  ∑ i, ∑ j ∈ Finset.univ.erase i, (u i * u j) ^ (2 : ℕ)
 
 /-- Cauchy--Schwarz on the off-diagonal incidence set. -/
 theorem sq_resolvedChannelWeightedCoherence_le
     (K : Matrix ι ι ℝ) (u : ι → ℝ) :
-    resolvedChannelWeightedCoherence K u ^ 2 ≤
+    resolvedChannelWeightedCoherence K u ^ (2 : ℕ) ≤
       resolvedChannelRealOffDiagonalEnergy K *
         resolvedChannelOffDiagonalWeightEnergy u := by
   let s : Finset (Σ _ : ι, ι) :=
@@ -324,18 +324,18 @@ theorem resolvedChannelOffDiagonalEnergy_ofReal
     resolvedChannelRealOffDiagonalEnergy, Complex.normSq, pow_two]
 
 theorem resolvedChannelOffDiagonalWeightEnergy_le_sq_sum (u : ι → ℝ) :
-    resolvedChannelOffDiagonalWeightEnergy u ≤ (∑ i, (u i) ^ 2) ^ 2 := by
+    resolvedChannelOffDiagonalWeightEnergy u ≤ (∑ i, (u i) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   have hrow (i : ι) :
-      (∑ j ∈ Finset.univ.erase i, (u i * u j) ^ 2) ≤
-        ∑ j, (u i * u j) ^ 2 := by
-    rw [← Finset.sum_erase_add Finset.univ (fun j => (u i * u j) ^ 2)
+      (∑ j ∈ Finset.univ.erase i, (u i * u j) ^ (2 : ℕ)) ≤
+        ∑ j, (u i * u j) ^ (2 : ℕ) := by
+    rw [← Finset.sum_erase_add Finset.univ (fun j => (u i * u j) ^ (2 : ℕ))
       (Finset.mem_univ i)]
     exact le_add_of_nonneg_right (sq_nonneg (u i * u i))
   calc
     resolvedChannelOffDiagonalWeightEnergy u ≤
-        ∑ i, ∑ j, (u i * u j) ^ 2 := by
+        ∑ i, ∑ j, (u i * u j) ^ (2 : ℕ) := by
       exact Finset.sum_le_sum fun i _hi => hrow i
-    _ = (∑ i, (u i) ^ 2) ^ 2 := by
+    _ = (∑ i, (u i) ^ (2 : ℕ)) ^ (2 : ℕ) := by
       simp_rw [mul_pow]
       simp_rw [← Finset.mul_sum]
       rw [← Finset.sum_mul]
@@ -352,20 +352,20 @@ forces resolved coordinate-commutator energy. -/
 theorem resolvedChannelWardSchurCapacity_lower
     (K : Matrix ι ι ℝ) (u : ι → ℝ) (L : ℝ)
     (hL : 0 ≤ L) (hcoherence : L ≤ resolvedChannelWeightedCoherence K u) :
-    2 * L ^ 2 ≤
+    2 * L ^ (2 : ℕ) ≤
       resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) *
         resolvedChannelOffDiagonalWeightEnergy u := by
   have hcs := sq_resolvedChannelWeightedCoherence_le K u
   have hcoherence0 : 0 ≤ resolvedChannelWeightedCoherence K u :=
     hL.trans hcoherence
-  have hsq : L ^ 2 ≤
+  have hsq : L ^ (2 : ℕ) ≤
       resolvedChannelRealOffDiagonalEnergy K *
         resolvedChannelOffDiagonalWeightEnergy u := by
-    have : L ^ 2 ≤ resolvedChannelWeightedCoherence K u ^ 2 := by
+    have : L ^ (2 : ℕ) ≤ resolvedChannelWeightedCoherence K u ^ (2 : ℕ) := by
       nlinarith
     exact this.trans hcs
   calc
-    2 * L ^ 2 ≤ 2 * (resolvedChannelRealOffDiagonalEnergy K *
+    2 * L ^ (2 : ℕ) ≤ 2 * (resolvedChannelRealOffDiagonalEnergy K *
         resolvedChannelOffDiagonalWeightEnergy u) := by nlinarith
     _ = resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) *
         resolvedChannelOffDiagonalWeightEnergy u := by
@@ -377,16 +377,16 @@ theorem resolvedChannelWardSchurCapacity_lower
 theorem resolvedChannelWardSchurCapacity_simple_lower
     (K : Matrix ι ι ℝ) (u : ι → ℝ) (L : ℝ)
     (hL : 0 ≤ L) (hcoherence : L ≤ resolvedChannelWeightedCoherence K u) :
-    2 * L ^ 2 ≤
+    2 * L ^ (2 : ℕ) ≤
       resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) *
-        (∑ i, (u i) ^ 2) ^ 2 := by
+        (∑ i, (u i) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   calc
-    2 * L ^ 2 ≤
+    2 * L ^ (2 : ℕ) ≤
         resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) *
           resolvedChannelOffDiagonalWeightEnergy u :=
       resolvedChannelWardSchurCapacity_lower K u L hL hcoherence
     _ ≤ resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) *
-        (∑ i, (u i) ^ 2) ^ 2 := by
+        (∑ i, (u i) ^ (2 : ℕ)) ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_left
         (resolvedChannelOffDiagonalWeightEnergy_le_sq_sum u)
         (resolvedChannelTotalCommutatorEnergy_nonneg _)

@@ -69,7 +69,7 @@ theorem cartanQuadratic_eq_coefficient_onePort
       d.toOrbitCoareaDatum.terminalEnergy x +
         d.toOrbitCoareaDatum.blockEnergy x -
       (((K + 1 : ℕ) : ℝ) / N - 1) *
-        d.toOrbitCoareaDatum.physicalRank x ^ 2 := by
+        d.toOrbitCoareaDatum.physicalRank x ^ (2 : ℕ) := by
   rw [d.toOrbitCoareaDatum.cartanQuadratic_eq_positive_sub_onePort]
   rw [d.toOrbit_root]
 

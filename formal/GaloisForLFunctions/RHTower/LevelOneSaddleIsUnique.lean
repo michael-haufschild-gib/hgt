@@ -41,8 +41,8 @@ namespace RHTower
 /-- **The second derivative is negative.**  Both terms are negative for positive abscissa and positive
 argument. -/
 theorem phase_second_deriv_neg {σ t : ℝ} (hσ : 0 < σ) (ht : 0 < t) :
-    -(σ / t ^ 2) - 4 * π * Real.exp (2 * t) < 0 := by
-  have h1 : 0 < σ / t ^ 2 := by positivity
+    -(σ / t ^ (2 : ℕ)) - 4 * π * Real.exp (2 * t) < 0 := by
+  have h1 : 0 < σ / t ^ (2 : ℕ) := by positivity
   have h2 : 0 < 4 * π * Real.exp (2 * t) := by positivity
   linarith
 

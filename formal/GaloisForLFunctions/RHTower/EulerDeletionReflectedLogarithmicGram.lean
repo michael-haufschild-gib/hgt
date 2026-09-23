@@ -172,7 +172,7 @@ theorem reflected_chronological_decomposition (p q N : ℕ) (s : ℂ) :
 theorem gram_quadratic_eq (S : Finset ℕ) (c : ℕ → ℝ) (N : ℕ) :
     (∑ p ∈ S, ∑ q ∈ S, c p*c q*gramPrefix p q N) =
       ∑ n ∈ Finset.Icc 1 N,
-        (∑ p ∈ S, c p*(blockDeletionCoefficient p n:ℝ))^2/(n:ℝ) := by
+        (∑ p ∈ S, c p*(blockDeletionCoefficient p n:ℝ))^(2 : ℕ)/(n:ℝ) := by
   simp_rw [gramPrefix, Finset.mul_sum]
   rw [show (∑ p ∈ S, ∑ q ∈ S, ∑ n ∈ Finset.Icc 1 N,
         c p*c q*((blockDeletionCoefficient p n:ℝ)*

@@ -276,12 +276,12 @@ theorem noRelation_phiMero_of_naturalBoundary_commonBasin_sqrt_family_offOther_c
     (hβne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
     (hβanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
     (hβsqrt : ∀ n, ∀ z ∈ escapeLevel c₁ (n + 1),
-      (βlev (n + 1) z) ^ 2 = βlev n (quadratic c₁ z))
+      (βlev (n + 1) z) ^ (2 : ℕ) = βlev n (quadratic c₁ z))
     (hγanalytic : ∀ n, AnalyticOnNhd ℂ (γlev n) (escapeLevel c₂ n))
     (hγne : ∀ n, ∀ z ∈ escapeLevel c₂ n, γlev n z ≠ 0)
     (hγanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₂, γlev n z = bottcherCoord c₂ z)
     (hγsqrt : ∀ n, ∀ z ∈ escapeLevel c₂ (n + 1),
-      (γlev (n + 1) z) ^ 2 = γlev n (quadratic c₂ z))
+      (γlev (n + 1) z) ^ (2 : ℕ) = γlev n (quadratic c₂ z))
     (hnb : ∀ β : ℂ → ℂ,
         AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
         (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
@@ -335,12 +335,12 @@ theorem hrig_phiMero_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossin
     (hβne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
     (hβanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
     (hβsqrt : ∀ n, ∀ z ∈ escapeLevel c₁ (n + 1),
-      (βlev (n + 1) z) ^ 2 = βlev n (quadratic c₁ z))
+      (βlev (n + 1) z) ^ (2 : ℕ) = βlev n (quadratic c₁ z))
     (hγanalytic : ∀ n, AnalyticOnNhd ℂ (γlev n) (escapeLevel c₂ n))
     (hγne : ∀ n, ∀ z ∈ escapeLevel c₂ n, γlev n z ≠ 0)
     (hγanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₂, γlev n z = bottcherCoord c₂ z)
     (hγsqrt : ∀ n, ∀ z ∈ escapeLevel c₂ (n + 1),
-      (γlev (n + 1) z) ^ 2 = γlev n (quadratic c₂ z))
+      (γlev (n + 1) z) ^ (2 : ℕ) = γlev n (quadratic c₂ z))
     (hnb : ∀ β : ℂ → ℂ,
         AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
         (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
@@ -395,12 +395,12 @@ theorem q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_of
     (hβne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
     (hβanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
     (hβsqrt : ∀ n, ∀ z ∈ escapeLevel c₁ (n + 1),
-      (βlev (n + 1) z) ^ 2 = βlev n (quadratic c₁ z))
+      (βlev (n + 1) z) ^ (2 : ℕ) = βlev n (quadratic c₁ z))
     (hγanalytic : ∀ n, AnalyticOnNhd ℂ (γlev n) (escapeLevel c₂ n))
     (hγne : ∀ n, ∀ z ∈ escapeLevel c₂ n, γlev n z ≠ 0)
     (hγanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₂, γlev n z = bottcherCoord c₂ z)
     (hγsqrt : ∀ n, ∀ z ∈ escapeLevel c₂ (n + 1),
-      (γlev (n + 1) z) ^ 2 = γlev n (quadratic c₂ z))
+      (γlev (n + 1) z) ^ (2 : ℕ) = γlev n (quadratic c₂ z))
     (hnb : ∀ β : ℂ → ℂ,
         AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
         (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
@@ -468,12 +468,12 @@ theorem q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_of
     (hβne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
     (hβanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
     (hβsqrt : ∀ n, ∀ z ∈ escapeLevel c₁ (n + 1),
-      (βlev (n + 1) z) ^ 2 = βlev n (quadratic c₁ z))
+      (βlev (n + 1) z) ^ (2 : ℕ) = βlev n (quadratic c₁ z))
     (hγanalytic : ∀ n, AnalyticOnNhd ℂ (γlev n) (escapeLevel c₂ n))
     (hγne : ∀ n, ∀ z ∈ escapeLevel c₂ n, γlev n z ≠ 0)
     (hγanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₂, γlev n z = bottcherCoord c₂ z)
     (hγsqrt : ∀ n, ∀ z ∈ escapeLevel c₂ (n + 1),
-      (γlev (n + 1) z) ^ 2 = γlev n (quadratic c₂ z))
+      (γlev (n + 1) z) ^ (2 : ℕ) = γlev n (quadratic c₂ z))
     (hnb : ∀ β : ℂ → ℂ,
         AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
         (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
@@ -552,12 +552,12 @@ theorem q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_of
     (hβne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
     (hβanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
     (hβsqrt : ∀ n, ∀ z ∈ escapeLevel c₁ (n + 1),
-      (βlev (n + 1) z) ^ 2 = βlev n (quadratic c₁ z))
+      (βlev (n + 1) z) ^ (2 : ℕ) = βlev n (quadratic c₁ z))
     (hγanalytic : ∀ n, AnalyticOnNhd ℂ (γlev n) (escapeLevel c₂ n))
     (hγne : ∀ n, ∀ z ∈ escapeLevel c₂ n, γlev n z ≠ 0)
     (hγanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₂, γlev n z = bottcherCoord c₂ z)
     (hγsqrt : ∀ n, ∀ z ∈ escapeLevel c₂ (n + 1),
-      (γlev (n + 1) z) ^ 2 = γlev n (quadratic c₂ z))
+      (γlev (n + 1) z) ^ (2 : ℕ) = γlev n (quadratic c₂ z))
     (hnb : ∀ β : ℂ → ℂ,
         AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
         (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →

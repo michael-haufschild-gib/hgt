@@ -13,7 +13,7 @@ theorem eventually_routeT_leftWindowRelevant_amplitudeBand_twoAlternative_above_
     (q : ℕ) :
     ∀ᶠ T : ℝ in atTop,
       ∀ {L X K : ℕ} {mu N0 V : ℝ},
-      1 < X → 1 ≤ L → X < (L + 1) ^ 60 →
+      1 < X → 1 ≤ L → X < (L + 1) ^ (60 : ℕ) →
       (X : ℝ) ≤ T ^ mu →
       (L : ℝ) ≤ T ^ (2 * (mu / 120)) →
       4 / 3 ≤ mu → mu ≤ 19 / 9 →

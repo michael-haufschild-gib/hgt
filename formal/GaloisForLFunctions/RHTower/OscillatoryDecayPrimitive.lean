@@ -20,20 +20,20 @@ namespace RHTower
 
 /-- The convergent inverse-square tail from `2` is at most `1/2`. -/
 theorem integral_inv_sq_le {X : ℝ} (hX : 2 ≤ X) :
-    (∫ x in (2 : ℝ)..X, (x ^ 2)⁻¹) ≤ 1 / 2 := by
+    (∫ x in (2 : ℝ)..X, (x ^ (2 : ℕ))⁻¹) ≤ 1 / 2 := by
   have hpos : ∀ x ∈ Set.uIcc (2 : ℝ) X, x ≠ 0 := by
     intro x hx
     rw [Set.uIcc_of_le hX] at hx
     exact ne_of_gt (lt_of_lt_of_le (by norm_num) hx.1)
-  have hderiv : ∀ x ∈ Set.uIcc (2 : ℝ) X, HasDerivAt (fun y : ℝ => -y⁻¹) ((x ^ 2)⁻¹) x := by
+  have hderiv : ∀ x ∈ Set.uIcc (2 : ℝ) X, HasDerivAt (fun y : ℝ => -y⁻¹) ((x ^ (2 : ℕ))⁻¹) x := by
     intro x hx
     have h := (hasDerivAt_inv (hpos x hx)).neg
     rwa [neg_neg] at h
-  have hint : IntervalIntegrable (fun x : ℝ => (x ^ 2)⁻¹) volume 2 X := by
+  have hint : IntervalIntegrable (fun x : ℝ => (x ^ (2 : ℕ))⁻¹) volume 2 X := by
     refine ContinuousOn.intervalIntegrable ?_
     refine ContinuousOn.inv₀ (continuousOn_pow 2) fun x hx => ?_
     exact pow_ne_zero 2 (hpos x hx)
-  have hftc : (∫ x in (2 : ℝ)..X, (x ^ 2)⁻¹) = -X⁻¹ - -(2 : ℝ)⁻¹ :=
+  have hftc : (∫ x in (2 : ℝ)..X, (x ^ (2 : ℕ))⁻¹) = -X⁻¹ - -(2 : ℝ)⁻¹ :=
     intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
   have hXpos : (0 : ℝ) < X := lt_of_lt_of_le (by norm_num) hX
   have hXinv : 0 < X⁻¹ := inv_pos.mpr hXpos
@@ -52,7 +52,7 @@ theorem norm_integral_cexp_le_of_decay
     (hAc : ContinuousOn A (Set.uIcc (2 : ℝ) X))
     (hrel : ∀ x ∈ Set.uIcc (2 : ℝ) X, B x * (Complex.I * (φ' x : ℂ)) = A x)
     (hBdecay : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖B x‖ ≤ K / x)
-    (hB'decay : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖B' x‖ ≤ K * (x ^ 2)⁻¹) :
+    (hB'decay : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖B' x‖ ≤ K * (x ^ (2 : ℕ))⁻¹) :
     ‖∫ t in (2 : ℝ)..X, A t * Complex.exp (Complex.I * φ t)‖ ≤ 3 * K / 2 := by
   have hXpos : (0 : ℝ) < X := lt_of_lt_of_le (by norm_num) hX
   have hmain := norm_integral_cexp_le_of_antiderivative hX hφ hB hB'c hAc hrel
@@ -63,19 +63,19 @@ theorem norm_integral_cexp_le_of_decay
   have hb2 : ‖B 2‖ ≤ K / 2 := hBdecay 2 Set.left_mem_uIcc
   -- the remaining integral
   have hi1 : IntervalIntegrable (fun t : ℝ => ‖B' t‖) volume 2 X := hB'c.norm.intervalIntegrable
-  have hi2 : IntervalIntegrable (fun t : ℝ => K * (t ^ 2)⁻¹) volume 2 X := by
+  have hi2 : IntervalIntegrable (fun t : ℝ => K * (t ^ (2 : ℕ))⁻¹) volume 2 X := by
     refine (ContinuousOn.mul continuousOn_const ?_).intervalIntegrable
     refine ContinuousOn.inv₀ (continuousOn_pow 2) fun x hx => ?_
     rw [Set.uIcc_of_le hX] at hx
     exact pow_ne_zero 2 (ne_of_gt (lt_of_lt_of_le (by norm_num) hx.1))
   have htail : (∫ t in (2 : ℝ)..X, ‖B' t‖) ≤ K / 2 := by
-    have hmono : (∫ t in (2 : ℝ)..X, ‖B' t‖) ≤ ∫ t in (2 : ℝ)..X, K * (t ^ 2)⁻¹ := by
+    have hmono : (∫ t in (2 : ℝ)..X, ‖B' t‖) ≤ ∫ t in (2 : ℝ)..X, K * (t ^ (2 : ℕ))⁻¹ := by
       refine intervalIntegral.integral_mono_on hX hi1 hi2 fun t ht => ?_
       exact hB'decay t (Set.uIcc_of_le hX ▸ ht)
-    have hconst : (∫ t in (2 : ℝ)..X, K * (t ^ 2)⁻¹) = K * ∫ t in (2 : ℝ)..X, (t ^ 2)⁻¹ :=
+    have hconst : (∫ t in (2 : ℝ)..X, K * (t ^ (2 : ℕ))⁻¹) = K * ∫ t in (2 : ℝ)..X, (t ^ (2 : ℕ))⁻¹ :=
       intervalIntegral.integral_const_mul K _
     have hbase := integral_inv_sq_le hX
-    have : K * (∫ t in (2 : ℝ)..X, (t ^ 2)⁻¹) ≤ K * (1 / 2) :=
+    have : K * (∫ t in (2 : ℝ)..X, (t ^ (2 : ℕ))⁻¹) ≤ K * (1 / 2) :=
       mul_le_mul_of_nonneg_left hbase hK
     rw [hconst] at hmono
     linarith
@@ -94,7 +94,7 @@ theorem norm_integral_cexp_le_of_profile
     (hAc : ContinuousOn A (Set.uIcc (2 : ℝ) X))
     (hrel : ∀ x ∈ Set.uIcc (2 : ℝ) X, P x * (ξ' x : ℂ) = A x)
     (hPd : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖P x‖ ≤ C / x)
-    (hP'd : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖P' x‖ ≤ C * (x ^ 2)⁻¹) :
+    (hP'd : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖P' x‖ ≤ C * (x ^ (2 : ℕ))⁻¹) :
     ‖∫ t in (2 : ℝ)..X, A t * Complex.exp (Complex.I * ((eps * c * ξ t : ℝ) : ℂ))‖
       ≤ 3 * C / (2 * c) := by
   have hepsne : eps ≠ 0 := by
@@ -137,12 +137,12 @@ theorem norm_integral_cexp_le_of_profile
     rw [norm_div, hd, hnormden]
     calc ‖P x‖ / c ≤ (C / x) / c := by gcongr; exact hPd x hx
       _ = (C / c) / x := by ring
-  have hB'd : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖P' x / d‖ ≤ (C / c) * (x ^ 2)⁻¹ := by
+  have hB'd : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖P' x / d‖ ≤ (C / c) * (x ^ (2 : ℕ))⁻¹ := by
     intro x hx
     have hx0 := hxpos x hx
     rw [norm_div, hd, hnormden]
-    calc ‖P' x‖ / c ≤ (C * (x ^ 2)⁻¹) / c := by gcongr; exact hP'd x hx
-      _ = (C / c) * (x ^ 2)⁻¹ := by ring
+    calc ‖P' x‖ / c ≤ (C * (x ^ (2 : ℕ))⁻¹) / c := by gcongr; exact hP'd x hx
+      _ = (C / c) * (x ^ (2 : ℕ))⁻¹ := by ring
   have hmain := norm_integral_cexp_le_of_decay (K := C / c) hX hK hφ hB hB'c hAc hrel' hBd hB'd
   have hval : 3 * (C / c) / 2 = 3 * C / (2 * c) := by
     field_simp

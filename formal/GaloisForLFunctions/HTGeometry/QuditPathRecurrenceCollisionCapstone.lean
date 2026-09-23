@@ -68,7 +68,7 @@ theorem volume_notMaximallyProjective_eq_zero_of_spectrumEscapesRealRelations
             (fun i => hroot i) j
         simp_rw [hcoefficient]
         rw [eval₂_spectralRelationCoefficientPolynomial_complex_esymm,
-          eval₂_spectralRelationOrbitPolynomial_complex]
+          eval₂_spectralRelationOrbitPolynomial]
         have hreal : spectralRelationOrbitValue k E ≠ 0 :=
           (spectralRelationOrbitValue_ne_zero_iff k E).2 hescape
         intro hzero

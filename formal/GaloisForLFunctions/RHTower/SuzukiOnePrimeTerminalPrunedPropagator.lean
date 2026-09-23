@@ -26,7 +26,7 @@ namespace RHTower
 noncomputable section
 
 /-- The second one-prime displacement lies strictly beyond the second-prime aperture threshold. -/
-theorem log_three_lt_two_mul_log_two : Real.log 3 < 2 * Real.log 2 := by
+theorem log_three_lt_two_mul_log_two_suzukiOnePrimeTerminalPrunedPropagator : Real.log 3 < 2 * Real.log 2 := by
   rw [← Real.log_four_eq]
   exact Real.strictMonoOn_log (by norm_num) (by norm_num) (by norm_num)
 
@@ -41,7 +41,7 @@ theorem onePrime_terminal_index (a : ℝ) (n : ℤ)
     have h2nR : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast h2n
     have hmul : (2 : ℝ) * Real.log 2 ≤ (n : ℝ) * Real.log 2 :=
       mul_le_mul_of_nonneg_right h2nR hlog2.le
-    linarith [log_three_lt_two_mul_log_two]
+    linarith [log_three_lt_two_mul_log_two_suzukiOnePrimeTerminalPrunedPropagator]
   omega
 
 /-- A strict-interior one-prime valuation below `log 3` is exactly site `1`. -/
@@ -114,7 +114,7 @@ def onePrimeTerminalGap : ℝ :=
 /-- The terminal pruning gap is strictly positive. -/
 theorem onePrimeTerminalGap_pos : 0 < onePrimeTerminalGap := by
   rw [onePrimeTerminalGap, lt_min_iff]
-  exact ⟨Real.log_pos (by norm_num), sub_pos.mpr log_three_lt_two_mul_log_two⟩
+  exact ⟨Real.log_pos (by norm_num), sub_pos.mpr log_three_lt_two_mul_log_two_suzukiOnePrimeTerminalPrunedPropagator⟩
 
 /-- Every right-rooted center outside sites `0,1` stays at least the terminal gap from aperture. -/
 theorem onePrimeRightCenter_outside_terminalGap (a : ℝ) (n : ℤ)

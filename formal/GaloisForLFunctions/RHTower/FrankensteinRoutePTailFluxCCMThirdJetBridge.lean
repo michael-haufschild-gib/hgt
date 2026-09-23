@@ -105,9 +105,9 @@ theorem frankensteinRoutePTailFluxCCMThirdJet_quadratic_of_sum_eq_zero
     (S : Finset (Nat.Primes × ℕ)) (N : ℕ)
     (v : Fin (2 * N + 1) → ℝ) (hv : ∑ i, v i = 0) :
     dotProduct v (frankensteinRoutePTailFluxCCMThirdJet S N *ᵥ v) =
-      2 * Real.pi ^ 2 *
+      2 * Real.pi ^ (2 : ℕ) *
         (∑ pe ∈ S, routePPrimitiveBurnolApertureDefectFlux pe) *
-          (∑ i, ccmPublishedCenteredClock N i * v i) ^ 2 := by
+          (∑ i, ccmPublishedCenteredClock N i * v i) ^ (2 : ℕ) := by
   rw [frankensteinRoutePTailFluxCCMThirdJet_eq_rate_smul,
     Matrix.smul_mulVec]
   simp only [dotProduct, Pi.smul_apply, smul_eq_mul]

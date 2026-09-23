@@ -42,7 +42,7 @@ theorem hasDerivAt_deriv_prolateHermiteRescale {c : ℝ} (hc : 0 < c) {Φ : ℝ 
   have hcomp := ((hΦ' (ξ / Real.sqrt c)).hasDerivAt).comp ξ hinner
   have hdiv := hcomp.div_const (Real.sqrt c)
   refine hdiv.congr_deriv ?_
-  have hsq2 : Real.sqrt c ^ 2 = c := Real.sq_sqrt hc.le
+  have hsq2 : Real.sqrt c ^ (2 : ℕ) = c := Real.sq_sqrt hc.le
   field_simp
   rw [hsq2]
   ring

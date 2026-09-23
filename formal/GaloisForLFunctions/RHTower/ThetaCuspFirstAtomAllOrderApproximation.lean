@@ -21,17 +21,17 @@ private theorem contDiff_firstAtom : ContDiff ℝ ∞ (fun x : ℝ => thetaCuspS
   fun_prop
 
 private theorem scale_eq_pi_exp_sq (x : ℝ) :
-    thetaCuspSingleAtomReflectionScale 1 x = Real.pi * Real.exp x^2 := by
+    thetaCuspSingleAtomReflectionScale 1 x = Real.pi * Real.exp x^(2 : ℕ) := by
   unfold thetaCuspSingleAtomReflectionScale
   norm_num only [Nat.cast_one, one_pow, mul_one]
-  rw [show Real.exp (2*x) = Real.exp x^2 by rw [pow_two, ← Real.exp_add]; congr 1; ring]
+  rw [show Real.exp (2*x) = Real.exp x^(2 : ℕ) by rw [pow_two, ← Real.exp_add]; congr 1; ring]
 
 private theorem firstSeed_one_le {x : ℝ} (hx : 0 < x) :
     1 ≤ Polynomial.eval (Real.exp x) thetaCuspSeedPolynomial := by
   have hq := three_lt_thetaCuspSingleAtomReflectionScale (n := 1) (by norm_num) hx.le
   rw [scale_eq_pi_exp_sq] at hq
   simp only [thetaCuspSeedPolynomial, eval_sub, eval_mul, eval_C, eval_pow, eval_X]
-  nlinarith [sq_nonneg (Real.pi*Real.exp x^2-3)]
+  nlinarith [sq_nonneg (Real.pi*Real.exp x^(2 : ℕ)-3)]
 
 /-- Every first-atom derivative has a fixed polynomial relative bound. -/
 theorem abs_firstAtom_derivative_ratio_le (m : ℕ) {x : ℝ} (hx : 0 < x) :

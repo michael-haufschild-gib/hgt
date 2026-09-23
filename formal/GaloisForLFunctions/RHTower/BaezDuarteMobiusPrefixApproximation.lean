@@ -142,11 +142,11 @@ theorem one_sub_bdMobiusModularApproximant (N n : ℕ) (hn : 1 ≤ n) (hnN : n �
 /-- Weighted squared error of the raw Möbius approximant on the finite prefix `1 ≤ n ≤ L`. -/
 def bdMobiusPrefixErrorEnergy (N L : ℕ) : ℝ :=
   ∑ n ∈ Finset.Icc 1 L,
-    (1 - bdMobiusModularApproximant N n) ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))
+    (1 - bdMobiusModularApproximant N n) ^ (2 : ℕ) / ((n : ℝ) * ((n : ℝ) + 1))
 
 /-- Exact prefix energy: all coordinates share the single harmonic Möbius defect. -/
 theorem bdMobiusPrefixErrorEnergy_eq (N L : ℕ) (hLN : L ≤ N) :
-    bdMobiusPrefixErrorEnergy N L = deningerHarmonicPartial N ^ 2 *
+    bdMobiusPrefixErrorEnergy N L = deningerHarmonicPartial N ^ (2 : ℕ) *
       ∑ n ∈ Finset.Icc 1 L, (n : ℝ) / ((n : ℝ) + 1) := by
   rw [bdMobiusPrefixErrorEnergy, Finset.mul_sum]
   refine Finset.sum_congr rfl fun n hn => ?_
@@ -163,7 +163,7 @@ theorem bdMobiusPrefixErrorEnergy_nonneg (N L : ℕ) : 0 ≤ bdMobiusPrefixError
 
 /-- The prefix energy is bounded by prefix length times the squared harmonic Möbius defect. -/
 theorem bdMobiusPrefixErrorEnergy_le (N L : ℕ) (hLN : L ≤ N) :
-    bdMobiusPrefixErrorEnergy N L ≤ (L : ℝ) * deningerHarmonicPartial N ^ 2 := by
+    bdMobiusPrefixErrorEnergy N L ≤ (L : ℝ) * deningerHarmonicPartial N ^ (2 : ℕ) := by
   rw [bdMobiusPrefixErrorEnergy_eq N L hLN]
   have hsum : (∑ n ∈ Finset.Icc 1 L, (n : ℝ) / ((n : ℝ) + 1)) ≤ (L : ℝ) := by
     calc
@@ -195,7 +195,7 @@ theorem tendsto_bdMobiusLogPrefixErrorEnergy_zero :
     Tendsto (fun N : ℕ => bdMobiusPrefixErrorEnergy N (bdMobiusLogPrefix N))
       atTop (𝓝 0) := by
   have hmajor : Tendsto (fun N : ℕ =>
-      (Real.log (N : ℝ) * deningerHarmonicPartial N) ^ 2) atTop (𝓝 0) := by
+      (Real.log (N : ℝ) * deningerHarmonicPartial N) ^ (2 : ℕ)) atTop (𝓝 0) := by
     convert RHTower.Sieve.tendsto_log_mul_deningerHarmonicPartial_zero.pow 2 using 1
     simp
   rw [tendsto_order]
@@ -214,13 +214,13 @@ theorem tendsto_bdMobiusLogPrefixErrorEnergy_zero :
       exact Nat.floor_le (zero_le_one.trans hlog1)
     have hbase := bdMobiusPrefixErrorEnergy_le N (bdMobiusLogPrefix N)
       (bdMobiusLogPrefix_le N)
-    have hH2 : 0 ≤ deningerHarmonicPartial N ^ 2 := sq_nonneg _
+    have hH2 : 0 ≤ deningerHarmonicPartial N ^ (2 : ℕ) := sq_nonneg _
     calc
       bdMobiusPrefixErrorEnergy N (bdMobiusLogPrefix N)
-          ≤ (bdMobiusLogPrefix N : ℝ) * deningerHarmonicPartial N ^ 2 := hbase
-      _ ≤ Real.log (N : ℝ) * deningerHarmonicPartial N ^ 2 :=
+          ≤ (bdMobiusLogPrefix N : ℝ) * deningerHarmonicPartial N ^ (2 : ℕ) := hbase
+      _ ≤ Real.log (N : ℝ) * deningerHarmonicPartial N ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hfloor hH2
-      _ ≤ (Real.log (N : ℝ) * deningerHarmonicPartial N) ^ 2 := by
+      _ ≤ (Real.log (N : ℝ) * deningerHarmonicPartial N) ^ (2 : ℕ) := by
         nlinarith [sq_nonneg (deningerHarmonicPartial N)]
       _ < b := hN
 
@@ -332,7 +332,7 @@ def bdMobiusFullErrorEnergy (N : ℕ) : ℝ :=
 /-- Complementary weighted tail after coordinates `1,…,L`. -/
 def bdMobiusComplementaryTailErrorEnergy (N L : ℕ) : ℝ :=
   ∑' j : ℕ,
-    (1 - bdMobiusModularApproximant N (j + L + 1)) ^ 2 /
+    (1 - bdMobiusModularApproximant N (j + L + 1)) ^ (2 : ℕ) /
       ((((j + L : ℕ) : ℝ) + 1) * (((j + L : ℕ) : ℝ) + 2))
 
 /-- The full error energy is the sum of its finite prefix and complementary tail. -/
@@ -340,7 +340,7 @@ theorem bdMobiusFullErrorEnergy_eq_prefix_add_tail (N L : ℕ) :
     bdMobiusFullErrorEnergy N =
       bdMobiusPrefixErrorEnergy N L + bdMobiusComplementaryTailErrorEnergy N L := by
   let f : ℕ → ℝ := fun j =>
-    (1 - bdMobiusModularApproximant N (j + 1)) ^ 2 /
+    (1 - bdMobiusModularApproximant N (j + 1)) ^ (2 : ℕ) /
       (((j : ℝ) + 1) * ((j : ℝ) + 2))
   have hsum : HasSum f (bdMobiusFullErrorEnergy N) := by
     simpa [f, bdMobiusFullErrorEnergy, pow_two] using
@@ -365,7 +365,7 @@ theorem bdMobiusFullErrorEnergy_eq_prefix_add_tail (N L : ℕ) :
 /-- The full raw-Möbius error already contains the square-root-scale harmonic defect on its
 first `N` coordinates. -/
 theorem half_nat_mul_deningerHarmonicPartial_sq_le_bdMobiusFullErrorEnergy (N : ℕ) :
-    (N : ℝ) / 2 * deningerHarmonicPartial N ^ 2 ≤ bdMobiusFullErrorEnergy N := by
+    (N : ℝ) / 2 * deningerHarmonicPartial N ^ (2 : ℕ) ≤ bdMobiusFullErrorEnergy N := by
   have hsum : (N : ℝ) / 2 ≤
       ∑ n ∈ Finset.Icc 1 N, (n : ℝ) / ((n : ℝ) + 1) := by
     calc
@@ -378,7 +378,7 @@ theorem half_nat_mul_deningerHarmonicPartial_sq_le_bdMobiusFullErrorEnergy (N : 
         rw [div_le_div_iff₀ (by norm_num : (0 : ℝ) < 2) (by positivity)]
         linarith
   have hprefix :
-      (N : ℝ) / 2 * deningerHarmonicPartial N ^ 2 ≤
+      (N : ℝ) / 2 * deningerHarmonicPartial N ^ (2 : ℕ) ≤
         bdMobiusPrefixErrorEnergy N N := by
     rw [bdMobiusPrefixErrorEnergy_eq N N le_rfl]
     nlinarith [sq_nonneg (deningerHarmonicPartial N)]
@@ -393,9 +393,9 @@ theorem half_nat_mul_deningerHarmonicPartial_sq_le_bdMobiusFullErrorEnergy (N : 
 vanish.  This is the exact boundary condition contradicted by critical-line zeta zeros. -/
 theorem tendsto_nat_mul_deningerHarmonicPartial_sq_zero_of_fullError
     (hfull : Tendsto bdMobiusFullErrorEnergy atTop (𝓝 0)) :
-    Tendsto (fun N : ℕ => (N : ℝ) * deningerHarmonicPartial N ^ 2) atTop (𝓝 0) := by
+    Tendsto (fun N : ℕ => (N : ℝ) * deningerHarmonicPartial N ^ (2 : ℕ)) atTop (𝓝 0) := by
   have hhalf : Tendsto
-      (fun N : ℕ => (N : ℝ) / 2 * deningerHarmonicPartial N ^ 2) atTop (𝓝 0) := by
+      (fun N : ℕ => (N : ℝ) / 2 * deningerHarmonicPartial N ^ (2 : ℕ)) atTop (𝓝 0) := by
     apply squeeze_zero
     · intro N
       positivity
@@ -412,14 +412,14 @@ theorem tendsto_nat_mul_deningerHarmonicPartial_sq_zero_of_fullError
 theorem bdMobiusFullErrorEnergy_eq_norm_sq (N : ℕ) :
     bdMobiusFullErrorEnergy N =
       ‖stepVec (fun n => 1 - bdMobiusModularApproximant N n)
-        (abs_one_sub_bdMobiusModularApproximant_le N)‖ ^ 2 := by
+        (abs_one_sub_bdMobiusModularApproximant_le N)‖ ^ (2 : ℕ) := by
   have h : (RCLike.re (inner ℂ
       (stepVec (fun n => 1 - bdMobiusModularApproximant N n)
         (abs_one_sub_bdMobiusModularApproximant_le N))
       (stepVec (fun n => 1 - bdMobiusModularApproximant N n)
         (abs_one_sub_bdMobiusModularApproximant_le N))) : ℝ) =
       ‖stepVec (fun n => 1 - bdMobiusModularApproximant N n)
-        (abs_one_sub_bdMobiusModularApproximant_le N)‖ ^ 2 :=
+        (abs_one_sub_bdMobiusModularApproximant_le N)‖ ^ (2 : ℕ) :=
     inner_self_eq_norm_sq _
   rw [inner_stepVec] at h
   simpa [bdMobiusFullErrorEnergy] using h
@@ -527,7 +527,7 @@ theorem bdMobiusGeneratorCombination_mem_bdSpanSet_discrete (N : ℕ) :
 
 /-- The raw Möbius full error controls the squared distance to the complete discrete span. -/
 theorem bdDist_bdDiscrete_sq_le_bdMobiusFullErrorEnergy (N : ℕ) :
-    bdDist bdDiscrete ^ 2 ≤ bdMobiusFullErrorEnergy N := by
+    bdDist bdDiscrete ^ (2 : ℕ) ≤ bdMobiusFullErrorEnergy N := by
   have hle := Metric.infDist_le_dist_of_mem (x := bdTarget)
     (bdMobiusGeneratorCombination_mem_bdSpanSet_discrete N)
   rw [← bdMobiusModularApproximantVec_eq_generatorCombination N, dist_eq_norm,
@@ -538,8 +538,8 @@ theorem bdDist_bdDiscrete_sq_le_bdMobiusFullErrorEnergy (N : ℕ) :
   have hn0 : 0 ≤ ‖stepVec (fun n => 1 - bdMobiusModularApproximant N n)
       (abs_one_sub_bdMobiusModularApproximant_le N)‖ := norm_nonneg _
   calc
-    bdDist bdDiscrete ^ 2 ≤ ‖stepVec (fun n => 1 - bdMobiusModularApproximant N n)
-        (abs_one_sub_bdMobiusModularApproximant_le N)‖ ^ 2 :=
+    bdDist bdDiscrete ^ (2 : ℕ) ≤ ‖stepVec (fun n => 1 - bdMobiusModularApproximant N n)
+        (abs_one_sub_bdMobiusModularApproximant_le N)‖ ^ (2 : ℕ) :=
       (sq_le_sq₀ hd0 hn0).2 hle
     _ = bdMobiusFullErrorEnergy N := (bdMobiusFullErrorEnergy_eq_norm_sq N).symm
 

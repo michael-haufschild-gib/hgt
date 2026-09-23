@@ -23,13 +23,13 @@ theorem integrableOn_star_mul_of_integrableOn_norm_sq_of_aestronglyMeasurable
     {f g : ℝ → ℂ}
     (hfmeas : AEStronglyMeasurable f (volume.restrict (Ioi 0)))
     (hgmeas : AEStronglyMeasurable g (volume.restrict (Ioi 0)))
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0))
-    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0))
+    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ (2 : ℕ)) (Ioi 0)) :
     IntegrableOn (fun u : ℝ => star (f u) * g u) (Ioi 0) := by
   apply Integrable.mono' (hf.add hg)
   · exact hfmeas.star.mul hgmeas
   · filter_upwards with u
-    change ‖star (f u) * g u‖ ≤ ‖f u‖ ^ 2 + ‖g u‖ ^ 2
+    change ‖star (f u) * g u‖ ≤ ‖f u‖ ^ (2 : ℕ) + ‖g u‖ ^ (2 : ℕ)
     rw [norm_mul, norm_star]
     nlinarith [sq_nonneg (‖f u‖ - ‖g u‖), norm_nonneg (f u), norm_nonneg (g u)]
 
@@ -39,8 +39,8 @@ theorem routePBurnolApertureDamping_pairing_colligation_of_aestronglyMeasurable
     {c : ℝ} (hc : 0 ≤ c) {f g : ℝ → ℂ}
     (hfmeas : AEStronglyMeasurable f (volume.restrict (Ioi 0)))
     (hgmeas : AEStronglyMeasurable g (volume.restrict (Ioi 0)))
-    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ 2) (Ioi 0))
-    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ 2) (Ioi 0)) :
+    (hf : IntegrableOn (fun u : ℝ => ‖f u‖ ^ (2 : ℕ)) (Ioi 0))
+    (hg : IntegrableOn (fun u : ℝ => ‖g u‖ ^ (2 : ℕ)) (Ioi 0)) :
     routePBurnolHalfLinePairing
         (routePBurnolForwardDampingShift c f)
         (routePBurnolForwardDampingShift c g) +
@@ -61,9 +61,9 @@ theorem routePBurnolApertureDamping_pairing_colligation_of_aestronglyMeasurable
   have hhead : IntegrableOn h (Ioc 0 c) := hpair.mono_set Ioc_subset_Ioi_self
   have htail : IntegrableOn h (Ioi c) := hpair.mono_set hsubset
   have htransport : IntegrableOn
-      (fun u : ℝ => (((u - c) / u) ^ 2 : ℂ) * h u) (Ioi c) := by
+      (fun u : ℝ => (((u - c) / u) ^ (2 : ℕ) : ℂ) * h u) (Ioi c) := by
     apply Integrable.mono' htail.norm
-    · have hweight : Measurable (fun u : ℝ => (((u - c) / u) ^ 2 : ℂ)) := by
+    · have hweight : Measurable (fun u : ℝ => (((u - c) / u) ^ (2 : ℕ) : ℂ)) := by
         fun_prop
       exact hweight.aestronglyMeasurable.restrict.mul htail.aestronglyMeasurable
     · filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
@@ -90,7 +90,7 @@ theorem routePBurnolApertureDamping_pairing_colligation_of_aestronglyMeasurable
       rw [norm_mul, norm_real, Real.norm_eq_abs, abs_of_nonneg hw0]
       exact mul_le_of_le_one_left (norm_nonneg _) hw1
   have htailComplete :
-      (∫ u : ℝ in Ioi c, (((u - c) / u) ^ 2 : ℂ) * h u) +
+      (∫ u : ℝ in Ioi c, (((u - c) / u) ^ (2 : ℕ) : ℂ) * h u) +
           ∫ u : ℝ in Ioi c,
             (routePBurnolApertureTailDefectWeight c u : ℂ) * h u =
         ∫ u : ℝ in Ioi c, h u := by
@@ -109,14 +109,14 @@ theorem routePBurnolApertureDamping_pairing_colligation_of_aestronglyMeasurable
     routePBurnolHalfLinePairing_boundaryDefect,
     routePBurnolHalfLinePairing_tailDefect hc,
     routePBurnolHalfLinePairing]
-  change (∫ u : ℝ in Ioi c, (((u - c) / u) ^ 2 : ℂ) * h u) +
+  change (∫ u : ℝ in Ioi c, (((u - c) / u) ^ (2 : ℕ) : ℂ) * h u) +
       (∫ u : ℝ in Ioc 0 c, h u) +
       (∫ u : ℝ in Ioi c,
         (routePBurnolApertureTailDefectWeight c u : ℂ) * h u) =
     ∫ u : ℝ in Ioi 0, h u
   calc
     _ = (∫ u : ℝ in Ioc 0 c, h u) +
-        ((∫ u : ℝ in Ioi c, (((u - c) / u) ^ 2 : ℂ) * h u) +
+        ((∫ u : ℝ in Ioi c, (((u - c) / u) ^ (2 : ℕ) : ℂ) * h u) +
           ∫ u : ℝ in Ioi c,
             (routePBurnolApertureTailDefectWeight c u : ℂ) * h u) := by ring
     _ = (∫ u : ℝ in Ioc 0 c, h u) + ∫ u : ℝ in Ioi c, h u := by

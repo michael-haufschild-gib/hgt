@@ -28,7 +28,7 @@ namespace HTGeometry
 /-- On the right half-plane the pole at `-a` is farther than the pole at `a`. -/
 theorem norm_sub_lt_norm_add_of_re_pos {a : ℝ} (ha : 0 < a) {z : ℂ} (hz : 0 < z.re) :
     ‖z - (a : ℂ)‖ < ‖z + (a : ℂ)‖ := by
-  have hsq : ‖z - (a : ℂ)‖ ^ 2 < ‖z + (a : ℂ)‖ ^ 2 := by
+  have hsq : ‖z - (a : ℂ)‖ ^ (2 : ℕ) < ‖z + (a : ℂ)‖ ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
     simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.add_re,
       Complex.add_im, Complex.ofReal_re, Complex.ofReal_im]
@@ -105,15 +105,15 @@ theorem re_inv_sub_pos_of_mem_ball {a : ℝ} (ha : 0 < a) {w : ℂ}
   have hdist : ‖w - ((1 / (2 * a) : ℝ) : ℂ)‖ < 1 / (2 * a) := by
     rw [mem_ball, Complex.dist_eq] at hw
     exact hw
-  have hsq : Complex.normSq (w - ((1 / (2 * a) : ℝ) : ℂ)) < (1 / (2 * a)) ^ 2 := by
-    have h1 : ‖w - ((1 / (2 * a) : ℝ) : ℂ)‖ ^ 2 < (1 / (2 * a)) ^ 2 := by
+  have hsq : Complex.normSq (w - ((1 / (2 * a) : ℝ) : ℂ)) < (1 / (2 * a)) ^ (2 : ℕ) := by
+    have h1 : ‖w - ((1 / (2 * a) : ℝ) : ℂ)‖ ^ (2 : ℕ) < (1 / (2 * a)) ^ (2 : ℕ) := by
       have h0 : (0 : ℝ) ≤ ‖w - ((1 / (2 * a) : ℝ) : ℂ)‖ := norm_nonneg _
       nlinarith
     rwa [Complex.normSq_eq_norm_sq]
   have hc2 : (1 : ℝ) / (2 * a) * 2 = 1 / a := by
     field_simp
   have hexp : Complex.normSq (w - ((1 / (2 * a) : ℝ) : ℂ))
-      = Complex.normSq w - (1 / a) * w.re + (1 / (2 * a)) ^ 2 := by
+      = Complex.normSq w - (1 / a) * w.re + (1 / (2 * a)) ^ (2 : ℕ) := by
     simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.ofReal_re,
       Complex.ofReal_im]
     have ha' : a ≠ 0 := ne_of_gt ha

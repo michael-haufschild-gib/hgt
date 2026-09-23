@@ -30,10 +30,10 @@ noncomputable section
 
 theorem norm_sub_windowCutoff_sq {S : Set ℝ} (hS : MeasurableSet S)
     (f : Lp (α := ℝ) (μ := (volume : Measure ℝ)) ℂ 2) :
-    ‖f - windowCutoff hS f‖ ^ 2 = ∫ x in Sᶜ, ‖(f : ℝ → ℂ) x‖ ^ 2 := by
+    ‖f - windowCutoff hS f‖ ^ (2 : ℕ) = ∫ x in Sᶜ, ‖(f : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
   classical
-  have hfun : (fun x => ‖((f - windowCutoff hS f : Lp (α := ℝ) ℂ 2) : ℝ → ℂ) x‖ ^ 2)
-      =ᵐ[(volume : Measure ℝ)] Sᶜ.indicator (fun x => ‖(f : ℝ → ℂ) x‖ ^ 2) := by
+  have hfun : (fun x => ‖((f - windowCutoff hS f : Lp (α := ℝ) ℂ 2) : ℝ → ℂ) x‖ ^ (2 : ℕ))
+      =ᵐ[(volume : Measure ℝ)] Sᶜ.indicator (fun x => ‖(f : ℝ → ℂ) x‖ ^ (2 : ℕ)) := by
     filter_upwards [Lp.coeFn_sub f (windowCutoff hS f), windowCutoff_coeFn hS f] with x h1 h2
     rw [h1, Pi.sub_apply, h2]
     by_cases hmem : x ∈ S
@@ -56,11 +56,11 @@ def gaussPacket (R T : ℝ) : Lp (α := ℝ) ℂ 2 :=
   rw [gaussPacket, LinearIsometryEquiv.norm_map, LinearIsometryEquiv.norm_map]
 
 theorem norm_gaussLp_pos : 0 < ‖gaussLp‖ := by
-  have hsq : ‖gaussLp‖ ^ 2 = Real.sqrt 2⁻¹ := norm_gaussLp_sq
+  have hsq : ‖gaussLp‖ ^ (2 : ℕ) = Real.sqrt 2⁻¹ := norm_gaussLp_sq
   have hpos : (0 : ℝ) < Real.sqrt 2⁻¹ := Real.sqrt_pos.2 (by norm_num)
   rcases eq_or_lt_of_le (norm_nonneg gaussLp) with h | h
   · exfalso
-    have hzero : (0 : ℝ) ^ 2 = Real.sqrt 2⁻¹ := by
+    have hzero : (0 : ℝ) ^ (2 : ℕ) = Real.sqrt 2⁻¹ := by
       rw [h]
       exact hsq
     rw [pow_two, mul_zero] at hzero
@@ -70,7 +70,7 @@ theorem norm_gaussLp_pos : 0 < ‖gaussLp‖ := by
 theorem coeFn_gaussPacket_norm (R T : ℝ) :
     (fun x => ‖(gaussPacket R T : ℝ → ℂ) x‖)
       =ᵐ[(volume : Measure ℝ)] fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ := by
-  have htrans := translation_coeFn (-T) (fourierPhaseMulUnitary (-R) gaussLp)
+  have htrans := translation_coeFn_massGaugeSuperluminalCompression (-T) (fourierPhaseMulUnitary (-R) gaussLp)
   have hphase := phaseMul_coeFn (-R) gaussLp
   have hphase' : ∀ᵐ x : ℝ,
       (fourierPhaseMulUnitary (-R) gaussLp : ℝ → ℂ) (x + -T)
@@ -85,35 +85,35 @@ theorem coeFn_gaussPacket_norm (R T : ℝ) :
 
 theorem gaussPacket_window_defect_le {R T H : ℝ} (hT : 0 < T) (hTH : T < H) :
     ‖gaussPacket R T - windowCutoff (measurableSet_Ioo (a := (0 : ℝ)) (b := H))
-        (gaussPacket R T)‖ ^ 2
-      ≤ Real.exp (-(Real.pi * (min T (H - T)) ^ 2)) := by
+        (gaussPacket R T)‖ ^ (2 : ℕ)
+      ≤ Real.exp (-(Real.pi * (min T (H - T)) ^ (2 : ℕ))) := by
   classical
   set m : ℝ := min T (H - T) with hm
   have hm0 : 0 < m := lt_min hT (by linarith)
   rw [norm_sub_windowCutoff_sq]
-  have hindic : ∫ x in (Set.Ioo (0 : ℝ) H)ᶜ, ‖(gaussPacket R T : ℝ → ℂ) x‖ ^ 2
+  have hindic : ∫ x in (Set.Ioo (0 : ℝ) H)ᶜ, ‖(gaussPacket R T : ℝ → ℂ) x‖ ^ (2 : ℕ)
       = ∫ x : ℝ, (Set.Ioo (0 : ℝ) H)ᶜ.indicator
-        (fun x => ‖(gaussPacket R T : ℝ → ℂ) x‖ ^ 2) x :=
+        (fun x => ‖(gaussPacket R T : ℝ → ℂ) x‖ ^ (2 : ℕ)) x :=
     (integral_indicator (measurableSet_Ioo.compl)).symm
   have hshift : ∫ x : ℝ, (Set.Ioo (0 : ℝ) H)ᶜ.indicator
-        (fun x => ‖(gaussPacket R T : ℝ → ℂ) x‖ ^ 2) x
+        (fun x => ‖(gaussPacket R T : ℝ → ℂ) x‖ ^ (2 : ℕ)) x
       = ∫ x : ℝ, (Set.Ioo (0 : ℝ) H)ᶜ.indicator
-        (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ 2) x := by
+        (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ (2 : ℕ)) x := by
     refine integral_congr_ae ?_
     filter_upwards [coeFn_gaussPacket_norm R T] with x hx
     by_cases hmem : x ∈ (Set.Ioo (0 : ℝ) H)ᶜ
     · rw [Set.indicator_of_mem hmem, Set.indicator_of_mem hmem, hx]
     · rw [Set.indicator_of_notMem hmem, Set.indicator_of_notMem hmem]
   have htranslate : ∫ x : ℝ, (Set.Ioo (0 : ℝ) H)ᶜ.indicator
-        (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ 2) x
+        (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ (2 : ℕ)) x
       = ∫ y : ℝ, (Set.Ioo (0 : ℝ) H)ᶜ.indicator
-        (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ 2) (y + T) := by
+        (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ (2 : ℕ)) (y + T) := by
     exact (integral_add_right_eq_self
       (fun x : ℝ => (Set.Ioo (0 : ℝ) H)ᶜ.indicator
-        (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ 2) x) T).symm
+        (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ (2 : ℕ)) x) T).symm
   have hdom : ∀ y : ℝ, (Set.Ioo (0 : ℝ) H)ᶜ.indicator
-      (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ 2) (y + T)
-      ≤ {y : ℝ | m ≤ |y|}.indicator (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ 2) y := by
+      (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ (2 : ℕ)) (y + T)
+      ≤ {y : ℝ | m ≤ |y|}.indicator (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ (2 : ℕ)) y := by
     intro y
     by_cases hmem : (y + T) ∈ (Set.Ioo (0 : ℝ) H)ᶜ
     · rw [Set.indicator_of_mem hmem]
@@ -141,17 +141,17 @@ theorem gaussPacket_window_defect_le {R T H : ℝ} (hT : 0 < T) (hTH : T < H) :
   have hmeas : MeasurableSet {y : ℝ | m ≤ |y|} :=
     measurableSet_le measurable_const measurable_norm
   have hintdom : Integrable ({y : ℝ | m ≤ |y|}.indicator
-      (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ 2)) := by
-    have hbase : Integrable (fun y : ℝ => ‖(gaussLp : ℝ → ℂ) y‖ ^ 2) :=
+      (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ (2 : ℕ))) := by
+    have hbase : Integrable (fun y : ℝ => ‖(gaussLp : ℝ → ℂ) y‖ ^ (2 : ℕ)) :=
       (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable gaussLp)).1 (Lp.memLp gaussLp)
     exact (hbase.indicator hmeas)
-  have hbase : Integrable (fun y : ℝ => ‖(gaussLp : ℝ → ℂ) y‖ ^ 2) :=
+  have hbase : Integrable (fun y : ℝ => ‖(gaussLp : ℝ → ℂ) y‖ ^ (2 : ℕ)) :=
     (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable gaussLp)).1 (Lp.memLp gaussLp)
   have hFint : Integrable (fun x : ℝ => (Set.Ioo (0 : ℝ) H)ᶜ.indicator
-      (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ 2) x) :=
+      (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ (2 : ℕ)) x) :=
     (hbase.comp_sub_right T).indicator measurableSet_Ioo.compl
   have hintsrc : Integrable (fun y : ℝ => (Set.Ioo (0 : ℝ) H)ᶜ.indicator
-      (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ 2) (y + T)) := hFint.comp_add_right T
+      (fun x => ‖(gaussLp : ℝ → ℂ) (x - T)‖ ^ (2 : ℕ)) (y + T)) := hFint.comp_add_right T
   rw [hindic, hshift, htranslate]
   refine le_trans (integral_mono hintsrc hintdom hdom) ?_
   rw [integral_indicator hmeas]
@@ -176,52 +176,52 @@ theorem coeFn_fourierGaussPacket_norm (R T : ℝ) :
     (fun w => ‖(fourierGaussPacket R T : ℝ → ℂ) w‖)
       =ᵐ[(volume : Measure ℝ)] fun w => ‖(gaussLp : ℝ → ℂ) (w + R)‖ := by
   have hphase := phaseMul_coeFn (-T) (additiveTranslationUnitary R gaussLp)
-  have htrans := translation_coeFn R gaussLp
+  have htrans := translation_coeFn_massGaugeSuperluminalCompression R gaussLp
   filter_upwards [hphase, htrans] with w h1 h2
   rw [fourierGaussPacket_eq, h1, norm_mul, norm_fourierPhase, one_mul, h2]
 
 /-- **The band defect of the packet.**  Outside a frequency band of radius `ρ` about `-R` the
 squared mass of the packet is at most `e^{-πρ²}`. -/
 theorem fourierGaussPacket_band_defect_le {R T rho : ℝ} (hrho : 0 ≤ rho) :
-    ∫ w in {w : ℝ | rho ≤ |w + R|}, ‖(fourierGaussPacket R T : ℝ → ℂ) w‖ ^ 2
-      ≤ Real.exp (-(Real.pi * rho ^ 2)) := by
+    ∫ w in {w : ℝ | rho ≤ |w + R|}, ‖(fourierGaussPacket R T : ℝ → ℂ) w‖ ^ (2 : ℕ)
+      ≤ Real.exp (-(Real.pi * rho ^ (2 : ℕ))) := by
   classical
   have hmeasS : MeasurableSet {w : ℝ | rho ≤ |w + R|} :=
     measurableSet_le measurable_const ((measurable_id.add_const R).norm)
   have hmeasT : MeasurableSet {y : ℝ | rho ≤ |y|} :=
     measurableSet_le measurable_const measurable_norm
-  have hcongr : ∫ w in {w : ℝ | rho ≤ |w + R|}, ‖(fourierGaussPacket R T : ℝ → ℂ) w‖ ^ 2
-      = ∫ w in {w : ℝ | rho ≤ |w + R|}, ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ 2 := by
+  have hcongr : ∫ w in {w : ℝ | rho ≤ |w + R|}, ‖(fourierGaussPacket R T : ℝ → ℂ) w‖ ^ (2 : ℕ)
+      = ∫ w in {w : ℝ | rho ≤ |w + R|}, ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ (2 : ℕ) := by
     refine integral_congr_ae ?_
     filter_upwards [ae_restrict_of_ae (coeFn_fourierGaussPacket_norm R T)] with w hw
     rw [hw]
   rw [hcongr]
-  have hind : ∫ w in {w : ℝ | rho ≤ |w + R|}, ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ 2
+  have hind : ∫ w in {w : ℝ | rho ≤ |w + R|}, ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ (2 : ℕ)
       = ∫ w : ℝ, {w : ℝ | rho ≤ |w + R|}.indicator
-        (fun w => ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ 2) w :=
+        (fun w => ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ (2 : ℕ)) w :=
     (integral_indicator hmeasS).symm
   have hfun : ∀ w : ℝ, {w : ℝ | rho ≤ |w + R|}.indicator
-      (fun w => ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ 2) w
-      = ({y : ℝ | rho ≤ |y|}.indicator (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ 2)) (w + R) := by
+      (fun w => ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ (2 : ℕ)) w
+      = ({y : ℝ | rho ≤ |y|}.indicator (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ (2 : ℕ))) (w + R) := by
     intro w
     by_cases hmem : rho ≤ |w + R|
     · rw [Set.indicator_of_mem (by exact hmem), Set.indicator_of_mem (by exact hmem)]
     · rw [Set.indicator_of_notMem (by exact hmem), Set.indicator_of_notMem (by exact hmem)]
   have hshift : ∫ w : ℝ, {w : ℝ | rho ≤ |w + R|}.indicator
-        (fun w => ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ 2) w
-      = ∫ y : ℝ, {y : ℝ | rho ≤ |y|}.indicator (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ 2) y := by
+        (fun w => ‖(gaussLp : ℝ → ℂ) (w + R)‖ ^ (2 : ℕ)) w
+      = ∫ y : ℝ, {y : ℝ | rho ≤ |y|}.indicator (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ (2 : ℕ)) y := by
     rw [funext hfun]
     exact integral_add_right_eq_self
-      ({y : ℝ | rho ≤ |y|}.indicator (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ 2)) R
+      ({y : ℝ | rho ≤ |y|}.indicator (fun y => ‖(gaussLp : ℝ → ℂ) y‖ ^ (2 : ℕ))) R
   rw [hind, hshift, integral_indicator hmeasT]
   exact gaussLp_tail_le hrho
 
 /-! ## The Gaussian absorbs an exponential weight as a shift -/
 
 theorem exp_weight_gauss (sigma y : ℝ) :
-    Complex.exp (((2 * Real.pi * sigma * y : ℝ)) : ℂ) * Complex.exp (-(Real.pi * (y : ℂ) ^ 2))
-      = Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)
-        * Complex.exp (-(Real.pi * (((y - sigma : ℝ)) : ℂ) ^ 2)) := by
+    Complex.exp (((2 * Real.pi * sigma * y : ℝ)) : ℂ) * Complex.exp (-(Real.pi * (y : ℂ) ^ (2 : ℕ)))
+      = Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)
+        * Complex.exp (-(Real.pi * (((y - sigma : ℝ)) : ℂ) ^ (2 : ℕ))) := by
   rw [← Complex.exp_add, ← Complex.exp_add]
   congr 1
   push_cast
@@ -229,7 +229,7 @@ theorem exp_weight_gauss (sigma y : ℝ) :
 
 theorem coeFn_gaussLp_shift (R : ℝ) :
     (fun w : ℝ => (gaussLp : ℝ → ℂ) (w + R))
-      =ᵐ[(volume : Measure ℝ)] fun w : ℝ => Complex.exp (-(Real.pi * (((w + R : ℝ)) : ℂ) ^ 2)) := by
+      =ᵐ[(volume : Measure ℝ)] fun w : ℝ => Complex.exp (-(Real.pi * (((w + R : ℝ)) : ℂ) ^ (2 : ℕ))) := by
   have hshift := (MeasureTheory.measurePreserving_add_right
     (volume : Measure ℝ) R).quasiMeasurePreserving
   exact hshift.ae coeFn_gaussLp
@@ -238,12 +238,12 @@ theorem coeFn_gaussLp_shift (R : ℝ) :
 theorem coeFn_expWeight_fourierGaussPacket (sigma R T : ℝ) :
     (fun w : ℝ => Complex.exp (((2 * Real.pi * sigma * (w + R) : ℝ)) : ℂ)
         * (fourierGaussPacket R T : ℝ → ℂ) w)
-      =ᵐ[(volume : Measure ℝ)] fun w : ℝ => Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)
+      =ᵐ[(volume : Measure ℝ)] fun w : ℝ => Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)
         * (fourierGaussPacket (R - sigma) T : ℝ → ℂ) w := by
   have h1 := phaseMul_coeFn (-T) (additiveTranslationUnitary R gaussLp)
-  have h2 := translation_coeFn R gaussLp
+  have h2 := translation_coeFn_massGaugeSuperluminalCompression R gaussLp
   have h3 := phaseMul_coeFn (-T) (additiveTranslationUnitary (R - sigma) gaussLp)
-  have h4 := translation_coeFn (R - sigma) gaussLp
+  have h4 := translation_coeFn_massGaugeSuperluminalCompression (R - sigma) gaussLp
   have h5 := coeFn_gaussLp_shift R
   have h6 := coeFn_gaussLp_shift (R - sigma)
   filter_upwards [h1, h2, h3, h4, h5, h6] with w e1 e2 e3 e4 e5 e6
@@ -254,14 +254,14 @@ theorem coeFn_expWeight_fourierGaussPacket (sigma R T : ℝ) :
   have hkey := exp_weight_gauss sigma (w + R)
   rw [hcast] at hkey
   calc Complex.exp (((2 * Real.pi * sigma * (w + R) : ℝ)) : ℂ)
-        * (fourierPhase (-T) w * Complex.exp (-(Real.pi * (((w + R : ℝ)) : ℂ) ^ 2)))
+        * (fourierPhase (-T) w * Complex.exp (-(Real.pi * (((w + R : ℝ)) : ℂ) ^ (2 : ℕ))))
       = fourierPhase (-T) w * (Complex.exp (((2 * Real.pi * sigma * (w + R) : ℝ)) : ℂ)
-          * Complex.exp (-(Real.pi * (((w + R : ℝ)) : ℂ) ^ 2))) := by ring
-    _ = fourierPhase (-T) w * (Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)
-          * Complex.exp (-(Real.pi * (((w + (R - sigma) : ℝ)) : ℂ) ^ 2))) := by
+          * Complex.exp (-(Real.pi * (((w + R : ℝ)) : ℂ) ^ (2 : ℕ)))) := by ring
+    _ = fourierPhase (-T) w * (Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)
+          * Complex.exp (-(Real.pi * (((w + (R - sigma) : ℝ)) : ℂ) ^ (2 : ℕ)))) := by
         rw [hkey]
-    _ = Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)
-          * (fourierPhase (-T) w * Complex.exp (-(Real.pi * (((w + (R - sigma) : ℝ)) : ℂ) ^ 2))) := by
+    _ = Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)
+          * (fourierPhase (-T) w * Complex.exp (-(Real.pi * (((w + (R - sigma) : ℝ)) : ℂ) ^ (2 : ℕ)))) := by
         ring
 
 
@@ -291,17 +291,17 @@ def dampedModelSymbol (a lambda sigma u r w : ℝ) : ℂ :=
 def dampedModelConst (a lambda sigma u r : ℝ) : ℂ :=
   massGaugeDampedSymbol a lambda sigma u (-r)
     * Complex.exp (((r * u : ℝ)) * Complex.I)
-    * Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)
+    * Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)
 
 theorem norm_dampedModelConst (a lambda sigma u r : ℝ) :
     ‖dampedModelConst a lambda sigma u r‖
-      = ‖massGaugeDampedSymbol a lambda sigma u (-r)‖ * Real.exp (Real.pi * sigma ^ 2) := by
+      = ‖massGaugeDampedSymbol a lambda sigma u (-r)‖ * Real.exp (Real.pi * sigma ^ (2 : ℕ)) := by
   rw [dampedModelConst, norm_mul, norm_mul]
   have h1 : ‖Complex.exp (((r * u : ℝ)) * Complex.I)‖ = 1 := by
     rw [Complex.norm_exp]
     simp [Complex.mul_re]
-  have h2 : ‖Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)‖
-      = Real.exp (Real.pi * sigma ^ 2) := by
+  have h2 : ‖Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)‖
+      = Real.exp (Real.pi * sigma ^ (2 : ℕ)) := by
     rw [Complex.norm_exp, Complex.ofReal_re]
   rw [h1, h2, mul_one]
 
@@ -318,7 +318,7 @@ theorem coeFn_dampedModel_mul_packet (a lambda sigma u r T : ℝ) (hr : r ≠ 0)
     field_simp
   have hweight := coeFn_expWeight_fourierGaussPacket sigma R T
   have h1 := phaseMul_coeFn (-T) (additiveTranslationUnitary (R - sigma) gaussLp)
-  have h2 := translation_coeFn (R - sigma) gaussLp
+  have h2 := translation_coeFn_massGaugeSuperluminalCompression (R - sigma) gaussLp
   have h3 := phaseMul_coeFn (-(T - u)) (additiveTranslationUnitary (R - sigma) gaussLp)
   filter_upwards [hweight, h1, h2, h3] with w ew e1 e2 e3
   have hsplit : Complex.exp (((sigma : ℂ) + (u : ℝ) * Complex.I)
@@ -341,7 +341,7 @@ theorem coeFn_dampedModel_mul_packet (a lambda sigma u r T : ℝ) (hr : r ≠ 0)
         ring
     _ = massGaugeDampedSymbol a lambda sigma u (-r)
           * (fourierPhase u w * Complex.exp (((r * u : ℝ)) * Complex.I))
-          * (Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)
+          * (Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)
             * (fourierGaussPacket (R - sigma) T : ℝ → ℂ) w) := by
         rw [ew]
     _ = dampedModelConst a lambda sigma u r
@@ -353,16 +353,16 @@ theorem coeFn_dampedModel_mul_packet (a lambda sigma u r T : ℝ) (hr : r ≠ 0)
           ring
         calc massGaugeDampedSymbol a lambda sigma u (-r)
               * (fourierPhase u w * Complex.exp (((r * u : ℝ)) * Complex.I))
-              * (Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)
+              * (Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)
                 * (fourierPhase (-T) w * (gaussLp : ℝ → ℂ) (w + (R - sigma))))
             = massGaugeDampedSymbol a lambda sigma u (-r)
                 * Complex.exp (((r * u : ℝ)) * Complex.I)
-                * Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)
+                * Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)
                 * ((fourierPhase u w * fourierPhase (-T) w)
                   * (gaussLp : ℝ → ℂ) (w + (R - sigma))) := by ring
           _ = massGaugeDampedSymbol a lambda sigma u (-r)
                 * Complex.exp (((r * u : ℝ)) * Complex.I)
-                * Complex.exp (((Real.pi * sigma ^ 2 : ℝ)) : ℂ)
+                * Complex.exp (((Real.pi * sigma ^ (2 : ℕ) : ℝ)) : ℂ)
                 * (fourierPhase (-(T - u)) w * (gaussLp : ℝ → ℂ) (w + (R - sigma))) := by
               rw [hph]
 

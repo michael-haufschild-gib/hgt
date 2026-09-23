@@ -47,7 +47,7 @@ theorem sign_constant_of_no_zero {f : ℝ → ℝ} (hf : Continuous f) {u v : �
 zero would be a local maximum. -/
 theorem not_two_negative_arches {f fd fdd h : ℝ → ℝ} {γ p m q : ℝ}
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hh : ∀ t, h t = fdd t + γ ^ 2 * f t) (hpos : 0 < h m) (hz : f m = 0)
+    (hh : ∀ t, h t = fdd t + γ ^ (2 : ℕ) * f t) (hpos : 0 < h m) (hz : f m = 0)
     (hpm : p < m) (hmq : m < q)
     (h1 : ∀ s ∈ Ioo p m, f s < 0) (h2 : ∀ s ∈ Ioo m q, f s < 0) : False := by
   refine not_isLocalMax_of_sturm_pos hf hfd hh hpos hz ?_
@@ -63,7 +63,7 @@ theorem not_two_negative_arches {f fd fdd h : ℝ → ℝ} {γ p m q : ℝ}
 `2(b-a)γ/π + 2`. -/
 theorem zero_count_le {f fd fdd h : ℝ → ℝ} {γ a b : ℝ} (hγ : 0 < γ) (hab : a ≤ b)
     (hf : ∀ t, HasDerivAt f (fd t) t) (hfd : ∀ t, HasDerivAt fd (fdd t) t)
-    (hh : ∀ t, h t = fdd t + γ ^ 2 * f t)
+    (hh : ∀ t, h t = fdd t + γ ^ (2 : ℕ) * f t)
     (hhpos : ∀ t ∈ Ioo a b, 0 < h t)
     {n : ℕ} (t : ℕ → ℝ)
     (hmono : ∀ i j, i < j → j ≤ n → t i < t j)

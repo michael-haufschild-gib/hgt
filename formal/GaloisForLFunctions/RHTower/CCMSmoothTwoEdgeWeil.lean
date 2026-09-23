@@ -59,19 +59,19 @@ theorem xiWeilSharp_xiSmoothProfileTwoEdgeTransform {eta L : ℝ}
 /-- Exact three-term square decomposition for an arbitrary smooth profile. -/
 theorem smoothProfileTwoEdgeTransform_sq_decomposition {eta L a : ℝ}
     (f : SmoothBoundaryProfile eta L) (w : ℂ) :
-    smoothProfileTwoEdgeTransform f a w ^ 2 =
-      smoothProfileLaplaceAmplitude f w ^ 2 *
+    smoothProfileTwoEdgeTransform f a w ^ (2 : ℕ) =
+      smoothProfileLaplaceAmplitude f w ^ (2 : ℕ) *
           Complex.exp (2 * (a : ℂ) * w) +
         2 * smoothProfileLaplaceAmplitude f w *
           smoothProfileLaplaceAmplitude f (-w) +
-        smoothProfileLaplaceAmplitude f (-w) ^ 2 *
+        smoothProfileLaplaceAmplitude f (-w) ^ (2 : ℕ) *
           Complex.exp (-2 * (a : ℂ) * w) := by
-  have hp : Complex.exp ((a : ℂ) * w) ^ 2 =
+  have hp : Complex.exp ((a : ℂ) * w) ^ (2 : ℕ) =
       Complex.exp (2 * (a : ℂ) * w) := by
     rw [pow_two, ← Complex.exp_add]
     congr 1
     ring
-  have hn : Complex.exp (-(a : ℂ) * w) ^ 2 =
+  have hn : Complex.exp (-(a : ℂ) * w) ^ (2 : ℕ) =
       Complex.exp (-2 * (a : ℂ) * w) := by
     rw [pow_two, ← Complex.exp_add]
     congr 1
@@ -151,8 +151,8 @@ theorem xiSmoothProfileTwoEdgeTransform_squareSummable
   let C : ℝ := 2 * Real.exp (|a| / 2) *
     (Real.exp (L / 2) * smoothProfileDerivativeMass f)
   have hmajor : Summable (fun q : XiZeroCopy =>
-      C ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
-    xiSpectralPoint_inv_sq_summable.mul_left (C ^ 2)
+      C ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
+    xiSpectralPoint_inv_sq_summable.mul_left (C ^ (2 : ℕ))
   refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_) hmajor
   ·
     have hz : I * xiSpectralPoint q ≠ 0 :=
@@ -161,32 +161,32 @@ theorem xiSmoothProfileTwoEdgeTransform_squareSummable
       (le_of_lt (abs_re_I_mul_xiSpectralPoint_le_half q))
     rw [norm_mul, norm_I, one_mul] at h
     calc
-      ‖smoothProfileTwoEdgeTransform f a (I * xiSpectralPoint q)‖ ^ 2 ≤
-          (C / ‖xiSpectralPoint q‖) ^ 2 :=
+      ‖smoothProfileTwoEdgeTransform f a (I * xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
+          (C / ‖xiSpectralPoint q‖) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) h 2
-      _ = C ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by field_simp
+      _ = C ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by field_simp
 
 /-- Sign-selected growing edge for a smooth profile. -/
 def smoothProfileTwoEdgeDominant {eta L : ℝ}
     (f : SmoothBoundaryProfile eta L) (a : ℝ) (w : ℂ) : ℂ :=
   if 0 < w.re then
-    smoothProfileLaplaceAmplitude f w ^ 2 *
+    smoothProfileLaplaceAmplitude f w ^ (2 : ℕ) *
       Complex.exp (2 * (a : ℂ) * w)
   else if w.re < 0 then
-    smoothProfileLaplaceAmplitude f (-w) ^ 2 *
+    smoothProfileLaplaceAmplitude f (-w) ^ (2 : ℕ) *
       Complex.exp (-2 * (a : ℂ) * w)
   else 0
 
 /-- Aperture-independent reciprocal-square remainder constant. -/
 def smoothProfileTwoEdgeRemainderBound {eta L : ℝ}
     (f : SmoothBoundaryProfile eta L) : ℝ :=
-  4 * (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ 2
+  4 * (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ (2 : ℕ)
 
 theorem smoothProfileTwoEdgeDominant_logSample_of_pos
     {eta L : ℝ} (f : SmoothBoundaryProfile eta L)
     {n : ℕ} (hn : 1 ≤ n) {w : ℂ} (hwre : 0 < w.re) :
     smoothProfileTwoEdgeDominant f (Real.log n / 2) w =
-      smoothProfileLaplaceAmplitude f w ^ 2 * (n : ℂ) ^ w := by
+      smoothProfileLaplaceAmplitude f w ^ (2 : ℕ) * (n : ℂ) ^ w := by
   rw [smoothProfileTwoEdgeDominant, if_pos hwre]
   congr 1
   rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr (by omega : n ≠ 0))]
@@ -218,11 +218,11 @@ theorem smoothProfileTwoEdgeDominant_even {eta L : ℝ}
 theorem smoothProfileTwoEdgeTransform_sq_sub_dominant_of_pos
     {eta L a : ℝ} (f : SmoothBoundaryProfile eta L)
     {w : ℂ} (hwre : 0 < w.re) :
-    smoothProfileTwoEdgeTransform f a w ^ 2 -
+    smoothProfileTwoEdgeTransform f a w ^ (2 : ℕ) -
         smoothProfileTwoEdgeDominant f a w =
       2 * smoothProfileLaplaceAmplitude f w *
           smoothProfileLaplaceAmplitude f (-w) +
-        smoothProfileLaplaceAmplitude f (-w) ^ 2 *
+        smoothProfileLaplaceAmplitude f (-w) ^ (2 : ℕ) *
           Complex.exp (-2 * (a : ℂ) * w) := by
   rw [smoothProfileTwoEdgeTransform_sq_decomposition,
     smoothProfileTwoEdgeDominant, if_pos hwre]
@@ -231,11 +231,11 @@ theorem smoothProfileTwoEdgeTransform_sq_sub_dominant_of_pos
 theorem smoothProfileTwoEdgeTransform_sq_sub_dominant_of_neg
     {eta L a : ℝ} (f : SmoothBoundaryProfile eta L)
     {w : ℂ} (hwre : w.re < 0) :
-    smoothProfileTwoEdgeTransform f a w ^ 2 -
+    smoothProfileTwoEdgeTransform f a w ^ (2 : ℕ) -
         smoothProfileTwoEdgeDominant f a w =
       2 * smoothProfileLaplaceAmplitude f (-w) *
           smoothProfileLaplaceAmplitude f w +
-        smoothProfileLaplaceAmplitude f w ^ 2 *
+        smoothProfileLaplaceAmplitude f w ^ (2 : ℕ) *
           Complex.exp (2 * (a : ℂ) * w) := by
   have hnpos : 0 < (-w).re := by simpa using neg_pos.mpr hwre
   rw [← smoothProfileTwoEdgeTransform_even f a w,
@@ -255,9 +255,9 @@ theorem norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_of_pos_le
     {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
     (f : SmoothBoundaryProfile eta L) {a : ℝ} (ha : 0 ≤ a)
     {w : ℂ} (hwre : 0 < w.re) (hstrip : |w.re| ≤ (1 / 2 : ℝ)) :
-    ‖smoothProfileTwoEdgeTransform f a w ^ 2 -
+    ‖smoothProfileTwoEdgeTransform f a w ^ (2 : ℕ) -
         smoothProfileTwoEdgeDominant f a w‖ ≤
-      smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ 2 := by
+      smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ (2 : ℕ) := by
   have hw : w ≠ 0 := by
     intro h
     rw [h] at hwre
@@ -283,30 +283,30 @@ theorem norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_of_pos_le
       2 * ‖smoothProfileLaplaceAmplitude f w‖ *
           ‖smoothProfileLaplaceAmplitude f (-w)‖ ≤ 2 * B * B := by
     gcongr
-  have hAn2 : ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ 2 ≤ B ^ 2 :=
+  have hAn2 : ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ (2 : ℕ) ≤ B ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hAn 2
-  have hsecond : ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ 2 *
-      ‖Complex.exp (-2 * (a : ℂ) * w)‖ ≤ B ^ 2 := by
+  have hsecond : ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ (2 : ℕ) *
+      ‖Complex.exp (-2 * (a : ℂ) * w)‖ ≤ B ^ (2 : ℕ) := by
     calc
-      ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ 2 *
-          ‖Complex.exp (-2 * (a : ℂ) * w)‖ ≤ B ^ 2 * 1 :=
+      ‖smoothProfileLaplaceAmplitude f (-w)‖ ^ (2 : ℕ) *
+          ‖Complex.exp (-2 * (a : ℂ) * w)‖ ≤ B ^ (2 : ℕ) * 1 :=
         mul_le_mul hAn2 hdec (norm_nonneg _) (sq_nonneg B)
-      _ = B ^ 2 := mul_one _
+      _ = B ^ (2 : ℕ) := mul_one _
   rw [smoothProfileTwoEdgeTransform_sq_sub_dominant_of_pos f hwre]
   calc
     ‖2 * smoothProfileLaplaceAmplitude f w *
           smoothProfileLaplaceAmplitude f (-w) +
-        smoothProfileLaplaceAmplitude f (-w) ^ 2 *
+        smoothProfileLaplaceAmplitude f (-w) ^ (2 : ℕ) *
           Complex.exp (-2 * (a : ℂ) * w)‖ ≤
       ‖2 * smoothProfileLaplaceAmplitude f w *
           smoothProfileLaplaceAmplitude f (-w)‖ +
-        ‖smoothProfileLaplaceAmplitude f (-w) ^ 2 *
+        ‖smoothProfileLaplaceAmplitude f (-w) ^ (2 : ℕ) *
           Complex.exp (-2 * (a : ℂ) * w)‖ := norm_add_le _ _
-    _ ≤ 2 * B * B + B ^ 2 := by
+    _ ≤ 2 * B * B + B ^ (2 : ℕ) := by
       simp only [norm_mul, norm_ofNat, norm_pow]
       exact add_le_add hfirst hsecond
-    _ ≤ 4 * B ^ 2 := by nlinarith [sq_nonneg B]
-    _ = smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ 2 := by
+    _ ≤ 4 * B ^ (2 : ℕ) := by nlinarith [sq_nonneg B]
+    _ = smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ (2 : ℕ) := by
       dsimp only [B, C0, smoothProfileTwoEdgeRemainderBound]
       field_simp
 
@@ -314,9 +314,9 @@ theorem norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_of_neg_le
     {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
     (f : SmoothBoundaryProfile eta L) {a : ℝ} (ha : 0 ≤ a)
     {w : ℂ} (hwre : w.re < 0) (hstrip : |w.re| ≤ (1 / 2 : ℝ)) :
-    ‖smoothProfileTwoEdgeTransform f a w ^ 2 -
+    ‖smoothProfileTwoEdgeTransform f a w ^ (2 : ℕ) -
         smoothProfileTwoEdgeDominant f a w‖ ≤
-      smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ 2 := by
+      smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ (2 : ℕ) := by
   have hnpos : 0 < (-w).re := by simpa using neg_pos.mpr hwre
   have hnstrip : |(-w).re| ≤ (1 / 2 : ℝ) := by simpa using hstrip
   have h := norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_of_pos_le
@@ -330,9 +330,9 @@ theorem norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_of_re_eq_zero_le
     {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
     (f : SmoothBoundaryProfile eta L) (a : ℝ)
     {w : ℂ} (hw : w ≠ 0) (hwre : w.re = 0) :
-    ‖smoothProfileTwoEdgeTransform f a w ^ 2 -
+    ‖smoothProfileTwoEdgeTransform f a w ^ (2 : ℕ) -
         smoothProfileTwoEdgeDominant f a w‖ ≤
-      smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ 2 := by
+      smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ (2 : ℕ) := by
   let C0 : ℝ := Real.exp (L / 2) * smoothProfileDerivativeMass f
   let B : ℝ := C0 / ‖w‖
   have hC0 : 0 ≤ C0 := mul_nonneg (Real.exp_pos _).le
@@ -366,9 +366,9 @@ theorem norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_of_re_eq_zero_le
       _ = 2 * B := by ring
   rw [smoothProfileTwoEdgeDominant_of_re_eq_zero f a hwre, sub_zero, norm_pow]
   calc
-    ‖smoothProfileTwoEdgeTransform f a w‖ ^ 2 ≤ (2 * B) ^ 2 :=
+    ‖smoothProfileTwoEdgeTransform f a w‖ ^ (2 : ℕ) ≤ (2 * B) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hF 2
-    _ = smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ 2 := by
+    _ = smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ (2 : ℕ) := by
       dsimp only [B, C0, smoothProfileTwoEdgeRemainderBound]
       field_simp
       ring
@@ -377,9 +377,9 @@ theorem norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_le
     {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
     (f : SmoothBoundaryProfile eta L) {a : ℝ} (ha : 0 ≤ a)
     {w : ℂ} (hw : w ≠ 0) (hstrip : |w.re| ≤ (1 / 2 : ℝ)) :
-    ‖smoothProfileTwoEdgeTransform f a w ^ 2 -
+    ‖smoothProfileTwoEdgeTransform f a w ^ (2 : ℕ) -
         smoothProfileTwoEdgeDominant f a w‖ ≤
-      smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ 2 := by
+      smoothProfileTwoEdgeRemainderBound f / ‖w‖ ^ (2 : ℕ) := by
   rcases lt_trichotomy w.re 0 with hneg | hzero | hpos
   · exact norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_of_neg_le
       heta hwindow f ha hneg hstrip
@@ -396,7 +396,7 @@ def xiSmoothProfileTwoEdgeDominant {eta L : ℝ}
 /-- Multiplicity-exact smooth-profile remainder term. -/
 def xiSmoothProfileTwoEdgeRemainderTerm {eta L : ℝ}
     (f : SmoothBoundaryProfile eta L) (a : ℝ) (q : XiZeroCopy) : ℂ :=
-  xiSmoothProfileTwoEdgeTransform f a (xiSpectralPoint q) ^ 2 -
+  xiSmoothProfileTwoEdgeTransform f a (xiSpectralPoint q) ^ (2 : ℕ) -
     xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q)
 
 theorem norm_xiSmoothProfileTwoEdgeRemainderTerm_le
@@ -404,7 +404,7 @@ theorem norm_xiSmoothProfileTwoEdgeRemainderTerm_le
     (f : SmoothBoundaryProfile eta L) {a : ℝ} (ha : 0 ≤ a)
     (q : XiZeroCopy) :
     ‖xiSmoothProfileTwoEdgeRemainderTerm f a q‖ ≤
-      smoothProfileTwoEdgeRemainderBound f / ‖xiSpectralPoint q‖ ^ 2 := by
+      smoothProfileTwoEdgeRemainderBound f / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have hz : I * xiSpectralPoint q ≠ 0 :=
     mul_ne_zero I_ne_zero (xiSpectralPoint_ne_zero q)
   have h := norm_smoothProfileTwoEdgeTransform_sq_sub_dominant_le
@@ -424,17 +424,17 @@ theorem xiSmoothProfileTwoEdgeRemainderTerm_summable
   intro q
   calc
     ‖xiSmoothProfileTwoEdgeRemainderTerm f a q‖ ≤
-        smoothProfileTwoEdgeRemainderBound f / ‖xiSpectralPoint q‖ ^ 2 :=
+        smoothProfileTwoEdgeRemainderBound f / ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
       norm_xiSmoothProfileTwoEdgeRemainderTerm_le heta hwindow f ha q
     _ = smoothProfileTwoEdgeRemainderBound f *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 theorem xiWeilPolarization_smoothProfile_eq_tsum_sq
     {eta L : ℝ} (f : SmoothBoundaryProfile eta L) (a : ℝ) :
     xiWeilPolarization (xiSmoothProfileTwoEdgeTransform f a)
         (xiSmoothProfileTwoEdgeTransform f a) =
       ∑' q : XiZeroCopy,
-        xiSmoothProfileTwoEdgeTransform f a (xiSpectralPoint q) ^ 2 := by
+        xiSmoothProfileTwoEdgeTransform f a (xiSpectralPoint q) ^ (2 : ℕ) := by
   unfold xiWeilPolarization
   apply tsum_congr
   intro q
@@ -445,7 +445,7 @@ theorem xiSmoothProfileTwoEdgeTransform_sq_summable
     {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
     (f : SmoothBoundaryProfile eta L) (a : ℝ) :
     Summable (fun q : XiZeroCopy =>
-      xiSmoothProfileTwoEdgeTransform f a (xiSpectralPoint q) ^ 2) := by
+      xiSmoothProfileTwoEdgeTransform f a (xiSpectralPoint q) ^ (2 : ℕ)) := by
   apply Summable.of_norm
   simpa only [XiWeilSquareSummable, norm_pow] using
     xiSmoothProfileTwoEdgeTransform_squareSummable heta hwindow f a
@@ -471,7 +471,7 @@ theorem norm_xiWeilPolarization_smoothProfile_sub_dominant_le
         ∑' q : XiZeroCopy,
           xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q)‖ ≤
       smoothProfileTwoEdgeRemainderBound f *
-        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   rw [xiWeilPolarization_smoothProfile_eq_tsum_sq]
   have hsq := xiSmoothProfileTwoEdgeTransform_sq_summable
     heta hwindow f a
@@ -484,22 +484,22 @@ theorem norm_xiWeilPolarization_smoothProfile_sub_dominant_le
     (smoothProfileTwoEdgeRemainderBound f)
   calc
     ‖∑' q : XiZeroCopy,
-        (xiSmoothProfileTwoEdgeTransform f a (xiSpectralPoint q) ^ 2 -
+        (xiSmoothProfileTwoEdgeTransform f a (xiSpectralPoint q) ^ (2 : ℕ) -
           xiSmoothProfileTwoEdgeDominant f a (xiSpectralPoint q))‖ =
       ‖∑' q : XiZeroCopy, xiSmoothProfileTwoEdgeRemainderTerm f a q‖ := by rfl
     _ ≤ ∑' q : XiZeroCopy, ‖xiSmoothProfileTwoEdgeRemainderTerm f a q‖ :=
       norm_tsum_le_tsum_norm hrem.norm
     _ ≤ ∑' q : XiZeroCopy, smoothProfileTwoEdgeRemainderBound f *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       exact hrem.norm.tsum_le_tsum (fun q => by
         calc
           ‖xiSmoothProfileTwoEdgeRemainderTerm f a q‖ ≤
-              smoothProfileTwoEdgeRemainderBound f / ‖xiSpectralPoint q‖ ^ 2 :=
+              smoothProfileTwoEdgeRemainderBound f / ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
             norm_xiSmoothProfileTwoEdgeRemainderTerm_le heta hwindow f ha q
           _ = smoothProfileTwoEdgeRemainderBound f *
-              (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring) hmajor
+              (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring) hmajor
     _ = smoothProfileTwoEdgeRemainderBound f *
-        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       rw [tsum_mul_left]
 
 theorem xiSmoothProfileTwoEdgeDominant_reflect
@@ -656,7 +656,7 @@ theorem xiWeilPolarization_smoothProfile_logSample_cofinally_unbounded_below
   intro B N0
   let D := smoothProfileXiRightCoefficientSystem heta hwindow f hf
   let K : ℝ := smoothProfileTwoEdgeRemainderBound f *
-    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   obtain ⟨N : ℕ, hN⟩ := exists_nat_gt
     (max (N0 : ℝ) (Real.exp (2 * L)))
   have hN0 : N0 ≤ N := by

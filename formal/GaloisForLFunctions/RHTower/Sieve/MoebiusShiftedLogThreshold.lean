@@ -95,7 +95,7 @@ theorem sum_moebius_log_sq_threshold_eq_shifted
     (X t : ℝ) (hX : 0 < X) (ht : 0 ≤ t) :
     (∑ d ∈ Finset.Icc 1 ⌊X⌋₊,
       (((moebius d : ℤ) : ℝ) / (d : ℝ) *
-        Real.log (X / (d : ℝ)) ^ 2) *
+        Real.log (X / (d : ℝ)) ^ (2 : ℕ)) *
           (if t ≤ Real.log (X / (d : ℝ)) then (1 : ℝ) else 0)) =
       moebiusShiftedLogSqKernelReal t (X * Real.exp (-t)) := by
   let S := Finset.Icc 1 ⌊X⌋₊
@@ -112,11 +112,11 @@ theorem sum_moebius_log_sq_threshold_eq_shifted
         (Finset.mem_Icc.mp hdT).1).mp hdT
   rw [show (∑ d ∈ S,
       (((moebius d : ℤ) : ℝ) / (d : ℝ) *
-        Real.log (X / (d : ℝ)) ^ 2) *
+        Real.log (X / (d : ℝ)) ^ (2 : ℕ)) *
           (if t ≤ Real.log (X / (d : ℝ)) then (1 : ℝ) else 0)) =
       ∑ d ∈ S.filter (fun d : ℕ => t ≤ Real.log (X / (d : ℝ))),
         ((moebius d : ℤ) : ℝ) / (d : ℝ) *
-          Real.log (X / (d : ℝ)) ^ 2 by
+          Real.log (X / (d : ℝ)) ^ (2 : ℕ) by
     rw [Finset.sum_filter]
     apply Finset.sum_congr rfl
     intro d hd

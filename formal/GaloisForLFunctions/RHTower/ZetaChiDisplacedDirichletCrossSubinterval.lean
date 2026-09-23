@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.ZetaChiDisplacedDirichletCross
 
 Finite positive/negative Dirichlet crosses inherit the displaced stationary-phase estimate on
 every subinterval of a fixed dyadic block.  The coefficient cost remains the exact factorized
-`ell^1` mass.
+`ell^(1 : ℕ)` mass.
 -/
 
 open Complex MeasureTheory Set
@@ -64,7 +64,7 @@ theorem integral_zetaChiDisplacedDirichletCross_eq_sum_subinterval
     rw [← heq]
     exact hs
 
-/-- Factorized `ell^1` bound for a displaced finite Dirichlet cross on any dyadic subinterval. -/
+/-- Factorized `ell^(1 : ℕ)` bound for a displaced finite Dirichlet cross on any dyadic subinterval. -/
 theorem exists_norm_integral_zetaChiDisplacedDirichletCross_le_l1_subinterval
     {d₀ : ℝ} (hd₀0 : 0 ≤ d₀) (hd₀quarter : d₀ ≤ 1 / 4) :
     ∃ K : ℝ, 0 ≤ K ∧

@@ -133,7 +133,7 @@ theorem routeEUniformFibreKernel_columnLoadGradient_eq_zero
     (label : Ω → Λ) (edgeWeight : Ω → Ω → ℝ) :
     (∑ x, ∑ y, edgeWeight x y *
       ((∑ z, routeEUniformFibreKernel label z x) -
-        ∑ z, routeEUniformFibreKernel label z y) ^ 2) = 0 := by
+        ∑ z, routeEUniformFibreKernel label z y) ^ (2 : ℕ)) = 0 := by
   simp_rw [routeEUniformFibreKernel_column_sum, sub_self, zero_pow (by norm_num : (2 : ℕ) ≠ 0),
     mul_zero, Finset.sum_const_zero]
 
@@ -177,7 +177,7 @@ theorem routeE_abs_conditionedMean_sub_totalMean_le_two_rejection
 theorem routeE_conditionedMean_sq_le_totalMean_sq_add_rejection_sq
     (thetaGood thetaTotal epsilon : ℝ) (_hepsilon : 0 ≤ epsilon)
     (hdefect : |thetaGood - thetaTotal| ≤ 2 * epsilon) :
-    thetaGood ^ 2 ≤ 2 * thetaTotal ^ 2 + 8 * epsilon ^ 2 := by
+    thetaGood ^ (2 : ℕ) ≤ 2 * thetaTotal ^ (2 : ℕ) + 8 * epsilon ^ (2 : ℕ) := by
   have hlower := (abs_le.mp hdefect).1
   have hupper := (abs_le.mp hdefect).2
   nlinarith [sq_nonneg (thetaGood - 2 * thetaTotal),
@@ -189,23 +189,23 @@ theorem routeE_weightedConditionalParityEnergy_le_admission
     (mass thetaGood thetaTotal epsilon : O → ℝ)
     (hmass : ∀ o, 0 ≤ mass o) (hepsilon : ∀ o, 0 ≤ epsilon o)
     (hdefect : ∀ o, |thetaGood o - thetaTotal o| ≤ 2 * epsilon o) :
-    (∑ o, mass o * thetaGood o ^ 2) ≤
-      2 * ∑ o, mass o * thetaTotal o ^ 2 +
-        8 * ∑ o, mass o * epsilon o ^ 2 := by
+    (∑ o, mass o * thetaGood o ^ (2 : ℕ)) ≤
+      2 * ∑ o, mass o * thetaTotal o ^ (2 : ℕ) +
+        8 * ∑ o, mass o * epsilon o ^ (2 : ℕ) := by
   calc
-    (∑ o, mass o * thetaGood o ^ 2) ≤
-        ∑ o, mass o * (2 * thetaTotal o ^ 2 + 8 * epsilon o ^ 2) := by
+    (∑ o, mass o * thetaGood o ^ (2 : ℕ)) ≤
+        ∑ o, mass o * (2 * thetaTotal o ^ (2 : ℕ) + 8 * epsilon o ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro o _ho
       exact mul_le_mul_of_nonneg_left
         (routeE_conditionedMean_sq_le_totalMean_sq_add_rejection_sq
           (thetaGood o) (thetaTotal o) (epsilon o) (hepsilon o) (hdefect o)) (hmass o)
-    _ = 2 * ∑ o, mass o * thetaTotal o ^ 2 +
-        8 * ∑ o, mass o * epsilon o ^ 2 := by
+    _ = 2 * ∑ o, mass o * thetaTotal o ^ (2 : ℕ) +
+        8 * ∑ o, mass o * epsilon o ^ (2 : ℕ) := by
       calc
-        (∑ o, mass o * (2 * thetaTotal o ^ 2 + 8 * epsilon o ^ 2)) =
-            ∑ o, (2 * (mass o * thetaTotal o ^ 2) +
-              8 * (mass o * epsilon o ^ 2)) := by
+        (∑ o, mass o * (2 * thetaTotal o ^ (2 : ℕ) + 8 * epsilon o ^ (2 : ℕ))) =
+            ∑ o, (2 * (mass o * thetaTotal o ^ (2 : ℕ)) +
+              8 * (mass o * epsilon o ^ (2 : ℕ))) := by
           apply Finset.sum_congr rfl
           intro o _ho
           ring

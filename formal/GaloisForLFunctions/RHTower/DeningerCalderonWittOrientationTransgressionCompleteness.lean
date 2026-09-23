@@ -229,7 +229,7 @@ theorem deningerCalderonWittOrientationTransgressionCompleteness
     (hregular :
       ∀ v, F (deningerCalderonWittOrientedBoundary p v) = 0)
     (S : Submodule ℂ (deningerCalderonWittMilnorIncidence p))
-    (w : ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))
+    (w : ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p))
     (hcocycle : deningerCalderonWittAlgebraicExteriorCup p w = 0) :
     (∃! phi : ℂ →ₗ[ℂ] W,
         F = phi.comp (deningerCalderonWittOrientedTrace p)) ∧
@@ -436,7 +436,7 @@ theorem deningerCalderonWittGlobalOrientationTransgressionCompleteness
     (hregular :
       ∀ v, F (deningerCalderonWittGlobalOrientedBoundary v) = 0)
     (S : Submodule ℂ deningerCalderonWittGlobalMilnorIncidence)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (hcocycle :
       deningerCalderonWittAlgebraicGlobalExteriorCup w = 0) :
     (∃! phi : ℂ →ₗ[ℂ] W,

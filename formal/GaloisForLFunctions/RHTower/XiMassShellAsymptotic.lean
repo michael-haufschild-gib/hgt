@@ -24,14 +24,14 @@ noncomputable section
 theorem norm_shellArgument_le {sigma kappa u s L : ℝ} (hkappa : 1 < kappa) (hu : 1 ≤ u)
     (hs : 0 ≤ s) (hsL : s ≤ L) (hsigma : 0 < sigma) :
     ‖xiMassShellArgument sigma kappa u s‖
-      ≤ (shellQ kappa ^ 2 + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) * u ^ 2 := by
+      ≤ (shellQ kappa ^ (2 : ℕ) + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) * u ^ (2 : ℕ) := by
   have hq : 0 < shellQ kappa := shellQ_pos hkappa
-  have hqsq : shellQ kappa ^ 2 = kappa ^ 2 - 1 := shellQ_sq hkappa
+  have hqsq : shellQ kappa ^ (2 : ℕ) = kappa ^ (2 : ℕ) - 1 := shellQ_sq hkappa
   have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
   have hkappa0 : (0 : ℝ) < kappa := lt_trans zero_lt_one hkappa
   have hL : 0 ≤ L := le_trans hs hsL
   have hre : (xiMassShellArgument sigma kappa u s).re
-      = (kappa ^ 2 - 1) * u ^ 2 + 2 * kappa * u * s + (sigma ^ 2 + s ^ 2) :=
+      = (kappa ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) + 2 * kappa * u * s + (sigma ^ (2 : ℕ) + s ^ (2 : ℕ)) :=
     xiMassShellArgument_re sigma kappa u s
   have him : (xiMassShellArgument sigma kappa u s).im = 2 * sigma * u := by
     rw [xiMassShellArgument]
@@ -40,44 +40,44 @@ theorem norm_shellArgument_le {sigma kappa u s L : ℝ} (hkappa : 1 < kappa) (hu
   have hbound := Complex.norm_le_abs_re_add_abs_im (xiMassShellArgument sigma kappa u s)
   rw [hre, him] at hbound
   refine le_trans hbound ?_
-  have habs1 : |(kappa ^ 2 - 1) * u ^ 2 + 2 * kappa * u * s + (sigma ^ 2 + s ^ 2)|
-      = (kappa ^ 2 - 1) * u ^ 2 + 2 * kappa * u * s + (sigma ^ 2 + s ^ 2) := by
+  have habs1 : |(kappa ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) + 2 * kappa * u * s + (sigma ^ (2 : ℕ) + s ^ (2 : ℕ))|
+      = (kappa ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) + 2 * kappa * u * s + (sigma ^ (2 : ℕ) + s ^ (2 : ℕ)) := by
     refine abs_of_nonneg ?_
     have hk1a : (0 : ℝ) ≤ kappa - 1 := by linarith
     have hk1b : (0 : ℝ) ≤ kappa + 1 := by linarith
-    have hk1 : (0 : ℝ) ≤ kappa ^ 2 - 1 := by nlinarith [mul_nonneg hk1a hk1b]
-    have h1 : (0 : ℝ) ≤ (kappa ^ 2 - 1) * u ^ 2 := mul_nonneg hk1 (sq_nonneg u)
+    have hk1 : (0 : ℝ) ≤ kappa ^ (2 : ℕ) - 1 := by nlinarith [mul_nonneg hk1a hk1b]
+    have h1 : (0 : ℝ) ≤ (kappa ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) := mul_nonneg hk1 (sq_nonneg u)
     have h2 : (0 : ℝ) ≤ 2 * kappa * u * s := by positivity
     nlinarith [sq_nonneg sigma, sq_nonneg s, h1, h2]
   have habs2 : |2 * sigma * u| = 2 * sigma * u := abs_of_nonneg (by positivity)
   rw [habs1, habs2, hqsq]
-  have hu2 : u ≤ u ^ 2 := by nlinarith
-  have hone : (1 : ℝ) ≤ u ^ 2 := by nlinarith
-  have h1 : u * s ≤ u ^ 2 * L := by nlinarith [hs, hsL, hu2, hL, hu0]
-  have h2 : s ^ 2 ≤ L ^ 2 * u ^ 2 := by nlinarith [hs, hsL, hone, hL]
-  have p1 : (0 : ℝ) ≤ 2 * kappa * (u ^ 2 * L - u * s) := by nlinarith [h1, hkappa0]
-  have p2 : (0 : ℝ) ≤ sigma ^ 2 * (u ^ 2 - 1) := by nlinarith [hone, sq_nonneg sigma]
-  have p3 : (0 : ℝ) ≤ L ^ 2 * u ^ 2 - s ^ 2 := by linarith [h2]
-  have p4 : (0 : ℝ) ≤ 2 * sigma * (u ^ 2 - u) := by nlinarith [hu2, hsigma.le]
+  have hu2 : u ≤ u ^ (2 : ℕ) := by nlinarith
+  have hone : (1 : ℝ) ≤ u ^ (2 : ℕ) := by nlinarith
+  have h1 : u * s ≤ u ^ (2 : ℕ) * L := by nlinarith [hs, hsL, hu2, hL, hu0]
+  have h2 : s ^ (2 : ℕ) ≤ L ^ (2 : ℕ) * u ^ (2 : ℕ) := by nlinarith [hs, hsL, hone, hL]
+  have p1 : (0 : ℝ) ≤ 2 * kappa * (u ^ (2 : ℕ) * L - u * s) := by nlinarith [h1, hkappa0]
+  have p2 : (0 : ℝ) ≤ sigma ^ (2 : ℕ) * (u ^ (2 : ℕ) - 1) := by nlinarith [hone, sq_nonneg sigma]
+  have p3 : (0 : ℝ) ≤ L ^ (2 : ℕ) * u ^ (2 : ℕ) - s ^ (2 : ℕ) := by linarith [h2]
+  have p4 : (0 : ℝ) ≤ 2 * sigma * (u ^ (2 : ℕ) - u) := by nlinarith [hu2, hsigma.le]
   linarith [p1, p2, p3, p4]
 
 theorem norm_shellRoot_le {sigma kappa u s L : ℝ} (hkappa : 1 < kappa) (hu : 1 ≤ u)
     (hs : 0 ≤ s) (hsL : s ≤ L) (hsigma : 0 < sigma) :
     ‖shellRoot sigma kappa u s‖
-      ≤ Real.sqrt (shellQ kappa ^ 2 + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) * u := by
+      ≤ Real.sqrt (shellQ kappa ^ (2 : ℕ) + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) * u := by
   have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
   have hpos := xiMassShellArgument_re_pos hkappa hu0 hs hsigma
   have hbound := norm_shellArgument_le hkappa hu hs hsL hsigma
   have hL : (0 : ℝ) ≤ L := le_trans hs hsL
   have hkappa0 : (0 : ℝ) < kappa := lt_trans zero_lt_one hkappa
-  have hK0 : (0 : ℝ) ≤ shellQ kappa ^ 2 + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma) := by
+  have hK0 : (0 : ℝ) ≤ shellQ kappa ^ (2 : ℕ) + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma) := by
     have h1 : (0 : ℝ) ≤ 2 * kappa * L := by positivity
     nlinarith [sq_nonneg (shellQ kappa), sq_nonneg sigma, sq_nonneg L, hsigma.le]
   rw [shellRoot, HTGeometry.norm_csqrt hpos]
   calc Real.sqrt ‖xiMassShellArgument sigma kappa u s‖
-      ≤ Real.sqrt ((shellQ kappa ^ 2 + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) * u ^ 2) :=
+      ≤ Real.sqrt ((shellQ kappa ^ (2 : ℕ) + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) * u ^ (2 : ℕ)) :=
         Real.sqrt_le_sqrt hbound
-    _ = Real.sqrt (shellQ kappa ^ 2 + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) * u := by
+    _ = Real.sqrt (shellQ kappa ^ (2 : ℕ) + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) * u := by
         rw [Real.sqrt_mul hK0, Real.sqrt_sq hu0.le]
 
 
@@ -88,8 +88,8 @@ theorem shellRemainder_relative_le {a sigma kappa u s L : ℝ} (ha : 0 < a) (hsi
     (hkappa : 1 < kappa) (hu : 1 ≤ u) (hs : 0 ≤ s) (hsL : s ≤ L) :
     2 / (Real.exp 1 * (a * (shellRoot sigma kappa u s).re))
         * Real.sqrt (2 * ‖shellRoot sigma kappa u s‖ / (shellRoot sigma kappa u s).re)
-      ≤ (2 * Real.sqrt (2 * Real.sqrt (shellQ kappa ^ 2
-            + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) / shellQ kappa)
+      ≤ (2 * Real.sqrt (2 * Real.sqrt (shellQ kappa ^ (2 : ℕ)
+            + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) / shellQ kappa)
           / (Real.exp 1 * a * shellQ kappa)) / u := by
   have hq : 0 < shellQ kappa := shellQ_pos hkappa
   have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
@@ -98,14 +98,14 @@ theorem shellRemainder_relative_le {a sigma kappa u s L : ℝ} (ha : 0 < a) (hsi
     shellRoot_re_ge hkappa hu0 hs hsigma
   have hZre0 : (0 : ℝ) < (shellRoot sigma kappa u s).re := lt_of_lt_of_le hqu hZre
   have hZn := norm_shellRoot_le hkappa hu hs hsL hsigma
-  have hSq : (0 : ℝ) ≤ Real.sqrt (shellQ kappa ^ 2
-      + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) := Real.sqrt_nonneg _
+  have hSq : (0 : ℝ) ≤ Real.sqrt (shellQ kappa ^ (2 : ℕ)
+      + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) := Real.sqrt_nonneg _
   have hratio : 2 * ‖shellRoot sigma kappa u s‖ / (shellRoot sigma kappa u s).re
-      ≤ 2 * Real.sqrt (shellQ kappa ^ 2
-        + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) / shellQ kappa := by
+      ≤ 2 * Real.sqrt (shellQ kappa ^ (2 : ℕ)
+        + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) / shellQ kappa := by
     rw [div_le_div_iff₀ hZre0 hq]
-    have h1 : 2 * ‖shellRoot sigma kappa u s‖ ≤ 2 * (Real.sqrt (shellQ kappa ^ 2
-        + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) * u) := by linarith [hZn]
+    have h1 : 2 * ‖shellRoot sigma kappa u s‖ ≤ 2 * (Real.sqrt (shellQ kappa ^ (2 : ℕ)
+        + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) * u) := by linarith [hZn]
     nlinarith [h1, hZre, hq, hu0, hSq, hZre0]
   have hfirst : 2 / (Real.exp 1 * (a * (shellRoot sigma kappa u s).re))
       ≤ 2 / (Real.exp 1 * (a * (shellQ kappa * u))) := by
@@ -113,8 +113,8 @@ theorem shellRemainder_relative_le {a sigma kappa u s L : ℝ} (ha : 0 < a) (hsi
     have hpos : (0 : ℝ) < Real.exp 1 * a := by positivity
     nlinarith [hZre, hpos]
   have hsecond : Real.sqrt (2 * ‖shellRoot sigma kappa u s‖ / (shellRoot sigma kappa u s).re)
-      ≤ Real.sqrt (2 * Real.sqrt (shellQ kappa ^ 2
-        + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) / shellQ kappa) :=
+      ≤ Real.sqrt (2 * Real.sqrt (shellQ kappa ^ (2 : ℕ)
+        + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) / shellQ kappa) :=
     Real.sqrt_le_sqrt hratio
   have hstep := mul_le_mul hfirst hsecond (Real.sqrt_nonneg _) (by positivity)
   refine le_trans hstep (le_of_eq ?_)
@@ -131,8 +131,8 @@ theorem exists_shellProfile_relative_error {a sigma kappa L : ℝ} (ha : 0 < a) 
         ≤ C / u * shellModulus a kappa u s := by
   classical
   obtain ⟨C₁, u₁, hC₁, hu₁, hR⟩ := exists_shellRatio_bound ha hsigma hkappa hL
-  obtain ⟨C₂, hC₂⟩ : ∃ C₂ : ℝ, 2 * Real.sqrt (2 * Real.sqrt (shellQ kappa ^ 2
-      + (2 * kappa * L + sigma ^ 2 + L ^ 2 + 2 * sigma)) / shellQ kappa)
+  obtain ⟨C₂, hC₂⟩ : ∃ C₂ : ℝ, 2 * Real.sqrt (2 * Real.sqrt (shellQ kappa ^ (2 : ℕ)
+      + (2 * kappa * L + sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + 2 * sigma)) / shellQ kappa)
       / (Real.exp 1 * a * shellQ kappa) = C₂ := ⟨_, rfl⟩
   have hq : 0 < shellQ kappa := shellQ_pos hkappa
   have hC₂0 : 0 ≤ C₂ := by

@@ -4,8 +4,8 @@ import Mathlib.Analysis.SpecificLimits.Basic
 /-!
 # Geometric amplitude dominance
 
-A point at distance `sqrt (p^2 + q^2)` from the origin outgrows one at distance `p` under repeated
-powering, whenever `q <> 0`.  Consequently a family of bounds `m * sqrt(p^2+q^2)^n <= K * p^n`,
+A point at distance `sqrt (p^(2 : ℕ) + q^(2 : ℕ))` from the origin outgrows one at distance `p` under repeated
+powering, whenever `q <> 0`.  Consequently a family of bounds `m * sqrt(p^(2 : ℕ)+q^(2 : ℕ))^n <= K * p^n`,
 holding for every `n`, forces `q = 0`.
 
 This is the entire detection mechanism of the real-variable route: at a fixed height `p`, an
@@ -25,11 +25,11 @@ theorem not_forall_mul_pow_le {c m K : ℝ} (hc : 1 < c) (hm : 0 < m)
   linarith [h n]
 
 theorem lt_sqrt_sq_add_sq {p q : ℝ} (hp : 0 < p) (hq : q ≠ 0) :
-    p < Real.sqrt (p ^ 2 + q ^ 2) := by
-  have hq2 : 0 < q ^ 2 := lt_of_le_of_ne (sq_nonneg q) (Ne.symm (pow_ne_zero 2 hq))
-  have hlt : p ^ 2 < p ^ 2 + q ^ 2 := by linarith
-  calc p = Real.sqrt (p ^ 2) := (Real.sqrt_sq hp.le).symm
-    _ < Real.sqrt (p ^ 2 + q ^ 2) := by
+    p < Real.sqrt (p ^ (2 : ℕ) + q ^ (2 : ℕ)) := by
+  have hq2 : 0 < q ^ (2 : ℕ) := lt_of_le_of_ne (sq_nonneg q) (Ne.symm (pow_ne_zero 2 hq))
+  have hlt : p ^ (2 : ℕ) < p ^ (2 : ℕ) + q ^ (2 : ℕ) := by linarith
+  calc p = Real.sqrt (p ^ (2 : ℕ)) := (Real.sqrt_sq hp.le).symm
+    _ < Real.sqrt (p ^ (2 : ℕ) + q ^ (2 : ℕ)) := by
         exact Real.sqrt_lt_sqrt (by positivity) hlt
 
 /-- **Two-base dominance.**  A geometric sequence of ratio `c` cannot be bounded by one of strictly
@@ -49,13 +49,13 @@ theorem not_forall_mul_pow_le_pow {c d m K : ℝ} (hd : 0 ≤ d) (hdc : d < c) (
   have hzero : m ≤ 0 := ge_of_tendsto htend (Filter.Eventually.of_forall hle)
   linarith
 
-/-- **Amplitude dominance.**  If a positive multiple of `sqrt(p^2+q^2)^n` stays below a fixed
+/-- **Amplitude dominance.**  If a positive multiple of `sqrt(p^(2 : ℕ)+q^(2 : ℕ))^n` stays below a fixed
 multiple of `p^n` for every `n`, the displacement `q` vanishes. -/
 theorem eq_zero_of_forall_mul_pow_le {p q m K : ℝ} (hp : 0 < p) (hm : 0 < m)
-    (h : ∀ n : ℕ, m * Real.sqrt (p ^ 2 + q ^ 2) ^ n ≤ K * p ^ n) : q = 0 := by
+    (h : ∀ n : ℕ, m * Real.sqrt (p ^ (2 : ℕ) + q ^ (2 : ℕ)) ^ n ≤ K * p ^ n) : q = 0 := by
   by_contra hq
   have hlt := lt_sqrt_sq_add_sq hp hq
-  have hc : 1 < Real.sqrt (p ^ 2 + q ^ 2) / p := (one_lt_div hp).mpr hlt
+  have hc : 1 < Real.sqrt (p ^ (2 : ℕ) + q ^ (2 : ℕ)) / p := (one_lt_div hp).mpr hlt
   refine not_forall_mul_pow_le hc hm (K := K) ?_
   intro n
   have hpn : (0 : ℝ) < p ^ n := pow_pos hp n

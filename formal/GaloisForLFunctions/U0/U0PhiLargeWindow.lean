@@ -65,10 +65,10 @@ theorem farB_invariant {b w : ℂ} (hb : 2 < ‖b‖) (hw : w ∈ farB b) :
     quadratic b w ∈ farB b := by
   have hx : xStar ‖b‖ < ‖w‖ := hw
   have hxs1 : 1 < xStar ‖b‖ := one_lt_xStar (by linarith)
-  have hfix : xStar ‖b‖ ^ 2 - xStar ‖b‖ - ‖b‖ = 0 := xStar_fixed (by linarith)
-  show xStar ‖b‖ < ‖w ^ 2 + b‖
-  have htri : ‖w ^ 2‖ ≤ ‖w ^ 2 + b‖ + ‖b‖ := norm_le_add_norm_add _ _
-  have hp : ‖w ^ 2‖ = ‖w‖ ^ 2 := norm_pow w 2
+  have hfix : xStar ‖b‖ ^ (2 : ℕ) - xStar ‖b‖ - ‖b‖ = 0 := xStar_fixed (by linarith)
+  show xStar ‖b‖ < ‖w ^ (2 : ℕ) + b‖
+  have htri : ‖w ^ (2 : ℕ)‖ ≤ ‖w ^ (2 : ℕ) + b‖ + ‖b‖ := norm_le_add_norm_add _ _
+  have hp : ‖w ^ (2 : ℕ)‖ = ‖w‖ ^ (2 : ℕ) := norm_pow w 2
   nlinarith [hx, htri, hxs1, hfix,
     mul_pos (sub_pos.mpr hx) (show (0:ℝ) < ‖w‖ + xStar ‖b‖ by linarith)]
 
@@ -91,11 +91,11 @@ theorem rMax_lt_one {b : ℂ} (hb : 2 < ‖b‖) : rMax b < 1 := by
 
 /-- The series ratio is uniformly bounded by `rMax b` on the sharp far field. -/
 theorem farB_ratio_le {b w : ℂ} (hb : 2 < ‖b‖) (hw : w ∈ farB b) :
-    ‖b / w ^ 2‖ ≤ rMax b := by
+    ‖b / w ^ (2 : ℕ)‖ ≤ rMax b := by
   have hx : xStar ‖b‖ < ‖w‖ := hw
   have hxs1 : 1 < xStar ‖b‖ := one_lt_xStar (by linarith)
-  have hfix : xStar ‖b‖ ^ 2 - xStar ‖b‖ - ‖b‖ = 0 := xStar_fixed (by linarith)
-  have hw2 : ‖b‖ + xStar ‖b‖ ≤ ‖w‖ ^ 2 := by
+  have hfix : xStar ‖b‖ ^ (2 : ℕ) - xStar ‖b‖ - ‖b‖ = 0 := xStar_fixed (by linarith)
+  have hw2 : ‖b‖ + xStar ‖b‖ ≤ ‖w‖ ^ (2 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hx) (show (0:ℝ) < ‖w‖ + xStar ‖b‖ by linarith), hfix]
   have hwpos : (0 : ℝ) < ‖w‖ := by linarith
   rw [norm_div, norm_pow, rMax,
@@ -103,25 +103,25 @@ theorem farB_ratio_le {b w : ℂ} (hb : 2 < ‖b‖) (hw : w ∈ farB b) :
   exact mul_le_mul_of_nonneg_left hw2 (norm_nonneg b)
 
 theorem farB_ratio_lt_one {b w : ℂ} (hb : 2 < ‖b‖) (hw : w ∈ farB b) :
-    ‖b / w ^ 2‖ < 1 :=
+    ‖b / w ^ (2 : ℕ)‖ < 1 :=
   lt_of_le_of_lt (farB_ratio_le hb hw) (rMax_lt_one hb)
 
 /-- Geometric term bound on the sharp far field, with the general-radius log constant. -/
 theorem norm_term_le_B {b w : ℂ} (hb : 2 < ‖b‖) (hw : w ∈ farB b) (k : ℕ) :
     ‖bottcherLogTerm b w k‖ ≤ (1 - rMax b)⁻¹ * rMax b * (1 / 2 : ℝ) ^ (k + 1) := by
   have hA : (quadratic b)^[k] w ∈ farB b := farB_iterate hb k hw
-  have hq : ‖b / ((quadratic b)^[k] w) ^ 2‖ ≤ rMax b := farB_ratio_le hb hA
+  have hq : ‖b / ((quadratic b)^[k] w) ^ (2 : ℕ)‖ ≤ rMax b := farB_ratio_le hb hA
   have hlog := norm_clog_one_add_le_of_le (rMax_lt_one hb) hq
   have hCpos : (0 : ℝ) < (1 - rMax b)⁻¹ := by
     have := rMax_lt_one hb
     exact inv_pos.mpr (by linarith)
   unfold bottcherLogTerm
   rw [norm_mul, norm_inv, norm_pow, Complex.norm_ofNat]
-  calc ((2 : ℝ) ^ (k + 1))⁻¹ * ‖Complex.log (1 + b / ((quadratic b)^[k] w) ^ 2)‖
+  calc ((2 : ℝ) ^ (k + 1))⁻¹ * ‖Complex.log (1 + b / ((quadratic b)^[k] w) ^ (2 : ℕ))‖
       ≤ ((2 : ℝ) ^ (k + 1))⁻¹ * ((1 - rMax b)⁻¹ * rMax b) := by
         refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-        calc ‖Complex.log (1 + b / ((quadratic b)^[k] w) ^ 2)‖
-            ≤ (1 - rMax b)⁻¹ * ‖b / ((quadratic b)^[k] w) ^ 2‖ := hlog
+        calc ‖Complex.log (1 + b / ((quadratic b)^[k] w) ^ (2 : ℕ))‖
+            ≤ (1 - rMax b)⁻¹ * ‖b / ((quadratic b)^[k] w) ^ (2 : ℕ)‖ := hlog
           _ ≤ (1 - rMax b)⁻¹ * rMax b := mul_le_mul_of_nonneg_left hq hCpos.le
     _ = (1 - rMax b)⁻¹ * rMax b * (1 / 2 : ℝ) ^ (k + 1) := by
         rw [one_div, inv_pow]
@@ -138,7 +138,7 @@ theorem summable_term_B {b w : ℂ} (hb : 2 < ‖b‖) (hw : w ∈ farB b) :
 theorem tail_differentiableOn_B {b : ℂ} (hb : 2 < ‖b‖) :
     DifferentiableOn ℂ (fun w => ∑' k, bottcherLogTerm b w k) (farB b) := by
   have hqd : Differentiable ℂ (quadratic b) := by
-    have : (quadratic b) = fun z => z ^ 2 + b := by
+    have : (quadratic b) = fun z => z ^ (2 : ℕ) + b := by
       funext z; exact quadratic_apply b z
     rw [this]
     exact (differentiable_pow 2).add_const b
@@ -152,20 +152,20 @@ theorem tail_differentiableOn_B {b : ℂ} (hb : 2 < ‖b‖) :
   · intro k w hw
     apply DifferentiableAt.differentiableWithinAt
     have hA : (quadratic b)^[k] w ∈ farB b := farB_iterate hb k hw
-    have hAne : ((quadratic b)^[k] w) ^ 2 ≠ 0 := pow_ne_zero 2 (farB_ne_zero hb hA)
+    have hAne : ((quadratic b)^[k] w) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (farB_ne_zero hb hA)
     have hiter : DifferentiableAt ℂ ((quadratic b)^[k]) w := (hqd.iterate k).differentiableAt
-    have hinner : DifferentiableAt ℂ (fun v => 1 + b / ((quadratic b)^[k] v) ^ 2) w := by
-      have hdiv : DifferentiableAt ℂ (fun v => b / ((quadratic b)^[k] v) ^ 2) w :=
+    have hinner : DifferentiableAt ℂ (fun v => 1 + b / ((quadratic b)^[k] v) ^ (2 : ℕ)) w := by
+      have hdiv : DifferentiableAt ℂ (fun v => b / ((quadratic b)^[k] v) ^ (2 : ℕ)) w :=
         (differentiableAt_const _).div (hiter.pow 2) hAne
       exact (differentiableAt_const (1 : ℂ)).add hdiv
-    have hslit : (1 + b / ((quadratic b)^[k] w) ^ 2) ∈ slitPlane := by
+    have hslit : (1 + b / ((quadratic b)^[k] w) ^ (2 : ℕ)) ∈ slitPlane := by
       refine Or.inl ?_
-      have hre : |(b / ((quadratic b)^[k] w) ^ 2).re|
-          ≤ ‖b / ((quadratic b)^[k] w) ^ 2‖ := Complex.abs_re_le_norm _
+      have hre : |(b / ((quadratic b)^[k] w) ^ (2 : ℕ)).re|
+          ≤ ‖b / ((quadratic b)^[k] w) ^ (2 : ℕ)‖ := Complex.abs_re_le_norm _
       have hq := farB_ratio_le hb hA
       have hlt := rMax_lt_one hb
-      have : (1 + b / ((quadratic b)^[k] w) ^ 2).re
-          = 1 + (b / ((quadratic b)^[k] w) ^ 2).re := by
+      have : (1 + b / ((quadratic b)^[k] w) ^ (2 : ℕ)).re
+          = 1 + (b / ((quadratic b)^[k] w) ^ (2 : ℕ)).re := by
         simp [Complex.add_re]
       rw [this]
       have habs := abs_le.mp (le_trans hre hq)
@@ -187,12 +187,12 @@ theorem one_lt_rB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) : 1 < rB b := by
   exact Real.sqrt_lt_sqrt (by norm_num) (by linarith)
 
 theorem rB_sq_le {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
-    rB b ^ 2 ≤ 1 + (‖b‖ - 1 - xStar ‖b‖) / 2 := by
+    rB b ^ (2 : ℕ) ≤ 1 + (‖b‖ - 1 - xStar ‖b‖) / 2 := by
   have hcl := xStar_lt_of_sharp hb
   have harg : (0 : ℝ) ≤ 1 + (‖b‖ - 1 - xStar ‖b‖) / 2 := by linarith
   have h1 : rB b ≤ Real.sqrt (1 + (‖b‖ - 1 - xStar ‖b‖) / 2) := min_le_right _ _
   have h0 : (0 : ℝ) ≤ rB b := le_min (by norm_num) (Real.sqrt_nonneg _)
-  calc rB b ^ 2 ≤ Real.sqrt (1 + (‖b‖ - 1 - xStar ‖b‖) / 2) ^ 2 := by nlinarith [h1, h0]
+  calc rB b ^ (2 : ℕ) ≤ Real.sqrt (1 + (‖b‖ - 1 - xStar ‖b‖) / 2) ^ (2 : ℕ) := by nlinarith [h1, h0]
     _ = 1 + (‖b‖ - 1 - xStar ‖b‖) / 2 := Real.sq_sqrt harg
 
 /-! ## The parameterized branch -/
@@ -201,7 +201,7 @@ theorem rB_sq_le {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
 well defined for every complex `b` above the sharp threshold — no slit-plane condition on
 `z² + b`. -/
 noncomputable def phiB (b z : ℂ) : ℂ :=
-  Complex.exp ((2 : ℂ)⁻¹ * (Complex.log b + Complex.log (1 + z ^ 2 / b)
+  Complex.exp ((2 : ℂ)⁻¹ * (Complex.log b + Complex.log (1 + z ^ (2 : ℕ) / b)
     + ∑' k, bottcherLogTerm b (quadratic b z) k))
 
 theorem phiB_ne_zero (b z : ℂ) : phiB b z ≠ 0 := Complex.exp_ne_zero _
@@ -214,24 +214,24 @@ theorem b_ne_zero {b : ℂ} (hb : 2 < ‖b‖) : b ≠ 0 := by
 
 /-- On the window disk the normalized ratio stays in the right half-plane. -/
 theorem ratio_re_ge {b z : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (hz : z ∈ ball (0 : ℂ) (rB b)) :
-    (1 / 2 : ℝ) ≤ (1 + z ^ 2 / b).re := by
+    (1 / 2 : ℝ) ≤ (1 + z ^ (2 : ℕ) / b).re := by
   have hz' : ‖z‖ < rB b := by simpa [mem_ball, dist_zero_right] using hz
   have hz21 : ‖z‖ < 21 / 20 := lt_of_lt_of_le hz' (rB_le b)
   have hs1 : (1 : ℝ) ≤ Real.sqrt 2 := by
     nlinarith [Real.sq_sqrt (show (0:ℝ) ≤ 2 by norm_num), Real.sqrt_nonneg 2]
   have hb0 : (0 : ℝ) < ‖b‖ := by linarith
-  have hnorm : ‖z ^ 2 / b‖ ≤ 1 / 2 := by
+  have hnorm : ‖z ^ (2 : ℕ) / b‖ ≤ 1 / 2 := by
     rw [norm_div, norm_pow, div_le_iff₀ hb0]
     nlinarith [hz21, norm_nonneg z, hs1, hb]
-  have hre : |(z ^ 2 / b).re| ≤ ‖z ^ 2 / b‖ := Complex.abs_re_le_norm _
+  have hre : |(z ^ (2 : ℕ) / b).re| ≤ ‖z ^ (2 : ℕ) / b‖ := Complex.abs_re_le_norm _
   have habs := abs_le.mp (le_trans hre hnorm)
-  have h1 : (1 + z ^ 2 / b).re = 1 + (z ^ 2 / b).re := by
+  have h1 : (1 + z ^ (2 : ℕ) / b).re = 1 + (z ^ (2 : ℕ) / b).re := by
     simp [Complex.add_re]
   rw [h1]
   linarith [habs.1]
 
 theorem ratio_ne_zero {b z : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (hz : z ∈ ball (0 : ℂ) (rB b)) :
-    (1 : ℂ) + z ^ 2 / b ≠ 0 := by
+    (1 : ℂ) + z ^ (2 : ℕ) / b ≠ 0 := by
   intro h0
   have := ratio_re_ge hb hz
   rw [h0] at this
@@ -240,7 +240,7 @@ theorem ratio_ne_zero {b z : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (hz : z ∈ b
 
 theorem ratio_mem_slitPlane {b z : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖)
     (hz : z ∈ ball (0 : ℂ) (rB b)) :
-    (1 : ℂ) + z ^ 2 / b ∈ slitPlane := by
+    (1 : ℂ) + z ^ (2 : ℕ) / b ∈ slitPlane := by
   refine Or.inl ?_
   have := ratio_re_ge hb hz
   linarith
@@ -252,17 +252,17 @@ theorem quadB_mem_farB {b z : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (hz : z ∈ 
   have hz' : ‖z‖ < rB b := by simpa [mem_ball, dist_zero_right] using hz
   have hrsq := rB_sq_le hb
   have hcl := xStar_lt_of_sharp hb
-  show xStar ‖b‖ < ‖z ^ 2 + b‖
-  have htri : ‖b‖ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := by
-    calc ‖b‖ = ‖z ^ 2 + b - z ^ 2‖ := by ring_nf
-      _ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := norm_sub_le _ _
-  have hp : ‖z ^ 2‖ = ‖z‖ ^ 2 := norm_pow z 2
-  have hzr : ‖z‖ ^ 2 < rB b ^ 2 := by
+  show xStar ‖b‖ < ‖z ^ (2 : ℕ) + b‖
+  have htri : ‖b‖ ≤ ‖z ^ (2 : ℕ) + b‖ + ‖z ^ (2 : ℕ)‖ := by
+    calc ‖b‖ = ‖z ^ (2 : ℕ) + b - z ^ (2 : ℕ)‖ := by ring_nf
+      _ ≤ ‖z ^ (2 : ℕ) + b‖ + ‖z ^ (2 : ℕ)‖ := norm_sub_le _ _
+  have hp : ‖z ^ (2 : ℕ)‖ = ‖z‖ ^ (2 : ℕ) := norm_pow z 2
+  have hzr : ‖z‖ ^ (2 : ℕ) < rB b ^ (2 : ℕ) := by
     nlinarith [hz', norm_nonneg z, one_lt_rB hb]
   nlinarith [htri, hzr, hrsq, hcl]
 
 theorem quadB_ne_zero {b z : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (hz : z ∈ ball (0 : ℂ) (rB b)) :
-    z ^ 2 + b ≠ 0 := by
+    z ^ (2 : ℕ) + b ≠ 0 := by
   have hfar : quadratic b z ∈ farB b := quadB_mem_farB hb hz
   have := farB_ne_zero (norm_gt_two hb) hfar
   simpa [quadratic_apply] using this
@@ -270,34 +270,34 @@ theorem quadB_ne_zero {b z : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (hz : z ∈ b
 /-- The branch squares to the genuine Böttcher coordinate one step ahead — branch-free at the
 `exp` level, for every `‖b‖` above the sharp threshold. -/
 theorem phiB_sq {b z : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (hz : z ∈ ball (0 : ℂ) (rB b)) :
-    phiB b z ^ 2 = bottcherCoord b (quadratic b z) := by
+    phiB b z ^ (2 : ℕ) = bottcherCoord b (quadratic b z) := by
   have hb0 : b ≠ 0 := b_ne_zero (norm_gt_two hb)
-  have hrne : (1 : ℂ) + z ^ 2 / b ≠ 0 := ratio_ne_zero hb hz
-  have hzsq : z ^ 2 + b ≠ 0 := quadB_ne_zero hb hz
-  have hδ : Complex.exp (Complex.log b + Complex.log (1 + z ^ 2 / b)
-      - Complex.log (z ^ 2 + b)) = 1 := by
+  have hrne : (1 : ℂ) + z ^ (2 : ℕ) / b ≠ 0 := ratio_ne_zero hb hz
+  have hzsq : z ^ (2 : ℕ) + b ≠ 0 := quadB_ne_zero hb hz
+  have hδ : Complex.exp (Complex.log b + Complex.log (1 + z ^ (2 : ℕ) / b)
+      - Complex.log (z ^ (2 : ℕ) + b)) = 1 := by
     rw [Complex.exp_sub, Complex.exp_add, Complex.exp_log hb0, Complex.exp_log hrne,
       Complex.exp_log hzsq]
     rw [div_eq_one_iff_eq hzsq]
     field_simp
     ring
-  have hqz : quadratic b z = z ^ 2 + b := rfl
+  have hqz : quadratic b z = z ^ (2 : ℕ) + b := rfl
   unfold phiB bottcherCoord bottcherLog
   rw [pow_two, ← Complex.exp_add]
-  calc Complex.exp ((2 : ℂ)⁻¹ * (Complex.log b + Complex.log (1 + z ^ 2 / b)
+  calc Complex.exp ((2 : ℂ)⁻¹ * (Complex.log b + Complex.log (1 + z ^ (2 : ℕ) / b)
         + ∑' k, bottcherLogTerm b (quadratic b z) k)
-      + (2 : ℂ)⁻¹ * (Complex.log b + Complex.log (1 + z ^ 2 / b)
+      + (2 : ℂ)⁻¹ * (Complex.log b + Complex.log (1 + z ^ (2 : ℕ) / b)
         + ∑' k, bottcherLogTerm b (quadratic b z) k))
       = Complex.exp ((Complex.log (quadratic b z)
           + ∑' k, bottcherLogTerm b (quadratic b z) k)
-        + (Complex.log b + Complex.log (1 + z ^ 2 / b) - Complex.log (z ^ 2 + b))) := by
+        + (Complex.log b + Complex.log (1 + z ^ (2 : ℕ) / b) - Complex.log (z ^ (2 : ℕ) + b))) := by
         rw [hqz]
         congr 1
         ring
     _ = Complex.exp (Complex.log (quadratic b z)
           + ∑' k, bottcherLogTerm b (quadratic b z) k)
-        * Complex.exp (Complex.log b + Complex.log (1 + z ^ 2 / b)
-          - Complex.log (z ^ 2 + b)) := Complex.exp_add _ _
+        * Complex.exp (Complex.log b + Complex.log (1 + z ^ (2 : ℕ) / b)
+          - Complex.log (z ^ (2 : ℕ) + b)) := Complex.exp_add _ _
     _ = Complex.exp (Complex.log (quadratic b z)
           + ∑' k, bottcherLogTerm b (quadratic b z) k) := by
         rw [hδ, mul_one]
@@ -309,13 +309,13 @@ theorem phiB_analytic {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
   intro z hz
   apply DifferentiableAt.differentiableWithinAt
   have hqd : DifferentiableAt ℂ (quadratic b) z := by
-    have : (quadratic b) = fun v => v ^ 2 + b := by
+    have : (quadratic b) = fun v => v ^ (2 : ℕ) + b := by
       funext v; exact quadratic_apply b v
     rw [this]
     exact ((differentiable_pow 2).add_const b).differentiableAt
-  have hratio : DifferentiableAt ℂ (fun v => Complex.log (1 + v ^ 2 / b)) z := by
-    have hin : DifferentiableAt ℂ (fun v : ℂ => 1 + v ^ 2 / b) z := by
-      have : DifferentiableAt ℂ (fun v : ℂ => v ^ 2 / b) z :=
+  have hratio : DifferentiableAt ℂ (fun v => Complex.log (1 + v ^ (2 : ℕ) / b)) z := by
+    have hin : DifferentiableAt ℂ (fun v : ℂ => 1 + v ^ (2 : ℕ) / b) z := by
+      have : DifferentiableAt ℂ (fun v : ℂ => v ^ (2 : ℕ) / b) z :=
         (differentiableAt_pow 2).div_const b
       exact (differentiableAt_const (1 : ℂ)).add this
     exact hin.clog (ratio_mem_slitPlane hb hz)
@@ -324,7 +324,7 @@ theorem phiB_analytic {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
       (tail_differentiableOn_B (norm_gt_two hb)).differentiableAt
         ((isOpen_farB b).mem_nhds (quadB_mem_farB hb hz))
     exact hT.comp z hqd
-  have hsum : DifferentiableAt ℂ (fun v => Complex.log b + Complex.log (1 + v ^ 2 / b)
+  have hsum : DifferentiableAt ℂ (fun v => Complex.log b + Complex.log (1 + v ^ (2 : ℕ) / b)
       + ∑' k, bottcherLogTerm b (quadratic b v) k) z :=
     ((differentiableAt_const _).add hratio).add htail
   exact (hsum.const_mul _).cexp
@@ -334,16 +334,16 @@ theorem phiB_analytic {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
 /-- **The Böttcher functional equation on the sharp far field** — branch-free at the `exp`
 level: `φ(z² + b) = φ(z)²` for every `‖z‖ > xStar ‖b‖`. -/
 theorem bottcherCoord_quadratic_farB {b z : ℂ} (hb : 2 < ‖b‖) (hz : z ∈ farB b) :
-    bottcherCoord b (quadratic b z) = (bottcherCoord b z) ^ 2 := by
+    bottcherCoord b (quadratic b z) = (bottcherCoord b z) ^ (2 : ℕ) := by
   have hz0 : z ≠ 0 := farB_ne_zero hb hz
-  have hzsq : z ^ 2 + b ≠ 0 := by
+  have hzsq : z ^ (2 : ℕ) + b ≠ 0 := by
     have hfar : quadratic b z ∈ farB b := farB_invariant hb hz
     have := farB_ne_zero hb hfar
     simpa [quadratic_apply] using this
-  have hratio : (1 : ℂ) + b / z ^ 2 ≠ 0 := by
+  have hratio : (1 : ℂ) + b / z ^ (2 : ℕ) ≠ 0 := by
     intro h0
-    have h1 : ‖b / z ^ 2‖ = 1 := by
-      rw [show b / z ^ 2 = -1 from by linear_combination h0]
+    have h1 : ‖b / z ^ (2 : ℕ)‖ = 1 := by
+      rw [show b / z ^ (2 : ℕ) = -1 from by linear_combination h0]
       simp
     have h2 := farB_ratio_lt_one hb hz
     rw [h1] at h2
@@ -373,12 +373,12 @@ theorem bottcherCoord_quadratic_farB {b z : ℂ} (hb : 2 < ‖b‖) (hz : z ∈ 
     ring
   unfold bottcherCoord bottcherLog
   rw [hsum]
-  have hterm0 : bottcherLogTerm b z 0 = (2 : ℂ)⁻¹ * Complex.log (1 + b / z ^ 2) := by
+  have hterm0 : bottcherLogTerm b z 0 = (2 : ℂ)⁻¹ * Complex.log (1 + b / z ^ (2 : ℕ)) := by
     unfold bottcherLogTerm
     simp
   rw [hterm0]
-  have hqz : quadratic b z = z ^ 2 + b := rfl
-  have hδ : Complex.exp (Complex.log (z ^ 2 + b) - Complex.log (1 + b / z ^ 2)
+  have hqz : quadratic b z = z ^ (2 : ℕ) + b := rfl
+  have hδ : Complex.exp (Complex.log (z ^ (2 : ℕ) + b) - Complex.log (1 + b / z ^ (2 : ℕ))
       - 2 * Complex.log z) = 1 := by
     rw [sub_sub, Complex.exp_sub, Complex.exp_add, Complex.exp_log hzsq,
       Complex.exp_log hratio]
@@ -392,19 +392,19 @@ theorem bottcherCoord_quadratic_farB {b z : ℂ} (hb : 2 < ‖b‖) (hz : z ∈ 
     field_simp
   calc Complex.exp (Complex.log (quadratic b z)
         + (2 * (∑' k, bottcherLogTerm b z k) - 2 * ((2 : ℂ)⁻¹
-            * Complex.log (1 + b / z ^ 2))))
+            * Complex.log (1 + b / z ^ (2 : ℕ)))))
       = Complex.exp ((2 : ℂ) * (Complex.log z + ∑' k, bottcherLogTerm b z k)
-          + (Complex.log (z ^ 2 + b) - Complex.log (1 + b / z ^ 2)
+          + (Complex.log (z ^ (2 : ℕ) + b) - Complex.log (1 + b / z ^ (2 : ℕ))
             - 2 * Complex.log z)) := by
         rw [hqz]
         congr 1
         ring
     _ = Complex.exp ((2 : ℂ) * (Complex.log z + ∑' k, bottcherLogTerm b z k))
-          * Complex.exp (Complex.log (z ^ 2 + b) - Complex.log (1 + b / z ^ 2)
+          * Complex.exp (Complex.log (z ^ (2 : ℕ) + b) - Complex.log (1 + b / z ^ (2 : ℕ))
             - 2 * Complex.log z) := Complex.exp_add _ _
     _ = Complex.exp ((2 : ℂ) * (Complex.log z + ∑' k, bottcherLogTerm b z k)) := by
         rw [hδ, mul_one]
-    _ = Complex.exp (Complex.log z + ∑' k, bottcherLogTerm b z k) ^ 2 := by
+    _ = Complex.exp (Complex.log z + ∑' k, bottcherLogTerm b z k) ^ (2 : ℕ) := by
         rw [pow_two, ← Complex.exp_add]
         congr 1
         ring
@@ -420,7 +420,7 @@ theorem phiB_pow_iterate {b z : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖)
   | succ m ihm =>
     have hmem : (quadratic b)^[m] (quadratic b z) ∈ farB b :=
       farB_iterate (norm_gt_two hb) m (quadB_mem_farB hb hz)
-    have hpow : phiB b z ^ (2 ^ (m + 1 + 1)) = (phiB b z ^ (2 ^ (m + 1))) ^ 2 := by
+    have hpow : phiB b z ^ (2 ^ (m + 1 + 1)) = (phiB b z ^ (2 ^ (m + 1))) ^ (2 : ℕ) := by
       rw [← pow_mul, ← pow_succ]
     rw [hpow, ihm, Function.iterate_succ_apply',
       bottcherCoord_quadratic_farB (norm_gt_two hb) hmem]

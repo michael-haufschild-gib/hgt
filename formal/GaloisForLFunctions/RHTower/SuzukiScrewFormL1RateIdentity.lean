@@ -26,7 +26,7 @@ noncomputable section
 /-- **`L¹` negativity rate `ε` of the screw form.** -/
 def ScrewFormL1Rate (ε : ℝ) : Prop :=
   ∃ C : ℝ, 0 ≤ C ∧ ∀ (a : ℝ) (φ : SuzukiSmoothZeroMeanTest a),
-    -(C * Real.exp (ε * |a|) * (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ 2) ≤ (suzukiScrewSmoothForm φ φ).re
+    -(C * Real.exp (ε * |a|) * (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ (2 : ℕ)) ≤ (suzukiScrewSmoothForm φ φ).re
 
 theorem xiSpectralInvSqSum_nonneg : 0 ≤ xiSpectralInvSqSum :=
   tsum_nonneg fun _ => by positivity
@@ -37,7 +37,7 @@ theorem ScrewFormL1Rate.mono {ε ε' : ℝ} (h : ScrewFormL1Rate ε) (hle : ε �
   obtain ⟨C, hC, hb⟩ := h
   refine ⟨C, hC, fun a φ => le_trans ?_ (hb a φ)⟩
   rw [neg_le_neg_iff]
-  have hI : 0 ≤ (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ 2 := by positivity
+  have hI : 0 ≤ (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ (2 : ℕ) := by positivity
   have hexp : Real.exp (ε * |a|) ≤ Real.exp (ε' * |a|) := by
     rw [Real.exp_le_exp]
     exact mul_le_mul_of_nonneg_right hle (abs_nonneg _)
@@ -53,16 +53,16 @@ theorem screwFormL1Rate_two_mul_topExcess : ScrewFormL1Rate (2 * xiTopExcess) :=
   have hL0 : 0 ≤ L := integral_nonneg fun u => norm_nonneg _
   have hx : 0 ≤ xiTopExcess * |a| := mul_nonneg xiTopExcess_nonneg (abs_nonneg _)
   have h1 : 1 ≤ Real.exp (xiTopExcess * |a|) := Real.one_le_exp hx
-  have hsq : (Real.exp (xiTopExcess * |a|) + 1) ^ 2 ≤ 4 * Real.exp (2 * xiTopExcess * |a|) := by
-    have : Real.exp (2 * xiTopExcess * |a|) = Real.exp (xiTopExcess * |a|) ^ 2 := by
+  have hsq : (Real.exp (xiTopExcess * |a|) + 1) ^ (2 : ℕ) ≤ 4 * Real.exp (2 * xiTopExcess * |a|) := by
+    have : Real.exp (2 * xiTopExcess * |a|) = Real.exp (xiTopExcess * |a|) ^ (2 : ℕ) := by
       rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
     rw [this]
     nlinarith
   have hS := xiSpectralInvSqSum_nonneg
-  calc ((Real.exp (xiTopExcess * |a|) + 1) * L) ^ 2 * xiSpectralInvSqSum
-      = (Real.exp (xiTopExcess * |a|) + 1) ^ 2 * L ^ 2 * xiSpectralInvSqSum := by ring
-    _ ≤ 4 * Real.exp (2 * xiTopExcess * |a|) * L ^ 2 * xiSpectralInvSqSum := by gcongr
-    _ = 4 * xiSpectralInvSqSum * Real.exp (2 * xiTopExcess * |a|) * L ^ 2 := by ring
+  calc ((Real.exp (xiTopExcess * |a|) + 1) * L) ^ (2 : ℕ) * xiSpectralInvSqSum
+      = (Real.exp (xiTopExcess * |a|) + 1) ^ (2 : ℕ) * L ^ (2 : ℕ) * xiSpectralInvSqSum := by ring
+    _ ≤ 4 * Real.exp (2 * xiTopExcess * |a|) * L ^ (2 : ℕ) * xiSpectralInvSqSum := by gcongr
+    _ = 4 * xiSpectralInvSqSum * Real.exp (2 * xiTopExcess * |a|) * L ^ (2 : ℕ) := by ring
 
 /-- `L¹` norm of the polar translate of a test: at most `5 (1 + cosh ½)` times the `L¹` norm. -/
 theorem integral_norm_polarTranslateTest_le {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a) :
@@ -102,9 +102,9 @@ theorem integral_norm_polarTranslateTest_le {a : ℝ} (φ : SuzukiSmoothZeroMean
 /-- The `L¹` rate bound controls the centred two-bump forms with a constant independent of `n`. -/
 theorem re_smoothForm_twoBump_ge_of_l1Rate {C ε : ℝ} (hC : 0 ≤ C)
     (h : ∀ (a : ℝ) (φ : SuzukiSmoothZeroMeanTest a),
-      -(C * Real.exp (ε * |a|) * (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ 2) ≤ (suzukiScrewSmoothForm φ φ).re)
+      -(C * Real.exp (ε * |a|) * (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ (2 : ℕ)) ≤ (suzukiScrewSmoothForm φ φ).re)
     (t : ℝ) (n : ℕ) :
-    -(C * Real.exp (ε * (|t| / 2 + 4)) * (10 * (1 + Real.cosh (1 / 2))) ^ 2)
+    -(C * Real.exp (ε * (|t| / 2 + 4)) * (10 * (1 + Real.cosh (1 / 2))) ^ (2 : ℕ))
       ≤ (suzukiScrewSmoothForm ((twoBumpSeq t n).polarTranslateTest one_pos)
           ((twoBumpSeq t n).polarTranslateTest one_pos)).re := by
   rw [← suzukiScrewSmoothForm_twoBumpSeqC]
@@ -131,9 +131,9 @@ theorem re_smoothForm_twoBump_ge_of_l1Rate {C ε : ℝ} (hC : 0 ≤ C)
 /-- The polar-weighted screw divisor inherits the `L¹` rate bound at half the aperture. -/
 theorem re_weightedXiScrewDivisor_polar_ge_of_l1Rate {C ε : ℝ} (hC : 0 ≤ C)
     (h : ∀ (a : ℝ) (φ : SuzukiSmoothZeroMeanTest a),
-      -(C * Real.exp (ε * |a|) * (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ 2) ≤ (suzukiScrewSmoothForm φ φ).re)
+      -(C * Real.exp (ε * |a|) * (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ (2 : ℕ)) ≤ (suzukiScrewSmoothForm φ φ).re)
     (t : ℝ) :
-    -(C * Real.exp (ε * (|t| / 2 + 4)) * (10 * (1 + Real.cosh (1 / 2))) ^ 2 / 2)
+    -(C * Real.exp (ε * (|t| / 2 + 4)) * (10 * (1 + Real.cosh (1 / 2))) ^ (2 : ℕ) / 2)
       ≤ (weightedXiScrewDivisor (polarSpectralWeight 1) t).re := by
   have hlim := (tendsto_suzukiScrewSmoothForm_polarTranslateTest_twoBumpSeq t one_pos)
   have hre := (Complex.continuous_re.tendsto _).comp hlim
@@ -145,10 +145,10 @@ theorem re_weightedXiScrewDivisor_polar_ge_of_l1Rate {C ε : ℝ} (hC : 0 ≤ C)
 theorem abs_im_xiSpectralPoint_le_half_of_l1Rate {C ε : ℝ} (hC : 0 ≤ C) (hε0 : 0 ≤ ε)
     (hε1 : ε < 1)
     (h : ∀ (a : ℝ) (φ : SuzukiSmoothZeroMeanTest a),
-      -(C * Real.exp (ε * |a|) * (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ 2) ≤ (suzukiScrewSmoothForm φ φ).re)
+      -(C * Real.exp (ε * |a|) * (∫ u : ℝ, ‖(φ : ℝ → ℂ) u‖) ^ (2 : ℕ)) ≤ (suzukiScrewSmoothForm φ φ).re)
     (q : XiZeroCopy) : |(xiSpectralPoint q).im| ≤ ε / 2 := by
   have hh : (0 : ℝ) < 1 := one_pos
-  set K : ℝ := C * Real.exp (ε * 4) * (10 * (1 + Real.cosh (1 / 2))) ^ 2 / 2 with hK
+  set K : ℝ := C * Real.exp (ε * 4) * (10 * (1 + Real.cosh (1 / 2))) ^ (2 : ℕ) / 2 with hK
   have hK0 : 0 ≤ K := by positivity
   have hlow : ∀ t : ℝ, 0 ≤ t →
       -(K * Real.exp (ε / 2 * t)) ≤ (weightedXiScrewDivisor (polarSpectralWeight 1) t).re := by
@@ -161,7 +161,7 @@ theorem abs_im_xiSpectralPoint_le_half_of_l1Rate {C ε : ℝ} (hC : 0 ≤ C) (h�
       rw [← Real.exp_add]; congr 1; ring
     rw [hexp]
     ring
-  exact abs_im_le_of_thr (polarSpectralWeight 1) K (ε / 2) (C := polarSymbolBound 1 ^ 2)
+  exact abs_im_le_of_thr (polarSpectralWeight 1) K (ε / 2) (C := polarSymbolBound 1 ^ (2 : ℕ))
     (by positivity) (norm_polarSpectralWeight_le hh.le)
     (fun q q' hq => polarSpectralWeight_of_eq 1 hq)
     (fun q q' hq => polarSpectralWeight_of_neg 1 hq)

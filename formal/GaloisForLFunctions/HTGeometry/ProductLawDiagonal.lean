@@ -47,7 +47,7 @@ theorem fpderiv_terminal_bracket {α : ℂ} {m : ℕ} (hQ : Q (m + 1) ≠ 0) :
     fpderiv (m + 1)
         (fact (terminalNumer (Q (m + 1)) (v (m + 1)) α) (m + 1) / fact (Q (m + 1)) (m + 1))
       = fact (terminalWronskian (Q (m + 1)) (v (m + 1)) α) (m + 1)
-        / fact (Q (m + 1)) (m + 1) ^ 2 := by
+        / fact (Q (m + 1)) (m + 1) ^ (2 : ℕ) := by
   have hne : fact (Q (m + 1)) (m + 1) ≠ 0 := fact_ne_zero hQ (m + 1)
   rw [div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv, derivation_fact,
     derivation_fact, fpderiv_fx_self, terminalWronskian, fact_sub, fact_mul, fact_mul]

@@ -33,7 +33,7 @@ def semilocalOnePrimeMassTerm (p : ℕ) (m : ℤ) : ℝ :=
 def semilocalOnePrimePositiveMassSeries (p : ℕ) : ℝ :=
   ∑' m : ℕ, semilocalOnePrimeMassTerm p ((m : ℤ) + 1)
 
-theorem semilocalArchimedeanCharacteristic_neg (t : ℝ) :
+theorem semilocalArchimedeanCharacteristic_neg_soninSemilocalOnePrimeMomentDefect (t : ℝ) :
     semilocalArchimedeanCharacteristic (-t) =
       semilocalArchimedeanCharacteristic t := by
   simp [semilocalArchimedeanCharacteristic]
@@ -44,7 +44,7 @@ theorem semilocalOnePrimeMassTerm_even (p : ℕ) :
   unfold semilocalOnePrimeMassTerm
   rw [Int.natAbs_neg]
   push_cast
-  rw [neg_mul, semilocalArchimedeanCharacteristic_neg]
+  rw [neg_mul, semilocalArchimedeanCharacteristic_neg_soninSemilocalOnePrimeMomentDefect]
 
 theorem summable_semilocalOnePrimeMassTerm
     {p : ℕ} (hp : p.Prime) :

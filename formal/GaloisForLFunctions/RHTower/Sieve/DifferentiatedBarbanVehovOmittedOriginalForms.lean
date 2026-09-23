@@ -54,7 +54,7 @@ def selbergOriginalOmittedCrossBoundary (ell : ℝ) (M : ℕ) : ℝ :=
     let B := Real.log ((M : ℝ) / (p.2 : ℝ))
     let u := Real.log ((M : ℝ) / ((max p.1 p.2 : ℕ) : ℝ))
     (-1 : ℝ) * selbergOriginalCoeff p.1 p.2 * (A * B) *
-      (u * (ell + B) - u ^ 2 / 2)
+      (u * (ell + B) - u ^ (2 : ℕ) / 2)
 
 /-- Original Selberg-coefficient form of the omitted derivative-square boundary. -/
 def selbergOriginalOmittedDerivativeBoundary (ell : ℝ) (M : ℕ) : ℝ :=
@@ -64,7 +64,7 @@ def selbergOriginalOmittedDerivativeBoundary (ell : ℝ) (M : ℕ) : ℝ :=
     let u := Real.log ((M : ℝ) / ((max p.1 p.2 : ℕ) : ℝ))
     selbergOriginalCoeff p.1 p.2 * (A * B) *
       (u * (ell + A) * (ell + B) -
-        u ^ 2 / 2 * (2 * ell + A + B) + u ^ 3 / 3)
+        u ^ (2 : ℕ) / 2 * (2 * ell + A + B) + u ^ (3 : ℕ) / 3)
 
 theorem barbanVehovOmittedLongBasePolynomialMain_eq_originalBoundary (M : ℕ) :
     barbanVehovOmittedLongBasePolynomialMain M =
@@ -151,14 +151,14 @@ theorem selbergOriginalOmittedCrossBoundary_eq_min
         let B := Real.log ((M : ℝ) / (p.2 : ℝ))
         let u := min A B
         (-1 : ℝ) * selbergOriginalCoeff p.1 p.2 * (A * B) *
-          (u * (ell + B) - u ^ 2 / 2) := by
+          (u * (ell + B) - u ^ (2 : ℕ) / 2) := by
   rw [selbergOriginalOmittedCrossBoundary]
   exact sum_log_nat_div_max_eq_min M hM
     (fun p u =>
       let A := Real.log ((M : ℝ) / (p.1 : ℝ))
       let B := Real.log ((M : ℝ) / (p.2 : ℝ))
       (-1 : ℝ) * selbergOriginalCoeff p.1 p.2 * (A * B) *
-        (u * (ell + B) - u ^ 2 / 2))
+        (u * (ell + B) - u ^ (2 : ℕ) / 2))
 
 /-- Min-normal form of the omitted derivative-square boundary. -/
 theorem selbergOriginalOmittedDerivativeBoundary_eq_min
@@ -170,7 +170,7 @@ theorem selbergOriginalOmittedDerivativeBoundary_eq_min
         let u := min A B
         selbergOriginalCoeff p.1 p.2 * (A * B) *
           (u * (ell + A) * (ell + B) -
-            u ^ 2 / 2 * (2 * ell + A + B) + u ^ 3 / 3) := by
+            u ^ (2 : ℕ) / 2 * (2 * ell + A + B) + u ^ (3 : ℕ) / 3) := by
   rw [selbergOriginalOmittedDerivativeBoundary]
   exact sum_log_nat_div_max_eq_min M hM
     (fun p u =>
@@ -178,7 +178,7 @@ theorem selbergOriginalOmittedDerivativeBoundary_eq_min
       let B := Real.log ((M : ℝ) / (p.2 : ℝ))
       selbergOriginalCoeff p.1 p.2 * (A * B) *
         (u * (ell + A) * (ell + B) -
-          u ^ 2 / 2 * (2 * ell + A + B) + u ^ 3 / 3))
+          u ^ (2 : ℕ) / 2 * (2 * ell + A + B) + u ^ (3 : ℕ) / 3))
 
 end
 

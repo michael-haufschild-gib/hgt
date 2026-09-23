@@ -26,10 +26,10 @@ namespace GaloisForLFunctions
 
 /-- The second-order elliptic expression `f − f''/4π²`. -/
 def sobolevOp : 𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) :=
-  ContinuousLinearMap.id ℂ 𝓢(ℝ, ℂ) - ((4 * (π : ℂ) ^ 2)⁻¹) • (derivSCLM.comp derivSCLM)
+  ContinuousLinearMap.id ℂ 𝓢(ℝ, ℂ) - ((4 * (π : ℂ) ^ (2 : ℕ))⁻¹) • (derivSCLM.comp derivSCLM)
 
 theorem sobolevOp_apply (f : 𝓢(ℝ, ℂ)) :
-    sobolevOp f = f - ((4 * (π : ℂ) ^ 2)⁻¹) • derivSCLM (derivSCLM f) := rfl
+    sobolevOp f = f - ((4 * (π : ℂ) ^ (2 : ℕ))⁻¹) • derivSCLM (derivSCLM f) := rfl
 
 theorem two_pi_I_ne_zero : (2 * (π : ℂ) * I) ≠ 0 := by
   refine mul_ne_zero (mul_ne_zero two_ne_zero ?_) Complex.I_ne_zero
@@ -46,12 +46,12 @@ theorem weightSchwartz_fourierSCLM (f : 𝓢(ℝ, ℂ)) :
   have hstep : mulXCLM (mulXCLM (fourierSCLM f))
       = ((2 * (π : ℂ) * I)⁻¹ * (2 * (π : ℂ) * I)⁻¹) • fourierSCLM (derivSCLM (derivSCLM f)) := by
     rw [mulXCLM_fourierSCLM, map_smul, mulXCLM_fourierSCLM, smul_smul]
-  have hsq : ((2 * (π : ℂ) * I)⁻¹ * (2 * (π : ℂ) * I)⁻¹) = -((4 * (π : ℂ) ^ 2)⁻¹) := by
+  have hsq : ((2 * (π : ℂ) * I)⁻¹ * (2 * (π : ℂ) * I)⁻¹) = -((4 * (π : ℂ) ^ (2 : ℕ))⁻¹) := by
     have hI : I * I = -1 := Complex.I_mul_I
     rw [← mul_inv, ← inv_neg]
     congr 1
-    calc (2 * (π : ℂ) * I) * (2 * (π : ℂ) * I) = 4 * (π : ℂ) ^ 2 * (I * I) := by ring
-      _ = -(4 * (π : ℂ) ^ 2) := by rw [hI]; ring
+    calc (2 * (π : ℂ) * I) * (2 * (π : ℂ) * I) = 4 * (π : ℂ) ^ (2 : ℕ) * (I * I) := by ring
+      _ = -(4 * (π : ℂ) ^ (2 : ℕ)) := by rw [hI]; ring
   have hleft : weightSchwartz (fourierSCLM f)
       = fourierSCLM f + mulXCLM (mulXCLM (fourierSCLM f)) := by
     show fourierSCLM f + mulXCLM (mulXCLM (fourierSCLM f)) = _
@@ -70,7 +70,7 @@ theorem norm_weight_fourier_toLp (f : 𝓢(ℝ, ℂ)) :
 the `L²` norm of `f − f''/4π²`. -/
 theorem norm_apply_le_sobolev (f : 𝓢(ℝ, ℂ)) (x : ℝ) :
     ‖f x‖
-      ≤ (∫ t : ℝ, ((1 + t ^ 2)⁻¹) ^ (2 : ℝ)) ^ (1 / (2 : ℝ))
+      ≤ (∫ t : ℝ, ((1 + t ^ (2 : ℕ))⁻¹) ^ (2 : ℝ)) ^ (1 / (2 : ℝ))
         * ‖(sobolevOp f).toLp 2 (volume : Measure ℝ)‖ := by
   have h := norm_apply_le_weight_fourier f x
   rwa [norm_weight_fourier_toLp] at h

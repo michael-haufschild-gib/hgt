@@ -36,19 +36,19 @@ theorem memLp_routeUCayleyLift {a : ℝ} (ha : 0 < a) {F : ℝ → ℝ} (hF : Co
     MemLp (routeUCayleyLift a F) 2 (volume : Measure ℝ) := by
   have hcont := continuous_routeUCayleyLift a hF
   refine (memLp_two_iff_integrable_sq hcont.aestronglyMeasurable).2 ?_
-  have hdom : Integrable (fun x : ℝ => M ^ 2 * a ^ 2 * ((a ^ 2 + x ^ 2)⁻¹))
+  have hdom : Integrable (fun x : ℝ => M ^ (2 : ℕ) * a ^ (2 : ℕ) * ((a ^ (2 : ℕ) + x ^ (2 : ℕ))⁻¹))
       (volume : Measure ℝ) := (integrable_inv_sq_add_sq ha).const_mul _
   refine Integrable.mono' hdom (hcont.pow 2).aestronglyMeasurable
     (Filter.Eventually.of_forall fun x => ?_)
-  have hpos : (0 : ℝ) < a ^ 2 + x ^ 2 := by positivity
-  have hsq : routeUCayleyLift a F x ^ 2
-      = (a ^ 2 / (a ^ 2 + x ^ 2)) * F (routeUHardEdgeInverseChart a x) ^ 2 := by
+  have hpos : (0 : ℝ) < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
+  have hsq : routeUCayleyLift a F x ^ (2 : ℕ)
+      = (a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ))) * F (routeUHardEdgeInverseChart a x) ^ (2 : ℕ) := by
     rw [routeUCayleyLift, mul_pow, cos_half_inverseChart_sq ha]
-  have hFb : F (routeUHardEdgeInverseChart a x) ^ 2 ≤ M ^ 2 := by
+  have hFb : F (routeUHardEdgeInverseChart a x) ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by
     have h := hM (routeUHardEdgeInverseChart a x)
     nlinarith [abs_nonneg (F (routeUHardEdgeInverseChart a x)),
       sq_abs (F (routeUHardEdgeInverseChart a x))]
-  have hfrac : (0 : ℝ) ≤ a ^ 2 / (a ^ 2 + x ^ 2) := by positivity
+  have hfrac : (0 : ℝ) ≤ a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) := by positivity
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), hsq]
   refine le_trans (mul_le_mul_of_nonneg_left hFb hfrac) (le_of_eq ?_)
   field_simp
@@ -81,8 +81,8 @@ theorem hasDerivAt_routeUCayleyChain {a : ℝ} (ha : 0 < a) {D : ℕ} {F : ℝ �
 
 theorem norm_toLp_routeUCayleyChain_sq {a : ℝ} (ha : 0 < a) {D : ℕ} {F : ℝ → ℝ}
     (hF : RealTrigDeg D F) (j : ℕ) :
-    ‖(memLp_routeUCayleyChain ha hF j).toLp (routeUCayleyChain a F j)‖ ^ 2
-      = ∫ x : ℝ, routeUCayleyLift a (trigCayleyIter a j F) x ^ 2 := by
+    ‖(memLp_routeUCayleyChain ha hF j).toLp (routeUCayleyChain a F j)‖ ^ (2 : ℕ)
+      = ∫ x : ℝ, routeUCayleyLift a (trigCayleyIter a j F) x ^ (2 : ℕ) := by
   rw [norm_lpTwo_sq]
   refine integral_congr_ae ?_
   filter_upwards [(memLp_routeUCayleyChain ha hF j).coeFn_toLp] with x hx
@@ -104,9 +104,9 @@ theorem norm_toLp_routeUCayleyChain_le {a : ℝ} (ha : 0 < a) {D : ℕ} {F : ℝ
     nlinarith
   have hbase := integral_iteratedDeriv_routeUCayleyLift_sq_le ha m hF
   rw [iteratedDeriv_routeUCayleyLift ha m hF] at hbase
-  have hsq : ‖(memLp_routeUCayleyChain ha hF m).toLp (routeUCayleyChain a F m)‖ ^ 2
+  have hsq : ‖(memLp_routeUCayleyChain ha hF m).toLp (routeUCayleyChain a F m)‖ ^ (2 : ℕ)
       ≤ ((∏ i ∈ Finset.range m, (1 / a) * (1 / 2 + 2 * ((D : ℝ) + (i : ℝ))))
-        * ‖(memLp_routeUCayleyChain ha hF 0).toLp (routeUCayleyChain a F 0)‖) ^ 2 := by
+        * ‖(memLp_routeUCayleyChain ha hF 0).toLp (routeUCayleyChain a F 0)‖) ^ (2 : ℕ) := by
     rw [mul_pow, norm_toLp_routeUCayleyChain_sq ha hF m, norm_toLp_routeUCayleyChain_sq ha hF 0,
       trigCayleyIter_zero]
     exact hbase
@@ -256,7 +256,7 @@ theorem routeUHardEdge_limit_fourier_support {C : ℝ} (hC : 0 < C)
       = ∑ j ∈ Finset.range (N k + 1),
         Polynomial.C (b k j) * Polynomial.Chebyshev.T ℝ (j : ℤ))
     (hNC : ∀ k : ℕ, ((N k : ℕ) : ℝ) ≤ C * a k)
-    (hnorm : ∀ k : ℕ, (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2) = 1)
+    (hnorm : ∀ k : ℕ, (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ (2 : ℕ)) = 1)
     {L : Lp ℝ 2 (volume : Measure ℝ)}
     (hL : Filter.Tendsto (fun k : ℕ =>
       (memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
@@ -270,7 +270,7 @@ theorem routeUHardEdge_limit_fourier_support {C : ℝ} (hC : 0 < C)
   have hnorm' : ∀ k : ℕ, ‖routeUCayleyPacket (a k) (ha k) (N k) (b k)‖ ≤ 1 := by
     intro k
     have hsq : ‖(memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
-        (routeUHardEdgeRationalTest (a k) (p k))‖ ^ 2 = 1 := by
+        (routeUHardEdgeRationalTest (a k) (p k))‖ ^ (2 : ℕ) = 1 := by
       rw [norm_toLp_sq]
       exact hnorm k
     have h1 : ‖(memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
@@ -300,7 +300,7 @@ theorem routeUHardEdge_limit_fourier_ae_eq_zero {C : ℝ} (hC : 0 < C)
       = ∑ j ∈ Finset.range (N k + 1),
         Polynomial.C (b k j) * Polynomial.Chebyshev.T ℝ (j : ℤ))
     (hNC : ∀ k : ℕ, ((N k : ℕ) : ℝ) ≤ C * a k)
-    (hnorm : ∀ k : ℕ, (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2) = 1)
+    (hnorm : ∀ k : ℕ, (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ (2 : ℕ)) = 1)
     {L : Lp ℝ 2 (volume : Measure ℝ)}
     (hL : Filter.Tendsto (fun k : ℕ =>
       (memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp

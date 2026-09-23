@@ -12,12 +12,12 @@ This module closes that loophole.
 The punctured complex Frobenius limit is pulled back along the real embedding.  Since its limit is
 the nonzero Xi monodromy jump, every Xi fibre has a point `z` in the physical interval `(0,1)` at
 which the exact radial mode is nonzero.  The corpus theorem
-`tanh '' (0,infinity) = (0,1)` then writes `z=tanh(xi)^2` with `xi>0`.
+`tanh '' (0,infinity) = (0,1)` then writes `z=tanh(xi)^(2 : ℕ)` with `xi>0`.
 
 Scaling the unit traceless horizon Hessian by that actual mode and applying the complete BM
 inverse-Hessian transport gives the exact source
 
-`-sech(xi)^2 * mode(tanh(xi)^2)^2 / 16`.
+`-sech(xi)^(2 : ℕ) * mode(tanh(xi)^(2 : ℕ))^(2 : ℕ) / 16`.
 
 It is nonzero on the selected rapidity, for every Xi copy and every AdS curvature coefficient.
 Thus the remaining angular problem is genuine: a completed Maass-raised/spin-two Eisenstein
@@ -73,7 +73,7 @@ theorem exists_d4BMXiMixedHorizonExactMonodromyMode_ne_zero_positiveRapidity
     (n k : ℕ) (q : XiZeroCopy) :
     ∃ xi : ℝ, 0 < xi ∧
       d4BMXiMixedHorizonExactMonodromyMode n k q
-          ((Real.tanh xi ^ 2 : ℝ) : ℂ) ≠ 0 := by
+          ((Real.tanh xi ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 := by
   rcases exists_d4BMXiMixedHorizonExactMonodromyMode_ne_zero_real_unitInterval n k q with
     ⟨z, hz0, hz1, hmode⟩
   have hsqrt : Real.sqrt z ∈ Set.Ioo (0 : ℝ) 1 := by
@@ -114,7 +114,7 @@ theorem ads4PlebanskiJacobiDoubleBracket_scaledTracelessHorizonWitness_eq
         0 (xi : ℝ) 1
         (d4BMScaledTracelessHorizonHessianSecondJet amplitude)
         (d4BMScaledTracelessHorizonHessianSecondJet amplitude) =
-      -(d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ 2 * amplitude ^ 2 / 16 := by
+      -(d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ (2 : ℕ) * amplitude ^ (2 : ℕ) / 16 := by
   have haR : Real.tanh (xi : ℝ) ≠ 0 := by
     rw [Real.tanh_eq_sinh_div_cosh]
     exact div_ne_zero (Real.sinh_ne_zero.mpr (ne_of_gt xi.property))
@@ -128,12 +128,12 @@ theorem ads4PlebanskiJacobiDoubleBracket_scaledTracelessHorizonWitness_eq
   have haComplex : Complex.tanh ((xi : ℝ) : ℂ) ≠ 0 := by
     simpa using ha
   have haCancel :
-      (Complex.tanh ((xi : ℝ) : ℂ))⁻¹ * Complex.tanh ((xi : ℝ) : ℂ) ^ 2 =
+      (Complex.tanh ((xi : ℝ) : ℂ))⁻¹ * Complex.tanh ((xi : ℝ) : ℂ) ^ (2 : ℕ) =
         Complex.tanh ((xi : ℝ) : ℂ) := by
     field_simp [haComplex]
   have hbCancel :
       (d4BMRindlerRapiditySech (xi : ℝ) : ℂ)⁻¹ *
-          (d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ 2 =
+          (d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ (2 : ℕ) =
         (d4BMRindlerRapiditySech (xi : ℝ) : ℂ) := by
     field_simp [hb]
   simp [ads4PlebanskiJacobiDoubleBracketOnBMFullSecondJets,
@@ -165,10 +165,10 @@ theorem exists_d4BMXiPulledPlebanskiTracelessHorizonSource_ne_zero
           0 (xi : ℝ) 1
           (d4BMScaledTracelessHorizonHessianSecondJet
             (d4BMXiMixedHorizonExactMonodromyMode n k q
-              ((Real.tanh (xi : ℝ) ^ 2 : ℝ) : ℂ)))
+              ((Real.tanh (xi : ℝ) ^ (2 : ℕ) : ℝ) : ℂ)))
           (d4BMScaledTracelessHorizonHessianSecondJet
             (d4BMXiMixedHorizonExactMonodromyMode n k q
-              ((Real.tanh (xi : ℝ) ^ 2 : ℝ) : ℂ))) ≠ 0 := by
+              ((Real.tanh (xi : ℝ) ^ (2 : ℕ) : ℝ) : ℂ))) ≠ 0 := by
   rcases exists_d4BMXiMixedHorizonExactMonodromyMode_ne_zero_positiveRapidity n k q with
     ⟨xi, hxi, hmode⟩
   let xiPos : {x : ℝ // 0 < x} := ⟨xi, hxi⟩

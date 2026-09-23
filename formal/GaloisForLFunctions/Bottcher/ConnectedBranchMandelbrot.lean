@@ -54,7 +54,7 @@ theorem exists_global_branch_modulus_of_mem_mandelbrot_of_rho_lifts (c : ℂ) (h
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖) ∧
-      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
       (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
         β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) :=
   exists_global_branch_modulus_of_rho_lifts_antiperiod_of_mem_mandelbrot c hcM
@@ -74,7 +74,7 @@ theorem exists_global_branch_covering_bijective_of_mem_mandelbrot (c : ℂ) (hcM
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
       (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
-        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ)) ∧
         (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
           β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
         (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧

@@ -32,11 +32,11 @@ noncomputable section
 
 /-- The affine Krein defect read in the inverse coordinate `x = 1 / t`. -/
 def suzukiInverseKreinDefect (alpha beta x : ℝ) : ℝ :=
-  alpha * beta * x ^ 3 / ((1 - alpha * x) * (1 - beta * x))
+  alpha * beta * x ^ (3 : ℕ) / ((1 - alpha * x) * (1 - beta * x))
 
 /-- The positive weight of the coherent completion, in the inverse coordinate. -/
 def suzukiInverseKreinWeight (alpha beta x : ℝ) : ℝ :=
-  alpha * beta * |x| * x ^ 2 / ((1 - alpha * x) * (1 - beta * x))
+  alpha * beta * |x| * x ^ (2 : ℕ) / ((1 - alpha * x) * (1 - beta * x))
 
 @[simp] theorem suzukiInverseKreinDefect_zero (alpha beta : ℝ) :
     suzukiInverseKreinDefect alpha beta 0 = 0 := by
@@ -59,7 +59,7 @@ theorem suzukiInverseKreinDefect_inv
   have h2 : 1 - beta * t⁻¹ = (t - beta) / t := by
     rw [eq_div_iff ht0, sub_mul, mul_assoc, inv_mul_cancel₀ ht0]
     ring
-  have key : (t - alpha) / t * ((t - beta) / t) = (t - alpha) * (t - beta) / t ^ 2 := by
+  have key : (t - alpha) / t * ((t - beta) / t) = (t - alpha) * (t - beta) / t ^ (2 : ℕ) := by
     field_simp
   rw [suzukiAffineResolventKreinDefect_eq hab ht0 hta htb, suzukiInverseKreinDefect, h1, h2, key,
     div_div_eq_mul_div]
@@ -78,7 +78,7 @@ theorem suzukiInverseKreinWeight_eq_abs
     abs_of_pos hden]
   congr 1
   rw [abs_mul, abs_of_pos hab, abs_pow]
-  rw [show |x| ^ 3 = |x| * x ^ 2 by
+  rw [show |x| ^ (3 : ℕ) = |x| * x ^ (2 : ℕ) by
     rw [pow_succ, pow_two, ← abs_mul, abs_mul_self, ← pow_two]
     ring]
   ring
@@ -439,7 +439,7 @@ theorem negPart_operatorKreinDefect_le_jetSquare {alpha beta rho : ℝ} {R : H �
     (hden : ∀ x ∈ spectrum ℝ R,
       (rho * x + 1) * ((rho - alpha) * x + 1) * ((rho - beta) * x + 1) ≠ 0)
     (hdom : ∀ x ∈ spectrum ℝ R,
-      0 ≤ suzukiKreinResolventWeight alpha beta rho x + (q.eval x) ^ 2) :
+      0 ≤ suzukiKreinResolventWeight alpha beta rho x + (q.eval x) ^ (2 : ℕ)) :
     (suzukiOperatorKreinDefect alpha beta rho R)⁻ ≤ suzukiResolventJetSquare q R := by
   have hw : ContinuousOn (suzukiKreinResolventWeight alpha beta rho) (spectrum ℝ R) :=
     continuousOn_suzukiKreinResolventWeight alpha beta rho hden
@@ -447,15 +447,15 @@ theorem negPart_operatorKreinDefect_le_jetSquare {alpha beta rho : ℝ} {R : H �
     (Polynomial.continuous_aeval q).continuousOn
   have hwneg : ContinuousOn (fun x => (suzukiKreinResolventWeight alpha beta rho x)⁻)
       (spectrum ℝ R) := hw.neg.sup continuousOn_const
-  have hsq : ContinuousOn (fun x : ℝ => (q.eval x) ^ 2) (spectrum ℝ R) := hpoly.pow 2
+  have hsq : ContinuousOn (fun x : ℝ => (q.eval x) ^ (2 : ℕ)) (spectrum ℝ R) := hpoly.pow 2
   have hneg : (suzukiOperatorKreinDefect alpha beta rho R)⁻
       = cfc (fun x => (suzukiKreinResolventWeight alpha beta rho x)⁻) R := by
     rw [suzukiOperatorKreinDefect]
     exact negPart_cfc hR hw
-  have hC : suzukiResolventJetSquare q R = cfc (fun x : ℝ => (q.eval x) ^ 2) R := by
+  have hC : suzukiResolventJetSquare q R = cfc (fun x : ℝ => (q.eval x) ^ (2 : ℕ)) R := by
     rw [cfc_pow (fun x : ℝ => q.eval x) 2 R hpoly, suzukiResolventJetSquare, cfc_polynomial q R]
   rw [hneg, hC, ← sub_nonneg,
-    ← cfc_sub (fun x : ℝ => (q.eval x) ^ 2)
+    ← cfc_sub (fun x : ℝ => (q.eval x) ^ (2 : ℕ))
       (fun x => (suzukiKreinResolventWeight alpha beta rho x)⁻) R hsq hwneg]
   refine (cfc_nonneg_iff _ R (hsq.sub hwneg) hR).mpr ?_
   intro x hx

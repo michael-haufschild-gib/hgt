@@ -36,9 +36,9 @@ theorem norm_masked_correlation_diag_le (T r : ℝ) (A B P Q : ℕ) (m : ℕ) :
 theorem norm_sum_ndExp_corr_kuzminLandau_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {m₁ m₂ A B : ℕ} (hm₁ : 1 ≤ m₁) (hm : m₁ < m₂) (hA : 1 ≤ A) (hAB : A < B)
     (h4 : 4 * (r / m₁) ≤ (A : ℝ))
-    (hsmall : T * (r / m₁ - r / m₂) / (2 * Real.pi * (A : ℝ) ^ 2) ≤ 1 / 2) :
+    (hsmall : T * (r / m₁ - r / m₂) / (2 * Real.pi * (A : ℝ) ^ (2 : ℕ)) ≤ 1 / 2) :
     ‖∑ d ∈ Finset.Ico A B, ndExp T r m₁ d * (starRingEnd ℂ) (ndExp T r m₂ d)‖
-      ≤ 75 * Real.pi * (B : ℝ) ^ 2 / (16 * (T * (r / m₁ - r / m₂))) + 1 := by
+      ≤ 75 * Real.pi * (B : ℝ) ^ (2 : ℕ) / (16 * (T * (r / m₁ - r / m₂))) + 1 := by
   have hm₁0 : (0 : ℝ) < (m₁ : ℝ) := by exact_mod_cast hm₁
   have hm₂0 : (0 : ℝ) < (m₂ : ℝ) := by
     have : 1 ≤ m₂ := by omega
@@ -56,9 +56,9 @@ theorem norm_sum_ndExp_corr_kuzminLandau_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r
 theorem norm_sum_ndExp_corr_kuzminLandau_abs_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {m₁ m₂ A B : ℕ} (hm₁ : 1 ≤ m₁) (hm₂ : 1 ≤ m₂) (hne : m₁ ≠ m₂) (hA : 1 ≤ A) (hAB : A < B)
     (h4₁ : 4 * (r / m₁) ≤ (A : ℝ)) (h4₂ : 4 * (r / m₂) ≤ (A : ℝ))
-    (hsmall : T * |r / m₁ - r / m₂| / (2 * Real.pi * (A : ℝ) ^ 2) ≤ 1 / 2) :
+    (hsmall : T * |r / m₁ - r / m₂| / (2 * Real.pi * (A : ℝ) ^ (2 : ℕ)) ≤ 1 / 2) :
     ‖∑ d ∈ Finset.Ico A B, ndExp T r m₁ d * (starRingEnd ℂ) (ndExp T r m₂ d)‖
-      ≤ 75 * Real.pi * (B : ℝ) ^ 2 / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
+      ≤ 75 * Real.pi * (B : ℝ) ^ (2 : ℕ) / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
   have hm₁0 : (0 : ℝ) < (m₁ : ℝ) := by exact_mod_cast hm₁
   have hm₂0 : (0 : ℝ) < (m₂ : ℝ) := by exact_mod_cast hm₂
   rcases lt_or_gt_of_ne hne with hlt | hgt

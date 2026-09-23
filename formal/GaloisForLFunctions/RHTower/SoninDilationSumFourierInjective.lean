@@ -21,9 +21,9 @@ open ContinuousLinearMap
 
 /-- A vector killed by the dilation sum is a `(-1)`-eigenvector of the inverse square dilation. -/
 theorem evenDilationCLM_inv_sq_apply_eq_neg_of_evenDilationSum_apply_eq_zero
-    {r : ℝ} (hr : 1 < r) (hs : 0 < (r ^ 2)⁻¹) {v : evenSubspace}
+    {r : ℝ} (hr : 1 < r) (hs : 0 < (r ^ (2 : ℕ))⁻¹) {v : evenSubspace}
     (hD : evenDilationSum r hr v = 0) :
-    evenDilationCLM ((r ^ 2)⁻¹) hs v = -v := by
+    evenDilationCLM ((r ^ (2 : ℕ))⁻¹) hs v = -v := by
   have hr0 : (0 : ℝ) < r := zero_lt_one.trans hr
   have hrinv : (0 : ℝ) < r⁻¹ := inv_pos.mpr hr0
   have hsum :
@@ -32,7 +32,7 @@ theorem evenDilationCLM_inv_sq_apply_eq_neg_of_evenDilationSum_apply_eq_zero
     simpa using hD
   have happ := congrArg (fun w : evenSubspace => evenDilationCLM r⁻¹ hrinv w) hsum
   simp only [map_add, map_zero] at happ
-  have hpow : r⁻¹ * r⁻¹ = (r ^ 2)⁻¹ := by rw [← mul_inv, ← sq]
+  have hpow : r⁻¹ * r⁻¹ = (r ^ (2 : ℕ))⁻¹ := by rw [← mul_inv, ← sq]
   have h1 : evenDilationCLM r⁻¹ hrinv (evenDilationCLM r hr0 v) = v := by
     have h := DFunLike.congr_fun (evenDilationCLM_mul r⁻¹ r hrinv hr0) v
     rw [mul_apply_eq_comp] at h
@@ -43,7 +43,7 @@ theorem evenDilationCLM_inv_sq_apply_eq_neg_of_evenDilationSum_apply_eq_zero
     rw [hone]
     rfl
   have h2 : evenDilationCLM r⁻¹ hrinv (evenDilationCLM r⁻¹ hrinv v) =
-      evenDilationCLM ((r ^ 2)⁻¹) hs v := by
+      evenDilationCLM ((r ^ (2 : ℕ))⁻¹) hs v := by
     have h := DFunLike.congr_fun (evenDilationCLM_mul r⁻¹ r⁻¹ hrinv hrinv) v
     rw [mul_apply_eq_comp] at h
     rw [h]
@@ -60,9 +60,9 @@ theorem eq_zero_of_evenDilationSum_apply_eq_zero_of_fourierAnnulus
     (hbv : evenFourierCutoff b v = 0) :
     v = 0 := by
   have hr0 : (0 : ℝ) < r := zero_lt_one.trans hr
-  have hr2 : (1 : ℝ) < r ^ 2 := by nlinarith
-  have hspos : (0 : ℝ) < (r ^ 2)⁻¹ := inv_pos.mpr (by positivity)
-  set s : ℝ := (r ^ 2)⁻¹ with hsdef
+  have hr2 : (1 : ℝ) < r ^ (2 : ℕ) := by nlinarith
+  have hspos : (0 : ℝ) < (r ^ (2 : ℕ))⁻¹ := inv_pos.mpr (by positivity)
+  set s : ℝ := (r ^ (2 : ℕ))⁻¹ with hsdef
   have hs0 : 0 < s := hspos
   have hs1 : s < 1 := by
     rw [hsdef]

@@ -122,7 +122,7 @@ theorem exists_rho_eq_smul {N : Submodule ℂ (MonoidAlgebra ℂ G)} (hN : IsGSt
       · exact absurd (by simpa using heq) (minpoly.ne_one ℂ A)
       · rfl
     · exfalso
-      have hsq : (X - C ε) ^ 2 ∣ X ^ m - C 1 := by
+      have hsq : (X - C ε) ^ (2 : ℕ) ∣ X ^ m - C 1 := by
         refine dvd_trans (pow_dvd_pow _ h) ?_
         rw [← heq]
         exact hdvd2

@@ -90,7 +90,7 @@ theorem corrected_ledger :
 theorem ledger_adds_up : (5127 : ℚ) + 4489 = 9616 := by norm_num
 
 /-- **The remainder is a perfect square, `67²`.** -/
-theorem remainder_is_square : (4489 : ℚ) = 67 ^ 2 := by norm_num
+theorem remainder_is_square : (4489 : ℚ) = 67 ^ (2 : ℕ) := by norm_num
 
 /-- **More than half the band is banked**: `5127/9616 > 1/2`. -/
 theorem majority_captured : (1 : ℚ) / 2 < 5127 / 9616 := by norm_num

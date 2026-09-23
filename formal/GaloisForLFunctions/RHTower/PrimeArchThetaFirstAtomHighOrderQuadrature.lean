@@ -19,13 +19,13 @@ noncomputable section
 
 /-- Taylor polynomial for `exp (2y)` through degree eight. -/
 def thetaCuspExpTwoTaylorEightPolynomial : ℝ[X] :=
-  1 + C 2 * X + C 2 * X ^ 2 + C (4 / 3) * X ^ 3 +
-    C (2 / 3) * X ^ 4 + C (4 / 15) * X ^ 5 +
-    C (4 / 45) * X ^ 6 + C (8 / 315) * X ^ 7 + C (2 / 315) * X ^ 8
+  1 + C 2 * X + C 2 * X ^ (2 : ℕ) + C (4 / 3) * X ^ (3 : ℕ) +
+    C (2 / 3) * X ^ (4 : ℕ) + C (4 / 15) * X ^ (5 : ℕ) +
+    C (4 / 45) * X ^ (6 : ℕ) + C (8 / 315) * X ^ (7 : ℕ) + C (2 / 315) * X ^ (8 : ℕ)
 
 /-- The factorial remainder with `exp (2y) < 3` inserted. -/
 def thetaCuspExpTwoTaylorEightUpperPolynomial : ℝ[X] :=
-  thetaCuspExpTwoTaylorEightPolynomial + C (4 / 945) * X ^ 9
+  thetaCuspExpTwoTaylorEightPolynomial + C (4 / 945) * X ^ (9 : ℕ)
 
 def thetaCuspThirtySecondExpTaylorLower : ℝ :=
   thetaCuspExpTwoTaylorEightPolynomial.eval (1 / 64)
@@ -104,14 +104,14 @@ end ThetaRationalQuadrature
 
 theorem thetaCuspExpTwoTaylorEightPolynomial_eval (y : ℝ) :
     thetaCuspExpTwoTaylorEightPolynomial.eval y =
-      1 + 2 * y + 2 * y ^ 2 + (4 / 3) * y ^ 3 +
-        (2 / 3) * y ^ 4 + (4 / 15) * y ^ 5 +
-        (4 / 45) * y ^ 6 + (8 / 315) * y ^ 7 + (2 / 315) * y ^ 8 := by
+      1 + 2 * y + 2 * y ^ (2 : ℕ) + (4 / 3) * y ^ (3 : ℕ) +
+        (2 / 3) * y ^ (4 : ℕ) + (4 / 15) * y ^ (5 : ℕ) +
+        (4 / 45) * y ^ (6 : ℕ) + (8 / 315) * y ^ (7 : ℕ) + (2 / 315) * y ^ (8 : ℕ) := by
   simp [thetaCuspExpTwoTaylorEightPolynomial]
 
 theorem thetaCuspExpTwoTaylorEightUpperPolynomial_eval (y : ℝ) :
     thetaCuspExpTwoTaylorEightUpperPolynomial.eval y =
-      thetaCuspExpTwoTaylorEightPolynomial.eval y + (4 / 945) * y ^ 9 := by
+      thetaCuspExpTwoTaylorEightPolynomial.eval y + (4 / 945) * y ^ (9 : ℕ) := by
   simp [thetaCuspExpTwoTaylorEightUpperPolynomial]
 
 theorem thetaCuspExpTwoTaylorEightPolynomial_le_exp
@@ -133,10 +133,10 @@ theorem exp_le_thetaCuspExpTwoTaylorEightUpperPolynomial
   have hexp : Real.exp (2 * y) < 3 := by
     exact (Real.exp_le_exp.mpr harg).trans_lt
       (Real.exp_one_lt_d9.trans (by norm_num))
-  have hpow : 0 ≤ (2 * y) ^ 9 / (Nat.factorial 9 : ℝ) := by positivity
+  have hpow : 0 ≤ (2 * y) ^ (9 : ℕ) / (Nat.factorial 9 : ℝ) := by positivity
   have htail :
-      ((2 * y) ^ 9 / (Nat.factorial 9 : ℝ)) * Real.exp (2 * y) ≤
-        ((2 * y) ^ 9 / (Nat.factorial 9 : ℝ)) * 3 :=
+      ((2 * y) ^ (9 : ℕ) / (Nat.factorial 9 : ℝ)) * Real.exp (2 * y) ≤
+        ((2 * y) ^ (9 : ℕ) / (Nat.factorial 9 : ℝ)) * 3 :=
     mul_le_mul_of_nonneg_left hexp.le hpow
   rw [thetaCuspExpTwoTaylorEightUpperPolynomial_eval,
     thetaCuspExpTwoTaylorEightPolynomial_eval]
@@ -329,7 +329,7 @@ theorem thetaCuspFirstRateTaylorUpperEndpoint64_lt_hundredMillion
       thetaCuspExpTwoTaylorEightPolynomial]
   have hj64 : j ≤ 64 := by omega
   have hpow := pow_le_pow_right₀ hbase hj64
-  have hcap : thetaCuspThirtySecondExpTaylorUpper ^ 64 < (8 : ℝ) := by
+  have hcap : thetaCuspThirtySecondExpTaylorUpper ^ (64 : ℕ) < (8 : ℝ) := by
     norm_num [thetaCuspThirtySecondExpTaylorUpper,
       thetaCuspExpTwoTaylorEightUpperPolynomial,
       thetaCuspExpTwoTaylorEightPolynomial]
@@ -437,7 +437,7 @@ theorem thetaRationalQuadrature_upperIncrement_le_one
       ThetaRationalQuadrature.C, ThetaRationalQuadrature.X,
       ThetaRationalQuadrature.expTwoTaylor]
   have hpow : ThetaRationalQuadrature.thirtySecondExpUpper ^ j ≤
-      ThetaRationalQuadrature.thirtySecondExpUpper ^ 64 :=
+      ThetaRationalQuadrature.thirtySecondExpUpper ^ (64 : ℕ) :=
     pow_le_pow_right₀ hbase (by omega)
   have hdiff : 0 ≤ ThetaRationalQuadrature.thirtySecondExpUpper - 1 :=
     sub_nonneg.mpr hbase
@@ -446,7 +446,7 @@ theorem thetaRationalQuadrature_upperIncrement_le_one
     (by norm_num : (0 : ℚ) ≤ 3.14159265358979323847)
   have hcap :
       3.14159265358979323847 *
-          ThetaRationalQuadrature.thirtySecondExpUpper ^ 64 *
+          ThetaRationalQuadrature.thirtySecondExpUpper ^ (64 : ℕ) *
             (ThetaRationalQuadrature.thirtySecondExpUpper - 1) - 5 / 128 <
         (1 : ℚ) := by
     norm_num [ThetaRationalQuadrature.thirtySecondExpUpper,
@@ -476,21 +476,21 @@ theorem expNegTruncPoly_ten_eval_pos_of_mem_unit
     {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
     0 < (expNegTruncPoly 10).eval t := by
   have hid : (expNegTruncPoly 10).eval t =
-      (1 - t) + t ^ 2 * (3 - t) / 6 + t ^ 4 * (5 - t) / 120 +
-        t ^ 6 * (7 - t) / 5040 + t ^ 8 * (9 - t) / 362880 := by
+      (1 - t) + t ^ (2 : ℕ) * (3 - t) / 6 + t ^ (4 : ℕ) * (5 - t) / 120 +
+        t ^ (6 : ℕ) * (7 - t) / 5040 + t ^ (8 : ℕ) * (9 - t) / 362880 := by
     norm_num [eval_expNegTruncPoly, Finset.sum_range_succ]
     ring
   rw [hid]
   rcases ht0.eq_or_lt with rfl | htpos
   · norm_num
   · have hfirst : 0 ≤ 1 - t := sub_nonneg.mpr ht1
-    have hsecond : 0 < t ^ 2 * (3 - t) / 6 := by
+    have hsecond : 0 < t ^ (2 : ℕ) * (3 - t) / 6 := by
       exact div_pos (mul_pos (sq_pos_of_pos htpos) (by linarith)) (by norm_num)
-    have hfourth : 0 ≤ t ^ 4 * (5 - t) / 120 := by
+    have hfourth : 0 ≤ t ^ (4 : ℕ) * (5 - t) / 120 := by
       exact div_nonneg (mul_nonneg (pow_nonneg ht0 4) (by linarith)) (by norm_num)
-    have hsixth : 0 ≤ t ^ 6 * (7 - t) / 5040 := by
+    have hsixth : 0 ≤ t ^ (6 : ℕ) * (7 - t) / 5040 := by
       exact div_nonneg (mul_nonneg (pow_nonneg ht0 6) (by linarith)) (by norm_num)
-    have heighth : 0 ≤ t ^ 8 * (9 - t) / 362880 := by
+    have heighth : 0 ≤ t ^ (8 : ℕ) * (9 - t) / 362880 := by
       exact div_nonneg (mul_nonneg (pow_nonneg ht0 8) (by linarith)) (by norm_num)
     linarith
 
@@ -681,7 +681,7 @@ theorem thetaCuspFirstRateTaylorUpperDelta64_eval_le_one
       thetaCuspExpTwoTaylorEightUpperPolynomial,
       thetaCuspExpTwoTaylorEightPolynomial]
   have hpow : thetaCuspThirtySecondExpTaylorUpper ^ j ≤
-      thetaCuspThirtySecondExpTaylorUpper ^ 64 :=
+      thetaCuspThirtySecondExpTaylorUpper ^ (64 : ℕ) :=
     pow_le_pow_right₀ hbase (by omega)
   have hlocal : thetaCuspExpTwoTaylorEightUpperPolynomial.eval y ≤
       thetaCuspExpTwoTaylorEightUpperPolynomial.eval (1 / 64) := by
@@ -699,14 +699,14 @@ theorem thetaCuspFirstRateTaylorUpperDelta64_eval_le_one
       pow_nonneg hy 8, pow_nonneg hy 9]
   have hproduct : thetaCuspThirtySecondExpTaylorUpper ^ j *
         (thetaCuspExpTwoTaylorEightUpperPolynomial.eval y - 1) ≤
-      thetaCuspThirtySecondExpTaylorUpper ^ 64 *
+      thetaCuspThirtySecondExpTaylorUpper ^ (64 : ℕ) *
         (thetaCuspExpTwoTaylorEightUpperPolynomial.eval (1 / 64) - 1) := by
     exact mul_le_mul hpow (sub_le_sub_right hlocal 1) hdiff0
       (pow_nonneg (by norm_num [thetaCuspThirtySecondExpTaylorUpper,
         thetaCuspExpTwoTaylorEightUpperPolynomial,
         thetaCuspExpTwoTaylorEightPolynomial]) _)
   have hcap : (3.14159265358979323847 : ℝ) *
-      (thetaCuspThirtySecondExpTaylorUpper ^ 64 *
+      (thetaCuspThirtySecondExpTaylorUpper ^ (64 : ℕ) *
         (thetaCuspExpTwoTaylorEightUpperPolynomial.eval (1 / 64) - 1)) < 1 := by
     norm_num [thetaCuspThirtySecondExpTaylorUpper,
       thetaCuspExpTwoTaylorEightUpperPolynomial,
@@ -721,7 +721,7 @@ theorem expNegTruncPoly_six_eval_pos_of_mem_unit
     {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
     0 < (expNegTruncPoly 6).eval t := by
   have hid : (expNegTruncPoly 6).eval t =
-      (1 - t) + t ^ 2 * (3 - t) / 6 + t ^ 4 * (5 - t) / 120 +
+      (1 - t) + t ^ (2 : ℕ) * (3 - t) / 6 + t ^ (4 : ℕ) * (5 - t) / 120 +
         0 := by
     norm_num [eval_expNegTruncPoly, Finset.sum_range_succ]
     ring
@@ -729,9 +729,9 @@ theorem expNegTruncPoly_six_eval_pos_of_mem_unit
   rcases ht0.eq_or_lt with rfl | htpos
   · norm_num
   · have hfirst : 0 ≤ 1 - t := sub_nonneg.mpr ht1
-    have hsecond : 0 < t ^ 2 * (3 - t) / 6 := by
+    have hsecond : 0 < t ^ (2 : ℕ) * (3 - t) / 6 := by
       exact div_pos (mul_pos (sq_pos_of_pos htpos) (by linarith)) (by norm_num)
-    have hfourth : 0 ≤ t ^ 4 * (5 - t) / 120 := by
+    have hfourth : 0 ≤ t ^ (4 : ℕ) * (5 - t) / 120 := by
       exact div_nonneg (mul_nonneg (pow_nonneg ht0 4) (by linarith)) (by norm_num)
     linarith
 
@@ -869,7 +869,7 @@ theorem actual_le_thetaCuspFirstSourceTaylorUpper64_eval
 private theorem expNegTruncPoly_ten_error_le
     {t : ℝ} (ht0 : 0 ≤ t) :
     |Real.exp (-t) - (expNegTruncPoly 10).eval t| ≤
-      (t ^ 10 / ((10 : ℕ).factorial : ℝ)) * Real.exp t := by
+      (t ^ (10 : ℕ) / ((10 : ℕ).factorial : ℝ)) * Real.exp t := by
   have h := norm_complex_exp_sub_sum_le_factorial_tail ((-t : ℝ) : ℂ) 10
   rw [Complex.norm_real, Real.norm_eq_abs, abs_neg, abs_of_nonneg ht0] at h
   rw [show (∑ m ∈ Finset.range 10,
@@ -886,7 +886,7 @@ private theorem expNegTruncPoly_ten_error_le
 private theorem exp_mul_one_sub_endpointDelta_le_expNegTruncPoly_ten
     {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
     Real.exp (-t) *
-        (1 - 9 * t ^ 10 / ((10 : ℕ).factorial : ℝ)) ≤
+        (1 - 9 * t ^ (10 : ℕ) / ((10 : ℕ).factorial : ℝ)) ≤
       (expNegTruncPoly 10).eval t := by
   have herr := expNegTruncPoly_ten_error_le ht0
   have hexpUpper : Real.exp t < 3 := by
@@ -897,10 +897,10 @@ private theorem exp_mul_one_sub_endpointDelta_le_expNegTruncPoly_ten
     simpa only [one_div] using one_div_lt_one_div_of_lt (Real.exp_pos t) hexpUpper
   have hratio : Real.exp t ≤ 9 * Real.exp (-t) := by
     nlinarith
-  have hpow : 0 ≤ t ^ 10 / ((10 : ℕ).factorial : ℝ) := by positivity
+  have hpow : 0 ≤ t ^ (10 : ℕ) / ((10 : ℕ).factorial : ℝ) := by positivity
   have herrorUpper :
       Real.exp (-t) - (expNegTruncPoly 10).eval t ≤
-        (t ^ 10 / ((10 : ℕ).factorial : ℝ)) * Real.exp t :=
+        (t ^ (10 : ℕ) / ((10 : ℕ).factorial : ℝ)) * Real.exp t :=
     (le_abs_self _).trans herr
   have hscaled := mul_le_mul_of_nonneg_left hratio hpow
   nlinarith
@@ -910,7 +910,7 @@ private def thetaRationalQuadratureEndpointFactor (j : ℕ) : ℝ :=
     (ThetaRationalQuadrature.upperIncrement j) : ℚ)
 
 private def thetaRationalQuadratureEndpointDelta (j : ℕ) : ℝ :=
-  9 * (ThetaRationalQuadrature.upperIncrement j : ℝ) ^ 10 /
+  9 * (ThetaRationalQuadrature.upperIncrement j : ℝ) ^ (10 : ℕ) /
     ((10 : ℕ).factorial : ℝ)
 
 private theorem thetaRationalQuadratureEndpointDelta_nonneg (j : ℕ) :
@@ -927,7 +927,7 @@ private theorem thetaRationalQuadratureEndpointDelta_le_one
   have ht1q := thetaRationalQuadrature_upperIncrement_le_one hj
   have ht1 : (ThetaRationalQuadrature.upperIncrement j : ℚ) ≤ (1 : ℝ) := by
     exact_mod_cast ht1q
-  have hp : (ThetaRationalQuadrature.upperIncrement j : ℝ) ^ 10 ≤ 1 := by
+  have hp : (ThetaRationalQuadrature.upperIncrement j : ℝ) ^ (10 : ℕ) ≤ 1 := by
     simpa using pow_le_one₀ ht0 ht1
   unfold thetaRationalQuadratureEndpointDelta
   norm_num at hp ⊢
@@ -1006,7 +1006,7 @@ private theorem thetaRationalQuadratureEndpointDelta_le_nine_div_factorial
   have ht1q := thetaRationalQuadrature_upperIncrement_le_one hj
   have ht1 : (ThetaRationalQuadrature.upperIncrement j : ℚ) ≤ (1 : ℝ) := by
     exact_mod_cast ht1q
-  have hp : (ThetaRationalQuadrature.upperIncrement j : ℝ) ^ 10 ≤ 1 := by
+  have hp : (ThetaRationalQuadrature.upperIncrement j : ℝ) ^ (10 : ℕ) ≤ 1 := by
     simpa using pow_le_one₀ ht0 ht1
   unfold thetaRationalQuadratureEndpointDelta
   norm_num at ⊢

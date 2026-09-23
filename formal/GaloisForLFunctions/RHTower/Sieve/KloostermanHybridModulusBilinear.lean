@@ -59,9 +59,9 @@ theorem norm_kloostermanHybridModulusBilinear_le_baseline
     ‖kloostermanHybridModulusBilinear Q w N M a b t‖ ≤
       ∑ q ∈ Q, ‖w q‖ * ((q + 1 : ℕ) : ℝ) *
         Real.sqrt (∑ d : ZMod (q + 1),
-          ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ 2) *
+          ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ (2 : ℕ)) *
         Real.sqrt (∑ n : ZMod (q + 1),
-          ‖additiveHybridDirichletPoly q M (b q) n t‖ ^ 2) := by
+          ‖additiveHybridDirichletPoly q M (b q) n t‖ ^ (2 : ℕ)) := by
   rw [kloostermanHybridModulusBilinear_eq]
   exact norm_kloostermanModulusBilinear_le_baseline Q w
     (fun q d => additiveHybridDirichletPoly q N (a q) d t)
@@ -71,14 +71,14 @@ theorem norm_kloostermanHybridModulusBilinear_le_baseline
 theorem norm_kloostermanHybridModulusBilinear_sq_le_baseline
     (Q : Finset ℕ) (w : ℕ → ℂ) (N M : ℕ)
     (a b : ℕ → ℕ → ℂ) (t : ℝ) :
-    ‖kloostermanHybridModulusBilinear Q w N M a b t‖ ^ 2 ≤
+    ‖kloostermanHybridModulusBilinear Q w N M a b t‖ ^ (2 : ℕ) ≤
       (∑ q ∈ Q,
         (‖w q‖ * ((q + 1 : ℕ) : ℝ) *
           Real.sqrt (∑ d : ZMod (q + 1),
-            ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ 2)) ^ 2) *
+            ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ (2 : ℕ))) ^ (2 : ℕ)) *
       ∑ q ∈ Q,
         (Real.sqrt (∑ n : ZMod (q + 1),
-          ‖additiveHybridDirichletPoly q M (b q) n t‖ ^ 2)) ^ 2 := by
+          ‖additiveHybridDirichletPoly q M (b q) n t‖ ^ (2 : ℕ))) ^ (2 : ℕ) := by
   rw [kloostermanHybridModulusBilinear_eq]
   exact norm_kloostermanModulusBilinear_sq_le_baseline Q w
     (fun q d => additiveHybridDirichletPoly q N (a q) d t)

@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.PeriodicCohomology
 # Pullback of periodic forms along a lattice map
 
 A linear map of coordinate spaces carrying the period lattice into the period lattice is the lift of
-a homomorphism of tori, and pullback of forms along it preserves periodicity, class `C^1`,
+a homomorphism of tori, and pullback of forms along it preserves periodicity, class `C^(1 : ℕ)`,
 closedness and exactness.  So it induces a map of the periodic de Rham complexes and of their
 cohomology, and on classes of constant forms it is composition with the linear map.  This is the
 naturality that turns the comparison of the cohomology of a torus with the exterior power into a map
@@ -106,7 +106,7 @@ theorem linearPullback_fderiv (T : (Fin r → 𝕜) →L[𝕜] (Fin s → 𝕜))
     ((hω (T w)).hasFDerivAt).comp w (T.hasFDerivAt)
   exact (((compContinuousLinearMapCLM (F := 𝕜) T).hasFDerivAt).comp w hinner).fderiv
 
-/-- The pullback of a form of class `C^1` is of class `C^1`. -/
+/-- The pullback of a form of class `C^(1 : ℕ)` is of class `C^(1 : ℕ)`. -/
 theorem linearPullback_fderiv_continuous (T : (Fin r → 𝕜) →L[𝕜] (Fin s → 𝕜))
     {ω : PeriodicFormSpace 𝕜 s n} (hω : Differentiable 𝕜 ω) (hcont : Continuous (fderiv 𝕜 ω)) :
     Continuous (fderiv 𝕜 (linearPullback T ω)) := by
@@ -153,7 +153,7 @@ section CohomologyFunctor
 
 variable {𝕜 : Type*} [RCLike 𝕜] {r s n : ℕ}
 
-/-- The pullback of a closed periodic form of class `C^1` is one. -/
+/-- The pullback of a closed periodic form of class `C^(1 : ℕ)` is one. -/
 theorem linearPullback_mem_closed {p : 𝕜} (T : (Fin r → 𝕜) →L[𝕜] (Fin s → 𝕜))
     (hT : ∀ l : Fin r, T (p • (Pi.single l (1 : 𝕜) : Fin r → 𝕜)) ∈ periodLattice p s)
     {ω : PeriodicFormSpace 𝕜 s n} (hω : ω ∈ periodicClosedForms p s n) :

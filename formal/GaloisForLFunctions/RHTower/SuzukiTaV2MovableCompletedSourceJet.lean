@@ -45,8 +45,8 @@ def suzukiTaV2CompletedCovarianceSchurDefectNumerator
 theorem suzukiTaV2CompletedCovarianceSchurDefectNumerator_eq_norm_gap
     (a : SuzukiPositiveAperture) (z : ℂ) :
     suzukiTaV2CompletedCovarianceSchurDefectNumerator a z =
-      ((‖(z + I) * suzukiTaV2CompletedCovarianceFourier a (-z)‖ ^ 2 -
-        ‖(z - I) * suzukiTaV2CompletedCovarianceFourier a z‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖(z + I) * suzukiTaV2CompletedCovarianceFourier a (-z)‖ ^ (2 : ℕ) -
+        ‖(z - I) * suzukiTaV2CompletedCovarianceFourier a z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [suzukiTaV2CompletedCovarianceSchurDefectNumerator]
   rw [← Complex.normSq_eq_conj_mul_self,
     ← Complex.normSq_eq_conj_mul_self,
@@ -68,8 +68,8 @@ theorem suzukiTaV2CompletedCovarianceSchurDefectNumerator_re_pos
     suzukiTaPhysicalFourier_plus_eq_completedCovarianceFourier] at hlt
   rw [suzukiTaV2CompletedCovarianceSchurDefectNumerator_eq_norm_gap]
   change 0 <
-    ‖(z + I) * suzukiTaV2CompletedCovarianceFourier a (-z)‖ ^ 2 -
-      ‖(z - I) * suzukiTaV2CompletedCovarianceFourier a z‖ ^ 2
+    ‖(z + I) * suzukiTaV2CompletedCovarianceFourier a (-z)‖ ^ (2 : ℕ) -
+      ‖(z - I) * suzukiTaV2CompletedCovarianceFourier a z‖ ^ (2 : ℕ)
   nlinarith [norm_nonneg
     ((z - I) * suzukiTaV2CompletedCovarianceFourier a z),
     norm_nonneg
@@ -114,10 +114,10 @@ theorem norm_suzukiTaV2CompletedCovarianceLivsic_defectClearedSecondJet_le
     let D := 1 - (starRingEnd ℂ) alpha * alpha
     let P := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
     let Q := iteratedDeriv 2 theta ((c : ℂ) * I) *
-        (2 * (c : ℂ) * I) ^ 2 +
+        (2 * (c : ℂ) * I) ^ (2 : ℕ) +
       deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-    ‖2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q‖ ≤
-      2 * (‖D‖ ^ 2 - ‖P‖ ^ 2) := by
+    ‖2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q‖ ≤
+      2 * (‖D‖ ^ (2 : ℕ) - ‖P‖ ^ (2 : ℕ)) := by
   rw [suzukiTaV2CompletedCovarianceLivsic_eq_actual]
   apply norm_suzukiMovableSchur_defectClearedSecondJet_le hc
   · exact differentiableOn_suzukiTaV2Livsic_upperHalfPlane a
@@ -133,10 +133,10 @@ theorem norm_suzukiTaV2CompletedCovarianceLivsic_defectNormalizedSecondJet_budge
     let D := 1 - (starRingEnd ℂ) alpha * alpha
     let P := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
     let Q := iteratedDeriv 2 theta ((c : ℂ) * I) *
-        (2 * (c : ℂ) * I) ^ 2 +
+        (2 * (c : ℂ) * I) ^ (2 : ℕ) +
       deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ +
-        2 * ‖P‖ ^ 2 / ‖D‖ ≤ 2 * ‖D‖ := by
+    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ +
+        2 * ‖P‖ ^ (2 : ℕ) / ‖D‖ ≤ 2 * ‖D‖ := by
   rw [suzukiTaV2CompletedCovarianceLivsic_eq_actual]
   apply norm_suzukiMovableSchur_defectNormalizedSecondJet_budget hc
   · exact differentiableOn_suzukiTaV2Livsic_upperHalfPlane a
@@ -152,9 +152,9 @@ theorem norm_suzukiTaV2CompletedCovarianceLivsic_defectNormalizedSecondJet_le_tw
     let D := 1 - (starRingEnd ℂ) alpha * alpha
     let P := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
     let Q := iteratedDeriv 2 theta ((c : ℂ) * I) *
-        (2 * (c : ℂ) * I) ^ 2 +
+        (2 * (c : ℂ) * I) ^ (2 : ℕ) +
       deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ 2‖ ≤ 2 := by
+    ‖Q + (2 * (starRingEnd ℂ) alpha / D) * P ^ (2 : ℕ)‖ ≤ 2 := by
   rw [suzukiTaV2CompletedCovarianceLivsic_eq_actual]
   apply norm_suzukiMovableSchur_defectNormalizedSecondJet_le_two hc
   · exact differentiableOn_suzukiTaV2Livsic_upperHalfPlane a
@@ -167,14 +167,14 @@ theorem norm_suzukiTaV2CompletedCovarianceLivsic_covariantSecondJet_le
     ‖(2 * (starRingEnd ℂ) (suzukiTaV2CompletedCovarianceLivsic a ((c : ℂ) * I)) /
           (1 - (starRingEnd ℂ)
               (suzukiTaV2CompletedCovarianceLivsic a ((c : ℂ) * I)) *
-            suzukiTaV2CompletedCovarianceLivsic a ((c : ℂ) * I)) ^ 2) *
+            suzukiTaV2CompletedCovarianceLivsic a ((c : ℂ) * I)) ^ (2 : ℕ)) *
           (deriv (suzukiTaV2CompletedCovarianceLivsic a) ((c : ℂ) * I) *
-            (2 * (c : ℂ) * I)) ^ 2 +
+            (2 * (c : ℂ) * I)) ^ (2 : ℕ) +
         (1 - (starRingEnd ℂ)
               (suzukiTaV2CompletedCovarianceLivsic a ((c : ℂ) * I)) *
             suzukiTaV2CompletedCovarianceLivsic a ((c : ℂ) * I))⁻¹ *
           (iteratedDeriv 2 (suzukiTaV2CompletedCovarianceLivsic a)
-                ((c : ℂ) * I) * (2 * (c : ℂ) * I) ^ 2 +
+                ((c : ℂ) * I) * (2 * (c : ℂ) * I) ^ (2 : ℕ) +
             deriv (suzukiTaV2CompletedCovarianceLivsic a) ((c : ℂ) * I) *
               (4 * (c : ℂ) * I))‖ ≤
       2 * (1 -
@@ -182,7 +182,7 @@ theorem norm_suzukiTaV2CompletedCovarianceLivsic_covariantSecondJet_le
             deriv (suzukiTaV2CompletedCovarianceLivsic a) ((c : ℂ) * I)) /
           (1 - (starRingEnd ℂ)
               (suzukiTaV2CompletedCovarianceLivsic a ((c : ℂ) * I)) *
-            suzukiTaV2CompletedCovarianceLivsic a ((c : ℂ) * I))‖ ^ 2) := by
+            suzukiTaV2CompletedCovarianceLivsic a ((c : ℂ) * I))‖ ^ (2 : ℕ)) := by
   rw [suzukiTaV2CompletedCovarianceLivsic_eq_actual]
   exact norm_suzukiTaV2MovableSchurCovariantSecondJet_le a hc
 
@@ -195,9 +195,9 @@ theorem norm_suzukiTaV2CompletedCovarianceLivsic_denominatorClearedSecondJet_le_
     let D := 1 - (starRingEnd ℂ) alpha * alpha
     let P := deriv theta ((c : ℂ) * I) * (2 * (c : ℂ) * I)
     let Q := iteratedDeriv 2 theta ((c : ℂ) * I) *
-        (2 * (c : ℂ) * I) ^ 2 +
+        (2 * (c : ℂ) * I) ^ (2 : ℕ) +
       deriv theta ((c : ℂ) * I) * (4 * (c : ℂ) * I)
-    ‖2 * (starRingEnd ℂ) alpha * P ^ 2 + D * Q‖ ≤ 2 := by
+    ‖2 * (starRingEnd ℂ) alpha * P ^ (2 : ℕ) + D * Q‖ ≤ 2 := by
   rw [suzukiTaV2CompletedCovarianceLivsic_eq_actual]
   apply norm_suzukiMovableSchur_denominatorClearedSecondJet_le_two hc
   · exact differentiableOn_suzukiTaV2Livsic_upperHalfPlane a

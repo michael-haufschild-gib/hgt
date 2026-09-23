@@ -111,7 +111,7 @@ def suzukiCriticalRootedBianchiPrimeAmplitude
 
 theorem suzukiCriticalRootedBianchiPrimeAmplitude_sq
     (p : Nat.Primes) :
-    suzukiCriticalRootedBianchiPrimeAmplitude p ^ 2 =
+    suzukiCriticalRootedBianchiPrimeAmplitude p ^ (2 : ℕ) =
       suzukiCriticalRootedBianchiPrimeMass p := by
   exact Real.sq_sqrt (suzukiCriticalRootedBianchiPrimeMass_nonneg p)
 
@@ -129,11 +129,11 @@ theorem vonMangoldtGammaRenormalizedBoundaryCoordinate_neg_half_prime
   rfl
 
 /-- **Hilbert realization no-go.**  The canonical critical rooted feature has
-divergent squared norm, so it cannot be an unrenormalized cofinal `ell^2`
+divergent squared norm, so it cannot be an unrenormalized cofinal `ell^(2 : ℕ)`
 Gram vector. -/
 theorem not_summable_sq_suzukiCriticalRootedBianchiPrimeAmplitude :
     ¬ Summable (fun p : Nat.Primes =>
-      suzukiCriticalRootedBianchiPrimeAmplitude p ^ 2) := by
+      suzukiCriticalRootedBianchiPrimeAmplitude p ^ (2 : ℕ)) := by
   intro hsum
   apply not_summable_suzukiCriticalRootedBianchiPrimeMass
   exact hsum.congr (fun p =>
@@ -147,16 +147,16 @@ prime coordinate must cancel exactly before the cofinal limit. -/
 theorem summable_const_mul_sq_suzukiCriticalRootedBianchiPrimeAmplitude_iff
     (c : ℝ) :
     Summable (fun p : Nat.Primes =>
-      (c * suzukiCriticalRootedBianchiPrimeAmplitude p) ^ 2) ↔
+      (c * suzukiCriticalRootedBianchiPrimeAmplitude p) ^ (2 : ℕ)) ↔
       c = 0 := by
   constructor
   · intro hsum
     by_contra hc
     have hscaled : Summable (fun p : Nat.Primes =>
-        c ^ 2 * suzukiCriticalRootedBianchiPrimeAmplitude p ^ 2) :=
+        c ^ (2 : ℕ) * suzukiCriticalRootedBianchiPrimeAmplitude p ^ (2 : ℕ)) :=
       hsum.congr (fun p => by ring)
     have hraw : Summable (fun p : Nat.Primes =>
-        suzukiCriticalRootedBianchiPrimeAmplitude p ^ 2) :=
+        suzukiCriticalRootedBianchiPrimeAmplitude p ^ (2 : ℕ)) :=
       (summable_mul_left_iff (pow_ne_zero 2 hc)).mp hscaled
     exact not_summable_sq_suzukiCriticalRootedBianchiPrimeAmplitude hraw
   · rintro rfl
@@ -168,7 +168,7 @@ on the corpus source connector itself, not merely on an abstractly matched
 weight. -/
 theorem not_summable_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_neg_half_prime :
     ¬ Summable (fun p : Nat.Primes =>
-      vonMangoldtGammaRenormalizedBoundaryCoordinate (-1 / 2) p ^ 2) := by
+      vonMangoldtGammaRenormalizedBoundaryCoordinate (-1 / 2) p ^ (2 : ℕ)) := by
   intro hsum
   apply not_summable_sq_suzukiCriticalRootedBianchiPrimeAmplitude
   exact hsum.congr (fun p => by

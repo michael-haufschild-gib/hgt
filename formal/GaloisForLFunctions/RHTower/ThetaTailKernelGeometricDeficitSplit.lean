@@ -33,7 +33,7 @@ def thetaTailGeometricKernel (x t : ℝ) : ℝ :=
 
 /-- Deficit part of the theta tail kernel: the square-root displacement weight. -/
 def thetaTailDeficitKernel (x t : ℝ) : ℝ :=
-  ∫ s in Ioi (0 : ℝ), (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ 2 *
+  ∫ s in Ioi (0 : ℝ), (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ (2 : ℕ) *
     (thetaCuspFullSource (x + s) * thetaCuspFullSource (t + s))
 
 /-- Shift of a half-line integral to base point zero. -/
@@ -89,7 +89,7 @@ private theorem integrableOn_orbitTotal {x t : ℝ} (hx : 0 ≤ x) (ht : 0 ≤ t
   set C : ℝ := thetaCuspDerivativeExpConstant 0 with hCdef
   have hC : 0 ≤ C := expConstant_nonneg
   have hmaj : IntegrableOn
-      (fun s => C ^ 2 * Real.exp (-x - t) *
+      (fun s => C ^ (2 : ℕ) * Real.exp (-x - t) *
         ((x + t) * Real.exp (-2 * s) + 2 * Real.exp (-s))) (Ioi (0 : ℝ)) := by
     have h2 : IntegrableOn (fun s : ℝ => Real.exp (-2 * s)) (Ioi (0 : ℝ)) :=
       exp_neg_integrableOn_Ioi 0 (by norm_num : (0 : ℝ) < 2)
@@ -133,11 +133,11 @@ private theorem integrableOn_orbitTotal {x t : ℝ} (hx : 0 ≤ x) (ht : 0 ≤ t
       have h2s : 2 * s * Real.exp (-2 * s) ≤ 2 * Real.exp (-s) := by nlinarith
       nlinarith [Real.exp_pos (-2 * s)]
     calc (x + t + 2 * s) * (C * Real.exp (-(x + s)) * (C * Real.exp (-(t + s)))) =
-          C ^ 2 * Real.exp (-x - t) * ((x + t + 2 * s) * Real.exp (-2 * s)) := by
+          C ^ (2 : ℕ) * Real.exp (-x - t) * ((x + t + 2 * s) * Real.exp (-2 * s)) := by
             rw [show C * Real.exp (-(x + s)) * (C * Real.exp (-(t + s))) =
-              C ^ 2 * (Real.exp (-(x + s)) * Real.exp (-(t + s))) by ring, hexp]
+              C ^ (2 : ℕ) * (Real.exp (-(x + s)) * Real.exp (-(t + s))) by ring, hexp]
             ring
-      _ ≤ C ^ 2 * Real.exp (-x - t) * ((x + t) * Real.exp (-2 * s) + 2 * Real.exp (-s)) := by
+      _ ≤ C ^ (2 : ℕ) * Real.exp (-x - t) * ((x + t) * Real.exp (-2 * s) + 2 * Real.exp (-s)) := by
             apply mul_le_mul_of_nonneg_left hsplit (by positivity)
 
 /-- Pointwise arithmetic–geometric bound of the geometric integrand by the total integrand. -/
@@ -172,7 +172,7 @@ private theorem integrableOn_orbitGeometric {x t : ℝ} (hx : 0 ≤ x) (ht : 0 �
     exact geometric_le_total hx ht hs0
 
 private theorem integrableOn_orbitDeficit {x t : ℝ} (hx : 0 ≤ x) (ht : 0 ≤ t) :
-    IntegrableOn (fun s => (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ 2 *
+    IntegrableOn (fun s => (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ (2 : ℕ) *
       (thetaCuspFullSource (x + s) * thetaCuspFullSource (t + s))) (Ioi (0 : ℝ)) := by
   refine Integrable.mono' (integrableOn_orbitTotal hx ht) ?_ ?_
   · exact (((Real.continuous_sqrt.comp (continuous_const.add continuous_id)).sub
@@ -186,7 +186,7 @@ private theorem integrableOn_orbitDeficit {x t : ℝ} (hx : 0 ≤ x) (ht : 0 ≤
       mul_nonneg (HedenmalmThetaSource.thetaCuspFullSource_pos _).le
         (HedenmalmThetaSource.thetaCuspFullSource_pos _).le
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) hP)]
-    have hdef : (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ 2 ≤ x + t + 2 * s := by
+    have hdef : (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ (2 : ℕ) ≤ x + t + 2 * s := by
       nlinarith [Real.sq_sqrt hxs, Real.sq_sqrt hts, Real.sqrt_nonneg (x + s),
         Real.sqrt_nonneg (t + s), Real.sqrt_nonneg ((x + s) * (t + s)),
         Real.sqrt_mul hxs (t + s), mul_nonneg (Real.sqrt_nonneg (x + s)) (Real.sqrt_nonneg (t + s))]
@@ -203,7 +203,7 @@ theorem thetaTailFirstMomentKernel_eq_geometric_add_deficit {x t : ℝ}
       (x + t + 2 * s) * (thetaCuspFullSource (x + s) * thetaCuspFullSource (t + s)) =
       2 * (Real.sqrt ((x + s) * (t + s)) *
           (thetaCuspFullSource (x + s) * thetaCuspFullSource (t + s))) +
-        (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ 2 *
+        (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ (2 : ℕ) *
           (thetaCuspFullSource (x + s) * thetaCuspFullSource (t + s)) := by
     intro s hs
     have hs0 : (0 : ℝ) < s := hs
@@ -211,7 +211,7 @@ theorem thetaTailFirstMomentKernel_eq_geometric_add_deficit {x t : ℝ}
     have hts : 0 ≤ t + s := by linarith
     have hkey : x + t + 2 * s =
         2 * Real.sqrt ((x + s) * (t + s)) +
-          (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ 2 := by
+          (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ (2 : ℕ) := by
       rw [Real.sqrt_mul hxs]
       nlinarith [Real.sq_sqrt hxs, Real.sq_sqrt hts]
     rw [hkey]
@@ -250,7 +250,7 @@ theorem thetaTailGeometricKernel_quadraticForm_nonneg
     rw [Real.sqrt_mul (by linarith [hx i] : (0 : ℝ) ≤ x i + s)]
     ring
   calc (0 : ℝ) ≤ ∫ s in Ioi (0 : ℝ),
-        (∑ i, a i * (Real.sqrt (x i + s) * thetaCuspFullSource (x i + s))) ^ 2 :=
+        (∑ i, a i * (Real.sqrt (x i + s) * thetaCuspFullSource (x i + s))) ^ (2 : ℕ) :=
         setIntegral_nonneg measurableSet_Ioi fun s _ => sq_nonneg _
     _ = ∫ s in Ioi (0 : ℝ), ∑ i, ∑ j,
         (a i * (Real.sqrt (x i + s) * thetaCuspFullSource (x i + s))) *
@@ -300,7 +300,7 @@ theorem thetaTailDeficitKernel_pos {x t : ℝ}
     (hx : 0 ≤ x) (ht : 0 ≤ t) (hxt : x ≠ t) :
     0 < thetaTailDeficitKernel x t := by
   let f : ℝ → ℝ := fun s =>
-    (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ 2 *
+    (Real.sqrt (x + s) - Real.sqrt (t + s)) ^ (2 : ℕ) *
       (thetaCuspFullSource (x + s) * thetaCuspFullSource (t + s))
   have hint : IntegrableOn f (Ioi (0 : ℝ)) := by
     simpa only [f] using integrableOn_orbitDeficit hx ht
@@ -322,7 +322,7 @@ theorem thetaTailDeficitKernel_pos {x t : ℝ}
   change f 1 ≠ 0
   have hsqrt : Real.sqrt (x + 1) ≠ Real.sqrt (t + 1) := by
     intro heq
-    have hsquare := congrArg (fun u : ℝ => u ^ 2) heq
+    have hsquare := congrArg (fun u : ℝ => u ^ (2 : ℕ)) heq
     rw [Real.sq_sqrt (by linarith), Real.sq_sqrt (by linarith)] at hsquare
     apply hxt
     linarith

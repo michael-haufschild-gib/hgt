@@ -33,7 +33,7 @@ theorem exists_xiBoundaryLoop_nonzero_winding :
       dsimp [rho]
       calc
         (1 / 2 + (a : ℂ) * Complex.I - 1 / 2) * (-Complex.I) =
-            -(a : ℂ) * Complex.I ^ 2 := by ring
+            -(a : ℂ) * Complex.I ^ (2 : ℕ) := by ring
         _ = (a : ℂ) := by rw [Complex.I_sq]; ring
     rw [hcoord, hza]
   obtain ⟨Rw, hRw, hwind⟩ := RHTower.windingNumber_xi_zero rho

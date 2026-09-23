@@ -34,7 +34,7 @@ private theorem W_integrable (q : XiZeroCopy) : Integrable (modeSource q) angula
 
 /-- Complete native weighted energy density, with every primitive-row cross term retained. -/
 def energyDensity (q : XiZeroCopy) (z : UpperHalfPlane) : ℝ :=
-  ‖modeSource q z‖^2/positiveSource z
+  ‖modeSource q z‖^(2 : ℕ)/positiveSource z
 
 /-- Actual integrated native energy in the positive theta weight. -/
 def nativeEnergy (q : XiZeroCopy) : ℝ := ∫ z, energyDensity q z ∂angularMeasure
@@ -47,18 +47,18 @@ private def diskDefect (q : XiZeroCopy) (z : UpperHalfPlane) : ℝ :=
 
 private theorem diskDefect_pos (q : XiZeroCopy) (z : UpperHalfPlane) : 0 < diskDefect q z := by
   have hd := modeSource_strict_disk q z
-  have he : ‖(positiveSource z:ℂ)+(b q:ℂ)*modeSource q z‖^2 =
-      (positiveSource z)^2+(b q)^2*‖modeSource q z‖^2+
+  have he : ‖(positiveSource z:ℂ)+(b q:ℂ)*modeSource q z‖^(2 : ℕ) =
+      (positiveSource z)^(2 : ℕ)+(b q)^(2 : ℕ)*‖modeSource q z‖^(2 : ℕ)+
         2*b q*positiveSource z*(modeSource q z).re := by
     simp [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
     ring
-  have hs : ‖(positiveSource z:ℂ)+(b q:ℂ)*modeSource q z‖^2 < (positiveSource z)^2 := by
+  have hs : ‖(positiveSource z:ℂ)+(b q:ℂ)*modeSource q z‖^(2 : ℕ) < (positiveSource z)^(2 : ℕ) := by
     change ‖(positiveSource z:ℂ)+(b q:ℂ)*modeSource q z‖ < positiveSource z at hd
     nlinarith [norm_nonneg ((positiveSource z:ℂ)+(b q:ℂ)*modeSource q z), positiveSource_pos z]
   rw [he] at hs
-  have hprod : ((b q)^2*positiveSource z)*diskDefect q z > 0 := by
-    have heq : ((b q)^2*positiveSource z)*diskDefect q z =
-        -((b q)^2*‖modeSource q z‖^2+2*b q*positiveSource z*(modeSource q z).re) := by
+  have hprod : ((b q)^(2 : ℕ)*positiveSource z)*diskDefect q z > 0 := by
+    have heq : ((b q)^(2 : ℕ)*positiveSource z)*diskDefect q z =
+        -((b q)^(2 : ℕ)*‖modeSource q z‖^(2 : ℕ)+2*b q*positiveSource z*(modeSource q z).re) := by
       unfold diskDefect energyDensity
       field_simp [b_ne_zero q, (positiveSource_pos z).ne']
       ring
@@ -94,7 +94,7 @@ private theorem integral_diskDefect_pos (q : XiZeroCopy) :
   exact hs.trans_le (measure_mono (fun z _ => (diskDefect_pos q z).ne'))
 
 private theorem real_mode_integral (q : XiZeroCopy) :
-    (∫ z, (modeSource q z).re ∂angularMeasure) = -sourceMass*b q/‖h q‖^2 := by
+    (∫ z, (modeSource q z).re ∂angularMeasure) = -sourceMass*b q/‖h q‖^(2 : ℕ) := by
   have hr := integral_re (𝕜 := ℂ) (W_integrable q)
   change (∫ z, (modeSource q z).re ∂angularMeasure) = (∫ z, modeSource q z ∂angularMeasure).re at hr
   rw [hr, modeSource_integral]
@@ -104,22 +104,22 @@ private theorem real_mode_integral (q : XiZeroCopy) :
     neg_zero, zero_mul, zero_div, add_zero, hh, Complex.normSq_eq_norm_sq]
 
 private theorem integral_diskDefect (q : XiZeroCopy) :
-    (∫ z, diskDefect q z ∂angularMeasure) = 2*sourceMass/‖h q‖^2-nativeEnergy q := by
+    (∫ z, diskDefect q z ∂angularMeasure) = 2*sourceMass/‖h q‖^(2 : ℕ)-nativeEnergy q := by
   have hs : (∫ z, diskDefect q z ∂angularMeasure) =
       (∫ z, -(2/b q)*(modeSource q z).re ∂angularMeasure)-
         (∫ z, energyDensity q z ∂angularMeasure) := by
     simpa only [diskDefect] using! integral_sub
       ((W_integrable q).re.const_mul (-(2/b q))) (energyDensity_integrable q)
   rw [hs, integral_const_mul, real_mode_integral]
-  change -(2/b q)*(-sourceMass*b q/‖h q‖^2)-nativeEnergy q = _
+  change -(2/b q)*(-sourceMass*b q/‖h q‖^(2 : ℕ))-nativeEnergy q = _
   field_simp [b_ne_zero q]
 
 /-- Strict source disk transfer gives a quantitative native upper energy bound. -/
 theorem nativeEnergy_upper (q : XiZeroCopy) :
-    nativeEnergy q < 2*sourceMass/‖xiSpectralPoint q-Complex.I‖^2 := by
+    nativeEnergy q < 2*sourceMass/‖xiSpectralPoint q-Complex.I‖^(2 : ℕ) := by
   have hp := integral_diskDefect_pos q
   rw [integral_diskDefect] at hp
-  change nativeEnergy q < 2*sourceMass/‖h q‖^2
+  change nativeEnergy q < 2*sourceMass/‖h q‖^(2 : ℕ)
   linarith
 
 /-- The mean-zero source uses the original theta comparison and its exact spectral denominator. -/
@@ -127,12 +127,12 @@ def centeredSource (q : XiZeroCopy) (z : UpperHalfPlane) : ℂ :=
   modeSource q z+(positiveSource z:ℂ)/(xiSpectralPoint q-Complex.I)
 
 private def centeredDensity (q : XiZeroCopy) (z : UpperHalfPlane) : ℝ :=
-  ‖centeredSource q z‖^2/positiveSource z
+  ‖centeredSource q z‖^(2 : ℕ)/positiveSource z
 
 private theorem centeredDensity_split (q : XiZeroCopy) (z : UpperHalfPlane) :
     centeredDensity q z = energyDensity q z+
-      2*(modeSource q z*star ((h q)⁻¹)).re+positiveSource z*‖(h q)⁻¹‖^2 := by
-  change ‖modeSource q z+(positiveSource z:ℂ)*(h q)⁻¹‖^2/positiveSource z = _
+      2*(modeSource q z*star ((h q)⁻¹)).re+positiveSource z*‖(h q)⁻¹‖^(2 : ℕ) := by
+  change ‖modeSource q z+(positiveSource z:ℂ)*(h q)⁻¹‖^(2 : ℕ)/positiveSource z = _
   unfold energyDensity
   simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.add_re, Complex.add_im,
     Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
@@ -143,19 +143,19 @@ private theorem centeredDensity_split (q : XiZeroCopy) (z : UpperHalfPlane) :
 private theorem centeredDensity_integrable (q : XiZeroCopy) : Integrable (centeredDensity q) angularMeasure := by
   have hi := ((energyDensity_integrable q).add
     (((W_integrable q).mul_const (star ((h q)⁻¹))).re.const_mul 2)).add
-      (P_integrable.mul_const (‖(h q)⁻¹‖^2))
+      (P_integrable.mul_const (‖(h q)⁻¹‖^(2 : ℕ)))
   apply hi.congr
   filter_upwards with z
   exact (centeredDensity_split q z).symm
 
 private theorem centeredDensity_integral (q : XiZeroCopy) :
-    (∫ z, centeredDensity q z ∂angularMeasure) = nativeEnergy q-sourceMass/‖h q‖^2 := by
+    (∫ z, centeredDensity q z ∂angularMeasure) = nativeEnergy q-sourceMass/‖h q‖^(2 : ℕ) := by
   have hi := ((W_integrable q).mul_const (star ((h q)⁻¹))).re.const_mul 2
   have hs : (∫ z, centeredDensity q z ∂angularMeasure) =
       (∫ z, energyDensity q z+2*(modeSource q z*star ((h q)⁻¹)).re ∂angularMeasure)+
-        (∫ z, positiveSource z*‖(h q)⁻¹‖^2 ∂angularMeasure) := by
+        (∫ z, positiveSource z*‖(h q)⁻¹‖^(2 : ℕ) ∂angularMeasure) := by
     simpa only [centeredDensity_split] using! integral_add ((energyDensity_integrable q).add hi)
-      (P_integrable.mul_const (‖(h q)⁻¹‖^2))
+      (P_integrable.mul_const (‖(h q)⁻¹‖^(2 : ℕ)))
   have ht : (∫ z, energyDensity q z+2*(modeSource q z*star ((h q)⁻¹)).re ∂angularMeasure) =
       nativeEnergy q+(∫ z, 2*(modeSource q z*star ((h q)⁻¹)).re ∂angularMeasure) := by
     simpa only [nativeEnergy] using! integral_add (energyDensity_integrable q) hi
@@ -165,8 +165,8 @@ private theorem centeredDensity_integral (q : XiZeroCopy) :
   rw [hs, ht, integral_const_mul, hr, integral_mul_const, integral_mul_const,
     positiveSource_integral, modeSource_integral]
   change nativeEnergy q+2*((-(sourceMass:ℂ)/h q)*star ((h q)⁻¹)).re+
-    sourceMass*‖(h q)⁻¹‖^2 = _
-  have he : ((-(sourceMass:ℂ)/h q)*star ((h q)⁻¹)).re = -sourceMass*‖(h q)⁻¹‖^2 := by
+    sourceMass*‖(h q)⁻¹‖^(2 : ℕ) = _
+  have he : ((-(sourceMass:ℂ)/h q)*star ((h q)⁻¹)).re = -sourceMass*‖(h q)⁻¹‖^(2 : ℕ) := by
     rw [div_eq_mul_inv, mul_assoc, Complex.star_def, Complex.mul_conj]
     simp only [Complex.mul_re, Complex.neg_re, Complex.ofReal_re, Complex.neg_im,
       Complex.ofReal_im, mul_zero, sub_zero, Complex.normSq_eq_norm_sq]
@@ -176,11 +176,11 @@ private theorem centeredDensity_integral (q : XiZeroCopy) :
 
 /-- The native energy cannot lose its exact mean contribution under complete periodization. -/
 theorem nativeEnergy_lower (q : XiZeroCopy) :
-    sourceMass/‖xiSpectralPoint q-Complex.I‖^2 ≤ nativeEnergy q := by
+    sourceMass/‖xiSpectralPoint q-Complex.I‖^(2 : ℕ) ≤ nativeEnergy q := by
   have hp : 0 ≤ ∫ z, centeredDensity q z ∂angularMeasure :=
     integral_nonneg (fun z => div_nonneg (sq_nonneg _) (positiveSource_pos z).le)
   rw [centeredDensity_integral] at hp
-  change sourceMass/‖h q‖^2 ≤ nativeEnergy q
+  change sourceMass/‖h q‖^(2 : ℕ) ≤ nativeEnergy q
   linarith
 
 /-- Exact native centering has zero mean, with no component silently discarded. -/
@@ -202,16 +202,16 @@ theorem centeredSource_memLp (q : XiZeroCopy) : MemLp (centeredSource q) 2 angul
 
 /-- Native weighted mass of the exact mean-zero theta source. -/
 def centeredEnergy (q : XiZeroCopy) : ℝ :=
-  ∫ z, ‖centeredSource q z‖^2/positiveSource z ∂angularMeasure
+  ∫ z, ‖centeredSource q z‖^(2 : ℕ)/positiveSource z ∂angularMeasure
 
 /-- Exact variance decomposition after complete modular periodization. -/
 theorem centeredEnergy_eq (q : XiZeroCopy) :
-    centeredEnergy q = nativeEnergy q-sourceMass/‖xiSpectralPoint q-Complex.I‖^2 :=
+    centeredEnergy q = nativeEnergy q-sourceMass/‖xiSpectralPoint q-Complex.I‖^(2 : ℕ) :=
   centeredDensity_integral q
 
 /-- Both native source energy and the surviving centered energy are finite and controlled. -/
 theorem centeredEnergy_bounds (q : XiZeroCopy) :
-    0 ≤ centeredEnergy q ∧ centeredEnergy q < sourceMass/‖xiSpectralPoint q-Complex.I‖^2 := by
+    0 ≤ centeredEnergy q ∧ centeredEnergy q < sourceMass/‖xiSpectralPoint q-Complex.I‖^(2 : ℕ) := by
   rw [centeredEnergy_eq]
   constructor
   · linarith [nativeEnergy_lower q]

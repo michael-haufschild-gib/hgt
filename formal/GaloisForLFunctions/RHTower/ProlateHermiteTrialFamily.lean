@@ -45,7 +45,7 @@ theorem prolateHermiteTrialDeriv2_eq (c : ℝ) (n : ℕ) :
       = fun x => c * (hermiteRungP n (Real.sqrt c * x) * hermiteFun n (Real.sqrt c * x)) := rfl
 
 theorem hermiteRungP_eq (n : ℕ) :
-    hermiteRungP n = fun xi : ℝ => xi ^ 2 - (2 * (n : ℝ) + 1) := rfl
+    hermiteRungP n = fun xi : ℝ => xi ^ (2 : ℕ) - (2 * (n : ℝ) + 1) := rfl
 
 theorem hasDerivAt_sqrt_mul (c x : ℝ) :
     HasDerivAt (fun y : ℝ => Real.sqrt c * y) (Real.sqrt c) x := by
@@ -89,14 +89,14 @@ theorem continuous_prolateHermiteTrialDeriv2 (c : ℝ) (n : ℕ) :
 /-- **The prolate action on the rescaled Hermite trial function.**  The rung term carries the full
 factor `c`; the two remaining terms are the bounded corrections. -/
 theorem prolateHermiteTrial_action {c : ℝ} (hc : 0 ≤ c) (n : ℕ) (x : ℝ) :
-    (1 - x ^ 2) * prolateHermiteTrialDeriv2 c n x
+    (1 - x ^ (2 : ℕ)) * prolateHermiteTrialDeriv2 c n x
         - 2 * x * prolateHermiteTrialDeriv c n x
-        - c ^ 2 * x ^ 2 * prolateHermiteTrial c n x
-      = -(c * (2 * (n : ℝ) + 1)) * ((1 - x ^ 2) * hermiteFun n (Real.sqrt c * x))
-        - c ^ 2 * x ^ 4 * hermiteFun n (Real.sqrt c * x)
+        - c ^ (2 : ℕ) * x ^ (2 : ℕ) * prolateHermiteTrial c n x
+      = -(c * (2 * (n : ℝ) + 1)) * ((1 - x ^ (2 : ℕ)) * hermiteFun n (Real.sqrt c * x))
+        - c ^ (2 : ℕ) * x ^ (4 : ℕ) * hermiteFun n (Real.sqrt c * x)
         - 2 * Real.sqrt c * (x * deriv (hermiteFun n) (Real.sqrt c * x)) := by
   rw [prolateHermiteTrialDeriv2, prolateHermiteTrialDeriv, prolateHermiteTrial, hermiteRungP]
-  have hsq : (Real.sqrt c * x) ^ 2 = c * x ^ 2 := by
+  have hsq : (Real.sqrt c * x) ^ (2 : ℕ) = c * x ^ (2 : ℕ) := by
     rw [mul_pow, Real.sq_sqrt hc]
   rw [hsq]
   ring
@@ -119,20 +119,20 @@ theorem integral_comp_sqrt_mul {c : ℝ} (hc : 0 < c) (F : ℝ → ℝ) :
 single explicit factor `c` on the rung term. -/
 theorem integral_trialPair_numerator {c : ℝ} (hc : 0 < c) (m n : ℕ) :
     (∫ x in (-1 : ℝ)..1,
-        ((1 - x ^ 2) * prolateHermiteTrialDeriv2 c m x
+        ((1 - x ^ (2 : ℕ)) * prolateHermiteTrialDeriv2 c m x
           - 2 * x * prolateHermiteTrialDeriv c m x
-          - c ^ 2 * x ^ 2 * prolateHermiteTrial c m x) * prolateHermiteTrial c n x)
+          - c ^ (2 : ℕ) * x ^ (2 : ℕ) * prolateHermiteTrial c m x) * prolateHermiteTrial c n x)
       = (1 / Real.sqrt c) * ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-          ((-(c * (2 * (m : ℝ) + 1)) + (2 * (m : ℝ) + 1) * xi ^ 2 - xi ^ 4)
+          ((-(c * (2 * (m : ℝ) + 1)) + (2 * (m : ℝ) + 1) * xi ^ (2 : ℕ) - xi ^ (4 : ℕ))
               * (hermiteFun m xi * hermiteFun n xi)
             - 2 * xi * (deriv (hermiteFun m) xi * hermiteFun n xi)) := by
   rw [← integral_comp_sqrt_mul hc]
   refine intervalIntegral.integral_congr fun x _ => ?_
   rw [prolateHermiteTrial_action hc.le m x, prolateHermiteTrial]
-  have hsq : (Real.sqrt c * x) ^ 2 = c * x ^ 2 := by
+  have hsq : (Real.sqrt c * x) ^ (2 : ℕ) = c * x ^ (2 : ℕ) := by
     rw [mul_pow, Real.sq_sqrt hc.le]
-  have hquart : (Real.sqrt c * x) ^ 4 = c ^ 2 * x ^ 4 := by
-    have : (Real.sqrt c * x) ^ 4 = ((Real.sqrt c * x) ^ 2) ^ 2 := by ring
+  have hquart : (Real.sqrt c * x) ^ (4 : ℕ) = c ^ (2 : ℕ) * x ^ (4 : ℕ) := by
+    have : (Real.sqrt c * x) ^ (4 : ℕ) = ((Real.sqrt c * x) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
     rw [this, hsq]
     ring
   rw [hsq, hquart]

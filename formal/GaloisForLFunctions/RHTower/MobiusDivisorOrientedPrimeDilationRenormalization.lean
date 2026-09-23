@@ -35,9 +35,9 @@ must act. -/
 theorem mobiusDivisorOrientedFibre_insert_mul_prime_square_renormalization
     {N p : ℕ} (hp : p.Prime) (hNp : N < p)
     (P R : Finset ℕ) (hpP : p ∉ P) (hpR : p ∉ R) :
-    (mobiusDivisorOrientedFibre (p * N) (insert p P) R) ^ 2 =
-      (mobiusDivisorOrientedFibre (p * N) P R) ^ 2 +
-        p * (mobiusDivisorOrientedFibre N P R) ^ 2 -
+    (mobiusDivisorOrientedFibre (p * N) (insert p P) R) ^ (2 : ℕ) =
+      (mobiusDivisorOrientedFibre (p * N) P R) ^ (2 : ℕ) +
+        p * (mobiusDivisorOrientedFibre N P R) ^ (2 : ℕ) -
           2 * Real.sqrt p *
             mobiusDivisorOrientedFibre (p * N) P R *
               mobiusDivisorOrientedFibre N P R := by

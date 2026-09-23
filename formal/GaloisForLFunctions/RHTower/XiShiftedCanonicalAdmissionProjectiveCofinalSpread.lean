@@ -11,7 +11,7 @@ noncomputable section
 
 def projectiveLowEdgeAnchor (s : ℕ → ℝ) : ℝ :=
   4 * HTGeometry.monicOrthoBeta s 1 /
-    (HTGeometry.monicOrthoAlpha s 0 ^ 2 + 2 * HTGeometry.monicOrthoBeta s 1)
+    (HTGeometry.monicOrthoAlpha s 0 ^ (2 : ℕ) + 2 * HTGeometry.monicOrthoBeta s 1)
 
 theorem projectiveLowEdgeAnchor_pos
     {s : ℕ → ℝ} {N : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
@@ -27,7 +27,7 @@ theorem tendsto_projectiveLowEdgeAnchor :
   have ha := tendsto_dimensionless_monicOrthoAlpha 0
   have hb := tendsto_dimensionless_monicOrthoBeta (n := 1) (by omega)
   rw [monicOrthoBeta_normalizedCentralBinom_one] at hb
-  have hden : ((1 / 2 : ℝ) ^ 2 + 2 * (1 / 8 : ℝ)) ≠ 0 := by norm_num
+  have hden : ((1 / 2 : ℝ) ^ (2 : ℕ) + 2 * (1 / 8 : ℝ)) ≠ 0 := by norm_num
   have h := (hb.const_mul 4).div ((ha.pow 2).add (hb.const_mul 2)) hden
   convert h using 1
   · funext w
@@ -35,10 +35,10 @@ theorem tendsto_projectiveLowEdgeAnchor :
   · norm_num
 
 theorem lowEdge_scalar_completion (a b μ : ℝ)
-    (hden : a ^ 2 + 2 * b ≠ 0) :
-    2 * (a - μ) ^ 2 + 4 * b -
-        (4 * b / (a ^ 2 + 2 * b)) * μ ^ 2 =
-      2 / (a ^ 2 + 2 * b) * (a * μ - (a ^ 2 + 2 * b)) ^ 2 := by
+    (hden : a ^ (2 : ℕ) + 2 * b ≠ 0) :
+    2 * (a - μ) ^ (2 : ℕ) + 4 * b -
+        (4 * b / (a ^ (2 : ℕ) + 2 * b)) * μ ^ (2 : ℕ) =
+      2 / (a ^ (2 : ℕ) + 2 * b) * (a * μ - (a ^ (2 : ℕ) + 2 * b)) ^ (2 : ℕ) := by
   field_simp [hden]
   ring
 
@@ -48,7 +48,7 @@ theorem projectiveGaussRootSpread_succ_sub
     projectiveGaussRootSpread s (n + 1) - projectiveGaussRootSpread s n =
       (n : ℝ) / (n + 1 : ℝ) *
           (HTGeometry.monicOrthoAlpha s n -
-            (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) / (n : ℝ)) ^ 2 +
+            (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) / (n : ℝ)) ^ (2 : ℕ) +
         2 * HTGeometry.monicOrthoBeta s n := by
   rw [projectiveGaussRootSpread_eq_alphaDispersion_add_betaInventory h (by omega) hnN,
     projectiveGaussRootSpread_eq_alphaDispersion_add_betaInventory h hn (by omega)]
@@ -96,13 +96,13 @@ theorem projectiveSurplus_ge_lowEdgeAnchor_mul_flux_sq_div_degree
     (hn : 2 ≤ n) (hnN : n + 1 < N) :
     let F := 2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
       HTGeometry.monicOrthoAlpha s n
-    let D := 2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-      HTGeometry.monicOrthoAlpha s n ^ 2 +
+    let D := 2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+      HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
       4 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
       2 * (n + 1 : ℝ) *
         (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1))
-    (2 * n + 1 : ℝ) * D - F ^ 2 ≥
-      projectiveLowEdgeAnchor s / (2 * n + 1 : ℝ) * F ^ 2 := by
+    (2 * n + 1 : ℝ) * D - F ^ (2 : ℕ) ≥
+      projectiveLowEdgeAnchor s / (2 * n + 1 : ℝ) * F ^ (2 : ℕ) := by
   dsimp only
   let c : ℝ := 2 * (n : ℝ) + 1
   let F : ℝ := 2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
@@ -114,13 +114,13 @@ theorem projectiveSurplus_ge_lowEdgeAnchor_mul_flux_sq_div_degree
   have hb : 0 < b := by
     dsimp only [b]
     exact HTGeometry.monicOrthoBeta_pos_below h (by omega) (by omega)
-  have hden : a ^ 2 + 2 * b ≠ 0 := by positivity
+  have hden : a ^ (2 : ℕ) + 2 * b ≠ 0 := by positivity
   have hcenter_expand :
       (∑ j ∈ Finset.range n,
-        (HTGeometry.monicOrthoAlpha s j - μ) ^ 2) =
-        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) -
+        (HTGeometry.monicOrthoAlpha s j - μ) ^ (2 : ℕ)) =
+        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) -
           2 * μ * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-          (n : ℝ) * μ ^ 2 := by
+          (n : ℝ) * μ ^ (2 : ℕ) := by
     simp_rw [sub_sq]
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
     have hmid : (∑ x ∈ Finset.range n,
@@ -138,30 +138,30 @@ theorem projectiveSurplus_ge_lowEdgeAnchor_mul_flux_sq_div_degree
     rw [hmid]
     simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
   have hsumalpha :
-      c * (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-          HTGeometry.monicOrthoAlpha s n ^ 2) - F ^ 2 =
+      c * (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+          HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ)) - F ^ (2 : ℕ) =
         c * (2 * (∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j - μ) ^ 2) +
-          (HTGeometry.monicOrthoAlpha s n - μ) ^ 2) := by
+          (HTGeometry.monicOrthoAlpha s j - μ) ^ (2 : ℕ)) +
+          (HTGeometry.monicOrthoAlpha s n - μ) ^ (2 : ℕ)) := by
     rw [hcenter_expand]
     unfold μ
     field_simp [hc.ne']
     ring
   have hcenter_nonneg : ∀ j ∈ Finset.range n,
-      0 ≤ (HTGeometry.monicOrthoAlpha s j - μ) ^ 2 :=
+      0 ≤ (HTGeometry.monicOrthoAlpha s j - μ) ^ (2 : ℕ) :=
     fun _ _ => sq_nonneg _
   have ha_mem : 0 ∈ Finset.range n := Finset.mem_range.mpr (by omega)
   have halpha_floor :
-      2 * (a - μ) ^ 2 ≤
+      2 * (a - μ) ^ (2 : ℕ) ≤
         2 * (∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j - μ) ^ 2) := by
-    have hsingle : (a - μ) ^ 2 ≤
-        ∑ j ∈ Finset.range n, (HTGeometry.monicOrthoAlpha s j - μ) ^ 2 := by
+          (HTGeometry.monicOrthoAlpha s j - μ) ^ (2 : ℕ)) := by
+    have hsingle : (a - μ) ^ (2 : ℕ) ≤
+        ∑ j ∈ Finset.range n, (HTGeometry.monicOrthoAlpha s j - μ) ^ (2 : ℕ) := by
       calc
-        (a - μ) ^ 2 = ∑ j ∈ ({0} : Finset ℕ),
-            (HTGeometry.monicOrthoAlpha s j - μ) ^ 2 := by simp [a]
+        (a - μ) ^ (2 : ℕ) = ∑ j ∈ ({0} : Finset ℕ),
+            (HTGeometry.monicOrthoAlpha s j - μ) ^ (2 : ℕ) := by simp [a]
         _ ≤ ∑ j ∈ Finset.range n,
-            (HTGeometry.monicOrthoAlpha s j - μ) ^ 2 :=
+            (HTGeometry.monicOrthoAlpha s j - μ) ^ (2 : ℕ) :=
           Finset.sum_le_sum_of_subset_of_nonneg
             (Finset.singleton_subset_iff.mpr ha_mem)
             (fun j hj _ => hcenter_nonneg j hj)
@@ -191,38 +191,38 @@ theorem projectiveSurplus_ge_lowEdgeAnchor_mul_flux_sq_div_degree
     have hbn1 := HTGeometry.monicOrthoBeta_pos_below h (by omega : 0 < n + 1) hnN
     positivity
   have hbase :
-      c * (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-        HTGeometry.monicOrthoAlpha s n ^ 2 +
+      c * (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+        HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
         4 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
         2 * (n + 1 : ℝ) *
-          (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1))) - F ^ 2 ≥
-        c * (2 * (a - μ) ^ 2 + 4 * b) := by
-    rw [show c * (_ + _ + _ + _) - F ^ 2 =
-        (c * (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-          HTGeometry.monicOrthoAlpha s n ^ 2) - F ^ 2) +
+          (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1))) - F ^ (2 : ℕ) ≥
+        c * (2 * (a - μ) ^ (2 : ℕ) + 4 * b) := by
+    rw [show c * (_ + _ + _ + _) - F ^ (2 : ℕ) =
+        (c * (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+          HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ)) - F ^ (2 : ℕ)) +
         c * (4 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j)) +
         c * (2 * (n + 1 : ℝ) *
           (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1))) by ring]
     rw [hsumalpha]
-    have hlast : 0 ≤ (HTGeometry.monicOrthoAlpha s n - μ) ^ 2 := sq_nonneg _
+    have hlast : 0 ≤ (HTGeometry.monicOrthoAlpha s n - μ) ^ (2 : ℕ) := sq_nonneg _
     nlinarith
-  have hscalar : projectiveLowEdgeAnchor s * μ ^ 2 ≤
-      2 * (a - μ) ^ 2 + 4 * b := by
-    change 4 * b / (a ^ 2 + 2 * b) * μ ^ 2 ≤ 2 * (a - μ) ^ 2 + 4 * b
+  have hscalar : projectiveLowEdgeAnchor s * μ ^ (2 : ℕ) ≤
+      2 * (a - μ) ^ (2 : ℕ) + 4 * b := by
+    change 4 * b / (a ^ (2 : ℕ) + 2 * b) * μ ^ (2 : ℕ) ≤ 2 * (a - μ) ^ (2 : ℕ) + 4 * b
     have hid := lowEdge_scalar_completion a b μ hden
-    have hrhs : 0 ≤ 2 / (a ^ 2 + 2 * b) *
-        (a * μ - (a ^ 2 + 2 * b)) ^ 2 := by positivity
+    have hrhs : 0 ≤ 2 / (a ^ (2 : ℕ) + 2 * b) *
+        (a * μ - (a ^ (2 : ℕ) + 2 * b)) ^ (2 : ℕ) := by positivity
     nlinarith
   have hFmu : F = c * μ := by
     unfold μ
     field_simp [hc.ne']
-  change projectiveLowEdgeAnchor s / c * F ^ 2 ≤ _
+  change projectiveLowEdgeAnchor s / c * F ^ (2 : ℕ) ≤ _
   rw [hFmu]
   have hanchor_nonneg : 0 ≤ projectiveLowEdgeAnchor s :=
     (projectiveLowEdgeAnchor_pos h (by omega)).le
   have hscaled := mul_le_mul_of_nonneg_left hscalar hc.le
-  have hrhs : projectiveLowEdgeAnchor s / c * (c * μ) ^ 2 =
-      c * (projectiveLowEdgeAnchor s * μ ^ 2) := by
+  have hrhs : projectiveLowEdgeAnchor s / c * (c * μ) ^ (2 : ℕ) =
+      c * (projectiveLowEdgeAnchor s * μ ^ (2 : ℕ)) := by
     field_simp [hc.ne']
   rw [hrhs]
   exact le_trans hscaled hbase
@@ -243,7 +243,7 @@ theorem dimensionlessProjectiveArithmeticSurplus_ge_harmonic
     (hanchor : (1 / 2 : ℝ) ≤ projectiveLowEdgeAnchor
       (xiShiftedFarRightNormalizedMoment w)) :
     dimensionlessProjectiveArithmeticSurplus w n ≥
-      1 / (2 * (2 * n + 1 : ℝ)) * dimensionlessCumulativeJacobiFlux w n ^ 2 := by
+      1 / (2 * (2 * n + 1 : ℝ)) * dimensionlessCumulativeJacobiFlux w n ^ (2 : ℕ) := by
   let s := xiShiftedFarRightNormalizedMoment w
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
   have hbase := projectiveSurplus_ge_lowEdgeAnchor_mul_flux_sq_div_degree
@@ -268,7 +268,7 @@ theorem xiShiftedFarRightNormalizedHankelMatrix_posDef_of_actual
     (hH : (HTGeometry.momentHankelMatrix (xiShiftedRealMomentSequence w) n).PosDef) :
     (xiShiftedFarRightNormalizedHankelMatrix w n).PosDef := by
   let D := xiShiftedFarRightDilation w n
-  let H := xiShiftedMomentHankelMatrix (w ^ 2) n
+  let H := xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n
   let c : ℝ := 2 * w / Real.log w
   have hc : 0 < c := div_pos (mul_pos (by norm_num) (lt_trans zero_lt_one hw))
     (Real.log_pos hw)
@@ -371,7 +371,7 @@ theorem routeU_cofinalSpread_and_harmonicWork_closed :
       (HTGeometry.momentHankelMatrix
         (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef →
       dimensionlessProjectiveArithmeticSurplus w n ≥
-        1 / (2 * (2 * n + 1 : ℝ)) * dimensionlessCumulativeJacobiFlux w n ^ 2) := by
+        1 / (2 * (2 * n + 1 : ℝ)) * dimensionlessCumulativeJacobiFlux w n ^ (2 : ℕ)) := by
   constructor
   · intro w n hw hn hH
     exact tendsto_projectiveGaussRootSpread_along_cofinal_actual_positive_blocks

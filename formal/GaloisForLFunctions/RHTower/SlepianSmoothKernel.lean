@@ -79,7 +79,7 @@ theorem deriv2_sincSmooth_off {c u : ℝ} (h : u ≠ 0) :
 origin. -/
 theorem sincSmooth_bessel {c u : ℝ} (h : u ≠ 0) :
     u * deriv (deriv (sincSmooth c)) u + 2 * deriv (sincSmooth c) u
-      + c ^ 2 * u * sincSmooth c u = 0 := by
+      + c ^ (2 : ℕ) * u * sincSmooth c u = 0 := by
   rw [deriv2_sincSmooth_off h, deriv_sincSmooth_off h, sincSmooth_eq_off h]
   exact sincScalar_bessel h
 

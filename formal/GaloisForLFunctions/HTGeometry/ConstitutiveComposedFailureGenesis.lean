@@ -536,7 +536,7 @@ theorem composedFailureReporter_sharp_eq_iff
 /-- Pure outcome doctrine of the convex repair: two atoms over every failure coordinate. -/
 abbrev ComposedFailureOutcome (I : Type*) := I × ZMod 2
 
-theorem sum_zmodTwo (f : ZMod 2 → ℚ) : ∑ c : ZMod 2, f c = f 0 + f 1 := by
+theorem sum_zmodTwo_constitutiveComposedFailureGenesis (f : ZMod 2 → ℚ) : ∑ c : ZMod 2, f c = f 0 + f 1 := by
   have huniv : (Finset.univ : Finset (ZMod 2)) = {0, 1} := by decide
   rw [huniv, Finset.sum_insert (by decide), Finset.sum_singleton]
 
@@ -564,7 +564,7 @@ theorem composedFailureAtomWeight_pair_sum {I : Type*} [Fintype I]
     (hI : 0 < Fintype.card I) (o : Option (ZMod 2)) :
     ∑ c : ZMod 2, composedFailureAtomWeight (I := I) o c = 1 / (Fintype.card I : ℚ) := by
   have hn : (0 : ℚ) < (Fintype.card I : ℚ) := by exact_mod_cast hI
-  rw [sum_zmodTwo]
+  rw [sum_zmodTwo_constitutiveComposedFailureGenesis]
   cases o with
   | none =>
       simp [composedFailureAtomWeight]

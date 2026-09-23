@@ -22,10 +22,10 @@ namespace GaloisForLFunctions.RHTower
 variable {𝕜 E : Type*} [RCLike 𝕜] [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
 
 /-- The channel majorant: the `k`-th channel contributes at most `B/(c (k+1)²)`. -/
-def channelMajorant (B c : ℝ) (k : ℕ) : ℝ := B / (c * (1 + (k : ℝ)) ^ 2)
+def channelMajorant (B c : ℝ) (k : ℕ) : ℝ := B / (c * (1 + (k : ℝ)) ^ (2 : ℕ))
 
 theorem channelMajorant_eq (B c : ℝ) (k : ℕ) :
-    channelMajorant B c k = B / c * (1 / (1 + (k : ℝ)) ^ 2) := by
+    channelMajorant B c k = B / c * (1 / (1 + (k : ℝ)) ^ (2 : ℕ)) := by
   unfold channelMajorant
   rw [div_mul_eq_div_div_swap]
   ring
@@ -45,11 +45,11 @@ theorem tsum_channelMajorant_le {B c : ℝ} (hB : 0 ≤ B) (hc : 0 < c) :
     ∑' k, channelMajorant B c k ≤ 2 * B / c := by
   have hbc : (0 : ℝ) ≤ B / c := by positivity
   have hrw : ∑' k : ℕ, channelMajorant B c k
-      = B / c * ∑' k : ℕ, 1 / (1 + (k : ℝ)) ^ 2 := by
+      = B / c * ∑' k : ℕ, 1 / (1 + (k : ℝ)) ^ (2 : ℕ) := by
     rw [← tsum_mul_left]
     exact tsum_congr (fun k => channelMajorant_eq B c k)
   rw [hrw]
-  calc B / c * ∑' k : ℕ, 1 / (1 + (k : ℝ)) ^ 2 ≤ B / c * 2 :=
+  calc B / c * ∑' k : ℕ, 1 / (1 + (k : ℝ)) ^ (2 : ℕ) ≤ B / c * 2 :=
         mul_le_mul_of_nonneg_left tsum_inv_sq_shift_one_le_two hbc
     _ = 2 * B / c := by ring
 

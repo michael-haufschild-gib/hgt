@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 def egbCriticalALogQuarticCoefficient (x θ : ℝ) : ℝ :=
   exp x * (1 - 2 * egbCriticalAShape θ) / (12 * (1 + 2 * egbCriticalAShape θ))
 def egbCriticalARadialQuarticCoefficient (x θ : ℝ) : ℝ :=
-  (1 - 2 * egbCriticalAShape θ) / (12 * exp x ^ 3 * (1 + 2 * egbCriticalAShape θ))
+  (1 - 2 * egbCriticalAShape θ) / (12 * exp x ^ (3 : ℕ) * (1 + 2 * egbCriticalAShape θ))
 
 theorem egbCriticalALogQuarticCoefficient_pos (x θ : ℝ) : 0 < egbCriticalALogQuarticCoefficient x θ := by
   have hb := (egbCriticalAShape_bounds θ).1
@@ -53,7 +53,7 @@ theorem egbCriticalALogGibbs_contDiff (x θ l : ℝ) (n : ℕ) : ContDiff ℝ n 
 /-- The actual Taylor polynomial has only a constant term and a quartic term. -/
 theorem egbCriticalALogGibbs_taylor_four (x θ l u : ℝ) :
     taylorWithinEval (egbCriticalALogGibbs x θ l) 4 Set.univ x u =
-      egbCriticalALogGibbs x θ l x + egbCriticalALogQuarticCoefficient x θ * (u - x) ^ 4 := by
+      egbCriticalALogGibbs x θ l x + egbCriticalALogQuarticCoefficient x θ * (u - x) ^ (4 : ℕ) := by
   norm_num [taylorWithinEval_succ, taylor_within_zero_eval, iteratedDerivWithin_univ, iteratedDeriv_one,
     egbCriticalALogGibbs_first_derivative_zero, egbCriticalALogGibbs_second_derivative_zero,
     egbCriticalALogGibbs_third_derivative_zero, egbCriticalALogGibbs_fourth_derivative, smul_eq_mul]
@@ -64,20 +64,20 @@ theorem egbCriticalALogGibbs_taylor_four (x θ l u : ℝ) :
 
 theorem egbCriticalALogGibbs_quartic_littleO (x θ l : ℝ) :
     (fun u => egbCriticalALogGibbs x θ l u -
-      (egbCriticalALogGibbs x θ l x + egbCriticalALogQuarticCoefficient x θ * (u - x) ^ 4)) =o[nhds x]
-        (fun u => (u - x) ^ 4) := by
+      (egbCriticalALogGibbs x θ l x + egbCriticalALogQuarticCoefficient x θ * (u - x) ^ (4 : ℕ))) =o[nhds x]
+        (fun u => (u - x) ^ (4 : ℕ)) := by
   have h := taylor_isLittleO_univ (x₀ := x) (egbCriticalALogGibbs_contDiff x θ l 4)
   simpa only [egbCriticalALogGibbs_taylor_four] using h
 
 /-- A genuine punctured-neighborhood limit, rather than a formal truncated series. -/
 theorem egbCriticalALogGibbs_quartic_limit (x θ l : ℝ) :
-    Tendsto (fun u => (egbCriticalALogGibbs x θ l u - egbCriticalALogGibbs x θ l x) / (u - x) ^ 4)
+    Tendsto (fun u => (egbCriticalALogGibbs x θ l u - egbCriticalALogGibbs x θ l x) / (u - x) ^ (4 : ℕ))
       (𝓝[≠] x) (nhds (egbCriticalALogQuarticCoefficient x θ)) := by
   have h := ((egbCriticalALogGibbs_quartic_littleO x θ l).tendsto_div_nhds_zero.mono_left (show (𝓝[≠] x) ≤ nhds x from nhdsWithin_le_nhds)).add
     (tendsto_const_nhds (x := egbCriticalALogQuarticCoefficient x θ))
-  have he : (fun u => (egbCriticalALogGibbs x θ l u - egbCriticalALogGibbs x θ l x) / (u - x) ^ 4) =ᶠ[𝓝[≠] x]
+  have he : (fun u => (egbCriticalALogGibbs x θ l u - egbCriticalALogGibbs x θ l x) / (u - x) ^ (4 : ℕ)) =ᶠ[𝓝[≠] x]
       (fun u => (egbCriticalALogGibbs x θ l u -
-        (egbCriticalALogGibbs x θ l x + egbCriticalALogQuarticCoefficient x θ * (u - x) ^ 4)) / (u - x) ^ 4 +
+        (egbCriticalALogGibbs x θ l x + egbCriticalALogQuarticCoefficient x θ * (u - x) ^ (4 : ℕ))) / (u - x) ^ (4 : ℕ) +
           egbCriticalALogQuarticCoefficient x θ) := by
     filter_upwards [self_mem_nhdsWithin] with u hu
     have hn : u - x ≠ 0 := sub_ne_zero.mpr hu
@@ -99,7 +99,7 @@ theorem egbCriticalA_radial_quartic_limit (x θ l : ℝ) :
       (egbOffShellGibbsA (egbCriticalAPressure x θ) (egbCriticalATemperature x θ)
         (egbCriticalACharge x θ) (egbCriticalACouplingRoot x θ) l r -
        egbOffShellGibbsA (egbCriticalAPressure x θ) (egbCriticalATemperature x θ)
-        (egbCriticalACharge x θ) (egbCriticalACouplingRoot x θ) l (exp x)) / (r - exp x) ^ 4)
+        (egbCriticalACharge x θ) (egbCriticalACouplingRoot x θ) l (exp x)) / (r - exp x) ^ (4 : ℕ))
       (𝓝[≠] (exp x)) (nhds (egbCriticalARadialQuarticCoefficient x θ)) := by
   have hpN : ∀ᶠ r : ℝ in nhds (exp x), 0 < r := isOpen_Ioi.mem_nhds (exp_pos x)
   have hp : ∀ᶠ r : ℝ in 𝓝[≠] (exp x), 0 < r := hpN.filter_mono nhdsWithin_le_nhds
@@ -120,7 +120,7 @@ theorem egbCriticalA_radial_quartic_limit (x θ l : ℝ) :
     rw [he] at h
     simpa only [one_div] using h
   have h := ((egbCriticalALogGibbs_quartic_limit x θ l).comp hlog).mul (hs.pow 4)
-  have hc : egbCriticalALogQuarticCoefficient x θ * (1 / exp x) ^ 4 = egbCriticalARadialQuarticCoefficient x θ := by
+  have hc : egbCriticalALogQuarticCoefficient x θ * (1 / exp x) ^ (4 : ℕ) = egbCriticalARadialQuarticCoefficient x θ := by
     unfold egbCriticalALogQuarticCoefficient egbCriticalARadialQuarticCoefficient
     have hb := (egbCriticalAShape_bounds θ).1
     field_simp
@@ -129,9 +129,9 @@ theorem egbCriticalA_radial_quartic_limit (x θ l : ℝ) :
       (egbOffShellGibbsA (egbCriticalAPressure x θ) (egbCriticalATemperature x θ)
         (egbCriticalACharge x θ) (egbCriticalACouplingRoot x θ) l r -
        egbOffShellGibbsA (egbCriticalAPressure x θ) (egbCriticalATemperature x θ)
-        (egbCriticalACharge x θ) (egbCriticalACouplingRoot x θ) l (exp x)) / (r - exp x) ^ 4) =ᶠ[𝓝[≠] (exp x)]
-      (fun r => ((egbCriticalALogGibbs x θ l (log r) - egbCriticalALogGibbs x θ l x) / (log r - x) ^ 4) *
-        ((log r - x) / (r - exp x)) ^ 4) := by
+        (egbCriticalACharge x θ) (egbCriticalACouplingRoot x θ) l (exp x)) / (r - exp x) ^ (4 : ℕ)) =ᶠ[𝓝[≠] (exp x)]
+      (fun r => ((egbCriticalALogGibbs x θ l (log r) - egbCriticalALogGibbs x θ l x) / (log r - x) ^ (4 : ℕ)) *
+        ((log r - x) / (r - exp x)) ^ (4 : ℕ)) := by
     filter_upwards [self_mem_nhdsWithin, hp] with r hr hrp
     have hl : log r - x ≠ 0 := by
       intro he

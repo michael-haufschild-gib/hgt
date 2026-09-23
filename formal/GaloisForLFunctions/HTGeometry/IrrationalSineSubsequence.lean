@@ -22,12 +22,12 @@ open Real
 /-- A small sine forces a large cosine. -/
 theorem abs_cos_ge_of_abs_sin_lt {x : ℝ} (h : |Real.sin x| < 1 / 2) :
     4 / 5 ≤ |Real.cos x| := by
-  have hpyth : Real.sin x ^ 2 + Real.cos x ^ 2 = 1 := Real.sin_sq_add_cos_sq x
-  have hs : Real.sin x ^ 2 < 1 / 4 := by
-    have h1 : |Real.sin x| ^ 2 = Real.sin x ^ 2 := sq_abs _
+  have hpyth : Real.sin x ^ (2 : ℕ) + Real.cos x ^ (2 : ℕ) = 1 := Real.sin_sq_add_cos_sq x
+  have hs : Real.sin x ^ (2 : ℕ) < 1 / 4 := by
+    have h1 : |Real.sin x| ^ (2 : ℕ) = Real.sin x ^ (2 : ℕ) := sq_abs _
     nlinarith [abs_nonneg (Real.sin x)]
-  have hc : 3 / 4 < Real.cos x ^ 2 := by nlinarith
-  have habs : |Real.cos x| ^ 2 = Real.cos x ^ 2 := sq_abs _
+  have hc : 3 / 4 < Real.cos x ^ (2 : ℕ) := by nlinarith
+  have habs : |Real.cos x| ^ (2 : ℕ) = Real.cos x ^ (2 : ℕ) := sq_abs _
   nlinarith [abs_nonneg (Real.cos x)]
 
 /-- Doubling multiplies a small sine by at least `8/5`. -/
@@ -75,7 +75,7 @@ theorem sin_eq_zero_of_forall_dyadic_lt {α : ℝ} {k : ℕ}
     have h3 := h j
     linarith
   have h0 : f 0 = |Real.sin (Real.pi * α * (k : ℝ))| := by
-    show |Real.sin (Real.pi * α * ((2 ^ 0 * k : ℕ) : ℝ))| = _
+    show |Real.sin (Real.pi * α * ((2 ^ (0 : ℕ) * k : ℕ) : ℝ))| = _
     norm_num
   rw [h0] at hzero
   exact abs_eq_zero.mp hzero

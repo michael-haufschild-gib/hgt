@@ -10,7 +10,7 @@ open D4BMGlobalAngularResponse D4BMAngularSeries D4BMModularCore
 noncomputable section
 
 /-- The full three-term squared principal part, retaining both original Weyl coefficients. -/
-def principalSquare (q : XiZeroCopy) (z : Fin 2 → ℝ) : ℂ := (principal (center q) z)^2/2
+def principalSquare (q : XiZeroCopy) (z : Fin 2 → ℝ) : ℂ := (principal (center q) z)^(2 : ℕ)/2
 
 def squareResidual (q : XiZeroCopy) (z : Fin 2 → ℝ) : ℂ :=
   fullSquarePotential q z-cutoff z*principalSquare q z

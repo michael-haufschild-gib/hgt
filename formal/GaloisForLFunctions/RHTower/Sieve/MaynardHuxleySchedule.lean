@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardWeightedFiniteSet
 For a dyadic block of length `N`, choose switch frequency `U=N` and take the exact second-
 derivative envelope, clipped below by one.  This removes all free schedule choices from the
 all-short large-values theorem.  Its only regime condition is the transparent inequality
-`T <= 8*pi*N^2`.
+`T <= 8*pi*N^(2 : ℕ)`.
 -/
 
 noncomputable section

@@ -111,17 +111,17 @@ theorem detCoeff_truncKernel {K : ι × ι → ℂ} (hK : IsHS K) (s : Finset ι
 /-- **The Carleman bound for the truncated coefficients**, uniform in the truncation. -/
 theorem norm_detCoeff_truncKernel_le {K : ι × ι → ℂ} (hK : IsHS K) (s : Finset ι) {R : ℝ}
     (hR : 0 < R) (n : ℕ) :
-    ‖detCoeff (truncKernel K s) n‖ ≤ Real.exp (R ^ 2 * hsNormSq K / 2) / R ^ n := by
+    ‖detCoeff (truncKernel K s) n‖ ≤ Real.exp (R ^ (2 : ℕ) * hsNormSq K / 2) / R ^ n := by
   rw [detCoeff_truncKernel hK s n]
   refine le_trans (norm_taylorCoeff_finiteDet2_le (-(blockMatrix K s)) hR n) ?_
   have hneg : matHSNormSq (-(blockMatrix K s)) = matHSNormSq (blockMatrix K s) := by
     simp [matHSNormSq]
   have hHS : matHSNormSq (-(blockMatrix K s)) ≤ hsNormSq K := by
     rw [hneg]; exact matHSNormSq_blockMatrix_le hK s
-  have hexp : Real.exp (R ^ 2 * matHSNormSq (-(blockMatrix K s)) / 2)
-      ≤ Real.exp (R ^ 2 * hsNormSq K / 2) := by
+  have hexp : Real.exp (R ^ (2 : ℕ) * matHSNormSq (-(blockMatrix K s)) / 2)
+      ≤ Real.exp (R ^ (2 : ℕ) * hsNormSq K / 2) := by
     refine Real.exp_le_exp.mpr ?_
-    have hR2 : (0 : ℝ) ≤ R ^ 2 := sq_nonneg R
+    have hR2 : (0 : ℝ) ≤ R ^ (2 : ℕ) := sq_nonneg R
     nlinarith
   exact div_le_div_of_nonneg_right hexp (by positivity)
 
@@ -141,8 +141,8 @@ theorem tendsto_detCoeff_truncKernel {K : ι × ι → ℂ} (hK : IsHS K) (n : �
   set ρ : ℝ := r / 2 with hρdef
   have hρ0 : 0 < ρ := by rw [hρdef]; positivity
   have hρr : ρ < r := by rw [hρdef]; linarith
-  set C : ℝ := 2 * Real.exp ((r * M) ^ 2 / (1 - r * M)) with hCdef
-  set L : ℝ := r ^ 2 * M / (1 - r * M) with hLdef
+  set C : ℝ := 2 * Real.exp ((r * M) ^ (2 : ℕ) / (1 - r * M)) with hCdef
+  set L : ℝ := r ^ (2 : ℕ) * M / (1 - r * M) with hLdef
   have hL0 : 0 ≤ L := by rw [hLdef, hrM]; positivity
   have hCD : ∀ (f : ℂ → ℂ), DifferentiableOn ℂ f (ball (0 : ℂ) r) → ∀ k : ℕ, ContDiffAt ℂ k f 0 :=
     fun f hf k => ((hf.analyticAt (isOpen_ball.mem_nhds (zero_mem_ball_detRadius K))).contDiffAt)
@@ -194,7 +194,7 @@ theorem tendsto_detCoeff_truncKernel {K : ι × ι → ℂ} (hK : IsHS K) (n : �
 
 /-- **The Carleman bound for the limit coefficients.** -/
 theorem norm_detCoeff_le {K : ι × ι → ℂ} (hK : IsHS K) {R : ℝ} (hR : 0 < R) (n : ℕ) :
-    ‖detCoeff K n‖ ≤ Real.exp (R ^ 2 * hsNormSq K / 2) / R ^ n :=
+    ‖detCoeff K n‖ ≤ Real.exp (R ^ (2 : ℕ) * hsNormSq K / 2) / R ^ n :=
   le_of_tendsto ((tendsto_detCoeff_truncKernel hK n).norm)
     (Eventually.of_forall fun s => norm_detCoeff_truncKernel_le hK s hR n)
 
@@ -245,24 +245,24 @@ theorem tendsto_finiteDet2_entireDet2 {K : ι × ι → ℂ} (hK : IsHS K) (z : 
   · have hz0 : 0 < ‖z‖ := norm_pos_iff.mpr hz
     set R : ℝ := 2 * ‖z‖ with hRdef
     have hR : 0 < R := by rw [hRdef]; positivity
-    set bnd : ℕ → ℝ := fun n => Real.exp (R ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n with hbnd
+    set bnd : ℕ → ℝ := fun n => Real.exp (R ^ (2 : ℕ) * hsNormSq K / 2) * (1 / 2) ^ n with hbnd
     have hsumbnd : Summable bnd := by
       rw [hbnd]
       exact (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
-    have hdom : ∀ (a : ℕ → ℂ), (∀ n, ‖a n‖ ≤ Real.exp (R ^ 2 * hsNormSq K / 2) / R ^ n) →
+    have hdom : ∀ (a : ℕ → ℂ), (∀ n, ‖a n‖ ≤ Real.exp (R ^ (2 : ℕ) * hsNormSq K / 2) / R ^ n) →
         ∀ n, ‖a n * z ^ n‖ ≤ bnd n := by
       intro a ha n
       rw [norm_mul, norm_pow, hbnd]
       have hzn : ‖z‖ ^ n ≠ 0 := by positivity
-      have hkey : (Real.exp (R ^ 2 * hsNormSq K / 2) / R ^ n) * ‖z‖ ^ n
-          = Real.exp (R ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := by
+      have hkey : (Real.exp (R ^ (2 : ℕ) * hsNormSq K / 2) / R ^ n) * ‖z‖ ^ n
+          = Real.exp (R ^ (2 : ℕ) * hsNormSq K / 2) * (1 / 2) ^ n := by
         have hRn : R ^ n = 2 ^ n * ‖z‖ ^ n := by rw [hRdef, mul_pow]
         rw [hRn, div_pow, one_pow]
         field_simp
       calc ‖a n‖ * ‖z‖ ^ n
-          ≤ (Real.exp (R ^ 2 * hsNormSq K / 2) / R ^ n) * ‖z‖ ^ n :=
+          ≤ (Real.exp (R ^ (2 : ℕ) * hsNormSq K / 2) / R ^ n) * ‖z‖ ^ n :=
             mul_le_mul_of_nonneg_right (ha n) (by positivity)
-        _ = Real.exp (R ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := hkey
+        _ = Real.exp (R ^ (2 : ℕ) * hsNormSq K / 2) * (1 / 2) ^ n := hkey
     have hconv := tendsto_tsum_of_dominated_convergence (𝓕 := (atTop : Filter (Finset ι)))
       (f := fun s n => detCoeff (truncKernel K s) n * z ^ n)
       (g := fun n => detCoeff K n * z ^ n) hsumbnd
@@ -280,32 +280,32 @@ theorem tendsto_finiteDet2_entireDet2 {K : ι × ι → ℂ} (hK : IsHS K) (z : 
 into a geometric series. -/
 theorem norm_detCoeff_mul_pow_le {K : ι × ι → ℂ} (hK : IsHS K) {ρ : ℝ} (hρ : 0 < ρ) (n : ℕ) :
     ‖detCoeff K n‖ * ρ ^ n
-      ≤ Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := by
+      ≤ Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) * (1 / 2) ^ n := by
   have hR : (0 : ℝ) < 2 * ρ := by positivity
-  have hkey : (Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n
-      = Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := by
+  have hkey : (Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n
+      = Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) * (1 / 2) ^ n := by
     have hρn : ρ ^ n ≠ 0 := by positivity
     rw [mul_pow, div_pow, one_pow]
     field_simp
     rw [mul_comm, ← mul_pow]
   calc ‖detCoeff K n‖ * ρ ^ n
-      ≤ (Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n :=
+      ≤ (Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n :=
         mul_le_mul_of_nonneg_right (norm_detCoeff_le hK hR n) (by positivity)
     _ = _ := hkey
 
 theorem norm_detCoeff_truncKernel_mul_pow_le {K : ι × ι → ℂ} (hK : IsHS K) (s : Finset ι)
     {ρ : ℝ} (hρ : 0 < ρ) (n : ℕ) :
     ‖detCoeff (truncKernel K s) n‖ * ρ ^ n
-      ≤ Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := by
+      ≤ Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) * (1 / 2) ^ n := by
   have hR : (0 : ℝ) < 2 * ρ := by positivity
-  have hkey : (Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n
-      = Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := by
+  have hkey : (Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n
+      = Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) * (1 / 2) ^ n := by
     have hρn : ρ ^ n ≠ 0 := by positivity
     rw [mul_pow, div_pow, one_pow]
     field_simp
     rw [mul_comm, ← mul_pow]
   calc ‖detCoeff (truncKernel K s) n‖ * ρ ^ n
-      ≤ (Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n :=
+      ≤ (Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n :=
         mul_le_mul_of_nonneg_right (norm_detCoeff_truncKernel_le hK s hR n) (by positivity)
     _ = _ := hkey
 
@@ -313,7 +313,7 @@ theorem norm_detCoeff_truncKernel_mul_pow_le {K : ι × ι → ℂ} (hK : IsHS K
 theorem tendsto_tsum_norm_detCoeff_sub {K : ι × ι → ℂ} (hK : IsHS K) {ρ : ℝ} (hρ : 0 < ρ) :
     Tendsto (fun s : Finset ι =>
       ∑' n : ℕ, ‖detCoeff (truncKernel K s) n - detCoeff K n‖ * ρ ^ n) atTop (nhds 0) := by
-  set E : ℝ := Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) with hE
+  set E : ℝ := Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) with hE
   have hsumbnd : Summable fun n : ℕ => 2 * E * (1 / 2) ^ n :=
     (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
   have hbound : ∀ (s : Finset ι) (n : ℕ),
@@ -347,7 +347,7 @@ theorem tendstoUniformlyOn_finiteDet2_entireDet2 {K : ι × ι → ℂ} (hK : Is
     (hρ : 0 < ρ) :
     TendstoUniformlyOn (fun (s : Finset ι) (z : ℂ) => finiteDet2 (-(blockMatrix K s)) z)
       (entireDet2 K) atTop (closedBall (0 : ℂ) ρ) := by
-  set E : ℝ := Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) with hE
+  set E : ℝ := Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) with hE
   have hsumbnd : Summable fun n : ℕ => 2 * E * (1 / 2) ^ n :=
     (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
   have hsum_s : ∀ (s : Finset ι),

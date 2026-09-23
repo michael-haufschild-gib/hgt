@@ -44,11 +44,11 @@ namespace RHTower
 
 /-- The elementary identity behind the correction term. -/
 theorem one_div_add_one_eq {x : ℝ} (hx : 1 < x) :
-    1 / (x + 1) = 1 / (x - 1) - 2 / (x ^ 2 - 1) := by
+    1 / (x + 1) = 1 / (x - 1) - 2 / (x ^ (2 : ℕ) - 1) := by
   have h1 : x - 1 ≠ 0 := by intro h; linarith [sub_eq_zero.mp h]
   have h2 : x + 1 ≠ 0 := by intro h; linarith
-  have h3 : x ^ 2 - 1 ≠ 0 := by
-    have : x ^ 2 - 1 = (x - 1) * (x + 1) := by ring
+  have h3 : x ^ (2 : ℕ) - 1 ≠ 0 := by
+    have : x ^ (2 : ℕ) - 1 = (x - 1) * (x + 1) := by ring
     rw [this]
     exact mul_ne_zero h1 h2
   field_simp
@@ -72,7 +72,7 @@ theorem localLower_eq {q : ℝ} (hq : 1 < q) :
 symbol is at least `-log q/(q+1)`, and the identity above rewrites this as the naive bound
 `-log q/(q-1)` improved by exactly `2 log q/(q²-1)`. -/
 theorem localSymbol_lower {q c lg : ℝ} (hq : 1 < q) (hc : |c| ≤ 1) (hlg : 0 ≤ lg) :
-    -(lg / (q - 1)) + 2 * lg / (q ^ 2 - 1) ≤ lg * primeLocalSymbol (1 / q) c := by
+    -(lg / (q - 1)) + 2 * lg / (q ^ (2 : ℕ) - 1) ≤ lg * primeLocalSymbol (1 / q) c := by
   have hq0 : (0 : ℝ) < q := by linarith
   have hx : 0 < 1 / q := by positivity
   have hx1 : 1 / q < 1 := by rw [div_lt_one hq0]; exact hq
@@ -81,7 +81,7 @@ theorem localSymbol_lower {q c lg : ℝ} (hq : 1 < q) (hc : |c| ≤ 1) (hlg : 0 
   have hstep : lg * (-(1 / (q + 1))) ≤ lg * primeLocalSymbol (1 / q) c :=
     mul_le_mul_of_nonneg_left hL hlg
   have hid := one_div_add_one_eq hq
-  have hrw : lg * (-(1 / (q + 1))) = -(lg / (q - 1)) + 2 * lg / (q ^ 2 - 1) := by
+  have hrw : lg * (-(1 / (q + 1))) = -(lg / (q - 1)) + 2 * lg / (q ^ (2 : ℕ) - 1) := by
     rw [hid]
     field_simp
     ring
@@ -103,8 +103,8 @@ theorem localSymbol_upper {q c lg : ℝ} (hq : 1 < q) (hc : |c| ≤ 1) (hlg : 0 
 
 /-- The correction term is strictly positive, so the sharp lower bound strictly improves the naive
 one at every prime. -/
-theorem correction_pos {q lg : ℝ} (hq : 1 < q) (hlg : 0 < lg) : 0 < 2 * lg / (q ^ 2 - 1) := by
-  have h : (0 : ℝ) < q ^ 2 - 1 := by nlinarith
+theorem correction_pos {q lg : ℝ} (hq : 1 < q) (hlg : 0 < lg) : 0 < 2 * lg / (q ^ (2 : ℕ) - 1) := by
+  have h : (0 : ℝ) < q ^ (2 : ℕ) - 1 := by nlinarith
   positivity
 
 end RHTower

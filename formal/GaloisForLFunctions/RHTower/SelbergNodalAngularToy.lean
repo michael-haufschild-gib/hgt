@@ -20,12 +20,12 @@ noncomputable section
 
 /-- Actual scalar derivative residual after subtracting the squared-amplitude radial slope. -/
 def residual (h : ℝ → ℝ) (x : ℝ) : ℝ :=
-  (deriv h x - deriv (fun t => h t ^ 2) x / (2 * h x ^ 2) * h x) ^ 2
+  (deriv h x - deriv (fun t => h t ^ (2 : ℕ)) x / (2 * h x ^ (2 : ℕ)) * h x) ^ (2 : ℕ)
 
 /-- For a real differentiable profile, all residual energy is concentrated at its zeros. -/
 theorem residual_eq_zero_off_zeros {h : ℝ → ℝ} {x : ℝ}
     (hd : DifferentiableAt ℝ h x) (hx : h x ≠ 0) : residual h x = 0 := by
-  have hs : deriv (fun t => h t ^ 2) x = (2 : ℝ) * h x * deriv h x := by
+  have hs : deriv (fun t => h t ^ (2 : ℕ)) x = (2 : ℝ) * h x * deriv h x := by
     simpa only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSub, pow_one] using (hd.hasDerivAt.fun_pow 2).deriv
   unfold residual
   rw [hs]
@@ -34,7 +34,7 @@ theorem residual_eq_zero_off_zeros {h : ℝ → ℝ} {x : ℝ}
 
 /-- At a real profile zero, the residual retains the full derivative square. -/
 theorem residual_at_zero {h : ℝ → ℝ} {x : ℝ} (hx : h x = 0) :
-    residual h x = deriv h x ^ 2 := by
+    residual h x = deriv h x ^ (2 : ℕ) := by
   simp [residual, hx]
 
 /-- The exact nodal set of cosine is countable. -/
@@ -72,7 +72,7 @@ theorem zero_mean_does_not_force_angular_energy :
     ∃ h : ℝ → ℝ, ContDiff ℝ 2 h ∧ Function.Periodic h (2 * Real.pi) ∧
       h 0 = 1 ∧ h Real.pi = -1 ∧
       (∫ x in (0 : ℝ)..2 * Real.pi, h x) = 0 ∧
-      0 < (∫ x in (0 : ℝ)..2 * Real.pi, h x ^ 2) ∧
+      0 < (∫ x in (0 : ℝ)..2 * Real.pi, h x ^ (2 : ℕ)) ∧
       Integrable (residual h) ∧ (∫ x in (0 : ℝ)..2 * Real.pi, residual h x) = 0 := by
   refine ⟨Real.cos, Real.contDiff_cos, Real.cos_periodic, Real.cos_zero, Real.cos_pi, ?_, ?_,
     cosine_residual_integrable, cosine_residual_integral _ _⟩

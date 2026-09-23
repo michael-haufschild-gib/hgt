@@ -10,10 +10,10 @@ theorem oddCompactDet_eq_reflectedScalars (u a w : ℝ) :
     oddCompactDet u a w =
       (-oddCompactReflectedScalar2 u a w)*(-oddCompactReflectedScalar6 u a w)*
         (-oddCompactReflectedScalar10 u a w) -
-      (-oddCompactReflectedScalar2 u a w)*(oddCompactReflectedScalar8 u a w)^2 -
-      (oddCompactReflectedScalar4 u a w)^2*(-oddCompactReflectedScalar10 u a w) +
+      (-oddCompactReflectedScalar2 u a w)*(oddCompactReflectedScalar8 u a w)^(2 : ℕ) -
+      (oddCompactReflectedScalar4 u a w)^(2 : ℕ)*(-oddCompactReflectedScalar10 u a w) +
       2*oddCompactReflectedScalar4 u a w*(-oddCompactReflectedScalar6 u a w)*
-        oddCompactReflectedScalar8 u a w - (-oddCompactReflectedScalar6 u a w)^3 := by
+        oddCompactReflectedScalar8 u a w - (-oddCompactReflectedScalar6 u a w)^(3 : ℕ) := by
   unfold oddCompactDet
   rw [eval_oddCompactDetPolynomial]
   dsimp only
@@ -26,7 +26,7 @@ theorem oddCompactDet_eq_reflectedScalars (u a w : ℝ) :
 theorem oddCompactHead_eq_reflectedScalars (u a w : ℝ) :
     oddCompactHead u a w =
       (-oddCompactReflectedScalar2 u a w)*(-oddCompactReflectedScalar6 u a w) -
-        (oddCompactReflectedScalar4 u a w)^2 := by
+        (oddCompactReflectedScalar4 u a w)^(2 : ℕ) := by
   unfold oddCompactHead
   rw [eval_oddCompactHeadPolynomial]
   rw [oddCompactReflectedScalar2_eq, oddCompactReflectedScalar4_eq, oddCompactReflectedScalar6_eq]

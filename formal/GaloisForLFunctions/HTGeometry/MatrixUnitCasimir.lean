@@ -25,7 +25,7 @@ variable {I : Type*} [Fintype I] [DecidableEq I]
 def cinner (X Y : I → ℂ) : ℂ := ∑ i, (starRingEnd ℂ) (X i) * Y i
 
 /-- The coordinate square norm. -/
-def cnormSq (X : I → ℂ) : ℝ := ∑ i, ‖X i‖ ^ 2
+def cnormSq (X : I → ℂ) : ℝ := ∑ i, ‖X i‖ ^ (2 : ℕ)
 
 theorem cnormSq_nonneg (X : I → ℂ) : 0 ≤ cnormSq X :=
   Finset.sum_nonneg fun _ _ => sq_nonneg _

@@ -11,7 +11,7 @@ theorem thetaCuspTwoAtomReflectionErrorBound_le_middle {n : ℕ} (hn : n ≤ 10)
     thetaCuspTwoAtomReflectionErrorBound n x ≤
       2*(16*thetaCuspSingleAtomReflectionScale 1 x)^n*thetaCuspDeepTailErrorScale x+
         (22*thetaCuspSingleAtomReflectionScale 1 x)^n*thetaCuspDeepTailErrorScale x/50+
-        5*(32*thetaCuspSingleAtomReflectionScale 1 x)^n*thetaCuspDeepTailErrorScale x^2 := by
+        5*(32*thetaCuspSingleAtomReflectionScale 1 x)^n*thetaCuspDeepTailErrorScale x^(2 : ℕ) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let δ := thetaCuspDeepTailErrorScale x
   have hq0 : 0 ≤ q := by dsimp [q]; linarith
@@ -20,7 +20,7 @@ theorem thetaCuspTwoAtomReflectionErrorBound_le_middle {n : ℕ} (hn : n ≤ 10)
   have h22 : 6*q+16*q = 22*q := by ring
   have h32 : 16*q+16*q = 32*q := by ring
   rw [h22, h32] at he
-  change thetaCuspTwoAtomReflectionErrorBound n x ≤ 2*(16*q)^n*δ+(22*q)^n*δ/50+5*(32*q)^n*δ^2
+  change thetaCuspTwoAtomReflectionErrorBound n x ≤ 2*(16*q)^n*δ+(22*q)^n*δ/50+5*(32*q)^n*δ^(2 : ℕ)
   rw [← he]
   unfold thetaCuspTwoAtomReflectionErrorBound thetaCuspDeepDerivativeBound
   apply Finset.sum_le_sum
@@ -41,7 +41,7 @@ theorem abs_thetaCuspTwoAtomReflectionErrorJet_le_middle {n : ℕ} (hn : n ≤ 1
     |thetaCuspTwoAtomReflectionErrorJet n x| ≤
       2*(16*thetaCuspSingleAtomReflectionScale 1 x)^n*thetaCuspDeepTailErrorScale x+
         (22*thetaCuspSingleAtomReflectionScale 1 x)^n*thetaCuspDeepTailErrorScale x/50+
-        5*(32*thetaCuspSingleAtomReflectionScale 1 x)^n*thetaCuspDeepTailErrorScale x^2 :=
+        5*(32*thetaCuspSingleAtomReflectionScale 1 x)^n*thetaCuspDeepTailErrorScale x^(2 : ℕ) :=
   (abs_thetaCuspTwoAtomReflectionErrorJet_le hn hq).trans
     (thetaCuspTwoAtomReflectionErrorBound_le_middle hn hq)
 

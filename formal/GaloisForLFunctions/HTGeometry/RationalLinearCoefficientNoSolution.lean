@@ -31,7 +31,7 @@ theorem ratFuncCoordinateDerivation_affine_cross (z : RatFunc K) {a b : K[X]}
     (h : ratFuncCoordinateDerivation K z
       = algebraMap K[X] (RatFunc K) a * z + algebraMap K[X] (RatFunc K) b) :
     z.denom * z.num.derivative - z.num * z.denom.derivative
-      = a * z.num * z.denom + b * z.denom ^ 2 := by
+      = a * z.num * z.denom + b * z.denom ^ (2 : ℕ) := by
   have hden : algebraMap K[X] (RatFunc K) z.denom ≠ 0 := by
     intro hzero
     exact RatFunc.denom_ne_zero z
@@ -44,7 +44,7 @@ theorem ratFuncCoordinateDerivation_affine_cross (z : RatFunc K) {a b : K[X]}
         algebraMap K[X] (RatFunc K) z.denom.derivative)
       = algebraMap K[X] (RatFunc K) a * algebraMap K[X] (RatFunc K) z.num
           * algebraMap K[X] (RatFunc K) z.denom
-        + algebraMap K[X] (RatFunc K) b * algebraMap K[X] (RatFunc K) z.denom ^ 2 := by
+        + algebraMap K[X] (RatFunc K) b * algebraMap K[X] (RatFunc K) z.denom ^ (2 : ℕ) := by
     field_simp at h
     linear_combination h
   exact IsFractionRing.injective K[X] (RatFunc K)
@@ -100,7 +100,7 @@ theorem eq_zero_of_deriv_eq_linear_mul {c : K} (hc : c ≠ 0) {z : RatFunc K}
   have hnum : z.num ≠ 0 := RatFunc.num_ne_zero hz
   have hden : z.denom ≠ 0 := RatFunc.denom_ne_zero z
   have hcross : z.denom * z.num.derivative - z.num * z.denom.derivative
-      = (Polynomial.C c * Polynomial.X) * z.num * z.denom + 0 * z.denom ^ 2 := by
+      = (Polynomial.C c * Polynomial.X) * z.num * z.denom + 0 * z.denom ^ (2 : ℕ) := by
     refine ratFuncCoordinateDerivation_affine_cross z ?_
     simpa using h
   rw [zero_mul, add_zero] at hcross
@@ -124,7 +124,7 @@ theorem not_deriv_eq_linear_mul_add_one [CharZero K] {c : K} (hc : c ≠ 0) (z :
   have hnum : z.num ≠ 0 ∨ z.num = 0 := ne_or_eq _ _
   have hden : z.denom ≠ 0 := RatFunc.denom_ne_zero z
   have hcross : z.denom * z.num.derivative - z.num * z.denom.derivative
-      = (Polynomial.C c * Polynomial.X) * z.num * z.denom + 1 * z.denom ^ 2 := by
+      = (Polynomial.C c * Polynomial.X) * z.num * z.denom + 1 * z.denom ^ (2 : ℕ) := by
     refine ratFuncCoordinateDerivation_affine_cross z ?_
     simpa using h
   rw [one_mul] at hcross
@@ -176,7 +176,7 @@ theorem eq_zero_of_deriv_eq_polynomial_mul {a : Polynomial K} (ha : a ≠ 0) {z 
     z = 0 := by
   by_contra hz
   have hcross : z.denom * z.num.derivative - z.num * z.denom.derivative
-      = a * z.num * z.denom + 0 * z.denom ^ 2 := by
+      = a * z.num * z.denom + 0 * z.denom ^ (2 : ℕ) := by
     refine ratFuncCoordinateDerivation_affine_cross z ?_
     simpa using h
   rw [zero_mul, add_zero] at hcross

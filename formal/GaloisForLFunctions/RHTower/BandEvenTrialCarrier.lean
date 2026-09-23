@@ -90,15 +90,15 @@ theorem evenIndicatorCutoff_one_continuousEvenBandTrial
 
 theorem norm_sq_continuousEvenBandTrial
     (psi : ℝ → ℝ) (hpsi : Continuous psi) (heven : Function.Even psi) :
-    ‖continuousEvenBandTrial psi hpsi heven‖ ^ 2 = ∫ x in (-1 : ℝ)..1, psi x ^ 2 := by
-  change ‖continuousEvenBandL2 psi hpsi‖ ^ 2 = _
+    ‖continuousEvenBandTrial psi hpsi heven‖ ^ (2 : ℕ) = ∫ x in (-1 : ℝ)..1, psi x ^ (2 : ℕ) := by
+  change ‖continuousEvenBandL2 psi hpsi‖ ^ (2 : ℕ) = _
   rw [GaloisForLFunctions.RHTower.lp_norm_sq_eq_integral]
   calc
-    (∫ x : ℝ, ‖(continuousEvenBandL2 psi hpsi : ℝ → ℂ) x‖ ^ 2) =
-        ∫ x : ℝ, ‖bandTrunc psi x‖ ^ 2 := by
+    (∫ x : ℝ, ‖(continuousEvenBandL2 psi hpsi : ℝ → ℂ) x‖ ^ (2 : ℕ)) =
+        ∫ x : ℝ, ‖bandTrunc psi x‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards [continuousEvenBandL2_coeFn psi hpsi] with x hx
-      exact congrArg (fun z : ℂ => ‖z‖ ^ 2) hx
+      exact congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) hx
     _ = _ := integral_norm_sq_bandTrunc psi
 
 theorem fourierUnitary_continuousEvenBandL2_coeFn
@@ -133,10 +133,10 @@ theorem fourierUnitary_continuousEvenBandL2_coeFn
 theorem norm_sq_evenIndicatorCutoff_fourier_continuousEvenBandTrial
     (psi : ℝ → ℝ) (hpsi : Continuous psi) (heven : Function.Even psi) (r : ℝ) :
     ‖evenIndicatorCutoff r (evenFourierTransform
-        (continuousEvenBandTrial psi hpsi heven))‖ ^ 2 =
-      ∫ xi in Icc (-r) r, ‖FourierTransform.fourier (bandTrunc psi) xi‖ ^ 2 := by
+        (continuousEvenBandTrial psi hpsi heven))‖ ^ (2 : ℕ) =
+      ∫ xi in Icc (-r) r, ‖FourierTransform.fourier (bandTrunc psi) xi‖ ^ (2 : ℕ) := by
   change ‖indicatorCutoff (centralInterval r) (measurableSet_centralInterval r)
-      (fourierUnitary (continuousEvenBandL2 psi hpsi))‖ ^ 2 = _
+      (fourierUnitary (continuousEvenBandL2 psi hpsi))‖ ^ (2 : ℕ) = _
   rw [GaloisForLFunctions.RHTower.lp_norm_sq_eq_integral]
   have hae :
       ((indicatorCutoff (centralInterval r) (measurableSet_centralInterval r)
@@ -154,14 +154,14 @@ theorem norm_sq_evenIndicatorCutoff_fourier_continuousEvenBandTrial
   calc
     (∫ xi : ℝ, ‖((indicatorCutoff (centralInterval r)
         (measurableSet_centralInterval r) (fourierUnitary
-          (continuousEvenBandL2 psi hpsi)) : SoninL2) : ℝ → ℂ) xi‖ ^ 2) =
+          (continuousEvenBandL2 psi hpsi)) : SoninL2) : ℝ → ℂ) xi‖ ^ (2 : ℕ)) =
         ∫ xi : ℝ, ‖(Icc (-r) r).indicator
-          (fun eta => FourierTransform.fourier (bandTrunc psi) eta) xi‖ ^ 2 := by
+          (fun eta => FourierTransform.fourier (bandTrunc psi) eta) xi‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards [hae] with xi hxi
-      exact congrArg (fun z : ℂ => ‖z‖ ^ 2) hxi
+      exact congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) hxi
     _ = ∫ xi : ℝ, (Icc (-r) r).indicator
-          (fun eta => ‖FourierTransform.fourier (bandTrunc psi) eta‖ ^ 2) xi := by
+          (fun eta => ‖FourierTransform.fourier (bandTrunc psi) eta‖ ^ (2 : ℕ)) xi := by
       apply integral_congr_ae
       filter_upwards with xi
       by_cases hxi : xi ∈ Icc (-r) r <;> simp [hxi]
@@ -171,19 +171,19 @@ theorem norm_sq_evenIndicatorCutoff_fourier_continuousEvenBandTrial
 theorem norm_sq_sub_norm_sq_fourierCutoff_continuousEvenBandTrial
     (psi : ℝ → ℝ) (hpsi : Continuous psi) (heven : Function.Even psi)
     {r : ℝ} (hr : 0 ≤ r) :
-    ‖continuousEvenBandTrial psi hpsi heven‖ ^ 2 -
+    ‖continuousEvenBandTrial psi hpsi heven‖ ^ (2 : ℕ) -
         ‖evenIndicatorCutoff r (evenFourierTransform
-          (continuousEvenBandTrial psi hpsi heven))‖ ^ 2 =
-      ∫ xi in (Icc (-r) r)ᶜ, ‖FourierTransform.fourier (bandTrunc psi) xi‖ ^ 2 := by
-  let rho : ℝ → ℝ := fun xi => ‖FourierTransform.fourier (bandTrunc psi) xi‖ ^ 2
+          (continuousEvenBandTrial psi hpsi heven))‖ ^ (2 : ℕ) =
+      ∫ xi in (Icc (-r) r)ᶜ, ‖FourierTransform.fourier (bandTrunc psi) xi‖ ^ (2 : ℕ) := by
+  let rho : ℝ → ℝ := fun xi => ‖FourierTransform.fourier (bandTrunc psi) xi‖ ^ (2 : ℕ)
   have hrho : Integrable rho := integrable_norm_sq_fourier_bandTrunc hpsi
   have hsplit := MeasureTheory.integral_add_compl
     (measurableSet_Icc (a := -r) (b := r)) hrho
   rw [norm_sq_continuousEvenBandTrial,
     norm_sq_evenIndicatorCutoff_fourier_continuousEvenBandTrial]
-  have htotal : (∫ xi : ℝ, rho xi) = ∫ x in (-1 : ℝ)..1, psi x ^ 2 :=
+  have htotal : (∫ xi : ℝ, rho xi) = ∫ x in (-1 : ℝ)..1, psi x ^ (2 : ℕ) :=
     (integral_norm_sq_fourier_bandTrunc hpsi).trans (integral_norm_sq_bandTrunc psi)
-  change (∫ x in (-1 : ℝ)..1, psi x ^ 2) - ∫ xi in Icc (-r) r, rho xi =
+  change (∫ x in (-1 : ℝ)..1, psi x ^ (2 : ℕ)) - ∫ xi in Icc (-r) r, rho xi =
       ∫ xi in (Icc (-r) r)ᶜ, rho xi
   rw [← htotal, ← hsplit]
   ring
@@ -197,8 +197,8 @@ def continuousEvenPhysicalTrial
 theorem norm_sq_continuousEvenPhysicalTrial
     {a : ℝ} (ha : 0 < a) (psi : ℝ → ℝ)
     (hpsi : Continuous psi) (heven : Function.Even psi) :
-    ‖continuousEvenPhysicalTrial a ha psi hpsi heven‖ ^ 2 =
-      ∫ x in (-1 : ℝ)..1, psi x ^ 2 := by
+    ‖continuousEvenPhysicalTrial a ha psi hpsi heven‖ ^ (2 : ℕ) =
+      ∫ x in (-1 : ℝ)..1, psi x ^ (2 : ℕ) := by
   rw [continuousEvenPhysicalTrial,
     (evenDilationUnitary a⁻¹ (inv_pos.mpr ha)).norm_map,
     norm_sq_continuousEvenBandTrial]
@@ -209,7 +209,7 @@ theorem evenTimeBandFourier_continuousEvenPhysicalTrial
     (hpsi : Continuous psi) (heven : Function.Even psi) :
     evenTimeBandFourier a (continuousEvenPhysicalTrial a ha psi hpsi heven) =
       evenDilationUnitary a ha
-        (evenIndicatorCutoff (a ^ 2)
+        (evenIndicatorCutoff (a ^ (2 : ℕ))
           (evenFourierTransform (continuousEvenBandTrial psi hpsi heven))) := by
   apply Subtype.ext
   rw [continuousEvenPhysicalTrial, evenTimeBandFourier_eq_mul]
@@ -219,8 +219,8 @@ theorem evenTimeBandFourier_continuousEvenPhysicalTrial
           (indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
             (dilation a⁻¹ (inv_pos.mpr ha) (continuousEvenBandL2 psi hpsi)))) =
       dilation a ha
-        (indicatorCutoff (centralInterval (a ^ 2))
-          (measurableSet_centralInterval (a ^ 2))
+        (indicatorCutoff (centralInterval (a ^ (2 : ℕ)))
+          (measurableSet_centralInterval (a ^ (2 : ℕ)))
           (fourierUnitary (continuousEvenBandL2 psi hpsi)))
   rw [indicatorCutoff_dilation a a⁻¹ (inv_pos.mpr ha)]
   have hmul : a⁻¹ * a = 1 := inv_mul_cancel₀ ha.ne'
@@ -239,10 +239,10 @@ theorem evenTimeBandFourier_continuousEvenPhysicalTrial
 theorem norm_sq_sub_norm_sq_timeBand_continuousEvenPhysicalTrial
     {a : ℝ} (ha : 0 < a) (psi : ℝ → ℝ)
     (hpsi : Continuous psi) (heven : Function.Even psi) :
-    ‖continuousEvenPhysicalTrial a ha psi hpsi heven‖ ^ 2 -
-        ‖evenTimeBandFourier a (continuousEvenPhysicalTrial a ha psi hpsi heven)‖ ^ 2 =
-      ∫ xi in (Icc (-(a ^ 2)) (a ^ 2))ᶜ,
-        ‖FourierTransform.fourier (bandTrunc psi) xi‖ ^ 2 := by
+    ‖continuousEvenPhysicalTrial a ha psi hpsi heven‖ ^ (2 : ℕ) -
+        ‖evenTimeBandFourier a (continuousEvenPhysicalTrial a ha psi hpsi heven)‖ ^ (2 : ℕ) =
+      ∫ xi in (Icc (-(a ^ (2 : ℕ))) (a ^ (2 : ℕ)))ᶜ,
+        ‖FourierTransform.fourier (bandTrunc psi) xi‖ ^ (2 : ℕ) := by
   rw [evenTimeBandFourier_continuousEvenPhysicalTrial ha psi hpsi heven,
     (evenDilationUnitary a ha).norm_map,
     continuousEvenPhysicalTrial,

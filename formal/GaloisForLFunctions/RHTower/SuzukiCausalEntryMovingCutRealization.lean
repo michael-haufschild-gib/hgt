@@ -231,7 +231,7 @@ theorem suzukiDelayedHingeNearCompletedJet3_movingCut_entryWall_sub
     suzukiDelayedHingeNearCompletedJet3 a (2 * a)
         (suzukiMovingCutHighMoment v z a (2 * a)) (v (a - 2 * a)) z -
       suzukiDelayedHingeFarCompletedJet3 (2 * a) (suzukiApertureCharacteristic v z a) z =
-        z ^ 2 * suzukiOscillatoryKernel z a * v (-a) := by
+        z ^ (2 : ℕ) * suzukiOscillatoryKernel z a * v (-a) := by
   rw [suzukiMovingCutHighMoment_entryWall, show a - 2 * a = -a by ring]
   exact suzukiDelayedHingeCompletedJet3_entryWall_sub a _ (v (-a)) z
 

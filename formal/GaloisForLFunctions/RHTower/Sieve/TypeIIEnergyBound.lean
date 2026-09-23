@@ -51,7 +51,7 @@ theorem norm_sum_corr_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {m₁ m₂ A B : 
     ‖∑ d ∈ Finset.Ico A B, ndExp T r m₁ d * (starRingEnd ℂ) (ndExp T r m₂ d)‖
       ≤ 2500 * Real.sqrt (T * |r / m₁ - r / m₂| / (36 * Real.pi * A))
         + 22 * Real.sqrt (36 * Real.pi / (T * |r / m₁ - r / m₂|))
-            * Real.sqrt (((B : ℝ)) ^ 3) := by
+            * Real.sqrt (((B : ℝ)) ^ (3 : ℕ)) := by
   have hm₁0 : (0 : ℝ) < (m₁ : ℝ) := by exact_mod_cast hm₁
   have hm₂0 : (0 : ℝ) < (m₂ : ℝ) := by exact_mod_cast hm₂
   rcases lt_or_gt_of_ne hne with hlt | hgt
@@ -75,8 +75,8 @@ theorem norm_sum_corr_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {m₁ m₂ A B : 
 
 /-- **The type-II energy bound.** -/
 theorem norm_typeII_sq_le (T r : ℝ) (A B : ℕ) (Ms : Finset ℕ) (a b : ℕ → ℂ) :
-    ‖∑ d ∈ Finset.Ico A B, a d * ∑ m ∈ Ms, b m * ndExp T r m d‖ ^ 2
-      ≤ (∑ d ∈ Finset.Ico A B, ‖a d‖ ^ 2)
+    ‖∑ d ∈ Finset.Ico A B, a d * ∑ m ∈ Ms, b m * ndExp T r m d‖ ^ (2 : ℕ)
+      ≤ (∑ d ∈ Finset.Ico A B, ‖a d‖ ^ (2 : ℕ))
         * ∑ m₁ ∈ Ms, ∑ m₂ ∈ Ms, ‖b m₁‖ * ‖b m₂‖
             * ‖∑ d ∈ Finset.Ico A B, ndExp T r m₁ d * (starRingEnd ℂ) (ndExp T r m₂ d)‖ := by
   refine le_trans (norm_bilinear_sq_le (Finset.Ico A B) a

@@ -33,7 +33,7 @@ theorem exists_good_radii_family {ι : Type*} [Fintype ι] (F : ι → ℂ → �
   have hCex : ∀ i : ι, ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 1 ≤ r → U (r + (U r)⁻¹) < 2 * U r →
       (2 * π)⁻¹ * ∫ θ in (0 : ℝ)..(2 * π),
         Real.posLog ‖logDeriv (F i) ((r : ℂ) * Complex.exp (θ * Complex.I))‖
-        ≤ 2 * Real.log (1 + C * (r + 1) ^ 4 * (U r + 1) ^ 4) :=
+        ≤ 2 * Real.log (1 + C * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ)) :=
     fun i => exists_logDeriv_poly_bound (hF i) (hFo i) U hUmono hU1 (hUdom i)
   choose C hC0 hCb using hCex
   set Cmax : ℝ := ∑ i, C i with hCmax
@@ -51,22 +51,22 @@ theorem exists_good_radii_family {ι : Type*} [Fintype ι] (F : ι → ℂ → �
     set r : ℝ := rn n with hrdef
     have hgood := (hrn n).2.2
     have hU1r : (1 : ℝ) ≤ U r := hU1 r
-    have hlogpos : 0 ≤ Real.log (1 + Cmax * (r + 1) ^ 4 * (U r + 1) ^ 4) := by
+    have hlogpos : 0 ≤ Real.log (1 + Cmax * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ)) := by
       refine Real.log_nonneg ?_
-      have : (0 : ℝ) ≤ Cmax * (r + 1) ^ 4 * (U r + 1) ^ 4 := by positivity
+      have : (0 : ℝ) ≤ Cmax * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ) := by positivity
       linarith
     have hterm : ∀ i : ι, proximity (fun z => deriv (F i) z / F i z) ⊤ r
-        ≤ 2 * Real.log (1 + Cmax * (r + 1) ^ 4 * (U r + 1) ^ 4) := by
+        ≤ 2 * Real.log (1 + Cmax * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ)) := by
       intro i
       rw [proximity_logDeriv_eq]
       refine le_trans (hCb i r hn hgood) ?_
-      have hpos : (0 : ℝ) < 1 + C i * (r + 1) ^ 4 * (U r + 1) ^ 4 := by
-        have h1 : (0 : ℝ) ≤ C i * (r + 1) ^ 4 * (U r + 1) ^ 4 :=
+      have hpos : (0 : ℝ) < 1 + C i * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ) := by
+        have h1 : (0 : ℝ) ≤ C i * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ) :=
           mul_nonneg (mul_nonneg (hC0 i) (by positivity)) (by positivity)
         linarith
       refine mul_le_mul_of_nonneg_left (Real.log_le_log hpos ?_) (by norm_num)
-      have hmono : C i * (r + 1) ^ 4 * (U r + 1) ^ 4
-          ≤ Cmax * (r + 1) ^ 4 * (U r + 1) ^ 4 := by
+      have hmono : C i * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ)
+          ≤ Cmax * (r + 1) ^ (4 : ℕ) * (U r + 1) ^ (4 : ℕ) := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
         exact mul_le_mul_of_nonneg_right (hCle i) (by positivity)
       linarith

@@ -21,7 +21,7 @@ set_option maxHeartbeats 1600000 in
 theorem abs_deriv_riemannZeta_le_sq_log {σ t : ℝ} (ht : 9 ≤ |t|)
     (hσ1 : 1 - 1 / (4 * Real.log |t|) ≤ σ) (hσ2 : σ ≤ 3 / 2) :
     ‖deriv riemannZeta (↑σ + ↑t * Complex.I)‖
-      ≤ 112 * Real.log |t| ^ 2 := by
+      ≤ 112 * Real.log |t| ^ (2 : ℕ) := by
   have ht0 : (0 : ℝ) < |t| := by linarith
   have ht1 : (1 : ℝ) ≤ |t| := by linarith
   -- `log|t| > 2` as in the growth bound
@@ -73,10 +73,10 @@ theorem abs_deriv_riemannZeta_le_sq_log {σ t : ℝ} (ht : 9 ≤ |t|)
     have h8 : (8 : ℝ) ≤ |w.im| := by linarith
     have hwim0 : (0 : ℝ) < |w.im| := by linarith
     -- `log|w.im| ≤ 2 log|t|` since `|w.im| ≤ |t|²`
-    have hsq : |w.im| ≤ |t| ^ 2 := by
+    have hsq : |w.im| ≤ |t| ^ (2 : ℕ) := by
       nlinarith
     have hlog2L : Real.log |w.im| ≤ 2 * Real.log |t| := by
-      have h1 : Real.log |w.im| ≤ Real.log (|t| ^ 2) :=
+      have h1 : Real.log |w.im| ≤ Real.log (|t| ^ (2 : ℕ)) :=
         Real.log_le_log hwim0 hsq
       rwa [Real.log_pow, Nat.cast_ofNat] at h1
     have hlogw0 : (0 : ℝ) < Real.log |w.im| := by
@@ -130,7 +130,7 @@ theorem abs_deriv_riemannZeta_le_sq_log {σ t : ℝ} (ht : 9 ≤ |t|)
   refine le_trans hcauchy ?_
   simp only [Nat.factorial_one, Nat.cast_one, pow_one, one_mul]
   have hid : 28 * Real.log |t| / (1 / (4 * Real.log |t|))
-      = 112 * Real.log |t| ^ 2 := by
+      = 112 * Real.log |t| ^ (2 : ℕ) := by
     field_simp
     ring
   linarith [hid]

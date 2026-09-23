@@ -362,11 +362,11 @@ theorem algebraicIndependent_comp_jets_of_linear_order_two
           linear_combination hrel2
         rw [this]
         exact mul_mem hβF (inv_mem hαF)
-      refine hvtr ⟨Polynomial.X ^ 2 - Polynomial.C
+      refine hvtr ⟨Polynomial.X ^ (2 : ℕ) - Polynomial.C
           (⟨v * v, hsq⟩ : ↥(algebraicClosure ↥F (meroField (Set.univ : Set ℂ)))), ?_, ?_⟩
       · exact Polynomial.X_pow_sub_C_ne_zero (by norm_num) _
       · simp only [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C]
-        show v ^ 2 - v * v = 0
+        show v ^ (2 : ℕ) - v * v = 0
         ring
     have hβ0 : β = 0 := by rw [← hrel2, hα0, mul_zero]
     have hmatch : x * Dx A + A = 0 := by

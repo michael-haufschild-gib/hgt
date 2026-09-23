@@ -29,10 +29,10 @@ theorem filledJulia_meets_unit_disk {b : ℝ} (hb2 : b ≤ -2) (hb : -2 - Real.s
     ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia (b : ℂ) := by
   set s : ℝ := Real.sqrt (1 - 4 * b) with hs
   have hs0 : (0 : ℝ) ≤ 1 - 4 * b := by linarith
-  have hssq : s ^ 2 = 1 - 4 * b := Real.sq_sqrt hs0
+  have hssq : s ^ (2 : ℕ) = 1 - 4 * b := Real.sq_sqrt hs0
   have hsnn : 0 ≤ s := Real.sqrt_nonneg _
   set β : ℝ := (1 + s) / 2 with hβ
-  have hβfix : β ^ 2 + b = β := by
+  have hβfix : β ^ (2 : ℕ) + b = β := by
     rw [hβ]
     linear_combination hssq / 4
   -- x₀² = −β − b ≥ 0
@@ -41,9 +41,9 @@ theorem filledJulia_meets_unit_disk {b : ℝ} (hb2 : b ≤ -2) (hb : -2 - Real.s
     push Not at hcon
     have h3 : 0 < (s - (-2 * b - 1)) * (s + (-2 * b - 1)) :=
       mul_pos (by linarith) (by linarith [hsnn, hb2])
-    have h4 : (s - (-2 * b - 1)) * (s + (-2 * b - 1)) = -4 * (b ^ 2 + 2 * b) := by
+    have h4 : (s - (-2 * b - 1)) * (s + (-2 * b - 1)) = -4 * (b ^ (2 : ℕ) + 2 * b) := by
       linear_combination hssq
-    have h5 : 0 ≤ b ^ 2 + 2 * b := by
+    have h5 : 0 ≤ b ^ (2 : ℕ) + 2 * b := by
       nlinarith [mul_nonneg (show (0 : ℝ) ≤ -b by linarith)
         (show (0 : ℝ) ≤ -(b + 2) by linarith)]
     nlinarith [h3, h4, h5]
@@ -51,11 +51,11 @@ theorem filledJulia_meets_unit_disk {b : ℝ} (hb2 : b ≤ -2) (hb : -2 - Real.s
     rw [hβ]
     linarith [hsle]
   set x₀ : ℝ := Real.sqrt (-β - b) with hx₀def
-  have hx₀sq : x₀ ^ 2 = -β - b := Real.sq_sqrt hx0nn
+  have hx₀sq : x₀ ^ (2 : ℕ) = -β - b := Real.sq_sqrt hx0nn
   have hx₀nn : 0 ≤ x₀ := Real.sqrt_nonneg _
   -- x₀ ≤ 1 from b ≥ −2−√2
-  have hquad : b ^ 2 + 4 * b + 2 ≤ 0 := by
-    have h2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hquad : b ^ (2 : ℕ) + 4 * b + 2 ≤ 0 := by
+    have h2 : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
     nlinarith [h2, hb, hb2,
       mul_nonneg (show (0 : ℝ) ≤ -(b + 2) by linarith)
         (show (0 : ℝ) ≤ Real.sqrt 2 + (b + 2) by linarith [hb]),
@@ -66,7 +66,7 @@ theorem filledJulia_meets_unit_disk {b : ℝ} (hb2 : b ≤ -2) (hb : -2 - Real.s
     push Not at hcon
     have h3 : 0 < ((-2 * b - 3) - s) * ((-2 * b - 3) + s) :=
       mul_pos (by linarith) (by linarith [hsnn, hb2])
-    have h4 : ((-2 * b - 3) - s) * ((-2 * b - 3) + s) = 4 * (b ^ 2 + 4 * b + 2) := by
+    have h4 : ((-2 * b - 3) - s) * ((-2 * b - 3) + s) = 4 * (b ^ (2 : ℕ) + 4 * b + 2) := by
       linear_combination -hssq
     nlinarith [h3, h4, hquad]
   have hx0le : -β - b ≤ 1 := by
@@ -78,19 +78,19 @@ theorem filledJulia_meets_unit_disk {b : ℝ} (hb2 : b ≤ -2) (hb : -2 - Real.s
       _ = 1 := Real.sqrt_one
   -- the three orbit steps, at the complex level
   have hfb : quadratic (b : ℂ) ((β : ℝ) : ℂ) = ((β : ℝ) : ℂ) := by
-    show (((β : ℝ) : ℂ)) ^ 2 + ((b : ℝ) : ℂ) = ((β : ℝ) : ℂ)
-    calc (((β : ℝ) : ℂ)) ^ 2 + ((b : ℝ) : ℂ) = (((β ^ 2 + b : ℝ)) : ℂ) := by push_cast; ring
+    show (((β : ℝ) : ℂ)) ^ (2 : ℕ) + ((b : ℝ) : ℂ) = ((β : ℝ) : ℂ)
+    calc (((β : ℝ) : ℂ)) ^ (2 : ℕ) + ((b : ℝ) : ℂ) = (((β ^ (2 : ℕ) + b : ℝ)) : ℂ) := by push_cast; ring
       _ = ((β : ℝ) : ℂ) := by rw [hβfix]
   have hfnb : quadratic (b : ℂ) (-((β : ℝ) : ℂ)) = ((β : ℝ) : ℂ) := by
-    show (-((β : ℝ) : ℂ)) ^ 2 + ((b : ℝ) : ℂ) = ((β : ℝ) : ℂ)
-    calc (-((β : ℝ) : ℂ)) ^ 2 + ((b : ℝ) : ℂ) = (((β ^ 2 + b : ℝ)) : ℂ) := by push_cast; ring
+    show (-((β : ℝ) : ℂ)) ^ (2 : ℕ) + ((b : ℝ) : ℂ) = ((β : ℝ) : ℂ)
+    calc (-((β : ℝ) : ℂ)) ^ (2 : ℕ) + ((b : ℝ) : ℂ) = (((β ^ (2 : ℕ) + b : ℝ)) : ℂ) := by push_cast; ring
       _ = ((β : ℝ) : ℂ) := by rw [hβfix]
   have hfx : quadratic (b : ℂ) ((x₀ : ℝ) : ℂ) = -((β : ℝ) : ℂ) := by
-    show (((x₀ : ℝ) : ℂ)) ^ 2 + ((b : ℝ) : ℂ) = -((β : ℝ) : ℂ)
-    have hr : x₀ ^ 2 + b = -β := by
+    show (((x₀ : ℝ) : ℂ)) ^ (2 : ℕ) + ((b : ℝ) : ℂ) = -((β : ℝ) : ℂ)
+    have hr : x₀ ^ (2 : ℕ) + b = -β := by
       rw [hx₀sq]
       ring
-    calc (((x₀ : ℝ) : ℂ)) ^ 2 + ((b : ℝ) : ℂ) = (((x₀ ^ 2 + b : ℝ)) : ℂ) := by push_cast; ring
+    calc (((x₀ : ℝ) : ℂ)) ^ (2 : ℕ) + ((b : ℝ) : ℂ) = (((x₀ ^ (2 : ℕ) + b : ℝ)) : ℂ) := by push_cast; ring
       _ = ((-β : ℝ) : ℂ) := by rw [hr]
       _ = -((β : ℝ) : ℂ) := by push_cast; ring
   -- the orbit is contained in a three-point set
@@ -124,7 +124,7 @@ theorem filledJulia_meets_unit_disk {b : ℝ} (hb2 : b ≤ -2) (hb : -2 - Real.s
 theorem filledJulia_meets_unit_disk_example :
     ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia ((-5 / 2 : ℝ) : ℂ) := by
   refine filledJulia_meets_unit_disk (by norm_num) ?_
-  have h2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have h2 : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   nlinarith [Real.sqrt_nonneg 2, h2]
 
 /-- **Sharpness of the exterior geometry**: the conclusion of `filledJulia_exterior`

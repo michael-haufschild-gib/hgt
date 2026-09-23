@@ -90,7 +90,7 @@ theorem one_le_abs_half {t : ℝ} (ht : 2 ≤ |t|) : 1 ≤ |(t / 2 : ℝ)| := by
 even character have equal exponential size, so their ratio is bounded by a cubic polynomial. -/
 theorem norm_Gamma_ratio_even {t : ℝ} (ht : 2 ≤ |t|) :
     ‖Complex.Gamma (((3 : ℂ) - (t : ℂ) * Complex.I + ((0 : ℝ) : ℂ)) / 2)‖
-      ≤ 40 * |t / 2| ^ 3 *
+      ≤ 40 * |t / 2| ^ (3 : ℕ) *
         ‖Complex.Gamma ((((-2 : ℂ) + (t : ℂ) * Complex.I) + ((0 : ℝ) : ℂ)) / 2)‖ := by
   set v : ℝ := t / 2 with hv
   have hv1 : 1 ≤ |v| := one_le_abs_half ht
@@ -134,25 +134,25 @@ theorem norm_Gamma_ratio_even {t : ℝ} (ht : 2 ≤ |t|) :
     nlinarith [Real.pi_pos]
   have hcubic : Real.sqrt (2 * Real.pi) * (((3 : ℝ) / 2 + (1 : ℕ)) * |v|) ^ (1 : ℕ) *
       ((|(-1 : ℝ)| + ((2 : ℕ) : ℝ) + 1) * |v|) ^ (2 : ℕ) * Y
-      ≤ Real.sqrt (2 * Real.pi * |v|) * (40 * |v| ^ 3 * Y) := by
+      ≤ Real.sqrt (2 * Real.pi * |v|) * (40 * |v| ^ (3 : ℕ) * Y) := by
     have hone : ((1 : ℕ) : ℝ) = 1 := by norm_num
     have htwo : ((2 : ℕ) : ℝ) = 2 := by norm_num
     have habs1 : |(-1 : ℝ)| = 1 := by norm_num
     rw [hone, htwo, habs1, pow_one]
-    have hstep : Real.sqrt (2 * Real.pi) * (((3 : ℝ) / 2 + 1) * |v|) * ((1 + 2 + 1) * |v|) ^ 2 * Y
-        = Real.sqrt (2 * Real.pi) * (40 * |v| ^ 3 * Y) := by ring
+    have hstep : Real.sqrt (2 * Real.pi) * (((3 : ℝ) / 2 + 1) * |v|) * ((1 + 2 + 1) * |v|) ^ (2 : ℕ) * Y
+        = Real.sqrt (2 * Real.pi) * (40 * |v| ^ (3 : ℕ) * Y) := by ring
     rw [hstep]
     exact mul_le_mul_of_nonneg_right hSge (by positivity)
   rw [hnumpt, hdenpt, ← hX, ← hY]
   have hfinal : Real.sqrt (2 * Real.pi * |v|) * X
-      ≤ Real.sqrt (2 * Real.pi * |v|) * (40 * |v| ^ 3 * Y) := le_trans hcombine hcubic
+      ≤ Real.sqrt (2 * Real.pi * |v|) * (40 * |v| ^ (3 : ℕ) * Y) := le_trans hcombine hcubic
   exact le_of_mul_le_mul_left hfinal hSpos
 
 /-- **The Archimedean ratio, odd case.** -/
 theorem exists_norm_Gamma_ratio_odd :
     ∃ A : ℝ, 0 < A ∧ ∀ t : ℝ, 2 ≤ |t| →
       ‖Complex.Gamma (((3 : ℂ) - (t : ℂ) * Complex.I + ((1 : ℝ) : ℂ)) / 2)‖
-        ≤ A * |t / 2| ^ 3 *
+        ≤ A * |t / 2| ^ (3 : ℕ) *
           ‖Complex.Gamma ((((-2 : ℂ) + (t : ℂ) * Complex.I) + ((1 : ℝ) : ℂ)) / 2)‖ := by
   have he2 : Real.exp (-2 : ℝ) < 1 := by rw [Real.exp_lt_one_iff]; norm_num
   have he2pos : (0 : ℝ) < 1 - Real.exp (-2 : ℝ) := by linarith
@@ -196,31 +196,31 @@ theorem exists_norm_Gamma_ratio_odd :
     congr 1
     field_simp
   have hsqle : Real.sqrt |v| ≤ |v| := by
-    have h1 : Real.sqrt |v| ≤ Real.sqrt (|v| ^ 2) := Real.sqrt_le_sqrt (by nlinarith)
+    have h1 : Real.sqrt |v| ≤ Real.sqrt (|v| ^ (2 : ℕ)) := Real.sqrt_le_sqrt (by nlinarith)
     rwa [Real.sqrt_sq (abs_nonneg v)] at h1
   have hcubic : Real.sqrt (2 * Real.pi * |v| / (1 - Real.exp (-2))) *
       (((2 : ℝ) + (1 : ℕ)) * |v|) ^ (1 : ℕ) *
       ((|(-1 / 2 : ℝ)| + ((1 : ℕ) : ℝ) + 1) * |v|) ^ (1 : ℕ) * Y
       ≤ Real.sqrt Real.pi *
         (Real.sqrt (2 * Real.pi / (1 - Real.exp (-2))) * (15 / 2) / Real.sqrt Real.pi *
-          |v| ^ 3 * Y) := by
+          |v| ^ (3 : ℕ) * Y) := by
     have hone : ((1 : ℕ) : ℝ) = 1 := by norm_num
     have habs2 : |(-1 / 2 : ℝ)| = 1 / 2 := by rw [abs_of_nonpos (by norm_num)]; norm_num
     rw [hone, habs2, pow_one, pow_one, hsplit]
     have hcan : Real.sqrt Real.pi *
         (Real.sqrt (2 * Real.pi / (1 - Real.exp (-2))) * (15 / 2) / Real.sqrt Real.pi *
-          |v| ^ 3 * Y)
-        = Real.sqrt (2 * Real.pi / (1 - Real.exp (-2))) * ((15 / 2) * (|v| ^ 3 * Y)) := by
+          |v| ^ (3 : ℕ) * Y)
+        = Real.sqrt (2 * Real.pi / (1 - Real.exp (-2))) * ((15 / 2) * (|v| ^ (3 : ℕ) * Y)) := by
       field_simp
     rw [hcan]
     have hlhs : Real.sqrt (2 * Real.pi / (1 - Real.exp (-2))) * Real.sqrt |v| *
         ((2 + 1) * |v|) * ((1 / 2 + 1 + 1) * |v|) * Y
         = Real.sqrt (2 * Real.pi / (1 - Real.exp (-2))) *
-          ((15 / 2) * (Real.sqrt |v| * |v| ^ 2 * Y)) := by ring
+          ((15 / 2) * (Real.sqrt |v| * |v| ^ (2 : ℕ) * Y)) := by ring
     rw [hlhs]
     refine mul_le_mul_of_nonneg_left ?_ (Real.sqrt_nonneg _)
     refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
-    have : Real.sqrt |v| * |v| ^ 2 ≤ |v| * |v| ^ 2 :=
+    have : Real.sqrt |v| * |v| ^ (2 : ℕ) ≤ |v| * |v| ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right hsqle (by positivity)
     nlinarith [hYnn, this]
   rw [hnumpt, hdenpt, ← hX, ← hY]

@@ -54,14 +54,14 @@ theorem xiThetaNodeFiber_eq_xiThetaNodeFiber
 
 /-- Projective Legendre equation pulled back along the completed theta function. -/
 def xiThetaLegendreEquation (z X Y Z : ℂ) : ℂ :=
-  Y ^ 2 * Z - X * (X - Z) * (X - XiC z * Z)
+  Y ^ (2 : ℕ) * Z - X * (X - Z) * (X - XiC z * Z)
 
 /-- Every Xi divisor fibre of the global Legendre equation is the same nodal cubic equation. -/
 @[simp]
 theorem xiThetaLegendreEquation_at_divisor
     (rho : XiDivisorSupport) (X Y Z : ℂ) :
     xiThetaLegendreEquation (xiSpectralPointSupport rho) X Y Z =
-      Y ^ 2 * Z - X ^ 2 * (X - Z) := by
+      Y ^ (2 : ℕ) * Z - X ^ (2 : ℕ) * (X - Z) := by
   rw [xiThetaLegendreEquation, XiC_xiSpectralPointSupport_eq_zero]
   ring
 

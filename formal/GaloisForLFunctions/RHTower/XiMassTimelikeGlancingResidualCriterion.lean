@@ -82,14 +82,14 @@ for some fixed legal mass. -/
 theorem exists_mass_with_xiMassSpacelikeSharpSlope_lt
     {alpha : ℝ} (halpha : 1 < alpha) :
     ∃ a : ℝ, 1 / 2 < a ∧ xiMassSpacelikeSharpSlope a < alpha := by
-  let k := Real.sqrt (alpha ^ 2 - 1)
+  let k := Real.sqrt (alpha ^ (2 : ℕ) - 1)
   let a := alpha / k
   have halpha0 : 0 < alpha := lt_trans (by norm_num) halpha
   have hk : 0 < k := by
     dsimp only [k]
     rw [Real.sqrt_pos]
     nlinarith
-  have hkSq : k ^ 2 = alpha ^ 2 - 1 := by
+  have hkSq : k ^ (2 : ℕ) = alpha ^ (2 : ℕ) - 1 := by
     dsimp only [k]
     rw [Real.sq_sqrt]
     nlinarith
@@ -100,23 +100,23 @@ theorem exists_mass_with_xiMassSpacelikeSharpSlope_lt
     dsimp only [a]
     rw [lt_div_iff₀ hk]
     nlinarith [sq_nonneg (2 * alpha + k)]
-  have hj : 0 < Real.sqrt (a ^ 2 - 1 / 4) :=
+  have hj : 0 < Real.sqrt (a ^ (2 : ℕ) - 1 / 4) :=
     xiMassSpacelikeSharpSlope_denominator_pos hhalf
-  have hjSq : Real.sqrt (a ^ 2 - 1 / 4) ^ 2 = a ^ 2 - 1 / 4 := by
+  have hjSq : Real.sqrt (a ^ (2 : ℕ) - 1 / 4) ^ (2 : ℕ) = a ^ (2 : ℕ) - 1 / 4 := by
     rw [Real.sq_sqrt]
     nlinarith [sq_pos_of_pos ha0]
   have hka : k * a = alpha := by
     dsimp only [a]
     field_simp [hk.ne']
-  have hkaSq := congrArg (fun x : ℝ => x ^ 2) hka
-  have hlinear : a < alpha * Real.sqrt (a ^ 2 - 1 / 4) := by
+  have hkaSq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hka
+  have hlinear : a < alpha * Real.sqrt (a ^ (2 : ℕ) - 1 / 4) := by
     have hleft : 0 < a := ha0
-    have hright : 0 < alpha * Real.sqrt (a ^ 2 - 1 / 4) := mul_pos halpha0 hj
-    have hsquare : a ^ 2 <
-        (alpha * Real.sqrt (a ^ 2 - 1 / 4)) ^ 2 := by
+    have hright : 0 < alpha * Real.sqrt (a ^ (2 : ℕ) - 1 / 4) := mul_pos halpha0 hj
+    have hsquare : a ^ (2 : ℕ) <
+        (alpha * Real.sqrt (a ^ (2 : ℕ) - 1 / 4)) ^ (2 : ℕ) := by
       rw [mul_pow, hjSq]
       nlinarith [sq_pos_of_pos halpha0]
-    nlinarith [sq_nonneg (a + alpha * Real.sqrt (a ^ 2 - 1 / 4))]
+    nlinarith [sq_nonneg (a + alpha * Real.sqrt (a ^ (2 : ℕ) - 1 / 4))]
   refine ⟨a, hhalf, ?_⟩
   rw [xiMassSpacelikeSharpSlope, div_lt_iff₀ hj]
   exact hlinear

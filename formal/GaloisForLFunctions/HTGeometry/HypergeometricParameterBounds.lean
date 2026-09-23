@@ -61,7 +61,7 @@ theorem hypergeometricCoefficient_norm (a b c : ℂ) (n : ℕ) :
 def positiveGaussCoefficient (B : ℝ) (n : ℕ) : ℝ := ordinaryHypergeometricCoefficient B B 1 n
 
 theorem positiveGaussCoefficient_eq (B : ℝ) (n : ℕ) :
-    positiveGaussCoefficient B n = ((ascPochhammer ℝ n).eval B)^2/(n.factorial : ℝ)^2 := by
+    positiveGaussCoefficient B n = ((ascPochhammer ℝ n).eval B)^(2 : ℕ)/(n.factorial : ℝ)^(2 : ℕ) := by
   simp only [positiveGaussCoefficient,ordinaryHypergeometricCoefficient,ascPochhammer_eval_one]
   ring
 

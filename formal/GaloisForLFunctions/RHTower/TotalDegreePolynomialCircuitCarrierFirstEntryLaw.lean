@@ -84,7 +84,7 @@ theorem no_second_twoQubitCircuitChoiCapture_of_totalDegreeCarrierAction_lt
     (hcoord : ∀ i, Integrable
       (fun x => ‖replicaSubspaceCoordinate r
         (TwoQubitCircuit.twoQubitCircuitChoiTotalDegreeReplicaCarrier n s r)
-        (psi (T * x)) i‖ ^ 2)
+        (psi (T * x)) i‖ ^ (2 : ℕ))
       ((gaussianReal 0 1).restrict
         (Icc (-(epsw / speed / T)) (epsw / speed / T))ᶜ))
     (haction :
@@ -94,7 +94,7 @@ theorem no_second_twoQubitCircuitChoiCapture_of_totalDegreeCarrierAction_lt
           (fun x => psi (T * x))
           (Icc (-(epsw / speed / T)) (epsw / speed / T)) <
       (gaussianFloorTwo * ((epsw - epsn) / speed / (2 * T)) *
-        threshold ^ r) ^ 2) :
+        threshold ^ r) ^ (2 : ℕ)) :
     ¬ ∃ t ∈ Icc
         (epsw / speed + (epsw - epsn) / speed) T,
       ∃ c, D (psi t)
@@ -125,7 +125,7 @@ theorem no_second_twoQubitCircuitChoiCapture_of_totalDegreeCarrierAction_lt
           (fun x => psi (T * x))
           (Icc (-(epsw / speed / T)) (epsw / speed / T)) <
       (gaussianFloorTwo * ((epsw - epsn) / speed / (2 * T)) *
-        threshold ^ r) ^ 2 := by
+        threshold ^ r) ^ (2 : ℕ) := by
     exact (mul_le_mul_of_nonneg_right hrankReal hactionNonneg).trans_lt
       (by simpa [S] using haction)
   simpa [target, S] using

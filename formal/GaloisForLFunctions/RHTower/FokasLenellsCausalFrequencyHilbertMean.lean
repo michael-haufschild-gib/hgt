@@ -79,29 +79,29 @@ private theorem vectorPencil_inner_mean [DecidableEq I] (s : Finset I)
       exact (hi' hi).elim
 
 private theorem hilbert_self_square (x : H) :
-    inner ℂ x x = ((‖x‖ ^ 2 : ℝ) : ℂ) := by
+    inner ℂ x x = ((‖x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have h := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) x
-  change inner ℂ x x = (‖x‖ : ℂ) ^ 2 at h
+  change inner ℂ x x = (‖x‖ : ℂ) ^ (2 : ℕ) at h
   exact h.trans (Complex.ofReal_pow ‖x‖ 2).symm
 
 private theorem real_mean_inner (x : ℕ → H) (N : ℕ) :
     (((N : ℝ)⁻¹ : ℂ) * ∑ n ∈ Finset.range N, inner ℂ (x n) (x n)).re =
-      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖x n‖ ^ 2 := by
+      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖x n‖ ^ (2 : ℕ) := by
   have he : ((N : ℝ)⁻¹ : ℂ) * ∑ n ∈ Finset.range N, inner ℂ (x n) (x n) =
-      (((N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖x n‖ ^ 2 : ℝ) : ℂ) := by
+      (((N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖x n‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     simp only [hilbert_self_square, ← Complex.ofReal_sum]
     rw [Complex.ofReal_mul, Complex.ofReal_inv]
   rw [he, Complex.ofReal_re]
 
-private theorem complex_star_square (z : ℂ) : star z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+private theorem complex_star_square (z : ℂ) : star z * z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   change (starRingEnd ℂ) z * z = _
   rw [Complex.conj_mul', Complex.ofReal_pow]
 
 private theorem diagonal_real (s : Finset I) (c : I → ℂ) (h : I → H) :
     (∑ i ∈ s, star (c i) * c i * inner ℂ (h i) (h i)).re =
-      ∑ i ∈ s, ‖c i‖ ^ 2 * ‖h i‖ ^ 2 := by
+      ∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) * ‖h i‖ ^ (2 : ℕ) := by
   have he : (∑ i ∈ s, star (c i) * c i * inner ℂ (h i) (h i)) =
-      ((∑ i ∈ s, ‖c i‖ ^ 2 * ‖h i‖ ^ 2 : ℝ) : ℂ) := by
+      ((∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) * ‖h i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     simp only [complex_star_square, hilbert_self_square, ← Complex.ofReal_mul, ← Complex.ofReal_sum]
   rw [he, Complex.ofReal_re]
 
@@ -109,7 +109,7 @@ private theorem vectorPencil_square_mean [DecidableEq I] (s : Finset I)
     (c z : I → ℂ) (h : I → H) (hz : ∀ i, ‖z i‖ = 1)
     (hinj : Function.Injective z) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖vectorPencil s c z h n‖ ^ 2) atTop (𝓝 (∑ i ∈ s, ‖c i‖ ^ 2 * ‖h i‖ ^ 2)) := by
+      ‖vectorPencil s c z h n‖ ^ (2 : ℕ)) atTop (𝓝 (∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) * ‖h i‖ ^ (2 : ℕ))) := by
   have hc := vectorPencil_inner_mean s c z h hz hinj
   have hr := (Complex.continuous_re.tendsto _).comp hc
   simpa only [Function.comp_def, real_mean_inner, diagonal_real] using! hr
@@ -140,8 +140,8 @@ private theorem observed_shift_square_mean (T : E ≃ₗᵢ[ℂ] E) (v : I → E
     (hz : ∀ i, ‖z i‖ = 1) (hinj : Function.Injective z)
     (J : E →L[ℂ] H) (s : Finset I) (c : I → ℂ) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-      ‖J ((T ^ n) (∑ i ∈ s, c i • v i))‖ ^ 2) atTop
-      (𝓝 (∑ i ∈ s, ‖c i‖ ^ 2 * ‖J (v i)‖ ^ 2)) := by
+      ‖J ((T ^ n) (∑ i ∈ s, c i • v i))‖ ^ (2 : ℕ)) atTop
+      (𝓝 (∑ i ∈ s, ‖c i‖ ^ (2 : ℕ) * ‖J (v i)‖ ^ (2 : ℕ))) := by
   classical
   have hm := vectorPencil_square_mean s c z (fun i => J (v i)) hz hinj
   simpa only [observed_shift_packet T v z hT] using hm
@@ -157,8 +157,8 @@ theorem causalFrequencyShift_hilbert_square_mean
     (b : ℝ) (J : causalFrequencySpace b →L[ℂ] H) (s : Finset ℝ) (c : ℝ → ℂ) :
     Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
       ‖J (((causalFrequencyShift b) ^ n)
-        (∑ ω ∈ s, c ω • causalFrequencyMode b ω))‖ ^ 2) atTop
-      (𝓝 (∑ ω ∈ s, ‖c ω‖ ^ 2 * ‖J (causalFrequencyMode b ω)‖ ^ 2)) :=
+        (∑ ω ∈ s, c ω • causalFrequencyMode b ω))‖ ^ (2 : ℕ)) atTop
+      (𝓝 (∑ ω ∈ s, ‖c ω‖ ^ (2 : ℕ) * ‖J (causalFrequencyMode b ω)‖ ^ (2 : ℕ))) :=
   observed_shift_square_mean (causalFrequencyShift b) (causalFrequencyMode b)
     (fun ω => (causalUnitBoundaryRate b ω).val) (causalFrequencyShift_mode b)
     (norm_causalUnitBoundaryRate b) (causalUnitBoundaryRate_injective b) J s c

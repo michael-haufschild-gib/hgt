@@ -49,7 +49,7 @@ theorem phaseField_dir (c : ℝ) (z : ℂ) :
   ring
 
 /-- The actual horizontal derivative energy is exactly the squared frequency. -/
-theorem phaseField_energy (c : ℝ) (z : ℂ) : normSq (dir 1 (phaseField c) z) = c ^ 2 := by
+theorem phaseField_energy (c : ℝ) (z : ℂ) : normSq (dir 1 (phaseField c) z) = c ^ (2 : ℕ) := by
   rw [phaseField_dir, normSq_mul, normSq_mul, normSq_I, normSq_ofReal, phaseField_normSq]
   ring
 

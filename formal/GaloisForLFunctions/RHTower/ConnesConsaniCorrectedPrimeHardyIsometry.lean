@@ -64,7 +64,7 @@ theorem norm_connesConsaniPrimeHardyRatio_lt_one (p : Nat.Primes) (n : ℤ) :
   have hlog : 0 < Real.log (p : ℝ) := Real.log_pos hp
   let a : ℝ := 4 * Real.pi * (n : ℝ)
   let L : ℝ := Real.log (p : ℝ)
-  have hsq : ‖Complex.mk a (-L)‖ ^ 2 < ‖Complex.mk a (3 * L)‖ ^ 2 := by
+  have hsq : ‖Complex.mk a (-L)‖ ^ (2 : ℕ) < ‖Complex.mk a (3 * L)‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
     change a * a + -L * -L < a * a + 3 * L * (3 * L)
     nlinarith
@@ -141,7 +141,7 @@ theorem inner_connesConsaniPrimeHardyFeature (p : Nat.Primes) (m n : ℤ) :
   let nn : ℂ := Complex.mk an (-L)
   let c : ℂ := connesConsaniPrimeHardyCauchyDenom p m n
   let S : ℂ := ((Real.sqrt (8 * L) : ℝ) : ℂ)
-  have hsqrtSq : Real.sqrt (8 * Real.log (p : ℝ)) ^ 2 = 8 * Real.log p :=
+  have hsqrtSq : Real.sqrt (8 * Real.log (p : ℝ)) ^ (2 : ℕ) = 8 * Real.log p :=
     Real.sq_sqrt (mul_nonneg (by norm_num) hlogpos.le)
   have hdm : dm ≠ 0 := by
     simpa [dm, am, L] using connesConsaniPrimeHardyDenomMinus_ne_zero p m

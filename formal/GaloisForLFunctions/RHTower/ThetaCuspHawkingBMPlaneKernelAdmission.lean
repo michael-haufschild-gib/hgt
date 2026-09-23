@@ -152,7 +152,7 @@ theorem physical_plane_source_integrable (q : XiZeroCopy) (branch : Bool)
 theorem original_combined_plane_integrable (q : XiZeroCopy) (branch : Bool)
     (amp : ℂ) (tau x : ℝ) (w : ℍ) :
     Integrable (fun z : ℍ =>
-      (parameter q branch*D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amp^2/
+      (parameter q branch*D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amp^(2 : ℕ)/
         (2*Real.pi:ℂ))*
       ((planeKernel (2*physicalRate q branch) tau x w z-
         planeKernel (2*physicalRate q branch) tau (-x) w z)*
@@ -161,7 +161,7 @@ theorem original_combined_plane_integrable (q : XiZeroCopy) (branch : Bool)
             fullSquarePotential q (coordinates z)))) := by
   have h := ((physical_plane_source_integrable q branch tau x w).sub
     (physical_plane_source_integrable q branch tau (-x) w)).const_mul
-    (parameter q branch*D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amp^2/
+    (parameter q branch*D4BMLaplaceRadial.power (2*physicalRate q branch) 2*amp^(2 : ℕ)/
       (2*Real.pi:ℂ))
   exact h.congr (Eventually.of_forall (fun z => by dsimp only [Pi.sub_apply]; ring))
 

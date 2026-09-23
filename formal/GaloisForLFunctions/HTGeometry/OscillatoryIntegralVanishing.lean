@@ -120,11 +120,11 @@ theorem tendsto_integral_mul_cos_comp_atTop {a b φ : ℝ} (hab : a ≤ b) {g g'
 theorem tendsto_integral_mul_cos_sq_comp_atTop {a b φ : ℝ} (hab : a ≤ b) {g g' ξ ξ' : ℝ → ℝ}
     (hg : ∀ x, HasDerivAt g (g' x) x) (hg'c : Continuous g')
     (hξ : ∀ x, HasDerivAt ξ (ξ' x) x) (hξ'c : Continuous ξ') :
-    Tendsto (fun c : ℝ => ∫ x in a..b, g x * (ξ' x * Real.cos (c * ξ x + φ) ^ 2)) atTop
+    Tendsto (fun c : ℝ => ∫ x in a..b, g x * (ξ' x * Real.cos (c * ξ x + φ) ^ (2 : ℕ))) atTop
       (𝓝 ((1 / 2) * ∫ x in a..b, g x * ξ' x)) := by
   have hgc : Continuous g := continuous_iff_continuousAt.mpr fun x => (hg x).continuousAt
   have hξc : Continuous ξ := continuous_iff_continuousAt.mpr fun x => (hξ x).continuousAt
-  have hsplit : ∀ c : ℝ, (∫ x in a..b, g x * (ξ' x * Real.cos (c * ξ x + φ) ^ 2))
+  have hsplit : ∀ c : ℝ, (∫ x in a..b, g x * (ξ' x * Real.cos (c * ξ x + φ) ^ (2 : ℕ)))
       = (1 / 2) * (∫ x in a..b, g x * ξ' x)
         + (1 / 2) * (∫ x in a..b, g x * (ξ' x * Real.cos (2 * c * ξ x + 2 * φ))) := by
     intro c
@@ -138,7 +138,7 @@ theorem tendsto_integral_mul_cos_sq_comp_atTop {a b φ : ℝ} (hab : a ≤ b) {g
     rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_const_mul,
       ← intervalIntegral.integral_add hint1 hint2]
     refine intervalIntegral.integral_congr fun x _ => ?_
-    show g x * (ξ' x * Real.cos (c * ξ x + φ) ^ 2)
+    show g x * (ξ' x * Real.cos (c * ξ x + φ) ^ (2 : ℕ))
       = 1 / 2 * (g x * ξ' x) + 1 / 2 * (g x * (ξ' x * Real.cos (2 * c * ξ x + 2 * φ)))
     rw [show 2 * c * ξ x + 2 * φ = 2 * (c * ξ x + φ) from by ring, Real.cos_sq]
     ring

@@ -7,7 +7,7 @@ import Mathlib.NumberTheory.Harmonic.Bounds
 The even/odd endpoint pair obtained from center and aperture differentiation of the theta-source
 window has no prime-clock coordinate in its energy.  This file proves its exact finite-cutoff
 decomposition into prime harmonic mass plus radial reflected energy, then classifies its
-sub-`log^2` domain.
+sub-`log^(2 : ℕ)` domain.
 
 This closes multiplicity-safe receiver geometry.  It does not prove that Xi root blocks enter the
 closed all-prime source domain.
@@ -24,9 +24,9 @@ open HedenmalmContinuousAperture
 /-- Energy of one actual source-derived even/odd endpoint symbol. -/
 def hedenmalmPrimeEndpointDoubletTerm (p : ℕ) (z : ℂ) : ℝ :=
   ‖hedenmalmPrimeEvenSolder
-      (centeredApertureMarkedCharacter (Real.log p) z)‖ ^ 2 +
+      (centeredApertureMarkedCharacter (Real.log p) z)‖ ^ (2 : ℕ) +
     ‖-Complex.I * hedenmalmPrimeOddSolder
-      (centeredApertureMarkedCharacter (Real.log p) z)‖ ^ 2
+      (centeredApertureMarkedCharacter (Real.log p) z)‖ ^ (2 : ℕ)
 
 /-- Finite energy of the actual source-derived even/odd endpoint symbols. -/
 def hedenmalmPrimeEndpointDoubletEnergy (N : ℕ) (z : ℂ) : ℝ :=
@@ -61,7 +61,7 @@ theorem hedenmalmPrimeEndpointDoubletEnergy_eq_mass_add_radial (N : ℕ) (z : �
   intro p hp
   have hhalf :
       Real.cosh (z.im * Real.log p) =
-        1 + 2 * Real.sinh ((z.im / 2) * Real.log p) ^ 2 := by
+        1 + 2 * Real.sinh ((z.im / 2) * Real.log p) ^ (2 : ℕ) := by
     have h := Real.cosh_two_mul ((z.im / 2) * Real.log p)
     rw [show 2 * ((z.im / 2) * Real.log p) = z.im * Real.log p by ring] at h
     nlinarith [Real.cosh_sq_sub_sinh_sq ((z.im / 2) * Real.log p)]
@@ -94,13 +94,13 @@ theorem hedenmalmPrimeEndpointDoubletEnergy_nonneg (N : ℕ) (z : ℂ) :
   rw [hedenmalmPrimeEndpointDoubletTerm]
   exact add_nonneg (sq_nonneg _) (sq_nonneg _)
 
-/-- The `o(log^2 N)` finite-domain condition for the source-derived endpoint doublet. -/
+/-- The `o(log^(2 : ℕ) N)` finite-domain condition for the source-derived endpoint doublet. -/
 def HedenmalmPrimeEndpointDoubletSubLogSquare (z : ℂ) : Prop :=
   Tendsto
-    (fun N : ℕ => hedenmalmPrimeEndpointDoubletEnergy N z / Real.log N ^ 2)
+    (fun N : ℕ => hedenmalmPrimeEndpointDoubletEnergy N z / Real.log N ^ (2 : ℕ))
     atTop (𝓝 0)
 
-/-- Every centered-real point belongs to the endpoint-doublet sub-`log^2` domain. -/
+/-- Every centered-real point belongs to the endpoint-doublet sub-`log^(2 : ℕ)` domain. -/
 theorem hedenmalmPrimeEndpointDoubletSubLogSquare_of_im_eq_zero
     {z : ℂ} (hz : z.im = 0) :
     HedenmalmPrimeEndpointDoubletSubLogSquare z := by
@@ -129,30 +129,30 @@ theorem hedenmalmPrimeEndpointDoubletSubLogSquare_of_im_eq_zero
       harmonic_le_one_add_log N
     have hlogpos : 0 < Real.log N := lt_of_lt_of_le zero_lt_one hlogone
     calc
-      hedenmalmPrimeEndpointDoubletEnergy N z / Real.log N ^ 2 ≤
-          (4 * (harmonic N : ℝ)) / Real.log N ^ 2 :=
+      hedenmalmPrimeEndpointDoubletEnergy N z / Real.log N ^ (2 : ℕ) ≤
+          (4 * (harmonic N : ℝ)) / Real.log N ^ (2 : ℕ) :=
         div_le_div_of_nonneg_right henergy (sq_nonneg _)
-      _ ≤ (4 * (1 + Real.log N)) / Real.log N ^ 2 := by
+      _ ≤ (4 * (1 + Real.log N)) / Real.log N ^ (2 : ℕ) := by
         gcongr
       _ ≤ 8 / Real.log N := by
         rw [div_le_div_iff₀ (sq_pos_of_pos hlogpos) hlogpos]
         nlinarith
   · exact hinvlog
 
-/-- Sub-`log^2` endpoint-doublet energy forces zero radial displacement. -/
+/-- Sub-`log^(2 : ℕ)` endpoint-doublet energy forces zero radial displacement. -/
 theorem im_eq_zero_of_hedenmalmPrimeEndpointDoubletSubLogSquare
     {z : ℂ} (h : HedenmalmPrimeEndpointDoubletSubLogSquare z) :
     z.im = 0 := by
   have hradial : Tendsto
-      (fun N : ℕ => primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ 2)
+      (fun N : ℕ => primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ (2 : ℕ))
       atTop (𝓝 0) := by
     have hnonneg : ∀ᶠ N : ℕ in atTop,
-        0 ≤ primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ 2 :=
+        0 ≤ primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ (2 : ℕ) :=
       Eventually.of_forall fun N =>
         div_nonneg (primeClockCutoffEnergy_nonneg N (z.im / 2)) (sq_nonneg _)
     have hle : ∀ᶠ N : ℕ in atTop,
-        primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ 2 ≤
-          hedenmalmPrimeEndpointDoubletEnergy N z / Real.log N ^ 2 := by
+        primeClockCutoffEnergy N (z.im / 2) / Real.log N ^ (2 : ℕ) ≤
+          hedenmalmPrimeEndpointDoubletEnergy N z / Real.log N ^ (2 : ℕ) := by
       filter_upwards with N
       apply div_le_div_of_nonneg_right _ (sq_nonneg _)
       rw [hedenmalmPrimeEndpointDoubletEnergy_eq_mass_add_radial]

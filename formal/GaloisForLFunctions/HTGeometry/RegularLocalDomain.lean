@@ -58,7 +58,7 @@ variable [IsLocalRing R] [IsNoetherianRing R]
 
 /-- **An element outside `𝔪²` is part of a minimal generating set of `𝔪`.** -/
 theorem exists_span_insert_of_notMem_sq {x : R} (hx : x ∈ maximalIdeal R)
-    (hx2 : x ∉ (maximalIdeal R) ^ 2) :
+    (hx2 : x ∉ (maximalIdeal R) ^ (2 : ℕ)) :
     ∃ s : Finset R, s.card + 1 ≤ (maximalIdeal R).spanFinrank ∧
       Ideal.span (insert x (s : Set R)) = maximalIdeal R := by
   classical
@@ -132,7 +132,7 @@ theorem ringKrullDim_quotient_span_singleton_succ_of_notMem_minimalPrimes {x : R
 
 /-- **The quotient by an element outside `𝔪²` needs one generator fewer.** -/
 theorem spanFinrank_map_maximalIdeal_succ_le {x : R} (hx : x ∈ maximalIdeal R)
-    (hx2 : x ∉ (maximalIdeal R) ^ 2) :
+    (hx2 : x ∉ (maximalIdeal R) ^ (2 : ℕ)) :
     (Ideal.map (Ideal.Quotient.mk (Ideal.span {x})) (maximalIdeal R)).spanFinrank + 1
       ≤ (maximalIdeal R).spanFinrank := by
   classical
@@ -156,7 +156,7 @@ theorem spanFinrank_map_maximalIdeal_succ_le {x : R} (hx : x ∈ maximalIdeal R)
 leaves a regular local ring.** -/
 theorem isRegularLocalRing_quotient_span_singleton {S : Type u} [CommRing S]
     [IsRegularLocalRing S] {x : S}
-    (hx : x ∈ maximalIdeal S) (hx2 : x ∉ (maximalIdeal S) ^ 2)
+    (hx : x ∈ maximalIdeal S) (hx2 : x ∉ (maximalIdeal S) ^ (2 : ℕ))
     (hn : ∀ p ∈ minimalPrimes S, x ∉ p) :
     IsRegularLocalRing (S ⧸ Ideal.span {x}) := by
   classical
@@ -193,7 +193,7 @@ theorem isRegularLocalRing_quotient_span_singleton {S : Type u} [CommRing S]
 
 /-- The quotient by a parameter needs exactly one generator fewer. -/
 theorem spanFinrank_maximalIdeal_quotient_succ {S : Type u} [CommRing S] [IsRegularLocalRing S]
-    {x : S} (hx : x ∈ maximalIdeal S) (hx2 : x ∉ (maximalIdeal S) ^ 2)
+    {x : S} (hx : x ∈ maximalIdeal S) (hx2 : x ∉ (maximalIdeal S) ^ (2 : ℕ))
     (hn : ∀ p ∈ minimalPrimes S, x ∉ p) :
     (Ideal.map (Ideal.Quotient.mk (Ideal.span {x})) (maximalIdeal S)).spanFinrank + 1
       = (maximalIdeal S).spanFinrank := by
@@ -237,7 +237,7 @@ theorem isDomain_of_spanFinrank_maximalIdeal :
     -- the maximal ideal is not inside its square
     have hjac : maximalIdeal S ≤ Ideal.jacobson ⊥ :=
       le_of_eq (IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top).symm
-    have hsq : ¬ (maximalIdeal S ≤ (maximalIdeal S) ^ 2) := by
+    have hsq : ¬ (maximalIdeal S ≤ (maximalIdeal S) ^ (2 : ℕ)) := by
       intro hle
       have hnak : maximalIdeal S = ⊥ := by
         refine Submodule.eq_bot_of_le_smul_of_le_jacobson_bot (maximalIdeal S) (maximalIdeal S)
@@ -268,8 +268,8 @@ theorem isDomain_of_spanFinrank_maximalIdeal :
     -- prime avoidance
     obtain ⟨F, hF⟩ : ∃ F : Finset (Ideal S), (F : Set (Ideal S)) = minimalPrimes S :=
       ⟨(minimalPrimes.finite_of_isNoetherianRing S).toFinset, by simp⟩
-    set G : Finset (Ideal S) := insert ((maximalIdeal S) ^ 2) F with hGdef
-    have hprime : ∀ i ∈ G, i ≠ (maximalIdeal S) ^ 2 → i ≠ (maximalIdeal S) ^ 2 → i.IsPrime := by
+    set G : Finset (Ideal S) := insert ((maximalIdeal S) ^ (2 : ℕ)) F with hGdef
+    have hprime : ∀ i ∈ G, i ≠ (maximalIdeal S) ^ (2 : ℕ) → i ≠ (maximalIdeal S) ^ (2 : ℕ) → i.IsPrime := by
       intro i hi hne _
       have : i ∈ F := by
         rcases Finset.mem_insert.mp hi with h | h
@@ -279,7 +279,7 @@ theorem isDomain_of_spanFinrank_maximalIdeal :
       exact this.1.1
     have hnotsub : ¬ ((maximalIdeal S : Set S) ⊆ ⋃ i ∈ (G : Set (Ideal S)), (i : Set S)) := by
       rw [Ideal.subset_union_prime (f := fun i : Ideal S => i)
-        ((maximalIdeal S) ^ 2) ((maximalIdeal S) ^ 2) hprime]
+        ((maximalIdeal S) ^ (2 : ℕ)) ((maximalIdeal S) ^ (2 : ℕ)) hprime]
       rintro ⟨i, hi, hle⟩
       rcases Finset.mem_insert.mp hi with h | h
       · exact hsq (h ▸ hle)
@@ -287,7 +287,7 @@ theorem isDomain_of_spanFinrank_maximalIdeal :
         rw [← hF]
         exact_mod_cast h
     obtain ⟨x, hxmem, hxnot⟩ := Set.not_subset.mp hnotsub
-    have hx2 : x ∉ (maximalIdeal S) ^ 2 := by
+    have hx2 : x ∉ (maximalIdeal S) ^ (2 : ℕ) := by
       intro h
       exact hxnot (Set.mem_biUnion (by exact_mod_cast Finset.mem_insert_self _ _) h)
     have hxmin : ∀ p ∈ minimalPrimes S, x ∉ p := by
@@ -363,7 +363,7 @@ theorem exists_isRingRegularSeq_of_isRegularLocalRing :
     classical
     have hjac : maximalIdeal S ≤ Ideal.jacobson ⊥ :=
       le_of_eq (IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top).symm
-    have hsq : ¬ (maximalIdeal S ≤ (maximalIdeal S) ^ 2) := by
+    have hsq : ¬ (maximalIdeal S ≤ (maximalIdeal S) ^ (2 : ℕ)) := by
       intro hle
       have hnak : maximalIdeal S = ⊥ := by
         refine Submodule.eq_bot_of_le_smul_of_le_jacobson_bot (maximalIdeal S) (maximalIdeal S)

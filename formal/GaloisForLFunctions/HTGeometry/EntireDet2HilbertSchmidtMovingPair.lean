@@ -37,8 +37,8 @@ theorem tendsto_detCoeff_sub_of_hsNorm_sub_tendsto_zero_of_eventually_bound
   set ρ : ℝ := r / 2 with hρdef
   have hρ0 : 0 < ρ := by rw [hρdef]; positivity
   have hρr : ρ < r := by rw [hρdef]; linarith
-  set C : ℝ := 2 * Real.exp ((r * M) ^ 2 / (1 - r * M)) with hCdef
-  set L : ℝ := r ^ 2 * M / (1 - r * M) with hLdef
+  set C : ℝ := 2 * Real.exp ((r * M) ^ (2 : ℕ) / (1 - r * M)) with hCdef
+  set L : ℝ := r ^ (2 : ℕ) * M / (1 - r * M) with hLdef
   have hL0 : 0 < L := by rw [hLdef, hrM]; positivity
   have hkey : ∀ n : ℕ, hsNorm (A n) ≤ M → hsNorm (B n) ≤ M →
       hsNorm (A n - B n) * L ≤ 1 →
@@ -94,7 +94,7 @@ theorem tendsto_tsum_norm_detCoeff_sub_of_hsNorm_sub_tendsto_zero_of_eventually_
     Tendsto (fun k => ∑' n : ℕ,
       ‖detCoeff (A k) n - detCoeff (B k) n‖ * ρ ^ n) atTop (nhds 0) := by
   rcases hbounded with ⟨M, hM0, hbounded⟩
-  set E : ℝ := Real.exp ((2 * ρ) ^ 2 * M ^ 2 / 2) with hEdef
+  set E : ℝ := Real.exp ((2 * ρ) ^ (2 : ℕ) * M ^ (2 : ℕ) / 2) with hEdef
   set bnd : ℕ → ℝ := fun n => 2 * E * (1 / 2) ^ n with hbnd
   have hsumbnd : Summable bnd := by
     rw [hbnd]
@@ -102,14 +102,14 @@ theorem tendsto_tsum_norm_detCoeff_sub_of_hsNorm_sub_tendsto_zero_of_eventually_
   have hkernel_bound : ∀ (K : ι × ι → ℂ), IsHS K → hsNorm K ≤ M → ∀ n,
       ‖detCoeff K n‖ * ρ ^ n ≤ E * (1 / 2) ^ n := by
     intro K hK hKM n
-    have hKsq : hsNormSq K ≤ M ^ 2 := by
-      have heq : hsNormSq K = hsNorm K ^ 2 := by
+    have hKsq : hsNormSq K ≤ M ^ (2 : ℕ) := by
+      have heq : hsNormSq K = hsNorm K ^ (2 : ℕ) := by
         rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg K)]
       rw [heq]
       exact pow_le_pow_left₀ (hsNorm_nonneg K) hKM 2
     calc
       ‖detCoeff K n‖ * ρ ^ n
-          ≤ Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n :=
+          ≤ Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) * (1 / 2) ^ n :=
             norm_detCoeff_mul_pow_le hK hρ n
       _ ≤ E * (1 / 2) ^ n := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
@@ -155,18 +155,18 @@ theorem tendstoUniformlyOn_sub_entireDet2_of_hsNorm_sub_tendsto_zero_of_eventual
     TendstoUniformlyOn (fun k z => entireDet2 (A k) z - entireDet2 (B k) z)
       (fun _ => 0) atTop (closedBall (0 : ℂ) ρ) := by
   rcases hbounded with ⟨M, hM0, hbounded⟩
-  set E : ℝ := Real.exp ((2 * ρ) ^ 2 * M ^ 2 / 2) with hEdef
+  set E : ℝ := Real.exp ((2 * ρ) ^ (2 : ℕ) * M ^ (2 : ℕ) / 2) with hEdef
   have hkernel_bound : ∀ (K : ι × ι → ℂ), IsHS K → hsNorm K ≤ M → ∀ n,
       ‖detCoeff K n‖ * ρ ^ n ≤ E * (1 / 2) ^ n := by
     intro K hK hKM n
-    have hKsq : hsNormSq K ≤ M ^ 2 := by
-      have heq : hsNormSq K = hsNorm K ^ 2 := by
+    have hKsq : hsNormSq K ≤ M ^ (2 : ℕ) := by
+      have heq : hsNormSq K = hsNorm K ^ (2 : ℕ) := by
         rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg K)]
       rw [heq]
       exact pow_le_pow_left₀ (hsNorm_nonneg K) hKM 2
     calc
       ‖detCoeff K n‖ * ρ ^ n
-          ≤ Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n :=
+          ≤ Real.exp ((2 * ρ) ^ (2 : ℕ) * hsNormSq K / 2) * (1 / 2) ^ n :=
             norm_detCoeff_mul_pow_le hK hρ n
       _ ≤ E * (1 / 2) ^ n := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)

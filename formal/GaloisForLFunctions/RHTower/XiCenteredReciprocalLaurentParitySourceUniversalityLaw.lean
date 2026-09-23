@@ -38,7 +38,7 @@ theorem summable_xiCenteredReciprocalLaurentCoordinate_pow
   apply Summable.of_norm_bounded summable_norm_xiSpectralPoint_inv_sq
   intro q
   rw [norm_pow]
-  change ‖(xiSpectralPoint q)⁻¹‖ ^ k ≤ ‖(xiSpectralPoint q)⁻¹‖ ^ 2
+  change ‖(xiSpectralPoint q)⁻¹‖ ^ k ≤ ‖(xiSpectralPoint q)⁻¹‖ ^ (2 : ℕ)
   have hnonneg : 0 ≤ ‖(xiSpectralPoint q)⁻¹‖ := norm_nonneg _
   have hle : ‖(xiSpectralPoint q)⁻¹‖ ≤ 1 := by
     rw [norm_inv]
@@ -48,11 +48,11 @@ theorem summable_xiCenteredReciprocalLaurentCoordinate_pow
   rw [hsplit, pow_add]
   calc
     ‖(xiSpectralPoint q)⁻¹‖ ^ (k - 2) *
-          ‖(xiSpectralPoint q)⁻¹‖ ^ 2 ≤
-        1 * ‖(xiSpectralPoint q)⁻¹‖ ^ 2 := by
+          ‖(xiSpectralPoint q)⁻¹‖ ^ (2 : ℕ) ≤
+        1 * ‖(xiSpectralPoint q)⁻¹‖ ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_right
         (pow_le_one₀ hnonneg hle) (pow_nonneg hnonneg 2)
-    _ = ‖(xiSpectralPoint q)⁻¹‖ ^ 2 := one_mul _
+    _ = ‖(xiSpectralPoint q)⁻¹‖ ^ (2 : ℕ) := one_mul _
 
 /-- Multiplicity-exact signed centered reciprocal Laurent trace. -/
 def xiCenteredReciprocalLaurentTrace (k : ℕ) : ℂ :=

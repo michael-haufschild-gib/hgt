@@ -10,7 +10,7 @@ Equations (20) and (29) of Blau--Visser--Wipf, *Analytic Results for the Effecti
 Action*, arXiv:0906.2851, express the two-dimensional scalar and spinor one-loop effective
 Lagrangians in a constant magnetic field through
 
-`Gamma(x + 1/2)` and `Gamma(x + 1)`, where `x = m^2/(2B)`.
+`Gamma(x + 1/2)` and `Gamma(x + 1)`, where `x = m^(2 : ℕ)/(2B)`.
 
 After removing the displayed elementary renormalization terms and exponentiating, these are the
 complete non-DA carriers.  Their quotient is the inverse reduced Veneziano ratio at separation
@@ -33,7 +33,7 @@ noncomputable section
 open scoped UnivMeroFieldInstances
 
 /-- Gamma carrier of the renormalized exponentiated scalar determinant in the clock
-`x=m^2/(2B)`. -/
+`x=m^(2 : ℕ)/(2B)`. -/
 def constantMagneticScalarQEDGammaCarrierMero : meroField Set.univ :=
   gammaShiftMero (1 / 2)
 

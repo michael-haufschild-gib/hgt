@@ -24,7 +24,7 @@ off the poles, where `ψ' = deriv (Γ'/Γ)` is the trigamma function.  Iterates 
 theorem trigamma_add_nat (w : ℂ) (hw : ∀ k : ℕ, w ≠ -(k : ℂ)) (n : ℕ) :
     deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) (w + n)
       = deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) w
-        - ∑ i ∈ Finset.range n, 1 / (w + i) ^ 2 := by
+        - ∑ i ∈ Finset.range n, 1 / (w + i) ^ (2 : ℕ) := by
   induction n with
   | zero => simp
   | succ n ih =>
@@ -44,7 +44,7 @@ second-order analogue of `digamma_charge_collapse`. -/
 theorem trigamma_charge_collapse {d : ℕ} (w : ℂ) (hw : ∀ k : ℕ, w ≠ -(k : ℂ)) (nn : Fin d → ℕ)
     (m : Fin d → ℂ) (hcharge : ∑ j, m j = 0) :
     ∑ j, m j * deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) (w + nn j)
-      = -∑ j, m j * ∑ i ∈ Finset.range (nn j), 1 / (w + i) ^ 2 := by
+      = -∑ j, m j * ∑ i ∈ Finset.range (nn j), 1 / (w + i) ^ (2 : ℕ) := by
   simp_rw [trigamma_add_nat w hw, mul_sub, Finset.sum_sub_distrib, ← Finset.sum_mul, hcharge,
     zero_mul, zero_sub]
 

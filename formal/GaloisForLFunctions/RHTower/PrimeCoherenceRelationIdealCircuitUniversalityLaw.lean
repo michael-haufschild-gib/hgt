@@ -46,12 +46,12 @@ theorem exists_orderPointedContinuumPrimeRelationIdealCircuitUniversality
         (booleanHalfDensity (primeCoherenceHalfDensityMass sigma)
             (continuumSparsePrimeOrientation (fun _ => false) e z) p -
           booleanHalfDensity (primeCoherenceHalfDensityMass sigma)
-            (fun _ => false) p) ^ 2) < eta ^ 2) ∧
+            (fun _ => false) p) ^ (2 : ℕ)) < eta ^ (2 : ℕ)) ∧
       (∀ z w, (∑' p,
         (booleanHalfDensity (primeCoherenceHalfDensityMass sigma)
             (continuumSparsePrimeOrientation (fun _ => false) e z) p -
           booleanHalfDensity (primeCoherenceHalfDensityMass sigma)
-            (continuumSparsePrimeOrientation (fun _ => false) e w) p) ^ 2) < eta ^ 2) ∧
+            (continuumSparsePrimeOrientation (fun _ => false) e w) p) ^ (2 : ℕ)) < eta ^ (2 : ℕ)) ∧
       (∀ epsilon : Nat.Primes → Bool,
         PositiveDefiniteOnReal (signedPrimeVerticalTrace epsilon x) ↔
           epsilon = fun _ => false) ∧

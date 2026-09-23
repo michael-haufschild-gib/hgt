@@ -126,12 +126,12 @@ theorem deningerDlogForm_holomorphic (i : Fin r) :
 /-- The derivative of the coefficient of a logarithmic differential, in a fixed direction. -/
 theorem deningerDlog_fderiv_apply (i : Fin r) {z : Fin r → ℂ} (hz : z i ≠ 0) (c : ℂ)
     (u : Fin r → ℂ) :
-    fderiv ℂ (fun w : Fin r → ℂ => (w i)⁻¹ * c) z u = -((z i) ^ 2)⁻¹ * u i * c := by
+    fderiv ℂ (fun w : Fin r → ℂ => (w i)⁻¹ * c) z u = -((z i) ^ (2 : ℕ))⁻¹ * u i * c := by
   have hproj : HasFDerivAt (fun w : Fin r → ℂ => w i)
       (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin r => ℂ) i) z :=
     (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin r => ℂ) i).hasFDerivAt
   have hinv : HasFDerivAt (fun w : Fin r → ℂ => (w i)⁻¹)
-      ((ContinuousLinearMap.toSpanSingleton ℂ (-((z i) ^ 2)⁻¹)).comp
+      ((ContinuousLinearMap.toSpanSingleton ℂ (-((z i) ^ (2 : ℕ))⁻¹)).comp
         (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin r => ℂ) i)) z :=
     (hasFDerivAt_inv hz).comp z hproj
   rw [(hinv.mul_const c).fderiv]
@@ -147,7 +147,7 @@ theorem deningerDlogForm_closed (i : Fin r) {z : Fin r → ℂ} (hz : z ∈ deni
   ext v
   rw [extDeriv_apply hdiff v]
   have hcoord : ∀ (w : Fin 1 → (Fin r → ℂ)) (u : Fin r → ℂ),
-      fderiv ℂ (fun y => deningerDlogForm r i y w) z u = -((z i) ^ 2)⁻¹ * u i * w 0 i := by
+      fderiv ℂ (fun y => deningerDlogForm r i y w) z u = -((z i) ^ (2 : ℕ))⁻¹ * u i * w 0 i := by
     intro w u
     rw [deningerDlogForm_eval]
     exact deningerDlog_fderiv_apply i (hz i) (w 0 i) u

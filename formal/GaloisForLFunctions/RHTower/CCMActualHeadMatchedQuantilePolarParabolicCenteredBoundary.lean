@@ -37,7 +37,7 @@ theorem ccmActualHeadParabolicMass_pos (K : ℕ) :
   apply lt_of_lt_of_le htwo
   exact Finset.single_le_sum (s := Finset.range (K + 1))
     (f := fun n => criticalMellinAtomWeight (n + 2))
-    (fun n _ => criticalMellinAtomWeight_nonneg (n + 2)) hmem
+    (fun n _ => criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer (n + 2)) hmem
 
 /-- The unique common null translation which puts the literal source boundary at zero first
 moment. -/
@@ -116,7 +116,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCenteredCharge_eq (K : ℕ) :
         ccmActualHeadMatchedQuantileParabolicCenteredShift K *
           ccmActualHeadMatchedQuantileParabolicCodiagonal K 1 := by
   change ccmActualHeadMatchedQuantileParabolicCenteredCodiagonal K 2 = _
-  change ccmActualHeadMatchedQuantileParabolicCenteredShift K ^ 2 / 2 *
+  change ccmActualHeadMatchedQuantileParabolicCenteredShift K ^ (2 : ℕ) / 2 *
       ccmActualHeadMatchedQuantileParabolicCodiagonal K 0 +
       ccmActualHeadMatchedQuantileParabolicCenteredShift K *
         ccmActualHeadMatchedQuantileParabolicCodiagonal K 1 +
@@ -156,7 +156,7 @@ theorem two_mul_ccmActualHeadParabolicMass_mul_centeredCharge_eq_crossKernel
             ccmActualHeadMatchedParabolicMoment (m + 2) 1 *
               ccmActualHeadMatchedParabolicMoment (n + 2) 0) -
         (ccmActualHeadMatchedQuantilePolarDisplacement (n + 2) -
-            ccmActualHeadMatchedQuantilePolarDisplacement (m + 2)) ^ 2 / 2 *
+            ccmActualHeadMatchedQuantilePolarDisplacement (m + 2)) ^ (2 : ℕ) / 2 *
           (criticalMellinAtomWeight (m + 2) * criticalMellinAtomWeight (n + 2))) := by
   rw [← ccmActualHeadMatchedQuantileParabolicCentered_pairing]
   rw [ccmActualHeadMatchedQuantileParabolicCenteredCodiagonal,

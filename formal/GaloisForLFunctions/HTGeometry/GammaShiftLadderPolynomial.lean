@@ -37,7 +37,7 @@ theorem coeff_zero_one_add_C_mul_X (mu : ℂ) : ((1 : ℂ[X]) + C mu * X).coeff 
 /-- The shifted ladder polynomial: the cleared numerator of the one-step difference of
 `ψ(s+μ) - log s + ∑_{m<M} d_m s^{-(m+1)}`. -/
 def shiftLadderPoly (mu : ℂ) : ℕ → ℂ[X]
-  | 0 => -(C mu) * X ^ 2
+  | 0 => -(C mu) * X ^ (2 : ℕ)
   | (M + 1) =>
       (1 + X) * shiftLadderPoly mu M
         - C ((-1) ^ (M + 1) / ((M : ℂ) + 2))

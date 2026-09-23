@@ -207,9 +207,9 @@ needed by the Landau carrier. -/
 theorem norm_smoothProfileLaplaceAmplitude_sq_xiRight_le
     {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
     (f : SmoothBoundaryProfile eta L) (q : XiRightZeroCopy) :
-    ‖smoothProfileLaplaceAmplitude f (xiRightCenteredZero q) ^ 2‖ ≤
-      (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ 2 /
-        ‖xiSpectralPoint q.1‖ ^ 2 := by
+    ‖smoothProfileLaplaceAmplitude f (xiRightCenteredZero q) ^ (2 : ℕ)‖ ≤
+      (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ (2 : ℕ) /
+        ‖xiSpectralPoint q.1‖ ^ (2 : ℕ) := by
   rw [norm_pow]
   have hA := norm_smoothProfileLaplaceAmplitude_le heta hwindow f
     (xiRightCenteredZero_ne_zero q)
@@ -217,11 +217,11 @@ theorem norm_smoothProfileLaplaceAmplitude_sq_xiRight_le
   have hA2 := pow_le_pow_left₀ (norm_nonneg _) hA 2
   rw [xiRightCenteredZero, norm_mul, norm_I, one_mul] at hA2
   calc
-    ‖smoothProfileLaplaceAmplitude f (xiRightCenteredZero q)‖ ^ 2 ≤
+    ‖smoothProfileLaplaceAmplitude f (xiRightCenteredZero q)‖ ^ (2 : ℕ) ≤
         ((Real.exp (L / 2) * smoothProfileDerivativeMass f) /
-          ‖xiSpectralPoint q.1‖) ^ 2 := hA2
-    _ = (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ 2 /
-        ‖xiSpectralPoint q.1‖ ^ 2 := by ring
+          ‖xiSpectralPoint q.1‖) ^ (2 : ℕ) := hA2
+    _ = (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ (2 : ℕ) /
+        ‖xiSpectralPoint q.1‖ ^ (2 : ℕ) := by ring
 
 end
 

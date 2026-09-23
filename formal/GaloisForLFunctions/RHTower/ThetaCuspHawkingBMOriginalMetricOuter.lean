@@ -126,7 +126,7 @@ private theorem onset_eq (q : XiZeroCopy) (br : Bool) (w : ℂ) (hw : -2<w.re) :
 
 /-- The original metric time-limit density in the unchanged tortoise measure. -/
 def outerDensity (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (x : ℝ) : ℂ :=
-  ((tortoiseRadius x:ℂ)^2-1)*metricFrequencyDensity q br true amp w (tortoiseRadius x)
+  ((tortoiseRadius x:ℂ)^(2 : ℕ)-1)*metricFrequencyDensity q br true amp w (tortoiseRadius x)
 
 def outerIntegral (q : XiZeroCopy) (br : Bool) (amp : ℂ) (T : ℝ) (w : ℂ) : ℂ :=
   ∫ x in Ioo T (0:ℝ),outerDensity q br amp w x
@@ -141,12 +141,12 @@ theorem outerDensity_decomposition (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
           normalizable w (physicalRadialFrequency q) (horizonCoordinate x))+
       (mu q*w*physicalSelfSourceCoefficient q*continuedOnset (physicalRate q br) w)*
         regularKernel q br amp w x := by
-  have hf : (tortoiseRadius x:ℂ)^2-1≠0 := by
-    exact_mod_cast (show tortoiseRadius x^2-1≠0 by nlinarith [tortoiseRadius_exterior x hx])
+  have hf : (tortoiseRadius x:ℂ)^(2 : ℕ)-1≠0 := by
+    exact_mod_cast (show tortoiseRadius x^(2 : ℕ)-1≠0 by nlinarith [tortoiseRadius_exterior x hx])
   have hr : (tortoiseRadius x:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by
     have h := tortoiseRadius_exterior x hx
     linarith)
-  have hz : (horizonCoordinate x:ℂ)=((tortoiseRadius x:ℂ)^2-1)/(tortoiseRadius x:ℂ)^2 := by
+  have hz : (horizonCoordinate x:ℂ)=((tortoiseRadius x:ℂ)^(2 : ℕ)-1)/(tortoiseRadius x:ℂ)^(2 : ℕ) := by
     apply (eq_div_iff (pow_ne_zero 2 hr)).mpr
     simpa only [mul_comm] using radius_sq_mul_horizonCoordinate x hx
   have hL : radialLift (physicalRate q br) w amp (continuedOnset (physicalRate q br) w) x=
@@ -223,7 +223,7 @@ theorem originalMetricOuter_QNM_residue (q : XiZeroCopy) (br side : Bool) (amp :
     Tendsto (fun v => (v-w)*outerIntegral q br amp T v) (𝓝[≠] w)
       (𝓝 ((2*mu q*w*(mu q-2)*physicalSelfSourceCoefficient q)*
         ((fundamentalSourceMoment w s amp*clearedOnset s w)*
-          (∫ x in Ioo T (0:ℝ),normalizable w chi (horizonCoordinate x)^2)/
+          (∫ x in Ioo T (0:ℝ),normalizable w chi (horizonCoordinate x)^(2 : ℕ))/
             physicalFundamentalDenominatorSlope q br side))) := by
   dsimp only
   let w := physicalFundamentalFrequency q side

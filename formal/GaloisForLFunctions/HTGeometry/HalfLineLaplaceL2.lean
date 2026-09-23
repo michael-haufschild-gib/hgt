@@ -30,13 +30,13 @@ def laplaceRay (φ : ℝ → ℂ) (w : ℂ) : ℂ := ∫ x in Ioi (0 : ℝ), φ 
 def laplaceRayTrunc (φ : ℝ → ℂ) (T : ℝ) (w : ℂ) : ℂ := ∫ x in Ioc (0 : ℝ) T, φ x * expRay w x
 
 /-- The `L²` mass of the datum on the ray. -/
-def rayL2Norm (φ : ℝ → ℂ) : ℝ := Real.sqrt (∫ x in Ioi (0 : ℝ), ‖φ x‖ ^ 2)
+def rayL2Norm (φ : ℝ → ℂ) : ℝ := Real.sqrt (∫ x in Ioi (0 : ℝ), ‖φ x‖ ^ (2 : ℕ))
 
 theorem rayL2Norm_nonneg (φ : ℝ → ℂ) : 0 ≤ rayL2Norm φ := Real.sqrt_nonneg _
 
 theorem integrableOn_norm_sq_of_memLp {φ : ℝ → ℂ}
     (hφ : MemLp φ 2 (volume.restrict (Ioi (0 : ℝ)))) :
-    IntegrableOn (fun x : ℝ => ‖φ x‖ ^ 2) (Ioi (0 : ℝ)) :=
+    IntegrableOn (fun x : ℝ => ‖φ x‖ ^ (2 : ℕ)) (Ioi (0 : ℝ)) :=
   (memLp_two_iff_integrable_sq_norm hφ.aestronglyMeasurable).1 hφ
 
 theorem integrableOn_laplaceRay {φ : ℝ → ℂ}
@@ -53,7 +53,7 @@ theorem norm_laplaceRay_tail_le {φ : ℝ → ℂ}
   have hsub : Ioi T ⊆ Ioi (0 : ℝ) := Ioi_subset_Ioi hT
   have hφT : MemLp φ 2 (volume.restrict (Ioi T)) :=
     hφ.mono_measure (Measure.restrict_mono hsub le_rfl)
-  have hsqT : IntegrableOn (fun x : ℝ => ‖φ x‖ ^ 2) (Ioi T) :=
+  have hsqT : IntegrableOn (fun x : ℝ => ‖φ x‖ ^ (2 : ℕ)) (Ioi T) :=
     (integrableOn_norm_sq_of_memLp hφ).mono_set hsub
   have hcs := integral_mul_le_sqrt_mul_sqrt_measure (μ := volume.restrict (Ioi T))
     hφT.aestronglyMeasurable ((continuous_expRay w).aestronglyMeasurable)
@@ -62,15 +62,15 @@ theorem norm_laplaceRay_tail_le {φ : ℝ → ℂ}
     refine le_trans (norm_integral_le_integral_norm _) (le_of_eq ?_)
     refine setIntegral_congr_fun measurableSet_Ioi (fun x _ => ?_)
     rw [norm_mul]
-  have hmono : Real.sqrt (∫ x in Ioi T, ‖φ x‖ ^ 2) ≤ rayL2Norm φ := by
+  have hmono : Real.sqrt (∫ x in Ioi T, ‖φ x‖ ^ (2 : ℕ)) ≤ rayL2Norm φ := by
     refine Real.sqrt_le_sqrt ?_
     refine setIntegral_mono_set (integrableOn_norm_sq_of_memLp hφ) ?_ (LE.le.eventuallyLE hsub)
     filter_upwards with x
     positivity
   calc ‖∫ x in Ioi T, φ x * expRay w x‖
       ≤ ∫ x in Ioi T, ‖φ x‖ * ‖expRay w x‖ := hnorm
-    _ ≤ Real.sqrt (∫ x in Ioi T, ‖φ x‖ ^ 2) * Real.sqrt (∫ x in Ioi T, ‖expRay w x‖ ^ 2) := hcs
-    _ = Real.sqrt (∫ x in Ioi T, ‖φ x‖ ^ 2)
+    _ ≤ Real.sqrt (∫ x in Ioi T, ‖φ x‖ ^ (2 : ℕ)) * Real.sqrt (∫ x in Ioi T, ‖expRay w x‖ ^ (2 : ℕ)) := hcs
+    _ = Real.sqrt (∫ x in Ioi T, ‖φ x‖ ^ (2 : ℕ))
           * (Real.exp (-(w.re * T)) / Real.sqrt (2 * w.re)) := by
         rw [sqrt_integral_norm_sq_expRay hw T]
     _ ≤ rayL2Norm φ * (Real.exp (-(w.re * T)) / Real.sqrt (2 * w.re)) := by

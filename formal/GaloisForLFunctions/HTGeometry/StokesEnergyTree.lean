@@ -25,25 +25,25 @@ theorem double_sum_mul {a b : ℕ} (f : Fin a → ℝ) (g : Fin b → ℝ) :
 
 /-- Pairwise squared-difference identity underlying conditional negative definiteness. -/
 theorem pair_square_sum_identity (x s : Fin n → ℝ) :
-    (∑ i, ∑ j, x i * x j * (s i - s j) ^ 2) =
-      2 * (∑ i, x i) * (∑ i, x i * (s i) ^ 2) -
-        2 * (∑ i, x i * s i) ^ 2 := by
+    (∑ i, ∑ j, x i * x j * (s i - s j) ^ (2 : ℕ)) =
+      2 * (∑ i, x i) * (∑ i, x i * (s i) ^ (2 : ℕ)) -
+        2 * (∑ i, x i * s i) ^ (2 : ℕ) := by
   calc
-    (∑ i, ∑ j, x i * x j * (s i - s j) ^ 2) =
-        ∑ i, ∑ j, (x i * x j * s i ^ 2 -
-          2 * (x i * s i) * (x j * s j) + x i * x j * s j ^ 2) := by
+    (∑ i, ∑ j, x i * x j * (s i - s j) ^ (2 : ℕ)) =
+        ∑ i, ∑ j, (x i * x j * s i ^ (2 : ℕ) -
+          2 * (x i * s i) * (x j * s j) + x i * x j * s j ^ (2 : ℕ)) := by
             apply Finset.sum_congr rfl
             intro i _
             apply Finset.sum_congr rfl
             intro j _
             ring
-    _ = (∑ i, x i * s i ^ 2) * (∑ j, x j) -
+    _ = (∑ i, x i * s i ^ (2 : ℕ)) * (∑ j, x j) -
           2 * ((∑ i, x i * s i) * (∑ j, x j * s j)) +
-          (∑ i, x i) * (∑ j, x j * s j ^ 2) := by
+          (∑ i, x i) * (∑ j, x j * s j ^ (2 : ℕ)) := by
             simp_rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
-            have hA : (∑ i, ∑ j, x i * x j * s i ^ 2) =
-                (∑ i, x i * s i ^ 2) * (∑ j, x j) := by
-              rw [← double_sum_mul (fun i => x i * s i ^ 2) x]
+            have hA : (∑ i, ∑ j, x i * x j * s i ^ (2 : ℕ)) =
+                (∑ i, x i * s i ^ (2 : ℕ)) * (∑ j, x j) := by
+              rw [← double_sum_mul (fun i => x i * s i ^ (2 : ℕ)) x]
               apply Finset.sum_congr rfl
               intro i _
               apply Finset.sum_congr rfl
@@ -59,22 +59,22 @@ theorem pair_square_sum_identity (x s : Fin n → ℝ) :
                 _ = 2 * ((∑ i, x i * s i) * (∑ j, x j * s j)) := by
                       rw [← Finset.mul_sum]
                       ring
-            have hC : (∑ i, ∑ j, x i * x j * s j ^ 2) =
-                (∑ i, x i) * (∑ j, x j * s j ^ 2) := by
-              rw [← double_sum_mul x (fun j => x j * s j ^ 2)]
+            have hC : (∑ i, ∑ j, x i * x j * s j ^ (2 : ℕ)) =
+                (∑ i, x i) * (∑ j, x j * s j ^ (2 : ℕ)) := by
+              rw [← double_sum_mul x (fun j => x j * s j ^ (2 : ℕ))]
               apply Finset.sum_congr rfl
               intro i _
               apply Finset.sum_congr rfl
               intro j _
               ring
             rw [hA, hB, hC]
-    _ = 2 * (∑ i, x i) * (∑ i, x i * (s i) ^ 2) -
-          2 * (∑ i, x i * s i) ^ 2 := by ring
+    _ = 2 * (∑ i, x i) * (∑ i, x i * (s i) ^ (2 : ℕ)) -
+          2 * (∑ i, x i * s i) ^ (2 : ℕ) := by ring
 
 /-- Zero-sum specialization of the pairwise squared-difference identity. -/
 theorem pair_square_sum_of_sum_zero (x s : Fin n → ℝ) (hx : ∑ i, x i = 0) :
-    (∑ i, ∑ j, x i * x j * (s i - s j) ^ 2) =
-      -2 * (∑ i, x i * s i) ^ 2 := by
+    (∑ i, ∑ j, x i * x j * (s i - s j) ^ (2 : ℕ)) =
+      -2 * (∑ i, x i * s i) ^ (2 : ℕ) := by
   rw [pair_square_sum_identity, hx]
   ring
 
@@ -87,7 +87,7 @@ namespace CutFamily
 
 /-- Squared cut distance. -/
 def dist (c : CutFamily n m) (i j : Fin n) : ℝ :=
-  ∑ e, c.length e * (c.side e i - c.side e j) ^ 2
+  ∑ e, c.length e * (c.side e i - c.side e j) ^ (2 : ℕ)
 
 /-- Conditional-negative-type quadratic form of a cut distance. -/
 def qform (c : CutFamily n m) (x : Fin n → ℝ) : ℝ :=
@@ -97,13 +97,13 @@ def qform (c : CutFamily n m) (x : Fin n → ℝ) : ℝ :=
 theorem qform_eq_edge_sum (c : CutFamily n m) (x : Fin n → ℝ) :
     c.qform x =
       ∑ e, c.length e * (∑ i, ∑ j, x i * x j *
-        (c.side e i - c.side e j) ^ 2) := by
+        (c.side e i - c.side e j) ^ (2 : ℕ)) := by
   simp only [qform, dist]
   calc
     (∑ i, ∑ j, x i * x j * ∑ e, c.length e *
-        (c.side e i - c.side e j) ^ 2) =
+        (c.side e i - c.side e j) ^ (2 : ℕ)) =
       ∑ i, ∑ j, ∑ e, c.length e *
-        (x i * x j * (c.side e i - c.side e j) ^ 2) := by
+        (x i * x j * (c.side e i - c.side e j) ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro i _
           apply Finset.sum_congr rfl
@@ -113,15 +113,15 @@ theorem qform_eq_edge_sum (c : CutFamily n m) (x : Fin n → ℝ) :
           intro e _
           ring
     _ = ∑ i, ∑ e, ∑ j, c.length e *
-        (x i * x j * (c.side e i - c.side e j) ^ 2) := by
+        (x i * x j * (c.side e i - c.side e j) ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro i _
           rw [Finset.sum_comm]
     _ = ∑ e, ∑ i, ∑ j, c.length e *
-        (x i * x j * (c.side e i - c.side e j) ^ 2) := by
+        (x i * x j * (c.side e i - c.side e j) ^ (2 : ℕ)) := by
           rw [Finset.sum_comm]
     _ = ∑ e, c.length e * (∑ i, ∑ j, x i * x j *
-        (c.side e i - c.side e j) ^ 2) := by
+        (c.side e i - c.side e j) ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           intro e _
           rw [Finset.mul_sum]
@@ -132,11 +132,11 @@ theorem qform_eq_edge_sum (c : CutFamily n m) (x : Fin n → ℝ) :
 /-- Exact edge-square expansion of the zero-sum quadratic form. -/
 theorem qform_eq_negative_edge_squares (c : CutFamily n m) (x : Fin n → ℝ)
     (hx : ∑ i, x i = 0) :
-    c.qform x = -2 * ∑ e, c.length e * (∑ i, x i * c.side e i) ^ 2 := by
+    c.qform x = -2 * ∑ e, c.length e * (∑ i, x i * c.side e i) ^ (2 : ℕ) := by
   rw [qform_eq_edge_sum]
   have hedge : ∀ e : Fin m,
-      (∑ i, ∑ j, x i * x j * (c.side e i - c.side e j) ^ 2) =
-        -2 * (∑ i, x i * c.side e i) ^ 2 := by
+      (∑ i, ∑ j, x i * x j * (c.side e i - c.side e j) ^ (2 : ℕ)) =
+        -2 * (∑ i, x i * c.side e i) ^ (2 : ℕ) := by
     intro e
     exact pair_square_sum_of_sum_zero x (c.side e) hx
   simp_rw [hedge]
@@ -190,7 +190,7 @@ theorem dist_pos_of_ne (c : PositivePendantCutFamily n m) {i j : Fin n} (hij : i
 
 /-- The explicit feature map realizes cut distance as squared Euclidean distance. -/
 theorem feature_sqDistance (c : PositivePendantCutFamily n m) (i j : Fin n) :
-    (∑ e, (c.feature i e - c.feature j e) ^ 2) = c.dist i j := by
+    (∑ e, (c.feature i e - c.feature j e) ^ (2 : ℕ)) = c.dist i j := by
   apply Finset.sum_congr rfl
   intro e _
   rw [show c.feature i e - c.feature j e =
@@ -215,7 +215,7 @@ theorem pendant_coordinate_sum (c : PositivePendantCutFamily n m) (x : Fin n →
 /-- Every nonzero coefficient vector has strictly positive edge energy. -/
 theorem positive_edge_energy (c : PositivePendantCutFamily n m) {x : Fin n → ℝ}
     (hx : x ≠ 0) :
-    0 < ∑ e, c.length e * (∑ i, x i * c.side e i) ^ 2 := by
+    0 < ∑ e, c.length e * (∑ i, x i * c.side e i) ^ (2 : ℕ) := by
   have hex : ∃ i, x i ≠ 0 := by
     by_contra h
     push Not at h
@@ -241,7 +241,7 @@ end PositivePendantCutFamily
 /-- Rooted positive cuts with idempotent side indicators and a root contact height. -/
 structure RootedCutContact (n m : ℕ) extends PositivePendantCutFamily n m where
   root : ℝ
-  side_idempotent : ∀ e i, side e i ^ 2 = side e i
+  side_idempotent : ∀ e i, side e i ^ (2 : ℕ) = side e i
 
 namespace RootedCutContact
 
@@ -279,12 +279,12 @@ theorem energy_eq_dist (c : RootedCutContact n m) (i j : Fin n) :
     c.energy i j = c.toPositivePendantCutFamily.dist i j := by
   simp only [energy, contact, PositivePendantCutFamily.dist, CutFamily.dist]
   have hterm : ∀ e : Fin m,
-      c.length e * (c.side e i - c.side e j) ^ 2 =
+      c.length e * (c.side e i - c.side e j) ^ (2 : ℕ) =
         c.length e * c.side e i + c.length e * c.side e j -
           2 * (c.length e * (c.side e i * c.side e j)) := by
     intro e
-    rw [show (c.side e i - c.side e j) ^ 2 =
-      c.side e i ^ 2 + c.side e j ^ 2 - 2 * c.side e i * c.side e j by ring]
+    rw [show (c.side e i - c.side e j) ^ (2 : ℕ) =
+      c.side e i ^ (2 : ℕ) + c.side e j ^ (2 : ℕ) - 2 * c.side e i * c.side e j by ring]
     rw [c.side_idempotent, c.side_idempotent]
     ring
   have hside : ∀ (e : Fin m) (k : Fin n), c.side e k * c.side e k = c.side e k := by
@@ -325,23 +325,23 @@ theorem energy_triangle (c : RootedCutContact n m) (i j k : Fin n) :
     ← Finset.sum_add_distrib]
   apply Finset.sum_le_sum
   intro e _
-  have hindicator : (c.side e i - c.side e k) ^ 2 ≤
-      (c.side e i - c.side e j) ^ 2 + (c.side e j - c.side e k) ^ 2 := by
+  have hindicator : (c.side e i - c.side e k) ^ (2 : ℕ) ≤
+      (c.side e i - c.side e j) ^ (2 : ℕ) + (c.side e j - c.side e k) ^ (2 : ℕ) := by
     nlinarith [c.side_idempotent e i, c.side_idempotent e j,
       c.side_idempotent e k, sq_nonneg (c.side e i - c.side e j),
       sq_nonneg (c.side e j - c.side e k)]
   calc
-    c.length e * (c.side e i - c.side e k) ^ 2 ≤
-        c.length e * ((c.side e i - c.side e j) ^ 2 +
-          (c.side e j - c.side e k) ^ 2) :=
+    c.length e * (c.side e i - c.side e k) ^ (2 : ℕ) ≤
+        c.length e * ((c.side e i - c.side e j) ^ (2 : ℕ) +
+          (c.side e j - c.side e k) ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hindicator (c.length_pos e).le
-    _ = c.length e * (c.side e i - c.side e j) ^ 2 +
-        c.length e * (c.side e j - c.side e k) ^ 2 := by ring
+    _ = c.length e * (c.side e i - c.side e j) ^ (2 : ℕ) +
+        c.length e * (c.side e j - c.side e k) ^ (2 : ℕ) := by ring
 
 /-- Explicit squared-Euclidean realization of Stokes energy. -/
 theorem energy_has_explicit_sqEmbedding (c : RootedCutContact n m) (i j : Fin n) :
     (∑ e, (c.toPositivePendantCutFamily.feature i e -
-      c.toPositivePendantCutFamily.feature j e) ^ 2) = c.energy i j := by
+      c.toPositivePendantCutFamily.feature j e) ^ (2 : ℕ)) = c.energy i j := by
   rw [c.energy_eq_dist]
   exact c.toPositivePendantCutFamily.feature_sqDistance i j
 
@@ -368,7 +368,7 @@ theorem energy_eq_absDist (c : RootedCutContact n m) (i j : Fin n) :
   rw [c.energy_eq_dist]
   simp only [PositivePendantCutFamily.dist, CutFamily.dist]
   refine Finset.sum_congr rfl fun e _ => ?_
-  have hsq : (c.side e i - c.side e j) ^ 2 = |c.side e i - c.side e j| := by
+  have hsq : (c.side e i - c.side e j) ^ (2 : ℕ) = |c.side e i - c.side e j| := by
     rcases c.side_eq_zero_or_one e i with hi | hi <;>
       rcases c.side_eq_zero_or_one e j with hj | hj <;>
         rw [hi, hj] <;> norm_num

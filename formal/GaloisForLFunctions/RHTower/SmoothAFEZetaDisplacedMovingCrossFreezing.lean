@@ -102,10 +102,10 @@ theorem norm_integral_conj_smoothAFEZetaDisplacedDirect_mul_freezingError_le
             (smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M t) *
           smoothAFEZetaDisplacedReflectedChiWeightedFreezingError lam d u L M t‖ ≤
       Real.sqrt (∫ t in a..b,
-          ‖smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M t‖ ^ 2) *
+          ‖smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M t‖ ^ (2 : ℕ)) *
         Real.sqrt (∫ t in a..b,
           ‖smoothAFEZetaDisplacedReflectedChiWeightedFreezingError
-            lam d u L M t‖ ^ 2) := by
+            lam d u L M t‖ ^ (2 : ℕ)) := by
   let D : ℝ → ℂ := smoothAFEZetaDisplacedMollifiedDirectHead lam d x L M
   let E : ℝ → ℂ := smoothAFEZetaDisplacedReflectedChiWeightedFreezingError lam d u L M
   have hD : Continuous D :=
@@ -126,8 +126,8 @@ theorem norm_integral_conj_smoothAFEZetaDisplacedDirect_mul_freezingError_le
         change ‖star (D t)‖ = ‖D t‖
         exact norm_star (D t)
       rw [hs]
-    _ ≤ Real.sqrt (∫ t in a..b, ‖D t‖ ^ 2) *
-          Real.sqrt (∫ t in a..b, ‖E t‖ ^ 2) :=
+    _ ≤ Real.sqrt (∫ t in a..b, ‖D t‖ ^ (2 : ℕ)) *
+          Real.sqrt (∫ t in a..b, ‖E t‖ ^ (2 : ℕ)) :=
       GaloisForLFunctions.HTGeometry.integral_norm_mul_norm_le_sqrt_mul_sqrt hD hE hab
 
 /-- The chi-weighted freezing-error energy inherits the uniform left-line chi envelope. -/
@@ -139,9 +139,9 @@ theorem exists_integral_smoothAFEZetaDisplacedReflectedChiWeightedFreezingError_
         u ∈ Set.Icc a b → b - a ≤ H → 2 * H ≤ T → 1 < M →
         (∫ t in a..b,
           ‖smoothAFEZetaDisplacedReflectedChiWeightedFreezingError
-            lam d u L M t‖ ^ 2) ≤
-          (K * (2 * T) ^ d) ^ 2 *
-            ((|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ 2 *
+            lam d u L M t‖ ^ (2 : ℕ)) ≤
+          (K * (2 * T) ^ d) ^ (2 : ℕ) *
+            ((|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ (2 : ℕ) *
               (‖((b - a : ℝ) : ℂ) *
                   smoothAFEZetaDisplacedReflectedBaseMollifiedDiagonal d L M‖ +
                 smoothAFEZetaDisplacedReflectedBaseMollifiedMeanError L M)) := by
@@ -161,23 +161,23 @@ theorem exists_integral_smoothAFEZetaDisplacedReflectedChiWeightedFreezingError_
     continuous_smoothAFEZetaDisplacedReflectedCombinedFreezingError
       hd hdhalf lam u L M
   have hpoint : ∀ t ∈ Set.Icc a b,
-      ‖smoothAFEZetaDisplacedReflectedChiWeightedFreezingError lam d u L M t‖ ^ 2 ≤
-        C ^ 2 * ‖E t‖ ^ 2 := by
+      ‖smoothAFEZetaDisplacedReflectedChiWeightedFreezingError lam d u L M t‖ ^ (2 : ℕ) ≤
+        C ^ (2 : ℕ) * ‖E t‖ ^ (2 : ℕ) := by
     intro t ht
     have htT : t ∈ Set.Icc T (2 * T) := ⟨haT.trans ht.1, ht.2.trans hbT⟩
     have hz := hchi d hd.le hdd₀ T t (by linarith) htT
     change ‖zetaChi (displacedLinePt d t)‖ ≤ C at hz
-    change ‖zetaChi (displacedLinePt d t) * E t‖ ^ 2 ≤ C ^ 2 * ‖E t‖ ^ 2
+    change ‖zetaChi (displacedLinePt d t) * E t‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) * ‖E t‖ ^ (2 : ℕ)
     rw [norm_mul]
-    have hsquare : ‖zetaChi (displacedLinePt d t)‖ ^ 2 ≤ C ^ 2 := by
+    have hsquare : ‖zetaChi (displacedLinePt d t)‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (zetaChi (displacedLinePt d t))]
     rw [mul_pow]
     exact mul_le_mul_of_nonneg_right hsquare (sq_nonneg ‖E t‖)
   have hmono :
       (∫ t in a..b,
         ‖smoothAFEZetaDisplacedReflectedChiWeightedFreezingError
-          lam d u L M t‖ ^ 2) ≤
-        ∫ t in a..b, C ^ 2 * ‖E t‖ ^ 2 := by
+          lam d u L M t‖ ^ (2 : ℕ)) ≤
+        ∫ t in a..b, C ^ (2 : ℕ) * ‖E t‖ ^ (2 : ℕ) := by
     exact intervalIntegral.integral_mono_on hab
       ((hweightedCont.norm.pow 2).intervalIntegrable a b)
       ((continuous_const.mul (hECont.norm.pow 2)).intervalIntegrable a b) hpoint
@@ -187,8 +187,8 @@ theorem exists_integral_smoothAFEZetaDisplacedReflectedChiWeightedFreezingError_
     integral_smoothAFEZetaDisplacedReflectedCombinedFreezingError_normSq_le_dyadic
       (lam := lam) hd hdquarter hT ⟨haT.trans huab.1, huab.2.trans hbT⟩
         hab huab hwidth hH L M hM
-  change C ^ 2 * (∫ t in a..b, ‖E t‖ ^ 2) ≤ C ^ 2 *
-    ((|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ 2 *
+  change C ^ (2 : ℕ) * (∫ t in a..b, ‖E t‖ ^ (2 : ℕ)) ≤ C ^ (2 : ℕ) *
+    ((|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ (2 : ℕ) *
       (‖((b - a : ℝ) : ℂ) *
           smoothAFEZetaDisplacedReflectedBaseMollifiedDiagonal d L M‖ +
         smoothAFEZetaDisplacedReflectedBaseMollifiedMeanError L M))
@@ -209,10 +209,10 @@ theorem exists_norm_integral_conj_smoothAFEZetaDisplacedDirect_mul_freezingError
           Real.sqrt
               (((b - a) + 8 * ((L * M : ℕ) : ℝ) * (1 + Real.log (L * M))) *
                 ∑ r : Fin (L * M),
-                  ‖smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M r‖ ^ 2) *
+                  ‖smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M r‖ ^ (2 : ℕ)) *
             Real.sqrt
-              ((K * (2 * T) ^ d) ^ 2 *
-                ((|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ 2 *
+              ((K * (2 * T) ^ d) ^ (2 : ℕ) *
+                ((|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ (2 : ℕ) *
                   (‖((b - a : ℝ) : ℂ) *
                       smoothAFEZetaDisplacedReflectedBaseMollifiedDiagonal d L M‖ +
                     smoothAFEZetaDisplacedReflectedBaseMollifiedMeanError L M))) := by
@@ -252,10 +252,10 @@ theorem exists_norm_integral_conj_smoothAFEZetaDisplacedDirect_mul_movingReflect
           Real.sqrt
               (((b - a) + 8 * ((L * M : ℕ) : ℝ) * (1 + Real.log (L * M))) *
                 ∑ r : Fin (L * M),
-                  ‖smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M r‖ ^ 2) *
+                  ‖smoothAFEZetaDisplacedDirectMollifiedCoeff lam d x L M r‖ ^ (2 : ℕ)) *
             Real.sqrt
-              ((K * (2 * T) ^ d) ^ 2 *
-                ((|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ 2 *
+              ((K * (2 * T) ^ d) ^ (2 : ℕ) *
+                ((|lam| * ((8 + 4 * Real.pi) * (1 + H) / T)) ^ (2 : ℕ) *
                   (‖((b - a : ℝ) : ℂ) *
                       smoothAFEZetaDisplacedReflectedBaseMollifiedDiagonal d L M‖ +
                     smoothAFEZetaDisplacedReflectedBaseMollifiedMeanError L M))) := by

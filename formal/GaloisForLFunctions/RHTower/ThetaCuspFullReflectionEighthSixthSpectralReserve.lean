@@ -33,20 +33,20 @@ theorem thetaCuspFullReflectionEighthCompactEighthCoefficient_pos
   have hA0 : (19 : ℝ) ≤ A0 := by
     simpa only [A0] using
       nineteen_le_thetaCuspBornWittenLogCurvature (n := 1) (by norm_num) hx
-  have hB0upper : B0 ≤ (6 / 5 : ℝ) * A0 ^ 2 := by
+  have hB0upper : B0 ≤ (6 / 5 : ℝ) * A0 ^ (2 : ℕ) := by
     simpa only [A0, B0] using
       thetaCuspBornWittenLogFourthDerivative_le_sixFifths_curvature_sq
         (n := 1) (by norm_num) hx
   have hWratio : (177 / 190 : ℝ) * A0 ≤ A0 - 13 / 10 := by
     nlinarith
-  have hratioSq : (177 / 190 : ℝ) ^ 2 * A0 ^ 2 ≤ (A0 - 13 / 10) ^ 2 := by
+  have hratioSq : (177 / 190 : ℝ) ^ (2 : ℕ) * A0 ^ (2 : ℕ) ≤ (A0 - 13 / 10) ^ (2 : ℕ) := by
     have hpow := pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ (177 / 190) * A0)
       hWratio 2
     simpa only [mul_pow] using hpow
-  have hcoef : (6 / 5 : ℝ) < 4 * (177 / 190) ^ 2 := by norm_num
-  have hA0sq : 0 < A0 ^ 2 := by positivity
-  have hstrict : (6 / 5 : ℝ) * A0 ^ 2 <
-      (4 * (177 / 190) ^ 2) * A0 ^ 2 :=
+  have hcoef : (6 / 5 : ℝ) < 4 * (177 / 190) ^ (2 : ℕ) := by norm_num
+  have hA0sq : 0 < A0 ^ (2 : ℕ) := by positivity
+  have hstrict : (6 / 5 : ℝ) * A0 ^ (2 : ℕ) <
+      (4 * (177 / 190) ^ (2 : ℕ)) * A0 ^ (2 : ℕ) :=
     mul_lt_mul_of_pos_right hcoef hA0sq
   dsimp only [thetaCuspFullReflectionEighthCompactEighthCoefficient]
   rw [← hA0profile, ← hB0profile]
@@ -60,12 +60,12 @@ def thetaCuspFullReflectionEighthSixthSpectralReserve (x : ℝ) : ℝ :=
   let e4 := thetaCuspLikelihoodSourceLogPartitionJetFour x
   let e6 := thetaCuspLikelihoodSourceLogPartitionJetSix x
   thetaCuspFirstAtomEighthNoSixthLossBaseline q +
-    e4 * (68 * e4 ^ 2 +
-      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 2 -
+    e4 * (68 * e4 ^ (2 : ℕ) +
+      (304 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (2 : ℕ) -
         204 * thetaCuspFirstAtomFourthProfile q) * e4 +
       thetaCuspFullReflectionEighthCompactFourthCoefficient q) +
     e6 * ((thetaCuspFullReflectionEighthCompactEighthCoefficient q + e4) *
-      (1 / 69) * A ^ 2 -
+      (1 / 69) * A ^ (2 : ℕ) -
       (thetaCuspFullReflectionEighthCompactSixthCoefficient q + e6))
 
 /-- The sixth-spectral reserve is a strict lower bound for the compact reserve. -/
@@ -84,7 +84,7 @@ theorem thetaCuspFullReflectionEighthSixthSpectralReserve_lt_compactReserve
     simpa only [e4] using thetaCuspLikelihoodSourceLogPartitionJetFour_pos hx
   have hcoef : 0 < thetaCuspFullReflectionEighthCompactEighthCoefficient q + e4 := by
     linarith
-  have hcoupling : (1 / 69 : ℝ) * A ^ 2 * e6 < e8 := by
+  have hcoupling : (1 / 69 : ℝ) * A ^ (2 : ℕ) * e6 < e8 := by
     simpa only [A, e6, e8] using
       oneSixtyNinth_mul_scale_sq_logJetSix_lt_logJetEight hx
   have hgain := mul_lt_mul_of_pos_left hcoupling hcoef

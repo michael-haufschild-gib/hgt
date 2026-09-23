@@ -28,21 +28,21 @@ theorem sq_second_observation_le_first_mul_third
     (hXnonneg : ∀ᵐ x ∂μ, 0 ≤ X x)
     (hρnonneg : ∀ᵐ x ∂μ, 0 ≤ ρ x)
     (hfirst : Integrable (fun x => X x * ρ x) μ)
-    (hthird : Integrable (fun x => X x ^ 3 * ρ x) μ) :
-    (∫ x, X x ^ 2 * ρ x ∂μ) ^ 2 ≤
-      (∫ x, X x * ρ x ∂μ) * ∫ x, X x ^ 3 * ρ x ∂μ := by
+    (hthird : Integrable (fun x => X x ^ (3 : ℕ) * ρ x) μ) :
+    (∫ x, X x ^ (2 : ℕ) * ρ x ∂μ) ^ (2 : ℕ) ≤
+      (∫ x, X x * ρ x ∂μ) * ∫ x, X x ^ (3 : ℕ) * ρ x ∂μ := by
   let f : α → ℝ := fun x => Real.sqrt (X x * ρ x)
   let g : α → ℝ := fun x => X x * Real.sqrt (X x * ρ x)
   have hsqrt : AEStronglyMeasurable (fun x => Real.sqrt (X x * ρ x)) μ :=
     (hX.mul hρ).aemeasurable.sqrt.aestronglyMeasurable
   have hfmeas : AEStronglyMeasurable f μ := hsqrt
   have hgmeas : AEStronglyMeasurable g μ := hX.mul hsqrt
-  have hf : Integrable (fun x => f x ^ 2) μ := by
+  have hf : Integrable (fun x => f x ^ (2 : ℕ)) μ := by
     apply hfirst.congr
     filter_upwards [hXnonneg, hρnonneg] with x hx hρx
     dsimp only [f]
     rw [Real.sq_sqrt (mul_nonneg hx hρx)]
-  have hg : Integrable (fun x => g x ^ 2) μ := by
+  have hg : Integrable (fun x => g x ^ (2 : ℕ)) μ := by
     apply hthird.congr
     filter_upwards [hXnonneg, hρnonneg] with x hx hρx
     dsimp only [g]
@@ -50,21 +50,21 @@ theorem sq_second_observation_le_first_mul_third
     ring
   have hcs := sq_integral_mul_le_integral_sq_mul_integral_sq
     hfmeas hgmeas hf hg
-  have hfg : (∫ x, f x * g x ∂μ) = ∫ x, X x ^ 2 * ρ x ∂μ := by
+  have hfg : (∫ x, f x * g x ∂μ) = ∫ x, X x ^ (2 : ℕ) * ρ x ∂μ := by
     apply integral_congr_ae
     filter_upwards [hXnonneg, hρnonneg] with x hx hρx
     dsimp only [f, g]
     rw [show Real.sqrt (X x * ρ x) *
           (X x * Real.sqrt (X x * ρ x)) =
-        X x * Real.sqrt (X x * ρ x) ^ 2 by ring,
+        X x * Real.sqrt (X x * ρ x) ^ (2 : ℕ) by ring,
       Real.sq_sqrt (mul_nonneg hx hρx)]
     ring
-  have hfsq : (∫ x, f x ^ 2 ∂μ) = ∫ x, X x * ρ x ∂μ := by
+  have hfsq : (∫ x, f x ^ (2 : ℕ) ∂μ) = ∫ x, X x * ρ x ∂μ := by
     apply integral_congr_ae
     filter_upwards [hXnonneg, hρnonneg] with x hx hρx
     dsimp only [f]
     rw [Real.sq_sqrt (mul_nonneg hx hρx)]
-  have hgsq : (∫ x, g x ^ 2 ∂μ) = ∫ x, X x ^ 3 * ρ x ∂μ := by
+  have hgsq : (∫ x, g x ^ (2 : ℕ) ∂μ) = ∫ x, X x ^ (3 : ℕ) * ρ x ∂μ := by
     apply integral_congr_ae
     filter_upwards [hXnonneg, hρnonneg] with x hx hρx
     dsimp only [g]
@@ -77,20 +77,20 @@ gives a closed square bound for the second moment. -/
 theorem sq_second_observation_le_six_budget_sq
     {m₁ m₂ m₃ S : ℝ}
     (hm₁ : 0 ≤ m₁) (hm₃ : 0 ≤ m₃)
-    (hlog : m₂ ^ 2 ≤ m₁ * m₃)
+    (hlog : m₂ ^ (2 : ℕ) ≤ m₁ * m₃)
     (hbudget : m₁ + m₃ / 24 ≤ S) :
-    m₂ ^ 2 ≤ 6 * S ^ 2 := by
+    m₂ ^ (2 : ℕ) ≤ 6 * S ^ (2 : ℕ) := by
   have hsum0 : 0 ≤ m₁ + m₃ / 24 := by positivity
   have hS0 : 0 ≤ S := hsum0.trans hbudget
-  have hprod : m₁ * m₃ ≤ 6 * (m₁ + m₃ / 24) ^ 2 := by
+  have hprod : m₁ * m₃ ≤ 6 * (m₁ + m₃ / 24) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (m₁ - m₃ / 24)]
-  have hsquare : (m₁ + m₃ / 24) ^ 2 ≤ S ^ 2 :=
+  have hsquare : (m₁ + m₃ / 24) ^ (2 : ℕ) ≤ S ^ (2 : ℕ) :=
     (sq_le_sq₀ hsum0 hS0).2 hbudget
   nlinarith
 
 /-- The first two positive terms in the `sinh` series. -/
 theorem self_add_cube_div_six_le_sinh {u : ℝ} (hu : 0 ≤ u) :
-    u + u ^ 3 / 6 ≤ Real.sinh u := by
+    u + u ^ (3 : ℕ) / 6 ≤ Real.sinh u := by
   rw [Real.sinh_eq_tsum]
   have hsum := (u.hasSum_sinh.summable).sum_le_tsum
     (Finset.range 2) (fun n _hn => by positivity)
@@ -100,13 +100,13 @@ theorem self_add_cube_div_six_le_sinh {u : ℝ} (hu : 0 ≤ u) :
 /-- Half-density scaling of the first two positive `sinh` terms. -/
 theorem self_add_cube_div_twenty_four_le_two_sinh_half
     {x : ℝ} (hx : 0 ≤ x) :
-    x + x ^ 3 / 24 ≤ 2 * Real.sinh (x / 2) := by
+    x + x ^ (3 : ℕ) / 24 ≤ 2 * Real.sinh (x / 2) := by
   have h := self_add_cube_div_six_le_sinh (u := x / 2) (by positivity)
   nlinarith
 
 /-- The first three nonnegative terms of the even exponential observation. -/
 theorem one_add_sq_div_two_add_fourth_div_twenty_four_le_cosh (u : ℝ) :
-    1 + u ^ 2 / 2 + u ^ 4 / 24 ≤ Real.cosh u := by
+    1 + u ^ (2 : ℕ) / 2 + u ^ (4 : ℕ) / 24 ≤ Real.cosh u := by
   rw [Real.cosh_eq_tsum]
   have hsum := (Real.hasSum_cosh u).summable.sum_le_tsum
     (Finset.range 3) (fun n _hn => by
@@ -117,7 +117,7 @@ theorem one_add_sq_div_two_add_fourth_div_twenty_four_le_cosh (u : ℝ) :
 
 /-- Half-density scaling of the first three nonnegative `cosh` terms. -/
 theorem one_add_sq_div_eight_add_fourth_div_384_le_cosh_half (x : ℝ) :
-    1 + x ^ 2 / 8 + x ^ 4 / 384 ≤ Real.cosh (x / 2) := by
+    1 + x ^ (2 : ℕ) / 8 + x ^ (4 : ℕ) / 384 ≤ Real.cosh (x / 2) := by
   have h := one_add_sq_div_two_add_fourth_div_twenty_four_le_cosh (x / 2)
   convert h using 1
   ring

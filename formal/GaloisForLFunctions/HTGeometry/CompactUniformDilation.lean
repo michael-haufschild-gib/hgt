@@ -228,7 +228,7 @@ theorem TendstoUniformlyOn.div_of_isCompact_of_ne_zero
   have hqupper : ∀ u ∈ K, ‖q u‖ < B := by
     intro u hu
     exact lt_of_le_of_lt (hv₀max hu) (lt_add_one _)
-  let C : ℝ := 2 / c + 2 * B / c ^ 2
+  let C : ℝ := 2 / c + 2 * B / c ^ (2 : ℕ)
   have hCpos : 0 < C := by
     dsimp [C]
     positivity
@@ -267,27 +267,27 @@ theorem TendstoUniformlyOn.div_of_isCompact_of_ne_zero
       _ = 2 * e / c := by field_simp [hcpos.ne']
   have hterm2 :
       ‖q u * (dseq n u - d u) / (dseq n u * d u)‖ <
-        2 * B * e / c ^ 2 := by
+        2 * B * e / c ^ (2 : ℕ) := by
     rw [norm_div, norm_mul, norm_mul]
     have hnum : ‖q u‖ * ‖dseq n u - d u‖ < B * e := by
       calc
         ‖q u‖ * ‖dseq n u - d u‖ ≤ B * ‖dseq n u - d u‖ :=
           mul_le_mul_of_nonneg_right (hqupper u hu).le (norm_nonneg _)
         _ < B * e := mul_lt_mul_of_pos_left hderr' hBpos
-    have hden : c ^ 2 / 2 < ‖dseq n u‖ * ‖d u‖ := by
+    have hden : c ^ (2 : ℕ) / 2 < ‖dseq n u‖ * ‖d u‖ := by
       have hdlo := hdlower u hu
       nlinarith [mul_lt_mul_of_pos_right hdnLower hcpos]
     have hdenpos : 0 < ‖dseq n u‖ * ‖d u‖ := mul_pos hdnpos hdpos
     have hdiv :
         ‖q u‖ * ‖dseq n u - d u‖ /
             (‖dseq n u‖ * ‖d u‖) <
-          (B * e) / (c ^ 2 / 2) :=
+          (B * e) / (c ^ (2 : ℕ) / 2) :=
       lt_trans (div_lt_div_of_pos_right hnum hdenpos)
         (div_lt_div_of_pos_left (mul_pos hBpos hepos) (by positivity) hden)
     calc
       ‖q u‖ * ‖dseq n u - d u‖ / (‖dseq n u‖ * ‖d u‖) <
-          B * e / (c ^ 2 / 2) := hdiv
-      _ = 2 * B * e / c ^ 2 := by field_simp [hcpos.ne']
+          B * e / (c ^ (2 : ℕ) / 2) := hdiv
+      _ = 2 * B * e / c ^ (2 : ℕ) := by field_simp [hcpos.ne']
   have hrewrite :
       q u / d u - qseq n u / dseq n u =
         (q u - qseq n u) / dseq n u +
@@ -301,7 +301,7 @@ theorem TendstoUniformlyOn.div_of_isCompact_of_ne_zero
         q u * (dseq n u - d u) / (dseq n u * d u)‖
         ≤ ‖(q u - qseq n u) / dseq n u‖ +
             ‖q u * (dseq n u - d u) / (dseq n u * d u)‖ := norm_add_le _ _
-    _ < 2 * e / c + 2 * B * e / c ^ 2 := add_lt_add hterm1 hterm2
+    _ < 2 * e / c + 2 * B * e / c ^ (2 : ℕ) := add_lt_add hterm1 hterm2
     _ = C * e := by dsimp [C]; ring
     _ ≤ C * (η / C) := mul_le_mul_of_nonneg_left heη hCpos.le
     _ = η := by field_simp [hCpos.ne']

@@ -94,7 +94,7 @@ theorem depolarizedStagHunt_criticalNoise_coupling
     (beta : ℝ) * depolarizedStagHuntInteraction (stagHuntCriticalNoise beta) =
       squareIsingCriticalCoupling := by
   rw [depolarizedStagHuntInteraction]
-  rw [show (1 - stagHuntCriticalNoise beta) ^ 2 =
+  rw [show (1 - stagHuntCriticalNoise beta) ^ (2 : ℕ) =
       stagHuntPostADAttenuation (stagHuntCriticalNoise beta) by rfl]
   have h := stagHuntCriticalNoise_attenuation_balance beta
   unfold phaseDampedCriticalInverseTemperature at h

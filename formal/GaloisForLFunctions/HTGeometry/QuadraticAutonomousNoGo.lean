@@ -68,7 +68,7 @@ theorem eq_const_of_deriv_eq_quadratic {gam a₁ a₂ : ℂ} (hgam : gam ≠ 0) 
       simpa using this.sub_const a₁
     have h2 := h1.inv (hsub z)
     have hne2 : (F z - a₁) ≠ 0 := hsub z
-    have h3 : -(gam * (F z - a₁) * (F z - a₂)) / (F z - a₁) ^ 2
+    have h3 : -(gam * (F z - a₁) * (F z - a₂)) / (F z - a₁) ^ (2 : ℕ)
         = alpha * (F z - a₁)⁻¹ + -gam := by
       rw [halpha, div_eq_iff (pow_ne_zero 2 hne2)]
       field_simp

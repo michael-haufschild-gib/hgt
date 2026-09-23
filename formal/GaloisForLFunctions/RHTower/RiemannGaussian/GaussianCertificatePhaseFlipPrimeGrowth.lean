@@ -44,7 +44,7 @@ theorem gaussianPrimePartialOscillationEnergy_phaseFlip_le_slopeMass
       _ = (Real.pi / ε) * |Real.log n| := by
         rw [sub_zero, abs_mul, abs_of_pos (div_pos Real.pi_pos hε)]
   have hexp : ∀ n : ℕ,
-      Real.exp (-(Real.log n) ^ 2 / (4 * ε)) ≤ 1 := by
+      Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε)) ≤ 1 := by
     intro n
     rw [Real.exp_le_one_iff]
     have hden : 0 ≤ 4 * ε := mul_nonneg (by norm_num) hε.le
@@ -68,11 +68,11 @@ theorem gaussianPrimePartialOscillationEnergy_phaseFlip_le_slopeMass
         calc
           (2 / Real.sqrt (Real.pi * ε)) *
               (ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-                Real.exp (-(Real.log n) ^ 2 / (4 * ε))) *
+                Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε))) *
               (1 - Real.cos ((Real.pi / ε) * Real.log n)) =
             (2 / Real.sqrt (Real.pi * ε)) *
               ((ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-                Real.exp (-(Real.log n) ^ 2 / (4 * ε))) *
+                Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε))) *
                 (1 - Real.cos ((Real.pi / ε) * Real.log n))) := by ring
           _ ≤ (2 / Real.sqrt (Real.pi * ε)) *
               ((ArithmeticFunction.vonMangoldt n / Real.sqrt n) *
@@ -80,10 +80,10 @@ theorem gaussianPrimePartialOscillationEnergy_phaseFlip_le_slopeMass
               apply mul_le_mul_of_nonneg_left _ hfactor
               calc
                 (ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-                    Real.exp (-(Real.log n) ^ 2 / (4 * ε))) *
+                    Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε))) *
                     (1 - Real.cos ((Real.pi / ε) * Real.log n)) =
                   (ArithmeticFunction.vonMangoldt n / Real.sqrt n) *
-                    (Real.exp (-(Real.log n) ^ 2 / (4 * ε)) *
+                    (Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε)) *
                       (1 - Real.cos ((Real.pi / ε) * Real.log n))) := by ring
                 _ ≤ (ArithmeticFunction.vonMangoldt n / Real.sqrt n) *
                     (1 * (1 - Real.cos ((Real.pi / ε) * Real.log n))) := by
@@ -110,7 +110,7 @@ theorem GaussianArithmeticWidthCertificate.phaseFlipPeak_le_digammaGain_add_slop
     {ε : ℝ} (certificate : GaussianArithmeticWidthCertificate ε)
     (hphaseRadius : Real.pi / ε ≤ certificate.compactRadius) :
     4 * Real.exp (ε / 4) +
-        4 * Real.exp (ε / 4 - Real.pi ^ 2 / ε) ≤
+        4 * Real.exp (ε / 4 - Real.pi ^ (2 : ℕ) / ε) ≤
       gaussianDigammaGain ε (Real.pi / ε) +
         2 * Real.pi / (ε * Real.sqrt (Real.pi * ε)) *
           gaussianPrimePhaseSlopeMass (Finset.range certificate.cutoff) := by

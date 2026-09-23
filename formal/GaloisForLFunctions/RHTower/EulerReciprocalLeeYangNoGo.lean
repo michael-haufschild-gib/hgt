@@ -23,7 +23,7 @@ noncomputable def reciprocalEulerPairCoefficient (a : ℝ) : ℝ :=
 /-- Positive reciprocal pairing lands at or beyond the Lee--Yang chamber boundary. -/
 theorem one_le_reciprocalEulerPairCoefficient {a : ℝ} (ha : 0 < a) :
     1 ≤ reciprocalEulerPairCoefficient a := by
-  have hid : a + a⁻¹ - 2 = (a - 1) ^ 2 / a := by
+  have hid : a + a⁻¹ - 2 = (a - 1) ^ (2 : ℕ) / a := by
     field_simp [ha.ne']
     ring
   have hnonneg : 0 ≤ a + a⁻¹ - 2 := by
@@ -37,7 +37,7 @@ theorem leeYangPairCircle_reciprocalEulerPair_iff {a : ℝ} (ha : 0 < a) :
     leeYangPairCircle (reciprocalEulerPairCoefficient a) ↔ a = 1 := by
   constructor
   · intro hcircle
-    have hle : reciprocalEulerPairCoefficient a ^ 2 ≤ 1 :=
+    have hle : reciprocalEulerPairCoefficient a ^ (2 : ℕ) ≤ 1 :=
       (leeYangPairCircle_iff _).mp hcircle
     have hge := one_le_reciprocalEulerPairCoefficient ha
     have hc : reciprocalEulerPairCoefficient a = 1 := by nlinarith

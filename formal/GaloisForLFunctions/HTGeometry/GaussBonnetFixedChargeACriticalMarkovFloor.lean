@@ -49,7 +49,7 @@ theorem egbFixedChargeACriticalMarkovMatrix_lower_floor
   let x := 2 * (egbFixedChargeAFourierGrid (n + 3) i - egbFixedChargeAFourierGrid (n + 3) j)
   have hc : -1 ≤ Real.cos x := Real.neg_one_le_cos x
   have h4 : Real.cos (4 * (egbFixedChargeAFourierGrid (n + 3) i -
-      egbFixedChargeAFourierGrid (n + 3) j)) = 2 * Real.cos x ^ 2 - 1 := by
+      egbFixedChargeAFourierGrid (n + 3) j)) = 2 * Real.cos x ^ (2 : ℕ) - 1 := by
     rw [show 4 * (egbFixedChargeAFourierGrid (n + 3) i - egbFixedChargeAFourierGrid (n + 3) j) =
       2 * x by dsimp [x]; ring, Real.cos_two_mul]
   rw [h4]
@@ -60,7 +60,7 @@ theorem egbFixedChargeACriticalMarkovMatrix_lower_floor
   have hp := mul_nonneg (by linarith : 0 ≤ 2 * (Real.cos x + 1)) hi
   change 1 - 2 * (2 / 3 : ℝ) ^ (m + 1) + 2 * (1 / 6 : ℝ) ^ (m + 1) ≤
     1 + 2 * (2 / 3 : ℝ) ^ (m + 1) * Real.cos x +
-      2 * (1 / 6 : ℝ) ^ (m + 1) * (2 * Real.cos x ^ 2 - 1)
+      2 * (1 / 6 : ℝ) ^ (m + 1) * (2 * Real.cos x ^ (2 : ℕ) - 1)
   nlinarith
 
 /-- Every pair of states has a positive transition floor from the second step onward. -/

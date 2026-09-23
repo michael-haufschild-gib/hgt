@@ -64,9 +64,9 @@ theorem complement_discriminant (P : Parameters) :
   simp only [complementParameters_modulus, complementParameters_q₀]
   ring
 
-theorem complexI_inv_pow_four : (Complex.I : ℂ)⁻¹ ^ 4 = 1 := by
+theorem complexI_inv_pow_four : (Complex.I : ℂ)⁻¹ ^ (4 : ℕ) = 1 := by
   rw [Complex.inv_I]
-  rw [show (-Complex.I : ℂ) ^ 4 = (Complex.I ^ 2) ^ 2 by ring]
+  rw [show (-Complex.I : ℂ) ^ (4 : ℕ) = (Complex.I ^ (2 : ℕ)) ^ (2 : ℕ) by ring]
   rw [Complex.I_sq]
   norm_num
 

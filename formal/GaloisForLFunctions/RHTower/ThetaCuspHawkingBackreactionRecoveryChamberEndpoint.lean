@@ -9,7 +9,7 @@ The preceding cubic-completion endpoint identifies the conditional-independence 
 
 and proves the exact repair identity
 
-`D(r*) - D(r) = K_yy (r* - r)^2`.
+`D(r*) - D(r) = K_yy (r* - r)^(2 : ℕ)`.
 
 Dempster covariance selection and Gaussian/Petz recovery explain `r*` as the unique
 maximum-determinant (maximum-entropy) completion.  That literature does not prove a Hawking system
@@ -24,7 +24,7 @@ remote-shell mixing.
 The entire chamber is classified by one quadratic inequality.  An affine repair of strength
 `s` has exact determinant gain
 
-`K_yy s (2-s) (r* - r)^2`
+`K_yy s (2-s) (r* - r)^(2 : ℕ)`
 
 and strengths compose by `s₁ + s₂ - s₁s₂`.  This supplies a canonical nonperturbative recovery
 flow, while keeping the physical open core honest: actual nonlinear theta-mirror dynamics must
@@ -40,7 +40,7 @@ noncomputable section
 theorem symmetricThreePointLongEdgeDet_nonneg_iff_passiveDistance
     (K : ℝ → ℝ → ℝ) {x y z r : ℝ} (hy : 0 < K y y) :
     0 ≤ symmetricThreePointLongEdgeDet K x y z r ↔
-      K y y * (threePointPassiveLongEdge K x y z - r) ^ 2 ≤
+      K y y * (threePointPassiveLongEdge K x y z - r) ^ (2 : ℕ) ≤
         symmetricThreePointLongEdgeDet K x y z
           (threePointPassiveLongEdge K x y z) := by
   have hrepair :=
@@ -68,9 +68,9 @@ theorem threePointPassiveLongEdge_unique_maximizer
       (x := x) (y := y) (z := z) (r := r) hy.ne'
   constructor
   · intro heq
-    have hzero : K y y * (threePointPassiveLongEdge K x y z - r) ^ 2 = 0 := by
+    have hzero : K y y * (threePointPassiveLongEdge K x y z - r) ^ (2 : ℕ) = 0 := by
       linarith
-    have hsquare : (threePointPassiveLongEdge K x y z - r) ^ 2 = 0 :=
+    have hsquare : (threePointPassiveLongEdge K x y z - r) ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hzero).resolve_left hy.ne'
     nlinarith
   · rintro rfl
@@ -81,8 +81,8 @@ theorem negativeLongEdge_to_passive_squaredDistance_lt
     (hy : 0 < K y y)
     (hraw : symmetricThreePointLongEdgeDet K x y z raw < 0)
     (hrepaired : 0 ≤ symmetricThreePointLongEdgeDet K x y z repaired) :
-    (repaired - threePointPassiveLongEdge K x y z) ^ 2 <
-      (raw - threePointPassiveLongEdge K x y z) ^ 2 := by
+    (repaired - threePointPassiveLongEdge K x y z) ^ (2 : ℕ) <
+      (raw - threePointPassiveLongEdge K x y z) ^ (2 : ℕ) := by
   have hrawRepair :=
     symmetricThreePointLongEdgeDet_passive_sub_eq_sq K
       (x := x) (y := y) (z := z) (r := raw) hy.ne'
@@ -133,7 +133,7 @@ theorem symmetricThreePointLongEdgeDet_affineBackreaction_sub_eq
         (threePointAffineBackreactionEdge K x y z strength raw) -
       symmetricThreePointLongEdgeDet K x y z raw =
     K y y * strength * (2 - strength) *
-      (threePointPassiveLongEdge K x y z - raw) ^ 2 := by
+      (threePointPassiveLongEdge K x y z - raw) ^ (2 : ℕ) := by
   have hraw :=
     symmetricThreePointLongEdgeDet_passive_sub_eq_sq K
       (x := x) (y := y) (z := z) (r := raw) hy
@@ -151,12 +151,12 @@ theorem symmetricThreePointLongEdgeDet_affineBackreaction_sub_eq
           (threePointPassiveLongEdge K x y z) -
         symmetricThreePointLongEdgeDet K x y z
           (threePointAffineBackreactionEdge K x y z strength raw)) := by ring
-    _ = K y y * (threePointPassiveLongEdge K x y z - raw) ^ 2 -
+    _ = K y y * (threePointPassiveLongEdge K x y z - raw) ^ (2 : ℕ) -
         K y y * (threePointPassiveLongEdge K x y z -
-          threePointAffineBackreactionEdge K x y z strength raw) ^ 2 := by
+          threePointAffineBackreactionEdge K x y z strength raw) ^ (2 : ℕ) := by
       rw [hraw, hnew]
     _ = K y y * strength * (2 - strength) *
-        (threePointPassiveLongEdge K x y z - raw) ^ 2 := by
+        (threePointPassiveLongEdge K x y z - raw) ^ (2 : ℕ) := by
       unfold threePointAffineBackreactionEdge
       ring
 
@@ -185,9 +185,9 @@ theorem thetaCuspHawking_passiveRepair_squaredDistance_lt
       (thetaCuspHawkingSelectiveModularGainKernel q rapidity) x y z < 0)
     (hrepaired : 0 ≤ symmetricThreePointLongEdgeDet
       (thetaCuspHawkingSelectiveModularGainKernel q rapidity) x y z repaired) :
-    (repaired - thetaCuspHawkingPassiveBackreactionEdge q rapidity x y z) ^ 2 <
+    (repaired - thetaCuspHawkingPassiveBackreactionEdge q rapidity x y z) ^ (2 : ℕ) <
       (thetaCuspHawkingSelectiveModularGainKernel q rapidity x z -
-        thetaCuspHawkingPassiveBackreactionEdge q rapidity x y z) ^ 2 := by
+        thetaCuspHawkingPassiveBackreactionEdge q rapidity x y z) ^ (2 : ℕ) := by
   apply negativeLongEdge_to_passive_squaredDistance_lt
   · exact xiSquaredEulerReweightedFullKernel_diag_pos q
       (thetaCuspHawkingModularGain_one_le rapidity) (hx.trans hxy)
@@ -246,10 +246,10 @@ theorem thetaCuspHawkingCausalHardy_passiveRepair_forces_contraction
       (thetaCuspHawkingCausalHardyStimulatedKernel mode hmode rapidity)
         x y z repaired) :
     (repaired - thetaCuspHawkingCausalHardyPassiveBackreactionEdge
-        mode hmode rapidity x y z) ^ 2 <
+        mode hmode rapidity x y z) ^ (2 : ℕ) <
       (thetaCuspHawkingCausalHardyStimulatedKernel mode hmode rapidity x z -
         thetaCuspHawkingCausalHardyPassiveBackreactionEdge
-          mode hmode rapidity x y z) ^ 2 ∧
+          mode hmode rapidity x y z) ^ (2 : ℕ) ∧
     0 < (repaired -
         thetaCuspHawkingCausalHardyStimulatedKernel mode hmode rapidity x z) *
       (thetaCuspHawkingCausalHardyPassiveBackreactionEdge
@@ -269,9 +269,9 @@ theorem exists_thetaCuspHawking_eventually_everyPassiveRepair_contracts
     ∃ R : ℝ, ∀ rapidity : ℝ, R ≤ rapidity → ∀ repaired : ℝ,
       0 ≤ symmetricThreePointLongEdgeDet
           (thetaCuspHawkingSelectiveModularGainKernel q rapidity) x y z repaired →
-        (repaired - thetaCuspHawkingPassiveBackreactionEdge q rapidity x y z) ^ 2 <
+        (repaired - thetaCuspHawkingPassiveBackreactionEdge q rapidity x y z) ^ (2 : ℕ) <
           (thetaCuspHawkingSelectiveModularGainKernel q rapidity x z -
-            thetaCuspHawkingPassiveBackreactionEdge q rapidity x y z) ^ 2 ∧
+            thetaCuspHawkingPassiveBackreactionEdge q rapidity x y z) ^ (2 : ℕ) ∧
         0 < (repaired -
             thetaCuspHawkingSelectiveModularGainKernel q rapidity x z) *
           (thetaCuspHawkingPassiveBackreactionEdge q rapidity x y z -

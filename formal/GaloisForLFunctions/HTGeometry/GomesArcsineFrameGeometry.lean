@@ -60,7 +60,7 @@ theorem gomesArcsineFrame_positive_metric_iff (n : ℕ) (x : ℝ) :
     (∃ B : Matrix (Fin 2) (Fin 2) ℝ, B.PosDef ∧
       (gomesJacobiStep (recurDiag normalizedCentralBinom n) (recurOff normalizedCentralBinom n) x)ᵀ * B *
         gomesJacobiStep (recurDiag normalizedCentralBinom n) (recurOff normalizedCentralBinom n) x = recurOff normalizedCentralBinom n • B) ↔
-      (x-recurDiag normalizedCentralBinom n)^2 < 4*recurOff normalizedCentralBinom n :=
+      (x-recurDiag normalizedCentralBinom n)^(2 : ℕ) < 4*recurOff normalizedCentralBinom n :=
   gomesJacobiStep_exists_positive_metric_iff _ _ _
 
 /-- The arcsine complex step's Hermitian defect detects exactly the closed upper half-plane. -/

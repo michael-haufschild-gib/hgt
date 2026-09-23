@@ -181,7 +181,7 @@ theorem criticalSourceRecip_eq_numerator_div
                 criticalSourceRaw K m n ⟨0, by omega⟩ ^ (i : ℕ) =
             criticalSourceRaw K m n ⟨0, by omega⟩ ^ (k + 2) := by
           calc
-            _ = criticalSourceRaw K m n ⟨0, by omega⟩ ^ 1 *
+            _ = criticalSourceRaw K m n ⟨0, by omega⟩ ^ (1 : ℕ) *
                   criticalSourceRaw K m n ⟨0, by omega⟩ ^ (k - (i : ℕ) + 1) *
                     criticalSourceRaw K m n ⟨0, by omega⟩ ^ (i : ℕ) := by rw [pow_one]
             _ = criticalSourceRaw K m n ⟨0, by omega⟩ ^

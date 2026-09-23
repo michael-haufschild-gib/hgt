@@ -86,7 +86,7 @@ theorem isGreatest_pow_mul_exp_neg_div (m : ℕ) {a : ℝ} (ha : 0 < a) :
 
 /-- Dai–Yoshikawa's `B := sup_{x≥0} x² e^{−x/2}`, evaluated: `B = 16 e^{−2}`. -/
 theorem isGreatest_sq_exp_neg_half :
-    IsGreatest ((fun x : ℝ => x ^ 2 * exp (-(x / 2))) '' Ici 0) (16 * exp (-2)) := by
+    IsGreatest ((fun x : ℝ => x ^ (2 : ℕ) * exp (-(x / 2))) '' Ici 0) (16 * exp (-2)) := by
   have h := isGreatest_pow_mul_exp_neg_div 2 (a := 2) (by norm_num)
   norm_num at h
   exact h
@@ -124,10 +124,10 @@ This is (2.10)–(2.13) of Dai–Yoshikawa with `c = 8`: there `s^{-(2n+1)} e^{�
 `B'_{2n+1} δ^{−2(2n+1)} e^{−δ²/(16 s)}`, and the constant produced here,
 `(16(2n+1))^{2n+1} e^{−(2n+1)}`, is exactly their `B'_{2n+1}`. -/
 theorem exp_neg_sq_div_div_pow_le (m : ℕ) {c δ s : ℝ} (hc : 0 < c) (hδ : 0 < δ) (hs : 0 < s) :
-    exp (-(δ ^ 2 / (c * s))) / s ^ m
+    exp (-(δ ^ (2 : ℕ) / (c * s))) / s ^ m
       ≤ ((m : ℝ) * (2 * c)) ^ m * exp (-(m : ℝ)) / δ ^ (2 * m)
-          * exp (-(δ ^ 2 / (2 * c * s))) := by
-  set y : ℝ := δ ^ 2 / s with hy
+          * exp (-(δ ^ (2 : ℕ) / (2 * c * s))) := by
+  set y : ℝ := δ ^ (2 : ℕ) / s with hy
   have hy0 : 0 ≤ y := by positivity
   have hδm : (0 : ℝ) < δ ^ (2 * m) := by positivity
   have hsm : (0 : ℝ) < s ^ m := by positivity
@@ -142,13 +142,13 @@ theorem exp_neg_sq_div_div_pow_le (m : ℕ) {c δ s : ℝ} (hc : 0 < c) (hδ : 0
       rw [hym]; field_simp
     rw [hrw]
     exact key
-  have hsplit : -(δ ^ 2 / (c * s)) = -(y / (2 * c)) + -(δ ^ 2 / (2 * c * s)) := by
+  have hsplit : -(δ ^ (2 : ℕ) / (c * s)) = -(y / (2 * c)) + -(δ ^ (2 : ℕ) / (2 * c * s)) := by
     rw [hy]; field_simp; ring
   rw [hsplit, Real.exp_add]
-  have hpos : (0 : ℝ) < exp (-(δ ^ 2 / (2 * c * s))) := exp_pos _
-  calc exp (-(y / (2 * c))) * exp (-(δ ^ 2 / (2 * c * s))) / s ^ m
-      = (exp (-(y / (2 * c))) / s ^ m) * exp (-(δ ^ 2 / (2 * c * s))) := by ring
+  have hpos : (0 : ℝ) < exp (-(δ ^ (2 : ℕ) / (2 * c * s))) := exp_pos _
+  calc exp (-(y / (2 * c))) * exp (-(δ ^ (2 : ℕ) / (2 * c * s))) / s ^ m
+      = (exp (-(y / (2 * c))) / s ^ m) * exp (-(δ ^ (2 : ℕ) / (2 * c * s))) := by ring
     _ ≤ (((m : ℝ) * (2 * c)) ^ m * exp (-(m : ℝ)) / δ ^ (2 * m))
-          * exp (-(δ ^ 2 / (2 * c * s))) := mul_le_mul_of_nonneg_right hstep hpos.le
+          * exp (-(δ ^ (2 : ℕ) / (2 * c * s))) := mul_le_mul_of_nonneg_right hstep hpos.le
 
 end GaloisForLFunctions.HTGeometry.DaiYoshikawa

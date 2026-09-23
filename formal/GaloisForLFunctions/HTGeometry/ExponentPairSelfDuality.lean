@@ -101,23 +101,23 @@ theorem procA_decreases_iff {κ lam : ℚ} (hκ : 0 ≤ κ) :
 /-- **The self-dual improvement threshold.**  On the locus `λ = κ + 1/2`, the criterion becomes the
 quadratic `8κ² + 4κ - 1 > 0`, whose positive root is `(√3 - 1)/4 = 0.18301…`. -/
 theorem procA_decreases_selfDual_iff {κ lam : ℚ} (hκ : 0 ≤ κ) (h : SelfDual κ lam) :
-    epSum (procA_fst κ) (procA_snd κ lam) < epSum κ lam ↔ 8*κ^2 + 4*κ - 1 > 0 := by
+    epSum (procA_fst κ) (procA_snd κ lam) < epSum κ lam ↔ 8*κ^(2 : ℕ) + 4*κ - 1 > 0 := by
   rw [procA_decreases_iff hκ]
   unfold SelfDual at h
   subst h
   constructor <;> intro hh <;> nlinarith [hh]
 
 /-- **Weyl's pair is below the threshold: `A` cannot improve it.** -/
-theorem weyl_below_threshold : ¬ (8*(1/6:ℚ)^2 + 4*(1/6) - 1 > 0) := by norm_num
+theorem weyl_below_threshold : ¬ (8*(1/6:ℚ)^(2 : ℕ) + 4*(1/6) - 1 > 0) := by norm_num
 
 /-- **Bourgain's record pair is below the threshold: `A` cannot improve it either.** -/
-theorem bourgain_below_threshold : ¬ (8*(13/84:ℚ)^2 + 4*(13/84) - 1 > 0) := by norm_num
+theorem bourgain_below_threshold : ¬ (8*(13/84:ℚ)^(2 : ℕ) + 4*(13/84) - 1 > 0) := by norm_num
 
 /-- **The threshold is monotone: the quadratic is increasing on `κ ≥ 0`, so once a self-dual pair
 falls below the threshold, every *better* self-dual pair falls further below it.**  Since `μ = κ`
 on the locus, improving `μ` moves strictly away from the region where `A` is useful. -/
 theorem threshold_monotone {κ κ' : ℚ} (hκ : 0 ≤ κ') (hlt : κ' < κ) :
-    8*κ'^2 + 4*κ' - 1 < 8*κ^2 + 4*κ - 1 := by nlinarith
+    8*κ'^(2 : ℕ) + 4*κ' - 1 < 8*κ^(2 : ℕ) + 4*κ - 1 := by nlinarith
 
 /-- **The barrier, assembled.**  For a self-dual exponent pair with `0 ≤ κ ≤ 13/84` — that is, any
 pair at least as good as the current record — the `A` process strictly *increases* `κ+λ`, hence
@@ -126,8 +126,8 @@ theorem vanDerCorput_inert_at_record {κ lam : ℚ} (hκ : 0 ≤ κ) (hrec : κ 
     (h : SelfDual κ lam) :
     ¬ (epSum (procA_fst κ) (procA_snd κ lam) < epSum κ lam) := by
   rw [procA_decreases_selfDual_iff hκ h]
-  have : 8*κ^2 + 4*κ - 1 ≤ 8*(13/84:ℚ)^2 + 4*(13/84) - 1 := by nlinarith
-  have hb : 8*(13/84:ℚ)^2 + 4*(13/84) - 1 < 0 := by norm_num
+  have : 8*κ^(2 : ℕ) + 4*κ - 1 ≤ 8*(13/84:ℚ)^(2 : ℕ) + 4*(13/84) - 1 := by nlinarith
+  have hb : 8*(13/84:ℚ)^(2 : ℕ) + 4*(13/84) - 1 < 0 := by norm_num
   linarith
 
 /-- **Restated in terms of `μ`.**  On the self-dual locus `μ = κ`, so the van der Corput `A` process
@@ -176,10 +176,10 @@ theorem record_chain_strictAnti :
 /-- **Every landmark pair is strictly below the `A`-inertness threshold.**  Equivalently, each of the
 four is a point at which the van der Corput `A` process strictly increases `κ+λ`. -/
 theorem all_records_below_threshold :
-    8*(1/6 : ℚ)^2 + 4*(1/6) - 1 < 0 ∧
-    8*(9/56 : ℚ)^2 + 4*(9/56) - 1 < 0 ∧
-    8*(32/205 : ℚ)^2 + 4*(32/205) - 1 < 0 ∧
-    8*(13/84 : ℚ)^2 + 4*(13/84) - 1 < 0 := by
+    8*(1/6 : ℚ)^(2 : ℕ) + 4*(1/6) - 1 < 0 ∧
+    8*(9/56 : ℚ)^(2 : ℕ) + 4*(9/56) - 1 < 0 ∧
+    8*(32/205 : ℚ)^(2 : ℕ) + 4*(32/205) - 1 < 0 ∧
+    8*(13/84 : ℚ)^(2 : ℕ) + 4*(13/84) - 1 < 0 := by
   refine ⟨by norm_num, by norm_num, by norm_num, by norm_num⟩
 
 /-- **`A`-inertness for any self-dual pair below `9/50 = 0.18`**, a rational bound strictly under the
@@ -189,8 +189,8 @@ theorem vanDerCorput_inert_below_threshold {κ lam : ℚ} (hκ : 0 ≤ κ) (hrec
     (h : SelfDual κ lam) :
     ¬ (epSum (procA_fst κ) (procA_snd κ lam) < epSum κ lam) := by
   rw [procA_decreases_selfDual_iff hκ h]
-  have : 8*κ^2 + 4*κ - 1 ≤ 8*(9/50:ℚ)^2 + 4*(9/50) - 1 := by nlinarith
-  have hb : 8*(9/50:ℚ)^2 + 4*(9/50) - 1 < 0 := by norm_num
+  have : 8*κ^(2 : ℕ) + 4*κ - 1 ≤ 8*(9/50:ℚ)^(2 : ℕ) + 4*(9/50) - 1 := by nlinarith
+  have hb : 8*(9/50:ℚ)^(2 : ℕ) + 4*(9/50) - 1 < 0 := by norm_num
   linarith
 
 /-- **`A` worsens each of the four landmark pairs.** -/
@@ -208,7 +208,7 @@ theorem vanDerCorput_inert_at_all_records :
 /-- The exponent-pair conjecture `κ = 0` is the extreme case: maximally far below the threshold.
 So the closer the subject gets to the Lindelöf hypothesis, the more inert `A` becomes. -/
 theorem conjecture_furthest_below_threshold {κ : ℚ} (hκ : 0 < κ) (hrec : κ ≤ 13/84) :
-    8*(0:ℚ)^2 + 4*0 - 1 < 8*κ^2 + 4*κ - 1 ∧ 8*κ^2 + 4*κ - 1 < 0 := by
+    8*(0:ℚ)^(2 : ℕ) + 4*0 - 1 < 8*κ^(2 : ℕ) + 4*κ - 1 ∧ 8*κ^(2 : ℕ) + 4*κ - 1 < 0 := by
   constructor
   · nlinarith
   · nlinarith
@@ -314,7 +314,7 @@ theorem lineMap_eq_epMu_procA {μ : ℚ} (hμ : 0 ≤ μ) :
 
 /-- The fixed points of `lineMap` are the roots of the threshold quadratic. -/
 theorem lineMap_fixed_iff {μ : ℚ} (hμ : 0 ≤ μ) :
-    lineMap μ = μ ↔ 8*μ^2 + 4*μ - 1 = 0 := by
+    lineMap μ = μ ↔ 8*μ^(2 : ℕ) + 4*μ - 1 = 0 := by
   have h8 : (8*μ + 8) ≠ 0 := by positivity
   unfold lineMap
   rw [div_eq_iff h8]
@@ -322,7 +322,7 @@ theorem lineMap_fixed_iff {μ : ℚ} (hμ : 0 ≤ μ) :
 
 /-- **`lineMap` decreases `μ` exactly above the threshold, and increases it exactly below.** -/
 theorem lineMap_lt_iff {μ : ℚ} (hμ : 0 ≤ μ) :
-    lineMap μ < μ ↔ 8*μ^2 + 4*μ - 1 > 0 := by
+    lineMap μ < μ ↔ 8*μ^(2 : ℕ) + 4*μ - 1 > 0 := by
   have h8 : (0:ℚ) < 8*μ + 8 := by positivity
   unfold lineMap
   rw [div_lt_iff₀ h8]
@@ -330,7 +330,7 @@ theorem lineMap_lt_iff {μ : ℚ} (hμ : 0 ≤ μ) :
 
 /-- **`lineMap` strictly increases `μ` below the threshold.**  In particular the composite makes
 every record strictly worse. -/
-theorem lineMap_gt_of_below {μ : ℚ} (hμ : 0 ≤ μ) (h : 8*μ^2 + 4*μ - 1 < 0) : μ < lineMap μ := by
+theorem lineMap_gt_of_below {μ : ℚ} (hμ : 0 ≤ μ) (h : 8*μ^(2 : ℕ) + 4*μ - 1 < 0) : μ < lineMap μ := by
   have h8 : (0:ℚ) < 8*μ + 8 := by positivity
   unfold lineMap
   rw [lt_div_iff₀ h8]
@@ -364,7 +364,7 @@ to `1/5`.  The iteration continues to decrease, but is trapped above `(√3-1)/4
 
 /-- The threshold quadratic is negative at `9/50 = 0.18` and positive at `1/5 = 0.2`, so the fixed
 point `(√3-1)/4` lies strictly between them; every landmark `μ` is below `9/50`. -/
-theorem threshold_between : 8*(9/50:ℚ)^2 + 4*(9/50) - 1 < 0 ∧ 8*(1/5:ℚ)^2 + 4*(1/5) - 1 > 0 := by
+theorem threshold_between : 8*(9/50:ℚ)^(2 : ℕ) + 4*(9/50) - 1 < 0 ∧ 8*(1/5:ℚ)^(2 : ℕ) + 4*(1/5) - 1 > 0 := by
   constructor <;> norm_num
 
 end HTGeometry
@@ -437,7 +437,7 @@ theorem procA_ge_relaxedStep {κ lam : ℚ} (hκ : 0 ≤ κ) (hlam : 1/2 ≤ lam
 /-- Fixed points of the relaxed step are the roots of `16μ² + 4μ - 1`; the positive root is
 `(√5 - 1)/8 = 0.15450849…`. -/
 theorem relaxedStep_fixed_iff {μ : ℚ} (hμ : 0 ≤ μ) :
-    relaxedStep μ = μ ↔ 16*μ^2 + 4*μ - 1 = 0 := by
+    relaxedStep μ = μ ↔ 16*μ^(2 : ℕ) + 4*μ - 1 = 0 := by
   have h : (0:ℚ) < 16*μ + 8 := by linarith
   unfold relaxedStep
   rw [div_eq_iff (ne_of_gt h)]
@@ -445,7 +445,7 @@ theorem relaxedStep_fixed_iff {μ : ℚ} (hμ : 0 ≤ μ) :
 
 /-- **The floor.**  Below the positive root of `16μ²+4μ-1`, the relaxed step strictly *increases*
 `μ`; so the chain can never descend past `(√5-1)/8`. -/
-theorem relaxedStep_gt_of_below {μ : ℚ} (hμ : 0 ≤ μ) (h : 16*μ^2 + 4*μ - 1 < 0) :
+theorem relaxedStep_gt_of_below {μ : ℚ} (hμ : 0 ≤ μ) (h : 16*μ^(2 : ℕ) + 4*μ - 1 < 0) :
     μ < relaxedStep μ := by
   have hd : (0:ℚ) < 16*μ + 8 := by linarith
   unfold relaxedStep
@@ -455,7 +455,7 @@ theorem relaxedStep_gt_of_below {μ : ℚ} (hμ : 0 ≤ μ) (h : 16*μ^2 + 4*μ 
 /-- The floor `(√5-1)/8` is bracketed: `16μ²+4μ-1` is negative at `309/2000 = 0.1545` and positive
 at `17/110 = 0.15454…`, so `0.1545 < (√5-1)/8 < 17/110`.  Every chain term stays above it. -/
 theorem floor_brackets :
-    16*(309/2000:ℚ)^2 + 4*(309/2000) - 1 < 0 ∧ 16*(17/110:ℚ)^2 + 4*(17/110) - 1 > 0 := by
+    16*(309/2000:ℚ)^(2 : ℕ) + 4*(309/2000) - 1 < 0 ∧ 16*(17/110:ℚ)^(2 : ℕ) + 4*(17/110) - 1 > 0 := by
   constructor <;> norm_num
 
 /-- **The floor is pinned between two consecutive chain terms.**  Since the threshold quadratic is

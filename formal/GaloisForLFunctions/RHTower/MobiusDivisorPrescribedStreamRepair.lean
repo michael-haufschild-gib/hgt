@@ -24,8 +24,8 @@ private lemma physical_displacement_bound (M : ℕ) (P L : Finset ℕ) {R : ℝ}
       |∑ p ∈ L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}| ≤ 2*R*Real.sqrt M := by
   let z : ℝ × ℝ := ∑ p ∈ L,mobiusDivisorTwoPlanePacket M p P
   have hr : 0<Real.sqrt (M:ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast hM)
-  have hsq : z.1^2+z.2^2 ≤ R^2 := by
-    have hs : (planeDisplacementRadius z)^2 ≤ R^2 :=
+  have hsq : z.1^(2 : ℕ)+z.2^(2 : ℕ) ≤ R^(2 : ℕ) := by
+    have hs : (planeDisplacementRadius z)^(2 : ℕ) ≤ R^(2 : ℕ) :=
       (sq_le_sq₀ (Real.sqrt_nonneg _) hR).mpr hz
     dsimp only [planeDisplacementRadius] at hs
     rw [Real.sq_sqrt (by positivity)] at hs
@@ -57,7 +57,7 @@ theorem exists_mobiusDivisor_prescribed_stream_repair :
         let M := 14*(b+1)*N
         ∀ P : Finset ℕ,mobiusDivisorCoupledTwoCore ⊆ P → 2 ∉ P →
           (∀ p ∈ mobiusDivisorCoupledTwoPool b N,p ∉ P) →
-          mobiusDivisorSuccessorEnvelope M P ≤ C*(M:ℝ)^2 →
+          mobiusDivisorSuccessorEnvelope M P ≤ C*(M:ℝ)^(2 : ℕ) →
           ∀ t : List ℕ,t.Nodup →
             (∀ p ∈ t,p.Prime ∧ p<M ∧ p ∉ P ∧ 15 ≤ p ∧ M/p ≤ 14) →
             (K+1)*t.length+⌈A*Real.sqrt M⌉₊ ≤ mobiusDivisorCoupledTwoCapacity b N-1 →
@@ -67,21 +67,21 @@ theorem exists_mobiusDivisor_prescribed_stream_repair :
               (∀ k : ℕ,
                 |∑ p ∈ (l.take k).toFinset, Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅|+
                 |∑ p ∈ (l.take k).toFinset, Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}| ≤ H*Real.sqrt M) ∧
-              (∀ k : ℕ,mobiusDivisorSuccessorEnvelope M (P ∪ (l.take k).toFinset) ≤ C'*(M:ℝ)^2) ∧
+              (∀ k : ℕ,mobiusDivisorSuccessorEnvelope M (P ∪ (l.take k).toFinset) ≤ C'*(M:ℝ)^(2 : ℕ)) ∧
               mobiusDivisorSuccessorEnvelope M (P ∪ l.toFinset)+(M:ℝ) ≤ mobiusDivisorSuccessorEnvelope M P := by
   obtain ⟨b,c,d,hb,hc,hd,hgeometry⟩ := exists_mobiusDivisorTwoPlaneWindowGeometry
   obtain ⟨K,hK⟩ := exists_nat_ge (72/c)
   have hKpay : 18 ≤ (K:ℝ)*c/4 := by
     have hh := (div_le_iff₀ hc).mp hK
     nlinarith
-  let R : ℝ := 4*9^2/c+2*9+c
+  let R : ℝ := 4*9^(2 : ℕ)/c+2*9+c
   let H : ℝ := 2*(R+18)
   have hR : 0<R := by dsimp [R]; positivity
   have hH : 0<H := by dsimp [H]; positivity
   refine ⟨b,K,H,hb,hH,?_⟩
   intro C hC
-  let A : ℝ := (2*Real.sqrt C*H+H^2+1)/d
-  let C' : ℝ := C+2*Real.sqrt C*H+H^2
+  let A : ℝ := (2*Real.sqrt C*H+H^(2 : ℕ)+1)/d
+  let C' : ℝ := C+2*Real.sqrt C*H+H^(2 : ℕ)
   have hA : 0<A := by dsimp [A]; positivity
   have hC' : 0<C' := by dsimp [C']; positivity
   refine ⟨A,C',hA,hC',?_⟩
@@ -179,14 +179,14 @@ theorem exists_mobiusDivisor_prescribed_stream_repair :
       exact ⟨hpp,hpm,hfresh p hpw,hp15,by dsimp [M]; omega⟩
   have hbase : ∀ L ⊆ l.toFinset,
       mobiusDivisorSuccessorEnvelope M (P ∪ L)+
-        min (∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2))
-          (∑ p ∈ L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2) ≤
+        min (∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)))
+          (∑ p ∈ L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) ≤
       mobiusDivisorSuccessorEnvelope M P+
         2*Real.sqrt (mobiusDivisorSuccessorEnvelope M P)*
           (|∑ p ∈ L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅|+
            |∑ p ∈ L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}|)+
           (|∑ p ∈ L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅|+
-           |∑ p ∈ L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}|)^2 := by
+           |∑ p ∈ L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}|)^(2 : ℕ) := by
     intro L hL
     apply mobiusDivisorSuccessorEnvelope_two_block_reserve_error M P L hM
     · intro p hp
@@ -211,14 +211,14 @@ theorem exists_mobiusDivisor_prescribed_stream_repair :
       exact List.mem_toFinset.mpr (List.mem_of_mem_take (List.mem_toFinset.mp hp))
     have he := hbase L hL
     have hmin : 0 ≤ min
-        (∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+(mobiusDivisorInterpolatedFibre M p P {2})^2))
-        (∑ p ∈ L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^2) := by positivity
+        (∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+(mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)))
+        (∑ p ∈ L,(p:ℝ)*(mobiusDivisorInterpolatedFibre M p P ∅+mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by positivity
     let D := |∑ p ∈ L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅|+
       |∑ p ∈ L,Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}|
     have hD0 : 0 ≤ D := by dsimp [D]; positivity
     have hsE : Real.sqrt (mobiusDivisorSuccessorEnvelope M P) ≤ Real.sqrt C*(M:ℝ) := by
       calc
-        _ ≤ Real.sqrt (C*(M:ℝ)^2) := Real.sqrt_le_sqrt hE
+        _ ≤ Real.sqrt (C*(M:ℝ)^(2 : ℕ)) := Real.sqrt_le_sqrt hE
         _ = _ := by rw [Real.sqrt_mul hC.le,Real.sqrt_sq (Nat.cast_nonneg M)]
     have hrootM : Real.sqrt M ≤ (M:ℝ) := by
       apply Real.sqrt_le_iff.mpr
@@ -229,7 +229,7 @@ theorem exists_mobiusDivisor_prescribed_stream_repair :
     have hlin := mul_le_mul (mul_le_mul_of_nonneg_left hsE (by norm_num : (0:ℝ) ≤ 2)) hDM hD0 (by positivity)
     have hquad := (sq_le_sq₀ hD0 (by positivity : 0 ≤ H*(M:ℝ))).mpr hDM
     change mobiusDivisorSuccessorEnvelope M (P ∪ L)+_ ≤ mobiusDivisorSuccessorEnvelope M P+
-      2*Real.sqrt (mobiusDivisorSuccessorEnvelope M P)*D+D^2 at he
+      2*Real.sqrt (mobiusDivisorSuccessorEnvelope M P)*D+D^(2 : ℕ) at he
     dsimp [C']
     nlinarith only [he,hmin,hE,hlin,hquad]
   · have he := hbase l.toFinset Subset.rfl
@@ -258,7 +258,7 @@ theorem eventually_mobiusDivisor_prescribed_stream_repair :
         let M := 14*(b+1)*N
         ∀ P : Finset ℕ, mobiusDivisorCoupledTwoCore ⊆ P → 2 ∉ P →
           (∀ p ∈ mobiusDivisorCoupledTwoPool b N, p ∉ P) →
-          mobiusDivisorSuccessorEnvelope M P ≤ C*(M:ℝ)^2 →
+          mobiusDivisorSuccessorEnvelope M P ≤ C*(M:ℝ)^(2 : ℕ) →
           ∀ t : List ℕ, t.Nodup →
             (∀ p ∈ t, p.Prime ∧ p < M ∧ p ∉ P ∧ 15 ≤ p ∧ M/p ≤ 14) →
             2*(K+1)*t.length ≤ mobiusDivisorCoupledTwoCapacity b N-1 →
@@ -268,7 +268,7 @@ theorem eventually_mobiusDivisor_prescribed_stream_repair :
               (∀ k : ℕ,
                 |∑ p ∈ (l.take k).toFinset, Real.sqrt p*mobiusDivisorInterpolatedFibre M p P ∅|+
                 |∑ p ∈ (l.take k).toFinset, Real.sqrt p*mobiusDivisorInterpolatedFibre M p P {2}| ≤ H*Real.sqrt M) ∧
-              (∀ k : ℕ, mobiusDivisorSuccessorEnvelope M (P ∪ (l.take k).toFinset) ≤ C'*(M:ℝ)^2) ∧
+              (∀ k : ℕ, mobiusDivisorSuccessorEnvelope M (P ∪ (l.take k).toFinset) ≤ C'*(M:ℝ)^(2 : ℕ)) ∧
               mobiusDivisorSuccessorEnvelope M (P ∪ l.toFinset)+(M:ℝ) ≤ mobiusDivisorSuccessorEnvelope M P := by
   obtain ⟨b,K,H,hb,hH,hrepair⟩ := exists_mobiusDivisor_prescribed_stream_repair
   refine ⟨b,K,H,hb,hH,?_⟩

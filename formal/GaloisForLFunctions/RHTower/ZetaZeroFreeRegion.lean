@@ -21,7 +21,7 @@ namespace RHTower
 open Set
 
 /-- The zero-free constant `1/(2·27·28·224⁴)`. -/
-def zetaZeroFreeC : ℝ := 1 / (2 * (27 * 28 * 224 ^ 4))
+def zetaZeroFreeC : ℝ := 1 / (2 * (27 * 28 * 224 ^ (4 : ℕ)))
 
 theorem zetaZeroFreeC_pos : 0 < zetaZeroFreeC := by
   rw [zetaZeroFreeC]
@@ -39,7 +39,7 @@ theorem norm_riemannZeta_le_of_zero {β σ' t : ℝ} (ht : 9 ≤ |t|)
     (hσ2 : σ' ≤ 3 / 2)
     (hzero : riemannZeta (↑β + ↑t * Complex.I) = 0) :
     ‖riemannZeta (↑σ' + ↑t * Complex.I)‖
-      ≤ 112 * Real.log |t| ^ 2 * (σ' - β) := by
+      ≤ 112 * Real.log |t| ^ (2 : ℕ) * (σ' - β) := by
   have ht0 : (0 : ℝ) < |t| := by linarith
   have htne : t ≠ 0 := by
     intro h
@@ -69,7 +69,7 @@ theorem norm_riemannZeta_le_of_zero {β σ' t : ℝ} (ht : 9 ≤ |t|)
     fun u _ => (hf u).differentiableAt.differentiableWithinAt
   have hbound : ∀ u ∈ Set.Ico β σ',
       ‖derivWithin (fun v : ℝ => riemannZeta (↑v + ↑t * Complex.I))
-        (Set.Icc β σ') u‖ ≤ 112 * Real.log |t| ^ 2 := by
+        (Set.Icc β σ') u‖ ≤ 112 * Real.log |t| ^ (2 : ℕ) := by
     intro u hu
     rw [(hf u).hasDerivWithinAt.derivWithin
       ((uniqueDiffOn_Icc hβσ) u (Set.mem_Icc_of_Ico hu))]
@@ -85,7 +85,7 @@ set_option maxHeartbeats 3200000 in
 /-- **The de la Vallée Poussin zero-free region**:
 `ζ(β+it) ≠ 0` for `|t| ≥ 9` and `β > 1 − c/log⁹|t|`. -/
 theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
-    (hβ : 1 - zetaZeroFreeC / Real.log |t| ^ 9 < β) :
+    (hβ : 1 - zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) < β) :
     riemannZeta (↑β + ↑t * Complex.I) ≠ 0 := by
   intro hzero
   have ht0 : (0 : ℝ) < |t| := by linarith
@@ -96,9 +96,9 @@ theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
       Real.log_lt_log (Real.exp_pos 2) (by linarith)
     rwa [Real.log_exp] at h1
   have hL0 : (0 : ℝ) < Real.log |t| := by linarith
-  have hL9 : (2 : ℝ) ^ 9 < Real.log |t| ^ 9 := by
+  have hL9 : (2 : ℝ) ^ (9 : ℕ) < Real.log |t| ^ (9 : ℕ) := by
     exact pow_lt_pow_left₀ hlogt2 (by norm_num) (by norm_num)
-  have hL90 : (0 : ℝ) < Real.log |t| ^ 9 := by positivity
+  have hL90 : (0 : ℝ) < Real.log |t| ^ (9 : ℕ) := by positivity
   -- `β < 1` (else mathlib's nonvanishing applies)
   have hβ1 : β < 1 := by
     by_contra h
@@ -107,32 +107,32 @@ theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
       simp [Complex.add_re, Complex.mul_re]
     exact riemannZeta_ne_zero_of_one_le_re (by rw [hre]; exact h) hzero
   -- the working scale
-  have hx0 : (0 : ℝ) < zetaZeroFreeC / Real.log |t| ^ 9 :=
+  have hx0 : (0 : ℝ) < zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) :=
     div_pos zetaZeroFreeC_pos hL90
-  have hx1 : zetaZeroFreeC / Real.log |t| ^ 9 ≤ 1 := by
-    calc zetaZeroFreeC / Real.log |t| ^ 9
-        ≤ zetaZeroFreeC / 2 ^ 9 := by
+  have hx1 : zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) ≤ 1 := by
+    calc zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)
+        ≤ zetaZeroFreeC / 2 ^ (9 : ℕ) := by
           apply div_le_div_of_nonneg_left zetaZeroFreeC_pos.le
             (by norm_num) hL9.le
       _ ≤ 1 := by
           have := zetaZeroFreeC_le_half
           rw [zetaZeroFreeC] at *
           norm_num
-  have hxhalf : zetaZeroFreeC / Real.log |t| ^ 9 ≤ 1 / 2 := by
-    calc zetaZeroFreeC / Real.log |t| ^ 9
-        ≤ zetaZeroFreeC / 2 ^ 9 := by
+  have hxhalf : zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) ≤ 1 / 2 := by
+    calc zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)
+        ≤ zetaZeroFreeC / 2 ^ (9 : ℕ) := by
           apply div_le_div_of_nonneg_left zetaZeroFreeC_pos.le
             (by norm_num) hL9.le
       _ ≤ 1 / 2 := by
           rw [zetaZeroFreeC]
           norm_num
   have hβfloor : 1 - 1 / (4 * Real.log |t|) ≤ β := by
-    have h1 : zetaZeroFreeC / Real.log |t| ^ 9
+    have h1 : zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)
         ≤ 1 / (4 * Real.log |t|) := by
       rw [div_le_div_iff₀ hL90 (by positivity)]
-      have h2 : Real.log |t| ^ 9 = Real.log |t| ^ 8 * Real.log |t| := by
+      have h2 : Real.log |t| ^ (9 : ℕ) = Real.log |t| ^ (8 : ℕ) * Real.log |t| := by
         ring
-      have h3 : (2 : ℝ) ^ 8 ≤ Real.log |t| ^ 8 :=
+      have h3 : (2 : ℝ) ^ (8 : ℕ) ≤ Real.log |t| ^ (8 : ℕ) :=
         pow_le_pow_left₀ (by norm_num) hlogt2.le 8
       have h4 : zetaZeroFreeC * (4 * Real.log |t|)
           ≤ 4 * Real.log |t| := by
@@ -140,35 +140,35 @@ theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
       nlinarith [hL0]
     linarith
   -- the mean value at `σ' := 1 + x`
-  have hmid : ‖riemannZeta (((1 + zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ)
+  have hmid : ‖riemannZeta (((1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
       + ↑t * Complex.I)‖
-      ≤ 224 * (zetaZeroFreeC / Real.log |t| ^ 9)
-        * Real.log |t| ^ 2 := by
+      ≤ 224 * (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ))
+        * Real.log |t| ^ (2 : ℕ) := by
     have h1 := norm_riemannZeta_le_of_zero ht hβfloor
-      (show β < 1 + zetaZeroFreeC / Real.log |t| ^ 9 by linarith)
+      (show β < 1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) by linarith)
       (by linarith) hzero
     refine le_trans h1 ?_
-    have h2 : 1 + zetaZeroFreeC / Real.log |t| ^ 9 - β
-        ≤ 2 * (zetaZeroFreeC / Real.log |t| ^ 9) := by
+    have h2 : 1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) - β
+        ≤ 2 * (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)) := by
       linarith
     nlinarith [sq_nonneg (Real.log |t|), hx0]
   -- the pole bound
-  have hpole : ‖riemannZeta (1 + ((zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ))‖
-      ≤ 3 / (zetaZeroFreeC / Real.log |t| ^ 9) := by
+  have hpole : ‖riemannZeta (1 + ((zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ))‖
+      ≤ 3 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)) := by
     have h1 := abs_riemannZeta_one_add_le hx0
-    have h2 : 1 / (zetaZeroFreeC / Real.log |t| ^ 9) + 2
-        ≤ 3 / (zetaZeroFreeC / Real.log |t| ^ 9) := by
-      have h3 : 2 ≤ 2 / (zetaZeroFreeC / Real.log |t| ^ 9) := by
+    have h2 : 1 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)) + 2
+        ≤ 3 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)) := by
+      have h3 : 2 ≤ 2 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)) := by
         rw [le_div_iff₀ hx0]
         linarith
-      have h4 : 1 / (zetaZeroFreeC / Real.log |t| ^ 9)
-          + 2 / (zetaZeroFreeC / Real.log |t| ^ 9)
-          = 3 / (zetaZeroFreeC / Real.log |t| ^ 9) := by
+      have h4 : 1 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ))
+          + 2 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ))
+          = 3 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)) := by
         ring
       linarith
     linarith
   -- the height-`2t` bound
-  have hhigh : ‖riemannZeta (((1 + zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ)
+  have hhigh : ‖riemannZeta (((1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
       + ((2 * t : ℝ) : ℂ) * Complex.I)‖ ≤ 28 * Real.log |t| := by
     have h2t : (8 : ℝ) ≤ |2 * t| := by
       rw [abs_mul]
@@ -176,17 +176,17 @@ theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
       linarith
     have h2t0 : (0 : ℝ) < |2 * t| := by linarith
     have h1 := abs_riemannZeta_le_log h2t
-      (show 1 - 1 / Real.log |2 * t| ≤ 1 + zetaZeroFreeC / Real.log |t| ^ 9 by
+      (show 1 - 1 / Real.log |2 * t| ≤ 1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) by
         have h2 : (0 : ℝ) < Real.log |2 * t| := by
           have := Real.log_le_log (by norm_num : (0:ℝ) < 8) h2t
           have h3 : (0:ℝ) < Real.log 8 := Real.log_pos (by norm_num)
           linarith
         have h4 : 0 < 1 / Real.log |2 * t| := by positivity
         linarith)
-      (show 1 + zetaZeroFreeC / Real.log |t| ^ 9 ≤ 2 by linarith)
+      (show 1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) ≤ 2 by linarith)
     refine le_trans h1 ?_
     have h5 : Real.log |2 * t| ≤ 2 * Real.log |t| := by
-      have h6 : |2 * t| ≤ |t| ^ 2 := by
+      have h6 : |2 * t| ≤ |t| ^ (2 : ℕ) := by
         rw [abs_mul]
         simp only [abs_two]
         nlinarith
@@ -197,51 +197,51 @@ theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
   have hprod := norm_zeta_product_ge_one hx0 t
   rw [norm_mul, norm_mul, norm_pow, norm_pow] at hprod
   -- align the three arguments
-  have harg1 : (1 : ℂ) + ((zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ)
-      = 1 + ((zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ) := rfl
-  have harg2 : (1 : ℂ) + ((zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ)
+  have harg1 : (1 : ℂ) + ((zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
+      = 1 + ((zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ) := rfl
+  have harg2 : (1 : ℂ) + ((zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
       + Complex.I * ↑t
-      = ((1 + zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ) + (t : ℂ) * Complex.I := by
+      = ((1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ) + (t : ℂ) * Complex.I := by
     push_cast
     ring
-  have harg3 : (1 : ℂ) + ((zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ)
+  have harg3 : (1 : ℂ) + ((zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
       + 2 * Complex.I * ↑t
-      = ((1 + zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ)
+      = ((1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
         + ((2 * t : ℝ) : ℂ) * Complex.I := by
     push_cast
     ring
   rw [harg2, harg3] at hprod
   -- the bounded product
   have hnn1 : (0 : ℝ) ≤ ‖riemannZeta (1
-      + ((zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ))‖ := norm_nonneg _
+      + ((zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ))‖ := norm_nonneg _
   have hnn2 : (0 : ℝ) ≤ ‖riemannZeta
-      (((1 + zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ) + ↑t * Complex.I)‖ :=
+      (((1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ) + ↑t * Complex.I)‖ :=
     norm_nonneg _
   have hnn3 : (0 : ℝ) ≤ ‖riemannZeta
-      (((1 + zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ)
+      (((1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
         + ((2 * t : ℝ) : ℂ) * Complex.I)‖ := norm_nonneg _
   have hb1 := pow_le_pow_left₀ hnn1 hpole 3
   have hb2 := pow_le_pow_left₀ hnn2 hmid 4
-  have hchain : ‖riemannZeta (1 + ((zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ))‖ ^ 3
-      * ‖riemannZeta (((1 + zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ)
-          + ↑t * Complex.I)‖ ^ 4
-      * ‖riemannZeta (((1 + zetaZeroFreeC / Real.log |t| ^ 9 : ℝ) : ℂ)
+  have hchain : ‖riemannZeta (1 + ((zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ))‖ ^ (3 : ℕ)
+      * ‖riemannZeta (((1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
+          + ↑t * Complex.I)‖ ^ (4 : ℕ)
+      * ‖riemannZeta (((1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
           + ((2 * t : ℝ) : ℂ) * Complex.I)‖
-      ≤ (3 / (zetaZeroFreeC / Real.log |t| ^ 9)) ^ 3
-        * (224 * (zetaZeroFreeC / Real.log |t| ^ 9)
-            * Real.log |t| ^ 2) ^ 4
+      ≤ (3 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ))) ^ (3 : ℕ)
+        * (224 * (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ))
+            * Real.log |t| ^ (2 : ℕ)) ^ (4 : ℕ)
         * (28 * Real.log |t|) := by
     apply mul_le_mul
     · apply mul_le_mul hb1 hb2 (by positivity) (by positivity)
     · exact hhigh
     · exact norm_nonneg _
     · positivity
-  have hfinal : (3 / (zetaZeroFreeC / Real.log |t| ^ 9)) ^ 3
-      * (224 * (zetaZeroFreeC / Real.log |t| ^ 9)
-          * Real.log |t| ^ 2) ^ 4
+  have hfinal : (3 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ))) ^ (3 : ℕ)
+      * (224 * (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ))
+          * Real.log |t| ^ (2 : ℕ)) ^ (4 : ℕ)
       * (28 * Real.log |t|) = 1 / 2 := by
     have hc0 : zetaZeroFreeC ≠ 0 := ne_of_gt zetaZeroFreeC_pos
-    have hL90' : Real.log |t| ^ 9 ≠ 0 := ne_of_gt hL90
+    have hL90' : Real.log |t| ^ (9 : ℕ) ≠ 0 := ne_of_gt hL90
     rw [zetaZeroFreeC]
     rw [zetaZeroFreeC] at hc0
     field_simp

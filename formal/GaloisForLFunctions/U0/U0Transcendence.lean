@@ -60,7 +60,7 @@ theorem lens_starConvex (z₀ : ℂ) (hz₀ : ‖z₀‖ = 1) {ρ : ℝ} (hρ : 
     have hζρ : normSq ζ < ρ ^ 2 := by
       have hb : ‖ζ‖ < ρ := by rw [hζ, ← dist_eq_norm]; rwa [mem_ball] at hyball
       rw [Complex.normSq_eq_norm_sq]; nlinarith [norm_nonneg ζ, hb]
-    have hncomb : normSq (A • z₀ + t • ζ) = A^2 + t^2 * normSq ζ + 2 * A * t * c := by
+    have hncomb : normSq (A • z₀ + t • ζ) = A^(2 : ℕ) + t^(2 : ℕ) * normSq ζ + 2 * A * t * c := by
       rw [Complex.real_smul, Complex.real_smul, Complex.normSq_add, Complex.normSq_mul,
         Complex.normSq_mul, Complex.normSq_ofReal, Complex.normSq_ofReal, hz₀sq]
       have hre : ((A:ℂ) * z₀ * (starRingEnd ℂ) ((t:ℂ) * ζ)).re = A * t * c := by
@@ -74,7 +74,7 @@ theorem lens_starConvex (z₀ : ℂ) (hz₀ : ‖z₀‖ = 1) {ρ : ℝ} (hρ : 
     have hbracket : 0 < ρ * (A + 1) / 2 - normSq ζ * t * (1 + ρ / 2) := by
       nlinarith [hζρ, hA1, ht0, ht1, hρ, hρ2, normSq_nonneg ζ,
         mul_nonneg (normSq_nonneg ζ) ht0, mul_le_mul_of_nonneg_left hρ2 hρ.le]
-    have key_id : A^2 + t^2 * normSq ζ + 2 * A * t * c
+    have key_id : A^(2 : ℕ) + t^(2 : ℕ) * normSq ζ + 2 * A * t * c
         = 1 + (1 - t) * (ρ * (A + 1) / 2 - normSq ζ * t * (1 + ρ / 2))
           + A * t * (2 * c + normSq ζ) := by rw [hA]; ring
     have hkey : 1 < normSq (A • z₀ + t • ζ) := by

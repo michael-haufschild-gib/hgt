@@ -309,7 +309,7 @@ theorem probabilityAdmissionTail_hasSum :
       probabilityAdmissionRatio_norm_lt_one).mul_left probabilityAdmissionRatio
   have hsum :
       probabilityAdmissionRatio *
-        (probabilityAdmissionRatio / (1 - probabilityAdmissionRatio) ^ 2) = 1 := by
+        (probabilityAdmissionRatio / (1 - probabilityAdmissionRatio) ^ (2 : ℕ)) = 1 := by
     norm_num [probabilityAdmissionRatio]
   rw [← hsum]
   exact hg.congr (fun n => by

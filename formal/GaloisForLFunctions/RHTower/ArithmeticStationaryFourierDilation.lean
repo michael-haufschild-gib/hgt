@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.PrimeSquareMobiusDensityFracture
 /-!
 # Exact dilation and finite inversion of the stationary Fourier source
 
-The literal scaled Bernoulli atom satisfies `A(s,N,d*k) = A(s,d*N,k)/d^2`.
+The literal scaled Bernoulli atom satisfies `A(s,N,d*k) = A(s,d*N,k)/d^(2 : ℕ)`.
 Consequently, the finite stationary sector is the weighted multiples transform
 of the first negative harmonic at integer anchors. Existing finite aperture
 Möbius inversion recovers that complex profile exactly on its stationary carrier.
@@ -24,7 +24,7 @@ namespace RHTower.DeletionMixedRefinement
 
 /-- Integer frequency dilation contributes the exact inverse-square Bernoulli weight. -/
 theorem bernoulliModeWeight_mul (d : ℕ) (k : ℤ) :
-    bernoulliModeWeight ((d:ℤ)*k) = bernoulliModeWeight k/(d:ℝ)^2 := by
+    bernoulliModeWeight ((d:ℤ)*k) = bernoulliModeWeight k/(d:ℝ)^(2 : ℕ) := by
   simp only [bernoulliModeWeight, Int.cast_mul, Int.cast_natCast, mul_pow, div_div]
   congr 1
   ring
@@ -43,7 +43,7 @@ theorem bernoulliFourierTerm_dilation (s : ℂ) {d : ℕ} (hd : 1 ≤ d) (k : �
     bernoulliFourierTerm ((d:ℤ)*k) s x = (d:ℂ)^s * bernoulliFourierTerm k s ((d:ℝ)*x) := by
   have hdR : (0:ℝ) < d := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hd)
   have hdC : (d:ℂ) ≠ 0 := by exact_mod_cast hdR.ne'
-  have hp : (d:ℂ)^s*(d:ℂ)^(-s-2) = 1/(d:ℂ)^2 := by
+  have hp : (d:ℂ)^s*(d:ℂ)^(-s-2) = 1/(d:ℂ)^(2 : ℕ) := by
     rw [← Complex.cpow_add _ _ hdC, show s+(-s-2)=-(2:ℂ) by ring,
       Complex.cpow_neg, Complex.cpow_two, one_div]
   have hm := Complex.mul_cpow_ofReal_nonneg hdR.le hx.le (-s-2)
@@ -74,7 +74,7 @@ theorem integral_bernoulliFourierTerm_dilation (s : ℂ) {d : ℕ} (hd : 1 ≤ d
 /-- Frequency and integer anchor enter the scaled source through their product. -/
 theorem scaledBernoulliFourierAtom_dilation (s : ℂ) {d : ℕ} (hd : 1 ≤ d)
     (N : ℕ) (k : ℤ) :
-    scaledBernoulliFourierAtom s N ((d:ℤ)*k) = scaledBernoulliFourierAtom s (d*N) k/(d:ℂ)^2 := by
+    scaledBernoulliFourierAtom s N ((d:ℤ)*k) = scaledBernoulliFourierAtom s (d*N) k/(d:ℂ)^(2 : ℕ) := by
   have hdC : (d:ℂ) ≠ 0 := by exact_mod_cast (by omega : d ≠ 0)
   have hp : (d:ℂ)^(star s+1) = (d:ℂ)^(star s)*(d:ℂ) := by
     rw [Complex.cpow_add _ _ hdC, Complex.cpow_one]
@@ -91,7 +91,7 @@ def negativeFourierSection (s : ℂ) (N K : ℕ) : ℂ :=
 /-- Every finite negative-frequency section is a weighted multiples sum of the first harmonic. -/
 theorem negativeFourierSection_dilation (s : ℂ) (N K : ℕ) :
     negativeFourierSection s N K =
-      ∑ k ∈ Finset.Icc 1 K, scaledBernoulliFourierAtom s (k*N) (-1)/(k:ℂ)^2 := by
+      ∑ k ∈ Finset.Icc 1 K, scaledBernoulliFourierAtom s (k*N) (-1)/(k:ℂ)^(2 : ℕ) := by
   unfold negativeFourierSection
   apply Finset.sum_congr rfl
   intro k hk
@@ -101,7 +101,7 @@ theorem negativeFourierSection_dilation (s : ℂ) (N K : ℕ) :
 /-- Existing finite aperture inversion recovers the literal first negative harmonic. -/
 theorem negativeFourierSection_mobius_inversion (s : ℂ) (N : ℕ) {K : ℕ} (hK : 1 ≤ K) :
     (∑ d ∈ Finset.Icc 1 K, (ArithmeticFunction.moebius d : ℂ) *
-      negativeFourierSection s (d*N) (K/d)/(d:ℂ)^2) = scaledBernoulliFourierAtom s N (-1) := by
+      negativeFourierSection s (d*N) (K/d)/(d:ℂ)^(2 : ℕ)) = scaledBernoulliFourierAtom s N (-1) := by
   have h := RHTower.finiteApertureMobiusReconstruction_eq hK
     (fun k => scaledBernoulliFourierAtom s N (-(k:ℤ)))
   unfold RHTower.finiteApertureMobiusReconstruction RHTower.finiteApertureRaySum at h
@@ -164,7 +164,7 @@ theorem stationary_frequency_cutoff_mul (t : ℝ) (d N : ℕ) :
 theorem stationaryComplexBudget_mobius_inversion (s : ℂ) (N : ℕ)
     (hactive : 1 ≤ ⌊s.im/(2*Real.pi*N)⌋₊) :
     (∑ d ∈ Finset.Icc 1 ⌊s.im/(2*Real.pi*N)⌋₊, (ArithmeticFunction.moebius d : ℂ) *
-      stationaryComplexBudget s (d*N)/(d:ℂ)^2) = scaledBernoulliFourierAtom s N (-1) := by
+      stationaryComplexBudget s (d*N)/(d:ℂ)^(2 : ℕ)) = scaledBernoulliFourierAtom s N (-1) := by
   simp only [stationaryComplexBudget, Nat.cast_mul, stationary_frequency_cutoff_mul]
   exact negativeFourierSection_mobius_inversion s N hactive
 
@@ -172,15 +172,15 @@ theorem stationaryComplexBudget_mobius_inversion (s : ℂ) (N : ℕ)
 theorem stationaryFourierBudget_mobius_inversion {s : ℂ} (ht : 0 ≤ s.im) {N : ℕ} (hN : 1 ≤ N)
     (hactive : 1 ≤ ⌊s.im/(2*Real.pi*N)⌋₊) :
     (∑ d ∈ Finset.Icc 1 ⌊s.im/(2*Real.pi*N)⌋₊, (ArithmeticFunction.moebius d : ℝ) *
-      stationaryFourierBudget s (d*N)/(d:ℝ)^2) = (scaledBernoulliFourierAtom s N (-1)).im := by
+      stationaryFourierBudget s (d*N)/(d:ℝ)^(2 : ℕ)) = (scaledBernoulliFourierAtom s N (-1)).im := by
   have h := congrArg Complex.im (stationaryComplexBudget_mobius_inversion s N hactive)
   rw [Complex.im_sum] at h
   rw [← h]
   apply Finset.sum_congr rfl
   intro d hd
   have hdN : 1 ≤ d*N := Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by have := (Finset.mem_Icc.mp hd).1; omega) (by omega))
-  have he : (ArithmeticFunction.moebius d : ℂ) * stationaryComplexBudget s (d*N)/(d:ℂ)^2 =
-      (((ArithmeticFunction.moebius d : ℝ)/(d:ℝ)^2):ℝ) * stationaryComplexBudget s (d*N) := by
+  have he : (ArithmeticFunction.moebius d : ℂ) * stationaryComplexBudget s (d*N)/(d:ℂ)^(2 : ℕ) =
+      (((ArithmeticFunction.moebius d : ℝ)/(d:ℝ)^(2 : ℕ)):ℝ) * stationaryComplexBudget s (d*N) := by
     push_cast
     ring
   rw [he]
@@ -192,7 +192,7 @@ theorem stationaryFourierBudget_mobius_inversion {s : ℂ} (ht : 0 ≤ s.im) {N 
 theorem stationaryComplexBudget_dilation (s : ℂ) (N : ℕ) :
     stationaryComplexBudget s N =
       ∑ d ∈ Finset.Icc 1 ⌊s.im/(2*Real.pi*N)⌋₊,
-        scaledBernoulliFourierAtom s (d*N) (-1)/(d:ℂ)^2 :=
+        scaledBernoulliFourierAtom s (d*N) (-1)/(d:ℂ)^(2 : ℕ) :=
   negativeFourierSection_dilation s N _
 
 /-- The actual real budget retains the imaginary first-harmonic values and their inverse-square weights. -/
@@ -200,13 +200,13 @@ theorem stationaryFourierBudget_dilation {s : ℂ} (ht : 0 ≤ s.im)
     {N : ℕ} (hN : 1 ≤ N) :
     stationaryFourierBudget s N =
       ∑ d ∈ Finset.Icc 1 ⌊s.im/(2*Real.pi*N)⌋₊,
-        (scaledBernoulliFourierAtom s (d*N) (-1)).im/(d:ℝ)^2 := by
+        (scaledBernoulliFourierAtom s (d*N) (-1)).im/(d:ℝ)^(2 : ℕ) := by
   rw [← stationaryComplexBudget_im ht hN, stationaryComplexBudget_dilation,
     Complex.im_sum]
   apply Finset.sum_congr rfl
   intro d hd
-  have he : scaledBernoulliFourierAtom s (d*N) (-1)/(d:ℂ)^2 =
-      (((1:ℝ)/(d:ℝ)^2):ℝ)*scaledBernoulliFourierAtom s (d*N) (-1) := by
+  have he : scaledBernoulliFourierAtom s (d*N) (-1)/(d:ℂ)^(2 : ℕ) =
+      (((1:ℝ)/(d:ℝ)^(2 : ℕ)):ℝ)*scaledBernoulliFourierAtom s (d*N) (-1) := by
     push_cast
     ring
   rw [he]
@@ -246,7 +246,7 @@ theorem stationaryFirstHarmonic_eq_zero {s : ℂ} {N : ℕ} (hN : 1 ≤ N)
 /-- The finite complex inverse recovers the truncated profile, including inactive anchors. -/
 theorem stationaryComplexBudget_mobius_reconstruction (s : ℂ) (N : ℕ) :
     (∑ d ∈ Finset.Icc 1 ⌊s.im/(2*Real.pi*N)⌋₊,
-      (ArithmeticFunction.moebius d : ℂ)*stationaryComplexBudget s (d*N)/(d:ℂ)^2) =
+      (ArithmeticFunction.moebius d : ℂ)*stationaryComplexBudget s (d*N)/(d:ℂ)^(2 : ℕ)) =
       stationaryFirstHarmonic s N := by
   by_cases hactive : 1 ≤ ⌊s.im/(2*Real.pi*N)⌋₊
   · simpa [stationaryFirstHarmonic, hactive] using
@@ -258,7 +258,7 @@ theorem stationaryComplexBudget_mobius_reconstruction (s : ℂ) (N : ℕ) :
 theorem stationaryFourierBudget_mobius_reconstruction {s : ℂ} (ht : 0 ≤ s.im)
     {N : ℕ} (hN : 1 ≤ N) :
     (∑ d ∈ Finset.Icc 1 ⌊s.im/(2*Real.pi*N)⌋₊,
-      (ArithmeticFunction.moebius d : ℝ)*stationaryFourierBudget s (d*N)/(d:ℝ)^2) =
+      (ArithmeticFunction.moebius d : ℝ)*stationaryFourierBudget s (d*N)/(d:ℝ)^(2 : ℕ)) =
       (stationaryFirstHarmonic s N).im := by
   by_cases hactive : 1 ≤ ⌊s.im/(2*Real.pi*N)⌋₊
   · simpa [stationaryFirstHarmonic, hactive] using
@@ -276,7 +276,7 @@ theorem exists_positive_first_harmonic_at_closed_right_zero {s : ℂ}
   simp only [Nat.cast_one, mul_one] at hb
   by_contra! hn
   have hn' : (∑ d ∈ Finset.Icc 1 ⌊s.im/(2*Real.pi)⌋₊,
-      (scaledBernoulliFourierAtom s d (-1)).im/(d:ℝ)^2) ≤ 0 := by
+      (scaledBernoulliFourierAtom s d (-1)).im/(d:ℝ)^(2 : ℕ)) ≤ 0 := by
     apply Finset.sum_nonpos
     intro d hd
     exact div_nonpos_of_nonpos_of_nonneg (hn d hd) (sq_nonneg _)
@@ -286,7 +286,7 @@ theorem exists_positive_first_harmonic_at_closed_right_zero {s : ℂ}
 theorem stationaryComplexBudget_eq_sum_firstHarmonic (s : ℂ) (N : ℕ) :
     stationaryComplexBudget s N =
       ∑ d ∈ Finset.Icc 1 ⌊s.im/(2*Real.pi*N)⌋₊,
-        stationaryFirstHarmonic s (d*N)/(d:ℂ)^2 := by
+        stationaryFirstHarmonic s (d*N)/(d:ℂ)^(2 : ℕ) := by
   rw [stationaryComplexBudget_dilation]
   apply Finset.sum_congr rfl
   intro d hd

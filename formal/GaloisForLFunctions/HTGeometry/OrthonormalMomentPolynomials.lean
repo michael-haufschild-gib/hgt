@@ -12,7 +12,7 @@ and has exact degree `n` with strictly positive leading coefficient — the clas
 orthonormal polynomials on the real line.
 
 This is the family whose complex evaluations control indeterminacy of the Hamburger problem through
-the convergence of `∑ |P n z| ^ 2`.
+the convergence of `∑ |P n z| ^ (2 : ℕ)`.
 -/
 
 open scoped BigOperators
@@ -33,7 +33,7 @@ theorem monicOrthoNorm_ne_zero (h : PositiveMomentForm s) (n : ℕ) : monicOrtho
   ne_of_gt (monicOrthoNorm_pos h n)
 
 theorem monicOrthoNorm_sq (h : PositiveMomentForm s) (n : ℕ) :
-    monicOrthoNorm s n ^ 2 = momentInner s (monicOrtho s n) (monicOrtho s n) :=
+    monicOrthoNorm s n ^ (2 : ℕ) = momentInner s (monicOrtho s n) (monicOrtho s n) :=
   Real.sq_sqrt (monicOrtho_inner_self_pos h n).le
 
 /-- The **orthonormal polynomials** of the moment sequence. -/

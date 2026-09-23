@@ -26,7 +26,7 @@ theorem suzukiProjectiveAffineSecantTensor_commonScale
     (alpha beta omega x X y Y c : F) :
     suzukiProjectiveAffineSecantTensor alpha beta
         (omega * x) (omega * X) (omega * y) (omega * Y) (omega * c) =
-      omega ^ 2 * suzukiProjectiveAffineSecantTensor alpha beta x X y Y c := by
+      omega ^ (2 : ℕ) * suzukiProjectiveAffineSecantTensor alpha beta x X y Y c := by
   simp only [suzukiProjectiveAffineSecantTensor]
   ring
 
@@ -36,7 +36,7 @@ theorem suzukiProjectiveAffineSecantDenominator_commonScale
     (alpha beta omega y Y : F) :
     suzukiProjectiveAffineSecantDenominator alpha beta
         (omega * y) (omega * Y) =
-      omega ^ 2 * suzukiProjectiveAffineSecantDenominator alpha beta y Y := by
+      omega ^ (2 : ℕ) * suzukiProjectiveAffineSecantDenominator alpha beta y Y := by
   simp only [suzukiProjectiveAffineSecantDenominator]
   ring
 
@@ -46,7 +46,7 @@ theorem suzukiProjectiveAffineSecant_cross_commonScale
     (alpha beta omega x X y Y c : F) :
     beta * (omega * (X - beta * x + c)) * (omega * (Y - alpha * y)) -
         alpha * (omega * (X - alpha * x + c)) * (omega * (Y - beta * y)) =
-      (beta - alpha) * omega ^ 2 *
+      (beta - alpha) * omega ^ (2 : ℕ) *
         suzukiProjectiveAffineSecantTensor alpha beta x X y Y c := by
   simp only [suzukiProjectiveAffineSecantTensor]
   ring
@@ -77,7 +77,7 @@ theorem suzukiProjectiveAffineSecantTensor_linearMap_smul
     suzukiProjectiveAffineSecantTensor alpha beta
         (B (omega • v)) (B (A (omega • v)))
         (D (omega • v)) (D (A (omega • v))) (K (omega • e)) =
-      omega ^ 2 *
+      omega ^ (2 : ℕ) *
         suzukiProjectiveAffineSecantTensor alpha beta
           (B v) (B (A v)) (D v) (D (A v)) (K e) := by
   simpa only [map_smul, smul_eq_mul] using

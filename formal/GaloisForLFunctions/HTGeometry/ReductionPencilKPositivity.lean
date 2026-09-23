@@ -114,7 +114,7 @@ theorem posSemidef_of_matSesq_re_nonneg {M : Matrix I I ℂ} (hH : M.IsHermitian
 
 /-- **Cauchy–Schwarz for the sesquilinear form of a positive semidefinite matrix.** -/
 theorem matSesq_norm_sq_le {A : Matrix I I ℂ} (hA : A.PosSemidef) (x y : I → ℂ) :
-    ‖matSesq A x y‖ ^ 2 ≤ (matSesq A x x).re * (matSesq A y y).re :=
+    ‖matSesq A x y‖ ^ (2 : ℕ) ≤ (matSesq A x x).re * (matSesq A y y).re :=
   _root_.HTGeometry.cauchy_schwarz_psd (matSesq A) (matSesq_add_left A)
     (fun c x y => matSesq_smul_left c A x y) (matSesq_conj hA.isHermitian)
     (matSesq_self_re_nonneg hA) x y
@@ -124,7 +124,7 @@ most the square of the sum of the square roots of the diagonal values of the sum
 theorem matSesq_self_re_le_sq_sum_sqrt {A : Matrix I I ℂ} (hA : A.PosSemidef)
     {ι : Type*} (s : Finset ι) (f : ι → I → ℂ) :
     (matSesq A (∑ p ∈ s, f p) (∑ p ∈ s, f p)).re
-      ≤ (∑ p ∈ s, Real.sqrt ((matSesq A (f p) (f p)).re)) ^ 2 := by
+      ≤ (∑ p ∈ s, Real.sqrt ((matSesq A (f p) (f p)).re)) ^ (2 : ℕ) := by
   have hexp : matSesq A (∑ p ∈ s, f p) (∑ p ∈ s, f p)
       = ∑ p ∈ s, ∑ q ∈ s, matSesq A (f p) (f q) := by
     rw [matSesq_sum_left]
@@ -133,7 +133,7 @@ theorem matSesq_self_re_le_sq_sum_sqrt {A : Matrix I I ℂ} (hA : A.PosSemidef)
   have hre : (∑ p ∈ s, ∑ q ∈ s, matSesq A (f p) (f q)).re
       = ∑ p ∈ s, ∑ q ∈ s, (matSesq A (f p) (f q)).re := by simp [Complex.re_sum]
   rw [hre]
-  have hsq : (∑ p ∈ s, Real.sqrt ((matSesq A (f p) (f p)).re)) ^ 2
+  have hsq : (∑ p ∈ s, Real.sqrt ((matSesq A (f p) (f p)).re)) ^ (2 : ℕ)
       = ∑ p ∈ s, ∑ q ∈ s, Real.sqrt ((matSesq A (f p) (f p)).re)
           * Real.sqrt ((matSesq A (f q) (f q)).re) := by
     rw [sq, Finset.sum_mul_sum]
@@ -145,7 +145,7 @@ theorem matSesq_self_re_le_sq_sum_sqrt {A : Matrix I I ℂ} (hA : A.PosSemidef)
   have hrp := matSesq_self_re_nonneg hA (f p)
   have hle : ‖matSesq A (f p) (f q)‖
       ≤ Real.sqrt ((matSesq A (f p) (f p)).re * (matSesq A (f q) (f q)).re) := by
-    rw [show ‖matSesq A (f p) (f q)‖ = Real.sqrt (‖matSesq A (f p) (f q)‖ ^ 2) from
+    rw [show ‖matSesq A (f p) (f q)‖ = Real.sqrt (‖matSesq A (f p) (f q)‖ ^ (2 : ℕ)) from
       (Real.sqrt_sq hnn).symm]
     exact Real.sqrt_le_sqrt hcs
   rwa [Real.sqrt_mul hrp] at hle
@@ -153,8 +153,8 @@ theorem matSesq_self_re_le_sq_sum_sqrt {A : Matrix I I ℂ} (hA : A.PosSemidef)
 /-- Master estimate against explicit majorants of the square roots. -/
 theorem matSesq_self_re_le_sq_sum {A : Matrix I I ℂ} (hA : A.PosSemidef)
     {ι : Type*} (s : Finset ι) (f : ι → I → ℂ) (g : ι → ℝ)
-    (hg : ∀ p ∈ s, 0 ≤ g p) (h : ∀ p ∈ s, (matSesq A (f p) (f p)).re ≤ (g p) ^ 2) :
-    (matSesq A (∑ p ∈ s, f p) (∑ p ∈ s, f p)).re ≤ (∑ p ∈ s, g p) ^ 2 := by
+    (hg : ∀ p ∈ s, 0 ≤ g p) (h : ∀ p ∈ s, (matSesq A (f p) (f p)).re ≤ (g p) ^ (2 : ℕ)) :
+    (matSesq A (∑ p ∈ s, f p) (∑ p ∈ s, f p)).re ≤ (∑ p ∈ s, g p) ^ (2 : ℕ) := by
   refine (matSesq_self_re_le_sq_sum_sqrt hA s f).trans ?_
   have hle : ∑ p ∈ s, Real.sqrt ((matSesq A (f p) (f p)).re) ≤ ∑ p ∈ s, g p := by
     refine Finset.sum_le_sum fun p hp => ?_
@@ -342,7 +342,7 @@ theorem re_diag_nonneg {I : Type*} [Fintype I] [DecidableEq I] {M : Matrix I I �
   have := matSesq_self_re_nonneg hM (fun z => if z = w then (1 : ℂ) else 0)
   rwa [matSesq_single] at this
 
-private theorem conj_mul_self (z : ℂ) : (starRingEnd ℂ) z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+private theorem conj_mul_self (z : ℂ) : (starRingEnd ℂ) z * z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
 
 /-- **Aperture half of the threshold.**  Coefficient at least the aperture always works, at every
@@ -380,7 +380,7 @@ theorem redPencil_posSemidef_of_card_left_le_of_diagonal {c : ℝ}
   classical
   refine posSemidef_of_matSesq_re_nonneg (redPencil_isHermitian c hA.isHermitian) fun φ => ?_
   rw [re_matSesq_redPencil]
-  set N : α → ℝ := fun a => ∑ i, ‖φ (a, i)‖ ^ 2 with hNdef
+  set N : α → ℝ := fun a => ∑ i, ‖φ (a, i)‖ ^ (2 : ℕ) with hNdef
   set d : α → ℝ := fun a => ((partialTraceRight A) a a).re with hddef
   have hρpsd : (partialTraceRight A).PosSemidef := posSemidef_partialTraceRight hA
   have hdnn : ∀ a, 0 ≤ d a := fun a => re_diag_nonneg hρpsd a
@@ -392,7 +392,7 @@ theorem redPencil_posSemidef_of_card_left_le_of_diagonal {c : ℝ}
         * φ (b, i)) = ((N a : ℝ) : ℂ) * (partialTraceRight A) a a := by
       intro a
       have hb : ∀ i : β, (∑ b, (starRingEnd ℂ) (φ (a, i)) * (partialTraceRight A) a b * φ (b, i))
-          = ((‖φ (a, i)‖ ^ 2 : ℝ) : ℂ) * (partialTraceRight A) a a := by
+          = ((‖φ (a, i)‖ ^ (2 : ℕ) : ℝ) : ℂ) * (partialTraceRight A) a a := by
         intro i
         rw [Finset.sum_eq_single a]
         · rw [← conj_mul_self]; ring
@@ -411,26 +411,26 @@ theorem redPencil_posSemidef_of_card_left_le_of_diagonal {c : ℝ}
     intro a
     set g : β → ℝ := fun m => ‖φ (a, m)‖ * Real.sqrt ((A (a, m) (a, m)).re) with hgdef
     have hddn : ∀ m : β, 0 ≤ (A (a, m) (a, m)).re := fun m => re_diag_nonneg hA (a, m)
-    have hstep : (matSesq A (rowSlice φ a) (rowSlice φ a)).re ≤ (∑ m, g m) ^ 2 := by
+    have hstep : (matSesq A (rowSlice φ a) (rowSlice φ a)).re ≤ (∑ m, g m) ^ (2 : ℕ) := by
       rw [← sum_cellSlice φ a]
       refine matSesq_self_re_le_sq_sum hA Finset.univ (fun m => cellSlice φ (a, m)) g
         (fun m _ => mul_nonneg (norm_nonneg _) (Real.sqrt_nonneg _)) (fun m _ => ?_)
       rw [matSesq_cellSlice]
       have : (starRingEnd ℂ) (φ (a, m)) * A (a, m) (a, m) * φ (a, m)
-          = ((‖φ (a, m)‖ ^ 2 : ℝ) : ℂ) * A (a, m) (a, m) := by
+          = ((‖φ (a, m)‖ ^ (2 : ℕ) : ℝ) : ℂ) * A (a, m) (a, m) := by
         rw [← conj_mul_self]; ring
       rw [this]
-      have hsq : (g m) ^ 2 = ‖φ (a, m)‖ ^ 2 * (A (a, m) (a, m)).re := by
+      have hsq : (g m) ^ (2 : ℕ) = ‖φ (a, m)‖ ^ (2 : ℕ) * (A (a, m) (a, m)).re := by
         rw [hgdef, mul_pow, Real.sq_sqrt (hddn m)]
       rw [hsq, Complex.re_ofReal_mul]
     refine hstep.trans ?_
     have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset β)
       (fun m => ‖φ (a, m)‖) (fun m => Real.sqrt ((A (a, m) (a, m)).re))
-    have hd' : ∑ m, (Real.sqrt ((A (a, m) (a, m)).re)) ^ 2 = d a := by
+    have hd' : ∑ m, (Real.sqrt ((A (a, m) (a, m)).re)) ^ (2 : ℕ) = d a := by
       rw [Finset.sum_congr rfl fun m _ => Real.sq_sqrt (hddn m)]
       simp only [hddef, partialTraceRight, Complex.re_sum]
     rw [hd'] at hcs
-    calc (∑ m, g m) ^ 2 ≤ (∑ m, ‖φ (a, m)‖ ^ 2) * d a := hcs
+    calc (∑ m, g m) ^ (2 : ℕ) ≤ (∑ m, ‖φ (a, m)‖ ^ (2 : ℕ)) * d a := hcs
       _ = d a * N a := by rw [hNdef]; ring
   have hmaster : (matSesq A φ φ).re
       ≤ (Fintype.card α : ℝ) * ∑ a, (matSesq A (rowSlice φ a) (rowSlice φ a)).re := by
@@ -619,7 +619,7 @@ theorem exists_posSemidef_not_redPencil_posSemidef {c : ℝ} [Nonempty ι]
     rw [Finset.sum_congr rfl fun t _ => Finset.sum_congr rfl fun s _ => hcollapse t s]
     simp [hΨ, entangledVec]
   -- the two quadratic forms
-  have hAform : matSesq A Ψ Ψ = (Fintype.card ι : ℂ) ^ 2 := by
+  have hAform : matSesq A Ψ Ψ = (Fintype.card ι : ℂ) ^ (2 : ℕ) := by
     have : matSesq A Ψ Ψ = (∑ i, (starRingEnd ℂ) (Ψ i) * Ψ i)
         * ∑ j, (starRingEnd ℂ) (Ψ j) * Ψ j := by
       rw [Finset.sum_mul_sum]
@@ -642,8 +642,8 @@ theorem exists_posSemidef_not_redPencil_posSemidef {c : ℝ} [Nonempty ι]
   have hval := matSesq_self_re_nonneg hpos Ψ
   rw [matSesq_redPencil, hAform, hTform] at hval
   have hcard : (0 : ℝ) < Fintype.card ι := by exact_mod_cast Fintype.card_pos
-  have hre : ((c : ℂ) * (Fintype.card ι : ℂ) - (Fintype.card ι : ℂ) ^ 2).re
-      = c * (Fintype.card ι : ℝ) - (Fintype.card ι : ℝ) ^ 2 := by
+  have hre : ((c : ℂ) * (Fintype.card ι : ℂ) - (Fintype.card ι : ℂ) ^ (2 : ℕ)).re
+      = c * (Fintype.card ι : ℝ) - (Fintype.card ι : ℝ) ^ (2 : ℕ) := by
     simp [Complex.sub_re, Complex.mul_re, sq]
   rw [hre] at hval
   nlinarith [hval, hcard, hc]

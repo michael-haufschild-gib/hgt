@@ -96,7 +96,7 @@ theorem deriv_digamma_add_nat_tendsto (z : ℂ) :
 half plane. -/
 theorem deriv_digamma_apply_add_nat {z : ℂ} (hz : 0 < z.re) (N : ℕ) :
     deriv Complex.digamma (z + (N : ℂ)) =
-      deriv Complex.digamma z - ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹ := by
+      deriv Complex.digamma z - ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹ := by
   have hUopen : IsOpen {w : ℂ | 0 < w.re} := isOpen_lt continuous_const Complex.continuous_re
   have hψdiff : ∀ {w : ℂ}, 0 < w.re → HasDerivAt Complex.digamma (deriv Complex.digamma w) w :=
     fun hw => (digamma_analyticOnNhd_re_pos _ hw).differentiableAt.hasDerivAt
@@ -115,7 +115,7 @@ theorem deriv_digamma_apply_add_nat {z : ℂ} (hz : 0 < z.re) (N : ℕ) :
     have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
     linarith
   have hsum : HasDerivAt (fun w : ℂ => ∑ n ∈ Finset.range N, (w + (n : ℂ))⁻¹)
-      (∑ n ∈ Finset.range N, -1 / (z + (n : ℂ)) ^ 2) z := by
+      (∑ n ∈ Finset.range N, -1 / (z + (n : ℂ)) ^ (2 : ℕ)) z := by
     have hfun : (fun w : ℂ => ∑ n ∈ Finset.range N, (w + (n : ℂ))⁻¹) =
         ∑ n ∈ Finset.range N, fun w : ℂ => (w + (n : ℂ))⁻¹ := by
       funext w
@@ -134,8 +134,8 @@ theorem deriv_digamma_apply_add_nat {z : ℂ} (hz : 0 < z.re) (N : ℕ) :
     have : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
     linarith
   have huniq := hL.unique (hR.congr_of_eventuallyEq hEq)
-  rw [huniq, show ∑ n ∈ Finset.range N, (-1 : ℂ) / (z + (n : ℂ)) ^ 2 =
-    -∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹ from by
+  rw [huniq, show ∑ n ∈ Finset.range N, (-1 : ℂ) / (z + (n : ℂ)) ^ (2 : ℕ) =
+    -∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹ from by
       rw [← Finset.sum_neg_distrib]
       exact Finset.sum_congr rfl fun n _ => by rw [neg_div, one_div]]
   ring
@@ -144,9 +144,9 @@ theorem deriv_digamma_apply_add_nat {z : ℂ} (hz : 0 < z.re) (N : ℕ) :
 `Σ_{n<N} (z+n)⁻²` converge to `ψ′(z)`.  This is the common limit interface behind both vertical
 magnitude estimates and orientation laws. -/
 theorem deriv_digamma_partialSum_tendsto {z : ℂ} (hz : 0 < z.re) :
-    Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹)
+    Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹)
       atTop (nhds (deriv Complex.digamma z)) := by
-  have hpart : ∀ N : ℕ, (∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹) =
+  have hpart : ∀ N : ℕ, (∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹) =
       deriv Complex.digamma z - deriv Complex.digamma (z + (N : ℂ)) := by
     intro N
     rw [deriv_digamma_apply_add_nat hz N]
@@ -161,29 +161,29 @@ theorem deriv_digamma_partialSum_tendsto {z : ℂ} (hz : 0 < z.re) :
 /-- **Positive-real trigamma floor.**  On the positive real axis the first reciprocal-square
 summand gives `1/x² ≤ Re ψ′(x)`. -/
 theorem one_div_sq_le_re_deriv_digamma_of_pos {x : ℝ} (hx : 0 < x) :
-    1 / x ^ 2 ≤ (deriv Complex.digamma (x : ℂ)).re := by
+    1 / x ^ (2 : ℕ) ≤ (deriv Complex.digamma (x : ℂ)).re := by
   have hterm : ∀ n : ℕ,
-      ((((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re = 1 / (x + n) ^ 2 := by
+      ((((x : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹).re = 1 / (x + n) ^ (2 : ℕ) := by
     intro n
     calc
-      ((((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re =
-          ((((x + (n : ℝ)) ^ 2)⁻¹ : ℝ) : ℂ).re := by
+      ((((x : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹).re =
+          ((((x + (n : ℝ)) ^ (2 : ℕ))⁻¹ : ℝ) : ℂ).re := by
         apply congrArg Complex.re
         rw [Complex.ofReal_inv, Complex.ofReal_pow]
         norm_cast
-      _ = 1 / (x + n) ^ 2 := by
+      _ = 1 / (x + n) ^ (2 : ℕ) := by
         rw [Complex.ofReal_re]
         simp only [one_div]
   have hre_sum : ∀ N : ℕ,
-      (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re =
-        ∑ n ∈ Finset.range N, ((((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re := by
+      (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹).re =
+        ∑ n ∈ Finset.range N, ((((x : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹).re := by
     intro N
     induction Finset.range N using Finset.induction_on with
     | empty => simp
     | @insert a s ha ih => simp [ha, ih, Complex.add_re]
   have hxre : 0 < ((x : ℂ)).re := by simpa using hx
   have hlimre : Tendsto (fun N : ℕ =>
-      (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ 2)⁻¹).re)
+      (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹).re)
       atTop (nhds (deriv Complex.digamma (x : ℂ)).re) :=
     Complex.continuous_re.continuousAt.tendsto.comp
       (deriv_digamma_partialSum_tendsto hxre)
@@ -192,12 +192,12 @@ theorem one_div_sq_le_re_deriv_digamma_of_pos {x : ℝ} (hx : 0 < x) :
   obtain ⟨M, rfl⟩ : ∃ M, N = M + 1 := ⟨N - 1, by omega⟩
   rw [hre_sum, Finset.sum_range_succ']
   have htail : 0 ≤ ∑ n ∈ Finset.range M,
-      ((((x : ℂ) + ((n + 1 : ℕ) : ℂ)) ^ 2)⁻¹).re := by
+      ((((x : ℂ) + ((n + 1 : ℕ) : ℂ)) ^ (2 : ℕ))⁻¹).re := by
     apply Finset.sum_nonneg
     intro n _
     rw [hterm]
     positivity
-  have hzero : ((((x : ℂ) + ((0 : ℕ) : ℂ)) ^ 2)⁻¹).re = 1 / x ^ 2 := by
+  have hzero : ((((x : ℂ) + ((0 : ℕ) : ℂ)) ^ (2 : ℕ))⁻¹).re = 1 / x ^ (2 : ℕ) := by
     simpa using hterm 0
   rw [hzero]
   linarith
@@ -240,12 +240,12 @@ theorem deriv_digamma_vertical_im_neg {σ t : ℝ} (hσ : 0 < σ) (ht : 0 < t) :
   have hzre : 0 < z.re := by
     simp [z, hσ]
   have hlimim : Tendsto (fun N : ℕ =>
-      (∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹).im)
+      (∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹).im)
       atTop (nhds (deriv Complex.digamma z).im) :=
     Complex.continuous_im.continuousAt.tendsto.comp
       (deriv_digamma_partialSum_tendsto hzre)
-  have hterm : ∀ n : ℕ, (((z + (n : ℂ)) ^ 2)⁻¹).im =
-      -2 * (σ + n) * t / (((σ + n) ^ 2 + t ^ 2) ^ 2) := by
+  have hterm : ∀ n : ℕ, (((z + (n : ℂ)) ^ (2 : ℕ))⁻¹).im =
+      -2 * (σ + n) * t / (((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ)) := by
     intro n
     have hzn : z + (n : ℂ) = ((σ + n : ℝ) : ℂ) + (t : ℂ) * Complex.I := by
       simp [z]
@@ -257,31 +257,31 @@ theorem deriv_digamma_vertical_im_neg {σ t : ℝ} (hσ : 0 < σ) (ht : 0 < t) :
       zero_add, add_zero]
     field_simp
     ring
-  let C : ℝ := -2 * σ * t / ((σ ^ 2 + t ^ 2) ^ 2)
+  let C : ℝ := -2 * σ * t / ((σ ^ (2 : ℕ) + t ^ (2 : ℕ)) ^ (2 : ℕ))
   have hCneg : C < 0 := by
     dsimp [C]
     apply div_neg_of_neg_of_pos
     · nlinarith
     · exact sq_pos_of_pos (by nlinarith [sq_nonneg σ, sq_nonneg t])
   have hbound : ∀ᶠ N : ℕ in atTop,
-      (∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹).im ≤ C := by
+      (∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹).im ≤ C := by
     filter_upwards [eventually_ge_atTop 1] with N hN
     obtain ⟨M, rfl⟩ : ∃ M, N = M + 1 := ⟨N - 1, by omega⟩
     rw [Finset.sum_range_succ', Complex.add_im]
     have htail : (∑ n ∈ Finset.range M,
-        ((z + ((n + 1 : ℕ) : ℂ)) ^ 2)⁻¹).im ≤ 0 := by
+        ((z + ((n + 1 : ℕ) : ℂ)) ^ (2 : ℕ))⁻¹).im ≤ 0 := by
       change Complex.imLm (∑ n ∈ Finset.range M,
-        ((z + ((n + 1 : ℕ) : ℂ)) ^ 2)⁻¹) ≤ 0
+        ((z + ((n + 1 : ℕ) : ℂ)) ^ (2 : ℕ))⁻¹) ≤ 0
       rw [map_sum Complex.imLm]
       apply Finset.sum_nonpos
       intro n _
-      change (((z + ((n + 1 : ℕ) : ℂ)) ^ 2)⁻¹).im ≤ 0
+      change (((z + ((n + 1 : ℕ) : ℂ)) ^ (2 : ℕ))⁻¹).im ≤ 0
       rw [hterm]
       apply div_nonpos_of_nonpos_of_nonneg
       · have : 0 ≤ 2 * (σ + (n + 1 : ℕ)) * t := by positivity
         linarith
       · positivity
-    have hzero : (((z + ((0 : ℕ) : ℂ)) ^ 2)⁻¹).im = C := by
+    have hzero : (((z + ((0 : ℕ) : ℂ)) ^ (2 : ℕ))⁻¹).im = C := by
       simpa [C] using hterm 0
     rw [hzero]
     linarith
@@ -294,16 +294,16 @@ differentiated recurrence and the far-field anchor, and each is bounded by the a
 comparison. -/
 theorem norm_deriv_digamma_vertical_le {σ t : ℝ} (hσ : 0 < σ) (ht : 0 < t) :
     ‖deriv Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤
-      1 / t ^ 2 + Real.pi / (2 * t) := by
+      1 / t ^ (2 : ℕ) + Real.pi / (2 * t) := by
   set z : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I with hz_def
   have hzre : 0 < z.re := by
     rw [hz_def]
     simp [Complex.add_re, Complex.mul_re]
     linarith
-  have hbound : ∀ N : ℕ, ‖∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹‖ ≤
-      1 / t ^ 2 + Real.pi / (2 * t) := by
+  have hbound : ∀ N : ℕ, ‖∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹‖ ≤
+      1 / t ^ (2 : ℕ) + Real.pi / (2 * t) := by
     intro N
-    have hterm : ∀ n : ℕ, ‖((z + (n : ℂ)) ^ 2)⁻¹‖ = 1 / ((σ + n) ^ 2 + t ^ 2) := by
+    have hterm : ∀ n : ℕ, ‖((z + (n : ℂ)) ^ (2 : ℕ))⁻¹‖ = 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
       intro n
       have hzn : z + (n : ℂ) = ((σ + n : ℝ) : ℂ) + ((t : ℝ) : ℂ) * Complex.I := by
         rw [hz_def]
@@ -312,11 +312,11 @@ theorem norm_deriv_digamma_vertical_le {σ t : ℝ} (hσ : 0 < σ) (ht : 0 < t) 
       rw [norm_inv, norm_pow, inv_eq_one_div]
       congr 1
       rw [← Complex.normSq_eq_norm_sq, hzn, Complex.normSq_add_mul_I]
-    calc ‖∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹‖
-        ≤ ∑ n ∈ Finset.range N, ‖((z + (n : ℂ)) ^ 2)⁻¹‖ := norm_sum_le _ _
-      _ = ∑ n ∈ Finset.range N, 1 / ((σ + n) ^ 2 + t ^ 2) :=
+    calc ‖∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹‖
+        ≤ ∑ n ∈ Finset.range N, ‖((z + (n : ℂ)) ^ (2 : ℕ))⁻¹‖ := norm_sum_le _ _
+      _ = ∑ n ∈ Finset.range N, 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) :=
           Finset.sum_congr rfl fun n _ => hterm n
-      _ ≤ 1 / t ^ 2 + Real.pi / (2 * t) := sum_inv_sq_add_le hσ.le ht N
+      _ ≤ 1 / t ^ (2 : ℕ) + Real.pi / (2 * t) := sum_inv_sq_add_le hσ.le ht N
   exact le_of_tendsto' (deriv_digamma_partialSum_tendsto hzre).norm hbound
 
 end RHTower

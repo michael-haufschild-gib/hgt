@@ -37,14 +37,14 @@ theorem sq_le_of_psd_bilinear {b : V → V → ℝ}
     (hadd : ∀ x y z, b (x + y) z = b x z + b y z)
     (hsmul : ∀ (c : ℝ) (x y : V), b (c • x) y = c * b x y)
     (hpsd : ∀ x, 0 ≤ b x x) (x y : V) :
-    b x y ^ 2 ≤ b x x * b y y := by
+    b x y ^ (2 : ℕ) ≤ b x x * b y y := by
   have hadd₂ : ∀ p q r : V, b p (q + r) = b p q + b p r := by
     intro p q r
     rw [hsymm, hadd, hsymm q p, hsymm r p]
   have hsmul₂ : ∀ (c : ℝ) (p q : V), b p (c • q) = c * b p q := by
     intro c p q
     rw [hsymm, hsmul, hsymm q p]
-  have hquad : ∀ t : ℝ, 0 ≤ t ^ 2 * b x x + 2 * t * b x y + b y y := by
+  have hquad : ∀ t : ℝ, 0 ≤ t ^ (2 : ℕ) * b x x + 2 * t * b x y + b y y := by
     intro t
     have h := hpsd (t • x + y)
     rw [hadd, hsmul, hadd₂, hadd₂, hsmul₂, hsmul₂, hsymm y x] at h
@@ -64,14 +64,14 @@ theorem sq_le_of_psd_bilinear {b : V → V → ℝ}
     simp
   · have hval := hquad (-(b x y) / b x x)
     have hne : b x x ≠ 0 := ne_of_gt hpos
-    have hexp : (-(b x y) / b x x) ^ 2 * b x x + 2 * (-(b x y) / b x x) * b x y + b y y
-        = b y y - b x y ^ 2 / b x x := by
+    have hexp : (-(b x y) / b x x) ^ (2 : ℕ) * b x x + 2 * (-(b x y) / b x x) * b x y + b y y
+        = b y y - b x y ^ (2 : ℕ) / b x x := by
       field_simp
       ring
     rw [hexp] at hval
-    have h : b x y ^ 2 / b x x ≤ b y y := by linarith
+    have h : b x y ^ (2 : ℕ) / b x x ≤ b y y := by linarith
     rw [div_le_iff₀ hpos] at h
-    calc b x y ^ 2 ≤ b y y * b x x := h
+    calc b x y ^ (2 : ℕ) ≤ b y y * b x x := h
       _ = b x x * b y y := mul_comm _ _
 
 /-! ## The exact reflection identities -/
@@ -105,7 +105,7 @@ theorem abs_cross_le_exp_mul {b : V → V → ℝ} {J : V → V}
   rw [hJ] at hcs
   have hb : 0 ≤ b v v := hpsd v
   have habs : |b (J v) v| ≤ b v v := by
-    have hsq : |b (J v) v| ^ 2 ≤ (b v v) ^ 2 := by
+    have hsq : |b (J v) v| ^ (2 : ℕ) ≤ (b v v) ^ (2 : ℕ) := by
       rw [sq_abs]
       nlinarith [hcs]
     exact le_of_pow_le_pow_left₀ (by norm_num) hb hsq
@@ -238,9 +238,9 @@ theorem edge_bound_antitone {κXi s t : ℝ} (hκXi0 : 0 < κXi) (hκXi1 : κXi 
   rcases abs_lt.mp ht with ⟨ht1, ht2⟩
   have hds : 0 < 1 - κXi * s := by nlinarith
   have hdt : 0 < 1 - κXi * t := by nlinarith
-  have hκsq : κXi ^ 2 < 1 := by nlinarith
+  have hκsq : κXi ^ (2 : ℕ) < 1 := by nlinarith
   rw [div_le_div_iff₀ hdt hds]
-  nlinarith [mul_nonneg (sub_nonneg.mpr hst) (by nlinarith : (0 : ℝ) ≤ 1 - κXi ^ 2)]
+  nlinarith [mul_nonneg (sub_nonneg.mpr hst) (by nlinarith : (0 : ℝ) ≤ 1 - κXi ^ (2 : ℕ))]
 
 /-- **`(233)`: the asymptotic wall.**  As the aperture grows the `sech` damping vanishes, so the
 edge bound tends to the target defect itself. -/

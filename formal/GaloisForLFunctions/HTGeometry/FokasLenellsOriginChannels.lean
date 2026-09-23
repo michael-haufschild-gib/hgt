@@ -20,8 +20,8 @@ def signedOriginWeightedChannels (q : SchwartzMap ℝ ℂ) (z : ℝ) : ℂ × �
 theorem signedOriginWeightedChannels_eq_contour (q : SchwartzMap ℝ ℂ)
     (vertical negative : Bool) (κ : ℝ) :
     signedOriginWeightedChannels q (contourSquaredParameter vertical κ) =
-      (contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^5,
-       contourReverseReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^5) := by
+      (contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^(5 : ℕ),
+       contourReverseReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^(5 : ℕ)) := by
   rw [signedOriginWeightedChannels,signedOriginWeightedReflection_eq_contour,
     contourReverseReflectionAmplitude_eq_neg,neg_div]
 
@@ -42,7 +42,7 @@ theorem signedOriginWeightedChannels_memLp_iff (q : SchwartzMap ℝ ℂ)
     (signedOriginWeightedReflection_measurable q).aestronglyMeasurable
   exact Filter.Eventually.of_forall (signedOriginWeightedChannels_norm q)
 
-/-- Both actual weighted channels lie in L^2 on one symmetric window exactly when the moment vanishes. -/
+/-- Both actual weighted channels lie in L^(2 : ℕ) on one symmetric window exactly when the moment vanishes. -/
 theorem signedOriginWeightedChannels_locally_memLp_two_iff (q : SchwartzMap ℝ ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ MemLp (signedOriginWeightedChannels q) 2
       (volume.restrict (Ioo (-δ) δ))) ↔ compatibilityMoment q = 0 := by

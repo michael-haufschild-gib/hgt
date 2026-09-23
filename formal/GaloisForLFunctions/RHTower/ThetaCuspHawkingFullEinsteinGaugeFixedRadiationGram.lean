@@ -316,9 +316,9 @@ theorem d4BMGaugeFixedSecondHarmonicRadiationMap_angularIntertwining
       angular • d4BMGaugeFixedSecondHarmonicRadiationMap q source := by
   exact map_smul _ _ _
 
-/-- BM physical angular eigenvalue `Q=1/4+xi^2`. -/
+/-- BM physical angular eigenvalue `Q=1/4+xi^(2 : ℕ)`. -/
 def d4BMPhysicalAngularEigenvalue (xi : ℝ) : ℝ :=
-  1 / 4 + xi ^ 2
+  1 / 4 + xi ^ (2 : ℕ)
 
 /-- Optical Gram is symmetric with respect to the physical real BM angular operator. -/
 theorem d4BMGaugeFixedSecondHarmonicOpticalGram_angularCompatible
@@ -340,9 +340,9 @@ theorem d4BMGaugeFixedSecondHarmonicRadiation_direct_orthogonal
 /-- Exact global-on-the-fibre optical decomposition into direct flux and orthogonal mixing flux. -/
 theorem d4BMGaugeFixedSecondHarmonicRadiation_norm_sq_decomposition
     (q : XiZeroCopy) (direct mixing : ℂ) :
-    ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, mixing)‖ ^ 2 =
-      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, 0)‖ ^ 2 +
-        ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, mixing)‖ ^ 2 := by
+    ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, mixing)‖ ^ (2 : ℕ) =
+      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, 0)‖ ^ (2 : ℕ) +
+        ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, mixing)‖ ^ (2 : ℕ) := by
   repeat rw [EuclideanSpace.norm_sq_eq]
   simp [d4BMGaugeFixedSecondHarmonicRadiationMap, Fin.sum_univ_succ]
   ring
@@ -350,17 +350,17 @@ theorem d4BMGaugeFixedSecondHarmonicRadiation_norm_sq_decomposition
 /-- Full-minus-direct flux is exactly the squared orthogonal-helicity radiation norm. -/
 theorem d4BMGaugeFixedSecondHarmonicOpticalDiscrepancy_eq_mixing
     (q : XiZeroCopy) (direct mixing : ℂ) :
-    ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, mixing)‖ ^ 2 -
-        ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, 0)‖ ^ 2 =
-      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, mixing)‖ ^ 2 := by
+    ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, mixing)‖ ^ (2 : ℕ) -
+        ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, 0)‖ ^ (2 : ℕ) =
+      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, mixing)‖ ^ (2 : ℕ) := by
   rw [d4BMGaugeFixedSecondHarmonicRadiation_norm_sq_decomposition]
   ring
 
 /-- Orthogonal-helicity optical discrepancy is nonnegative. -/
 theorem d4BMGaugeFixedSecondHarmonicOpticalDiscrepancy_nonneg
     (q : XiZeroCopy) (direct mixing : ℂ) :
-    0 ≤ ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, mixing)‖ ^ 2 -
-      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, 0)‖ ^ 2 := by
+    0 ≤ ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, mixing)‖ ^ (2 : ℕ) -
+      ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (direct, 0)‖ ^ (2 : ℕ) := by
   rw [d4BMGaugeFixedSecondHarmonicOpticalDiscrepancy_eq_mixing]
   positivity
 

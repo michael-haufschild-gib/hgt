@@ -22,7 +22,7 @@ variable {N D : ℕ}
 theorem eval_jointCriticalitySquareSum_eq (M : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ)
     (k : Fin D → ℝ) (π : Equiv.Perm (Fin D)) (x : Fin D ⊕ Fin N → ℝ) :
     MvPolynomial.eval x (jointCriticalitySquareSum M c k π)
-      = ∑ i : Fin N, (MvPolynomial.eval x (jointCriticality M c k π i)) ^ 2 := by
+      = ∑ i : Fin N, (MvPolynomial.eval x (jointCriticality M c k π i)) ^ (2 : ℕ) := by
   simp only [jointCriticalitySquareSum]
   rw [map_sum]
   exact Finset.sum_congr rfl fun i _ => by rw [map_pow]

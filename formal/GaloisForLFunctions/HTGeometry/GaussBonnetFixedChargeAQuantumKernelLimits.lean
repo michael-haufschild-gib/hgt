@@ -17,7 +17,7 @@ def egbFixedChargeAQuantumCriticalProfile (ψ : ℝ) : ℝ :=
   (QuantumAlg.quantumKernel egbFixedChargeAPairQubitFeature ψ 0).re
 
 theorem egbFixedChargeAQuantumCriticalProfile_formula (ψ : ℝ) :
-    egbFixedChargeAQuantumCriticalProfile ψ = cos ψ ^ 4 := by
+    egbFixedChargeAQuantumCriticalProfile ψ = cos ψ ^ (4 : ℕ) := by
   simp only [egbFixedChargeAQuantumCriticalProfile, egbFixedChargeAPairQubitFeature_kernel_real, sub_zero]
 
 theorem egbFixedChargeAGibbs_quantum_jet_uniform_first_zero_limit (w φ l₁ l₂ : ℝ) (n : ℕ) :
@@ -25,7 +25,7 @@ theorem egbFixedChargeAGibbs_quantum_jet_uniform_first_zero_limit (w φ l₁ l�
       (iteratedDeriv n (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ -
        iteratedDeriv n egbFixedChargeAQuantumCriticalProfile ψ) / egbCoexistenceASymmetricRatio τ)
       (fun _ => (0 : ℝ)) atBot := by
-  have h : egbFixedChargeAQuantumCriticalProfile = fun ψ => cos ψ ^ 4 :=
+  have h : egbFixedChargeAQuantumCriticalProfile = fun ψ => cos ψ ^ (4 : ℕ) :=
     funext egbFixedChargeAQuantumCriticalProfile_formula
   rw [h]
   exact egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_uniform_first_zero_limit w φ l₁ l₂ n
@@ -33,7 +33,7 @@ theorem egbFixedChargeAGibbs_quantum_jet_uniform_first_zero_limit (w φ l₁ l�
 theorem egbFixedChargeAGibbs_quantum_jet_uniform_limit (w φ l₁ l₂ : ℝ) (n : ℕ) :
     TendstoUniformly (fun τ ψ => iteratedDeriv n (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ)
       (iteratedDeriv n egbFixedChargeAQuantumCriticalProfile) atBot := by
-  have h : egbFixedChargeAQuantumCriticalProfile = fun ψ => cos ψ ^ 4 :=
+  have h : egbFixedChargeAQuantumCriticalProfile = fun ψ => cos ψ ^ (4 : ℕ) :=
     funext egbFixedChargeAQuantumCriticalProfile_formula
   rw [h]
   exact egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_uniform_limit w φ l₁ l₂ n
@@ -43,7 +43,7 @@ theorem egbFixedChargeAGibbs_quantum_jet_moving_first_zero_limit (w φ l₁ l₂
       (iteratedDeriv n (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) -
        iteratedDeriv n egbFixedChargeAQuantumCriticalProfile (ψ τ)) / egbCoexistenceASymmetricRatio τ)
       atBot (𝓝 (0 : ℝ)) := by
-  have h : egbFixedChargeAQuantumCriticalProfile = fun ψ => cos ψ ^ 4 :=
+  have h : egbFixedChargeAQuantumCriticalProfile = fun ψ => cos ψ ^ (4 : ℕ) :=
     funext egbFixedChargeAQuantumCriticalProfile_formula
   rw [h]
   exact egbFixedChargeAPeakNormalizedGibbs_iteratedDeriv_moving_first_zero_limit w φ l₁ l₂ n ψ

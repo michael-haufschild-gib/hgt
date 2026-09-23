@@ -25,7 +25,7 @@ open Complex MeasureTheory Set Finset
 
 /-- The Perron truncation error of a block, in closed form. -/
 def ghsPerronError (N B M n : ℕ) (σ : ℝ) : ℝ :=
-  ((Real.log ((B * (M * N) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+  ((Real.log ((B * (M * N) : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ))
     * ((N : ℝ) + 1 / 2) ^ σ
     * (5 * (1 + Real.log ((B * (M * N) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
     / (Real.pi * ((n : ℝ) * 2 ^ (0 : ℕ)))
@@ -41,7 +41,7 @@ theorem ghs_block_D_geometric_explicit
     (hn : 1 ≤ n) (hne : Real.exp 4 ≤ (n : ℝ)) (hN : 1 ≤ N)
     (hk1 : 1 ≤ k) (hk : (2 : ℝ) ^ (k + 1) * (4 * Real.log 2) ≤ Real.log N)
     (hBN : 2 ≤ N / ghsBlockRight N k)
-    (hA2 : n ^ 2 ≤ ghsBlockLeft N k)
+    (hA2 : n ^ (2 : ℕ) ≤ ghsBlockLeft N k)
     (hheight : (5 / (4 * (n : ℝ)))
         * ((16 / 9) * 4 ^ (k + 1) * (Real.log N + Real.log 4)) ≤ 1750 * ghsShapeConst) :
     ‖∑ i ∈ Finset.Icc 1 N,
@@ -65,13 +65,13 @@ theorem ghs_block_D_trimmed_explicit
     (hn : 1 ≤ n) (hne : Real.exp 4 ≤ (n : ℝ)) (hN : 1 ≤ N)
     (hk : (2 : ℝ) ^ (0 + 1) * (4 * Real.log 2) ≤ Real.log N)
     (hBN : 2 ≤ N / ghsBlockRight N 0)
-    (hA2 : n ^ 2 ≤ ghsBlockRight N 0)
+    (hA2 : n ^ (2 : ℕ) ≤ ghsBlockRight N 0)
     (hheight : (5 / (4 * (n : ℝ)))
         * ((16 / 9) * 4 ^ (0 + 1) * (Real.log N + Real.log 4)) ≤ 1750 * ghsShapeConst) :
     ‖∑ i ∈ Finset.Icc 1 N,
-        (LSeries.convolution (ghsOuterBlock f N (n ^ 2) (ghsBlockRight N 0))
-          (LSeries.convolution (ghsInner f (N / n ^ 2)) f)) i‖
-      ≤ ghsPerronError N (ghsBlockRight N 0) (N / n ^ 2) n σ
+        (LSeries.convolution (ghsOuterBlock f N (n ^ (2 : ℕ)) (ghsBlockRight N 0))
+          (LSeries.convolution (ghsInner f (N / n ^ (2 : ℕ))) f)) i‖
+      ≤ ghsPerronError N (ghsBlockRight N 0) (N / n ^ (2 : ℕ)) n σ
           + (1 / (2 * Real.pi))
             * (dampedSize σ δ z N * ((N : ℝ) + 1 / 2) ^ σ
                 * ghsBlockConstOf σ ghsShapeConst) :=

@@ -153,7 +153,7 @@ theorem hasDerivAt_halfDensityGauge {F F' : ℝ → ℝ} (hF : ∀ x, HasDerivAt
   exact hexp.mul (hF h)
 
 /-- The exponential window factor is pinned between `√(n/(n+1))` and `1`. -/
-theorem exp_neg_half_log (x : ℝ) (hx : 0 < x) :
+theorem exp_neg_half_log_adjointCellQuotientScale (x : ℝ) (hx : 0 < x) :
     Real.exp (-Real.log x / 2) = 1 / Real.sqrt x := by
   rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hx, one_div, ← Real.exp_neg]
   congr 1
@@ -175,7 +175,7 @@ theorem exp_window_bounds {n : ℕ} (hn : 1 ≤ n) {ξ : ℝ}
         ≤ Real.exp (-ξ / 2) * Real.sqrt (n : ℝ) :=
       mul_le_mul_of_nonneg_right hle hs0.le
     refine le_trans (le_of_eq ?_) hlow
-    rw [exp_neg_half_log _ hn1, Real.sqrt_div hn0.le]
+    rw [exp_neg_half_log_adjointCellQuotientScale _ hn1, Real.sqrt_div hn0.le]
     ring
   · have hle : Real.exp (-ξ / 2) ≤ Real.exp (-Real.log (n : ℝ) / 2) := by
       refine Real.exp_le_exp.2 ?_
@@ -184,7 +184,7 @@ theorem exp_window_bounds {n : ℕ} (hn : 1 ≤ n) {ξ : ℝ}
         ≤ Real.exp (-Real.log (n : ℝ) / 2) * Real.sqrt (n : ℝ) :=
       mul_le_mul_of_nonneg_right hle hs0.le
     refine hup.trans (le_of_eq ?_)
-    rw [exp_neg_half_log _ hn0]
+    rw [exp_neg_half_log_adjointCellQuotientScale _ hn0]
     field_simp
 
 /-! ## The asymptotic form on a fixed profile -/

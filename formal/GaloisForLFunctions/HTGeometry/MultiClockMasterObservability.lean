@@ -39,7 +39,7 @@ theorem finiteClockObservabilityEnergy_eq_erasedNormSq
     (hadjoint_mul : U.adjoint * U = 1) (hperiod : U ^ N = 1)
     (hX : IsSelfAdjoint X) {ψ : E} (hψ : U ψ = ψ) :
     finiteClockObservabilityEnergy U X N ψ =
-      ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2 := by
+      ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ (2 : ℕ) := by
   exact re_inner_finiteCyclicObservableTwirlKadisonDefect_eq_erasedNormSq
     U X N hN hadjoint_mul hperiod hX hψ
 
@@ -67,7 +67,7 @@ theorem finiteClockFamilyObservabilityEnergy_eq_sum_erasedNormSq
     (hperiod : ∀ i, U i ^ N i = 1)
     (hX : IsSelfAdjoint X) {ψ : E} (hψ : ∀ i, U i ψ = ψ) :
     finiteClockFamilyObservabilityEnergy U X N ψ =
-      ∑ i, ‖(1 - finiteCyclicGaugeAverage (U i) (N i)) (X ψ)‖ ^ 2 := by
+      ∑ i, ‖(1 - finiteCyclicGaugeAverage (U i) (N i)) (X ψ)‖ ^ (2 : ℕ) := by
   unfold finiteClockFamilyObservabilityEnergy
   apply Finset.sum_congr rfl
   intro i hi

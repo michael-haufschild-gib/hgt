@@ -17,7 +17,7 @@ private theorem normalizable_weightedFirst (w chi : ℂ) {z : ℝ} (hz : z < 1) 
       power (w/2) z*(1-z:ℂ)*gaussFirst w chi true (1-z) := by
   have hx : 0 ≤ 1-z := sub_nonneg.mpr hz.le
   have hx0 : (1-(z:ℂ)) ≠ 0 := by exact_mod_cast (ne_of_gt (sub_pos.mpr hz))
-  have hs : (Real.sqrt (1-z):ℂ)^2=(1-z:ℂ) := by exact_mod_cast Real.sq_sqrt hx
+  have hs : (Real.sqrt (1-z):ℂ)^(2 : ℕ)=(1-z:ℂ) := by exact_mod_cast Real.sq_sqrt hx
   dsimp [normalizableFirst,dressFirst,outerFactor,outerFirst]
   rw [show powerFirst (1/2) (1-z)=(1/2:ℂ)*power (1/2) (1-z)/((1-z:ℝ):ℂ) from rfl,
     power_half_eq_sqrt hx]

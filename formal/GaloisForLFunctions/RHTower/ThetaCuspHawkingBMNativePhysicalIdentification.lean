@@ -111,7 +111,7 @@ private theorem sine_deriv (ω t : ℝ) : HasDerivAt (sine ω) (Real.cos (t*ω))
     exact hd.congr_of_eventuallyEq (Eventually.of_forall (fun s => sine_eq hω s))
 
 private theorem cosine_deriv (ω t : ℝ) :
-    HasDerivAt (fun s => Real.cos (s*ω)) (-ω^2*sine ω t) t := by
+    HasDerivAt (fun s => Real.cos (s*ω)) (-ω^(2 : ℕ)*sine ω t) t := by
   have hd := ((hasDerivAt_id t).mul_const ω).cos
   apply hd.congr_deriv
   by_cases hω : ω = 0
@@ -121,15 +121,15 @@ private theorem cosine_deriv (ω t : ℝ) :
 
 private theorem sine_mass_identity (ω Ω T : ℝ) :
     sine ω T-sine Ω T =
-      ∫ t in (0:ℝ)..T, (Ω^2-ω^2)*sine Ω (T-t)*sine ω t := by
+      ∫ t in (0:ℝ)..T, (Ω^(2 : ℕ)-ω^(2 : ℕ))*sine Ω (T-t)*sine ω t := by
   let W (t : ℝ) := Real.cos ((T-t)*Ω)*sine ω t+sine Ω (T-t)*Real.cos (t*ω)
-  have hd (t : ℝ) : HasDerivAt W ((Ω^2-ω^2)*sine Ω (T-t)*sine ω t) t := by
+  have hd (t : ℝ) : HasDerivAt W ((Ω^(2 : ℕ)-ω^(2 : ℕ))*sine Ω (T-t)*sine ω t) t := by
     have h₁ := (cosine_deriv Ω (T-t)).scomp t ((hasDerivAt_const t T).sub (hasDerivAt_id t))
     have h₂ := (sine_deriv Ω (T-t)).scomp t ((hasDerivAt_const t T).sub (hasDerivAt_id t))
     convert! (h₁.mul (sine_deriv ω t)).add (h₂.mul (cosine_deriv ω t)) using 1
     simp only [Function.comp_apply,smul_eq_mul,zero_sub]
     ring
-  have hi : IntervalIntegrable (fun t => (Ω^2-ω^2)*sine Ω (T-t)*sine ω t) volume 0 T := by
+  have hi : IntervalIntegrable (fun t => (Ω^(2 : ℕ)-ω^(2 : ℕ))*sine Ω (T-t)*sine ω t) volume 0 T := by
     apply Continuous.intervalIntegrable
     have h₁ := sine_continuous.comp (show Continuous (fun t : ℝ => (Ω,T-t)) by fun_prop)
     have h₂ := sine_continuous.comp (show Continuous (fun t : ℝ => (ω,t)) by fun_prop)
@@ -199,12 +199,12 @@ private theorem unitWaveSine_symbol (t : ℝ) : unitWaveSine t =
 
 private theorem symbol_mass_identity (ξ T : ℝ) :
     freeSymbol T ξ-massiveSymbol T ξ =
-      ∫ t in (0:ℝ)..T, ((2*Real.pi)^2:ℂ)*massiveSymbol (T-t) ξ*freeSymbol t ξ := by
-  have hk : (kgFreq ξ)^2 = 1+ξ^2 := by
+      ∫ t in (0:ℝ)..T, ((2*Real.pi)^(2 : ℕ):ℂ)*massiveSymbol (T-t) ξ*freeSymbol t ξ := by
+  have hk : (kgFreq ξ)^(2 : ℕ) = 1+ξ^(2 : ℕ) := by
     unfold kgFreq
     rw [Real.sq_sqrt (by positivity)]
     simp only [Real.norm_eq_abs,sq_abs]
-  have hdiff : (2*Real.pi*kgFreq ξ)^2-(2*Real.pi*ξ)^2 = (2*Real.pi)^2 := by
+  have hdiff : (2*Real.pi*kgFreq ξ)^(2 : ℕ)-(2*Real.pi*ξ)^(2 : ℕ) = (2*Real.pi)^(2 : ℕ) := by
     nlinarith [sq_nonneg (2*Real.pi)]
   have h := congrArg Complex.ofReal (sine_mass_identity (2*Real.pi*ξ) (2*Real.pi*kgFreq ξ) T)
   rw [hdiff,← intervalIntegral.integral_ofReal] at h
@@ -267,8 +267,8 @@ private theorem scaled_massive_comp (c : ℝ) (hc : 0 ≤ c) (u v : ℝ)
 /-- Exact mass conversion on every L² datum, with the original physical free propagator. -/
 theorem freeWaveSine_mass_conversion {T : ℝ} (hT : 0 ≤ T) (f : FourierRealL2) :
     freeWaveSine T f = unitWaveSine T f+
-      ((2*Real.pi)^2:ℂ) • ∫ t in (0:ℝ)..T, unitWaveSine (T-t) (freeWaveSine t f) := by
-  let c : ℝ := (2*Real.pi)^2
+      ((2*Real.pi)^(2 : ℕ):ℂ) • ∫ t in (0:ℝ)..T, unitWaveSine (T-t) (freeWaveSine t f) := by
+  let c : ℝ := (2*Real.pi)^(2 : ℕ)
   have hc : 0 ≤ c := sq_nonneg _
   let clamp (t : ℝ) := max 0 (min t T)
   have hcl : ∀ t, 0 ≤ clamp t ∧ clamp t ≤ T := by
@@ -283,7 +283,7 @@ theorem freeWaveSine_mass_conversion {T : ℝ} (hT : 0 ≤ T) (f : FourierRealL2
     have hF := freeSymbol_continuous.comp
       (show Continuous (fun z : ℝ × ℝ => (clamp z.1,z.2)) by dsimp only [clamp]; fun_prop)
     exact (continuous_const.mul hM).mul hF
-  have hb : ∀ t ξ, ‖φ (t,ξ)‖ ≤ c*T^2 := by
+  have hb : ∀ t ξ, ‖φ (t,ξ)‖ ≤ c*T^(2 : ℕ) := by
     intro t ξ
     have ht := hcl t
     dsimp only [φ]
@@ -296,7 +296,7 @@ theorem freeWaveSine_mass_conversion {T : ℝ} (hT : 0 ≤ T) (f : FourierRealL2
         ≤ c*T*T := mul_le_mul
           (mul_le_mul_of_nonneg_left (hM.trans (by linarith [ht.1])) hc)
           (hF.trans ht.2) (norm_nonneg _) (mul_nonneg hc hT)
-      _ = c*T^2 := by ring
+      _ = c*T^(2 : ℕ) := by ring
   let ψ (ξ : ℝ) := freeSymbol T ξ-massiveSymbol T ξ
   have hψ : Measurable ψ :=
     ((freeSymbol_continuous.comp (continuous_const.prodMk continuous_id)).sub
@@ -342,8 +342,8 @@ theorem freeWaveSine_mass_conversion {T : ℝ} (hT : 0 ≤ T) (f : FourierRealL2
     rw [scaled_massive_comp c hc (T-t) t _ _ _ (hb t) he']
     rfl
   rw [hint] at hi
-  change _ = _+((2*Real.pi)^2:ℂ) • _
-  have hc' : (c:ℂ) = ((2*Real.pi)^2:ℂ) := by simp only [c,Complex.ofReal_pow,Complex.ofReal_mul,Complex.ofReal_ofNat]
+  change _ = _+((2*Real.pi)^(2 : ℕ):ℂ) • _
+  have hc' : (c:ℂ) = ((2*Real.pi)^(2 : ℕ):ℂ) := by simp only [c,Complex.ofReal_pow,Complex.ofReal_mul,Complex.ofReal_ofNat]
   rw [hc'] at hi
   change _ = freeWaveSine T f-unitWaveSine T f at hi
   exact (sub_eq_iff_eq_add.mp hi.symm).trans (add_comm _ _)
@@ -500,7 +500,7 @@ The mass is that of the existing physical sine propagator, not an adjustable nor
 theorem freeWaveDuhamel_mass_conversion (F : ℝ → FourierRealL2) (hF : Continuous F)
     {T : ℝ} (hT : 0 ≤ T) :
     freeWaveDuhamel F T = unitWaveDuhamel F T+
-      ((2*Real.pi)^2:ℂ) • unitWaveDuhamel (freeWaveDuhamel F) T := by
+      ((2*Real.pi)^(2 : ℕ):ℂ) • unitWaveDuhamel (freeWaveDuhamel F) T := by
   have hM := unitWaveSine_continuous_comp (fun t => T-t) F (continuous_const.sub continuous_id) hF
   have hK : Continuous (fun z : ℝ × ℝ =>
       unitWaveSine (T-z.1-z.2) (freeWaveSine z.2 (F z.1))) :=
@@ -511,14 +511,14 @@ theorem freeWaveDuhamel_mass_conversion (F : ℝ → FourierRealL2) (hF : Contin
     (f := fun t a => unitWaveSine (T-t-a) (freeWaveSine a (F t))) hK
     (show Continuous (fun t : ℝ => T-t) from continuous_const.sub continuous_id)
   have he : freeWaveDuhamel F T = ∫ t in (0:ℝ)..T,
-      unitWaveSine (T-t) (F t)+((2*Real.pi)^2:ℂ) •
+      unitWaveSine (T-t) (F t)+((2*Real.pi)^(2 : ℕ):ℂ) •
         ∫ a in (0:ℝ)..(T-t), unitWaveSine (T-t-a) (freeWaveSine a (F t)) := by
     apply intervalIntegral.integral_congr
     intro t ht
     have ht' : t ∈ Icc 0 T := by simpa [uIcc_of_le hT] using ht
     exact freeWaveSine_mass_conversion (sub_nonneg.mpr ht'.2) (F t)
   have hadd := intervalIntegral.integral_add (hM.intervalIntegrable (μ := volume) 0 T)
-    ((hI.const_smul ((2*Real.pi)^2:ℂ)).intervalIntegrable (μ := volume) 0 T)
+    ((hI.const_smul ((2*Real.pi)^(2 : ℕ):ℂ)).intervalIntegrable (μ := volume) 0 T)
   simp only [Pi.smul_apply] at hadd
   rw [he,hadd,intervalIntegral.integral_smul,duhamel_association F hF hT]
   rfl
@@ -547,7 +547,7 @@ private theorem l2_integral_eq (f : ℝ × ℝ → ℂ) (hf : Continuous f)
     constructor
     · filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
       exact (L2.integrable_inner g (u t)).congr (hslice t ⟨ht.1.le,ht.2⟩).symm
-    · have hbound : Integrable (fun t => ‖g‖^2+‖u t‖^2) μ :=
+    · have hbound : Integrable (fun t => ‖g‖^(2 : ℕ)+‖u t‖^(2 : ℕ)) μ :=
         ((continuous_const.add (hu.norm.pow 2)).intervalIntegrable (μ := volume) a b).1
       apply hbound.mono' hk.norm.integral_prod_right'
       filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
@@ -558,13 +558,13 @@ private theorem l2_integral_eq (f : ℝ × ℝ → ℂ) (hf : Continuous f)
       have hg := (Lp.memLp g).norm.integrable_sq
       have hu' := (Lp.memLp (u t)).norm.integrable_sq
       calc
-        (∫ x, ‖inner ℂ (g x) (u t x)‖) ≤ ∫ x, ‖g x‖^2+‖u t x‖^2 := by
+        (∫ x, ‖inner ℂ (g x) (u t x)‖) ≤ ∫ x, ‖g x‖^(2 : ℕ)+‖u t x‖^(2 : ℕ) := by
           apply integral_mono (L2.integrable_inner g (u t)).norm (hg.add hu')
           intro x
           dsimp only [Pi.add_apply]
           have hn := norm_inner_le_norm (g x) (u t x) (𝕜 := ℂ)
           nlinarith [sq_nonneg (‖g x‖-‖u t x‖)]
-        _ = ‖g‖^2+‖u t‖^2 := by
+        _ = ‖g‖^(2 : ℕ)+‖u t‖^(2 : ℕ) := by
           rw [integral_add hg hu',← _root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq,
             ← _root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
   have hleft : (∫ t in a..b, inner ℂ g (u t)) = ∫ t, ∫ x, k (t,x) ∂volume ∂μ := by
@@ -661,10 +661,10 @@ private theorem source_zero_outside (s a : ℂ) {τ x : ℝ} (hx : τ < |x|) :
     linarith
 
 private theorem potential_exact (q : XiZeroCopy) (i : Fin 3) (x : ℝ) :
-    principalWavePotential q i x-((2*Real.pi)^2:ℂ) =
-      (-principalExponent q i)*(-principalExponent q i+1)/(Real.cosh x:ℂ)^2 := by
+    principalWavePotential q i x-((2*Real.pi)^(2 : ℕ):ℂ) =
+      (-principalExponent q i)*(-principalExponent q i+1)/(Real.cosh x:ℂ)^(2 : ℕ) := by
   have hc : Real.cosh x ≠ 0 := (Real.cosh_pos x).ne'
-  have hh : horizonCoordinate x = 1/(Real.cosh x)^2 := by
+  have hh : horizonCoordinate x = 1/(Real.cosh x)^(2 : ℕ) := by
     unfold horizonCoordinate radialUnit
     field_simp
     nlinarith [Real.cosh_sq_sub_sinh_sq x]
@@ -692,11 +692,11 @@ private theorem nativeValue_ae (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : F
 
 private def effectiveValue (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3) (z : ℝ × ℝ) : ℂ :=
   principalAmplitude q i*oddSource (physicalRate q branch) a z.1 z.2+
-    (principalWavePotential q i z.2-((2*Real.pi)^2:ℂ))*nativeValue q branch a i z.1 z.2
+    (principalWavePotential q i z.2-((2*Real.pi)^(2 : ℕ):ℂ))*nativeValue q branch a i z.1 z.2
 
 private def effectiveVector (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3) (τ : ℝ) : FourierRealL2 :=
   principalTimeForcing q branch a i τ+principalWavePotentialOp q i (nativePrincipalResponse q branch a i τ)-
-    ((2*Real.pi)^2:ℂ) • nativePrincipalResponse q branch a i τ
+    ((2*Real.pi)^(2 : ℕ):ℂ) • nativePrincipalResponse q branch a i τ
 
 private theorem effectiveValue_continuous (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3) :
     Continuous (effectiveValue q branch a i) := by
@@ -711,23 +711,23 @@ private theorem effectiveVector_continuous (q : XiZeroCopy) (branch : Bool) (a :
     Continuous (effectiveVector q branch a i) :=
   ((principalTimeForcing_continuous q branch a i).add
     ((principalWavePotentialOp q i).continuous.comp (nativePrincipalResponse_continuous q branch a i))).sub
-    ((nativePrincipalResponse_continuous q branch a i).const_smul ((2*Real.pi)^2:ℂ))
+    ((nativePrincipalResponse_continuous q branch a i).const_smul ((2*Real.pi)^(2 : ℕ):ℂ))
 
 private theorem effectiveVector_ae (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3) (τ : ℝ) :
     (effectiveVector q branch a i τ : ℝ → ℂ) =ᵐ[volume] fun x => effectiveValue q branch a i (τ,x) := by
   let u := nativePrincipalResponse q branch a i τ
   let f := principalTimeForcing q branch a i τ
   let p := principalWavePotentialOp q i u
-  filter_upwards [Lp.coeFn_sub (f+p) (((2*Real.pi)^2:ℂ) • u),Lp.coeFn_add f p,
-    Lp.coeFn_smul ((2*Real.pi)^2:ℂ) u,principalWavePotentialOp_ae q i u,
+  filter_upwards [Lp.coeFn_sub (f+p) (((2*Real.pi)^(2 : ℕ):ℂ) • u),Lp.coeFn_add f p,
+    Lp.coeFn_smul ((2*Real.pi)^(2 : ℕ):ℂ) u,principalWavePotentialOp_ae q i u,
     principalForcing_ae_oddSource q branch a i τ,nativeValue_ae q branch a i τ] with x hsub hadd hsmul hp hf hu
-  change (f+p-((2*Real.pi)^2:ℂ) • u) x = _
+  change (f+p-((2*Real.pi)^(2 : ℕ):ℂ) • u) x = _
   rw [hsub]
   dsimp only [Pi.sub_apply]
   rw [hadd]
   dsimp only [Pi.add_apply]
   rw [hsmul,hp]
-  change f x+principalWavePotential q i x*u x-((2*Real.pi)^2:ℂ)*u x = _
+  change f x+principalWavePotential q i x*u x-((2*Real.pi)^(2 : ℕ):ℂ)*u x = _
   rw [hf,hu]
   dsimp only [effectiveValue]
   ring
@@ -746,10 +746,10 @@ private theorem nativeValue_free (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i :
   rw [radialResponse_freeDuhamel _ _ _ hτ]
   simp only [effectiveValue,nativeValue,potential_exact]
   simp_rw [show ∀ σ y, principalAmplitude q i*oddSource (physicalRate q branch) a σ y+
-      ((-principalExponent q i)*(-principalExponent q i+1)/(Real.cosh y:ℂ)^2)*
+      ((-principalExponent q i)*(-principalExponent q i+1)/(Real.cosh y:ℂ)^(2 : ℕ))*
         (principalAmplitude q i*radialResponse (-principalExponent q i) (physicalRate q branch) a σ y) =
       principalAmplitude q i*(oddSource (physicalRate q branch) a σ y+
-        (-principalExponent q i)*(-principalExponent q i+1)/(Real.cosh y:ℂ)^2*
+        (-principalExponent q i)*(-principalExponent q i+1)/(Real.cosh y:ℂ)^(2 : ℕ)*
           radialResponse (-principalExponent q i) (physicalRate q branch) a σ y) by intros; ring]
   simp_rw [intervalIntegral.integral_const_mul]
   ring
@@ -835,13 +835,13 @@ theorem nativePrincipalResponse_eq_principalTimeResponse (q : XiZeroCopy) (branc
     have h := freeWaveDuhamel_mass_conversion _ (effectiveVector_continuous q branch a i) hT
     rw [he] at h
     have ha := massive_add (effectiveVector q branch a i)
-      (fun t => ((2*Real.pi)^2:ℂ) • nativePrincipalResponse q branch a i t)
+      (fun t => ((2*Real.pi)^(2 : ℕ):ℂ) • nativePrincipalResponse q branch a i t)
       (effectiveVector_continuous q branch a i)
-      ((nativePrincipalResponse_continuous q branch a i).const_smul ((2*Real.pi)^2:ℂ)) T
+      ((nativePrincipalResponse_continuous q branch a i).const_smul ((2*Real.pi)^(2 : ℕ):ℂ)) T
     rw [massive_smul] at ha
     rw [← ha] at h
     have hi : (fun t => effectiveVector q branch a i t+
-        ((2*Real.pi)^2:ℂ) • nativePrincipalResponse q branch a i t) =
+        ((2*Real.pi)^(2 : ℕ):ℂ) • nativePrincipalResponse q branch a i t) =
         fun t => principalTimeForcing q branch a i t+principalWavePotentialOp q i (nativePrincipalResponse q branch a i t) := by
       funext t
       exact sub_add_cancel _ _

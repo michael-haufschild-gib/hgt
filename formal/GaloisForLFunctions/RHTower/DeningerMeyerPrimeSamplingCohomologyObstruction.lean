@@ -248,16 +248,16 @@ theorem deningerMeyerPrimeInvisibleEvenH1LM_injective :
 /-- Explicit even point mass on the nonsampled radii `±1`. -/
 def deningerMeyerPrimeInvisibleUnitMass :
     DeningerMeyerPrimeInvisibleEvenFunctions :=
-  ⟨fun x => if x ^ 2 = 1 then 1 else 0, by
+  ⟨fun x => if x ^ (2 : ℕ) = 1 then 1 else 0, by
     constructor
     · intro x
-      change (if (-x) ^ 2 = 1 then 1 else 0) =
-        (if x ^ 2 = 1 then 1 else 0)
+      change (if (-x) ^ (2 : ℕ) = 1 then 1 else 0) =
+        (if x ^ (2 : ℕ) = 1 then 1 else 0)
       rw [neg_sq]
     constructor
     · norm_num
     · intro p
-      change (if (p : ℝ) ^ 2 = 1 then 1 else 0) = 0
+      change (if (p : ℝ) ^ (2 : ℕ) = 1 then 1 else 0) = 0
       rw [if_neg]
       intro hp
       have hp2 : (2 : ℝ) ≤ (p : ℝ) := by

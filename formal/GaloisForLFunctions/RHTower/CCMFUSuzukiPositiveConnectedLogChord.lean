@@ -14,7 +14,7 @@ open GaloisForLFunctions.HTGeometry GaloisForLFunctions.RHTower
 def ccmFUSuzukiPositiveConnectedLogChordPrimeEntryApprox
     (ω : ℝ) (n : ℕ) : ℝ :=
   16 * shiftedEulerLogChordConnectedThirdExcess ω n /
-    (Real.sqrt n * Real.log n ^ 5)
+    (Real.sqrt n * Real.log n ^ (5 : ℕ))
 
 theorem ccmFUSuzukiPositiveConnectedLogChordPrimeEntryApprox_nonneg
     {ω : ℝ} (hω : 0 < ω) (n : ℕ) :
@@ -30,7 +30,7 @@ theorem ccmFUSuzukiPositiveConnectedLogChordPrimeEntryApprox_pos_iff
   have hnR : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
   have hlog : 0 < Real.log (n : ℝ) :=
     Real.log_pos (by exact_mod_cast hn)
-  have hden : 0 < Real.sqrt (n : ℝ) * Real.log (n : ℝ) ^ 5 := by
+  have hden : 0 < Real.sqrt (n : ℝ) * Real.log (n : ℝ) ^ (5 : ℕ) := by
     exact mul_pos (Real.sqrt_pos.2 hnR) (pow_pos hlog 5)
   rw [ccmFUSuzukiPositiveConnectedLogChordPrimeEntryApprox]
   constructor
@@ -52,12 +52,12 @@ theorem tendsto_ccmFUSuzukiPositiveConnectedLogChordPrimeEntryApprox
       (𝓝[>] 0) (𝓝 (ccmGuinandWeilPrimeEntryThirdJetScale (n + 2))) := by
   have hbase := tendsto_shiftedEulerLogChordConnectedThirdExcess (n + 2)
   have h := (hbase.const_mul (16 : ℝ)).div_const
-    (Real.sqrt ((n + 2 : ℕ) : ℝ) * Real.log ((n + 2 : ℕ) : ℝ) ^ 5)
+    (Real.sqrt ((n + 2 : ℕ) : ℝ) * Real.log ((n + 2 : ℕ) : ℝ) ^ (5 : ℕ))
   rw [ccmGuinandWeilPrimeEntryThirdJetScale_eq_connectedSuzukiThirdTangent n]
   have hre :
       (shiftedEulerConnectedThirdTangentArithmetic (n + 2)).re =
         2 * ArithmeticFunction.vonMangoldt (n + 2) *
-          Real.log ((n + 2 : ℕ) : ℝ) ^ 2 := by
+          Real.log ((n + 2 : ℕ) : ℝ) ^ (2 : ℕ) := by
     rw [shiftedEulerConnectedThirdTangentArithmetic_apply]
     rw [← Complex.ofReal_pow]
     simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
@@ -95,24 +95,24 @@ theorem shiftedEulerLogPolarChordDensity_eq_principalPolarIncrement
   calc
     Real.exp (h * ω) *
         (Real.exp (h * ω) - Real.exp (-(h * ω))) =
-      Real.exp (h * ω) ^ 2 -
+      Real.exp (h * ω) ^ (2 : ℕ) -
         Real.exp (h * ω) * Real.exp (-(h * ω)) := by ring
-    _ = Real.exp (h * ω) ^ 2 - 1 := by rw [hinv]
+    _ = Real.exp (h * ω) ^ (2 : ℕ) - 1 := by rw [hinv]
 
 def shiftedEulerLogPolarConnectedThirdExcess (ω h : ℝ) : ℝ :=
-  12 * (shiftedEulerLogPolarChordDensity ω h - 2 * Real.cosh (h / 2)) / ω ^ 2
+  12 * (shiftedEulerLogPolarChordDensity ω h - 2 * Real.cosh (h / 2)) / ω ^ (2 : ℕ)
 
 theorem shiftedEulerLogPolarConnectedThirdExcess_eq_principalPolarIncrement
     {ω h : ℝ} (hω : ω ≠ 0) (hh : h ≠ 0) :
     shiftedEulerLogPolarConnectedThirdExcess ω h =
       12 * (shiftedEulerLogPrincipalPolarIncrement ω h / (2 * ω * h) -
-        2 * Real.cosh (h / 2)) / ω ^ 2 := by
+        2 * Real.cosh (h / 2)) / ω ^ (2 : ℕ) := by
   rw [shiftedEulerLogPolarConnectedThirdExcess,
     shiftedEulerLogPolarChordDensity_eq_principalPolarIncrement hω hh]
 
 /-- Universal finite-clock connected third-jet multiplier. -/
 def shiftedEulerLogConnectedThirdMultiplier (ω h : ℝ) : ℝ :=
-  6 * (Real.sinh (ω * h) / (ω * h) - 1) / (ω * h) ^ 2
+  6 * (Real.sinh (ω * h) / (ω * h) - 1) / (ω * h) ^ (2 : ℕ)
 
 theorem shiftedEulerLogConnectedThirdMultiplier_nonneg
     {ω h : ℝ} (hω : 0 < ω) (hh : 0 < h) :
@@ -171,14 +171,14 @@ theorem tendsto_shiftedEulerLogConnectedThirdMultiplier {h : ℝ} (hh : h ≠ 0)
   · norm_num
 
 private def shiftedEulerLogConnectedThirdMultiplierPrimitive (y t : ℝ) : ℝ :=
-  3 * (((1 - t) ^ 2 * Real.sinh (t * y)) / y +
-    (2 * (1 - t) * Real.cosh (t * y)) / y ^ 2 +
-    (2 * Real.sinh (t * y)) / y ^ 3)
+  3 * (((1 - t) ^ (2 : ℕ) * Real.sinh (t * y)) / y +
+    (2 * (1 - t) * Real.cosh (t * y)) / y ^ (2 : ℕ) +
+    (2 * Real.sinh (t * y)) / y ^ (3 : ℕ))
 
 private theorem hasDerivAt_shiftedEulerLogConnectedThirdMultiplierPrimitive
     {y : ℝ} (hy : y ≠ 0) (t : ℝ) :
     HasDerivAt (shiftedEulerLogConnectedThirdMultiplierPrimitive y)
-      (3 * (1 - t) ^ 2 * Real.cosh (t * y)) t := by
+      (3 * (1 - t) ^ (2 : ℕ) * Real.cosh (t * y)) t := by
   have harg : HasDerivAt (fun x : ℝ => x * y) y t := by
     simpa only [Function.id_def, one_mul] using
       (hasDerivAt_id t).mul_const y
@@ -193,8 +193,8 @@ private theorem hasDerivAt_shiftedEulerLogConnectedThirdMultiplierPrimitive
   have honeSub : HasDerivAt (fun x : ℝ => 1 - x) (-1) t :=
     (hasDerivAt_id t).const_sub 1
   have hraw := ((honeSub.pow 2).mul hsinh).div_const y |>.add
-    ((honeSub.const_mul 2).mul hcosh |>.div_const (y ^ 2)) |>.add
-      (hsinh.const_mul 2 |>.div_const (y ^ 3)) |>.const_mul 3
+    ((honeSub.const_mul 2).mul hcosh |>.div_const (y ^ (2 : ℕ))) |>.add
+      (hsinh.const_mul 2 |>.div_const (y ^ (3 : ℕ))) |>.const_mul 3
   apply hraw.congr_deriv
   simp only [Pi.pow_apply]
   field_simp [hy]
@@ -205,37 +205,37 @@ The mixing density `3(1-t)²` is positive and has total mass one. -/
 theorem shiftedEulerLogConnectedThirdMultiplier_eq_coshMixture
     {ω h : ℝ} (hω : ω ≠ 0) (hh : h ≠ 0) :
     shiftedEulerLogConnectedThirdMultiplier ω h =
-      ∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ 2 * Real.cosh (t * (ω * h)) := by
+      ∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ (2 : ℕ) * Real.cosh (t * (ω * h)) := by
   have hy : ω * h ≠ 0 := mul_ne_zero hω hh
   have hcont : Continuous (fun t : ℝ =>
-      3 * (1 - t) ^ 2 * Real.cosh (t * (ω * h))) := by
+      3 * (1 - t) ^ (2 : ℕ) * Real.cosh (t * (ω * h))) := by
     fun_prop
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun t _ =>
       hasDerivAt_shiftedEulerLogConnectedThirdMultiplierPrimitive hy t)
     (hcont.intervalIntegrable 0 1)
   have hF1 : shiftedEulerLogConnectedThirdMultiplierPrimitive (ω * h) 1 =
-      6 * Real.sinh (ω * h) / (ω * h) ^ 3 := by
+      6 * Real.sinh (ω * h) / (ω * h) ^ (3 : ℕ) := by
     simp [shiftedEulerLogConnectedThirdMultiplierPrimitive]
     ring
   have hF0 : shiftedEulerLogConnectedThirdMultiplierPrimitive (ω * h) 0 =
-      6 / (ω * h) ^ 2 := by
+      6 / (ω * h) ^ (2 : ℕ) := by
     simp [shiftedEulerLogConnectedThirdMultiplierPrimitive]
     ring
   rw [hFTC, hF1, hF0, shiftedEulerLogConnectedThirdMultiplier]
   field_simp [hy]
 
 theorem integral_shiftedEulerLogConnectedThirdMultiplier_mixingDensity :
-    (∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ 2) = 1 := by
+    (∫ t in (0 : ℝ)..1, 3 * (1 - t) ^ (2 : ℕ)) = 1 := by
   have hderiv : ∀ t : ℝ,
-      HasDerivAt (fun x : ℝ => -(1 - x) ^ 3) (3 * (1 - t) ^ 2) t := by
+      HasDerivAt (fun x : ℝ => -(1 - x) ^ (3 : ℕ)) (3 * (1 - t) ^ (2 : ℕ)) t := by
     intro t
     have hone : HasDerivAt (fun x : ℝ => 1 - x) (-1) t :=
       (hasDerivAt_id t).const_sub 1
     exact (hone.pow 3).neg.congr_deriv (by ring)
-  have hint : IntervalIntegrable (fun t : ℝ => 3 * (1 - t) ^ 2)
+  have hint : IntervalIntegrable (fun t : ℝ => 3 * (1 - t) ^ (2 : ℕ))
       MeasureTheory.volume 0 1 :=
-    (by fun_prop : Continuous (fun t : ℝ => 3 * (1 - t) ^ 2)).intervalIntegrable 0 1
+    (by fun_prop : Continuous (fun t : ℝ => 3 * (1 - t) ^ (2 : ℕ))).intervalIntegrable 0 1
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun t _ => hderiv t) hint]
   norm_num
@@ -243,8 +243,8 @@ theorem integral_shiftedEulerLogConnectedThirdMultiplier_mixingDensity :
 private theorem ccmGuinandWeilPrimeEntryThirdJetScale_eq_logSource_of_two_le
     {n : ℕ} (hn : 2 ≤ n) :
     ccmGuinandWeilPrimeEntryThirdJetScale n =
-      16 * (2 * ArithmeticFunction.vonMangoldt n * Real.log n ^ 2) /
-        (Real.sqrt n * Real.log n ^ 5) := by
+      16 * (2 * ArithmeticFunction.vonMangoldt n * Real.log n ^ (2 : ℕ)) /
+        (Real.sqrt n * Real.log n ^ (5 : ℕ)) := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
   rw [show 2 + m = m + 2 by omega,
     ccmGuinandWeilPrimeEntryThirdJetScale_eq_connectedSuzukiThirdTangent m,
@@ -310,7 +310,7 @@ theorem shiftedEulerLogPolarConnectedThirdExcess_pos
 
 theorem tendsto_shiftedEulerLogPolarConnectedThirdExcess {h : ℝ} (hh : h ≠ 0) :
     Tendsto (fun ω : ℝ => shiftedEulerLogPolarConnectedThirdExcess ω h)
-      (𝓝[>] 0) (𝓝 (4 * Real.cosh (h / 2) * h ^ 2)) := by
+      (𝓝[>] 0) (𝓝 (4 * Real.cosh (h / 2) * h ^ (2 : ℕ))) := by
   have hscale : Tendsto (fun ω : ℝ => ω * h)
         (𝓝[>] 0) (𝓝[≠] 0) := by
       apply tendsto_nhdsWithin_iff.mpr
@@ -323,8 +323,8 @@ theorem tendsto_shiftedEulerLogPolarConnectedThirdExcess {h : ℝ} (hh : h ≠ 0
         exact mul_ne_zero hω.ne' hh
   have hjet := tendsto_real_sinh_sub_self_div_cube_nhdsNE_zero.comp hscale
   have hconst : Tendsto (fun _ : ℝ =>
-        24 * Real.cosh (h / 2) * h ^ 2)
-        (𝓝[>] 0) (𝓝 (24 * Real.cosh (h / 2) * h ^ 2)) :=
+        24 * Real.cosh (h / 2) * h ^ (2 : ℕ))
+        (𝓝[>] 0) (𝓝 (24 * Real.cosh (h / 2) * h ^ (2 : ℕ))) :=
     tendsto_const_nhds
   have hprod := hjet.mul hconst
   convert hprod using 1
@@ -336,9 +336,9 @@ theorem tendsto_shiftedEulerLogPolarConnectedThirdExcess {h : ℝ} (hh : h ≠ 0
     · change
           12 * (2 * Real.cosh (h / 2) *
               (Real.sinh (ω * h) / (ω * h)) -
-            2 * Real.cosh (h / 2)) / ω ^ 2 =
-          ((Real.sinh (ω * h) - ω * h) / (ω * h) ^ 3) *
-            (24 * Real.cosh (h / 2) * h ^ 2)
+            2 * Real.cosh (h / 2)) / ω ^ (2 : ℕ) =
+          ((Real.sinh (ω * h) - ω * h) / (ω * h) ^ (3 : ℕ)) *
+            (24 * Real.cosh (h / 2) * h ^ (2 : ℕ))
       field_simp [hω, hh]
       <;> ring
   · ring
@@ -347,7 +347,7 @@ theorem shiftedEulerLogPolarConnectedThirdExcess_le
     {ω h H : ℝ} (hω : 0 < ω) (hω1 : ω ≤ 1)
     (hh : 0 < h) (hhH : h ≤ H) :
     shiftedEulerLogPolarConnectedThirdExcess ω h ≤
-      4 * Real.cosh (h / 2) * h ^ 2 * Real.cosh H := by
+      4 * Real.cosh (h / 2) * h ^ (2 : ℕ) * Real.cosh H := by
   have hy : 0 < ω * h := mul_pos hω hh
   have hyH : ω * h ≤ H := by
     calc
@@ -359,36 +359,36 @@ theorem shiftedEulerLogPolarConnectedThirdExcess_le
   have hscaled :
       24 * Real.cosh (h / 2) * (Real.sinh (ω * h) - ω * h) ≤
         24 * Real.cosh (h / 2) *
-          ((ω * h) ^ 3 / 6 * Real.cosh (ω * h)) :=
+          ((ω * h) ^ (3 : ℕ) / 6 * Real.cosh (ω * h)) :=
     mul_le_mul_of_nonneg_left hjet (by positivity)
-  have hden : 0 < (ω * h) * ω ^ 2 := mul_pos hy (sq_pos_of_pos hω)
+  have hden : 0 < (ω * h) * ω ^ (2 : ℕ) := mul_pos hy (sq_pos_of_pos hω)
   have hdiv := div_le_div_of_nonneg_right hscaled hden.le
   have hcosh : Real.cosh (ω * h) ≤ Real.cosh H := by
     rw [Real.cosh_le_cosh]
     simpa only [abs_of_pos hy, abs_of_nonneg (hh.le.trans hhH)] using hyH
   have hlast :
-      4 * Real.cosh (h / 2) * h ^ 2 * Real.cosh (ω * h) ≤
-        4 * Real.cosh (h / 2) * h ^ 2 * Real.cosh H :=
+      4 * Real.cosh (h / 2) * h ^ (2 : ℕ) * Real.cosh (ω * h) ≤
+        4 * Real.cosh (h / 2) * h ^ (2 : ℕ) * Real.cosh H :=
     mul_le_mul_of_nonneg_left hcosh (by positivity)
   calc
     shiftedEulerLogPolarConnectedThirdExcess ω h =
         (24 * Real.cosh (h / 2) *
-          (Real.sinh (ω * h) - ω * h)) / ((ω * h) * ω ^ 2) := by
+          (Real.sinh (ω * h) - ω * h)) / ((ω * h) * ω ^ (2 : ℕ)) := by
       rw [shiftedEulerLogPolarConnectedThirdExcess,
         shiftedEulerLogPolarChordDensity]
       field_simp [hω.ne', hh.ne']
       ring
     _ ≤ (24 * Real.cosh (h / 2) *
-          ((ω * h) ^ 3 / 6 * Real.cosh (ω * h))) /
-        ((ω * h) * ω ^ 2) := hdiv
-    _ = 4 * Real.cosh (h / 2) * h ^ 2 * Real.cosh (ω * h) := by
+          ((ω * h) ^ (3 : ℕ) / 6 * Real.cosh (ω * h))) /
+        ((ω * h) * ω ^ (2 : ℕ)) := hdiv
+    _ = 4 * Real.cosh (h / 2) * h ^ (2 : ℕ) * Real.cosh (ω * h) := by
       field_simp [hω.ne', hh.ne']
       ring
     _ ≤ _ := hlast
 
 def ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox
     (ω H h : ℝ) : ℝ :=
-  16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ 5 *
+  16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ (5 : ℕ) *
     (1 - h / H)
 
 /-- Exact common-multiplier law on the principal-polar continuum. -/
@@ -415,7 +415,7 @@ theorem tendsto_ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox
       (𝓝 (ccmGuinandWeilThirdGradeCesaroTriangularWeight H h *
         (2 * Real.cosh (h / 2)))) := by
   have hbase := tendsto_shiftedEulerLogPolarConnectedThirdExcess hh
-  have h := ((hbase.const_mul (16 : ℝ)).div_const (h ^ 5)).mul_const
+  have h := ((hbase.const_mul (16 : ℝ)).div_const (h ^ (5 : ℕ))).mul_const
     (1 - h / H)
   convert h using 1
   · funext ω
@@ -429,7 +429,7 @@ theorem abs_ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox_le
     {ω b H h : ℝ} (hω : 0 < ω) (hω1 : ω ≤ 1)
     (hb : 0 < b) (hbH : b ≤ H) (hh : b ≤ h) (hhH : h ≤ H) :
     |ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox ω H h| ≤
-      64 * Real.cosh (H / 2) * Real.cosh H / b ^ 3 := by
+      64 * Real.cosh (H / 2) * Real.cosh H / b ^ (3 : ℕ) := by
   have hH : 0 < H := hb.trans_le hbH
   have hh0 : 0 < h := hb.trans_le hh
   have hexcess0 := shiftedEulerLogPolarConnectedThirdExcess_nonneg hω hh0
@@ -441,16 +441,16 @@ theorem abs_ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox_le
     have : 0 ≤ h / H := div_nonneg hh0.le hH.le
     linarith
   have hbase0 : 0 ≤
-      16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ 5 :=
+      16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ (5 : ℕ) :=
     div_nonneg (mul_nonneg (by norm_num) hexcess0) (by positivity)
   have hfirst :
       ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox ω H h ≤
-        16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ 5 := by
+        16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ (5 : ℕ) := by
     rw [ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox]
     nlinarith
   have hsecond :
-      16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ 5 ≤
-        16 * (4 * Real.cosh (h / 2) * h ^ 2 * Real.cosh H) / h ^ 5 := by
+      16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ (5 : ℕ) ≤
+        16 * (4 * Real.cosh (h / 2) * h ^ (2 : ℕ) * Real.cosh H) / h ^ (5 : ℕ) := by
     exact div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left hexcess (by norm_num)) (by positivity)
   have hcosh : Real.cosh (h / 2) ≤ Real.cosh (H / 2) := by
@@ -458,24 +458,24 @@ theorem abs_ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox_le
     rw [abs_of_nonneg (by positivity : 0 ≤ h / 2),
       abs_of_nonneg (by positivity : 0 ≤ H / 2)]
     linarith
-  have hpow : b ^ 3 ≤ h ^ 3 := pow_le_pow_left₀ hb.le hh 3
-  have hinv : 1 / h ^ 3 ≤ 1 / b ^ 3 :=
+  have hpow : b ^ (3 : ℕ) ≤ h ^ (3 : ℕ) := pow_le_pow_left₀ hb.le hh 3
+  have hinv : 1 / h ^ (3 : ℕ) ≤ 1 / b ^ (3 : ℕ) :=
     one_div_le_one_div_of_le (by positivity) hpow
   have hcoshH0 : 0 ≤ Real.cosh H := (Real.cosh_pos _).le
   have hthird :
-      64 * Real.cosh (h / 2) * Real.cosh H / h ^ 3 ≤
-        64 * Real.cosh (H / 2) * Real.cosh H / b ^ 3 := by
+      64 * Real.cosh (h / 2) * Real.cosh H / h ^ (3 : ℕ) ≤
+        64 * Real.cosh (H / 2) * Real.cosh H / b ^ (3 : ℕ) := by
     have hcoef :
         64 * Real.cosh (h / 2) * Real.cosh H ≤
           64 * Real.cosh (H / 2) * Real.cosh H :=
       mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hcosh (by norm_num)) hcoshH0
     calc
-      64 * Real.cosh (h / 2) * Real.cosh H / h ^ 3 =
-          (64 * Real.cosh (h / 2) * Real.cosh H) * (1 / h ^ 3) := by ring
-      _ ≤ (64 * Real.cosh (H / 2) * Real.cosh H) * (1 / h ^ 3) :=
+      64 * Real.cosh (h / 2) * Real.cosh H / h ^ (3 : ℕ) =
+          (64 * Real.cosh (h / 2) * Real.cosh H) * (1 / h ^ (3 : ℕ)) := by ring
+      _ ≤ (64 * Real.cosh (H / 2) * Real.cosh H) * (1 / h ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_right hcoef (by positivity)
-      _ ≤ (64 * Real.cosh (H / 2) * Real.cosh H) * (1 / b ^ 3) :=
+      _ ≤ (64 * Real.cosh (H / 2) * Real.cosh H) * (1 / b ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_left hinv (by positivity)
       _ = _ := by ring
   have hnonneg : 0 ≤
@@ -485,9 +485,9 @@ theorem abs_ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox_le
   rw [abs_of_nonneg hnonneg]
   calc
     ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox ω H h
-        ≤ 16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ 5 := hfirst
-    _ ≤ 16 * (4 * Real.cosh (h / 2) * h ^ 2 * Real.cosh H) / h ^ 5 := hsecond
-    _ = 64 * Real.cosh (h / 2) * Real.cosh H / h ^ 3 := by
+        ≤ 16 * shiftedEulerLogPolarConnectedThirdExcess ω h / h ^ (5 : ℕ) := hfirst
+    _ ≤ 16 * (4 * Real.cosh (h / 2) * h ^ (2 : ℕ) * Real.cosh H) / h ^ (5 : ℕ) := hsecond
+    _ = 64 * Real.cosh (h / 2) * Real.cosh H / h ^ (3 : ℕ) := by
       field_simp [hh0.ne']
       ring
     _ ≤ _ := hthird
@@ -504,7 +504,7 @@ theorem tendsto_integral_ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox
     Ioo_mem_nhdsGT (by norm_num)
   apply intervalIntegral.tendsto_integral_filter_of_dominated_convergence
       (bound := fun _ : ℝ =>
-        64 * Real.cosh (H / 2) * Real.cosh H / b ^ 3)
+        64 * Real.cosh (H / 2) * Real.cosh H / b ^ (3 : ℕ))
   · filter_upwards [hclock] with ω hω
     apply ContinuousOn.aestronglyMeasurable
     · intro h hhmem
@@ -532,15 +532,15 @@ theorem tendsto_integral_ccmFUSuzukiPositiveConnectedLogChordPolarEntryApprox
           (fun x : ℝ =>
             12 * (2 * Real.cosh (x / 2) *
               (Real.sinh (ω * x) / (ω * x)) -
-                2 * Real.cosh (x / 2)) / ω ^ 2) h :=
+                2 * Real.cosh (x / 2)) / ω ^ (2 : ℕ)) h :=
         (continuousAt_const.mul ((htwoC.mul hratio).sub htwoC)).div_const _
       have hnum : ContinuousAt
           (fun x : ℝ => 16 *
             (12 * (2 * Real.cosh (x / 2) *
               (Real.sinh (ω * x) / (ω * x)) -
-                2 * Real.cosh (x / 2)) / ω ^ 2)) h :=
+                2 * Real.cosh (x / 2)) / ω ^ (2 : ℕ))) h :=
         continuousAt_const.mul hexcess
-      have hpow : ContinuousAt (fun x : ℝ => x ^ 5) h :=
+      have hpow : ContinuousAt (fun x : ℝ => x ^ (5 : ℕ)) h :=
         continuousAt_id.pow 5
       have hquot := hnum.div hpow (pow_ne_zero 5 hh0)
       have hfactor : ContinuousAt (fun x : ℝ => 1 - x / H) h := by

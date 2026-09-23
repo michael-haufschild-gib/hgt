@@ -47,11 +47,11 @@ section Elementary
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- Elementary scalar inequality `x² ≥ c·x − c²/4`, i.e. `(x − c/2)² ≥ 0`. -/
-lemma sq_ge_linear (x c : ℝ) : c * x - c ^ 2 / 4 ≤ x ^ 2 := by
+lemma sq_ge_linear (x c : ℝ) : c * x - c ^ (2 : ℕ) / 4 ≤ x ^ (2 : ℕ) := by
   nlinarith [sq_nonneg (x - c / 2)]
 
 /-- Elementary scalar inequality `x² ≥ 2c·x − c²`, i.e. `(x − c)² ≥ 0`. -/
-lemma sq_ge_linear' (x c : ℝ) : 2 * c * x - c ^ 2 ≤ x ^ 2 := by
+lemma sq_ge_linear' (x c : ℝ) : 2 * c * x - c ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := by
   nlinarith [sq_nonneg (x - c)]
 
 /-- **Sum estimate A** (first elementary estimate in the proof of [lem:ranktrace]). For `p, m ≥ 0` with at most `r`
@@ -59,12 +59,12 @@ indices where `p` is nonzero, and `c ≥ 0`:
 `∑(pᵢ − mᵢ)² ≥ c·∑pᵢ − (c²/4)·r − 2c·∑mᵢ`. -/
 lemma sum_sq_diff_lower {p m : ι → ℝ} (hm : ∀ i, 0 ≤ m i)
     {r : ℕ} (hr : #{i | p i ≠ 0} ≤ r) {c : ℝ} (hc : 0 ≤ c) :
-    c * (∑ i, p i) - c ^ 2 / 4 * r - 2 * c * (∑ i, m i) ≤ ∑ i, (p i - m i) ^ 2 := by
+    c * (∑ i, p i) - c ^ (2 : ℕ) / 4 * r - 2 * c * (∑ i, m i) ≤ ∑ i, (p i - m i) ^ (2 : ℕ) := by
   classical
   set s : Finset ι := {i | p i ≠ 0} with hs_def
   -- Pointwise: `(pᵢ−mᵢ)² ≥ c·pᵢ − 2c·mᵢ − (c²/4)·1_{i∈s}`.
   have hptwise : ∀ i ∈ (univ : Finset ι),
-      c * p i - 2 * c * m i - (if i ∈ s then c ^ 2 / 4 else 0) ≤ (p i - m i) ^ 2 := by
+      c * p i - 2 * c * m i - (if i ∈ s then c ^ (2 : ℕ) / 4 else 0) ≤ (p i - m i) ^ (2 : ℕ) := by
     intro i _
     rcases eq_or_ne (p i) 0 with hi | hi
     · have his : i ∉ s := by simp [hs_def, mem_filter, hi]
@@ -76,7 +76,7 @@ lemma sum_sq_diff_lower {p m : ι → ℝ} (hm : ∀ i, 0 ≤ m i)
   have hsum := sum_le_sum hptwise
   simp only [sum_sub_distrib, ← mul_sum, sum_ite_mem, univ_inter, sum_const,
     nsmul_eq_mul] at hsum
-  have hcard : (#s : ℝ) * (c ^ 2 / 4) ≤ r * (c ^ 2 / 4) :=
+  have hcard : (#s : ℝ) * (c ^ (2 : ℕ) / 4) ≤ r * (c ^ (2 : ℕ) / 4) :=
     mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hr) (by positivity)
   linarith
 
@@ -84,11 +84,11 @@ lemma sum_sq_diff_lower {p m : ι → ℝ} (hm : ∀ i, 0 ≤ m i)
 indices where `q` is nonzero: `∑qᵢ² ≥ 2c·∑qᵢ − c²·b`. -/
 lemma sum_sq_lower_of_card_pos_le {q : ι → ℝ}
     {b : ℕ} (hb : #{i | q i ≠ 0} ≤ b) (c : ℝ) :
-    2 * c * (∑ i, q i) - c ^ 2 * b ≤ ∑ i, (q i) ^ 2 := by
+    2 * c * (∑ i, q i) - c ^ (2 : ℕ) * b ≤ ∑ i, (q i) ^ (2 : ℕ) := by
   classical
   set s : Finset ι := {i | q i ≠ 0} with hs_def
   have hptwise : ∀ i ∈ (univ : Finset ι),
-      2 * c * q i - (if i ∈ s then c ^ 2 else 0) ≤ (q i) ^ 2 := by
+      2 * c * q i - (if i ∈ s then c ^ (2 : ℕ) else 0) ≤ (q i) ^ (2 : ℕ) := by
     intro i _
     rcases eq_or_ne (q i) 0 with hi | hi
     · have his : i ∉ s := by simp [hs_def, mem_filter, hi]
@@ -98,7 +98,7 @@ lemma sum_sq_lower_of_card_pos_le {q : ι → ℝ}
   have hsum := sum_le_sum hptwise
   simp only [sum_sub_distrib, ← mul_sum, sum_ite_mem, univ_inter, sum_const,
     nsmul_eq_mul] at hsum
-  have hcard : (#s : ℝ) * c ^ 2 ≤ b * c ^ 2 :=
+  have hcard : (#s : ℝ) * c ^ (2 : ℕ) ≤ b * c ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hb) (sq_nonneg c)
   linarith
 
@@ -162,7 +162,7 @@ theorem rank_trace_ineq {P Q : Matrix n n 𝕜}
     (hP : P.PosSemidef) (hQ : Q.IsHermitian)
     {r b : ℕ} (hr : P.rank ≤ r) (hb : posIndex hQ ≤ b)
     {c : ℝ} (hc : 0 < c) :
-    c * rtrace P - c ^ 2 / 4 * r + 2 * c * rtrace Q - c ^ 2 * b
+    c * rtrace P - c ^ (2 : ℕ) / 4 * r + 2 * c * rtrace Q - c ^ (2 : ℕ) * b
       ≤ frobSq (P + Q) := by
   classical
   -- Positive/negative parts of `Q`.
@@ -202,12 +202,12 @@ theorem rank_trace_ineq {P Q : Matrix n n 𝕜}
   have htraceQm : rtrace Qm = ∑ k, m k := by
     rw [rtrace_eq_sum_eigenvalues hQm_psd.isHermitian]
     exact sum_eigenvalues_reindex hQm_psd.isHermitian id
-  have hfrobP : frobSq P = ∑ k, (p k) ^ 2 := by
+  have hfrobP : frobSq P = ∑ k, (p k) ^ (2 : ℕ) := by
     rw [frobSq_hermitian_eq_sum_sq_eigenvalues hP.isHermitian]
-    exact sum_eigenvalues_reindex hP.isHermitian (· ^ 2)
-  have hfrobQm : frobSq Qm = ∑ k, (m k) ^ 2 := by
+    exact sum_eigenvalues_reindex hP.isHermitian (· ^ (2 : ℕ))
+  have hfrobQm : frobSq Qm = ∑ k, (m k) ^ (2 : ℕ) := by
     rw [frobSq_hermitian_eq_sum_sq_eigenvalues hQm_psd.isHermitian]
-    exact sum_eigenvalues_reindex hQm_psd.isHermitian (· ^ 2)
+    exact sum_eigenvalues_reindex hQm_psd.isHermitian (· ^ (2 : ℕ))
   -- Step 1: Frobenius expansion.
   have hexpand : frobSq (P + Q)
       = frobSq P + 2 * RCLike.re (P * Qp).trace - 2 * RCLike.re (P * Qm).trace
@@ -228,20 +228,20 @@ theorem rank_trace_ineq {P Q : Matrix n n 𝕜}
   have hvN : RCLike.re (P * Qm).trace ≤ ∑ k, p k * m k :=
     vonNeumann_trace_ineq hP.isHermitian hQm_psd.isHermitian
   -- Step 4: the von Neumann step gives `frobSq P − 2 tr(PQ₋) + frobSq Q₋ ≥ ∑(pₖ−mₖ)²`.
-  have hstep4 : ∑ k, (p k - m k) ^ 2
+  have hstep4 : ∑ k, (p k - m k) ^ (2 : ℕ)
       ≤ frobSq P - 2 * RCLike.re (P * Qm).trace + frobSq Qm := by
-    have hsplit : ∑ k, (p k - m k) ^ 2
-        = ∑ k, (p k)^2 - 2 * ∑ k, p k * m k + ∑ k, (m k)^2 := by
+    have hsplit : ∑ k, (p k - m k) ^ (2 : ℕ)
+        = ∑ k, (p k)^(2 : ℕ) - 2 * ∑ k, p k * m k + ∑ k, (m k)^(2 : ℕ) := by
       simp only [sub_sq, Finset.sum_add_distrib, Finset.sum_sub_distrib,
         Finset.mul_sum, mul_assoc]
     rw [hsplit, hfrobP, hfrobQm]; linarith
   -- Step 5: elementary estimate A.
-  have hstep5 : c * rtrace P - c^2/4 * r - 2 * c * rtrace Qm
-      ≤ ∑ k, (p k - m k) ^ 2 := by
+  have hstep5 : c * rtrace P - c^(2 : ℕ)/4 * r - 2 * c * rtrace Qm
+      ≤ ∑ k, (p k - m k) ^ (2 : ℕ) := by
     rw [htraceP, htraceQm]
     exact sum_sq_diff_lower hm_nn hp_card hc.le
   -- Step 6: elementary estimate B on `Q₊`.
-  have hstep6 : 2 * c * rtrace Qp - c^2 * b ≤ frobSq Qp := by
+  have hstep6 : 2 * c * rtrace Qp - c^(2 : ℕ) * b ≤ frobSq Qp := by
     rw [hQp_def, rtrace_hermPosPart, frobSq_hermPosPart]
     refine sum_sq_lower_of_card_pos_le ?_ c
     calc #{i | (hQ.eigenvalues i)⁺ ≠ 0}

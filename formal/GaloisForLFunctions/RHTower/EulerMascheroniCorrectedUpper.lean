@@ -8,7 +8,7 @@ Subtracting `1 / (2 * (n + 1))` from the standard upper sequence
 its first-order error.  The proof uses the rational Padé lower bound
 `2x / (x + 2) < log (1 + x)`.
 
-At the factorable index `1250 = 2 * 5^4`, this gives the exact certified
+At the factorable index `1250 = 2 * 5^(4 : ℕ)`, this gives the exact certified
 bound `gamma < 0.577216` without a large harmonic evaluation.
 -/
 
@@ -100,14 +100,14 @@ theorem eulerMascheroniConstant_lt_correctedUpper (n : ℕ) :
     tendsto_eulerMascheroniCorrectedUpper (n + 1)
 
 set_option maxRecDepth 1000000 in
-/-- Exact six-decimal upper bound obtained at `1250 = 2 * 5^4`. -/
+/-- Exact six-decimal upper bound obtained at `1250 = 2 * 5^(4 : ℕ)`. -/
 theorem eulerMascheroniConstant_lt_fiveHundredSeventySevenThousandTwoHundredSixteen_over_oneMillion :
     Real.eulerMascheroniConstant < 577216 / 1000000 := by
   refine (eulerMascheroniConstant_lt_correctedUpper 1250).trans ?_
   rw [eulerMascheroniCorrectedUpper, if_neg (by norm_num),
     Real.eulerMascheroniSeq']
   norm_num only [if_false, Nat.reduceEqDiff, Nat.cast_ofNat]
-  rw [show (1250 : ℝ) = 2 * 5 ^ 4 by norm_num,
+  rw [show (1250 : ℝ) = 2 * 5 ^ (4 : ℕ) by norm_num,
     Real.log_mul (by norm_num) (by positivity), Real.log_pow]
   have htwo := Real.log_two_gt_d9
   have hfive := Real.log_five_gt_d9

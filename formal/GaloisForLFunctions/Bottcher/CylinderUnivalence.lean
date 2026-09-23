@@ -37,7 +37,7 @@ theorem quadratic_injOn {c : ℂ} {S : Set ℂ}
     (hS : ∀ z₁ ∈ S, ∀ z₂ ∈ S, z₁ = -z₂ → z₁ = z₂) :
     Set.InjOn (quadratic c) S := by
   intro z₁ hz₁ z₂ hz₂ h
-  have hsq : z₁ ^ 2 = z₂ ^ 2 := by simp only [quadratic] at h; linear_combination h
+  have hsq : z₁ ^ (2 : ℕ) = z₂ ^ (2 : ℕ) := by simp only [quadratic] at h; linear_combination h
   have hfac : (z₁ - z₂) * (z₁ + z₂) = 0 := by linear_combination hsq
   rcases mul_eq_zero.mp hfac with h1 | h2
   · exact sub_eq_zero.mp h1
@@ -190,7 +190,7 @@ theorem no_sqrt_of_inj_loop {c : ℂ} (k : ℕ) {R : ℝ} (hR : max 2 ‖c‖ < 
     (hesc : ∀ z ∈ A, (quadratic c)^[k] z ∈ escapeOpen c)
     (hlift : ∀ θ, (quadratic c)^[k] (γ θ) = circleMap 0 R θ)
     {h : ℂ → ℂ} (hh : AnalyticOnNhd ℂ h A)
-    (hsq : Set.EqOn (fun z => (h z) ^ 2) (fun z => bottcherCoord c ((quadratic c)^[k] z)) A) :
+    (hsq : Set.EqOn (fun z => (h z) ^ (2 : ℕ)) (fun z => bottcherCoord c ((quadratic c)^[k] z)) A) :
     False := by
   have hcq : Continuous (quadratic c) := by unfold quadratic; fun_prop
   have hβcont : Continuous (circleMap 0 R) := continuous_circleMap 0 R
@@ -289,9 +289,9 @@ namespace Bottcher
 
 open Complex Set
 
-/-- **`Complex.sqrt` squares back (unconditional).** `(Complex.sqrt z)^2 = z` for every `z`, since
-`Complex.sqrt z = z^(2⁻¹)` and `(z^(2⁻¹))^2 = z` (`cpow_nat_inv_pow`). Axiom-clean. -/
-theorem complex_sqrt_sq (z : ℂ) : (Complex.sqrt z) ^ 2 = z := by
+/-- **`Complex.sqrt` squares back (unconditional).** `(Complex.sqrt z)^(2 : ℕ) = z` for every `z`, since
+`Complex.sqrt z = z^(2⁻¹)` and `(z^(2⁻¹))^(2 : ℕ) = z` (`cpow_nat_inv_pow`). Axiom-clean. -/
+theorem complex_sqrt_sq (z : ℂ) : (Complex.sqrt z) ^ (2 : ℕ) = z := by
   rw [Complex.sqrt, show (2 : ℂ)⁻¹ = ((2 : ℕ) : ℂ)⁻¹ by norm_num]
   exact Complex.cpow_nat_inv_pow z (by norm_num)
 
@@ -300,7 +300,7 @@ theorem complex_sqrt_sq (z : ℂ) : (Complex.sqrt z) ^ 2 = z := by
 source of the two-lobe antipodal split. Axiom-clean. -/
 theorem quadratic_sqrt_inverse (c w : ℂ) :
     quadratic c (Complex.sqrt (w - c)) = w ∧ quadratic c (-(Complex.sqrt (w - c))) = w := by
-  have h : (Complex.sqrt (w - c)) ^ 2 = w - c := complex_sqrt_sq (w - c)
+  have h : (Complex.sqrt (w - c)) ^ (2 : ℕ) = w - c := complex_sqrt_sq (w - c)
   constructor <;> · simp only [quadratic, neg_sq]; rw [h]; ring
 
 /-- **Holomorphic inverse branches of `f_c` on a slit plane.** On `U_c = {w | w - c ∈ slitPlane}`

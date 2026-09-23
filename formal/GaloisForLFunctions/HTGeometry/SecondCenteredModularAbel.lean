@@ -14,7 +14,7 @@ open Finset
 namespace HTGeometry
 
 /-- The positive magnitude of the period mean of the first centered modular primitive. -/
-def centeredModularMeanMagnitude (d : ℕ) : ℝ := ((d:ℝ)^2-1)/(12*d)
+def centeredModularMeanMagnitude (d : ℕ) : ℝ := ((d:ℝ)^(2 : ℕ)-1)/(12*d)
 
 /-- Periodic cubic primitive of the mean-corrected shifted quadratic primitive. -/
 def centeredModularSecondPrimitive (d N : ℕ) : ℝ :=
@@ -49,7 +49,7 @@ theorem centeredModularSecondPrimitive_succ {d : ℕ} (hd : 0<d) (N : ℕ) :
 
 /-- The periodic cubic primitive has a uniform quadratic-modulus bound. -/
 theorem abs_centeredModularSecondPrimitive_le (d N : ℕ) :
-    |centeredModularSecondPrimitive d N| ≤ (d:ℝ)^2/12 := by
+    |centeredModularSecondPrimitive d N| ≤ (d:ℝ)^(2 : ℕ)/12 := by
   by_cases hd : d=0
   · simp [hd,centeredModularSecondPrimitive]
   have hd0 : (0:ℝ)<d := by positivity
@@ -60,7 +60,7 @@ theorem abs_centeredModularSecondPrimitive_le (d N : ℕ) :
     dsimp [r]
     exact_mod_cast (Nat.mod_lt N (show 0<d by omega)).le
   have hp0 : 0≤r*((d:ℝ)-r) := mul_nonneg hr0 (sub_nonneg.mpr hrd)
-  have hp : r*((d:ℝ)-r)≤(d:ℝ)^2/4 := by nlinarith [sq_nonneg (r-(d:ℝ)/2)]
+  have hp : r*((d:ℝ)-r)≤(d:ℝ)^(2 : ℕ)/4 := by nlinarith [sq_nonneg (r-(d:ℝ)/2)]
   have hb : |(d:ℝ)-3-2*r|≤4*d := by
     apply abs_le.mpr
     constructor <;> linarith only [hr0,hrd,hd1]
@@ -104,7 +104,7 @@ theorem abs_centeredModularRamp_second_abel_le (d N : ℕ) (w : ℕ → ℝ)
     (hg : ∀ k,0≤w k-w (k+1)) (hmono : Antitone (fun k => w k-w (k+1))) :
     |(∑ k ∈ range N,centeredModularRamp d k*w k)+centeredModularMeanMagnitude d*w 0-
       (centeredModularMeanMagnitude d+centeredModularPrimitive d N)*w N| ≤
-        (d:ℝ)^2/12*(w 0-w 1) := by
+        (d:ℝ)^(2 : ℕ)/12*(w 0-w 1) := by
   rw [centeredModularRamp_second_abel]
   let g := fun k => w k-w (k+1)
   have hd (k : ℕ) : 0≤g k-g (k+1) := sub_nonneg.mpr (hmono (by omega))
@@ -113,23 +113,23 @@ theorem abs_centeredModularRamp_second_abel_le (d N : ℕ) (w : ℕ → ℝ)
     | zero => simp
     | succ N ih => rw [sum_range_succ]; linarith
   have hs : |∑ k ∈ range N,centeredModularSecondPrimitive d (k+1)*(g k-g (k+1))| ≤
-      (d:ℝ)^2/12*(∑ k ∈ range N,(g k-g (k+1))) := by
+      (d:ℝ)^(2 : ℕ)/12*(∑ k ∈ range N,(g k-g (k+1))) := by
     calc
       _ ≤ ∑ k ∈ range N,|centeredModularSecondPrimitive d (k+1)*(g k-g (k+1))| := abs_sum_le_sum_abs _ _
-      _ ≤ ∑ k ∈ range N,((d:ℝ)^2/12)*(g k-g (k+1)) := by
+      _ ≤ ∑ k ∈ range N,((d:ℝ)^(2 : ℕ)/12)*(g k-g (k+1)) := by
         apply sum_le_sum
         intro k hk
         rw [abs_mul,abs_of_nonneg (hd k)]
         exact mul_le_mul_of_nonneg_right (abs_centeredModularSecondPrimitive_le d (k+1)) (hd k)
       _ = _ := by rw [mul_sum]
-  have ht : |centeredModularSecondPrimitive d N*g N| ≤ (d:ℝ)^2/12*g N := by
+  have ht : |centeredModularSecondPrimitive d N*g N| ≤ (d:ℝ)^(2 : ℕ)/12*g N := by
     rw [abs_mul,abs_of_nonneg (hg N)]
     exact mul_le_mul_of_nonneg_right (abs_centeredModularSecondPrimitive_le d N) (hg N)
   change |(∑ k ∈ range N,centeredModularSecondPrimitive d (k+1)*(g k-g (k+1)))+
-    centeredModularSecondPrimitive d N*g N| ≤ (d:ℝ)^2/12*g 0
+    centeredModularSecondPrimitive d N*g N| ≤ (d:ℝ)^(2 : ℕ)/12*g 0
   have htri := abs_add_le (∑ k ∈ range N,centeredModularSecondPrimitive d (k+1)*(g k-g (k+1)))
     (centeredModularSecondPrimitive d N*g N)
-  have he := congrArg (fun x : ℝ => (d:ℝ)^2/12*x) htel
+  have he := congrArg (fun x : ℝ => (d:ℝ)^(2 : ℕ)/12*x) htel
   nlinarith only [hs,ht,htri,he]
 
 private theorem sqrt_step_reciprocal (n : ℕ) :
@@ -186,7 +186,7 @@ theorem halfOrderAbelStep_gap_antitone (B : ℕ) :
 
 /-- At a square birth, the clock difference has cubic decay in the modulus. -/
 theorem halfOrderAbelStep_square_gap_le {d : ℕ} (hd : 0<d) :
-    halfOrderAbelStep (d*d) 0-halfOrderAbelStep (d*d) 1 ≤ 1/(4*(d:ℝ)^3) := by
+    halfOrderAbelStep (d*d) 0-halfOrderAbelStep (d*d) 1 ≤ 1/(4*(d:ℝ)^(3 : ℕ)) := by
   rw [halfOrderAbelStep_gap_eq]
   simp only [Nat.add_zero]
   have he : Real.sqrt (d*d:ℕ)=(d:ℝ) := by
@@ -198,7 +198,7 @@ theorem halfOrderAbelStep_square_gap_le {d : ℕ} (hd : 0<d) :
   have h2 : (d:ℝ)≤Real.sqrt (d*d+2:ℕ) := by
     rw [← he]
     exact Real.sqrt_le_sqrt (by exact_mod_cast (show d*d≤d*d+2 by omega))
-  have hden : (2*(d:ℝ))^3 ≤
+  have hden : (2*(d:ℝ))^(3 : ℕ) ≤
       ((d:ℝ)+Real.sqrt (d*d+1:ℕ))*(Real.sqrt (d*d+1:ℕ)+Real.sqrt (d*d+2:ℕ))*
       ((d:ℝ)+Real.sqrt (d*d+2:ℕ)) := by
     have h := mul_le_mul (mul_le_mul (by linarith only [h1] : 2*(d:ℝ)≤(d:ℝ)+Real.sqrt (d*d+1:ℕ))
@@ -207,7 +207,7 @@ theorem halfOrderAbelStep_square_gap_le {d : ℕ} (hd : 0<d) :
       (by linarith only [h2] : 2*(d:ℝ)≤(d:ℝ)+Real.sqrt (d*d+2:ℕ)) (by positivity) (by positivity)
     nlinarith only [h]
   calc
-    _ ≤ 2/(2*(d:ℝ))^3 := div_le_div_of_nonneg_left (by norm_num) (by positivity) hden
+    _ ≤ 2/(2*(d:ℝ))^(3 : ℕ) := div_le_div_of_nonneg_left (by norm_num) (by positivity) hden
     _ = _ := by field_simp; ring
 
 /-- The half-order centered modular response has an exact-mean approximation with reciprocal-modulus error. -/
@@ -220,8 +220,8 @@ theorem abs_centeredModularRamp_halfOrder_mean_error_le {d : ℕ} (hd : 0<d) (N 
     (fun k => sub_nonneg.mpr (halfOrderAbelStep_antitone (d*d) (show k≤k+1 by omega)))
     (halfOrderAbelStep_gap_antitone (d*d))
   have hgap := mul_le_mul_of_nonneg_left (halfOrderAbelStep_square_gap_le hd)
-    (show (0:ℝ)≤(d:ℝ)^2/12 by positivity)
-  have he : (d:ℝ)^2/12*(1/(4*(d:ℝ)^3))=1/(48*(d:ℝ)) := by field_simp; ring
+    (show (0:ℝ)≤(d:ℝ)^(2 : ℕ)/12 by positivity)
+  have he : (d:ℝ)^(2 : ℕ)/12*(1/(4*(d:ℝ)^(3 : ℕ)))=1/(48*(d:ℝ)) := by field_simp; ring
   rw [he] at hgap
   exact h.trans hgap
 

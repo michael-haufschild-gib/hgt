@@ -23,22 +23,22 @@ noncomputable section
 /-- Contribution of one centered Xi spectral point to the imaginary part of the reciprocal-square
 quadratic value at a Cauchy pole. -/
 def xiReciprocalSquareCauchySpectralTerm (z a : ℂ) : ℝ :=
-  -(a⁻¹ ^ 2).im / Complex.normSq (a - z)
+  -(a⁻¹ ^ (2 : ℕ)).im / Complex.normSq (a - z)
 
 private lemma inv_sq_im (a : ℂ) :
-    (a⁻¹ ^ 2).im = -2 * a.re * a.im / Complex.normSq a ^ 2 := by
+    (a⁻¹ ^ (2 : ℕ)).im = -2 * a.re * a.im / Complex.normSq a ^ (2 : ℕ) := by
   rw [pow_two, mul_im, Complex.inv_re, Complex.inv_im]
   ring
 
 theorem xiReciprocalSquareCauchySpectralTerm_eq (z a : ℂ) :
     xiReciprocalSquareCauchySpectralTerm z a =
       2 * a.re * a.im /
-        (Complex.normSq a ^ 2 * Complex.normSq (a - z)) := by
+        (Complex.normSq a ^ (2 : ℕ) * Complex.normSq (a - z)) := by
   rw [xiReciprocalSquareCauchySpectralTerm, inv_sq_im]
   ring
 
 private lemma inner_reciprocalSquare_cauchy_im (z a : ℂ) :
-    (inner ℂ (a⁻¹ ^ 2 * (a - z)⁻¹) ((a - z)⁻¹)).im =
+    (inner ℂ (a⁻¹ ^ (2 : ℕ) * (a - z)⁻¹) ((a - z)⁻¹)).im =
       xiReciprocalSquareCauchySpectralTerm z a := by
   rw [RCLike.inner_apply]
   rw [map_mul, map_pow, map_inv₀, map_inv₀]
@@ -47,21 +47,21 @@ private lemma inner_reciprocalSquare_cauchy_im (z a : ℂ) :
       (starRingEnd ℂ) a - (starRingEnd ℂ) z by simp]
   have hnorm :
       (starRingEnd ℂ) ((a - z)⁻¹) * (a - z)⁻¹ =
-        (‖(a - z)⁻¹‖ : ℂ) ^ 2 := by
+        (‖(a - z)⁻¹‖ : ℂ) ^ (2 : ℕ) := by
     exact RCLike.conj_mul ((a - z)⁻¹)
   rw [show (a - z)⁻¹ *
-      (((starRingEnd ℂ) a)⁻¹ ^ 2 *
+      (((starRingEnd ℂ) a)⁻¹ ^ (2 : ℕ) *
         ((starRingEnd ℂ) a - (starRingEnd ℂ) z)⁻¹) =
-      ((starRingEnd ℂ) (a⁻¹ ^ 2)) *
+      ((starRingEnd ℂ) (a⁻¹ ^ (2 : ℕ))) *
         ((starRingEnd ℂ) ((a - z)⁻¹) * (a - z)⁻¹) by
       simp only [map_pow, map_inv₀, map_sub]
       ring]
   rw [hnorm, Complex.mul_im]
-  have hrealRe (r : ℝ) : ((r : ℂ) ^ 2).re = r ^ 2 := by
+  have hrealRe (r : ℝ) : ((r : ℂ) ^ (2 : ℕ)).re = r ^ (2 : ℕ) := by
     rw [pow_two]
     simp [Complex.mul_re]
     ring
-  have hrealIm (r : ℝ) : ((r : ℂ) ^ 2).im = 0 := by
+  have hrealIm (r : ℝ) : ((r : ℂ) ^ (2 : ℕ)).im = 0 := by
     rw [pow_two]
     simp [Complex.mul_im]
   rw [hrealRe, hrealIm]
@@ -72,13 +72,13 @@ private lemma inner_reciprocalSquare_cauchy_im (z a : ℂ) :
 private lemma real_quartet_identity
     (x y u v A B C D R Q : ℝ)
     (hA : A ≠ 0) (hB : B ≠ 0) (hC : C ≠ 0) (hD : D ≠ 0) (hQ : Q ≠ 0)
-    (hAeq : A = (x - u) ^ 2 + (y - v) ^ 2)
-    (hBeq : B = (x - u) ^ 2 + (-y - v) ^ 2)
-    (hCeq : C = (x + u) ^ 2 + (y + v) ^ 2)
-    (hDeq : D = (x + u) ^ 2 + (-y + v) ^ 2)
-    (hReq : R = x ^ 2 + y ^ 2 + u ^ 2 + v ^ 2) :
+    (hAeq : A = (x - u) ^ (2 : ℕ) + (y - v) ^ (2 : ℕ))
+    (hBeq : B = (x - u) ^ (2 : ℕ) + (-y - v) ^ (2 : ℕ))
+    (hCeq : C = (x + u) ^ (2 : ℕ) + (y + v) ^ (2 : ℕ))
+    (hDeq : D = (x + u) ^ (2 : ℕ) + (-y + v) ^ (2 : ℕ))
+    (hReq : R = x ^ (2 : ℕ) + y ^ (2 : ℕ) + u ^ (2 : ℕ) + v ^ (2 : ℕ)) :
     2 * x * y / Q * (1 / A - 1 / B + 1 / C - 1 / D) =
-      64 * u * v * (x ^ 2 * y ^ 2 * R) / (Q * A * B * C * D) := by
+      64 * u * v * (x ^ (2 : ℕ) * y ^ (2 : ℕ) * R) / (Q * A * B * C * D) := by
   subst A
   subst B
   subst C
@@ -99,9 +99,9 @@ theorem xiReciprocalSquareCauchySpectralTerm_quartet
         xiReciprocalSquareCauchySpectralTerm z (-a) +
         xiReciprocalSquareCauchySpectralTerm z (-(starRingEnd ℂ) a) =
       64 * z.re * z.im *
-        (a.re ^ 2 * a.im ^ 2 *
+        (a.re ^ (2 : ℕ) * a.im ^ (2 : ℕ) *
           (Complex.normSq a + Complex.normSq z)) /
-        (Complex.normSq a ^ 2 *
+        (Complex.normSq a ^ (2 : ℕ) *
           Complex.normSq (a - z) *
           Complex.normSq ((starRingEnd ℂ) a - z) *
           Complex.normSq (a + z) *
@@ -128,16 +128,16 @@ theorem xiReciprocalSquareCauchySpectralTerm_quartet
   simp only [neg_neg]
   rw [show
       2 * a.re * a.im /
-              (Complex.normSq a ^ 2 * Complex.normSq (a - z)) +
+              (Complex.normSq a ^ (2 : ℕ) * Complex.normSq (a - z)) +
             2 * a.re * -a.im /
-              (Complex.normSq a ^ 2 *
+              (Complex.normSq a ^ (2 : ℕ) *
                 Complex.normSq ((starRingEnd ℂ) a - z)) +
           2 * -a.re * -a.im /
-            (Complex.normSq a ^ 2 * Complex.normSq (a + z)) +
+            (Complex.normSq a ^ (2 : ℕ) * Complex.normSq (a + z)) +
         2 * -a.re * a.im /
-          (Complex.normSq a ^ 2 *
+          (Complex.normSq a ^ (2 : ℕ) *
             Complex.normSq ((starRingEnd ℂ) a + z)) =
-        2 * a.re * a.im / Complex.normSq a ^ 2 *
+        2 * a.re * a.im / Complex.normSq a ^ (2 : ℕ) *
           (1 / Complex.normSq (a - z) -
             1 / Complex.normSq ((starRingEnd ℂ) a - z) +
             1 / Complex.normSq (a + z) -
@@ -149,7 +149,7 @@ theorem xiReciprocalSquareCauchySpectralTerm_quartet
       (Complex.normSq (a + z))
       (Complex.normSq ((starRingEnd ℂ) a + z))
       (Complex.normSq a + Complex.normSq z)
-      (Complex.normSq a ^ 2)
+      (Complex.normSq a ^ (2 : ℕ))
       h1 h2 h3 h4 (pow_ne_zero 2 hnorma)
   · simp [Complex.normSq_apply, pow_two]
   · simp [Complex.normSq_apply, pow_two]
@@ -193,7 +193,7 @@ theorem xiReciprocalSquareContinuedCauchyOrientationDefect_eq_tsum
   intro q
   rw [xiReciprocalSquareOperator_apply]
   change (inner ℂ
-      ((xiSpectralPoint q)⁻¹ ^ 2 *
+      ((xiSpectralPoint q)⁻¹ ^ (2 : ℕ) *
         (xiSpectralPoint q - (z : ℂ))⁻¹)
       ((xiSpectralPoint q - (z : ℂ))⁻¹)).im = _
   exact inner_reciprocalSquare_cauchy_im (z : ℂ) (xiSpectralPoint q)
@@ -221,7 +221,7 @@ theorem summable_xiReciprocalSquareCauchySpectralTerm
   intro q
   rw [xiReciprocalSquareOperator_apply]
   change (inner ℂ
-      ((xiSpectralPoint q)⁻¹ ^ 2 *
+      ((xiSpectralPoint q)⁻¹ ^ (2 : ℕ) *
         (xiSpectralPoint q - (z : ℂ))⁻¹)
       ((xiSpectralPoint q - (z : ℂ))⁻¹)).im = _
   exact inner_reciprocalSquare_cauchy_im (z : ℂ) (xiSpectralPoint q)
@@ -295,9 +295,9 @@ theorem tsum_xiReciprocalSquareCauchyQuartetTerm
 
 /-- Nonnegative variance carried by one centered Xi quartet at one Cauchy pole. -/
 def xiReciprocalSquareCauchyQuartetVariance (z a : ℂ) : ℝ :=
-  (a.re ^ 2 * a.im ^ 2 *
+  (a.re ^ (2 : ℕ) * a.im ^ (2 : ℕ) *
       (Complex.normSq a + Complex.normSq z)) /
-    (Complex.normSq a ^ 2 *
+    (Complex.normSq a ^ (2 : ℕ) *
       Complex.normSq (a - z) *
       Complex.normSq ((starRingEnd ℂ) a - z) *
       Complex.normSq (a + z) *
@@ -440,7 +440,7 @@ theorem xiReciprocalSquareCauchyQuartetVariance_eq_zero_iff
       -((starRingEnd ℂ) a + (z : ℂ)) by ring, h]
     simp
   have hden :
-      Complex.normSq a ^ 2 *
+      Complex.normSq a ^ (2 : ℕ) *
           Complex.normSq (a - (z : ℂ)) *
           Complex.normSq ((starRingEnd ℂ) a - (z : ℂ)) *
           Complex.normSq (a + (z : ℂ)) *
@@ -461,13 +461,13 @@ theorem xiReciprocalSquareCauchyQuartetVariance_eq_zero_iff
   constructor
   · intro hzero
     have hnum :
-        a.re ^ 2 * a.im ^ 2 *
+        a.re ^ (2 : ℕ) * a.im ^ (2 : ℕ) *
           (Complex.normSq a + Complex.normSq (z : ℂ)) = 0 := by
       unfold xiReciprocalSquareCauchyQuartetVariance at hzero
       rcases div_eq_zero_iff.mp hzero with hnum | hdenzero
       · exact hnum
       · exact False.elim (hden hdenzero)
-    have hsq : a.im ^ 2 = 0 := by
+    have hsq : a.im ^ (2 : ℕ) = 0 := by
       rcases mul_eq_zero.mp hnum with hprod | hnorm
       · exact (mul_eq_zero.mp hprod).resolve_left (pow_ne_zero 2 hare)
       · exact False.elim (hsum hnorm)

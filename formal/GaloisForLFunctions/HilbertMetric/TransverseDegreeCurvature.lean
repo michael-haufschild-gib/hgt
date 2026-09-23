@@ -30,18 +30,18 @@ def fifthDegreeBalancedPartition (B k : ℕ) (t : ℝ) : ℝ :=
 /-- Expanded logarithm of the balanced degree-five partition on the positive scale ray. -/
 def fifthDegreeBalancedLogModel (B k : ℕ) (t : ℝ) : ℝ :=
   (B : ℝ) * Real.log t +
-    (k : ℝ) * Real.log (t ^ 5 + (5 / 3 : ℝ) * t)
+    (k : ℝ) * Real.log (t ^ (5 : ℕ) + (5 / 3 : ℝ) * t)
 
 /-- First derivative of the expanded logarithmic model. -/
 def fifthDegreeBalancedLogDerivative (B k : ℕ) (t : ℝ) : ℝ :=
   (B : ℝ) / t +
     (k : ℝ) *
-      ((5 : ℝ) * t ^ 4 + 5 / 3) / (t ^ 5 + (5 / 3 : ℝ) * t)
+      ((5 : ℝ) * t ^ (4 : ℕ) + 5 / 3) / (t ^ (5 : ℕ) + (5 / 3 : ℝ) * t)
 
 /-- The balanced partition is exactly the lower skeleton times the two-degree graph factor. -/
 theorem fifthDegreeBalancedPartition_eq (B k : ℕ) (t : ℝ) (ht : 0 ≤ t) :
     fifthDegreeBalancedPartition B k t =
-      t ^ B * (t ^ 5 + (5 / 3 : ℝ) * t) ^ k := by
+      t ^ B * (t ^ (5 : ℕ) + (5 / 3 : ℝ) * t) ^ k := by
   unfold fifthDegreeBalancedPartition transverseDegreePartition
   rw [det_transverseDegreeGram k 5 (Real.sqrt (5 / 3)) t ht]
   rw [Real.sq_sqrt (by positivity : (0 : ℝ) ≤ 5 / 3)]
@@ -51,8 +51,8 @@ theorem log_fifthDegreeBalancedPartition_eq (B k : ℕ) (t : ℝ) (ht : 0 < t) :
     Real.log (fifthDegreeBalancedPartition B k t) =
       fifthDegreeBalancedLogModel B k t := by
   rw [fifthDegreeBalancedPartition_eq B k t ht.le]
-  have hinner : 0 < t ^ 5 + (5 / 3 : ℝ) * t := by
-    rw [show t ^ 5 + (5 / 3 : ℝ) * t = t * (t ^ 4 + 5 / 3) by ring]
+  have hinner : 0 < t ^ (5 : ℕ) + (5 / 3 : ℝ) * t := by
+    rw [show t ^ (5 : ℕ) + (5 / 3 : ℝ) * t = t * (t ^ (4 : ℕ) + 5 / 3) by ring]
     exact mul_pos ht
       (add_pos_of_nonneg_of_pos (pow_nonneg ht.le 4) (by positivity))
   rw [Real.log_mul (pow_ne_zero B (ne_of_gt ht))
@@ -63,12 +63,12 @@ theorem log_fifthDegreeBalancedPartition_eq (B k : ℕ) (t : ℝ) (ht : 0 < t) :
 /-! ### Exact logarithmic curvature -/
 
 theorem hasDerivAt_fifthDegreeBalancedLogModel (B k : ℕ) (t : ℝ)
-    (ht : t ≠ 0) (hh : t ^ 5 + (5 / 3 : ℝ) * t ≠ 0) :
+    (ht : t ≠ 0) (hh : t ^ (5 : ℕ) + (5 / 3 : ℝ) * t ≠ 0) :
     HasDerivAt (fifthDegreeBalancedLogModel B k)
       (fifthDegreeBalancedLogDerivative B k t) t := by
   have hinner :
-      HasDerivAt (fun s : ℝ => s ^ 5 + (5 / 3 : ℝ) * s)
-        ((5 : ℝ) * t ^ 4 + 5 / 3) t := by
+      HasDerivAt (fun s : ℝ => s ^ (5 : ℕ) + (5 / 3 : ℝ) * s)
+        ((5 : ℝ) * t ^ (4 : ℕ) + 5 / 3) t := by
     simpa only [id_eq, mul_one, Nat.cast_ofNat] using!
       (((hasDerivAt_id t).pow 5).add
         ((hasDerivAt_id t).const_mul (5 / 3 : ℝ)))
@@ -85,16 +85,16 @@ theorem hasDerivAt_fifthDegreeBalancedLogDerivative_one (B k : ℕ) :
     simpa only [id_eq, one_mul, mul_one, one_pow, zero_mul, zero_sub, div_one] using!
       ((hasDerivAt_const (1 : ℝ) (B : ℝ)).div (hasDerivAt_id 1) one_ne_zero)
   have hnum :
-      HasDerivAt (fun t : ℝ => (5 : ℝ) * t ^ 4 + 5 / 3) 20 1 := by
+      HasDerivAt (fun t : ℝ => (5 : ℝ) * t ^ (4 : ℕ) + 5 / 3) 20 1 := by
     simpa only [Pi.pow_apply, id_eq] using!
       (((((hasDerivAt_id (1 : ℝ)).pow 4).const_mul 5).add_const (5 / 3)).congr_deriv
         (by norm_num))
   have hden :
-      HasDerivAt (fun t : ℝ => t ^ 5 + (5 / 3 : ℝ) * t) (20 / 3) 1 := by
+      HasDerivAt (fun t : ℝ => t ^ (5 : ℕ) + (5 / 3 : ℝ) * t) (20 / 3) 1 := by
     simpa only [Pi.add_apply, Pi.pow_apply, id_eq] using!
       ((((hasDerivAt_id (1 : ℝ)).pow 5).add
         ((hasDerivAt_id 1).const_mul (5 / 3 : ℝ))).congr_deriv (by norm_num))
-  have hden_ne : (1 : ℝ) ^ 5 + (5 / 3 : ℝ) * 1 ≠ 0 := by
+  have hden_ne : (1 : ℝ) ^ (5 : ℕ) + (5 / 3 : ℝ) * 1 ≠ 0 := by
     positivity
   have hright := (hnum.div hden hden_ne).const_mul (k : ℝ)
   unfold fifthDegreeBalancedLogDerivative
@@ -115,8 +115,8 @@ theorem fifthDegreeBalancedLogModel_secondDerivative_one (B k : ℕ) :
         =ᶠ[nhds (1 : ℝ)] fifthDegreeBalancedLogDerivative B k := by
     filter_upwards [hpos] with t ht
     have ht0 : t ≠ 0 := ne_of_gt ht
-    have hhpos : 0 < t ^ 5 + (5 / 3 : ℝ) * t := by
-      rw [show t ^ 5 + (5 / 3 : ℝ) * t = t * (t ^ 4 + 5 / 3) by ring]
+    have hhpos : 0 < t ^ (5 : ℕ) + (5 / 3 : ℝ) * t := by
+      rw [show t ^ (5 : ℕ) + (5 / 3 : ℝ) * t = t * (t ^ (4 : ℕ) + 5 / 3) by ring]
       exact mul_pos ht
         (add_pos_of_nonneg_of_pos (pow_nonneg ht.le 4) (by positivity))
     exact (hasDerivAt_fifthDegreeBalancedLogModel B k t ht0 (ne_of_gt hhpos)).deriv
@@ -144,8 +144,8 @@ theorem fifthDegreeBalancedPartition_log_secondDerivative_one (B k : ℕ) :
           deriv (fifthDegreeBalancedLogModel B k) t := hlocalEq.deriv_eq
       _ = fifthDegreeBalancedLogDerivative B k t := by
         have ht0 : t ≠ 0 := ne_of_gt ht
-        have hinner : 0 < t ^ 5 + (5 / 3 : ℝ) * t := by
-          rw [show t ^ 5 + (5 / 3 : ℝ) * t = t * (t ^ 4 + 5 / 3) by ring]
+        have hinner : 0 < t ^ (5 : ℕ) + (5 / 3 : ℝ) * t := by
+          rw [show t ^ (5 : ℕ) + (5 / 3 : ℝ) * t = t * (t ^ (4 : ℕ) + 5 / 3) by ring]
           exact mul_pos ht
             (add_pos_of_nonneg_of_pos (pow_nonneg ht.le 4) (by positivity))
         exact

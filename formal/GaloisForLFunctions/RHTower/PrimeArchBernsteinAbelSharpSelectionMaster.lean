@@ -20,16 +20,16 @@ noncomputable section
 /-- The source-attained sharp false phase at an Abel radius `R`. -/
 def PrimeArchEndpointBernsteinAbelSharpFalsePhase (R : ℝ) : Prop :=
   ∃ D : Finset XiZeroCopy, ∃ B beta L : ℝ,
-    R = 1 / B ^ 2 ∧
+    R = 1 / B ^ (2 : ℕ) ∧
     1 < B ∧ 1 < beta ∧ beta < B ∧ D.Nonempty ∧
     (∀ q ∈ D, xiEndpointBernsteinAtomAmplitudeBase q = B) ∧
     (∀ q ∉ D, xiEndpointBernsteinAtomAmplitudeBase q ≤ beta) ∧
     L = ∑ u ∈ xiEndpointCoordinateSet D,
-      ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+      ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
         bernsteinAffineRowHalfOrderConstant u ∧
     0 < L ∧ 0 < Real.sqrt Real.pi * L ∧
     Tendsto
-      (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+      (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
         primeArchEndpointBernsteinAbelSusceptibility t)
       (nhdsWithin R (Set.Ico 0 R))
       (nhds (Real.sqrt Real.pi * L)) ∧
@@ -44,11 +44,11 @@ def PrimeArchEndpointBernsteinAbelSharpFalsePhase (R : ℝ) : Prop :=
           (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) B t +
         primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t) ∧
     Tendsto
-      (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+      (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
         primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t)
       (nhdsWithin R (Set.Ico 0 R)) (nhds 0) ∧
     Tendsto
-      (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+      (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
         xiEndpointCoordinateDiagonalAbelSusceptibility D t)
       (nhdsWithin R (Set.Ico 0 R))
       (nhds (Real.sqrt Real.pi * L)) ∧
@@ -103,12 +103,12 @@ theorem primeArchEndpointBernsteinAbelSharpSelectionMaster :
       have hblowup :=
         GaloisForLFunctions.HTGeometry.tendsto_atTop_of_positive_sqrt_scaled_boundary
           (lt_trans zero_lt_one hB) hboundaryPos hboundary
-      have hReq : R = 1 / B ^ 2 :=
+      have hReq : R = 1 / B ^ (2 : ℕ) :=
         primeArchEndpointBernsteinAbelCriticalRadius_unique hR.2.2.1 hcritical
       have hRne : R ≠ 1 := fun hEq => hRH (hR.2.2.2.mpr hEq)
       have hRlt : R < 1 := lt_of_le_of_ne hR.2.1 hRne
       have hboundaryR : Tendsto
-          (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+          (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
             primeArchEndpointBernsteinAbelSusceptibility t)
           (nhdsWithin R (Set.Ico 0 R))
           (nhds (Real.sqrt Real.pi * L)) := by
@@ -131,13 +131,13 @@ theorem primeArchEndpointBernsteinAbelSharpSelectionMaster :
             primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t := by
         simpa only [hReq] using hpointDecomp
       have hremBoundaryR : Tendsto
-          (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+          (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
             primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t)
           (nhdsWithin R (Set.Ico 0 R)) (nhds 0) := by
         rw [hReq]
         exact hremBoundary
       have hdiagBoundaryR : Tendsto
-          (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+          (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
             xiEndpointCoordinateDiagonalAbelSusceptibility D t)
           (nhdsWithin R (Set.Ico 0 R))
           (nhds (Real.sqrt Real.pi * L)) := by
@@ -148,10 +148,10 @@ theorem primeArchEndpointBernsteinAbelSharpSelectionMaster :
             (fun t : ℝ =>
               (primeArchEndpointBernsteinAbelSusceptibility t : ℂ)) := by
         intro f hf hagree
-        have hf' : MeromorphicAt f (1 / B ^ 2 : ℝ) := by
+        have hf' : MeromorphicAt f (1 / B ^ (2 : ℕ) : ℝ) := by
           simpa only [hReq] using hf
         have hagree' : (fun t : ℝ => f t) =ᶠ[
-            nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2))]
+            nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ)))]
             (fun t : ℝ =>
               (primeArchEndpointBernsteinAbelSusceptibility t : ℂ)) := by
           simpa only [hReq] using hagree

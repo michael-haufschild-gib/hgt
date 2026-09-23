@@ -53,7 +53,7 @@ theorem CCMRootOfUnity.neg {x : ℂ} (hx : CCMRootOfUnity x) : CCMRootOfUnity (-
   refine ⟨2 * n, Nat.mul_pos (by norm_num) hn, ?_⟩
   rw [neg_pow, Even.neg_one_pow (by exact ⟨n, by ring⟩), one_mul]
   calc
-    x ^ (2 * n) = (x ^ n) ^ 2 := by rw [Nat.mul_comm, pow_mul]
+    x ^ (2 * n) = (x ^ n) ^ (2 : ℕ) := by rw [Nat.mul_comm, pow_mul]
     _ = 1 := by rw [hxn]; simp
 
 theorem CCMCyclotomicInteger.one : CCMCyclotomicInteger (1 : ℂ) := by
@@ -182,16 +182,16 @@ theorem ccmQuadraticGaussSum_cyclotomicInteger (p : ℕ) [Fact p.Prime] :
   · rfl
 
 theorem ccmPrimeSquareRoot_cyclotomicInteger {p : ℕ} [Fact p.Prime] {z : ℂ}
-    (hz : z ^ 2 = (p : ℂ)) : CCMCyclotomicInteger z := by
+    (hz : z ^ (2 : ℕ) = (p : ℂ)) : CCMCyclotomicInteger z := by
   by_cases hp2 : p = 2
   · subst p
-    have hsq : (Real.sqrt 2 : ℂ) ^ 2 = (2 : ℂ) := by
+    have hsq : (Real.sqrt 2 : ℂ) ^ (2 : ℕ) = (2 : ℂ) := by
       rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num)]
       norm_num
     have hfactor : (z - (Real.sqrt 2 : ℂ)) * (z + (Real.sqrt 2 : ℂ)) = 0 := by
       calc
         (z - (Real.sqrt 2 : ℂ)) * (z + (Real.sqrt 2 : ℂ)) =
-            z ^ 2 - (Real.sqrt 2 : ℂ) ^ 2 := by ring
+            z ^ (2 : ℕ) - (Real.sqrt 2 : ℂ) ^ (2 : ℕ) := by ring
         _ = 0 := by rw [hz, hsq]; ring
     rcases mul_eq_zero.mp hfactor with h | h
     · rw [sub_eq_zero.mp h]
@@ -209,7 +209,7 @@ theorem ccmPrimeSquareRoot_cyclotomicInteger {p : ℕ} [Fact p.Prime] {z : ℂ}
         (quadraticChar_ne_one hpchar)
     have hχquad : χ.IsQuadratic :=
       (quadraticChar_isQuadratic (ZMod p)).comp _
-    have hgsq : g ^ 2 = χ (-1) * (p : ℂ) := by
+    have hgsq : g ^ (2 : ℕ) = χ (-1) * (p : ℂ) := by
       simpa [g, ZMod.card] using
         (gaussSum_sq hχne hχquad (ZMod.isPrimitive_stdAddChar p))
     have hgcyc : CCMCyclotomicInteger g := by
@@ -217,10 +217,10 @@ theorem ccmPrimeSquareRoot_cyclotomicInteger {p : ℕ} [Fact p.Prime] {z : ℂ}
     rcases quadraticChar_dichotomy (F := ZMod p) (neg_ne_zero.mpr one_ne_zero) with hpos | hneg
     · have hχpos : χ (-1) = 1 := by
         simpa [χ] using congrArg (fun x : ℤ => (x : ℂ)) hpos
-      have hg2 : g ^ 2 = (p : ℂ) := by rw [hgsq, hχpos, one_mul]
+      have hg2 : g ^ (2 : ℕ) = (p : ℂ) := by rw [hgsq, hχpos, one_mul]
       have hfactor : (z - g) * (z + g) = 0 := by
         calc
-          (z - g) * (z + g) = z ^ 2 - g ^ 2 := by ring
+          (z - g) * (z + g) = z ^ (2 : ℕ) - g ^ (2 : ℕ) := by ring
           _ = 0 := by rw [hz, hg2]; ring
       rcases mul_eq_zero.mp hfactor with h | h
       · rw [sub_eq_zero.mp h]
@@ -229,7 +229,7 @@ theorem ccmPrimeSquareRoot_cyclotomicInteger {p : ℕ} [Fact p.Prime] {z : ℂ}
         exact hgcyc.neg
     · have hχneg : χ (-1) = -1 := by
         simpa [χ] using congrArg (fun x : ℤ => (x : ℂ)) hneg
-      have hIg2 : (Complex.I * g) ^ 2 = (p : ℂ) := by
+      have hIg2 : (Complex.I * g) ^ (2 : ℕ) = (p : ℂ) := by
         rw [mul_pow, Complex.I_sq, hgsq, hχneg]
         ring
       have hIgcyc : CCMCyclotomicInteger (Complex.I * g) := by
@@ -238,7 +238,7 @@ theorem ccmPrimeSquareRoot_cyclotomicInteger {p : ℕ} [Fact p.Prime] {z : ℂ}
         · exact hgcyc
       have hfactor : (z - Complex.I * g) * (z + Complex.I * g) = 0 := by
         calc
-          (z - Complex.I * g) * (z + Complex.I * g) = z ^ 2 - (Complex.I * g) ^ 2 := by ring
+          (z - Complex.I * g) * (z + Complex.I * g) = z ^ (2 : ℕ) - (Complex.I * g) ^ (2 : ℕ) := by ring
           _ = 0 := by rw [hz, hIg2]; ring
       rcases mul_eq_zero.mp hfactor with h | h
       · rw [sub_eq_zero.mp h]
@@ -247,19 +247,19 @@ theorem ccmPrimeSquareRoot_cyclotomicInteger {p : ℕ} [Fact p.Prime] {z : ℂ}
         exact hIgcyc.neg
 
 private theorem ccmRealSqrtNat_sq (n : ℕ) :
-    ((Real.sqrt (n : ℝ) : ℝ) : ℂ) ^ 2 = (n : ℂ) := by
+    ((Real.sqrt (n : ℝ) : ℝ) : ℂ) ^ (2 : ℕ) = (n : ℂ) := by
   rw [← Complex.ofReal_pow, Real.sq_sqrt (Nat.cast_nonneg n)]
   norm_num
 
 theorem ccmNatSquareRoot_cyclotomicInteger {n : ℕ} {z : ℂ}
-    (hz : z ^ 2 = (n : ℂ)) : CCMCyclotomicInteger z := by
+    (hz : z ^ (2 : ℕ) = (n : ℂ)) : CCMCyclotomicInteger z := by
   induction n using Nat.strong_induction_on generalizing z with
   | h n ih =>
       by_cases hn0 : n = 0
       · subst n
         have hz0 : z * z = 0 := by
           calc
-            z * z = z ^ 2 := by ring
+            z * z = z ^ (2 : ℕ) := by ring
             _ = 0 := by simpa using hz
         rw [mul_self_eq_zero.mp hz0]
         exact CCMCyclotomicInteger.zero
@@ -267,7 +267,7 @@ theorem ccmNatSquareRoot_cyclotomicInteger {n : ℕ} {z : ℂ}
       · subst n
         have hfactor : (z - 1) * (z + 1) = 0 := by
           calc
-            (z - 1) * (z + 1) = z ^ 2 - 1 := by ring
+            (z - 1) * (z + 1) = z ^ (2 : ℕ) - 1 := by ring
             _ = 0 := by rw [hz]; norm_num
         rcases mul_eq_zero.mp hfactor with h | h
         · rw [sub_eq_zero.mp h]
@@ -288,18 +288,18 @@ theorem ccmNatSquareRoot_cyclotomicInteger {n : ℕ} {z : ℂ}
         exact Nat.div_lt_self (Nat.pos_of_ne_zero hn0) hpprime.one_lt
       let a : ℂ := ((Real.sqrt (p : ℝ) : ℝ) : ℂ)
       let b : ℂ := ((Real.sqrt (m : ℝ) : ℝ) : ℂ)
-      have ha2 : a ^ 2 = (p : ℂ) := by
+      have ha2 : a ^ (2 : ℕ) = (p : ℂ) := by
         exact ccmRealSqrtNat_sq p
-      have hb2 : b ^ 2 = (m : ℂ) := by
+      have hb2 : b ^ (2 : ℕ) = (m : ℂ) := by
         exact ccmRealSqrtNat_sq m
       have hacyc : CCMCyclotomicInteger a :=
         ccmPrimeSquareRoot_cyclotomicInteger ha2
       have hbcyc : CCMCyclotomicInteger b := ih m hmlt hb2
-      have hab2 : (a * b) ^ 2 = (n : ℂ) := by
+      have hab2 : (a * b) ^ (2 : ℕ) = (n : ℂ) := by
         rw [mul_pow, ha2, hb2, ← Nat.cast_mul, hpm]
       have hfactor : (z - a * b) * (z + a * b) = 0 := by
         calc
-          (z - a * b) * (z + a * b) = z ^ 2 - (a * b) ^ 2 := by ring
+          (z - a * b) * (z + a * b) = z ^ (2 : ℕ) - (a * b) ^ (2 : ℕ) := by ring
           _ = 0 := by rw [hz, hab2]; ring
       rcases mul_eq_zero.mp hfactor with h | h
       · rw [sub_eq_zero.mp h]
@@ -349,10 +349,10 @@ theorem ccmLambertRadicand_eq_natCast (ell i j : ℕ) :
 /-- Exact CCM equation-(55) radical gate: every complex square root occurring
 in a literal equation-(53) coefficient lies in `ℤ^cyc`. -/
 theorem ccmLambertRadical_cyclotomicInteger (ell i j : ℕ) (z : ℂ)
-    (hz : z ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
+    (hz : z ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ)) :
     CCMCyclotomicInteger z := by
   obtain ⟨n, hn⟩ := ccmLambertRadicand_eq_natCast ell i j
-  have hzn : z ^ 2 = (n : ℂ) := by
+  have hzn : z ^ (2 : ℕ) = (n : ℂ) := by
     rw [hz, hn]
     norm_num
   exact ccmNatSquareRoot_cyclotomicInteger hzn
@@ -424,7 +424,7 @@ theorem ccmLambertEntryCoefficient_dyadicCyclotomic (i j n : ℕ) (rad : ℕ →
 /-- The unconditional form of CCM equation (55): no choice of a complex
 square-root branch can escape the cyclotomic ring. -/
 theorem ccmLambertEntryCoefficient_literal_dyadicCyclotomic (i j n : ℕ) (rad : ℕ → ℂ)
-    (hrad : ∀ ell, (rad ell) ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
+    (hrad : ∀ ell, (rad ell) ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ)) :
     CCMDyadicCyclotomicInteger (ccmLambertEntryCoefficient i j n rad) := by
   apply ccmLambertEntryCoefficient_dyadicCyclotomic
   intro ell
@@ -448,7 +448,7 @@ theorem ccmLambertEntrySeries_coeff_zero (i j : ℕ) (rad : ℕ → ℂ) :
 /-- The full formal Lambert system has coefficientwise containment in
 `ℤ^cyc[1/2]` under its literal square-root equations. -/
 theorem ccmLambertEntrySeries_coeff_literal_dyadicCyclotomic (i j n : ℕ) (rad : ℕ → ℂ)
-    (hrad : ∀ ell, (rad ell) ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
+    (hrad : ∀ ell, (rad ell) ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ)) :
     CCMDyadicCyclotomicInteger ((ccmLambertEntrySeries i j rad).coeff n) := by
   rw [ccmLambertEntrySeries_coeff]
   exact ccmLambertEntryCoefficient_literal_dyadicCyclotomic i j n rad hrad

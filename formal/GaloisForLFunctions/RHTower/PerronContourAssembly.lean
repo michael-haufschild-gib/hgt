@@ -35,12 +35,12 @@ theorem smoothed_chebyshev_contour_assembly {x a σ₀ W : ℝ}
             - deriv riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
               / riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
             * ((x : ℂ) ^ ((a : ℂ) + 2 * Real.pi * w * Complex.I)
-              / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2))
+              / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ)))
         + ∫ w in Set.Ioi W,
             - deriv riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
               / riemannZeta ((a : ℂ) + 2 * Real.pi * w * Complex.I)
             * ((x : ℂ) ^ ((a : ℂ) + 2 * Real.pi * w * Complex.I)
-              / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2))
+              / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ)))
       + (2 * Real.pi)⁻¹ •
           (Complex.I *
             ((∫ t in σ₀..a,
@@ -51,7 +51,7 @@ theorem smoothed_chebyshev_contour_assembly {x a σ₀ W : ℝ}
               * ((x : ℂ) ^ ((t : ℂ)
                   + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I)
                 / ((t : ℂ)
-                  + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I) ^ 2))
+                  + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I) ^ (2 : ℕ)))
             - ∫ t in σ₀..a,
               - deriv riemannZeta ((t : ℂ)
                   + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I)
@@ -60,12 +60,12 @@ theorem smoothed_chebyshev_contour_assembly {x a σ₀ W : ℝ}
               * ((x : ℂ) ^ ((t : ℂ)
                   + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I)
                 / ((t : ℂ)
-                  + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I) ^ 2))
+                  + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I) ^ (2 : ℕ)))
           + ∫ y in (-(2 * Real.pi * W))..(2 * Real.pi * W),
               - deriv riemannZeta ((σ₀ : ℂ) + y * Complex.I)
                 / riemannZeta ((σ₀ : ℂ) + y * Complex.I)
               * ((x : ℂ) ^ ((σ₀ : ℂ) + y * Complex.I)
-                / ((σ₀ : ℂ) + y * Complex.I) ^ 2)) := by
+                / ((σ₀ : ℂ) + y * Complex.I) ^ (2 : ℕ))) := by
   have hπ0 : (0 : ℝ) < Real.pi := Real.pi_pos
   have hT0 : (0 : ℝ) < 2 * Real.pi * W := by positivity
   -- corner coordinates
@@ -110,7 +110,7 @@ theorem smoothed_chebyshev_contour_assembly {x a σ₀ W : ℝ}
     * ((x : ℂ) ^ ((t : ℂ)
         + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I)
       / ((t : ℂ)
-        + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I) ^ 2) with hBv
+        + ((-(2 * Real.pi * W) : ℝ) : ℂ) * Complex.I) ^ (2 : ℕ)) with hBv
   set Tv : ℂ := ∫ t in σ₀..a,
     - deriv riemannZeta ((t : ℂ)
         + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I)
@@ -119,17 +119,17 @@ theorem smoothed_chebyshev_contour_assembly {x a σ₀ W : ℝ}
     * ((x : ℂ) ^ ((t : ℂ)
         + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I)
       / ((t : ℂ)
-        + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I) ^ 2) with hTv
+        + ((2 * Real.pi * W : ℝ) : ℂ) * Complex.I) ^ (2 : ℕ)) with hTv
   set Rv : ℂ := ∫ y in (-(2 * Real.pi * W))..(2 * Real.pi * W),
     - deriv riemannZeta ((a : ℂ) + y * Complex.I)
       / riemannZeta ((a : ℂ) + y * Complex.I)
     * ((x : ℂ) ^ ((a : ℂ) + y * Complex.I)
-      / ((a : ℂ) + y * Complex.I) ^ 2) with hRv
+      / ((a : ℂ) + y * Complex.I) ^ (2 : ℕ)) with hRv
   set Lv : ℂ := ∫ y in (-(2 * Real.pi * W))..(2 * Real.pi * W),
     - deriv riemannZeta ((σ₀ : ℂ) + y * Complex.I)
       / riemannZeta ((σ₀ : ℂ) + y * Complex.I)
     * ((x : ℂ) ^ ((σ₀ : ℂ) + y * Complex.I)
-      / ((σ₀ : ℂ) + y * Complex.I) ^ 2) with hLv
+      / ((σ₀ : ℂ) + y * Complex.I) ^ (2 : ℕ)) with hLv
   have hI := Complex.I_sq
   have hRight : Rv = 2 * (Real.pi : ℂ) * (x : ℂ)
       + (Complex.I * (Bv - Tv) + Lv) := by

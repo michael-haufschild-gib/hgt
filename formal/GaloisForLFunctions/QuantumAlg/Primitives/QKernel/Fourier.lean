@@ -422,7 +422,7 @@ kernel equals the squared-cosine kernel `cos²((x-x')/2)`. -/
 theorem pauliX_kernel_eq_cos_sq (x x' : ℝ) :
     Complex.normSq (∑ m, (starRingEnd ℂ) (featState pauliXW pauliXSpectrum pauliXPsi 1 ![x'] m)
         * featState pauliXW pauliXSpectrum pauliXPsi 1 ![x] m)
-      = Real.cos ((x - x') / 2) ^ 2 := by
+      = Real.cos ((x - x') / 2) ^ (2 : ℕ) := by
   have hr2 : (((Real.sqrt 2)⁻¹ : ℝ) : ℂ) * (((Real.sqrt 2)⁻¹ : ℝ) : ℂ) = 1 / 2 := by
     rw [← Complex.ofReal_mul, ← mul_inv, Real.mul_self_sqrt (by norm_num)]; norm_num
   have hcosG : (1 / 2 : ℂ) * (Complex.exp (Complex.I * ↑((x - x') / 2))

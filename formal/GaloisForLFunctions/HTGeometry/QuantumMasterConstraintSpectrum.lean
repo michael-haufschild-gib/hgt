@@ -44,9 +44,9 @@ value of `C`. -/
 theorem svVal_quantumMasterConstraint_eq_singVal_sq
     (C : H →L[ℂ] H) (n : ℕ) :
     ContinuousLinearMap.svVal (quantumMasterConstraint C) n =
-      ContinuousLinearMap.singVal C n ^ 2 := by
+      ContinuousLinearMap.singVal C n ^ (2 : ℕ) := by
   change ContinuousLinearMap.svVal (ContinuousLinearMap.energyOp C) n =
-    ContinuousLinearMap.singVal C n ^ 2
+    ContinuousLinearMap.singVal C n ^ (2 : ℕ)
   exact (ContinuousLinearMap.singVal_sq C n).symm
 
 /-- A live greedy master mode is a genuine unit eigenvector.  Compactness of `C` is the only

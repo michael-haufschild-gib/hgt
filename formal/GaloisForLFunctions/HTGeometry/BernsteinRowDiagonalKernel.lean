@@ -37,14 +37,14 @@ lemma integral_comp_two_eq_of_two_pi_periodic
 /-- Squared Euclidean norm of a weighted Bernstein row. -/
 def bernsteinRowSquare (a b : ℝ) (n : ℕ) : ℝ :=
   ∑ k ∈ Finset.range (n + 1),
-    (Nat.choose n k : ℝ) ^ 2 * a ^ (2 * k) * b ^ (2 * (n - k))
+    (Nat.choose n k : ℝ) ^ (2 : ℕ) * a ^ (2 * k) * b ^ (2 * (n - k))
 
 /-- Parseval representation of the squared weighted Bernstein row. -/
 theorem bernsteinRowSquare_eq_normalizedIntegral (a b : ℝ) (n : ℕ) :
     bernsteinRowSquare a b n =
       (2 * Real.pi)⁻¹ *
         (∫ x in (0 : ℝ)..2 * Real.pi,
-          ‖((a : ℂ) * circleMap 0 1 x + (b : ℂ)) ^ n‖ ^ 2) := by
+          ‖((a : ℂ) * circleMap 0 1 x + (b : ℂ)) ^ n‖ ^ (2 : ℕ)) := by
   let c : ℕ → ℂ := fun k =>
     (((Nat.choose n k : ℝ) * a ^ k * b ^ (n - k) : ℝ) : ℂ)
   have hparseval := circleAverage_normSq_poly (1 : ℝ) (n + 1) c
@@ -59,8 +59,8 @@ theorem bernsteinRowSquare_eq_normalizedIntegral (a b : ℝ) (n : ℕ) :
     rw [mul_pow]
     ring
   have hfun : (fun x : ℝ =>
-      ‖∑ k ∈ Finset.range (n + 1), c k * (circleMap 0 1 x) ^ k‖ ^ 2) =
-      fun x : ℝ => ‖((a : ℂ) * circleMap 0 1 x + (b : ℂ)) ^ n‖ ^ 2 := by
+      ‖∑ k ∈ Finset.range (n + 1), c k * (circleMap 0 1 x) ^ k‖ ^ (2 : ℕ)) =
+      fun x : ℝ => ‖((a : ℂ) * circleMap 0 1 x + (b : ℂ)) ^ n‖ ^ (2 : ℕ) := by
     funext x
     rw [hpoly]
   rw [hfun] at hparseval
@@ -76,11 +76,11 @@ theorem bernsteinRowSquare_eq_normalizedIntegral (a b : ℝ) (n : ℕ) :
 /-- Pointwise characteristic-coordinate identity on the doubled unit circle. -/
 lemma norm_pow_circleMap_two_eq_diagonalTrigKernel
     (a b : ℝ) (n : ℕ) (x : ℝ) :
-    ‖((a : ℂ) * circleMap 0 1 (2 * x) + (b : ℂ)) ^ n‖ ^ 2 =
+    ‖((a : ℂ) * circleMap 0 1 (2 * x) + (b : ℂ)) ^ n‖ ^ (2 : ℕ) =
       diagonalTrigKernel (a + b) (a - b) n x := by
   have hbase :
       Complex.normSq ((a : ℂ) * circleMap 0 1 (2 * x) + (b : ℂ)) =
-        (a - b) ^ 2 * Real.sin x ^ 2 + (a + b) ^ 2 * Real.cos x ^ 2 := by
+        (a - b) ^ (2 : ℕ) * Real.sin x ^ (2 : ℕ) + (a + b) ^ (2 : ℕ) * Real.cos x ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
     simp only [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
       Complex.ofReal_re, Complex.ofReal_im, circleMap_zero_re, circleMap_zero_im,
@@ -88,7 +88,7 @@ lemma norm_pow_circleMap_two_eq_diagonalTrigKernel
     rw [Real.cos_two_mul, Real.sin_two_mul]
     have htrig := Real.sin_sq_add_cos_sq x
     linear_combination
-      (a ^ 2 * (4 * Real.cos x ^ 2 - 1) + 2 * a * b - b ^ 2) * htrig
+      (a ^ (2 : ℕ) * (4 * Real.cos x ^ (2 : ℕ) - 1) + 2 * a * b - b ^ (2 : ℕ)) * htrig
   rw [norm_pow, ← pow_mul, show n * 2 = 2 * n by omega, pow_mul,
     ← Complex.normSq_eq_norm_sq, hbase]
   rfl
@@ -99,7 +99,7 @@ theorem bernsteinRowSquare_eq_centralBinomialDiagonalKernelCoefficient
     bernsteinRowSquare a b n =
       centralBinomialDiagonalKernelCoefficient (a + b) (a - b) n := by
   let f : ℝ → ℝ := fun x =>
-    ‖((a : ℂ) * circleMap 0 1 x + (b : ℂ)) ^ n‖ ^ 2
+    ‖((a : ℂ) * circleMap 0 1 x + (b : ℂ)) ^ n‖ ^ (2 : ℕ)
   have hf : Continuous f := by
     dsimp only [f]
     fun_prop

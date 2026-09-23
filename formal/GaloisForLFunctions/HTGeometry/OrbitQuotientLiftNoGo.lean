@@ -103,21 +103,21 @@ nonzero `H`-fixed orbit vector. -/
 theorem eq_zero_of_infinite_subgroup_leftInvariant_summable_normSq
     {G E : Type*} [Group G] [NormedAddCommGroup E]
     (H : Subgroup G) [Infinite H] (f : G → E)
-    (hsum : Summable (fun g => ‖f g‖ ^ 2))
+    (hsum : Summable (fun g => ‖f g‖ ^ (2 : ℕ)))
     (hinv : ∀ h : H, ∀ x, f (h.1 * x) = f x) : f = 0 := by
   funext x
   by_contra hx
-  have hpos : 0 < ‖f x‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hx)
+  have hpos : 0 < ‖f x‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hx)
   let emb : H → G := fun h => h.1 * x
   have hemb : Function.Injective emb := by
     intro h k heq
     apply Subtype.ext
     exact mul_right_cancel heq
-  have hconst : Summable (fun _ : H => ‖f x‖ ^ 2) := by
+  have hconst : Summable (fun _ : H => ‖f x‖ ^ (2 : ℕ)) := by
     have hcomp := hsum.comp_injective hemb
     apply hcomp.congr
     intro h
-    change ‖f (h.1 * x)‖ ^ 2 = ‖f x‖ ^ 2
+    change ‖f (h.1 * x)‖ ^ (2 : ℕ) = ‖f x‖ ^ (2 : ℕ)
     rw [hinv h x]
   haveI : Finite H := Finite.of_summable_const hpos hconst
   exact not_finite H

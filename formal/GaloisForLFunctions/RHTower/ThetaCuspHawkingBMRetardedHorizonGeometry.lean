@@ -31,10 +31,10 @@ theorem expc_mul (t : ℝ) : t*expc t=Real.exp t-1 := by
   unfold expc
   rw [show t*(Real.exp (t/2)*sinhc (t/2))=2*Real.exp (t/2)*(sinhc (t/2)*(t/2)) by ring]
   rw [h,Real.sinh_eq,Real.exp_neg]
-  have he : Real.exp t=Real.exp (t/2)^2 := by
+  have he : Real.exp t=Real.exp (t/2)^(2 : ℕ) := by
     calc
       Real.exp t=Real.exp (t/2+t/2) := congrArg Real.exp (by ring)
-      _=Real.exp (t/2)^2 := by rw [Real.exp_add,pow_two]
+      _=Real.exp (t/2)^(2 : ℕ) := by rw [Real.exp_add,pow_two]
   rw [he]
   field_simp
 
@@ -53,13 +53,13 @@ def compactInvariant (image : Bool) (E rho z : ℝ) : ℝ :=
 theorem invariant_compact (image : Bool) (v x y : ℝ) :
     invariant (v-x+y) x (if image then -y else y)=
       compactInvariant image (Real.exp v) (Real.exp (2*x)) (Real.exp (2*y)) := by
-  have hx : Real.exp (2*x)=Real.exp x^2 := by rw [two_mul,Real.exp_add,pow_two]
-  have hy : Real.exp (2*y)=Real.exp y^2 := by rw [two_mul,Real.exp_add,pow_two]
+  have hx : Real.exp (2*x)=Real.exp x^(2 : ℕ) := by rw [two_mul,Real.exp_add,pow_two]
+  have hy : Real.exp (2*y)=Real.exp y^(2 : ℕ) := by rw [two_mul,Real.exp_add,pow_two]
   have hxp := Real.exp_pos x
   have hyp := Real.exp_pos y
   have hvp := Real.exp_pos v
-  have hx2 : 1+Real.exp x^2 ≠ 0 := ne_of_gt (by positivity)
-  have hy2 : 1+Real.exp y^2 ≠ 0 := ne_of_gt (by positivity)
+  have hx2 : 1+Real.exp x^(2 : ℕ) ≠ 0 := ne_of_gt (by positivity)
+  have hy2 : 1+Real.exp y^(2 : ℕ) ≠ 0 := ne_of_gt (by positivity)
   cases image
   · simp only [compactInvariant,Bool.false_eq_true,↓reduceIte,hx,hy,invariant,
       Real.cosh_eq,Real.sinh_eq,Real.exp_add,Real.exp_sub,Real.exp_neg]
@@ -73,8 +73,8 @@ theorem invariant_compact (image : Bool) (v x y : ℝ) :
 
 /-- Complete source density after cancelling the logarithmic Jacobian. -/
 def compactForcing (s amp : ℂ) (a z : ℝ) (J K : ℂ) : ℂ :=
-  -8*(compactUnit z:ℂ)/(1+(z:ℂ))^2*power (2*s) (2/(1+z))*amp^2*
-    (((5*s^2+15*s+4)/4)*J+s*(s-1)*(compactUnit z:ℂ)^2/4*((s+2)^2*J-K))*
+  -8*(compactUnit z:ℂ)/(1+(z:ℂ))^(2 : ℕ)*power (2*s) (2/(1+z))*amp^(2 : ℕ)*
+    (((5*s^(2 : ℕ)+15*s+4)/4)*J+s*(s-1)*(compactUnit z:ℂ)^(2 : ℕ)/4*((s+2)^(2 : ℕ)*J-K))*
     timeOnset (2*s) a
 
 theorem originalForcing_compact (s amp J K : ℂ) (tau y : ℝ) :
@@ -86,7 +86,7 @@ theorem originalForcing_compact (s amp J K : ℂ) (tau y : ℝ) :
     rw [radialUnit_compact,compactUnit]
     field_simp
     ring
-  have hc : 1-(radialUnit y:ℂ)^2=4*(Real.exp (2*y):ℂ)/(1+(Real.exp (2*y):ℂ))^2 := by
+  have hc : 1-(radialUnit y:ℂ)^(2 : ℕ)=4*(Real.exp (2*y):ℂ)/(1+(Real.exp (2*y):ℂ))^(2 : ℕ) := by
     rw [radialUnit_compact]
     simp only [compactUnit,Complex.ofReal_div,Complex.ofReal_sub,Complex.ofReal_add,
       Complex.ofReal_one]
@@ -193,25 +193,25 @@ theorem horizonChart_bounds (v : ℝ) : -(1/2:ℝ)<horizonChart v ∧ horizonCha
 def horizonRadius (image : Bool) (z : Fin 4 → ℝ) : ℝ :=
   2*Real.arsinh (Real.cos (z 2)*Real.sin (z 3)*
     Real.sqrt (horizonFactor image (Real.exp (z 0)) (horizonChart (z 1))
-      (Real.sin (z 2)^2) (Real.sin (z 3)^2)))
+      (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))))
 
 @[fun_prop] theorem sourceZ_chart_smooth (image : Bool) :
     ContDiff ℝ ∞ (fun z : Fin 4 → ℝ => sourceZ image (Real.exp (z 0))
-      (horizonChart (z 1)) (Real.sin (z 2)^2) (Real.sin (z 3)^2)) := by
+      (horizonChart (z 1)) (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))) := by
   cases image <;> dsimp [sourceZ,sourceLower] <;> fun_prop
 
 theorem sourceZ_chart_add_one_pos (image : Bool) (z : Fin 4 → ℝ) :
     0 < 1+sourceZ image (Real.exp (z 0)) (horizonChart (z 1))
-      (Real.sin (z 2)^2) (Real.sin (z 3)^2) :=
+      (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ)) :=
   sourceZ_add_one_pos image (Real.exp_pos _).le (horizonChart_bounds _).1
     (Real.sin_sq_le_one _) (sq_nonneg _) (Real.sin_sq_le_one _)
 
 @[fun_prop] theorem horizonFactor_chart_smooth (image : Bool) :
     ContDiff ℝ ∞ (fun z : Fin 4 → ℝ => horizonFactor image (Real.exp (z 0))
-      (horizonChart (z 1)) (Real.sin (z 2)^2) (Real.sin (z 3)^2)) := by
+      (horizonChart (z 1)) (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))) := by
   have hn (z : Fin 4 → ℝ) :
       (1+horizonChart (z 1))*(1+sourceZ image (Real.exp (z 0)) (horizonChart (z 1))
-        (Real.sin (z 2)^2) (Real.sin (z 3)^2)) ≠ 0 :=
+        (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))) ≠ 0 :=
     mul_ne_zero (ne_of_gt (by linarith [(horizonChart_bounds (z 1)).1]))
       (sourceZ_chart_add_one_pos image z).ne'
   unfold horizonFactor
@@ -219,7 +219,7 @@ theorem sourceZ_chart_add_one_pos (image : Bool) (z : Fin 4 → ℝ) :
 
 @[fun_prop] theorem horizonRadius_smooth (image : Bool) : ContDiff ℝ ∞ (horizonRadius image) := by
   have hH (z : Fin 4 → ℝ) : 0 < horizonFactor image (Real.exp (z 0)) (horizonChart (z 1))
-      (Real.sin (z 2)^2) (Real.sin (z 3)^2) :=
+      (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ)) :=
     horizonFactor_pos image (Real.exp_pos _) (horizonChart_bounds _).1 (horizonChart_bounds _).2
       (Real.sin_sq_le_one _) (sq_nonneg _) (Real.sin_sq_le_one _)
   have hs : ContDiff ℝ ∞ (fun z : Fin 4 → ℝ => Real.cos (z 2)*Real.sin (z 3)) := by fun_prop
@@ -241,7 +241,7 @@ theorem compact_radius (image : Bool) {p rho alpha beta : ℝ}
       compactInvariant image (Real.exp (p*(1-alpha))) rho (sourceZ image p rho alpha beta) := by
     rw [Real.cosh_two_mul,Real.cosh_arsinh,Real.sinh_arsinh,
       Real.sq_sqrt (by positivity : 0 ≤ 1+(Real.sqrt ((1-alpha)*beta)*
-        Real.sqrt (horizonFactor image p rho alpha beta))^2),
+        Real.sqrt (horizonFactor image p rho alpha beta))^(2 : ℕ)),
       mul_pow,Real.sq_sqrt hw,Real.sq_sqrt hH.le]
     linear_combination -(compactInvariant_factor image p rho alpha beta)
   rw [← hc,max_eq_right (Real.one_le_cosh _),Real.arcosh_cosh]
@@ -257,7 +257,7 @@ theorem horizonRadius_eq (image : Bool) (u v : ℝ) {alpha beta : ℝ}
     (horizonChart_bounds _).2 ha.2 hb.1 hb.2]
   change 2*Real.arsinh (Real.cos (angleMap alpha)*Real.sin (angleMap beta)*
     Real.sqrt (horizonFactor image (Real.exp u) (horizonChart v)
-      (Real.sin (angleMap alpha)^2) (Real.sin (angleMap beta)^2)))=
+      (Real.sin (angleMap alpha)^(2 : ℕ)) (Real.sin (angleMap beta)^(2 : ℕ))))=
     2*Real.arsinh (Real.sqrt ((1-alpha)*beta)*Real.sqrt (horizonFactor image
       (Real.exp u) (horizonChart v) alpha beta))
   rw [angleMap_sine_square ha,angleMap_sine_square hb,angleMap_cosine ha]

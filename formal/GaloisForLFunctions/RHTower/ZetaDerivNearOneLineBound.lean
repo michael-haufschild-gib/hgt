@@ -24,7 +24,7 @@ noncomputable section
 and `|t| ≥ 9`. -/
 theorem norm_deriv_riemannZeta_le_log_sq {s : ℂ}
     (hσ1 : 1 ≤ s.re) (hσ2 : s.re ≤ 3 / 2) (ht : 9 ≤ |s.im|) :
-    ‖deriv riemannZeta s‖ ≤ 110 * (Real.log |s.im|) ^ 2 := by
+    ‖deriv riemannZeta s‖ ≤ 110 * (Real.log |s.im|) ^ (2 : ℕ) := by
   have ht8 : (8 : ℝ) ≤ |s.im| := by linarith
   have htpos : (0 : ℝ) < |s.im| := by linarith
   set L : ℝ := Real.log |s.im| with hLdef

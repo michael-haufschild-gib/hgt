@@ -30,64 +30,64 @@ open GaloisForLFunctions.HilbertMetric FirstEulerCriticalJet MeixnerPollaczek
 
 /-- `|1/(1 − 2ε cos x + ε²) − (1 + 2ε cos x + ε²(1 + 2 cos 2x))| ≤ 60 ε³` for `0 ≤ ε ≤ 1/6`. -/
 theorem abs_eulerFactor_sub_quadratic_le {ε : ℝ} (hε0 : 0 ≤ ε) (hε : ε ≤ 1 / 6) (x : ℝ) :
-    |1 / (1 - 2 * ε * Real.cos x + ε ^ 2) -
-      (1 + 2 * ε * Real.cos x + ε ^ 2 * (1 + 2 * Real.cos (2 * x)))| ≤ 60 * ε ^ 3 := by
+    |1 / (1 - 2 * ε * Real.cos x + ε ^ (2 : ℕ)) -
+      (1 + 2 * ε * Real.cos x + ε ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * x)))| ≤ 60 * ε ^ (3 : ℕ) := by
   set c := Real.cos x with hc
   have hc1 : |c| ≤ 1 := Real.abs_cos_le_one x
-  have hc2 : Real.cos (2 * x) = 2 * c ^ 2 - 1 := Real.cos_two_mul x
-  set y := 2 * ε * c - ε ^ 2 with hy
+  have hc2 : Real.cos (2 * x) = 2 * c ^ (2 : ℕ) - 1 := Real.cos_two_mul x
+  set y := 2 * ε * c - ε ^ (2 : ℕ) with hy
   have hyabs : |y| ≤ 3 * ε := by
     rw [hy]
     have h1 : |2 * ε * c| ≤ 2 * ε := by
       rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ 2 * ε)]
       nlinarith
-    have h2 : |ε ^ 2| ≤ ε := by
+    have h2 : |ε ^ (2 : ℕ)| ≤ ε := by
       rw [abs_of_nonneg (by positivity)]
       nlinarith
-    calc |2 * ε * c - ε ^ 2| ≤ |2 * ε * c| + |ε ^ 2| := abs_sub_le_abs_add_abs _ _
+    calc |2 * ε * c - ε ^ (2 : ℕ)| ≤ |2 * ε * c| + |ε ^ (2 : ℕ)| := abs_sub_le_abs_add_abs _ _
       _ ≤ 2 * ε + ε := add_le_add h1 h2
       _ = 3 * ε := by ring
   have hy1 : 1 / 2 ≤ 1 - y := by
     have := (abs_le.mp hyabs).2
     linarith
   have hy0 : 1 - y ≠ 0 := by linarith
-  have hden : 1 - 2 * ε * c + ε ^ 2 = 1 - y := by rw [hy]; ring
-  have hE : 1 / (1 - 2 * ε * c + ε ^ 2) - (1 + y + y ^ 2) = y ^ 3 / (1 - y) := by
+  have hden : 1 - 2 * ε * c + ε ^ (2 : ℕ) = 1 - y := by rw [hy]; ring
+  have hE : 1 / (1 - 2 * ε * c + ε ^ (2 : ℕ)) - (1 + y + y ^ (2 : ℕ)) = y ^ (3 : ℕ) / (1 - y) := by
     rw [hden]
     field_simp
     ring
-  have hT : (1 + y + y ^ 2) - (1 + 2 * ε * c + ε ^ 2 * (1 + 2 * Real.cos (2 * x))) =
-      -4 * ε ^ 3 * c + ε ^ 4 := by
+  have hT : (1 + y + y ^ (2 : ℕ)) - (1 + 2 * ε * c + ε ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * x))) =
+      -4 * ε ^ (3 : ℕ) * c + ε ^ (4 : ℕ) := by
     rw [hc2, hy]
     ring
-  have hsplit : 1 / (1 - 2 * ε * c + ε ^ 2) -
-      (1 + 2 * ε * c + ε ^ 2 * (1 + 2 * Real.cos (2 * x))) =
-      y ^ 3 / (1 - y) + (-4 * ε ^ 3 * c + ε ^ 4) := by
+  have hsplit : 1 / (1 - 2 * ε * c + ε ^ (2 : ℕ)) -
+      (1 + 2 * ε * c + ε ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * x))) =
+      y ^ (3 : ℕ) / (1 - y) + (-4 * ε ^ (3 : ℕ) * c + ε ^ (4 : ℕ)) := by
     rw [← hE, ← hT]
     ring
   rw [hsplit]
-  have hA : |y ^ 3 / (1 - y)| ≤ 54 * ε ^ 3 := by
+  have hA : |y ^ (3 : ℕ) / (1 - y)| ≤ 54 * ε ^ (3 : ℕ) := by
     rw [abs_div, abs_of_pos (by linarith : (0 : ℝ) < 1 - y), abs_pow]
-    have h3 : |y| ^ 3 ≤ (3 * ε) ^ 3 := pow_le_pow_left₀ (abs_nonneg _) hyabs 3
-    calc |y| ^ 3 / (1 - y) ≤ (3 * ε) ^ 3 / (1 / 2) :=
+    have h3 : |y| ^ (3 : ℕ) ≤ (3 * ε) ^ (3 : ℕ) := pow_le_pow_left₀ (abs_nonneg _) hyabs 3
+    calc |y| ^ (3 : ℕ) / (1 - y) ≤ (3 * ε) ^ (3 : ℕ) / (1 / 2) :=
           div_le_div₀ (by positivity) h3 (by norm_num) hy1
-      _ = 54 * ε ^ 3 := by ring
-  have hB : |-4 * ε ^ 3 * c + ε ^ 4| ≤ 6 * ε ^ 3 := by
-    have h1 : |-4 * ε ^ 3 * c| ≤ 4 * ε ^ 3 := by
+      _ = 54 * ε ^ (3 : ℕ) := by ring
+  have hB : |-4 * ε ^ (3 : ℕ) * c + ε ^ (4 : ℕ)| ≤ 6 * ε ^ (3 : ℕ) := by
+    have h1 : |-4 * ε ^ (3 : ℕ) * c| ≤ 4 * ε ^ (3 : ℕ) := by
       rw [abs_mul, abs_mul, show |(-4 : ℝ)| = 4 by norm_num, abs_of_nonneg (pow_nonneg hε0 3)]
       nlinarith [pow_nonneg hε0 3, abs_nonneg c]
-    have h2 : |ε ^ 4| ≤ ε ^ 3 := by
+    have h2 : |ε ^ (4 : ℕ)| ≤ ε ^ (3 : ℕ) := by
       rw [abs_of_nonneg (by positivity)]
-      have : ε ^ 4 = ε ^ 3 * ε := by ring
+      have : ε ^ (4 : ℕ) = ε ^ (3 : ℕ) * ε := by ring
       rw [this]
       nlinarith [pow_nonneg hε0 3]
-    calc |-4 * ε ^ 3 * c + ε ^ 4| ≤ |-4 * ε ^ 3 * c| + |ε ^ 4| := abs_add_le _ _
-      _ ≤ 4 * ε ^ 3 + ε ^ 3 := add_le_add h1 h2
-      _ ≤ 6 * ε ^ 3 := by nlinarith [pow_nonneg hε0 3]
-  calc |y ^ 3 / (1 - y) + (-4 * ε ^ 3 * c + ε ^ 4)|
-      ≤ |y ^ 3 / (1 - y)| + |-4 * ε ^ 3 * c + ε ^ 4| := abs_add_le _ _
-    _ ≤ 54 * ε ^ 3 + 6 * ε ^ 3 := add_le_add hA hB
-    _ = 60 * ε ^ 3 := by ring
+    calc |-4 * ε ^ (3 : ℕ) * c + ε ^ (4 : ℕ)| ≤ |-4 * ε ^ (3 : ℕ) * c| + |ε ^ (4 : ℕ)| := abs_add_le _ _
+      _ ≤ 4 * ε ^ (3 : ℕ) + ε ^ (3 : ℕ) := add_le_add h1 h2
+      _ ≤ 6 * ε ^ (3 : ℕ) := by nlinarith [pow_nonneg hε0 3]
+  calc |y ^ (3 : ℕ) / (1 - y) + (-4 * ε ^ (3 : ℕ) * c + ε ^ (4 : ℕ))|
+      ≤ |y ^ (3 : ℕ) / (1 - y)| + |-4 * ε ^ (3 : ℕ) * c + ε ^ (4 : ℕ)| := abs_add_le _ _
+    _ ≤ 54 * ε ^ (3 : ℕ) + 6 * ε ^ (3 : ℕ) := add_le_add hA hB
+    _ = 60 * ε ^ (3 : ℕ) := by ring
 
 /-! ## The quadratic Gram matrix -/
 
@@ -95,12 +95,12 @@ theorem abs_eulerFactor_sub_quadratic_le {ε : ℝ} (hε0 : 0 ≤ ε) (hε : ε 
 noncomputable def eulerQuadraticGram (δ ε : ℝ) (n : ℕ) : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ :=
   fun i j => ∫ s : ℝ, (semilocalArchimedeanJacobiPolynomial i).eval s *
     (semilocalArchimedeanJacobiPolynomial j).eval s *
-    (1 + 2 * ε * Real.cos (δ * s) + ε ^ 2 * (1 + 2 * Real.cos (2 * δ * s)))
+    (1 + 2 * ε * Real.cos (δ * s) + ε ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * δ * s)))
     ∂semilocalArchimedeanGammaMeasure
 
 /-- `1 + ε T(δ) + ε² (1 + T(2δ))`. -/
 noncomputable def eulerQuadraticMatrix (δ : ℝ) (n : ℕ) (ε : ℝ) : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ :=
-  1 + ε • cosineModeTangent δ n + (ε ^ 2) • (1 + cosineModeTangent (2 * δ) n)
+  1 + ε • cosineModeTangent δ n + (ε ^ (2 : ℕ)) • (1 + cosineModeTangent (2 * δ) n)
 
 theorem eulerQuadraticGram_eq (δ ε : ℝ) (n : ℕ) :
     eulerQuadraticGram δ ε n = eulerQuadraticMatrix δ n ε := by
@@ -117,15 +117,15 @@ theorem eulerQuadraticGram_eq (δ ε : ℝ) (n : ℕ) :
     integrable_eval_mul_eval_mul_cos i j (2 * δ)
   have hsplit : (fun s : ℝ => (semilocalArchimedeanJacobiPolynomial i).eval s *
       (semilocalArchimedeanJacobiPolynomial j).eval s *
-      (1 + 2 * ε * Real.cos (δ * s) + ε ^ 2 * (1 + 2 * Real.cos (2 * δ * s)))) =
-      fun s => P s + (2 * ε) * (P s * Real.cos (δ * s)) + ε ^ 2 * P s +
-        (2 * ε ^ 2) * (P s * Real.cos (2 * δ * s)) := by
+      (1 + 2 * ε * Real.cos (δ * s) + ε ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * δ * s)))) =
+      fun s => P s + (2 * ε) * (P s * Real.cos (δ * s)) + ε ^ (2 : ℕ) * P s +
+        (2 * ε ^ (2 : ℕ)) * (P s * Real.cos (2 * δ * s)) := by
     funext s
     simp only [hP]
     ring
   have hA : Integrable (fun s => P s + (2 * ε) * (P s * Real.cos (δ * s)))
       semilocalArchimedeanGammaMeasure := h0.add (h1.const_mul _)
-  have hB : Integrable (fun s => P s + (2 * ε) * (P s * Real.cos (δ * s)) + ε ^ 2 * P s)
+  have hB : Integrable (fun s => P s + (2 * ε) * (P s * Real.cos (δ * s)) + ε ^ (2 : ℕ) * P s)
       semilocalArchimedeanGammaMeasure := hA.add (h0.const_mul _)
   rw [hsplit, integral_add hB (h2.const_mul _), integral_add hA (h0.const_mul _),
     integral_add h0 (h1.const_mul _), integral_const_mul, integral_const_mul, integral_const_mul]
@@ -165,7 +165,7 @@ theorem hasDerivAt_eulerQuadraticMatrix_entry (t : ℝ) (i j : Fin (n + 1)) :
       ((cosineModeTangent δ n + (2 * t) • (1 + cosineModeTangent (2 * δ) n)) i j) t := by
   have hfun : (fun ε => eulerQuadraticMatrix δ n ε i j) =
       fun ε => (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i j + ε * cosineModeTangent δ n i j +
-        ε ^ 2 * ((1 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i j + cosineModeTangent (2 * δ) n i j) := by
+        ε ^ (2 : ℕ) * ((1 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i j + cosineModeTangent (2 * δ) n i j) := by
     funext ε
     simp only [eulerQuadraticMatrix, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
   rw [hfun]
@@ -346,7 +346,7 @@ theorem eulerQuadraticDeterminant_zero (δ : ℝ) (m : ℕ) : eulerQuadraticDete
 noncomputable def eulerQuadraticSquaredRadius (δ : ℝ) (n : ℕ) (ε : ℝ) : ℝ :=
   archimedeanSquaredRadius n *
     (eulerQuadraticPrevDeterminant δ n ε * eulerQuadraticDeterminant δ (n + 1) ε /
-      eulerQuadraticDeterminant δ n ε ^ 2)
+      eulerQuadraticDeterminant δ n ε ^ (2 : ℕ))
 
 /-- `g_{n−1} + g_{n+1} − 2 g_n`. -/
 noncomputable def eulerQuadraticRadiusSlope (δ : ℝ) (n : ℕ) (t : ℝ) : ℝ :=
@@ -396,7 +396,7 @@ noncomputable def onePrimeSecondOrderJet (δ : ℝ) (n : ℕ) : ℝ :=
   archimedeanSquaredRadius n *
     ((prevJet (eulerQuadraticLogJet δ) n + eulerQuadraticLogJet δ (n + 1) - 2 * eulerQuadraticLogJet δ n) +
       (prevJet (cosineModeDeterminantJet δ) n + cosineModeDeterminantJet δ (n + 1) -
-        2 * cosineModeDeterminantJet δ n) ^ 2)
+        2 * cosineModeDeterminantJet δ n) ^ (2 : ℕ))
 
 /-- **The second derivative of the quadratic-weight squared radius.** -/
 theorem deriv_deriv_eulerQuadraticSquaredRadius (δ : ℝ) (n : ℕ) :
@@ -448,7 +448,7 @@ theorem abs_onePrimeSecondOrder_le {δ : ℝ} (hδ : 0 < δ) (m : ℕ) :
       archimedeanSquaredRadius (m + 1) *
         (4 * ∑ i : Fin (m + 3), entryBound δ i (m + 2) * entryBound δ i (m + 2) +
           4 * ∑ i : Fin (m + 2), entryBound δ i (m + 1) * entryBound δ i (m + 1) +
-          2 * (entryBound δ (m + 2) (m + 2) + entryBound δ (m + 1) (m + 1)) ^ 2) := by
+          2 * (entryBound δ (m + 2) (m + 2) + entryBound δ (m + 1) (m + 1)) ^ (2 : ℕ)) := by
   have hr := archimedeanSquaredRadius_pos (m + 1)
   set r2 := archimedeanSquaredRadius (m + 1) with hr2
   -- exact decomposition
@@ -457,7 +457,7 @@ theorem abs_onePrimeSecondOrder_le {δ : ℝ} (hδ : 0 < δ) (m : ℕ) :
       r2 * (-(1 / 2) * ((truncationDefect δ δ (m + 2) - truncationDefect δ δ (m + 1)) -
         (truncationDefect δ δ (m + 1) - truncationDefect δ δ m)) +
         (1 / 2) * (cosineModeDeterminantJet δ m + cosineModeDeterminantJet δ (m + 2) -
-          2 * cosineModeDeterminantJet δ (m + 1)) ^ 2) := by
+          2 * cosineModeDeterminantJet δ (m + 1)) ^ (2 : ℕ)) := by
     unfold onePrimeSecondOrderJet squaredRadiusJetOf eulerQuadraticLogJet
     simp only [prevJet]
     push_cast
@@ -486,21 +486,21 @@ theorem abs_onePrimeSecondOrder_le {δ : ℝ} (hδ : 0 < δ) (m : ℕ) :
     have b3 := abs_sub_le_abs_add_abs (cosineDiagonalMoment δ (m + 2)) (cosineDiagonalMoment δ (m + 1))
     nlinarith
   have hJ2 : (cosineModeDeterminantJet δ m + cosineModeDeterminantJet δ (m + 2) -
-      2 * cosineModeDeterminantJet δ (m + 1)) ^ 2 ≤
-      (2 * (entryBound δ (m + 2) (m + 2) + entryBound δ (m + 1) (m + 1))) ^ 2 := by
+      2 * cosineModeDeterminantJet δ (m + 1)) ^ (2 : ℕ) ≤
+      (2 * (entryBound δ (m + 2) (m + 2) + entryBound δ (m + 1) (m + 1))) ^ (2 : ℕ) := by
     rw [← sq_abs]
     exact pow_le_pow_left₀ (abs_nonneg _) hJ 2
   have hsplit := abs_add_le (-(1 / 2 : ℝ) * ((truncationDefect δ δ (m + 2) - truncationDefect δ δ (m + 1)) -
         (truncationDefect δ δ (m + 1) - truncationDefect δ δ m)))
     ((1 / 2 : ℝ) * (cosineModeDeterminantJet δ m + cosineModeDeterminantJet δ (m + 2) -
-          2 * cosineModeDeterminantJet δ (m + 1)) ^ 2)
+          2 * cosineModeDeterminantJet δ (m + 1)) ^ (2 : ℕ))
   rw [abs_mul, abs_mul, show |(-(1 / 2) : ℝ)| = 1 / 2 by norm_num, show |(1 / 2 : ℝ)| = 1 / 2 by norm_num,
     abs_of_nonneg (sq_nonneg (cosineModeDeterminantJet δ m + cosineModeDeterminantJet δ (m + 2) -
       2 * cosineModeDeterminantJet δ (m + 1)))] at hsplit
   calc _ ≤ _ := hsplit
     _ ≤ 1 / 2 * (8 * ∑ i : Fin (m + 3), entryBound δ i (m + 2) * entryBound δ i (m + 2) +
           8 * ∑ i : Fin (m + 2), entryBound δ i (m + 1) * entryBound δ i (m + 1)) +
-        1 / 2 * (2 * (entryBound δ (m + 2) (m + 2) + entryBound δ (m + 1) (m + 1))) ^ 2 := by
+        1 / 2 * (2 * (entryBound δ (m + 2) (m + 2) + entryBound δ (m + 1) (m + 1))) ^ (2 : ℕ) := by
         gcongr
         linarith
     _ = _ := by ring

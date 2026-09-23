@@ -33,7 +33,7 @@ theorem adjoint_norm_le_of_gram_sub_gram_isPositive
   have hq := (ContinuousLinearMap.isPositive_def'.mp hpos).2 y
   have hB :
       (⟪(B ∘L ContinuousLinearMap.adjoint B) y, y⟫_ℂ).re =
-        ‖ContinuousLinearMap.adjoint B y‖ ^ 2 := by
+        ‖ContinuousLinearMap.adjoint B y‖ ^ (2 : ℕ) := by
     have hinner :
         ⟪(B ∘L ContinuousLinearMap.adjoint B) y, y⟫_ℂ =
           ⟪ContinuousLinearMap.adjoint B y,
@@ -43,7 +43,7 @@ theorem adjoint_norm_le_of_gram_sub_gram_isPositive
     exact inner_self_eq_norm_sq (𝕜 := ℂ) _
   have hA :
       (⟪(A ∘L ContinuousLinearMap.adjoint A) y, y⟫_ℂ).re =
-        ‖ContinuousLinearMap.adjoint A y‖ ^ 2 := by
+        ‖ContinuousLinearMap.adjoint A y‖ ^ (2 : ℕ) := by
     have hinner :
         ⟪(A ∘L ContinuousLinearMap.adjoint A) y, y⟫_ℂ =
           ⟪ContinuousLinearMap.adjoint A y,

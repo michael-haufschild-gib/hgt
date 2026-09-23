@@ -52,11 +52,11 @@ theorem friedrichsCosine_le_sqrt_norm_soninAlternatingBlock
   have hinner : ⟪u, v⟫_𝕜 = ⟪u, A.starProjection (B.starProjection v)⟫_𝕜 := by
     rw [hPv, ← A.inner_starProjection_left_eq_right, hPu]
   -- `‖P_A P_B v‖² = re ⟪v, block v⟫ ≤ ‖block‖`
-  have hblock : ‖A.starProjection (B.starProjection v)‖ ^ 2 ≤ ‖soninAlternatingBlock A B‖ := by
+  have hblock : ‖A.starProjection (B.starProjection v)‖ ^ (2 : ℕ) ≤ ‖soninAlternatingBlock A B‖ := by
     have hid : A.starProjection (A.starProjection (B.starProjection v)) =
         A.starProjection (B.starProjection v) :=
       Submodule.starProjection_eq_self_iff.2 (A.starProjection_apply_mem _)
-    have hexp : (‖A.starProjection (B.starProjection v)‖ : ℝ) ^ 2 =
+    have hexp : (‖A.starProjection (B.starProjection v)‖ : ℝ) ^ (2 : ℕ) =
         RCLike.re ⟪v, soninAlternatingBlock A B v⟫_𝕜 := by
       have happ : soninAlternatingBlock A B v =
           B.starProjection (A.starProjection (B.starProjection v)) := rfl
@@ -80,7 +80,7 @@ theorem friedrichsCosine_le_sqrt_norm_soninAlternatingBlock
       _ = ‖A.starProjection (B.starProjection v)‖ := by rw [hun, one_mul]
   refine le_trans hle ?_
   rw [show ‖A.starProjection (B.starProjection v)‖ =
-      Real.sqrt (‖A.starProjection (B.starProjection v)‖ ^ 2) by
+      Real.sqrt (‖A.starProjection (B.starProjection v)‖ ^ (2 : ℕ)) by
     rw [Real.sqrt_sq (norm_nonneg _)]]
   exact Real.sqrt_le_sqrt hblock
 

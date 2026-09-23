@@ -25,7 +25,7 @@ namespace RHTower
 
 /-- Termwise summability of the de Branges series at a point. -/
 theorem summable_deBrangesSeries_at (hRH : RiemannHypothesis)
-    {c : XiDivisorSupport → ℂ} (hc : Summable fun ρ : XiDivisorSupport => ‖c ρ‖ ^ 2) (z : ℂ) :
+    {c : XiDivisorSupport → ℂ} (hc : Summable fun ρ : XiDivisorSupport => ‖c ρ‖ ^ (2 : ℕ)) (z : ℂ) :
     Summable (fun ρ : XiDivisorSupport =>
       c ρ * suzukiDeBrangesVector (xiRealSpectralPointSupport ρ) (xiSupportMult ρ) z) := by
   have hpi := Real.pi_pos
@@ -57,7 +57,7 @@ theorem summable_deBrangesSeries_at (hRH : RiemannHypothesis)
 /-! ## The series represents the model-space element -/
 
 theorem suzukiCauchyWeight_mul (ρ : XiDivisorSupport) :
-    ‖suzukiEnergyScale ρ‖ ^ 2 * suzukiCauchyWeight ρ = 1 := by
+    ‖suzukiEnergyScale ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ = 1 := by
   have hpi := Real.pi_pos
   have hm : (0 : ℝ) < (xiSupportMult ρ : ℝ) := by exact_mod_cast xiSupportMult_pos ρ
   rw [suzukiEnergyScale, suzukiCauchyWeight, norm_mul, Complex.norm_I, mul_one,
@@ -106,12 +106,12 @@ theorem suzukiDeBrangesSeries_div_ae (hRH : RiemannHypothesis)
         ((x : ℝ) : ℂ) / xiHedenmalmDeBrangesE ((x : ℝ) : ℂ))
       =ᵐ[volume] (F : ℝ → ℂ) := by
   set c : XiDivisorSupport → ℂ := fun ρ => (inner ℂ (suzukiFGammaFamily hRH ρ) F : ℂ) with hcdef
-  have hc : Summable fun ρ : XiDivisorSupport => ‖c ρ‖ ^ 2 :=
+  have hc : Summable fun ρ : XiDivisorSupport => ‖c ρ‖ ^ (2 : ℕ) :=
     (hasSum_normSq_inner_suzukiFGammaFamily hRH hF).summable
   set a : XiDivisorSupport → ℂ := fun ρ => c ρ * suzukiEnergyScale ρ with hadef
   set g : ℝ → ℂ := fun x =>
     suzukiDeBrangesSeries c ((x : ℝ) : ℂ) / xiHedenmalmDeBrangesE ((x : ℝ) : ℂ) with hgdef
-  have hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ 2 * suzukiCauchyWeight ρ := by
+  have hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ := by
     refine hc.congr fun ρ => ?_
     rw [hadef, norm_mul, mul_pow, mul_assoc, suzukiCauchyWeight_mul, mul_one]
   have hg : ∀ᵐ x : ℝ, HasSum (fun ρ : XiDivisorSupport =>
@@ -176,7 +176,7 @@ theorem memDeBranges_suzukiDeBrangesSeries (hRH : RiemannHypothesis)
     {F : Lp ℂ 2 (volume : Measure ℝ)} (hF : F ∈ suzukiModelSpace) :
     MemDeBranges (suzukiDeBrangesSeries (fun ρ => (inner ℂ (suzukiFGammaFamily hRH ρ) F : ℂ))) := by
   have hc : Summable fun ρ : XiDivisorSupport =>
-      ‖(inner ℂ (suzukiFGammaFamily hRH ρ) F : ℂ)‖ ^ 2 :=
+      ‖(inner ℂ (suzukiFGammaFamily hRH ρ) F : ℂ)‖ ^ (2 : ℕ) :=
     (hasSum_normSq_inner_suzukiFGammaFamily hRH hF).summable
   have h1 : MemLp (fun x : ℝ =>
       suzukiDeBrangesSeries (fun ρ => (inner ℂ (suzukiFGammaFamily hRH ρ) F : ℂ))

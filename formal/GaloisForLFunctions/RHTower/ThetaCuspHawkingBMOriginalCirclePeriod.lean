@@ -77,7 +77,7 @@ private theorem differential_components (F : Point → ℂ) (z : UpperHalfPlane)
 private theorem differential_modular (F : Point → ℂ)
     (hF : ∀ z, 0 < z 1 → ContDiffAt ℝ ∞ F z) (A : SL(2,ℤ))
     (hi : ∀ z, F (coordinates (A • z))=F (coordinates z)) (z : UpperHalfPlane) (v : ℂ) :
-    differential F z v=differential F (A • z) ((1/(denom A z)^2)*v) := by
+    differential F z v=differential F (A • z) ((1/(denom A z)^(2 : ℕ))*v) := by
   have he : (fun w : UpperHalfPlane => F (coordinates (A • w))) =
       (fun w => F (coordinates w)) := funext hi
   have h := chart_fderiv_modular_pullback A (fun w => F (coordinates w))
@@ -92,7 +92,7 @@ def flux (F : Point → ℂ) (u : ℂ) (j : Fin 2) (z : Point) : ℂ :=
 
 def defect (F : Point → ℂ) (u : ℂ) (z : Point) : ℂ :=
   (D4BMLiteralCusp.scalar u z*scalarLaplacian F z-
-    (u^2-1/4)*D4BMLiteralCusp.scalar u z*F z)/(z 1:ℂ)^2
+    (u^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar u z*F z)/(z 1:ℂ)^(2 : ℕ)
 
 private theorem partial_smooth {F : Point → ℂ} {z : Point} (hF : ContDiffAt ℝ ∞ F z) (j : Fin 2) :
     ContDiffAt ℝ ∞ (coordDeriv j F) z := coordDeriv_contDiffAt hF (by simp) j
@@ -118,7 +118,7 @@ private theorem divergence_flux {F : Point → ℂ} {z : Point} (hF : ContDiffAt
   have he := D4BMLiteralCusp.scalar_equation u z hz
   rw [scalarLaplacian_eq _ z hz] at he
   simp only [D4BMLiteralCusp.scalarQ,neg_sub] at he
-  have hn : (z 1:ℂ)^2 ≠ 0 := pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hz.ne')
+  have hn : (z 1:ℂ)^(2 : ℕ) ≠ 0 := pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hz.ne')
   simp only [Fin.sum_univ_two,hd,defect,scalarLaplacian_eq _ z hz]
   apply (eq_div_iff hn).mpr
   linear_combination -F z*he
@@ -149,7 +149,7 @@ private theorem current_differential (q r : XiZeroCopy) (d : ℝ)
 theorem current_modular (q r : XiZeroCopy) (d : ℝ)
     (A : SL(2,ℤ)) (z : UpperHalfPlane) (a : ℂ) :
     current q r d z a =
-      current q r d (A • z) ((1/(denom A z)^2)*a) := by
+      current q r d (A • z) ((1/(denom A z)^(2 : ℕ))*a) := by
   rw [current_differential,current_differential,source_modular,
     show D4BMLiteralCusp.scalar (physicalAngularParameter r) (coordinates (A • z))=
       D4BMLiteralCusp.scalar (physicalAngularParameter r) (coordinates z) from physicalScalar_modular r A z,
@@ -162,7 +162,7 @@ theorem current_radial_inversion (q r : XiZeroCopy) (d : ℝ)
     current q r d z (z:ℂ)+
       current q r d (S • z) ((S • z:UpperHalfPlane):ℂ)=0 := by
   have h := current_modular q r d S z (z:ℂ)
-  have hv : (1/(denom S z)^2)*(z:ℂ) = -((S • z:UpperHalfPlane):ℂ) := by
+  have hv : (1/(denom S z)^(2 : ℕ))*(z:ℂ) = -((S • z:UpperHalfPlane):ℂ) := by
     simp only [UpperHalfPlane.modular_S_smul]
     simp [denom,ModularGroup.S,inv_neg]
     field_simp
@@ -194,7 +194,7 @@ theorem original_side_cancellation (q r : XiZeroCopy) (d : ℝ)
 
 /-- Literal oriented unit-circle fluxes cancel for the complete original source and reader. -/
 theorem original_arc_cancellation (q r : XiZeroCopy) (d : ℝ)
-    {x y : ℝ} (hy : 0 < y) (hxy : x^2+y^2=1) :
+    {x y : ℝ} (hy : 0 < y) (hxy : x^(2 : ℕ)+y^(2 : ℕ)=1) :
     ((x/y:ℝ):ℂ)*(flux (circleField q d) (physicalAngularParameter r) 0 ![-x,y]-
       flux (circleField q d) (physicalAngularParameter r) 0 ![x,y])-
       flux (circleField q d) (physicalAngularParameter r) 1 ![-x,y]-
@@ -396,7 +396,7 @@ attribute [-instance] RCLike.innerProductSpace
 namespace RHTower.D4BMOriginalCirclePeriod
 open D4BMCausalKernel D4BMModularCore D4BMGlobalAngularResponse D4BMNativeCircle D4BMJointSource
 private def kernelFlux (nu : ℂ) (z : ℝ) : ℝ :=
-  (((z:ℂ)^2-1)*star (legendreKernel nu z)*legendreKernelFirst nu z).im
+  (((z:ℂ)^(2 : ℕ)-1)*star (legendreKernel nu z)*legendreKernelFirst nu z).im
 
 private theorem kernelFlux_derivative (nu : ℂ) {z : ℝ} (hz : 0 < z) :
     HasDerivAt (kernelFlux nu) ((nu*(nu+1)).im*Complex.normSq (legendreKernel nu z)) z := by
@@ -406,8 +406,8 @@ private theorem kernelFlux_derivative (nu : ℂ) {z : ℝ} (hz : 0 < z) :
   apply h.congr_deriv
   norm_num only [Complex.imCLM_apply, Pi.mul_apply, Pi.pow_apply, id_eq]
   simp only [pow_one, Complex.ofReal_one, mul_one]
-  change ((2*(z:ℂ)*star (legendreKernel nu z)+((z:ℂ)^2-1)*star (legendreKernelFirst nu z))*legendreKernelFirst nu z
-    +((z:ℂ)^2-1)*star (legendreKernel nu z)*legendreKernelSecond nu z).im =
+  change ((2*(z:ℂ)*star (legendreKernel nu z)+((z:ℂ)^(2 : ℕ)-1)*star (legendreKernelFirst nu z))*legendreKernelFirst nu z
+    +((z:ℂ)^(2 : ℕ)-1)*star (legendreKernel nu z)*legendreKernelSecond nu z).im =
     (nu*(nu+1)).im*Complex.normSq (legendreKernel nu z)
   have he := congrArg (fun w : ℂ => (star (legendreKernel nu z)*w).im)
     (legendreKernel_equation nu hz)
@@ -461,7 +461,7 @@ def readerExponent (q : XiZeroCopy) : ℂ := 1-(q.1:ℂ)/2
 def readerEigenvalue (q : XiZeroCopy) : ℂ := readerExponent q*(readerExponent q-1)
 
 theorem readerEigenvalue_eq (q : XiZeroCopy) :
-    readerEigenvalue q=physicalAngularParameter q^2-1/4 := by
+    readerEigenvalue q=physicalAngularParameter q^(2 : ℕ)-1/4 := by
   rw [physicalAngularParameter_eq]
   unfold readerEigenvalue readerExponent
   ring

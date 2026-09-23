@@ -8,9 +8,9 @@ import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSquareIndexPolarization
 For a reciprocal-square Xi atom `lambda = a + i b`, the source height gap gives `a > 0`.
 This permits an exact, all-degree completion of the trace-Hankel square:
 
-`Re (lambda * w^2)
-  = a * (Re w - (b / a) * Im w)^2
-      - (|lambda|^2 / a) * (Im w)^2`.
+`Re (lambda * w^(2 : ℕ))
+  = a * (Re w - (b / a) * Im w)^(2 : ℕ)
+      - (|lambda|^(2 : ℕ) / a) * (Im w)^(2 : ℕ)`.
 
 Thus the RH-bearing form is not an unspecified signed Jordan decomposition.  It is the difference
 of a positive sheared-evaluation Hilbert energy and an explicit transverse charge energy.
@@ -18,21 +18,21 @@ of a positive sheared-evaluation Hilbert energy and an explicit transverse charg
 At the first nonconstant Hankel level this becomes a sharper response-correlation law.  If
 
 `a_q = Re lambda_q`,
-`tau_q = Re(lambda_q^2) / a_q`, and
-`chi_q = Im(lambda_q)^2 * |lambda_q|^2 / a_q`,
+`tau_q = Re(lambda_q^(2 : ℕ)) / a_q`, and
+`chi_q = Im(lambda_q)^(2 : ℕ) * |lambda_q|^(2 : ℕ) / a_q`,
 
 then every finite multiplicity-exact Xi packet satisfies
 
-`A C - B^2 = G - A * sum_q chi_q`,
+`A C - B^(2 : ℕ) = G - A * sum_q chi_q`,
 
 where `G` is the Hilbert Gram determinant of the mass vector `sqrt(a_q)` and the response-slope
 vector `sqrt(a_q) tau_q`.  Equivalently,
 
-`2 G = sum_{q,r} a_q a_r (tau_q - tau_r)^2`.
+`2 G = sum_{q,r} a_q a_r (tau_q - tau_r)^(2 : ℕ)`.
 
 The correlation side is therefore manifestly nonnegative.  The remaining signed boundary problem
 is exactly whether this Hilbert dispersion dominates the transverse charge.  A single transverse
-orbit has negative minor `-Im(lambda)^2 * |lambda|^2`, while cross-orbit response dispersion is
+orbit has negative minor `-Im(lambda)^(2 : ℕ) * |lambda|^(2 : ℕ)`, while cross-orbit response dispersion is
 the only possible positive cancellation mechanism.
 -/
 
@@ -45,16 +45,16 @@ noncomputable section
 
 /-- Positive square in the oriented complex-square decomposition. -/
 def orientedComplexSquareHilbertTerm (lam w : ℂ) : ℝ :=
-  lam.re * (w.re - lam.im / lam.re * w.im) ^ 2
+  lam.re * (w.re - lam.im / lam.re * w.im) ^ (2 : ℕ)
 
 /-- Transverse square in the oriented complex-square decomposition. -/
 def orientedComplexSquareTransverseTerm (lam w : ℂ) : ℝ :=
-  Complex.normSq lam / lam.re * w.im ^ 2
+  Complex.normSq lam / lam.re * w.im ^ (2 : ℕ)
 
 /-- Exact oriented completion of a complex square. -/
 theorem re_mul_sq_eq_orientedHilbert_sub_transverse
     (lam w : ℂ) (hlam : lam.re ≠ 0) :
-    (lam * w ^ 2).re =
+    (lam * w ^ (2 : ℕ)).re =
       orientedComplexSquareHilbertTerm lam w -
         orientedComplexSquareTransverseTerm lam w := by
   unfold orientedComplexSquareHilbertTerm orientedComplexSquareTransverseTerm
@@ -97,20 +97,20 @@ def xiSquaredEulerApertureShearedEvaluation
 def xiSquaredEulerApertureHilbertTerm
     (p : Polynomial ℝ) (q : XiZeroCopy) : ℝ :=
   let lam := xiZeroCopyReciprocalSquare q
-  lam.re * (xiSquaredEulerApertureShearedEvaluation p q) ^ 2
+  lam.re * (xiSquaredEulerApertureShearedEvaluation p q) ^ (2 : ℕ)
 
 /-- Transverse boundary-charge energy of one multiplicity-exact Xi atom. -/
 def xiSquaredEulerApertureTransverseTerm
     (p : Polynomial ℝ) (q : XiZeroCopy) : ℝ :=
   let lam := xiZeroCopyReciprocalSquare q
-  Complex.normSq lam / lam.re * (evalRealPolynomial p lam).im ^ 2
+  Complex.normSq lam / lam.re * (evalRealPolynomial p lam).im ^ (2 : ℕ)
 
 /-- The unweighted copy summand of the actual Xi trace-Hankel form.  Multiplicity is represented
 by the `XiZeroCopy` index itself. -/
 def xiSquaredEulerApertureHankelTerm
     (p : Polynomial ℝ) (q : XiZeroCopy) : ℝ :=
   let lam := xiZeroCopyReciprocalSquare q
-  (lam * evalRealPolynomial p lam ^ 2).re
+  (lam * evalRealPolynomial p lam ^ (2 : ℕ)).re
 
 /-- Every reciprocal-square Xi atom has positive oriented mass, unconditionally. -/
 theorem xiZeroCopyReciprocalSquare_re_pos (q : XiZeroCopy) :
@@ -142,7 +142,7 @@ theorem xiSquaredEulerApertureHilbertTerm_eq_responseAmplitude_sq_div
     (p : Polynomial ℝ) (q : XiZeroCopy) :
     xiSquaredEulerApertureHilbertTerm p q =
       (xiZeroCopyReciprocalSquare q *
-          evalRealPolynomial p (xiZeroCopyReciprocalSquare q)).re ^ 2 /
+          evalRealPolynomial p (xiZeroCopyReciprocalSquare q)).re ^ (2 : ℕ) /
         (xiZeroCopyReciprocalSquare q).re := by
   have hre : (xiZeroCopyReciprocalSquare q).re ≠ 0 :=
     (xiZeroCopyReciprocalSquare_re_pos q).ne'
@@ -227,12 +227,12 @@ def xiSquaredEulerApertureOrbitMass (q : XiZeroCopy) : ℝ :=
 
 /-- Radial response slope of one squared-Euler orbit at the central aperture. -/
 def xiSquaredEulerApertureOrbitSlope (q : XiZeroCopy) : ℝ :=
-  (xiZeroCopyReciprocalSquare q ^ 2).re /
+  (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re /
     xiSquaredEulerApertureOrbitMass q
 
 /-- Transverse charge density exposed by the cubic response coefficient. -/
 def xiSquaredEulerApertureOrbitChargeDensity (q : XiZeroCopy) : ℝ :=
-  (xiZeroCopyReciprocalSquare q).im ^ 2 *
+  (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) *
     Complex.normSq (xiZeroCopyReciprocalSquare q) /
       xiSquaredEulerApertureOrbitMass q
 
@@ -243,7 +243,7 @@ theorem xiSquaredEulerApertureOrbitMass_pos (q : XiZeroCopy) :
 /-- The second central response coefficient is mass times radial slope. -/
 theorem xiSquaredEulerAperture_pow_two_re_eq_mass_mul_slope
     (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q ^ 2).re =
+    (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
       xiSquaredEulerApertureOrbitMass q *
         xiSquaredEulerApertureOrbitSlope q := by
   unfold xiSquaredEulerApertureOrbitSlope
@@ -253,18 +253,18 @@ theorem xiSquaredEulerAperture_pow_two_re_eq_mass_mul_slope
 charge density. -/
 theorem xiSquaredEulerAperture_pow_three_re_eq_mass_mul_slope_sq_sub_charge
     (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q ^ 3).re =
+    (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re =
       xiSquaredEulerApertureOrbitMass q *
-          xiSquaredEulerApertureOrbitSlope q ^ 2 -
+          xiSquaredEulerApertureOrbitSlope q ^ (2 : ℕ) -
         xiSquaredEulerApertureOrbitChargeDensity q := by
   let z := xiZeroCopyReciprocalSquare q
   have hz : z.re ≠ 0 := (xiZeroCopyReciprocalSquare_re_pos q).ne'
   unfold xiSquaredEulerApertureOrbitMass xiSquaredEulerApertureOrbitSlope
     xiSquaredEulerApertureOrbitChargeDensity
-  change (z ^ 3).re =
-    z.re * ((z ^ 2).re / z.re) ^ 2 -
-      z.im ^ 2 * Complex.normSq z / z.re
-  rw [show z ^ 3 = z * z * z by ring, show z ^ 2 = z * z by ring]
+  change (z ^ (3 : ℕ)).re =
+    z.re * ((z ^ (2 : ℕ)).re / z.re) ^ (2 : ℕ) -
+      z.im ^ (2 : ℕ) * Complex.normSq z / z.re
+  rw [show z ^ (3 : ℕ) = z * z * z by ring, show z ^ (2 : ℕ) = z * z by ring]
   simp only [Complex.mul_re, Complex.mul_im, Complex.normSq_apply]
   field_simp [hz]
   ring
@@ -316,25 +316,25 @@ def xiSquaredEulerFiniteApertureCentralA (S : Finset XiZeroCopy) : ℝ :=
 
 /-- Finite first central response coefficient. -/
 def xiSquaredEulerFiniteApertureCentralB (S : Finset XiZeroCopy) : ℝ :=
-  ∑ q ∈ S, (xiZeroCopyReciprocalSquare q ^ 2).re
+  ∑ q ∈ S, (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re
 
 /-- Finite second central response coefficient. -/
 def xiSquaredEulerFiniteApertureCentralC (S : Finset XiZeroCopy) : ℝ :=
-  ∑ q ∈ S, (xiZeroCopyReciprocalSquare q ^ 3).re
+  ∑ q ∈ S, (xiZeroCopyReciprocalSquare q ^ (3 : ℕ)).re
 
 /-- The first nonconstant central Hankel minor of a finite Xi packet. -/
 def xiSquaredEulerFiniteApertureCentralMinor (S : Finset XiZeroCopy) : ℝ :=
   xiSquaredEulerFiniteApertureCentralA S *
       xiSquaredEulerFiniteApertureCentralC S -
-    xiSquaredEulerFiniteApertureCentralB S ^ 2
+    xiSquaredEulerFiniteApertureCentralB S ^ (2 : ℕ)
 
 /-- The actual positive Hilbert Gram determinant of central orbit mass and response slope. -/
 def xiSquaredEulerFiniteApertureHilbertGram (S : Finset XiZeroCopy) : ℝ :=
   xiSquaredEulerFiniteApertureCentralA S *
       (∑ q ∈ S, xiSquaredEulerApertureOrbitMass q *
-        xiSquaredEulerApertureOrbitSlope q ^ 2) -
+        xiSquaredEulerApertureOrbitSlope q ^ (2 : ℕ)) -
     (∑ q ∈ S, xiSquaredEulerApertureOrbitMass q *
-      xiSquaredEulerApertureOrbitSlope q) ^ 2
+      xiSquaredEulerApertureOrbitSlope q) ^ (2 : ℕ)
 
 /-- Total transverse boundary charge at the first nonconstant response level. -/
 def xiSquaredEulerFiniteApertureBoundaryCharge (S : Finset XiZeroCopy) : ℝ :=
@@ -358,7 +358,7 @@ theorem xiSquaredEulerFiniteApertureCentralMinor_eq_hilbertGram_sub_boundaryChar
     exact xiSquaredEulerAperture_pow_two_re_eq_mass_mul_slope q
   have hC : xiSquaredEulerFiniteApertureCentralC S =
       (∑ q ∈ S, xiSquaredEulerApertureOrbitMass q *
-          xiSquaredEulerApertureOrbitSlope q ^ 2) -
+          xiSquaredEulerApertureOrbitSlope q ^ (2 : ℕ)) -
         ∑ q ∈ S, xiSquaredEulerApertureOrbitChargeDensity q := by
     unfold xiSquaredEulerFiniteApertureCentralC
     rw [← Finset.sum_sub_distrib]
@@ -379,7 +379,7 @@ theorem two_mul_xiSquaredEulerFiniteApertureHilbertGram_eq_pairwiseDispersion
         xiSquaredEulerApertureOrbitMass q *
           xiSquaredEulerApertureOrbitMass r *
             (xiSquaredEulerApertureOrbitSlope q -
-              xiSquaredEulerApertureOrbitSlope r) ^ 2 := by
+              xiSquaredEulerApertureOrbitSlope r) ^ (2 : ℕ) := by
   classical
   have hvariance := two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion
     S xiSquaredEulerApertureOrbitMass
@@ -397,7 +397,7 @@ theorem xiSquaredEulerFiniteApertureHilbertGram_nonneg
         xiSquaredEulerApertureOrbitMass q *
           xiSquaredEulerApertureOrbitMass r *
             (xiSquaredEulerApertureOrbitSlope q -
-              xiSquaredEulerApertureOrbitSlope r) ^ 2 := by
+              xiSquaredEulerApertureOrbitSlope r) ^ (2 : ℕ) := by
     apply Finset.sum_nonneg
     intro q _hq
     apply Finset.sum_nonneg
@@ -459,11 +459,11 @@ theorem xiSquaredEulerFiniteApertureBoundaryCharge_eq_zero_iff
       (hline q hq)
 
 /-- A single orbit has central minor equal to the negative transverse charge
-`-Im(lambda)^2 |lambda|^2`. -/
+`-Im(lambda)^(2 : ℕ) |lambda|^(2 : ℕ)`. -/
 theorem xiSquaredEulerAperture_singleOrbitCentralMinor_eq
     (q : XiZeroCopy) :
     xiSquaredEulerFiniteApertureCentralMinor {q} =
-      -(xiZeroCopyReciprocalSquare q).im ^ 2 *
+      -(xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) *
         Complex.normSq (xiZeroCopyReciprocalSquare q) := by
   classical
   let z := xiZeroCopyReciprocalSquare q
@@ -473,9 +473,9 @@ theorem xiSquaredEulerAperture_singleOrbitCentralMinor_eq
     xiSquaredEulerFiniteApertureCentralC
     xiSquaredEulerApertureOrbitMass
   simp only [Finset.sum_singleton]
-  change z.re * (z ^ 3).re - (z ^ 2).re ^ 2 =
-    -z.im ^ 2 * Complex.normSq z
-  rw [show z ^ 3 = z * z * z by ring, show z ^ 2 = z * z by ring]
+  change z.re * (z ^ (3 : ℕ)).re - (z ^ (2 : ℕ)).re ^ (2 : ℕ) =
+    -z.im ^ (2 : ℕ) * Complex.normSq z
+  rw [show z ^ (3 : ℕ) = z * z * z by ring, show z ^ (2 : ℕ) = z * z by ring]
   simp only [Complex.mul_re, Complex.mul_im, Complex.normSq_apply]
   ring
 

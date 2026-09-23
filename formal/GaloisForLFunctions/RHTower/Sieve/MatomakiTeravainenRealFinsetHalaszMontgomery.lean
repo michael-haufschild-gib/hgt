@@ -100,11 +100,11 @@ theorem halaszMontgomery_blockPoly_real_finset_explicit
     (hspread : ∀ x ∈ S, ∀ y ∈ S, |x - y| ≤ T)
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N T ≤ 1) :
-    ∑ t ∈ S, ‖blockPoly N c 1 t‖ ^ 2 ≤
+    ∑ t ∈ S, ‖blockPoly N c 1 t‖ ^ (2 : ℕ) ≤
       ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log S.card)
           + (S.card : ℝ) *
             (1 + 214 * Real.sqrt T + 1536 * ((N : ℝ) / Real.sqrt U))) *
-        ‖blockCoeff N c 1‖ ^ 2 := by
+        ‖blockCoeff N c 1‖ ^ (2 : ℕ) := by
   let P := matomakiTeravainenFiniteSeparatedOrdinates S delta hdelta hsep
   have hdiam : ∀ r ∈ Finset.range S.card, ∀ s ∈ Finset.range S.card,
       |RHTower.cglFiniteSeparatedOrdinatesTimeline P s -
@@ -120,7 +120,7 @@ theorem halaszMontgomery_blockPoly_real_finset_explicit
     hnear hlamT
   rw [sum_finset_eq_sum_matomakiTeravainenFiniteSeparatedOrdinates_timeline
     S delta hdelta hsep
-    (fun t => ‖blockPoly N c 1 t‖ ^ 2)]
+    (fun t => ‖blockPoly N c 1 t‖ ^ (2 : ℕ))]
   simpa only [inner_dyadicDirRow_blockCoeff] using hbase
 
 /-- The `T₁` receiver on literal real ordinates, stated with intrinsic coefficient mass. This is
@@ -135,33 +135,33 @@ theorem matomakiTeravainen_typeII_T1_real_finset_energy_of_mass
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N T ≤ 1)
     (F₁ : ℝ → ℝ) (hF₁0 : ∀ t ∈ S, 0 ≤ F₁ t) (hF₁ : ∀ t ∈ S, F₁ t ≤ A)
-    (hmass : ‖blockCoeff N c 1‖ ^ 2 ≤ G) :
-    ∑ t ∈ S, F₁ t ^ 2 * ‖blockPoly N c 1 t‖ ^ 2 ≤
-      A ^ 2 *
+    (hmass : ‖blockCoeff N c 1‖ ^ (2 : ℕ) ≤ G) :
+    ∑ t ∈ S, F₁ t ^ (2 : ℕ) * ‖blockPoly N c 1 t‖ ^ (2 : ℕ) ≤
+      A ^ (2 : ℕ) *
         (((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log S.card)
             + (S.card : ℝ) *
               (1 + 214 * Real.sqrt T + 1536 * ((N : ℝ) / Real.sqrt U))) * G) := by
   have hpoint : ∀ t ∈ S,
-      F₁ t ^ 2 * ‖blockPoly N c 1 t‖ ^ 2 ≤
-        A ^ 2 * ‖blockPoly N c 1 t‖ ^ 2 := by
+      F₁ t ^ (2 : ℕ) * ‖blockPoly N c 1 t‖ ^ (2 : ℕ) ≤
+        A ^ (2 : ℕ) * ‖blockPoly N c 1 t‖ ^ (2 : ℕ) := by
     intro t ht
-    have hsquare : F₁ t ^ 2 ≤ A ^ 2 := pow_le_pow_left₀ (hF₁0 t ht) (hF₁ t ht) 2
+    have hsquare : F₁ t ^ (2 : ℕ) ≤ A ^ (2 : ℕ) := pow_le_pow_left₀ (hF₁0 t ht) (hF₁ t ht) 2
     exact mul_le_mul_of_nonneg_right hsquare (sq_nonneg _)
   calc
-    ∑ t ∈ S, F₁ t ^ 2 * ‖blockPoly N c 1 t‖ ^ 2
-        ≤ ∑ t ∈ S, A ^ 2 * ‖blockPoly N c 1 t‖ ^ 2 :=
+    ∑ t ∈ S, F₁ t ^ (2 : ℕ) * ‖blockPoly N c 1 t‖ ^ (2 : ℕ)
+        ≤ ∑ t ∈ S, A ^ (2 : ℕ) * ‖blockPoly N c 1 t‖ ^ (2 : ℕ) :=
       Finset.sum_le_sum hpoint
-    _ = A ^ 2 * ∑ t ∈ S, ‖blockPoly N c 1 t‖ ^ 2 := by
+    _ = A ^ (2 : ℕ) * ∑ t ∈ S, ‖blockPoly N c 1 t‖ ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
-    _ ≤ A ^ 2 *
+    _ ≤ A ^ (2 : ℕ) *
         (((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log S.card)
             + (S.card : ℝ) *
               (1 + 214 * Real.sqrt T + 1536 * ((N : ℝ) / Real.sqrt U))) *
-          ‖blockCoeff N c 1‖ ^ 2) := by
+          ‖blockCoeff N c 1‖ ^ (2 : ℕ)) := by
       gcongr
       exact halaszMontgomery_blockPoly_real_finset_explicit N hN c hdelta hU hT
         hsep hspread hnear hlamT
-    _ ≤ A ^ 2 *
+    _ ≤ A ^ (2 : ℕ) *
         (((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log S.card)
             + (S.card : ℝ) *
               (1 + 214 * Real.sqrt T + 1536 * ((N : ℝ) / Real.sqrt U))) * G) := by

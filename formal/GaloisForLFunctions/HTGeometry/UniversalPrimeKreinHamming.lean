@@ -489,7 +489,7 @@ def primeChamberDephasingCharge (J : Finset Nat.Primes) (p : Nat.Primes) : ℝ :
 theorem primeChamberDephasingCharge_gap_sq
     (J L : Finset Nat.Primes) {p : Nat.Primes}
     (hp : p ∈ primeChamberSymmetricDifference J L) :
-    (primeChamberDephasingCharge J p - primeChamberDephasingCharge L p) ^ 2 = 4 := by
+    (primeChamberDephasingCharge J p - primeChamberDephasingCharge L p) ^ (2 : ℕ) = 4 := by
   rw [primeChamberSymmetricDifference, Finset.mem_union] at hp
   rcases hp with hp | hp
   · have hpLJ := Finset.mem_sdiff.mp hp
@@ -501,7 +501,7 @@ theorem primeChamberDephasingCharge_gap_sq
 `1/4` is the Pauli-`Z` normalization for which one changed binary charge has unit rate. -/
 def primeChamberDephasingMasterEnergy (J L : Finset Nat.Primes) : ℝ :=
   (1 / 4 : ℝ) * ∑ p ∈ primeChamberSymmetricDifference J L,
-    (primeChamberDephasingCharge J p - primeChamberDephasingCharge L p) ^ 2
+    (primeChamberDephasingCharge J p - primeChamberDephasingCharge L p) ^ (2 : ℕ)
 
 /-- **Dephasing--Hamming identity.**  The static positive master energy is exactly the chamber
 Hamming distance, hence also the sum of the exact positive and negative Krein channel counts. -/
@@ -511,7 +511,7 @@ theorem primeChamberDephasingMasterEnergy_eq_hamming
   rw [primeChamberDephasingMasterEnergy]
   calc
     (1 / 4 : ℝ) * ∑ p ∈ primeChamberSymmetricDifference J L,
-        (primeChamberDephasingCharge J p - primeChamberDephasingCharge L p) ^ 2 =
+        (primeChamberDephasingCharge J p - primeChamberDephasingCharge L p) ^ (2 : ℕ) =
         (1 / 4 : ℝ) * ∑ _p ∈ primeChamberSymmetricDifference J L, (4 : ℝ) := by
           congr 1
           exact Finset.sum_congr rfl fun p hp =>

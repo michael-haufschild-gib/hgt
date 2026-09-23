@@ -185,7 +185,7 @@ def xiGammaEulerCalderonWittCellCupAlternating :
 
 /-- Exterior-square cell cup. -/
 def xiGammaEulerCalderonWittCellExteriorCup :
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
       XiGammaEulerCalderonWittCellDegreeTwo :=
   exteriorPower.alternatingMapLinearEquiv
     xiGammaEulerCalderonWittCellCupAlternating
@@ -206,7 +206,7 @@ theorem xiGammaEulerCalderonWittCellExteriorCup_ιMulti
 
 /-- Cellwise exact Milnor-incidence sector. -/
 def xiGammaEulerCalderonWittCellMilnorIncidence :
-    Submodule ℂ (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) :=
+    Submodule ℂ (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) :=
   LinearMap.ker xiGammaEulerCalderonWittCellExteriorCup
 
 /--
@@ -382,8 +382,8 @@ theorem xiGammaEulerCalderonWittCellCup_transport
 /-- Exterior transport induced from cell-labelled degree one. -/
 def xiGammaEulerCalderonWittCellExteriorTransport
     (c : XiGammaEulerCalderonWittCell → ℂ) :
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
-      (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) :=
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
+      (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) :=
   exteriorPower.map 2
     (xiGammaEulerCalderonWittCellDegreeOneTransport c)
 
@@ -418,8 +418,8 @@ prime-power cells.
 -/
 def xiGammaEulerCalderonWittGammaCoPoissonExteriorTransport
     (z w : ℂ) :
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
-      (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) :=
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
+      (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) :=
   xiGammaEulerCalderonWittCellExteriorTransport
     (xiGammaEulerCalderonWittGammaCoPoissonCoefficient z w)
 
@@ -489,10 +489,10 @@ theorem xiGammaEulerCalderonWittCellExteriorCup_surjective :
 def xiGammaEulerCalderonWittCellExteriorWedgeLeft
     (x : XiGammaEulerCalderonWittCellDegreeOne) :
     XiGammaEulerCalderonWittCellDegreeOne →ₗ[ℂ]
-      (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) :=
+      (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) :=
   (AlternatingMap.ofSubsingleton ℂ
       XiGammaEulerCalderonWittCellDegreeOne
-      (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne)
+      (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne)
       (0 : Fin 1)).symm
     ((exteriorPower.ιMulti ℂ 2).curryLeft x)
 
@@ -507,7 +507,7 @@ theorem xiGammaEulerCalderonWittCellExteriorWedgeLeft_apply
 def xiGammaEulerCalderonWittOneCellExteriorCupSection
     (pe : XiGammaEulerCalderonWittCell) :
     DeningerCalderonWittAlgebraicDegreeTwo pe.1 →ₗ[ℂ]
-      (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) :=
+      (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) :=
   (xiGammaEulerCalderonWittCellExteriorWedgeLeft
       (DirectSum.lof ℂ XiGammaEulerCalderonWittCell
         (fun qe => DeningerCalderonWittAlgebraicDegreeOne qe.1) pe
@@ -544,9 +544,9 @@ theorem xiGammaEulerCalderonWittCellExteriorCup_oneCellSection
 /-- Canonical finite-support Green section over all prime-power cells. -/
 def xiGammaEulerCalderonWittCellExteriorCupSection :
     XiGammaEulerCalderonWittCellDegreeTwo →ₗ[ℂ]
-      (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) :=
+      (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) :=
   DirectSum.toModule ℂ XiGammaEulerCalderonWittCell
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne)
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne)
     xiGammaEulerCalderonWittOneCellExteriorCupSection
 
 @[simp]
@@ -576,7 +576,7 @@ theorem xiGammaEulerCalderonWittCellExteriorCup_section :
 
 /-- Green retraction onto exact cell-labelled incidence relations. -/
 def xiGammaEulerCalderonWittCellMilnorGreenRetraction :
-    (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
+    (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
       xiGammaEulerCalderonWittCellMilnorIncidence :=
   ((LinearMap.id -
       xiGammaEulerCalderonWittCellExteriorCupSection.comp
@@ -595,16 +595,16 @@ def xiGammaEulerCalderonWittCellMilnorGreenRetraction :
 
 @[simp]
 theorem xiGammaEulerCalderonWittCellMilnorGreenRetraction_coe
-    (w : ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) :
+    (w : ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) :
     (xiGammaEulerCalderonWittCellMilnorGreenRetraction w :
-        ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) =
+        ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) =
       w -
         xiGammaEulerCalderonWittCellExteriorCupSection
           (xiGammaEulerCalderonWittCellExteriorCup w) := by
   change
     ((LinearMap.id :
-        (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
-          (⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne)) -
+        (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) →ₗ[ℂ]
+          (⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne)) -
       xiGammaEulerCalderonWittCellExteriorCupSection.comp
         xiGammaEulerCalderonWittCellExteriorCup) w =
       w -
@@ -700,7 +700,7 @@ theorem xiGammaEulerCalderonWittCellMilnorIncidenceTransport_coe
     (c : XiGammaEulerCalderonWittCell → ℂ)
     (i : xiGammaEulerCalderonWittCellMilnorIncidence) :
     (xiGammaEulerCalderonWittCellMilnorIncidenceTransport c i :
-        ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) =
+        ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) =
       xiGammaEulerCalderonWittCellExteriorTransport c i.1 :=
   rfl
 
@@ -711,7 +711,7 @@ cofinal admitted sector by this explicit incidence endomorphism.
 -/
 theorem xiGammaEulerCalderonWittCellMilnorGreenRetraction_transport
     (c : XiGammaEulerCalderonWittCell → ℂ)
-    (w : ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) :
+    (w : ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) :
     xiGammaEulerCalderonWittCellMilnorGreenRetraction
         (xiGammaEulerCalderonWittCellExteriorTransport c w) =
       xiGammaEulerCalderonWittCellMilnorIncidenceTransport c
@@ -756,7 +756,7 @@ theorem xiGammaEulerCalderonWittCrossCell_greenRetraction_coe
               (fun re => DeningerCalderonWittAlgebraicDegreeOne re.1) pe x,
             DirectSum.lof ℂ XiGammaEulerCalderonWittCell
               (fun re => DeningerCalderonWittAlgebraicDegreeOne re.1) qe y]) :
-      ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) =
+      ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) =
         exteriorPower.ιMulti ℂ 2
           ![
             DirectSum.lof ℂ XiGammaEulerCalderonWittCell
@@ -822,7 +822,7 @@ theorem xiGammaEulerCalderonWittSamePrimeDepthCarrier_escape
             (0, deningerCalderonWittAlgebraicUnitPacket p)]
     carrier ∈ xiGammaEulerCalderonWittCellMilnorIncidence ∧
       (xiGammaEulerCalderonWittCellMilnorGreenRetraction carrier :
-          ⋀[ℂ]^2 XiGammaEulerCalderonWittCellDegreeOne) = carrier ∧
+          ⋀[ℂ]^(2 : ℕ) XiGammaEulerCalderonWittCellDegreeOne) = carrier ∧
       xiGammaEulerPrimitiveReflectionOddExterior a pe qe ≠ 0 := by
   dsimp only
   have hcell : (p, e) ≠ (p, f) := by

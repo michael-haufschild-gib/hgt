@@ -185,7 +185,7 @@ theorem hasDerivAt_xiShiftTheta_zero_logDeriv {W : ℂ} (hW : xiCent W ≠ 0) :
   ring
 
 theorem FiniteXiRightDivisor.energy_eq_integral (D : FiniteXiRightDivisor) :
-    ∫ t in Ioi (0 : ℝ), ‖D.profile t‖ ^ 2 = D.energy := by
+    ∫ t in Ioi (0 : ℝ), ‖D.profile t‖ ^ (2 : ℕ) = D.energy := by
   exact integral_norm_sq_finiteOfflineProfile (fun _ => 1) D.depth_pos
 
 theorem FiniteXiRightDivisor.curvatureKernel_zero_zero_re_eq_energy
@@ -262,7 +262,7 @@ theorem finiteXiRightDivisor_capstone :
         2 * ∑ j, Complex.exp
           (-((D.depth j : ℝ) : ℂ) * t -
             Complex.I * (D.ordinate j : ℂ) * t)) ∧
-      (∫ t in Ioi (0 : ℝ), ‖D.profile t‖ ^ 2 = D.energy) ∧
+      (∫ t in Ioi (0 : ℝ), ‖D.profile t‖ ^ (2 : ℕ) = D.energy) ∧
       ((D.curvatureKernel 0 0).re = D.energy) ∧
       (0 < D.card → (4 : ℝ) * D.card < D.energy) ∧
       (∀ W : ℂ, xiCent W ≠ 0 →

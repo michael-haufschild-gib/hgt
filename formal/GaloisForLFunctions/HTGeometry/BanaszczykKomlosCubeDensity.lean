@@ -117,14 +117,14 @@ def komlosTangentCoordinate (t : ℝ) : ℝ :=
 
 theorem hasDerivAt_komlosTangentCoordinate (t : ℝ) :
     HasDerivAt komlosTangentCoordinate
-      (komlosCubeRadius * ((2 / Real.pi) * (1 + t ^ 2)⁻¹)) t := by
+      (komlosCubeRadius * ((2 / Real.pi) * (1 + t ^ (2 : ℕ))⁻¹)) t := by
   unfold komlosTangentCoordinate
   exact (hasDerivAt_banaszczykTangentCoordinate t).const_mul komlosCubeRadius
 
 /-- Scaling cancels exactly in the tangent Jacobian. -/
 theorem komlos_tangent_jacobian (t : ℝ) :
     komlosCoordinateDensity (komlosTangentCoordinate t) *
-        (komlosCubeRadius * ((2 / Real.pi) * (1 + t ^ 2)⁻¹)) =
+        (komlosCubeRadius * ((2 / Real.pi) * (1 + t ^ (2 : ℕ))⁻¹)) =
       banaszczykRationalDensity t := by
   have h := banaszczyk_tangent_jacobian t
   unfold komlosCoordinateDensity komlosTangentCoordinate
@@ -132,9 +132,9 @@ theorem komlos_tangent_jacobian (t : ℝ) :
   rw [mul_div_cancel_left₀ _ hR]
   calc
     komlosCubeRadius⁻¹ * banaszczykCosineDensity (banaszczykTangentCoordinate t) *
-          (komlosCubeRadius * ((2 / Real.pi) * (1 + t ^ 2)⁻¹)) =
+          (komlosCubeRadius * ((2 / Real.pi) * (1 + t ^ (2 : ℕ))⁻¹)) =
         banaszczykCosineDensity (banaszczykTangentCoordinate t) *
-          ((2 / Real.pi) * (1 + t ^ 2)⁻¹) := by
+          ((2 / Real.pi) * (1 + t ^ (2 : ℕ))⁻¹) := by
       field_simp [hR]
     _ = banaszczykRationalDensity t := h
 
@@ -142,7 +142,7 @@ def komlosTangentChart (d : ℕ) (t : Fin d → ℝ) : Fin d → ℝ :=
   fun i => komlosTangentCoordinate (t i)
 
 def komlosTangentJacobian (d : ℕ) (t : Fin d → ℝ) : ℝ :=
-  ∏ i, komlosCubeRadius * ((2 / Real.pi) * (1 + (t i) ^ 2)⁻¹)
+  ∏ i, komlosCubeRadius * ((2 / Real.pi) * (1 + (t i) ^ (2 : ℕ))⁻¹)
 
 /-- Finite-dimensional product form of the tangent-Jacobian identity. -/
 theorem komlos_product_tangent_jacobian (d : ℕ) (t : Fin d → ℝ) :

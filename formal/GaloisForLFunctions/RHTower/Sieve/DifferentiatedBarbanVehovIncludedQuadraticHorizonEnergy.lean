@@ -13,7 +13,7 @@ noncomputable section
 
 theorem abs_barbanVehovIncludedLongHarmonicKernel_sub_continuous_le_horizon
     {L M q r : ℕ} (hq : 0 < q) (hr : 0 < r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : M ^ 2 ≤ L) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongHarmonicKernel L (L * M) q r -
         barbanVehovLongHarmonicKernelContinuous L (L * min q r) q r| ≤
       322 / (L : ℝ) := by
@@ -27,10 +27,10 @@ theorem abs_barbanVehovIncludedLongHarmonicKernel_sub_continuous_le_horizon
 
 theorem abs_barbanVehovIncludedLongFirstLogKernel_sub_continuous_le_horizon
     {L M q r : ℕ} (hq : 0 < q) (hr : 0 < r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : M ^ 2 ≤ L) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongFirstLogKernel L (L * M) q r -
         barbanVehovLongFirstLogKernelContinuous L (L * min q r) q r| ≤
-      2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ) := by
+      2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ) := by
   have hmin1 : 1 ≤ min q r := le_min hq hr
   have hminM : min q r ≤ M := (Nat.min_le_left q r).trans hqM
   have hLmin : L ≤ L * min q r := by
@@ -44,8 +44,8 @@ theorem abs_barbanVehovIncludedLongFirstLogKernel_sub_continuous_le_horizon
     exact Real.log_le_log (by positivity) (by exact_mod_cast Nat.add_le_add_right hU 1)
   have hleft : 0 ≤ 1 + Real.log (L * min q r + 1 : ℕ) := by positivity
   have hright : 0 ≤ 1 + Real.log (L * M + 1 : ℕ) := by positivity
-  have hsq : (1 + Real.log (L * min q r + 1 : ℕ)) ^ 2 ≤
-      (1 + Real.log (L * M + 1 : ℕ)) ^ 2 := by
+  have hsq : (1 + Real.log (L * min q r + 1 : ℕ)) ^ (2 : ℕ) ≤
+      (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) := by
     nlinarith [mul_le_mul (show 1 + Real.log (L * min q r + 1 : ℕ) ≤
       1 + Real.log (L * M + 1 : ℕ) by linarith)
       (show 1 + Real.log (L * min q r + 1 : ℕ) ≤
@@ -54,10 +54,10 @@ theorem abs_barbanVehovIncludedLongFirstLogKernel_sub_continuous_le_horizon
 
 theorem abs_barbanVehovIncludedLongSecondLogKernel_sub_continuous_le_horizon
     {L M q r : ℕ} (hq : 0 < q) (hr : 0 < r)
-    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : M ^ 2 ≤ L) :
+    (hqM : q ≤ M) (hrM : r ≤ M) (hscale : M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongSecondLogKernel L (L * M) q r -
         barbanVehovLongSecondLogKernelContinuous L (L * min q r) q r| ≤
-      20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ) := by
+      20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ) := by
   have hmin1 : 1 ≤ min q r := le_min hq hr
   have hminM : min q r ≤ M := (Nat.min_le_left q r).trans hqM
   have hLmin : L ≤ L * min q r := by
@@ -71,8 +71,8 @@ theorem abs_barbanVehovIncludedLongSecondLogKernel_sub_continuous_le_horizon
     exact Real.log_le_log (by positivity) (by exact_mod_cast Nat.add_le_add_right hU 1)
   have hleft : 0 ≤ 1 + Real.log (L * min q r + 1 : ℕ) := by positivity
   have hright : 0 ≤ 1 + Real.log (L * M + 1 : ℕ) := by positivity
-  have hsq : (1 + Real.log (L * min q r + 1 : ℕ)) ^ 2 ≤
-      (1 + Real.log (L * M + 1 : ℕ)) ^ 2 := by
+  have hsq : (1 + Real.log (L * min q r + 1 : ℕ)) ^ (2 : ℕ) ≤
+      (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) := by
     nlinarith [mul_le_mul (show 1 + Real.log (L * min q r + 1 : ℕ) ≤
       1 + Real.log (L * M + 1 : ℕ) by linarith)
       (show 1 + Real.log (L * min q r + 1 : ℕ) ≤
@@ -80,10 +80,10 @@ theorem abs_barbanVehovIncludedLongSecondLogKernel_sub_continuous_le_horizon
   gcongr
 
 theorem abs_barbanVehovIncludedLongBaseLcm_sub_continuous_le_horizon
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongBaseLcm L M -
         barbanVehovIncludedLongBaseContinuous L M| ≤
-      (M : ℝ) ^ 2 * (322 / (L : ℝ)) := by
+      (M : ℝ) ^ (2 : ℕ) * (322 / (L : ℝ)) := by
   rw [barbanVehovIncludedLongBaseLcm, barbanVehovIncludedLongBaseContinuous]
   let s := (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M)
   have hpoint : ∀ p ∈ s,
@@ -104,17 +104,17 @@ theorem abs_barbanVehovIncludedLongBaseLcm_sub_continuous_le_horizon
     (sum_product_abs_barbanVehovWeight_le_quadratic hM) (by positivity))
 
 theorem abs_barbanVehovIncludedLongCrossLcm_sub_continuous_le_horizon
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongCrossLcm L M -
         barbanVehovIncludedLongCrossContinuous L M| ≤
-      (M : ℝ) ^ 2 *
-        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+      (M : ℝ) ^ (2 : ℕ) *
+        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
   rw [barbanVehovIncludedLongCrossLcm, barbanVehovIncludedLongCrossContinuous]
   let s := (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M)
   have hpoint : ∀ p ∈ s,
       |barbanVehovIncludedLongFirstLogKernel L (L * M) p.1 p.2 -
           barbanVehovLongFirstLogKernelContinuous L (L * min p.1 p.2) p.1 p.2| ≤
-        2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ) := by
+        2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ) := by
     intro p hp
     obtain ⟨hp1, hp2⟩ := Finset.mem_product.mp hp
     rw [Finset.mem_Icc] at hp1 hp2
@@ -131,25 +131,25 @@ theorem abs_barbanVehovIncludedLongCrossLcm_sub_continuous_le_horizon
       barbanVehovLongFirstLogKernelContinuous L (L * min p.1 p.2) p.1 p.2| ≤ _
   calc
     _ ≤ (∑ p ∈ s, |-(barbanVehovWeight M p.1 * barbanVehovWeight M p.2)|) *
-        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := hraw
+        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := hraw
     _ = (∑ p ∈ s, |barbanVehovWeight M p.1 * barbanVehovWeight M p.2|) *
-        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+        (2000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
       simp only [abs_neg]
     _ ≤ _ := mul_le_mul_of_nonneg_right
       (sum_product_abs_barbanVehovWeight_le_quadratic hM) (by positivity)
 
 theorem abs_barbanVehovIncludedLongDerivativeLcm_sub_continuous_le_horizon
-    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ 2 ≤ L) :
+    {L M : ℕ} (hM : 1 ≤ M) (hscale : M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongDerivativeLcm L M -
         barbanVehovIncludedLongDerivativeContinuous L M| ≤
-      (M : ℝ) ^ 2 *
-        (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ)) := by
+      (M : ℝ) ^ (2 : ℕ) *
+        (20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ)) := by
   rw [barbanVehovIncludedLongDerivativeLcm, barbanVehovIncludedLongDerivativeContinuous]
   let s := (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M)
   have hpoint : ∀ p ∈ s,
       |barbanVehovIncludedLongSecondLogKernel L (L * M) p.1 p.2 -
           barbanVehovLongSecondLogKernelContinuous L (L * min p.1 p.2) p.1 p.2| ≤
-        20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ 2 / (L : ℝ) := by
+        20000 * (1 + Real.log (L * M + 1 : ℕ)) ^ (2 : ℕ) / (L : ℝ) := by
     intro p hp
     obtain ⟨hp1, hp2⟩ := Finset.mem_product.mp hp
     rw [Finset.mem_Icc] at hp1 hp2
@@ -171,23 +171,23 @@ private theorem one_le_two_mul_log_nat_included {N : ℕ} (hN : 2 ≤ N) :
 
 theorem abs_barbanVehovIncludedLongBaseLcm_quadraticHorizon_div_log_sq_sub_polynomial_le
     {N : ℕ} (hN : 2 ≤ N) :
-    |barbanVehovIncludedLongBaseLcm (N ^ 98) (N ^ 49) /
-          (49 * Real.log N) ^ 2 -
-        barbanVehovIncludedLongBasePolynomialMain (N ^ 49) /
-          (49 * Real.log N) ^ 2| ≤
-      322 / (49 * Real.log N) ^ 2 := by
+    |barbanVehovIncludedLongBaseLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) /
+          (49 * Real.log N) ^ (2 : ℕ) -
+        barbanVehovIncludedLongBasePolynomialMain (N ^ (49 : ℕ)) /
+          (49 * Real.log N) ^ (2 : ℕ)| ≤
+      322 / (49 * Real.log N) ^ (2 : ℕ) := by
   have hN0 : 0 < N := by omega
   have hNR : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN0
-  have hM0 : 0 < N ^ 49 := pow_pos hN0 49
-  have hM1 : 1 ≤ N ^ 49 := hM0
-  have hscale : (N ^ 49) ^ 2 ≤ N ^ 98 := by
-    have : (N ^ 49) ^ 2 = N ^ 98 := by ring
+  have hM0 : 0 < N ^ (49 : ℕ) := pow_pos hN0 49
+  have hM1 : 1 ≤ N ^ (49 : ℕ) := hM0
+  have hscale : (N ^ (49 : ℕ)) ^ (2 : ℕ) ≤ N ^ (98 : ℕ) := by
+    have : (N ^ (49 : ℕ)) ^ (2 : ℕ) = N ^ (98 : ℕ) := by ring
     exact this.le
   have herr := abs_barbanVehovIncludedLongBaseLcm_sub_continuous_le_horizon hM1 hscale
   rw [barbanVehovIncludedLongBaseContinuous_eq_polynomialMain (pow_pos hN0 98)] at herr
   have herr' :
-      |barbanVehovIncludedLongBaseLcm (N ^ 98) (N ^ 49) -
-          barbanVehovIncludedLongBasePolynomialMain (N ^ 49)| ≤ 322 := by
+      |barbanVehovIncludedLongBaseLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) -
+          barbanVehovIncludedLongBasePolynomialMain (N ^ (49 : ℕ))| ≤ 322 := by
     refine herr.trans_eq ?_
     norm_num [Nat.cast_pow]
     field_simp [hNR.ne']
@@ -196,48 +196,48 @@ theorem abs_barbanVehovIncludedLongBaseLcm_quadraticHorizon_div_log_sq_sub_polyn
 
 theorem abs_barbanVehovIncludedLongCrossLcm_quadraticHorizon_div_log_cube_sub_polynomial_le
     {N : ℕ} (hN : 2 ≤ N) :
-    |barbanVehovIncludedLongCrossLcm (N ^ 98) (N ^ 49) /
-          (49 * Real.log N) ^ 3 -
+    |barbanVehovIncludedLongCrossLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) /
+          (49 * Real.log N) ^ (3 : ℕ) -
         barbanVehovIncludedLongCrossPolynomialMain
-            (98 * Real.log N) (N ^ 49) /
-          (49 * Real.log N) ^ 3| ≤
+            (98 * Real.log N) (N ^ (49 : ℕ)) /
+          (49 * Real.log N) ^ (3 : ℕ)| ≤
       400 / Real.log N := by
   have hN0 : 0 < N := by omega
   have hNR : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN0
-  have hM0 : 0 < N ^ 49 := pow_pos hN0 49
-  have hM1 : 1 ≤ N ^ 49 := hM0
+  have hM0 : 0 < N ^ (49 : ℕ) := pow_pos hN0 49
+  have hM1 : 1 ≤ N ^ (49 : ℕ) := hM0
   have hlogPos : 0 < Real.log (N : ℝ) :=
     Real.log_pos (by exact_mod_cast (by omega : 1 < N))
-  have hlogL : Real.log (((N ^ 98 : ℕ) : ℝ)) = 98 * Real.log (N : ℝ) := by
-    rw [show (((N ^ 98 : ℕ) : ℝ)) = (N : ℝ) ^ 98 by norm_num,
+  have hlogL : Real.log (((N ^ (98 : ℕ) : ℕ) : ℝ)) = 98 * Real.log (N : ℝ) := by
+    rw [show (((N ^ (98 : ℕ) : ℕ) : ℝ)) = (N : ℝ) ^ (98 : ℕ) by norm_num,
       Real.log_pow]
     norm_num
-  let K := Real.log (N ^ 98 * N ^ 49 + 1 : ℕ)
+  let K := Real.log (N ^ (98 : ℕ) * N ^ (49 : ℕ) + 1 : ℕ)
   have hK0 : 0 ≤ K := by dsimp [K]; positivity
   have hK : K ≤ 148 * Real.log N :=
     log_quadraticHorizon_mul_add_one_le_oneHundredFortyEight_log hN
   have h1K : 1 + K ≤ 150 * Real.log N := by
     nlinarith [one_le_two_mul_log_nat_included hN]
   have h1K0 : 0 ≤ 1 + K := by positivity
-  have h1Ksq : (1 + K) ^ 2 ≤ 22500 * Real.log N ^ 2 := by
+  have h1Ksq : (1 + K) ^ (2 : ℕ) ≤ 22500 * Real.log N ^ (2 : ℕ) := by
     nlinarith [mul_le_mul h1K h1K h1K0 (by positivity)]
-  have hscale : (N ^ 49) ^ 2 ≤ N ^ 98 := by
-    have : (N ^ 49) ^ 2 = N ^ 98 := by ring
+  have hscale : (N ^ (49 : ℕ)) ^ (2 : ℕ) ≤ N ^ (98 : ℕ) := by
+    have : (N ^ (49 : ℕ)) ^ (2 : ℕ) = N ^ (98 : ℕ) := by ring
     exact this.le
   have herr := abs_barbanVehovIncludedLongCrossLcm_sub_continuous_le_horizon hM1 hscale
   rw [barbanVehovIncludedLongCrossContinuous_eq_polynomialMain (pow_pos hN0 98), hlogL] at herr
   have herr' :
-      |barbanVehovIncludedLongCrossLcm (N ^ 98) (N ^ 49) -
+      |barbanVehovIncludedLongCrossLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) -
           barbanVehovIncludedLongCrossPolynomialMain
-            (98 * Real.log N) (N ^ 49)| ≤ 2000 * (1 + K) ^ 2 := by
+            (98 * Real.log N) (N ^ (49 : ℕ))| ≤ 2000 * (1 + K) ^ (2 : ℕ) := by
     refine herr.trans_eq ?_
     dsimp [K]
     norm_num [Nat.cast_pow]
     field_simp [hNR.ne']
   have hscaled := abs_div_sub_div_le_of_abs_sub_le
-    (D := (49 * Real.log (N : ℝ)) ^ 3) (pow_nonneg (by positivity) 3) herr'
+    (D := (49 * Real.log (N : ℝ)) ^ (3 : ℕ)) (pow_nonneg (by positivity) 3) herr'
   calc
-    _ ≤ (2000 * (1 + K) ^ 2) / (49 * Real.log N) ^ 3 := hscaled
+    _ ≤ (2000 * (1 + K) ^ (2 : ℕ)) / (49 * Real.log N) ^ (3 : ℕ) := hscaled
     _ ≤ 400 / Real.log N := by
       rw [div_le_div_iff₀ (by positivity) hlogPos]
       have hs := mul_le_mul_of_nonneg_left h1Ksq (by norm_num : (0 : ℝ) ≤ 2000)
@@ -245,55 +245,55 @@ theorem abs_barbanVehovIncludedLongCrossLcm_quadraticHorizon_div_log_cube_sub_po
 
 theorem abs_barbanVehovIncludedLongDerivativeLcm_quadraticHorizon_div_log_four_sub_polynomial_le
     {N : ℕ} (hN : 2 ≤ N) :
-    |barbanVehovIncludedLongDerivativeLcm (N ^ 98) (N ^ 49) /
-          (49 * Real.log N) ^ 4 -
+    |barbanVehovIncludedLongDerivativeLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) /
+          (49 * Real.log N) ^ (4 : ℕ) -
         barbanVehovIncludedLongDerivativePolynomialMain
-            (98 * Real.log N) (N ^ 49) /
-          (49 * Real.log N) ^ 4| ≤
-      79 / Real.log N ^ 2 := by
+            (98 * Real.log N) (N ^ (49 : ℕ)) /
+          (49 * Real.log N) ^ (4 : ℕ)| ≤
+      79 / Real.log N ^ (2 : ℕ) := by
   have hN0 : 0 < N := by omega
   have hNR : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN0
-  have hM0 : 0 < N ^ 49 := pow_pos hN0 49
-  have hM1 : 1 ≤ N ^ 49 := hM0
+  have hM0 : 0 < N ^ (49 : ℕ) := pow_pos hN0 49
+  have hM1 : 1 ≤ N ^ (49 : ℕ) := hM0
   have hlogPos : 0 < Real.log (N : ℝ) :=
     Real.log_pos (by exact_mod_cast (by omega : 1 < N))
-  have hlogL : Real.log (((N ^ 98 : ℕ) : ℝ)) = 98 * Real.log (N : ℝ) := by
-    rw [show (((N ^ 98 : ℕ) : ℝ)) = (N : ℝ) ^ 98 by norm_num,
+  have hlogL : Real.log (((N ^ (98 : ℕ) : ℕ) : ℝ)) = 98 * Real.log (N : ℝ) := by
+    rw [show (((N ^ (98 : ℕ) : ℕ) : ℝ)) = (N : ℝ) ^ (98 : ℕ) by norm_num,
       Real.log_pow]
     norm_num
-  let K := Real.log (N ^ 98 * N ^ 49 + 1 : ℕ)
+  let K := Real.log (N ^ (98 : ℕ) * N ^ (49 : ℕ) + 1 : ℕ)
   have hK0 : 0 ≤ K := by dsimp [K]; positivity
   have hK : K ≤ 148 * Real.log N :=
     log_quadraticHorizon_mul_add_one_le_oneHundredFortyEight_log hN
   have h1K : 1 + K ≤ 150 * Real.log N := by
     nlinarith [one_le_two_mul_log_nat_included hN]
   have h1K0 : 0 ≤ 1 + K := by positivity
-  have h1Ksq : (1 + K) ^ 2 ≤ 22500 * Real.log N ^ 2 := by
+  have h1Ksq : (1 + K) ^ (2 : ℕ) ≤ 22500 * Real.log N ^ (2 : ℕ) := by
     nlinarith [mul_le_mul h1K h1K h1K0 (by positivity)]
-  have hscale : (N ^ 49) ^ 2 ≤ N ^ 98 := by
-    have : (N ^ 49) ^ 2 = N ^ 98 := by ring
+  have hscale : (N ^ (49 : ℕ)) ^ (2 : ℕ) ≤ N ^ (98 : ℕ) := by
+    have : (N ^ (49 : ℕ)) ^ (2 : ℕ) = N ^ (98 : ℕ) := by ring
     exact this.le
   have herr := abs_barbanVehovIncludedLongDerivativeLcm_sub_continuous_le_horizon hM1 hscale
   rw [barbanVehovIncludedLongDerivativeContinuous_eq_polynomialMain (pow_pos hN0 98), hlogL] at herr
   have herr' :
-      |barbanVehovIncludedLongDerivativeLcm (N ^ 98) (N ^ 49) -
+      |barbanVehovIncludedLongDerivativeLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) -
           barbanVehovIncludedLongDerivativePolynomialMain
-            (98 * Real.log N) (N ^ 49)| ≤ 20000 * (1 + K) ^ 2 := by
+            (98 * Real.log N) (N ^ (49 : ℕ))| ≤ 20000 * (1 + K) ^ (2 : ℕ) := by
     refine herr.trans_eq ?_
     dsimp [K]
     norm_num [Nat.cast_pow]
     field_simp [hNR.ne']
   have hscaled := abs_div_sub_div_le_of_abs_sub_le
-    (D := (49 * Real.log (N : ℝ)) ^ 4) (pow_nonneg (by positivity) 4) herr'
+    (D := (49 * Real.log (N : ℝ)) ^ (4 : ℕ)) (pow_nonneg (by positivity) 4) herr'
   calc
-    _ ≤ (20000 * (1 + K) ^ 2) / (49 * Real.log N) ^ 4 := hscaled
-    _ ≤ 79 / Real.log N ^ 2 := by
+    _ ≤ (20000 * (1 + K) ^ (2 : ℕ)) / (49 * Real.log N) ^ (4 : ℕ) := hscaled
+    _ ≤ 79 / Real.log N ^ (2 : ℕ) := by
       rw [div_le_div_iff₀ (by positivity) (sq_pos_of_pos hlogPos)]
       have hs := mul_le_mul_of_nonneg_left h1Ksq (by norm_num : (0 : ℝ) ≤ 20000)
       nlinarith
 
 private theorem tendsto_nat_pow_fortyNine_atTop_included_horizon :
-    Tendsto (fun N : ℕ => N ^ 49) atTop atTop := by
+    Tendsto (fun N : ℕ => N ^ (49 : ℕ)) atTop atTop := by
   rw [tendsto_atTop]
   intro B
   filter_upwards [eventually_ge_atTop (max B 1)] with N hN
@@ -301,22 +301,22 @@ private theorem tendsto_nat_pow_fortyNine_atTop_included_horizon :
   have hN1 : 1 ≤ N := (Nat.le_max_right B 1).trans hN
   exact hBN.trans (by
     calc
-      N ≤ N * N ^ 48 := Nat.le_mul_of_pos_right N (pow_pos hN1 48)
-      _ = N ^ 49 := by ring)
+      N ≤ N * N ^ (48 : ℕ) := Nat.le_mul_of_pos_right N (pow_pos hN1 48)
+      _ = N ^ (49 : ℕ) := by ring)
 
 theorem tendsto_barbanVehovIncludedLongEnergyPolynomialMain_quadraticHorizon_half :
     Tendsto (fun N : ℕ =>
       barbanVehovIncludedLongEnergyPolynomialMain
         ((1 / 2 : ℝ) / (49 * Real.log N))
-        (98 * Real.log N) (N ^ 49))
-      atTop (𝓝 ((1 / 2 : ℝ) ^ 2 / 12)) := by
+        (98 * Real.log N) (N ^ (49 : ℕ)))
+      atTop (𝓝 ((1 / 2 : ℝ) ^ (2 : ℕ) / 12)) := by
   have hbase := tendsto_barbanVehovIncludedLongEnergyPolynomialMain_tuned_rho
     (1 / 2 : ℝ) (by norm_num)
   have hcomp := hbase.comp tendsto_nat_pow_fortyNine_atTop_included_horizon
   refine hcomp.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with N hN
   simp only [Function.comp_apply]
-  rw [show (((N ^ 49 : ℕ) : ℝ)) = (N : ℝ) ^ 49 by norm_num,
+  rw [show (((N ^ (49 : ℕ) : ℕ) : ℝ)) = (N : ℝ) ^ (49 : ℕ) by norm_num,
     Real.log_pow]
   congr 2
   ring
@@ -324,65 +324,65 @@ theorem tendsto_barbanVehovIncludedLongEnergyPolynomialMain_quadraticHorizon_hal
 theorem abs_levinsonCriticalDetectorLongEnergy_quadraticHorizon_half_sub_polynomialMain_le
     {N : ℕ} (hN : 2 ≤ N) :
     |RHTower.levinsonCriticalDetectorLongEnergy
-          ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ 98) (N ^ 49) -
+          ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) -
         barbanVehovIncludedLongEnergyPolynomialMain
           ((1 / 2 : ℝ) / (49 * Real.log N))
-          (98 * Real.log N) (N ^ 49)| ≤
-      322 / (49 * Real.log N) ^ 2 + 400 / Real.log N +
-        (1 / 4 : ℝ) * (79 / Real.log N ^ 2) := by
+          (98 * Real.log N) (N ^ (49 : ℕ))| ≤
+      322 / (49 * Real.log N) ^ (2 : ℕ) + 400 / Real.log N +
+        (1 / 4 : ℝ) * (79 / Real.log N ^ (2 : ℕ)) := by
   have hN0 : 0 < N := by omega
   have hlog : Real.log (N : ℝ) ≠ 0 :=
     (Real.log_pos (by exact_mod_cast (by omega : 1 < N))).ne'
-  have hM : 1 < N ^ 49 := by
+  have hM : 1 < N ^ (49 : ℕ) := by
     exact (by omega : 1 < N).trans_le (by
       calc
-        N ≤ N * N ^ 48 := Nat.le_mul_of_pos_right N (pow_pos hN0 48)
-        _ = N ^ 49 := by ring)
-  have hML : N ^ 49 ≤ N ^ 98 := by
+        N ≤ N * N ^ (48 : ℕ) := Nat.le_mul_of_pos_right N (pow_pos hN0 48)
+        _ = N ^ (49 : ℕ) := by ring)
+  have hML : N ^ (49 : ℕ) ≤ N ^ (98 : ℕ) := by
     calc
-      N ^ 49 ≤ N ^ 49 * N ^ 49 :=
+      N ^ (49 : ℕ) ≤ N ^ (49 : ℕ) * N ^ (49 : ℕ) :=
         Nat.le_mul_of_pos_right _ (pow_pos hN0 49)
-      _ = N ^ 98 := by ring
-  have hlogM : Real.log (((N ^ 49 : ℕ) : ℝ)) = 49 * Real.log N := by
-    rw [show (((N ^ 49 : ℕ) : ℝ)) = (N : ℝ) ^ 49 by norm_num,
+      _ = N ^ (98 : ℕ) := by ring
+  have hlogM : Real.log (((N ^ (49 : ℕ) : ℕ) : ℝ)) = 49 * Real.log N := by
+    rw [show (((N ^ (49 : ℕ) : ℕ) : ℝ)) = (N : ℝ) ^ (49 : ℕ) by norm_num,
       Real.log_pow]
     norm_num
   rw [levinsonCriticalDetectorLongEnergy_eq_includedLcm
-    ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ 98) hM hML,
+    ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ (98 : ℕ)) hM hML,
     barbanVehovIncludedLongEnergyLcm,
     barbanVehovIncludedLongEnergyPolynomialMain, hlogM]
-  let eB := barbanVehovIncludedLongBaseLcm (N ^ 98) (N ^ 49) /
-      (49 * Real.log N) ^ 2 -
-    barbanVehovIncludedLongBasePolynomialMain (N ^ 49) /
-      (49 * Real.log N) ^ 2
-  let eC := barbanVehovIncludedLongCrossLcm (N ^ 98) (N ^ 49) /
-      (49 * Real.log N) ^ 3 -
-    barbanVehovIncludedLongCrossPolynomialMain (98 * Real.log N) (N ^ 49) /
-      (49 * Real.log N) ^ 3
-  let eD := barbanVehovIncludedLongDerivativeLcm (N ^ 98) (N ^ 49) /
-      (49 * Real.log N) ^ 4 -
-    barbanVehovIncludedLongDerivativePolynomialMain (98 * Real.log N) (N ^ 49) /
-      (49 * Real.log N) ^ 4
-  have hbase : |eB| ≤ 322 / (49 * Real.log N) ^ 2 := by
+  let eB := barbanVehovIncludedLongBaseLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) /
+      (49 * Real.log N) ^ (2 : ℕ) -
+    barbanVehovIncludedLongBasePolynomialMain (N ^ (49 : ℕ)) /
+      (49 * Real.log N) ^ (2 : ℕ)
+  let eC := barbanVehovIncludedLongCrossLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) /
+      (49 * Real.log N) ^ (3 : ℕ) -
+    barbanVehovIncludedLongCrossPolynomialMain (98 * Real.log N) (N ^ (49 : ℕ)) /
+      (49 * Real.log N) ^ (3 : ℕ)
+  let eD := barbanVehovIncludedLongDerivativeLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) /
+      (49 * Real.log N) ^ (4 : ℕ) -
+    barbanVehovIncludedLongDerivativePolynomialMain (98 * Real.log N) (N ^ (49 : ℕ)) /
+      (49 * Real.log N) ^ (4 : ℕ)
+  have hbase : |eB| ≤ 322 / (49 * Real.log N) ^ (2 : ℕ) := by
     exact abs_barbanVehovIncludedLongBaseLcm_quadraticHorizon_div_log_sq_sub_polynomial_le hN
   have hcross : |eC| ≤ 400 / Real.log N := by
     exact abs_barbanVehovIncludedLongCrossLcm_quadraticHorizon_div_log_cube_sub_polynomial_le hN
-  have hderiv : |eD| ≤ 79 / Real.log N ^ 2 := by
+  have hderiv : |eD| ≤ 79 / Real.log N ^ (2 : ℕ) := by
     exact abs_barbanVehovIncludedLongDerivativeLcm_quadraticHorizon_div_log_four_sub_polynomial_le hN
   have heq :
-      (barbanVehovIncludedLongBaseLcm (N ^ 98) (N ^ 49) +
+      (barbanVehovIncludedLongBaseLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) +
             2 * ((1 / 2 : ℝ) / (49 * Real.log N)) *
-              barbanVehovIncludedLongCrossLcm (N ^ 98) (N ^ 49) +
-            ((1 / 2 : ℝ) / (49 * Real.log N)) ^ 2 *
-              barbanVehovIncludedLongDerivativeLcm (N ^ 98) (N ^ 49)) /
-          (49 * Real.log N) ^ 2 -
-        (barbanVehovIncludedLongBasePolynomialMain (N ^ 49) +
+              barbanVehovIncludedLongCrossLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) +
+            ((1 / 2 : ℝ) / (49 * Real.log N)) ^ (2 : ℕ) *
+              barbanVehovIncludedLongDerivativeLcm (N ^ (98 : ℕ)) (N ^ (49 : ℕ))) /
+          (49 * Real.log N) ^ (2 : ℕ) -
+        (barbanVehovIncludedLongBasePolynomialMain (N ^ (49 : ℕ)) +
             2 * ((1 / 2 : ℝ) / (49 * Real.log N)) *
-              barbanVehovIncludedLongCrossPolynomialMain (98 * Real.log N) (N ^ 49) +
-            ((1 / 2 : ℝ) / (49 * Real.log N)) ^ 2 *
+              barbanVehovIncludedLongCrossPolynomialMain (98 * Real.log N) (N ^ (49 : ℕ)) +
+            ((1 / 2 : ℝ) / (49 * Real.log N)) ^ (2 : ℕ) *
               barbanVehovIncludedLongDerivativePolynomialMain
-                (98 * Real.log N) (N ^ 49)) /
-          (49 * Real.log N) ^ 2 = eB + eC + (1 / 4 : ℝ) * eD := by
+                (98 * Real.log N) (N ^ (49 : ℕ))) /
+          (49 * Real.log N) ^ (2 : ℕ) = eB + eC + (1 / 4 : ℝ) * eD := by
     dsimp only [eB, eC, eD]
     field_simp [hlog]
     ring
@@ -395,8 +395,8 @@ theorem abs_levinsonCriticalDetectorLongEnergy_quadraticHorizon_half_sub_polynom
         _ ≤ (|eB| + |eC|) + |(1 / 4 : ℝ) * eD| :=
           add_le_add (abs_add_le _ _) le_rfl
         _ = _ := by rw [abs_mul]; norm_num
-    _ ≤ 322 / (49 * Real.log N) ^ 2 + 400 / Real.log N +
-        (1 / 4 : ℝ) * (79 / Real.log N ^ 2) := by
+    _ ≤ 322 / (49 * Real.log N) ^ (2 : ℕ) + 400 / Real.log N +
+        (1 / 4 : ℝ) * (79 / Real.log N ^ (2 : ℕ)) := by
       exact add_le_add (add_le_add hbase hcross)
         (mul_le_mul_of_nonneg_left hderiv (by norm_num))
 
@@ -406,7 +406,7 @@ private theorem tendsto_const_div_log_nat_included_horizon (c : ℝ) :
     (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
 
 private theorem tendsto_const_div_log_nat_sq_included_horizon (c : ℝ) :
-    Tendsto (fun N : ℕ => c / Real.log N ^ 2) atTop (𝓝 0) := by
+    Tendsto (fun N : ℕ => c / Real.log N ^ (2 : ℕ)) atTop (𝓝 0) := by
   have hc := tendsto_const_div_log_nat_included_horizon c
   have h1 := tendsto_const_div_log_nat_included_horizon 1
   have hmul := hc.mul h1
@@ -421,17 +421,17 @@ private theorem tendsto_const_div_log_nat_sq_included_horizon (c : ℝ) :
 theorem tendsto_levinsonCriticalDetectorLongEnergy_quadraticHorizon_half :
     Tendsto (fun N : ℕ =>
       RHTower.levinsonCriticalDetectorLongEnergy
-        ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ 98) (N ^ 49))
+        ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ (98 : ℕ)) (N ^ (49 : ℕ)))
       atTop (𝓝 (1 / 48 : ℝ)) := by
   let P : ℕ → ℝ := fun N =>
     barbanVehovIncludedLongEnergyPolynomialMain
-      ((1 / 2 : ℝ) / (49 * Real.log N)) (98 * Real.log N) (N ^ 49)
+      ((1 / 2 : ℝ) / (49 * Real.log N)) (98 * Real.log N) (N ^ (49 : ℕ))
   have hP : Tendsto P atTop (𝓝 (1 / 48 : ℝ)) := by
     convert tendsto_barbanVehovIncludedLongEnergyPolynomialMain_quadraticHorizon_half using 1
     norm_num
   have hbase : Tendsto (fun N : ℕ =>
-      322 / (49 * Real.log N) ^ 2) atTop (𝓝 0) := by
-    have h := tendsto_const_div_log_nat_sq_included_horizon (322 / 49 ^ 2)
+      322 / (49 * Real.log N) ^ (2 : ℕ)) atTop (𝓝 0) := by
+    have h := tendsto_const_div_log_nat_sq_included_horizon (322 / 49 ^ (2 : ℕ))
     refine h.congr' ?_
     filter_upwards [eventually_ge_atTop 2] with N hN
     have hlog : Real.log (N : ℝ) ≠ 0 :=
@@ -440,12 +440,12 @@ theorem tendsto_levinsonCriticalDetectorLongEnergy_quadraticHorizon_half :
   have hbound := (hbase.add (tendsto_const_div_log_nat_included_horizon 400)).add
     ((tendsto_const_div_log_nat_sq_included_horizon 79).const_mul (1 / 4 : ℝ))
   have hbound' : Tendsto (fun N : ℕ =>
-      322 / (49 * Real.log N) ^ 2 + 400 / Real.log N +
-        (1 / 4 : ℝ) * (79 / Real.log N ^ 2)) atTop (𝓝 0) := by
+      322 / (49 * Real.log N) ^ (2 : ℕ) + 400 / Real.log N +
+        (1 / 4 : ℝ) * (79 / Real.log N ^ (2 : ℕ))) atTop (𝓝 0) := by
     simpa using hbound
   have habs : Tendsto (fun N : ℕ =>
       |RHTower.levinsonCriticalDetectorLongEnergy
-          ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ 98) (N ^ 49) - P N|)
+          ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) - P N|)
       atTop (𝓝 0) := by
     refine squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _) ?_ hbound'
     filter_upwards [eventually_ge_atTop 2] with N hN
@@ -453,7 +453,7 @@ theorem tendsto_levinsonCriticalDetectorLongEnergy_quadraticHorizon_half :
       abs_levinsonCriticalDetectorLongEnergy_quadraticHorizon_half_sub_polynomialMain_le hN
   have herr : Tendsto (fun N : ℕ =>
       RHTower.levinsonCriticalDetectorLongEnergy
-          ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ 98) (N ^ 49) - P N)
+          ((1 / 2 : ℝ) / (49 * Real.log N)) (N ^ (98 : ℕ)) (N ^ (49 : ℕ)) - P N)
       atTop (𝓝 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
     simpa only [Real.norm_eq_abs, norm_zero] using habs

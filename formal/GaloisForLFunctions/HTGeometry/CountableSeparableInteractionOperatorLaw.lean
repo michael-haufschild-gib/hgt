@@ -31,7 +31,7 @@ noncomputable section
 its complex multiplier. -/
 theorem summable_norm_real_cast_sq
     {I : Type*} (w : I → ℝ) (habs : Summable (fun i => |w i|)) :
-    Summable (fun i => ‖(w i : ℂ)‖ ^ 2) := by
+    Summable (fun i => ‖(w i : ℂ)‖ ^ (2 : ℕ)) := by
   let C : ℝ := max 1 (∑' i, |w i|)
   have hC : ∀ i, |w i| ≤ C := by
     intro i
@@ -47,7 +47,7 @@ theorem summable_norm_real_cast_sq
 diagonal form a square-summable multiplier. -/
 theorem summable_norm_complex_sqrt_real_sq
     {I : Type*} (w : I → ℝ) (habs : Summable (fun i => |w i|)) :
-    Summable (fun i => ‖Complex.sqrt (w i : ℂ)‖ ^ 2) := by
+    Summable (fun i => ‖Complex.sqrt (w i : ℂ)‖ ^ (2 : ℕ)) := by
   apply habs.congr
   intro i
   rw [← norm_pow, complex_sqrt_sq, Complex.norm_real, Real.norm_eq_abs]
@@ -55,7 +55,7 @@ theorem summable_norm_complex_sqrt_real_sq
 /-- A Hilbert--Schmidt diagonal kernel acts by coordinate multiplication. -/
 theorem toOperator_diagMul_apply
     {I : Type*} [DecidableEq I] (g : I → ℂ)
-    (hs : Summable (fun i => ‖g i‖ ^ 2))
+    (hs : Summable (fun i => ‖g i‖ ^ (2 : ℕ)))
     (f : lp (fun _ : I => ℂ) 2) (i : I) :
     HilbertSchmidt.toOperator
         (HilbertSchmidt.isHS_diagMul_infinite g hs) f i =
@@ -129,7 +129,7 @@ theorem realSummableDiagonalOperator_memSchattenClass_one
       (realSummableDiagonalOperator w habs) := by
   classical
   let root : I → ℂ := fun i => Complex.sqrt (w i : ℂ)
-  have hroot : Summable (fun i => ‖root i‖ ^ 2) :=
+  have hroot : Summable (fun i => ‖root i‖ ^ (2 : ℕ)) :=
     summable_norm_complex_sqrt_real_sq w habs
   let A : lp (fun _ : I => ℂ) 2 →L[ℂ]
       lp (fun _ : I => ℂ) 2 :=
@@ -160,27 +160,27 @@ theorem norm_realSummableDiagonalOperator_le
   classical
   apply ContinuousLinearMap.opNorm_le_bound _ hδ
   intro f
-  have hsumf : Summable fun i => ‖f i‖ ^ 2 :=
+  have hsumf : Summable fun i => ‖f i‖ ^ (2 : ℕ) :=
     HilbertSchmidt.summable_coe_sq f
   have hsumT : Summable fun i =>
-      ‖(realSummableDiagonalOperator w habs f) i‖ ^ 2 :=
+      ‖(realSummableDiagonalOperator w habs f) i‖ ^ (2 : ℕ) :=
     HilbertSchmidt.summable_coe_sq
       (realSummableDiagonalOperator w habs f)
   have hterm : ∀ i,
-      ‖(realSummableDiagonalOperator w habs f) i‖ ^ 2 ≤
-        δ ^ 2 * ‖f i‖ ^ 2 := by
+      ‖(realSummableDiagonalOperator w habs f) i‖ ^ (2 : ℕ) ≤
+        δ ^ (2 : ℕ) * ‖f i‖ ^ (2 : ℕ) := by
     intro i
     rw [realSummableDiagonalOperator_apply, norm_mul,
       Complex.norm_real, Real.norm_eq_abs, mul_pow]
     exact mul_le_mul_of_nonneg_right
       ((sq_le_sq₀ (abs_nonneg (w i)) hδ).2 (hpoint i))
       (sq_nonneg ‖f i‖)
-  have hpow : ‖realSummableDiagonalOperator w habs f‖ ^ 2 ≤
-      (δ * ‖f‖) ^ 2 := by
+  have hpow : ‖realSummableDiagonalOperator w habs f‖ ^ (2 : ℕ) ≤
+      (δ * ‖f‖) ^ (2 : ℕ) := by
     rw [HilbertSchmidt.lp_norm_sq_eq, mul_pow,
       HilbertSchmidt.lp_norm_sq_eq, ← tsum_mul_left]
     exact Summable.tsum_le_tsum hterm hsumT
-      (hsumf.mul_left (δ ^ 2))
+      (hsumf.mul_left (δ ^ (2 : ℕ)))
   exact (sq_le_sq₀ (norm_nonneg _)
     (mul_nonneg hδ (norm_nonneg f))).1 hpow
 

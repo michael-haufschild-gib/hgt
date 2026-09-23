@@ -22,7 +22,7 @@ def fiveShiftEulerGammaPairedFeature (r a : ℝ) : ℝ :=
   -(fiveShiftEulerGammaFeature r a + fiveShiftEulerGammaFeature r (-a))
 
 def fiveShiftEulerGammaPairedRenormalizedFeature (r a : ℝ) : ℝ :=
-  a⁻¹ ^ 2 * fiveShiftEulerGammaPairedFeature r a
+  a⁻¹ ^ (2 : ℕ) * fiveShiftEulerGammaPairedFeature r a
 
 theorem fiveShiftEulerGammaPairedRenormalizedFeature_zero (r : ℝ) :
     fiveShiftEulerGammaPairedRenormalizedFeature r 0 = 0 := by
@@ -32,7 +32,7 @@ theorem fiveShiftEulerGammaPairedRenormalizedFeature_zero (r : ℝ) :
 theorem fiveShiftEulerGammaPolynomial_reciprocal
     {q t u x : ℝ} (hx : x ≠ 0) :
     fiveShiftEulerGammaPolynomial q t u x⁻¹ =
-      -(1 - x) * (1 - t * x) * (1 - q * x) * (1 - u * x) / x ^ 5 := by
+      -(1 - x) * (1 - t * x) * (1 - q * x) * (1 - u * x) / x ^ (5 : ℕ) := by
   rw [fiveShiftEulerGammaPolynomial]
   field_simp [hx]
   ring
@@ -42,7 +42,7 @@ theorem fiveShiftEulerGammaPolynomial_neg_pair_lower
     (hx0 : 0 < x) (hx1 : x ≤ 1)
     (ht0 : 0 ≤ t) (hq0 : 0 ≤ q) (hu0 : 0 ≤ u)
     (htx : t < x) (hqx : q < x) (hux : u < x) :
-    (1 - x) ^ 2 * (x - q) * (x - u) ≤
+    (1 - x) ^ (2 : ℕ) * (x - q) * (x - u) ≤
       -(fiveShiftEulerGammaPolynomial q t u x +
         fiveShiftEulerGammaPolynomial q t u x⁻¹) := by
   let B := (x - t) * (x - q) * (x - u)
@@ -66,9 +66,9 @@ theorem fiveShiftEulerGammaPolynomial_neg_pair_lower
     nlinarith
   have hB0 : 0 ≤ B := by dsimp [B]; positivity
   have hC0 : 0 ≤ C := by dsimp [C]; positivity
-  have hxpow0 : 0 < x ^ 5 := pow_pos hx0 _
-  have hxpow1 : x ^ 5 ≤ 1 := pow_le_one₀ hx0' hx1
-  have hCdiv : C ≤ C / x ^ 5 := by
+  have hxpow0 : 0 < x ^ (5 : ℕ) := pow_pos hx0 _
+  have hxpow1 : x ^ (5 : ℕ) ≤ 1 := pow_le_one₀ hx0' hx1
+  have hCdiv : C ≤ C / x ^ (5 : ℕ) := by
     rw [le_div_iff₀ hxpow0]
     nlinarith [mul_le_mul_of_nonneg_left hxpow1 hC0]
   have hxB : x * B ≤ B := by
@@ -101,27 +101,27 @@ theorem fiveShiftEulerGammaPolynomial_neg_pair_lower
         nlinarith [mul_nonneg ht0 hxm]
       _ ≤ C - B := hmid_sub
   have hbracket :
-      (1 - x) * (x - q) * (x - u) ≤ C / x ^ 5 - x * B := by
+      (1 - x) * (x - q) * (x - u) ≤ C / x ^ (5 : ℕ) - x * B := by
     nlinarith
   rw [fiveShiftEulerGammaPolynomial_reciprocal hx0.ne']
   rw [fiveShiftEulerGammaPolynomial]
   have hpair :
       -(x * (1 - x) * (x - t) * (x - q) * (x - u) +
           (-(1 - x) * (1 - t * x) * (1 - q * x) * (1 - u * x) /
-            x ^ 5)) =
-        (1 - x) * (C / x ^ 5 - x * B) := by
+            x ^ (5 : ℕ))) =
+        (1 - x) * (C / x ^ (5 : ℕ) - x * B) := by
     dsimp [B, C]
     ring
   rw [hpair]
   calc
-    (1 - x) ^ 2 * (x - q) * (x - u) =
+    (1 - x) ^ (2 : ℕ) * (x - q) * (x - u) =
         (1 - x) * ((1 - x) * (x - q) * (x - u)) := by ring
-    _ ≤ (1 - x) * (C / x ^ 5 - x * B) :=
+    _ ≤ (1 - x) * (C / x ^ (5 : ℕ) - x * B) :=
       mul_le_mul_of_nonneg_left hbracket hxm
 
 theorem fiveShiftEulerGammaPairedFeature_lower
     {r a : ℝ} (hr : 0 < r) (ha0 : 0 < a) (ha : a ≤ 1 / 2) :
-    (1 - Real.exp (-2 * a * r)) ^ 2 *
+    (1 - Real.exp (-2 * a * r)) ^ (2 : ℕ) *
         (Real.exp (-2 * a * r) - Real.exp (-2 * r)) *
         (Real.exp (-2 * a * r) - Real.exp (-(21 / 10 : ℝ) * r)) ≤
       fiveShiftEulerGammaPairedFeature r a := by
@@ -165,7 +165,7 @@ theorem mul_exp_neg_le_one_sub_exp_neg (y : ℝ) :
 
 theorem fiveShiftEulerGammaPairedRenormalizedFeature_lower
     {r a : ℝ} (hr : 0 < r) (ha0 : 0 < a) (ha : a ≤ 1 / 2) :
-    4 * r ^ 2 * Real.exp (-4 * r) * (1 - Real.exp (-r)) ^ 2 ≤
+    4 * r ^ (2 : ℕ) * Real.exp (-4 * r) * (1 - Real.exp (-r)) ^ (2 : ℕ) ≤
       fiveShiftEulerGammaPairedRenormalizedFeature r a := by
   let x := Real.exp (-2 * a * r)
   let e := Real.exp (-r)
@@ -199,14 +199,14 @@ theorem fiveShiftEulerGammaPairedRenormalizedFeature_lower
       nlinarith
     nlinarith
   have hpair := fiveShiftEulerGammaPairedFeature_lower hr ha0 ha
-  change (1 - x) ^ 2 * (x - q) * (x - u) ≤
+  change (1 - x) ^ (2 : ℕ) * (x - q) * (x - u) ≤
     fiveShiftEulerGammaPairedFeature r a at hpair
   have hgap0 : 0 ≤ x * (1 - e) :=
     mul_nonneg hx0.le (sub_nonneg.mpr he1.le)
   have hqgap0 : 0 ≤ x - q := hgap0.trans hqgap
   have hugap0 : 0 ≤ x - u := hgap0.trans hugap
   have hpair' :
-      (1 - x) ^ 2 * (x * (1 - e)) * (x * (1 - e)) ≤
+      (1 - x) ^ (2 : ℕ) * (x * (1 - e)) * (x * (1 - e)) ≤
         fiveShiftEulerGammaPairedFeature r a := by
     apply le_trans ?_ hpair
     gcongr
@@ -219,13 +219,13 @@ theorem fiveShiftEulerGammaPairedRenormalizedFeature_lower
   have hlin : 2 * a * r * x ≤ 1 - x := by
     convert hexplower using 1
   have hlin0 : 0 ≤ 2 * a * r * x := by positivity
-  have hsq : (2 * a * r * x) ^ 2 ≤ (1 - x) ^ 2 :=
+  have hsq : (2 * a * r * x) ^ (2 : ℕ) ≤ (1 - x) ^ (2 : ℕ) :=
     (sq_le_sq₀ hlin0 (sub_nonneg.mpr hx1)).2 hlin
   have hraw :
-      4 * a ^ 2 * r ^ 2 * Real.exp (-8 * a * r) * (1 - e) ^ 2 ≤
+      4 * a ^ (2 : ℕ) * r ^ (2 : ℕ) * Real.exp (-8 * a * r) * (1 - e) ^ (2 : ℕ) ≤
         fiveShiftEulerGammaPairedFeature r a := by
     apply le_trans ?_ hpair'
-    have hxpow : x ^ 4 = Real.exp (-8 * a * r) := by
+    have hxpow : x ^ (4 : ℕ) = Real.exp (-8 * a * r) := by
       dsimp [x]
       rw [← Real.exp_nat_mul]
       congr 1
@@ -235,23 +235,23 @@ theorem fiveShiftEulerGammaPairedRenormalizedFeature_lower
     nlinarith [mul_le_mul_of_nonneg_right hsq
       (mul_nonneg (sq_nonneg x) (sq_nonneg (1 - e)))]
   have hnorm :
-      4 * r ^ 2 * Real.exp (-8 * a * r) * (1 - e) ^ 2 ≤
+      4 * r ^ (2 : ℕ) * Real.exp (-8 * a * r) * (1 - e) ^ (2 : ℕ) ≤
         fiveShiftEulerGammaPairedRenormalizedFeature r a := by
     rw [fiveShiftEulerGammaPairedRenormalizedFeature]
     calc
-      4 * r ^ 2 * Real.exp (-8 * a * r) * (1 - e) ^ 2 =
-          a⁻¹ ^ 2 *
-            (4 * a ^ 2 * r ^ 2 * Real.exp (-8 * a * r) * (1 - e) ^ 2) := by
+      4 * r ^ (2 : ℕ) * Real.exp (-8 * a * r) * (1 - e) ^ (2 : ℕ) =
+          a⁻¹ ^ (2 : ℕ) *
+            (4 * a ^ (2 : ℕ) * r ^ (2 : ℕ) * Real.exp (-8 * a * r) * (1 - e) ^ (2 : ℕ)) := by
               field_simp [ha0.ne']
-      _ ≤ a⁻¹ ^ 2 * fiveShiftEulerGammaPairedFeature r a :=
+      _ ≤ a⁻¹ ^ (2 : ℕ) * fiveShiftEulerGammaPairedFeature r a :=
         mul_le_mul_of_nonneg_left hraw (sq_nonneg _)
   have hexp : Real.exp (-4 * r) ≤ Real.exp (-8 * a * r) := by
     apply Real.exp_le_exp.mpr
     have har := mul_le_mul_of_nonneg_right ha hr.le
     nlinarith
   calc
-    4 * r ^ 2 * Real.exp (-4 * r) * (1 - Real.exp (-r)) ^ 2 ≤
-        4 * r ^ 2 * Real.exp (-8 * a * r) * (1 - e) ^ 2 := by
+    4 * r ^ (2 : ℕ) * Real.exp (-4 * r) * (1 - Real.exp (-r)) ^ (2 : ℕ) ≤
+        4 * r ^ (2 : ℕ) * Real.exp (-8 * a * r) * (1 - e) ^ (2 : ℕ) := by
       dsimp [e]
       gcongr
     _ ≤ fiveShiftEulerGammaPairedRenormalizedFeature r a := hnorm
@@ -263,9 +263,9 @@ theorem fiveShiftEulerGammaPairedRenormalizedFeature_one_ge
     (r := 1) (by norm_num) ha0 ha
   norm_num only [one_pow, mul_one] at hbase
   have hexp4 : Real.exp 4 < 81 := by
-    have hpow : Real.exp 4 = Real.exp 1 ^ 4 := by
+    have hpow : Real.exp 4 = Real.exp 1 ^ (4 : ℕ) := by
       rw [show (4 : ℝ) = (4 : ℕ) * 1 by norm_num, Real.exp_nat_mul]
-    rw [hpow, show (81 : ℝ) = 3 ^ 4 by norm_num]
+    rw [hpow, show (81 : ℝ) = 3 ^ (4 : ℕ) by norm_num]
     gcongr
     exact Real.exp_one_lt_three
   have hexpneg4 : (1 / 81 : ℝ) < Real.exp (-4) := by
@@ -278,10 +278,10 @@ theorem fiveShiftEulerGammaPairedRenormalizedFeature_one_ge
       (inv_lt_inv₀ (Real.exp_pos 1) (by norm_num : (0 : ℝ) < 2)).2
         Real.exp_one_gt_two
   have hgap : (1 / 2 : ℝ) < 1 - Real.exp (-1) := by linarith
-  have hgapsq : (1 / 4 : ℝ) ≤ (1 - Real.exp (-1)) ^ 2 := by nlinarith
+  have hgapsq : (1 / 4 : ℝ) ≤ (1 - Real.exp (-1)) ^ (2 : ℕ) := by nlinarith
   calc
     (1 / 81 : ℝ) = 4 * (1 / 81 : ℝ) * (1 / 4 : ℝ) := by norm_num
-    _ ≤ 4 * Real.exp (-4) * (1 - Real.exp (-1)) ^ 2 := by gcongr
+    _ ≤ 4 * Real.exp (-4) * (1 - Real.exp (-1)) ^ (2 : ℕ) := by gcongr
     _ ≤ fiveShiftEulerGammaPairedRenormalizedFeature 1 a := by
       simpa using hbase
 

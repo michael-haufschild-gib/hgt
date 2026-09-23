@@ -127,7 +127,7 @@ theorem tendsto_norm_soninApertureCoupling_apply_soninPacketEven_subAnnulus
     Tendsto (fun n : ℕ =>
         ‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n)
           (soninPacketEven β γ hβ hβγ (2 * Real.pi * (r n * q)))‖) atTop
-      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump β γ hβγ x ^ 2))) := by
+      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump β γ hβγ x ^ (2 : ℕ)))) := by
   have hq : 0 < q := ha.trans haq
   have hfreq : Tendsto (fun n : ℕ => 2 * Real.pi * (r n * q)) atTop atTop := by
     have h1 : Tendsto (fun n : ℕ => r n * q) atTop atTop :=
@@ -139,7 +139,7 @@ theorem tendsto_norm_soninApertureCoupling_apply_soninPacketEven_subAnnulus
     (fun n : ℕ => 2 * Real.pi * (r n * q)) hfreq
   have hdil : Tendsto (fun n : ℕ =>
       ‖soninDilatedPacket β γ hβ hβγ (2 * Real.pi * (r n * q)) (r n) (hrpos n)‖) atTop
-      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump β γ hβγ x ^ 2))) := by
+      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump β γ hβγ x ^ (2 : ℕ)))) := by
     refine hpacket.congr fun n => ?_
     exact (norm_soninDilatedPacket β γ hβ hβγ (2 * Real.pi * (r n * q)) (r n) (hrpos n)).symm
   have hclose : Tendsto (fun n : ℕ =>

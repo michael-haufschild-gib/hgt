@@ -85,10 +85,10 @@ at every scale and tends to zero in the original angular L² norm. -/
 theorem nativeTimePrimitiveAngularEnergy_endpoint_error_tendsto_zero
     (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ) :
     (∀ m : ℕ, Integrable (fun x => ‖deriv (nativeDirichletCutoff m) x •
-      D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n x)‖^2)
+      D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n x)‖^(2 : ℕ))
       radialMeasure) ∧
     Tendsto (fun m : ℕ => ∫ x, ‖deriv (nativeDirichletCutoff m) x •
-      D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n x)‖^2
+      D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n x)‖^(2 : ℕ)
       ∂radialMeasure) atTop (𝓝 0) := by
   let f : ℝ → D4BMModularCore.Space := fun x =>
     D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n x)
@@ -107,15 +107,15 @@ theorem nativeTimePrimitiveAngularEnergy_endpoint_error_tendsto_zero
       (fun y _ => hD y) convex_univ (mem_univ (0:ℝ)) (mem_univ x)
     simpa only [hz,sub_zero,Real.norm_eq_abs] using h
   obtain ⟨C,hC,hbound⟩ := nativeDirichletCutoff_weighted_derivative_bound
-  let M : ℝ → ℝ := (Icc (-3:ℝ) 0).indicator (fun _ => (D*C)^2)
+  let M : ℝ → ℝ := (Icc (-3:ℝ) 0).indicator (fun _ => (D*C)^(2 : ℕ))
   have hM : Integrable M radialMeasure :=
     (integrableOn_const (μ := radialMeasure) (s := Icc (-3:ℝ) 0)
-      (C := (D*C)^2) isCompact_Icc.measure_lt_top.ne).integrable_indicator measurableSet_Icc
-  have hcont (m : ℕ) : Continuous (fun x => ‖deriv (nativeDirichletCutoff m) x • f x‖^2) :=
+      (C := (D*C)^(2 : ℕ)) isCompact_Icc.measure_lt_top.ne).integrable_indicator measurableSet_Icc
+  have hcont (m : ℕ) : Continuous (fun x => ‖deriv (nativeDirichletCutoff m) x • f x‖^(2 : ℕ)) :=
     (((contDiff_infty_iff_deriv.mp (nativeDirichletCutoff_profile m).1).2.continuous).smul
       hf.continuous).norm.pow 2
   have hb (m : ℕ) : ∀ᵐ x ∂radialMeasure,
-      ‖‖deriv (nativeDirichletCutoff m) x • f x‖^2‖ ≤ M x := by
+      ‖‖deriv (nativeDirichletCutoff m) x • f x‖^(2 : ℕ)‖ ≤ M x := by
     filter_upwards [ae_restrict_mem measurableSet_Iio] with x hx
     rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
     by_cases hk : x ∈ Icc (-3:ℝ) 0
@@ -134,7 +134,7 @@ theorem nativeTimePrimitiveAngularEnergy_endpoint_error_tendsto_zero
       rw [indicator_of_notMem hk,cutoff_deriv_zero_below m x hx',zero_smul,norm_zero]
       simp
   refine ⟨fun m => hM.mono' (hcont m).aestronglyMeasurable (hb m),?_⟩
-  change Tendsto (fun m : ℕ => ∫ x, ‖deriv (nativeDirichletCutoff m) x • f x‖^2 ∂radialMeasure)
+  change Tendsto (fun m : ℕ => ∫ x, ‖deriv (nativeDirichletCutoff m) x • f x‖^(2 : ℕ) ∂radialMeasure)
     atTop (𝓝 0)
   have h := tendsto_integral_of_dominated_convergence M
     (fun m => (hcont m).aestronglyMeasurable) hM hb (f := fun _ : ℝ => (0:ℝ)) ?_
@@ -147,16 +147,16 @@ theorem nativeTimePrimitiveAngularEnergy_endpoint_error_tendsto_zero
 
 private theorem cutoff_value_convergence {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f : ℝ → E) (hf : Continuous f) (hc : HasCompactSupport f) :
-    (∀ m : ℕ, Integrable (fun x => ‖nativeDirichletCutoff m x • f x-f x‖^2) radialMeasure) ∧
-    Tendsto (fun m : ℕ => ∫ x, ‖nativeDirichletCutoff m x • f x-f x‖^2 ∂radialMeasure)
+    (∀ m : ℕ, Integrable (fun x => ‖nativeDirichletCutoff m x • f x-f x‖^(2 : ℕ)) radialMeasure) ∧
+    Tendsto (fun m : ℕ => ∫ x, ‖nativeDirichletCutoff m x • f x-f x‖^(2 : ℕ) ∂radialMeasure)
       atTop (𝓝 0) := by
-  have hM : Integrable (fun x => ‖f x‖^2) radialMeasure :=
+  have hM : Integrable (fun x => ‖f x‖^(2 : ℕ)) radialMeasure :=
     (memLp_two_iff_integrable_sq_norm hf.aestronglyMeasurable).mp
       (hf.memLp_of_hasCompactSupport hc)
   have ha (m : ℕ) : AEStronglyMeasurable
-      (fun x => ‖nativeDirichletCutoff m x • f x-f x‖^2) radialMeasure :=
+      (fun x => ‖nativeDirichletCutoff m x • f x-f x‖^(2 : ℕ)) radialMeasure :=
     (((nativeDirichletCutoff_profile m).1.continuous.smul hf).sub hf).norm.pow 2 |>.aestronglyMeasurable
-  have hb (m : ℕ) (x : ℝ) : ‖‖nativeDirichletCutoff m x • f x-f x‖^2‖ ≤ ‖f x‖^2 := by
+  have hb (m : ℕ) (x : ℝ) : ‖‖nativeDirichletCutoff m x • f x-f x‖^(2 : ℕ)‖ ≤ ‖f x‖^(2 : ℕ) := by
     have h := (nativeDirichletCutoff_profile m).2.1 x
     have he : |nativeDirichletCutoff m x-1| ≤ 1 := abs_le.mpr ⟨by linarith,by linarith⟩
     have he' : ‖nativeDirichletCutoff m x • f x-f x‖ ≤ ‖f x‖ := by
@@ -166,7 +166,7 @@ private theorem cutoff_value_convergence {E : Type*} [NormedAddCommGroup E] [Nor
     rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
     nlinarith [norm_nonneg (nativeDirichletCutoff m x • f x-f x),norm_nonneg (f x)]
   refine ⟨fun m => hM.mono' (ha m) (Eventually.of_forall (hb m)),?_⟩
-  have h := tendsto_integral_of_dominated_convergence (fun x => ‖f x‖^2) ha hM
+  have h := tendsto_integral_of_dominated_convergence (fun x => ‖f x‖^(2 : ℕ)) ha hM
     (fun m => Eventually.of_forall (hb m)) (f := fun _ : ℝ => (0:ℝ)) ?_
   · simpa only [integral_zero] using h
   · filter_upwards [ae_restrict_mem measurableSet_Iio] with x hx
@@ -181,10 +181,10 @@ theorem nativeTimePrimitiveAngularEnergy_endpoint_value_convergence
     (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ) :
     (∀ m : ℕ, Integrable (fun x => ‖nativeDirichletCutoff m x •
       nativeTimePrimitiveAngularEnergy q s amplitude t n x-
-      nativeTimePrimitiveAngularEnergy q s amplitude t n x‖^2) radialMeasure) ∧
+      nativeTimePrimitiveAngularEnergy q s amplitude t n x‖^(2 : ℕ)) radialMeasure) ∧
     Tendsto (fun m : ℕ => ∫ x, ‖nativeDirichletCutoff m x •
       nativeTimePrimitiveAngularEnergy q s amplitude t n x-
-      nativeTimePrimitiveAngularEnergy q s amplitude t n x‖^2 ∂radialMeasure)
+      nativeTimePrimitiveAngularEnergy q s amplitude t n x‖^(2 : ℕ) ∂radialMeasure)
       atTop (𝓝 0) :=
   cutoff_value_convergence _ (nativeTimePrimitiveAngularEnergy_continuous q s amplitude t n)
     (nativeTimePrimitiveAngularEnergy_compact q s amplitude t n)
@@ -192,26 +192,26 @@ theorem nativeTimePrimitiveAngularEnergy_endpoint_value_convergence
 private theorem integral_sq_add_tendsto_zero {E : Type*} [NormedAddCommGroup E]
     (a b : ℕ → ℝ → E) (ha : ∀ m, AEStronglyMeasurable (a m) radialMeasure)
     (hb : ∀ m, AEStronglyMeasurable (b m) radialMeasure)
-    (hai : ∀ m, Integrable (fun x => ‖a m x‖^2) radialMeasure)
-    (hbi : ∀ m, Integrable (fun x => ‖b m x‖^2) radialMeasure)
-    (hal : Tendsto (fun m => ∫ x, ‖a m x‖^2 ∂radialMeasure) atTop (𝓝 0))
-    (hbl : Tendsto (fun m => ∫ x, ‖b m x‖^2 ∂radialMeasure) atTop (𝓝 0)) :
-    (∀ m, Integrable (fun x => ‖a m x+b m x‖^2) radialMeasure) ∧
-    Tendsto (fun m => ∫ x, ‖a m x+b m x‖^2 ∂radialMeasure) atTop (𝓝 0) := by
-  have hi (m : ℕ) : Integrable (fun x => ‖a m x+b m x‖^2) radialMeasure :=
+    (hai : ∀ m, Integrable (fun x => ‖a m x‖^(2 : ℕ)) radialMeasure)
+    (hbi : ∀ m, Integrable (fun x => ‖b m x‖^(2 : ℕ)) radialMeasure)
+    (hal : Tendsto (fun m => ∫ x, ‖a m x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0))
+    (hbl : Tendsto (fun m => ∫ x, ‖b m x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0)) :
+    (∀ m, Integrable (fun x => ‖a m x+b m x‖^(2 : ℕ)) radialMeasure) ∧
+    Tendsto (fun m => ∫ x, ‖a m x+b m x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0) := by
+  have hi (m : ℕ) : Integrable (fun x => ‖a m x+b m x‖^(2 : ℕ)) radialMeasure :=
     (memLp_two_iff_integrable_sq_norm ((ha m).add (hb m))).mp
       (((memLp_two_iff_integrable_sq_norm (ha m)).mpr (hai m)).add
         ((memLp_two_iff_integrable_sq_norm (hb m)).mpr (hbi m)))
   refine ⟨hi,?_⟩
-  have hl : Tendsto (fun m => 2*((∫ x, ‖a m x‖^2 ∂radialMeasure)+
-      (∫ x, ‖b m x‖^2 ∂radialMeasure))) atTop (𝓝 0) := by
+  have hl : Tendsto (fun m => 2*((∫ x, ‖a m x‖^(2 : ℕ) ∂radialMeasure)+
+      (∫ x, ‖b m x‖^(2 : ℕ) ∂radialMeasure))) atTop (𝓝 0) := by
     simpa only [add_zero,mul_zero] using (hal.add hbl).const_mul 2
   apply squeeze_zero (fun m => integral_nonneg (fun x => sq_nonneg _)) ?_ hl
   intro m
-  have hu : Integrable (fun x => 2*(‖a m x‖^2+‖b m x‖^2)) radialMeasure :=
+  have hu : Integrable (fun x => 2*(‖a m x‖^(2 : ℕ)+‖b m x‖^(2 : ℕ))) radialMeasure :=
     ((hai m).add (hbi m)).const_mul 2
   calc
-    _ ≤ ∫ x, 2*(‖a m x‖^2+‖b m x‖^2) ∂radialMeasure := integral_mono (hi m) hu (fun x => by
+    _ ≤ ∫ x, 2*(‖a m x‖^(2 : ℕ)+‖b m x‖^(2 : ℕ)) ∂radialMeasure := integral_mono (hi m) hu (fun x => by
       have h := norm_add_le (a m x) (b m x)
       have hn := norm_nonneg (a m x+b m x)
       nlinarith [sq_nonneg (‖a m x‖-‖b m x‖)])
@@ -224,9 +224,9 @@ theorem nativeTimePrimitiveAngularEnergy_endpoint_radial_convergence
     let f : ℝ → D4BMModularCore.Space := fun x =>
       D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n x)
     (∀ m : ℕ, Integrable (fun x => ‖deriv (fun y => nativeDirichletCutoff m y • f y) x-
-      nativeTimePrimitiveAngularRadial q s amplitude t n x‖^2) radialMeasure) ∧
+      nativeTimePrimitiveAngularRadial q s amplitude t n x‖^(2 : ℕ)) radialMeasure) ∧
     Tendsto (fun m : ℕ => ∫ x, ‖deriv (fun y => nativeDirichletCutoff m y • f y) x-
-      nativeTimePrimitiveAngularRadial q s amplitude t n x‖^2 ∂radialMeasure)
+      nativeTimePrimitiveAngularRadial q s amplitude t n x‖^(2 : ℕ) ∂radialMeasure)
       atTop (𝓝 0) := by
   intro f
   have hf : ContDiff ℝ 1 f := nativeTimePrimitiveAngularEnergy_value_contDiff q s amplitude t n

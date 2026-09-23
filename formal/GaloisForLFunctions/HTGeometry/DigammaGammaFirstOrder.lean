@@ -107,7 +107,7 @@ theorem meromorphicAt_digamma_comp_Gamma_clusterPole (n m : ℕ) :
 
 theorem digammaGammaCluster_deriv_principalPart (n m : ℕ) :
     Tendsto
-      (fun z : ℂ => (z - digammaGammaClusterPole n m) ^ 2 *
+      (fun z : ℂ => (z - digammaGammaClusterPole n m) ^ (2 : ℕ) *
         deriv (fun w : ℂ => Complex.digamma (Complex.Gamma w)) z)
       (𝓝[≠] (digammaGammaClusterPole n m))
       (𝓝 (-digammaGammaClusterResidue n m)) := by

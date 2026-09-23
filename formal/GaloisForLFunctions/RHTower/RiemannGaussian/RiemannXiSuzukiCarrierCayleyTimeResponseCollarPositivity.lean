@@ -7,7 +7,7 @@ The uniform collar obstruction can be sharpened algebraically.  For one
 selected upper spectral zero `alpha`, the real part of its scaled signed
 Blaschke response at `x + i y` has numerator
 
-`2 * alpha.im * (normSq (x - alpha) - y^2)`.
+`2 * alpha.im * (normSq (x - alpha) - y^(2 : ℕ))`.
 
 It is therefore positive whenever the approach height is smaller than the
 boundary distance to that zero.  The uniform upper-divisor gap makes this
@@ -27,14 +27,14 @@ noncomputable section
 response along a vertical approach. -/
 theorem re_neg_I_mul_zetaUpperBlaschkeLogDerivativeSummand_approach_eq
     (x y : ℝ) (rho : NontrivialZetaZero)
-    (hradial : y ^ 2 < Complex.normSq
+    (hradial : y ^ (2 : ℕ) < Complex.normSq
       ((x : ℂ) - zetaSpectralCoordinate rho.1)) :
     (-Complex.I * zetaUpperBlaschkeLogDerivativeSummand
       (upperBoundaryApproachPoint x y) rho).re =
       (analyticZetaZeroMultiplicity rho : ℝ) *
         (2 * (zetaSpectralCoordinate rho.1).im *
           (Complex.normSq
-              ((x : ℂ) - zetaSpectralCoordinate rho.1) - y ^ 2) /
+              ((x : ℂ) - zetaSpectralCoordinate rho.1) - y ^ (2 : ℕ)) /
             (Complex.normSq
                 (upperBoundaryApproachPoint x y -
                   zetaSpectralCoordinate rho.1) *
@@ -84,7 +84,7 @@ theorem re_neg_I_mul_zetaUpperBlaschkeLogDerivativeSummand_approach_eq
       ring
   have hdenRe :
       ((z - alpha) * (z - starRingEnd ℂ alpha)).re =
-        Complex.normSq ((x : ℂ) - alpha) - y ^ 2 := by
+        Complex.normSq ((x : ℂ) - alpha) - y ^ (2 : ℕ) := by
     dsimp [z]
     unfold upperBoundaryApproachPoint Complex.normSq
     simp
@@ -147,7 +147,7 @@ theorem re_neg_I_mul_zetaUpperBlaschkeSelectedLogDerivativeSummand_approach_pos
     have hhalf : delta / 2 ≤ ‖(x : ℂ) - alpha‖ := by
       exact (half_le_self hdelta.le).trans (hgap rho hupper)
     exact hySmall.trans_le hhalf
-  have hradial : y ^ 2 < Complex.normSq ((x : ℂ) - alpha) := by
+  have hradial : y ^ (2 : ℕ) < Complex.normSq ((x : ℂ) - alpha) := by
     rw [Complex.normSq_eq_norm_sq]
     nlinarith
   have hfirst : 0 < Complex.normSq (z - alpha) := by
@@ -163,12 +163,12 @@ theorem re_neg_I_mul_zetaUpperBlaschkeSelectedLogDerivativeSummand_approach_pos
     re_neg_I_mul_zetaUpperBlaschkeLogDerivativeSummand_approach_eq
       x y rho hradial]
   have hradialPos :
-      0 < Complex.normSq ((x : ℂ) - alpha) - y ^ 2 := by
+      0 < Complex.normSq ((x : ℂ) - alpha) - y ^ (2 : ℕ) := by
     linarith
   change 0 <
     (analyticZetaZeroMultiplicity rho : ℝ) *
       (2 * alpha.im *
-        (Complex.normSq ((x : ℂ) - alpha) - y ^ 2) /
+        (Complex.normSq ((x : ℂ) - alpha) - y ^ (2 : ℕ)) /
           (Complex.normSq (z - alpha) *
             Complex.normSq (z - starRingEnd ℂ alpha)))
   have hm : 0 < (analyticZetaZeroMultiplicity rho : ℝ) := by

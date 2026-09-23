@@ -31,22 +31,22 @@ namespace GaloisForLFunctions.RHTower
 def dilatedRadialPhase (s r x : ℝ) : ℝ := xiEndpointPhase s (r * x)
 
 /-- The second derivative of the dilated phase. -/
-def dilatedRadialPhaseAccel (s r x : ℝ) : ℝ := r ^ 2 * xiSpeedDeriv s (r * x)
+def dilatedRadialPhaseAccel (s r x : ℝ) : ℝ := r ^ (2 : ℕ) * xiSpeedDeriv s (r * x)
 
 theorem xiSpeed_pos_of_le_half {s t : ℝ} (hs1 : s ≤ 1 / 2) (ht : 1 < t) : 0 < xiSpeed s t := by
-  have h1 : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
-  have h2 : (0 : ℝ) < t ^ 2 - s := by nlinarith
+  have h1 : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
+  have h2 : (0 : ℝ) < t ^ (2 : ℕ) - s := by nlinarith
   rw [xiSpeed]
   exact Real.sqrt_pos.mpr (div_pos h2 h1)
 
 theorem continuousAt_xiSpeedDeriv {s t : ℝ} (hs1 : s ≤ 1 / 2) (ht : 1 < t) :
     ContinuousAt (xiSpeedDeriv s) t := by
-  have h1 : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+  have h1 : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
   have hsq : 0 < xiSpeed s t := xiSpeed_pos_of_le_half hs1 ht
-  have hden : ((t ^ 2 - 1) ^ 2 * xiSpeed s t) ≠ 0 := by positivity
+  have hden : ((t ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s t) ≠ 0 := by positivity
   have hnum : ContinuousAt (fun u : ℝ => u * (s - 1)) t := by fun_prop
-  have hd : ContinuousAt (fun u : ℝ => (u ^ 2 - 1) ^ 2 * xiSpeed s u) t :=
-    (by fun_prop : ContinuousAt (fun u : ℝ => (u ^ 2 - 1) ^ 2) t).mul
+  have hd : ContinuousAt (fun u : ℝ => (u ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s u) t :=
+    (by fun_prop : ContinuousAt (fun u : ℝ => (u ^ (2 : ℕ) - 1) ^ (2 : ℕ)) t).mul
       (continuousAt_xiSpeed ht)
   exact hnum.div hd hden
 
@@ -87,15 +87,15 @@ theorem continuousOn_dilatedRadialPhaseAccel {s r a b : ℝ} (hs1 : s ≤ 1 / 2)
   intro x hx
   have hrx : 1 < r * x := one_lt_mul_of_two_le hr ha hx.1
   have hlin : ContinuousAt (fun t : ℝ => r * t) x := by fun_prop
-  have h : ContinuousAt (fun t : ℝ => r ^ 2 * xiSpeedDeriv s (r * t)) x :=
-    (((continuousAt_xiSpeedDeriv hs1 hrx).comp hlin).const_smul (r ^ 2))
+  have h : ContinuousAt (fun t : ℝ => r ^ (2 : ℕ) * xiSpeedDeriv s (r * t)) x :=
+    (((continuousAt_xiSpeedDeriv hs1 hrx).comp hlin).const_smul (r ^ (2 : ℕ)))
   exact h.continuousWithinAt
 
 /-! ## The curvature of the dilated phase -/
 
 theorem one_le_xiSpeed_of_le_one {s t : ℝ} (hs1 : s ≤ 1) (ht : 1 < t) : 1 ≤ xiSpeed s t := by
-  have h1 : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
-  have hratio : (1 : ℝ) ≤ (t ^ 2 - s) / (t ^ 2 - 1) := by
+  have h1 : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
+  have hratio : (1 : ℝ) ≤ (t ^ (2 : ℕ) - s) / (t ^ (2 : ℕ) - 1) := by
     rw [le_div_iff₀ h1]
     linarith
   have h := Real.sqrt_le_sqrt hratio
@@ -137,42 +137,42 @@ theorem le_dilatedRadialPhase {s r x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1) (hr :
 /-- **The dilated phase curvature decays like `1/(r x³)`.** -/
 theorem abs_dilatedRadialPhaseAccel_le {s r x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hr : 2 ≤ r) (hx : 1 ≤ x) :
-    |dilatedRadialPhaseAccel s r x| ≤ 16 / 9 / (r * x ^ 3) := by
+    |dilatedRadialPhaseAccel s r x| ≤ 16 / 9 / (r * x ^ (3 : ℕ)) := by
   have hr0 : (0 : ℝ) < r := lt_of_lt_of_le (by norm_num) hr
   have hx0 : (0 : ℝ) < x := lt_of_lt_of_le (by norm_num) hx
   have hu : (2 : ℝ) ≤ r * x := by nlinarith
   have hu1 : (1 : ℝ) < r * x := by linarith
   have hu0 : (0 : ℝ) < r * x := by linarith
-  have husq : (4 : ℝ) ≤ (r * x) ^ 2 := by nlinarith
-  have hden : (0 : ℝ) < (r * x) ^ 2 - 1 := by linarith
+  have husq : (4 : ℝ) ≤ (r * x) ^ (2 : ℕ) := by nlinarith
+  have hden : (0 : ℝ) < (r * x) ^ (2 : ℕ) - 1 := by linarith
   have hspeed : (1 : ℝ) ≤ xiSpeed s (r * x) := one_le_xiSpeed_of_le_one (by linarith) hu1
   have hspeed0 : (0 : ℝ) < xiSpeed s (r * x) := lt_of_lt_of_le zero_lt_one hspeed
   have hnum : |(r * x) * (s - 1)| = (r * x) * (1 - s) := by
     rw [abs_mul, abs_of_pos hu0, abs_of_nonpos (by linarith : s - 1 ≤ 0)]
     ring
   have hval : |xiSpeedDeriv s (r * x)|
-      = (r * x) * (1 - s) / (((r * x) ^ 2 - 1) ^ 2 * xiSpeed s (r * x)) := by
+      = (r * x) * (1 - s) / (((r * x) ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s (r * x)) := by
     rw [xiSpeedDeriv, abs_div, hnum, abs_of_pos (by positivity)]
-  have hquotient : (r * x) * (1 - s) / (((r * x) ^ 2 - 1) ^ 2 * xiSpeed s (r * x))
-      ≤ 16 / 9 / (r * x) ^ 3 := by
+  have hquotient : (r * x) * (1 - s) / (((r * x) ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s (r * x))
+      ≤ 16 / 9 / (r * x) ^ (3 : ℕ) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    have hsq : (9 : ℝ) / 16 * (r * x) ^ 4 ≤ ((r * x) ^ 2 - 1) ^ 2 := by
-      have h34 : (3 : ℝ) / 4 * (r * x) ^ 2 ≤ (r * x) ^ 2 - 1 := by nlinarith
+    have hsq : (9 : ℝ) / 16 * (r * x) ^ (4 : ℕ) ≤ ((r * x) ^ (2 : ℕ) - 1) ^ (2 : ℕ) := by
+      have h34 : (3 : ℝ) / 4 * (r * x) ^ (2 : ℕ) ≤ (r * x) ^ (2 : ℕ) - 1 := by nlinarith
       nlinarith [h34, husq]
     have hs1' : (1 : ℝ) - s ≤ 1 := by linarith
     nlinarith [hsq, hspeed, hs1', hu0, pow_pos hu0 3, pow_pos hu0 4,
       mul_pos (pow_pos hu0 3) hspeed0]
-  have hfinal : |dilatedRadialPhaseAccel s r x| ≤ r ^ 2 * (16 / 9 / (r * x) ^ 3) := by
-    rw [dilatedRadialPhaseAccel, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ r ^ 2)]
+  have hfinal : |dilatedRadialPhaseAccel s r x| ≤ r ^ (2 : ℕ) * (16 / 9 / (r * x) ^ (3 : ℕ)) := by
+    rw [dilatedRadialPhaseAccel, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ r ^ (2 : ℕ))]
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
     exact le_trans (le_of_eq hval) hquotient
-  have hid : r ^ 2 * (16 / 9 / (r * x) ^ 3) = 16 / 9 / (r * x ^ 3) := by
+  have hid : r ^ (2 : ℕ) * (16 / 9 / (r * x) ^ (3 : ℕ)) = 16 / 9 / (r * x ^ (3 : ℕ)) := by
     field_simp
   rwa [hid] at hfinal
 
 theorem abs_dilatedRadialPhaseAccel_sub_le {s j k x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hj : 2 ≤ j) (hk : 2 ≤ k) (hx : 1 ≤ x) :
-    |dilatedRadialPhaseAccel s j x - dilatedRadialPhaseAccel s k x| ≤ 16 / 9 / x ^ 3 := by
+    |dilatedRadialPhaseAccel s j x - dilatedRadialPhaseAccel s k x| ≤ 16 / 9 / x ^ (3 : ℕ) := by
   have hj0 : (0 : ℝ) < j := lt_of_lt_of_le (by norm_num) hj
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le (by norm_num) hk
   have hx0 : (0 : ℝ) < x := lt_of_lt_of_le (by norm_num) hx
@@ -180,21 +180,21 @@ theorem abs_dilatedRadialPhaseAccel_sub_le {s j k x : ℝ} (hs : 0 ≤ s) (hs1 :
   have hbk := abs_dilatedRadialPhaseAccel_le hs hs1 hk hx
   have hstep : |dilatedRadialPhaseAccel s j x - dilatedRadialPhaseAccel s k x|
       ≤ |dilatedRadialPhaseAccel s j x| + |dilatedRadialPhaseAccel s k x| := abs_sub _ _
-  have hx3 : (0 : ℝ) < x ^ 3 := by positivity
-  have hj2 : 16 / 9 / (j * x ^ 3) ≤ 16 / 9 / (2 * x ^ 3) := by
+  have hx3 : (0 : ℝ) < x ^ (3 : ℕ) := by positivity
+  have hj2 : 16 / 9 / (j * x ^ (3 : ℕ)) ≤ 16 / 9 / (2 * x ^ (3 : ℕ)) := by
     apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
     nlinarith [hx3, hj]
-  have hk2 : 16 / 9 / (k * x ^ 3) ≤ 16 / 9 / (2 * x ^ 3) := by
+  have hk2 : 16 / 9 / (k * x ^ (3 : ℕ)) ≤ 16 / 9 / (2 * x ^ (3 : ℕ)) := by
     apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
     nlinarith [hx3, hk]
-  have hid : 16 / 9 / (2 * x ^ 3) + 16 / 9 / (2 * x ^ 3) = 16 / 9 / x ^ 3 := by
+  have hid : 16 / 9 / (2 * x ^ (3 : ℕ)) + 16 / 9 / (2 * x ^ (3 : ℕ)) = 16 / 9 / x ^ (3 : ℕ) := by
     field_simp
     ring
   linarith
 
 theorem abs_dilatedRadialPhaseAccel_add_le {s j k x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hj : 2 ≤ j) (hk : 2 ≤ k) (hx : 1 ≤ x) :
-    |dilatedRadialPhaseAccel s j x + dilatedRadialPhaseAccel s k x| ≤ 16 / 9 / x ^ 3 := by
+    |dilatedRadialPhaseAccel s j x + dilatedRadialPhaseAccel s k x| ≤ 16 / 9 / x ^ (3 : ℕ) := by
   have hj0 : (0 : ℝ) < j := lt_of_lt_of_le (by norm_num) hj
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le (by norm_num) hk
   have hx0 : (0 : ℝ) < x := lt_of_lt_of_le (by norm_num) hx
@@ -202,14 +202,14 @@ theorem abs_dilatedRadialPhaseAccel_add_le {s j k x : ℝ} (hs : 0 ≤ s) (hs1 :
   have hbk := abs_dilatedRadialPhaseAccel_le hs hs1 hk hx
   have hstep : |dilatedRadialPhaseAccel s j x + dilatedRadialPhaseAccel s k x|
       ≤ |dilatedRadialPhaseAccel s j x| + |dilatedRadialPhaseAccel s k x| := abs_add_le _ _
-  have hx3 : (0 : ℝ) < x ^ 3 := by positivity
-  have hj2 : 16 / 9 / (j * x ^ 3) ≤ 16 / 9 / (2 * x ^ 3) := by
+  have hx3 : (0 : ℝ) < x ^ (3 : ℕ) := by positivity
+  have hj2 : 16 / 9 / (j * x ^ (3 : ℕ)) ≤ 16 / 9 / (2 * x ^ (3 : ℕ)) := by
     apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
     nlinarith [hx3, hj]
-  have hk2 : 16 / 9 / (k * x ^ 3) ≤ 16 / 9 / (2 * x ^ 3) := by
+  have hk2 : 16 / 9 / (k * x ^ (3 : ℕ)) ≤ 16 / 9 / (2 * x ^ (3 : ℕ)) := by
     apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
     nlinarith [hx3, hk]
-  have hid : 16 / 9 / (2 * x ^ 3) + 16 / 9 / (2 * x ^ 3) = 16 / 9 / x ^ 3 := by
+  have hid : 16 / 9 / (2 * x ^ (3 : ℕ)) + 16 / 9 / (2 * x ^ (3 : ℕ)) = 16 / 9 / x ^ (3 : ℕ) := by
     field_simp
     ring
   linarith

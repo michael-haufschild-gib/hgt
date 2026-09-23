@@ -21,7 +21,7 @@ noncomputable section
 
 /-- Four actual field coefficients combined along the independent mode parameter. -/
 def fieldPath (H : Fin 4 → MetricField) (z : ℂ) : MetricField :=
-  fun x => H 0 x + z • H 1 x + z^2 • H 2 x + z^3 • H 3 x
+  fun x => H 0 x + z • H 1 x + z^(2 : ℕ) • H 2 x + z^(3 : ℕ) • H 3 x
 
 private theorem fieldPath_smooth (p : ExteriorPoint) (H : Fin 4 → MetricField)
     (hH : ∀ a i j, ContDiffAt ℝ 2 (fun x => H a x i j) p.val) (z : ℂ) (i j : Fin 4) :
@@ -40,13 +40,13 @@ theorem fieldPath_jet (p : ExteriorPoint) (H : Fin 4 → MetricField)
       (fieldSpace p (H 0)) (fieldSpace p (H 1)) (fieldSpace p (H 2)) (fieldSpace p (H 3)) z := by
   have hs (a : Fin 4) (c : ℂ) (i j : Fin 4) :
       ContDiffAt ℝ 2 (fun x => (c • H a x) i j) p.val := contDiffAt_const.mul (hH a i j)
-  change toSpace (ofMetricField (fun x => H 0 x + z • H 1 x + z^2 • H 2 x + z^3 • H 3 x) p.val) = _
+  change toSpace (ofMetricField (fun x => H 0 x + z • H 1 x + z^(2 : ℕ) • H 2 x + z^(3 : ℕ) • H 3 x) p.val) = _
   rw [D4BMFullLinearEquation.fieldSpace_add p
-      (fun x => H 0 x + z • H 1 x + z^2 • H 2 x) (fun x => z^3 • H 3 x)
-      (fun i j => ((hH 0 i j).add (hs 1 z i j)).add (hs 2 (z^2) i j)) (hs 3 (z^3)),
+      (fun x => H 0 x + z • H 1 x + z^(2 : ℕ) • H 2 x) (fun x => z^(3 : ℕ) • H 3 x)
+      (fun i j => ((hH 0 i j).add (hs 1 z i j)).add (hs 2 (z^(2 : ℕ)) i j)) (hs 3 (z^(3 : ℕ))),
     D4BMFullLinearEquation.fieldSpace_add p
-      (fun x => H 0 x + z • H 1 x) (fun x => z^2 • H 2 x)
-      (fun i j => (hH 0 i j).add (hs 1 z i j)) (hs 2 (z^2)),
+      (fun x => H 0 x + z • H 1 x) (fun x => z^(2 : ℕ) • H 2 x)
+      (fun i j => (hH 0 i j).add (hs 1 z i j)) (hs 2 (z^(2 : ℕ))),
     D4BMFullLinearEquation.fieldSpace_add p (H 0) (fun x => z • H 1 x) (hH 0) (hs 1 z),
     D4BMCorrectedMetricSource.fieldSpace_smul p (H 1) (hH 1),
     D4BMCorrectedMetricSource.fieldSpace_smul p (H 2) (hH 2),

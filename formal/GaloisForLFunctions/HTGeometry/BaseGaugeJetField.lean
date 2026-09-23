@@ -91,27 +91,27 @@ theorem exists_baseCombination_differentialJet_mul (a : F) (x : L) (i : ℕ) :
           norm_num
 
 /-- The finite jet field of an element over the differential base. -/
-def jetField (F : Type*) {L : Type*} [Field F] [Field L] [Algebra F L] [Differential L]
+def jetField_baseGaugeJetField (F : Type*) {L : Type*} [Field F] [Field L] [Algebra F L] [Differential L]
     (x : L) (m : ℕ) : IntermediateField F L :=
   IntermediateField.adjoin F ((fun k => differentialJet k x) '' Set.Iic m)
 
 omit [Differential F] [DifferentialAlgebra F L] in
 theorem differentialJet_mem_jetField (x : L) {m k : ℕ} (hk : k ≤ m) :
-    differentialJet k x ∈ jetField F x m :=
+    differentialJet k x ∈ jetField_baseGaugeJetField F x m :=
   IntermediateField.subset_adjoin F _ ⟨k, hk, rfl⟩
 
 theorem differentialJet_mul_base_mem_jetField (a : F) (x : L) {m i : ℕ} (hi : i ≤ m) :
-    differentialJet i (algebraMap F L a * x) ∈ jetField F x m := by
+    differentialJet i (algebraMap F L a * x) ∈ jetField_baseGaugeJetField F x m := by
   obtain ⟨c, -, -, hrep⟩ := exists_baseCombination_differentialJet_mul a x i
   rw [hrep]
   refine Subalgebra.sum_mem _ fun k hk => ?_
   refine Subalgebra.mul_mem _ ?_ ?_
-  · exact (jetField F x m).algebraMap_mem _
+  · exact (jetField_baseGaugeJetField F x m).algebraMap_mem _
   · exact differentialJet_mem_jetField x (le_trans (Nat.lt_succ_iff.mp
       (Finset.mem_range.mp hk)) hi)
 
 theorem jetField_mul_base_le (a : F) (x : L) (m : ℕ) :
-    jetField F (algebraMap F L a * x) m ≤ jetField F x m := by
+    jetField_baseGaugeJetField F (algebraMap F L a * x) m ≤ jetField_baseGaugeJetField F x m := by
   refine IntermediateField.adjoin_le_iff.mpr ?_
   rintro - ⟨i, hi, rfl⟩
   exact differentialJet_mul_base_mem_jetField a x hi
@@ -119,10 +119,10 @@ theorem jetField_mul_base_le (a : F) (x : L) (m : ℕ) :
 /-- **A nonzero base gauge leaves every finite jet field unchanged.**  This is equation `(3a)` of
 the gauge-blindness card at the level of jet fields. -/
 theorem jetField_mul_base_eq {a : F} (ha : a ≠ 0) (x : L) (m : ℕ) :
-    jetField F (algebraMap F L a * x) m = jetField F x m := by
+    jetField_baseGaugeJetField F (algebraMap F L a * x) m = jetField_baseGaugeJetField F x m := by
   refine le_antisymm (jetField_mul_base_le a x m) ?_
-  have hback : jetField F (algebraMap F L a⁻¹ * (algebraMap F L a * x)) m
-      ≤ jetField F (algebraMap F L a * x) m :=
+  have hback : jetField_baseGaugeJetField F (algebraMap F L a⁻¹ * (algebraMap F L a * x)) m
+      ≤ jetField_baseGaugeJetField F (algebraMap F L a * x) m :=
     jetField_mul_base_le a⁻¹ _ m
   have hx : algebraMap F L a⁻¹ * (algebraMap F L a * x) = x := by
     rw [← mul_assoc, ← map_mul, inv_mul_cancel₀ ha, map_one, one_mul]
@@ -133,12 +133,12 @@ theorem jetField_mul_base_eq {a : F} (ha : a ≠ 0) (x : L) (m : ℕ) :
 /-- The aperture predicate at level `m`: the fresh jet is algebraic over the jet prefix field. -/
 def JetAlgebraicOver (F : Type*) {L : Type*} [Field F] [Field L] [Algebra F L] [Differential L]
     (x : L) (m : ℕ) : Prop :=
-  IsAlgebraic (jetField F x m) (differentialJet (m + 1) x)
+  IsAlgebraic (jetField_baseGaugeJetField F x m) (differentialJet (m + 1) x)
 
 omit [Differential F] [DifferentialAlgebra F L] in
-theorem isAlgebraic_of_mem_jetField {x v : L} {m : ℕ} (hv : v ∈ jetField F x m) :
-    IsAlgebraic (jetField F x m) v := by
-  have h := isAlgebraic_algebraMap (R := jetField F x m) (A := L) (⟨v, hv⟩ : jetField F x m)
+theorem isAlgebraic_of_mem_jetField {x v : L} {m : ℕ} (hv : v ∈ jetField_baseGaugeJetField F x m) :
+    IsAlgebraic (jetField_baseGaugeJetField F x m) v := by
+  have h := isAlgebraic_algebraMap (R := jetField_baseGaugeJetField F x m) (A := L) (⟨v, hv⟩ : jetField_baseGaugeJetField F x m)
   simpa using h
 
 /-- **The minimal differential aperture is a base-gauge invariant.**  Equation `(3a)`. -/
@@ -146,12 +146,12 @@ theorem jetAlgebraicOver_mul_base_iff {a : F} (ha : a ≠ 0) (x : L) (m : ℕ) :
     JetAlgebraicOver F (algebraMap F L a * x) m ↔ JetAlgebraicOver F x m := by
   classical
   obtain ⟨c, -, htop, hrep⟩ := exists_baseCombination_differentialJet_mul a x (m + 1)
-  have hJeq : jetField F (algebraMap F L a * x) m = jetField F x m :=
+  have hJeq : jetField_baseGaugeJetField F (algebraMap F L a * x) m = jetField_baseGaugeJetField F x m :=
     jetField_mul_base_eq ha x m
   set w : L := ∑ k ∈ Finset.range (m + 1), algebraMap F L (c k) * differentialJet k x with hw
-  have hwmem : w ∈ jetField F x m := by
+  have hwmem : w ∈ jetField_baseGaugeJetField F x m := by
     refine Subalgebra.sum_mem _ fun k hk => ?_
-    exact Subalgebra.mul_mem _ ((jetField F x m).algebraMap_mem _)
+    exact Subalgebra.mul_mem _ ((jetField_baseGaugeJetField F x m).algebraMap_mem _)
       (differentialJet_mem_jetField x (Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)))
   have hsplit : differentialJet (m + 1) (algebraMap F L a * x)
       = algebraMap F L a * differentialJet (m + 1) x + w := by
@@ -159,12 +159,12 @@ theorem jetAlgebraicOver_mul_base_iff {a : F} (ha : a ≠ 0) (x : L) (m : ℕ) :
     ring
   have hane : algebraMap F L a ≠ 0 := by
     simpa using (map_ne_zero_iff (algebraMap F L) (algebraMap F L).injective).mpr ha
-  have hamem : algebraMap F L a ∈ jetField F x m := (jetField F x m).algebraMap_mem a
-  have haInvMem : (algebraMap F L a)⁻¹ ∈ jetField F x m := (jetField F x m).inv_mem hamem
+  have hamem : algebraMap F L a ∈ jetField_baseGaugeJetField F x m := (jetField_baseGaugeJetField F x m).algebraMap_mem a
+  have haInvMem : (algebraMap F L a)⁻¹ ∈ jetField_baseGaugeJetField F x m := (jetField_baseGaugeJetField F x m).inv_mem hamem
   rw [JetAlgebraicOver, JetAlgebraicOver, hJeq, hsplit]
   constructor
   · intro h
-    have hsub : IsAlgebraic (jetField F x m) (algebraMap F L a * differentialJet (m + 1) x) := by
+    have hsub : IsAlgebraic (jetField_baseGaugeJetField F x m) (algebraMap F L a * differentialJet (m + 1) x) := by
       have := h.sub (isAlgebraic_of_mem_jetField hwmem)
       simpa using this
     have hmul := (isAlgebraic_of_mem_jetField haInvMem).mul hsub

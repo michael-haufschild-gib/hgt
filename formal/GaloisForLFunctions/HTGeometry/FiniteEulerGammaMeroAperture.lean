@@ -264,7 +264,7 @@ theorem finiteEulerGamma_state_ai (S : Finset Nat.Primes) :
     finiteEulerGamma_anchor_initial_jets_ai S
   have hymem : ∀ i, y i ∈ M := by
     intro i
-    exact differentialJet_mem_of_derivationClosed hclosed (i : ℕ)
+    exact differentialJet_mem_of_derivationClosed_jetHorizonTorsorTower hclosed (i : ℕ)
       (finiteEulerGamma_anchor_mem_state_adjoin S)
   exact algebraicIndependent_of_independent_family_mem_adjoin
     (finitePrimeEulerMeroState S) y hy hymem rfl

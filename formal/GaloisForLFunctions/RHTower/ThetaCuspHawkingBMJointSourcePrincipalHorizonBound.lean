@@ -20,10 +20,10 @@ theorem horizonCoordinate_norm_le_exp (t : ℝ) (ht : t < 0) :
   have hu := radialUnit_bounds t ht
   have hz := horizonCoordinate_interior t ht
   rw [Complex.norm_real,Real.norm_eq_abs,abs_of_pos hz.1,horizonCoordinate_factor,mul_pow]
-  have he : (Real.exp t)^2 = Real.exp (2*t) := by rw [pow_two,← Real.exp_add]; congr 1; ring
+  have he : (Real.exp t)^(2 : ℕ) = Real.exp (2*t) := by rw [pow_two,← Real.exp_add]; congr 1; ring
   rw [he]
   nlinarith [Real.exp_pos (2*t),mul_nonneg (Real.exp_pos (2*t)).le
-    (show 0 ≤ 4-(1+radialUnit t)^2 by nlinarith)]
+    (show 0 ≤ 4-(1+radialUnit t)^(2 : ℕ) by nlinarith)]
 
 /-- Exact source cancellation yields the decaying forcing required by the principal ODE. -/
 theorem reducedCoefficient_amplitude_norm_le_exp (s w a T J : ℂ) :
@@ -49,7 +49,7 @@ theorem continuedPrincipalDifference_norm_le_exp (q : XiZeroCopy) (branch : Bool
   let m := principalExponent q i
   let J := principalAmplitude q i
   by_cases hc : connection w (principalFrequency q i) = 0
-  · let P : ℝ → ℂ := fun u => (s*(s-1)/4)*(u:ℂ)^3*J
+  · let P : ℝ → ℂ := fun u => (s*(s-1)/4)*(u:ℂ)^(3 : ℕ)*J
     obtain ⟨C,hC,hb⟩ := sourceAmplitude_profile_norm_le_exp s w a T P (by dsimp [P]; fun_prop)
     refine ⟨C,hC,fun t ht => ?_⟩
     have he : continuedPrincipalDifference q branch w a i t =
@@ -65,7 +65,7 @@ theorem continuedPrincipalDifference_norm_le_exp (q : XiZeroCopy) (branch : Bool
     let p : ℝ → ℂ := fun t => -(horizonCoordinate t:ℂ)*(m*(m-1))
     let f : ℝ → ℂ := fun t => reducedCoefficient s w a T t*J
     have hd (t : ℝ) (ht : t < 0) := continuedPrincipalDifference_hasDerivAt q branch w a hw hwre i t ht
-    have hV (t : ℝ) (ht : t < 0) : HasDerivAt V (w^2*U t+p t*U t-f t) t := by
+    have hV (t : ℝ) (ht : t < 0) : HasDerivAt V (w^(2 : ℕ)*U t+p t*U t-f t) t := by
       have he := continuedPrincipalDifference_equation q branch w a hw hwre i hc t ht
       rw [continuedPrincipalDifference_secondDerivative q branch w a hw hwre i t ht] at he
       convert! (hd t ht).2 using 1

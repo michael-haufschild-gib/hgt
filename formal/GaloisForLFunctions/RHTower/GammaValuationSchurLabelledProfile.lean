@@ -47,7 +47,7 @@ theorem gammaValuationNthPrimeIndexWeight_le_height (e n : ℕ) :
       (nthPrimeSubtype_index_add_two_le n))
   have hp1 : (1 : ℝ) ≤ (nthPrimeSubtype n : ℝ) := by
     exact_mod_cast (nthPrimeSubtype n).2.one_le
-  have hpow : (nthPrimeSubtype n : ℝ) ^ 1 ≤
+  have hpow : (nthPrimeSubtype n : ℝ) ^ (1 : ℕ) ≤
       (nthPrimeSubtype n : ℝ) ^ (e + 1) :=
     pow_le_pow_right₀ hp1 (by omega)
   exact hindex.trans (by simpa using hpow)
@@ -60,7 +60,7 @@ theorem summable_gammaValuationAdjacentPrimitiveProfile
   let w : ℕ × ℕ → ℝ := fun en =>
     (en.2 + 1 : ℝ) * ‖gammaValuationNthPrimeCoord en.1 a en.2‖
   have hbase : Summable (fun en : ℕ × ℕ =>
-      deningerHeight (gammaValuationNthPrimeAxis en.1 en.2) ^ 1 *
+      deningerHeight (gammaValuationNthPrimeAxis en.1 en.2) ^ (1 : ℕ) *
         ‖gammaValuationNthPrimeCoord en.1 a en.2‖) :=
     (deningerHeightSeminorm_summable a 1).comp_injective
       gammaValuationNthPrimeAxis_pair_injective

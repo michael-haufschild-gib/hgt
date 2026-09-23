@@ -8,7 +8,7 @@ private def D (q : ℝ) := innerErrorDenominator q
 /-- Twice the inner polynomial controls the complete derivative convolution through order twelve. -/
 def middleEvenErrorBound (k : ℕ) (q : ℝ) : ℝ := 2*innerEvenErrorBound k q
 
-private theorem budget_zero {v : ℝ} (hv : 0 ≤ v) : 0 < (1/2000000)*(D (5+v))^2-(2*P 0 (5+v)*D (5+v)) := by
+private theorem budget_zero {v : ℝ} (hv : 0 ≤ v) : 0 < (1/2000000)*(D (5+v))^(2 : ℕ)-(2*P 0 (5+v)*D (5+v)) := by
   dsimp [D,P]
   simp only [innerErrorDenominator_eq]
   norm_num [innerEvenErrorPolynomial,innerPartitionErrorCoefficient,
@@ -28,14 +28,14 @@ theorem middleEvenErrorBound_zero {q : ℝ} (hq : 5 ≤ q) :
   have h := budget_zero (v:=q-5) (by linarith)
   rw [show (5 : ℝ)+(q-5)=q by ring] at h
   have hp := div_pos h (pow_pos hd 2)
-  have he : (1/2000000)-(middleEvenErrorBound 0 q) = ((1/2000000)*(D q)^2-(2*P 0 q*D q))/(D q)^2 := by
+  have he : (1/2000000)-(middleEvenErrorBound 0 q) = ((1/2000000)*(D q)^(2 : ℕ)-(2*P 0 q*D q))/(D q)^(2 : ℕ) := by
     simp only [middleEvenErrorBound,innerEvenErrorBound_eq,P,D]
     field_simp [show innerErrorDenominator q ≠ 0 from hd.ne']
     all_goals ring
   rw [← he] at hp
   linarith only [hp]
 
-private theorem budget_one {v : ℝ} (hv : 0 ≤ v) : 0 < (1/40000)*(D (5+v))^2-(2*P 2 (5+v)*D (5+v)+32000000*(P 1 (5+v))^2) := by
+private theorem budget_one {v : ℝ} (hv : 0 ≤ v) : 0 < (1/40000)*(D (5+v))^(2 : ℕ)-(2*P 2 (5+v)*D (5+v)+32000000*(P 1 (5+v))^(2 : ℕ)) := by
   dsimp [D,P]
   simp only [innerErrorDenominator_eq]
   norm_num [innerEvenErrorPolynomial,innerPartitionErrorCoefficient,
@@ -47,7 +47,7 @@ private theorem budget_one {v : ℝ} (hv : 0 ≤ v) : 0 < (1/40000)*(D (5+v))^2-
 
 /-- Strict middle-interval coordinate budget. -/
 theorem middleEvenErrorBound_one {q : ℝ} (hq : 5 ≤ q) :
-    middleEvenErrorBound 2 q+8000000*(middleEvenErrorBound 1 q)^2 < 1/40000 := by
+    middleEvenErrorBound 2 q+8000000*(middleEvenErrorBound 1 q)^(2 : ℕ) < 1/40000 := by
   have hd : 0 < D q := by
     have h := innerErrorDenominator_lower (q:=q) (by linarith)
     dsimp [D]
@@ -55,14 +55,14 @@ theorem middleEvenErrorBound_one {q : ℝ} (hq : 5 ≤ q) :
   have h := budget_one (v:=q-5) (by linarith)
   rw [show (5 : ℝ)+(q-5)=q by ring] at h
   have hp := div_pos h (pow_pos hd 2)
-  have he : (1/40000)-(middleEvenErrorBound 2 q+8000000*(middleEvenErrorBound 1 q)^2) = ((1/40000)*(D q)^2-(2*P 2 q*D q+32000000*(P 1 q)^2))/(D q)^2 := by
+  have he : (1/40000)-(middleEvenErrorBound 2 q+8000000*(middleEvenErrorBound 1 q)^(2 : ℕ)) = ((1/40000)*(D q)^(2 : ℕ)-(2*P 2 q*D q+32000000*(P 1 q)^(2 : ℕ)))/(D q)^(2 : ℕ) := by
     simp only [middleEvenErrorBound,innerEvenErrorBound_eq,P,D]
     field_simp [show innerErrorDenominator q ≠ 0 from hd.ne']
     all_goals ring
   rw [← he] at hp
   linarith only [hp]
 
-private theorem budget_two {v : ℝ} (hv : 0 ≤ v) : 0 < (1/20)*(D (5+v))^2-(2*P 4 (5+v)*D (5+v)+32000000*(P 2 (5+v))^2+160000*(P 3 (5+v))^2) := by
+private theorem budget_two {v : ℝ} (hv : 0 ≤ v) : 0 < (1/20)*(D (5+v))^(2 : ℕ)-(2*P 4 (5+v)*D (5+v)+32000000*(P 2 (5+v))^(2 : ℕ)+160000*(P 3 (5+v))^(2 : ℕ)) := by
   dsimp [D,P]
   simp only [innerErrorDenominator_eq]
   norm_num [innerEvenErrorPolynomial,innerPartitionErrorCoefficient,
@@ -74,7 +74,7 @@ private theorem budget_two {v : ℝ} (hv : 0 ≤ v) : 0 < (1/20)*(D (5+v))^2-(2*
 
 /-- Strict middle-interval coordinate budget. -/
 theorem middleEvenErrorBound_two {q : ℝ} (hq : 5 ≤ q) :
-    middleEvenErrorBound 4 q+8000000*(middleEvenErrorBound 2 q)^2+40000*(middleEvenErrorBound 3 q)^2 < 1/20 := by
+    middleEvenErrorBound 4 q+8000000*(middleEvenErrorBound 2 q)^(2 : ℕ)+40000*(middleEvenErrorBound 3 q)^(2 : ℕ) < 1/20 := by
   have hd : 0 < D q := by
     have h := innerErrorDenominator_lower (q:=q) (by linarith)
     dsimp [D]
@@ -82,14 +82,14 @@ theorem middleEvenErrorBound_two {q : ℝ} (hq : 5 ≤ q) :
   have h := budget_two (v:=q-5) (by linarith)
   rw [show (5 : ℝ)+(q-5)=q by ring] at h
   have hp := div_pos h (pow_pos hd 2)
-  have he : (1/20)-(middleEvenErrorBound 4 q+8000000*(middleEvenErrorBound 2 q)^2+40000*(middleEvenErrorBound 3 q)^2) = ((1/20)*(D q)^2-(2*P 4 q*D q+32000000*(P 2 q)^2+160000*(P 3 q)^2))/(D q)^2 := by
+  have he : (1/20)-(middleEvenErrorBound 4 q+8000000*(middleEvenErrorBound 2 q)^(2 : ℕ)+40000*(middleEvenErrorBound 3 q)^(2 : ℕ)) = ((1/20)*(D q)^(2 : ℕ)-(2*P 4 q*D q+32000000*(P 2 q)^(2 : ℕ)+160000*(P 3 q)^(2 : ℕ)))/(D q)^(2 : ℕ) := by
     simp only [middleEvenErrorBound,innerEvenErrorBound_eq,P,D]
     field_simp [show innerErrorDenominator q ≠ 0 from hd.ne']
     all_goals ring
   rw [← he] at hp
   linarith only [hp]
 
-private theorem budget_three {v : ℝ} (hv : 0 ≤ v) : 0 < (1)*(D (5+v))^2-(2*P 6 (5+v)*D (5+v)+16000000*(P 3 (5+v))^2+80000*(P 4 (5+v))^2+80*(P 5 (5+v))^2) := by
+private theorem budget_three {v : ℝ} (hv : 0 ≤ v) : 0 < (1)*(D (5+v))^(2 : ℕ)-(2*P 6 (5+v)*D (5+v)+16000000*(P 3 (5+v))^(2 : ℕ)+80000*(P 4 (5+v))^(2 : ℕ)+80*(P 5 (5+v))^(2 : ℕ)) := by
   dsimp [D,P]
   simp only [innerErrorDenominator_eq]
   norm_num [innerEvenErrorPolynomial,innerPartitionErrorCoefficient,
@@ -101,7 +101,7 @@ private theorem budget_three {v : ℝ} (hv : 0 ≤ v) : 0 < (1)*(D (5+v))^2-(2*P
 
 /-- Strict middle-interval coordinate budget. -/
 theorem middleEvenErrorBound_three {q : ℝ} (hq : 5 ≤ q) :
-    middleEvenErrorBound 6 q+4000000*(middleEvenErrorBound 3 q)^2+20000*(middleEvenErrorBound 4 q)^2+20*(middleEvenErrorBound 5 q)^2 < 1 := by
+    middleEvenErrorBound 6 q+4000000*(middleEvenErrorBound 3 q)^(2 : ℕ)+20000*(middleEvenErrorBound 4 q)^(2 : ℕ)+20*(middleEvenErrorBound 5 q)^(2 : ℕ) < 1 := by
   have hd : 0 < D q := by
     have h := innerErrorDenominator_lower (q:=q) (by linarith)
     dsimp [D]
@@ -109,7 +109,7 @@ theorem middleEvenErrorBound_three {q : ℝ} (hq : 5 ≤ q) :
   have h := budget_three (v:=q-5) (by linarith)
   rw [show (5 : ℝ)+(q-5)=q by ring] at h
   have hp := div_pos h (pow_pos hd 2)
-  have he : (1)-(middleEvenErrorBound 6 q+4000000*(middleEvenErrorBound 3 q)^2+20000*(middleEvenErrorBound 4 q)^2+20*(middleEvenErrorBound 5 q)^2) = ((1)*(D q)^2-(2*P 6 q*D q+16000000*(P 3 q)^2+80000*(P 4 q)^2+80*(P 5 q)^2))/(D q)^2 := by
+  have he : (1)-(middleEvenErrorBound 6 q+4000000*(middleEvenErrorBound 3 q)^(2 : ℕ)+20000*(middleEvenErrorBound 4 q)^(2 : ℕ)+20*(middleEvenErrorBound 5 q)^(2 : ℕ)) = ((1)*(D q)^(2 : ℕ)-(2*P 6 q*D q+16000000*(P 3 q)^(2 : ℕ)+80000*(P 4 q)^(2 : ℕ)+80*(P 5 q)^(2 : ℕ)))/(D q)^(2 : ℕ) := by
     simp only [middleEvenErrorBound,innerEvenErrorBound_eq,P,D]
     field_simp [show innerErrorDenominator q ≠ 0 from hd.ne']
     all_goals ring
@@ -180,10 +180,10 @@ theorem middlePartitionErrorCoefficient_le_two_inner {n : ℕ} (hn : n ≤ 12) :
   nlinarith only [hh]
 
 private theorem weighted_pair (t a b : ℝ) {W : ℝ} (hW : 0 < W) :
-    2*t*|a*b| ≤ a^2/W+W*t^2*b^2 := by
+    2*t*|a*b| ≤ a^(2 : ℕ)/W+W*t^(2 : ℕ)*b^(2 : ℕ) := by
   have h := div_nonneg (sq_nonneg (|a|-W*t*|b|)) hW.le
-  have he : a^2/W+W*t^2*b^2-2*t*|a*b| = (|a|-W*t*|b|)^2/W := by
-    rw [abs_mul,show a^2=|a|^2 by rw [sq_abs],show b^2=|b|^2 by rw [sq_abs]]
+  have he : a^(2 : ℕ)/W+W*t^(2 : ℕ)*b^(2 : ℕ)-2*t*|a*b| = (|a|-W*t*|b|)^(2 : ℕ)/W := by
+    rw [abs_mul,show a^(2 : ℕ)=|a|^(2 : ℕ) by rw [sq_abs],show b^(2 : ℕ)=|b|^(2 : ℕ) by rw [sq_abs]]
     field_simp
     all_goals ring
   rw [← he] at h
@@ -191,12 +191,12 @@ private theorem weighted_pair (t a b : ℝ) {W : ℝ} (hW : 0 < W) :
 /-- All sixteen normalized entry-error contributions, with both ordered off-diagonal entries. -/
 def middleEvenErrorQuadratic (q x y z w : ℝ) : ℝ :=
   let e := fun k => middleEvenErrorBound k q
-  e 0*x^2+2*e 1*|x*y|+2*e 2*|x*z|+2*e 3*|x*w|+
-    e 2*y^2+2*e 3*|y*z|+2*e 4*|y*w|+e 4*z^2+2*e 5*|z*w|+e 6*w^2
+  e 0*x^(2 : ℕ)+2*e 1*|x*y|+2*e 2*|x*z|+2*e 3*|x*w|+
+    e 2*y^(2 : ℕ)+2*e 3*|y*z|+2*e 4*|y*w|+e 4*z^(2 : ℕ)+2*e 5*|z*w|+e 6*w^(2 : ℕ)
 /-- Coordinate reserve after charging the complete middle compensation. -/
 def middleEvenCoordinateReserve (_q x y z w : ℝ) : ℝ :=
-  x^2/1000000+y^2/10000+z^2/10+
-    w^2
+  x^(2 : ℕ)/1000000+y^(2 : ℕ)/10000+z^(2 : ℕ)/10+
+    w^(2 : ℕ)
 /-- The complete sixteen-entry error is strictly absorbed in every nonzero direction. -/
 theorem middleEvenErrorQuadratic_lt_reserve {q : ℝ} (hq : 5 ≤ q)
     (x y z w : ℝ) (hc : x ≠ 0 ∨ y ≠ 0 ∨ z ≠ 0 ∨ w ≠ 0) :
@@ -204,9 +204,9 @@ theorem middleEvenErrorQuadratic_lt_reserve {q : ℝ} (hq : 5 ≤ q)
   let e := fun k => middleEvenErrorBound k q
   let d : ℝ := 1
   let A : ℝ := e 0+1/2000000
-  let B : ℝ := e 2+8000000*(e 1)^2+3/40000
-  let C : ℝ := e 4+8000000*(e 2)^2+40000*(e 3)^2+1/20
-  let D : ℝ := e 6+4000000*(e 3)^2+20000*(e 4)^2+20*(e 5)^2
+  let B : ℝ := e 2+8000000*(e 1)^(2 : ℕ)+3/40000
+  let C : ℝ := e 4+8000000*(e 2)^(2 : ℕ)+40000*(e 3)^(2 : ℕ)+1/20
+  let D : ℝ := e 6+4000000*(e 3)^(2 : ℕ)+20000*(e 4)^(2 : ℕ)+20*(e 5)^(2 : ℕ)
   have hA : A < 1/1000000 := by
     have h := middleEvenErrorBound_zero hq
     dsimp [A,e]; linarith
@@ -224,22 +224,22 @@ theorem middleEvenErrorQuadratic_lt_reserve {q : ℝ} (hq : 5 ≤ q)
   have h12 := weighted_pair (e 3) y z (W:=40000) (by norm_num)
   have h13 := weighted_pair (e 4) y w (W:=20000) (by norm_num)
   have h23 := weighted_pair (e 5) z w (W:=20) (by norm_num)
-  have hsum : middleEvenErrorQuadratic q x y z w ≤ A*x^2+B*y^2+C*z^2+D*w^2 := by
+  have hsum : middleEvenErrorQuadratic q x y z w ≤ A*x^(2 : ℕ)+B*y^(2 : ℕ)+C*z^(2 : ℕ)+D*w^(2 : ℕ) := by
     dsimp [middleEvenErrorQuadratic,A,B,C,D,e] at *
     nlinarith only [h01,h02,h03,h12,h13,h23]
   have hAp : 0 < 1/1000000-A := by linarith
   have hBp : 0 < 1/10000-B := by linarith
   have hCp : 0 < 1/10-C := by linarith
   have hDp : 0 < d-D := by linarith
-  have hgap : 0 < (1/1000000-A)*x^2+(1/10000-B)*y^2+(1/10-C)*z^2+(d-D)*w^2 := by
+  have hgap : 0 < (1/1000000-A)*x^(2 : ℕ)+(1/10000-B)*y^(2 : ℕ)+(1/10-C)*z^(2 : ℕ)+(d-D)*w^(2 : ℕ) := by
     rcases hc with hx | hy | hz | hw
-    · have : 0 < x^2 := sq_pos_of_ne_zero hx
+    · have : 0 < x^(2 : ℕ) := sq_pos_of_ne_zero hx
       positivity
-    · have : 0 < y^2 := sq_pos_of_ne_zero hy
+    · have : 0 < y^(2 : ℕ) := sq_pos_of_ne_zero hy
       positivity
-    · have : 0 < z^2 := sq_pos_of_ne_zero hz
+    · have : 0 < z^(2 : ℕ) := sq_pos_of_ne_zero hz
       positivity
-    · have : 0 < w^2 := sq_pos_of_ne_zero hw
+    · have : 0 < w^(2 : ℕ) := sq_pos_of_ne_zero hw
       positivity
   dsimp [middleEvenCoordinateReserve]
   dsimp [d] at hgap

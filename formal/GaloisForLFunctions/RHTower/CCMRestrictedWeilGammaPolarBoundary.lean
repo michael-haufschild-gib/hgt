@@ -56,8 +56,8 @@ private theorem core_gauss (h : ℝ) :
       have hz : -h = 0 := Real.exp_injective (by simpa using heq)
       exact hh (by linarith)
     have hp : 1 + Real.exp (-h) ≠ 0 := by positivity
-    have hn2 : 1 - Real.exp (-h)^2 ≠ 0 := by
-      have heq : 1 - Real.exp (-h)^2 = (1-Real.exp (-h))*(1+Real.exp (-h)) := by ring
+    have hn2 : 1 - Real.exp (-h)^(2 : ℕ) ≠ 0 := by
+      have heq : 1 - Real.exp (-h)^(2 : ℕ) = (1-Real.exp (-h))*(1+Real.exp (-h)) := by ring
       rw [heq]
       exact mul_ne_zero (sub_ne_zero.mpr (Ne.symm hn)) hp
     field_simp
@@ -125,29 +125,29 @@ theorem ccmGammaPolarCore_pos_lt_one {h : ℝ} (hh : 0 < h) :
   let t := Real.exp (-(h/2))
   have ht : 0 < t := Real.exp_pos _
   have ht1 : t < 1 := Real.exp_lt_one_iff.mpr (by linarith)
-  have ht2 : Real.exp (-h)=t^2 := by
+  have ht2 : Real.exp (-h)=t^(2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have ht4 : Real.exp (-(2*h))=t^4 := by
+  have ht4 : Real.exp (-(2*h))=t^(4 : ℕ) := by
     rw [show (4:ℕ)=2*2 by norm_num, pow_mul, ← ht2, pow_two, ← Real.exp_add]
     congr 1
     ring
-  have heq : ccmGammaPolarCore h = t*(t^2+t+2)/((1+t)*(1+t^2)) := by
+  have heq : ccmGammaPolarCore h = t*(t^(2 : ℕ)+t+2)/((1+t)*(1+t^(2 : ℕ))) := by
     unfold ccmGammaPolarCore ccmGammaTranslationDensity geometricKernel
     rw [ht2, ht4]
-    change 2*(t/(1-t^4)) - t^2/(1-t^2) = _
-    have hden2 : 1-t^2 ≠ 0 := by nlinarith
-    have hden4 : 1-t^4 ≠ 0 := by
-      have hsq : t^2 < 1 := by nlinarith
-      nlinarith [sq_nonneg (t^2)]
-    have hden : (1+t)*(1+t^2) ≠ 0 := by positivity
+    change 2*(t/(1-t^(4 : ℕ))) - t^(2 : ℕ)/(1-t^(2 : ℕ)) = _
+    have hden2 : 1-t^(2 : ℕ) ≠ 0 := by nlinarith
+    have hden4 : 1-t^(4 : ℕ) ≠ 0 := by
+      have hsq : t^(2 : ℕ) < 1 := by nlinarith
+      nlinarith [sq_nonneg (t^(2 : ℕ))]
+    have hden : (1+t)*(1+t^(2 : ℕ)) ≠ 0 := by positivity
     field_simp
     ring
   rw [heq]
   constructor
   · positivity
-  · apply (div_lt_iff₀ (by positivity : 0<(1+t)*(1+t^2))).mpr
+  · apply (div_lt_iff₀ (by positivity : 0<(1+t)*(1+t^(2 : ℕ)))).mpr
     nlinarith
 
 private theorem geometric_integrable {r : ℝ} (hr : 0 < r) :
@@ -175,7 +175,7 @@ private theorem geometric_scaled_integral {r : ℝ} (hr : 0 < r) :
 private theorem reciprocal_sinh_eq (h : ℝ) :
     Real.exp (-h)/(1-Real.exp (-(2*h))) = geometricKernel h - geometricKernel (2*h) := by
   unfold geometricKernel
-  have he : Real.exp (-(2*h))=Real.exp (-h)^2 := by
+  have he : Real.exp (-(2*h))=Real.exp (-h)^(2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -187,8 +187,8 @@ private theorem reciprocal_sinh_eq (h : ℝ) :
       have hz : -h=0 := Real.exp_injective (by simpa using heq)
       exact hh (by linarith)
     have hp : 1+Real.exp (-h) ≠ 0 := by positivity
-    have hn2 : 1-Real.exp (-h)^2 ≠ 0 := by
-      rw [show 1-Real.exp (-h)^2=(1-Real.exp (-h))*(1+Real.exp (-h)) by ring]
+    have hn2 : 1-Real.exp (-h)^(2 : ℕ) ≠ 0 := by
+      rw [show 1-Real.exp (-h)^(2 : ℕ)=(1-Real.exp (-h))*(1+Real.exp (-h)) by ring]
       exact mul_ne_zero (sub_ne_zero.mpr (Ne.symm hn)) hp
     field_simp
     ring
@@ -427,7 +427,7 @@ theorem ccmGammaPolarBoundary_eq_log_tanh (R : ℝ) {L : ℝ} (hL : 0 < L) :
       -(1/2)*Real.log (1-Real.exp (-(2*R))) - (1/2)*Real.log (Real.tanh (L/2)) := by
   have hp : 0 < 1-Real.exp (-L) := one_sub_exp_neg_pos hL
   have hq : 0 < 1+Real.exp (-L) := by positivity
-  have he : Real.exp (-(2*L))=Real.exp (-L)^2 := by
+  have he : Real.exp (-(2*L))=Real.exp (-L)^(2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring

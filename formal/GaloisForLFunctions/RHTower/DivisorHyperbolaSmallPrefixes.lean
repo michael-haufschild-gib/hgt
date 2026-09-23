@@ -15,7 +15,7 @@ namespace RHTower
 private theorem orientation_gamma_lower : (5768/10000:ℝ) ≤ Real.eulerMascheroniConstant := by
   have h := (harmonic_mascheroni_half_bounds (n := 16) (by norm_num)).2
   have hlog : Real.log (16:ℝ)=4*Real.log 2 := by
-    rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]
+    rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]
     norm_num
   norm_num [harmonic,Finset.sum_range_succ,hlog] at h
   linarith [Real.log_two_lt_d9]
@@ -29,10 +29,10 @@ private theorem orientation_log_bounds :
   have h17 := (Real.lt_log_one_add_of_pos (x := (1:ℝ)/16) (by norm_num)).le
   have h19 := log_le_half_sub_inv (x := (20:ℝ)/19) (by norm_num)
   have h23 := log_le_half_sub_inv (x := (24:ℝ)/23) (by norm_num)
-  have l8 : Real.log 8=3*Real.log 2 := by rw [show (8:ℝ)=2^3 by norm_num,Real.log_pow]; norm_num
+  have l8 : Real.log 8=3*Real.log 2 := by rw [show (8:ℝ)=2^(3 : ℕ) by norm_num,Real.log_pow]; norm_num
   have l12 : Real.log 12=2*Real.log 2+Real.log 3 := by
     rw [show (12:ℝ)=4*3 by norm_num,Real.log_mul (by norm_num) (by norm_num),Real.log_four_eq]
-  have l16 : Real.log 16=4*Real.log 2 := by rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]; norm_num
+  have l16 : Real.log 16=4*Real.log 2 := by rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]; norm_num
   have l20 : Real.log 20=2*Real.log 2+Real.log 5 := by
     rw [show (20:ℝ)=4*5 by norm_num,Real.log_mul (by norm_num) (by norm_num),Real.log_four_eq]
   have l24 : Real.log 24=3*Real.log 2+Real.log 3 := by
@@ -199,7 +199,7 @@ theorem sum_primeFreeDivisorDefect_nonneg_of_le_twentyFour {N : ℕ} (hN : N ≤
 
 private def orientationSmoothLower (k : ℕ) : ℝ :=
   (∑ m ∈ Icc 1 k, orientationLogLower m)-(2*(k:ℝ)+1)*((harmonic (Nat.sqrt k):ℚ):ℝ)+
-    (Nat.sqrt k:ℝ)^2+Nat.sqrt k+2*(5768/10000)*k
+    (Nat.sqrt k:ℝ)^(2 : ℕ)+Nat.sqrt k+2*(5768/10000)*k
 /-- The first four complete smooth square blocks cover the sharp centered-prefix allowance. -/
 theorem sum_divisorHyperbolaSmoothRemainder_twentyFour_ge :
     (7/2:ℝ) ≤ ∑ k ∈ Icc 1 24, divisorHyperbolaSmoothRemainder k := by

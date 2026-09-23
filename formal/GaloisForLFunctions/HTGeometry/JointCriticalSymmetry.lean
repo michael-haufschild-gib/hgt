@@ -91,8 +91,8 @@ theorem rename_sumMap_jointCriticalitySquareSum (M : ℕ) (c : ℕ → MvPolynom
       = jointCriticalitySquareSum M c k (τ * π) := by
   have hterm : ∀ i : Fin N,
       MvPolynomial.rename (Sum.map (τ : Fin D → Fin D) (id : Fin N → Fin N))
-        ((jointCriticality M c k π i) ^ 2)
-      = (jointCriticality M c k (τ * π) i) ^ 2 := by
+        ((jointCriticality M c k π i) ^ (2 : ℕ))
+      = (jointCriticality M c k (τ * π) i) ^ (2 : ℕ) := by
     intro i
     rw [map_pow, rename_sumMap_jointCriticality]
   simp only [jointCriticalitySquareSum]

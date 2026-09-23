@@ -31,7 +31,7 @@ theorem thetaCuspGaussianApertureRatioCurvature_finiteSection_nonnegative
     (S := fun j lambda => thetaCuspGaussianApertureRatioCurvature lambda j)
     (A := fun j lambda =>
       4 * (thetaCuspGaussianApertureGammaRatio lambda j -
-        thetaCuspGaussianApertureGammaRatio lambda (j + 1)) ^ 2)
+        thetaCuspGaussianApertureGammaRatio lambda (j + 1)) ^ (2 : ℕ))
     (B := fun j lambda =>
       thetaCuspGaussianApertureGammaShape (j + 3) *
         thetaCuspGaussianApertureGammaRatio lambda (j + 2))
@@ -185,18 +185,18 @@ theorem thetaCuspGaussianAperture_curvatureTransportLocalizationCapstone
     (∀ (lambda : ℝ) (hlambda : lambda ≤ 0), ∀ j : ℕ,
       (3 * Real.pi) *
           (∫ x : ℝ in Ioi 0,
-            (x ^ 2 -
+            (x ^ (2 : ℕ) -
                 thetaCuspGaussianApertureResponseCenteredSaddleHeight
-                  lambda hlambda j ^ 2) ^ 2 *
+                  lambda hlambda j ^ (2 : ℕ)) ^ (2 : ℕ) *
               x ^ (2 * j) *
                 thetaCuspGaussianApertureLeadingChannelWeight lambda x) ≤
         thetaCuspGaussianApertureTailChannelMoment lambda 4 (j + 1)) ∧
     (∀ (lambda : ℝ) (hlambda : lambda ≤ 0), ∀ j : ℕ,
       let s := thetaCuspGaussianApertureResponseCenteredSaddleHeight
         lambda hlambda j
-      (3 * Real.pi) * s ^ 4 *
+      (3 * Real.pi) * s ^ (4 : ℕ) *
           thetaCuspGaussianApertureHigherAtomHalfMoment lambda j ≤
-        (16 / 2997 : ℝ) * (3 * Real.pi) * s ^ 4 *
+        (16 / 2997 : ℝ) * (3 * Real.pi) * s ^ (4 : ℕ) *
             thetaCuspHigherAtomExactHeightDamping (s / 2) *
               thetaCuspGaussianApertureFirstAtomHalfMoment lambda j +
           (32 / 2997 : ℝ) *

@@ -23,7 +23,7 @@ variable {b c R : ℝ}
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **On a sub-band the shifted cosine symbol is still the constant `cos(ct)`.** -/
-theorem kgShiftedCos_kgTunedPot_subband (hc0 : 0 < c) (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b))
+theorem kgShiftedCos_kgTunedPot_subband (hc0 : 0 < c) (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b))
     (t : ℝ) (ξ : E) :
     kgShiftedCos (fun ζ : E => -(kgTunedPot b c ζ)) t ξ * kgLowPass R ξ
       = ((Real.cos (t * c) : ℝ) : ℂ) * kgLowPass R ξ := by
@@ -36,7 +36,7 @@ theorem kgShiftedCos_kgTunedPot_subband (hc0 : 0 < c) (hR : R ≤ Real.sqrt (c ^
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **On a sub-band the shifted sine symbol is still the constant `sin(ct)/c`.** -/
 theorem kgShiftedSinOverFreq_kgTunedPot_subband (hc0 : 0 < c)
-    (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b)) (t : ℝ) (ξ : E) :
+    (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b)) (t : ℝ) (ξ : E) :
     kgShiftedSinOverFreq (fun ζ : E => -(kgTunedPot b c ζ)) t ξ * kgLowPass R ξ
       = ((Real.sin (t * c) / c : ℝ) : ℂ) * kgLowPass R ξ := by
   rw [kgLowPass]
@@ -49,9 +49,9 @@ theorem kgShiftedSinOverFreq_kgTunedPot_subband (hc0 : 0 < c)
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **On a sub-band the generator symbol is still `c²`.** -/
 theorem kgShiftedFreqSqLow_kgTunedPot_subband (hc0 : 0 < c)
-    (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b)) (ξ : E) :
+    (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b)) (ξ : E) :
     kgShiftedFreqSqLow (fun ζ : E => -(kgTunedPot b c ζ)) R ξ * kgLowPass R ξ
-      = ((c ^ 2 : ℝ) : ℂ) * kgLowPass R ξ := by
+      = ((c ^ (2 : ℕ) : ℝ) : ℂ) * kgLowPass R ξ := by
   rw [kgShiftedFreqSqLow, kgLowPass]
   split
   · rename_i hξ

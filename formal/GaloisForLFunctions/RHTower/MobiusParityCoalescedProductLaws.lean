@@ -44,7 +44,7 @@ theorem mixed_gibbs_cost_le {ι : Type*} (G : Finset ι) (U t q : ι → ℝ) (�
     rw [Finset.prod_mul_distrib, Finset.prod_const, prod_sqrt_mul G U t hU ht, hprodU, hprodT]
   rw [hexp] at hstep
   have hnT : Real.sqrt (n / a * T) = Real.sqrt (a * n * T) / a := by
-    have hval : n / a * T = a * n * T / a ^ 2 := by
+    have hval : n / a * T = a * n * T / a ^ (2 : ℕ) := by
       field_simp
     rw [hval, Real.sqrt_div' (a * n * T) (by positivity), Real.sqrt_sq ha.le]
   rw [hnT] at hstep

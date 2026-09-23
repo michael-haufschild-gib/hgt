@@ -65,26 +65,26 @@ theorem card_le_of_halaszMontgomery_level
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N (4 * Real.pi * G) ≤ 1)
     (hV0 : 0 ≤ V) (hV : ∀ w ∈ P, V ≤ ‖logPoly a s w‖)
-    (hgap : 0 < V ^ 2
+    (hgap : 0 < V ^ (2 : ℕ)
       - (1 + 214 * Real.sqrt (4 * Real.pi * G) + 1536 * ((N : ℝ) / Real.sqrt U))
-        * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ 2) :
+        * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ (2 : ℕ)) :
     (P.card : ℝ)
       ≤ ((N : ℝ) + 6 * (N : ℝ) * (1 + Real.log (2 * G + 2)))
-          * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ 2
-        / (V ^ 2
+          * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ (2 : ℕ)
+        / (V ^ (2 : ℕ)
           - (1 + 214 * Real.sqrt (4 * Real.pi * G) + 1536 * ((N : ℝ) / Real.sqrt U))
-            * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ 2) := by
+            * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ (2 : ℕ)) := by
   classical
-  set Eng : ℝ := ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ 2 with hEng
+  set Eng : ℝ := ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ (2 : ℕ) with hEng
   set CG : ℝ := 1 + 214 * Real.sqrt (4 * Real.pi * G) + 1536 * ((N : ℝ) / Real.sqrt U) with hCG
   have hHM := halaszMontgomery_logPoly_finset hN hs a hG hU hsep hspread hnear hlamT
-  have hlow : (P.card : ℝ) * V ^ 2 ≤ ∑ w ∈ P, ‖logPoly a s w‖ ^ 2 := by
-    have : ∀ w ∈ P, V ^ 2 ≤ ‖logPoly a s w‖ ^ 2 := by
+  have hlow : (P.card : ℝ) * V ^ (2 : ℕ) ≤ ∑ w ∈ P, ‖logPoly a s w‖ ^ (2 : ℕ) := by
+    have : ∀ w ∈ P, V ^ (2 : ℕ) ≤ ‖logPoly a s w‖ ^ (2 : ℕ) := by
       intro w hw
       exact pow_le_pow_left₀ hV0 (hV w hw) 2
-    calc (P.card : ℝ) * V ^ 2 = ∑ _w ∈ P, V ^ 2 := by
+    calc (P.card : ℝ) * V ^ (2 : ℕ) = ∑ _w ∈ P, V ^ (2 : ℕ) := by
           rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ ∑ w ∈ P, ‖logPoly a s w‖ ^ 2 := Finset.sum_le_sum this
+      _ ≤ ∑ w ∈ P, ‖logPoly a s w‖ ^ (2 : ℕ) := Finset.sum_le_sum this
   have hcardG : (P.card : ℝ) ≤ 2 * G + 2 := card_le_of_spaced_in_Icc hG hsep hmem
   have hcard0 : (0 : ℝ) ≤ (P.card : ℝ) := Nat.cast_nonneg _
   have hEng0 : (0 : ℝ) ≤ Eng := by positivity
@@ -95,7 +95,7 @@ theorem card_le_of_halaszMontgomery_level
       have h1 : (1 : ℝ) ≤ 2 * G + 2 := by linarith
       exact Real.log_nonneg h1
     · exact Real.log_le_log h hcardG
-  have hchain : (P.card : ℝ) * V ^ 2
+  have hchain : (P.card : ℝ) * V ^ (2 : ℕ)
       ≤ ((N : ℝ) + 6 * (N : ℝ) * (1 + Real.log (2 * G + 2)) + (P.card : ℝ) * CG) * Eng := by
     refine hlow.trans (hHM.trans ?_)
     have hstep : (N : ℝ) + (12 * Real.pi * (N : ℝ) / (2 * Real.pi)) * (1 + Real.log P.card)
@@ -125,15 +125,15 @@ theorem volume_real_logPolyLevelSet_le_halaszMontgomery
     {G U V : ℝ} (hG : 0 ≤ G) (hU : 0 < U) (hV0 : 0 ≤ V)
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N (4 * Real.pi * G) ≤ 1)
-    (hgap : 0 < V ^ 2
+    (hgap : 0 < V ^ (2 : ℕ)
       - (1 + 214 * Real.sqrt (4 * Real.pi * G) + 1536 * ((N : ℝ) / Real.sqrt U))
-        * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ 2) :
+        * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ (2 : ℕ)) :
     volume.real (logPolyLevelSet a s G V)
       ≤ 2 * (((N : ℝ) + 6 * (N : ℝ) * (1 + Real.log (2 * G + 2)))
-            * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ 2
-          / (V ^ 2
+            * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ (2 : ℕ)
+          / (V ^ (2 : ℕ)
             - (1 + 214 * Real.sqrt (4 * Real.pi * G) + 1536 * ((N : ℝ) / Real.sqrt U))
-              * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ 2)) * 1 := by
+              * ‖blockCoeff N (blockRestrictCoeff a s) 0‖ ^ (2 : ℕ))) * 1 := by
   refine measureReal_le_of_spaced_card_le hG one_pos (logPolyLevelSet_subset a s G V) ?_
   intro P hsep hPmem
   have hmem : ∀ x ∈ P, x ∈ Set.Icc (-G) G := fun x hx => (hPmem x hx).1

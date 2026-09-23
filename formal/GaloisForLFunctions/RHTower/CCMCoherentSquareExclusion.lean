@@ -77,9 +77,9 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 /-- On a packet where the two outputs are orthogonal the mixed square splits exactly. -/
 theorem norm_sub_smul_sq_of_inner_eq_zero {u v : E} (h : inner ℝ u v = (0 : ℝ)) (a b : ℝ) :
-    ‖a • u - b • v‖ ^ 2 = a ^ 2 * ‖u‖ ^ 2 + b ^ 2 * ‖v‖ ^ 2 := by
-  have hsq : ‖a • u - b • v‖ ^ 2
-      = ‖a • u‖ ^ 2 - 2 * inner ℝ (a • u) (b • v) + ‖b • v‖ ^ 2 := norm_sub_sq_real _ _
+    ‖a • u - b • v‖ ^ (2 : ℕ) = a ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) + b ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ) := by
+  have hsq : ‖a • u - b • v‖ ^ (2 : ℕ)
+      = ‖a • u‖ ^ (2 : ℕ) - 2 * inner ℝ (a • u) (b • v) + ‖b • v‖ ^ (2 : ℕ) := norm_sub_sq_real _ _
   rw [hsq, real_inner_smul_left, real_inner_smul_right, h, norm_smul, norm_smul]
   simp only [Real.norm_eq_abs]
   rw [mul_pow, mul_pow, sq_abs, sq_abs]
@@ -87,9 +87,9 @@ theorem norm_sub_smul_sq_of_inner_eq_zero {u v : E} (h : inner ℝ u v = (0 : �
 
 /-- **Equation (16).**  Every balancing scalar pays at least `2‖u‖‖v‖`. -/
 theorem two_mul_norm_mul_norm_le {u v : E} (h : inner ℝ u v = (0 : ℝ)) {a b : ℝ}
-    (hab : a * b = 1) : 2 * (‖u‖ * ‖v‖) ≤ ‖a • u - b • v‖ ^ 2 := by
+    (hab : a * b = 1) : 2 * (‖u‖ * ‖v‖) ≤ ‖a • u - b • v‖ ^ (2 : ℕ) := by
   rw [norm_sub_smul_sq_of_inner_eq_zero h]
-  have hsq : 0 ≤ (a * ‖u‖ - b * ‖v‖) ^ 2 := sq_nonneg _
+  have hsq : 0 ≤ (a * ‖u‖ - b * ‖v‖) ^ (2 : ℕ) := sq_nonneg _
   have habs : a * b * (‖u‖ * ‖v‖) = ‖u‖ * ‖v‖ := by rw [hab, one_mul]
   nlinarith [hsq, habs]
 
@@ -180,8 +180,8 @@ theorem not_exists_coherent_square {q sq rem lower : ℕ → ℝ}
 /-! ## Compact-support combinators -/
 
 theorem hasCompactSupport_sq {g : ℝ → ℝ} (hg : HasCompactSupport g) :
-    HasCompactSupport fun x : ℝ => (g x) ^ 2 := by
-  have hgg : (fun x : ℝ => (g x) ^ 2) = g * g := by funext x; rw [sq]; rfl
+    HasCompactSupport fun x : ℝ => (g x) ^ (2 : ℕ) := by
+  have hgg : (fun x : ℝ => (g x) ^ (2 : ℕ)) = g * g := by funext x; rw [sq]; rfl
   rw [hgg]
   exact hg.mul_right
 
@@ -218,7 +218,7 @@ structure BoundaryPacket (delta : ℝ) (f : ℝ → ℝ) : Prop where
   continuous : Continuous f
   nonneg : ∀ x, 0 ≤ f x
   support : ∀ x, f x ≠ 0 → x ∈ Ioo 0 delta
-  mass_pos : 0 < ∫ x, (f x) ^ 2
+  mass_pos : 0 < ∫ x, (f x) ^ (2 : ℕ)
 
 theorem BoundaryPacket.hasCompactSupport {delta : ℝ} {f : ℝ → ℝ} (hp : BoundaryPacket delta f) :
     HasCompactSupport f := by
@@ -231,7 +231,7 @@ theorem BoundaryPacket.exists_ne_zero {delta : ℝ} {f : ℝ → ℝ} (hp : Boun
     ∃ x, f x ≠ 0 := by
   by_contra hall
   have hall' : ∀ x, f x = 0 := fun x => not_not.mp fun h => hall ⟨x, h⟩
-  have hz : (∫ x, (f x) ^ 2) = 0 := by simp [hall']
+  have hz : (∫ x, (f x) ^ (2 : ℕ)) = 0 := by simp [hall']
   exact absurd hz (ne_of_gt hp.mass_pos)
 
 /-- The packet is a translate of `fwdShift` once the shift plus the packet width fits inside the
@@ -285,23 +285,23 @@ theorem hasCompactSupport_primeChannel {delta : ℝ} {f : ℝ → ℝ} (hp : Bou
   exact fun x hx => primeChannel_eq_zero_of_notMem hp p hx
 
 theorem integrable_sq_primeChannel {delta : ℝ} {f : ℝ → ℝ} (hp : BoundaryPacket delta f) (p : ℕ) :
-    Integrable (fun x => (primeChannel f p x) ^ 2) :=
+    Integrable (fun x => (primeChannel f p x) ^ (2 : ℕ)) :=
   ((continuous_primeChannel hp p).pow 2).integrable_of_hasCompactSupport
     (hasCompactSupport_sq (hasCompactSupport_primeChannel hp p))
 
 /-- The mass of one channel is the packet mass scaled by `1/p`, by translation invariance. -/
 theorem integral_sq_primeChannel (f : ℝ → ℝ) (p : ℕ) :
-    (∫ x, (primeChannel f p x) ^ 2) = (p : ℝ)⁻¹ * ∫ x, (f x) ^ 2 := by
+    (∫ x, (primeChannel f p x) ^ (2 : ℕ)) = (p : ℝ)⁻¹ * ∫ x, (f x) ^ (2 : ℕ) := by
   have hp0 : (0 : ℝ) ≤ (p : ℝ) := by positivity
-  have hsq : ∀ x : ℝ, (primeChannel f p x) ^ 2 = (p : ℝ)⁻¹ * (f (x - Real.log p)) ^ 2 := by
+  have hsq : ∀ x : ℝ, (primeChannel f p x) ^ (2 : ℕ) = (p : ℝ)⁻¹ * (f (x - Real.log p)) ^ (2 : ℕ) := by
     intro x
     rw [primeChannel, mul_pow, inv_pow, Real.sq_sqrt hp0]
-  calc (∫ x, (primeChannel f p x) ^ 2)
-      = ∫ x, (p : ℝ)⁻¹ * (f (x - Real.log p)) ^ 2 := by simp_rw [hsq]
-    _ = (p : ℝ)⁻¹ * ∫ x, (f (x - Real.log p)) ^ 2 := integral_const_mul _ _
-    _ = (p : ℝ)⁻¹ * ∫ x, (f x) ^ 2 := by
+  calc (∫ x, (primeChannel f p x) ^ (2 : ℕ))
+      = ∫ x, (p : ℝ)⁻¹ * (f (x - Real.log p)) ^ (2 : ℕ) := by simp_rw [hsq]
+    _ = (p : ℝ)⁻¹ * ∫ x, (f (x - Real.log p)) ^ (2 : ℕ) := integral_const_mul _ _
+    _ = (p : ℝ)⁻¹ * ∫ x, (f x) ^ (2 : ℕ) := by
         congr 1
-        exact integral_sub_right_eq_self (fun y => (f y) ^ 2) (Real.log p)
+        exact integral_sub_right_eq_self (fun y => (f y) ^ (2 : ℕ)) (Real.log p)
 
 theorem log_bounds_of_mem_primeFilter {N p : ℕ} (hpP : p ∈ (Finset.range N).filter Nat.Prime) :
     0 ≤ Real.log p ∧ Real.log p ≤ Real.log N := by
@@ -345,7 +345,7 @@ theorem hasCompactSupport_eulerShellApply {A delta : ℝ} {f : ℝ → ℝ} {N :
 theorem integrable_sq_eulerShellApply {A delta : ℝ} {f : ℝ → ℝ} {N : ℕ}
     (hp : BoundaryPacket delta f)
     (hA : ∀ p ∈ (Finset.range N).filter Nat.Prime, Real.log p + delta ≤ A) :
-    Integrable fun x => (eulerShellApply A N f x) ^ 2 :=
+    Integrable fun x => (eulerShellApply A N f x) ^ (2 : ℕ) :=
   ((continuous_eulerShellApply hp hA).pow 2).integrable_of_hasCompactSupport
     (hasCompactSupport_sq (hasCompactSupport_eulerShellApply hp hA))
 
@@ -358,12 +358,12 @@ consumes. -/
 theorem primeReciprocalSum_mul_mass_le {A delta : ℝ} {f : ℝ → ℝ} {N : ℕ}
     (hp : BoundaryPacket delta f)
     (hA : ∀ p ∈ (Finset.range N).filter Nat.Prime, Real.log p + delta ≤ A) :
-    primeReciprocalSum N * (∫ x, (f x) ^ 2) ≤ ∫ x, (eulerShellApply A N f x) ^ 2 := by
+    primeReciprocalSum N * (∫ x, (f x) ^ (2 : ℕ)) ≤ ∫ x, (eulerShellApply A N f x) ^ (2 : ℕ) := by
   classical
   have hshell := eulerShellApply_eq_sum_primeChannel hp hA
   have hptw : ∀ x : ℝ,
-      (∑ p ∈ (Finset.range N).filter Nat.Prime, (primeChannel f p x) ^ 2)
-        ≤ (∑ p ∈ (Finset.range N).filter Nat.Prime, primeChannel f p x) ^ 2 := by
+      (∑ p ∈ (Finset.range N).filter Nat.Prime, (primeChannel f p x) ^ (2 : ℕ))
+        ≤ (∑ p ∈ (Finset.range N).filter Nat.Prime, primeChannel f p x) ^ (2 : ℕ) := by
     intro x
     rw [sq, Finset.sum_mul_sum]
     refine Finset.sum_le_sum fun p hpP => ?_
@@ -371,10 +371,10 @@ theorem primeReciprocalSum_mul_mass_le {A delta : ℝ} {f : ℝ → ℝ} {N : �
     exact Finset.single_le_sum (f := fun q => primeChannel f p x * primeChannel f q x)
       (fun q _ => mul_nonneg (primeChannel_nonneg hp p x) (primeChannel_nonneg hp q x)) hpP
   have hsumint : Integrable
-      (fun x => ∑ p ∈ (Finset.range N).filter Nat.Prime, (primeChannel f p x) ^ 2) :=
+      (fun x => ∑ p ∈ (Finset.range N).filter Nat.Prime, (primeChannel f p x) ^ (2 : ℕ)) :=
     integrable_finsetSum _ fun p _ => integrable_sq_primeChannel hp p
-  have hdiag : (∫ x, ∑ p ∈ (Finset.range N).filter Nat.Prime, (primeChannel f p x) ^ 2)
-      = primeReciprocalSum N * (∫ x, (f x) ^ 2) := by
+  have hdiag : (∫ x, ∑ p ∈ (Finset.range N).filter Nat.Prime, (primeChannel f p x) ^ (2 : ℕ))
+      = primeReciprocalSum N * (∫ x, (f x) ^ (2 : ℕ)) := by
     rw [integral_finsetSum _ fun p _ => integrable_sq_primeChannel hp p, primeReciprocalSum,
       Finset.sum_mul]
     exact Finset.sum_congr rfl fun p _ => integral_sq_primeChannel f p
@@ -387,14 +387,14 @@ theorem primeReciprocalSum_mul_mass_le {A delta : ℝ} {f : ℝ → ℝ} {N : �
 shift inside the aperture. -/
 theorem tendsto_energy_atTop {delta : ℝ} {f : ℝ → ℝ} (hp : BoundaryPacket delta f) (A : ℕ → ℝ)
     (hA : ∀ N, ∀ p ∈ (Finset.range N).filter Nat.Prime, Real.log p + delta ≤ A N) :
-    Tendsto (fun N => ∫ x, (eulerShellApply (A N) N f x) ^ 2) atTop atTop :=
+    Tendsto (fun N => ∫ x, (eulerShellApply (A N) N f x) ^ (2 : ℕ)) atTop atTop :=
   tendsto_atTop_mono (fun N => primeReciprocalSum_mul_mass_le hp (hA N))
     (tendsto_primeReciprocalSum_atTop.atTop_mul_const hp.mass_pos)
 
 /-- An explicit admissible schedule: aperture `N + delta` already contains every prime shift below
 `N`, since `log p ≤ p - 1`. -/
 theorem tendsto_energy_atTop_natAperture {delta : ℝ} {f : ℝ → ℝ} (hp : BoundaryPacket delta f) :
-    Tendsto (fun N : ℕ => ∫ x, (eulerShellApply ((N : ℝ) + delta) N f x) ^ 2) atTop atTop := by
+    Tendsto (fun N : ℕ => ∫ x, (eulerShellApply ((N : ℝ) + delta) N f x) ^ (2 : ℕ)) atTop atTop := by
   refine tendsto_energy_atTop hp _ fun N p hpP => ?_
   rw [Finset.mem_filter, Finset.mem_range] at hpP
   have hpos : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hpP.2.pos
@@ -428,7 +428,7 @@ theorem tentPacket_mid (delta : ℝ) : tentPacket delta (delta / 2) = max 0 (del
   rw [show delta - delta / 2 = delta / 2 by ring, min_self]
 
 theorem hasCompactSupport_sq_tentPacket (delta : ℝ) :
-    HasCompactSupport fun x : ℝ => (tentPacket delta x) ^ 2 := by
+    HasCompactSupport fun x : ℝ => (tentPacket delta x) ^ (2 : ℕ) := by
   refine HasCompactSupport.intro (isCompact_Icc (a := (0 : ℝ)) (b := delta)) ?_
   intro x hx
   have hz : tentPacket delta x = 0 := by
@@ -440,7 +440,7 @@ theorem hasCompactSupport_sq_tentPacket (delta : ℝ) :
 /-- The packet class of the exclusion theorem is inhabited at every width. -/
 theorem boundaryPacket_tentPacket {delta : ℝ} (hd : 0 < delta) :
     BoundaryPacket delta (tentPacket delta) := by
-  have hc : Continuous fun x : ℝ => (tentPacket delta x) ^ 2 :=
+  have hc : Continuous fun x : ℝ => (tentPacket delta x) ^ (2 : ℕ) :=
     (continuous_tentPacket delta).pow 2
   refine ⟨continuous_tentPacket delta, tentPacket_nonneg delta,
     fun x hx => tentPacket_support hx, ?_⟩
@@ -456,20 +456,20 @@ theorem boundaryPacket_tentPacket {delta : ℝ} (hd : 0 < delta) :
 theorem integral_sq_sub_of_orthogonal {g h : ℝ → ℝ} (hgc : Continuous g)
     (hgs : HasCompactSupport g) (hhc : Continuous h) (hhs : HasCompactSupport h)
     (horth : (∫ x, g x * h x) = 0) (a b : ℝ) :
-    (∫ x, (a * g x - b * h x) ^ 2)
-      = a ^ 2 * (∫ x, (g x) ^ 2) + b ^ 2 * ∫ x, (h x) ^ 2 := by
-  have hgsq : Integrable fun x : ℝ => (g x) ^ 2 :=
+    (∫ x, (a * g x - b * h x) ^ (2 : ℕ))
+      = a ^ (2 : ℕ) * (∫ x, (g x) ^ (2 : ℕ)) + b ^ (2 : ℕ) * ∫ x, (h x) ^ (2 : ℕ) := by
+  have hgsq : Integrable fun x : ℝ => (g x) ^ (2 : ℕ) :=
     (hgc.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hgs)
-  have hhsq : Integrable fun x : ℝ => (h x) ^ 2 :=
+  have hhsq : Integrable fun x : ℝ => (h x) ^ (2 : ℕ) :=
     (hhc.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hhs)
   have hgh : Integrable fun x : ℝ => g x * h x :=
     (hgc.mul hhc).integrable_of_hasCompactSupport (hasCompactSupport_mul hgs)
-  have i1 : Integrable fun x : ℝ => a ^ 2 * (g x) ^ 2 := hgsq.const_mul _
-  have i2 : Integrable fun x : ℝ => b ^ 2 * (h x) ^ 2 := hhsq.const_mul _
+  have i1 : Integrable fun x : ℝ => a ^ (2 : ℕ) * (g x) ^ (2 : ℕ) := hgsq.const_mul _
+  have i2 : Integrable fun x : ℝ => b ^ (2 : ℕ) * (h x) ^ (2 : ℕ) := hhsq.const_mul _
   have i3 : Integrable fun x : ℝ => 2 * a * b * (g x * h x) := hgh.const_mul _
-  have i12 : Integrable fun x : ℝ => a ^ 2 * (g x) ^ 2 + b ^ 2 * (h x) ^ 2 := i1.add i2
-  have e1 : ∀ x : ℝ, (a * g x - b * h x) ^ 2
-      = a ^ 2 * (g x) ^ 2 + b ^ 2 * (h x) ^ 2 - 2 * a * b * (g x * h x) := fun x => by ring
+  have i12 : Integrable fun x : ℝ => a ^ (2 : ℕ) * (g x) ^ (2 : ℕ) + b ^ (2 : ℕ) * (h x) ^ (2 : ℕ) := i1.add i2
+  have e1 : ∀ x : ℝ, (a * g x - b * h x) ^ (2 : ℕ)
+      = a ^ (2 : ℕ) * (g x) ^ (2 : ℕ) + b ^ (2 : ℕ) * (h x) ^ (2 : ℕ) - 2 * a * b * (g x * h x) := fun x => by ring
   simp_rw [e1]
   rw [integral_sub i12 i3, integral_add i1 i2, integral_const_mul, integral_const_mul,
     integral_const_mul, horth, mul_zero, sub_zero]
@@ -477,15 +477,15 @@ theorem integral_sq_sub_of_orthogonal {g h : ℝ → ℝ} (hgc : Continuous g)
 /-- Balancing is powerless: whatever the scalar, the split is at least twice the geometric mean of
 the two energies. -/
 theorem two_mul_sqrt_mul_sqrt_le {X Z a : ℝ} (hX : 0 ≤ X) (hZ : 0 ≤ Z) (ha : a ≠ 0) :
-    2 * Real.sqrt X * Real.sqrt Z ≤ a ^ 2 * X + (a⁻¹) ^ 2 * Z := by
-  have hsX : Real.sqrt X ^ 2 = X := Real.sq_sqrt hX
-  have hsZ : Real.sqrt Z ^ 2 = Z := Real.sq_sqrt hZ
-  have h0 : 0 ≤ (a * Real.sqrt X - a⁻¹ * Real.sqrt Z) ^ 2 := sq_nonneg _
+    2 * Real.sqrt X * Real.sqrt Z ≤ a ^ (2 : ℕ) * X + (a⁻¹) ^ (2 : ℕ) * Z := by
+  have hsX : Real.sqrt X ^ (2 : ℕ) = X := Real.sq_sqrt hX
+  have hsZ : Real.sqrt Z ^ (2 : ℕ) = Z := Real.sq_sqrt hZ
+  have h0 : 0 ≤ (a * Real.sqrt X - a⁻¹ * Real.sqrt Z) ^ (2 : ℕ) := sq_nonneg _
   have hai : a * a⁻¹ = 1 := mul_inv_cancel₀ ha
-  have hexp : (a * Real.sqrt X - a⁻¹ * Real.sqrt Z) ^ 2
-      = a ^ 2 * X + (a⁻¹) ^ 2 * Z - 2 * Real.sqrt X * Real.sqrt Z := by
-    have hring : (a * Real.sqrt X - a⁻¹ * Real.sqrt Z) ^ 2
-        = a ^ 2 * (Real.sqrt X ^ 2) + (a⁻¹) ^ 2 * (Real.sqrt Z ^ 2)
+  have hexp : (a * Real.sqrt X - a⁻¹ * Real.sqrt Z) ^ (2 : ℕ)
+      = a ^ (2 : ℕ) * X + (a⁻¹) ^ (2 : ℕ) * Z - 2 * Real.sqrt X * Real.sqrt Z := by
+    have hring : (a * Real.sqrt X - a⁻¹ * Real.sqrt Z) ^ (2 : ℕ)
+        = a ^ (2 : ℕ) * (Real.sqrt X ^ (2 : ℕ)) + (a⁻¹) ^ (2 : ℕ) * (Real.sqrt Z ^ (2 : ℕ))
           - 2 * (a * a⁻¹) * (Real.sqrt X * Real.sqrt Z) := by ring
     rw [hring, hsX, hsZ, hai]
     ring
@@ -508,9 +508,9 @@ theorem hasCompactSupport_positionApply {delta : ℝ} {f : ℝ → ℝ} (hp : Bo
 
 /-- The position energy is positive and aperture-independent. -/
 theorem positionApply_mass_pos {delta : ℝ} {f : ℝ → ℝ} (hp : BoundaryPacket delta f) :
-    0 < ∫ x, (positionApply f x) ^ 2 := by
+    0 < ∫ x, (positionApply f x) ^ (2 : ℕ) := by
   obtain ⟨x0, hx0⟩ := hp.exists_ne_zero
-  have hc : Continuous fun x : ℝ => (positionApply f x) ^ 2 :=
+  have hc : Continuous fun x : ℝ => (positionApply f x) ^ (2 : ℕ) :=
     (continuous_positionApply hp).pow 2
   refine integral_pos_of_integrable_nonneg_nonzero (x := x0) hc
     (hc.integrable_of_hasCompactSupport
@@ -556,14 +556,14 @@ theorem not_exists_coherent_square_packet {delta : ℝ} {f : ℝ → ℝ} (hp : 
     (hA : ∀ N, ∀ p ∈ (Finset.range N).filter Nat.Prime, Real.log p + delta ≤ A N)
     {alpha q r : ℕ → ℝ} (halpha : ∀ N, alpha N ≠ 0)
     (hfact : ∀ N, q N = (∫ x, (alpha N * positionApply f x
-        - (alpha N)⁻¹ * eulerShellApply (A N) N f x) ^ 2) + r N)
+        - (alpha N)⁻¹ * eulerShellApply (A N) N f x) ^ (2 : ℕ)) + r N)
     (hr : ∀ N, 0 ≤ r N) (hconst : ∃ c : ℝ, ∀ N, q N = c) : False := by
-  have hXpos : 0 < ∫ x, (positionApply f x) ^ 2 := positionApply_mass_pos hp
-  have hZnn : ∀ N, 0 ≤ ∫ x, (eulerShellApply (A N) N f x) ^ 2 :=
+  have hXpos : 0 < ∫ x, (positionApply f x) ^ (2 : ℕ) := positionApply_mass_pos hp
+  have hZnn : ∀ N, 0 ≤ ∫ x, (eulerShellApply (A N) N f x) ^ (2 : ℕ) :=
     fun N => integral_nonneg fun x => by positivity
-  have hsplit : ∀ N, 2 * Real.sqrt (∫ x, (positionApply f x) ^ 2)
-      * Real.sqrt (∫ x, (eulerShellApply (A N) N f x) ^ 2)
-      ≤ ∫ x, (alpha N * positionApply f x - (alpha N)⁻¹ * eulerShellApply (A N) N f x) ^ 2 := by
+  have hsplit : ∀ N, 2 * Real.sqrt (∫ x, (positionApply f x) ^ (2 : ℕ))
+      * Real.sqrt (∫ x, (eulerShellApply (A N) N f x) ^ (2 : ℕ))
+      ≤ ∫ x, (alpha N * positionApply f x - (alpha N)⁻¹ * eulerShellApply (A N) N f x) ^ (2 : ℕ) := by
     intro N
     rw [integral_sq_sub_of_orthogonal (continuous_positionApply hp)
       (hasCompactSupport_positionApply hp) (continuous_eulerShellApply hp (hA N))
@@ -572,14 +572,14 @@ theorem not_exists_coherent_square_packet {delta : ℝ} {f : ℝ → ℝ} (hp : 
     exact two_mul_sqrt_mul_sqrt_le hXpos.le (hZnn N) (halpha N)
   refine not_exists_coherent_square (q := q)
     (sq := fun N => ∫ x, (alpha N * positionApply f x
-      - (alpha N)⁻¹ * eulerShellApply (A N) N f x) ^ 2) (rem := r)
-    (lower := fun N => 2 * Real.sqrt (∫ x, (positionApply f x) ^ 2)
-      * Real.sqrt (∫ x, (eulerShellApply (A N) N f x) ^ 2))
+      - (alpha N)⁻¹ * eulerShellApply (A N) N f x) ^ (2 : ℕ)) (rem := r)
+    (lower := fun N => 2 * Real.sqrt (∫ x, (positionApply f x) ^ (2 : ℕ))
+      * Real.sqrt (∫ x, (eulerShellApply (A N) N f x) ^ (2 : ℕ)))
     hfact hr hsplit hconst ?_
   have hsq : Tendsto
-      (fun N => Real.sqrt (∫ x, (eulerShellApply (A N) N f x) ^ 2)) atTop atTop :=
+      (fun N => Real.sqrt (∫ x, (eulerShellApply (A N) N f x) ^ (2 : ℕ))) atTop atTop :=
     Real.tendsto_sqrt_atTop.comp (tendsto_energy_atTop hp A hA)
-  have hc : (0 : ℝ) < 2 * Real.sqrt (∫ x, (positionApply f x) ^ 2) := by
+  have hc : (0 : ℝ) < 2 * Real.sqrt (∫ x, (positionApply f x) ^ (2 : ℕ)) := by
     have := Real.sqrt_pos.mpr hXpos
     positivity
   exact Filter.Tendsto.const_mul_atTop hc hsq
@@ -591,10 +591,10 @@ remainder. -/
 theorem not_exists_coherent_square_of_divergence {u : E} {v : ℕ → E} {alpha q r : ℕ → ℝ}
     (horth : ∀ j, inner ℝ u (v j) = (0 : ℝ)) (hu : 0 < ‖u‖) (halpha : ∀ j, alpha j ≠ 0)
     (hdiv : Tendsto (fun j => ‖v j‖) atTop atTop)
-    (hfact : ∀ j, q j = ‖alpha j • u - (alpha j)⁻¹ • v j‖ ^ 2 + r j)
+    (hfact : ∀ j, q j = ‖alpha j • u - (alpha j)⁻¹ • v j‖ ^ (2 : ℕ) + r j)
     (hr : ∀ j, 0 ≤ r j) (hconst : ∃ c : ℝ, ∀ j, q j = c) : False := by
   refine not_exists_coherent_square (q := q)
-    (sq := fun j => ‖alpha j • u - (alpha j)⁻¹ • v j‖ ^ 2) (rem := r)
+    (sq := fun j => ‖alpha j • u - (alpha j)⁻¹ • v j‖ ^ (2 : ℕ)) (rem := r)
     (lower := fun j => 2 * (‖u‖ * ‖v j‖)) hfact hr
     (fun j => two_mul_norm_mul_norm_le (horth j) (mul_inv_cancel₀ (halpha j))) hconst ?_
   have h := Filter.Tendsto.const_mul_atTop (show (0 : ℝ) < 2 * ‖u‖ by positivity) hdiv

@@ -7,10 +7,10 @@ import GaloisForLFunctions.RHTower.MobiusThetaAdaptivePrimeNormalGlobalReflected
 
 The uniformly half-density-capacity-bounded reflected Gaussian
 countertransport is assembled here over every multiplicity-exact Xi divisor
-copy.  At each fixed depth its evaluations form an honest `ell^2` divisor
+copy.  At each fixed depth its evaluations form an honest `ell^(2 : ℕ)` divisor
 field.  The field remains reflection-even.
 
-The new global separation law says that these `ell^2` norms are uniformly
+The new global separation law says that these `ell^(2 : ℕ)` norms are uniformly
 bounded over all countertransport depths exactly under RH.  If RH fails, the
 source cohomology capacity stays at most two while the global divisor norm
 escapes every finite ceiling.  Thus completed divisor assembly cannot hide
@@ -76,7 +76,7 @@ theorem norm_deningerMeyerReflectedGaussianCountertransportXiMultiplier_le
     _ = 2 * Real.exp (|c| / 2) := by ring
 
 /-- Global multiplicity-exact Xi evaluation field of one countertransport
-depth.  Gaussian decay makes this an `ell^2` vector for every real depth. -/
+depth.  Gaussian decay makes this an `ell^(2 : ℕ)` vector for every real depth. -/
 def deningerMeyerReflectedGaussianCountertransportXiField
     (c : ℝ) : XiDivisorL2 :=
   ⟨fun q =>

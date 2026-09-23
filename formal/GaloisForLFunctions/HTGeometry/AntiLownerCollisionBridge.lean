@@ -235,7 +235,7 @@ theorem tendsto_audenaertSignedCollisionMatrix
       neg_div_neg_eq]
 
 theorem audenaertDoubledSign_sq {ι : Type*} :
-    ∀ k : ι ⊕ ι, (audenaertDoubledSign k) ^ 2 = 1 := by
+    ∀ k : ι ⊕ ι, (audenaertDoubledSign k) ^ (2 : ℕ) = 1 := by
   rintro (i | i) <;> norm_num [audenaertDoubledSign]
 
 theorem eventually_audenaertDoubledNodes_pos

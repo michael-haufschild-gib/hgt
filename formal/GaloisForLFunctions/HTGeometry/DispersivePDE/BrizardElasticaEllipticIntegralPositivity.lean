@@ -15,23 +15,23 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 abbrev SubcriticalModulus := {m : ℝ // m < 1}
 
 noncomputable def completeKIntegrand (m θ : ℝ) : ℝ :=
-  (Real.sqrt (1 - m * Real.sin θ ^ 2))⁻¹
+  (Real.sqrt (1 - m * Real.sin θ ^ (2 : ℕ)))⁻¹
 
 noncomputable def completeEIntegrand (m θ : ℝ) : ℝ :=
-  Real.sqrt (1 - m * Real.sin θ ^ 2)
+  Real.sqrt (1 - m * Real.sin θ ^ (2 : ℕ))
 
 theorem subcriticalRadicand_pos (m : SubcriticalModulus) (θ : ℝ) :
-    0 < 1 - (m : ℝ) * Real.sin θ ^ 2 := by
+    0 < 1 - (m : ℝ) * Real.sin θ ^ (2 : ℕ) := by
   have hm1 : (m : ℝ) < 1 := m.property
-  have hs0 : 0 ≤ Real.sin θ ^ 2 := sq_nonneg _
-  have hs1 : Real.sin θ ^ 2 ≤ 1 := by
+  have hs0 : 0 ≤ Real.sin θ ^ (2 : ℕ) := sq_nonneg _
+  have hs1 : Real.sin θ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [Real.sin_sq_add_cos_sq θ, sq_nonneg (Real.cos θ)]
   by_cases hm0 : (m : ℝ) ≤ 0
-  · have hprod : (m : ℝ) * Real.sin θ ^ 2 ≤ 0 :=
+  · have hprod : (m : ℝ) * Real.sin θ ^ (2 : ℕ) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg hm0 hs0
     linarith
   · have hm0' : 0 ≤ (m : ℝ) := le_of_lt (lt_of_not_ge hm0)
-    have hprod : (m : ℝ) * Real.sin θ ^ 2 ≤ (m : ℝ) :=
+    have hprod : (m : ℝ) * Real.sin θ ^ (2 : ℕ) ≤ (m : ℝ) :=
       by simpa using mul_le_mul_of_nonneg_left hs1 hm0'
     linarith
 
@@ -47,7 +47,7 @@ theorem completeEIntegrand_pos (m : SubcriticalModulus) (θ : ℝ) :
 
 theorem continuous_completeKIntegrand (m : SubcriticalModulus) :
     Continuous (completeKIntegrand m) := by
-  have hbase : Continuous (fun θ : ℝ => 1 - (m : ℝ) * Real.sin θ ^ 2) := by
+  have hbase : Continuous (fun θ : ℝ => 1 - (m : ℝ) * Real.sin θ ^ (2 : ℕ)) := by
     fun_prop
   exact (Real.continuous_sqrt.comp hbase).inv₀ fun θ =>
     ne_of_gt (Real.sqrt_pos.mpr (subcriticalRadicand_pos m θ))

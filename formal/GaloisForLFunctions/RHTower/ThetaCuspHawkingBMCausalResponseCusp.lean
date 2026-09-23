@@ -547,13 +547,13 @@ private theorem slice_second {f : Angular → ℂ} (hf : ContDiff ℝ ∞ f) (i 
   exact slice_first (D_smooth hf i) i z
 
 private def remainderAction (q : XiZeroCopy) (s amplitude : ℂ) (p r : ℝ) (z : Angular) : ℂ :=
-  (Real.exp (z 1):ℂ)^2*jetIntegral q s amplitude [0,0] p r z+
+  (Real.exp (z 1):ℂ)^(2 : ℕ)*jetIntegral q s amplitude [0,0] p r z+
     jetIntegral q s amplitude [1,1] p r z-jetIntegral q s amplitude [1] p r z
 private def principalAction (q : XiZeroCopy) (s amplitude : ℂ) (p r : ℝ) (z : Angular) : ℂ :=
   ∑ i : Fin 3, principalExponent q i*(principalExponent q i-1)*
     principalNullResponse q s amplitude i p r*Complex.exp (principalExponent q i*(z 1:ℂ))
 private theorem full_action (q : XiZeroCopy) (s amplitude : ℂ) (p r : Ici (0:ℝ)) (X k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun x => fullNullResponse q s amplitude p.val r.val x k)) X+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun x => fullNullResponse q s amplitude p.val r.val x k)) X+
       deriv (deriv (fun x => fullNullResponse q s amplitude p.val r.val X x)) k-
       deriv (fun x => fullNullResponse q s amplitude p.val r.val X x) k=
         remainderAction q s amplitude p.val r.val ![X,k]+principalAction q s amplitude p.val r.val ![X,k] := by
@@ -593,7 +593,7 @@ private theorem full_action (q : XiZeroCopy) (s amplitude : ℂ) (p r : Ici (0:�
     Continuous (fun x => jetIntegral q s amplitude word (p x) (r x) (z x)) := by
   simpa only [Function.comp_def] using!
     (jetIntegral_continuous q s amplitude word).comp ((hp.prodMk hr).prodMk hz)
-private def potential (p r : ℝ) : ℂ := 1/(4*(Real.cosh ((p-r)/2):ℂ)^2)
+private def potential (p r : ℝ) : ℂ := 1/(4*(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ))
 @[fun_prop] private theorem potential_comp {P : Type*} [TopologicalSpace P]
     (p r : P → ℝ) (hp : Continuous p) (hr : Continuous r) :
     Continuous (fun z => potential (p z) (r z)) := by
@@ -637,7 +637,7 @@ private theorem principal_primitive (q : XiZeroCopy) (s amplitude : ℂ) (i : Fi
     (p r : Ici (0:ℝ)) :
     principalNullResponse q s amplitude i p.val r.val=rectangle (principalEffective q s amplitude i) p.val r.val := by
   let alpha := principalExponent q i
-  let v := fun a b => (-alpha)*(-alpha+1)/(4*(Real.cosh ((a-b)/2):ℂ)^2)*
+  let v := fun a b => (-alpha)*(-alpha+1)/(4*(Real.cosh ((a-b)/2):ℂ)^(2 : ℕ))*
     radialResponse (-alpha) s amplitude ((a+b)/2) ((a-b)/2)
   have hv : Continuous (Function.uncurry v) := by
     have hu := (radialResponse_continuous (-alpha) s amplitude).comp
@@ -729,9 +729,9 @@ theorem responseRemainder_goursat (q : XiZeroCopy) (s amplitude : ℂ) (p r : Ic
     responseRemainder q s amplitude p.val r.val z=
       ∫ a in (0:ℝ)..p.val, ∫ b in (0:ℝ)..r.val,
         (1/4:ℂ)*nativeRemainder q ![0,z 0,z 1]*sourceWeight s amplitude a b+
-          ((Real.exp (z 1):ℂ)^2*coordinateJet [0,0] (responseRemainder q s amplitude a b) z+
+          ((Real.exp (z 1):ℂ)^(2 : ℕ)*coordinateJet [0,0] (responseRemainder q s amplitude a b) z+
             coordinateJet [1,1] (responseRemainder q s amplitude a b) z-
-            coordinateJet [1] (responseRemainder q s amplitude a b) z)/(4*(Real.cosh ((a-b)/2):ℂ)^2) := by
+            coordinateJet [1] (responseRemainder q s amplitude a b) z)/(4*(Real.cosh ((a-b)/2):ℂ)^(2 : ℕ)) := by
   rw [remainder_primitive]
   unfold rectangle
   apply intervalIntegral.integral_congr
@@ -750,9 +750,9 @@ theorem responseRemainder_goursat (q : XiZeroCopy) (s amplitude : ℂ) (p r : Ic
 /-- The original remainder source plus its actual hyperbolic angular Laplacian. -/
 def remainderForcing (q : XiZeroCopy) (s amplitude : ℂ) (p r : ℝ) (z : Angular) : ℂ :=
   (1/4:ℂ)*nativeRemainder q ![0,z 0,z 1]*sourceWeight s amplitude p r+
-    ((Real.exp (z 1):ℂ)^2*coordinateJet [0,0] (responseRemainder q s amplitude p r) z+
+    ((Real.exp (z 1):ℂ)^(2 : ℕ)*coordinateJet [0,0] (responseRemainder q s amplitude p r) z+
       coordinateJet [1,1] (responseRemainder q s amplitude p r) z-
-      coordinateJet [1] (responseRemainder q s amplitude p r) z)/(4*(Real.cosh ((p-r)/2):ℂ)^2)
+      coordinateJet [1] (responseRemainder q s amplitude p r) z)/(4*(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ))
 private theorem effective_actual (q : XiZeroCopy) (s amplitude : ℂ) (p r : Ici (0:ℝ)) (z : Angular) :
     effective q s amplitude z p.val r.val=remainderForcing q s amplitude p.val r.val z := by
   unfold remainderForcing

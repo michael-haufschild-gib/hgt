@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.ParameterizedPicardVessiotSystem
 # Parameterized Picard--Vessiot quotients with normalized Casoratian
 
 When the companion determinant has square one, the differential orbit of
-`det(Y)^2 - 1` generates a proper `σ`-`δ` ideal in the universal PPV coordinate ring.  Properness
+`det(Y)^(2 : ℕ) - 1` generates a proper `σ`-`δ` ideal in the universal PPV coordinate ring.  Properness
 comes from identity-jet evaluation.  Extending that ideal to a maximal proper `σ`-`δ` ideal
 produces a PPV quotient whose fundamental determinant has square one, without any no-new-constants
 hypothesis.

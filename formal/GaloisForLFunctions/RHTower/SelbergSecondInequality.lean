@@ -40,7 +40,7 @@ theorem vonMangoldt_conv_nonneg (m : ℕ) : 0 ≤ (vonMangoldt * vonMangoldt) m 
 
 /-- **Selberg's second inequality**. -/
 theorem selberg_second_inequality (N : ℕ) (hN : 1 ≤ N) :
-    |psiRemainder N| * Real.log N ^ 2
+    |psiRemainder N| * Real.log N ^ (2 : ℕ)
       ≤ (∑ m ∈ Finset.Icc 1 N,
           (vonMangoldt m * Real.log m + (vonMangoldt * vonMangoldt) m)
             * |psiRemainder (N / m)|)
@@ -256,11 +256,11 @@ theorem selberg_second_inequality (N : ℕ) (hN : 1 ≤ N) :
             ring_nf
         _ ≤ _ := abs_sub _ _
     linarith
-  have hstep1 : |psiRemainder N| * Real.log N ^ 2
+  have hstep1 : |psiRemainder N| * Real.log N ^ (2 : ℕ)
       ≤ 400 * N * Real.log N
         + |(∑ k ∈ Finset.Icc 1 N, vonMangoldt k * psiRemainder (N / k))
             * Real.log N| := by
-    have heq : |psiRemainder N| * Real.log N ^ 2
+    have heq : |psiRemainder N| * Real.log N ^ (2 : ℕ)
         = |psiRemainder N * Real.log N| * Real.log N := by
       rw [abs_mul, abs_of_nonneg hlN0]
       ring

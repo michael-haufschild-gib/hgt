@@ -258,9 +258,9 @@ theorem cglProposition51S1_norm_le_literalEpsilonSourcePower
           (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump
             (S.epsilonDenominator * 25) *
             cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
-            (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
+            (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
             cglProposition51PuncturedInverseSquareMass)) /
-          S.base ^ 10) := by
+          S.base ^ (10 : ℕ)) := by
   unfold cglProposition51S1
   calc
     ‖∑' m : {m : (ℤ × ℤ) × ℤ // cglProposition51S1Frequency m},
@@ -286,23 +286,23 @@ theorem cglProposition51S1_norm_le_literalEpsilonSourcePower
         (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump
           (S.epsilonDenominator * 25) *
           cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
-          (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
+          (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
           cglProposition51PuncturedInverseSquareMass)) /
-        S.base ^ 10) +
+        S.base ^ (10 : ℕ)) +
         (((9 *
           (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump
             (S.epsilonDenominator * 25) *
             cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
-            (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
+            (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
             cglProposition51PuncturedInverseSquareMass)) /
-          S.base ^ 10) +
+          S.base ^ (10 : ℕ)) +
           ((9 *
             (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump
               (S.epsilonDenominator * 25) *
               cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
-              (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
+              (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
               cglProposition51PuncturedInverseSquareMass)) /
-            S.base ^ 10)) := by
+            S.base ^ (10 : ℕ))) := by
         gcongr
         · exact cglProposition51_firstAxis_norm_tsum_le_literalEpsilonSourcePower S w
         · exact cglProposition51_secondAxis_norm_tsum_le_literalEpsilonSourcePower S w

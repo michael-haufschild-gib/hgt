@@ -26,7 +26,7 @@ noncomputable section
 def modularThetaLyapunovStrictClockRay (t : ℝ) :
     ModularThetaLyapunovState → ℂ
   | .S => (-t : ℝ)
-  | .A => ((25 / 4 : ℝ) * (1 - t ^ 2) : ℝ)
+  | .A => ((25 / 4 : ℝ) * (1 - t ^ (2 : ℕ)) : ℝ)
   | .W => ((11 / 6 : ℝ) * t : ℝ)
 
 /-- Complete static chamber presently known on the missing physical interval, restricted to the
@@ -37,7 +37,7 @@ def modularThetaLyapunovStrictClockChamber (t : ℝ) : Prop :=
     0 < (modularThetaLyapunovStrictClockRay t .A).re ∧
     0 < (modularThetaLyapunovStrictClockRay t .W).re ∧
     18 <
-      2 * (modularThetaLyapunovStrictClockRay t .S).re ^ 2 +
+      2 * (modularThetaLyapunovStrictClockRay t .S).re ^ (2 : ℕ) +
         3 * (modularThetaLyapunovStrictClockRay t .A).re ∧
     -(1 / 3 : ℝ) * (modularThetaLyapunovStrictClockRay t .S).re <
       (modularThetaLyapunovStrictClockRay t .W).re
@@ -47,14 +47,14 @@ def modularThetaLyapunovStrictClockChamber (t : ℝ) : Prop :=
 theorem modularThetaLyapunovStrictClockRay_reducedCoordinate_eq (t : ℝ) :
     (modularThetaLyapunovStrictClockRay t .S).re = -t ∧
     (modularThetaLyapunovStrictClockRay t .A).re =
-      (5 / 2 : ℝ) ^ 2 * (1 - (-t) ^ 2) ∧
+      (5 / 2 : ℝ) ^ (2 : ℕ) * (1 - (-t) ^ (2 : ℕ)) ∧
     (modularThetaLyapunovStrictClockRay t .W).re =
       (2 / 3 : ℝ) * (-t) - (5 / 2 : ℝ) * (-t) := by
   constructor
   · rfl
   constructor
-  · change (25 / 4 : ℝ) * (1 - t ^ 2) =
-      (5 / 2 : ℝ) ^ 2 * (1 - (-t) ^ 2)
+  · change (25 / 4 : ℝ) * (1 - t ^ (2 : ℕ)) =
+      (5 / 2 : ℝ) ^ (2 : ℕ) * (1 - (-t) ^ (2 : ℕ))
     ring
   · change (11 / 6 : ℝ) * t =
       (2 / 3 : ℝ) * (-t) - (5 / 2 : ℝ) * (-t)

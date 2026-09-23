@@ -41,13 +41,13 @@ def pwBoundaryLimitMomentTwo (L1 L2 L5 : ℝ) : ℝ :=
 
 def pwBoundaryResidualLimit (L1 L2 L5 : ℝ) (s : ℂ) : ℝ :=
   pwBoundaryLimitMomentZero L1 L2 L5 *
-      schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2 +
+      schwarzschildParikhWilczekBorelSpectralCoordinate s ^ (2 : ℕ) +
     pwBoundaryLimitMomentOne L1 L2 L5 *
       schwarzschildParikhWilczekBorelSpectralCoordinate s +
     pwBoundaryLimitMomentTwo L1 L2 L5
 
 def pwBoundaryCrossGradeEnergyLimit (L1 L2 L5 : ℝ) (s : ℂ) : ℝ :=
-  schwarzschildParikhWilczekBorelWallFactor s ^ 2 *
+  schwarzschildParikhWilczekBorelWallFactor s ^ (2 : ℕ) *
     pwBoundaryResidualLimit L1 L2 L5 s
 
 theorem pwCountableMatrixMoments_eq_three_samples
@@ -211,14 +211,14 @@ theorem tendsto_pwCountableMatrixCrossGradeEnergy_of_three_samples
       (𝓝[<] (1 : ℝ)) (𝓝 (pwBoundaryCrossGradeEnergyLimit L1 L2 L5 s)) := by
   have hres := tendsto_pwCountableMatrixResidualEnergy_of_three_samples hM h1 h2 h5 s
   have hmul : Tendsto
-      (fun r => schwarzschildParikhWilczekBorelWallFactor s ^ 2 *
+      (fun r => schwarzschildParikhWilczekBorelWallFactor s ^ (2 : ℕ) *
         schwarzschildParikhWilczekCountableMatrixResidualEnergy (M r) s)
       (𝓝[<] (1 : ℝ)) (𝓝 (pwBoundaryCrossGradeEnergyLimit L1 L2 L5 s)) := by
     unfold pwBoundaryCrossGradeEnergyLimit
     exact hres.const_mul _
   have hEq :
       (fun r => schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy (M r) s) =ᶠ[𝓝[<] (1 : ℝ)]
-        fun r => schwarzschildParikhWilczekBorelWallFactor s ^ 2 *
+        fun r => schwarzschildParikhWilczekBorelWallFactor s ^ (2 : ℕ) *
           schwarzschildParikhWilczekCountableMatrixResidualEnergy (M r) s := by
     filter_upwards with r
     exact schwarzschildParikhWilczekCountableMatrixCrossGradeEnergy_factorization (M r) s
@@ -301,9 +301,9 @@ theorem pwBoundaryResidualLimit_pos_of_nonnegative_nonzero
     0 < pwBoundaryResidualLimit L1 L2 L5 s := by
   let x := schwarzschildParikhWilczekBorelSpectralCoordinate s
   have hx : 1 < x := hs
-  have hx2 : 1 ≤ x ^ 2 := by nlinarith
+  have hx2 : 1 ≤ x ^ (2 : ℕ) := by nlinarith
   have hAx : pwBoundaryLimitMomentZero L1 L2 L5 ≤
-      pwBoundaryLimitMomentZero L1 L2 L5 * x ^ 2 :=
+      pwBoundaryLimitMomentZero L1 L2 L5 * x ^ (2 : ℕ) :=
     by simpa using mul_le_mul_of_nonneg_left hx2 hA
   have hBx : pwBoundaryLimitMomentOne L1 L2 L5 ≤
       pwBoundaryLimitMomentOne L1 L2 L5 * x :=
@@ -318,7 +318,7 @@ theorem pwBoundaryResidualLimit_pos_of_nonnegative_nonzero
           pwBoundaryLimitMomentTwo L1 L2 L5 := by positivity
     exact lt_of_le_of_ne hnonneg (Ne.symm hnonzero)
   rw [pwBoundaryResidualLimit]
-  change 0 < pwBoundaryLimitMomentZero L1 L2 L5 * x ^ 2 +
+  change 0 < pwBoundaryLimitMomentZero L1 L2 L5 * x ^ (2 : ℕ) +
     pwBoundaryLimitMomentOne L1 L2 L5 * x +
     pwBoundaryLimitMomentTwo L1 L2 L5
   linarith
@@ -341,7 +341,7 @@ theorem pwBoundaryCrossGradeEnergyLimit_eq_zero_iff_wall
       (schwarzschildParikhWilczekBorelSpectralCoordinate_gt_one rho)
   constructor
   · intro hzero
-    have hwallSq : schwarzschildParikhWilczekBorelWallFactor (rho : ℂ) ^ 2 = 0 :=
+    have hwallSq : schwarzschildParikhWilczekBorelWallFactor (rho : ℂ) ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hzero).resolve_right hres.ne'
     have hwall : schwarzschildParikhWilczekBorelWallFactor (rho : ℂ) = 0 :=
       (sq_eq_zero_iff).mp hwallSq

@@ -33,7 +33,7 @@ theorem xiExponential_herglotzGauge_hypertranscendentalOver
     HypertranscendentalOver upperEndRationalCoordinateField
       (algebraMap ℂ upperEndMeroField c *
         (upperEndCoordinateMero +
-          (1 + upperEndCoordinateMero ^ 2) *
+          (1 + upperEndCoordinateMero ^ (2 : ℕ)) *
             xiExponentialRotatedUpperEndCarrier)) := by
   exact
     (hypertranscendentalOver_herglotzGauge_iff

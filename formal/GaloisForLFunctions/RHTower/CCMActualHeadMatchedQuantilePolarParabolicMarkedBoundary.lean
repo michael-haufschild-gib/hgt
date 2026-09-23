@@ -18,7 +18,7 @@ def ccmParabolicLightlikeBoundary : Fin 3 → ℝ := ![1, 0, 0]
 
 /-- A mass-neutral parabolic vector has a self-form independent of its second coordinate. -/
 theorem ccmParabolicForm_massNeutral {v : Fin 3 → ℝ} (hv : v 0 = 0) :
-    ccmParabolicForm v = -(v 1) ^ 2 := by
+    ccmParabolicForm v = -(v 1) ^ (2 : ℕ) := by
   rw [ccmParabolicForm, hv]
   ring
 
@@ -41,7 +41,7 @@ theorem ccmParabolicPairing_massNeutral_lightlike
 control the second source coordinate. -/
 theorem ccmActualHeadMatchedQuantileParabolicCodiagonal_form (K : ℕ) :
     ccmParabolicForm (ccmActualHeadMatchedQuantileParabolicCodiagonal K) =
-      -(ccmActualHeadMatchedQuantileParabolicCodiagonal K 1) ^ 2 := by
+      -(ccmActualHeadMatchedQuantileParabolicCodiagonal K 1) ^ (2 : ℕ) := by
   exact ccmParabolicForm_massNeutral
     (ccmActualHeadMatchedQuantileParabolicCodiagonal_zero K)
 

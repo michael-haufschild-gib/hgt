@@ -17,21 +17,21 @@ variable {E : Type*} [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
 
 /-- Exact weighted observation of the conserved Klein–Gordon energy. -/
 theorem kleinGordon_energy (v : KGEnergy E) (d t : ℝ) :
-    energy d t (fun s => kgPropagator s v) = mass d t * ‖v‖ ^ 2 := by
+    energy d t (fun s => kgPropagator s v) = mass d t * ‖v‖ ^ (2 : ℕ) := by
   unfold energy
   simp_rw [norm_kgPropagator_apply]
   rw [intervalIntegral.integral_mul_const, integral_weight]
 
 /-- Exact energy stability in the full pair of initial data. -/
 theorem kleinGordon_difference_energy (v w : KGEnergy E) (d t : ℝ) :
-    energy d t (fun s => kgPropagator s v - kgPropagator s w) = mass d t * ‖v - w‖ ^ 2 := by
+    energy d t (fun s => kgPropagator s v - kgPropagator s w) = mass d t * ‖v - w‖ ^ (2 : ℕ) := by
   simp_rw [← map_sub]
   exact kleinGordon_energy (v - w) d t
 
 /-- Repeated characteristic integration is sharp for two successive wave evolutions. -/
 theorem kleinGordon_rectangle_energy (v : KGEnergy E) (d u t : ℝ) :
     rectangleEnergy d u t (fun p => kgPropagator p.1 (kgPropagator p.2 v)) =
-      mass d u * mass d t * ‖v‖ ^ 2 := by
+      mass d u * mass d t * ‖v‖ ^ (2 : ℕ) := by
   unfold rectangleEnergy energy
   simp_rw [norm_kgPropagator_apply]
   rw [intervalIntegral.integral_mul_const, integral_weight,
@@ -41,11 +41,11 @@ theorem kleinGordon_rectangle_energy (v : KGEnergy E) (d u t : ℝ) :
 /-- The cosine and sine channels partition the integrated energy exactly. -/
 theorem kleinGordon_channel_energy (v : Lp ℂ 2 (volume : Measure E)) (d t : ℝ) :
     energy d t (fun s => kgCosOp s v) + energy d t (fun s => kgSinOp s v) =
-      mass d t * ‖v‖ ^ 2 := by
+      mass d t * ‖v‖ ^ (2 : ℕ) := by
   unfold energy
-  have hc : IntervalIntegrable (fun s => weight d t s * ‖kgCosOp s v‖ ^ 2) volume 0 |t| :=
+  have hc : IntervalIntegrable (fun s => weight d t s * ‖kgCosOp s v‖ ^ (2 : ℕ)) volume 0 |t| :=
     ((continuous_weight d t).mul ((continuous_kgCosOp_apply v).norm.pow 2)).intervalIntegrable 0 |t|
-  have hs : IntervalIntegrable (fun s => weight d t s * ‖kgSinOp s v‖ ^ 2) volume 0 |t| :=
+  have hs : IntervalIntegrable (fun s => weight d t s * ‖kgSinOp s v‖ ^ (2 : ℕ)) volume 0 |t| :=
     ((continuous_weight d t).mul ((continuous_kgSinOp_apply v).norm.pow 2)).intervalIntegrable 0 |t|
   rw [← intervalIntegral.integral_add hc hs]
   simp_rw [← mul_add, norm_kgCosOp_sq_add_norm_kgSinOp_sq]
@@ -59,7 +59,7 @@ def kleinGordonFieldOrbit (f h : Lp ℂ 2 (volume : Measure E)) :
 
 /-- The field itself inherits a uniform weighted L²-in-time bound from arbitrary L² Cauchy data. -/
 theorem kleinGordon_field_energy_le (f h : Lp ℂ 2 (volume : Measure E)) (d t : ℝ) :
-    energy d t (kgFieldFree f h) ≤ (‖f‖ + ‖h‖) ^ 2 / (2 * Real.exp d) := by
+    energy d t (kgFieldFree f h) ≤ (‖f‖ + ‖h‖) ^ (2 : ℕ) / (2 * Real.exp d) := by
   have hb : ‖kleinGordonFieldOrbit f h‖ ≤ ‖f‖ + ‖h‖ :=
     BoundedContinuousFunction.norm_ofNormedAddCommGroup_le _ (by positivity) _
   exact (energy_le d t (kleinGordonFieldOrbit f h)).trans
@@ -73,7 +73,7 @@ def kleinGordonSineOrbit (h : Lp ℂ 2 (volume : Measure E)) :
 
 /-- The Duhamel sine propagator has the same inverse-rate integrated gain. -/
 theorem kleinGordon_sine_energy_le (h : Lp ℂ 2 (volume : Measure E)) (d t : ℝ) :
-    energy d t (fun s => kgSinFreqOp s h) ≤ ‖h‖ ^ 2 / (2 * Real.exp d) := by
+    energy d t (fun s => kgSinFreqOp s h) ≤ ‖h‖ ^ (2 : ℕ) / (2 * Real.exp d) := by
   have hb : ‖kleinGordonSineOrbit h‖ ≤ ‖h‖ :=
     BoundedContinuousFunction.norm_ofNormedAddCommGroup_le _ (norm_nonneg _) _
   exact (energy_le d t (kleinGordonSineOrbit h)).trans

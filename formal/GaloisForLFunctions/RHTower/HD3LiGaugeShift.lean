@@ -29,7 +29,7 @@ noncomputable def liLogCoeff (g : ℂ → ℂ) (n : ℕ) : ℂ :=
   (1 / (Nat.factorial (n - 1) : ℂ)) * iteratedDeriv n (fun s => s ^ (n - 1) * g s) 1
 
 /-- The HD3 zero-free FE-symmetric gauge `Q_c(s) = c (s − 1/2)²`. -/
-noncomputable def hd3Gauge (c : ℂ) (s : ℂ) : ℂ := c * (s - 1 / 2) ^ 2
+noncomputable def hd3Gauge (c : ℂ) (s : ℂ) : ℂ := c * (s - 1 / 2) ^ (2 : ℕ)
 
 /-- The gauge is even in `s − 1/2`, so it preserves the functional-equation symmetry. -/
 theorem hd3Gauge_reflect (c s : ℂ) : hd3Gauge c (1 - s) = hd3Gauge c s := by
@@ -49,7 +49,7 @@ theorem hd3_zero_iff (c : ℂ) (f : ℂ → ℂ) (s : ℂ) :
     rw [h, mul_zero]
 
 theorem factorial_succ_eq {n : ℕ} (hn : 1 ≤ n) :
-    Nat.factorial (n + 1) = Nat.factorial n + n ^ 2 * Nat.factorial (n - 1) := by
+    Nat.factorial (n + 1) = Nat.factorial n + n ^ (2 : ℕ) * Nat.factorial (n - 1) := by
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
   simp only [Nat.add_sub_cancel, Nat.factorial_succ]
   ring
@@ -57,14 +57,14 @@ theorem factorial_succ_eq {n : ℕ} (hn : 1 ≤ n) :
 /-- **The HD3 Li-coefficient gauge shift.**  The zero-free FE-symmetric gauge shifts the
 log-defined Li coefficients by exactly `c n²`. -/
 theorem liLogCoeff_hd3Gauge (c : ℂ) {n : ℕ} (hn : 1 ≤ n) :
-    liLogCoeff (hd3Gauge c) n = c * (n : ℂ) ^ 2 := by
+    liLogCoeff (hd3Gauge c) n = c * (n : ℂ) ^ (2 : ℕ) := by
   have hfun : (fun s : ℂ => s ^ (n - 1) * hd3Gauge c s)
       = fun s : ℂ => c * s ^ (n + 1) - c * s ^ n + (c / 4) * s ^ (n - 1) := by
     funext s
     rw [hd3Gauge]
     have h1 : n - 1 + 2 = n + 1 := by omega
     have h2 : n - 1 + 1 = n := by omega
-    rw [show s ^ (n + 1) = s ^ (n - 1) * s ^ 2 by rw [← pow_add, h1],
+    rw [show s ^ (n + 1) = s ^ (n - 1) * s ^ (2 : ℕ) by rw [← pow_add, h1],
       show s ^ n = s ^ (n - 1) * s by rw [← pow_succ, h2]]
     ring
   have hA : iteratedDeriv n (fun s : ℂ => c * s ^ (n + 1)) 1
@@ -109,7 +109,7 @@ theorem liLogCoeff_hd3Gauge (c : ℂ) {n : ℕ} (hn : 1 ≤ n) :
 log-defined Li coefficient by exactly `c n²`. -/
 theorem liLogCoeff_add_hd3Gauge {g : ℂ → ℂ} {n : ℕ} (hn : 1 ≤ n)
     (hg : ContDiffAt ℂ (n : ℕ) (fun s : ℂ => s ^ (n - 1) * g s) 1) (c : ℂ) :
-    liLogCoeff (fun s => g s + hd3Gauge c s) n = liLogCoeff g n + c * (n : ℂ) ^ 2 := by
+    liLogCoeff (fun s => g s + hd3Gauge c s) n = liLogCoeff g n + c * (n : ℂ) ^ (2 : ℕ) := by
   have hsplit : (fun s : ℂ => s ^ (n - 1) * (g s + hd3Gauge c s))
       = (fun s : ℂ => s ^ (n - 1) * g s) + (fun s : ℂ => s ^ (n - 1) * hd3Gauge c s) := by
     funext s

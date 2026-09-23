@@ -20,7 +20,7 @@ namespace RHTower
 open ArithmeticFunction Finset
 
 /-- Finite Basel bound: `∑_{j ≤ N} 1/j² ≤ 2`. -/
-theorem sum_inv_sq_le (N : ℕ) : ∑ j ∈ Finset.Icc 1 N, 1 / (j : ℝ) ^ 2 ≤ 2 := by
+theorem sum_inv_sq_le (N : ℕ) : ∑ j ∈ Finset.Icc 1 N, 1 / (j : ℝ) ^ (2 : ℕ) ≤ 2 := by
   rcases Nat.lt_or_ge N 2 with hN2 | hN2
   · interval_cases N
     · simp
@@ -31,7 +31,7 @@ theorem sum_inv_sq_le (N : ℕ) : ∑ j ∈ Finset.Icc 1 N, 1 / (j : ℝ) ^ 2 �
       omega
     rw [hins, Finset.sum_insert (by simp [Finset.mem_Icc])]
     have hterm : ∀ j ∈ Finset.Icc 2 N,
-        1 / (j : ℝ) ^ 2 ≤ 1 / ((j : ℝ) - 1) - 1 / j := by
+        1 / (j : ℝ) ^ (2 : ℕ) ≤ 1 / ((j : ℝ) - 1) - 1 / j := by
       intro j hj
       rw [Finset.mem_Icc] at hj
       have hj1 : (1 : ℝ) < j := by exact_mod_cast (by omega : 1 < j)
@@ -68,7 +68,7 @@ theorem sum_inv_sq_le (N : ℕ) : ∑ j ∈ Finset.Icc 1 N, 1 / (j : ℝ) ^ 2 �
     have htel := sum_reciprocal_telescope
       (k := 1) (N := N - 1) le_rfl (by omega)
     have hsum := Finset.sum_le_sum hterm
-    have h1 : 1 / (((1 : ℕ)) : ℝ) ^ 2 = 1 := by norm_num
+    have h1 : 1 / (((1 : ℕ)) : ℝ) ^ (2 : ℕ) = 1 := by norm_num
     rw [h1]
     have hnn : (0 : ℝ) ≤ 1 / ((((N - 1 : ℕ)) : ℝ) + 1) := by positivity
     have h2 : (1 : ℝ) / (((1 : ℕ)) : ℝ) = 1 := by norm_num
@@ -98,20 +98,20 @@ theorem sum_log_increment_eq (N : ℕ) (hN : 1 ≤ N) :
 `∑_{1 ≤ j < N} (log²(j+1) − log²j) = log²N`. -/
 theorem sum_log_sq_increment_eq (N : ℕ) (hN : 1 ≤ N) :
     ∑ j ∈ Finset.Ico 1 N,
-        (Real.log ((j : ℝ) + 1) ^ 2 - Real.log j ^ 2)
-      = Real.log N ^ 2 := by
+        (Real.log ((j : ℝ) + 1) ^ (2 : ℕ) - Real.log j ^ (2 : ℕ))
+      = Real.log N ^ (2 : ℕ) := by
   have hcongr : ∑ j ∈ Finset.Ico 1 N,
-      (Real.log ((j : ℝ) + 1) ^ 2 - Real.log j ^ 2)
+      (Real.log ((j : ℝ) + 1) ^ (2 : ℕ) - Real.log j ^ (2 : ℕ))
       = ∑ j ∈ Finset.Ico 1 N,
-          (Real.log (((j + 1 : ℕ)) : ℝ) ^ 2
-            - Real.log ((j : ℕ) : ℝ) ^ 2) := by
+          (Real.log (((j + 1 : ℕ)) : ℝ) ^ (2 : ℕ)
+            - Real.log ((j : ℕ) : ℝ) ^ (2 : ℕ)) := by
     apply Finset.sum_congr rfl
     intro j _
     push_cast
     ring
   rw [hcongr, Finset.sum_Ico_eq_sub _ hN,
-    Finset.sum_range_sub (fun j => Real.log ((j : ℕ) : ℝ) ^ 2) N,
-    Finset.sum_range_sub (fun j => Real.log ((j : ℕ) : ℝ) ^ 2) 1]
+    Finset.sum_range_sub (fun j => Real.log ((j : ℕ) : ℝ) ^ (2 : ℕ)) N,
+    Finset.sum_range_sub (fun j => Real.log ((j : ℕ) : ℝ) ^ (2 : ℕ)) 1]
   push_cast
   rw [Real.log_zero, Real.log_one]
   ring
@@ -120,7 +120,7 @@ theorem sum_log_sq_increment_eq (N : ℕ) (hN : 1 ≤ N) :
 `|∑_{m ≤ N} Λ(m)log m/m − ½log²N| ≤ 15·log N + 1`. -/
 theorem abs_sum_vonMangoldt_log_div_sub_le (N : ℕ) (hN : 1 ≤ N) :
     |(∑ m ∈ Finset.Icc 1 N, vonMangoldt m * Real.log m / m)
-        - Real.log N ^ 2 / 2| ≤ 15 * Real.log N + 1 := by
+        - Real.log N ^ (2 : ℕ) / 2| ≤ 15 * Real.log N + 1 := by
   have hlN0 : 0 ≤ Real.log N := Real.log_nonneg (by exact_mod_cast hN)
   have hlog4 : Real.log 4 ≤ 3 := by
     have := Real.log_le_sub_one_of_pos (x := (4 : ℝ)) (by norm_num)
@@ -232,35 +232,35 @@ theorem abs_sum_vonMangoldt_log_div_sub_le (N : ℕ) (hN : 1 ≤ N) :
   -- the increment-weighted log sum
   have hΔlogsum : |(∑ j ∈ Finset.Ico 1 N,
       (Real.log ((j : ℝ) + 1) - Real.log j) * Real.log j)
-      - Real.log N ^ 2 / 2| ≤ 1 := by
+      - Real.log N ^ (2 : ℕ) / 2| ≤ 1 := by
     have hid : ∀ j ∈ Finset.Ico 1 N,
         (Real.log ((j : ℝ) + 1) - Real.log j) * Real.log j
-          = (Real.log ((j : ℝ) + 1) ^ 2 - Real.log j ^ 2) / 2
-            - (Real.log ((j : ℝ) + 1) - Real.log j) ^ 2 / 2 := by
+          = (Real.log ((j : ℝ) + 1) ^ (2 : ℕ) - Real.log j ^ (2 : ℕ)) / 2
+            - (Real.log ((j : ℝ) + 1) - Real.log j) ^ (2 : ℕ) / 2 := by
       intro j _
       ring
     rw [Finset.sum_congr rfl hid, Finset.sum_sub_distrib,
       ← Finset.sum_div, sum_log_sq_increment_eq N hN, ← Finset.sum_div]
     have hΔsq : 0 ≤ ∑ j ∈ Finset.Ico 1 N,
-        (Real.log ((j : ℝ) + 1) - Real.log j) ^ 2 := by
+        (Real.log ((j : ℝ) + 1) - Real.log j) ^ (2 : ℕ) := by
       apply Finset.sum_nonneg
       intro j _
       positivity
     have hΔsq2 : ∑ j ∈ Finset.Ico 1 N,
-        (Real.log ((j : ℝ) + 1) - Real.log j) ^ 2 ≤ 2 := by
+        (Real.log ((j : ℝ) + 1) - Real.log j) ^ (2 : ℕ) ≤ 2 := by
       have hle : ∀ j ∈ Finset.Ico 1 N,
-          (Real.log ((j : ℝ) + 1) - Real.log j) ^ 2 ≤ 1 / (j : ℝ) ^ 2 := by
+          (Real.log ((j : ℝ) + 1) - Real.log j) ^ (2 : ℕ) ≤ 1 / (j : ℝ) ^ (2 : ℕ) := by
         intro j hj
         have h := hΔ j hj
-        have h2 : (1 : ℝ) / (j : ℝ) ^ 2 = (1 / j) ^ 2 := by
+        have h2 : (1 : ℝ) / (j : ℝ) ^ (2 : ℕ) = (1 / j) ^ (2 : ℕ) := by
           rw [div_pow, one_pow]
         rw [h2]
         exact pow_le_pow_left₀ h.1 h.2 2
       calc ∑ j ∈ Finset.Ico 1 N,
-            (Real.log ((j : ℝ) + 1) - Real.log j) ^ 2
-          ≤ ∑ j ∈ Finset.Ico 1 N, 1 / (j : ℝ) ^ 2 :=
+            (Real.log ((j : ℝ) + 1) - Real.log j) ^ (2 : ℕ)
+          ≤ ∑ j ∈ Finset.Ico 1 N, 1 / (j : ℝ) ^ (2 : ℕ) :=
             Finset.sum_le_sum hle
-        _ ≤ ∑ j ∈ Finset.Icc 1 N, 1 / (j : ℝ) ^ 2 :=
+        _ ≤ ∑ j ∈ Finset.Icc 1 N, 1 / (j : ℝ) ^ (2 : ℕ) :=
             Finset.sum_le_sum_of_subset_of_nonneg
               (by
                 intro x hx

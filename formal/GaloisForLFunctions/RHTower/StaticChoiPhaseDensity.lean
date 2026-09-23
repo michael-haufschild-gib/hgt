@@ -43,7 +43,7 @@ theorem relativePhase_norm {d : ℕ}
 observer-distance energy of their relative phase. -/
 theorem norm_uniformPhaseDensity_sub_sq_eq_observer
     {d : ℕ} (hd : 0 < d) (x y : Fin d → UnitAddCircle) :
-    ‖uniformPhaseDensity d x - uniformPhaseDensity d y‖ ^ 2 =
+    ‖uniformPhaseDensity d x - uniformPhaseDensity d y‖ ^ (2 : ℕ) =
       finiteQuantumObserverDistanceSq uniformPureObserverWeight
         (relativePhase x y) (uniformPureObserverBlock d) := by
   rw [EuclideanSpace.norm_sq_eq,
@@ -57,9 +57,9 @@ theorem norm_uniformPhaseDensity_sub_sq_eq_observer
   rw [uniformPureObserverUnionWeight hd]
   change
     ‖((d : ℝ)⁻¹ : ℂ) * fourier 1 (x i) * starRingEnd ℂ (fourier 1 (x j)) -
-      ((d : ℝ)⁻¹ : ℂ) * fourier 1 (y i) * starRingEnd ℂ (fourier 1 (y j))‖ ^ 2 =
-      (d : ℝ)⁻¹ ^ 2 *
-        ‖relativePhase x y i * starRingEnd ℂ (relativePhase x y j) - 1‖ ^ 2
+      ((d : ℝ)⁻¹ : ℂ) * fourier 1 (y i) * starRingEnd ℂ (fourier 1 (y j))‖ ^ (2 : ℕ) =
+      (d : ℝ)⁻¹ ^ (2 : ℕ) *
+        ‖relativePhase x y i * starRingEnd ℂ (relativePhase x y j) - 1‖ ^ (2 : ℕ)
   have hrel (k : Fin d) :
       relativePhase x y k =
         fourier 1 (x k) * starRingEnd ℂ (fourier 1 (y k)) := by
@@ -111,8 +111,8 @@ theorem norm_uniformPhaseDensity_sub_sq_eq_observer
 phase densities. -/
 theorem dist_uniformPhaseDensity_sq_eq_two_mul_fidelityDeficit
     {d : ℕ} (hd : 0 < d) (x y : Fin d → UnitAddCircle) :
-    dist (uniformPhaseDensity d x) (uniformPhaseDensity d y) ^ 2 =
-      2 * (1 - ‖equalPhaseAmplitude (relativePhase x y)‖ ^ 2) := by
+    dist (uniformPhaseDensity d x) (uniformPhaseDensity d y) ^ (2 : ℕ) =
+      2 * (1 - ‖equalPhaseAmplitude (relativePhase x y)‖ ^ (2 : ℕ)) := by
   rw [dist_eq_norm,
     norm_uniformPhaseDensity_sub_sq_eq_observer hd]
   exact uniformPureObserver_distanceSq_eq_two_mul_fidelityDeficit
@@ -123,10 +123,10 @@ theorem uniformPhaseDensity_pair_mem_torusCoherenceTarget
     {d : ℕ} (hd : 0 < d) {δ : ℝ} (hδ : 0 ≤ δ)
     (x y : Fin d → UnitAddCircle)
     (hxy : dist (uniformPhaseDensity d x) (uniformPhaseDensity d y) ≤ 2 * δ) :
-    x - y ∈ torusCoherenceTarget (d := Fin d) (2 * δ ^ 2) := by
+    x - y ∈ torusCoherenceTarget (d := Fin d) (2 * δ ^ (2 : ℕ)) := by
   letI : Nonempty (Fin d) := Fin.pos_iff_nonempty.mp hd
   rw [torusCoherenceTarget]
-  change 1 - 2 * δ ^ 2 ≤
+  change 1 - 2 * δ ^ (2 : ℕ) ≤
     ‖equalPhaseAmplitude (fun j ↦ fourier 1 ((x - y) j))‖
   have hphase : (fun j ↦ fourier 1 ((x - y) j)) = relativePhase x y := by
     funext j
@@ -136,8 +136,8 @@ theorem uniformPhaseDensity_pair_mem_torusCoherenceTarget
   have hdist0 : 0 ≤ dist (uniformPhaseDensity d x) (uniformPhaseDensity d y) :=
     dist_nonneg
   have hsq :
-      dist (uniformPhaseDensity d x) (uniformPhaseDensity d y) ^ 2 ≤
-        (2 * δ) ^ 2 := by
+      dist (uniformPhaseDensity d x) (uniformPhaseDensity d y) ^ (2 : ℕ) ≤
+        (2 * δ) ^ (2 : ℕ) := by
     nlinarith
   have ha0 : 0 ≤ ‖equalPhaseAmplitude (relativePhase x y)‖ := norm_nonneg _
   have ha1 : ‖equalPhaseAmplitude (relativePhase x y)‖ ≤ 1 := by

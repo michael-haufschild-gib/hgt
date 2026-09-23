@@ -361,8 +361,8 @@ lemma integralPosAux'_of_le (c₁ c₂ : ℝ) (c₁_pos : 0 < c₁) (hle : c₁ 
       calc
         _ ≥ (c₁ + t ^ 2).sqrt * (c₁ + t ^ 2).sqrt := by gcongr
         _ ≥ c₁ + t ^ 2 := by rw [← Real.sqrt_mul, sqrt_mul_self] <;> positivity
-  calc 0 < ∫ t, 1 / (c₂ + t^2) := integral_one_div_const_add_sq_pos c₂ c₂_pos
-       _ ≤ ∫ t, 1 / (Real.sqrt (c₁ + t^2) * Real.sqrt (c₂ + t^2)) := ?_
+  calc 0 < ∫ t, 1 / (c₂ + t^(2 : ℕ)) := integral_one_div_const_add_sq_pos c₂ c₂_pos
+       _ ≤ ∫ t, 1 / (Real.sqrt (c₁ + t^(2 : ℕ)) * Real.sqrt (c₂ + t^(2 : ℕ))) := ?_
   refine integral_mono (Integrable.one_div_const_add_sq c₂ c₂_pos) ?_ hlower
   apply MeasureTheory.Integrable.mono (g := fun t : ℝ ↦ 1 / (c₁ + t ^ 2))
     <| Integrable.one_div_const_add_sq c₁ c₁_pos
@@ -374,13 +374,13 @@ lemma integralPosAux'_of_le (c₁ c₂ : ℝ) (c₁_pos : 0 < c₁) (hle : c₁ 
 
 
 lemma integralPosAux' (c₁ c₂ : ℝ) (c₁_pos : 0 < c₁) (c₂_pos : 0 < c₂) :
-    0 < ∫ (t : ℝ), 1 / ((c₁ + t^2).sqrt * (c₂ + t^2).sqrt) := by
+    0 < ∫ (t : ℝ), 1 / ((c₁ + t^(2 : ℕ)).sqrt * (c₂ + t^(2 : ℕ)).sqrt) := by
   by_cases hc : c₁ ≤ c₂
   · exact integralPosAux'_of_le c₁ c₂ c₁_pos hc
   · convert integralPosAux'_of_le c₂ c₁ c₂_pos (by linarith) using 4; rw [mul_comm]
 
-lemma integralPosAux : 0 < ∫ (t : ℝ), 1 / ((1 + t^2).sqrt * (2 + t^2).sqrt) := by
-  /- This integral is between $\frac{1}{2}$ and $1$ of the integral of $\frac{1}{1+t^2}$,
+lemma integralPosAux : 0 < ∫ (t : ℝ), 1 / ((1 + t^(2 : ℕ)).sqrt * (2 + t^(2 : ℕ)).sqrt) := by
+  /- This integral is between $\frac{1}{2}$ and $1$ of the integral of $\frac{1}{1+t^(2 : ℕ)}$,
   which is $\pi$. -/
   apply integralPosAux' <;> norm_num
 
@@ -473,7 +473,7 @@ lemma map_conj (hx : 0 ≤ x) (s : ℂ) : f x (conj s) = conj (f x s) := by
 
 theorem isTheta_uniformlyOn_uIcc {x : ℝ} (xpos : 0 < x) (σ' σ'' : ℝ) :
     (fun (σ, (y : ℝ)) ↦ f x (σ + y * I)) =Θ[𝓟 [[σ', σ'']] ×ˢ (atBot ⊔ atTop)]
-    ((fun y ↦ 1 / y^2) ∘ Prod.snd) := by
+    ((fun y ↦ 1 / y^(2 : ℕ)) ∘ Prod.snd) := by
   set l := 𝓟 [[σ', σ'']] ×ˢ (atBot ⊔ atTop : Filter ℝ) with hl
   refine IsTheta.div (isTheta_norm_left.mp ?_) ?_
   · suffices (fun (σ, _y) ↦ |x| ^ σ) =Θ[l] fun _ ↦ (1 : ℝ) by
@@ -496,14 +496,14 @@ theorem isTheta_uniformlyOn_uIcc {x : ℝ} (xpos : 0 < x) (σ' σ'' : ℝ) :
 
 theorem isTheta_uniformlyOn_uIoc {x : ℝ} (xpos : 0 < x) (σ' σ'' : ℝ) :
     (fun (σ, (y : ℝ)) ↦ f x (σ + y * I)) =Θ[𝓟 (uIoc σ' σ'') ×ˢ (atBot ⊔ atTop)]
-    fun (_, y) ↦ 1 / y^2 := by
+    fun (_, y) ↦ 1 / y^(2 : ℕ) := by
   refine (𝓟 (uIoc σ' σ'')).eq_or_neBot.casesOn (fun hbot ↦ by simp [hbot]) (fun _ ↦ ?_)
   haveI : NeBot (atBot (α := ℝ) ⊔ atTop) := sup_neBot.mpr (Or.inl atBot_neBot)
   exact (isTheta_uniformlyOn_uIcc xpos σ' σ'').mono (by simpa using! Ioc_subset_Icc_self)
 
 lemma isTheta (xpos : 0 < x) :
-    ((fun (y : ℝ) ↦ f x (σ + y * I)) =Θ[atBot] fun (y : ℝ) ↦ 1 / y^2) ∧
-    (fun (y : ℝ) ↦ f x (σ + y * I)) =Θ[atTop] fun (y : ℝ) ↦ 1 / y^2 :=
+    ((fun (y : ℝ) ↦ f x (σ + y * I)) =Θ[atBot] fun (y : ℝ) ↦ 1 / y^(2 : ℕ)) ∧
+    (fun (y : ℝ) ↦ f x (σ + y * I)) =Θ[atTop] fun (y : ℝ) ↦ 1 / y^(2 : ℕ) :=
   isTheta_sup.mp <| isTheta_of_isThetaUniformly (isTheta_uniformlyOn_uIcc xpos σ σ) left_mem_uIcc
 
 
@@ -532,13 +532,13 @@ lemma isIntegrable (xpos : 0 < x) (σ_ne_zero : σ ≠ 0) (σ_ne_neg_one : σ �
 theorem horizontal_integral_isBigO {x : ℝ} (xpos : 0 < x) (σ' σ'' : ℝ) (μ : Measure ℝ)
     [IsLocallyFiniteMeasure μ] :
     (fun (y : ℝ) ↦ ∫ (σ : ℝ) in σ'..σ'', f x (σ + y * I) ∂μ) =O[atBot ⊔ atTop]
-      fun y ↦ 1 / y^2 := by
+      fun y ↦ 1 / y^(2 : ℕ) := by
   let g := fun ((σ, y) : ℝ × ℝ) ↦ f x (σ + y * I)
   calc
     _ =Θ[atBot ⊔ atTop] fun (y : ℝ) ↦ ∫ (σ : ℝ) in uIoc σ' σ'', g (σ, y) ∂μ :=
         IsTheta.of_norm_eventuallyEq_norm <| univ_mem'
           fun _ ↦ intervalIntegral.norm_intervalIntegral_eq _ _ _ _
-    _ =O[atBot ⊔ atTop] fun y ↦ 1 / y^2 :=
+    _ =O[atBot ⊔ atTop] fun y ↦ 1 / y^(2 : ℕ) :=
       (isTheta_uniformlyOn_uIoc xpos σ' σ'').isBigO.set_integral_isBigO
         (g := fun x => 1 / (x ^ 2))
         measure_Ioc_lt_top

@@ -267,8 +267,8 @@ theorem hasDerivAt_observerJetSqrtGapDeriv
   have hx0 : x ≠ 0 := hx.ne'
   have hsx : Real.sqrt x ≠ 0 := (Real.sqrt_pos.2 hx).ne'
   have hsxp : Real.sqrt (x + 1) ≠ 0 := (Real.sqrt_pos.2 (by linarith)).ne'
-  have hsqx : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx.le
-  have hsqxp : Real.sqrt (x + 1) ^ 2 = x + 1 := Real.sq_sqrt (by linarith)
+  have hsqx : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
+  have hsqxp : Real.sqrt (x + 1) ^ (2 : ℕ) = x + 1 := Real.sq_sqrt (by linarith)
   have hshift : HasDerivAt (fun y : ℝ => y + 1) 1 x :=
     (hasDerivAt_id x).add_const 1
   have hs1 : HasDerivAt (fun y : ℝ => Real.sqrt (y + 1))
@@ -388,7 +388,7 @@ theorem abs_observerJetSqrtGapDeriv_le {x : ℝ} (hx : 0 < x) :
   let b := Real.sqrt (x + 1)
   have ha : 0 < a := Real.sqrt_pos.2 hx
   have hb : 0 < b := Real.sqrt_pos.2 (by linarith)
-  have haa : a ^ 2 = x := Real.sq_sqrt hx.le
+  have haa : a ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
   have hab : a ≤ b := Real.sqrt_le_sqrt (by linarith)
   have hgap0 : 0 ≤ observerJetSqrtGap x := (observerJetSqrtGap_pos hx.le).le
   have hgap := observerJetSqrtGap_le hx
@@ -411,8 +411,8 @@ theorem observerJetSqrtGapSecondDeriv_split {x : ℝ} (hx : 0 < x) :
   have hsx1 : Real.sqrt (x + 1) ≠ 0 := (Real.sqrt_pos.2 (by linarith)).ne'
   have hx0 : x ≠ 0 := hx.ne'
   have hx1 : x + 1 ≠ 0 := by linarith
-  have hsquare : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx.le
-  have hsquare1 : Real.sqrt (x + 1) ^ 2 = x + 1 := Real.sq_sqrt (by linarith)
+  have hsquare : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
+  have hsquare1 : Real.sqrt (x + 1) ^ (2 : ℕ) = x + 1 := Real.sq_sqrt (by linarith)
   unfold observerJetSqrtGapSecondDeriv observerJetSqrtGap
   field_simp [hx0, hx1, hsx, hsx1]
   nlinarith
@@ -427,42 +427,42 @@ theorem observerJetSqrtGapSecondDeriv_nonneg {x : ℝ} (hx : 0 < x) :
 
 theorem observerJetSqrtGapSecondDeriv_le {x : ℝ} (hx : 0 < x) :
     observerJetSqrtGapSecondDeriv x ≤
-      3 / (8 * x ^ 2 * Real.sqrt x) := by
+      3 / (8 * x ^ (2 : ℕ) * Real.sqrt x) := by
   let a := Real.sqrt x
   let b := Real.sqrt (x + 1)
   have ha : 0 < a := Real.sqrt_pos.2 hx
   have hb : 0 < b := Real.sqrt_pos.2 (by linarith)
-  have haa : a ^ 2 = x := Real.sq_sqrt hx.le
+  have haa : a ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
   have hab : a ≤ b := Real.sqrt_le_sqrt (by linarith)
   have hgap0 : 0 ≤ observerJetSqrtGap x := (observerJetSqrtGap_pos hx.le).le
   have hgap := observerJetSqrtGap_le hx
-  have h1 : 1 / (x * (x + 1) * a) ≤ 1 / (x ^ 2 * a) := by
+  have h1 : 1 / (x * (x + 1) * a) ≤ 1 / (x ^ (2 : ℕ) * a) := by
     gcongr
     nlinarith
   have habmul : x ≤ a * b := by
     nlinarith [mul_le_mul_of_nonneg_left hab ha.le]
-  have hden : x ^ 2 ≤ (x + 1) * a * b := by
+  have hden : x ^ (2 : ℕ) ≤ (x + 1) * a * b := by
     nlinarith [mul_le_mul_of_nonneg_left habmul (show 0 ≤ x by positivity)]
   have h2 : observerJetSqrtGap x / ((x + 1) * a * b) ≤
-      1 / (2 * x ^ 2 * a) := by
+      1 / (2 * x ^ (2 : ℕ) * a) := by
     apply (div_le_iff₀ (by positivity : 0 < (x + 1) * a * b)).2
     calc
       observerJetSqrtGap x ≤ 1 / (2 * a) := by simpa [a] using hgap
-      _ ≤ 1 / (2 * x ^ 2 * a) * ((x + 1) * a * b) := by
+      _ ≤ 1 / (2 * x ^ (2 : ℕ) * a) * ((x + 1) * a * b) := by
         field_simp [ha.ne', hx.ne']
         nlinarith
   rw [observerJetSqrtGapSecondDeriv_split hx]
   change (1 / (x * (x + 1) * a) +
       observerJetSqrtGap x / ((x + 1) * a * b)) / 4 ≤
-    3 / (8 * x ^ 2 * a)
+    3 / (8 * x ^ (2 : ℕ) * a)
   have hsum := add_le_add h1 h2
-  have hpos : 0 < x ^ 2 * a := by positivity
+  have hpos : 0 < x ^ (2 : ℕ) * a := by positivity
   calc
     (1 / (x * (x + 1) * a) +
         observerJetSqrtGap x / ((x + 1) * a * b)) / 4 ≤
-        (1 / (x ^ 2 * a) + 1 / (2 * x ^ 2 * a)) / 4 :=
+        (1 / (x ^ (2 : ℕ) * a) + 1 / (2 * x ^ (2 : ℕ) * a)) / 4 :=
       div_le_div_of_nonneg_right hsum (by norm_num)
-    _ = 3 / (8 * x ^ 2 * a) := by field_simp; ring
+    _ = 3 / (8 * x ^ (2 : ℕ) * a) := by field_simp; ring
 
 theorem abs_observerJetClockRealSecondDeriv_le
     {x : ℝ} (hx : 1 ≤ x) :
@@ -498,7 +498,7 @@ theorem abs_observerJetClockRealSecondDeriv_le
       abs_of_nonneg (by linarith : 0 ≤ x + 1), abs_of_nonneg hsecond0]
     calc
       x * (x + 1) * observerJetSqrtGapSecondDeriv x ≤
-          x * (2 * x) * (3 / (8 * x ^ 2 * a)) := by gcongr
+          x * (2 * x) * (3 / (8 * x ^ (2 : ℕ) * a)) := by gcongr
       _ = 3 / (4 * a) := by field_simp; ring
   unfold observerJetClockRealSecondDeriv
   calc

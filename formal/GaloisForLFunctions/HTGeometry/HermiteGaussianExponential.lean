@@ -38,15 +38,15 @@ theorem real_hasSum_exp (r : ℝ) :
 
 theorem gauss_mul_exp_abs_le (a x : ℝ) :
     gaussReal x * Real.exp (|a| * |x|)
-      ≤ Real.exp (a ^ 2 / π) * Real.exp (-(3 * π / 4) * x ^ 2) := by
+      ≤ Real.exp (a ^ (2 : ℕ) / π) * Real.exp (-(3 * π / 4) * x ^ (2 : ℕ)) := by
   have hpi : (0 : ℝ) < π := Real.pi_pos
-  have hkey : |a| * |x| ≤ a ^ 2 / π + π / 4 * x ^ 2 := by
-    have hmain : 4 * π * (|a| * |x|) ≤ 4 * a ^ 2 + π ^ 2 * x ^ 2 := by
+  have hkey : |a| * |x| ≤ a ^ (2 : ℕ) / π + π / 4 * x ^ (2 : ℕ) := by
+    have hmain : 4 * π * (|a| * |x|) ≤ 4 * a ^ (2 : ℕ) + π ^ (2 : ℕ) * x ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (2 * |a| - π * |x|), sq_abs a, sq_abs x]
-    have hdiff : a ^ 2 / π + π / 4 * x ^ 2 - |a| * |x|
-        = (4 * a ^ 2 + π ^ 2 * x ^ 2 - 4 * π * (|a| * |x|)) / (4 * π) := by
+    have hdiff : a ^ (2 : ℕ) / π + π / 4 * x ^ (2 : ℕ) - |a| * |x|
+        = (4 * a ^ (2 : ℕ) + π ^ (2 : ℕ) * x ^ (2 : ℕ) - 4 * π * (|a| * |x|)) / (4 * π) := by
       field_simp
-    have hnn : 0 ≤ (4 * a ^ 2 + π ^ 2 * x ^ 2 - 4 * π * (|a| * |x|)) / (4 * π) :=
+    have hnn : 0 ≤ (4 * a ^ (2 : ℕ) + π ^ (2 : ℕ) * x ^ (2 : ℕ) - 4 * π * (|a| * |x|)) / (4 * π) :=
       div_nonneg (by linarith) (by positivity)
     rw [← hdiff] at hnn
     linarith
@@ -62,7 +62,7 @@ theorem integrable_gauss_mul_exp_abs (a : ℝ) :
     · exact Real.continuous_exp.comp (by fun_prop)
     · exact Real.continuous_exp.comp (by fun_prop)
   have hdom : Integrable fun x : ℝ =>
-      Real.exp (a ^ 2 / π) * Real.exp (-(3 * π / 4) * x ^ 2) := by
+      Real.exp (a ^ (2 : ℕ) / π) * Real.exp (-(3 * π / 4) * x ^ (2 : ℕ)) := by
     refine Integrable.const_mul ?_ _
     exact integrable_exp_neg_mul_sq (by positivity)
   refine Integrable.mono' hdom hcont.aestronglyMeasurable ?_

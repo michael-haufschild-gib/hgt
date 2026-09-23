@@ -34,11 +34,11 @@ def ccmRoutePBaseCubicGreenPolarIntegrand (h : ℝ) : ℝ :=
 
 /-- Explicit positive-half-line form of the Gamma-channel integrand. -/
 def ccmRoutePBaseCubicGreenGammaExplicit (h : ℝ) : ℝ :=
-  Real.exp (-h) / (4 * h ^ 3 * (1 - Real.exp (-2 * h)))
+  Real.exp (-h) / (4 * h ^ (3 : ℕ) * (1 - Real.exp (-2 * h)))
 
 /-- Explicit positive-half-line form of the polar-channel integrand. -/
 def ccmRoutePBaseCubicGreenPolarExplicit (h : ℝ) : ℝ :=
-  (1 + Real.exp (-h)) / (4 * h ^ 3)
+  (1 + Real.exp (-h)) / (4 * h ^ (3 : ℕ))
 
 theorem ccmRoutePBaseCubicGreenGammaIntegrand_eq_explicit
     {h : ℝ} (hh : Real.log 2 < h) :
@@ -58,12 +58,12 @@ theorem ccmRoutePBaseCubicGreenGammaIntegrand_eq_explicit
     ccmGuinandWeilArchimedeanDensity_eq_exp_neg_half_div hh0,
     ccmRoutePBaseCubicGreenGammaExplicit]
   calc
-    Real.exp (-h / 2) / (4 * h ^ 3) *
+    Real.exp (-h / 2) / (4 * h ^ (3 : ℕ)) *
           (Real.exp (-h / 2) / (1 - Real.exp (-2 * h))) =
         (Real.exp (-h / 2) * Real.exp (-h / 2)) /
-          (4 * h ^ 3 * (1 - Real.exp (-2 * h))) := by
+          (4 * h ^ (3 : ℕ) * (1 - Real.exp (-2 * h))) := by
       field_simp [hh0.ne', hden]
-    _ = Real.exp (-h) / (4 * h ^ 3 * (1 - Real.exp (-2 * h))) := by
+    _ = Real.exp (-h) / (4 * h ^ (3 : ℕ) * (1 - Real.exp (-2 * h))) := by
       rw [hexp]
 
 theorem ccmRoutePBaseCubicGreenPolarIntegrand_eq_explicit
@@ -90,10 +90,10 @@ theorem ccmRoutePBaseCubicGreenPolarIntegrand_eq_explicit
     ccmRoutePBaseCubicGreenLogProfile, max_eq_left hh.le,
     ccmRoutePBaseCubicGreenPolarExplicit]
   calc
-    Real.exp (-h / 2) / (4 * h ^ 3) * (2 * Real.cosh (h / 2)) =
+    Real.exp (-h / 2) / (4 * h ^ (3 : ℕ)) * (2 * Real.cosh (h / 2)) =
         (Real.exp (-h / 2) * (2 * Real.cosh (h / 2))) /
-          (4 * h ^ 3) := by ring
-    _ = (1 + Real.exp (-h)) / (4 * h ^ 3) := by rw [hnum]
+          (4 * h ^ (3 : ℕ)) := by ring
+    _ = (1 + Real.exp (-h)) / (4 * h ^ (3 : ℕ)) := by rw [hnum]
 
 theorem ccmRoutePBaseCubicGreenGammaExplicit_nonneg
     {h : ℝ} (hh : Real.log 2 < h) :
@@ -117,7 +117,7 @@ private theorem exp_neg_le_half_of_log_two_le
       norm_num
 
 private theorem exp_neg_two_mul_eq_sq (h : ℝ) :
-    Real.exp (-2 * h) = Real.exp (-h) ^ 2 := by
+    Real.exp (-2 * h) = Real.exp (-h) ^ (2 : ℕ) := by
   rw [sq, ← Real.exp_add]
   congr 1
   ring
@@ -125,13 +125,13 @@ private theorem exp_neg_two_mul_eq_sq (h : ℝ) :
 theorem ccmRoutePBaseCubicGreenGammaExplicit_le_inv_cube
     {h : ℝ} (hh : Real.log 2 < h) :
     ccmRoutePBaseCubicGreenGammaExplicit h ≤
-      (1 / 6 : ℝ) * (h ^ 3)⁻¹ := by
+      (1 / 6 : ℝ) * (h ^ (3 : ℕ))⁻¹ := by
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hh0 : 0 < h := hlog.trans hh
   have he0 : 0 < Real.exp (-h) := Real.exp_pos _
   have hehalf : Real.exp (-h) ≤ 1 / 2 :=
     exp_neg_le_half_of_log_two_le hh.le
-  have he2 : Real.exp (-2 * h) = Real.exp (-h) ^ 2 :=
+  have he2 : Real.exp (-2 * h) = Real.exp (-h) ^ (2 : ℕ) :=
     exp_neg_two_mul_eq_sq h
   have hden : 3 / 4 ≤ 1 - Real.exp (-2 * h) := by
     rw [he2]
@@ -141,16 +141,16 @@ theorem ccmRoutePBaseCubicGreenGammaExplicit_le_inv_cube
   have hratio : Real.exp (-h) / (1 - Real.exp (-2 * h)) ≤ 2 / 3 := by
     rw [div_le_iff₀ hdenpos]
     nlinarith
-  have hfac : 0 ≤ 1 / (4 * h ^ 3) := by positivity
+  have hfac : 0 ≤ 1 / (4 * h ^ (3 : ℕ)) := by positivity
   have hmul := mul_le_mul_of_nonneg_left hratio hfac
   rw [ccmRoutePBaseCubicGreenGammaExplicit]
   calc
-    Real.exp (-h) / (4 * h ^ 3 * (1 - Real.exp (-2 * h))) =
-        (1 / (4 * h ^ 3)) *
+    Real.exp (-h) / (4 * h ^ (3 : ℕ) * (1 - Real.exp (-2 * h))) =
+        (1 / (4 * h ^ (3 : ℕ))) *
           (Real.exp (-h) / (1 - Real.exp (-2 * h))) := by
       field_simp [hh0.ne', hdenpos.ne']
-    _ ≤ (1 / (4 * h ^ 3)) * (2 / 3) := hmul
-    _ ≤ (1 / 6) * (h ^ 3)⁻¹ := by
+    _ ≤ (1 / (4 * h ^ (3 : ℕ))) * (2 / 3) := hmul
+    _ ≤ (1 / 6) * (h ^ (3 : ℕ))⁻¹ := by
       apply le_of_eq
       field_simp [hh0.ne']
       ring_nf
@@ -166,20 +166,20 @@ theorem ccmRoutePBaseCubicGreenPolarExplicit_nonneg
 theorem ccmRoutePBaseCubicGreenPolarExplicit_le_inv_cube
     {h : ℝ} (hh : Real.log 2 < h) :
     ccmRoutePBaseCubicGreenPolarExplicit h ≤
-      (3 / 8 : ℝ) * (h ^ 3)⁻¹ := by
+      (3 / 8 : ℝ) * (h ^ (3 : ℕ))⁻¹ := by
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hh0 : 0 < h := hlog.trans hh
   have hehalf : Real.exp (-h) ≤ 1 / 2 :=
     exp_neg_le_half_of_log_two_le hh.le
   rw [ccmRoutePBaseCubicGreenPolarExplicit]
-  have hden : 0 < 4 * h ^ 3 := by positivity
-  have hdiv : (1 + Real.exp (-h)) / (4 * h ^ 3) ≤
-      (3 / 2) / (4 * h ^ 3) :=
+  have hden : 0 < 4 * h ^ (3 : ℕ) := by positivity
+  have hdiv : (1 + Real.exp (-h)) / (4 * h ^ (3 : ℕ)) ≤
+      (3 / 2) / (4 * h ^ (3 : ℕ)) :=
     div_le_div_of_nonneg_right (by linarith) hden.le
   calc
-    (1 + Real.exp (-h)) / (4 * h ^ 3) ≤
-        (3 / 2) / (4 * h ^ 3) := hdiv
-    _ ≤ (3 / 8) * (h ^ 3)⁻¹ := by
+    (1 + Real.exp (-h)) / (4 * h ^ (3 : ℕ)) ≤
+        (3 / 2) / (4 * h ^ (3 : ℕ)) := hdiv
+    _ ≤ (3 / 8) * (h ^ (3 : ℕ))⁻¹ := by
       apply le_of_eq
       field_simp [hh0.ne']
       norm_num
@@ -187,14 +187,14 @@ theorem ccmRoutePBaseCubicGreenPolarExplicit_le_inv_cube
 theorem integrableOn_ccmRoutePBaseCubicGreenGammaExplicit :
     IntegrableOn ccmRoutePBaseCubicGreenGammaExplicit (Ioi (Real.log 2)) := by
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  have hmajor : IntegrableOn (fun h : ℝ => (1 / 6 : ℝ) * (1 / h ^ 3))
+  have hmajor : IntegrableOn (fun h : ℝ => (1 / 6 : ℝ) * (1 / h ^ (3 : ℕ)))
       (Ioi (Real.log 2)) :=
     (GaloisForLFunctions.RHTower.integrableOn_Ioi_inv_pow
       hlog (k := 3) (by norm_num)).const_mul _
   refine hmajor.mono' (by
     have hn : Measurable (fun h : ℝ => Real.exp (-h)) := by fun_prop
     have hd : Measurable (fun h : ℝ =>
-        4 * h ^ 3 * (1 - Real.exp (-2 * h))) := by fun_prop
+        4 * h ^ (3 : ℕ) * (1 - Real.exp (-2 * h))) := by fun_prop
     exact (hn.div hd).aestronglyMeasurable.restrict) ?_
   refine (ae_restrict_iff' measurableSet_Ioi).mpr
     (Filter.Eventually.of_forall fun h hh => ?_)
@@ -206,13 +206,13 @@ theorem integrableOn_ccmRoutePBaseCubicGreenGammaExplicit :
 theorem integrableOn_ccmRoutePBaseCubicGreenPolarExplicit :
     IntegrableOn ccmRoutePBaseCubicGreenPolarExplicit (Ioi (Real.log 2)) := by
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  have hmajor : IntegrableOn (fun h : ℝ => (3 / 8 : ℝ) * (1 / h ^ 3))
+  have hmajor : IntegrableOn (fun h : ℝ => (3 / 8 : ℝ) * (1 / h ^ (3 : ℕ)))
       (Ioi (Real.log 2)) :=
     (GaloisForLFunctions.RHTower.integrableOn_Ioi_inv_pow
       hlog (k := 3) (by norm_num)).const_mul _
   refine hmajor.mono' (by
     have hn : Measurable (fun h : ℝ => 1 + Real.exp (-h)) := by fun_prop
-    have hd : Measurable (fun h : ℝ => 4 * h ^ 3) := by fun_prop
+    have hd : Measurable (fun h : ℝ => 4 * h ^ (3 : ℕ)) := by fun_prop
     exact (hn.div hd).aestronglyMeasurable.restrict) ?_
   refine (ae_restrict_iff' measurableSet_Ioi).mpr
     (Filter.Eventually.of_forall fun h hh => ?_)
@@ -263,13 +263,13 @@ theorem ccmRoutePBaseCubicGreenGammaTail_lt_three_sixteenths :
     ccmRoutePBaseCubicGreenGammaTail < 3 / 16 := by
   rw [ccmRoutePBaseCubicGreenGammaTail_eq_explicit]
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  have hmajor : IntegrableOn (fun h : ℝ => (1 / 6 : ℝ) * (1 / h ^ 3))
+  have hmajor : IntegrableOn (fun h : ℝ => (1 / 6 : ℝ) * (1 / h ^ (3 : ℕ)))
       (Ioi (Real.log 2)) :=
     (GaloisForLFunctions.RHTower.integrableOn_Ioi_inv_pow
       hlog (k := 3) (by norm_num)).const_mul _
   have hle :
       (∫ h in Ioi (Real.log 2), ccmRoutePBaseCubicGreenGammaExplicit h) ≤
-        ∫ h in Ioi (Real.log 2), (1 / 6 : ℝ) * (1 / h ^ 3) := by
+        ∫ h in Ioi (Real.log 2), (1 / 6 : ℝ) * (1 / h ^ (3 : ℕ)) := by
     apply integral_mono_ae integrableOn_ccmRoutePBaseCubicGreenGammaExplicit hmajor
     refine (ae_restrict_iff' measurableSet_Ioi).mpr
       (Filter.Eventually.of_forall fun h hh => ?_)
@@ -277,9 +277,9 @@ theorem ccmRoutePBaseCubicGreenGammaTail_lt_three_sixteenths :
       ccmRoutePBaseCubicGreenGammaExplicit_le_inv_cube hh
   rw [integral_const_mul,
     GaloisForLFunctions.RHTower.integral_Ioi_inv_cube hlog] at hle
-  have hLsq : (4 / 9 : ℝ) < (Real.log 2) ^ 2 := by
+  have hLsq : (4 / 9 : ℝ) < (Real.log 2) ^ (2 : ℕ) := by
     nlinarith [two_thirds_lt_log_two]
-  have hinv : ((Real.log 2) ^ 2)⁻¹ < ((4 / 9 : ℝ))⁻¹ := by
+  have hinv : ((Real.log 2) ^ (2 : ℕ))⁻¹ < ((4 / 9 : ℝ))⁻¹ := by
     exact (inv_lt_inv₀ (sq_pos_of_pos hlog) (by norm_num)).2 hLsq
   norm_num at hinv hle
   nlinarith
@@ -288,13 +288,13 @@ theorem ccmRoutePBaseCubicGreenPolarTail_lt_one :
     ccmRoutePBaseCubicGreenPolarTail < 1 := by
   rw [ccmRoutePBaseCubicGreenPolarTail_eq_explicit]
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  have hmajor : IntegrableOn (fun h : ℝ => (3 / 8 : ℝ) * (1 / h ^ 3))
+  have hmajor : IntegrableOn (fun h : ℝ => (3 / 8 : ℝ) * (1 / h ^ (3 : ℕ)))
       (Ioi (Real.log 2)) :=
     (GaloisForLFunctions.RHTower.integrableOn_Ioi_inv_pow
       hlog (k := 3) (by norm_num)).const_mul _
   have hle :
       (∫ h in Ioi (Real.log 2), ccmRoutePBaseCubicGreenPolarExplicit h) ≤
-        ∫ h in Ioi (Real.log 2), (3 / 8 : ℝ) * (1 / h ^ 3) := by
+        ∫ h in Ioi (Real.log 2), (3 / 8 : ℝ) * (1 / h ^ (3 : ℕ)) := by
     apply integral_mono_ae integrableOn_ccmRoutePBaseCubicGreenPolarExplicit hmajor
     refine (ae_restrict_iff' measurableSet_Ioi).mpr
       (Filter.Eventually.of_forall fun h hh => ?_)
@@ -302,9 +302,9 @@ theorem ccmRoutePBaseCubicGreenPolarTail_lt_one :
       ccmRoutePBaseCubicGreenPolarExplicit_le_inv_cube hh
   rw [integral_const_mul,
     GaloisForLFunctions.RHTower.integral_Ioi_inv_cube hlog] at hle
-  have hLsq : (4 / 9 : ℝ) < (Real.log 2) ^ 2 := by
+  have hLsq : (4 / 9 : ℝ) < (Real.log 2) ^ (2 : ℕ) := by
     nlinarith [two_thirds_lt_log_two]
-  have hinv : ((Real.log 2) ^ 2)⁻¹ < ((4 / 9 : ℝ))⁻¹ := by
+  have hinv : ((Real.log 2) ^ (2 : ℕ))⁻¹ < ((4 / 9 : ℝ))⁻¹ := by
     exact (inv_lt_inv₀ (sq_pos_of_pos hlog) (by norm_num)).2 hLsq
   norm_num at hinv hle
   nlinarith
@@ -316,7 +316,7 @@ theorem routePPrimeGammaBaseCubicWeight_nonneg (n : ℕ) :
 
 theorem routePPrimeGammaBaseCubicWeight_two_eq :
     routePPrimeGammaBaseCubicWeight 2 =
-      1 / (8 * (Real.log 2) ^ 2) := by
+      1 / (8 * (Real.log 2) ^ (2 : ℕ)) := by
   rw [routePPrimeGammaBaseCubicWeight, routePPrimeGammaCubicWeight,
     vonMangoldtInverseLogPowerWeight, finiteVonMangoldtRealWeight,
     ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
@@ -329,9 +329,9 @@ theorem three_sixteenths_lt_routePPrimeGammaBaseCubicWeight_two :
     (3 / 16 : ℝ) < routePPrimeGammaBaseCubicWeight 2 := by
   rw [routePPrimeGammaBaseCubicWeight_two_eq]
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  have hsq : (Real.log 2) ^ 2 < 2 / 3 := by
+  have hsq : (Real.log 2) ^ (2 : ℕ) < 2 / 3 := by
     nlinarith [Real.log_two_lt_d9]
-  rw [lt_div_iff₀ (by positivity : 0 < 8 * (Real.log 2) ^ 2)]
+  rw [lt_div_iff₀ (by positivity : 0 < 8 * (Real.log 2) ^ (2 : ℕ))]
   nlinarith
 
 /-- Arithmetic prime tail after deleting the atom at the first-prime wall. -/

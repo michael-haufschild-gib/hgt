@@ -29,7 +29,7 @@ theorem xiWeilPolarization_rectangular_logSample_cofinally_unbounded_below
         (xiRectangularTwoEdgeTransform L (Real.log n / 2))).re < B := by
   intro B N0
   let K : ℝ := rectangularTwoEdgeRemainderBound L *
-    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   obtain ⟨N : ℕ, hN⟩ := exists_nat_gt
     (max (N0 : ℝ) (Real.exp (2 * L)))
   have hN0 : N0 ≤ N := by

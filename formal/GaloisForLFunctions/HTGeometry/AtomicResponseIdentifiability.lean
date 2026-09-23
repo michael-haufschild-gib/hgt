@@ -14,9 +14,9 @@ noncomputable section
 /-- Three quadratic response probes carry exactly mass, first moment, and second moment. -/
 theorem quadratic_response_three_probes_iff_moments {n m : ℕ}
     (w z : Fin n → ℝ) (v t : Fin m → ℝ) :
-    (finiteResponseForce (fun u => u ^ 2) w z 0 = finiteResponseForce (fun u => u ^ 2) v t 0 ∧
-      finiteResponseForce (fun u => u ^ 2) w z 1 = finiteResponseForce (fun u => u ^ 2) v t 1 ∧
-      finiteResponseForce (fun u => u ^ 2) w z (-1) = finiteResponseForce (fun u => u ^ 2) v t (-1)) ↔
+    (finiteResponseForce (fun u => u ^ (2 : ℕ)) w z 0 = finiteResponseForce (fun u => u ^ (2 : ℕ)) v t 0 ∧
+      finiteResponseForce (fun u => u ^ (2 : ℕ)) w z 1 = finiteResponseForce (fun u => u ^ (2 : ℕ)) v t 1 ∧
+      finiteResponseForce (fun u => u ^ (2 : ℕ)) w z (-1) = finiteResponseForce (fun u => u ^ (2 : ℕ)) v t (-1)) ↔
     (RHTower.ccmAtomicMixedMoment w z 0 = RHTower.ccmAtomicMixedMoment v t 0 ∧
       RHTower.ccmAtomicMixedMoment w z 1 = RHTower.ccmAtomicMixedMoment v t 1 ∧
       RHTower.ccmAtomicMixedMoment w z 2 = RHTower.ccmAtomicMixedMoment v t 2) := by
@@ -31,10 +31,10 @@ theorem quadratic_response_three_probes_iff_moments {n m : ℕ}
 /-- Four cubic response probes carry exactly the first four atomic moments, including mass. -/
 theorem cubic_response_four_probes_iff_moments {n m : ℕ}
     (w z : Fin n → ℝ) (v t : Fin m → ℝ) :
-    (finiteResponseForce (fun u => u ^ 3) w z 0 = finiteResponseForce (fun u => u ^ 3) v t 0 ∧
-      finiteResponseForce (fun u => u ^ 3) w z 1 = finiteResponseForce (fun u => u ^ 3) v t 1 ∧
-      finiteResponseForce (fun u => u ^ 3) w z (-1) = finiteResponseForce (fun u => u ^ 3) v t (-1) ∧
-      finiteResponseForce (fun u => u ^ 3) w z 2 = finiteResponseForce (fun u => u ^ 3) v t 2) ↔
+    (finiteResponseForce (fun u => u ^ (3 : ℕ)) w z 0 = finiteResponseForce (fun u => u ^ (3 : ℕ)) v t 0 ∧
+      finiteResponseForce (fun u => u ^ (3 : ℕ)) w z 1 = finiteResponseForce (fun u => u ^ (3 : ℕ)) v t 1 ∧
+      finiteResponseForce (fun u => u ^ (3 : ℕ)) w z (-1) = finiteResponseForce (fun u => u ^ (3 : ℕ)) v t (-1) ∧
+      finiteResponseForce (fun u => u ^ (3 : ℕ)) w z 2 = finiteResponseForce (fun u => u ^ (3 : ℕ)) v t 2) ↔
     (RHTower.ccmAtomicMixedMoment w z 0 = RHTower.ccmAtomicMixedMoment v t 0 ∧
       RHTower.ccmAtomicMixedMoment w z 1 = RHTower.ccmAtomicMixedMoment v t 1 ∧
       RHTower.ccmAtomicMixedMoment w z 2 = RHTower.ccmAtomicMixedMoment v t 2 ∧
@@ -64,9 +64,9 @@ theorem atomicHankel_two_eq_iff_response_moments {n m : ℕ}
 /-- Three force readings identify an existing Hankel section without observing its entries. -/
 theorem quadratic_response_three_probes_iff_hankel {n m : ℕ}
     (w z : Fin n → ℝ) (v t : Fin m → ℝ) :
-    (finiteResponseForce (fun u => u ^ 2) w z 0 = finiteResponseForce (fun u => u ^ 2) v t 0 ∧
-      finiteResponseForce (fun u => u ^ 2) w z 1 = finiteResponseForce (fun u => u ^ 2) v t 1 ∧
-      finiteResponseForce (fun u => u ^ 2) w z (-1) = finiteResponseForce (fun u => u ^ 2) v t (-1)) ↔
+    (finiteResponseForce (fun u => u ^ (2 : ℕ)) w z 0 = finiteResponseForce (fun u => u ^ (2 : ℕ)) v t 0 ∧
+      finiteResponseForce (fun u => u ^ (2 : ℕ)) w z 1 = finiteResponseForce (fun u => u ^ (2 : ℕ)) v t 1 ∧
+      finiteResponseForce (fun u => u ^ (2 : ℕ)) w z (-1) = finiteResponseForce (fun u => u ^ (2 : ℕ)) v t (-1)) ↔
         atomicHankel w z 2 = atomicHankel v t 2 :=
   (quadratic_response_three_probes_iff_moments w z v t).trans
     (atomicHankel_two_eq_iff_response_moments w z v t).symm

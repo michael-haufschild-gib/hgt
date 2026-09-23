@@ -127,10 +127,10 @@ theorem levinsonCriticalDetectorOmittedHeadCoeff_eq_arithmetic
 /-- Exact square norm of one omitted detector-head coefficient. -/
 theorem norm_levinsonCriticalDetectorOmittedHeadCoeff_sq
     (lam : ℝ) (L : ℕ) {M k : ℕ} (hM : 1 < M) (hk : 0 < k) :
-    ‖levinsonCriticalDetectorOmittedHeadCoeff lam L M k‖ ^ 2 =
+    ‖levinsonCriticalDetectorOmittedHeadCoeff lam L M k‖ ^ (2 : ℕ) =
       (Sieve.barbanVehovOmittedBaseCoeff L M k +
-          lam * Sieve.barbanVehovOmittedDifferentiatedCoeff L M k) ^ 2 /
-        (k : ℝ) / Real.log M ^ 2 := by
+          lam * Sieve.barbanVehovOmittedDifferentiatedCoeff L M k) ^ (2 : ℕ) /
+        (k : ℝ) / Real.log M ^ (2 : ℕ) := by
   rw [levinsonCriticalDetectorOmittedHeadCoeff_eq_arithmetic lam L M hk,
     Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_div]
   have hlog : 0 < Real.log (M : ℝ) :=
@@ -138,8 +138,8 @@ theorem norm_levinsonCriticalDetectorOmittedHeadCoeff_sq
   have hkR : 0 < (k : ℝ) := by exact_mod_cast hk
   rw [abs_of_pos hlog,
     abs_of_nonneg (by positivity : 0 ≤ (1 : ℝ) / Real.sqrt k)]
-  have hsqrt : (Real.sqrt (k : ℝ)) ^ 2 = k := Real.sq_sqrt hkR.le
-  have hinvsqrt : ((1 : ℝ) / Real.sqrt k) ^ 2 = 1 / (k : ℝ) := by
+  have hsqrt : (Real.sqrt (k : ℝ)) ^ (2 : ℕ) = k := Real.sq_sqrt hkR.le
+  have hinvsqrt : ((1 : ℝ) / Real.sqrt k) ^ (2 : ℕ) = 1 / (k : ℝ) := by
     field_simp
     nlinarith
   rw [mul_pow, div_pow, sq_abs, hinvsqrt]
@@ -148,7 +148,7 @@ theorem norm_levinsonCriticalDetectorOmittedHeadCoeff_sq
 /-- Base harmonic energy of the omitted detector-head boundary. -/
 def levinsonCriticalDetectorOmittedLongBaseMoment (L M : ℕ) : ℝ :=
   ∑ k ∈ Finset.Ioc L (L * M),
-    Sieve.barbanVehovOmittedBaseCoeff L M k ^ 2 / (k : ℝ)
+    Sieve.barbanVehovOmittedBaseCoeff L M k ^ (2 : ℕ) / (k : ℝ)
 
 /-- Base/derivative cross moment of the omitted detector-head boundary. -/
 def levinsonCriticalDetectorOmittedLongCrossMoment (L M : ℕ) : ℝ :=
@@ -159,7 +159,7 @@ def levinsonCriticalDetectorOmittedLongCrossMoment (L M : ℕ) : ℝ :=
 /-- Differentiated harmonic energy of the omitted detector-head boundary. -/
 def levinsonCriticalDetectorOmittedLongDerivativeMoment (L M : ℕ) : ℝ :=
   ∑ k ∈ Finset.Ioc L (L * M),
-    Sieve.barbanVehovOmittedDifferentiatedCoeff L M k ^ 2 / (k : ℝ)
+    Sieve.barbanVehovOmittedDifferentiatedCoeff L M k ^ (2 : ℕ) / (k : ℝ)
 
 /-- The omitted-head energy is exactly a quadratic form in three truncated harmonic moments. -/
 theorem levinsonCriticalDetectorOmittedLongEnergy_eq_momentQuadratic
@@ -167,8 +167,8 @@ theorem levinsonCriticalDetectorOmittedLongEnergy_eq_momentQuadratic
     levinsonCriticalDetectorOmittedLongEnergy lam L M =
       (levinsonCriticalDetectorOmittedLongBaseMoment L M +
           2 * lam * levinsonCriticalDetectorOmittedLongCrossMoment L M +
-          lam ^ 2 * levinsonCriticalDetectorOmittedLongDerivativeMoment L M) /
-        Real.log M ^ 2 := by
+          lam ^ (2 : ℕ) * levinsonCriticalDetectorOmittedLongDerivativeMoment L M) /
+        Real.log M ^ (2 : ℕ) := by
   rw [levinsonCriticalDetectorOmittedLongEnergy_eq_sum_Ioc]
   rw [levinsonCriticalDetectorOmittedLongBaseMoment,
     levinsonCriticalDetectorOmittedLongCrossMoment,

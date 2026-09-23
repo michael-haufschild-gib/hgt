@@ -21,7 +21,7 @@ noncomputable section
 
 /-- Quadratic refinement of the one-prime order circle charge. -/
 def quadraticPrimeOrderCircleCharge (p : Nat.Primes) (m : ℤ) : AddCircle (1 : ℝ) :=
-  primeOrderCircleCharge p (m ^ 2)
+  primeOrderCircleCharge p (m ^ (2 : ℕ))
 
 /-- Total quadratic phase of a signed reflection pair. -/
 def reflectionPairQuadraticCircleCharge (p : Nat.Primes) (m : ℤ) : AddCircle (1 : ℝ) :=
@@ -29,11 +29,11 @@ def reflectionPairQuadraticCircleCharge (p : Nat.Primes) (m : ℤ) : AddCircle (
 
 /-- Reflection-pair quadratic phase is the prime circle charge of `2m²`. -/
 theorem reflectionPairQuadraticCircleCharge_eq (p : Nat.Primes) (m : ℤ) :
-    reflectionPairQuadraticCircleCharge p m = primeOrderCircleCharge p (2 * m ^ 2) := by
+    reflectionPairQuadraticCircleCharge p m = primeOrderCircleCharge p (2 * m ^ (2 : ℕ)) := by
   rw [reflectionPairQuadraticCircleCharge, quadraticPrimeOrderCircleCharge,
     quadraticPrimeOrderCircleCharge, neg_sq]
-  change GaloisForLFunctions.RHTower.primeCircleHom (Finsupp.single p (m ^ 2)) +
-      GaloisForLFunctions.RHTower.primeCircleHom (Finsupp.single p (m ^ 2)) = _
+  change GaloisForLFunctions.RHTower.primeCircleHom (Finsupp.single p (m ^ (2 : ℕ))) +
+      GaloisForLFunctions.RHTower.primeCircleHom (Finsupp.single p (m ^ (2 : ℕ))) = _
   rw [← map_add]
   congr 1
   ext q
@@ -75,10 +75,10 @@ theorem riemannHypothesis_iff_xiReflectionPairQuadraticCircleCharges_zero
 
 /-- Nonnegative integer carried by a finite list of free-orbit multiplicities. -/
 def freeOrbitQuadraticIndex (ms : List ℕ) : ℕ :=
-  2 * (ms.map fun m => m ^ 2).sum
+  2 * (ms.map fun m => m ^ (2 : ℕ)).sum
 
 theorem sum_sq_eq_zero_iff (ms : List ℕ) :
-    (ms.map fun m => m ^ 2).sum = 0 ↔ ∀ m ∈ ms, m = 0 := by
+    (ms.map fun m => m ^ (2 : ℕ)).sum = 0 ↔ ∀ m ∈ ms, m = 0 := by
   induction ms with
   | nil => simp
   | cons a ms ih => simp [ih]

@@ -110,7 +110,7 @@ theorem exists_gt_tsum_routeEStaticAntiscaleTerm_lt
   set epsilon : ℝ := Real.sqrt ((delta / 2) / (W + 1)) with hepsilon
   have hquot : (0 : ℝ) < (delta / 2) / (W + 1) := div_pos hhalf hdenom
   have hepsilon_pos : 0 < epsilon := Real.sqrt_pos.mpr hquot
-  have hepsilon_sq : epsilon ^ 2 = (delta / 2) / (W + 1) :=
+  have hepsilon_sq : epsilon ^ (2 : ℕ) = (delta / 2) / (W + 1) :=
     Real.sq_sqrt hquot.le
   have hind : LinearIndependent ℚ
       (fun p : {q : Nat.Primes // q ∈ P} => Real.log (((p : Nat.Primes) : ℕ) : ℝ)) :=
@@ -125,7 +125,7 @@ theorem exists_gt_tsum_routeEStaticAntiscaleTerm_lt
       (∑ p ∈ P, routeEStaticAntiscaleTerm omega p t) < delta / 2 := by
     have hterm : ∀ p ∈ P,
         routeEStaticAntiscaleTerm omega p t ≤
-          routeEStaticAntiscaleMass omega p * epsilon ^ 2 := by
+          routeEStaticAntiscaleMass omega p * epsilon ^ (2 : ℕ) := by
       intro p hp
       have hpclose := hclose ⟨p, hp⟩
       rw [Complex.exp_pi_mul_I] at hpclose
@@ -140,7 +140,7 @@ theorem exists_gt_tsum_routeEStaticAntiscaleTerm_lt
             charFn t ((p : Nat.Primes) : ℕ) - (-1) by ring, hchar]
         exact hpclose
       have hnormsq : Complex.normSq (1 + charFn t ((p : Nat.Primes) : ℕ)) <
-          epsilon ^ 2 := by
+          epsilon ^ (2 : ℕ) := by
         rw [Complex.normSq_eq_norm_sq]
         nlinarith [norm_nonneg (1 + charFn t ((p : Nat.Primes) : ℕ))]
       rw [routeEStaticAntiscaleTerm]
@@ -148,11 +148,11 @@ theorem exists_gt_tsum_routeEStaticAntiscaleTerm_lt
         (routeEStaticAntiscaleMass_nonneg homega p)
     calc
       (∑ p ∈ P, routeEStaticAntiscaleTerm omega p t)
-          ≤ ∑ p ∈ P, routeEStaticAntiscaleMass omega p * epsilon ^ 2 :=
+          ≤ ∑ p ∈ P, routeEStaticAntiscaleMass omega p * epsilon ^ (2 : ℕ) :=
             Finset.sum_le_sum hterm
-      _ = (∑ p ∈ P, routeEStaticAntiscaleMass omega p) * epsilon ^ 2 := by
+      _ = (∑ p ∈ P, routeEStaticAntiscaleMass omega p) * epsilon ^ (2 : ℕ) := by
             rw [Finset.sum_mul]
-      _ = W * epsilon ^ 2 := by rw [hW]
+      _ = W * epsilon ^ (2 : ℕ) := by rw [hW]
       _ < delta / 2 := by
         rw [hepsilon_sq]
         have hrewrite :

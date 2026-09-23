@@ -94,7 +94,7 @@ theorem IsPSDKernel.posSemidef (hK : IsPSDKernel K) {n : ℕ} (w : Fin n → X) 
       rw [hentry j k]
       ring
     rw [hform, inner_self_eq_norm_sq_to_K]
-    have h0 : (0 : ℂ) ≤ ((‖C‖ ^ 2 : ℝ) : ℂ) := Complex.zero_le_real.mpr (sq_nonneg _)
+    have h0 : (0 : ℂ) ≤ ((‖C‖ ^ (2 : ℕ) : ℝ) : ℂ) := Complex.zero_le_real.mpr (sq_nonneg _)
     push_cast at h0
     exact h0
 
@@ -196,7 +196,7 @@ theorem isPSDKernel_gram {H : Type*} [NormedAddCommGroup H] [InnerProductSpace �
       rw [Finset.mul_sum]
       exact Finset.sum_congr rfl fun k _ => by ring
     rw [hform, inner_self_eq_norm_sq_to_K]
-    have h0 : (0 : ℂ) ≤ ((‖C‖ ^ 2 : ℝ) : ℂ) := Complex.zero_le_real.mpr (sq_nonneg _)
+    have h0 : (0 : ℂ) ≤ ((‖C‖ ^ (2 : ℕ) : ℝ) : ℂ) := Complex.zero_le_real.mpr (sq_nonneg _)
     push_cast at h0
     exact h0
 
@@ -241,7 +241,7 @@ theorem inner_self_kernelCombination (K : X → X → ℂ) [Fact (IsPSDKernel K)
 
 theorem norm_sq_kernelCombination (K : X → X → ℂ) [Fact (IsPSDKernel K)]
     {n : ℕ} (c : Fin n → ℂ) (w : Fin n → X) :
-    ((‖∑ j, conj (c j) • KernelHilbert.vector K (w j)‖ : ℂ)) ^ 2 = kernelEnergy K c w := by
+    ((‖∑ j, conj (c j) • KernelHilbert.vector K (w j)‖ : ℂ)) ^ (2 : ℕ) = kernelEnergy K c w := by
   rw [← inner_self_kernelCombination K c w, inner_self_eq_norm_sq_to_K]
   rfl
 

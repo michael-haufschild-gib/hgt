@@ -31,7 +31,7 @@ private theorem factor_jet (x : Fin 4 → ℝ) :
 
 /-- The time and tortoise-radial part of the wave operator, acting on actual jets. -/
 def waveJet (r : ℂ) (J : ScalarTwoJet (Fin 4) ℂ) : ℂ :=
-  J.second 0 0-(r^2-1)^2*J.second 1 1-2*r*(r^2-1)*J.first 1
+  J.second 0 0-(r^(2 : ℕ)-1)^(2 : ℕ)*J.second 1 1-2*r*(r^(2 : ℕ)-1)*J.first 1
 
 /-- This expression is exactly ∂t² minus two applications of the original
 tortoise vector field (r²-1)∂r, including its differentiated coefficient. -/
@@ -71,12 +71,12 @@ theorem normalizedStream_jet (w a : ℂ) (square : Bool) (p : D4BMBackground.Ext
 def normalizedStreamWave (w a : ℂ) (square : Bool) (V : Covector)
     (k : Fin 2) (x : Fin 4 → ℝ) : ℂ :=
   waveJet (x 1) (ofField (normalizedStream w a square) x)*V k (angularPoint x) -
-    ((x 1 : ℂ)^2-1)/(x 1 : ℂ)^2*normalizedStream w a square x*
+    ((x 1 : ℂ)^(2 : ℕ)-1)/(x 1 : ℂ)^(2 : ℕ)*normalizedStream w a square x*
       streamAngularOperator V k (angularPoint x)
 
-private theorem normalized_master (w r H H1 H2 A D : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
+private theorem normalized_master (w r H H1 H2 A D : ℂ) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     waveJet r ((radialJet w H H1 H2).mul (coord r 1).inv)*A-
-      (r^2-1)/r^2*(H*r⁻¹)*D = -(r^2-1)/r^3*master w r H H1 H2 A D := by
+      (r^(2 : ℕ)-1)/r^(2 : ℕ)*(H*r⁻¹)*D = -(r^(2 : ℕ)-1)/r^(3 : ℕ)*master w r H H1 H2 A D := by
   simp [waveJet,radialJet,ScalarTwoJet.mul,ScalarTwoJet.inv,coord,master]
   field_simp [hr,hf]
   ring
@@ -86,12 +86,12 @@ forced radius normalization. This fixes the operator and source together. -/
 theorem normalizedStreamWave_master (w a : ℂ) (square : Bool) (V : Covector)
     (k : Fin 2) (p : D4BMBackground.ExteriorPoint) :
     normalizedStreamWave w a square V k p.val =
-      -((p.val 1 : ℂ)^2-1)/(p.val 1 : ℂ)^3*
+      -((p.val 1 : ℂ)^(2 : ℕ)-1)/(p.val 1 : ℂ)^(3 : ℕ)*
         streamMaster w (p.val 1) (envelope w a p.val) square V k (angularPoint p.val) := by
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
   have hv := congrArg (fun J => J.value) (streamRadialField_jet w a square p)
   change streamRadialField w a square p.val = streamRadialValue w (p.val 1) (envelope w a p.val) square at hv
   unfold normalizedStreamWave
@@ -107,15 +107,15 @@ theorem forced_normalized_wave (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     let s := physicalRate q branch
     let r := (p.val 1 : ℂ)
     let z := angularPoint p.val
-    normalizedStreamWave (2*s) (a^2) false (fullAngularCovector q branch) k p.val -
-      (s*(s-1)/4)*normalizedStreamWave (2*s) (a^2) true (fullSquareCovector q) k p.val =
-      -2*(r^2-1)/r^3*current s r (envelope s a p.val)
+    normalizedStreamWave (2*s) (a^(2 : ℕ)) false (fullAngularCovector q branch) k p.val -
+      (s*(s-1)/4)*normalizedStreamWave (2*s) (a^(2 : ℕ)) true (fullSquareCovector q) k p.val =
+      -2*(r^(2 : ℕ)-1)/r^(3 : ℕ)*current s r (envelope s a p.val)
         (fullSquareCovector q k z) (fullGradientCovector q branch k z) := by
   dsimp only
   rw [normalizedStreamWave_master,normalizedStreamWave_master,envelope_double]
   have h := forced_stream_master q branch p (envelope (physicalRate q branch) a p.val) k
   dsimp only at h
-  linear_combination -((p.val 1 : ℂ)^2-1)/(p.val 1 : ℂ)^3*h
+  linear_combination -((p.val 1 : ℂ)^(2 : ℕ)-1)/(p.val 1 : ℂ)^(3 : ℕ)*h
 
 end
 end RHTower.D4BMModularCore

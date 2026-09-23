@@ -78,7 +78,7 @@ theorem norm_exp_conjugation_sub_self_le
 theorem norm_duhamelConjugationPrimitive_sub_smul_le
     (x p : A) (hx : x ∈ skewAdjoint A) {δ : ℝ} (hδ : 0 ≤ δ) :
     ‖duhamelConjugationPrimitive x p δ - δ • p‖ ≤
-      2 * δ ^ 2 * ‖x‖ * ‖p‖ := by
+      2 * δ ^ (2 : ℕ) * ‖x‖ * ‖p‖ := by
   let f : ℝ → A := fun s => exp (s • (-x)) * p * exp (s • x)
   have hf : Continuous f := continuous_duhamelConjugationIntegrand x p
   have hsub :
@@ -101,7 +101,7 @@ theorem norm_duhamelConjugationPrimitive_sub_smul_le
         have hpoint := norm_exp_conjugation_sub_self_le x p hx s
         rw [abs_of_nonneg hs0] at hpoint
         exact hpoint.trans (by gcongr))
-    _ = 2 * δ ^ 2 * ‖x‖ * ‖p‖ := by
+    _ = 2 * δ ^ (2 : ℕ) * ‖x‖ * ‖p‖ := by
       rw [sub_zero, abs_of_nonneg hδ]
       ring
 
@@ -125,13 +125,13 @@ theorem duhamelConjugationPrimitive_shortTime_lower
       _ = _ := add_comm _ _
   rw [hδp] at htri
   have herror :
-      2 * δ ^ 2 * ‖x‖ * ‖p‖ ≤ δ / 2 * ‖p‖ := by
+      2 * δ ^ (2 : ℕ) * ‖x‖ * ‖p‖ ≤ δ / 2 * ‖p‖ := by
     have hmul :
         (4 * δ * ‖x‖) * (δ * ‖p‖ / 2) ≤
           1 * (δ * ‖p‖ / 2) :=
       mul_le_mul_of_nonneg_right hsmall (by positivity)
     calc
-      2 * δ ^ 2 * ‖x‖ * ‖p‖ =
+      2 * δ ^ (2 : ℕ) * ‖x‖ * ‖p‖ =
           (4 * δ * ‖x‖) * (δ * ‖p‖ / 2) := by ring
       _ ≤ 1 * (δ * ‖p‖ / 2) := hmul
       _ = δ / 2 * ‖p‖ := by ring
@@ -205,9 +205,9 @@ theorem duhamelConjugationPrimitive_add_sub
     _ = _ := hpull
 
 theorem norm_sub_sq_le_two_mul_sum_sq (u v : A) :
-    ‖u - v‖ ^ 2 ≤ 2 * (‖u‖ ^ 2 + ‖v‖ ^ 2) := by
+    ‖u - v‖ ^ (2 : ℕ) ≤ 2 * (‖u‖ ^ (2 : ℕ) + ‖v‖ ^ (2 : ℕ)) := by
   have h := norm_sub_le u v
-  have hsq : ‖u - v‖ ^ 2 ≤ (‖u‖ + ‖v‖) ^ 2 :=
+  have hsq : ‖u - v‖ ^ (2 : ℕ) ≤ (‖u‖ + ‖v‖) ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) (add_nonneg (norm_nonneg _) (norm_nonneg _))).2 h
   nlinarith [sq_nonneg (‖u‖ - ‖v‖)]
 
@@ -218,9 +218,9 @@ and base time. -/
 theorem duhamelConjugationPrimitive_twoTime_energy_lower
     (x p : A) (hx : x ∈ skewAdjoint A) (t : ℝ)
     {δ : ℝ} (hδ : 0 ≤ δ) (hsmall : 4 * δ * ‖x‖ ≤ 1) :
-    δ ^ 2 / 8 * ‖p‖ ^ 2 ≤
-      ‖duhamelConjugationPrimitive x p t‖ ^ 2 +
-        ‖duhamelConjugationPrimitive x p (t + δ)‖ ^ 2 := by
+    δ ^ (2 : ℕ) / 8 * ‖p‖ ^ (2 : ℕ) ≤
+      ‖duhamelConjugationPrimitive x p t‖ ^ (2 : ℕ) +
+        ‖duhamelConjugationPrimitive x p (t + δ)‖ ^ (2 : ℕ) := by
   have hshort := duhamelConjugationPrimitive_shortTime_lower x p hx hδ hsmall
   have hinc := duhamelConjugationPrimitive_add_sub x p t δ
   have hnormInc :
@@ -237,9 +237,9 @@ theorem duhamelConjugationPrimitive_twoTime_energy_lower
     rw [hnormInc]
     exact hshort
   have hdiffSq :
-      (δ / 2 * ‖p‖) ^ 2 ≤
+      (δ / 2 * ‖p‖) ^ (2 : ℕ) ≤
         ‖duhamelConjugationPrimitive x p (t + δ) -
-          duhamelConjugationPrimitive x p t‖ ^ 2 := by
+          duhamelConjugationPrimitive x p t‖ ^ (2 : ℕ) := by
     exact (sq_le_sq₀ (by positivity) (norm_nonneg _)).2 hdiffLower
   have hupper := norm_sub_sq_le_two_mul_sum_sq
     (duhamelConjugationPrimitive x p (t + δ))
@@ -296,7 +296,7 @@ theorem norm_autonomousPerturbedEndpoint_linearizationError_le
     ‖autonomousPerturbedEndpoint x p t r -
         autonomousPerturbedEndpoint x p t 0 -
         r • (exp (t • x) * duhamelConjugationPrimitive x p t)‖ ≤
-      |r| ^ 2 * t ^ 2 * ‖p‖ ^ 2 := by
+      |r| ^ (2 : ℕ) * t ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) := by
   let _ : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
   let base : ℝ → A := fun s => exp (s • (-x)) * p * exp (s • x)
   let q : ℝ → ℝ → A := fun r s =>
@@ -348,7 +348,7 @@ theorem norm_autonomousPerturbedEndpoint_linearizationError_le
     ((by dsimp only [lin]; fun_prop : Continuous (lin r)).intervalIntegrable _ _)]
   calc
     ‖∫ s : ℝ in 0..t, q r s - lin r s‖ ≤
-        (|r| ^ 2 * t * ‖p‖ ^ 2) * |t - 0| :=
+        (|r| ^ (2 : ℕ) * t * ‖p‖ ^ (2 : ℕ)) * |t - 0| :=
       intervalIntegral.norm_integral_le_of_norm_le_const (fun s hs => by
         have hs' : s ∈ Set.Ioc (0 : ℝ) t := by
           simpa [Set.uIoc_of_le ht] using hs
@@ -391,14 +391,14 @@ theorem norm_autonomousPerturbedEndpoint_linearizationError_le
           _ ≤ (|r| * ‖p‖) * (s * |r| * ‖p‖) := by
             rw [norm_smul, Real.norm_eq_abs]
             gcongr
-          _ ≤ |r| ^ 2 * t * ‖p‖ ^ 2 := by
+          _ ≤ |r| ^ (2 : ℕ) * t * ‖p‖ ^ (2 : ℕ) := by
             calc
               (|r| * ‖p‖) * (s * |r| * ‖p‖) =
-                  (|r| ^ 2 * ‖p‖ ^ 2) * s := by ring
-              _ ≤ (|r| ^ 2 * ‖p‖ ^ 2) * t :=
+                  (|r| ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ)) * s := by ring
+              _ ≤ (|r| ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ)) * t :=
                 mul_le_mul_of_nonneg_left hst (by positivity)
-              _ = |r| ^ 2 * t * ‖p‖ ^ 2 := by ring)
-    _ = |r| ^ 2 * t ^ 2 * ‖p‖ ^ 2 := by
+              _ = |r| ^ (2 : ℕ) * t * ‖p‖ ^ (2 : ℕ) := by ring)
+    _ = |r| ^ (2 : ℕ) * t ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) := by
       rw [sub_zero, abs_of_nonneg ht]
       ring
 
@@ -410,7 +410,7 @@ theorem hasDerivAt_autonomousPerturbedEndpoint_zero
     HasDerivAt (autonomousPerturbedEndpoint x p t)
       (exp (t • x) * duhamelConjugationPrimitive x p t) 0 := by
   rw [hasDerivAt_iff_isLittleO_nhds_zero]
-  refine (Asymptotics.IsBigO.of_bound (t ^ 2 * ‖p‖ ^ 2) ?_).trans_isLittleO
+  refine (Asymptotics.IsBigO.of_bound (t ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ)) ?_).trans_isLittleO
     (Asymptotics.isLittleO_pow_id (𝕜 := ℝ) (n := 2) one_lt_two)
   filter_upwards
   intro r

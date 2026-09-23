@@ -32,28 +32,28 @@ noncomputable section
 the reflected D1 polynomial and completed C5 orientation slope. -/
 def thetaCuspC5D1SlopeReserve
     (A B C E F G : ℝ) : ℝ :=
-  768 * A ^ 8 - 1344 * A ^ 6 * B + 448 * A ^ 4 * B ^ 2 -
-    88 * A ^ 2 * B ^ 3 - 4 * B ^ 4 + 56 * A ^ 5 * C -
-    2 * A ^ 3 * B * C + 5 * A * B ^ 2 * C - A ^ 2 * C ^ 2 +
-    288 * A ^ 3 * B * E ^ 2 - 72 * A * B ^ 2 * E ^ 2 -
-    12 * A ^ 2 * C * E ^ 2 + 3 * B * C * E ^ 2 -
-    72 * A ^ 4 * E * F + 42 * A ^ 2 * B * E * F -
-    6 * B ^ 2 * E * F - 8 * A ^ 3 * F ^ 2 + 2 * A * B * F ^ 2 -
-    4 * A ^ 3 * E * G + A * B * E * G
+  768 * A ^ (8 : ℕ) - 1344 * A ^ (6 : ℕ) * B + 448 * A ^ (4 : ℕ) * B ^ (2 : ℕ) -
+    88 * A ^ (2 : ℕ) * B ^ (3 : ℕ) - 4 * B ^ (4 : ℕ) + 56 * A ^ (5 : ℕ) * C -
+    2 * A ^ (3 : ℕ) * B * C + 5 * A * B ^ (2 : ℕ) * C - A ^ (2 : ℕ) * C ^ (2 : ℕ) +
+    288 * A ^ (3 : ℕ) * B * E ^ (2 : ℕ) - 72 * A * B ^ (2 : ℕ) * E ^ (2 : ℕ) -
+    12 * A ^ (2 : ℕ) * C * E ^ (2 : ℕ) + 3 * B * C * E ^ (2 : ℕ) -
+    72 * A ^ (4 : ℕ) * E * F + 42 * A ^ (2 : ℕ) * B * E * F -
+    6 * B ^ (2 : ℕ) * E * F - 8 * A ^ (3 : ℕ) * F ^ (2 : ℕ) + 2 * A * B * F ^ (2 : ℕ) -
+    4 * A ^ (3 : ℕ) * E * G + A * B * E * G
 
 /-- Polynomial form of the completed C5 orientation slope. -/
 def thetaCuspC5D1SlopePolynomial
     (A B C D E F G : ℝ) : ℝ :=
-  A ^ 2 * D - 5 * A * B * C + 4 * B ^ 3 - 18 * A ^ 3 * C +
-      36 * A ^ 2 * B ^ 2 - A * E * G + 6 * B * E * F -
-    2 * A * F ^ 2 - 3 * C * E ^ 2 - 18 * A ^ 2 * E * F +
-    72 * A * B * E ^ 2
+  A ^ (2 : ℕ) * D - 5 * A * B * C + 4 * B ^ (3 : ℕ) - 18 * A ^ (3 : ℕ) * C +
+      36 * A ^ (2 : ℕ) * B ^ (2 : ℕ) - A * E * G + 6 * B * E * F -
+    2 * A * F ^ (2 : ℕ) - 3 * C * E ^ (2 : ℕ) - 18 * A ^ (2 : ℕ) * E * F +
+    72 * A * B * E ^ (2 : ℕ)
 
 /-- Exact C5--D1 cancellation.  The right side is independent of the eighth
 jet `D`; this is the nontrivial algebraic weld used by the corridor. -/
 theorem thetaCuspC5D1SlopeReserve_identity
     (A B C D E F G : ℝ) :
-    A ^ 2 * thetaCuspReflectedEighthPolynomial A B C D +
+    A ^ (2 : ℕ) * thetaCuspReflectedEighthPolynomial A B C D +
         thetaCuspRankThreeLowerGap A B *
           thetaCuspC5D1SlopePolynomial A B C D E F G =
       thetaCuspC5D1SlopeReserve A B C E F G := by
@@ -92,7 +92,7 @@ def thetaCuspC5D1SlopeCorridorAt (u : ℝ) : Prop :=
 
 /-- Actual-source specialization of the exact eighth-jet cancellation. -/
 theorem thetaCuspC5D1SlopeReserveAt_identity (u : ℝ) :
-    (-iteratedDeriv 2 thetaCuspLogSource u) ^ 2 *
+    (-iteratedDeriv 2 thetaCuspLogSource u) ^ (2 : ℕ) *
         thetaCuspC5D1RankThreeValue u +
       thetaCuspRankThreeLowerGap
           (-iteratedDeriv 2 thetaCuspLogSource u)
@@ -120,7 +120,7 @@ theorem thetaCuspC5D1RankThreeValue_pos_of_corridor
   have hid := thetaCuspC5D1SlopeReserveAt_identity u
   unfold thetaCuspC5D1SlopeCorridorAt at h
   have hscaled :
-      0 < (-iteratedDeriv 2 thetaCuspLogSource u) ^ 2 *
+      0 < (-iteratedDeriv 2 thetaCuspLogSource u) ^ (2 : ℕ) *
         thetaCuspC5D1RankThreeValue u := by
     linarith
   exact (mul_pos_iff_of_pos_left (sq_pos_of_pos hA)).mp hscaled

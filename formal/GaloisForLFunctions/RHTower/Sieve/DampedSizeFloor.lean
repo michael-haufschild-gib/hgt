@@ -49,7 +49,7 @@ theorem mulDistSqPair_le_two_mul_sum_inv {f g : ℕ → ℂ} {P : Finset ℕ}
     _ = 2 * (1 / (p : ℝ)) := by rw [mul_one_div]
 
 /-- **The damped size, floored by the distance bound.**  Substituting an upper bound for `δ²`. -/
-theorem dampedSize_ge_of_sq_le {σ δ D : ℝ} (hσ : 1 < σ) (z L : ℕ) (hδ : δ ^ 2 ≤ D) :
+theorem dampedSize_ge_of_sq_le {σ δ D : ℝ} (hσ : 1 < σ) (z L : ℕ) (hδ : δ ^ (2 : ℕ) ≤ D) :
     (1 + 1 / (σ - 1)) * Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - D)
       ≤ dampedSize σ δ z L := by
   have hσ1 : (0 : ℝ) < σ - 1 := by linarith
@@ -58,7 +58,7 @@ theorem dampedSize_ge_of_sq_le {σ δ D : ℝ} (hσ : 1 < σ) (z L : ℕ) (hδ :
     have hL0 : (0 : ℝ) ≤ ((L : ℕ) : ℝ) := Nat.cast_nonneg L
     positivity
   have hexp : Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - D)
-      ≤ Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) :=
+      ≤ Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ (2 : ℕ)) :=
     Real.exp_le_exp.mpr (by linarith)
   rw [dampedSize]
   have hmul := mul_le_mul_of_nonneg_left hexp hcoef
@@ -76,7 +76,7 @@ theorem dampedSize_ge_of_dist {f : ℕ → ℂ} {P : Finset ℕ} (hf : ∀ p ∈
   refine dampedSize_ge_of_sq_le hσ z L ?_
   have hnn : 0 ≤ mulDistSqPair f (charFn t) P :=
     mulDistSqPair_nonneg_disc hf (fun p _ => (norm_charFn t p).le) hP
-  have hsq : δ ^ 2 ≤ mulDistSqPair f (charFn t) P := by
+  have hsq : δ ^ (2 : ℕ) ≤ mulDistSqPair f (charFn t) P := by
     have h := pow_le_pow_left₀ hδ hdist 2
     rwa [Real.sq_sqrt hnn] at h
   exact le_trans hsq

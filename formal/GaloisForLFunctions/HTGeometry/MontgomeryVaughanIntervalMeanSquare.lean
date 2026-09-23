@@ -68,16 +68,16 @@ gaps at least `D > 0`, the mean square of `Σ_r c_r e^{2πi u_r α}` over `[a, a
 theorem interval_integral_normSq_expSum_ge {ι : Type} [Fintype ι] [DecidableEq ι]
     (u : ι → ℝ) (c : ι → ℂ) {D a ℓ : ℝ} (hD : 0 < D)
     (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) :
-    (ℓ - 26 / (Real.pi * D)) * ∑ r, ‖c r‖ ^ 2 ≤
-      ∫ α in a..a + ℓ, ‖∑ r, c r * mvExp (u r) α‖ ^ 2 := by
+    (ℓ - 26 / (Real.pi * D)) * ∑ r, ‖c r‖ ^ (2 : ℕ) ≤
+      ∫ α in a..a + ℓ, ‖∑ r, c r * mvExp (u r) α‖ ^ (2 : ℕ) := by
   classical
   set b := a + ℓ with hb
   set S : ℝ → ℂ := fun α => ∑ r, c r * mvExp (u r) α with hS
   set K : ι → ι → ℂ := fun r s => 2 * Real.pi * I * ((u r - u s : ℝ) : ℂ) with hK
-  set Sc : ℝ := ∑ r, ‖c r‖ ^ 2 with hSc
+  set Sc : ℝ := ∑ r, ‖c r‖ ^ (2 : ℕ) with hSc
   have hSc0 : 0 ≤ Sc := Finset.sum_nonneg fun r _ => by positivity
   -- pointwise expansion of the squared modulus
-  have hpt : ∀ α : ℝ, ((‖S α‖ ^ 2 : ℝ) : ℂ) =
+  have hpt : ∀ α : ℝ, ((‖S α‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       ∑ r, ∑ s, c r * conj (c s) * cexp (K r s * (α : ℂ)) := by
     intro α
     rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj]
@@ -92,11 +92,11 @@ theorem interval_integral_normSq_expSum_ge {ι : Type} [Fintype ι] [DecidableEq
   have hcont : ∀ r s, Continuous (fun α : ℝ => c r * conj (c s) * cexp (K r s * (α : ℂ))) := by
     intro r s
     fun_prop
-  have hint : (∫ α in a..b, ‖S α‖ ^ 2) =
+  have hint : (∫ α in a..b, ‖S α‖ ^ (2 : ℕ)) =
       (∑ r, ∑ s, c r * conj (c s) * ∫ α in a..b, cexp (K r s * (α : ℂ))).re := by
-    have h1 : ((∫ α in a..b, ‖S α‖ ^ 2 : ℝ) : ℂ) = ∫ α in a..b, ((‖S α‖ ^ 2 : ℝ) : ℂ) :=
+    have h1 : ((∫ α in a..b, ‖S α‖ ^ (2 : ℕ) : ℝ) : ℂ) = ∫ α in a..b, ((‖S α‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
       (intervalIntegral.integral_ofReal).symm
-    have h2 : (∫ α in a..b, ((‖S α‖ ^ 2 : ℝ) : ℂ)) =
+    have h2 : (∫ α in a..b, ((‖S α‖ ^ (2 : ℕ) : ℝ) : ℂ)) =
         ∑ r, ∑ s, c r * conj (c s) * ∫ α in a..b, cexp (K r s * (α : ℂ)) := by
       simp_rw [hpt]
       rw [intervalIntegral.integral_finsetSum]
@@ -185,7 +185,7 @@ theorem interval_integral_normSq_expSum_ge {ι : Type} [Fintype ι] [DecidableEq
     have hnormx : ∀ r, ‖x t r‖ = ‖c r‖ := by
       intro r
       simp only [hx, norm_mul, norm_mvExp, mul_one]
-    have hsum : (∑ r, ‖x t r‖ ^ 2 / D) = Sc / D := by
+    have hsum : (∑ r, ‖x t r‖ ^ (2 : ℕ) / D) = Sc / D := by
       rw [hSc, Finset.sum_div]
       exact Finset.sum_congr rfl fun r _ => by rw [hnormx]
     rw [hsum] at hmv
@@ -243,15 +243,15 @@ theorem interval_integral_normSq_expSum_ge {ι : Type} [Fintype ι] [DecidableEq
 theorem interval_integral_normSq_expSum_le {ι : Type} [Fintype ι] [DecidableEq ι]
     (u : ι → ℝ) (c : ι → ℂ) {D a ℓ : ℝ} (hD : 0 < D)
     (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) :
-    (∫ α in a..a + ℓ, ‖∑ r, c r * mvExp (u r) α‖ ^ 2) ≤
-      (ℓ + 26 / (Real.pi * D)) * ∑ r, ‖c r‖ ^ 2 := by
+    (∫ α in a..a + ℓ, ‖∑ r, c r * mvExp (u r) α‖ ^ (2 : ℕ)) ≤
+      (ℓ + 26 / (Real.pi * D)) * ∑ r, ‖c r‖ ^ (2 : ℕ) := by
   classical
   set b := a + ℓ with hb
   set S : ℝ → ℂ := fun α => ∑ r, c r * mvExp (u r) α with hS
   set K : ι → ι → ℂ := fun r s => 2 * Real.pi * I * ((u r - u s : ℝ) : ℂ) with hK
-  set Sc : ℝ := ∑ r, ‖c r‖ ^ 2 with hSc
+  set Sc : ℝ := ∑ r, ‖c r‖ ^ (2 : ℕ) with hSc
   have hSc0 : 0 ≤ Sc := Finset.sum_nonneg fun r _ => by positivity
-  have hpt : ∀ α : ℝ, ((‖S α‖ ^ 2 : ℝ) : ℂ) =
+  have hpt : ∀ α : ℝ, ((‖S α‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       ∑ r, ∑ s, c r * conj (c s) * cexp (K r s * (α : ℂ)) := by
     intro α
     rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj]
@@ -265,11 +265,11 @@ theorem interval_integral_normSq_expSum_le {ι : Type} [Fintype ι] [DecidableEq
   have hcont : ∀ r s, Continuous (fun α : ℝ => c r * conj (c s) * cexp (K r s * (α : ℂ))) := by
     intro r s
     fun_prop
-  have hint : (∫ α in a..b, ‖S α‖ ^ 2) =
+  have hint : (∫ α in a..b, ‖S α‖ ^ (2 : ℕ)) =
       (∑ r, ∑ s, c r * conj (c s) * ∫ α in a..b, cexp (K r s * (α : ℂ))).re := by
-    have h1 : ((∫ α in a..b, ‖S α‖ ^ 2 : ℝ) : ℂ) = ∫ α in a..b, ((‖S α‖ ^ 2 : ℝ) : ℂ) :=
+    have h1 : ((∫ α in a..b, ‖S α‖ ^ (2 : ℕ) : ℝ) : ℂ) = ∫ α in a..b, ((‖S α‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
       (intervalIntegral.integral_ofReal).symm
-    have h2 : (∫ α in a..b, ((‖S α‖ ^ 2 : ℝ) : ℂ)) =
+    have h2 : (∫ α in a..b, ((‖S α‖ ^ (2 : ℕ) : ℝ) : ℂ)) =
         ∑ r, ∑ s, c r * conj (c s) * ∫ α in a..b, cexp (K r s * (α : ℂ)) := by
       simp_rw [hpt]
       rw [intervalIntegral.integral_finsetSum]
@@ -355,7 +355,7 @@ theorem interval_integral_normSq_expSum_le {ι : Type} [Fintype ι] [DecidableEq
     have hnormx : ∀ r, ‖x t r‖ = ‖c r‖ := by
       intro r
       simp only [hx, norm_mul, norm_mvExp, mul_one]
-    have hsum : (∑ r, ‖x t r‖ ^ 2 / D) = Sc / D := by
+    have hsum : (∑ r, ‖x t r‖ ^ (2 : ℕ) / D) = Sc / D := by
       rw [hSc, Finset.sum_div]
       exact Finset.sum_congr rfl fun r _ => by rw [hnormx]
     rw [hsum] at hmv

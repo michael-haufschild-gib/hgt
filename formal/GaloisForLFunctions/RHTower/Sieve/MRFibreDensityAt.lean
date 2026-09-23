@@ -50,9 +50,9 @@ theorem MRBilinearAt_of_averaged {f : ℕ → ℝ} {c C : ℝ} {X hh : ℝ → �
     (tendsto_block_log_mean_of_count hc hC hcount).comp hXsqrt
   have hmainlim : Tendsto (fun x : ℝ =>
       c * (∑ a ∈ Finset.Icc ⌈Real.sqrt (X x)⌉₊ ⌊2 * Real.sqrt (X x)⌋₊, f a / (a : ℝ))
-        / Real.log 2) atTop (𝓝 (c ^ 2)) := by
+        / Real.log 2) atTop (𝓝 (c ^ (2 : ℕ))) := by
     have hbase := (hlogmean.const_mul c).div_const (Real.log 2)
-    have hval : c * (c * Real.log 2) / Real.log 2 = c ^ 2 := by
+    have hval : c * (c * Real.log 2) / Real.log 2 = c ^ (2 : ℕ) := by
       field_simp
     rwa [hval] at hbase
   have hdiff : Tendsto (fun x : ℝ =>
@@ -79,10 +79,10 @@ theorem MRBilinearAt_of_averaged {f : ℕ → ℝ} {c C : ℝ} {X hh : ℝ → �
   rw [zero_add] at hpair
   have hpair' : Tendsto (fun x : ℝ =>
       pairSum f (X x) (hh x) / (hh x * Real.sqrt (X x) * Real.log 2))
-      atTop (𝓝 (c ^ 2)) := by
+      atTop (𝓝 (c ^ (2 : ℕ))) := by
     refine hpair.congr fun x => ?_
     ring
-  have hsq : Tendsto (fun x : ℝ => (blockMean f (X x)) ^ 2) atTop (𝓝 (c ^ 2)) := hmean.pow 2
+  have hsq : Tendsto (fun x : ℝ => (blockMean f (X x)) ^ (2 : ℕ)) atTop (𝓝 (c ^ (2 : ℕ))) := hmean.pow 2
   have := hpair'.sub hsq
   rw [sub_self] at this
   exact this
@@ -93,12 +93,12 @@ theorem MRBilinearAt_coprime_of_averaged {p : ℕ} (hp : p.Prime) {hh : ℝ → 
     (hgrow : Tendsto hh atTop atTop)
     (havg : AveragedShortIntervalDensityAt (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
-    MRBilinearAt (coprimeSquarefreeWeight p) (fun x => x / (p : ℝ) ^ 2)
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ))) :
+    MRBilinearAt (coprimeSquarefreeWeight p) (fun x => x / (p : ℝ) ^ (2 : ℕ))
       (fun x => hh x / (p : ℝ)) := by
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
-  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
-  have hXtop : Tendsto (fun x : ℝ => x / (p : ℝ) ^ 2) atTop atTop :=
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ (2 : ℕ) := by positivity
+  have hXtop : Tendsto (fun x : ℝ => x / (p : ℝ) ^ (2 : ℕ)) atTop atTop :=
     tendsto_id.atTop_div_const hpsq
   have hhtop : Tendsto (fun x : ℝ => hh x / (p : ℝ)) atTop atTop :=
     hgrow.atTop_div_const hp0

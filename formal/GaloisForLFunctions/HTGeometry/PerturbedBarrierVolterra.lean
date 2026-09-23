@@ -103,7 +103,7 @@ theorem hasDerivAt_barrierKernelTail (hψ : Continuous ψ) (hW : Continuous W) (
 
 theorem hasDerivAt_barrierKernelTailDeriv (hψ : Continuous ψ) (hW : Continuous W) (ξ : ℝ) :
     HasDerivAt (barrierKernelTailDeriv u b ψ W)
-      (u ^ 2 * barrierKernelTail u b ψ W ξ - u * (ψ ξ * W ξ)) ξ := by
+      (u ^ (2 : ℕ) * barrierKernelTail u b ψ W ξ - u * (ψ ξ * W ξ)) ξ := by
   have hC := hasDerivAt_barrierCoshTail (u := u) (b := b) hψ hW ξ
   have hS := hasDerivAt_barrierSinhTail (u := u) (b := b) hψ hW ξ
   have hsh : HasDerivAt (fun x : ℝ => Real.sinh (u * x)) (Real.cosh (u * ξ) * u) ξ := by
@@ -114,7 +114,7 @@ theorem hasDerivAt_barrierKernelTailDeriv (hψ : Continuous ψ) (hW : Continuous
     simpa [Function.comp_def] using h
   have h := ((hch.mul hC).sub (hsh.mul hS)).const_mul u
   refine h.congr_deriv ?_
-  have hid : Real.cosh (u * ξ) ^ 2 - Real.sinh (u * ξ) ^ 2 = 1 := Real.cosh_sq_sub_sinh_sq _
+  have hid : Real.cosh (u * ξ) ^ (2 : ℕ) - Real.sinh (u * ξ) ^ (2 : ℕ) = 1 := Real.cosh_sq_sub_sinh_sq _
   rw [barrierKernelTail]
   linear_combination (-(u * (ψ ξ * W ξ))) * hid
 
@@ -124,7 +124,7 @@ theorem hasDerivAt_barrierKernelTailDeriv (hψ : Continuous ψ) (hW : Continuous
 exponential Volterra equation.** -/
 theorem barrier_volterra_eq (hu : 0 < u) (hψ : Continuous ψ)
     (hW : ∀ x, HasDerivAt W (W' x) x) (hW' : ∀ x, HasDerivAt W' (W'' x) x)
-    (hode : ∀ x, W'' x = (u ^ 2 + ψ x) * W x)
+    (hode : ∀ x, W'' x = (u ^ (2 : ℕ) + ψ x) * W x)
     (hWb : W b = Real.exp (-(u * (b - a))))
     (hW'b : W' b = -u * Real.exp (-(u * (b - a)))) :
     ∀ ξ : ℝ, W ξ
@@ -146,7 +146,7 @@ theorem barrier_volterra_eq (hu : 0 < u) (hψ : Continuous ψ)
     refine h.congr_deriv ?_
     ring
   have hexp' : ∀ ξ : ℝ, HasDerivAt (fun x : ℝ => -u * Real.exp (-(u * (x - a))))
-      (u ^ 2 * Real.exp (-(u * (ξ - a)))) ξ := by
+      (u ^ (2 : ℕ) * Real.exp (-(u * (ξ - a)))) ξ := by
     intro ξ
     have h := (hexp ξ).const_mul (-u)
     refine h.congr_deriv ?_
@@ -155,7 +155,7 @@ theorem barrier_volterra_eq (hu : 0 < u) (hψ : Continuous ψ)
     intro ξ
     exact (hexp ξ).sub (((hasDerivAt_barrierKernelTail (u := u) (b := b) hψ hWc ξ).const_mul (1 / u)))
   have hG'd : ∀ ξ : ℝ, HasDerivAt G'
-      (u ^ 2 * G ξ + ψ ξ * W ξ) ξ := by
+      (u ^ (2 : ℕ) * G ξ + ψ ξ * W ξ) ξ := by
     intro ξ
     have h := (hexp' ξ).sub ((hasDerivAt_barrierKernelTailDeriv (u := u) (b := b) hψ hWc ξ).const_mul (1 / u))
     refine h.congr_deriv ?_
@@ -166,7 +166,7 @@ theorem barrier_volterra_eq (hu : 0 < u) (hψ : Continuous ψ)
   set D : ℝ → ℝ := fun ξ => G ξ - W ξ with hD
   set D' : ℝ → ℝ := fun ξ => G' ξ - W' ξ with hD'
   have hDd : ∀ x : ℝ, HasDerivAt D (D' x) x := fun x => (hGd x).sub (hW x)
-  have hD'd : ∀ x : ℝ, HasDerivAt D' ((fun _ : ℝ => u ^ 2) x * D x) x := by
+  have hD'd : ∀ x : ℝ, HasDerivAt D' ((fun _ : ℝ => u ^ (2 : ℕ)) x * D x) x := by
     intro x
     have h := (hG'd x).sub (hW' x)
     refine h.congr_deriv ?_
@@ -175,7 +175,7 @@ theorem barrier_volterra_eq (hu : 0 < u) (hψ : Continuous ψ)
   have hzero : ∀ x : ℝ, HasDerivAt (fun _ : ℝ => (0 : ℝ)) ((fun _ : ℝ => (0 : ℝ)) x) x :=
     fun x => hasDerivAt_const x 0
   have hzero' : ∀ x : ℝ,
-      HasDerivAt (fun _ : ℝ => (0 : ℝ)) ((fun _ : ℝ => u ^ 2) x * (fun _ : ℝ => (0 : ℝ)) x) x := by
+      HasDerivAt (fun _ : ℝ => (0 : ℝ)) ((fun _ : ℝ => u ^ (2 : ℕ)) x * (fun _ : ℝ => (0 : ℝ)) x) x := by
     intro x
     simpa using hasDerivAt_const x (0 : ℝ)
   have hDb : D b = 0 := by
@@ -194,7 +194,7 @@ theorem barrier_volterra_eq (hu : 0 < u) (hψ : Continuous ψ)
     simp only
     rw [hKd, hW'b]
     ring
-  have heq := secondOrder_eq_at (P := fun _ : ℝ => u ^ 2) (u := D) (u' := D')
+  have heq := secondOrder_eq_at (P := fun _ : ℝ => u ^ (2 : ℕ)) (u := D) (u' := D')
     (v := fun _ : ℝ => (0 : ℝ)) (v' := fun _ : ℝ => (0 : ℝ)) continuous_const b
     hDd hD'd hzero hzero' (by rw [hDb]) (by rw [hD'b])
   intro ξ
@@ -206,7 +206,7 @@ theorem barrier_volterra_eq (hu : 0 < u) (hψ : Continuous ψ)
 equation.** -/
 theorem isExponentialLGSolution_of_ode (hu : 0 < u) (hψ : Continuous ψ)
     (hW : ∀ x, HasDerivAt W (W' x) x) (hW' : ∀ x, HasDerivAt W' (W'' x) x)
-    (hode : ∀ x, W'' x = (u ^ 2 + ψ x) * W x)
+    (hode : ∀ x, W'' x = (u ^ (2 : ℕ) + ψ x) * W x)
     (hWb : W b = Real.exp (-(u * (b - a))))
     (hW'b : W' b = -u * Real.exp (-(u * (b - a)))) :
     IsExponentialLGSolution b u ψ (fun ξ => Real.exp (u * (ξ - a)) * W ξ) a := by
@@ -267,7 +267,7 @@ theorem isExponentialLGSolution_of_ode (hu : 0 < u) (hψ : Continuous ψ)
 interval. -/
 theorem abs_barrier_normalized_sub_one_le (hab : a ≤ b) (hu : 0 < u) (hψ : Continuous ψ)
     (hW : ∀ x, HasDerivAt W (W' x) x) (hW' : ∀ x, HasDerivAt W' (W'' x) x)
-    (hode : ∀ x, W'' x = (u ^ 2 + ψ x) * W x)
+    (hode : ∀ x, W'' x = (u ^ (2 : ℕ) + ψ x) * W x)
     (hWb : W b = Real.exp (-(u * (b - a))))
     (hW'b : W' b = -u * Real.exp (-(u * (b - a)))) :
     ∀ ξ ∈ Icc a b, |Real.exp (u * (ξ - a)) * W ξ - 1|
@@ -282,7 +282,7 @@ theorem abs_barrier_normalized_sub_one_le (hab : a ≤ b) (hu : 0 < u) (hψ : Co
 unperturbed exponential, with the same error-control factor on both sides. -/
 theorem barrier_two_sided (hab : a ≤ b) (hu : 0 < u) (hψ : Continuous ψ)
     (hW : ∀ x, HasDerivAt W (W' x) x) (hW' : ∀ x, HasDerivAt W' (W'' x) x)
-    (hode : ∀ x, W'' x = (u ^ 2 + ψ x) * W x)
+    (hode : ∀ x, W'' x = (u ^ (2 : ℕ) + ψ x) * W x)
     (hWb : W b = Real.exp (-(u * (b - a))))
     (hW'b : W' b = -u * Real.exp (-(u * (b - a))))
     {ξ : ℝ} (hξ : ξ ∈ Icc a b) :

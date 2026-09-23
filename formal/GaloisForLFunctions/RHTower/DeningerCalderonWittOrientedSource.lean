@@ -193,7 +193,7 @@ def deningerCalderonWittOrientedCenterGraph
 source-orientation graph. -/
 def deningerCalderonWittOrientedBoundary
     (p : Nat.Primes) :
-    (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) →ₗ[ℂ]
+    (⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) →ₗ[ℂ]
       (DeningerCalderonWittAlgebraicDegreeTwo p × ℂ) :=
   (deningerCalderonWittOrientedCenterGraph p).comp
     (deningerCalderonWittAlgebraicExteriorCup p)
@@ -278,7 +278,7 @@ def deningerCalderonWittOrientedSourceComplex
     (p : Nat.Primes) :
     DeningerArithmeticThreeTermComplex ℂ
       (deningerCalderonWittMilnorIncidence p)
-      (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))
+      (⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p))
       (DeningerCalderonWittAlgebraicDegreeTwo p × ℂ) where
   d0 := (deningerCalderonWittMilnorIncidence p).subtype
   d1 := deningerCalderonWittOrientedBoundary p
@@ -323,7 +323,7 @@ def deningerCalderonWittOrientationInclusion
 def deningerCalderonWittOrientedTopGreenLift
     (p : Nat.Primes) :
     (DeningerCalderonWittAlgebraicDegreeTwo p × ℂ) →ₗ[ℂ]
-      (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :=
+      (⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) :=
   (deningerCalderonWittExteriorCupSection p).comp
     (LinearMap.fst ℂ
       (DeningerCalderonWittAlgebraicDegreeTwo p) ℂ)
@@ -364,7 +364,7 @@ center along exterior cup. -/
 def deningerCalderonWittMiddleGreenForm
     (p : Nat.Primes)
     (w v :
-      ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) : ℂ :=
+      ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) : ℂ :=
   inner ℂ
     (deningerCalderonWittAlgebraicExteriorCup p w)
     (deningerCalderonWittAlgebraicExteriorCup p v)
@@ -373,7 +373,7 @@ def deningerCalderonWittMiddleGreenForm
 theorem deningerCalderonWittMiddleGreenForm_self_nonneg
     (p : Nat.Primes)
     (w :
-      ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :
+      ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) :
     0 ≤
       Complex.re
         (deningerCalderonWittMiddleGreenForm p w w) := by
@@ -392,7 +392,7 @@ Milnor-incidence boundaries. -/
 theorem deningerCalderonWittMiddleGreenForm_self_eq_zero_iff
     (p : Nat.Primes)
     (w :
-      ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :
+      ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) :
     deningerCalderonWittMiddleGreenForm p w w = 0 ↔
       w ∈ deningerCalderonWittMilnorIncidence p := by
   change
@@ -520,7 +520,7 @@ def deningerCalderonWittGlobalOrientedCenterGraph :
 
 /-- All-prime oriented source boundary. -/
 def deningerCalderonWittGlobalOrientedBoundary :
-    (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
+    (⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
       (DeningerCalderonWittAlgebraicGlobalDegreeTwo × ℂ) :=
   deningerCalderonWittGlobalOrientedCenterGraph.comp
     deningerCalderonWittAlgebraicGlobalExteriorCup
@@ -602,7 +602,7 @@ surviving orientation line. -/
 def deningerCalderonWittGlobalOrientedSourceComplex :
     DeningerArithmeticThreeTermComplex ℂ
       deningerCalderonWittGlobalMilnorIncidence
-      (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+      (⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
       (DeningerCalderonWittAlgebraicGlobalDegreeTwo × ℂ) where
   d0 := deningerCalderonWittGlobalMilnorIncidence.subtype
   d1 := deningerCalderonWittGlobalOrientedBoundary
@@ -644,7 +644,7 @@ def deningerCalderonWittGlobalOrientationInclusion :
 /-- Global Green lift of the center coordinate. -/
 def deningerCalderonWittGlobalOrientedTopGreenLift :
     (DeningerCalderonWittAlgebraicGlobalDegreeTwo × ℂ) →ₗ[ℂ]
-      (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :=
+      (⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) :=
   deningerCalderonWittGlobalExteriorCupSection.comp
     (LinearMap.fst ℂ
       DeningerCalderonWittAlgebraicGlobalDegreeTwo ℂ)
@@ -685,7 +685,7 @@ directions. -/
 def deningerCalderonWittGlobalMiddleGreenCoordinate
     (p : Nat.Primes)
     (w v :
-      ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) : ℂ :=
+      ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) : ℂ :=
   inner ℂ
     (DirectSum.component ℂ Nat.Primes
       DeningerCalderonWittAlgebraicDegreeTwo p
@@ -697,7 +697,7 @@ def deningerCalderonWittGlobalMiddleGreenCoordinate
 theorem deningerCalderonWittGlobalMiddleGreenCoordinate_self_nonneg
     (p : Nat.Primes)
     (w :
-      ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :
+      ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) :
     0 ≤ Complex.re
       (deningerCalderonWittGlobalMiddleGreenCoordinate p w w) := by
   change
@@ -722,7 +722,7 @@ energy vanishes exactly on global Milnor incidence. -/
 theorem
     deningerCalderonWittGlobalMiddleGreenCoordinate_self_eq_zero_iff
     (w :
-      ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :
+      ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) :
     (∀ p : Nat.Primes,
       deningerCalderonWittGlobalMiddleGreenCoordinate p w w = 0) ↔
       w ∈ deningerCalderonWittGlobalMilnorIncidence := by

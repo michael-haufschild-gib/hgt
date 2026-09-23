@@ -25,7 +25,7 @@ namespace RHTower.Sieve
 noncomputable section
 
 def selbergCorrectionWeight (r u v : ℕ) : ℝ :=
-  (((ArithmeticFunction.moebius r : ℤ) : ℝ) / ((r : ℝ) ^ 2)) *
+  (((ArithmeticFunction.moebius r : ℤ) : ℝ) / ((r : ℝ) ^ (2 : ℕ))) *
     localizedReciprocalMoebiusAmplitude r u *
     localizedReciprocalMoebiusAmplitude r v
 
@@ -52,7 +52,7 @@ theorem summable_abs_selbergCorrectionWeight_pair (r : ℕ) :
   · exact summable_zero.congr (fun uv => by simp [selbergCorrectionWeight_zero])
   by_cases hsq : Squarefree r
   · have hr : 0 < r := Nat.pos_of_ne_zero hr0
-    let c : ℝ := ((ArithmeticFunction.moebius r : ℤ) : ℝ) / ((r : ℝ) ^ 2)
+    let c : ℝ := ((ArithmeticFunction.moebius r : ℤ) : ℝ) / ((r : ℝ) ^ (2 : ℕ))
     have hprod : Summable (fun uv : ℕ × ℕ =>
         |localizedReciprocalMoebiusAmplitude r uv.1| *
           |localizedReciprocalMoebiusAmplitude r uv.2|) :=
@@ -68,7 +68,7 @@ private theorem abs_moebius_real_eq_one_of_squarefree {r : ℕ} (hsq : Squarefre
     |((ArithmeticFunction.moebius r : ℤ) : ℝ)| = 1 := by
   have hmu := ArithmeticFunction.moebius_sq (n := r)
   rw [if_pos hsq] at hmu
-  have hmuR : (((ArithmeticFunction.moebius r : ℤ) : ℝ) ^ 2) = 1 := by
+  have hmuR : (((ArithmeticFunction.moebius r : ℤ) : ℝ) ^ (2 : ℕ)) = 1 := by
     exact_mod_cast hmu
   nlinarith [sq_abs (((ArithmeticFunction.moebius r : ℤ) : ℝ)),
     abs_nonneg (((ArithmeticFunction.moebius r : ℤ) : ℝ))]
@@ -77,13 +77,13 @@ private theorem abs_moebius_real_eq_one_of_squarefree {r : ℕ} (hsq : Squarefre
 theorem tsum_abs_selbergCorrectionWeight_pair_of_squarefree
     {r : ℕ} (hr : 0 < r) (hsq : Squarefree r) :
     (∑' uv : ℕ × ℕ, |selbergCorrectionWeight r uv.1 uv.2|) =
-      ((r.divisors.card : ℝ) ^ 2) / ((r : ℝ) ^ 2) := by
+      ((r.divisors.card : ℝ) ^ (2 : ℕ)) / ((r : ℝ) ^ (2 : ℕ)) := by
   have hnorm := summable_norm_abs_localizedReciprocalMoebiusAmplitude hr
   have hmul := tsum_mul_tsum_of_summable_norm hnorm hnorm
   have hmass := tsum_abs_localizedReciprocalMoebiusAmplitude hr
-  let c : ℝ := ((ArithmeticFunction.moebius r : ℤ) : ℝ) / ((r : ℝ) ^ 2)
+  let c : ℝ := ((ArithmeticFunction.moebius r : ℤ) : ℝ) / ((r : ℝ) ^ (2 : ℕ))
   have hcoeff :
-      |c| = 1 / ((r : ℝ) ^ 2) := by
+      |c| = 1 / ((r : ℝ) ^ (2 : ℕ)) := by
     dsimp [c]
     rw [abs_div, abs_moebius_real_eq_one_of_squarefree hsq, abs_pow,
       abs_of_pos (by exact_mod_cast hr)]
@@ -101,19 +101,19 @@ theorem tsum_abs_selbergCorrectionWeight_pair_of_squarefree
           ∑' uv : ℕ × ℕ,
             (|localizedReciprocalMoebiusAmplitude r uv.1| *
               |localizedReciprocalMoebiusAmplitude r uv.2|) := tsum_mul_left
-    _ = (1 / ((r : ℝ) ^ 2)) *
-          (((2 : ℝ) ^ r.primeFactors.card) ^ 2) := by
+    _ = (1 / ((r : ℝ) ^ (2 : ℕ))) *
+          (((2 : ℝ) ^ r.primeFactors.card) ^ (2 : ℕ)) := by
       rw [hcoeff, ← hmul, hmass]
       ring
-    _ = ((r.divisors.card : ℝ) ^ 2) / ((r : ℝ) ^ 2) := by
-      rw [card_divisors_of_squarefree hsq hr.ne']
+    _ = ((r.divisors.card : ℝ) ^ (2 : ℕ)) / ((r : ℝ) ^ (2 : ℕ)) := by
+      rw [card_divisors_of_squarefree_squarefreeDivisorCount hsq hr.ne']
       push_cast
       ring
 
 theorem tsum_abs_selbergCorrectionWeight_pair (r : ℕ) :
     (∑' uv : ℕ × ℕ, |selbergCorrectionWeight r uv.1 uv.2|) =
       if 0 < r ∧ Squarefree r then
-        ((r.divisors.card : ℝ) ^ 2) / ((r : ℝ) ^ 2) else 0 := by
+        ((r.divisors.card : ℝ) ^ (2 : ℕ)) / ((r : ℝ) ^ (2 : ℕ)) else 0 := by
   by_cases hr : 0 < r ∧ Squarefree r
   · rw [if_pos hr]
     exact tsum_abs_selbergCorrectionWeight_pair_of_squarefree hr.1 hr.2
@@ -163,7 +163,7 @@ theorem tsum_selbergCorrectionWeight_pair (r : ℕ) :
       exact selbergCorrectionWeight_zero uv.1 uv.2]
     simp
   · have hr : 0 < r := Nat.pos_of_ne_zero hr0
-    let c : ℝ := ((ArithmeticFunction.moebius r : ℤ) : ℝ) / ((r : ℝ) ^ 2)
+    let c : ℝ := ((ArithmeticFunction.moebius r : ℤ) : ℝ) / ((r : ℝ) ^ (2 : ℕ))
     have hnorm : Summable (fun n : ℕ =>
         ‖localizedReciprocalMoebiusAmplitude r n‖) := by
       simpa [Real.norm_eq_abs] using summable_abs_localizedReciprocalMoebiusAmplitude hr

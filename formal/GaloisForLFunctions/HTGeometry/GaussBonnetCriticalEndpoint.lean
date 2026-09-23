@@ -30,14 +30,14 @@ open CPV
 
 theorem egbCoexistenceShape_tendsto_critical : Tendsto egbCoexistenceShape atBot (𝓝 6) := by
   have hr := thermalRatio_tendsto_atBot_one
-  have h : Tendsto egbCoexistenceShape atBot (𝓝 ((1 : ℝ)^2 + 4*1 + 1)) :=
+  have h : Tendsto egbCoexistenceShape atBot (𝓝 ((1 : ℝ)^(2 : ℕ) + 4*1 + 1)) :=
     ((hr.pow 2).add (tendsto_const_nhds.mul hr)).add tendsto_const_nhds
   norm_num at h
   exact h
 
 theorem egbCoexistenceShape_tendsto_cold : Tendsto egbCoexistenceShape atTop (𝓝 1) := by
   have hr := thermalRatio_tendsto_atTop_zero
-  have h : Tendsto egbCoexistenceShape atTop (𝓝 ((0 : ℝ)^2 + 4*0 + 1)) :=
+  have h : Tendsto egbCoexistenceShape atTop (𝓝 ((0 : ℝ)^(2 : ℕ) + 4*0 + 1)) :=
     ((hr.pow 2).add (tendsto_const_nhds.mul hr)).add tendsto_const_nhds
   norm_num at h
   exact h
@@ -58,11 +58,11 @@ theorem egbFixedCharge_large_radius_critical (w : ℝ) :
   simpa only [div_one, Pi.div_def] using h.div thermalRatio_tendsto_atBot_one one_ne_zero
 
 theorem egbFixedChargePressure_critical_limit (w : ℝ) :
-    Tendsto (egbFixedChargePressure w) atBot (𝓝 (1 / (96 * Real.pi * Real.exp w ^ 2))) := by
-  rw [show egbFixedChargePressure w = (fun tau => 3 * thermalRatio tau ^ 2 /
-    (8 * Real.pi * Real.exp w ^ 2 * egbCoexistenceShape tau ^ 2)) from funext (egbFixedChargePressure_formula w)]
+    Tendsto (egbFixedChargePressure w) atBot (𝓝 (1 / (96 * Real.pi * Real.exp w ^ (2 : ℕ)))) := by
+  rw [show egbFixedChargePressure w = (fun tau => 3 * thermalRatio tau ^ (2 : ℕ) /
+    (8 * Real.pi * Real.exp w ^ (2 : ℕ) * egbCoexistenceShape tau ^ (2 : ℕ))) from funext (egbFixedChargePressure_formula w)]
   have h := ((tendsto_const_nhds (x := (3 : ℝ))).mul (thermalRatio_tendsto_atBot_one.pow 2)).div
-    ((tendsto_const_nhds (x := 8 * Real.pi * Real.exp w ^ 2)).mul (egbCoexistenceShape_tendsto_critical.pow 2)) (by positivity)
+    ((tendsto_const_nhds (x := 8 * Real.pi * Real.exp w ^ (2 : ℕ))).mul (egbCoexistenceShape_tendsto_critical.pow 2)) (by positivity)
   simp only [Pi.div_def] at h
   convert h using 1
   norm_num
@@ -123,11 +123,11 @@ theorem egbFixedCharge_latent_heat_critical_limit (w theta : ℝ) :
 theorem egbFixedCharge_clapeyron_slope_formula (w tau : ℝ) :
     deriv (egbFixedChargePressure w) tau / deriv (egbFixedChargeTemperature w) tau =
       3 * thermalRatio tau * (1 + thermalRatio tau) /
-        (4 * Real.exp w * Real.sqrt (egbCoexistenceShape tau) * (1 + thermalRatio tau + thermalRatio tau ^ 2)) := by
+        (4 * Real.exp w * Real.sqrt (egbCoexistenceShape tau) * (1 + thermalRatio tau + thermalRatio tau ^ (2 : ℕ))) := by
   rw [egbFixedCharge_clapeyron, egbFixedChargeEntropyJump_formula, egbFixedChargeVolumeJump_formula]
-  rw [show 1 - thermalRatio tau ^ 3 = (1 - thermalRatio tau) * (1 + thermalRatio tau + thermalRatio tau ^ 2) by ring,
-    show 1 - thermalRatio tau ^ 2 = (1 - thermalRatio tau) * (1 + thermalRatio tau) by ring]
-  have h1 : 1 + thermalRatio tau + thermalRatio tau ^ 2 ≠ 0 := by nlinarith [thermalRatio_pos tau, sq_nonneg (thermalRatio tau)]
+  rw [show 1 - thermalRatio tau ^ (3 : ℕ) = (1 - thermalRatio tau) * (1 + thermalRatio tau + thermalRatio tau ^ (2 : ℕ)) by ring,
+    show 1 - thermalRatio tau ^ (2 : ℕ) = (1 - thermalRatio tau) * (1 + thermalRatio tau) by ring]
+  have h1 : 1 + thermalRatio tau + thermalRatio tau ^ (2 : ℕ) ≠ 0 := by nlinarith [thermalRatio_pos tau, sq_nonneg (thermalRatio tau)]
   field_simp [Real.pi_ne_zero, (thermalRatio_pos tau).ne', (egbCoexistenceShape_pos tau).ne',
     (Real.sqrt_pos.mpr (egbCoexistenceShape_pos tau)).ne', (sub_pos.mpr (thermalRatio_lt_one tau)).ne', h1]
 
@@ -137,7 +137,7 @@ theorem egbFixedCharge_clapeyron_critical_limit (w : ℝ) :
       (𝓝 (1 / (2 * Real.exp w * Real.sqrt 6))) := by
   rw [show (fun tau => deriv (egbFixedChargePressure w) tau / deriv (egbFixedChargeTemperature w) tau) =
       (fun tau => 3 * thermalRatio tau * (1 + thermalRatio tau) /
-        (4 * Real.exp w * Real.sqrt (egbCoexistenceShape tau) * (1 + thermalRatio tau + thermalRatio tau ^ 2))) from
+        (4 * Real.exp w * Real.sqrt (egbCoexistenceShape tau) * (1 + thermalRatio tau + thermalRatio tau ^ (2 : ℕ)))) from
     funext (egbFixedCharge_clapeyron_slope_formula w)]
   have hr := thermalRatio_tendsto_atBot_one
   have hn := ((tendsto_const_nhds (x := (3 : ℝ))).mul hr).mul ((tendsto_const_nhds (x := (1 : ℝ))).add hr)
@@ -151,10 +151,10 @@ theorem egbFixedCharge_clapeyron_critical_limit (w : ℝ) :
   ring
 
 theorem egbFixedChargePressure_cold_limit (w : ℝ) : Tendsto (egbFixedChargePressure w) atTop (𝓝 0) := by
-  rw [show egbFixedChargePressure w = (fun tau => 3 * thermalRatio tau ^ 2 /
-    (8 * Real.pi * Real.exp w ^ 2 * egbCoexistenceShape tau ^ 2)) from funext (egbFixedChargePressure_formula w)]
+  rw [show egbFixedChargePressure w = (fun tau => 3 * thermalRatio tau ^ (2 : ℕ) /
+    (8 * Real.pi * Real.exp w ^ (2 : ℕ) * egbCoexistenceShape tau ^ (2 : ℕ))) from funext (egbFixedChargePressure_formula w)]
   have h := ((tendsto_const_nhds (x := (3 : ℝ))).mul (thermalRatio_tendsto_atTop_zero.pow 2)).div
-    ((tendsto_const_nhds (x := 8 * Real.pi * Real.exp w ^ 2)).mul (egbCoexistenceShape_tendsto_cold.pow 2)) (by positivity)
+    ((tendsto_const_nhds (x := 8 * Real.pi * Real.exp w ^ (2 : ℕ))).mul (egbCoexistenceShape_tendsto_cold.pow 2)) (by positivity)
   simpa [Pi.div_def] using h
 
 theorem egbFixedChargeTemperature_cold_limit (w : ℝ) : Tendsto (egbFixedChargeTemperature w) atTop (𝓝 0) := by
@@ -169,7 +169,7 @@ theorem egbFixedChargeTemperature_cold_limit (w : ℝ) : Tendsto (egbFixedCharge
 
 /-- Every finite coexistence parameter stays strictly below the critical pressure. -/
 theorem egbFixedChargePressure_below_critical (w tau : ℝ) :
-    egbFixedChargePressure w tau < 1 / (96 * Real.pi * Real.exp w ^ 2) := by
+    egbFixedChargePressure w tau < 1 / (96 * Real.pi * Real.exp w ^ (2 : ℕ)) := by
   exact lt_of_lt_of_le (egbFixedChargePressure_strictAnti w (show tau - 1 < tau by linarith))
     ((egbFixedChargePressure_strictAnti w).antitone.ge_of_tendsto
       (egbFixedChargePressure_critical_limit w) (tau - 1))
@@ -183,7 +183,7 @@ theorem egbFixedChargeTemperature_below_critical (w tau : ℝ) :
 
 /-- The constructed coexistence family covers every positive subcritical pressure. -/
 theorem egbFixedChargePressure_range (w : ℝ) :
-    Set.range (egbFixedChargePressure w) = Set.Ioo 0 (1 / (96 * Real.pi * Real.exp w ^ 2)) := by
+    Set.range (egbFixedChargePressure w) = Set.Ioo 0 (1 / (96 * Real.pi * Real.exp w ^ (2 : ℕ))) := by
   ext p
   constructor
   · rintro ⟨tau, rfl⟩
@@ -217,10 +217,10 @@ theorem egbFixedChargeTemperature_range (w : ℝ) :
 
 /-- Unique coexistence parameter at any positive subcritical pressure, encoded without a premise. -/
 theorem egbFixedChargePressure_unique_parameter (w s : ℝ) :
-    ∃! tau, egbFixedChargePressure w tau = thermalRatio s / (96 * Real.pi * Real.exp w ^ 2) := by
-  have hd : 0 < 96 * Real.pi * Real.exp w ^ 2 := by positivity
-  have hp : thermalRatio s / (96 * Real.pi * Real.exp w ^ 2) ∈
-      Set.Ioo 0 (1 / (96 * Real.pi * Real.exp w ^ 2)) :=
+    ∃! tau, egbFixedChargePressure w tau = thermalRatio s / (96 * Real.pi * Real.exp w ^ (2 : ℕ)) := by
+  have hd : 0 < 96 * Real.pi * Real.exp w ^ (2 : ℕ) := by positivity
+  have hp : thermalRatio s / (96 * Real.pi * Real.exp w ^ (2 : ℕ)) ∈
+      Set.Ioo 0 (1 / (96 * Real.pi * Real.exp w ^ (2 : ℕ))) :=
     ⟨div_pos (thermalRatio_pos s) hd, (div_lt_div_iff_of_pos_right hd).mpr (thermalRatio_lt_one s)⟩
   rw [← egbFixedChargePressure_range w] at hp
   obtain ⟨tau, htau⟩ := hp

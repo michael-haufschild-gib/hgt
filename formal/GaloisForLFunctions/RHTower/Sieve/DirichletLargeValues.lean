@@ -24,13 +24,13 @@ theorem largeValues_dirPoly_of_energy (N : ℕ) (hN : 2 ≤ N) (a : Fin N → �
     {δ T E E' : ℝ} (hδ : 0 < δ) (hT : 0 ≤ T)
     (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
     (hhigh : lam R + δ / 2 ≤ T)
-    (hI1 : (∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ 2) ≤ E)
-    (hI2 : (∫ t in (0 : ℝ)..T, ‖dirPoly N (dirDerivCoeff N a) t‖ ^ 2) ≤ E') :
-    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ 2
+    (hI1 : (∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ (2 : ℕ)) ≤ E)
+    (hI2 : (∫ t in (0 : ℝ)..T, ‖dirPoly N (dirDerivCoeff N a) t‖ ^ (2 : ℕ)) ≤ E') :
+    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ (2 : ℕ)
       ≤ (1 / δ) * E + Real.log N * E + (1 / Real.log N) * E' := by
   have hNR : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   have hlogpos : (0 : ℝ) < Real.log N := Real.log_pos (by linarith)
-  have hcont1 : Continuous (fun t : ℝ => ‖dirPoly N a t‖ ^ 2) :=
+  have hcont1 : Continuous (fun t : ℝ => ‖dirPoly N a t‖ ^ (2 : ℕ)) :=
     ((continuous_dirPoly N a).norm).pow 2
   have hcont2 : Continuous (fun t : ℝ =>
       2 * ‖dirPoly N a t‖ * ‖dirPoly N (dirDerivCoeff N a) t‖) :=
@@ -44,8 +44,8 @@ theorem largeValues_dirPoly_of_energy (N : ℕ) (hN : 2 ≤ N) (a : Fin N → �
     linarith
   have hright : (0 : ℝ) ≤ lam R + δ / 2 := by linarith
   have hbase := gallagher_dirPoly_sum N a hδ hgap hA R
-  have hext1 : (∫ t in (0 : ℝ)..(lam R + δ / 2), ‖dirPoly N a t‖ ^ 2)
-      ≤ ∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ 2 :=
+  have hext1 : (∫ t in (0 : ℝ)..(lam R + δ / 2), ‖dirPoly N a t‖ ^ (2 : ℕ))
+      ≤ ∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ (2 : ℕ) :=
     intervalIntegral.integral_mono_interval le_rfl hright hhigh
       (Filter.Eventually.of_forall (fun t => sq_nonneg _)) (hcont1.intervalIntegrable _ _)
   have hext2 : (∫ t in (0 : ℝ)..(lam R + δ / 2),
@@ -70,9 +70,9 @@ theorem largeValues_dirPoly (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {lam : 
     (hδ : 0 < δ) (hT : 0 ≤ T)
     (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
     (hhigh : lam R + δ / 2 ≤ T) :
-    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ 2
+    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ (2 : ℕ)
       ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) * (1 / δ + 2 * Real.log N)
-          * ∑ m : Fin N, ‖a m‖ ^ 2 := by
+          * ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ) := by
   have hNR : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   have hlogpos : (0 : ℝ) < Real.log N := Real.log_pos (by linarith)
   have hbase := largeValues_dirPoly_of_energy N hN a hδ hT hgap hlow R hhigh

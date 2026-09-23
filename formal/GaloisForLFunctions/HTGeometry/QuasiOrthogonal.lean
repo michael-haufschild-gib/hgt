@@ -110,7 +110,7 @@ theorem quasiOrtho_splits (h : PositiveMomentForm s) (n : ℕ) (t : ℝ) :
 /-- **No repeated root.**  Cancelling the linear factor in the collapsed Christoffel--Darboux
 identity and evaluating at the root would make the kernel diagonal vanish. -/
 theorem quasiOrtho_not_sq_dvd (h : PositiveMomentForm s) (n : ℕ) (t : ℝ) (r : ℝ) :
-    ¬ (((X - C r) ^ 2 : Polynomial ℝ) ∣ quasiOrtho s n t) := by
+    ¬ (((X - C r) ^ (2 : ℕ) : Polynomial ℝ) ∣ quasiOrtho s n t) := by
   rintro ⟨H, hH⟩
   have hn0 : momentInner s (monicOrtho s n) (monicOrtho s n) ≠ 0 :=
     (monicOrtho_inner_self_pos h n).ne'
@@ -131,7 +131,7 @@ theorem quasiOrtho_not_sq_dvd (h : PositiveMomentForm s) (n : ℕ) (t : ℝ) (r 
           momentInner s (monicOrtho s k) (monicOrtho s k) := by
       rw [cdKernel_symm, cdKernel_eval]
     have hPx : (monicOrtho s (n + 1)).eval x + t * (monicOrtho s n).eval x
-        = (x - r) ^ 2 * H.eval x := by
+        = (x - r) ^ (2 : ℕ) * H.eval x := by
       rw [← quasiOrtho_eval, hH]
       simp
     rw [h1]

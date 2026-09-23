@@ -21,7 +21,7 @@ variable [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
 /-- Unavoidable self-memory paid once by every selected sample. -/
 def selectorDiagonalRecurrenceEnergy (r : J → F) (w : J → ℝ) : ℝ :=
-  ∑ j, w j ^ 2 * ‖r j‖ ^ 2
+  ∑ j, w j ^ (2 : ℕ) * ‖r j‖ ^ (2 : ℕ)
 
 /-- Genuine cross-time recurrence retained only inside a reused observer channel. -/
 def selectorCrossRecurrenceEnergy
@@ -74,7 +74,7 @@ theorem selectorRecurrenceEnergy_eq_diagonal_add_cross
         w i * w j * inner ℝ (r i) (r j) else 0) = ∑ j, f j := rfl
     _ = (∑ j ∈ Finset.univ.erase i, f j) + f i := by
       exact (Finset.sum_erase_add Finset.univ f (Finset.mem_univ i)).symm
-    _ = w i ^ 2 * ‖r i‖ ^ 2 +
+    _ = w i ^ (2 : ℕ) * ‖r i‖ ^ (2 : ℕ) +
         ∑ j ∈ Finset.univ.erase i,
           if chosen i = chosen j then
             w i * w j * inner ℝ (r i) (r j) else 0 := by
@@ -84,7 +84,7 @@ theorem selectorRecurrenceEnergy_eq_diagonal_add_cross
 theorem selectorLoadEnergy_eq_diagonal_add_cross
     (chosen : J → C) (w : J → ℝ) :
     selectorLoadEnergy chosen w =
-      (∑ j, w j ^ 2) + selectorCrossLoad chosen w := by
+      (∑ j, w j ^ (2 : ℕ)) + selectorCrossLoad chosen w := by
   have hload :
       selectorLoadEnergy chosen w =
         selectorRecurrenceEnergy (fun _ : J => (1 : ℝ)) chosen w := by
@@ -106,7 +106,7 @@ theorem selectorLoadEnergy_eq_diagonal_add_cross
     (∑ j, if chosen i = chosen j then w i * w j else 0) = ∑ j, f j := rfl
     _ = (∑ j ∈ Finset.univ.erase i, f j) + f i := by
       exact (Finset.sum_erase_add Finset.univ f (Finset.mem_univ i)).symm
-    _ = w i ^ 2 +
+    _ = w i ^ (2 : ℕ) +
         ∑ j ∈ Finset.univ.erase i,
           if chosen i = chosen j then w i * w j else 0 := by
       simp only [f, if_pos]
@@ -138,16 +138,16 @@ theorem selectorCrossRecurrenceEnergy_le_coherence_mul_crossLoad
 omit [DecidableEq J] [InnerProductSpace ℝ F] in
 theorem selectorDiagonalRecurrenceEnergy_le
     (r : J → F) (w : J → ℝ) {D : ℝ}
-    (hnorm : ∀ j, ‖r j‖ ^ 2 ≤ D) :
-    selectorDiagonalRecurrenceEnergy r w ≤ D * ∑ j, w j ^ 2 := by
+    (hnorm : ∀ j, ‖r j‖ ^ (2 : ℕ) ≤ D) :
+    selectorDiagonalRecurrenceEnergy r w ≤ D * ∑ j, w j ^ (2 : ℕ) := by
   unfold selectorDiagonalRecurrenceEnergy
   rw [Finset.mul_sum]
   apply Finset.sum_le_sum
   intro j hj
   calc
-    w j ^ 2 * ‖r j‖ ^ 2 ≤ w j ^ 2 * D :=
+    w j ^ (2 : ℕ) * ‖r j‖ ^ (2 : ℕ) ≤ w j ^ (2 : ℕ) * D :=
       mul_le_mul_of_nonneg_left (hnorm j) (sq_nonneg (w j))
-    _ = D * w j ^ 2 := by ring
+    _ = D * w j ^ (2 : ℕ) := by ring
 
 theorem selectorThreshold_sq_load_le_diagonal_add_cross
     (r : J → F) (q : C → F) (chosen : J → C) (w : J → ℝ)
@@ -155,8 +155,8 @@ theorem selectorThreshold_sq_load_le_diagonal_add_cross
     (heta : 0 ≤ eta)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B) :
-    eta ^ 2 * selectorLoadEnergy chosen w ≤
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B) :
+    eta ^ (2 : ℕ) * selectorLoadEnergy chosen w ≤
       B * (selectorDiagonalRecurrenceEnergy r w +
         selectorCrossRecurrenceEnergy r chosen w) := by
   rw [← selectorRecurrenceEnergy_eq_diagonal_add_cross]
@@ -171,11 +171,11 @@ theorem selectorCoherenceGap_mul_load_le_diagonal
     (heta : 0 ≤ eta) (hB : 0 ≤ B)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
-    (hnorm : ∀ j, ‖r j‖ ^ 2 ≤ D)
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B)
+    (hnorm : ∀ j, ‖r j‖ ^ (2 : ℕ) ≤ D)
     (hcoh : ∀ i j, i ≠ j → inner ℝ (r i) (r j) ≤ mu) :
-    (eta ^ 2 - B * mu) * selectorLoadEnergy chosen w ≤
-      B * (D - mu) * ∑ j, w j ^ 2 := by
+    (eta ^ (2 : ℕ) - B * mu) * selectorLoadEnergy chosen w ≤
+      B * (D - mu) * ∑ j, w j ^ (2 : ℕ) := by
   have hthreshold := selectorThreshold_sq_load_le_diagonal_add_cross
     r q chosen w heta hw halign hq
   have hdiag := selectorDiagonalRecurrenceEnergy_le r w hnorm
@@ -184,19 +184,19 @@ theorem selectorCoherenceGap_mul_load_le_diagonal
   have hupper :
       B * (selectorDiagonalRecurrenceEnergy r w +
           selectorCrossRecurrenceEnergy r chosen w) ≤
-        B * (D * (∑ j, w j ^ 2) + mu * selectorCrossLoad chosen w) :=
+        B * (D * (∑ j, w j ^ (2 : ℕ)) + mu * selectorCrossLoad chosen w) :=
     mul_le_mul_of_nonneg_left (add_le_add hdiag hcross) hB
   have hload := selectorLoadEnergy_eq_diagonal_add_cross chosen w
   calc
-    (eta ^ 2 - B * mu) * selectorLoadEnergy chosen w =
-        eta ^ 2 * selectorLoadEnergy chosen w -
-          B * mu * ((∑ j, w j ^ 2) + selectorCrossLoad chosen w) := by
+    (eta ^ (2 : ℕ) - B * mu) * selectorLoadEnergy chosen w =
+        eta ^ (2 : ℕ) * selectorLoadEnergy chosen w -
+          B * mu * ((∑ j, w j ^ (2 : ℕ)) + selectorCrossLoad chosen w) := by
       rw [hload]
       ring
-    _ ≤ B * (D * (∑ j, w j ^ 2) + mu * selectorCrossLoad chosen w) -
-          B * mu * ((∑ j, w j ^ 2) + selectorCrossLoad chosen w) :=
+    _ ≤ B * (D * (∑ j, w j ^ (2 : ℕ)) + mu * selectorCrossLoad chosen w) -
+          B * mu * ((∑ j, w j ^ (2 : ℕ)) + selectorCrossLoad chosen w) :=
       sub_le_sub_right (hthreshold.trans hupper) _
-    _ = B * (D - mu) * ∑ j, w j ^ 2 := by ring
+    _ = B * (D - mu) * ∑ j, w j ^ (2 : ℕ) := by ring
 
 /-- Under a positive coherence gap, bounded observer-channel capacity converts cross-time
 anti-coherence into a quantitative obstruction to a long shortcut history. -/
@@ -204,33 +204,33 @@ theorem selectorMass_sq_le_capacity_mul_diagonal_of_coherence
     (r : J → F) (q : C → F) (chosen : J → C) (w : J → ℝ)
     {eta B D mu : ℝ} {K : ℕ}
     (heta : 0 ≤ eta) (hB : 0 ≤ B)
-    (hgap : 0 ≤ eta ^ 2 - B * mu)
+    (hgap : 0 ≤ eta ^ (2 : ℕ) - B * mu)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
-    (hnorm : ∀ j, ‖r j‖ ^ 2 ≤ D)
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B)
+    (hnorm : ∀ j, ‖r j‖ ^ (2 : ℕ) ≤ D)
     (hcoh : ∀ i j, i ≠ j → inner ℝ (r i) (r j) ≤ mu)
     (hcapacity : (selectorOccupiedChannels chosen w).card ≤ K) :
-    (eta ^ 2 - B * mu) * (∑ j, w j) ^ 2 ≤
-      B * K * (D - mu) * ∑ j, w j ^ 2 := by
+    (eta ^ (2 : ℕ) - B * mu) * (∑ j, w j) ^ (2 : ℕ) ≤
+      B * K * (D - mu) * ∑ j, w j ^ (2 : ℕ) := by
   have hmass := selectorTotalWeight_sq_le_occupied_mul_load chosen w
   have hloadNonneg := selectorLoadEnergy_nonneg chosen w
   have hcapacityLoad :
-      (∑ j, w j) ^ 2 ≤ K * selectorLoadEnergy chosen w := by
+      (∑ j, w j) ^ (2 : ℕ) ≤ K * selectorLoadEnergy chosen w := by
     calc
-      (∑ j, w j) ^ 2 ≤
+      (∑ j, w j) ^ (2 : ℕ) ≤
           (selectorOccupiedChannels chosen w).card *
             selectorLoadEnergy chosen w := hmass
       _ ≤ K * selectorLoadEnergy chosen w := by gcongr
   have hsource := selectorCoherenceGap_mul_load_le_diagonal
     r q chosen w heta hB hw halign hq hnorm hcoh
   calc
-    (eta ^ 2 - B * mu) * (∑ j, w j) ^ 2 ≤
-        (eta ^ 2 - B * mu) * (K * selectorLoadEnergy chosen w) :=
+    (eta ^ (2 : ℕ) - B * mu) * (∑ j, w j) ^ (2 : ℕ) ≤
+        (eta ^ (2 : ℕ) - B * mu) * (K * selectorLoadEnergy chosen w) :=
       mul_le_mul_of_nonneg_left hcapacityLoad hgap
-    _ = K * ((eta ^ 2 - B * mu) * selectorLoadEnergy chosen w) := by ring
-    _ ≤ K * (B * (D - mu) * ∑ j, w j ^ 2) := by gcongr
-    _ = B * K * (D - mu) * ∑ j, w j ^ 2 := by ring
+    _ = K * ((eta ^ (2 : ℕ) - B * mu) * selectorLoadEnergy chosen w) := by ring
+    _ ≤ K * (B * (D - mu) * ∑ j, w j ^ (2 : ℕ)) := by gcongr
+    _ = B * K * (D - mu) * ∑ j, w j ^ (2 : ℕ) := by ring
 
 /-- If diagonal memory cannot pay a shortcut history and distinct-time recurrence stays below
 `mu`, more than `K` observer channels must be occupied. -/
@@ -238,14 +238,14 @@ theorem selectorOccupiedChannels_gt_of_coherenceBudget_lt
     (r : J → F) (q : C → F) (chosen : J → C) (w : J → ℝ)
     {eta B D mu : ℝ} {K : ℕ}
     (heta : 0 ≤ eta) (hB : 0 ≤ B)
-    (hgap : 0 ≤ eta ^ 2 - B * mu)
+    (hgap : 0 ≤ eta ^ (2 : ℕ) - B * mu)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
-    (hnorm : ∀ j, ‖r j‖ ^ 2 ≤ D)
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B)
+    (hnorm : ∀ j, ‖r j‖ ^ (2 : ℕ) ≤ D)
     (hcoh : ∀ i j, i ≠ j → inner ℝ (r i) (r j) ≤ mu)
-    (hbudget : B * K * (D - mu) * (∑ j, w j ^ 2) <
-      (eta ^ 2 - B * mu) * (∑ j, w j) ^ 2) :
+    (hbudget : B * K * (D - mu) * (∑ j, w j ^ (2 : ℕ)) <
+      (eta ^ (2 : ℕ) - B * mu) * (∑ j, w j) ^ (2 : ℕ)) :
     K < (selectorOccupiedChannels chosen w).card := by
   by_contra hnot
   have hcapacity : (selectorOccupiedChannels chosen w).card ≤ K :=
@@ -260,13 +260,13 @@ theorem selectorCard_sq_le_capacity_mul_card_of_coherence
     (r : J → F) (q : C → F) (chosen : J → C)
     {eta B D mu : ℝ} {K : ℕ}
     (heta : 0 ≤ eta) (hB : 0 ≤ B)
-    (hgap : 0 ≤ eta ^ 2 - B * mu)
+    (hgap : 0 ≤ eta ^ (2 : ℕ) - B * mu)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
-    (hnorm : ∀ j, ‖r j‖ ^ 2 ≤ D)
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B)
+    (hnorm : ∀ j, ‖r j‖ ^ (2 : ℕ) ≤ D)
     (hcoh : ∀ i j, i ≠ j → inner ℝ (r i) (r j) ≤ mu)
     (hcapacity : (selectorOccupiedChannels chosen (fun _ => 1)).card ≤ K) :
-    (eta ^ 2 - B * mu) * (Fintype.card J : ℝ) ^ 2 ≤
+    (eta ^ (2 : ℕ) - B * mu) * (Fintype.card J : ℝ) ^ (2 : ℕ) ≤
       B * K * (D - mu) * (Fintype.card J : ℝ) := by
   simpa using selectorMass_sq_le_capacity_mul_diagonal_of_coherence
     r q chosen (fun _ => 1) heta hB hgap (fun _ => by norm_num)
@@ -280,9 +280,9 @@ theorem selectorCapacity_forces_crossRecurrence
     (heta : 0 ≤ eta) (hB : 0 ≤ B)
     (hw : ∀ j, 0 ≤ w j)
     (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
-    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
+    (hq : ∀ c, ‖q c‖ ^ (2 : ℕ) ≤ B)
     (hcapacity : (selectorOccupiedChannels chosen w).card ≤ K) :
-    eta ^ 2 * (∑ j, w j) ^ 2 -
+    eta ^ (2 : ℕ) * (∑ j, w j) ^ (2 : ℕ) -
         B * K * selectorDiagonalRecurrenceEnergy r w ≤
       B * K * selectorCrossRecurrenceEnergy r chosen w := by
   have hmain := selectorMass_sq_le_capacity_mul_recurrence

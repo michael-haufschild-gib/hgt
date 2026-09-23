@@ -204,7 +204,7 @@ structure MobiusContactGammaToricFormalAtlasMasterCertificate : Prop where
       Tendsto (fun n => gammaFactorialProjectiveThirdSecondClosureRatio n x)
         atTop (𝓝 (-1 / 6)) ∧
       Tendsto (fun n => gammaFactorialLogSecondHarmonicClosureRatio n x)
-        atTop (𝓝 (-((Real.pi : ℂ) ^ 2) / 9)) ∧
+        atTop (𝓝 (-((Real.pi : ℂ) ^ (2 : ℕ)) / 9)) ∧
       Tendsto (fun n => gammaFactorialLogEnvelopeSixthJetClosureRatio n x)
         atTop (𝓝 729)) ∧
     ∀ aF aS aP aT aL aE aH : ℤ,

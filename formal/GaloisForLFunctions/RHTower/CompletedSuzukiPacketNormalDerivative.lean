@@ -65,7 +65,7 @@ theorem hasDerivAt_completedSuzukiPacket {z : ℂ} (hz : XiC z ≠ 0) :
   have h0 : z + ((0 : ℝ) : ℂ) = z := by push_cast; ring
   have h0' : z - ((0 : ℝ) : ℂ) = z := by push_cast; ring
   rw [h0, h0'] at h
-  have hvalue : (-deriv XiC z * XiC z - XiC z * deriv XiC z) / XiC z ^ 2
+  have hvalue : (-deriv XiC z * XiC z - XiC z * deriv XiC z) / XiC z ^ (2 : ℕ)
       = -2 * logDeriv XiC z := by
     rw [logDeriv_apply]
     field_simp

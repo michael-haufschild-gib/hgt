@@ -56,7 +56,7 @@ theorem sharpMobiusSeedGap_boundarySecondMoment_pos_iff_squarefree
     {A B : ℝ} (hAB : A < B) :
     (0 < ∫ x in A..B,
         ‖dpoly (seedGapCoeff sharpMobiusRowWeight N y)
-          (P.image (fun p => p * d)) x‖ ^ 2) ↔
+          (P.image (fun p => p * d)) x‖ ^ (2 : ℕ)) ↔
       Squarefree d := by
   rw [seedGap_boundary_component_secondMoment_pos_iff
     sharpMobiusRowWeight hd2 hdy hP hPne hPy hPN hbig hAB]
@@ -80,7 +80,7 @@ theorem sharpMobiusSeedGap_innerBoundaryPhaseTransitionUniversality
       ∀ {A B : ℝ}, A < B →
         ((0 < ∫ x in A..B,
             ‖dpoly (seedGapCoeff sharpMobiusRowWeight N y)
-              (P.image (fun p => p * d)) x‖ ^ 2) ↔
+              (P.image (fun p => p * d)) x‖ ^ (2 : ℕ)) ↔
           Squarefree d) := by
   refine ⟨?_, ?_, ?_⟩
   · intro p hp hpy hdpN

@@ -27,7 +27,7 @@ def HermiteSecularContrastStableRankActivationCertificate
         (constrainedProlateHermiteWeight (k + 1)) x = 0 ↔ x = E)) ∧
     (∀ (A : ℕ → ℝ), (∀ j, 0 < A j) →
       Tendsto (fun lam : ℝ =>
-          (ladderTwoModeRoot A (k + 1) lam / ladderTwoModeRoot A k lam) / lam ^ 8)
+          (ladderTwoModeRoot A (k + 1) lam / ladderTwoModeRoot A k lam) / lam ^ (8 : ℕ))
         atTop (nhds
           ((hermiteContrastSecularEnergyCoordinate (k + 1) / E) *
             (A (k + 2) / A (k + 1))))) ∧
@@ -35,10 +35,10 @@ def HermiteSecularContrastStableRankActivationCertificate
         constrainedProlateHermiteQuasiFreeMean (k + 1) = Q * (1 - E) * d ∧
     constrainedProlateHermiteQuasiFreeVariance (k + 2) -
         constrainedProlateHermiteQuasiFreeVariance (k + 1) =
-      Q * (1 - E) * (1 - Q * (1 - E)) * d ^ 2 ∧
+      Q * (1 - E) * (1 - Q * (1 - E)) * d ^ (2 : ℕ) ∧
     constrainedProlateHermiteQuasiFreeFanoMargin (k + 2) -
         constrainedProlateHermiteQuasiFreeFanoMargin (k + 1) =
-      Q * (1 - E) * (d - (1 - Q * (1 - E)) * d ^ 2) ∧
+      Q * (1 - E) * (d - (1 - Q * (1 - E)) * d ^ (2 : ℕ)) ∧
     0 < constrainedProlateHermiteQuasiFreeMean (k + 2) -
         constrainedProlateHermiteQuasiFreeMean (k + 1) ∧
     0 < constrainedProlateHermiteQuasiFreeVariance (k + 2) -

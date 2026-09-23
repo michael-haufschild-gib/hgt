@@ -74,7 +74,7 @@ theorem kerrNewmanFlatBZDressedSmoothMetric_dalembert_explicit
           coordPartial 1 (coordPartial 1 f) x +
             coordPartial 2 (coordPartial 2 f) x +
               parameter * coordPartial 3 (coordPartial 0 f) x +
-                (1 - parameter ^ 2) * coordPartial 3 (coordPartial 3 f) x := by
+                (1 - parameter ^ (2 : ℕ)) * coordPartial 3 (coordPartial 3 f) x := by
   rw [kerrNewmanFlatBZDressedSmoothMetric_dalembert parameter hf x]
   simp [kerrNewmanFlatBZDressedMetricInverse, Fin.sum_univ_four]
   ring

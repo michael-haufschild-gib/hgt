@@ -59,7 +59,7 @@ theorem hypergeometric_second_endpoint_bound {a b c z : ℂ} {B δ r : ℝ}
     (ha : ‖a‖ ≤ B) (hb : ‖b‖ ≤ B) (hc : ‖c‖ ≤ B)
     (hsep : ∀ j : ℕ, δ ≤ ‖c+j‖) (N : ℕ) (hN : B+1 ≤ N) (hz : ‖z‖ ≤ r) :
     ‖ordinaryHypergeometric a b c z-1-ordinaryHypergeometricCoefficient a b c 1*z‖ ≤
-      (∑' n, gaussParameterMajorant B δ N (n+2)*r^n)*‖z‖^2 := by
+      (∑' n, gaussParameterMajorant B δ N (n+2)*r^n)*‖z‖^(2 : ℕ) := by
   have h := hypergeometric_taylor_remainder_bound hB hδ hr hr1 ha hb hc hsep N hN hz 2
   have hc0 : ordinaryHypergeometricCoefficient a b c 0=1 := by simp [ordinaryHypergeometricCoefficient]
   simpa only [Finset.sum_range_succ,Finset.sum_range_zero,zero_add,

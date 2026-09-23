@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.EulerActivationSquarefreeDisintegration
 
 The retained second coordinate of the literal strict-preclosure essential edge is
 
-`c_p = 1 / p - p / (farPrime p)^2`.
+`c_p = 1 / p - p / (farPrime p)^(2 : ℕ)`.
 
 This module proves that its far-prime correction is absolutely summable and classifies every real
 modular twist `p^t c_p` exactly: it is summable if and only if `t < 0`.  The reflected twists have

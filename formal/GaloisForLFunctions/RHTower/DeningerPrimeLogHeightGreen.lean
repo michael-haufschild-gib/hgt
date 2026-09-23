@@ -133,12 +133,12 @@ theorem deningerSign_mul_self {m : DeningerPrimeLattice} (h : deningerFreq m ≠
   · rw [deningerSign_of_pos hgt]; norm_num
 
 theorem deningerFreq_multiplier_bound (m : DeningerPrimeLattice) :
-    ‖((deningerFreq m : ℂ))‖ ≤ deningerHeight m ^ 1 := by
+    ‖((deningerFreq m : ℂ))‖ ≤ deningerHeight m ^ (1 : ℕ) := by
   rw [Complex.norm_real, Real.norm_eq_abs, pow_one]
   exact abs_deningerFreq_le_height m
 
 theorem deningerGreen_multiplier_bound (m : DeningerPrimeLattice) :
-    ‖(((deningerFreq m)⁻¹ : ℝ) : ℂ)‖ ≤ deningerHeight m ^ 1 := by
+    ‖(((deningerFreq m)⁻¹ : ℝ) : ℂ)‖ ≤ deningerHeight m ^ (1 : ℕ) := by
   rw [Complex.norm_real, Real.norm_eq_abs, pow_one]
   by_cases hm : m = 0
   · subst hm
@@ -151,34 +151,34 @@ theorem deningerGreen_multiplier_bound (m : DeningerPrimeLattice) :
     exact hle
 
 theorem deningerModulus_multiplier_bound (m : DeningerPrimeLattice) :
-    ‖((|deningerFreq m| : ℝ) : ℂ)‖ ≤ deningerHeight m ^ 1 := by
+    ‖((|deningerFreq m| : ℝ) : ℂ)‖ ≤ deningerHeight m ^ (1 : ℕ) := by
   rw [Complex.norm_real, Real.norm_eq_abs, pow_one, abs_abs]
   exact abs_deningerFreq_le_height m
 
 theorem deningerModulusGreen_multiplier_bound (m : DeningerPrimeLattice) :
-    ‖(((|deningerFreq m|)⁻¹ : ℝ) : ℂ)‖ ≤ deningerHeight m ^ 1 := by
+    ‖(((|deningerFreq m|)⁻¹ : ℝ) : ℂ)‖ ≤ deningerHeight m ^ (1 : ℕ) := by
   have h := deningerGreen_multiplier_bound m
   rw [Complex.norm_real, Real.norm_eq_abs] at h
   rw [Complex.norm_real, Real.norm_eq_abs, abs_inv, abs_abs, ← abs_inv]
   exact h
 
 theorem deningerHodgeSign_multiplier_bound (m : DeningerPrimeLattice) :
-    ‖(Complex.I * ((deningerSign m : ℝ) : ℂ))‖ ≤ deningerHeight m ^ 0 := by
+    ‖(Complex.I * ((deningerSign m : ℝ) : ℂ))‖ ≤ deningerHeight m ^ (0 : ℕ) := by
   rw [pow_zero, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
   exact abs_deningerSign_le_one m
 
 theorem deningerHeightHardyPlus_multiplier_bound (m : DeningerPrimeLattice) :
-    ‖(if 0 < deningerFreq m then (1 : ℂ) else 0)‖ ≤ deningerHeight m ^ 0 := by
+    ‖(if 0 < deningerFreq m then (1 : ℂ) else 0)‖ ≤ deningerHeight m ^ (0 : ℕ) := by
   rw [pow_zero]
   by_cases h : 0 < deningerFreq m <;> simp [h]
 
 theorem deningerHeightHardyMinus_multiplier_bound (m : DeningerPrimeLattice) :
-    ‖(if deningerFreq m < 0 then (1 : ℂ) else 0)‖ ≤ deningerHeight m ^ 0 := by
+    ‖(if deningerFreq m < 0 then (1 : ℂ) else 0)‖ ≤ deningerHeight m ^ (0 : ℕ) := by
   rw [pow_zero]
   by_cases h : deningerFreq m < 0 <;> simp [h]
 
 theorem deningerPoisson_multiplier_bound (r : ℝ) (hr : 0 ≤ r) (m : DeningerPrimeLattice) :
-    ‖((Real.exp (-(r * |deningerFreq m|)) : ℝ) : ℂ)‖ ≤ deningerHeight m ^ 0 := by
+    ‖((Real.exp (-(r * |deningerFreq m|)) : ℝ) : ℂ)‖ ≤ deningerHeight m ^ (0 : ℕ) := by
   rw [pow_zero, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
   refine Real.exp_le_one_iff.mpr ?_
   have hnn : 0 ≤ r * |deningerFreq m| := mul_nonneg hr (abs_nonneg _)

@@ -21,8 +21,8 @@ variable {ω₁ ω₂ : ℝ → ℝ} {M δ b : ℝ}
 
 /-- **The comparison of two flows, backward in time.** -/
 theorem norm_hillFlow_sub_le_neg (hω₁ : Continuous ω₁) (hω₂ : Continuous ω₂) (hM1 : 1 ≤ M)
-    (hM₁ : ∀ s, ω₁ s ^ 2 ≤ M) (hM₂ : ∀ s, ω₂ s ^ 2 ≤ M)
-    (hδ : ∀ s, |ω₁ s ^ 2 - ω₂ s ^ 2| ≤ δ) (hδ0 : 0 ≤ δ) (y₀ : ℝ × ℝ)
+    (hM₁ : ∀ s, ω₁ s ^ (2 : ℕ) ≤ M) (hM₂ : ∀ s, ω₂ s ^ (2 : ℕ) ≤ M)
+    (hδ : ∀ s, |ω₁ s ^ (2 : ℕ) - ω₂ s ^ (2 : ℕ)| ≤ δ) (hδ0 : 0 ≤ δ) (y₀ : ℝ × ℝ)
     {t : ℝ} (ht : t ∈ Icc (-b) 0) :
     ‖hillFlow ω₁ y₀ t - hillFlow ω₂ y₀ t‖ ≤
       gronwallBound 0 M (δ * (‖y₀‖ * Real.exp (M * b))) (-t) := by
@@ -100,8 +100,8 @@ theorem norm_hillFlow_sub_le_neg (hω₁ : Continuous ω₁) (hω₂ : Continuou
 
 /-- **The comparison of two flows, in both directions.** -/
 theorem norm_hillFlow_sub_le_abs (hω₁ : Continuous ω₁) (hω₂ : Continuous ω₂) (hM1 : 1 ≤ M)
-    (hM₁ : ∀ s, ω₁ s ^ 2 ≤ M) (hM₂ : ∀ s, ω₂ s ^ 2 ≤ M)
-    (hδ : ∀ s, |ω₁ s ^ 2 - ω₂ s ^ 2| ≤ δ) (hδ0 : 0 ≤ δ) (y₀ : ℝ × ℝ) {t : ℝ} (hb : |t| ≤ b) :
+    (hM₁ : ∀ s, ω₁ s ^ (2 : ℕ) ≤ M) (hM₂ : ∀ s, ω₂ s ^ (2 : ℕ) ≤ M)
+    (hδ : ∀ s, |ω₁ s ^ (2 : ℕ) - ω₂ s ^ (2 : ℕ)| ≤ δ) (hδ0 : 0 ≤ δ) (y₀ : ℝ × ℝ) {t : ℝ} (hb : |t| ≤ b) :
     ‖hillFlow ω₁ y₀ t - hillFlow ω₂ y₀ t‖ ≤
       gronwallBound 0 M (δ * (‖y₀‖ * Real.exp (M * b))) |t| := by
   rcases le_or_gt 0 t with htpos | htneg
@@ -124,16 +124,16 @@ variable {c : ℝ → ℝ} {m C : ℝ}
 
 /-- **The massive fibre is continuous in the spatial frequency at every time.** -/
 theorem continuousAt_hillFlow_massive_all (hm : 0 < m) (hc : Continuous c)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (y₀ : ℝ × ℝ) (t : ℝ) (s₀ : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (y₀ : ℝ × ℝ) (t : ℝ) (s₀ : ℝ) :
     ContinuousAt (fun s => hillFlow (massiveFreq m c s) y₀ t) s₀ := by
   set S : ℝ := |s₀| + 1 with hSdef
-  have hs₀ : s₀ ^ 2 ≤ S ^ 2 := by
+  have hs₀ : s₀ ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
     have h1 : |s₀| ≤ S := by simp [hSdef]
     nlinarith [sq_abs s₀, abs_nonneg s₀]
-  set M : ℝ := max 1 (m ^ 2 + C ^ 2 * S ^ 2) with hM
+  set M : ℝ := max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) with hM
   set b : ℝ := |t| with hb
   set B : ℝ := ‖y₀‖ * Real.exp (M * b) with hB
-  have hnear : ∀ᶠ s in nhds s₀, s ^ 2 ≤ S ^ 2 := by
+  have hnear : ∀ᶠ s in nhds s₀, s ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
     refine Filter.eventually_of_mem (ball_mem_nhds s₀ one_pos) fun s hs => ?_
     have hdist : |s - s₀| < 1 := by simpa [Real.dist_eq] using hs
     have hpair := abs_lt.mp hdist
@@ -148,15 +148,15 @@ theorem continuousAt_hillFlow_massive_all (hm : 0 < m) (hc : Continuous c)
     nlinarith [sq_abs s, abs_nonneg s]
   have hle : ∀ᶠ s in nhds s₀,
       dist (hillFlow (massiveFreq m c s) y₀ t) (hillFlow (massiveFreq m c s₀) y₀ t) ≤
-        gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) |t| := by
+        gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) |t| := by
     filter_upwards [hnear] with s hs
     rw [dist_eq_norm]
-    have hδ : ∀ r, |massiveFreq m c s r ^ 2 - massiveFreq m c s₀ r ^ 2|
-        ≤ C ^ 2 * |s ^ 2 - s₀ ^ 2| := by
+    have hδ : ∀ r, |massiveFreq m c s r ^ (2 : ℕ) - massiveFreq m c s₀ r ^ (2 : ℕ)|
+        ≤ C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| := by
       intro r
       rw [massiveFreq_sq hm, massiveFreq_sq hm]
-      have hfac : m ^ 2 + (c r * s) ^ 2 - (m ^ 2 + (c r * s₀) ^ 2)
-          = c r ^ 2 * (s ^ 2 - s₀ ^ 2) := by ring
+      have hfac : m ^ (2 : ℕ) + (c r * s) ^ (2 : ℕ) - (m ^ (2 : ℕ) + (c r * s₀) ^ (2 : ℕ))
+          = c r ^ (2 : ℕ) * (s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)) := by ring
       rw [hfac, abs_mul, abs_of_nonneg (sq_nonneg (c r))]
       exact mul_le_mul_of_nonneg_right (hC r) (abs_nonneg _)
     exact norm_hillFlow_sub_le_abs (continuous_massiveFreq hc m s)
@@ -165,26 +165,26 @@ theorem continuousAt_hillFlow_massive_all (hm : 0 < m) (hc : Continuous c)
       (fun r => (massiveFreq_sq_le hm hC hs₀ r).trans (le_max_right _ _)) hδ
       (mul_nonneg (sq_nonneg _) (abs_nonneg _)) y₀ le_rfl
   have hzero : Filter.Tendsto
-      (fun s => gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) |t|) (nhds s₀) (nhds 0) := by
+      (fun s => gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) |t|) (nhds s₀) (nhds 0) := by
     have hcontε : Continuous fun ε : ℝ => gronwallBound 0 M ε |t| :=
       gronwallBound_continuous_ε 0 M |t|
-    have hmap : Filter.Tendsto (fun s : ℝ => C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) (nhds s₀) (nhds 0) := by
-      have hcont : Continuous fun s : ℝ => C ^ 2 * |s ^ 2 - s₀ ^ 2| * B := by fun_prop
+    have hmap : Filter.Tendsto (fun s : ℝ => C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) (nhds s₀) (nhds 0) := by
+      have hcont : Continuous fun s : ℝ => C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B := by fun_prop
       simpa using hcont.tendsto s₀
     have hcomp := (hcontε.tendsto 0).comp hmap
     have hval : ((fun ε : ℝ => gronwallBound 0 M ε |t|) ∘
-        fun s : ℝ => C ^ 2 * |s ^ 2 - s₀ ^ 2| * B)
-        = fun s : ℝ => gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) |t| := rfl
+        fun s : ℝ => C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B)
+        = fun s : ℝ => gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) |t| := rfl
     rw [hval] at hcomp
     simpa [gronwallBound_ε0_δ0] using hcomp
   refine Metric.tendsto_nhds.mpr fun ε hε => ?_
   have hzero' := Metric.tendsto_nhds.mp hzero ε hε
   filter_upwards [hle, hzero'] with s hs hz
-  have habs : abs (gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) |t|) < ε := by
+  have habs : abs (gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) |t|) < ε := by
     simpa [Real.dist_eq] using hz
   calc dist (hillFlow (massiveFreq m c s) y₀ t) (hillFlow (massiveFreq m c s₀) y₀ t)
-      ≤ gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) |t| := hs
-    _ ≤ abs (gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) |t|) := le_abs_self _
+      ≤ gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) |t| := hs
+    _ ≤ abs (gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) |t|) := le_abs_self _
     _ < ε := habs
 
 end MassiveContinuity

@@ -16,7 +16,7 @@ def egbFixedChargeAGibbsOddCoefficient (w φ : ℝ) : ℝ :=
   egbFixedChargeACriticalRadius w φ * egbFixedChargeAMeanGibbsForceCoefficient φ
 
 def egbFixedChargeAGibbsOddLimitKernel (w φ t : ℝ) : ℝ :=
-  egbFixedChargeAGibbsOddCoefficient w φ * (t ^ 2 - 1) * (5 * t ^ 2 - 1)
+  egbFixedChargeAGibbsOddCoefficient w φ * (t ^ (2 : ℕ) - 1) * (5 * t ^ (2 : ℕ) - 1)
 
 theorem egbFixedChargeAGibbsOddCoefficient_neg (w φ : ℝ) : egbFixedChargeAGibbsOddCoefficient w φ < 0 :=
   mul_neg_of_pos_of_neg (egbFixedChargeACriticalRadius_pos w φ) (egbFixedChargeAMeanGibbsForceCoefficient_neg φ)
@@ -41,17 +41,17 @@ theorem egbFixedChargeAGibbsOddKernel_critical_limit (w φ t : ℝ) :
   have h3 := (tendsto_const_nhds (x := egbFixedChargeAGibbsCriticalPrefactor w φ *
     (4 * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ)) * t)).mul (egbFixedChargeAGibbsReciprocal_linear_limit t)
   have h4 := ((egbFixedChargeAGibbsPrefactor_critical_limit w φ).mul he).mul
-    (((egbFixedChargeAMeanPressureNumerator_critical_limit φ).mul (tendsto_const_nhds (x := t ^ 2))).add
+    (((egbFixedChargeAMeanPressureNumerator_critical_limit φ).mul (tendsto_const_nhds (x := t ^ (2 : ℕ)))).add
       (egbFixedChargeAGibbsResidual_critical_limit φ))
-  have h := (tendsto_const_nhds (x := t ^ 2 - 1)).mul (((h1.add h2).add h3).add h4)
+  have h := (tendsto_const_nhds (x := t ^ (2 : ℕ) - 1)).mul (((h1.add h2).add h3).add h4)
   simp only [mul_zero, zero_mul, zero_add, mul_one] at h
-  have hlimit : (t ^ 2 - 1) * (egbFixedChargeAGibbsCriticalPrefactor w φ *
+  have hlimit : (t ^ (2 : ℕ) - 1) * (egbFixedChargeAGibbsCriticalPrefactor w φ *
       (4 * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ)) * t * (-2 * t) +
-      egbFixedChargeAGibbsCriticalPrefactor w φ * ((3 - 2 * egbFixedChargeACriticalCouplingWeight φ) * t ^ 2 +
+      egbFixedChargeAGibbsCriticalPrefactor w φ * ((3 - 2 * egbFixedChargeACriticalCouplingWeight φ) * t ^ (2 : ℕ) +
         (1 - 14 * egbFixedChargeACriticalCouplingWeight φ / 5))) = egbFixedChargeAGibbsOddLimitKernel w φ t := by
     calc
       _ = (egbFixedChargeAGibbsCriticalPrefactor w φ * (1 - 14 * egbFixedChargeACriticalCouplingWeight φ / 5)) *
-        (t ^ 2 - 1) * (1 - 5 * t ^ 2) := by ring
+        (t ^ (2 : ℕ) - 1) * (1 - 5 * t ^ (2 : ℕ)) := by ring
       _ = _ := by
         rw [egbFixedChargeAGibbsCriticalPrefactor_residual_product]
         unfold egbFixedChargeAGibbsOddLimitKernel egbFixedChargeAGibbsOddCoefficient

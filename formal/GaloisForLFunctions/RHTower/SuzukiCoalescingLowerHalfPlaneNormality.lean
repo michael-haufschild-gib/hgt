@@ -129,9 +129,9 @@ theorem exists_suzukiCoalescingResolvent_montel_subseq_lower
     (hκderiv : ∀ n,
       2 * (c n : ℂ) * I * deriv (θ n) ((c n : ℂ) * I) = (κ n : ℂ))
     (hκ0 : ∀ n, 0 ≤ κ n) (hκ1 : ∀ n, κ n < 1)
-    (hκgap : ∀ n, 1 - κ n ≤ C * (c n) ^ 2)
+    (hκgap : ∀ n, 1 - κ n ≤ C * (c n) ^ (2 : ℕ))
     (hsmall : ∀ n,
-      c n * ((2 + C * (‖q‖ + R + 1) ^ 2) / (-q.im - R)) ≤ 1)
+      c n * ((2 + C * (‖q‖ + R + 1) ^ (2 : ℕ)) / (-q.im - R)) ≤ 1)
     (hθrefl : ∀ n, ∀ z : ℂ, z.im < 0 →
       θ n z * (starRingEnd ℂ) (θ n ((starRingEnd ℂ) z)) = 1)
     (hθne : ∀ n, ∀ z : ℂ, z.im < 0 → 1 + θ n ((starRingEnd ℂ) z) ≠ 0) :

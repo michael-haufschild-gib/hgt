@@ -128,12 +128,12 @@ theorem character_area_stokes (r : ZMod (N+1)) {Y : ℝ} (hY : 1 ≤ Y) :
 
 /-- Original character hyperbolic mass density in the physical planar coordinates. -/
 def massAt (r : ZMod (N+1)) (p : ℝ × ℝ) : ℝ :=
-  characterMass N f (upperBlock N) r (point p.1 p.2)/p.2^2
+  characterMass N f (upperBlock N) r (point p.1 p.2)/p.2^(2 : ℕ)
 
 /-- Original character physical gradient minus its quarter hyperbolic mass density. -/
 def quarterAt (r : ZMod (N+1)) (p : ℝ × ℝ) : ℝ :=
   characterGradient N f (upperBlock N) r (ofComplex (point p.1 p.2))-
-    characterMass N f (upperBlock N) r (point p.1 p.2)/(4*p.2^2)
+    characterMass N f (upperBlock N) r (point p.1 p.2)/(4*p.2^(2 : ℕ))
 
 def coreMass (r : ZMod (N+1)) (Y : ℝ) : ℝ := ∫ p in domain Y, massAt N f r p
 

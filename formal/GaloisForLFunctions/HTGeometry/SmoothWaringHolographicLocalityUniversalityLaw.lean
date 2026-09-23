@@ -63,7 +63,7 @@ theorem exteriorPower_basis_quantumLawPairPowerset
 
 theorem quantumPairWedge_linearIndependent :
     LinearIndependent K
-      (quantumPairWedge (K := K) : QuantumLawPair ι → ⋀[K]^2 (ι → K)) := by
+      (quantumPairWedge (K := K) : QuantumLawPair ι → ⋀[K]^(2 : ℕ) (ι → K)) := by
   have hbasis :=
     ((Pi.basisFun K ι).exteriorPower 2).linearIndependent.comp
       (quantumLawPairPowerset (ι := ι))
@@ -71,7 +71,7 @@ theorem quantumPairWedge_linearIndependent :
   have heq :
       ((fun s => ((Pi.basisFun K ι).exteriorPower 2) s) ∘
           quantumLawPairPowerset) =
-        (quantumPairWedge (K := K) : QuantumLawPair ι → ⋀[K]^2 (ι → K)) := by
+        (quantumPairWedge (K := K) : QuantumLawPair ι → ⋀[K]^(2 : ℕ) (ι → K)) := by
     funext p
     exact exteriorPower_basis_quantumLawPairPowerset p
   rw [heq] at hbasis

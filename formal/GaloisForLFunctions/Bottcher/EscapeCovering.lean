@@ -70,7 +70,7 @@ This is the concrete generator of the deck group `ℤ/2` — the explicit handle
 2-sheeted structure (no abstract deck-group theory needed). -/
 
 /-- `f(z)=z²+c` is even: `f(-z)=f(z)`. -/
-theorem quadratic_neg (c z : ℂ) : quadratic c (-z) = quadratic c z := by
+theorem quadratic_neg_escapeCovering (c z : ℂ) : quadratic c (-z) = quadratic c z := by
   simp only [quadratic]; ring
 
 /-- `-z` escapes at level `n` exactly when `z` does. -/
@@ -79,7 +79,7 @@ theorem neg_mem_escapeLevel (c : ℂ) (n : ℕ) (z : ℂ) :
   cases n with
   | zero => simp [escapeLevel, escapeOpen]
   | succ m =>
-    simp only [escapeLevel, Set.mem_setOf_eq, Function.iterate_succ_apply, quadratic_neg]
+    simp only [escapeLevel, Set.mem_setOf_eq, Function.iterate_succ_apply, quadratic_neg_escapeCovering]
 
 /-- **The deck transformation** `z ↦ -z` of `escapeLevel c n`, an involutive homeomorphism. -/
 def negHomeoEscape (c : ℂ) (n : ℕ) : escapeLevel c n ≃ₜ escapeLevel c n where
@@ -94,6 +94,6 @@ def negHomeoEscape (c : ℂ) (n : ℕ) : escapeLevel c n ≃ₜ escapeLevel c n 
 theorem quadratic_comp_neg (c : ℂ) (n : ℕ) (z : escapeLevel c (n + 1)) :
     quadratic c ((negHomeoEscape c (n + 1) z : ℂ)) = quadratic c (z : ℂ) := by
   show quadratic c (-(z : ℂ)) = quadratic c (z : ℂ)
-  exact quadratic_neg c z
+  exact quadratic_neg_escapeCovering c z
 
 end Bottcher

@@ -31,7 +31,7 @@ noncomputable section
 
 /-- The pinned prefix of the coordinate vector is the elementary quadratic primitive. -/
 theorem pinnedPrefix_pinnedCoordinate {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
-    pinnedPrefix pinnedCoordinate t = ((t ^ 2 / 2 : ℝ) : ℂ) := by
+    pinnedPrefix pinnedCoordinate t = ((t ^ (2 : ℕ) / 2 : ℝ) : ℂ) := by
   rw [pinnedPrefix_eq_intervalIntegral pinnedCoordinate ht]
   rw [intervalIntegral.integral_of_le ht.1]
   have hsubset : Ioc (0 : ℝ) t ⊆ Icc (0 : ℝ) 1 := by
@@ -53,14 +53,14 @@ theorem pinnedPrefix_pinnedCoordinate {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
 /-- The pinned Volterra primitive of the coordinate vector is `t(t-1)/2`. -/
 theorem pinnedVolterraFun_pinnedCoordinate {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
     pinnedVolterraFun pinnedCoordinate t =
-      (((t ^ 2 - t) / 2 : ℝ) : ℂ) := by
+      (((t ^ (2 : ℕ) - t) / 2 : ℝ) : ℂ) := by
   rw [pinnedVolterraFun, pinnedPrefix_pinnedCoordinate ht, pinnedMean_pinnedCoordinate]
   push_cast
   ring
 
 /-- Positive real density detected by the coordinate-vector expectation. -/
 def thetaSkewAdjointCoordinateDensity (t : ℝ) : ℝ :=
-  quantileSpeed thetaSource t * (t ^ 2 * (1 - t) / 2)
+  quantileSpeed thetaSource t * (t ^ (2 : ℕ) * (1 - t) / 2)
 
 theorem integrable_thetaSkewAdjointCoordinateDensity :
     Integrable thetaSkewAdjointCoordinateDensity unitIntervalMeasure := by

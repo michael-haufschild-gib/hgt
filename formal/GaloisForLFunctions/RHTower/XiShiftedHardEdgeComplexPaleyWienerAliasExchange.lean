@@ -38,24 +38,24 @@ def routeUXiComplexHardEdgeCentral
 
 /-- Mass-renormalized shifted reciprocal weight occurring in the hard-edge Xi trace. -/
 def routeUXiHardEdgeResolventWeight (r : ℝ) (q : XiZeroCopy) : ℂ :=
-  (((routeUHardEdgeMass r) ^ 2 : ℝ) : ℂ) *
-    xiShiftedReciprocalSquare ((routeUHardEdgeMass r) ^ 2) q
+  (((routeUHardEdgeMass r) ^ (2 : ℕ) : ℝ) : ℂ) *
+    xiShiftedReciprocalSquare ((routeUHardEdgeMass r) ^ (2 : ℕ)) q
 
 /-- Weighted error made by replacing the squared lattice sample by its central entire value. -/
 def routeUXiComplexHardEdgeAliasSquareErrorTerm
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) (q : XiZeroCopy) : ℂ :=
   routeUXiHardEdgeResolventWeight r q *
-    (routeUXiComplexHardEdgeSample n f r q ^ 2 -
-      routeUXiComplexHardEdgeCentral n f r q ^ 2)
+    (routeUXiComplexHardEdgeSample n f r q ^ (2 : ℕ) -
+      routeUXiComplexHardEdgeCentral n f r q ^ (2 : ℕ))
 
 /-- Divisor-independent coefficient in the reciprocal-square majorant for alias exchange. -/
 def routeUXiComplexHardEdgeAliasSquareMajorantCoefficient
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) : ℝ :=
-  (routeUHardEdgeMass r) ^ 2 *
+  (routeUHardEdgeMass r) ^ (2 : ℕ) *
       (routeUComplexHardEdgeUniformAliasTailConstant n f 1 *
         (routeUComplexHardEdgeUniformAliasTailConstant n f 1 +
           2 * routeUComplexTiltUniformDecay n f 0)) /
-    routeUHardEdgeAliasPeriod r ^ 4
+    routeUHardEdgeAliasPeriod r ^ (4 : ℕ)
 
 theorem routeUXiComplexHardEdgeAliasSquareMajorantCoefficient_nonneg
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) :
@@ -99,12 +99,12 @@ theorem one_le_routeUHardEdgeAliasPeriod (r : ℝ) :
 
 theorem norm_routeUXiComplexHardEdgeAliasSquare_sub_le
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) (q : XiZeroCopy) :
-    ‖routeUXiComplexHardEdgeSample n f r q ^ 2 -
-        routeUXiComplexHardEdgeCentral n f r q ^ 2‖ ≤
+    ‖routeUXiComplexHardEdgeSample n f r q ^ (2 : ℕ) -
+        routeUXiComplexHardEdgeCentral n f r q ^ (2 : ℕ)‖ ≤
       routeUComplexHardEdgeUniformAliasTailConstant n f 1 *
           (routeUComplexHardEdgeUniformAliasTailConstant n f 1 +
             2 * routeUComplexTiltUniformDecay n f 0) /
-        routeUHardEdgeAliasPeriod r ^ 4 := by
+        routeUHardEdgeAliasPeriod r ^ (4 : ℕ) := by
   let T : ℂ := routeUComplexHardEdgeAliasTail n f r
     (routeUComplexHardEdgePhase r (xiSpectralPoint q))
   let C : ℂ := routeUXiComplexHardEdgeCentral n f r q
@@ -114,7 +114,7 @@ theorem norm_routeUXiComplexHardEdgeAliasSquare_sub_le
   have hD : 0 ≤ D := routeUComplexHardEdgeUniformAliasTailConstant_nonneg n f 1
   have hB : 0 ≤ B := routeUComplexTiltUniformDecay_nonneg n f 0
   have hL : 1 ≤ L := one_le_routeUHardEdgeAliasPeriod r
-  have hT : ‖T‖ ≤ D / L ^ 4 := by
+  have hT : ‖T‖ ≤ D / L ^ (4 : ℕ) := by
     simpa only [T, D, L,
       GaloisForLFunctions.RHTower.ccmRationalArchimedeanDecayExponent] using
       norm_routeUComplexHardEdgeAliasTail_xiSpectralPoint_le n f r q 1
@@ -130,17 +130,17 @@ theorem norm_routeUXiComplexHardEdgeAliasSquare_sub_le
       _ ≤ D + B + B := by gcongr
       _ = D + 2 * B := by ring
   rw [routeUXiComplexHardEdgeSample_eq_central_add_aliasTail]
-  change ‖(C + T) ^ 2 - C ^ 2‖ ≤ D * (D + 2 * B) / L ^ 4
-  rw [show (C + T) ^ 2 - C ^ 2 = T * (T + C + C) by ring, norm_mul]
+  change ‖(C + T) ^ (2 : ℕ) - C ^ (2 : ℕ)‖ ≤ D * (D + 2 * B) / L ^ (4 : ℕ)
+  rw [show (C + T) ^ (2 : ℕ) - C ^ (2 : ℕ) = T * (T + C + C) by ring, norm_mul]
   calc
-    ‖T‖ * ‖T + C + C‖ ≤ (D / L ^ 4) * (D + 2 * B) := by
+    ‖T‖ * ‖T + C + C‖ ≤ (D / L ^ (4 : ℕ)) * (D + 2 * B) := by
       exact mul_le_mul hT hsum (norm_nonneg _) (by positivity)
-    _ = D * (D + 2 * B) / L ^ 4 := by ring
+    _ = D * (D + 2 * B) / L ^ (4 : ℕ) := by ring
 
 theorem norm_routeUXiHardEdgeResolventWeight_le
     (r : ℝ) (q : XiZeroCopy) :
     ‖routeUXiHardEdgeResolventWeight r q‖ ≤
-      (routeUHardEdgeMass r) ^ 2 * ‖xiZeroCopyReciprocalSquare q‖ := by
+      (routeUHardEdgeMass r) ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖ := by
   rw [routeUXiHardEdgeResolventWeight, norm_mul, Complex.norm_real,
     Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
   gcongr
@@ -156,13 +156,13 @@ theorem norm_routeUXiComplexHardEdgeAliasSquareErrorTerm_le
   rw [routeUXiComplexHardEdgeAliasSquareErrorTerm, norm_mul]
   calc
     ‖routeUXiHardEdgeResolventWeight r q‖ *
-        ‖routeUXiComplexHardEdgeSample n f r q ^ 2 -
-          routeUXiComplexHardEdgeCentral n f r q ^ 2‖ ≤
-      ((routeUHardEdgeMass r) ^ 2 * ‖xiZeroCopyReciprocalSquare q‖) *
+        ‖routeUXiComplexHardEdgeSample n f r q ^ (2 : ℕ) -
+          routeUXiComplexHardEdgeCentral n f r q ^ (2 : ℕ)‖ ≤
+      ((routeUHardEdgeMass r) ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖) *
         (routeUComplexHardEdgeUniformAliasTailConstant n f 1 *
             (routeUComplexHardEdgeUniformAliasTailConstant n f 1 +
               2 * routeUComplexTiltUniformDecay n f 0) /
-          routeUHardEdgeAliasPeriod r ^ 4) := by
+          routeUHardEdgeAliasPeriod r ^ (4 : ℕ)) := by
       exact mul_le_mul
         (norm_routeUXiHardEdgeResolventWeight_le r q)
         (norm_routeUXiComplexHardEdgeAliasSquare_sub_le n f r q)
@@ -225,15 +225,15 @@ theorem tendsto_routeUXiComplexHardEdgeAliasSquareMajorantCoefficient_natCast_ze
     simpa only [add_comm] using
       Filter.tendsto_atTop_add_const_right Filter.atTop (1 : ℝ)
         tendsto_natCast_atTop_atTop
-  have hmassSq : Filter.Tendsto (fun k : ℕ => (1 + (k : ℝ)) ^ 2)
+  have hmassSq : Filter.Tendsto (fun k : ℕ => (1 + (k : ℝ)) ^ (2 : ℕ))
       Filter.atTop Filter.atTop := by
     simpa only [pow_two] using hmass.atTop_mul_atTop₀ hmass
   have hden : Filter.Tendsto
-      (fun k : ℕ => Real.pi ^ 4 * (1 + (k : ℝ)) ^ 2)
+      (fun k : ℕ => Real.pi ^ (4 : ℕ) * (1 + (k : ℝ)) ^ (2 : ℕ))
       Filter.atTop Filter.atTop :=
     Filter.Tendsto.const_mul_atTop (pow_pos Real.pi_pos 4) hmassSq
   have hlim : Filter.Tendsto
-      (fun k : ℕ => K / (Real.pi ^ 4 * (1 + (k : ℝ)) ^ 2))
+      (fun k : ℕ => K / (Real.pi ^ (4 : ℕ) * (1 + (k : ℝ)) ^ (2 : ℕ)))
       Filter.atTop (nhds 0) :=
     tendsto_const_nhds.div_atTop hden
   apply hlim.congr'
@@ -241,9 +241,9 @@ theorem tendsto_routeUXiComplexHardEdgeAliasSquareMajorantCoefficient_natCast_ze
   rw [routeUXiComplexHardEdgeAliasSquareMajorantCoefficient,
     routeUHardEdgeAliasPeriod, routeUHardEdgeMass]
   simp only [abs_of_nonneg (show 0 ≤ (k : ℝ) by positivity)]
-  change K / (Real.pi ^ 4 * (1 + (k : ℝ)) ^ 2) =
-    (1 + (k : ℝ)) ^ 2 * K /
-      (Real.pi * (1 + (k : ℝ))) ^ 4
+  change K / (Real.pi ^ (4 : ℕ) * (1 + (k : ℝ)) ^ (2 : ℕ)) =
+    (1 + (k : ℝ)) ^ (2 : ℕ) * K /
+      (Real.pi * (1 + (k : ℝ))) ^ (4 : ℕ)
   field_simp [Real.pi_ne_zero, show (1 + (k : ℝ)) ≠ 0 by positivity]
 
 /-- **Premise-free infinite-divisor alias exchange.**  The full Xi-weighted squared lattice

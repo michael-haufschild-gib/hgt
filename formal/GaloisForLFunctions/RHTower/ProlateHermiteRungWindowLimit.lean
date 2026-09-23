@@ -100,7 +100,7 @@ initial phase vector matches that of the `n`-th Hermite function stays within th
 Grönwall envelope of it on `[0, K]`. -/
 theorem prolateProfile_window_hermiteRung_dist_le
     {c mu K B : ℝ} {n : ℕ} {u u' u'' : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hu : ∀ x, HasDerivAt u (u' x) x) (hu' : ∀ x, HasDerivAt u' (u'' x) x)
     (hequ : ∀ x ∈ Icc (0 : ℝ) K,
       u'' x = rescaledProlateP c mu x * u x + rescaledProlateQ c x * u' x)
@@ -119,7 +119,7 @@ initial phase vector converges to `φ_n` pointwise on `[0, K]`. -/
 theorem tendsto_prolateProfile_hermiteRung
     {ι : Type*} {L : Filter ι} {mu c : ι → ℝ} {K B : ℝ} {n : ℕ}
     {u u' u'' : ι → ℝ → ℝ}
-    (hK : 0 < K) (hcK : ∀ i, 2 * K ^ 2 ≤ c i)
+    (hK : 0 < K) (hcK : ∀ i, 2 * K ^ (2 : ℕ) ≤ c i)
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (hequ : ∀ i, ∀ x ∈ Icc (0 : ℝ) K,
       u'' i x = rescaledProlateP (c i) (mu i) x * u i x + rescaledProlateQ (c i) x * u' i x)

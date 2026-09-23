@@ -51,7 +51,7 @@ theorem inner_kgPropagator (t : ℝ) (v w : KGEnergy E) :
 /-- The squared norm of a differentiable curve in the energy space is differentiable. -/
 theorem hasDerivAt_norm_sq_energy {x : ℝ → KGEnergy E} {x' : KGEnergy E} {t : ℝ}
     (h : HasDerivAt x x' t) :
-    HasDerivAt (fun s => ‖x s‖ ^ 2) (RCLike.re (inner ℂ (x t) x' + inner ℂ x' (x t))) t := by
+    HasDerivAt (fun s => ‖x s‖ ^ (2 : ℕ)) (RCLike.re (inner ℂ (x t) x' + inner ℂ x' (x t))) t := by
   have hi := HasDerivAt.inner ℂ h h
   have hre := (RCLike.reCLM (K := ℂ)).hasFDerivAt.comp_hasDerivAt t hi
   refine hre.congr_of_eventuallyEq ?_
@@ -133,7 +133,7 @@ variable {W : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure
 For a self-adjoint perturbation this is exactly conserved. -/
 def kgTotalEnergy (W : Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E))
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) : ℝ :=
-  ‖kgFieldState W g h t‖ ^ 2
+  ‖kgFieldState W g h t‖ ^ (2 : ℕ)
     - RCLike.re (inner ℂ (W (kgFieldMild W (kgFreqInvOp g) h t))
         (kgFieldMild W (kgFreqInvOp g) h t))
 
@@ -151,10 +151,10 @@ theorem hasDerivAt_kgTotalEnergy (hb0 : 0 ≤ b) (hW : ‖W‖ ≤ b)
   -- the derivative of the squared norm of the state
   have hZ := hasDerivAt_kgReducedState hb0 hW g h t
   have hZsq := hasDerivAt_norm_sq_energy hZ
-  have hnormeq : ∀ s : ℝ, ‖kgReducedState W g h s‖ ^ 2 = ‖kgFieldState W g h s‖ ^ 2 := by
+  have hnormeq : ∀ s : ℝ, ‖kgReducedState W g h s‖ ^ (2 : ℕ) = ‖kgFieldState W g h s‖ ^ (2 : ℕ) := by
     intro s
     rw [norm_kgReducedState]
-  have hstateSq : HasDerivAt (fun s => ‖kgFieldState W g h s‖ ^ 2)
+  have hstateSq : HasDerivAt (fun s => ‖kgFieldState W g h s‖ ^ (2 : ℕ))
       (RCLike.re (inner ℂ (kgReducedState W g h t)
           (kgPropagator (-t) (kgSourceOp W (kgFieldState W g h t)))
         + inner ℂ (kgPropagator (-t) (kgSourceOp W (kgFieldState W g h t)))
@@ -217,17 +217,17 @@ theorem kgTotalEnergy_const (hb0 : 0 ≤ b) (hW : ‖W‖ ≤ b)
 theorem kgFieldEnergy_conserved (hb0 : 0 ≤ b) (hW : ‖W‖ ≤ b)
     (hsa : ∀ x y : Lp ℂ 2 (volume : Measure E), (inner ℂ (W x) y : ℂ) = inner ℂ x (W y))
     (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    ‖kgFieldGrad W g h t‖ ^ 2 + ‖kgFieldVel W g h t‖ ^ 2
+    ‖kgFieldGrad W g h t‖ ^ (2 : ℕ) + ‖kgFieldVel W g h t‖ ^ (2 : ℕ)
         - RCLike.re (inner ℂ (W (kgFieldMild W (kgFreqInvOp g) h t))
             (kgFieldMild W (kgFreqInvOp g) h t))
-      = ‖g‖ ^ 2 + ‖h‖ ^ 2
+      = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)
         - RCLike.re (inner ℂ (W (kgFreqInvOp g)) (kgFreqInvOp g)) := by
   have hconst := kgTotalEnergy_const hb0 hW hsa g h t 0
-  have hsq : ∀ r : ℝ, ‖kgFieldState W g h r‖ ^ 2
-      = ‖kgFieldGrad W g h r‖ ^ 2 + ‖kgFieldVel W g h r‖ ^ 2 := by
+  have hsq : ∀ r : ℝ, ‖kgFieldState W g h r‖ ^ (2 : ℕ)
+      = ‖kgFieldGrad W g h r‖ ^ (2 : ℕ) + ‖kgFieldVel W g h r‖ ^ (2 : ℕ) := by
     intro r
     rw [← kgEnergy_eq_norm_sq, kgEnergy, kgFieldState, kgPair_fst, kgPair_snd]
-  have hzeroSq : ‖kgFieldState W g h 0‖ ^ 2 = ‖g‖ ^ 2 + ‖h‖ ^ 2 := by
+  have hzeroSq : ‖kgFieldState W g h 0‖ ^ (2 : ℕ) = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ) := by
     rw [kgFieldState_zero, ← kgEnergy_eq_norm_sq, kgEnergy, kgPair_fst, kgPair_snd]
   have hzeroU : kgFieldMild W (kgFreqInvOp g) h 0 = kgFreqInvOp g :=
     kgFieldMild_zero hb0 hW _ h

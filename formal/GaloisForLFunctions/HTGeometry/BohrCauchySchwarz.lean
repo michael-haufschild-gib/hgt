@@ -74,7 +74,7 @@ theorem bohrMean_sub_smul_mul_conj (z : ℂ) :
 include hhc hha hkc hka in
 /-- **Cauchy–Schwarz for the Bohr mean.** -/
 theorem norm_bohrMean_mul_conj_sq_le :
-    ‖bohrMean (fun t => h t * conj (k t))‖ ^ 2
+    ‖bohrMean (fun t => h t * conj (k t))‖ ^ (2 : ℕ)
       ≤ (bohrMean (fun t => h t * conj (h t))).re * (bohrMean (fun t => k t * conj (k t))).re := by
   set A : ℝ := (bohrMean (fun t => h t * conj (h t))).re with hA
   set B : ℝ := (bohrMean (fun t => k t * conj (k t))).re with hB
@@ -94,7 +94,7 @@ theorem norm_bohrMean_mul_conj_sq_le :
     rw [hfun] at hcj
     rw [hcj, hC]
   -- the quadratic inequality
-  have hkey : ∀ s : ℝ, 0 ≤ A - 2 * s * ‖C‖ ^ 2 + s ^ 2 * ‖C‖ ^ 2 * B := by
+  have hkey : ∀ s : ℝ, 0 ≤ A - 2 * s * ‖C‖ ^ (2 : ℕ) + s ^ (2 : ℕ) * ‖C‖ ^ (2 : ℕ) * B := by
     intro s
     have hnonneg : 0 ≤ (bohrMean (fun t => (h t - ((s : ℂ) * C) * k t) *
         conj (h t - ((s : ℂ) * C) * k t))).re := by
@@ -102,21 +102,21 @@ theorem norm_bohrMean_mul_conj_sq_le :
       exact isBohrAlmostPeriodic_sub hhc hha (continuous_const.mul hkc)
         (isBohrAlmostPeriodic_const_mul _ hka)
     rw [bohrMean_sub_smul_mul_conj hhc hha hkc hka ((s : ℂ) * C), hCconj] at hnonneg
-    have hCC : C * conj C = ((‖C‖ ^ 2 : ℝ) : ℂ) := by
+    have hCC : C * conj C = ((‖C‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [Complex.mul_conj']
       push_cast
       ring
-    have hterm1 : conj ((s : ℂ) * C) * C = ((s * ‖C‖ ^ 2 : ℝ) : ℂ) := by
+    have hterm1 : conj ((s : ℂ) * C) * C = ((s * ‖C‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [map_mul, Complex.conj_ofReal]
       push_cast
       rw [mul_assoc, mul_comm (conj C) C, hCC]
       push_cast
       ring
-    have hterm2 : ((s : ℂ) * C) * conj C = ((s * ‖C‖ ^ 2 : ℝ) : ℂ) := by
+    have hterm2 : ((s : ℂ) * C) * conj C = ((s * ‖C‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [mul_assoc, hCC]
       push_cast
       ring
-    have hterm3 : ((s : ℂ) * C) * conj ((s : ℂ) * C) = ((s ^ 2 * ‖C‖ ^ 2 : ℝ) : ℂ) := by
+    have hterm3 : ((s : ℂ) * C) * conj ((s : ℂ) * C) = ((s ^ (2 : ℕ) * ‖C‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [map_mul, Complex.conj_ofReal]
       rw [show ((s : ℂ) * C) * ((s : ℂ) * conj C) = ((s : ℂ) * (s : ℂ)) * (C * conj C) by ring,
         hCC]
@@ -128,26 +128,26 @@ theorem norm_bohrMean_mul_conj_sq_le :
     rw [← hA, ← hB] at hnonneg
     linarith
   rcases eq_or_lt_of_le (norm_nonneg C) with hC0 | hCpos
-  · have : ‖C‖ ^ 2 = 0 := by rw [← hC0]; ring
+  · have : ‖C‖ ^ (2 : ℕ) = 0 := by rw [← hC0]; ring
     rw [this]
     exact mul_nonneg hAnonneg hBnonneg
-  · have hCsq : 0 < ‖C‖ ^ 2 := by positivity
+  · have hCsq : 0 < ‖C‖ ^ (2 : ℕ) := by positivity
     rcases eq_or_lt_of_le hBnonneg with hB0 | hBpos
     · exfalso
-      have := hkey ((A + 1) / ‖C‖ ^ 2)
+      have := hkey ((A + 1) / ‖C‖ ^ (2 : ℕ))
       rw [← hB0] at this
-      have hcancel : (A + 1) / ‖C‖ ^ 2 * ‖C‖ ^ 2 = A + 1 := by
+      have hcancel : (A + 1) / ‖C‖ ^ (2 : ℕ) * ‖C‖ ^ (2 : ℕ) = A + 1 := by
         field_simp
       nlinarith [hcancel]
     · have hs := hkey (1 / B)
       have hBne : B ≠ 0 := ne_of_gt hBpos
-      have hexp : A - 2 * (1 / B) * ‖C‖ ^ 2 + (1 / B) ^ 2 * ‖C‖ ^ 2 * B
-          = A - ‖C‖ ^ 2 / B := by
+      have hexp : A - 2 * (1 / B) * ‖C‖ ^ (2 : ℕ) + (1 / B) ^ (2 : ℕ) * ‖C‖ ^ (2 : ℕ) * B
+          = A - ‖C‖ ^ (2 : ℕ) / B := by
         field_simp
         ring
       rw [hexp] at hs
-      have hle : ‖C‖ ^ 2 / B ≤ A := by linarith
-      calc ‖C‖ ^ 2 = (‖C‖ ^ 2 / B) * B := by field_simp
+      have hle : ‖C‖ ^ (2 : ℕ) / B ≤ A := by linarith
+      calc ‖C‖ ^ (2 : ℕ) = (‖C‖ ^ (2 : ℕ) / B) * B := by field_simp
         _ ≤ A * B := mul_le_mul_of_nonneg_right hle hBnonneg
 
 end

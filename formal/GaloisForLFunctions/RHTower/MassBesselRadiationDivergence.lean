@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.MassBesselPoincareMass
 /-!
 # The finite radiation apertures are not uniformly bounded
 
-At the deep-time point `σ + i(log X)^4` the order-`m` radiation remainder of a dyadic prime aperture
+At the deep-time point `σ + i(log X)^(4 : ℕ)` the order-`m` radiation remainder of a dyadic prime aperture
 is the prime mass of the `m`-th Poincaré coefficient times the `m`-th power of the reciprocal
 spectral parameter, plus an error smaller by a further power of the logarithm.  Since that leading
 term grows like `√X (log X)^{-2m-2}`, no finite number of radiation subtractions bounds the aperture.

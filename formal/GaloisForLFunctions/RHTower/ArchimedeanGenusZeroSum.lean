@@ -62,7 +62,7 @@ theorem completedRiemannZeta₀_one :
   rw [Complex.Gammaℝ_one, div_one, div_one] at this
   linear_combination this
 
-theorem hasDerivAt_xi_one : HasDerivAt xi (completedRiemannZeta₀ 1 / 2) 1 := by
+theorem hasDerivAt_xi_one_archimedeanGenusZeroSum : HasDerivAt xi (completedRiemannZeta₀ 1 / 2) 1 := by
   have h1 : HasDerivAt (fun s : ℂ => s * (s - 1) / 2) ((1 * (1 - 1) + 1 * 1) / 2) 1 := by
     have := ((hasDerivAt_id (1 : ℂ)).mul ((hasDerivAt_id (1 : ℂ)).sub_const 1)).div_const 2
     simpa using this
@@ -95,7 +95,7 @@ theorem logDeriv_XiC_neg_I_half : logDeriv XiC (-I / 2) = I * completedRiemannZe
   have hxi : HasDerivAt xi (completedRiemannZeta₀ 1 / 2)
       ((fun z : ℂ => 1 / 2 + z * I) (-I / 2)) := by
     simp only [half_add_neg_I_half_mul_I]
-    exact hasDerivAt_xi_one
+    exact hasDerivAt_xi_one_archimedeanGenusZeroSum
   have hd : HasDerivAt XiC (completedRiemannZeta₀ 1 / 2 * I) (-I / 2) := hxi.comp (-I / 2) hg
   rw [logDeriv_apply, hd.deriv, XiC_neg_I_half]
   field_simp
@@ -121,21 +121,21 @@ theorem xiZeroCopy_eq_half_add (q : XiZeroCopy) :
   linear_combination ((q.1 : ℂ) - 1 / 2) * Complex.I_mul_I
 
 theorem pair_inv_add_inv {z t : ℂ} (h1 : z - t ≠ 0) (h2 : z + t ≠ 0) :
-    (z - t)⁻¹ + (z + t)⁻¹ = 2 * z / (z ^ 2 - t ^ 2) := by
-  have h3 : z ^ 2 - t ^ 2 ≠ 0 := by
+    (z - t)⁻¹ + (z + t)⁻¹ = 2 * z / (z ^ (2 : ℕ) - t ^ (2 : ℕ)) := by
+  have h3 : z ^ (2 : ℕ) - t ^ (2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero h2 h1
   field_simp
   ring
 
-theorem neg_I_half_sq : (-I / 2 : ℂ) ^ 2 = -1 / 4 := by
+theorem neg_I_half_sq : (-I / 2 : ℂ) ^ (2 : ℕ) = -1 / 4 := by
   rw [div_pow, neg_sq, Complex.I_sq]
   norm_num
 
 /-- Reflection symmetrisation of the Mittag-Leffler sum at `z = −I/2`. -/
 theorem tsum_logDerivTerm_eq :
     (∑' q : XiZeroCopy, ((-I / 2 - xiSpectralPoint q)⁻¹ + (xiSpectralPoint q)⁻¹)) =
-      I / 2 * ∑' q : XiZeroCopy, (1 : ℂ) / (1 / 4 + xiSpectralPoint q ^ 2) := by
+      I / 2 * ∑' q : XiZeroCopy, (1 : ℂ) / (1 / 4 + xiSpectralPoint q ^ (2 : ℕ)) := by
   obtain ⟨f, hf⟩ : ∃ f : XiZeroCopy → ℂ,
       f = fun q => (-I / 2 - xiSpectralPoint q)⁻¹ + (xiSpectralPoint q)⁻¹ := ⟨_, rfl⟩
   have hsumm : Summable f := by
@@ -148,7 +148,7 @@ theorem tsum_logDerivTerm_eq :
   have hσ : Summable (f ∘ xiZeroCopyReflectEquiv) :=
     (xiZeroCopyReflectEquiv.summable_iff).mpr hsumm
   have hpair : ∀ q, f q + (f ∘ xiZeroCopyReflectEquiv) q =
-      I * (1 / (1 / 4 + xiSpectralPoint q ^ 2)) := by
+      I * (1 / (1 / 4 + xiSpectralPoint q ^ (2 : ℕ))) := by
     intro q
     simp only [hf, Function.comp_def, xiSpectralPoint_reflect]
     have h1 : -I / 2 - xiSpectralPoint q ≠ 0 :=
@@ -158,8 +158,8 @@ theorem tsum_logDerivTerm_eq :
       apply I_half_ne_xiSpectralPoint q
       linear_combination -h
     have h3 : xiSpectralPoint q ≠ 0 := xiSpectralPoint_ne_zero q
-    have hden : (1 / 4 : ℂ) + xiSpectralPoint q ^ 2 ≠ 0 := by
-      have : (1 / 4 : ℂ) + xiSpectralPoint q ^ 2 = -((-I / 2) ^ 2 - xiSpectralPoint q ^ 2) := by
+    have hden : (1 / 4 : ℂ) + xiSpectralPoint q ^ (2 : ℕ) ≠ 0 := by
+      have : (1 / 4 : ℂ) + xiSpectralPoint q ^ (2 : ℕ) = -((-I / 2) ^ (2 : ℕ) - xiSpectralPoint q ^ (2 : ℕ)) := by
         rw [neg_I_half_sq]
         ring
       rw [this, neg_ne_zero, sub_ne_zero]
@@ -174,7 +174,7 @@ theorem tsum_logDerivTerm_eq :
         (-I / 2 - xiSpectralPoint q)⁻¹ + (-I / 2 + xiSpectralPoint q)⁻¹ := by
       rw [sub_neg_eq_add, inv_neg]
       ring
-    have hden' : (-1 / 4 : ℂ) - xiSpectralPoint q ^ 2 ≠ 0 := by
+    have hden' : (-1 / 4 : ℂ) - xiSpectralPoint q ^ (2 : ℕ) ≠ 0 := by
       intro h
       apply hden
       linear_combination -h
@@ -202,18 +202,18 @@ theorem tsum_inv_zero_mul_one_sub_zero :
       xiSpectralPoint_inv_sq_summable neg_I_half_ne_xiSpectralPoint
   rw [logDeriv_XiC_neg_I_half, tsum_logDerivTerm_eq] at hL
   have hterm : ∀ q : XiZeroCopy, (1 : ℂ) / ((q.1 : ℂ) * (1 - (q.1 : ℂ))) =
-      1 / (1 / 4 + xiSpectralPoint q ^ 2) := by
+      1 / (1 / 4 + xiSpectralPoint q ^ (2 : ℕ)) := by
     intro q
     rw [xiZeroCopy_eq_half_add q]
     congr 1
-    linear_combination (-(xiSpectralPoint q ^ 2)) * Complex.I_mul_I
+    linear_combination (-(xiSpectralPoint q ^ (2 : ℕ))) * Complex.I_mul_I
   simp_rw [hterm]
   have hI : (I : ℂ) ≠ 0 := Complex.I_ne_zero
-  have hS : (∑' q : XiZeroCopy, (1 : ℂ) / (1 / 4 + xiSpectralPoint q ^ 2)) =
+  have hS : (∑' q : XiZeroCopy, (1 : ℂ) / (1 / 4 + xiSpectralPoint q ^ (2 : ℕ))) =
       2 * completedRiemannZeta₀ 1 := by
     apply mul_left_cancel₀ hI
-    calc I * ∑' q : XiZeroCopy, (1 : ℂ) / (1 / 4 + xiSpectralPoint q ^ 2)
-        = 2 * (I / 2 * ∑' q : XiZeroCopy, (1 : ℂ) / (1 / 4 + xiSpectralPoint q ^ 2)) := by ring
+    calc I * ∑' q : XiZeroCopy, (1 : ℂ) / (1 / 4 + xiSpectralPoint q ^ (2 : ℕ))
+        = 2 * (I / 2 * ∑' q : XiZeroCopy, (1 : ℂ) / (1 / 4 + xiSpectralPoint q ^ (2 : ℕ))) := by ring
       _ = 2 * (I * completedRiemannZeta₀ 1) := by rw [hL]
       _ = I * (2 * completedRiemannZeta₀ 1) := by ring
   rw [hS, completedRiemannZeta₀_one]

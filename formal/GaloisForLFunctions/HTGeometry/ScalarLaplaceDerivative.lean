@@ -62,7 +62,7 @@ theorem scalarLaplace_second_derivative (f v g : ℝ → ℂ) (w : ℂ)
     (hvi : IntegrableOn (scalarLaplaceDamp w v) (Ioi 0))
     (hgi : IntegrableOn (scalarLaplaceDamp w g) (Ioi 0)) :
     (∫ t in Ioi (0:ℝ), scalarLaplaceDamp w g t) =
-      w^2*(∫ t in Ioi (0:ℝ), scalarLaplaceDamp w f t)-w*f 0-v 0 := by
+      w^(2 : ℕ)*(∫ t in Ioi (0:ℝ), scalarLaplaceDamp w f t)-w*f 0-v 0 := by
   rw [scalarLaplace_derivative v g w hv hvi hgi,
     scalarLaplace_derivative f v w hf hfi hvi]
   ring

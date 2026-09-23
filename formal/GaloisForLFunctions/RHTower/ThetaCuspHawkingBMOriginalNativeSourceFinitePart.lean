@@ -16,7 +16,7 @@ theorem nativeForcing_pullback_eq_bare_source (q : XiZeroCopy) (br : Bool) (amp 
       sourceProfile (physicalRate q br) w amp 1 K 1 z/(z:ℂ)) := by
   have hu := radialUnit_eq_sqrt (tortoiseOf z) (tortoiseOf_neg hz)
   rw [horizonCoordinate_tortoiseOf hz] at hu
-  have hr : (Real.sqrt (1-z):ℂ)^2=1-(z:ℂ) := by
+  have hr : (Real.sqrt (1-z):ℂ)^(2 : ℕ)=1-(z:ℂ) := by
     exact_mod_cast Real.sq_sqrt (sub_nonneg.mpr hz.2.le)
   have hz0 : (z:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hz.1.ne'
   have hr0 : (Real.sqrt (1-z):ℂ)≠0 := Complex.ofReal_ne_zero.mpr

@@ -38,7 +38,7 @@ theorem inverseSquareMatchingEnergy_firstInverseCubeBridgeConfig_eq_zero
 theorem inverseCubeBridgeEnergy_firstInverseCubeBridgeConfig
     {L : ℕ} (hL : 2 ≤ L) :
     inverseCubeBridgeEnergy (firstInverseCubeBridgeConfig hL) =
-      1 / (L : ℝ) ^ 3 := by
+      1 / (L : ℝ) ^ (3 : ℕ) := by
   unfold inverseCubeBridgeEnergy
   let j0 : Fin L := ⟨0, by omega⟩
   have hsum :
@@ -77,22 +77,22 @@ theorem inverseCubeBridgeEnergy_firstInverseCubeBridgeConfig
 theorem inverseSquareChainEnergy_firstInverseCubeBridgeConfig
     {L : ℕ} (hL : 2 ≤ L) :
     inverseSquareChainEnergy (firstInverseCubeBridgeConfig hL) =
-      1 / (L : ℝ) ^ 3 := by
+      1 / (L : ℝ) ^ (3 : ℕ) := by
   rw [inverseSquareChainEnergy,
     inverseSquareMatchingEnergy_firstInverseCubeBridgeConfig_eq_zero hL,
     inverseCubeBridgeEnergy_firstInverseCubeBridgeConfig hL, zero_add]
 
 def inverseSquareChainCubicReturnSeparation (L : ℕ) (guard : ℝ) : ℝ :=
-  2 * (guard / (L : ℝ) ^ 3) / Real.pi
+  2 * (guard / (L : ℝ) ^ (3 : ℕ)) / Real.pi
 
 theorem inverseSquareChainCubicReturnSeparation_le_norm_sub_one_of_le_halfPeriod
     {L : ℕ} (hL : 2 ≤ L) {guard t : ℝ}
     (hguard : 0 ≤ guard) (hgt : guard ≤ t)
-    (ht : t ≤ Real.pi * (L : ℝ) ^ 3) :
+    (ht : t ≤ Real.pi * (L : ℝ) ^ (3 : ℕ)) :
     inverseSquareChainCubicReturnSeparation L guard ≤
       ‖inverseSquareChainEvolution L t - 1‖ := by
   let x := firstInverseCubeBridgeConfig hL
-  let phi := t / (L : ℝ) ^ 3
+  let phi := t / (L : ℝ) ^ (3 : ℕ)
   have hLpos : (0 : ℝ) < L := by positivity
   have ht0 : 0 ≤ t := hguard.trans hgt
   have hphi0 : 0 ≤ phi := by
@@ -117,7 +117,7 @@ theorem inverseSquareChainCubicReturnSeparation_le_norm_sub_one_of_le_halfPeriod
     (inverseSquareChainEvolution L t - 1) x x
   calc
     inverseSquareChainCubicReturnSeparation L guard =
-        2 * (guard / (L : ℝ) ^ 3) / Real.pi := rfl
+        2 * (guard / (L : ℝ) ^ (3 : ℕ)) / Real.pi := rfl
     _ ≤ 2 * phi / Real.pi := by
       gcongr
       exact div_le_div_of_nonneg_right hgt (by positivity)
@@ -142,18 +142,18 @@ theorem inverseSquareChainCubicReturnSeparation_le_norm_sub_one
     {L : ℕ} (hL : 2 ≤ L) {guard t : ℝ}
     (hguard : 0 ≤ guard)
     (ht : t ∈ Set.Icc guard
-      (2 * Real.pi * (L : ℝ) ^ 3 - guard)) :
+      (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)) :
     inverseSquareChainCubicReturnSeparation L guard ≤
       ‖inverseSquareChainEvolution L t - 1‖ := by
-  by_cases hhalf : t ≤ Real.pi * (L : ℝ) ^ 3
+  by_cases hhalf : t ≤ Real.pi * (L : ℝ) ^ (3 : ℕ)
   · exact inverseSquareChainCubicReturnSeparation_le_norm_sub_one_of_le_halfPeriod
       hL hguard ht.1 hhalf
   · let x := firstInverseCubeBridgeConfig hL
-    let phi := t / (L : ℝ) ^ 3
+    let phi := t / (L : ℝ) ^ (3 : ℕ)
     let psi := 2 * Real.pi - phi
     have hLpos : (0 : ℝ) < L := by positivity
-    have hden : 0 < (L : ℝ) ^ 3 := by positivity
-    have htop : t ≤ 2 * Real.pi * (L : ℝ) ^ 3 := by
+    have hden : 0 < (L : ℝ) ^ (3 : ℕ) := by positivity
+    have htop : t ≤ 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) := by
       exact ht.2.trans (sub_le_self _ hguard)
     have hpsi0 : 0 ≤ psi := by
       dsimp [psi, phi]
@@ -167,10 +167,10 @@ theorem inverseSquareChainCubicReturnSeparation_le_norm_sub_one
         exact hnot.le
       dsimp [psi]
       nlinarith
-    have hguardPsi : guard / (L : ℝ) ^ 3 ≤ psi := by
+    have hguardPsi : guard / (L : ℝ) ^ (3 : ℕ) ≤ psi := by
       dsimp [psi, phi]
       rw [div_le_iff₀ hden]
-      have hcancel : t / (L : ℝ) ^ 3 * (L : ℝ) ^ 3 = t := by
+      have hcancel : t / (L : ℝ) ^ (3 : ℕ) * (L : ℝ) ^ (3 : ℕ) = t := by
         exact div_mul_cancel₀ t (ne_of_gt hden)
       rw [sub_mul, hcancel]
       nlinarith [ht.2]
@@ -191,7 +191,7 @@ theorem inverseSquareChainCubicReturnSeparation_le_norm_sub_one
       (inverseSquareChainEvolution L t - 1) x x
     calc
       inverseSquareChainCubicReturnSeparation L guard =
-          2 * (guard / (L : ℝ) ^ 3) / Real.pi := rfl
+          2 * (guard / (L : ℝ) ^ (3 : ℕ)) / Real.pi := rfl
       _ ≤ 2 * psi / Real.pi := by gcongr
       _ ≤ ‖Complex.exp (-(Complex.I * (psi : ℂ))) - 1‖ := hchord
       _ = ‖Complex.exp (-(Complex.I * (phi : ℂ))) - 1‖ := hreflect.symm
@@ -204,7 +204,7 @@ theorem inverseSquareChainCubicReturnSeparation_sub_perturbation_le
     (hK : IsSelfAdjoint K) {guard t : ℝ}
     (hguard : 0 ≤ guard)
     (ht : t ∈ Set.Icc guard
-      (2 * Real.pi * (L : ℝ) ^ 3 - guard)) :
+      (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)) :
     inverseSquareChainCubicReturnSeparation L guard -
         |t| * ‖K - inverseSquareChainHamiltonian L‖ ≤
       ‖unitaryEvolution K t - 1‖ := by
@@ -233,7 +233,7 @@ theorem inverseSquareChainCubicReturn_halfSeparation_le_of_perturbationBudget
     (hK : IsSelfAdjoint K) {guard t : ℝ}
     (hguard : 0 ≤ guard)
     (ht : t ∈ Set.Icc guard
-      (2 * Real.pi * (L : ℝ) ^ 3 - guard))
+      (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard))
     (hbudget : |t| * ‖K - inverseSquareChainHamiltonian L‖ ≤
       inverseSquareChainCubicReturnSeparation L guard / 2) :
     inverseSquareChainCubicReturnSeparation L guard / 2 ≤
@@ -254,7 +254,7 @@ theorem norm_projectiveSeedWeakTwoLocalHamiltonian_sub_inverseSquareChain_le
     ‖projectiveSeedWeakTwoLocalHamiltonian L p scale x -
         inverseSquareChainHamiltonian L‖ ≤
       rho * nearestNeighborPathLocalGeneratorMass L +
-        |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3) := by
+        |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ)) := by
   rw [projectiveSeedWeakTwoLocalHamiltonian]
   rw [show nearestNeighborPathLocalHamiltonian L p +
       (scale : ℂ) • pairQubitReindexedTwoLocalPauliHamiltonian L x -
@@ -275,7 +275,7 @@ theorem norm_projectiveSeedWeakTwoLocalHamiltonian_sub_inverseSquareChain_le
       rw [norm_smul, Complex.norm_real, Real.norm_eq_abs]
       exact add_le_add hseed le_rfl
     _ ≤ rho * nearestNeighborPathLocalGeneratorMass L +
-        |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3) := by
+        |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ)) := by
       gcongr
       exact norm_pairQubitReindexedTwoLocalPauliHamiltonian_le_eighteen_mul_cube_of_mem_box
         (by omega : 1 ≤ L) hx
@@ -290,15 +290,15 @@ theorem projectiveSeedWeakTwoLocal_cubicReturn_halfSeparation_le
     (hseed : ‖nearestNeighborPathLocalHamiltonian L p -
         inverseSquareChainHamiltonian L‖ ≤
       rho * nearestNeighborPathLocalGeneratorMass L)
-    (hbudget : (2 * Real.pi * (L : ℝ) ^ 3) *
+    (hbudget : (2 * Real.pi * (L : ℝ) ^ (3 : ℕ)) *
         (rho * nearestNeighborPathLocalGeneratorMass L +
-          |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)) ≤
+          |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))) ≤
       inverseSquareChainCubicReturnSeparation L guard / 2)
     {x : TwoLocalPauliCoefficientSpace (L * 2)}
     (hx : x ∈ weakTwoLocalPauliCertifiedGrowthSet L)
     {t : ℝ}
     (ht : t ∈ Set.Icc guard
-      (2 * Real.pi * (L : ℝ) ^ 3 - guard)) :
+      (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)) :
     inverseSquareChainCubicReturnSeparation L guard / 2 ≤
       ‖unitaryEvolution
         (projectiveSeedWeakTwoLocalHamiltonian L p scale x) t - 1‖ := by
@@ -307,20 +307,20 @@ theorem projectiveSeedWeakTwoLocal_cubicReturn_halfSeparation_le
     norm_projectiveSeedWeakTwoLocalHamiltonian_sub_inverseSquareChain_le
       hL (rho := rho) (scale := scale) hseed hx
   have ht0 : 0 ≤ t := hguard.trans ht.1
-  have htmax : |t| ≤ 2 * Real.pi * (L : ℝ) ^ 3 := by
+  have htmax : |t| ≤ 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) := by
     rw [abs_of_nonneg ht0]
     exact ht.2.trans (sub_le_self _ hguard)
-  have hperiod0 : 0 ≤ 2 * Real.pi * (L : ℝ) ^ 3 := by positivity
+  have hperiod0 : 0 ≤ 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) := by positivity
   have htimeBudget : |t| * ‖K - inverseSquareChainHamiltonian L‖ ≤
       inverseSquareChainCubicReturnSeparation L guard / 2 := by
     calc
       |t| * ‖K - inverseSquareChainHamiltonian L‖ ≤
-          (2 * Real.pi * (L : ℝ) ^ 3) *
+          (2 * Real.pi * (L : ℝ) ^ (3 : ℕ)) *
             ‖K - inverseSquareChainHamiltonian L‖ :=
         mul_le_mul_of_nonneg_right htmax (norm_nonneg _)
-      _ ≤ (2 * Real.pi * (L : ℝ) ^ 3) *
+      _ ≤ (2 * Real.pi * (L : ℝ) ^ (3 : ℕ)) *
           (rho * nearestNeighborPathLocalGeneratorMass L +
-            |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)) :=
+            |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))) :=
         mul_le_mul_of_nonneg_left hdiff hperiod0
       _ ≤ inverseSquareChainCubicReturnSeparation L guard / 2 := hbudget
   exact inverseSquareChainCubicReturn_halfSeparation_le_of_perturbationBudget
@@ -340,11 +340,11 @@ theorem projectiveSeedWeakTwoLocal_sameDraw_growth_and_cubicFirstReturnExclusion
     (hepsilonMax : epsilon ≤ 1 / 200)
     (hgrowthBudget : T *
         (rho * nearestNeighborPathLocalGeneratorMass L +
-          |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)) ≤ epsilon)
+          |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))) ≤ epsilon)
     (hguard : 0 ≤ guard)
-    (hreturnBudget : (2 * Real.pi * (L : ℝ) ^ 3) *
+    (hreturnBudget : (2 * Real.pi * (L : ℝ) ^ (3 : ℕ)) *
         (rho * nearestNeighborPathLocalGeneratorMass L +
-          |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)) ≤
+          |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))) ≤
       inverseSquareChainCubicReturnSeparation L guard / 2)
     {x : TwoLocalPauliCoefficientSpace (L * 2)}
     (hx : x ∈ weakTwoLocalPauliCertifiedGrowthSet L) :
@@ -357,7 +357,7 @@ theorem projectiveSeedWeakTwoLocal_sameDraw_growth_and_cubicFirstReturnExclusion
           (unitaryEvolution
             (projectiveSeedWeakTwoLocalHamiltonian L p scale x) t)) ∧
     (∀ t ∈ Set.Icc guard
-        (2 * Real.pi * (L : ℝ) ^ 3 - guard),
+        (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard),
       inverseSquareChainCubicReturnSeparation L guard / 2 ≤
         ‖unitaryEvolution
           (projectiveSeedWeakTwoLocalHamiltonian L p scale x) t - 1‖) := by

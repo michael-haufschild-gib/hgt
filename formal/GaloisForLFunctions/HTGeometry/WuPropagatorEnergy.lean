@@ -24,7 +24,7 @@ theorem hermitianGenerator_selfAdjoint (H : 𝓗 →L[ℂ] 𝓗) :
 
 /-- Exact weighted energy of the existing Schrödinger solution. -/
 theorem schrodinger_energy (H : 𝓗 →L[ℂ] 𝓗) (x : 𝓗) (d t : ℝ) :
-    energy d t (fun s => propagator (hermitianGenerator H) s x) = mass d t * ‖x‖ ^ 2 := by
+    energy d t (fun s => propagator (hermitianGenerator H) s x) = mass d t * ‖x‖ ^ (2 : ℕ) := by
   unfold energy
   simp_rw [norm_propagator_apply (hermitianGenerator_selfAdjoint H)]
   rw [intervalIntegral.integral_mul_const, integral_weight]
@@ -32,7 +32,7 @@ theorem schrodinger_energy (H : 𝓗 →L[ℂ] 𝓗) (x : 𝓗) (d t : ℝ) :
 /-- Exact stability in the initial datum over an arbitrarily long observation interval. -/
 theorem schrodinger_difference_energy (H : 𝓗 →L[ℂ] 𝓗) (x y : 𝓗) (d t : ℝ) :
     energy d t (fun s => propagator (hermitianGenerator H) s x -
-      propagator (hermitianGenerator H) s y) = mass d t * ‖x - y‖ ^ 2 := by
+      propagator (hermitianGenerator H) s y) = mass d t * ‖x - y‖ ^ (2 : ℕ) := by
   simp_rw [← map_sub]
   exact schrodinger_energy H (x - y) d t
 
@@ -52,7 +52,7 @@ theorem norm_schrodingerOrbit (H : 𝓗 →L[ℂ] 𝓗) (x : 𝓗) : ‖schrodin
 /-- The paper's uniform square-energy bound, now for a genuine quantum evolution. -/
 theorem schrodinger_energy_le (H : 𝓗 →L[ℂ] 𝓗) (x : 𝓗) (d t : ℝ) :
     energy d t (fun s => propagator (hermitianGenerator H) s x) ≤
-      ‖x‖ ^ 2 / (2 * Real.exp d) := by
+      ‖x‖ ^ (2 : ℕ) / (2 * Real.exp d) := by
   have h := energy_le d t (schrodingerOrbit H x)
   rwa [norm_schrodingerOrbit] at h
 
@@ -70,7 +70,7 @@ def observedSchrodingerOrbit {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ
 theorem observed_schrodinger_energy_le {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y]
     (H : 𝓗 →L[ℂ] 𝓗) (x : 𝓗) (A : 𝓗 →L[ℂ] Y) (d t : ℝ) :
     energy d t (fun s => A (propagator (hermitianGenerator H) s x)) ≤
-      (‖A‖ * ‖x‖) ^ 2 / (2 * Real.exp d) := by
+      (‖A‖ * ‖x‖) ^ (2 : ℕ) / (2 * Real.exp d) := by
   have hb : ‖observedSchrodingerOrbit H x A‖ ≤ ‖A‖ * ‖x‖ :=
     BoundedContinuousFunction.norm_ofNormedAddCommGroup_le _ (by positivity) _
   exact (energy_le d t (observedSchrodingerOrbit H x A)).trans

@@ -26,11 +26,11 @@ theorem not_shiftDifference_signedInvSq_of_incongruent {r : ℕ} (lam : Fin r �
     {y : ℂ → ℂ} (hy : MeromorphicOn y Set.univ)
     (hpoles : {z : ℂ | ¬ AnalyticAt ℂ y z}.Finite) :
     ¬ ((fun z => y (z + 1) - y z)
-        =ᶠ[Filter.cofinite] fun z => ∑ k, n k * ((z + lam k) ^ 2)⁻¹) := by
+        =ᶠ[Filter.cofinite] fun z => ∑ k, n k * ((z + lam k) ^ (2 : ℕ))⁻¹) := by
   classical
   intro heq
-  have hrw : (fun z : ℂ => ∑ k, n k * ((z + lam k) ^ 2)⁻¹)
-      = fun z : ℂ => ∑ k ∈ (Finset.univ : Finset (Fin r)), n k * ((z - (-lam k)) ^ 2)⁻¹ := by
+  have hrw : (fun z : ℂ => ∑ k, n k * ((z + lam k) ^ (2 : ℕ))⁻¹)
+      = fun z : ℂ => ∑ k ∈ (Finset.univ : Finset (Fin r)), n k * ((z - (-lam k)) ^ (2 : ℕ))⁻¹ := by
     funext z
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [sub_neg_eq_add]

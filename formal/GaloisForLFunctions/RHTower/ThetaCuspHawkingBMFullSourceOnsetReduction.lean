@@ -21,28 +21,28 @@ set_option autoImplicit false
 
 theorem source_fundamental_onset_polynomial (s w u : ℂ) :
     reducedPolynomial s w u =
-      -(2*s+1)*(2*s+2)*(1-u^2)*u +
-        s*(s-1)/2*(w-2*s)*(1-u)*u^2*(3+(2*s+3)*u) := by
+      -(2*s+1)*(2*s+2)*(1-u^(2 : ℕ))*u +
+        s*(s-1)/2*(w-2*s)*(1-u)*u^(2 : ℕ)*(3+(2*s+3)*u) := by
   unfold reducedPolynomial liftSecondPolynomial amplitudeRate
   ring
 
 def sourceSeedPolynomial (s lam u : ℂ) : ℂ :=
-  -(2*s+1)*(2*s+2)*u - s*(s-1)/4*((2*s+1)*(2*s+2)-lam)*u^3
+  -(2*s+1)*(2*s+2)*u - s*(s-1)/4*((2*s+1)*(2*s+2)-lam)*u^(3 : ℕ)
 
 def sourceSeedFirst (s lam u : ℂ) : ℂ :=
-  -(2*s+1)*(2*s+2) - 3*s*(s-1)/4*((2*s+1)*(2*s+2)-lam)*u^2
+  -(2*s+1)*(2*s+2) - 3*s*(s-1)/4*((2*s+1)*(2*s+2)-lam)*u^(2 : ℕ)
 
 def sourceSeedSecond (s lam u : ℂ) : ℂ :=
   -6*s*(s-1)/4*((2*s+1)*(2*s+2)-lam)*u
 
 -- Free Laplace frequency retained; expression is the exact radial wave after factoring sourceAmplitude.
 theorem full_source_onset_polynomial (s w lam u : ℂ) :
-    (w^2-(amplitudeRate s w u)^2-2*s*(u^2-1)-lam*(1-u^2))*sourceSeedPolynomial s lam u -
-      (2*amplitudeRate s w u+2*u)*(u^2-1)*sourceSeedFirst s lam u -
-      (u^2-1)^2*sourceSeedSecond s lam u =
+    (w^(2 : ℕ)-(amplitudeRate s w u)^(2 : ℕ)-2*s*(u^(2 : ℕ)-1)-lam*(1-u^(2 : ℕ)))*sourceSeedPolynomial s lam u -
+      (2*amplitudeRate s w u+2*u)*(u^(2 : ℕ)-1)*sourceSeedFirst s lam u -
+      (u^(2 : ℕ)-1)^(2 : ℕ)*sourceSeedSecond s lam u =
     ((2*s+1)*(2*s+2)-lam)*
-      (-2*(1-u^2)*u*((5*s^2+15*s+4)/4+
-        s*(s-1)/4*((s+2)^2-(lam/2-(s+1)*(s+2)))*u^2)) +
+      (-2*(1-u^(2 : ℕ))*u*((5*s^(2 : ℕ)+15*s+4)/4+
+        s*(s-1)/4*((s+2)^(2 : ℕ)-(lam/2-(s+1)*(s+2)))*u^(2 : ℕ))) +
       2*(w-2*s)*(1-u)*((1+u)*sourceSeedFirst s lam u+2*s*sourceSeedPolynomial s lam u) := by
   unfold amplitudeRate sourceSeedPolynomial sourceSeedFirst sourceSeedSecond
   ring
@@ -63,20 +63,20 @@ def sourceSeedField (s w a T lam : ℂ) (t : ℝ) : ℂ :=
 
 def sourceSeedFieldFirst (s w a T lam : ℂ) (t : ℝ) : ℂ :=
   sourceAmplitude s w a T t*(amplitudeRate s w (radialUnit t)*sourceSeedPolynomial s lam (radialUnit t)+
-    ((radialUnit t:ℂ)^2-1)*sourceSeedFirst s lam (radialUnit t))
+    ((radialUnit t:ℂ)^(2 : ℕ)-1)*sourceSeedFirst s lam (radialUnit t))
 
 def sourceSeedFieldSecond (s w a T lam : ℂ) (t : ℝ) : ℂ :=
   let u : ℂ := radialUnit t
-  sourceAmplitude s w a T t*((amplitudeRate s w u)^2*sourceSeedPolynomial s lam u+
-    2*s*(u^2-1)*sourceSeedPolynomial s lam u+
-    (2*amplitudeRate s w u+2*u)*(u^2-1)*sourceSeedFirst s lam u+
-    (u^2-1)^2*sourceSeedSecond s lam u)
+  sourceAmplitude s w a T t*((amplitudeRate s w u)^(2 : ℕ)*sourceSeedPolynomial s lam u+
+    2*s*(u^(2 : ℕ)-1)*sourceSeedPolynomial s lam u+
+    (2*amplitudeRate s w u+2*u)*(u^(2 : ℕ)-1)*sourceSeedFirst s lam u+
+    (u^(2 : ℕ)-1)^(2 : ℕ)*sourceSeedSecond s lam u)
 
 private theorem sourceSeed_radial_derivatives (s lam : ℂ) (t : ℝ) :
     HasDerivAt (fun t => sourceSeedPolynomial s lam (radialUnit t))
-      (((radialUnit t:ℂ)^2-1)*sourceSeedFirst s lam (radialUnit t)) t ∧
+      (((radialUnit t:ℂ)^(2 : ℕ)-1)*sourceSeedFirst s lam (radialUnit t)) t ∧
     HasDerivAt (fun t => sourceSeedFirst s lam (radialUnit t))
-      (((radialUnit t:ℂ)^2-1)*sourceSeedSecond s lam (radialUnit t)) t := by
+      (((radialUnit t:ℂ)^(2 : ℕ)-1)*sourceSeedSecond s lam (radialUnit t)) t := by
   have h := (radialUnit_hasDerivAt t).ofReal_comp
   constructor
   · apply ((h.const_mul (-(2*s+1)*(2*s+2))).sub
@@ -116,8 +116,8 @@ theorem sourceSeedField_derivatives (s w a T lam : ℂ) :
 /-- Exact original source equation with its free target frequency and explicit residual.
 No source or target frequency has been identified with the other. -/
 theorem sourceSeedField_originalWave (s w a T lam : ℂ) (t : ℝ) :
-    w^2*sourceSeedField s w a T lam t-deriv (deriv (sourceSeedField s w a T lam)) t-
-      lam*(1-(radialUnit t:ℂ)^2)*sourceSeedField s w a T lam t =
+    w^(2 : ℕ)*sourceSeedField s w a T lam t-deriv (deriv (sourceSeedField s w a T lam)) t-
+      lam*(1-(radialUnit t:ℂ)^(2 : ℕ))*sourceSeedField s w a T lam t =
     ((2*s+1)*(2*s+2)-lam)*originalForcing s w a T 1 (lam/2-(s+1)*(s+2)) t+
       2*(w-2*s)*sourceAmplitude s w a T t*(1-(radialUnit t:ℂ))*
         ((1+(radialUnit t:ℂ))*sourceSeedFirst s lam (radialUnit t)+
@@ -206,7 +206,7 @@ set_option autoImplicit false
 
 private theorem sourceSeedField_zero_frequency (s a lam : ℂ) (t : ℝ) :
     -sourceSeedFieldSecond s 0 a 1 lam t-
-      lam*(1-(radialUnit t:ℂ)^2)*sourceSeedField s 0 a 1 lam t =
+      lam*(1-(radialUnit t:ℂ)^(2 : ℕ))*sourceSeedField s 0 a 1 lam t =
     ((2*s+1)*(2*s+2)-lam)*originalForcing s 0 a 1 1 (lam/2-(s+1)*(s+2)) t+
       4*s*sourceSeedFieldFirst s 0 a 1 lam t := by
   have h := sourceSeedField_originalWave s 0 a 1 lam t
@@ -224,7 +224,7 @@ one specified onset pulse. All time and radial derivatives are actual derivative
 theorem timeSourceSeed_originalWave (s a lam : ℂ) (τ t : ℝ) :
     deriv (deriv (fun σ => timeSourceSeed s a lam σ t)) τ-
       deriv (deriv (timeSourceSeed s a lam τ)) t-
-      lam*(1-(radialUnit t:ℂ)^2)*timeSourceSeed s a lam τ t =
+      lam*(1-(radialUnit t:ℂ)^(2 : ℕ))*timeSourceSeed s a lam τ t =
     ((2*s+1)*(2*s+2)-lam)*originalForcing s 0 a 1 1 (lam/2-(s+1)*(s+2)) t*
       timeOnset (2*s) (τ+t)+originalSourceOnsetPulse s a lam τ t := by
   rw [timeSourceSeed_wave]
@@ -281,7 +281,7 @@ private theorem timeAngularSeedField_wave (q : XiZeroCopy) (branch : Bool) (a : 
     (τ t : ℝ) (z : Point) (hz : 0 < z 1) :
     timeFieldWave (timeAngularSeedField q branch a) τ t z =
       originalSourceOnsetPulse (physicalRate q branch) a (parameter q branch) τ t*fullAngularField q branch z-
-      parameter q branch*(1-(radialUnit t:ℂ)^2)*
+      parameter q branch*(1-(radialUnit t:ℂ)^(2 : ℕ))*
         timeSourceSeed (physicalRate q branch) a (parameter q branch) τ t*fullSquarePotential q z := by
   have hL : scalarLaplacian (fun y =>
       timeSourceSeed (physicalRate q branch) a (parameter q branch) τ t*fullAngularField q branch y) z =
@@ -300,7 +300,7 @@ private theorem timeAngularSeedField_wave (q : XiZeroCopy) (branch : Bool) (a : 
 
 private theorem timeReducedCoefficient_sourceSeed (s a : ℂ) (τ t : ℝ) :
     timeReducedCoefficient s a τ t =
-      (1-(radialUnit t:ℂ)^2)*timeSourceSeed s a ((2*s+1)*(2*s+2)) τ t+
+      (1-(radialUnit t:ℂ)^(2 : ℕ))*timeSourceSeed s a ((2*s+1)*(2*s+2)) τ t+
       2*radialLiftFirst s 0 a 1 t*(timeOnsetFirst (2*s) (τ+t)-2*s*timeOnset (2*s) (τ+t)) := by
   have h := source_fundamental_onset_polynomial s 0 (radialUnit t)
   dsimp only [timeReducedCoefficient,reducedCoefficient,timeSourceSeed,sourceSeedField,

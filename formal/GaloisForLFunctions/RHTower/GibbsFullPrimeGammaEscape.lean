@@ -14,7 +14,7 @@ The normalized squared product `q(t)` lies in `(0,1]`, equals `exp(-D)` at the p
 and is `(Y+1) log Y`-Lipschitz. Its half-height interval has radius `q/(4Y²)`.
 Any weight with local floor `c` therefore has energy at least
 `(c/4) exp(log G - 2D - 2 log Y)`. The existing prime-log sum asymptotic bounds
-`log G` below by `Y^a/(a log Y)(1+o(1))`, while `D = O(Y^a/(log Y)^3)`.
+`log G` below by `Y^a/(a log Y)(1+o(1))`, while `D = O(Y^a/(log Y)^(3 : ℕ))`.
 
 The positive survivor is weight-independent: every continuous nonnegative weight positive
 at zero sees this escape. No zero, RH, or zero-free-region premise is used. In particular,

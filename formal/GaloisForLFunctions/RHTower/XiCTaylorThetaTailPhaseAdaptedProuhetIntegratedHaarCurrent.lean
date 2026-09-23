@@ -24,7 +24,7 @@ private theorem integrableOn_id_mul_cexp_Ioi
   let a : ℝ := -c.re
   have ha : 0 < a := by dsimp only [a]; linarith
   have hmajor : IntegrableOn
-      (fun x : ℝ => x ^ 1 * Real.exp (-a * x)) (Ioi 0) :=
+      (fun x : ℝ => x ^ (1 : ℕ) * Real.exp (-a * x)) (Ioi 0) :=
     integrableOn_pow_mul_exp_neg_real 1 ha
   change Integrable (fun x : ℝ =>
     (x : ℂ) * Complex.exp (c * (x : ℂ)))
@@ -81,7 +81,7 @@ private theorem tendsto_id_mul_cexp_atTop_zero
 private theorem integral_id_mul_cexp_Ioi
     {c : ℂ} (hc : c.re < 0) :
     (∫ x : ℝ in Ioi 0, (x : ℂ) * Complex.exp (c * (x : ℂ))) =
-      1 / c ^ 2 := by
+      1 / c ^ (2 : ℕ) := by
   have hc0 : c ≠ 0 := by
     intro h
     rw [h] at hc
@@ -101,11 +101,11 @@ private theorem integral_id_mul_cexp_Ioi
       ring
     · simp
   have hrhs : Tendsto (fun b : ℝ =>
-      ((c * b - 1) * Complex.exp (c * b)) / c ^ 2 -
-        ((c * (0 : ℝ) - 1) * Complex.exp (c * (0 : ℝ))) / c ^ 2)
-      atTop (nhds (1 / c ^ 2)) := by
-    have h := (hboundary.div_const (c ^ 2)).sub_const
-      (((c * (0 : ℝ) - 1) * Complex.exp (c * (0 : ℝ))) / c ^ 2)
+      ((c * b - 1) * Complex.exp (c * b)) / c ^ (2 : ℕ) -
+        ((c * (0 : ℝ) - 1) * Complex.exp (c * (0 : ℝ))) / c ^ (2 : ℕ))
+      atTop (nhds (1 / c ^ (2 : ℕ))) := by
+    have h := (hboundary.div_const (c ^ (2 : ℕ))).sub_const
+      (((c * (0 : ℝ) - 1) * Complex.exp (c * (0 : ℝ))) / c ^ (2 : ℕ))
     simpa only [Complex.ofReal_zero, mul_zero, zero_sub, Complex.exp_zero,
       one_mul, neg_div, zero_div, sub_neg_eq_add, zero_add, neg_one_mul,
       neg_neg] using h

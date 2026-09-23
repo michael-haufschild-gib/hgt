@@ -96,7 +96,7 @@ theorem beurlingCountermodel_seam_hyperbolicPlane (β : ℝ) {γ : ℝ} (hγ : 0
 theorem beurling_small_reciprocalMass_seam_hyperbolicPlane
     {β : ℝ} (hβ1 : 1 / 2 < β) (hβ2 : β < 1) {ε : ℝ} (hε : 0 < ε) :
     ∃ γ : ℝ, 0 < γ ∧
-      Real.log (1 + γ ^ 2 / (1 - β) ^ 2) < ε ∧
+      Real.log (1 + γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ)) < ε ∧
       BeurlingSensitivity.perturbedZeta β γ ((β : ℂ) + (γ : ℂ) * I) = 0 ∧
       1 / 2 < ((β : ℂ) + (γ : ℂ) * I).re ∧
       ∃ z : Fin (2 * 1) → ℂ, SeamCarrierExactInertia ![(β : ℂ) + (γ : ℂ) * I] z := by

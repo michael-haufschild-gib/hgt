@@ -17,21 +17,21 @@ open MeasureTheory Set intervalIntegral FourierTransform
 
 namespace GaloisForLFunctions.RHTower
 
-/-- On the central angular-frequency window `omega^2 <= c`, the Kaiser transform retains its
+/-- On the central angular-frequency window `omega^(2 : ℕ) <= c`, the Kaiser transform retains its
 central exponential size. -/
 theorem exp_sub_one_div_two_mul_le_integral_kaiserTrial_cos
-    {c omega : ℝ} (hc : 2 ≤ c) (homega : omega ^ 2 ≤ c) :
+    {c omega : ℝ} (hc : 2 ≤ c) (homega : omega ^ (2 : ℕ) ≤ c) :
     Real.exp (c - 1) / (2 * c) ≤
       ∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (omega * x) := by
   have hcpos : 0 < c := by linarith
   have hvpos : 0 < c - 1 := by linarith
-  have hz0 : 0 ≤ (c - 1) ^ 2 := sq_nonneg _
-  have harg : (c - 1) ^ 2 ≤ c ^ 2 - omega ^ 2 := by
+  have hz0 : 0 ≤ (c - 1) ^ (2 : ℕ) := sq_nonneg _
+  have harg : (c - 1) ^ (2 : ℕ) ≤ c ^ (2 : ℕ) - omega ^ (2 : ℕ) := by
     nlinarith
   have hmono := tsum_oddFactorial_mono hz0 harg
   have hseries :
       2 * Real.sinh (c - 1) / (c - 1) ≤
-        ∑' m : ℕ, 2 * (c ^ 2 - omega ^ 2) ^ m /
+        ∑' m : ℕ, 2 * (c ^ (2 : ℕ) - omega ^ (2 : ℕ)) ^ m /
           (Nat.factorial (2 * m + 1) : ℝ) := by
     rw [← tsum_oddFactorial_sinh hvpos.ne']
     exact hmono
@@ -60,12 +60,12 @@ theorem exp_sub_one_div_two_mul_le_integral_kaiserTrial_cos
 single-frequency squared-mean estimate. -/
 theorem sqrt_mul_exp_sub_one_sq_div_le_energy_kaiserTrial
     {c : ℝ} (hc : 2 ≤ c) :
-    Real.sqrt c / Real.pi * (Real.exp (c - 1) / (2 * c)) ^ 2 ≤
-      ∫ x in (-1 : ℝ)..1, kaiserTrial c x ^ 2 := by
+    Real.sqrt c / Real.pi * (Real.exp (c - 1) / (2 * c)) ^ (2 : ℕ) ≤
+      ∫ x in (-1 : ℝ)..1, kaiserTrial c x ^ (2 : ℕ) := by
   let r : ℝ := Real.sqrt c / (2 * Real.pi)
-  let q : ℝ := (Real.exp (c - 1) / (2 * c)) ^ 2
+  let q : ℝ := (Real.exp (c - 1) / (2 * c)) ^ (2 : ℕ)
   let rho : ℝ → ℝ := fun xi =>
-    ‖FourierTransform.fourier (bandTrunc (kaiserTrial c)) xi‖ ^ 2
+    ‖FourierTransform.fourier (bandTrunc (kaiserTrial c)) xi‖ ^ (2 : ℕ)
   have hc0 : 0 ≤ c := by linarith
   have hcpos : 0 < c := by linarith
   have hr0 : 0 ≤ r := by
@@ -78,8 +78,8 @@ theorem sqrt_mul_exp_sub_one_sq_div_le_energy_kaiserTrial
     intro xi hxi
     have habsxi : |xi| ≤ r := (abs_le).2 hxi
     have hpi : 0 < 2 * Real.pi := by positivity
-    have hsqrtSq : Real.sqrt c ^ 2 = c := Real.sq_sqrt hc0
-    have homega : (2 * Real.pi * xi) ^ 2 ≤ c := by
+    have hsqrtSq : Real.sqrt c ^ (2 : ℕ) = c := Real.sq_sqrt hc0
+    have homega : (2 * Real.pi * xi) ^ (2 : ℕ) ≤ c := by
       have hsquare := pow_le_pow_left₀ (abs_nonneg xi) habsxi 2
       rw [sq_abs] at hsquare
       dsimp [r] at hsquare
@@ -107,7 +107,7 @@ theorem sqrt_mul_exp_sub_one_sq_div_le_energy_kaiserTrial
     field_simp [Real.pi_ne_zero]
     ring
   have htotal : (∫ xi : ℝ, rho xi) =
-      ∫ x in (-1 : ℝ)..1, kaiserTrial c x ^ 2 := by
+      ∫ x in (-1 : ℝ)..1, kaiserTrial c x ^ (2 : ℕ) := by
     dsimp [rho]
     exact (integral_norm_sq_fourier_bandTrunc (continuous_kaiserTrial c)).trans
       (integral_norm_sq_bandTrunc (kaiserTrial c))
@@ -119,10 +119,10 @@ theorem sqrt_mul_exp_sub_one_sq_div_le_energy_kaiserTrial
 theorem one_sub_norm_bandOperatorL2_mul_sqrt_mul_exp_le
     {c : ℝ} (hc : 2 ≤ c) :
     (1 - ‖bandOperatorL2 c‖) *
-        (Real.sqrt c / Real.pi * (Real.exp (c - 1) / (2 * c)) ^ 2) ≤ 8 := by
+        (Real.sqrt c / Real.pi * (Real.exp (c - 1) / (2 * c)) ^ (2 : ℕ)) ≤ 8 := by
   have hcpos : 0 < c := by linarith
   have henergy := sqrt_mul_exp_sub_one_sq_div_le_energy_kaiserTrial hc
-  have henergyPos : 0 < ∫ x in (-1 : ℝ)..1, kaiserTrial c x ^ 2 :=
+  have henergyPos : 0 < ∫ x in (-1 : ℝ)..1, kaiserTrial c x ^ (2 : ℕ) :=
     energy_kaiserTrial_pos hcpos
   have hvar := one_sub_norm_bandOperatorL2_le c (kaiserTrial c)
     (continuous_kaiserTrial c) (bandClass_kaiserTrial_ne_zero hcpos)
@@ -130,7 +130,7 @@ theorem one_sub_norm_bandOperatorL2_mul_sqrt_mul_exp_le
   have htail := integral_tail_kaiser_le (c := c) hcpos.le
   rcases le_or_gt (1 - ‖bandOperatorL2 c‖) 0 with hnonpos | hpos
   · have hfactor : 0 ≤
-        Real.sqrt c / Real.pi * (Real.exp (c - 1) / (2 * c)) ^ 2 := by positivity
+        Real.sqrt c / Real.pi * (Real.exp (c - 1) / (2 * c)) ^ (2 : ℕ) := by positivity
     nlinarith
   · rw [le_div_iff₀ henergyPos] at hvar
     have hmul := mul_le_mul_of_nonneg_left henergy hpos.le

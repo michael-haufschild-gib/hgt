@@ -28,9 +28,9 @@ theorem regionIIJacobiAmplitude_pos
 theorem regionIIJacobiAmplitude_sq
     (P : PhysicalRegionII)
     (J : JacobiEllipticSystem (regionIIComplementModulus P : ℝ)) (x : ℝ) :
-    regionIIJacobiAmplitude P J x ^ 2 =
+    regionIIJacobiAmplitude P J x ^ (2 : ℕ) =
       1 + regionIITransformedModulus P / (-(P.val.q₀ : ℝ)) *
-        jacobiSd J x ^ 2 := by
+        jacobiSd J x ^ (2 : ℕ) := by
   rw [regionIIJacobiAmplitude,
     Real.sq_sqrt (div_nonneg
       (regionIIJacobiSquaredCurvature_pos P J x).le
@@ -76,8 +76,8 @@ noncomputable def regionIIJacobiAmplitudeAcceleration
     (J : JacobiEllipticSystem (regionIIComplementModulus P : ℝ)) (x : ℝ) : ℝ :=
   regionIIJacobiSquaredCurvatureAcceleration P J x /
       (2 * regionIIRealScale P * regionIIJacobiAmplitude P J x) -
-    regionIIJacobiSquaredCurvatureVelocity P J x ^ 2 /
-      (4 * regionIIRealScale P ^ 2 * regionIIJacobiAmplitude P J x ^ 3)
+    regionIIJacobiSquaredCurvatureVelocity P J x ^ (2 : ℕ) /
+      (4 * regionIIRealScale P ^ (2 : ℕ) * regionIIJacobiAmplitude P J x ^ (3 : ℕ))
 
 theorem regionIIJacobiAmplitudeVelocity_hasDerivAt
     (P : PhysicalRegionII)
@@ -97,7 +97,7 @@ theorem regionIIJacobiAmplitudeVelocity_hasDerivAt
             (2 * regionIIRealScale P * regionIIJacobiAmplitude P J x) -
           regionIIJacobiSquaredCurvatureVelocity P J x *
             ((2 * regionIIRealScale P) * regionIIJacobiAmplitudeVelocity P J x)) /
-          (2 * regionIIRealScale P * regionIIJacobiAmplitude P J x) ^ 2 =
+          (2 * regionIIRealScale P * regionIIJacobiAmplitude P J x) ^ (2 : ℕ) =
         regionIIJacobiAmplitudeAcceleration P J x := by
     rw [regionIIJacobiAmplitudeAcceleration, regionIIJacobiAmplitudeVelocity]
     field_simp [ne_of_gt (regionIIRealScale_pos P),
@@ -111,7 +111,7 @@ theorem regionIIJacobiAmplitude_curvature
     (P : PhysicalRegionII)
     (J : JacobiEllipticSystem (regionIIComplementModulus P : ℝ)) (x : ℝ) :
     regionIIJacobiSquaredCurvature P J x =
-      regionIIRealScale P * regionIIJacobiAmplitude P J x ^ 2 := by
+      regionIIRealScale P * regionIIJacobiAmplitude P J x ^ (2 : ℕ) := by
   rw [regionIIJacobiAmplitude, Real.sq_sqrt
     (div_nonneg (regionIIJacobiSquaredCurvature_pos P J x).le
       (regionIIRealScale_pos P).le)]
@@ -122,10 +122,10 @@ theorem regionIIJacobiAmplitude_secondOrderEquation
     (P : PhysicalRegionII)
     (J : JacobiEllipticSystem (regionIIComplementModulus P : ℝ)) (x : ℝ) :
     regionIIJacobiAmplitudeAcceleration P J x =
-      -2 * regionIIRealScale P * regionIIJacobiAmplitude P J x ^ 3 -
+      -2 * regionIIRealScale P * regionIIJacobiAmplitude P J x ^ (3 : ℕ) -
         regionIIRealScale P * gammaSq P.val * regionIIJacobiAmplitude P J x +
         regionIIRealScale P * nuSq P.val /
-          regionIIJacobiAmplitude P J x ^ 3 := by
+          regionIIJacobiAmplitude P J x ^ (3 : ℕ) := by
   rw [regionIIJacobiAmplitudeAcceleration,
     regionIIJacobiSquaredCurvature_secondOrderEquation,
     regionIIJacobiSquaredCurvature_equation,
@@ -164,12 +164,12 @@ theorem regionIIJacobiAmplitudeAcceleration_zero_pos
 theorem regionIIJacobiAmplitudeVelocity_sq
     (P : PhysicalRegionII)
     (J : JacobiEllipticSystem (regionIIComplementModulus P : ℝ)) (x : ℝ) :
-    regionIIJacobiAmplitudeVelocity P J x ^ 2 =
+    regionIIJacobiAmplitudeVelocity P J x ^ (2 : ℕ) =
       regionIIRealScale P *
         (1 + gammaSq P.val + nuSq P.val -
-          regionIIJacobiAmplitude P J x ^ 4 -
-          gammaSq P.val * regionIIJacobiAmplitude P J x ^ 2 -
-          nuSq P.val / regionIIJacobiAmplitude P J x ^ 2) := by
+          regionIIJacobiAmplitude P J x ^ (4 : ℕ) -
+          gammaSq P.val * regionIIJacobiAmplitude P J x ^ (2 : ℕ) -
+          nuSq P.val / regionIIJacobiAmplitude P J x ^ (2 : ℕ)) := by
   rw [regionIIJacobiAmplitudeVelocity,
     div_pow,
     regionIIJacobiSquaredCurvature_equation,
@@ -182,11 +182,11 @@ theorem regionIIJacobiAmplitudeVelocity_sq
 noncomputable def regionIIJacobiAmplitudeEnergy
     (P : PhysicalRegionII)
     (J : JacobiEllipticSystem (regionIIComplementModulus P : ℝ)) (x : ℝ) : ℝ :=
-  regionIIJacobiAmplitudeVelocity P J x ^ 2 / 2 +
-    regionIIRealScale P * regionIIJacobiAmplitude P J x ^ 4 / 2 +
-    regionIIRealScale P * gammaSq P.val * regionIIJacobiAmplitude P J x ^ 2 / 2 +
+  regionIIJacobiAmplitudeVelocity P J x ^ (2 : ℕ) / 2 +
+    regionIIRealScale P * regionIIJacobiAmplitude P J x ^ (4 : ℕ) / 2 +
+    regionIIRealScale P * gammaSq P.val * regionIIJacobiAmplitude P J x ^ (2 : ℕ) / 2 +
     regionIIRealScale P * nuSq P.val /
-      (2 * regionIIJacobiAmplitude P J x ^ 2)
+      (2 * regionIIJacobiAmplitude P J x ^ (2 : ℕ))
 
 theorem regionIIJacobiAmplitudeEnergy_eq
     (P : PhysicalRegionII)

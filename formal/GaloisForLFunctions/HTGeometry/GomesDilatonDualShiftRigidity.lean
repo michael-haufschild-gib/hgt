@@ -83,8 +83,8 @@ theorem gomesDilatonDual_constant_shift_iff (H : ℝ[X]) (c : ℝ) :
 /-- Constant second derivative characterizes quadratic-or-lower polynomial log-weights exactly. -/
 theorem gomesDilaton_secondDerivative_constant_iff (H : ℝ[X]) (k : ℝ) :
     H.derivative.derivative = C k ↔
-      ∃ d e : ℝ, H = C (k / 2) * X ^ 2 + C d * X + C e := by
-  have hq : (C (k / 2) * X ^ 2 : ℝ[X]).derivative = C k * X := by
+      ∃ d e : ℝ, H = C (k / 2) * X ^ (2 : ℕ) + C d * X + C e := by
+  have hq : (C (k / 2) * X ^ (2 : ℕ) : ℝ[X]).derivative = C k * X := by
     apply Polynomial.funext
     intro x
     simp
@@ -96,10 +96,10 @@ theorem gomesDilaton_secondDerivative_constant_iff (H : ℝ[X]) (k : ℝ) :
       simp only [P, derivative_sub, derivative_C_mul, derivative_X, mul_one, h, sub_self]
     let d := P.coeff 0
     have hd : H.derivative - C k * X = C d := eq_C_of_derivative_eq_zero hp
-    let Q : ℝ[X] := H - C (k / 2) * X ^ 2 - C d * X
+    let Q : ℝ[X] := H - C (k / 2) * X ^ (2 : ℕ) - C d * X
     have hQ : Q.derivative = 0 := by
       simp only [Q, derivative_sub, hq, derivative_C_mul, derivative_X, mul_one, hd, sub_self]
-    have he : H - C (k / 2) * X ^ 2 - C d * X = C (Q.coeff 0) :=
+    have he : H - C (k / 2) * X ^ (2 : ℕ) - C d * X = C (Q.coeff 0) :=
       eq_C_of_derivative_eq_zero hQ
     refine ⟨d, Q.coeff 0, ?_⟩
     linear_combination he
@@ -110,7 +110,7 @@ theorem gomesDilaton_secondDerivative_constant_iff (H : ℝ[X]) (k : ℝ) :
 /-- The complete constant-shift classification, with the exact allowed quadratic coefficient. -/
 theorem gomesDilatonDual_quadratic_rigidity (H : ℝ[X]) (c : ℝ) :
     (∀ x : ℝ, dilatonPotential (-H) x = dilatonPotential H x + c) ↔
-      ∃ d e : ℝ, H = C (-c / 2) * X ^ 2 + C d * X + C e := by
+      ∃ d e : ℝ, H = C (-c / 2) * X ^ (2 : ℕ) + C d * X + C e := by
   rw [gomesDilatonDual_constant_shift_iff, gomesDilaton_secondDerivative_constant_iff]
 
 end GaloisForLFunctions.HTGeometry

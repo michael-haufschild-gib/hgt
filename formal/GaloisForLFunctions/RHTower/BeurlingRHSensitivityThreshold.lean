@@ -171,7 +171,7 @@ theorem integral_cexp_mul_adjoinedDensity (β γ : ℝ) {s : ℂ} (hs : β < s.r
 
 /-- The Euler factor contributed by the adjoined generalized primes. -/
 def adjoinedFactor (β γ : ℝ) (s : ℂ) : ℂ :=
-  ((s - (β : ℂ)) ^ 2 + (γ : ℂ) ^ 2) / (s - (β : ℂ)) ^ 2
+  ((s - (β : ℂ)) ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ)) / (s - (β : ℂ)) ^ (2 : ℕ)
 
 /-- The adjoined Euler factor is the exponential of the Laplace transform of the adjoined density.
 This is what makes the perturbed zeta the zeta function of a genuine Beurling system. -/
@@ -190,7 +190,7 @@ theorem cexp_integral_adjoinedDensity (β γ : ℝ) {s : ℂ} (hs : β < s.re) :
   rw [integral_cexp_mul_adjoinedDensity β γ hs, Complex.exp_sub, Complex.exp_add,
     Complex.exp_log n1, Complex.exp_log n2, two_mul, Complex.exp_add, Complex.exp_log n0,
     adjoinedFactor]
-  have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
+  have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
   field_simp
   ring_nf
   rw [hI]
@@ -209,7 +209,7 @@ theorem perturbedZeta_eq_zeta_mul_cexp (β γ : ℝ) {s : ℂ} (hs : β < s.re) 
 theorem adjoinedFactor_eq_zero (β : ℝ) {γ : ℝ} (hγ : γ ≠ 0) :
     adjoinedFactor β γ ((β : ℂ) + (γ : ℂ) * I) = 0 := by
   have hγC : (γ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hγ
-  have hnum : (((β : ℂ) + (γ : ℂ) * I) - (β : ℂ)) ^ 2 + (γ : ℂ) ^ 2 = 0 := by
+  have hnum : (((β : ℂ) + (γ : ℂ) * I) - (β : ℂ)) ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ) = 0 := by
     have : (((β : ℂ) + (γ : ℂ) * I) - (β : ℂ)) = (γ : ℂ) * I := by ring
     rw [this, mul_pow, Complex.I_sq]
     ring
@@ -227,7 +227,7 @@ theorem re_of_zero (β γ : ℝ) : ((β : ℂ) + (γ : ℂ) * I).re = β := by
 /-- **The `σ`-mass of the adjoined generalized primes**, `∫ u^{-σ} dν(u)`. -/
 theorem integral_cexp_mul_adjoinedDensity_ofReal (β γ : ℝ) {σ : ℝ} (hσ : β < σ) :
     (∫ t in Ioi (0 : ℝ), Complex.exp (-((σ : ℂ) * t)) * (adjoinedDensity β γ t : ℂ)) =
-      ((Real.log (1 + γ ^ 2 / (σ - β) ^ 2) : ℝ) : ℂ) := by
+      ((Real.log (1 + γ ^ (2 : ℕ) / (σ - β) ^ (2 : ℕ)) : ℝ) : ℂ) := by
   have hs : β < ((σ : ℂ)).re := by simpa using hσ
   rw [integral_cexp_mul_adjoinedDensity β γ hs]
   have hb : (0 : ℝ) < σ - β := by linarith
@@ -240,7 +240,7 @@ theorem integral_cexp_mul_adjoinedDensity_ofReal (β γ : ℝ) {σ : ℝ} (hσ :
     have hre := h.1
     simp [Complex.sub_re, Complex.mul_re] at hre
     linarith
-  have hnorm : ‖(σ : ℂ) - (β : ℂ) - (γ : ℂ) * I‖ = Real.sqrt ((σ - β) ^ 2 + γ ^ 2) := by
+  have hnorm : ‖(σ : ℂ) - (β : ℂ) - (γ : ℂ) * I‖ = Real.sqrt ((σ - β) ^ (2 : ℕ) + γ ^ (2 : ℕ)) := by
     rw [Complex.norm_def, Complex.normSq_apply]
     simp [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im]
     ring_nf
@@ -249,16 +249,16 @@ theorem integral_cexp_mul_adjoinedDensity_ofReal (β γ : ℝ) {σ : ℝ} (hσ :
     simp
   have hlogpair : Complex.log ((σ : ℂ) - (β : ℂ) - (γ : ℂ) * I) +
       Complex.log ((σ : ℂ) - (β : ℂ) + (γ : ℂ) * I) =
-      ((Real.log ((σ - β) ^ 2 + γ ^ 2) : ℝ) : ℂ) := by
+      ((Real.log ((σ - β) ^ (2 : ℕ) + γ ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [← hconj, Complex.log_conj _ harg, Complex.add_conj, Complex.log_re, hnorm,
       Real.log_sqrt (by positivity)]
     push_cast
     ring
-  have hval : Real.log ((σ - β) ^ 2 + γ ^ 2) - 2 * Real.log (σ - β) =
-      Real.log (1 + γ ^ 2 / (σ - β) ^ 2) := by
-    have hb2 : (0 : ℝ) < (σ - β) ^ 2 := pow_pos hb 2
-    have hsum : (0 : ℝ) < (σ - β) ^ 2 + γ ^ 2 := by positivity
-    rw [show (2 : ℝ) * Real.log (σ - β) = Real.log ((σ - β) ^ 2) from by
+  have hval : Real.log ((σ - β) ^ (2 : ℕ) + γ ^ (2 : ℕ)) - 2 * Real.log (σ - β) =
+      Real.log (1 + γ ^ (2 : ℕ) / (σ - β) ^ (2 : ℕ)) := by
+    have hb2 : (0 : ℝ) < (σ - β) ^ (2 : ℕ) := pow_pos hb 2
+    have hsum : (0 : ℝ) < (σ - β) ^ (2 : ℕ) + γ ^ (2 : ℕ) := by positivity
+    rw [show (2 : ℝ) * Real.log (σ - β) = Real.log ((σ - β) ^ (2 : ℕ)) from by
       rw [Real.log_pow]; norm_num]
     rw [← Real.log_div (ne_of_gt hsum) (ne_of_gt hb2)]
     congr 1
@@ -276,7 +276,7 @@ theorem cexp_ofReal_mul_adjoinedDensity (β γ σ : ℝ) (t : ℝ) :
 /-- The real form of the `σ`-mass. -/
 theorem integral_adjoinedDensity_mass (β γ : ℝ) {σ : ℝ} (hσ : β < σ) :
     (∫ t in Ioi (0 : ℝ), Real.exp (-(σ * t)) * adjoinedDensity β γ t) =
-      Real.log (1 + γ ^ 2 / (σ - β) ^ 2) := by
+      Real.log (1 + γ ^ (2 : ℕ) / (σ - β) ^ (2 : ℕ)) := by
   have h := integral_cexp_mul_adjoinedDensity_ofReal β γ hσ
   rw [setIntegral_congr_fun measurableSet_Ioi
     (fun t _ => cexp_ofReal_mul_adjoinedDensity β γ σ t)] at h
@@ -285,7 +285,7 @@ theorem integral_adjoinedDensity_mass (β γ : ℝ) {σ : ℝ} (hσ : β < σ) :
 /-- **The reciprocal mass** `∫ u⁻¹ dν(u)` of the adjoined generalized primes. -/
 theorem integral_adjoinedDensity_reciprocal (β γ : ℝ) (hβ : β < 1) :
     (∫ t in Ioi (0 : ℝ), Real.exp (-(1 * t)) * adjoinedDensity β γ t) =
-      Real.log (1 + γ ^ 2 / (1 - β) ^ 2) :=
+      Real.log (1 + γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ)) :=
   integral_adjoinedDensity_mass β γ hβ
 
 /-- **The abscissa of the adjoined measure is exactly `β`.**  The `β`-mass diverges, so no
@@ -294,7 +294,7 @@ theorem not_integrableOn_adjoinedDensity_abscissa (β : ℝ) {γ : ℝ} (hγ : �
     ¬ IntegrableOn (fun t : ℝ => Real.exp (-(β * t)) * adjoinedDensity β γ t) (Ioi (0 : ℝ)) := by
   intro hint
   set M : ℝ := ∫ t in Ioi (0 : ℝ), Real.exp (-(β * t)) * adjoinedDensity β γ t with hM
-  have hγ2 : (0 : ℝ) < γ ^ 2 := by positivity
+  have hγ2 : (0 : ℝ) < γ ^ (2 : ℕ) := by positivity
   set δ : ℝ := |γ| / Real.sqrt (Real.exp M + 1) with hδ
   have hroot : (0 : ℝ) < Real.sqrt (Real.exp M + 1) :=
     Real.sqrt_pos.mpr (by positivity)
@@ -328,9 +328,9 @@ theorem not_integrableOn_adjoinedDensity_abscissa (β : ℝ) {γ : ℝ} (hγ : �
   rw [integral_adjoinedDensity_mass β γ hσ] at hle
   have hsub : σ - β = δ := by simp [hσdef]
   rw [hsub] at hle
-  have hδ2 : δ ^ 2 = γ ^ 2 / (Real.exp M + 1) := by
+  have hδ2 : δ ^ (2 : ℕ) = γ ^ (2 : ℕ) / (Real.exp M + 1) := by
     rw [hδ, div_pow, Real.sq_sqrt (by positivity), sq_abs]
-  have hquot : γ ^ 2 / δ ^ 2 = Real.exp M + 1 := by
+  have hquot : γ ^ (2 : ℕ) / δ ^ (2 : ℕ) = Real.exp M + 1 := by
     rw [hδ2]
     field_simp
   rw [hquot] at hle
@@ -383,7 +383,7 @@ theorem cexp_mul_mertensIntegrand (β γ : ℝ) (s : ℂ) (t : ℝ) :
 which the Mertens sum of the enlarged system exceeds the classical one. -/
 theorem integral_mertensIntegrand (β γ : ℝ) (hβ : β < 1) :
     (∫ t in Ioi (0 : ℝ), Complex.exp (-((1 : ℂ) * t)) * (mertensIntegrand β γ t : ℂ)) =
-      2 * (γ : ℂ) ^ 2 / (((1 : ℂ) - β) * (((1 : ℂ) - β) ^ 2 + (γ : ℂ) ^ 2)) := by
+      2 * (γ : ℂ) ^ (2 : ℕ) / (((1 : ℂ) - β) * (((1 : ℂ) - β) ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ))) := by
   have hs : β < (1 : ℂ).re := by simpa using hβ
   have h0 := re_sub_pos (β := β) hs
   have h1 := re_sub_sub_pos (β := β) (γ := γ) hs
@@ -413,11 +413,11 @@ theorem integral_mertensIntegrand (β γ : ℝ) (hβ : β < 1) :
       ((integrableOn_cexp_neg_mul h0).const_mul 2) (integrableOn_cexp_neg_mul h1),
     integral_const_mul, integral_cexp_neg_mul h0, integral_cexp_neg_mul h1,
     integral_cexp_neg_mul h2]
-  have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
-  have hfac : ((1 : ℂ) - (β : ℂ)) ^ 2 + (γ : ℂ) ^ 2 =
+  have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
+  have hfac : ((1 : ℂ) - (β : ℂ)) ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ) =
       ((1 : ℂ) - (β : ℂ) - (γ : ℂ) * I) * ((1 : ℂ) - (β : ℂ) + (γ : ℂ) * I) := by
-    linear_combination ((γ : ℂ) ^ 2) * hI
-  have hD : ((1 : ℂ) - (β : ℂ)) ^ 2 + (γ : ℂ) ^ 2 ≠ 0 := by
+    linear_combination ((γ : ℂ) ^ (2 : ℕ)) * hI
+  have hD : ((1 : ℂ) - (β : ℂ)) ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ) ≠ 0 := by
     rw [hfac]
     exact mul_ne_zero n1 n2
   field_simp
@@ -427,11 +427,11 @@ theorem integral_mertensIntegrand (β γ : ℝ) (hβ : β < 1) :
 
 /-- The reciprocal mass tends to `0` as the adjoined oscillation frequency tends to `0`. -/
 theorem tendsto_reciprocalMass (β : ℝ) (hβ : β < 1) :
-    Tendsto (fun γ : ℝ => Real.log (1 + γ ^ 2 / (1 - β) ^ 2)) (𝓝 0) (𝓝 0) := by
-  have hb : (1 - β) ^ 2 ≠ 0 := by
+    Tendsto (fun γ : ℝ => Real.log (1 + γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ))) (𝓝 0) (𝓝 0) := by
+  have hb : (1 - β) ^ (2 : ℕ) ≠ 0 := by
     have : (0 : ℝ) < 1 - β := by linarith
     positivity
-  have hcont : ContinuousAt (fun γ : ℝ => Real.log (1 + γ ^ 2 / (1 - β) ^ 2)) 0 := by
+  have hcont : ContinuousAt (fun γ : ℝ => Real.log (1 + γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ))) 0 := by
     apply ContinuousAt.log
     · fun_prop
     · norm_num
@@ -445,14 +445,14 @@ mass is below `ε` and whose enlarged zeta function has a zero with real part `�
 theorem exists_small_reciprocalMass_zero_off_line
     {β : ℝ} (hβ1 : 1 / 2 < β) (hβ2 : β < 1) {ε : ℝ} (hε : 0 < ε) :
     ∃ γ : ℝ, 0 < γ ∧
-      Real.log (1 + γ ^ 2 / (1 - β) ^ 2) < ε ∧
+      Real.log (1 + γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ)) < ε ∧
       (∀ t : ℝ, 0 < t → 0 ≤ adjoinedDensity β γ t) ∧
       perturbedZeta β γ ((β : ℂ) + (γ : ℂ) * I) = 0 ∧
       1 / 2 < ((β : ℂ) + (γ : ℂ) * I).re := by
   have hlim := tendsto_reciprocalMass β hβ2
-  have hev0 : ∀ᶠ γ : ℝ in 𝓝 (0 : ℝ), Real.log (1 + γ ^ 2 / (1 - β) ^ 2) < ε :=
+  have hev0 : ∀ᶠ γ : ℝ in 𝓝 (0 : ℝ), Real.log (1 + γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ)) < ε :=
     hlim.eventually (eventually_lt_nhds hε)
-  have hev : ∀ᶠ γ : ℝ in 𝓝[>] (0 : ℝ), Real.log (1 + γ ^ 2 / (1 - β) ^ 2) < ε :=
+  have hev : ∀ᶠ γ : ℝ in 𝓝[>] (0 : ℝ), Real.log (1 + γ ^ (2 : ℕ) / (1 - β) ^ (2 : ℕ)) < ε :=
     Filter.Eventually.filter_mono nhdsWithin_le_nhds hev0
   obtain ⟨γ, hγε, hγpos⟩ := ((hev.and self_mem_nhdsWithin).exists)
   refine ⟨γ, hγpos, hγε, fun t ht => adjoinedDensity_nonneg β γ ht,
@@ -498,7 +498,7 @@ theorem rh_sensitivity_threshold {β : ℝ} (hβ1 : 1 / 2 < β) (hβ2 : β < 1) 
       (∀ t : ℝ, 0 < t → 0 ≤ adjoinedDensity β γ t) ∧
       (∀ σ : ℝ, β < σ →
         (∫ t in Ioi (0 : ℝ), Real.exp (-(σ * t)) * adjoinedDensity β γ t) =
-          Real.log (1 + γ ^ 2 / (σ - β) ^ 2)) ∧
+          Real.log (1 + γ ^ (2 : ℕ) / (σ - β) ^ (2 : ℕ))) ∧
       ¬ IntegrableOn (fun t : ℝ => Real.exp (-(β * t)) * adjoinedDensity β γ t) (Ioi (0 : ℝ)) ∧
       (∫ t in Ioi (0 : ℝ), Real.exp (-(1 * t)) * adjoinedDensity β γ t) < ε ∧
       (∀ s : ℂ, β < s.re →

@@ -12,10 +12,10 @@ Their difference defines a literal completed outgoing profile.
 This module proves the profile collapses to
 `(R_1(log N)/2) exp(-u/2)`, is HG-admissible, and has exact all-aperture boundary trace
 
-`boundaryRelativeTrace = (R_1(log N)^2/4)(1-exp(-u))`.
+`boundaryRelativeTrace = (R_1(log N)^(2 : ℕ)/4)(1-exp(-u))`.
 
 Consequently domination by canonical incoming pole packet `4(1-exp(-u))` at every positive
-aperture is equivalent to `R_1(log N)^2 <= 16`.  This supplies canonical source-defined HG carrier
+aperture is equivalent to `R_1(log N)^(2 : ℕ) <= 16`.  This supplies canonical source-defined HG carrier
 and an exact arithmetic four-unit target; missing science is proof of domination (and its
 source-to-divisor endpoint), not profile construction.
 -/
@@ -106,7 +106,7 @@ theorem continuous_unitRieszCoherentCompletedOutgoingProfile (N : ℕ) :
 
 theorem leakDensity_unitRieszCoherentCompletedOutgoingProfile (N : ℕ) (u : ℝ) :
     leakDensity (unitRieszCoherentCompletedOutgoingProfile N) u =
-      unitRieszCoherentCompletedOutgoingCharge N ^ 2 * Real.exp (-u) := by
+      unitRieszCoherentCompletedOutgoingCharge N ^ (2 : ℕ) * Real.exp (-u) := by
   rw [leakDensity, unitRieszCoherentCompletedOutgoingProfile, Complex.norm_real,
     Real.norm_eq_abs, sq_abs, mul_pow]
   congr 1
@@ -120,7 +120,7 @@ theorem leakProfile_unitRieszCoherentCompletedOutgoingProfile (N : ℕ) :
   · exact (continuous_unitRieszCoherentCompletedOutgoingProfile N).measurable.aestronglyMeasurable
   · have hbase : IntegrableOn (fun u : ℝ => (1 + u) * Real.exp (-1 * u)) (Ioi 0) :=
       integrableOn_one_add_mul_exp_neg (b := 1) one_pos
-    have hmul := hbase.const_mul (unitRieszCoherentCompletedOutgoingCharge N ^ 2)
+    have hmul := hbase.const_mul (unitRieszCoherentCompletedOutgoingCharge N ^ (2 : ℕ))
     refine hmul.congr ?_
     filter_upwards with u
     rw [leakDensity_unitRieszCoherentCompletedOutgoingProfile]
@@ -130,9 +130,9 @@ theorem leakProfile_unitRieszCoherentCompletedOutgoingProfile (N : ℕ) :
 theorem integral_leakDensity_unitRieszCoherentCompletedOutgoingProfile (N : ℕ) :
     (∫ u in Ioi (0 : ℝ),
         leakDensity (unitRieszCoherentCompletedOutgoingProfile N) u) =
-      unitRieszCoherentCompletedOutgoingCharge N ^ 2 := by
+      unitRieszCoherentCompletedOutgoingCharge N ^ (2 : ℕ) := by
   rw [show (fun u : ℝ => leakDensity (unitRieszCoherentCompletedOutgoingProfile N) u) =
-      fun u => unitRieszCoherentCompletedOutgoingCharge N ^ 2 * Real.exp (-(1 * u)) by
+      fun u => unitRieszCoherentCompletedOutgoingCharge N ^ (2 : ℕ) * Real.exp (-(1 * u)) by
     funext u
     rw [leakDensity_unitRieszCoherentCompletedOutgoingProfile]
     congr 2
@@ -143,9 +143,9 @@ theorem integral_leakDensity_unitRieszCoherentCompletedOutgoingProfile (N : ℕ)
 theorem hankelGapProfile_unitRieszCoherentCompletedOutgoingProfile
     (N : ℕ) {u : ℝ} (hu : 0 ≤ u) :
     hankelGapProfile (unitRieszCoherentCompletedOutgoingProfile N) u =
-      unitRieszCoherentCompletedOutgoingCharge N ^ 2 * Real.exp (-u) := by
+      unitRieszCoherentCompletedOutgoingCharge N ^ (2 : ℕ) * Real.exp (-u) := by
   rw [hankelGapProfile_of_leakDensity_exp
-    (c := unitRieszCoherentCompletedOutgoingCharge N ^ 2) (a := 1)
+    (c := unitRieszCoherentCompletedOutgoingCharge N ^ (2 : ℕ)) (a := 1)
     (fun t => by
       rw [leakDensity_unitRieszCoherentCompletedOutgoingProfile]
       congr 2
@@ -155,7 +155,7 @@ theorem hankelGapProfile_unitRieszCoherentCompletedOutgoingProfile
 theorem boundaryRelativeTrace_unitRieszCoherentCompletedOutgoingProfile
     (N : ℕ) {u : ℝ} (hu : 0 < u) :
     boundaryRelativeTrace (unitRieszCoherentCompletedOutgoingProfile N) u =
-      unitRieszCoherentCompletedOutgoingCharge N ^ 2 * (1 - Real.exp (-u)) := by
+      unitRieszCoherentCompletedOutgoingCharge N ^ (2 : ℕ) * (1 - Real.exp (-u)) := by
   rw [boundaryRelativeTrace_eq_gap_sub
     (leakProfile_unitRieszCoherentCompletedOutgoingProfile N) hu,
     hankelGapProfile_unitRieszCoherentCompletedOutgoingProfile N (le_refl 0),
@@ -170,7 +170,7 @@ theorem tendsto_boundaryRelativeTrace_div_unitRieszCoherentCompletedOutgoingProf
     Tendsto (fun u : ℝ =>
         boundaryRelativeTrace (unitRieszCoherentCompletedOutgoingProfile N) u / u)
       (𝓝[>] (0 : ℝ))
-      (𝓝 ((criticalMellinChebyshevResolventSource (Real.log N) / 2) ^ 2)) := by
+      (𝓝 ((criticalMellinChebyshevResolventSource (Real.log N) / 2) ^ (2 : ℕ))) := by
   have hlim := tendsto_boundaryRelativeTrace_div
     (leakProfile_unitRieszCoherentCompletedOutgoingProfile N)
   rw [integral_leakDensity_unitRieszCoherentCompletedOutgoingProfile,
@@ -183,7 +183,7 @@ theorem unitRieszCoherentCompletedOutgoingProfile_density_le_four_iff
         Tendsto (fun u : ℝ =>
             boundaryRelativeTrace (unitRieszCoherentCompletedOutgoingProfile N) u / u)
           (𝓝[>] (0 : ℝ)) (𝓝 L) → L ≤ 4) ↔
-      criticalMellinChebyshevResolventSource (Real.log N) ^ 2 ≤ 16 := by
+      criticalMellinChebyshevResolventSource (Real.log N) ^ (2 : ℕ) ≤ 16 := by
   have hlim :=
     tendsto_boundaryRelativeTrace_div_unitRieszCoherentCompletedOutgoingProfile hN
   constructor
@@ -191,7 +191,7 @@ theorem unitRieszCoherentCompletedOutgoingProfile_density_le_four_iff
     have hle := hall _ hlim
     nlinarith
   · intro hres L hL
-    have hEq : L = (criticalMellinChebyshevResolventSource (Real.log N) / 2) ^ 2 :=
+    have hEq : L = (criticalMellinChebyshevResolventSource (Real.log N) / 2) ^ (2 : ℕ) :=
       tendsto_nhds_unique hL hlim
     rw [hEq]
     nlinarith
@@ -203,7 +203,7 @@ theorem unitRieszCoherentCompletedOutgoingProfile_le_pole_iff
     (∀ u : ℝ, 0 < u →
       boundaryRelativeTrace (unitRieszCoherentCompletedOutgoingProfile N) u ≤
         boundaryRelativeTrace polePacketProfile u) ↔
-      criticalMellinChebyshevResolventSource (Real.log N) ^ 2 ≤ 16 := by
+      criticalMellinChebyshevResolventSource (Real.log N) ^ (2 : ℕ) ≤ 16 := by
   constructor
   · intro hall
     have h := hall 1 one_pos
@@ -213,14 +213,14 @@ theorem unitRieszCoherentCompletedOutgoingProfile_le_pole_iff
     have hfactor : 0 < 1 - Real.exp (-(1 : ℝ)) := by
       have : Real.exp (-(1 : ℝ)) < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
       linarith
-    have hsquare : (criticalMellinChebyshevResolventSource (Real.log N) / 2) ^ 2 ≤ 4 :=
+    have hsquare : (criticalMellinChebyshevResolventSource (Real.log N) / 2) ^ (2 : ℕ) ≤ 4 :=
       le_of_mul_le_mul_right h hfactor
     nlinarith
   · intro hres u hu
     rw [boundaryRelativeTrace_unitRieszCoherentCompletedOutgoingProfile N hu,
       unitRieszCoherentCompletedOutgoingCharge_eq_resolvent_half hN,
       boundaryRelativeTrace_polePacket hu]
-    have hsquare : (criticalMellinChebyshevResolventSource (Real.log N) / 2) ^ 2 ≤ 4 := by
+    have hsquare : (criticalMellinChebyshevResolventSource (Real.log N) / 2) ^ (2 : ℕ) ≤ 4 := by
       nlinarith
     exact mul_le_mul_of_nonneg_right hsquare (by
       have hexp : Real.exp (-u) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)

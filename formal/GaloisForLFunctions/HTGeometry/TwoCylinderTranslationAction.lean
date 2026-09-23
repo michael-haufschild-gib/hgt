@@ -31,7 +31,7 @@ theorem ratFuncScale_inv_scale (q : K) (hq : q ≠ 0) (f : RatFunc K) :
     mul_inv_cancel₀ hq, polyScale_one, polyScale_one]
 
 /-- The dilation `X ↦ q X` of `K(X)` as a ring automorphism. -/
-def ratFuncScaleEquiv (q : K) (hq : q ≠ 0) : RatFunc K ≃+* RatFunc K where
+def ratFuncScaleEquiv_twoCylinderTranslationAction (q : K) (hq : q ≠ 0) : RatFunc K ≃+* RatFunc K where
   toFun := ratFuncScale q hq
   invFun := ratFuncScale q⁻¹ (inv_ne_zero hq)
   left_inv := ratFuncScale_scale_inv q hq
@@ -40,7 +40,7 @@ def ratFuncScaleEquiv (q : K) (hq : q ≠ 0) : RatFunc K ≃+* RatFunc K where
   map_add' := map_add _
 
 @[simp] theorem ratFuncScaleEquiv_apply (q : K) (hq : q ≠ 0) (f : RatFunc K) :
-    ratFuncScaleEquiv q hq f = ratFuncScale q hq f := rfl
+    ratFuncScaleEquiv_twoCylinderTranslationAction q hq f = ratFuncScale q hq f := rfl
 
 
 local instance tcDomain :

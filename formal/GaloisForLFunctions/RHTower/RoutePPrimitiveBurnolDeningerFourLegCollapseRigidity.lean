@@ -53,8 +53,8 @@ theorem routePDeningerFourLegCollapseDefect_factorization
         ((xiSpectralPoint q - (starRingEnd ℂ) (xiSpectralPoint q)) *
           (xiSpectralPoint q + (starRingEnd ℂ) (xiSpectralPoint q) -
             2 * (w : ℂ))) *
-        (((starRingEnd ℂ) (xiSpectralPoint q) - (w : ℂ)) ^ 2 *
-          (xiSpectralPoint q - (w : ℂ)) ^ 2)⁻¹ := by
+        (((starRingEnd ℂ) (xiSpectralPoint q) - (w : ℂ)) ^ (2 : ℕ) *
+          (xiSpectralPoint q - (w : ℂ)) ^ (2 : ℕ))⁻¹ := by
   have hq := xiSpectralPoint_ne_deningerPrimeGammaUpperPoint q w
   have hL := xiSpectralPoint_ne_deningerPrimeGammaUpperPoint
     (xiZeroCopyLineConjEquiv q) w
@@ -64,8 +64,8 @@ theorem routePDeningerFourLegCollapseDefect_factorization
     routePDeningerUpperFourLegHodgeMate_eq_lineConj]
   change
     A * xiWeilCauchyTest (w : ℂ)
-          (xiSpectralPoint (xiZeroCopyLineConjEquiv q)) ^ 2 -
-        A * xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q) ^ 2 = _
+          (xiSpectralPoint (xiZeroCopyLineConjEquiv q)) ^ (2 : ℕ) -
+        A * xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q) ^ (2 : ℕ) = _
   rw [xiSpectralPoint_lineConj]
   unfold xiWeilCauchyTest
   field_simp [sub_ne_zero.mpr hq, sub_ne_zero.mpr hconj]
@@ -85,8 +85,8 @@ theorem routePDeningerFourLegCollapseDefect_eq_zero_iff
   have hconj : (starRingEnd ℂ) (xiSpectralPoint q) ≠ (w : ℂ) := by
     simpa [xiSpectralPoint_lineConj] using hL
   have hden :
-      ((starRingEnd ℂ) (xiSpectralPoint q) - (w : ℂ)) ^ 2 *
-          (xiSpectralPoint q - (w : ℂ)) ^ 2 ≠ 0 := by
+      ((starRingEnd ℂ) (xiSpectralPoint q) - (w : ℂ)) ^ (2 : ℕ) *
+          (xiSpectralPoint q - (w : ℂ)) ^ (2 : ℕ) ≠ 0 := by
     exact mul_ne_zero
       (pow_ne_zero 2 (sub_ne_zero.mpr hconj))
       (pow_ne_zero 2 (sub_ne_zero.mpr hq))

@@ -87,9 +87,9 @@ private theorem selection_sum (M : ℕ) (F : ℕ → ℝ → ℝ) (hF : ∀ d, F
 
 /-- No prime selection gives exactly the original arithmetic diagonal. -/
 theorem mobiusDivisorSelectionEnergy_empty (M : ℕ) :
-    mobiusDivisorSelectionEnergy M ∅ = ∑ d ∈ Icc 1 M, (mobiusDivisorDilationChannel M d)^2 := by
+    mobiusDivisorSelectionEnergy M ∅ = ∑ d ∈ Icc 1 M, (mobiusDivisorDilationChannel M d)^(2 : ℕ) := by
   rw [mobiusDivisorSelectionEnergy,subsetLabelEnergy_empty _ _ _ _ (selection_labels M)]
-  · exact selection_sum M (fun _ x => x^2) (by simp)
+  · exact selection_sum M (fun _ x => x^(2 : ℕ)) (by simp)
   · intro d hd e he h
     have hdS := (mem_filter.mp hd).2
     have heS := (mem_filter.mp he).2
@@ -98,7 +98,7 @@ theorem mobiusDivisorSelectionEnergy_empty (M : ℕ) :
 /-- Complete prime selection gives exactly the complete signed square. -/
 theorem mobiusDivisorSelectionEnergy_full (M : ℕ) :
     mobiusDivisorSelectionEnergy M (mobiusDivisorSelectionPrimes M) =
-      (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)^2 := by
+      (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d)^(2 : ℕ) := by
   rw [mobiusDivisorSelectionEnergy,subsetLabelEnergy_full _ _ _ _ (selection_labels M),
     selection_sum M (fun _ x => x) (by simp)]
 
@@ -115,7 +115,7 @@ theorem mobiusDivisorHalfSelectionHead_eq_mean (M : ℕ) :
 
 /-- The mean head squared is an unconditional lower bound for averaged retained energy. -/
 theorem mobiusDivisorHalfSelectionHead_sq_le_energy (M : ℕ) :
-    (mobiusDivisorHalfSelectionHead M)^2 ≤ mobiusDivisorHalfSelectionEnergy M := by
+    (mobiusDivisorHalfSelectionHead M)^(2 : ℕ) ≤ mobiusDivisorHalfSelectionEnergy M := by
   have h := uniformSubsetMean_labelHead_sq_le_energy (mobiusDivisorSelectionPrimes M)
     (mobiusDivisorSelectionIndices M) Nat.primeFactors (mobiusDivisorDilationChannel M)
     (selection_labels M)

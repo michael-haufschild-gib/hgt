@@ -10,10 +10,10 @@ Let `E(n)` be the positive excess of the weighted von Mangoldt window above its 
 square-root main term. This module proves that the full Dirichlet-energy RH criterion need only
 be checked at perfect squares:
 
-`Summable (m ↦ E(m^2) / m^(1+epsilon))` for every positive `epsilon` implies RH.
+`Summable (m ↦ E(m^(2 : ℕ)) / m^(1+epsilon))` for every positive `epsilon` implies RH.
 
 The proof partitions the apertures into the exact square blocks
-`r^2 ≤ n < (r+1)^2`. A block has `2r+1` members, and the next-square interpolation error is only
+`r^(2 : ℕ) ≤ n < (r+1)^(2 : ℕ)`. A block has `2r+1` members, and the next-square interpolation error is only
 logarithmic. Consequently the all-aperture energy at exponent `1+epsilon` is controlled by the
 square-sample energy at exponent `1+2*epsilon`, plus a summable subpower correction.
 
@@ -640,7 +640,7 @@ theorem dyadicWeightedPrimeWindowPositiveExcess_LSeriesSummable_of_squareSquareE
 
 /-- Natural square-sample form of the critical energy criterion. It is enough that, for every
 positive `epsilon`, the series
-`sum_m E(m^2) / m^(1+epsilon)` converges, where `E` is the positive excess above the exact
+`sum_m E(m^(2 : ℕ)) / m^(1+epsilon)` converges, where `E` is the positive excess above the exact
 dyadic square-root main term. -/
 theorem riemannHypothesis_of_squarePrimeWindowPositiveExcessEnergy
     (hSquare : ∀ epsilon : ℝ, 0 < epsilon →

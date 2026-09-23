@@ -27,7 +27,7 @@ theorem hasDerivAt_inv_sqrt {x : ℝ} (hx : 0 < x) :
   have hs : HasDerivAt Real.sqrt (1 / (2 * Real.sqrt x)) x := Real.hasDerivAt_sqrt (ne_of_gt hx)
   have hne : Real.sqrt x ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hx)
   have h := hs.inv hne
-  have hval : -(1 / (2 * Real.sqrt x)) / Real.sqrt x ^ 2 = -(2 * x * Real.sqrt x)⁻¹ := by
+  have hval : -(1 / (2 * Real.sqrt x)) / Real.sqrt x ^ (2 : ℕ) = -(2 * x * Real.sqrt x)⁻¹ := by
     rw [Real.sq_sqrt hx.le]
     field_simp
   rwa [hval] at h
@@ -58,9 +58,9 @@ theorem abs_exteriorWeight_le {x : ℝ} (hx : 0 < x) {ξ' : ℝ → ℝ} (hξ : 
 /-- The derivative of the exterior weight is bounded once the reciprocal speed has controlled
 variation. -/
 theorem abs_deriv_exteriorWeight_le {x C : ℝ} (hx : 0 < x) {ξ' ρ : ℝ → ℝ}
-    (hξ : 1 ≤ ξ' x) (hρ : |ρ x| ≤ C / x ^ 2) :
+    (hξ : 1 ≤ ξ' x) (hρ : |ρ x| ≤ C / x ^ (2 : ℕ)) :
     |(-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x)|
-      ≤ (2 * x * Real.sqrt x)⁻¹ + (Real.sqrt x)⁻¹ * (C / x ^ 2) := by
+      ≤ (2 * x * Real.sqrt x)⁻¹ + (Real.sqrt x)⁻¹ * (C / x ^ (2 : ℕ)) := by
   have hsx : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
   have hinv : |(ξ' x)⁻¹| ≤ 1 := by
     rw [abs_of_nonneg (by positivity : (0 : ℝ) ≤ (ξ' x)⁻¹)]
@@ -71,7 +71,7 @@ theorem abs_deriv_exteriorWeight_le {x C : ℝ} (hx : 0 < x) {ξ' ρ : ℝ → �
     calc (2 * x * Real.sqrt x)⁻¹ * |(ξ' x)⁻¹| ≤ (2 * x * Real.sqrt x)⁻¹ * 1 :=
           mul_le_mul_of_nonneg_left hinv (by positivity)
       _ = (2 * x * Real.sqrt x)⁻¹ := mul_one _
-  have h2 : |(Real.sqrt x)⁻¹ * ρ x| ≤ (Real.sqrt x)⁻¹ * (C / x ^ 2) := by
+  have h2 : |(Real.sqrt x)⁻¹ * ρ x| ≤ (Real.sqrt x)⁻¹ * (C / x ^ (2 : ℕ)) := by
     rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ (Real.sqrt x)⁻¹)]
     exact mul_le_mul_of_nonneg_left hρ (by positivity)
   linarith
@@ -93,38 +93,38 @@ theorem norm_exteriorProfile_le {x C : ℝ} (hx : 0 < x) {ξ' : ℝ → ℝ} {a 
 /-- **The derivative of the exterior profile decays like `1/x²`.** -/
 theorem norm_deriv_exteriorProfile_le {x C : ℝ} (hx2 : 2 ≤ x) (hC : 0 ≤ C)
     {ξ' ρ : ℝ → ℝ} {a a' : ℝ → ℂ}
-    (hξ : 1 ≤ ξ' x) (hρ : |ρ x| ≤ C / x ^ 2)
+    (hξ : 1 ≤ ξ' x) (hρ : |ρ x| ≤ C / x ^ (2 : ℕ))
     (ha : ‖a x‖ ≤ C / Real.sqrt x) (ha' : ‖a' x‖ ≤ C / (x * Real.sqrt x)) :
     ‖a' x * (exteriorWeight ξ' x : ℂ)
         + a x * ((-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x : ℝ) : ℂ)‖
-      ≤ (3 * C / 2 + C ^ 2 / 2) / x ^ 2 := by
+      ≤ (3 * C / 2 + C ^ (2 : ℕ) / 2) / x ^ (2 : ℕ) := by
   have hx : 0 < x := lt_of_lt_of_le (by norm_num) hx2
   have hsx : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
   have hss : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx.le
   have hw := abs_exteriorWeight_le hx hξ
   have hw' := abs_deriv_exteriorWeight_le hx hξ hρ
-  have hterm1 : ‖a' x * (exteriorWeight ξ' x : ℂ)‖ ≤ C / x ^ 2 := by
+  have hterm1 : ‖a' x * (exteriorWeight ξ' x : ℂ)‖ ≤ C / x ^ (2 : ℕ) := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     calc ‖a' x‖ * |exteriorWeight ξ' x| ≤ (C / (x * Real.sqrt x)) * (Real.sqrt x)⁻¹ :=
           mul_le_mul ha' hw (abs_nonneg _) (le_trans (norm_nonneg _) ha')
-      _ = C / x ^ 2 := by
+      _ = C / x ^ (2 : ℕ) := by
           field_simp
           rw [Real.sq_sqrt hx.le]
   have hterm2 : ‖a x * ((-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹
         + (Real.sqrt x)⁻¹ * ρ x : ℝ) : ℂ)‖
-      ≤ C / (2 * x ^ 2) + C ^ 2 / x ^ 3 := by
+      ≤ C / (2 * x ^ (2 : ℕ)) + C ^ (2 : ℕ) / x ^ (3 : ℕ) := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     have hbase : ‖a x‖ * |(-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x)|
-        ≤ (C / Real.sqrt x) * ((2 * x * Real.sqrt x)⁻¹ + (Real.sqrt x)⁻¹ * (C / x ^ 2)) :=
+        ≤ (C / Real.sqrt x) * ((2 * x * Real.sqrt x)⁻¹ + (Real.sqrt x)⁻¹ * (C / x ^ (2 : ℕ))) :=
       mul_le_mul ha hw' (abs_nonneg _) (le_trans (norm_nonneg _) ha)
     refine le_trans hbase (le_of_eq ?_)
     field_simp
     rw [Real.sq_sqrt hx.le]
-  have htail : C ^ 2 / x ^ 3 ≤ C ^ 2 / (2 * x ^ 2) := by
+  have htail : C ^ (2 : ℕ) / x ^ (3 : ℕ) ≤ C ^ (2 : ℕ) / (2 * x ^ (2 : ℕ)) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [mul_nonneg (mul_nonneg (sq_nonneg C) (sq_nonneg x)) (sub_nonneg.mpr hx2)]
-  have hsum : C / x ^ 2 + (C / (2 * x ^ 2) + C ^ 2 / (2 * x ^ 2))
-      = (3 * C / 2 + C ^ 2 / 2) / x ^ 2 := by
+  have hsum : C / x ^ (2 : ℕ) + (C / (2 * x ^ (2 : ℕ)) + C ^ (2 : ℕ) / (2 * x ^ (2 : ℕ)))
+      = (3 * C / 2 + C ^ (2 : ℕ) / 2) / x ^ (2 : ℕ) := by
     field_simp
     ring
   calc ‖a' x * (exteriorWeight ξ' x : ℂ)
@@ -132,9 +132,9 @@ theorem norm_deriv_exteriorProfile_le {x C : ℝ} (hx2 : 2 ≤ x) (hC : 0 ≤ C)
       ≤ ‖a' x * (exteriorWeight ξ' x : ℂ)‖
         + ‖a x * ((-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x : ℝ) : ℂ)‖ :=
         norm_add_le _ _
-    _ ≤ C / x ^ 2 + (C / (2 * x ^ 2) + C ^ 2 / (2 * x ^ 2)) := by
+    _ ≤ C / x ^ (2 : ℕ) + (C / (2 * x ^ (2 : ℕ)) + C ^ (2 : ℕ) / (2 * x ^ (2 : ℕ))) := by
         linarith [hterm1, hterm2, htail]
-    _ = (3 * C / 2 + C ^ 2 / 2) / x ^ 2 := hsum
+    _ = (3 * C / 2 + C ^ (2 : ℕ) / 2) / x ^ (2 : ℕ) := hsum
 
 /-- **The exterior primitive of a Liouville–Green branch.**  Given an amplitude with the decay of an
 exterior expansion and a phase whose speed is at least one with reciprocal of controlled variation,
@@ -153,10 +153,10 @@ theorem norm_integral_exterior_le
     (hspeed : ∀ x ∈ Set.uIcc (2 : ℝ) X, 1 ≤ ξ' x)
     (haB : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖a x‖ ≤ C / Real.sqrt x)
     (ha'B : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖a' x‖ ≤ C / (x * Real.sqrt x))
-    (hρB : ∀ x ∈ Set.uIcc (2 : ℝ) X, |ρ x| ≤ C / x ^ 2) :
+    (hρB : ∀ x ∈ Set.uIcc (2 : ℝ) X, |ρ x| ≤ C / x ^ (2 : ℕ)) :
     ‖∫ t in (2 : ℝ)..X, (a t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
         * Complex.exp (Complex.I * ((eps * c * ξ t : ℝ) : ℂ))‖
-      ≤ 3 * (3 * C / 2 + C ^ 2 / 2) / (2 * c) := by
+      ≤ 3 * (3 * C / 2 + C ^ (2 : ℕ) / 2) / (2 * c) := by
   have hxpos : ∀ x ∈ Set.uIcc (2 : ℝ) X, (0 : ℝ) < x := by
     intro x hx
     rw [Set.uIcc_of_le hX] at hx
@@ -169,7 +169,7 @@ theorem norm_integral_exterior_le
     ne_of_gt (lt_of_lt_of_le zero_lt_one (hspeed x hx))
   have hsqrtne : ∀ x ∈ Set.uIcc (2 : ℝ) X, Real.sqrt x ≠ 0 := fun x hx =>
     ne_of_gt (Real.sqrt_pos.mpr (hxpos x hx))
-  set C' : ℝ := 3 * C / 2 + C ^ 2 / 2 with hC'def
+  set C' : ℝ := 3 * C / 2 + C ^ (2 : ℕ) / 2 with hC'def
   have hC'0 : 0 ≤ C' := by rw [hC'def]; positivity
   have hCC' : C ≤ C' := by rw [hC'def]; nlinarith [sq_nonneg C]
   -- the profile and its derivative
@@ -218,7 +218,7 @@ theorem norm_integral_exterior_le
     have hx0 := hxpos x hx
     gcongr
   have hP'd : ∀ x ∈ Set.uIcc (2 : ℝ) X,
-      ‖a' x * ((exteriorWeight ξ' x : ℝ) : ℂ) + a x * ((W' x : ℝ) : ℂ)‖ ≤ C' * (x ^ 2)⁻¹ := by
+      ‖a' x * ((exteriorWeight ξ' x : ℝ) : ℂ) + a x * ((W' x : ℝ) : ℂ)‖ ≤ C' * (x ^ (2 : ℕ))⁻¹ := by
     intro x hx
     have h := norm_deriv_exteriorProfile_le (hx2 x hx) hC (hspeed x hx) (hρB x hx)
       (haB x hx) (ha'B x hx)
@@ -234,38 +234,38 @@ constant play different roles: the bound is *linear* in the amplitude constant, 
 is not rounded up by a large variation constant. -/
 theorem norm_deriv_exteriorProfile_two_const_le {x Ca Cr : ℝ} (hx2 : 2 ≤ x)
     (hCa : 0 ≤ Ca) (hCr : 0 ≤ Cr) {ξ' ρ : ℝ → ℝ} {a a' : ℝ → ℂ}
-    (hξ : 1 ≤ ξ' x) (hρ : |ρ x| ≤ Cr / x ^ 2)
+    (hξ : 1 ≤ ξ' x) (hρ : |ρ x| ≤ Cr / x ^ (2 : ℕ))
     (ha : ‖a x‖ ≤ Ca / Real.sqrt x) (ha' : ‖a' x‖ ≤ Ca / (x * Real.sqrt x)) :
     ‖a' x * (exteriorWeight ξ' x : ℂ)
         + a x * ((-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x : ℝ) : ℂ)‖
-      ≤ (3 * Ca / 2 + Ca * Cr / 2) / x ^ 2 := by
+      ≤ (3 * Ca / 2 + Ca * Cr / 2) / x ^ (2 : ℕ) := by
   have hx : 0 < x := lt_of_lt_of_le (by norm_num) hx2
   have hsx : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
   have hw := abs_exteriorWeight_le hx hξ
   have hw' := abs_deriv_exteriorWeight_le hx hξ hρ
-  have hterm1 : ‖a' x * (exteriorWeight ξ' x : ℂ)‖ ≤ Ca / x ^ 2 := by
+  have hterm1 : ‖a' x * (exteriorWeight ξ' x : ℂ)‖ ≤ Ca / x ^ (2 : ℕ) := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     calc ‖a' x‖ * |exteriorWeight ξ' x| ≤ (Ca / (x * Real.sqrt x)) * (Real.sqrt x)⁻¹ :=
           mul_le_mul ha' hw (abs_nonneg _) (le_trans (norm_nonneg _) ha')
-      _ = Ca / x ^ 2 := by
+      _ = Ca / x ^ (2 : ℕ) := by
           field_simp
           rw [Real.sq_sqrt hx.le]
   have hterm2 : ‖a x * ((-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹
         + (Real.sqrt x)⁻¹ * ρ x : ℝ) : ℂ)‖
-      ≤ Ca / (2 * x ^ 2) + Ca * Cr / x ^ 3 := by
+      ≤ Ca / (2 * x ^ (2 : ℕ)) + Ca * Cr / x ^ (3 : ℕ) := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     have hbase : ‖a x‖ * |(-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x)|
-        ≤ (Ca / Real.sqrt x) * ((2 * x * Real.sqrt x)⁻¹ + (Real.sqrt x)⁻¹ * (Cr / x ^ 2)) :=
+        ≤ (Ca / Real.sqrt x) * ((2 * x * Real.sqrt x)⁻¹ + (Real.sqrt x)⁻¹ * (Cr / x ^ (2 : ℕ))) :=
       mul_le_mul ha hw' (abs_nonneg _) (le_trans (norm_nonneg _) ha)
     refine le_trans hbase (le_of_eq ?_)
     field_simp
     rw [Real.sq_sqrt hx.le]
-  have htail : Ca * Cr / x ^ 3 ≤ Ca * Cr / (2 * x ^ 2) := by
+  have htail : Ca * Cr / x ^ (3 : ℕ) ≤ Ca * Cr / (2 * x ^ (2 : ℕ)) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [mul_nonneg (mul_nonneg (mul_nonneg hCa hCr) (sq_nonneg x))
       (sub_nonneg.mpr hx2)]
-  have hsum : Ca / x ^ 2 + (Ca / (2 * x ^ 2) + Ca * Cr / (2 * x ^ 2))
-      = (3 * Ca / 2 + Ca * Cr / 2) / x ^ 2 := by
+  have hsum : Ca / x ^ (2 : ℕ) + (Ca / (2 * x ^ (2 : ℕ)) + Ca * Cr / (2 * x ^ (2 : ℕ)))
+      = (3 * Ca / 2 + Ca * Cr / 2) / x ^ (2 : ℕ) := by
     field_simp
     ring
   calc ‖a' x * (exteriorWeight ξ' x : ℂ)
@@ -273,9 +273,9 @@ theorem norm_deriv_exteriorProfile_two_const_le {x Ca Cr : ℝ} (hx2 : 2 ≤ x)
       ≤ ‖a' x * (exteriorWeight ξ' x : ℂ)‖
         + ‖a x * ((-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x : ℝ) : ℂ)‖ :=
         norm_add_le _ _
-    _ ≤ Ca / x ^ 2 + (Ca / (2 * x ^ 2) + Ca * Cr / (2 * x ^ 2)) := by
+    _ ≤ Ca / x ^ (2 : ℕ) + (Ca / (2 * x ^ (2 : ℕ)) + Ca * Cr / (2 * x ^ (2 : ℕ))) := by
         linarith [hterm1, hterm2, htail]
-    _ = (3 * Ca / 2 + Ca * Cr / 2) / x ^ 2 := hsum
+    _ = (3 * Ca / 2 + Ca * Cr / 2) / x ^ (2 : ℕ) := hsum
 
 
 /-- **Two-constant exterior bound.**  Separating the amplitude constant from the speed-variation
@@ -294,7 +294,7 @@ theorem norm_integral_exterior_two_const_le
     (hspeed : ∀ x ∈ Set.uIcc (2 : ℝ) X, 1 ≤ ξ' x)
     (haB : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖a x‖ ≤ Ca / Real.sqrt x)
     (ha'B : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖a' x‖ ≤ Ca / (x * Real.sqrt x))
-    (hρB : ∀ x ∈ Set.uIcc (2 : ℝ) X, |ρ x| ≤ Cr / x ^ 2) :
+    (hρB : ∀ x ∈ Set.uIcc (2 : ℝ) X, |ρ x| ≤ Cr / x ^ (2 : ℕ)) :
     ‖∫ t in (2 : ℝ)..X, (a t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
         * Complex.exp (Complex.I * ((eps * c * ξ t : ℝ) : ℂ))‖
       ≤ 3 * (Ca * (3 / 2 + Cr / 2)) / (2 * c) := by
@@ -358,12 +358,12 @@ theorem norm_integral_exterior_two_const_le
     gcongr
   have hP'd : ∀ x ∈ Set.uIcc (2 : ℝ) X,
       ‖a' x * ((exteriorWeight ξ' x : ℝ) : ℂ) + a x * ((W' x : ℝ) : ℂ)‖
-        ≤ C' * (x ^ 2)⁻¹ := by
+        ≤ C' * (x ^ (2 : ℕ))⁻¹ := by
     intro x hx
     have h := norm_deriv_exteriorProfile_two_const_le (hx2 x hx) hCa hCr (hspeed x hx)
       (hρB x hx) (haB x hx) (ha'B x hx)
     rw [hW'def]
-    have hval : (3 * Ca / 2 + Ca * Cr / 2) / x ^ 2 = C' * (x ^ 2)⁻¹ := by
+    have hval : (3 * Ca / 2 + Ca * Cr / 2) / x ^ (2 : ℕ) = C' * (x ^ (2 : ℕ))⁻¹ := by
       rw [hC'def, div_eq_mul_inv]
       ring
     rw [hval] at h

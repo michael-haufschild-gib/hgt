@@ -75,7 +75,7 @@ theorem mtMinimalGeometricTripleTypeI_II_FirstAF_scaleSupported
     (hz0 : (z0 : ℝ) ≤ mtGeometricLevel delta start 0)
     (hroot : mtGeometricLevel delta start 0 < z)
     (i2 i3 : Fin (mtMinimalGeometricDepth delta start z hdelta))
-    (chainLength eIndex : ℕ) (hdilation : (1 + delta) ^ 3 ≤ 2) :
+    (chainLength eIndex : ℕ) (hdilation : (1 + delta) ^ (3 : ℕ) ≤ 2) :
     MTRealScaleSupported
       (mtMinimalGeometricTripleTypeI_II_FirstAF
         z0 D start hdelta hz0 hroot i2 i3 chainLength eIndex)
@@ -255,10 +255,10 @@ def mtMinimalGeometricTripleBoxTypeI_II_Data
     (i1 i2 i3 : Fin (mtMinimalGeometricDepth delta start z hdelta))
     (chain : List (Fin (mtMinimalGeometricDepth delta start z hdelta)))
     (hchain : chain.Nodup) (eIndex kIndex : ℕ)
-    (hfirstDilation : (1 + delta) ^ 3 ≤ 2)
+    (hfirstDilation : (1 + delta) ^ (3 : ℕ) ≤ 2)
     (hsecondDilation : (1 + delta) ^ (chain.length + 1) ≤ 2)
     (hsquare : mtMinimalGeometricTripleBoxTypeI_II_M1
-        delta start i2 i3 eIndex ^ 2 *
+        delta start i2 i3 eIndex ^ (2 : ℕ) *
       mtMinimalGeometricTripleBoxTypeI_II_M2 delta start i1 chain ≤
         X ^ (1 - epsilon))
     (hM2le : mtMinimalGeometricTripleBoxTypeI_II_M2 delta start i1 chain ≤
@@ -302,10 +302,10 @@ theorem mtMinimalGeometricTripleBoxTypeI_II_Data_pieceAF_eq
     (i1 i2 i3 : Fin (mtMinimalGeometricDepth delta start z hdelta))
     (chain : List (Fin (mtMinimalGeometricDepth delta start z hdelta)))
     (hchain : chain.Nodup) (eIndex kIndex : ℕ)
-    (hfirstDilation : (1 + delta) ^ 3 ≤ 2)
+    (hfirstDilation : (1 + delta) ^ (3 : ℕ) ≤ 2)
     (hsecondDilation : (1 + delta) ^ (chain.length + 1) ≤ 2)
     (hsquare : mtMinimalGeometricTripleBoxTypeI_II_M1
-        delta start i2 i3 eIndex ^ 2 *
+        delta start i2 i3 eIndex ^ (2 : ℕ) *
       mtMinimalGeometricTripleBoxTypeI_II_M2 delta start i1 chain ≤
         X ^ (1 - epsilon))
     (hM2le : mtMinimalGeometricTripleBoxTypeI_II_M2 delta start i1 chain ≤

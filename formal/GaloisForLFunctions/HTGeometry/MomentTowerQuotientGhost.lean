@@ -32,9 +32,9 @@ noncomputable def twoAtomMomentQuotient (x y : ℝ) (n : ℕ) : ℝ :=
 def shiftedHankelDetThree (s : ℕ → ℝ) (N : ℕ) : ℝ :=
   s N * s (N + 2) * s (N + 4) +
     2 * s (N + 1) * s (N + 2) * s (N + 3) -
-    s N * s (N + 3) ^ 2 -
-    s (N + 4) * s (N + 1) ^ 2 -
-    s (N + 2) ^ 3
+    s N * s (N + 3) ^ (2 : ℕ) -
+    s (N + 4) * s (N + 1) ^ (2 : ℕ) -
+    s (N + 2) ^ (3 : ℕ)
 
 /-- Tensor multiplication of two two-atom towers is the positive four-atom tower. -/
 theorem twoAtomMomentTower_mul (x y : ℝ) (n : ℕ) :

@@ -138,7 +138,7 @@ theorem tail_le_one {r : ℝ} (hr : 0 < r) {K : ℕ} (hK : 2 * Real.exp 1 * r �
     norm_num
   rw [hval]
   have hpow : (1 / 2 : ℝ) ^ K ≤ 1 / 2 := by
-    calc (1 / 2 : ℝ) ^ K ≤ (1 / 2 : ℝ) ^ 1 :=
+    calc (1 / 2 : ℝ) ^ K ≤ (1 / 2 : ℝ) ^ (1 : ℕ) :=
           pow_le_pow_of_le_one (by norm_num) (by norm_num) hK1
       _ = 1 / 2 := by norm_num
   linarith
@@ -151,7 +151,7 @@ theorem exists_sphere_norm_ge_of_factorial_moduli {f : ℂ → ℂ} (hf : Differ
     ∀ᶠ r : ℝ in atTop, ∃ z ∈ Metric.sphere (0 : ℂ) r,
       Real.exp ((1 - ε) * r) ≤ ‖f z‖ := by
   filter_upwards [eventually_ge_atTop (1 : ℝ),
-    eventually_ge_atTop (2 * (4 * Real.exp 1 + 4) / ε ^ 2 + 1)] with r hr1 hrbig
+    eventually_ge_atTop (2 * (4 * Real.exp 1 + 4) / ε ^ (2 : ℕ) + 1)] with r hr1 hrbig
   by_contra hcon
   push Not at hcon
   have hr : (0 : ℝ) < r := lt_of_lt_of_le one_pos hr1
@@ -192,10 +192,10 @@ theorem exists_sphere_norm_ge_of_factorial_moduli {f : ℂ → ℂ} (hf : Differ
   have hCval : C = Real.exp r * Real.exp (-(ε * r)) := by
     rw [hC, ← Real.exp_add]
     ring_nf
-  have hquad : 1 + ε * r + (ε * r) ^ 2 / 2 ≤ Real.exp (ε * r) := by
+  have hquad : 1 + ε * r + (ε * r) ^ (2 : ℕ) / 2 ≤ Real.exp (ε * r) := by
     have h := Real.sum_le_exp_of_nonneg (x := ε * r) (by positivity) 3
     have hsum : ∑ i ∈ Finset.range 3, (ε * r) ^ i / (i.factorial : ℝ)
-        = 1 + ε * r + (ε * r) ^ 2 / 2 := by
+        = 1 + ε * r + (ε * r) ^ (2 : ℕ) / 2 := by
       simp [Finset.sum_range_succ, Nat.factorial]
     rw [hsum] at h
     exact h
@@ -228,13 +228,13 @@ theorem exists_sphere_norm_ge_of_factorial_moduli {f : ℂ → ℂ} (hf : Differ
     exact Real.exp_le_exp.mpr (by linarith)
   have hhalf : Real.exp (ε * r) / 2 ≤ (K : ℝ) := by
     nlinarith [Real.exp_pos (ε * r), hkey, hsmall]
-  have hquadbig : 2 * (4 * Real.exp 1 + 4) / ε ^ 2 + 1 ≤ r := hrbig
+  have hquadbig : 2 * (4 * Real.exp 1 + 4) / ε ^ (2 : ℕ) + 1 ≤ r := hrbig
   have hεr : 0 < ε * r := by positivity
   have h1 : Real.exp (ε * r) ≤ 4 * Real.exp 1 * r + 4 := by linarith [hhalf, hKle]
-  have h2 : (ε * r) ^ 2 / 2 ≤ Real.exp (ε * r) := by nlinarith [hquad, hεr]
-  have h3 : (ε * r) ^ 2 / 2 ≤ (4 * Real.exp 1 + 4) * r := by nlinarith [h1, h2, hr1]
-  have h4 : ε ^ 2 * r / 2 ≤ 4 * Real.exp 1 + 4 := by nlinarith [h3, hr]
-  have h5 : r ≤ 2 * (4 * Real.exp 1 + 4) / ε ^ 2 := by
+  have h2 : (ε * r) ^ (2 : ℕ) / 2 ≤ Real.exp (ε * r) := by nlinarith [hquad, hεr]
+  have h3 : (ε * r) ^ (2 : ℕ) / 2 ≤ (4 * Real.exp 1 + 4) * r := by nlinarith [h1, h2, hr1]
+  have h4 : ε ^ (2 : ℕ) * r / 2 ≤ 4 * Real.exp 1 + 4 := by nlinarith [h3, hr]
+  have h5 : r ≤ 2 * (4 * Real.exp 1 + 4) / ε ^ (2 : ℕ) := by
     rw [le_div_iff₀ (by positivity)]
     nlinarith [h4]
   linarith [hrbig, h5]
@@ -272,7 +272,7 @@ theorem differentiable_factorialProfileHT : Differentiable ℂ factorialProfileH
   exact h.differentiable (by simp)
 
 theorem factorialProfileHT_eq_tsum (z : ℂ) :
-    factorialProfileHT z = ∑' n : ℕ, phaseSeq factorialProfile n * z ^ n := by
+    factorialProfileHT z = ∑' n : ℕ, phaseSeq_modulusPhaseSequence factorialProfile n * z ^ n := by
   rw [factorialProfileHT, modulusProfileFunction,
     FormalMultilinearSeries.ofScalars_sum_eq]
   simp [smul_eq_mul]
@@ -289,7 +289,7 @@ theorem factorialProfile_order_one_type_one :
           Real.exp ((1 - ε) * r) ≤ ‖factorialProfileHT z‖) := by
   refine ⟨norm_cexp_le_exp_norm, ?_, ?_, ?_⟩
   · intro z
-    refine norm_le_exp_of_factorial_moduli (c := phaseSeq factorialProfile)
+    refine norm_le_exp_of_factorial_moduli (c := phaseSeq_modulusPhaseSequence factorialProfile)
       factorialProfileHT_eq_tsum ?_ z
     intro n
     rw [norm_phaseSeq, factorialProfile, abs_of_pos (by positivity)]

@@ -20,11 +20,11 @@ namespace GaloisForLFunctions.HTGeometry
 `c ≠ 0` and the discriminant `(d − a)² + 4 c b ≠ 0`, the Möbius fixed-point quadratic has two
 distinct roots. -/
 theorem mobius_two_distinct_fixed_points {C : Type*} [Field C] [IsAlgClosed C] [CharZero C]
-    {a b c d : C} (hc : c ≠ 0) (hdisc : (d - a) ^ 2 + 4 * c * b ≠ 0) :
-    ∃ p₁ p₂ : C, p₁ ≠ p₂ ∧ c * p₁ ^ 2 + (d - a) * p₁ - b = 0
-      ∧ c * p₂ ^ 2 + (d - a) * p₂ - b = 0 := by
+    {a b c d : C} (hc : c ≠ 0) (hdisc : (d - a) ^ (2 : ℕ) + 4 * c * b ≠ 0) :
+    ∃ p₁ p₂ : C, p₁ ≠ p₂ ∧ c * p₁ ^ (2 : ℕ) + (d - a) * p₁ - b = 0
+      ∧ c * p₂ ^ (2 : ℕ) + (d - a) * p₂ - b = 0 := by
   obtain ⟨δ, hδ⟩ :=
-    IsAlgClosed.exists_pow_nat_eq ((d - a) ^ 2 + 4 * c * b) (n := 2) (by norm_num)
+    IsAlgClosed.exists_pow_nat_eq ((d - a) ^ (2 : ℕ) + 4 * c * b) (n := 2) (by norm_num)
   have hδ0 : δ ≠ 0 := fun h => hdisc (by rw [← hδ, h]; ring)
   have hc2 : (2 * c : C) ≠ 0 := mul_ne_zero two_ne_zero hc
   refine ⟨(-(d - a) + δ) / (2 * c), (-(d - a) - δ) / (2 * c), ?_, ?_, ?_⟩
@@ -50,7 +50,7 @@ theorem mobius_nonparabolic_scaling {C E : Type*} [Field C] [IsAlgClosed C] [Cha
     [Field E] [Algebra C E] (σ : E ≃ₐ[C] E) {a b c d : C} {q : E}
     (hσq : σ q * (algebraMap C E c * q + algebraMap C E d)
       = algebraMap C E a * q + algebraMap C E b)
-    (hc : c ≠ 0) (hdisc : (d - a) ^ 2 + 4 * c * b ≠ 0)
+    (hc : c ≠ 0) (hdisc : (d - a) ^ (2 : ℕ) + 4 * c * b ≠ 0)
     (hden : algebraMap C E c * q + algebraMap C E d ≠ 0)
     (hq_ne : ∀ p : C, q - algebraMap C E p ≠ 0) :
     ∃ p₁ p₂ : C, p₁ ≠ p₂ ∧

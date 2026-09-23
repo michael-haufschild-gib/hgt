@@ -25,36 +25,36 @@ private theorem tightOperatorFamily_subspace_left_trace
     [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y]
     [Fintype J]
     (T : J → X →ₗ[ℝ] Y) (a : ℝ)
-    (hleft : ∀ x, ∑ j, ‖T j x‖ ^ 2 = a * ‖x‖ ^ 2)
+    (hleft : ∀ x, ∑ j, ‖T j x‖ ^ (2 : ℕ) = a * ‖x‖ ^ (2 : ℕ))
     (U : Submodule ℝ X) (V : Submodule ℝ Y)
     (hUV : ∀ j x, x ∈ U → T j x ∈ V) :
     a * (Module.finrank ℝ U : ℝ) =
       ∑ j, ∑ q : Fin (Module.finrank ℝ V),
         ∑ p : Fin (Module.finrank ℝ U),
           inner ℝ (((stdOrthonormalBasis ℝ U) p : U) : X)
-            ((T j).adjoint (((stdOrthonormalBasis ℝ V) q : V) : Y)) ^ 2 := by
+            ((T j).adjoint (((stdOrthonormalBasis ℝ V) q : V) : Y)) ^ (2 : ℕ) := by
   let u := stdOrthonormalBasis ℝ U
   let v := stdOrthonormalBasis ℝ V
-  have hunorm (p) : ‖((u p : U) : X)‖ ^ 2 = 1 := by
-    change ‖u p‖ ^ 2 = 1
+  have hunorm (p) : ‖((u p : U) : X)‖ ^ (2 : ℕ) = 1 := by
+    change ‖u p‖ ^ (2 : ℕ) = 1
     rw [u.orthonormal.1 p]
     norm_num
   change a * (Module.finrank ℝ U : ℝ) =
     ∑ j, ∑ q, ∑ p,
-      inner ℝ (((u p : U) : X)) ((T j).adjoint (((v q : V) : Y))) ^ 2
+      inner ℝ (((u p : U) : X)) ((T j).adjoint (((v q : V) : Y))) ^ (2 : ℕ)
   rw [show a * (Module.finrank ℝ U : ℝ) =
-      ∑ p, a * ‖((u p : U) : X)‖ ^ 2 by
+      ∑ p, a * ‖((u p : U) : X)‖ ^ (2 : ℕ) by
         simp [hunorm, mul_comm]]
-  rw [show (∑ p, a * ‖((u p : U) : X)‖ ^ 2) =
-      ∑ p, ∑ j, ‖T j ((u p : U) : X)‖ ^ 2 by
+  rw [show (∑ p, a * ‖((u p : U) : X)‖ ^ (2 : ℕ)) =
+      ∑ p, ∑ j, ‖T j ((u p : U) : X)‖ ^ (2 : ℕ) by
         apply Finset.sum_congr rfl
         intro p _
         exact (hleft _).symm]
   rw [Finset.sum_comm]
   calc
-    ∑ j, ∑ p, ‖T j ((u p : U) : X)‖ ^ 2 =
+    ∑ j, ∑ p, ‖T j ((u p : U) : X)‖ ^ (2 : ℕ) =
         ∑ j, ∑ p, ∑ q,
-          inner ℝ ((v q : V) : Y) (T j ((u p : U) : X)) ^ 2 := by
+          inner ℝ ((v q : V) : Y) (T j ((u p : U) : X)) ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro j _
           apply Finset.sum_congr rfl
@@ -62,7 +62,7 @@ private theorem tightOperatorFamily_subspace_left_trace
           let z : V := ⟨T j ((u p : U) : X), hUV j _ (u p).property⟩
           simpa [z] using (v.sum_sq_inner_right z).symm
     _ = ∑ j, ∑ q, ∑ p,
-        inner ℝ ((u p : U) : X) ((T j).adjoint ((v q : V) : Y)) ^ 2 := by
+        inner ℝ ((u p : U) : X) ((T j).adjoint ((v q : V) : Y)) ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro j _
           rw [Finset.sum_comm]
@@ -78,24 +78,24 @@ private theorem tightOperatorFamily_subspace_right_trace
     [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y]
     [Fintype J]
     (T : J → X →ₗ[ℝ] Y) (b : ℝ)
-    (hright : ∀ y, ∑ j, ‖(T j).adjoint y‖ ^ 2 = b * ‖y‖ ^ 2)
+    (hright : ∀ y, ∑ j, ‖(T j).adjoint y‖ ^ (2 : ℕ) = b * ‖y‖ ^ (2 : ℕ))
     (V : Submodule ℝ Y) :
     b * (Module.finrank ℝ V : ℝ) =
       ∑ j, ∑ q : Fin (Module.finrank ℝ V),
-        ‖(T j).adjoint (((stdOrthonormalBasis ℝ V) q : V) : Y)‖ ^ 2 := by
+        ‖(T j).adjoint (((stdOrthonormalBasis ℝ V) q : V) : Y)‖ ^ (2 : ℕ) := by
   let v := stdOrthonormalBasis ℝ V
-  have hvnorm (q) : ‖((v q : V) : Y)‖ ^ 2 = 1 := by
-    change ‖v q‖ ^ 2 = 1
+  have hvnorm (q) : ‖((v q : V) : Y)‖ ^ (2 : ℕ) = 1 := by
+    change ‖v q‖ ^ (2 : ℕ) = 1
     rw [v.orthonormal.1 q]
     norm_num
   change b * (Module.finrank ℝ V : ℝ) =
-    ∑ j, ∑ q, ‖(T j).adjoint (((v q : V) : Y))‖ ^ 2
+    ∑ j, ∑ q, ‖(T j).adjoint (((v q : V) : Y))‖ ^ (2 : ℕ)
   rw [Finset.sum_comm]
   calc
     b * (Module.finrank ℝ V : ℝ) =
-        ∑ q, b * ‖((v q : V) : Y)‖ ^ 2 := by
+        ∑ q, b * ‖((v q : V) : Y)‖ ^ (2 : ℕ) := by
           simp [hvnorm, mul_comm]
-    _ = ∑ q, ∑ j, ‖(T j).adjoint ((v q : V) : Y)‖ ^ 2 := by
+    _ = ∑ q, ∑ j, ‖(T j).adjoint ((v q : V) : Y)‖ ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro q _
           exact (hright _).symm
@@ -107,8 +107,8 @@ theorem tightOperatorFamily_subspace_finrank_eq_iff_adjoint_mem
     [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y]
     [Fintype J]
     (T : J → X →ₗ[ℝ] Y) (a b : ℝ)
-    (hleft : ∀ x, ∑ j, ‖T j x‖ ^ 2 = a * ‖x‖ ^ 2)
-    (hright : ∀ y, ∑ j, ‖(T j).adjoint y‖ ^ 2 = b * ‖y‖ ^ 2)
+    (hleft : ∀ x, ∑ j, ‖T j x‖ ^ (2 : ℕ) = a * ‖x‖ ^ (2 : ℕ))
+    (hright : ∀ y, ∑ j, ‖(T j).adjoint y‖ ^ (2 : ℕ) = b * ‖y‖ ^ (2 : ℕ))
     (U : Submodule ℝ X) (V : Submodule ℝ Y)
     (hUV : ∀ j x, x ∈ U → T j x ∈ V) :
     a * (Module.finrank ℝ U : ℝ) = b * (Module.finrank ℝ V : ℝ) ↔
@@ -129,43 +129,43 @@ theorem tightOperatorFamily_subspace_finrank_eq_iff_adjoint_mem
     have hrightTrace := tightOperatorFamily_subspace_right_trace T b hright V
     change a * (Module.finrank ℝ U : ℝ) =
       ∑ j, ∑ q, ∑ p,
-        inner ℝ (((u p : U) : X)) ((T j).adjoint (((v q : V) : Y))) ^ 2
+        inner ℝ (((u p : U) : X)) ((T j).adjoint (((v q : V) : Y))) ^ (2 : ℕ)
       at hleftTrace
     change b * (Module.finrank ℝ V : ℝ) =
-      ∑ j, ∑ q, ‖(T j).adjoint (((v q : V) : Y))‖ ^ 2 at hrightTrace
+      ∑ j, ∑ q, ‖(T j).adjoint (((v q : V) : Y))‖ ^ (2 : ℕ) at hrightTrace
     have hdef_nonneg (j : J) (q : Fin (Module.finrank ℝ V)) :
-        0 ≤ ‖(T j).adjoint (((v q : V) : Y))‖ ^ 2 -
+        0 ≤ ‖(T j).adjoint (((v q : V) : Y))‖ ^ (2 : ℕ) -
           ∑ p, inner ℝ (((u p : U) : X))
-            ((T j).adjoint (((v q : V) : Y))) ^ 2 := by
+            ((T j).adjoint (((v q : V) : Y))) ^ (2 : ℕ) := by
       exact sub_nonneg.mpr (by
         simpa using (hu.sum_inner_products_le
           ((T j).adjoint (((v q : V) : Y))) (s := Finset.univ)))
     have hdef_sum :
-        ∑ j, ∑ q, (‖(T j).adjoint (((v q : V) : Y))‖ ^ 2 -
+        ∑ j, ∑ q, (‖(T j).adjoint (((v q : V) : Y))‖ ^ (2 : ℕ) -
           ∑ p, inner ℝ (((u p : U) : X))
-            ((T j).adjoint (((v q : V) : Y))) ^ 2) = 0 := by
+            ((T j).adjoint (((v q : V) : Y))) ^ (2 : ℕ)) = 0 := by
       simp_rw [Finset.sum_sub_distrib]
       rw [← hrightTrace, ← hleftTrace, heq, sub_self]
     have houter (j : J) :
-        ∑ q, (‖(T j).adjoint (((v q : V) : Y))‖ ^ 2 -
+        ∑ q, (‖(T j).adjoint (((v q : V) : Y))‖ ^ (2 : ℕ) -
           ∑ p, inner ℝ (((u p : U) : X))
-            ((T j).adjoint (((v q : V) : Y))) ^ 2) = 0 := by
+            ((T j).adjoint (((v q : V) : Y))) ^ (2 : ℕ)) = 0 := by
       exact (Finset.sum_eq_zero_iff_of_nonneg
         (fun j _ => Finset.sum_nonneg (fun q _ => hdef_nonneg j q))).mp hdef_sum
         j (Finset.mem_univ j)
     have hdef_zero (j : J) (q : Fin (Module.finrank ℝ V)) :
-        ‖(T j).adjoint (((v q : V) : Y))‖ ^ 2 -
+        ‖(T j).adjoint (((v q : V) : Y))‖ ^ (2 : ℕ) -
           ∑ p, inner ℝ (((u p : U) : X))
-            ((T j).adjoint (((v q : V) : Y))) ^ 2 = 0 := by
+            ((T j).adjoint (((v q : V) : Y))) ^ (2 : ℕ) = 0 := by
       exact (Finset.sum_eq_zero_iff_of_nonneg
         (fun q _ => hdef_nonneg j q)).mp (houter j) q (Finset.mem_univ q)
     have hbasis (j : J) (q : Fin (Module.finrank ℝ V)) :
         (T j).adjoint (((v q : V) : Y)) ∈ U := by
       let x := (T j).adjoint (((v q : V) : Y))
-      have hs : ∑ p, inner ℝ (((u p : U) : X)) x ^ 2 = ‖x‖ ^ 2 := by
+      have hs : ∑ p, inner ℝ (((u p : U) : X)) x ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
         dsimp [x]
         linarith [hdef_zero j q]
-      have hproj : ‖U.starProjection x‖ ^ 2 = ‖x‖ ^ 2 := by
+      have hproj : ‖U.starProjection x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
         rw [Submodule.starProjection_apply, ← hs]
         simpa only [Submodule.coe_norm,
           Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left] using
@@ -196,8 +196,8 @@ theorem tightOperatorFamily_subspace_finrank_lt_iff_exists_adjoint_not_mem
     [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y]
     [Fintype J]
     (T : J → X →ₗ[ℝ] Y) (a b : ℝ)
-    (hleft : ∀ x, ∑ j, ‖T j x‖ ^ 2 = a * ‖x‖ ^ 2)
-    (hright : ∀ y, ∑ j, ‖(T j).adjoint y‖ ^ 2 = b * ‖y‖ ^ 2)
+    (hleft : ∀ x, ∑ j, ‖T j x‖ ^ (2 : ℕ) = a * ‖x‖ ^ (2 : ℕ))
+    (hright : ∀ y, ∑ j, ‖(T j).adjoint y‖ ^ (2 : ℕ) = b * ‖y‖ ^ (2 : ℕ))
     (U : Submodule ℝ X) (V : Submodule ℝ Y)
     (hUV : ∀ j x, x ∈ U → T j x ∈ V) :
     a * (Module.finrank ℝ U : ℝ) < b * (Module.finrank ℝ V : ℝ) ↔

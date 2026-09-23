@@ -57,14 +57,14 @@ theorem sourceDerivative_components (v : ℂ) (z : ℍ) :
   conv_lhs => rw [hv,map_add,map_smul,map_smul]
 
 theorem sourceDerivative_gradient (z : ℍ) :
-    ‖sourceDerivative N f 1 z‖^2 + ‖sourceDerivative N f Complex.I z‖^2 =
+    ‖sourceDerivative N f 1 z‖^(2 : ℕ) + ‖sourceDerivative N f Complex.I z‖^(2 : ℕ) =
       gradientDensity N f (z : ℂ) := by
   simp only [EuclideanSpace.norm_sq_eq,Complex.sq_norm,← Finset.sum_add_distrib]
   rfl
 
 /-- Both polar directions retain exactly the original full physical gradient. -/
 theorem sourceDerivative_polar_energy (v : ℂ) (z : ℍ) :
-    ‖sourceDerivative N f v z‖^2 + ‖sourceDerivative N f (Complex.I*v) z‖^2 =
+    ‖sourceDerivative N f v z‖^(2 : ℕ) + ‖sourceDerivative N f (Complex.I*v) z‖^(2 : ℕ) =
       normSq v * gradientDensity N f (z : ℂ) := by
   rw [sourceDerivative_components N f v,sourceDerivative_components N f (Complex.I*v)]
   simp only [Complex.mul_re,Complex.mul_im,Complex.I_re,Complex.I_im,zero_mul,one_mul,zero_sub,zero_add]
@@ -75,13 +75,13 @@ theorem sourceDerivative_polar_energy (v : ℂ) (z : ℍ) :
   ring
 
 theorem sourceDerivative_sq_le_gradient (v : ℂ) (z : ℍ) :
-    ‖sourceDerivative N f v z‖^2 ≤ normSq v*gradientDensity N f (z : ℂ) := by
+    ‖sourceDerivative N f v z‖^(2 : ℕ) ≤ normSq v*gradientDensity N f (z : ℂ) := by
   rw [← sourceDerivative_polar_energy N f v z]
   exact le_add_of_nonneg_right (sq_nonneg _)
 
 /-- Original derivatives transform with the literal reciprocal-square Jacobian. -/
 theorem sourceDerivative_modular (A : SL2Z) (z : ℍ) (v : ℂ) :
-    sourceDerivative N f ((1/(denom A z)^2)*v) (A • z) =
+    sourceDerivative N f ((1/(denom A z)^(2 : ℕ))*v) (A • z) =
       finiteRegularUnitary (QuotientGroup.mk A : Deck N) (sourceDerivative N f v z) := by
   ext q
   exact field_dir_modular N f q A z v
@@ -91,7 +91,7 @@ theorem sourceDerivative_radial_inversion (z : ℍ) :
     sourceDerivative N f ((S • z : ℍ) : ℂ) (S • z) =
       -finiteRegularUnitary (QuotientGroup.mk S : Deck N) (sourceDerivative N f (z : ℂ) z) := by
   have h := sourceDerivative_modular N f S z (z : ℂ)
-  have hv : (1/(denom S z)^2)*(z : ℂ) = -((S • z : ℍ) : ℂ) := by
+  have hv : (1/(denom S z)^(2 : ℕ))*(z : ℂ) = -((S • z : ℍ) : ℂ) := by
     simp only [UpperHalfPlane.modular_S_smul]
     simp [denom,ModularGroup.S,inv_neg]
     field_simp
@@ -121,16 +121,16 @@ theorem radialFlux_seam_identity (r : ZMod (N+1)) (z : ℍ) :
 
 /-- Squared paired flux is bounded by actual transfer loss and physical radial energy. -/
 theorem radialFlux_seam_sq_le_loss (r : ZMod (N+1)) (z : ℍ) :
-    (radialFlux N f r z + radialFlux N f r (S⁻¹ • z))^2 ≤
-      (‖sourceVector N f z‖^2-‖inversionTransfer N r r (sourceVector N f z)‖^2)*
-        ‖sourceDerivative N f (z : ℂ) z‖^2 := by
+    (radialFlux N f r z + radialFlux N f r (S⁻¹ • z))^(2 : ℕ) ≤
+      (‖sourceVector N f z‖^(2 : ℕ)-‖inversionTransfer N r r (sourceVector N f z)‖^(2 : ℕ))*
+        ‖sourceDerivative N f (z : ℂ) z‖^(2 : ℕ) := by
   rw [radialFlux_seam_identity,← character_flux_difference]
   exact character_flux_sq_le_transfer_loss N r r _ _
 
 /-- Quantitative paired flux bound in the original planar gradient density. -/
 theorem radialFlux_seam_sq_le_gradient (r : ZMod (N+1)) (z : ℍ) :
-    (radialFlux N f r z + radialFlux N f r (S⁻¹ • z))^2 ≤
-      (‖sourceVector N f z‖^2-‖inversionTransfer N r r (sourceVector N f z)‖^2)*
+    (radialFlux N f r z + radialFlux N f r (S⁻¹ • z))^(2 : ℕ) ≤
+      (‖sourceVector N f z‖^(2 : ℕ)-‖inversionTransfer N r r (sourceVector N f z)‖^(2 : ℕ))*
         (normSq (z : ℂ)*gradientDensity N f (z : ℂ)) :=
   (radialFlux_seam_sq_le_loss N f r z).trans
     (mul_le_mul_of_nonneg_left (sourceDerivative_sq_le_gradient N f (z : ℂ) z)
@@ -152,7 +152,7 @@ theorem sourceDerivative_eq_dir (v : ℂ) (z : ℍ) :
 /-- The character current is the literal derivative of its original projected mass. -/
 theorem character_mass_dir
     (p : Multiplicative (ZMod (N+1)) →* Deck N) (r : ZMod (N+1)) (v : ℂ) (z : ℍ) :
-    dir v (fun w => ‖characterProjection N p r (sourceVector N f (ofComplex w))‖^2) (z : ℂ) =
+    dir v (fun w => ‖characterProjection N p r (sourceVector N f (ofComplex w))‖^(2 : ℕ)) (z : ℂ) =
       2*(inner ℂ (characterProjection N p r (sourceVector N f z)) (sourceDerivative N f v z)).re := by
   have hf := (SelbergMaassCharacterGradient.sourceVector_contDiffOn N f).contDiffAt
     (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
@@ -162,7 +162,7 @@ theorem character_mass_dir
   have hn := hp.norm_sq
   have h := congrArg (fun L => L v) hn.fderiv
   simp only [smul_apply,ContinuousLinearMap.comp_apply,innerSL_apply_apply,nsmul_eq_mul] at h
-  change dir v (fun w => ‖characterProjection N p r (sourceVector N f (ofComplex w))‖^2) (z : ℂ) =
+  change dir v (fun w => ‖characterProjection N p r (sourceVector N f (ofComplex w))‖^(2 : ℕ)) (z : ℂ) =
     2*(inner ℝ (characterProjection N p r (sourceVector N f (ofComplex (z : ℂ)) ))
       (characterProjection N p r (dir v (fun w => sourceVector N f (ofComplex w)) (z : ℂ)))) at h
   rw [ofComplex_apply,← sourceDerivative_eq_dir] at h
@@ -174,29 +174,29 @@ theorem character_mass_dir
 
 /-- The seam estimate retains the entire positive angular-energy remainder. -/
 theorem radialFlux_seam_angular_remainder (r : ZMod (N+1)) (z : ℍ) :
-    (radialFlux N f r z + radialFlux N f r (S⁻¹ • z))^2 +
-      (‖sourceVector N f z‖^2-‖inversionTransfer N r r (sourceVector N f z)‖^2)*
-        ‖sourceDerivative N f (Complex.I*(z : ℂ)) z‖^2 ≤
-      (‖sourceVector N f z‖^2-‖inversionTransfer N r r (sourceVector N f z)‖^2)*
+    (radialFlux N f r z + radialFlux N f r (S⁻¹ • z))^(2 : ℕ) +
+      (‖sourceVector N f z‖^(2 : ℕ)-‖inversionTransfer N r r (sourceVector N f z)‖^(2 : ℕ))*
+        ‖sourceDerivative N f (Complex.I*(z : ℂ)) z‖^(2 : ℕ) ≤
+      (‖sourceVector N f z‖^(2 : ℕ)-‖inversionTransfer N r r (sourceVector N f z)‖^(2 : ℕ))*
         (normSq (z : ℂ)*gradientDensity N f (z : ℂ)) := by
   rw [← sourceDerivative_polar_energy N f (z : ℂ) z,mul_add]
   exact add_le_add (radialFlux_seam_sq_le_loss N f r z) le_rfl
 
 /-- On the actual circle, the inverse inversion point is its reflected horizontal point. -/
-theorem inverse_inversion_on_unit_circle {x y : ℝ} (hy : 0 < y) (hxy : x^2+y^2=1) :
+theorem inverse_inversion_on_unit_circle {x y : ℝ} (hy : 0 < y) (hxy : x^(2 : ℕ)+y^(2 : ℕ)=1) :
     S⁻¹ • ofComplex (point x y) = ofComplex (point (-x) y) := by
   have h := SelbergMaassTraceBoundary.inversion_on_unit_circle hy (x := -x) (by simpa using hxy)
   simpa using (congrArg (fun z : ℍ => S⁻¹ • z) h).symm
 
 /-- The literal circle flux is controlled by the complete arithmetic phase displacement. -/
 theorem unit_circle_flux_sq_le_phase_gradient (r : ZMod (N+1))
-    {x y : ℝ} (hy : 0 < y) (hxy : x^2+y^2=1) :
+    {x y : ℝ} (hy : 0 < y) (hxy : x^(2 : ℕ)+y^(2 : ℕ)=1) :
     (radialFlux N f r (ofComplex (point x y))+
-      radialFlux N f r (ofComplex (point (-x) y)))^2 ≤
-      (((((N+1 : ℕ) : ℝ)⁻¹)^3/2)*
+      radialFlux N f r (ofComplex (point (-x) y)))^(2 : ℕ) ≤
+      (((((N+1 : ℕ) : ℝ)⁻¹)^(3 : ℕ)/2)*
         (∑ a : ZMod (N+1), ∑ b : ZMod (N+1), ∑ c : ZMod (N+1),
           ‖sourceVector N f (ofComplex (point x y))-
-            tripleMotion N r r a b c (sourceVector N f (ofComplex (point x y)))‖^2))*
+            tripleMotion N r r a b c (sourceVector N f (ofComplex (point x y)))‖^(2 : ℕ)))*
         gradientDensity N f (point x y) := by
   have hp : 0 < (point x y).im := by simpa [point] using hy
   have hs : normSq (point x y)=1 := by simpa only [point,Complex.normSq_add_mul_I] using hxy
@@ -209,7 +209,7 @@ theorem unit_circle_flux_sq_le_phase_gradient (r : ZMod (N+1))
 On the unit circle the tangent is `(-x/y,-1)`, including the arc-length Jacobian. -/
 def circleNormalCurrent (r : ZMod (N+1)) (x y : ℝ) : ℝ :=
   dir ((-y⁻¹) • point x y)
-    (fun w => ‖characterProjection N (upperBlock N) r (sourceVector N f (ofComplex w))‖^2)
+    (fun w => ‖characterProjection N (upperBlock N) r (sourceVector N f (ofComplex w))‖^(2 : ℕ))
     (point x y)
 
 /-- The actual outward normal density has its exact radial-flux and height factor. -/
@@ -223,24 +223,24 @@ theorem circleNormalCurrent_eq_radialFlux (r : ZMod (N+1)) (x : ℝ) {y : ℝ} (
   unfold circleNormalCurrent
   simp only [dir,map_smul]
   change (-y⁻¹) • dir (point x y)
-    (fun w => ‖characterProjection N (upperBlock N) r (sourceVector N f (ofComplex w))‖^2)
+    (fun w => ‖characterProjection N (upperBlock N) r (sourceVector N f (ofComplex w))‖^(2 : ℕ))
       (point x y) = _
   rw [h,smul_eq_mul,radialFlux,hz]
   ring
 
 /-- Literal paired outward normal current is controlled by inversion loss and physical gradient. -/
 theorem unit_circle_normal_current_sq_le_loss_gradient (r : ZMod (N+1))
-    {x y : ℝ} (hy : 0 < y) (hxy : x^2+y^2=1) :
-    (circleNormalCurrent N f r x y+circleNormalCurrent N f r (-x) y)^2 ≤
-      (4/y^2)*
-        ((‖sourceVector N f (ofComplex (point x y))‖^2-
-          ‖inversionTransfer N r r (sourceVector N f (ofComplex (point x y)))‖^2)*
+    {x y : ℝ} (hy : 0 < y) (hxy : x^(2 : ℕ)+y^(2 : ℕ)=1) :
+    (circleNormalCurrent N f r x y+circleNormalCurrent N f r (-x) y)^(2 : ℕ) ≤
+      (4/y^(2 : ℕ))*
+        ((‖sourceVector N f (ofComplex (point x y))‖^(2 : ℕ)-
+          ‖inversionTransfer N r r (sourceVector N f (ofComplex (point x y)))‖^(2 : ℕ))*
           gradientDensity N f (point x y)) := by
   have h := unit_circle_flux_sq_le_phase_gradient N f r hy hxy
   rw [triple_displacement_energy] at h
-  have hm := mul_le_mul_of_nonneg_left h (show 0 ≤ 4/y^2 by positivity)
+  have hm := mul_le_mul_of_nonneg_left h (show 0 ≤ 4/y^(2 : ℕ) by positivity)
   rw [circleNormalCurrent_eq_radialFlux N f r x hy,circleNormalCurrent_eq_radialFlux N f r (-x) hy]
-  have he (a b : ℝ) : (-2*y⁻¹*a + -2*y⁻¹*b)^2 = (4/y^2)*(a+b)^2 := by
+  have he (a b : ℝ) : (-2*y⁻¹*a + -2*y⁻¹*b)^(2 : ℕ) = (4/y^(2 : ℕ))*(a+b)^(2 : ℕ) := by
     rw [div_eq_mul_inv,← inv_pow]
     ring
   rw [he]
@@ -250,17 +250,17 @@ theorem unit_circle_normal_current_sq_le_loss_gradient (r : ZMod (N+1))
 theorem modular_arc_normal_current_sq_le (r : ZMod (N+1))
     (x : Set.Icc (-(1/2 : ℝ)) (1/2)) :
     (circleNormalCurrent N f r x (SelbergMaassTraceStokes.arcHeight x)+
-      circleNormalCurrent N f r (-x) (SelbergMaassTraceStokes.arcHeight x))^2 ≤
+      circleNormalCurrent N f r (-x) (SelbergMaassTraceStokes.arcHeight x))^(2 : ℕ) ≤
       (16/3 : ℝ)*
-        ((‖sourceVector N f (ofComplex (point x (SelbergMaassTraceStokes.arcHeight x)))‖^2-
-          ‖inversionTransfer N r r (sourceVector N f (ofComplex (point x (SelbergMaassTraceStokes.arcHeight x))))‖^2)*
+        ((‖sourceVector N f (ofComplex (point x (SelbergMaassTraceStokes.arcHeight x)))‖^(2 : ℕ)-
+          ‖inversionTransfer N r r (sourceVector N f (ofComplex (point x (SelbergMaassTraceStokes.arcHeight x))))‖^(2 : ℕ))*
           gradientDensity N f (point x (SelbergMaassTraceStokes.arcHeight x))) := by
   have hy := SelbergMaassTraceStokes.arcHeight_pos x.property
   have hys := SelbergMaassTraceStokes.arcHeight_sq x.property
-  have hx : (x : ℝ)^2 ≤ 1/4 := by
+  have hx : (x : ℝ)^(2 : ℕ) ≤ 1/4 := by
     nlinarith [x.property.1,x.property.2,sq_nonneg ((x : ℝ)+1/2),sq_nonneg (1/2-(x : ℝ))]
-  have hb : 4/SelbergMaassTraceStokes.arcHeight (x : ℝ)^2 ≤ (16/3 : ℝ) :=
-    (div_le_iff₀ (show 0 < SelbergMaassTraceStokes.arcHeight (x : ℝ)^2 by positivity)).mpr (by nlinarith)
+  have hb : 4/SelbergMaassTraceStokes.arcHeight (x : ℝ)^(2 : ℕ) ≤ (16/3 : ℝ) :=
+    (div_le_iff₀ (show 0 < SelbergMaassTraceStokes.arcHeight (x : ℝ)^(2 : ℕ) by positivity)).mpr (by nlinarith)
   exact (unit_circle_normal_current_sq_le_loss_gradient N f r hy (by linarith)).trans
     (mul_le_mul_of_nonneg_right hb (mul_nonneg (transfer_loss_nonneg N r r _)
       (gradientDensity_nonneg N f _)))

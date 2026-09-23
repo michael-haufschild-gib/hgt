@@ -35,7 +35,7 @@ theorem norm_spectralOrbit_le (f g h : SchwartzMap ℝ ℂ) (z : ℂ) (v : Spect
 /-- Damping separates the known spectral growth from the energy integration gain. -/
 theorem spectral_energy_le (f g h : SchwartzMap ℝ ℂ) (z : ℂ) (v : SpectralVector) (d t : ℝ) :
     energy d t (fun s => Real.exp (-(spectralMass f g h z * |s|)) •
-      spectralSolution f g h z v s) ≤ ‖v‖ ^ 2 / (2 * Real.exp d) := by
+      spectralSolution f g h z v s) ≤ ‖v‖ ^ (2 : ℕ) / (2 * Real.exp d) := by
   exact (energy_le d t (spectralOrbit f g h z v)).trans
     (div_le_div_of_nonneg_right
       ((sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mpr (norm_spectralOrbit_le f g h z v))
@@ -62,7 +62,7 @@ theorem spectral_derivative_energy_le (f g h : SchwartzMap ℝ ℂ) (z : ℂ)
     (v : SpectralVector) (d t : ℝ) :
     energy d t (fun s => Real.exp (-(spectralMass f g h z * |s|)) •
       deriv (spectralSolution f g h z v) s) ≤
-      (spectralMass f g h z * ‖v‖) ^ 2 / (2 * Real.exp d) := by
+      (spectralMass f g h z * ‖v‖) ^ (2 : ℕ) / (2 * Real.exp d) := by
   have heq : (fun s => Real.exp (-(spectralMass f g h z * |s|)) •
       deriv (spectralSolution f g h z v) s) = spectralDerivativeOrbit f g h z v := by
     funext s
@@ -85,7 +85,7 @@ theorem initial_spectral_energy_le (q : SchwartzMap ℝ ℂ) (z : ℂ)
     energy d t (fun s =>
       Real.exp (-(spectralMass (SchwartzMap.derivCLM ℂ ℂ q) (reflectedDerivative q)
         (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q)) z * |s|)) •
-        initialSpectralSolution q z v s) ≤ ‖v‖ ^ 2 / (2 * Real.exp d) :=
+        initialSpectralSolution q z v s) ≤ ‖v‖ ^ (2 : ℕ) / (2 * Real.exp d) :=
   spectral_energy_le _ _ _ z v d t
 
 end

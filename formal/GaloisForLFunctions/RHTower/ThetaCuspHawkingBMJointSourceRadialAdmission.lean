@@ -55,7 +55,7 @@ theorem sourceAmplitude_profile_memLp (s w a T : ℂ) (hw : 0 < w.re) (P : ℝ �
     intro u hu
     have hp := (power_derivatives (2*s) (by linarith [hu.1] : 0 < 1+u)).1.continuousAt
     exact (hp.comp_of_eq (continuous_const.add continuous_id).continuousAt rfl).continuousWithinAt
-  have h := laplaceProfile_memLp w hw (fun u => power (2*s) (1+u)*a^2*T*P u)
+  have h := laplaceProfile_memLp w hw (fun u => power (2*s) (1+u)*a^(2 : ℕ)*T*P u)
     (((hpower.mul continuousOn_const).mul continuousOn_const).mul hP)
   convert! h using 1
   ext t

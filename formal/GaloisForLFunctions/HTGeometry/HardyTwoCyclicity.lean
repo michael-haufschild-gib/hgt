@@ -47,7 +47,7 @@ theorem coeff_sub_partialSum {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g (Metric
       (Metric.ball 0 1) := fun z _ =>
     (hasFPowerSeriesOnBall_partialSum_truncSeries (cauchyPowerSeries g 0 R₀) N).analyticAt_of_mem (by simp)
   rw [cauchyPowerSeries_sub hg hpart hR₀0 hR₀1, cauchyPowerSeries_partialSum N hR₀0 hR₀1]
-  show (cauchyPowerSeries g 0 R₀).coeff k - (truncSeries (cauchyPowerSeries g 0 R₀) N).coeff k = _
+  show (cauchyPowerSeries g 0 R₀).coeff k - (truncSeries_hardyTwoMultiplier (cauchyPowerSeries g 0 R₀) N).coeff k = _
   rw [coeff_truncSeries]
   by_cases h : k < N
   · rw [if_pos h, if_pos h, sub_self]

@@ -23,9 +23,9 @@ theorem linSum_eq_realWindow (c : ℕ → ℂ) (L M : ℕ) (x : ℝ) :
 
 /-- **The discrete window variance is a set integral of the linear window sum.** -/
 theorem sum_normSq_Ioc_eq_setIntegral (c : ℕ → ℂ) (L Y K M : ℕ) (hM : Y + K + L < M) :
-    (∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), c n‖ ^ 2)
+    (∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), c n‖ ^ (2 : ℕ))
       = ∫ x in Set.Ioc ((Y : ℝ)) ((Y : ℝ) + K),
-          ‖linSum c (Finset.range M) ((L : ℕ) : ℝ) x‖ ^ 2 := by
+          ‖linSum c (Finset.range M) ((L : ℕ) : ℝ) x‖ ^ (2 : ℕ) := by
   rw [← integral_realWindow_eq_sum c L Y K M hM,
     intervalIntegral.integral_of_le (by linarith [Nat.cast_nonneg (α := ℝ) K])]
   exact setIntegral_congr_fun measurableSet_Ioc

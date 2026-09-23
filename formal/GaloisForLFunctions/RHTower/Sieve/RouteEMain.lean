@@ -21,12 +21,12 @@ open scoped ArithmeticFunction.Moebius
 theorem route_e_sign_density {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (hMR1 : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (hMR2 : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2) hh)
+    (hMR2 : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ)) hh)
     (hMRp : ∀ p : ℕ, p.Prime → MRBilinearAt (coprimeSquarefreeWeight p)
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ)))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
   have hboth := tendsto_signClass_of_MR hMR1 hMR2
   rcases hs with rfl | rfl
@@ -35,8 +35,8 @@ theorem route_e_sign_density {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1
 
 /-- **The margin is strictly positive**, so both sign classes are eventually nonempty. -/
 theorem route_e_margin_pos :
-    0 < squarefreeDensity ^ 2 / 2
-      - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity :=
+    0 < squarefreeDensity ^ (2 : ℕ) / 2
+      - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity :=
   coprime_margin_pos
 
 /-- **Both sign classes are eventually nonempty.**  The card's stated consequence: every large
@@ -44,15 +44,15 @@ balanced window carries a coprime squarefree pair of each product sign. -/
 theorem route_e_signClass_nonempty {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (hMR1 : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (hMR2 : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2) hh)
+    (hMR2 : MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ)) hh)
     (hMRp : ∀ p : ℕ, p.Prime → MRBilinearAt (coprimeSquarefreeWeight p)
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ))) :
     ∀ᶠ x in atTop, (coprimeSignClass x (hh x) s).Nonempty := by
   have hmargin := route_e_margin_pos
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   have hbound := route_e_sign_density hs hgrow hMR1 hMR2 hMRp
-    (ε := (squarefreeDensity ^ 2 / 2
-      - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity) / 2) (by linarith)
+    (ε := (squarefreeDensity ^ (2 : ℕ) / 2
+      - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity) / 2) (by linarith)
   filter_upwards [eventually_gt_atTop (0 : ℝ), hhtop.eventually_gt_atTop (0 : ℝ), hbound]
     with x hx0 hhx hb
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0

@@ -72,7 +72,7 @@ theorem eventually_menonFinalShellProductCostVolume_le_explicit :
       (j : ℕ), j ∈ Finset.range (menonFinalRangeLadderSteps x) → 0 ≤ volE →
       menonHarmonicProductCostVolume P ⌈x⌉₊ (menonFinalRangeTopNat x)
           (menonFinalRangeLadderBase x) (menonFinalRangeLadderEta x) x V volE j ≤
-        V ^ 2 * ((2 * Real.pi)⁻¹ *
+        V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
           (24 * (6 +
             80000 * Real.sqrt x * Real.log x * (2 * Real.pi * volE) *
               (menonFinalRangeLadderBase x *

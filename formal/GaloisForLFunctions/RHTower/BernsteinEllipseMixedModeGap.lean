@@ -37,7 +37,7 @@ lemma norm_affineBernsteinBase_le_amplitude
     ‖1 - u + u * w‖ ≤ ‖1 - u‖ + ‖u * w‖ := norm_add_le _ _
     _ = ‖u‖ + ‖1 - u‖ := by rw [norm_mul, hw, mul_one, add_comm]
 
-/-- Distinct maximizing phases force every reflected mixed product strictly below `B^2`. -/
+/-- Distinct maximizing phases force every reflected mixed product strictly below `B^(2 : ℕ)`. -/
 theorem norm_reflectedBernsteinProduct_lt_sq_of_phase_ne
     {u v w : ℂ} {B : ℝ}
     (huim : u.im ≠ 0) (hvim : v.im ≠ 0)
@@ -45,7 +45,7 @@ theorem norm_reflectedBernsteinProduct_lt_sq_of_phase_ne
     (hvB : ‖v‖ + ‖1 - v‖ = B)
     (hphase : bernsteinEllipsePhase u ≠ bernsteinEllipsePhase v)
     (hw : ‖w‖ = 1) :
-    ‖reflectedBernsteinProduct u v w‖ < B ^ 2 := by
+    ‖reflectedBernsteinProduct u v w‖ < B ^ (2 : ℕ) := by
   have hB : 0 < B := by
     rw [← huB]
     exact add_pos (norm_pos_iff.mpr (by
@@ -99,7 +99,7 @@ theorem exists_uniform_reflectedBernsteinProduct_gap_of_phase_ne
     (huB : ‖u‖ + ‖1 - u‖ = B)
     (hvB : ‖v‖ + ‖1 - v‖ = B)
     (hphase : bernsteinEllipsePhase u ≠ bernsteinEllipsePhase v) :
-    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ 2 ∧
+    ∃ gamma : ℝ, 0 ≤ gamma ∧ gamma < B ^ (2 : ℕ) ∧
       ∀ w : ℂ, ‖w‖ = 1 → ‖reflectedBernsteinProduct u v w‖ ≤ gamma := by
   let g : ℂ → ℝ := fun w => ‖reflectedBernsteinProduct u v w‖
   have hg : Continuous g := by

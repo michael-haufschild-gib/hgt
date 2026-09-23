@@ -83,7 +83,7 @@ section ConstantVanishing
 
 variable {𝕜 : Type*} [RCLike 𝕜] {r : ℕ}
 
-/-- **A constant form that is the exterior derivative of a periodic `C^1` form vanishes.** -/
+/-- **A constant form that is the exterior derivative of a periodic `C^(1 : ℕ)` form vanishes.** -/
 theorem constantForm_eq_zero {p : 𝕜} (hp : p ≠ 0) :
     ∀ (n : ℕ) (α : (Fin r → 𝕜) [⋀^Fin (n + 1)]→L[𝕜] 𝕜)
     (β : (Fin r → 𝕜) → (Fin r → 𝕜) [⋀^Fin n]→L[𝕜] 𝕜), Differentiable 𝕜 β →

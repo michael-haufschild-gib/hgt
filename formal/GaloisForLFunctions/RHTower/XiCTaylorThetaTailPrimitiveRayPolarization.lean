@@ -11,8 +11,8 @@ Ordered positive square indices have the unique arithmetic coordinates
 
 This file records the local analytic identity behind that regrouping.  For fixed `a,b,x,y`, put
 
-`A = a exp(x)`, `B = b exp(y)`, `exp(2r) = A^2+B^2`, and
-`u = A^2/(A^2+B^2)`.
+`A = a exp(x)`, `B = b exp(y)`, `exp(2r) = A^(2 : ℕ)+B^(2 : ℕ)`, and
+`u = A^(2 : ℕ)/(A^(2 : ℕ)+B^(2 : ℕ))`.
 
 Then the product of the two exact density atoms with common scale `g` is one radial Gaussian atom
 at `r`.  All dependence on the primitive direction is carried by one degree-eight polynomial
@@ -30,7 +30,7 @@ noncomputable section
 
 /-- The second-density polynomial after the squared radial variable has been split with weight
 `u`.  Evaluation at `X = gR` agrees with the canonical second-density polynomial at `gA` whenever
-`u R^2 = A^2`. -/
+`u R^(2 : ℕ) = A^(2 : ℕ)`. -/
 def thetaCuspDensityRadialScaledPolynomial (u : ℝ) : ℝ[X] :=
   C (1 / 4) - C (6 * Real.pi * u) * X ^ 2 +
     C (4 * Real.pi ^ 2 * u ^ 2) * X ^ 4

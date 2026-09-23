@@ -121,7 +121,7 @@ theorem observerVirtualPivotEnergy_eq_rootChordEnergy
   rw [projectiveWeightedPivotEnergy, Fin.sum_univ_succ]
   have hzero : observerVirtualWeight e 0 *
       ‖spectralReturnPhase (observerVirtualEnergy G energy q sigma) t 0 -
-        spectralReturnPhase (observerVirtualEnergy G energy q sigma) t 0‖ ^ 2 = 0 := by
+        spectralReturnPhase (observerVirtualEnergy G energy q sigma) t 0‖ ^ (2 : ℕ) = 0 := by
     simp
   rw [hzero, zero_add]
   simp_rw [hterm]
@@ -132,7 +132,7 @@ theorem observerVirtualPivotEnergy_eq_rootChordEnergy
     (fun v : graphNonRoot G =>
       ‖finiteObserverHamiltonianVertexPhase t energy v.1 -
         finiteObserverHamiltonianVertexPhase t energy
-          (graphComponentRoot G (G.connectedComponentMk v.1))‖ ^ 2)
+          (graphComponentRoot G (G.connectedComponentMk v.1))‖ ^ (2 : ℕ))
 
 theorem observerVirtualFidelityDeficit_pivot_comparable
     {d e : ℕ} (G : SimpleGraph (Fin d)) (energy : Fin d → ℝ)

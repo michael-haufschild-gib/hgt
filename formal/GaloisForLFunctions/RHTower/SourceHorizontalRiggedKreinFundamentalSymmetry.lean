@@ -241,9 +241,9 @@ private theorem preDivisorRiggedPrimeWittPairing_linearCombination_self
     {s : ℂ} (hs : 0 < s.re ∧ s.re < 1)
     (c d : ℝ) (x y : DeningerHeightKothe) :
     preDivisorRiggedPrimeWittPairing s (c • x + d • y) (c • x + d • y) =
-      c ^ 2 * preDivisorRiggedPrimeWittPairing s x x +
+      c ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s x x +
         2 * c * d * preDivisorRiggedPrimeWittPairing s x y +
-        d ^ 2 * preDivisorRiggedPrimeWittPairing s y y := by
+        d ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s y y := by
   rw [preDivisorRiggedPrimeWittPairing_add_left hs,
     preDivisorRiggedPrimeWittPairing_add_right hs,
     preDivisorRiggedPrimeWittPairing_add_right hs]
@@ -403,20 +403,20 @@ private theorem preDivisorRiggedPrimeWittPairing_nonneg_of_timeAxis_orthogonal_l
   rw [hcross] at hnonneg
   simp only [mul_zero, add_zero] at hnonneg
   rcases hcd with hc | hd
-  · have hc2 : 0 < c ^ 2 := sq_pos_of_ne_zero hc
-    have hd2 : 0 ≤ d ^ 2 := sq_nonneg d
-    have hfirst : c ^ 2 * preDivisorRiggedPrimeWittPairing s
+  · have hc2 : 0 < c ^ (2 : ℕ) := sq_pos_of_ne_zero hc
+    have hd2 : 0 ≤ d ^ (2 : ℕ) := sq_nonneg d
+    have hfirst : c ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s
         preDivisorRiggedPrimeTimeAxis preDivisorRiggedPrimeTimeAxis < 0 :=
       mul_neg_of_pos_of_neg hc2 haxis
-    have hsecond : d ^ 2 * preDivisorRiggedPrimeWittPairing s u u ≤ 0 :=
+    have hsecond : d ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s u u ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos hd2 huu.le
     linarith
-  · have hc2 : 0 ≤ c ^ 2 := sq_nonneg c
-    have hd2 : 0 < d ^ 2 := sq_pos_of_ne_zero hd
-    have hfirst : c ^ 2 * preDivisorRiggedPrimeWittPairing s
+  · have hc2 : 0 ≤ c ^ (2 : ℕ) := sq_nonneg c
+    have hd2 : 0 < d ^ (2 : ℕ) := sq_pos_of_ne_zero hd
+    have hfirst : c ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s
         preDivisorRiggedPrimeTimeAxis preDivisorRiggedPrimeTimeAxis ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos hc2 haxis.le
-    have hsecond : d ^ 2 * preDivisorRiggedPrimeWittPairing s u u < 0 :=
+    have hsecond : d ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s u u < 0 :=
       mul_neg_of_pos_of_neg hd2 huu
     linarith
 
@@ -442,20 +442,20 @@ private theorem preDivisorRiggedPrimeWittPairing_nonpos_of_timeAxis_orthogonal_r
   rw [hcross] at hnonpos
   simp only [mul_zero, add_zero] at hnonpos
   rcases hcd with hc | hd
-  · have hc2 : 0 < c ^ 2 := sq_pos_of_ne_zero hc
-    have hd2 : 0 ≤ d ^ 2 := sq_nonneg d
-    have hfirst : 0 < c ^ 2 * preDivisorRiggedPrimeWittPairing s
+  · have hc2 : 0 < c ^ (2 : ℕ) := sq_pos_of_ne_zero hc
+    have hd2 : 0 ≤ d ^ (2 : ℕ) := sq_nonneg d
+    have hfirst : 0 < c ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s
         preDivisorRiggedPrimeTimeAxis preDivisorRiggedPrimeTimeAxis :=
       mul_pos hc2 haxis
-    have hsecond : 0 ≤ d ^ 2 * preDivisorRiggedPrimeWittPairing s u u :=
+    have hsecond : 0 ≤ d ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s u u :=
       mul_nonneg hd2 huu.le
     linarith
-  · have hc2 : 0 ≤ c ^ 2 := sq_nonneg c
-    have hd2 : 0 < d ^ 2 := sq_pos_of_ne_zero hd
-    have hfirst : 0 ≤ c ^ 2 * preDivisorRiggedPrimeWittPairing s
+  · have hc2 : 0 ≤ c ^ (2 : ℕ) := sq_nonneg c
+    have hd2 : 0 < d ^ (2 : ℕ) := sq_pos_of_ne_zero hd
+    have hfirst : 0 ≤ c ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s
         preDivisorRiggedPrimeTimeAxis preDivisorRiggedPrimeTimeAxis :=
       mul_nonneg hc2 haxis.le
-    have hsecond : 0 < d ^ 2 * preDivisorRiggedPrimeWittPairing s u u :=
+    have hsecond : 0 < d ^ (2 : ℕ) * preDivisorRiggedPrimeWittPairing s u u :=
       mul_pos hd2 huu
     linarith
 
@@ -468,7 +468,7 @@ theorem preDivisorRiggedPrimeTimeOrthogonalProjection_self
         (preDivisorRiggedPrimeTimeOrthogonalProjection s a)
         (preDivisorRiggedPrimeTimeOrthogonalProjection s a) =
       preDivisorRiggedPrimeWittPairing s a a -
-        preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ 2 /
+        preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ (2 : ℕ) /
           preDivisorRiggedPrimeWittPairing s
             preDivisorRiggedPrimeTimeAxis preDivisorRiggedPrimeTimeAxis := by
   rw [preDivisorRiggedPrimeTimeOrthogonalProjection, sub_eq_add_neg]
@@ -504,7 +504,7 @@ theorem preDivisorRiggedPrimePolarizedPairing_self_nonneg_left
       s hs0 hleft u huorth
   have hprojection := preDivisorRiggedPrimeTimeOrthogonalProjection_self hs haxis a
   have hcorrection :
-      0 ≤ -(preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ 2 /
+      0 ≤ -(preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ (2 : ℕ) /
         preDivisorRiggedPrimeWittPairing s
           preDivisorRiggedPrimeTimeAxis preDivisorRiggedPrimeTimeAxis) := by
     exact neg_nonneg.mpr (div_nonpos_of_nonneg_of_nonpos
@@ -512,7 +512,7 @@ theorem preDivisorRiggedPrimePolarizedPairing_self_nonneg_left
   have hpolar :
       preDivisorRiggedPrimePolarizedPairing s a a =
         preDivisorRiggedPrimeWittPairing s u u -
-          preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ 2 /
+          preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ (2 : ℕ) /
             preDivisorRiggedPrimeWittPairing s
               preDivisorRiggedPrimeTimeAxis preDivisorRiggedPrimeTimeAxis := by
     rw [preDivisorRiggedPrimePolarizedPairing,
@@ -545,14 +545,14 @@ theorem preDivisorRiggedPrimePolarizedPairing_self_nonneg_right
       s hright hs1 u huorth
   have hprojection := preDivisorRiggedPrimeTimeOrthogonalProjection_self hs haxis a
   have hcorrection :
-      0 ≤ preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ 2 /
+      0 ≤ preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ (2 : ℕ) /
         preDivisorRiggedPrimeWittPairing s
           preDivisorRiggedPrimeTimeAxis preDivisorRiggedPrimeTimeAxis :=
     div_nonneg (sq_nonneg _) haxisPos.le
   have hpolar :
       preDivisorRiggedPrimePolarizedPairing s a a =
         -preDivisorRiggedPrimeWittPairing s u u +
-          preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ 2 /
+          preDivisorRiggedPrimeWittPairing s a preDivisorRiggedPrimeTimeAxis ^ (2 : ℕ) /
             preDivisorRiggedPrimeWittPairing s
               preDivisorRiggedPrimeTimeAxis preDivisorRiggedPrimeTimeAxis := by
     rw [preDivisorRiggedPrimePolarizedPairing,
@@ -624,9 +624,9 @@ private theorem preDivisorRiggedPrimePolarizedPairing_linearCombination_self
     {s : ℂ} (hs : 0 < s.re ∧ s.re < 1)
     (c d : ℝ) (x y : DeningerHeightKothe) :
     preDivisorRiggedPrimePolarizedPairing s (c • x + d • y) (c • x + d • y) =
-      c ^ 2 * preDivisorRiggedPrimePolarizedPairing s x x +
+      c ^ (2 : ℕ) * preDivisorRiggedPrimePolarizedPairing s x x +
         2 * c * d * preDivisorRiggedPrimePolarizedPairing s x y +
-        d ^ 2 * preDivisorRiggedPrimePolarizedPairing s y y := by
+        d ^ (2 : ℕ) * preDivisorRiggedPrimePolarizedPairing s y y := by
   rw [preDivisorRiggedPrimePolarizedPairing_add_left hs,
     preDivisorRiggedPrimePolarizedPairing_add_right hs,
     preDivisorRiggedPrimePolarizedPairing_add_right hs]
@@ -674,15 +674,15 @@ private theorem preDivisorRiggedPrimePolarizedPairing_cross_eq_zero_of_self_eq_z
         preDivisorRiggedPrimePolarizedPairing s
             ((1 : ℝ) • x + (-(c / d)) • y)
             ((1 : ℝ) • x + (-(c / d)) • y) =
-          -(c ^ 2 / d) := by
+          -(c ^ (2 : ℕ) / d) := by
       rw [preDivisorRiggedPrimePolarizedPairing_linearCombination_self hs, hx]
       dsimp [c, d]
       field_simp
       ring
     rw [htrialEq] at htrial
     by_contra hc
-    have hc2 : 0 < c ^ 2 := sq_pos_of_ne_zero hc
-    have hquot : 0 < c ^ 2 / d := div_pos hc2 hdpos
+    have hc2 : 0 < c ^ (2 : ℕ) := sq_pos_of_ne_zero hc
+    have hquot : 0 < c ^ (2 : ℕ) / d := div_pos hc2 hdpos
     linarith
 
 /-- Nullspace of the positive polarization is exactly the original rigged radical on the left. -/

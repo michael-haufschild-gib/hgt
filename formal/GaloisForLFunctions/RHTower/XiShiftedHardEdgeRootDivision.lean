@@ -30,9 +30,9 @@ theorem routeUHardEdge_rootDivision (σ : ℝ) (G : ℝ → ℝ) (r : ℝ)
     (hpsd : ∀ t : ℝ, 0 ≤ routeUHardEdgeEvenForm σ
       (fun u => (u - r) * G u + t * G u) (fun u => (u - r) * G u + t * G u))
     (hnull : routeUHardEdgeEvenForm σ (fun u => (u - r) * G u) (fun u => (u - r) * G u) = 0) :
-    routeUHardEdgePairing σ (fun u => (u - r) * G u ^ 2) = 0 := by
+    routeUHardEdgePairing σ (fun u => (u - r) * G u ^ (2 : ℕ)) = 0 := by
   have h := routeUEvenForm_eq_zero_of_diag σ (fun u => (u - r) * G u) G hFF hFG hGG hpsd hnull
-  have heq : (fun u : ℝ => ((u - r) * G u) * G u) = fun u => (u - r) * G u ^ 2 := by
+  have heq : (fun u : ℝ => ((u - r) * G u) * G u) = fun u => (u - r) * G u ^ (2 : ℕ) := by
     funext u
     ring
   rw [routeUHardEdgeEvenForm, heq] at h
@@ -53,7 +53,7 @@ theorem routeUHardEdge_rootDivision_jetMoment (σ : ℝ) (G : ℝ → ℝ) (r : 
     routeUJetMoment σ G r 1 = 0 := by
   have h := routeUHardEdge_rootDivision σ G r hFF hFG hGG hpsd hnull
   rw [routeUJetMoment]
-  have heq : (fun u : ℝ => (u - r) ^ 1 * G u ^ 2) = fun u => (u - r) * G u ^ 2 := by
+  have heq : (fun u : ℝ => (u - r) ^ (1 : ℕ) * G u ^ (2 : ℕ)) = fun u => (u - r) * G u ^ (2 : ℕ) := by
     funext u
     rw [pow_one]
   rw [heq]
@@ -82,13 +82,13 @@ theorem routeUHardEdgeOddForm_divided_nonneg_of_nonnegative_root
   have hvanish : routeUJetMoment σ G r 1 = 0 :=
     routeUHardEdge_rootDivision_jetMoment σ G r hFF hFG hGG hpsd hnull
   have h1 : IntegrableOn (fun u : ℝ =>
-      (u - r) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) /
+      (u - r) ^ (1 : ℕ) * G u ^ (2 : ℕ) * routeUHardEdgeDensity σ (Real.sqrt u) /
         Real.sqrt u) (Ioi 0) := by
     refine hFG.congr_fun ?_ measurableSet_Ioi
     intro u _
     ring
   have h2 : IntegrableOn (fun u : ℝ =>
-      r * ((u - r) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) /
+      r * ((u - r) ^ (0 : ℕ) * G u ^ (2 : ℕ)) * routeUHardEdgeDensity σ (Real.sqrt u) /
         Real.sqrt u) (Ioi 0) := by
     refine (hGG.const_mul r).congr (ae_of_all _ fun u => ?_)
     ring
@@ -110,22 +110,22 @@ odd branch cannot be negative once the even quotient is admitted to the critical
 theorem routeUHardEdgeOddForm_divided_nonneg_of_symmetric_real_roots
     (σ : ℝ) (G : ℝ → ℝ) (c : ℝ)
     (hFF : IntegrableOn (fun u : ℝ =>
-      ((u - c ^ 2) * G u) * ((u - c ^ 2) * G u) *
+      ((u - c ^ (2 : ℕ)) * G u) * ((u - c ^ (2 : ℕ)) * G u) *
         routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (hFG : IntegrableOn (fun u : ℝ =>
-      ((u - c ^ 2) * G u) * G u *
+      ((u - c ^ (2 : ℕ)) * G u) * G u *
         routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (hGG : IntegrableOn (fun u : ℝ =>
       G u * G u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
     (hpsd : ∀ t : ℝ, 0 ≤ routeUHardEdgeEvenForm σ
-      (fun u => (u - c ^ 2) * G u + t * G u)
-      (fun u => (u - c ^ 2) * G u + t * G u))
+      (fun u => (u - c ^ (2 : ℕ)) * G u + t * G u)
+      (fun u => (u - c ^ (2 : ℕ)) * G u + t * G u))
     (hnull : routeUHardEdgeEvenForm σ
-      (fun u => (u - c ^ 2) * G u) (fun u => (u - c ^ 2) * G u) = 0)
+      (fun u => (u - c ^ (2 : ℕ)) * G u) (fun u => (u - c ^ (2 : ℕ)) * G u) = 0)
     (hGnonneg : 0 ≤ routeUHardEdgeEvenForm σ G G) :
     0 ≤ routeUHardEdgeOddForm σ G G :=
   routeUHardEdgeOddForm_divided_nonneg_of_nonnegative_root
-    σ G (c ^ 2) hFF hFG hGG hpsd hnull (sq_nonneg c) hGnonneg
+    σ G (c ^ (2 : ℕ)) hFF hFG hGG hpsd hnull (sq_nonneg c) hGnonneg
 
 end RHTower
 

@@ -48,9 +48,9 @@ theorem oscBudget_le_of_product_symbol {a b m P Q N : ℝ}
     {w w' Θ'' : ℝ → ℝ}
     (hwc : ContinuousOn w (Icc a b)) (hw'c : ContinuousOn w' (Icc a b))
     (hΘc : ContinuousOn Θ'' (Icc a b))
-    (hw : ∀ x ∈ Icc a b, |w x| ≤ P / x) (hw' : ∀ x ∈ Icc a b, |w' x| ≤ Q / x ^ 2)
-    (hΘ : ∀ x ∈ Icc a b, |Θ'' x| ≤ N / x ^ 3) :
-    oscBudget a b m w w' Θ'' ≤ 2 * P / m + Q / m + P * N / (3 * m ^ 2) :=
+    (hw : ∀ x ∈ Icc a b, |w x| ≤ P / x) (hw' : ∀ x ∈ Icc a b, |w' x| ≤ Q / x ^ (2 : ℕ))
+    (hΘ : ∀ x ∈ Icc a b, |Θ'' x| ≤ N / x ^ (3 : ℕ)) :
+    oscBudget a b m w w' Θ'' ≤ 2 * P / m + Q / m + P * N / (3 * m ^ (2 : ℕ)) :=
   oscBudget_le_of_symbolBounds ha hab hm hP hQ hN hwc hw'c hΘc hw hw' hΘ
 
 /-- **Building a symbol record by composition.**  A Liouville amplitude with `|A| ≤ C/√x`,
@@ -68,8 +68,8 @@ theorem symbolTwoBranch_of_composition {a b C C' K K' : ℝ}
     (hA : ∀ x ∈ Icc a b, |A x| ≤ C / Real.sqrt x)
     (hA'b : ∀ x ∈ Icc a b, |A' x| ≤ C' / (x * Real.sqrt x))
     (hPb : ∀ t, |P t| ≤ K) (hQb : ∀ t, |Q t| ≤ K)
-    (hP'b : ∀ x ∈ Icc a b, |P' (Φ x) * Φ' x| ≤ K' / x ^ 2)
-    (hQ'b : ∀ x ∈ Icc a b, |Q' (Φ x) * Φ' x| ≤ K' / x ^ 2) :
+    (hP'b : ∀ x ∈ Icc a b, |P' (Φ x) * Φ' x| ≤ K' / x ^ (2 : ℕ))
+    (hQ'b : ∀ x ∈ Icc a b, |Q' (Φ x) * Φ' x| ≤ K' / x ^ (2 : ℕ)) :
     SymbolTwoBranch a b (C * K) (C' * K + C * K')
       (fun x => A x * P (Φ x)) (fun x => A x * Q (Φ x))
       (fun x => A' x * P (Φ x) + A x * (P' (Φ x) * Φ' x))
@@ -77,7 +77,7 @@ theorem symbolTwoBranch_of_composition {a b C C' K K' : ℝ}
   have hxpos : ∀ x ∈ Icc a b, (0 : ℝ) < x := fun x hx => lt_of_lt_of_le zero_lt_one
     (le_trans ha hx.1)
   have hbound : ∀ (R R' : ℝ → ℝ), (∀ t, HasDerivAt R (R' t) t) → (∀ t, |R t| ≤ K) →
-      (∀ x ∈ Icc a b, |R' (Φ x) * Φ' x| ≤ K' / x ^ 2) →
+      (∀ x ∈ Icc a b, |R' (Φ x) * Φ' x| ≤ K' / x ^ (2 : ℕ)) →
       (∀ x ∈ Icc a b, |A x * R (Φ x)| ≤ C * K / Real.sqrt x) ∧
       (∀ x ∈ Icc a b, |A' x * R (Φ x) + A x * (R' (Φ x) * Φ' x)|
         ≤ (C' * K + C * K') / (x * Real.sqrt x)) := by
@@ -102,13 +102,13 @@ theorem symbolTwoBranch_of_composition {a b C C' K K' : ℝ}
           _ = C' * K / (x * Real.sqrt x) := by ring
       have h2 : |A x * (R' (Φ x) * Φ' x)| ≤ C * K' / (x * Real.sqrt x) := by
         rw [abs_mul]
-        have hstep : |A x| * |R' (Φ x) * Φ' x| ≤ (C / Real.sqrt x) * (K' / x ^ 2) :=
+        have hstep : |A x| * |R' (Φ x) * Φ' x| ≤ (C / Real.sqrt x) * (K' / x ^ (2 : ℕ)) :=
           mul_le_mul (hA x hx) (hR'b x hx) (abs_nonneg _) (div_nonneg hC hs.le)
-        have hval : (C / Real.sqrt x) * (K' / x ^ 2) = C * K' / (x ^ 2 * Real.sqrt x) := by
+        have hval : (C / Real.sqrt x) * (K' / x ^ (2 : ℕ)) = C * K' / (x ^ (2 : ℕ) * Real.sqrt x) := by
           ring
-        have hmono : C * K' / (x ^ 2 * Real.sqrt x) ≤ C * K' / (x * Real.sqrt x) := by
+        have hmono : C * K' / (x ^ (2 : ℕ) * Real.sqrt x) ≤ C * K' / (x * Real.sqrt x) := by
           refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
-          have hxx : x ≤ x ^ 2 := by nlinarith
+          have hxx : x ≤ x ^ (2 : ℕ) := by nlinarith
           nlinarith [hs, hxx]
         rw [hval] at hstep
         exact hstep.trans hmono
@@ -139,16 +139,16 @@ theorem abs_integral_radial_twoBranch_symbol_le
     (hj : SymbolTwoBranch a b Mj Mj' g₁ g₂ g₁' g₂')
     (hkk : SymbolTwoBranch a b Mk Mk' g₃ g₄ g₃' g₄')
     (hND : ∀ x ∈ Icc a b,
-      |dilatedRadialPhaseAccel s j x - dilatedRadialPhaseAccel s k x| ≤ N / x ^ 3)
+      |dilatedRadialPhaseAccel s j x - dilatedRadialPhaseAccel s k x| ≤ N / x ^ (3 : ℕ))
     (hNS : ∀ x ∈ Icc a b,
-      |dilatedRadialPhaseAccel s j x + dilatedRadialPhaseAccel s k x| ≤ N / x ^ 3) :
+      |dilatedRadialPhaseAccel s j x + dilatedRadialPhaseAccel s k x| ≤ N / x ^ (3 : ℕ)) :
     |∫ x in a..b,
         (g₁ x * Real.cos (c * dilatedRadialPhase s j x)
             + g₂ x * Real.sin (c * dilatedRadialPhase s j x))
           * (g₃ x * Real.cos (c * dilatedRadialPhase s k x)
             + g₄ x * Real.sin (c * dilatedRadialPhase s k x))|
       ≤ 4 * (2 * (Mj * Mk) / (2 / 3 * (j - k)) + (Mj' * Mk + Mj * Mk') / (2 / 3 * (j - k))
-        + (Mj * Mk) * N / (3 * (2 / 3 * (j - k)) ^ 2)) / c := by
+        + (Mj * Mk) * N / (3 * (2 / 3 * (j - k)) ^ (2 : ℕ))) / c := by
   set m : ℝ := 2 / 3 * (j - k) with hmdef
   have hjge : (2 : ℝ) ≤ j := le_trans hk2 hkj.le
   have hm : (0 : ℝ) < m := by
@@ -236,7 +236,7 @@ theorem abs_integral_radial_twoBranch_symbol_le
         (fun x => 1 / 2 * (g₂' x * g₃ x + g₂ x * g₃' x + (g₁' x * g₄ x + g₁ x * g₄' x)))
         (fun x => dilatedRadialPhaseAccel s j x + dilatedRadialPhaseAccel s k x))
       ≤ 4 * (2 * (Mj * Mk) / m + (Mj' * Mk + Mj * Mk') / m
-        + (Mj * Mk) * N / (3 * m ^ 2)) := by
+        + (Mj * Mk) * N / (3 * m ^ (2 : ℕ))) := by
     linarith [hb₁, hb₂, hb₃, hb₄]
   gcongr
 
@@ -257,7 +257,7 @@ theorem abs_integral_radial_twoBranch_symbol_le'
           * (g₃ x * Real.cos (c * dilatedRadialPhase s k x)
             + g₄ x * Real.sin (c * dilatedRadialPhase s k x))|
       ≤ 4 * (2 * (Mj * Mk) / (2 / 3 * (j - k)) + (Mj' * Mk + Mj * Mk') / (2 / 3 * (j - k))
-        + (Mj * Mk) * (16 / 9) / (3 * (2 / 3 * (j - k)) ^ 2)) / c := by
+        + (Mj * Mk) * (16 / 9) / (3 * (2 / 3 * (j - k)) ^ (2 : ℕ))) / c := by
   have hjge : (2 : ℝ) ≤ j := le_trans hk2 hkj.le
   exact abs_integral_radial_twoBranch_symbol_le hs hs1 hk2 hkj ha hab hc hMj hMj' hMk hMk'
     (by norm_num) hj hkk

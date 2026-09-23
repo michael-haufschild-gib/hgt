@@ -29,13 +29,13 @@ def StrictSourcePositiveRefinedParabolicClockCone
     (σ : ModularThetaSourcePositiveState → ℂ) : Prop :=
   ∃ R z v : ℝ,
     0 < R ∧ 0 < z ∧ z < 3 / 10 ∧
-    (13 / 32 + z ^ 2 / 32 : ℝ) * z < v ∧
-    v < (33 / 80 + z ^ 2 / 16 : ℝ) * z ∧
-    (191 / 10 + (37 / 5 : ℝ) * z ^ 2) < R ^ 2 ∧
+    (13 / 32 + z ^ (2 : ℕ) / 32 : ℝ) * z < v ∧
+    v < (33 / 80 + z ^ (2 : ℕ) / 16 : ℝ) * z ∧
+    (191 / 10 + (37 / 5 : ℝ) * z ^ (2 : ℕ)) < R ^ (2 : ℕ) ∧
     σ .U = (R * v : ℝ) ∧
     σ .B = (R * (z - v) / 3 : ℝ) ∧
     MvPolynomial.eval σ modularThetaSourcePositiveGap =
-      (R ^ 2 * (1 - z ^ 2) : ℝ) ∧
+      (R ^ (2 : ℕ) * (1 - z ^ (2 : ℕ)) : ℝ) ∧
     0 < (σ .Q).re
 
 /-- Ray through the `X=100` seam, with projective clock ratio strictly between the
@@ -44,7 +44,7 @@ def modularThetaSourcePositiveRefinedParabolicRayState (s : ℝ) :
     ModularThetaSourcePositiveState → ℂ
   | .U => ((131 / 32 : ℝ) * s : ℝ)
   | .B => ((63 / 32 : ℝ) * s : ℝ)
-  | .Q => ((6 * ((63 / 32 : ℝ) * s) ^ 2 + 100 * (1 - s ^ 2) - 6) / 16 : ℝ)
+  | .Q => ((6 * ((63 / 32 : ℝ) * s) ^ (2 : ℕ) + 100 * (1 - s ^ (2 : ℕ)) - 6) / 16 : ℝ)
 
 @[simp] theorem modularThetaSourcePositiveRefinedParabolicRayState_zero :
     modularThetaSourcePositiveRefinedParabolicRayState 0 =
@@ -56,7 +56,7 @@ def modularThetaSourcePositiveRefinedParabolicRayState (s : ℝ) :
 
 theorem eval_modularThetaSourcePositiveGap_refinedParabolicRayState (s : ℝ) :
     MvPolynomial.eval (modularThetaSourcePositiveRefinedParabolicRayState s)
-      modularThetaSourcePositiveGap = (100 * (1 - s ^ 2) : ℝ) := by
+      modularThetaSourcePositiveGap = (100 * (1 - s ^ (2 : ℕ)) : ℝ) := by
   simp [modularThetaSourcePositiveRefinedParabolicRayState,
     modularThetaSourcePositiveGap]
   ring
@@ -65,10 +65,10 @@ theorem modularThetaSourcePositiveRefinedParabolicRayState_mem
     {s : ℝ} (hs : 0 < s) (hs3 : s < 3 / 10) :
     StrictSourcePositiveRefinedParabolicClockCone
       (modularThetaSourcePositiveRefinedParabolicRayState s) := by
-  have hs2 : s ^ 2 < (1 / 10 : ℝ) := by nlinarith [sq_nonneg (s - 3 / 10)]
-  have hlower : (13 / 32 + s ^ 2 / 32 : ℝ) < 131 / 320 := by
+  have hs2 : s ^ (2 : ℕ) < (1 / 10 : ℝ) := by nlinarith [sq_nonneg (s - 3 / 10)]
+  have hlower : (13 / 32 + s ^ (2 : ℕ) / 32 : ℝ) < 131 / 320 := by
     nlinarith
-  have hupper : (131 / 320 : ℝ) < 33 / 80 + s ^ 2 / 16 := by
+  have hupper : (131 / 320 : ℝ) < 33 / 80 + s ^ (2 : ℕ) / 16 := by
     nlinarith [sq_nonneg s]
   refine ⟨10, s, (131 / 320 : ℝ) * s, by norm_num, hs, hs3,
     mul_lt_mul_of_pos_right hlower hs,

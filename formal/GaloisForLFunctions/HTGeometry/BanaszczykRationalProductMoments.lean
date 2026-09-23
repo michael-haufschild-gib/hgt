@@ -120,7 +120,7 @@ def rationalLinearForm {d : ℕ} (u t : Fin d → ℝ) : ℝ :=
   ∑ i, u i * t i
 
 private theorem rationalLinearForm_sq_expand {d : ℕ} (u t : Fin d → ℝ) :
-    rationalLinearForm u t ^ 2 =
+    rationalLinearForm u t ^ (2 : ℕ) =
       ∑ i, ∑ j, (u i * u j) * (t i * t j) := by
   unfold rationalLinearForm
   rw [pow_two, Finset.sum_mul]
@@ -133,7 +133,7 @@ private theorem rationalLinearForm_sq_expand {d : ℕ} (u t : Fin d → ℝ) :
 
 theorem integrable_weighted_rationalLinearForm_sq {d : ℕ} (u : Fin d → ℝ) :
     Integrable (fun t : Fin d → ℝ =>
-      rationalProductDensity d t * rationalLinearForm u t ^ 2)
+      rationalProductDensity d t * rationalLinearForm u t ^ (2 : ℕ))
       (rationalProductVolume d) := by
   have hterm : ∀ i j : Fin d, Integrable
       (fun t : Fin d → ℝ => (u i * u j) *
@@ -145,7 +145,7 @@ theorem integrable_weighted_rationalLinearForm_sq {d : ℕ} (u : Fin d → ℝ) 
     integrable_finsetSum Finset.univ fun i _ =>
       integrable_finsetSum Finset.univ fun j _ => hterm i j
   have hfun : (fun t : Fin d → ℝ =>
-      rationalProductDensity d t * rationalLinearForm u t ^ 2) =
+      rationalProductDensity d t * rationalLinearForm u t ^ (2 : ℕ)) =
       fun t => ∑ i, ∑ j, (u i * u j) *
         (t i * t j * rationalProductDensity d t) := by
     funext t
@@ -162,14 +162,14 @@ theorem integrable_weighted_rationalLinearForm_sq {d : ℕ} (u : Fin d → ℝ) 
 /-- Exact variance of every linear form under the rational product density. -/
 @[simp]
 theorem integral_weighted_rationalLinearForm_sq {d : ℕ} (u : Fin d → ℝ) :
-    ∫ t : Fin d → ℝ, rationalProductDensity d t * rationalLinearForm u t ^ 2
-        ∂(rationalProductVolume d) = ∑ i, u i ^ 2 := by
+    ∫ t : Fin d → ℝ, rationalProductDensity d t * rationalLinearForm u t ^ (2 : ℕ)
+        ∂(rationalProductVolume d) = ∑ i, u i ^ (2 : ℕ) := by
   have hterm : ∀ i j : Fin d, Integrable
       (fun t : Fin d → ℝ => (u i * u j) *
         (t i * t j * rationalProductDensity d t)) (rationalProductVolume d) :=
     fun i j => (integrable_cross_mul_rationalProductDensity i j).const_mul _
   have hfun : (fun t : Fin d → ℝ =>
-      rationalProductDensity d t * rationalLinearForm u t ^ 2) =
+      rationalProductDensity d t * rationalLinearForm u t ^ (2 : ℕ)) =
       fun t => ∑ i, ∑ j, (u i * u j) *
         (t i * t j * rationalProductDensity d t) := by
     funext t
@@ -187,10 +187,10 @@ theorem integral_weighted_rationalLinearForm_sq {d : ℕ} (u : Fin d → ℝ) :
   rw [integral_finsetSum Finset.univ (fun j _ => hterm i j)]
   rw [show (∑ j, ∫ t : Fin d → ℝ,
       (u i * u j) * (t i * t j * rationalProductDensity d t)
-        ∂(rationalProductVolume d)) = u i ^ 2 by
+        ∂(rationalProductVolume d)) = u i ^ (2 : ℕ) by
     rw [show (fun j => ∫ t : Fin d → ℝ,
         (u i * u j) * (t i * t j * rationalProductDensity d t)
-          ∂(rationalProductVolume d)) = fun j => if i = j then u i ^ 2 else 0 by
+          ∂(rationalProductVolume d)) = fun j => if i = j then u i ^ (2 : ℕ) else 0 by
       funext j
       rw [integral_const_mul, integral_cross_mul_rationalProductDensity]
       by_cases hij : i = j
@@ -206,7 +206,7 @@ Euclidean coefficient norm. -/
 theorem integral_abs_rationalLinearForm_le_sqrt {d : ℕ} (u : Fin d → ℝ) :
     (∫ t : Fin d → ℝ,
       rationalProductDensity d t * |rationalLinearForm u t|
-        ∂(rationalProductVolume d)) ≤ Real.sqrt (∑ i, u i ^ 2) := by
+        ∂(rationalProductVolume d)) ≤ Real.sqrt (∑ i, u i ^ (2 : ℕ)) := by
   have hcs := sq_integral_weighted_le
     (μ := rationalProductVolume d)
     (w := rationalProductDensity d)
@@ -223,8 +223,8 @@ theorem integral_abs_rationalLinearForm_le_sqrt {d : ℕ} (u : Fin d → ℝ) :
       funext t
       rw [sq_abs])
   have habsfun : (fun t : Fin d → ℝ =>
-      rationalProductDensity d t * |rationalLinearForm u t| ^ 2) =
-      fun t => rationalProductDensity d t * rationalLinearForm u t ^ 2 := by
+      rationalProductDensity d t * |rationalLinearForm u t| ^ (2 : ℕ)) =
+      fun t => rationalProductDensity d t * rationalLinearForm u t ^ (2 : ℕ) := by
     funext t
     rw [sq_abs]
   rw [integral_rationalProductDensity, habsfun,

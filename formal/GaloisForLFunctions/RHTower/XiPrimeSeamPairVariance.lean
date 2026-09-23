@@ -30,7 +30,7 @@ def primeReciprocalMass (s : Finset Nat.Primes) : ℝ :=
 /-- Reciprocal-prime weighted square norm of a finite prime-indexed packet. -/
 def primePairWeightedNormSq (a : Nat.Primes → ℂ)
     (s : Finset Nat.Primes) : ℝ :=
-  ∑ p ∈ s, (1 / (p : ℝ)) * ‖a p‖ ^ 2
+  ∑ p ∈ s, (1 / (p : ℝ)) * ‖a p‖ ^ (2 : ℕ)
 
 /-- Reciprocal-prime weighted, unnormalized mean of a finite prime-indexed packet. -/
 def primePairWeightedMean (a : Nat.Primes → ℂ)
@@ -43,27 +43,27 @@ theorem primePairDifferenceEnergy_eq_weightedVariance
     (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
     primePairDifferenceEnergy a s =
       2 * primeReciprocalMass s * primePairWeightedNormSq a s -
-        2 * ‖primePairWeightedMean a s‖ ^ 2 := by
+        2 * ‖primePairWeightedMean a s‖ ^ (2 : ℕ) := by
   let w : Nat.Primes → ℝ := fun p => 1 / (p : ℝ)
   have hre0 := two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion
     s w (fun p => (a p).re) (fun p => (a p).re)
   have him0 := two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion
     s w (fun p => (a p).im) (fun p => (a p).im)
   have hre :
-      2 * (∑ p ∈ s, w p) * (∑ p ∈ s, w p * (a p).re ^ 2) =
-        2 * (∑ p ∈ s, w p * (a p).re) ^ 2 +
+      2 * (∑ p ∈ s, w p) * (∑ p ∈ s, w p * (a p).re ^ (2 : ℕ)) =
+        2 * (∑ p ∈ s, w p * (a p).re) ^ (2 : ℕ) +
           ∑ p ∈ s, ∑ q ∈ s,
-            w p * w q * ((a p).re - (a q).re) ^ 2 := by
+            w p * w q * ((a p).re - (a q).re) ^ (2 : ℕ) := by
     simpa only [pow_two, mul_assoc] using hre0
   have him :
-      2 * (∑ p ∈ s, w p) * (∑ p ∈ s, w p * (a p).im ^ 2) =
-        2 * (∑ p ∈ s, w p * (a p).im) ^ 2 +
+      2 * (∑ p ∈ s, w p) * (∑ p ∈ s, w p * (a p).im ^ (2 : ℕ)) =
+        2 * (∑ p ∈ s, w p * (a p).im) ^ (2 : ℕ) +
           ∑ p ∈ s, ∑ q ∈ s,
-            w p * w q * ((a p).im - (a q).im) ^ 2 := by
+            w p * w q * ((a p).im - (a q).im) ^ (2 : ℕ) := by
     simpa only [pow_two, mul_assoc] using him0
   have henergy : primePairDifferenceEnergy a s =
       ∑ p ∈ s, ∑ q ∈ s,
-        w p * w q * ((a p - a q).re ^ 2 + (a p - a q).im ^ 2) := by
+        w p * w q * ((a p - a q).re ^ (2 : ℕ) + (a p - a q).im ^ (2 : ℕ)) := by
     unfold primePairDifferenceEnergy primePairDifferenceRow
     apply Finset.sum_congr rfl
     intro p hp
@@ -76,23 +76,23 @@ theorem primePairDifferenceEnergy_eq_weightedVariance
   rw [henergy]
   have hpair :
       (∑ p ∈ s, ∑ q ∈ s,
-        w p * w q * ((a p - a q).re ^ 2 + (a p - a q).im ^ 2)) =
+        w p * w q * ((a p - a q).re ^ (2 : ℕ) + (a p - a q).im ^ (2 : ℕ))) =
       (∑ p ∈ s, ∑ q ∈ s,
-        w p * w q * ((a p).re - (a q).re) ^ 2) +
+        w p * w q * ((a p).re - (a q).re) ^ (2 : ℕ)) +
       (∑ p ∈ s, ∑ q ∈ s,
-        w p * w q * ((a p).im - (a q).im) ^ 2) := by
+        w p * w q * ((a p).im - (a q).im) ^ (2 : ℕ)) := by
     simp only [Complex.sub_re, Complex.sub_im]
     simp_rw [mul_add, Finset.sum_add_distrib]
   rw [hpair]
   rw [show (∑ p ∈ s, ∑ q ∈ s,
-      w p * w q * ((a p).re - (a q).re) ^ 2) =
-      2 * (∑ p ∈ s, w p) * (∑ p ∈ s, w p * (a p).re ^ 2) -
-        2 * (∑ p ∈ s, w p * (a p).re) ^ 2 by
+      w p * w q * ((a p).re - (a q).re) ^ (2 : ℕ)) =
+      2 * (∑ p ∈ s, w p) * (∑ p ∈ s, w p * (a p).re ^ (2 : ℕ)) -
+        2 * (∑ p ∈ s, w p * (a p).re) ^ (2 : ℕ) by
     linarith [hre]]
   rw [show (∑ p ∈ s, ∑ q ∈ s,
-      w p * w q * ((a p).im - (a q).im) ^ 2) =
-      2 * (∑ p ∈ s, w p) * (∑ p ∈ s, w p * (a p).im ^ 2) -
-        2 * (∑ p ∈ s, w p * (a p).im) ^ 2 by
+      w p * w q * ((a p).im - (a q).im) ^ (2 : ℕ)) =
+      2 * (∑ p ∈ s, w p) * (∑ p ∈ s, w p * (a p).im ^ (2 : ℕ)) -
+        2 * (∑ p ∈ s, w p * (a p).im) ^ (2 : ℕ) by
     linarith [him]]
   have hmeanRe : (primePairWeightedMean a s).re =
       ∑ p ∈ s, w p * (a p).re := by
@@ -110,7 +110,7 @@ finite Cauchy--Schwarz inequality is an immediate positive consequence of pair-e
 nonnegativity and the exact variance identity. -/
 theorem primePairWeightedMean_norm_sq_le
     (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
-    ‖primePairWeightedMean a s‖ ^ 2 ≤
+    ‖primePairWeightedMean a s‖ ^ (2 : ℕ) ≤
       primeReciprocalMass s * primePairWeightedNormSq a s := by
   have h := primePairDifferenceEnergy_nonneg a s
   rw [primePairDifferenceEnergy_eq_weightedVariance] at h
@@ -123,7 +123,7 @@ This is the squared Plucker area of their span. -/
 def primePairPluckerGramDet (a : Nat.Primes → ℂ)
     (s : Finset Nat.Primes) : ℝ :=
   primeReciprocalMass s * primePairWeightedNormSq a s -
-    ‖primePairWeightedMean a s‖ ^ 2
+    ‖primePairWeightedMean a s‖ ^ (2 : ℕ)
 
 /-- **Prime-pair Plucker identity.**  The reciprocal-prime pair energy is twice the weighted
 Gram determinant of the constant section and the packet `a`.  Thus the two-particle obstruction
@@ -162,7 +162,7 @@ theorem orbitwisePrimeSeamPairEnergy_eq_weightedVariance
           primePairWeightedNormSq
             (fun p : Nat.Primes => orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s -
         2 * ‖primePairWeightedMean
-          (fun p : Nat.Primes => orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s‖ ^ 2 :=
+          (fun p : Nat.Primes => orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s‖ ^ (2 : ℕ) :=
   primePairDifferenceEnergy_eq_weightedVariance _ _
 
 end

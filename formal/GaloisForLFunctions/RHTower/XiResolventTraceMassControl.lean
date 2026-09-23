@@ -106,7 +106,7 @@ theorem abs_im_lt_re_xiResolventPoint {X : ℝ} (hX : 0 ≤ X) (q : XiZeroCopy) 
     |(xiResolventPoint X q).im| < (xiResolventPoint X q).re := by
   have hcone := xiSpectralSq_add_abs_im_lt_re hX q
   have hne := xiSpectralSq_add_ofReal_ne_zero hX q
-  have hnsq : 0 < Complex.normSq (xiSpectralPoint q ^ 2 + (X : ℂ)) :=
+  have hnsq : 0 < Complex.normSq (xiSpectralPoint q ^ (2 : ℕ) + (X : ℂ)) :=
     Complex.normSq_pos.mpr hne
   rw [xiResolventPoint, Complex.inv_re, Complex.inv_im, abs_div, abs_neg,
     abs_of_pos hnsq, div_eq_mul_inv, div_eq_mul_inv]
@@ -115,18 +115,18 @@ theorem abs_im_lt_re_xiResolventPoint {X : ℝ} (hX : 0 ≤ X) (q : XiZeroCopy) 
 /-- **The pointwise cone bound**: a coordinate in the 45° cone with unit norm multiplies any
 complex square with real part at least `−2·(Im w)²`. -/
 theorem re_mul_sq_ge_of_cone {u w : ℂ} (hc : |u.im| ≤ u.re) (hb : ‖u‖ ≤ 1) :
-    -(2 * w.im ^ 2) ≤ (u * w ^ 2).re := by
-  have hre : (u * w ^ 2).re = u.re * (w.re ^ 2 - w.im ^ 2) - u.im * (2 * w.re * w.im) := by
-    have hw2r : (w ^ 2).re = w.re ^ 2 - w.im ^ 2 := by
+    -(2 * w.im ^ (2 : ℕ)) ≤ (u * w ^ (2 : ℕ)).re := by
+  have hre : (u * w ^ (2 : ℕ)).re = u.re * (w.re ^ (2 : ℕ) - w.im ^ (2 : ℕ)) - u.im * (2 * w.re * w.im) := by
+    have hw2r : (w ^ (2 : ℕ)).re = w.re ^ (2 : ℕ) - w.im ^ (2 : ℕ) := by
       rw [sq, Complex.mul_re]
       ring
-    have hw2i : (w ^ 2).im = 2 * w.re * w.im := by
+    have hw2i : (w ^ (2 : ℕ)).im = 2 * w.re * w.im := by
       rw [sq, Complex.mul_im]
       ring
     rw [Complex.mul_re, hw2r, hw2i]
   have hure : |u.re| ≤ 1 := le_trans (Complex.abs_re_le_norm u) hb
   have huim : |u.im| ≤ 1 := le_trans (Complex.abs_im_le_norm u) hb
-  have hcross : |u.im * (2 * w.re * w.im)| ≤ |u.im| * (w.re ^ 2 + w.im ^ 2) := by
+  have hcross : |u.im * (2 * w.re * w.im)| ≤ |u.im| * (w.re ^ (2 : ℕ) + w.im ^ (2 : ℕ)) := by
     rw [abs_mul]
     apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
     have h2 : |2 * w.re * w.im| = 2 * (|w.re| * |w.im|) := by
@@ -146,24 +146,24 @@ theorem re_mul_sq_ge_of_cone {u w : ℂ} (hc : |u.im| ≤ u.re) (hb : ‖u‖ �
 /-- **Termwise mass bound**: every polynomial trace term is bounded below by minus twice the
 squared Lipschitz constant times the squared imaginary part of the coordinate. -/
 theorem re_traceTerm_ge_neg_mass {X : ℝ} (hX : 0 ≤ X) (p : Polynomial ℝ) (q : XiZeroCopy) :
-    -(2 * evalRealPolynomialLipBound p ^ 2 * (xiResolventPoint X q).im ^ 2) ≤
+    -(2 * evalRealPolynomialLipBound p ^ (2 : ℕ) * (xiResolventPoint X q).im ^ (2 : ℕ)) ≤
       (xiResolventPoint X q *
-        evalRealPolynomial p (xiResolventPoint X q) ^ 2).re := by
+        evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ)).re := by
   have hb : ‖xiResolventPoint X q‖ ≤ 1 := norm_xiResolventPoint_le_one hX q
   have hc : |(xiResolventPoint X q).im| ≤ (xiResolventPoint X q).re :=
     (abs_im_lt_re_xiResolventPoint hX q).le
   have hpoint := re_mul_sq_ge_of_cone hc hb (w := evalRealPolynomial p (xiResolventPoint X q))
   have hLip := abs_im_evalRealPolynomial_le p hb
-  have hsq : (evalRealPolynomial p (xiResolventPoint X q)).im ^ 2 ≤
-      evalRealPolynomialLipBound p ^ 2 * (xiResolventPoint X q).im ^ 2 := by
+  have hsq : (evalRealPolynomial p (xiResolventPoint X q)).im ^ (2 : ℕ) ≤
+      evalRealPolynomialLipBound p ^ (2 : ℕ) * (xiResolventPoint X q).im ^ (2 : ℕ) := by
     have h := mul_self_le_mul_self (abs_nonneg _) hLip
-    calc (evalRealPolynomial p (xiResolventPoint X q)).im ^ 2 =
-        |(evalRealPolynomial p (xiResolventPoint X q)).im| ^ 2 := (sq_abs _).symm
-      _ ≤ (evalRealPolynomialLipBound p * |(xiResolventPoint X q).im|) ^ 2 := by
+    calc (evalRealPolynomial p (xiResolventPoint X q)).im ^ (2 : ℕ) =
+        |(evalRealPolynomial p (xiResolventPoint X q)).im| ^ (2 : ℕ) := (sq_abs _).symm
+      _ ≤ (evalRealPolynomialLipBound p * |(xiResolventPoint X q).im|) ^ (2 : ℕ) := by
           nlinarith [abs_nonneg (evalRealPolynomial p (xiResolventPoint X q)).im, hLip,
             mul_nonneg (evalRealPolynomialLipBound_nonneg p)
               (abs_nonneg (xiResolventPoint X q).im)]
-      _ = evalRealPolynomialLipBound p ^ 2 * (xiResolventPoint X q).im ^ 2 := by
+      _ = evalRealPolynomialLipBound p ^ (2 : ℕ) * (xiResolventPoint X q).im ^ (2 : ℕ) := by
           rw [mul_pow, sq_abs]
   linarith
 
@@ -171,41 +171,41 @@ theorem re_traceTerm_ge_neg_mass {X : ℝ} (hX : 0 ≤ X) (p : Polynomial ℝ) (
 every polynomial trace is carried by the `ℓ²` imaginary mass, with constant twice the squared
 unit-disc Lipschitz bound of the polynomial. -/
 theorem xiResolventTrace_re_ge_neg_mass {X : ℝ} (hX : 0 ≤ X) (p : Polynomial ℝ) :
-    -(2 * evalRealPolynomialLipBound p ^ 2 * xiResolventImSqMass X) ≤
+    -(2 * evalRealPolynomialLipBound p ^ (2 : ℕ) * xiResolventImSqMass X) ≤
       (xiResolventTrace X p).re := by
   have hB := evalRealPolynomialNormBound_nonneg p (zero_le_one (α := ℝ))
   have hsumTrace : Summable (fun q : XiZeroCopy =>
-      xiResolventPoint X q * evalRealPolynomial p (xiResolventPoint X q) ^ 2) := by
+      xiResolventPoint X q * evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ)) := by
     apply Summable.of_norm
     refine Summable.of_nonneg_of_le (fun q => norm_nonneg _) (fun q => ?_)
       ((summable_norm_xiResolventPoint hX).mul_left
-        (evalRealPolynomialNormBound p 1 ^ 2))
+        (evalRealPolynomialNormBound p 1 ^ (2 : ℕ)))
     rw [norm_mul, norm_pow]
     have h1 : ‖evalRealPolynomial p (xiResolventPoint X q)‖ ≤
         evalRealPolynomialNormBound p 1 :=
       norm_evalRealPolynomial_le p (norm_xiResolventPoint_le_one hX q)
-    have h2 : ‖evalRealPolynomial p (xiResolventPoint X q)‖ ^ 2 ≤
-        evalRealPolynomialNormBound p 1 ^ 2 := by
+    have h2 : ‖evalRealPolynomial p (xiResolventPoint X q)‖ ^ (2 : ℕ) ≤
+        evalRealPolynomialNormBound p 1 ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (evalRealPolynomial p (xiResolventPoint X q))]
     nlinarith [norm_nonneg (xiResolventPoint X q),
       mul_le_mul_of_nonneg_left h2 (norm_nonneg (xiResolventPoint X q))]
   rw [xiResolventTrace, Complex.re_tsum hsumTrace]
   have hsumRe : Summable (fun q : XiZeroCopy =>
-      (xiResolventPoint X q * evalRealPolynomial p (xiResolventPoint X q) ^ 2).re) := by
+      (xiResolventPoint X q * evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ)).re) := by
     simpa only [Function.comp_apply] using!
       hsumTrace.map Complex.reCLM Complex.reCLM.continuous
   have hsumLow : Summable (fun q : XiZeroCopy =>
-      -(2 * evalRealPolynomialLipBound p ^ 2 * (xiResolventPoint X q).im ^ 2)) :=
+      -(2 * evalRealPolynomialLipBound p ^ (2 : ℕ) * (xiResolventPoint X q).im ^ (2 : ℕ))) :=
     ((summable_im_sq_xiResolventPoint hX).mul_left
-      (2 * evalRealPolynomialLipBound p ^ 2)).neg
+      (2 * evalRealPolynomialLipBound p ^ (2 : ℕ))).neg
   have hcompare := hsumLow.tsum_le_tsum
     (fun q => re_traceTerm_ge_neg_mass hX p q) hsumRe
-  calc -(2 * evalRealPolynomialLipBound p ^ 2 * xiResolventImSqMass X) =
+  calc -(2 * evalRealPolynomialLipBound p ^ (2 : ℕ) * xiResolventImSqMass X) =
       ∑' q : XiZeroCopy,
-        -(2 * evalRealPolynomialLipBound p ^ 2 * (xiResolventPoint X q).im ^ 2) := by
+        -(2 * evalRealPolynomialLipBound p ^ (2 : ℕ) * (xiResolventPoint X q).im ^ (2 : ℕ)) := by
         rw [tsum_neg, tsum_mul_left, xiResolventImSqMass]
     _ ≤ ∑' q : XiZeroCopy,
-        (xiResolventPoint X q * evalRealPolynomial p (xiResolventPoint X q) ^ 2).re :=
+        (xiResolventPoint X q * evalRealPolynomial p (xiResolventPoint X q) ^ (2 : ℕ)).re :=
         hcompare
 
 /-- **Mass control of every Hankel form**: at every order and every coefficient vector the
@@ -213,7 +213,7 @@ possible negativity of the resolvent Hankel form is explicitly bounded by the `�
 mass. -/
 theorem xiResolventHankelForm_re_ge_neg_mass {X : ℝ} (hX : 0 ≤ X) (N : ℕ) (a : ℕ → ℝ) :
     -(2 * evalRealPolynomialLipBound
-        (∑ j ∈ Finset.range N, Polynomial.C (a j) * Polynomial.X ^ j) ^ 2 *
+        (∑ j ∈ Finset.range N, Polynomial.C (a j) * Polynomial.X ^ j) ^ (2 : ℕ) *
           xiResolventImSqMass X) ≤
       (xiResolventHankelForm N a X).re := by
   rw [← xiResolventTrace_rangeSum hX N a]

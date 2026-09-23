@@ -21,7 +21,7 @@ namespace RHTower
 
 /-- The closed form of the generating function of one paired Li summand:
 `Σ_n (2 - wⁿ - w⁻ⁿ) zⁿ = z(z+1)(w-1)² / ((z-1)(z-w)(wz-1))`. -/
-def liBracket (w z : ℂ) : ℂ := z * (z + 1) * (w - 1) ^ 2 / ((z - 1) * (z - w) * (w * z - 1))
+def liBracket (w z : ℂ) : ℂ := z * (z + 1) * (w - 1) ^ (2 : ℕ) / ((z - 1) * (z - w) * (w * z - 1))
 
 theorem hasSum_liTerm_mul_pow {w z : ℂ} (hw : w ≠ 0) (hz : ‖z‖ < 1)
     (h1 : ‖w * z‖ < 1) (h2 : ‖z / w‖ < 1) :

@@ -34,7 +34,7 @@ theorem hsSqRe_sub_le (A B : Matrix n n ℂ) :
   rw [Matrix.sub_apply]
   have htri : ‖A b a - B b a‖ ≤ ‖A b a‖ + ‖B b a‖ := norm_sub_le _ _
   have hAB : (0 : ℝ) ≤ ‖A b a - B b a‖ := norm_nonneg _
-  have hsq : ‖A b a - B b a‖ ^ 2 ≤ (‖A b a‖ + ‖B b a‖) ^ 2 := by nlinarith [htri, hAB]
+  have hsq : ‖A b a - B b a‖ ^ (2 : ℕ) ≤ (‖A b a‖ + ‖B b a‖) ^ (2 : ℕ) := by nlinarith [htri, hAB]
   nlinarith [hsq, sq_nonneg (‖A b a‖ - ‖B b a‖)]
 
 omit [DecidableEq n] in
@@ -49,8 +49,8 @@ theorem hsSqRe_conjTranspose (A : Matrix n n ℂ) : hsSqRe Aᴴ = hsSqRe A := by
 omit [DecidableEq n] in
 /-- Right multiplication is bounded by the operator norm of the adjoint. -/
 theorem hsSqRe_mul_right_le (A E : Matrix n n ℂ) {c : ℝ}
-    (hE : ∀ v : n → ℂ, ∑ l, ‖(Eᴴ *ᵥ v) l‖ ^ 2 ≤ c ^ 2 * ∑ l, ‖v l‖ ^ 2) :
-    hsSqRe (A * E) ≤ c ^ 2 * hsSqRe A := by
+    (hE : ∀ v : n → ℂ, ∑ l, ‖(Eᴴ *ᵥ v) l‖ ^ (2 : ℕ) ≤ c ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ)) :
+    hsSqRe (A * E) ≤ c ^ (2 : ℕ) * hsSqRe A := by
   have hconj : hsSqRe (A * E) = hsSqRe (Eᴴ * Aᴴ) := by
     rw [← Matrix.conjTranspose_mul, hsSqRe_conjTranspose]
   rw [hconj]
@@ -61,9 +61,9 @@ omit [DecidableEq n] in
 /-- **The commutator bound.**  A slot that moves every vector by at most `c`, in either the operator
 or the adjoint direction, makes the commutator energy at most `(2c)²` times the other slot's. -/
 theorem hsSqRe_commutator_le_of_opBound (E A : Matrix n n ℂ) {c : ℝ}
-    (hE : ∀ v : n → ℂ, ∑ l, ‖(E *ᵥ v) l‖ ^ 2 ≤ c ^ 2 * ∑ l, ‖v l‖ ^ 2)
-    (hEH : ∀ v : n → ℂ, ∑ l, ‖(Eᴴ *ᵥ v) l‖ ^ 2 ≤ c ^ 2 * ∑ l, ‖v l‖ ^ 2) :
-    hsSqRe (E * A - A * E) ≤ (2 * c) ^ 2 * hsSqRe A := by
+    (hE : ∀ v : n → ℂ, ∑ l, ‖(E *ᵥ v) l‖ ^ (2 : ℕ) ≤ c ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ))
+    (hEH : ∀ v : n → ℂ, ∑ l, ‖(Eᴴ *ᵥ v) l‖ ^ (2 : ℕ) ≤ c ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ)) :
+    hsSqRe (E * A - A * E) ≤ (2 * c) ^ (2 : ℕ) * hsSqRe A := by
   have h1 := hsSqRe_mul_left_le E A hE
   have h2 := hsSqRe_mul_right_le A E hEH
   have h3 := hsSqRe_sub_le (E * A) (A * E)
@@ -108,15 +108,15 @@ omit [DecidableEq n] in
 operator-norm approximation combine to force the transverse part of a candidate logarithm below
 `(2ε/α)` times its distance to the scalars. -/
 theorem transverse_le_of_gap_and_approx (U A E K : Matrix n n ℂ) {α ε : ℝ} (hα : 0 < α)
-    (hgap : α ^ 2 * hsSqRe A ≤ hsSqRe (U * A - A * U))
+    (hgap : α ^ (2 : ℕ) * hsSqRe A ≤ hsSqRe (U * A - A * U))
     (hrewrite : U * A - A * U = E * K - K * E)
-    (hE : ∀ v : n → ℂ, ∑ l, ‖(E *ᵥ v) l‖ ^ 2 ≤ ε ^ 2 * ∑ l, ‖v l‖ ^ 2)
-    (hEH : ∀ v : n → ℂ, ∑ l, ‖(Eᴴ *ᵥ v) l‖ ^ 2 ≤ ε ^ 2 * ∑ l, ‖v l‖ ^ 2) :
-    hsSqRe A ≤ (2 * ε / α) ^ 2 * hsSqRe K := by
+    (hE : ∀ v : n → ℂ, ∑ l, ‖(E *ᵥ v) l‖ ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ))
+    (hEH : ∀ v : n → ℂ, ∑ l, ‖(Eᴴ *ᵥ v) l‖ ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ)) :
+    hsSqRe A ≤ (2 * ε / α) ^ (2 : ℕ) * hsSqRe K := by
   have hbound := hsSqRe_commutator_le_of_opBound E K hE hEH
   rw [hrewrite] at hgap
-  have hchain : α ^ 2 * hsSqRe A ≤ (2 * ε) ^ 2 * hsSqRe K := le_trans hgap hbound
-  have hα2 : 0 < α ^ 2 := by positivity
+  have hchain : α ^ (2 : ℕ) * hsSqRe A ≤ (2 * ε) ^ (2 : ℕ) * hsSqRe K := le_trans hgap hbound
+  have hα2 : 0 < α ^ (2 : ℕ) := by positivity
   rw [div_pow, div_mul_eq_mul_div, le_div_iff₀ hα2]
   nlinarith [hchain]
 
@@ -124,19 +124,19 @@ omit [DecidableEq n] in
 /-- **Theorem C.1's assembled estimate.**  A tangent gap, a chord comparison and an operator-norm
 approximation combine into a distance bound with the constant of the card. -/
 theorem subwinding_transverse_le (H K V E : Matrix n n ℂ) {γ C ε : ℝ} (hγ : 0 < γ)
-    (hgap : γ ^ 2 * hsSqRe K ≤ hsSqRe (H * K - K * H))
-    (hcomp : hsSqRe (H * K - K * H) ≤ C ^ 2 * hsSqRe (H * V - V * H))
+    (hgap : γ ^ (2 : ℕ) * hsSqRe K ≤ hsSqRe (H * K - K * H))
+    (hcomp : hsSqRe (H * K - K * H) ≤ C ^ (2 : ℕ) * hsSqRe (H * V - V * H))
     (hrewrite : H * V - V * H = E * H - H * E)
-    (hE : ∀ v : n → ℂ, ∑ l, ‖(E *ᵥ v) l‖ ^ 2 ≤ ε ^ 2 * ∑ l, ‖v l‖ ^ 2)
-    (hEH : ∀ v : n → ℂ, ∑ l, ‖(Eᴴ *ᵥ v) l‖ ^ 2 ≤ ε ^ 2 * ∑ l, ‖v l‖ ^ 2) :
-    hsSqRe K ≤ (C * (2 * ε) / γ) ^ 2 * hsSqRe H := by
+    (hE : ∀ v : n → ℂ, ∑ l, ‖(E *ᵥ v) l‖ ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ))
+    (hEH : ∀ v : n → ℂ, ∑ l, ‖(Eᴴ *ᵥ v) l‖ ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ)) :
+    hsSqRe K ≤ (C * (2 * ε) / γ) ^ (2 : ℕ) * hsSqRe H := by
   have hbound := hsSqRe_commutator_le_of_opBound E H hE hEH
   rw [hrewrite] at hcomp
-  have hchain : γ ^ 2 * hsSqRe K ≤ C ^ 2 * ((2 * ε) ^ 2 * hsSqRe H) := by
+  have hchain : γ ^ (2 : ℕ) * hsSqRe K ≤ C ^ (2 : ℕ) * ((2 * ε) ^ (2 : ℕ) * hsSqRe H) := by
     refine le_trans hgap (le_trans hcomp ?_)
-    have hC2 : (0 : ℝ) ≤ C ^ 2 := sq_nonneg C
+    have hC2 : (0 : ℝ) ≤ C ^ (2 : ℕ) := sq_nonneg C
     exact mul_le_mul_of_nonneg_left hbound hC2
-  have hγ2 : 0 < γ ^ 2 := by positivity
+  have hγ2 : 0 < γ ^ (2 : ℕ) := by positivity
   rw [div_pow, div_mul_eq_mul_div, le_div_iff₀ hγ2]
   nlinarith [hchain]
 

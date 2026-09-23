@@ -57,7 +57,7 @@ def vecC : ParityH := evec 0 0 1
 def vecC' : ParityH := evec (1 / 2) (-(1 / (2 * Real.sqrt 3))) (Real.sqrt (2 / 3))
 
 theorem norm_eq_one_of_inner_self {v : ParityH} (h : (inner ℂ v v : ℂ) = 1) : ‖v‖ = 1 := by
-  have h1 : ‖v‖ ^ 2 = RCLike.re (inner ℂ v v : ℂ) := norm_sq_eq_re_inner v
+  have h1 : ‖v‖ ^ (2 : ℕ) = RCLike.re (inner ℂ v v : ℂ) := norm_sq_eq_re_inner v
   rw [h] at h1
   norm_num at h1
   rcases h1 with h1 | h1

@@ -8,7 +8,7 @@ The rectangular amplitude has a canonical source orientation in its width:
 `∂_L A_L(w) = exp (-Lw)`.
 
 Therefore differentiating the multiplicity-weighted squared residue model
-`2m A_L(w)^2`, then multiplying by `exp(Lw) / 4`, recovers the unsquared
+`2m A_L(w)^(2 : ℕ)`, then multiplying by `exp(Lw) / 4`, recovers the unsquared
 signed cell `m A_L(w)`.  The recovery uses no square-root branch and no
 zero-dependent normalization.
 
@@ -126,10 +126,10 @@ theorem hasDerivAt_rectangularWindowAmplitudeComplex_width
     convert hquot using 1
     field_simp [hw]
 
-/-- Local model of the already-proved tomography residue `2m A_L(w)^2`. -/
+/-- Local model of the already-proved tomography residue `2m A_L(w)^(2 : ℕ)`. -/
 def rectangularTomographyResidueModel
     (m : ℕ) (L w : ℂ) : ℂ :=
-  2 * (m : ℂ) * rectangularWindowAmplitudeComplex L w ^ 2
+  2 * (m : ℂ) * rectangularWindowAmplitudeComplex L w ^ (2 : ℕ)
 
 theorem hasDerivAt_rectangularTomographyResidueModel_width
     (m : ℕ) (L w : ℂ) :
@@ -139,15 +139,15 @@ theorem hasDerivAt_rectangularTomographyResidueModel_width
   have hA := hasDerivAt_rectangularWindowAmplitudeComplex_width L w
   change HasDerivAt
     (fun U =>
-      2 * (m : ℂ) * rectangularWindowAmplitudeComplex U w ^ 2)
+      2 * (m : ℂ) * rectangularWindowAmplitudeComplex U w ^ (2 : ℕ))
     _ L
   have hmodel := (hA.pow 2).const_mul (2 * (m : ℂ))
   have hfun :
       (fun U =>
-        2 * (m : ℂ) * rectangularWindowAmplitudeComplex U w ^ 2) =
+        2 * (m : ℂ) * rectangularWindowAmplitudeComplex U w ^ (2 : ℕ)) =
         fun y =>
           2 * (m : ℂ) *
-            ((fun U => rectangularWindowAmplitudeComplex U w) ^ 2) y := by
+            ((fun U => rectangularWindowAmplitudeComplex U w) ^ (2 : ℕ)) y := by
     funext U
     rfl
   have hder :

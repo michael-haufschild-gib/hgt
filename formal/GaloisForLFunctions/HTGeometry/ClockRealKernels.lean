@@ -30,7 +30,7 @@ structure ClockDatum (V Vs Vt : ℝ → ℝ → ℂ → ℂ) (ρ₀ Mv ρ ρ₁ 
   radNonneg : 0 ≤ ρ
   rad : ρ < ρ₀
   sideNonneg : 0 ≤ T
-  small : (4 + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1
+  small : (4 + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1
   rad₁Nonneg : 0 ≤ ρ₁
   rad₁ : ρ₁ < ρ
   rad₂Nonneg : 0 ≤ ρ₂

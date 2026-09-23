@@ -66,10 +66,10 @@ theorem log_cross_kernel_le_carleman {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
 
 /-- **Equations (17)–(18).**  A coercive form gives the exact inverse bound. -/
 theorem norm_le_of_coercive {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H]
-    {γ : ℝ} (hγ : 0 < γ) {u f : H} (hcoer : γ * ‖u‖ ^ 2 ≤ inner ℝ f u) :
+    {γ : ℝ} (hγ : 0 < γ) {u f : H} (hcoer : γ * ‖u‖ ^ (2 : ℕ) ≤ inner ℝ f u) :
     ‖u‖ ≤ γ⁻¹ * ‖f‖ := by
   have hcs : (inner ℝ f u : ℝ) ≤ ‖f‖ * ‖u‖ := real_inner_le_norm f u
-  have hchain : γ * ‖u‖ ^ 2 ≤ ‖f‖ * ‖u‖ := le_trans hcoer hcs
+  have hchain : γ * ‖u‖ ^ (2 : ℕ) ≤ ‖f‖ * ‖u‖ := le_trans hcoer hcs
   rcases eq_or_lt_of_le (norm_nonneg u) with hzero | hposu
   · rw [← hzero]
     positivity

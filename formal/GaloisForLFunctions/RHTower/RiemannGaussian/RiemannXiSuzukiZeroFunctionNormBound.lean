@@ -9,7 +9,7 @@ used only the unit carrier bound and an off-axis Cauchy kernel.  Here that
 argument is made quantitative.  We first prove the exact translated and
 scaled Cauchy-density integral
 
-`∫ x, ((x-a)^2 + b^2)⁻¹ = pi / |b|` for `b != 0`,
+`∫ x, ((x-a)^(2 : ℕ) + b^(2 : ℕ))⁻¹ = pi / |b|` for `b != 0`,
 
 then combine it with `|carrier(x)| <= 1`.  The result is the explicit bound
 

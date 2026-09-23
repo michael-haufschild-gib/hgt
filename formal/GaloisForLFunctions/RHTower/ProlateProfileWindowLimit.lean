@@ -23,19 +23,19 @@ namespace RHTower
 
 /-- Coefficient perturbation of the rescaled prolate equation against the `n`-th Hermite rung. -/
 noncomputable def prolateWindowEpsP (c mu K : ℝ) (n : ℕ) : ℝ :=
-  2 * |mu - (2 * (n : ℝ) + 1)| + 2 * (K ^ 2 * (K ^ 2 + (2 * (n : ℝ) + 1))) / c
+  2 * |mu - (2 * (n : ℝ) + 1)| + 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + (2 * (n : ℝ) + 1))) / c
 
 /-- First-derivative coefficient of the rescaled prolate equation on the window. -/
 noncomputable def prolateWindowEpsQ (c K : ℝ) : ℝ := 4 * K / c
 
 /-- Lipschitz constant of the limiting Hermite field on the window. -/
-noncomputable def hermiteWindowBound (K : ℝ) (n : ℕ) : ℝ := K ^ 2 + (2 * (n : ℝ) + 1)
+noncomputable def hermiteWindowBound (K : ℝ) (n : ℕ) : ℝ := K ^ (2 : ℕ) + (2 * (n : ℝ) + 1)
 
 /-- **Window comparison.**  The prolate profile and the Hermite-rung solution with the same initial
 phase vector separate by the Grönwall envelope built from the coefficient perturbations. -/
 theorem prolateProfile_window_dist_le
     {c mu K B : ℝ} {n : ℕ} {u u' u'' v v' v'' : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hu : ∀ x, HasDerivAt u (u' x) x) (hu' : ∀ x, HasDerivAt u' (u'' x) x)
     (hv : ∀ x, HasDerivAt v (v' x) x) (hv' : ∀ x, HasDerivAt v' (v'' x) x)
     (hequ : ∀ x ∈ Icc (0 : ℝ) K,
@@ -71,7 +71,7 @@ theorem tendsto_prolateWindowEpsP {ι : Type*} {L : Filter ι} {mu c : ι → �
       simpa using hsub.abs
     simpa using habs.const_mul 2
   have h2 : Tendsto
-      (fun i => 2 * (K ^ 2 * (K ^ 2 + (2 * (n : ℝ) + 1))) / c i) L (𝓝 0) :=
+      (fun i => 2 * (K ^ (2 : ℕ) * (K ^ (2 : ℕ) + (2 * (n : ℝ) + 1))) / c i) L (𝓝 0) :=
     tendsto_const_nhds.div_atTop hc
   have := h1.add h2
   simpa [prolateWindowEpsP] using this
@@ -97,7 +97,7 @@ solution uniformly on `[0, K]`. -/
 theorem tendsto_prolateProfile_window
     {ι : Type*} {L : Filter ι} {mu c : ι → ℝ} {K B : ℝ} {n : ℕ}
     {u u' u'' : ι → ℝ → ℝ} {v v' v'' : ℝ → ℝ}
-    (hK : 0 < K) (hcK : ∀ i, 2 * K ^ 2 ≤ c i)
+    (hK : 0 < K) (hcK : ∀ i, 2 * K ^ (2 : ℕ) ≤ c i)
     (hu : ∀ i x, HasDerivAt (u i) (u' i x) x) (hu' : ∀ i x, HasDerivAt (u' i) (u'' i x) x)
     (hv : ∀ x, HasDerivAt v (v' x) x) (hv' : ∀ x, HasDerivAt v' (v'' x) x)
     (hequ : ∀ i, ∀ x ∈ Icc (0 : ℝ) K,
@@ -128,7 +128,7 @@ theorem tendsto_prolateProfile_window
 /-- The normal-form coefficient is bounded on the window by the limiting bound plus the
 perturbation. -/
 theorem abs_rescaledProlateP_le {c K mu xi : ℝ} {n : ℕ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c) (hxi : |xi| ≤ K) :
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c) (hxi : |xi| ≤ K) :
     |rescaledProlateP c mu xi| ≤ hermiteWindowBound K n + prolateWindowEpsP c mu K n := by
   have h1 : |rescaledProlateP c mu xi - hermiteRungP n xi| ≤ prolateWindowEpsP c mu K n :=
     abs_rescaledProlateP_sub_le hK hcK hxi
@@ -142,7 +142,7 @@ theorem abs_rescaledProlateP_le {c K mu xi : ℝ} {n : ℕ}
 most exponentially on the window, at a rate built from the two explicit coefficient bounds. -/
 theorem prolateProfile_window_phase_le
     {c mu K : ℝ} {n : ℕ} {u u' u'' : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hu : ∀ x, HasDerivAt u (u' x) x) (hu' : ∀ x, HasDerivAt u' (u'' x) x)
     (hequ : ∀ x ∈ Icc (0 : ℝ) K,
       u'' x = rescaledProlateP c mu x * u x + rescaledProlateQ c x * u' x) :

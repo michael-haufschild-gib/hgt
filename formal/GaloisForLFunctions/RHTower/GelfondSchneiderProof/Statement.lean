@@ -85,7 +85,7 @@ theorem transcendental_cpow_of_isAlgebraic_of_irrational (α β : ℂ)
     · unfold n q
       refine Nat.div_le_div_right (Nat.pow_le_pow_left H1 2)
 
-  have H4 : (h7.c₁₅)^4 ≤ (h7.n q : ℝ) := by
+  have H4 : (h7.c₁₅)^(4 : ℕ) ≤ (h7.n q : ℝ) := by
     unfold n q
     refine Nat.ceil_le.mp ?_
     refine (Nat.le_div_iff_mul_le ?_).mpr ?_
@@ -120,7 +120,7 @@ theorem transcendental_cpow_of_isAlgebraic_of_irrational (α β : ℂ)
 
   have H5 : 6* h7.h ≤ h7.r q hq0 h2mq := H3.trans (n_le_r h7 q hq0 h2mq)
 
-  have H6 : (h7.c₁₅)^4 ≤ h7.r q hq0 h2mq := by
+  have H6 : (h7.c₁₅)^(4 : ℕ) ≤ h7.r q hq0 h2mq := by
     trans
     · apply H4
     simp only [Nat.cast_le]

@@ -57,14 +57,14 @@ theorem norm_routeKPhysicalEndpointBoundaryRankOne
     (r : Nat.Primes) :
     ‖routeKPhysicalEndpointBoundaryRankOne r‖ =
       physicalPrimeEndpointWeight r *
-        (∑' p : Nat.Primes, physicalPrimeEndpointWeight p ^ 2) := by
+        (∑' p : Nat.Primes, physicalPrimeEndpointWeight p ^ (2 : ℕ)) := by
   rw [routeKPhysicalEndpointBoundaryRankOne, norm_smul,
     InnerProductSpace.norm_rankOne, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (physicalPrimeEndpointWeight_pos r), ← pow_two,
     norm_sq_routeKPhysicalEndpointCorrectionPhaseVector]
 
 private theorem routeKPhysicalEndpointEnergy_pos :
-    0 < ∑' p : Nat.Primes, physicalPrimeEndpointWeight p ^ 2 := by
+    0 < ∑' p : Nat.Primes, physicalPrimeEndpointWeight p ^ (2 : ℕ) := by
   let two : Nat.Primes := ⟨2, by norm_num⟩
   rw [← norm_sq_routeKPhysicalEndpointCorrectionPhaseVector (two, 0)]
   apply sq_pos_of_pos
@@ -91,11 +91,11 @@ theorem not_summable_norm_routeKPhysicalEndpointBoundaryRankOne :
       ‖routeKPhysicalEndpointBoundaryRankOne r‖) := by
   intro hsum
   have henergy :
-      (∑' p : Nat.Primes, physicalPrimeEndpointWeight p ^ 2) ≠ 0 :=
+      (∑' p : Nat.Primes, physicalPrimeEndpointWeight p ^ (2 : ℕ)) ≠ 0 :=
     ne_of_gt routeKPhysicalEndpointEnergy_pos
   have hscaled : Summable (fun r : Nat.Primes =>
       physicalPrimeEndpointWeight r *
-        (∑' p : Nat.Primes, physicalPrimeEndpointWeight p ^ 2)) :=
+        (∑' p : Nat.Primes, physicalPrimeEndpointWeight p ^ (2 : ℕ))) :=
     hsum.congr (fun r => norm_routeKPhysicalEndpointBoundaryRankOne r)
   have hphysical : Summable
       (fun r : Nat.Primes => physicalPrimeEndpointWeight r) :=

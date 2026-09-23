@@ -15,7 +15,7 @@ the critical Mellin prefix is at most a constant times `sqrt N`.  The reporter G
 gives a linear upper bound for the transition core.  Conversely, the corpus dyadic PNT lower bound
 makes the coherent outgoing prime charge at least a constant times `sqrt N`.  Therefore
 
-`A_N^2 <= C_N <= K A_N^2`
+`A_N^(2 : ℕ) <= C_N <= K A_N^(2 : ℕ)`
 
 eventually, where `A_N` is the coherent atomic amplitude and `C_N` is the positive transition
 core.
@@ -23,7 +23,7 @@ core.
 The globally aligned completion distributes the regular-screw amplitude in the exact atomic
 Cartan direction before squaring.  Its energy is
 
-`C_N * ((A_N - R_N) / A_N)^2`.
+`C_N * ((A_N - R_N) / A_N)^(2 : ℕ)`.
 
 The two-sided condition-number law proves that eventual boundedness of this growing-rank completed
 energy is equivalent to boundedness of the completed Suzuki Green amplitude, hence equivalent to
@@ -169,7 +169,7 @@ theorem suzukiCriticalMellinWeightPrefix_le (N : ℕ) :
 
 theorem suzukiNaturalApertureTransitionCoreCauchyEnergy_le_prefix_sq (N : ℕ) :
     suzukiNaturalApertureTransitionCoreCauchyEnergy N ≤
-      2 * suzukiCriticalMellinWeightPrefix N ^ 2 := by
+      2 * suzukiCriticalMellinWeightPrefix N ^ (2 : ℕ) := by
   classical
   rw [suzukiNaturalApertureTransitionCoreCauchyEnergy]
   calc
@@ -202,7 +202,7 @@ theorem suzukiNaturalApertureTransitionCoreCauchyEnergy_le_prefix_sq (N : ℕ) :
       · exact Finset.filter_subset _ _
       · intro ij hij hnot
         positivity
-    _ = 2 * suzukiCriticalMellinWeightPrefix N ^ 2 := by
+    _ = 2 * suzukiCriticalMellinWeightPrefix N ^ (2 : ℕ) := by
       rw [suzukiNaturalAperturePairSet, Finset.sum_product,
         suzukiCriticalMellinWeightPrefix]
       change (∑ i ∈ Finset.Icc 2 N, ∑ j ∈ Finset.Icc 2 N,
@@ -220,24 +220,24 @@ theorem suzukiNaturalApertureTransitionCoreCauchyEnergy_le_prefix_sq (N : ℕ) :
 
 theorem suzukiNaturalApertureTransitionCoreCauchyEnergy_le_linear (N : ℕ) :
     suzukiNaturalApertureTransitionCoreCauchyEnergy N ≤
-      18 * (Real.log 4 + 4) ^ 2 * N := by
+      18 * (Real.log 4 + 4) ^ (2 : ℕ) * N := by
   have hp := suzukiCriticalMellinWeightPrefix_le N
   have hprefix : 0 ≤ suzukiCriticalMellinWeightPrefix N := by
     rw [suzukiCriticalMellinWeightPrefix]
     exact Finset.sum_nonneg fun n hn => criticalMellinAtomWeight_nonneg n
   have hroot : 0 ≤ Real.sqrt (N : ℝ) := Real.sqrt_nonneg _
-  have hsq : Real.sqrt (N : ℝ) ^ 2 = N := Real.sq_sqrt (by positivity)
+  have hsq : Real.sqrt (N : ℝ) ^ (2 : ℕ) = N := Real.sq_sqrt (by positivity)
   calc
-    _ ≤ 2 * suzukiCriticalMellinWeightPrefix N ^ 2 :=
+    _ ≤ 2 * suzukiCriticalMellinWeightPrefix N ^ (2 : ℕ) :=
       suzukiNaturalApertureTransitionCoreCauchyEnergy_le_prefix_sq N
-    _ ≤ 2 * (3 * (Real.log 4 + 4) * Real.sqrt N) ^ 2 := by
+    _ ≤ 2 * (3 * (Real.log 4 + 4) * Real.sqrt N) ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hprefix hp 2) (by norm_num)
-    _ = 18 * (Real.log 4 + 4) ^ 2 * Real.sqrt N ^ 2 := by ring
+    _ = 18 * (Real.log 4 + 4) ^ (2 : ℕ) * Real.sqrt N ^ (2 : ℕ) := by ring
     _ = _ := by rw [hsq]
 
 theorem eventually_unitRieszCoherentPrimeOutgoingCharge_sq_ge_linear :
     ∀ᶠ N : ℕ in atTop,
-      (N : ℝ) / 104976 ≤ unitRieszCoherentPrimeOutgoingCharge N ^ 2 := by
+      (N : ℝ) / 104976 ≤ unitRieszCoherentPrimeOutgoingCharge N ^ (2 : ℕ) := by
   have hdiv : Tendsto (fun N : ℕ => N / 9) atTop atTop :=
     Nat.tendsto_div_const_atTop (by norm_num)
   have hcast : Tendsto (fun N : ℕ => ((N / 9 : ℕ) : ℝ)) atTop atTop :=
@@ -269,29 +269,29 @@ theorem eventually_unitRieszCoherentPrimeOutgoingCharge_sq_ge_linear :
     calc
       _ ≤ Real.sqrt ((N / 9 : ℕ) : ℝ) / 18 := by linarith
       _ ≤ _ := hA
-  have hsqrt : Real.sqrt (N : ℝ) ^ 2 = N := Real.sq_sqrt (by positivity)
-  have hsqle : (Real.sqrt (N : ℝ) / 324) ^ 2 ≤
-      unitRieszCoherentPrimeOutgoingCharge N ^ 2 :=
+  have hsqrt : Real.sqrt (N : ℝ) ^ (2 : ℕ) = N := Real.sq_sqrt (by positivity)
+  have hsqle : (Real.sqrt (N : ℝ) / 324) ^ (2 : ℕ) ≤
+      unitRieszCoherentPrimeOutgoingCharge N ^ (2 : ℕ) :=
     pow_le_pow_left₀ (div_nonneg (Real.sqrt_nonneg _) (by norm_num)) hAlinear 2
   calc
-    (N : ℝ) / 104976 = (Real.sqrt (N : ℝ) / 324) ^ 2 := by
+    (N : ℝ) / 104976 = (Real.sqrt (N : ℝ) / 324) ^ (2 : ℕ) := by
       rw [div_pow, hsqrt]
       norm_num
     _ ≤ _ := hsqle
 
 def suzukiTransitionCoreAnchorConditionNumberBound : ℝ :=
-  1889568 * (Real.log 4 + 4) ^ 2
+  1889568 * (Real.log 4 + 4) ^ (2 : ℕ)
 
 theorem eventually_suzukiTransitionCore_le_anchorConditionNumber_mul_sq :
     ∀ᶠ N : ℕ in atTop,
       suzukiNaturalApertureTransitionCoreCauchyEnergy N ≤
         suzukiTransitionCoreAnchorConditionNumberBound *
-          unitRieszCoherentPrimeOutgoingCharge N ^ 2 := by
+          unitRieszCoherentPrimeOutgoingCharge N ^ (2 : ℕ) := by
   filter_upwards [eventually_unitRieszCoherentPrimeOutgoingCharge_sq_ge_linear]
     with N hA
   have hcore := suzukiNaturalApertureTransitionCoreCauchyEnergy_le_linear N
   rw [suzukiTransitionCoreAnchorConditionNumberBound]
-  have hC : 0 ≤ (Real.log 4 + 4) ^ 2 := sq_nonneg _
+  have hC : 0 ≤ (Real.log 4 + 4) ^ (2 : ℕ) := sq_nonneg _
   nlinarith [mul_le_mul_of_nonneg_left hA
     (mul_nonneg (by norm_num : (0 : ℝ) ≤ 18) hC)]
 
@@ -299,7 +299,7 @@ def suzukiTransitionCoreAlignedGammaCompletedEnergy (N : ℕ) : ℝ :=
   if _hA : unitRieszCoherentPrimeOutgoingCharge N = 0 then 0
   else suzukiNaturalApertureTransitionCoreCauchyEnergy N *
     (suzukiNaturalApertureCompletedLowerHardyAmplitude N /
-      unitRieszCoherentPrimeOutgoingCharge N) ^ 2
+      unitRieszCoherentPrimeOutgoingCharge N) ^ (2 : ℕ)
 
 theorem suzukiTransitionCoreAlignedGammaCompletedEnergy_nonneg (N : ℕ) :
     0 ≤ suzukiTransitionCoreAlignedGammaCompletedEnergy N := by
@@ -310,22 +310,22 @@ theorem suzukiTransitionCoreAlignedGammaCompletedEnergy_nonneg (N : ℕ) :
       (suzukiNaturalApertureTransitionCoreCauchyEnergy_nonneg N) (sq_nonneg _)
 
 private theorem sq_mul_div_sq_cancel {A x : ℝ} (hA : A ≠ 0) :
-    A ^ 2 * (x / A) ^ 2 = x ^ 2 := by
+    A ^ (2 : ℕ) * (x / A) ^ (2 : ℕ) = x ^ (2 : ℕ) := by
   field_simp [hA]
 
 theorem suzukiCompletedAnchor_sq_le_alignedEnergy
     {N : ℕ} (hN : 2 ≤ N)
     (hA : unitRieszCoherentPrimeOutgoingCharge N ≠ 0) :
-    suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2 ≤
+    suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ) ≤
       suzukiTransitionCoreAlignedGammaCompletedEnergy N := by
   rw [suzukiTransitionCoreAlignedGammaCompletedEnergy, dif_neg hA]
   have hcore := unitRieszCoherentPrimeOutgoingCharge_sq_le_transitionCore hN
   have hq : 0 ≤ (suzukiNaturalApertureCompletedLowerHardyAmplitude N /
-      unitRieszCoherentPrimeOutgoingCharge N) ^ 2 := sq_nonneg _
+      unitRieszCoherentPrimeOutgoingCharge N) ^ (2 : ℕ) := sq_nonneg _
   calc
-    _ = unitRieszCoherentPrimeOutgoingCharge N ^ 2 *
+    _ = unitRieszCoherentPrimeOutgoingCharge N ^ (2 : ℕ) *
         (suzukiNaturalApertureCompletedLowerHardyAmplitude N /
-          unitRieszCoherentPrimeOutgoingCharge N) ^ 2 := by
+          unitRieszCoherentPrimeOutgoingCharge N) ^ (2 : ℕ) := by
       rw [sq_mul_div_sq_cancel hA]
     _ ≤ _ := mul_le_mul_of_nonneg_right hcore hq
 
@@ -333,18 +333,18 @@ theorem suzukiAlignedEnergy_le_condition_mul_completedAnchor_sq
     {N : ℕ} (hA : unitRieszCoherentPrimeOutgoingCharge N ≠ 0)
     (hcore : suzukiNaturalApertureTransitionCoreCauchyEnergy N ≤
       suzukiTransitionCoreAnchorConditionNumberBound *
-        unitRieszCoherentPrimeOutgoingCharge N ^ 2) :
+        unitRieszCoherentPrimeOutgoingCharge N ^ (2 : ℕ)) :
     suzukiTransitionCoreAlignedGammaCompletedEnergy N ≤
       suzukiTransitionCoreAnchorConditionNumberBound *
-        suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2 := by
+        suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ) := by
   rw [suzukiTransitionCoreAlignedGammaCompletedEnergy, dif_neg hA]
   have hq : 0 ≤ (suzukiNaturalApertureCompletedLowerHardyAmplitude N /
-      unitRieszCoherentPrimeOutgoingCharge N) ^ 2 := sq_nonneg _
+      unitRieszCoherentPrimeOutgoingCharge N) ^ (2 : ℕ) := sq_nonneg _
   calc
     _ ≤ (suzukiTransitionCoreAnchorConditionNumberBound *
-          unitRieszCoherentPrimeOutgoingCharge N ^ 2) *
+          unitRieszCoherentPrimeOutgoingCharge N ^ (2 : ℕ)) *
         (suzukiNaturalApertureCompletedLowerHardyAmplitude N /
-          unitRieszCoherentPrimeOutgoingCharge N) ^ 2 :=
+          unitRieszCoherentPrimeOutgoingCharge N) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right hcore hq
     _ = _ := by rw [mul_assoc, sq_mul_div_sq_cancel hA]
 
@@ -358,7 +358,7 @@ theorem eventually_unitRieszCoherentPrimeOutgoingCharge_ne_zero :
 
 theorem eventually_completedAnchor_sq_le_suzukiTransitionCoreAlignedEnergy :
     ∀ᶠ N : ℕ in atTop,
-      suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2 ≤
+      suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ) ≤
         suzukiTransitionCoreAlignedGammaCompletedEnergy N := by
   filter_upwards [eventually_ge_atTop (2 : ℕ),
     eventually_unitRieszCoherentPrimeOutgoingCharge_ne_zero] with N hN hA
@@ -368,7 +368,7 @@ theorem eventually_suzukiAlignedEnergy_le_condition_mul_completedAnchor_sq :
     ∀ᶠ N : ℕ in atTop,
       suzukiTransitionCoreAlignedGammaCompletedEnergy N ≤
         suzukiTransitionCoreAnchorConditionNumberBound *
-          suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2 := by
+          suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ) := by
   filter_upwards [eventually_suzukiTransitionCore_le_anchorConditionNumber_mul_sq,
     eventually_unitRieszCoherentPrimeOutgoingCharge_ne_zero] with N hcore hA
   exact suzukiAlignedEnergy_le_condition_mul_completedAnchor_sq hA hcore
@@ -384,12 +384,12 @@ theorem riemannHypothesis_iff_suzukiTransitionCoreAlignedGammaCompletedEnergyEve
   · intro hRH
     obtain ⟨B, hB, hbound⟩ :=
       (riemannHypothesis_iff_suzukiNaturalCauchyCompletedAnchorBounded.mp hRH)
-    refine ⟨suzukiTransitionCoreAnchorConditionNumberBound * B ^ 2, ?_⟩
+    refine ⟨suzukiTransitionCoreAnchorConditionNumberBound * B ^ (2 : ℕ), ?_⟩
     filter_upwards [eventually_suzukiAlignedEnergy_le_condition_mul_completedAnchor_sq,
       eventually_ge_atTop (2 : ℕ)] with N henergy hN
     have habs : |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ≤ B := by
       simpa [Nat.sub_add_cancel hN] using hbound (N - 2)
-    have hsq : suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2 ≤ B ^ 2 := by
+    have hsq : suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ) ≤ B ^ (2 : ℕ) := by
       rw [← sq_abs]
       exact pow_le_pow_left₀ (abs_nonneg _) habs 2
     exact henergy.trans (mul_le_mul_of_nonneg_left hsq (by
@@ -397,7 +397,7 @@ theorem riemannHypothesis_iff_suzukiTransitionCoreAlignedGammaCompletedEnergyEve
       positivity))
   · rintro ⟨E, henergy⟩
     have hsquare : ∀ᶠ N : ℕ in atTop,
-        suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2 ≤ E := by
+        suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ) ≤ E := by
       filter_upwards [eventually_completedAnchor_sq_le_suzukiTransitionCoreAlignedEnergy,
         henergy] with N hlower hupper
       exact hlower.trans hupper
@@ -418,14 +418,14 @@ theorem riemannHypothesis_iff_suzukiTransitionCoreAlignedGammaCompletedEnergyEve
       · have hsquareN := hN₀ N hlarge
         have habs_le_sq_add_one :
             |suzukiNaturalApertureCompletedLowerHardyAmplitude N| ≤
-              suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2 + 1 := by
+              suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ) + 1 := by
           have hnonneg := abs_nonneg
             (suzukiNaturalApertureCompletedLowerHardyAmplitude N)
           rw [← sq_abs]
           nlinarith [sq_nonneg
             (|suzukiNaturalApertureCompletedLowerHardyAmplitude N| - 1 / 2)]
         calc
-          _ ≤ suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ 2 + 1 :=
+          _ ≤ suzukiNaturalApertureCompletedLowerHardyAmplitude N ^ (2 : ℕ) + 1 :=
             habs_le_sq_add_one
           _ ≤ E + 1 := by linarith
           _ ≤ |E| + 1 := by linarith [le_abs_self E]

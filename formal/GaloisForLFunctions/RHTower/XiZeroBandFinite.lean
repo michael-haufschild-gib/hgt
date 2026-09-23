@@ -82,23 +82,23 @@ theorem finite_xiZeroCopy_band (t : ℝ) {r : ℝ} (hr : 0 ≤ r) :
 
 /-- The Cauchy weight is summable over the divisor at every real height. -/
 theorem summable_xiZeroWeight (x : ℝ) :
-    Summable (fun q : XiZeroCopy => (1 : ℝ) / (1 + (x - (q.1 : ℂ).im) ^ 2)) := by
+    Summable (fun q : XiZeroCopy => (1 : ℝ) / (1 + (x - (q.1 : ℂ).im) ^ (2 : ℕ))) := by
   obtain ⟨C, hC0, hC⟩ := exists_tsum_weighted_density_le
   obtain ⟨t₀, ht₀⟩ := (hC.and (Filter.eventually_ge_atTop (0 : ℝ))).exists
-  have hbase : Summable (fun q : XiZeroCopy => (1 : ℝ) / (1 + (t₀ - (q.1 : ℂ).im) ^ 2)) :=
+  have hbase : Summable (fun q : XiZeroCopy => (1 : ℝ) / (1 + (t₀ - (q.1 : ℂ).im) ^ (2 : ℕ))) :=
     ht₀.1.1
-  set K : ℝ := 1 + 2 * (t₀ - x) ^ 2 + 2 with hK
+  set K : ℝ := 1 + 2 * (t₀ - x) ^ (2 : ℕ) + 2 with hK
   have hK0 : 0 < K := by rw [hK]; positivity
   refine Summable.of_nonneg_of_le (fun q => by positivity) (fun q => ?_) (hbase.mul_left K)
   set γ : ℝ := (q.1 : ℂ).im with hγ
-  have hden1 : (0 : ℝ) < 1 + (x - γ) ^ 2 := by positivity
-  have hden2 : (0 : ℝ) < 1 + (t₀ - γ) ^ 2 := by positivity
-  have key : 1 + (t₀ - γ) ^ 2 ≤ K * (1 + (x - γ) ^ 2) := by
+  have hden1 : (0 : ℝ) < 1 + (x - γ) ^ (2 : ℕ) := by positivity
+  have hden2 : (0 : ℝ) < 1 + (t₀ - γ) ^ (2 : ℕ) := by positivity
+  have key : 1 + (t₀ - γ) ^ (2 : ℕ) ≤ K * (1 + (x - γ) ^ (2 : ℕ)) := by
     rw [hK]
     nlinarith [sq_nonneg ((t₀ - x) - (x - γ)), sq_nonneg (x - γ), sq_nonneg (t₀ - x)]
-  calc (1 : ℝ) / (1 + (x - γ) ^ 2) = K * (1 / (K * (1 + (x - γ) ^ 2))) := by
+  calc (1 : ℝ) / (1 + (x - γ) ^ (2 : ℕ)) = K * (1 / (K * (1 + (x - γ) ^ (2 : ℕ)))) := by
         field_simp
-    _ ≤ K * (1 / (1 + (t₀ - γ) ^ 2)) := by
+    _ ≤ K * (1 / (1 + (t₀ - γ) ^ (2 : ℕ))) := by
         gcongr
 
 end

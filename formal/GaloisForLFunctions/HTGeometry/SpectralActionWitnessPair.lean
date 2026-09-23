@@ -29,13 +29,13 @@ theorem exists_disjoint_actionRatio_pair_of_witness_of_pos
     {P : Fin N → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
     (k : Fin D → ℝ) (hN : 0 < N)
     (hwit : ∀ b : ℝ, ∃ θ₀ : Fin N → ℝ, ∀ π : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
-        ≠ b ^ 2 * (∑ a, (θ₀ a) ^ 2)) :
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ (2 : ℕ)
+        ≠ b ^ (2 : ℕ) * (∑ a, (θ₀ a) ^ (2 : ℕ))) :
     ∃ θ₁ θ₂ : Fin N → ℝ, ∀ π₁ π₂ : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₁).eigenvalues (π₁ j)) ^ 2
-          * (∑ a, (θ₂ a) ^ 2)
-        ≠ (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₂).eigenvalues (π₂ j)) ^ 2
-          * (∑ a, (θ₁ a) ^ 2) := by
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₁).eigenvalues (π₁ j)) ^ (2 : ℕ)
+          * (∑ a, (θ₂ a) ^ (2 : ℕ))
+        ≠ (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₂).eigenvalues (π₂ j)) ^ (2 : ℕ)
+          * (∑ a, (θ₁ a) ^ (2 : ℕ)) := by
   classical
   let i₀ : Fin N := ⟨0, hN⟩
   let θ₁ : Fin N → ℝ := Pi.single i₀ 1
@@ -61,7 +61,7 @@ theorem exists_disjoint_actionRatio_pair_of_witness_of_pos
     dsimp only [Q]
     rw [map_prod]
     exact Finset.prod_eq_zero (Finset.mem_univ π) hzero
-  have hnorm₁ : ∑ a, (θ₁ a) ^ 2 = 1 := by
+  have hnorm₁ : ∑ a, (θ₁ a) ^ (2 : ℕ) = 1 := by
     simp [θ₁, Pi.single_apply]
   refine ⟨θ₁, θ₂, ?_⟩
   intro π₁ π₂ hcollision
@@ -70,8 +70,8 @@ theorem exists_disjoint_actionRatio_pair_of_witness_of_pos
   refine Finset.prod_eq_zero (Finset.mem_univ π₂) ?_
   rw [hnorm₁, mul_one] at hcollision
   change
-    (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₂).eigenvalues (π₂ j)) ^ 2
-      - level π₁ ^ 2 * (∑ a, (θ₂ a) ^ 2) = 0
+    (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₂).eigenvalues (π₂ j)) ^ (2 : ℕ)
+      - level π₁ ^ (2 : ℕ) * (∑ a, (θ₂ a) ^ (2 : ℕ)) = 0
   dsimp only [level]
   linarith
 
@@ -84,13 +84,13 @@ theorem exists_disjoint_actionRatio_pair_of_witness
     {P : Fin (m + 1) → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
     (k : Fin D → ℝ)
     (hwit : ∀ b : ℝ, ∃ θ₀ : Fin (m + 1) → ℝ, ∀ π : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
-        ≠ b ^ 2 * (∑ a, (θ₀ a) ^ 2)) :
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ (2 : ℕ)
+        ≠ b ^ (2 : ℕ) * (∑ a, (θ₀ a) ^ (2 : ℕ))) :
     ∃ θ₁ θ₂ : Fin (m + 1) → ℝ, ∀ π₁ π₂ : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₁).eigenvalues (π₁ j)) ^ 2
-          * (∑ a, (θ₂ a) ^ 2)
-        ≠ (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₂).eigenvalues (π₂ j)) ^ 2
-      * (∑ a, (θ₁ a) ^ 2) :=
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₁).eigenvalues (π₁ j)) ^ (2 : ℕ)
+          * (∑ a, (θ₂ a) ^ (2 : ℕ))
+        ≠ (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₂).eigenvalues (π₂ j)) ^ (2 : ℕ)
+      * (∑ a, (θ₁ a) ^ (2 : ℕ)) :=
   exists_disjoint_actionRatio_pair_of_witness_of_pos hP k (Nat.succ_pos m) hwit
 
 end

@@ -80,10 +80,10 @@ theorem suzukiEulerianFivePrimeBlockComponent_unbounded
     dsimp [c]
     positivity
   obtain ⟨n, hn⟩ := exists_nat_gt
-    (max (Real.exp 20) ((max B 0 / c) ^ 2))
+    (max (Real.exp 20) ((max B 0 / c) ^ (2 : ℕ)))
   have hN : Real.exp 20 ≤ (n : ℝ) :=
     (le_max_left _ _).trans hn.le
-  have hsq : (max B 0 / c) ^ 2 < (n : ℝ) :=
+  have hsq : (max B 0 / c) ^ (2 : ℕ) < (n : ℝ) :=
     (le_max_right _ _).trans_lt hn
   have hratioNonneg : 0 ≤ max B 0 / c := div_nonneg (le_max_right _ _) hc.le
   have hratioSqrt : max B 0 / c < Real.sqrt (n : ℝ) :=

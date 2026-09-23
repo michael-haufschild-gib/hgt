@@ -71,7 +71,7 @@ theorem two_mul_natCast_le_routePBudget_add_traceDefect_of_not_rh
     calc
       2 * (N : ℝ) = ∑ _i : Fin N, (2 : ℝ) := by simp [mul_comm]
       _ ≤ ∑ i : Fin N,
-          1 / (4 * (xiRightCenteredZero (packet i)).re ^ 3) := by
+          1 / (4 * (xiRightCenteredZero (packet i)).re ^ (3 : ℕ)) := by
             exact Finset.sum_le_sum fun i _ =>
               routePStrictRightZeroBaseCauchyCubicCharge_ge_two (packet i)
   have hsource :=

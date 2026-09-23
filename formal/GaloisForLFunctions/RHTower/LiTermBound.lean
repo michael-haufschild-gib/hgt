@@ -33,7 +33,7 @@ def liTerm (w : ℂ) (n : ℕ) : ℂ := 2 - w ^ n - (w⁻¹) ^ n
 
 /-- The summand is `-w⁻ⁿ (wⁿ - 1)²`: a perfect square up to the unimodular factor. -/
 theorem liTerm_eq_neg_mul_sq {w : ℂ} (hw : w ≠ 0) (n : ℕ) :
-    liTerm w n = -((w⁻¹) ^ n * (w ^ n - 1) ^ 2) := by
+    liTerm w n = -((w⁻¹) ^ n * (w ^ n - 1) ^ (2 : ℕ)) := by
   have hwn : (w ^ n) ≠ 0 := pow_ne_zero n hw
   have hp : (w⁻¹) ^ n = (w ^ n)⁻¹ := inv_pow w n
   rw [liTerm, hp]
@@ -79,10 +79,10 @@ theorem re_liTerm_nonneg_of_norm_eq_one {w : ℂ} (hw : ‖w‖ = 1) (n : ℕ) :
 
 /-- The geometric factor `(max 1 a)² / a` is exactly `max a a⁻¹`, bounded by it in particular. -/
 theorem inv_mul_max_sq_le_max {a : ℝ} (ha : 0 < a) :
-    a⁻¹ * max 1 a ^ 2 ≤ max a a⁻¹ := by
+    a⁻¹ * max 1 a ^ (2 : ℕ) ≤ max a a⁻¹ := by
   rcases le_or_gt 1 a with h | h
   · rw [max_eq_right h]
-    have : a⁻¹ * a ^ 2 = a := by field_simp
+    have : a⁻¹ * a ^ (2 : ℕ) = a := by field_simp
     rw [this]
     exact le_max_left _ _
   · rw [max_eq_left h.le, one_pow, mul_one]
@@ -113,34 +113,34 @@ theorem norm_pow_sub_one_le (w : ℂ) (n : ℕ) :
 
 /-- **The paired Li summand is `O(n² Mⁿ ‖w-1‖²)`**, with `M = max(‖w‖, ‖w‖⁻¹)`. -/
 theorem norm_liTerm_le {w : ℂ} (hw : w ≠ 0) (n : ℕ) :
-    ‖liTerm w n‖ ≤ (n : ℝ) ^ 2 * max ‖w‖ ‖w‖⁻¹ ^ n * ‖w - 1‖ ^ 2 := by
+    ‖liTerm w n‖ ≤ (n : ℝ) ^ (2 : ℕ) * max ‖w‖ ‖w‖⁻¹ ^ n * ‖w - 1‖ ^ (2 : ℕ) := by
   have hpos : 0 < ‖w‖ := norm_pos_iff.mpr hw
   have hmax : 0 ≤ max 1 ‖w‖ := le_trans zero_le_one (le_max_left _ _)
   rw [liTerm_eq_neg_mul_sq hw n, norm_neg, norm_mul, norm_pow, norm_pow, norm_inv]
-  have h1 : ‖w ^ n - 1‖ ^ 2 ≤ ((n : ℝ) * max 1 ‖w‖ ^ n * ‖w - 1‖) ^ 2 := by
+  have h1 : ‖w ^ n - 1‖ ^ (2 : ℕ) ≤ ((n : ℝ) * max 1 ‖w‖ ^ n * ‖w - 1‖) ^ (2 : ℕ) := by
     have := norm_pow_sub_one_le w n
     have hnn : (0:ℝ) ≤ ‖w ^ n - 1‖ := norm_nonneg _
     nlinarith
-  have h2 : ‖w‖⁻¹ ^ n * ‖w ^ n - 1‖ ^ 2
-      ≤ ‖w‖⁻¹ ^ n * ((n : ℝ) * max 1 ‖w‖ ^ n * ‖w - 1‖) ^ 2 := by
+  have h2 : ‖w‖⁻¹ ^ n * ‖w ^ n - 1‖ ^ (2 : ℕ)
+      ≤ ‖w‖⁻¹ ^ n * ((n : ℝ) * max 1 ‖w‖ ^ n * ‖w - 1‖) ^ (2 : ℕ) := by
     have : (0:ℝ) ≤ ‖w‖⁻¹ ^ n := by positivity
     exact mul_le_mul_of_nonneg_left h1 this
   refine le_trans h2 ?_
-  have hgeo : ‖w‖⁻¹ ^ n * (max 1 ‖w‖ ^ n) ^ 2 ≤ max ‖w‖ ‖w‖⁻¹ ^ n := by
-    have hfac : ‖w‖⁻¹ ^ n * (max 1 ‖w‖ ^ n) ^ 2
-        = (‖w‖⁻¹ * max 1 ‖w‖ ^ 2) ^ n := by
+  have hgeo : ‖w‖⁻¹ ^ n * (max 1 ‖w‖ ^ n) ^ (2 : ℕ) ≤ max ‖w‖ ‖w‖⁻¹ ^ n := by
+    have hfac : ‖w‖⁻¹ ^ n * (max 1 ‖w‖ ^ n) ^ (2 : ℕ)
+        = (‖w‖⁻¹ * max 1 ‖w‖ ^ (2 : ℕ)) ^ n := by
       rw [mul_pow, ← pow_mul, ← pow_mul]
       ring
     rw [hfac]
     exact pow_le_pow_left₀ (by positivity) (inv_mul_max_sq_le_max hpos) n
-  have hexp : ‖w‖⁻¹ ^ n * ((n : ℝ) * max 1 ‖w‖ ^ n * ‖w - 1‖) ^ 2
-      = ((n : ℝ) ^ 2 * ‖w - 1‖ ^ 2) * (‖w‖⁻¹ ^ n * (max 1 ‖w‖ ^ n) ^ 2) := by ring
+  have hexp : ‖w‖⁻¹ ^ n * ((n : ℝ) * max 1 ‖w‖ ^ n * ‖w - 1‖) ^ (2 : ℕ)
+      = ((n : ℝ) ^ (2 : ℕ) * ‖w - 1‖ ^ (2 : ℕ)) * (‖w‖⁻¹ ^ n * (max 1 ‖w‖ ^ n) ^ (2 : ℕ)) := by ring
   rw [hexp]
-  have hnn : (0:ℝ) ≤ (n : ℝ) ^ 2 * ‖w - 1‖ ^ 2 := by positivity
-  calc ((n : ℝ) ^ 2 * ‖w - 1‖ ^ 2) * (‖w‖⁻¹ ^ n * (max 1 ‖w‖ ^ n) ^ 2)
-      ≤ ((n : ℝ) ^ 2 * ‖w - 1‖ ^ 2) * max ‖w‖ ‖w‖⁻¹ ^ n :=
+  have hnn : (0:ℝ) ≤ (n : ℝ) ^ (2 : ℕ) * ‖w - 1‖ ^ (2 : ℕ) := by positivity
+  calc ((n : ℝ) ^ (2 : ℕ) * ‖w - 1‖ ^ (2 : ℕ)) * (‖w‖⁻¹ ^ n * (max 1 ‖w‖ ^ n) ^ (2 : ℕ))
+      ≤ ((n : ℝ) ^ (2 : ℕ) * ‖w - 1‖ ^ (2 : ℕ)) * max ‖w‖ ‖w‖⁻¹ ^ n :=
         mul_le_mul_of_nonneg_left hgeo hnn
-    _ = (n : ℝ) ^ 2 * max ‖w‖ ‖w‖⁻¹ ^ n * ‖w - 1‖ ^ 2 := by ring
+    _ = (n : ℝ) ^ (2 : ℕ) * max ‖w‖ ‖w‖⁻¹ ^ n * ‖w - 1‖ ^ (2 : ℕ) := by ring
 
 /-! ## Absolute convergence of the paired Li sum -/
 
@@ -149,9 +149,9 @@ theorem norm_liTerm_le {w : ℂ} (hw : w ≠ 0) (n : ℕ) :
 every order. -/
 theorem summable_liTerm {ι : Type*} {w : ι → ℂ} {M : ℝ}
     (hw : ∀ i, w i ≠ 0) (hb : ∀ i, max ‖w i‖ ‖w i‖⁻¹ ≤ M)
-    (hs : Summable fun i => ‖w i - 1‖ ^ 2) (n : ℕ) :
+    (hs : Summable fun i => ‖w i - 1‖ ^ (2 : ℕ)) (n : ℕ) :
     Summable fun i => liTerm (w i) n := by
-  refine Summable.of_norm_bounded (hs.mul_left ((n : ℝ) ^ 2 * M ^ n)) fun i => ?_
+  refine Summable.of_norm_bounded (hs.mul_left ((n : ℝ) ^ (2 : ℕ) * M ^ n)) fun i => ?_
   refine le_trans (norm_liTerm_le (hw i) n) ?_
   have hM0 : (0 : ℝ) ≤ max ‖w i‖ ‖w i‖⁻¹ := le_trans (norm_nonneg _) (le_max_left _ _)
   have h1 : max ‖w i‖ ‖w i‖⁻¹ ^ n ≤ M ^ n := pow_le_pow_left₀ hM0 (hb i) n

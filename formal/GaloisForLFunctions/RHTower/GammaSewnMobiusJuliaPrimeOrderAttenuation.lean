@@ -27,14 +27,14 @@ amplitude at prime `p`. -/
 def gammaSewnMobiusJuliaPrimeAttenuation
     (x : ℝ) (p : Nat.Primes) : ℝ :=
   (gammaSewnMobiusJuliaNormalizedPrimeLog x p /
-    Real.log (p : ℝ)) ^ 2
+    Real.log (p : ℝ)) ^ (2 : ℕ)
 
 /-- Fourth-power identity matching the aperture-disk and hyperbolic descriptions of the sewn
 Julia compression. -/
 lemma hyperbolicJuliaCompression_sq_sq (y : ℝ) :
-    (Real.cosh (y / 2) ^ 2 / Real.sqrt (Real.cosh (2 * y))) ^ 2 =
+    (Real.cosh (y / 2) ^ (2 : ℕ) / Real.sqrt (Real.cosh (2 * y))) ^ (2 : ℕ) =
       let q := Real.exp (-y)
-      (1 + q) ^ 4 / (8 * (1 + q ^ 4)) := by
+      (1 + q) ^ (4 : ℕ) / (8 * (1 + q ^ (4 : ℕ))) := by
   let q := Real.exp (-y)
   let e := Real.exp y
   have hq0 : q ≠ 0 := (Real.exp_pos _).ne'
@@ -42,24 +42,24 @@ lemma hyperbolicJuliaCompression_sq_sq (y : ℝ) :
     dsimp only [q, e]
     rw [← Real.exp_add]
     simp
-  have hsqrt : Real.sqrt (Real.cosh (2 * y)) ^ 2 = Real.cosh (2 * y) :=
+  have hsqrt : Real.sqrt (Real.cosh (2 * y)) ^ (2 : ℕ) = Real.cosh (2 * y) :=
     Real.sq_sqrt (Real.cosh_pos _).le
   have heq : e = 1 / q := by
     apply (eq_div_iff hq0).2
     nlinarith
-  have hhalf : Real.cosh (y / 2) ^ 2 = (Real.cosh y + 1) / 2 := by
+  have hhalf : Real.cosh (y / 2) ^ (2 : ℕ) = (Real.cosh y + 1) / 2 := by
     have h := Real.cosh_two_mul (y / 2)
     rw [show 2 * (y / 2) = y by ring] at h
     nlinarith [Real.cosh_sq_sub_sinh_sq (y / 2)]
   have hcosh : Real.cosh y = (e + q) / 2 := by
     rw [Real.cosh_eq]
-  have hcosh2 : Real.cosh (2 * y) = (e ^ 2 + q ^ 2) / 2 := by
+  have hcosh2 : Real.cosh (2 * y) = (e ^ (2 : ℕ) + q ^ (2 : ℕ)) / 2 := by
     rw [Real.cosh_eq]
-    rw [show Real.exp (2 * y) = e ^ 2 by
+    rw [show Real.exp (2 * y) = e ^ (2 : ℕ) by
       dsimp only [e]
       rw [show 2 * y = y + y by ring, Real.exp_add]
       ring,
-    show Real.exp (-(2 * y)) = q ^ 2 by
+    show Real.exp (-(2 * y)) = q ^ (2 : ℕ) by
       dsimp only [q]
       rw [show -(2 * y) = (-y) + (-y) by ring, Real.exp_add]
       ring]
@@ -71,12 +71,12 @@ lemma hyperbolicJuliaCompression_sq_sq (y : ℝ) :
 /-- Exact hyperbolic normal form of the squared arithmetic compression. -/
 theorem gammaSewnMobiusValuationContractionMultiplier_sq_eq_hyperbolic
     (x : ℝ) (p : Nat.Primes) :
-    gammaSewnMobiusValuationContractionMultiplier x p ^ 2 =
-      Real.cosh (x * Real.log (p : ℝ) / 2) ^ 2 /
+    gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ) =
+      Real.cosh (x * Real.log (p : ℝ) / 2) ^ (2 : ℕ) /
         Real.sqrt (Real.cosh (2 * (x * Real.log (p : ℝ)))) := by
   let y := x * Real.log (p : ℝ)
   let c := gammaSewnMobiusValuationContractionMultiplier x p
-  let H := Real.cosh (y / 2) ^ 2 / Real.sqrt (Real.cosh (2 * y))
+  let H := Real.cosh (y / 2) ^ (2 : ℕ) / Real.sqrt (Real.cosh (2 * y))
   have hc4 := gammaSewnMobiusValuationContractionMultiplier_pow_four x p
   have hq : xiMobiusContinuousApertureDiskNode x p = Real.exp (-y) := by
     simp only [xiMobiusContinuousApertureDiskNode, y]
@@ -84,15 +84,15 @@ theorem gammaSewnMobiusValuationContractionMultiplier_sq_eq_hyperbolic
     ring
   rw [hq] at hc4
   have hH2 := hyperbolicJuliaCompression_sq_sq y
-  have hsq : (c ^ 2) ^ 2 = H ^ 2 := by
+  have hsq : (c ^ (2 : ℕ)) ^ (2 : ℕ) = H ^ (2 : ℕ) := by
     calc
-      (c ^ 2) ^ 2 = c ^ 4 := by ring
-      _ = (1 + Real.exp (-y)) ^ 4 /
-          (8 * (1 + Real.exp (-y) ^ 4)) := by
+      (c ^ (2 : ℕ)) ^ (2 : ℕ) = c ^ (4 : ℕ) := by ring
+      _ = (1 + Real.exp (-y)) ^ (4 : ℕ) /
+          (8 * (1 + Real.exp (-y) ^ (4 : ℕ))) := by
         simpa only [c] using hc4
-      _ = H ^ 2 := by
+      _ = H ^ (2 : ℕ) := by
         simpa only [H] using hH2.symm
-  have hc0 : 0 ≤ c ^ 2 := sq_nonneg _
+  have hc0 : 0 ≤ c ^ (2 : ℕ) := sq_nonneg _
   have hH0 : 0 < H := by
     dsimp only [H]
     positivity
@@ -102,7 +102,7 @@ theorem gammaSewnMobiusValuationContractionMultiplier_sq_eq_hyperbolic
 /-- The literal arithmetic Julia defect is the universal HT defect profile at `x * log p`. -/
 theorem gammaSewnMobiusJuliaDefect_sq_eq_juliaDefectSquareProfile
     {x : ℝ} (hx : 0 ≤ x) (p : Nat.Primes) :
-    gammaSewnMobiusJuliaDefect x p ^ 2 =
+    gammaSewnMobiusJuliaDefect x p ^ (2 : ℕ) =
       HTGeometry.juliaDefectSquareProfile (x * Real.log (p : ℝ)) := by
   let y := x * Real.log (p : ℝ)
   rw [gammaSewnMobiusJuliaDefect_sq hx,
@@ -120,7 +120,7 @@ theorem gammaSewnMobiusJuliaPrimeAttenuation_eq_profile
         (x * Real.log (p : ℝ)) := by
   have hpLog : 0 < Real.log (p : ℝ) :=
     Real.log_pos (by exact_mod_cast p.property.one_lt)
-  have hsqrtSq : Real.sqrt (3 / 4 : ℝ) ^ 2 = 3 / 4 := by
+  have hsqrtSq : Real.sqrt (3 / 4 : ℝ) ^ (2 : ℕ) = 3 / 4 := by
     rw [Real.sq_sqrt]
     norm_num
   have hdef := gammaSewnMobiusJuliaDefect_sq_eq_juliaDefectSquareProfile hx.le p
@@ -154,7 +154,7 @@ theorem tendsto_gammaSewnMobiusJuliaPrimeAttenuation_nhdsGT_zero
   have h :=
     (tendsto_gammaSewnMobiusJuliaNormalizedPrimeLog_nhdsGT_zero p).div_const
       (Real.log (p : ℝ)) |>.pow 2
-  have hlim : (Real.log (p : ℝ) / Real.log (p : ℝ)) ^ 2 = 1 := by
+  have hlim : (Real.log (p : ℝ) / Real.log (p : ℝ)) ^ (2 : ℕ) = 1 := by
     field_simp
   rw [hlim] at h
   simpa only [gammaSewnMobiusJuliaPrimeAttenuation] using h
@@ -194,13 +194,13 @@ theorem ccmFirstClockPrime_lt_of_two_le_length_of_length_one
   have hpPowN : p ^ ccmFirstClockPrimePowerLength L p ≤ n := by
     simpa only [ccmFirstClockPrimePowerLength, n] using
       Nat.pow_log_le_self p hn0
-  have hpSqN : p ^ 2 ≤ n :=
+  have hpSqN : p ^ (2 : ℕ) ≤ n :=
     (Nat.pow_le_pow_right hp.pos hpLength).trans hpPowN
   have hnqPow : n < q ^ (ccmFirstClockPrimePowerLength L q + 1) := by
     simpa only [ccmFirstClockPrimePowerLength, n] using
       Nat.lt_pow_succ_log_self hq.one_lt n
   rw [hqLength] at hnqPow
-  have hpqPow : p ^ 2 < q ^ 2 := by
+  have hpqPow : p ^ (2 : ℕ) < q ^ (2 : ℕ) := by
     norm_num at hnqPow ⊢
     exact hpSqN.trans_lt hnqPow
   exact (Nat.pow_lt_pow_iff_left (by norm_num : 2 ≠ 0)).mp hpqPow
@@ -252,9 +252,9 @@ theorem ccmFirstClockJuliaAttenuatedPrimePowerTowerMass_nonpos_iff
 prime receive the same strictly positive scalar. -/
 theorem gammaSewnMobiusJuliaHardHalfWeightTransport_sq_eq_attenuated
     (x u : ℝ) (pe : Nat.Primes × ℕ) :
-    gammaSewnMobiusJuliaHardHalfWeightTransport x u pe ^ 2 =
+    gammaSewnMobiusJuliaHardHalfWeightTransport x u pe ^ (2 : ℕ) =
       gammaSewnMobiusJuliaPrimeAttenuation x pe.1 *
-        xiGammaEulerBoundaryRealAmplitude u pe ^ 2 := by
+        xiGammaEulerBoundaryRealAmplitude u pe ^ (2 : ℕ) := by
   have hpLog : Real.log (pe.1 : ℝ) ≠ 0 :=
     (Real.log_pos (by exact_mod_cast pe.1.property.one_lt)).ne'
   rw [← primeLog_mul_gammaSewnMobiusJuliaSoftHalfWeightSource u pe]

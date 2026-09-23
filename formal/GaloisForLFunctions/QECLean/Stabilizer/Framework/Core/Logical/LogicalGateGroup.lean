@@ -65,7 +65,7 @@ private lemma extend_from_states_to_submodule (M : Matrix (NQubitBasis n) (NQubi
   have hw_norm : Quantum.norm (c • v) = 1 := by
     simp only [Quantum.norm, Pi.smul_apply, smul_eq_mul, norm_mul, mul_pow, ← Finset.mul_sum]
     rw [Real.sqrt_mul (sq_nonneg _)]
-    conv_lhs => rw [show √(‖c‖ ^ 2) = ‖c‖ from by
+    conv_lhs => rw [show √(‖c‖ ^ (2 : ℕ)) = ‖c‖ from by
       rw [Real.sqrt_sq_eq_abs]; exact abs_of_nonneg (le_of_lt (by positivity))]
     rw [Complex.norm_real, Real.norm_of_nonneg (le_of_lt (inv_pos.mpr hnp))]
     exact inv_mul_cancel₀ (ne_of_gt hnp)
@@ -146,7 +146,7 @@ private lemma conjugation_iff_maps_codespace (U : NQubitGate n) (S : StabilizerG
       have hw_norm : Quantum.norm (c • v) = 1 := by
         simp only [Quantum.norm, Pi.smul_apply, smul_eq_mul, norm_mul, mul_pow, ← Finset.mul_sum]
         rw [Real.sqrt_mul (sq_nonneg _)]
-        conv_lhs => rw [show √(‖c‖ ^ 2) = ‖c‖ from by
+        conv_lhs => rw [show √(‖c‖ ^ (2 : ℕ)) = ‖c‖ from by
           rw [Real.sqrt_sq_eq_abs]; exact abs_of_nonneg (le_of_lt (by positivity))]
         rw [Complex.norm_real, Real.norm_of_nonneg (le_of_lt (inv_pos.mpr hnp))]
         exact inv_mul_cancel₀ (ne_of_gt hnp)
@@ -188,17 +188,17 @@ private lemma maps_to_codespace_of_conjugation (U : NQubitGate n) (S : Stabilize
     convert StabilizerGroup.conjugation_iff_maps_codespace U S |>.1 _ ψ hψ₁ using 1;
     convert hv₂ using 1;
     unfold Quantum.StabilizerGroup.PreservesCodespaceConjugation; aesop;
-  by_cases hv : ∑ i, ‖v i‖ ^ 2 = 0;
+  by_cases hv : ∑ i, ‖v i‖ ^ (2 : ℕ) = 0;
   · simp_all +decide [Finset.sum_eq_zero_iff_of_nonneg];
     ext i; simp +decide [ hv, Matrix.mulVec, dotProduct ] ;
-  · have := h_conj ⟨(1 / Real.sqrt (∑ i, ‖v i‖ ^ 2)) • v, ?_⟩ ?_ <;> simp_all +decide
+  · have := h_conj ⟨(1 / Real.sqrt (∑ i, ‖v i‖ ^ (2 : ℕ))) • v, ?_⟩ ?_ <;> simp_all +decide
     any_goals simp +decide
       [mul_pow, abs_of_nonneg (Real.sqrt_nonneg _),
         Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _)]
     any_goals rw [ ← Finset.mul_sum _ _ _, inv_mul_cancel₀ hv ];
     · have := this g hg
       simp_all +decide
-      convert congr_arg (fun x : NQubitVec n => (Real.sqrt (∑ i, ‖v i‖ ^ 2)) • x) this using 1 <;>
+      convert congr_arg (fun x : NQubitVec n => (Real.sqrt (∑ i, ‖v i‖ ^ (2 : ℕ))) • x) this using 1 <;>
         norm_num [Matrix.mulVec_smul, smul_smul]
       · rw [mul_inv_cancel₀ (ne_of_gt (Real.sqrt_pos.mpr
               (lt_of_le_of_ne (Finset.sum_nonneg fun _ _ => sq_nonneg _) (Ne.symm hv)))), one_smul]

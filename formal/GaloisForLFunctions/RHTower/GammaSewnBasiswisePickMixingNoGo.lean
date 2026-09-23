@@ -55,7 +55,7 @@ theorem tendsto_gammaSewnMobius_commonAperturePickDiagonal_nhdsGT_zero
   let L := Real.log (p : ℝ)
   let qp : ℝ → ℝ := fun x => xiMobiusContinuousApertureDiskNode x p
   let r : ℝ → ℝ := fun x => Real.exp (-x)
-  have hnumSlope : Tendsto (fun x : ℝ => (1 - qp x ^ 2) / x)
+  have hnumSlope : Tendsto (fun x : ℝ => (1 - qp x ^ (2 : ℕ)) / x)
       (nhdsWithin (0 : ℝ) (Ioi 0)) (𝓝 (2 * L)) := by
     have h := tendsto_one_sub_exp_neg_mul_div_self_nhdsGT_zero (2 * L)
     convert h using 1
@@ -64,7 +64,7 @@ theorem tendsto_gammaSewnMobius_commonAperturePickDiagonal_nhdsGT_zero
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have hdenSlope : Tendsto (fun x : ℝ => (1 - r x ^ 2) / x)
+  have hdenSlope : Tendsto (fun x : ℝ => (1 - r x ^ (2 : ℕ)) / x)
       (nhdsWithin (0 : ℝ) (Ioi 0)) (𝓝 2) := by
     have h := tendsto_one_sub_exp_neg_mul_div_self_nhdsGT_zero 2
     convert h using 1
@@ -73,13 +73,13 @@ theorem tendsto_gammaSewnMobius_commonAperturePickDiagonal_nhdsGT_zero
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have hratio : Tendsto (fun x : ℝ => (1 - qp x ^ 2) / (1 - r x ^ 2))
+  have hratio : Tendsto (fun x : ℝ => (1 - qp x ^ (2 : ℕ)) / (1 - r x ^ (2 : ℕ)))
       (nhdsWithin (0 : ℝ) (Ioi 0)) (𝓝 L) := by
     have hdiv := hnumSlope.div hdenSlope (by norm_num)
     have heq :
-        ((fun x : ℝ => (1 - qp x ^ 2) / x) /
-            (fun x : ℝ => (1 - r x ^ 2) / x)) =ᶠ[nhdsWithin (0 : ℝ) (Ioi 0)]
-          (fun x : ℝ => (1 - qp x ^ 2) / (1 - r x ^ 2)) := by
+        ((fun x : ℝ => (1 - qp x ^ (2 : ℕ)) / x) /
+            (fun x : ℝ => (1 - r x ^ (2 : ℕ)) / x)) =ᶠ[nhdsWithin (0 : ℝ) (Ioi 0)]
+          (fun x : ℝ => (1 - qp x ^ (2 : ℕ)) / (1 - r x ^ (2 : ℕ))) := by
       filter_upwards [self_mem_nhdsWithin] with x hx
       have hx0 : x ≠ 0 := ne_of_gt hx
       have hr0 : 0 < r x := Real.exp_pos _
@@ -87,9 +87,9 @@ theorem tendsto_gammaSewnMobius_commonAperturePickDiagonal_nhdsGT_zero
         dsimp only [r]
         rw [← Real.exp_zero]
         exact Real.exp_lt_exp.mpr (neg_lt_zero.mpr hx)
-      have hrden : 1 - r x ^ 2 ≠ 0 := by nlinarith
-      change ((1 - qp x ^ 2) / x) / ((1 - r x ^ 2) / x) =
-        (1 - qp x ^ 2) / (1 - r x ^ 2)
+      have hrden : 1 - r x ^ (2 : ℕ) ≠ 0 := by nlinarith
+      change ((1 - qp x ^ (2 : ℕ)) / x) / ((1 - r x ^ (2 : ℕ)) / x) =
+        (1 - qp x ^ (2 : ℕ)) / (1 - r x ^ (2 : ℕ))
       field_simp [hx0, hrden]
     convert hdiv.congr' heq using 1
     ring
@@ -98,7 +98,7 @@ theorem tendsto_gammaSewnMobius_commonAperturePickDiagonal_nhdsGT_zero
   have heq :
       (fun x : ℝ => HTGeometry.pickDiagonalDefect
           (gammaSewnMobiusValuationContractionMultiplier x p) (qp x) *
-        ((1 - qp x ^ 2) / (1 - r x ^ 2))) =ᶠ[nhdsWithin (0 : ℝ) (Ioi 0)]
+        ((1 - qp x ^ (2 : ℕ)) / (1 - r x ^ (2 : ℕ)))) =ᶠ[nhdsWithin (0 : ℝ) (Ioi 0)]
       (fun x : ℝ => gammaSewnMobiusCommonAperturePickDiagonal x p) := by
     filter_upwards [self_mem_nhdsWithin] with x hx
     have hqp : qp x < 1 := xiMobiusContinuousApertureDiskNode_lt_one hx p
@@ -110,8 +110,8 @@ theorem tendsto_gammaSewnMobius_commonAperturePickDiagonal_nhdsGT_zero
     have hr0 : 0 < r x := Real.exp_pos _
     simp only [gammaSewnMobiusCommonAperturePickDiagonal, r,
       HTGeometry.pickDiagonalDefect]
-    field_simp [show 1 - qp x ^ 2 ≠ 0 by nlinarith,
-      show 1 - r x ^ 2 ≠ 0 by nlinarith]
+    field_simp [show 1 - qp x ^ (2 : ℕ) ≠ 0 by nlinarith,
+      show 1 - r x ^ (2 : ℕ) ≠ 0 by nlinarith]
   simpa only [zero_mul] using hprod.congr' heq
 
 /-- **Gamma-sewn infinite-dimensional mixing no-go.**  For an arbitrary Hilbert basis indexed by
@@ -135,7 +135,7 @@ theorem not_exists_gammaSewnMobius_basisMarginal_commonAperturePickFamily
             gammaSewnMobiusValuationContractionMultiplier x (prime i)) ∧
         (∀ x y, 0 < x → 0 < y → ∀ u v,
           HTGeometry.operatorPickCross (T x) (T y)
-                (Real.exp (-x)) (Real.exp (-y)) u v ^ 2 ≤
+                (Real.exp (-x)) (Real.exp (-y)) u v ^ (2 : ℕ) ≤
             HTGeometry.operatorPickDiagonal (T x) (Real.exp (-x)) u *
               HTGeometry.operatorPickDiagonal (T y) (Real.exp (-y)) v) := by
   rintro ⟨T, hTbasis, hmarginal, hpick⟩
@@ -163,7 +163,7 @@ theorem not_exists_gammaSewnMobius_basisMarginal_commonAperturePickFamily
       b.orthonormal.norm_eq_one, one_pow]
   have hpickOne : ∀ᶠ y in l, ∀ u v,
       HTGeometry.operatorPickCross (T 1) (T y)
-            (Real.exp (-(1 : ℝ))) (Real.exp (-y)) u v ^ 2 ≤
+            (Real.exp (-(1 : ℝ))) (Real.exp (-y)) u v ^ (2 : ℕ) ≤
         HTGeometry.operatorPickDiagonal (T 1) (Real.exp (-(1 : ℝ))) u *
           HTGeometry.operatorPickDiagonal (T y) (Real.exp (-y)) v := by
     filter_upwards [self_mem_nhdsWithin] with y hy
@@ -195,7 +195,7 @@ theorem not_exists_continuous_gammaSewnMobius_basisMarginal_commonAperturePickFa
             gammaSewnMobiusValuationContractionMultiplier x (prime i)) ∧
         (∀ x y, 0 < x → 0 < y → ∀ u v,
           HTGeometry.operatorPickCross (T x) (T y)
-                (Real.exp (-x)) (Real.exp (-y)) u v ^ 2 ≤
+                (Real.exp (-x)) (Real.exp (-y)) u v ^ (2 : ℕ) ≤
             HTGeometry.operatorPickDiagonal (T x) (Real.exp (-x)) u *
               HTGeometry.operatorPickDiagonal (T y) (Real.exp (-y)) v) := by
   rintro ⟨T, hT0, hTcont, hmarginal, hpick⟩

@@ -52,22 +52,22 @@ theorem scattering_connection_position_independent (q : SchwartzMap ℝ ℂ) (κ
 /-- The normalized relation (2.59), with the explicit free-phase conjugation. -/
 theorem leftJostFunction_eq_right_scattering (q : SchwartzMap ℝ ℂ) (κ x : ℝ) :
     leftJostFunction q κ x = rightJostFunction q κ x *
-      (diagonalFrame (-((Real.exp κ)^2)) x*scatteringMatrix q κ*
-        diagonalFrame ((Real.exp κ)^2) x) := by
-  have hi : diagonalFrame ((Real.exp κ)^2) x*diagonalFrame (-((Real.exp κ)^2)) x = 1 := by
-    simpa only [neg_neg] using diagonalFrame_neg_inverse (-((Real.exp κ)^2)) x
+      (diagonalFrame (-((Real.exp κ)^(2 : ℕ))) x*scatteringMatrix q κ*
+        diagonalFrame ((Real.exp κ)^(2 : ℕ)) x) := by
+  have hi : diagonalFrame ((Real.exp κ)^(2 : ℕ)) x*diagonalFrame (-((Real.exp κ)^(2 : ℕ))) x = 1 := by
+    simpa only [neg_neg] using diagonalFrame_neg_inverse (-((Real.exp κ)^(2 : ℕ))) x
   simp only [leftJostFunction, rightJostFunction, leftJostMatrix_eq_right_mul_scattering]
   simp only [← Matrix.mul_assoc]
-  rw [Matrix.mul_assoc (rightJostMatrix q κ x) _ (diagonalFrame (-((Real.exp κ)^2)) x),
+  rw [Matrix.mul_assoc (rightJostMatrix q κ x) _ (diagonalFrame (-((Real.exp κ)^(2 : ℕ))) x),
     hi, mul_one]
 
 /-- Equation (2.60): removing the free conjugation recovers a constant matrix. -/
 theorem scatteringMatrix_eq_normalized_connection (q : SchwartzMap ℝ ℂ) (κ x : ℝ) :
-    diagonalFrame ((Real.exp κ)^2) x *
+    diagonalFrame ((Real.exp κ)^(2 : ℕ)) x *
       ((rightJostFunction q κ x)⁻¹*leftJostFunction q κ x) *
-        diagonalFrame (-((Real.exp κ)^2)) x = scatteringMatrix q κ := by
-  have hi : diagonalFrame ((Real.exp κ)^2) x*diagonalFrame (-((Real.exp κ)^2)) x = 1 := by
-    simpa only [neg_neg] using diagonalFrame_neg_inverse (-((Real.exp κ)^2)) x
+        diagonalFrame (-((Real.exp κ)^(2 : ℕ))) x = scatteringMatrix q κ := by
+  have hi : diagonalFrame ((Real.exp κ)^(2 : ℕ)) x*diagonalFrame (-((Real.exp κ)^(2 : ℕ))) x = 1 := by
+    simpa only [neg_neg] using diagonalFrame_neg_inverse (-((Real.exp κ)^(2 : ℕ))) x
   rw [leftJostFunction_eq_right_scattering,
     ← Matrix.mul_assoc ((rightJostFunction q κ x)⁻¹),
     Matrix.nonsing_inv_mul _ (by rw [rightJostFunction_det]; exact isUnit_one), one_mul]
@@ -136,7 +136,7 @@ theorem scattering_amplitudes_normalized_wronskians (q : SchwartzMap ℝ ℂ) (�
       rightJostFunction q κ 0 1 0*leftJostFunction q κ 0 0 0 ∧
     reverseReflectionAmplitude q κ = leftJostFunction q κ 0 0 1*rightJostFunction q κ 0 1 1 -
       leftJostFunction q κ 0 1 1*rightJostFunction q κ 0 0 1 := by
-  have hz : diagonalFrame ((Real.exp κ)^2) 0 = 1 := by
+  have hz : diagonalFrame ((Real.exp κ)^(2 : ℕ)) 0 = 1 := by
     ext i j
     fin_cases i <;> fin_cases j <;> simp [diagonalFrame, FDNLS.staggerPhase]
   simpa only [leftJostFunction, rightJostFunction, hz, mul_one] using

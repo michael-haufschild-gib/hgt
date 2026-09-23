@@ -88,7 +88,7 @@ theorem confocalNullSupportHull_subset_confocalHullOfField
         (isLUB_confocalGlobalEnvelope hne hM hR hcone hbound).1 ⟨p, hpS, rfl⟩
       have hpa : p.2 ≤ liftedConfocalBranch p R := by
         simp only [liftedConfocalBranch]
-        linarith [Real.sqrt_nonneg ((R - p.1) ^ 2 + (p.2 ^ 2 - p.1 ^ 2))]
+        linarith [Real.sqrt_nonneg ((R - p.1) ^ (2 : ℕ) + (p.2 ^ (2 : ℕ) - p.1 ^ (2 : ℕ)))]
       show confocalNullFunctional p 1 ≤ 2 * confocalGlobalEnvelope S R
       rw [confocalNullFunctional, confocalNullMinus, confocalNullPlus]
       linarith
@@ -141,7 +141,7 @@ theorem confocalNullFunctional_le_nullSupport_of_mem_hull
   have hqsnd : q.2 ≤ R + d := by
     have hqb : q.2 ≤ liftedConfocalBranch q R := by
       simp only [liftedConfocalBranch]
-      linarith [Real.sqrt_nonneg ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))]
+      linarith [Real.sqrt_nonneg ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))]
     linarith
   have hnull := (liftedConfocalBranch_le_add_iff_nullFunctional_le_of_snd_le_add
     hqCone hR hd0 hqsnd).mp hbr
@@ -318,8 +318,8 @@ theorem confocalHullOfField_subset_confocalNullSupportHull
       have hbr : liftedConfocalBranch q (q.2 / 2) ≤ q.2 / 2 := by
         have h := hqField (q.2 / 2) hR1; rwa [hGR (q.2 / 2) hR1] at h
       rw [liftedConfocalBranch, hua] at hbr
-      have hrad : Real.sqrt ((q.2 / 2 - q.2) ^ 2 + (q.2 ^ 2 - q.2 ^ 2)) = q.2 - q.2 / 2 := by
-        rw [show q.2 ^ 2 - q.2 ^ 2 = 0 by ring, add_zero, Real.sqrt_sq_eq_abs,
+      have hrad : Real.sqrt ((q.2 / 2 - q.2) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.2 ^ (2 : ℕ))) = q.2 - q.2 / 2 := by
+        rw [show q.2 ^ (2 : ℕ) - q.2 ^ (2 : ℕ) = 0 by ring, add_zero, Real.sqrt_sq_eq_abs,
           abs_of_nonpos (by linarith)]
         ring
       rw [hrad] at hbr; linarith

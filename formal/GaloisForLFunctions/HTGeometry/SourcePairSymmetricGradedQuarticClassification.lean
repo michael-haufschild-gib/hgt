@@ -46,7 +46,7 @@ def sourcePairSymmetricGradedAnomaly (n : ℕ) (k l a b : ℝ) : ℂ :=
 
 /-- Quartic orientation charge after imposing the negative Pell conic. -/
 def sourcePairSymmetricQuarticCharge (k a b : ℝ) : ℝ :=
-  (k ^ 2 + 1) * b ^ 2 * (12 * a ^ 2 + (k ^ 2 - 3) * b ^ 2)
+  (k ^ (2 : ℕ) + 1) * b ^ (2 : ℕ) * (12 * a ^ (2 : ℕ) + (k ^ (2 : ℕ) - 3) * b ^ (2 : ℕ))
 
 /-- Universal preservation of the complete quadratic trace. -/
 def SourcePairSymmetricTraceTwoPreserving (k l : ℝ) : Prop :=
@@ -84,7 +84,7 @@ theorem sourcePairSymmetricGradedAnomaly_one (k l a b : ℝ) :
 /-- Exact quadratic defect before imposing any scale relation. -/
 theorem sourcePairSymmetricGradedAnomaly_two_formula (k l a b : ℝ) :
     sourcePairSymmetricGradedAnomaly 2 k l a b =
-      ((2 * (k ^ 2 - 2 * l ^ 2 + 1) * b ^ 2 : ℝ) : ℂ) := by
+      ((2 * (k ^ (2 : ℕ) - 2 * l ^ (2 : ℕ) + 1) * b ^ (2 : ℕ) : ℝ) : ℂ) := by
   simp [sourcePairSymmetricGradedAnomaly, sourcePairSymmetricRealEvenMoment,
     sourcePairSymmetricRealOddMoment, sourcePairMoment]
   ring_nf
@@ -94,8 +94,8 @@ theorem sourcePairSymmetricGradedAnomaly_two_formula (k l a b : ℝ) :
 /-- Exact quartic defect before imposing any scale relation. -/
 theorem sourcePairSymmetricGradedAnomaly_four_formula (k l a b : ℝ) :
     sourcePairSymmetricGradedAnomaly 4 k l a b =
-      ((12 * (k ^ 2 + 1) * a ^ 2 * b ^ 2 +
-        (2 * k ^ 4 - 4 * l ^ 4 - 2) * b ^ 4 : ℝ) : ℂ) := by
+      ((12 * (k ^ (2 : ℕ) + 1) * a ^ (2 : ℕ) * b ^ (2 : ℕ) +
+        (2 * k ^ (4 : ℕ) - 4 * l ^ (4 : ℕ) - 2) * b ^ (4 : ℕ) : ℝ) : ℂ) := by
   simp [sourcePairSymmetricGradedAnomaly, sourcePairSymmetricRealEvenMoment,
     sourcePairSymmetricRealOddMoment, sourcePairMoment]
   ring_nf
@@ -104,7 +104,7 @@ theorem sourcePairSymmetricGradedAnomaly_four_formula (k l a b : ℝ) :
 
 /-- Universal quadratic exactness is precisely the negative Pell conic. -/
 theorem sourcePairSymmetricTraceTwoPreserving_iff (k l : ℝ) :
-    SourcePairSymmetricTraceTwoPreserving k l ↔ k ^ 2 - 2 * l ^ 2 = -1 := by
+    SourcePairSymmetricTraceTwoPreserving k l ↔ k ^ (2 : ℕ) - 2 * l ^ (2 : ℕ) = -1 := by
   constructor
   · intro h
     have hz := h 0 1
@@ -117,16 +117,16 @@ theorem sourcePairSymmetricTraceTwoPreserving_iff (k l : ℝ) :
 
 /-- On the trace-preserving conic, the quartic defect has one sharp factored charge. -/
 theorem sourcePairSymmetricGradedAnomaly_four_of_pell (k l a b : ℝ)
-    (hpell : k ^ 2 - 2 * l ^ 2 = -1) :
+    (hpell : k ^ (2 : ℕ) - 2 * l ^ (2 : ℕ) = -1) :
     sourcePairSymmetricGradedAnomaly 4 k l a b =
       (sourcePairSymmetricQuarticCharge k a b : ℂ) := by
-  have hl2 : 2 * l ^ 2 = k ^ 2 + 1 := by nlinarith
-  have hl4 : 4 * l ^ 4 = (k ^ 2 + 1) ^ 2 := by
+  have hl2 : 2 * l ^ (2 : ℕ) = k ^ (2 : ℕ) + 1 := by nlinarith
+  have hl4 : 4 * l ^ (4 : ℕ) = (k ^ (2 : ℕ) + 1) ^ (2 : ℕ) := by
     calc
-      4 * l ^ 4 = (2 * l ^ 2) ^ 2 := by ring
-      _ = (k ^ 2 + 1) ^ 2 := by rw [hl2]
-  have hcoeff : 2 * k ^ 4 - 4 * l ^ 4 - 2 =
-      (k ^ 2 + 1) * (k ^ 2 - 3) := by
+      4 * l ^ (4 : ℕ) = (2 * l ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ = (k ^ (2 : ℕ) + 1) ^ (2 : ℕ) := by rw [hl2]
+  have hcoeff : 2 * k ^ (4 : ℕ) - 4 * l ^ (4 : ℕ) - 2 =
+      (k ^ (2 : ℕ) + 1) * (k ^ (2 : ℕ) - 3) := by
     rw [hl4]
     ring
   rw [sourcePairSymmetricGradedAnomaly_four_formula]
@@ -137,28 +137,28 @@ theorem sourcePairSymmetricGradedAnomaly_four_of_pell (k l a b : ℝ)
 
 /-- The factored charge is universally nonnegative exactly at and above the boundary `k²=3`. -/
 theorem sourcePairSymmetricQuarticCharge_nonnegative_iff (k : ℝ) :
-    (∀ a b : ℝ, 0 ≤ sourcePairSymmetricQuarticCharge k a b) ↔ 3 ≤ k ^ 2 := by
+    (∀ a b : ℝ, 0 ≤ sourcePairSymmetricQuarticCharge k a b) ↔ 3 ≤ k ^ (2 : ℕ) := by
   constructor
   · intro h
     have h01 := h 0 1
     simp [sourcePairSymmetricQuarticCharge] at h01
     nlinarith [sq_nonneg k]
   · intro hk a b
-    have hk1 : 0 ≤ k ^ 2 + 1 := by nlinarith [sq_nonneg k]
-    have hinner : 0 ≤ 12 * a ^ 2 + (k ^ 2 - 3) * b ^ 2 := by
+    have hk1 : 0 ≤ k ^ (2 : ℕ) + 1 := by nlinarith [sq_nonneg k]
+    have hinner : 0 ≤ 12 * a ^ (2 : ℕ) + (k ^ (2 : ℕ) - 3) * b ^ (2 : ℕ) := by
       positivity
     exact mul_nonneg (mul_nonneg hk1 (sq_nonneg b)) hinner
 
 /-- Above the sharp boundary, charge zero is equivalent to a real source pair. -/
 theorem sourcePairSymmetricQuarticCharge_eq_zero_iff_of_gt (k a b : ℝ)
-    (hk : 3 < k ^ 2) :
+    (hk : 3 < k ^ (2 : ℕ)) :
     sourcePairSymmetricQuarticCharge k a b = 0 ↔ b = 0 := by
   constructor
   · intro h
     by_contra hb
-    have hk1 : 0 < k ^ 2 + 1 := by nlinarith [sq_nonneg k]
-    have hb2 : 0 < b ^ 2 := sq_pos_of_ne_zero hb
-    have hinner : 0 < 12 * a ^ 2 + (k ^ 2 - 3) * b ^ 2 := by
+    have hk1 : 0 < k ^ (2 : ℕ) + 1 := by nlinarith [sq_nonneg k]
+    have hb2 : 0 < b ^ (2 : ℕ) := sq_pos_of_ne_zero hb
+    have hinner : 0 < 12 * a ^ (2 : ℕ) + (k ^ (2 : ℕ) - 3) * b ^ (2 : ℕ) := by
       positivity
     have hpos : 0 < sourcePairSymmetricQuarticCharge k a b := by
       exact mul_pos (mul_pos hk1 hb2) hinner
@@ -170,7 +170,7 @@ theorem sourcePairSymmetricQuarticCharge_eq_zero_iff_of_gt (k a b : ℝ)
 theorem sourcePairSymmetric_traceTwo_and_quarticNonnegative_iff (k l : ℝ) :
     (SourcePairSymmetricTraceTwoPreserving k l ∧
       SourcePairSymmetricQuarticNonnegative k l) ↔
-      k ^ 2 - 2 * l ^ 2 = -1 ∧ 3 ≤ k ^ 2 := by
+      k ^ (2 : ℕ) - 2 * l ^ (2 : ℕ) = -1 ∧ 3 ≤ k ^ (2 : ℕ) := by
   constructor
   · rintro ⟨htrace, hnonneg⟩
     have hpell := (sourcePairSymmetricTraceTwoPreserving_iff k l).mp htrace
@@ -194,18 +194,18 @@ For the difficult converse, every `k² ≤ 3` admits the explicit nonreal zero-c
 theorem sourcePairSymmetric_traceTwo_and_quarticFaithful_iff (k l : ℝ) :
     (SourcePairSymmetricTraceTwoPreserving k l ∧
       SourcePairSymmetricQuarticFaithful k l) ↔
-      k ^ 2 - 2 * l ^ 2 = -1 ∧ 3 < k ^ 2 := by
+      k ^ (2 : ℕ) - 2 * l ^ (2 : ℕ) = -1 ∧ 3 < k ^ (2 : ℕ) := by
   constructor
   · rintro ⟨htrace, hfaithful⟩
     have hpell := (sourcePairSymmetricTraceTwoPreserving_iff k l).mp htrace
     refine ⟨hpell, ?_⟩
     by_contra hk
-    have hkle : k ^ 2 ≤ 3 := le_of_not_gt hk
-    let a : ℝ := Real.sqrt ((3 - k ^ 2) / 12)
-    have hrad : 0 ≤ (3 - k ^ 2) / 12 := by positivity
-    have ha2 : a ^ 2 = (3 - k ^ 2) / 12 := by
+    have hkle : k ^ (2 : ℕ) ≤ 3 := le_of_not_gt hk
+    let a : ℝ := Real.sqrt ((3 - k ^ (2 : ℕ)) / 12)
+    have hrad : 0 ≤ (3 - k ^ (2 : ℕ)) / 12 := by positivity
+    have ha2 : a ^ (2 : ℕ) = (3 - k ^ (2 : ℕ)) / 12 := by
       exact Real.sq_sqrt hrad
-    have hinner : 12 * a ^ 2 + (k ^ 2 - 3) = 0 := by
+    have hinner : 12 * a ^ (2 : ℕ) + (k ^ (2 : ℕ) - 3) = 0 := by
       rw [ha2]
       ring
     have hcharge : sourcePairSymmetricQuarticCharge k a 1 = 0 := by

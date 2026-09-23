@@ -36,7 +36,7 @@ theorem log_chebHeightOne (x : ℝ) :
 theorem four_le_sqrt_log {x : ℝ} (hx : 16 ≤ Real.log x) : 4 ≤ Real.sqrt (Real.log x) := by
   have h : Real.sqrt 16 ≤ Real.sqrt (Real.log x) := Real.sqrt_le_sqrt hx
   have h16 : Real.sqrt 16 = 4 := by
-    rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]
+    rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]
   linarith [h, h16]
 
 theorem eight_le_log_chebHeightOne {x : ℝ} (hx : 16 ≤ Real.log x) :

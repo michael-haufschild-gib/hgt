@@ -27,7 +27,7 @@ theorem halfTurn_repaired_moment_curvature
     (k : ℕ) (hk : 1 ≤ k) :
     ((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ) /
         (((2 * k : ℕ) : ℝ) * ((2 * k + 1 : ℕ) : ℝ)) ≤
-      M k * M (k + 2) / M (k + 1) ^ 2 := by
+      M k * M (k + 2) / M (k + 1) ^ (2 : ℕ) := by
   have hlog := adjacentHankel_nonneg_of_hasStieltjesMoments hrep k
   have hk1 : 1 ≤ k + 1 := by omega
   have hk2 : 1 ≤ k + 2 := by omega
@@ -71,7 +71,7 @@ theorem two_le_limsup_halfTurn_rawMoment_curvature
     (hMpos : ∀ k : ℕ, 1 ≤ k → 0 < M k) :
     (2 : EReal) ≤ Filter.limsup
       (fun k : ℕ =>
-        (((k : ℝ) * (M k * M (k + 2) / M (k + 1) ^ 2 - 1) : ℝ) : EReal))
+        (((k : ℝ) * (M k * M (k + 2) / M (k + 1) ^ (2 : ℕ) - 1) : ℝ) : EReal))
       atTop := by
   apply Filter.le_limsup_of_frequently_le'
   apply (eventually_ge_atTop (1 : ℕ)).frequently.mono
@@ -88,7 +88,7 @@ theorem two_le_limsup_halfTurn_rawMoment_curvature
   have hsub := sub_le_sub_right hratio 1
   have hmul := mul_le_mul_of_nonneg_left hsub (le_of_lt hkpos)
   change ((2 : ℝ) : EReal) ≤
-    ((k : ℝ) * (M k * M (k + 2) / M (k + 1) ^ 2 - 1) : ℝ)
+    ((k : ℝ) * (M k * M (k + 2) / M (k + 1) ^ (2 : ℕ) - 1) : ℝ)
   exact EReal.coe_le_coe (hthreshold.trans hmul)
 
 /-- Therefore a raw moment law whose normalized curvature has extended limsup below `2` cannot
@@ -101,7 +101,7 @@ theorem not_limsup_halfTurn_rawMoment_curvature_lt_two
     (hMpos : ∀ k : ℕ, 1 ≤ k → 0 < M k) :
     ¬ Filter.limsup
         (fun k : ℕ =>
-          (((k : ℝ) * (M k * M (k + 2) / M (k + 1) ^ 2 - 1) : ℝ) : EReal))
+          (((k : ℝ) * (M k * M (k + 2) / M (k + 1) ^ (2 : ℕ) - 1) : ℝ) : EReal))
         atTop < (2 : EReal) := by
   exact not_lt_of_ge (two_le_limsup_halfTurn_rawMoment_curvature hrep hrepair hMpos)
 

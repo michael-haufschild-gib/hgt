@@ -54,12 +54,12 @@ theorem tendsto_pwSingularReflectionGauge_atTop :
 
 theorem pwSingularReflectionGain_eq_gauge_sq
     {x : ℝ} (hx : 0 < x) :
-    pwSingularReflectionGain x = pwSingularReflectionGauge x ^ 2 := by
+    pwSingularReflectionGain x = pwSingularReflectionGauge x ^ (2 : ℕ) := by
   rw [pwSingularReflectionGauge,
     Real.sq_sqrt (pwSingularReflectionGain_pos hx).le]
 
 private theorem tendsto_sq_atTop_pw :
-    Tendsto (fun y : ℝ => y ^ 2) atTop atTop := by
+    Tendsto (fun y : ℝ => y ^ (2 : ℕ)) atTop atTop := by
   refine tendsto_atTop.2 ?_
   intro b
   filter_upwards [eventually_ge_atTop (max b 1)] with y hy
@@ -81,7 +81,7 @@ theorem tendsto_pwSingularReflectionGain_atTop :
 theorem pwNeutralChannelEnergy_singularReflectionBlock_zero_one
     (x : ℝ) :
     pwNeutralChannelEnergy (pwSingularReflectionBlock x (0, 1)) =
-      pwSingularReflectionGain x ^ 2 := by
+      pwSingularReflectionGain x ^ (2 : ℕ) := by
   simp [pwNeutralChannelEnergy, pwSingularReflectionBlock]
 
 /-- Neutral energy amplification already diverges on the fixed input `(0, 1)`. -/
@@ -102,17 +102,17 @@ operator bound. -/
 def PWSingularNeutralOrbitUniformlyBounded : Prop :=
   ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 0 < x → ∀ w : PWReflectionPair,
     pwNeutralChannelEnergy (pwSingularReflectionBlock x w) ≤
-      C ^ 2 * pwNeutralChannelEnergy w
+      C ^ (2 : ℕ) * pwNeutralChannelEnergy w
 
 /-- No fixed neutral Hilbert norm makes the source-forced singular blocks uniformly bounded. -/
 theorem no_pwSingularNeutralOrbitUniformlyBounded :
     ¬ PWSingularNeutralOrbitUniformlyBounded := by
   rintro ⟨C, _hCnonneg, hC⟩
   have hlarge : ∀ᶠ x in atTop,
-      C ^ 2 <
+      C ^ (2 : ℕ) <
         pwNeutralChannelEnergy (pwSingularReflectionBlock x (0, 1)) :=
     tendsto_pwNeutralChannelEnergy_singularReflectionBlock_zero_one_atTop.eventually
-      (eventually_gt_atTop (C ^ 2))
+      (eventually_gt_atTop (C ^ (2 : ℕ)))
   have hxpos : ∀ᶠ x : ℝ in atTop, 0 < x := eventually_gt_atTop 0
   rcases (hlarge.and hxpos).exists with ⟨x, hCx, hx⟩
   have hbound := hC x hx (0, 1)
@@ -126,13 +126,13 @@ def PWSingularFixedCoerciveEnergyUniformlyBounded : Prop :=
     0 < m ∧ 0 ≤ C ∧
     (∀ w : PWReflectionPair, m * pwNeutralChannelEnergy w ≤ energy w) ∧
     (∀ x : ℝ, 0 < x → ∀ w : PWReflectionPair,
-      energy (pwSingularReflectionBlock x w) ≤ C ^ 2 * energy w)
+      energy (pwSingularReflectionBlock x w) ≤ C ^ (2 : ℕ) * energy w)
 
 /-- No fixed source-independent coercive energy can uniformly bound the singular carrier family. -/
 theorem no_pwSingularFixedCoerciveEnergyUniformlyBounded :
     ¬ PWSingularFixedCoerciveEnergyUniformlyBounded := by
   rintro ⟨energy, m, C, hm, _hCnonneg, hcoerce, hbound⟩
-  let D : ℝ := C ^ 2 * energy (0, 1)
+  let D : ℝ := C ^ (2 : ℕ) * energy (0, 1)
   have hlarge : ∀ᶠ x in atTop,
       D / m <
         pwNeutralChannelEnergy (pwSingularReflectionBlock x (0, 1)) :=

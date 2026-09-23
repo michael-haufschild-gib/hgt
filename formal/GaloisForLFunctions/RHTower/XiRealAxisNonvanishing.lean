@@ -62,7 +62,7 @@ theorem XiC_ne_zero_of_imaginary (y : ℝ) : XiC ((y : ℂ) * Complex.I) ≠ 0 :
   exact xi_ne_zero_of_real _
 
 /-- **A centered Xi zero with real square is real.**  This is the reality step behind the folded
-second-order realization: the folded eigenvalue is `alpha^2`, and a self-adjoint realization forces
+second-order realization: the folded eigenvalue is `alpha^(2 : ℕ)`, and a self-adjoint realization forces
 it real, which forces `alpha` itself real because no purely imaginary point is a zero. -/
 theorem XiC_im_eq_zero_of_sq_im_eq_zero {α : ℂ} (hα : XiC α = 0) (hsq : (α ^ 2).im = 0) :
     α.im = 0 := by

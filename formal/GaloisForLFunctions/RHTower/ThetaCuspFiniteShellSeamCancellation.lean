@@ -23,8 +23,8 @@ noncomputable section
 
 /-- Exact logarithmic slope of the `n`th positive theta shell at the modular seam. -/
 def thetaCuspAtomBoundaryLogSlope (n : ℕ) : ℝ :=
-  9 / 2 - 2 * Real.pi * (n : ℝ) ^ 2 +
-    6 / (2 * Real.pi * (n : ℝ) ^ 2 - 3)
+  9 / 2 - 2 * Real.pi * (n : ℝ) ^ (2 : ℕ) +
+    6 / (2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 3)
 
 /-- Every positive-index shell is strictly positive at the modular seam. -/
 theorem thetaCuspSourceTerm_zero_pos
@@ -34,10 +34,10 @@ theorem thetaCuspSourceTerm_zero_pos
   norm_num
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hpi : (3 : ℝ) < Real.pi := Real.pi_gt_three
-  have hsq : (1 : ℝ) ≤ (n : ℝ) ^ 2 := by nlinarith
-  have : 0 < 2 * Real.pi * (n : ℝ) ^ 2 - 3 := by nlinarith
-  rw [show 2 * Real.pi * (n : ℝ) ^ 4 - 3 * (n : ℝ) ^ 2 =
-      (n : ℝ) ^ 2 * (2 * Real.pi * (n : ℝ) ^ 2 - 3) by ring]
+  have hsq : (1 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith
+  have : 0 < 2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 3 := by nlinarith
+  rw [show 2 * Real.pi * (n : ℝ) ^ (4 : ℕ) - 3 * (n : ℝ) ^ (2 : ℕ) =
+      (n : ℝ) ^ (2 : ℕ) * (2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 3) by ring]
   positivity
 
 /-- Every shell after the first has strictly negative logarithmic seam slope. -/
@@ -46,10 +46,10 @@ theorem thetaCuspAtomBoundaryLogSlope_neg
     thetaCuspAtomBoundaryLogSlope n < 0 := by
   have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
   have hpi : (3 : ℝ) < Real.pi := Real.pi_gt_three
-  have hsq : (4 : ℝ) ≤ (n : ℝ) ^ 2 := by nlinarith
-  have hden : 21 < 2 * Real.pi * (n : ℝ) ^ 2 - 3 := by nlinarith
-  have hfrac : 6 / (2 * Real.pi * (n : ℝ) ^ 2 - 3) < (2 / 7 : ℝ) := by
-    rw [div_lt_iff₀ (by linarith : 0 < 2 * Real.pi * (n : ℝ) ^ 2 - 3)]
+  have hsq : (4 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith
+  have hden : 21 < 2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 3 := by nlinarith
+  have hfrac : 6 / (2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 3) < (2 / 7 : ℝ) := by
+    rw [div_lt_iff₀ (by linarith : 0 < 2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 3)]
     nlinarith
   unfold thetaCuspAtomBoundaryLogSlope
   nlinarith
@@ -68,12 +68,12 @@ theorem iteratedDeriv_one_thetaCuspSourceTerm_zero_eq_slope
     norm_num
   · have hnpos : 0 < n := Nat.pos_of_ne_zero hn
     have hnR : (0 : ℝ) < n := by exact_mod_cast hnpos
-    have hden : 2 * Real.pi * (n : ℝ) ^ 2 - 3 ≠ 0 := by
+    have hden : 2 * Real.pi * (n : ℝ) ^ (2 : ℕ) - 3 ≠ 0 := by
       have hpi : (3 : ℝ) < Real.pi := Real.pi_gt_three
       have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hnpos
       nlinarith [sq_nonneg ((n : ℝ) - 1)]
     have hder :
-        eval (n : ℝ) (derivative (C Real.pi ^ 2)) = 0 := by
+        eval (n : ℝ) (derivative (C Real.pi ^ (2 : ℕ))) = 0 := by
       rw [Polynomial.derivative_pow, Polynomial.derivative_C]
       simp
     rw [hder]

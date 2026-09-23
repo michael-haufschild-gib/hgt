@@ -14,7 +14,7 @@ namespace RHTower.Sieve
 open Filter Topology Asymptotics MeasureTheory Set
 
 /-- The error density of `θ`. -/
-noncomputable def thetaErrorDensity (t : ℝ) : ℝ := (Chebyshev.theta t - t) / t ^ 2
+noncomputable def thetaErrorDensity (t : ℝ) : ℝ := (Chebyshev.theta t - t) / t ^ (2 : ℕ)
 
 theorem measurable_thetaErrorDensity : Measurable thetaErrorDensity := by
   unfold thetaErrorDensity
@@ -27,7 +27,7 @@ theorem integrableOn_thetaErrorDensity_Ioc {a b : ℝ} (ha : 0 < a) :
     refine MeasureTheory.IntegrableOn.sub ?_ ?_
     · exact MonotoneOn.integrableOn_isCompact isCompact_Icc (Chebyshev.theta_mono.monotoneOn _)
     · exact (continuous_id.continuousOn).integrableOn_Icc
-  have hcont : ContinuousOn (fun t : ℝ => (t ^ 2)⁻¹) (Set.Icc a b) := by
+  have hcont : ContinuousOn (fun t : ℝ => (t ^ (2 : ℕ))⁻¹) (Set.Icc a b) := by
     refine ContinuousOn.inv₀ (by fun_prop) ?_
     intro t ht
     have ht0 : (0 : ℝ) < t := lt_of_lt_of_le ha ht.1
@@ -50,14 +50,14 @@ theorem integrableOn_thetaErrorDensity_Ioi_of_bound {c K T : ℝ} (hc : 0 < c) (
   refine hdom.mono' measurable_thetaErrorDensity.aestronglyMeasurable.restrict ?_
   refine (ae_restrict_iff' measurableSet_Ioi).mpr (.of_forall fun t ht => ?_)
   have ht0 : (0 : ℝ) < t := lt_trans (by linarith) ht
-  have hsq : (0 : ℝ) < t ^ 2 := by positivity
-  have habs : ‖thetaErrorDensity t‖ = |Chebyshev.theta t - t| / t ^ 2 := by
+  have hsq : (0 : ℝ) < t ^ (2 : ℕ) := by positivity
+  have habs : ‖thetaErrorDensity t‖ = |Chebyshev.theta t - t| / t ^ (2 : ℕ) := by
     unfold thetaErrorDensity
     rw [Real.norm_eq_abs, abs_div, abs_of_pos hsq]
   rw [habs]
   rw [div_le_iff₀ hsq]
   have hb := hbd t ht
-  have hstep : K * (Real.exp (-c * Real.sqrt (Real.log t)) / t) * t ^ 2
+  have hstep : K * (Real.exp (-c * Real.sqrt (Real.log t)) / t) * t ^ (2 : ℕ)
       = K * t * Real.exp (-c * Real.sqrt (Real.log t)) := by
     field_simp
   rw [hstep]

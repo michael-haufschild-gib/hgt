@@ -56,7 +56,7 @@ theorem cosh_eq_one_iff_exists_int {z : ℂ} :
   · intro h
     have hw : Complex.exp z ≠ 0 := Complex.exp_ne_zero z
     rw [Complex.cosh, Complex.exp_neg] at h
-    have hsquare : (Complex.exp z - 1) ^ 2 = 0 := by
+    have hsquare : (Complex.exp z - 1) ^ (2 : ℕ) = 0 := by
       field_simp [hw] at h
       linear_combination h
     have hexp : Complex.exp z = 1 := by

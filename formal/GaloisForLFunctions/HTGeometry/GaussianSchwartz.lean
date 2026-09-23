@@ -28,7 +28,7 @@ noncomputable section
 namespace GaloisForLFunctions
 
 /-- The standard self-dual Gaussian. -/
-def gaussReal (x : ℝ) : ℝ := Real.exp (-(π * x ^ 2))
+def gaussReal (x : ℝ) : ℝ := Real.exp (-(π * x ^ (2 : ℕ)))
 
 theorem gaussReal_pos (x : ℝ) : 0 < gaussReal x := Real.exp_pos _
 
@@ -38,9 +38,9 @@ theorem contDiff_gaussReal {n : WithTop ℕ∞} : ContDiff ℝ n gaussReal := by
 
 theorem hasDerivAt_gaussReal (x : ℝ) :
     HasDerivAt gaussReal (-(2 * π * x) * gaussReal x) x := by
-  have h : HasDerivAt (fun y : ℝ => -(π * y ^ 2)) (-(π * (2 * x))) x := by
+  have h : HasDerivAt (fun y : ℝ => -(π * y ^ (2 : ℕ))) (-(π * (2 * x))) x := by
     have hraw := ((hasDerivAt_pow 2 x).const_mul π).neg
-    rw [show (-(fun y : ℝ => π * y ^ 2)) = (fun y : ℝ => -(π * y ^ 2)) by
+    rw [show (-(fun y : ℝ => π * y ^ (2 : ℕ))) = (fun y : ℝ => -(π * y ^ (2 : ℕ))) by
       funext y
       rfl] at hraw
     exact hraw.congr_deriv (by norm_num)
@@ -77,21 +77,21 @@ theorem exists_poly_iteratedDeriv_gaussReal (n : ℕ) :
 theorem abs_pow_two_mul_gaussReal_le (j : ℕ) (x : ℝ) :
     |x| ^ (2 * j) * gaussReal x ≤ Nat.factorial j / π ^ j := by
   have hpi : (0 : ℝ) < π := Real.pi_pos
-  have hx : (0 : ℝ) ≤ π * x ^ 2 := by positivity
-  have hkey := Real.pow_div_factorial_le_exp (π * x ^ 2) hx j
-  have hexp : (0 : ℝ) < Real.exp (π * x ^ 2) := Real.exp_pos _
+  have hx : (0 : ℝ) ≤ π * x ^ (2 : ℕ) := by positivity
+  have hkey := Real.pow_div_factorial_le_exp (π * x ^ (2 : ℕ)) hx j
+  have hexp : (0 : ℝ) < Real.exp (π * x ^ (2 : ℕ)) := Real.exp_pos _
   have hfac : (0 : ℝ) < (Nat.factorial j : ℝ) := by
     exact_mod_cast Nat.factorial_pos j
-  have habs : |x| ^ (2 * j) = (x ^ 2) ^ j := by
+  have habs : |x| ^ (2 * j) = (x ^ (2 : ℕ)) ^ j := by
     rw [pow_mul, sq_abs]
-  have hg : gaussReal x = (Real.exp (π * x ^ 2))⁻¹ := by
+  have hg : gaussReal x = (Real.exp (π * x ^ (2 : ℕ)))⁻¹ := by
     unfold gaussReal
     rw [← Real.exp_neg]
   rw [habs, hg]
   rw [le_div_iff₀ (by positivity : (0 : ℝ) < π ^ j)]
   rw [inv_eq_one_div, mul_one_div, div_mul_eq_mul_div, div_le_iff₀ hexp]
-  have hstep : (π * x ^ 2) ^ j / (Nat.factorial j : ℝ) ≤ Real.exp (π * x ^ 2) := hkey
-  have hexpand : (π * x ^ 2) ^ j = π ^ j * (x ^ 2) ^ j := by rw [mul_pow]
+  have hstep : (π * x ^ (2 : ℕ)) ^ j / (Nat.factorial j : ℝ) ≤ Real.exp (π * x ^ (2 : ℕ)) := hkey
+  have hexpand : (π * x ^ (2 : ℕ)) ^ j = π ^ j * (x ^ (2 : ℕ)) ^ j := by rw [mul_pow]
   rw [hexpand] at hstep
   have := (div_le_iff₀ hfac).mp hstep
   nlinarith [this, hfac, hexp.le, pow_nonneg (sq_nonneg x) j]
@@ -108,7 +108,7 @@ theorem exists_bound_abs_pow_mul_gaussReal (k : ℕ) :
     have h2 : gaussReal x ≤ 1 := by
       unfold gaussReal
       rw [Real.exp_le_one_iff]
-      have hnn : (0 : ℝ) ≤ π * x ^ 2 := by positivity
+      have hnn : (0 : ℝ) ≤ π * x ^ (2 : ℕ) := by positivity
       linarith
     have hprod : |x| ^ k * gaussReal x ≤ 1 * 1 :=
       mul_le_mul h1 h2 (gaussReal_pos x).le zero_le_one
@@ -184,8 +184,8 @@ def gaussianSchwartz : SchwartzMap ℝ ℂ where
 
 /-- The Gaussian in the form mathlib's Fourier transform consumes. -/
 theorem gaussianSchwartz_eq_cexp (x : ℝ) :
-    gaussianSchwartz x = Complex.exp (-(π * (x : ℂ) ^ 2)) := by
-  show ((Real.exp (-(π * x ^ 2)) : ℝ) : ℂ) = Complex.exp (-(π * (x : ℂ) ^ 2))
+    gaussianSchwartz x = Complex.exp (-(π * (x : ℂ) ^ (2 : ℕ))) := by
+  show ((Real.exp (-(π * x ^ (2 : ℕ))) : ℝ) : ℂ) = Complex.exp (-(π * (x : ℂ) ^ (2 : ℕ)))
   rw [Complex.ofReal_exp]
   norm_cast
 
@@ -304,13 +304,13 @@ theorem hermiteStep_apply (p : Polynomial ℝ) (x : ℝ) :
 /-- **The Gaussian is a fixed point of the Fourier transform**, in mathlib's `𝓕`
 normalization: the `b = 1` case of the Gaussian Fourier transform. -/
 theorem fourierIntegral_gaussianSchwartz :
-    𝓕 (fun x : ℝ => Complex.exp (-(π * (x : ℂ) ^ 2)))
-      = fun x : ℝ => Complex.exp (-(π * (x : ℂ) ^ 2)) := by
+    𝓕 (fun x : ℝ => Complex.exp (-(π * (x : ℂ) ^ (2 : ℕ))))
+      = fun x : ℝ => Complex.exp (-(π * (x : ℂ) ^ (2 : ℕ))) := by
   have hb : (0 : ℝ) < (1 : ℂ).re := by norm_num
   have h := fourier_gaussian_pi (b := 1) hb
   simp only [mul_one, div_one, one_div] at h
-  rw [show (fun (x : ℝ) => Complex.exp (-(π * (x : ℂ) ^ 2)))
-      = fun (x : ℝ) => Complex.exp (-(π : ℂ) * (x : ℂ) ^ 2) by
+  rw [show (fun (x : ℝ) => Complex.exp (-(π * (x : ℂ) ^ (2 : ℕ))))
+      = fun (x : ℝ) => Complex.exp (-(π : ℂ) * (x : ℂ) ^ (2 : ℕ)) by
     funext x; ring_nf]
   rw [h]
   funext t
@@ -322,7 +322,7 @@ theorem fourier_gaussianSchwartz : 𝓕 gaussianSchwartz = gaussianSchwartz := b
   apply SchwartzMap.ext
   intro x
   have hfun : (gaussianSchwartz : ℝ → ℂ)
-      = fun y : ℝ => Complex.exp (-(π * (y : ℂ) ^ 2)) := by
+      = fun y : ℝ => Complex.exp (-(π * (y : ℂ) ^ (2 : ℕ))) := by
     funext y
     exact gaussianSchwartz_eq_cexp y
   have hcoe : ((𝓕 gaussianSchwartz : SchwartzMap ℝ ℂ) : ℝ → ℂ)

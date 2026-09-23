@@ -34,7 +34,7 @@ noncomputable def hillDensityDeriv (m : ℝ) (c : ℝ → ℝ) (G₀ : E → ℂ
 /-! ## Continuity in the frequency -/
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-theorem continuous_hillDensity (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+theorem continuous_hillDensity (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (hG : Continuous G₀) {t : ℝ} (ht : 0 ≤ t) : Continuous (hillDensity m c G₀ t) := by
   have hfibre : Continuous fun s : ℝ => hillFlow (massiveFreq m c s) (1, 0) t := by
     refine continuous_iff_continuousAt.mpr fun s₀ => ?_
@@ -49,7 +49,7 @@ theorem continuous_hillDensity (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem aestronglyMeasurable_hillDensity [MeasurableSpace E] [BorelSpace E]
-    (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     {t : ℝ} (ht : 0 ≤ t) (μ : Measure E) :
     AEStronglyMeasurable (hillDensity m c G₀ t) μ :=
   (continuous_hillDensity hm hc hC hG ht).aestronglyMeasurable
@@ -60,7 +60,7 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **The density is dominated by the initial density**, with a factor that does not depend on the
 frequency. -/
 theorem norm_hillDensity_le (hm : 0 < m) (hc : Continuous c) (hcd : ∀ r, HasDerivAt c (dc r) r)
-    (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+    (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     {t : ℝ} (ht : 0 ≤ t) (ξ : E) :
     ‖hillDensity m c G₀ t ξ‖ ≤ (max 1 (c 0 / c t) * Real.exp (K * t)) * ‖G₀ ξ‖ := by
   have hfib := abs_hillSolution_massive_cos_le (S := ‖ξ‖) (t := t) (b := t) hm hc hcd hcpos hK hC
@@ -75,7 +75,7 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **The density of the time derivative costs one power of the frequency.** -/
 theorem norm_hillDensityDeriv_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) {t : ℝ} (ht : 0 ≤ t) (ξ : E) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) {t : ℝ} (ht : 0 ≤ t) (ξ : E) :
     ‖hillDensityDeriv m c G₀ t ξ‖ ≤
       (massiveFreq m c ‖ξ‖ 0 * Real.exp (K * t)) * ‖G₀ ξ‖ := by
   have hfib := abs_hillSolutionDeriv_massive_cos_le (S := ‖ξ‖) (t := t) (b := t) hm hc hcd hcpos
@@ -92,9 +92,9 @@ theorem massiveFreq_zero_le (hm : 0 < m) (hcpos : ∀ r, 0 < c r) (ξ : E) :
     massiveFreq m c ‖ξ‖ 0 ≤ m + c 0 * ‖ξ‖ := by
   have hm0 : (0 : ℝ) ≤ m := le_of_lt hm
   have hc0 : (0 : ℝ) ≤ c 0 * ‖ξ‖ := mul_nonneg (le_of_lt (hcpos 0)) (norm_nonneg _)
-  have hsq : m ^ 2 + (c 0 * ‖ξ‖) ^ 2 ≤ (m + c 0 * ‖ξ‖) ^ 2 := by nlinarith
-  calc massiveFreq m c ‖ξ‖ 0 = Real.sqrt (m ^ 2 + (c 0 * ‖ξ‖) ^ 2) := rfl
-    _ ≤ Real.sqrt ((m + c 0 * ‖ξ‖) ^ 2) := Real.sqrt_le_sqrt hsq
+  have hsq : m ^ (2 : ℕ) + (c 0 * ‖ξ‖) ^ (2 : ℕ) ≤ (m + c 0 * ‖ξ‖) ^ (2 : ℕ) := by nlinarith
+  calc massiveFreq m c ‖ξ‖ 0 = Real.sqrt (m ^ (2 : ℕ) + (c 0 * ‖ξ‖) ^ (2 : ℕ)) := rfl
+    _ ≤ Real.sqrt ((m + c 0 * ‖ξ‖) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsq
     _ = m + c 0 * ‖ξ‖ := Real.sqrt_sq (by linarith)
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
@@ -102,7 +102,7 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 every time, with a dominating function that does not depend on the frequency. -/
 theorem integrable_of_hillDensity_bound [MeasurableSpace E] [BorelSpace E] {μ : Measure E}
     (hm : 0 < m) (hc : Continuous c) (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r)
-    (hK : ∀ r, |dc r| ≤ K * c r) (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hK : ∀ r, |dc r| ≤ K * c r) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) μ) {t : ℝ} (ht : 0 ≤ t) :
     Integrable (hillDensity m c G₀ t) μ := by
   refine Integrable.mono' (hint.const_mul (max 1 (c 0 / c t) * Real.exp (K * t)))

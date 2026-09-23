@@ -93,8 +93,8 @@ theorem integral_norm_sq_maynardFixedAmbientPhysicalDefectPacket_le_card
       ‖maynardFixedAmbientDefectCellCoefficient a N R H sigma m v‖ ≤ A) :
     (∫ lambda : ℝ in x..(2 * x),
         ‖maynardFixedAmbientPhysicalDefectPacket
-          S a lambda N R H sigma‖ ^ 2) ≤
-      4 * (2 * x) ^ (2 * (sigma - 1) + 1) * A ^ 2 * (S.card : ℝ) *
+          S a lambda N R H sigma‖ ^ (2 : ℕ)) ≤
+      4 * (2 * x) ^ (2 * (sigma - 1) + 1) * A ^ (2 : ℕ) * (S.card : ℝ) *
         (1 + 2 * (1 + Real.log cellCount)) := by
   have hb : ∀ m ∈ S,
       Continuous (maynardFixedAmbientDefectCellCoefficient a N R H sigma m) := by
@@ -107,18 +107,18 @@ theorem integral_norm_sq_maynardFixedAmbientPhysicalDefectPacket_le_card
   calc
     (∫ lambda : ℝ in x..(2 * x),
         ‖maynardFixedAmbientPhysicalDefectPacket
-          S a lambda N R H sigma‖ ^ 2) =
+          S a lambda N R H sigma‖ ^ (2 : ℕ)) =
         ∫ lambda : ℝ in x..(2 * x),
           ‖maynardUnitCellMellinPacket S
             (maynardFixedAmbientDefectCellCoefficient a N R H sigma)
-            (sigma - 1) lambda‖ ^ 2 := by
+            (sigma - 1) lambda‖ ^ (2 : ℕ) := by
       apply intervalIntegral.integral_congr
       intro lambda hlambda
       rw [Set.uIcc_of_le (by linarith : x ≤ 2 * x)] at hlambda
-      change ‖maynardFixedAmbientPhysicalDefectPacket S a lambda N R H sigma‖ ^ 2 =
+      change ‖maynardFixedAmbientPhysicalDefectPacket S a lambda N R H sigma‖ ^ (2 : ℕ) =
         ‖maynardUnitCellMellinPacket S
           (maynardFixedAmbientDefectCellCoefficient a N R H sigma)
-          (sigma - 1) lambda‖ ^ 2
+          (sigma - 1) lambda‖ ^ (2 : ℕ)
       rw [maynardFixedAmbientPhysicalDefectPacket_eq_mellinPacket
         S a lambda N R H sigma (lt_of_lt_of_le zero_lt_one (hx.trans hlambda.1)) hR hH]
     _ ≤ _ := hL2

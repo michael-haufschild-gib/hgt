@@ -281,9 +281,9 @@ theorem traceCoordRaw_apply (z : Fin (m + 1) → R) (i : Fin m) :
 
 /-- The trace-law defect coordinates, taken modulo `a²`. -/
 noncomputable def traceCoord (a : R) (m : ℕ) [Invertible ((m : R) + 1)] :
-    (Fin (m + 1) → R) →ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) :=
+    (Fin (m + 1) → R) →ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) :=
   LinearMap.pi fun i =>
-    (Ideal.span ({a ^ 2} : Set R)).mkQ.comp ((LinearMap.proj i).comp (traceCoordRaw m))
+    (Ideal.span ({a ^ (2 : ℕ)} : Set R)).mkQ.comp ((LinearMap.proj i).comp (traceCoordRaw m))
 
 theorem traceCoord_apply (z : Fin (m + 1) → R) (i : Fin m) :
     traceCoord a m z i
@@ -293,7 +293,7 @@ theorem traceCoord_apply (z : Fin (m + 1) → R) (i : Fin m) :
 
 theorem traceCoord_eq_zero_iff (z : Fin (m + 1) → R) :
     traceCoord a m z = 0 ↔
-      ∀ i : Fin m, a ^ 2 ∣ z i.castSucc - ⅟((m : R) + 1) * ∑ j, z j := by
+      ∀ i : Fin m, a ^ (2 : ℕ) ∣ z i.castSucc - ⅟((m : R) + 1) * ∑ j, z j := by
   constructor
   · intro h i
     have hi := congrFun h i
@@ -325,11 +325,11 @@ theorem traceCoord_scaledOrder {z : Fin (m + 1) → R} (hz : z ∈ scaledOrder a
   rw [hsum]
   linear_combination (a * ⅟((m : R) + 1)) * hA - (a * v i.castSucc) * hB
 
-theorem traceCoord_surjective_scaledDual (w : Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) :
+theorem traceCoord_surjective_scaledDual (w : Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) :
     ∃ z ∈ scaledDual a (m + 1), traceCoord a m z = w := by
   classical
   choose c hc using fun i =>
-    Submodule.Quotient.mk_surjective (Ideal.span ({a ^ 2} : Set R)) (w i)
+    Submodule.Quotient.mk_surjective (Ideal.span ({a ^ (2 : ℕ)} : Set R)) (w i)
   have hzero : ∑ j, (Fin.snoc c (-(∑ i, c i)) : Fin (m + 1) → R) j = 0 := by
     rw [Fin.sum_univ_castSucc]
     simp
@@ -347,18 +347,18 @@ theorem mem_scaledOrder_of_traceCoord {z : Fin (m + 1) → R}
   choose u' hu' using h0
   have hB : ⅟((m : R) + 1) * ((m : R) + 1) = 1 := invOf_mul_self _
   have hS : ∑ i : Fin m, z i.castSucc
-      = (m : R) * (⅟((m : R) + 1) * ∑ j, z j) + a ^ 2 * ∑ i, u' i := by
+      = (m : R) * (⅟((m : R) + 1) * ∑ j, z j) + a ^ (2 : ℕ) * ∑ i, u' i := by
     have hi : ∀ i : Fin m,
-        z i.castSucc = ⅟((m : R) + 1) * ∑ j, z j + a ^ 2 * u' i := by
+        z i.castSucc = ⅟((m : R) + 1) * ∑ j, z j + a ^ (2 : ℕ) * u' i := by
       intro i
       linear_combination hu' i
     rw [Finset.sum_congr rfl (fun i _ => hi i), Finset.sum_add_distrib, Finset.sum_const,
       Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, ← Finset.mul_sum]
   have hsplit := Fin.sum_univ_castSucc z
-  have hlast : z (Fin.last m) - ⅟((m : R) + 1) * ∑ j, z j = a ^ 2 * (-(∑ i, u' i)) := by
+  have hlast : z (Fin.last m) - ⅟((m : R) + 1) * ∑ j, z j = a ^ (2 : ℕ) * (-(∑ i, u' i)) := by
     linear_combination -hsplit - hS - (∑ j, z j) * hB
   set u : Fin (m + 1) → R := Fin.snoc u' (-(∑ i, u' i)) with hudef
-  have hall : ∀ j, z j - ⅟((m : R) + 1) * ∑ k, z k = a ^ 2 * u j := by
+  have hall : ∀ j, z j - ⅟((m : R) + 1) * ∑ k, z k = a ^ (2 : ℕ) * u j := by
     intro j
     induction j using Fin.lastCases with
     | last =>
@@ -379,7 +379,7 @@ theorem mem_scaledOrder_of_traceCoord {z : Fin (m + 1) → R}
 
 /-- The trace-law defect map on the rescaled dual lattice. -/
 noncomputable def scaledTraceCoord (a : R) (m : ℕ) [Invertible ((m : R) + 1)] :
-    scaledDual a (m + 1) →ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) :=
+    scaledDual a (m + 1) →ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) :=
   (traceCoord a m).comp (scaledDual a (m + 1)).subtype
 
 theorem scaledTraceCoord_surjective :
@@ -407,7 +407,7 @@ theorem ker_scaledTraceCoord :
 noncomputable def scaledTraceDefectEquiv :
     (scaledDual a (m + 1) ⧸
         Submodule.comap (scaledDual a (m + 1)).subtype (scaledOrder a (m + 1)))
-      ≃ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) :=
+      ≃ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) :=
   (Submodule.quotEquivOfEq _ _ ker_scaledTraceCoord.symm).trans
     (LinearMap.quotKerEquivOfSurjective _ scaledTraceCoord_surjective)
 
@@ -445,7 +445,7 @@ variable {R : Type*} [CommRing R] {a : R} {m : ℕ} [Invertible ((m : R) + 1)]
 
 /-- The trace-law defect map. -/
 noncomputable def traceDefectMap (ha : a ≠ 0) :
-    traceDual (K := K) a (m + 1) →ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) :=
+    traceDual (K := K) a (m + 1) →ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) :=
   (scaledTraceCoord a m).comp (dualIntegralEquiv (K := K) ha).symm.toLinearMap
 
 theorem traceDefectMap_surjective (ha : a ≠ 0) :
@@ -483,7 +483,7 @@ theorem ker_traceDefectMap (ha : a ≠ 0) :
 noncomputable def traceDefectEquiv (ha : a ≠ 0) :
     ((traceDual (K := K) a (m + 1)) ⧸
         Submodule.comap (traceDual (K := K) a (m + 1)).subtype (orderLattice (K := K) a (m + 1)))
-      ≃ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) :=
+      ≃ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) :=
   (Submodule.quotEquivOfEq _ _ (ker_traceDefectMap (K := K) ha).symm).trans
     (LinearMap.quotKerEquivOfSurjective _ (traceDefectMap_surjective (K := K) ha))
 
@@ -538,7 +538,7 @@ theorem one_mem_traceDual (a : R) (N : ℕ) :
 theorem mem_dedekindDifferent_iff (ha : a ≠ 0) {m : ℕ} (hm : 2 ≤ m)
     {d : Fin (m + 1) → K} :
     d ∈ dedekindDifferent (K := K) a (m + 1)
-      ↔ ∃ w : Fin (m + 1) → R, d = coordIncl R K (m + 1) ((a ^ 2) • w) := by
+      ↔ ∃ w : Fin (m + 1) → R, d = coordIncl R K (m + 1) ((a ^ (2 : ℕ)) • w) := by
   classical
   constructor
   · intro hd
@@ -550,8 +550,8 @@ theorem mem_dedekindDifferent_iff (ha : a ≠ 0) {m : ℕ} (hm : 2 ≤ m)
       rw [hj]
       show d j = d j * 1
       rw [mul_one]
-    have hdvd : ∀ j, a ^ 2 ∣ v j := by
-      have key : ∀ i : Fin m, a ^ 2 ∣ v i.castSucc ∧ a ^ 2 ∣ v (Fin.last m) := by
+    have hdvd : ∀ j, a ^ (2 : ℕ) ∣ v j := by
+      have key : ∀ i : Fin m, a ^ (2 : ℕ) ∣ v i.castSucc ∧ a ^ (2 : ℕ) ∣ v (Fin.last m) := by
         intro i
         set z : Fin (m + 1) → R :=
           Pi.single i.castSucc 1 - Pi.single (Fin.last m) 1 with hz
@@ -627,9 +627,9 @@ theorem mem_dedekindDifferent_iff (ha : a ≠ 0) {m : ℕ} (hm : 2 ≤ m)
     funext j
     rw [coordIncl_apply]
     show algebraMap R K (a * (w j * q j))
-      = algebraMap R K (((a ^ 2) • w) j) * y j
+      = algebraMap R K (((a ^ (2 : ℕ)) • w) j) * y j
     rw [← hqy, dualScaleMap_apply]
-    show _ = algebraMap R K (a ^ 2 * w j) * (algebraMap R K (q j) / algebraMap R K a)
+    show _ = algebraMap R K (a ^ (2 : ℕ) * w j) * (algebraMap R K (q j) / algebraMap R K a)
     rw [map_mul, map_mul, map_mul, map_pow]
     field_simp
 

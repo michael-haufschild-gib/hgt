@@ -189,7 +189,7 @@ reconstruction from the `3n` local-DLA data, indexed by `m + 1` qubits. -/
 theorem localObs_polyDLA_family_dichotomy :
     ¬ HasBarrenPlateau
         (fun m => (rLocalProductClifford (n := m + 1) (Nat.succ_pos m)).variance)
-      ∧ (∀ m, (((localHermBasis (m + 1)).dim : ℝ) ≤ 3 * (((m : ℝ) + 1) ^ 1)))
+      ∧ (∀ m, (((localHermBasis (m + 1)).dim : ℝ) ≤ 3 * (((m : ℝ) + 1) ^ (1 : ℕ))))
       ∧ ∀ m (Gs : List (Matrix (Fin (2 ^ (m + 1))) (Fin (2 ^ (m + 1))) ℂ)),
           (∀ A ∈ Gs, A ∈ (dynamicalLieAlgebra (localGens (m + 1))).toSubmodule) →
           ((Gs.map NormedSpace.exp).prod * localState
@@ -237,7 +237,7 @@ theorem localObs_polyDLA_family_dichotomy :
       norm_num
     · norm_num
     · intro m
-      change 1 / (((m : ℝ) + 1) ^ 0)
+      change 1 / (((m : ℝ) + 1) ^ (0 : ℕ))
         ≤ ‖(su2EmbHermBasis (⟨0, Nat.succ_pos m⟩ : Fin (m + 1))).gPurity
               (localState (n := m + 1))
             * (su2EmbHermBasis (⟨0, Nat.succ_pos m⟩ : Fin (m + 1))).gPurity

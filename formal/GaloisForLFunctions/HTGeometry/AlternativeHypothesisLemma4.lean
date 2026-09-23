@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The `n = 1` interior branch of the source test function `g_n`. -/
 def alternativeHypothesisLemma4GOne (x : ℝ) : ℝ :=
-  Real.cos (Real.pi * x / 2) ^ 2
+  Real.cos (Real.pi * x / 2) ^ (2 : ℕ)
 
 /-- The source Fourier convention `e(-t x)` at the literal point `t = 1 / 2`,
 restricted to the support interval of `g₁`. -/
@@ -54,12 +54,12 @@ private theorem alternativeHypothesisLemma4_int_sin_pi :
   norm_num
 
 private theorem alternativeHypothesisLemma4_int_cos_sq_pi :
-    (∫ x in (-1 : ℝ)..1, Real.cos (Real.pi * x) ^ 2) = 1 := by
-  rw [show (fun x : ℝ => Real.cos (Real.pi * x) ^ 2) =
-      fun x => Real.cos (x * Real.pi) ^ 2 by
+    (∫ x in (-1 : ℝ)..1, Real.cos (Real.pi * x) ^ (2 : ℕ)) = 1 := by
+  rw [show (fun x : ℝ => Real.cos (Real.pi * x) ^ (2 : ℕ)) =
+      fun x => Real.cos (x * Real.pi) ^ (2 : ℕ) by
     funext x
     ring_nf]
-  rw [intervalIntegral.integral_comp_mul_right (fun x : ℝ => Real.cos x ^ 2) Real.pi_ne_zero]
+  rw [intervalIntegral.integral_comp_mul_right (fun x : ℝ => Real.cos x ^ (2 : ℕ)) Real.pi_ne_zero]
   rw [smul_eq_mul, integral_cos_sq]
   rw [show (-1 : ℝ) * Real.pi = -Real.pi by ring_nf,
     show (1 : ℝ) * Real.pi = Real.pi by ring_nf,
@@ -107,7 +107,7 @@ private theorem alternativeHypothesisLemma4_int_sin_pi_complex :
   norm_num
 
 private theorem alternativeHypothesisLemma4_int_cos_sq_pi_complex :
-    (∫ x in (-1 : ℝ)..1, ((Real.cos (Real.pi * x) ^ 2 : ℝ) : ℂ)) = 1 := by
+    (∫ x in (-1 : ℝ)..1, ((Real.cos (Real.pi * x) ^ (2 : ℕ) : ℝ) : ℂ)) = 1 := by
   rw [intervalIntegral.integral_ofReal, alternativeHypothesisLemma4_int_cos_sq_pi]
   norm_num
 
@@ -125,7 +125,7 @@ theorem alternativeHypothesisLemma4_n1_halfIntegerFourier :
       (alternativeHypothesisLemma4GOne x : ℂ) *
           Complex.exp (((-(Real.pi * x) : ℝ) : ℂ) * Complex.I) =
         (1 / 2 : ℂ) *
-          ((Real.cos (Real.pi * x) : ℂ) + ((Real.cos (Real.pi * x) ^ 2 : ℝ) : ℂ) -
+          ((Real.cos (Real.pi * x) : ℂ) + ((Real.cos (Real.pi * x) ^ (2 : ℕ) : ℝ) : ℂ) -
             Complex.I * ((Real.sin (Real.pi * x) : ℂ) +
               ((Real.sin (Real.pi * x) * Real.cos (Real.pi * x) : ℝ) : ℂ))) := by
     intro x
@@ -134,14 +134,14 @@ theorem alternativeHypothesisLemma4_n1_halfIntegerFourier :
     ring_nf
   rw [intervalIntegral.integral_congr (fun x _ => hpoint x)]
   have hcos : Continuous fun x : ℝ => (Real.cos (Real.pi * x) : ℂ) := by fun_prop
-  have hcosSq : Continuous fun x : ℝ => ((Real.cos (Real.pi * x) ^ 2 : ℝ) : ℂ) := by fun_prop
+  have hcosSq : Continuous fun x : ℝ => ((Real.cos (Real.pi * x) ^ (2 : ℕ) : ℝ) : ℂ) := by fun_prop
   have hsin : Continuous fun x : ℝ => (Real.sin (Real.pi * x) : ℂ) := by fun_prop
   have hsinCos : Continuous fun x : ℝ =>
       ((Real.sin (Real.pi * x) * Real.cos (Real.pi * x) : ℝ) : ℂ) := by fun_prop
   have hcosInt : IntervalIntegrable (fun x : ℝ => (Real.cos (Real.pi * x) : ℂ)) volume (-1) 1 :=
     hcos.intervalIntegrable _ _
   have hcosSqInt : IntervalIntegrable
-      (fun x : ℝ => ((Real.cos (Real.pi * x) ^ 2 : ℝ) : ℂ)) volume (-1) 1 :=
+      (fun x : ℝ => ((Real.cos (Real.pi * x) ^ (2 : ℕ) : ℝ) : ℂ)) volume (-1) 1 :=
     hcosSq.intervalIntegrable _ _
   have hsinInt : IntervalIntegrable (fun x : ℝ => (Real.sin (Real.pi * x) : ℂ)) volume (-1) 1 :=
     hsin.intervalIntegrable _ _

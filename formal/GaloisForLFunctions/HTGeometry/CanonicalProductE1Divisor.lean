@@ -19,7 +19,7 @@ namespace RHTower
 variable {ι : Type*}
 
 theorem multipliable_canonicalProductE1Indexed {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) (z : ℂ) :
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) (z : ℂ) :
     Multipliable (fun i : ι => weierstrassE1 (z / a i)) := by
   have hfsum : Summable (fun i : ι => weierstrassE1 (z / a i) - 1) :=
     (canonicalProductE1Indexed_sub_one_norm_summable a hane hsum z).of_norm
@@ -29,7 +29,7 @@ theorem multipliable_canonicalProductE1Indexed {a : ι → ℂ} (hane : ∀ i, a
   ring
 
 theorem canonicalProductE1Indexed_split {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) (s : Set ι) (z : ℂ) :
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ))) (s : Set ι) (z : ℂ) :
     (∏' x : s, weierstrassE1 (z / a x)) * (∏' x : ↑(sᶜ), weierstrassE1 (z / a x))
       = canonicalProductE1Indexed a z := by
   have h1 : Multipliable (fun x : s => weierstrassE1 (z / a x.1)) :=
@@ -54,7 +54,7 @@ theorem tprod_fiber_weierstrassE1_eq {a : ι → ℂ} (hloc : LocallyFiniteDivis
   rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card]
 
 theorem canonicalProductE1Indexed_eq_pow_mul {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
-    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2))
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ)))
     (hloc : LocallyFiniteDivisor a) (w : ℂ) :
     canonicalProductE1Indexed a
       = (fun z : ℂ => weierstrassE1 (z / w) ^ ({i : ι | a i = w}.ncard))
@@ -90,13 +90,13 @@ theorem analyticOrderAt_weierstrassE1_div {w : ℂ} (hw : w ≠ 0) :
 /-- **The divisor of the genus-one canonical product.**  Its order at every nonzero point is
 exactly the multiplicity of that point in the index family. -/
 theorem analyticOrderAt_canonicalProductE1Indexed {a : ι → ℂ} (hane : ∀ i, a i ≠ 0)
-    (hloc : LocallyFiniteDivisor a) (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2))
+    (hloc : LocallyFiniteDivisor a) (hsum : Summable (fun i => 1 / ‖a i‖ ^ (2 : ℕ)))
     {w : ℂ} (hw : w ≠ 0) :
     analyticOrderAt (canonicalProductE1Indexed a) w = (({i : ι | a i = w}.ncard : ℕ) : ℕ∞) := by
   set F : Set ι := {i : ι | a i = w} with hF
   set T : ↑(Fᶜ) → ℂ := fun x => a x.1 with hT
   have hTane : ∀ x : ↑(Fᶜ), T x ≠ 0 := fun x => hane x.1
-  have hTsum : Summable (fun x : ↑(Fᶜ) => 1 / ‖T x‖ ^ 2) := hsum.subtype (· ∈ Fᶜ)
+  have hTsum : Summable (fun x : ↑(Fᶜ) => 1 / ‖T x‖ ^ (2 : ℕ)) := hsum.subtype (· ∈ Fᶜ)
   have hTne : ∀ x : ↑(Fᶜ), w ≠ T x := by
     intro x
     have hx := x.2

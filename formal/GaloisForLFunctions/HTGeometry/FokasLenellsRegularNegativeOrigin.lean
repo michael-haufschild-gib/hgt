@@ -14,17 +14,17 @@ noncomputable section
 
 /-- Exact negative-ray weighted formulas, with the transmission exchange kept explicit. -/
 theorem regularSecondInverseReflection_negative_exp_factor (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
-    regularSecondInverseReflection q false (-((Real.exp κ)^2)) =
-      2*I*(Real.exp κ : ℂ)^2*originWeightedReflection (twistedPotential q) ((Real.exp κ)^2) /
-        regularScatteringMatrix q (-((Real.exp κ)^2)) 0 0 ∧
-    regularSecondInverseReflection q true (-((Real.exp κ)^2)) =
-      I*originWeightedReflection (twistedPotential q) ((Real.exp κ)^2) /
-        (2*regularScatteringMatrix q (-((Real.exp κ)^2)) 1 1) := by
+    regularSecondInverseReflection q false (-((Real.exp κ)^(2 : ℕ))) =
+      2*I*(Real.exp κ : ℂ)^(2 : ℕ)*originWeightedReflection (twistedPotential q) ((Real.exp κ)^(2 : ℕ)) /
+        regularScatteringMatrix q (-((Real.exp κ)^(2 : ℕ))) 0 0 ∧
+    regularSecondInverseReflection q true (-((Real.exp κ)^(2 : ℕ))) =
+      I*originWeightedReflection (twistedPotential q) ((Real.exp κ)^(2 : ℕ)) /
+        (2*regularScatteringMatrix q (-((Real.exp κ)^(2 : ℕ))) 1 1) := by
   have hS := regularScatteringMatrix_negative_exp q κ
-  have hd0 : regularScatteringMatrix q (-((Real.exp κ)^2)) 0 0 = reverseTransmission (twistedPotential q) κ := by
+  have hd0 : regularScatteringMatrix q (-((Real.exp κ)^(2 : ℕ))) 0 0 = reverseTransmission (twistedPotential q) κ := by
     rw [hS]
     rfl
-  have hd1 : regularScatteringMatrix q (-((Real.exp κ)^2)) 1 1 = transmission (twistedPotential q) κ := by
+  have hd1 : regularScatteringMatrix q (-((Real.exp κ)^(2 : ℕ))) 1 1 = transmission (twistedPotential q) κ := by
     rw [hS]
     rfl
   have he : (Real.exp κ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.exp_ne_zero κ)
@@ -33,7 +33,7 @@ theorem regularSecondInverseReflection_negative_exp_factor (q : SchwartzMap ℝ 
       regularReflectionCoefficient, originWeightedReflection_exp, hd0]
     rw [hS]
     change (2*I*(Real.exp κ : ℂ)*reflectionAmplitude (twistedPotential q) κ /
-      reverseTransmission (twistedPotential q) κ) / (↑(-((Real.exp κ)^2)) : ℂ)^2 = _
+      reverseTransmission (twistedPotential q) κ) / (↑(-((Real.exp κ)^(2 : ℕ))) : ℂ)^(2 : ℕ) = _
     simp only [Complex.ofReal_neg, Complex.ofReal_pow, neg_sq]
     by_cases ht : reverseTransmission (twistedPotential q) κ = 0
     · simp [ht]
@@ -42,7 +42,7 @@ theorem regularSecondInverseReflection_negative_exp_factor (q : SchwartzMap ℝ 
       regularReverseReflectionCoefficient, originWeightedReflection_exp, hd1]
     rw [hS]
     change ((I*reflectionAmplitude (twistedPotential q) κ/(2*(Real.exp κ : ℂ))) /
-      transmission (twistedPotential q) κ) / (↑(-((Real.exp κ)^2)) : ℂ)^2 = _
+      transmission (twistedPotential q) κ) / (↑(-((Real.exp κ)^(2 : ℕ))) : ℂ)^(2 : ℕ) = _
     simp only [Complex.ofReal_neg, Complex.ofReal_pow, neg_sq]
     by_cases ht : transmission (twistedPotential q) κ = 0
     · simp [ht]
@@ -55,7 +55,7 @@ private theorem regular_second_inverse_negative_factor (q : SchwartzMap ℝ ℂ)
       I*originWeightedReflection (twistedPotential q) z / (2*regularScatteringMatrix q (-z) 1 1) := by
   have hh := regularSecondInverseReflection_negative_exp_factor q (Real.log (Real.sqrt z))
   rw [Real.exp_log (Real.sqrt_pos.mpr hz), Real.sq_sqrt hz.le] at hh
-  have hs : (Real.sqrt z : ℂ)^2 = (z : ℂ) := by exact_mod_cast Real.sq_sqrt hz.le
+  have hs : (Real.sqrt z : ℂ)^(2 : ℕ) = (z : ℂ) := by exact_mod_cast Real.sq_sqrt hz.le
   rwa [hs] at hh
 
 private theorem negative_transmission_tendsto (q : SchwartzMap ℝ ℂ) (i : Fin 2) :

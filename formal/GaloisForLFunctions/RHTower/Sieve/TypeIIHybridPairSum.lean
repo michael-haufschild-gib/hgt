@@ -25,7 +25,7 @@ theorem offdiag_hybrid_correlation_total_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r
     (∑ m₁ ∈ S, ∑ m₂ ∈ S.erase m₁, |b m₁| * |b m₂|
         * ‖∑ d ∈ Finset.Ico P Q,
             maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖)
-      ≤ (∑ m ∈ S, |b m| ^ 2)
+      ≤ (∑ m ∈ S, |b m| ^ (2 : ℕ))
         * (2 * ∑ h ∈ Finset.Icc 1 H, hybridGapCorrBound T r M₀ M₁ P Q h) := by
   classical
   have hterm : ∀ m₁ ∈ S, ∀ m₂ ∈ S.erase m₁,
@@ -55,8 +55,8 @@ theorem pairSum_hybrid_closed_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     (∑ m₁ ∈ Finset.Icc 1 L, ∑ m₂ ∈ Finset.Icc 1 L,
         |b m₁| * |b m₂| * ‖∑ d ∈ Finset.Ico P Q,
           maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖)
-      ≤ ((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
-        + (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
+      ≤ ((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
+        + (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
           * (2 * ∑ h ∈ Finset.Icc 1 H, hybridGapCorrBound T r M₀ M₁ P Q h) := by
   classical
   rw [pair_sum_restrict_eff hA hB hP T r b,
@@ -76,8 +76,8 @@ theorem pairSum_hybrid_block_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     (∑ m₁ ∈ Finset.Icc 1 L, ∑ m₂ ∈ Finset.Icc 1 L,
         |b m₁| * |b m₂| * ‖∑ d ∈ Finset.Ico P Q,
           maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖)
-      ≤ ((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
-        + (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
+      ≤ ((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
+        + (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
           * (2 * ∑ h ∈ Finset.Icc 1 (effGap A B P Q),
               hybridGapCorrBound T r (effLow A Q) (effHigh B P) P Q h) :=
   pairSum_hybrid_closed_le hT hr hA hB hP hQ2P (one_le_effLow A Q) b

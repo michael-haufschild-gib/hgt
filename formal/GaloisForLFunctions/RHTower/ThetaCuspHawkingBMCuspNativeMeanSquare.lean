@@ -12,7 +12,7 @@ noncomputable section
 
 /-- The actual smooth response retains square-integrability in the original native measure. -/
 theorem globalResponse_native_square_integrable (q : XiZeroCopy) (branch : Bool) :
-    Integrable (fun z : UpperHalfPlane => ‖globalResponse q branch z‖^2) measure := by
+    Integrable (fun z : UpperHalfPlane => ‖globalResponse q branch z‖^(2 : ℕ)) measure := by
   have hi := (Lp.memLp (embedding (weakResponse q branch))).integrable_norm_pow
     (by norm_num : (2:ℕ) ≠ 0)
   apply hi.congr
@@ -21,7 +21,7 @@ theorem globalResponse_native_square_integrable (q : XiZeroCopy) (branch : Bool)
 
 /-- The actual horizontal mean square, before taking the square of the mean. -/
 def responseMeanSquare (q : XiZeroCopy) (branch : Bool) (y : ℝ) : ℝ :=
-  ∫ x in Ioc (-1/2:ℝ) (1/2), ‖responsePlanar q branch (point x y)‖^2
+  ∫ x in Ioc (-1/2:ℝ) (1/2), ‖responsePlanar q branch (point x y)‖^(2 : ℕ)
 
 private def normRectangle : Set ℂ := {z | z.re ∈ Icc (-1/2) (1/2) ∧ 2 < z.im}
 
@@ -38,8 +38,8 @@ private theorem normRectangle_subset : normRectangle ⊆ cellChart := by
 /-- Transport of the full original native norm to the literal cusp rectangle
 proves integrability of the horizontal mean-square density. -/
 theorem responseMeanSquare_density_integrable (q : XiZeroCopy) (branch : Bool) :
-    IntegrableOn (fun y : ℝ => responseMeanSquare q branch y/y^2) (Ioi (2:ℝ)) := by
-  let F : ℂ → ℝ := fun z => ‖responsePlanar q branch z‖^2
+    IntegrableOn (fun y : ℝ => responseMeanSquare q branch y/y^(2 : ℕ)) (Ioi (2:ℝ)) := by
+  let F : ℂ → ℝ := fun z => ‖responsePlanar q branch z‖^(2 : ℕ)
   have hi : Integrable (fun z : UpperHalfPlane => F z) measure := by
     simpa only [F,responsePlanar,Function.comp_apply,ofComplex_apply] using
       globalResponse_native_square_integrable q branch
@@ -49,7 +49,7 @@ theorem responseMeanSquare_density_integrable (q : XiZeroCopy) (branch : Bool) :
   have hd : IntegrableOn (fun z => chartDensity z • F z) cellChart :=
     (integrable_withDensity_iff_integrable_smul (show Measurable chartDensity by
       unfold chartDensity; fun_prop)).mp hmap
-  have hrect : IntegrableOn (fun z : ℂ => F z/z.im^2) normRectangle := by
+  have hrect : IntegrableOn (fun z : ℂ => F z/z.im^(2 : ℕ)) normRectangle := by
     apply (hd.mono_set normRectangle_subset).congr_fun
     · intro z hz
       have hp : 0 < z.im := lt_trans (by norm_num) hz.2
@@ -58,13 +58,13 @@ theorem responseMeanSquare_density_integrable (q : XiZeroCopy) (branch : Bool) :
       ring
     · exact (isClosed_Icc.preimage Complex.continuous_re).measurableSet.inter
         (isOpen_lt continuous_const Complex.continuous_im).measurableSet
-  let G : ℝ × ℝ → ℝ := fun xy => F (Complex.measurableEquivRealProd.symm xy)/xy.2^2
+  let G : ℝ × ℝ → ℝ := fun xy => F (Complex.measurableEquivRealProd.symm xy)/xy.2^(2 : ℕ)
   have hG : IntegrableOn G (Icc (-1/2:ℝ) (1/2) ×ˢ Ioi (2:ℝ))
       ((volume : Measure ℝ).prod volume) := by
     rw [← Measure.volume_eq_prod]
     apply (Complex.volume_preserving_equiv_real_prod.integrableOn_comp_preimage
       Complex.measurableEquivRealProd.measurableEmbedding).mp
-    change IntegrableOn (fun z : ℂ => F z/z.im^2) normRectangle
+    change IntegrableOn (fun z : ℂ => F z/z.im^(2 : ℕ)) normRectangle
     exact hrect
   have hp : Integrable G
       ((volume.restrict (Icc (-1/2:ℝ) (1/2))).prod (volume.restrict (Ioi (2:ℝ)))) := by

@@ -63,7 +63,7 @@ def mobiusCriticalUniversalHardyKernel (u v : ℂ) : ℂ :=
 
 /-- Universal completed Fisher boundary column. -/
 def mobiusCriticalUniversalFisherScore (u : ℂ) : ℂ :=
-  2 * u / (1 + u) ^ 2
+  2 * u / (1 + u) ^ (2 : ℕ)
 
 /-- Precritical arithmetic vector packet: complex-damped features followed
 by the completed Fisher tangent. -/
@@ -155,7 +155,7 @@ theorem mobiusCriticalComplexPhaseFisherGram_bottomRight
     (u : Fin n → ℂ) (hu : ∀ i, 0 ≤ (u i).re) :
     mobiusCriticalComplexPhaseFisherGram sigma hsigma u hu
         (Sum.inr ()) (Sum.inr ()) =
-      (‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ 2 : ℂ) := by
+      (‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ (2 : ℕ) : ℂ) := by
   change inner ℂ (infiniteMobiusCriticalFisherTangentLp sigma hsigma)
       (infiniteMobiusCriticalFisherTangentLp sigma hsigma) = _
   exact inner_self_eq_norm_sq_to_K (𝕜 := ℂ)
@@ -265,8 +265,8 @@ theorem mobiusCriticalHardySaturation_quadratic_eq
           (mobiusCriticalUniversalHardyFisherGram
             (mobiusCriticalHardySaturationNodes t))
           (mobiusCriticalHardySaturationCoefficients t)) =
-      ((8 * t ^ 2 * (2 * t + 3) /
-        ((1 + t) ^ 2 * (1 + 2 * t)) : ℝ) : ℂ) := by
+      ((8 * t ^ (2 : ℕ) * (2 * t + 3) /
+        ((1 + t) ^ (2 : ℕ) * (1 + 2 * t)) : ℝ) : ℂ) := by
   have ht0 : t ≠ 0 := ne_of_gt ht
   have ht1 : (1 + t : ℝ) ≠ 0 := by positivity
   have ht2 : (1 + 2 * t : ℝ) ≠ 0 := by positivity
@@ -292,24 +292,24 @@ theorem tendsto_mobiusCriticalHardySaturation_quadratic_zero :
           (mobiusCriticalHardySaturationCoefficients t)))
       (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
   have hformula : Tendsto (fun t : ℝ =>
-      ((8 * t ^ 2 * (2 * t + 3) /
-        ((1 + t) ^ 2 * (1 + 2 * t)) : ℝ) : ℂ))
+      ((8 * t ^ (2 : ℕ) * (2 * t + 3) /
+        ((1 + t) ^ (2 : ℕ) * (1 + 2 * t)) : ℝ) : ℂ))
       (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
     have hn : ContinuousAt (fun t : ℝ =>
-        8 * t ^ 2 * (2 * t + 3)) 0 := by fun_prop
+        8 * t ^ (2 : ℕ) * (2 * t + 3)) 0 := by fun_prop
     have hd : ContinuousAt (fun t : ℝ =>
-        (1 + t) ^ 2 * (1 + 2 * t)) 0 := by fun_prop
+        (1 + t) ^ (2 : ℕ) * (1 + 2 * t)) 0 := by fun_prop
     have hr : ContinuousAt (fun t : ℝ =>
-        8 * t ^ 2 * (2 * t + 3) /
-          ((1 + t) ^ 2 * (1 + 2 * t))) 0 :=
+        8 * t ^ (2 : ℕ) * (2 * t + 3) /
+          ((1 + t) ^ (2 : ℕ) * (1 + 2 * t))) 0 :=
       hn.div hd (by norm_num)
     have hc : ContinuousAt (fun t : ℝ =>
-        ((8 * t ^ 2 * (2 * t + 3) /
-          ((1 + t) ^ 2 * (1 + 2 * t)) : ℝ) : ℂ)) 0 :=
+        ((8 * t ^ (2 : ℕ) * (2 * t + 3) /
+          ((1 + t) ^ (2 : ℕ) * (1 + 2 * t)) : ℝ) : ℂ)) 0 :=
       Complex.continuous_ofReal.continuousAt.comp hr
     change Tendsto (fun t : ℝ =>
-      ((8 * t ^ 2 * (2 * t + 3) /
-        ((1 + t) ^ 2 * (1 + 2 * t)) : ℝ) : ℂ))
+      ((8 * t ^ (2 : ℕ) * (2 * t + 3) /
+        ((1 + t) ^ (2 : ℕ) * (1 + 2 * t)) : ℝ) : ℂ))
       (nhds 0 ⊓ Filter.principal (Ioi 0)) (nhds 0)
     simpa using hc.tendsto.mono_left inf_le_left
   apply hformula.congr'
@@ -357,8 +357,8 @@ theorem mobiusCriticalHardySaturation_budget_quadratic_eq
           (mobiusCriticalUniversalHardyFisherGramWithBudget
             (mobiusCriticalHardySaturationNodes t) budget)
           (mobiusCriticalHardySaturationCoefficients t)) =
-      ((8 * t ^ 2 * (2 * t + 3) /
-          ((1 + t) ^ 2 * (1 + 2 * t)) + budget - 4 : ℝ) : ℂ) := by
+      ((8 * t ^ (2 : ℕ) * (2 * t + 3) /
+          ((1 + t) ^ (2 : ℕ) * (1 + 2 * t)) + budget - 4 : ℝ) : ℂ) := by
   rw [mobiusCriticalHardySaturation_budget_quadratic_eq_four_add,
     mobiusCriticalHardySaturation_quadratic_eq ht]
   push_cast
@@ -515,8 +515,8 @@ theorem mobiusCriticalHardyMassSaturation_quadratic_eq
           (mobiusCriticalUniversalHardyFisherMassPerturbedGram
             (mobiusCriticalHardySaturationNodes t) d)
           (mobiusCriticalHardyMassSaturationCoefficients t d)) =
-      ((8 * t ^ 2 * (2 * t + 3) /
-        ((1 + t) ^ 2 * (1 + 2 * t)) : ℝ) : ℂ) -
+      ((8 * t ^ (2 : ℕ) * (2 * t + 3) /
+        ((1 + t) ^ (2 : ℕ) * (1 + 2 * t)) : ℝ) : ℂ) -
         (Complex.normSq d : ℂ) := by
   have ht0 : t ≠ 0 := ne_of_gt ht
   have ht1 : (1 + t : ℝ) ≠ 0 := by positivity
@@ -673,8 +673,8 @@ theorem mobiusCriticalHardyMassSaturation_budget_quadratic_eq
           (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
             (mobiusCriticalHardySaturationNodes t) d budget)
           (mobiusCriticalHardyMassSaturationCoefficients t d)) =
-      ((8 * t ^ 2 * (2 * t + 3) /
-        ((1 + t) ^ 2 * (1 + 2 * t)) + budget - 4 : ℝ) : ℂ) -
+      ((8 * t ^ (2 : ℕ) * (2 * t + 3) /
+        ((1 + t) ^ (2 : ℕ) * (1 + 2 * t)) + budget - 4 : ℝ) : ℂ) -
         (Complex.normSq d : ℂ) := by
   rw [mobiusCriticalHardyMassSaturation_budget_quadratic_eq_four_add,
     mobiusCriticalHardyMassSaturation_quadratic_eq ht d]

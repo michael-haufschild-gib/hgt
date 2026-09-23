@@ -37,7 +37,7 @@ theorem one_le_abs_rate_sub_above_conductor {T τ L : ℝ} (hT : 16 ≤ T)
   have hτ16 : (16 : ℝ) ≤ τ := le_trans hT hτ.1
   have hbound := gammaHardyPhaseRate_sub_log_conductor_bound hτ0
   have hup : gammaHardyPhaseRate τ
-      ≤ Real.log (τ / (2 * Real.pi)) / 2 + (33 / (16 * τ ^ 2) + Real.pi / (2 * τ)) := by
+      ≤ Real.log (τ / (2 * Real.pi)) / 2 + (33 / (16 * τ ^ (2 : ℕ)) + Real.pi / (2 * τ)) := by
     have := (abs_le.mp hbound).2
     linarith
   -- monotonicity of the conductor logarithm
@@ -48,7 +48,7 @@ theorem one_le_abs_rate_sub_above_conductor {T τ L : ℝ} (hT : 16 ≤ T)
       nlinarith [hτ.2]
     exact Real.log_le_log (by positivity) h1
   -- the error terms
-  have herr1 : 33 / (16 * τ ^ 2) ≤ 1 / 100 := by
+  have herr1 : 33 / (16 * τ ^ (2 : ℕ)) ≤ 1 / 100 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith
   have herr2 : Real.pi / (2 * τ) ≤ 1 / 10 := by
@@ -60,7 +60,7 @@ theorem one_le_abs_rate_sub_above_conductor {T τ L : ℝ} (hT : 16 ≤ T)
   have hlog5 : (1.386 : ℝ) ≤ Real.log 5 := by
     have h4 : Real.log 4 ≤ Real.log 5 := Real.log_le_log (by norm_num) (by norm_num)
     have : Real.log 4 = 2 * Real.log 2 := by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.log_pow]
       push_cast; ring
     linarith [Real.log_two_gt_d9]
   have hlogpi : (1 : ℝ) ≤ Real.log Real.pi := by

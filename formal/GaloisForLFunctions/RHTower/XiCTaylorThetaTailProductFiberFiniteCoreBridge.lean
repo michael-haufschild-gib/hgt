@@ -68,8 +68,8 @@ translated finite core is the joint positive/negative phase packet multiplied by
 character, together with the untouched constant seam. -/
 theorem two_mul_sq_mul_thetaCuspTailSecondCoreAtom_add_eq_twoPhase
     (d : ℕ) (z : ℂ) (x a : ℝ) :
-    2 * (z ^ 2 * thetaCuspTailSecondCoreAtom d z (x + a)) =
-      (z ^ 2 + 1 / 4) *
+    2 * (z ^ (2 : ℕ) * thetaCuspTailSecondCoreAtom d z (x + a)) =
+      (z ^ (2 : ℕ) + 1 / 4) *
           (((finitePositivePhasePolynomial (d + 1) x *
                 finitePositivePhasePolynomial (d + 1) a -
               finitePositivePhaseTranslationTopEdge (d + 1) x a).eval z) +
@@ -86,9 +86,9 @@ with the radial completion term, both mixed phase derivatives, both top edges, a
 still joined.  It is the correct derivative vector to use before taking Hermitian current. -/
 theorem two_mul_sq_mul_thetaCuspTailSecondCoreAtomDerivative_add_eq_twoPhase
     (d : ℕ) (z : ℂ) (x a : ℝ) :
-    2 * (z ^ 2 * thetaCuspTailSecondCoreAtomDerivative d z (x + a) +
+    2 * (z ^ (2 : ℕ) * thetaCuspTailSecondCoreAtomDerivative d z (x + a) +
         2 * z * thetaCuspTailSecondCoreAtom d z (x + a)) =
-      (z ^ 2 + 1 / 4) *
+      (z ^ (2 : ℕ) + 1 / 4) *
           ((finitePositivePhasePolynomial (d + 1) x *
                 finitePositivePhasePolynomial (d + 1) a -
               finitePositivePhaseTranslationTopEdge (d + 1) x a).derivative.eval z +
@@ -109,16 +109,16 @@ theorem two_mul_sq_mul_thetaCuspTailSecondCoreAtomDerivative_add_eq_twoPhase
 
 /-! ## Current cost of the completion monomial -/
 
-/-- **Symmetric Hermitian completion identity.**  Multiplying both value packets by `2*z^2`
+/-- **Symmetric Hermitian completion identity.**  Multiplying both value packets by `2*z^(2 : ℕ)`
 and differentiating that multiplier leaves exactly one radial real-correlation term.  The two
 off-diagonal value packets remain conjugate-paired rather than being bounded separately. -/
 theorem symmetricHermitianCurrent_two_mul_sq_completion
     (z D₁ V₁ D₂ V₂ : ℂ) :
-    (((2 * (z ^ 2 * D₁ + 2 * z * V₁)) *
-          (starRingEnd ℂ) (2 * z ^ 2 * V₂)).im +
-        ((2 * (z ^ 2 * D₂ + 2 * z * V₂)) *
-          (starRingEnd ℂ) (2 * z ^ 2 * V₁)).im) / 2 =
-      4 * Complex.normSq z ^ 2 *
+    (((2 * (z ^ (2 : ℕ) * D₁ + 2 * z * V₁)) *
+          (starRingEnd ℂ) (2 * z ^ (2 : ℕ) * V₂)).im +
+        ((2 * (z ^ (2 : ℕ) * D₂ + 2 * z * V₂)) *
+          (starRingEnd ℂ) (2 * z ^ (2 : ℕ) * V₁)).im) / 2 =
+      4 * Complex.normSq z ^ (2 : ℕ) *
           (((D₁ * (starRingEnd ℂ) V₂).im +
             (D₂ * (starRingEnd ℂ) V₁).im) / 2) -
         8 * Complex.normSq z * z.im *

@@ -18,13 +18,13 @@ noncomputable section
 /-- The reciprocal-mesh and quadratic-height error budget tends to zero. -/
 theorem tendsto_reciprocal_square_grid_budget (N : ℕ) :
     Filter.Tendsto (fun n : ℕ =>
-      Real.sqrt ((((Real.sqrt 3 / 2) ^ 2)⁻¹ * 16) *
-        ((((n + 1 : ℕ) : ℝ)⁻¹) ^ 2)) +
-      Real.sqrt ((((N + 1 : ℝ) / (2 * Real.pi)) ^ 2) *
-        (Real.sqrt 3 / 2 + ((n + 1 : ℕ) : ℝ))⁻¹ ^ 2))
+      Real.sqrt ((((Real.sqrt 3 / 2) ^ (2 : ℕ))⁻¹ * 16) *
+        ((((n + 1 : ℕ) : ℝ)⁻¹) ^ (2 : ℕ))) +
+      Real.sqrt ((((N + 1 : ℝ) / (2 * Real.pi)) ^ (2 : ℕ)) *
+        (Real.sqrt 3 / 2 + ((n + 1 : ℕ) : ℝ))⁻¹ ^ (2 : ℕ)))
       Filter.atTop (nhds 0) := by
-  let C : ℝ := ((Real.sqrt 3 / 2) ^ 2)⁻¹ * 16
-  let D : ℝ := ((N + 1 : ℝ) / (2 * Real.pi)) ^ 2
+  let C : ℝ := ((Real.sqrt 3 / 2) ^ (2 : ℕ))⁻¹ * 16
+  let D : ℝ := ((N + 1 : ℝ) / (2 * Real.pi)) ^ (2 : ℕ)
   let c : ℝ := Real.sqrt 3 / 2
   have hinv : Filter.Tendsto (fun n : ℕ => (((n + 1 : ℕ) : ℝ)⁻¹))
       Filter.atTop (nhds 0) :=
@@ -37,16 +37,16 @@ theorem tendsto_reciprocal_square_grid_budget (N : ℕ) :
   have hshiftInv : Filter.Tendsto (fun n : ℕ =>
       (c + ((n + 1 : ℕ) : ℝ))⁻¹) Filter.atTop (nhds 0) :=
     hshift.inv_tendsto_atTop
-  have hcoreCont : Continuous (fun x : ℝ => Real.sqrt (C * x ^ 2)) :=
+  have hcoreCont : Continuous (fun x : ℝ => Real.sqrt (C * x ^ (2 : ℕ))) :=
     Real.continuous_sqrt.comp (continuous_const.mul (continuous_id.pow 2))
-  have htailCont : Continuous (fun x : ℝ => Real.sqrt (D * x ^ 2)) :=
+  have htailCont : Continuous (fun x : ℝ => Real.sqrt (D * x ^ (2 : ℕ))) :=
     Real.continuous_sqrt.comp (continuous_const.mul (continuous_id.pow 2))
   have hcore : Filter.Tendsto
-      (fun n : ℕ => Real.sqrt (C * (((n + 1 : ℕ) : ℝ)⁻¹) ^ 2))
+      (fun n : ℕ => Real.sqrt (C * (((n + 1 : ℕ) : ℝ)⁻¹) ^ (2 : ℕ)))
       Filter.atTop (nhds 0) := by
     convert (hcoreCont.tendsto 0).comp hinv using 1 <;> simp [Function.comp_def]
   have htail : Filter.Tendsto
-      (fun n : ℕ => Real.sqrt (D * (c + ((n + 1 : ℕ) : ℝ))⁻¹ ^ 2))
+      (fun n : ℕ => Real.sqrt (D * (c + ((n + 1 : ℕ) : ℝ))⁻¹ ^ (2 : ℕ)))
       Filter.atTop (nhds 0) := by
     convert (htailCont.tendsto 0).comp hshiftInv using 1 <;> simp [Function.comp_def]
   simpa [C, D, c] using hcore.add htail
@@ -56,9 +56,9 @@ quadratic cusp height whose combined finite-grid budget is smaller. -/
 theorem exists_reciprocal_grid_budget_lt (N : ℕ) {ε : ℝ} (hε : 0 < ε) :
     ∃ M K : ℕ, 0 < M ∧
       1 ≤ Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹ ∧
-      Real.sqrt (((Real.sqrt 3 / 2) ^ 2)⁻¹ * (16 * ((M : ℝ)⁻¹) ^ 2)) +
-        Real.sqrt ((((N + 1 : ℝ) / (2 * Real.pi)) ^ 2) *
-          (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ 2) < ε := by
+      Real.sqrt (((Real.sqrt 3 / 2) ^ (2 : ℕ))⁻¹ * (16 * ((M : ℝ)⁻¹) ^ (2 : ℕ))) +
+        Real.sqrt ((((N + 1 : ℝ) / (2 * Real.pi)) ^ (2 : ℕ)) *
+          (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ (2 : ℕ)) < ε := by
   obtain ⟨n, hn⟩ := Filter.eventually_atTop.mp
     ((tendsto_reciprocal_square_grid_budget N).eventually (gt_mem_nhds hε))
   refine ⟨n + 1, (n + 1) * (n + 1), Nat.succ_pos n, ?_, ?_⟩

@@ -37,7 +37,7 @@ theorem wardEulerExponentialAtom_add (lambda x y : ℝ) :
 
 theorem wardEulerExponentialAtom_two_mul (lambda x : ℝ) :
     wardEulerExponentialAtom lambda (2 * x) =
-      wardEulerExponentialAtom lambda x ^ 2 := by
+      wardEulerExponentialAtom lambda x ^ (2 : ℕ) := by
   rw [show 2 * x = x + x by ring, wardEulerExponentialAtom_add, pow_two]
 
 /-- Exact atomwise factorization of the cubic mixed difference.  This is the source of positivity

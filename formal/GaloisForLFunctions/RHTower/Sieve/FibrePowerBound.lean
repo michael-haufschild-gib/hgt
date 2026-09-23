@@ -21,7 +21,7 @@ def fibreKernel (T r : ℝ) (A : ℕ) : ℝ := 2500 * Real.sqrt (T * r / (36 * R
 
 /-- The part of the fibre bound proportional to `1/b`. -/
 def fibreTail (T r : ℝ) (B : ℕ) : ℝ :=
-  22 * Real.sqrt (36 * Real.pi * (2 * (B : ℝ)) ^ 3 / (T * r))
+  22 * Real.sqrt (36 * Real.pi * (2 * (B : ℝ)) ^ (3 : ℕ) / (T * r))
 
 theorem fibreKernel_nonneg (T r : ℝ) (A : ℕ) : 0 ≤ fibreKernel T r A := by
   rw [fibreKernel]; positivity
@@ -76,40 +76,40 @@ theorem fibreBound_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {A B b : ℕ} (hA : 
       field_simp
     linarith [hstep, heq]
   have hsecond : 22 * Real.sqrt (36 * Real.pi / (T * (r / b)))
-      * Real.sqrt ((((B - 1) / b + 1 : ℕ) : ℝ) ^ 3) ≤ fibreTail T r B / b := by
-    have hb2 : (0 : ℝ) < (b : ℝ) ^ 2 := by positivity
-    have hkey : ((b : ℝ) * (((B - 1) / b + 1 : ℕ) : ℝ)) ^ 3 ≤ (2 * (B : ℝ)) ^ 3 :=
+      * Real.sqrt ((((B - 1) / b + 1 : ℕ) : ℝ) ^ (3 : ℕ)) ≤ fibreTail T r B / b := by
+    have hb2 : (0 : ℝ) < (b : ℝ) ^ (2 : ℕ) := by positivity
+    have hkey : ((b : ℝ) * (((B - 1) / b + 1 : ℕ) : ℝ)) ^ (3 : ℕ) ≤ (2 * (B : ℝ)) ^ (3 : ℕ) :=
       pow_le_pow_left₀ (by positivity) hhigh 3
-    have harg : 36 * Real.pi / (T * (r / (b : ℝ))) * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ 3
-        ≤ 36 * Real.pi * (2 * (B : ℝ)) ^ 3 / (T * r) / (b : ℝ) ^ 2 := by
-      have e1 : 36 * Real.pi / (T * (r / (b : ℝ))) * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ 3
-          = (36 * Real.pi * (b : ℝ) * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ 3) / (T * r) := by
+    have harg : 36 * Real.pi / (T * (r / (b : ℝ))) * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ (3 : ℕ)
+        ≤ 36 * Real.pi * (2 * (B : ℝ)) ^ (3 : ℕ) / (T * r) / (b : ℝ) ^ (2 : ℕ) := by
+      have e1 : 36 * Real.pi / (T * (r / (b : ℝ))) * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ (3 : ℕ)
+          = (36 * Real.pi * (b : ℝ) * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ (3 : ℕ)) / (T * r) := by
         field_simp
-      have e2 : 36 * Real.pi * (2 * (B : ℝ)) ^ 3 / (T * r) / (b : ℝ) ^ 2
-          = (36 * Real.pi * (2 * (B : ℝ)) ^ 3 / (b : ℝ) ^ 2) / (T * r) := by
+      have e2 : 36 * Real.pi * (2 * (B : ℝ)) ^ (3 : ℕ) / (T * r) / (b : ℝ) ^ (2 : ℕ)
+          = (36 * Real.pi * (2 * (B : ℝ)) ^ (3 : ℕ) / (b : ℝ) ^ (2 : ℕ)) / (T * r) := by
         field_simp
       rw [e1, e2]
-      have hnum : 36 * Real.pi * (b : ℝ) * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ 3
-          ≤ 36 * Real.pi * (2 * (B : ℝ)) ^ 3 / (b : ℝ) ^ 2 := by
+      have hnum : 36 * Real.pi * (b : ℝ) * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ (3 : ℕ)
+          ≤ 36 * Real.pi * (2 * (B : ℝ)) ^ (3 : ℕ) / (b : ℝ) ^ (2 : ℕ) := by
         rw [le_div_iff₀ hb2]
         nlinarith [hkey, hpi]
       exact div_le_div_of_nonneg_right hnum hTr.le
     have hstep : Real.sqrt (36 * Real.pi / (T * (r / (b : ℝ)))
-        * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ 3)
-        ≤ Real.sqrt (36 * Real.pi * (2 * (B : ℝ)) ^ 3 / (T * r) / (b : ℝ) ^ 2) :=
+        * ((((B - 1) / b + 1 : ℕ)) : ℝ) ^ (3 : ℕ))
+        ≤ Real.sqrt (36 * Real.pi * (2 * (B : ℝ)) ^ (3 : ℕ) / (T * r) / (b : ℝ) ^ (2 : ℕ)) :=
       Real.sqrt_le_sqrt harg
     rw [Real.sqrt_div
-      (show (0:ℝ) ≤ 36 * Real.pi * (2 * (B : ℝ)) ^ 3 / (T * r) by positivity) ((b : ℝ) ^ 2),
+      (show (0:ℝ) ≤ 36 * Real.pi * (2 * (B : ℝ)) ^ (3 : ℕ) / (T * r) by positivity) ((b : ℝ) ^ (2 : ℕ)),
       Real.sqrt_sq hb0.le] at hstep
     have hxnn : (0 : ℝ) ≤ 36 * Real.pi / (T * (r / (b : ℝ))) :=
       le_of_lt (div_pos (by positivity) (mul_pos hT (div_pos hr hb0)))
     calc 22 * Real.sqrt (36 * Real.pi / (T * (r / (b : ℝ))))
-            * Real.sqrt ((((B - 1) / b + 1 : ℕ) : ℝ) ^ 3)
+            * Real.sqrt ((((B - 1) / b + 1 : ℕ) : ℝ) ^ (3 : ℕ))
         = 22 * (Real.sqrt (36 * Real.pi / (T * (r / (b : ℝ))))
-            * Real.sqrt ((((B - 1) / b + 1 : ℕ) : ℝ) ^ 3)) := by ring
+            * Real.sqrt ((((B - 1) / b + 1 : ℕ) : ℝ) ^ (3 : ℕ))) := by ring
       _ = 22 * Real.sqrt (36 * Real.pi / (T * (r / (b : ℝ)))
-            * (((B - 1) / b + 1 : ℕ) : ℝ) ^ 3) := by rw [Real.sqrt_mul hxnn]
-      _ ≤ 22 * (Real.sqrt (36 * Real.pi * (2 * (B : ℝ)) ^ 3 / (T * r)) / (b : ℝ)) :=
+            * (((B - 1) / b + 1 : ℕ) : ℝ) ^ (3 : ℕ)) := by rw [Real.sqrt_mul hxnn]
+      _ ≤ 22 * (Real.sqrt (36 * Real.pi * (2 * (B : ℝ)) ^ (3 : ℕ) / (T * r)) / (b : ℝ)) :=
           mul_le_mul_of_nonneg_left hstep (by norm_num : (0:ℝ) ≤ 22)
       _ = fibreTail T r B / b := by rw [fibreTail]; ring
   rw [fibreBound]

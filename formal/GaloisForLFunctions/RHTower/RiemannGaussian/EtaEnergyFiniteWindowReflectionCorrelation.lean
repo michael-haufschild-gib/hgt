@@ -116,8 +116,8 @@ def pairedEtaTopPrefixFiniteCutoffFamilyReflectedOriginalSelfMass
     (rho : NontrivialZetaZero) : ℝ :=
   ∑ j,
     (‖pairedEtaTopPrefixFiniteOriginalChannelTerm
-        (NontrivialZetaZero.conjugatePartner rho) (cutoff j)‖ ^ 2 +
-      ‖pairedEtaTopPrefixFiniteOriginalChannelTerm rho (cutoff j)‖ ^ 2)
+        (NontrivialZetaZero.conjugatePartner rho) (cutoff j)‖ ^ (2 : ℕ) +
+      ‖pairedEtaTopPrefixFiniteOriginalChannelTerm rho (cutoff j)‖ ^ (2 : ℕ))
 
 /-- The two-component same-channel self-mass is the original channel's mass
 at the zero and its reflected partner. -/
@@ -140,9 +140,9 @@ at each zero and its reflected partner. -/
 def pairedEtaTopPrefixFiniteZeroWindowDiagonalReflectedOriginalMass
     {d : Type*} [Fintype d] (cutoff : d → ℕ) (T : ℝ) : ℝ :=
   4 * ∑ rho ∈ spectralZetaZeroWindow T,
-    (analyticZetaZeroMultiplicity rho : ℝ) ^ 2 *
+    (analyticZetaZeroMultiplicity rho : ℝ) ^ (2 : ℕ) *
       pairedEtaTopPrefixFiniteCutoffFamilyReflectedOriginalSelfMass
-        cutoff rho ^ 2
+        cutoff rho ^ (2 : ℕ)
 
 /-- The signed distinct-zero mass expressed through one original-channel
 Gram kernel coupled to its reflected copy. -/
@@ -158,7 +158,7 @@ def pairedEtaTopPrefixFiniteZeroWindowOffDiagonalReflectionCorrelationMass
                 (NontrivialZetaZero.conjugatePartner rho) +
             starRingEnd ℂ
               (pairedEtaTopPrefixFiniteCutoffFamilyOriginalChannelCorrelation
-                cutoff sigma rho))) ^ 2).re
+                cutoff sigma rho))) ^ (2 : ℕ)).re
 
 /-- The same-channel diagonal mass equals its one-channel reflection
 compression. -/

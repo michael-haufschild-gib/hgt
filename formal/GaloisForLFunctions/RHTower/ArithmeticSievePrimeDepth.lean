@@ -141,7 +141,7 @@ private theorem coprimeObservation_two_four_transfer (z : ℂ) (M : ℕ) :
     coprimeObservation (coefficientTransfer 2 4 z) M = 0 := by
   rw [coprimeObservation_coefficientTransfer]
   have hc : M.Coprime 4 ↔ M.Coprime 2 := by
-    simpa only [show (2 : ℕ)^2 = 4 by norm_num] using Nat.coprime_pow_right_iff (by omega : 0<2) M 2
+    simpa only [show (2 : ℕ)^(2 : ℕ) = 4 by norm_num] using Nat.coprime_pow_right_iff (by omega : 0<2) M 2
   change (if M.Coprime 2 then z else 0) - (if M.Coprime 4 then z else 0) = 0
   by_cases h : M.Coprime 2
   · rw [if_pos h, if_pos (hc.mpr h), sub_self]

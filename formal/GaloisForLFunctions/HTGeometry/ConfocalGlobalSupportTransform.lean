@@ -32,7 +32,7 @@ theorem le_liftedConfocalBranch
   · exact le_liftedConfocalBranch_of_snd_lt_radius hq hqR
   · have hRq : R ≤ q.2 := le_of_not_gt hqR
     rw [liftedConfocalBranch]
-    nlinarith [Real.sqrt_nonneg ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))]
+    nlinarith [Real.sqrt_nonneg ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))]
 
 /-- The exact general-radius hypothesis behind projective linearization is only that the proposed
 sublevel lies above the source height. -/
@@ -84,18 +84,18 @@ private theorem liftedConfocalBranch_le_radius_add_two_mul_bound
   have hxneg : -q.1 ≤ q.2 := (neg_le_abs q.1).trans hq
   have hrad := liftedConfocalRadicand_nonneg hq R
   have hrad_le :
-      (R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2) ≤ (R + M) ^ 2 := by
+      (R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)) ≤ (R + M) ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (show 0 ≤ R by positivity) (sub_nonneg.mpr hxneg),
       mul_nonneg (show 0 ≤ R by positivity) (sub_nonneg.mpr hqM),
       sq_nonneg (M - q.2)]
   have hsqrt2 := Real.sq_sqrt hrad
   have hsqrt0 := Real.sqrt_nonneg
-    ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))
+    ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))
   have hRM0 : 0 ≤ R + M := by positivity
   have hsqrt_le :
-      Real.sqrt ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2)) ≤ R + M := by
+      Real.sqrt ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ))) ≤ R + M := by
     nlinarith [sq_nonneg
-      (Real.sqrt ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2)) - (R + M))]
+      (Real.sqrt ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ))) - (R + M))]
   rw [liftedConfocalBranch]
   linarith
 
@@ -147,7 +147,7 @@ theorem confocalEnvelopeDefect_eq_nullSupport_fixedPoint_global
     have hqa : q.2 ≤ G := by
       rw [liftedConfocalBranch] at hqBranch
       nlinarith [Real.sqrt_nonneg
-        ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))]
+        ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))]
     have hqa' : q.2 ≤ R + (G - R) := by linarith
     apply (liftedConfocalBranch_le_add_iff_nullFunctional_le_of_snd_le_add
       (hcone hqS) hR hD0 hqa').mp
@@ -405,7 +405,7 @@ theorem confocalPositiveFixedPoint_eq_envelopeDefect_global
         have hqHeightG : q.2 ≤ G := by
           rw [liftedConfocalBranch] at hqBranch
           nlinarith [Real.sqrt_nonneg
-            ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))]
+            ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))]
         dsimp only [D] at hDe
         linarith
       apply (liftedConfocalBranch_le_add_iff_nullFunctional_le_of_snd_le_add

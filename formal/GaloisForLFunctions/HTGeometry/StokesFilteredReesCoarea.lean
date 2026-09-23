@@ -28,13 +28,13 @@ def cutCharge (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) (edge : Fin e) : 
 /-- Multi-Rees deformation of the positive block energy. -/
 def reesBlockEnergy (d : OrbitCoareaDatum n m e) (parameter : Fin e → ℝ)
     (x : Fin n → ℝ) : ℝ :=
-  ∑ edge, parameter edge * d.cuts.length edge * d.cutCharge x edge ^ 2
+  ∑ edge, parameter edge * d.cuts.length edge * d.cutCharge x edge ^ (2 : ℕ)
 
 /-- Rees-deformed Cartan quadratic form. -/
 def reesCartanQuadratic (d : OrbitCoareaDatum n m e) (parameter : Fin e → ℝ)
     (x : Fin n → ℝ) : ℝ :=
   d.terminalEnergy x + d.reesBlockEnergy parameter x -
-    (d.cuts.root - 1) * d.physicalRank x ^ 2
+    (d.cuts.root - 1) * d.physicalRank x ^ (2 : ℕ)
 
 /-- Associated-graded coordinate of one cut channel. -/
 def gradedChannel (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ)
@@ -44,7 +44,7 @@ def gradedChannel (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ)
 /-- Associated-graded squared norm is exactly block coarea energy. -/
 theorem sum_gradedChannel_sq_eq_blockEnergy
     (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) :
-    (∑ edge, d.gradedChannel x edge ^ 2) = d.blockEnergy x := by
+    (∑ edge, d.gradedChannel x edge ^ (2 : ℕ)) = d.blockEnergy x := by
   simp only [gradedChannel, blockEnergy, cutCharge, mul_pow,
     Real.sq_sqrt (d.cuts.length_pos _).le]
 
@@ -89,7 +89,7 @@ theorem reesBlockEnergy_specialize (d : OrbitCoareaDatum n m e)
     (x : Fin n → ℝ) :
     d.reesBlockEnergy (specialize parameter retained) x =
       ∑ edge ∈ Finset.univ.filter retained,
-        parameter edge * d.cuts.length edge * d.cutCharge x edge ^ 2 := by
+        parameter edge * d.cuts.length edge * d.cutCharge x edge ^ (2 : ℕ) := by
   simp only [reesBlockEnergy, specialize]
   simp_rw [ite_mul, zero_mul]
   rw [Finset.sum_ite]

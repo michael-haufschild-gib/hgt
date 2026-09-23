@@ -44,9 +44,9 @@ theorem averagedMeanSquare_moebius_of_headSmall {hh ω B : ℝ → ℝ}
       4 ≤ x ∧ 1 ≤ hh x ∧ hh x ≤ Real.sqrt x ∧ 1 ≤ ω x ∧ 0 ≤ B x
         ∧ (∫ w in Set.Icc (-(headT₀ x (hh x) (ω x))) (headT₀ x (hh x) (ω x)),
             ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ))
-              (fibreIndex x (hh x)) w‖ ^ 2) ≤ B x)
+              (fibreIndex x (hh x)) w‖ ^ (2 : ℕ)) ≤ B x)
     (hωgrow : Tendsto ω atTop atTop)
-    (hrel : Tendsto (fun x : ℝ => B x / ((⌊Real.sqrt x + hh x⌋₊ : ℕ) : ℝ) ^ 2) atTop (nhds 0)) :
+    (hrel : Tendsto (fun x : ℝ => B x / ((⌊Real.sqrt x + hh x⌋₊ : ℕ) : ℝ) ^ (2 : ℕ)) atTop (nhds 0)) :
     AveragedMeanSquare (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) hh := by
   have hfacts : ∀ᶠ x : ℝ in atTop,
       4 ≤ x ∧ 1 ≤ hh x ∧ hh x ≤ Real.sqrt x ∧ 1 ≤ ω x ∧ 0 ≤ B x
@@ -78,7 +78,7 @@ theorem averagedMeanSquare_moebius_of_headSmall {hh ω B : ℝ → ℝ}
     rw [headT₀]
     nlinarith [hG1, hω1]
   · refine squeeze_zero' (g := fun x : ℝ => 90 / hh x + 60 / ω x
-      + 9 * (B x / ((⌊Real.sqrt x + hh x⌋₊ : ℕ) : ℝ) ^ 2)) ?_ ?_ ?_
+      + 9 * (B x / ((⌊Real.sqrt x + hh x⌋₊ : ℕ) : ℝ) ^ (2 : ℕ))) ?_ ?_ ?_
     · filter_upwards [hdata, hfacts] with x hx hf
       obtain ⟨hx4, hh1, hhx, hω1, hB0, -⟩ := hx
       obtain ⟨-, -, -, -, -, hM0, hlow, hhigh⟩ := hf
@@ -115,7 +115,7 @@ theorem averagedMeanSquare_moebius_of_headSmall {hh ω B : ℝ → ℝ}
       have h2 : Tendsto (fun x : ℝ => (60 : ℝ) / ω x) atTop (nhds 0) :=
         Tendsto.div_atTop tendsto_const_nhds hωgrow
       have h3 : Tendsto (fun x : ℝ =>
-          9 * (B x / ((⌊Real.sqrt x + hh x⌋₊ : ℕ) : ℝ) ^ 2)) atTop (nhds 0) := by
+          9 * (B x / ((⌊Real.sqrt x + hh x⌋₊ : ℕ) : ℝ) ^ (2 : ℕ))) atTop (nhds 0) := by
         have := hrel.const_mul (9 : ℝ)
         simpa using this
       have := (h1.add h2).add h3

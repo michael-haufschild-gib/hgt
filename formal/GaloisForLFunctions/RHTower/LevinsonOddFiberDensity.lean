@@ -117,7 +117,7 @@ def LevinsonMeanSquareGate (R c : ℝ) : Prop :=
     (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
       edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) ∧
     (∫ t in T₁..T₂, ‖levinsonMollifiedDetector ((lam : ℝ) : ℂ) b (Finset.Icc 1 N)
-        ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ (c + ε) * (T₂ - T₁)
+        ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ (c + ε) * (T₂ - T₁)
 
 /-- Sign-correct Levinson gate.  The polar argument uses exactly nonvanishing of `lam` and
 positivity of the detector weight on the selected window; it does not require a negative shift. -/
@@ -138,7 +138,7 @@ def LevinsonMeanSquareGateOfYPos (R c : ℝ) : Prop :=
     (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
       edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) ∧
     (∫ t in T₁..T₂, ‖levinsonMollifiedDetector ((lam : ℝ) : ℂ) b (Finset.Icc 1 N)
-        ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ (c + ε) * (T₂ - T₁)
+        ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ (c + ε) * (T₂ - T₁)
 
 /-- The legacy negative-shift gate supplies the exact positive detector-weight interface. -/
 theorem levinsonMeanSquareGateOfYPos_of_gate {R c : ℝ}
@@ -202,7 +202,7 @@ private theorem levinson_budget_scalar {η R c C K T₁ T₂ Λ S LM LMb σ₀ :
     (hK : 0 < K) (hσ₀ : (1 / 2 - σ₀) * Λ = R) (hσ₀b : σ₀ < 1 / 2)
     (hLM : LM ≤ Real.log c + R * η) (hLMb : LMb ≤ 5 * Λ) (hlogT₂ : Real.log T₂ = Λ) :
     ((T₂ - T₁) / 2 * LM + C + K * (Real.log T₂ + LMb)) / (1 / 2 - σ₀)
-      ≤ (S / (2 * R)) * Real.log c + (S / 2) * η + (C / R) * Λ + (6 * K / R) * Λ ^ 2 := by
+      ≤ (S / (2 * R)) * Real.log c + (S / 2) * η + (C / R) * Λ + (6 * K / R) * Λ ^ (2 : ℕ) := by
   have hRne : R ≠ 0 := ne_of_gt hR
   have hL0 : (0 : ℝ) < T₂ - T₁ := by linarith
   have hLT : T₂ - T₁ ≤ T₂ := by linarith
@@ -229,7 +229,7 @@ private theorem levinson_budget_scalar {η R c C K T₁ T₂ Λ S LM LMb σ₀ :
   have hR1 : R * η * (Λ / R) = η * Λ := by field_simp
   have hexpand : ((T₂ - T₁) / 2 * (Real.log c + R * η) + C + 6 * K * Λ) * (Λ / R)
       = ((T₂ - T₁) * Λ / (2 * R)) * Real.log c + ((T₂ - T₁) * Λ / 2) * η
-        + (C / R) * Λ + (6 * K / R) * Λ ^ 2 := by
+        + (C / R) * Λ + (6 * K / R) * Λ ^ (2 : ℕ) := by
     have hsplit : ((T₂ - T₁) / 2 * (Real.log c + R * η) + C + 6 * K * Λ) * (Λ / R)
         = ((T₂ - T₁) / 2 * Real.log c) * (Λ / R) + ((T₂ - T₁) / 2) * (R * η * (Λ / R))
           + C * (Λ / R) + 6 * K * Λ * (Λ / R) := by ring
@@ -262,10 +262,10 @@ private theorem levinson_window_scalar
     (hmR : mR ≤ (1 / 3 + δ) * NU + 1)
     (hLM : LM ≤ Real.log c + R * η) (hLMb : LMb ≤ 5 * Λ)
     (hΘ : (1 / 2 - η) * S ≤ Θ)
-    (hlower : 4 * Real.pi + cw * Real.log 21 + (cw + C / R) * Λ + (6 * K / R) * Λ ^ 2
+    (hlower : 4 * Real.pi + cw * Real.log 21 + (cw + C / R) * Λ + (6 * K / R) * Λ ^ (2 : ℕ)
       + (6 / 400) * T₂ ≤ η * S)
     (hlogT₂ : Real.log T₂ = Λ) :
-    (mR + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ 2) + cw * Real.log T₁
+    (mR + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ)) + cw * Real.log T₁
       + cw * Real.log T₂
       + ((T₂ - T₁) / 2 * LM + C + K * (Real.log T₂ + LMb)) / (1 / 2 - σ₀) ≤ Θ := by
   have hπ0 : (0 : ℝ) < Real.pi := Real.pi_pos
@@ -293,11 +293,11 @@ private theorem levinson_window_scalar
     linarith [h1, h2]
   have hT₁log : cw * Real.log T₁ ≤ cw * Real.log 21 :=
     mul_le_mul_of_nonneg_left (Real.log_le_log (by linarith) hT₁21) hcw.le
-  have hT₁sq : (T₂ - T₁) * (6 / T₁ ^ 2) ≤ (6 / 400) * T₂ := by
-    have hsq : (400 : ℝ) ≤ T₁ ^ 2 := by nlinarith [hT₁20]
-    have h1 : (6 : ℝ) / T₁ ^ 2 ≤ 6 / 400 :=
+  have hT₁sq : (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ)) ≤ (6 / 400) * T₂ := by
+    have hsq : (400 : ℝ) ≤ T₁ ^ (2 : ℕ) := by nlinarith [hT₁20]
+    have h1 : (6 : ℝ) / T₁ ^ (2 : ℕ) ≤ 6 / 400 :=
       div_le_div_of_nonneg_left (by norm_num) (by norm_num) hsq
-    have hstep : (T₂ - T₁) * (6 / T₁ ^ 2) ≤ (T₂ - T₁) * (6 / 400) :=
+    have hstep : (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ)) ≤ (T₂ - T₁) * (6 / 400) :=
       mul_le_mul_of_nonneg_left h1 hL0.le
     have hstep2 : (T₂ - T₁) * (6 / 400 : ℝ) ≤ T₂ * (6 / 400) :=
       mul_le_mul_of_nonneg_right hLT (by norm_num)
@@ -448,7 +448,7 @@ theorem eventually_oddFiber_ge_of_gate_of_Y_pos {R c δ : ℝ}
     exact hloggate
   have hbracketkey : (1 / 3 + δ) + 20 * η ≤ 1 - Real.log c / R := by
     rw [← hκ, hηdef]; linarith
-  have hlower : 4 * Real.pi + cw * Real.log 21 + (cw + C / R) * Λ + (6 * K / R) * Λ ^ 2
+  have hlower : 4 * Real.pi + cw * Real.log 21 + (cw + C / R) * Λ + (6 * K / R) * Λ ^ (2 : ℕ)
       + (6 / 400) * T₂ ≤ η * S := by
     have h := hA₃ T₂ hT₂A₃
     rw [hSdef, hΛdef]

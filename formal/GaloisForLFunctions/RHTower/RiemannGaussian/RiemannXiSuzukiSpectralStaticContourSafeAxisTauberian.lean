@@ -70,7 +70,7 @@ theorem riemannXiUpperSpectralHeightCumulative_mono
     (fun rho _ _ ↦ zetaUpperSpectralHeightSummand_nonneg rho)
 
 /-- On the imaginary axis the reflected-zero denominator has the elementary
-real-coordinate form `gamma^2 + (y + a)^2`. -/
+real-coordinate form `gamma^(2 : ℕ) + (y + a)^(2 : ℕ)`. -/
 theorem normSq_imaginary_sub_conj_zetaSpectralCoordinate
     (y : ℝ) (rho : NontrivialZetaZero) :
     Complex.normSq
@@ -201,7 +201,7 @@ theorem zetaUpperHeight_div_le_safeAxisPoissonSummand
     rw [if_neg hupper, if_neg hupper, zero_div]
 
 /-- Outside an ordinate radius `r`, one Poisson contribution is bounded by
-`4 y / r^2` times its upper-height contribution. -/
+`4 y / r^(2 : ℕ)` times its upper-height contribution. -/
 theorem zetaUpperSafeAxisPoissonSummand_le_of_ordinate_ge
     {y r : ℝ} (hy : 0 < y) (hr : 0 < r)
     (rho : NontrivialZetaZero)

@@ -9,13 +9,13 @@ import GaloisForLFunctions.RHTower.HorizontalSingletonFiberCharging
 `\zeta` has infinitely many zeros on the critical line, with a logarithmic lower bound for the
 census.  The three moment estimates over a dyadic window `[T, 2T]` —
 
-* `T/4 \le \int Z^2` (first-moment route),
-* `\int Z^4 = O(T(1+\log T)^4)` (Ingham),
+* `T/4 \le \int Z^(2 : ℕ)` (first-moment route),
+* `\int Z^(4 : ℕ) = O(T(1+\log T)^(4 : ℕ))` (Ingham),
 * `\int Z = O(T^{3/4})` (van der Corput on the smooth approximate functional equation),
 
-feed the interpolation inequality `(\int f^2)^3 \le (\int f)^2 (\int f^4)`: a `Z` of constant
+feed the interpolation inequality `(\int f^(2 : ℕ))^(3 : ℕ) \le (\int f)^(2 : ℕ) (\int f^(4 : ℕ))`: a `Z` of constant
 sign on the window would satisfy `\int |Z| = |\int Z|`, which the three estimates contradict once
-`64\,C_E^2 C_F(1+\log T)^4 < \sqrt T`.  Hence `Z` changes sign on every dyadic window beyond an
+`64\,C_E^(2 : ℕ) C_F(1+\log T)^(4 : ℕ) < \sqrt T`.  Hence `Z` changes sign on every dyadic window beyond an
 explicit height, and its zero is a critical-line zero of `\zeta`.
 
 Chaining the windows `4^k M` gives `N_0(T) \ge c\log T`, where `N_0` is the census
@@ -30,7 +30,7 @@ namespace RHTower
 
 noncomputable section
 
-/-- `(1 + log N)^4` is dominated by the fourth root of `N`, with an explicit constant. -/
+/-- `(1 + log N)^(4 : ℕ)` is dominated by the fourth root of `N`, with an explicit constant. -/
 theorem one_add_log_pow_four_le {N : ℝ} (hN : 1 ≤ N) :
     (1 + Real.log N) ^ 4 ≤ 83521 * Real.sqrt (Real.sqrt N) := by
   have hN0 : (0 : ℝ) < N := by linarith

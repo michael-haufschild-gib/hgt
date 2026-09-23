@@ -43,12 +43,12 @@ theorem windingRate_eq (u : ℝ) :
     unfold linePt
     push_cast
     ring
-  have h2 : linePt u * (linePt u - 1) = ((-(1 / 4 + u ^ 2) : ℝ) : ℂ) := by
+  have h2 : linePt u * (linePt u - 1) = ((-(1 / 4 + u ^ (2 : ℕ)) : ℝ) : ℂ) := by
     unfold linePt
     push_cast
-    linear_combination ((u : ℂ)) ^ 2 * Complex.I_sq
-  have h3 : ((2 * u : ℝ) : ℂ) * Complex.I / ((-(1 / 4 + u ^ 2) : ℝ) : ℂ) =
-      ((2 * u / (-(1 / 4 + u ^ 2)) : ℝ) : ℂ) * Complex.I := by
+    linear_combination ((u : ℂ)) ^ (2 : ℕ) * Complex.I_sq
+  have h3 : ((2 * u : ℝ) : ℂ) * Complex.I / ((-(1 / 4 + u ^ (2 : ℕ)) : ℝ) : ℂ) =
+      ((2 * u / (-(1 / 4 + u ^ (2 : ℕ))) : ℝ) : ℂ) * Complex.I := by
     rw [Complex.ofReal_div, div_mul_eq_mul_div]
   have hpolyre : ((2 * linePt u - 1) / (linePt u * (linePt u - 1))).re = 0 := by
     rw [h1, h2, h3, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
@@ -61,7 +61,7 @@ theorem windingRate_eq (u : ℝ) :
 /-- **Explicit winding-rate floor.**  The vertical digamma bound gives
 `windingRate u ≥ (log(u/2π) − 4/u² − π/u)/2` for every positive height. -/
 theorem windingRate_ge {u : ℝ} (hu : 0 < u) :
-    (Real.log (u / (2 * Real.pi)) - (4 / u ^ 2 + Real.pi / u)) / 2 ≤ windingRate u := by
+    (Real.log (u / (2 * Real.pi)) - (4 / u ^ (2 : ℕ) + Real.pi / u)) / 2 ≤ windingRate u := by
   rw [windingRate_eq]
   have harg : (linePt u) / 2 = ((1 / 4 : ℝ) : ℂ) + ((u / 2 : ℝ) : ℂ) * Complex.I := by
     unfold linePt
@@ -69,8 +69,8 @@ theorem windingRate_ge {u : ℝ} (hu : 0 < u) :
     ring
   have h := re_digamma_ge (x := 1 / 4) (y := u / 2) (by norm_num) (by positivity)
   rw [harg]
-  have e1 : 1 / ((u / 2) ^ 2) = 4 / u ^ 2 := by
-    rw [show ((u : ℝ) / 2) ^ 2 = u ^ 2 / 4 from by ring, one_div_div]
+  have e1 : 1 / ((u / 2) ^ (2 : ℕ)) = 4 / u ^ (2 : ℕ) := by
+    rw [show ((u : ℝ) / 2) ^ (2 : ℕ) = u ^ (2 : ℕ) / 4 from by ring, one_div_div]
   have e2 : 2 * (u / 2) = u := by ring
   rw [e1, e2] at h
   have hlog : Real.log (u / (2 * Real.pi)) = Real.log (u / 2) - Real.log Real.pi := by
@@ -82,19 +82,19 @@ theorem windingRate_ge {u : ℝ} (hu : 0 < u) :
 left-endpoint value bounds the whole segment. -/
 theorem windingRate_uIcc_floor {α β : ℝ} (hα : 0 < α) (hαβ : α ≤ β) :
     ∀ u ∈ Set.uIcc α β,
-      (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2 ≤ |windingRate u| := by
+      (Real.log (α / (2 * Real.pi)) - (4 / α ^ (2 : ℕ) + Real.pi / α)) / 2 ≤ |windingRate u| := by
   intro u hu
   rw [Set.uIcc_of_le hαβ] at hu
   have hu0 : 0 < u := lt_of_lt_of_le hα hu.1
   have hmono1 : Real.log (α / (2 * Real.pi)) ≤ Real.log (u / (2 * Real.pi)) :=
     Real.log_le_log (by positivity)
       (div_le_div₀ (by linarith [hu.1] : (0:ℝ) ≤ u) hu.1 (by positivity) le_rfl)
-  have hmono2 : 4 / u ^ 2 ≤ 4 / α ^ 2 :=
+  have hmono2 : 4 / u ^ (2 : ℕ) ≤ 4 / α ^ (2 : ℕ) :=
     div_le_div₀ (by norm_num) le_rfl (by positivity) (by nlinarith [hu.1])
   have hmono3 : Real.pi / u ≤ Real.pi / α :=
     div_le_div₀ Real.pi_pos.le le_rfl hα hu.1
   have h := windingRate_ge hu0
-  have hchain : (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2 ≤
+  have hchain : (Real.log (α / (2 * Real.pi)) - (4 / α ^ (2 : ℕ) + Real.pi / α)) / 2 ≤
       windingRate u := by
     linarith
   exact le_trans hchain (le_abs_self _)
@@ -105,14 +105,14 @@ envelope on `[α, β]` obeys the van der Corput bound with that floor — the re
 decays like the reciprocal logarithm of the height, with no undischarged phase data. -/
 theorem norm_integral_archFactor_line_le_explicit
     {α β M₀ Mim Mp : ℝ} (hα : 0 < α) (hαβ : α ≤ β)
-    (hm : 0 < (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2)
+    (hm : 0 < (Real.log (α / (2 * Real.pi)) - (4 / α ^ (2 : ℕ) + Real.pi / α)) / 2)
     (hM₀ : ∀ u ∈ Set.Icc α β, ‖archFactor (linePt u)‖ ≤ M₀)
     (hMim : ∀ u ∈ Set.Icc α β, ‖archFactor (linePt u)‖ * |(archWinding u).im| ≤ Mim)
     (hMp : ∀ u ∈ Set.Icc α β, |windingRateDeriv u| ≤ Mp) :
     ‖∫ u in α..β, archFactor (linePt u)‖ ≤
-      2 * (M₀ / ((Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2)) +
-      (β - α) * (Mim / ((Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2) +
-        M₀ * Mp / ((Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2) ^ 2) :=
+      2 * (M₀ / ((Real.log (α / (2 * Real.pi)) - (4 / α ^ (2 : ℕ) + Real.pi / α)) / 2)) +
+      (β - α) * (Mim / ((Real.log (α / (2 * Real.pi)) - (4 / α ^ (2 : ℕ) + Real.pi / α)) / 2) +
+        M₀ * Mp / ((Real.log (α / (2 * Real.pi)) - (4 / α ^ (2 : ℕ) + Real.pi / α)) / 2) ^ (2 : ℕ)) :=
   norm_integral_archFactor_line_le_of_winding_floor hαβ hm
     (windingRate_uIcc_floor hα hαβ) hM₀ hMim hMp
 
@@ -122,13 +122,13 @@ namespace RHTower
 
 /-- The winding-floor expression is monotone in the height. -/
 theorem winding_floor_expr_mono {α α' : ℝ} (h0 : 0 < α) (hαα' : α ≤ α') :
-    (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2 ≤
-      (Real.log (α' / (2 * Real.pi)) - (4 / α' ^ 2 + Real.pi / α')) / 2 := by
+    (Real.log (α / (2 * Real.pi)) - (4 / α ^ (2 : ℕ) + Real.pi / α)) / 2 ≤
+      (Real.log (α' / (2 * Real.pi)) - (4 / α' ^ (2 : ℕ) + Real.pi / α')) / 2 := by
   have h0' : 0 < α' := lt_of_lt_of_le h0 hαα'
   have hlog : Real.log (α / (2 * Real.pi)) ≤ Real.log (α' / (2 * Real.pi)) :=
     Real.log_le_log (by positivity)
       (div_le_div₀ h0'.le hαα' (by positivity) le_rfl)
-  have h4 : 4 / α' ^ 2 ≤ 4 / α ^ 2 :=
+  have h4 : 4 / α' ^ (2 : ℕ) ≤ 4 / α ^ (2 : ℕ) :=
     div_le_div₀ (by norm_num) le_rfl (by positivity) (by nlinarith)
   have hπ : Real.pi / α' ≤ Real.pi / α :=
     div_le_div₀ Real.pi_pos.le le_rfl h0 hαα'

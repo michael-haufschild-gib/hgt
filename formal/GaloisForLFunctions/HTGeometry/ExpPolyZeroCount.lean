@@ -122,7 +122,7 @@ theorem card_zeros_degenerate_energy {S : Finset ℂ} {C : ℂ → ℂ} {γ a b 
   have hiter2 : ∀ t, iteratedDeriv 2 f t = fdd t := by
     intro t
     rw [hfdd, iteratedDeriv_succ, iteratedDeriv_one]
-  have hkill : ∀ t : ℝ, fdd t + γ ^ 2 * f t = 0 := by
+  have hkill : ∀ t : ℝ, fdd t + γ ^ (2 : ℕ) * f t = 0 := by
     intro t
     rw [← hiter2 t, sturm_expr_expCombo hreal γ t]
     have hz : ∑ y ∈ S, sturmCoeff C γ y * Complex.exp (y * t) = 0 := by

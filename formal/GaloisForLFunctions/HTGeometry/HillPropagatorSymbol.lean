@@ -61,19 +61,19 @@ theorem max_le_hillSpeedRatio (hcmin : 0 < cmin) (hcpos : ∀ r, 0 < c r) (hclow
 
 theorem abs_hillCos_le_ratio (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t : ℝ) (ξ : E) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t : ℝ) (ξ : E) :
     |hillCos (massiveFreq m c ‖ξ‖) t| ≤ hillSpeedRatio c cmin * Real.exp (K * |t|) := by
   refine (abs_hillCos_massive_le (S := ‖ξ‖) hm hc hcd hcpos hK hC le_rfl t).trans ?_
   exact mul_le_mul_of_nonneg_right (max_le_hillSpeedRatio hcmin hcpos hclow t)
     (le_of_lt (Real.exp_pos _))
 
 theorem abs_hillSin_le_inv (hm : 0 < m) (hc : Continuous c) (hcd : ∀ t, HasDerivAt c (dc t) t)
-    (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t) (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (t : ℝ)
+    (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (t : ℝ)
     (ξ : E) : |hillSin (massiveFreq m c ‖ξ‖) t| ≤ m⁻¹ * Real.exp (K * |t|) := by
   refine (abs_hillSin_massive_le (S := ‖ξ‖) hm hc hcd hcpos hK hC le_rfl t).trans ?_
   have hpos := massiveFreq_pos hm c ‖ξ‖ t
   have hle : m ≤ massiveFreq m c ‖ξ‖ t := by
-    have hsq : m ^ 2 ≤ massiveFreq m c ‖ξ‖ t ^ 2 := by
+    have hsq : m ^ (2 : ℕ) ≤ massiveFreq m c ‖ξ‖ t ^ (2 : ℕ) := by
       rw [massiveFreq_sq hm]
       nlinarith [sq_nonneg (c t * ‖ξ‖)]
     nlinarith [le_of_lt hpos, le_of_lt hm]
@@ -83,7 +83,7 @@ theorem abs_hillSin_le_inv (hm : 0 < m) (hc : Continuous c) (hcd : ∀ t, HasDer
 /-- **The cosine velocity, measured against the sine, is a speed ratio.** -/
 theorem abs_hillCosDeriv_mul_abs_hillSin_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t s : ℝ) (ξ : E) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t s : ℝ) (ξ : E) :
     |hillCosDeriv (massiveFreq m c ‖ξ‖) t| * |hillSin (massiveFreq m c ‖ξ‖) s| ≤
       hillSpeedRatio c cmin * (Real.exp (K * |t|) * Real.exp (K * |s|)) := by
   have hspos := massiveFreq_pos hm c ‖ξ‖ s
@@ -124,7 +124,7 @@ theorem abs_hillCosDeriv_mul_abs_hillSin_le (hm : 0 < m) (hc : Continuous c)
 
 /-- **The propagator symbol is bounded on every window of times, uniformly in the frequency.** -/
 theorem abs_hillPropSymbol_le (hm : 0 < m) (hc : Continuous c) (hcd : ∀ t, HasDerivAt c (dc t) t)
-    (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+    (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t s : ℝ) (ξ : E) :
     |hillPropSymbol m c t s ξ| ≤
       2 * (hillSpeedRatio c cmin * m⁻¹) * (Real.exp (K * |t|) * Real.exp (K * |s|)) := by
@@ -153,13 +153,13 @@ theorem abs_hillPropSymbol_le (hm : 0 < m) (hc : Continuous c) (hcd : ∀ t, Has
 
 /-- **The damped free symbol is bounded on every window of times.** -/
 theorem abs_hillCoscSymbol_le (hm : 0 < m) (hc : Continuous c) (hcd : ∀ t, HasDerivAt c (dc t) t)
-    (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+    (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t : ℝ) (ξ : E) :
     |hillCoscSymbol m c t ξ| ≤ hillSpeedRatio c cmin * m⁻¹ * Real.exp (K * |t|) := by
   have hpos := massiveFreq_pos hm c ‖ξ‖ 0
   have hCt := abs_hillCos_le_ratio (C := C) hm hc hcd hcpos hK hC hcmin hclow t ξ
   have hle : m ≤ massiveFreq m c ‖ξ‖ 0 := by
-    have hsq : m ^ 2 ≤ massiveFreq m c ‖ξ‖ 0 ^ 2 := by
+    have hsq : m ^ (2 : ℕ) ≤ massiveFreq m c ‖ξ‖ 0 ^ (2 : ℕ) := by
       rw [massiveFreq_sq hm]
       nlinarith [sq_nonneg (c 0 * ‖ξ‖)]
     nlinarith [le_of_lt hpos, le_of_lt hm]
@@ -181,11 +181,11 @@ theorem abs_hillCoscSymbol_le (hm : 0 < m) (hc : Continuous c) (hcd : ∀ t, Has
 /-! ## The derivatives in the two times -/
 
 theorem hasDerivAt_hillPropSymbol_time (hm : 0 < m) (hc : Continuous c)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (s : ℝ) (ξ : E) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (s : ℝ) (ξ : E) (t : ℝ) :
     HasDerivAt (fun r : ℝ => hillPropSymbol m c r s ξ)
       (hillPropSymbolTimeDeriv m c t s ξ) t := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC le_rfl r).trans (le_max_right _ _)
   have hcont := continuous_massiveFreq (m := m) hc ‖ξ‖
   have hS := (hasDerivAt_hillSin hcont hM1 hMb t).mul_const (hillCos (massiveFreq m c ‖ξ‖) s)
@@ -193,11 +193,11 @@ theorem hasDerivAt_hillPropSymbol_time (hm : 0 < m) (hc : Continuous c)
   exact hS.sub hCd
 
 theorem hasDerivAt_hillPropSymbol_base (hm : 0 < m) (hc : Continuous c)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (t : ℝ) (ξ : E) (s : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (t : ℝ) (ξ : E) (s : ℝ) :
     HasDerivAt (fun r : ℝ => hillPropSymbol m c t r ξ)
       (hillPropSymbolBaseDeriv m c t s ξ) s := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC le_rfl r).trans (le_max_right _ _)
   have hcont := continuous_massiveFreq (m := m) hc ‖ξ‖
   have hC' := (hasDerivAt_hillCos hcont hM1 hMb s).const_mul (hillSin (massiveFreq m c ‖ξ‖) t)
@@ -205,10 +205,10 @@ theorem hasDerivAt_hillPropSymbol_base (hm : 0 < m) (hc : Continuous c)
   exact hC'.sub hS'
 
 theorem hasDerivAt_hillCoscSymbol (hm : 0 < m) (hc : Continuous c)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (ξ : E) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (ξ : E) (t : ℝ) :
     HasDerivAt (fun r : ℝ => hillCoscSymbol m c r ξ) (hillCoscSymbolDeriv m c t ξ) t := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c ‖ξ‖ r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC le_rfl r).trans (le_max_right _ _)
   have hcont := continuous_massiveFreq (m := m) hc ‖ξ‖
   exact (hasDerivAt_hillCos hcont hM1 hMb t).div_const (massiveFreq m c ‖ξ‖ 0)
@@ -217,7 +217,7 @@ theorem hasDerivAt_hillCoscSymbol (hm : 0 < m) (hc : Continuous c)
 
 theorem abs_hillPropSymbolTimeDeriv_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t s : ℝ) (ξ : E) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t s : ℝ) (ξ : E) :
     |hillPropSymbolTimeDeriv m c t s ξ| ≤
       2 * hillSpeedRatio c cmin * (Real.exp (K * |t|) * Real.exp (K * |s|)) := by
   have hEt : (0 : ℝ) ≤ Real.exp (K * |t|) := le_of_lt (Real.exp_pos _)
@@ -242,7 +242,7 @@ theorem abs_hillPropSymbolTimeDeriv_le (hm : 0 < m) (hc : Continuous c)
 
 theorem abs_hillPropSymbolBaseDeriv_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t s : ℝ) (ξ : E) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (t s : ℝ) (ξ : E) :
     |hillPropSymbolBaseDeriv m c t s ξ| ≤
       2 * hillSpeedRatio c cmin * (Real.exp (K * |t|) * Real.exp (K * |s|)) := by
   have hEt : (0 : ℝ) ≤ Real.exp (K * |t|) := le_of_lt (Real.exp_pos _)
@@ -271,7 +271,7 @@ theorem abs_hillPropSymbolBaseDeriv_le (hm : 0 < m) (hc : Continuous c)
 
 theorem abs_hillCoscSymbolDeriv_le (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (t : ℝ) (ξ : E) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (t : ℝ) (ξ : E) :
     |hillCoscSymbolDeriv m c t ξ| ≤ Real.exp (K * |t|) := by
   have hpos := massiveFreq_pos hm c ‖ξ‖ 0
   have hCd := abs_hillCosDeriv_massive_le (S := ‖ξ‖) hm hc hcd hcpos hK hC le_rfl t
@@ -281,14 +281,14 @@ theorem abs_hillCoscSymbolDeriv_le (hm : 0 < m) (hc : Continuous c)
 
 /-! ## Continuity in the frequency -/
 
-theorem continuous_hillCos_freq (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+theorem continuous_hillCos_freq (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (t : ℝ) : Continuous fun ξ : E => hillCos (massiveFreq m c ‖ξ‖) t := by
   have hfibre : Continuous fun σ : ℝ => hillFlow (massiveFreq m c σ) (1, 0) t :=
     continuous_iff_continuousAt.mpr fun σ₀ =>
       continuousAt_hillFlow_massive_all (C := C) hm hc hC (1, 0) t σ₀
   exact (continuous_fst.comp hfibre).comp continuous_norm
 
-theorem continuous_hillSin_freq (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+theorem continuous_hillSin_freq (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (t : ℝ) : Continuous fun ξ : E => hillSin (massiveFreq m c ‖ξ‖) t := by
   have hfibre : Continuous fun σ : ℝ => hillFlow (massiveFreq m c σ) (0, 1) t :=
     continuous_iff_continuousAt.mpr fun σ₀ =>
@@ -296,7 +296,7 @@ theorem continuous_hillSin_freq (hm : 0 < m) (hc : Continuous c) (hC : ∀ r, c 
   exact (continuous_fst.comp hfibre).comp continuous_norm
 
 theorem continuous_hillPropSymbol_freq (hm : 0 < m) (hc : Continuous c)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (t s : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (t s : ℝ) :
     Continuous fun ξ : E => hillPropSymbol m c t s ξ := by
   have h1 : Continuous fun ξ : E =>
       hillSin (massiveFreq m c ‖ξ‖) t * hillCos (massiveFreq m c ‖ξ‖) s :=
@@ -311,13 +311,13 @@ theorem continuous_hillPropSymbol_freq (hm : 0 < m) (hc : Continuous c)
 theorem continuous_massiveFreq_freq (m : ℝ) (c : ℝ → ℝ) (t : ℝ) :
     Continuous fun ξ : E => massiveFreq m c ‖ξ‖ t := by
   have hscale : Continuous fun σ : ℝ => massiveFreq m c σ t := by
-    show Continuous fun σ : ℝ => Real.sqrt (m ^ 2 + (c t * σ) ^ 2)
+    show Continuous fun σ : ℝ => Real.sqrt (m ^ (2 : ℕ) + (c t * σ) ^ (2 : ℕ))
     exact Real.continuous_sqrt.comp
       (continuous_const.add ((continuous_const.mul continuous_id).pow 2))
   exact hscale.comp continuous_norm
 
 theorem continuous_hillCoscSymbol_freq (hm : 0 < m) (hc : Continuous c)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (t : ℝ) :
     Continuous fun ξ : E => hillCoscSymbol m c t ξ := by
   refine (continuous_hillCos_freq (C := C) hm hc hC t).div
     (continuous_massiveFreq_freq (E := E) m c 0) ?_

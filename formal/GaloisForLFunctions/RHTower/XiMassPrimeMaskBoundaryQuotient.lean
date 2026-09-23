@@ -11,13 +11,13 @@ noncomputable section
 theorem summable_norm_xiMassPrimeSquareCenteredAtom
     {a : ℝ} (ha : 0 < a) {τ : ℂ} (hτ : 0 < τ.re) :
     Summable (fun p : Nat.Primes =>
-      ‖xiMassCenteredPrimeAtom a τ ((p : ℕ) ^ 2)‖) := by
+      ‖xiMassCenteredPrimeAtom a τ ((p : ℕ) ^ (2 : ℕ))‖) := by
   let d : ℝ := a / 2
   have hd : 0 < d := by dsimp only [d]; linarith
   have hda : d < a := by dsimp only [d]; linarith
   have hnorm : Summable (fun p : Nat.Primes =>
       ‖∫ x : ℝ,
-        xiMassBottomPrimeAtomIntegrand a d τ ((p : ℕ) ^ 2) x‖) :=
+        xiMassBottomPrimeAtomIntegrand a d τ ((p : ℕ) ^ (2 : ℕ)) x‖) :=
     Summable.of_nonneg_of_le
       (fun _ => norm_nonneg _)
       (fun _ => norm_integral_le_integral_norm _)
@@ -29,23 +29,23 @@ theorem summable_norm_xiMassPrimeSquareCenteredAtom
 theorem summable_xiMassPrimeSquareCenteredAtom
     {a : ℝ} (ha : 0 < a) {τ : ℂ} (hτ : 0 < τ.re) :
     Summable (fun p : Nat.Primes =>
-      xiMassCenteredPrimeAtom a τ ((p : ℕ) ^ 2)) :=
+      xiMassCenteredPrimeAtom a τ ((p : ℕ) ^ (2 : ℕ))) :=
   summable_norm_iff.mp
     (summable_norm_xiMassPrimeSquareCenteredAtom ha hτ)
 
 theorem xiMassPrimeSqrtMask_mul_centeredAtom_eq_two_mul_squareAtom
     {a : ℝ} (ha : 0 < a) (τ : ℂ) (p : Nat.Primes) :
     xiMassPrimeSqrtMask p * xiMassCenteredPrimeAtom a τ (p : ℕ) =
-      2 * xiMassCenteredPrimeAtom (a / 2) (2 * τ) ((p : ℕ) ^ 2) := by
+      2 * xiMassCenteredPrimeAtom (a / 2) (2 * τ) ((p : ℕ) ^ (2 : ℕ)) := by
   calc
     xiMassPrimeSqrtMask p * xiMassCenteredPrimeAtom a τ (p : ℕ) =
         LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
-            (1 / 2 : ℂ) ((p : ℕ) ^ 2) *
+            (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) *
           stripFourier (xiMassAnalyticTest a τ)
             (Real.log (p : ℕ) : ℂ) :=
       xiMassPrimeSqrtMask_mul_centeredAtom_eq_boundaryTerm a τ p
     _ = 2 * xiMassCenteredPrimeAtom (a / 2) (2 * τ)
-          ((p : ℕ) ^ 2) :=
+          ((p : ℕ) ^ (2 : ℕ)) :=
       xiMassPrimeSqrtBoundaryTerm_eq_two_mul_squareAtom ha τ p
 
 theorem summable_xiMassPrimeSqrtMaskedAtom

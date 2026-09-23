@@ -7,7 +7,7 @@ import Mathlib.Analysis.SpecificLimits.Normed
 
 For a finite packet with positive, distinct nodes, the largest node dominates
 with exponentially small relative error.  This yields the rate
-`k * (M k * M (k + 2) / M (k + 1) ^ 2 - 1) → 0`, which is strong enough to
+`k * (M k * M (k + 2) / M (k + 1) ^ (2 : ℕ) - 1) → 0`, which is strong enough to
 overcome the factorial correction approaching one from below.  Consequently,
 an adjacent Hankel determinant of the repaired sequence is eventually negative.
 -/
@@ -127,7 +127,7 @@ theorem tendsto_normalizedFinitePacketMoment_ratio_error_mul_natCast
       (fun k : ℕ => (k : ℝ) *
         (normalizedFinitePacketMoment c x i₀ k *
               normalizedFinitePacketMoment c x i₀ (k + 2) /
-            normalizedFinitePacketMoment c x i₀ (k + 1) ^ 2 - 1))
+            normalizedFinitePacketMoment c x i₀ (k + 1) ^ (2 : ℕ) - 1))
       atTop (nhds 0) := by
   let A := normalizedFinitePacketMoment c x i₀
   let C := c i₀
@@ -147,7 +147,7 @@ theorem tendsto_normalizedFinitePacketMoment_ratio_error_mul_natCast
     simpa [A, C] using
       tendsto_normalizedFinitePacketMoment_error_mul_natCast c x i₀ 2 hx hmax
   have hnum : Tendsto
-      (fun k : ℕ => (k : ℝ) * (A k * A (k + 2) - A (k + 1) ^ 2))
+      (fun k : ℕ => (k : ℝ) * (A k * A (k + 2) - A (k + 1) ^ (2 : ℕ)))
       atTop (nhds 0) := by
     have hconst : Tendsto (fun _k : ℕ => C) atTop (nhds C) := tendsto_const_nhds
     have hterm0 : Tendsto
@@ -165,21 +165,21 @@ theorem tendsto_normalizedFinitePacketMoment_ratio_error_mul_natCast
     · funext k
       ring
     · norm_num
-  have hden : Tendsto (fun k : ℕ => A (k + 1) ^ 2) atTop (nhds (C ^ 2)) := hA1.pow 2
-  have hCne : C ^ 2 ≠ 0 := pow_ne_zero 2 (hc i₀).ne'
+  have hden : Tendsto (fun k : ℕ => A (k + 1) ^ (2 : ℕ)) atTop (nhds (C ^ (2 : ℕ))) := hA1.pow 2
+  have hCne : C ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (hc i₀).ne'
   have hquot := hnum.div hden hCne
   have hfun :
-      (fun k : ℕ => (k : ℝ) * (A k * A (k + 2) / A (k + 1) ^ 2 - 1)) =
-      fun k : ℕ => ((k : ℝ) * (A k * A (k + 2) - A (k + 1) ^ 2)) /
-        A (k + 1) ^ 2 := by
+      (fun k : ℕ => (k : ℝ) * (A k * A (k + 2) / A (k + 1) ^ (2 : ℕ) - 1)) =
+      fun k : ℕ => ((k : ℝ) * (A k * A (k + 2) - A (k + 1) ^ (2 : ℕ))) /
+        A (k + 1) ^ (2 : ℕ) := by
     funext k
     have hApos : 0 < A (k + 1) :=
       normalizedFinitePacketMoment_pos c x i₀ (k + 1) hc hx
     field_simp [hApos.ne']
   rw [hfun]
   change Tendsto
-    ((fun k : ℕ => (k : ℝ) * (A k * A (k + 2) - A (k + 1) ^ 2)) /
-      fun k : ℕ => A (k + 1) ^ 2) atTop (nhds 0)
+    ((fun k : ℕ => (k : ℝ) * (A k * A (k + 2) - A (k + 1) ^ (2 : ℕ))) /
+      fun k : ℕ => A (k + 1) ^ (2 : ℕ)) atTop (nhds 0)
   simpa only [zero_div] using hquot
 
 theorem eventually_normalizedFinitePacketMoment_factorial_ratio_lt_one
@@ -189,13 +189,13 @@ theorem eventually_normalizedFinitePacketMoment_factorial_ratio_lt_one
     ∀ᶠ k : ℕ in atTop,
       (normalizedFinitePacketMoment c x i₀ k *
               normalizedFinitePacketMoment c x i₀ (k + 2) /
-            normalizedFinitePacketMoment c x i₀ (k + 1) ^ 2) *
+            normalizedFinitePacketMoment c x i₀ (k + 1) ^ (2 : ℕ)) *
           (((2 * k : ℕ) : ℝ) * ((2 * k + 1 : ℕ) : ℝ) /
             (((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ))) < 1 := by
   let ratio : ℕ → ℝ := fun k =>
     normalizedFinitePacketMoment c x i₀ k *
           normalizedFinitePacketMoment c x i₀ (k + 2) /
-        normalizedFinitePacketMoment c x i₀ (k + 1) ^ 2
+        normalizedFinitePacketMoment c x i₀ (k + 1) ^ (2 : ℕ)
   have hrate : Tendsto (fun k : ℕ => (k : ℝ) * (ratio k - 1)) atTop (nhds 0) := by
     simpa [ratio] using
       tendsto_normalizedFinitePacketMoment_ratio_error_mul_natCast c x i₀ hc hx hmax
@@ -234,7 +234,7 @@ theorem eventually_normalizedFinitePacketMoment_weighted_gap
           (normalizedFinitePacketMoment c x i₀ k *
             normalizedFinitePacketMoment c x i₀ (k + 2)) <
         (((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ)) *
-          normalizedFinitePacketMoment c x i₀ (k + 1) ^ 2 := by
+          normalizedFinitePacketMoment c x i₀ (k + 1) ^ (2 : ℕ) := by
   have hratio := eventually_normalizedFinitePacketMoment_factorial_ratio_lt_one
     c x i₀ hc hx hmax
   have hkpos : ∀ᶠ k : ℕ in atTop, 1 ≤ k := eventually_atTop.2 ⟨1, fun _ hk => hk⟩
@@ -250,26 +250,26 @@ theorem eventually_normalizedFinitePacketMoment_weighted_gap
 
 theorem shiftedMomentFunctional_cauchy_schwarz
     {s : ℕ → ℝ}
-    (hshift : ∀ r : Polynomial ℝ, 0 ≤ momentFunctional s (Polynomial.X * r ^ 2))
+    (hshift : ∀ r : Polynomial ℝ, 0 ≤ momentFunctional s (Polynomial.X * r ^ (2 : ℕ)))
     (p q : Polynomial ℝ) :
-    momentFunctional s (Polynomial.X * (p * q)) ^ 2 ≤
-      momentFunctional s (Polynomial.X * p ^ 2) *
-        momentFunctional s (Polynomial.X * q ^ 2) := by
+    momentFunctional s (Polynomial.X * (p * q)) ^ (2 : ℕ) ≤
+      momentFunctional s (Polynomial.X * p ^ (2 : ℕ)) *
+        momentFunctional s (Polynomial.X * q ^ (2 : ℕ)) := by
   have hquad : ∀ t : ℝ,
-      0 ≤ momentFunctional s (Polynomial.X * q ^ 2) * (t * t) +
+      0 ≤ momentFunctional s (Polynomial.X * q ^ (2 : ℕ)) * (t * t) +
         (2 * momentFunctional s (Polynomial.X * (p * q))) * t +
-        momentFunctional s (Polynomial.X * p ^ 2) := by
+        momentFunctional s (Polynomial.X * p ^ (2 : ℕ)) := by
     intro t
-    have hpoly : Polynomial.X * (p + t • q) ^ 2 =
-        Polynomial.X * p ^ 2 +
+    have hpoly : Polynomial.X * (p + t • q) ^ (2 : ℕ) =
+        Polynomial.X * p ^ (2 : ℕ) +
           (2 * t) • (Polynomial.X * (p * q)) +
-          (t ^ 2) • (Polynomial.X * q ^ 2) := by
+          (t ^ (2 : ℕ)) • (Polynomial.X * q ^ (2 : ℕ)) := by
       simp only [Polynomial.smul_eq_C_mul, map_mul, map_pow, map_ofNat]
       ring
-    have heq : momentFunctional s (Polynomial.X * (p + t • q) ^ 2) =
-        momentFunctional s (Polynomial.X * q ^ 2) * (t * t) +
+    have heq : momentFunctional s (Polynomial.X * (p + t • q) ^ (2 : ℕ)) =
+        momentFunctional s (Polynomial.X * q ^ (2 : ℕ)) * (t * t) +
           (2 * momentFunctional s (Polynomial.X * (p * q))) * t +
-          momentFunctional s (Polynomial.X * p ^ 2) := by
+          momentFunctional s (Polynomial.X * p ^ (2 : ℕ)) := by
       rw [hpoly, momentFunctional_add, momentFunctional_add,
         momentFunctional_smul, momentFunctional_smul]
       ring
@@ -282,7 +282,7 @@ theorem shiftedMomentFunctional_cauchy_schwarz
 theorem adjacentHankel_nonneg_of_hasStieltjesMoments
     {s : ℕ → ℝ} {μ : MeasureTheory.Measure ℝ}
     (hrep : HasStieltjesMoments s μ) (k : ℕ) :
-    0 ≤ s k * s (k + 2) - s (k + 1) ^ 2 := by
+    0 ≤ s k * s (k + 2) - s (k + 1) ^ (2 : ℕ) := by
   rcases hrep with ⟨hmom, hsupport⟩
   have hs : ∀ n, s n = ∫ x : ℝ, x ^ n ∂μ := fun n => (hmom n).2.symm
   have hint : ∀ n, MeasureTheory.Integrable (fun x : ℝ => x ^ n) μ :=
@@ -295,18 +295,18 @@ theorem adjacentHankel_nonneg_of_hasStieltjesMoments
       rw [← pow_add, momentFunctional_X_pow]
       congr 1
       omega
-    have hpp : momentFunctional s ((Polynomial.X ^ m) ^ 2) = s (2 * m) := by
+    have hpp : momentFunctional s ((Polynomial.X ^ m) ^ (2 : ℕ)) = s (2 * m) := by
       rw [← pow_mul, momentFunctional_X_pow]
       congr 1
       omega
-    have hqq : momentFunctional s ((Polynomial.X ^ (m + 1)) ^ 2) = s (2 * m + 2) := by
+    have hqq : momentFunctional s ((Polynomial.X ^ (m + 1)) ^ (2 : ℕ)) = s (2 * m + 2) := by
       rw [← pow_mul, momentFunctional_X_pow]
       congr 1
       omega
     rw [hpq, hpp, hqq] at hcs
     convert sub_nonneg.mpr hcs using 1
   · have hshift : ∀ r : Polynomial ℝ,
-        0 ≤ momentFunctional s (Polynomial.X * r ^ 2) :=
+        0 ≤ momentFunctional s (Polynomial.X * r ^ (2 : ℕ)) :=
       momentFunctional_X_mul_sq_nonneg s hs hint hsupport
     have hcs := shiftedMomentFunctional_cauchy_schwarz hshift
       (Polynomial.X ^ m) (Polynomial.X ^ (m + 1))
@@ -317,12 +317,12 @@ theorem adjacentHankel_nonneg_of_hasStieltjesMoments
       congr 1
       omega
     have hpp : momentFunctional s
-        (Polynomial.X * (Polynomial.X ^ m) ^ 2) = s (2 * m + 1) := by
+        (Polynomial.X * (Polynomial.X ^ m) ^ (2 : ℕ)) = s (2 * m + 1) := by
       rw [← pow_mul, ← pow_succ', momentFunctional_X_pow]
       congr 1
       omega
     have hqq : momentFunctional s
-        (Polynomial.X * (Polynomial.X ^ (m + 1)) ^ 2) = s (2 * m + 3) := by
+        (Polynomial.X * (Polynomial.X ^ (m + 1)) ^ (2 : ℕ)) = s (2 * m + 3) := by
       rw [← pow_mul, ← pow_succ', momentFunctional_X_pow]
       congr 1
       omega
@@ -381,7 +381,7 @@ theorem eventually_finitePositivePacketMoment_weighted_gap
           (finitePositivePacketMoment nodes c k *
             finitePositivePacketMoment nodes c (k + 2)) <
         (((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ)) *
-          finitePositivePacketMoment nodes c (k + 1) ^ 2 := by
+          finitePositivePacketMoment nodes c (k + 1) ^ (2 : ℕ) := by
   let i₀ := finitePositivePacketTop nodes hne
   let c' : {x // x ∈ nodes} → ℝ := fun x => c x
   let x' : {x // x ∈ nodes} → ℝ := fun x => (x : ℝ)
@@ -412,7 +412,7 @@ theorem eventually_finitePositivePacketMoment_weighted_gap
     rw [← pow_add]
     congr 1
     omega
-  have hp11 : (R ^ (k + 1)) ^ 2 = R ^ (2 * k + 2) := by
+  have hp11 : (R ^ (k + 1)) ^ (2 : ℕ) = R ^ (2 * k + 2) := by
     rw [← pow_mul]
     congr 1
     omega
@@ -426,10 +426,10 @@ theorem eventually_finitePositivePacketMoment_weighted_gap
       ring
     _ < R ^ (2 * k + 2) *
           ((((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ)) *
-            A (k + 1) ^ 2) := by
+            A (k + 1) ^ (2 : ℕ)) := by
       simpa [A] using hscaled
     _ = (((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ)) *
-          (R ^ (k + 1) * A (k + 1)) ^ 2 := by
+          (R ^ (k + 1) * A (k + 1)) ^ (2 : ℕ) := by
       rw [mul_pow, hp11]
       ring
 
@@ -437,10 +437,10 @@ theorem halfTurnRepaired_det_neg_of_weighted_gap
     (M : ℕ → ℝ) {k : ℕ} (hk : 1 ≤ k)
     (hgap :
       (((2 * k : ℕ) : ℝ) * ((2 * k + 1 : ℕ) : ℝ)) * (M k * M (k + 2)) <
-        (((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ)) * M (k + 1) ^ 2) :
+        (((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ)) * M (k + 1) ^ (2 : ℕ)) :
     M k / (Nat.factorial (2 * k - 1) : ℝ) *
           (M (k + 2) / (Nat.factorial (2 * (k + 2) - 1) : ℝ)) -
-        (M (k + 1) / (Nat.factorial (2 * (k + 1) - 1) : ℝ)) ^ 2 < 0 := by
+        (M (k + 1) / (Nat.factorial (2 * (k + 1) - 1) : ℝ)) ^ (2 : ℕ) < 0 := by
   have hstep0 : Nat.factorial (2 * k) =
       (2 * k) * Nat.factorial (2 * k - 1) := by
     have harg : 2 * k - 1 + 1 = 2 * k := by omega
@@ -466,8 +466,8 @@ theorem halfTurnRepaired_det_neg_of_weighted_gap
   have ha : 0 < a := by dsimp [a]; positivity
   have hscaled := mul_lt_mul_of_pos_left hgap (mul_pos ha (sq_pos_of_pos hF0))
   have hleftEq :
-      (Nat.factorial (2 * k + 1) : ℝ) ^ 2 * (M k * M (k + 2)) =
-        a * (Nat.factorial (2 * k - 1) : ℝ) ^ 2 *
+      (Nat.factorial (2 * k + 1) : ℝ) ^ (2 : ℕ) * (M k * M (k + 2)) =
+        a * (Nat.factorial (2 * k - 1) : ℝ) ^ (2 : ℕ) *
           ((((2 * k : ℕ) : ℝ) * ((2 * k + 1 : ℕ) : ℝ)) *
             (M k * M (k + 2))) := by
     rw [hf1]
@@ -475,24 +475,24 @@ theorem halfTurnRepaired_det_neg_of_weighted_gap
     ring
   have hrightEq :
       ((Nat.factorial (2 * k - 1) : ℝ) *
-          (Nat.factorial (2 * k + 3) : ℝ)) * M (k + 1) ^ 2 =
-        a * (Nat.factorial (2 * k - 1) : ℝ) ^ 2 *
+          (Nat.factorial (2 * k + 3) : ℝ)) * M (k + 1) ^ (2 : ℕ) =
+        a * (Nat.factorial (2 * k - 1) : ℝ) ^ (2 : ℕ) *
           ((((2 * k + 2 : ℕ) : ℝ) * ((2 * k + 3 : ℕ) : ℝ)) *
-            M (k + 1) ^ 2) := by
+            M (k + 1) ^ (2 : ℕ)) := by
     rw [hf2, hf1]
     dsimp [a]
     ring
   have hratioF :
-      (Nat.factorial (2 * k + 1) : ℝ) ^ 2 * (M k * M (k + 2)) <
+      (Nat.factorial (2 * k + 1) : ℝ) ^ (2 : ℕ) * (M k * M (k + 2)) <
         ((Nat.factorial (2 * k - 1) : ℝ) *
-          (Nat.factorial (2 * k + 3) : ℝ)) * M (k + 1) ^ 2 := by
+          (Nat.factorial (2 * k + 3) : ℝ)) * M (k + 1) ^ (2 : ℕ) := by
     rw [hleftEq, hrightEq]
     exact hscaled
   have hdiv :
       (M k * M (k + 2)) /
           ((Nat.factorial (2 * k - 1) : ℝ) *
             (Nat.factorial (2 * k + 3) : ℝ)) <
-        M (k + 1) ^ 2 / (Nat.factorial (2 * k + 1) : ℝ) ^ 2 :=
+        M (k + 1) ^ (2 : ℕ) / (Nat.factorial (2 * k + 1) : ℝ) ^ (2 : ℕ) :=
     (div_lt_div_iff₀ (mul_pos hF0 hF2) (sq_pos_of_pos hF1)).2 (by
       simpa [mul_comm, mul_left_comm, mul_assoc] using hratioF)
   simp only [show 2 * (k + 1) - 1 = 2 * k + 1 by omega,
@@ -500,11 +500,11 @@ theorem halfTurnRepaired_det_neg_of_weighted_gap
   calc
     M k / (Nat.factorial (2 * k - 1) : ℝ) *
           (M (k + 2) / (Nat.factorial (2 * k + 3) : ℝ)) -
-        (M (k + 1) / (Nat.factorial (2 * k + 1) : ℝ)) ^ 2 =
+        (M (k + 1) / (Nat.factorial (2 * k + 1) : ℝ)) ^ (2 : ℕ) =
       (M k * M (k + 2)) /
           ((Nat.factorial (2 * k - 1) : ℝ) *
             (Nat.factorial (2 * k + 3) : ℝ)) -
-        M (k + 1) ^ 2 / (Nat.factorial (2 * k + 1) : ℝ) ^ 2 := by ring
+        M (k + 1) ^ (2 : ℕ) / (Nat.factorial (2 * k + 1) : ℝ) ^ (2 : ℕ) := by ring
     _ < 0 := sub_neg.mpr hdiv
 
 theorem finitePositivePacket_halfTurn_det_eventually_neg
@@ -513,7 +513,7 @@ theorem finitePositivePacket_halfTurn_det_eventually_neg
     ∀ᶠ k : ℕ in atTop,
       halfTurnRepairedPacketMoment nodes c k *
           halfTurnRepairedPacketMoment nodes c (k + 2) -
-        halfTurnRepairedPacketMoment nodes c (k + 1) ^ 2 < 0 := by
+        halfTurnRepairedPacketMoment nodes c (k + 1) ^ (2 : ℕ) < 0 := by
   have hgap := eventually_finitePositivePacketMoment_weighted_gap nodes hne c hc hx
   have hkpos : ∀ᶠ k : ℕ in atTop, 1 ≤ k := eventually_atTop.2 ⟨1, fun _ hk => hk⟩
   filter_upwards [hgap, hkpos] with k hgapk hk
@@ -538,12 +538,12 @@ theorem finitePositivePacket_halfTurn_not_stieltjes
   have hnonneg' : 0 ≤
       halfTurnRepairedPacketMoment nodes c (N + 1) *
           halfTurnRepairedPacketMoment nodes c (N + 3) -
-        halfTurnRepairedPacketMoment nodes c (N + 2) ^ 2 := by
+        halfTurnRepairedPacketMoment nodes c (N + 2) ^ (2 : ℕ) := by
     simpa only [hN2, hN3a] using hnonneg
   have hneg' :
       halfTurnRepairedPacketMoment nodes c (N + 1) *
           halfTurnRepairedPacketMoment nodes c (N + 3) -
-        halfTurnRepairedPacketMoment nodes c (N + 2) ^ 2 < 0 := by
+        halfTurnRepairedPacketMoment nodes c (N + 2) ^ (2 : ℕ) < 0 := by
     simpa only [hN2, hN3b] using hneg
   exact (not_lt_of_ge hnonneg') hneg'
 

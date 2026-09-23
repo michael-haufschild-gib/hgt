@@ -29,7 +29,7 @@ def IsBoolTwoQubitPauliClifford (U : Matrix (Bool × Bool) (Bool × Bool) ℂ) :
 private theorem boolHadamard_conj_Y :
     (boolHadamard : Matrix Bool Bool ℂ) * finiteQubitPauli 1 *
         Matrix.conjTranspose (boolHadamard : Matrix Bool Bool ℂ) = -finiteQubitPauli 1 := by
-  have hsqrt : ((Real.sqrt 2 : ℂ) ^ 2) = 2 := by
+  have hsqrt : ((Real.sqrt 2 : ℂ) ^ (2 : ℕ)) = 2 := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
   ext i j
@@ -41,7 +41,7 @@ private theorem boolHadamard_conj_Y :
 private theorem boolHadamard_conj_Z :
     (boolHadamard : Matrix Bool Bool ℂ) * finiteQubitPauli 2 *
         Matrix.conjTranspose (boolHadamard : Matrix Bool Bool ℂ) = finiteQubitPauli 0 := by
-  have hsqrt : ((Real.sqrt 2 : ℂ) ^ 2) = 2 := by
+  have hsqrt : ((Real.sqrt 2 : ℂ) ^ (2 : ℕ)) = 2 := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
   ext i j

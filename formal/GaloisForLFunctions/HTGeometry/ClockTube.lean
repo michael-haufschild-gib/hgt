@@ -119,7 +119,7 @@ theorem norm_cpartial_le_on_tube {ρ ρ' M : ℝ} (hρ : ρ < ρ') {w : (Fin k �
 theorem norm_cpartial_cpartial_le_on_tube {ρ ρ' M : ℝ} (hρ : ρ < ρ') {w : (Fin k → ℂ) → ℂ}
     (hw : DifferentiableOn ℂ w (tube k ρ')) (hM : ∀ z ∈ tube k ρ', ‖w z‖ ≤ M)
     {z : Fin k → ℂ} (hz : z ∈ tube k ρ) (i : Fin k) :
-    ‖cpartial i (cpartial i w) z‖ ≤ 16 * M / (ρ' - ρ) ^ 2 := by
+    ‖cpartial i (cpartial i w) z‖ ≤ 16 * M / (ρ' - ρ) ^ (2 : ℕ) := by
   have hzt : z ∈ tube k ρ' := tube_mono hρ.le hz
   have hslice : DifferentiableOn ℂ (fun ζ : ℂ => w (Function.update z i ζ)) (imStrip ρ') :=
     differentiableOn_updateSlice hw hzt i

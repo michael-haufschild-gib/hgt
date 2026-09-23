@@ -10,7 +10,7 @@ set_option autoImplicit false
 def nonstationaryMultiplier (x : ℝ) : ℂ := (2-(x:ℂ))/(2+3*(x:ℂ))
 
 theorem nonstationaryMultiplier_hasDerivAt {x : ℝ} (hx : -(1/2) < x) :
-    HasDerivAt nonstationaryMultiplier (-8/(2+3*(x:ℂ))^2) x := by
+    HasDerivAt nonstationaryMultiplier (-8/(2+3*(x:ℂ))^(2 : ℕ)) x := by
   have hb : (2+3*(x:ℂ)) ≠ 0 := by
     exact_mod_cast (show (2+3*x:ℝ) ≠ 0 by linarith)
   have h2 : HasDerivAt (fun z : ℂ => 2-z) (-1) (x:ℂ) := by
@@ -25,7 +25,7 @@ def nonstationaryPrimitiveCore (P : ℂ[X]) (j : ℕ) (w : ℂ) (x : ℝ) : ℂ 
 
 def nonstationaryPrimitiveCoreFirst (P : ℂ[X]) (j : ℕ) (w : ℂ) (x : ℝ) : ℂ :=
   (-powerFirst (-4*w) (2-x)*nonstationaryMultiplier x+
-    power (-4*w) (2-x)*(-8/(2+3*(x:ℂ))^2))*nonstationaryWeight P j x+
+    power (-4*w) (2-x)*(-8/(2+3*(x:ℂ))^(2 : ℕ)))*nonstationaryWeight P j x+
     power (-4*w) (2-x)*nonstationaryMultiplier x*nonstationaryWeightFirst P j x
 
 theorem nonstationaryPrimitiveCore_hasDerivAt (P : ℂ[X]) (j : ℕ) (w : ℂ) {x : ℝ}

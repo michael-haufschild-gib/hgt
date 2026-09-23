@@ -8,7 +8,7 @@ The regularized Herglotz transform of a measure satisfying the Nevanlinna growth
 after normalizing its weighted measure, the value
 
 ```text
-c * (z + (1 + z ^ 2) * C_P z)
+c * (z + (1 + z ^ (2 : ℕ)) * C_P z)
 ```
 
 of an invertible affine rational gauge applied to the Cauchy transform of a probability measure.
@@ -40,19 +40,19 @@ theorem upperEndCoordinateGen_coe :
     (upperEndCoordinateGen : upperEndMeroField) = upperEndCoordinateMero :=
   rfl
 
-/-- The quadratic gauge factor `1 + z ^ 2` is the image of a nonzero coordinate polynomial. -/
+/-- The quadratic gauge factor `1 + z ^ (2 : ℕ)` is the image of a nonzero coordinate polynomial. -/
 theorem one_add_coordinate_sq_eq_poly :
-    (1 : upperEndMeroField) + upperEndCoordinateMero ^ 2 =
-      upperEndPolyToMero (1 + Polynomial.X ^ 2) := by
+    (1 : upperEndMeroField) + upperEndCoordinateMero ^ (2 : ℕ) =
+      upperEndPolyToMero (1 + Polynomial.X ^ (2 : ℕ)) := by
   rw [map_add, map_one, map_pow]
   rfl
 
 /-- The quadratic gauge factor never vanishes in the meromorphic field. -/
 theorem one_add_coordinate_sq_ne_zero :
-    (1 : upperEndMeroField) + upperEndCoordinateMero ^ 2 ≠ 0 := by
+    (1 : upperEndMeroField) + upperEndCoordinateMero ^ (2 : ℕ) ≠ 0 := by
   rw [one_add_coordinate_sq_eq_poly]
   intro hzero
-  have hpoly : (1 + Polynomial.X ^ 2 : Polynomial ℂ) = 0 := by
+  have hpoly : (1 + Polynomial.X ^ (2 : ℕ) : Polynomial ℂ) = 0 := by
     apply upperEndPolyToMero_injective
     rw [hzero, map_zero]
   have hcoeff := congrArg (fun p : Polynomial ℂ => p.coeff 0) hpoly
@@ -60,7 +60,7 @@ theorem one_add_coordinate_sq_ne_zero :
 
 /-- The multiplicative part of the Herglotz normalization gauge. -/
 def herglotzGaugeMultiplier (c : ℂ) : upperEndRationalCoordinateField :=
-  algebraMap ℂ upperEndRationalCoordinateField c * (1 + upperEndCoordinateGen ^ 2)
+  algebraMap ℂ upperEndRationalCoordinateField c * (1 + upperEndCoordinateGen ^ (2 : ℕ))
 
 /-- The additive part of the Herglotz normalization gauge. -/
 def herglotzGaugeShift (c : ℂ) : upperEndRationalCoordinateField :=
@@ -70,7 +70,7 @@ def herglotzGaugeShift (c : ℂ) : upperEndRationalCoordinateField :=
 theorem herglotzGaugeMultiplier_coe (c : ℂ) :
     (herglotzGaugeMultiplier c : upperEndMeroField) =
       algebraMap ℂ upperEndMeroField c *
-        (1 + upperEndCoordinateMero ^ 2) := by
+        (1 + upperEndCoordinateMero ^ (2 : ℕ)) := by
   rw [herglotzGaugeMultiplier]
   push_cast
   rfl
@@ -97,7 +97,7 @@ theorem herglotzGaugeMultiplier_ne_zero {c : ℂ} (hc : c ≠ 0) :
   · exact one_add_coordinate_sq_ne_zero hq0
 
 /-- **Herglotz gauge transfer.**  The normalized Herglotz presentation
-`c * (z + (1 + z ^ 2) * C)` is hypertranscendental over the embedded rational coordinate field
+`c * (z + (1 + z ^ (2 : ℕ)) * C)` is hypertranscendental over the embedded rational coordinate field
 exactly when the underlying Cauchy carrier `C` is.  No analytic hypothesis is used beyond the
 carrier lying in the meromorphic field. -/
 theorem hypertranscendentalOver_herglotzGauge_iff
@@ -105,11 +105,11 @@ theorem hypertranscendentalOver_herglotzGauge_iff
     HypertranscendentalOver upperEndRationalCoordinateField
         (algebraMap ℂ upperEndMeroField c *
           (upperEndCoordinateMero +
-            (1 + upperEndCoordinateMero ^ 2) * C)) ↔
+            (1 + upperEndCoordinateMero ^ (2 : ℕ)) * C)) ↔
       HypertranscendentalOver upperEndRationalCoordinateField C := by
   have hrewrite :
       algebraMap ℂ upperEndMeroField c *
-          (upperEndCoordinateMero + (1 + upperEndCoordinateMero ^ 2) * C) =
+          (upperEndCoordinateMero + (1 + upperEndCoordinateMero ^ (2 : ℕ)) * C) =
         (herglotzGaugeMultiplier c : upperEndMeroField) * C +
           (herglotzGaugeShift c : upperEndMeroField) := by
     rw [herglotzGaugeMultiplier_coe, herglotzGaugeShift_coe]
@@ -125,7 +125,7 @@ theorem hypertranscendentalOver_herglotzGauge_cauchyTransform_iff
     HypertranscendentalOver upperEndRationalCoordinateField
         (algebraMap ℂ upperEndMeroField c *
           (upperEndCoordinateMero +
-            (1 + upperEndCoordinateMero ^ 2) * cauchyTransformUpperEndMero ν)) ↔
+            (1 + upperEndCoordinateMero ^ (2 : ℕ)) * cauchyTransformUpperEndMero ν)) ↔
       HypertranscendentalOver upperEndRationalCoordinateField
         (cauchyTransformUpperEndMero ν) :=
   hypertranscendentalOver_herglotzGauge_iff (cauchyTransformUpperEndMero ν) hc

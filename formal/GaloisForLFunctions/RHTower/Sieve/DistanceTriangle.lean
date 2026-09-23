@@ -42,11 +42,11 @@ theorem distVec_add (f g h : ℕ → ℂ) (P : Finset ℕ) :
 
 /-- Each coordinate of the vector has the right size. -/
 theorem norm_distVec_term_sq {u v : ℂ} (hu : ‖u‖ = 1) (hv : ‖v‖ = 1) {p : ℕ} (hp : 0 < p) :
-    ‖(u - v) / ((Real.sqrt (2 * (p : ℝ)) : ℝ) : ℂ)‖ ^ 2
+    ‖(u - v) / ((Real.sqrt (2 * (p : ℝ)) : ℝ) : ℂ)‖ ^ (2 : ℕ)
       = (1 - (u * (starRingEnd ℂ) v).re) / (p : ℝ) := by
   have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
   have h2p : (0 : ℝ) ≤ 2 * (p : ℝ) := by positivity
-  have hsq : Real.sqrt (2 * (p : ℝ)) ^ 2 = 2 * (p : ℝ) := Real.sq_sqrt h2p
+  have hsq : Real.sqrt (2 * (p : ℝ)) ^ (2 : ℕ) = 2 * (p : ℝ) := Real.sq_sqrt h2p
   rw [norm_div, div_pow, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (Real.sqrt_nonneg _), hsq, one_sub_re_eq_half_normSq hu hv]
   field_simp

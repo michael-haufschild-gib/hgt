@@ -205,14 +205,14 @@ theorem whole_source_resolvent (s chi amp J K w v : ℂ)
     (hs : (2*s).re<w.re) (hplus : 0<(w+v).re) (hminus : 0<(w-v).re) :
     IntervalIntegrable (mixedDensity s chi amp J K w v) volume 0 1 ∧
     IntervalIntegrable (sourceDensity s chi amp J K w v) volume 0 1 ∧
-    (v^2-w^2)*(∫ z in (0:ℝ)..1,mixedDensity s chi amp J K w v z)=
+    (v^(2 : ℕ)-w^(2 : ℕ))*(∫ z in (0:ℝ)..1,mixedDensity s chi amp J K w v z)=
       ∫ z in (0:ℝ)..1,sourceDensity s chi amp J K w v z := by
   have hI := mixedDensity_whole_integrable s chi amp J K w v hw hv hwi hvi hs hplus hminus
   have hS := sourceDensity_whole_integrable s chi amp J K w v hv hvi hplus hminus
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_tendsto (by norm_num : (0:ℝ)<1)
     (fun z hz => mixedBracket_hasDerivAt s chi amp J K w v hwi
       (by linarith [chamber_re_pos hw]) (connection_ne_zero hw) hz)
-    (((hI.const_mul (v^2-w^2)).sub hS).div_const 2)
+    (((hI.const_mul (v^(2 : ℕ)-w^(2 : ℕ))).sub hS).div_const 2)
     (mixedBracket_horizon_limit s chi amp J K w v hw hwi hvi hs hplus hminus)
     (mixedBracket_outer_limit s chi amp J K w v hw hv hwi hs)
   rw [intervalIntegral.integral_div,intervalIntegral.integral_sub (hI.const_mul _) hS,

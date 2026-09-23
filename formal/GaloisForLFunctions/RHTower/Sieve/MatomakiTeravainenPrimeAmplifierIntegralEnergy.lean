@@ -64,7 +64,7 @@ theorem convPow_mtTypeIPrimeCoeff_eq_powFibreOn_card
 theorem one_le_normSq_mtTypeIPrimeRaisedCoeff_of_mem_blockSupport
     {P ell B m : ℕ}
     (hm : m ∈ mtTypeIPrimeRaisedBlockSupportNat P ell B) :
-    (1 : ℝ) ≤ ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ 2 := by
+    (1 : ℝ) ≤ ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ (2 : ℕ) := by
   let m' : ↑(mtTypeIPrimeRaisedBlockSupportNat P ell B) := ⟨m, hm⟩
   let j := mtTypeIPrimeRaisedBlockSupportIndex P ell B m'
   have hj := mtTypeIPrimeRaisedBlockSupportIndex_spec P ell B m'
@@ -99,18 +99,18 @@ theorem card_mtTypeIPrimeRaisedBlockSupportPNat_le_energy
     (P ell B : ℕ) :
     ((mtTypeIPrimeRaisedBlockSupportPNat P ell B).card : ℝ) ≤
       ∑ m ∈ Finset.Ioc B (2 * B),
-        ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ 2 := by
+        ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ (2 : ℕ) := by
   rw [card_mtTypeIPrimeRaisedBlockSupportPNat]
   calc
     ((mtTypeIPrimeRaisedBlockSupportNat P ell B).card : ℝ) =
         ∑ _m ∈ mtTypeIPrimeRaisedBlockSupportNat P ell B, (1 : ℝ) := by
       simp
     _ ≤ ∑ m ∈ mtTypeIPrimeRaisedBlockSupportNat P ell B,
-        ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ 2 := by
+        ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ (2 : ℕ) := by
       exact Finset.sum_le_sum fun m hm =>
         one_le_normSq_mtTypeIPrimeRaisedCoeff_of_mem_blockSupport hm
     _ ≤ ∑ m ∈ Finset.Ioc B (2 * B),
-        ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ 2 := by
+        ‖mtTypeIPrimeRaisedCoeff P ell m‖ ^ (2 : ℕ) := by
       exact Finset.sum_le_sum_of_subset_of_nonneg
         (Finset.filter_subset _ _)
         (fun m _ _ => sq_nonneg _)

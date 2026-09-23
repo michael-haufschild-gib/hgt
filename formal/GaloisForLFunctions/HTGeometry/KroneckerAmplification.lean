@@ -108,7 +108,7 @@ theorem kronecker_one_mem_unitary {U : Matrix d d ℂ} (hU : U ∈ unitary (Matr
       Matrix.one_kronecker_one]
 
 theorem norm_sq_euclideanOfFun {m : Type*} [Fintype m] (f : m → ℂ) :
-    ‖(EuclideanSpace.equiv m ℂ).symm f‖ ^ 2 = ∑ i, ‖f i‖ ^ 2 := by
+    ‖(EuclideanSpace.equiv m ℂ).symm f‖ ^ (2 : ℕ) = ∑ i, ‖f i‖ ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
   rfl
 
@@ -140,28 +140,28 @@ theorem l2_opNorm_kronecker_one_le (A : Matrix d d ℂ) :
     rintro ⟨k, a⟩
     rw [Matrix.ofLp_toEuclideanCLM]
     exact kronecker_one_mulVec A x.ofLp k a
-  have hlhs : ‖Matrix.toEuclideanCLM (𝕜 := ℂ) (A ⊗ₖ (1 : Matrix n n ℂ)) x‖ ^ 2
-      = ∑ a, ‖(EuclideanSpace.equiv d ℂ).symm (A *ᵥ y a)‖ ^ 2 := by
+  have hlhs : ‖Matrix.toEuclideanCLM (𝕜 := ℂ) (A ⊗ₖ (1 : Matrix n n ℂ)) x‖ ^ (2 : ℕ)
+      = ∑ a, ‖(EuclideanSpace.equiv d ℂ).symm (A *ᵥ y a)‖ ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity), Fintype.sum_prod_type,
       Finset.sum_comm]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [norm_sq_euclideanOfFun]
     exact Finset.sum_congr rfl fun k _ => by rw [hval (k, a)]
-  have hrhs : ‖x‖ ^ 2 = ∑ a, ‖(EuclideanSpace.equiv d ℂ).symm (y a)‖ ^ 2 := by
+  have hrhs : ‖x‖ ^ (2 : ℕ) = ∑ a, ‖(EuclideanSpace.equiv d ℂ).symm (y a)‖ ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity), Fintype.sum_prod_type,
       Finset.sum_comm]
     exact Finset.sum_congr rfl fun a _ => (norm_sq_euclideanOfFun (y a)).symm
-  have hbound : ‖Matrix.toEuclideanCLM (𝕜 := ℂ) (A ⊗ₖ (1 : Matrix n n ℂ)) x‖ ^ 2
-      ≤ (‖A‖ * ‖x‖) ^ 2 := by
+  have hbound : ‖Matrix.toEuclideanCLM (𝕜 := ℂ) (A ⊗ₖ (1 : Matrix n n ℂ)) x‖ ^ (2 : ℕ)
+      ≤ (‖A‖ * ‖x‖) ^ (2 : ℕ) := by
     rw [hlhs, mul_pow, hrhs, Finset.mul_sum]
     refine Finset.sum_le_sum fun a _ => ?_
     have hstep := Matrix.l2_opNorm_mulVec A ((EuclideanSpace.equiv d ℂ).symm (y a))
     have hstep' : ‖(EuclideanSpace.equiv d ℂ).symm (A *ᵥ y a)‖
         ≤ ‖A‖ * ‖(EuclideanSpace.equiv d ℂ).symm (y a)‖ := hstep
-    calc ‖(EuclideanSpace.equiv d ℂ).symm (A *ᵥ y a)‖ ^ 2
-        ≤ (‖A‖ * ‖(EuclideanSpace.equiv d ℂ).symm (y a)‖) ^ 2 := by
+    calc ‖(EuclideanSpace.equiv d ℂ).symm (A *ᵥ y a)‖ ^ (2 : ℕ)
+        ≤ (‖A‖ * ‖(EuclideanSpace.equiv d ℂ).symm (y a)‖) ^ (2 : ℕ) := by
           exact pow_le_pow_left₀ (norm_nonneg _) hstep' 2
-      _ = ‖A‖ ^ 2 * ‖(EuclideanSpace.equiv d ℂ).symm (y a)‖ ^ 2 := by ring
+      _ = ‖A‖ ^ (2 : ℕ) * ‖(EuclideanSpace.equiv d ℂ).symm (y a)‖ ^ (2 : ℕ) := by ring
   have hsqrt := Real.sqrt_le_sqrt hbound
   rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (by positivity)] at hsqrt
 

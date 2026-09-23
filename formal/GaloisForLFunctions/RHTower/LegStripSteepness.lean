@@ -37,7 +37,7 @@ theorem self_lt_sinh {x : ℝ} (hx : 0 < x) : x < Real.sinh x := by
   simpa using this
 
 /-- **`csch²(z) < 1/z²` for `z > 0`** — the near-pole envelope: `csch(z) = 1/sinh z < 1/z`. -/
-theorem rcsch_sq_lt_inv_sq {z : ℝ} (hz : 0 < z) : (rcsch z)^2 < (1/z)^2 := by
+theorem rcsch_sq_lt_inv_sq {z : ℝ} (hz : 0 < z) : (rcsch z)^(2 : ℕ) < (1/z)^(2 : ℕ) := by
   have h1 : rcsch z < 1/z := by
     rw [rcsch]; exact one_div_lt_one_div_of_lt hz (self_lt_sinh hz)
   have h0 : 0 < rcsch z := by rw [rcsch]; exact one_div_pos.mpr (sinh_pos_of_pos hz)
@@ -64,7 +64,7 @@ near-pole value `(2/L)²`: writing it as `(rcsch(dist/2)·(dist/2))² · (4/(n·
 theorem tendsto_rescaled_csch_sq_term {dist : ℕ → ℝ} {L : ℝ} (hL : 0 < L)
     (hpos : ∀ᶠ n in atTop, 0 < dist n)
     (hlim : Tendsto (fun n : ℕ => (n : ℝ) * dist n) atTop (𝓝 L)) :
-    Tendsto (fun n : ℕ => (1/(n : ℝ)^2) * (rcsch (dist n / 2))^2) atTop (𝓝 ((2/L)^2)) := by
+    Tendsto (fun n : ℕ => (1/(n : ℝ)^(2 : ℕ)) * (rcsch (dist n / 2))^(2 : ℕ)) atTop (𝓝 ((2/L)^(2 : ℕ))) := by
   -- dist n → 0
   have hdist0 : Tendsto (fun n => dist n) atTop (𝓝 0) := by
     have hm := hlim.mul (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ))
@@ -84,11 +84,11 @@ theorem tendsto_rescaled_csch_sq_term {dist : ℕ → ℝ} {L : ℝ} (hL : 0 < L
     tendsto_self_div_sinh.comp hhalf
   -- 4/(n·dist n)² → 4/L²
   have hpow := hlim.pow 2
-  have hfac2 := (tendsto_const_nhds (x := (4:ℝ))).div hpow (show L^2 ≠ 0 by positivity)
+  have hfac2 := (tendsto_const_nhds (x := (4:ℝ))).div hpow (show L^(2 : ℕ) ≠ 0 by positivity)
   -- product → 1 · 4/L² = (2/L)²
   have hprod := (hfac1.pow 2).mul hfac2
   simp only [one_pow, one_mul] at hprod
-  rw [show ((2:ℝ)/L)^2 = 4/L^2 by rw [div_pow]; norm_num]
+  rw [show ((2:ℝ)/L)^(2 : ℕ) = 4/L^(2 : ℕ) by rw [div_pow]; norm_num]
   refine hprod.congr' ?_
   filter_upwards [eventually_gt_atTop 0, hpos] with n hn hdn
   have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
@@ -102,27 +102,27 @@ theorem tendsto_rescaled_csch_sq_term {dist : ℕ → ℝ} {L : ℝ} (hL : 0 < L
 contribution is bounded by the summable near-pole value `(2/(c(k+½)))²` uniformly in `n`. -/
 theorem rescaled_csch_sq_le {c : ℝ} (hc : 0 < c) (k : ℕ) {n : ℕ} (hn : 0 < n) {d : ℝ}
     (hdpos : 0 < d) (hlb : (c/(n:ℝ))*((k:ℝ)+1/2) ≤ d) :
-    (1/(n:ℝ)^2)*(rcsch (d/2))^2 ≤ (2/(c*((k:ℝ)+1/2)))^2 := by
+    (1/(n:ℝ)^(2 : ℕ))*(rcsch (d/2))^(2 : ℕ) ≤ (2/(c*((k:ℝ)+1/2)))^(2 : ℕ) := by
   have hn0 : (0:ℝ) < n := by exact_mod_cast hn
-  have hcsch : (rcsch (d/2))^2 < (1/(d/2))^2 := rcsch_sq_lt_inv_sq (by positivity)
+  have hcsch : (rcsch (d/2))^(2 : ℕ) < (1/(d/2))^(2 : ℕ) := rcsch_sq_lt_inv_sq (by positivity)
   have hk : (0:ℝ) < c*((k:ℝ)+1/2) := by positivity
   have hcancel : (n:ℝ) * ((c/(n:ℝ))*((k:ℝ)+1/2)) = c*((k:ℝ)+1/2) := by field_simp
   have hnd : c*((k:ℝ)+1/2) ≤ (n:ℝ)*d := by
     have h := mul_le_mul_of_nonneg_left hlb hn0.le
     rwa [hcancel] at h
-  have step1 : (1/(n:ℝ)^2)*(rcsch (d/2))^2 ≤ (1/(n:ℝ)^2)*(1/(d/2))^2 :=
+  have step1 : (1/(n:ℝ)^(2 : ℕ))*(rcsch (d/2))^(2 : ℕ) ≤ (1/(n:ℝ)^(2 : ℕ))*(1/(d/2))^(2 : ℕ) :=
     mul_le_mul_of_nonneg_left hcsch.le (by positivity)
-  have eq1 : (1/(n:ℝ)^2)*(1/(d/2))^2 = (2/((n:ℝ)*d))^2 := by field_simp
-  have step2 : (2/((n:ℝ)*d))^2 ≤ (2/(c*((k:ℝ)+1/2)))^2 := by gcongr
+  have eq1 : (1/(n:ℝ)^(2 : ℕ))*(1/(d/2))^(2 : ℕ) = (2/((n:ℝ)*d))^(2 : ℕ) := by field_simp
+  have step2 : (2/((n:ℝ)*d))^(2 : ℕ) ≤ (2/(c*((k:ℝ)+1/2)))^(2 : ℕ) := by gcongr
   rw [eq1] at step1
   linarith [step1, step2]
 
 /-- The near-pole bound `(2/(c(k+½)))²` is summable, with sum `2π²/c²` (odd Basel): it equals
 `(16/c²)·Σ 1/(2k+1)² = (16/c²)(π²/8)`. -/
 theorem summable_near_pole_bound {c : ℝ} (hc : 0 < c) :
-    Summable (fun k : ℕ => (2/(c*((k:ℝ)+1/2)))^2) := by
-  have hrw : (fun k : ℕ => (2/(c*((k:ℝ)+1/2)))^2)
-      = fun k : ℕ => (16/c^2) * (1/(2*(k:ℝ)+1)^2) := by
+    Summable (fun k : ℕ => (2/(c*((k:ℝ)+1/2)))^(2 : ℕ)) := by
+  have hrw : (fun k : ℕ => (2/(c*((k:ℝ)+1/2)))^(2 : ℕ))
+      = fun k : ℕ => (16/c^(2 : ℕ)) * (1/(2*(k:ℝ)+1)^(2 : ℕ)) := by
     funext k
     have h1 : c ≠ 0 := ne_of_gt hc
     have h2 : ((k:ℝ)+1/2) ≠ 0 := by positivity
@@ -130,13 +130,13 @@ theorem summable_near_pole_bound {c : ℝ} (hc : 0 < c) :
     field_simp
     ring
   rw [hrw]
-  exact (hasSum_odd_basel.summable.mul_left (16/c^2))
+  exact (hasSum_odd_basel.summable.mul_left (16/c^(2 : ℕ)))
 
 /-- The near-pole bound sums to `2π²/c²`. -/
 theorem tsum_near_pole_bound {c : ℝ} (hc : 0 < c) :
-    ∑' k : ℕ, (2/(c*((k:ℝ)+1/2)))^2 = 2*π^2/c^2 := by
-  have hrw : (fun k : ℕ => (2/(c*((k:ℝ)+1/2)))^2)
-      = fun k : ℕ => (16/c^2) * (1/(2*(k:ℝ)+1)^2) := by
+    ∑' k : ℕ, (2/(c*((k:ℝ)+1/2)))^(2 : ℕ) = 2*π^(2 : ℕ)/c^(2 : ℕ) := by
+  have hrw : (fun k : ℕ => (2/(c*((k:ℝ)+1/2)))^(2 : ℕ))
+      = fun k : ℕ => (16/c^(2 : ℕ)) * (1/(2*(k:ℝ)+1)^(2 : ℕ)) := by
     funext k
     have h1 : c ≠ 0 := ne_of_gt hc
     have h2 : ((k:ℝ)+1/2) ≠ 0 := by positivity
@@ -154,8 +154,8 @@ theorem tendsto_rescaled_csch_sq_sum {c : ℝ} (hc : 0 < c) {dist : ℕ → ℕ 
     (hpos : ∀ n k : ℕ, 0 < dist n k)
     (hlb : ∀ n k : ℕ, 0 < n → (c/(n:ℝ))*((k:ℝ)+1/2) ≤ dist n k)
     (hlim : ∀ k : ℕ, Tendsto (fun n : ℕ => (n:ℝ)*dist n k) atTop (𝓝 (c*((k:ℝ)+1/2)))) :
-    Tendsto (fun n : ℕ => ∑' k : ℕ, (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2) atTop
-      (𝓝 (2*π^2/c^2)) := by
+    Tendsto (fun n : ℕ => ∑' k : ℕ, (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ)) atTop
+      (𝓝 (2*π^(2 : ℕ)/c^(2 : ℕ))) := by
   rw [← tsum_near_pole_bound hc]
   apply tendsto_tsum_of_dominated_convergence (summable_near_pole_bound hc)
   · intro k
@@ -273,12 +273,12 @@ theorem tendsto_rescaled_csch_sq_finsum {c : ℝ} (hc : 0 < c) {dist : ℕ → �
     (hpos : ∀ k : ℕ, ∀ᶠ n in atTop, 0 < dist n k)
     (hlb : ∀ n k : ℕ, 0 < n → k < count n → (c/(n:ℝ))*((k:ℝ)+1/2) ≤ dist n k)
     (hlim : ∀ k : ℕ, Tendsto (fun n : ℕ => (n:ℝ)*dist n k) atTop (𝓝 (c*((k:ℝ)+1/2)))) :
-    Tendsto (fun n : ℕ => ∑ k ∈ Finset.range (count n), (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2) atTop
-      (𝓝 (2*π^2/c^2)) := by
+    Tendsto (fun n : ℕ => ∑ k ∈ Finset.range (count n), (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ)) atTop
+      (𝓝 (2*π^(2 : ℕ)/c^(2 : ℕ))) := by
   classical
   rw [← tsum_near_pole_bound hc]
-  have hsumeq : ∀ n : ℕ, (∑ k ∈ Finset.range (count n), (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2)
-      = ∑' k : ℕ, (if k < count n then (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2 else 0) := by
+  have hsumeq : ∀ n : ℕ, (∑ k ∈ Finset.range (count n), (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ))
+      = ∑' k : ℕ, (if k < count n then (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ) else 0) := by
     intro n
     rw [tsum_eq_sum (s := Finset.range (count n))
       (fun k hk => by rw [Finset.mem_range] at hk; simp [hk])]
@@ -286,8 +286,8 @@ theorem tendsto_rescaled_csch_sq_finsum {c : ℝ} (hc : 0 < c) {dist : ℕ → �
   simp_rw [hsumeq]
   apply tendsto_tsum_of_dominated_convergence (summable_near_pole_bound hc)
   · intro k
-    have hev : (fun n : ℕ => (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2)
-        =ᶠ[atTop] (fun n => if k < count n then (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2 else 0) := by
+    have hev : (fun n : ℕ => (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ))
+        =ᶠ[atTop] (fun n => if k < count n then (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ) else 0) := by
       filter_upwards [hcount.eventually_gt_atTop k] with n hn; simp [hn]
     exact (tendsto_rescaled_csch_sq_term (show (0:ℝ) < c*((k:ℝ)+1/2) by positivity)
       (hpos k) (hlim k)).congr' hev
@@ -307,12 +307,12 @@ theorem tendsto_rescaled_csch_sq_finsum_gen {c b : ℝ} (hc : 0 < c) (hb : 0 < b
     (hpos : ∀ k : ℕ, ∀ᶠ n in atTop, 0 < dist n k)
     (hlb : ∀ n k : ℕ, 0 < n → k < count n → (b/(n:ℝ))*((k:ℝ)+1/2) ≤ dist n k)
     (hlim : ∀ k : ℕ, Tendsto (fun n : ℕ => (n:ℝ)*dist n k) atTop (𝓝 (c*((k:ℝ)+1/2)))) :
-    Tendsto (fun n : ℕ => ∑ k ∈ Finset.range (count n), (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2) atTop
-      (𝓝 (2*π^2/c^2)) := by
+    Tendsto (fun n : ℕ => ∑ k ∈ Finset.range (count n), (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ)) atTop
+      (𝓝 (2*π^(2 : ℕ)/c^(2 : ℕ))) := by
   classical
   rw [← tsum_near_pole_bound hc]
-  have hsumeq : ∀ n : ℕ, (∑ k ∈ Finset.range (count n), (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2)
-      = ∑' k : ℕ, (if k < count n then (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2 else 0) := by
+  have hsumeq : ∀ n : ℕ, (∑ k ∈ Finset.range (count n), (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ))
+      = ∑' k : ℕ, (if k < count n then (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ) else 0) := by
     intro n
     rw [tsum_eq_sum (s := Finset.range (count n))
       (fun k hk => by rw [Finset.mem_range] at hk; simp [hk])]
@@ -320,8 +320,8 @@ theorem tendsto_rescaled_csch_sq_finsum_gen {c b : ℝ} (hc : 0 < c) (hb : 0 < b
   simp_rw [hsumeq]
   apply tendsto_tsum_of_dominated_convergence (summable_near_pole_bound hb)
   · intro k
-    have hev : (fun n : ℕ => (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2)
-        =ᶠ[atTop] (fun n => if k < count n then (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2 else 0) := by
+    have hev : (fun n : ℕ => (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ))
+        =ᶠ[atTop] (fun n => if k < count n then (1/(n:ℝ)^(2 : ℕ))*(rcsch (dist n k /2))^(2 : ℕ) else 0) := by
       filter_upwards [hcount.eventually_gt_atTop k] with n hn; simp [hn]
     exact (tendsto_rescaled_csch_sq_term (show (0:ℝ) < c*((k:ℝ)+1/2) by positivity)
       (hpos k) (hlim k)).congr' hev
@@ -339,8 +339,8 @@ finite-sum Tannery limit, the near-pole distance limit `tendsto_behind_dist`, an
 `behind_dist_lb`. -/
 theorem behind_csch_sum_tendsto {c : ℝ} (hc : 0 < c) :
     Tendsto (fun n : ℕ => ∑ k ∈ Finset.range n,
-        (1/(n:ℝ)^2) * (rcsch ((c/(2*(n:ℝ)) + c*∑ j ∈ Finset.range k, 1/((n:ℝ)-1-(j:ℝ)))/2))^2)
-      atTop (𝓝 (2*π^2/c^2)) := by
+        (1/(n:ℝ)^(2 : ℕ)) * (rcsch ((c/(2*(n:ℝ)) + c*∑ j ∈ Finset.range k, 1/((n:ℝ)-1-(j:ℝ)))/2))^(2 : ℕ))
+      atTop (𝓝 (2*π^(2 : ℕ)/c^(2 : ℕ))) := by
   exact tendsto_rescaled_csch_sq_finsum hc (fun n => n) tendsto_id
     (fun k => by
       filter_upwards [eventually_ge_atTop (k+1)] with n hn
@@ -435,8 +435,8 @@ exact distances `adist_n(k) = c/(2n) + c·Σ_{j<k}1/(n+1+j)` (the `n` nearest ah
 constant `c/2`) + `tendsto_ahead_dist` + `ahead_dist_lb`. -/
 theorem ahead_csch_sum_tendsto {c : ℝ} (hc : 0 < c) :
     Tendsto (fun n : ℕ => ∑ k ∈ Finset.range n,
-        (1/(n:ℝ)^2) * (rcsch ((c/(2*(n:ℝ)) + c*∑ j ∈ Finset.range k, 1/((n:ℝ)+1+(j:ℝ)))/2))^2)
-      atTop (𝓝 (2*π^2/c^2)) := by
+        (1/(n:ℝ)^(2 : ℕ)) * (rcsch ((c/(2*(n:ℝ)) + c*∑ j ∈ Finset.range k, 1/((n:ℝ)+1+(j:ℝ)))/2))^(2 : ℕ))
+      atTop (𝓝 (2*π^(2 : ℕ)/c^(2 : ℕ))) := by
   exact tendsto_rescaled_csch_sq_finsum_gen hc (by positivity : (0:ℝ) < c/2) (fun n => n) tendsto_id
     (fun k => by
       filter_upwards [eventually_ge_atTop (k+1)] with n hn

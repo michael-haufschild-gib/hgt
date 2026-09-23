@@ -89,7 +89,7 @@ variable (N : ℕ) {lam : ℝ}
 
 /-- The exact scalar potential of each original Fourier mode. -/
 def modalPotential (n : ℤ) (y : ℝ) : ℂ :=
-  ((signedFrequency (N+1:ℕ) n ^ 2 - lam / y^2 : ℝ) : ℂ)
+  ((signedFrequency (N+1:ℕ) n ^ (2 : ℕ) - lam / y^(2 : ℕ) : ℝ) : ℂ)
 
 /-- The defining Maass equation in the coefficient form used by Cauchy uniqueness. -/
 theorem maassCoefficient_second_eq (n : ℤ) {y : ℝ} (hy : 0 < y) :
@@ -220,22 +220,22 @@ variable (mu : Ioo (0:ℝ) (1/4))
 
 /-- Every actual exceptional Maass cusp tail has strictly positive hyperbolic mass. -/
 theorem hyperbolic_tail_mass_pos {Y : ℝ} (hY : 0 < Y) :
-    0 < ∫ y in Ioi Y, mass N g y / y^2 := by
-  have hn : 0 ≤ᵐ[volume.restrict (Ioi Y)] (fun y => mass N g y / y^2) := by
+    0 < ∫ y in Ioi Y, mass N g y / y^(2 : ℕ) := by
+  have hn : 0 ≤ᵐ[volume.restrict (Ioi Y)] (fun y => mass N g y / y^(2 : ℕ)) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
     exact div_nonneg (mass_nonneg N g (hY.trans hy)) (sq_nonneg _)
   have hp := integral_nonneg_of_ae hn
   apply lt_of_le_of_ne hp
   intro he
   have hz := (integral_eq_zero_iff_of_nonneg_ae hn (hyperbolicMass_tail_integrable N mu g hY)).mp he.symm
-  have hc : ContinuousOn (fun y => mass N g y / y^2) (Ioi Y) := by
+  have hc : ContinuousOn (fun y => mass N g y / y^(2 : ℕ)) (Ioi Y) := by
     intro y hy
     exact ((mass_hasDerivAt N g (hY.trans hy)).continuousAt.div
       (continuousAt_id.pow 2) (pow_ne_zero 2 (hY.trans hy).ne')).continuousWithinAt
   have hall := MeasureTheory.Measure.eqOn_open_of_ae_eq hz isOpen_Ioi hc continuousOn_const
   obtain ⟨y,hy,hm⟩ := exists_mass_pos_in_height_band N g (a:=Y) (b:=Y+1) hY (by linarith)
   have hzero := hall hy.1
-  have hgt : 0 < mass N g y / y^2 := div_pos hm (sq_pos_of_pos (hY.trans hy.1))
+  have hgt : 0 < mass N g y / y^(2 : ℕ) := div_pos hm (sq_pos_of_pos (hY.trans hy.1))
   simp only [hzero,Pi.zero_apply,lt_self_iff_false] at hgt
 
 /-- Original spectral tail mass and nonnegative Bessel squares rule out a whole zero horizontal slice. -/

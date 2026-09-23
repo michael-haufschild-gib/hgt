@@ -20,14 +20,14 @@ probability `1 − p` and `y₂ = 1 + v/a` with probability `p = a²/(v + a²)` 
 moment `1 + v`, and Jensen gap `log(E Y) − E log Y < ε` once `a` is small. -/
 theorem exists_twoPoint_mean_one_variance_jensen_gap_lt {v ε : ℝ} (hv : 0 < v) (hε : 0 < ε) :
     ∃ p y₁ y₂ : ℝ, 0 < p ∧ p < 1 ∧ 0 < y₁ ∧ 0 < y₂ ∧
-      (1 - p) * y₁ + p * y₂ = 1 ∧ (1 - p) * y₁ ^ 2 + p * y₂ ^ 2 = 1 + v ∧
+      (1 - p) * y₁ + p * y₂ = 1 ∧ (1 - p) * y₁ ^ (2 : ℕ) + p * y₂ ^ (2 : ℕ) = 1 + v ∧
       Real.log ((1 - p) * y₁ + p * y₂) - ((1 - p) * Real.log y₁ + p * Real.log y₂) < ε := by
   set a : ℝ := min (1 / 4) (ε / 4) with ha
   have ha0 : 0 < a := lt_min (by norm_num) (by linarith)
   have ha1 : a ≤ 1 / 4 := min_le_left _ _
   have haε : a ≤ ε / 4 := min_le_right _ _
-  have hva : 0 < v + a ^ 2 := by positivity
-  set p : ℝ := a ^ 2 / (v + a ^ 2) with hp
+  have hva : 0 < v + a ^ (2 : ℕ) := by positivity
+  set p : ℝ := a ^ (2 : ℕ) / (v + a ^ (2 : ℕ)) with hp
   have hp0 : 0 < p := by positivity
   have hp1 : p < 1 := by
     rw [hp, div_lt_one hva]

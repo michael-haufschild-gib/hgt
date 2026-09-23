@@ -10,7 +10,7 @@ the infinitesimal Pascal death rate and undo the uniformly invertible Gamma sewi
 critical half-aperture, the resulting geometric ray is then acted on by unilateral valuation
 adjacency.  Every positive depth is recovered from its two neighbours.  At depth zero the unique
 missing predecessor is supplied exactly by the Gamma-coupled vacuum coordinate, with rational
-gauge `p^2 / (p^2 - 1)` lying in `[1, 4/3]`.
+gauge `p^(2 : ℕ) / (p^(2 : ℕ) - 1)` lying in `[1, 4/3]`.
 
 The half-aperture is rigid: self-reproduction under the same Jacobi adjacency at just the first
 two depths forces the aperture to equal `1/2`.  Thus the central exponent is selected by the

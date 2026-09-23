@@ -14,14 +14,14 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAMiddleQuadraticShift (τ φ : ℝ) : ℝ :=
-  (egbFixedChargeAMiddleMeanRatio τ φ - 1) / egbCoexistenceASymmetricRatio τ ^ 2
+  (egbFixedChargeAMiddleMeanRatio τ φ - 1) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)
 
 theorem egbFixedChargeAMiddleQuadraticShift_critical_limit (φ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAMiddleQuadraticShift τ φ) atBot (𝓝 (egbFixedChargeAMiddleMeanCorrection φ)) :=
   egbFixedChargeAMiddleMeanRatio_quadratic_limit φ
 
 theorem egbFixedChargeAMiddleQuadraticShift_cross (τ φ : ℝ) :
-    egbCoexistenceASymmetricRatio τ ^ 2 * egbFixedChargeAMiddleQuadraticShift τ φ = egbFixedChargeAMiddleMeanRatio τ φ - 1 := by
+    egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * egbFixedChargeAMiddleQuadraticShift τ φ = egbFixedChargeAMiddleMeanRatio τ φ - 1 := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   unfold egbFixedChargeAMiddleQuadraticShift
   field_simp
@@ -50,7 +50,7 @@ theorem egbFixedChargeAMiddleQuadraticShift_eventually_bounds (φ : ℝ) :
 
 theorem egbFixedChargeAMiddleRadius_quadratic_displacement (w φ τ : ℝ) :
     egbFixedChargeAMiddleRadius w φ τ - egbFixedChargeAMeanRadius w φ τ =
-      egbFixedChargeAMeanRadius w φ τ * egbCoexistenceASymmetricRatio τ ^ 2 * egbFixedChargeAMiddleQuadraticShift τ φ := by
+      egbFixedChargeAMeanRadius w φ τ * egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * egbFixedChargeAMiddleQuadraticShift τ φ := by
   rw [egbFixedChargeAMiddleRadius_mean_formula]
   have h := egbFixedChargeAMiddleQuadraticShift_cross τ φ
   nlinarith only [congrArg (fun x : ℝ => egbFixedChargeAMeanRadius w φ τ * x) h]

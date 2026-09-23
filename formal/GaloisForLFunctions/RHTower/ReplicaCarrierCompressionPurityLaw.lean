@@ -31,8 +31,8 @@ theorem finiteCoordinateCovarianceCollision_le_of_injective
     (μ : Measure X) (a : X → κ → ℂ) (J : ι → κ)
     (hJ : Function.Injective J) :
     (∑ i, ∑ j,
-        ‖finiteCoordinateCovariance μ (fun x i => a x (J i)) i j‖ ^ 2) ≤
-      ∑ p, ∑ q, ‖finiteCoordinateCovariance μ a p q‖ ^ 2 := by
+        ‖finiteCoordinateCovariance μ (fun x i => a x (J i)) i j‖ ^ (2 : ℕ)) ≤
+      ∑ p, ∑ q, ‖finiteCoordinateCovariance μ a p q‖ ^ (2 : ℕ) := by
   classical
   have himage (g : κ → ℝ) (hg : ∀ q, 0 ≤ g q) :
       (∑ i, g (J i)) ≤ ∑ q, g q := by
@@ -47,16 +47,16 @@ theorem finiteCoordinateCovarianceCollision_le_of_injective
     rfl
   simp_rw [hcov]
   calc
-    (∑ i, ∑ j, ‖finiteCoordinateCovariance μ a (J i) (J j)‖ ^ 2) ≤
-        ∑ i, ∑ q, ‖finiteCoordinateCovariance μ a (J i) q‖ ^ 2 := by
+    (∑ i, ∑ j, ‖finiteCoordinateCovariance μ a (J i) (J j)‖ ^ (2 : ℕ)) ≤
+        ∑ i, ∑ q, ‖finiteCoordinateCovariance μ a (J i) q‖ ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro i _
       exact himage
-        (fun q => ‖finiteCoordinateCovariance μ a (J i) q‖ ^ 2)
+        (fun q => ‖finiteCoordinateCovariance μ a (J i) q‖ ^ (2 : ℕ))
         (fun q => sq_nonneg _)
-    _ ≤ ∑ p, ∑ q, ‖finiteCoordinateCovariance μ a p q‖ ^ 2 := by
+    _ ≤ ∑ p, ∑ q, ‖finiteCoordinateCovariance μ a p q‖ ^ (2 : ℕ) := by
       exact himage
-        (fun p => ∑ q, ‖finiteCoordinateCovariance μ a p q‖ ^ 2)
+        (fun p => ∑ q, ‖finiteCoordinateCovariance μ a p q‖ ^ (2 : ℕ))
         (fun p => Finset.sum_nonneg fun q _ => sq_nonneg _)
 
 theorem finiteCoordinatePairKernel_orthonormalBasis
@@ -64,7 +64,7 @@ theorem finiteCoordinatePairKernel_orthonormalBasis
     [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     (b : OrthonormalBasis κ ℂ E) (v : X → E) (p : X × X) :
     finiteCoordinatePairKernel (fun x i => inner ℂ (b i) (v x)) p =
-      ‖inner ℂ (v p.1) (v p.2)‖ ^ 2 := by
+      ‖inner ℂ (v p.1) (v p.2)‖ ^ (2 : ℕ) := by
   unfold finiteCoordinatePairKernel
   have hsum :
     (∑ i, star (inner ℂ (b i) (v p.1)) *
@@ -81,7 +81,7 @@ theorem finiteCoordinatePairKernel_orthonormalBasis
         rw [inner_conj_symm]
       _ = inner ℂ (v p.1) (v p.2) :=
         b.sum_inner_mul_inner (v p.1) (v p.2)
-  exact congrArg (fun z : ℂ => ‖z‖ ^ 2) hsum
+  exact congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) hsum
 
 /-- Orthogonal compression cannot increase integrated covariance collision.
 This is the carrier-independent reduction from circuit coarea to full replica
@@ -97,12 +97,12 @@ theorem replicaSubspaceIncidenceCollision_le_fullReplicaPairAction
     (hsq : ∀ u : EuclideanSpace ℂ (Fin r → α),
       Integrable
         (fun x => ‖inner ℂ u
-          (finitePureTensorPowerEuclidean r (state x))‖ ^ 2) μ) :
+          (finitePureTensorPowerEuclidean r (state x))‖ ^ (2 : ℕ)) μ) :
     replicaSubspaceIncidenceCollision μ r S state ≤
       ∫ p : X × X,
         ‖inner ℂ
           (finitePureTensorPowerEuclidean r (state p.1))
-          (finitePureTensorPowerEuclidean r (state p.2))‖ ^ 2 ∂(μ.prod μ) := by
+          (finitePureTensorPowerEuclidean r (state p.2))‖ ^ (2 : ℕ) ∂(μ.prod μ) := by
   classical
   let bS := replicaSubspaceOrthonormalBasis r S
   let vS : Fin (Module.finrank ℂ S) →
@@ -148,14 +148,14 @@ theorem replicaSubspaceIncidenceCollision_le_fullReplicaPairAction
   calc
     replicaSubspaceIncidenceCollision μ r S state =
         ∑ i, ∑ j,
-          ‖finiteCoordinateCovariance μ (fun x i => a x (J i)) i j‖ ^ 2 := by
+          ‖finiteCoordinateCovariance μ (fun x i => a x (J i)) i j‖ ^ (2 : ℕ) := by
       unfold replicaSubspaceIncidenceCollision
       apply Finset.sum_congr rfl
       intro i _
       apply Finset.sum_congr rfl
       intro j _
       rw [hcov]
-    _ ≤ ∑ p, ∑ q, ‖finiteCoordinateCovariance μ a p q‖ ^ 2 :=
+    _ ≤ ∑ p, ∑ q, ‖finiteCoordinateCovariance μ a p q‖ ^ (2 : ℕ) :=
       finiteCoordinateCovarianceCollision_le_of_injective μ a J hJ
     _ = ∫ p, finiteCoordinatePairKernel a p ∂(μ.prod μ) :=
       finiteCoordinate_covarianceCollision_eq_pairKernel μ a
@@ -163,7 +163,7 @@ theorem replicaSubspaceIncidenceCollision_le_fullReplicaPairAction
     _ = ∫ p : X × X,
         ‖inner ℂ
           (finitePureTensorPowerEuclidean r (state p.1))
-          (finitePureTensorPowerEuclidean r (state p.2))‖ ^ 2 ∂(μ.prod μ) := by
+          (finitePureTensorPowerEuclidean r (state p.2))‖ ^ (2 : ℕ) ∂(μ.prod μ) := by
       apply integral_congr_ae
       exact Filter.Eventually.of_forall fun p => by
         exact finiteCoordinatePairKernel_orthonormalBasis b v p
@@ -183,7 +183,7 @@ theorem returnExcisedReplicaCarrierIncidenceAction_le_fullReplicaPurity
     (hsq : ∀ u : EuclideanSpace ℂ (Fin r → α),
       Integrable
         (fun x => ‖inner ℂ u
-          (finitePureTensorPowerEuclidean r (state x))‖ ^ 2)
+          (finitePureTensorPowerEuclidean r (state x))‖ ^ (2 : ℕ))
         (μ.restrict returnSetᶜ)) :
     returnExcisedReplicaCarrierIncidenceAction μ r S state returnSet ≤
       ∫ p : X × X,

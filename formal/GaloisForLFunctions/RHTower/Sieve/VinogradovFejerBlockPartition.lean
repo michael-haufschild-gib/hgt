@@ -13,7 +13,7 @@ gain. -/
 theorem sum_finiteFejerKernel_range_le_blockCost
     {H q a G : ℕ} (hH : H ≠ 0) (hq : 0 < q)
     {α : ℝ} (hcop : Nat.Coprime a q)
-    (happrox : |α - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ 2) :
+    (happrox : |α - (a : ℝ) / (q : ℝ)| ≤ 1 / (q : ℝ) ^ (2 : ℕ)) :
     (∑ n ∈ Finset.range (G + 1),
       finiteFejerKernel H (α * (n : ℝ))) ≤
       ((G / ((q + 1) / 2) + 1 : ℕ) : ℝ) *

@@ -34,16 +34,16 @@ def thetaCuspBornWittenSuperpotential (n : ℕ) (x : ℝ) : ℝ :=
 /-- Exact derivative of the observable-weighted superpotential. -/
 def thetaCuspBornWittenCurvature (n : ℕ) (x : ℝ) : ℝ :=
   2 * thetaCuspMorseScale n x +
-    3 * thetaCuspMorseScale n x / thetaCuspBornWittenWeight n x ^ 2
+    3 * thetaCuspMorseScale n x / thetaCuspBornWittenWeight n x ^ (2 : ℕ)
 
 /-- Lower supersymmetric potential selected by the weighted theta amplitude. -/
 def thetaCuspBornWittenPotentialMinus (n : ℕ) (x : ℝ) : ℝ :=
-  thetaCuspBornWittenSuperpotential n x ^ 2 -
+  thetaCuspBornWittenSuperpotential n x ^ (2 : ℕ) -
     thetaCuspBornWittenCurvature n x
 
 /-- Partner supersymmetric potential selected by the weighted theta amplitude. -/
 def thetaCuspBornWittenPotentialPlus (n : ℕ) (x : ℝ) : ℝ :=
-  thetaCuspBornWittenSuperpotential n x ^ 2 +
+  thetaCuspBornWittenSuperpotential n x ^ (2 : ℕ) +
     thetaCuspBornWittenCurvature n x
 
 theorem thetaCuspBornWittenWeight_eq (n : ℕ) (x : ℝ) :
@@ -64,8 +64,8 @@ theorem hasDerivAt_thetaCuspBornWittenWeight (n : ℕ) (x : ℝ) :
 /-- The squared weighted amplitude is exactly the original positive-observable Born density. -/
 theorem thetaCuspBornWittenAmplitude_sq
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
-    thetaCuspBornWittenAmplitude n x ^ 2 =
-      4 * thetaCuspBornWittenWeight n x * thetaCuspMorseGroundState n x ^ 2 := by
+    thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) =
+      4 * thetaCuspBornWittenWeight n x * thetaCuspMorseGroundState n x ^ (2 : ℕ) := by
   have hq := (thetaCuspBornWittenWeight_pos hn hx).le
   rw [thetaCuspBornWittenAmplitude, mul_pow, mul_pow, Real.sq_sqrt hq]
   ring
@@ -74,7 +74,7 @@ theorem thetaCuspBornWittenAmplitude_sq
 theorem thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspSourceTerm x n =
-      Real.pi * thetaCuspBornWittenAmplitude n x ^ 2 := by
+      Real.pi * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) := by
   rw [thetaCuspSourceTerm_eq_morseBornObservable,
     thetaCuspBornWittenAmplitude_sq hn hx]
   simp only [thetaCuspBornWittenWeight]
@@ -97,7 +97,7 @@ theorem hasDerivAt_thetaCuspBornWittenAmplitude
       simp only [thetaCuspBornWittenAmplitude, thetaCuspBornWittenSuperpotential]
       have hsqrtPos : 0 < Real.sqrt (thetaCuspBornWittenWeight n x) :=
         Real.sqrt_pos.2 hqpos
-      have hsqrtSq : Real.sqrt (thetaCuspBornWittenWeight n x) ^ 2 =
+      have hsqrtSq : Real.sqrt (thetaCuspBornWittenWeight n x) ^ (2 : ℕ) =
           thetaCuspBornWittenWeight n x := Real.sq_sqrt hqpos.le
       field_simp [hsqrtPos.ne', hqpos.ne']
       rw [hsqrtSq]
@@ -141,12 +141,12 @@ theorem deriv_thetaCuspBornWittenSuperpotential
 
 theorem thetaCuspMorseScale_pi_mul_sq_le
     {n : ℕ} {x : ℝ} (hx : 0 ≤ x) :
-    Real.pi * (n : ℝ) ^ 2 ≤ thetaCuspMorseScale n x := by
+    Real.pi * (n : ℝ) ^ (2 : ℕ) ≤ thetaCuspMorseScale n x := by
   have hexp : (1 : ℝ) ≤ Real.exp x := Real.one_le_exp hx
   have hn0 : (0 : ℝ) ≤ n := by positivity
   have hmul : (n : ℝ) ≤ (n : ℝ) * Real.exp x := by
     nlinarith [mul_nonneg hn0 (sub_nonneg.mpr hexp)]
-  have hsq : (n : ℝ) ^ 2 ≤ ((n : ℝ) * Real.exp x) ^ 2 := by
+  have hsq : (n : ℝ) ^ (2 : ℕ) ≤ ((n : ℝ) * Real.exp x) ^ (2 : ℕ) := by
     nlinarith
   simpa only [thetaCuspMorseScale] using
     mul_le_mul_of_nonneg_left hsq Real.pi_pos.le
@@ -154,21 +154,21 @@ theorem thetaCuspMorseScale_pi_mul_sq_le
 /-- Uniform positive curvature of the pure theta source state. -/
 theorem thetaCuspBornWittenCurvature_floor
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
-    2 * Real.pi * (n : ℝ) ^ 2 ≤ thetaCuspBornWittenCurvature n x := by
+    2 * Real.pi * (n : ℝ) ^ (2 : ℕ) ≤ thetaCuspBornWittenCurvature n x := by
   have hqpos := thetaCuspBornWittenWeight_pos hn hx
   have ht := thetaCuspMorseScale_pi_mul_sq_le (n := n) hx
   have hscaleNonneg : 0 ≤ thetaCuspMorseScale n x := by
     simp only [thetaCuspMorseScale]
     positivity
   have hcorr : 0 ≤
-      3 * thetaCuspMorseScale n x / thetaCuspBornWittenWeight n x ^ 2 := by
+      3 * thetaCuspMorseScale n x / thetaCuspBornWittenWeight n x ^ (2 : ℕ) := by
     positivity
   simp only [thetaCuspBornWittenCurvature]
   nlinarith
 
 theorem thetaCuspBornWittenPotentialPlus_floor
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
-    2 * Real.pi * (n : ℝ) ^ 2 ≤ thetaCuspBornWittenPotentialPlus n x := by
+    2 * Real.pi * (n : ℝ) ^ (2 : ℕ) ≤ thetaCuspBornWittenPotentialPlus n x := by
   have hcurv := thetaCuspBornWittenCurvature_floor hn hx
   simp only [thetaCuspBornWittenPotentialPlus]
   nlinarith [sq_nonneg (thetaCuspBornWittenSuperpotential n x)]
@@ -204,20 +204,20 @@ theorem thetaCuspBornWitten_factorized_schrodinger_zero
 /-- The pure-state density obeys the exact first-order logarithmic curvature equation. -/
 theorem hasDerivAt_thetaCuspBornWittenAmplitude_sq
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
-    HasDerivAt (fun y : ℝ => thetaCuspBornWittenAmplitude n y ^ 2)
+    HasDerivAt (fun y : ℝ => thetaCuspBornWittenAmplitude n y ^ (2 : ℕ))
       (-2 * thetaCuspBornWittenSuperpotential n x *
-        thetaCuspBornWittenAmplitude n x ^ 2) x := by
+        thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) x := by
   have hraw := (hasDerivAt_thetaCuspBornWittenAmplitude hn hx).pow 2
   have hraw' := hraw.congr_deriv
     (g' := -2 * thetaCuspBornWittenSuperpotential n x *
-      thetaCuspBornWittenAmplitude n x ^ 2) (by ring)
+      thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) (by ring)
   simpa only [Pi.pow_apply] using! hraw'
 
 /-- Existing Morse Born moments are ordinary position moments of the exact pure Witten state. -/
 theorem thetaCuspMorseBornMoment_eq_integral_bornWittenAmplitude_sq
     (j n : ℕ) :
     thetaCuspMorseBornMoment j n =
-      ∫ x : ℝ in Ioi 0, x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ 2 := by
+      ∫ x : ℝ in Ioi 0, x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) := by
   by_cases hn : n = 0
   · subst n
     simp [thetaCuspMorseBornMoment, thetaCuspBornWittenAmplitude,
@@ -237,7 +237,7 @@ theorem thetaCuspAtomRawEvenMoment_eq_integral_bornWittenAmplitude_sq
     (j n : ℕ) :
     thetaCuspAtomRawEvenMoment j n =
       2 * Real.pi *
-        ∫ x : ℝ in Ioi 0, x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ 2 := by
+        ∫ x : ℝ in Ioi 0, x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) := by
   rw [thetaCuspAtomRawEvenMoment_eq_morseBornMoment,
     thetaCuspMorseBornMoment_eq_integral_bornWittenAmplitude_sq]
 
@@ -245,7 +245,7 @@ theorem thetaCuspAtomRawEvenMoment_eq_integral_bornWittenAmplitude_sq
 theorem thetaCuspRawEvenMoment_eq_tsum_integral_bornWittenAmplitude_sq (j : ℕ) :
     thetaCuspRawEvenMoment j =
       ∑' n : ℕ, 2 * Real.pi *
-        ∫ x : ℝ in Ioi 0, x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ 2 := by
+        ∫ x : ℝ in Ioi 0, x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) := by
   rw [thetaCuspRawEvenMoment_eq_tsum_atomRawEvenMoment]
   apply tsum_congr
   intro n

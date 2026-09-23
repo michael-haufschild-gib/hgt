@@ -54,7 +54,7 @@ theorem rectangularSchurToeplitz_det_reflection
   rw [Matrix.det_smul, Matrix.det_mul, Matrix.det_mul, Matrix.det_diagonal]
   simp only [Fintype.card_fin]
   have hdiag :
-      (∏ i : Fin m, (-1 : K) ^ (i : ℕ)) ^ 2 = 1 := by
+      (∏ i : Fin m, (-1 : K) ^ (i : ℕ)) ^ (2 : ℕ) = 1 := by
     rw [← Finset.prod_pow]
     simp [← pow_mul]
   have hpows : ((-1 : K) ^ n) ^ m = (-1 : K) ^ (m * n) := by
@@ -65,7 +65,7 @@ theorem rectangularSchurToeplitz_det_reflection
             (rectangularSchurToeplitz h n m).det *
             ∏ i : Fin m, (-1 : K) ^ (i : ℕ)) =
         (-1 : K) ^ (m * n) *
-          ((∏ i : Fin m, (-1 : K) ^ (i : ℕ)) ^ 2 *
+          ((∏ i : Fin m, (-1 : K) ^ (i : ℕ)) ^ (2 : ℕ) *
             (rectangularSchurToeplitz h n m).det) := by
               rw [hpows]
               ring

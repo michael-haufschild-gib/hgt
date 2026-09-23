@@ -288,8 +288,8 @@ theorem split_deckClass_one_iff_even {ρ : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀)
     {G₁ G₂ : ℂ → ℂ}
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA ρ r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA ρ r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA ρ r₀ R, G₁ z ^ 2 = F z)
-    (hpG₂ : ∀ z ∈ chartLA ρ r₀ R, G₂ z ^ 2 = F z) :
+    (hpG₁ : ∀ z ∈ chartRA ρ r₀ R, G₁ z ^ (2 : ℕ) = F z)
+    (hpG₂ : ∀ z ∈ chartLA ρ r₀ R, G₂ z ^ (2 : ℕ) = F z) :
     deckClass G₁ G₂ (ρ + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
         (ρ - (((r₀ + R) / 2 : ℝ) : ℂ) * I) = 1 ↔ Even zs.length := by
   have hmz := deckClass_multi_zero (Finset.univ : Finset (Fin zs.length))

@@ -38,7 +38,7 @@ theorem principalTimeAcceleration_laplace_probe (q : XiZeroCopy) (branch : Bool)
     (ψ : 𝓢(ℝ,ℂ)) (w : ℂ) (hw : principalResponseGrowth q i < w.re) :
     (∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ))*
       l2SchwartzProbe ψ (deriv (deriv (principalTimeResponse q branch a i)) t)) =
-        w^2*l2SchwartzProbe ψ (principalTimeLaplace q branch a i w) := by
+        w^(2 : ℕ)*l2SchwartzProbe ψ (principalTimeLaplace q branch a i w) := by
   let U := principalTimeResponse q branch a i
   let F := principalTimeForcing q branch a i
   let P := l2SchwartzProbe ψ

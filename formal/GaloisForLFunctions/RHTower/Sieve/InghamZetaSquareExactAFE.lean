@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.InghamZetaSquareInfiniteContour
 # Exact exponential approximate functional equation for zeta square
 
 Combining Mellin inversion on right line with completed infinite contour shift solves exactly for
-`zeta(1/2+i tau)^2`: smoothed divisor carrier minus shifted residue minus reflected left contour.
+`zeta(1/2+i tau)^(2 : ℕ)`: smoothed divisor carrier minus shifted residue minus reflected left contour.
 -/
 
 noncomputable section

@@ -64,10 +64,10 @@ theorem sum_blockSum_eq (z : ℤ → ℂ) (N H : ℕ)
 /-- **Cauchy-Schwarz over the block positions.**  The squared modulus of a sum of `M` complex
 numbers is at most `M` times the sum of their squared moduli. -/
 theorem normSq_sum_le_card_mul (s : Finset ℤ) (w : ℤ → ℂ) :
-    (‖∑ k ∈ s, w k‖ : ℝ)^2 ≤ (s.card : ℝ) * ∑ k ∈ s, (‖w k‖ : ℝ)^2 := by
+    (‖∑ k ∈ s, w k‖ : ℝ)^(2 : ℕ) ≤ (s.card : ℝ) * ∑ k ∈ s, (‖w k‖ : ℝ)^(2 : ℕ) := by
   classical
   have h1 : (‖∑ k ∈ s, w k‖ : ℝ) ≤ ∑ k ∈ s, ‖w k‖ := norm_sum_le _ _
-  have h2 : (∑ k ∈ s, ‖w k‖)^2 ≤ (s.card : ℝ) * ∑ k ∈ s, (‖w k‖ : ℝ)^2 :=
+  have h2 : (∑ k ∈ s, ‖w k‖)^(2 : ℕ) ≤ (s.card : ℝ) * ∑ k ∈ s, (‖w k‖ : ℝ)^(2 : ℕ) :=
     sq_sum_le_card_mul_sum_sq
   have h0 : (0:ℝ) ≤ ‖∑ k ∈ s, w k‖ := norm_nonneg _
   nlinarith [h1, h2, h0, Finset.sum_nonneg (fun k (_ : k ∈ s) => norm_nonneg (w k))]
@@ -80,12 +80,12 @@ The right-hand side is the block-energy; expanding it produces the differenced s
 bound on the correlations bounds the original sum. -/
 theorem vanDerCorput_shift_inequality (z : ℤ → ℂ) (N H : ℕ)
     (hsupp : ∀ k : ℤ, k ∉ Finset.Ico (0 : ℤ) (N : ℤ) → z k = 0) :
-    (H : ℝ)^2 * (‖∑ k ∈ Finset.Ico (0 : ℤ) (N : ℤ), z k‖ : ℝ)^2
+    (H : ℝ)^(2 : ℕ) * (‖∑ k ∈ Finset.Ico (0 : ℤ) (N : ℤ), z k‖ : ℝ)^(2 : ℕ)
       ≤ ((Finset.Ico (-(H : ℤ) + 1) (N : ℤ)).card : ℝ)
-        * ∑ k ∈ Finset.Ico (-(H : ℤ) + 1) (N : ℤ), (‖blockSum z H k‖ : ℝ)^2 := by
+        * ∑ k ∈ Finset.Ico (-(H : ℤ) + 1) (N : ℤ), (‖blockSum z H k‖ : ℝ)^(2 : ℕ) := by
   have hid := sum_blockSum_eq z N H hsupp
-  have h1 : (‖∑ k ∈ Finset.Ico (-(H : ℤ) + 1) (N : ℤ), blockSum z H k‖ : ℝ)^2
-      = (H : ℝ)^2 * (‖∑ k ∈ Finset.Ico (0 : ℤ) (N : ℤ), z k‖ : ℝ)^2 := by
+  have h1 : (‖∑ k ∈ Finset.Ico (-(H : ℤ) + 1) (N : ℤ), blockSum z H k‖ : ℝ)^(2 : ℕ)
+      = (H : ℝ)^(2 : ℕ) * (‖∑ k ∈ Finset.Ico (0 : ℤ) (N : ℤ), z k‖ : ℝ)^(2 : ℕ) := by
     rw [hid, norm_mul, mul_pow]
     congr 1
     simp
@@ -104,7 +104,7 @@ noncomputable def corr (z : ℤ → ℂ) (N : ℕ) (h : ℤ) : ℂ :=
 
 /-- The squared modulus of a block sum, expanded over pairs of offsets. -/
 theorem normSq_blockSum_eq (z : ℤ → ℂ) (H : ℕ) (k : ℤ) :
-    ((‖blockSum z H k‖ : ℝ)^2 : ℂ)
+    ((‖blockSum z H k‖ : ℝ)^(2 : ℕ) : ℂ)
       = ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, z (k + j₁) * (starRingEnd ℂ) (z (k + j₂)) := by
   have h1 : ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, z (k + j₁) * (starRingEnd ℂ) (z (k + j₂))
       = blockSum z H k * (starRingEnd ℂ) (blockSum z H k) := by
@@ -119,7 +119,7 @@ positions and reindexing by `m = k + j₂` turns the energy into a double sum of
 one for each ordered pair of offsets. -/
 theorem sum_blockEnergy_eq_corrSum (z : ℤ → ℂ) (N H : ℕ)
     (hsupp : ∀ k : ℤ, k ∉ Finset.Ico (0 : ℤ) (N : ℤ) → z k = 0) :
-    ((∑ k ∈ Finset.Ico (-(H : ℤ) + 1) (N : ℤ), (‖blockSum z H k‖ : ℝ)^2 : ℝ) : ℂ)
+    ((∑ k ∈ Finset.Ico (-(H : ℤ) + 1) (N : ℤ), (‖blockSum z H k‖ : ℝ)^(2 : ℕ) : ℝ) : ℂ)
       = ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, corr z N ((j₁ : ℤ) - (j₂ : ℤ)) := by
   classical
   push_cast
@@ -223,10 +223,10 @@ trading the number of correlations against the block count.  This is the analyti
 exponent-pair `A` process records. -/
 theorem vanDerCorput_correlation_bound (z : ℤ → ℂ) (N H : ℕ) (hH : 0 < H)
     (hsupp : ∀ k : ℤ, k ∉ Finset.Ico (0 : ℤ) (N : ℤ) → z k = 0) :
-    (H : ℝ)^2 * (‖∑ k ∈ Finset.Ico (0 : ℤ) (N : ℤ), z k‖ : ℝ)^2
+    (H : ℝ)^(2 : ℕ) * (‖∑ k ∈ Finset.Ico (0 : ℤ) (N : ℤ), z k‖ : ℝ)^(2 : ℕ)
       ≤ ((N : ℝ) + H - 1) * ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, ‖corr z N ((j₁ : ℤ) - (j₂ : ℤ))‖ := by
   classical
-  set E : ℝ := ∑ k ∈ Finset.Ico (-(H : ℤ) + 1) (N : ℤ), (‖blockSum z H k‖ : ℝ)^2 with hE
+  set E : ℝ := ∑ k ∈ Finset.Ico (-(H : ℤ) + 1) (N : ℤ), (‖blockSum z H k‖ : ℝ)^(2 : ℕ) with hE
   have hEnn : 0 ≤ E := Finset.sum_nonneg fun k _ => sq_nonneg _
   have hEbound : E ≤ ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, ‖corr z N ((j₁ : ℤ) - (j₂ : ℤ))‖ := by
     have hcast : (E : ℂ) = ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, corr z N ((j₁ : ℤ) - (j₂ : ℤ)) :=
@@ -250,7 +250,7 @@ theorem vanDerCorput_correlation_bound (z : ℤ → ℂ) (N H : ℕ) (hH : 0 < H
   have hnn : (0 : ℝ) ≤ ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, ‖corr z N ((j₁ : ℤ) - (j₂ : ℤ))‖ :=
     Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _
   have hcardnn : (0 : ℝ) ≤ ((Finset.Ico (-(H : ℤ) + 1) (N : ℤ)).card : ℝ) := Nat.cast_nonneg _
-  calc (H : ℝ)^2 * (‖∑ k ∈ Finset.Ico (0 : ℤ) (N : ℤ), z k‖ : ℝ)^2
+  calc (H : ℝ)^(2 : ℕ) * (‖∑ k ∈ Finset.Ico (0 : ℤ) (N : ℤ), z k‖ : ℝ)^(2 : ℕ)
       ≤ ((Finset.Ico (-(H : ℤ) + 1) (N : ℤ)).card : ℝ) * E := hstep
     _ ≤ ((N : ℝ) + H - 1) * ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, ‖corr z N ((j₁ : ℤ) - (j₂ : ℤ))‖ := by
         have h2 : ((Finset.Ico (-(H : ℤ) + 1) (N : ℤ)).card : ℝ) * E
@@ -319,7 +319,7 @@ correlations are. -/
 theorem vanDerCorput_bound_ge_length (z : ℤ → ℂ) (N H : ℕ) (hN : 1 ≤ N) (hH : 0 < H)
     (hz : ∀ k ∈ Finset.Ico (0 : ℤ) (N : ℤ), ‖z k‖ = 1) :
     (N : ℝ)
-      ≤ ((N : ℝ) + H - 1) / (H : ℝ)^2
+      ≤ ((N : ℝ) + H - 1) / (H : ℝ)^(2 : ℕ)
         * ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, ‖corr z N ((j₁ : ℤ) - (j₂ : ℤ))‖ := by
   have hHpos : (0 : ℝ) < (H : ℝ) := by exact_mod_cast hH
   have hNpos : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
@@ -328,19 +328,19 @@ theorem vanDerCorput_bound_ge_length (z : ℤ → ℂ) (N H : ℕ) (hN : 1 ≤ N
     simp
   have hdiag := diagonal_le_offsetPairSum z N H
   rw [hcorr0] at hdiag
-  have hfac : (0 : ℝ) < ((N : ℝ) + H - 1) / (H : ℝ)^2 := by
+  have hfac : (0 : ℝ) < ((N : ℝ) + H - 1) / (H : ℝ)^(2 : ℕ) := by
     have : (0 : ℝ) < (N : ℝ) + H - 1 := by linarith
     positivity
-  calc (N : ℝ) = ((N : ℝ) + H - 1) / (H : ℝ)^2 * ((H : ℝ) * (N : ℝ))
+  calc (N : ℝ) = ((N : ℝ) + H - 1) / (H : ℝ)^(2 : ℕ) * ((H : ℝ) * (N : ℝ))
         - (((N : ℝ) - 1) / (H : ℝ)) * (N : ℝ) := by
         field_simp
         ring
-    _ ≤ ((N : ℝ) + H - 1) / (H : ℝ)^2 * ((H : ℝ) * (N : ℝ)) := by
+    _ ≤ ((N : ℝ) + H - 1) / (H : ℝ)^(2 : ℕ) * ((H : ℝ) * (N : ℝ)) := by
         have : (0 : ℝ) ≤ (((N : ℝ) - 1) / (H : ℝ)) * (N : ℝ) := by
           have h1 : (0 : ℝ) ≤ (N : ℝ) - 1 := by linarith
           positivity
         linarith
-    _ ≤ ((N : ℝ) + H - 1) / (H : ℝ)^2
+    _ ≤ ((N : ℝ) + H - 1) / (H : ℝ)^(2 : ℕ)
           * ∑ j₁ ∈ range H, ∑ j₂ ∈ range H, ‖corr z N ((j₁ : ℤ) - (j₂ : ℤ))‖ :=
         mul_le_mul_of_nonneg_left hdiag (le_of_lt hfac)
 

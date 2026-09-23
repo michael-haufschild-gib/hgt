@@ -38,25 +38,25 @@ noncomputable def exponentialTriple : ℝ × ℝ × ℝ := (1, 2, 24)
 
 /-- The uniform density satisfies the threshold inequality. -/
 theorem uniform_satisfies :
-    16 * uniformTriple.1 * uniformTriple.2.2 ≤ 45 * uniformTriple.2.1 ^ 2 := by
+    16 * uniformTriple.1 * uniformTriple.2.2 ≤ 45 * uniformTriple.2.1 ^ (2 : ℕ) := by
   unfold uniformTriple
   norm_num
 
 /-- The exponential density violates it. -/
 theorem exponential_violates :
-    ¬ (16 * exponentialTriple.1 * exponentialTriple.2.2 ≤ 45 * exponentialTriple.2.1 ^ 2) := by
+    ¬ (16 * exponentialTriple.1 * exponentialTriple.2.2 ≤ 45 * exponentialTriple.2.1 ^ (2 : ℕ)) := by
   unfold exponentialTriple
   norm_num
 
 /-- The dispersion of the uniform triple is `4/5`, below the threshold `45/16 − 1`. -/
 theorem uniform_dispersion :
-    uniformTriple.1 * uniformTriple.2.2 / uniformTriple.2.1 ^ 2 - 1 = 4 / 5 := by
+    uniformTriple.1 * uniformTriple.2.2 / uniformTriple.2.1 ^ (2 : ℕ) - 1 = 4 / 5 := by
   unfold uniformTriple
   norm_num
 
 /-- The dispersion of the exponential triple is `5`, above the threshold. -/
 theorem exponential_dispersion :
-    exponentialTriple.1 * exponentialTriple.2.2 / exponentialTriple.2.1 ^ 2 - 1 = 5 := by
+    exponentialTriple.1 * exponentialTriple.2.2 / exponentialTriple.2.1 ^ (2 : ℕ) - 1 = 5 := by
   unfold exponentialTriple
   norm_num
 
@@ -69,8 +69,8 @@ theorem threshold_between :
 log-concave densities on `[0,∞)`, one satisfying the inequality and one violating it.  Hence no
 criterion depending only on log-concavity can decide it. -/
 theorem logConcave_class_undecidable :
-    (∃ t : ℝ × ℝ × ℝ, 16 * t.1 * t.2.2 ≤ 45 * t.2.1 ^ 2)
-      ∧ (∃ t : ℝ × ℝ × ℝ, ¬ (16 * t.1 * t.2.2 ≤ 45 * t.2.1 ^ 2)) :=
+    (∃ t : ℝ × ℝ × ℝ, 16 * t.1 * t.2.2 ≤ 45 * t.2.1 ^ (2 : ℕ))
+      ∧ (∃ t : ℝ × ℝ × ℝ, ¬ (16 * t.1 * t.2.2 ≤ 45 * t.2.1 ^ (2 : ℕ))) :=
   ⟨⟨uniformTriple, uniform_satisfies⟩, ⟨exponentialTriple, exponential_violates⟩⟩
 
 end MomentRatioStraddle

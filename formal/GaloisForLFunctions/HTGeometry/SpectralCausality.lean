@@ -304,12 +304,12 @@ theorem rectangleContrastRelation_span_finrank
   exact rectangleContrastIndex_card a₀ b₀
 
 /-- A fixed pair of sites in an `n`-site `q`-level system carries
-`(q-1)^2 q^(n-2)` independent rectangle contrasts. -/
+`(q-1)^(2 : ℕ) q^(n-2)` independent rectangle contrasts. -/
 theorem quditPair_rectangleContrastIndex_card
     {q n : ℕ} (a₀ b₀ : Fin q) :
     Fintype.card
         (RectangleContrastIndex (Fin q) (Fin q) (Fin (n - 2) → Fin q) a₀ b₀) =
-      (q - 1) ^ 2 * q ^ (n - 2) := by
+      (q - 1) ^ (2 : ℕ) * q ^ (n - 2) := by
   rw [rectangleContrastIndex_card]
   simp only [Fintype.card_fin, Fintype.card_fun]
   rw [pow_two]
@@ -403,7 +403,7 @@ theorem higherCoordinateContrast_eq_zero_of_local_miss
     {support : Set ι} {f : (ι → A) → R}
     (hf : CoordinateLocalOn support f)
     (x alternative : ι → A) {sites : Finset ι} {i : ι}
-    (hi_sites : i ∈ sites) (hi_support : i ∉ support) :
+    (hi_sites : i ∈ sites) (hi : i ∉ support) :
     higherCoordinateContrast x alternative sites f = 0 := by
   have hi_erase : i ∉ sites.erase i := by simp
   rw [← Finset.insert_erase hi_sites]
@@ -415,7 +415,7 @@ theorem higherCoordinateContrast_eq_zero_of_local_miss
       (fun active => f (updateOnFinset x alternative active)) := by
     funext active
     exact coordinateLocalOn_updateOnFinset_insert_eq
-      hf x alternative hi_support active
+      hf x alternative hi active
   rw [hresponse, sub_self]
 
 theorem higherCoordinateContrast_sum
@@ -440,9 +440,9 @@ theorem higherCoordinateContrast_sum_eq_zero_of_cluster_miss
   rw [higherCoordinateContrast_sum]
   apply Finset.sum_eq_zero
   intro c hc
-  obtain ⟨i, hi_sites, hi_support⟩ := hmiss c hc
+  obtain ⟨i, hi_sites, hi⟩ := hmiss c hc
   exact higherCoordinateContrast_eq_zero_of_local_miss
-    (hlocal c hc) x alternative hi_sites hi_support
+    (hlocal c hc) x alternative hi_sites hi
 
 /-- Minimum number of edges in a connected subgraph spanning `sites`, with value `⊤` when no such
 subgraph exists. -/

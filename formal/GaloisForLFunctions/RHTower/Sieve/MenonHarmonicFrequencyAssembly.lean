@@ -27,7 +27,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_frequencyPartition
     (hright : ∀ j ∈ Finset.range L,
       1 ≤ ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊) :
     (∫ w in Set.Icc (-W) W,
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
           menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j)
             (menonHarmonicAllBlocksSmall P Q eta L V W) j
@@ -36,7 +36,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_frequencyPartition
             (harmonicPrimeMass (geomBlock P Q (1 + eta) j))
             (menonHarmonicSomeBlockLarge P Q eta L V W) j := by
   let f : ℝ → ℝ := fun w =>
-    ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2
+    ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)
   have hfcont : Continuous f := by
     dsimp only [f]
     refine (continuous_finsetSum P fun p _ => ?_).norm.pow 2
@@ -49,11 +49,11 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_frequencyPartition
     hA₀ hQ heta hW hL hPprime hPrange V hleft hright
   calc
     (∫ w in Set.Icc (-W) W,
-        ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) =
+        ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) =
         (∫ w in menonHarmonicAllBlocksSmall P Q eta L V W,
-          ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) +
+          ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) +
         ∫ w in menonHarmonicSomeBlockLarge P Q eta L V W,
-          ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2 := by
+          ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ) := by
             simpa only [f] using hsplit
     _ ≤ _ := add_le_add hsmall hlarge
 
@@ -69,7 +69,7 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_frequencyPartition
     (hright : ∀ j ∈ Finset.range L,
       1 ≤ ⌊(menonFinalRangeTopNat x : ℝ) / (Q * (1 + eta) ^ j)⌋₊) :
     (∫ w in Set.Icc (-x) x,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2)
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
       ≤ 2 * ((L : ℝ) * ∑ j ∈ Finset.range L,
           menonHarmonicAllSmallBlockCost (menonFinalRangePrimes x) ⌈x⌉₊
             (menonFinalRangeTopNat x) Q eta x (V j)
@@ -102,12 +102,12 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_frequencyPartition
   rw [menonFinalRangeHarmonicRoughEnergy]
   calc
     (∫ w in Set.Icc (-x) x,
-        ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2)
+        ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
         ≤ 2 * (∫ w in Set.Icc (-x) x,
             ‖harmonicRamareBilinear (menonFinalRangePrimes x)
-              (menonFinalRangeShell x) w‖ ^ 2)
+              (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
           + 2 * ∫ w in Set.Icc (-x) x,
-            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 := by
+            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ) := by
               simpa only [logPoly_harmonicMoebius_eq_menonFinalRange_ramare_add_rough,
                 menonFinalRangeHarmonicRoughSet] using hsplit
     _ ≤ 2 * ((L : ℝ) * ∑ j ∈ Finset.range L,
@@ -121,7 +121,7 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_frequencyPartition
               (geomBlock (menonFinalRangePrimes x) Q (1 + eta) j))
             (menonHarmonicSomeBlockLarge (menonFinalRangePrimes x) Q eta L V x) j)
           + 2 * ∫ w in Set.Icc (-x) x,
-            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 := by
+            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ) := by
               rw [hshell]
               have hmul := mul_le_mul_of_nonneg_left hbil
                 (show (0 : ℝ) ≤ 2 by norm_num)

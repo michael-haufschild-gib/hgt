@@ -42,30 +42,30 @@ theorem intervalIntegrable_prolateWKB {c χ a b : ℝ} (ha : -1 < a) (hb : b < 1
     IntervalIntegrable (prolateWKB c χ) volume a b := by
   refine ContinuousOn.intervalIntegrable ?_
   rw [uIcc_of_le hab]
-  have hne : ∀ y ∈ Icc a b, (1 : ℝ) - y ^ 2 ≠ 0 := by
+  have hne : ∀ y ∈ Icc a b, (1 : ℝ) - y ^ (2 : ℕ) ≠ 0 := by
     intro y hy
     have h1 : -1 < y := lt_of_lt_of_le ha hy.1
     have h2 : y < 1 := lt_of_le_of_lt hy.2 hb
     nlinarith
-  have hdiv : ContinuousOn (fun y : ℝ => (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2)) (Icc a b) :=
+  have hdiv : ContinuousOn (fun y : ℝ => (χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ))) (Icc a b) :=
     ContinuousOn.div (by fun_prop) (by fun_prop) hne
-  show ContinuousOn (fun y : ℝ => Real.sqrt ((χ + c ^ 2 * y ^ 2) / (1 - y ^ 2))) (Icc a b)
+  show ContinuousOn (fun y : ℝ => Real.sqrt ((χ + c ^ (2 : ℕ) * y ^ (2 : ℕ)) / (1 - y ^ (2 : ℕ)))) (Icc a b)
   exact Real.continuous_sqrt.comp_continuousOn hdiv
 
 /-- **The transported action is at most the full angular action.**  The potential is a square root,
 hence nonnegative, so discarding the stretch from the turning point to the anchor only helps. -/
 theorem integral_prolateWKB_le_angleAction_anchor {c s a b : ℝ} (hc : 0 ≤ c) (hs0 : 0 < s)
     (hs1 : s ≤ 1) (hsa : Real.sqrt s ≤ a) (hab : a ≤ b) (hb : b < 1) :
-    (∫ y in a..b, prolateWKB c (-(s * c ^ 2)) y) ≤ c * prolateAngleAction s := by
+    (∫ y in a..b, prolateWKB c (-(s * c ^ (2 : ℕ))) y) ≤ c * prolateAngleAction s := by
   have hs : (0 : ℝ) ≤ Real.sqrt s := Real.sqrt_nonneg s
   have ha : (-1 : ℝ) < a := lt_of_lt_of_le (by linarith) hsa
   have ha1 : a < 1 := lt_of_le_of_lt hab hb
   have hsb : Real.sqrt s ≤ b := le_trans hsa hab
-  have h1 := intervalIntegrable_prolateWKB (c := c) (χ := -(s * c ^ 2)) (a := Real.sqrt s) (b := a)
+  have h1 := intervalIntegrable_prolateWKB (c := c) (χ := -(s * c ^ (2 : ℕ))) (a := Real.sqrt s) (b := a)
     (by linarith) ha1 hsa
-  have h2 := intervalIntegrable_prolateWKB (c := c) (χ := -(s * c ^ 2)) (a := a) (b := b) ha hb hab
+  have h2 := intervalIntegrable_prolateWKB (c := c) (χ := -(s * c ^ (2 : ℕ))) (a := a) (b := b) ha hb hab
   have hadd := intervalIntegral.integral_add_adjacent_intervals h1 h2
-  have hnn : 0 ≤ ∫ y in Real.sqrt s..a, prolateWKB c (-(s * c ^ 2)) y :=
+  have hnn : 0 ≤ ∫ y in Real.sqrt s..a, prolateWKB c (-(s * c ^ (2 : ℕ))) y :=
     intervalIntegral.integral_nonneg hsa fun _ _ => Real.sqrt_nonneg _
   have hfull := integral_prolateWKB_le_angleAction hc hs0 hs1 hsb hb
   linarith [hadd, hnn, hfull]
@@ -77,24 +77,24 @@ solution loses at most the factor `exp(−c·A(s))`, and the anchor may be any p
 point at which the potential is genuinely positive. -/
 theorem exp_neg_angleAction_le_endpoint_anchor {c s a b : ℝ} {Φ : ℝ → ℝ}
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hc : 0 ≤ c) (hs0 : 0 < s) (hs1 : s ≤ 1)
     (hsa : Real.sqrt s ≤ a) (hab : a ≤ b) (hb : b < 1)
     (hpos : ∀ y ∈ Icc a b, 0 < Φ y)
-    (hQ : ∀ y ∈ Icc a b, 0 < -(s * c ^ 2) + c ^ 2 * y ^ 2)
-    (houter : ∀ y ∈ Icc a b, c ^ 2 * (1 - 2 * y ^ 2) ≤ -(s * c ^ 2))
-    (hinit : prolateLogDeriv Φ b ≤ prolateWKB c (-(s * c ^ 2)) b) :
+    (hQ : ∀ y ∈ Icc a b, 0 < -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * y ^ (2 : ℕ))
+    (houter : ∀ y ∈ Icc a b, c ^ (2 : ℕ) * (1 - 2 * y ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)))
+    (hinit : prolateLogDeriv Φ b ≤ prolateWKB c (-(s * c ^ (2 : ℕ))) b) :
     Φ a * Real.exp (-(c * prolateAngleAction s)) ≤ Φ b := by
   have hs : (0 : ℝ) ≤ Real.sqrt s := Real.sqrt_nonneg s
   have ha0 : (0 : ℝ) ≤ a := le_trans hs hsa
   have hmain := le_endpoint_prolateWKB hsm heig hab ha0 (by linarith) hb hpos hQ houter hinit
   have hbound := integral_prolateWKB_le_angleAction_anchor hc hs0 hs1 hsa hab hb
   have hexp : Real.exp (-(c * prolateAngleAction s))
-      ≤ Real.exp (-∫ t in a..b, prolateWKB c (-(s * c ^ 2)) t) :=
+      ≤ Real.exp (-∫ t in a..b, prolateWKB c (-(s * c ^ (2 : ℕ))) t) :=
     Real.exp_le_exp.mpr (by linarith)
   have hΦa : 0 < Φ a := hpos _ (left_mem_Icc.mpr hab)
   calc Φ a * Real.exp (-(c * prolateAngleAction s))
-      ≤ Φ a * Real.exp (-∫ t in a..b, prolateWKB c (-(s * c ^ 2)) t) :=
+      ≤ Φ a * Real.exp (-∫ t in a..b, prolateWKB c (-(s * c ^ (2 : ℕ))) t) :=
         mul_le_mul_of_nonneg_left hexp hΦa.le
     _ ≤ Φ b := hmain
 
@@ -103,18 +103,18 @@ theorem exp_neg_angleAction_le_endpoint_anchor {c s a b : ℝ} {Φ : ℝ → ℝ
 /-- **The Riccati potential blows up at the band endpoint.**  The numerator tends to `c²(1 − s) > 0`
 while the denominator tends to `0` from above. -/
 theorem tendsto_prolateWKB_atTop {c s : ℝ} (hc : 0 < c) (hs1 : s < 1) :
-    Tendsto (fun b : ℝ => prolateWKB c (-(s * c ^ 2)) b) (𝓝[<] (1 : ℝ)) atTop := by
-  have hnum : Tendsto (fun b : ℝ => -(s * c ^ 2) + c ^ 2 * b ^ 2) (𝓝[<] (1 : ℝ))
-      (𝓝 (c ^ 2 * (1 - s))) := by
-    have hcont : Continuous (fun b : ℝ => -(s * c ^ 2) + c ^ 2 * b ^ 2) := by fun_prop
-    have h : Tendsto (fun b : ℝ => -(s * c ^ 2) + c ^ 2 * b ^ 2) (𝓝[<] (1 : ℝ))
-        (𝓝 (-(s * c ^ 2) + c ^ 2 * (1 : ℝ) ^ 2)) := (hcont.tendsto 1).mono_left nhdsWithin_le_nhds
-    have hval : -(s * c ^ 2) + c ^ 2 * (1 : ℝ) ^ 2 = c ^ 2 * (1 - s) := by ring
+    Tendsto (fun b : ℝ => prolateWKB c (-(s * c ^ (2 : ℕ))) b) (𝓝[<] (1 : ℝ)) atTop := by
+  have hnum : Tendsto (fun b : ℝ => -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * b ^ (2 : ℕ)) (𝓝[<] (1 : ℝ))
+      (𝓝 (c ^ (2 : ℕ) * (1 - s))) := by
+    have hcont : Continuous (fun b : ℝ => -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * b ^ (2 : ℕ)) := by fun_prop
+    have h : Tendsto (fun b : ℝ => -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * b ^ (2 : ℕ)) (𝓝[<] (1 : ℝ))
+        (𝓝 (-(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * (1 : ℝ) ^ (2 : ℕ))) := (hcont.tendsto 1).mono_left nhdsWithin_le_nhds
+    have hval : -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * (1 : ℝ) ^ (2 : ℕ) = c ^ (2 : ℕ) * (1 - s) := by ring
     rwa [hval] at h
-  have hden : Tendsto (fun b : ℝ => 1 - b ^ 2) (𝓝[<] (1 : ℝ)) (𝓝[>] 0) := by
+  have hden : Tendsto (fun b : ℝ => 1 - b ^ (2 : ℕ)) (𝓝[<] (1 : ℝ)) (𝓝[>] 0) := by
     refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-    · have hcont : Continuous (fun b : ℝ => 1 - b ^ 2) := by fun_prop
-      have h : Tendsto (fun b : ℝ => 1 - b ^ 2) (𝓝[<] (1 : ℝ)) (𝓝 (1 - (1 : ℝ) ^ 2)) :=
+    · have hcont : Continuous (fun b : ℝ => 1 - b ^ (2 : ℕ)) := by fun_prop
+      have h : Tendsto (fun b : ℝ => 1 - b ^ (2 : ℕ)) (𝓝[<] (1 : ℝ)) (𝓝 (1 - (1 : ℝ) ^ (2 : ℕ))) :=
         (hcont.tendsto 1).mono_left nhdsWithin_le_nhds
       simpa using h
     · filter_upwards [self_mem_nhdsWithin,
@@ -123,12 +123,12 @@ theorem tendsto_prolateWKB_atTop {c s : ℝ} (hc : 0 < c) (hs1 : s < 1) :
       have hlt : b < 1 := hb1
       simp only [Set.mem_Ioi]
       nlinarith
-  have hinv : Tendsto (fun b : ℝ => (1 - b ^ 2)⁻¹) (𝓝[<] (1 : ℝ)) atTop :=
+  have hinv : Tendsto (fun b : ℝ => (1 - b ^ (2 : ℕ))⁻¹) (𝓝[<] (1 : ℝ)) atTop :=
     tendsto_inv_nhdsGT_zero.comp hden
-  have hcs : (0 : ℝ) < c ^ 2 * (1 - s) := by
-    have : (0 : ℝ) < c ^ 2 := by positivity
+  have hcs : (0 : ℝ) < c ^ (2 : ℕ) * (1 - s) := by
+    have : (0 : ℝ) < c ^ (2 : ℕ) := by positivity
     nlinarith
-  have hquot : Tendsto (fun b : ℝ => (-(s * c ^ 2) + c ^ 2 * b ^ 2) * (1 - b ^ 2)⁻¹)
+  have hquot : Tendsto (fun b : ℝ => (-(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * b ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))⁻¹)
       (𝓝[<] (1 : ℝ)) atTop := Filter.Tendsto.pos_mul_atTop hcs hnum hinv
   have hsq := Real.tendsto_sqrt_atTop.comp hquot
   refine hsq.congr fun b => ?_
@@ -138,7 +138,7 @@ theorem tendsto_prolateWKB_atTop {c s : ℝ} (hc : 0 < c) (hs1 : s < 1) :
 the Riccati potential, because the former stays bounded and the latter diverges. -/
 theorem eventually_prolateLogDeriv_le_prolateWKB {c s : ℝ} {Φ : ℝ → ℝ}
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ) (hΦ1 : 0 < Φ 1) (hc : 0 < c) (hs1 : s < 1) :
-    ∀ᶠ b in 𝓝[<] (1 : ℝ), prolateLogDeriv Φ b ≤ prolateWKB c (-(s * c ^ 2)) b := by
+    ∀ᶠ b in 𝓝[<] (1 : ℝ), prolateLogDeriv Φ b ≤ prolateWKB c (-(s * c ^ (2 : ℕ))) b := by
   have hd : Differentiable ℝ Φ := (contDiff_infty_iff_deriv.mp hsm).1
   have hdc : Continuous (deriv Φ) := (contDiff_infty_iff_deriv.mp hsm).2.continuous
   have hfun : prolateLogDeriv Φ = fun y : ℝ => -(deriv Φ y / Φ y) := rfl
@@ -159,12 +159,12 @@ point, with `A(s)` the full angular action.  No loss is incurred: the bound is t
 transported Riccati inequality as the target approaches the band endpoint. -/
 theorem prolate_anchor_le_exp_angleAction {c s a : ℝ} {Φ : ℝ → ℝ}
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hc : 0 < c) (hs0 : 0 < s) (hs1 : s < 1)
     (hsa : Real.sqrt s ≤ a) (ha1 : a < 1)
     (hpos : ∀ y ∈ Icc a 1, 0 < Φ y)
-    (hQ : ∀ y ∈ Icc a 1, 0 < -(s * c ^ 2) + c ^ 2 * y ^ 2)
-    (houter : ∀ y ∈ Icc a 1, c ^ 2 * (1 - 2 * y ^ 2) ≤ -(s * c ^ 2)) :
+    (hQ : ∀ y ∈ Icc a 1, 0 < -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * y ^ (2 : ℕ))
+    (houter : ∀ y ∈ Icc a 1, c ^ (2 : ℕ) * (1 - 2 * y ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ))) :
     Φ a * Real.exp (-(c * prolateAngleAction s)) ≤ Φ 1 := by
   have hΦcont : Continuous Φ := hsm.continuous
   have hΦ1 : 0 < Φ 1 := hpos 1 (right_mem_Icc.mpr ha1.le)
@@ -183,12 +183,12 @@ theorem prolate_anchor_le_exp_angleAction {c s a : ℝ} {Φ : ℝ → ℝ}
 `s^(c s/4)`; for a fixed mode, where `c·s` is bounded, that is a negative power of the bandwidth. -/
 theorem prolate_anchor_le_exp_sharp {c s a : ℝ} {Φ : ℝ → ℝ}
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hc : 0 < c) (hs0 : 0 < s) (hs1 : s < 1)
     (hsa : Real.sqrt s ≤ a) (ha1 : a < 1)
     (hpos : ∀ y ∈ Icc a 1, 0 < Φ y)
-    (hQ : ∀ y ∈ Icc a 1, 0 < -(s * c ^ 2) + c ^ 2 * y ^ 2)
-    (houter : ∀ y ∈ Icc a 1, c ^ 2 * (1 - 2 * y ^ 2) ≤ -(s * c ^ 2)) :
+    (hQ : ∀ y ∈ Icc a 1, 0 < -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * y ^ (2 : ℕ))
+    (houter : ∀ y ∈ Icc a 1, c ^ (2 : ℕ) * (1 - 2 * y ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ))) :
     Φ a ≤ Φ 1 * Real.exp (c + c * s / 4 * Real.log s) := by
   have hmain := prolate_anchor_le_exp_angleAction hsm heig hc hs0 hs1 hsa ha1 hpos hQ houter
   have hA := (prolateAngleAction_sub_bounds hs0 hs1.le).1
@@ -208,12 +208,12 @@ theorem prolate_anchor_le_exp_sharp {c s a : ℝ} {Φ : ℝ → ℝ}
 barrier factor outright. -/
 theorem prolate_anchor_le_exp_sharp_of_one {c s a : ℝ} {Φ : ℝ → ℝ}
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hc : 0 < c) (hs0 : 0 < s) (hs1 : s < 1)
     (hsa : Real.sqrt s ≤ a) (ha1 : a < 1)
     (hpos : ∀ y ∈ Icc a 1, 0 < Φ y)
-    (hQ : ∀ y ∈ Icc a 1, 0 < -(s * c ^ 2) + c ^ 2 * y ^ 2)
-    (houter : ∀ y ∈ Icc a 1, c ^ 2 * (1 - 2 * y ^ 2) ≤ -(s * c ^ 2))
+    (hQ : ∀ y ∈ Icc a 1, 0 < -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * y ^ (2 : ℕ))
+    (houter : ∀ y ∈ Icc a 1, c ^ (2 : ℕ) * (1 - 2 * y ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)))
     (hΦ1 : Φ 1 = 1) :
     Φ a ≤ Real.exp (c + c * s / 4 * Real.log s) := by
   have h := prolate_anchor_le_exp_sharp hsm heig hc hs0 hs1 hsa ha1 hpos hQ houter

@@ -356,7 +356,7 @@ theorem rpow_quarter_lt_of_lt_pow {δ B : ℝ} (hδ0 : 0 < δ) (hB : 0 < B) (h :
     _ = B := hpow
 
 /-- **The quarter comparison holds at the `log^{-9}` scale.**  With
-`A = (e^{-11/2}·2^{-3/4}·2^{-1/4}/64)^4`, any `δ < A/L^9` satisfies the comparison, for every
+`A = (e^{-11/2}·2^{-3/4}·2^{-1/4}/64)^(4 : ℕ)`, any `δ < A/L^(9 : ℕ)` satisfies the comparison, for every
 `L ≥ 3` — no further largeness is needed. -/
 theorem quarter_comparison {L δ : ℝ} (hL : 3 ≤ L) (hδ0 : 0 < δ)
     (hδ : δ < (Real.exp (-22 / 4) * (2 : ℝ) ^ (-(3 : ℝ) / 4) * (2 : ℝ) ^ (-(1 : ℝ) / 4) / 64)

@@ -33,8 +33,8 @@ open Finset
 = (x−a)² + b² > 0` when `b ≠ 0`. The pair operator `(D−τ)(D−τ̄)`, `τ = a+bi`, is a genuine
 damped oscillator, not a product of real first-order factors. -/
 theorem dampedChar_pos {a b : ℝ} (hb : b ≠ 0) (x : ℝ) :
-    0 < x ^ 2 - 2 * a * x + (a ^ 2 + b ^ 2) := by
-  have : x ^ 2 - 2 * a * x + (a ^ 2 + b ^ 2) = (x - a) ^ 2 + b ^ 2 := by ring
+    0 < x ^ (2 : ℕ) - 2 * a * x + (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
+  have : x ^ (2 : ℕ) - 2 * a * x + (a ^ (2 : ℕ) + b ^ (2 : ℕ)) = (x - a) ^ (2 : ℕ) + b ^ (2 : ℕ) := by ring
   rw [this]; positivity
 
 /-- **Log-derivative imaginary part** (§2a): for a real pole `β`, `Im((z − β)⁻¹) =
@@ -78,13 +78,13 @@ theorem boundaryField_im_pos {ι : Type*} (x : ℝ) (ρ : ι → ℂ) (s : Finse
 NEGATIVE discriminant — one conjugate non-real pair — exactly when `d > 1 + a²/b²` (the (CPI)
 dip threshold; `disc = 4d(a² + b² − b²d)`). -/
 theorem degenerate_disc_neg {a b d : ℝ} (hb : b ≠ 0) (hd : 0 < d) :
-    (2 * a * d) ^ 2 - 4 * (a ^ 2 + b ^ 2) * (d * (d - 1)) < 0 ↔ 1 + a ^ 2 / b ^ 2 < d := by
-  have hb2 : 0 < b ^ 2 := by positivity
-  have key : (1 + a ^ 2 / b ^ 2 < d) ↔ (b ^ 2 + a ^ 2 < d * b ^ 2) := by
-    rw [show (1 : ℝ) + a ^ 2 / b ^ 2 = (b ^ 2 + a ^ 2) / b ^ 2 from by field_simp,
+    (2 * a * d) ^ (2 : ℕ) - 4 * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (d * (d - 1)) < 0 ↔ 1 + a ^ (2 : ℕ) / b ^ (2 : ℕ) < d := by
+  have hb2 : 0 < b ^ (2 : ℕ) := by positivity
+  have key : (1 + a ^ (2 : ℕ) / b ^ (2 : ℕ) < d) ↔ (b ^ (2 : ℕ) + a ^ (2 : ℕ) < d * b ^ (2 : ℕ)) := by
+    rw [show (1 : ℝ) + a ^ (2 : ℕ) / b ^ (2 : ℕ) = (b ^ (2 : ℕ) + a ^ (2 : ℕ)) / b ^ (2 : ℕ) from by field_simp,
       div_lt_iff₀ hb2]
-  rw [key, show (2 * a * d) ^ 2 - 4 * (a ^ 2 + b ^ 2) * (d * (d - 1))
-      = 4 * d * (a ^ 2 + b ^ 2 - b ^ 2 * d) from by ring]
+  rw [key, show (2 * a * d) ^ (2 : ℕ) - 4 * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * (d * (d - 1))
+      = 4 * d * (a ^ (2 : ℕ) + b ^ (2 : ℕ) - b ^ (2 : ℕ) * d) from by ring]
   constructor
   · intro h; nlinarith [hd, mul_pos hd hb2]
   · intro h; nlinarith [hd, mul_pos hd hb2]

@@ -326,7 +326,7 @@ def primeShearKernelAddCharBiFourier
 theorem primeShearKernel_addChar_biFourier
     {p : ℕ} (hp : p.Prime) (ψ φ : AddChar (ZMod p) ℂ) :
     primeShearKernelAddCharBiFourier p hp ψ φ =
-      p ^ 2 * (if ψ = 1 ∨ φ = 1 then 1 else 0) := by
+      p ^ (2 : ℕ) * (if ψ = 1 ∨ φ = 1 then 1 else 0) := by
   letI : NeZero p := ⟨hp.ne_zero⟩
   have hψsum : (∑ a : ZMod p, ψ a) = if ψ = 1 then p else 0 := by
     by_cases hψ : ψ = 1
@@ -388,7 +388,7 @@ kernel, with exact unnormalized scale `l²`. -/
 theorem squarefreePrimeShearKernel_biFourier
     {k : ℕ} (P : SquarefreePrimeFamily k) (x y : ZMod P.product) :
     squarefreePrimeShearKernelBiFourier P x y =
-      (P.product : ℂ) ^ 2 * (if x * y = 0 then 1 else 0) := by
+      (P.product : ℂ) ^ (2 : ℕ) * (if x * y = 0 then 1 else 0) := by
   classical
   letI (i : Fin k) : NeZero (P.primeValue i) := ⟨(P.prime i).ne_zero⟩
   let E := GaloisForLFunctions.IrregularStokes.DistinctPrimeFamily.crtEquiv P
@@ -491,7 +491,7 @@ theorem squarefreePrimeShearKernel_biFourier
       (primeShearKernel (P.primeValue i) a b *
         squarefreePrimeRestrictedAddChar P x i a) *
           squarefreePrimeRestrictedAddChar P (-y) i b) =
-      ∏ i, (P.primeValue i : ℂ) ^ 2 *
+      ∏ i, (P.primeValue i : ℂ) ^ (2 : ℕ) *
         (if squarefreePrimeRestrictedAddChar P x i = 1 ∨
             squarefreePrimeRestrictedAddChar P (-y) i = 1 then 1 else 0) by
     apply Finset.prod_congr rfl
@@ -508,7 +508,7 @@ theorem squarefreePrimeShearKernel_biFourier
     exact (mul_eq_zero).symm
   simp_rw [if_congr (htrivial _) rfl rfl]
   rw [Finset.prod_mul_distrib]
-  have hscale : (∏ i, ((P.primeValue i : ℕ) : ℂ) ^ 2) = (P.product : ℂ) ^ 2 := by
+  have hscale : (∏ i, ((P.primeValue i : ℕ) : ℂ) ^ (2 : ℕ)) = (P.product : ℂ) ^ (2 : ℕ) := by
     rw [Finset.prod_pow]
     rw [GaloisForLFunctions.IrregularStokes.DistinctPrimeFamily.product]
     push_cast
@@ -560,7 +560,7 @@ theorem squarefreePrimeShearPacketForm_eq_zeroProductGram
     {k : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (P : SquarefreePrimeFamily k) (ξ : ZMod P.product → H) :
     squarefreePrimeShearPacketForm P ξ =
-      (P.product : ℂ) ^ 2 * squarefreePrimeZeroProductGram P ξ := by
+      (P.product : ℂ) ^ (2 : ℕ) * squarefreePrimeZeroProductGram P ξ := by
   classical
   let T : ZMod P.product → ZMod P.product → ZMod P.product →
       ZMod P.product → ℂ := fun j q y x =>
@@ -625,10 +625,10 @@ theorem squarefreePrimeShearPacketForm_eq_zeroProductGram
           rw [Finset.sum_mul]
         _ = _ := rfl
     _ = ∑ x, ∑ y,
-        ((P.product : ℂ) ^ 2 * (if x * y = 0 then 1 else 0)) *
+        ((P.product : ℂ) ^ (2 : ℕ) * (if x * y = 0 then 1 else 0)) *
           inner ℂ (ξ x) (ξ y) := by
       simp_rw [squarefreePrimeShearKernel_biFourier]
-    _ = (P.product : ℂ) ^ 2 * squarefreePrimeZeroProductGram P ξ := by
+    _ = (P.product : ℂ) ^ (2 : ℕ) * squarefreePrimeZeroProductGram P ξ := by
       rw [squarefreePrimeZeroProductGram, Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro x _

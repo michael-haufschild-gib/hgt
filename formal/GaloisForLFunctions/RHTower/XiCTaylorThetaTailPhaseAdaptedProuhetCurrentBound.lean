@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.XiCTaylorAnisotropicRelativeRemainder
 The double-root Prouhet packet annihilates the complete one-sided translated value and derivative
 vectors.  Its off-diagonal Hermitian cross with the fixed seam vector is therefore exactly zero,
 not merely bounded.  The anisotropic local-order lower bound for the final Taylor section turns
-that exact identity into the required strict `o(n)|P|^2` upper estimate even when the limiting Xi
+that exact identity into the required strict `o(n)|P|^(2 : ℕ)` upper estimate even when the limiting Xi
 value is zero.
 -/
 

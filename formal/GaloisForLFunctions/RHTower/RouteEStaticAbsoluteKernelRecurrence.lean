@@ -84,7 +84,7 @@ theorem exists_gt_norm_tsum_routeEStaticAbsoluteKernelTerm_lt
   set epsilon : ℝ := Real.sqrt ((delta / 2) / (H + 1)) with hepsilon
   have hquot : (0 : ℝ) < (delta / 2) / (H + 1) := div_pos hhalf hdenom
   have hepsilon_pos : 0 < epsilon := Real.sqrt_pos.mpr hquot
-  have hepsilon_sq : epsilon ^ 2 = (delta / 2) / (H + 1) :=
+  have hepsilon_sq : epsilon ^ (2 : ℕ) = (delta / 2) / (H + 1) :=
     Real.sq_sqrt hquot.le
   have hind : LinearIndependent ℚ
       (fun p : {q : Nat.Primes // q ∈ P} => Real.log (((p : Nat.Primes) : ℕ) : ℝ)) :=
@@ -113,7 +113,7 @@ theorem exists_gt_norm_tsum_routeEStaticAbsoluteKernelTerm_lt
   have hheadbound :
       ‖∑ q ∈ A, routeEStaticAbsoluteKernelTerm K q t‖ < delta / 2 := by
     have hterm : ∀ q ∈ A,
-        ‖routeEStaticAbsoluteKernelTerm K q t‖ ≤ ‖K q‖ * epsilon ^ 2 := by
+        ‖routeEStaticAbsoluteKernelTerm K q t‖ ≤ ‖K q‖ * epsilon ^ (2 : ℕ) := by
       intro q hq
       have hq₁ : q.1 ∈ P := by
         rw [hP]
@@ -134,13 +134,13 @@ theorem exists_gt_norm_tsum_routeEStaticAbsoluteKernelTerm_lt
                 (‖routeEAntiscaleSeam q.1 t‖ * ‖routeEAntiscaleSeam q.2 t‖) := by ring
         _ ≤ ‖K q‖ * (epsilon * epsilon) :=
           mul_le_mul_of_nonneg_left hseamprod (norm_nonneg _)
-        _ = ‖K q‖ * epsilon ^ 2 := by ring
+        _ = ‖K q‖ * epsilon ^ (2 : ℕ) := by ring
     calc
       ‖∑ q ∈ A, routeEStaticAbsoluteKernelTerm K q t‖
           ≤ ∑ q ∈ A, ‖routeEStaticAbsoluteKernelTerm K q t‖ := norm_sum_le _ _
-      _ ≤ ∑ q ∈ A, ‖K q‖ * epsilon ^ 2 := Finset.sum_le_sum hterm
-      _ = (∑ q ∈ A, ‖K q‖) * epsilon ^ 2 := by rw [Finset.sum_mul]
-      _ = H * epsilon ^ 2 := by rw [hH]
+      _ ≤ ∑ q ∈ A, ‖K q‖ * epsilon ^ (2 : ℕ) := Finset.sum_le_sum hterm
+      _ = (∑ q ∈ A, ‖K q‖) * epsilon ^ (2 : ℕ) := by rw [Finset.sum_mul]
+      _ = H * epsilon ^ (2 : ℕ) := by rw [hH]
       _ < delta / 2 := by
         rw [hepsilon_sq]
         have hrewrite :

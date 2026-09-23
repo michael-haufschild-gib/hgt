@@ -57,14 +57,14 @@ theorem quarticContactResidual_weighted_jet_memLp (q : XiZeroCopy) (slot : Fin 6
 theorem quarticResidual_vertical_pairing_integrable (q r : XiZeroCopy) (slot : Fin 6) :
     Integrable (fun z : UpperHalfPlane => scalar (physicalAngularParameter r) (coordinates z)*
       (z.im:ℂ)*coordDeriv 1 (quarticContactResidual q slot) (coordinates z)) D4BMModularCore.measure := by
-  have hh : MemLp (fun z : UpperHalfPlane => (z.im:ℂ)^2*
+  have hh : MemLp (fun z : UpperHalfPlane => (z.im:ℂ)^(2 : ℕ)*
       coordDeriv 1 (quarticContactResidual q slot) (coordinates z)) 2 D4BMModularCore.measure := by
     simpa only [coordinateJet,Complex.cpow_ofNat] using
       quarticContactResidual_weighted_jet_memLp q slot [1] 2
   apply ((physicalDualDensity_memLp r).integrable_mul hh).congr
   exact Filter.Eventually.of_forall (fun z => by
     change ((z.im:ℂ)⁻¹*scalar (physicalAngularParameter r) (coordinates z))*
-      ((z.im:ℂ)^2*coordDeriv 1 (quarticContactResidual q slot) (coordinates z))=_
+      ((z.im:ℂ)^(2 : ℕ)*coordDeriv 1 (quarticContactResidual q slot) (coordinates z))=_
     have hy : (z.im:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr z.im_pos.ne'
     field_simp [hy])
 
@@ -125,14 +125,14 @@ theorem quarticResidualCoreCutoff_H_physical_laplacian_tendsto (q r : XiZeroCopy
     have h1 : ‖(z.im:ℂ)*((deriv (scaledCuspCutoff N) z.im:ℝ):ℂ)‖ ≤ C := by
       rw [← Complex.ofReal_mul,Complex.norm_real,Real.norm_eq_abs]
       exact (hb N z.im).1
-    have h2 : ‖(z.im:ℂ)^2*((deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ)‖ ≤ C := by
+    have h2 : ‖(z.im:ℂ)^(2 : ℕ)*((deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ)‖ ≤ C := by
       rw [← Complex.ofReal_pow,← Complex.ofReal_mul,Complex.norm_real,Real.norm_eq_abs]
       exact (hb N z.im).2
     have he : scalar (physicalAngularParameter r) (coordinates z)*
         (quarticResidualCoreCutoff q 4 n).laplacian.field z=
         (scaledCuspCutoff N z.im:ℂ)*L z+
           (2:ℂ)*((z.im:ℂ)*((deriv (scaledCuspCutoff N) z.im:ℝ):ℂ))*V z+
-            ((z.im:ℂ)^2*((deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ))*P z := by
+            ((z.im:ℂ)^(2 : ℕ)*((deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ))*P z := by
       rw [quarticResidualCoreCutoff_laplacian q 4 n z hz]
       dsimp only [L,V,P,N]
       ring
@@ -142,14 +142,14 @@ theorem quarticResidualCoreCutoff_H_physical_laplacian_tendsto (q r : XiZeroCopy
     have h1b : ‖(2:ℂ)*((z.im:ℂ)*((deriv (scaledCuspCutoff N) z.im:ℝ):ℂ))*V z‖ ≤ 2*C*‖V z‖ := by
       rw [norm_mul,norm_mul,Complex.norm_ofNat]
       exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h1 (by norm_num)) (norm_nonneg _)
-    have h2b : ‖((z.im:ℂ)^2*((deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ))*P z‖ ≤ C*‖P z‖ := by
+    have h2b : ‖((z.im:ℂ)^(2 : ℕ)*((deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ))*P z‖ ≤ C*‖P z‖ := by
       rw [norm_mul]
       exact mul_le_mul_of_nonneg_right h2 (norm_nonneg _)
     rw [he]
     calc
       _ ≤ ‖(scaledCuspCutoff N z.im:ℂ)*L z‖+
           ‖(2:ℂ)*((z.im:ℂ)*((deriv (scaledCuspCutoff N) z.im:ℝ):ℂ))*V z‖+
-            ‖((z.im:ℂ)^2*((deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ))*P z‖ :=
+            ‖((z.im:ℂ)^(2 : ℕ)*((deriv (deriv (scaledCuspCutoff N)) z.im:ℝ):ℂ))*P z‖ :=
         (norm_add_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
       _ ≤ ‖L z‖+2*C*‖V z‖+C*‖P z‖ := add_le_add (add_le_add h0b h1b) h2b
   · filter_upwards [ae_restrict_mem ModularGroup.isClosed_fd.measurableSet] with z hz
@@ -162,14 +162,14 @@ theorem quarticResidualCoreCutoff_H_physical_laplacian_tendsto (q r : XiZeroCopy
 theorem quarticContactResidual_H_physical_green (q r : XiZeroCopy) :
     (∫ z : UpperHalfPlane, scalar (physicalAngularParameter r) (coordinates z)*
       hyperbolicLaplacian (quarticContactResidual q 4) (coordinates z) ∂D4BMModularCore.measure)=
-      (physicalAngularParameter r^2-1/4)*∫ z : UpperHalfPlane,
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*∫ z : UpperHalfPlane,
         scalar (physicalAngularParameter r) (coordinates z)*quarticContactResidual q 4 (coordinates z)
           ∂D4BMModularCore.measure := by
   have h := (quarticResidualCoreCutoff_physical_pairing_tendsto q r 4).const_mul
-    (physicalAngularParameter r^2-1/4)
+    (physicalAngularParameter r^(2 : ℕ)-1/4)
   have he : (fun n : ℕ => ∫ z : UpperHalfPlane, scalar (physicalAngularParameter r) (coordinates z)*
       (quarticResidualCoreCutoff q 4 n).laplacian.field z ∂D4BMModularCore.measure)=
-      fun n => (physicalAngularParameter r^2-1/4)*∫ z : UpperHalfPlane,
+      fun n => (physicalAngularParameter r^(2 : ℕ)-1/4)*∫ z : UpperHalfPlane,
         scalar (physicalAngularParameter r) (coordinates z)*(quarticResidualCoreCutoff q 4 n).field z
           ∂D4BMModularCore.measure := funext (fun n => (quarticResidualCoreCutoff_physical_green q r 4 n).2.2)
   rw [← he] at h
@@ -184,8 +184,8 @@ def quarticNativePhysicalPeriod (q : XiZeroCopy) (slot : Fin 6) : ℂ :=
 
 /-- Exact native physical Green transport of H: all original cusp and source-cutoff contacts are included. -/
 theorem quarticNativePhysicalPeriod_H_green (q : XiZeroCopy) :
-    quarticNativePhysicalPeriod q 5=(physicalAngularParameter q^2-1/4)*quarticNativePhysicalPeriod q 4 := by
-  let mu : ℂ := physicalAngularParameter q^2-1/4
+    quarticNativePhysicalPeriod q 5=(physicalAngularParameter q^(2 : ℕ)-1/4)*quarticNativePhysicalPeriod q 4 := by
+  let mu : ℂ := physicalAngularParameter q^(2 : ℕ)-1/4
   have hmu : mu=(q.1:ℂ)*((q.1:ℂ)-2)/4 := by
     dsimp only [mu]
     rw [physicalAngularParameter_eq]

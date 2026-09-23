@@ -16,7 +16,7 @@ open Set Filter Topology
 
 theorem k_gt_fiveFourths {x : ℝ} (hx : 0 ≤ x) : 5/4 < k x := by
   have hs := thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one
-  have h0 : k 0 = thetaCuspSelfDualModularScale^2/12-1/3 := by
+  have h0 : k 0 = thetaCuspSelfDualModularScale^(2 : ℕ)/12-1/3 := by
     simp [k, t, u, A, thetaCuspModularGapAmplitude_zero]
     ring
   have hm := k_mono (show 0 ∈ Ici (0 : ℝ) by simp) hx hx
@@ -42,7 +42,7 @@ theorem J_le_three_k {x : ℝ} (hx : 0 ≤ x) : J x ≤ 3*k x := by
   nlinarith only [hu, hw, hm]
 
 theorem J_deriv_boundary_decomposition {x : ℝ} (hx : 0 ≤ x) :
-    deriv J x = (3-u x)*((u x+3)*k x^2-2*k x-4/3) +
+    deriv J x = (3-u x)*((u x+3)*k x^(2 : ℕ)-2*k x-4/3) +
       2*u x*(k x+2/3)*(J x-1) := by
   have hk : k x ≠ 0 := ne_of_gt (lt_trans (by norm_num) (k_gt hx))
   rw [(dJ hx).deriv]
@@ -51,18 +51,18 @@ theorem J_deriv_boundary_decomposition {x : ℝ} (hx : 0 ≤ x) :
   ring
 
 theorem J_deriv_boundary_reserve_pos {x : ℝ} (hx : 0 ≤ x) :
-    0 < (3-u x)*((u x+3)*k x^2-2*k x-4/3) := by
+    0 < (3-u x)*((u x+3)*k x^(2 : ℕ)-2*k x-4/3) := by
   have hu := thetaCuspModularMassDrift_nonneg hx
   have h3 := thetaCuspModularMassDrift_lt_three hx
   have hk := k_gt_fiveFourths hx
   have hp := mul_nonneg (show 0 ≤ k x-5/4 by linarith)
     (show 0 ≤ 3*k x+7/4 by linarith)
   have hq := mul_nonneg hu (sq_nonneg (k x))
-  have hb : 0 < (u x+3)*k x^2-2*k x-4/3 := by nlinarith only [hp,hq]
+  have hb : 0 < (u x+3)*k x^(2 : ℕ)-2*k x-4/3 := by nlinarith only [hp,hq]
   exact mul_pos (sub_pos.mpr h3) hb
 
 theorem J_deriv_gt_escape {b x : ℝ} (hb : 0 < b) (hbx : b ≤ x) (hJ : 1 ≤ J x) :
-    (2*u b/3)*(J x-1)^2 < deriv J x := by
+    (2*u b/3)*(J x-1)^(2 : ℕ) < deriv J x := by
   have hx : 0 ≤ x := hb.le.trans hbx
   have hub : 0 < u b := neg_pos.mpr (thetaCuspModularDrift_re_neg_of_pos hb)
   have hux := thetaCuspModularMassDrift_nonneg hx
@@ -115,11 +115,11 @@ theorem J_lt_one {b : ℝ} (hb : 0 ≤ b) : J b < 1 := by
     have hcomp := hj.comp s ((hasDerivAt_id s).const_add b)
     convert (hcomp.const_sub 1).const_mul c using 1
     all_goals first | rfl | (simp only [mul_one]; ring)
-  have hineq (s : ℝ) (hs : 0 < s) : deriv f s < -(f s)^2 := by
+  have hineq (s : ℝ) (hs : 0 < s) : deriv f s < -(f s)^(2 : ℕ) := by
     rw [(hf s hs).deriv]
     have hbs : b ≤ b+s := by linarith only [hs]
     have hp := J_deriv_gt_escape hb0 hbs (hbound (b+s) hbs)
-    change c*(J (b+s)-1)^2 < deriv J (b+s) at hp
+    change c*(J (b+s)-1)^(2 : ℕ) < deriv J (b+s) at hp
     have hm := mul_lt_mul_of_pos_left hp hc
     dsimp [f]
     nlinarith only [hm]

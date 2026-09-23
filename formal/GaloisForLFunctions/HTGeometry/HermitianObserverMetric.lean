@@ -27,23 +27,23 @@ theorem inner_eq_sum_repr (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v w : E
   inner_eq_sum_repr_of_orthonormalBasis (hT.eigenvectorBasis hn) v w
 
 theorem norm_sq_eq_sum_repr (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v : E) :
-    ‖v‖ ^ 2 = ∑ i, ‖(hT.eigenvectorBasis hn).repr v i‖ ^ 2 := by
+    ‖v‖ ^ (2 : ℕ) = ∑ i, ‖(hT.eigenvectorBasis hn).repr v i‖ ^ (2 : ℕ) := by
   rw [norm_sq_repr hT hn v, Real.sq_sqrt]
   exact Finset.sum_nonneg fun i _ => sq_nonneg _
 
 theorem conj_mul_ofReal_mul (z : ℂ) (r : ℝ) :
-    (starRingEnd ℂ) z * ((r : ℂ) * z) = ((r * ‖z‖ ^ 2 : ℝ) : ℂ) := by
-  have h : (starRingEnd ℂ) z * z = ((‖z‖ : ℝ) : ℂ) ^ 2 := RCLike.conj_mul z
+    (starRingEnd ℂ) z * ((r : ℂ) * z) = ((r * ‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
+  have h : (starRingEnd ℂ) z * z = ((‖z‖ : ℝ) : ℂ) ^ (2 : ℕ) := RCLike.conj_mul z
   calc (starRingEnd ℂ) z * ((r : ℂ) * z) = (r : ℂ) * ((starRingEnd ℂ) z * z) := by ring
-    _ = (r : ℂ) * ((‖z‖ : ℝ) : ℂ) ^ 2 := by rw [h]
-    _ = ((r * ‖z‖ ^ 2 : ℝ) : ℂ) := by push_cast; ring
+    _ = (r : ℂ) * ((‖z‖ : ℝ) : ℂ) ^ (2 : ℕ) := by rw [h]
+    _ = ((r * ‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; ring
 
 /-- **The observer metric in eigencoordinates**: along the ray each eigencoordinate is weighted by
 the exponential of its eigenvalue. -/
 theorem inner_metricRay_eq_sum (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v : E) (t : ℝ) :
     inner ℂ v (metricRay T t v)
       = ((∑ i, Real.exp (t * hT.eigenvalues hn i)
-          * ‖(hT.eigenvectorBasis hn).repr v i‖ ^ 2 : ℝ) : ℂ) := by
+          * ‖(hT.eigenvectorBasis hn).repr v i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [inner_eq_sum_repr hT hn v (metricRay T t v), Complex.ofReal_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [repr_metricRay hT hn v t i]
@@ -68,7 +68,7 @@ theorem inner_metricRay_pos (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {v : E
   obtain ⟨i, hi⟩ : ∃ i : Fin n, (hT.eigenvectorBasis hn).repr v i ≠ 0 := by
     by_contra hcon
     push Not at hcon
-    have hnorm : ‖v‖ ^ 2 = 0 := by
+    have hnorm : ‖v‖ ^ (2 : ℕ) = 0 := by
       rw [norm_sq_eq_sum_repr hT hn v]
       exact Finset.sum_eq_zero fun i _ => by rw [hcon i]; simp
     exact hv (norm_eq_zero.1 ((pow_eq_zero_iff two_ne_zero).1 hnorm))
@@ -98,7 +98,7 @@ theorem repr_eq_zero_of_mem_orthogonal (hT : T.IsSymmetric) (hn : finrank ℂ E 
 /-- **On the flag member at threshold `c` the observer metric grows at least at rate `c`.** -/
 theorem re_inner_metricRay_ge (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {c : ℝ} {v : E}
     (hv : v ∈ eigenSum T c) {t : ℝ} (ht : 0 ≤ t) :
-    Real.exp (c * t) * ‖v‖ ^ 2 ≤ (inner ℂ v (metricRay T t v)).re := by
+    Real.exp (c * t) * ‖v‖ ^ (2 : ℕ) ≤ (inner ℂ v (metricRay T t v)).re := by
   rw [inner_metricRay_eq_sum hT hn v t]
   simp only [Complex.ofReal_re]
   rw [norm_sq_eq_sum_repr hT hn v, Finset.mul_sum]
@@ -114,7 +114,7 @@ theorem re_inner_metricRay_ge (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {c :
 `c`.** -/
 theorem re_inner_metricRay_le (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {c : ℝ} {v : E}
     (hv : v ∈ (eigenSum T c)ᗮ) {t : ℝ} (ht : 0 ≤ t) :
-    (inner ℂ v (metricRay T t v)).re ≤ Real.exp (c * t) * ‖v‖ ^ 2 := by
+    (inner ℂ v (metricRay T t v)).re ≤ Real.exp (c * t) * ‖v‖ ^ (2 : ℕ) := by
   rw [inner_metricRay_eq_sum hT hn v t]
   simp only [Complex.ofReal_re]
   rw [norm_sq_eq_sum_repr hT hn v, Finset.mul_sum]

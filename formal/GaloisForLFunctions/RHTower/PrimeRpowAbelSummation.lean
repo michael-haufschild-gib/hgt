@@ -24,12 +24,12 @@ noncomputable section
 /-! ## The two summands -/
 
 /-- The prime logarithm mass. -/
-def primeLogWeight (n : ℕ) : ℝ := if n.Prime then Real.log n else 0
+def primeLogWeight_primeRpowAbelSummation (n : ℕ) : ℝ := if n.Prime then Real.log n else 0
 
 theorem sum_primeLogWeight_eq_theta (t : ℝ) :
-    ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, primeLogWeight k = Chebyshev.theta t := by
+    ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, primeLogWeight_primeRpowAbelSummation k = Chebyshev.theta t := by
   rw [Chebyshev.theta_eq_sum_Icc, Finset.sum_filter]
-  exact Finset.sum_congr rfl fun n _ => by rw [primeLogWeight]
+  exact Finset.sum_congr rfl fun n _ => by rw [primeLogWeight_primeRpowAbelSummation]
 
 /-- The Abel weight `t^(a-1)/log t`. -/
 def rpowDivLog (a t : ℝ) : ℝ := t ^ (a - 1) / Real.log t
@@ -102,9 +102,9 @@ def primeRpowSumIoc (a x : ℝ) : ℝ :=
   ∑ k ∈ Finset.Ioc 2 ⌊x⌋₊, (if k.Prime then ((k : ℕ) : ℝ) ^ (a - 1) else 0)
 
 theorem rpowDivLog_mul_primeLogWeight {a : ℝ} {k : ℕ} (hk : 2 < k) :
-    rpowDivLog a (k : ℝ) * primeLogWeight k =
+    rpowDivLog a (k : ℝ) * primeLogWeight_primeRpowAbelSummation k =
       (if k.Prime then ((k : ℕ) : ℝ) ^ (a - 1) else 0) := by
-  rw [rpowDivLog, primeLogWeight]
+  rw [rpowDivLog, primeLogWeight_primeRpowAbelSummation]
   by_cases hp : k.Prime
   · have hk2 : (1 : ℝ) < (k : ℝ) := by exact_mod_cast hk.trans_le' (by norm_num)
     have hlog : Real.log (k : ℝ) ≠ 0 := ne_of_gt (Real.log_pos hk2)
@@ -116,7 +116,7 @@ theorem primeRpowSumIoc_eq {a x : ℝ} (hx : 2 ≤ x) :
     primeRpowSumIoc a x =
       rpowDivLog a x * Chebyshev.theta x - rpowDivLog a 2 * Chebyshev.theta 2 -
         ∫ t in Ioc (2 : ℝ) x, deriv (rpowDivLog a) t * Chebyshev.theta t := by
-  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight (f := rpowDivLog a)
+  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight_primeRpowAbelSummation (f := rpowDivLog a)
     (a := (2 : ℝ)) (b := x) (by norm_num) hx
     (fun t ht => differentiableAt_rpowDivLog ht.1) (integrableOn_derivRpowDivLog hx)
   simp only [sum_primeLogWeight_eq_theta] at habel

@@ -6,12 +6,12 @@ import GaloisForLFunctions.HTGeometry.AlgebraicallyIndependentCoefficientFormalG
 
 The normalized pole branch
 
-`B_n(T) = T + b_{n,0} T^2 + b_{n,1} T^3 + ...`
+`B_n(T) = T + b_{n,0} T^(2 : ℕ) + b_{n,1} T^(3 : ℕ) + ...`
 
 has a fixed origin and unit tangent.  Removing those two gauge coordinates leaves the nonlinear
 observation germ
 
-`C_n(T) = (B_n(T) - T) / T^2 = b_{n,0} + b_{n,1} T + ...`.
+`C_n(T) = (B_n(T) - T) / T^(2 : ℕ) = b_{n,0} + b_{n,1} T + ...`.
 
 Its coefficients, viewed as eventual germs in the pole label, are already known to be countably
 algebraically independent.  This file records the exact formal consequence: the clock observation

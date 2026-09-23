@@ -68,7 +68,7 @@ def routePTwoPrimeJuliaWardEnergyLevel (x : ℝ) (i : Fin 2) : ℝ :=
 def routePTwoPrimeJuliaWardCompressedEnergy (x u : ℝ) : ℝ :=
   2 * routePTwoPrimeWardWeight u 0 * routePTwoPrimeWardWeight u 1 *
     (routePTwoPrimeJuliaWardEnergyLevel x 0 -
-      routePTwoPrimeJuliaWardEnergyLevel x 1) ^ 2
+      routePTwoPrimeJuliaWardEnergyLevel x 1) ^ (2 : ℕ)
 
 /-- Nonlocal cross term produced before cell compression from both reciprocal-promotion
 amplitudes and the Gamma--Julia environment clock. -/
@@ -97,9 +97,9 @@ def routePTwoPrimeJuliaWardPrecompressionShortedEnergy (x u : ℝ) : ℝ :=
   B 0 0 - B 0 1 * (B 1 1)⁻¹ * B 1 0
 
 theorem routePTwoPrimeJuliaWardNonlocalCoupling_sq (x u : ℝ) :
-    routePTwoPrimeJuliaWardNonlocalCoupling x u ^ 2 =
+    routePTwoPrimeJuliaWardNonlocalCoupling x u ^ (2 : ℕ) =
       routePTwoPrimeJuliaWardCompressedEnergy x u := by
-  have hsqrt : Real.sqrt 2 ^ 2 = (2 : ℝ) := Real.sq_sqrt (by norm_num)
+  have hsqrt : Real.sqrt 2 ^ (2 : ℕ) = (2 : ℝ) := Real.sq_sqrt (by norm_num)
   rw [routePTwoPrimeJuliaWardNonlocalCoupling,
     routePPrimitiveGammaJuliaWardSourceExteriorCoupling,
     routePTwoPrimeJuliaWardCompressedEnergy,
@@ -128,7 +128,7 @@ theorem routePTwoPrimeJuliaWardPrecompressionBlock_posSemidef
     (routePTwoPrimeJuliaWardPrecompressionBlock x u).PosSemidef := by
   let c := routePTwoPrimeJuliaWardNonlocalCoupling x u
   let R : Matrix (Fin 1) (Fin 2) ℝ := !![c, 1]
-  have hc : routePTwoPrimeJuliaWardCompressedEnergy x u = c ^ 2 := by
+  have hc : routePTwoPrimeJuliaWardCompressedEnergy x u = c ^ (2 : ℕ) := by
     simpa [c] using (routePTwoPrimeJuliaWardNonlocalCoupling_sq x u).symm
   have hGram : routePTwoPrimeJuliaWardPrecompressionBlock x u = Rᴴ * R := by
     ext i j

@@ -44,15 +44,15 @@ theorem indepPeriods_iff_linearIndependent_int (a b : ℂ) :
 
 /-- **Period interface identification.**  Integral independence of the three periods is exactly
 rational independence of the source-period family. -/
-theorem indepPeriods_iff_linearIndependent_ellipticGammaSourcePeriods (a b : ℂ) :
+theorem indepPeriods_iff_linearIndependent_ellipticGammaSourcePeriods_indepPeriodsFractionFieldConnector (a b : ℂ) :
     IndepPeriods a b ↔ LinearIndependent ℚ (ellipticGammaSourcePeriods a b) := by
   rw [indepPeriods_iff_linearIndependent_int]
   exact LinearIndependent.iff_fractionRing ℤ ℚ
 
 /-- The unconditional rational witness discharges the integral period hypothesis. -/
-theorem indepPeriods_I_I_sqrtTwo :
+theorem indepPeriods_I_I_sqrtTwo_indepPeriodsFractionFieldConnector :
     IndepPeriods Complex.I (Complex.I * (Real.sqrt 2 : ℂ)) :=
-  (indepPeriods_iff_linearIndependent_ellipticGammaSourcePeriods _ _).mpr
+  (indepPeriods_iff_linearIndependent_ellipticGammaSourcePeriods_indepPeriodsFractionFieldConnector _ _).mpr
     GaloisForLFunctions.linearIndependent_ellipticGammaSourcePeriods_I_I_sqrtTwo
 
 end PeriodConnector

@@ -51,7 +51,7 @@ theorem norm_sq_smul_sourceConormal_apply
     {V Q : Type*} [AddCommGroup V] [Module ℂ V]
     [NormedAddCommGroup Q] [NormedSpace ℂ Q]
     (L : V →ₗ[ℂ] Q) (c : ℂ) (x : V) :
-    ‖(c • L) x‖ ^ 2 = ‖c‖ ^ 2 * ‖L x‖ ^ 2 := by
+    ‖(c • L) x‖ ^ (2 : ℕ) = ‖c‖ ^ (2 : ℕ) * ‖L x‖ ^ (2 : ℕ) := by
   rw [LinearMap.smul_apply, norm_smul, mul_pow]
 
 end

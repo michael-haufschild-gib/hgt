@@ -36,9 +36,9 @@ lemma relativeResolvent_conj_pair_im_formula
     ((a⁻¹ - (a - z)⁻¹) +
         (((starRingEnd ℂ) a)⁻¹ - ((starRingEnd ℂ) a - z)⁻¹)).im =
       -2 * z.im *
-          ((z.re - a.re) ^ 2 + z.im ^ 2 - a.im ^ 2) /
-        (((z.re - a.re) ^ 2 + (z.im - a.im) ^ 2) *
-          ((z.re - a.re) ^ 2 + (z.im + a.im) ^ 2)) := by
+          ((z.re - a.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) - a.im ^ (2 : ℕ)) /
+        (((z.re - a.re) ^ (2 : ℕ) + (z.im - a.im) ^ (2 : ℕ)) *
+          ((z.re - a.re) ^ (2 : ℕ) + (z.im + a.im) ^ (2 : ℕ))) := by
   have hca : (starRingEnd ℂ) a ≠ 0 := (map_ne_zero (starRingEnd ℂ)).2 ha
   have haz : a - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hza)
   have hcaz : (starRingEnd ℂ) a - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hzac)
@@ -46,24 +46,24 @@ lemma relativeResolvent_conj_pair_im_formula
   rw [Complex.inv_im, Complex.inv_im, Complex.inv_im, Complex.inv_im]
   simp only [Complex.conj_re, Complex.conj_im, neg_neg, sub_im,
     Complex.normSq_apply, sub_re]
-  have hna : a.re ^ 2 + a.im ^ 2 ≠ 0 := by
+  have hna : a.re ^ (2 : ℕ) + a.im ^ (2 : ℕ) ≠ 0 := by
     simpa only [Complex.normSq_apply, pow_two] using
       (Complex.normSq_pos.mpr ha).ne'
   have hnaz :
-      (a.re - z.re) ^ 2 + (a.im - z.im) ^ 2 ≠ 0 := by
+      (a.re - z.re) ^ (2 : ℕ) + (a.im - z.im) ^ (2 : ℕ) ≠ 0 := by
     simpa only [Complex.normSq_apply, sub_re, sub_im, pow_two] using
       (Complex.normSq_pos.mpr haz).ne'
   have hncaz :
-      (a.re - z.re) ^ 2 + (-a.im - z.im) ^ 2 ≠ 0 := by
+      (a.re - z.re) ^ (2 : ℕ) + (-a.im - z.im) ^ (2 : ℕ) ≠ 0 := by
     simpa only [Complex.normSq_apply, Complex.conj_re, Complex.conj_im,
       sub_re, sub_im, pow_two] using (Complex.normSq_pos.mpr hcaz).ne'
   have hdnaz :
-      (z.re - a.re) ^ 2 + (z.im - a.im) ^ 2 ≠ 0 := by
+      (z.re - a.re) ^ (2 : ℕ) + (z.im - a.im) ^ (2 : ℕ) ≠ 0 := by
     have h : z - a ≠ 0 := sub_ne_zero.mpr hza
     simpa only [Complex.normSq_apply, sub_re, sub_im, pow_two] using
       (Complex.normSq_pos.mpr h).ne'
   have hdncaz :
-      (z.re - a.re) ^ 2 + (z.im + a.im) ^ 2 ≠ 0 := by
+      (z.re - a.re) ^ (2 : ℕ) + (z.im + a.im) ^ (2 : ℕ) ≠ 0 := by
     have h : z - (starRingEnd ℂ) a ≠ 0 := sub_ne_zero.mpr hzac
     simpa only [Complex.normSq_apply, Complex.conj_re, Complex.conj_im,
       sub_re, sub_im, sub_neg_eq_add, pow_two] using
@@ -80,8 +80,8 @@ keeps the two resolvent terms finite.  Every accretive-band hypothesis in the to
 through this one inequality. -/
 lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core
     (z : ℂ) (hzIm : 0 < z.im) (q : XiZeroCopy)
-    (hcore : 0 < (z.re - (xiSpectralPoint q).re) ^ 2 + z.im ^ 2
-      - (xiSpectralPoint q).im ^ 2) :
+    (hcore : 0 < (z.re - (xiSpectralPoint q).re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)
+      - (xiSpectralPoint q).im ^ (2 : ℕ)) :
     (xiRelativeResolventTerm z q +
       xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im ≤ 0 := by
   set a : ℂ := xiSpectralPoint q with ha_def
@@ -94,11 +94,11 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core
     rw [h] at hcore
     simp only [Complex.conj_re, Complex.conj_im] at hcore
     nlinarith [hcore]
-  have hdenOne : 0 < (z.re - a.re) ^ 2 + (z.im - a.im) ^ 2 := by
+  have hdenOne : 0 < (z.re - a.re) ^ (2 : ℕ) + (z.im - a.im) ^ (2 : ℕ) := by
     have hne : z - a ≠ 0 := sub_ne_zero.mpr hza
     have hnorm : 0 < Complex.normSq (z - a) := Complex.normSq_pos.mpr hne
     simpa [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, sq] using hnorm
-  have hdenTwo : 0 < (z.re - a.re) ^ 2 + (z.im + a.im) ^ 2 := by
+  have hdenTwo : 0 < (z.re - a.re) ^ (2 : ℕ) + (z.im + a.im) ^ (2 : ℕ) := by
     have hne : z - (starRingEnd ℂ) a ≠ 0 := sub_ne_zero.mpr hzac
     have hnorm : 0 < Complex.normSq (z - (starRingEnd ℂ) a) := Complex.normSq_pos.mpr hne
     simpa [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.conj_re,
@@ -122,7 +122,7 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos
     (xiRelativeResolventTerm z q +
       xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im ≤ 0 := by
   let a : ℂ := xiSpectralPoint q
-  have hareSq : (41 / 2 : ℝ) < a.re ^ 2 := by
+  have hareSq : (41 / 2 : ℝ) < a.re ^ (2 : ℕ) := by
     simpa [a, xiSpectralPoint, mul_re] using
       xiZeroCopy_fortyOne_div_two_lt_im_sq q
   have hareAbs : R + 1 / 2 < |a.re| := by
@@ -136,10 +136,10 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos
   have hdistAbs : 1 / 2 < |z.re - a.re| := by
     rw [abs_sub_comm]
     linarith
-  have hdistSq : a.im ^ 2 < (z.re - a.re) ^ 2 := by
+  have hdistSq : a.im ^ (2 : ℕ) < (z.re - a.re) ^ (2 : ℕ) := by
     nlinarith [sq_abs a.im, sq_abs (z.re - a.re),
       abs_nonneg a.im, abs_nonneg (z.re - a.re)]
-  have hcore : 0 < (z.re - a.re) ^ 2 + z.im ^ 2 - a.im ^ 2 := by
+  have hcore : 0 < (z.re - a.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) - a.im ^ (2 : ℕ) := by
     nlinarith [sq_nonneg z.im]
   exact xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core z hzIm q hcore
 

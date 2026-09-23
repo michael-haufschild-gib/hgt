@@ -78,7 +78,7 @@ theorem purityReflection_norm_le_one {x : H} (hx : ‖x‖ = 1) :
         simp
   have hre := congrArg Complex.re hinner
   simp only [inner_self_eq_norm_sq_to_K] at hre
-  have hnormSq : ‖A y‖ ^ 2 = ‖y‖ ^ 2 := by exact_mod_cast hre
+  have hnormSq : ‖A y‖ ^ (2 : ℕ) = ‖y‖ ^ (2 : ℕ) := by exact_mod_cast hre
   nlinarith [norm_nonneg (A y), norm_nonneg y]
 
 omit [CompleteSpace H] in
@@ -364,7 +364,7 @@ theorem top_eigenvector_rankOne_operator_distance
       change P y - (R z + (‖S‖ : ℂ) • P y) = (a : ℂ) • P y - R z
       simp [a]
       module
-    have hsplit : ‖p‖ ^ 2 + ‖z‖ ^ 2 = ‖y‖ ^ 2 := by
+    have hsplit : ‖p‖ ^ (2 : ℕ) + ‖z‖ ^ (2 : ℕ) = ‖y‖ ^ (2 : ℕ) := by
       have hy : y = p + z := by simp [z]
       rw [hy, norm_add_sq (𝕜 := ℂ) p z, hpz]
       norm_num
@@ -372,13 +372,13 @@ theorem top_eigenvector_rankOne_operator_distance
       calc
         ‖R z‖ ≤ ‖R‖ * ‖z‖ := R.le_opNorm z
         _ ≤ a * ‖z‖ := mul_le_mul_of_nonneg_right hRnorm (norm_nonneg z)
-    have hRzsq : ‖R z‖ ^ 2 ≤ a ^ 2 * ‖z‖ ^ 2 := by
+    have hRzsq : ‖R z‖ ^ (2 : ℕ) ≤ a ^ (2 : ℕ) * ‖z‖ ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (R z), norm_nonneg z]
-    have hnormsq : ‖(P - S) y‖ ^ 2 = a ^ 2 * ‖p‖ ^ 2 + ‖R z‖ ^ 2 := by
+    have hnormsq : ‖(P - S) y‖ ^ (2 : ℕ) = a ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) + ‖R z‖ ^ (2 : ℕ) := by
       rw [hDy, norm_sub_sq (𝕜 := ℂ), inner_smul_left, hpRz, mul_zero, map_zero, norm_smul,
         Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ha]
       ring
-    have hsquared : ‖(P - S) y‖ ^ 2 ≤ (a * ‖y‖) ^ 2 := by
+    have hsquared : ‖(P - S) y‖ ^ (2 : ℕ) ≤ (a * ‖y‖) ^ (2 : ℕ) := by
       rw [hnormsq]
       nlinarith [sq_nonneg a, sq_nonneg (norm y)]
     nlinarith [norm_nonneg ((P - S) y), mul_nonneg ha (norm_nonneg y)]

@@ -88,7 +88,7 @@ theorem hardyResponseDenominator_mul_derivative (t : ℝ) :
   change HasDerivAt normalizedMinimumZeta _ c at hq
   rw [hq.deriv]
   change c*(c+1)*((deriv riemannZeta c*(c*(c+1))-
-    riemannZeta c*(1*(c+1)+c*1))/(c*(c+1))^2) =
+    riemannZeta c*(1*(c+1)+c*1))/(c*(c+1))^(2 : ℕ)) =
       deriv riemannZeta c-(1/c+1/(c+1))*riemannZeta c
   field_simp [hd.1, hd.2.2]
 
@@ -121,11 +121,11 @@ theorem norm_hardy_response_rotation (t : ℝ) :
 
 /-- The actual arithmetic response has an exact positive two-component norm decomposition. -/
 theorem hardy_response_norm_sq (t : ℝ) :
-    ‖hardyResponseDenominator t‖^2 *
-        ‖criticalFullLogResponse t + reflectionZeroTarget (criticalResponsePoint t)‖^2 =
-      (hardyResponseCoercivity t * hardyZ t)^2 + (hardyResponseSlope t)^2 := by
+    ‖hardyResponseDenominator t‖^(2 : ℕ) *
+        ‖criticalFullLogResponse t + reflectionZeroTarget (criticalResponsePoint t)‖^(2 : ℕ) =
+      (hardyResponseCoercivity t * hardyZ t)^(2 : ℕ) + (hardyResponseSlope t)^(2 : ℕ) := by
   rw [criticalFullLogResponse_add_target_eq_derivative, norm_star]
-  have h := congrArg (fun z : ℂ => ‖z‖^2) (hardy_rotated_normalized_derivative t)
+  have h := congrArg (fun z : ℂ => ‖z‖^(2 : ℕ)) (hardy_rotated_normalized_derivative t)
   rw [norm_mul, norm_mul, norm_hardy_response_rotation, one_mul, mul_pow] at h
   rw [h, Complex.sq_norm]
   simp [Complex.normSq_apply, pow_two]
@@ -199,9 +199,9 @@ theorem hardy_rotated_reflection_source {s : ℂ} (hs : s ∈ minimumStrip) :
         star (reflectionDiskSource s) =
       -((hardyResponseCoercivity s.im * hardyZ s.im : ℝ) : ℂ) -
         I * (hardyResponseSlope s.im : ℂ) -
-        (((s.re-1/2)^2 : ℝ) : ℂ) * hardyReflectionCorrection s := by
+        (((s.re-1/2)^(2 : ℕ) : ℝ) : ℂ) * hardyReflectionCorrection s := by
   have h := congrArg (star : ℂ → ℂ) (reflectionDiskSource_eq_derivative_correction hs)
-  have hstar : star ((((s.re-1/2)^2 : ℝ) : ℂ)) = (((s.re-1/2)^2 : ℝ) : ℂ) := by simp
+  have hstar : star ((((s.re-1/2)^(2 : ℕ) : ℝ) : ℂ)) = (((s.re-1/2)^(2 : ℕ) : ℝ) : ℂ) := by simp
   simp only [star_sub, star_star, star_mul, hstar] at h
   rw [h, mul_sub, hardy_rotated_normalized_derivative]
   unfold hardyReflectionCorrection
@@ -210,12 +210,12 @@ theorem hardy_rotated_reflection_source {s : ℂ} (hs : s ∈ minimumStrip) :
 
 /-- The complete reflected source norm is the joint corrected Hardy value/slope square. -/
 theorem hardy_reflection_source_norm_sq {s : ℂ} (hs : s ∈ minimumStrip) :
-    ‖hardyResponseDenominator s.im‖^2 * ‖reflectionDiskSource s‖^2 =
+    ‖hardyResponseDenominator s.im‖^(2 : ℕ) * ‖reflectionDiskSource s‖^(2 : ℕ) =
       (hardyResponseCoercivity s.im * hardyZ s.im +
-        (s.re-1/2)^2 * (hardyReflectionCorrection s).re)^2 +
+        (s.re-1/2)^(2 : ℕ) * (hardyReflectionCorrection s).re)^(2 : ℕ) +
       (hardyResponseSlope s.im +
-        (s.re-1/2)^2 * (hardyReflectionCorrection s).im)^2 := by
-  have h := congrArg (fun z : ℂ => ‖z‖^2) (hardy_rotated_reflection_source hs)
+        (s.re-1/2)^(2 : ℕ) * (hardyReflectionCorrection s).im)^(2 : ℕ) := by
+  have h := congrArg (fun z : ℂ => ‖z‖^(2 : ℕ)) (hardy_rotated_reflection_source hs)
   rw [norm_mul, norm_mul, norm_hardy_response_rotation, one_mul, norm_star, mul_pow] at h
   rw [h, Complex.sq_norm]
   simp [Complex.normSq_apply, pow_two]
@@ -225,10 +225,10 @@ theorem hardy_reflection_source_norm_sq {s : ℂ} (hs : s ∈ minimumStrip) :
 theorem hardy_joint_constraint_at_offline_zero {s : ℂ} (hs : s ∈ minimumStrip)
     (hd : s.re ≠ 1/2) (hz : riemannZeta s = 0) :
     (hardyResponseCoercivity s.im * hardyZ s.im +
-        (s.re-1/2)^2 * (hardyReflectionCorrection s).re)^2 +
+        (s.re-1/2)^(2 : ℕ) * (hardyReflectionCorrection s).re)^(2 : ℕ) +
       (hardyResponseSlope s.im +
-        (s.re-1/2)^2 * (hardyReflectionCorrection s).im)^2 ≤
-        (‖hardyResponseDenominator s.im‖ * ((s.re-1/2)^2/12))^2 := by
+        (s.re-1/2)^(2 : ℕ) * (hardyReflectionCorrection s).im)^(2 : ℕ) ≤
+        (‖hardyResponseDenominator s.im‖ * ((s.re-1/2)^(2 : ℕ)/12))^(2 : ℕ) := by
   rw [←hardy_reflection_source_norm_sq hs, mul_pow]
   have h := norm_criticalFullLogResponse_zero_constraint hs.1 hs.2 hd hz
   change ‖reflectionDiskSource s‖ ≤ _ at h
@@ -238,11 +238,11 @@ theorem hardy_joint_constraint_at_offline_zero {s : ℂ} (hs : s ∈ minimumStri
 theorem hardy_joint_height_constraint_at_offline_zero {s : ℂ} (hs : s ∈ minimumStrip)
     (hd : s.re ≠ 1/2) (ht : s.im ≠ 0) (hz : riemannZeta s = 0) :
     (hardyResponseCoercivity s.im * hardyZ s.im +
-        (s.re-1/2)^2 * (hardyReflectionCorrection s).re)^2 +
+        (s.re-1/2)^(2 : ℕ) * (hardyReflectionCorrection s).re)^(2 : ℕ) +
       (hardyResponseSlope s.im +
-        (s.re-1/2)^2 * (hardyReflectionCorrection s).im)^2 ≤
-        (‖hardyResponseDenominator s.im‖ * ((s.re-1/2)^2 *
-          reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|)))^2 := by
+        (s.re-1/2)^(2 : ℕ) * (hardyReflectionCorrection s).im)^(2 : ℕ) ≤
+        (‖hardyResponseDenominator s.im‖ * ((s.re-1/2)^(2 : ℕ) *
+          reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|)))^(2 : ℕ) := by
   rw [←hardy_reflection_source_norm_sq hs, mul_pow]
   have h := norm_criticalFullLogResponse_zero_constraint_height hs.1 hs.2 hd ht hz
   change ‖reflectionDiskSource s‖ ≤ _ at h

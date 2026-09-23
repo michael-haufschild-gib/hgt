@@ -26,18 +26,18 @@ theorem exists_sum_sq_real_moebius_explicit :
         8 * Real.pi * W + 5 ≤ ((contourParam (N + smoothWidth N) : ℕ) : ℝ) →
         (Y : ℝ) + K = (Y : ℝ) * (1 + ε) ^ J →
         (∑ t ∈ Finset.Ico Y (Y + K),
-            (∑ n ∈ Finset.Ioc t (t + L), ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ 2)
+            (∑ n ∈ Finset.Ioc t (t + L), ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ (2 : ℕ))
           ≤ ((Y : ℝ) + K) * (Real.log (1 + (K : ℝ) / (Y : ℝ)) * (1 + ε) / ε)
-              * (2 * (B N * N) ^ 2 * ((L : ℝ) / (Y : ℝ))
-                  + 4 * ((((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ 2) / (Real.pi ^ 2 * W)
-                  + 2 * (ε * (L : ℝ) + 1) ^ 2 * ε) := by
+              * (2 * (B N * N) ^ (2 : ℕ) * ((L : ℝ) / (Y : ℝ))
+                  + 4 * ((((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ (2 : ℕ)) / (Real.pi ^ (2 : ℕ) * W)
+                  + 2 * (ε * (L : ℝ) + 1) ^ (2 : ℕ) * ε) := by
   obtain ⟨B, hB, hev⟩ := exists_sum_sq_real_moebius_Ico_le
   refine ⟨B, hB, ?_⟩
   filter_upwards [hev] with N hN
   intro L Y K J ε W hM hL hY hε hW hWC hJ
   have hbase := hN L Y K J ε W hM hL hY hε.le hW hWC hJ
-  set M₁ : ℝ := (B N * N) ^ 2 with hM₁def
-  set M₂ : ℝ := (((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ 2 with hM₂def
+  set M₁ : ℝ := (B N * N) ^ (2 : ℕ) with hM₁def
+  set M₂ : ℝ := (((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ (2 : ℕ) with hM₂def
   have hM₁ : 0 ≤ M₁ := by rw [hM₁def]; positivity
   have hM₂ : 0 ≤ M₂ := by rw [hM₂def]; positivity
   have hbc0 : 0 ≤ blockCost (L : ℝ) (Y : ℝ) ε M₁ M₂ W :=
@@ -60,19 +60,19 @@ theorem exists_sum_sq_real_moebius_explicit :
   have hstep2 : (Real.log (1 + (K : ℝ) / (Y : ℝ)) * (1 + ε) / ε)
         * blockCost (L : ℝ) (Y : ℝ) ε M₁ M₂ W
       ≤ (Real.log (1 + (K : ℝ) / (Y : ℝ)) * (1 + ε) / ε)
-        * (2 * M₁ * ((L : ℝ) / (Y : ℝ)) + 4 * M₂ / (Real.pi ^ 2 * W)
-            + 2 * (ε * (L : ℝ) + 1) ^ 2 * ε) :=
+        * (2 * M₁ * ((L : ℝ) / (Y : ℝ)) + 4 * M₂ / (Real.pi ^ (2 : ℕ) * W)
+            + 2 * (ε * (L : ℝ) + 1) ^ (2 : ℕ) * ε) :=
     mul_le_mul_of_nonneg_left hbcle hJb0
   have hfinal := mul_le_mul_of_nonneg_left (le_trans hstep1 hstep2) hZ
   rw [← hJ] at hbase
   calc (∑ t ∈ Finset.Ico Y (Y + K),
-        (∑ n ∈ Finset.Ioc t (t + L), ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ 2)
+        (∑ n ∈ Finset.Ioc t (t + L), ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ (2 : ℕ))
       ≤ ((Y : ℝ) + K) * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε M₁ M₂ W) := hbase
     _ ≤ ((Y : ℝ) + K) * ((Real.log (1 + (K : ℝ) / (Y : ℝ)) * (1 + ε) / ε)
-          * (2 * M₁ * ((L : ℝ) / (Y : ℝ)) + 4 * M₂ / (Real.pi ^ 2 * W)
-              + 2 * (ε * (L : ℝ) + 1) ^ 2 * ε)) := hfinal
+          * (2 * M₁ * ((L : ℝ) / (Y : ℝ)) + 4 * M₂ / (Real.pi ^ (2 : ℕ) * W)
+              + 2 * (ε * (L : ℝ) + 1) ^ (2 : ℕ) * ε)) := hfinal
     _ = ((Y : ℝ) + K) * (Real.log (1 + (K : ℝ) / (Y : ℝ)) * (1 + ε) / ε)
-          * (2 * M₁ * ((L : ℝ) / (Y : ℝ)) + 4 * M₂ / (Real.pi ^ 2 * W)
-              + 2 * (ε * (L : ℝ) + 1) ^ 2 * ε) := by ring
+          * (2 * M₁ * ((L : ℝ) / (Y : ℝ)) + 4 * M₂ / (Real.pi ^ (2 : ℕ) * W)
+              + 2 * (ε * (L : ℝ) + 1) ^ (2 : ℕ) * ε) := by ring
 
 end RHTower.Sieve

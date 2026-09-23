@@ -26,7 +26,7 @@ theorem deningerTestSupNorm_def (m : ℕ) (phi : ℝ → ℂ) :
     deningerTestSupNorm m phi = sSup (Set.range fun t => ‖iteratedDeriv m phi t‖) := rfl
 
 /-- Every iterated derivative of the zero function is zero. -/
-theorem iteratedDeriv_zero_fun (m : ℕ) : iteratedDeriv m (0 : ℝ → ℂ) = 0 := by
+theorem iteratedDeriv_zero_fun_testFunctionSeminorm (m : ℕ) : iteratedDeriv m (0 : ℝ → ℂ) = 0 := by
   induction m with
   | zero => rw [iteratedDeriv_zero]
   | succ m ih =>
@@ -34,7 +34,7 @@ theorem iteratedDeriv_zero_fun (m : ℕ) : iteratedDeriv m (0 : ℝ → ℂ) = 0
       exact deriv_const' 0
 
 theorem deningerTestSupNorm_zero (m : ℕ) : deningerTestSupNorm m (0 : ℝ → ℂ) = 0 := by
-  rw [deningerTestSupNorm_def, iteratedDeriv_zero_fun]
+  rw [deningerTestSupNorm_def, iteratedDeriv_zero_fun_testFunctionSeminorm]
   simp
 
 /-- The derivative sup-norms are invariant under negation. -/

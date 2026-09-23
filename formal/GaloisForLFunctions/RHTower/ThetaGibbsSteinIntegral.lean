@@ -29,7 +29,7 @@ private theorem gibbs_poly_integrable (P : ℝ[X]) :
   apply integrable_finsetSum
   intro k hk
   exact (integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
-    k (X ^ 2) (n := 1) (by norm_num)).const_mul _
+    k (X ^ (2 : ℕ)) (n := 1) (by norm_num)).const_mul _
 
 private theorem gibbs_poly_tendsto (P : ℝ[X]) :
     Tendsto (fun x => P.eval x * thetaCuspLiouvilleGibbsAtom 1 x)
@@ -37,7 +37,7 @@ private theorem gibbs_poly_tendsto (P : ℝ[X]) :
   have h (k : ℕ) : Tendsto (fun x => P.coeff k *
       (x ^ k * thetaCuspLiouvilleGibbsAtom 1 x)) atTop (𝓝 0) := by
     simpa only [mul_zero, thetaCuspLiouvilleGibbsAtom] using (pow_mul_thetaCuspPolynomialAtom_tendsto_atTop_zero_of_pos
-      k (X ^ 2) (n := 1) (by norm_num)).const_mul (P.coeff k)
+      k (X ^ (2 : ℕ)) (n := 1) (by norm_num)).const_mul (P.coeff k)
   have hs := tendsto_finsetSum P.support (fun k _ => h k)
   simp only [Finset.sum_const_zero] at hs
   convert hs using 1

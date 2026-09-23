@@ -177,7 +177,7 @@ private lemma resolvedVonMangoldtPrimeRightHalfPlaneGram_eq
 /-- **Complex resolved Euler Gram positivity.**  Every finite packet of actual von Mangoldt
 right-half-plane channels is positive semidefinite.  Its quadratic form retains the unsquared
 arithmetic weights and is the convergent prime-power sum
-`sum_n (Lambda(n)/n) * |sum_i c_i n^(-conj(w_i))|^2`. -/
+`sum_n (Lambda(n)/n) * |sum_i c_i n^(-conj(w_i))|^(2 : ℕ)`. -/
 theorem vonMangoldtPrimeRightHalfPlaneGram_posSemidef
     {N : ℕ} (w : Fin N → ℂ) (hw : ∀ i, 0 < (w i).re) :
     (vonMangoldtPrimeRightHalfPlaneGram w).PosSemidef := by

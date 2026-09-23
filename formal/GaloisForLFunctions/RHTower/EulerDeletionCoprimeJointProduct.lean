@@ -247,7 +247,7 @@ def sourceBlock (P Q : ℕ) (X Y : A) : ℂ → A :=
 
 /-- A vanishing jet through order four forces a fifth-order analytic remainder. -/
 theorem exponentialWord_remainder (vs : List A) (h : ∀ n, 1 ≤ n → n ≤ 4 → jet vs n = 0) :
-    (fun z : ℂ => exponentialWord vs z - 1) =O[nhds 0] (fun z : ℂ => ‖z‖^5) := by
+    (fun z : ℂ => exponentialWord vs z - 1) =O[nhds 0] (fun z : ℂ => ‖z‖^(5 : ℕ)) := by
   obtain ⟨pS, hpS⟩ := analytic_exponentialWord vs 0
   obtain ⟨r, hr⟩ := hpS
   have hp : HasFPowerSeriesAt (exponentialWord vs) pS 0 := ⟨r, hr⟩
@@ -270,7 +270,7 @@ theorem exponentialWord_remainder (vs : List A) (h : ∀ n, 1 ≤ n → n ≤ 4 
 
 /-- The actual coprime-period block has a fifth-order remainder at the origin. -/
 theorem sourceBlock_remainder {p q : ℕ} (hpq : (p+1).Coprime (q+1)) (X Y : A) :
-    (fun z : ℂ => sourceBlock (p+1) (q+1) X Y z - 1) =O[nhds 0] (fun z : ℂ => ‖z‖^5) :=
+    (fun z : ℂ => sourceBlock (p+1) (q+1) X Y z - 1) =O[nhds 0] (fun z : ℂ => ‖z‖^(5 : ℕ)) :=
   exponentialWord_remainder _ (fun n hn hn' =>
     RHTower.DeletionPolygonSignature.jet_sourceVelocity_eq_zero hpq X Y n hn hn')
 

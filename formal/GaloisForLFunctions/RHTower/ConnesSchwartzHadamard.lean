@@ -77,7 +77,7 @@ theorem connes_integrable_id_smul (ψ : 𝓢(ℝ, ℂ)) :
   refine (ψ.integrable_pow_mul volume 1).mono ?_ ?_
   · exact (continuous_id.smul ψ.continuous).aestronglyMeasurable
   · filter_upwards with y
-    have h1 : ‖y • (ψ : ℝ → ℂ) y‖ = ‖y‖ ^ 1 * ‖(ψ : ℝ → ℂ) y‖ := by
+    have h1 : ‖y • (ψ : ℝ → ℂ) y‖ = ‖y‖ ^ (1 : ℕ) * ‖(ψ : ℝ → ℂ) y‖ := by
       rw [norm_smul, pow_one]
     rw [h1]
     exact Real.le_norm_self _

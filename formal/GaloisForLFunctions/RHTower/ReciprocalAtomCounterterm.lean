@@ -94,10 +94,10 @@ theorem xiAtomMultiplicity_conj (a : ℂ) :
 
 theorem xiQZero_atomIsolator_of_eq_conj {a : ℂ} (ha : a ≠ 0)
     (heq : a = (starRingEnd ℂ) a) (ζ : ℂ) :
-    xiQZero (xiAtomIsolator a ζ) = (xiAtomMultiplicity a : ℂ) * (a * ζ ^ 2) := by
+    xiQZero (xiAtomIsolator a ζ) = (xiAtomMultiplicity a : ℂ) * (a * ζ ^ (2 : ℕ)) := by
   have hterm : ∀ q : XiZeroCopy,
-      xiZeroCopyReciprocalSquare q * xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ 2 =
-        (a * ζ ^ 2) * (if xiZeroCopyReciprocalSquare q = a then (1 : ℂ) else 0) := by
+      xiZeroCopyReciprocalSquare q * xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ) =
+        (a * ζ ^ (2 : ℕ)) * (if xiZeroCopyReciprocalSquare q = a then (1 : ℂ) else 0) := by
     intro q
     rw [xiQZeroTerm_atomIsolator]
     by_cases h1 : xiZeroCopyReciprocalSquare q = a
@@ -110,13 +110,13 @@ theorem xiQZero_atomIsolator_of_eq_conj {a : ℂ} (ha : a ≠ 0)
 theorem xiQZero_atomIsolator_of_ne_conj {a : ℂ} (ha : a ≠ 0)
     (hne : a ≠ (starRingEnd ℂ) a) (ζ : ℂ) :
     xiQZero (xiAtomIsolator a ζ) =
-      (xiAtomMultiplicity a : ℂ) * (a * ζ ^ 2) +
-        (xiAtomMultiplicity a : ℂ) * (starRingEnd ℂ) (a * ζ ^ 2) := by
+      (xiAtomMultiplicity a : ℂ) * (a * ζ ^ (2 : ℕ)) +
+        (xiAtomMultiplicity a : ℂ) * (starRingEnd ℂ) (a * ζ ^ (2 : ℕ)) := by
   have hca : (starRingEnd ℂ) a ≠ 0 := by simpa using ha
   have hterm : ∀ q : XiZeroCopy,
-      xiZeroCopyReciprocalSquare q * xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ 2 =
-        (a * ζ ^ 2) * (if xiZeroCopyReciprocalSquare q = a then (1 : ℂ) else 0) +
-          ((starRingEnd ℂ) (a * ζ ^ 2)) *
+      xiZeroCopyReciprocalSquare q * xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ) =
+        (a * ζ ^ (2 : ℕ)) * (if xiZeroCopyReciprocalSquare q = a then (1 : ℂ) else 0) +
+          ((starRingEnd ℂ) (a * ζ ^ (2 : ℕ))) *
             (if xiZeroCopyReciprocalSquare q = (starRingEnd ℂ) a then (1 : ℂ) else 0) := by
     intro q
     rw [xiQZeroTerm_atomIsolator]
@@ -139,14 +139,14 @@ theorem xiQZero_atomIsolator_of_ne_conj {a : ℂ} (ha : a ≠ 0)
 
 theorem xiQZero_atomIsolator_re_of_eq_conj {a : ℂ} (ha : a ≠ 0)
     (heq : a = (starRingEnd ℂ) a) (ζ : ℂ) :
-    (xiQZero (xiAtomIsolator a ζ)).re = (xiAtomMultiplicity a : ℝ) * (a * ζ ^ 2).re := by
+    (xiQZero (xiAtomIsolator a ζ)).re = (xiAtomMultiplicity a : ℝ) * (a * ζ ^ (2 : ℕ)).re := by
   rw [xiQZero_atomIsolator_of_eq_conj ha heq ζ, Complex.mul_re]
   simp
 
 theorem xiQZero_atomIsolator_re_of_ne_conj {a : ℂ} (ha : a ≠ 0)
     (hne : a ≠ (starRingEnd ℂ) a) (ζ : ℂ) :
     (xiQZero (xiAtomIsolator a ζ)).re =
-      2 * (xiAtomMultiplicity a : ℝ) * (a * ζ ^ 2).re := by
+      2 * (xiAtomMultiplicity a : ℝ) * (a * ζ ^ (2 : ℕ)).re := by
   rw [xiQZero_atomIsolator_of_ne_conj ha hne ζ]
   simp only [Complex.add_re, Complex.mul_re, Complex.natCast_re, Complex.natCast_im,
     Complex.conj_re, Complex.conj_im, zero_mul, sub_zero, mul_neg, sub_neg_eq_add]
@@ -215,7 +215,7 @@ theorem counterterm_nonrealAtom_threshold (C : (ℂ → ℂ) → ℝ)
     (hne : xiZeroCopyReciprocalSquare q ≠ (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q))
     (ζ : ℂ) :
     0 ≤ 2 * (xiAtomMultiplicity (xiZeroCopyReciprocalSquare q) : ℝ) *
-        (xiZeroCopyReciprocalSquare q * ζ ^ 2).re +
+        (xiZeroCopyReciprocalSquare q * ζ ^ (2 : ℕ)).re +
       C (xiAtomIsolator (xiZeroCopyReciprocalSquare q) ζ) := by
   have hq := hpos (xiAtomIsolator (xiZeroCopyReciprocalSquare q) ζ)
   rwa [xiRepairedForm, xiQZero_atomIsolator_re_of_ne_conj
@@ -227,12 +227,12 @@ def xiAtomFedCounterterm (a : ℂ) (f : ℂ → ℂ) : ℝ :=
 
 theorem xiAtomFedCounterterm_eq_of_eq_conj {a : ℂ} (ha : a ≠ 0)
     (heq : a = (starRingEnd ℂ) a) (f : ℂ → ℂ) :
-    xiAtomFedCounterterm a f = -((xiAtomMultiplicity a : ℝ) * (a * f a ^ 2).re) := by
+    xiAtomFedCounterterm a f = -((xiAtomMultiplicity a : ℝ) * (a * f a ^ (2 : ℕ)).re) := by
   rw [xiAtomFedCounterterm, xiQZero_atomIsolator_re_of_eq_conj ha heq]
 
 theorem xiAtomFedCounterterm_eq_of_ne_conj {a : ℂ} (ha : a ≠ 0)
     (hne : a ≠ (starRingEnd ℂ) a) (f : ℂ → ℂ) :
-    xiAtomFedCounterterm a f = -(2 * (xiAtomMultiplicity a : ℝ) * (a * f a ^ 2).re) := by
+    xiAtomFedCounterterm a f = -(2 * (xiAtomMultiplicity a : ℝ) * (a * f a ^ (2 : ℕ)).re) := by
   rw [xiAtomFedCounterterm, xiQZero_atomIsolator_re_of_ne_conj ha hne]
 
 /-- **Sharpness.**  The atom-fed counterterm makes the repaired form vanish identically on the

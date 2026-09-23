@@ -40,7 +40,7 @@ theorem hasDerivAt_taylorGreenCos (k d x : ℝ) :
   exact h.congr_deriv (by ring)
 
 theorem taylorGreenSin_sq_add_cos_sq (k d x : ℝ) :
-    taylorGreenSin k d x ^ 2 + taylorGreenCos k d x ^ 2 = 1 :=
+    taylorGreenSin k d x ^ (2 : ℕ) + taylorGreenCos k d x ^ (2 : ℕ) = 1 :=
   Real.sin_sq_add_cos_sq _
 
 /-- Taylor--Green modes as an actual derivative-certified corpus Navier--Stokes jet.
@@ -48,18 +48,18 @@ The pressure differs from the usual double-cosine form only by a constant. -/
 def taylorGreenJet (k A dx dy : ℝ) : SteadyNavierStokesJet2 where
   u := fun x y => A * taylorGreenSin k dx x * taylorGreenCos k dy y
   v := fun x y => -A * taylorGreenCos k dx x * taylorGreenSin k dy y
-  p := fun x y => -A ^ 2 / 2 *
-    (taylorGreenSin k dx x ^ 2 + taylorGreenSin k dy y ^ 2)
+  p := fun x y => -A ^ (2 : ℕ) / 2 *
+    (taylorGreenSin k dx x ^ (2 : ℕ) + taylorGreenSin k dy y ^ (2 : ℕ))
   ux := fun x y => A * k * taylorGreenCos k dx x * taylorGreenCos k dy y
   uy := fun x y => -A * k * taylorGreenSin k dx x * taylorGreenSin k dy y
   vx := fun x y => A * k * taylorGreenSin k dx x * taylorGreenSin k dy y
   vy := fun x y => -A * k * taylorGreenCos k dx x * taylorGreenCos k dy y
-  px := fun x _y => -A ^ 2 * k * taylorGreenSin k dx x * taylorGreenCos k dx x
-  py := fun _x y => -A ^ 2 * k * taylorGreenSin k dy y * taylorGreenCos k dy y
-  uxx := fun x y => -k ^ 2 * (A * taylorGreenSin k dx x * taylorGreenCos k dy y)
-  uyy := fun x y => -k ^ 2 * (A * taylorGreenSin k dx x * taylorGreenCos k dy y)
-  vxx := fun x y => -k ^ 2 * (-A * taylorGreenCos k dx x * taylorGreenSin k dy y)
-  vyy := fun x y => -k ^ 2 * (-A * taylorGreenCos k dx x * taylorGreenSin k dy y)
+  px := fun x _y => -A ^ (2 : ℕ) * k * taylorGreenSin k dx x * taylorGreenCos k dx x
+  py := fun _x y => -A ^ (2 : ℕ) * k * taylorGreenSin k dy y * taylorGreenCos k dy y
+  uxx := fun x y => -k ^ (2 : ℕ) * (A * taylorGreenSin k dx x * taylorGreenCos k dy y)
+  uyy := fun x y => -k ^ (2 : ℕ) * (A * taylorGreenSin k dx x * taylorGreenCos k dy y)
+  vxx := fun x y => -k ^ (2 : ℕ) * (-A * taylorGreenCos k dx x * taylorGreenSin k dy y)
+  vyy := fun x y => -k ^ (2 : ℕ) * (-A * taylorGreenCos k dx x * taylorGreenSin k dy y)
   hasDerivAt_u_x := by
     intro x y
     exact (((hasDerivAt_taylorGreenSin k dx x).const_mul A).mul_const
@@ -79,11 +79,11 @@ def taylorGreenJet (k A dx dy : ℝ) : SteadyNavierStokesJet2 where
   hasDerivAt_p_x := by
     intro x y
     exact ((((hasDerivAt_taylorGreenSin k dx x).pow 2).add_const
-      (taylorGreenSin k dy y ^ 2)).const_mul (-A ^ 2 / 2)).congr_deriv (by ring)
+      (taylorGreenSin k dy y ^ (2 : ℕ))).const_mul (-A ^ (2 : ℕ) / 2)).congr_deriv (by ring)
   hasDerivAt_p_y := by
     intro x y
     exact ((((hasDerivAt_taylorGreenSin k dy y).pow 2).const_add
-      (taylorGreenSin k dx x ^ 2)).const_mul (-A ^ 2 / 2)).congr_deriv (by ring)
+      (taylorGreenSin k dx x ^ (2 : ℕ))).const_mul (-A ^ (2 : ℕ) / 2)).congr_deriv (by ring)
   hasDerivAt_ux_x := by
     intro x y
     exact (((hasDerivAt_taylorGreenCos k dx x).const_mul (A * k)).mul_const
@@ -112,7 +112,7 @@ theorem taylorGreenJet_horizontal_euler (k A dx dy x y : ℝ) :
     let J := taylorGreenJet k A dx dy
     J.u x y * J.ux x y + J.v x y * J.uy x y + J.px x y = 0 := by
   dsimp [taylorGreenJet]
-  linear_combination A ^ 2 * k * taylorGreenSin k dx x * taylorGreenCos k dx x *
+  linear_combination A ^ (2 : ℕ) * k * taylorGreenSin k dx x * taylorGreenCos k dx x *
     (taylorGreenSin_sq_add_cos_sq k dy y)
 
 /-- The pressure exactly cancels vertical convective acceleration. -/
@@ -120,7 +120,7 @@ theorem taylorGreenJet_vertical_euler (k A dx dy x y : ℝ) :
     let J := taylorGreenJet k A dx dy
     J.u x y * J.vx x y + J.v x y * J.vy x y + J.py x y = 0 := by
   dsimp [taylorGreenJet]
-  linear_combination A ^ 2 * k * taylorGreenSin k dy y * taylorGreenCos k dy y *
+  linear_combination A ^ (2 : ℕ) * k * taylorGreenSin k dy y * taylorGreenCos k dy y *
     (taylorGreenSin_sq_add_cos_sq k dx x)
 
 /-- A new exact family inhabits the corpus's existing incompressible-flow predicate. -/
@@ -143,9 +143,9 @@ theorem taylorGreenJet_vorticity (k A dx dy x y : ℝ) :
 theorem taylorGreenJet_viscous_residual (nu k A dx dy x y : ℝ) :
     let J := taylorGreenJet k A dx dy
     (J.u x y * J.ux x y + J.v x y * J.uy x y + J.px x y -
-      nu * (J.uxx x y + J.uyy x y) = 2 * nu * k ^ 2 * J.u x y) ∧
+      nu * (J.uxx x y + J.uyy x y) = 2 * nu * k ^ (2 : ℕ) * J.u x y) ∧
     (J.u x y * J.vx x y + J.v x y * J.vy x y + J.py x y -
-      nu * (J.vxx x y + J.vyy x y) = 2 * nu * k ^ 2 * J.v x y) := by
+      nu * (J.vxx x y + J.vyy x y) = 2 * nu * k ^ (2 : ℕ) * J.v x y) := by
   dsimp only
   rw [taylorGreenJet_horizontal_euler, taylorGreenJet_vertical_euler]
   constructor <;> dsimp [taylorGreenJet] <;> ring
@@ -168,21 +168,21 @@ theorem taylorGreenJet_v_KAN (k A dx dy x y : ℝ) :
 
 /-- The decaying Taylor--Green solution, equation (9), with arbitrary frequency and translation. -/
 def taylorGreenEvolution (nu k dx dy t : ℝ) : SteadyNavierStokesJet2 :=
-  taylorGreenJet k (Real.exp (-2 * nu * k ^ 2 * t)) dx dy
+  taylorGreenJet k (Real.exp (-2 * nu * k ^ (2 : ℕ) * t)) dx dy
 
 theorem hasDerivAt_taylorGreenEvolution_u (nu k dx dy t x y : ℝ) :
     HasDerivAt (fun s => (taylorGreenEvolution nu k dx dy s).u x y)
-      (-2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).u x y) t := by
-  have h := (Real.hasDerivAt_exp (-2 * nu * k ^ 2 * t)).comp t
-    ((hasDerivAt_id t).const_mul (-2 * nu * k ^ 2))
+      (-2 * nu * k ^ (2 : ℕ) * (taylorGreenEvolution nu k dx dy t).u x y) t := by
+  have h := (Real.hasDerivAt_exp (-2 * nu * k ^ (2 : ℕ) * t)).comp t
+    ((hasDerivAt_id t).const_mul (-2 * nu * k ^ (2 : ℕ)))
   exact ((h.mul_const (taylorGreenSin k dx x)).mul_const
     (taylorGreenCos k dy y)).congr_deriv (by dsimp [taylorGreenEvolution, taylorGreenJet]; ring)
 
 theorem hasDerivAt_taylorGreenEvolution_v (nu k dx dy t x y : ℝ) :
     HasDerivAt (fun s => (taylorGreenEvolution nu k dx dy s).v x y)
-      (-2 * nu * k ^ 2 * (taylorGreenEvolution nu k dx dy t).v x y) t := by
-  have h := (Real.hasDerivAt_exp (-2 * nu * k ^ 2 * t)).comp t
-    ((hasDerivAt_id t).const_mul (-2 * nu * k ^ 2))
+      (-2 * nu * k ^ (2 : ℕ) * (taylorGreenEvolution nu k dx dy t).v x y) t := by
+  have h := (Real.hasDerivAt_exp (-2 * nu * k ^ (2 : ℕ) * t)).comp t
+    ((hasDerivAt_id t).const_mul (-2 * nu * k ^ (2 : ℕ)))
   exact ((h.neg.mul_const (taylorGreenCos k dx x)).mul_const
     (taylorGreenSin k dy y)).congr_deriv (by dsimp [taylorGreenEvolution, taylorGreenJet]; ring)
 
@@ -199,7 +199,7 @@ theorem taylorGreenEvolution_momentum (nu k dx dy t x y : ℝ) :
   rw [(hasDerivAt_taylorGreenEvolution_u nu k dx dy t x y).deriv,
     (hasDerivAt_taylorGreenEvolution_v nu k dx dy t x y).deriv]
   have h := taylorGreenJet_viscous_residual nu k
-    (Real.exp (-2 * nu * k ^ 2 * t)) dx dy x y
+    (Real.exp (-2 * nu * k ^ (2 : ℕ) * t)) dx dy x y
   change _ ∧ _ at h
   constructor <;> dsimp only [taylorGreenEvolution] <;> linarith [h.1, h.2]
 
@@ -248,7 +248,7 @@ theorem taylorGreenBlend_vorticity_advection (beta k l dx dy x y : ℝ) :
         deriv (fun z => taylorGreenBlendVorticity beta k l dx dy z y) x +
       taylorGreenBlendV beta k l dx dy x y *
         deriv (taylorGreenBlendVorticity beta k l dx dy x) y =
-      2 * beta * (1 - beta) * (l ^ 2 - k ^ 2) *
+      2 * beta * (1 - beta) * (l ^ (2 : ℕ) - k ^ (2 : ℕ)) *
         (taylorGreenSin k 0 x * taylorGreenCos k 0 y *
             taylorGreenCos l dx x * taylorGreenSin l dy y -
           taylorGreenCos k 0 x * taylorGreenSin k 0 y *

@@ -45,16 +45,16 @@ theorem norm_suzukiCenteredBlaschkeSection_sub_one_le
   have hconj : (starRingEnd ℂ) ζ * ζ = 1 := star_mul_self_eq_one_of_norm_eq_one hζ
   have hswap : ‖ζ - w‖ = ‖w - ζ‖ := norm_sub_rev _ _
   -- the radial split bounds the denominator below
-  have hsplit : ‖ζ - (r : ℂ) * w‖ ^ 2 = (1 - r) ^ 2 + r * ‖ζ - w‖ ^ 2 :=
+  have hsplit : ‖ζ - (r : ℂ) * w‖ ^ (2 : ℕ) = (1 - r) ^ (2 : ℕ) + r * ‖ζ - w‖ ^ (2 : ℕ) :=
     GaloisForLFunctions.HTGeometry.norm_sub_radial_sq hw hζ r
   have hsqrtpos : 0 < Real.sqrt r * d := by positivity
   have hden_lb : Real.sqrt r * d ≤ ‖ζ - (r : ℂ) * w‖ := by
-    have h1 : r * d ^ 2 ≤ ‖ζ - (r : ℂ) * w‖ ^ 2 := by
+    have h1 : r * d ^ (2 : ℕ) ≤ ‖ζ - (r : ℂ) * w‖ ^ (2 : ℕ) := by
       rw [hsplit, hswap]
-      have hsq : d ^ 2 ≤ ‖w - ζ‖ ^ 2 := pow_le_pow_left₀ hd.le hwd 2
-      have hmul : r * d ^ 2 ≤ r * ‖w - ζ‖ ^ 2 := mul_le_mul_of_nonneg_left hsq hr0.le
+      have hsq : d ^ (2 : ℕ) ≤ ‖w - ζ‖ ^ (2 : ℕ) := pow_le_pow_left₀ hd.le hwd 2
+      have hmul : r * d ^ (2 : ℕ) ≤ r * ‖w - ζ‖ ^ (2 : ℕ) := mul_le_mul_of_nonneg_left hsq hr0.le
       linarith [sq_nonneg (1 - r)]
-    have h2 : Real.sqrt (r * d ^ 2) ≤ Real.sqrt (‖ζ - (r : ℂ) * w‖ ^ 2) := Real.sqrt_le_sqrt h1
+    have h2 : Real.sqrt (r * d ^ (2 : ℕ)) ≤ Real.sqrt (‖ζ - (r : ℂ) * w‖ ^ (2 : ℕ)) := Real.sqrt_le_sqrt h1
     rwa [Real.sqrt_mul hr0.le, Real.sqrt_sq hd.le, Real.sqrt_sq (norm_nonneg _)] at h2
   have hDeq : (starRingEnd ℂ) ζ * (ζ - (r : ℂ) * w)
       = 1 - (r : ℂ) * (starRingEnd ℂ) ζ * w := by

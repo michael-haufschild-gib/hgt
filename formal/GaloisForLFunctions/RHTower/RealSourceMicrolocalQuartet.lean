@@ -8,7 +8,7 @@ import Mathlib.Tactic
 
 For `a, b > 0` the polynomial
 
-`F a b z = ((z - a) ^ 2 + b ^ 2) * ((z + a) ^ 2 + b ^ 2)`
+`F a b z = ((z - a) ^ (2 : ℕ) + b ^ (2 : ℕ)) * ((z + a) ^ (2 : ℕ) + b ^ (2 : ℕ))`
 
 has real coefficients, is even, satisfies Schwarz symmetry, and its four simple zeros
 `±a ± i b` all lie off the critical axis `Re z = 0`.
@@ -30,24 +30,24 @@ open scoped BigOperators
 open Complex
 
 /-- The real quartet polynomial. -/
-def quartetPoly (a b : ℝ) : Polynomial ℝ :=
-  ((Polynomial.X - Polynomial.C a) ^ 2 + Polynomial.C (b ^ 2)) *
-    ((Polynomial.X + Polynomial.C a) ^ 2 + Polynomial.C (b ^ 2))
+def quartetPoly_realSourceMicrolocalQuartet (a b : ℝ) : Polynomial ℝ :=
+  ((Polynomial.X - Polynomial.C a) ^ (2 : ℕ) + Polynomial.C (b ^ (2 : ℕ))) *
+    ((Polynomial.X + Polynomial.C a) ^ (2 : ℕ) + Polynomial.C (b ^ (2 : ℕ)))
 
 /-- The complexified quartet reporter. -/
 def quartetFun (a b : ℝ) (z : ℂ) : ℂ :=
-  ((z - (a : ℂ)) ^ 2 + (b : ℂ) ^ 2) * ((z + (a : ℂ)) ^ 2 + (b : ℂ) ^ 2)
+  ((z - (a : ℂ)) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ)) * ((z + (a : ℂ)) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ))
 
 theorem quartetPoly_eval_complex (a b : ℝ) (z : ℂ) :
-    ((quartetPoly a b).map (algebraMap ℝ ℂ)).eval z = quartetFun a b z := by
-  simp [quartetPoly, quartetFun]
+    ((quartetPoly_realSourceMicrolocalQuartet a b).map (algebraMap ℝ ℂ)).eval z = quartetFun a b z := by
+  simp [quartetPoly_realSourceMicrolocalQuartet, quartetFun]
 
-theorem quartetPoly_natDegree (a b : ℝ) : (quartetPoly a b).natDegree = 4 := by
-  have h1 : ((Polynomial.X - Polynomial.C a) ^ 2 + Polynomial.C (b ^ 2)).natDegree = 2 := by
+theorem quartetPoly_natDegree (a b : ℝ) : (quartetPoly_realSourceMicrolocalQuartet a b).natDegree = 4 := by
+  have h1 : ((Polynomial.X - Polynomial.C a) ^ (2 : ℕ) + Polynomial.C (b ^ (2 : ℕ))).natDegree = 2 := by
     compute_degree!
-  have h2 : ((Polynomial.X + Polynomial.C a) ^ 2 + Polynomial.C (b ^ 2)).natDegree = 2 := by
+  have h2 : ((Polynomial.X + Polynomial.C a) ^ (2 : ℕ) + Polynomial.C (b ^ (2 : ℕ))).natDegree = 2 := by
     compute_degree!
-  unfold quartetPoly
+  unfold quartetPoly_realSourceMicrolocalQuartet
   compute_degree!
 
 /-- **Evenness.** -/
@@ -67,9 +67,9 @@ theorem quartetFun_factor (a b : ℝ) (z : ℂ) :
       (z - ((a : ℂ) + (b : ℂ) * I)) * (z - ((a : ℂ) - (b : ℂ) * I)) *
         (z - (-(a : ℂ) + (b : ℂ) * I)) * (z - (-(a : ℂ) - (b : ℂ) * I)) := by
   unfold quartetFun
-  have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
-  linear_combination ((b : ℂ) ^ 2 * ((z - (a : ℂ)) ^ 2 + (z + (a : ℂ)) ^ 2) -
-      (b : ℂ) ^ 4 * ((I : ℂ) ^ 2 - 1)) * hI
+  have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
+  linear_combination ((b : ℂ) ^ (2 : ℕ) * ((z - (a : ℂ)) ^ (2 : ℕ) + (z + (a : ℂ)) ^ (2 : ℕ)) -
+      (b : ℂ) ^ (4 : ℕ) * ((I : ℂ) ^ (2 : ℕ) - 1)) * hI
 
 /-- **The zero set is exactly the quartet.** -/
 theorem quartetFun_eq_zero_iff (a b : ℝ) (z : ℂ) :
@@ -160,7 +160,7 @@ theorem pointSourcePairing_exp (p : Polynomial ℝ) (z : ℂ) :
 /-- **The countermodel.**  The point source of the quartet polynomial has the quartet reporter as
 its bilateral Laplace transform. -/
 theorem pointSourcePairing_quartet (a b : ℝ) (z : ℂ) :
-    pointSourcePairing (quartetPoly a b) (fun t : ℝ => Complex.exp (-(z * t))) =
+    pointSourcePairing (quartetPoly_realSourceMicrolocalQuartet a b) (fun t : ℝ => Complex.exp (-(z * t))) =
       quartetFun a b z := by
   rw [pointSourcePairing_exp, quartetPoly_eval_complex]
 

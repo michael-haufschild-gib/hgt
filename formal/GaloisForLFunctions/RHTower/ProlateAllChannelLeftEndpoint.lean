@@ -21,12 +21,12 @@ variable {s c : ℝ} {R DR DDR : ℝ → ℝ}
 theorem abs_integral_radialProlate_dilate_left_le
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
     {L X : ℝ} (hL : 2 ≤ L) (hLX : L ≤ X) (n : ℕ) :
     |∫ t in L..X, R (((n : ℝ) + 1) * t)|
       ≤ 4500 * GaloisForLFunctions.RHTower.exactEnergyBudget s c R DR 2 /
-          (Real.sqrt c * (c * ((n : ℝ) + 1) ^ 2) * L) := by
+          (Real.sqrt c * (c * ((n : ℝ) + 1) ^ (2 : ℕ)) * L) := by
   have hk : (1 : ℝ) ≤ (n : ℝ) + 1 := by
     have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
     linarith
@@ -43,8 +43,8 @@ theorem abs_integral_radialProlate_dilate_left_le
 theorem tsum_abs_integral_radialProlate_left_le
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
     {L X : ℝ} (hL : 2 ≤ L) (hLX : L ≤ X) :
     Summable (fun n : ℕ => |∫ t in L..X, R (((n : ℝ) + 1) * t)|) ∧
       ∑' n : ℕ, |∫ t in L..X, R (((n : ℝ) + 1) * t)|
@@ -58,7 +58,7 @@ theorem tsum_abs_integral_radialProlate_left_le
   set B : ℝ := 4500 * M / (Real.sqrt c * c * L) with hBdef
   have hB : (0 : ℝ) ≤ B := by rw [hBdef]; positivity
   have hterm : ∀ n : ℕ, |∫ t in L..X, R (((n : ℝ) + 1) * t)|
-      ≤ B * (1 / (1 + (n : ℝ)) ^ 2) := by
+      ≤ B * (1 / (1 + (n : ℝ)) ^ (2 : ℕ)) := by
     intro n
     have h := abs_integral_radialProlate_dilate_left_le hs0 hs1 hc hR hDR hode hL hLX n
     refine le_trans h (le_of_eq ?_)
@@ -68,14 +68,14 @@ theorem tsum_abs_integral_radialProlate_left_le
     rw [hcomm]
     field_simp
   have hnn : ∀ n : ℕ, (0 : ℝ) ≤ |∫ t in L..X, R (((n : ℝ) + 1) * t)| := fun n => abs_nonneg _
-  have hmaj : Summable fun n : ℕ => B * (1 / (1 + (n : ℝ)) ^ 2) :=
+  have hmaj : Summable fun n : ℕ => B * (1 / (1 + (n : ℝ)) ^ (2 : ℕ)) :=
     (GaloisForLFunctions.HTGeometry.summable_inv_sq_shift (σ := 1) (by norm_num)).mul_left B
   have hsummable : Summable fun n : ℕ => |∫ t in L..X, R (((n : ℝ) + 1) * t)| :=
     hmaj.of_nonneg_of_le hnn hterm
   refine ⟨hsummable, ?_⟩
   calc ∑' n : ℕ, |∫ t in L..X, R (((n : ℝ) + 1) * t)|
-      ≤ ∑' n : ℕ, B * (1 / (1 + (n : ℝ)) ^ 2) := hsummable.tsum_le_tsum hterm hmaj
-    _ = B * ∑' n : ℕ, 1 / (1 + (n : ℝ)) ^ 2 := tsum_mul_left
+      ≤ ∑' n : ℕ, B * (1 / (1 + (n : ℝ)) ^ (2 : ℕ)) := hsummable.tsum_le_tsum hterm hmaj
+    _ = B * ∑' n : ℕ, 1 / (1 + (n : ℝ)) ^ (2 : ℕ) := tsum_mul_left
     _ ≤ B * 2 := mul_le_mul_of_nonneg_left
         GaloisForLFunctions.HTGeometry.tsum_inv_sq_shift_one_le_two hB
     _ = 2 * B := by ring

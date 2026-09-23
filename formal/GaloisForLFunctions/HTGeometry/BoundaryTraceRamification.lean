@@ -21,7 +21,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 
 /-- Thermal first-order boundary density of a normed-space curve. -/
 def thermalBoundaryTraceDensity (F : ℝ → E) (u : ℝ) : ℝ :=
-  ‖F u‖ ^ 2 / (1 - Real.exp (-u))
+  ‖F u‖ ^ (2 : ℕ) / (1 - Real.exp (-u))
 
 /-- Square-root-normalized amplitude associated to the thermal density. -/
 def thermalBoundaryRamificationAmplitude (F : ℝ → E) (u : ℝ) : ℝ :=
@@ -48,7 +48,7 @@ variable [NormedSpace ℝ E]
 which is little-oh of the thermal first-order scale. -/
 theorem tendsto_norm_sq_div_id_nhdsGT_zero_of_hasDerivAt
     {F : ℝ → E} {v : E} (hF : HasDerivAt F v 0) (hF0 : F 0 = 0) :
-    Tendsto (fun u : ℝ => ‖F u‖ ^ 2 / u) (𝓝[>] 0) (nhds 0) := by
+    Tendsto (fun u : ℝ => ‖F u‖ ^ (2 : ℕ) / u) (𝓝[>] 0) (nhds 0) := by
   have hslope :
       Tendsto (fun u : ℝ => u⁻¹ • F u) (𝓝[>] 0) (nhds v) := by
     simpa only [zero_add, hF0, sub_zero] using hF.tendsto_slope_zero_right
@@ -62,7 +62,7 @@ theorem tendsto_norm_sq_div_id_nhdsGT_zero_of_hasDerivAt
   have hprod := hnormSlope.mul hnormF
   have heq :
       (fun u : ℝ => ‖u⁻¹ • F u‖ * ‖F u‖) =ᶠ[𝓝[>] 0]
-        (fun u : ℝ => ‖F u‖ ^ 2 / u) := by
+        (fun u : ℝ => ‖F u‖ ^ (2 : ℕ) / u) := by
     filter_upwards [self_mem_nhdsWithin] with u hu
     have hu0 : u ≠ 0 := ne_of_gt hu
     rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hu]
@@ -108,7 +108,7 @@ theorem tendsto_thermalBoundaryTraceDensity_zero_of_hasDerivAt
     (tendsto_norm_sq_div_id_nhdsGT_zero_of_hasDerivAt hF hF0).mul
       tendsto_id_div_one_sub_exp_neg_nhdsGT_zero
   have heq :
-      (fun u : ℝ => (‖F u‖ ^ 2 / u) * (u / (1 - Real.exp (-u)))) =ᶠ[𝓝[>] 0]
+      (fun u : ℝ => (‖F u‖ ^ (2 : ℕ) / u) * (u / (1 - Real.exp (-u)))) =ᶠ[𝓝[>] 0]
         thermalBoundaryTraceDensity F := by
     filter_upwards [self_mem_nhdsWithin] with u hu
     have hu0 : u ≠ 0 := ne_of_gt hu

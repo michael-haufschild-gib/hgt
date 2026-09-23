@@ -24,9 +24,9 @@ interior of the rectangle. -/
 theorem weightedLittlewoodBoundary_poleGauge_sq
     {c d T₁ T₂ : ℝ} (hc1 : c < 1) (h1d : 1 < d)
     (hT₁ : T₁ < 0) (hT₂ : 0 < T₂) :
-    weightedLittlewoodBoundary (fun s : ℂ => (s - 1) ^ 2) c d T₁ T₂ =
+    weightedLittlewoodBoundary (fun s : ℂ => (s - 1) ^ (2 : ℕ)) c d T₁ T₂ =
       4 * Real.pi * (1 - c) := by
-  let p : ℂ → ℂ := fun s => (s - 1) ^ 2
+  let p : ℂ → ℂ := fun s => (s - 1) ^ (2 : ℕ)
   have hcd : c < d := hc1.trans h1d
   have hT : T₁ < T₂ := hT₁.trans hT₂
   have hp : AnalyticOnNhd ℂ p Set.univ := by
@@ -81,7 +81,7 @@ theorem weightedLittlewoodBoundary_poleGauge_sq
   have hlinOrder : analyticOrderAt (fun s : ℂ => s - 1) 1 = 1 := by
     exact hlin.analyticOrderAt_eq_one_of_zero_deriv_ne_zero (by simp) (by simp)
   have hpOrder : analyticOrderAt p 1 = 2 := by
-    change analyticOrderAt ((fun s : ℂ => s - 1) ^ 2) 1 = 2
+    change analyticOrderAt ((fun s : ℂ => s - 1) ^ (2 : ℕ)) 1 = 2
     rw [analyticOrderAt_pow hlin, hlinOrder]
     rfl
   have hsum :
@@ -91,7 +91,7 @@ theorem weightedLittlewoodBoundary_poleGauge_sq
     simp [hpOrder]
   rw [hsum] at hboundary
   calc
-    weightedLittlewoodBoundary (fun s : ℂ => (s - 1) ^ 2) c d T₁ T₂ =
+    weightedLittlewoodBoundary (fun s : ℂ => (s - 1) ^ (2 : ℕ)) c d T₁ T₂ =
         weightedLittlewoodBoundary p c d T₁ T₂ := rfl
     _ = 2 * Real.pi * (2 * (1 - c)) := hboundary.symm
     _ = 4 * Real.pi * (1 - c) := by ring
@@ -106,7 +106,7 @@ noncomputable section
 
 /-- Ingham's classical meromorphic detector before pole clearing. -/
 noncomputable def inghamClassicalDetector (X : ℕ) (s : ℂ) : ℂ :=
-  1 - (riemannZeta s * inghamMollifier X s - 1) ^ 2
+  1 - (riemannZeta s * inghamMollifier X s - 1) ^ (2 : ℕ)
 
 /-- Weighted Littlewood boundary of the classical meromorphic detector. -/
 noncomputable def inghamClassicalLittlewoodBoundary
@@ -189,7 +189,7 @@ private theorem intervalIntegrable_weighted_im_logDeriv_horizontal
 private theorem eventuallyEq_inghamDetector_factor
     (X : ℕ) {s : ℂ} (hs : s ≠ 1) :
     inghamDetector X =ᶠ[nhds s]
-      (fun z => (z - 1) ^ 2 * inghamClassicalDetector X z) := by
+      (fun z => (z - 1) ^ (2 : ℕ) * inghamClassicalDetector X z) := by
   filter_upwards [isOpen_compl_singleton.mem_nhds hs] with z hz
   simpa only [inghamClassicalDetector] using
     inghamDetector_eq_poleCleared X (by simpa using hz)
@@ -199,25 +199,25 @@ private theorem inghamClassicalDetector_ne_zero_of_detector_ne_zero
     inghamClassicalDetector X s ≠ 0 := by
   intro hh
   have hfactor := inghamDetector_eq_poleCleared X hs
-  rw [show 1 - (riemannZeta s * inghamMollifier X s - 1) ^ 2 =
+  rw [show 1 - (riemannZeta s * inghamMollifier X s - 1) ^ (2 : ℕ) =
       inghamClassicalDetector X s by rfl, hh, mul_zero] at hfactor
   exact hH hfactor
 
 private theorem log_norm_inghamDetector_eq_gauge_add_classical
     (X : ℕ) {s : ℂ} (hs : s ≠ 1) (hH : inghamDetector X s ≠ 0) :
     Real.log ‖inghamDetector X s‖ =
-      Real.log ‖(s - 1) ^ 2‖ + Real.log ‖inghamClassicalDetector X s‖ := by
-  have hp : (s - 1) ^ 2 ≠ 0 := pow_ne_zero 2 (sub_ne_zero.mpr hs)
+      Real.log ‖(s - 1) ^ (2 : ℕ)‖ + Real.log ‖inghamClassicalDetector X s‖ := by
+  have hp : (s - 1) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (sub_ne_zero.mpr hs)
   have hh := inghamClassicalDetector_ne_zero_of_detector_ne_zero X hs hH
   rw [inghamDetector_eq_poleCleared X hs,
-    show 1 - (riemannZeta s * inghamMollifier X s - 1) ^ 2 =
+    show 1 - (riemannZeta s * inghamMollifier X s - 1) ^ (2 : ℕ) =
       inghamClassicalDetector X s by rfl,
     norm_mul, Real.log_mul (norm_ne_zero_iff.mpr hp) (norm_ne_zero_iff.mpr hh)]
 
 private theorem logDeriv_inghamDetector_eq_gauge_add_classical
     (X : ℕ) {s : ℂ} (hs : s ≠ 1) (hH : inghamDetector X s ≠ 0) :
     logDeriv (inghamDetector X) s =
-      logDeriv (fun z : ℂ => (z - 1) ^ 2) s +
+      logDeriv (fun z : ℂ => (z - 1) ^ (2 : ℕ)) s +
         logDeriv (inghamClassicalDetector X) s := by
   rw [logDeriv_congr_of_eventuallyEq (eventuallyEq_inghamDetector_factor X hs)]
   exact logDeriv_mul s
@@ -241,7 +241,7 @@ theorem inghamLittlewoodBoundary_eq_classical_add_poleCharge
       inghamClassicalLittlewoodBoundary X c d T₁ T₂ +
         4 * Real.pi * (1 - c) := by
   classical
-  let p : ℂ → ℂ := fun s => (s - 1) ^ 2
+  let p : ℂ → ℂ := fun s => (s - 1) ^ (2 : ℕ)
   let h : ℂ → ℂ := inghamClassicalDetector X
   let H : ℂ → ℂ := inghamDetector X
   have hcd : c < d := hc1.trans h1d

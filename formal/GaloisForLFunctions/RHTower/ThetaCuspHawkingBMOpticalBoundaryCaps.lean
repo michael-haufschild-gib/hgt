@@ -11,11 +11,11 @@ open GaloisForLFunctions.HTGeometry
 noncomputable section
 
 private def primitiveBasis (i : Fin 7) (x : ℝ) : ℝ :=
-  ![(-1/5)*(x^5)⁻¹,(-1/4)*(x^4)⁻¹,(-1/3)*(x^3)⁻¹,
-    (-1/2)*(x^2)⁻¹,-x⁻¹,Real.log x,x] i
+  ![(-1/5)*(x^(5 : ℕ))⁻¹,(-1/4)*(x^(4 : ℕ))⁻¹,(-1/3)*(x^(3 : ℕ))⁻¹,
+    (-1/2)*(x^(2 : ℕ))⁻¹,-x⁻¹,Real.log x,x] i
 
 private theorem primitiveBasis_derivative (i : Fin 7) (x : Ioi (0:ℝ)) :
-    HasDerivAt (primitiveBasis i) (x.val^i.val/x.val^6) x.val := by
+    HasDerivAt (primitiveBasis i) (x.val^i.val/x.val^(6 : ℕ)) x.val := by
   have hx : x.val ≠ 0 := ne_of_gt x.property
   fin_cases i
   · convert (((hasDerivAt_id x.val).pow 5).inv (pow_ne_zero 5 hx)).const_mul (-1/5) using 1 <;>
@@ -26,13 +26,13 @@ private theorem primitiveBasis_derivative (i : Fin 7) (x : Ioi (0:ℝ)) :
       first | rfl | (try dsimp only [id_eq,Pi.pow_apply]; field_simp [hx]; ring)
   · convert (((hasDerivAt_id x.val).pow 2).inv (pow_ne_zero 2 hx)).const_mul (-1/2) using 1 <;>
       first | rfl | (try dsimp only [id_eq,Pi.pow_apply]; field_simp [hx]; ring)
-  · change HasDerivAt (fun y : ℝ => -y⁻¹) (x.val^4/x.val^6) x.val
+  · change HasDerivAt (fun y : ℝ => -y⁻¹) (x.val^(4 : ℕ)/x.val^(6 : ℕ)) x.val
     convert ((hasDerivAt_id x.val).inv hx).neg using 1 <;>
       first | rfl | (norm_num only [id_eq]; field_simp [hx])
-  · change HasDerivAt Real.log (x.val^5/x.val^6) x.val
+  · change HasDerivAt Real.log (x.val^(5 : ℕ)/x.val^(6 : ℕ)) x.val
     convert Real.hasDerivAt_log hx using 1
     field_simp [hx]
-  · change HasDerivAt (fun y : ℝ => y) (x.val^6/x.val^6) x.val
+  · change HasDerivAt (fun y : ℝ => y) (x.val^(6 : ℕ)/x.val^(6 : ℕ)) x.val
     convert hasDerivAt_id x.val using 1 <;>
       first | rfl | exact div_self (pow_ne_zero 6 hx)
 
@@ -49,10 +49,10 @@ private def moment (n : Fin 7) (L x : ℝ) : ℝ :=
     ∑ i : Fin 7, coefficient n i L*primitiveBasis i L
 
 private theorem moment_derivative (n : Fin 7) (L x : ℝ) (hx : 0 < L+x) :
-    HasDerivAt (moment n L) (x^n.val/(L+x)^6) x := by
+    HasDerivAt (moment n L) (x^n.val/(L+x)^(6 : ℕ)) x := by
   have hb (i : Fin 7) : HasDerivAt
       (fun y : ℝ => coefficient n i L*primitiveBasis i (L+y))
-      (coefficient n i L*((L+x)^i.val/(L+x)^6)) x := by
+      (coefficient n i L*((L+x)^i.val/(L+x)^(6 : ℕ))) x := by
     convert ((primitiveBasis_derivative i ⟨L+x,hx⟩).comp x
       ((hasDerivAt_id x).const_add L)).const_mul (coefficient n i L) using 1 <;>
       first | rfl | simp
@@ -76,14 +76,14 @@ private theorem moment_flat (n : Fin 7) (L : Ioi (2:ℝ)) (j : ℕ) (hj : j ≤ 
   · subst j
     simp [moment]
   have hderiv : deriv (moment n L.val) =ᶠ[𝓝 0]
-      fun x : ℝ => x^n.val*((L.val+x)^6)⁻¹ := by
+      fun x : ℝ => x^n.val*((L.val+x)^(6 : ℕ))⁻¹ := by
     filter_upwards [Ioo_mem_nhds (by norm_num : (-1:ℝ)<0) (by norm_num : (0:ℝ)<1)] with x hx
     have hLgt : (2:ℝ) < L.val := L.property
     have hxgt : (-1:ℝ) < x := hx.1
     simpa only [div_eq_mul_inv] using (moment_derivative n L.val x (by linarith only [hLgt,hxgt])).deriv
   have hL : L.val ≠ 0 := ne_of_gt (lt_trans (by norm_num) L.property)
   apply iteratedDeriv_eq_zero_of_velocity_flat (d := n.val)
-    (D := fun x : ℝ => x^n.val) (G := fun x : ℝ => ((L.val+x)^6)⁻¹)
+    (D := fun x : ℝ => x^n.val) (G := fun x : ℝ => ((L.val+x)^(6 : ℕ))⁻¹)
     (fun k => by fun_prop) (fun k => by fun_prop (disch := simpa using pow_ne_zero 6 hL)) hderiv
     (fun i hi => ?_) (by omega) hj
   have hn : n.val-i ≠ 0 := by omega
@@ -99,9 +99,9 @@ the source edge; `cap L (-1) row (-epsilon)` is the internal interface differenc
 def cap (L c : ℝ) (row : Fin 4) : ℝ → ℝ :=
   match row.val with
   | 0 => fun x => moment 2 L x+(c-x)*moment 1 L x
-  | 1 => fun x => moment 4 L x+3*(c-x)*moment 3 L x+3*(c-x)^2*moment 2 L x+(c-x)^3*moment 1 L x
+  | 1 => fun x => moment 4 L x+3*(c-x)*moment 3 L x+3*(c-x)^(2 : ℕ)*moment 2 L x+(c-x)^(3 : ℕ)*moment 1 L x
   | 2 => fun x => moment 4 L x+(c-x)*moment 3 L x
-  | _ => fun x => moment 6 L x+3*(c-x)*moment 5 L x+3*(c-x)^2*moment 4 L x+(c-x)^3*moment 3 L x
+  | _ => fun x => moment 6 L x+3*(c-x)*moment 5 L x+3*(c-x)^(2 : ℕ)*moment 4 L x+(c-x)^(3 : ℕ)*moment 3 L x
 
 /-- Exact number of vanishing jets needed by the original source-polynomial current. -/
 def capOrder (row : Fin 4) : ℕ := sourcePower row+1
@@ -149,13 +149,13 @@ theorem cap_flat_jet (L : Ioi (2:ℝ)) (c : ℝ) (row : Fin 4) (j : Fin (capOrde
   cap_flat_nat L c row j.val j.isLt
 
 private theorem moment_integral (n : Fin 7) (L : Ioi (2:ℝ)) (x : Ioo (-1:ℝ) 1) :
-    (∫ y in (0:ℝ)..x.val, y^n.val/(L.val+y)^6)=moment n L.val x.val := by
+    (∫ y in (0:ℝ)..x.val, y^n.val/(L.val+y)^(6 : ℕ))=moment n L.val x.val := by
   have hpos (y : ℝ) (hy : y ∈ uIcc (0:ℝ) x.val) : 0 < L.val+y := by
     have hmin : (-1:ℝ) < min 0 x.val := lt_min (by norm_num) x.property.1
     have hy1 : -1<y := hmin.trans_le hy.1
     have hLgt : (2:ℝ) < L.val := L.property
     linarith only [hy1,hLgt]
-  have hi : IntervalIntegrable (fun y : ℝ => y^n.val/(L.val+y)^6) volume 0 x.val := by
+  have hi : IntervalIntegrable (fun y : ℝ => y^n.val/(L.val+y)^(6 : ℕ)) volume 0 x.val := by
     apply ContinuousOn.intervalIntegrable
     intro y hy
     exact ((continuousAt_id.pow n.val).div
@@ -169,10 +169,10 @@ private theorem moment_integral (n : Fin 7) (L : Ioi (2:ℝ)) (x : Ioo (-1:ℝ) 
 Both signs of the small cap length are included. -/
 theorem cap_integral (L : Ioi (2:ℝ)) (c : ℝ) (row : Fin 4) (x : Ioo (-1:ℝ) 1) :
     (∫ y in (0:ℝ)..x.val,
-      y^(sourcePower row)*(y+c-x.val)^(targetPower row)/(L.val+y)^6)=
+      y^(sourcePower row)*(y+c-x.val)^(targetPower row)/(L.val+y)^(6 : ℕ))=
         cap L.val c row x.val := by
   have hi (n : Fin 7) : IntervalIntegrable
-      (fun y : ℝ => y^n.val/(L.val+y)^6) volume 0 x.val := by
+      (fun y : ℝ => y^n.val/(L.val+y)^(6 : ℕ)) volume 0 x.val := by
     apply ContinuousOn.intervalIntegrable
     intro y hy
     have hmin : (-1:ℝ) < min 0 x.val := lt_min (by norm_num) x.property.1
@@ -183,8 +183,8 @@ theorem cap_integral (L : Ioi (2:ℝ)) (c : ℝ) (row : Fin 4) (x : Ioo (-1:ℝ)
       (pow_ne_zero 6 hpos.ne')).continuousWithinAt
   have hfour (a b c d : ℝ) (i j k l : Fin 7) :
       (∫ y in (0:ℝ)..x.val,
-        a*(y^i.val/(L.val+y)^6)+b*(y^j.val/(L.val+y)^6)+
-          c*(y^k.val/(L.val+y)^6)+d*(y^l.val/(L.val+y)^6))=
+        a*(y^i.val/(L.val+y)^(6 : ℕ))+b*(y^j.val/(L.val+y)^(6 : ℕ))+
+          c*(y^k.val/(L.val+y)^(6 : ℕ))+d*(y^l.val/(L.val+y)^(6 : ℕ)))=
         a*moment i L.val x.val+b*moment j L.val x.val+
           c*moment k L.val x.val+d*moment l L.val x.val := by
     rw [intervalIntegral.integral_add (((hi i).const_mul a).add ((hi j).const_mul b) |>.add
@@ -200,7 +200,7 @@ theorem cap_integral (L : Ioi (2:ℝ)) (c : ℝ) (row : Fin 4) (x : Ioo (-1:ℝ)
       norm_num
       ring
     · simp [cap]
-  · convert hfour 1 (3*(c-x.val)) (3*(c-x.val)^2) ((c-x.val)^3) 4 3 2 1 using 1
+  · convert hfour 1 (3*(c-x.val)) (3*(c-x.val)^(2 : ℕ)) ((c-x.val)^(3 : ℕ)) 4 3 2 1 using 1
     · apply intervalIntegral.integral_congr
       intro y hy
       simp only [sourcePower,targetPower]
@@ -214,7 +214,7 @@ theorem cap_integral (L : Ioi (2:ℝ)) (c : ℝ) (row : Fin 4) (x : Ioo (-1:ℝ)
       norm_num
       ring
     · simp [cap]
-  · convert hfour 1 (3*(c-x.val)) (3*(c-x.val)^2) ((c-x.val)^3) 6 5 4 3 using 1
+  · convert hfour 1 (3*(c-x.val)) (3*(c-x.val)^(2 : ℕ)) ((c-x.val)^(3 : ℕ)) 6 5 4 3 using 1
     · apply intervalIntegral.integral_congr
       intro y hy
       simp only [sourcePower,targetPower]

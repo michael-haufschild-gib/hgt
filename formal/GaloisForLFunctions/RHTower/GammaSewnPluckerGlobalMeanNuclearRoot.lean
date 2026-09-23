@@ -9,7 +9,7 @@ namespace RHTower.HedenmalmThetaSource
 
 private abbrev H := GammaSewnCriticalPhysicalPluckerHilbert
 
-local instance : ContinuousFunctionalCalculus ℝ (H →L[ℂ] H) IsSelfAdjoint :=
+local instance gammaSewnPluckerGlobalMeanNuclearRootInst1 : ContinuousFunctionalCalculus ℝ (H →L[ℂ] H) IsSelfAdjoint :=
   IsSelfAdjoint.instContinuousFunctionalCalculus
 
 private def diagonal (u : ℕ × ℕ) : (H →L[ℂ] H) →L[ℝ] ℝ :=
@@ -17,7 +17,7 @@ private def diagonal (u : ℕ × ℕ) : (H →L[ℂ] H) →L[ℝ] ℝ :=
     (ContinuousLinearMap.apply ℂ H (gammaSewnCriticalPhysicalPluckerBasis u))).restrictScalars ℝ)
 
 private theorem diagonal_rankOne (u : ℕ × ℕ) (c : ℝ) (v : H) :
-    diagonal u ((c : ℂ) • InnerProductSpace.rankOne ℂ v v) = c * ‖v u‖ ^ 2 := by
+    diagonal u ((c : ℂ) • InnerProductSpace.rankOne ℂ v v) = c * ‖v u‖ ^ (2 : ℕ) := by
   change (inner ℂ (gammaSewnCriticalPhysicalPluckerBasis u)
     (((c : ℂ) • InnerProductSpace.rankOne ℂ v v) (gammaSewnCriticalPhysicalPluckerBasis u))).re = _
   calc
@@ -29,10 +29,10 @@ private theorem diagonal_rankOne (u : ℕ × ℕ) (c : ℝ) (v : H) :
     GaloisForLFunctions.HTGeometry.re_inner_rankOneOp c v (gammaSewnCriticalPhysicalPluckerBasis u)
 
 private def squareBudget (u : ℕ × ℕ) : ℝ :=
-  ∑' z : ℕ × ℕ, gammaSewnCriticalPluckerRootProfile z u ^ 2
+  ∑' z : ℕ × ℕ, gammaSewnCriticalPluckerRootProfile z u ^ (2 : ℕ)
 
 private theorem summable_squareProfile (u : ℕ × ℕ) :
-    Summable (fun z : ℕ × ℕ => gammaSewnCriticalPluckerRootProfile z u ^ 2) := by
+    Summable (fun z : ℕ × ℕ => gammaSewnCriticalPluckerRootProfile z u ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun _ => sq_nonneg _) (fun z => ?_)
     ((summable_gammaSewnCriticalPluckerRootProfile_left u).mul_right
       (gammaSewnCriticalPluckerRootDiagonalBudget u))
@@ -41,9 +41,9 @@ private theorem summable_squareProfile (u : ℕ × ℕ) :
     (gammaSewnCriticalPluckerRootProfile_nonneg z u)
 
 private theorem squareBudget_le (u : ℕ × ℕ) :
-    squareBudget u ≤ gammaSewnCriticalPluckerRootDiagonalBudget u ^ 2 := by
+    squareBudget u ≤ gammaSewnCriticalPluckerRootDiagonalBudget u ^ (2 : ℕ) := by
   have hle := Summable.tsum_le_tsum
-    (fun z => show gammaSewnCriticalPluckerRootProfile z u ^ 2 ≤
+    (fun z => show gammaSewnCriticalPluckerRootProfile z u ^ (2 : ℕ) ≤
       gammaSewnCriticalPluckerRootProfile z u * gammaSewnCriticalPluckerRootDiagonalBudget u by
       rw [pow_two]
       exact mul_le_mul_of_nonneg_left (gammaSewnCriticalPluckerRootProfile_le_budget z u)
@@ -52,9 +52,9 @@ private theorem squareBudget_le (u : ℕ × ℕ) :
   simpa [squareBudget, tsum_mul_right, gammaSewnCriticalPluckerRootDiagonalBudget, pow_two] using hle
 
 private theorem rootProfile_sq (z u : ℕ × ℕ) :
-    gammaSewnCriticalPluckerRootProfile z u ^ 2 =
+    gammaSewnCriticalPluckerRootProfile z u ^ (2 : ℕ) =
       gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z *
-        gammaSewnCriticalPluckerCoordinateProfile z u ^ 2 := by
+        gammaSewnCriticalPluckerCoordinateProfile z u ^ (2 : ℕ) := by
   rw [gammaSewnCriticalPluckerRootProfile, mul_pow,
     Real.sq_sqrt (gammaSewnCriticalAdjacentPrime_PluckerBlockWeight_pos z).le]
 
@@ -75,7 +75,7 @@ private theorem diagonal_local_le (u : ℕ × ℕ) :
     ∑ s : Fin 6, f (z, s) ≤ ∑ s : Fin 6,
         gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z *
           gammaSewnCriticalAdjacentPrime_PluckerProbability z s *
-            gammaSewnCriticalPluckerCoordinateProfile z u ^ 2 := by
+            gammaSewnCriticalPluckerCoordinateProfile z u ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro s _
       change diagonal u (((_ : ℝ) : ℂ) • InnerProductSpace.rankOne ℂ _ _) ≤ _
@@ -96,9 +96,9 @@ private theorem diagonal_dispersion_le (u : ℕ × ℕ) :
     diagonal u (gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm zw)
   let g : (ℕ × ℕ) × (ℕ × ℕ) → ℝ := fun zw =>
     gammaSewnCriticalAdjacentPrime_PluckerBlockWeight zw.2 *
-        gammaSewnCriticalPluckerRootProfile zw.1 u ^ 2 +
+        gammaSewnCriticalPluckerRootProfile zw.1 u ^ (2 : ℕ) +
       gammaSewnCriticalAdjacentPrime_PluckerBlockWeight zw.1 *
-        gammaSewnCriticalPluckerRootProfile zw.2 u ^ 2
+        gammaSewnCriticalPluckerRootProfile zw.2 u ^ (2 : ℕ)
   have hf : Summable f := (Summable.of_norm
     summable_norm_gammaSewnCriticalPhysicalPluckerMeanDispersionRankOneTerm).mapL (diagonal u)
   have hright := summable_mul_of_summable_norm
@@ -107,7 +107,7 @@ private theorem diagonal_dispersion_le (u : ℕ × ℕ) :
     (summable_squareProfile u).norm summable_gammaSewnCriticalAdjacentPrime_PluckerBlockWeight.norm)
   have hleft' : Summable (fun zw : (ℕ × ℕ) × (ℕ × ℕ) =>
       gammaSewnCriticalAdjacentPrime_PluckerBlockWeight zw.2 *
-        gammaSewnCriticalPluckerRootProfile zw.1 u ^ 2) :=
+        gammaSewnCriticalPluckerRootProfile zw.1 u ^ (2 : ℕ)) :=
     hleft.congr fun zw => mul_comm _ _
   have hg : Summable g := hleft'.add hright
   have heq : diagonal u gammaSewnCriticalPhysicalPluckerGlobalMeanDispersionOperator = ∑' zw, f zw := by
@@ -129,9 +129,9 @@ private theorem diagonal_dispersion_le (u : ℕ × ℕ) :
       have hn2 := (sq_le_sq₀ (norm_nonneg _)
         (add_nonneg (gammaSewnCriticalPluckerCoordinateProfile_nonneg _ _)
           (gammaSewnCriticalPluckerCoordinateProfile_nonneg _ _))).2 hn
-      have hsum : ‖gammaSewnCriticalPhysicalPluckerMeanDifference zw.1 zw.2 u‖ ^ 2 ≤
-          2 * (gammaSewnCriticalPluckerCoordinateProfile zw.1 u ^ 2 +
-            gammaSewnCriticalPluckerCoordinateProfile zw.2 u ^ 2) := by
+      have hsum : ‖gammaSewnCriticalPhysicalPluckerMeanDifference zw.1 zw.2 u‖ ^ (2 : ℕ) ≤
+          2 * (gammaSewnCriticalPluckerCoordinateProfile zw.1 u ^ (2 : ℕ) +
+            gammaSewnCriticalPluckerCoordinateProfile zw.2 u ^ (2 : ℕ)) := by
         nlinarith [sq_nonneg (gammaSewnCriticalPluckerCoordinateProfile zw.1 u -
           gammaSewnCriticalPluckerCoordinateProfile zw.2 u)]
       have hm := mul_le_mul_of_nonneg_left hsum
@@ -156,7 +156,7 @@ theorem gammaSewnCriticalPhysicalPluckerGlobalMeanPolarized_diagonal_le_rootBudg
     (inner ℂ (gammaSewnCriticalPhysicalPluckerBasis u)
       (gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator
         (gammaSewnCriticalPhysicalPluckerBasis u))).re ≤
-      3 * gammaSewnCriticalPluckerRootDiagonalBudget u ^ 2 := by
+      3 * gammaSewnCriticalPluckerRootDiagonalBudget u ^ (2 : ℕ) := by
   change diagonal u gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator ≤ _
   rw [gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator_eq_add, map_add]
   linarith [diagonal_local_le u, diagonal_dispersion_le u, squareBudget_le u]
@@ -175,7 +175,7 @@ theorem norm_gammaSewnCriticalPhysicalPluckerGlobalMeanPolarized_sqrt_apply_le
       gammaSewnCriticalPhysicalPluckerGlobalMeanPolarizedOperator_isPositive
   have hR : IsSelfAdjoint R := IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg T)
   have hRR : R ∘L R = T := CFC.sqrt_mul_sqrt_self T hT
-  have hdiag : ‖R b‖ ^ 2 = (inner ℂ b (T b)).re := by
+  have hdiag : ‖R b‖ ^ (2 : ℕ) = (inner ℂ b (T b)).re := by
     have heq : inner ℂ (R b) (R b) = inner ℂ b (T b) := by
       calc
         _ = inner ℂ b (R (R b)) := hR.isSymmetric b (R b)
@@ -185,7 +185,7 @@ theorem norm_gammaSewnCriticalPhysicalPluckerGlobalMeanPolarized_sqrt_apply_le
   apply (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (Real.sqrt_nonneg _)
     (gammaSewnCriticalPluckerRootDiagonalBudget_nonneg u))).mp
   rw [mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 3)]
-  change ‖R b‖ ^ 2 ≤ _
+  change ‖R b‖ ^ (2 : ℕ) ≤ _
   rw [hdiag]
   exact gammaSewnCriticalPhysicalPluckerGlobalMeanPolarized_diagonal_le_rootBudget u
 

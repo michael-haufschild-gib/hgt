@@ -113,7 +113,7 @@ end Reindex
 open Unitary in
 /-- For a Hermitian matrix, `‖A‖_F² = ∑ᵢ λᵢ²` (sum of squared eigenvalues). -/
 lemma frobSq_hermitian_eq_sum_sq_eigenvalues {A : Matrix n n 𝕜} (hA : A.IsHermitian) :
-    frobSq A = ∑ i, (hA.eigenvalues i) ^ 2 := by
+    frobSq A = ∑ i, (hA.eigenvalues i) ^ (2 : ℕ) := by
   -- A = U D Uᴴ ⟹ AᴴA = A² = U D² Uᴴ ⟹ tr(AᴴA) = ∑ λᵢ²
   unfold frobSq
   rw [hA.eq]

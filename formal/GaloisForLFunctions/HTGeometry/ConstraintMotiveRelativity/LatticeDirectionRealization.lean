@@ -99,28 +99,28 @@ theorem latGram_eq (hz : ∀ i, L.weight i 0 = 0) (n : ℕ) (z : Y) :
   rw [hsplit, Finset.sum_union hdisj]
   rw [Finset.sum_image (fun a _ b _ h => Sum.inl_injective h),
     Finset.sum_image (fun a _ b _ h => Sum.inr_injective h)]
-  have hbase : ∑ m, ((latWt L (Sum.inl m)) ^ 2 * ⟪latDir L (Sum.inl m), z⟫) •
+  have hbase : ∑ m, ((latWt L (Sum.inl m)) ^ (2 : ℕ) * ⟪latDir L (Sum.inl m), z⟫) •
       latDir L (Sum.inl m) = L.base z := by
     rw [apply_eq_sum L.base_isSymmetric z]
     refine Finset.sum_congr rfl fun m _ => ?_
-    have hw : (latWt L (Sum.inl m)) ^ 2 = eigVal L.base_isSymmetric m :=
+    have hw : (latWt L (Sum.inl m)) ^ (2 : ℕ) = eigVal L.base_isSymmetric m :=
       Real.sq_sqrt (eigVal_nonneg L.base_isSymmetric L.base_nonneg m)
-    show ((latWt L (Sum.inl m)) ^ 2 * ⟪latDir L (Sum.inl m), z⟫) • latDir L (Sum.inl m) = _
+    show ((latWt L (Sum.inl m)) ^ (2 : ℕ) * ⟪latDir L (Sum.inl m), z⟫) • latDir L (Sum.inl m) = _
     rw [hw]
     rfl
   have hincr : ∑ p ∈ Finset.univ ×ˢ Finset.range n,
-      ((latWt L (Sum.inr p)) ^ 2 * ⟪latDir L (Sum.inr p), z⟫) • latDir L (Sum.inr p)
+      ((latWt L (Sum.inr p)) ^ (2 : ℕ) * ⟪latDir L (Sum.inr p), z⟫) • latDir L (Sum.inr p)
       = ∑ i, (L.weight i n * ⟪L.dir i, z⟫) • L.dir i := by
     rw [Finset.sum_product]
     refine Finset.sum_congr rfl fun i _ => ?_
     have hterm : ∀ k ∈ Finset.range n,
-        ((latWt L (Sum.inr (i, k))) ^ 2 * ⟪latDir L (Sum.inr (i, k)), z⟫) •
+        ((latWt L (Sum.inr (i, k))) ^ (2 : ℕ) * ⟪latDir L (Sum.inr (i, k)), z⟫) •
           latDir L (Sum.inr (i, k))
         = ((L.weight i (k + 1) - L.weight i k) * ⟪L.dir i, z⟫) • L.dir i := by
       intro k _
-      have hw : (latWt L (Sum.inr (i, k))) ^ 2 = L.weight i (k + 1) - L.weight i k :=
+      have hw : (latWt L (Sum.inr (i, k))) ^ (2 : ℕ) = L.weight i (k + 1) - L.weight i k :=
         Real.sq_sqrt (by linarith [L.weight_mono i (Nat.le_succ k)])
-      show ((latWt L (Sum.inr (i, k))) ^ 2 * ⟪latDir L (Sum.inr (i, k)), z⟫) •
+      show ((latWt L (Sum.inr (i, k))) ^ (2 : ℕ) * ⟪latDir L (Sum.inr (i, k)), z⟫) •
         latDir L (Sum.inr (i, k)) = _
       rw [hw]
       rfl

@@ -28,7 +28,7 @@ theorem uniformPhaseDensity_metricBallTarget_controlled
     (c : EuclideanSpace ℂ (Fin d × Fin d)) :
     TorusTargetControlled
       (torusMetricBallTarget (uniformPhaseDensity d) c δ)
-      (2 * δ ^ 2) := by
+      (2 * δ ^ (2 : ℕ)) := by
   apply torusMetricBallTarget_controlled
   intro x y hxy
   exact uniformPhaseDensity_pair_mem_torusCoherenceTarget hd hδ x y hxy
@@ -44,13 +44,13 @@ theorem measureReal_iUnion_uniformPhaseDensity_metricBallTarget_le
           (uniformPhaseDensity d) (target k) δ) ≤
       (κ : ℝ) *
         ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
-          Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ (d - 1)) := by
+          Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ (d - 1)) := by
   letI : Nonempty (Fin d) := Fin.pos_iff_nonempty.mp hd
   simpa only [Fintype.card_fin] using
     (measureReal_iUnion_torusTargetControlled_le
       (fun k : Fin κ ↦ torusMetricBallTarget
         (uniformPhaseDensity d) (target k) δ)
-      (by positivity : 0 < 2 * δ ^ 2)
+      (by positivity : 0 < 2 * δ ^ (2 : ℕ))
       (fun k ↦ uniformPhaseDensity_metricBallTarget_controlled
         hd hδ.le (target k)))
 
@@ -67,13 +67,13 @@ theorem measureReal_iUnion_uniformPhaseDensity_paddedCircuitTargets_le
           (uniformPhaseDensity d) (target w) δ) ≤
       (Fintype.card gate : ℝ) ^ (s + 1) *
         ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
-          Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ (d - 1)) := by
+          Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ (d - 1)) := by
   letI : Nonempty (Fin d) := Fin.pos_iff_nonempty.mp hd
   simpa only [Fintype.card_fin] using
     (measureReal_iUnion_paddedCircuitTargets_le s
       (fun w ↦ torusMetricBallTarget
         (uniformPhaseDensity d) (target w) δ)
-      (by positivity : 0 < 2 * δ ^ 2)
+      (by positivity : 0 < 2 * δ ^ (2 : ℕ))
       (fun w ↦ uniformPhaseDensity_metricBallTarget_controlled
         hd hδ.le (target w)))
 
@@ -103,7 +103,7 @@ theorem completedTime_iUnion_uniformPhaseDensity_paddedCircuitTargets
       volume.real A ≤
         (Fintype.card gate : ℝ) ^ (s + 1) *
           ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ (d - 1)) := by
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ (d - 1)) := by
   dsimp only
   constructor
   · apply GaloisForLFunctions.HTGeometry.rationallyIndependent_closedTarget_limsup_le_volume

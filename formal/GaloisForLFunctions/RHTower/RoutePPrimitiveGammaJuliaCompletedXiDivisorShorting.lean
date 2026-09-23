@@ -14,7 +14,7 @@ current, gauges the two pole variables separately, and takes the divisor residue
 
 The universal block `B(a,b)=[[ab,a],[b,1]]` leaves the environment pivot unscaled. Its upper-left
 source entry is exactly the two-sided pole gauge of the completed quadratic current, multiplied by
-`kappa^2`. Iterated residues retain the complete coefficient and analytic-multiplicity product.
+`kappa^(2 : ℕ)`. Iterated residues retain the complete coefficient and analytic-multiplicity product.
 Canonical leg-by-leg multiplicity splitting is then performed before the limits; every actual
 divisor copy receives one exact Julia-weighted conormal coordinate. On a common support the
 reflection law makes both raw and split landings Hermitian positive rank-one blocks. Their short is
@@ -146,7 +146,7 @@ theorem routePPrimitiveGammaJuliaCompletedSourceEnvironmentBlock_sourceCorner
     (x u : ℝ) (rho tau : XiDivisorSupport) (z w : ℂ) (r : ℝ) :
     routePPrimitiveGammaJuliaCompletedSourceEnvironmentBlock x u rho tau z w r 0 0 =
       (z - criticalMellinXiPole rho) * (w - criticalMellinXiPole tau) *
-        routePPrimitiveGammaJuliaXiDescentCoefficient x u ^ 2 *
+        routePPrimitiveGammaJuliaXiDescentCoefficient x u ^ (2 : ℕ) *
           frankensteinKreinCCMRoutePQuadraticSourceCurrent z w r := by
   change
     (routePPrimitiveGammaJuliaXiDescentCoefficient x u *

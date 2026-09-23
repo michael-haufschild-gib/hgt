@@ -36,7 +36,7 @@ def squareReaderCuspFlux (q reader : XiZeroCopy) (y : ℝ) : ℂ :=
 
 /-- The exact two-Weyl principal part of the square-reader face. -/
 def squareReaderPrincipalCuspFlux (q reader : XiZeroCopy) (y : ℝ) : ℂ :=
-  principal (center q) ![0, y] ^ 2 / 2 *
+  principal (center q) ![0, y] ^ (2 : ℕ) / 2 *
     readerCoefficient reader * readerPower reader * (y : ℂ) ^ (readerPower reader - 1)
 
 private theorem physicalTest_smooth (r : XiZeroCopy) :
@@ -53,7 +53,8 @@ private theorem physicalTest_mean (r : XiZeroCopy) (y : Ioi (0 : ℝ)) :
   let u := physicalAngularParameter r
   have he (x : ℝ) : physicalTest r (D4BMCuspResponse.point x y) =
       principal u ![0, y.val] + tail u ![x, y.val] := by
-    simp [physicalTest, scalar, principal, tail, d4BMCompletedEisensteinCuspLeg,
+    simp [physicalTest, scalar, D4BMGlobalAngularResponse.principal, tail,
+      d4BMCompletedEisensteinCuspLeg,
       angularCoordinates, D4BMCuspResponse.point, u]
   have ht : Continuous (fun x : ℝ => tail u ![x, y.val]) := by
     have hh : (fun x : ℝ => tail u ![x, y.val]) =
@@ -69,7 +70,7 @@ private theorem physicalTest_mean (r : XiZeroCopy) (y : Ioi (0 : ℝ)) :
   simp_rw [he]
   rw [integral_add (integrable_const _) ht.integrableOn_Ioc]
   have hm := D4BMCuspProjection.mean_tail u y.property
-  change (∫ x in Ioc (-1 / 2 : ℝ), tail u ![x, y.val]) = 0 at hm
+  change (∫ x in Ioc (-1 / 2 : ℝ) (1 / 2), tail u ![x, y.val]) = 0 at hm
   rw [hm, add_zero]
   norm_num
   exact physicalScalar_principal r ![0, y.val]
@@ -107,34 +108,39 @@ theorem squareReaderCuspFlux_eq_principal_add_forcingTail (q reader : XiZeroCopy
       squareReaderPrincipalCuspFlux q reader y + (1 / 2 : ℂ) * forcingTail q reader y := by
   let P : ℂ := principal (center q) ![0, y.val]
   let F : ℝ → ℂ := fun x => squareReaderCurrent q reader 1 ![x, y.val]
-  let A : ℝ → ℂ := fun x => P ^ 2 / 2 *
+  let A : ℝ → ℂ := fun x => P ^ (2 : ℕ) / 2 *
     directional Complex.I (physicalTest reader) (D4BMCuspResponse.point x y.val)
   let B : ℝ → ℂ := fun x => (1 / 2 : ℂ) * squareRemainder (center q) ![x, y.val] *
     directional Complex.I (physicalTest reader) (D4BMCuspResponse.point x y.val)
   have hFA (x : ℝ) : F x = A x + B x := by
     dsimp only [F, A, B, P]
-    change D4BMAngularTwoTensor.source q ![x, y.val] ^ 2 / 2 *
+    change D4BMAngularTwoTensor.source q ![x, y.val] ^ (2 : ℕ) / 2 *
         coordDeriv 1 (D4BMLiteralCusp.scalar (physicalAngularParameter reader)) ![x, y.val] = _
     rw [reader_vertical]
-    change D4BMLiteralCusp.scalar (center q) ![x, y.val] ^ 2 / 2 *
+    change D4BMLiteralCusp.scalar (center q) ![x, y.val] ^ (2 : ℕ) / 2 *
         directional Complex.I (physicalTest reader) (D4BMCuspResponse.point x y.val) = _
     have hp : principal (center q) ![x, y.val] = principal (center q) ![0, y.val] := rfl
     rw [show squareRemainder (center q) ![x, y.val] =
-      D4BMLiteralCusp.scalar (center q) ![x, y.val] ^ 2 -
-        principal (center q) ![x, y.val] ^ 2 by rfl, hp]
+      D4BMLiteralCusp.scalar (center q) ![x, y.val] ^ (2 : ℕ) -
+        principal (center q) ![x, y.val] ^ (2 : ℕ) by rfl, hp]
     ring
   have hFsmooth : ContDiffOn ℝ ∞ (squareReaderCurrent q reader 1)
       {z : Point | 0 < z 1} := by
     intro z hz
     exact (squareReaderCurrent_contDiffAt q reader ⟨z, hz⟩ 1).contDiffWithinAt
+  have hmap : Continuous (fun x : ℝ => (![x, y.val] : Point)) := by fun_prop
   have cF : Continuous F := by
     dsimp only [F]
-    exact GaloisForLFunctions.RHTower.SelbergMaassMean.slice_continuous
-      hFsmooth.continuousOn y.property
+    refine hFsmooth.continuousOn.comp_continuous hmap ?_
+    intro x
+    show (0 : ℝ) < (![x, y.val] : Point) 1
+    simp only [Matrix.cons_val_one]
+    exact y.property
   have cV : Continuous (fun x : ℝ =>
       directional Complex.I (physicalTest reader) (D4BMCuspResponse.point x y.val)) :=
     GaloisForLFunctions.RHTower.SelbergMaassMean.slice_continuous
-      (directional_smooth (physicalTest_smooth reader) Complex.I).continuousOn y.property
+      (planar_derivative_contDiffOn (physicalTest_smooth reader) Complex.I).continuousOn
+      y.property
   have cA : Continuous A := cV.const_mul _
   have cB : Continuous B := by
     have hB : B = fun x => F x - A x := by
@@ -159,18 +165,20 @@ theorem squareReaderCuspFlux_eq_principal_add_forcingTail (q reader : XiZeroCopy
     change D4BMCuspResponse.average (directional Complex.I (physicalTest reader)) y = _
     exact physicalTest_vertical_mean reader y
   have hA : (∫ x in Ioc (-1 / 2 : ℝ) (1 / 2 : ℝ), A x) =
-      P ^ 2 / 2 * readerCoefficient reader * readerPower reader *
+      P ^ (2 : ℕ) / 2 * readerCoefficient reader * readerPower reader *
         (y.val : ℂ) ^ (readerPower reader - 1) := by
     dsimp only [A]
     rw [integral_const_mul, hV]
+    ring
   have hB : (∫ x in Ioc (-1 / 2 : ℝ) (1 / 2 : ℝ), B x) =
       (1 / 2 : ℂ) * forcingTail q reader y := by
     dsimp only [B, forcingTail]
+    simp_rw [mul_assoc]
     rw [integral_const_mul]
+    rfl
   unfold squareReaderCuspFlux squareReaderPrincipalCuspFlux
   change (∫ x in Ioc (-1 / 2 : ℝ) (1 / 2 : ℝ), F x) = _
   rw [hsplit, hA, hB]
-  rfl
 
 /-- The full Fourier remainder of the square-reader face vanishes at the
 cusp.  This fully discharges the first survivor's noncompact tail. -/
@@ -179,7 +187,7 @@ theorem squareReaderCuspFlux_sub_principal_tendsto_zero (q reader : XiZeroCopy) 
       squareReaderCuspFlux q reader y - squareReaderPrincipalCuspFlux q reader y)
       atTop (𝓝 0) := by
   have h := (forcingTail_weighted_tendsto_zero q reader 0).const_mul (1 / 2 : ℂ)
-  simp only [Complex.cpow_zero, one_mul] at h
+  simp only [Complex.cpow_zero, one_mul, mul_zero] at h
   apply h.congr'
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with y hy
   rw [squareReaderCuspFlux_eq_principal_add_forcingTail q reader ⟨y, hy⟩]

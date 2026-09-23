@@ -7,7 +7,7 @@ The variational optimizer from `XiMassSpacelikeContourOptimality` is converted i
 interior first-quadrant angle.  Combining that angle with the entire hyperbolic contour theorem
 identifies the Bessel argument exactly with
 
-`a * Re sqrt ((sigma+i*u)^2+h^2)`.
+`a * Re sqrt ((sigma+i*u)^(2 : ℕ)+h^(2 : ℕ))`.
 
 Consequently the mass Fourier transform has both an exact optimal `K₁` bound and a fixed-base
 bound retaining the full exponential coefficient `1`.  This closes the analytic C41-S lift; the
@@ -22,13 +22,13 @@ noncomputable section
 
 theorem xiMassSpacelikePropagationRateSq_gt_gap
     {sigma u h : ℝ} (hsigma : 0 < sigma) (hu : 0 ≤ u) (huh : u < h) :
-    h ^ 2 - u ^ 2 < xiMassSpacelikePropagationRateSq sigma u h := by
-  have hgap : 0 < h ^ 2 - u ^ 2 := by nlinarith
+    h ^ (2 : ℕ) - u ^ (2 : ℕ) < xiMassSpacelikePropagationRateSq sigma u h := by
+  have hgap : 0 < h ^ (2 : ℕ) - u ^ (2 : ℕ) := by nlinarith
   have hsqrt := sqrt_spacelikeGap_lt_csqrtRe_propagationArgument hsigma hu huh
-  have hsqrt0 : 0 ≤ Real.sqrt (h ^ 2 - u ^ 2) := Real.sqrt_nonneg _
+  have hsqrt0 : 0 ≤ Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) := Real.sqrt_nonneg _
   have hkappa0 : 0 ≤ HTGeometry.csqrtRe
       (xiMassSpacelikePropagationArgument sigma u h) := HTGeometry.csqrtRe_nonneg _
-  have hgapSq : Real.sqrt (h ^ 2 - u ^ 2) ^ 2 = h ^ 2 - u ^ 2 :=
+  have hgapSq : Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) ^ (2 : ℕ) = h ^ (2 : ℕ) - u ^ (2 : ℕ) :=
     Real.sq_sqrt hgap.le
   have htrace : 0 < xiMassSpacelikeTrace sigma u h := by
     rw [xiMassSpacelikeTrace]
@@ -48,8 +48,8 @@ theorem exists_xiMassSpacelikeOptimalContourAngle
   have hcpos : 0 < c := by
     by_contra hnc
     have hc0 : c = 0 := le_antisymm (le_of_not_gt hnc) hc
-    have hsSq : s ^ 2 = 1 := by nlinarith
-    have hrate : xiMassSpacelikeContourRateSq sigma u h c s = h ^ 2 - u ^ 2 := by
+    have hsSq : s ^ (2 : ℕ) = 1 := by nlinarith
+    have hrate : xiMassSpacelikeContourRateSq sigma u h c s = h ^ (2 : ℕ) - u ^ (2 : ℕ) := by
       rw [xiMassSpacelikeContourRateSq, hc0]
       nlinarith
     have hstrict := xiMassSpacelikePropagationRateSq_gt_gap hsigma hu huh
@@ -57,7 +57,7 @@ theorem exists_xiMassSpacelikeOptimalContourAngle
     exact (lt_irrefl _ hstrict)
   let z : ℂ := (c : ℂ) + (s : ℂ) * I
   have hzNorm : ‖z‖ = 1 := by
-    have hzSq : ‖z‖ ^ 2 = 1 := by
+    have hzSq : ‖z‖ ^ (2 : ℕ) = 1 := by
       rw [Complex.sq_norm, Complex.normSq_apply]
       simp only [z, Complex.add_re, Complex.add_im, Complex.ofReal_re,
         Complex.ofReal_im, Complex.mul_re, Complex.mul_im, Complex.I_re,
@@ -107,7 +107,7 @@ theorem sq_csqrtRe_eq_optimalContourRateSq
     xiMassSpacelikeContourRateSq sigma u h
         (Real.cos theta) (Real.sin theta) =
       HTGeometry.csqrtRe
-        (xiMassSpacelikePropagationArgument sigma u h) ^ 2 := by
+        (xiMassSpacelikePropagationArgument sigma u h) ^ (2 : ℕ) := by
   have htrace : 0 < xiMassSpacelikeTrace sigma u h := by
     rw [xiMassSpacelikeTrace]
     nlinarith [sq_pos_of_pos hsigma]
@@ -133,7 +133,7 @@ theorem exists_norm_stripFourier_xiMass_le_optimalCurvedBessel
       (xiMassSpacelikePropagationArgument sigma u h)
     ∃ theta : ℝ, 0 ≤ theta ∧ theta < Real.pi / 2 ∧
       xiMassSpacelikeContourRateSq sigma u h
-          (Real.cos theta) (Real.sin theta) = kappa ^ 2 ∧
+          (Real.cos theta) (Real.sin theta) = kappa ^ (2 : ℕ) ∧
       ‖stripFourier
         (xiMassAnalyticTest a ((sigma : ℂ) + (u : ℂ) * I)) (h : ℂ)‖ ≤
           2 * a * Real.exp
@@ -147,8 +147,8 @@ theorem exists_norm_stripFourier_xiMass_le_optimalCurvedBessel
   have hrate := sq_csqrtRe_eq_optimalContourRateSq hsigma hu huh hopt
   have hq := sqrt_optimalContourRateSq_eq_csqrtRe hsigma hu huh hopt
   have hq' : Real.sqrt
-      ((sigma * Real.cos theta + h * Real.sin theta) ^ 2 -
-        (u * Real.sin theta) ^ 2) = kappa := by
+      ((sigma * Real.cos theta + h * Real.sin theta) ^ (2 : ℕ) -
+        (u * Real.sin theta) ^ (2 : ℕ)) = kappa := by
     simpa only [xiMassSpacelikeContourRateSq, kappa] using hq
   have hb := norm_stripFourier_xiMass_le_curvedBessel
     ha hsigma hu huh.le htheta0 hthetaPi
@@ -168,7 +168,7 @@ theorem exists_norm_stripFourier_xiMass_le_optimal_full_exponent
       (xiMassSpacelikePropagationArgument sigma u h)
     ∃ theta : ℝ, 0 ≤ theta ∧ theta < Real.pi / 2 ∧
       xiMassSpacelikeContourRateSq sigma u h
-          (Real.cos theta) (Real.sin theta) = kappa ^ 2 ∧
+          (Real.cos theta) (Real.sin theta) = kappa ^ (2 : ℕ) ∧
       ‖stripFourier
         (xiMassAnalyticTest a ((sigma : ℂ) + (u : ℂ) * I)) (h : ℂ)‖ ≤
           2 * a * Real.exp
@@ -183,12 +183,12 @@ theorem exists_norm_stripFourier_xiMass_le_optimal_full_exponent
   have hrate := sq_csqrtRe_eq_optimalContourRateSq hsigma hu huh hopt
   have hq := sqrt_optimalContourRateSq_eq_csqrtRe hsigma hu huh hopt
   have hq' : Real.sqrt
-      ((sigma * Real.cos theta + h * Real.sin theta) ^ 2 -
-        (u * Real.sin theta) ^ 2) = kappa := by
+      ((sigma * Real.cos theta + h * Real.sin theta) ^ (2 : ℕ) -
+        (u * Real.sin theta) ^ (2 : ℕ)) = kappa := by
     simpa only [xiMassSpacelikeContourRateSq, kappa] using hq
   have hq₀angle : q₀ ≤ Real.sqrt
-      ((sigma * Real.cos theta + h * Real.sin theta) ^ 2 -
-        (u * Real.sin theta) ^ 2) := by
+      ((sigma * Real.cos theta + h * Real.sin theta) ^ (2 : ℕ) -
+        (u * Real.sin theta) ^ (2 : ℕ)) := by
     rw [hq']
     exact hq₀kappa
   have hb := norm_stripFourier_xiMass_le_curvedBessel_full_exponent

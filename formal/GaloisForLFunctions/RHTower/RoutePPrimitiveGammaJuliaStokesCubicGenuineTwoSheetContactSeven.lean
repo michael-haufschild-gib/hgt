@@ -61,13 +61,13 @@ theorem routePPrimitiveGammaJuliaStokesCubicGenuineTwoSheetUnitLanding_contactNu
     f.toFinitePuiseuxFamily.coeff_ne_at_contact (by omega)
   have hequiv := f.coeff_equivariant (0 : Fin 2) e
   rw [hmonodromy] at hequiv
-  have hroot_inv_sq : f.root⁻¹ ^ 2 = 1 := by
+  have hroot_inv_sq : f.root⁻¹ ^ (2 : ℕ) = 1 := by
     rw [inv_pow, f.root_primitive.pow_eq_one, inv_one]
   have hfactor : f.root⁻¹ ^ e.val = 1 := by
     have heval : e.val = 6 := by simp [e, hk]
     rw [heval]
     calc
-      f.root⁻¹ ^ 6 = (f.root⁻¹ ^ 2) ^ 3 := by ring
+      f.root⁻¹ ^ (6 : ℕ) = (f.root⁻¹ ^ (2 : ℕ)) ^ (3 : ℕ) := by ring
       _ = 1 := by rw [hroot_inv_sq]; norm_num
   rw [hfactor, one_mul] at hequiv
   exact hdiff hequiv.symm
@@ -76,7 +76,7 @@ private noncomputable def genuineTwoSheetSevenRoot : ℂ :=
   GaloisForLFunctions.HTGeometry.unitRoot 2
 
 private noncomputable def genuineTwoSheetSevenRatio : ℂ :=
-  genuineTwoSheetSevenRoot⁻¹ ^ 7
+  genuineTwoSheetSevenRoot⁻¹ ^ (7 : ℕ)
 
 private noncomputable def genuineTwoSheetSevenCoeff (i : Fin 2) (e : Fin 8) : ℂ :=
   if e.val = 7 then if i = 0 then 1 else genuineTwoSheetSevenRatio else 0
@@ -85,14 +85,14 @@ private theorem genuineTwoSheetSevenRoot_primitive :
     IsPrimitiveRoot genuineTwoSheetSevenRoot 2 := by
   exact GaloisForLFunctions.HTGeometry.unitRoot_isPrimitiveRoot (by norm_num)
 
-private theorem genuineTwoSheetSevenRoot_inv_sq : genuineTwoSheetSevenRoot⁻¹ ^ 2 = 1 := by
+private theorem genuineTwoSheetSevenRoot_inv_sq : genuineTwoSheetSevenRoot⁻¹ ^ (2 : ℕ) = 1 := by
   rw [inv_pow, genuineTwoSheetSevenRoot_primitive.pow_eq_one, inv_one]
 
-private theorem genuineTwoSheetSevenRatio_sq : genuineTwoSheetSevenRatio ^ 2 = 1 := by
+private theorem genuineTwoSheetSevenRatio_sq : genuineTwoSheetSevenRatio ^ (2 : ℕ) = 1 := by
   rw [genuineTwoSheetSevenRatio]
   calc
-    (genuineTwoSheetSevenRoot⁻¹ ^ 7) ^ 2 =
-        (genuineTwoSheetSevenRoot⁻¹ ^ 2) ^ 7 := by ring
+    (genuineTwoSheetSevenRoot⁻¹ ^ (7 : ℕ)) ^ (2 : ℕ) =
+        (genuineTwoSheetSevenRoot⁻¹ ^ (2 : ℕ)) ^ (7 : ℕ) := by ring
     _ = 1 := by rw [genuineTwoSheetSevenRoot_inv_sq]; norm_num
 
 private theorem genuineTwoSheetSevenRatio_ne_one : genuineTwoSheetSevenRatio ≠ 1 := by
@@ -111,10 +111,10 @@ private theorem genuineTwoSheetSevenRatio_ne_one : genuineTwoSheetSevenRatio ≠
   rw [genuineTwoSheetSevenRatio] at hratio
   calc
     genuineTwoSheetSevenRoot⁻¹ =
-        (genuineTwoSheetSevenRoot⁻¹ ^ 2) ^ 3 * genuineTwoSheetSevenRoot⁻¹ := by
+        (genuineTwoSheetSevenRoot⁻¹ ^ (2 : ℕ)) ^ (3 : ℕ) * genuineTwoSheetSevenRoot⁻¹ := by
       rw [genuineTwoSheetSevenRoot_inv_sq]
       simp
-    _ = genuineTwoSheetSevenRoot⁻¹ ^ 7 := by ring
+    _ = genuineTwoSheetSevenRoot⁻¹ ^ (7 : ℕ) := by ring
     _ = 1 := hratio
 
 /-- Explicit genuine cyclic Puiseux spectrum supported at exponent `7/2`.  Its monodromy swaps the

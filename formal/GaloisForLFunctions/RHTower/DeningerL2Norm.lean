@@ -30,8 +30,8 @@ variable {K : Type*} [Field K] [NumberField K]
 /-- The unnormalized `L²` place norm: archimedean places weighted by multiplicity, finite places
 weighted by the reciprocal of the local degree. -/
 noncomputable def deningerL2NormSq (x : K) : ℝ :=
-  (∑ v : InfinitePlace K, (v.mult : ℝ) * (Real.log (v x)) ^ 2)
-    + ∑ᶠ w : FinitePlace K, (Real.log (w x)) ^ 2 / (deningerPlaceDegree w : ℝ)
+  (∑ v : InfinitePlace K, (v.mult : ℝ) * (Real.log (v x)) ^ (2 : ℕ))
+    + ∑ᶠ w : FinitePlace K, (Real.log (w x)) ^ (2 : ℕ) / (deningerPlaceDegree w : ℝ)
 
 /-- The local degree of a finite place is positive. -/
 theorem deningerPlaceDegree_pos (w : FinitePlace K) : 0 < deningerPlaceDegree w := by
@@ -61,9 +61,9 @@ private theorem deningerL2Pow_ne_one {t : ℝ} (ht : 0 < t) (ht1 : t ≠ 1) {n :
 /-- **Base change for the finite part of the `L²` norm.** -/
 theorem deningerL2FinsumBaseChange {x : K} (hx : x ≠ 0) :
     ∑ᶠ w : FinitePlace L,
-        (Real.log (w (algebraMap K L x))) ^ 2 / (deningerPlaceDegree w : ℝ)
+        (Real.log (w (algebraMap K L x))) ^ (2 : ℕ) / (deningerPlaceDegree w : ℝ)
       = (finrank K L : ℝ)
-          * ∑ᶠ v : FinitePlace K, (Real.log (v x)) ^ 2 / (deningerPlaceDegree v : ℝ) := by
+          * ∑ᶠ v : FinitePlace K, (Real.log (v x)) ^ (2 : ℕ) / (deningerPlaceDegree v : ℝ) := by
   classical
   have hxL : algebraMap K L x ≠ 0 := (map_ne_zero (algebraMap K L)).mpr hx
   set SL : Finset (FinitePlace L) := (FinitePlace.hasFiniteMulSupport hxL).toFinset with hSL
@@ -75,23 +75,23 @@ theorem deningerL2FinsumBaseChange {x : K} (hx : x ≠ 0) :
     intro v
     simp [hSK, Function.mulSupport]
   have hsubL : Function.support (fun w : FinitePlace L =>
-      (Real.log (w (algebraMap K L x))) ^ 2 / (deningerPlaceDegree w : ℝ))
+      (Real.log (w (algebraMap K L x))) ^ (2 : ℕ) / (deningerPlaceDegree w : ℝ))
       ⊆ (SL : Set (FinitePlace L)) := by
     intro w hw
     by_contra hwS
     refine hw ?_
-    show (Real.log (w (algebraMap K L x))) ^ 2 / (deningerPlaceDegree w : ℝ) = 0
+    show (Real.log (w (algebraMap K L x))) ^ (2 : ℕ) / (deningerPlaceDegree w : ℝ) = 0
     have hone : w (algebraMap K L x) = 1 := by
       by_contra hne
       exact hwS (Finset.mem_coe.mpr ((hmemSL w).mpr hne))
     rw [hone, Real.log_one]
     simp
   have hsubK : Function.support (fun v : FinitePlace K =>
-      (Real.log (v x)) ^ 2 / (deningerPlaceDegree v : ℝ)) ⊆ (SK : Set (FinitePlace K)) := by
+      (Real.log (v x)) ^ (2 : ℕ) / (deningerPlaceDegree v : ℝ)) ⊆ (SK : Set (FinitePlace K)) := by
     intro v hv
     by_contra hvS
     refine hv ?_
-    show (Real.log (v x)) ^ 2 / (deningerPlaceDegree v : ℝ) = 0
+    show (Real.log (v x)) ^ (2 : ℕ) / (deningerPlaceDegree v : ℝ) = 0
     have hone : v x = 1 := by
       by_contra hne
       exact hvS (Finset.mem_coe.mpr ((hmemSK v).mpr hne))
@@ -126,7 +126,7 @@ degree, exactly as for the height. -/
 theorem deningerL2NormSq_baseChange {x : K} (hx : x ≠ 0) :
     deningerL2NormSq (algebraMap K L x) = (finrank K L : ℝ) * deningerL2NormSq x := by
   rw [deningerL2NormSq, deningerL2NormSq, mul_add,
-    ← deningerArchPlaceSum_baseChange (fun t => (Real.log t) ^ 2) x,
+    ← deningerArchPlaceSum_baseChange (fun t => (Real.log t) ^ (2 : ℕ)) x,
     ← deningerL2FinsumBaseChange hx]
 
 /-- **The normalized `L²` norm does not depend on the field of definition.** -/

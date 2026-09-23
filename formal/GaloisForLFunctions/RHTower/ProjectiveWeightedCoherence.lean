@@ -29,12 +29,12 @@ def projectiveWeightedPhaseAmplitude {d : ℕ}
 /-- Ordered weighted pairwise squared phase distance. -/
 def projectiveWeightedPairwiseEnergy {d : ℕ}
     (w : Fin d → ℝ) (phase : Fin d → ℂ) : ℝ :=
-  ∑ i, ∑ j, w i * w j * ‖phase i - phase j‖ ^ 2
+  ∑ i, ∑ j, w i * w j * ‖phase i - phase j‖ ^ (2 : ℕ)
 
 /-- Weighted squared distance from a selected projective pivot. -/
 def projectiveWeightedPivotEnergy {d : ℕ}
     (w : Fin d → ℝ) (phase : Fin d → ℂ) (k : Fin d) : ℝ :=
-  ∑ j, w j * ‖phase j - phase k‖ ^ 2
+  ∑ j, w j * ‖phase j - phase k‖ ^ (2 : ℕ)
 
 theorem projectiveWeightedPhaseAmplitude_eq_finiteWeightedMean
     {d : ℕ} (w : Fin d → ℝ) (phase : Fin d → ℂ) :
@@ -53,7 +53,7 @@ theorem projectiveWeightedPairwiseEnergy_eq_two_mul_fidelityDeficit
     {d : ℕ} (w : Fin d → ℝ) (phase : Fin d → ℂ)
     (hmass : ∑ i, w i = 1) (hphase : ∀ i, ‖phase i‖ = 1) :
     projectiveWeightedPairwiseEnergy w phase =
-      2 * (1 - ‖projectiveWeightedPhaseAmplitude w phase‖ ^ 2) := by
+      2 * (1 - ‖projectiveWeightedPhaseAmplitude w phase‖ ^ (2 : ℕ)) := by
   rw [projectiveWeightedPairwiseEnergy_eq_finiteWeightedDifferenceEnergy,
     finiteWeightedDifferenceEnergy_eq_variance]
   have hnorm : finiteWeightedNormSq w phase = 1 := by
@@ -73,7 +73,7 @@ theorem half_projectiveWeightedPairwiseEnergy_ofReal_eq_covariance
     {d : ℕ} (w theta : Fin d → ℝ) (hmass : ∑ i, w i = 1) :
     (1 / 2 : ℝ) *
         projectiveWeightedPairwiseEnergy w (fun i => (theta i : ℂ)) =
-      (∑ i, w i * theta i ^ 2) - (∑ i, w i * theta i) ^ 2 := by
+      (∑ i, w i * theta i ^ (2 : ℕ)) - (∑ i, w i * theta i) ^ (2 : ℕ) := by
   have hmean :
       (∑ i, (w i : ℂ) * (theta i : ℂ)) =
         ((∑ i, w i * theta i : ℝ) : ℂ) := by
@@ -119,8 +119,8 @@ theorem exists_positiveWeight_projectiveWeightedPivotEnergy_le
     {η : ℝ} (hη1 : η ≤ 1)
     (hcoh : 1 - η ≤ ‖projectiveWeightedPhaseAmplitude w phase‖) :
     ∃ k, 0 < w k ∧ projectiveWeightedPivotEnergy w phase k ≤ 4 * η := by
-  have hsq : (1 - η) ^ 2 ≤
-      ‖projectiveWeightedPhaseAmplitude w phase‖ ^ 2 := by
+  have hsq : (1 - η) ^ (2 : ℕ) ≤
+      ‖projectiveWeightedPhaseAmplitude w phase‖ ^ (2 : ℕ) := by
     exact (sq_le_sq₀ (sub_nonneg.mpr hη1) (norm_nonneg _)).2 hcoh
   have hpair : projectiveWeightedPairwiseEnergy w phase ≤ 4 * η := by
     rw [projectiveWeightedPairwiseEnergy_eq_two_mul_fidelityDeficit
@@ -297,12 +297,12 @@ theorem waterLevel_mul_eta_le_card_sub_one
 /-- Weighted pivot energy on the finite phase torus. -/
 def torusProjectiveWeightedPivotEnergy {d : ℕ}
     (w : Fin d → ℝ) (k : Fin d) (x : Fin d → UnitAddCircle) : ℝ :=
-  ∑ j, w j * ‖fourier 1 (x j) - fourier 1 (x k)‖ ^ 2
+  ∑ j, w j * ‖fourier 1 (x j) - fourier 1 (x k)‖ ^ (2 : ℕ)
 
 /-- Independent-coordinate weighted pivot energy after the projective shear. -/
 def torusIndependentProjectiveWeightedPivotEnergy {d : ℕ}
     (w : Fin d → ℝ) (k : Fin d) (y : Fin d → UnitAddCircle) : ℝ :=
-  ∑ j, if j = k then 0 else w j * ‖fourier 1 (y j) - 1‖ ^ 2
+  ∑ j, if j = k then 0 else w j * ‖fourier 1 (y j) - 1‖ ^ (2 : ℕ)
 
 theorem continuous_torusProjectiveWeightedPivotEnergy
     {d : ℕ} (w : Fin d → ℝ) (k : Fin d) :
@@ -339,19 +339,19 @@ theorem integral_exp_neg_torusIndependentProjectiveWeightedPivotEnergy
       Real.exp (-lam *
           torusIndependentProjectiveWeightedPivotEnergy w k y) =
         ∏ j, if j = k then 1 else
-          Real.exp (-(lam * w j) * ‖fourier 1 (y j) - 1‖ ^ 2) := by
+          Real.exp (-(lam * w j) * ‖fourier 1 (y j) - 1‖ ^ (2 : ℕ)) := by
     rw [torusIndependentProjectiveWeightedPivotEnergy]
     calc
       Real.exp (-lam * ∑ j, if j = k then 0 else
-          w j * ‖fourier 1 (y j) - 1‖ ^ 2) =
+          w j * ‖fourier 1 (y j) - 1‖ ^ (2 : ℕ)) =
           Real.exp (∑ j, -lam * (if j = k then 0 else
-            w j * ‖fourier 1 (y j) - 1‖ ^ 2)) := by
+            w j * ‖fourier 1 (y j) - 1‖ ^ (2 : ℕ))) := by
               congr 1
               rw [← Finset.mul_sum]
       _ = ∏ j, Real.exp (-lam * (if j = k then 0 else
-            w j * ‖fourier 1 (y j) - 1‖ ^ 2)) := Real.exp_sum _ _
+            w j * ‖fourier 1 (y j) - 1‖ ^ (2 : ℕ))) := Real.exp_sum _ _
       _ = ∏ j, if j = k then 1 else
-          Real.exp (-(lam * w j) * ‖fourier 1 (y j) - 1‖ ^ 2) := by
+          Real.exp (-(lam * w j) * ‖fourier 1 (y j) - 1‖ ^ (2 : ℕ)) := by
             apply Finset.prod_congr rfl
             intro j _hj
             by_cases hjk : j = k <;> simp [hjk]
@@ -359,10 +359,10 @@ theorem integral_exp_neg_torusIndependentProjectiveWeightedPivotEnergy
   rw [integral_congr_ae (ae_of_all _ hfactor)]
   change (∫ y : Fin d → UnitAddCircle,
     ∏ j, (fun z : UnitAddCircle ↦ if j = k then 1 else
-      Real.exp (-(lam * w j) * ‖fourier 1 z - 1‖ ^ 2)) (y j)) = _
+      Real.exp (-(lam * w j) * ‖fourier 1 z - 1‖ ^ (2 : ℕ))) (y j)) = _
   have hprod := integral_fintype_prod_volume_eq_prod
     (fun j : Fin d ↦ fun z : UnitAddCircle ↦ if j = k then 1 else
-      Real.exp (-(lam * w j) * ‖fourier 1 z - 1‖ ^ 2))
+      Real.exp (-(lam * w j) * ‖fourier 1 z - 1‖ ^ (2 : ℕ)))
   rw [hprod]
   apply Finset.prod_congr rfl
   intro j _hj
@@ -493,9 +493,9 @@ theorem torusProjectiveWeightedCoherenceTarget_subset_iUnion_pivotTarget
   rw [Set.mem_iUnion]
   refine ⟨k, ?_⟩
   change (∑ j, w j *
-    ‖fourier 1 (x j) - fourier 1 (x k)‖ ^ 2) ≤ 4 * η at hk
+    ‖fourier 1 (x j) - fourier 1 (x k)‖ ^ (2 : ℕ)) ≤ 4 * η at hk
   change (∑ j, w j *
-    ‖fourier 1 (x j) - fourier 1 (x k)‖ ^ 2) ≤ 4 * η
+    ‖fourier 1 (x j) - fourier 1 (x k)‖ ^ (2 : ℕ)) ≤ 4 * η
   exact hk
 
 /-- **Universal weighted target budget.**  Each pivot may use its own

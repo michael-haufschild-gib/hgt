@@ -25,34 +25,34 @@ def thetaCuspReflectedActionC5DirectBalance (u t : ℝ) : ℝ :=
   let a := thetaCuspReflectedLogJetOne u t
   let b := thetaCuspReflectedLogJetTwo u t
   6 - (9 / 4 : ℝ) * t * a * R +
-    (5 / 4 : ℝ) * t ^ 2 * (b - a ^ 2) * R - t ^ 2 * a ^ 2 * R ^ 2
+    (5 / 4 : ℝ) * t ^ (2 : ℕ) * (b - a ^ (2 : ℕ)) * R - t ^ (2 : ℕ) * a ^ (2 : ℕ) * R ^ (2 : ℕ)
 
 /-- Formal partial derivative of direct C5 balance with respect to action. -/
 def thetaCuspReflectedActionC5PartialAction (u t : ℝ) : ℝ :=
   let R := thetaCuspReflectedActionInverseRadius u t
   let a := thetaCuspReflectedLogJetOne u t
   let b := thetaCuspReflectedLogJetTwo u t
-  (-(9 / 4 : ℝ) * t * a + (5 / 4 : ℝ) * t ^ 2 * (b - a ^ 2) -
-      2 * t ^ 2 * a ^ 2 * R) * (-R - R ^ 2)
+  (-(9 / 4 : ℝ) * t * a + (5 / 4 : ℝ) * t ^ (2 : ℕ) * (b - a ^ (2 : ℕ)) -
+      2 * t ^ (2 : ℕ) * a ^ (2 : ℕ) * R) * (-R - R ^ (2 : ℕ))
 
 /-- Formal partial derivative of direct C5 balance with respect to first displacement jet. -/
 def thetaCuspReflectedActionC5PartialJetOne (u t : ℝ) : ℝ :=
   let R := thetaCuspReflectedActionInverseRadius u t
   let a := thetaCuspReflectedLogJetOne u t
-  (-(9 / 4 : ℝ) * t * R - (5 / 2 : ℝ) * t ^ 2 * a * R -
-    2 * t ^ 2 * a * R ^ 2)
+  (-(9 / 4 : ℝ) * t * R - (5 / 2 : ℝ) * t ^ (2 : ℕ) * a * R -
+    2 * t ^ (2 : ℕ) * a * R ^ (2 : ℕ))
 
 /-- Formal partial derivative of direct C5 balance with respect to second displacement jet. -/
 def thetaCuspReflectedActionC5PartialJetTwo (u t : ℝ) : ℝ :=
-  (5 / 4 : ℝ) * t ^ 2 * thetaCuspReflectedActionInverseRadius u t
+  (5 / 4 : ℝ) * t ^ (2 : ℕ) * thetaCuspReflectedActionInverseRadius u t
 
 /-- Explicit-displacement partial derivative of direct C5 balance. -/
 def thetaCuspReflectedActionC5PartialDisplacement (u t : ℝ) : ℝ :=
   let R := thetaCuspReflectedActionInverseRadius u t
   let a := thetaCuspReflectedLogJetOne u t
   let b := thetaCuspReflectedLogJetTwo u t
-  (-(9 / 4 : ℝ) * a * R + (5 / 2 : ℝ) * t * (b - a ^ 2) * R -
-    2 * t * a ^ 2 * R ^ 2)
+  (-(9 / 4 : ℝ) * a * R + (5 / 2 : ℝ) * t * (b - a ^ (2 : ℕ)) * R -
+    2 * t * a ^ (2 : ℕ) * R ^ (2 : ℕ))
 
 /-- Centre derivative of the second reflected displacement jet. -/
 def thetaCuspReflectedLogCenterMixedJetThree (u t : ℝ) : ℝ :=
@@ -104,7 +104,7 @@ theorem hasDerivAt_thetaCuspReflectedActionInverseRadius_center
     (u : ℝ) {t : ℝ} (ht : 0 < t) :
     HasDerivAt (fun x => thetaCuspReflectedActionInverseRadius x t)
       ((-thetaCuspReflectedActionInverseRadius u t -
-          thetaCuspReflectedActionInverseRadius u t ^ 2) *
+          thetaCuspReflectedActionInverseRadius u t ^ (2 : ℕ)) *
         thetaCuspReflectedLogCenterJetOne u t) u := by
   have hq := hasDerivAt_thetaCuspReflectedLogAction_center u t
   have hr := hq.exp.sub_const 1
@@ -124,7 +124,7 @@ theorem hasDerivAt_thetaCuspReflectedActionInverseRadius_displacement
     (u : ℝ) {t : ℝ} (ht : 0 < t) :
     HasDerivAt (thetaCuspReflectedActionInverseRadius u)
       ((-thetaCuspReflectedActionInverseRadius u t -
-          thetaCuspReflectedActionInverseRadius u t ^ 2) *
+          thetaCuspReflectedActionInverseRadius u t ^ (2 : ℕ)) *
         thetaCuspReflectedLogJetOne u t) t := by
   have hq := hasDerivAt_thetaCuspReflectedLogAction u t
   have hr := hq.exp.sub_const 1
@@ -148,7 +148,7 @@ theorem hasDerivAt_thetaCuspReflectedActionC5DirectBalance_center
   let A : ℝ → ℝ := fun x => thetaCuspReflectedLogJetOne x t
   let B : ℝ → ℝ := fun x => thetaCuspReflectedLogJetTwo x t
   have hR : HasDerivAt R
-      ((-R u - R u ^ 2) * thetaCuspReflectedLogCenterJetOne u t) u := by
+      ((-R u - R u ^ (2 : ℕ)) * thetaCuspReflectedLogCenterJetOne u t) u := by
     simpa only [R] using hasDerivAt_thetaCuspReflectedActionInverseRadius_center u ht
   have hA : HasDerivAt A (thetaCuspReflectedLogCenterMixedJetOne u t) u := by
     simpa only [A] using hasDerivAt_thetaCuspReflectedLogJetOne_center u t
@@ -157,8 +157,8 @@ theorem hasDerivAt_thetaCuspReflectedActionC5DirectBalance_center
       hasDerivAt_thetaCuspReflectedLogJetTwo_center u t
   have hraw := (((hasDerivAt_const u 6).sub
       (((hA.const_mul t).const_mul (9 / 4 : ℝ)).mul hR)).add
-      (((hB.sub (hA.pow 2)).const_mul (t ^ 2)).const_mul (5 / 4 : ℝ) |>.mul hR)).sub
-      (((hA.pow 2).const_mul (t ^ 2)).mul (hR.pow 2))
+      (((hB.sub (hA.pow 2)).const_mul (t ^ (2 : ℕ))).const_mul (5 / 4 : ℝ) |>.mul hR)).sub
+      (((hA.pow 2).const_mul (t ^ (2 : ℕ))).mul (hR.pow 2))
   refine (hraw.congr_of_eventuallyEq (Filter.Eventually.of_forall fun x => ?_)).congr_deriv ?_
   · simp only [R, A, B, Pi.add_apply, Pi.sub_apply,
       Pi.pow_apply, Pi.mul_apply]
@@ -180,7 +180,7 @@ theorem hasDerivAt_thetaCuspReflectedActionC5DirectBalance_displacement
   let A : ℝ → ℝ := thetaCuspReflectedLogJetOne u
   let B : ℝ → ℝ := thetaCuspReflectedLogJetTwo u
   have hR : HasDerivAt R
-      ((-R t - R t ^ 2) * thetaCuspReflectedLogJetOne u t) t := by
+      ((-R t - R t ^ (2 : ℕ)) * thetaCuspReflectedLogJetOne u t) t := by
     simpa only [R] using hasDerivAt_thetaCuspReflectedActionInverseRadius_displacement u ht
   have hA : HasDerivAt A (thetaCuspReflectedLogJetTwo u t) t := by
     simpa only [A] using hasDerivAt_thetaCuspReflectedLogJetOne u t

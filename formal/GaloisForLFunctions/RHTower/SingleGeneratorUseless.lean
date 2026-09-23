@@ -36,7 +36,7 @@ namespace RHTower
 
 /-- **A lower bound on the Gram diagonal**, from the first `m − 1` terms of its series. -/
 theorem bdGram_self_lower {m : ℕ} (hm : 1 ≤ m) :
-    ((m : ℝ) - 1) / (2 * (m : ℝ) ^ 2) ≤ bdGram (1 / (m : ℝ)) (1 / (m : ℝ)) := by
+    ((m : ℝ) - 1) / (2 * (m : ℝ) ^ (2 : ℕ)) ≤ bdGram (1 / (m : ℝ)) (1 / (m : ℝ)) := by
   have hm0 : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
   have hgram := hasSum_bdGram_discrete (m₁ := m) (m₂ := m) hm hm
   have hnonneg : ∀ n : ℕ, 0 ≤ (((n + 1) % m : ℕ) : ℝ) * (((n + 1) % m : ℕ) : ℝ)
@@ -48,7 +48,7 @@ theorem bdGram_self_lower {m : ℕ} (hm : 1 ≤ m) :
   have hpartial := sum_le_hasSum (Finset.range (m - 1)) (fun i _ => hnonneg i) hgram
   refine le_trans ?_ hpartial
   have hterm : ∀ n ∈ Finset.range (m - 1),
-      1 / (2 * (m : ℝ) ^ 2) ≤ (((n + 1) % m : ℕ) : ℝ) * (((n + 1) % m : ℕ) : ℝ)
+      1 / (2 * (m : ℝ) ^ (2 : ℕ)) ≤ (((n + 1) % m : ℕ) : ℝ) * (((n + 1) % m : ℕ) : ℝ)
         / ((m : ℝ) * (m : ℝ) * ((n : ℝ) + 1) * ((n : ℝ) + 2)) := by
     intro n hn
     rw [Finset.mem_range] at hn
@@ -70,14 +70,14 @@ theorem bdGram_self_lower {m : ℕ} (hm : 1 ≤ m) :
   have hcard : ((m - 1 : ℕ) : ℝ) = (m : ℝ) - 1 := by
     rw [Nat.cast_sub hm, Nat.cast_one]
   rw [hcard]
-  have hid : ((m : ℝ) - 1) * (1 / (2 * (m : ℝ) ^ 2)) = ((m : ℝ) - 1) / (2 * (m : ℝ) ^ 2) := by
+  have hid : ((m : ℝ) - 1) * (1 / (2 * (m : ℝ) ^ (2 : ℕ))) = ((m : ℝ) - 1) / (2 * (m : ℝ) ^ (2 : ℕ)) := by
     ring
   rw [hid]
 
 /-- **The optimal single-generator gain is `O((log m)²/m)`.** -/
 theorem bdDist_single_ge {m : ℕ} (hm : 2 ≤ m) :
-    1 - 2 * Real.log (m : ℝ) ^ 2 / ((m : ℝ) - 1)
-      ≤ bdDist (fun _ : Fin 1 => 1 / (m : ℝ)) ^ 2 := by
+    1 - 2 * Real.log (m : ℝ) ^ (2 : ℕ) / ((m : ℝ) - 1)
+      ≤ bdDist (fun _ : Fin 1 => 1 / (m : ℝ)) ^ (2 : ℕ) := by
   have hm1 : 1 ≤ m := by omega
   have hm0 : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm1
   have hm1R : (1 : ℝ) < (m : ℝ) := by exact_mod_cast hm
@@ -115,12 +115,12 @@ theorem bdDist_single_ge {m : ℕ} (hm : 2 ≤ m) :
   have hLnn : 0 ≤ L := by
     rw [hL]
     exact Real.log_nonneg (by linarith)
-  have hkey : L ^ 2 / ((m : ℝ) * ((m : ℝ) * g)) ≤ 2 * L ^ 2 / ((m : ℝ) - 1) := by
+  have hkey : L ^ (2 : ℕ) / ((m : ℝ) * ((m : ℝ) * g)) ≤ 2 * L ^ (2 : ℕ) / ((m : ℝ) - 1) := by
     rw [div_le_div_iff₀ (by positivity) (by linarith)]
-    have hglow' : ((m : ℝ) - 1) / (2 * (m : ℝ) ^ 2) ≤ g := hglow
+    have hglow' : ((m : ℝ) - 1) / (2 * (m : ℝ) ^ (2 : ℕ)) ≤ g := hglow
     rw [div_le_iff₀ (by positivity)] at hglow'
     nlinarith [sq_nonneg L, hLnn, hm0, hglow']
-  have hexp : L / ((m : ℝ) * g) * -(L / (m : ℝ)) = -(L ^ 2 / ((m : ℝ) * ((m : ℝ) * g))) := by
+  have hexp : L / ((m : ℝ) * g) * -(L / (m : ℝ)) = -(L ^ (2 : ℕ) / ((m : ℝ) * ((m : ℝ) * g))) := by
     field_simp
   rw [hexp]
   linarith [hkey]

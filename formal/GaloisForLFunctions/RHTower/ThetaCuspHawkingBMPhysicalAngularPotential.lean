@@ -25,7 +25,7 @@ set_option autoImplicit false
 
 private theorem source_syy (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0 < z 1) :
     coordDeriv 1 (coordDeriv 1 (source q)) z =
-      (physicalRate q branch+1)*(physicalRate q branch+2)*source q z/(z 1:ℂ)^2-
+      (physicalRate q branch+1)*(physicalRate q branch+2)*source q z/(z 1:ℂ)^(2 : ℕ)-
         coordDeriv 0 (coordDeriv 0 (source q)) z := by
   have he := scalar_physical_equation q branch z hz
   change scalarLaplacian (source q) z =
@@ -37,7 +37,7 @@ private theorem source_syy (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0 
 
 private theorem source_sxyy (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0 < z 1) :
     coordDeriv 0 (coordDeriv 1 (coordDeriv 1 (source q))) z =
-      (physicalRate q branch+1)*(physicalRate q branch+2)*coordDeriv 0 (source q) z/(z 1:ℂ)^2-
+      (physicalRate q branch+1)*(physicalRate q branch+2)*coordDeriv 0 (source q) z/(z 1:ℂ)^(2 : ℕ)-
         coordDeriv 0 (coordDeriv 0 (coordDeriv 0 (source q))) z := by
   have hs : ContDiffAt ℝ 3 (source q) z :=
     D4BMLiteralCusp.scalar_contDiffAt (D4BMGlobalAngularResponse.center q) 3 z hz
@@ -50,7 +50,7 @@ private theorem source_sxyy (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0
   rw [scalarLaplacian_partial _ z hz hs 0] at hd
   rw [((hs.differentiableAt (by norm_num)).hasFDerivAt.const_mul
     ((physicalRate q branch+1)*(physicalRate q branch+2))).fderiv] at hd
-  change (0:ℂ)*_+(z 1:ℂ)^2*(_+_) =
+  change (0:ℂ)*_+(z 1:ℂ)^(2 : ℕ)*(_+_) =
     (physicalRate q branch+1)*(physicalRate q branch+2)*coordDeriv 0 (source q) z at hd
   have hy : (z 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz.ne'
   field_simp
@@ -205,15 +205,15 @@ private theorem half_square_hessian (q : XiZeroCopy) (branch : Bool) (z : Point)
 
 /-- All three source channels expressed through two original scalar potentials; no tensor is dropped. -/
 def potentialSource (q : XiZeroCopy) (branch : Bool) (r B aS aV : ℂ) (z : Point) : ℂ × ℂ :=
-  B^2 • ((aS^2*scalarWeight (physicalRate q branch) r) • hessianComponents (squareSource q) z+
+  B^(2 : ℕ) • ((aS^(2 : ℕ)*scalarWeight (physicalRate q branch) r) • hessianComponents (squareSource q) z+
     (aS*aV*mixedWeight (physicalRate q branch) r/2) •
       rotatePair (hessianComponents (squareSource q) z)+
-    (eigenvalue q*(aS^2*scalarWeight (physicalRate q branch) r-
-      aV^2*vectorWeight (physicalRate q branch) r)) • hessianComponents (coordinateResponse q) z)
+    (eigenvalue q*(aS^(2 : ℕ)*scalarWeight (physicalRate q branch) r-
+      aV^(2 : ℕ)*vectorWeight (physicalRate q branch) r)) • hessianComponents (coordinateResponse q) z)
 
 /-- Source-level angular potential identity for the actual literal scalar/vector jets. -/
 theorem literal_angular_potential (q : XiZeroCopy) (branch : Bool) (r B aS aV : ℂ)
-    (z : Point) (hz : 0 < z 1) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
+    (z : Point) (hz : 0 < z 1) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     angularCoefficient (physicalRate q branch) r (z 1) B aS aV
       (source q z) (coordDeriv 0 (source q) z) (coordDeriv 1 (source q) z)
       (coordDeriv 0 (coordDeriv 0 (source q)) z) (coordDeriv 0 (coordDeriv 1 (source q)) z)
@@ -240,8 +240,8 @@ theorem physical_angular_potential (q : XiZeroCopy) (branch : Bool) (aS aV : ℂ
         (D4BMMetricReconstruction.angularPoint p.val) := by
   have hr : (p.val 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr
     (ne_of_gt (lt_trans zero_lt_one p.property.1))
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   have h := literal_angular_potential q branch (p.val 1)
     (D4BMFundamentalScalarMetric.envelope (physicalRate q branch) 1 p.val) aS aV
@@ -272,14 +272,14 @@ theorem corrected_angular_potential (q : XiZeroCopy) (branch : Bool) (B aS aV : 
       (coordDeriv 0 (coordDeriv 0 (source q)) z) (coordDeriv 0 (coordDeriv 1 (source q)) z)
       (coordDeriv 0 (coordDeriv 0 (coordDeriv 0 (source q))) z)
       (coordDeriv 0 (coordDeriv 0 (coordDeriv 1 (source q))) z) =
-      (B^2*eigenvalue q*(aS^2*scalarWeight (physicalRate q branch) (p.val 1)-
-        aV^2*vectorWeight (physicalRate q branch) (p.val 1))) •
+      (B^(2 : ℕ)*eigenvalue q*(aS^(2 : ℕ)*scalarWeight (physicalRate q branch) (p.val 1)-
+        aV^(2 : ℕ)*vectorWeight (physicalRate q branch) (p.val 1))) •
         hessianComponents (coordinateResponse q) z := by
   have hr : (p.val 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr
     (ne_of_gt (lt_trans zero_lt_one p.property.1))
   have hy : (p.val 3:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   dsimp only
   rw [D4BMQuadraticAngularCorrection.correctedAngularCoefficient_eq _ _ _ _ _ _ _ _ _ _ _ _ _ hr hy hf,
@@ -293,7 +293,7 @@ theorem physical_angular_polarization (q : XiZeroCopy) (branch : Bool) (aS aV cS
     let B := D4BMFundamentalScalarMetric.envelope (physicalRate q branch) 1 p.val
     (1/2:ℂ) • (physicalAngularSource q branch (aS+cS) (aV+cV) p-
       physicalAngularSource q branch aS aV p-physicalAngularSource q branch cS cV p) =
-      B^2 • ((aS*cS*scalarWeight (physicalRate q branch) (p.val 1)) •
+      B^(2 : ℕ) • ((aS*cS*scalarWeight (physicalRate q branch) (p.val 1)) •
           hessianComponents (squareSource q) z+
         ((aS*cV+aV*cS)*mixedWeight (physicalRate q branch) (p.val 1)/4) •
           rotatePair (hessianComponents (squareSource q) z)+

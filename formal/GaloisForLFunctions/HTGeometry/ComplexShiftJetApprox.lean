@@ -187,7 +187,7 @@ theorem hasLogRatApprox_digamma_anyShift (lam : ℂ) :
   rw [hrec]
   simp only [hterms]
   have hcancel : (∑ x ∈ Finset.range m,
-        (-1 : ℂ) ^ 0 * ((Nat.factorial 0 : ℕ) : ℂ) / (z + (lam + (x : ℂ))) ^ (0 + 1))
+        (-1 : ℂ) ^ (0 : ℕ) * ((Nat.factorial 0 : ℕ) : ℂ) / (z + (lam + (x : ℂ))) ^ (0 + 1))
       + ∑ i ∈ Finset.range m, (-1 : ℂ) / (z + (lam + (i : ℂ))) = 0 := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_eq_zero fun i _ => ?_

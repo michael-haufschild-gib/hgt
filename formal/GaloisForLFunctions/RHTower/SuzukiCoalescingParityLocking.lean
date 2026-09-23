@@ -45,12 +45,12 @@ private theorem tendsto_real_sinh_div_self_zero :
   rw [slope_def_field, Real.sinh_zero, sub_zero, sub_zero]
 
 private theorem tendsto_real_sinh_sub_self_div_cube_zero :
-    Tendsto (fun y : ℝ => (Real.sinh y - y) / y ^ 3)
+    Tendsto (fun y : ℝ => (Real.sinh y - y) / y ^ (3 : ℕ))
       (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
   have hbase : Tendsto (fun y : ℝ => Real.sinh y / (y * 6))
       (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
     simpa only [div_div] using tendsto_real_sinh_div_self_zero.div_const 6
-  have hcosh : Tendsto (fun y : ℝ => (Real.cosh y - 1) / (3 * y ^ 2))
+  have hcosh : Tendsto (fun y : ℝ => (Real.cosh y - 1) / (3 * y ^ (2 : ℕ)))
       (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
     refine HasDerivAt.lhopital_zero_nhdsNE
       (f' := fun y : ℝ => Real.sinh y) (g' := fun y : ℝ => y * 6)
@@ -67,12 +67,12 @@ private theorem tendsto_real_sinh_sub_self_div_cube_zero :
       have ht : Tendsto (fun y : ℝ => Real.cosh y - 1) (𝓝 0) (𝓝 0) := by
         simpa using hcont.tendsto
       exact ht.mono_left nhdsWithin_le_nhds
-    · have hcont : ContinuousAt (fun y : ℝ => 3 * y ^ 2) 0 := by fun_prop
-      have ht : Tendsto (fun y : ℝ => 3 * y ^ 2) (𝓝 0) (𝓝 0) := by
+    · have hcont : ContinuousAt (fun y : ℝ => 3 * y ^ (2 : ℕ)) 0 := by fun_prop
+      have ht : Tendsto (fun y : ℝ => 3 * y ^ (2 : ℕ)) (𝓝 0) (𝓝 0) := by
         simpa using hcont.tendsto
       exact ht.mono_left nhdsWithin_le_nhds
   refine HasDerivAt.lhopital_zero_nhdsNE
-    (f' := fun y : ℝ => Real.cosh y - 1) (g' := fun y : ℝ => 3 * y ^ 2)
+    (f' := fun y : ℝ => Real.cosh y - 1) (g' := fun y : ℝ => 3 * y ^ (2 : ℕ))
     ?_ ?_ ?_ ?_ ?_ hcosh
   · exact Filter.Eventually.of_forall fun y =>
       (Real.hasDerivAt_sinh y).sub (hasDerivAt_id y)
@@ -84,8 +84,8 @@ private theorem tendsto_real_sinh_sub_self_div_cube_zero :
     have ht : Tendsto (fun y : ℝ => Real.sinh y - y) (𝓝 0) (𝓝 0) := by
       simpa using hcont.tendsto
     exact ht.mono_left nhdsWithin_le_nhds
-  · have hcont : ContinuousAt (fun y : ℝ => y ^ 3) 0 := by fun_prop
-    have ht : Tendsto (fun y : ℝ => y ^ 3) (𝓝 0) (𝓝 0) := by
+  · have hcont : ContinuousAt (fun y : ℝ => y ^ (3 : ℕ)) 0 := by fun_prop
+    have ht : Tendsto (fun y : ℝ => y ^ (3 : ℕ)) (𝓝 0) (𝓝 0) := by
       simpa using hcont.tendsto
     exact ht.mono_left nhdsWithin_le_nhds
 
@@ -96,8 +96,8 @@ def suzukiCoalescingFreeDefect (a c : ℝ) : ℝ :=
 /-- Sharp quadratic free-endpoint coefficient. -/
 theorem tendsto_suzukiCoalescingFreeDefect_rate {a : ℝ} (ha : 0 < a) :
     Tendsto
-      (fun c : ℝ => (1 - suzukiCoalescingFreeDefect a c) / (2 * c ^ 2))
-      (𝓝[>] (0 : ℝ)) (𝓝 (a ^ 2 / 3)) := by
+      (fun c : ℝ => (1 - suzukiCoalescingFreeDefect a c) / (2 * c ^ (2 : ℕ)))
+      (𝓝[>] (0 : ℝ)) (𝓝 (a ^ (2 : ℕ) / 3)) := by
   have hscale : Tendsto (fun c : ℝ => 2 * a * c)
       (𝓝[>] (0 : ℝ)) (𝓝[≠] (0 : ℝ)) := by
     apply tendsto_nhdsWithin_iff.mpr
@@ -109,14 +109,14 @@ theorem tendsto_suzukiCoalescingFreeDefect_rate {a : ℝ} (ha : 0 < a) :
   have hcube := tendsto_real_sinh_sub_self_div_cube_zero.comp hscale
   have hself := tendsto_real_sinh_div_self_zero.comp hscale
   have hratio := hcube.div hself one_ne_zero
-  have hconst : Tendsto (fun _ : ℝ => 2 * a ^ 2)
-      (𝓝[>] (0 : ℝ)) (𝓝 (2 * a ^ 2)) := tendsto_const_nhds
+  have hconst : Tendsto (fun _ : ℝ => 2 * a ^ (2 : ℕ))
+      (𝓝[>] (0 : ℝ)) (𝓝 (2 * a ^ (2 : ℕ))) := tendsto_const_nhds
   have hmain := hratio.mul hconst
   convert hmain using 1
   · funext c
-    change (1 - suzukiCoalescingFreeDefect a c) / (2 * c ^ 2) =
-      (((Real.sinh (2 * a * c) - 2 * a * c) / (2 * a * c) ^ 3) /
-        (Real.sinh (2 * a * c) / (2 * a * c))) * (2 * a ^ 2)
+    change (1 - suzukiCoalescingFreeDefect a c) / (2 * c ^ (2 : ℕ)) =
+      (((Real.sinh (2 * a * c) - 2 * a * c) / (2 * a * c) ^ (3 : ℕ)) /
+        (Real.sinh (2 * a * c) / (2 * a * c))) * (2 * a ^ (2 : ℕ))
     by_cases hc : c = 0
     · simp [hc, suzukiCoalescingFreeDefect]
     · have hsinh : Real.sinh (2 * a * c) ≠ 0 := by
@@ -246,7 +246,7 @@ theorem tendsto_quadraticDefectRate_zero_of_higherRate
     (h : Tendsto
       (fun c : ℝ => (1 - defect c) / (2 * c ^ (2 * d)))
       (𝓝[>] (0 : ℝ)) (𝓝 eta)) :
-    Tendsto (fun c : ℝ => (1 - defect c) / (2 * c ^ 2))
+    Tendsto (fun c : ℝ => (1 - defect c) / (2 * c ^ (2 : ℕ)))
       (𝓝[>] (0 : ℝ)) (𝓝 0) := by
   have hpow : Tendsto (fun c : ℝ => c ^ (2 * d - 2))
       (𝓝[>] (0 : ℝ)) (𝓝 0) := by
@@ -273,22 +273,22 @@ target for all sufficiently small anchors. -/
 theorem eventually_suzukiXiDefect_lt_of_sourceRate_lt
     {sourceDefect : ℝ → ℝ} {eta : ℝ}
     (hsource : Tendsto
-      (fun c : ℝ => (1 - sourceDefect c) / (2 * c ^ 2))
+      (fun c : ℝ => (1 - sourceDefect c) / (2 * c ^ (2 : ℕ)))
       (𝓝[>] (0 : ℝ)) (𝓝 eta))
     (heta : eta < suzukiXiCoalescingSourceRate) :
     ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
       suzukiXiCoalescingDefect c < sourceDefect c := by
   let mid := (eta + suzukiXiCoalescingSourceRate) / 2
   have hsourceMid : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
-      (1 - sourceDefect c) / (2 * c ^ 2) < mid :=
+      (1 - sourceDefect c) / (2 * c ^ (2 : ℕ)) < mid :=
     hsource.eventually (eventually_lt_nhds (by dsimp [mid]; linarith))
   have hxiMid : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
-      mid < (1 - suzukiXiCoalescingDefect c) / (2 * c ^ 2) :=
+      mid < (1 - suzukiXiCoalescingDefect c) / (2 * c ^ (2 : ℕ)) :=
     tendsto_suzukiXiCoalescingDefect_rate.eventually
       (eventually_gt_nhds (by dsimp [mid]; linarith))
   filter_upwards [self_mem_nhdsWithin, hsourceMid, hxiMid] with c hc hs hx
   have hcpos : 0 < c := hc
-  have hden : 0 < 2 * c ^ 2 := by positivity
+  have hden : 0 < 2 * c ^ (2 : ℕ) := by positivity
   have hs' := (div_lt_iff₀ hden).mp hs
   have hx' := (lt_div_iff₀ hden).mp hx
   linarith
@@ -298,22 +298,22 @@ target for all sufficiently small anchors. -/
 theorem eventually_sourceDefect_lt_suzukiXi_of_rate_gt
     {sourceDefect : ℝ → ℝ} {eta : ℝ}
     (hsource : Tendsto
-      (fun c : ℝ => (1 - sourceDefect c) / (2 * c ^ 2))
+      (fun c : ℝ => (1 - sourceDefect c) / (2 * c ^ (2 : ℕ)))
       (𝓝[>] (0 : ℝ)) (𝓝 eta))
     (heta : suzukiXiCoalescingSourceRate < eta) :
     ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
       sourceDefect c < suzukiXiCoalescingDefect c := by
   let mid := (eta + suzukiXiCoalescingSourceRate) / 2
   have hsourceMid : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
-      mid < (1 - sourceDefect c) / (2 * c ^ 2) :=
+      mid < (1 - sourceDefect c) / (2 * c ^ (2 : ℕ)) :=
     hsource.eventually (eventually_gt_nhds (by dsimp [mid]; linarith))
   have hxiMid : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
-      (1 - suzukiXiCoalescingDefect c) / (2 * c ^ 2) < mid :=
+      (1 - suzukiXiCoalescingDefect c) / (2 * c ^ (2 : ℕ)) < mid :=
     tendsto_suzukiXiCoalescingDefect_rate.eventually
       (eventually_lt_nhds (by dsimp [mid]; linarith))
   filter_upwards [self_mem_nhdsWithin, hsourceMid, hxiMid] with c hc hs hx
   have hcpos : 0 < c := hc
-  have hden : 0 < 2 * c ^ 2 := by positivity
+  have hden : 0 < 2 * c ^ (2 : ℕ) := by positivity
   have hs' := (lt_div_iff₀ hden).mp hs
   have hx' := (div_lt_iff₀ hden).mp hx
   linarith
@@ -321,7 +321,7 @@ theorem eventually_sourceDefect_lt_suzukiXi_of_rate_gt
 /-- Sufficiently large apertures put the free endpoint strictly before the Xi target. -/
 theorem eventually_suzukiCoalescingFreeDefect_lt_xi
     {a : ℝ} (ha : 0 < a)
-    (hlarge : 3 * suzukiXiCoalescingSourceRate < a ^ 2) :
+    (hlarge : 3 * suzukiXiCoalescingSourceRate < a ^ (2 : ℕ)) :
     ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
       suzukiCoalescingFreeDefect a c < suzukiXiCoalescingDefect c := by
   apply eventually_sourceDefect_lt_suzukiXi_of_rate_gt

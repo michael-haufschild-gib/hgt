@@ -22,12 +22,12 @@ open scoped FourierTransform
 
 /-- The spectral density of the rescaled packet. -/
 def soninScaledPacketSpectralDensity (m δ κ : ℝ) : ℝ → ℝ := fun ξ =>
-  ‖𝓕 (fun x : ℝ => (soninScaledPacket m δ κ x : ℂ)) ξ‖ ^ 2
+  ‖𝓕 (fun x : ℝ => (soninScaledPacket m δ κ x : ℂ)) ξ‖ ^ (2 : ℕ)
 
 /-- **Density scaling.** -/
 theorem soninScaledPacketSpectralDensity_scaling (m δ κ : ℝ) (hδ : 0 < δ) (ξ : ℝ) :
     soninScaledPacketSpectralDensity m δ κ ξ =
-      δ ^ 2 * soninScaledPacketSpectralDensity (m / δ) 1 (δ * κ) (δ * ξ) := by
+      δ ^ (2 : ℕ) * soninScaledPacketSpectralDensity (m / δ) 1 (δ * κ) (δ * ξ) := by
   rw [soninScaledPacketSpectralDensity, soninScaledPacketSpectralDensity,
     norm_fourier_soninScaledPacket_scaling m δ κ hδ ξ, mul_pow]
 
@@ -44,7 +44,7 @@ theorem abs_le_iff_abs_mul_le (δ : ℝ) (hδ : 0 < δ) (t ξ : ℝ) :
 /-- The banded density of the family is the rescaled banded density of the reference. -/
 theorem indicator_soninScaledPacketSpectralDensity_scaling (m δ κ t : ℝ) (hδ : 0 < δ) (ξ : ℝ) :
     {η : ℝ | |η| ≤ t}.indicator (soninScaledPacketSpectralDensity m δ κ) ξ =
-      δ ^ 2 * {η : ℝ | |η| ≤ δ * t}.indicator
+      δ ^ (2 : ℕ) * {η : ℝ | |η| ≤ δ * t}.indicator
         (soninScaledPacketSpectralDensity (m / δ) 1 (δ * κ)) (δ * ξ) := by
   by_cases hmem : |ξ| ≤ t
   · have hmemset : ξ ∈ {η : ℝ | |η| ≤ t} := hmem
@@ -66,7 +66,7 @@ theorem integral_indicator_soninScaledPacketSpectralDensity_scaling
         (soninScaledPacketSpectralDensity (m / δ) 1 (δ * κ)) η := by
   have hpoint : ∀ ξ : ℝ,
       {η : ℝ | |η| ≤ t}.indicator (soninScaledPacketSpectralDensity m δ κ) ξ =
-        δ ^ 2 * (fun y : ℝ => {η : ℝ | |η| ≤ δ * t}.indicator
+        δ ^ (2 : ℕ) * (fun y : ℝ => {η : ℝ | |η| ≤ δ * t}.indicator
           (soninScaledPacketSpectralDensity (m / δ) 1 (δ * κ)) y) (ξ / δ⁻¹) := by
     intro ξ
     have hrw : ξ / δ⁻¹ = δ * ξ := by

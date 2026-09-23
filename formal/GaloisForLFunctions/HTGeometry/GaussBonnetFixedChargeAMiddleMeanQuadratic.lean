@@ -11,11 +11,11 @@ open CPV
 
 theorem egbFixedChargeAPressureWeight_mean_formula (τ φ : ℝ) :
     egbFixedChargeAPressureWeight τ φ =
-      egbFixedChargeAMeanPressureNumerator τ φ * (1 + egbCoexistenceASymmetricRatio τ) ^ 2 /
-        (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2)) := by
+      egbFixedChargeAMeanPressureNumerator τ φ * (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) /
+        (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hD := egbFixedChargeADenominator_pos τ φ
-  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ 2 := by positivity
+  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by positivity
   rw [egbFixedChargeAMeanDenominator_formula]
   unfold egbFixedChargeAPressureWeight egbFixedChargeAMeanPressureNumerator
   rw [egbCoexistenceASymmetricRatio_square_sum, egbFixedChargeAMeanCoupling_formula]
@@ -39,10 +39,10 @@ theorem egbFixedChargeAMeanPressureNumerator_pos (τ φ : ℝ) : 0 < egbFixedCha
     rw [← egbFixedChargeAAngle_pressure_weight]
     exact egbCoexistenceAPressureWeight_pos τ (egbFixedChargeAAngle τ φ)
   have he : egbFixedChargeAMeanPressureNumerator τ φ =
-      egbFixedChargeAPressureWeight τ φ * (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2)) /
-        (1 + egbCoexistenceASymmetricRatio τ) ^ 2 := by
+      egbFixedChargeAPressureWeight τ φ * (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) /
+        (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) := by
     rw [egbFixedChargeAPressureWeight_mean_formula]
-    have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ 2 := by positivity
+    have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by positivity
     field_simp
   rw [he]
   positivity
@@ -50,10 +50,10 @@ theorem egbFixedChargeAMeanPressureNumerator_pos (τ φ : ℝ) : 0 < egbFixedCha
 theorem egbFixedChargeAStationaryLinear_mean_formula (τ φ : ℝ) :
     egbCoexistenceAStationaryLinear τ (egbFixedChargeAAngle τ φ) =
       (1 + egbCoexistenceASymmetricRatio τ) * egbFixedChargeAMiddleMeanLinear τ φ /
-        (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2)) := by
+        (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hD := egbFixedChargeAMeanDenominator_pos τ φ
-  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ 2 := by positivity
+  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by positivity
   unfold egbCoexistenceAStationaryLinear egbFixedChargeAMiddleMeanLinear
   rw [egbFixedChargeAAngle_pressure_weight, egbFixedChargeAAngle_temperature_weight,
     egbFixedChargeAPressureWeight_mean_formula, egbFixedChargeATemperatureWeight_mean_formula]
@@ -64,36 +64,36 @@ theorem egbFixedChargeAStationaryLinear_mean_formula (τ φ : ℝ) :
 
 theorem egbFixedChargeAStationaryConstant_mean_formula (τ φ : ℝ) :
     egbFixedChargeAWeight τ φ / thermalRatio τ =
-      egbFixedChargeAMeanWeight τ φ / (1 - egbCoexistenceASymmetricRatio τ ^ 2) := by
+      egbFixedChargeAMeanWeight τ φ / (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) := by
   have hd := egbCoexistenceASymmetricRatio_bounds τ
   have h1 : 0 < 1 - egbCoexistenceASymmetricRatio τ := by linarith [hd.2]
   have h2 : 0 < 1 + egbCoexistenceASymmetricRatio τ := by linarith [hd.1]
-  have hx : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ 2 := by nlinarith [hd.1, hd.2]
+  have hx : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by nlinarith [hd.1, hd.2]
   unfold egbFixedChargeAMeanWeight
   rw [egbCoexistenceASymmetricRatio_inversion]
   field_simp <;> ring
 
 theorem egbFixedChargeAMiddleMeanRatio_quadratic (τ φ : ℝ) :
-    egbFixedChargeAMeanPressureNumerator τ φ * egbFixedChargeAMiddleMeanRatio τ φ ^ 2 +
+    egbFixedChargeAMeanPressureNumerator τ φ * egbFixedChargeAMiddleMeanRatio τ φ ^ (2 : ℕ) +
       egbFixedChargeAMiddleMeanLinear τ φ * egbFixedChargeAMiddleMeanRatio τ φ + egbFixedChargeAMiddleMeanConstant τ φ = 0 := by
   have hd := egbCoexistenceASymmetricRatio_bounds τ
   have hD := egbFixedChargeAMeanDenominator_pos τ φ
-  have hx : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ 2 := by nlinarith [hd.1, hd.2]
-  have hp : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ 2 := by positivity
+  have hx : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by nlinarith [hd.1, hd.2]
+  have hp : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by positivity
   have h := egbCoexistenceAMiddleRadius_quadratic τ (egbFixedChargeAAngle τ φ)
   rw [egbFixedChargeAAngle_pressure_weight, egbFixedChargeAPressureWeight_mean_formula,
     egbFixedChargeAStationaryLinear_mean_formula, egbFixedChargeAAngle_charge_weight,
     egbFixedChargeAStationaryConstant_mean_formula] at h
   unfold egbFixedChargeAMiddleMeanRatio egbFixedChargeAMiddleMeanConstant
-  have he : egbFixedChargeAMeanPressureNumerator τ φ * ((1 + egbCoexistenceASymmetricRatio τ) * egbCoexistenceAMiddleRadius τ (egbFixedChargeAAngle τ φ)) ^ 2 +
+  have he : egbFixedChargeAMeanPressureNumerator τ φ * ((1 + egbCoexistenceASymmetricRatio τ) * egbCoexistenceAMiddleRadius τ (egbFixedChargeAAngle τ φ)) ^ (2 : ℕ) +
       egbFixedChargeAMiddleMeanLinear τ φ * ((1 + egbCoexistenceASymmetricRatio τ) * egbCoexistenceAMiddleRadius τ (egbFixedChargeAAngle τ φ)) +
-      (-egbFixedChargeAMeanWeight τ φ * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2) / (1 - egbCoexistenceASymmetricRatio τ ^ 2)) =
-      (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2)) *
-        (egbFixedChargeAMeanPressureNumerator τ φ * (1 + egbCoexistenceASymmetricRatio τ) ^ 2 /
-          (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2)) * egbCoexistenceAMiddleRadius τ (egbFixedChargeAAngle τ φ) ^ 2 +
+      (-egbFixedChargeAMeanWeight τ φ * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) / (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) =
+      (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) *
+        (egbFixedChargeAMeanPressureNumerator τ φ * (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) /
+          (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) * egbCoexistenceAMiddleRadius τ (egbFixedChargeAAngle τ φ) ^ (2 : ℕ) +
         (1 + egbCoexistenceASymmetricRatio τ) * egbFixedChargeAMiddleMeanLinear τ φ /
-          (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2)) * egbCoexistenceAMiddleRadius τ (egbFixedChargeAAngle τ φ) -
-          egbFixedChargeAMeanWeight τ φ / (1 - egbCoexistenceASymmetricRatio τ ^ 2)) := by
+          (egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) * egbCoexistenceAMiddleRadius τ (egbFixedChargeAAngle τ φ) -
+          egbFixedChargeAMeanWeight τ φ / (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) := by
     field_simp <;> ring
   rw [he, h, mul_zero]
 

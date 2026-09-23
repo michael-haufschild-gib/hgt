@@ -60,7 +60,7 @@ theorem cmem_of_arc_relation {h : ℂ → ℂ} {c : ℂ} {ζ₀ : ℂ} {r : ℝ}
     (hζ₀ : ‖ζ₀‖ = 1) (hr : 0 < r)
     (hhd : DifferentiableOn ℂ h (ball 0 1))
     (hhe : ∀ z ∈ ball (0 : ℂ) 1, h (-z) = h z)
-    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hh0 : h 0 = 1)
     (hrelarc : ∀ ζ : ℂ, ‖ζ‖ = 1 → ζ ∈ ball ζ₀ r →
       ∃ (f : ℂ × ℂ → ℂ) (w₀ : ℂ), ContDiffAt ℂ ⊤ f (ζ, w₀) ∧ f (ζ, w₀) = 0 ∧

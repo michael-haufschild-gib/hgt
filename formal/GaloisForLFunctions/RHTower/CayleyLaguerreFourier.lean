@@ -97,7 +97,7 @@ theorem fourier_routeUGammaDatum (j : ℕ) (w : ℝ) :
 theorem integrable_fourier_routeUGammaDatum (j : ℕ) :
     Integrable (𝓕 (routeUGammaDatum j)) := by
   have hbase : Integrable (fun w : ℝ =>
-      (1 + (2 * Real.pi * w) ^ 2)⁻¹) := by
+      (1 + (2 * Real.pi * w) ^ (2 : ℕ))⁻¹) := by
     have h := (GaloisForLFunctions.HTGeometry.integrable_inv_sq_add_sq
       (by norm_num : (0 : ℝ) < 1)).comp_mul_left'
         (R := 2 * Real.pi) (by positivity)
@@ -112,7 +112,7 @@ theorem integrable_fourier_routeUGammaDatum (j : ℕ) :
   · filter_upwards with w
     rw [fourier_routeUGammaDatum, norm_pow]
     let c : ℂ := 1 + 2 * (Real.pi : ℂ) * I * (w : ℂ)
-    have hsq : ‖c‖ ^ 2 = 1 + (2 * Real.pi * w) ^ 2 := by
+    have hsq : ‖c‖ ^ (2 : ℕ) = 1 + (2 * Real.pi * w) ^ (2 : ℕ) := by
       have hcre : c.re = 1 := by
         dsimp only [c]
         simp [Complex.mul_re]
@@ -127,11 +127,11 @@ theorem integrable_fourier_routeUGammaDatum (j : ℕ) :
     have hu : ‖c⁻¹‖ ≤ 1 := by
       rw [norm_inv]
       exact (inv_le_one₀ (by positivity)).2 hcnorm
-    have hpow : ‖c⁻¹‖ ^ (j + 2) ≤ ‖c⁻¹‖ ^ 2 :=
+    have hpow : ‖c⁻¹‖ ^ (j + 2) ≤ ‖c⁻¹‖ ^ (2 : ℕ) :=
       pow_le_pow_of_le_one (norm_nonneg _) hu (by omega)
-    have htwo : ‖c⁻¹‖ ^ 2 = (1 + (2 * Real.pi * w) ^ 2)⁻¹ := by
+    have htwo : ‖c⁻¹‖ ^ (2 : ℕ) = (1 + (2 * Real.pi * w) ^ (2 : ℕ))⁻¹ := by
       rw [norm_inv, inv_pow, hsq]
-    change ‖c⁻¹‖ ^ (j + 2) ≤ (1 + (2 * Real.pi * w) ^ 2)⁻¹
+    change ‖c⁻¹‖ ^ (j + 2) ≤ (1 + (2 * Real.pi * w) ^ (2 : ℕ))⁻¹
     exact hpow.trans_eq htwo
 
 theorem fourierInv_fourier_routeUGammaDatum (j : ℕ) (t : ℝ) :
@@ -234,7 +234,7 @@ theorem routeUFourierIntegral_cayleyPolePower_neg
 
 def routeUCayleyModeKernel (m : ℕ) (x : ℝ) : ℂ :=
   ((((1 : ℂ) + I * (x : ℂ)) / ((1 : ℂ) - I * (x : ℂ))) ^ m) /
-    ((1 : ℂ) + (x : ℂ) ^ 2)
+    ((1 : ℂ) + (x : ℂ) ^ (2 : ℕ))
 
 def routeUCayleyPoleCoefficient (m k : ℕ) : ℂ :=
   (-1 : ℂ) ^ (k + (m - 1)) * (2 : ℂ) ^ k *
@@ -258,13 +258,13 @@ theorem routeUCayleyModeKernel_eq_sum_poles
     have hre := congrArg Complex.re h
     dsimp only [v] at hre
     norm_num [Complex.mul_re] at hre
-  have hden : (1 : ℂ) + (x : ℂ) ^ 2 = v * u := by
+  have hden : (1 : ℂ) + (x : ℂ) ^ (2 : ℕ) = v * u := by
     symm
     calc
-      v * u = 1 - (I * (x : ℂ)) ^ 2 := by
+      v * u = 1 - (I * (x : ℂ)) ^ (2 : ℕ) := by
         dsimp only [u, v]
         ring
-      _ = (1 : ℂ) + (x : ℂ) ^ 2 := by
+      _ = (1 : ℂ) + (x : ℂ) ^ (2 : ℕ) := by
         rw [mul_pow, Complex.I_sq]
         ring
   have hmode : routeUCayleyModeKernel (n + 1) x =
@@ -274,15 +274,15 @@ theorem routeUCayleyModeKernel_eq_sum_poles
     rw [div_pow]
     field_simp [hu, hv]
     simp only [pow_succ]
-    have hunit : u ^ 2 * u ^ n * u⁻¹ ^ 2 * u⁻¹ ^ n = 1 := by
+    have hunit : u ^ (2 : ℕ) * u ^ n * u⁻¹ ^ (2 : ℕ) * u⁻¹ ^ n = 1 := by
       calc
-        _ = (u ^ 2 * u⁻¹ ^ 2) * (u ^ n * u⁻¹ ^ n) := by ring
-        _ = (u * u⁻¹) ^ 2 * (u * u⁻¹) ^ n := by
+        _ = (u ^ (2 : ℕ) * u⁻¹ ^ (2 : ℕ)) * (u ^ n * u⁻¹ ^ n) := by ring
+        _ = (u * u⁻¹) ^ (2 : ℕ) * (u * u⁻¹) ^ n := by
           rw [mul_pow, mul_pow]
         _ = 1 := by simp [hu]
     calc
       v ^ n * v = v ^ n * v *
-          (u ^ 2 * u ^ n * u⁻¹ ^ 2 * u⁻¹ ^ n) := by rw [hunit]; ring
+          (u ^ (2 : ℕ) * u ^ n * u⁻¹ ^ (2 : ℕ) * u⁻¹ ^ n) := by rw [hunit]; ring
       _ = _ := by ring
   rw [hmode]
   have hv_sub : v = 2 - u := by
@@ -373,7 +373,7 @@ private theorem routeUNegOnePowerCoefficient {m : ℕ} (hm : 0 < m) (k : ℕ) :
   simp only [Nat.succ_sub_one]
   rw [← pow_add]
   calc
-    (-1 : ℂ) ^ (k + n) = (-1 : ℂ) ^ (k + n) * (-1 : ℂ) ^ 2 := by
+    (-1 : ℂ) ^ (k + n) = (-1 : ℂ) ^ (k + n) * (-1 : ℂ) ^ (2 : ℕ) := by
       norm_num
     _ = (-1 : ℂ) ^ (k + n + 2) := by rw [← pow_add]
     _ = (-1 : ℂ) ^ (n + 1 + (k + 1)) := by
@@ -413,7 +413,7 @@ theorem routeUFourierIntegral_cayleyModeKernel_neg
 
 def routeUCayleyInverseModeKernel (m : ℕ) (x : ℝ) : ℂ :=
   ((((1 : ℂ) - I * (x : ℂ)) / ((1 : ℂ) + I * (x : ℂ))) ^ m) /
-    ((1 : ℂ) + (x : ℂ) ^ 2)
+    ((1 : ℂ) + (x : ℂ) ^ (2 : ℕ))
 
 theorem routeUCayleyInverseModeKernel_eq_reflect (m : ℕ) (x : ℝ) :
     routeUCayleyInverseModeKernel m x = routeUCayleyModeKernel m (-x) := by
@@ -491,7 +491,7 @@ theorem routeUFourierIntegral_cayleyInverseModeKernel_zero
     routeUFourierIntegral_cayleyModeKernel_zero hm]
 
 def routeUCauchyKernel (x : ℝ) : ℂ :=
-  ((1 : ℂ) + (x : ℂ) ^ 2)⁻¹
+  ((1 : ℂ) + (x : ℂ) ^ (2 : ℕ))⁻¹
 
 theorem routeUFourierIntegral_cauchyKernel (ξ : ℝ) :
     routeUFourierIntegral routeUCauchyKernel ξ =
@@ -500,9 +500,9 @@ theorem routeUFourierIntegral_cauchyKernel (ξ : ℝ) :
     (a := (1 : ℝ)) (by norm_num) ξ
   rw [routeUFourierIntegral]
   simp only [routeUCauchyKernel]
-  rw [show (∫ x : ℝ, ((1 : ℂ) + (x : ℂ) ^ 2)⁻¹ *
+  rw [show (∫ x : ℝ, ((1 : ℂ) + (x : ℂ) ^ (2 : ℕ))⁻¹ *
       Complex.exp (-I * ((ξ * x : ℝ) : ℂ))) =
-      ∫ x : ℝ, (((1 : ℝ) ^ 2 + x ^ 2 : ℝ) : ℂ)⁻¹ *
+      ∫ x : ℝ, (((1 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ)⁻¹ *
         Complex.exp (((-(ξ * x) : ℝ) : ℂ) * I) by
     apply integral_congr_ae
     filter_upwards with x
@@ -577,7 +577,7 @@ private theorem routeUFourierIntegral_const_mul
     ring]
   exact MeasureTheory.integral_const_mul _ _
 
-/-- Algebraic Cayley form of `cos(m arctan x)^2 / (1+x^2)`. -/
+/-- Algebraic Cayley form of `cos(m arctan x)^(2 : ℕ) / (1+x^(2 : ℕ))`. -/
 def routeUCayleyCosineSquareKernel (m : ℕ) (x : ℝ) : ℂ :=
   (2 * routeUCauchyKernel x + routeUCayleyModeKernel m x +
     routeUCayleyInverseModeKernel m x) / 4
@@ -639,10 +639,10 @@ theorem routeUFourierIntegral_cayleyCosineSquareKernel
 private theorem routeUCayleyRatio_eq_trigSquare (x : ℝ) :
     ((1 : ℂ) + I * (x : ℂ)) / ((1 : ℂ) - I * (x : ℂ)) =
       (((Real.cos (Real.arctan x) : ℝ) : ℂ) +
-        ((Real.sin (Real.arctan x) : ℝ) : ℂ) * I) ^ 2 := by
-  let r : ℝ := Real.sqrt (1 + x ^ 2)
+        ((Real.sin (Real.arctan x) : ℝ) : ℂ) * I) ^ (2 : ℕ) := by
+  let r : ℝ := Real.sqrt (1 + x ^ (2 : ℕ))
   have hrpos : 0 < r := Real.sqrt_pos.2 (by positivity)
-  have hr : r ^ 2 = 1 + x ^ 2 := by
+  have hr : r ^ (2 : ℕ) = 1 + x ^ (2 : ℕ) := by
     dsimp only [r]
     exact Real.sq_sqrt (by positivity)
   have hu : (1 : ℂ) - I * (x : ℂ) ≠ 0 := by
@@ -651,13 +651,13 @@ private theorem routeUCayleyRatio_eq_trigSquare (x : ℝ) :
     norm_num [Complex.mul_re] at hre
   rw [Real.cos_arctan, Real.sin_arctan]
   change ((1 : ℂ) + I * (x : ℂ)) / ((1 : ℂ) - I * (x : ℂ)) =
-    (((1 / r : ℝ) : ℂ) + (((x / r : ℝ) : ℂ) * I)) ^ 2
+    (((1 / r : ℝ) : ℂ) + (((x / r : ℝ) : ℂ) * I)) ^ (2 : ℕ)
   push_cast
   field_simp [hu, ne_of_gt hrpos]
-  have hrc : (r : ℂ) ^ 2 = 1 + (x : ℂ) ^ 2 := by exact_mod_cast hr
-  have hfactor : (1 : ℂ) + (x : ℂ) ^ 2 =
+  have hrc : (r : ℂ) ^ (2 : ℕ) = 1 + (x : ℂ) ^ (2 : ℕ) := by exact_mod_cast hr
+  have hfactor : (1 : ℂ) + (x : ℂ) ^ (2 : ℕ) =
       (1 + I * (x : ℂ)) * (1 - I * (x : ℂ)) := by
-    linear_combination ((x : ℂ) ^ 2) * Complex.I_sq
+    linear_combination ((x : ℂ) ^ (2 : ℕ)) * Complex.I_sq
   rw [hrc, hfactor]
   ring
 
@@ -690,7 +690,7 @@ private theorem routeUCayleyInverseModeKernel_eq_trig (m : ℕ) (x : ℝ) :
 
 theorem routeUCayleyCosineSquareKernel_eq (m : ℕ) (x : ℝ) :
     routeUCayleyCosineSquareKernel m x =
-      ((Real.cos ((m : ℝ) * Real.arctan x) ^ 2 / (1 + x ^ 2) : ℝ) : ℂ) := by
+      ((Real.cos ((m : ℝ) * Real.arctan x) ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [routeUCayleyCosineSquareKernel,
     routeUCayleyModeKernel_eq_trig,
     routeUCayleyInverseModeKernel_eq_trig,
@@ -703,11 +703,11 @@ theorem routeUCayleyCosineSquareKernel_eq (m : ℕ) (x : ℝ) :
 theorem routeUFourierIntegral_cosineSquareKernel
     {m : ℕ} (hm : 0 < m) (ξ : ℝ) :
     routeUFourierIntegral (fun x : ℝ =>
-      ((Real.cos ((m : ℝ) * Real.arctan x) ^ 2 / (1 + x ^ 2) : ℝ) : ℂ)) ξ =
+      ((Real.cos ((m : ℝ) * Real.arctan x) ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) : ℝ) : ℂ)) ξ =
       ((Real.pi / 4 * Real.exp (-|ξ|) *
         (2 + (-1 : ℝ) ^ m * routeUAssociatedLaguerreMinusOne m (2 * |ξ|)) : ℝ) : ℂ) := by
   rw [show (fun x : ℝ =>
-      ((Real.cos ((m : ℝ) * Real.arctan x) ^ 2 / (1 + x ^ 2) : ℝ) : ℂ)) =
+      ((Real.cos ((m : ℝ) * Real.arctan x) ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) : ℝ) : ℂ)) =
       routeUCayleyCosineSquareKernel m by
     funext x
     exact (routeUCayleyCosineSquareKernel_eq m x).symm]
@@ -717,8 +717,8 @@ theorem routeUFourierIntegral_cosineSquareKernel
 theorem routeUFourierIntegral_cosineSquareKernel_even
     {n : ℕ} (hn : 0 < n) (ξ : ℝ) :
     routeUFourierIntegral (fun x : ℝ =>
-      ((Real.cos ((2 * n : ℕ) * Real.arctan x) ^ 2 /
-        (1 + x ^ 2) : ℝ) : ℂ)) ξ =
+      ((Real.cos ((2 * n : ℕ) * Real.arctan x) ^ (2 : ℕ) /
+        (1 + x ^ (2 : ℕ)) : ℝ) : ℂ)) ξ =
       ((Real.pi / 4 * Real.exp (-|ξ|) *
         (2 + routeUAssociatedLaguerreMinusOne (2 * n) (2 * |ξ|)) : ℝ) : ℂ) := by
   rw [routeUFourierIntegral_cosineSquareKernel (m := 2 * n) (by omega)]

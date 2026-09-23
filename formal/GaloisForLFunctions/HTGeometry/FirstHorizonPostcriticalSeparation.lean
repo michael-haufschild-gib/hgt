@@ -8,7 +8,7 @@ import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 At the first horizon `m = n = 1`, `L = 2`, the critical observation of a jet is the pair
 `(x_1, y_1)`, and the new raw coefficient is `x_2`.  The sign flip of the constant term `x_0` fixes
 `x_1`, fixes `y_1 = -x_1 x_0^{-2}` because that is even in `x_0`, and fixes `x_2`, but it reverses
-the sign of the leading term of `y_2 = x_1^2 x_0^{-3} - x_2 x_0^{-2}`.
+the sign of the leading term of `y_2 = x_1^(2 : ℕ) x_0^{-3} - x_2 x_0^{-2}`.
 
 So `y_2` is not a rational function of the critical observation and the new raw coefficient: one
 postcritical reciprocal coefficient genuinely leaves the critical field.  This is the first
@@ -83,11 +83,11 @@ theorem jetX_one_ne_zero : jetX F 1 ≠ 0 := fun hcon =>
 noncomputable def jetY0 : firstHorizonField F := (jetX F 0)⁻¹
 
 /-- The critical coefficient of the reciprocal jet. -/
-noncomputable def jetY1 : firstHorizonField F := -(jetX F 1) / (jetX F 0) ^ 2
+noncomputable def jetY1 : firstHorizonField F := -(jetX F 1) / (jetX F 0) ^ (2 : ℕ)
 
 /-- The first postcritical coefficient of the reciprocal jet. -/
 noncomputable def jetY2 : firstHorizonField F :=
-  (jetX F 1) ^ 2 / (jetX F 0) ^ 3 - (jetX F 2) / (jetX F 0) ^ 2
+  (jetX F 1) ^ (2 : ℕ) / (jetX F 0) ^ (3 : ℕ) - (jetX F 2) / (jetX F 0) ^ (2 : ℕ)
 
 theorem jet_reciprocal_zero : jetX F 0 * jetY0 F = 1 := by
   rw [jetY0, mul_inv_cancel₀ (jetX_zero_ne_zero F)]
@@ -151,11 +151,11 @@ even in the constant term. -/
 
 /-- **The postcritical reciprocal coefficient is moved by the sign flip.** -/
 theorem signFlip_jetY2 :
-    signFlip F (jetY2 F) = -((jetX F 1) ^ 2 / (jetX F 0) ^ 3) - (jetX F 2) / (jetX F 0) ^ 2 := by
+    signFlip F (jetY2 F) = -((jetX F 1) ^ (2 : ℕ) / (jetX F 0) ^ (3 : ℕ)) - (jetX F 2) / (jetX F 0) ^ (2 : ℕ) := by
   rw [jetY2, map_sub, map_div₀, map_div₀, map_pow, map_pow, map_pow, signFlip_jetX_zero,
     signFlip_jetX_one, signFlip_jetX_two,
-    show (-(jetX F 0)) ^ 3 = -((jetX F 0) ^ 3) by ring,
-    show (-(jetX F 0)) ^ 2 = (jetX F 0) ^ 2 by ring, div_neg]
+    show (-(jetX F 0)) ^ (3 : ℕ) = -((jetX F 0) ^ (3 : ℕ)) by ring,
+    show (-(jetX F 0)) ^ (2 : ℕ) = (jetX F 0) ^ (2 : ℕ) by ring, div_neg]
 
 /-- The jet algebra has characteristic zero. -/
 instance charZero_firstHorizonRing [CharZero F] : CharZero (firstHorizonRing F) :=
@@ -176,9 +176,9 @@ instance charZero_firstHorizonField [CharZero F] : CharZero (firstHorizonField F
 theorem signFlip_jetY2_ne [CharZero F] : signFlip F (jetY2 F) ≠ jetY2 F := by
   rw [signFlip_jetY2, jetY2]
   intro hcon
-  have hsq : (2 : firstHorizonField F) * ((jetX F 1) ^ 2 / (jetX F 0) ^ 3) = 0 := by
+  have hsq : (2 : firstHorizonField F) * ((jetX F 1) ^ (2 : ℕ) / (jetX F 0) ^ (3 : ℕ)) = 0 := by
     linear_combination -hcon
-  have hne : ((jetX F 1) ^ 2 / (jetX F 0) ^ 3) ≠ 0 :=
+  have hne : ((jetX F 1) ^ (2 : ℕ) / (jetX F 0) ^ (3 : ℕ)) ≠ 0 :=
     div_ne_zero (pow_ne_zero _ (jetX_one_ne_zero F)) (pow_ne_zero _ (jetX_zero_ne_zero F))
   exact hne (by
     rcases mul_eq_zero.1 hsq with h | h

@@ -44,7 +44,7 @@ theorem tendsto_one_sub_coalescingDefect_rate (R : Lp ℂ 2 μ →L[ℂ] Lp ℂ 
     (hR : 0 < (inner ℂ (B.monomialC 0) (R (B.monomialC 0)) : ℂ).re) :
     Tendsto (fun c : ℝ =>
         (1 - GaloisForLFunctions.RHTower.suzukiDefectAngle (coalescingEvenEnergy B R c)
-          (coalescingOddEnergy B R c)) / (2 * c ^ 2))
+          (coalescingOddEnergy B R c)) / (2 * c ^ (2 : ℕ)))
       (𝓝[>] (0 : ℝ)) (𝓝 (positionResolventTangent B R)) := by
   have hcosh := B.tendsto_coshVecC
   have hsinh := B.tendsto_inv_smul_sinhVecC
@@ -52,7 +52,7 @@ theorem tendsto_one_sub_coalescingDefect_rate (R : Lp ℂ 2 μ →L[ℂ] Lp ℂ 
       (𝓝 ((inner ℂ (B.monomialC 0) (R (B.monomialC 0)) : ℂ).re)) :=
     (Complex.continuous_re.tendsto _).comp
       (hcosh.inner ((R.continuous.tendsto _).comp hcosh))
-  have hOsq : Tendsto (fun c : ℝ => coalescingOddEnergy B R c / c ^ 2) (𝓝[>] (0 : ℝ))
+  have hOsq : Tendsto (fun c : ℝ => coalescingOddEnergy B R c / c ^ (2 : ℕ)) (𝓝[>] (0 : ℝ))
       (𝓝 ((inner ℂ (B.monomialC 1) (R (B.monomialC 1)) : ℂ).re)) := by
     have h : Tendsto (fun c : ℝ =>
         (inner ℂ (c⁻¹ • B.sinhVecC c) (R (c⁻¹ • B.sinhVecC c)) : ℂ).re)
@@ -73,8 +73,8 @@ theorem tendsto_one_sub_coalescingDefect_rate (R : Lp ℂ 2 μ →L[ℂ] Lp ℂ 
       inner_smul_left, inner_smul_right, Complex.conj_ofReal]
     simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
     field_simp
-  have hc2 : Tendsto (fun c : ℝ => c ^ 2) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    have h0 : Tendsto (fun c : ℝ => c ^ 2) (𝓝 (0 : ℝ)) (𝓝 0) := by
+  have hc2 : Tendsto (fun c : ℝ => c ^ (2 : ℕ)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have h0 : Tendsto (fun c : ℝ => c ^ (2 : ℕ)) (𝓝 (0 : ℝ)) (𝓝 0) := by
       simpa using (continuous_pow 2).tendsto (0 : ℝ)
     exact h0.mono_left nhdsWithin_le_nhds
   have hO : Tendsto (fun c : ℝ => coalescingOddEnergy B R c) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
@@ -113,7 +113,7 @@ theorem tendsto_one_sub_suzukiIntervalDefect_rate {a : ℝ} (ha : 0 ≤ a)
     Tendsto (fun c : ℝ =>
         (1 - GaloisForLFunctions.RHTower.suzukiDefectAngle
           (coalescingEvenEnergy (suzukiApertureCoordinate ha) R c)
-          (coalescingOddEnergy (suzukiApertureCoordinate ha) R c)) / (2 * c ^ 2))
+          (coalescingOddEnergy (suzukiApertureCoordinate ha) R c)) / (2 * c ^ (2 : ℕ)))
       (𝓝[>] (0 : ℝ)) (𝓝 (positionResolventTangent (suzukiApertureCoordinate ha) R)) :=
   tendsto_one_sub_coalescingDefect_rate (suzukiApertureCoordinate ha) R hR
 

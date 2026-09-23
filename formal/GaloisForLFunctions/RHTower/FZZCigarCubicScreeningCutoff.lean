@@ -29,7 +29,7 @@ def fzzScreeningCubicLocalFinitePart : ℝ :=
     fzzScreeningCubicCollisionPrimitive (1/2))
 
 private def cubicPolar (p : ℝ × ℝ) : ℝ :=
-  (p.1^5)⁻¹*(‖1-circleMap 0 p.1 p.2‖^6)⁻¹
+  (p.1^(5 : ℕ))⁻¹*(‖1-circleMap 0 p.1 p.2‖^(6 : ℕ))⁻¹
 
 private theorem cubicKernel_circleMap (r θ : ℝ) (hr : 0 < r) :
     r*fzzScreeningPlaneKernel (-6) (-6) (circleMap 0 r θ) = cubicPolar (r,θ) := by
@@ -104,12 +104,12 @@ private theorem cubic_annulus_polar (ε : ℝ) (hε : 0 < ε) :
   rw [hs]
 
 private theorem cubic_angle_integral (r : ℝ) :
-    (∫ θ : ℝ in Ioo (-Real.pi) Real.pi, (‖1-circleMap 0 r θ‖^6)⁻¹) =
+    (∫ θ : ℝ in Ioo (-Real.pi) Real.pi, (‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) =
       2*Real.pi*fzzScreeningHigherAngular 3 r := by
   have h := Real.circleAverage_eq_integral_add
-    (f := fun z : ℂ => (‖1-z‖^6)⁻¹) (c := 0) (R := r) (-Real.pi)
+    (f := fun z : ℂ => (‖1-z‖^(6 : ℕ))⁻¹) (c := 0) (R := r) (-Real.pi)
   rw [intervalIntegral.integral_comp_add_right
-      (fun θ : ℝ => (‖1-circleMap 0 r θ‖^6)⁻¹) (-Real.pi), zero_add,
+      (fun θ : ℝ => (‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) (-Real.pi), zero_add,
     show 2*Real.pi+-Real.pi = Real.pi by ring, smul_eq_mul,
     intervalIntegral.integral_of_le (by linarith [Real.pi_pos] : -Real.pi ≤ Real.pi),
     integral_Ioc_eq_integral_Ioo] at h
@@ -119,7 +119,7 @@ private theorem cubic_angle_integral (r : ℝ) :
 
 private theorem cubic_annulus_angular (ε : ℝ) (hε : 0 < ε) (hεR : ε ≤ 1/2) :
     (∫ z : ℂ in ball 0 (1/2) \ closedBall 0 ε, fzzScreeningPlaneKernel (-6) (-6) z) =
-      2*Real.pi*(∫ r : ℝ in ε..(1/2), (r^5)⁻¹*fzzScreeningHigherAngular 3 r) := by
+      2*Real.pi*(∫ r : ℝ in ε..(1/2), (r^(5 : ℕ))⁻¹*fzzScreeningHigherAngular 3 r) := by
   rw [cubic_annulus_polar ε hε, Measure.volume_eq_prod,
     setIntegral_prod _ (cubicPolar_integrable ε hε)]
   simp_rw [cubicPolar, integral_const_mul, cubic_angle_integral]

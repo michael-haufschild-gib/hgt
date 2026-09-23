@@ -34,14 +34,14 @@ Gram matrix. -/
 theorem frame_entry_sq_le_inv_diag
     (C G : Matrix (Fin N) (Fin N) ℂ) (hC : IsInverseCholeskyFrame C G)
     (i j : Fin N) :
-    ‖C i j‖ ^ 2 ≤ (G⁻¹ j j).re := by
+    ‖C i j‖ ^ (2 : ℕ) ≤ (G⁻¹ j j).re := by
   have hinv := inverse_eq_conjTranspose_mul_of_inverseCholesky C G hC
   have hentry := congrArg Complex.re (congrFun (congrFun hinv j) j)
   simp only [Matrix.mul_apply, Matrix.conjTranspose_apply] at hentry
   rw [hentry]
-  change ‖C i j‖ ^ 2 ≤ Complex.reCLM (∑ x, star (C x j) * C x j)
+  change ‖C i j‖ ^ (2 : ℕ) ≤ Complex.reCLM (∑ x, star (C x j) * C x j)
   rw [map_sum]
-  change ‖C i j‖ ^ 2 ≤ ∑ x, (star (C x j) * C x j).re
+  change ‖C i j‖ ^ (2 : ℕ) ≤ ∑ x, (star (C x j) * C x j).re
   simp only [RCLike.star_def, Complex.mul_re, Complex.conj_re, Complex.conj_im,
     neg_mul, sub_neg_eq_add]
   rw [Complex.sq_norm, Complex.normSq_apply]
@@ -59,7 +59,7 @@ theorem frame_norm_le_inv_norm_add_one
   rw [Matrix.norm_le_iff (by positivity)]
   intro i j
   calc
-    ‖C i j‖ ≤ ‖C i j‖ ^ 2 + 1 := by nlinarith [norm_nonneg (C i j)]
+    ‖C i j‖ ≤ ‖C i j‖ ^ (2 : ℕ) + 1 := by nlinarith [norm_nonneg (C i j)]
     _ ≤ (G⁻¹ j j).re + 1 := by
       nlinarith [frame_entry_sq_le_inv_diag C G hC i j]
     _ ≤ ‖G⁻¹ j j‖ + 1 := by nlinarith [Complex.re_le_norm (G⁻¹ j j)]

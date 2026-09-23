@@ -25,14 +25,14 @@ of any finite set of shell modes. -/
 theorem sum_norm_sq_evenShellVectorEven_apply_le_hsNormSq
     {T : evenSubspace →L[ℂ] evenSubspace} (hT : T.IsHilbertSchmidt)
     (s t : ℝ) (hs : 0 < s) (hst : s < t) (F : Finset ℕ) :
-    ∑ j ∈ F, ‖T (evenShellVectorEven s t hst j)‖ ^ 2 ≤ hsNormSq T := by
+    ∑ j ∈ F, ‖T (evenShellVectorEven s t hst j)‖ ^ (2 : ℕ) ≤ hsNormSq T := by
   classical
   have hortho : Orthonormal ℂ (fun j : F => evenShellVectorEven s t hst (j : ℕ)) :=
     (evenShellVectorEven_orthonormal s t hs hst).comp _ Subtype.val_injective
   have hsum := sum_norm_sq_apply_le_hsNormSq hT hortho
-  have hconv : ∑ j : F, ‖T (evenShellVectorEven s t hst (j : ℕ))‖ ^ 2 =
-      ∑ j ∈ F, ‖T (evenShellVectorEven s t hst j)‖ ^ 2 :=
-    Finset.sum_coe_sort F (fun j => ‖T (evenShellVectorEven s t hst j)‖ ^ 2)
+  have hconv : ∑ j : F, ‖T (evenShellVectorEven s t hst (j : ℕ))‖ ^ (2 : ℕ) =
+      ∑ j ∈ F, ‖T (evenShellVectorEven s t hst j)‖ ^ (2 : ℕ) :=
+    Finset.sum_coe_sort F (fun j => ‖T (evenShellVectorEven s t hst j)‖ ^ (2 : ℕ))
   rw [← hconv]
   exact hsum
 
@@ -44,12 +44,12 @@ theorem card_le_hsNormSq_of_evenShellVectorEven
     (hmodes : ∀ j ∈ F, 1 ≤ ‖T (evenShellVectorEven s t hst j)‖) :
     (F.card : ℝ) ≤ hsNormSq T := by
   refine le_trans ?_ (sum_norm_sq_evenShellVectorEven_apply_le_hsNormSq hT s t hs hst F)
-  have hterm : ∀ j ∈ F, (1 : ℝ) ≤ ‖T (evenShellVectorEven s t hst j)‖ ^ 2 := by
+  have hterm : ∀ j ∈ F, (1 : ℝ) ≤ ‖T (evenShellVectorEven s t hst j)‖ ^ (2 : ℕ) := by
     intro j hj
     have h := hmodes j hj
     nlinarith [norm_nonneg (T (evenShellVectorEven s t hst j))]
   calc (F.card : ℝ) = ∑ _j ∈ F, (1 : ℝ) := by
         rw [Finset.sum_const, nsmul_eq_mul, mul_one]
-    _ ≤ ∑ j ∈ F, ‖T (evenShellVectorEven s t hst j)‖ ^ 2 := Finset.sum_le_sum hterm
+    _ ≤ ∑ j ∈ F, ‖T (evenShellVectorEven s t hst j)‖ ^ (2 : ℕ) := Finset.sum_le_sum hterm
 
 end RHTower

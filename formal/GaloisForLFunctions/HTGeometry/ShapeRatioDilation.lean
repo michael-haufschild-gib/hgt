@@ -40,15 +40,15 @@ theorem intervalIntegral_dilate (f : ℝ → ℝ) {α : ℝ} (hα : α ≠ 0) (�
 
 /-- The second moment of a dilated, rescaled profile over the matching window. -/
 theorem intervalIntegral_dilate_sq (f : ℝ → ℝ) {α : ℝ} (hα : α ≠ 0) (β R : ℝ) :
-    (∫ x in -(α * R)..(α * R), (β * f (x / α)) ^ 2)
-      = α * β ^ 2 * ∫ x in -R..R, (f x) ^ 2 := by
+    (∫ x in -(α * R)..(α * R), (β * f (x / α)) ^ (2 : ℕ))
+      = α * β ^ (2 : ℕ) * ∫ x in -R..R, (f x) ^ (2 : ℕ) := by
   have hdiv := intervalIntegral.integral_comp_div (a := -(α * R)) (b := α * R)
-    (fun u : ℝ => (f u) ^ 2) hα
+    (fun u : ℝ => (f u) ^ (2 : ℕ)) hα
   have hleft : -(α * R) / α = -R := by field_simp
   have hright : (α * R) / α = R := by field_simp
   rw [hleft, hright] at hdiv
-  have hcongr : (∫ x in -(α * R)..(α * R), (β * f (x / α)) ^ 2)
-      = ∫ x in -(α * R)..(α * R), β ^ 2 * (fun u : ℝ => (f u) ^ 2) (x / α) := by
+  have hcongr : (∫ x in -(α * R)..(α * R), (β * f (x / α)) ^ (2 : ℕ))
+      = ∫ x in -(α * R)..(α * R), β ^ (2 : ℕ) * (fun u : ℝ => (f u) ^ (2 : ℕ)) (x / α) := by
     refine intervalIntegral.integral_congr fun x _ => ?_
     simp only
     ring
@@ -57,19 +57,19 @@ theorem intervalIntegral_dilate_sq (f : ℝ → ℝ) {α : ℝ} (hα : α ≠ 0)
 
 /-- **The shape ratio scales by the dilation and ignores the amplitude.** -/
 theorem shapeRatio_dilate (f : ℝ → ℝ) {α β : ℝ} (hα : α ≠ 0) (hβ : β ≠ 0) (R : ℝ) :
-    (∫ x in -(α * R)..(α * R), β * f (x / α)) ^ 2
-        / (∫ x in -(α * R)..(α * R), (β * f (x / α)) ^ 2)
-      = α * ((∫ x in -R..R, f x) ^ 2 / ∫ x in -R..R, (f x) ^ 2) := by
+    (∫ x in -(α * R)..(α * R), β * f (x / α)) ^ (2 : ℕ)
+        / (∫ x in -(α * R)..(α * R), (β * f (x / α)) ^ (2 : ℕ))
+      = α * ((∫ x in -R..R, f x) ^ (2 : ℕ) / ∫ x in -R..R, (f x) ^ (2 : ℕ)) := by
   rw [intervalIntegral_dilate f hα β R, intervalIntegral_dilate_sq f hα β R]
-  rcases eq_or_ne (∫ x in -R..R, (f x) ^ 2) 0 with h | h
+  rcases eq_or_ne (∫ x in -R..R, (f x) ^ (2 : ℕ)) 0 with h | h
   · rw [h]
     simp
   · field_simp
 
 /-- **The shape ratio is independent of the amplitude.** -/
 theorem shapeRatio_amplitude_invariant (f : ℝ → ℝ) {β : ℝ} (hβ : β ≠ 0) (R : ℝ) :
-    (∫ x in -R..R, β * f x) ^ 2 / (∫ x in -R..R, (β * f x) ^ 2)
-      = (∫ x in -R..R, f x) ^ 2 / ∫ x in -R..R, (f x) ^ 2 := by
+    (∫ x in -R..R, β * f x) ^ (2 : ℕ) / (∫ x in -R..R, (β * f x) ^ (2 : ℕ))
+      = (∫ x in -R..R, f x) ^ (2 : ℕ) / ∫ x in -R..R, (f x) ^ (2 : ℕ) := by
   have h := shapeRatio_dilate f (α := 1) one_ne_zero hβ R
   simpa using h
 

@@ -15,7 +15,7 @@ the exact Davies--Fulling pair numerator contains the nonlinear phase
 After subtracting the inertial distribution, its coupling derivative at zero is the established
 Xi-valued Born kernel.  Its second derivative is instead
 
-`2 * omega_in * omega_out^2 * Fourier(thetaCuspFullSource^2)(omega_in + omega_out)`.
+`2 * omega_in * omega_out^(2 : ℕ) * Fourier(thetaCuspFullSource^(2 : ℕ))(omega_in + omega_out)`.
 
 The theta source is everywhere positive, so the square transform is nonzero on a nonempty open
 interval of positive physical frequencies.  The canonical Cayley transition is odd in the
@@ -83,7 +83,7 @@ def thetaCuspMovingMirrorFullSecondJetIntegrand
   let phase := Complex.exp ((lambda : ℂ) * phaseRate)
   let slope := ((outgoingFrequency * g' : ℝ) : ℂ)
   Complex.exp (((-totalFrequency * v : ℝ) : ℂ) * Complex.I) *
-    (phaseRate ^ 2 * phase *
+    (phaseRate ^ (2 : ℕ) * phase *
         (((outgoingFrequency - incomingFrequency : ℝ) : ℂ) +
           (lambda : ℂ) * slope) +
       2 * phaseRate * phase * slope)
@@ -147,7 +147,7 @@ theorem hasDerivAt_thetaCuspMovingMirrorFullFirstJetIntegrand
   change HasDerivAt
     (fun coupling => base *
       (rate * phase coupling * affine coupling + phase coupling * slope))
-    (base * (rate ^ 2 * phase lambda * affine lambda +
+    (base * (rate ^ (2 : ℕ) * phase lambda * affine lambda +
       2 * rate * phase lambda * slope)) lambda
   have hlambda : HasDerivAt (fun coupling : ℝ => (coupling : ℂ)) 1 lambda :=
     (hasDerivAt_id lambda).ofReal_comp
@@ -167,7 +167,7 @@ theorem hasDerivAt_thetaCuspMovingMirrorFullFirstJetIntegrand
       (base * (rate * (phase lambda * rate) * affine lambda +
         rate * phase lambda * slope + (phase lambda * rate) * slope)) lambda := by
     simpa only [Pi.add_apply, Pi.mul_apply] using hmain
-  rw [show base * (rate ^ 2 * phase lambda * affine lambda +
+  rw [show base * (rate ^ (2 : ℕ) * phase lambda * affine lambda +
       2 * rate * phase lambda * slope) =
       base * (rate * (phase lambda * rate) * affine lambda +
         rate * phase lambda * slope + (phase lambda * rate) * slope) by ring]
@@ -236,7 +236,7 @@ private theorem norm_thetaCuspMovingMirrorFullFirstJetIntegrand_le
 private theorem norm_thetaCuspMovingMirrorFullSecondJetIntegrand_le
     (lambda frequency v B : ℝ) (hlambda : |lambda| ≤ B) (hB : 0 ≤ B) :
     ‖thetaCuspMovingMirrorFullSecondJetIntegrand lambda frequency frequency v‖ ≤
-      (((|frequency| * thetaCuspDerivativeExpConstant 0) ^ 2 * B +
+      (((|frequency| * thetaCuspDerivativeExpConstant 0) ^ (2 : ℕ) * B +
           2 * (|frequency| * thetaCuspDerivativeExpConstant 0)) *
         (|frequency| * thetaCuspDerivativeExpConstant 1)) * Real.exp (-|v|) := by
   let C0 := thetaCuspDerivativeExpConstant 0
@@ -277,23 +277,23 @@ private theorem norm_thetaCuspMovingMirrorFullSecondJetIntegrand_le
   dsimp only
   simp only [sub_self, ofReal_zero, zero_add]
   rw [norm_mul, hbase, one_mul]
-  change ‖rate ^ 2 * phase * ((lambda : ℂ) * slope) + 2 * rate * phase * slope‖ ≤
-    (((|frequency| * C0) ^ 2 * B + 2 * (|frequency| * C0)) *
+  change ‖rate ^ (2 : ℕ) * phase * ((lambda : ℂ) * slope) + 2 * rate * phase * slope‖ ≤
+    (((|frequency| * C0) ^ (2 : ℕ) * B + 2 * (|frequency| * C0)) *
       (|frequency| * C1)) * Real.exp (-|v|)
   calc
-    ‖rate ^ 2 * phase * ((lambda : ℂ) * slope) + 2 * rate * phase * slope‖ ≤
-        ‖rate ^ 2 * phase * ((lambda : ℂ) * slope)‖ +
+    ‖rate ^ (2 : ℕ) * phase * ((lambda : ℂ) * slope) + 2 * rate * phase * slope‖ ≤
+        ‖rate ^ (2 : ℕ) * phase * ((lambda : ℂ) * slope)‖ +
           ‖(2 : ℂ) * rate * phase * slope‖ := norm_add_le _ _
-    _ = ‖rate‖ ^ 2 * ‖phase‖ * (‖(lambda : ℂ)‖ * ‖slope‖) +
+    _ = ‖rate‖ ^ (2 : ℕ) * ‖phase‖ * (‖(lambda : ℂ)‖ * ‖slope‖) +
           2 * ‖rate‖ * ‖phase‖ * ‖slope‖ := by
       simp only [norm_mul, norm_pow, Complex.norm_ofNat]
-    _ ≤ (|frequency| * C0) ^ 2 * 1 *
+    _ ≤ (|frequency| * C0) ^ (2 : ℕ) * 1 *
           (B * (|frequency| * C1 * Real.exp (-|v|))) +
         2 * (|frequency| * C0) * 1 *
           (|frequency| * C1 * Real.exp (-|v|)) := by
       rw [hphase]
       gcongr
-    _ = (((|frequency| * C0) ^ 2 * B + 2 * (|frequency| * C0)) *
+    _ = (((|frequency| * C0) ^ (2 : ℕ) * B + 2 * (|frequency| * C0)) *
           (|frequency| * C1)) * Real.exp (-|v|) := by ring
 
 private theorem measurable_thetaCuspMovingMirrorFullRenormalizedIntegrand
@@ -447,7 +447,7 @@ theorem hasDerivAt_thetaCuspMovingMirrorFullFirstJetRaw_zero (frequency : ℝ) :
     (|frequency| * C0 + 1) * (|frequency| * C1)
   let firstMajor : ℝ → ℝ := fun v => firstMajorCoefficient * Real.exp (-|v|)
   let secondMajorCoefficient : ℝ :=
-    ((|frequency| * C0) ^ 2 + 2 * (|frequency| * C0)) *
+    ((|frequency| * C0) ^ (2 : ℕ) + 2 * (|frequency| * C0)) *
       (|frequency| * C1)
   let secondMajor : ℝ → ℝ := fun v => secondMajorCoefficient * Real.exp (-|v|)
   have hC0 : 0 ≤ C0 := thetaCuspDerivativeExpConstant_nonneg 0
@@ -526,14 +526,14 @@ theorem secondDeriv_thetaCuspMovingMirrorFullRenormalizedRaw_balanced_zero
 /-- Fourier transform of the squared theta source in physical angular-frequency normalization. -/
 def thetaCuspSourceSquareFourier (totalFrequency : ℝ) : ℂ :=
   FourierTransform.fourier
-    (fun v : ℝ => ((thetaCuspFullSource v : ℂ) ^ 2))
+    (fun v : ℝ => ((thetaCuspFullSource v : ℂ) ^ (2 : ℕ)))
     (totalFrequency / (2 * Real.pi))
 
 theorem integrable_thetaCuspFullSource_sq_complex :
-    Integrable (fun v : ℝ => ((thetaCuspFullSource v : ℂ) ^ 2)) := by
+    Integrable (fun v : ℝ => ((thetaCuspFullSource v : ℂ) ^ (2 : ℕ))) := by
   let C := thetaCuspDerivativeExpConstant 0
   have hC : 0 ≤ C := thetaCuspDerivativeExpConstant_nonneg 0
-  have hmajor : Integrable (fun v : ℝ => C ^ 2 * Real.exp (-|v|)) :=
+  have hmajor : Integrable (fun v : ℝ => C ^ (2 : ℕ) * Real.exp (-|v|)) :=
     integrable_exp_neg_abs.const_mul _
   apply hmajor.mono
   · exact ((Complex.continuous_ofReal.comp
@@ -548,12 +548,12 @@ theorem integrable_thetaCuspFullSource_sq_complex :
       Real.norm_eq_abs, abs_of_nonneg
         (mul_nonneg (sq_nonneg C) (Real.exp_pos _).le)]
     calc
-      |thetaCuspFullSource v| ^ 2 ≤
-          (C * Real.exp (-|v|)) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) hg 2
-      _ = C ^ 2 * Real.exp (-2 * |v|) := by
+      |thetaCuspFullSource v| ^ (2 : ℕ) ≤
+          (C * Real.exp (-|v|)) ^ (2 : ℕ) := pow_le_pow_left₀ (abs_nonneg _) hg 2
+      _ = C ^ (2 : ℕ) * Real.exp (-2 * |v|) := by
         rw [mul_pow, ← Real.exp_nat_mul]
         ring_nf
-      _ ≤ C ^ 2 * Real.exp (-|v|) :=
+      _ ≤ C ^ (2 : ℕ) * Real.exp (-|v|) :=
         mul_le_mul_of_nonneg_left
           (Real.exp_le_exp.mpr (by linarith [abs_nonneg v])) (sq_nonneg C)
 
@@ -568,21 +568,21 @@ theorem thetaCuspSourceSquareFourier_zero_re_pos :
     0 < (thetaCuspSourceSquareFourier 0).re := by
   rw [thetaCuspSourceSquareFourier, zero_div, Real.fourier_real_eq_integral_exp_smul]
   simp only [mul_zero, ofReal_zero, zero_mul, Complex.exp_zero, one_smul]
-  change 0 < RCLike.re (∫ v : ℝ, ((thetaCuspFullSource v : ℂ) ^ 2))
+  change 0 < RCLike.re (∫ v : ℝ, ((thetaCuspFullSource v : ℂ) ^ (2 : ℕ)))
   rw [← integral_re integrable_thetaCuspFullSource_sq_complex]
-  have hrealEq : (fun v : ℝ => RCLike.re ((thetaCuspFullSource v : ℂ) ^ 2)) =
-      fun v : ℝ => thetaCuspFullSource v ^ 2 := by
+  have hrealEq : (fun v : ℝ => RCLike.re ((thetaCuspFullSource v : ℂ) ^ (2 : ℕ))) =
+      fun v : ℝ => thetaCuspFullSource v ^ (2 : ℕ) := by
     funext v
-    change ((thetaCuspFullSource v : ℂ) ^ 2).re = thetaCuspFullSource v ^ 2
+    change ((thetaCuspFullSource v : ℂ) ^ (2 : ℕ)).re = thetaCuspFullSource v ^ (2 : ℕ)
     rw [pow_two, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
     ring
   rw [hrealEq]
-  have hsqReal : Integrable (fun v : ℝ => thetaCuspFullSource v ^ 2) := by
+  have hsqReal : Integrable (fun v : ℝ => thetaCuspFullSource v ^ (2 : ℕ)) := by
     rw [← hrealEq]
     exact integrable_thetaCuspFullSource_sq_complex.re
   rw [integral_pos_iff_support_of_nonneg_ae (Filter.Eventually.of_forall fun _ => sq_nonneg _)
     hsqReal]
-  have hsupp : Function.support (fun v : ℝ => thetaCuspFullSource v ^ 2) = Set.univ := by
+  have hsupp : Function.support (fun v : ℝ => thetaCuspFullSource v ^ (2 : ℕ)) = Set.univ := by
     ext v
     simp only [Function.mem_support, ne_eq, mem_univ, iff_true]
     exact pow_ne_zero 2 (thetaCuspFullSource_pos v).ne'
@@ -608,7 +608,7 @@ theorem exists_pos_thetaCuspSourceSquareFourier_ne_zero :
 
 /-- Complex square of the theta source and its ordinary derivative. -/
 private def thetaCuspSourceSquare (v : ℝ) : ℂ :=
-  (thetaCuspFullSource v : ℂ) ^ 2
+  (thetaCuspFullSource v : ℂ) ^ (2 : ℕ)
 
 private theorem differentiable_thetaCuspSourceSquare :
     Differentiable ℝ thetaCuspSourceSquare := by
@@ -629,7 +629,7 @@ private theorem deriv_thetaCuspSourceSquare (v : ℝ) :
     (contDiff_thetaCuspFullSource.differentiable (by simp) v).hasDerivAt
   have hcomplex : HasDerivAt (fun x : ℝ => (thetaCuspFullSource x : ℂ))
       (d : ℂ) v := hreal.ofReal_comp
-  have heq : (fun x : ℝ => (thetaCuspFullSource x : ℂ) ^ 2) =
+  have heq : (fun x : ℝ => (thetaCuspFullSource x : ℂ) ^ (2 : ℕ)) =
       (fun x : ℝ => (thetaCuspFullSource x : ℂ)) *
         (fun x : ℝ => (thetaCuspFullSource x : ℂ)) := by
     funext x
@@ -680,12 +680,12 @@ theorem integral_thetaCuspMovingMirrorFullSecondJetIntegrand_zero_balanced
     (frequency : ℝ) :
     (∫ v : ℝ, thetaCuspMovingMirrorFullSecondJetIntegrand
       0 frequency frequency v) =
-      (2 * frequency ^ 3 : ℝ) * thetaCuspSourceSquareFourier (2 * frequency) := by
+      (2 * frequency ^ (3 : ℕ) : ℝ) * thetaCuspSourceSquareFourier (2 * frequency) := by
   have hFourierDeriv := congrFun
     (Real.fourier_deriv
       (f := thetaCuspSourceSquare)
       (by
-        change Integrable (fun v : ℝ => ((thetaCuspFullSource v : ℂ) ^ 2))
+        change Integrable (fun v : ℝ => ((thetaCuspFullSource v : ℂ) ^ (2 : ℕ)))
         exact integrable_thetaCuspFullSource_sq_complex)
       differentiable_thetaCuspSourceSquare
       integrable_deriv_thetaCuspSourceSquare)
@@ -709,7 +709,7 @@ theorem integral_thetaCuspMovingMirrorFullSecondJetIntegrand_zero_balanced
   calc
     (∫ v : ℝ, thetaCuspMovingMirrorFullSecondJetIntegrand
         0 frequency frequency v) =
-        (-Complex.I * (frequency : ℂ) ^ 2) *
+        (-Complex.I * (frequency : ℂ) ^ (2 : ℕ)) *
           ∫ v : ℝ,
             Complex.exp (((-2 * frequency * v : ℝ) : ℂ) * Complex.I) *
               deriv thetaCuspSourceSquare v := by
@@ -722,14 +722,14 @@ theorem integral_thetaCuspMovingMirrorFullSecondJetIntegrand_zero_balanced
         simp only [zero_mul, ofReal_zero, Complex.exp_zero]
         push_cast
         ring
-    _ = (-Complex.I * (frequency : ℂ) ^ 2) *
+    _ = (-Complex.I * (frequency : ℂ) ^ (2 : ℕ)) *
           FourierTransform.fourier (deriv thetaCuspSourceSquare)
             (frequency / Real.pi) := by rw [hphaseDeriv]
-    _ = (-Complex.I * (frequency : ℂ) ^ 2) *
+    _ = (-Complex.I * (frequency : ℂ) ^ (2 : ℕ)) *
           ((2 * (Real.pi : ℂ) * Complex.I * (frequency / Real.pi : ℝ)) •
             FourierTransform.fourier thetaCuspSourceSquare
               (frequency / Real.pi)) := by rw [hFourierDeriv]
-    _ = (2 * frequency ^ 3 : ℝ) *
+    _ = (2 * frequency ^ (3 : ℕ) : ℝ) *
           FourierTransform.fourier thetaCuspSourceSquare
             (frequency / Real.pi) := by
         simp only [smul_eq_mul]

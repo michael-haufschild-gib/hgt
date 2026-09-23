@@ -17,7 +17,7 @@ open scoped MatrixGroups ContDiff
 
 namespace RHTower.D4BMFullAngularCircleModular
 
-open D4BMHorizon D4BMModularCore D4BMNativeCircle
+open D4BMHorizon D4BMModularCore D4BMNativeCircle D4BMGlobalAngularResponse
 open D4BMFullAngularCircle D4BMFullAngularCircleJointJets
 open D4BMFullCovectorHyperbolicEnergy
 
@@ -79,7 +79,7 @@ with the literal modular Jacobian. -/
 theorem physicalMeanCovector_modular (q : XiZeroCopy) (branch : Bool) (d : ℝ)
     (A : SL(2, ℤ)) (z : UpperHalfPlane) (v : ℂ) :
     covectorAction (physicalMeanCovector q branch d) (coordinates (A • z))
-      ((1 / denom A z ^ 2) * v) =
+      ((1 / denom A z ^ (2 : ℕ)) * v) =
       covectorAction (physicalMeanCovector q branch d) (coordinates z) v := by
   unfold physicalMeanCovector
   exact coexact_modular_action A (physicalMean q branch d)

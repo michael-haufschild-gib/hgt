@@ -12,7 +12,7 @@ missing linear term makes coordinate induction close with a dimension-independen
 
 For nonnegative coefficients supported on Pauli weight at most `q`, the final theorem is
 
-`fourthIncidence c <= (9^q * sqrt (sum_s c_s^2))^4`.
+`fourthIncidence c <= (9^q * sqrt (sum_s c_s^(2 : ℕ)))^(4 : ℕ)`.
 
 No probabilistic, spectral-gap, or asymptotic hypothesis is used.
 -/
@@ -35,10 +35,10 @@ noncomputable def corrTripleEquiv : (G × G × G) ≃ (G × G × G) where
   right_inv p := by ext <;> simp
 
 theorem sum_corr_sq_eq (f g : G → ℝ) :
-    (∑ u, corr f g u ^ 2) = ∑ v, corr f f v * corr g g v := by
+    (∑ u, corr f g u ^ (2 : ℕ)) = ∑ v, corr f f v * corr g g v := by
   classical
   calc
-    (∑ u, corr f g u ^ 2) =
+    (∑ u, corr f g u ^ (2 : ℕ)) =
         ∑ p : G × G × G,
           f p.2.1 * g (p.2.1 + p.1) * (f p.2.2 * g (p.2.2 + p.1)) := by
       simp only [Fintype.sum_prod_type, corr, sq, Finset.sum_mul, Finset.mul_sum]
@@ -67,7 +67,7 @@ theorem sum_corr_sq_eq (f g : G → ℝ) :
       conv_rhs => rw [Finset.sum_comm]
 
 noncomputable def fourthIncidence (f : G → ℝ) : ℝ :=
-  ∑ u, corr f f u ^ 2
+  ∑ u, corr f f u ^ (2 : ℕ)
 
 noncomputable def crossIncidence (f₁ f₂ f₃ f₄ : G → ℝ) : ℝ :=
   ∑ u, corr f₁ f₂ u * corr f₃ f₄ u
@@ -90,31 +90,31 @@ theorem crossIncidence_nonneg {f₁ f₂ f₃ f₄ : G → ℝ}
     mul_nonneg (corr_nonneg h₁ h₂ u) (corr_nonneg h₃ h₄ u)
 
 theorem corr_normSq_sq_le (f g : G → ℝ) :
-    (∑ u, corr f g u ^ 2) ^ 2 ≤ fourthIncidence f * fourthIncidence g := by
+    (∑ u, corr f g u ^ (2 : ℕ)) ^ (2 : ℕ) ≤ fourthIncidence f * fourthIncidence g := by
   rw [sum_corr_sq_eq]
   simpa only [fourthIncidence] using
     (Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset G)
       (fun u => corr f f u) (fun u => corr g g u))
 
 theorem crossIncidence_pow_four_le (f₁ f₂ f₃ f₄ : G → ℝ) :
-    crossIncidence f₁ f₂ f₃ f₄ ^ 4 ≤
+    crossIncidence f₁ f₂ f₃ f₄ ^ (4 : ℕ) ≤
       fourthIncidence f₁ * fourthIncidence f₂ * fourthIncidence f₃ * fourthIncidence f₄ := by
-  let S₁₂ : ℝ := ∑ u, corr f₁ f₂ u ^ 2
-  let S₃₄ : ℝ := ∑ u, corr f₃ f₄ u ^ 2
-  have hcross : crossIncidence f₁ f₂ f₃ f₄ ^ 2 ≤ S₁₂ * S₃₄ := by
+  let S₁₂ : ℝ := ∑ u, corr f₁ f₂ u ^ (2 : ℕ)
+  let S₃₄ : ℝ := ∑ u, corr f₃ f₄ u ^ (2 : ℕ)
+  have hcross : crossIncidence f₁ f₂ f₃ f₄ ^ (2 : ℕ) ≤ S₁₂ * S₃₄ := by
     simpa only [crossIncidence, S₁₂, S₃₄] using
       (Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset G)
         (fun u => corr f₁ f₂ u) (fun u => corr f₃ f₄ u))
-  have hS₁₂ : S₁₂ ^ 2 ≤ fourthIncidence f₁ * fourthIncidence f₂ := by
+  have hS₁₂ : S₁₂ ^ (2 : ℕ) ≤ fourthIncidence f₁ * fourthIncidence f₂ := by
     simpa only [S₁₂] using corr_normSq_sq_le f₁ f₂
-  have hS₃₄ : S₃₄ ^ 2 ≤ fourthIncidence f₃ * fourthIncidence f₄ := by
+  have hS₃₄ : S₃₄ ^ (2 : ℕ) ≤ fourthIncidence f₃ * fourthIncidence f₄ := by
     simpa only [S₃₄] using corr_normSq_sq_le f₃ f₄
   have hS₁₂0 : 0 ≤ S₁₂ := by dsimp [S₁₂]; positivity
   have hS₃₄0 : 0 ≤ S₃₄ := by dsimp [S₃₄]; positivity
   calc
-    crossIncidence f₁ f₂ f₃ f₄ ^ 4 = (crossIncidence f₁ f₂ f₃ f₄ ^ 2) ^ 2 := by ring
-    _ ≤ (S₁₂ * S₃₄) ^ 2 := pow_le_pow_left₀ (sq_nonneg _) hcross 2
-    _ = S₁₂ ^ 2 * S₃₄ ^ 2 := by ring
+    crossIncidence f₁ f₂ f₃ f₄ ^ (4 : ℕ) = (crossIncidence f₁ f₂ f₃ f₄ ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+    _ ≤ (S₁₂ * S₃₄) ^ (2 : ℕ) := pow_le_pow_left₀ (sq_nonneg _) hcross 2
+    _ = S₁₂ ^ (2 : ℕ) * S₃₄ ^ (2 : ℕ) := by ring
     _ ≤ (fourthIncidence f₁ * fourthIncidence f₂) *
         (fourthIncidence f₃ * fourthIncidence f₄) :=
       mul_le_mul hS₁₂ hS₃₄ (sq_nonneg S₃₄)
@@ -126,30 +126,30 @@ theorem crossIncidence_le_of_fourth_bounds {f₁ f₂ f₃ f₄ : G → ℝ}
     (h₁ : ∀ x, 0 ≤ f₁ x) (h₂ : ∀ x, 0 ≤ f₂ x)
     (h₃ : ∀ x, 0 ≤ f₃ x) (h₄ : ∀ x, 0 ≤ f₄ x)
     (hA₁ : 0 ≤ A₁) (hA₂ : 0 ≤ A₂) (hA₃ : 0 ≤ A₃) (hA₄ : 0 ≤ A₄)
-    (hb₁ : fourthIncidence f₁ ≤ A₁ ^ 4)
-    (hb₂ : fourthIncidence f₂ ≤ A₂ ^ 4)
-    (hb₃ : fourthIncidence f₃ ≤ A₃ ^ 4)
-    (hb₄ : fourthIncidence f₄ ≤ A₄ ^ 4) :
+    (hb₁ : fourthIncidence f₁ ≤ A₁ ^ (4 : ℕ))
+    (hb₂ : fourthIncidence f₂ ≤ A₂ ^ (4 : ℕ))
+    (hb₃ : fourthIncidence f₃ ≤ A₃ ^ (4 : ℕ))
+    (hb₄ : fourthIncidence f₄ ≤ A₄ ^ (4 : ℕ)) :
     crossIncidence f₁ f₂ f₃ f₄ ≤ A₁ * A₂ * A₃ * A₄ := by
   have hcross0 := crossIncidence_nonneg h₁ h₂ h₃ h₄
-  have h12 : fourthIncidence f₁ * fourthIncidence f₂ ≤ A₁ ^ 4 * A₂ ^ 4 :=
+  have h12 : fourthIncidence f₁ * fourthIncidence f₂ ≤ A₁ ^ (4 : ℕ) * A₂ ^ (4 : ℕ) :=
     mul_le_mul hb₁ hb₂ (fourthIncidence_nonneg f₂) (pow_nonneg hA₁ 4)
   have h123 : fourthIncidence f₁ * fourthIncidence f₂ * fourthIncidence f₃ ≤
-      A₁ ^ 4 * A₂ ^ 4 * A₃ ^ 4 :=
+      A₁ ^ (4 : ℕ) * A₂ ^ (4 : ℕ) * A₃ ^ (4 : ℕ) :=
     mul_le_mul h12 hb₃ (fourthIncidence_nonneg f₃)
       (mul_nonneg (pow_nonneg hA₁ 4) (pow_nonneg hA₂ 4))
   have h1234 : fourthIncidence f₁ * fourthIncidence f₂ * fourthIncidence f₃ *
-      fourthIncidence f₄ ≤ A₁ ^ 4 * A₂ ^ 4 * A₃ ^ 4 * A₄ ^ 4 :=
+      fourthIncidence f₄ ≤ A₁ ^ (4 : ℕ) * A₂ ^ (4 : ℕ) * A₃ ^ (4 : ℕ) * A₄ ^ (4 : ℕ) :=
     mul_le_mul h123 hb₄ (fourthIncidence_nonneg f₄)
       (mul_nonneg (mul_nonneg (pow_nonneg hA₁ 4) (pow_nonneg hA₂ 4)) (pow_nonneg hA₃ 4))
   apply le_of_pow_le_pow_left₀ (n := 4) (by norm_num)
     (mul_nonneg (mul_nonneg (mul_nonneg hA₁ hA₂) hA₃) hA₄)
   calc
-    crossIncidence f₁ f₂ f₃ f₄ ^ 4 ≤
+    crossIncidence f₁ f₂ f₃ f₄ ^ (4 : ℕ) ≤
         fourthIncidence f₁ * fourthIncidence f₂ * fourthIncidence f₃ * fourthIncidence f₄ :=
       crossIncidence_pow_four_le f₁ f₂ f₃ f₄
-    _ ≤ A₁ ^ 4 * A₂ ^ 4 * A₃ ^ 4 * A₄ ^ 4 := h1234
-    _ = (A₁ * A₂ * A₃ * A₄) ^ 4 := by ring
+    _ ≤ A₁ ^ (4 : ℕ) * A₂ ^ (4 : ℕ) * A₃ ^ (4 : ℕ) * A₄ ^ (4 : ℕ) := h1234
+    _ = (A₁ * A₂ * A₃ * A₄) ^ (4 : ℕ) := by ring
 
 section Tensor
 
@@ -167,7 +167,7 @@ theorem corr_product (F : A × G → ℝ) (u : A × G) :
 
 theorem fourthIncidence_product_le {F : A × G → ℝ} {B : A → ℝ}
     (hF : ∀ z, 0 ≤ F z) (hB : ∀ a, 0 ≤ B a)
-    (hbound : ∀ a, fourthIncidence (fiber F a) ≤ B a ^ 4) :
+    (hbound : ∀ a, fourthIncidence (fiber F a) ≤ B a ^ (4 : ℕ)) :
     fourthIncidence F ≤ fourthIncidence B := by
   classical
   have hBexpand : fourthIncidence B =
@@ -215,10 +215,10 @@ abbrev QubitLabel := Fin 2 × Fin 2
 theorem qubitLabel_fourthIncidence_le (B : QubitLabel → ℝ)
     (hB : ∀ a, 0 ≤ B a) :
     fourthIncidence B ≤
-      B (0, 0) ^ 4 +
-        6 * B (0, 0) ^ 2 * (B (1, 0) + B (0, 1) + B (1, 1)) ^ 2 +
-        4 * B (0, 0) * (B (1, 0) + B (0, 1) + B (1, 1)) ^ 3 +
-        (B (1, 0) + B (0, 1) + B (1, 1)) ^ 4 := by
+      B (0, 0) ^ (4 : ℕ) +
+        6 * B (0, 0) ^ (2 : ℕ) * (B (1, 0) + B (0, 1) + B (1, 1)) ^ (2 : ℕ) +
+        4 * B (0, 0) * (B (1, 0) + B (0, 1) + B (1, 1)) ^ (3 : ℕ) +
+        (B (1, 0) + B (0, 1) + B (1, 1)) ^ (4 : ℕ) := by
   simp only [fourthIncidence, corr, Fintype.sum_prod_type, Fin.sum_univ_two]
   norm_num [Fin.add_def]
   ring_nf
@@ -233,36 +233,36 @@ theorem qubitLabel_fourthIncidence_le (B : QubitLabel → ℝ)
 theorem quartic_missing_linear_absorption {A B C X Y : ℝ}
     (hC : 0 ≤ C) (hX : 0 ≤ X) (hY : 0 ≤ Y)
     (hA : A = C * X) (hB0 : 0 ≤ B) (hB : B ≤ C * Y / 3) :
-    A ^ 4 + 6 * A ^ 2 * B ^ 2 + 4 * A * B ^ 3 + B ^ 4 ≤
-      (C * Real.sqrt (X ^ 2 + Y ^ 2)) ^ 4 := by
+    A ^ (4 : ℕ) + 6 * A ^ (2 : ℕ) * B ^ (2 : ℕ) + 4 * A * B ^ (3 : ℕ) + B ^ (4 : ℕ) ≤
+      (C * Real.sqrt (X ^ (2 : ℕ) + Y ^ (2 : ℕ))) ^ (4 : ℕ) := by
   subst A
   have hCY : 0 ≤ C * Y / 3 := by positivity
-  have hB2 : B ^ 2 ≤ (C * Y / 3) ^ 2 := pow_le_pow_left₀ hB0 hB 2
-  have hB3 : B ^ 3 ≤ (C * Y / 3) ^ 3 := pow_le_pow_left₀ hB0 hB 3
-  have hB4 : B ^ 4 ≤ (C * Y / 3) ^ 4 := pow_le_pow_left₀ hB0 hB 4
+  have hB2 : B ^ (2 : ℕ) ≤ (C * Y / 3) ^ (2 : ℕ) := pow_le_pow_left₀ hB0 hB 2
+  have hB3 : B ^ (3 : ℕ) ≤ (C * Y / 3) ^ (3 : ℕ) := pow_le_pow_left₀ hB0 hB 3
+  have hB4 : B ^ (4 : ℕ) ≤ (C * Y / 3) ^ (4 : ℕ) := pow_le_pow_left₀ hB0 hB 4
   have hpoly :
-      (C * X) ^ 4 + 6 * (C * X) ^ 2 * B ^ 2 + 4 * (C * X) * B ^ 3 + B ^ 4 ≤
-        (C * X) ^ 4 + 6 * (C * X) ^ 2 * (C * Y / 3) ^ 2 +
-          4 * (C * X) * (C * Y / 3) ^ 3 + (C * Y / 3) ^ 4 := by
+      (C * X) ^ (4 : ℕ) + 6 * (C * X) ^ (2 : ℕ) * B ^ (2 : ℕ) + 4 * (C * X) * B ^ (3 : ℕ) + B ^ (4 : ℕ) ≤
+        (C * X) ^ (4 : ℕ) + 6 * (C * X) ^ (2 : ℕ) * (C * Y / 3) ^ (2 : ℕ) +
+          4 * (C * X) * (C * Y / 3) ^ (3 : ℕ) + (C * Y / 3) ^ (4 : ℕ) := by
     gcongr
-  have hXY : 2 * X * Y ≤ X ^ 2 + Y ^ 2 := by nlinarith [sq_nonneg (X - Y)]
-  have hXYscaled : 2 * X * Y * Y ^ 2 ≤ (X ^ 2 + Y ^ 2) * Y ^ 2 :=
+  have hXY : 2 * X * Y ≤ X ^ (2 : ℕ) + Y ^ (2 : ℕ) := by nlinarith [sq_nonneg (X - Y)]
+  have hXYscaled : 2 * X * Y * Y ^ (2 : ℕ) ≤ (X ^ (2 : ℕ) + Y ^ (2 : ℕ)) * Y ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_right hXY (sq_nonneg Y)
   have hcore :
-      X ^ 4 + 6 * X ^ 2 * (Y / 3) ^ 2 + 4 * X * (Y / 3) ^ 3 + (Y / 3) ^ 4 ≤
-        (X ^ 2 + Y ^ 2) ^ 2 := by
-    nlinarith [sq_nonneg (X * Y), sq_nonneg (Y ^ 2), hXYscaled]
-  have hsum : 0 ≤ X ^ 2 + Y ^ 2 := by positivity
-  have hsqrt : Real.sqrt (X ^ 2 + Y ^ 2) ^ 2 = X ^ 2 + Y ^ 2 :=
+      X ^ (4 : ℕ) + 6 * X ^ (2 : ℕ) * (Y / 3) ^ (2 : ℕ) + 4 * X * (Y / 3) ^ (3 : ℕ) + (Y / 3) ^ (4 : ℕ) ≤
+        (X ^ (2 : ℕ) + Y ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    nlinarith [sq_nonneg (X * Y), sq_nonneg (Y ^ (2 : ℕ)), hXYscaled]
+  have hsum : 0 ≤ X ^ (2 : ℕ) + Y ^ (2 : ℕ) := by positivity
+  have hsqrt : Real.sqrt (X ^ (2 : ℕ) + Y ^ (2 : ℕ)) ^ (2 : ℕ) = X ^ (2 : ℕ) + Y ^ (2 : ℕ) :=
     Real.sq_sqrt hsum
   calc
-    (C * X) ^ 4 + 6 * (C * X) ^ 2 * B ^ 2 + 4 * (C * X) * B ^ 3 + B ^ 4 ≤ _ := hpoly
-    _ = C ^ 4 *
-        (X ^ 4 + 6 * X ^ 2 * (Y / 3) ^ 2 + 4 * X * (Y / 3) ^ 3 + (Y / 3) ^ 4) := by ring
-    _ ≤ C ^ 4 * (X ^ 2 + Y ^ 2) ^ 2 :=
+    (C * X) ^ (4 : ℕ) + 6 * (C * X) ^ (2 : ℕ) * B ^ (2 : ℕ) + 4 * (C * X) * B ^ (3 : ℕ) + B ^ (4 : ℕ) ≤ _ := hpoly
+    _ = C ^ (4 : ℕ) *
+        (X ^ (4 : ℕ) + 6 * X ^ (2 : ℕ) * (Y / 3) ^ (2 : ℕ) + 4 * X * (Y / 3) ^ (3 : ℕ) + (Y / 3) ^ (4 : ℕ)) := by ring
+    _ ≤ C ^ (4 : ℕ) * (X ^ (2 : ℕ) + Y ^ (2 : ℕ)) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hcore (pow_nonneg hC 4)
-    _ = C ^ 4 * (Real.sqrt (X ^ 2 + Y ^ 2) ^ 2) ^ 2 := by rw [hsqrt]
-    _ = (C * Real.sqrt (X ^ 2 + Y ^ 2)) ^ 4 := by ring
+    _ = C ^ (4 : ℕ) * (Real.sqrt (X ^ (2 : ℕ) + Y ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ) := by rw [hsqrt]
+    _ = (C * Real.sqrt (X ^ (2 : ℕ) + Y ^ (2 : ℕ))) ^ (4 : ℕ) := by ring
 
 theorem corr_comp_addEquiv {K : Type*} [Fintype K] [AddCommGroup K]
     (e : K ≃+ G) (f g : G → ℝ) (u : K) :
@@ -279,7 +279,7 @@ theorem fourthIncidence_comp_addEquiv {K : Type*} [Fintype K] [AddCommGroup K]
   classical
   unfold fourthIncidence
   simp_rw [corr_comp_addEquiv e f f]
-  exact Equiv.sum_comp e.toEquiv (fun u => corr f f u ^ 2)
+  exact Equiv.sum_comp e.toEquiv (fun u => corr f f u ^ (2 : ℕ))
 
 abbrev QubitCube (n : ℕ) := Fin n → QubitLabel
 
@@ -310,7 +310,7 @@ theorem one_le_cubeWeight_of_ne_zero {n : ℕ} {s : QubitCube n} (hs : s ≠ 0) 
   simpa [hi0] using hle
 
 noncomputable def cubeEnergy {n : ℕ} (c : QubitCube n → ℝ) : ℝ :=
-  ∑ s, c s ^ 2
+  ∑ s, c s ^ (2 : ℕ)
 
 theorem cubeEnergy_nonneg {n : ℕ} (c : QubitCube n → ℝ) : 0 ≤ cubeEnergy c := by
   unfold cubeEnergy
@@ -320,13 +320,13 @@ theorem cubeEnergy_succ_fibers {n : ℕ} (c : QubitCube (n + 1) → ℝ) :
     cubeEnergy c = ∑ a : QubitLabel, cubeEnergy (fun s => c (Fin.cons a s)) := by
   classical
   unfold cubeEnergy
-  rw [← Equiv.sum_comp (qubitCubeSuccAddEquiv n).toEquiv (fun s => c s ^ 2)]
+  rw [← Equiv.sum_comp (qubitCubeSuccAddEquiv n).toEquiv (fun s => c s ^ (2 : ℕ))]
   rw [Fintype.sum_prod_type]
   rfl
 
 theorem corr_eq_ite_of_supported_zero [DecidableEq G] (f : G → ℝ)
     (hf : ∀ x, x ≠ 0 → f x = 0) (u : G) :
-    corr f f u = if u = 0 then f 0 ^ 2 else 0 := by
+    corr f f u = if u = 0 then f 0 ^ (2 : ℕ) else 0 := by
   classical
   by_cases hu : u = 0
   · subst u
@@ -348,7 +348,7 @@ theorem corr_eq_ite_of_supported_zero [DecidableEq G] (f : G → ℝ)
 
 theorem fourthIncidence_eq_pow_four_of_supported_zero [DecidableEq G] (f : G → ℝ)
     (hf : ∀ x, x ≠ 0 → f x = 0) :
-    fourthIncidence f = f 0 ^ 4 := by
+    fourthIncidence f = f 0 ^ (4 : ℕ) := by
   classical
   unfold fourthIncidence
   simp_rw [corr_eq_ite_of_supported_zero f hf]
@@ -361,7 +361,7 @@ theorem fourthIncidence_eq_pow_four_of_supported_zero [DecidableEq G] (f : G →
 
 theorem cubeEnergy_eq_sq_of_supported_zero {n : ℕ} (c : QubitCube n → ℝ)
     (hc : ∀ s, s ≠ 0 → c s = 0) :
-    cubeEnergy c = c 0 ^ 2 := by
+    cubeEnergy c = c 0 ^ (2 : ℕ) := by
   classical
   unfold cubeEnergy
   exact Finset.sum_eq_single 0
@@ -371,7 +371,7 @@ theorem cubeEnergy_eq_sq_of_supported_zero {n : ℕ} (c : QubitCube n → ℝ)
 theorem cube_fourth_degree_zero {n : ℕ} (c : QubitCube n → ℝ)
     (hc : ∀ s, 0 ≤ c s)
     (hdegree : ∀ s, c s ≠ 0 → cubeWeight s ≤ 0) :
-    fourthIncidence c ≤ (Real.sqrt (cubeEnergy c)) ^ 4 := by
+    fourthIncidence c ≤ (Real.sqrt (cubeEnergy c)) ^ (4 : ℕ) := by
   have hsupp : ∀ s, s ≠ 0 → c s = 0 := by
     intro s hs
     by_contra hcs
@@ -385,11 +385,11 @@ theorem cube_fourth_degree_zero {n : ℕ} (c : QubitCube n → ℝ)
 theorem cube_fourth_succ_step {n q : ℕ} (c : QubitCube (n + 1) → ℝ)
     (hc : ∀ s, 0 ≤ c s)
     (hzero : fourthIncidence (fun s : QubitCube n => c (Fin.cons 0 s)) ≤
-      (9 ^ (q + 1) * Real.sqrt (cubeEnergy (fun s : QubitCube n => c (Fin.cons 0 s)))) ^ 4)
+      (9 ^ (q + 1) * Real.sqrt (cubeEnergy (fun s : QubitCube n => c (Fin.cons 0 s)))) ^ (4 : ℕ))
     (htail : ∀ a : QubitLabel, a ≠ 0 →
       fourthIncidence (fun s : QubitCube n => c (Fin.cons a s)) ≤
-        (9 ^ q * Real.sqrt (cubeEnergy (fun s : QubitCube n => c (Fin.cons a s)))) ^ 4) :
-    fourthIncidence c ≤ (9 ^ (q + 1) * Real.sqrt (cubeEnergy c)) ^ 4 := by
+        (9 ^ q * Real.sqrt (cubeEnergy (fun s : QubitCube n => c (Fin.cons a s)))) ^ (4 : ℕ)) :
+    fourthIncidence c ≤ (9 ^ (q + 1) * Real.sqrt (cubeEnergy c)) ^ (4 : ℕ) := by
   classical
   let e := qubitCubeSuccAddEquiv n
   let F : QubitLabel × QubitCube n → ℝ := c ∘ e
@@ -404,7 +404,7 @@ theorem cube_fourth_succ_step {n q : ℕ} (c : QubitCube (n + 1) → ℝ)
   have hfiber (a : QubitLabel) :
       fiber F a = fun s : QubitCube n => c (Fin.cons a s) := by
     rfl
-  have hBbound (a : QubitLabel) : fourthIncidence (fiber F a) ≤ B a ^ 4 := by
+  have hBbound (a : QubitLabel) : fourthIncidence (fiber F a) ≤ B a ^ (4 : ℕ) := by
     rw [hfiber]
     by_cases ha : a = 0
     · subst a
@@ -454,20 +454,20 @@ theorem cube_fourth_succ_step {n q : ℕ} (c : QubitCube (n + 1) → ℝ)
     simp only [Fintype.sum_prod_type, Fin.sum_univ_two]
     change (E0 + E2) + (E1 + E3) = E0 + (E1 + E2 + E3)
     ring
-  have hXY : X ^ 2 + Y ^ 2 = cubeEnergy c := by
+  have hXY : X ^ (2 : ℕ) + Y ^ (2 : ℕ) = cubeEnergy c := by
     dsimp [X, Y]
     rw [Real.sq_sqrt hE0, Real.sq_sqrt htailE, henergy]
   calc
     fourthIncidence c ≤ fourthIncidence B := hproduct
-    _ ≤ B (0, 0) ^ 4 + 6 * B (0, 0) ^ 2 * T ^ 2 +
-        4 * B (0, 0) * T ^ 3 + T ^ 4 := hqubit
-    _ ≤ (C * Real.sqrt (X ^ 2 + Y ^ 2)) ^ 4 := habsorb
-    _ = (9 ^ (q + 1) * Real.sqrt (cubeEnergy c)) ^ 4 := by rw [hXY]
+    _ ≤ B (0, 0) ^ (4 : ℕ) + 6 * B (0, 0) ^ (2 : ℕ) * T ^ (2 : ℕ) +
+        4 * B (0, 0) * T ^ (3 : ℕ) + T ^ (4 : ℕ) := hqubit
+    _ ≤ (C * Real.sqrt (X ^ (2 : ℕ) + Y ^ (2 : ℕ))) ^ (4 : ℕ) := habsorb
+    _ = (9 ^ (q + 1) * Real.sqrt (cubeEnergy c)) ^ (4 : ℕ) := by rw [hXY]
 
 theorem cube_fourth_hypercontractive : ∀ (n q : ℕ) (c : QubitCube n → ℝ),
     (∀ s, 0 ≤ c s) →
     (∀ s, c s ≠ 0 → cubeWeight s ≤ q) →
-    fourthIncidence c ≤ (9 ^ q * Real.sqrt (cubeEnergy c)) ^ 4 := by
+    fourthIncidence c ≤ (9 ^ q * Real.sqrt (cubeEnergy c)) ^ (4 : ℕ) := by
   intro n
   induction n with
   | zero =>
@@ -667,7 +667,7 @@ theorem norm_phaseCorr_le_corr_abs {G : Type*} [Fintype G] [AddCommGroup G]
 theorem normSq_phaseCorr_le_corr_abs_sq {G : Type*} [Fintype G] [AddCommGroup G]
     (c : G → ℝ) (phase : G → ℂ) (hphase : ∀ x, ‖phase x‖ ≤ 1) (u : G) :
     Complex.normSq (phaseCorr c phase u) ≤
-      corr (fun x => |c x|) (fun x => |c x|) u ^ 2 := by
+      corr (fun x => |c x|) (fun x => |c x|) u ^ (2 : ℕ) := by
   rw [Complex.normSq_eq_norm_sq]
   exact pow_le_pow_left₀ (norm_nonneg _) (norm_phaseCorr_le_corr_abs c phase hphase u) 2
 
@@ -742,7 +742,7 @@ theorem pauliHamiltonian_isHermitian {n : ℕ} (c : QubitCube n → ℝ) :
 
 theorem trace_pauliHamiltonian_sq_re_eq {n : ℕ} (c : QubitCube n → ℝ) :
     (Matrix.trace (pauliHamiltonian c * pauliHamiltonian c)).re =
-      (2 ^ n : ℝ) * ∑ s, c s ^ 2 := by
+      (2 ^ n : ℝ) * ∑ s, c s ^ (2 : ℕ) := by
   have hH : Matrix.conjTranspose (pauliHamiltonian c) = pauliHamiltonian c :=
     pauliHamiltonian_isHermitian c
   calc
@@ -751,7 +751,7 @@ theorem trace_pauliHamiltonian_sq_re_eq {n : ℕ} (c : QubitCube n → ℝ) :
       rw [QuantumAlg.hsInner_def, hH]
     _ = ((2 ^ n : ℂ) * ∑ s, (Complex.normSq ((c s : ℝ) : ℂ) : ℂ)).re := by
       exact congrArg Complex.re (hsInner_pauli_sum_self (fun s => ((c s : ℝ) : ℂ)))
-    _ = (2 ^ n : ℝ) * ∑ s, c s ^ 2 := by
+    _ = (2 ^ n : ℝ) * ∑ s, c s ^ (2 : ℕ) := by
       have htwo : ∀ k : ℕ,
           ((2 ^ k : ℂ).re) = (2 ^ k : ℝ) ∧ ((2 ^ k : ℂ).im) = 0 := by
         intro k
@@ -783,7 +783,7 @@ theorem trace_pauliHamiltonian_four_re_le {n : ℕ} (c : QubitCube n → ℝ) :
 theorem trace_four_re_eq_sum_four_eigenvalues
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (H : Matrix ι ι ℂ) (hH : H.IsHermitian) :
-    (Matrix.trace ((H * H) * (H * H))).re = ∑ i, hH.eigenvalues i ^ 4 := by
+    (Matrix.trace ((H * H) * (H * H))).re = ∑ i, hH.eigenvalues i ^ (4 : ℕ) := by
   let K := hH.eigenvectorUnitary
   let D := Matrix.diagonal (fun i => (hH.eigenvalues i : ℂ))
   have hspec : H = (K : Matrix ι ι ℂ) * D * star (K : Matrix ι ι ℂ) :=
@@ -831,55 +831,55 @@ theorem trace_four_re_eq_sum_four_eigenvalues
 theorem pauliHamiltonian_eigenKurtosis_of_incidence {n q : ℕ}
     (c : QubitCube n → ℝ)
     (hinc : fourthIncidence (fun s => |c s|) ≤
-      (9 ^ q * Real.sqrt (∑ s, c s ^ 2)) ^ 4) :
+      (9 ^ q * Real.sqrt (∑ s, c s ^ (2 : ℕ))) ^ (4 : ℕ)) :
     (Fintype.card (Fin (2 ^ n)) : ℝ) *
-        (∑ i, (pauliHamiltonian_isHermitian c).eigenvalues i ^ 4) ≤
-      (9 ^ q : ℝ) ^ 4 *
-        (∑ i, (pauliHamiltonian_isHermitian c).eigenvalues i ^ 2) ^ 2 := by
+        (∑ i, (pauliHamiltonian_isHermitian c).eigenvalues i ^ (4 : ℕ)) ≤
+      (9 ^ q : ℝ) ^ (4 : ℕ) *
+        (∑ i, (pauliHamiltonian_isHermitian c).eigenvalues i ^ (2 : ℕ)) ^ (2 : ℕ) := by
   let H := pauliHamiltonian c
   let hH : H.IsHermitian := pauliHamiltonian_isHermitian c
-  let E : ℝ := ∑ s, c s ^ 2
+  let E : ℝ := ∑ s, c s ^ (2 : ℕ)
   let D : ℝ := (2 ^ n : ℝ)
   have hcard : (Fintype.card (Fin (2 ^ n)) : ℝ) = D := by simp [D]
   have hE : 0 ≤ E := by dsimp [E]; positivity
-  have hinc' : fourthIncidence (fun s => |c s|) ≤ (9 ^ q : ℝ) ^ 4 * E ^ 2 := by
+  have hinc' : fourthIncidence (fun s => |c s|) ≤ (9 ^ q : ℝ) ^ (4 : ℕ) * E ^ (2 : ℕ) := by
     calc
       fourthIncidence (fun s => |c s|) ≤
-          (9 ^ q * Real.sqrt E) ^ 4 := by simpa [E] using hinc
-      _ = (9 ^ q : ℝ) ^ 4 * E ^ 2 := by
+          (9 ^ q * Real.sqrt E) ^ (4 : ℕ) := by simpa [E] using hinc
+      _ = (9 ^ q : ℝ) ^ (4 : ℕ) * E ^ (2 : ℕ) := by
         rw [mul_pow]
-        have hsqrt : (Real.sqrt E) ^ 4 = E ^ 2 := by
+        have hsqrt : (Real.sqrt E) ^ (4 : ℕ) = E ^ (2 : ℕ) := by
           calc
-            (Real.sqrt E) ^ 4 = ((Real.sqrt E) ^ 2) ^ 2 := by ring
-            _ = E ^ 2 := by rw [Real.sq_sqrt hE]
+            (Real.sqrt E) ^ (4 : ℕ) = ((Real.sqrt E) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+            _ = E ^ (2 : ℕ) := by rw [Real.sq_sqrt hE]
         rw [hsqrt]
-  have hfour : (∑ i, hH.eigenvalues i ^ 4) ≤
+  have hfour : (∑ i, hH.eigenvalues i ^ (4 : ℕ)) ≤
       D * fourthIncidence (fun s => |c s|) := by
     have h := trace_pauliHamiltonian_four_re_le c
     rw [trace_four_re_eq_sum_four_eigenvalues H hH] at h
     simpa [H, hH, D] using h
-  have hsecond : (∑ i, hH.eigenvalues i ^ 2) = D * E := by
+  have hsecond : (∑ i, hH.eigenvalues i ^ (2 : ℕ)) = D * E := by
     rw [← trace_mul_self_re_eq_sum_sq_eigenvalues H hH]
     simpa [H, D, E] using trace_pauliHamiltonian_sq_re_eq c
   rw [hcard]
   calc
-    D * (∑ i, hH.eigenvalues i ^ 4) ≤
+    D * (∑ i, hH.eigenvalues i ^ (4 : ℕ)) ≤
         D * (D * fourthIncidence (fun s => |c s|)) :=
       mul_le_mul_of_nonneg_left hfour (by positivity)
-    _ ≤ D * (D * ((9 ^ q : ℝ) ^ 4 * E ^ 2)) :=
+    _ ≤ D * (D * ((9 ^ q : ℝ) ^ (4 : ℕ) * E ^ (2 : ℕ))) :=
       mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left hinc' (by positivity)) (by positivity)
-    _ = (9 ^ q : ℝ) ^ 4 * (D * E) ^ 2 := by ring
-    _ = (9 ^ q : ℝ) ^ 4 * (∑ i, hH.eigenvalues i ^ 2) ^ 2 := by rw [hsecond]
+    _ = (9 ^ q : ℝ) ^ (4 : ℕ) * (D * E) ^ (2 : ℕ) := by ring
+    _ = (9 ^ q : ℝ) ^ (4 : ℕ) * (∑ i, hH.eigenvalues i ^ (2 : ℕ)) ^ (2 : ℕ) := by rw [hsecond]
 
 /-- **Fixed-locality Pauli kurtosis law.** Every real Pauli Hamiltonian whose coefficients vanish
-above weight `q` has normalized spectral kurtosis at most `(9^q)^4`, independently of qubit count. -/
+above weight `q` has normalized spectral kurtosis at most `(9^q)^(4 : ℕ)`, independently of qubit count. -/
 theorem pauliHamiltonian_eigenKurtosis {n q : ℕ} (c : QubitCube n → ℝ)
     (hdegree : ∀ s, c s ≠ 0 → cubeWeight s ≤ q) :
     (Fintype.card (Fin (2 ^ n)) : ℝ) *
-        (∑ i, (pauliHamiltonian_isHermitian c).eigenvalues i ^ 4) ≤
-      (9 ^ q : ℝ) ^ 4 *
-        (∑ i, (pauliHamiltonian_isHermitian c).eigenvalues i ^ 2) ^ 2 := by
+        (∑ i, (pauliHamiltonian_isHermitian c).eigenvalues i ^ (4 : ℕ)) ≤
+      (9 ^ q : ℝ) ^ (4 : ℕ) *
+        (∑ i, (pauliHamiltonian_isHermitian c).eigenvalues i ^ (2 : ℕ)) ^ (2 : ℕ) := by
   apply pauliHamiltonian_eigenKurtosis_of_incidence c
   have hcube := cube_fourth_hypercontractive n q (fun s => |c s|)
     (fun s => abs_nonneg (c s))
@@ -893,19 +893,19 @@ theorem pauliHamiltonian_choiShortcut_commutatorEnergy_le_traceEnergy
     (T W : Matrix.unitaryGroup (Fin (2 ^ n)) ℂ)
     (hcomm : pauliHamiltonian c * (T : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ) =
       (T : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ) * pauliHamiltonian c)
-    (hfidelity : 16 * (9 ^ q : ℝ) ^ 4 *
-        ((Fintype.card (Fin (2 ^ n)) : ℝ) ^ 2 -
+    (hfidelity : 16 * (9 ^ q : ℝ) ^ (4 : ℕ) *
+        ((Fintype.card (Fin (2 ^ n)) : ℝ) ^ (2 : ℕ) -
           Complex.normSq (Matrix.trace
             (star (T : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ) *
               (W : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ)))) ≤
-        (Fintype.card (Fin (2 ^ n)) : ℝ) ^ 2) :
+        (Fintype.card (Fin (2 ^ n)) : ℝ) ^ (2 : ℕ)) :
     finiteMatrixHilbertSchmidtEnergy
         (pauliHamiltonian c * (W : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ) -
           (W : Matrix (Fin (2 ^ n)) (Fin (2 ^ n)) ℂ) * pauliHamiltonian c) ≤
       (Matrix.trace (pauliHamiltonian c * pauliHamiltonian c)).re := by
   exact finiteUnitary_choiShortcut_commutatorEnergy_le_traceEnergy_of_eigenKurtosis
     (pauliHamiltonian c) (pauliHamiltonian_isHermitian c) T W hcomm
-    ((9 ^ q : ℝ) ^ 4) (pauliHamiltonian_eigenKurtosis c hdegree) hfidelity
+    ((9 ^ q : ℝ) ^ (4 : ℕ)) (pauliHamiltonian_eigenKurtosis c hdegree) hfidelity
 
 end
 

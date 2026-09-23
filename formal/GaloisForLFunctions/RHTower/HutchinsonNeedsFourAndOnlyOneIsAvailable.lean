@@ -73,17 +73,17 @@ theorem hutchinsonCap_pos {n : ℝ} (hn : 1 < n) : 0 < hutchinsonCap n := by
 
 /-- **The cap tends to one.**  Asymptotically the factorial factor gives no help at all. -/
 theorem hutchinsonCap_tendsto_one : Tendsto hutchinsonCap atTop (𝓝 1) := by
-  have hnum : Tendsto (fun n : ℝ => 1 + 3 / n + 2 / n ^ 2) atTop (𝓝 1) := by
+  have hnum : Tendsto (fun n : ℝ => 1 + 3 / n + 2 / n ^ (2 : ℕ)) atTop (𝓝 1) := by
     have h1 : Tendsto (fun n : ℝ => (3 : ℝ) / n) atTop (𝓝 0) :=
       tendsto_const_nhds.div_atTop tendsto_id
-    have h2 : Tendsto (fun n : ℝ => (2 : ℝ) / n ^ 2) atTop (𝓝 0) :=
+    have h2 : Tendsto (fun n : ℝ => (2 : ℝ) / n ^ (2 : ℕ)) atTop (𝓝 0) :=
       tendsto_const_nhds.div_atTop (tendsto_pow_atTop (by norm_num))
     simpa using (tendsto_const_nhds.add h1).add h2
   have hden : Tendsto (fun n : ℝ => 1 - 1 / n) atTop (𝓝 1) := by
     have h1 : Tendsto (fun n : ℝ => (1 : ℝ) / n) atTop (𝓝 0) :=
       tendsto_const_nhds.div_atTop tendsto_id
     simpa using tendsto_const_nhds.sub h1
-  have hdiv : Tendsto (fun n : ℝ => (1 + 3 / n + 2 / n ^ 2) / (1 - 1 / n)) atTop (𝓝 1) := by
+  have hdiv : Tendsto (fun n : ℝ => (1 + 3 / n + 2 / n ^ (2 : ℕ)) / (1 - 1 / n)) atTop (𝓝 1) := by
     simpa using! hnum.div hden one_ne_zero
   refine hdiv.congr' ?_
   filter_upwards [eventually_ge_atTop (2 : ℝ)] with n hn

@@ -147,7 +147,7 @@ theorem qubitPath_everyChart_sameDraw_recurrenceCollisionLaw (k : ℕ)
     instNeZeroCardChainLabel k
   have hD4 : 4 ≤ 2 ^ (k + 3) := by
     calc
-      4 = 2 ^ 2 := by norm_num
+      4 = 2 ^ (2 : ℕ) := by norm_num
       _ ≤ 2 ^ (k + 3) := Nat.pow_le_pow_right (by omega) (by omega)
   have hDiscrete := ae_tendsto_log_firstHit_sortedGap
     (n := 2 ^ (k + 3) - 1)
@@ -219,7 +219,7 @@ theorem qubitPath_sameDraw_recurrenceCollisionLaw (k : ℕ) :
     instNeZeroCardChainLabel k
   have hD4 : 4 ≤ 2 ^ (k + 3) := by
     calc
-      4 = 2 ^ 2 := by norm_num
+      4 = 2 ^ (2 : ℕ) := by norm_num
       _ ≤ 2 ^ (k + 3) := Nat.pow_le_pow_right (by omega) (by omega)
   let hP := chainPauliFin_isHermitian (k + 3)
   have hAffine := chainPauliFin_spectrumEscapesAffineRelations k

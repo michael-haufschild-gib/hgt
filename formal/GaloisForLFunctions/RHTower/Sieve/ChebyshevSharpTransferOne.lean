@@ -19,16 +19,16 @@ open Filter Topology
 /-- The square root of four times a logarithm. -/
 theorem sqrt_four_mul_log (x : ℝ) :
     Real.sqrt (4 * Real.log x) = 2 * Real.sqrt (Real.log x) := by
-  rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_mul (by positivity),
+  rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_mul (by positivity),
     Real.sqrt_sq (by norm_num)]
 
 /-- **The shift at most doubles the square root.** -/
 theorem sqrt_log_shift_le {N : ℝ} (hN3 : 3 ≤ N) (hlogN : 0 ≤ Real.log N)
     (hHN : chebWidthOne N ≤ N) :
     Real.sqrt (Real.log (N + chebWidthOne N + 1)) ≤ 2 * Real.sqrt (Real.log N) := by
-  have hZN2 : N + chebWidthOne N + 1 ≤ N ^ 2 := by nlinarith [hHN, hN3]
+  have hZN2 : N + chebWidthOne N + 1 ≤ N ^ (2 : ℕ) := by nlinarith [hHN, hN3]
   have hlogZ2 : Real.log (N + chebWidthOne N + 1) ≤ 2 * Real.log N := by
-    have h1 : Real.log (N + chebWidthOne N + 1) ≤ Real.log (N ^ 2) :=
+    have h1 : Real.log (N + chebWidthOne N + 1) ≤ Real.log (N ^ (2 : ℕ)) :=
       Real.log_le_log (by linarith [chebWidthOne_nonneg (show (0:ℝ) ≤ N by linarith)]) hZN2
     rw [Real.log_pow] at h1
     push_cast at h1
@@ -40,7 +40,7 @@ theorem sqrt_log_shift_le {N : ℝ} (hN3 : 3 ≤ N) (hlogN : 0 ≤ Real.log N)
 /-- **The cost of the sharp transfer, against the contour's shape.** -/
 theorem cheb_sharp_transfer_cost_le {N : ℝ} (hN3 : 3 ≤ N) (hlogN : 16 ≤ Real.log N) :
     (chebWidthOne N + 1) * Real.log (N + chebWidthOne N)
-      ≤ 2 * (Real.sqrt (Real.log (N + chebWidthOne N + 1)) ^ 2
+      ≤ 2 * (Real.sqrt (Real.log (N + chebWidthOne N + 1)) ^ (2 : ℕ)
           * ((N + chebWidthOne N + 1)
               * Real.exp (-(Real.sqrt (Real.log (N + chebWidthOne N + 1)) / 480000)))) := by
   have hN0 : (0 : ℝ) < N := by linarith
@@ -50,7 +50,7 @@ theorem cheb_sharp_transfer_cost_le {N : ℝ} (hN3 : 3 ≤ N) (hlogN : 16 ≤ Re
   have hlogZ : (16 : ℝ) ≤ Real.log (N + chebWidthOne N + 1) :=
     le_trans hlogN (Real.log_le_log hN0 (by linarith))
   have hsq : Real.log (N + chebWidthOne N + 1)
-      = Real.sqrt (Real.log (N + chebWidthOne N + 1)) ^ 2 :=
+      = Real.sqrt (Real.log (N + chebWidthOne N + 1)) ^ (2 : ℕ) :=
     (Real.sq_sqrt (by linarith)).symm
   have hs4 : (4 : ℝ) ≤ Real.sqrt (Real.log (N + chebWidthOne N + 1)) := four_le_sqrt_log hlogZ
   -- the window is below the shape
@@ -84,7 +84,7 @@ theorem cheb_sharp_transfer_cost_le {N : ℝ} (hN3 : 3 ≤ N) (hlogN : 16 ≤ Re
           rw [Real.exp_sub, Real.exp_log hZ0, Real.exp_neg, div_eq_mul_inv]
   -- the logarithm is the polynomial factor
   have hlogle : Real.log (N + chebWidthOne N)
-      ≤ Real.sqrt (Real.log (N + chebWidthOne N + 1)) ^ 2 := by
+      ≤ Real.sqrt (Real.log (N + chebWidthOne N + 1)) ^ (2 : ℕ) := by
     rw [← hsq]
     exact Real.log_le_log (by linarith) (by linarith)
   have hlog0 : (0 : ℝ) ≤ Real.log (N + chebWidthOne N) := Real.log_nonneg (by linarith)

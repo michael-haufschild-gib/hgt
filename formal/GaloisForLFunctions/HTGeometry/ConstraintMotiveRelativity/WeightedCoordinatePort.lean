@@ -156,7 +156,7 @@ theorem inner_portEmb_portWitness_portBasis (F : Finset J) (z : Y) {k : J} (hk :
 /-- **The Gram operator of a weighted coordinate stage.** -/
 theorem portGram_portStage (F : Finset J) (z : Y) :
     portGram (weightedPort dir wt) (portStage (J := J) F) (portStage_le dir wt F) z
-      = ∑ j ∈ F, ((wt j) ^ 2 * ⟪dir j, z⟫) • dir j := by
+      = ∑ j ∈ F, ((wt j) ^ (2 : ℕ) * ⟪dir j, z⟫) • dir j := by
   set uv : PortCoord J := portEmb (J := J) (portWitness dir wt F z) with huv
   set u : (weightedPort dir wt).domain := ⟨uv, ⟨portWitness dir wt F z, rfl⟩⟩ with hu
   have humem : ((u : (weightedPort dir wt).domain) : PortCoord J) ∈ portStage (J := J) F :=

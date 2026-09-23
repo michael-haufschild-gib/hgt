@@ -31,7 +31,7 @@ theorem card_sign_window_ge_block {y hy : ℝ} {X H M₀ Q m K : ℕ} {σ : ℤ}
         ((((bigPrimeSet M₀ (Q * M₀)).filter
           (fun p => p + d ∈ bigPrimeSet M₀ (Q * M₀))).card : ℕ) : ℝ) ≤ Pi)
     (hbthr : (((badStart y hy).card : ℕ) : ℝ)
-      * ((((bigPrimeSet M₀ (Q * M₀)).card : ℕ) : ℝ) + 2 * Pi) ≤ b ^ 2) (hb0 : 0 ≤ b)
+      * ((((bigPrimeSet M₀ (Q * M₀)).card : ℕ) : ℝ) + 2 * Pi) ≤ b ^ (2 : ℕ)) (hb0 : 0 ≤ b)
     (hS : S ≤ (∑ p ∈ bigPrimeSet M₀ (Q * M₀), 1 / (p : ℝ)) - b / (M₀ : ℝ))
     (hB : (((bigPrimeSet M₀ (Q * M₀)).card : ℕ) : ℝ) ≤ B) :
     rho * ((H : ℝ) * S - B)

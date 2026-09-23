@@ -30,14 +30,14 @@ def scalar (u : ℂ) : D4BMHorizon.Field :=
 def vector (u : ℂ) : D4BMHorizon.Covector := D4BMHorizon.coexact (scalar u)
 
 /-- Scalar eigenvalue in the sign convention `Delta S = -q S`. -/
-def scalarQ (u : ℂ) : ℂ := 1 / 4 - u ^ 2
+def scalarQ (u : ℂ) : ℂ := 1 / 4 - u ^ (2 : ℕ)
 
 /-- Radial square-root parameter matched to the actual cusp equation. -/
 def radialMomentum (u : ℂ) : ℂ := -Complex.I * u
 
 /-- The radial effective parameter is the derived scalar eigenvalue. -/
 theorem scalarQ_eq_radialMomentum (u : ℂ) :
-    scalarQ u = 1 / 4 + radialMomentum u ^ 2 := by
+    scalarQ u = 1 / 4 + radialMomentum u ^ (2 : ℕ) := by
   simp [scalarQ, radialMomentum, mul_pow, Complex.I_sq, sub_eq_add_neg]
 
 /-- Every finite scalar spatial jet is supplied by the literal infinite series. -/

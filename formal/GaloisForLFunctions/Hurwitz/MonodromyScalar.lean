@@ -48,7 +48,7 @@ theorem monoScalar_eq_one_iff (s : ℂ) : monoScalar s = 1 ↔ ∃ m : ℤ, s = 
     exact ⟨-m, by push_cast; ring⟩
 
 /-- **`q² = 1 ⟺ 2s ∈ ℤ`.** -/
-theorem monoScalar_sq_eq_one_iff (s : ℂ) : (monoScalar s) ^ 2 = 1 ↔ ∃ m : ℤ, 2 * s = (m : ℂ) := by
+theorem monoScalar_sq_eq_one_iff (s : ℂ) : (monoScalar s) ^ (2 : ℕ) = 1 ↔ ∃ m : ℤ, 2 * s = (m : ℂ) := by
   rw [monoScalar, ← Complex.exp_nat_mul, Complex.exp_eq_one_iff]
   constructor
   · rintro ⟨n, hn⟩
@@ -67,15 +67,15 @@ theorem monoScalar_sq_eq_one_iff (s : ℂ) : (monoScalar s) ^ 2 = 1 ↔ ∃ m : 
 `orbit_eq_zero_of_three_distinct` to kill a degree-≤2 orbit polynomial outright. -/
 theorem monoScalar_three_distinct {s : ℂ} (hs : ∀ m : ℤ, s ≠ (m : ℂ))
     (h2s : ∀ m : ℤ, 2 * s ≠ (m : ℂ)) :
-    (1 : ℂ) ≠ monoScalar s ∧ (1 : ℂ) ≠ (monoScalar s) ^ 2 ∧
-      monoScalar s ≠ (monoScalar s) ^ 2 := by
+    (1 : ℂ) ≠ monoScalar s ∧ (1 : ℂ) ≠ (monoScalar s) ^ (2 : ℕ) ∧
+      monoScalar s ≠ (monoScalar s) ^ (2 : ℕ) := by
   have hq1 : monoScalar s ≠ 1 := fun h => by obtain ⟨m, hm⟩ := (monoScalar_eq_one_iff s).mp h; exact hs m hm
-  have hq21 : (monoScalar s) ^ 2 ≠ 1 := fun h => by
+  have hq21 : (monoScalar s) ^ (2 : ℕ) ≠ 1 := fun h => by
     obtain ⟨m, hm⟩ := (monoScalar_sq_eq_one_iff s).mp h; exact h2s m hm
   refine ⟨fun h => hq1 h.symm, fun h => hq21 h.symm, ?_⟩
   intro h
   -- q = q² ⟹ q(q-1)=0 ⟹ q=1 (q≠0), contradiction
-  have : monoScalar s * (monoScalar s - 1) = 0 := by linear_combination -h + (by ring : (monoScalar s)^2 - monoScalar s = monoScalar s * (monoScalar s - 1))
+  have : monoScalar s * (monoScalar s - 1) = 0 := by linear_combination -h + (by ring : (monoScalar s)^(2 : ℕ) - monoScalar s = monoScalar s * (monoScalar s - 1))
   rcases mul_eq_zero.mp this with h0 | h1
   · exact monoScalar_ne_zero s h0
   · exact hq1 (by linear_combination h1)
@@ -85,7 +85,7 @@ theorem monoScalar_three_distinct {s : ℂ} (hs : ∀ m : ℤ, s ≠ (m : ℂ))
 theorem monoScalar_eq_neg_one {s : ℂ} (hs : ∀ m : ℤ, s ≠ (m : ℂ))
     (h2s : ∃ m : ℤ, 2 * s = (m : ℂ)) : monoScalar s = -1 := by
   have hq1 : monoScalar s ≠ 1 := fun h => by obtain ⟨m, hm⟩ := (monoScalar_eq_one_iff s).mp h; exact hs m hm
-  have hq2 : (monoScalar s) ^ 2 = 1 := (monoScalar_sq_eq_one_iff s).mpr h2s
+  have hq2 : (monoScalar s) ^ (2 : ℕ) = 1 := (monoScalar_sq_eq_one_iff s).mpr h2s
   -- (q-1)(q+1)=0, q≠1 ⟹ q=-1
   have : (monoScalar s - 1) * (monoScalar s + 1) = 0 := by linear_combination hq2
   rcases mul_eq_zero.mp this with h | h

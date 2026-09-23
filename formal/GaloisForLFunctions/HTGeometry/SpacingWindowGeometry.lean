@@ -1,12 +1,12 @@
 /-
 The coverage geometry of a two-regime spacing endgame.
 
-A spacing endgame for a sixth-power large-value quantity `A = S^6` attached to a Dirichlet polynomial
+A spacing endgame for a sixth-power large-value quantity `A = S^(6 : ℕ)` attached to a Dirichlet polynomial
 of length `M` at height `T` supplies two source bounds and asks for one target:
 
-    source, upper regime :   A ≤ M^4 · T^b     for  M ≥ T^m
-    source, lower regime :   A ≤ M^2 · T^c     for  M < T^m
-    target               :   A ≤ M^3 · T^(6θ)      (i.e. `S ≤ M^(1/2) T^θ`)
+    source, upper regime :   A ≤ M^(4 : ℕ) · T^b     for  M ≥ T^m
+    source, lower regime :   A ≤ M^(2 : ℕ) · T^c     for  M < T^m
+    target               :   A ≤ M^(3 : ℕ) · T^(6θ)      (i.e. `S ≤ M^(1/2) T^θ`)
 
 Everything below is an identity or inequality in the three exponents `(b, c, θ)`; no analytic input
 is used.
@@ -53,13 +53,13 @@ namespace HTGeometry
 
 /-! ### The three lines -/
 
-/-- Exponent of the target `M^3 T^(6θ)` at `M = T^x`. -/
+/-- Exponent of the target `M^(3 : ℕ) T^(6θ)` at `M = T^x`. -/
 def sixthTargetExponent (θ x : ℚ) : ℚ := 3 * x + 6 * θ
 
-/-- Exponent of the upper-regime source `M^4 T^b` at `M = T^x`. -/
+/-- Exponent of the upper-regime source `M^(4 : ℕ) T^b` at `M = T^x`. -/
 def sourceExponentMid (b x : ℚ) : ℚ := 4 * x + b
 
-/-- Exponent of the lower-regime source `M^2 T^c` at `M = T^x`. -/
+/-- Exponent of the lower-regime source `M^(2 : ℕ) T^c` at `M = T^x`. -/
 def sourceExponentLow (c x : ℚ) : ℚ := 2 * x + c
 
 /-- The crossover between the two source regimes: the corner of their upper envelope. -/
@@ -349,7 +349,7 @@ theorem crossover_share_of_critical_length :
 
 /-- **The single statement the architecture reduces to at its Lindelöf limit**: at the invariant
 crossover the target and the degenerate source coincide, so the method collapses to square-root
-cancellation, `S^6 ≤ M^3`, for a Dirichlet polynomial of length `T^(5/12)`. -/
+cancellation, `S^(6 : ℕ) ≤ M^(3 : ℕ)`, for a Dirichlet polynomial of length `T^(5/12)`. -/
 theorem lindelof_collapses_to_crossover :
     sixthTargetExponent 0 (spacingCrossover lindelofB lindelofC)
       = sourceExponentLow lindelofC (spacingCrossover lindelofB lindelofC) := by

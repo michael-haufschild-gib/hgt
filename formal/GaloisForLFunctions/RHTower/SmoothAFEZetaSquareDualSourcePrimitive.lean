@@ -81,7 +81,7 @@ theorem exists_norm_deriv_smoothAFEZetaSquareDualWeight_le_global_invScale :
       dsimp only [K, C]
       ring
 
-/-- Inner square-dual AFE series, before multiplication by the neutral `chi^2` factor. -/
+/-- Inner square-dual AFE series, before multiplication by the neutral `chi^(2 : ℕ)` factor. -/
 def smoothAFEZetaSquareDualSourceField (T r t : ℝ) : ℂ :=
   ∑' n : ℕ, ((n + 1).divisors.card : ℂ) *
     (n + 1 : ℂ) ^ (linePt t - 1) *

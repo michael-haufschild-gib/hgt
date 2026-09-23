@@ -146,11 +146,11 @@ theorem thetaCuspTailPhaseTranslationPacketIntegratedNorm_le
         ((R : ℝ) + 1) * Real.exp (((1 + R : ℕ) : ℝ) * a) := by
   let f0 : ℝ → ℝ := fun x =>
     |thetaCuspTailDerivative 2 x| *
-      ((((R : ℝ) * (x + a)) ^ 0 / ((0 : ℕ).factorial : ℕ)) *
+      ((((R : ℝ) * (x + a)) ^ (0 : ℕ) / ((0 : ℕ).factorial : ℕ)) *
         Real.exp ((R : ℝ) * (x + a)))
   let f1 : ℝ → ℝ := fun x =>
     |thetaCuspTailDerivative 2 x| *
-      ((((R : ℝ) * (x + a)) ^ 1 / ((1 : ℕ).factorial : ℕ)) *
+      ((((R : ℝ) * (x + a)) ^ (1 : ℕ) / ((1 : ℕ).factorial : ℕ)) *
         Real.exp ((R : ℝ) * (x + a)))
   have hf0int : IntegrableOn f0 (Ioi 0) := by
     simpa only [f0] using
@@ -324,7 +324,7 @@ theorem abs_thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent_le
     |thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent d z a| ≤
       thetaCuspTailPhaseTranslationPacketIntegratedNorm d z a *
         thetaCuspTailPhaseTranslationEdgeIntegratedNorm d z a +
-      thetaCuspTailPhaseTranslationEdgeIntegratedNorm d z a ^ 2 := by
+      thetaCuspTailPhaseTranslationEdgeIntegratedNorm d z a ^ (2 : ℕ) := by
   let PV : ℝ := ∫ x : ℝ in Ioi 0,
     |thetaCuspTailSecondDensity x| * ‖(finitePositivePhaseTranslationPacket d x a).eval z‖
   let PD : ℝ := ∫ x : ℝ in Ioi 0,
@@ -368,7 +368,7 @@ theorem abs_thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent_le
       _ = ‖thetaCuspTailPhaseTranslationEdgeDerivativeAverage d z a‖ *
           ‖thetaCuspTailPhaseTranslationPacketAverage d z a‖ := by simp
       _ ≤ ED * PV := mul_le_mul hED hPV (norm_nonneg _) hED0
-  have hJ : |J| ≤ (EV + ED) ^ 2 := by
+  have hJ : |J| ≤ (EV + ED) ^ (2 : ℕ) := by
     dsimp [J, EV, ED]
     exact abs_thetaCuspTailPhaseTranslationEdgeIntegratedCurrent_le_sq d z a
   have habs : |-A - B + J| ≤ |A| + |B| + |J| := by
@@ -377,8 +377,8 @@ theorem abs_thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent_le
   change |-A - B + J| ≤ _
   calc
     _ ≤ |A| + |B| + |J| := habs
-    _ ≤ PD * EV + ED * PV + (EV + ED) ^ 2 := by linarith
-    _ ≤ (PV + PD) * (EV + ED) + (EV + ED) ^ 2 := by
+    _ ≤ PD * EV + ED * PV + (EV + ED) ^ (2 : ℕ) := by linarith
+    _ ≤ (PV + PD) * (EV + ED) + (EV + ED) ^ (2 : ℕ) := by
       nlinarith [mul_nonneg hPV0 hED0, mul_nonneg hPD0 hEV0]
     _ = _ := by
       unfold thetaCuspTailPhaseTranslationPacketIntegratedNorm thetaCuspTailPhaseTranslationEdgeIntegratedNorm
@@ -513,7 +513,7 @@ theorem tendsto_thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent_mul_pow
       |thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent (d n) (z n)
           (xiCTaylorLogarithmicHaarDisplacement A n)| *
           ((n + 1 : ℕ) : ℝ) ^ M ≤
-        (Q n * E n + E n ^ 2) * ((n + 1 : ℕ) : ℝ) ^ M := by
+        (Q n * E n + E n ^ (2 : ℕ)) * ((n + 1 : ℕ) : ℝ) ^ M := by
           exact mul_le_mul_of_nonneg_right hdef hpow
       _ = (Q n * E n) * ((n + 1 : ℕ) : ℝ) ^ M +
           E n * (E n * ((n + 1 : ℕ) : ℝ) ^ M) := by ring
@@ -567,7 +567,7 @@ theorem tendsto_scheduled_thetaCuspTailPhaseTranslationFullDefectIntegratedCurre
         (xiCTaylorAnisotropicCenteredPoint sigma) hz
 
 /-- **Complete positive-channel edge theorem.**  The self-current and both exact mixed currents of
-the finite translation edge are jointly `o(n)|P|^2` on every source-selected anisotropic mesh. -/
+the finite translation edge are jointly `o(n)|P|^(2 : ℕ)` on every source-selected anisotropic mesh. -/
 theorem eventually_abs_scheduled_thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent_lt_scaled_normSq
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
     (A : ℕ) (sigma : ℂ) {epsilon : ℝ} (hepsilon : 0 < epsilon) :
@@ -717,7 +717,7 @@ theorem tendsto_scheduled_thetaCuspTailNegativePhaseTranslationFullDefectIntegra
     abs_neg]
 
 /-- **Complete negative-channel edge theorem.**  Both reflected mixed currents and the edge
-self-current are jointly `o(n)|P|^2` on the same anisotropic Taylor denominator. -/
+self-current are jointly `o(n)|P|^(2 : ℕ)` on the same anisotropic Taylor denominator. -/
 theorem eventually_abs_scheduled_thetaCuspTailNegativePhaseTranslationFullDefectIntegratedCurrent_lt_scaled_normSq
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
     (A : ℕ) (sigma : ℂ) {epsilon : ℝ} (hepsilon : 0 < epsilon) :
@@ -745,7 +745,7 @@ theorem eventually_abs_scheduled_thetaCuspTailNegativePhaseTranslationFullDefect
 
 /-- **Finite translation/Haar capstone.**  At one explicit local-order logarithmic depth, the
 cofinal Haar row and the complete current defects of both finite cosine--sine channels are all
-`o(n)|P|^2` on the anisotropic rational mesh. -/
+`o(n)|P|^(2 : ℕ)` on the anisotropic rational mesh. -/
 theorem eventually_logarithmicHaarTopRow_and_twoPhaseFullDefectCurrents_lt_scaled_normSq
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
     (sigma : ℂ) {epsilon : ℝ} (hepsilon : 0 < epsilon) :

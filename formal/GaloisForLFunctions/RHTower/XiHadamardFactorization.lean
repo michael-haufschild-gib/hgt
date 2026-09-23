@@ -39,7 +39,7 @@ def xiCanonicalProductAway (ρ : XiDivisorSupport) : ℂ → ℂ :=
   canonicalProductE1Indexed (fun q : XiZeroCopyAway ρ => xiSpectralPoint q.1)
 
 theorem xiCanonicalProductAway_inv_sq_summable (ρ : XiDivisorSupport) :
-    Summable (fun q : XiZeroCopyAway ρ => 1 / ‖xiSpectralPoint q.1‖ ^ 2) :=
+    Summable (fun q : XiZeroCopyAway ρ => 1 / ‖xiSpectralPoint q.1‖ ^ (2 : ℕ)) :=
   xiSpectralPoint_inv_sq_summable.comp_injective Subtype.val_injective
 
 theorem xiCanonicalProductAway_analytic (ρ : XiDivisorSupport) :

@@ -76,15 +76,15 @@ theorem compactInvariant_edge (image : Bool) (w T a b : ℝ) :
 def edgeRadius (image : Bool) (z : Fin 4 → ℝ) : ℝ :=
   2*Real.arsinh (Real.sin (z 2)*(if image then 1 else Real.cos (z 3))*
     Real.sqrt (edgeFactor image (Real.exp (z 0)) (Real.exp (z 1))
-      (Real.sin (z 2)^2) (Real.sin (z 3)^2)))
+      (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))))
 
 @[fun_prop] theorem edgeFactor_chart_smooth (image : Bool) :
     ContDiff ℝ ∞ (fun z : Fin 4 → ℝ => edgeFactor image (Real.exp (z 0)) (Real.exp (z 1))
-      (Real.sin (z 2)^2) (Real.sin (z 3)^2)) := by
+      (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))) := by
   have hd (z : Fin 4 → ℝ) : (1+Real.exp (-Real.exp (z 0)))*
-      (1+sourceZ image (Real.exp (z 0)) (Real.sin (z 2)^2) (Real.sin (z 3)^2)) ≠ 0 := by
+      (1+sourceZ image (Real.exp (z 0)) (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))) ≠ 0 := by
     apply mul_ne_zero (ne_of_gt (by positivity))
-    have hz := sourceZ_nonneg image (Real.exp (z 0)) (Real.sin (z 2)^2)
+    have hz := sourceZ_nonneg image (Real.exp (z 0)) (Real.sin (z 2)^(2 : ℕ))
       (sq_nonneg (Real.sin (z 3)))
     exact ne_of_gt (by linarith)
   unfold edgeFactor
@@ -95,7 +95,7 @@ def edgeRadius (image : Bool) (z : Fin 4 → ℝ) : ℝ :=
 
 @[fun_prop] theorem edgeRadius_smooth (image : Bool) : ContDiff ℝ ∞ (edgeRadius image) := by
   have hp (z : Fin 4 → ℝ) : 0 < edgeFactor image (Real.exp (z 0)) (Real.exp (z 1))
-      (Real.sin (z 2)^2) (Real.sin (z 3)^2) :=
+      (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ)) :=
     edgeFactor_pos image (Real.exp_pos _) (Real.exp_pos _)
       ⟨sq_nonneg _,Real.sin_sq_le_one _⟩ ⟨sq_nonneg _,Real.sin_sq_le_one _⟩
   have hs : ContDiff ℝ ∞ (fun z : Fin 4 → ℝ =>
@@ -112,7 +112,7 @@ private theorem compact_edge_radius (image : Bool) {w T a b : ℝ} (hw : 0<w) (h
       2*Real.arsinh (Real.sqrt a*(if image then 1 else Real.sqrt (1-b))*
         Real.sqrt (edgeFactor image w T a b)) := by
   have hp := edgeFactor_pos image hw hT ha hb
-  have hsq : (Real.sqrt a*(if image then 1 else Real.sqrt (1-b)))^2=
+  have hsq : (Real.sqrt a*(if image then 1 else Real.sqrt (1-b)))^(2 : ℕ)=
       a*(if image then 1 else 1-b) := by
     cases image <;> simp only [Bool.false_eq_true,↓reduceIte,mul_one]
     · rw [mul_pow,Real.sq_sqrt ha.1,Real.sq_sqrt (sub_nonneg.mpr hb.2)]
@@ -122,7 +122,7 @@ private theorem compact_edge_radius (image : Bool) {w T a b : ℝ} (hw : 0<w) (h
       compactInvariant image (sourceE image w T a) (Real.exp (-w)) (sourceZ image w a b) := by
     rw [Real.cosh_two_mul,Real.cosh_arsinh,Real.sinh_arsinh,
       Real.sq_sqrt (by positivity : 0 ≤ 1+(Real.sqrt a*(if image then 1 else Real.sqrt (1-b))*
-        Real.sqrt (edgeFactor image w T a b))^2),mul_pow,hsq,Real.sq_sqrt hp.le]
+        Real.sqrt (edgeFactor image w T a b))^(2 : ℕ)),mul_pow,hsq,Real.sq_sqrt hp.le]
     linear_combination -(compactInvariant_edge image w T a b)
   rw [← hc,max_eq_right (Real.one_le_cosh _),Real.arcosh_cosh]
   apply mul_nonneg (by norm_num)
@@ -137,7 +137,7 @@ theorem edgeRadius_eq (image : Bool) (W L : ℝ) {a b : ℝ}
   rw [compact_edge_radius image (Real.exp_pos _) (Real.exp_pos _) ha hb]
   change 2*Real.arsinh (Real.sin (angleMap a)*(if image then 1 else Real.cos (angleMap b))*
     Real.sqrt (edgeFactor image (Real.exp W) (Real.exp L)
-      (Real.sin (angleMap a)^2) (Real.sin (angleMap b)^2)))=_
+      (Real.sin (angleMap a)^(2 : ℕ)) (Real.sin (angleMap b)^(2 : ℕ))))=_
   rw [angleMap_sine_square ha,angleMap_sine_square hb,angleMap_cosine hb]
   have hs : Real.sin (angleMap a)=Real.sqrt a := by
     unfold angleMap
@@ -170,10 +170,10 @@ private theorem chartCircle_height_pos (image : Bool) (z : (Fin 5 → ℝ) × (F
 /-- Full original pulse on the two remaining compact source regions. -/
 def edgeIntegrand (image : Bool) (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (z : (Fin 5 → ℝ) × (Fin 3 → ℝ)) : ℂ :=
-  (sourceJacobian image (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^2):ℂ)*
+  (sourceJacobian image (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^(2 : ℕ)):ℂ)*
     compactPulse q branch amp
-      (sourceClock image (z.1 0) (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^2))
-      (sourceZ image (Real.exp (z.1 1)) (Real.sin (z.2 0)^2) (Real.sin (z.2 1)^2))
+      (sourceClock image (z.1 0) (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^(2 : ℕ)))
+      (sourceZ image (Real.exp (z.1 1)) (Real.sin (z.2 0)^(2 : ℕ)) (Real.sin (z.2 1)^(2 : ℕ)))
       (fullAngularField q branch (chartCircle image z)) (fullSquarePotential q (chartCircle image z))/4
 
 theorem edgeIntegrand_smooth (image : Bool) (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
@@ -189,21 +189,21 @@ theorem edgeIntegrand_smooth (image : Bool) (q : XiZeroCopy) (branch : Bool) (am
     exact (contDiffAt_infty.mpr (fun n =>
       fullSquarePotential_smooth q _ (chartCircle_height_pos image z) n)).comp z hC.contDiffAt
   have hv : ContDiff ℝ ∞ (fun z : (Fin 5 → ℝ) × (Fin 3 → ℝ) =>
-      sourceClock image (z.1 0) (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^2)) := by
+      sourceClock image (z.1 0) (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^(2 : ℕ))) := by
     cases image <;> dsimp [sourceClock] <;> fun_prop
   have hz : ContDiff ℝ ∞ (fun z : (Fin 5 → ℝ) × (Fin 3 → ℝ) =>
-      sourceZ image (Real.exp (z.1 1)) (Real.sin (z.2 0)^2) (Real.sin (z.2 1)^2)) := by
+      sourceZ image (Real.exp (z.1 1)) (Real.sin (z.2 0)^(2 : ℕ)) (Real.sin (z.2 1)^(2 : ℕ))) := by
     cases image <;> dsimp [sourceZ] <;> fun_prop
   have hp (z : (Fin 5 → ℝ) × (Fin 3 → ℝ)) :
-      0<1+sourceZ image (Real.exp (z.1 1)) (Real.sin (z.2 0)^2) (Real.sin (z.2 1)^2) := by
-    linarith [sourceZ_nonneg image (Real.exp (z.1 1)) (Real.sin (z.2 0)^2)
+      0<1+sourceZ image (Real.exp (z.1 1)) (Real.sin (z.2 0)^(2 : ℕ)) (Real.sin (z.2 1)^(2 : ℕ)) := by
+    linarith [sourceZ_nonneg image (Real.exp (z.1 1)) (Real.sin (z.2 0)^(2 : ℕ))
       (sq_nonneg (Real.sin (z.2 1)))]
   have hF := compactPulse_comp_smooth q branch amp hv hz hB hQ hp
   have hJ : ContDiff ℝ ∞ (fun z : (Fin 5 → ℝ) × (Fin 3 → ℝ) =>
-      sourceJacobian image (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^2)) := by
+      sourceJacobian image (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^(2 : ℕ))) := by
     cases image <;> dsimp [sourceJacobian] <;> fun_prop
   have hJc : ContDiff ℝ ∞ (fun z : (Fin 5 → ℝ) × (Fin 3 → ℝ) =>
-      (sourceJacobian image (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^2):ℂ)) :=
+      (sourceJacobian image (Real.exp (z.1 1)) (Real.exp (z.1 2)) (Real.sin (z.2 0)^(2 : ℕ)):ℂ)) :=
     Complex.ofRealCLM.contDiff.comp hJ
   unfold edgeIntegrand
   simpa only [div_eq_mul_inv] using
@@ -292,10 +292,10 @@ private theorem edgeIntegrand_eq_sample (image : Bool) (q : XiZeroCopy) (branch 
     cases image <;> simp only [sourceClock,sourceE,Bool.false_eq_true,↓reduceIte]
     all_goals congr 1; ring
   unfold edgeIntegrand
-  change (sourceJacobian image (Real.exp (z 1)) (Real.exp (z 2)) (Real.sin (angleMap a)^2):ℂ)*
+  change (sourceJacobian image (Real.exp (z 1)) (Real.exp (z 2)) (Real.sin (angleMap a)^(2 : ℕ)):ℂ)*
     compactPulse q branch amp
-      (sourceClock image (z 0) (Real.exp (z 1)) (Real.exp (z 2)) (Real.sin (angleMap a)^2))
-      (sourceZ image (Real.exp (z 1)) (Real.sin (angleMap a)^2) (Real.sin (angleMap b)^2))
+      (sourceClock image (z 0) (Real.exp (z 1)) (Real.exp (z 2)) (Real.sin (angleMap a)^(2 : ℕ)))
+      (sourceZ image (Real.exp (z 1)) (Real.sin (angleMap a)^(2 : ℕ)) (Real.sin (angleMap b)^(2 : ℕ)))
       (fullAngularField q branch (logCircle (edgeRadius image ![z 1,z 2,angleMap a,angleMap b])
         (2*Real.pi*c) (z 3) (z 4)))
       (fullSquarePotential q (logCircle (edgeRadius image ![z 1,z 2,angleMap a,angleMap b])

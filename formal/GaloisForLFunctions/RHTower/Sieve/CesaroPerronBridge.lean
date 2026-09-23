@@ -68,13 +68,13 @@ theorem continuous_cesaroBox {σ : ℝ} (hσ : 0 < σ) :
 theorem integral_cesaro_eq_integral_perron {σ T : ℝ} (hσ : 0 < σ) (hT : 0 ≤ T) {y : ℝ}
     (hy : 1 ≤ y) :
     (∫ t in (-T)..T,
-        (((y : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) - 1) / ((σ : ℂ) + (t : ℝ) * I) ^ 2)
+        (((y : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) - 1) / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ))
       = ∫ u in (1 : ℝ)..y, (∫ t in (-T)..T,
           ((u : ℂ)) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I)) / (u : ℂ) := by
   have hFubini := interval_integral_swap_of_continuous_vec hy (by linarith : -T ≤ T)
     (continuous_cesaroBox hσ)
   have hinner : ∀ t : ℝ, (∫ u in (1 : ℝ)..y, cesaroBox σ u t)
-      = (((y : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) - 1) / ((σ : ℂ) + (t : ℝ) * I) ^ 2 := by
+      = (((y : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) - 1) / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ) := by
     intro t
     have hs := line_ne_zero hσ t
     have hcongr : (∫ u in (1 : ℝ)..y, cesaroBox σ u t)
@@ -98,7 +98,7 @@ theorem integral_cesaro_eq_integral_perron {σ T : ℝ} (hσ : 0 < σ) (hT : 0 �
     ring
   have h1 : (∫ t in (-T)..T, ∫ u in (1 : ℝ)..y, cesaroBox σ u t)
       = ∫ t in (-T)..T,
-          (((y : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) - 1) / ((σ : ℂ) + (t : ℝ) * I) ^ 2 :=
+          (((y : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) - 1) / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ) :=
     intervalIntegral.integral_congr fun t _ => hinner t
   have h2 : (∫ u in (1 : ℝ)..y, ∫ t in (-T)..T, cesaroBox σ u t)
       = ∫ u in (1 : ℝ)..y, (∫ t in (-T)..T,
@@ -112,7 +112,7 @@ the averaging identity: the `1/2π`-scaled Cesàro integral is the logarithmic a
 theorem perron_cesaro_eq_average {σ T : ℝ} (hσ : 0 < σ) (hT : 0 ≤ T) {y : ℝ} (hy : 1 ≤ y) :
     ((1 / (2 * Real.pi) : ℝ) : ℂ)
         * ∫ t in (-T)..T,
-            (((y : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) - 1) / ((σ : ℂ) + (t : ℝ) * I) ^ 2
+            (((y : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) - 1) / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ)
       = ∫ u in (1 : ℝ)..y, perronVertical σ T u / (u : ℂ) := by
   rw [integral_cesaro_eq_integral_perron hσ hT hy, ← intervalIntegral.integral_const_mul]
   refine intervalIntegral.integral_congr fun u _ => ?_

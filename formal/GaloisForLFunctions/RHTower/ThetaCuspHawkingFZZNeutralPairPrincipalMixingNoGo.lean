@@ -49,11 +49,11 @@ open GaloisForLFunctions.HTGeometry.FZZCigar
 /-- Torus neutrality canonically packages two opposite bare winding insertions into one physical
 neutral-pair coupling. -/
 def fzzTorusNeutralPairCoupling (μ : ℂ) : ℂ :=
-  μ ^ 2
+  μ ^ (2 : ℕ)
 
 /-- Coefficient of neutral screening depth `n` in the de-ramified pair coordinate. -/
 def fzzTorusNeutralPairCoefficient (lambda : ℂ) (n : ℕ) : ℂ :=
-  lambda ^ n / ((n.factorial : ℂ) ^ 2)
+  lambda ^ n / ((n.factorial : ℂ) ^ (2 : ℕ))
 
 /-- Exact de-ramification of the full neutral FZZ screening weight. -/
 theorem neutralScreeningCoefficient_eq_fzzTorusNeutralPairCoefficient
@@ -84,7 +84,7 @@ theorem fzzTorusNeutralPairCoefficient_ne_zero
 /-- Exact adjacent-depth recurrence of the neutral screening tower. -/
 theorem fzzTorusNeutralPairCoefficient_succ
     (lambda : ℂ) (n : ℕ) :
-    (((n + 1 : ℕ) : ℂ) ^ 2) *
+    (((n + 1 : ℕ) : ℂ) ^ (2 : ℕ)) *
         fzzTorusNeutralPairCoefficient lambda (n + 1) =
       lambda * fzzTorusNeutralPairCoefficient lambda n := by
   have hfac : (n.factorial : ℂ) ≠ 0 := by

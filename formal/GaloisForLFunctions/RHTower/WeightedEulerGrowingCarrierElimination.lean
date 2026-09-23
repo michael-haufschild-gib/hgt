@@ -315,14 +315,14 @@ theorem compactFourierBorel_eq_zero_of_primeLog_graph_annihilation_critical
     (hgraph : ∀ p : ℕ, p.Prime →
       lam p + L (compactPrimeEulerUnitTangent s p) = 0)
     (hdual : ∀ p : ℕ, p.Prime →
-      ‖lam p‖ ≤ C * criticalNorm (primeCoordinateField p)) :
+      ‖lam p‖ ≤ C * criticalNorm_weightedEulerDualReduction (primeCoordinateField p)) :
     (∀ z : ℂ, compactFourierBorel L s z = 0) ∧
       ∀ m : ℕ, L (s ^ m) = 0 := by
   refine compactFourierBorel_eq_zero_of_primeLog_graph_annihilation_growing
     L s lam hα hC hstrip hβ1 hgraph ?_
   intro p hp
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
-  calc ‖lam p‖ ≤ C * criticalNorm (primeCoordinateField p) := hdual p hp
+  calc ‖lam p‖ ≤ C * criticalNorm_weightedEulerDualReduction (primeCoordinateField p) := hdual p hp
     _ = C * Real.log p * ((p : ℝ)) ^ (-(1 : ℝ)) := by
         rw [criticalNorm_coordinate hp, Real.rpow_neg_one]
         ring

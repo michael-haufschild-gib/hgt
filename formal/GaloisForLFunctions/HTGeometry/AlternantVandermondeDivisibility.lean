@@ -57,16 +57,16 @@ theorem vandermondeProd_succ {m : ℕ} (v : Fin (m + 1) → R) :
 /-! ## Divided differences -/
 
 /-- A divided difference of a polynomial: `p − p(c)` factors through `X − c`. -/
-noncomputable def dividedDifference (p : Polynomial R) (c : R) : Polynomial R :=
+noncomputable def dividedDifference_alternantVandermondeDivisibility (p : Polynomial R) (c : R) : Polynomial R :=
   (Polynomial.X_sub_C_dvd_sub_C_eval (a := c) (p := p)).choose
 
 theorem dividedDifference_spec (p : Polynomial R) (c : R) :
-    p - Polynomial.C (p.eval c) = (Polynomial.X - Polynomial.C c) * dividedDifference p c :=
+    p - Polynomial.C (p.eval c) = (Polynomial.X - Polynomial.C c) * dividedDifference_alternantVandermondeDivisibility p c :=
   (Polynomial.X_sub_C_dvd_sub_C_eval (a := c) (p := p)).choose_spec
 
 /-- The defining identity of the divided difference, read off by evaluation. -/
 theorem eval_sub_eval (p : Polynomial R) (c u : R) :
-    p.eval u - p.eval c = (u - c) * (dividedDifference p c).eval u := by
+    p.eval u - p.eval c = (u - c) * (dividedDifference_alternantVandermondeDivisibility p c).eval u := by
   have h := congrArg (Polynomial.eval u) (dividedDifference_spec p c)
   simpa using h
 
@@ -85,7 +85,7 @@ theorem vandermondeProd_dvd_det_eval :
   | succ m ih =>
     intro v p
     classical
-    set dd : Fin (m + 1) → Polynomial R := fun j => dividedDifference (p j) (v 0) with hdd
+    set dd : Fin (m + 1) → Polynomial R := fun j => dividedDifference_alternantVandermondeDivisibility (p j) (v 0) with hdd
     set M : Matrix (Fin (m + 1)) (Fin (m + 1)) R :=
       Matrix.of fun i j => (p j).eval (v i) with hM
     set M' : Matrix (Fin (m + 1)) (Fin (m + 1)) R :=

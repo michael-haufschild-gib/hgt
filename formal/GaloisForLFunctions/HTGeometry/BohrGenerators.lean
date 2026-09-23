@@ -147,7 +147,7 @@ def archimedeanSquareScale : Nat.Primes → ℂˣ :=
 /-- Finite-support product-formula skeleton: applying the simultaneous square
 of all prime dilations to a Bohr character multiplies it by the finite product
 of the prime-square scale factors on its support. This is the formal finite
-character form of `sigma_infty|_R = product_p sigma_p^2` on the base. -/
+character form of `sigma_infty|_R = product_p sigma_p^(2 : ℕ)` on the base. -/
 @[aesop safe]
 theorem bohrCharacter_archimedeanSquareScale (m : Nat.Primes →₀ ℤ) (x : Nat.Primes → ℂˣ) :
     bohrCharacter m (scaleAllCoordinates archimedeanSquareScale x) =

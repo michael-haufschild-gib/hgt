@@ -147,7 +147,7 @@ theorem maximallyProjectiveEnergy_eigenvalues_of_mem_polynomialMatrixGenericSet
   simp_rw [hcoefficient] at hobstruction
   rw [
     eval₂_spectralRelationCoefficientPolynomial_complex_esymm,
-    eval₂_spectralRelationOrbitPolynomial_complex]
+    eval₂_spectralRelationOrbitPolynomial]
       at hobstruction
   apply hobstruction
   letI : DecidableEq I := Classical.decEq I

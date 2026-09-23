@@ -49,12 +49,12 @@ namespace CubicMoment
 
 /-- The cubic moment functional `C = 3m₀m₁m₃ + 15m₁²m₂ − 10m₀m₂²`. -/
 noncomputable def cubicFunctional (m₀ m₁ m₂ m₃ : ℝ) : ℝ :=
-  3 * m₀ * m₁ * m₃ + 15 * m₁ ^ 2 * m₂ - 10 * m₀ * m₂ ^ 2
+  3 * m₀ * m₁ * m₃ + 15 * m₁ ^ (2 : ℕ) * m₂ - 10 * m₀ * m₂ ^ (2 : ℕ)
 
 /-- The exact split identity used by the corpus: the two quadratic defects, weighted by `m₀` and
 `m₂`, sum to `3C`. -/
 theorem ratioSplit_identity (m₀ m₁ m₂ m₃ : ℝ) :
-    m₀ * (9 * m₁ * m₃ - 14 * m₂ ^ 2) + m₂ * (45 * m₁ ^ 2 - 16 * m₀ * m₂)
+    m₀ * (9 * m₁ * m₃ - 14 * m₂ ^ (2 : ℕ)) + m₂ * (45 * m₁ ^ (2 : ℕ) - 16 * m₀ * m₂)
       = 3 * cubicFunctional m₀ m₁ m₂ m₃ := by
   unfold cubicFunctional
   ring
@@ -63,12 +63,12 @@ theorem ratioSplit_identity (m₀ m₁ m₂ m₃ : ℝ) :
 noncomputable def gammaMoment₂ (α : ℝ) : ℝ := (α + 2) * (α + 3) / (α * (α + 1))
 
 noncomputable def gammaMoment₃ (α : ℝ) : ℝ :=
-  (α + 2) * (α + 3) * (α + 4) * (α + 5) / (α * (α + 1)) ^ 2
+  (α + 2) * (α + 3) * (α + 4) * (α + 5) / (α * (α + 1)) ^ (2 : ℕ)
 
 /-- **The cubic functional on the Gamma family, in closed form.** -/
 theorem cubicFunctional_gamma {α : ℝ} (hα : 0 < α) :
     cubicFunctional 1 1 (gammaMoment₂ α) (gammaMoment₃ α)
-      = 8 * (α + 2) * (α + 3) * (α - 1) / (α * (α + 1) ^ 2) := by
+      = 8 * (α + 2) * (α + 3) * (α - 1) / (α * (α + 1) ^ (2 : ℕ)) := by
   have h1 : α ≠ 0 := ne_of_gt hα
   have h2 : α + 1 ≠ 0 := by positivity
   unfold cubicFunctional gammaMoment₂ gammaMoment₃
@@ -81,7 +81,7 @@ log-concave. -/
 theorem cubicFunctional_gamma_nonneg_iff {α : ℝ} (hα : 0 < α) :
     0 ≤ cubicFunctional 1 1 (gammaMoment₂ α) (gammaMoment₃ α) ↔ 1 ≤ α := by
   rw [cubicFunctional_gamma hα]
-  have hden : 0 < α * (α + 1) ^ 2 := by positivity
+  have hden : 0 < α * (α + 1) ^ (2 : ℕ) := by positivity
   have hnum : 0 < 8 * (α + 2) * (α + 3) := by positivity
   rw [le_div_iff₀ hden, zero_mul]
   constructor
@@ -100,7 +100,7 @@ theorem cubicFunctional_gamma_one :
 /-- **The corpus's split is lossy at the extremal point.**  The exponential's unnormalized moments
 `(1, 2, 24, 720)` give `C = 0`, yet the second quadratic inequality fails by a wide margin. -/
 theorem exponential_split_lossy :
-    cubicFunctional 1 2 24 720 = 0 ∧ ¬ (16 * 1 * 24 ≤ 45 * (2 : ℝ) ^ 2) := by
+    cubicFunctional 1 2 24 720 = 0 ∧ ¬ (16 * 1 * 24 ≤ 45 * (2 : ℝ) ^ (2 : ℕ)) := by
   constructor
   · unfold cubicFunctional; norm_num
   · norm_num
@@ -130,11 +130,11 @@ This is the handle: the conjecture is not "a cubic is positive" but "one log-con
 dominates another", and the two defects are adjacent indices of one sequence. -/
 
 /-- The log-concavity defect of `{Mₖ/k!}` at index `2`, cleared of denominators. -/
-noncomputable def defectTwo (M₀ M₂ M₄ : ℝ) : ℝ := 6 * M₂ ^ 2 - M₀ * M₄
+noncomputable def defectTwo (M₀ M₂ M₄ : ℝ) : ℝ := 6 * M₂ ^ (2 : ℕ) - M₀ * M₄
 
 /-- The log-concavity defect at index `4`, cleared of denominators and signed so that it is
 nonnegative for a log-concave density. -/
-noncomputable def defectFour (M₂ M₄ M₆ : ℝ) : ℝ := 5 / 2 * M₄ ^ 2 - M₂ * M₆
+noncomputable def defectFour (M₂ M₄ M₆ : ℝ) : ℝ := 5 / 2 * M₄ ^ (2 : ℕ) - M₂ * M₆
 
 /-- **The defect decomposition.**  The cubic functional is the index-`2` defect weighted by `M₄`,
 minus three times the index-`4` defect weighted by `M₀`. -/
@@ -198,17 +198,17 @@ noncomputable def stepRatio (La Lb : ℝ) : ℝ := Lb / La
 the defect comparison is exactly `R₀ + 3R₄ ≥ 4R₂`. -/
 theorem defect_comparison_iff_ratio (L₀ L₂ L₄ L₆ : ℝ)
     (h₀ : 0 < L₀) (h₂ : 0 < L₂) (h₄ : 0 < L₄) :
-    3 * L₀ * (L₄ ^ 2 - L₂ * L₆) ≤ L₄ * (L₂ ^ 2 - L₀ * L₄)
+    3 * L₀ * (L₄ ^ (2 : ℕ) - L₂ * L₆) ≤ L₄ * (L₂ ^ (2 : ℕ) - L₀ * L₄)
       ↔ 4 * stepRatio L₂ L₄ ≤ stepRatio L₀ L₂ + 3 * stepRatio L₄ L₆ := by
   unfold stepRatio
   have hD : (0 : ℝ) < L₀ * L₂ * L₄ := by positivity
   have key : (L₂ / L₀ + 3 * (L₆ / L₄)) - 4 * (L₄ / L₂)
-      = (L₄ * (L₂ ^ 2 - L₀ * L₄) - 3 * L₀ * (L₄ ^ 2 - L₂ * L₆)) / (L₀ * L₂ * L₄) := by
+      = (L₄ * (L₂ ^ (2 : ℕ) - L₀ * L₄) - 3 * L₀ * (L₄ ^ (2 : ℕ) - L₂ * L₆)) / (L₀ * L₂ * L₄) := by
     field_simp
     ring
   constructor
   · intro h
-    have hnum : 0 ≤ L₄ * (L₂ ^ 2 - L₀ * L₄) - 3 * L₀ * (L₄ ^ 2 - L₂ * L₆) := by linarith
+    have hnum : 0 ≤ L₄ * (L₂ ^ (2 : ℕ) - L₀ * L₄) - 3 * L₀ * (L₄ ^ (2 : ℕ) - L₂ * L₆) := by linarith
     have hdiv := div_nonneg hnum hD.le
     rw [← key] at hdiv
     linarith

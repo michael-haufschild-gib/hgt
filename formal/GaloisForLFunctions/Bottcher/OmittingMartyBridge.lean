@@ -23,7 +23,7 @@ theorem sphericalDeriv_comp_le {μ g : ℂ → ℂ} {z : ℂ} {A B : ℝ}
     sphericalDeriv (fun y => μ (g y)) z ≤ A * B := by
   have hderiv : deriv (fun y => μ (g y)) z = deriv μ (g z) * deriv g z := by
     exact (hμ.hasDerivAt.comp z hg.hasDerivAt).deriv
-  have hdenpos : 0 < (1 : ℝ) + ‖μ (g z)‖ ^ 2 := by positivity
+  have hdenpos : 0 < (1 : ℝ) + ‖μ (g z)‖ ^ (2 : ℕ) := by positivity
   have hσeq : sphericalDeriv (fun y => μ (g y)) z =
       sphericalDeriv μ (g z) * ‖deriv g z‖ := by
     unfold sphericalDeriv

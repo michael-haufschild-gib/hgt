@@ -10,7 +10,7 @@ noncomputable section
 
 /-- Euler-scale derivative of the exact first-atom reflection coefficient. -/
 def c5SingleAtomScaleLambdaJetOne (A : ℝ) : ℝ :=
-  -6 * A * (A + 3 / 2) / (A - 3 / 2) ^ 3
+  -6 * A * (A + 3 / 2) / (A - 3 / 2) ^ (3 : ℕ)
 
 theorem c5SingleAtomScaleLambdaJetOne_eq
     {A : ℝ} (hA : 3 / 2 < A) :
@@ -75,10 +75,10 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionLambda
       (c5SingleAtomScaleLambdaJetOne A / (2 * A)) A := by
   have hnum := (hasDerivAt_id A).const_mul 3
   have hden := ((hasDerivAt_id A).sub_const (3 / 2)).pow 2
-  have hden0 : (A - 3 / 2) ^ 2 ≠ 0 := by positivity
+  have hden0 : (A - 3 / 2) ^ (2 : ℕ) ≠ 0 := by positivity
   have hraw := hnum.fun_div hden hden0
   unfold thetaCuspSingleAtomReflectionLambda
-  change HasDerivAt (fun x : ℝ => 3 * x / (x - 3 / 2) ^ 2)
+  change HasDerivAt (fun x : ℝ => 3 * x / (x - 3 / 2) ^ (2 : ℕ))
     (c5SingleAtomScaleLambdaJetOne A / (2 * A)) A
   apply hraw.congr_deriv
   dsimp
@@ -127,15 +127,15 @@ def c5SingleAtomScaleActionJetOne (A z : ℝ) : ℝ :=
 def c5SingleAtomScaleMixedJetOne (A z z' : ℝ) : ℝ :=
   let d := c5SingleAtomScaleLambdaJetOne A
   let r := thetaCuspSingleAtomReflectionFactor A z
-  (4 * A + d / r ^ 2) * z'
+  (4 * A + d / r ^ (2 : ℕ)) * z'
 
 /-- Exact centre derivative of the second displacement jet. -/
 def c5SingleAtomScaleMixedJetTwo (A z : ℝ) : ℝ :=
   let l := thetaCuspSingleAtomReflectionLambda A
   let d := c5SingleAtomScaleLambdaJetOne A
   let r := thetaCuspSingleAtomReflectionFactor A z
-  4 * (2 * l * d / r ^ 3 * z * (z + 2) +
-    (4 * A + d / r ^ 2) * (z + 1))
+  4 * (2 * l * d / r ^ (3 : ℕ) * z * (z + 2) +
+    (4 * A + d / r ^ (2 : ℕ)) * (z + 1))
 
 theorem hasDerivAt_thetaCuspSingleAtomReflectedAction_scale
     {u t : ℝ} (hu : 0 ≤ u)
@@ -202,7 +202,7 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionSlope_scale
         c5SingleAtomScaleLambdaJetOne
           (thetaCuspSingleAtomReflectionScale 1 u) /
             thetaCuspSingleAtomReflectionFactor
-              (thetaCuspSingleAtomReflectionScale 1 u) z ^ 2) u := by
+              (thetaCuspSingleAtomReflectionScale 1 u) z ^ (2 : ℕ)) u := by
   let A := thetaCuspSingleAtomReflectionScale 1 u
   let lfun := fun x => thetaCuspSingleAtomReflectionLambda
     (thetaCuspSingleAtomReflectionScale 1 x)
@@ -267,15 +267,15 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionCurvature_scale
     HasDerivAt
       (fun x =>
         thetaCuspSingleAtomReflectionLambda
-            (thetaCuspSingleAtomReflectionScale 1 x) ^ 2 /
+            (thetaCuspSingleAtomReflectionScale 1 x) ^ (2 : ℕ) /
           thetaCuspSingleAtomReflectionFactor
-            (thetaCuspSingleAtomReflectionScale 1 x) z ^ 2)
+            (thetaCuspSingleAtomReflectionScale 1 x) z ^ (2 : ℕ))
       (2 * thetaCuspSingleAtomReflectionLambda
           (thetaCuspSingleAtomReflectionScale 1 u) *
         c5SingleAtomScaleLambdaJetOne
           (thetaCuspSingleAtomReflectionScale 1 u) /
         thetaCuspSingleAtomReflectionFactor
-          (thetaCuspSingleAtomReflectionScale 1 u) z ^ 3) u := by
+          (thetaCuspSingleAtomReflectionScale 1 u) z ^ (3 : ℕ)) u := by
   let A := thetaCuspSingleAtomReflectionScale 1 u
   let lfun := fun x => thetaCuspSingleAtomReflectionLambda
     (thetaCuspSingleAtomReflectionScale 1 x)
@@ -301,10 +301,10 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionCurvature_scale
   have hfun :
       (fun x =>
         thetaCuspSingleAtomReflectionLambda
-            (thetaCuspSingleAtomReflectionScale 1 x) ^ 2 /
+            (thetaCuspSingleAtomReflectionScale 1 x) ^ (2 : ℕ) /
           thetaCuspSingleAtomReflectionFactor
-            (thetaCuspSingleAtomReflectionScale 1 x) z ^ 2) =
-      fun x => (lfun x / rfun x) ^ 2 := by
+            (thetaCuspSingleAtomReflectionScale 1 x) z ^ (2 : ℕ)) =
+      fun x => (lfun x / rfun x) ^ (2 : ℕ) := by
     funext x
     dsimp only [lfun, rfun]
     unfold thetaCuspSingleAtomReflectionFactor
@@ -344,9 +344,9 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectedActionJetTwo_scale
         (thetaCuspSingleAtomReflectionScale 1 x) z) =
       (fun y => 4 *
         (thetaCuspSingleAtomReflectionLambda
-            (thetaCuspSingleAtomReflectionScale 1 y) ^ 2 /
+            (thetaCuspSingleAtomReflectionScale 1 y) ^ (2 : ℕ) /
           thetaCuspSingleAtomReflectionFactor
-            (thetaCuspSingleAtomReflectionScale 1 y) z ^ 2 *
+            (thetaCuspSingleAtomReflectionScale 1 y) z ^ (2 : ℕ) *
           (z * (z + 2)))) +
         fun y => 4 *
           (thetaCuspSingleAtomReflectionSlope
@@ -528,7 +528,7 @@ def c5SingleAtomVelocitySlopeCenterNumerator (A t : ℝ) : ℝ :=
   let s := c5SingleAtomScaleActionJetOne A z
   let m := c5SingleAtomScaleMixedJetOne A z z'
   let n := c5SingleAtomScaleMixedJetTwo A z
-  a * (t * m + t ^ 2 * n) - (a + 3 * t * b + t ^ 2 * c) * s
+  a * (t * m + t ^ (2 : ℕ) * n) - (a + 3 * t * b + t ^ (2 : ℕ) * c) * s
 
 /-- Full exact first-atom direct-C5 compensation margin. -/
 def c5SingleAtomCompensationMargin (A t : ℝ) : ℝ :=
@@ -590,37 +590,37 @@ private theorem four_mul_add_two_lambdaJet_pos
   let b := A - 3 / 2
   have hb : 9 / 2 ≤ b := by dsimp only [b]; linarith
   have hb0 : 0 < b := lt_of_lt_of_le (by norm_num) hb
-  have hb2 : (81 / 4 : ℝ) ≤ b ^ 2 := by
+  have hb2 : (81 / 4 : ℝ) ≤ b ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (b - 9 / 2)]
-  have hmul : b * (81 / 4 : ℝ) ≤ b * b ^ 2 :=
+  have hmul : b * (81 / 4 : ℝ) ≤ b * b ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hb2 hb0.le
   have hlinear : 3 * b + 9 < b * (81 / 4 : ℝ) := by nlinarith
-  have hgap : 0 < b ^ 3 - 3 * (b + 3) := by
-    nlinarith [show b * b ^ 2 = b ^ 3 by ring]
+  have hgap : 0 < b ^ (3 : ℕ) - 3 * (b + 3) := by
+    nlinarith [show b * b ^ (2 : ℕ) = b ^ (3 : ℕ) by ring]
   have hA0 : 0 < A := lt_of_lt_of_le (by norm_num) hA
-  have hden : 0 < (A - 3 / 2) ^ 3 := by positivity
+  have hden : 0 < (A - 3 / 2) ^ (3 : ℕ) := by positivity
   have hid :
       4 * A + 2 * c5SingleAtomScaleLambdaJetOne A =
-        4 * A * ((A - 3 / 2) ^ 3 - 3 * (A + 3 / 2)) /
-          (A - 3 / 2) ^ 3 := by
+        4 * A * ((A - 3 / 2) ^ (3 : ℕ) - 3 * (A + 3 / 2)) /
+          (A - 3 / 2) ^ (3 : ℕ) := by
     apply (eq_div_iff hden.ne').2
     have hdprod :
-        c5SingleAtomScaleLambdaJetOne A * (A - 3 / 2) ^ 3 =
+        c5SingleAtomScaleLambdaJetOne A * (A - 3 / 2) ^ (3 : ℕ) =
           -6 * A * (A + 3 / 2) := by
       unfold c5SingleAtomScaleLambdaJetOne
       exact div_mul_cancel₀ _ hden.ne'
     calc
       (4 * A + 2 * c5SingleAtomScaleLambdaJetOne A) *
-          (A - 3 / 2) ^ 3 =
-        4 * A * (A - 3 / 2) ^ 3 +
+          (A - 3 / 2) ^ (3 : ℕ) =
+        4 * A * (A - 3 / 2) ^ (3 : ℕ) +
           2 * (c5SingleAtomScaleLambdaJetOne A *
-            (A - 3 / 2) ^ 3) := by ring
-      _ = 4 * A * (A - 3 / 2) ^ 3 - 12 * A * (A + 3 / 2) := by
+            (A - 3 / 2) ^ (3 : ℕ)) := by ring
+      _ = 4 * A * (A - 3 / 2) ^ (3 : ℕ) - 12 * A * (A + 3 / 2) := by
         rw [hdprod]
         ring
-      _ = 4 * A * ((A - 3 / 2) ^ 3 - 3 * (A + 3 / 2)) := by ring
+      _ = 4 * A * ((A - 3 / 2) ^ (3 : ℕ) - 3 * (A + 3 / 2)) := by ring
   rw [hid]
-  have hgapA : 0 < (A - 3 / 2) ^ 3 - 3 * (A + 3 / 2) := by
+  have hgapA : 0 < (A - 3 / 2) ^ (3 : ℕ) - 3 * (A + 3 / 2) := by
     dsimp only [b] at hgap
     have hshift : A + 3 / 2 = (A - 3 / 2) + 3 := by ring
     simpa only [hshift] using hgap
@@ -665,9 +665,9 @@ theorem c5SingleAtomVelocityCenterNumerator_neg
   let d := c5SingleAtomScaleLambdaJetOne A
   let r := thetaCuspSingleAtomReflectionFactor A z
   let p := 2 * A + l / r
-  let g := l ^ 2 / r ^ 2
+  let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
   let L := 4 * A + d / r
-  let M := 4 * A + d / r ^ 2
+  let M := 4 * A + d / r ^ (2 : ℕ)
   have hz : 0 < z := by
     dsimp only [z, thetaCuspSingleAtomReflectionDefect]
     exact sub_pos.mpr (Real.one_lt_cosh.mpr (by linarith))
@@ -693,11 +693,11 @@ theorem c5SingleAtomVelocityCenterNumerator_neg
   have hL : 0 < L := by
     dsimp only [L, d, r]
     exact c5SingleAtomScaleActionSlope_pos hA hrhalf
-  have hr2lt : r ^ 2 < r := by
+  have hr2lt : r ^ (2 : ℕ) < r := by
     nlinarith [mul_pos hr (sub_pos.mpr hrlt)]
   have hscaled := mul_lt_mul_of_neg_left hr2lt hd
   have hML : M < L := by
-    have hdiv : d / r ^ 2 < d / r := by
+    have hdiv : d / r ^ (2 : ℕ) < d / r := by
       rw [div_lt_div_iff₀ (sq_pos_of_pos hr) hr]
       simpa only [mul_comm] using hscaled
     dsimp only [M, L]
@@ -729,20 +729,20 @@ theorem c5SingleAtomVelocityCenterNumerator_neg
     have hm : c5SingleAtomScaleMixedJetOne A z z' = M * z' := by
       unfold c5SingleAtomScaleMixedJetOne
       dsimp only [M, d, r]
-    have hzsq : (2 * Real.sinh (2 * t)) ^ 2 =
+    have hzsq : (2 * Real.sinh (2 * t)) ^ (2 : ℕ) =
         4 * thetaCuspSingleAtomReflectionDefect t *
           (thetaCuspSingleAtomReflectionDefect t + 2) :=
       sq_two_mul_sinh_two t
     unfold c5SingleAtomVelocityCenterNumerator
     dsimp only
     rw [ha, hb, hs, hm]
-    have hzsq' : z' ^ 2 = 4 * z * (z + 2) := by
+    have hzsq' : z' ^ (2 : ℕ) = 4 * z * (z + 2) := by
       simpa only [z, z'] using hzsq
     calc
       p * z' * (t * (M * z')) -
           (p * z' + t * (4 * (g * z * (z + 2) + p * (z + 1)))) *
             (z * L) =
-        t * p * M * z' ^ 2 - p * z' * z * L -
+        t * p * M * z' ^ (2 : ℕ) - p * z' * z * L -
           4 * t * (g * z * (z + 2) + p * (z + 1)) * z * L := by ring
       _ = z * (4 * t * p * (z + 2) * M - p * z' * L -
           4 * t * (g * z * (z + 2) + p * (z + 1)) * L) := by

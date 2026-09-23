@@ -14,10 +14,10 @@ open RHTower
 abbrev u := thetaCuspModularMassDrift
 abbrev A := thetaCuspModularGapAmplitude
 abbrev w := thetaCuspModularTransverseShear
-def t (x : ℝ) : ℝ := 9-u x^2
+def t (x : ℝ) : ℝ := 9-u x^(2 : ℕ)
 def k (x : ℝ) : ℝ := 3*(A x/t x)/4-1/3
 def J (x : ℝ) : ℝ := u x*k x-w x
-def D (x : ℝ) : ℝ := t x-6/k x-4/k x^2
+def D (x : ℝ) : ℝ := t x-6/k x-4/k x^(2 : ℕ)
 
 theorem t_pos {x : ℝ} (hx : 0 ≤ x) : 0 < t x := by
   have h0 := thetaCuspModularMassDrift_nonneg hx
@@ -63,14 +63,14 @@ theorem dw {x : ℝ} (hx : 0 ≤ x) :
   nlinarith [he]
 
 theorem dJ {x : ℝ} (hx : 0 ≤ x) :
-    HasDerivAt J (k x^2*D x+2*u x*(k x+2/3)*J x) x := by
+    HasDerivAt J (k x^(2 : ℕ)*D x+2*u x*(k x+2/3)*J x) x := by
   have hk : k x ≠ 0 := ne_of_gt (lt_trans (by norm_num) (k_gt hx))
   convert ((du hx).mul (dk hx)).sub (dw hx) using 1
   all_goals first | rfl | (dsimp [D]; field_simp [hk]; ring)
 
 theorem dD {x : ℝ} (hx : 0 ≤ x) :
     HasDerivAt D
-      (-2*u x*k x*t x+2*(k x+1/3)*(6/k x^2+8/k x^3)*J x) x := by
+      (-2*u x*k x*t x+2*(k x+1/3)*(6/k x^(2 : ℕ)+8/k x^(3 : ℕ))*J x) x := by
   have hk : k x ≠ 0 := ne_of_gt (lt_trans (by norm_num) (k_gt hx))
   convert ((dt hx).sub ((hasDerivAt_const x (6 : ℝ)).div (dk hx) hk)).sub
     ((hasDerivAt_const x (4 : ℝ)).div ((dk hx).pow 2) (pow_ne_zero 2 hk)) using 1
@@ -85,7 +85,7 @@ theorem dD_neg {x : ℝ} (hx : 0 < x) (hJ : J x ≤ 0) :
   have hneg : -2*u x*k x*t x < 0 := by
     have hp : 0 < 2*u x*k x*t x := by positivity
     nlinarith only [hp]
-  have hc : 0 ≤ 2*(k x+1/3)*(6/k x^2+8/k x^3) := by positivity
+  have hc : 0 ≤ 2*(k x+1/3)*(6/k x^(2 : ℕ)+8/k x^(3 : ℕ)) := by positivity
   exact add_neg_of_neg_of_nonpos hneg (mul_nonpos_of_nonneg_of_nonpos hc hJ)
 
 theorem dJ_neg {x : ℝ} (hx : 0 < x) (hJ : J x < 0) (hD : D x ≤ 0) :
@@ -129,7 +129,7 @@ theorem D_neg_of_J_neg {b : ℝ} (hb : 0 < b) (hJb : J b < 0) : D b < 0 := by
     have hzS : z ∈ S := ⟨⟨ha0.trans (hy.1.le.trans hz.1), hz.2⟩, hz0⟩
     have hza := hmax hzS
     linarith [hz.1, hy.1]
-  have hdja : k a^2*D a+2*u a*(k a+2/3)*J a ≤ 0 := by
+  have hdja : k a^(2 : ℕ)*D a+2*u a*(k a+2/3)*J a ≤ 0 := by
     apply le_of_tendsto ((dJ ha0).tendsto_slope.mono_left (nhdsGT_le_nhdsNE a))
     have hlt : ∀ᶠ y in 𝓝[>] a, y < b :=
       (eventually_lt_nhds hab).filter_mono nhdsWithin_le_nhds
@@ -165,7 +165,7 @@ theorem J_nonneg {x : ℝ} (hx : 0 ≤ x) : 0 ≤ J x := by
   have hbound : ∀ y, x ≤ y → J y ≤ J x := by
     intro y hxy
     apply image_le_of_deriv_right_lt_deriv_boundary
-      (f := J) (f' := fun z => k z^2*D z+2*u z*(k z+2/3)*J z)
+      (f := J) (f' := fun z => k z^(2 : ℕ)*D z+2*u z*(k z+2/3)*J z)
       (a := x) (b := y)
       (fun z hz => (dJ (hx.trans hz.1)).continuousAt.continuousWithinAt)
       (fun z hz => (dJ (hx.trans hz.1)).hasDerivWithinAt)
@@ -225,7 +225,7 @@ private theorem k_zero : k 0 = A 0/12-1/3 := by
   ring
 
 /-- The gap amplitude divided by the actual remaining drift gap is nondecreasing. -/
-theorem ratio_mono : MonotoneOn (fun x => A x/(9-u x^2)) (Ici 0) := by
+theorem ratio_mono : MonotoneOn (fun x => A x/(9-u x^(2 : ℕ))) (Ici 0) := by
   intro x hx y hy hxy
   have hm := k_mono hx hy hxy
   dsimp [k, t] at hm
@@ -233,7 +233,7 @@ theorem ratio_mono : MonotoneOn (fun x => A x/(9-u x^2)) (Ici 0) := by
 
 /-- A global lower bound retaining the exact self-dual source amplitude. -/
 theorem gap_lower {x : ℝ} (hx : 0 ≤ x) :
-    A 0*(9-u x^2)/9 ≤ A x := by
+    A 0*(9-u x^(2 : ℕ))/9 ≤ A x := by
   have hm := mul_le_mul_of_nonneg_right
     (k_mono (show 0 ∈ Ici (0 : ℝ) by simp) hx hx) (t_pos hx).le
   rw [k_zero] at hm
@@ -243,7 +243,7 @@ theorem gap_lower {x : ℝ} (hx : 0 ≤ x) :
 
 /-- The native transverse shear is bounded by the same global ratio. -/
 theorem shear_upper {x : ℝ} (hx : 0 ≤ x) :
-    w x ≤ u x*(3*(A x/(9-u x^2))/4-1/3) := by
+    w x ≤ u x*(3*(A x/(9-u x^(2 : ℕ)))/4-1/3) := by
   have hj := J_nonneg hx
   dsimp [J, k, t] at hj
   linarith only [hj]

@@ -8,7 +8,7 @@ The multiscale signed defect must reach the existing Maynard selected-cell count
 the signed integral by a global supremum.  This module discretises a vertical interval at maxima of
 the full integrand.  On the natural central band, exact pole cancellation bounds the adjacent
 kernel by `4`; on a tail block its second-order Mellin decay gives the explicit scale
-`65 C (N/R)^2/U^2`.  The produced maxima remain in their literal cells, so parity splitting yields
+`65 C (N/R)^(2 : ℕ)/U^(2 : ℕ)`.  The produced maxima remain in their literal cells, so parity splitting yields
 two separated ordinate families with no loss of cancellation before extraction.
 -/
 
@@ -160,7 +160,7 @@ theorem exists_cell_max_norm_intervalIntegral_adjacent_defect_central_le
   exact exists_cell_max_norm_intervalIntegral_mul_le hA hK hΔ m hM
 
 /-- On any block staying outside ordinate `U`, quadratic Mellin decay bounds the adjacent kernel
-by `65 C (N/R)^2/U^2`.  Comparable widths are the only scale hypothesis. -/
+by `65 C (N/R)^(2 : ℕ)/U^(2 : ℕ)`.  Comparable widths are the only scale hypothesis. -/
 theorem exists_cell_max_norm_intervalIntegral_adjacent_defect_tail_le :
     ∃ C : ℝ, 1 ≤ C ∧
       ∀ (L X k : ℕ) (T0 t : ℝ) {N H R U a Δ : ℝ},
@@ -178,7 +178,7 @@ theorem exists_cell_max_norm_intervalIntegral_adjacent_defect_tail_le :
                 routeTNormalizedSmoothWindowMellin N H
                   ((1 : ℂ) + (y : ℝ) * I))‖ ≤
             ∑ j ∈ Finset.range m, Δ *
-              ((65 * C * (N / R) ^ 2 / U ^ 2) *
+              ((65 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ)) *
                 ‖heathBrownWindowRelevantEligibleDyadicAggregate L X k T0 t N
                   ((1 : ℂ) + (c j : ℝ) * I)‖) := by
   obtain ⟨C, hC, hquad⟩ :=
@@ -199,51 +199,51 @@ theorem exists_cell_max_norm_intervalIntegral_adjacent_defect_tail_le :
   have hHleN : H ≤ N := hHR.trans hRN
   have hC0 : 0 ≤ C := zero_le_one.trans hC
   have hM : ∀ y ∈ Set.Icc a (a + (m : ℝ) * Δ),
-      ‖K y‖ ≤ 65 * C * (N / R) ^ 2 / U ^ 2 := by
+      ‖K y‖ ≤ 65 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) := by
     intro y hy
     have hyU := haway y hy
-    have hy2 : U ^ 2 ≤ |y| ^ 2 := by nlinarith [sq_nonneg (|y| - U)]
+    have hy2 : U ^ (2 : ℕ) ≤ |y| ^ (2 : ℕ) := by nlinarith [sq_nonneg (|y| - U)]
     have hqR := hquad N R y hN hR hRN
     have hqH := hquad N H y hN hH hHleN
     have hKR : ‖routeTNormalizedSmoothWindowMellin N R
           ((1 : ℂ) + (y : ℝ) * I)‖ ≤
-        13 * C * (N / R) ^ 2 / U ^ 2 := by
+        13 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) := by
       rw [le_div_iff₀ (sq_pos_of_pos hU)]
       calc
         ‖routeTNormalizedSmoothWindowMellin N R
-              ((1 : ℂ) + (y : ℝ) * I)‖ * U ^ 2 =
-            U ^ 2 * ‖routeTNormalizedSmoothWindowMellin N R
+              ((1 : ℂ) + (y : ℝ) * I)‖ * U ^ (2 : ℕ) =
+            U ^ (2 : ℕ) * ‖routeTNormalizedSmoothWindowMellin N R
               ((1 : ℂ) + (y : ℝ) * I)‖ := by ring
-        _ ≤ |y| ^ 2 * ‖routeTNormalizedSmoothWindowMellin N R
+        _ ≤ |y| ^ (2 : ℕ) * ‖routeTNormalizedSmoothWindowMellin N R
               ((1 : ℂ) + (y : ℝ) * I)‖ :=
           mul_le_mul_of_nonneg_right hy2 (norm_nonneg _)
-        _ ≤ 13 * C * (N / R) ^ 2 := hqR
+        _ ≤ 13 * C * (N / R) ^ (2 : ℕ) := hqR
     have hratio : R / H ≤ 2 := (div_le_iff₀ hH).2 hRH
     have hratio0 : 0 ≤ R / H := by positivity
-    have hratioSq : (R / H) ^ 2 ≤ 4 := by nlinarith
-    have hNH : (N / H) ^ 2 ≤ 4 * (N / R) ^ 2 := by
+    have hratioSq : (R / H) ^ (2 : ℕ) ≤ 4 := by nlinarith
+    have hNH : (N / H) ^ (2 : ℕ) ≤ 4 * (N / R) ^ (2 : ℕ) := by
       have hre : N / H = (N / R) * (R / H) := by field_simp
       rw [hre, mul_pow]
       calc
-        (N / R) ^ 2 * (R / H) ^ 2 ≤ (N / R) ^ 2 * 4 :=
+        (N / R) ^ (2 : ℕ) * (R / H) ^ (2 : ℕ) ≤ (N / R) ^ (2 : ℕ) * 4 :=
           mul_le_mul_of_nonneg_left hratioSq (sq_nonneg (N / R))
-        _ = 4 * (N / R) ^ 2 := by ring
+        _ = 4 * (N / R) ^ (2 : ℕ) := by ring
     have hKH : ‖routeTNormalizedSmoothWindowMellin N H
           ((1 : ℂ) + (y : ℝ) * I)‖ ≤
-        52 * C * (N / R) ^ 2 / U ^ 2 := by
+        52 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) := by
       rw [le_div_iff₀ (sq_pos_of_pos hU)]
       calc
         ‖routeTNormalizedSmoothWindowMellin N H
-              ((1 : ℂ) + (y : ℝ) * I)‖ * U ^ 2 =
-            U ^ 2 * ‖routeTNormalizedSmoothWindowMellin N H
+              ((1 : ℂ) + (y : ℝ) * I)‖ * U ^ (2 : ℕ) =
+            U ^ (2 : ℕ) * ‖routeTNormalizedSmoothWindowMellin N H
               ((1 : ℂ) + (y : ℝ) * I)‖ := by ring
-        _ ≤ |y| ^ 2 * ‖routeTNormalizedSmoothWindowMellin N H
+        _ ≤ |y| ^ (2 : ℕ) * ‖routeTNormalizedSmoothWindowMellin N H
               ((1 : ℂ) + (y : ℝ) * I)‖ :=
           mul_le_mul_of_nonneg_right hy2 (norm_nonneg _)
-        _ ≤ 13 * C * (N / H) ^ 2 := hqH
-        _ ≤ 13 * C * (4 * (N / R) ^ 2) :=
+        _ ≤ 13 * C * (N / H) ^ (2 : ℕ) := hqH
+        _ ≤ 13 * C * (4 * (N / R) ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hNH (mul_nonneg (by norm_num) hC0)
-        _ = 52 * C * (N / R) ^ 2 := by ring
+        _ = 52 * C * (N / R) ^ (2 : ℕ) := by ring
     dsimp only [K]
     calc
       ‖routeTNormalizedSmoothWindowMellin N R (1 + (y : ℂ) * I) -
@@ -251,9 +251,9 @@ theorem exists_cell_max_norm_intervalIntegral_adjacent_defect_tail_le :
           ‖routeTNormalizedSmoothWindowMellin N R (1 + (y : ℂ) * I)‖ +
             ‖routeTNormalizedSmoothWindowMellin N H (1 + (y : ℂ) * I)‖ :=
         norm_sub_le _ _
-      _ ≤ 13 * C * (N / R) ^ 2 / U ^ 2 +
-          52 * C * (N / R) ^ 2 / U ^ 2 := add_le_add hKR hKH
-      _ = 65 * C * (N / R) ^ 2 / U ^ 2 := by ring
+      _ ≤ 13 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) +
+          52 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) := add_le_add hKR hKH
+      _ = 65 * C * (N / R) ^ (2 : ℕ) / U ^ (2 : ℕ) := by ring
   exact exists_cell_max_norm_intervalIntegral_mul_le hA hK hΔ m hM
 
 /-- Every even collection of cell maxima splits into two globally defined `Δ`-spaced sequences.
@@ -322,7 +322,7 @@ theorem exists_two_gap_sequences_of_cell_sum_bound
 
 /-- The fixed-polylog aggregate envelope upgrades the arbitrary-cutoff adjacent-kernel tail bound
 to the actual Route-T signed defect.  Thus defect mass beyond `U` decays like
-`fixedPolylog * (N / R)^2 / U`, uniformly over the eligible dyadic aggregate. -/
+`fixedPolylog * (N / R)^(2 : ℕ) / U`, uniformly over the eligible dyadic aggregate. -/
 theorem exists_integral_norm_windowRelevantAggregate_mul_adjacentKernel_tail_le :
     ∃ C : ℝ, 1 ≤ C ∧
       ∀ (L X k : ℕ) (T0 t : ℝ) {N H R U : ℝ},
@@ -336,7 +336,7 @@ theorem exists_integral_norm_windowRelevantAggregate_mul_adjacentKernel_tail_le 
               routeTNormalizedSmoothWindowMellin N H
                 ((1 : ℂ) + (y : ℝ) * I))‖ ≤
           heathBrownWindowRelevantFixedPolylogBound L X k N 1 *
-            (130 * C * (N / R) ^ 2 / U) := by
+            (130 * C * (N / R) ^ (2 : ℕ) / U) := by
   obtain ⟨C, hC, htail⟩ :=
     exists_integral_routeTAdjacentNormalizedKernel_one_general_tail_le
   refine ⟨C, hC, ?_⟩
@@ -387,7 +387,7 @@ theorem exists_integral_norm_windowRelevantAggregate_mul_adjacentKernel_tail_le 
         ∫ y in tail, ‖A y * K y‖ := by rfl
     _ ≤ ∫ y in tail, P * ‖K y‖ := hmono
     _ = P * ∫ y in tail, ‖K y‖ := hscale
-    _ ≤ P * (130 * C * (N / R) ^ 2 / U) :=
+    _ ≤ P * (130 * C * (N / R) ^ (2 : ℕ) / U) :=
       mul_le_mul_of_nonneg_left (by simpa [tail, K] using hktail) hP
     _ = _ := by rfl
 
@@ -473,9 +473,9 @@ theorem exists_norm_setIntegral_windowRelevantAggregate_mul_adjacentKernel_annul
               routeTNormalizedSmoothWindowMellin N H
                 ((1 : ℂ) + (y : ℝ) * I))‖ →
         B - 16 * heathBrownWindowRelevantFixedPolylogBound L X k N 1 *
-              (R / N) * U ^ 2 -
+              (R / N) * U ^ (2 : ℕ) -
             heathBrownWindowRelevantFixedPolylogBound L X k N 1 *
-              (130 * C * (N / R) ^ 2 / V) ≤
+              (130 * C * (N / R) ^ (2 : ℕ) / V) ≤
           ‖∫ y in {y : ℝ | U ≤ |y| ∧ |y| < V},
             heathBrownWindowRelevantEligibleDyadicAggregate L X k T0 t N
                   ((1 : ℂ) + (y : ℝ) * I) *
@@ -505,12 +505,12 @@ theorem exists_norm_setIntegral_windowRelevantAggregate_mul_adjacentKernel_annul
   have hlowRaw :=
     norm_intervalIntegral_windowRelevantAggregate_mul_normalizedKernelDefect_le_fixedPolylog
       L X k hX T0 t N H R 1 U hN hH hR hHR (by norm_num) hU (by simpa using hsmall)
-  have hlow : ‖∫ y in (-U)..U, f y‖ ≤ 16 * P * (R / N) * U ^ 2 := by
+  have hlow : ‖∫ y in (-U)..U, f y‖ ≤ 16 * P * (R / N) * U ^ (2 : ℕ) := by
     dsimp only [f, P]
     convert hlowRaw using 1 <;> norm_num <;> ring
   have hfar := htail L X k T0 t hX hN hH hR hHR hRH hRN hV
   have hfar' : (∫ y in {y : ℝ | V ≤ |y|}, ‖f y‖) ≤
-      P * (130 * C * (N / R) ^ 2 / V) := by
+      P * (130 * C * (N / R) ^ (2 : ℕ) / V) := by
     simpa only [f, P] using hfar
   exact norm_setIntegral_annulus_ge_of_low_tail hf hU hUV
     (by simpa only [f] using hfull) hlow hfar'

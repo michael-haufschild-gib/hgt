@@ -236,7 +236,7 @@ theorem criticalMellinAtomWeight_sq_div_eight_le_quantileGammaDiagonalCellCost
   have hwgap : w ≤ 2 * A * gap := by
     simpa only [w, A, gap, b0, b1] using
       criticalMellinAtomWeight_le_two_exp_half_mul_quantileWidth n
-  have hw0 : 0 ≤ w := criticalMellinAtomWeight_nonneg n
+  have hw0 : 0 ≤ w := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
   have hAgap0 : 0 ≤ A * gap := mul_nonneg hA0 hgap0
   have hsq : w ^ 2 ≤ 4 * A ^ 2 * gap ^ 2 := by nlinarith
   rw [ccmOutgoingQuantileGammaDiagonalCellCost_eq_interval]

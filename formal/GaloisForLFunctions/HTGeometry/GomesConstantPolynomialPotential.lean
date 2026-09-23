@@ -15,13 +15,13 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The affine potential retains the squared slope and discards its sign and intercept. -/
 theorem gomesDilatonPotential_affine (a b x : ℝ) :
-    dilatonPotential (C a * X + C b) x = a ^ 2 / 4 := by
+    dilatonPotential (C a * X + C b) x = a ^ (2 : ℕ) / 4 := by
   simp [dilatonPotential]
 
 /-- Every profile of a constant potential is affine, with its exact half-slope square. -/
 theorem gomesDilatonPotential_constant_iff (H : ℝ[X]) (k : ℝ) :
     (∀ x : ℝ, dilatonPotential H x = k) ↔
-      ∃ r b : ℝ, H = C (2 * r) * X + C b ∧ r ^ 2 = k := by
+      ∃ r b : ℝ, H = C (2 * r) * X + C b ∧ r ^ (2 : ℕ) = k := by
   constructor
   · intro h
     have hp : gomesDilatonPotentialPolynomial H = C k := by
@@ -56,7 +56,7 @@ theorem gomesDilatonPotential_constant_image_iff (k : ℝ) :
 
 /-- A prescribed square yields precisely the two opposite affine slope families. -/
 theorem gomesDilatonPotential_square_fiber (H : ℝ[X]) (r : ℝ) :
-    (∀ x : ℝ, dilatonPotential H x = r ^ 2) ↔
+    (∀ x : ℝ, dilatonPotential H x = r ^ (2 : ℕ)) ↔
       (∃ b : ℝ, H = C (2 * r) * X + C b) ∨
         ∃ b : ℝ, H = C (-2 * r) * X + C b := by
   rw [gomesDilatonPotential_constant_iff]
@@ -94,7 +94,7 @@ theorem gomesDilatonHamiltonian_free_iff (H : ℝ[X]) :
 /-- Two affine Hamiltonians coincide exactly when their slopes have the same square. -/
 theorem gomesDilatonHamiltonian_affine_eq_iff (a b c d : ℝ) :
     dilatonHamiltonianCLM (C a * X + C b) =
-      dilatonHamiltonianCLM (C c * X + C d) ↔ a ^ 2 = c ^ 2 := by
+      dilatonHamiltonianCLM (C c * X + C d) ↔ a ^ (2 : ℕ) = c ^ (2 : ℕ) := by
   rw [gomesDilatonHamiltonian_potential_eq_iff]
   constructor
   · intro h

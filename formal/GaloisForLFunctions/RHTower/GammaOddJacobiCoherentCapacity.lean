@@ -27,7 +27,7 @@ def gammaOddJacobiPrimeFeature (p : Nat.Primes) (k : ℕ) : ℝ :=
   gammaOddJacobiCoefficient k (Real.log (p : ℝ))
 
 theorem summable_gammaOddJacobiPrimeFeature_sq (p : Nat.Primes) :
-    Summable fun k => gammaOddJacobiPrimeFeature p k ^ 2 := by
+    Summable fun k => gammaOddJacobiPrimeFeature p k ^ (2 : ℕ) := by
   have hpLog : 0 < Real.log (p : ℝ) :=
     Real.log_pos (by exact_mod_cast p.prop.one_lt)
   have hsum := (hasSum_gammaOddJacobiCoefficient_mul hpLog hpLog).summable
@@ -82,7 +82,7 @@ theorem sum_gammaOddJacobiPrimeCoherentResidualDiagonal_le_tsum_inv_sq
     ∑ p ∈ F,
         gammaConductorPrimeSchurCost p *
           gammaOddJacobiPrimeCoherentResidualKernel p p ≤
-      ∑' n : ℕ, ((n : ℝ) ^ 2)⁻¹ := by
+      ∑' n : ℕ, ((n : ℝ) ^ (2 : ℕ))⁻¹ := by
   simpa only [gammaOddJacobiPrimeCoherentResidualKernel_self,
     gammaOddJacobiPrimeResidualCost] using
       sum_gammaOddJacobiPrimeResidualCost_le_tsum_inv_sq F

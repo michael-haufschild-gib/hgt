@@ -44,7 +44,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 omit [FiniteDimensional ℝ E] in
 /-- A continuous `2`-homogeneous function vanishes at the origin. -/
 theorem eq_zero_of_homogeneous {q : E → ℝ}
-    (hhom : ∀ (c : ℝ) (v : E), q (c • v) = c ^ 2 * q v) : q 0 = 0 := by
+    (hhom : ∀ (c : ℝ) (v : E), q (c • v) = c ^ (2 : ℕ) * q v) : q 0 = 0 := by
   have h := hhom 0 0
   simpa using h
 
@@ -62,9 +62,9 @@ is strictly positive on the nonzero vectors of a subspace `W` of a finite-dimens
 dominates a positive multiple of `‖·‖²` on all of `W`.  This is the compactness step behind the
 Hodge coercivity criterion. -/
 theorem exists_pos_forall_mem_smul_norm_sq_le (W : Submodule ℝ E) {q : E → ℝ}
-    (hq : Continuous q) (hhom : ∀ (c : ℝ) (v : E), q (c • v) = c ^ 2 * q v)
+    (hq : Continuous q) (hhom : ∀ (c : ℝ) (v : E), q (c • v) = c ^ (2 : ℕ) * q v)
     (hpos : ∀ v ∈ W, v ≠ 0 → 0 < q v) :
-    ∃ lam : ℝ, 0 < lam ∧ ∀ v ∈ W, lam * ‖v‖ ^ 2 ≤ q v := by
+    ∃ lam : ℝ, 0 < lam ∧ ∀ v ∈ W, lam * ‖v‖ ^ (2 : ℕ) ≤ q v := by
   classical
   have hq0 : q 0 = 0 := eq_zero_of_homogeneous hhom
   set S : Set E := {v : E | v ∈ W ∧ ‖v‖ = 1} with hS
@@ -96,11 +96,11 @@ theorem exists_pos_forall_mem_smul_norm_sq_le (W : Submodule ℝ E) {q : E → �
       have hmem := hnorm v hv hne
       have hle : q v₀ ≤ q (‖v‖⁻¹ • v) := hmin hmem
       rw [hhom ‖v‖⁻¹ v] at hle
-      have hsq : (‖v‖⁻¹) ^ 2 = (‖v‖ ^ 2)⁻¹ := by
+      have hsq : (‖v‖⁻¹) ^ (2 : ℕ) = (‖v‖ ^ (2 : ℕ))⁻¹ := by
         rw [inv_pow]
       rw [hsq] at hle
-      have h2 : (0 : ℝ) < ‖v‖ ^ 2 := by positivity
-      calc q v₀ * ‖v‖ ^ 2 ≤ ((‖v‖ ^ 2)⁻¹ * q v) * ‖v‖ ^ 2 := by
+      have h2 : (0 : ℝ) < ‖v‖ ^ (2 : ℕ) := by positivity
+      calc q v₀ * ‖v‖ ^ (2 : ℕ) ≤ ((‖v‖ ^ (2 : ℕ))⁻¹ * q v) * ‖v‖ ^ (2 : ℕ) := by
             exact mul_le_mul_of_nonneg_right hle (le_of_lt h2)
         _ = q v := by field_simp
 
@@ -108,9 +108,9 @@ theorem exists_pos_forall_mem_smul_norm_sq_le (W : Submodule ℝ E) {q : E → �
 constant is attained on the unit sphere.  This is the variational characterisation
 `λ₊ = min_{0 ≠ v ∈ W} ⟨Δ₁ v, v⟩ / ‖v‖²` of the paper. -/
 theorem exists_attained_forall_mem_smul_norm_sq_le (W : Submodule ℝ E) {q : E → ℝ}
-    (hq : Continuous q) (hhom : ∀ (c : ℝ) (v : E), q (c • v) = c ^ 2 * q v)
+    (hq : Continuous q) (hhom : ∀ (c : ℝ) (v : E), q (c • v) = c ^ (2 : ℕ) * q v)
     (hpos : ∀ v ∈ W, v ≠ 0 → 0 < q v) (hW : W ≠ ⊥) :
-    ∃ lam : ℝ, 0 < lam ∧ (∀ v ∈ W, lam * ‖v‖ ^ 2 ≤ q v) ∧
+    ∃ lam : ℝ, 0 < lam ∧ (∀ v ∈ W, lam * ‖v‖ ^ (2 : ℕ) ≤ q v) ∧
       ∃ v ∈ W, ‖v‖ = 1 ∧ q v = lam := by
   classical
   have hq0 : q 0 = 0 := eq_zero_of_homogeneous hhom
@@ -137,8 +137,8 @@ theorem exists_attained_forall_mem_smul_norm_sq_le (W : Submodule ℝ E) {q : E 
     have hmem := hnorm v hv hne
     have hle : q v₀ ≤ q (‖v‖⁻¹ • v) := hmin hmem
     rw [hhom ‖v‖⁻¹ v, inv_pow] at hle
-    have h2 : (0 : ℝ) < ‖v‖ ^ 2 := by positivity
-    calc q v₀ * ‖v‖ ^ 2 ≤ ((‖v‖ ^ 2)⁻¹ * q v) * ‖v‖ ^ 2 :=
+    have h2 : (0 : ℝ) < ‖v‖ ^ (2 : ℕ) := by positivity
+    calc q v₀ * ‖v‖ ^ (2 : ℕ) ≤ ((‖v‖ ^ (2 : ℕ))⁻¹ * q v) * ‖v‖ ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hle (le_of_lt h2)
       _ = q v := by field_simp
 
@@ -189,14 +189,14 @@ theorem divFreeComplement_le_divFree (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[�
 
 /-- The real Laplacian quadratic form is a sum of two squares. -/
 theorem inner_hodgeLaplacian_self (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2) (v : C1) :
-    ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ = ‖LinearMap.adjoint d0 v‖ ^ 2 + ‖d1 v‖ ^ 2 := by
+    ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ = ‖LinearMap.adjoint d0 v‖ ^ (2 : ℕ) + ‖d1 v‖ ^ (2 : ℕ) := by
   have h := re_inner_hodgeLaplacian_self (𝕜 := ℝ) d0 d1 v
   simpa using h
 
 /-- **Equation (1).**  On the divergence-free space the Laplacian form is `‖d₁ v‖²`. -/
 theorem inner_hodgeLaplacian_self_of_mem_divFree (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2)
     {v : C1} (hv : v ∈ divFree d0) :
-    ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ = ‖d1 v‖ ^ 2 := by
+    ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ = ‖d1 v‖ ^ (2 : ℕ) := by
   rw [inner_hodgeLaplacian_self, (mem_divFree_iff d0 v).mp hv]
   simp
 
@@ -323,7 +323,7 @@ theorem starProjection_hodgeLaplacian (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[�
 theorem continuous_hodgeLaplacian_form (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2) :
     Continuous fun v : C1 => ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ := by
   have hrw : (fun v : C1 => ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ)
-      = fun v : C1 => ‖LinearMap.adjoint d0 v‖ ^ 2 + ‖d1 v‖ ^ 2 :=
+      = fun v : C1 => ‖LinearMap.adjoint d0 v‖ ^ (2 : ℕ) + ‖d1 v‖ ^ (2 : ℕ) :=
     funext (inner_hodgeLaplacian_self d0 d1)
   rw [hrw]
   exact (((LinearMap.adjoint d0).continuous_of_finiteDimensional.norm).pow 2).add
@@ -331,7 +331,7 @@ theorem continuous_hodgeLaplacian_form (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[
 
 theorem hodgeLaplacian_form_homogeneous (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2)
     (c : ℝ) (v : C1) :
-    ⟪hodgeLaplacian d0 d1 (c • v), c • v⟫_ℝ = c ^ 2 * ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ := by
+    ⟪hodgeLaplacian d0 d1 (c • v), c • v⟫_ℝ = c ^ (2 : ℕ) * ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ := by
   rw [map_smul, real_inner_smul_left, real_inner_smul_right]
   ring
 
@@ -341,7 +341,7 @@ trivial. -/
 theorem hodge_coercive_iff_harmonic_eq_bot (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2) :
     harmonic d0 d1 = ⊥ ↔
       ∃ lam : ℝ, 0 < lam ∧
-        ∀ v ∈ divFree d0, lam * ‖v‖ ^ 2 ≤ ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ := by
+        ∀ v ∈ divFree d0, lam * ‖v‖ ^ (2 : ℕ) ≤ ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ := by
   constructor
   · intro hbot
     refine exists_pos_forall_mem_smul_norm_sq_le (divFree d0)
@@ -360,7 +360,7 @@ theorem hodge_coercive_iff_harmonic_eq_bot (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →
     have h0 : hodgeLaplacian d0 d1 v = 0 := hv
     have := hb v hvV
     rw [h0, inner_zero_left] at this
-    have hn : ‖v‖ ^ 2 ≤ 0 := by nlinarith [sq_nonneg ‖v‖]
+    have hn : ‖v‖ ^ (2 : ℕ) ≤ 0 := by nlinarith [sq_nonneg ‖v‖]
     have : ‖v‖ = 0 := by nlinarith [norm_nonneg v, sq_nonneg ‖v‖]
     exact norm_eq_zero.mp this
 
@@ -368,7 +368,7 @@ theorem hodge_coercive_iff_harmonic_eq_bot (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →
 unconditionally, with a strictly positive constant `λ₊`. -/
 theorem exists_pos_coercive_on_divFreeComplement (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2) :
     ∃ lam : ℝ, 0 < lam ∧
-      ∀ v ∈ divFreeComplement d0 d1, lam * ‖v‖ ^ 2 ≤ ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ := by
+      ∀ v ∈ divFreeComplement d0 d1, lam * ‖v‖ ^ (2 : ℕ) ≤ ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ := by
   refine exists_pos_forall_mem_smul_norm_sq_le (divFreeComplement d0 d1)
     (continuous_hodgeLaplacian_form d0 d1) (hodgeLaplacian_form_homogeneous d0 d1) ?_
   intro v hv hne
@@ -385,7 +385,7 @@ constant is the minimum of the Rayleigh quotient and is attained. -/
 theorem exists_attained_coercive_on_divFreeComplement (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2)
     (hne : divFreeComplement d0 d1 ≠ ⊥) :
     ∃ lam : ℝ, 0 < lam ∧
-      (∀ v ∈ divFreeComplement d0 d1, lam * ‖v‖ ^ 2 ≤ ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ) ∧
+      (∀ v ∈ divFreeComplement d0 d1, lam * ‖v‖ ^ (2 : ℕ) ≤ ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ) ∧
       ∃ v ∈ divFreeComplement d0 d1, ‖v‖ = 1 ∧ ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ = lam := by
   refine exists_attained_forall_mem_smul_norm_sq_le (divFreeComplement d0 d1)
     (continuous_hodgeLaplacian_form d0 d1) (hodgeLaplacian_form_homogeneous d0 d1) ?_ hne
@@ -403,7 +403,7 @@ undamped by the Hodge Laplacian. -/
 theorem not_coercive_of_harmonic_ne_bot (d0 : C0 →ₗ[ℝ] C1) (d1 : C1 →ₗ[ℝ] C2)
     (hne : harmonic d0 d1 ≠ ⊥) :
     ¬ ∃ lam : ℝ, 0 < lam ∧
-        ∀ v ∈ divFree d0, lam * ‖v‖ ^ 2 ≤ ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ :=
+        ∀ v ∈ divFree d0, lam * ‖v‖ ^ (2 : ℕ) ≤ ⟪hodgeLaplacian d0 d1 v, v⟫_ℝ :=
   fun h => hne ((hodge_coercive_iff_harmonic_eq_bot d0 d1).mpr h)
 
 end Complex
@@ -462,7 +462,7 @@ theorem comp_zero_id : (LinearMap.id : ℝ →ₗ[ℝ] ℝ) ∘ₗ (0 : ℝ →�
 /-- Consequently Theorem 1 yields a genuine coercivity constant on this complex. -/
 theorem exists_coercivity_constant_zero_id :
     ∃ lam : ℝ, 0 < lam ∧ ∀ v ∈ divFree (0 : ℝ →ₗ[ℝ] ℝ),
-      lam * ‖v‖ ^ 2 ≤ ⟪hodgeLaplacian (0 : ℝ →ₗ[ℝ] ℝ) (LinearMap.id : ℝ →ₗ[ℝ] ℝ) v, v⟫_ℝ :=
+      lam * ‖v‖ ^ (2 : ℕ) ≤ ⟪hodgeLaplacian (0 : ℝ →ₗ[ℝ] ℝ) (LinearMap.id : ℝ →ₗ[ℝ] ℝ) v, v⟫_ℝ :=
   (hodge_coercive_iff_harmonic_eq_bot _ _).mp harmonic_zero_id_eq_bot
 
 /-- A noncoercive model: `d₀ = d₁ = 0` makes the whole edge space harmonic. -/
@@ -480,7 +480,7 @@ theorem harmonic_zero_zero_ne_bot :
 /-- Hence full-space coercivity genuinely fails on that complex. -/
 theorem not_coercive_zero_zero :
     ¬ ∃ lam : ℝ, 0 < lam ∧ ∀ v ∈ divFree (0 : ℝ →ₗ[ℝ] ℝ),
-        lam * ‖v‖ ^ 2 ≤ ⟪hodgeLaplacian (0 : ℝ →ₗ[ℝ] ℝ) (0 : ℝ →ₗ[ℝ] ℝ) v, v⟫_ℝ :=
+        lam * ‖v‖ ^ (2 : ℕ) ≤ ⟪hodgeLaplacian (0 : ℝ →ₗ[ℝ] ℝ) (0 : ℝ →ₗ[ℝ] ℝ) v, v⟫_ℝ :=
   not_coercive_of_harmonic_ne_bot _ _ harmonic_zero_zero_ne_bot
 
 end Models

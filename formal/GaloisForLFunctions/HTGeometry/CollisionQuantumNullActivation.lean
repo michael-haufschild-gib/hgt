@@ -20,7 +20,7 @@ theorem projectiveGramTangentEnergy_smul_right
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     (u v : E) (c : ℂ) :
     projectiveGramTangentEnergy (𝕜 := ℂ) u (c • v) =
-      ‖c‖ ^ 2 * projectiveGramTangentEnergy (𝕜 := ℂ) u v := by
+      ‖c‖ ^ (2 : ℕ) * projectiveGramTangentEnergy (𝕜 := ℂ) u v := by
   unfold projectiveGramTangentEnergy
   rw [norm_smul, inner_smul_right, norm_mul]
   ring
@@ -37,9 +37,9 @@ def collisionRotatingTangent (a e y s t : ℝ) :=
 theorem collisionRotatingTangent_projective_energy (a e x y s t : ℝ) :
     HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ)
       (collisionLaplaceAtom a e x) (collisionRotatingTangent a e y s t) =
-      Real.sin (t - s) ^ 2 * (Real.Gamma (Real.exp a) ^ 2 *
+      Real.sin (t - s) ^ (2 : ℕ) * (Real.Gamma (Real.exp a) ^ (2 : ℕ) *
         (collisionFractionalKernel a e x x * collisionFractionalKernel a e y y -
-          collisionFractionalKernel a e x y ^ 2)) := by
+          collisionFractionalKernel a e x y ^ (2 : ℕ))) := by
   unfold collisionRotatingTangent
   rw [HTGeometry.projectiveGramTangentEnergy_smul_right,
     HTGeometry.rotatingObservation_null_transport, Complex.norm_real, Real.norm_eq_abs, sq_abs]
@@ -48,9 +48,9 @@ theorem collisionRotatingTangent_projective_energy (a e x y s t : ℝ) :
   rw [collisionLaplaceAtom_berry_zero, collisionLaplaceAtom_metric_area] at h
   have he : HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ)
       (collisionLaplaceAtom a e x) (collisionLaplaceAtom a e y) =
-      Real.Gamma (Real.exp a) ^ 2 *
+      Real.Gamma (Real.exp a) ^ (2 : ℕ) *
         (collisionFractionalKernel a e x x * collisionFractionalKernel a e y y -
-          collisionFractionalKernel a e x y ^ 2) := by linarith
+          collisionFractionalKernel a e x y ^ (2 : ℕ)) := by linarith
   rw [he]
 
 /-- Without rotation every such parameter direction is invisible. -/
@@ -64,7 +64,7 @@ theorem collisionRotatingTangent_initial_energy (a e x y s : ℝ) :
 theorem collisionRotatingTangent_quarter_turn_positive_iff (a e x y s : ℝ) :
     0 < HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ)
       (collisionLaplaceAtom a e x) (collisionRotatingTangent a e y s (s + Real.pi / 2)) ↔
-        x ^ 2 ≠ y ^ 2 := by
+        x ^ (2 : ℕ) ≠ y ^ (2 : ℕ) := by
   rw [collisionRotatingTangent_projective_energy]
   simp only [add_sub_cancel_left, Real.sin_pi_div_two, one_pow, one_mul]
   rw [mul_pos_iff_of_pos_left (sq_pos_of_pos (Real.Gamma_pos_of_pos (Real.exp_pos a))),

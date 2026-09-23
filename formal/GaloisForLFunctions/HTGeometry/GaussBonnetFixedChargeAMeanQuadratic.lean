@@ -15,17 +15,17 @@ namespace GaloisForLFunctions.HTGeometry
 open CPV
 
 def egbFixedChargeAMeanQuadraticA (τ φ : ℝ) : ℝ :=
-  4 * egbFixedChargeAFraction φ * egbCoexistenceALogKernel τ * (1 + egbCoexistenceASymmetricRatio τ ^ 2)
+  4 * egbFixedChargeAFraction φ * egbCoexistenceALogKernel τ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
 def egbFixedChargeAMeanQuadraticB (τ φ : ℝ) : ℝ :=
-  2 * ((3 - egbCoexistenceASymmetricRatio τ ^ 2) * (1 + egbCoexistenceASymmetricRatio τ ^ 2) +
-    egbFixedChargeAFraction φ * (1 - egbCoexistenceASymmetricRatio τ ^ 2) *
-      (2 * (3 + egbCoexistenceASymmetricRatio τ ^ 2) - (1 - egbCoexistenceASymmetricRatio τ ^ 2) * egbCoexistenceALogKernel τ))
+  2 * ((3 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) +
+    egbFixedChargeAFraction φ * (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) *
+      (2 * (3 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) - (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) * egbCoexistenceALogKernel τ))
 def egbFixedChargeAMeanQuadraticC (τ : ℝ) : ℝ :=
-  (1 - egbCoexistenceASymmetricRatio τ ^ 2) ^ 2 * (1 + egbCoexistenceASymmetricRatio τ ^ 2)
+  (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) ^ (2 : ℕ) * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
 
 theorem egbFixedChargeAMeanQuadraticA_transfer (τ φ : ℝ) :
     egbFixedChargeAMeanQuadraticA τ φ =
-      egbFixedChargeAFraction φ * (1 + egbCoexistenceASymmetricRatio τ) ^ 2 * egbCoexistenceAQuadraticA τ / 2 := by
+      egbFixedChargeAFraction φ * (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) * egbCoexistenceAQuadraticA τ / 2 := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   unfold egbFixedChargeAMeanQuadraticA egbCoexistenceAQuadraticA
   rw [egbCoexistenceASymmetricRatio_square_sum]
@@ -33,7 +33,7 @@ theorem egbFixedChargeAMeanQuadraticA_transfer (τ φ : ℝ) :
 
 theorem egbFixedChargeAMeanQuadraticB_transfer (τ φ : ℝ) :
     egbFixedChargeAMeanQuadraticB τ φ =
-      (1 + egbCoexistenceASymmetricRatio τ) ^ 4 * egbFixedChargeAQuadraticB τ φ / 2 := by
+      (1 + egbCoexistenceASymmetricRatio τ) ^ (4 : ℕ) * egbFixedChargeAQuadraticB τ φ / 2 := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   unfold egbFixedChargeAMeanQuadraticB egbFixedChargeAQuadraticB egbFixedChargeABase egbFixedChargeALinearCorrection
   rw [egbCoexistenceASymmetricRatio_shape, egbCoexistenceASymmetricRatio_square_sum,
@@ -43,7 +43,7 @@ theorem egbFixedChargeAMeanQuadraticB_transfer (τ φ : ℝ) :
 
 theorem egbFixedChargeAMeanQuadraticC_transfer (τ : ℝ) :
     egbFixedChargeAMeanQuadraticC τ =
-      (1 + egbCoexistenceASymmetricRatio τ) ^ 6 * egbCoexistenceAQuadraticC τ / 2 := by
+      (1 + egbCoexistenceASymmetricRatio τ) ^ (6 : ℕ) * egbCoexistenceAQuadraticC τ / 2 := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   unfold egbFixedChargeAMeanQuadraticC egbCoexistenceAQuadraticC
   rw [egbCoexistenceASymmetricRatio_square_sum, egbCoexistenceASymmetricRatio_inversion]
@@ -64,23 +64,23 @@ theorem egbFixedChargeAMeanQuadraticB_pos (τ φ : ℝ) : 0 < egbFixedChargeAMea
 
 theorem egbFixedChargeAMeanQuadraticC_pos (τ : ℝ) : 0 < egbFixedChargeAMeanQuadraticC τ := by
   have hd := egbCoexistenceASymmetricRatio_bounds τ
-  have h : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ 2 := by nlinarith [hd.1, hd.2]
+  have h : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by nlinarith [hd.1, hd.2]
   unfold egbFixedChargeAMeanQuadraticC
   positivity
 
 theorem egbFixedChargeAMeanWeight_quadratic (τ φ : ℝ) :
-    egbFixedChargeAMeanQuadraticA τ φ * egbFixedChargeAMeanWeight τ φ ^ 2 +
+    egbFixedChargeAMeanQuadraticA τ φ * egbFixedChargeAMeanWeight τ φ ^ (2 : ℕ) +
       egbFixedChargeAMeanQuadraticB τ φ * egbFixedChargeAMeanWeight τ φ - egbFixedChargeAMeanQuadraticC τ = 0 := by
   rw [egbFixedChargeAMeanQuadraticA_transfer, egbFixedChargeAMeanQuadraticB_transfer, egbFixedChargeAMeanQuadraticC_transfer]
   unfold egbFixedChargeAMeanWeight
-  linear_combination (1 + egbCoexistenceASymmetricRatio τ) ^ 6 / 2 * egbFixedChargeAWeight_quadratic τ φ
+  linear_combination (1 + egbCoexistenceASymmetricRatio τ) ^ (6 : ℕ) / 2 * egbFixedChargeAWeight_quadratic τ φ
 
 theorem egbFixedChargeAMeanWeight_critical_difference (τ φ : ℝ) :
     (egbFixedChargeAMeanWeight τ φ - egbFixedChargeACriticalWeight φ) *
       (egbFixedChargeAMeanQuadraticA τ φ * (egbFixedChargeAMeanWeight τ φ + egbFixedChargeACriticalWeight φ) +
         egbFixedChargeAMeanQuadraticB τ φ) =
     (egbFixedChargeAMeanQuadraticC τ - 1) -
-      (egbFixedChargeAMeanQuadraticA τ φ - 12 * egbFixedChargeAFraction φ) * egbFixedChargeACriticalWeight φ ^ 2 -
+      (egbFixedChargeAMeanQuadraticA τ φ - 12 * egbFixedChargeAFraction φ) * egbFixedChargeACriticalWeight φ ^ (2 : ℕ) -
       (egbFixedChargeAMeanQuadraticB τ φ - 6 * (1 + egbFixedChargeAFraction φ)) * egbFixedChargeACriticalWeight φ := by
   linear_combination egbFixedChargeAMeanWeight_quadratic τ φ - egbFixedChargeACriticalWeight_quadratic φ
 

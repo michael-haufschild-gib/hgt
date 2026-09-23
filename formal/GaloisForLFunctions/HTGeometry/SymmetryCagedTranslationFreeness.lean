@@ -564,11 +564,11 @@ theorem exists_symGauge_fullTranslationFreeness
 /-! ### A symmetric divisor on the critical line, and one off it -/
 
 /-- A symmetric Schwarz-real entire source whose whole divisor lies on the critical line. -/
-def critSymDivisor (t : ℝ) : ℂ → ℂ := fun z => ((z - 1 / 2) ^ 2 + ((t : ℂ)) ^ 2) ^ 2
+def critSymDivisor (t : ℝ) : ℂ → ℂ := fun z => ((z - 1 / 2) ^ (2 : ℕ) + ((t : ℂ)) ^ (2 : ℕ)) ^ (2 : ℕ)
 
 /-- A symmetric Schwarz-real entire source whose whole divisor lies off the critical line. -/
 def offSymDivisor (a : ℂ) : ℂ → ℂ := fun z =>
-  (((z - 1 / 2) ^ 2 - a ^ 2) * ((z - 1 / 2) ^ 2 - ((starRingEnd ℂ) a) ^ 2)) ^ 2
+  (((z - 1 / 2) ^ (2 : ℕ) - a ^ (2 : ℕ)) * ((z - 1 / 2) ^ (2 : ℕ) - ((starRingEnd ℂ) a) ^ (2 : ℕ))) ^ (2 : ℕ)
 
 theorem differentiable_critSymDivisor (t : ℝ) : Differentiable ℂ (critSymDivisor t) := by
   unfold critSymDivisor
@@ -612,9 +612,9 @@ theorem offSymDivisor_ne_zero {a : ℂ} (ha : a ≠ 0) : ∃ w, offSymDivisor a 
   refine ⟨1 / 2, ?_⟩
   unfold offSymDivisor
   have hca : (starRingEnd ℂ) a ≠ 0 := by simpa using ha
-  have h1 : ((1 / 2 : ℂ) - 1 / 2) ^ 2 - a ^ 2 = -(a ^ 2) := by ring
-  have h2 : ((1 / 2 : ℂ) - 1 / 2) ^ 2 - ((starRingEnd ℂ) a) ^ 2
-      = -(((starRingEnd ℂ) a) ^ 2) := by ring
+  have h1 : ((1 / 2 : ℂ) - 1 / 2) ^ (2 : ℕ) - a ^ (2 : ℕ) = -(a ^ (2 : ℕ)) := by ring
+  have h2 : ((1 / 2 : ℂ) - 1 / 2) ^ (2 : ℕ) - ((starRingEnd ℂ) a) ^ (2 : ℕ)
+      = -(((starRingEnd ℂ) a) ^ (2 : ℕ)) := by ring
   rw [h1, h2]
   exact pow_ne_zero _ (mul_ne_zero (neg_ne_zero.mpr (pow_ne_zero 2 ha))
     (neg_ne_zero.mpr (pow_ne_zero 2 hca)))
@@ -622,10 +622,10 @@ theorem offSymDivisor_ne_zero {a : ℂ} (ha : a ≠ 0) : ∃ w, offSymDivisor a 
 /-- **Every zero of the critical source lies on the critical line.** -/
 theorem critSymDivisor_zero_re {t : ℝ} {z : ℂ} (hz : critSymDivisor t z = 0) : z.re = 1 / 2 := by
   have hfac : ((z - 1 / 2) - Complex.I * (t : ℂ)) * ((z - 1 / 2) + Complex.I * (t : ℂ)) = 0 := by
-    have h1 : ((z - 1 / 2) ^ 2 + ((t : ℂ)) ^ 2) = 0 := by
+    have h1 : ((z - 1 / 2) ^ (2 : ℕ) + ((t : ℂ)) ^ (2 : ℕ)) = 0 := by
       have := pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hz
       exact this
-    linear_combination h1 - (t : ℂ)^2 * Complex.I_sq
+    linear_combination h1 - (t : ℂ)^(2 : ℕ) * Complex.I_sq
   rcases mul_eq_zero.mp hfac with h | h
   · have hval : z - 1 / 2 = Complex.I * (t : ℂ) := by linear_combination h
     have hre := congrArg Complex.re hval
@@ -639,9 +639,9 @@ theorem critSymDivisor_zero_re {t : ℝ} {z : ℂ} (hz : critSymDivisor t z = 0)
 /-- **No zero of the off-critical source lies on the critical line.** -/
 theorem offSymDivisor_zero_re {a : ℂ} (ha : a.re ≠ 0) {z : ℂ} (hz : offSymDivisor a z = 0) :
     z.re ≠ 1 / 2 := by
-  have hprod : ((z - 1 / 2) ^ 2 - a ^ 2) * ((z - 1 / 2) ^ 2 - ((starRingEnd ℂ) a) ^ 2) = 0 :=
+  have hprod : ((z - 1 / 2) ^ (2 : ℕ) - a ^ (2 : ℕ)) * ((z - 1 / 2) ^ (2 : ℕ) - ((starRingEnd ℂ) a) ^ (2 : ℕ)) = 0 :=
     pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hz
-  have hsq : ∀ b : ℂ, b.re ≠ 0 → (z - 1 / 2) ^ 2 - b ^ 2 = 0 → z.re ≠ 1 / 2 := by
+  have hsq : ∀ b : ℂ, b.re ≠ 0 → (z - 1 / 2) ^ (2 : ℕ) - b ^ (2 : ℕ) = 0 → z.re ≠ 1 / 2 := by
     intro b hb hfac hre
     have hzero : ((z - 1 / 2) - b) * ((z - 1 / 2) + b) = 0 := by linear_combination hfac
     have hhalfre : ((1 : ℂ) / 2).re = 1 / 2 := by norm_num

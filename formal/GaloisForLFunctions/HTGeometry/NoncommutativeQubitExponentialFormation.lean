@@ -19,7 +19,7 @@ noncomputable section
 
 abbrev QubitMatrix := Matrix (Fin 2) (Fin 2) ℂ
 
-def qubitRadius (b t : ℝ) : ℝ := Real.sqrt (t ^ 2 + b ^ 2)
+def qubitRadius (b t : ℝ) : ℝ := Real.sqrt (t ^ (2 : ℕ) + b ^ (2 : ℕ))
 
 def qubitHamiltonian (b t : ℝ) : QubitMatrix :=
   (t : ℂ) • QuantumAlg.pauliZ + (b : ℂ) • QuantumAlg.pauliX
@@ -37,8 +37,8 @@ theorem qubitHamiltonian_isHermitian (b t : ℝ) :
 
 theorem qubitHamiltonian_sq (b t : ℝ) :
     qubitHamiltonian b t * qubitHamiltonian b t =
-      ((qubitRadius b t ^ 2 : ℝ) : ℂ) • (1 : QubitMatrix) := by
-  have hr : qubitRadius b t ^ 2 = t ^ 2 + b ^ 2 := by
+      ((qubitRadius b t ^ (2 : ℕ) : ℝ) : ℂ) • (1 : QubitMatrix) := by
+  have hr : qubitRadius b t ^ (2 : ℕ) = t ^ (2 : ℕ) + b ^ (2 : ℕ) := by
     rw [qubitRadius, Real.sq_sqrt]
     positivity
   ext i j
@@ -87,7 +87,7 @@ theorem qubitHamiltonian_exp_closed {b : ℝ} (hb : 0 < b) (t : ℝ) :
     simp only [K, smul_mul_smul_comm]
     rw [qubitHamiltonian_sq, smul_smul]
     have hrC : (qubitRadius b t : ℂ) ≠ 0 := by exact_mod_cast hr.ne'
-    rw [show ((qubitRadius b t ^ 2 : ℝ) : ℂ) = (qubitRadius b t : ℂ) ^ 2 by
+    rw [show ((qubitRadius b t ^ (2 : ℕ) : ℝ) : ℂ) = (qubitRadius b t : ℂ) ^ (2 : ℕ) by
       norm_cast]
     field_simp
     simp

@@ -19,7 +19,7 @@ noncomputable section
 
 /-- The centered Gaussian test at complex heat time. -/
 def xiGaussianComplexTestC (τ z : ℂ) : ℂ :=
-  Complex.exp (-τ * z ^ 2)
+  Complex.exp (-τ * z ^ (2 : ℕ))
 
 theorem differentiable_xiGaussianComplexTestC (τ : ℂ) :
     Differentiable ℂ (xiGaussianComplexTestC τ) := by

@@ -28,9 +28,9 @@ theorem escapeOpen_persist {b w : ℂ} (hw : max 2 ‖b‖ < ‖w‖) :
     max 2 ‖b‖ < ‖quadratic b w‖ := by
   have hM2 : (2 : ℝ) ≤ max 2 ‖b‖ := le_max_left _ _
   have hMb : ‖b‖ ≤ max 2 ‖b‖ := le_max_right _ _
-  have hstep : ‖w‖ ^ 2 - ‖b‖ ≤ ‖quadratic b w‖ := by
-    have : ‖w ^ 2‖ - ‖b‖ ≤ ‖w ^ 2 + b‖ := by
-      have := norm_sub_norm_le (w ^ 2) (-b)
+  have hstep : ‖w‖ ^ (2 : ℕ) - ‖b‖ ≤ ‖quadratic b w‖ := by
+    have : ‖w ^ (2 : ℕ)‖ - ‖b‖ ≤ ‖w ^ (2 : ℕ) + b‖ := by
+      have := norm_sub_norm_le (w ^ (2 : ℕ)) (-b)
       simpa [sub_neg_eq_add] using this
     rwa [norm_pow] at this
   nlinarith [hstep, hw, hM2, hMb, norm_nonneg w]
@@ -101,7 +101,7 @@ theorem psiN_ne_zero (b : ℂ) (N : ℕ) (z : ℂ) : psiN b N z ≠ 0 :=
 
 /-- The quadratic map is analytic everywhere. -/
 theorem analyticAt_quadratic (b w : ℂ) : AnalyticAt ℂ (quadratic b) w := by
-  have : quadratic b = fun z => z ^ 2 + b := rfl
+  have : quadratic b = fun z => z ^ (2 : ℕ) + b := rfl
   rw [this]
   exact (analyticAt_id.pow 2).add analyticAt_const
 

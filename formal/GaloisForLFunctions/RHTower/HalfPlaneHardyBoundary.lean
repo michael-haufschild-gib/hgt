@@ -79,11 +79,11 @@ theorem lineRestriction_eq_fourier_dampedDatum (F : ℂ → ℂ) {M : ℝ} (hF :
 
 
 theorem norm_sq_lp_eq_integral (f : Lp ℂ 2 (volume : Measure ℝ)) :
-    ‖f‖ ^ 2 = ∫ x : ℝ, ‖(f : ℝ → ℂ) x‖ ^ 2 := by
-  have hinner : (inner ℂ f f : ℂ) = ((∫ x : ℝ, ‖(f : ℝ → ℂ) x‖ ^ 2 : ℝ) : ℂ) := by
+    ‖f‖ ^ (2 : ℕ) = ∫ x : ℝ, ‖(f : ℝ → ℂ) x‖ ^ (2 : ℕ) := by
+  have hinner : (inner ℂ f f : ℂ) = ((∫ x : ℝ, ‖(f : ℝ → ℂ) x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [MeasureTheory.L2.inner_def, ← integral_complex_ofReal]
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    show (inner ℂ ((f : ℝ → ℂ) x) ((f : ℝ → ℂ) x) : ℂ) = ((‖(f : ℝ → ℂ) x‖ ^ 2 : ℝ) : ℂ)
+    show (inner ℂ ((f : ℝ → ℂ) x) ((f : ℝ → ℂ) x) : ℂ) = ((‖(f : ℝ → ℂ) x‖ ^ (2 : ℕ) : ℝ) : ℂ)
     rw [RCLike.inner_apply, Complex.mul_conj, Complex.sq_norm]
   have h := @inner_self_eq_norm_sq ℂ _ _ _ _ f
   rw [hinner] at h
@@ -94,25 +94,25 @@ half-plane Hardy function are the Fourier transform of its datum. -/
 theorem tendsto_dampedDatumLp (F : ℂ → ℂ) {M : ℝ} (hF : IsHalfPlaneHardy F M)
     (σ : ℕ → ℝ) (hσpos : ∀ n, 0 < σ n) (hσ0 : Tendsto σ atTop (𝓝 0)) :
     Tendsto (fun n => dampedDatumLp F hF (hσpos n)) atTop (𝓝 (hardyDatumLp F hF)) := by
-  have hdint : Integrable (fun x : ℝ => ‖hardyDatum F hF x‖ ^ 2) volume :=
+  have hdint : Integrable (fun x : ℝ => ‖hardyDatum F hF x‖ ^ (2 : ℕ)) volume :=
     (memLp_two_iff_integrable_sq_norm (aestronglyMeasurable_hardyDatum hF)).mp
       (memLp_hardyDatum_volume hF)
   have hdiff : ∀ n : ℕ, ∀ᵐ x : ℝ,
       ‖((dampedDatumLp F hF (hσpos n) - hardyDatumLp F hF : Lp ℂ 2 (volume : Measure ℝ))
-          : ℝ → ℂ) x‖ ^ 2
-        = ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ 2 * ‖hardyDatum F hF x‖ ^ 2 := by
+          : ℝ → ℂ) x‖ ^ (2 : ℕ)
+        = ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ (2 : ℕ) * ‖hardyDatum F hF x‖ ^ (2 : ℕ) := by
     intro n
     filter_upwards [MeasureTheory.Lp.coeFn_sub (dampedDatumLp F hF (hσpos n)) (hardyDatumLp F hF),
       (memLp_two_weighted_hardyDatum hF (hσpos n)).coeFn_toLp,
       hardyDatumLp_coeFn F hF] with x h1 h2 h3
     rw [h1, Pi.sub_apply]
     show ‖((dampedDatumLp F hF (hσpos n) : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) x
-      - ((hardyDatumLp F hF : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) x‖ ^ 2 = _
+      - ((hardyDatumLp F hF : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) x‖ ^ (2 : ℕ) = _
     simp only [dampedDatumLp] at h2 ⊢
     rw [h2, h3, ← sub_one_mul, norm_mul, mul_pow]
   have hbnd : ∀ n : ℕ, ∀ᵐ x : ℝ,
-      ‖‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ 2 * ‖hardyDatum F hF x‖ ^ 2‖
-        ≤ ‖hardyDatum F hF x‖ ^ 2 := by
+      ‖‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ (2 : ℕ) * ‖hardyDatum F hF x‖ ^ (2 : ℕ)‖
+        ≤ ‖hardyDatum F hF x‖ ^ (2 : ℕ) := by
     intro n
     filter_upwards [hardyDatum_ae_zero_of_neg hF] with x hx
     rcases lt_or_ge x 0 with h | h
@@ -126,12 +126,12 @@ theorem tendsto_dampedDatumLp (F : ℂ → ℂ) {M : ℝ} (hF : IsHalfPlaneHardy
             = (((Real.exp (-(σ n * x)) - 1 : ℝ)) : ℂ) by push_cast; ring,
           Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith)]
         linarith [he0]
-      have hsq1 : ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ 2 ≤ 1 := by
+      have hsq1 : ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ (2 : ℕ) ≤ 1 := by
         nlinarith [norm_nonneg (((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1), hnb]
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
       nlinarith [hsq1, sq_nonneg ‖hardyDatum F hF x‖]
   have hptw : ∀ᵐ x : ℝ, Tendsto
-      (fun n => ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ 2 * ‖hardyDatum F hF x‖ ^ 2)
+      (fun n => ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ (2 : ℕ) * ‖hardyDatum F hF x‖ ^ (2 : ℕ))
       atTop (𝓝 0) := by
     filter_upwards with x
     have hexp : Tendsto (fun n => ((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1) atTop (𝓝 0) := by
@@ -146,10 +146,10 @@ theorem tendsto_dampedDatumLp (F : ℂ → ℂ) {M : ℝ} (hF : IsHalfPlaneHardy
         rw [Complex.ofReal_one] at h3'
         exact h3'
       simpa using h3.sub_const 1
-    have := ((hexp.norm).pow 2).mul_const (‖hardyDatum F hF x‖ ^ 2)
+    have := ((hexp.norm).pow 2).mul_const (‖hardyDatum F hF x‖ ^ (2 : ℕ))
     simpa using this
   have hmeas : ∀ n : ℕ, AEStronglyMeasurable
-      (fun x : ℝ => ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ 2 * ‖hardyDatum F hF x‖ ^ 2)
+      (fun x : ℝ => ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ (2 : ℕ) * ‖hardyDatum F hF x‖ ^ (2 : ℕ))
       volume := by
     intro n
     refine AEStronglyMeasurable.mul ?_ (hdint.aestronglyMeasurable)
@@ -157,19 +157,19 @@ theorem tendsto_dampedDatumLp (F : ℂ → ℂ) {M : ℝ} (hF : IsHalfPlaneHardy
       (Real.continuous_exp.comp (by fun_prop))).sub continuous_const).norm).pow 2
       ).aestronglyMeasurable
   have hintTo : Tendsto (fun n => ∫ x : ℝ,
-      ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ 2 * ‖hardyDatum F hF x‖ ^ 2) atTop (𝓝 0) := by
+      ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ (2 : ℕ) * ‖hardyDatum F hF x‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     have := MeasureTheory.tendsto_integral_of_dominated_convergence
-      (fun x : ℝ => ‖hardyDatum F hF x‖ ^ 2) hmeas hdint hbnd hptw
+      (fun x : ℝ => ‖hardyDatum F hF x‖ ^ (2 : ℕ)) hmeas hdint hbnd hptw
     simpa using this
   rw [tendsto_iff_norm_sub_tendsto_zero]
   have hsq : ∀ n : ℕ,
-      ‖dampedDatumLp F hF (hσpos n) - hardyDatumLp F hF‖ ^ 2
-        = ∫ x : ℝ, ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ 2 * ‖hardyDatum F hF x‖ ^ 2 := by
+      ‖dampedDatumLp F hF (hσpos n) - hardyDatumLp F hF‖ ^ (2 : ℕ)
+        = ∫ x : ℝ, ‖((Real.exp (-(σ n * x)) : ℝ) : ℂ) - 1‖ ^ (2 : ℕ) * ‖hardyDatum F hF x‖ ^ (2 : ℕ) := by
     intro n
     rw [norm_sq_lp_eq_integral]
     exact MeasureTheory.integral_congr_ae (hdiff n)
   have hsqTo : Tendsto
-      (fun n => ‖dampedDatumLp F hF (hσpos n) - hardyDatumLp F hF‖ ^ 2) atTop (𝓝 0) := by
+      (fun n => ‖dampedDatumLp F hF (hσpos n) - hardyDatumLp F hF‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     simpa only [hsq] using hintTo
   have hroot := (Real.continuous_sqrt.tendsto 0).comp hsqTo
   simp only [Real.sqrt_zero] at hroot

@@ -54,7 +54,7 @@ theorem min_le_convex_complement
 
 def twoLocalAnchorTransverseActivationRate
     (n r : ℕ) (scale B : ℝ) : ℝ :=
-  4 * (r : ℝ) * ((n - 1 : ℕ) : ℝ) * scale ^ 2 / B ^ 2
+  4 * (r : ℝ) * ((n - 1 : ℕ) : ℝ) * scale ^ (2 : ℕ) / B ^ (2 : ℕ)
 
 def twoLocalAnchorTransverseStableRate (n : ℕ) : ℝ :=
   ((6 * n - 4 : ℕ) : ℝ)
@@ -79,26 +79,26 @@ theorem twoLocalPauli_anchor_mul_gaussianLaplaceProduct_le_exp_uniformRate
         (‖Matrix.trace
           (U : Matrix (FiniteQubitConfiguration (Fin n))
             (FiniteQubitConfiguration (Fin n)) ℂ)‖ /
-          Fintype.card (FiniteQubitConfiguration (Fin n))) ^ 2) *
+          Fintype.card (FiniteQubitConfiguration (Fin n))) ^ (2 : ℕ)) *
       ∏ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
         (Real.sqrt (2 * Real.pi))⁻¹ *
           Real.sqrt (Real.pi /
             (((r : ℝ) *
                 (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                scale ^ 2 / B ^ 2) *
-              (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+              (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
               1 / 2)) ≤
       Real.exp (-twoLocalAnchorTransverseUniformRate n r scale B) := by
   let D : ℝ := (2 : ℝ) ^ n
   let a2 : ℝ := ‖Matrix.trace
       (U : Matrix (FiniteQubitConfiguration (Fin n))
-        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 / D ^ 2
+        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) / D ^ (2 : ℕ)
   let b : ℝ := 1 - a2
-  let tau : ℝ := (r : ℝ) * D⁻¹ * scale ^ 2 / B ^ 2
+  let tau : ℝ := (r : ℝ) * D⁻¹ * scale ^ (2 : ℕ) / B ^ (2 : ℕ)
   let S : ℝ := ∑ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
-    (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2
+    (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ)
   let Q : ℝ := ∑ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
-    (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 4
+    (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (4 : ℕ)
   let A := twoLocalAnchorTransverseActivationRate n r scale B
   let K := twoLocalAnchorTransverseStableRate n
   let q := twoLocalAnchorTransverseHarmonicRate n r scale B
@@ -109,7 +109,7 @@ theorem twoLocalPauli_anchor_mul_gaussianLaplaceProduct_le_exp_uniformRate
     positivity
   have htrace : ‖Matrix.trace
       (U : Matrix (FiniteQubitConfiguration (Fin n))
-        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ 2 ≤ D ^ 2 := by
+        (FiniteQubitConfiguration (Fin n)) ℂ)‖ ^ (2 : ℕ) ≤ D ^ (2 : ℕ) := by
     have h := finiteUnitary_trace_normSq_le_card_sq U
     simpa [Complex.sq_norm, D] using h
   have ha20 : 0 ≤ a2 := by dsimp [a2]; positivity
@@ -137,27 +137,27 @@ theorem twoLocalPauli_anchor_mul_gaussianLaplaceProduct_le_exp_uniformRate
   have hSfloor : 4 * ((n - 1 : ℕ) : ℝ) * D * b ≤ S := by
     simpa [S, D, b, a2] using
       sum_sq_twoLocalPauliUnitaryCommutator_singularValues_ge_traceDeficit U
-  have hRfloor : K * b ≤ S ^ 2 / Q := by
+  have hRfloor : K * b ≤ S ^ (2 : ℕ) / Q := by
     simpa [K, twoLocalAnchorTransverseStableRate, S, Q, b, a2, D,
       twoLocalPauliUnitaryCommutatorGramStableRatio] using
       twoLocalPauliUnitaryCommutatorGramStableRatio_ge_sixNSubFour_normalizedTraceDeficit U
   have hprodTotal := gaussianLaplaceProduct_le_exp_stableRatio_total
     (fun i : Fin (Fintype.card (PauliTracelessLabel n 2)) =>
-      (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2)
+      (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ))
     (fun i => sq_nonneg _) htau
   by_cases hb : b = 0
   · have ha2 : a2 = 1 := by dsimp [b] at hb; linarith
-    have hfrac0 : 0 ≤ (tau * S ^ 2) / (tau * Q + S) :=
+    have hfrac0 : 0 ≤ (tau * S ^ (2 : ℕ)) / (tau * Q + S) :=
       div_nonneg (mul_nonneg htau.le (sq_nonneg S))
         (add_nonneg (mul_nonneg htau.le hQ0) hS0)
     have hprodOne :
         (∏ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
           (Real.sqrt (2 * Real.pi))⁻¹ *
             Real.sqrt (Real.pi /
-              (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+              (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                 1 / 2))) ≤ 1 := by
       calc
-        _ ≤ Real.exp (-((tau * S ^ 2) / (tau * Q + S))) := by
+        _ ≤ Real.exp (-((tau * S ^ (2 : ℕ)) / (tau * Q + S))) := by
           simpa only [S, Q, ← pow_mul, Nat.reduceMul] using hprodTotal
         _ ≤ 1 := Real.exp_le_one_iff.mpr (neg_nonpos.mpr hfrac0)
     have hrate : twoLocalAnchorTransverseUniformRate n r scale B ≤ (r : ℝ) := by
@@ -173,20 +173,20 @@ theorem twoLocalPauli_anchor_mul_gaussianLaplaceProduct_le_exp_uniformRate
           (‖Matrix.trace
             (U : Matrix (FiniteQubitConfiguration (Fin n))
               (FiniteQubitConfiguration (Fin n)) ℂ)‖ /
-            Fintype.card (FiniteQubitConfiguration (Fin n))) ^ 2) *
+            Fintype.card (FiniteQubitConfiguration (Fin n))) ^ (2 : ℕ)) *
         ∏ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
           (Real.sqrt (2 * Real.pi))⁻¹ *
             Real.sqrt (Real.pi /
               (((r : ℝ) *
                   (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                  scale ^ 2 / B ^ 2) *
-                (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                  scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+                (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                 1 / 2)) =
           Real.exp (-(r : ℝ) * a2) *
             ∏ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
               (Real.sqrt (2 * Real.pi))⁻¹ *
                 Real.sqrt (Real.pi /
-                  (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                  (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                     1 / 2)) := by simp [a2, D, tau, div_pow]
       _ ≤ Real.exp (-(r : ℝ) * a2) * 1 :=
         mul_le_mul_of_nonneg_left hprodOne (Real.exp_pos _).le
@@ -197,7 +197,7 @@ theorem twoLocalPauli_anchor_mul_gaussianLaplaceProduct_le_exp_uniformRate
         have hn1 : 0 < ((n - 1 : ℕ) : ℝ) := by exact_mod_cast Nat.sub_pos_of_lt hn
         positivity
       exact this.trans_le hSfloor
-    have hRpos : 0 < S ^ 2 / Q := (mul_pos hK hbpos).trans_le hRfloor
+    have hRpos : 0 < S ^ (2 : ℕ) / Q := (mul_pos hK hbpos).trans_le hRfloor
     have hQ : 0 < Q := by
       rcases hQ0.eq_or_lt with hQzero | hQpos
       · rw [← hQzero, div_zero] at hRpos
@@ -211,23 +211,23 @@ theorem twoLocalPauli_anchor_mul_gaussianLaplaceProduct_le_exp_uniformRate
           field_simp [ne_of_gt hD, ne_of_gt hB]
         _ ≤ tau * S := hmul
     have hharmonic : q * b ≤
-        (tau * S) * (S ^ 2 / Q) / (tau * S + S ^ 2 / Q) := by
+        (tau * S) * (S ^ (2 : ℕ) / Q) / (tau * S + S ^ (2 : ℕ) / Q) := by
       simpa [q, twoLocalAnchorTransverseHarmonicRate, A, K] using
         harmonic_mean_lower_of_linear_floors hA hK hbpos htauS hRfloor
     have hprod := gaussianLaplaceProduct_le_exp_activationStableHarmonicMean
       (fun i : Fin (Fintype.card (PauliTracelessLabel n 2)) =>
-        (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2)
+        (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ))
       (fun i => sq_nonneg _) htau hS (by
         simpa only [Q, ← pow_mul, Nat.reduceMul] using hQ)
     have hprodRate :
         (∏ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
           (Real.sqrt (2 * Real.pi))⁻¹ *
             Real.sqrt (Real.pi /
-              (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+              (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                 1 / 2))) ≤ Real.exp (-(q * b)) := by
       calc
-        _ ≤ Real.exp (-((tau * S) * (S ^ 2 / Q) /
-            (tau * S + S ^ 2 / Q))) := by
+        _ ≤ Real.exp (-((tau * S) * (S ^ (2 : ℕ) / Q) /
+            (tau * S + S ^ (2 : ℕ) / Q))) := by
           simpa only [S, Q, ← pow_mul, Nat.reduceMul] using hprod
         _ ≤ Real.exp (-(q * b)) := Real.exp_le_exp.mpr (by linarith)
     have hconvex : twoLocalAnchorTransverseUniformRate n r scale B ≤
@@ -239,20 +239,20 @@ theorem twoLocalPauli_anchor_mul_gaussianLaplaceProduct_le_exp_uniformRate
           (‖Matrix.trace
             (U : Matrix (FiniteQubitConfiguration (Fin n))
               (FiniteQubitConfiguration (Fin n)) ℂ)‖ /
-            Fintype.card (FiniteQubitConfiguration (Fin n))) ^ 2) *
+            Fintype.card (FiniteQubitConfiguration (Fin n))) ^ (2 : ℕ)) *
         ∏ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
           (Real.sqrt (2 * Real.pi))⁻¹ *
             Real.sqrt (Real.pi /
               (((r : ℝ) *
                   (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                  scale ^ 2 / B ^ 2) *
-                (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                  scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+                (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                 1 / 2)) =
           Real.exp (-(r : ℝ) * a2) *
             ∏ i : Fin (Fintype.card (PauliTracelessLabel n 2)),
               (Real.sqrt (2 * Real.pi))⁻¹ *
                 Real.sqrt (Real.pi /
-                  (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ 2 +
+                  (tau * (twoLocalPauliUnitaryCommutatorMap U).singularValues i ^ (2 : ℕ) +
                     1 / 2)) := by simp [a2, D, tau, div_pow]
       _ ≤ Real.exp (-(r : ℝ) * a2) * Real.exp (-(q * b)) :=
         mul_le_mul_of_nonneg_left hprodRate (Real.exp_pos _).le
@@ -271,14 +271,14 @@ theorem twoLocalPauliPencil_anchor_mul_gaussianLaplaceProduct_le_exp_uniformRate
         (‖Matrix.trace
           (U : Matrix (FiniteQubitConfiguration (Fin n))
             (FiniteQubitConfiguration (Fin n)) ℂ)‖ /
-          Fintype.card (FiniteQubitConfiguration (Fin n))) ^ 2) *
+          Fintype.card (FiniteQubitConfiguration (Fin n))) ^ (2 : ℕ)) *
       ∏ i : Fin (Module.finrank ℝ (TwoLocalPauliCoefficientSpace n)),
         (Real.sqrt (2 * Real.pi))⁻¹ *
           Real.sqrt (Real.pi /
             (((r : ℝ) *
                 (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                scale ^ 2 / B ^ 2) *
-              ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ 2 +
+                scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
+              ((twoLocalPauliGaussianHermitianPencil n).commutatorMap U).singularValues i ^ (2 : ℕ) +
               1 / 2)) ≤
       Real.exp (-twoLocalAnchorTransverseUniformRate n r scale B) := by
   rw [twoLocalPauliGaussianHermitianPencil_commutatorMap]
@@ -299,15 +299,15 @@ theorem weighted_twoLocalPauliPencil_anchor_mul_gaussianLaplaceProduct_le_exp_un
           (‖Matrix.trace
             (U c : Matrix (FiniteQubitConfiguration (Fin n))
               (FiniteQubitConfiguration (Fin n)) ℂ)‖ /
-            Fintype.card (FiniteQubitConfiguration (Fin n))) ^ 2) *
+            Fintype.card (FiniteQubitConfiguration (Fin n))) ^ (2 : ℕ)) *
         ∏ i : Fin (Module.finrank ℝ (TwoLocalPauliCoefficientSpace n)),
           (Real.sqrt (2 * Real.pi))⁻¹ *
             Real.sqrt (Real.pi /
               (((r : ℝ) *
                   (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ)⁻¹ *
-                  scale ^ 2 / B ^ 2) *
+                  scale ^ (2 : ℕ) / B ^ (2 : ℕ)) *
                 ((twoLocalPauliGaussianHermitianPencil n).commutatorMap
-                    (U c)).singularValues i ^ 2 +
+                    (U c)).singularValues i ^ (2 : ℕ) +
                 1 / 2)))) ≤
       Real.exp (-twoLocalAnchorTransverseUniformRate n r scale B) := by
   calc
@@ -342,7 +342,7 @@ theorem pairQubitProjectiveSeedWeightedReturnExcisedGrowingReplicaBudget_le_unif
             (pairQubitPathUnitaryReindex L (U c) :
               Matrix (FiniteQubitConfiguration (Fin (L * 2)))
                 (FiniteQubitConfiguration (Fin (L * 2))) ℂ)‖ /
-            Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) ^ 2) *
+            Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) ^ (2 : ℕ)) *
         ∏ i : Fin (Module.finrank ℝ
             (TwoLocalPauliCoefficientSpace (L * 2))),
           (Real.sqrt (2 * Real.pi))⁻¹ *
@@ -350,12 +350,12 @@ theorem pairQubitProjectiveSeedWeightedReturnExcisedGrowingReplicaBudget_le_unif
               (((r : ℝ) *
                   (Fintype.card
                     (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ *
-                  scale ^ 2 /
+                  scale ^ (2 : ℕ) /
                     pairQubitProjectiveSeedGrowingReplicaOscillationCeiling
-                      L rho scale ^ 2) *
+                      L rho scale ^ (2 : ℕ)) *
                 ((twoLocalPauliGaussianHermitianPencil
                     (L * 2)).commutatorMap
-                      (pairQubitPathUnitaryReindex L (U c))).singularValues i ^ 2 +
+                      (pairQubitPathUnitaryReindex L (U c))).singularValues i ^ (2 : ℕ) +
                 1 / 2))) ≤
         Real.exp (-twoLocalAnchorTransverseUniformRate (L * 2) r scale
           (pairQubitProjectiveSeedGrowingReplicaOscillationCeiling L rho scale)) := by

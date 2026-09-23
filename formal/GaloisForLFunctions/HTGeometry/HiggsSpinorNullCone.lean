@@ -42,15 +42,15 @@ theorem lorentzHermitianMatrix_isHermitian (t x y z : ℝ) :
 /-- Its determinant is exactly the Lorentz quadratic form of signature `(1, 3)`. -/
 theorem lorentzHermitianMatrix_det (t x y z : ℝ) :
     (lorentzHermitianMatrix t x y z).det =
-      ((t ^ 2 - x ^ 2 - y ^ 2 - z ^ 2 : ℝ) : ℂ) := by
+      ((t ^ (2 : ℕ) - x ^ (2 : ℕ) - y ^ (2 : ℕ) - z ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [Matrix.det_fin_two]
   push_cast
   simp [lorentzHermitianMatrix]
   calc
     (↑t + ↑z) * (↑t - ↑z) -
           (↑x + ↑y * Complex.I) * (↑x - ↑y * Complex.I) =
-        ↑t ^ 2 - ↑x ^ 2 + ↑y ^ 2 * Complex.I ^ 2 - ↑z ^ 2 := by ring
-    _ = ↑t ^ 2 - ↑x ^ 2 - ↑y ^ 2 - ↑z ^ 2 := by
+        ↑t ^ (2 : ℕ) - ↑x ^ (2 : ℕ) + ↑y ^ (2 : ℕ) * Complex.I ^ (2 : ℕ) - ↑z ^ (2 : ℕ) := by ring
+    _ = ↑t ^ (2 : ℕ) - ↑x ^ (2 : ℕ) - ↑y ^ (2 : ℕ) - ↑z ^ (2 : ℕ) := by
       rw [Complex.I_sq]
       ring
 
@@ -98,8 +98,8 @@ theorem higgsSpinorEventMatrix_det (H : Fin 2 → ℂ) :
 
 /-- Exact light-cone identity for the four real coordinates of a complex doublet. -/
 theorem higgsSpinor_null (H : Fin 2 → ℂ) :
-    higgsSpinorTime H ^ 2 =
-      higgsSpinorX H ^ 2 + higgsSpinorY H ^ 2 + higgsSpinorZ H ^ 2 := by
+    higgsSpinorTime H ^ (2 : ℕ) =
+      higgsSpinorX H ^ (2 : ℕ) + higgsSpinorY H ^ (2 : ℕ) + higgsSpinorZ H ^ (2 : ℕ) := by
   simp only [higgsSpinorTime, higgsSpinorX, higgsSpinorY, higgsSpinorZ,
     Complex.normSq_apply, Complex.mul_re, Complex.mul_im,
     Complex.conj_re, Complex.conj_im]
@@ -107,8 +107,8 @@ theorem higgsSpinor_null (H : Fin 2 → ℂ) :
 
 /-- Equivalent vanishing of the Lorentz quadratic form. -/
 theorem higgsSpinor_lorentzQuadratic_eq_zero (H : Fin 2 → ℂ) :
-    higgsSpinorTime H ^ 2 - higgsSpinorX H ^ 2 -
-        higgsSpinorY H ^ 2 - higgsSpinorZ H ^ 2 = 0 := by
+    higgsSpinorTime H ^ (2 : ℕ) - higgsSpinorX H ^ (2 : ℕ) -
+        higgsSpinorY H ^ (2 : ℕ) - higgsSpinorZ H ^ (2 : ℕ) = 0 := by
   rw [higgsSpinor_null]
   ring
 

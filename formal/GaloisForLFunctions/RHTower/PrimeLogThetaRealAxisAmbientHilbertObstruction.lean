@@ -7,14 +7,14 @@ import Mathlib.Analysis.LocallyConvex.HahnBanach
 # Real-axis ambient-Hilbert obstruction for the prime-log theta graph
 
 The literal prime-log theta coefficient on the real axis has squared mass
-`4 log(p)^4 / p`, which is not summable.  This file proves the stronger obstruction
+`4 log(p)^(4 : ℕ) / p`, which is not summable.  This file proves the stronger obstruction
 needed for Route P's actual closed-graph problem.  It is not enough to observe that the
 coefficient is not a source vector: a continuous functional on an ambient
 source/output Hilbert product could in principle combine a source vector with a Hilbert-output
 reader of the Laplace feature.
 
 For the literal feature, however, the output reader divided by the real-axis coefficient has
-squared norm at most `‖b‖² / (4 log(p)^3)` and therefore vanishes along the cofinite prime
+squared norm at most `‖b‖² / (4 log(p)^(3 : ℕ))` and therefore vanishes along the cofinite prime
 filter.  A source vector plus such a relatively negligible term cannot equal the literal
 reporter, because it would force a nonsummable lower bound on an `ℓ²` source vector.
 

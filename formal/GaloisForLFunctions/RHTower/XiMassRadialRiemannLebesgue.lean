@@ -5,11 +5,11 @@ import Mathlib.MeasureTheory.Function.JacobianOneDim
 /-!
 # Timelike Riemann--Lebesgue decay on the Xi mass shell
 
-The positive-energy mass shell `sqrt (x^2 + a^2)` is not a linear Fourier phase in the spectral
+The positive-energy mass shell `sqrt (x^(2 : ℕ) + a^(2 : ℕ))` is not a linear Fourier phase in the spectral
 coordinate `x`.  Pushing the two real sheets `x > 0` and `x < 0` onto energy `y > a` produces the
 exact threshold density
 
-`y / sqrt (y^2-a^2) * (f(sqrt (y^2-a^2)) + f(-sqrt (y^2-a^2)))`.
+`y / sqrt (y^(2 : ℕ)-a^(2 : ℕ)) * (f(sqrt (y^(2 : ℕ)-a^(2 : ℕ))) + f(-sqrt (y^(2 : ℕ)-a^(2 : ℕ))))`.
 
 This file proves that density is integrable whenever `f` is integrable, identifies the radial
 oscillatory integral with its ordinary Fourier transform, and obtains vertical-time decay from the
@@ -24,11 +24,11 @@ noncomputable section
 
 /-- Positive spatial momentum as a function of mass-shell energy. -/
 def xiMassRadialInverse (a y : ℝ) : ℝ :=
-  Real.sqrt (y ^ 2 - a ^ 2)
+  Real.sqrt (y ^ (2 : ℕ) - a ^ (2 : ℕ))
 
 /-- Jacobian of the positive-energy-to-positive-momentum map. -/
 def xiMassRadialJacobian (a y : ℝ) : ℝ :=
-  y / Real.sqrt (y ^ 2 - a ^ 2)
+  y / Real.sqrt (y ^ (2 : ℕ) - a ^ (2 : ℕ))
 
 /-- Full two-sheet pushforward density on the positive mass shell, extended by zero. -/
 def xiMassRadialPushforwardDensity (a : ℝ) (f : ℝ → ℂ) (y : ℝ) : ℂ :=
@@ -42,7 +42,7 @@ theorem xiMassRadialInverse_pos {a y : ℝ} (ha : 0 < a) (hy : a < y) :
   nlinarith
 
 theorem xiMassRadialInverse_sq {a y : ℝ} (ha : 0 < a) (hy : a < y) :
-    xiMassRadialInverse a y ^ 2 = y ^ 2 - a ^ 2 := by
+    xiMassRadialInverse a y ^ (2 : ℕ) = y ^ (2 : ℕ) - a ^ (2 : ℕ) := by
   rw [xiMassRadialInverse, Real.sq_sqrt]
   nlinarith
 
@@ -50,13 +50,13 @@ theorem xiMassRadialFrequency_inverse {a y : ℝ} (ha : 0 < a) (hy : a < y) :
     xiMassRadialFrequency a (xiMassRadialInverse a y) = y := by
   rw [xiMassRadialFrequency, xiMassRadialInverse_sq ha hy]
   have hy0 : 0 ≤ y := le_of_lt (lt_trans ha hy)
-  rw [show y ^ 2 - a ^ 2 + a ^ 2 = y ^ 2 by ring, Real.sqrt_sq hy0]
+  rw [show y ^ (2 : ℕ) - a ^ (2 : ℕ) + a ^ (2 : ℕ) = y ^ (2 : ℕ) by ring, Real.sqrt_sq hy0]
 
 theorem xiMassRadialInverse_frequency {a x : ℝ} (hx : 0 < x) :
     xiMassRadialInverse a (xiMassRadialFrequency a x) = x := by
   rw [xiMassRadialInverse]
   have hfreq := xiMassRadialFrequency_sq (a := a) x
-  rw [hfreq, show x ^ 2 + a ^ 2 - a ^ 2 = x ^ 2 by ring,
+  rw [hfreq, show x ^ (2 : ℕ) + a ^ (2 : ℕ) - a ^ (2 : ℕ) = x ^ (2 : ℕ) by ring,
     Real.sqrt_sq hx.le]
 
 theorem xiMassRadialFrequency_gt_mass {a x : ℝ} (ha : 0 < a) (hx : 0 < x) :
@@ -78,7 +78,7 @@ theorem image_xiMassRadialInverse_Ioi {a : ℝ} (ha : 0 < a) :
 theorem injOn_xiMassRadialInverse_Ioi {a : ℝ} (ha : 0 < a) :
     InjOn (xiMassRadialInverse a) (Ioi a) := by
   intro y₁ hy₁ y₂ hy₂ h
-  have hsq := congrArg (fun z : ℝ => z ^ 2) h
+  have hsq := congrArg (fun z : ℝ => z ^ (2 : ℕ)) h
   rw [xiMassRadialInverse_sq ha hy₁, xiMassRadialInverse_sq ha hy₂] at hsq
   have hy₁0 : 0 < y₁ := lt_trans ha hy₁
   have hy₂0 : 0 < y₂ := lt_trans ha hy₂
@@ -86,16 +86,16 @@ theorem injOn_xiMassRadialInverse_Ioi {a : ℝ} (ha : 0 < a) :
 
 theorem hasDerivAt_xiMassRadialInverse {a y : ℝ} (ha : 0 < a) (hy : a < y) :
     HasDerivAt (xiMassRadialInverse a) (xiMassRadialJacobian a y) y := by
-  have harg : 0 < y ^ 2 - a ^ 2 := by nlinarith
-  have hinner : HasDerivAt (fun v : ℝ => v * v - a ^ 2) (y + y) y := by
+  have harg : 0 < y ^ (2 : ℕ) - a ^ (2 : ℕ) := by nlinarith
+  have hinner : HasDerivAt (fun v : ℝ => v * v - a ^ (2 : ℕ)) (y + y) y := by
     simpa only [Pi.mul_apply, id_eq, one_mul, mul_one] using
-      (((hasDerivAt_id y).mul (hasDerivAt_id y)).sub_const (a ^ 2))
-  have hsqrt : HasDerivAt (fun v : ℝ => Real.sqrt (v ^ 2 - a ^ 2))
-      ((2 * y) / (2 * Real.sqrt (y ^ 2 - a ^ 2))) y := by
-    have harg' : y * y - a ^ 2 ≠ 0 := by nlinarith
+      (((hasDerivAt_id y).mul (hasDerivAt_id y)).sub_const (a ^ (2 : ℕ)))
+  have hsqrt : HasDerivAt (fun v : ℝ => Real.sqrt (v ^ (2 : ℕ) - a ^ (2 : ℕ)))
+      ((2 * y) / (2 * Real.sqrt (y ^ (2 : ℕ) - a ^ (2 : ℕ)))) y := by
+    have harg' : y * y - a ^ (2 : ℕ) ≠ 0 := by nlinarith
     simpa only [pow_two, two_mul] using hinner.sqrt harg'
-  change HasDerivAt (fun v : ℝ => Real.sqrt (v ^ 2 - a ^ 2))
-    (y / Real.sqrt (y ^ 2 - a ^ 2)) y
+  change HasDerivAt (fun v : ℝ => Real.sqrt (v ^ (2 : ℕ) - a ^ (2 : ℕ)))
+    (y / Real.sqrt (y ^ (2 : ℕ) - a ^ (2 : ℕ))) y
   convert hsqrt using 1
   field_simp [ne_of_gt (Real.sqrt_pos.2 harg)]
 
@@ -228,7 +228,7 @@ theorem integrable_xiMassRadialFourierBase
     Integrable (fun x : ℝ =>
       Complex.exp ((-(σ * xiMassRadialFrequency a x) : ℝ)) *
         Complex.exp (-(I * (h : ℂ) * (x : ℂ)))) := by
-  apply Integrable.mono' (integrable_exp_neg_mul_abs hσ)
+  apply Integrable.mono' (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ)
   · have hfirst : Continuous (fun x : ℝ =>
         ((-(σ * xiMassRadialFrequency a x) : ℝ) : ℂ)) := by
       fun_prop

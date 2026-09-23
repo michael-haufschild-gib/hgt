@@ -50,7 +50,7 @@ theorem pd_second_substitutionShift_eq (R : RatFunc C) : ∀ K : ℕ,
       = ((K + 2 : ℕ) * (K + 3 : ℕ) : ℕ)
         * (JetField.pd ((), 0) (substitutionDeriv R) * (JetField.jet ((), 2) : JetField C Unit)
           + JetField.pd ((), 0) (JetField.pd ((), 0) (substitutionDeriv R))
-            * (JetField.jet ((), 1) : JetField C Unit) ^ 2) := by
+            * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ)) := by
   intro K
   induction K with
   | zero =>
@@ -65,8 +65,8 @@ theorem pd_second_substitutionShift_eq (R : RatFunc C) : ∀ K : ℕ,
         JetField.pd_jet_self _
       have hy2 : JetField.pd ((), 1) (JetField.jet ((), 2) : JetField C Unit) = 0 :=
         JetField.pd_jet_of_ne (by simp only [ne_eq, Prod.mk.injEq, true_and]; omega)
-      have hcube : JetField.pd ((), 1) ((JetField.jet ((), 1) : JetField C Unit) ^ 3)
-          = 3 * (JetField.jet ((), 1) : JetField C Unit) ^ 2 := by
+      have hcube : JetField.pd ((), 1) ((JetField.jet ((), 1) : JetField C Unit) ^ (3 : ℕ))
+          = 3 * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ) := by
         have hl := (JetField.pd ((), 1) :
           Derivation C (JetField C Unit) (JetField C Unit)).leibniz_pow
             (JetField.jet ((), 1) : JetField C Unit) 3
@@ -94,11 +94,11 @@ theorem pd_second_substitutionShift_eq (R : RatFunc C) : ∀ K : ℕ,
             rw [map_ofNat], Derivation.map_algebraMap]
         rw [hl1, hy2, hl2, hl3, hρ₁, h3z, hy1]
         ring
-      have hB : JetField.pd ((), 1) (ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ 3)
-          = 3 * ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ 2 := by
+      have hB : JetField.pd ((), 1) (ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ (3 : ℕ))
+          = 3 * ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ) := by
         have hl := (JetField.pd ((), 1) :
           Derivation C (JetField C Unit) (JetField C Unit)).leibniz
-            ρ₂ ((JetField.jet ((), 1) : JetField C Unit) ^ 3)
+            ρ₂ ((JetField.jet ((), 1) : JetField C Unit) ^ (3 : ℕ))
         simp only [smul_eq_mul] at hl
         rw [hl, hcube, hρ₂]
         ring
@@ -139,7 +139,7 @@ theorem pd_second_substitutionShift_eq (R : RatFunc C) : ∀ K : ℕ,
           = JetField.jet ((), 2) := JetField.jetDerivation_jet ((), 1)
       have hδtop : JetField.jetDerivation (JetField.pd ((), K + 2) (substitutionJet R (K + 3)))
           = ((K + 3 : ℕ) : JetField C Unit)
-            * (ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ 2
+            * (ρ₂ * (JetField.jet ((), 1) : JetField C Unit) ^ (2 : ℕ)
               + ρ₁ * (JetField.jet ((), 2) : JetField C Unit)) := by
         rw [htop]
         have hl1 := (JetField.jetDerivation :

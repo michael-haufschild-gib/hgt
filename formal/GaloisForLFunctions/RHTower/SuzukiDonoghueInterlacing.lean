@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.RHTower
 open Set
 
 /-- The Nevanlinna weight of an atom: the spectral mass scaled by `1 + t²`. -/
-noncomputable def nevanlinnaWeight (p t : ℝ) : ℝ := (1 + t ^ 2) * p
+noncomputable def nevanlinnaWeight (p t : ℝ) : ℝ := (1 + t ^ (2 : ℕ)) * p
 
 theorem nevanlinnaWeight_pos {p t : ℝ} (hp : 0 < p) : 0 < nevanlinnaWeight p t := by
   rw [nevanlinnaWeight]
@@ -119,20 +119,20 @@ theorem cauchySum_eq_zero_at_center {ι : Type*} (s : Finset ι) (p t : ι → �
   refine sum_eq_zero_of_symmetric_odd s
     (fun j => nevanlinnaWeight (p j) (t j) / (t j - 0)) σ hmem hinv fun j hj => ?_
   rw [nevanlinnaWeight, nevanlinnaWeight, hnode j hj, hmass j hj, sub_zero, sub_zero]
-  rw [show (1 : ℝ) + (-t j) ^ 2 = 1 + t j ^ 2 by ring]
+  rw [show (1 : ℝ) + (-t j) ^ (2 : ℕ) = 1 + t j ^ (2 : ℕ) by ring]
   rw [div_neg]
 
 /-- **`(14)`'s derivative formula.**  The transform's derivative is the sum of `(1+t²)p/(t-x)²`. -/
 theorem hasDerivAt_donoghuePurePoint {ι : Type*} (s : Finset ι) (p t : ι → ℝ) (x : ℝ)
     (h : ∀ j ∈ s, t j - x ≠ 0) :
     HasDerivAt (fun y : ℝ => ∑ j ∈ s, nevanlinnaWeight (p j) (t j) / (t j - y))
-      (∑ j ∈ s, nevanlinnaWeight (p j) (t j) / (t j - x) ^ 2) x :=
+      (∑ j ∈ s, nevanlinnaWeight (p j) (t j) / (t j - x) ^ (2 : ℕ)) x :=
   _root_.RHTower.hasDerivAt_cauchySumReal s (fun j => nevanlinnaWeight (p j) (t j)) t x h
 
 /-- **And it is positive**, which is the analytic content of `(14)`. -/
 theorem deriv_donoghuePurePoint_pos {ι : Type*} (s : Finset ι) (p t : ι → ℝ) (x : ℝ)
     (h : ∀ j ∈ s, t j - x ≠ 0) (hp : ∀ j ∈ s, 0 < p j) (hne : s.Nonempty) :
-    0 < ∑ j ∈ s, nevanlinnaWeight (p j) (t j) / (t j - x) ^ 2 :=
+    0 < ∑ j ∈ s, nevanlinnaWeight (p j) (t j) / (t j - x) ^ (2 : ℕ) :=
   _root_.RHTower.deriv_cauchySumReal_pos s (fun j => nevanlinnaWeight (p j) (t j)) t x h
     (fun j hj => nevanlinnaWeight_pos (hp j hj)) hne
 
@@ -195,7 +195,7 @@ exactly what makes the affine term of the Donoghue kernel come out right. -/
 eigenbasis sum to its squared norm — so a unit vector has masses totalling one, which is `(12)`. -/
 theorem sum_spectralMass_eq_normSq {n : ℕ} {V : Type*} [NormedAddCommGroup V]
     [InnerProductSpace ℝ V] (b : OrthonormalBasis (Fin n) ℝ V) (g : V) :
-    ∑ i, inner ℝ (b i) g * inner ℝ (b i) g = ‖g‖ ^ 2 := by
+    ∑ i, inner ℝ (b i) g * inner ℝ (b i) g = ‖g‖ ^ (2 : ℕ) := by
   have h := b.sum_inner_mul_inner g g
   rw [real_inner_self_eq_norm_sq] at h
   simpa [real_inner_comm] using h
@@ -205,10 +205,10 @@ theorem sum_spectralMass_eq_normSq {n : ℕ} {V : Type*} [NormedAddCommGroup V]
 The affine term `z` is absorbed precisely because the masses are a probability. -/
 theorem donoghueResolvent_eq_kernelSum {ι : Type*} (s : Finset ι) (p t : ι → ℝ) (z : ℂ)
     (hp : ∑ j ∈ s, p j = 1) :
-    z + (z ^ 2 + 1) * ∑ j ∈ s, ((p j : ℝ) : ℂ) / ((t j : ℂ) - z)
+    z + (z ^ (2 : ℕ) + 1) * ∑ j ∈ s, ((p j : ℝ) : ℂ) / ((t j : ℂ) - z)
       = ∑ j ∈ s, suzukiDonoghueKernel (t j) z * ((p j : ℝ) : ℂ) := by
   have hterm : ∀ j ∈ s, suzukiDonoghueKernel (t j) z * ((p j : ℝ) : ℂ)
-      = z * ((p j : ℝ) : ℂ) + (z ^ 2 + 1) * (((p j : ℝ) : ℂ) / ((t j : ℂ) - z)) := by
+      = z * ((p j : ℝ) : ℂ) + (z ^ (2 : ℕ) + 1) * (((p j : ℝ) : ℂ) / ((t j : ℂ) - z)) := by
     intro j _
     rw [suzukiDonoghueKernel]
     ring
@@ -234,7 +234,7 @@ theorem donoghueTransform_of_orthonormalEigenbasis {n : ℕ} {V : Type*} [Normed
     (hmass : ∀ j, inner ℝ (b (σ j)) g * inner ℝ (b (σ j)) g
       = inner ℝ (b j) g * inner ℝ (b j) g)
     {z : ℂ} (hz : ∀ j, ((t j : ℂ) - z) ≠ 0) :
-    z + (z ^ 2 + 1) * ∑ j, ((inner ℝ (b j) g * inner ℝ (b j) g : ℝ) : ℂ) / ((t j : ℂ) - z)
+    z + (z ^ (2 : ℕ) + 1) * ∑ j, ((inner ℝ (b j) g * inner ℝ (b j) g : ℝ) : ℂ) / ((t j : ℂ) - z)
       = ∑ j, ((nevanlinnaWeight (inner ℝ (b j) g * inner ℝ (b j) g) (t j) : ℝ) : ℂ)
           / ((t j : ℂ) - z) := by
   have hsum : ∑ j, inner ℝ (b j) g * inner ℝ (b j) g = 1 := by
@@ -286,7 +286,7 @@ theorem tsum_cauchy_eq_zero_at_center {p t : ℤ → ℝ} (e : ℤ ≃ ℤ)
     ∑' k, nevanlinnaWeight (p k) (t k) / (t k - 0) = 0 := by
   refine tsum_eq_zero_of_symmetric_odd e fun k => ?_
   rw [nevanlinnaWeight, nevanlinnaWeight, hnode k, hmass k, sub_zero, sub_zero,
-    show (1 : ℝ) + (-t k) ^ 2 = 1 + t k ^ 2 by ring, div_neg]
+    show (1 : ℝ) + (-t k) ^ (2 : ℕ) = 1 + t k ^ (2 : ℕ) by ring, div_neg]
 
 /-! ## The free model's reflection
 

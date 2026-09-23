@@ -13,7 +13,7 @@ theorem card_le_good_add_bad_var {S Bad₁ Bad₂ : Finset ℕ} {Lf : ℕ → �
     (h1 : ∀ t ∈ S, t ∉ Bad₁ →
       |∑ n ∈ Finset.Ioc t (t + Lf t), ((moebius n : ℤ) : ℝ)| ≤ (1 / 8) * D * (Lf t : ℝ))
     (h2 : ∀ t ∈ S, t ∉ Bad₂ →
-      (1 / 2) * D * (Lf t : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + Lf t), ((moebius n : ℤ) : ℝ) ^ 2) :
+      (1 / 2) * D * (Lf t : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + Lf t), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) :
     S.card
       ≤ (S.filter (fun t =>
           (3 / 16) * D * (Lf t : ℝ)
@@ -47,16 +47,16 @@ feed: the fibre above `a` is a window whose length varies with `a`, so the fixed
 theorem card_le_good_add_meanSquare_var {S Bad₂ : Finset ℕ} {Lf : ℕ → ℕ} {D V δ : ℝ}
     (hδ : 0 < δ)
     (hδL : ∀ t ∈ S, δ ≤ (1 / 8) * D * (Lf t : ℝ))
-    (hms : ∑ t ∈ S, (∑ n ∈ Finset.Ioc t (t + Lf t), ((moebius n : ℤ) : ℝ)) ^ 2 ≤ V)
+    (hms : ∑ t ∈ S, (∑ n ∈ Finset.Ioc t (t + Lf t), ((moebius n : ℤ) : ℝ)) ^ (2 : ℕ) ≤ V)
     (h2 : ∀ t ∈ S, t ∉ Bad₂ →
-      (1 / 2) * D * (Lf t : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + Lf t), ((moebius n : ℤ) : ℝ) ^ 2) :
+      (1 / 2) * D * (Lf t : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + Lf t), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) :
     (S.card : ℝ)
       ≤ ((S.filter (fun t =>
           (3 / 16) * D * (Lf t : ℝ)
               ≤ (((Finset.Ioc t (t + Lf t)).filter (fun n => moebius n = 1)).card : ℝ)
             ∧ (3 / 16) * D * (Lf t : ℝ)
               ≤ (((Finset.Ioc t (t + Lf t)).filter (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
-        + V / δ ^ 2 + (Bad₂.card : ℝ) := by
+        + V / δ ^ (2 : ℕ) + (Bad₂.card : ℝ) := by
   classical
   set M : ℕ → ℝ := fun t => ∑ n ∈ Finset.Ioc t (t + Lf t), ((moebius n : ℤ) : ℝ) with hM
   set Bad₁ : Finset ℕ := S.filter (fun t => δ ≤ |M t|) with hBad₁
@@ -70,7 +70,7 @@ theorem card_le_good_add_meanSquare_var {S Bad₂ : Finset ℕ} {Lf : ℕ → �
     linarith [hδL t ht]
   have hcover := card_le_good_add_bad_var (S := S) (Bad₁ := Bad₁) (Bad₂ := Bad₂)
     (Lf := Lf) (D := D) h1 h2
-  have hmarkov : (Bad₁.card : ℝ) ≤ V / δ ^ 2 := by
+  have hmarkov : (Bad₁.card : ℝ) ≤ V / δ ^ (2 : ℕ) := by
     rw [hBad₁]
     exact RHTower.card_large_le_of_sum_sq_le hδ hms
   have hcast : (S.card : ℝ)

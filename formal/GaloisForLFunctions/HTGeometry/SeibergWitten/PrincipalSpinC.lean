@@ -19,7 +19,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry.SeibergWitten
 
-/-- Riemannian Clifford quadratic form in the convention `c(v)^2 = -‖v‖²`. -/
+/-- Riemannian Clifford quadratic form in the convention `c(v)^(2 : ℕ) = -‖v‖²`. -/
 def fourSpinQuadraticForm : QuadraticForm ℝ FourSpace :=
   (Matrix.toQuadraticForm' (-1 : Matrix (Fin 4) (Fin 4) ℝ)).comp
     (EuclideanSpace.equiv (Fin 4) ℝ).toLinearMap

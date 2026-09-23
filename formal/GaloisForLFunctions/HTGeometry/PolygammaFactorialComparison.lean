@@ -25,7 +25,7 @@ variable {σ t : ℝ}
 theorem norm_le_norm_add_nat {x : ℂ} (hx : 0 < x.re) (j : ℕ) : ‖x‖ ≤ ‖x + (j : ℂ)‖ := by
   have hre : (x + (j : ℂ)).re = x.re + (j : ℝ) := by simp
   have him : (x + (j : ℂ)).im = x.im := by simp
-  have hsq : ‖x‖ ^ 2 ≤ ‖x + (j : ℂ)‖ ^ 2 := by
+  have hsq : ‖x‖ ^ (2 : ℕ) ≤ ‖x + (j : ℂ)‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply, hre, him]
     have hj : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
     nlinarith

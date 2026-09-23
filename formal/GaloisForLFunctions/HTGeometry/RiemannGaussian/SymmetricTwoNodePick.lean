@@ -518,7 +518,7 @@ theorem symmetricPickFeature_det_formula
   have hqMinus : symmetricPickAlphaMinus tau a -
       starRingEnd ℂ (symmetricPickPole (-x) v) ≠ 0 :=
     sub_conj_ne_zero_of_im_pos (by simpa using ha) (by simpa using hv)
-  have hsqrt : (Real.sqrt (2 * v) : ℂ) ^ 2 = (2 * v : ℂ) := by
+  have hsqrt : (Real.sqrt (2 * v) : ℂ) ^ (2 : ℕ) = (2 * v : ℂ) := by
     exact_mod_cast Real.sq_sqrt (by positivity : 0 ≤ 2 * v)
   unfold symmetricPickFeature0 symmetricPickFeature1
     elementaryPickFeature elementaryUpperHalfPlaneBlaschke
@@ -587,7 +587,7 @@ theorem normSq_I_div_sqrt_two_mul
     Complex.normSq (Complex.I / (Real.sqrt (2 * v) : ℂ)) =
       1 / (2 * v) := by
   rw [Complex.normSq_div, Complex.normSq_I, Complex.normSq_ofReal]
-  have hsqrt : Real.sqrt (2 * v) ^ 2 = 2 * v :=
+  have hsqrt : Real.sqrt (2 * v) ^ (2 : ℕ) = 2 * v :=
     Real.sq_sqrt (by positivity)
   rw [show Real.sqrt (2 * v) * Real.sqrt (2 * v) = 2 * v by
     simpa [pow_two] using hsqrt]
@@ -983,7 +983,7 @@ theorem norm_pole_le_symmetricPickBound_of_posSemidef
       2 * ‖symmetricPickBlaschke x v (symmetricPickAlphaPlus tau a)‖ /
         (1 +
           ‖symmetricPickBlaschke x v
-            (symmetricPickAlphaPlus tau a)‖ ^ 2) := by
+            (symmetricPickAlphaPlus tau a)‖ ^ (2 : ℕ)) := by
   apply norm_le_two_mul_div_one_add_sq_of_generalTwoNodePickMatrix
       (A := symmetricPickBaseA tau a x v)
       (D := symmetricPickBaseD tau a x v)
@@ -1018,7 +1018,7 @@ theorem norm_lowerRootInnerValue_at_pole_le_symmetricPickBound
       2 * ‖symmetricPickBlaschke x v (symmetricPickAlphaPlus tau a)‖ /
         (1 +
           ‖symmetricPickBlaschke x v
-            (symmetricPickAlphaPlus tau a)‖ ^ 2) := by
+            (symmetricPickAlphaPlus tau a)‖ ^ (2 : ℕ)) := by
   have hnodes : ∀ i,
       0 < (symmetricPickNodes tau a x v i).im := by
     intro i

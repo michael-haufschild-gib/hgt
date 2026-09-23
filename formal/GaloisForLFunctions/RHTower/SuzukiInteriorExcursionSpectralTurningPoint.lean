@@ -145,7 +145,7 @@ theorem suzukiDefectAngleTiltVelocity_eq_hazardFactor
     (heven : evenEnergy ≠ 0) (hodd : oddEnergy ≠ 0) :
     suzukiDefectAngleTiltVelocity
         evenEnergy oddEnergy evenVelocity oddVelocity =
-      (2 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ 2) *
+      (2 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ (2 : ℕ)) *
         (evenVelocity / evenEnergy - oddVelocity / oddEnergy) := by
   rw [suzukiDefectAngleTiltVelocity]
   field_simp [heven, hodd]
@@ -160,7 +160,7 @@ theorem suzukiDefectAngleTiltVelocity_pos_iff_hazardGap_pos
       0 < evenVelocity / evenEnergy - oddVelocity / oddEnergy := by
   rw [suzukiDefectAngleTiltVelocity_eq_hazardFactor heven.ne' hodd.ne']
   have hfactor :
-      0 < 2 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ 2 := by
+      0 < 2 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ (2 : ℕ) := by
     exact div_pos (mul_pos (mul_pos (by norm_num) heven) hodd)
       (sq_pos_of_pos (add_pos heven hodd))
   exact mul_pos_iff_of_pos_left hfactor
@@ -174,7 +174,7 @@ theorem suzukiDefectAngleTiltVelocity_eq_zero_iff_hazardGap_eq_zero
       evenVelocity / evenEnergy - oddVelocity / oddEnergy = 0 := by
   rw [suzukiDefectAngleTiltVelocity_eq_hazardFactor heven.ne' hodd.ne']
   have hfactor :
-      0 < 2 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ 2 := by
+      0 < 2 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ (2 : ℕ) := by
     exact div_pos (mul_pos (mul_pos (by norm_num) heven) hodd)
       (sq_pos_of_pos (add_pos heven hodd))
   simp only [mul_eq_zero, hfactor.ne', false_or]
@@ -189,7 +189,7 @@ theorem suzukiDefectAngleTiltVelocity_neg_iff_hazardGap_neg
       evenVelocity / evenEnergy - oddVelocity / oddEnergy < 0 := by
   rw [suzukiDefectAngleTiltVelocity_eq_hazardFactor heven.ne' hodd.ne']
   have hfactor :
-      0 < 2 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ 2 := by
+      0 < 2 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ (2 : ℕ) := by
     exact div_pos (mul_pos (mul_pos (by norm_num) heven) hodd)
       (sq_pos_of_pos (add_pos heven hodd))
   constructor
@@ -205,8 +205,8 @@ theorem hasDerivAt_suzukiShiftResolventKernel_sq
     {γ : Type*} {node : γ → ℝ} {lam : ℝ} {x : γ}
     (h : node x - lam ≠ 0) :
     HasDerivAt
-      (fun l => suzukiShiftResolventKernel node l x ^ 2)
-      (2 * suzukiShiftResolventKernel node lam x ^ 3) lam := by
+      (fun l => suzukiShiftResolventKernel node l x ^ (2 : ℕ))
+      (2 * suzukiShiftResolventKernel node lam x ^ (3 : ℕ)) lam := by
   have hpow := (hasDerivAt_suzukiShiftResolventKernel h).pow 2
   apply hpow.congr_deriv
   ring
@@ -220,22 +220,22 @@ theorem hasDerivAt_integral_weighted_suzukiShiftResolventKernel_sq
     (hs : s ∈ nhds lam)
     (hF_meas : ∀ᶠ l in nhds lam,
       AEStronglyMeasurable
-        (fun x => g x * suzukiShiftResolventKernel node l x ^ 2) μ)
+        (fun x => g x * suzukiShiftResolventKernel node l x ^ (2 : ℕ)) μ)
     (hF_int : Integrable
-      (fun x => g x * suzukiShiftResolventKernel node lam x ^ 2) μ)
+      (fun x => g x * suzukiShiftResolventKernel node lam x ^ (2 : ℕ)) μ)
     (hF'_meas : AEStronglyMeasurable
       (fun x => 2 * (g x *
-        suzukiShiftResolventKernel node lam x ^ 3)) μ)
+        suzukiShiftResolventKernel node lam x ^ (3 : ℕ))) μ)
     (h_bound : ∀ᵐ x ∂μ, ∀ l ∈ s,
-      ‖2 * (g x * suzukiShiftResolventKernel node l x ^ 3)‖ ≤
+      ‖2 * (g x * suzukiShiftResolventKernel node l x ^ (3 : ℕ))‖ ≤
         bound x)
     (bound_int : Integrable bound μ)
     (h_ne : ∀ᵐ x ∂μ, ∀ l ∈ s, node x - l ≠ 0) :
     HasDerivAt
       (fun l => ∫ x,
-        g x * suzukiShiftResolventKernel node l x ^ 2 ∂μ)
+        g x * suzukiShiftResolventKernel node l x ^ (2 : ℕ) ∂μ)
       (2 * ∫ x,
-        g x * suzukiShiftResolventKernel node lam x ^ 3 ∂μ) lam := by
+        g x * suzukiShiftResolventKernel node lam x ^ (3 : ℕ) ∂μ) lam := by
   have hraw :=
     (hasDerivAt_integral_of_dominated_loc_of_deriv_le
       hs hF_meas hF_int hF'_meas h_bound bound_int
@@ -252,12 +252,12 @@ resolvent-tilted source law. -/
 def suzukiParityCubedSpectralEnergy
     {γ : Type*} [MeasurableSpace γ]
     (μ : Measure γ) (node weight : γ → ℝ) (lambda : ℝ) : ℝ :=
-  ∫ x, weight x * suzukiShiftResolventKernel node lambda x ^ 3 ∂μ
+  ∫ x, weight x * suzukiShiftResolventKernel node lambda x ^ (3 : ℕ) ∂μ
 
 /-- Normalized inverse-gap variance coordinate for a positive resolvent-tilted source law. -/
 def suzukiParityTiltedInverseGapVariance
     (energy squaredEnergy cubedEnergy : ℝ) : ℝ :=
-  cubedEnergy / energy - (squaredEnergy / energy) ^ 2
+  cubedEnergy / energy - (squaredEnergy / energy) ^ (2 : ℕ)
 
 /-- At normalized first-moment balance, the derivative of the parity-angle velocity is the
 stationary cubed-resolvent cross-Wronskian. -/
@@ -277,7 +277,7 @@ theorem hasDerivAt_suzukiDefectAngleTiltVelocity_of_balance
       (fun u => suzukiDefectAngleTiltVelocity
         (evenEnergy u) (oddEnergy u) (evenSquared u) (oddSquared u))
       (4 * (evenCubed * oddEnergy t - evenEnergy t * oddCubed) /
-        (evenEnergy t + oddEnergy t) ^ 2) t := by
+        (evenEnergy t + oddEnergy t) ^ (2 : ℕ)) t := by
   have hcross :
       evenSquared t * oddEnergy t - evenEnergy t * oddSquared t = 0 := by
     field_simp [heven0, hodd0] at hbalance
@@ -293,14 +293,14 @@ theorem hasDerivAt_suzukiDefectAngleTiltVelocity_of_balance
                 evenSquared t * oddSquared t -
                 (evenSquared t * oddSquared t +
                   evenEnergy t * (2 * oddCubed))) *
-              ((evenEnergy + oddEnergy) ^ 2) t -
+              ((evenEnergy + oddEnergy) ^ (2 : ℕ)) t -
             (evenSquared * oddEnergy -
               evenEnergy * oddSquared) t *
               (2 * (evenEnergy + oddEnergy) t ^ (2 - 1) *
                 (evenSquared t + oddSquared t))) /
-          ((evenEnergy + oddEnergy) ^ 2) t ^ 2) =
+          ((evenEnergy + oddEnergy) ^ (2 : ℕ)) t ^ (2 : ℕ)) =
         4 * (evenCubed * oddEnergy t - evenEnergy t * oddCubed) /
-          (evenEnergy t + oddEnergy t) ^ 2 := by
+          (evenEnergy t + oddEnergy t) ^ (2 : ℕ) := by
     simp only [Pi.add_apply, Pi.mul_apply, Pi.sub_apply, Pi.pow_apply]
     rw [hcross]
     simp only [zero_mul, sub_zero]
@@ -320,8 +320,8 @@ theorem suzukiStationaryAngleAcceleration_eq_tiltedVarianceDifference
     (hsum : evenEnergy + oddEnergy ≠ 0)
     (hbalance : evenSquared / evenEnergy = oddSquared / oddEnergy) :
     4 * (evenCubed * oddEnergy - evenEnergy * oddCubed) /
-          (evenEnergy + oddEnergy) ^ 2 =
-      (4 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ 2) *
+          (evenEnergy + oddEnergy) ^ (2 : ℕ) =
+      (4 * evenEnergy * oddEnergy / (evenEnergy + oddEnergy) ^ (2 : ℕ)) *
         (suzukiParityTiltedInverseGapVariance
             evenEnergy evenSquared evenCubed -
           suzukiParityTiltedInverseGapVariance
@@ -379,7 +379,7 @@ theorem suzukiParitySpectral_interiorExcursion_forces_creditBalanceDebt
     (hevenSqInt : ∀ lambda ∈ Ioo left right,
       Integrable
         (fun x => evenWeight x *
-          suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+          suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)) μ)
     (hoddInt : ∀ lambda ∈ Ioo left right,
       Integrable
         (fun y => oddWeight y *
@@ -387,7 +387,7 @@ theorem suzukiParitySpectral_interiorExcursion_forces_creditBalanceDebt
     (hoddSqInt : ∀ lambda ∈ Ioo left right,
       Integrable
         (fun y => oddWeight y *
-          suzukiShiftResolventKernel oddNode lambda y ^ 2) ν)
+          suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)) ν)
     (hevenPos : ∀ lambda ∈ Icc left right,
       0 < suzukiParitySpectralEnergy
         μ evenNode evenWeight lambda)
@@ -558,7 +558,7 @@ theorem suzukiParitySpectral_interiorExcursion_forces_creditBalanceDebt
           (suzukiParitySpectralEnergy
                 μ evenNode evenWeight peak +
               suzukiParitySpectralEnergy
-                ν oddNode oddWeight peak) ^ 2)
+                ν oddNode oddWeight peak) ^ (2 : ℕ))
         peak := by
     dsimp only [velocity]
     exact hasDerivAt_suzukiDefectAngleTiltVelocity_of_balance
@@ -587,7 +587,7 @@ theorem suzukiParitySpectral_interiorExcursion_forces_creditBalanceDebt
           (suzukiParitySpectralEnergy
                 μ evenNode evenWeight peak +
               suzukiParitySpectralEnergy
-                ν oddNode oddWeight peak) ^ 2)
+                ν oddNode oddWeight peak) ^ (2 : ℕ))
         peak :=
     hvelocityDeriv.congr_of_eventuallyEq hangleDerivEq
   have haccelerationNonpos :
@@ -603,7 +603,7 @@ theorem suzukiParitySpectral_interiorExcursion_forces_creditBalanceDebt
           (suzukiParitySpectralEnergy
                 μ evenNode evenWeight peak +
               suzukiParitySpectralEnergy
-                ν oddNode oddWeight peak) ^ 2 ≤ 0 := by
+                ν oddNode oddWeight peak) ^ (2 : ℕ) ≤ 0 := by
     have hsecond :=
       suzukiSecondDeriv_nonpos_of_isLocalMax
         hpeakLocalMax (hangleDeriv peak hpeak).continuousAt
@@ -633,7 +633,7 @@ theorem suzukiParitySpectral_interiorExcursion_forces_creditBalanceDebt
           (suzukiParitySpectralEnergy
                 μ evenNode evenWeight peak +
               suzukiParitySpectralEnergy
-                ν oddNode oddWeight peak) ^ 2 := by
+                ν oddNode oddWeight peak) ^ (2 : ℕ) := by
     exact div_pos
       (mul_pos
         (mul_pos (by norm_num)

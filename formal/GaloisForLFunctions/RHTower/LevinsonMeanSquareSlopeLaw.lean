@@ -52,57 +52,57 @@ theorem hasDerivAt_youngE_zero : HasDerivAt youngE 1 0 := by
       linarith
     have hb := Real.exp_bound hx (n := 3) (by norm_num)
     have hsum : ∑ m ∈ Finset.range 3, (2 * R) ^ m / (m.factorial : ℝ)
-        = 1 + 2 * R + 2 * R ^ 2 := by
+        = 1 + 2 * R + 2 * R ^ (2 : ℕ) := by
       simp [Finset.sum_range_succ, Nat.factorial]
       ring
     rw [hsum] at hb
-    have hcoef : |2 * R| ^ 3 * (((3 : ℕ).succ : ℝ) / (((3 : ℕ).factorial : ℝ) * (3 : ℕ)))
-        = (16 / 9) * |R| ^ 3 := by
+    have hcoef : |2 * R| ^ (3 : ℕ) * (((3 : ℕ).succ : ℝ) / (((3 : ℕ).factorial : ℝ) * (3 : ℕ)))
+        = (16 / 9) * |R| ^ (3 : ℕ) := by
       rw [abs_mul, abs_two]
       norm_num [Nat.factorial]
       ring
     rw [hcoef] at hb
     have hnum : (Real.exp (2 * R) - 1) / (2 * R) - 1 - R
-        = (Real.exp (2 * R) - (1 + 2 * R + 2 * R ^ 2)) / (2 * R) := by
+        = (Real.exp (2 * R) - (1 + 2 * R + 2 * R ^ (2 : ℕ))) / (2 * R) := by
       field_simp
       ring
     rw [hnum, abs_div, abs_mul, abs_two]
     rw [div_le_iff₀ (by positivity : (0 : ℝ) < 2 * |R|)]
     have hR0 : 0 < |R| := abs_pos.mpr h0
-    have hkey : (16 / 9) * |R| ^ 3 ≤ c * |R| * (2 * |R|) := by
+    have hkey : (16 / 9) * |R| ^ (3 : ℕ) ≤ c * |R| * (2 * |R|) := by
       have h1 : (16 / 9) * |R| ≤ 2 * c := by linarith
-      have h2 : 0 ≤ |R| ^ 2 := sq_nonneg _
+      have h2 : 0 ≤ |R| ^ (2 : ℕ) := sq_nonneg _
       nlinarith [mul_le_mul_of_nonneg_right h1 h2]
     linarith
 
 /-- The Levinson/Young mean-square functional. -/
 def youngMeanSquare (θ : ℝ) (P P' : ℝ → ℝ) (R : ℝ) : ℝ :=
-  1 + (1 / θ) * (youngE R * ∫ u in (0 : ℝ)..1, (R * θ * P u + P' u) ^ 2)
+  1 + (1 / θ) * (youngE R * ∫ u in (0 : ℝ)..1, (R * θ * P u + P' u) ^ (2 : ℕ))
 
 /-- The mollifier integral is a quadratic polynomial in the shift. -/
 theorem integral_shiftedProfile_sq {θ : ℝ} {P P' : ℝ → ℝ} (hPc : Continuous P)
     (hP' : Continuous P') (R : ℝ) :
-    (∫ u in (0 : ℝ)..1, (R * θ * P u + P' u) ^ 2)
-      = (∫ u in (0 : ℝ)..1, P' u ^ 2) + (∫ u in (0 : ℝ)..1, 2 * θ * (P u * P' u)) * R
-        + (∫ u in (0 : ℝ)..1, θ ^ 2 * P u ^ 2) * R ^ 2 := by
-  have hfun : (fun u => (R * θ * P u + P' u) ^ 2)
-      = fun u => (P' u ^ 2 + 2 * θ * (P u * P' u) * R) + θ ^ 2 * P u ^ 2 * R ^ 2 := by
+    (∫ u in (0 : ℝ)..1, (R * θ * P u + P' u) ^ (2 : ℕ))
+      = (∫ u in (0 : ℝ)..1, P' u ^ (2 : ℕ)) + (∫ u in (0 : ℝ)..1, 2 * θ * (P u * P' u)) * R
+        + (∫ u in (0 : ℝ)..1, θ ^ (2 : ℕ) * P u ^ (2 : ℕ)) * R ^ (2 : ℕ) := by
+  have hfun : (fun u => (R * θ * P u + P' u) ^ (2 : ℕ))
+      = fun u => (P' u ^ (2 : ℕ) + 2 * θ * (P u * P' u) * R) + θ ^ (2 : ℕ) * P u ^ (2 : ℕ) * R ^ (2 : ℕ) := by
     funext u
     ring
-  have h1 : IntervalIntegrable (fun u => P' u ^ 2) MeasureTheory.volume 0 1 :=
+  have h1 : IntervalIntegrable (fun u => P' u ^ (2 : ℕ)) MeasureTheory.volume 0 1 :=
     (hP'.pow 2).intervalIntegrable 0 1
   have h2 : IntervalIntegrable (fun u => 2 * θ * (P u * P' u) * R) MeasureTheory.volume 0 1 :=
     (((hPc.mul hP').const_mul (2 * θ)).mul_const R).intervalIntegrable 0 1
-  have h3 : IntervalIntegrable (fun u => θ ^ 2 * P u ^ 2 * R ^ 2) MeasureTheory.volume 0 1 :=
-    (((hPc.pow 2).const_mul (θ ^ 2)).mul_const (R ^ 2)).intervalIntegrable 0 1
+  have h3 : IntervalIntegrable (fun u => θ ^ (2 : ℕ) * P u ^ (2 : ℕ) * R ^ (2 : ℕ)) MeasureTheory.volume 0 1 :=
+    (((hPc.pow 2).const_mul (θ ^ (2 : ℕ))).mul_const (R ^ (2 : ℕ))).intervalIntegrable 0 1
   rw [hfun, intervalIntegral.integral_add (h1.add h2) h3, intervalIntegral.integral_add h1 h2,
     intervalIntegral.integral_mul_const, intervalIntegral.integral_mul_const]
 
 /-- `∫₀¹ 2θ P P' = θ (P(1)² − P(0)²)`. -/
 theorem integral_two_theta_mul_profile_deriv {θ : ℝ} {P P' : ℝ → ℝ}
     (hP : ∀ x, HasDerivAt P (P' x) x) (hPc : Continuous P) (hP' : Continuous P') :
-    (∫ u in (0 : ℝ)..1, 2 * θ * (P u * P' u)) = θ * (P 1 ^ 2 - P 0 ^ 2) := by
-  have hsq : ∀ x, HasDerivAt (fun x => P x ^ 2) (2 * (P x * P' x)) x := by
+    (∫ u in (0 : ℝ)..1, 2 * θ * (P u * P' u)) = θ * (P 1 ^ (2 : ℕ) - P 0 ^ (2 : ℕ)) := by
+  have hsq : ∀ x, HasDerivAt (fun x => P x ^ (2 : ℕ)) (2 * (P x * P' x)) x := by
     intro x
     have h := (hP x).pow 2
     have h2 : ((2 : ℕ) : ℝ) * P x ^ (2 - 1) * P' x = 2 * (P x * P' x) := by
@@ -125,20 +125,20 @@ theorem youngMeanSquare_slope_law {θ : ℝ} (hθ : θ ≠ 0) {P P' : ℝ → �
     (hP : ∀ x, HasDerivAt P (P' x) x) (hP' : Continuous P') (hP0 : P 0 = 0) (hP1 : P 1 = 1) :
     HasDerivAt (youngMeanSquare θ P P') (youngMeanSquare θ P P' 0) 0 := by
   have hPc : Continuous P := continuous_iff_continuousAt.2 fun x => (hP x).continuousAt
-  set A : ℝ := ∫ u in (0 : ℝ)..1, P' u ^ 2 with hA
+  set A : ℝ := ∫ u in (0 : ℝ)..1, P' u ^ (2 : ℕ) with hA
   set B : ℝ := ∫ u in (0 : ℝ)..1, 2 * θ * (P u * P' u) with hB
-  set C : ℝ := ∫ u in (0 : ℝ)..1, θ ^ 2 * P u ^ 2 with hC
+  set C : ℝ := ∫ u in (0 : ℝ)..1, θ ^ (2 : ℕ) * P u ^ (2 : ℕ) with hC
   have hBθ : B = θ := by
     rw [hB, integral_two_theta_mul_profile_deriv hP hPc hP', hP0, hP1]
     ring
   have hfun : youngMeanSquare θ P P'
-      = fun R => 1 + (1 / θ) * (youngE R * (A + B * R + C * R ^ 2)) := by
+      = fun R => 1 + (1 / θ) * (youngE R * (A + B * R + C * R ^ (2 : ℕ))) := by
     funext R
     simp only [youngMeanSquare]
     rw [integral_shiftedProfile_sq hPc hP' R]
   rw [hfun]
-  show HasDerivAt _ (1 + 1 / θ * (youngE 0 * (A + B * 0 + C * 0 ^ 2))) 0
-  have hpoly : HasDerivAt (fun R : ℝ => A + B * R + C * R ^ 2)
+  show HasDerivAt _ (1 + 1 / θ * (youngE 0 * (A + B * 0 + C * 0 ^ (2 : ℕ)))) 0
+  have hpoly : HasDerivAt (fun R : ℝ => A + B * R + C * R ^ (2 : ℕ))
       (B * 1 + C * ((2 : ℕ) * (0 : ℝ) ^ (2 - 1))) 0 :=
     (((hasDerivAt_id' (0 : ℝ)).const_mul B).const_add A).add
       ((hasDerivAt_pow 2 (0 : ℝ)).const_mul C)

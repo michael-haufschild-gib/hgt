@@ -46,7 +46,7 @@ def quantumPairOperator (G : ι → Module.End K M) (p : QuantumLawPair ι) :
   G p.upper * G p.lower
 
 /-- The canonical coordinate bivector attached to an increasing law pair. -/
-def quantumPairWedge (p : QuantumLawPair ι) : ⋀[K]^2 (ι → K) :=
+def quantumPairWedge (p : QuantumLawPair ι) : ⋀[K]^(2 : ℕ) (ι → K) :=
   exteriorPower.ιMulti K 2
     ![Pi.basisFun K ι p.lower, Pi.basisFun K ι p.upper]
 
@@ -68,7 +68,7 @@ def quantumPairSpanDecoder
     (q : K) (G : ι → Module.End K M)
     (hLI : LinearIndependent K (quantumPairOperator G)) :
     Submodule.span K (Set.range (quantumPairOperator G)) →ₗ[K]
-      ⋀[K]^2 (ι → K) :=
+      ⋀[K]^(2 : ℕ) (ι → K) :=
   (Finsupp.linearCombination K fun p : QuantumLawPair ι ↦
     (q - 1)⁻¹ • quantumPairWedge (K := K) p).comp hLI.repr
 
@@ -76,7 +76,7 @@ def quantumPairSpanDecoder
 def quantumPairDecoder
     (q : K) (G : ι → Module.End K M)
     (hLI : LinearIndependent K (quantumPairOperator G)) :
-    Module.End K M →ₗ[K] ⋀[K]^2 (ι → K) :=
+    Module.End K M →ₗ[K] ⋀[K]^(2 : ℕ) (ι → K) :=
   Classical.choose (LinearMap.exists_extend (quantumPairSpanDecoder q G hLI))
 
 omit [CharZero K] in
@@ -119,7 +119,7 @@ theorem quantumGenerator_commutator_of_lt
 def decodedQuantumCommutatorMap
     (q : K) (G : ι → Module.End K M)
     (hLI : LinearIndependent K (quantumPairOperator G)) :
-    (⋀[K]^2 (ι → K)) →ₗ[K] ⋀[K]^2 (ι → K) :=
+    (⋀[K]^(2 : ℕ) (ι → K)) →ₗ[K] ⋀[K]^(2 : ℕ) (ι → K) :=
   (quantumPairDecoder q G hLI).comp
     (endomorphismCommutatorMap (quantumGeneratorSymbol G))
 

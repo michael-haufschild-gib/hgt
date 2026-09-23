@@ -255,7 +255,7 @@ On the ball `B(z, R=‖z‖/2)` (⊆ `escapeOpen`), `‖S(w)‖ ≤ 2‖c‖/‖
 `norm_deriv_le_of_forall_mem_sphere_norm_le` gives `‖S'(z)‖ ≤ (2‖c‖/R²)/R = 16‖c‖/‖z‖³`. With
 `logDeriv φ_c = z⁻¹ + S'` this yields `d log φ_c ≠ 0` once `‖z‖² > 16‖c‖`. Axiom-clean. -/
 theorem norm_deriv_bottcherLogSum_le {c z : ℂ} (hz : 2 * max 2 ‖c‖ < ‖z‖) :
-    ‖deriv (fun w => ∑' k, bottcherLogTerm c w k) z‖ ≤ 16 * ‖c‖ / ‖z‖ ^ 3 := by
+    ‖deriv (fun w => ∑' k, bottcherLogTerm c w k) z‖ ≤ 16 * ‖c‖ / ‖z‖ ^ (3 : ℕ) := by
   have hmaxpos : (0:ℝ) < max 2 ‖c‖ := lt_of_lt_of_le (by norm_num) (le_max_left _ _)
   have hzpos : 0 < ‖z‖ := by nlinarith
   set R := ‖z‖ / 2 with hRdef
@@ -273,9 +273,9 @@ theorem norm_deriv_bottcherLogSum_le {c z : ℂ} (hz : 2 * max 2 ‖c‖ < ‖z�
      ((differentiableOn_bottcherLogSum c).mono hsub).continuousOn.mono
         Metric.closure_ball_subset_closedBall⟩
   have hC : ∀ w ∈ Metric.sphere z R, ‖(fun w => ∑' k, bottcherLogTerm c w k) w‖
-      ≤ 2 * ‖c‖ / R ^ 2 := by
+      ≤ 2 * ‖c‖ / R ^ (2 : ℕ) := by
     intro w hw
-    show ‖∑' k, bottcherLogTerm c w k‖ ≤ 2 * ‖c‖ / R ^ 2
+    show ‖∑' k, bottcherLogTerm c w k‖ ≤ 2 * ‖c‖ / R ^ (2 : ℕ)
     rw [Metric.mem_sphere, dist_eq_norm] at hw
     have hwge : R ≤ ‖w‖ := by
       have h1 := norm_sub_norm_le z w
@@ -304,7 +304,7 @@ open Complex
 `logDeriv φ_c z = z⁻¹ + S'(z)` with `‖z⁻¹‖ = 1/‖z‖` strictly bigger than `‖S'(z)‖ ≤ 16‖c‖/‖z‖³`, so the
 sum is nonzero — the pole `z⁻¹` dominates the analytic correction at `∞`. Axiom-clean. -/
 theorem logDeriv_bottcherCoord_ne_zero_far {c z : ℂ}
-    (h1 : 2 * max 2 ‖c‖ < ‖z‖) (h2 : 16 * ‖c‖ < ‖z‖ ^ 2) :
+    (h1 : 2 * max 2 ‖c‖ < ‖z‖) (h2 : 16 * ‖c‖ < ‖z‖ ^ (2 : ℕ)) :
     logDeriv (bottcherCoord c) z ≠ 0 := by
   have hm : (0:ℝ) < max 2 ‖c‖ := lt_of_lt_of_le (by norm_num) (le_max_left _ _)
   have hzpos : 0 < ‖z‖ := by linarith
@@ -316,10 +316,10 @@ theorem logDeriv_bottcherCoord_ne_zero_far {c z : ℂ}
     linear_combination hzero
   have hSbound := norm_deriv_bottcherLogSum_le h1
   rw [hSeq, norm_neg, norm_inv] at hSbound
-  have hkey : ‖z‖ ^ 2 ≤ 16 * ‖c‖ := by
-    have hz3 : (0:ℝ) < ‖z‖ ^ 3 := by positivity
+  have hkey : ‖z‖ ^ (2 : ℕ) ≤ 16 * ‖c‖ := by
+    have hz3 : (0:ℝ) < ‖z‖ ^ (3 : ℕ) := by positivity
     have h := (le_div_iff₀ hz3).mp hSbound
-    have heqsimp : ‖z‖⁻¹ * ‖z‖ ^ 3 = ‖z‖ ^ 2 := by
+    have heqsimp : ‖z‖⁻¹ * ‖z‖ ^ (3 : ℕ) = ‖z‖ ^ (2 : ℕ) := by
       rw [inv_mul_eq_div, eq_comm, eq_div_iff hzpos.ne']; ring
     rwa [heqsimp] at h
   linarith [hkey, h2]
@@ -347,7 +347,7 @@ theorem logDeriv_bottcherCoord_ne_zero_escape {c z : ℂ} (hz : z ∈ escapeOpen
   have hwpos : 0 < ‖w‖ := by linarith
   have hge1 : 1 < ‖w‖ := by linarith
   have h16 : 16 * ‖c‖ < ‖w‖ := by linarith
-  have h2far : 16 * ‖c‖ < ‖w‖ ^ 2 := by nlinarith [hge1, h16, hwpos]
+  have h2far : 16 * ‖c‖ < ‖w‖ ^ (2 : ℕ) := by nlinarith [hge1, h16, hwpos]
   intro hzero
   rw [logDeriv_bottcherCoord_iterate_eq_zero_iff hz N] at hzero
   exact logDeriv_bottcherCoord_ne_zero_far h1far h2far hzero
@@ -552,9 +552,9 @@ theorem deriv2_completion_critical_ne_zero {c : ℂ} (hc : Disconnected c) {R : 
     intro z hz
     rw [Metric.mem_ball, dist_eq_norm] at hz ⊢
     simp only [sub_zero] at hz
-    have hzz : quadratic c z - quadratic c 0 = z ^ 2 := by simp only [quadratic]; ring
+    have hzz : quadratic c z - quadratic c 0 = z ^ (2 : ℕ) := by simp only [quadratic]; ring
     rw [hzz, norm_pow]
-    have h1 : ‖z‖ ^ 2 < r ^ 2 := by
+    have h1 : ‖z‖ ^ (2 : ℕ) < r ^ (2 : ℕ) := by
       rw [sq, sq]; exact mul_self_lt_mul_self (norm_nonneg z) hz
     nlinarith [h1, hrle1, hrRc, hrpos]
   -- deriv F = z * deriv Fc (quadratic c z) on ball 0 r
@@ -617,8 +617,8 @@ open Complex
 
 /-- **[normal form, step 1] A nonvanishing analytic function has a local analytic square root.** -/
 theorem exists_analyticAt_sq_eq {g : ℂ → ℂ} {z₀ : ℂ} (hg : AnalyticAt ℂ g z₀) (hg0 : g z₀ ≠ 0) :
-    ∃ h : ℂ → ℂ, AnalyticAt ℂ h z₀ ∧ h z₀ ≠ 0 ∧ ∀ᶠ z in nhds z₀, h z ^ 2 = g z := by
-  obtain ⟨s, hs⟩ : ∃ s : ℂ, s ^ 2 = g z₀ :=
+    ∃ h : ℂ → ℂ, AnalyticAt ℂ h z₀ ∧ h z₀ ≠ 0 ∧ ∀ᶠ z in nhds z₀, h z ^ (2 : ℕ) = g z := by
+  obtain ⟨s, hs⟩ : ∃ s : ℂ, s ^ (2 : ℕ) = g z₀ :=
     IsAlgClosed.exists_pow_nat_eq (g z₀) (by norm_num)
   have hsne : s ≠ 0 := by intro h; rw [h] at hs; simp at hs; exact hg0 hs.symm
   set q : ℂ → ℂ := fun z => g z / g z₀ with hq
@@ -664,7 +664,7 @@ factors near `0` as `F z − F 0 = z² · G z` with `G` analytic, `G 0 = ½F''(0
 the order-0 and order-1 coefficients vanish, the order-2 coefficient is `½F''(0)`.) -/
 theorem exists_factor_order_two {F : ℂ → ℂ} (hF : AnalyticAt ℂ F 0)
     (hF'0 : deriv F 0 = 0) (hF''0 : deriv (deriv F) 0 ≠ 0) :
-    ∃ G : ℂ → ℂ, AnalyticAt ℂ G 0 ∧ G 0 ≠ 0 ∧ ∀ᶠ z in nhds 0, F z - F 0 = z ^ 2 * G z := by
+    ∃ G : ℂ → ℂ, AnalyticAt ℂ G 0 ∧ G 0 ≠ 0 ∧ ∀ᶠ z in nhds 0, F z - F 0 = z ^ (2 : ℕ) * G z := by
   set d : ℂ → ℂ := fun z => F z - F 0 with hd
   have hdan : AnalyticAt ℂ d 0 := hF.sub analyticAt_const
   obtain ⟨F₃, hF₃an, hF₃⟩ := hdan.exists_eventuallyEq_sum_add_pow_mul 3
@@ -693,7 +693,7 @@ which the disconnected basin's two-lobe split is read. Axiom-clean. -/
 theorem exists_sq_normal_form {F : ℂ → ℂ} (hF : AnalyticAt ℂ F 0)
     (hF'0 : deriv F 0 = 0) (hF''0 : deriv (deriv F) 0 ≠ 0) :
     ∃ h : ℂ → ℂ, AnalyticAt ℂ h 0 ∧ h 0 = 0 ∧ deriv h 0 ≠ 0 ∧
-      ∀ᶠ z in nhds 0, F z - F 0 = (h z) ^ 2 := by
+      ∀ᶠ z in nhds 0, F z - F 0 = (h z) ^ (2 : ℕ) := by
   obtain ⟨G, hGan, hG0, hGeq⟩ := exists_factor_order_two hF hF'0 hF''0
   obtain ⟨s, hsan, hs0, hseq⟩ := exists_analyticAt_sq_eq hGan hG0
   refine ⟨fun z => z * s z, analyticAt_id.mul hsan, by simp, ?_, ?_⟩
@@ -717,7 +717,7 @@ open Complex
 `w ↦ Re(w²)` is the open double cone `{|Re w| < |Im w|}` — two half-cones (`Im w > |Re w|` and
 `Im w < −|Re w|`) meeting only at `0`. This is what makes `{Re w² < 0}` disconnected, hence (pulled back
 by the normal-form biholomorphism) the two Cantor lobes of the disconnected basin. Axiom-clean. -/
-theorem re_sq_neg_iff (w : ℂ) : (w ^ 2).re < 0 ↔ |w.re| < |w.im| := by
+theorem re_sq_neg_iff (w : ℂ) : (w ^ (2 : ℕ)).re < 0 ↔ |w.re| < |w.im| := by
   rw [sq, Complex.mul_re]
   constructor
   · intro h
@@ -731,7 +731,7 @@ preimage of the open double cone `{|Re w| < |Im w|}` under `h`. Since `h` is a l
 (`deriv h 0 ≠ 0`) and the double cone has two components, the sublevel set near `0` has two components —
 the two lobes. Axiom-clean. -/
 theorem sublevel_eq_preimage_doublecone {F h : ℂ → ℂ} {c₀ : ℂ}
-    (heq : ∀ᶠ z in nhds (0:ℂ), F z - c₀ = (h z) ^ 2) :
+    (heq : ∀ᶠ z in nhds (0:ℂ), F z - c₀ = (h z) ^ (2 : ℕ)) :
     ∀ᶠ z in nhds (0:ℂ), ((F z - c₀).re < 0 ↔ |(h z).re| < |(h z).im|) := by
   filter_upwards [heq] with z hz
   rw [hz]; exact re_sq_neg_iff (h z)

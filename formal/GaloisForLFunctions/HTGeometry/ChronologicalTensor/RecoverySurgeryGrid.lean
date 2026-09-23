@@ -17,7 +17,7 @@ noncomputable section
 open Real Polynomial
 
 theorem recoveryGrid_cos_chord (n : ℕ) (hn : 0 < n) :
-    Real.cos (Real.pi / n) ≤ 1 - 2 / (n : ℝ)^2 := by
+    Real.cos (Real.pi / n) ≤ 1 - 2 / (n : ℝ)^(2 : ℕ) := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have ha0 : 0 ≤ Real.pi / n := by positivity
@@ -42,7 +42,7 @@ theorem recoveryGrid_abs_cos_remainder (a n : ℕ) (hn : 0 < n) :
   rw [he,Real.cos_add_nat_mul_pi,abs_mul,abs_neg_one_pow,one_mul]
 
 theorem recoveryGrid_abs_cos_interior (r n : ℕ) (hr : 0 < r) (hrn : r < n) :
-    |Real.cos ((r : ℝ)*Real.pi/n)| ≤ 1 - 2/(n : ℝ)^2 := by
+    |Real.cos ((r : ℝ)*Real.pi/n)| ≤ 1 - 2/(n : ℝ)^(2 : ℕ) := by
   have hn : 0 < n := by omega
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   have hr1 : (1 : ℝ) ≤ r := by exact_mod_cast hr
@@ -70,7 +70,7 @@ theorem recoveryGrid_abs_cos_interior (r n : ℕ) (hr : 0 < r) (hrn : r < n) :
 
 theorem recoveryGrid_abs_cos_gap (a n : ℕ) :
     |Real.cos ((a : ℝ)*Real.pi/n)| = 1 ∨
-      |Real.cos ((a : ℝ)*Real.pi/n)| ≤ 1 - 2/(n : ℝ)^2 := by
+      |Real.cos ((a : ℝ)*Real.pi/n)| ≤ 1 - 2/(n : ℝ)^(2 : ℕ) := by
   by_cases hn : n=0
   · subst n
     simp
@@ -85,7 +85,7 @@ theorem recoveryGrid_abs_cos_gap (a n : ℕ) :
 theorem recoveryGrid_eval_gap (m n i : ℕ) (hn : 0 < n) (hnm : n ≤ m) :
     |(Chebyshev.T ℝ (m : ℤ)).eval (Chebyshev.node n i)| = 1 ∨
       |(Chebyshev.T ℝ (m : ℤ)).eval (Chebyshev.node n i)| ≤
-        1 - 2 / (m : ℝ)^2 := by
+        1 - 2 / (m : ℝ)^(2 : ℕ) := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   have hnmR : (n : ℝ) ≤ m := by exact_mod_cast hnm
   have he : (Chebyshev.T ℝ (m : ℤ)).eval (Chebyshev.node n i) =
@@ -98,7 +98,7 @@ theorem recoveryGrid_eval_gap (m n i : ℕ) (hn : 0 < n) (hnm : n ≤ m) :
   rcases recoveryGrid_abs_cos_gap (m*i) n with h | h
   · exact Or.inl h
   · right
-    have hd : 2/(m : ℝ)^2 ≤ 2/(n : ℝ)^2 :=
+    have hd : 2/(m : ℝ)^(2 : ℕ) ≤ 2/(n : ℝ)^(2 : ℕ) :=
       div_le_div_of_nonneg_left (by positivity) (sq_pos_of_pos hn0)
         (by nlinarith)
     linarith
@@ -143,7 +143,7 @@ theorem recoveryGrid_shared_or_gap (m n i : ℕ)
     (hn : 0 < n) (hnm : n < m) (hi : i ≤ n) :
     (∃ j ≤ m, j ≠ 1 ∧ Chebyshev.node n i = Chebyshev.node m j) ∨
       |(Chebyshev.T ℝ (m : ℤ)).eval (Chebyshev.node n i)| ≤
-        1 - 2/(m : ℝ)^2 := by
+        1 - 2/(m : ℝ)^(2 : ℕ) := by
   rcases recoveryGrid_eval_gap m n i hn (le_of_lt hnm) with he | hg
   · left
     obtain ⟨j, hj, heq⟩ :=
@@ -159,9 +159,9 @@ def recoveryCardinal (n : ℕ) : ℝ[X] :=
   Lagrange.basis (Finset.range (n+3)) (Chebyshev.node (n+2)) 1
 
 def recoverySurgeryAlpha (n : ℕ) : ℝ :=
-  -2*(n+2 : ℝ)^2 / (2*(n+2 : ℝ)-Chebyshev.node (n+2) 1)
+  -2*(n+2 : ℝ)^(2 : ℕ) / (2*(n+2 : ℝ)-Chebyshev.node (n+2) 1)
 
-def recoverySurgeryEpsilon (n : ℕ) : ℝ := 1/(16*(n+2 : ℝ)^3)
+def recoverySurgeryEpsilon (n : ℕ) : ℝ := 1/(16*(n+2 : ℝ)^(3 : ℕ))
 
 def recoverySurgeryHeight (n : ℕ) : ℝ := 1-recoverySurgeryEpsilon n/2
 
@@ -487,10 +487,10 @@ theorem recoverySurgeryPolynomial_bound (n : ℕ) (x : ℝ) (hx : |x| ≤ 1) :
     Chebyshev.abs_eval_T_real_le_one ((n+2 : ℕ) : ℤ) hx]
 
 theorem recoverySurgery_margin (n : ℕ) :
-    recoverySurgeryEpsilon n*(4*(n+2 : ℝ)+1)+1-2/(n+2 : ℝ)^2 <
+    recoverySurgeryEpsilon n*(4*(n+2 : ℝ)+1)+1-2/(n+2 : ℝ)^(2 : ℕ) <
       recoverySurgeryHeight n := by
   have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-  have he : 2/(n+2 : ℝ)^2 = recoverySurgeryEpsilon n*(32*(n+2 : ℝ)) := by
+  have he : 2/(n+2 : ℝ)^(2 : ℕ) = recoverySurgeryEpsilon n*(32*(n+2 : ℝ)) := by
     unfold recoverySurgeryEpsilon
     field_simp
     ring

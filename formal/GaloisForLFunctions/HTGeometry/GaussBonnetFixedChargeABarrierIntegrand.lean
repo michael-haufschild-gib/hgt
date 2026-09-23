@@ -14,24 +14,24 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeABarrierPolynomial (τ φ t : ℝ) : ℝ :=
-  egbFixedChargeAMeanPressureNumerator τ φ * egbCoexistenceASymmetricRatio τ * t ^ 2 +
+  egbFixedChargeAMeanPressureNumerator τ φ * egbCoexistenceASymmetricRatio τ * t ^ (2 : ℕ) +
     (2 * egbFixedChargeAMeanPressureNumerator τ φ + egbFixedChargeAMiddleMeanLinear τ φ) * t +
     (egbFixedChargeAMeanPressureNumerator τ φ + egbFixedChargeAMiddleMeanLinear τ φ + egbFixedChargeAMiddleMeanConstant τ φ) /
       egbCoexistenceASymmetricRatio τ
 
 def egbFixedChargeABarrierIntegrand (w φ τ u : ℝ) : ℝ :=
   egbFixedChargeAMeanRadius w φ τ * (egbFixedChargeAMiddleGapCoordinate τ φ - 1) *
-    (egbFixedChargeABarrierPathCoordinate τ φ u ^ 2 - 1) *
+    (egbFixedChargeABarrierPathCoordinate τ φ u ^ (2 : ℕ) - 1) *
     egbFixedChargeABarrierPolynomial τ φ (egbFixedChargeABarrierPathCoordinate τ φ u) /
-    (2 * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2) *
-      (1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeABarrierPathCoordinate τ φ u) ^ 2)
+    (2 * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) *
+      (1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeABarrierPathCoordinate τ φ u) ^ (2 : ℕ))
 
 def egbFixedChargeAGibbsBarrierCoefficient (w φ : ℝ) : ℝ :=
   egbFixedChargeACriticalRadius w φ * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ) /
     (12 * (1 + 2 * egbFixedChargeACriticalCouplingWeight φ))
 
 def egbFixedChargeABarrierLimitIntegrand (w φ u : ℝ) : ℝ :=
-  4 * egbFixedChargeAGibbsBarrierCoefficient w φ * (2 * u - 3 * u ^ 2 + u ^ 3)
+  4 * egbFixedChargeAGibbsBarrierCoefficient w φ * (2 * u - 3 * u ^ (2 : ℕ) + u ^ (3 : ℕ))
 
 theorem egbFixedChargeAGibbsBarrierCoefficient_pos (w φ : ℝ) : 0 < egbFixedChargeAGibbsBarrierCoefficient w φ := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
@@ -57,15 +57,15 @@ theorem egbFixedChargeABarrierIntegrand_critical_limit (w φ u : ℝ) :
   have hgap := (egbFixedChargeAMiddleGapCoordinate_critical_limit φ).sub (tendsto_const_nhds (x := (1 : ℝ)))
   have hpoly := (hx.pow 2).sub (tendsto_const_nhds (x := (1 : ℝ)))
   have hn := (((egbFixedChargeAMeanRadius_critical_limit w φ).mul hgap).mul hpoly).mul (egbFixedChargeABarrierPolynomial_path_limit φ u)
-  have hd2 : Tendsto (fun τ => 1 + egbCoexistenceASymmetricRatio τ ^ 2) atBot (𝓝 (1 : ℝ)) := by
+  have hd2 : Tendsto (fun τ => 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) atBot (𝓝 (1 : ℝ)) := by
     simpa using (tendsto_const_nhds (x := (1 : ℝ))).add (egbCoexistenceASymmetricRatio_critical_limit.pow 2)
-  have hs : Tendsto (fun τ => (1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeABarrierPathCoordinate τ φ u) ^ 2)
+  have hs : Tendsto (fun τ => (1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeABarrierPathCoordinate τ φ u) ^ (2 : ℕ))
       atBot (𝓝 (1 : ℝ)) := by
     simpa using ((tendsto_const_nhds (x := (1 : ℝ))).add (egbCoexistenceASymmetricRatio_critical_limit.mul hx)).pow 2
   have hd := (((tendsto_const_nhds (x := (2 : ℝ))).mul (egbFixedChargeAMeanDenominator_critical_limit φ)).mul hd2).mul hs
   have h := hn.div hd (by positivity)
   simp only [Pi.div_def] at h
-  have he : egbFixedChargeACriticalRadius w φ * (0 - 1) * ((1 - u) ^ 2 - 1) *
+  have he : egbFixedChargeACriticalRadius w φ * (0 - 1) * ((1 - u) ^ (2 : ℕ) - 1) *
       (4 * (1 - 2 * egbFixedChargeACriticalCouplingWeight φ) * (1 - u)) /
       (2 * (6 + 12 * egbFixedChargeACriticalCouplingWeight φ) * 1 * 1) = egbFixedChargeABarrierLimitIntegrand w φ u := by
     unfold egbFixedChargeABarrierLimitIntegrand egbFixedChargeAGibbsBarrierCoefficient

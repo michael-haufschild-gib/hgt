@@ -55,7 +55,7 @@ theorem gomesDilatonPotential_shifted_derivatives_iff (H K : ℝ[X]) (k : ℝ) :
     (∀ x : ℝ, dilatonPotential H x = dilatonPotential K x + k) ↔
       (H.derivative = K.derivative ∧ k = 0) ∨
         (∃ a b : ℝ, H.derivative = C (2 * a) ∧ K.derivative = C (2 * b) ∧
-          a ^ 2 = b ^ 2 + k) ∨
+          a ^ (2 : ℕ) = b ^ (2 : ℕ) + k) ∨
             (H.derivative = -K.derivative ∧ H.derivative.derivative = C k) := by
   rw [gomesDilatonPotential_shifted_polynomial_iff]
   change gomesPolynomialRiccati (gomesDilatonConnectionPolynomial H) =
@@ -71,8 +71,8 @@ theorem gomesDilatonPotential_shifted_profiles_iff (H K : ℝ[X]) (k : ℝ) :
     (∀ x : ℝ, dilatonPotential H x = dilatonPotential K x + k) ↔
       ((∃ c : ℝ, H = K + C c) ∧ k = 0) ∨
         (∃ a b c d : ℝ, H = C (2 * a) * X + C b ∧
-          K = C (2 * c) * X + C d ∧ a ^ 2 = c ^ 2 + k) ∨
-            ∃ a b c : ℝ, H = C (k / 2) * X ^ 2 + C a * X + C b ∧ K = -H + C c := by
+          K = C (2 * c) * X + C d ∧ a ^ (2 : ℕ) = c ^ (2 : ℕ) + k) ∨
+            ∃ a b c : ℝ, H = C (k / 2) * X ^ (2 : ℕ) + C a * X + C b ∧ K = -H + C c := by
   rw [gomesDilatonPotential_shifted_derivatives_iff]
   constructor
   · rintro (⟨he, hk⟩ | ⟨a, c, ha, hc, hk⟩ | ⟨hu, hd⟩)
@@ -98,7 +98,7 @@ theorem gomesDilatonPotential_shifted_profiles_iff (H K : ℝ[X]) (k : ℝ) :
 /-- Every energy reference difference occurs for an explicit pair of opposite quadratic profiles. -/
 theorem gomesDilatonPotential_energy_shift_surjective (k : ℝ) :
     ∃ H K : ℝ[X], ∀ x : ℝ, dilatonPotential H x = dilatonPotential K x + k := by
-  let H : ℝ[X] := C (k / 2) * X ^ 2
+  let H : ℝ[X] := C (k / 2) * X ^ (2 : ℕ)
   refine ⟨H, -H, (gomesDilatonPotential_shifted_profiles_iff H (-H) k).mpr ?_⟩
   exact Or.inr (Or.inr ⟨0, 0, 0, by simp [H], by simp⟩)
 

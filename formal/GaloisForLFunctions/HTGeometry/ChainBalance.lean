@@ -22,10 +22,10 @@ namespace HTGeometry
 while their square roots are not. -/
 theorem exists_summable_sqrt_not_summable :
     ∃ e : ℕ → ℝ, (∀ n, 0 < e n) ∧ Summable e ∧ ¬ Summable fun n => Real.sqrt (e n) := by
-  refine ⟨fun n => (1 : ℝ) / ((n : ℝ) + 1) ^ 2, fun n => by positivity, ?_, ?_⟩
-  · have hbase : Summable fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2 :=
+  refine ⟨fun n => (1 : ℝ) / ((n : ℝ) + 1) ^ (2 : ℕ), fun n => by positivity, ?_, ?_⟩
+  · have hbase : Summable fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ) :=
       Real.summable_one_div_nat_pow.mpr one_lt_two
-    have hshift := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) 1).mpr hbase
+    have hshift := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) 1).mpr hbase
     refine hshift.congr fun n => ?_
     push_cast
     ring
@@ -39,8 +39,8 @@ theorem exists_summable_sqrt_not_summable :
     intro hc
     refine hharm ?_
     refine hc.congr fun n => ?_
-    show Real.sqrt ((1 : ℝ) / ((n : ℝ) + 1) ^ 2) = (1 : ℝ) / ((n : ℝ) + 1)
-    have hid : (1 : ℝ) / ((n : ℝ) + 1) ^ 2 = ((1 : ℝ) / ((n : ℝ) + 1)) ^ 2 := by
+    show Real.sqrt ((1 : ℝ) / ((n : ℝ) + 1) ^ (2 : ℕ)) = (1 : ℝ) / ((n : ℝ) + 1)
+    have hid : (1 : ℝ) / ((n : ℝ) + 1) ^ (2 : ℕ) = ((1 : ℝ) / ((n : ℝ) + 1)) ^ (2 : ℕ) := by
       field_simp
     rw [hid, Real.sqrt_sq (by positivity)]
 

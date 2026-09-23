@@ -100,7 +100,7 @@ theorem ccmThirdGradeCesaroQuantileTransport_fixedWall_succ_sub_nonneg
       ccmPrimePolarReporterCompletedQuantileTransport
         (ccmThirdGradeCesaroClippedTriangularWeight b H) N H := by
   rw [ccmThirdGradeCesaroQuantileTransport_fixedWall_succ_sub hb hbH]
-  exact mul_nonneg (criticalMellinAtomWeight_nonneg _) (le_max_right _ _)
+  exact mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _) (le_max_right _ _)
 
 /-- On a common wall interval, the entire continuous deformation of the literal triangular
 reporter is its exact reciprocal-wall drift.  This is the second coordinate, alongside quantile

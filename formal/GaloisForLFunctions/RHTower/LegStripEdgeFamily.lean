@@ -54,24 +54,24 @@ theorem edge_law_reduction_general {κ a : ℝ} (ha : 0 < a) {mgn m : ℝ → �
   exact (edge_margin_const_general ha.le hd).symm
 
 /-- The harmonic instance: `ρ(2/π², π²/16) = 1/π`. The `c = 2` edge law is one point of the family. -/
-theorem rhoFamily_harmonic : rhoFamily (2/π^2) (π^2/16) = 1/π := by
+theorem rhoFamily_harmonic : rhoFamily (2/π^(2 : ℕ)) (π^(2 : ℕ)/16) = 1/π := by
   have hpi : 0 < π := Real.pi_pos
-  rw [rhoFamily, show (π^2/16 : ℝ) = (π/4)^2 by ring, Real.sqrt_sq (by positivity)]
+  rw [rhoFamily, show (π^(2 : ℕ)/16 : ℝ) = (π/4)^(2 : ℕ) by ring, Real.sqrt_sq (by positivity)]
   field_simp
   ring
 
 /-- **The general local field factor** `κ(c) = c/π²` at the harmonic carrier `δ_j = c/j`. -/
-def localFactor (c : ℝ) : ℝ := c / π^2
+def localFactor (c : ℝ) : ℝ := c / π^(2 : ℕ)
 
 /-- At the physical carrier the local factor is `κ(2) = 2/π²`. -/
-theorem localFactor_two : localFactor 2 = 2/π^2 := by rw [localFactor]
+theorem localFactor_two : localFactor 2 = 2/π^(2 : ℕ) := by rw [localFactor]
 
 /-- The local factor is grounded in odd Basel: `κ(c) = c/(8·Σ_{k≥0} 1/(2k+1)²)`, since
 `Σ 1/(2k+1)² = π²/8` (`hasSum_odd_basel`). The edge constant `ρ` is thus the odd-Basel constant read
 through the `√d` boundary layer, for every carrier `c`. -/
 theorem localFactor_odd_basel (c : ℝ) :
-    localFactor c = c / (8 * ∑' k : ℕ, (1:ℝ)/(2*k+1)^2) := by
-  rw [localFactor, hasSum_odd_basel.tsum_eq, show (8:ℝ)*(π^2/8) = π^2 by ring]
+    localFactor c = c / (8 * ∑' k : ℕ, (1:ℝ)/(2*k+1)^(2 : ℕ)) := by
+  rw [localFactor, hasSum_odd_basel.tsum_eq, show (8:ℝ)*(π^(2 : ℕ)/8) = π^(2 : ℕ) by ring]
 
 /-- **The assembled edge-law family.** At the harmonic carrier `δ_j = c/j` with local factor
 `κ = c/π²` and shell coefficient `a > 0`, given the decomposition `margin(d) = κ · m(d)` (with `m` the
@@ -83,7 +83,7 @@ theorem edge_law_family {c a : ℝ} (ha : 0 < a) {mgn m : ℝ → ℝ}
   edge_law_reduction_general ha hm hθ
 
 /-- The harmonic carrier `c = 2` sits at `ρ = 1/π`: `rhoFamily (localFactor 2) (π²/16) = 1/π`. -/
-theorem rho_at_two : rhoFamily (localFactor 2) (π^2/16) = 1/π := by
+theorem rho_at_two : rhoFamily (localFactor 2) (π^(2 : ℕ)/16) = 1/π := by
   rw [localFactor_two]; exact rhoFamily_harmonic
 
 /-- **The finite-size-scaling crossover function.** Along the scaling curve `c = 2 − ξ/√d`
@@ -100,16 +100,16 @@ imbalance `(π²/8)(c−2) = −(π²/8)ξ/√d` plus the least gap margin `m(d)
 cancels for every `d`); the gap-margin term contributes `1/π` (the edge law, `edge_law_reduction_general`
 via `rhoFamily_harmonic`). This constructs the crossover as a theorem, its two boundary constants unified. -/
 theorem crossover_reduction {margin m : ℝ → ℝ} (ξ : ℝ)
-    (hm : ∀ d, 0 < d → IsLeast ((fun x => x/d + (π^2/16)/x) '' Set.Ioi 0) (m d))
-    (hmargin : ∀ d, 0 < d → margin d = (2/π^2)*((π^2/8)*(-(ξ/Real.sqrt d)) + m d)) :
+    (hm : ∀ d, 0 < d → IsLeast ((fun x => x/d + (π^(2 : ℕ)/16)/x) '' Set.Ioi 0) (m d))
+    (hmargin : ∀ d, 0 < d → margin d = (2/π^(2 : ℕ))*((π^(2 : ℕ)/8)*(-(ξ/Real.sqrt d)) + m d)) :
     Tendsto (fun d => margin d * Real.sqrt d) atTop (𝓝 (crossoverG ξ)) := by
   -- second term: (2/π²)·m(d)·√d → 1/π
-  have hsecond : Tendsto (fun d => (2/π^2) * m d * Real.sqrt d) atTop (𝓝 (1/π)) := by
-    have := edge_law_reduction_general (κ := 2/π^2) (a := π^2/16)
+  have hsecond : Tendsto (fun d => (2/π^(2 : ℕ)) * m d * Real.sqrt d) atTop (𝓝 (1/π)) := by
+    have := edge_law_reduction_general (κ := 2/π^(2 : ℕ)) (a := π^(2 : ℕ)/16)
       (by positivity [Real.pi_pos]) hm (fun d _ => rfl)
     rwa [rhoFamily_harmonic] at this
   -- first term: (2/π²)·(π²/8)·(−ξ/√d)·√d = −ξ/4 for every d>0 (√d cancels)
-  have hfirst : Tendsto (fun d => (2/π^2)*((π^2/8)*(-(ξ/Real.sqrt d)))*Real.sqrt d) atTop
+  have hfirst : Tendsto (fun d => (2/π^(2 : ℕ))*((π^(2 : ℕ)/8)*(-(ξ/Real.sqrt d)))*Real.sqrt d) atTop
       (𝓝 (-ξ/4)) := by
     apply tendsto_const_nhds.congr'
     filter_upwards [eventually_gt_atTop 0] with d hd
@@ -140,11 +140,11 @@ def rhoOfCarrier (c a : ℝ) : ℝ := rhoFamily (localFactor c) a
 
 /-- The family in closed form: `ρ(c, a) = (2c/π²)·√a`. -/
 theorem rhoOfCarrier_eq (c a : ℝ) :
-    rhoOfCarrier c a = (2*c/π^2) * Real.sqrt a := by
+    rhoOfCarrier c a = (2*c/π^(2 : ℕ)) * Real.sqrt a := by
   unfold rhoOfCarrier rhoFamily localFactor; ring
 
 /-- The physical marginal carrier sits at `ρ(2, π²/16) = 1/π`. -/
-theorem rhoOfCarrier_two : rhoOfCarrier 2 (π^2/16) = 1/π := rho_at_two
+theorem rhoOfCarrier_two : rhoOfCarrier 2 (π^(2 : ℕ)/16) = 1/π := rho_at_two
 
 /-- **The edge law along the carrier curve.** For a carrier with local factor `κ(c) = c/π²` and shell
 coefficient `a > 0`, given the decomposition `margin(d) = κ(c)·m(d)` (least gap margin), the `√d`-scaled

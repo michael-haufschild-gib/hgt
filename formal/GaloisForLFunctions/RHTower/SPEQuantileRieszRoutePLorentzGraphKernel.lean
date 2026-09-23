@@ -36,7 +36,7 @@ private theorem ccmActualHeadQuantilePolarCentroid_lt_of_lt_of_isPrimePow
     rw [ccmActualHeadQuantilePolarCentroid_succ_sub_eq_atomWeight_half_add]
     have hpos : 0 < criticalMellinAtomWeight m := criticalMellinAtomWeight_pos hm
     have hnonneg : 0 ≤ criticalMellinAtomWeight (m + 1) :=
-      criticalMellinAtomWeight_nonneg _
+      criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
     positivity
   have hmn' : m + 1 ≤ n := Nat.succ_le_iff.mpr hmn
   exact lt_of_lt_of_le (sub_pos.mp hstep)
@@ -133,7 +133,7 @@ theorem ccmActualHeadMatchedQuantileParabolicLorentzGraphDissipation_eq_zero_iff
           (ccmActualHeadMatchedPolarCentroid ((n : ℕ) + 2) -
             ccmActualHeadMatchedPolarCentroid ((m : ℕ) + 2))) =
           ((criticalMellinAtomWeight ((m : ℕ) + 2) *
-            criticalMellinAtomWeight ((n : ℕ) + 2)) / 2 * (c * (c + q))) * d ^ 2 := by
+            criticalMellinAtomWeight ((n : ℕ) + 2)) / 2 * (c * (c + q))) * d ^ (2 : ℕ) := by
       rw [ccmActualHeadMatchedQuantileParabolicCrossKernelValue_eq_lorentzEdge]
       unfold ccmActualHeadMatchedQuantileLorentzSquare ccmActualHeadMatchedQuantileLorentzEdge
       simp
@@ -142,7 +142,7 @@ theorem ccmActualHeadMatchedQuantileParabolicLorentzGraphDissipation_eq_zero_iff
         ccmActualHeadQuantilePolarCentroid_eq_matched_add_displacement ((n : ℕ) + 2)]
       ring
     rw [hformula] at htermzero
-    have hd2 : d ^ 2 = 0 := (mul_eq_zero.mp htermzero).resolve_left hfactor.ne'
+    have hd2 : d ^ (2 : ℕ) = 0 := (mul_eq_zero.mp htermzero).resolve_left hfactor.ne'
     have hd : d = 0 := sq_eq_zero_iff.mp hd2
     dsimp [d] at hd
     linarith

@@ -199,7 +199,7 @@ theorem mul_realAffineOrderShiftRecurrence_factorial_lower
     (hy₁pos : ∀ x : ℝ, 0 < y₁ x) (hy₂pos : ∀ x : ℝ, 0 < y₂ x)
     (hc : 0 < c) {x₁ x₂ : ℝ} (hx₁ : 1 ≤ x₁) (hx₂ : 1 ≤ x₂)
     {N : ℕ} (hN : 1 ≤ N) :
-    (y₁ x₁ * y₂ x₂) * c ^ (2 * N) * (N.factorial : ℝ) ^ 2 <
+    (y₁ x₁ * y₂ x₂) * c ^ (2 * N) * (N.factorial : ℝ) ^ (2 : ℕ) <
       y₁ (x₁ + N) * y₂ (x₂ + N) := by
   have h1 := realAffineOrderShiftRecurrence_factorial_lower'
     hy₁ hy₁pos hc hx₁ hN
@@ -210,7 +210,7 @@ theorem mul_realAffineOrderShiftRecurrence_factorial_lower
   have hrightpos : 0 < y₂ x₂ * c ^ N * (N.factorial : ℝ) :=
     mul_pos (mul_pos (hy₂pos _) (pow_pos hc _)) (by positivity)
   calc
-    (y₁ x₁ * y₂ x₂) * c ^ (2 * N) * (N.factorial : ℝ) ^ 2 =
+    (y₁ x₁ * y₂ x₂) * c ^ (2 * N) * (N.factorial : ℝ) ^ (2 : ℕ) =
         (y₁ x₁ * c ^ N * (N.factorial : ℝ)) *
           (y₂ x₂ * c ^ N * (N.factorial : ℝ)) := by
             rw [pow_two, two_mul, pow_add]

@@ -25,13 +25,13 @@ namespace RHTower.Sieve
 open Complex MeasureTheory Filter Topology GaloisForLFunctions.HTGeometry
 
 /-- The left abscissa of the width-`log^{-2}` rectangle. -/
-noncomputable def leftAbscissaTwo (K : ℕ) : ℝ := 1 - 1 / (Real.log K) ^ 2
+noncomputable def leftAbscissaTwo (K : ℕ) : ℝ := 1 - 1 / (Real.log K) ^ (2 : ℕ)
 
 /-- The right abscissa of the width-`log^{-2}` rectangle. -/
-noncomputable def rightAbscissaTwo (K : ℕ) : ℝ := 1 + 1 / (Real.log K) ^ 2
+noncomputable def rightAbscissaTwo (K : ℕ) : ℝ := 1 + 1 / (Real.log K) ^ (2 : ℕ)
 
 /-- The Euler-product bound on the right line of that rectangle. -/
-noncomputable def invZetaRightBoundTwo (K : ℕ) : ℝ := Real.exp (22 / 4) * (1 + (Real.log K) ^ 2)
+noncomputable def invZetaRightBoundTwo (K : ℕ) : ℝ := Real.exp (22 / 4) * (1 + (Real.log K) ^ (2 : ℕ))
 
 theorem invZetaRightBoundTwo_nonneg (K : ℕ) : 0 ≤ invZetaRightBoundTwo K := by
   rw [invZetaRightBoundTwo]
@@ -47,11 +47,11 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_kappa_two {N H : ℝ} (hN : 0 <
           (ArithmeticFunction.moebius n : ℂ)
             * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
         ≤ 2 * (invZetaRightBoundTwo K * (C * (N + H + 1) ^ rightAbscissaTwo K)) / truncHeight K
-            + Ms * Real.log K ^ 2 * (C' * (N + H + 1) ^ rightAbscissaTwo K)
+            + Ms * Real.log K ^ (2 : ℕ) * (C' * (N + H + 1) ^ rightAbscissaTwo K)
                 / (truncHeight K) ^ (j + 1) * (rightAbscissaTwo K - leftAbscissaTwo K)
-            + Ms * Real.log K ^ 2 * (C' * (N + H + 1) ^ rightAbscissaTwo K)
+            + Ms * Real.log K ^ (2 : ℕ) * (C' * (N + H + 1) ^ rightAbscissaTwo K)
                 / (truncHeight K) ^ (j + 1) * (rightAbscissaTwo K - leftAbscissaTwo K)
-            + Ms * Real.log K ^ 2
+            + Ms * Real.log K ^ (2 : ℕ)
                 * (2 * ((N + H) ^ leftAbscissaTwo K / leftAbscissaTwo K)
                     + 2 * (C * (N + H + 1) ^ leftAbscissaTwo K)) := by
   obtain ⟨C, hC, hdec1⟩ := exists_bound_mellin_smoothWeight_upto hN hH 1
@@ -70,11 +70,11 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_kappa_two {N H : ℝ} (hN : 0 <
   have hL2 : (2 : ℝ) ≤ Real.log K := by linarith
   have hL₀K : L₀ ≤ Real.log K := by linarith [le_max_left L₀ L₁]
   have hL₁K : L₁ ≤ Real.log K := by linarith [le_max_right L₀ L₁]
-  have hLsq : (4 : ℝ) ≤ Real.log K ^ 2 := by nlinarith
-  have hLsq0 : (0 : ℝ) < Real.log K ^ 2 := by linarith
-  have hinv : 1 / Real.log K ^ 2 ≤ 1 / 4 :=
+  have hLsq : (4 : ℝ) ≤ Real.log K ^ (2 : ℕ) := by nlinarith
+  have hLsq0 : (0 : ℝ) < Real.log K ^ (2 : ℕ) := by linarith
+  have hinv : 1 / Real.log K ^ (2 : ℕ) ≤ 1 / 4 :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) hLsq
-  have hinv0 : (0 : ℝ) < 1 / Real.log K ^ 2 := by positivity
+  have hinv0 : (0 : ℝ) < 1 / Real.log K ^ (2 : ℕ) := by positivity
   -- the rectangle
   have hd1 : (1 : ℝ) < rightAbscissaTwo K := by rw [rightAbscissaTwo]; linarith
   have hc0 : (0 : ℝ) < leftAbscissaTwo K := by rw [leftAbscissaTwo]; linarith
@@ -104,21 +104,21 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_kappa_two {N H : ℝ} (hN : 0 <
     linarith [h, heq]
   -- the horizontal edges and the left edge
   have hFt : ∀ x ∈ Set.Ioc (leftAbscissaTwo K) (rightAbscissaTwo K),
-      ‖invZeta ((x : ℂ) + ((truncHeight K : ℝ) : ℂ) * Complex.I)‖ ≤ Ms * Real.log K ^ 2 := by
+      ‖invZeta ((x : ℂ) + ((truncHeight K : ℝ) : ℂ) * Complex.I)‖ ≤ Ms * Real.log K ^ (2 : ℕ) := by
     intro x hx
     rw [leftAbscissaTwo] at hx
     rw [rightAbscissaTwo] at hx
     exact hunif x (truncHeight K) (K : ℝ) hL₀K
       (by rw [abs_of_nonneg (by linarith)]; exact hTK) hx.1.le hx.2
   have hFb : ∀ x ∈ Set.Ioc (leftAbscissaTwo K) (rightAbscissaTwo K),
-      ‖invZeta ((x : ℂ) + ((-truncHeight K : ℝ) : ℂ) * Complex.I)‖ ≤ Ms * Real.log K ^ 2 := by
+      ‖invZeta ((x : ℂ) + ((-truncHeight K : ℝ) : ℂ) * Complex.I)‖ ≤ Ms * Real.log K ^ (2 : ℕ) := by
     intro x hx
     rw [leftAbscissaTwo] at hx
     rw [rightAbscissaTwo] at hx
     exact hunif x (-truncHeight K) (K : ℝ) hL₀K
       (by rw [abs_of_nonpos (by linarith)]; linarith) hx.1.le hx.2
   have hFc : ∀ y ∈ Set.Icc (-truncHeight K) (truncHeight K),
-      ‖invZeta ((leftAbscissaTwo K : ℂ) + (y : ℝ) * Complex.I)‖ ≤ Ms * Real.log K ^ 2 := by
+      ‖invZeta ((leftAbscissaTwo K : ℂ) + (y : ℝ) * Complex.I)‖ ≤ Ms * Real.log K ^ (2 : ℕ) := by
     intro y hy
     refine hunif (leftAbscissaTwo K) y (K : ℝ) hL₀K
       (le_trans (abs_le.mpr ⟨hy.1, hy.2⟩) hTK) ?_ ?_

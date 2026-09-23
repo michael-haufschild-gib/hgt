@@ -36,17 +36,17 @@ theorem norm_tsum_vonMangoldt_sub_main_five_terms
             * (((2 * Real.arctan (chebHeight N / (zetaLowerA / (Real.log N) ^ ((9 : ℝ) / 10)))
                 - 2 * Real.arctan (chebHeight N
                     / (-(zetaLowerA / (Real.log N) ^ ((9 : ℝ) / 10)))) : ℝ)) : ℂ)‖
-      ≤ 1296 * Cj / zetaLowerA ^ 2
-            * (((Real.log N) ^ ((1 : ℝ) / 10)) ^ 18 * (N * savingG N))
+      ≤ 1296 * Cj / zetaLowerA ^ (2 : ℕ)
+            * (((Real.log N) ^ ((1 : ℝ) / 10)) ^ (18 : ℕ) * (N * savingG N))
         + (8 + 54 * Cj) / zetaLowerA
-            * (((Real.log N) ^ ((1 : ℝ) / 10)) ^ 9 * (N * savingE N))
+            * (((Real.log N) ^ ((1 : ℝ) / 10)) ^ (9 : ℕ) * (N * savingE N))
         + (324 * Cj + 8) * (N * savingG N)
         + ((M₀ + 1 / 9) * (8 + 54 * Cj) * (N * savingE N)
           + 2240 * (8 + 54 * Cj) / zetaLowerA
-            * (((Real.log N) ^ ((1 : ℝ) / 10)) ^ 9 * (N * savingE N)))
+            * (((Real.log N) ^ ((1 : ℝ) / 10)) ^ (9 : ℕ) * (N * savingE N)))
         + (324 * Cj * (M₀ + 1 / 9) * (N * savingG N)
           + 324 * Cj * 2240 / zetaLowerA
-            * (((Real.log N) ^ ((1 : ℝ) / 10)) ^ 9 * (N * savingG N))) := by
+            * (((Real.log N) ^ ((1 : ℝ) / 10)) ^ (9 : ℕ) * (N * savingG N))) := by
   refine le_trans (norm_tsum_vonMangoldt_sub_main_at_choice hN hL hNine hM₀ hCj hfit
     hlowzf hlowbox hdecay) ?_
   have h1 := term_tail_le (N := N) (Cj := Cj) hN hL hCj
@@ -59,16 +59,16 @@ theorem norm_tsum_vonMangoldt_sub_main_five_terms
 /-- **The majorant, divided by the cutoff, tends to zero.** -/
 theorem tendsto_five_term_majorant (Cj M₀ : ℝ) :
     Tendsto (fun x : ℝ =>
-        1296 * Cj / zetaLowerA ^ 2 * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ 18 * savingG x)
+        1296 * Cj / zetaLowerA ^ (2 : ℕ) * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ (18 : ℕ) * savingG x)
           + (8 + 54 * Cj) / zetaLowerA
-              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ 9 * savingE x)
+              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ (9 : ℕ) * savingE x)
           + (324 * Cj + 8) * savingG x
           + ((M₀ + 1 / 9) * (8 + 54 * Cj) * savingE x
             + 2240 * (8 + 54 * Cj) / zetaLowerA
-              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ 9 * savingE x))
+              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ (9 : ℕ) * savingE x))
           + (324 * Cj * (M₀ + 1 / 9) * savingG x
             + 324 * Cj * 2240 / zetaLowerA
-              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ 9 * savingG x))) atTop (𝓝 0) := by
+              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ (9 : ℕ) * savingG x))) atTop (𝓝 0) := by
   have hE0 : Tendsto (fun x : ℝ => savingE x) atTop (𝓝 0) := by
     have h := tendsto_pow_savingE 0
     refine h.congr fun x => ?_
@@ -80,7 +80,7 @@ theorem tendsto_five_term_majorant (Cj M₀ : ℝ) :
   have hE9 := tendsto_pow_savingE 9
   have hG9 := tendsto_pow_savingG 9
   have hG18 := tendsto_pow_savingG 18
-  have hsum := ((((hG18.const_mul (1296 * Cj / zetaLowerA ^ 2)).add
+  have hsum := ((((hG18.const_mul (1296 * Cj / zetaLowerA ^ (2 : ℕ))).add
     (hE9.const_mul ((8 + 54 * Cj) / zetaLowerA))).add
     (hG0.const_mul (324 * Cj + 8))).add
     (((hE0.const_mul ((M₀ + 1 / 9) * (8 + 54 * Cj))).add
@@ -120,16 +120,16 @@ theorem tendsto_norm_tsum_vonMangoldt_sub_main_div :
               * (((2 * Real.arctan (chebHeight x / (zetaLowerA / (Real.log x) ^ ((9 : ℝ) / 10)))
                   - 2 * Real.arctan (chebHeight x
                       / (-(zetaLowerA / (Real.log x) ^ ((9 : ℝ) / 10)))) : ℝ)) : ℂ)‖ / x
-        ≤ 1296 * Cj / zetaLowerA ^ 2 * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ 18 * savingG x)
+        ≤ 1296 * Cj / zetaLowerA ^ (2 : ℕ) * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ (18 : ℕ) * savingG x)
           + (8 + 54 * Cj) / zetaLowerA
-              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ 9 * savingE x)
+              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ (9 : ℕ) * savingE x)
           + (324 * Cj + 8) * savingG x
           + ((M₀ + 1 / 9) * (8 + 54 * Cj) * savingE x
             + 2240 * (8 + 54 * Cj) / zetaLowerA
-              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ 9 * savingE x))
+              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ (9 : ℕ) * savingE x))
           + (324 * Cj * (M₀ + 1 / 9) * savingG x
             + 324 * Cj * 2240 / zetaLowerA
-              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ 9 * savingG x)) := by
+              * (((Real.log x) ^ ((1 : ℝ) / 10)) ^ (9 : ℕ) * savingG x)) := by
     filter_upwards [eventually_ge_atTop (1 : ℝ), hlogtop.eventually_ge_atTop (1 : ℝ),
       hlogtop.eventually_ge_atTop ((Real.log 9) ^ (10 : ℕ)),
       hheighttop.eventually_ge_atTop T₀] with x hx hlx hninex hheightx

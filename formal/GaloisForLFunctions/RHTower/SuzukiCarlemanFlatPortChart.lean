@@ -11,7 +11,7 @@ and non-square-integrable derivative: the two ray integrals
 decide membership, and the second diverges because `L - 2√L - log L → ∞`.  So the profile lies in
 the completed boundary class and outside the raw spatial derivative domain.
 
-The logistic kernel `k(y) = e^y/(1+e^y)^2` — the `L`-derivative of the Carleman cutoff factor —
+The logistic kernel `k(y) = e^y/(1+e^y)^(2 : ℕ)` — the `L`-derivative of the Carleman cutoff factor —
 is a probability density: its antiderivative is `-(1+e^y)⁻¹`.
 -/
 
@@ -52,8 +52,8 @@ theorem tendsto_flatPortDerivativeDensity :
     have hs : 0 < Real.sqrt L := Real.sqrt_pos.mpr hL
     have hlog : Real.log (Real.sqrt L) ≤ Real.sqrt L - 1 := Real.log_le_sub_one_of_pos hs
     have hsq : Real.log L = 2 * Real.log (Real.sqrt L) := by
-      have h : Real.sqrt L ^ 2 = L := Real.sq_sqrt hL.le
-      calc Real.log L = Real.log (Real.sqrt L ^ 2) := by rw [h]
+      have h : Real.sqrt L ^ (2 : ℕ) = L := Real.sq_sqrt hL.le
+      calc Real.log L = Real.log (Real.sqrt L ^ (2 : ℕ)) := by rw [h]
         _ = 2 * Real.log (Real.sqrt L) := by rw [Real.log_pow]; norm_num
     rw [hsq]
     linarith
@@ -62,7 +62,7 @@ theorem tendsto_flatPortDerivativeDensity :
     have hLpos : (0:ℝ) < L := by linarith
     have h4 : (8:ℝ) ≤ Real.sqrt L := by
       have : Real.sqrt 64 ≤ Real.sqrt L := Real.sqrt_le_sqrt hL
-      rwa [show (64:ℝ) = 8 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)] at this
+      rwa [show (64:ℝ) = 8 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)] at this
     have hsq : Real.sqrt L * Real.sqrt L = L := Real.mul_self_sqrt hLpos.le
     have hlog := hlogsqrt L hLpos
     nlinarith [Real.sqrt_nonneg L]
@@ -81,8 +81,8 @@ theorem not_integrableOn_flatPortDerivativeDensity :
     ¬ IntegrableOn flatPortDerivativeDensity (Ioi (1:ℝ)) volume :=
   not_integrableOn_Ioi_of_tendsto_atTop tendsto_flatPortDerivativeDensity 1
 
-/-- The logistic kernel `k(y) = e^y/(1+e^y)^2`. -/
-def logisticKernel (y : ℝ) : ℝ := Real.exp y / (1 + Real.exp y) ^ 2
+/-- The logistic kernel `k(y) = e^y/(1+e^y)^(2 : ℕ)`. -/
+def logisticKernel (y : ℝ) : ℝ := Real.exp y / (1 + Real.exp y) ^ (2 : ℕ)
 
 theorem logisticKernel_pos (y : ℝ) : 0 < logisticKernel y := by
   have hy := Real.exp_pos y
@@ -91,7 +91,7 @@ theorem logisticKernel_pos (y : ℝ) : 0 < logisticKernel y := by
 
 theorem continuous_logisticKernel : Continuous logisticKernel := by
   unfold logisticKernel
-  have h : ∀ y : ℝ, (1 + Real.exp y) ^ 2 ≠ 0 := by
+  have h : ∀ y : ℝ, (1 + Real.exp y) ^ (2 : ℕ) ≠ 0 := by
     intro y
     have := Real.exp_pos y
     positivity
@@ -110,12 +110,12 @@ theorem hasDerivAt_logisticPrimitive (y : ℝ) :
     have := (Real.hasDerivAt_exp y).const_add (1:ℝ)
     simpa using this
   have hinv : HasDerivAt (fun x : ℝ => ((1 + Real.exp x)⁻¹))
-      (-Real.exp y / (1 + Real.exp y) ^ 2) y := hbase.inv hne
+      (-Real.exp y / (1 + Real.exp y) ^ (2 : ℕ)) y := hbase.inv hne
   have hneg := hinv.neg
   have hfun : logisticPrimitive = fun x : ℝ => -((1 + Real.exp x)⁻¹) := by
     funext x
     rw [logisticPrimitive]
-  have hval : -(-Real.exp y / (1 + Real.exp y) ^ 2) = logisticKernel y := by
+  have hval : -(-Real.exp y / (1 + Real.exp y) ^ (2 : ℕ)) = logisticKernel y := by
     simp only [logisticKernel]
     ring
   rw [hfun, ← hval]
@@ -128,7 +128,7 @@ theorem logisticKernel_le_exp_neg_abs (y : ℝ) : logisticKernel y ≤ Real.exp 
   · rw [abs_of_nonneg hy, div_le_iff₀ (by positivity)]
     have h1 : Real.exp y ≤ (1 + Real.exp y) := by
       linarith [Real.exp_pos y]
-    have h2 : Real.exp (-y) * (1 + Real.exp y) ^ 2
+    have h2 : Real.exp (-y) * (1 + Real.exp y) ^ (2 : ℕ)
         = Real.exp (-y) * (1 + Real.exp y) * (1 + Real.exp y) := by ring
     rw [h2]
     have h3 : (1:ℝ) ≤ Real.exp (-y) * (1 + Real.exp y) := by
@@ -137,7 +137,7 @@ theorem logisticKernel_le_exp_neg_abs (y : ℝ) : logisticKernel y ≤ Real.exp 
       linarith [Real.exp_pos (-y)]
     nlinarith [Real.exp_pos y, Real.exp_pos (-y)]
   · rw [abs_of_nonpos hy, neg_neg, div_le_iff₀ (by positivity)]
-    have h1 : (1:ℝ) ≤ (1 + Real.exp y) ^ 2 := by
+    have h1 : (1:ℝ) ≤ (1 + Real.exp y) ^ (2 : ℕ) := by
       nlinarith [Real.exp_pos y]
     nlinarith [Real.exp_pos y]
 

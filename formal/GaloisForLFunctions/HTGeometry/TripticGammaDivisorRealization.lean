@@ -27,7 +27,7 @@ theorem meromorphicOrderAt_pow_ne_top {Y : ℂ → ℂ} (hY : MeromorphicOn Y (S
     meromorphicOrderAt (fun z ↦ Y z ^ n) w ≠ ⊤ := by
   induction n with
   | zero =>
-      have hfun : (fun z : ℂ ↦ Y z ^ 0) = fun _ : ℂ ↦ (1 : ℂ) := by
+      have hfun : (fun z : ℂ ↦ Y z ^ (0 : ℕ)) = fun _ : ℂ ↦ (1 : ℂ) := by
         funext z
         simp
       rw [hfun]
@@ -51,7 +51,7 @@ theorem shiftOrder_pow {Y : ℂ → ℂ} {σ : ℂ} (hY : MeromorphicOn Y (Set.u
     shiftOrder (fun z ↦ Y z ^ n) σ w = n * shiftOrder Y σ w := by
   induction n with
   | zero =>
-      have hfun : (fun z : ℂ ↦ Y z ^ 0) = fun _ : ℂ ↦ (1 : ℂ) := by
+      have hfun : (fun z : ℂ ↦ Y z ^ (0 : ℕ)) = fun _ : ℂ ↦ (1 : ℂ) := by
         funext z
         simp
       rw [hfun]

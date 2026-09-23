@@ -114,8 +114,8 @@ theorem primeScaleInner_comm (u v : ℝ) : primeScaleInner u v = primeScaleInner
     rw [divProfile, divProfile, coherentProfile, coherentProfile]
     split_ifs with ht
     · rfl
-    · rw [show (Real.exp (u * t) - Real.exp (v * t)) ^ 2
-        = (Real.exp (v * t) - Real.exp (u * t)) ^ 2 by ring]
+    · rw [show (Real.exp (u * t) - Real.exp (v * t)) ^ (2 : ℕ)
+        = (Real.exp (v * t) - Real.exp (u * t)) ^ (2 : ℕ) by ring]
   rw [this]
   ring
 
@@ -156,7 +156,7 @@ theorem primeScaleInner_quadForm_nonneg {n : ℕ} (u c : Fin n → ℝ) :
     intervalIntegral.integral_finsetSum (fun i _ => hFint i)
   have hswap : (∑ i, ∑ j, c i * primeScaleInner (u i) (u j) * c j)
       = ∫ t in (0 : ℝ)..1,
-          divProfile (fun s => (∑ i, c i * (Real.exp (u i * s) - 1)) ^ 2) t := by
+          divProfile (fun s => (∑ i, c i * (Real.exp (u i * s) - 1)) ^ (2 : ℕ)) t := by
     rw [Finset.sum_congr rfl fun i _ => hstep i, ← htot]
     refine intervalIntegral.integral_congr fun t _ => ?_
     rw [hF]
@@ -208,8 +208,8 @@ theorem hadamardPow_posSemidef {n : ℕ} {M : Matrix (Fin n) (Fin n) ℝ} (hM : 
   induction k with
   | zero =>
       refine posSemidef_of_quadForm (fun _ _ => by simp) (fun x => ?_)
-      have : ∑ i, ∑ j, x i * (Matrix.of (fun (i j : Fin n) => (M i j) ^ 0)) i j * x j
-          = (∑ i, x i) ^ 2 := by
+      have : ∑ i, ∑ j, x i * (Matrix.of (fun (i j : Fin n) => (M i j) ^ (0 : ℕ))) i j * x j
+          = (∑ i, x i) ^ (2 : ℕ) := by
         simp only [Matrix.of_apply, pow_zero, mul_one]
         rw [sq, Finset.sum_mul_sum]
       rw [this]

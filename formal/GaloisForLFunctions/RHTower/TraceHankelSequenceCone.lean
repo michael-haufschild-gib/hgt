@@ -26,7 +26,7 @@ def sequenceTraceHankel (m : ℕ → ℝ) (p : Polynomial ℝ) : ℝ :=
 /-- The coefficient-level trace-Hankel form is exactly the moment functional evaluated on the
 polynomial square. -/
 theorem sequenceTraceHankel_eq_momentFunctional (m : ℕ → ℝ) (p : Polynomial ℝ) :
-    sequenceTraceHankel m p = HTGeometry.momentFunctional m (p ^ 2) := by
+    sequenceTraceHankel m p = HTGeometry.momentFunctional m (p ^ (2 : ℕ)) := by
   rw [sequenceTraceHankel, HTGeometry.momentFunctional_eq_support_sum, pow_two]
 
 /-- Membership in the all-order real trace-Hankel-positive cone. -/

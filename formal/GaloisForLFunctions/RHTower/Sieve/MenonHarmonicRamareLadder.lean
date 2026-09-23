@@ -27,9 +27,9 @@ def harmonicCofactorSupportError (A₀ B₀ : ℕ) (Q eta W : ℝ) (j : ℕ) : �
   2 * (5 * Real.pi / 2 * W +
       5 * Real.exp 1 / 2 * (⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊ : ℝ)) *
     ((((A₀ : ℝ) + (B₀ : ℝ)) * eta / (Q * (1 + eta) ^ j) + 4 +
-        ((B₀ : ℝ) / (Q * (1 + eta) ^ j) ^ 2 + 1)) *
+        ((B₀ : ℝ) / (Q * (1 + eta) ^ j) ^ (2 : ℕ) + 1)) *
       (1 / (⌈(A₀ : ℝ) /
-        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2)
+        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ))
 
 /-- The harmonic Ramaré bilinear form over a geometric ladder.  Splitting into `L` prime blocks
 costs exactly `L`. -/
@@ -37,10 +37,10 @@ theorem integral_normSq_harmonicRamareBilinear_le_geomLadder
     {P s : Finset ℕ} {W Q r : ℝ}
     (hQ : 0 < Q) (hr : 1 ≤ r) {L : ℕ} (hL : 1 ≤ L)
     (hP : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * r ^ L) :
-    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P s w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P s w‖ ^ (2 : ℕ))
       ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
           ∫ w in Set.Icc (-W) W,
-            ‖harmonicRamareBlock P s (geomBlock P Q r j) w‖ ^ 2 := by
+            ‖harmonicRamareBlock P s (geomBlock P Q r j) w‖ ^ (2 : ℕ) := by
   classical
   have h := integral_normSq_harmonicRamareBilinear_le_blocks
     (P := P) (s := s) (W := W) (Finset.range L) (geomBlock P Q r)
@@ -58,12 +58,12 @@ theorem integral_normSq_harmonicRamareBlock_geom_le
       ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊) :
     (∫ w in Set.Icc (-W) W,
       ‖harmonicRamareBlock P (Finset.Icc A₀ B₀)
-        (geomBlock P Q (1 + eta) j) w‖ ^ 2)
+        (geomBlock P Q (1 + eta) j) w‖ ^ (2 : ℕ))
       ≤ 2 * (∫ w in Set.Icc (-W) W,
           ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w *
             logPoly (harmonicRamareCofactorCoeff P)
-              (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ 2)
-        + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ 2 *
+              (harmonicGeomCofactorBlock A₀ B₀ Q eta j) w‖ ^ (2 : ℕ))
+        + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ (2 : ℕ) *
             harmonicCofactorSupportError A₀ B₀ Q eta W j := by
   classical
   let B : Finset ℕ := geomBlock P Q (1 + eta) j
@@ -80,7 +80,7 @@ theorem integral_normSq_harmonicRamareBlock_geom_le
   have hdisc : ∀ p ∈ B,
       (∫ w in Set.Icc (-W) W,
         ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-          logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2) ≤ E := by
+          logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)) ≤ E := by
     intro p hp
     have hpB := Finset.mem_filter.1 hp
     have hp0 := (hBprime p hp).pos
@@ -96,13 +96,13 @@ theorem integral_normSq_harmonicRamareBlock_geom_le
       (∑ p ∈ B, (1 / (p : ℝ)) *
         (∫ w in Set.Icc (-W) W,
           ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-            logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2))
+            logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)))
         ≤ harmonicPrimeMass B * E := by
     calc
       (∑ p ∈ B, (1 / (p : ℝ)) *
           (∫ w in Set.Icc (-W) W,
             ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-              logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2))
+              logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)))
           ≤ ∑ p ∈ B, (1 / (p : ℝ)) * E := by
             refine Finset.sum_le_sum fun p hp => ?_
             exact mul_le_mul_of_nonneg_left (hdisc p hp) (by positivity)
@@ -119,17 +119,17 @@ theorem integral_normSq_harmonicRamareBlock_geom_le
           (∑ p ∈ B, (1 / (p : ℝ)) *
             (∫ w in Set.Icc (-W) W,
               ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-                logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2))
-        ≤ 2 * harmonicPrimeMass B ^ 2 * E := by
+                logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)))
+        ≤ 2 * harmonicPrimeMass B ^ (2 : ℕ) * E := by
     calc
       2 * harmonicPrimeMass B *
           (∑ p ∈ B, (1 / (p : ℝ)) *
             (∫ w in Set.Icc (-W) W,
               ‖harmonicRamareCofactorPoly P (Finset.Icc A₀ B₀) p w -
-                logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2))
+                logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)))
           ≤ 2 * harmonicPrimeMass B * (harmonicPrimeMass B * E) :=
             mul_le_mul_of_nonneg_left hsum (mul_nonneg (by norm_num) hmass0)
-      _ = 2 * harmonicPrimeMass B ^ 2 * E := by ring
+      _ = 2 * harmonicPrimeMass B ^ (2 : ℕ) * E := by ring
   dsimp only [B, C, E] at hbase hsecond ⊢
   exact hbase.trans (add_le_add le_rfl hsecond)
 

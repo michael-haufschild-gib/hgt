@@ -41,7 +41,7 @@ theorem primePoisson_half_continuousOne_toLp_ne_zero (t : ℝ) :
   let u : Lp ℂ 2 mu := ContinuousMap.toLp 2 mu ℂ (1 : C(PrimeTorus, ℂ))
   change u ≠ 0
   intro hzero
-  have hnorm : ‖u‖ ^ 2 = 1 := by
+  have hnorm : ‖u‖ ^ (2 : ℕ) = 1 := by
     rw [_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     have hcoe : ((u : Lp ℂ 2 mu) : PrimeTorus → ℂ) =ᵐ[mu]
         fun _ => (1 : ℂ) := by
@@ -49,7 +49,7 @@ theorem primePoisson_half_continuousOne_toLp_ne_zero (t : ℝ) :
         (1 : C(PrimeTorus, ℂ))] with x hx
       simpa [u] using hx
     calc
-      (∫ x, ‖((u : Lp ℂ 2 mu) : PrimeTorus → ℂ) x‖ ^ 2 ∂mu) =
+      (∫ x, ‖((u : Lp ℂ 2 mu) : PrimeTorus → ℂ) x‖ ^ (2 : ℕ) ∂mu) =
           ∫ _x : PrimeTorus, (1 : ℝ) ∂mu := by
         refine integral_congr_ae ?_
         filter_upwards [hcoe] with x hx

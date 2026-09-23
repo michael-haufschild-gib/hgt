@@ -1400,10 +1400,10 @@ theorem shorSourceJoint_run_with_scaled_error_recoverable_event_resource_success
       shorSourceJoint_run_with_recoverable_event_resource_certificates hr cert
 
 /-- Direct Shor source joint-event order-finding theorem from public register
-bounds. The usual lower bound `N^2 <= 2^t` supplies the scaled-error premise
+bounds. The usual lower bound `N^(2 : ℕ) <= 2^t` supplies the scaled-error premise
 because the source order is strictly smaller than the modulus. The finite
 source-distribution lower bound additionally needs `12N <= 2^t`; the older
-upper bound `2^t < 2N^2` does not imply it for small moduli. -/
+upper bound `2^t < 2N^(2 : ℕ)` does not imply it for small moduli. -/
 private theorem shorSourceJoint_run_with_public_register_resource_certificates
     {N x t r : ℕ}
     (hinput : OrderFinding.Input N x r)
@@ -1437,7 +1437,7 @@ private theorem shorSourceJoint_run_with_public_register_resource_certificates
 
 /-- Direct Shor source joint-event order-finding theorem from the restored
 public register lower bound, in the large-modulus branch. When `12 <= N`, the
-public lower bound `N^2 <= 2^t` already implies the finite large-register
+public lower bound `N^(2 : ℕ) <= 2^t` already implies the finite large-register
 hypothesis used by the current source-joint probability proof
 [Sho95, source.tex:1183-1185]. -/
 theorem shorSourceJoint_run_with_public_register_large_modulus_resource_certificates
@@ -1559,7 +1559,7 @@ theorem shorSourceJoint_run_with_public_register_small_modulus_resource_certific
         shorSourceJoint_run_with_resource_certificates hinput.order_pos cert
 
 /-- Direct Shor source joint-event order-finding theorem from the restored
-public register window `N^2 <= 2^t < 2N^2`. The large-modulus branch uses the
+public register window `N^(2 : ℕ) <= 2^t < 2N^(2 : ℕ)`. The large-modulus branch uses the
 usual `12N <= 2^t` consequence; the small-modulus branch is a finite residual
 check against the same Shor source probability route
 [Sho95, source.tex:1183-1185]. -/
@@ -2286,7 +2286,7 @@ noncomputable def shorSourceJointRunWithPublicRegisterPrivateExactResourceCorrec
 /-- Circuit-aware source-joint endpoint from the restored public register lower
 bound in the large-modulus branch. This wrapper keeps correctness and exact
 resource accounting tied to the same typed circuit while deriving the current
-finite large-register hypothesis from `12 <= N` and `N^2 <= 2^t`
+finite large-register hypothesis from `12 <= N` and `N^(2 : ℕ) <= 2^t`
 [Sho95, source.tex:1183-1185]. -/
 noncomputable def
     shorSourceJointRunWithPublicRegisterLargeModulusPrivateExactResourceCorrectWitness

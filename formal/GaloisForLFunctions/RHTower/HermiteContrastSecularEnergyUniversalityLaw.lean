@@ -20,8 +20,8 @@ noncomputable section
 /-- Secular coordinate recovered from the Hilbert norm of the canonical contrast, its next
 Hermite weight, and the accumulated next-depth mass. -/
 def hermiteContrastSecularEnergyCoordinate (k : ℕ) : ℝ :=
-  (‖hermiteContrastLp k‖ ^ 2 * constrainedProlateHermiteWeight (k + 1)) /
-    (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ 2)
+  (‖hermiteContrastLp k‖ ^ (2 : ℕ) * constrainedProlateHermiteWeight (k + 1)) /
+    (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ (2 : ℕ))
 
 /-- Hilbert normalization recovers the original ladder mass ratio exactly. -/
 theorem hermiteContrastSecularEnergyCoordinate_eq_theta (k : ℕ) :
@@ -46,7 +46,7 @@ theorem hermiteContrastSecularEnergyUniversality (k : ℕ) :
             x = hermiteContrastSecularEnergyCoordinate k)) ∧
       ∀ (A : ℕ → ℝ), (∀ j, 0 < A j) →
         Tendsto (fun lam : ℝ =>
-            (ladderTwoModeRoot A (k + 1) lam / ladderTwoModeRoot A k lam) / lam ^ 8)
+            (ladderTwoModeRoot A (k + 1) lam / ladderTwoModeRoot A k lam) / lam ^ (8 : ℕ))
           atTop (nhds
             ((hermiteContrastSecularEnergyCoordinate (k + 1) /
                 hermiteContrastSecularEnergyCoordinate k) *

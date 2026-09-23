@@ -135,8 +135,8 @@ theorem abs_gridStep_le (f : ℝ → ℝ) (a h : ℝ) (M : ℕ) (x : ℝ) :
 step function on a uniform grid by at most the mesh times the `L²` norm of its derivative. -/
 theorem integral_sub_gridStep_sq_le {f f' : ℝ → ℝ} {a h : ℝ} (hh : 0 < h) (M : ℕ)
     (hderiv : ∀ x : ℝ, HasDerivAt f (f' x) x) (hf'c : Continuous f') :
-    (∫ x in Set.Ioc a (a + M * h), (f x - gridStep f a h M x) ^ 2)
-      ≤ h ^ 2 * ∫ x in Set.Ioc a (a + M * h), f' x ^ 2 := by
+    (∫ x in Set.Ioc a (a + M * h), (f x - gridStep f a h M x) ^ (2 : ℕ))
+      ≤ h ^ (2 : ℕ) * ∫ x in Set.Ioc a (a + M * h), f' x ^ (2 : ℕ) := by
   have hfc : Continuous f := by
     refine continuous_iff_continuousAt.2 fun x => ?_
     exact (hderiv x).continuousAt
@@ -148,14 +148,14 @@ theorem integral_sub_gridStep_sq_le {f f' : ℝ → ℝ} {a h : ℝ} (hh : 0 < h
       hfc.continuousOn
   have hVbound : ∀ x : ℝ, |gridStep f a h M x| ≤ ∑ j ∈ Finset.range M, |f (a + j * h)| :=
     abs_gridStep_le f a h M
-  have hmeasfun : Measurable (fun x : ℝ => (f x - gridStep f a h M x) ^ 2) :=
+  have hmeasfun : Measurable (fun x : ℝ => (f x - gridStep f a h M x) ^ (2 : ℕ)) :=
     (hfc.measurable.sub (measurable_gridStep f a h M)).pow_const 2
-  have hmeas : AEStronglyMeasurable (fun x : ℝ => (f x - gridStep f a h M x) ^ 2) volume :=
+  have hmeas : AEStronglyMeasurable (fun x : ℝ => (f x - gridStep f a h M x) ^ (2 : ℕ)) volume :=
     hmeasfun.aestronglyMeasurable
-  have hint : IntegrableOn (fun x : ℝ => (f x - gridStep f a h M x) ^ 2)
+  have hint : IntegrableOn (fun x : ℝ => (f x - gridStep f a h M x) ^ (2 : ℕ))
       (Set.Ioc a (a + (M : ℝ) * h)) volume := by
     refine MeasureTheory.Measure.integrableOn_of_bounded (M :=
-      (B + ∑ j ∈ Finset.range M, |f (a + j * h)|) ^ 2) measure_Ioc_lt_top.ne hmeas ?_
+      (B + ∑ j ∈ Finset.range M, |f (a + j * h)|) ^ (2 : ℕ)) measure_Ioc_lt_top.ne hmeas ?_
     filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioc] with x hx
     have hx' : x ∈ Set.Icc a (a + (M : ℝ) * h) := Set.Ioc_subset_Icc_self hx
     have h1 : |f x| ≤ B := by
@@ -170,15 +170,15 @@ theorem integral_sub_gridStep_sq_le {f f' : ℝ → ℝ} {a h : ℝ} (hh : 0 < h
         rw [abs_neg] at this
         simpa [sub_eq_add_neg] using this
       linarith
-    have hd : (f x - gridStep f a h M x) ^ 2 = |f x - gridStep f a h M x| ^ 2 :=
+    have hd : (f x - gridStep f a h M x) ^ (2 : ℕ) = |f x - gridStep f a h M x| ^ (2 : ℕ) :=
       (sq_abs _).symm
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _), hd]
     exact pow_le_pow_left₀ (abs_nonneg _) habs 2
-  have hintervalErr : IntervalIntegrable (fun x : ℝ => (f x - gridStep f a h M x) ^ 2)
+  have hintervalErr : IntervalIntegrable (fun x : ℝ => (f x - gridStep f a h M x) ^ (2 : ℕ))
       volume a (a + (M : ℝ) * h) := by
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hab]
     exact hint
-  have hintervalD : IntervalIntegrable (fun x : ℝ => f' x ^ 2) volume a (a + (M : ℝ) * h) :=
+  have hintervalD : IntervalIntegrable (fun x : ℝ => f' x ^ (2 : ℕ)) volume a (a + (M : ℝ) * h) :=
     ((hf'c.pow 2).intervalIntegrable _ _)
   rw [← intervalIntegral.integral_of_le hab, ← intervalIntegral.integral_of_le hab,
     integral_grid_sum hh.le M hintervalErr, integral_grid_sum hh.le M hintervalD,
@@ -187,7 +187,7 @@ theorem integral_sub_gridStep_sq_le {f f' : ℝ → ℝ} {a h : ℝ} (hh : 0 < h
   have hle : a + (j : ℝ) * h ≤ a + ((j : ℝ) + 1) * h := by nlinarith
   have hlen : (a + ((j : ℝ) + 1) * h) - (a + (j : ℝ) * h) = h := by ring
   have hcongr : ∀ x ∈ Set.Ioc (a + (j : ℝ) * h) (a + ((j : ℝ) + 1) * h),
-      (f x - gridStep f a h M x) ^ 2 = (f x - f (a + (j : ℝ) * h)) ^ 2 := by
+      (f x - gridStep f a h M x) ^ (2 : ℕ) = (f x - f (a + (j : ℝ) * h)) ^ (2 : ℕ) := by
     intro x hx
     rw [gridStep_eq_of_mem hh hj (show x ∈ gridCell a h j from hx)]
   rw [intervalIntegral.integral_of_le hle, intervalIntegral.integral_of_le hle,

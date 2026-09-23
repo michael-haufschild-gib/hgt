@@ -55,8 +55,8 @@ theorem hankel (a b c d e f g : Polynomial ℝ) (a' b' c' d' e' f' g' : ℝ)
       (hankelFourDet a' b' c' d' e' f' g') := by
   have htwo : evenCompactGapTop (2 : Polynomial ℝ) 0 2 := by
     norm_num [evenCompactGapTop]
-  have hhead : evenCompactGapTop (a*c*e-a*d^2-b^2*e+2*b*c*d-c^3) 12
-      (a'*c'*e'-a'*d'^2-b'^2*e'+2*b'*c'*d'-c'^3) :=
+  have hhead : evenCompactGapTop (a*c*e-a*d^(2 : ℕ)-b^(2 : ℕ)*e+2*b*c*d-c^(3 : ℕ)) 12
+      (a'*c'*e'-a'*d'^(2 : ℕ)-b'^(2 : ℕ)*e'+2*b'*c'*d'-c'^(3 : ℕ)) :=
     sub (add (sub (sub (mul (mul ha hc) he) (mul ha (pow hd 2)))
       (mul (pow (n := 3) hb 2) he)) (mul (mul (mul htwo hb) hc) hd)) (pow hc 3)
   have h1 := mul (sub (mul hc he) (pow hd 2)) (pow hd 2)

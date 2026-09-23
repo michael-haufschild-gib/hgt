@@ -96,16 +96,16 @@ theorem norm_suzukiPtCopyCoef_le (t : ℝ) (q : XiZeroCopy) :
   gcongr
 
 theorem summable_norm_sq_suzukiPtCopyCoef (t : ℝ) :
-    Summable fun q : XiZeroCopy => ‖suzukiPtCopyCoef t q‖ ^ 2 := by
+    Summable fun q : XiZeroCopy => ‖suzukiPtCopyCoef t q‖ ^ (2 : ℕ) := by
   refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_)
-    (xiSpectralPoint_inv_sq_summable.mul_left ((Real.exp (|t| / 2) + 1) ^ 2))
+    (xiSpectralPoint_inv_sq_summable.mul_left ((Real.exp (|t| / 2) + 1) ^ (2 : ℕ)))
   have h := norm_suzukiPtCopyCoef_le t q
   have h0 : (0 : ℝ) ≤ ‖suzukiPtCopyCoef t q‖ := norm_nonneg _
   have hpos : (0 : ℝ) < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hexp : (0 : ℝ) ≤ Real.exp (|t| / 2) + 1 := by positivity
-  calc ‖suzukiPtCopyCoef t q‖ ^ 2
-      ≤ ((Real.exp (|t| / 2) + 1) * (1 / ‖xiSpectralPoint q‖)) ^ 2 := by nlinarith
-    _ = (Real.exp (|t| / 2) + 1) ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+  calc ‖suzukiPtCopyCoef t q‖ ^ (2 : ℕ)
+      ≤ ((Real.exp (|t| / 2) + 1) * (1 / ‖xiSpectralPoint q‖)) ^ (2 : ℕ) := by nlinarith
+    _ = (Real.exp (|t| / 2) + 1) ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         rw [mul_pow, div_pow]
         ring
 
@@ -116,24 +116,24 @@ theorem suzukiPtSupportCoef_eq (hRH : RiemannHypothesis) (t : ℝ) (ρ : XiDivis
 
 theorem summable_weighted_suzukiPtSupportCoef (hRH : RiemannHypothesis) (t : ℝ) :
     Summable fun ρ : XiDivisorSupport =>
-      ‖suzukiPtSupportCoef t ρ‖ ^ 2 * suzukiCauchyWeight ρ := by
+      ‖suzukiPtSupportCoef t ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ := by
   have hbase := summable_norm_sq_suzukiPtCopyCoef t
-  have hsig := (summable_sigma_of_nonneg (f := fun q : XiZeroCopy => ‖suzukiPtCopyCoef t q‖ ^ 2)
+  have hsig := (summable_sigma_of_nonneg (f := fun q : XiZeroCopy => ‖suzukiPtCopyCoef t q‖ ^ (2 : ℕ))
     (fun q => sq_nonneg _)).mp hbase
   refine ((hsig.2).mul_left Real.pi).congr fun ρ => ?_
   have hpos := xiSupportMult_pos ρ
   have hi : Fin (xiSupportMult ρ) := ⟨0, hpos⟩
-  show Real.pi * (∑' j : Fin (xiSupportMult ρ), ‖suzukiPtCopyCoef t (⟨ρ, j⟩ : XiZeroCopy)‖ ^ 2)
-      = ‖suzukiPtSupportCoef t ρ‖ ^ 2 * suzukiCauchyWeight ρ
+  show Real.pi * (∑' j : Fin (xiSupportMult ρ), ‖suzukiPtCopyCoef t (⟨ρ, j⟩ : XiZeroCopy)‖ ^ (2 : ℕ))
+      = ‖suzukiPtSupportCoef t ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ
   · have hconst : ∀ j : Fin (xiSupportMult ρ),
-        ‖suzukiPtCopyCoef t (⟨ρ, j⟩ : XiZeroCopy)‖ ^ 2
-          = ‖suzukiPtCopyCoef t (⟨ρ, hi⟩ : XiZeroCopy)‖ ^ 2 := by
+        ‖suzukiPtCopyCoef t (⟨ρ, j⟩ : XiZeroCopy)‖ ^ (2 : ℕ)
+          = ‖suzukiPtCopyCoef t (⟨ρ, hi⟩ : XiZeroCopy)‖ ^ (2 : ℕ) := by
       intro j
       rw [suzukiPtCopyCoef, suzukiPtCopyCoef, xiSpectralPoint_copy_eq hRH,
         xiSpectralPoint_copy_eq hRH]
     have htsum : (∑' j : Fin (xiSupportMult ρ),
-        ‖suzukiPtCopyCoef t (⟨ρ, j⟩ : XiZeroCopy)‖ ^ 2)
-        = (xiSupportMult ρ : ℝ) * ‖suzukiPtCopyCoef t (⟨ρ, hi⟩ : XiZeroCopy)‖ ^ 2 := by
+        ‖suzukiPtCopyCoef t (⟨ρ, j⟩ : XiZeroCopy)‖ ^ (2 : ℕ))
+        = (xiSupportMult ρ : ℝ) * ‖suzukiPtCopyCoef t (⟨ρ, hi⟩ : XiZeroCopy)‖ ^ (2 : ℕ) := by
       rw [tsum_fintype, Finset.sum_congr rfl (fun j _ => hconst j), Finset.sum_const,
         Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     rw [htsum, suzukiPtSupportCoef_eq hRH t ρ hi, suzukiCauchyWeight, norm_mul,
@@ -237,7 +237,7 @@ theorem inner_suzukiFrakSFull_eq_pi_mul_screwKernel (hRH : RiemannHypothesis) (t
 /-- **Suzuki Corollary 4.3, forward direction.**  Under the Riemann hypothesis the squared `L²`
 norm of `𝔖_t` is `2π` times the screw source. -/
 theorem norm_sq_suzukiFrakSFull_eq (hRH : RiemannHypothesis) (t : ℝ) :
-    ‖(memLp_suzukiFrakSFull t).toLp (fun x : ℝ => suzukiFrakSFull t ((x : ℝ) : ℂ))‖ ^ 2
+    ‖(memLp_suzukiFrakSFull t).toLp (fun x : ℝ => suzukiFrakSFull t ((x : ℝ) : ℂ))‖ ^ (2 : ℕ)
       = 2 * Real.pi * suzukiPsi t := by
   have hinner := inner_suzukiFrakSFull_eq_pi_mul_screwKernel hRH t t
   rw [suzukiScrewKernel_self] at hinner
@@ -256,12 +256,12 @@ states the converse assuming the identity only on `[t₀, ∞)`; that refinement
 11.1, which is not yet formalized here.) -/
 theorem riemannHypothesis_iff_norm_sq_suzukiFrakSFull :
     RiemannHypothesis ↔ ∀ t : ℝ, 0 ≤ t →
-      ‖(memLp_suzukiFrakSFull t).toLp (fun x : ℝ => suzukiFrakSFull t ((x : ℝ) : ℂ))‖ ^ 2
+      ‖(memLp_suzukiFrakSFull t).toLp (fun x : ℝ => suzukiFrakSFull t ((x : ℝ) : ℂ))‖ ^ (2 : ℕ)
         = 2 * Real.pi * suzukiPsi t := by
   refine ⟨fun hRH t _ => norm_sq_suzukiFrakSFull_eq hRH t, fun h => ?_⟩
   refine riemannHypothesis_of_suzukiPsiPointwiseNonnegative fun t ht => ?_
   have h2 : (0 : ℝ) ≤ ‖(memLp_suzukiFrakSFull t).toLp
-      (fun x : ℝ => suzukiFrakSFull t ((x : ℝ) : ℂ))‖ ^ 2 := sq_nonneg _
+      (fun x : ℝ => suzukiFrakSFull t ((x : ℝ) : ℂ))‖ ^ (2 : ℕ) := sq_nonneg _
   rw [h t ht] at h2
   nlinarith [Real.pi_pos]
 

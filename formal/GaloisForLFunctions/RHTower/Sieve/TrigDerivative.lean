@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.TrigParseval
 Differentiating `S(t) = ∑_{n < N} c_n e(nt)` term by term multiplies each coefficient by `2πin`, so
 the derivative is again a trigonometric polynomial and Parseval evaluates its energy:
 
-`∫_0^1 |S'(t)|² dt = ∑_{n < N} (2πn)² |c_n|²`.
+`∫_0^(1 : ℕ) |S'(t)|² dt = ∑_{n < N} (2πn)² |c_n|²`.
 
 Together with `TrigParseval.lean` this supplies both integrals appearing in Gallagher's Sobolev
 bound, so the local averages it produces are expressed entirely in the coefficient energy.
@@ -73,8 +73,8 @@ theorem hasDerivAt_expSum (N : ℕ) (c : Fin N → ℂ) (t : ℝ) :
 
 /-- **The energy of the derivative.** -/
 theorem integral_normSq_derivCoeff (N : ℕ) (c : Fin N → ℂ) :
-    (∫ t in (0 : ℝ)..1, ‖expSum N (derivCoeff N c) t‖ ^ 2)
-      = ∑ n : Fin N, (2 * Real.pi * ((n : ℕ) : ℝ)) ^ 2 * ‖c n‖ ^ 2 := by
+    (∫ t in (0 : ℝ)..1, ‖expSum N (derivCoeff N c) t‖ ^ (2 : ℕ))
+      = ∑ n : Fin N, (2 * Real.pi * ((n : ℕ) : ℝ)) ^ (2 : ℕ) * ‖c n‖ ^ (2 : ℕ) := by
   rw [integral_normSq_expSum]
   refine Finset.sum_congr rfl fun n _ => ?_
   have hn : (0 : ℝ) ≤ 2 * Real.pi * ((n : ℕ) : ℝ) := by positivity

@@ -54,7 +54,7 @@ def uniformPhaseSeed (x : α → ℝ) : α → ℂ := torusReplicaPhaseOrbit (un
 /-- **Replica moments of the uniform phase seed.**  The `r`-th moment of the squared pairing with
 any subunit vector is at most `r!` times the `r`-th power of the uniform weight. -/
 theorem integral_box_fidelity_uniformPhaseSeed_pow_le {z : α → ℂ}
-    (hz : (∑ a, ‖z a‖ ^ 2) ≤ 1) (r : ℕ) :
+    (hz : (∑ a, ‖z a‖ ^ (2 : ℕ)) ≤ 1) (r : ℕ) :
     (∫ x in torusBox α, finitePureStateFidelity (uniformPhaseSeed x) z ^ r) ≤
       (r.factorial : ℝ) * ((Fintype.card α : ℝ))⁻¹ ^ r :=
   integral_box_fidelity_pow_le (fun _ => uniformPhaseWeights_nonneg _)
@@ -62,9 +62,9 @@ theorem integral_box_fidelity_uniformPhaseSeed_pow_le {z : α → ℂ}
 
 /-- **Fourth phase moment.**  Two is the number of index pairings. -/
 theorem integral_box_fidelity_uniformPhaseSeed_sq_le {z : α → ℂ}
-    (hz : (∑ a, ‖z a‖ ^ 2) ≤ 1) :
-    (∫ x in torusBox α, finitePureStateFidelity (uniformPhaseSeed x) z ^ 2) ≤
-      2 * ((Fintype.card α : ℝ))⁻¹ ^ 2 := by
+    (hz : (∑ a, ‖z a‖ ^ (2 : ℕ)) ≤ 1) :
+    (∫ x in torusBox α, finitePureStateFidelity (uniformPhaseSeed x) z ^ (2 : ℕ)) ≤
+      2 * ((Fintype.card α : ℝ))⁻¹ ^ (2 : ℕ) := by
   have h := integral_box_fidelity_uniformPhaseSeed_pow_le hz 2
   norm_num at h
   rw [inv_pow]
@@ -72,9 +72,9 @@ theorem integral_box_fidelity_uniformPhaseSeed_sq_le {z : α → ℂ}
 
 /-- **Sixth phase moment.**  Six is the number of index triple pairings. -/
 theorem integral_box_fidelity_uniformPhaseSeed_cube_le {z : α → ℂ}
-    (hz : (∑ a, ‖z a‖ ^ 2) ≤ 1) :
-    (∫ x in torusBox α, finitePureStateFidelity (uniformPhaseSeed x) z ^ 3) ≤
-      6 * ((Fintype.card α : ℝ))⁻¹ ^ 3 := by
+    (hz : (∑ a, ‖z a‖ ^ (2 : ℕ)) ≤ 1) :
+    (∫ x in torusBox α, finitePureStateFidelity (uniformPhaseSeed x) z ^ (3 : ℕ)) ≤
+      6 * ((Fintype.card α : ℝ))⁻¹ ^ (3 : ℕ) := by
   have h := integral_box_fidelity_uniformPhaseSeed_pow_le hz 3
   norm_num at h
   rw [inv_pow]
@@ -82,14 +82,14 @@ theorem integral_box_fidelity_uniformPhaseSeed_cube_le {z : α → ℂ}
 
 /-- The spectral collision of the uniform phase seed in a given family. -/
 def phaseCollision {ι : Type*} [Fintype ι] (e : ι → α → ℂ) (x : α → ℝ) : ℝ :=
-  ∑ j, finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ 2
+  ∑ j, finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ (2 : ℕ)
 
 theorem phaseCollision_nonneg {ι : Type*} [Fintype ι] (e : ι → α → ℂ) (x : α → ℝ) :
     0 ≤ phaseCollision e x :=
   Finset.sum_nonneg fun _ _ => by positivity
 
 theorem integrableOn_box_fidelity_uniformPhaseSeed_pow {z : α → ℂ}
-    (hz : (∑ a, ‖z a‖ ^ 2) ≤ 1) (r : ℕ) :
+    (hz : (∑ a, ‖z a‖ ^ (2 : ℕ)) ≤ 1) (r : ℕ) :
     IntegrableOn (fun x => finitePureStateFidelity (uniformPhaseSeed x) z ^ r)
       (torusBox α) volume :=
   integrableOn_box_fidelity_pow (fun _ => uniformPhaseWeights_nonneg _)
@@ -99,16 +99,16 @@ theorem integrableOn_box_fidelity_uniformPhaseSeed_pow {z : α → ℂ}
 collision is at most twice the family size over the squared dimension; at family size the
 dimension this is `2 / D`. -/
 theorem integral_box_phaseCollision_le {ι : Type*} [Fintype ι] (e : ι → α → ℂ)
-    (he : ∀ j, (∑ a, ‖e j a‖ ^ 2) ≤ 1) :
+    (he : ∀ j, (∑ a, ‖e j a‖ ^ (2 : ℕ)) ≤ 1) :
     (∫ x in torusBox α, phaseCollision e x) ≤
-      2 * (Fintype.card ι : ℝ) * ((Fintype.card α : ℝ))⁻¹ ^ 2 := by
+      2 * (Fintype.card ι : ℝ) * ((Fintype.card α : ℝ))⁻¹ ^ (2 : ℕ) := by
   classical
   simp only [phaseCollision]
   rw [integral_finsetSum _ fun j _ => integrableOn_box_fidelity_uniformPhaseSeed_pow (he j) 2]
-  calc (∑ j : ι, ∫ x in torusBox α, finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ 2)
-      ≤ ∑ _j : ι, 2 * ((Fintype.card α : ℝ))⁻¹ ^ 2 :=
+  calc (∑ j : ι, ∫ x in torusBox α, finitePureStateFidelity (uniformPhaseSeed x) (e j) ^ (2 : ℕ))
+      ≤ ∑ _j : ι, 2 * ((Fintype.card α : ℝ))⁻¹ ^ (2 : ℕ) :=
         Finset.sum_le_sum fun j _ => integral_box_fidelity_uniformPhaseSeed_sq_le (he j)
-    _ = 2 * (Fintype.card ι : ℝ) * ((Fintype.card α : ℝ))⁻¹ ^ 2 := by
+    _ = 2 * (Fintype.card ι : ℝ) * ((Fintype.card α : ℝ))⁻¹ ^ (2 : ℕ) := by
         rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ]
         ring
 

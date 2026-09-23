@@ -9,7 +9,7 @@ mean-value theorem cannot be applied directly; but it is smooth and increasing, 
 by parts transfers the mean-value asymptotic through it, at the cost of `E·(2w(b) − w(a))` where `E`
 is the mean-value error on every initial subinterval.
 
-This is exactly the step that turns the constant `∑|c_n|²` into Young's `∫_0^1 e^{2Rv}(…) dv`.
+This is exactly the step that turns the constant `∑|c_n|²` into Young's `∫_0^(1 : ℕ) e^{2Rv}(…) dv`.
 -/
 
 open MeasureTheory intervalIntegral Set

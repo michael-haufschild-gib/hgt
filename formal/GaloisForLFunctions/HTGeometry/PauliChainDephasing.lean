@@ -36,11 +36,11 @@ theorem exists_energy_witness_of_span_witness_at {P : Fin N → Matrix (Fin D) (
     (hroot₀ : ∀ i, matrixCharpolyRelation (H₀, energy₀ i) = 0)
     (κ : ℝ)
     (hfail : ∀ σ : Equiv.Perm (Fin D),
-      (∑ j, ((k (σ.symm j) : ℝ) : ℂ) * energy₀ j) ^ 2
-        - ((κ : ℝ) : ℂ) * ∑ j, energy₀ j ^ 2 ≠ 0) :
+      (∑ j, ((k (σ.symm j) : ℝ) : ℂ) * energy₀ j) ^ (2 : ℕ)
+        - ((κ : ℝ) : ℂ) * ∑ j, energy₀ j ^ (2 : ℕ) ≠ 0) :
     ∃ θ₀ : Fin N → ℝ, ∀ π : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
-        ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues i) ^ 2 := by
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ (2 : ℕ)
+        ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues i) ^ (2 : ℕ) := by
   classical
   obtain ⟨q, hq, hgood⟩ := exists_mem_real_shell_quadraticRate_ne_zero_of_mem_span P
     (fun j => ((k j : ℝ) : ℂ)) ((κ : ℝ) : ℂ) hspan hinj₀ hroot₀ hfail
@@ -68,8 +68,8 @@ theorem exists_energy_witness_of_span_witness_at {P : Fin N → Matrix (Fin D) (
       = (((∑ i, k i * hHerm.eigenvalues (π i) : ℝ)) : ℂ) := by
     rw [Complex.ofReal_sum]
     exact Finset.sum_congr rfl fun i _ => by push_cast; ring
-  have hR : (∑ j, ((hHerm.eigenvalues j : ℝ) : ℂ) ^ 2)
-      = (((∑ j, (hHerm.eigenvalues j) ^ 2 : ℝ)) : ℂ) := by
+  have hR : (∑ j, ((hHerm.eigenvalues j : ℝ) : ℂ) ^ (2 : ℕ))
+      = (((∑ j, (hHerm.eigenvalues j) ^ (2 : ℕ) : ℝ)) : ℂ) := by
     rw [Complex.ofReal_sum]
     exact Finset.sum_congr rfl fun j _ => by push_cast; ring
   rw [hL, hR, ← Complex.ofReal_pow, ← Complex.ofReal_mul, ← Complex.ofReal_sub, hπ]
@@ -102,9 +102,9 @@ theorem exists_shell_energy_witness_pauliChain (k : ℕ)
     ∃ θ₀ : Fin (Fintype.card (ChainLabel (k + 3))) → ℝ,
       ∀ π : Equiv.Perm (Fin (2 ^ (k + 3))),
         (∑ j, kvec j * (isHermitian_spectralEnsembleMatrix
-            (chainPauliFin_isHermitian (k + 3)) θ₀).eigenvalues (π j)) ^ 2
+            (chainPauliFin_isHermitian (k + 3)) θ₀).eigenvalues (π j)) ^ (2 : ℕ)
           ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix
-            (chainPauliFin_isHermitian (k + 3)) θ₀).eigenvalues i) ^ 2 := by
+            (chainPauliFin_isHermitian (k + 3)) θ₀).eigenvalues i) ^ (2 : ℕ) := by
   obtain ⟨H₀, energy₀, hspan, hinj₀, hroot₀, hfail⟩ :=
     exists_pauliChain_spanWitness k κ kvec hksum hkne
   exact exists_energy_witness_of_span_witness_at (chainPauliFin_isHermitian (k + 3))
@@ -129,9 +129,9 @@ theorem tendsto_integral_exp_sortedSpectralAction_zero_pauliChain (k : ℕ)
   have hwit : ∀ κ : ℝ, ∃ θ₀ : Fin (Fintype.card (ChainLabel (k + 3))) → ℝ,
       ∀ π : Equiv.Perm (Fin (2 ^ (k + 3))),
         (∑ j, kvec j * (isHermitian_spectralEnsembleMatrix
-            (chainPauliFin_isHermitian (k + 3)) θ₀).eigenvalues (π j)) ^ 2
+            (chainPauliFin_isHermitian (k + 3)) θ₀).eigenvalues (π j)) ^ (2 : ℕ)
           ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix
-            (chainPauliFin_isHermitian (k + 3)) θ₀).eigenvalues i) ^ 2 := by
+            (chainPauliFin_isHermitian (k + 3)) θ₀).eigenvalues i) ^ (2 : ℕ) := by
     intro κ
     obtain ⟨H₀, energy₀, hspan, hinj₀, hroot₀, hfail⟩ :=
       exists_pauliChain_spanWitness k κ kvec hksum hkne

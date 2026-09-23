@@ -75,7 +75,7 @@ theorem xiShiftedBoundaryDegreeCenteredShearPolynomial_eq_adaptive_sub_square
     (n : ℕ) (A : Polynomial ℝ) :
     xiShiftedBoundaryDegreeCenteredShearPolynomial n A =
       xiShiftedBoundaryAdaptiveShearPolynomial A -
-        (n + 1 : ℝ) • ((X * A) ^ 2) := by
+        (n + 1 : ℝ) • ((X * A) ^ (2 : ℕ)) := by
   simp only [xiShiftedBoundaryDegreeCenteredShearPolynomial,
     xiShiftedBoundaryDegreeCenteredEuler,
     xiShiftedBoundaryAdaptiveShearPolynomial,
@@ -88,7 +88,7 @@ theorem xiShiftedDegreeCenteredCompletedArithmeticSource_eq_adaptive_sub_square
     xiShiftedDegreeCenteredCompletedArithmeticSource w n A =
       xiShiftedAdaptiveMixedCompletedArithmeticSource w A -
         2 * (n + 1 : ℝ) *
-          xiShiftedPolynomialCompletedArithmeticSource w ((X * A) ^ 2) := by
+          xiShiftedPolynomialCompletedArithmeticSource w ((X * A) ^ (2 : ℕ)) := by
   rw [xiShiftedDegreeCenteredCompletedArithmeticSource_eq_momentFunctional hw,
     xiShiftedPolynomialCompletedArithmeticSource_eq_momentFunctional hw,
     xiShiftedBoundaryDegreeCenteredShearPolynomial_eq_adaptive_sub_square,
@@ -98,11 +98,11 @@ theorem xiShiftedDegreeCenteredCompletedArithmeticSource_eq_adaptive_sub_square
     2 * (HTGeometry.momentInner (xiShiftedRealMomentSequence w)
         (X * A) (X * xiShiftedBoundaryShiftedEuler 1 A) -
       (n + 1 : ℝ) *
-        HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) ((X * A) ^ 2)) =
+        HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) ((X * A) ^ (2 : ℕ))) =
       2 * HTGeometry.momentInner (xiShiftedRealMomentSequence w)
           (X * A) (X * xiShiftedBoundaryShiftedEuler 1 A) -
         2 * (n + 1 : ℝ) *
-          HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) ((X * A) ^ 2)
+          HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) ((X * A) ^ (2 : ℕ))
   ring
 
 theorem natDegree_xiShiftedBoundaryDegreeCenteredEuler_le
@@ -214,12 +214,12 @@ theorem coeff_xiShiftedBoundaryDegreeCenteredShearPolynomial_top
 theorem xiShiftedDegreeCenteredCompletedArithmeticSource_eq_monicRemainder
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     xiShiftedDegreeCenteredCompletedArithmeticSource w n P =
-      -2 * P.nextCoeff * xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c := by
+      -2 * P.nextCoeff * xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c := by
   dsimp only
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
   let Q := xiShiftedBoundaryDegreeCenteredShearPolynomial n P
@@ -227,19 +227,19 @@ theorem xiShiftedDegreeCenteredCompletedArithmeticSource_eq_monicRemainder
   have hPdeg : P.natDegree = n :=
     HTGeometry.finiteHankelNullMonicPolynomial_natDegree c hlast
   have hzero : ∀ k < 2 * n + 1,
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0 := by
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0 := by
     intro k hk
     exact xiShiftedHankelBoundaryPadeDefect_eq_zero_of_le
       c hhead hflat hlast (by omega)
   have hfactor : ∃ R : Polynomial ℝ, Q = P * R := by
-    refine ⟨X ^ 2 * xiShiftedBoundaryDegreeCenteredEuler n P, ?_⟩
+    refine ⟨X ^ (2 : ℕ) * xiShiftedBoundaryDegreeCenteredEuler n P, ?_⟩
     dsimp only [Q, xiShiftedBoundaryDegreeCenteredShearPolynomial]
     ring
   obtain ⟨R, hQR⟩ := hfactor
   have hdefect :
       HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) Q =
         HTGeometry.momentFunctional
-          (xiShiftedHankelBoundaryPadeDefect (w ^ 2) c) Q := by
+          (xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c) Q := by
     rw [hQR]
     exact (momentFunctional_finiteHankelBoundaryPadeDefect_null_mul
       (xiShiftedRealMomentSequence w) c R).symm
@@ -258,13 +258,13 @@ theorem xiShiftedDegreeCenteredCompletedArithmeticSource_eq_monicRemainder
 centering and before rational--Gamma/von Mangoldt formation. -/
 theorem xiShiftedCanonicalAdmissionDegreeCenteredCompletedArithmeticSource_eq_monicRemainder
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ
       HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0) :
     let P := HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n
     xiShiftedDegreeCenteredCompletedArithmeticSource w n P =
       -2 * P.nextCoeff *
-        xiShiftedHankelBoundaryMonicRemainder (w ^ 2)
+        xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ))
           (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) := by
   dsimp only
   let c := HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n
@@ -342,17 +342,17 @@ and every even successor have disappeared. -/
 theorem xiShiftedDegreeCenteredCompletedArithmeticSource_eq_alphaTrace_mul_monicRemainder
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     xiShiftedDegreeCenteredCompletedArithmeticSource w n
         (HTGeometry.finiteHankelNullMonicPolynomial c) =
       2 * (∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j) *
-        xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c := by
+        xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c := by
   have hmatrix (m : ℕ) :
       HTGeometry.momentHankelMatrix (xiShiftedRealMomentSequence w) m =
-        xiShiftedMomentHankelMatrix (w ^ 2) m := by
+        xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) m := by
     ext i j
     rfl
   have hhead' : (HTGeometry.momentHankelMatrix
@@ -372,13 +372,13 @@ positive monic extension orientation. -/
 theorem xiShiftedDegreeCenteredCompletedArithmeticSource_pos_iff_monicRemainder_pos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0)
     (hnext : (HTGeometry.finiteHankelNullMonicPolynomial c).nextCoeff < 0) :
     0 < xiShiftedDegreeCenteredCompletedArithmeticSource w n
         (HTGeometry.finiteHankelNullMonicPolynomial c) ↔
-      0 < xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c := by
+      0 < xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c := by
   rw [xiShiftedDegreeCenteredCompletedArithmeticSource_eq_monicRemainder
     hw hn c hhead hflat hlast]
   constructor <;> intro h <;> nlinarith
@@ -389,16 +389,16 @@ therefore exclude the crossing. -/
 theorem xiShiftedHankelFirstCrossing_degreeCenteredArithmeticSource_nonpos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hcne : c ≠ 0)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hmin : IsLocalMinOn
       (fun y => xiShiftedMomentHankelQuadratic y (n + 1) c)
-      (Ici (w ^ 2)) (w ^ 2))
+      (Ici (w ^ (2 : ℕ))) (w ^ (2 : ℕ)))
     (hnext : (HTGeometry.finiteHankelNullMonicPolynomial c).nextCoeff < 0) :
     xiShiftedDegreeCenteredCompletedArithmeticSource w n
         (HTGeometry.finiteHankelNullMonicPolynomial c) ≤ 0 := by
   have hlast := xiShiftedHankelNullVector_terminal_ne_zero_of_head_posDef
-    (w ^ 2) n c hhead hcne hflat
+    (w ^ (2 : ℕ)) n c hhead hcne hflat
   have hrem := xiShiftedHankelFirstCrossing_monicRemainder_nonpos
     (sq_pos_of_pos (by linarith : 0 < w)) n c hhead hcne hflat hmin
   rw [xiShiftedDegreeCenteredCompletedArithmeticSource_eq_monicRemainder
@@ -432,13 +432,13 @@ Thus no barycenter sign survives. -/
 theorem xiShiftedTraceCoupledDegreeCenteredCompletedArithmeticSource_eq_sq_mul_monicRemainder
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     xiShiftedTraceCoupledDegreeCenteredCompletedArithmeticSource w n P =
-      2 * P.nextCoeff ^ 2 *
-        xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c := by
+      2 * P.nextCoeff ^ (2 : ℕ) *
+        xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c := by
   dsimp only
   rw [xiShiftedTraceCoupledDegreeCenteredCompletedArithmeticSource_eq_mul hw,
     xiShiftedDegreeCenteredCompletedArithmeticSource_eq_monicRemainder
@@ -450,15 +450,15 @@ trace-coupled producer nonpositive, with no sign hypothesis on admitted barycent
 theorem xiShiftedHankelFirstCrossing_traceCoupledDegreeCenteredArithmeticSource_nonpos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hcne : c ≠ 0)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hmin : IsLocalMinOn
       (fun y => xiShiftedMomentHankelQuadratic y (n + 1) c)
-      (Ici (w ^ 2)) (w ^ 2)) :
+      (Ici (w ^ (2 : ℕ))) (w ^ (2 : ℕ))) :
     xiShiftedTraceCoupledDegreeCenteredCompletedArithmeticSource w n
         (HTGeometry.finiteHankelNullMonicPolynomial c) ≤ 0 := by
   have hlast := xiShiftedHankelNullVector_terminal_ne_zero_of_head_posDef
-    (w ^ 2) n c hhead hcne hflat
+    (w ^ (2 : ℕ)) n c hhead hcne hflat
   have hrem := xiShiftedHankelFirstCrossing_monicRemainder_nonpos
     (sq_pos_of_pos (by linarith : 0 < w)) n c hhead hcne hflat hmin
   rw [xiShiftedTraceCoupledDegreeCenteredCompletedArithmeticSource_eq_sq_mul_monicRemainder
@@ -474,7 +474,7 @@ degree-`n` null row. -/
 def xiShiftedBoundaryRiccatiCompletedDegreeCenteredShearPolynomial
     (n : ℕ) (A : Polynomial ℝ) : Polynomial ℝ :=
   xiShiftedBoundaryDegreeCenteredShearPolynomial n A +
-    (2 * A.nextCoeff ^ 2) • A ^ 2
+    (2 * A.nextCoeff ^ (2 : ℕ)) • A ^ (2 : ℕ)
 
 def xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource
     (w : ℝ) (n : ℕ) (A : Polynomial ℝ) : ℝ :=
@@ -526,9 +526,9 @@ face but completes the positive-chamber history to a sum of squares plus one. -/
 def xiShiftedBoundaryNondegenerateNullFlagCompletedShearPolynomial
     (n : ℕ) (A B : Polynomial ℝ) : Polynomial ℝ :=
   xiShiftedBoundaryRiccatiCompletedDegreeCenteredShearPolynomial n A +
-    (1 + A.nextCoeff) • (X * A ^ 2) +
-    ((A.nextCoeff - B.nextCoeff) ^ 2 -
-      (A.nextCoeff - B.nextCoeff) + 1) • A ^ 2
+    (1 + A.nextCoeff) • (X * A ^ (2 : ℕ)) +
+    ((A.nextCoeff - B.nextCoeff) ^ (2 : ℕ) -
+      (A.nextCoeff - B.nextCoeff) + 1) • A ^ (2 : ℕ)
 
 /-- Literal rational--Gamma-minus-von-Mangoldt formation of the nondegenerate adjacent
 completion.  Both admitted amplitudes are selected before source aggregation. -/
@@ -578,7 +578,7 @@ def xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass
 Mangoldt arithmetic source. -/
 theorem xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass_sq_eq_arithmetic
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
-    xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ 2) n =
+    xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (w ^ (2 : ℕ)) n =
       xiShiftedNondegenerateNullFlagCompletedArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n)
@@ -594,7 +594,7 @@ locally bounded completed producer. -/
 theorem two_mul_xiShiftedCanonicalAdmissionOddCurrent_sq_le_norm_mul_nondegenerateSourceMass
     {y : ℝ} {n : ℕ} (hn : 0 < n)
     (hH : (xiShiftedMomentHankelMatrix y (n + 2)).PosDef) :
-    2 * xiShiftedCanonicalAdmissionOddCurrent y n ^ 2 ≤
+    2 * xiShiftedCanonicalAdmissionOddCurrent y n ^ (2 : ℕ) ≤
       xiShiftedCanonicalAdmissionNorm y n *
         xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass y n := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
@@ -628,16 +628,16 @@ theorem xiShiftedCanonicalAdmissionNorm_mul_nondegenerateSourceMass_eq_odd_sq_ad
     (hH : (xiShiftedMomentHankelMatrix y (n + 2)).PosDef) :
     xiShiftedCanonicalAdmissionNorm y n *
         xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass y n =
-      2 * xiShiftedCanonicalAdmissionOddCurrent y n ^ 2 +
-        2 * xiShiftedCanonicalAdmissionNorm y n ^ 2 *
+      2 * xiShiftedCanonicalAdmissionOddCurrent y n ^ (2 : ℕ) +
+        2 * xiShiftedCanonicalAdmissionNorm y n ^ (2 : ℕ) *
           ((∑ j ∈ Finset.range n,
               HTGeometry.monicOrthoAlpha
-                (fun k => (xiShiftedReciprocalMoment y k).re) j ^ 2) +
+                (fun k => (xiShiftedReciprocalMoment y k).re) j ^ (2 : ℕ)) +
             2 * (∑ j ∈ Finset.range n,
               HTGeometry.monicOrthoBeta
                 (fun k => (xiShiftedReciprocalMoment y k).re) j) +
             2 * HTGeometry.monicOrthoFirstCoeff
-                (fun k => (xiShiftedReciprocalMoment y k).re) n ^ 2 + 1) := by
+                (fun k => (xiShiftedReciprocalMoment y k).re) n ^ (2 : ℕ) + 1) := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   change (HTGeometry.momentHankelMatrix s (n + 2)).PosDef at hH
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
@@ -676,18 +676,18 @@ theorem not_eventually_nondegenerateSourceMass_le_of_oddCurrent_survives_norm_co
     ∀ C : ℝ, ¬ ∀ᶠ x in l,
       xiShiftedCanonicalNondegenerateNullFlagCompletedSourceMass (f x) n ≤ C := by
   intro C hsource
-  have hJsq : 0 < J ^ 2 := sq_pos_of_ne_zero hJ
+  have hJsq : 0 < J ^ (2 : ℕ) := sq_pos_of_ne_zero hJ
   have hoddSq : Tendsto
-      (fun x => xiShiftedCanonicalAdmissionOddCurrent (f x) n ^ 2) l (nhds (J ^ 2)) :=
+      (fun x => xiShiftedCanonicalAdmissionOddCurrent (f x) n ^ (2 : ℕ)) l (nhds (J ^ (2 : ℕ))) :=
     hodd.pow 2
-  have hoddLower : ∀ᶠ x in l, J ^ 2 / 2 <
-      xiShiftedCanonicalAdmissionOddCurrent (f x) n ^ 2 :=
+  have hoddLower : ∀ᶠ x in l, J ^ (2 : ℕ) / 2 <
+      xiShiftedCanonicalAdmissionOddCurrent (f x) n ^ (2 : ℕ) :=
     hoddSq.eventually (Ioi_mem_nhds (by linarith))
   have hnormScaled : Tendsto
       (fun x => xiShiftedCanonicalAdmissionNorm (f x) n * C) l (nhds 0) := by
     simpa only [zero_mul] using hnorm.mul_const C
   have hnormUpper : ∀ᶠ x in l,
-      xiShiftedCanonicalAdmissionNorm (f x) n * C < J ^ 2 :=
+      xiShiftedCanonicalAdmissionNorm (f x) n * C < J ^ (2 : ℕ) :=
     hnormScaled.eventually (Iio_mem_nhds hJsq)
   have hfalse : ∀ᶠ x in l, False := by
     filter_upwards [hH, hsource, hoddLower, hnormUpper] with x hHx hsourcex hoddx hnormx
@@ -795,10 +795,10 @@ theorem xiShiftedNondegenerateNullFlagCompletedArithmeticSource_eq_riccati_add_o
     xiShiftedNondegenerateNullFlagCompletedArithmeticSource w n A B =
       xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource w n A +
         2 * (1 + A.nextCoeff) *
-          xiShiftedPolynomialCompletedArithmeticSource w (X * A ^ 2) +
-        2 * ((A.nextCoeff - B.nextCoeff) ^ 2 -
+          xiShiftedPolynomialCompletedArithmeticSource w (X * A ^ (2 : ℕ)) +
+        2 * ((A.nextCoeff - B.nextCoeff) ^ (2 : ℕ) -
           (A.nextCoeff - B.nextCoeff) + 1) *
-          xiShiftedPolynomialCompletedArithmeticSource w (A ^ 2) := by
+          xiShiftedPolynomialCompletedArithmeticSource w (A ^ (2 : ℕ)) := by
   rw [xiShiftedNondegenerateNullFlagCompletedArithmeticSource_eq_momentFunctional hw,
     xiShiftedBoundaryNondegenerateNullFlagCompletedShearPolynomial,
     HTGeometry.momentFunctional_add, HTGeometry.momentFunctional_add,
@@ -873,12 +873,12 @@ theorem xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_liftedNull_eq_fi
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0) :
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     let A := P * X ^ m
     xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource w (n + m) A =
       -2 * A.nextCoeff *
-        xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+        xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
           (2 * n + (2 * m + 1)) := by
   dsimp only
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
@@ -902,13 +902,13 @@ theorem xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_liftedNull_eq_fi
   have hQmoment :
       HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) Q =
         -A.nextCoeff *
-          xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+          xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
             (2 * n + (2 * m + 1)) := by
     obtain ⟨R, hQR⟩ := hQfactor
     have hdefect :
         HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) Q =
           HTGeometry.momentFunctional
-            (xiShiftedHankelBoundaryPadeDefect (w ^ 2) c) Q := by
+            (xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c) Q := by
       rw [hQR]
       exact (momentFunctional_finiteHankelBoundaryPadeDefect_null_mul
         (xiShiftedRealMomentSequence w) c R).symm
@@ -922,17 +922,17 @@ theorem xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_liftedNull_eq_fi
       rw [← htop]
       exact coeff_xiShiftedBoundaryDegreeCenteredShearPolynomial_top hnm hA hAdeg
     rw [hQcoeff]
-  have hAsqFactor : ∃ R : Polynomial ℝ, A ^ 2 = P * R := by
+  have hAsqFactor : ∃ R : Polynomial ℝ, A ^ (2 : ℕ) = P * R := by
     refine ⟨P * X ^ (2 * m), ?_⟩
     dsimp only [A]
     ring
   have hAsqMoment :
-      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ 2) = 0 := by
+      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ (2 : ℕ)) = 0 := by
     obtain ⟨R, hAR⟩ := hAsqFactor
     have hdefect :
-        HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ 2) =
+        HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ (2 : ℕ)) =
           HTGeometry.momentFunctional
-            (xiShiftedHankelBoundaryPadeDefect (w ^ 2) c) (A ^ 2) := by
+            (xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c) (A ^ (2 : ℕ)) := by
       rw [hAR]
       exact (momentFunctional_finiteHankelBoundaryPadeDefect_null_mul
         (xiShiftedRealMomentSequence w) c R).symm
@@ -944,8 +944,8 @@ theorem xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_liftedNull_eq_fi
     xiShiftedBoundaryRiccatiCompletedDegreeCenteredShearPolynomial,
     HTGeometry.momentFunctional_add, HTGeometry.momentFunctional_smul]
   change 2 * (HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) Q +
-    2 * A.nextCoeff ^ 2 *
-      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ 2)) = _
+    2 * A.nextCoeff ^ (2 : ℕ) *
+      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ (2 : ℕ))) = _
   rw [hQmoment, hAsqMoment]
   ring
 
@@ -957,12 +957,12 @@ theorem xiShiftedTraceCoupledRiccatiCompletedSource_liftedNull_eq_sq_mul_firstOd
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0) :
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     let A := P * X ^ m
     xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w (n + m) A =
-      2 * A.nextCoeff ^ 2 *
-        xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      2 * A.nextCoeff ^ (2 : ℕ) *
+        xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
           (2 * n + (2 * m + 1)) := by
   dsimp only
   rw [xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource_eq_mul hw,
@@ -978,12 +978,12 @@ theorem xiShiftedNondegenerateNullFlagCompletedArithmeticSource_liftedNull_eq_tw
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0)
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0)
     (B : Polynomial ℝ) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     let A := P * X ^ m
     xiShiftedNondegenerateNullFlagCompletedArithmeticSource w (n + m) A B =
-      2 * xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      2 * xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
         (2 * n + (2 * m + 1)) := by
   dsimp only
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
@@ -1001,41 +1001,41 @@ theorem xiShiftedNondegenerateNullFlagCompletedArithmeticSource_liftedNull_eq_tw
     xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_liftedNull_eq_firstOddDefect
       hw hn c hlast hzero
   dsimp only at hriccati
-  have hoddFactor : ∃ R : Polynomial ℝ, X * A ^ 2 = P * R := by
+  have hoddFactor : ∃ R : Polynomial ℝ, X * A ^ (2 : ℕ) = P * R := by
     refine ⟨X * P * X ^ (2 * m), ?_⟩
     dsimp only [A]
     ring
-  have hoddMonic : (X * A ^ 2).Monic := Polynomial.monic_X.mul (hA.pow 2)
-  have hoddDeg : (X * A ^ 2).natDegree = 2 * n + (2 * m + 1) := by
+  have hoddMonic : (X * A ^ (2 : ℕ)).Monic := Polynomial.monic_X.mul (hA.pow 2)
+  have hoddDeg : (X * A ^ (2 : ℕ)).natDegree = 2 * n + (2 * m + 1) := by
     rw [Polynomial.monic_X.natDegree_mul (hA.pow 2), Polynomial.natDegree_X,
       hA.natDegree_pow, hAdeg]
     omega
   have hoddMoment :
-      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (X * A ^ 2) =
-        xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (X * A ^ (2 : ℕ)) =
+        xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
           (2 * n + (2 * m + 1)) := by
     obtain ⟨R, hAR⟩ := hoddFactor
     calc
-      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (X * A ^ 2) =
+      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (X * A ^ (2 : ℕ)) =
           HTGeometry.momentFunctional
-            (xiShiftedHankelBoundaryPadeDefect (w ^ 2) c) (X * A ^ 2) := by
+            (xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c) (X * A ^ (2 : ℕ)) := by
         rw [hAR]
         exact (momentFunctional_finiteHankelBoundaryPadeDefect_null_mul
           (xiShiftedRealMomentSequence w) c R).symm
-      _ = xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      _ = xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
           (2 * n + (2 * m + 1)) :=
         momentFunctional_monic_eq_first_of_zero_below hzero hoddMonic hoddDeg
-  have hAsqFactor : ∃ R : Polynomial ℝ, A ^ 2 = P * R := by
+  have hAsqFactor : ∃ R : Polynomial ℝ, A ^ (2 : ℕ) = P * R := by
     refine ⟨P * X ^ (2 * m), ?_⟩
     dsimp only [A]
     ring
   have hAsqMoment :
-      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ 2) = 0 := by
+      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ (2 : ℕ)) = 0 := by
     obtain ⟨R, hAR⟩ := hAsqFactor
     have hdefect :
-        HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ 2) =
+        HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ (2 : ℕ)) =
           HTGeometry.momentFunctional
-            (xiShiftedHankelBoundaryPadeDefect (w ^ 2) c) (A ^ 2) := by
+            (xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c) (A ^ (2 : ℕ)) := by
       rw [hAR]
       exact (momentFunctional_finiteHankelBoundaryPadeDefect_null_mul
         (xiShiftedRealMomentSequence w) c R).symm
@@ -1060,7 +1060,7 @@ theorem xiShiftedNondegenerateNullFlagCompletedArithmeticSource_eq_adaptiveBilin
     {w : ℝ} (hw : 1 / 2 < w) {n m : ℕ} (hn : 0 < n) (hm : 0 < m)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0)
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0)
     (B : Polynomial ℝ) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     let A := P * X ^ m
@@ -1089,22 +1089,22 @@ theorem xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_eq_adaptive_sub_
     xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource w n A =
       xiShiftedAdaptiveMixedCompletedArithmeticSource w A -
         2 * (n + 1 : ℝ) *
-          xiShiftedPolynomialCompletedArithmeticSource w ((X * A) ^ 2) +
-        4 * A.nextCoeff ^ 2 *
-          xiShiftedPolynomialCompletedArithmeticSource w (A ^ 2) := by
+          xiShiftedPolynomialCompletedArithmeticSource w ((X * A) ^ (2 : ℕ)) +
+        4 * A.nextCoeff ^ (2 : ℕ) *
+          xiShiftedPolynomialCompletedArithmeticSource w (A ^ (2 : ℕ)) := by
   calc
     xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource w n A =
         2 * HTGeometry.momentFunctional (xiShiftedRealMomentSequence w)
             (xiShiftedBoundaryDegreeCenteredShearPolynomial n A) +
-          4 * A.nextCoeff ^ 2 *
-            HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ 2) := by
+          4 * A.nextCoeff ^ (2 : ℕ) *
+            HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (A ^ (2 : ℕ)) := by
       rw [xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_eq_momentFunctional hw,
         xiShiftedBoundaryRiccatiCompletedDegreeCenteredShearPolynomial,
         HTGeometry.momentFunctional_add, HTGeometry.momentFunctional_smul]
       ring
     _ = xiShiftedDegreeCenteredCompletedArithmeticSource w n A +
-          4 * A.nextCoeff ^ 2 *
-            xiShiftedPolynomialCompletedArithmeticSource w (A ^ 2) := by
+          4 * A.nextCoeff ^ (2 : ℕ) *
+            xiShiftedPolynomialCompletedArithmeticSource w (A ^ (2 : ℕ)) := by
       rw [xiShiftedDegreeCenteredCompletedArithmeticSource_eq_momentFunctional hw,
         xiShiftedPolynomialCompletedArithmeticSource_eq_momentFunctional hw]
     _ = _ := by
@@ -1119,14 +1119,14 @@ theorem xiShiftedNondegenerateNullFlagCompletedArithmeticSource_eq_adaptiveMixed
     xiShiftedNondegenerateNullFlagCompletedArithmeticSource w n A B =
       xiShiftedAdaptiveMixedCompletedArithmeticSource w A -
         2 * (n + 1 : ℝ) *
-          xiShiftedPolynomialCompletedArithmeticSource w ((X * A) ^ 2) +
-        4 * A.nextCoeff ^ 2 *
-          xiShiftedPolynomialCompletedArithmeticSource w (A ^ 2) +
+          xiShiftedPolynomialCompletedArithmeticSource w ((X * A) ^ (2 : ℕ)) +
+        4 * A.nextCoeff ^ (2 : ℕ) *
+          xiShiftedPolynomialCompletedArithmeticSource w (A ^ (2 : ℕ)) +
         2 * (1 + A.nextCoeff) *
-          xiShiftedPolynomialCompletedArithmeticSource w (X * A ^ 2) +
-        2 * ((A.nextCoeff - B.nextCoeff) ^ 2 -
+          xiShiftedPolynomialCompletedArithmeticSource w (X * A ^ (2 : ℕ)) +
+        2 * ((A.nextCoeff - B.nextCoeff) ^ (2 : ℕ) -
           (A.nextCoeff - B.nextCoeff) + 1) *
-          xiShiftedPolynomialCompletedArithmeticSource w (A ^ 2) := by
+          xiShiftedPolynomialCompletedArithmeticSource w (A ^ (2 : ℕ)) := by
   rw [xiShiftedNondegenerateNullFlagCompletedArithmeticSource_eq_riccati_add_odd_add_even
       hw,
     xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_eq_adaptive_sub_square_add_traceSquare
@@ -1221,14 +1221,14 @@ theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedDegreeCenteredAri
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    (hfirst : xiShiftedCanonicalAdmissionFirstCoeff (w ^ 2) n < 0)
-    (hflux : 0 < xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n) :
+    (hfirst : xiShiftedCanonicalAdmissionFirstCoeff (w ^ (2 : ℕ)) n < 0)
+    (hflux : 0 < xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n) :
     0 < xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
       (HTGeometry.monicMomentAdmissionPolynomial
         (xiShiftedRealMomentSequence w) n) := by
   unfold xiShiftedRealMomentSequence at hH ⊢
   have hfirst' : HTGeometry.monicOrthoFirstCoeff
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n < 0 := by
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n < 0 := by
     have hfirstEq :=
       xiShiftedCanonicalAdmissionFirstCoeff_eq_monicOrthoFirstCoeff hn hH
     rw [hfirstEq] at hfirst
@@ -1238,22 +1238,22 @@ theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedDegreeCenteredAri
   have hfluxEq := xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_trace hn hH
   have hfluxExpanded : 0 < 2 * (∑ j ∈ Finset.range n,
       HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j) +
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j) +
       HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n := by
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n := by
     rw [hfluxEq] at hflux
     exact hflux
   have hflux' : 0 < -2 * HTGeometry.monicOrthoFirstCoeff
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n +
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n +
       HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n := by
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n := by
     rw [hfirstSum]
     linarith
   have hadmission := xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho hH
   rw [hadmission,
     xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource_eq_mul hw,
     HTGeometry.monicOrtho_nextCoeff_eq_firstCoeff
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) hn]
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) hn]
   have hraw :=
     xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_monicOrtho_pos
       hw hn hH hfirst' hflux'
@@ -1268,15 +1268,15 @@ theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_pos_of_adj
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    (hcurrent : xiShiftedCanonicalAdmissionFirstCoeff (w ^ 2) n < 0)
-    (hnext : xiShiftedCanonicalAdmissionFirstCoeff (w ^ 2) (n + 1) < 0) :
+    (hcurrent : xiShiftedCanonicalAdmissionFirstCoeff (w ^ (2 : ℕ)) n < 0)
+    (hnext : xiShiftedCanonicalAdmissionFirstCoeff (w ^ (2 : ℕ)) (n + 1) < 0) :
     0 < xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
       (HTGeometry.monicMomentAdmissionPolynomial
         (xiShiftedRealMomentSequence w) n) := by
   unfold xiShiftedRealMomentSequence at hH ⊢
   have hfluxEq :=
     xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_neg_adjacentFirstCoeff hn hH
-  have hflux : 0 < xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n := by
+  have hflux : 0 < xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n := by
     rw [hfluxEq]
     linarith
   exact
@@ -1293,8 +1293,8 @@ theorem current_or_nextFirstCoeff_nonneg_of_traceCoupledRiccatiCompletedSource_n
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) ≤ 0) :
-    0 ≤ xiShiftedCanonicalAdmissionFirstCoeff (w ^ 2) n ∨
-      0 ≤ xiShiftedCanonicalAdmissionFirstCoeff (w ^ 2) (n + 1) := by
+    0 ≤ xiShiftedCanonicalAdmissionFirstCoeff (w ^ (2 : ℕ)) n ∨
+      0 ≤ xiShiftedCanonicalAdmissionFirstCoeff (w ^ (2 : ℕ)) (n + 1) := by
   by_contra hneg
   push Not at hneg
   exact (not_lt_of_ge hsource)
@@ -1306,18 +1306,18 @@ the same first odd remainder landing as the uncompleted centered source. -/
 theorem xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_eq_monicRemainder
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource w n P =
       -2 * P.nextCoeff *
-        xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c := by
+        xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c := by
   dsimp only
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
   have hmatrix : HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 1) =
-      xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) := by
+      xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) := by
     ext i j
     rfl
   have hflat' : HTGeometry.momentHankelMatrix
@@ -1330,9 +1330,9 @@ theorem xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_eq_monicRemainde
     HTGeometry.momentFunctional_add, HTGeometry.momentFunctional_smul]
   change 2 * (HTGeometry.momentFunctional (xiShiftedRealMomentSequence w)
       (xiShiftedBoundaryDegreeCenteredShearPolynomial n P) +
-    2 * P.nextCoeff ^ 2 *
-      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (P ^ 2)) = _
-  rw [show P ^ 2 = P * P by ring, hsquare, mul_zero, add_zero]
+    2 * P.nextCoeff ^ (2 : ℕ) *
+      HTGeometry.momentFunctional (xiShiftedRealMomentSequence w) (P ^ (2 : ℕ))) = _
+  rw [show P ^ (2 : ℕ) = P * P by ring, hsquare, mul_zero, add_zero]
   have hcenter := xiShiftedDegreeCenteredCompletedArithmeticSource_eq_monicRemainder
     hw hn c hhead hflat hlast
   dsimp only at hcenter
@@ -1342,13 +1342,13 @@ theorem xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_eq_monicRemainde
 theorem xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource_eq_sq_mul_monicRemainder
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n P =
-      2 * P.nextCoeff ^ 2 *
-        xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c := by
+      2 * P.nextCoeff ^ (2 : ℕ) *
+        xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ)) c := by
   dsimp only
   rw [xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource_eq_mul hw,
     xiShiftedRiccatiCompletedDegreeCenteredArithmeticSource_eq_monicRemainder
@@ -1360,15 +1360,15 @@ without changing the unconditional nonpositive landing at any right-hand first c
 theorem xiShiftedHankelFirstCrossing_traceCoupledRiccatiCompletedDegreeCenteredArithmeticSource_nonpos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (c : Fin (n + 1) → ℝ) (hcne : c ≠ 0)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hmin : IsLocalMinOn
       (fun y => xiShiftedMomentHankelQuadratic y (n + 1) c)
-      (Ici (w ^ 2)) (w ^ 2)) :
+      (Ici (w ^ (2 : ℕ))) (w ^ (2 : ℕ))) :
     xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
         (HTGeometry.finiteHankelNullMonicPolynomial c) ≤ 0 := by
   have hlast := xiShiftedHankelNullVector_terminal_ne_zero_of_head_posDef
-    (w ^ 2) n c hhead hcne hflat
+    (w ^ (2 : ℕ)) n c hhead hcne hflat
   have hrem := xiShiftedHankelFirstCrossing_monicRemainder_nonpos
     (sq_pos_of_pos (by linarith : 0 < w)) n c hhead hcne hflat hmin
   rw [xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource_eq_sq_mul_monicRemainder
@@ -1383,34 +1383,34 @@ equals an even square amplitude times the strictly negative completed prime--Gam
 channel.  It is therefore nonpositive unconditionally and strictly negative unless the retained
 null-root barycenter vanishes. -/
 theorem exists_liftedNull_traceCoupledRiccatiCompletedSource_landing_of_genuine_crossing
-    {w : ℝ} (hw : 1 / 2 < w) (hwmax : w ^ 2 < 41 / 2)
+    {w : ℝ} (hw : 1 / 2 < w) (hwmax : w ^ (2 : ℕ) < 41 / 2)
     {n : ℕ} (hn : 0 < n) (c : Fin (n + 1) → ℝ)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0)
     (hright : ∀ᶠ u in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      (xiShiftedMomentHankelMatrix (w ^ 2 + u) (n + 1)).PosSemidef)
+      (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ) + u) (n + 1)).PosSemidef)
     (hleft : ∀ᶠ u in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      ¬ (xiShiftedMomentHankelMatrix (w ^ 2 - u) (n + 1)).PosSemidef) :
+      ¬ (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ) - u) (n + 1)).PosSemidef) :
     ∃ m : ℕ,
       (∀ k < 2 * n + (2 * m + 1),
-        primeArchShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0) ∧
-      (xiShiftedMomentHankelMatrix (w ^ 2) (n + m + 1)).PosSemidef ∧
-      xiShiftedMomentHankelMatrix (w ^ 2) (n + m + 1) *ᵥ
+        primeArchShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0) ∧
+      (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + m + 1)).PosSemidef ∧
+      xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + m + 1) *ᵥ
           xiShiftedHankelBoundaryLiftedNullVector c m = 0 ∧
-      ¬ (xiShiftedMomentHankelMatrix (w ^ 2) (n + m + 2)).PosSemidef ∧
+      ¬ (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + m + 2)).PosSemidef ∧
       let P := HTGeometry.finiteHankelNullMonicPolynomial c
       let A := P * X ^ m
       let S := HTGeometry.momentFunctional
-        (fun k => (primeArchShiftedReciprocalMoment (w ^ 2) k).re)
-        (X * A ^ 2)
+        (fun k => (primeArchShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
+        (X * A ^ (2 : ℕ))
       S < 0 ∧
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w (n + m) A =
-        2 * A.nextCoeff ^ 2 * S ∧
+        2 * A.nextCoeff ^ (2 : ℕ) * S ∧
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w (n + m) A ≤ 0 ∧
       (A.nextCoeff ≠ 0 →
         xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w (n + m) A < 0) := by
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith)
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith)
   obtain ⟨m, hzeroPA, hplateau, hkernel, hnext, hnegative⟩ :=
     exists_flatPlateau_kernel_nextFailure_and_negativeSource_of_genuine_crossing
       hy hwmax c hhead hc hlast hright hleft
@@ -1419,9 +1419,9 @@ theorem exists_liftedNull_traceCoupledRiccatiCompletedSource_landing_of_genuine_
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
   let A := P * X ^ m
   let S := HTGeometry.momentFunctional
-    (fun k => (primeArchShiftedReciprocalMoment (w ^ 2) k).re) (X * A ^ 2)
+    (fun k => (primeArchShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (X * A ^ (2 : ℕ))
   have hzeroXi : ∀ k < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0 := by
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0 := by
     intro k hk
     rw [xiShiftedHankelBoundaryPadeDefect_eq_primeArch hy.le hwmax]
     exact hzeroPA k hk
@@ -1433,12 +1433,12 @@ theorem exists_liftedNull_traceCoupledRiccatiCompletedSource_landing_of_genuine_
     primeArchShiftedHankelBoundaryPadeDefect_first_odd_eq_liftedShiftedSquare
       c hlast hzeroPA
   have hdefectEq :
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
           (2 * n + (2 * m + 1)) = S := by
     rw [xiShiftedHankelBoundaryPadeDefect_eq_primeArch hy.le hwmax, hfirstPA]
   have hsourceEq :
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w
-          (n + m) A = 2 * A.nextCoeff ^ 2 * S := by
+          (n + m) A = 2 * A.nextCoeff ^ (2 : ℕ) * S := by
     rw [hlanding, hdefectEq]
   have hSneg : S < 0 := by
     simpa only [S, A, P] using hnegative
@@ -1457,33 +1457,33 @@ where the same source equals twice a strictly negative completed prime--Gamma sh
 The singular landing is independent of the unavailable adjacent amplitude, so neither trace zero
 nor admission totalization can erase it. -/
 theorem exists_liftedNull_nondegenerateNullFlagCompletedSource_strictNeg_of_genuine_crossing
-    {w : ℝ} (hw : 1 / 2 < w) (hwmax : w ^ 2 < 41 / 2)
+    {w : ℝ} (hw : 1 / 2 < w) (hwmax : w ^ (2 : ℕ) < 41 / 2)
     {n : ℕ} (hn : 0 < n) (c : Fin (n + 1) → ℝ)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hc : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ c = 0)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hc : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0)
     (hright : ∀ᶠ u in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      (xiShiftedMomentHankelMatrix (w ^ 2 + u) (n + 1)).PosSemidef)
+      (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ) + u) (n + 1)).PosSemidef)
     (hleft : ∀ᶠ u in nhdsWithin (0 : ℝ) (Set.Ioi 0),
-      ¬ (xiShiftedMomentHankelMatrix (w ^ 2 - u) (n + 1)).PosSemidef) :
+      ¬ (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ) - u) (n + 1)).PosSemidef) :
     ∃ m : ℕ,
       (∀ k < 2 * n + (2 * m + 1),
-        primeArchShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0) ∧
-      (xiShiftedMomentHankelMatrix (w ^ 2) (n + m + 1)).PosSemidef ∧
-      xiShiftedMomentHankelMatrix (w ^ 2) (n + m + 1) *ᵥ
+        primeArchShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0) ∧
+      (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + m + 1)).PosSemidef ∧
+      xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + m + 1) *ᵥ
           xiShiftedHankelBoundaryLiftedNullVector c m = 0 ∧
-      ¬ (xiShiftedMomentHankelMatrix (w ^ 2) (n + m + 2)).PosSemidef ∧
+      ¬ (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + m + 2)).PosSemidef ∧
       let P := HTGeometry.finiteHankelNullMonicPolynomial c
       let A := P * X ^ m
       let S := HTGeometry.momentFunctional
-        (fun k => (primeArchShiftedReciprocalMoment (w ^ 2) k).re)
-        (X * A ^ 2)
+        (fun k => (primeArchShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
+        (X * A ^ (2 : ℕ))
       S < 0 ∧
       ∀ B : Polynomial ℝ,
         xiShiftedNondegenerateNullFlagCompletedArithmeticSource w (n + m) A B =
             2 * S ∧
           xiShiftedNondegenerateNullFlagCompletedArithmeticSource w (n + m) A B < 0 := by
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith)
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith)
   obtain ⟨m, hzeroPA, hplateau, hkernel, hnext, hnegative⟩ :=
     exists_flatPlateau_kernel_nextFailure_and_negativeSource_of_genuine_crossing
       hy hwmax c hhead hc hlast hright hleft
@@ -1492,9 +1492,9 @@ theorem exists_liftedNull_nondegenerateNullFlagCompletedSource_strictNeg_of_genu
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
   let A := P * X ^ m
   let S := HTGeometry.momentFunctional
-    (fun k => (primeArchShiftedReciprocalMoment (w ^ 2) k).re) (X * A ^ 2)
+    (fun k => (primeArchShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (X * A ^ (2 : ℕ))
   have hzeroXi : ∀ k < 2 * n + (2 * m + 1),
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0 := by
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0 := by
     intro k hk
     rw [xiShiftedHankelBoundaryPadeDefect_eq_primeArch hy.le hwmax]
     exact hzeroPA k hk
@@ -1502,7 +1502,7 @@ theorem exists_liftedNull_nondegenerateNullFlagCompletedSource_strictNeg_of_genu
     primeArchShiftedHankelBoundaryPadeDefect_first_odd_eq_liftedShiftedSquare
       c hlast hzeroPA
   have hdefectEq :
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c
           (2 * n + (2 * m + 1)) = S := by
     rw [xiShiftedHankelBoundaryPadeDefect_eq_primeArch hy.le hwmax, hfirstPA]
   have hSneg : S < 0 := by
@@ -1542,22 +1542,22 @@ theorem exists_xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_ter
   intro w hw
   have hw1 : 1 < w := lt_trans (by linarith : 1 < A + 2) hw
   have hAw : A < w := by linarith
-  have hww : w < w ^ 2 := by
+  have hww : w < w ^ (2 : ℕ) := by
     have hw0 : 0 < w := lt_trans zero_lt_one hw1
     nlinarith [mul_pos hw0 (by linarith : 0 < w - 1)]
-  have hAwSq : A < w ^ 2 := lt_trans hAw hww
+  have hAwSq : A < w ^ (2 : ℕ) := lt_trans hAw hww
   have hAHle : AH ≤ A := le_max_left _ _
   have hATle : AT ≤ A := le_trans (le_max_left _ _) (le_max_right _ _)
   have hAUle : AU ≤ A := le_trans (le_max_right _ _) (le_max_right _ _)
-  have hHactual := hchamber (w ^ 2) (lt_of_le_of_lt hAHle hAwSq)
-  have hfirst := (htrace (w ^ 2) (lt_of_le_of_lt hATle hAwSq)).1
-  have hrenorm := hflux (w ^ 2) (lt_of_le_of_lt hAUle hAwSq)
+  have hHactual := hchamber (w ^ (2 : ℕ)) (lt_of_le_of_lt hAHle hAwSq)
+  have hfirst := (htrace (w ^ (2 : ℕ)) (lt_of_le_of_lt hATle hAwSq)).1
+  have hrenorm := hflux (w ^ (2 : ℕ)) (lt_of_le_of_lt hAUle hAwSq)
   have hweight : 0 < (2 * n + 1 : ℝ) := by positivity
   have hmul := mul_pos hrenorm hweight
   have hcancel :
-      xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ 2) n *
+      xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ (2 : ℕ)) n *
           (2 * n + 1 : ℝ) =
-        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n := by
+        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n := by
     rw [xiShiftedCanonicalAdmissionRenormalizedJacobiFlux]
     field_simp
   rw [hcancel] at hmul
@@ -1656,8 +1656,8 @@ trace source is positive on the whole positive component containing the terminal
 merely on a far-right ray. -/
 theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_pos_of_terminalConnected
     {w z : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hwz : w ^ 2 ≤ z)
-    (hchamber : ∀ y ∈ Set.Icc (w ^ 2) z,
+    (hwz : w ^ (2 : ℕ) ≤ z)
+    (hchamber : ∀ y ∈ Set.Icc (w ^ (2 : ℕ)) z,
       (HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef)
     (hfirstz : xiShiftedCanonicalAdmissionFirstCoeff z n < 0)
@@ -1668,41 +1668,41 @@ theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_pos_of_ter
   let a : ℝ → ℝ := fun y => xiShiftedCanonicalAdmissionFirstCoeff y n
   let F : ℝ → ℝ := fun y => xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n
   have hw0 : 0 < w := lt_trans (by norm_num) hw
-  have hsq0 : 0 < w ^ 2 := sq_pos_of_pos hw0
-  have hconta : ContinuousOn a (Set.Icc (w ^ 2) z) := by
+  have hsq0 : 0 < w ^ (2 : ℕ) := sq_pos_of_pos hw0
+  have hconta : ContinuousOn a (Set.Icc (w ^ (2 : ℕ)) z) := by
     intro y hy
     have hy0 : 0 < y := lt_of_lt_of_le hsq0 hy.1
     have hdet := xiShiftedMomentHankel_det_ne_zero_of_add_two_posDef
       (hchamber y hy)
     exact (hasDerivAt_xiShiftedCanonicalAdmissionFirstCoeff hy0 hn hdet).continuousAt
       |>.continuousWithinAt
-  have hmonoa : StrictMonoOn a (Set.Icc (w ^ 2) z) := by
-    apply strictMonoOn_of_deriv_pos (convex_Icc (w ^ 2) z) hconta
+  have hmonoa : StrictMonoOn a (Set.Icc (w ^ (2 : ℕ)) z) := by
+    apply strictMonoOn_of_deriv_pos (convex_Icc (w ^ (2 : ℕ)) z) hconta
     intro y hy
     rw [interior_Icc] at hy
     exact deriv_xiShiftedCanonicalAdmissionFirstCoeff_pos
       (lt_trans hsq0 hy.1) hn (hchamber y ⟨hy.1.le, hy.2.le⟩)
-  have hcontF : ContinuousOn F (Set.Icc (w ^ 2) z) := by
+  have hcontF : ContinuousOn F (Set.Icc (w ^ (2 : ℕ)) z) := by
     intro y hy
     have hy0 : 0 < y := lt_of_lt_of_le hsq0 hy.1
     exact (hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux
       hy0 hn (hchamber y hy)).continuousAt.continuousWithinAt
-  have hantiF : StrictAntiOn F (Set.Icc (w ^ 2) z) := by
-    apply strictAntiOn_of_deriv_neg (convex_Icc (w ^ 2) z) hcontF
+  have hantiF : StrictAntiOn F (Set.Icc (w ^ (2 : ℕ)) z) := by
+    apply strictAntiOn_of_deriv_neg (convex_Icc (w ^ (2 : ℕ)) z) hcontF
     intro y hy
     rw [interior_Icc] at hy
     exact deriv_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_neg
       (lt_trans hsq0 hy.1) hn (hchamber y ⟨hy.1.le, hy.2.le⟩)
-  have hwmem : w ^ 2 ∈ Set.Icc (w ^ 2) z := ⟨le_rfl, hwz⟩
-  have hzmem : z ∈ Set.Icc (w ^ 2) z := ⟨hwz, le_rfl⟩
-  have hfirstw : xiShiftedCanonicalAdmissionFirstCoeff (w ^ 2) n < 0 := by
+  have hwmem : w ^ (2 : ℕ) ∈ Set.Icc (w ^ (2 : ℕ)) z := ⟨le_rfl, hwz⟩
+  have hzmem : z ∈ Set.Icc (w ^ (2 : ℕ)) z := ⟨hwz, le_rfl⟩
+  have hfirstw : xiShiftedCanonicalAdmissionFirstCoeff (w ^ (2 : ℕ)) n < 0 := by
     rcases hwz.eq_or_lt with heq | hlt
     · rw [heq]
       exact hfirstz
     · have hlt' := hmonoa hwmem hzmem hlt
       dsimp only [a] at hlt'
       exact lt_trans hlt' hfirstz
-  have hfluxw : 0 < xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n := by
+  have hfluxw : 0 < xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n := by
     rcases hwz.eq_or_lt with heq | hlt
     · rw [heq]
       exact hfluxz
@@ -1711,7 +1711,7 @@ theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_pos_of_ter
       exact lt_trans hfluxz hlt'
   exact
     xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource_pos
-      hw hn (hchamber (w ^ 2) hwmem) hfirstw hfluxw
+      hw hn (hchamber (w ^ (2 : ℕ)) hwmem) hfirstw hfluxw
 
 /-- **Adjacent-trace terminal-component rigidity.**  Two neighboring negative terminal traces
 propagate backwards through the same connected positive `(n+2)` block chamber.  The next trace
@@ -1719,8 +1719,8 @@ uses the one-block derivative improvement above, so no `(n+3)` positivity hypoth
 separate cumulative-flux terminal premise are needed. -/
 theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_pos_of_terminalAdjacentConnected
     {w z : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hwz : w ^ 2 ≤ z)
-    (hchamber : ∀ y ∈ Set.Icc (w ^ 2) z,
+    (hwz : w ^ (2 : ℕ) ≤ z)
+    (hchamber : ∀ y ∈ Set.Icc (w ^ (2 : ℕ)) z,
       (HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef)
     (hcurrentz : xiShiftedCanonicalAdmissionFirstCoeff z n < 0)
@@ -1731,21 +1731,21 @@ theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_pos_of_ter
   let a : ℝ → ℝ := fun y => xiShiftedCanonicalAdmissionFirstCoeff y n
   let aNext : ℝ → ℝ := fun y => xiShiftedCanonicalAdmissionFirstCoeff y (n + 1)
   have hw0 : 0 < w := lt_trans (by norm_num) hw
-  have hsq0 : 0 < w ^ 2 := sq_pos_of_pos hw0
-  have hconta : ContinuousOn a (Set.Icc (w ^ 2) z) := by
+  have hsq0 : 0 < w ^ (2 : ℕ) := sq_pos_of_pos hw0
+  have hconta : ContinuousOn a (Set.Icc (w ^ (2 : ℕ)) z) := by
     intro y hy
     have hy0 : 0 < y := lt_of_lt_of_le hsq0 hy.1
     have hdet := xiShiftedMomentHankel_det_ne_zero_of_add_two_posDef
       (hchamber y hy)
     exact (hasDerivAt_xiShiftedCanonicalAdmissionFirstCoeff hy0 hn hdet).continuousAt
       |>.continuousWithinAt
-  have hmonoa : StrictMonoOn a (Set.Icc (w ^ 2) z) := by
-    apply strictMonoOn_of_deriv_pos (convex_Icc (w ^ 2) z) hconta
+  have hmonoa : StrictMonoOn a (Set.Icc (w ^ (2 : ℕ)) z) := by
+    apply strictMonoOn_of_deriv_pos (convex_Icc (w ^ (2 : ℕ)) z) hconta
     intro y hy
     rw [interior_Icc] at hy
     exact deriv_xiShiftedCanonicalAdmissionFirstCoeff_pos
       (lt_trans hsq0 hy.1) hn (hchamber y ⟨hy.1.le, hy.2.le⟩)
-  have hcontNext : ContinuousOn aNext (Set.Icc (w ^ 2) z) := by
+  have hcontNext : ContinuousOn aNext (Set.Icc (w ^ (2 : ℕ)) z) := by
     intro y hy
     have hy0 : 0 < y := lt_of_lt_of_le hsq0 hy.1
     have hnextBlock : (HTGeometry.momentHankelMatrix
@@ -1756,22 +1756,22 @@ theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_pos_of_ter
       ne_of_gt hnextBlock.det_pos
     exact (hasDerivAt_xiShiftedCanonicalAdmissionFirstCoeff hy0
       (by omega : 0 < n + 1) hnextDet).continuousAt.continuousWithinAt
-  have hmonoNext : StrictMonoOn aNext (Set.Icc (w ^ 2) z) := by
-    apply strictMonoOn_of_deriv_pos (convex_Icc (w ^ 2) z) hcontNext
+  have hmonoNext : StrictMonoOn aNext (Set.Icc (w ^ (2 : ℕ)) z) := by
+    apply strictMonoOn_of_deriv_pos (convex_Icc (w ^ (2 : ℕ)) z) hcontNext
     intro y hy
     rw [interior_Icc] at hy
     exact deriv_xiShiftedCanonicalAdmissionFirstCoeff_succ_pos_of_add_two_posDef
       (lt_trans hsq0 hy.1) hn (hchamber y ⟨hy.1.le, hy.2.le⟩)
-  have hwmem : w ^ 2 ∈ Set.Icc (w ^ 2) z := ⟨le_rfl, hwz⟩
-  have hzmem : z ∈ Set.Icc (w ^ 2) z := ⟨hwz, le_rfl⟩
-  have hcurrentw : xiShiftedCanonicalAdmissionFirstCoeff (w ^ 2) n < 0 := by
+  have hwmem : w ^ (2 : ℕ) ∈ Set.Icc (w ^ (2 : ℕ)) z := ⟨le_rfl, hwz⟩
+  have hzmem : z ∈ Set.Icc (w ^ (2 : ℕ)) z := ⟨hwz, le_rfl⟩
+  have hcurrentw : xiShiftedCanonicalAdmissionFirstCoeff (w ^ (2 : ℕ)) n < 0 := by
     rcases hwz.eq_or_lt with heq | hlt
     · rw [heq]
       exact hcurrentz
     · have hlt' := hmonoa hwmem hzmem hlt
       dsimp only [a] at hlt'
       exact lt_trans hlt' hcurrentz
-  have hnextw : xiShiftedCanonicalAdmissionFirstCoeff (w ^ 2) (n + 1) < 0 := by
+  have hnextw : xiShiftedCanonicalAdmissionFirstCoeff (w ^ (2 : ℕ)) (n + 1) < 0 := by
     rcases hwz.eq_or_lt with heq | hlt
     · rw [heq]
       exact hnextz
@@ -1780,7 +1780,7 @@ theorem xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_pos_of_ter
       exact lt_trans hlt' hnextz
   exact
     xiShiftedCanonicalAdmissionTraceCoupledRiccatiCompletedSource_pos_of_adjacentFirstCoeff_neg
-      hw hn (hchamber (w ^ 2) hwmem) hcurrentw hnextw
+      hw hn (hchamber (w ^ (2 : ℕ)) hwmem) hcurrentw hnextw
 
 /-- **Source-to-higher-face escalation.**  If the completed trace source is nonpositive before a
 future point carrying terminal trace/flux signs, some `(n+2)` Hankel block on the intervening
@@ -1788,18 +1788,18 @@ closed mass interval is not positive definite.  Thus a source zero cannot be hid
 terminal positive component: it forces a higher-face gap. -/
 theorem exists_xiShiftedHigherBlockGap_of_traceCoupledRiccatiCompletedSource_nonpos
     {w z : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hwz : w ^ 2 ≤ z)
+    (hwz : w ^ (2 : ℕ) ≤ z)
     (hfirstz : xiShiftedCanonicalAdmissionFirstCoeff z n < 0)
     (hfluxz : 0 < xiShiftedCanonicalAdmissionCumulativeJacobiFlux z n)
     (hsource :
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) ≤ 0) :
-    ∃ y ∈ Set.Icc (w ^ 2) z,
+    ∃ y ∈ Set.Icc (w ^ (2 : ℕ)) z,
       ¬(HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef := by
   by_contra hgap
-  have hchamber : ∀ y ∈ Set.Icc (w ^ 2) z,
+  have hchamber : ∀ y ∈ Set.Icc (w ^ (2 : ℕ)) z,
       (HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef := by
     intro y hy
@@ -1814,18 +1814,18 @@ nonpositive before a point where both neighboring traces are negative, then the 
 `(n+2)` block cannot remain positive definite.  This is the flux-free form of escalation. -/
 theorem exists_xiShiftedHigherBlockGap_of_traceCoupledRiccatiCompletedSource_nonpos_of_terminalAdjacent
     {w z : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hwz : w ^ 2 ≤ z)
+    (hwz : w ^ (2 : ℕ) ≤ z)
     (hcurrentz : xiShiftedCanonicalAdmissionFirstCoeff z n < 0)
     (hnextz : xiShiftedCanonicalAdmissionFirstCoeff z (n + 1) < 0)
     (hsource :
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) ≤ 0) :
-    ∃ y ∈ Set.Icc (w ^ 2) z,
+    ∃ y ∈ Set.Icc (w ^ (2 : ℕ)) z,
       ¬(HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef := by
   by_contra hgap
-  have hchamber : ∀ y ∈ Set.Icc (w ^ 2) z,
+  have hchamber : ∀ y ∈ Set.Icc (w ^ (2 : ℕ)) z,
       (HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef := by
     intro y hy
@@ -1841,12 +1841,12 @@ interior source zero into an actual degree-escalation event. -/
 theorem exists_future_xiShiftedHigherBlockGap_of_traceCoupledRiccatiCompletedSource_nonpos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hcurrent : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef)
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef)
     (hsource :
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) ≤ 0) :
-    ∃ z y : ℝ, w ^ 2 < z ∧ y ∈ Set.Ioc (w ^ 2) z ∧
+    ∃ z y : ℝ, w ^ (2 : ℕ) < z ∧ y ∈ Set.Ioc (w ^ (2 : ℕ)) z ∧
       ¬(HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef := by
   obtain ⟨AT, hAT, htrace⟩ :=
@@ -1854,14 +1854,14 @@ theorem exists_future_xiShiftedHigherBlockGap_of_traceCoupledRiccatiCompletedSou
   obtain ⟨ANext, hANext, htraceNext⟩ :=
     RHTower.XiShiftedCanonicalAdmission.exists_xiShiftedCanonicalAdmissionFirstCoeff_terminal_neg_increasing_to_zero
       (by omega : 0 < n + 1)
-  let z : ℝ := max (w ^ 2) (max AT ANext) + 1
-  have hwz : w ^ 2 < z := lt_of_le_of_lt (le_max_left _ _) (lt_add_one _)
+  let z : ℝ := max (w ^ (2 : ℕ)) (max AT ANext) + 1
+  have hwz : w ^ (2 : ℕ) < z := lt_of_le_of_lt (le_max_left _ _) (lt_add_one _)
   have hATz : AT < z := by
-    have : AT ≤ max (w ^ 2) (max AT ANext) :=
+    have : AT ≤ max (w ^ (2 : ℕ)) (max AT ANext) :=
       le_trans (le_max_left _ _) (le_max_right _ _)
     linarith
   have hANextz : ANext < z := by
-    have : ANext ≤ max (w ^ 2) (max AT ANext) :=
+    have : ANext ≤ max (w ^ (2 : ℕ)) (max AT ANext) :=
       le_trans (le_max_right _ _) (le_max_right _ _)
     linarith
   have hfirstz := (htrace z hATz).1
@@ -1869,7 +1869,7 @@ theorem exists_future_xiShiftedHigherBlockGap_of_traceCoupledRiccatiCompletedSou
   obtain ⟨y, hy, hnot⟩ :=
     exists_xiShiftedHigherBlockGap_of_traceCoupledRiccatiCompletedSource_nonpos_of_terminalAdjacent
       hw hn hwz.le hfirstz hnextz hsource
-  have hyne : y ≠ w ^ 2 := by
+  have hyne : y ≠ w ^ (2 : ℕ) := by
     intro heq
     rw [heq] at hnot
     exact hnot hcurrent
@@ -1907,7 +1907,7 @@ theorem det_xiShiftedMomentHankelMatrix_add_two_of_flatFace_eq
     (xiShiftedMomentHankelMatrix y (n + 2)).det =
       -(xiShiftedHankelBoundaryMonicRemainder y
           (HTGeometry.monicMomentAdmissionVector
-            (fun k => (xiShiftedReciprocalMoment y k).re) n)) ^ 2 *
+            (fun k => (xiShiftedReciprocalMoment y k).re) n)) ^ (2 : ℕ) *
         (xiShiftedMomentHankelMatrix y n).det := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let c : Fin (n + 1) → ℝ := HTGeometry.monicMomentAdmissionVector s n
@@ -1938,7 +1938,7 @@ theorem det_xiShiftedMomentHankelMatrix_add_two_neg_iff_monicRemainder_ne_zero_o
     rw [hzero, zero_pow (by norm_num), neg_zero, zero_mul] at hneg
     exact (lt_irrefl 0) hneg
   · intro hne
-    have hsquare : 0 < Δ ^ 2 := sq_pos_of_ne_zero hne
+    have hsquare : 0 < Δ ^ (2 : ℕ) := sq_pos_of_ne_zero hne
     exact mul_neg_of_neg_of_pos (neg_neg_of_pos hsquare) hdet
 
 private theorem hankelTerminalBasis_succ_eq_indicator_last
@@ -2046,7 +2046,7 @@ theorem xiShiftedMomentHankelQuadratic_padTerminalZero_add_terminal_eq
     let γ := GaloisForLFunctions.HTGeometry.hankelFirstOmittedCoupling s (n + 1) c
     let a := s (2 * (n + 1))
     xiShiftedMomentHankelQuadratic y (n + 2) (u + t • e) =
-      2 * t * γ + t ^ 2 * a := by
+      2 * t * γ + t ^ (2 : ℕ) * a := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let M := GaloisForLFunctions.HTGeometry.finiteHankelMatrix s (n + 2)
   let u : Fin (n + 2) → ℝ := GaloisForLFunctions.HTGeometry.padTerminalZero c
@@ -2105,7 +2105,7 @@ theorem xiShiftedMomentHankelQuadratic_padTerminalZero_add_terminal_eq
       simp [hi]
     · simp
   rw [hankelTerminalBasis_succ_eq_indicator_last]
-  change (u + t • e) ⬝ᵥ (M *ᵥ (u + t • e)) = 2 * t * γ + t ^ 2 * a
+  change (u + t • e) ⬝ᵥ (M *ᵥ (u + t • e)) = 2 * t * γ + t ^ (2 : ℕ) * a
   rw [Matrix.mulVec_add, Matrix.mulVec_smul,
     add_dotProduct, dotProduct_add, dotProduct_smul,
     smul_dotProduct, dotProduct_add, dotProduct_smul,
@@ -2124,7 +2124,7 @@ theorem xiShiftedMomentHankelQuadratic_oddContactAdaptiveHankelWitness_eq
     let a := s (2 * (n + 1))
     xiShiftedMomentHankelQuadratic y (n + 2)
         (xiShiftedOddContactAdaptiveHankelWitness y n c) =
-      -(γ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) := by
+      -(γ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let γ := GaloisForLFunctions.HTGeometry.hankelFirstOmittedCoupling s (n + 1) c
   let a := s (2 * (n + 1))
@@ -2144,7 +2144,7 @@ theorem hankelFirstOmittedCoupling_sq_div_terminalMomentAbs_add_one_le_neg_adapt
     let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
     let γ := GaloisForLFunctions.HTGeometry.hankelFirstOmittedCoupling s (n + 1) c
     let a := s (2 * (n + 1))
-    γ ^ 2 / (|a| + 1) ≤
+    γ ^ (2 : ℕ) / (|a| + 1) ≤
       -xiShiftedMomentHankelQuadratic y (n + 2)
         (xiShiftedOddContactAdaptiveHankelWitness y n c) := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
@@ -2152,11 +2152,11 @@ theorem hankelFirstOmittedCoupling_sq_div_terminalMomentAbs_add_one_le_neg_adapt
   let a := s (2 * (n + 1))
   rw [xiShiftedMomentHankelQuadratic_oddContactAdaptiveHankelWitness_eq c hflat]
   simp only [neg_neg]
-  change γ ^ 2 / (|a| + 1) ≤
-    γ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2
+  change γ ^ (2 : ℕ) / (|a| + 1) ≤
+    γ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)
   have hD : 0 < |a| + 1 := by positivity
-  have hleft : γ ^ 2 / (|a| + 1) =
-      γ ^ 2 * (|a| + 1) / (|a| + 1) ^ 2 := by
+  have hleft : γ ^ (2 : ℕ) / (|a| + 1) =
+      γ ^ (2 : ℕ) * (|a| + 1) / (|a| + 1) ^ (2 : ℕ) := by
     field_simp
   rw [hleft, div_le_div_iff_of_pos_right (sq_pos_of_pos hD)]
   apply mul_le_mul_of_nonneg_left _ (sq_nonneg γ)
@@ -2174,11 +2174,11 @@ theorem xiShiftedMomentHankelQuadratic_oddContactAdaptiveHankelWitness_neg
   let γ := GaloisForLFunctions.HTGeometry.hankelFirstOmittedCoupling s (n + 1) c
   let a := s (2 * (n + 1))
   rw [xiShiftedMomentHankelQuadratic_oddContactAdaptiveHankelWitness_eq c hflat]
-  have hγ : 0 < γ ^ 2 := sq_pos_of_ne_zero (by simpa only [γ, s] using hcoupling)
+  have hγ : 0 < γ ^ (2 : ℕ) := sq_pos_of_ne_zero (by simpa only [γ, s] using hcoupling)
   have hfactor : 0 < 2 * (|a| + 1) - a := by
     have ha : a ≤ |a| := le_abs_self a
     linarith [abs_nonneg a]
-  have hden : 0 < (|a| + 1) ^ 2 := sq_pos_of_pos (by positivity)
+  have hden : 0 < (|a| + 1) ^ (2 : ℕ) := sq_pos_of_pos (by positivity)
   exact neg_neg_of_pos (div_pos (mul_pos hγ hfactor) hden)
 
 /-- Canonical specialization: adaptive witness energy is an exact nonlinear transform of odd
@@ -2195,7 +2195,7 @@ theorem xiShiftedCanonicalOddContactAdaptiveHankelWitness_energy_eq
     let Δ := xiShiftedHankelBoundaryMonicRemainder y c
     xiShiftedMomentHankelQuadratic y (n + 2)
         (xiShiftedOddContactAdaptiveHankelWitness y n c) =
-      -(Δ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) := by
+      -(Δ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) := by
   dsimp only
   rw [xiShiftedMomentHankelQuadratic_oddContactAdaptiveHankelWitness_eq _ hflat]
   rw [xiShiftedCanonicalAdmissionFirstOmittedCoupling_eq_monicRemainder]
@@ -2427,7 +2427,7 @@ theorem add_oddRemainderAdaptiveEnergy_div_lipschitzWeight_le_terminalFrontier_s
     let a := s (2 * (n + 1))
     let Δ := xiShiftedHankelBoundaryMonicRemainder y c
     let x := xiShiftedOddContactAdaptiveHankelWitness y n c
-    y + (Δ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) /
+    y + (Δ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) /
         xiShiftedMomentHankelQuadraticLipschitzWeight x ≤
       xiShiftedHigherBlockTerminalFrontier n := by
   have hfront :=
@@ -2451,7 +2451,7 @@ theorem add_oddRemainderSq_div_terminalAbs_div_lipschitzWeight_le_terminalFronti
     let a := s (2 * (n + 1))
     let Δ := xiShiftedHankelBoundaryMonicRemainder y c
     let x := xiShiftedOddContactAdaptiveHankelWitness y n c
-    y + (Δ ^ 2 / (|a| + 1)) /
+    y + (Δ ^ (2 : ℕ) / (|a| + 1)) /
         xiShiftedMomentHankelQuadraticLipschitzWeight x ≤
       xiShiftedHigherBlockTerminalFrontier n := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
@@ -2472,15 +2472,15 @@ theorem add_oddRemainderSq_div_terminalAbs_div_lipschitzWeight_le_terminalFronti
     simpa only [s, c, Δ] using
       xiShiftedCanonicalAdmissionFirstOmittedCoupling_eq_monicRemainder y n
   rw [hcoup] at hlower
-  change Δ ^ 2 / (|a| + 1) ≤
+  change Δ ^ (2 : ℕ) / (|a| + 1) ≤
     -xiShiftedMomentHankelQuadratic y (n + 2) x at hlower
   have hW : 0 < xiShiftedMomentHankelQuadraticLipschitzWeight x :=
     xiShiftedMomentHankelQuadraticLipschitzWeight_pos_of_neg hy x hneg
-  change y + (Δ ^ 2 / (|a| + 1)) /
+  change y + (Δ ^ (2 : ℕ) / (|a| + 1)) /
       xiShiftedMomentHankelQuadraticLipschitzWeight x ≤
     xiShiftedHigherBlockTerminalFrontier n
   calc
-    y + (Δ ^ 2 / (|a| + 1)) /
+    y + (Δ ^ (2 : ℕ) / (|a| + 1)) /
           xiShiftedMomentHankelQuadraticLipschitzWeight x ≤
         y + (-xiShiftedMomentHankelQuadratic y (n + 2) x) /
           xiShiftedMomentHankelQuadraticLipschitzWeight x := by
@@ -2503,7 +2503,7 @@ theorem add_oddRemainderAdaptiveEnergy_div_lipschitzWeight_le_terminalFrontier
     let a := s (2 * (n + 1))
     let Δ := xiShiftedHankelBoundaryMonicRemainder y c
     let x := xiShiftedOddContactAdaptiveHankelWitness y n c
-    y + (Δ ^ 2 * (2 * (|a| + 1) - a) / (|a| + 1) ^ 2) /
+    y + (Δ ^ (2 : ℕ) * (2 * (|a| + 1) - a) / (|a| + 1) ^ (2 : ℕ)) /
         (2 * (xiShiftedMomentHankelQuadraticLipschitzWeight x + 1)) ≤
       xiShiftedHigherBlockTerminalFrontier n := by
   have hfront :=
@@ -2529,7 +2529,7 @@ theorem add_oddRemainderSq_div_terminalAbs_div_lipschitzWeight_le_terminalFronti
     let a := s (2 * (n + 1))
     let Δ := xiShiftedHankelBoundaryMonicRemainder y c
     let x := xiShiftedOddContactAdaptiveHankelWitness y n c
-    y + (Δ ^ 2 / (|a| + 1)) /
+    y + (Δ ^ (2 : ℕ) / (|a| + 1)) /
         (2 * (xiShiftedMomentHankelQuadraticLipschitzWeight x + 1)) ≤
       xiShiftedHigherBlockTerminalFrontier n := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
@@ -2549,16 +2549,16 @@ theorem add_oddRemainderSq_div_terminalAbs_div_lipschitzWeight_le_terminalFronti
     simpa only [s, c, Δ] using
       xiShiftedCanonicalAdmissionFirstOmittedCoupling_eq_monicRemainder y n
   rw [hcoup] at hlower
-  change Δ ^ 2 / (|a| + 1) ≤
+  change Δ ^ (2 : ℕ) / (|a| + 1) ≤
     -xiShiftedMomentHankelQuadratic y (n + 2) x at hlower
   have hden : 0 < 2 * (xiShiftedMomentHankelQuadraticLipschitzWeight x + 1) := by
     have hW := xiShiftedMomentHankelQuadraticLipschitzWeight_nonneg x
     positivity
-  change y + (Δ ^ 2 / (|a| + 1)) /
+  change y + (Δ ^ (2 : ℕ) / (|a| + 1)) /
       (2 * (xiShiftedMomentHankelQuadraticLipschitzWeight x + 1)) ≤
     xiShiftedHigherBlockTerminalFrontier n
   calc
-    y + (Δ ^ 2 / (|a| + 1)) /
+    y + (Δ ^ (2 : ℕ) / (|a| + 1)) /
           (2 * (xiShiftedMomentHankelQuadraticLipschitzWeight x + 1)) ≤
         y + (-xiShiftedMomentHankelQuadratic y (n + 2) x) /
           (2 * (xiShiftedMomentHankelQuadraticLipschitzWeight x + 1)) := by
@@ -2862,12 +2862,12 @@ scalar obstruction. -/
 theorem sq_lt_xiShiftedHigherBlockTerminalFrontier_of_traceCoupledSource_nonpos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hcurrent : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef)
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef)
     (hsource :
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) ≤ 0) :
-    w ^ 2 < xiShiftedHigherBlockTerminalFrontier n := by
+    w ^ (2 : ℕ) < xiShiftedHigherBlockTerminalFrontier n := by
   obtain ⟨z, y, hwz, hy, hnot⟩ :=
     exists_future_xiShiftedHigherBlockGap_of_traceCoupledRiccatiCompletedSource_nonpos
       hw hn hcurrent hsource
@@ -2882,7 +2882,7 @@ theorem sq_lt_xiShiftedHigherBlockTerminalFrontier_of_traceCoupledSource_nonpos
 theorem xiShiftedHigherBlockFailureSet_nonempty_of_traceCoupledSource_nonpos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hcurrent : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef)
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef)
     (hsource :
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial
@@ -2900,7 +2900,7 @@ block rather than a merely supremal or nonclosed escape point. -/
 theorem xiShiftedHigherBlockTerminalFrontier_mem_failureSet_of_traceCoupledSource_nonpos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hcurrent : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef)
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef)
     (hsource :
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial
@@ -2918,7 +2918,7 @@ theorem xiShiftedHigherBlockTerminalFrontier_mem_failureSet_of_traceCoupledSourc
 theorem xiShiftedHigherBlockTerminalFrontier_le_succ_of_traceCoupledSource_nonpos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hcurrent : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef)
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef)
     (hsource :
       xiShiftedTraceCoupledRiccatiCompletedDegreeCenteredArithmeticSource w n
         (HTGeometry.monicMomentAdmissionPolynomial

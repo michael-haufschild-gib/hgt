@@ -121,8 +121,8 @@ theorem suzukiTestSpectral_suzukiModulatedBump_ne_zero (hRH : RiemannHypothesis)
 
 theorem hasSum_mult_normSq_suzukiTestSpectral (hRH : RiemannHypothesis) (ψ : SuzukiTest) :
     HasSum (fun ρ : XiDivisorSupport =>
-      (xiSupportMult ρ : ℝ) * ‖suzukiTestSpectral ψ ρ‖ ^ 2) ((suzukiWeilInner ψ ψ).re) := by
-  have hbase : HasSum (fun q : XiZeroCopy => ‖suzukiTestSpectral ψ q.1‖ ^ 2)
+      (xiSupportMult ρ : ℝ) * ‖suzukiTestSpectral ψ ρ‖ ^ (2 : ℕ)) ((suzukiWeilInner ψ ψ).re) := by
+  have hbase : HasSum (fun q : XiZeroCopy => ‖suzukiTestSpectral ψ q.1‖ ^ (2 : ℕ))
       ((suzukiWeilInner ψ ψ).re) := by
     refine (hasSum_normSq_suzukiTestFourier hRH ψ).congr_fun ?_
     intro q
@@ -130,16 +130,16 @@ theorem hasSum_mult_normSq_suzukiTestSpectral (hRH : RiemannHypothesis) (ψ : Su
   refine hbase.sigma ?_
   intro ρ
   have hfin := hasSum_fintype (fun _i : Fin (xiSupportMult ρ) =>
-    ‖suzukiTestSpectral ψ ρ‖ ^ 2)
-  have hsum : (∑ _i : Fin (xiSupportMult ρ), ‖suzukiTestSpectral ψ ρ‖ ^ 2)
-      = (xiSupportMult ρ : ℝ) * ‖suzukiTestSpectral ψ ρ‖ ^ 2 := by
+    ‖suzukiTestSpectral ψ ρ‖ ^ (2 : ℕ))
+  have hsum : (∑ _i : Fin (xiSupportMult ρ), ‖suzukiTestSpectral ψ ρ‖ ^ (2 : ℕ))
+      = (xiSupportMult ρ : ℝ) * ‖suzukiTestSpectral ψ ρ‖ ^ (2 : ℕ) := by
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   rw [hsum] at hfin
   exact hfin
 
 theorem summable_mult_normSq_suzukiTestSpectral (hRH : RiemannHypothesis) (ψ : SuzukiTest) :
     Summable (fun ρ : XiDivisorSupport =>
-      (xiSupportMult ρ : ℝ) * ‖suzukiTestSpectral ψ ρ‖ ^ 2) :=
+      (xiSupportMult ρ : ℝ) * ‖suzukiTestSpectral ψ ρ‖ ^ (2 : ℕ)) :=
   (hasSum_mult_normSq_suzukiTestSpectral hRH ψ).summable
 
 /-- **Density of the spectral values of test functions.**  A weighted square-summable sequence on
@@ -149,7 +149,7 @@ kills each term separately, and the modulated bump has a nonzero value at any pr
 frequency. -/
 theorem eq_zero_of_orthogonal_suzukiTestSpectral (hRH : RiemannHypothesis)
     {a : XiDivisorSupport → ℂ}
-    (ha : Summable (fun ρ : XiDivisorSupport => (xiSupportMult ρ : ℝ) * ‖a ρ‖ ^ 2))
+    (ha : Summable (fun ρ : XiDivisorSupport => (xiSupportMult ρ : ℝ) * ‖a ρ‖ ^ (2 : ℕ)))
     (h : ∀ ψ : SuzukiTest,
       (∑' ρ : XiDivisorSupport,
         ((xiSupportMult ρ : ℝ) : ℂ) * (starRingEnd ℂ) (a ρ) * suzukiTestSpectral ψ ρ) = 0) :
@@ -162,8 +162,8 @@ theorem eq_zero_of_orthogonal_suzukiTestSpectral (hRH : RiemannHypothesis)
   set ψ : SuzukiTest := suzukiModulatedBump (xiRealSpectralPointSupport ρ₀) with hψ
   set c : XiDivisorSupport → ℂ := fun ρ =>
     ((xiSupportMult ρ : ℝ) : ℂ) * (starRingEnd ℂ) (a ρ) * suzukiTestSpectral ψ ρ with hc
-  have hcnorm : ∀ ρ, ‖c ρ‖ ≤ ((xiSupportMult ρ : ℝ) * ‖a ρ‖ ^ 2
-      + (xiSupportMult ρ : ℝ) * ‖suzukiTestSpectral ψ ρ‖ ^ 2) / 2 := by
+  have hcnorm : ∀ ρ, ‖c ρ‖ ≤ ((xiSupportMult ρ : ℝ) * ‖a ρ‖ ^ (2 : ℕ)
+      + (xiSupportMult ρ : ℝ) * ‖suzukiTestSpectral ψ ρ‖ ^ (2 : ℕ)) / 2 := by
     intro ρ
     have hm : (0 : ℝ) ≤ (xiSupportMult ρ : ℝ) := Nat.cast_nonneg _
     rw [hc, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,

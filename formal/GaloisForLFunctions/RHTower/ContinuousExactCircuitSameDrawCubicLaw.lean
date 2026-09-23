@@ -140,19 +140,19 @@ theorem exists_pairQubitProjective_growth_noContinuousExactCircuitReturn
     (hdelta : 0 < delta) (hkappa : 0 < kappa)
     {guard eta returnRadius thetaN thetaW radius : ℝ}
     (hguard : 0 ≤ guard)
-    (hTpos : 0 < 2 * Real.pi * (L : ℝ) ^ 3 - guard)
+    (hTpos : 0 < 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)
     (hreturnPos : 0 < returnRadius)
     (hthetaW : 0 < thetaW) (hgap : thetaW < thetaN)
     (hradius : 0 < radius)
     (hmeshReturn : thetaN - thetaW ≤ returnRadius)
-    (hreturnT : returnRadius ≤ 2 * Real.pi * (L : ℝ) ^ 3 - guard)
+    (hreturnT : returnRadius ≤ 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard)
     (hguardStart : guard ≤ returnRadius)
     (hscalarBudget :
-      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ 2 /
-          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ 2)) +
-        (2 * Real.pi * (L : ℝ) ^ 3) *
+      Real.sqrt (1 - inverseSquareChainCubicReturnSeparation L guard ^ (2 : ℕ) /
+          (2 * (Fintype.card (Config (PairQubit L)) : ℝ) ^ (2 : ℕ))) +
+        (2 * Real.pi * (L : ℝ) ^ (3 : ℕ)) *
           (rho * nearestNeighborPathLocalGeneratorMass L +
-            |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ 3)) < eta)
+            |scale| * (18 * ((L * 2 : ℕ) : ℝ) ^ (3 : ℕ))) < eta)
     (hselect : pairQubitWeakTwoLocalGrowthFailureBudget L +
         Real.exp (-twoLocalAnchorTransverseUniformRate (L * 2) r scale
           (pairQubitProjectiveSeedGrowingReplicaOscillationCeiling L rho scale)) /
@@ -163,12 +163,12 @@ theorem exists_pairQubitProjective_growth_noContinuousExactCircuitReturn
             (Fintype.card
               (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ ^ r +
           kappa +
-          Real.exp (-(((2 * Real.pi * (L : ℝ) ^ 3 - guard) * delta) ^ 2) / 2)) <
+          Real.exp (-(((2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard) * delta) ^ (2 : ℕ)) / 2)) <
         gaussianFloorTwo *
           (((thetaN - thetaW) /
               pairQubitProjectiveStaticChoiSpeedCeiling L rho scale) /
-            (2 * (2 * Real.pi * (L : ℝ) ^ 3 - guard))) *
-              (thetaW ^ 2) ^ r) :
+            (2 * (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard))) *
+              (thetaW ^ (2 : ℕ)) ^ r) :
     ∃ x : TwoLocalPauliCoefficientSpace (L * 2),
       x ∈ weakTwoLocalPauliCertifiedGrowthSet L ∧
       MaximallyProjectiveEnergy
@@ -177,7 +177,7 @@ theorem exists_pairQubitProjective_growth_noContinuousExactCircuitReturn
           (returnRadius + (thetaN - thetaW) /
             staticChoiSpeed
               (pairQubitProjectiveSeedWeakTwoLocalSpectralEnergy L p scale x))
-          (2 * Real.pi * (L : ℝ) ^ 3 - guard),
+          (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard),
         ∃ U ∈ TwoQubitArchitecture.circuitImageExact (L * 2) s,
           eta + thetaN + radius ≤ ‖inner ℂ
             (staticSpectralChoiVector
@@ -216,12 +216,12 @@ theorem exists_pairQubitProjective_growth_noContinuousExactCircuitReturn
             (Fintype.card
               (FiniteQubitConfiguration (Fin (L * 2))) : ℝ)⁻¹ ^ r +
           kappa +
-          Real.exp (-(((2 * Real.pi * (L : ℝ) ^ 3 - guard) * delta) ^ 2) / 2)) <
+          Real.exp (-(((2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard) * delta) ^ (2 : ℕ)) / 2)) <
         gaussianFloorTwo *
           (((thetaN - thetaW) /
               pairQubitProjectiveStaticChoiSpeedCeiling L rho scale) /
-            (2 * (2 * Real.pi * (L : ℝ) ^ 3 - guard))) *
-              (thetaW ^ 2) ^ r := by
+            (2 * (2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard))) *
+              (thetaW ^ (2 : ℕ)) ^ r := by
     refine (mul_le_mul_of_nonneg_right (by exact_mod_cast hrank) ?_).trans_lt hmoment
     positivity
   have hpos : 0 < Module.finrank ℂ (replicaTargetSpan r
@@ -237,7 +237,7 @@ theorem exists_pairQubitProjective_growth_noContinuousExactCircuitReturn
   let onset := returnRadius + (thetaN - thetaW) /
     staticChoiSpeed
       (pairQubitProjectiveSeedWeakTwoLocalSpectralEnergy L p scale x)
-  let finish := 2 * Real.pi * (L : ℝ) ^ 3 - guard
+  let finish := 2 * Real.pi * (L : ℝ) ^ (3 : ℕ) - guard
   let state : {t : ℝ // t ∈ Icc onset finish} →
       EuclideanSpace ℂ
         (Fin (Fintype.card (FiniteQubitConfiguration (Fin (L * 2)))) ×

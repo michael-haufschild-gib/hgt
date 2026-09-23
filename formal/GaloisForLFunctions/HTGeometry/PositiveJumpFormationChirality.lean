@@ -239,11 +239,11 @@ theorem lt_iff_chirality_pos {s t : ℝ} (hs : s ∈ D.I) (ht : t ∈ D.I) :
     · exact absurd h (not_lt.mpr (D.chirality_neg hs ht hst).le)
 
 /-- The third response of the formation. -/
-noncomputable def thirdCumulant (t : ℝ) : ℝ := ∫ x, x ^ 3 * Real.exp (-(t * x)) ∂D.ν
+noncomputable def thirdCumulant (t : ℝ) : ℝ := ∫ x, x ^ (3 : ℕ) * Real.exp (-(t * x)) ∂D.ν
 
 /-- **The third response of a positive-jump formation is strictly positive.** -/
 theorem thirdCumulant_pos {t : ℝ}
-    (hint : Integrable (fun x => x ^ 3 * Real.exp (-(t * x))) D.ν) :
+    (hint : Integrable (fun x => x ^ (3 : ℕ) * Real.exp (-(t * x))) D.ν) :
     0 < D.thirdCumulant t := by
   refine integral_pos_of_ae_pos D.ν_ne_zero hint ?_
   filter_upwards [D.ae_pos] with x hx

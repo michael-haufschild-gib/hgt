@@ -21,7 +21,7 @@ variable (N : ℕ) {lam : ℝ}
   (r s : ZMod (N + 1))
 
 def phasePairPartial (M : ℕ) : ℂ :=
-  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2 : ℝ) : ℂ) *
+  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ) : ℂ) *
     ∑ i : PhaseIndex N,
       l2Pair
         (fourierPartialSum
@@ -30,7 +30,7 @@ def phasePairPartial (M : ℕ) : ℂ :=
           (unitRescaledVerticalReadout N f (phaseReadout N r s i) 1) M)
 
 def phasePairExact : ℂ :=
-  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2 : ℝ) : ℂ) *
+  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ) : ℂ) *
     ∑ i : PhaseIndex N,
       l2Pair
         (unitRescaledHorizontalReadout N f (phaseReadout N r s i) 1)
@@ -41,7 +41,7 @@ theorem phasePairExact_re_eq_unitLossMean :
       ∫ t in (0 : ℝ)..1, lossPair N r s
         (sourceDerivative N f 1 (ofComplex (point (t * (N + 1 : ℕ)) 1)))
         (sourceDerivative N f Complex.I (ofComplex (point (t * (N + 1 : ℕ)) 1))) := by
-  let c : ℝ := ((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2
+  let c : ℝ := ((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2
   let H : PhaseIndex N → ℝ → ℂ := fun i =>
     unitRescaledHorizontalReadout N f (phaseReadout N r s i) 1
   let V : PhaseIndex N → ℝ → ℂ := fun i =>
@@ -128,7 +128,7 @@ theorem phasePairPartial_re_eq_zero
     (e : Ioo (0 : ℝ) (1 / 4))
     (g : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (e : ℝ))
     (M : ℕ) : (phasePairPartial N g r s M).re = 0 := by
-  let c : ℝ := ((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2
+  let c : ℝ := ((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2
   let H : PhaseIndex N → ℝ → ℂ := fun i =>
     unitRescaledHorizontalReadout N g (phaseReadout N r s i) 1
   let V : PhaseIndex N → ℝ → ℂ := fun i =>
@@ -240,7 +240,7 @@ theorem tendsto_phasePairPartial :
           (by norm_num : (0 : ℝ) < 1))
       simpa [Finset.sum_insert, hi] using hi'.add hI
   simpa only [Finset.sum_const_zero, Finset.sum_const] using
-    (hsum Finset.univ).const_mul ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2 : ℝ) : ℂ)
+    (hsum Finset.univ).const_mul ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ) : ℂ)
 
 theorem unitLossMean_eq_zero
     (e : Ioo (0 : ℝ) (1 / 4))

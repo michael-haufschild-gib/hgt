@@ -77,8 +77,8 @@ theorem card_costBall_le (k : ℕ) : (costBall s t hgen k).card ≤ 5^k := by
 
 /-- Exact counting lower bound for the average squared generator cost. -/
 theorem counting_cost_lower (k : ℕ) :
-    (k:ℝ)^2*((Fintype.card G:ℝ)-(5:ℝ)^k) ≤
-      ∑ g : G, (cost s t hgen g:ℝ)^2 := by
+    (k:ℝ)^(2 : ℕ)*((Fintype.card G:ℝ)-(5:ℝ)^k) ≤
+      ∑ g : G, (cost s t hgen g:ℝ)^(2 : ℕ) := by
   classical
   let B := costBall s t hgen k
   let R := Finset.univ \ B
@@ -86,10 +86,10 @@ theorem counting_cost_lower (k : ℕ) :
     have hnot := (Finset.mem_sdiff.mp hg).2
     change g ∉ Finset.univ.filter (fun g => cost s t hgen g ≤ k) at hnot
     simpa only [Finset.mem_filter,Finset.mem_univ,true_and,not_le] using hnot
-  have hsum : (R.card:ℝ)*(k:ℝ)^2 ≤ ∑ g : G, (cost s t hgen g:ℝ)^2 := by
+  have hsum : (R.card:ℝ)*(k:ℝ)^(2 : ℕ) ≤ ∑ g : G, (cost s t hgen g:ℝ)^(2 : ℕ) := by
     calc
-      _ = ∑ g ∈ R, (k:ℝ)^2 := by simp
-      _ ≤ ∑ g ∈ R, (cost s t hgen g:ℝ)^2 := by
+      _ = ∑ g ∈ R, (k:ℝ)^(2 : ℕ) := by simp
+      _ ≤ ∑ g ∈ R, (cost s t hgen g:ℝ)^(2 : ℕ) := by
         apply Finset.sum_le_sum
         intro g hg
         have hh : (k:ℝ) ≤ (cost s t hgen g:ℝ) := by exact_mod_cast (hr g hg).le
@@ -103,12 +103,12 @@ theorem counting_cost_lower (k : ℕ) :
 
 /-- A bounded all-word comparison cost forces an explicit bound on group size. -/
 theorem card_le_of_comparisonConstant_le (k : ℕ) (hk : 0 < k)
-    (hC : comparisonConstant s t hgen ≤ (k:ℝ)^2/2) :
+    (hC : comparisonConstant s t hgen ≤ (k:ℝ)^(2 : ℕ)/2) :
     Fintype.card G ≤ 2*5^k := by
   have hc : 0 < (Fintype.card G:ℝ) := by exact_mod_cast Fintype.card_pos
   have hkR : 0 < (k:ℝ) := by exact_mod_cast hk
   have hs := counting_cost_lower s t hgen k
-  have hsum : (∑ g : G, (cost s t hgen g:ℝ)^2)=
+  have hsum : (∑ g : G, (cost s t hgen g:ℝ)^(2 : ℕ))=
       (Fintype.card G:ℝ)*(comparisonConstant s t hgen-1) := by
     unfold comparisonConstant
     rw [add_sub_cancel_left,← mul_assoc,mul_inv_cancel₀ hc.ne',one_mul]

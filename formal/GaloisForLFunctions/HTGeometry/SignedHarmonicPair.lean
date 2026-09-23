@@ -44,7 +44,7 @@ theorem abs_signedHarmonicPair (j : ℕ) :
 
 /-- The signed gap series converges absolutely. -/
 theorem summable_signedHarmonicPair : Summable signedHarmonicPair := by
-  have hmaj : Summable (fun j : ℕ => 1 / ((j : ℝ) + 1) ^ 2) := by
+  have hmaj : Summable (fun j : ℕ => 1 / ((j : ℝ) + 1) ^ (2 : ℕ)) := by
     have h := (Real.summable_one_div_nat_pow (p := 2)).mpr one_lt_two
     refine ((summable_nat_add_iff 1).2 h).congr fun k => ?_
     push_cast

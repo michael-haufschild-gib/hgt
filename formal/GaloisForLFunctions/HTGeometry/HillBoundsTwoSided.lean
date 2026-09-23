@@ -22,12 +22,12 @@ variable {ω dω u du ddu : ℝ → ℝ} {K : ℝ}
 
 /-- The square root of the energy, bounded in both directions. -/
 theorem sqrt_hillEnergy_le_abs (hω : ∀ t, HasDerivAt ω (dω t) t) (hu : ∀ t, HasDerivAt u (du t) t)
-    (hdu : ∀ t, HasDerivAt du (ddu t) t) (heq : ∀ t, ddu t + ω t ^ 2 * u t = 0)
+    (hdu : ∀ t, HasDerivAt du (ddu t) t) (heq : ∀ t, ddu t + ω t ^ (2 : ℕ) * u t = 0)
     (hωpos : ∀ t, 0 < ω t) (hK : ∀ t, |dω t| ≤ K * ω t) (t : ℝ) :
     Real.sqrt (hillEnergy ω u du t) ≤
       Real.sqrt (hillEnergy ω u du 0) * Real.exp (K * |t|) := by
   have hgron := hillEnergy_le_abs hω hu hdu heq hωpos hK t
-  have hfactor : Real.exp (2 * K * |t|) = Real.exp (K * |t|) ^ 2 := by
+  have hfactor : Real.exp (2 * K * |t|) = Real.exp (K * |t|) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
@@ -44,13 +44,13 @@ variable {c dc : ℝ → ℝ} {m K C S : ℝ}
 /-- The energy of the massive fibre, in both directions. -/
 theorem hillEnergy_massive_le_abs (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hs : s ^ 2 ≤ S ^ 2) (y₀ : ℝ × ℝ) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hs : s ^ (2 : ℕ) ≤ S ^ (2 : ℕ)) (y₀ : ℝ × ℝ) (t : ℝ) :
     hillEnergy (massiveFreq m c s) (hillSolution (massiveFreq m c s) y₀)
         (hillSolutionDeriv (massiveFreq m c s) y₀) t ≤
       hillEnergy (massiveFreq m c s) (hillSolution (massiveFreq m c s) y₀)
         (hillSolutionDeriv (massiveFreq m c s) y₀) 0 * Real.exp (2 * K * |t|) := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c s r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c s r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC hs r).trans (le_max_right _ _)
   exact hillEnergy_le_abs (fun r => hasDerivAt_massiveFreq hm hcd s r)
     (hasDerivAt_hillSolution (continuous_massiveFreq hc m s) hM1 hMb y₀)
@@ -62,10 +62,10 @@ theorem hillEnergy_massive_le_abs (hm : 0 < m) (hc : Continuous c)
 spatial frequency.** -/
 theorem abs_hillSolution_massive_le_abs (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hs : s ^ 2 ≤ S ^ 2) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hs : s ^ (2 : ℕ) ≤ S ^ (2 : ℕ)) (t : ℝ) :
     |hillSolution (massiveFreq m c s) (1, 0) t| ≤ max 1 (c 0 / c t) * Real.exp (K * |t|) := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c s r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c s r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC hs r).trans (le_max_right _ _)
   have hcont := continuous_massiveFreq (m := m) hc s
   have hsplit := mul_abs_le_sqrt_hillEnergy
@@ -99,11 +99,11 @@ theorem abs_hillSolution_massive_le_abs (hm : 0 < m) (hc : Continuous c)
 /-- **Its velocity, in both directions.** -/
 theorem abs_hillSolutionDeriv_massive_le_abs (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ t, HasDerivAt c (dc t) t) (hcpos : ∀ t, 0 < c t) (hK : ∀ t, |dc t| ≤ K * c t)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hs : s ^ 2 ≤ S ^ 2) (t : ℝ) :
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hs : s ^ (2 : ℕ) ≤ S ^ (2 : ℕ)) (t : ℝ) :
     |hillSolutionDeriv (massiveFreq m c s) (1, 0) t| ≤
       massiveFreq m c s 0 * Real.exp (K * |t|) := by
-  have hM1 : (1 : ℝ) ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := le_max_left _ _
-  have hMb : ∀ r, massiveFreq m c s r ^ 2 ≤ max 1 (m ^ 2 + C ^ 2 * S ^ 2) := fun r =>
+  have hM1 : (1 : ℝ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := le_max_left _ _
+  have hMb : ∀ r, massiveFreq m c s r ^ (2 : ℕ) ≤ max 1 (m ^ (2 : ℕ) + C ^ (2 : ℕ) * S ^ (2 : ℕ)) := fun r =>
     (massiveFreq_sq_le hm hC hs r).trans (le_max_right _ _)
   have hcont := continuous_massiveFreq (m := m) hc s
   have hsplit := abs_deriv_le_sqrt_hillEnergy

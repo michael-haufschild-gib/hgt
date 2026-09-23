@@ -54,7 +54,7 @@ theorem coeff_one_one_add_X_pow (n : ℕ) : (((1 + X : ℂ[X]) ^ n)).coeff 1 = (
 
 theorem X_dvd_one_sub_one_add_X_pow (n : ℕ) :
     (X : ℂ[X]) ∣ 1 - (1 + X) ^ n := by
-  have h : ((X : ℂ[X]) ^ 1) ∣ 1 - (1 + X) ^ n := by
+  have h : ((X : ℂ[X]) ^ (1 : ℕ)) ∣ 1 - (1 + X) ^ n := by
     rw [Polynomial.X_pow_dvd_iff]
     intro d hd
     interval_cases d

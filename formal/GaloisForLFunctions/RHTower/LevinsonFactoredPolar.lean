@@ -71,8 +71,8 @@ theorem continuous_lineConj : Continuous lineConj := by
   exact continuous_const.sub (Complex.continuous_ofReal.mul continuous_const)
 
 theorem linePt_sub_one_inv_sq (u : ℝ) :
-    ((linePt u - 1) ^ 2)⁻¹
-      = ((((Complex.normSq (linePt u - 1))⁻¹ ^ 2 : ℝ)) : ℂ) * (lineConj u * lineConj u) := by
+    ((linePt u - 1) ^ (2 : ℕ))⁻¹
+      = ((((Complex.normSq (linePt u - 1))⁻¹ ^ (2 : ℕ) : ℝ)) : ℂ) * (lineConj u * lineConj u) := by
   have hne : linePt u - 1 ≠ 0 := by
     intro h
     have := congrArg Complex.re h
@@ -86,15 +86,15 @@ theorem linePt_sub_one_inv_sq (u : ℝ) :
   have hinv : (linePt u - 1)⁻¹
       = lineConj u * (((Complex.normSq (linePt u - 1))⁻¹ : ℝ) : ℂ) := by
     rw [Complex.inv_def, hconj]
-  rw [show ((linePt u - 1) ^ 2)⁻¹ = (linePt u - 1)⁻¹ * (linePt u - 1)⁻¹ by
+  rw [show ((linePt u - 1) ^ (2 : ℕ))⁻¹ = (linePt u - 1)⁻¹ * (linePt u - 1)⁻¹ by
     rw [sq, mul_inv], hinv]
   push_cast
   ring
 
 /-- The imaginary part of the logarithmic derivative of the reflected quadratic factor. -/
 theorem im_neg_two_I_div_lineConj (u : ℝ) :
-    ((-2 * I) / lineConj u).im = 1 / (1 / 4 + u ^ 2) := by
-  have hns : Complex.normSq (lineConj u) = 1 / 4 + u ^ 2 := by
+    ((-2 * I) / lineConj u).im = 1 / (1 / 4 + u ^ (2 : ℕ)) := by
+  have hns : Complex.normSq (lineConj u) = 1 / 4 + u ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
     simp [lineConj]
     ring
@@ -198,7 +198,7 @@ theorem exists_factored_polar_hardyZ_advance_of_Y_pos {lam : ℝ}
     field_simp
     ring
   have himEq : ∀ u ∈ Icc T₁ T₂, (g' u / g u).im
-      = gammaHardyPhaseRate u + (logDeriv H (linePt u)).re + 1 / (1 / 4 + u ^ 2) := by
+      = gammaHardyPhaseRate u + (logDeriv H (linePt u)).re + 1 / (1 / 4 + u ^ (2 : ℕ)) := by
     intro u hu
     rw [hquotEq u hu, Complex.add_im, Complex.add_im, im_neg_two_I_div_lineConj, logDeriv_apply]
     simp [Complex.mul_im]
@@ -212,7 +212,7 @@ theorem exists_factored_polar_hardyZ_advance_of_Y_pos {lam : ℝ}
       + (∫ τ in T₁..T₂, (logDeriv H (linePt τ)).re) ≤ φ T₂ - φ T₁ := by
     rw [hadv]
     have hcong : ∀ u ∈ uIcc T₁ T₂, (g' u / g u).im
-        = gammaHardyPhaseRate u + (logDeriv H (linePt u)).re + 1 / (1 / 4 + u ^ 2) := by
+        = gammaHardyPhaseRate u + (logDeriv H (linePt u)).re + 1 / (1 / 4 + u ^ (2 : ℕ)) := by
       intro u hu
       rw [uIcc_of_le hT] at hu
       exact himEq u hu
@@ -221,12 +221,12 @@ theorem exists_factored_polar_hardyZ_advance_of_Y_pos {lam : ℝ}
       continuous_gammaHardyPhaseRate.intervalIntegrable T₁ T₂
     have hint₂ : IntervalIntegrable (fun u : ℝ => (logDeriv H (linePt u)).re) volume T₁ T₂ :=
       hlogc.intervalIntegrable
-    have hint₃ : IntervalIntegrable (fun u : ℝ => 1 / (1 / 4 + u ^ 2)) volume T₁ T₂ := by
+    have hint₃ : IntervalIntegrable (fun u : ℝ => 1 / (1 / 4 + u ^ (2 : ℕ))) volume T₁ T₂ := by
       refine Continuous.intervalIntegrable ?_ _ _
       fun_prop (disch := intro u; positivity)
     rw [intervalIntegral.integral_add (hint₁.add hint₂) hint₃,
       intervalIntegral.integral_add hint₁ hint₂, integral_gammaHardyPhaseRate]
-    have hpos : (0 : ℝ) ≤ ∫ u in T₁..T₂, 1 / (1 / 4 + u ^ 2) :=
+    have hpos : (0 : ℝ) ≤ ∫ u in T₁..T₂, 1 / (1 / 4 + u ^ (2 : ℕ)) :=
       intervalIntegral.integral_nonneg hT (fun u _ => by positivity)
     linarith
   -- the polar identity
@@ -238,18 +238,18 @@ theorem exists_factored_polar_hardyZ_advance_of_Y_pos {lam : ℝ}
   have hprodid : ∀ u : ℝ,
       Complex.exp (I * (gammaHardyTheta u : ℂ)) * levinsonG (lam : ℂ) (linePt u)
         = ((((∏ c ∈ pts, (u - c.im) ^ (m c))
-              * ((Complex.normSq (linePt u - 1))⁻¹ ^ 2) : ℝ)) : ℂ) * g u := by
+              * ((Complex.normSq (linePt u - 1))⁻¹ ^ (2 : ℕ)) : ℝ)) : ℂ) * g u := by
     intro u
     have hG : levinsonG (lam : ℂ) (linePt u)
-        = levinsonGEntire (lam : ℂ) (linePt u) * ((linePt u - 1) ^ 2)⁻¹ := by
-      rw [levinsonGEntire_eq (lam : ℂ) (linePt_ne_one u)]
+        = levinsonGEntire (lam : ℂ) (linePt u) * ((linePt u - 1) ^ (2 : ℕ))⁻¹ := by
+      rw [levinsonGEntire_eq (lam : ℂ) (linePt_ne_one_levinsonEntirePhaseAdvance u)]
       field_simp [hlineone u]
     rw [hG, hfact, lineProd_eq_pow_I_mul_amp m hline u, linePt_sub_one_inv_sq, hgdef, hAdef]
     push_cast
     ring
   have hns : ∀ u : ℝ, (0 : ℝ) < Complex.normSq (linePt u - 1) :=
     fun u => Complex.normSq_pos.mpr (hlineone u)
-  refine ⟨fun u => 2 * ((Complex.normSq (linePt u - 1))⁻¹ ^ 2) * r u
+  refine ⟨fun u => 2 * ((Complex.normSq (linePt u - 1))⁻¹ ^ (2 : ℕ)) * r u
       / (levinsonY (lam : ℂ) (linePt u)).re, φ, hφc, ?_, ?_, hadvle⟩
   · intro u hu
     have h1 := hrpos u hu

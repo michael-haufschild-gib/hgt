@@ -163,7 +163,7 @@ theorem hermiteFlatPerturbedGerm_pair_same_prefix
 
 /-- The real-even quartet polynomial with roots `±α` and `±conj α`. -/
 def quartetFlatAtom (α z : ℂ) : ℂ :=
-  (z ^ 2 - α ^ 2) * (z ^ 2 - ((starRingEnd ℂ) α) ^ 2)
+  (z ^ (2 : ℕ) - α ^ (2 : ℕ)) * (z ^ (2 : ℕ) - ((starRingEnd ℂ) α) ^ (2 : ℕ))
 
 /-- The product carrying independently prescribed multiplicities at a finite packet of quartets. -/
 def simultaneousFlatProduct {ι : Type*} [Fintype ι]
@@ -177,7 +177,7 @@ def simultaneousFlatMultiplier {ι : Type*} [Fintype ι]
 
 /-- The unit left after extracting `x` from the selected quartet atom at `α`. -/
 def quartetFlatAtomUnit (α x : ℂ) : ℂ :=
-  (2 * α + x) * ((α + x) ^ 2 - ((starRingEnd ℂ) α) ^ 2)
+  (2 * α + x) * ((α + x) ^ (2 : ℕ) - ((starRingEnd ℂ) α) ^ (2 : ℕ))
 
 /-- The local analytic unit obtained at packet center `α i` after extracting `x^(M i)`. -/
 def simultaneousFlatUnit {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -233,7 +233,7 @@ theorem simultaneousFlatUnit_analyticAt_zero
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (M : ι → ℕ) (α : ι → ℂ) (i : ι) :
     simultaneousFlatUnit M α i 0 =
-      ((2 * α i) * ((α i) ^ 2 - ((starRingEnd ℂ) (α i)) ^ 2)) ^ M i *
+      ((2 * α i) * ((α i) ^ (2 : ℕ) - ((starRingEnd ℂ) (α i)) ^ (2 : ℕ))) ^ M i *
         ∏ j ∈ Finset.univ.erase i, quartetFlatAtom (α j) (α i) ^ M j := by
   simp [simultaneousFlatUnit, quartetFlatAtomUnit]
 
@@ -242,7 +242,7 @@ from every other quartet in the packet. -/
 theorem simultaneousFlatUnit_zero_ne
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     {M : ι → ℕ} {α : ι → ℂ} {i : ι}
-    (hself : (2 * α i) * ((α i) ^ 2 - ((starRingEnd ℂ) (α i)) ^ 2) ≠ 0)
+    (hself : (2 * α i) * ((α i) ^ (2 : ℕ) - ((starRingEnd ℂ) (α i)) ^ (2 : ℕ)) ≠ 0)
     (hother : ∀ j, j ≠ i → quartetFlatAtom (α j) (α i) ≠ 0) :
     simultaneousFlatUnit M α i 0 ≠ 0 := by
   rw [simultaneousFlatUnit_zero]
@@ -257,7 +257,7 @@ order `M i`. -/
 theorem simultaneousFlatMultiplier_localFluxCorrection_order
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     {M : ι → ℕ} {α : ι → ℂ} {i : ι} (hMi : 0 < M i)
-    (hself : (2 * α i) * ((α i) ^ 2 - ((starRingEnd ℂ) (α i)) ^ 2) ≠ 0)
+    (hself : (2 * α i) * ((α i) ^ (2 : ℕ) - ((starRingEnd ℂ) (α i)) ^ (2 : ℕ)) ≠ 0)
     (hother : ∀ j, j ≠ i → quartetFlatAtom (α j) (α i) ≠ 0) :
     analyticOrderAt
       (hermiteFlatFluxCorrection (M i) (simultaneousFlatUnit M α i)) 0 = M i := by
@@ -270,26 +270,26 @@ theorem simultaneousFlatMultiplier_localFluxCorrection_order
 /-- On the imaginary axis, one real-even quartet atom is exactly a real norm square. -/
 theorem quartetFlatAtom_mul_I_ofReal (α : ℂ) (y : ℝ) :
     quartetFlatAtom α ((y : ℂ) * I) =
-      ((Complex.normSq (((y : ℂ) ^ 2) + α ^ 2) : ℝ) : ℂ) := by
-  have hzsq : (((y : ℂ) * I) ^ 2) = -((y : ℂ) ^ 2) := by
+      ((Complex.normSq (((y : ℂ) ^ (2 : ℕ)) + α ^ (2 : ℕ)) : ℝ) : ℂ) := by
+  have hzsq : (((y : ℂ) * I) ^ (2 : ℕ)) = -((y : ℂ) ^ (2 : ℕ)) := by
     rw [mul_pow, I_sq]
     ring
-  have hconj : (starRingEnd ℂ) (((y : ℂ) ^ 2) + α ^ 2) =
-      ((y : ℂ) ^ 2) + ((starRingEnd ℂ) α) ^ 2 := by simp
+  have hconj : (starRingEnd ℂ) (((y : ℂ) ^ (2 : ℕ)) + α ^ (2 : ℕ)) =
+      ((y : ℂ) ^ (2 : ℕ)) + ((starRingEnd ℂ) α) ^ (2 : ℕ) := by simp
   rw [quartetFlatAtom, hzsq]
   calc
-    (-((y : ℂ) ^ 2) - α ^ 2) *
-        (-((y : ℂ) ^ 2) - ((starRingEnd ℂ) α) ^ 2) =
-      (((y : ℂ) ^ 2) + α ^ 2) *
-        (starRingEnd ℂ) (((y : ℂ) ^ 2) + α ^ 2) := by rw [hconj]; ring
-    _ = ((Complex.normSq (((y : ℂ) ^ 2) + α ^ 2) : ℝ) : ℂ) :=
+    (-((y : ℂ) ^ (2 : ℕ)) - α ^ (2 : ℕ)) *
+        (-((y : ℂ) ^ (2 : ℕ)) - ((starRingEnd ℂ) α) ^ (2 : ℕ)) =
+      (((y : ℂ) ^ (2 : ℕ)) + α ^ (2 : ℕ)) *
+        (starRingEnd ℂ) (((y : ℂ) ^ (2 : ℕ)) + α ^ (2 : ℕ)) := by rw [hconj]; ring
+    _ = ((Complex.normSq (((y : ℂ) ^ (2 : ℕ)) + α ^ (2 : ℕ)) : ℝ) : ℂ) :=
       Complex.mul_conj _
 
 /-- A nondegenerate quartet atom takes a strictly positive real value on the imaginary axis. -/
 theorem quartetFlatAtom_mul_I_pos_real {α : ℂ} {y : ℝ}
-    (hne : ((y : ℂ) ^ 2) + α ^ 2 ≠ 0) :
+    (hne : ((y : ℂ) ^ (2 : ℕ)) + α ^ (2 : ℕ) ≠ 0) :
     ∃ r : ℝ, 0 < r ∧ quartetFlatAtom α ((y : ℂ) * I) = (r : ℂ) := by
-  refine ⟨Complex.normSq (((y : ℂ) ^ 2) + α ^ 2),
+  refine ⟨Complex.normSq (((y : ℂ) ^ (2 : ℕ)) + α ^ (2 : ℕ)),
     Complex.normSq_pos.mpr hne, ?_⟩
   exact quartetFlatAtom_mul_I_ofReal α y
 
@@ -298,9 +298,9 @@ quartet atoms degenerates there.  This is the algebraic source of the zero-free-
 the arbitrary finite-packet theorem. -/
 theorem simultaneousFlatProduct_mul_I_pos_real
     {ι : Type*} [Fintype ι] (M : ι → ℕ) (α : ι → ℂ) (y : ℝ)
-    (hne : ∀ i, ((y : ℂ) ^ 2) + (α i) ^ 2 ≠ 0) :
+    (hne : ∀ i, ((y : ℂ) ^ (2 : ℕ)) + (α i) ^ (2 : ℕ) ≠ 0) :
     ∃ r : ℝ, 0 < r ∧ simultaneousFlatProduct M α ((y : ℂ) * I) = (r : ℂ) := by
-  let v : ι → ℝ := fun i => Complex.normSq (((y : ℂ) ^ 2) + (α i) ^ 2) ^ M i
+  let v : ι → ℝ := fun i => Complex.normSq (((y : ℂ) ^ (2 : ℕ)) + (α i) ^ (2 : ℕ)) ^ M i
   refine ⟨∏ i, v i, Finset.prod_pos fun i _ => pow_pos
     (Complex.normSq_pos.mpr (hne i)) _, ?_⟩
   rw [simultaneousFlatProduct]

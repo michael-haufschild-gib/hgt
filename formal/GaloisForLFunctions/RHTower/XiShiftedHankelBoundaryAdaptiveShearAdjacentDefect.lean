@@ -26,7 +26,7 @@ def xiShiftedBoundaryAdaptiveShearPolynomial (A : Polynomial ℝ) : Polynomial �
 theorem two_smul_xiShiftedBoundaryAdaptiveShearPolynomial
     (A : Polynomial ℝ) :
     (2 : ℝ) • xiShiftedBoundaryAdaptiveShearPolynomial A =
-      X * ((X * A) ^ 2).derivative := by
+      X * ((X * A) ^ (2 : ℕ)).derivative := by
   simp only [xiShiftedBoundaryAdaptiveShearPolynomial,
     xiShiftedBoundaryShiftedEuler, Polynomial.derivative_mul,
     Polynomial.derivative_pow, Polynomial.derivative_X, one_mul,
@@ -127,7 +127,7 @@ theorem natDegree_xiShiftedBoundaryAdaptiveShearPolynomial_le
 theorem coeff_xiShiftedBoundaryAdaptiveShearPolynomial_top
     {A : Polynomial ℝ} {N : ℕ} (hA : A.Monic) (hAdeg : A.natDegree = N) :
     (xiShiftedBoundaryAdaptiveShearPolynomial A).coeff (2 * N + 2) = N + 1 := by
-  let B : Polynomial ℝ := (X * A) ^ 2
+  let B : Polynomial ℝ := (X * A) ^ (2 : ℕ)
   have hXA : (X * A).Monic := Polynomial.monic_X.mul hA
   have hB : B.Monic := hXA.pow 2
   have hXAdeg : (X * A).natDegree = N + 1 := by
@@ -157,7 +157,7 @@ theorem coeff_xiShiftedBoundaryAdaptiveShearPolynomial_next
     {A : Polynomial ℝ} {N : ℕ} (hA : A.Monic) (hAdeg : A.natDegree = N) :
     (xiShiftedBoundaryAdaptiveShearPolynomial A).coeff (2 * N + 1) =
       (2 * N + 1 : ℕ) * A.nextCoeff := by
-  let B : Polynomial ℝ := (X * A) ^ 2
+  let B : Polynomial ℝ := (X * A) ^ (2 : ℕ)
   have hXA : (X * A).Monic := Polynomial.monic_X.mul hA
   have hB : B.Monic := hXA.pow 2
   have hXAdeg : (X * A).natDegree = N + 1 := by

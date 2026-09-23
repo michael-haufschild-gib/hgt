@@ -37,7 +37,7 @@ theorem momentInner_comm (s : ℕ → ℝ) (p q : Polynomial ℝ) :
 
 /-- On the diagonal the moment form is the square functional. -/
 theorem momentInner_self (s : ℕ → ℝ) (p : Polynomial ℝ) :
-    momentInner s p p = momentFunctional s (p ^ 2) := by
+    momentInner s p p = momentFunctional s (p ^ (2 : ℕ)) := by
   simp [momentInner, pow_two]
 
 @[simp] theorem momentInner_zero_left (s : ℕ → ℝ) (q : Polynomial ℝ) :
@@ -162,7 +162,7 @@ theorem positiveMomentForm_of_infiniteSupport {μ : Measure ℝ} (s : ℕ → �
 theorem momentInner_sq_le {μ : Measure ℝ} (s : ℕ → ℝ)
     (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
     (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ) (p q : Polynomial ℝ) :
-    (momentInner s p q) ^ 2 ≤ momentInner s p p * momentInner s q q := by
+    (momentInner s p q) ^ (2 : ℕ) ≤ momentInner s p p * momentInner s q q := by
   rw [momentInner_self, momentInner_self, momentInner_def]
   exact momentFunctional_cauchy_schwarz s hs hint p q
 

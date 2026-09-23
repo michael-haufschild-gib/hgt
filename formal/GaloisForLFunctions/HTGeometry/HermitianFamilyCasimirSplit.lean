@@ -97,7 +97,7 @@ theorem adjoint_toEuclideanLin_of_hermitian {M : Matrix D D ℂ} (hM : Mᴴ = M)
 theorem inner_hermitianFamilyCasimir_self (M : J → Matrix D D ℂ) (hM : ∀ j, (M j)ᴴ = M j)
     (x : EuclideanSpace ℂ D) :
     @inner ℂ _ _ x (hermitianFamilyCasimirOperator M x) =
-      ∑ j, ((‖(M j).toEuclideanLin x‖ : ℂ)) ^ 2 := by
+      ∑ j, ((‖(M j).toEuclideanLin x‖ : ℂ)) ^ (2 : ℕ) := by
   rw [hermitianFamilyCasimirOperator_apply, inner_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [← adjoint_toEuclideanLin_of_hermitian (hM j), LinearMap.adjoint_inner_right,
@@ -113,8 +113,8 @@ theorem mem_commonKernel_of_inner_hermitianFamilyCasimir_eq_zero (M : J → Matr
   classical
   · have hinner := hinner0
     rw [inner_hermitianFamilyCasimir_self M hM] at hinner
-    have hreal : (∑ j, ‖(M j).toEuclideanLin x‖ ^ 2) = 0 := by
-      have hcast : ((∑ j, ‖(M j).toEuclideanLin x‖ ^ 2 : ℝ) : ℂ) = 0 := by
+    have hreal : (∑ j, ‖(M j).toEuclideanLin x‖ ^ (2 : ℕ)) = 0 := by
+      have hcast : ((∑ j, ‖(M j).toEuclideanLin x‖ ^ (2 : ℕ) : ℝ) : ℂ) = 0 := by
         push_cast
         exact hinner
       exact_mod_cast hcast

@@ -49,7 +49,7 @@ theorem gradPair_comp (M : SmoothMetricChart d) {φ : (Fin d → ℝ) → ℝ} {
 noncomputable def foliationPotential (P R : ℝ → ℝ) (a massSq : ℝ) (σ₀ : ℝ → ℝ) : ℝ → ℝ :=
   fun t => massSq * Real.exp (2 * σ₀ t)
     - (a * (P t * deriv (deriv σ₀) t + R t * deriv σ₀ t)
-        + a ^ 2 * (P t * (deriv σ₀ t * deriv σ₀ t)))
+        + a ^ (2 : ℕ) * (P t * (deriv σ₀ t * deriv σ₀ t)))
 
 theorem conformalPotential_foliation (M : SmoothMetricChart d) {φ : (Fin d → ℝ) → ℝ}
     (hφ : ContDiff ℝ ∞ φ) {P R : ℝ → ℝ}
@@ -77,7 +77,7 @@ theorem contDiff_foliationPotential {P R : ℝ → ℝ} (hPc : ContDiff ℝ 1 P)
   have hterm1 : ContDiff ℝ 1 fun t =>
       a * (P t * deriv (deriv σ₀) t + R t * deriv σ₀ t) :=
     contDiff_const.mul ((hPc.mul (h2.of_le (by simp))).add (hRc.mul (h1.of_le (by simp))))
-  have hterm2 : ContDiff ℝ 1 fun t => a ^ 2 * (P t * (deriv σ₀ t * deriv σ₀ t)) :=
+  have hterm2 : ContDiff ℝ 1 fun t => a ^ (2 : ℕ) * (P t * (deriv σ₀ t * deriv σ₀ t)) :=
     contDiff_const.mul (hPc.mul ((h1.of_le (by simp)).mul (h1.of_le (by simp))))
   exact hexp.sub (hterm1.add hterm2)
 

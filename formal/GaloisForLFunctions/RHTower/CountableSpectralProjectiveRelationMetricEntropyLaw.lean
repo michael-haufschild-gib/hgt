@@ -236,7 +236,7 @@ theorem
     (hsum : Summable p) (htotal : ∑' k, p k = 1)
     (omega : ℕ → ℝ) {r : ℝ} (hr : 0 < r) :
     countableTorusWeightedFirstCoherenceTime p
-        (screwPhase omega 1) (2 * r ^ 2) ≤
+        (screwPhase omega 1) (2 * r ^ (2 : ℕ)) ≤
       countableSpectralProjectiveRelationHullCoveringNumber
         p hp hsum omega r := by
   rw [countableSpectralProjectiveRelationHullCoveringNumber,
@@ -257,7 +257,7 @@ theorem exists_countableSpectralProjectiveRelationLatticeFirstReturnBound
         ∃ c ∈ C,
           ‖countableSpectralPhaseState p hp hsum z - c‖ ≤ r) ∧
       countableTorusWeightedFirstCoherenceTime p
-          (screwPhase omega 1) (2 * r ^ 2) ≤ C.card := by
+          (screwPhase omega 1) (2 * r ^ (2 : ℕ)) ≤ C.card := by
   obtain ⟨C, hcover, htime⟩ :=
     exists_countableSpectralRelationLatticeFirstReturnBound
       p hp hsum htotal (anchoredCountableFrequency omega) hr

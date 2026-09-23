@@ -51,7 +51,7 @@ theorem analyticAt_coordZero :
     AnalyticAt ℂ (fun w : Fin (n + 1) → ℂ => w 0) (0 : Fin (n + 1) → ℂ) :=
   (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin (n + 1) => ℂ) 0).analyticAt _
 
-theorem analyticAt_tail :
+theorem analyticAt_tail_analyticGermUnit :
     AnalyticAt ℂ (fun w : Fin (n + 1) → ℂ => (Fin.tail w : Fin n → ℂ))
       (0 : Fin (n + 1) → ℂ) := by
   have : AnalyticAt ℂ (fun w : Fin (n + 1) → ℂ =>
@@ -69,7 +69,7 @@ noncomputable def germCoord (n : ℕ) : AnalyticGerm (0 : Fin (n + 1) → ℂ) :
 /-- Pulling germs in the remaining variables back along the projection. -/
 noncomputable def germTail (n : ℕ) :
     AnalyticGerm (0 : Fin n → ℂ) →+* AnalyticGerm (0 : Fin (n + 1) → ℂ) :=
-  analyticGermPullback analyticAt_tail (by
+  analyticGermPullback analyticAt_tail_analyticGermUnit (by
     funext i
     simp [Fin.tail])
 
@@ -77,7 +77,7 @@ theorem germTail_analyticGermOf {a : (Fin n → ℂ) → ℂ} (ha : AnalyticAt �
     (germTail n (analyticGermOf ha) : Germ (𝓝 (0 : Fin (n + 1) → ℂ)) ℂ)
       = ((a ∘ fun w : Fin (n + 1) → ℂ => (Fin.tail w : Fin n → ℂ)) :
           (Fin (n + 1) → ℂ) → ℂ) :=
-  analyticGermPullback_analyticGermOf analyticAt_tail _ ha
+  analyticGermPullback_analyticGermOf analyticAt_tail_analyticGermUnit _ ha
 
 @[simp]
 theorem analyticGermValue_germCoord :

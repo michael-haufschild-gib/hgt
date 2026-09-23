@@ -21,7 +21,7 @@ G_c(0)}` two lobes. Assembles `fderiv_greenLimit_critical` (`F'(0)=0`),
 `deriv2_completion_critical_ne_zero` (`F''(0)≠0`), and `exists_sq_normal_form`. Axiom-clean. -/
 theorem disconnected_critical_figure_eight {c : ℂ} (hc : Disconnected c) :
     ∃ (R : ℝ) (h : ℂ → ℂ), 0 < R ∧ AnalyticAt ℂ h 0 ∧ h 0 = 0 ∧ deriv h 0 ≠ 0 ∧
-      ∀ᶠ z in nhds (0:ℂ), greenLimit c z - greenLimit c 0 = ((h z) ^ 2).re := by
+      ∀ᶠ z in nhds (0:ℂ), greenLimit c z - greenLimit c 0 = ((h z) ^ (2 : ℕ)).re := by
   have h0 : (0:ℂ) ∉ filledJulia c := (disconnected_iff_zero_not_mem c).mp hc
   obtain ⟨R, hRpos, hsub⟩ :=
     Metric.mem_nhds_iff.mp ((isClosed_filledJulia c).isOpen_compl.mem_nhds h0)
@@ -55,14 +55,14 @@ theorem disconnected_two_lobes {c : ℂ} (hc : Disconnected c) {U : Set ℂ} (hU
   obtain ⟨R, h, hRpos, hhan, hh0, hh'0, hheq⟩ := disconnected_critical_figure_eight hc
   obtain ⟨zp, hzpU, zm, hzmU, _hp1, hp2, _hm1, hm2⟩ :=
     exists_two_lobe_points hhan hh0 hh'0
-      (U := U ∩ {z | greenLimit c z - greenLimit c 0 = ((h z) ^ 2).re})
+      (U := U ∩ {z | greenLimit c z - greenLimit c 0 = ((h z) ^ (2 : ℕ)).re})
       (Filter.inter_mem hU hheq)
   refine ⟨zp, hzpU.1, zm, hzmU.1, ?_, ?_⟩
-  · have heq : greenLimit c zp - greenLimit c 0 = ((h zp) ^ 2).re := hzpU.2
-    have hneg : ((h zp) ^ 2).re < 0 := (re_sq_neg_iff (h zp)).mpr hp2
+  · have heq : greenLimit c zp - greenLimit c 0 = ((h zp) ^ (2 : ℕ)).re := hzpU.2
+    have hneg : ((h zp) ^ (2 : ℕ)).re < 0 := (re_sq_neg_iff (h zp)).mpr hp2
     linarith
-  · have heq : greenLimit c zm - greenLimit c 0 = ((h zm) ^ 2).re := hzmU.2
-    have hneg : ((h zm) ^ 2).re < 0 := (re_sq_neg_iff (h zm)).mpr hm2
+  · have heq : greenLimit c zm - greenLimit c 0 = ((h zm) ^ (2 : ℕ)).re := hzmU.2
+    have hneg : ((h zm) ^ (2 : ℕ)).re < 0 := (re_sq_neg_iff (h zm)).mpr hm2
     linarith
 
 end Bottcher

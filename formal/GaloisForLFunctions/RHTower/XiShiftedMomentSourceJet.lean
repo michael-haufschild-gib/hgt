@@ -20,19 +20,19 @@ theorem completedSourceJet_eq_xiShiftedReciprocalMoment
     (n : ℕ) {w : ℝ} (hw : 0 < w) :
     completedSourceJet n w =
       (2 : ℝ) ^ n * (n.factorial : ℝ) * w ^ (2 * n + 1) *
-        (xiShiftedReciprocalMoment (w ^ 2) n).re := by
+        (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) n).re := by
   rw [completedSourceJet_eq n hw,
-    iteratedDeriv_squaredXiRadialField n (by positivity : (0 : ℝ) < w ^ 2)]
+    iteratedDeriv_squaredXiRadialField n (by positivity : (0 : ℝ) < w ^ (2 : ℕ))]
   have hsign : (-1 : ℝ) ^ n * (-1 : ℝ) ^ n = 1 := by
     rw [← pow_add, ← two_mul, pow_mul]
     norm_num
   rw [show
       (-1 : ℝ) ^ n * 2 ^ (n + 1) * w ^ (2 * n + 1) *
           ((-1 : ℝ) ^ n * (n.factorial : ℝ) / 2 *
-            (xiShiftedReciprocalMoment (w ^ 2) n).re) =
+            (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) n).re) =
         ((-1 : ℝ) ^ n * (-1 : ℝ) ^ n) *
           (2 ^ (n + 1) / 2) * (n.factorial : ℝ) * w ^ (2 * n + 1) *
-            (xiShiftedReciprocalMoment (w ^ 2) n).re by ring,
+            (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) n).re by ring,
     hsign, one_mul, pow_succ]
   ring
 

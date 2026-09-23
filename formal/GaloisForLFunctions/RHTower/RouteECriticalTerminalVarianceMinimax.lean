@@ -37,12 +37,12 @@ noncomputable def routeETerminalMean (a : ℝ) : ℝ :=
 /-- Unnormalized terminal-position variance. -/
 noncomputable def routeETerminalVariance (a : ℝ) : ℝ :=
   ∫ v in (0 : ℝ)..1,
-    routeETerminalWeight a v * (v - routeETerminalMean a) ^ 2
+    routeETerminalWeight a v * (v - routeETerminalMean a) ^ (2 : ℕ)
 
 /-- Quadratic phase energy after an odd terminal resonance. Parameter u is resonance and b is
 second-order correction. -/
 noncomputable def routeETerminalQuadratic (a u b : ℝ) : ℝ :=
-  ∫ v in (0 : ℝ)..1, routeETerminalWeight a v * (b - u * v) ^ 2
+  ∫ v in (0 : ℝ)..1, routeETerminalWeight a v * (b - u * v) ^ (2 : ℕ)
 
 theorem continuous_routeETerminalWeight (a : ℝ) :
     Continuous (routeETerminalWeight a) := by
@@ -83,7 +83,7 @@ private theorem intervalIntegrable_routeETerminalCentered (a : ℝ) :
 
 private theorem intervalIntegrable_routeETerminalVariance (a : ℝ) :
     IntervalIntegrable
-      (fun v : ℝ => routeETerminalWeight a v * (v - routeETerminalMean a) ^ 2)
+      (fun v : ℝ => routeETerminalWeight a v * (v - routeETerminalMean a) ^ (2 : ℕ))
       volume 0 1 := by
   exact ((continuous_routeETerminalWeight a).mul
     ((continuous_id.sub continuous_const).pow 2)).intervalIntegrable 0 1
@@ -128,7 +128,7 @@ theorem routeETerminalVariance_pos (a : ℝ) :
       rw [hmean]
       simpa [routeETerminalWeight] using Real.exp_pos (-a)
     · refine ⟨0, Set.mem_Icc.2 ⟨le_rfl, zero_le_one⟩, ?_⟩
-      have hsq : 0 < (routeETerminalMean a) ^ 2 := sq_pos_of_ne_zero hmean
+      have hsq : 0 < (routeETerminalMean a) ^ (2 : ℕ) := sq_pos_of_ne_zero hmean
       simpa using mul_pos (routeETerminalWeight_pos a 0) hsq
 
 /-- Exact weighted Pythagorean identity. It is source of unique second-order terminal phase
@@ -136,14 +136,14 @@ correction and sharp variance constant. -/
 theorem routeETerminalQuadratic_eq_variance_add_centering
     (a u b : ℝ) :
     routeETerminalQuadratic a u b =
-      routeETerminalMass a * (b - u * routeETerminalMean a) ^ 2 +
-        u ^ 2 * routeETerminalVariance a := by
+      routeETerminalMass a * (b - u * routeETerminalMean a) ^ (2 : ℕ) +
+        u ^ (2 : ℕ) * routeETerminalVariance a := by
   let μ := routeETerminalMean a
   have hfun :
-      (fun v : ℝ => routeETerminalWeight a v * (b - u * v) ^ 2) =
+      (fun v : ℝ => routeETerminalWeight a v * (b - u * v) ^ (2 : ℕ)) =
         (fun v : ℝ =>
-          (b - u * μ) ^ 2 * routeETerminalWeight a v +
-            u ^ 2 * (routeETerminalWeight a v * (v - μ) ^ 2) -
+          (b - u * μ) ^ (2 : ℕ) * routeETerminalWeight a v +
+            u ^ (2 : ℕ) * (routeETerminalWeight a v * (v - μ) ^ (2 : ℕ)) -
             (2 * u * (b - u * μ)) *
               (routeETerminalWeight a v * (v - μ))) := by
     funext v
@@ -153,7 +153,7 @@ theorem routeETerminalQuadratic_eq_variance_add_centering
   have hweight := intervalIntegrable_routeETerminalWeight a
   have hvariance :
       IntervalIntegrable
-        (fun v : ℝ => routeETerminalWeight a v * (v - μ) ^ 2)
+        (fun v : ℝ => routeETerminalWeight a v * (v - μ) ^ (2 : ℕ))
         volume 0 1 := by
     simpa [μ] using intervalIntegrable_routeETerminalVariance a
   have hcentered :
@@ -163,19 +163,19 @@ theorem routeETerminalQuadratic_eq_variance_add_centering
     simpa [μ] using intervalIntegrable_routeETerminalCentered a
   have hterm1 :
       IntervalIntegrable
-        (fun v : ℝ => (b - u * μ) ^ 2 * routeETerminalWeight a v)
+        (fun v : ℝ => (b - u * μ) ^ (2 : ℕ) * routeETerminalWeight a v)
         volume 0 1 :=
-    hweight.const_mul ((b - u * μ) ^ 2)
+    hweight.const_mul ((b - u * μ) ^ (2 : ℕ))
   have hterm2 :
       IntervalIntegrable
-        (fun v : ℝ => u ^ 2 * (routeETerminalWeight a v * (v - μ) ^ 2))
+        (fun v : ℝ => u ^ (2 : ℕ) * (routeETerminalWeight a v * (v - μ) ^ (2 : ℕ)))
         volume 0 1 :=
-    hvariance.const_mul (u ^ 2)
+    hvariance.const_mul (u ^ (2 : ℕ))
   have hleft :
       IntervalIntegrable
         (fun v : ℝ =>
-          (b - u * μ) ^ 2 * routeETerminalWeight a v +
-            u ^ 2 * (routeETerminalWeight a v * (v - μ) ^ 2))
+          (b - u * μ) ^ (2 : ℕ) * routeETerminalWeight a v +
+            u ^ (2 : ℕ) * (routeETerminalWeight a v * (v - μ) ^ (2 : ℕ)))
         volume 0 1 :=
     hterm1.add hterm2
   have hright :
@@ -199,7 +199,7 @@ theorem routeETerminalQuadratic_eq_variance_add_centering
 
 /-- Sharp lower bound for every second-order correction. -/
 theorem routeETerminalVariance_minimax_lower (a u b : ℝ) :
-    u ^ 2 * routeETerminalVariance a ≤ routeETerminalQuadratic a u b := by
+    u ^ (2 : ℕ) * routeETerminalVariance a ≤ routeETerminalQuadratic a u b := by
   rw [routeETerminalQuadratic_eq_variance_add_centering]
   have hmass := (routeETerminalMass_pos a).le
   nlinarith [mul_nonneg hmass
@@ -207,16 +207,16 @@ theorem routeETerminalVariance_minimax_lower (a u b : ℝ) :
 
 /-- Exact equality condition: weighted correction must center terminal position. -/
 theorem routeETerminalVariance_minimax_eq_iff (a u b : ℝ) :
-    routeETerminalQuadratic a u b = u ^ 2 * routeETerminalVariance a ↔
+    routeETerminalQuadratic a u b = u ^ (2 : ℕ) * routeETerminalVariance a ↔
       b = u * routeETerminalMean a := by
   rw [routeETerminalQuadratic_eq_variance_add_centering]
   have hmass := routeETerminalMass_pos a
   constructor
   · intro h
     have hzero :
-        routeETerminalMass a * (b - u * routeETerminalMean a) ^ 2 = 0 := by
+        routeETerminalMass a * (b - u * routeETerminalMean a) ^ (2 : ℕ) = 0 := by
       linarith
-    have hsquare : (b - u * routeETerminalMean a) ^ 2 = 0 :=
+    have hsquare : (b - u * routeETerminalMean a) ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.1 hzero).resolve_left hmass.ne'
     exact sub_eq_zero.mp (sq_eq_zero_iff.mp hsquare)
   · rintro rfl
@@ -233,7 +233,7 @@ theorem routeETerminalVariance_unique_minimizer (a u : ℝ) :
           b = u * routeETerminalMean a := by
   have hcenter :
       routeETerminalQuadratic a u (u * routeETerminalMean a) =
-        u ^ 2 * routeETerminalVariance a :=
+        u ^ (2 : ℕ) * routeETerminalVariance a :=
     (routeETerminalVariance_minimax_eq_iff a u
       (u * routeETerminalMean a)).2 rfl
   constructor
@@ -248,7 +248,7 @@ theorem routeETerminalVariance_unique_minimizer (a u : ℝ) :
 theorem routeETerminal_firstOddResonance_minimum (a : ℝ) :
     routeETerminalQuadratic a Real.pi
         (Real.pi * routeETerminalMean a) =
-      Real.pi ^ 2 * routeETerminalVariance a :=
+      Real.pi ^ (2 : ℕ) * routeETerminalVariance a :=
   (routeETerminalVariance_minimax_eq_iff a Real.pi
     (Real.pi * routeETerminalMean a)).2 rfl
 
@@ -264,10 +264,10 @@ theorem routeETerminal_firstOddResonance_minimum (a : ℝ) :
   rw [routeETerminalVariance]
   simp [routeETerminalWeight, routeETerminalMean_zero]
   have hcalc :
-      (∫ v : ℝ in 0..1, (v - (1 / 2 : ℝ)) ^ 2) = (1 / 12 : ℝ) := by
+      (∫ v : ℝ in 0..1, (v - (1 / 2 : ℝ)) ^ (2 : ℕ)) = (1 / 12 : ℝ) := by
     calc
-      (∫ v : ℝ in 0..1, (v - (1 / 2 : ℝ)) ^ 2) =
-        ∫ v : ℝ in 0..1, (v ^ 2 - v ^ 1 + (1 / 4 : ℝ)) := by
+      (∫ v : ℝ in 0..1, (v - (1 / 2 : ℝ)) ^ (2 : ℕ)) =
+        ∫ v : ℝ in 0..1, (v ^ (2 : ℕ) - v ^ (1 : ℕ) + (1 / 4 : ℝ)) := by
         apply intervalIntegral.integral_congr
         intro v hv
         ring
@@ -280,7 +280,7 @@ theorem routeETerminal_firstOddResonance_minimum (a : ℝ) :
 /-- Critical endpoint exact constant pi squared over twelve. -/
 theorem routeETerminal_firstOddResonance_minimum_zero :
     routeETerminalQuadratic 0 Real.pi (Real.pi / 2) =
-      Real.pi ^ 2 / 12 := by
+      Real.pi ^ (2 : ℕ) / 12 := by
   rw [show Real.pi / 2 = Real.pi * routeETerminalMean 0 by
     rw [routeETerminalMean_zero]; ring]
   rw [routeETerminal_firstOddResonance_minimum, routeETerminalVariance_zero]

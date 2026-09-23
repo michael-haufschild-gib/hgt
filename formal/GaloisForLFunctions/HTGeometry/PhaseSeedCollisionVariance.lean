@@ -81,7 +81,7 @@ theorem phaseAmp_eq_inner (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
   ring
 
 theorem normSq_phaseAmp (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
-    ‖phaseAmp e j x‖ ^ 2 = finitePureStateFidelity (torusReplicaPhaseOrbit (fun _ => (1 : ℝ)) x) (e j) := by
+    ‖phaseAmp e j x‖ ^ (2 : ℕ) = finitePureStateFidelity (torusReplicaPhaseOrbit (fun _ => (1 : ℝ)) x) (e j) := by
   rw [finitePureStateFidelity, phaseAmp_eq_inner]
 
 theorem hasFDerivAt_phaseAmp (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
@@ -127,10 +127,10 @@ theorem pderiv_phaseAmpConj (e : ι → α → ℂ) (j : ι) (b : α) (x : α �
 
 /-- The unnormalized collision of the seed with an orthonormal family. -/
 def quarticSum (e : ι → α → ℂ) : (α → ℝ) → ℂ :=
-  fun x => ∑ j, (phaseAmp e j x * phaseAmpConj e j x) ^ 2
+  fun x => ∑ j, (phaseAmp e j x * phaseAmpConj e j x) ^ (2 : ℕ)
 
 theorem quarticSum_eq_ofReal (e : ι → α → ℂ) (x : α → ℝ) :
-    quarticSum e x = ((∑ j, ‖phaseAmp e j x‖ ^ 4 : ℝ) : ℂ) := by
+    quarticSum e x = ((∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ) : ℝ) : ℂ) := by
   rw [quarticSum, Complex.ofReal_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [phaseAmpConj_eq, Complex.mul_conj]
@@ -148,7 +148,7 @@ def quarticCoeff (e : ι → α → ℂ) (q : ι × ((α × α) × (α × α))) 
     ((starRingEnd ℂ) (e q.1 q.2.2.1) * (starRingEnd ℂ) (e q.1 q.2.2.2))
 
 theorem sq_phaseAmp (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
-    (phaseAmp e j x) ^ 2 =
+    (phaseAmp e j x) ^ (2 : ℕ) =
       ∑ p : α × α, (e j p.1 * e j p.2) *
         charLift (-(Pi.single p.1 1) + -(Pi.single p.2 1)) x := by
   rw [sq, phaseAmp, trigLift, Finset.sum_mul_sum, Fintype.sum_prod_type]
@@ -158,7 +158,7 @@ theorem sq_phaseAmp (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
   ring
 
 theorem sq_phaseAmpConj (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
-    (phaseAmpConj e j x) ^ 2 =
+    (phaseAmpConj e j x) ^ (2 : ℕ) =
       ∑ p : α × α, ((starRingEnd ℂ) (e j p.1) * (starRingEnd ℂ) (e j p.2)) *
         charLift (Pi.single p.1 1 + Pi.single p.2 1) x := by
   rw [sq, phaseAmpConj, trigLift, Finset.sum_mul_sum, Fintype.sum_prod_type]
@@ -194,7 +194,7 @@ def cubedAmp (e : ι → α → ℂ) (j : ι) (x : α → ℝ) : ℂ :=
   phaseAmp e j x * phaseAmpConj e j x * phaseAmp e j x
 
 theorem norm_cubedAmp (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
-    ‖cubedAmp e j x‖ = ‖phaseAmp e j x‖ ^ 3 := by
+    ‖cubedAmp e j x‖ = ‖phaseAmp e j x‖ ^ (3 : ℕ) := by
   rw [cubedAmp, norm_mul, norm_mul, phaseAmpConj_eq, RCLike.norm_conj]
   ring
 
@@ -267,9 +267,9 @@ theorem norm_pderiv_quarticSum_le (e : ι → α → ℂ) (b : α) (x : α → �
 /-- **Orthonormal dual coordinates preserve the square sum.** -/
 theorem sum_normSq_dual (e : ι → α → ℂ)
     (horth : ∀ j k, finiteComplexInner (e j) (e k) = if j = k then 1 else 0) (w : ι → ℂ) :
-    (∑ b : α, ‖∑ j, w j * (starRingEnd ℂ) (e j b)‖ ^ 2) = ∑ j, ‖w j‖ ^ 2 := by
+    (∑ b : α, ‖∑ j, w j * (starRingEnd ℂ) (e j b)‖ ^ (2 : ℕ)) = ∑ j, ‖w j‖ ^ (2 : ℕ) := by
   classical
-  have hb : ∀ b : α, (((‖∑ j, w j * (starRingEnd ℂ) (e j b)‖ ^ 2 : ℝ)) : ℂ) =
+  have hb : ∀ b : α, (((‖∑ j, w j * (starRingEnd ℂ) (e j b)‖ ^ (2 : ℕ) : ℝ)) : ℂ) =
       ∑ j, ∑ k, (w j * (starRingEnd ℂ) (w k)) * ((starRingEnd ℂ) (e j b) * e k b) := by
     intro b
     rw [Complex.sq_norm, ← Complex.mul_conj, map_sum, Finset.sum_mul_sum]
@@ -285,7 +285,7 @@ theorem sum_normSq_dual (e : ι → α → ℂ)
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [finiteComplexInner, Finset.mul_sum]
   have hdiag : (∑ j : ι, ∑ k : ι, (w j * (starRingEnd ℂ) (w k)) * finiteComplexInner (e j) (e k)) =
-      ∑ j : ι, ((‖w j‖ ^ 2 : ℝ) : ℂ) := by
+      ∑ j : ι, ((‖w j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Finset.sum_eq_single j]
     · rw [horth j j, if_pos rfl, mul_one, Complex.mul_conj, Complex.sq_norm]
@@ -293,34 +293,34 @@ theorem sum_normSq_dual (e : ι → α → ℂ)
       rw [horth j k, if_neg (Ne.symm hkj), mul_zero]
     · intro hcon
       exact absurd (Finset.mem_univ j) hcon
-  have hcast : (((∑ b : α, ‖∑ j, w j * (starRingEnd ℂ) (e j b)‖ ^ 2 : ℝ)) : ℂ) =
-      ((∑ j : ι, ‖w j‖ ^ 2 : ℝ) : ℂ) := by
+  have hcast : (((∑ b : α, ‖∑ j, w j * (starRingEnd ℂ) (e j b)‖ ^ (2 : ℕ) : ℝ)) : ℂ) =
+      ((∑ j : ι, ‖w j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [Complex.ofReal_sum, Finset.sum_congr rfl fun b (_ : b ∈ Finset.univ) => hb b, hswap, hdiag,
       Complex.ofReal_sum]
   exact_mod_cast hcast
 
 theorem sum_normSq_e_le_one (e : ι → α → ℂ)
     (horth : ∀ j k, finiteComplexInner (e j) (e k) = if j = k then 1 else 0) (j : ι) :
-    (∑ a, ‖e j a‖ ^ 2) ≤ 1 := by
+    (∑ a, ‖e j a‖ ^ (2 : ℕ)) ≤ 1 := by
   have h := horth j j
   rw [if_pos rfl, finiteComplexInner] at h
-  have hre : (∑ a, ((‖e j a‖ ^ 2 : ℝ) : ℂ)) = (1 : ℂ) := by
+  have hre : (∑ a, ((‖e j a‖ ^ (2 : ℕ) : ℝ) : ℂ)) = (1 : ℂ) := by
     rw [← h]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Complex.sq_norm, ← Complex.mul_conj]
     ring
   rw [← Complex.ofReal_sum] at hre
-  have : (∑ a, ‖e j a‖ ^ 2) = 1 := by exact_mod_cast hre
+  have : (∑ a, ‖e j a‖ ^ (2 : ℕ)) = 1 := by exact_mod_cast hre
   exact le_of_eq this
 
 /-- **The total derivative energy is the sixth moment.** -/
 theorem sum_normSq_pderiv_quarticSum_le (e : ι → α → ℂ)
     (horth : ∀ j k, finiteComplexInner (e j) (e k) = if j = k then 1 else 0) (x : α → ℝ) :
-    (∑ b : α, ‖pderiv b (quarticSum e) x‖ ^ 2) ≤
-      64 * Real.pi ^ 2 * ∑ j, ‖phaseAmp e j x‖ ^ 6 := by
+    (∑ b : α, ‖pderiv b (quarticSum e) x‖ ^ (2 : ℕ)) ≤
+      64 * Real.pi ^ (2 : ℕ) * ∑ j, ‖phaseAmp e j x‖ ^ (6 : ℕ) := by
   classical
-  have hstep : ∀ b : α, ‖pderiv b (quarticSum e) x‖ ^ 2 ≤
-      64 * Real.pi ^ 2 * ‖∑ j, cubedAmp e j x * (starRingEnd ℂ) (e j b)‖ ^ 2 := by
+  have hstep : ∀ b : α, ‖pderiv b (quarticSum e) x‖ ^ (2 : ℕ) ≤
+      64 * Real.pi ^ (2 : ℕ) * ‖∑ j, cubedAmp e j x * (starRingEnd ℂ) (e j b)‖ ^ (2 : ℕ) := by
     intro b
     have h := norm_pderiv_quarticSum_le e b x
     have hnn : (0 : ℝ) ≤ 8 * Real.pi * ‖∑ j, cubedAmp e j x * (starRingEnd ℂ) (e j b)‖ := by
@@ -348,11 +348,11 @@ theorem integrableOn_box_normPow_phaseAmp (e : ι → α → ℂ) (j : ι) (r : 
   integrableOn_box_normPow_trigLift _ _ _ r
 
 theorem integrableOn_box_normSq_pderiv_quarticSum (e : ι → α → ℂ) (b : α) :
-    IntegrableOn (fun x => ‖pderiv b (quarticSum e) x‖ ^ 2) (torusBox α) volume := by
-  have hrw : (fun x => ‖pderiv b (quarticSum e) x‖ ^ 2) =
+    IntegrableOn (fun x => ‖pderiv b (quarticSum e) x‖ ^ (2 : ℕ)) (torusBox α) volume := by
+  have hrw : (fun x => ‖pderiv b (quarticSum e) x‖ ^ (2 : ℕ)) =
       fun x => ‖trigLift (Finset.univ : Finset (ι × ((α × α) × (α × α))))
         (fun q => quarticFreq q.2)
-        (fun q => (2 * Real.pi * I * ((quarticFreq q.2) b : ℂ)) * quarticCoeff e q) x‖ ^ 2 := by
+        (fun q => (2 * Real.pi * I * ((quarticFreq q.2) b : ℂ)) * quarticCoeff e q) x‖ ^ (2 : ℕ) := by
     funext x
     rw [quarticSum_eq_trigLift, pderiv_trigLift]
   rw [hrw]
@@ -362,17 +362,17 @@ theorem integrableOn_box_normSq_pderiv_quarticSum (e : ι → α → ℂ) (b : �
 most ninety-six times the family size. -/
 theorem integral_box_variance_quarticSum_le (e : ι → α → ℂ)
     (horth : ∀ j k, finiteComplexInner (e j) (e k) = if j = k then 1 else 0) :
-    (∫ x in torusBox α, ‖quarticSum e x‖ ^ 2) -
-        ‖∫ x in torusBox α, quarticSum e x‖ ^ 2 ≤ 96 * (Fintype.card ι : ℝ) := by
+    (∫ x in torusBox α, ‖quarticSum e x‖ ^ (2 : ℕ)) -
+        ‖∫ x in torusBox α, quarticSum e x‖ ^ (2 : ℕ) ≤ 96 * (Fintype.card ι : ℝ) := by
   classical
-  have hpi : (0 : ℝ) < (2 * Real.pi) ^ 2 := by positivity
+  have hpi : (0 : ℝ) < (2 * Real.pi) ^ (2 : ℕ) := by positivity
   have hpoin := variance_trigLift_le_sum_integral_normSq_pderiv
     (Finset.univ : Finset (ι × ((α × α) × (α × α)))) (fun q => quarticFreq q.2) (quarticCoeff e)
   rw [← quarticSum_eq_trigLift e] at hpoin
-  have hsum : (∑ b : α, ∫ x in torusBox α, ‖pderiv b (quarticSum e) x‖ ^ 2) ≤
-      64 * Real.pi ^ 2 * (6 * (Fintype.card ι : ℝ)) := by
+  have hsum : (∑ b : α, ∫ x in torusBox α, ‖pderiv b (quarticSum e) x‖ ^ (2 : ℕ)) ≤
+      64 * Real.pi ^ (2 : ℕ) * (6 * (Fintype.card ι : ℝ)) := by
     rw [← integral_finsetSum _ fun b _ => integrableOn_box_normSq_pderiv_quarticSum e b]
-    have hint2 : IntegrableOn (fun x => 64 * Real.pi ^ 2 * ∑ j, ‖phaseAmp e j x‖ ^ 6)
+    have hint2 : IntegrableOn (fun x => 64 * Real.pi ^ (2 : ℕ) * ∑ j, ‖phaseAmp e j x‖ ^ (6 : ℕ))
         (torusBox α) volume :=
       Integrable.const_mul
         (integrable_finsetSum _ fun j _ => integrableOn_box_normPow_phaseAmp e j 6) _
@@ -382,11 +382,11 @@ theorem integral_box_variance_quarticSum_le (e : ι → α → ℂ)
     rw [integral_const_mul,
       integral_finsetSum _ fun j _ => integrableOn_box_normPow_phaseAmp e j 6]
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-    calc (∑ j : ι, ∫ x in torusBox α, ‖phaseAmp e j x‖ ^ 6)
+    calc (∑ j : ι, ∫ x in torusBox α, ‖phaseAmp e j x‖ ^ (6 : ℕ))
         ≤ ∑ _j : ι, (6 : ℝ) := by
           refine Finset.sum_le_sum fun j _ => ?_
-          have hpt : ∀ x : α → ℝ, ‖phaseAmp e j x‖ ^ 6 =
-              finitePureStateFidelity (torusReplicaPhaseOrbit (fun _ => (1 : ℝ)) x) (e j) ^ 3 := by
+          have hpt : ∀ x : α → ℝ, ‖phaseAmp e j x‖ ^ (6 : ℕ) =
+              finitePureStateFidelity (torusReplicaPhaseOrbit (fun _ => (1 : ℝ)) x) (e j) ^ (3 : ℕ) := by
             intro x
             rw [← normSq_phaseAmp, ← pow_mul]
           simp_rw [hpt]
@@ -398,7 +398,7 @@ theorem integral_box_variance_quarticSum_le (e : ι → α → ℂ)
       _ = 6 * (Fintype.card ι : ℝ) := by
           rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ]
           ring
-  have hfinal : ((2 * Real.pi) ^ 2)⁻¹ * (64 * Real.pi ^ 2 * (6 * (Fintype.card ι : ℝ))) =
+  have hfinal : ((2 * Real.pi) ^ (2 : ℕ))⁻¹ * (64 * Real.pi ^ (2 : ℕ) * (6 * (Fintype.card ι : ℝ))) =
       96 * (Fintype.card ι : ℝ) := by
     field_simp
     ring
@@ -406,7 +406,7 @@ theorem integral_box_variance_quarticSum_le (e : ι → α → ℂ)
   exact mul_le_mul_of_nonneg_left hsum (by positivity)
 
 theorem integrableOn_box_collision (e : ι → α → ℂ) :
-    IntegrableOn (fun x => ∑ j, ‖phaseAmp e j x‖ ^ 4) (torusBox α) volume :=
+    IntegrableOn (fun x => ∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ)) (torusBox α) volume :=
   integrable_finsetSum _ fun j _ => integrableOn_box_normPow_phaseAmp e j 4
 
 /-- **The unnormalized collision has variance at most ninety-six times the family size.**  This is
@@ -414,19 +414,19 @@ the variance half of the basis-uniform collision concentration, before the `D⁻
 the seed. -/
 theorem integral_box_variance_collision_le (e : ι → α → ℂ)
     (horth : ∀ j k, finiteComplexInner (e j) (e k) = if j = k then 1 else 0) :
-    (∫ x in torusBox α, (∑ j, ‖phaseAmp e j x‖ ^ 4) ^ 2) -
-        (∫ x in torusBox α, ∑ j, ‖phaseAmp e j x‖ ^ 4) ^ 2 ≤ 96 * (Fintype.card ι : ℝ) := by
+    (∫ x in torusBox α, (∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ)) ^ (2 : ℕ)) -
+        (∫ x in torusBox α, ∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ)) ^ (2 : ℕ) ≤ 96 * (Fintype.card ι : ℝ) := by
   classical
-  have hsq : ∀ x : α → ℝ, ‖quarticSum e x‖ ^ 2 = (∑ j, ‖phaseAmp e j x‖ ^ 4) ^ 2 := by
+  have hsq : ∀ x : α → ℝ, ‖quarticSum e x‖ ^ (2 : ℕ) = (∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ)) ^ (2 : ℕ) := by
     intro x
     rw [quarticSum_eq_ofReal, Complex.norm_real,
       Real.norm_of_nonneg (Finset.sum_nonneg fun j _ => by positivity)]
   have hmean : (∫ x in torusBox α, quarticSum e x) =
-      ((∫ x in torusBox α, ∑ j, ‖phaseAmp e j x‖ ^ 4 : ℝ) : ℂ) := by
+      ((∫ x in torusBox α, ∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ) : ℝ) : ℂ) := by
     rw [← integral_complex_ofReal]
     exact integral_congr_ae (Filter.Eventually.of_forall fun x => quarticSum_eq_ofReal e x)
-  have hmeansq : ‖∫ x in torusBox α, quarticSum e x‖ ^ 2 =
-      (∫ x in torusBox α, ∑ j, ‖phaseAmp e j x‖ ^ 4) ^ 2 := by
+  have hmeansq : ‖∫ x in torusBox α, quarticSum e x‖ ^ (2 : ℕ) =
+      (∫ x in torusBox α, ∑ j, ‖phaseAmp e j x‖ ^ (4 : ℕ)) ^ (2 : ℕ) := by
     rw [hmean, Complex.norm_real,
       Real.norm_of_nonneg (integral_nonneg fun x => Finset.sum_nonneg fun j _ => by positivity)]
   have hmain := integral_box_variance_quarticSum_le e horth

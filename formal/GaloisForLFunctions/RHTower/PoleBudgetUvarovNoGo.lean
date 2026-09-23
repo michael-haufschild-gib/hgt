@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.BoundaryWeylThresholdNonMonotone
 For two boundary functionals that are not scalar multiples, pick `q` with `α q = 1` and `β q = 0`.
 The Hermitian form
 
-`A v = -‖α v‖ ^ 2 + ‖v - (α v) • q‖ ^ 2`
+`A v = -‖α v‖ ^ (2 : ℕ) + ‖v - (α v) • q‖ ^ (2 : ℕ)`
 
 is positive definite on `ker α`, has its single negative direction at `q`, and for every `c > 1`
 decomposes as `A = R - c α* α` with `R` positive definite.  Yet
@@ -27,15 +27,15 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 
 /-- The pole-budget form with one negative direction at `q`. -/
 def poleBudgetForm (α : V →ₗ[ℂ] ℂ) (q : V) (v : V) : ℝ :=
-  -‖α v‖ ^ 2 + ‖v - (α v) • q‖ ^ 2
+  -‖α v‖ ^ (2 : ℕ) + ‖v - (α v) • q‖ ^ (2 : ℕ)
 
 /-- Its positive-definite completion after adding back `c` pole squares. -/
 def poleBudgetPositivePart (α : V →ₗ[ℂ] ℂ) (q : V) (c : ℝ) (v : V) : ℝ :=
-  (c - 1) * ‖α v‖ ^ 2 + ‖v - (α v) • q‖ ^ 2
+  (c - 1) * ‖α v‖ ^ (2 : ℕ) + ‖v - (α v) • q‖ ^ (2 : ℕ)
 
 /-- **Exact pole decomposition** `A = R - c α* α`. -/
 theorem poleBudget_decomposition (α : V →ₗ[ℂ] ℂ) (q : V) (c : ℝ) (v : V) :
-    poleBudgetForm α q v = poleBudgetPositivePart α q c v - c * ‖α v‖ ^ 2 := by
+    poleBudgetForm α q v = poleBudgetPositivePart α q c v - c * ‖α v‖ ^ (2 : ℕ) := by
   unfold poleBudgetForm poleBudgetPositivePart
   ring
 
@@ -67,16 +67,16 @@ theorem poleBudgetPositivePart_pos (α : V →ₗ[ℂ] ℂ) {q : V} {c : ℝ} (h
     have : ‖v‖ ≠ 0 := norm_ne_zero_iff.mpr hv
     positivity
   · have hpos : 0 < ‖α v‖ := norm_pos_iff.mpr hα
-    have h1 : 0 < (c - 1) * ‖α v‖ ^ 2 := by
+    have h1 : 0 < (c - 1) * ‖α v‖ ^ (2 : ℕ) := by
       have : 0 < c - 1 := by linarith
       positivity
-    have h2 : 0 ≤ ‖v - (α v) • q‖ ^ 2 := sq_nonneg _
+    have h2 : 0 ≤ ‖v - (α v) • q‖ ^ (2 : ℕ) := sq_nonneg _
     linarith
 
 /-- **The repair fails.**  The negative direction is invisible to the second boundary functional,
 so no amount of rank-one repair there restores positivity. -/
 theorem uvarov_repair_fails (α β : V →ₗ[ℂ] ℂ) {q : V} (hαq : α q = 1) (hβq : β q = 0) (t : ℝ) :
-    poleBudgetForm α q q + t * ‖β q‖ ^ 2 = -1 := by
+    poleBudgetForm α q q + t * ‖β q‖ ^ (2 : ℕ) = -1 := by
   rw [poleBudgetForm_at_q α hαq, hβq]
   simp
 
@@ -86,9 +86,9 @@ theorem poleBudget_not_uvarov (α β : V →ₗ[ℂ] ℂ) {q : V} (hαq : α q =
     {c : ℝ} (hc : 1 < c) :
     poleBudgetForm α q q < 0 ∧
       (∀ v : V, v ≠ 0 → α v = 0 → 0 < poleBudgetForm α q v) ∧
-      (∀ v : V, poleBudgetForm α q v = poleBudgetPositivePart α q c v - c * ‖α v‖ ^ 2) ∧
+      (∀ v : V, poleBudgetForm α q v = poleBudgetPositivePart α q c v - c * ‖α v‖ ^ (2 : ℕ)) ∧
       (∀ v : V, v ≠ 0 → 0 < poleBudgetPositivePart α q c v) ∧
-      (∀ t : ℝ, poleBudgetForm α q q + t * ‖β q‖ ^ 2 < 0) := by
+      (∀ t : ℝ, poleBudgetForm α q q + t * ‖β q‖ ^ (2 : ℕ) < 0) := by
   refine ⟨?_, fun v hv hker => poleBudgetForm_pos_on_ker α q hv hker,
     fun v => poleBudget_decomposition α q c v,
     fun v hv => poleBudgetPositivePart_pos α hc hv, fun t => ?_⟩

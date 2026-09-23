@@ -24,7 +24,7 @@ theorem case41_arith {n m repS P l s d Sp : ℕ} (hs : 1 ≤ s)
     (hKn : n + m ≤ P + d + l)
     (hcount : (l + s) * P + l * d + Sp * s ≤ repS)
     (hSp : d + 2 ≤ Sp + 2 * (l + s)) :
-    (l + s) * n + (l + s) * m + 1 ≤ repS + 2 * (l + s) ^ 2 := by
+    (l + s) * n + (l + s) * m + 1 ≤ repS + 2 * (l + s) ^ (2 : ℕ) := by
   have h1 : (l + s) * (n + m) ≤ (l + s) * (P + d + l) := Nat.mul_le_mul_left _ hKn
   have h2 : (d + 2) * s ≤ (Sp + 2 * (l + s)) * s := Nat.mul_le_mul_right _ hSp
   nlinarith [h1, h2, hcount, hs, Nat.zero_le l, Nat.zero_le s, Nat.zero_le d, Nat.zero_le Sp]

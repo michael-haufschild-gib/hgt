@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.HedenmalmAdjacentFeatureKreinIndexSeparator
 The adjacent-feature Krein index survives submicroscopic coalescence qualitatively.  Orienting the
 second reporter toward the nearest-center cell strengthens this to a uniform quantitative theorem:
 after division by the squared transverse displacement, one of two predeclared adjacent blocks has
-determinant at most `-4 * (96 / 145)^2` throughout the critical strip.
+determinant at most `-4 * (96 / 145)^(2 : ℕ)` throughout the critical strip.
 
 This closes the local quantitative separator.  A source-native exterior-square trace budget is a
 separate global problem; no zero-density conclusion is asserted here.
@@ -21,7 +21,7 @@ noncomputable section
 open HedenmalmThetaSource
 
 def criticalFeatureDenominatorNormSq (t : ℝ) (z : ℂ) : ℝ :=
-  Complex.normSq (1 + (z - (t : ℂ)) ^ 2)
+  Complex.normSq (1 + (z - (t : ℂ)) ^ (2 : ℕ))
 
 theorem criticalFeatureDenominatorNormSq_pos
     (t : ℝ) {z : ℂ} (hz : |z.im| < 1 / 2) :
@@ -34,8 +34,8 @@ theorem criticalFeatureDenominatorNormSq_pos
 
 theorem criticalFeatureDenominatorNormSq_eq (t : ℝ) (z : ℂ) :
     criticalFeatureDenominatorNormSq t z =
-      (1 + (z.re - t) ^ 2 - z.im ^ 2) ^ 2 +
-        (2 * (z.re - t) * z.im) ^ 2 := by
+      (1 + (z.re - t) ^ (2 : ℕ) - z.im ^ (2 : ℕ)) ^ (2 : ℕ) +
+        (2 * (z.re - t) * z.im) ^ (2 : ℕ) := by
   rw [criticalFeatureDenominatorNormSq, Complex.normSq_apply]
   simp [pow_two, Complex.mul_re, Complex.mul_im]
   ring
@@ -46,23 +46,23 @@ theorem criticalFeatureDenominatorNormSq_le_five
     criticalFeatureDenominatorNormSq t z ≤ 5 := by
   let u : ℝ := z.re - t
   let y : ℝ := z.im
-  have hu2 : u ^ 2 ≤ 1 := by
+  have hu2 : u ^ (2 : ℕ) ≤ 1 := by
     have h := (sq_le_sq₀ (abs_nonneg u) (by norm_num : (0 : ℝ) ≤ 1)).2
       (by simpa [u] using ht)
     simpa only [sq_abs, one_pow] using h
-  have hy2 : y ^ 2 ≤ 1 / 4 := by
+  have hy2 : y ^ (2 : ℕ) ≤ 1 / 4 := by
     have h := (sq_le_sq₀ (abs_nonneg y) (by norm_num : (0 : ℝ) ≤ 1 / 2)).2
       (by simpa [y] using hy)
     rw [sq_abs] at h
     norm_num at h ⊢
     exact h
-  have hA0 : 0 ≤ 1 + u ^ 2 - y ^ 2 := by nlinarith [sq_nonneg u]
-  have hA : 1 + u ^ 2 - y ^ 2 ≤ 2 := by nlinarith
-  have hA4 : (1 + u ^ 2 - y ^ 2) ^ 2 ≤ 4 := by
+  have hA0 : 0 ≤ 1 + u ^ (2 : ℕ) - y ^ (2 : ℕ) := by nlinarith [sq_nonneg u]
+  have hA : 1 + u ^ (2 : ℕ) - y ^ (2 : ℕ) ≤ 2 := by nlinarith
+  have hA4 : (1 + u ^ (2 : ℕ) - y ^ (2 : ℕ)) ^ (2 : ℕ) ≤ 4 := by
     have := (sq_le_sq₀ hA0 (by norm_num : (0 : ℝ) ≤ 2)).2 hA
     norm_num at this ⊢
     exact this
-  have huv : u ^ 2 * y ^ 2 ≤ 1 / 4 := by
+  have huv : u ^ (2 : ℕ) * y ^ (2 : ℕ) ≤ 1 / 4 := by
     exact (mul_le_mul hu2 hy2 (sq_nonneg y) (by norm_num)).trans_eq (by norm_num)
   rw [criticalFeatureDenominatorNormSq_eq]
   dsimp only [u, y] at hA4 huv ⊢
@@ -75,23 +75,23 @@ theorem criticalFeatureDenominatorNormSq_le_twentyNineSixteenths
     criticalFeatureDenominatorNormSq t z ≤ 29 / 16 := by
   let u : ℝ := z.re - t
   let y : ℝ := z.im
-  have hu2 : u ^ 2 ≤ 1 / 4 := by
+  have hu2 : u ^ (2 : ℕ) ≤ 1 / 4 := by
     have h := (sq_le_sq₀ (abs_nonneg u) (by norm_num : (0 : ℝ) ≤ 1 / 2)).2
       (by simpa [u] using ht)
     rw [sq_abs] at h
     norm_num at h ⊢
     exact h
-  have hy2 : y ^ 2 ≤ 1 / 4 := by
+  have hy2 : y ^ (2 : ℕ) ≤ 1 / 4 := by
     have h := (sq_le_sq₀ (abs_nonneg y) (by norm_num : (0 : ℝ) ≤ 1 / 2)).2
       (by simpa [y] using hy)
     rw [sq_abs] at h
     norm_num at h ⊢
     exact h
-  have hA0 : 0 ≤ 1 + u ^ 2 - y ^ 2 := by nlinarith [sq_nonneg u]
-  have hA : 1 + u ^ 2 - y ^ 2 ≤ 5 / 4 := by nlinarith
-  have hAsq : (1 + u ^ 2 - y ^ 2) ^ 2 ≤ (5 / 4 : ℝ) ^ 2 :=
+  have hA0 : 0 ≤ 1 + u ^ (2 : ℕ) - y ^ (2 : ℕ) := by nlinarith [sq_nonneg u]
+  have hA : 1 + u ^ (2 : ℕ) - y ^ (2 : ℕ) ≤ 5 / 4 := by nlinarith
+  have hAsq : (1 + u ^ (2 : ℕ) - y ^ (2 : ℕ)) ^ (2 : ℕ) ≤ (5 / 4 : ℝ) ^ (2 : ℕ) :=
     (sq_le_sq₀ hA0 (by norm_num)).2 hA
-  have huv : u ^ 2 * y ^ 2 ≤ 1 / 16 := by
+  have huv : u ^ (2 : ℕ) * y ^ (2 : ℕ) ≤ 1 / 16 := by
     have := mul_le_mul hu2 hy2 (sq_nonneg y) (by norm_num : 0 ≤ (1 / 4 : ℝ))
     norm_num at this ⊢
     exact this
@@ -109,7 +109,7 @@ theorem complexPairArea_adjacentCriticalFeature_eq
         (criticalEvaluation z hz
           (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) =
       8 * z.im *
-        (1 - z.im ^ 2 - (z.re - t) * (z.re - (t + 1))) /
+        (1 - z.im ^ (2 : ℕ) - (z.re - t) * (z.re - (t + 1))) /
           (criticalFeatureDenominatorNormSq t z *
             criticalFeatureDenominatorNormSq (t + 1) z) := by
   have h0 := criticalFeatureDenominatorNormSq_pos t hz
@@ -128,13 +128,13 @@ theorem complexPairArea_adjacentCriticalFeature_eq
 theorem complexPairArea_adjacentCriticalFeature_sq_ge_of_nonneg
     (t : ℝ) {z : ℂ} (hz : |z.im| < 1 / 2)
     (ht : |z.re - t| ≤ 1 / 2) (hu : 0 ≤ z.re - t) :
-    (96 / 145 : ℝ) ^ 2 * z.im ^ 2 ≤
+    (96 / 145 : ℝ) ^ (2 : ℕ) * z.im ^ (2 : ℕ) ≤
       complexPairArea
         (criticalEvaluation z hz
           (criticalFeature (t : ℂ) (by norm_num)))
         (criticalEvaluation z hz
-          (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) ^ 2 := by
-  let C : ℝ := 1 - z.im ^ 2 - (z.re - t) * (z.re - (t + 1))
+          (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) ^ (2 : ℕ) := by
+  let C : ℝ := 1 - z.im ^ (2 : ℕ) - (z.re - t) * (z.re - (t + 1))
   let D0 : ℝ := criticalFeatureDenominatorNormSq t z
   let D1 : ℝ := criticalFeatureDenominatorNormSq (t + 1) z
   let D : ℝ := D0 * D1
@@ -144,7 +144,7 @@ theorem complexPairArea_adjacentCriticalFeature_sq_ge_of_nonneg
     rw [abs_le]
     constructor <;> linarith
   have hC : 3 / 4 ≤ C := by
-    have hy2 : z.im ^ 2 ≤ 1 / 4 := by
+    have hy2 : z.im ^ (2 : ℕ) ≤ 1 / 4 := by
       have h := (sq_le_sq₀ (abs_nonneg z.im)
         (by norm_num : (0 : ℝ) ≤ 1 / 2)).2 hy
       rw [sq_abs] at h
@@ -170,28 +170,28 @@ theorem complexPairArea_adjacentCriticalFeature_sq_ge_of_nonneg
     rw [le_div_iff₀ hDpos]
     exact hfactorCross
   have hfactorNonneg : 0 ≤ (96 / 145 : ℝ) := by norm_num
-  have hfactorSq : (96 / 145 : ℝ) ^ 2 ≤ (8 * C / D) ^ 2 :=
+  have hfactorSq : (96 / 145 : ℝ) ^ (2 : ℕ) ≤ (8 * C / D) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hfactorNonneg hfactor 2
   rw [complexPairArea_adjacentCriticalFeature_eq]
-  change (96 / 145 : ℝ) ^ 2 * z.im ^ 2 ≤
-    (8 * z.im * C / D) ^ 2
+  change (96 / 145 : ℝ) ^ (2 : ℕ) * z.im ^ (2 : ℕ) ≤
+    (8 * z.im * C / D) ^ (2 : ℕ)
   have hmul := mul_le_mul_of_nonneg_right hfactorSq (sq_nonneg z.im)
   calc
-    (96 / 145 : ℝ) ^ 2 * z.im ^ 2 ≤
-        (8 * C / D) ^ 2 * z.im ^ 2 := hmul
-    _ = (8 * z.im * C / D) ^ 2 := by ring
+    (96 / 145 : ℝ) ^ (2 : ℕ) * z.im ^ (2 : ℕ) ≤
+        (8 * C / D) ^ (2 : ℕ) * z.im ^ (2 : ℕ) := hmul
+    _ = (8 * z.im * C / D) ^ (2 : ℕ) := by ring
 
 theorem complexPairArea_previousCriticalFeature_sq_ge_of_nonpos
     (t : ℝ) {z : ℂ} (hz : |z.im| < 1 / 2)
     (ht : |z.re - t| ≤ 1 / 2) (hu : z.re - t ≤ 0) :
-    (96 / 145 : ℝ) ^ 2 * z.im ^ 2 ≤
+    (96 / 145 : ℝ) ^ (2 : ℕ) * z.im ^ (2 : ℕ) ≤
       complexPairArea
         (criticalEvaluation z hz
           (criticalFeature (t : ℂ) (by norm_num)))
         (criticalEvaluation z hz
-          (criticalFeature ((t - 1 : ℝ) : ℂ) (by norm_num))) ^ 2 := by
+          (criticalFeature ((t - 1 : ℝ) : ℂ) (by norm_num))) ^ (2 : ℕ) := by
   let C : ℝ :=
-    1 - z.im ^ 2 - (z.re - (t - 1)) * (z.re - t)
+    1 - z.im ^ (2 : ℕ) - (z.re - (t - 1)) * (z.re - t)
   let D0 : ℝ := criticalFeatureDenominatorNormSq (t - 1) z
   let D1 : ℝ := criticalFeatureDenominatorNormSq t z
   let D : ℝ := D0 * D1
@@ -201,7 +201,7 @@ theorem complexPairArea_previousCriticalFeature_sq_ge_of_nonpos
     rw [abs_le]
     constructor <;> linarith
   have hC : 3 / 4 ≤ C := by
-    have hy2 : z.im ^ 2 ≤ 1 / 4 := by
+    have hy2 : z.im ^ (2 : ℕ) ≤ 1 / 4 := by
       have h := (sq_le_sq₀ (abs_nonneg z.im)
         (by norm_num : (0 : ℝ) ≤ 1 / 2)).2 hy
       rw [sq_abs] at h
@@ -227,7 +227,7 @@ theorem complexPairArea_previousCriticalFeature_sq_ge_of_nonpos
     rw [le_div_iff₀ hDpos]
     exact hfactorCross
   have hfactorNonneg : 0 ≤ (96 / 145 : ℝ) := by norm_num
-  have hfactorSq : (96 / 145 : ℝ) ^ 2 ≤ (8 * C / D) ^ 2 :=
+  have hfactorSq : (96 / 145 : ℝ) ^ (2 : ℕ) ≤ (8 * C / D) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hfactorNonneg hfactor 2
   have harea := complexPairArea_adjacentCriticalFeature_eq (t - 1) z hz
   have harea' :
@@ -254,27 +254,27 @@ theorem complexPairArea_previousCriticalFeature_sq_ge_of_nonpos
   rw [hswap, harea']
   have hmul := mul_le_mul_of_nonneg_right hfactorSq (sq_nonneg z.im)
   calc
-    (96 / 145 : ℝ) ^ 2 * z.im ^ 2 ≤
-        (8 * C / D) ^ 2 * z.im ^ 2 := hmul
-    _ = (-(8 * z.im * C / D)) ^ 2 := by ring
+    (96 / 145 : ℝ) ^ (2 : ℕ) * z.im ^ (2 : ℕ) ≤
+        (8 * C / D) ^ (2 : ℕ) * z.im ^ (2 : ℕ) := hmul
+    _ = (-(8 * z.im * C / D)) ^ (2 : ℕ) := by ring
 
 /-- One of the two adjacent reporters oriented toward the nearest-center cell has a uniform
 inverse-square transverse area quantum. -/
 theorem complexPairArea_orientedAdjacentCriticalFeature_sq_ge
     (t : ℝ) {z : ℂ} (hz : |z.im| < 1 / 2)
     (ht : |z.re - t| ≤ 1 / 2) :
-    (96 / 145 : ℝ) ^ 2 * z.im ^ 2 ≤
+    (96 / 145 : ℝ) ^ (2 : ℕ) * z.im ^ (2 : ℕ) ≤
         complexPairArea
           (criticalEvaluation z hz
             (criticalFeature (t : ℂ) (by norm_num)))
           (criticalEvaluation z hz
-            (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) ^ 2 ∨
-      (96 / 145 : ℝ) ^ 2 * z.im ^ 2 ≤
+            (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) ^ (2 : ℕ) ∨
+      (96 / 145 : ℝ) ^ (2 : ℕ) * z.im ^ (2 : ℕ) ≤
         complexPairArea
           (criticalEvaluation z hz
             (criticalFeature (t : ℂ) (by norm_num)))
           (criticalEvaluation z hz
-            (criticalFeature ((t - 1 : ℝ) : ℂ) (by norm_num))) ^ 2 := by
+            (criticalFeature ((t - 1 : ℝ) : ℂ) (by norm_num))) ^ (2 : ℕ) := by
   by_cases hu : 0 ≤ z.re - t
   · exact Or.inl
       (complexPairArea_adjacentCriticalFeature_sq_ge_of_nonneg t hz ht hu)
@@ -291,14 +291,14 @@ theorem reflectedPairBlockDet_orientedAdjacentCriticalFeature_div_sq_le
             (criticalFeature (t : ℂ) (by norm_num)))
           (criticalEvaluation z hz
             (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) /
-        z.im ^ 2 ≤ -4 * (96 / 145 : ℝ) ^ 2 ∨
+        z.im ^ (2 : ℕ) ≤ -4 * (96 / 145 : ℝ) ^ (2 : ℕ) ∨
       reflectedPairBlockDet
           (criticalEvaluation z hz
             (criticalFeature (t : ℂ) (by norm_num)))
           (criticalEvaluation z hz
             (criticalFeature ((t - 1 : ℝ) : ℂ) (by norm_num))) /
-        z.im ^ 2 ≤ -4 * (96 / 145 : ℝ) ^ 2 := by
-  have hySq : 0 < z.im ^ 2 := sq_pos_of_ne_zero hy
+        z.im ^ (2 : ℕ) ≤ -4 * (96 / 145 : ℝ) ^ (2 : ℕ) := by
+  have hySq : 0 < z.im ^ (2 : ℕ) := sq_pos_of_ne_zero hy
   rcases complexPairArea_orientedAdjacentCriticalFeature_sq_ge t hz ht with hplus | hminus
   · left
     rw [reflectedPairBlockDet_eq]
@@ -317,12 +317,12 @@ def orientedAdjacentCriticalFeatureExteriorEnergy
       (criticalEvaluation z hz
         (criticalFeature (t : ℂ) (by norm_num)))
       (criticalEvaluation z hz
-        (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) ^ 2 +
+        (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) ^ (2 : ℕ) +
     complexPairArea
       (criticalEvaluation z hz
         (criticalFeature (t : ℂ) (by norm_num)))
       (criticalEvaluation z hz
-        (criticalFeature ((t - 1 : ℝ) : ℂ) (by norm_num))) ^ 2
+        (criticalFeature ((t - 1 : ℝ) : ℂ) (by norm_num))) ^ (2 : ℕ)
 
 /-- One adjacent exterior area is exactly one quarter of the squared norm of the explicit
 two-evaluation determinant. -/
@@ -332,7 +332,7 @@ theorem four_mul_complexPairArea_sq_eq_normSq_adjacentCriticalFeatureEvaluationD
         (criticalEvaluation z hz
           (criticalFeature (t : ℂ) (by norm_num)))
         (criticalEvaluation z hz
-          (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) ^ 2 =
+          (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) ^ (2 : ℕ) =
       Complex.normSq (adjacentCriticalFeatureEvaluationDet t z hz) := by
   rw [adjacentCriticalFeatureEvaluationDet_eq_area, Complex.normSq_mul,
     Complex.normSq_mul]
@@ -363,7 +363,7 @@ theorem orientedAdjacentCriticalFeatureExteriorEnergy_nonneg
 theorem orientedAdjacentCriticalFeatureExteriorEnergy_ge
     (t : ℝ) {z : ℂ} (hz : |z.im| < 1 / 2)
     (ht : |z.re - t| ≤ 1 / 2) :
-    (96 / 145 : ℝ) ^ 2 * z.im ^ 2 ≤
+    (96 / 145 : ℝ) ^ (2 : ℕ) * z.im ^ (2 : ℕ) ≤
       orientedAdjacentCriticalFeatureExteriorEnergy t z hz := by
   rcases complexPairArea_orientedAdjacentCriticalFeature_sq_ge t hz ht with hplus | hminus
   · rw [orientedAdjacentCriticalFeatureExteriorEnergy]
@@ -384,20 +384,20 @@ theorem orientedAdjacentCriticalFeatureExteriorEnergy_eq_zero_of_im_eq_zero
 /-- Singular transverse Green normalization of the exterior-square energy. -/
 def orientedAdjacentCriticalFeatureTransverseEnergy
     (t : ℝ) (z : ℂ) (hz : |z.im| < 1 / 2) : ℝ :=
-  z.im⁻¹ ^ 2 * orientedAdjacentCriticalFeatureExteriorEnergy t z hz
+  z.im⁻¹ ^ (2 : ℕ) * orientedAdjacentCriticalFeatureExteriorEnergy t z hz
 
 /-- Off the critical line, the fixed three-feature transverse energy has the uniform quantum. -/
 theorem orientedAdjacentCriticalFeatureTransverseEnergy_ge
     (t : ℝ) {z : ℂ} (hz : |z.im| < 1 / 2)
     (ht : |z.re - t| ≤ 1 / 2) (hy : z.im ≠ 0) :
-    (96 / 145 : ℝ) ^ 2 ≤
+    (96 / 145 : ℝ) ^ (2 : ℕ) ≤
       orientedAdjacentCriticalFeatureTransverseEnergy t z hz := by
   have h := orientedAdjacentCriticalFeatureExteriorEnergy_ge t hz ht
   rw [orientedAdjacentCriticalFeatureTransverseEnergy]
   calc
-    (96 / 145 : ℝ) ^ 2 = z.im⁻¹ ^ 2 *
-        ((96 / 145 : ℝ) ^ 2 * z.im ^ 2) := by field_simp
-    _ ≤ z.im⁻¹ ^ 2 * orientedAdjacentCriticalFeatureExteriorEnergy t z hz :=
+    (96 / 145 : ℝ) ^ (2 : ℕ) = z.im⁻¹ ^ (2 : ℕ) *
+        ((96 / 145 : ℝ) ^ (2 : ℕ) * z.im ^ (2 : ℕ)) := by field_simp
+    _ ≤ z.im⁻¹ ^ (2 : ℕ) * orientedAdjacentCriticalFeatureExteriorEnergy t z hz :=
       mul_le_mul_of_nonneg_left h (sq_nonneg _)
 
 /-- On the critical line the convention supplied by inverse in Lean makes transverse energy zero,
@@ -420,7 +420,7 @@ theorem reflectedPairBlockDet_orientedAdjacentCriticalFeature_xiRight_round_div_
           (criticalEvaluation (xiSpectralPoint q.1)
             (abs_xiSpectralPoint_im_lt_half q.1)
             (criticalFeature ((t + 1 : ℝ) : ℂ) (by norm_num))) /
-        (xiSpectralPoint q.1).im ^ 2 ≤ -4 * (96 / 145 : ℝ) ^ 2 ∨
+        (xiSpectralPoint q.1).im ^ (2 : ℕ) ≤ -4 * (96 / 145 : ℝ) ^ (2 : ℕ) ∨
       reflectedPairBlockDet
           (criticalEvaluation (xiSpectralPoint q.1)
             (abs_xiSpectralPoint_im_lt_half q.1)
@@ -428,7 +428,7 @@ theorem reflectedPairBlockDet_orientedAdjacentCriticalFeature_xiRight_round_div_
           (criticalEvaluation (xiSpectralPoint q.1)
             (abs_xiSpectralPoint_im_lt_half q.1)
             (criticalFeature ((t - 1 : ℝ) : ℂ) (by norm_num))) /
-        (xiSpectralPoint q.1).im ^ 2 ≤ -4 * (96 / 145 : ℝ) ^ 2 := by
+        (xiSpectralPoint q.1).im ^ (2 : ℕ) ≤ -4 * (96 / 145 : ℝ) ^ (2 : ℕ) := by
   dsimp only
   have hy : (xiSpectralPoint q.1).im ≠ 0 := by
     have hrel : -(xiSpectralPoint q.1).im = (xiRightCenteredZero q).re := by
@@ -446,7 +446,7 @@ theorem reflectedPairBlockDet_orientedAdjacentCriticalFeature_xiRight_round_div_
 the same rational quantum, independently of height and horizontal displacement. -/
 theorem orientedAdjacentCriticalFeatureTransverseEnergy_xiRight_round_ge
     (q : XiRightZeroCopy) :
-    (96 / 145 : ℝ) ^ 2 ≤
+    (96 / 145 : ℝ) ^ (2 : ℕ) ≤
       orientedAdjacentCriticalFeatureTransverseEnergy
         (((round (xiSpectralPoint q.1).re : ℤ) : ℝ))
         (xiSpectralPoint q.1) (abs_xiSpectralPoint_im_lt_half q.1) := by
@@ -465,28 +465,28 @@ theorem orientedAdjacentCriticalFeatureTransverseEnergy_xiRight_round_ge
 quantum. -/
 theorem finite_multiplicity_mul_transverseQuantum_le_energy
     {ι : Type*} (s : Finset ι) (m : ι → ℕ) (E : ι → ℝ)
-    (hE : ∀ i ∈ s, (96 / 145 : ℝ) ^ 2 ≤ E i) :
-    (96 / 145 : ℝ) ^ 2 * ∑ i ∈ s, (m i : ℝ) ≤
+    (hE : ∀ i ∈ s, (96 / 145 : ℝ) ^ (2 : ℕ) ≤ E i) :
+    (96 / 145 : ℝ) ^ (2 : ℕ) * ∑ i ∈ s, (m i : ℝ) ≤
       ∑ i ∈ s, (m i : ℝ) * E i := by
   rw [Finset.mul_sum]
   apply Finset.sum_le_sum
   intro i hi
   calc
-    (96 / 145 : ℝ) ^ 2 * (m i : ℝ) =
-        (m i : ℝ) * (96 / 145 : ℝ) ^ 2 := by ring
+    (96 / 145 : ℝ) ^ (2 : ℕ) * (m i : ℝ) =
+        (m i : ℝ) * (96 / 145 : ℝ) ^ (2 : ℕ) := by ring
     _ ≤ (m i : ℝ) * E i :=
       mul_le_mul_of_nonneg_left (hE i hi) (Nat.cast_nonneg _)
 
 /-- Exact `75%` receiver for a source budget on the new transverse exterior-square charge. -/
 theorem three_quarters_line_of_transverseExteriorEnergy
     {N N0 R E : ℝ} (hsplit : N = N0 + 2 * R)
-    (hcharge : (96 / 145 : ℝ) ^ 2 * R ≤ E)
-    (hbudget : (145 / 96 : ℝ) ^ 2 * E ≤ N / 8) :
+    (hcharge : (96 / 145 : ℝ) ^ (2 : ℕ) * R ≤ E)
+    (hbudget : (145 / 96 : ℝ) ^ (2 : ℕ) * E ≤ N / 8) :
     3 * N / 4 ≤ N0 := by
-  have hreciprocal : R ≤ (145 / 96 : ℝ) ^ 2 * E := by
+  have hreciprocal : R ≤ (145 / 96 : ℝ) ^ (2 : ℕ) * E := by
     calc
-      R = (145 / 96 : ℝ) ^ 2 * ((96 / 145 : ℝ) ^ 2 * R) := by norm_num; ring
-      _ ≤ (145 / 96 : ℝ) ^ 2 * E :=
+      R = (145 / 96 : ℝ) ^ (2 : ℕ) * ((96 / 145 : ℝ) ^ (2 : ℕ) * R) := by norm_num; ring
+      _ ≤ (145 / 96 : ℝ) ^ (2 : ℕ) * E :=
         mul_le_mul_of_nonneg_left hcharge (sq_nonneg _)
   nlinarith
 

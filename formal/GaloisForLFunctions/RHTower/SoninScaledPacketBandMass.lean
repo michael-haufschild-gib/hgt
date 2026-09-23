@@ -26,10 +26,10 @@ open scoped FourierTransform
 /-- The squared band energy of the rescaled packet as an explicit integral. -/
 theorem norm_sq_evenFourierCutoff_soninScaledPacketEven
     (m δ κ : ℝ) (hδ : 0 < δ) (t : ℝ) :
-    ‖evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ 2 =
+    ‖evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ (2 : ℕ) =
       ∫ ξ : ℝ, ‖(centralInterval t).indicator
         (fun η : ℝ => ((fourierUnitary (soninScaledPacketL2 m δ κ hδ) : SoninL2) : ℝ → ℂ) η)
-        ξ‖ ^ 2 := by
+        ξ‖ ^ (2 : ℕ) := by
   have hcoe : ((evenFourierCutoff t (soninScaledPacketEven m δ κ hδ) : evenSubspace) : SoninL2) =
       fourierUnitary.symm (indicatorCutoff (centralInterval t)
         (measurableSet_centralInterval t) (fourierUnitary (soninScaledPacketL2 m δ κ hδ))) := rfl
@@ -49,7 +49,7 @@ theorem norm_sq_evenFourierCutoff_soninScaledPacketEven
 /-- The band energy is the spectral density integrated over the band. -/
 theorem norm_sq_evenFourierCutoff_soninScaledPacketEven_eq_density
     (m δ κ : ℝ) (hδ : 0 < δ) (t : ℝ) :
-    ‖evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ 2 =
+    ‖evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ (2 : ℕ) =
       ∫ ξ : ℝ, {η : ℝ | |η| ≤ t}.indicator (soninScaledPacketSpectralDensity m δ κ) ξ := by
   rw [norm_sq_evenFourierCutoff_soninScaledPacketEven m δ κ hδ t]
   refine integral_congr_ae ?_
@@ -68,9 +68,9 @@ theorem norm_sq_evenFourierCutoff_soninScaledPacketEven_eq_density
 reference energy inside the band of radius `δ t`. -/
 theorem norm_sq_evenFourierCutoff_soninScaledPacketEven_scaling
     (m δ κ : ℝ) (hδ : 0 < δ) (t : ℝ) :
-    ‖evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ 2 =
+    ‖evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ (2 : ℕ) =
       δ * ‖evenFourierCutoff (δ * t)
-        (soninScaledPacketEven (m / δ) 1 (δ * κ) one_pos)‖ ^ 2 := by
+        (soninScaledPacketEven (m / δ) 1 (δ * κ) one_pos)‖ ^ (2 : ℕ) := by
   rw [norm_sq_evenFourierCutoff_soninScaledPacketEven_eq_density m δ κ hδ t,
     norm_sq_evenFourierCutoff_soninScaledPacketEven_eq_density (m / δ) 1 (δ * κ) one_pos (δ * t),
     integral_indicator_soninScaledPacketSpectralDensity_scaling m δ κ t hδ]
@@ -79,10 +79,10 @@ theorem norm_sq_evenFourierCutoff_soninScaledPacketEven_scaling
 exactly as the reference band energy relates to the reference total. -/
 theorem norm_sq_evenFourierCutoff_soninScaledPacketEven_fraction
     (m δ κ : ℝ) (hδ : 0 < δ) (t : ℝ) :
-    ‖evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ 2 *
-        ‖soninScaledPacketEven (m / δ) 1 (δ * κ) one_pos‖ ^ 2 =
-      ‖evenFourierCutoff (δ * t) (soninScaledPacketEven (m / δ) 1 (δ * κ) one_pos)‖ ^ 2 *
-        ‖soninScaledPacketEven m δ κ hδ‖ ^ 2 := by
+    ‖evenFourierCutoff t (soninScaledPacketEven m δ κ hδ)‖ ^ (2 : ℕ) *
+        ‖soninScaledPacketEven (m / δ) 1 (δ * κ) one_pos‖ ^ (2 : ℕ) =
+      ‖evenFourierCutoff (δ * t) (soninScaledPacketEven (m / δ) 1 (δ * κ) one_pos)‖ ^ (2 : ℕ) *
+        ‖soninScaledPacketEven m δ κ hδ‖ ^ (2 : ℕ) := by
   rw [norm_sq_evenFourierCutoff_soninScaledPacketEven_scaling m δ κ hδ t,
     norm_sq_soninScaledPacketEven_scaling m δ κ hδ]
   ring

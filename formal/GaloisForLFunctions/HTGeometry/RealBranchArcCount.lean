@@ -194,9 +194,9 @@ form a connected set: the two sheets are continuous images of the interval and m
 point. -/
 theorem isConnected_realDoubleCover {f : ℝ → ℝ} {α β : ℝ} (hαβ : α ≤ β)
     (hf : ContinuousOn f (Set.Icc α β)) (hnn : ∀ t ∈ Set.Icc α β, 0 ≤ f t) (hα : f α = 0) :
-    IsConnected {p : ℝ × ℝ | p.1 ∈ Set.Icc α β ∧ p.2 ^ 2 = f p.1} := by
+    IsConnected {p : ℝ × ℝ | p.1 ∈ Set.Icc α β ∧ p.2 ^ (2 : ℕ) = f p.1} := by
   classical
-  set S : Set (ℝ × ℝ) := {p : ℝ × ℝ | p.1 ∈ Set.Icc α β ∧ p.2 ^ 2 = f p.1} with hS
+  set S : Set (ℝ × ℝ) := {p : ℝ × ℝ | p.1 ∈ Set.Icc α β ∧ p.2 ^ (2 : ℕ) = f p.1} with hS
   set up : ℝ → ℝ × ℝ := fun t => (t, Real.sqrt (f t)) with hup
   set dn : ℝ → ℝ × ℝ := fun t => (t, -Real.sqrt (f t)) with hdn
   have hcup : ContinuousOn up (Set.Icc α β) :=
@@ -210,9 +210,9 @@ theorem isConnected_realDoubleCover {f : ℝ → ℝ} {α β : ℝ} (hαβ : α 
     ext p
     constructor
     · rintro ⟨h1, h2⟩
-      have hsq : Real.sqrt (f p.1) ^ 2 = f p.1 := Real.sq_sqrt (hnn p.1 h1)
+      have hsq : Real.sqrt (f p.1) ^ (2 : ℕ) = f p.1 := Real.sq_sqrt (hnn p.1 h1)
       have : (p.2 - Real.sqrt (f p.1)) * (p.2 + Real.sqrt (f p.1)) = 0 := by
-        have : p.2 ^ 2 - Real.sqrt (f p.1) ^ 2 = 0 := by rw [h2, hsq]; ring
+        have : p.2 ^ (2 : ℕ) - Real.sqrt (f p.1) ^ (2 : ℕ) = 0 := by rw [h2, hsq]; ring
         linear_combination this
       rcases mul_eq_zero.mp this with h | h
       · exact Or.inl ⟨p.1, h1, by rw [hup]; exact Prod.ext rfl (by linarith)⟩
@@ -220,7 +220,7 @@ theorem isConnected_realDoubleCover {f : ℝ → ℝ} {α β : ℝ} (hαβ : α 
     · rintro (⟨t, ht, rfl⟩ | ⟨t, ht, rfl⟩)
       · exact ⟨ht, by rw [hup]; exact Real.sq_sqrt (hnn t ht)⟩
       · refine ⟨ht, ?_⟩
-        show (-Real.sqrt (f t)) ^ 2 = f t
+        show (-Real.sqrt (f t)) ^ (2 : ℕ) = f t
         rw [neg_sq]
         exact Real.sq_sqrt (hnn t ht)
   have hmem : (α, (0 : ℝ)) ∈ up '' Set.Icc α β ∩ dn '' Set.Icc α β := by

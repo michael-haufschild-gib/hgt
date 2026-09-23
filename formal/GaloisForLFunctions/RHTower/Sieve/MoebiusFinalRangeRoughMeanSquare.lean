@@ -39,7 +39,7 @@ theorem filter_supportMeanSquareRoughSet_primesRange_squarefree_subset (z M : �
 
 /-- Möbius energy on the final rough set is bounded by the squarefree smooth count. -/
 theorem sum_normSq_moebiusC_supportMeanSquareRoughSet_primesRange_le_card (z M : ℕ) :
-    ∑ n ∈ supportMeanSquareRoughSet (primesRange z M) M, ‖moebiusC n‖ ^ 2
+    ∑ n ∈ supportMeanSquareRoughSet (primesRange z M) M, ‖moebiusC n‖ ^ (2 : ℕ)
       ≤ ((squarefreeSmoothUpTo z M).card : ℝ) := by
   classical
   rw [Finset.sum_congr rfl fun n _ => normSq_moebiusC_eq_indicator n,
@@ -51,7 +51,7 @@ theorem sum_normSq_moebiusC_supportMeanSquareRoughSet_primesRange_le_card (z M :
 theorem integral_Icc_normSq_moebius_rough_primesRange_le_squarefreeSmooth
     (z M : ℕ) {W : ℝ} (hW : 1 ≤ W) :
     (∫ w in Set.Icc (-W) W,
-      ‖logPoly moebiusC (supportMeanSquareRoughSet (primesRange z M) M) w‖ ^ 2)
+      ‖logPoly moebiusC (supportMeanSquareRoughSet (primesRange z M) M) w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) *
         ((squarefreeSmoothUpTo z M).card : ℝ) := by
   classical
@@ -76,8 +76,8 @@ theorem tendsto_menonFinalRange_roughMeanSquare_mul_logPow_div_zero :
         ‖logPoly moebiusC
           (supportMeanSquareRoughSet
             (primesRange (menonFinalRangePrimeCutoffNat x) (menonFinalRangeTopNat x))
-            (menonFinalRangeTopNat x)) w‖ ^ 2) *
-          (Real.log x) ^ 8 / x ^ 2) Filter.atTop (nhds 0) := by
+            (menonFinalRangeTopNat x)) w‖ ^ (2 : ℕ)) *
+          (Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)) Filter.atTop (nhds 0) := by
   let C : ℝ := 5 * Real.pi / 2 + 15 * Real.exp 1 / 2
   have hmajor :=
     tendsto_card_squarefreeSmoothUpTo_menonFinalRange_mul_logPow_div_zero.const_mul C
@@ -91,7 +91,7 @@ theorem tendsto_menonFinalRange_roughMeanSquare_mul_logPow_div_zero :
         ‖logPoly moebiusC
           (supportMeanSquareRoughSet
             (primesRange (menonFinalRangePrimeCutoffNat x) (menonFinalRangeTopNat x))
-            (menonFinalRangeTopNat x)) w‖ ^ 2 :=
+            (menonFinalRangeTopNat x)) w‖ ^ (2 : ℕ) :=
       MeasureTheory.integral_nonneg fun _ => by positivity
     positivity
   · filter_upwards [Filter.eventually_gt_atTop (Real.exp 1)] with x hx
@@ -114,14 +114,14 @@ theorem tendsto_menonFinalRange_roughMeanSquare_mul_logPow_div_zero :
     have hcard0 : 0 ≤ ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
         (menonFinalRangeTopNat x)).card : ℝ) := by positivity
     have hbound := henergy.trans (mul_le_mul_of_nonneg_right hcoef hcard0)
-    have hfac0 : 0 ≤ (Real.log x) ^ 8 / x ^ 2 := by positivity
+    have hfac0 : 0 ≤ (Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ) := by positivity
     have hscaled := mul_le_mul_of_nonneg_right hbound hfac0
-    have hlogpow : (Real.log x) ^ 8 ≤ (Real.log x) ^ 10 := by
-      nlinarith [sq_nonneg ((Real.log x) ^ 4 * (Real.log x - 1))]
+    have hlogpow : (Real.log x) ^ (8 : ℕ) ≤ (Real.log x) ^ (10 : ℕ) := by
+      nlinarith [sq_nonneg ((Real.log x) ^ (4 : ℕ) * (Real.log x - 1))]
     have hcardLog : ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-          (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ 8 / x
+          (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ (8 : ℕ) / x
         ≤ ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-          (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ 10 / x := by
+          (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ (10 : ℕ) / x := by
       exact div_le_div_of_nonneg_right
         (mul_le_mul_of_nonneg_left hlogpow hcard0) hx0.le
     calc
@@ -129,20 +129,20 @@ theorem tendsto_menonFinalRange_roughMeanSquare_mul_logPow_div_zero :
           ‖logPoly moebiusC
             (supportMeanSquareRoughSet
               (primesRange (menonFinalRangePrimeCutoffNat x) (menonFinalRangeTopNat x))
-              (menonFinalRangeTopNat x)) w‖ ^ 2) * (Real.log x) ^ 8 / x ^ 2
+              (menonFinalRangeTopNat x)) w‖ ^ (2 : ℕ)) * (Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)
           = (∫ w in Set.Icc (-x) x,
               ‖logPoly moebiusC
                 (supportMeanSquareRoughSet
                   (primesRange (menonFinalRangePrimeCutoffNat x) (menonFinalRangeTopNat x))
-                  (menonFinalRangeTopNat x)) w‖ ^ 2) *
-              ((Real.log x) ^ 8 / x ^ 2) := by ring
+                  (menonFinalRangeTopNat x)) w‖ ^ (2 : ℕ)) *
+              ((Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)) := by ring
       _ ≤ (C * x * ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-              (menonFinalRangeTopNat x)).card : ℝ)) * ((Real.log x) ^ 8 / x ^ 2) := hscaled
+              (menonFinalRangeTopNat x)).card : ℝ)) * ((Real.log x) ^ (8 : ℕ) / x ^ (2 : ℕ)) := hscaled
       _ = C * (((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-              (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ 8 / x) := by
+              (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ (8 : ℕ) / x) := by
             field_simp
       _ ≤ C * (((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)
-              (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ 10 / x) := by
+              (menonFinalRangeTopNat x)).card : ℝ) * (Real.log x) ^ (10 : ℕ) / x) := by
             exact mul_le_mul_of_nonneg_left hcardLog (by dsimp [C]; positivity)
 
 end

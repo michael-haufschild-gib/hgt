@@ -11,7 +11,7 @@ noncomputable section
 def forcedBoundaryMetric (q : XiZeroCopy) (branch : Bool) (a : ℂ) (v : ℝ) (z : Point) :
     Matrix (Fin 4) (Fin 4) ℂ :=
   let s := physicalRate q branch
-  let E := a^2*Complex.exp ((2*s)*(v:ℂ))
+  let E := a^(2 : ℕ)*Complex.exp ((2*s)*(v:ℂ))
   let U := fun k => E*(-2*s*fullAngularCovector q branch k z)
   !![0,0,0,0; 0,0,U 0,U 1; 0,U 0,0,0; 0,U 1,0,0]
 
@@ -20,7 +20,7 @@ def forcedHorizonMetric (q : XiZeroCopy) (branch : Bool) (a : ℂ) (v : ℝ) (z 
     Matrix (Fin 4) (Fin 4) ℂ :=
   let s := physicalRate q branch
   let c := s*(s-1)/4
-  let E := a^2*Complex.exp ((2*s)*((v:ℂ)+Complex.log 2))
+  let E := a^(2 : ℕ)*Complex.exp ((2*s)*((v:ℂ)+Complex.log 2))
   let T := fun k => E*(2*s*(fullAngularCovector q branch k z-c*fullSquareCovector q k z))
   let U := fun k => E*(-s*fullAngularCovector q branch k z+c*(s+2)*fullSquareCovector q k z)
   !![0,0,T 0,T 1; 0,0,U 0,U 1; T 0,U 0,0,0; T 1,U 1,0,0]
@@ -59,7 +59,7 @@ theorem compactForcedMetric_boundary (q : XiZeroCopy) (branch : Bool) (a : ℂ)
 /-- The complete conformally rescaled perturbation vanishes at the boundary after actual metric reconstruction. -/
 theorem compactForcedMetric_conformal_boundary (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (v : ℝ) (z : Point) (i j : Fin 4) :
-    Tendsto (fun u : ℂ => u^2*compactForcedMetric q branch a v u z i j) (𝓝 0) (𝓝 0) := by
+    Tendsto (fun u : ℂ => u^(2 : ℕ)*compactForcedMetric q branch a v u z i j) (𝓝 0) (𝓝 0) := by
   simpa using ((continuousAt_id (x := (0 : ℂ))).pow 2).tendsto.mul
     (compactForcedMetric_boundary q branch a v z i j)
 

@@ -18,9 +18,9 @@ def c5AdaptiveReservedClearedExpression
     (r a b s m c₀ n₀ Z : ℝ → ℝ) (t : ℝ) : ℝ :=
   let v := t * a t
   let H := a t * (t * m t) - (a t + t * b t) * s t
-  let P₂ := a t * (t * m t + t ^ 2 * n₀ t) -
-    (a t + 3 * t * b t + t ^ 2 * c₀ t) * s t
-  r t * (5 * P₂ - (14 + 10 * v) * H + 5 * t ^ 2 * a t * Z t) - 8 * v * H
+  let P₂ := a t * (t * m t + t ^ (2 : ℕ) * n₀ t) -
+    (a t + 3 * t * b t + t ^ (2 : ℕ) * c₀ t) * s t
+  r t * (5 * P₂ - (14 + 10 * v) * H + 5 * t ^ (2 : ℕ) * a t * Z t) - 8 * v * H
 
 /-- The adaptive-reserved cleared margin has exact seam order five, with leading jet equal to
 the curvature square times the uncancelled likelihood-cooling defect. -/
@@ -49,7 +49,7 @@ theorem c5AdaptiveReservedClearedExpression_seamJetClassification
         (c5AdaptiveReservedClearedExpression r a b s m c₀ n₀ Z) 0 = 0) ∧
       iteratedDeriv 5
           (c5AdaptiveReservedClearedExpression r a b s m c₀ n₀ Z) 0 =
-        600 * κ ^ 2 * (F₃ + 2 * A * F₂) := by
+        600 * κ ^ (2 : ℕ) * (F₃ + 2 * A * F₂) := by
   let x : ℝ → ℝ := id
   let x2 : ℝ → ℝ := fun t => x t * x t
   let v : ℝ → ℝ := fun t => x t * a t

@@ -20,7 +20,7 @@ variable {F L : Type*} [Field F] [Field L] [Algebra F L]
 /-- An element whose square is a scalar is integral. -/
 theorem isIntegral_of_sq_mem_bot {δ : L} {c : F} (hsq : δ * δ = algebraMap F L c) :
     IsIntegral F δ := by
-  refine ⟨Polynomial.X ^ 2 - Polynomial.C c, ?_, ?_⟩
+  refine ⟨Polynomial.X ^ (2 : ℕ) - Polynomial.C c, ?_, ?_⟩
   · refine (Polynomial.monic_X_pow 2).sub_of_left ?_
     refine lt_of_le_of_lt Polynomial.degree_C_le ?_
     rw [Polynomial.degree_X_pow]
@@ -35,10 +35,10 @@ theorem finrank_adjoin_eq_two {δ : L} {c : F} (hsq : δ * δ = algebraMap F L c
   have hint : IsIntegral F δ := isIntegral_of_sq_mem_bot hsq
   have hrank : Module.finrank F F⟮δ⟯ = (minpoly F δ).natDegree :=
     IntermediateField.adjoin.finrank hint
-  have hdvd : minpoly F δ ∣ Polynomial.X ^ 2 - Polynomial.C c := by
+  have hdvd : minpoly F δ ∣ Polynomial.X ^ (2 : ℕ) - Polynomial.C c := by
     refine minpoly.dvd F δ ?_
     rw [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, pow_two, hsq, sub_self]
-  have hne : (Polynomial.X ^ 2 - Polynomial.C c : Polynomial F) ≠ 0 := by
+  have hne : (Polynomial.X ^ (2 : ℕ) - Polynomial.C c : Polynomial F) ≠ 0 := by
     intro hcon
     have hdeg := congrArg Polynomial.natDegree hcon
     rw [Polynomial.natDegree_zero] at hdeg

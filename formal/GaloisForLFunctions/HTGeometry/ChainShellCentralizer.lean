@@ -32,7 +32,7 @@ theorem chainEdgeOp_add (J L : Fin m → Fin 3 → Fin 3 → ℝ) :
   push_cast
   ring
 
-theorem real_smul_matrix {ι : Type*} [Fintype ι] [DecidableEq ι] (c : ℝ)
+theorem real_smul_matrix_chainShellCentralizer {ι : Type*} [Fintype ι] [DecidableEq ι] (c : ℝ)
     (M : Matrix ι ι ℂ) : ((c : ℂ)) • M = c • M := by
   ext x y
   simp [Complex.real_smul]
@@ -59,10 +59,10 @@ def shellMap (m : ℕ) : ShellParam m →ₗ[ℝ] ShellMat m where
     abel
   map_smul' c p := by
     have h1 : chainSiteOp (c • p.2.1) = c • chainSiteOp p.2.1 := by
-      rw [← real_smul_matrix, ← chainSiteOp_smul]
+      rw [← real_smul_matrix_chainShellCentralizer, ← chainSiteOp_smul]
       rfl
     have h2 : chainEdgeOp (c • p.2.2) = c • chainEdgeOp p.2.2 := by
-      rw [← real_smul_matrix, ← chainEdgeOp_smul]
+      rw [← real_smul_matrix_chainShellCentralizer, ← chainEdgeOp_smul]
       rfl
     show (c * p.1) • (1 : ShellMat m) + chainSiteOp (c • p.2.1) + chainEdgeOp (c • p.2.2) = _
     rw [h1, h2, mul_smul]
@@ -138,12 +138,12 @@ theorem commute_shellMap_iff (hm : 2 ≤ m) (p0 : ShellParam m)
       have hfun : p.2.1 = fun s a => c * p0.2.1 s a := by
         funext s a
         exact hh s a
-      rw [hfun, chainSiteOp_smul, real_smul_matrix]
+      rw [hfun, chainSiteOp_smul, real_smul_matrix_chainShellCentralizer]
     have hedge : chainEdgeOp p.2.2 = c • chainEdgeOp p0.2.2 := by
       have hfun : p.2.2 = fun v a b => c * p0.2.2 v a b := by
         funext v a b
         simpa using congrFun (congrFun (hK v) a) b
-      rw [hfun, chainEdgeOp_smul, real_smul_matrix]
+      rw [hfun, chainEdgeOp_smul, real_smul_matrix_chainShellCentralizer]
     refine ⟨c, p.1 - c * p0.1, ?_⟩
     rw [← hp, shellMap_apply_assoc p, shellMap_apply_assoc p0, hsite, hedge, smul_add, smul_smul,
       sub_smul, mul_smul]

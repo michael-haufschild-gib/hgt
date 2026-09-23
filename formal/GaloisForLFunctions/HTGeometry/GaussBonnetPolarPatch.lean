@@ -29,7 +29,7 @@ variable {f : ℝ × ℝ → ℝ}
 /-- The metric `dr² + f(r,θ)² dθ²` as an orthogonal coordinate patch. -/
 noncomputable def polarPatch (hf : ContDiff ℝ ∞ f) (hpos : ∀ p, 0 < f p) : OrthogonalPatch where
   E := fun _ => 1
-  G := fun p => f p ^ 2
+  G := fun p => f p ^ (2 : ℕ)
   smoothE := contDiff_const
   smoothG := hf.pow 2
   posE := fun _ => one_pos
@@ -41,7 +41,7 @@ variable (hf : ContDiff ℝ ∞ f) (hpos : ∀ p, 0 < f p)
 
 @[simp] theorem E_eq (p : ℝ × ℝ) : (polarPatch hf hpos).E p = 1 := rfl
 
-@[simp] theorem G_eq (p : ℝ × ℝ) : (polarPatch hf hpos).G p = f p ^ 2 := rfl
+@[simp] theorem G_eq (p : ℝ × ℝ) : (polarPatch hf hpos).G p = f p ^ (2 : ℕ) := rfl
 
 theorem uSpeed_eq (p : ℝ × ℝ) : (polarPatch hf hpos).uSpeed p = 1 := by
   simp [OrthogonalPatch.uSpeed]
@@ -83,7 +83,7 @@ theorem px_G (r θ : ℝ) : px (polarPatch hf hpos).G (r, θ) = 2 * f (r, θ) * 
   have h1 : HasDerivAt (fun t : ℝ => (polarPatch hf hpos).G (t, θ))
       (px (polarPatch hf hpos).G (r, θ)) r :=
     hasDerivAt_px (polarPatch hf hpos).smoothG r θ
-  have h2 : HasDerivAt (fun t : ℝ => f (t, θ) ^ 2) (2 * f (r, θ) * px f (r, θ)) r := by
+  have h2 : HasDerivAt (fun t : ℝ => f (t, θ) ^ (2 : ℕ)) (2 * f (r, θ) * px f (r, θ)) r := by
     refine ((hasDerivAt_px hf r θ).pow 2).congr_deriv ?_
     push_cast
     ring
@@ -94,7 +94,7 @@ theorem py_G (r θ : ℝ) :
   have h1 : HasDerivAt (fun t : ℝ => (polarPatch hf hpos).G (r, t))
       (py (polarPatch hf hpos).G (r, θ)) θ :=
     hasDerivAt_py (polarPatch hf hpos).smoothG r θ
-  have h2 : HasDerivAt (fun t : ℝ => f (r, t) ^ 2) (2 * f (r, θ) * py f (r, θ)) θ := by
+  have h2 : HasDerivAt (fun t : ℝ => f (r, t) ^ (2 : ℕ)) (2 * f (r, θ) * py f (r, θ)) θ := by
     refine ((hasDerivAt_py hf r θ).pow 2).congr_deriv ?_
     push_cast
     ring
@@ -104,14 +104,14 @@ theorem py_G (r θ : ℝ) :
 `θ ↦ (R(θ), θ)` with velocity `R₁` and acceleration `R₂` in the radial direction. -/
 theorem geodesicCurvature_radialGraph (r θ R₁ R₂ : ℝ) :
     (polarPatch hf hpos).geodesicCurvature (r, θ) R₁ 1 R₂ 0
-      = (2 * px f (r, θ) * R₁ ^ 2 + R₁ * py f (r, θ) - f (r, θ) * R₂
-          + f (r, θ) ^ 2 * px f (r, θ)) / Real.sqrt (R₁ ^ 2 + f (r, θ) ^ 2) ^ 3 := by
+      = (2 * px f (r, θ) * R₁ ^ (2 : ℕ) + R₁ * py f (r, θ) - f (r, θ) * R₂
+          + f (r, θ) ^ (2 : ℕ) * px f (r, θ)) / Real.sqrt (R₁ ^ (2 : ℕ) + f (r, θ) ^ (2 : ℕ)) ^ (3 : ℕ) := by
   have hne : f (r, θ) ≠ 0 := (hpos (r, θ)).ne'
   have hspeed : (polarPatch hf hpos).speed (r, θ) R₁ 1
-      = Real.sqrt (R₁ ^ 2 + f (r, θ) ^ 2) := by
+      = Real.sqrt (R₁ ^ (2 : ℕ) + f (r, θ) ^ (2 : ℕ)) := by
     simp [OrthogonalPatch.speed]
-  have hs0 : Real.sqrt (R₁ ^ 2 + f (r, θ) ^ 2) ≠ 0 := by
-    have : (0 : ℝ) < R₁ ^ 2 + f (r, θ) ^ 2 := by positivity
+  have hs0 : Real.sqrt (R₁ ^ (2 : ℕ) + f (r, θ) ^ (2 : ℕ)) ≠ 0 := by
+    have : (0 : ℝ) < R₁ ^ (2 : ℕ) + f (r, θ) ^ (2 : ℕ) := by positivity
     exact (Real.sqrt_pos.mpr this).ne'
   unfold OrthogonalPatch.geodesicCurvature OrthogonalPatch.covAccU OrthogonalPatch.covAccV
     OrthogonalPatch.chr111 OrthogonalPatch.chr112 OrthogonalPatch.chr122 OrthogonalPatch.chr211

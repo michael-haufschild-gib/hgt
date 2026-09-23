@@ -16,7 +16,7 @@ open Set Polynomial
 theorem cubicRepairMiddle_isIntegral (I : Ideal (Polynomial ℝ)) :
     IsIntegral (cubicRepairAlgebra I) (Polynomial.X : Polynomial (Polynomial ℝ)) := by
   apply IsIntegral.of_pow (n := 2) (by positivity)
-  exact isIntegral_algebraMap (x := (⟨Polynomial.X^2,
+  exact isIntegral_algebraMap (x := (⟨Polynomial.X^(2 : ℕ),
     cubicRepairAlgebra_contains I cubicCuspAlgebra_square⟩ : cubicRepairAlgebra I))
 
 theorem cubicRepairNormalization_isIntegral (I : Ideal (Polynomial ℝ)) (P : Polynomial (Polynomial ℝ)) :
@@ -47,13 +47,13 @@ theorem cubicRepairNormalization_commonFractionField (I : Ideal (Polynomial ℝ)
   apply IsFractionRing.of_field (R := cubicRepairAlgebra I)
   intro z
   obtain ⟨P,Q,_,rfl⟩ := IsFractionRing.div_surjective (Polynomial (Polynomial ℝ)) z
-  refine ⟨⟨P*Polynomial.X^2,cubicRepairAlgebra_contains I (cubicCuspAlgebra_clearDenominator P)⟩,
-    ⟨Q*Polynomial.X^2,cubicRepairAlgebra_contains I (cubicCuspAlgebra_clearDenominator Q)⟩,?_⟩
+  refine ⟨⟨P*Polynomial.X^(2 : ℕ),cubicRepairAlgebra_contains I (cubicCuspAlgebra_clearDenominator P)⟩,
+    ⟨Q*Polynomial.X^(2 : ℕ),cubicRepairAlgebra_contains I (cubicCuspAlgebra_clearDenominator Q)⟩,?_⟩
   change algebraMap (Polynomial (Polynomial ℝ)) _ P / algebraMap (Polynomial (Polynomial ℝ)) _ Q=
-    algebraMap (Polynomial (Polynomial ℝ)) _ (P*Polynomial.X^2) /
-      algebraMap (Polynomial (Polynomial ℝ)) _ (Q*Polynomial.X^2)
+    algebraMap (Polynomial (Polynomial ℝ)) _ (P*Polynomial.X^(2 : ℕ)) /
+      algebraMap (Polynomial (Polynomial ℝ)) _ (Q*Polynomial.X^(2 : ℕ))
   have hX : algebraMap (Polynomial (Polynomial ℝ)) (FractionRing (Polynomial (Polynomial ℝ)))
-      (Polynomial.X^2) ≠ 0 := by
+      (Polynomial.X^(2 : ℕ)) ≠ 0 := by
     apply (map_ne_zero_iff _ (IsFractionRing.injective _ _)).mpr
     exact pow_ne_zero _ Polynomial.X_ne_zero
   rw [map_mul,map_mul,mul_div_mul_right _ _ hX]

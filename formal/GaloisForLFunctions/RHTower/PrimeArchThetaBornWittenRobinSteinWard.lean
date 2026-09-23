@@ -24,18 +24,18 @@ noncomputable section
 theorem thetaCuspBornWittenSuperpotential_mul_amplitude_sq_eq_polynomialAtom
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
     thetaCuspBornWittenSuperpotential n x *
-        thetaCuspBornWittenAmplitude n x ^ 2 =
+        thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) =
       -(2 * Real.pi)⁻¹ *
         thetaCuspPolynomialAtom (thetaCuspLogDerivativePolynomial 1) n x := by
   have heq :
       (fun y : ℝ => thetaCuspSourceTerm y n) =ᶠ[nhds x]
-        fun y : ℝ => Real.pi * thetaCuspBornWittenAmplitude n y ^ 2 := by
+        fun y : ℝ => Real.pi * thetaCuspBornWittenAmplitude n y ^ (2 : ℕ) := by
     filter_upwards [show ∀ᶠ y : ℝ in nhds x, y ∈ Ioi 0 from Ioi_mem_nhds hx] with y hy
     exact thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq hn hy.le
   have hamp : HasDerivAt
-      (fun y : ℝ => Real.pi * thetaCuspBornWittenAmplitude n y ^ 2)
+      (fun y : ℝ => Real.pi * thetaCuspBornWittenAmplitude n y ^ (2 : ℕ))
       (Real.pi * (-2 * thetaCuspBornWittenSuperpotential n x *
-        thetaCuspBornWittenAmplitude n x ^ 2)) x :=
+        thetaCuspBornWittenAmplitude n x ^ (2 : ℕ))) x :=
     (hasDerivAt_thetaCuspBornWittenAmplitude_sq hn hx.le).const_mul Real.pi
   have hsourceFromAmp := hamp.congr_of_eventuallyEq heq
   have hsourcePoly : HasDerivAt (fun y : ℝ => thetaCuspSourceTerm y n)
@@ -51,7 +51,7 @@ theorem thetaCuspBornWittenSuperpotential_mul_amplitude_sq_eq_polynomialAtom
 theorem integrableOn_pow_mul_thetaCuspBornWittenAmplitude_sq
     (m : ℕ) {n : ℕ} (hn : 0 < n) :
     IntegrableOn (fun x : ℝ =>
-      x ^ m * thetaCuspBornWittenAmplitude n x ^ 2) (Ioi 0) := by
+      x ^ m * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) (Ioi 0) := by
   have hsource := integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
     m thetaCuspSeedPolynomial hn
   have hscaled := hsource.const_mul (Real.pi)⁻¹
@@ -66,7 +66,7 @@ theorem integrableOn_pow_mul_thetaCuspBornWittenSuperpotential_mul_amplitude_sq
     (m : ℕ) {n : ℕ} (hn : 0 < n) :
     IntegrableOn (fun x : ℝ =>
       x ^ m * thetaCuspBornWittenSuperpotential n x *
-        thetaCuspBornWittenAmplitude n x ^ 2) (Ioi 0) := by
+        thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) (Ioi 0) := by
   have hpoly := integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
     m (thetaCuspLogDerivativePolynomial 1) hn
   have hscaled := hpoly.const_mul (-(2 * Real.pi)⁻¹)
@@ -80,16 +80,16 @@ theorem integrableOn_pow_mul_thetaCuspBornWittenSuperpotential_mul_amplitude_sq
           thetaCuspPolynomialAtom
             (thetaCuspLogDerivativePolynomial 1) n x) := by ring
     _ = x ^ m * (thetaCuspBornWittenSuperpotential n x *
-          thetaCuspBornWittenAmplitude n x ^ 2) := by
+          thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) := by
       rw [← thetaCuspBornWittenSuperpotential_mul_amplitude_sq_eq_polynomialAtom hn hx]
     _ = x ^ m * thetaCuspBornWittenSuperpotential n x *
-          thetaCuspBornWittenAmplitude n x ^ 2 := by ring
+          thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) := by ring
 
 /-- Polynomially weighted Born--Witten densities have zero current at infinity. -/
 theorem pow_mul_thetaCuspBornWittenAmplitude_sq_tendsto_atTop_zero
     (m : ℕ) {n : ℕ} (hn : 0 < n) :
     Tendsto (fun x : ℝ =>
-      x ^ m * thetaCuspBornWittenAmplitude n x ^ 2) atTop (nhds 0) := by
+      x ^ m * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) atTop (nhds 0) := by
   have hsource : Tendsto (fun x : ℝ => x ^ m * thetaCuspSourceTerm x n)
       atTop (nhds 0) := by
     simpa only [← congrFun (thetaCuspSourceTerm_eq_polynomialAtom n)] using
@@ -111,45 +111,45 @@ theorem thetaCuspBornWitten_monomial_anomalousSteinWard
     (m : ℕ) {n : ℕ} (hn : 0 < n) :
     (∫ x : ℝ in Ioi 0,
         x ^ m * thetaCuspBornWittenSuperpotential n x *
-          thetaCuspBornWittenAmplitude n x ^ 2) =
+          thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) =
       (1 / 2 : ℝ) *
-        ((if m = 0 then thetaCuspBornWittenAmplitude n 0 ^ 2 else 0) +
+        ((if m = 0 then thetaCuspBornWittenAmplitude n 0 ^ (2 : ℕ) else 0) +
           ∫ x : ℝ in Ioi 0,
             (m : ℝ) * x ^ (m - 1) *
-              thetaCuspBornWittenAmplitude n x ^ 2) := by
+              thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) := by
   have hright : IntegrableOn (fun x : ℝ =>
       ((m : ℝ) * x ^ (m - 1)) * 1 *
-        thetaCuspBornWittenAmplitude n x ^ 2) (Ioi 0) := by
+        thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) (Ioi 0) := by
     have h := (integrableOn_pow_mul_thetaCuspBornWittenAmplitude_sq
       (m - 1) hn).const_mul (m : ℝ)
     exact IntegrableOn.congr_fun h (fun x _ => by ring) measurableSet_Ioi
   have hboundary : Tendsto (fun x : ℝ =>
-      x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ 2)
+      x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ))
       (nhdsWithin 0 (Ioi 0))
-      (nhds (if m = 0 then thetaCuspBornWittenAmplitude n 0 ^ 2 else 0)) := by
+      (nhds (if m = 0 then thetaCuspBornWittenAmplitude n 0 ^ (2 : ℕ) else 0)) := by
     have hcont : ContinuousAt (fun x : ℝ =>
-        x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ 2) 0 :=
+        x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) 0 :=
       ((continuousAt_id.pow m).mul continuousAt_const).mul
         ((hasDerivAt_thetaCuspBornWittenAmplitude hn (by norm_num)).continuousAt.pow 2)
     have ht : Tendsto (fun x : ℝ =>
-        x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ 2)
+        x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ))
         (nhdsWithin 0 (Ioi 0))
-        (nhds (0 ^ m * 1 * thetaCuspBornWittenAmplitude n 0 ^ 2)) :=
+        (nhds (0 ^ m * 1 * thetaCuspBornWittenAmplitude n 0 ^ (2 : ℕ))) :=
       hcont.tendsto.mono_left nhdsWithin_le_nhds
     cases m with
     | zero => simpa using ht
     | succ m => simpa using ht
   have hinfty : Tendsto (fun x : ℝ =>
-      x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ 2) atTop (nhds 0) := by
+      x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa only [mul_one] using
       pow_mul_thetaCuspBornWittenAmplitude_sq_tendsto_atTop_zero m hn
   have h := HTGeometry.integral_Ioi_mul_halfLineSteinScore_with_boundary
     (f := fun x : ℝ => x ^ m)
     (f' := fun x : ℝ => (m : ℝ) * x ^ (m - 1))
     (P := fun _ : ℝ => 1) (P' := fun _ : ℝ => 0)
-    (ρ := fun x : ℝ => thetaCuspBornWittenAmplitude n x ^ 2)
+    (ρ := fun x : ℝ => thetaCuspBornWittenAmplitude n x ^ (2 : ℕ))
     (W := thetaCuspBornWittenSuperpotential n)
-    (c := if m = 0 then thetaCuspBornWittenAmplitude n 0 ^ 2 else 0)
+    (c := if m = 0 then thetaCuspBornWittenAmplitude n 0 ^ (2 : ℕ) else 0)
     (fun x _ => hasDerivAt_pow m x)
     (fun x _ => hasDerivAt_const x 1)
     (fun x hx => hasDerivAt_thetaCuspBornWittenAmplitude_sq hn hx.le)
@@ -165,8 +165,8 @@ theorem thetaCuspBornWitten_monomial_anomalousSteinWard
 theorem thetaCuspBornWitten_translation_contact_charge {n : ℕ} (hn : 0 < n) :
     (∫ x : ℝ in Ioi 0,
         thetaCuspBornWittenSuperpotential n x *
-          thetaCuspBornWittenAmplitude n x ^ 2) =
-      (1 / 2 : ℝ) * thetaCuspBornWittenAmplitude n 0 ^ 2 := by
+          thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) =
+      (1 / 2 : ℝ) * thetaCuspBornWittenAmplitude n 0 ^ (2 : ℕ) := by
   simpa only [pow_zero, one_mul, if_pos, Nat.cast_zero, Nat.zero_sub,
     zero_mul, integral_zero, add_zero] using
     thetaCuspBornWitten_monomial_anomalousSteinWard 0 hn
@@ -176,7 +176,7 @@ theorem thetaCuspBornWitten_odd_superpotential_moment
     (j : ℕ) {n : ℕ} (hn : 0 < n) :
     (∫ x : ℝ in Ioi 0,
         x ^ (2 * j + 1) * thetaCuspBornWittenSuperpotential n x *
-          thetaCuspBornWittenAmplitude n x ^ 2) =
+          thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) =
       ((2 * j + 1 : ℕ) : ℝ) / 2 * thetaCuspMorseBornMoment j n := by
   have h := thetaCuspBornWitten_monomial_anomalousSteinWard (2 * j + 1) hn
   rw [if_neg (by omega : 2 * j + 1 ≠ 0)] at h
@@ -184,10 +184,10 @@ theorem thetaCuspBornWitten_odd_superpotential_moment
   rw [show 2 * j + 1 - 1 = 2 * j by omega] at h
   rw [show (∫ x : ℝ in Ioi 0,
       ((2 * j + 1 : ℕ) : ℝ) * x ^ (2 * j) *
-        thetaCuspBornWittenAmplitude n x ^ 2) =
+        thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)) =
       ((2 * j + 1 : ℕ) : ℝ) *
         ∫ x : ℝ in Ioi 0,
-          x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ 2 by
+          x ^ (2 * j) * thetaCuspBornWittenAmplitude n x ^ (2 : ℕ) by
     rw [← integral_const_mul]
     apply integral_congr_ae
     filter_upwards [] with x
@@ -199,7 +199,7 @@ theorem thetaCuspBornWitten_odd_superpotential_moment
 def thetaCuspBornWittenSuperpotentialMoment (j n : ℕ) : ℝ :=
   ∫ x : ℝ in Ioi 0,
     x ^ (2 * j + 1) * thetaCuspBornWittenSuperpotential n x *
-      thetaCuspBornWittenAmplitude n x ^ 2
+      thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)
 
 theorem thetaCuspBornWittenSuperpotentialMoment_eq_morseBornMoment
     (j : ℕ) {n : ℕ} (hn : 0 < n) :
@@ -217,11 +217,11 @@ theorem thetaCuspBornWittenSuperpotentialMoment_nonneg
 theorem thetaCusp_firstAtom_relaxed_iff_superpotentialMoment :
     16 * ((3005 / 2997 : ℝ) * thetaCuspMorseBornMoment 0 1) *
           ((3005 / 2997 : ℝ) * thetaCuspMorseBornMoment 2 1) ≤
-        45 * thetaCuspMorseBornMoment 1 1 ^ 2 ↔
-      16 * (3005 / 2997 : ℝ) ^ 2 *
+        45 * thetaCuspMorseBornMoment 1 1 ^ (2 : ℕ) ↔
+      16 * (3005 / 2997 : ℝ) ^ (2 : ℕ) *
           thetaCuspBornWittenSuperpotentialMoment 0 1 *
             thetaCuspBornWittenSuperpotentialMoment 2 1 ≤
-        25 * thetaCuspBornWittenSuperpotentialMoment 1 1 ^ 2 := by
+        25 * thetaCuspBornWittenSuperpotentialMoment 1 1 ^ (2 : ℕ) := by
   rw [thetaCuspBornWittenSuperpotentialMoment_eq_morseBornMoment 0 (by norm_num),
     thetaCuspBornWittenSuperpotentialMoment_eq_morseBornMoment 1 (by norm_num),
     thetaCuspBornWittenSuperpotentialMoment_eq_morseBornMoment 2 (by norm_num)]
@@ -234,7 +234,7 @@ theorem thetaCuspFirstBornWittenSuperpotential_zero_neg :
     thetaCuspBornWittenSuperpotential 1 0 < 0 := by
   have hden : 0 < Real.pi - 3 / 2 := by
     nlinarith [Real.pi_gt_three]
-  have hpiSq : Real.pi ^ 2 < (3.1416 : ℝ) ^ 2 := by
+  have hpiSq : Real.pi ^ (2 : ℕ) < (3.1416 : ℝ) ^ (2 : ℕ) := by
     nlinarith [Real.pi_pos, Real.pi_lt_d4]
   have hpoly :
       (Real.pi - 5 / 4) * (Real.pi - 3 / 2) < Real.pi := by
@@ -254,17 +254,17 @@ theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_bornWittenSuperpotent
     (hupper :
       14 * ((3005 / 2997 : ℝ) *
           (∫ x : ℝ in Ioi 0,
-            x ^ 4 * thetaCuspBornWittenAmplitude 1 x ^ 2)) ^ 2 ≤
+            x ^ (4 : ℕ) * thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ))) ^ (2 : ℕ) ≤
         9 *
           (∫ x : ℝ in Ioi 0,
-            x ^ 2 * thetaCuspBornWittenAmplitude 1 x ^ 2) *
+            x ^ (2 : ℕ) * thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ)) *
           (∫ x : ℝ in Ioi 0,
-            x ^ 6 * thetaCuspBornWittenAmplitude 1 x ^ 2))
+            x ^ (6 : ℕ) * thetaCuspBornWittenAmplitude 1 x ^ (2 : ℕ)))
     (hward :
-      16 * (3005 / 2997 : ℝ) ^ 2 *
+      16 * (3005 / 2997 : ℝ) ^ (2 : ℕ) *
           thetaCuspBornWittenSuperpotentialMoment 0 1 *
             thetaCuspBornWittenSuperpotentialMoment 2 1 ≤
-        25 * thetaCuspBornWittenSuperpotentialMoment 1 1 ^ 2) :
+        25 * thetaCuspBornWittenSuperpotentialMoment 1 1 ^ (2 : ℕ)) :
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re := by
   apply forall_primeArchSourceTraceHankel_linear_nonneg_of_bornWittenAmplitude hupper
   have hmorse := thetaCusp_firstAtom_relaxed_iff_superpotentialMoment.mpr hward
@@ -291,7 +291,7 @@ def thetaCuspFullBornWittenSuperpotentialMoment (j : ℕ) : ℝ :=
 def thetaCuspFullBornWittenTranslationContactCharge : ℝ :=
   ∑' n : ℕ, ∫ x : ℝ in Ioi 0,
     thetaCuspBornWittenSuperpotential n x *
-      thetaCuspBornWittenAmplitude n x ^ 2
+      thetaCuspBornWittenAmplitude n x ^ (2 : ℕ)
 
 lemma thetaCuspBornWittenSuperpotentialMoment_zero (j : ℕ) :
     thetaCuspBornWittenSuperpotentialMoment j 0 = 0 := by
@@ -350,7 +350,7 @@ theorem thetaCuspRelaxedFourthMomentConcentration_iff_fullBornWittenSuperpotenti
     ThetaCuspRelaxedFourthMomentConcentration ↔
       16 * thetaCuspFullBornWittenSuperpotentialMoment 0 *
           thetaCuspFullBornWittenSuperpotentialMoment 2 ≤
-        25 * thetaCuspFullBornWittenSuperpotentialMoment 1 ^ 2 := by
+        25 * thetaCuspFullBornWittenSuperpotentialMoment 1 ^ (2 : ℕ) := by
   rw [ThetaCuspRelaxedFourthMomentConcentration,
     thetaCuspFullBornWittenSuperpotentialMoment_eq_rawEvenMoment,
     thetaCuspFullBornWittenSuperpotentialMoment_eq_rawEvenMoment,

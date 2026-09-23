@@ -24,10 +24,10 @@ noncomputable section
 
 /-- The ladder defect of one step, as it appears in the block bound. -/
 def ramareStepDefect (P : Finset ℕ) (M : ℕ) (Q η W : ℝ) (j : ℕ) : ℝ :=
-  2 * ((geomBlock P Q (1 + η) j).card : ℝ) ^ 2
+  2 * ((geomBlock P Q (1 + η) j).card : ℝ) ^ (2 : ℕ)
       * (2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
           * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 4
-            + (((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2 + 1)))
+            + (((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ) + 1)))
 
 /-- The block ladder over a measurable set, with the defect named. -/
 theorem setIntegral_normSq_ramareBilinear_le_ladder_defect {P : Finset ℕ} (M : ℕ) {Q η W : ℝ}
@@ -35,10 +35,10 @@ theorem setIntegral_normSq_ramareBilinear_le_ladder_defect {P : Finset ℕ} (M :
     (hPprime : ∀ q ∈ P, q.Prime)
     (hP : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * (1 + η) ^ L)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in E, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
-          (2 * (∫ w in E, ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-                * ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
+          (2 * (∫ w in E, ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+                * ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
             + ramareStepDefect P M Q η W j) := by
   have h := setIntegral_normSq_ramareBilinear_le_ladder_assembled (P := P) M hQ hη hW hL
     hPprime hP hEm hEs
@@ -101,11 +101,11 @@ and the prime polynomial's mean square supplied from outside. -/
 theorem integral_normSq_blockProduct_set_cofactorSup_le (a : ℕ → ℂ) (B D : Finset ℕ)
     {G U J : ℝ} {E : Set ℝ} (hEm : MeasurableSet E) (hEG : E ⊆ Set.Icc (-G) G)
     (hcof : ∀ w ∈ E, ‖logPoly a D w‖ ≤ U)
-    (hJ : (∫ w in E, ‖primeBlockPoly B w‖ ^ 2) ≤ J) :
-    (∫ w in E, ‖primeBlockPoly B w * logPoly a D w‖ ^ 2) ≤ U ^ 2 * J := by
+    (hJ : (∫ w in E, ‖primeBlockPoly B w‖ ^ (2 : ℕ)) ≤ J) :
+    (∫ w in E, ‖primeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ)) ≤ U ^ (2 : ℕ) * J := by
   classical
-  have hcomm : (∫ w in E, ‖primeBlockPoly B w * logPoly a D w‖ ^ 2)
-      = ∫ w in E, ‖logPoly a D w‖ ^ 2 * ‖primeBlockPoly B w‖ ^ 2 := by
+  have hcomm : (∫ w in E, ‖primeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      = ∫ w in E, ‖logPoly a D w‖ ^ (2 : ℕ) * ‖primeBlockPoly B w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun hEm fun w _ => ?_
     rw [norm_mul, mul_pow]
     ring
@@ -126,18 +126,18 @@ theorem integral_normSq_blockProduct_partitioned_le (a : ℕ → ℂ) (ha : ∀ 
     (hann : ∀ w ∈ T \ Set.Icc (-w₀) w₀, ‖primeBlockPoly B w‖ ≤ V)
     (hcof : ∀ w ∈ (Set.Icc (-G) G \ T) \ Set.Icc (-w₀) w₀, ‖logPoly a D w‖ ≤ Us)
     (hJ : (∫ w in (Set.Icc (-G) G \ T) \ Set.Icc (-w₀) w₀,
-        ‖primeBlockPoly B w‖ ^ 2) ≤ J)
+        ‖primeBlockPoly B w‖ ^ (2 : ℕ)) ≤ J)
     (hlowP : ∀ w ∈ Set.Icc (-w₀) w₀, ‖primeBlockPoly B w‖ ≤ Vlow)
     (hlowC : ∀ w ∈ Set.Icc (-w₀) w₀, ‖logPoly a D w‖ ≤ U) :
-    (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a D w‖ ^ 2)
-      ≤ V ^ 2 * ((5 * Real.pi / 2 * G + 5 * Real.exp 1 / 2 * (MD : ℝ)) * (D.card : ℝ))
-        + Us ^ 2 * J
-        + Vlow ^ 2 * U ^ 2 * (2 * w₀) := by
+    (∫ w in Set.Icc (-G) G, ‖primeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      ≤ V ^ (2 : ℕ) * ((5 * Real.pi / 2 * G + 5 * Real.exp 1 / 2 * (MD : ℝ)) * (D.card : ℝ))
+        + Us ^ (2 : ℕ) * J
+        + Vlow ^ (2 : ℕ) * U ^ (2 : ℕ) * (2 * w₀) := by
   classical
-  have hcont : Continuous fun w : ℝ => ‖primeBlockPoly B w * logPoly a D w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖primeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ) :=
     (((continuous_primeBlockPoly B).mul (continuous_logPoly a D)).norm).pow 2
   have hsplit := setIntegral_split_three (f := fun w : ℝ =>
-    ‖primeBlockPoly B w * logPoly a D w‖ ^ 2) hcont hwG hTm hTs
+    ‖primeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ)) hcont hwG hTm hTs
   have hsubT : T \ Set.Icc (-w₀) w₀ ⊆ Set.Icc (-G) G := fun u hu => hTs hu.1
   have hsubU : (Set.Icc (-G) G \ T) \ Set.Icc (-w₀) w₀ ⊆ Set.Icc (-G) G := fun u hu => hu.1.1
   have hT := integral_normSq_blockProduct_set_le a ha B D hD0 hDM hG hV

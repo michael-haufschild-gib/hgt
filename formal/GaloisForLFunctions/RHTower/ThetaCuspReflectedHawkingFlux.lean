@@ -8,7 +8,7 @@ For a reflection center `u`, let `q_u(t)` be the completed theta source's normal
 logarithmic action.  A conformal ray with derivative `p_u'(t) = exp (2 q_u(t))` has peeling field
 `-2 q_u'(t)`.  The Schwarzian flux formula therefore becomes
 
-`F_C,u(t) = 2 C (q_u'(t)^2 - q_u''(t))`.
+`F_C,u(t) = 2 C (q_u'(t)^(2 : ℕ) - q_u''(t))`.
 
 With `C = c/(24*pi)` and entropy `S_u = -(c/6) q_u`, this is exactly the Bianchi--Smerlak
 entropy--flux identity.  Its derivative is twice `C` times the existing reflected Riccati margin.
@@ -38,7 +38,7 @@ def thetaCuspReflectedHawkingPeelingDerivative (u t : ℝ) : ℝ :=
 `C = cCFT/(24*pi)`. -/
 def thetaCuspReflectedHawkingFlux (C u t : ℝ) : ℝ :=
   2 * C *
-    (thetaCuspReflectedLogJetOne u t ^ 2 -
+    (thetaCuspReflectedLogJetOne u t ^ (2 : ℕ) -
       thetaCuspReflectedLogJetTwo u t)
 
 /-- Renormalized entropy attached to the reflected theta action. -/
@@ -71,7 +71,7 @@ theorem thetaCuspReflectedHawkingFlux_eq_bianchiSmerlak
     {c : ℝ} (hc : c ≠ 0) (u t : ℝ) :
     thetaCuspReflectedHawkingFlux (c / (24 * Real.pi)) u t =
       (1 / (2 * Real.pi)) *
-        ((6 / c) * thetaCuspReflectedHawkingEntropyJetOne c u t ^ 2 +
+        ((6 / c) * thetaCuspReflectedHawkingEntropyJetOne c u t ^ (2 : ℕ) +
           thetaCuspReflectedHawkingEntropyJetTwo c u t) := by
   unfold thetaCuspReflectedHawkingFlux thetaCuspReflectedHawkingEntropyJetOne
     thetaCuspReflectedHawkingEntropyJetTwo
@@ -87,11 +87,11 @@ theorem hasDerivAt_thetaCuspReflectedHawkingPeeling (u t : ℝ) :
   simpa using (hasDerivAt_thetaCuspReflectedLogJetOne u t).const_mul (-2)
 
 /-- The reflected theta flux has the standard peeling normal form
-`C * (kappa' + kappa^2/2)`. -/
+`C * (kappa' + kappa^(2 : ℕ)/2)`. -/
 theorem thetaCuspReflectedHawkingFlux_eq_peeling_normal_form (C u t : ℝ) :
     thetaCuspReflectedHawkingFlux C u t =
       C * (thetaCuspReflectedHawkingPeelingDerivative u t +
-        (1 / 2 : ℝ) * thetaCuspReflectedHawkingPeeling u t ^ 2) := by
+        (1 / 2 : ℝ) * thetaCuspReflectedHawkingPeeling u t ^ (2 : ℕ)) := by
   unfold thetaCuspReflectedHawkingFlux thetaCuspReflectedHawkingPeeling
     thetaCuspReflectedHawkingPeelingDerivative
   ring
@@ -118,7 +118,7 @@ theorem hasDerivAt_thetaCuspReflectedHawkingFlux (C u t : ℝ) :
         thetaCuspReflectedLogJetThree u t)) t :=
     hraw.const_mul (2 * C)
   change HasDerivAt
-    (fun x => 2 * C * (thetaCuspReflectedLogJetOne u x ^ 2 -
+    (fun x => 2 * C * (thetaCuspReflectedLogJetOne u x ^ (2 : ℕ) -
       thetaCuspReflectedLogJetTwo u x))
     (2 * C * (2 * thetaCuspReflectedLogJetOne u t *
       thetaCuspReflectedLogJetTwo u t - thetaCuspReflectedLogJetThree u t)) t

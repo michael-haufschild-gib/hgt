@@ -45,7 +45,7 @@ private theorem intervalIntegral_id_mul_fzzTorusHolonomyCharacter
   have hderiv : ∀ t : ℝ, HasDerivAt
       (fun s : ℝ =>
         ((s : ℂ) / c) * Complex.exp (c * (s : ℂ)) -
-          Complex.exp (c * (s : ℂ)) / c ^ 2)
+          Complex.exp (c * (s : ℂ)) / c ^ (2 : ℕ))
       ((t : ℂ) * Complex.exp (c * (t : ℂ))) t := by
     intro t
     have hlin : HasDerivAt (fun s : ℝ => c * (s : ℂ)) c t := by
@@ -54,7 +54,7 @@ private theorem intervalIntegral_id_mul_fzzTorusHolonomyCharacter
         (c * Complex.exp (c * (t : ℂ))) t := by
       simpa [mul_comm] using hlin.cexp
     have hraw := ((Complex.hasDerivAt_ofReal t).div_const c).mul hexp |>.sub
-      (hexp.div_const (c ^ 2))
+      (hexp.div_const (c ^ (2 : ℕ)))
     convert hraw using 1 <;> try rfl
     field_simp [hc]
     ring
@@ -316,7 +316,7 @@ theorem fzzLinearReplicaAreaHolonomyTangent_weightedResponse
     (radialPlus radialMinus : ℂ) :
     (∫ s₂ in (0 : ℝ)..1,
       fzzLinearReplicaAreaHolonomyTangent n radialPlus radialMinus s₂ *
-        fzzHigherGenusOddHolonomy n (torusJacobianTwist s₁ s₂ τ) ^ 2) =
+        fzzHigherGenusOddHolonomy n (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) =
       1 + (fzzHigherGenusBetaRadialSquare n s₁ τ +
         fzzHigherGenusGammaRadialSquare n s₁ τ) / 6 := by
   rw [fzzHigherGenusOddHolonomy_sq_weightedAverage_resonance n s₁ τ
@@ -378,13 +378,13 @@ theorem fzzLinearReplicaAreaNormalizedResponse_ofReal_eq_integral
         (∫ s₂ in (0 : ℝ)..1,
           fzzLinearReplicaAreaHolonomyTangent n radialPlus radialMinus s₂ *
             fzzHigherGenusOddHolonomy n
-              (torusJacobianTwist s₁ s₂ Complex.I) ^ 2) := by
+              (torusJacobianTwist s₁ s₂ Complex.I) ^ (2 : ℕ)) := by
   have hcomplex :
       (3 / 4 : ℂ) *
           (∫ s₂ in (0 : ℝ)..1,
             fzzLinearReplicaAreaHolonomyTangent n radialPlus radialMinus s₂ *
               fzzHigherGenusOddHolonomy n
-                (torusJacobianTwist s₁ s₂ Complex.I) ^ 2) =
+                (torusJacobianTwist s₁ s₂ Complex.I) ^ (2 : ℕ)) =
         ((3 / 4 +
           (Real.exp (-4 * Real.pi * (n : ℝ) * s₁) +
             Real.exp (4 * Real.pi * (n : ℝ) * s₁)) / 8 : ℝ) : ℂ) := by

@@ -29,7 +29,7 @@ variable {n : ℕ} {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [
 
 /-- **The radial distance is the Euclidean norm of the logarithms of the spectrum.** -/
 theorem distId_eq_sqrt {A : E →ₗ[ℂ] E} (hA : A.IsSymmetric) (hn : finrank ℂ E = n) :
-    distId hA hn = Real.sqrt (∑ i, Real.log (hA.eigenvalues hn i) ^ 2) := by
+    distId hA hn = Real.sqrt (∑ i, Real.log (hA.eigenvalues hn i) ^ (2 : ℕ)) := by
   rw [distId, hsNorm_toCLM_diagonal (hA.eigenvectorBasis hn) (logOp_apply_basis hA hn)]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_

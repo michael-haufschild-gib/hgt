@@ -39,11 +39,11 @@ noncomputable def wallPositivePacket (θ : ℝ) : ℝ × ℝ × ℝ :=
 
 /-- **Equation (3).** -/
 theorem wallPositivePacket_eq (θ : ℝ) :
-    wallPositivePacket θ = (1, 1, 4 * Real.cos θ ^ 2) := by
+    wallPositivePacket θ = (1, 1, 4 * Real.cos θ ^ (2 : ℕ)) := by
   refine Prod.ext ?_ (Prod.ext ?_ ?_)
   · exact constitutivePositiveDoctrine_unit_phase (Real.pi / 2 + θ)
   · exact constitutivePositiveDoctrine_unit_phase (Real.pi / 2 - θ)
-  · show constitutivePositiveDoctrine (wallCharge₁ θ + wallCharge₂ θ) = 4 * Real.cos θ ^ 2
+  · show constitutivePositiveDoctrine (wallCharge₁ θ + wallCharge₂ θ) = 4 * Real.cos θ ^ (2 : ℕ)
     rw [wallCharge_sum, constitutivePositiveDoctrine, Complex.normSq_apply]
     simp only [Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
       Complex.ofReal_im, mul_zero, mul_one, sub_zero, add_zero, zero_add]

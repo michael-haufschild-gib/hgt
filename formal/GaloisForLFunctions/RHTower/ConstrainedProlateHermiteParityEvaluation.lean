@@ -9,19 +9,19 @@ import GaloisForLFunctions.RHTower.ConstrainedProlateParityExactTransfer
 
 The normalized Hermite functions at the origin satisfy
 ```text
-h_{2m}(0)^2 = \sqrt{2} \binom{2m}{m} / 4^m = \sqrt{2} \cdot \text{normalizedCentralBinom}(m).
+h_{2m}(0)^(2 : ℕ) = \sqrt{2} \binom{2m}{m} / 4^m = \sqrt{2} \cdot \text{normalizedCentralBinom}(m).
 ```
 
 In the positive compressed-Fourier sector (modes 0 and 4, corresponding to $m=0$ and $m=2$),
 the weight on the base mode is:
 ```text
-h_0(0)^2 / (h_0(0)^2 + h_4(0)^2) = 1 / (1 + 3/8) = 8/11.
+h_0(0)^(2 : ℕ) / (h_0(0)^(2 : ℕ) + h_4(0)^(2 : ℕ)) = 1 / (1 + 3/8) = 8/11.
 ```
 
 In the negative compressed-Fourier sector (modes 2 and 6, corresponding to $m=1$ and $m=3$),
 the weight on the base mode is:
 ```text
-h_2(0)^2 / (h_2(0)^2 + h_6(0)^2) = (1/2) / (1/2 + 5/16) = 8/13.
+h_2(0)^(2 : ℕ) / (h_2(0)^(2 : ℕ) + h_6(0)^(2 : ℕ)) = (1/2) / (1/2 + 5/16) = 8/13.
 ```
 
 The ratio of the two sector coefficients is:

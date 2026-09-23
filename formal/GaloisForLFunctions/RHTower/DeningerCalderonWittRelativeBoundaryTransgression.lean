@@ -30,11 +30,11 @@ admitted Milnor-incidence primitives to `S`.
 def deningerCalderonWittRelativeBoundaryClass
     (p : Nat.Primes)
     (S : Submodule ℂ (deningerCalderonWittMilnorIncidence p))
-    (w : ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :=
+    (w : ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) :=
   relativePrimitiveObstruction
     (R := ℂ)
     (A0 := deningerCalderonWittMilnorIncidence p)
-    (A1 := ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))
+    (A1 := ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p))
     S
     (deningerCalderonWittMilnorIncidence p).subtype
     (deningerCalderonWittMilnorGreenRetraction p)
@@ -48,7 +48,7 @@ Green primitive belongs to the admitted incidence sector.
 theorem deningerCalderonWittRelativeBoundaryClass_eq_zero_iff
     (p : Nat.Primes)
     (S : Submodule ℂ (deningerCalderonWittMilnorIncidence p))
-    (w : ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))
+    (w : ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p))
     (hcocycle : deningerCalderonWittAlgebraicExteriorCup p w = 0) :
     deningerCalderonWittRelativeBoundaryClass p S w = 0 ↔
       deningerCalderonWittMilnorGreenRetraction p w ∈ S := by
@@ -56,7 +56,7 @@ theorem deningerCalderonWittRelativeBoundaryClass_eq_zero_iff
     (contractedCocycle_relativePrimitiveObstruction_eq_zero_iff_of_injective
       (R := ℂ)
       (A0 := deningerCalderonWittMilnorIncidence p)
-      (A1 := ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))
+      (A1 := ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p))
       (A2 := DeningerCalderonWittAlgebraicDegreeTwo p)
       (S0 := S)
       (d0 := (deningerCalderonWittMilnorIncidence p).subtype)
@@ -88,7 +88,7 @@ cocycle has an incidence primitive in the admitted sector.
 theorem deningerCalderonWittRelativeBoundaryClass_eq_zero_iff_exists
     (p : Nat.Primes)
     (S : Submodule ℂ (deningerCalderonWittMilnorIncidence p))
-    (w : ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))
+    (w : ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p))
     (hcocycle : deningerCalderonWittAlgebraicExteriorCup p w = 0) :
     deningerCalderonWittRelativeBoundaryClass p S w = 0 ↔
       ∃ i : deningerCalderonWittMilnorIncidence p,
@@ -98,7 +98,7 @@ theorem deningerCalderonWittRelativeBoundaryClass_eq_zero_iff_exists
     (contractedCocycle_relativePrimitiveObstruction_eq_zero_iff
       (R := ℂ)
       (A0 := deningerCalderonWittMilnorIncidence p)
-      (A1 := ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))
+      (A1 := ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p))
       (A2 := DeningerCalderonWittAlgebraicDegreeTwo p)
       (S0 := S)
       (d0 := (deningerCalderonWittMilnorIncidence p).subtype)
@@ -117,11 +117,11 @@ restricting its admitted global Milnor-incidence primitives to `S`.
 -/
 def deningerCalderonWittGlobalRelativeBoundaryClass
     (S : Submodule ℂ deningerCalderonWittGlobalMilnorIncidence)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :=
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne) :=
   relativePrimitiveObstruction
     (R := ℂ)
     (A0 := deningerCalderonWittGlobalMilnorIncidence)
-    (A1 := ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (A1 := ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     S
     deningerCalderonWittGlobalMilnorIncidence.subtype
     deningerCalderonWittGlobalMilnorGreenRetraction
@@ -134,7 +134,7 @@ global Green primitive remains in the admitted incidence sector.
 -/
 theorem deningerCalderonWittGlobalRelativeBoundaryClass_eq_zero_iff
     (S : Submodule ℂ deningerCalderonWittGlobalMilnorIncidence)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (hcocycle : deningerCalderonWittAlgebraicGlobalExteriorCup w = 0) :
     deningerCalderonWittGlobalRelativeBoundaryClass S w = 0 ↔
       deningerCalderonWittGlobalMilnorGreenRetraction w ∈ S := by
@@ -142,7 +142,7 @@ theorem deningerCalderonWittGlobalRelativeBoundaryClass_eq_zero_iff
     (contractedCocycle_relativePrimitiveObstruction_eq_zero_iff_of_injective
       (R := ℂ)
       (A0 := deningerCalderonWittGlobalMilnorIncidence)
-      (A1 := ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+      (A1 := ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
       (A2 := DeningerCalderonWittAlgebraicGlobalDegreeTwo)
       (S0 := S)
       (d0 := deningerCalderonWittGlobalMilnorIncidence.subtype)
@@ -171,7 +171,7 @@ when the global exterior cocycle has a primitive in the admitted sector.
 -/
 theorem deningerCalderonWittGlobalRelativeBoundaryClass_eq_zero_iff_exists
     (S : Submodule ℂ deningerCalderonWittGlobalMilnorIncidence)
-    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (w : ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
     (hcocycle : deningerCalderonWittAlgebraicGlobalExteriorCup w = 0) :
     deningerCalderonWittGlobalRelativeBoundaryClass S w = 0 ↔
       ∃ i : deningerCalderonWittGlobalMilnorIncidence,
@@ -181,7 +181,7 @@ theorem deningerCalderonWittGlobalRelativeBoundaryClass_eq_zero_iff_exists
     (contractedCocycle_relativePrimitiveObstruction_eq_zero_iff
       (R := ℂ)
       (A0 := deningerCalderonWittGlobalMilnorIncidence)
-      (A1 := ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+      (A1 := ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne)
       (A2 := DeningerCalderonWittAlgebraicGlobalDegreeTwo)
       (S0 := S)
       (d0 := deningerCalderonWittGlobalMilnorIncidence.subtype)

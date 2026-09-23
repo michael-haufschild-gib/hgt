@@ -45,7 +45,7 @@ def burnolFirstWallCosineResidue (rho : ℂ) : ℂ :=
 /-- **Positive polarization.**  The residue sum is a nonnegative quadrature of the head gap. -/
 theorem burnolFirstWallResidue_add_cosineResidue (rho : ℂ) :
     burnolFirstWallResidue rho + burnolFirstWallCosineResidue rho =
-      ((‖burnolFirstWallHead rho - burnolFirstWallCosineHead rho‖ ^ 2 / 2 : ℝ) : ℂ) := by
+      ((‖burnolFirstWallHead rho - burnolFirstWallCosineHead rho‖ ^ (2 : ℕ) / 2 : ℝ) : ℂ) := by
   set a : ℂ := burnolFirstWallHead rho with ha
   set b : ℂ := burnolFirstWallCosineHead rho with hb
   have hB : burnolFirstWallExteriorMass rho = (b - a) / 2 := rfl
@@ -74,7 +74,7 @@ theorem two_mul_div_two_re (w : ℂ) : 2 * (w / 2).re = w.re := by
 /-- **Exact landing on the fixed physical Route-R current.** -/
 theorem burnolFirstWallResidue_sub_cosineResidue_re (rho : ℂ) :
     2 * (burnolFirstWallResidue rho - burnolFirstWallCosineResidue rho).re =
-      ‖burnolFirstWallHead rho‖ ^ 2 - ‖burnolFirstWallCosineHead rho‖ ^ 2 := by
+      ‖burnolFirstWallHead rho‖ ^ (2 : ℕ) - ‖burnolFirstWallCosineHead rho‖ ^ (2 : ℕ) := by
   set a : ℂ := burnolFirstWallHead rho with ha
   set b : ℂ := burnolFirstWallCosineHead rho with hb
   have hB : burnolFirstWallExteriorMass rho = (b - a) / 2 := rfl
@@ -83,7 +83,7 @@ theorem burnolFirstWallResidue_sub_cosineResidue_re (rho : ℂ) :
     rw [burnolFirstWallResidue, burnolFirstWallCosineResidue, hB, ← ha, ← hb, map_div₀,
       Complex.conj_ofNat, map_sub, map_sub]
     ring
-  have key : ((a + b) * conj (a - b)).re = ‖a‖ ^ 2 - ‖b‖ ^ 2 := by
+  have key : ((a + b) * conj (a - b)).re = ‖a‖ ^ (2 : ℕ) - ‖b‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm]
     simp only [Complex.mul_re, Complex.add_re, Complex.add_im, Complex.conj_re, Complex.conj_im,
       Complex.sub_re, Complex.sub_im, Complex.normSq_apply]

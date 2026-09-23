@@ -22,14 +22,14 @@ theorem dyadicSquare_dvd_integralJetQuadraticIndex_of_holeCount
     {rho : ℂ} {r0 R : ℝ} {N n : ℕ} {zs : List ℂ} {u : ℂ → ℂ}
     (hsplit : SEMSplitData rho r0 R N zs u) (hlen : zs.length = n + 1)
     {k : ℕ} (hdvd : 2 ^ k ∣ n + 1) {m : ℕ} (hm : 1 ≤ m) :
-    ((2 : ℤ) ^ k) ^ 2 ∣
+    ((2 : ℤ) ^ k) ^ (2 : ℕ) ∣
       integralJetQuadraticIndex m hm (completedSEMContourBoundaryZ rho r0 R N m) := by
   rw [integralJetQuadraticIndex_eq_splitCount_sq hsplit hm, hlen]
   exact pow_dvd_pow_of_dvd (Int.natCast_dvd_natCast.mpr hdvd) 2
 
 /-- **SEM dyadic Weyl quadratic-incidence law.**  Every boundary-completed SEM jet satisfying
 the depth-`k` Weyl equation lies on exactly the singular zero-wrap branch or on a quadratic
-incidence stratum divisible by `((2^k)^2)`.  On the latter branch the same divisor controls the
+incidence stratum divisible by `((2^k)^(2 : ℕ))`.  On the latter branch the same divisor controls the
 square of the local Xi order. -/
 theorem boundaryCompletedJetWeyl_implies_zeroWrap_or_quadraticXiIncidence
     {rho : ℂ} {r0 R : ℝ} {N n : ℕ} {zs : List ℂ} {u : ℂ → ℂ}
@@ -42,9 +42,9 @@ theorem boundaryCompletedJetWeyl_implies_zeroWrap_or_quadraticXiIncidence
             (boundaryCompletedJetShift n holonomy *
               truncatedJetClock n (Bottcher.dyadicRoot k))) :
     holonomy = 0 ∨
-      (((2 : ℤ) ^ k) ^ 2 ∣
+      (((2 : ℤ) ^ k) ^ (2 : ℕ) ∣
           integralJetQuadraticIndex m hm (completedSEMContourBoundaryZ rho r0 R N m)) ∧
-        ((2 : ℤ) ^ k) ^ 2 ∣ (((analyticOrderAt xi rho).toNat : ℤ) ^ 2) := by
+        ((2 : ℤ) ^ k) ^ (2 : ℕ) ∣ (((analyticOrderAt xi rho).toNat : ℤ) ^ (2 : ℕ)) := by
   rcases (dyadicBoundaryCompletedJetWeyl_iff_zero_or_dvd n k holonomy).mp hweyl with
     hzero | hdvd
   · exact Or.inl hzero
@@ -61,7 +61,7 @@ theorem no_nonzeroWrap_boundaryCompletedJetWeyl_of_quadraticXiIncidence_not_dvd
     {rho : ℂ} {r0 R : ℝ} {N n : ℕ} {zs : List ℂ} {u : ℂ → ℂ}
     (hsplit : SEMSplitData rho r0 R N zs u) (hlen : zs.length = n + 1)
     (k : ℕ) (holonomy : ℂ) (hholonomy : holonomy ≠ 0) {m : ℕ} (hm : 1 ≤ m)
-    (hnot : ¬ ((2 : ℤ) ^ k) ^ 2 ∣
+    (hnot : ¬ ((2 : ℤ) ^ k) ^ (2 : ℕ) ∣
       integralJetQuadraticIndex m hm (completedSEMContourBoundaryZ rho r0 R N m)) :
     ¬ (truncatedJetClock n (Bottcher.dyadicRoot k) *
           boundaryCompletedJetShift n holonomy =

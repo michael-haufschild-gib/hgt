@@ -612,12 +612,12 @@ lemma diskToRight_re_pos {z : ℂ} (hz : z ∈ ball 0 1) : 0 < (diskToRight z).r
   have hden : 1 - z ≠ 0 := one_sub_ne_zero_of_mem_unitBall hz
   have hnorm : ‖z‖ < 1 := by simpa [mem_ball, dist_zero_right] using hz
   rw [diskToRight, Complex.div_re]
-  have hsq : z.re ^ 2 + z.im ^ 2 < 1 := by
+  have hsq : z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) < 1 := by
     calc
-      z.re ^ 2 + z.im ^ 2 = Complex.normSq z := by
+      z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) = Complex.normSq z := by
         rw [Complex.normSq_apply]
         ring
-      _ = ‖z‖ ^ 2 := (Complex.sq_norm z).symm
+      _ = ‖z‖ ^ (2 : ℕ) := (Complex.sq_norm z).symm
       _ < 1 := by
         simpa using (pow_lt_pow_left₀ hnorm (norm_nonneg z) two_ne_zero)
   have hnormsq : 0 < Complex.normSq (1 - z) := Complex.normSq_pos.mpr hden

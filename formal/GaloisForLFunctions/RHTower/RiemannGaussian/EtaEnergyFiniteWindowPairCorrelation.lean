@@ -33,7 +33,7 @@ theorem frobSq_finsetSum_real_smul_vecMulVec_eq_pairCorrelation
     frobSq (∑ a ∈ s, (w a : ℂ) • Matrix.vecMulVec (v a) (v a)) =
       ∑ a ∈ s, ∑ b ∈ s,
         (((w a * w b : ℝ) : ℂ) *
-          (star (v b) ⬝ᵥ v a) ^ 2).re := by
+          (star (v b) ⬝ᵥ v a) ^ (2 : ℕ)).re := by
   unfold frobSq
   simp only [Matrix.conjTranspose_sum, Matrix.conjTranspose_smul,
     Matrix.conjTranspose_vecMulVec, RCLike.star_def,
@@ -44,7 +44,7 @@ theorem frobSq_finsetSum_real_smul_vecMulVec_eq_pairCorrelation
   intro b _hb
   have hdot :
       star (v b) ⬝ᵥ ((star (v b) ⬝ᵥ v a) • v a) =
-        (star (v b) ⬝ᵥ v a) ^ 2 := by
+        (star (v b) ⬝ᵥ v a) ^ (2 : ℕ) := by
     unfold dotProduct
     rw [pow_two, Finset.mul_sum]
     apply Finset.sum_congr rfl
@@ -73,7 +73,7 @@ def pairedEtaTopPrefixFiniteZeroWindowPairCorrelationMass
       ((((analyticZetaZeroMultiplicity rho : ℝ) *
           (analyticZetaZeroMultiplicity sigma : ℝ) : ℝ) : ℂ) *
         (star (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff sigma) ⬝ᵥ
-          pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) ^ 2).re
+          pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) ^ (2 : ℕ)).re
 
 /-- The literal finite eta block has Frobenius mass equal to the signed
 double correlation over its genuine spectral zero window. -/

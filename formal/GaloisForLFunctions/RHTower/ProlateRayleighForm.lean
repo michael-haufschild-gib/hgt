@@ -26,22 +26,22 @@ theorem integral_prolateSLAction_mul_self {f : ℝ → ℝ}
     (hf1 : Differentiable ℝ f) (hf2 : Differentiable ℝ (deriv f))
     (hf2c : Continuous (deriv (deriv f))) (c : ℝ) :
     (∫ y in (-1 : ℝ)..1, prolateSLAction c f y * f y)
-      = -((∫ y in (-1 : ℝ)..1, (1 - y ^ 2) * (deriv f y) ^ 2)
-        + c ^ 2 * ∫ y in (-1 : ℝ)..1, y ^ 2 * f y ^ 2) := by
+      = -((∫ y in (-1 : ℝ)..1, (1 - y ^ (2 : ℕ)) * (deriv f y) ^ (2 : ℕ))
+        + c ^ (2 : ℕ) * ∫ y in (-1 : ℝ)..1, y ^ (2 : ℕ) * f y ^ (2 : ℕ)) := by
   have hf'c : Continuous (deriv f) := hf2.continuous
   have hfc : Continuous f := hf1.continuous
   have hA : IntervalIntegrable
-      (fun y => f y * (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y)) volume (-1) 1 := by
+      (fun y => f y * (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y)) volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
-  have hB : IntervalIntegrable (fun y => f y * (c ^ 2 * y ^ 2 * f y)) volume (-1) 1 := by
+  have hB : IntervalIntegrable (fun y => f y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * f y)) volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     fun_prop
   -- split the action into flux and potential
   have hsplit : (∫ y in (-1 : ℝ)..1, f y * prolateSLAction c f y)
       = (∫ y in (-1 : ℝ)..1,
-          f y * (-(2 * y) * deriv f y + (1 - y ^ 2) * deriv (deriv f) y))
-        - ∫ y in (-1 : ℝ)..1, f y * (c ^ 2 * y ^ 2 * f y) := by
+          f y * (-(2 * y) * deriv f y + (1 - y ^ (2 : ℕ)) * deriv (deriv f) y))
+        - ∫ y in (-1 : ℝ)..1, f y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * f y) := by
     rw [← intervalIntegral.integral_sub hA hB]
     refine intervalIntegral.integral_congr fun y _ => ?_
     rw [prolateSLAction]
@@ -50,11 +50,11 @@ theorem integral_prolateSLAction_mul_self {f : ℝ → ℝ}
   have hcomm : (∫ y in (-1 : ℝ)..1, prolateSLAction c f y * f y)
       = ∫ y in (-1 : ℝ)..1, f y * prolateSLAction c f y :=
     intervalIntegral.integral_congr fun y _ => mul_comm _ _
-  have hdir : (∫ y in (-1 : ℝ)..1, deriv f y * ((1 - y ^ 2) * deriv f y))
-      = ∫ y in (-1 : ℝ)..1, (1 - y ^ 2) * (deriv f y) ^ 2 :=
+  have hdir : (∫ y in (-1 : ℝ)..1, deriv f y * ((1 - y ^ (2 : ℕ)) * deriv f y))
+      = ∫ y in (-1 : ℝ)..1, (1 - y ^ (2 : ℕ)) * (deriv f y) ^ (2 : ℕ) :=
     intervalIntegral.integral_congr fun y _ => by ring
-  have hpot : (∫ y in (-1 : ℝ)..1, f y * (c ^ 2 * y ^ 2 * f y))
-      = c ^ 2 * ∫ y in (-1 : ℝ)..1, y ^ 2 * f y ^ 2 := by
+  have hpot : (∫ y in (-1 : ℝ)..1, f y * (c ^ (2 : ℕ) * y ^ (2 : ℕ) * f y))
+      = c ^ (2 : ℕ) * ∫ y in (-1 : ℝ)..1, y ^ (2 : ℕ) * f y ^ (2 : ℕ) := by
     rw [← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr fun y _ => ?_
     ring
@@ -69,8 +69,8 @@ theorem prolate_trial_gt_iff {f : ℝ → ℝ}
     (hf2c : Continuous (deriv (deriv f))) (c K : ℝ) :
     (-K * (∫ y in (-1 : ℝ)..1, f y * f y)
         < ∫ y in (-1 : ℝ)..1, prolateSLAction c f y * f y)
-      ↔ (∫ y in (-1 : ℝ)..1, (1 - y ^ 2) * (deriv f y) ^ 2)
-          + c ^ 2 * (∫ y in (-1 : ℝ)..1, y ^ 2 * f y ^ 2)
+      ↔ (∫ y in (-1 : ℝ)..1, (1 - y ^ (2 : ℕ)) * (deriv f y) ^ (2 : ℕ))
+          + c ^ (2 : ℕ) * (∫ y in (-1 : ℝ)..1, y ^ (2 : ℕ) * f y ^ (2 : ℕ))
         < K * ∫ y in (-1 : ℝ)..1, f y * f y := by
   rw [integral_prolateSLAction_mul_self hf1 hf2 hf2c]
   constructor

@@ -20,11 +20,11 @@ def correctionJet (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) : CoordinateMetricTw
   let F := (R.mul R).add (ScalarTwoJet.constant (-1))
   let U := angular s y S Sx Sy Sxx Sxy
   let V0 := D4BMVectorLinearEquation.angular0 s y Sy Sxy
-    ((s+1)*(s+2)*S/y^2-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx)
+    ((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx)
   let V1 := D4BMVectorLinearEquation.angular1 s y (-Sx) Sxy (-Sxx)
-    Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx)
+    Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx)
   let T := ((((ScalarTwoJet.constant (s*(s+1)/2)).mul
-    (temporalRadial (2*s) r (B^2))).mul F).mul ((R.inv.mul R.inv).mul R.inv)).mul U
+    (temporalRadial (2*s) r (B^(2 : ℕ)))).mul F).mul ((R.inv.mul R.inv).mul R.inv)).mul U
   let X := T.mul V0
   let Y := T.mul V1
   let Z : ScalarTwoJet (Fin 4) ℂ := ScalarTwoJet.constant 0
@@ -37,24 +37,24 @@ def squareCovector (S Sx Sy : ℂ) : ℂ × ℂ := (S*Sy,-S*Sx)
 
 /-- Half the coexact derivative of the full hyperbolic gradient norm square. -/
 def gradientCovector (s y S Sx Sy Sxx Sxy : ℂ) : ℂ × ℂ :=
-  (y*(Sx^2+Sy^2)+y^2*(Sx*Sxy-Sy*Sxx)+(s+1)*(s+2)*S*Sy,
-    -y^2*(Sx*Sxx+Sy*Sxy))
+  (y*(Sx^(2 : ℕ)+Sy^(2 : ℕ))+y^(2 : ℕ)*(Sx*Sxy-Sy*Sxx)+(s+1)*(s+2)*S*Sy,
+    -y^(2 : ℕ)*(Sx*Sxx+Sy*Sxy))
 
 def timeSquare (s r : ℂ) : ℂ :=
-  s*(r^2*(-s^3+2*s^2+15*s+8)+(s-1)*(s+1)*(s+2)^2)/(2*r^5)
-def timeGradient (s r : ℂ) : ℂ := s*(s-1)*(r^2-s-1)/(2*r^5)
+  s*(r^(2 : ℕ)*(-s^(3 : ℕ)+2*s^(2 : ℕ)+15*s+8)+(s-1)*(s+1)*(s+2)^(2 : ℕ))/(2*r^(5 : ℕ))
+def timeGradient (s r : ℂ) : ℂ := s*(s-1)*(r^(2 : ℕ)-s-1)/(2*r^(5 : ℕ))
 def radialSquare (s r : ℂ) : ℂ :=
-  s*(r^2*(5*s^2+15*s+4)+s*(s-1)*(s+2)^2)/(2*r^4*(r^2-1))
-def radialGradient (s r : ℂ) : ℂ := -s^2*(s-1)/(2*r^4*(r^2-1))
+  s*(r^(2 : ℕ)*(5*s^(2 : ℕ)+15*s+4)+s*(s-1)*(s+2)^(2 : ℕ))/(2*r^(4 : ℕ)*(r^(2 : ℕ)-1))
+def radialGradient (s r : ℂ) : ℂ := -s^(2 : ℕ)*(s-1)/(2*r^(4 : ℕ)*(r^(2 : ℕ)-1))
 
 /-- Full source tensor, without an angular or radial projection. -/
 def tensor (s r y B S Sx Sy Sxx Sxy : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
   let J := squareCovector S Sx Sy
   let K := gradientCovector s y S Sx Sy Sxx Sxy
-  let T0 := B^2*(timeSquare s r*J.1+timeGradient s r*K.1)
-  let T1 := B^2*(timeSquare s r*J.2+timeGradient s r*K.2)
-  let R0 := B^2*(radialSquare s r*J.1+radialGradient s r*K.1)
-  let R1 := B^2*(radialSquare s r*J.2+radialGradient s r*K.2)
+  let T0 := B^(2 : ℕ)*(timeSquare s r*J.1+timeGradient s r*K.1)
+  let T1 := B^(2 : ℕ)*(timeSquare s r*J.2+timeGradient s r*K.2)
+  let R0 := B^(2 : ℕ)*(radialSquare s r*J.1+radialGradient s r*K.1)
+  let R1 := B^(2 : ℕ)*(radialSquare s r*J.2+radialGradient s r*K.2)
   !![0,0,T0,T1; 0,0,R0,R1; T0,R0,0,0; T1,R1,0,0]
 
 private theorem background_metric (r y : ℂ) :
@@ -62,15 +62,15 @@ private theorem background_metric (r y : ℂ) :
 
 private theorem background_first (r y : ℂ) (k : Fin 4) :
     (D4BMBackground.jet r y).first k = Matrix.diagonal
-      (if k = 1 then ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2]
-       else if k = 3 then ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] else 0) := rfl
+      (if k = 1 then ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)]
+       else if k = 3 then ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] else 0) := rfl
 
 private theorem background_second (r y : ℂ) (k l : Fin 4) :
     (D4BMBackground.jet r y).second k l = Matrix.diagonal
-      (if k = 1 ∧ l = 1 then ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3,
-        2*y⁻¹^2, 2*y⁻¹^2]
-       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3]
-       else if k = 3 ∧ l = 3 then ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] else 0) := rfl
+      (if k = 1 ∧ l = 1 then ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ),
+        2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)]
+       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)]
+       else if k = 3 ∧ l = 3 then ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] else 0) := rfl
 
 /-- Background first/second entries with the index conditionals already resolved, so the
 expansion below never evaluates a decidable branch. -/
@@ -79,13 +79,13 @@ private theorem background_first_0 (r y : ℂ) :
     (D4BMBackground.jet r y).first 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_first_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2] := rfl
+    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)] := rfl
 
 private theorem background_first_2 (r y : ℂ) :
     (D4BMBackground.jet r y).first 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_first_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_0_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 0 0 = Matrix.diagonal 0 := rfl
@@ -103,13 +103,13 @@ private theorem background_second_1_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_1_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3, 2*y⁻¹^2, 2*y⁻¹^2] := rfl
+    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ), 2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)] := rfl
 
 private theorem background_second_1_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_1_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_2_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 2 0 = Matrix.diagonal 0 := rfl
@@ -127,20 +127,20 @@ private theorem background_second_3_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_3_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_3_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_3_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] := rfl
+    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] := rfl
 
 
 
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_0_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 0 0 +
@@ -181,7 +181,7 @@ private theorem ricci_0_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_0_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 0 1 +
@@ -222,7 +222,7 @@ private theorem ricci_0_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_0_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 0 2 +
@@ -263,7 +263,7 @@ private theorem ricci_0_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_0_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 0 3 +
@@ -304,7 +304,7 @@ private theorem ricci_0_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_1_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 1 0 +
@@ -345,7 +345,7 @@ private theorem ricci_1_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_1_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 1 1 +
@@ -386,7 +386,7 @@ private theorem ricci_1_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_1_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 1 2 +
@@ -427,7 +427,7 @@ private theorem ricci_1_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_1_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 1 3 +
@@ -468,7 +468,7 @@ private theorem ricci_1_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_2_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 2 0 +
@@ -509,7 +509,7 @@ private theorem ricci_2_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_2_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 2 1 +
@@ -550,7 +550,7 @@ private theorem ricci_2_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_2_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 2 2 +
@@ -591,7 +591,7 @@ private theorem ricci_2_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_2_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 2 3 +
@@ -632,7 +632,7 @@ private theorem ricci_2_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_3_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 3 0 +
@@ -673,7 +673,7 @@ private theorem ricci_3_0 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_3_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 3 1 +
@@ -714,7 +714,7 @@ private theorem ricci_3_1 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_3_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 3 2 +
@@ -755,7 +755,7 @@ private theorem ricci_3_2 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 private theorem ricci_3_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 3 3 +
@@ -794,7 +794,7 @@ private theorem ricci_3_3 (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 
 
 theorem ricci_component (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     CoordinateMetricTwoJet.MixedQuadratic.ricci (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) i j +
@@ -831,7 +831,7 @@ set_option maxRecDepth 16384 in
 set_option maxHeartbeats 4000000 in
 /-- The combined scalar contraction vanishes, including both inverse--Ricci cross terms. -/
 theorem scalar_cancel (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.MixedQuadratic.scalar (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) +
@@ -841,7 +841,7 @@ theorem scalar_cancel (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (D4BMScalarLinearEquation.ricci_component s r y B S Sx Sy Sxx Sxy hr hy hf i j)
   have hV (i j : Fin 4) := eq_neg_of_add_eq_zero_left
     (D4BMVectorLinearEquation.ricci_component s r y B Sy (-Sx) Sxy
-      ((s+1)*(s+2)*S/y^2-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx) hr hy hf i j)
+      ((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx) hr hy hf i j)
   have hM (i j : Fin 4) := eq_sub_iff_add_eq.mpr (eq_sub_iff_add_eq.mpr
     (ricci_component s r y B S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf i j))
   simp only [CoordinateMetricTwoJet.MixedQuadratic.scalar,
@@ -860,7 +860,7 @@ theorem scalar_cancel (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
 
 /-- Complete mixed cosmological Einstein source at arbitrary height. -/
 theorem einstein_component (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     CoordinateMetricTwoJet.MixedQuadratic.einstein (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy)
       (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) i j +
@@ -876,7 +876,7 @@ theorem einstein_component (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) hr hy hf (by
       intro k l
       have h := D4BMVectorLinearEquation.ricci_component s r y B Sy (-Sx) Sxy
-        ((s+1)*(s+2)*S/y^2-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx) hr hy hf k l
+        ((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx) (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx) hr hy hf k l
       dsimp only [coexactJet]
       linear_combination h)
   have hc := scalar_cancel s r y B S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf

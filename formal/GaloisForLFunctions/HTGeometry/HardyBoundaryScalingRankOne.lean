@@ -17,7 +17,7 @@ def singleModelResidualCore (F : DiskMultiplier) {q : ℂ} (hq : ‖q‖ < 1) (c
 theorem singleModelResidualCore_eq_rankOneTransport
     (F : DiskMultiplier) {q : ℂ} (hq : ‖q‖ < 1) (c : ℂ) :
     singleModelResidualCore F hq c =
-      ((((‖hardyKernel hq‖ ^ 2 : ℝ) : ℂ))⁻¹) •
+      ((((‖hardyKernel hq‖ ^ (2 : ℕ) : ℝ) : ℂ))⁻¹) •
         rankOneTransport (𝕜 := ℂ) (hardyKernel hq)
           ((hardyMul F - c • ContinuousLinearMap.id ℂ HardyDisk) (hardyKernel hq)) := by
   rw [singleModelResidualCore, modelSpace_starProjection_eq_rankOneTransport]
@@ -43,13 +43,13 @@ theorem norm_singleModelResidualCore_eq
 theorem norm_sq_singleModelResidualCore_eq
     (F : DiskMultiplier) (hF : HardyMultiplierIsometry F)
     {q : ℂ} (hq : ‖q‖ < 1) {c : ℂ} (hc : ‖c‖ = 1) :
-    ‖singleModelResidualCore F hq c‖ ^ 2 =
+    ‖singleModelResidualCore F hq c‖ ^ (2 : ℕ) =
       2 - 2 * Complex.re ((starRingEnd ℂ) c * F.fn q) := by
   rw [norm_singleModelResidualCore_eq, div_pow]
   have hk0 : ‖hardyKernel hq‖ ≠ 0 :=
     norm_ne_zero_iff.mpr (hardyKernel_ne_zero hq)
   have hinner : inner ℂ (c • hardyKernel hq) (hardyMul F (hardyKernel hq)) =
-      (starRingEnd ℂ) c * F.fn q * ((‖hardyKernel hq‖ ^ 2 : ℝ) : ℂ) := by
+      (starRingEnd ℂ) c * F.fn q * ((‖hardyKernel hq‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [inner_smul_left, inner_hardyKernel hq,
       hardyFun_hardyMul F (hardyKernel hq) hq,
       ← inner_hardyKernel hq, inner_self_eq_norm_sq_to_K]
@@ -62,13 +62,13 @@ theorem norm_sq_singleModelResidualCore_eq
     hinner]
   have hre :
       RCLike.re
-        ((starRingEnd ℂ) c * F.fn q * ((‖hardyKernel hq‖ ^ 2 : ℝ) : ℂ)) =
-        Complex.re ((starRingEnd ℂ) c * F.fn q) * ‖hardyKernel hq‖ ^ 2 := by
+        ((starRingEnd ℂ) c * F.fn q * ((‖hardyKernel hq‖ ^ (2 : ℕ) : ℝ) : ℂ)) =
+        Complex.re ((starRingEnd ℂ) c * F.fn q) * ‖hardyKernel hq‖ ^ (2 : ℕ) := by
     change Complex.re
-        ((starRingEnd ℂ) c * F.fn q * ((‖hardyKernel hq‖ ^ 2 : ℝ) : ℂ)) = _
+        ((starRingEnd ℂ) c * F.fn q * ((‖hardyKernel hq‖ ^ (2 : ℕ) : ℝ) : ℂ)) = _
     rw [Complex.mul_re]
     simp only [ofReal_re, ofReal_im, mul_zero, sub_zero]
-  have hkpos : 0 < ‖hardyKernel hq‖ ^ 2 :=
+  have hkpos : 0 < ‖hardyKernel hq‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr (hardyKernel_ne_zero hq))
   rw [hre]
   field_simp
@@ -108,7 +108,7 @@ theorem tendsto_norm_singleModelResidualCore_zero
       ((starRingEnd ℂ) (c i) * (F i).fn (q i))) l (𝓝 0) at h
     exact h
   have hsq : Tendsto
-      (fun i => ‖singleModelResidualCore (F i) (hq i) (c i)‖ ^ 2) l (𝓝 0) := by
+      (fun i => ‖singleModelResidualCore (F i) (hq i) (c i)‖ ^ (2 : ℕ)) l (𝓝 0) := by
     exact hrhs.congr' (Filter.Eventually.of_forall fun i =>
       (norm_sq_singleModelResidualCore_eq (F i) (hF i) (hq i) (hc i)).symm)
   have hsqrt := hsq.sqrt

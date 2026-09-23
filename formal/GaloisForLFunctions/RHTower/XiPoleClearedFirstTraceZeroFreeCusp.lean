@@ -215,7 +215,7 @@ theorem exists_poleClearedFirstTrace_zeroFreeCusp_arithmetic_extension :
     ∃ T : ℝ, 4 ≤ T ∧ ∃ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g (firstTraceZeroFreeCusp T) ∧
         (∀ s ∈ firstTraceZeroFreeCusp T,
-          g s ^ 2 = poleClearedFirstTraceExponentialContinuation s) ∧
+          g s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s) ∧
         EqOn g poleClearedPrimeZetaHalfEulerGerm
           (firstTraceZeroFreeCusp T ∩ farHalf) := by
   obtain ⟨T₀, hT₀, hzf⟩ := Sieve.exists_zero_free_region_explicit
@@ -244,7 +244,7 @@ theorem exists_poleClearedFirstTrace_zeroFreeCusp_arithmetic_extension :
   have haFar : a ∈ farHalf := by
     rw [mem_farHalf]
     norm_num [a]
-  have hsquares : g a ^ 2 = poleClearedPrimeZetaHalfEulerGerm a ^ 2 := by
+  have hsquares : g a ^ (2 : ℕ) = poleClearedPrimeZetaHalfEulerGerm a ^ (2 : ℕ) := by
     rw [hgsq a haCusp, poleClearedPrimeZetaHalfEulerGerm_sq haFar]
   refine ⟨T, hT, ?_⟩
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsquares with hmatch | hmatch

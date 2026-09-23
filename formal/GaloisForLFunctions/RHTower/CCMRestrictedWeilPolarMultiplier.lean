@@ -73,7 +73,7 @@ theorem continuous_exp_mul_complex (s : ℝ) :
 theorem integral_exp_mul_deriv_deriv {g : ℝ → ℂ} (hg : ContDiff ℝ (⊤ : ℕ∞) g)
     (hsupp : HasCompactSupport g) (s : ℝ) :
     ∫ x, (Real.exp (s * x) : ℂ) * deriv (deriv g) x =
-      (s : ℂ) ^ 2 * ∫ x, (Real.exp (s * x) : ℂ) * g x := by
+      (s : ℂ) ^ (2 : ℕ) * ∫ x, (Real.exp (s * x) : ℂ) * g x := by
   obtain ⟨R, hR, hz⟩ := exists_radius_deriv_deriv_eq_zero hsupp
   have hg1 : ContDiff ℝ (⊤ : ℕ∞) (deriv g) := by
     have := hg.iterate_deriv 1
@@ -111,7 +111,7 @@ theorem integral_exp_mul_deriv_deriv {g : ℝ → ℂ} (hg : ContDiff ℝ (⊤ :
       (hcont1.intervalIntegrable _ _)
   rw [hIBP1, (hz R hRabs).2.1, (hz (-R) hRabs').2.1, hIBP2, (hz R hRabs).1, (hz (-R) hRabs').1]
   have hcongr : ∫ x in (-R)..R, ((Real.exp (s * x) : ℂ) * (s : ℂ) * (s : ℂ)) * g x =
-      (s : ℂ) ^ 2 * ∫ x in (-R)..R, (Real.exp (s * x) : ℂ) * g x := by
+      (s : ℂ) ^ (2 : ℕ) * ∫ x in (-R)..R, (Real.exp (s * x) : ℂ) * g x := by
     rw [← intervalIntegral.integral_const_mul]
     congr 1
     funext x
@@ -121,7 +121,7 @@ theorem integral_exp_mul_deriv_deriv {g : ℝ → ℂ} (hg : ContDiff ℝ (⊤ :
 
 /-- **The multiplier `∂² − 1/4` kills the exponential moments at `s = ±1/2`.** -/
 theorem integral_exp_mul_polarMultiplier {g : ℝ → ℂ} (hg : ContDiff ℝ (⊤ : ℕ∞) g)
-    (hsupp : HasCompactSupport g) {s : ℝ} (hs : s ^ 2 = 1 / 4) :
+    (hsupp : HasCompactSupport g) {s : ℝ} (hs : s ^ (2 : ℕ) = 1 / 4) :
     ∫ x, (Real.exp (s * x) : ℂ) * (deriv (deriv g) x - g x / 4) = 0 := by
   have hcont2 : Continuous (deriv (deriv g)) := by
     have := hg.iterate_deriv 2
@@ -146,7 +146,7 @@ theorem integral_exp_mul_polarMultiplier {g : ℝ → ℂ} (hg : ContDiff ℝ (�
       fun x => (1 / 4 : ℂ) * ((Real.exp (s * x) : ℂ) * g x) := by
     funext x; ring
   rw [h4, MeasureTheory.integral_const_mul]
-  have hs' : (s : ℂ) ^ 2 = 1 / 4 := by
+  have hs' : (s : ℂ) ^ (2 : ℕ) = 1 / 4 := by
     rw [← Complex.ofReal_pow, hs]
     norm_num
   rw [hs']
@@ -184,7 +184,7 @@ theorem CCMComplexSmoothInteriorSource.polarMultiplier_apply {a : SuzukiPositive
 theorem isPolarConstrained_polarMultiplier {a : SuzukiPositiveAperture}
     (g : CCMComplexSmoothInteriorSource a) :
     IsPolarConstrained a g.polarMultiplier.toCCMFormVector := by
-  have hkey : ∀ s : ℝ, s ^ 2 = 1 / 4 →
+  have hkey : ∀ s : ℝ, s ^ (2 : ℕ) = 1 / 4 →
       ∫ x : ℝ, (Real.exp (s * x) : ℂ) * g.polarMultiplier x = 0 := by
     intro s hs
     have := integral_exp_mul_polarMultiplier g.smooth g.hasCompactSupport hs

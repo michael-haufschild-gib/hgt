@@ -9,7 +9,7 @@ Source reflection makes the theta root energy even at every zero of the complete
 transform.  This removes the reflected argument from the completed divided-energy identity and
 places the compact theta boundary form on the same Xi divisor fibre:
 
-`pi * M * B_theta(rho) = Im(alpha_rho) * ‖Q_rho‖^2`.
+`pi * M * B_theta(rho) = Im(alpha_rho) * ‖Q_rho‖^(2 : ℕ)`.
 
 Here `Q_rho` is the genuine completed first-divided Xi vector, `M` is the fixed positive theta
 mass, and `B_theta` is the rank-two boundary form on the actual compact-source eigenvector.  At a
@@ -38,7 +38,7 @@ theorem thetaRootEnergy_neg_of_zero {z : ℂ}
     thetaRootEnergy_eq_integral_norm_sq_sourceModeU_div_mass_sq hz]
   congr 1
   rw [← MeasureTheory.integral_neg_eq_self
-    (fun x : ℝ => ‖sourceModeU thetaSource (-z) x‖ ^ 2) volume]
+    (fun x : ℝ => ‖sourceModeU thetaSource (-z) x‖ ^ (2 : ℕ)) volume]
   apply integral_congr_ae
   filter_upwards with x
   rw [sourceModeU_neg thetaSource thetaSource_even
@@ -48,8 +48,8 @@ theorem thetaRootEnergy_neg_of_zero {z : ℂ}
 not merely at its reflected point. -/
 theorem norm_sq_completedXiFirstDividedL2_eq_sameFiberThetaRootEnergy
     (rho : XiDivisorSupport) :
-    ‖completedXiFirstDividedL2 rho‖ ^ 2 =
-      2 * Real.pi * thetaSource.mass ^ 2 *
+    ‖completedXiFirstDividedL2 rho‖ ^ (2 : ℕ) =
+      2 * Real.pi * thetaSource.mass ^ (2 : ℕ) *
         thetaRootEnergy (xiSpectralPointSupport rho) := by
   rw [norm_sq_completedXiFirstDividedL2_eq_thetaRootEnergy]
   congr 1
@@ -72,7 +72,7 @@ with only the fixed positive source normalization `pi * M`. -/
 theorem thetaXiRankTwoBoundaryFlux_completedXi_sameFiber
     (q : XiZeroCopy) :
     Real.pi * thetaSource.mass * thetaXiRankTwoBoundaryFlux q =
-      (xiSpectralPoint q).im * ‖completedXiFirstDividedL2 q.1‖ ^ 2 := by
+      (xiSpectralPoint q).im * ‖completedXiFirstDividedL2 q.1‖ ^ (2 : ℕ) := by
   rw [xiSpectralPoint_eq_support]
   rw [thetaXiRankTwoBoundaryFlux_eq,
     norm_sq_completedXiFirstDividedL2_eq_sameFiberThetaRootEnergy]
@@ -84,7 +84,7 @@ right-half Xi divisor. -/
 theorem thetaXiRankTwoBoundaryFlux_neg_of_rightHalf
     (q : XiZeroCopy) (h : 1 / 2 < (q.1 : ℂ).re) :
     thetaXiRankTwoBoundaryFlux q < 0 := by
-  have hnorm : 0 < ‖completedXiFirstDividedL2 q.1‖ ^ 2 :=
+  have hnorm : 0 < ‖completedXiFirstDividedL2 q.1‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr (completedXiFirstDividedL2_ne_zero q.1))
   have him : (xiSpectralPoint q).im < 0 := by
     rw [xiSpectralPoint_im_eq]

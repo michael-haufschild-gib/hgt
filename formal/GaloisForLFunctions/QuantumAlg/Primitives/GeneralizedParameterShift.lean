@@ -116,7 +116,7 @@ theorem deriv_genTrigCost (a b : ℕ → ℝ) (R : ℕ) :
 /-- **Second derivative (genuine).** `ℓ''(0) = -∑_{p=1}^R p²·a_p`, reusing the first-derivative
 result on the derivative trigonometric polynomial. -/
 theorem genTrigCost_deriv2_zero (a b : ℕ → ℝ) (R : ℕ) :
-    deriv (deriv (genTrigCost a b R)) 0 = -∑ p ∈ Finset.Icc 1 R, (p : ℝ) ^ 2 * a p := by
+    deriv (deriv (genTrigCost a b R)) 0 = -∑ p ∈ Finset.Icc 1 R, (p : ℝ) ^ (2 : ℕ) * a p := by
   rw [deriv_genTrigCost, genTrigCost_deriv_zero, eq_neg_iff_add_eq_zero,
     ← Finset.sum_add_distrib]
   exact Finset.sum_eq_zero fun p _ => by ring
@@ -198,17 +198,17 @@ theorem dirichlet_first_identity (a b : ℕ → ℝ) (R : ℕ) (hR : 1 ≤ R) :
 This assembles the coefficient-level identities proved in `QuantumAlg.Util.DirichletKernel`
 for the abstract trigonometric polynomial `genTrigCost`. -/
 theorem dirichlet_second_identity (a b : ℕ → ℝ) (R : ℕ) (hR : 1 ≤ R) :
-    -genTrigCost a b R 0 * (2 * (R : ℝ) ^ 2 + 1) / 6
+    -genTrigCost a b R 0 * (2 * (R : ℝ) ^ (2 : ℕ) + 1) / 6
         + ∑ μ ∈ Finset.Icc 1 (2 * R - 1), genTrigCost a b R (psPoint2 R μ) * psWeight2 R μ
-      = -∑ p ∈ Finset.Icc 1 R, (p : ℝ) ^ 2 * a p := by
-  let C : ℝ := (2 * (R : ℝ) ^ 2 + 1) / 6
-  rw [show -genTrigCost a b R 0 * (2 * (R : ℝ) ^ 2 + 1) / 6
+      = -∑ p ∈ Finset.Icc 1 R, (p : ℝ) ^ (2 : ℕ) * a p := by
+  let C : ℝ := (2 * (R : ℝ) ^ (2 : ℕ) + 1) / 6
+  rw [show -genTrigCost a b R 0 * (2 * (R : ℝ) ^ (2 : ℕ) + 1) / 6
       = -genTrigCost a b R 0 * C by
       simp [C]
       ring]
   change -genTrigCost a b R 0 * C
         + ∑ μ ∈ Finset.Icc 1 (2 * R - 1), genTrigCost a b R (psPoint2 R μ) * psWeight2 R μ
-      = -∑ p ∈ Finset.Icc 1 R, (p : ℝ) ^ 2 * a p
+      = -∑ p ∈ Finset.Icc 1 R, (p : ℝ) ^ (2 : ℕ) * a p
   have hzero : genTrigCost a b R 0 = a 0 + ∑ p ∈ Finset.Icc 1 R, a p := by
     unfold genTrigCost
     congr 1
@@ -217,7 +217,7 @@ theorem dirichlet_second_identity (a b : ℕ → ℝ) (R : ℕ) (hR : 1 ≤ R) :
     simp only [mul_zero, Real.cos_zero, Real.sin_zero, mul_one, add_zero]
   have hweighted :
       ∑ μ ∈ Finset.Icc 1 (2 * R - 1), genTrigCost a b R (psPoint2 R μ) * psWeight2 R μ
-        = a 0 * C + ∑ p ∈ Finset.Icc 1 R, a p * (C - (p : ℝ) ^ 2) := by
+        = a 0 * C + ∑ p ∈ Finset.Icc 1 R, a p * (C - (p : ℝ) ^ (2 : ℕ)) := by
     unfold genTrigCost
     rw [show (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
           (a 0 + ∑ p ∈ Finset.Icc 1 R, (a p * Real.cos ((p : ℝ) * psPoint2 R μ)
@@ -282,11 +282,11 @@ theorem dirichlet_second_identity (a b : ℕ → ℝ) (R : ℕ) (hR : 1 ≤ R) :
     rw [sum_cos_mul_psWeight2_eq R p hR hp1 hpR, sum_sin_mul_psWeight2_eq_zero R p hR]
     ring
   rw [hweighted, hzero]
-  rw [show (∑ p ∈ Finset.Icc 1 R, a p * (C - (p : ℝ) ^ 2))
+  rw [show (∑ p ∈ Finset.Icc 1 R, a p * (C - (p : ℝ) ^ (2 : ℕ)))
       = C * ∑ p ∈ Finset.Icc 1 R, a p
-        - ∑ p ∈ Finset.Icc 1 R, (p : ℝ) ^ 2 * a p by
-      rw [show (∑ p ∈ Finset.Icc 1 R, a p * (C - (p : ℝ) ^ 2))
-          = ∑ p ∈ Finset.Icc 1 R, (C * a p - (p : ℝ) ^ 2 * a p) by
+        - ∑ p ∈ Finset.Icc 1 R, (p : ℝ) ^ (2 : ℕ) * a p by
+      rw [show (∑ p ∈ Finset.Icc 1 R, a p * (C - (p : ℝ) ^ (2 : ℕ)))
+          = ∑ p ∈ Finset.Icc 1 R, (C * a p - (p : ℝ) ^ (2 : ℕ) * a p) by
           exact Finset.sum_congr rfl fun p _ => by ring]
       rw [Finset.sum_sub_distrib, ← Finset.mul_sum]]
   ring
@@ -318,7 +318,7 @@ theorem firstDeriv :
 equals the weighted sum of shifted evaluations. -/
 theorem secondDeriv :
     deriv (deriv (genTrigCost G.a G.b R)) 0
-      = -genTrigCost G.a G.b R 0 * (2 * (R : ℝ) ^ 2 + 1) / 6
+      = -genTrigCost G.a G.b R 0 * (2 * (R : ℝ) ^ (2 : ℕ) + 1) / 6
         + ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             genTrigCost G.a G.b R (psPoint2 R μ) * psWeight2 R μ := by
   rw [genTrigCost_deriv2_zero, ← dirichlet_second_identity G.a G.b R G.hR]

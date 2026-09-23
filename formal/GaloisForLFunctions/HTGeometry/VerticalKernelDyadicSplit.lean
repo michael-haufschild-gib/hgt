@@ -125,7 +125,7 @@ theorem integral_mul_kernel_le_of_sqrt_block_moment {F G : ℝ → ℝ} {C K t�
     (∫ t in t₀..(t₀ * 2 ^ M), F t * G t)
       ≤ (C * K * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹ := by
   have hs2nn : (0 : ℝ) ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
-  have hs2sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hs2sq : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hs2lt : Real.sqrt 2 < 2 := by nlinarith
   refine le_trans (integral_mul_kernel_le_sum_dyadic ht₀ hC hF hG hFint hFGint) ?_
   refine sum_range_le_geometric (c := C * K * Real.sqrt 2 / Real.sqrt t₀)
@@ -146,15 +146,15 @@ theorem exists_bound_mellin_smoothWeight_first_order {N H : ℝ} (hN : 0 < N) (h
     (hσ : 0 < σ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ,
       ‖mellin (fun x : ℝ => ((smoothWeight N H x : ℝ) : ℂ)) ((σ : ℂ) + (y : ℝ) * I)‖
-        ≤ C / Real.sqrt (σ ^ 2 + y ^ 2) := by
+        ≤ C / Real.sqrt (σ ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
   obtain ⟨C, hC0, hbound⟩ := exists_bound_mellin_smoothWeight hN hH 0 σ
   refine ⟨C, hC0, fun y => ?_⟩
   have hre : ((σ : ℂ) + (y : ℝ) * I).re = σ := by simp
   have h := hbound ((σ : ℂ) + (y : ℝ) * I) (by rw [hre]; exact hσ) (by rw [hre])
   simp only [Finset.range_zero, Finset.prod_empty, mul_one] at h
-  have hnorm : ‖(σ : ℂ) + (y : ℝ) * I‖ = Real.sqrt (σ ^ 2 + y ^ 2) :=
+  have hnorm : ‖(σ : ℂ) + (y : ℝ) * I‖ = Real.sqrt (σ ^ (2 : ℕ) + y ^ (2 : ℕ)) :=
     Complex.norm_add_mul_I σ y
-  have hpos : 0 < Real.sqrt (σ ^ 2 + y ^ 2) := by
+  have hpos : 0 < Real.sqrt (σ ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
     refine Real.sqrt_pos.2 ?_
     positivity
   rw [le_div_iff₀ hpos, mul_comm, ← hnorm]
@@ -173,8 +173,8 @@ theorem exists_bound_mellin_smoothWeight_height {N H : ℝ} (hN : 0 < N) (hH : 0
   refine ⟨C, hC0, fun y hy => ?_⟩
   refine (hbound y).trans ?_
   refine div_le_div_of_nonneg_left hC0 hy ?_
-  calc y = Real.sqrt (y ^ 2) := by rw [Real.sqrt_sq hy.le]
-    _ ≤ Real.sqrt (σ ^ 2 + y ^ 2) := Real.sqrt_le_sqrt (by nlinarith)
+  calc y = Real.sqrt (y ^ (2 : ℕ)) := by rw [Real.sqrt_sq hy.le]
+    _ ≤ Real.sqrt (σ ^ (2 : ℕ) + y ^ (2 : ℕ)) := Real.sqrt_le_sqrt (by nlinarith)
 
 end GaloisForLFunctions.HTGeometry
 end
@@ -199,7 +199,7 @@ theorem integral_mul_kernel_le_of_affine_block_moment {F G : ℝ → ℝ} {C K L
     (∫ t in t₀..(t₀ * 2 ^ M), F t * G t)
       ≤ (C * K * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹ + 2 * C * L * M := by
   have hs2nn : (0 : ℝ) ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
-  have hs2sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hs2sq : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hs2lt : Real.sqrt 2 < 2 := by nlinarith
   refine le_trans (integral_mul_kernel_le_sum_dyadic ht₀ hC hF hG hFint hFGint) ?_
   have hbound : ∀ m ∈ Finset.range M,
@@ -251,7 +251,7 @@ theorem integral_mul_kernel_le_of_general_block_moment {F G : ℝ → ℝ} {C J 
           + (C * K * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
           + 2 * C * L * M := by
   have hs2nn : (0 : ℝ) ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
-  have hs2sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hs2sq : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hs2lt : Real.sqrt 2 < 2 := by nlinarith
   refine le_trans (integral_mul_kernel_le_sum_dyadic ht₀ hC hF hG hFint hFGint) ?_
   have hbound : ∀ m ∈ Finset.range M,

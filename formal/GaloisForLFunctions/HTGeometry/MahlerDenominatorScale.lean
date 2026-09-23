@@ -7,7 +7,7 @@ Pólya's induction for the denominators of the Taylor coefficients of a differen
 series carries the weight `∏_{j ≤ n} A_j^{⌊n/j⌋}`.  The floor exponents are exactly what makes the
 weight *superadditive*: the weights of two indices divide the weight of their sum, so a convolution
 of coefficients is controlled by the weight of the total index.  The same weight grows only like
-`exp(C n (log n)^2)`, because `∑_{j ≤ n} n/j` is `n` times a harmonic number.
+`exp(C n (log n)^(2 : ℕ))`, because `∑_{j ≤ n} n/j` is `n` times a harmonic number.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -131,7 +131,7 @@ theorem sum_div_le_harmonic (n : ℕ) :
     _ ≤ (n : ℝ) * (1 + Real.log n) := by
         refine mul_le_mul_of_nonneg_left (harmonic_le_one_add_log n) (Nat.cast_nonneg n)
 
-/-- **The weight grows like `exp(C n (log n)^2)`.** -/
+/-- **The weight grows like `exp(C n (log n)^(2 : ℕ))`.** -/
 theorem log_mahlerScale_le {C : ℕ} {A : ℕ → ℕ} (hC : 0 < C) (hA : ∀ j, 0 < A j)
     {Cb d : ℝ} (hCb : 0 ≤ Cb) (hd : 0 ≤ d)
     (hbound : ∀ j, 1 ≤ j → Real.log (A j) ≤ Cb + d * Real.log j) (n : ℕ) :

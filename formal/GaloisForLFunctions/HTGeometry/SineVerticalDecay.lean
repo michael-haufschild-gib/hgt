@@ -116,29 +116,29 @@ theorem norm_inv_sin_le_exp {z : ℂ} (hz : 1 ≤ |z.im|) :
 
 /-- A quadratic lower bound for the exponential, from the linear one applied at half the
 argument. -/
-theorem sq_div_four_le_exp {x : ℝ} (hx : 0 ≤ x) : x ^ 2 / 4 ≤ Real.exp x := by
+theorem sq_div_four_le_exp {x : ℝ} (hx : 0 ≤ x) : x ^ (2 : ℕ) / 4 ≤ Real.exp x := by
   have hhalf : x / 2 + 1 ≤ Real.exp (x / 2) := Real.add_one_le_exp (x / 2)
   have hnn : (0 : ℝ) ≤ x / 2 := by linarith
-  have hsq : (x / 2) ^ 2 ≤ (Real.exp (x / 2)) ^ 2 := by
+  have hsq : (x / 2) ^ (2 : ℕ) ≤ (Real.exp (x / 2)) ^ (2 : ℕ) := by
     refine pow_le_pow_left₀ hnn ?_ 2
     linarith
-  have hexp : (Real.exp (x / 2)) ^ 2 = Real.exp x := by
+  have hexp : (Real.exp (x / 2)) ^ (2 : ℕ) = Real.exp x := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
-  calc x ^ 2 / 4 = (x / 2) ^ 2 := by ring
-    _ ≤ (Real.exp (x / 2)) ^ 2 := hsq
+  calc x ^ (2 : ℕ) / 4 = (x / 2) ^ (2 : ℕ) := by ring
+    _ ≤ (Real.exp (x / 2)) ^ (2 : ℕ) := hsq
     _ = Real.exp x := hexp
 
 /-- **The reciprocal sine is dominated by the Cauchy density beyond height one.** -/
 theorem norm_inv_sin_le_cauchy_of_one_le {z : ℂ} (hz : 1 ≤ |z.im|) :
-    ‖(Complex.sin z)⁻¹‖ ≤ 32 * (1 + z.im ^ 2)⁻¹ := by
+    ‖(Complex.sin z)⁻¹‖ ≤ 32 * (1 + z.im ^ (2 : ℕ))⁻¹ := by
   have habs : (0 : ℝ) < |z.im| := lt_of_lt_of_le (by norm_num) hz
-  have hsq : z.im ^ 2 = |z.im| ^ 2 := by
+  have hsq : z.im ^ (2 : ℕ) = |z.im| ^ (2 : ℕ) := by
     rw [sq_abs]
-  have hquad : |z.im| ^ 2 / 4 ≤ Real.exp |z.im| := sq_div_four_le_exp (le_of_lt habs)
-  have hone : (1 : ℝ) ≤ |z.im| ^ 2 := by nlinarith
-  have hden : (0 : ℝ) < 1 + z.im ^ 2 := by positivity
+  have hquad : |z.im| ^ (2 : ℕ) / 4 ≤ Real.exp |z.im| := sq_div_four_le_exp (le_of_lt habs)
+  have hone : (1 : ℝ) ≤ |z.im| ^ (2 : ℕ) := by nlinarith
+  have hden : (0 : ℝ) < 1 + z.im ^ (2 : ℕ) := by positivity
   have hdecay : ‖(Complex.sin z)⁻¹‖ ≤ 4 * Real.exp (-|z.im|) := norm_inv_sin_le_exp hz
   refine le_trans hdecay ?_
   have hexp_pos : (0 : ℝ) < Real.exp |z.im| := Real.exp_pos _
@@ -160,47 +160,47 @@ theorem im_pi_mul_vertical (σ t : ℝ) :
 integers the reciprocal sine is dominated on the whole line by a multiple of the Cauchy density. -/
 theorem norm_inv_sin_vertical_le {σ : ℝ} (hσ : Real.sin (Real.pi * σ) ≠ 0) (t : ℝ) :
     ‖(Complex.sin ((Real.pi : ℂ) * ((σ : ℂ) + (t : ℂ) * Complex.I)))⁻¹‖
-      ≤ (max (2 * |Real.sin (Real.pi * σ)|⁻¹) 32) * (1 + t ^ 2)⁻¹ := by
+      ≤ (max (2 * |Real.sin (Real.pi * σ)|⁻¹) 32) * (1 + t ^ (2 : ℕ))⁻¹ := by
   set z : ℂ := (Real.pi : ℂ) * ((σ : ℂ) + (t : ℂ) * Complex.I) with hz
   have hre : z.re = Real.pi * σ := re_pi_mul_vertical σ t
   have him : z.im = Real.pi * t := im_pi_mul_vertical σ t
-  have hden : (0 : ℝ) < 1 + t ^ 2 := by positivity
+  have hden : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
   have hpi : (1 : ℝ) ≤ Real.pi := by linarith [Real.two_le_pi]
   rcases le_or_gt (|z.im|) 1 with hsmall | hbig
   · -- near the real axis: the constant bound, against a density bounded below
     have hbd : ‖(Complex.sin z)⁻¹‖ ≤ |Real.sin (Real.pi * σ)|⁻¹ := by
       have := norm_inv_sin_le_of_sin_re_ne (z := z) (by rw [hre]; exact hσ)
       rwa [hre] at this
-    have htsq : t ^ 2 ≤ 1 := by
+    have htsq : t ^ (2 : ℕ) ≤ 1 := by
       rw [him] at hsmall
       have habs : |t| ≤ 1 := by
         rw [abs_mul, abs_of_pos Real.pi_pos] at hsmall
         nlinarith [abs_nonneg t, Real.pi_pos]
       nlinarith [abs_nonneg t, sq_abs t]
-    have hlow : (1 : ℝ) / 2 ≤ (1 + t ^ 2)⁻¹ := by
+    have hlow : (1 : ℝ) / 2 ≤ (1 + t ^ (2 : ℕ))⁻¹ := by
       rw [le_inv_comm₀ (by norm_num) hden]
       linarith
     have hposinv : (0 : ℝ) ≤ |Real.sin (Real.pi * σ)|⁻¹ := by positivity
     calc ‖(Complex.sin z)⁻¹‖ ≤ |Real.sin (Real.pi * σ)|⁻¹ := hbd
       _ = 2 * |Real.sin (Real.pi * σ)|⁻¹ * (1 / 2) := by ring
-      _ ≤ 2 * |Real.sin (Real.pi * σ)|⁻¹ * (1 + t ^ 2)⁻¹ := by
+      _ ≤ 2 * |Real.sin (Real.pi * σ)|⁻¹ * (1 + t ^ (2 : ℕ))⁻¹ := by
           refine mul_le_mul_of_nonneg_left hlow (by positivity)
-      _ ≤ (max (2 * |Real.sin (Real.pi * σ)|⁻¹) 32) * (1 + t ^ 2)⁻¹ := by
+      _ ≤ (max (2 * |Real.sin (Real.pi * σ)|⁻¹) 32) * (1 + t ^ (2 : ℕ))⁻¹ := by
           refine mul_le_mul_of_nonneg_right (le_max_left _ _) (le_of_lt (by positivity))
   · -- away from the real axis: the Cauchy-density bound
-    have hbd : ‖(Complex.sin z)⁻¹‖ ≤ 32 * (1 + z.im ^ 2)⁻¹ :=
+    have hbd : ‖(Complex.sin z)⁻¹‖ ≤ 32 * (1 + z.im ^ (2 : ℕ))⁻¹ :=
       norm_inv_sin_le_cauchy_of_one_le (le_of_lt hbig)
-    have hcmp : (1 + z.im ^ 2)⁻¹ ≤ (1 + t ^ 2)⁻¹ := by
-      have hpisq : (1 : ℝ) ≤ Real.pi ^ 2 := by nlinarith [hpi]
-      have hle : 1 + t ^ 2 ≤ 1 + z.im ^ 2 := by
+    have hcmp : (1 + z.im ^ (2 : ℕ))⁻¹ ≤ (1 + t ^ (2 : ℕ))⁻¹ := by
+      have hpisq : (1 : ℝ) ≤ Real.pi ^ (2 : ℕ) := by nlinarith [hpi]
+      have hle : 1 + t ^ (2 : ℕ) ≤ 1 + z.im ^ (2 : ℕ) := by
         rw [him]
         nlinarith [sq_nonneg t, hpisq]
       rw [← one_div, ← one_div]
       exact one_div_le_one_div_of_le hden hle
-    calc ‖(Complex.sin z)⁻¹‖ ≤ 32 * (1 + z.im ^ 2)⁻¹ := hbd
-      _ ≤ 32 * (1 + t ^ 2)⁻¹ := by
+    calc ‖(Complex.sin z)⁻¹‖ ≤ 32 * (1 + z.im ^ (2 : ℕ))⁻¹ := hbd
+      _ ≤ 32 * (1 + t ^ (2 : ℕ))⁻¹ := by
           exact mul_le_mul_of_nonneg_left hcmp (by norm_num)
-      _ ≤ (max (2 * |Real.sin (Real.pi * σ)|⁻¹) 32) * (1 + t ^ 2)⁻¹ := by
+      _ ≤ (max (2 * |Real.sin (Real.pi * σ)|⁻¹) 32) * (1 + t ^ (2 : ℕ))⁻¹ := by
           refine mul_le_mul_of_nonneg_right (le_max_right _ _) (le_of_lt (by positivity))
 
 /-! ### Holomorphy of the reflection kernel off the integers -/

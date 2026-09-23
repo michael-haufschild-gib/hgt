@@ -142,10 +142,10 @@ private lemma heads :
   simp [source_profile,profile,hn0,hn3,hn5,Ne.symm hn0,Ne.symm hn3,Ne.symm hn5]
 
 private lemma energies :
-    mobiusDivisorSelectionEnergy 25 mobiusDivisorTwentyFiveCore=h^2+a^2+b^2+c^2 ∧
-    mobiusDivisorSelectionEnergy 25 (insert 3 mobiusDivisorTwentyFiveCore)=(h+a)^2+(b+c)^2 ∧
-    mobiusDivisorSelectionEnergy 25 (insert 5 mobiusDivisorTwentyFiveCore)=(h+b)^2+(a+c)^2 ∧
-    mobiusDivisorSelectionEnergy 25 (insert 5 (insert 3 mobiusDivisorTwentyFiveCore))=(h+a+b+c)^2 := by
+    mobiusDivisorSelectionEnergy 25 mobiusDivisorTwentyFiveCore=h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 25 (insert 3 mobiusDivisorTwentyFiveCore)=(h+a)^(2 : ℕ)+(b+c)^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 25 (insert 5 mobiusDivisorTwentyFiveCore)=(h+b)^(2 : ℕ)+(a+c)^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 25 (insert 5 (insert 3 mobiusDivisorTwentyFiveCore))=(h+a+b+c)^(2 : ℕ) := by
   have hpair : ({5,3}:Finset ℕ)={3,5} := by ext p; simp [or_comm]
   have h0 := subsetLabelEnergy_two_remaining (mobiusDivisorSelectionPrimes 25)
     (mobiusDivisorSelectionIndices 25) Nat.primeFactors (mobiusDivisorDilationChannel 25)
@@ -160,18 +160,18 @@ private lemma energies :
     (mobiusDivisorSelectionIndices 25) Nat.primeFactors (mobiusDivisorDilationChannel 25)
     mobiusDivisorTwentyFiveCore 3 5 (by omega) remaining
   change mobiusDivisorSelectionEnergy _ _=_ at h0 h3 h5 hf
-  change mobiusDivisorSelectionEnergy _ _= (mobiusDivisorSelectionFibre _ _ ∅)^2+
-    (mobiusDivisorSelectionFibre _ _ {3})^2+(mobiusDivisorSelectionFibre _ _ {5})^2+
-    (mobiusDivisorSelectionFibre _ _ {3,5})^2 at h0
+  change mobiusDivisorSelectionEnergy _ _= (mobiusDivisorSelectionFibre _ _ ∅)^(2 : ℕ)+
+    (mobiusDivisorSelectionFibre _ _ {3})^(2 : ℕ)+(mobiusDivisorSelectionFibre _ _ {5})^(2 : ℕ)+
+    (mobiusDivisorSelectionFibre _ _ {3,5})^(2 : ℕ) at h0
   change mobiusDivisorSelectionEnergy _ _=
-    (mobiusDivisorSelectionFibre _ _ ∅+mobiusDivisorSelectionFibre _ _ {3})^2+
-    (mobiusDivisorSelectionFibre _ _ {5}+mobiusDivisorSelectionFibre _ _ {3,5})^2 at h3
+    (mobiusDivisorSelectionFibre _ _ ∅+mobiusDivisorSelectionFibre _ _ {3})^(2 : ℕ)+
+    (mobiusDivisorSelectionFibre _ _ {5}+mobiusDivisorSelectionFibre _ _ {3,5})^(2 : ℕ) at h3
   change mobiusDivisorSelectionEnergy _ _=
-    (mobiusDivisorSelectionFibre _ _ ∅+mobiusDivisorSelectionFibre _ _ {5})^2+
-    (mobiusDivisorSelectionFibre _ _ {3}+mobiusDivisorSelectionFibre _ _ {5,3})^2 at h5
+    (mobiusDivisorSelectionFibre _ _ ∅+mobiusDivisorSelectionFibre _ _ {5})^(2 : ℕ)+
+    (mobiusDivisorSelectionFibre _ _ {3}+mobiusDivisorSelectionFibre _ _ {5,3})^(2 : ℕ) at h5
   change mobiusDivisorSelectionEnergy _ _=
     (mobiusDivisorSelectionFibre _ _ ∅+mobiusDivisorSelectionFibre _ _ {3}+
-      mobiusDivisorSelectionFibre _ _ {5}+mobiusDivisorSelectionFibre _ _ {3,5})^2 at hf
+      mobiusDivisorSelectionFibre _ _ {5}+mobiusDivisorSelectionFibre _ _ {3,5})^(2 : ℕ) at hf
   rw [hpair] at h5
   simp only [heads.1,heads.2.1,heads.2.2.1,heads.2.2.2] at h0 h3 h5 hf
   exact ⟨h0,h3,by nlinarith only [h5],hf⟩
@@ -217,13 +217,13 @@ private lemma initial_lower : (0.8:ℝ) ≤ mobiusDivisorSelectionEnergy 25 ∅ 
   nlinarith only [hb]
 
 private lemma arithmetic_inequalities :
-    1/500+(a^2+b^2+c^2)<(b+c)^2 ∧
-    1/500+(a^2+b^2+c^2)<(a+c)^2 ∧
-    1/250+((h+a)^2+(b+c)^2)<h^2+a^2+b^2+c^2 ∧
-    1/250+((h+b)^2+(a+c)^2)<h^2+a^2+b^2+c^2 ∧
-    (h+a+b+c)^2<(h+a)^2+(b+c)^2 ∧
-    (h+a+b+c)^2<(h+b)^2+(a+c)^2 ∧
-    h^2+a^2+b^2+c^2<(0.6:ℝ) := by
+    1/500+(a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ))<(b+c)^(2 : ℕ) ∧
+    1/500+(a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ))<(a+c)^(2 : ℕ) ∧
+    1/250+((h+a)^(2 : ℕ)+(b+c)^(2 : ℕ))<h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) ∧
+    1/250+((h+b)^(2 : ℕ)+(a+c)^(2 : ℕ))<h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) ∧
+    (h+a+b+c)^(2 : ℕ)<(h+a)^(2 : ℕ)+(b+c)^(2 : ℕ) ∧
+    (h+a+b+c)^(2 : ℕ)<(h+b)^(2 : ℕ)+(a+c)^(2 : ℕ) ∧
+    h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)<(0.6:ℝ) := by
   obtain ⟨hh,ha,hb,hc⟩ := boxes
   have ha0 : 0 ≤ a := by linarith
   have hb0 : 0 ≤ b := by linarith
@@ -252,9 +252,9 @@ private lemma arithmetic_inequalities :
   · nlinarith only [hh2,ha2,hb2,hc2]
 
 private lemma nonempty_values :
-    mobiusDivisorNonemptyEnergy 25 mobiusDivisorTwentyFiveCore=a^2+b^2+c^2 ∧
-    mobiusDivisorNonemptyEnergy 25 (insert 3 mobiusDivisorTwentyFiveCore)=(b+c)^2 ∧
-    mobiusDivisorNonemptyEnergy 25 (insert 5 mobiusDivisorTwentyFiveCore)=(a+c)^2 := by
+    mobiusDivisorNonemptyEnergy 25 mobiusDivisorTwentyFiveCore=a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) ∧
+    mobiusDivisorNonemptyEnergy 25 (insert 3 mobiusDivisorTwentyFiveCore)=(b+c)^(2 : ℕ) ∧
+    mobiusDivisorNonemptyEnergy 25 (insert 5 mobiusDivisorTwentyFiveCore)=(a+c)^(2 : ℕ) := by
   have hh3 : mobiusDivisorSelectionFibre 25 (insert 3 mobiusDivisorTwentyFiveCore) ∅=h+a := by
     rw [mobiusDivisorSelectionFibre_insert]
     simp only [notMem_empty,if_false,insert_empty_eq,heads.1,heads.2.1]
@@ -268,9 +268,9 @@ private lemma nonempty_values :
   constructor <;> ring
 
 private lemma envelope_values :
-    mobiusDivisorSuccessorEnvelope 25 mobiusDivisorTwentyFiveCore=h^2+a^2+b^2+c^2 ∧
-    mobiusDivisorSuccessorEnvelope 25 (insert 3 mobiusDivisorTwentyFiveCore)=(h+a)^2+(b+c)^2 ∧
-    mobiusDivisorSuccessorEnvelope 25 (insert 5 mobiusDivisorTwentyFiveCore)=(h+b)^2+(a+c)^2 := by
+    mobiusDivisorSuccessorEnvelope 25 mobiusDivisorTwentyFiveCore=h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) ∧
+    mobiusDivisorSuccessorEnvelope 25 (insert 3 mobiusDivisorTwentyFiveCore)=(h+a)^(2 : ℕ)+(b+c)^(2 : ℕ) ∧
+    mobiusDivisorSuccessorEnvelope 25 (insert 5 mobiusDivisorTwentyFiveCore)=(h+b)^(2 : ℕ)+(a+c)^(2 : ℕ) := by
   have hbase (P : Finset ℕ) : mobiusDivisorSelectionEnergy 25 P ≤ mobiusDivisorSuccessorEnvelope 25 P :=
     ((mobiusDivisorSuccessorEnvelope_le_iff 25 P _).mp le_rfl).1
   obtain ⟨_,_,h3,h5,hf3,hf5,_⟩ := arithmetic_inequalities
@@ -333,14 +333,14 @@ theorem mobiusDivisorTwentyFive_admitted_transverse_trap :
 
 /-- One of two remaining coordinate mergers increases nonempty energy by at most a factor of three halves. -/
 theorem min_twoCoordinateNonemptyEnergy_le (a b c : ℝ) :
-    min ((a+c)^2) ((b+c)^2) ≤ (3/2:ℝ)*(a^2+b^2+c^2) := by
-  rcases le_total (a^2) (b^2) with hab|hba
+    min ((a+c)^(2 : ℕ)) ((b+c)^(2 : ℕ)) ≤ (3/2:ℝ)*(a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)) := by
+  rcases le_total (a^(2 : ℕ)) (b^(2 : ℕ)) with hab|hba
   · exact (min_le_left _ _).trans (by nlinarith only [hab,sq_nonneg (2*a-c)])
   · exact (min_le_right _ _).trans (by nlinarith only [hba,sq_nonneg (2*b-c)])
 
 /-- Three halves is the sharp uniform two-coordinate nonempty-energy factor, including all signs. -/
 theorem twoCoordinateNonemptyEnergy_factor_iff (K : ℝ) :
-    (∀ a b c : ℝ,min ((a+c)^2) ((b+c)^2) ≤ K*(a^2+b^2+c^2)) ↔ (3/2:ℝ) ≤ K := by
+    (∀ a b c : ℝ,min ((a+c)^(2 : ℕ)) ((b+c)^(2 : ℕ)) ≤ K*(a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ))) ↔ (3/2:ℝ) ≤ K := by
   constructor
   · intro hk
     have ht := hk 1 1 2
@@ -352,7 +352,7 @@ theorem twoCoordinateNonemptyEnergy_factor_iff (K : ℝ) :
 
 /-- Retained energy with a fixed weight on the actual empty-label head square. -/
 def mobiusDivisorWeightedHeadEnergy (α : ℝ) (M : ℕ) (P : Finset ℕ) : ℝ :=
-  mobiusDivisorNonemptyEnergy M P+α*(mobiusDivisorSelectionFibre M P ∅)^2
+  mobiusDivisorNonemptyEnergy M P+α*(mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)
 
 /-- Every positive head weight retains uniform control of the complete energy. -/
 theorem mobiusDivisorWeightedHeadEnergy_bounds (α : ℝ) (hα0 : 0 ≤ α) (hα1 : α ≤ 1)
@@ -374,16 +374,16 @@ def mobiusDivisorTwentyFiveWeightThreshold : ℝ :=
   let A := mobiusDivisorSelectionFibre 25 mobiusDivisorTwentyFiveCore {3}
   let B := mobiusDivisorSelectionFibre 25 mobiusDivisorTwentyFiveCore {5}
   let C := mobiusDivisorSelectionFibre 25 mobiusDivisorTwentyFiveCore {3,5}
-  (2*A*C-B^2)/(H^2-(H+B)^2)
+  (2*A*C-B^(2 : ℕ))/(H^(2 : ℕ)-(H+B)^(2 : ℕ))
 
 private def sevenCore : Finset ℕ := mobiusDivisorSelectionPrimes 25\{7}
 private def t : ℝ := -divisorUnsignedDilationChannel 25 7+
   divisorUnsignedDilationChannel 25 14+divisorUnsignedDilationChannel 25 21
 private def g : ℝ := h+a+b+c-t
-private def w0 (α : ℝ) : ℝ := α*h^2+a^2+b^2+c^2
-private def w3 (α : ℝ) : ℝ := α*(h+a)^2+(b+c)^2
-private def w5 (α : ℝ) : ℝ := α*(h+b)^2+(a+c)^2
-private def wf (α : ℝ) : ℝ := α*(h+a+b+c)^2
+private def w0 (α : ℝ) : ℝ := α*h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)
+private def w3 (α : ℝ) : ℝ := α*(h+a)^(2 : ℕ)+(b+c)^(2 : ℕ)
+private def w5 (α : ℝ) : ℝ := α*(h+b)^(2 : ℕ)+(a+c)^(2 : ℕ)
+private def wf (α : ℝ) : ℝ := α*(h+a+b+c)^(2 : ℕ)
 
 private lemma weighted_values (α : ℝ) :
     mobiusDivisorWeightedHeadEnergy α 25 mobiusDivisorTwentyFiveCore=w0 α ∧
@@ -412,8 +412,8 @@ private lemma weighted_values (α : ℝ) :
   ring
 
 private lemma head_square_decreases :
-    (h+a)^2 < h^2 ∧ (h+b)^2 < h^2 ∧
-    (h+a+b+c)^2 < (h+a)^2 ∧ (h+a+b+c)^2 < (h+b)^2 := by
+    (h+a)^(2 : ℕ) < h^(2 : ℕ) ∧ (h+b)^(2 : ℕ) < h^(2 : ℕ) ∧
+    (h+a+b+c)^(2 : ℕ) < (h+a)^(2 : ℕ) ∧ (h+a+b+c)^(2 : ℕ) < (h+b)^(2 : ℕ) := by
   obtain ⟨hh,ha,hb,hc⟩ := boxes
   have h3 := mul_neg_of_pos_of_neg (show 0 < a by linarith) (show 2*h+a < 0 by linarith)
   have h5 := mul_neg_of_pos_of_neg (show 0 < b by linarith) (show 2*h+b < 0 by linarith)
@@ -457,19 +457,19 @@ private lemma weighted_final_decreases {α : ℝ} (hα : 0 ≤ α) : wf α < w3 
   obtain ⟨hh,ha,hb,hc⟩ := boxes
   have h3 := mul_le_mul_of_nonneg_left head_square_decreases.2.2.1.le hα
   have h5 := mul_le_mul_of_nonneg_left head_square_decreases.2.2.2.le hα
-  have hbcsq : 0 < (b+c)^2 := sq_pos_of_pos (by linarith)
-  have hacsq : 0 < (a+c)^2 := sq_pos_of_pos (by linarith)
+  have hbcsq : 0 < (b+c)^(2 : ℕ) := sq_pos_of_pos (by linarith)
+  have hacsq : 0 < (a+c)^(2 : ℕ) := sq_pos_of_pos (by linarith)
   dsimp [wf,w3,w5]
   exact ⟨by linarith only [h3,hbcsq],by linarith only [h5,hacsq]⟩
 
-private lemma threshold_eq : mobiusDivisorTwentyFiveWeightThreshold=(2*a*c-b^2)/(h^2-(h+b)^2) := by
+private lemma threshold_eq : mobiusDivisorTwentyFiveWeightThreshold=(2*a*c-b^(2 : ℕ))/(h^(2 : ℕ)-(h+b)^(2 : ℕ)) := by
   simp [mobiusDivisorTwentyFiveWeightThreshold,heads.1,heads.2.1,heads.2.2.1,heads.2.2.2]
 
 /-- The favorable completion requires weight strictly above one twentieth and starts strictly below one fifth. -/
 theorem mobiusDivisorTwentyFiveWeightThreshold_bounds :
     1/20 < mobiusDivisorTwentyFiveWeightThreshold ∧ mobiusDivisorTwentyFiveWeightThreshold < 1/5 := by
   rw [threshold_eq]
-  have hd : 0 < h^2-(h+b)^2 := sub_pos.mpr head_square_decreases.2.1
+  have hd : 0 < h^(2 : ℕ)-(h+b)^(2 : ℕ) := sub_pos.mpr head_square_decreases.2.1
   constructor
   · apply (lt_div_iff₀ hd).mpr
     have hw := (weighted_small_increases (α:=(1/20:ℝ)) le_rfl).2
@@ -547,21 +547,21 @@ private lemma seven_head : mobiusDivisorSelectionFibre 25 sevenCore ∅=g := by
   linarith only [hs]
 
 private lemma seven_weighted_values (α : ℝ) :
-    mobiusDivisorWeightedHeadEnergy α 25 sevenCore=α*g^2+t^2 ∧
-    mobiusDivisorWeightedHeadEnergy α 25 (insert 7 sevenCore)=α*(g+t)^2 := by
-  have hq : mobiusDivisorSelectionEnergy 25 sevenCore=g^2+t^2 := by
+    mobiusDivisorWeightedHeadEnergy α 25 sevenCore=α*g^(2 : ℕ)+t^(2 : ℕ) ∧
+    mobiusDivisorWeightedHeadEnergy α 25 (insert 7 sevenCore)=α*(g+t)^(2 : ℕ) := by
+  have hq : mobiusDivisorSelectionEnergy 25 sevenCore=g^(2 : ℕ)+t^(2 : ℕ) := by
     unfold mobiusDivisorSelectionEnergy
     rw [subsetLabelEnergy_remaining,seven_remaining]
-    change (∑ R∈({7}:Finset ℕ).powerset,(mobiusDivisorSelectionFibre 25 sevenCore R)^2)=_
+    change (∑ R∈({7}:Finset ℕ).powerset,(mobiusDivisorSelectionFibre 25 sevenCore R)^(2 : ℕ))=_
     simpa only [powerset_empty,sum_singleton,insert_empty_eq,seven_head,seven_fibre] using
-      sum_powerset_insert (notMem_empty (7:ℕ)) (fun R => (mobiusDivisorSelectionFibre 25 sevenCore R)^2)
+      sum_powerset_insert (notMem_empty (7:ℕ)) (fun R => (mobiusDivisorSelectionFibre 25 sevenCore R)^(2 : ℕ))
   have hf : mobiusDivisorSelectionFibre 25 (insert 7 sevenCore) ∅=g+t := by
     rw [mobiusDivisorSelectionFibre_insert]; simp [seven_head,seven_fibre]
-  have hqf : mobiusDivisorSelectionEnergy 25 (insert 7 sevenCore)=(g+t)^2 := by
+  have hqf : mobiusDivisorSelectionEnergy 25 (insert 7 sevenCore)=(g+t)^(2 : ℕ) := by
     unfold mobiusDivisorSelectionEnergy
     rw [subsetLabelEnergy_remaining,sdiff_insert,seven_remaining]
     simp only [erase_singleton,powerset_empty,sum_singleton]
-    change (mobiusDivisorSelectionFibre 25 (insert 7 sevenCore) ∅)^2=_
+    change (mobiusDivisorSelectionFibre 25 (insert 7 sevenCore) ∅)^(2 : ℕ)=_
     rw [hf]
   unfold mobiusDivisorWeightedHeadEnergy mobiusDivisorNonemptyEnergy
   rw [hq,seven_head,hqf,hf]
@@ -577,7 +577,7 @@ private lemma seven_large_increases {α : ℝ} (hα : 1/20 ≤ α) :
     (by norm_num : (0:ℝ) ≤ 0.017) (by linarith : 0 ≤ -g)
   have ht2 := mul_le_mul (show -t ≤ (0.020:ℝ) by linarith) (show -t ≤ (0.020:ℝ) by linarith)
     (by linarith : 0 ≤ -t) (by norm_num : (0:ℝ) ≤ 0.020)
-  have hd : 0 ≤ (g+t)^2-g^2 := by nlinarith only [hgt,sq_nonneg t]
+  have hd : 0 ≤ (g+t)^(2 : ℕ)-g^(2 : ℕ) := by nlinarith only [hgt,sq_nonneg t]
   have hm := mul_nonneg (show 0 ≤ α-1/20 by linarith) hd
   rw [(seven_weighted_values α).1,(seven_weighted_values α).2]
   nlinarith only [hgt,ht2,hm]
@@ -613,19 +613,19 @@ def mobiusDivisorTwentyFiveSevenWeightThreshold : ℝ :=
   let P := mobiusDivisorSelectionPrimes 25\{7}
   let H := mobiusDivisorSelectionFibre 25 P ∅
   let A := mobiusDivisorSelectionFibre 25 P {7}
-  A^2/((H+A)^2-H^2)
+  A^(2 : ℕ)/((H+A)^(2 : ℕ)-H^(2 : ℕ))
 
-private lemma seven_denominator_pos : 0 < (g+t)^2-g^2 := by
+private lemma seven_denominator_pos : 0 < (g+t)^(2 : ℕ)-g^(2 : ℕ) := by
   obtain ⟨hh,ha,hb,hc⟩ := boxes
   have ht : (-0.020:ℝ) ≤ t ∧ t ≤ -0.017 := divisorUnsignedDilationChannel_twentyFive_seven_leaf_box
   have hg : g < 0 := by dsimp [g]; linarith
   have hgt := mul_pos_of_neg_of_neg hg (show t < 0 by linarith)
   nlinarith only [hgt,sq_nonneg t]
 
-private lemma seven_threshold_eq : mobiusDivisorTwentyFiveSevenWeightThreshold=t^2/((g+t)^2-g^2) := by
-  change (mobiusDivisorSelectionFibre 25 sevenCore {7})^2/
-    ((mobiusDivisorSelectionFibre 25 sevenCore ∅+mobiusDivisorSelectionFibre 25 sevenCore {7})^2-
-      (mobiusDivisorSelectionFibre 25 sevenCore ∅)^2)=_
+private lemma seven_threshold_eq : mobiusDivisorTwentyFiveSevenWeightThreshold=t^(2 : ℕ)/((g+t)^(2 : ℕ)-g^(2 : ℕ)) := by
+  change (mobiusDivisorSelectionFibre 25 sevenCore {7})^(2 : ℕ)/
+    ((mobiusDivisorSelectionFibre 25 sevenCore ∅+mobiusDivisorSelectionFibre 25 sevenCore {7})^(2 : ℕ)-
+      (mobiusDivisorSelectionFibre 25 sevenCore ∅)^(2 : ℕ))=_
   rw [seven_head,seven_fibre]
 
 /-- The terminal-seven state admits positive head weights only below a threshold strictly smaller than one twentieth. -/
@@ -634,7 +634,7 @@ theorem mobiusDivisorTwentyFiveSevenWeightThreshold_bounds :
   rw [seven_threshold_eq]
   have htupper : t ≤ (-0.017:ℝ) := divisorUnsignedDilationChannel_twentyFive_seven_leaf_box.2
   have ht : t < 0 := by linarith only [htupper]
-  have ht2 : 0 < t^2 := sq_pos_of_ne_zero (ne_of_lt ht)
+  have ht2 : 0 < t^(2 : ℕ) := sq_pos_of_ne_zero (ne_of_lt ht)
   refine ⟨div_pos ht2 seven_denominator_pos,(div_lt_iff₀ seven_denominator_pos).mpr ?_⟩
   have hw := seven_large_increases (α:=(1/20:ℝ)) le_rfl
   rw [(seven_weighted_values (1/20)).1,(seven_weighted_values (1/20)).2] at hw

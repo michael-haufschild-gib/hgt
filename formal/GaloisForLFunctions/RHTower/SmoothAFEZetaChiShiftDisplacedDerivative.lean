@@ -33,7 +33,7 @@ theorem hasDerivAt_smoothAFEZetaChiShiftRatio_displaced
           zetaChi (displacedLinePt d τ) -
         zetaChi (displacedLinePt d τ + w) *
           (deriv zetaChi (displacedLinePt d τ) * I)) /
-        zetaChi (displacedLinePt d τ) ^ 2) τ := by
+        zetaChi (displacedLinePt d τ) ^ (2 : ℕ)) τ := by
   have hn := ((zetaChi_analyticAt hnum).differentiableAt.hasDerivAt.comp τ
     ((hasDerivAt_displacedLinePt d τ).add_const w))
   have hbaseGamma : Gammaℝ (1 - displacedLinePt d τ) ≠ 0 := by

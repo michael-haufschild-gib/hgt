@@ -57,11 +57,11 @@ variable {m : Type*} [Fintype m] [DecidableEq m]
 /-- Each eigenvalue of a matrix is bounded by its Hilbert–Schmidt norm. -/
 theorem norm_diag_le_of_schur {M U T : Matrix m m ℂ} (hU2 : U * Uᴴ = 1)
     (hMT : Uᴴ * M * U = T) (i : m) : ‖T i i‖ ≤ Real.sqrt (matHSNormSq M) := by
-  have h1 : ‖T i i‖ ^ 2 ≤ matHSNormSq M := by
+  have h1 : ‖T i i‖ ^ (2 : ℕ) ≤ matHSNormSq M := by
     refine le_trans ?_ (sum_diag_normSq_le_matHSNormSq hU2 hMT)
-    exact Finset.single_le_sum (f := fun j => ‖T j j‖ ^ 2) (fun j _ => by positivity)
+    exact Finset.single_le_sum (f := fun j => ‖T j j‖ ^ (2 : ℕ)) (fun j _ => by positivity)
       (Finset.mem_univ i)
-  calc ‖T i i‖ = Real.sqrt (‖T i i‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
+  calc ‖T i i‖ = Real.sqrt (‖T i i‖ ^ (2 : ℕ)) := (Real.sqrt_sq (norm_nonneg _)).symm
     _ ≤ Real.sqrt (matHSNormSq M) := Real.sqrt_le_sqrt h1
 
 /-- The trace-power series of a matrix, on the disc where it converges. -/

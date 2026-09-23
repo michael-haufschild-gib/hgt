@@ -13,8 +13,8 @@ noncomputable section
 
 theorem movingCanonicalZero_inv_sq_le_nat_majorant
     (θ : BoundedRealSequence) (a : ℕ) :
-    1 / ‖(movingCanonicalZero θ a : ℂ)‖ ^ 2 ≤
-      4 / ((a : ℝ) + 1) ^ 2 := by
+    1 / ‖(movingCanonicalZero θ a : ℂ)‖ ^ (2 : ℕ) ≤
+      4 / ((a : ℝ) + 1) ^ (2 : ℕ) := by
   rw [Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (movingCanonicalZero_pos θ a)]
   have hl : ((a : ℝ) + 1) / 2 ≤ movingCanonicalZero θ a := by
@@ -23,21 +23,21 @@ theorem movingCanonicalZero_inv_sq_le_nat_majorant
     linarith
   have hap : 0 < (a : ℝ) + 1 := by positivity
   have hzp := movingCanonicalZero_pos θ a
-  have hsq : (((a : ℝ) + 1) / 2) ^ 2 ≤
-      (movingCanonicalZero θ a) ^ 2 :=
+  have hsq : (((a : ℝ) + 1) / 2) ^ (2 : ℕ) ≤
+      (movingCanonicalZero θ a) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (by positivity) hl 2
   rw [div_le_iff₀ (sq_pos_of_pos hzp)]
   field_simp
   nlinarith [hsq]
 
 theorem summable_movingCanonicalNatMajorant :
-    Summable (fun a : ℕ => 4 / ((a : ℝ) + 1) ^ 2) := by
-  have hbase : Summable (fun a : ℕ => (1 : ℝ) / (a : ℝ) ^ 2) :=
+    Summable (fun a : ℕ => 4 / ((a : ℝ) + 1) ^ (2 : ℕ)) := by
+  have hbase : Summable (fun a : ℕ => (1 : ℝ) / (a : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
   have hshift := (summable_nat_add_iff
-    (f := fun a : ℕ => (1 : ℝ) / (a : ℝ) ^ 2) 1).mpr hbase
+    (f := fun a : ℕ => (1 : ℝ) / (a : ℝ) ^ (2 : ℕ)) 1).mpr hbase
   have hone : Summable (fun a : ℕ =>
-      (1 : ℝ) / ((a : ℝ) + 1) ^ 2) := by
+      (1 : ℝ) / ((a : ℝ) + 1) ^ (2 : ℕ)) := by
     simpa only [Nat.cast_add, Nat.cast_one] using hshift
   simpa [div_eq_mul_inv] using hone.mul_left 4
 
@@ -45,8 +45,8 @@ def movingCanonicalLocalJetMajorant (k : ℕ) (z : ℂ) (a : ℕ) : ℝ :=
   let y := z.im / 2
   let R := ‖z‖ + y
   let C := 1 + R / y
-  (if k = 0 then R * C else C ^ 2 * y⁻¹ ^ (k - 1)) *
-    (4 / ((a : ℝ) + 1) ^ 2)
+  (if k = 0 then R * C else C ^ (2 : ℕ) * y⁻¹ ^ (k - 1)) *
+    (4 / ((a : ℝ) + 1) ^ (2 : ℕ))
 
 theorem summable_movingCanonicalLocalJetMajorant
     (k : ℕ) {z : ℂ} (_hz : 0 < z.im) :
@@ -55,7 +55,7 @@ theorem summable_movingCanonicalLocalJetMajorant
   exact summable_movingCanonicalNatMajorant.mul_left
     (if k = 0 then (‖z‖ + z.im / 2) *
       (1 + (‖z‖ + z.im / 2) / (z.im / 2))
-    else (1 + (‖z‖ + z.im / 2) / (z.im / 2)) ^ 2 *
+    else (1 + (‖z‖ + z.im / 2) / (z.im / 2)) ^ (2 : ℕ) *
       (z.im / 2)⁻¹ ^ (k - 1))
 
 theorem movingCanonicalNormalizedJetTerm_norm_le_localMajorant
@@ -128,7 +128,7 @@ theorem movingCanonicalNormalizedJetTerm_norm_le_localMajorant
     simpa [div_eq_mul_inv] using hdiv
   have hinvY : d⁻¹ ≤ y⁻¹ := by
     simpa [one_div] using one_div_le_one_div_of_le hy hyd
-  have hAmajor : 1 / A ^ 2 ≤ 4 / ((a : ℝ) + 1) ^ 2 := by
+  have hAmajor : 1 / A ^ (2 : ℕ) ≤ 4 / ((a : ℝ) + 1) ^ (2 : ℕ) := by
     exact movingCanonicalZero_inv_sq_le_nat_majorant θ a
   by_cases hk : k = 0
   · subst k
@@ -148,12 +148,12 @@ theorem movingCanonicalNormalizedJetTerm_norm_le_localMajorant
       movingCanonicalRegularizedTerm, heq, norm_div, norm_mul]
     change ‖z‖ / (A * d) ≤ _
     have hbound : ‖z‖ / (A * d) ≤
-        (R * C) * (1 / A ^ 2) := by
+        (R * C) * (1 / A ^ (2 : ℕ)) := by
       rw [div_eq_mul_inv, mul_inv]
       calc
         ‖z‖ * (A⁻¹ * d⁻¹) ≤ R * (A⁻¹ * (C * A⁻¹)) := by
           gcongr
-        _ = (R * C) * (1 / A ^ 2) := by
+        _ = (R * C) * (1 / A ^ (2 : ℕ)) := by
           field_simp
     exact hbound.trans (mul_le_mul_of_nonneg_left hAmajor (by positivity))
   · obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk
@@ -162,17 +162,17 @@ theorem movingCanonicalNormalizedJetTerm_norm_le_localMajorant
     change d⁻¹ ^ (m + 2) ≤ _
     have hbound :
         d⁻¹ ^ (m + 2) ≤
-          (C ^ 2 * y⁻¹ ^ m) * (1 / A ^ 2) := by
+          (C ^ (2 : ℕ) * y⁻¹ ^ m) * (1 / A ^ (2 : ℕ)) := by
       rw [pow_add]
       calc
-        d⁻¹ ^ m * d⁻¹ ^ 2 ≤
-            y⁻¹ ^ m * (C * A⁻¹) ^ 2 :=
+        d⁻¹ ^ m * d⁻¹ ^ (2 : ℕ) ≤
+            y⁻¹ ^ m * (C * A⁻¹) ^ (2 : ℕ) :=
           mul_le_mul (pow_le_pow_left₀ (by positivity) hinvY m)
             (pow_le_pow_left₀ (by positivity) hinvAC 2)
             (by positivity) (by positivity)
-        _ = (C ^ 2 * y⁻¹ ^ m) * (1 / A ^ 2) := by
+        _ = (C ^ (2 : ℕ) * y⁻¹ ^ m) * (1 / A ^ (2 : ℕ)) := by
           field_simp
-    have hconst : 0 ≤ C ^ 2 * y⁻¹ ^ m := by positivity
+    have hconst : 0 ≤ C ^ (2 : ℕ) * y⁻¹ ^ m := by positivity
     exact hbound.trans (mul_le_mul_of_nonneg_left hAmajor hconst)
 
 theorem continuousAt_movingCanonicalNormalizedJet
@@ -232,7 +232,7 @@ theorem movingCanonicalNormalizedJetTerm_hasDerivAt
     exact (ne_of_gt hz) him
   have hbase : HasCoherentComplexDerivAt
       (fun w : ℂ => ((movingCanonicalZero θ a : ℂ) - w)⁻¹)
-      ((((movingCanonicalZero θ a : ℂ) - z)⁻¹) ^ 2) z := by
+      ((((movingCanonicalZero θ a : ℂ) - z)⁻¹) ^ (2 : ℕ)) z := by
     have h :=
       ((hasDerivAt_const (x := z)
         (movingCanonicalZero θ a : ℂ)).sub (hasDerivAt_id z)).inv hsep

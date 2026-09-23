@@ -295,8 +295,8 @@ noncomputable def volterraTerm (q : ℕ → ℝ) (k : ℕ) : ℝ := q k / (k : �
 /-- The weighted backward tail of a sequence. -/
 noncomputable def volterraTail (q : ℕ → ℝ) (n : ℕ) : ℝ := ∑' m : ℕ, volterraTerm q (n + m)
 
-theorem summable_inv_succ_sq : Summable fun m : ℕ => 1 / ((m : ℝ) + 1) ^ 2 := by
-  have h : Summable fun m : ℕ => 1 / ((m : ℝ)) ^ 2 :=
+theorem summable_inv_succ_sq_flatVolterraDecay : Summable fun m : ℕ => 1 / ((m : ℝ) + 1) ^ (2 : ℕ) := by
+  have h : Summable fun m : ℕ => 1 / ((m : ℝ)) ^ (2 : ℕ) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
   have hshift := (summable_nat_add_iff 1).mpr h
   refine hshift.congr fun m => ?_
@@ -320,7 +320,7 @@ theorem summable_volterraTerm {q : ℕ → ℝ} (hq0 : ∀ n, 0 ≤ q n)
   obtain ⟨M, hM⟩ := hflat 1
   have hM0 : 0 ≤ M := flat_nonneg hq0 hM
   refine Summable.of_nonneg_of_le (fun k => volterraTerm_nonneg hq0 k) (fun k => ?_)
-    (summable_inv_succ_sq.mul_left (4 * M))
+    (summable_inv_succ_sq_flatVolterraDecay.mul_left (4 * M))
   rcases Nat.eq_zero_or_pos k with hk | hk
   · subst hk
     rw [volterraTerm]
@@ -343,7 +343,7 @@ theorem summable_of_flat {q : ℕ → ℝ} (hq0 : ∀ n, 0 ≤ q n)
   have hM0 : 0 ≤ M := flat_nonneg hq0 hM
   have hshift : Summable fun k : ℕ => q (k + 1) := by
     refine Summable.of_nonneg_of_le (fun k => hq0 _) (fun k => ?_)
-      (summable_inv_succ_sq.mul_left (4 * M))
+      (summable_inv_succ_sq_flatVolterraDecay.mul_left (4 * M))
     have hk : 1 ≤ k + 1 := Nat.le_add_left 1 k
     have hq := hM (k + 1) hk
     have hcast : ((k + 1 : ℕ) : ℝ) = (k : ℝ) + 1 := by push_cast; ring
@@ -392,14 +392,14 @@ theorem volterraTail_flat {q : ℕ → ℝ} (hq0 : ∀ n, 0 ≤ q n)
     Tendsto (fun n : ℕ => (n : ℝ) ^ N * volterraTail q n) atTop (𝓝 0) := by
   obtain ⟨M, hM⟩ := hflat (N + 4)
   have hM0 : 0 ≤ M := flat_nonneg hq0 hM
-  set S : ℝ := ∑' m : ℕ, 1 / ((m : ℝ) + 1) ^ 2 with hSdef
+  set S : ℝ := ∑' m : ℕ, 1 / ((m : ℝ) + 1) ^ (2 : ℕ) with hSdef
   have hS0 : 0 ≤ S := tsum_nonneg fun m => by positivity
   have hbound : ∀ n : ℕ, 1 ≤ n → (n : ℝ) ^ N * volterraTail q n ≤ (M * S) / (n : ℝ) := by
     intro n hn
     have hn1 : (1:ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
     have hsum := summable_shifted_volterraTerm hq0 hflat n
     have hterm : ∀ m : ℕ, volterraTerm q (n + m)
-        ≤ (M / (n : ℝ) ^ (N + 1)) * (1 / ((m : ℝ) + 1) ^ 2) := by
+        ≤ (M / (n : ℝ) ^ (N + 1)) * (1 / ((m : ℝ) + 1) ^ (2 : ℕ)) := by
       intro m
       have hpos : 1 ≤ n + m := le_trans hn (Nat.le_add_right n m)
       have hcast : (1:ℝ) ≤ ((n + m : ℕ) : ℝ) := by exact_mod_cast hpos
@@ -412,30 +412,30 @@ theorem volterraTail_flat {q : ℕ → ℝ} (hq0 : ∀ n, 0 ≤ q n)
         gcongr
       refine le_trans hstep ?_
       rw [div_div, mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
-      have hbig : (n : ℝ) ^ (N + 1) * ((m : ℝ) + 1) ^ 2
+      have hbig : (n : ℝ) ^ (N + 1) * ((m : ℝ) + 1) ^ (2 : ℕ)
           ≤ ((n : ℝ) + m) ^ (N + 4) * ((n : ℝ) + m) := by
         have h1 : (n : ℝ) ^ (N + 1) ≤ ((n : ℝ) + m) ^ (N + 1) := by
           apply pow_le_pow_left₀ (by positivity)
           have : (0:ℝ) ≤ (m:ℝ) := by positivity
           linarith
-        have h2 : ((m : ℝ) + 1) ^ 2 ≤ ((n : ℝ) + m) ^ 2 := by
+        have h2 : ((m : ℝ) + 1) ^ (2 : ℕ) ≤ ((n : ℝ) + m) ^ (2 : ℕ) := by
           apply pow_le_pow_left₀ (by positivity)
           linarith
         have h3 : ((n : ℝ) + m) ^ (N + 3) ≤ ((n : ℝ) + m) ^ (N + 5) :=
           pow_le_pow_right₀ hcast (by omega)
-        calc (n : ℝ) ^ (N + 1) * ((m : ℝ) + 1) ^ 2
-            ≤ ((n : ℝ) + m) ^ (N + 1) * ((n : ℝ) + m) ^ 2 :=
+        calc (n : ℝ) ^ (N + 1) * ((m : ℝ) + 1) ^ (2 : ℕ)
+            ≤ ((n : ℝ) + m) ^ (N + 1) * ((n : ℝ) + m) ^ (2 : ℕ) :=
               mul_le_mul h1 h2 (by positivity) (by positivity)
           _ = ((n : ℝ) + m) ^ (N + 3) := by ring
           _ ≤ ((n : ℝ) + m) ^ (N + 5) := h3
           _ = ((n : ℝ) + m) ^ (N + 4) * ((n : ℝ) + m) := by ring
-      calc M * ((m : ℝ) + 1) ^ 2
-          = M / (n : ℝ) ^ (N + 1) * ((n : ℝ) ^ (N + 1) * ((m : ℝ) + 1) ^ 2) := by
+      calc M * ((m : ℝ) + 1) ^ (2 : ℕ)
+          = M / (n : ℝ) ^ (N + 1) * ((n : ℝ) ^ (N + 1) * ((m : ℝ) + 1) ^ (2 : ℕ)) := by
             field_simp
         _ ≤ M / (n : ℝ) ^ (N + 1) * (((n : ℝ) + m) ^ (N + 4) * ((n : ℝ) + m)) :=
             mul_le_mul_of_nonneg_left hbig (by positivity)
-    have hmajor : Summable fun m : ℕ => (M / (n : ℝ) ^ (N + 1)) * (1 / ((m : ℝ) + 1) ^ 2) :=
-      summable_inv_succ_sq.mul_left _
+    have hmajor : Summable fun m : ℕ => (M / (n : ℝ) ^ (N + 1)) * (1 / ((m : ℝ) + 1) ^ (2 : ℕ)) :=
+      summable_inv_succ_sq_flatVolterraDecay.mul_left _
     have htsum := Summable.tsum_le_tsum hterm hsum hmajor
     rw [tsum_mul_left, ← hSdef, ← volterraTail] at htsum
     have hfinal : (n : ℝ) ^ N * volterraTail q n

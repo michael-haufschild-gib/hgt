@@ -107,12 +107,12 @@ theorem full_forcing_weak_response_unique (q : XiZeroCopy) (minusBranch : Bool)
     simpa using! inner_self_im (𝕜 := ℂ) w
   have hji : (inner ℂ (embedding w) (embedding w)).im = 0 := by
     simpa using! inner_self_im (𝕜 := ℂ) (embedding w)
-  have hjr : (inner ℂ (embedding w) (embedding w)).re = ‖embedding w‖^2 := by
+  have hjr : (inner ℂ (embedding w) (embedding w)).re = ‖embedding w‖^(2 : ℕ) := by
     simpa using! inner_self_eq_norm_sq (𝕜 := ℂ) (embedding w)
-  have hp : (1-parameter q minusBranch).im*‖embedding w‖^2 = 0 := by
+  have hp : (1-parameter q minusBranch).im*‖embedding w‖^(2 : ℕ) = 0 := by
     rw [Complex.sub_im,Complex.mul_im,hwi,hji,hjr,mul_zero,zero_add,Complex.zero_im,zero_sub] at hi
     exact neg_eq_zero.mp hi
-  have hn : ‖embedding w‖^2 = 0 := (mul_eq_zero.mp hp).resolve_left (physical_shift_nonreal q minusBranch)
+  have hn : ‖embedding w‖^(2 : ℕ) = 0 := (mul_eq_zero.mp hp).resolve_left (physical_shift_nonreal q minusBranch)
   have hj : embedding w = 0 := norm_eq_zero.mp (sq_eq_zero_iff.mp hn)
   have hw : w = 0 := embedding_injective (by simpa only [map_zero] using hj)
   exact sub_eq_zero.mp hw

@@ -141,11 +141,11 @@ theorem fzzHJBalancedExternalGammaAmplitude_eq_shiftProduct_div_conj (P : ℝ) :
 theorem fzzHJGammaShiftProduct_eq_base_mul_rational (y : ℝ) :
     let z : ℂ := (1 / 2 : ℂ) + (y : ℂ) * I
     Complex.Gamma (z + 2) * Complex.Gamma (z - 2) =
-      gammaVerticalValue (1 / 2) y ^ 2 *
+      gammaVerticalValue (1 / 2) y ^ (2 : ℕ) *
         (z * (z + 1) / ((z - 1) * (z - 2))) := by
   let z : ℂ := (1 / 2 : ℂ) + (y : ℂ) * I
   change Complex.Gamma (z + 2) * Complex.Gamma (z - 2) =
-    gammaVerticalValue (1 / 2) y ^ 2 *
+    gammaVerticalValue (1 / 2) y ^ (2 : ℕ) *
       (z * (z + 1) / ((z - 1) * (z - 2)))
   have hz : z ≠ 0 := by
     intro h
@@ -253,7 +253,7 @@ theorem fzzHJRationalShiftFactor_eq_exp_phase (y : ℝ) :
 theorem fzzHJGammaShiftProduct_eq_normSq_mul_exp_halfPhase (y : ℝ) :
     let z : ℂ := (1 / 2 : ℂ) + (y : ℂ) * I
     Complex.Gamma (z + 2) * Complex.Gamma (z - 2) =
-      ((‖gammaVerticalValue (1 / 2) y‖ ^ 2 : ℝ) : ℂ) *
+      ((‖gammaVerticalValue (1 / 2) y‖ ^ (2 : ℕ) : ℝ) : ℂ) *
         Complex.exp (I * (((2 * (gammaVerticalPhase (1 / 2) y +
           Real.arctan (2 * y) + Real.arctan (2 * y / 3))) : ℝ) : ℂ)) := by
   change Complex.Gamma ((1 / 2 : ℂ) + (y : ℂ) * I + 2) *
@@ -264,12 +264,12 @@ theorem fzzHJGammaShiftProduct_eq_normSq_mul_exp_halfPhase (y : ℝ) :
   rw [fzzHJRationalShiftFactor_eq_exp_phase]
   rw [mul_pow]
   calc
-    ((‖gammaVerticalValue (1 / 2) y‖ : ℂ) ^ 2 *
-          Complex.exp (I * (gammaVerticalPhase (1 / 2) y : ℂ)) ^ 2) *
+    ((‖gammaVerticalValue (1 / 2) y‖ : ℂ) ^ (2 : ℕ) *
+          Complex.exp (I * (gammaVerticalPhase (1 / 2) y : ℂ)) ^ (2 : ℕ)) *
         Complex.exp (I * (((2 * (Real.arctan (2 * y) +
           Real.arctan (2 * y / 3))) : ℝ) : ℂ)) =
-      ((‖gammaVerticalValue (1 / 2) y‖ ^ 2 : ℝ) : ℂ) *
-        (Complex.exp (I * (gammaVerticalPhase (1 / 2) y : ℂ)) ^ 2 *
+      ((‖gammaVerticalValue (1 / 2) y‖ ^ (2 : ℕ) : ℝ) : ℂ) *
+        (Complex.exp (I * (gammaVerticalPhase (1 / 2) y : ℂ)) ^ (2 : ℕ) *
           Complex.exp (I * (((2 * (Real.arctan (2 * y) +
             Real.arctan (2 * y / 3))) : ℝ) : ℂ))) := by
         push_cast
@@ -290,13 +290,13 @@ theorem fzzHJGammaShiftProduct_div_conj_eq_exp_phase (y : ℝ) :
   let F : ℂ := Complex.Gamma (z + 2) * Complex.Gamma (z - 2)
   change F / (starRingEnd ℂ) F = _
   have hF : F =
-      ((‖gammaVerticalValue (1 / 2) y‖ ^ 2 : ℝ) : ℂ) *
+      ((‖gammaVerticalValue (1 / 2) y‖ ^ (2 : ℕ) : ℝ) : ℂ) *
         Complex.exp (I * (((2 * (gammaVerticalPhase (1 / 2) y +
           Real.arctan (2 * y) + Real.arctan (2 * y / 3))) : ℝ) : ℂ)) := by
     dsimp [F, z]
     exact fzzHJGammaShiftProduct_eq_normSq_mul_exp_halfPhase y
   rw [hF]
-  let r : ℝ := ‖gammaVerticalValue (1 / 2) y‖ ^ 2
+  let r : ℝ := ‖gammaVerticalValue (1 / 2) y‖ ^ (2 : ℕ)
   let beta : ℝ := 2 * (gammaVerticalPhase (1 / 2) y +
     Real.arctan (2 * y) + Real.arctan (2 * y / 3))
   have hr : (r : ℂ) ≠ 0 := by

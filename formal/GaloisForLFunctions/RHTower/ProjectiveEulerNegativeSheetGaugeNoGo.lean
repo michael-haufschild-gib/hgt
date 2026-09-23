@@ -108,9 +108,9 @@ theorem canonicalNegativeEulerSheetPoleFreeRightStrip_iff_riemannHypothesis :
       norm_num at hre
       linarith
     have hnum : AnalyticAt ℂ (fun z : ℂ => riemannZeta (2 * z)) s :=
-      (_root_.RHTower.analyticAt_riemannZeta h2s1).comp (by fun_prop)
+      (_root_.RHTower.analyticAt_riemannZeta_primeShiftResidueClosability h2s1).comp (by fun_prop)
     have hden : AnalyticAt ℂ riemannZeta s :=
-      _root_.RHTower.analyticAt_riemannZeta hs1
+      _root_.RHTower.analyticAt_riemannZeta_primeShiftResidueClosability hs1
     change AnalyticAt ℂ (fun z : ℂ => riemannZeta (2 * z) / riemannZeta z) s
     exact hnum.div hden hden_ne
 

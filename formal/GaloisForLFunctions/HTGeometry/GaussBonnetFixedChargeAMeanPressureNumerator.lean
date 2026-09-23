@@ -9,20 +9,20 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAMeanPressureNumerator (τ φ : ℝ) : ℝ :=
-  3 * (1 + egbCoexistenceASymmetricRatio τ ^ 2) + 2 * egbFixedChargeAMeanCoupling τ φ * (2 - egbCoexistenceALogKernel τ)
+  3 * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) + 2 * egbFixedChargeAMeanCoupling τ φ * (2 - egbCoexistenceALogKernel τ)
 def egbFixedChargeAMeanPressureNumeratorCorrection (φ : ℝ) : ℝ :=
   3 - 2 * egbFixedChargeAFraction φ * egbFixedChargeAMeanCriticalCorrection φ - 16 * egbFixedChargeACriticalCouplingWeight φ / 5
 
 theorem egbFixedChargeAMeanPressureNumerator_normalized_difference (τ φ : ℝ) :
-    (egbFixedChargeAMeanPressureNumerator τ φ - (3 - 2 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ 2 =
-      3 + 2 * (((egbFixedChargeAMeanCoupling τ φ - egbFixedChargeACriticalCouplingWeight φ) / egbCoexistenceASymmetricRatio τ ^ 2) * (2 - egbCoexistenceALogKernel τ) -
-        egbFixedChargeACriticalCouplingWeight φ * ((egbCoexistenceALogKernel τ - 3) / egbCoexistenceASymmetricRatio τ ^ 2)) := by
+    (egbFixedChargeAMeanPressureNumerator τ φ - (3 - 2 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) =
+      3 + 2 * (((egbFixedChargeAMeanCoupling τ φ - egbFixedChargeACriticalCouplingWeight φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) * (2 - egbCoexistenceALogKernel τ) -
+        egbFixedChargeACriticalCouplingWeight φ * ((egbCoexistenceALogKernel τ - 3) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   unfold egbFixedChargeAMeanPressureNumerator
   field_simp <;> ring
 
 theorem egbFixedChargeAMeanPressureNumerator_quadratic_critical_limit (φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAMeanPressureNumerator τ φ - (3 - 2 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeAMeanPressureNumerator τ φ - (3 - 2 * egbFixedChargeACriticalCouplingWeight φ)) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeAMeanPressureNumeratorCorrection φ)) := by
   simp only [egbFixedChargeAMeanPressureNumerator_normalized_difference]
   have h1 := (egbFixedChargeAMeanCoupling_quadratic_critical_limit φ).mul
@@ -51,7 +51,7 @@ theorem egbFixedChargeACritical_pressure_temperature_ratio (w φ : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeA_mean_pressure_radius_product_limit (w φ : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAMeanRadius w φ τ * (1 + egbCoexistenceASymmetricRatio τ ^ 2) - egbFixedChargeACriticalRadius w φ) / egbCoexistenceASymmetricRatio τ ^ 2)
+    Tendsto (fun τ => (egbFixedChargeAMeanRadius w φ τ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) - egbFixedChargeACriticalRadius w φ) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
       atBot (𝓝 (egbFixedChargeAMeanRadiusCorrection w φ + egbFixedChargeACriticalRadius w φ)) := by
   have h := (egbFixedChargeAMeanRadius_quadratic_critical_limit w φ).add (egbFixedChargeAMeanRadius_critical_limit w φ)
   convert h using 1

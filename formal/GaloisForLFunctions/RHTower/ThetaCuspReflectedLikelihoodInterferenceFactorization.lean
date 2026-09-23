@@ -18,7 +18,7 @@ normalized reflected completed source. -/
 def thetaCuspReflectedLikelihoodInterference (u t : ℝ) : ℝ :=
   thetaCuspLikelihoodPartition (thetaCuspLikelihoodCoordinate (u + t)) *
       thetaCuspLikelihoodPartition (thetaCuspLikelihoodCoordinate (u - t)) /
-    thetaCuspLikelihoodPartition (thetaCuspLikelihoodCoordinate u) ^ 2
+    thetaCuspLikelihoodPartition (thetaCuspLikelihoodCoordinate u) ^ (2 : ℕ)
 
 /-- Negative logarithmic action of the reflected likelihood-interference cocycle. -/
 def thetaCuspReflectedLikelihoodInterferenceAction (u t : ℝ) : ℝ :=
@@ -46,7 +46,7 @@ partitions. -/
 theorem thetaCuspFullSource_reflected_mul_eq_singleAtomModel_mul_likelihoodPartitions
     {u t : ℝ} (ht : 0 ≤ t) (htu : t ≤ u) :
     thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) =
-      thetaCuspSourceTerm u 1 ^ 2 *
+      thetaCuspSourceTerm u 1 ^ (2 : ℕ) *
           thetaCuspSingleAtomReflectedNormalizedModel
             (thetaCuspSingleAtomReflectionScale 1 u)
             (thetaCuspSingleAtomReflectionDefect t) *
@@ -72,7 +72,7 @@ strictly contracting first-atom profile times one positive likelihood cocycle. -
 theorem thetaCuspFullSource_reflected_normalized_eq_singleAtomModel_mul_interference
     {u t : ℝ} (ht : 0 ≤ t) (htu : t ≤ u) :
     thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-        thetaCuspFullSource u ^ 2 =
+        thetaCuspFullSource u ^ (2 : ℕ) =
       thetaCuspSingleAtomReflectedNormalizedModel
           (thetaCuspSingleAtomReflectionScale 1 u)
           (thetaCuspSingleAtomReflectionDefect t) *
@@ -127,7 +127,7 @@ theorem thetaCuspFullSource_reflected_action_eq_singleAtom_add_interference
     {u t : ℝ} (ht : 0 ≤ t) (htu : t ≤ u) :
     -Real.log
         (thetaCuspFullSource (u + t) * thetaCuspFullSource (u - t) /
-          thetaCuspFullSource u ^ 2) =
+          thetaCuspFullSource u ^ (2 : ℕ)) =
       thetaCuspSingleAtomReflectedAction
           (thetaCuspSingleAtomReflectionScale 1 u) t +
         thetaCuspReflectedLikelihoodInterferenceAction u t := by

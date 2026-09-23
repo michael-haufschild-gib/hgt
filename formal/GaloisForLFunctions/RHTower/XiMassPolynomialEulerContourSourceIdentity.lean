@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.TwoSidedExponentialMoments
 /-!
 # The polynomial-filtered mass source stays on one absolutely convergent Euler line
 
-The even entire weight `P(z ^ 2) ^ 2` grows only polynomially on the bottom line `z = x - ci`,
+The even entire weight `P(z ^ (2 : ℕ)) ^ (2 : ℕ)` grows only polynomially on the bottom line `z = x - ci`,
 while the analytic mass test decays exponentially there.  Hence the polynomial-filtered literal
 prime–archimedean source is Bochner integrable, and the same rectangle exhaustion that proves the
 unfiltered Euler-contour source identity proves its polynomial-filtered form.
@@ -20,7 +20,7 @@ noncomputable section
 
 /-- Polynomial-filtered literal prime–archimedean source on the mass bottom edge. -/
 def xiMassPolyBottomSourceIntegrand (P : Polynomial ℝ) (a c : ℝ) (τ : ℂ) (x : ℝ) : ℂ :=
-  evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2 * xiMassBottomSourceIntegrand a c τ x
+  evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ) * xiMassBottomSourceIntegrand a c τ x
 
 /-- Normalized polynomial-filtered mass source on a legal Euler bottom line. -/
 def normalizedXiMassPolyBottomEulerContour (P : Polynomial ℝ) (a c : ℝ) (τ : ℂ) : ℂ :=
@@ -56,7 +56,7 @@ theorem xiMassPolyWeightConstant_nonneg (P : Polynomial ℝ) {c : ℝ} (hc : 0 �
   positivity
 
 theorem norm_xiMassPolyBottomWeight_le (P : Polynomial ℝ) {c : ℝ} (hc : 0 ≤ c) (x : ℝ) :
-    ‖evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2‖ ≤
+    ‖evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ)‖ ≤
       xiMassPolyWeightConstant P c *
         (1 + |x| ^ (xiMassPolySquare P).natDegree) := by
   have hz : ‖((x : ℂ) - c * I)‖ ≤ |x| + c := by
@@ -65,7 +65,7 @@ theorem norm_xiMassPolyBottomWeight_le (P : Polynomial ℝ) {c : ℝ} (hc : 0 �
     have h2 : ‖((c : ℂ) * I)‖ = |c| := by simp
     rw [h1, h2, abs_of_nonneg hc] at hbound
     exact hbound
-  have hrw : evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2 =
+  have hrw : evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ) =
       evalRealPolynomial (xiMassPolySquare P) ((x : ℂ) - c * I) :=
     (evalRealPolynomial_xiMassPolySquare P _).symm
   have habs0 : (0 : ℝ) ≤ |x| + c := by positivity
@@ -114,7 +114,7 @@ theorem continuous_xiMassBottomSourceIntegrand {a c : ℝ}
 theorem continuous_xiMassPolyBottomSourceIntegrand (P : Polynomial ℝ) {a c : ℝ}
     (hhalf : 1 / 2 < c) (hca : c < a) (τ : ℂ) :
     Continuous (xiMassPolyBottomSourceIntegrand P a c τ) := by
-  have hW : Continuous (fun x : ℝ => evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2) := by
+  have hW : Continuous (fun x : ℝ => evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
     have hQ : Continuous (fun x : ℝ =>
         evalRealPolynomial (xiMassPolySquare P) ((x : ℂ) - c * I)) :=
       (continuous_evalRealPolynomial (xiMassPolySquare P)).comp (by fun_prop)
@@ -157,8 +157,8 @@ theorem integrable_xiMassPolyBottomSourceIntegrand (P : Polynomial ℝ) {a c : �
   have hG : 0 ≤ G := xiMassPolyWeightConstant_nonneg P hc0
   have hE : 0 < E := Real.exp_pos _
   have hmajor : Integrable (fun x : ℝ =>
-      (G * E * (V + A)) * (|x| ^ 0 * Real.exp (-τ.re * |x|)) +
-      (G * E / 2) * (|x| ^ 1 * Real.exp (-τ.re * |x|)) +
+      (G * E * (V + A)) * (|x| ^ (0 : ℕ) * Real.exp (-τ.re * |x|)) +
+      (G * E / 2) * (|x| ^ (1 : ℕ) * Real.exp (-τ.re * |x|)) +
       (G * E * (V + A)) * (|x| ^ D * Real.exp (-τ.re * |x|)) +
       (G * E / 2) * (|x| ^ (D + 1) * Real.exp (-τ.re * |x|))) := by
     exact ((((HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0
@@ -182,14 +182,14 @@ theorem integrable_xiMassPolyBottomSourceIntegrand (P : Polynomial ℝ) {a c : �
     have hexpEq : Real.exp (-(τ.re * |x|)) = Real.exp (-τ.re * |x|) := by
       rw [show -(τ.re * |x|) = -τ.re * |x| by ring]
     rw [xiMassPolyBottomSourceIntegrand, norm_mul]
-    calc ‖evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2‖ *
+    calc ‖evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ)‖ *
           ‖xiMassBottomSourceIntegrand a c τ x‖
         ≤ (G * (1 + |x| ^ D)) *
             ((E * Real.exp (-(τ.re * |x|))) * (V + (A + |x| / 2))) := by
           refine mul_le_mul hw hsrc (norm_nonneg _) ?_
           positivity
-      _ = (G * E * (V + A)) * (|x| ^ 0 * Real.exp (-τ.re * |x|)) +
-          (G * E / 2) * (|x| ^ 1 * Real.exp (-τ.re * |x|)) +
+      _ = (G * E * (V + A)) * (|x| ^ (0 : ℕ) * Real.exp (-τ.re * |x|)) +
+          (G * E / 2) * (|x| ^ (1 : ℕ) * Real.exp (-τ.re * |x|)) +
           (G * E * (V + A)) * (|x| ^ D * Real.exp (-τ.re * |x|)) +
           (G * E / 2) * (|x| ^ (D + 1) * Real.exp (-τ.re * |x|)) := by
           rw [hexpEq, pow_succ]
@@ -442,7 +442,7 @@ theorem tsum_xiMassPolyAnalyticTest_eq_normalizedBottomEulerContour (P : Polynom
 theorem xiMassPolynomialParabolicTerm_eq_expScale (P : Polynomial ℝ) (a t : ℝ)
     (q : XiZeroCopy) :
     xiMassPolynomialParabolicTerm P a t q =
-      Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+      Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
         xiMassPolyAnalyticTest P a (((2 * a * t : ℝ) : ℂ)) (xiSpectralPoint q) := by
   rw [xiMassPolynomialParabolicTerm_eq_restEnergyRenormalized, xiMassPolyAnalyticTest]
   ring
@@ -457,7 +457,7 @@ theorem summable_norm_xiMassPolyAnalyticTest_parabolic (P : Polynomial ℝ) {a t
       (fun q => norm_xiMassPolynomialParabolicTerm_le_poissonMajorant P ha ht q)
       (summable_norm_evalRealPolynomial_sq_mul_xiPoissonWeight P
         (show (0 : ℝ) < t / 2 by linarith))
-  have hscale := hsummableTerm.mul_left (Real.exp (-(2 * a ^ 2 * t)))
+  have hscale := hsummableTerm.mul_left (Real.exp (-(2 * a ^ (2 : ℕ) * t)))
   refine hscale.congr (fun q => ?_)
   rw [xiMassPolynomialParabolicTerm_eq_expScale, norm_mul, Complex.norm_exp,
     Complex.ofReal_re, ← mul_assoc, ← Real.exp_add]
@@ -468,7 +468,7 @@ normalized absolutely convergent polynomial-filtered Euler bottom integral. -/
 theorem xiMassPolynomialParabolicTrace_eq_normalizedBottomEulerContour (P : Polynomial ℝ)
     {a c t : ℝ} (ha : 1 ≤ a) (hhalf : 1 / 2 < c) (hca : c < a) (ht : 0 < t) :
     xiMassPolynomialParabolicTrace P a t =
-      Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+      Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
         normalizedXiMassPolyBottomEulerContour P a c (((2 * a * t : ℝ) : ℂ)) := by
   have ha0 : 0 < a := lt_of_lt_of_le (by norm_num) ha
   have hτ : 0 < (((2 * a * t : ℝ) : ℂ)).re := by
@@ -477,7 +477,7 @@ theorem xiMassPolynomialParabolicTrace_eq_normalizedBottomEulerContour (P : Poly
   have hsum := summable_norm_xiMassPolyAnalyticTest_parabolic P ha ht
   rw [xiMassPolynomialParabolicTrace]
   have hshift : (∑' q : XiZeroCopy, xiMassPolynomialParabolicTerm P a t q) =
-      Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+      Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
         ∑' q : XiZeroCopy,
           xiMassPolyAnalyticTest P a (((2 * a * t : ℝ) : ℂ)) (xiSpectralPoint q) := by
     rw [← tsum_mul_left]
@@ -492,8 +492,8 @@ theorem xiMassPolynomialParabolicTrace_eq_literalEulerLine (P : Polynomial ℝ)
     xiMassPolynomialParabolicTrace P a t =
       (2 * Real.pi * I)⁻¹ *
         (2 * ∫ x : ℝ,
-          evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2 *
-            (Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+          evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ) *
+            (Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
               xiMassAnalyticTest a (((2 * a * t : ℝ) : ℂ)) ((x : ℂ) - c * I)) *
             (-I *
               (LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
@@ -501,11 +501,11 @@ theorem xiMassPolynomialParabolicTrace_eq_literalEulerLine (P : Polynomial ℝ)
                 logDeriv archFactor (((1 / 2 + c : ℝ) : ℂ) + x * I)))) := by
   rw [xiMassPolynomialParabolicTrace_eq_normalizedBottomEulerContour P ha hhalf hca ht,
     normalizedXiMassPolyBottomEulerContour]
-  rw [show Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+  rw [show Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
       ((2 * Real.pi * I)⁻¹ *
         (2 * ∫ x : ℝ, xiMassPolyBottomSourceIntegrand P a c (((2 * a * t : ℝ) : ℂ)) x)) =
       (2 * Real.pi * I)⁻¹ *
-        (2 * (Complex.exp (((2 * a ^ 2 * t : ℝ) : ℂ)) *
+        (2 * (Complex.exp (((2 * a ^ (2 : ℕ) * t : ℝ) : ℂ)) *
           ∫ x : ℝ, xiMassPolyBottomSourceIntegrand P a c (((2 * a * t : ℝ) : ℂ)) x)) by ring]
   congr 2
   rw [← MeasureTheory.integral_const_mul]

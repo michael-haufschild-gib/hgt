@@ -59,15 +59,15 @@ theorem hasCompactSupport_soninScaledPacket (m δ κ : ℝ) (hδ : 0 < δ) :
 /-- **Energy scaling.**  The packet energy is the half-width times the reference energy at the
 rescaled frequency. -/
 theorem integral_soninScaledPacket_sq_scaling (m δ κ : ℝ) (hδ : 0 < δ) :
-    ∫ x : ℝ, soninScaledPacket m δ κ x ^ 2 =
-      δ * ∫ y : ℝ, soninScaledPacket (m / δ) 1 (δ * κ) y ^ 2 := by
-  have hpoint : ∀ x : ℝ, soninScaledPacket m δ κ x ^ 2 =
-      soninScaledPacket (m / δ) 1 (δ * κ) (x / δ) ^ 2 := by
+    ∫ x : ℝ, soninScaledPacket m δ κ x ^ (2 : ℕ) =
+      δ * ∫ y : ℝ, soninScaledPacket (m / δ) 1 (δ * κ) y ^ (2 : ℕ) := by
+  have hpoint : ∀ x : ℝ, soninScaledPacket m δ κ x ^ (2 : ℕ) =
+      soninScaledPacket (m / δ) 1 (δ * κ) (x / δ) ^ (2 : ℕ) := by
     intro x
     rw [soninScaledPacket_scaling m δ κ hδ x]
   rw [integral_congr_ae (Filter.Eventually.of_forall hpoint),
     MeasureTheory.Measure.integral_comp_div
-      (fun y : ℝ => soninScaledPacket (m / δ) 1 (δ * κ) y ^ 2) δ,
+      (fun y : ℝ => soninScaledPacket (m / δ) 1 (δ * κ) y ^ (2 : ℕ)) δ,
     abs_of_pos hδ, smul_eq_mul]
 
 end RHTower

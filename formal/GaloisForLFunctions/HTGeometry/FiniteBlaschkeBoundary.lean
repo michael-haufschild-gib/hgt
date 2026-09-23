@@ -33,7 +33,7 @@ theorem norm_blaschkeFactor_eq_one {a z : ℂ} (ha : ‖a‖ < 1) (hz : ‖z‖ 
   have hsq : Complex.normSq (z - a) = Complex.normSq (1 - star a * z) := by
     have hb := blaschke_normSq_sub a z
     rw [hz1] at hb; linarith
-  have : ‖z - a‖ ^ 2 = ‖1 - star a * z‖ ^ 2 := by
+  have : ‖z - a‖ ^ (2 : ℕ) = ‖1 - star a * z‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, hsq]
   nlinarith [norm_nonneg (z - a), norm_nonneg (1 - star a * z)]
 
@@ -84,7 +84,7 @@ theorem norm_blaschkeFactor_le_one {a z : ℂ} (ha : ‖a‖ < 1) (hz : ‖z‖ 
   have hasq : Complex.normSq a < 1 := by rw [← Complex.sq_norm]; nlinarith [norm_nonneg a]
   have hb := blaschke_normSq_sub a z
   have hle : Complex.normSq (z - a) ≤ Complex.normSq (1 - star a * z) := by nlinarith
-  have h2 : ‖z - a‖ ^ 2 ≤ ‖1 - star a * z‖ ^ 2 := by
+  have h2 : ‖z - a‖ ^ (2 : ℕ) ≤ ‖1 - star a * z‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm]; exact hle
   nlinarith [norm_nonneg (z - a), norm_nonneg (1 - star a * z)]
 

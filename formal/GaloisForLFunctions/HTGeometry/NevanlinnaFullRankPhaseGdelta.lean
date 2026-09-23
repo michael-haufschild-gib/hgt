@@ -95,7 +95,7 @@ theorem norm_cauchyPow_sub_le (m : ℕ) {z w : ℂ} {M : ℝ}
         · subst hm
           simp
         · have hpow : M ^ (m - 1) * (M * M) = M ^ (m + 1) := by
-            rw [show M * M = M ^ 2 by ring, ← pow_add]
+            rw [show M * M = M ^ (2 : ℕ) by ring, ← pow_add]
             congr 1
             omega
           have hrw : (m : ℝ) * M ^ (m - 1) * (‖z - w‖ * (M * M))

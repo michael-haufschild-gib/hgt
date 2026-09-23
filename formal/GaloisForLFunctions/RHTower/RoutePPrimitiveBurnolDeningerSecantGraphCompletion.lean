@@ -13,7 +13,7 @@ This file constructs it as a genuine source-selected graph completion.
 
 Move the upper source pole by the real step `1/(n+1)`.  The divided difference of the original
 and moved Cauchy atoms is exactly their product.  These explicit two-atom upper prime--Gamma
-packets converge in the multiplicity-exact Xi `ell^2` carrier to the squared Cauchy column.  The
+packets converge in the multiplicity-exact Xi `ell^(2 : ℕ)` carrier to the squared Cauchy column.  The
 primitive specialization retains the exact resolved von Mangoldt amplitude and reports the
 P-G200 Burnol integral at every strict-right zero.  Meanwhile each nonzero raw packet coefficient
 has norm `||A||(n+1)` and diverges.  Thus the landing exists precisely as an unbounded graph
@@ -137,7 +137,7 @@ theorem xiSpectralPoint_ne_deningerPrimeGammaUpperPoint
 /-- Coalesced upper-sector graph reporter. -/
 def routePDeningerUpperSquaredCauchyTest
     (A : ℂ) (w : DeningerPrimeGammaUpperPoint) (a : ℂ) : ℂ :=
-  A * xiWeilCauchyTest (w : ℂ) a ^ 2
+  A * xiWeilCauchyTest (w : ℂ) a ^ (2 : ℕ)
 
 theorem tendsto_deningerPrimeGammaUpperCauchyTest_secantPacket
     (A : ℂ) (w : DeningerPrimeGammaUpperPoint) (q : XiZeroCopy) :
@@ -225,24 +225,24 @@ theorem routePDeningerUpperSquaredCauchyTest_squareSummable
     exact inv_nonneg.mpr (routePDeningerUpperSpectralGap_pos w).le
   have hbase := XiWeilSquareSummable_cauchy (w : ℂ)
   have hmajor : Summable (fun q : XiZeroCopy =>
-      (‖A‖ ^ 2 * M ^ 2) *
-        ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2) :=
-    hbase.mul_left (‖A‖ ^ 2 * M ^ 2)
+      (‖A‖ ^ (2 : ℕ) * M ^ (2 : ℕ)) *
+        ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ)) :=
+    hbase.mul_left (‖A‖ ^ (2 : ℕ) * M ^ (2 : ℕ))
   unfold XiWeilSquareSummable
   refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_) hmajor
   have hc : ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ≤ M :=
     norm_xiWeilCauchyTest_upper_le_gap_inv w q
   rw [routePDeningerUpperSquaredCauchyTest, norm_mul, norm_pow]
   calc
-    (‖A‖ * ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2) ^ 2 =
-        ‖A‖ ^ 2 *
-          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2 *
-          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2 := by ring
-    _ ≤ ‖A‖ ^ 2 * M ^ 2 *
-          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2 := by
+    (‖A‖ * ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ)) ^ (2 : ℕ) =
+        ‖A‖ ^ (2 : ℕ) *
+          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) *
+          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by ring
+    _ ≤ ‖A‖ ^ (2 : ℕ) * M ^ (2 : ℕ) *
+          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
       gcongr
-    _ = (‖A‖ ^ 2 * M ^ 2) *
-          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2 := by ring
+    _ = (‖A‖ ^ (2 : ℕ) * M ^ (2 : ℕ)) *
+          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by ring
 
 /-- Coalesced squared-Cauchy vector in the multiplicity-exact Xi jet Hilbert carrier. -/
 def routePDeningerUpperSquaredCauchyJet
@@ -251,7 +251,7 @@ def routePDeningerUpperSquaredCauchyJet
   xiWeilEvaluationLp (routePDeningerUpperSquaredCauchyTest A w)
     (routePDeningerUpperSquaredCauchyTest_squareSummable A w)
 
-/-- The coalescing two-atom source packets converge in the actual Xi `ell^2` carrier to the
+/-- The coalescing two-atom source packets converge in the actual Xi `ell^(2 : ℕ)` carrier to the
 squared-Cauchy graph reporter.  Nodes and coefficients depend only on the source pole. -/
 theorem tendsto_routePDeningerUpperSecantPacket_to_squaredCauchyJet
     (A : ℂ) (w : DeningerPrimeGammaUpperPoint) :
@@ -263,16 +263,16 @@ theorem tendsto_routePDeningerUpperSecantPacket_to_squaredCauchyJet
   let term : ℕ → XiZeroCopy → ℝ := fun n q =>
     ‖deningerPrimeGammaUpperToJetHilbert
         (routePDeningerUpperSecantPacket A w n) q -
-      routePDeningerUpperSquaredCauchyJet A w q‖ ^ 2
+      routePDeningerUpperSquaredCauchyJet A w q‖ ^ (2 : ℕ)
   let bound : XiZeroCopy → ℝ := fun q =>
-    (4 * ‖A‖ ^ 2 * M ^ 2) *
-      ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2
+    (4 * ‖A‖ ^ (2 : ℕ) * M ^ (2 : ℕ)) *
+      ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ)
   have hM : 0 ≤ M := by
     dsimp [M]
     exact inv_nonneg.mpr (routePDeningerUpperSpectralGap_pos w).le
   have hboundsum : Summable bound :=
     (XiWeilSquareSummable_cauchy (w : ℂ)).mul_left
-      (4 * ‖A‖ ^ 2 * M ^ 2)
+      (4 * ‖A‖ ^ (2 : ℕ) * M ^ (2 : ℕ))
   have hterm_tend : ∀ q, Tendsto (fun n => term n q) atTop (nhds 0) := by
     intro q
     have hpoint :=
@@ -315,11 +315,11 @@ theorem tendsto_routePDeningerUpperSecantPacket_to_squaredCauchyJet
         _ = 2 * M := by ring
     have hdiffsq : ‖xiWeilCauchyTest
           (routePDeningerUpperSecantPoint w n : ℂ) (xiSpectralPoint q) -
-        xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2 ≤
-        4 * M ^ 2 := by
+        xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
+        4 * M ^ (2 : ℕ) := by
       calc
-        _ ≤ (2 * M) ^ 2 := by gcongr
-        _ = 4 * M ^ 2 := by ring
+        _ ≤ (2 * M) ^ (2 : ℕ) := by gcongr
+        _ = 4 * M ^ (2 : ℕ) := by ring
     dsimp only [term, bound]
     rw [Real.norm_of_nonneg (sq_nonneg _),
       deningerPrimeGammaUpperToJetHilbert_apply,
@@ -330,7 +330,7 @@ theorem tendsto_routePDeningerUpperSecantPacket_to_squaredCauchyJet
     rw [show A * xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q) *
           xiWeilCauchyTest
             (routePDeningerUpperSecantPoint w n : ℂ) (xiSpectralPoint q) -
-        A * xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q) ^ 2 =
+        A * xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q) ^ (2 : ℕ) =
           A * xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q) *
             (xiWeilCauchyTest
               (routePDeningerUpperSecantPoint w n : ℂ) (xiSpectralPoint q) -
@@ -340,15 +340,15 @@ theorem tendsto_routePDeningerUpperSecantPacket_to_squaredCauchyJet
       (‖A‖ * ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ *
           ‖xiWeilCauchyTest
             (routePDeningerUpperSecantPoint w n : ℂ) (xiSpectralPoint q) -
-            xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖) ^ 2 =
-        ‖A‖ ^ 2 * ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2 *
+            xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖) ^ (2 : ℕ) =
+        ‖A‖ ^ (2 : ℕ) * ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) *
           ‖xiWeilCauchyTest
             (routePDeningerUpperSecantPoint w n : ℂ) (xiSpectralPoint q) -
-            xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2 := by ring
-      _ ≤ ‖A‖ ^ 2 * ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2 *
-          (4 * M ^ 2) := by gcongr
-      _ = (4 * ‖A‖ ^ 2 * M ^ 2) *
-          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ 2 := by ring
+            xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by ring
+      _ ≤ ‖A‖ ^ (2 : ℕ) * ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) *
+          (4 * M ^ (2 : ℕ)) := by gcongr
+      _ = (4 * ‖A‖ ^ (2 : ℕ) * M ^ (2 : ℕ)) *
+          ‖xiWeilCauchyTest (w : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ) := by ring
   have htsum : Tendsto (fun n => ∑' q, term n q) atTop (nhds 0) := by
     simpa using tendsto_tsum_of_dominated_convergence hboundsum hterm_tend
       (Eventually.of_forall hbound)
@@ -356,7 +356,7 @@ theorem tendsto_routePDeningerUpperSecantPacket_to_squaredCauchyJet
   have hnormsq : ∀ n,
       ‖deningerPrimeGammaUpperToJetHilbert
           (routePDeningerUpperSecantPacket A w n) -
-        routePDeningerUpperSquaredCauchyJet A w‖ ^ 2 =
+        routePDeningerUpperSquaredCauchyJet A w‖ ^ (2 : ℕ) =
         ∑' q, term n q := by
     intro n
     rw [HilbertSchmidt.lp_norm_sq_eq]
@@ -366,7 +366,7 @@ theorem tendsto_routePDeningerUpperSecantPacket_to_squaredCauchyJet
   have hsqzero : Tendsto
       (fun n => ‖deningerPrimeGammaUpperToJetHilbert
           (routePDeningerUpperSecantPacket A w n) -
-        routePDeningerUpperSquaredCauchyJet A w‖ ^ 2)
+        routePDeningerUpperSquaredCauchyJet A w‖ ^ (2 : ℕ))
       atTop (nhds 0) :=
     htsum.congr' (Eventually.of_forall fun n => (hnormsq n).symm)
   have hsqrt := hsqzero.sqrt
@@ -396,7 +396,7 @@ theorem routePPrimitiveBurnolDeningerSquaredCauchyJet_apply
   ring
 
 /-- Primitive specialization: a zero-independent sequence of two-atom upper source packets
-converges in the complete divisor `ell^2` carrier to the coefficient-faithful graph reporter. -/
+converges in the complete divisor `ell^(2 : ℕ)` carrier to the coefficient-faithful graph reporter. -/
 theorem tendsto_routePPrimitiveBurnolDeningerSecantPacket_to_graphJet
     (pe : Nat.Primes × ℕ) (kappa : ℝ) :
     Tendsto

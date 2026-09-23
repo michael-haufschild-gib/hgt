@@ -11,7 +11,7 @@ with reciprocal positivity on a sufficiently long future interval.
 No Bessel asymptotic expansion or numerical bound is assumed.
 
 For actual frequency `k=exp(a)` and height `Y=exp(T)`, the outgoing coefficient
-therefore satisfies `0 < k-B(k,Y) < 1/(8*k*Y^2)`.
+therefore satisfies `0 < k-B(k,Y) < 1/(8*k*Y^(2 : ℕ))`.
 This identifies an inverse-frequency boundary correction; no assertion about
 the compact core or the global congruence Maass spectrum is made.
 -/
@@ -30,7 +30,7 @@ theorem excess_pos (t : ℝ) : 0 < excess t :=
 
 /-- Exact Riccati equation for the positive excess. -/
 theorem excess_hasDerivAt (t : ℝ) :
-    HasDerivAt excess (2 * Real.exp t * excess t + excess t ^ 2 - Real.exp t) t := by
+    HasDerivAt excess (2 * Real.exp t * excess t + excess t ^ (2 : ℕ) - Real.exp t) t := by
   convert (logSlope_hasDerivAt t).sub (Real.hasDerivAt_exp t) using 1 <;> try rfl
   unfold excess
   ring
@@ -40,7 +40,7 @@ def barrier (t : ℝ) : ℝ := Real.exp (-2 * Real.exp t) * (excess t - 1 / 2)
 
 /-- Its derivative is a strictly positive weighted square. -/
 theorem barrier_hasDerivAt (t : ℝ) :
-    HasDerivAt barrier (Real.exp (-2 * Real.exp t) * excess t ^ 2) t := by
+    HasDerivAt barrier (Real.exp (-2 * Real.exp t) * excess t ^ (2 : ℕ)) t := by
   have he := ((Real.hasDerivAt_exp t).const_mul (-2)).exp
   convert he.mul ((excess_hasDerivAt t).sub_const (1 / 2)) using 1 <;> try rfl
   ring
@@ -66,7 +66,7 @@ theorem excess_lt_half (T : ℝ) : excess T < 1 / 2 := by
     linarith
   let F : ℝ → ℝ := fun t => 1 / excess t + t
   have hF (t : ℝ) : HasDerivAt F
-      (-(2 * Real.exp t * excess t + excess t ^ 2 - Real.exp t) / excess t ^ 2 + 1) t := by
+      (-(2 * Real.exp t * excess t + excess t ^ (2 : ℕ) - Real.exp t) / excess t ^ (2 : ℕ) + 1) t := by
     convert ((hasDerivAt_const t (1 : ℝ)).div (excess_hasDerivAt t)
       (excess_pos t).ne').add (hasDerivAt_id t) using 1 <;>
       try rfl
@@ -81,9 +81,9 @@ theorem excess_lt_half (T : ℝ) : excess T < 1 / 2 := by
       rw [(hF t).deriv]
       have htT : t ∈ Ici T := interior_subset ht
       have hv := hpersist t htT
-      have hnum : excess t ^ 2 ≤ 2 * Real.exp t * excess t + excess t ^ 2 - Real.exp t := by
+      have hnum : excess t ^ (2 : ℕ) ≤ 2 * Real.exp t * excess t + excess t ^ (2 : ℕ) - Real.exp t := by
         nlinarith [Real.exp_pos t]
-      have hdiv : 1 ≤ (2 * Real.exp t * excess t + excess t ^ 2 - Real.exp t) / excess t ^ 2 := by
+      have hdiv : 1 ≤ (2 * Real.exp t * excess t + excess t ^ (2 : ℕ) - Real.exp t) / excess t ^ (2 : ℕ) := by
         rw [le_div_iff₀ (sq_pos_of_pos (excess_pos t)), one_mul]
         exact hnum
       rw [neg_div]
@@ -129,7 +129,7 @@ theorem deficit_bounds (t : ℝ) : 0 < deficit t ∧ deficit t < 1 / 2 := by
 
 /-- Exact differential equation for the positive deficit. -/
 theorem deficit_hasDerivAt (t : ℝ) :
-    HasDerivAt deficit (2 * Real.exp t * deficit t - excess t ^ 2) t := by
+    HasDerivAt deficit (2 * Real.exp t * deficit t - excess t ^ (2 : ℕ)) t := by
   convert (excess_hasDerivAt t).const_sub (1 / 2) using 1 <;> try rfl
   unfold deficit
   ring
@@ -141,7 +141,7 @@ def refinedBarrier (t : ℝ) : ℝ :=
 /-- The refined comparison derivative retains its explicit positive source. -/
 theorem refinedBarrier_hasDerivAt (t : ℝ) :
     HasDerivAt refinedBarrier
-      (Real.exp (-2 * Real.exp t) * (1 / 4 - excess t ^ 2 + Real.exp (-t) / 8)) t := by
+      (Real.exp (-2 * Real.exp t) * (1 / 4 - excess t ^ (2 : ℕ) + Real.exp (-t) / 8)) t := by
   have he := ((Real.hasDerivAt_exp t).const_mul (-2)).exp
   have hr := ((hasDerivAt_id t).neg.exp).div_const 8
   convert he.mul ((deficit_hasDerivAt t).sub hr) using 1 <;> try rfl
@@ -172,7 +172,7 @@ theorem deficit_lt_inverse_argument (T : ℝ) : deficit T < Real.exp (-T) / 8 :=
     linarith
   let F : ℝ → ℝ := fun t => 1 / deficit t + t
   have hF (t : ℝ) : HasDerivAt F
-      (-(2 * Real.exp t * deficit t - excess t ^ 2) / deficit t ^ 2 + 1) t := by
+      (-(2 * Real.exp t * deficit t - excess t ^ (2 : ℕ)) / deficit t ^ (2 : ℕ) + 1) t := by
     convert ((hasDerivAt_const t (1 : ℝ)).div (deficit_hasDerivAt t)
       (deficit_bounds t).1.ne').add (hasDerivAt_id t) using 1 <;> try rfl
     ring
@@ -192,11 +192,11 @@ theorem deficit_lt_inverse_argument (T : ℝ) : deficit T < Real.exp (-T) / 8 :=
         ring
       have hvp := mul_le_mul_of_nonneg_left hv (by positivity : 0 ≤ 2 * Real.exp t)
       rw [he] at hvp
-      have hnum : deficit t ^ 2 ≤ 2 * Real.exp t * deficit t - excess t ^ 2 := by
+      have hnum : deficit t ^ (2 : ℕ) ≤ 2 * Real.exp t * deficit t - excess t ^ (2 : ℕ) := by
         have hd : deficit t + excess t = 1 / 2 := by unfold deficit; ring
         obtain ⟨hp, hu⟩ := deficit_bounds t
         nlinarith
-      have hdiv : 1 ≤ (2 * Real.exp t * deficit t - excess t ^ 2) / deficit t ^ 2 := by
+      have hdiv : 1 ≤ (2 * Real.exp t * deficit t - excess t ^ (2 : ℕ)) / deficit t ^ (2 : ℕ) := by
         rw [le_div_iff₀ (sq_pos_of_pos (deficit_bounds t).1), one_mul]
         exact hnum
       rw [neg_div]
@@ -221,7 +221,7 @@ theorem correction_eq (a T : ℝ) : correction a T = deficit (a + T) / Real.exp 
 
 /-- The actual correction is positive and bounded by the inverse frequency times inverse squared height. -/
 theorem correction_inverse_frequency_bound (a T : ℝ) :
-    0 < correction a T ∧ correction a T < 1 / (8 * Real.exp a * Real.exp T ^ 2) := by
+    0 < correction a T ∧ correction a T < 1 / (8 * Real.exp a * Real.exp T ^ (2 : ℕ)) := by
   rw [correction_eq]
   refine ⟨div_pos (deficit_bounds _).1 (Real.exp_pos _), ?_⟩
   calc
@@ -233,7 +233,7 @@ theorem correction_inverse_frequency_bound (a T : ℝ) :
 
 /-- Refined two-sided envelope for the actual critical cusp boundary coefficient. -/
 theorem outgoing_refined_bounds (a T : ℝ) :
-    Real.exp a - 1 / (8 * Real.exp a * Real.exp T ^ 2) < outgoing a T ∧
+    Real.exp a - 1 / (8 * Real.exp a * Real.exp T ^ (2 : ℕ)) < outgoing a T ∧
       outgoing a T < Real.exp a := by
   have h := correction_inverse_frequency_bound a T
   unfold correction at h

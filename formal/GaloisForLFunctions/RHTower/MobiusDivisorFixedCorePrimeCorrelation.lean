@@ -123,7 +123,7 @@ theorem mobiusDivisorInterpolatedHead_insert_prime
   have hpr := (source_mul hp P hpP hr).mpr ⟨hs,hd⟩
   have hfac : (p*r).primeFactors=insert p r.primeFactors := by
     rw [Nat.primeFactors_mul hp.ne_zero hr.ne',hp.primeFactors,singleton_union]
-  have hmu : (((ArithmeticFunction.moebius r : ℤ) : ℝ))^2=1 := by
+  have hmu : (((ArithmeticFunction.moebius r : ℤ) : ℝ))^(2 : ℕ)=1 := by
     exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree hs
   have hm : (((ArithmeticFunction.moebius (p*r) : ℤ) : ℝ)) =
       -((ArithmeticFunction.moebius r : ℤ) : ℝ) := by
@@ -156,9 +156,9 @@ theorem mobiusDivisorSelectionEnergy_prime_release_eq_correlation
   rw [mobiusDivisorSelectionEnergy_eq_inclusive_squarefree,
     mobiusDivisorSelectionEnergy_eq_inclusive_squarefree,source_split hp P hpP M]
   have he : (∑ r ∈ fixedCoreSquarefreeIndices (insert p P) (M/p),
-      ((p*r : ℕ) : ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2) =
+      ((p*r : ℕ) : ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ)) =
       ∑ r ∈ fixedCoreSquarefreeIndices (insert p P) M,
-        ((p*r : ℕ) : ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2 := by
+        ((p*r : ℕ) : ℝ)*(mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ) := by
     apply sum_subset
     · intro r hr
       obtain ⟨hr,hs⟩ := mem_filter.mp hr
@@ -181,7 +181,7 @@ theorem mobiusDivisorSelectionEnergy_prime_release_eq_correlation
   push_cast
   have hsq := Real.sq_sqrt (Nat.cast_nonneg p)
   nlinarith [congrArg (fun z : ℝ => z*((r : ℝ)*
-    (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^2)) hsq]
+    (mobiusDivisorInterpolatedFibre M (p*r) P ∅)^(2 : ℕ))) hsq]
 
 /-- One literal signed term in the complete prime-release correlation. -/
 def mobiusDivisorPrimeCorrelationTerm (P : Finset ℕ) (p M r : ℕ) : ℝ :=
@@ -195,7 +195,7 @@ private lemma correlation_as_fibres (P : Finset ℕ) {p r : ℕ}
       -2*mobiusDivisorSelectionFibre M P r.primeFactors*
         mobiusDivisorSelectionFibre M P (insert p r.primeFactors) := by
   have hpR : p∉r.primeFactors := fun h => disjoint_left.mp hd h (mem_insert_self _ _)
-  have hm : (((ArithmeticFunction.moebius r : ℤ) : ℝ))^2=1 := by
+  have hm : (((ArithmeticFunction.moebius r : ℤ) : ℝ))^(2 : ℕ)=1 := by
     exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree hs
   have hb := mobiusDivisorSelectionFibre_insert M P r.primeFactors p
   rw [if_neg hpR, fibre_sample (insert p P) M hs hd,
@@ -205,10 +205,10 @@ private lemma correlation_as_fibres (P : Finset ℕ) {p r : ℕ}
       -(Real.sqrt r*((ArithmeticFunction.moebius r : ℤ) : ℝ))*
         Real.sqrt p*mobiusDivisorInterpolatedFibre M (p*r) P ∅ := by linarith
   rw [he, fibre_sample P M hs (hd.mono_right (subset_insert _ _))]
-  have hc : (Real.sqrt r*((ArithmeticFunction.moebius r : ℤ) : ℝ))^2=(r : ℝ) := by
+  have hc : (Real.sqrt r*((ArithmeticFunction.moebius r : ℤ) : ℝ))^(2 : ℕ)=(r : ℝ) := by
     rw [mul_pow,Real.sq_sqrt (Nat.cast_nonneg r),hm,mul_one]
   calc
-    _ = 2*Real.sqrt p*(Real.sqrt r*((ArithmeticFunction.moebius r : ℤ) : ℝ))^2*
+    _ = 2*Real.sqrt p*(Real.sqrt r*((ArithmeticFunction.moebius r : ℤ) : ℝ))^(2 : ℕ)*
         mobiusDivisorInterpolatedFibre M r P ∅*mobiusDivisorInterpolatedFibre M (p*r) P ∅ := by
       rw [hc]
       rfl
@@ -218,7 +218,7 @@ private lemma correlation_point_bound (P : Finset ℕ) (hP : ∀ q∈P,q.Prime) 
     (hp : p.Prime) (hpP : p∉P) (hr : 0<r) (hs : Squarefree r)
     (hd : Disjoint r.primeFactors (insert p P)) (M : ℕ) :
     |mobiusDivisorPrimeCorrelationTerm P p M r| ≤
-      2*((3/5:ℝ)*2^(P.card-1))^2*(M : ℝ) := by
+      2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)*(M : ℝ) := by
   have hR : ∀ q∈r.primeFactors,q.Prime := fun q hq => (Nat.mem_primeFactors.mp hq).1
   have hRp : ∀ q∈insert p r.primeFactors,q.Prime := by simpa using And.intro hp hR
   have h0 := abs_mobiusDivisorSelectionFibre_le_source_amplitude M P r.primeFactors hP hR
@@ -239,7 +239,7 @@ theorem mobiusDivisorPrimeCorrelation_absolute_tail_le
     (M : ℕ) {T : ℕ} (hT : 0<T) :
     (∑ r ∈ (fixedCoreSquarefreeIndices (insert p P) M).filter (fun r => T≤M/r),
       |mobiusDivisorPrimeCorrelationTerm P p M r|) ≤
-        (2*((3/5:ℝ)*2^(P.card-1))^2/(T : ℝ))*(M : ℝ)^2 := by
+        (2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)/(T : ℝ))*(M : ℝ)^(2 : ℕ) := by
   let C : ℝ := (3/5:ℝ)*2^(P.card-1)
   let A := (fixedCoreSquarefreeIndices (insert p P) M).filter (fun r => T≤M/r)
   have hcard : A.card ≤ M/T := by
@@ -252,17 +252,17 @@ theorem mobiusDivisorPrimeCorrelation_absolute_tail_le
       simpa only [mul_comm] using (Nat.le_div_iff_mul_le hr'.1).mp hquot
     simpa using card_le_card hs
   calc
-    _ ≤ ∑ r ∈ A, 2*C^2*(M : ℝ) := by
+    _ ≤ ∑ r ∈ A, 2*C^(2 : ℕ)*(M : ℝ) := by
       apply sum_le_sum
       intro r hr
       obtain ⟨hr,_⟩ := mem_filter.mp hr
       obtain ⟨hr,hs,hd⟩ := mem_filter.mp hr
       exact correlation_point_bound P hP hp hpP (mem_Icc.mp hr).1 hs hd M
-    _ = (A.card : ℝ)*(2*C^2*(M : ℝ)) := by simp
-    _ ≤ ((M/T : ℕ) : ℝ)*(2*C^2*(M : ℝ)) := by
+    _ = (A.card : ℝ)*(2*C^(2 : ℕ)*(M : ℝ)) := by simp
+    _ ≤ ((M/T : ℕ) : ℝ)*(2*C^(2 : ℕ)*(M : ℝ)) := by
       apply mul_le_mul_of_nonneg_right (by exact_mod_cast hcard)
       positivity
-    _ ≤ ((M : ℝ)/T)*(2*C^2*(M : ℝ)) := by
+    _ ≤ ((M : ℝ)/T)*(2*C^(2 : ℕ)*(M : ℝ)) := by
       exact mul_le_mul_of_nonneg_right Nat.cast_div_le (by positivity)
     _ = _ := by dsimp [C]; ring
 

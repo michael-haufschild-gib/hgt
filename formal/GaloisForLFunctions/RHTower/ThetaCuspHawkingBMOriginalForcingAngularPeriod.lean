@@ -106,7 +106,7 @@ theorem original_green_finitePart (q : XiZeroCopy) :
 def profileDefectCoefficient (s amp : ℂ) (u : ℝ) : ℂ :=
   (u:ℂ)^3*power (2*s) (1+u)*amp^2*s*(s-1)/4
 
-private theorem profile_decomposition (q : XiZeroCopy) (br : Bool) (amp : ℂ) (u : ℝ)
+private theorem profile (q : XiZeroCopy) (br : Bool) (amp : ℂ) (u : ℝ)
     (z : Point) (hz : 0<z 1) :
     forcingProfile (physicalRate q br) amp (fullSquarePotential q z) (fullGradientEnergy q z/2) u =
       forcingProfile (physicalRate q br) amp 1
@@ -166,7 +166,7 @@ theorem original_profile_cut_decomposition (q : XiZeroCopy) (br : Bool) (amp : �
     unfold truncatedIntegral
     rw [← integral_const_mul,← integral_const_mul,← integral_add (hS.const_mul a) (hD.const_mul b)]
     apply integral_congr_ae
-    exact ae_of_all _ (fun z => by dsimp only;rw [profile_decomposition q br amp u _ z.im_pos];dsimp [a,b];ring)
+    exact ae_of_all _ (fun z => by dsimp only;rw [profile q br amp u _ z.im_pos];dsimp [a,b];ring)
   have hc : principalCounterterm q (profilePrincipal q br amp u) Y=
       a*principalCounterterm q (principalAmplitude q) Y+
       b*principalCounterterm q (fun i => physicalAngularGap q q i*principalAmplitude q i) Y := by

@@ -82,16 +82,16 @@ theorem secondCoeff_key (k : ℕ) :
 `B(t²) = 2·B + 2·t²·θA − t⁴`. -/
 theorem dyadicSubst_secondJet :
     dyadicSubst secondJet =
-      2 * secondJet + 2 * (X ^ 2 * thetaSeries velocityJet) - X ^ 4 := by
+      2 * secondJet + 2 * (X ^ (2 : ℕ) * thetaSeries velocityJet) - X ^ (4 : ℕ) := by
   classical
   ext k
-  rw [map_sub, two_mul secondJet, two_mul (X ^ 2 * thetaSeries velocityJet), map_add,
+  rw [map_sub, two_mul secondJet, two_mul (X ^ (2 : ℕ) * thetaSeries velocityJet), map_add,
     map_add, map_add, coeff_secondJet, coeff_X_pow]
   rw [show (coeff k) (dyadicSubst secondJet) =
     (if 2 ∣ k then (coeff (k / 2)) secondJet else 0) from by
     rw [dyadicSubst, coeff_mk]]
   rw [coeff_secondJet]
-  have hs : (coeff k) (X ^ 2 * thetaSeries velocityJet) =
+  have hs : (coeff k) (X ^ (2 : ℕ) * thetaSeries velocityJet) =
       if 2 ≤ k ∧ IsDyadicPow (k - 2) then 1 else 0 := by
     rw [mul_comm, coeff_mul_X_pow', coeff_thetaSeries_velocityJet]
     by_cases h2 : 2 ≤ k
@@ -120,7 +120,7 @@ theorem eulerDeriv_toMahlerCarrier (f : PowerSeries ℂ) :
       toMahlerCarrier_coeff_of_ne _ hq, mul_zero]
 
 theorem toMahlerCarrier_X_sq :
-    toMahlerCarrier (X ^ 2 : PowerSeries ℂ) = mahlerT * mahlerT := by
+    toMahlerCarrier (X ^ (2 : ℕ) : PowerSeries ℂ) = mahlerT * mahlerT := by
   rw [sq, map_mul, toMahlerCarrier_X]
 
 /-- **The second velocity's Mahler equation in the carrier**:
@@ -135,12 +135,12 @@ theorem mahlerSigma_secondJet :
   · congr 1
     · rw [show (2 : PowerSeries ℂ) * secondJet = secondJet + secondJet from two_mul _,
         map_add, two_mul]
-    · rw [show (2 : PowerSeries ℂ) * (X ^ 2 * thetaSeries velocityJet) =
-        X ^ 2 * thetaSeries velocityJet + X ^ 2 * thetaSeries velocityJet from two_mul _,
+    · rw [show (2 : PowerSeries ℂ) * (X ^ (2 : ℕ) * thetaSeries velocityJet) =
+        X ^ (2 : ℕ) * thetaSeries velocityJet + X ^ (2 : ℕ) * thetaSeries velocityJet from two_mul _,
         map_add, two_mul]
       congr 1 <;>
       · rw [map_mul, toMahlerCarrier_X_sq, eulerDeriv_toMahlerCarrier]
-  · rw [show (X ^ 4 : PowerSeries ℂ) = X ^ 2 * X ^ 2 from by ring, map_mul,
+  · rw [show (X ^ (4 : ℕ) : PowerSeries ℂ) = X ^ (2 : ℕ) * X ^ (2 : ℕ) from by ring, map_mul,
       toMahlerCarrier_X_sq]
 
 end

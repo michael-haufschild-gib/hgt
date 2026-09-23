@@ -50,7 +50,7 @@ private theorem second_iteratedDeriv_nonneg_of_isLocalMin
   have hpoly : ∀ y : ℝ,
       taylorWithinEval f 2 univ x y =
         f x + (y - x) * iteratedDeriv 1 f x +
-          ((y - x) ^ 2 / 2) * iteratedDeriv 2 f x := by
+          ((y - x) ^ (2 : ℕ) / 2) * iteratedDeriv 2 f x := by
     intro y
     rw [show 2 = 1 + 1 by norm_num, taylorWithinEval_succ,
       taylorWithinEval_succ, taylor_within_zero_eval]
@@ -60,32 +60,32 @@ private theorem second_iteratedDeriv_nonneg_of_isLocalMin
   have hevent : ∀ᶠ y in 𝓝 x,
       f x ≤ f y ∧
         ‖f y - taylorWithinEval f 2 univ x y‖ ≤
-          (-(iteratedDeriv 2 f x) / 4) * ‖(y - x) ^ 2‖ :=
+          (-(iteratedDeriv 2 f x) / 4) * ‖(y - x) ^ (2 : ℕ)‖ :=
     hmin.and hbound
   obtain ⟨y, hy, hymin, hybound⟩ := hevent.exists_gt
   rw [hpoly y, hfirst] at hybound
-  have hsquare : 0 < (y - x) ^ 2 := sq_pos_of_pos (sub_pos.mpr hy)
-  have hnorm : ‖(y - x) ^ 2‖ = (y - x) ^ 2 := by
+  have hsquare : 0 < (y - x) ^ (2 : ℕ) := sq_pos_of_pos (sub_pos.mpr hy)
+  have hnorm : ‖(y - x) ^ (2 : ℕ)‖ = (y - x) ^ (2 : ℕ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg (y - x))]
   rw [hnorm] at hybound
   have hremainder :
-      f y - (f x + (y - x) ^ 2 / 2 * iteratedDeriv 2 f x) ≤
-        -(iteratedDeriv 2 f x) / 4 * (y - x) ^ 2 := by
+      f y - (f x + (y - x) ^ (2 : ℕ) / 2 * iteratedDeriv 2 f x) ≤
+        -(iteratedDeriv 2 f x) / 4 * (y - x) ^ (2 : ℕ) := by
     calc
-      _ ≤ |f y - (f x + (y - x) ^ 2 / 2 * iteratedDeriv 2 f x)| := le_abs_self _
-      _ = ‖f y - (f x + (y - x) ^ 2 / 2 * iteratedDeriv 2 f x)‖ :=
+      _ ≤ |f y - (f x + (y - x) ^ (2 : ℕ) / 2 * iteratedDeriv 2 f x)| := le_abs_self _
+      _ = ‖f y - (f x + (y - x) ^ (2 : ℕ) / 2 * iteratedDeriv 2 f x)‖ :=
         (Real.norm_eq_abs _).symm
       _ ≤ _ := by simpa only [mul_zero, add_zero] using hybound
   nlinarith
 
 /-- Fourth displacement jet of the reflected logarithmic action. -/
-def thetaCuspReflectedLogJetFour (u t : ℝ) : ℝ :=
+def thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration (u t : ℝ) : ℝ :=
   -iteratedDeriv 4 thetaCuspLogSource (u + t) -
     iteratedDeriv 4 thetaCuspLogSource (u - t)
 
-theorem hasDerivAt_thetaCuspReflectedLogJetThree (u t : ℝ) :
+theorem hasDerivAt_thetaCuspReflectedLogJetThree_thetaCuspFifthRootCurvatureStationaryAcceleration (u t : ℝ) :
     HasDerivAt (thetaCuspReflectedLogJetThree u)
-      (thetaCuspReflectedLogJetFour u t) t := by
+      (thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration u t) t := by
   have hp :=
     (hasDerivAt_iteratedDeriv_thetaCuspLogSource 3 (u + t)).comp t
       ((hasDerivAt_id t).const_add u)
@@ -93,18 +93,18 @@ theorem hasDerivAt_thetaCuspReflectedLogJetThree (u t : ℝ) :
     (hasDerivAt_iteratedDeriv_thetaCuspLogSource 3 (u - t)).comp t
       ((hasDerivAt_id t).const_sub u)
   unfold thetaCuspReflectedLogJetThree thetaCuspLogCurvatureJet
-    thetaCuspReflectedLogJetFour
+    thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration
   convert hp.neg.sub hm.neg using 1
   all_goals first | rfl | simp [sub_eq_add_neg]
 
 /-- Fourth ordinary jet of the positive reflected-source decay flux. -/
 def thetaCuspReflectedSourceDecayFluxFourthJet (u t : ℝ) : ℝ :=
   thetaCuspReflectedSourceProduct u t *
-    (thetaCuspReflectedLogJetFour u t -
+    (thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration u t -
       4 * thetaCuspReflectedLogJetOne u t * thetaCuspReflectedLogJetThree u t -
-      3 * thetaCuspReflectedLogJetTwo u t ^ 2 +
-      6 * thetaCuspReflectedLogJetOne u t ^ 2 * thetaCuspReflectedLogJetTwo u t -
-      thetaCuspReflectedLogJetOne u t ^ 4)
+      3 * thetaCuspReflectedLogJetTwo u t ^ (2 : ℕ) +
+      6 * thetaCuspReflectedLogJetOne u t ^ (2 : ℕ) * thetaCuspReflectedLogJetTwo u t -
+      thetaCuspReflectedLogJetOne u t ^ (4 : ℕ))
 
 theorem hasDerivAt_thetaCuspReflectedSourceDecayFluxThirdJet (u t : ℝ) :
     HasDerivAt (thetaCuspReflectedSourceDecayFluxThirdJet u)
@@ -112,7 +112,7 @@ theorem hasDerivAt_thetaCuspReflectedSourceDecayFluxThirdJet (u t : ℝ) :
   have hp := hasDerivAt_thetaCuspReflectedSourceProduct u t
   have hq1 := hasDerivAt_thetaCuspReflectedLogJetOne u t
   have hq2 := hasDerivAt_thetaCuspReflectedLogJetTwo u t
-  have hq3 := hasDerivAt_thetaCuspReflectedLogJetThree u t
+  have hq3 := hasDerivAt_thetaCuspReflectedLogJetThree_thetaCuspFifthRootCurvatureStationaryAcceleration u t
   have hinside := (hq3.sub ((hq1.mul hq2).const_mul 3)).add (hq1.pow 3)
   have hraw := hp.mul hinside
   have hfun :
@@ -120,12 +120,12 @@ theorem hasDerivAt_thetaCuspReflectedSourceDecayFluxThirdJet (u t : ℝ) :
           ((thetaCuspReflectedLogJetThree u -
               fun s => 3 * (thetaCuspReflectedLogJetOne u *
                 thetaCuspReflectedLogJetTwo u) s) +
-            thetaCuspReflectedLogJetOne u ^ 3) =
+            thetaCuspReflectedLogJetOne u ^ (3 : ℕ)) =
         fun s => thetaCuspReflectedSourceProduct u s *
           (thetaCuspReflectedLogJetThree u s -
             3 * thetaCuspReflectedLogJetOne u s *
               thetaCuspReflectedLogJetTwo u s +
-            thetaCuspReflectedLogJetOne u s ^ 3) := by
+            thetaCuspReflectedLogJetOne u s ^ (3 : ℕ)) := by
     funext s
     simp only [Pi.add_apply, Pi.sub_apply, Pi.mul_apply, Pi.pow_apply]
     ring
@@ -145,8 +145,8 @@ def thetaCuspReflectedSourceFifthRootCurvatureAcceleration (u t : ℝ) : ℝ :=
   let J := thetaCuspReflectedSourceDecayFluxCurvature u t
   let K := thetaCuspReflectedSourceDecayFluxThirdJet u t
   let L := thetaCuspReflectedSourceDecayFluxFourthJet u t
-  22 * D ^ 2 + 40 * A * J - 39 * t * D * J + 11 * t * A * K +
-    t ^ 2 * (2 * D * K + 5 * A * L - 3 * J ^ 2)
+  22 * D ^ (2 : ℕ) + 40 * A * J - 39 * t * D * J + 11 * t * A * K +
+    t ^ (2 : ℕ) * (2 * D * K + 5 * A * L - 3 * J ^ (2 : ℕ))
 
 theorem hasDerivAt_thetaCuspReflectedSourceFifthRootCurvatureVelocity
     (u t : ℝ) :
@@ -213,21 +213,21 @@ theorem contDiff_two_thetaCuspReflectedSourceFifthRootCurvatureNumerator
     fun_prop
   unfold thetaCuspReflectedSourceFifthRootCurvatureNumerator
   change ContDiff ℝ 2 (fun t =>
-    24 * thetaCuspReflectedSourceFirstDrop u t ^ 2 -
+    24 * thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ) -
       9 * t * thetaCuspReflectedSourceFirstDrop u t *
         thetaCuspReflectedSourceDecayFlux u t +
-      t ^ 2 *
+      t ^ (2 : ℕ) *
         (5 * thetaCuspReflectedSourceFirstDrop u t *
             thetaCuspReflectedSourceDecayFluxCurvature u t -
-          4 * thetaCuspReflectedSourceDecayFlux u t ^ 2))
+          4 * thetaCuspReflectedSourceDecayFlux u t ^ (2 : ℕ)))
   have htop : ContDiff ℝ (↑(⊤ : ℕ∞)) (fun t =>
-      24 * thetaCuspReflectedSourceFirstDrop u t ^ 2 -
+      24 * thetaCuspReflectedSourceFirstDrop u t ^ (2 : ℕ) -
         9 * t * thetaCuspReflectedSourceFirstDrop u t *
           thetaCuspReflectedSourceDecayFlux u t +
-        t ^ 2 *
+        t ^ (2 : ℕ) *
           (5 * thetaCuspReflectedSourceFirstDrop u t *
               thetaCuspReflectedSourceDecayFluxCurvature u t -
-            4 * thetaCuspReflectedSourceDecayFlux u t ^ 2)) := by
+            4 * thetaCuspReflectedSourceDecayFlux u t ^ (2 : ℕ))) := by
     fun_prop
   exact htop.of_le (by exact WithTop.coe_le_coe.mpr le_top)
 
@@ -246,13 +246,13 @@ theorem iteratedDeriv_two_thetaCuspReflectedSourceFifthRootCurvatureNumerator
 reflected logarithmic action jet at modular center. -/
 theorem thetaCuspReflectedLogJetFour_zero_add_threeHundredTwenty_lt_two_sq
     {t : ℝ} (ht : 0 < t) :
-    thetaCuspReflectedLogJetFour 0 t + 320 <
-      2 * thetaCuspReflectedLogJetTwo 0 t ^ 2 := by
+    thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration 0 t + 320 <
+      2 * thetaCuspReflectedLogJetTwo 0 t ^ (2 : ℕ) := by
   have hT := thetaCuspLogSource_fourthTuran_gt_one_hundred_sixty ht
   have h2 := iteratedDeriv_thetaCuspLogSource_neg 2 t
   have h4 := iteratedDeriv_thetaCuspLogSource_neg 4 t
   norm_num at h2 h4
-  unfold thetaCuspReflectedLogJetFour thetaCuspReflectedLogJetTwo
+  unfold thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration thetaCuspReflectedLogJetTwo
     thetaCuspLogCurvature
   norm_num
   rw [h2, h4]
@@ -269,8 +269,8 @@ theorem
       thetaCuspReflectedSourceFifthRootCurvatureNumerator 0 t < 0 ∧
       thetaCuspReflectedSourceFifthRootCurvatureVelocity 0 t = 0 ∧
       0 ≤ thetaCuspReflectedSourceFifthRootCurvatureAcceleration 0 t ∧
-      thetaCuspReflectedLogJetFour 0 t + 320 <
-        2 * thetaCuspReflectedLogJetTwo 0 t ^ 2 := by
+      thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration 0 t + 320 <
+        2 * thetaCuspReflectedLogJetTwo 0 t ^ (2 : ℕ) := by
   rcases hfail with ⟨t0, ht0, hneg0⟩
   rcases exists_thetaCuspReflectedSourceFifthRootCurvatureNumerator_pos_right 0 with
     ⟨delta0, hdelta0, hnear⟩
@@ -327,8 +327,8 @@ theorem
     ∃ t : ℝ, 0 < t ∧
       thetaCuspReflectedSourceFifthRootCurvatureVelocity 0 t = 0 ∧
       0 ≤ thetaCuspReflectedSourceFifthRootCurvatureAcceleration 0 t ∧
-      thetaCuspReflectedLogJetFour 0 t + 320 <
-        2 * thetaCuspReflectedLogJetTwo 0 t ^ 2 ∧
+      thetaCuspReflectedLogJetFour_thetaCuspFifthRootCurvatureStationaryAcceleration 0 t + 320 <
+        2 * thetaCuspReflectedLogJetTwo 0 t ^ (2 : ℕ) ∧
       thetaCuspCompletedProductFiberCofinalLikelihoodIntegralDriftReserveAtZero t <
         thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero t := by
   obtain ⟨t, ht, hneg, hstationary, hacc, hfour⟩ :=

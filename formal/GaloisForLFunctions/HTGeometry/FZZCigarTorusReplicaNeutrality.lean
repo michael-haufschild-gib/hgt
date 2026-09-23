@@ -126,7 +126,7 @@ section ExponentiatedCondensate
 the two exponentials of the opposite FZZ winding condensates.  The two signs
 square away, leaving `μ^(2n)/(n!)²`. -/
 noncomputable def neutralScreeningCoefficient (μ : ℂ) (n : ℕ) : ℂ :=
-  μ ^ (2 * n) / ((n.factorial : ℂ) ^ 2)
+  μ ^ (2 * n) / ((n.factorial : ℂ) ^ (2 : ℕ))
 
 /-- A nonzero FZZ cosmological constant activates every neutral screening
 depth in the exponentiated replica condensate.  Torus neutrality therefore

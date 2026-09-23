@@ -30,8 +30,8 @@ theorem norm_xiMassCenteredArchIntegrand_antitone
     ‖xiMassCenteredArchIntegrand a (σ : ℂ) x‖ ≤
       ‖xiMassCenteredArchIntegrand b (σ : ℂ) x‖ := by
   have ha : 0 < a := lt_of_lt_of_le hb hba
-  have hsq : b ^ 2 ≤ a ^ 2 := by nlinarith
-  have hsqrt : Real.sqrt (x ^ 2 + b ^ 2) ≤ Real.sqrt (x ^ 2 + a ^ 2) :=
+  have hsq : b ^ (2 : ℕ) ≤ a ^ (2 : ℕ) := by nlinarith
+  have hsqrt : Real.sqrt (x ^ (2 : ℕ) + b ^ (2 : ℕ)) ≤ Real.sqrt (x ^ (2 : ℕ) + a ^ (2 : ℕ)) :=
     Real.sqrt_le_sqrt (by linarith)
   have htest :
       ‖xiMassAnalyticTest a (σ : ℂ) (x : ℂ)‖ ≤
@@ -41,9 +41,9 @@ theorem norm_xiMassCenteredArchIntegrand_antitone
     have hmb := norm_xiMassAnalyticTest_ofReal_eq
       (a := b) (σ := σ) (u := 0) (x := x) hb
     have hma' : ‖xiMassAnalyticTest a (σ : ℂ) (x : ℂ)‖ =
-        Real.exp (-σ * Real.sqrt (x ^ 2 + a ^ 2)) := by simpa using hma
+        Real.exp (-σ * Real.sqrt (x ^ (2 : ℕ) + a ^ (2 : ℕ))) := by simpa using hma
     have hmb' : ‖xiMassAnalyticTest b (σ : ℂ) (x : ℂ)‖ =
-        Real.exp (-σ * Real.sqrt (x ^ 2 + b ^ 2)) := by simpa using hmb
+        Real.exp (-σ * Real.sqrt (x ^ (2 : ℕ) + b ^ (2 : ℕ))) := by simpa using hmb
     rw [hma', hmb']
     exact Real.exp_le_exp.mpr (by nlinarith)
   unfold xiMassCenteredArchIntegrand

@@ -54,8 +54,8 @@ theorem integrableOn_expPair {a b : ℝ} (h : 0 < a + b) :
 exponential feature. -/
 theorem cauchy_quadratic_form {n : ℕ} {x : Fin n → ℝ} (hx : ∀ i, 0 < x i) (α : Fin n → ℝ) :
     ∑ i, ∑ j, α i * α j * cauchyKernel (x i) (x j)
-      = ∫ t in Ioi (0 : ℝ), (∑ i, α i * Real.exp (-(x i * t))) ^ 2 := by
-  have hexpand : ∀ t : ℝ, (∑ i, α i * Real.exp (-(x i * t))) ^ 2
+      = ∫ t in Ioi (0 : ℝ), (∑ i, α i * Real.exp (-(x i * t))) ^ (2 : ℕ) := by
+  have hexpand : ∀ t : ℝ, (∑ i, α i * Real.exp (-(x i * t))) ^ (2 : ℕ)
       = ∑ i, ∑ j, α i * α j * (Real.exp (-(x i * t)) * Real.exp (-(x j * t))) := by
     intro t
     rw [sq, Finset.sum_mul_sum]

@@ -323,7 +323,7 @@ theorem relativeShellSummableTransverseNormValue_cofinal_tendsto_zero :
     tendsto_pow_atTop_nhds_zero_of_lt_one
       (by positivity) (by norm_num)
   have hscaled :=
-    hpow.const_mul (((2 : ℝ)⁻¹) ^ 12)
+    hpow.const_mul (((2 : ℝ)⁻¹) ^ (12 : ℕ))
   simpa [relativeShellSummableTransverseNormValue_mk,
     relativeShellSummableProvenanceMass_multiplier,
     relativeShellCofinalLabel, pow_add, mul_comm] using hscaled

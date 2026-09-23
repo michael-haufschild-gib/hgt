@@ -12,7 +12,7 @@ local Xi jets, while its continuous compact-support dual consists exactly of fin
 functionals.  The canonical Hilbert space between these two boundaries is therefore the
 square-summable jet carrier
 
-`⊕ J_rho^vee ⊂ ell^2(rho,k) ⊂ ∏ J_rho`.
+`⊕ J_rho^vee ⊂ ell^(2 : ℕ)(rho,k) ⊂ ∏ J_rho`.
 
 This file constructs that middle carrier from the source jet equivalence.  It proves an exact
 linear equivalence between compact-support cohomology and the finite jet sum and a continuous
@@ -345,7 +345,7 @@ theorem deningerCompactOpenH1Jet_jetHilbertToH1
   simp [deningerArithmeticJetHilbertToH1]
 
 /--
-The finite-test/`ell^2`/product rigging realizes the original source Poincare evaluation pairing.
+The finite-test/`ell^(2 : ℕ)`/product rigging realizes the original source Poincare evaluation pairing.
 -/
 theorem deningerArithmeticJetHilbert_pairing
     (a : DeningerArithmeticJetTest)
@@ -395,7 +395,7 @@ theorem deningerArithmeticJetTestToHilbertConj_dense :
 Restriction of a compact-support distribution to the canonical square-summable jet carrier.
 
 Continuity uses the strong topology on the source dual: precomposition by the fixed continuous
-map from `ell^2` into compact-open cohomology is continuous for bounded convergence.
+map from `ell^(2 : ℕ)` into compact-open cohomology is continuous for bounded convergence.
 -/
 def deningerArithmeticJetCompactRestrict :
     DeningerArithmeticTopologicalH1Compact →L[ℂ]
@@ -461,7 +461,7 @@ theorem deningerArithmeticJetCompactToHilbert_dense :
 /--
 Unconditional source-defined Gelfand triple
 
-`H^1_c = direct sum of jets  ⊂  ell^2(jets)  ⊂  product of jets = H^1`.
+`H^(1 : ℕ)_c = direct sum of jets  ⊂  ell^(2 : ℕ)(jets)  ⊂  product of jets = H^(1 : ℕ)`.
 -/
 def deningerArithmeticJetGelfandTriple :
     DeningerArithmeticGelfandTriple

@@ -15,7 +15,7 @@ The joint pole/clock limit and then the zero-secant limit produce an
 unconditional augmented boundary Gram with
 
 * test block `1 / (1 + a + star b)`,
-* Fisher column `2a / (1 + a)^2`,
+* Fisher column `2a / (1 + a)^(2 : ℕ)`,
 * Fisher energy exactly `4`.
 
 The module also identifies the finite mismatch between compact head and
@@ -556,7 +556,7 @@ theorem eulerPrimitiveBoundaryLimitSecantGram_score_score
     (a : ι → ℂ) :
     eulerPrimitiveBoundaryLimitSecantGram h a
         (Sum.inr ()) (Sum.inr ()) =
-      4 / ((1 + (h : ℂ)) ^ 2 * (1 + 2 * (h : ℂ))) := by
+      4 / ((1 + (h : ℂ)) ^ (2 : ℕ) * (1 + 2 * (h : ℂ))) := by
   classical
   simp [eulerPrimitiveBoundaryLimitSecantGram,
     eulerPrimitiveBoundaryLimitSecantTransform,
@@ -580,7 +580,7 @@ theorem eulerPrimitiveBoundaryLimitSecantGram_score_score
 
 def eulerPrimitiveBoundaryFisherColumn
     {ι : Type*} (a : ι → ℂ) (i : ι) : ℂ :=
-  2 * a i / (1 + a i) ^ 2
+  2 * a i / (1 + a i) ^ (2 : ℕ)
 
 def eulerPrimitiveBoundaryFisherGram
     {ι : Type*} [Fintype ι] (a : ι → ℂ) :
@@ -695,7 +695,7 @@ theorem tendsto_eulerPrimitiveBoundaryLimitSecantGram_fisher
           hh a ha
       exact congrFun₂ hps.isHermitian.eq (Sum.inr ()) (Sum.inl j)
     · let f : ℝ → ℂ := fun h =>
-          4 / ((1 + (h : ℂ)) ^ 2 * (1 + 2 * (h : ℂ)))
+          4 / ((1 + (h : ℂ)) ^ (2 : ℕ) * (1 + 2 * (h : ℂ)))
       have hf : ContinuousAt f 0 := by
         dsimp [f]
         have hc : ContinuousAt (fun h : ℝ => (h : ℂ)) 0 :=

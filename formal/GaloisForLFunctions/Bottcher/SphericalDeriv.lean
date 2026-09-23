@@ -24,7 +24,7 @@ namespace Bottcher
 
 /-- **Spherical derivative** `σf(z) = ‖f'(z)‖ / (1 + ‖f z‖²)`: the infinitesimal distortion of `f`
 measured in the round (chordal) metric of the Riemann sphere `ℂ̂`. -/
-noncomputable def sphericalDeriv (f : ℂ → ℂ) (z : ℂ) : ℝ := ‖deriv f z‖ / (1 + ‖f z‖ ^ 2)
+noncomputable def sphericalDeriv (f : ℂ → ℂ) (z : ℂ) : ℝ := ‖deriv f z‖ / (1 + ‖f z‖ ^ (2 : ℕ))
 
 /-- The spherical derivative is non-negative. -/
 theorem sphericalDeriv_nonneg (f : ℂ → ℂ) (z : ℂ) : 0 ≤ sphericalDeriv f z := by
@@ -34,7 +34,7 @@ theorem sphericalDeriv_nonneg (f : ℂ → ℂ) (z : ℂ) : 0 ≤ sphericalDeriv
 theorem sphericalDeriv_le_norm_deriv (f : ℂ → ℂ) (z : ℂ) :
     sphericalDeriv f z ≤ ‖deriv f z‖ := by
   unfold sphericalDeriv
-  have hdenpos : 0 < (1 : ℝ) + ‖f z‖ ^ 2 := by positivity
+  have hdenpos : 0 < (1 : ℝ) + ‖f z‖ ^ (2 : ℕ) := by positivity
   rw [div_le_iff₀ hdenpos]
   nlinarith [sq_nonneg ‖f z‖, norm_nonneg (deriv f z)]
 
@@ -45,13 +45,13 @@ built on it, extend across `∞`. -/
 theorem sphericalDeriv_inv {f : ℂ → ℂ} {z : ℂ} (hf : DifferentiableAt ℂ f z) (hfz : f z ≠ 0) :
     sphericalDeriv (fun w => (f w)⁻¹) z = sphericalDeriv f z := by
   unfold sphericalDeriv
-  have hderiv : deriv (fun w => (f w)⁻¹) z = -deriv f z / (f z) ^ 2 :=
+  have hderiv : deriv (fun w => (f w)⁻¹) z = -deriv f z / (f z) ^ (2 : ℕ) :=
     (hf.hasDerivAt.inv hfz).deriv
   rw [hderiv, norm_div, norm_neg, norm_pow, norm_inv, inv_pow]
   have hfz' : ‖f z‖ ≠ 0 := norm_ne_zero_iff.mpr hfz
-  have hb : ‖f z‖ ^ 2 ≠ 0 := pow_ne_zero 2 hfz'
-  have hd : (1 : ℝ) + ‖f z‖ ^ 2 ≠ 0 := by positivity
-  have hd2 : (1 : ℝ) + (‖f z‖ ^ 2)⁻¹ ≠ 0 := by positivity
+  have hb : ‖f z‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hfz'
+  have hd : (1 : ℝ) + ‖f z‖ ^ (2 : ℕ) ≠ 0 := by positivity
+  have hd2 : (1 : ℝ) + (‖f z‖ ^ (2 : ℕ))⁻¹ ≠ 0 := by positivity
   field_simp
   ring
 
@@ -62,6 +62,6 @@ theorem continuous_sphericalDeriv {f : ℂ → ℂ} (hf : Continuous f) (hf' : C
     Continuous (sphericalDeriv f) := by
   unfold sphericalDeriv
   exact hf'.norm.div (continuous_const.add (hf.norm.pow 2))
-    (fun z => (by positivity : (0 : ℝ) < 1 + ‖f z‖ ^ 2).ne')
+    (fun z => (by positivity : (0 : ℝ) < 1 + ‖f z‖ ^ (2 : ℕ)).ne')
 
 end Bottcher

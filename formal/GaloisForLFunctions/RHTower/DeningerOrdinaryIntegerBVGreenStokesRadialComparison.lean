@@ -286,7 +286,7 @@ theorem deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation_eq_zero_iff
     rw [hcurv] at hgainSub
     have hgainPos := deningerHalfDensityMateGain_pos n s
     have hgainOne : deningerHalfDensityMateGain n s = 1 := by
-      have hsq : deningerHalfDensityMateGain n s ^ 2 = 1 := by
+      have hsq : deningerHalfDensityMateGain n s ^ (2 : ℕ) = 1 := by
         field_simp [ne_of_gt hgainPos] at hgainSub
         nlinarith
       nlinarith

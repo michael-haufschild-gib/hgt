@@ -338,7 +338,7 @@ theorem meromorphicTrailingCoeffAt_suzukiCrossSewnExterior
     meromorphicTrailingCoeffAt
         (suzukiCrossSewnExterior eta WPlus WMinus intervalPlus intervalMinus) z =
       ((analyticOrderAt XiC z).toNat : ℂ) *
-        suzukiCrossSewnCharacteristic WPlus WMinus z / z ^ 2 := by
+        suzukiCrossSewnCharacteristic WPlus WMinus z / z ^ (2 : ℕ) := by
   have hP := analyticAt_suzukiCrossSewnCharacteristic hWPlus hWMinus
   have hP0 : suzukiCrossSewnCharacteristic WPlus WMinus z ≠ 0 :=
     mul_ne_zero (mul_ne_zero (by norm_num) hWPlus0) hWMinus0
@@ -408,7 +408,7 @@ theorem meromorphicTrailingCoeffAt_suzukiCrossSewnNormalizedExterior
     meromorphicTrailingCoeffAt
         (suzukiCrossSewnNormalizedExterior eta
           WPlus WMinus intervalPlus intervalMinus) z =
-      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2 := by
+      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ) := by
   let C := suzukiCrossSewnExterior eta WPlus WMinus intervalPlus intervalMinus
   let P := suzukiCrossSewnCharacteristic WPlus WMinus
   have hP : AnalyticAt ℂ P z :=
@@ -427,7 +427,7 @@ theorem meromorphicTrailingCoeffAt_suzukiCrossSewnNormalizedExterior
     exact (meromorphicAt_suzukiShiftedXiMultiplier 0 z).mul hP.meromorphicAt |>.sub
       hJ.meromorphicAt
   have hCtrail : meromorphicTrailingCoeffAt C z =
-      ((analyticOrderAt XiC z).toNat : ℂ) * P z / z ^ 2 := by
+      ((analyticOrderAt XiC z).toNat : ℂ) * P z / z ^ (2 : ℕ) := by
     dsimp only [C, P]
     exact meromorphicTrailingCoeffAt_suzukiCrossSewnExterior
       hz hWPlus hWPlus0 hWMinus hWMinus0 hIPlus hIMinus
@@ -436,7 +436,7 @@ theorem meromorphicTrailingCoeffAt_suzukiCrossSewnNormalizedExterior
     subst z
     exact XiC_zero_ne hz
   have htrailDiv : meromorphicTrailingCoeffAt (C / P) z =
-      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ 2 := by
+      ((analyticOrderAt XiC z).toNat : ℂ) / z ^ (2 : ℕ) := by
     rw [div_eq_mul_inv,
       hC.meromorphicTrailingCoeffAt_mul hP.meromorphicAt.inv,
       meromorphicTrailingCoeffAt_inv, hCtrail,

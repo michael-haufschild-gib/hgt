@@ -16,7 +16,7 @@ open scoped NNReal InnerProductSpace
 namespace GaloisForLFunctions.HTGeometry.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace UpperHardyL2 := RHTower.isClosed_hardyL2.completeSpace_coe
+local instance fokasLenellsCausalHardyOrientationInst1 : CompleteSpace UpperHardyL2 := RHTower.isClosed_hardyL2.completeSpace_coe
 
 /-- Interior Cauchy evaluation intertwines the actual singular Hardy evolution with its phase. -/
 theorem causalHardyEvolution_CauchyEval (t : ℝ≥0) (w : {z : ℂ // 0 < z.im}) (u : UpperHardyL2) :
@@ -64,7 +64,7 @@ private theorem positive_time_no_feature_preimage (t : ℝ≥0) (ht : 0 < (t:ℝ
     norm_pos_iff.mpr (lowerCauchyFeatureAt_ne_zero (by simp))
   have huNorm : ‖u‖ = ‖originCauchyFeature‖ := by
     rw [← (causalHardyEvolution t).norm_map u,hu]
-  have hinner : ‖inner ℂ originCauchyFeature originCauchyFeature‖ = ‖originCauchyFeature‖^2 := by
+  have hinner : ‖inner ℂ originCauchyFeature originCauchyFeature‖ = ‖originCauchyFeature‖^(2 : ℕ) := by
     rw [← inner_self_re_eq_norm (𝕜 := ℂ) originCauchyFeature,inner_self_eq_norm_sq]
   have hh := congrArg norm he
   rw [hinner,norm_mul] at hh

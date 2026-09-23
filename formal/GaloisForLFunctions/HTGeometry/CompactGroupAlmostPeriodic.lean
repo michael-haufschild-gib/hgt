@@ -10,7 +10,7 @@ continuous observable `g : G → E`, the height signal `t ↦ g (r t)`.  Two fac
   identity neighbourhood on which `g` moves by less than `ε` is produced by the tube lemma, and a
   finite subcover of the compact orbit closure makes the set of returns to that neighbourhood
   relatively dense.
-* `eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero` — an almost periodic signal vanishing at
+* `eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero_compactGroupAlmostPeriodic` — an almost periodic signal vanishing at
   infinity vanishes identically: an almost period translates any height into the small tail.
 
 For a finite measure `μ` on `G` the expectation `t ↦ ∫ f (r t · z) dμ z` of a continuous observable
@@ -117,7 +117,7 @@ theorem isBohrAlmostPeriodic_of_compact_flow {r : ℝ → G}
   exact hVprop _ hrτ (r t)
 
 /-- **An almost periodic signal vanishing at infinity vanishes identically.** -/
-theorem eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero {F : ℝ → E}
+theorem eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero_compactGroupAlmostPeriodic {F : ℝ → E}
     (hap : IsBohrAlmostPeriodic F) (hF : Tendsto F atTop (𝓝 0)) (x : ℝ) : F x = 0 := by
   have key : ∀ ε : ℝ, 0 < ε → ‖F x‖ ≤ 2 * ε := by
     intro ε hε
@@ -144,7 +144,7 @@ zero along the flow.** -/
 theorem eq_zero_of_compact_flow_of_tendsto_zero {r : ℝ → G}
     (hadd : ∀ s t : ℝ, r (s + t) = r s * r t) {g : G → E} (hg : Continuous g)
     (hlim : Tendsto (fun t => g (r t)) atTop (𝓝 0)) (t : ℝ) : g (r t) = 0 :=
-  eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero
+  eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero_compactGroupAlmostPeriodic
     (isBohrAlmostPeriodic_of_compact_flow hadd hg) hlim t
 
 section ScreenExpectation
@@ -208,7 +208,7 @@ theorem screenExpectation_eq_zero_of_tendsto_zero (μ : Measure G) [IsFiniteMeas
     (hf : Continuous f) {r : ℝ → G} (hadd : ∀ s t : ℝ, r (s + t) = r s * r t)
     (hlim : Tendsto (fun t => ∫ z, f (r t * z) ∂μ) atTop (𝓝 0)) (t : ℝ) :
     (∫ z, f (r t * z) ∂μ) = 0 :=
-  eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero
+  eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero_compactGroupAlmostPeriodic
     (isBohrAlmostPeriodic_screenExpectation μ hf hadd) hlim t
 
 end ScreenExpectation

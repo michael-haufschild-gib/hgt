@@ -14,8 +14,8 @@ namespace GaloisForLFunctions.HTGeometry
 open CPV
 
 def egbCoexistenceAEntropyJump (k τ θ : ℝ) : ℝ :=
-  Real.pi * exp k ^ 2 * (1 - thermalRatio τ ^ 2) +
-    4 * Real.pi * exp k ^ 2 * egbCoexistenceACouplingWeight τ θ * exp τ
+  Real.pi * exp k ^ (2 : ℕ) * (1 - thermalRatio τ ^ (2 : ℕ)) +
+    4 * Real.pi * exp k ^ (2 : ℕ) * egbCoexistenceACouplingWeight τ θ * exp τ
 
 def egbCoexistenceALatentHeat (k τ θ : ℝ) : ℝ :=
   egbCoexistenceATemperature k τ θ * egbCoexistenceAEntropyJump k τ θ
@@ -34,7 +34,7 @@ theorem egbCoexistenceA_entropy_jump (k τ θ l : ℝ) :
 theorem egbCoexistenceAEntropyJump_pos (k τ θ : ℝ) : 0 < egbCoexistenceAEntropyJump k τ θ := by
   have hz := thermalRatio_pos τ
   have hz1 := thermalRatio_lt_one τ
-  have hgap : 0 < 1 - thermalRatio τ ^ 2 := by nlinarith
+  have hgap : 0 < 1 - thermalRatio τ ^ (2 : ℕ) := by nlinarith
   have hb := (egbCoexistenceACouplingWeight_bounds τ θ).1
   unfold egbCoexistenceAEntropyJump
   positivity
@@ -51,7 +51,7 @@ theorem egbCoexistenceA_entropy_jump_reference_invariant (k τ θ l₁ l₂ : �
 theorem egbCoexistenceA_entropy_enhancement (k τ θ : ℝ) :
     egbCoexistenceAEntropyJump k τ θ -
       (egbEntropyB (egbCoexistenceLargeRadius k) - egbEntropyB (egbCoexistenceSmallRadius k τ)) =
-    4 * Real.pi * egbCoexistenceACouplingRoot k τ θ ^ 2 * exp τ := by
+    4 * Real.pi * egbCoexistenceACouplingRoot k τ θ ^ (2 : ℕ) * exp τ := by
   rw [egbCoexistence_entropy_jump, egbCoexistenceACouplingRoot_sq]
   unfold egbCoexistenceAEntropyJump
   ring
@@ -67,8 +67,8 @@ theorem egbCoexistenceA_entropy_enhancement_pos_iff (k τ θ : ℝ) :
       egbCoexistenceAEntropyJump k τ θ ↔ egbCoexistenceACouplingRoot k τ θ ≠ 0 := by
   rw [← sub_pos, egbCoexistenceA_entropy_enhancement]
   have hp : 0 < 4 * Real.pi * exp τ := by positivity
-  rw [show 4 * Real.pi * egbCoexistenceACouplingRoot k τ θ ^ 2 * exp τ =
-    (4 * Real.pi * exp τ) * egbCoexistenceACouplingRoot k τ θ ^ 2 by ring,
+  rw [show 4 * Real.pi * egbCoexistenceACouplingRoot k τ θ ^ (2 : ℕ) * exp τ =
+    (4 * Real.pi * exp τ) * egbCoexistenceACouplingRoot k τ θ ^ (2 : ℕ) by ring,
     mul_pos_iff_of_pos_left hp, sq_pos_iff]
 
 theorem egbCoexistenceALatentHeat_pos (k τ θ : ℝ) : 0 < egbCoexistenceALatentHeat k τ θ :=

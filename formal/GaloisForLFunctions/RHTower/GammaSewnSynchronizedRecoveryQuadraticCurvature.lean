@@ -25,7 +25,7 @@ noncomputable section
 theorem tendsto_exponentialChordFactor_quadraticJet_zero :
     Tendsto
       (fun x : ℝ =>
-        (exponentialChordFactor x - 1 + x / 2) / x ^ 2)
+        (exponentialChordFactor x - 1 + x / 2) / x ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ)) (𝓝 (1 / 6 : ℝ)) := by
   have hbase :
       Tendsto (fun y : ℝ => (1 - Real.exp (-y)) / (6 * y))
@@ -47,7 +47,7 @@ theorem tendsto_exponentialChordFactor_quadraticJet_zero :
     field_simp [hy]
   have hsecond :
       Tendsto
-        (fun y : ℝ => (Real.exp (-y) - 1 + y) / (3 * y ^ 2))
+        (fun y : ℝ => (Real.exp (-y) - 1 + y) / (3 * y ^ (2 : ℕ)))
         (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
     refine HasDerivAt.lhopital_zero_nhdsNE
       (f' := fun y : ℝ => 1 - Real.exp (-y))
@@ -68,16 +68,16 @@ theorem tendsto_exponentialChordFactor_quadraticJet_zero :
     · have hcont : ContinuousAt
           (fun y : ℝ => Real.exp (-y) - 1 + y) 0 := by fun_prop
       simpa using! hcont.tendsto.mono_left nhdsWithin_le_nhds
-    · have hcont : ContinuousAt (fun y : ℝ => 3 * y ^ 2) 0 := by fun_prop
+    · have hcont : ContinuousAt (fun y : ℝ => 3 * y ^ (2 : ℕ)) 0 := by fun_prop
       simpa using! hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hthird :
       Tendsto
         (fun y : ℝ =>
-          (1 - Real.exp (-y) - y + y ^ 2 / 2) / y ^ 3)
+          (1 - Real.exp (-y) - y + y ^ (2 : ℕ) / 2) / y ^ (3 : ℕ))
         (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
     refine HasDerivAt.lhopital_zero_nhdsNE
       (f' := fun y : ℝ => Real.exp (-y) - 1 + y)
-      (g' := fun y : ℝ => 3 * y ^ 2) ?_ ?_ ?_ ?_ ?_ hsecond
+      (g' := fun y : ℝ => 3 * y ^ (2 : ℕ)) ?_ ?_ ?_ ?_ ?_ hsecond
     · exact Filter.Eventually.of_forall fun y => by
         have hraw :=
           ((((hasDerivAt_const (x := y) (c := (1 : ℝ))).sub
@@ -89,15 +89,15 @@ theorem tendsto_exponentialChordFactor_quadraticJet_zero :
         simpa only [Function.comp_apply, Pi.sub_apply] using! hraw'
     · exact Filter.Eventually.of_forall fun y => by
         have hraw := (hasDerivAt_pow 3 y)
-        have hraw' := hraw.congr_deriv (g' := 3 * y ^ 2) (by ring)
+        have hraw' := hraw.congr_deriv (g' := 3 * y ^ (2 : ℕ)) (by ring)
         simpa using! hraw'
     · filter_upwards [self_mem_nhdsWithin] with y hy
       change y ≠ 0 at hy
       exact mul_ne_zero (by norm_num) (pow_ne_zero 2 hy)
     · have hcont : ContinuousAt
-          (fun y : ℝ => 1 - Real.exp (-y) - y + y ^ 2 / 2) 0 := by fun_prop
+          (fun y : ℝ => 1 - Real.exp (-y) - y + y ^ (2 : ℕ) / 2) 0 := by fun_prop
       simpa using! hcont.tendsto.mono_left nhdsWithin_le_nhds
-    · have hcont : ContinuousAt (fun y : ℝ => y ^ 3) 0 := by fun_prop
+    · have hcont : ContinuousAt (fun y : ℝ => y ^ (3 : ℕ)) 0 := by fun_prop
       simpa using! hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hright : 𝓝[>] (0 : ℝ) ≤ 𝓝[≠] (0 : ℝ) :=
     nhdsWithin_mono 0 (by
@@ -114,8 +114,8 @@ theorem tendsto_exponentialChordFactor_scaledQuadraticJet_zero
     (a : ℝ) (ha : 0 < a) :
     Tendsto
       (fun x : ℝ =>
-        (exponentialChordFactor (x * a) - 1 + x * a / 2) / x ^ 2)
-      (𝓝[>] (0 : ℝ)) (𝓝 (a ^ 2 / 6)) := by
+        (exponentialChordFactor (x * a) - 1 + x * a / 2) / x ^ (2 : ℕ))
+      (𝓝[>] (0 : ℝ)) (𝓝 (a ^ (2 : ℕ) / 6)) := by
   have hscale :
       Tendsto (fun x : ℝ => x * a) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
     rw [tendsto_nhdsWithin_iff]
@@ -130,14 +130,14 @@ theorem tendsto_exponentialChordFactor_scaledQuadraticJet_zero
     · filter_upwards [self_mem_nhdsWithin] with x hx
       exact mul_pos hx ha
   have h := tendsto_exponentialChordFactor_quadraticJet_zero.comp hscale
-  have hmul := h.const_mul (a ^ 2)
+  have hmul := h.const_mul (a ^ (2 : ℕ))
   have hmul' :
       Tendsto
-        (fun x : ℝ => a ^ 2 *
+        (fun x : ℝ => a ^ (2 : ℕ) *
           (((fun y : ℝ =>
-              (exponentialChordFactor y - 1 + y / 2) / y ^ 2) ∘
+              (exponentialChordFactor y - 1 + y / 2) / y ^ (2 : ℕ)) ∘
             fun y : ℝ => y * a) x))
-        (𝓝[>] (0 : ℝ)) (𝓝 (a ^ 2 / 6)) := by
+        (𝓝[>] (0 : ℝ)) (𝓝 (a ^ (2 : ℕ) / 6)) := by
     convert hmul using 1
     ring
   apply hmul'.congr'
@@ -150,9 +150,9 @@ theorem tendsto_gammaSewnMobiusValuationContraction_quadraticJet_zero
     (p : Nat.Primes) :
     Tendsto
       (fun x : ℝ =>
-        (gammaSewnMobiusValuationContractionMultiplier x p - 1) / x ^ 2)
+        (gammaSewnMobiusValuationContractionMultiplier x p - 1) / x ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ))
-      (𝓝 (-(3 / 8 : ℝ) * Real.log (p : ℝ) ^ 2)) := by
+      (𝓝 (-(3 / 8 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))) := by
   let q : ℝ → ℝ := fun x => xiMobiusContinuousApertureDiskNode x p
   let g : ℝ → ℝ :=
     fun x => gammaSewnMobiusValuationQuadraticDefectGain x p
@@ -170,9 +170,9 @@ theorem tendsto_gammaSewnMobiusValuationContraction_quadraticJet_zero
       h.mono_left nhdsWithin_le_nhds
   have hmain := (hgap.pow 2).mul hgain |>.neg
   have hmain' :
-      Tendsto (fun x : ℝ => -(((1 - q x) / x) ^ 2 * g x))
+      Tendsto (fun x : ℝ => -(((1 - q x) / x) ^ (2 : ℕ) * g x))
         (𝓝[>] (0 : ℝ))
-        (𝓝 (-(3 / 8 : ℝ) * Real.log (p : ℝ) ^ 2)) := by
+        (𝓝 (-(3 / 8 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))) := by
     convert hmain using 1 <;> ring
   apply hmain'.congr'
   filter_upwards [self_mem_nhdsWithin] with x hx
@@ -188,19 +188,19 @@ theorem tendsto_gammaSewnLocalChord_quadraticJet_zero (p : Nat.Primes) :
       (fun x : ℝ =>
         (gammaSewnMobiusValuationContractionMultiplier x p *
               exponentialChordFactor (x * Real.log (p : ℝ)) - 1 +
-            x * Real.log (p : ℝ) / 2) / x ^ 2)
+            x * Real.log (p : ℝ) / 2) / x ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ))
-      (𝓝 (-(5 / 24 : ℝ) * Real.log (p : ℝ) ^ 2)) := by
+      (𝓝 (-(5 / 24 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))) := by
   let l : ℝ := Real.log (p : ℝ)
   have hl : 0 < l := Real.log_pos (by exact_mod_cast p.2.one_lt)
   let c : ℝ → ℝ := fun x => gammaSewnMobiusValuationContractionMultiplier x p
   let f : ℝ → ℝ := fun x => exponentialChordFactor (x * l)
-  have hc2 : Tendsto (fun x : ℝ => (c x - 1) / x ^ 2)
-      (𝓝[>] (0 : ℝ)) (𝓝 (-(3 / 8 : ℝ) * l ^ 2)) := by
+  have hc2 : Tendsto (fun x : ℝ => (c x - 1) / x ^ (2 : ℕ))
+      (𝓝[>] (0 : ℝ)) (𝓝 (-(3 / 8 : ℝ) * l ^ (2 : ℕ))) := by
     simpa only [c, l] using
       tendsto_gammaSewnMobiusValuationContraction_quadraticJet_zero p
-  have hf2 : Tendsto (fun x : ℝ => (f x - 1 + x * l / 2) / x ^ 2)
-      (𝓝[>] (0 : ℝ)) (𝓝 (l ^ 2 / 6)) := by
+  have hf2 : Tendsto (fun x : ℝ => (f x - 1 + x * l / 2) / x ^ (2 : ℕ))
+      (𝓝[>] (0 : ℝ)) (𝓝 (l ^ (2 : ℕ) / 6)) := by
     simpa only [f] using
       tendsto_exponentialChordFactor_scaledQuadraticJet_zero l hl
   have hc1 : Tendsto (fun x : ℝ => (c x - 1) / x)
@@ -220,16 +220,16 @@ theorem tendsto_gammaSewnLocalChord_quadraticJet_zero (p : Nat.Primes) :
   have hmain := hc2.add hf2 |>.add (hc1.mul hf1)
   have hmain' :
       Tendsto
-        (fun x : ℝ => (c x - 1) / x ^ 2 +
-          (f x - 1 + x * l / 2) / x ^ 2 +
+        (fun x : ℝ => (c x - 1) / x ^ (2 : ℕ) +
+          (f x - 1 + x * l / 2) / x ^ (2 : ℕ) +
           (c x - 1) / x * ((f x - 1) / x))
-        (𝓝[>] (0 : ℝ)) (𝓝 (-(5 / 24 : ℝ) * l ^ 2)) := by
+        (𝓝[>] (0 : ℝ)) (𝓝 (-(5 / 24 : ℝ) * l ^ (2 : ℕ))) := by
     convert hmain using 1 <;> ring
   have hfinal :
       Tendsto
         (fun x : ℝ =>
-          (c x * f x - 1 + x * l / 2) / x ^ 2)
-        (𝓝[>] (0 : ℝ)) (𝓝 (-(5 / 24 : ℝ) * l ^ 2)) := by
+          (c x * f x - 1 + x * l / 2) / x ^ (2 : ℕ))
+        (𝓝[>] (0 : ℝ)) (𝓝 (-(5 / 24 : ℝ) * l ^ (2 : ℕ))) := by
     apply hmain'.congr'
     filter_upwards [self_mem_nhdsWithin] with x hx
     change 0 < x at hx
@@ -301,14 +301,14 @@ private theorem tendsto_finset_prod_secondJet
       Tendsto (fun x : ℝ => (f p x - 1) / x)
         (𝓝[>] (0 : ℝ)) (𝓝 (a p)))
     (hf2 : ∀ p ∈ P,
-      Tendsto (fun x : ℝ => (f p x - 1 - x * a p) / x ^ 2)
+      Tendsto (fun x : ℝ => (f p x - 1 - x * a p) / x ^ (2 : ℕ))
         (𝓝[>] (0 : ℝ)) (𝓝 (b p))) :
     Tendsto
       (fun x : ℝ =>
-        ((∏ p ∈ P, f p x) - 1 - x * ∑ p ∈ P, a p) / x ^ 2)
+        ((∏ p ∈ P, f p x) - 1 - x * ∑ p ∈ P, a p) / x ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ))
       (𝓝 ((∑ p ∈ P, b p) +
-        (((∑ p ∈ P, a p) ^ 2 - ∑ p ∈ P, (a p) ^ 2) / 2))) := by
+        (((∑ p ∈ P, a p) ^ (2 : ℕ) - ∑ p ∈ P, (a p) ^ (2 : ℕ)) / 2))) := by
   induction P using Finset.induction_on with
   | empty => simp
   | @insert p P hp ih =>
@@ -325,14 +325,14 @@ private theorem tendsto_finset_prod_secondJet
       have hmain' :
           Tendsto
             (fun x : ℝ =>
-              (f p x - 1 - x * a p) / x ^ 2 +
-              ((∏ q ∈ P, f q x) - 1 - x * ∑ q ∈ P, a q) / x ^ 2 +
+              (f p x - 1 - x * a p) / x ^ (2 : ℕ) +
+              ((∏ q ∈ P, f q x) - 1 - x * ∑ q ∈ P, a q) / x ^ (2 : ℕ) +
               ((f p x - 1) / x) *
                 (((∏ q ∈ P, f q x) - 1) / x))
             (𝓝[>] (0 : ℝ))
             (𝓝 ((∑ q ∈ insert p P, b q) +
-              (((∑ q ∈ insert p P, a q) ^ 2 -
-                ∑ q ∈ insert p P, (a q) ^ 2) / 2))) := by
+              (((∑ q ∈ insert p P, a q) ^ (2 : ℕ) -
+                ∑ q ∈ insert p P, (a q) ^ (2 : ℕ)) / 2))) := by
         rw [Finset.sum_insert hp, Finset.sum_insert hp,
           Finset.sum_insert hp]
         convert hmain using 1 <;> ring
@@ -346,8 +346,8 @@ private theorem tendsto_finset_prod_secondJet
 /-- Exact boundary-curvature cost of synchronized Gamma recovery on a finite prime support. -/
 def gammaSewnSynchronizedRecoveryQuadraticCost
     (P : Finset Nat.Primes) : ℝ :=
-  (1 / 3 : ℝ) * ∑ p ∈ P, Real.log (p : ℝ) ^ 2 +
-    (1 / 24 : ℝ) * (∑ p ∈ P, Real.log (p : ℝ)) ^ 2
+  (1 / 3 : ℝ) * ∑ p ∈ P, Real.log (p : ℝ) ^ (2 : ℕ) +
+    (1 / 24 : ℝ) * (∑ p ∈ P, Real.log (p : ℝ)) ^ (2 : ℕ)
 
 theorem gammaSewnSynchronizedRecoveryQuadraticCost_nonneg
     (P : Finset Nat.Primes) :
@@ -360,9 +360,9 @@ theorem gammaSewnSynchronizedRecoveryQuadraticCost_pos
     0 < gammaSewnSynchronizedRecoveryQuadraticCost P := by
   have hlog (p : Nat.Primes) : 0 < Real.log (p : ℝ) :=
     Real.log_pos (by exact_mod_cast p.2.one_lt)
-  have hsq : 0 < ∑ p ∈ P, Real.log (p : ℝ) ^ 2 :=
+  have hsq : 0 < ∑ p ∈ P, Real.log (p : ℝ) ^ (2 : ℕ) :=
     Finset.sum_pos (fun p hp ↦ sq_pos_of_pos (hlog p)) hP
-  have htotal : 0 ≤ (∑ p ∈ P, Real.log (p : ℝ)) ^ 2 := sq_nonneg _
+  have htotal : 0 ≤ (∑ p ∈ P, Real.log (p : ℝ)) ^ (2 : ℕ) := sq_nonneg _
   unfold gammaSewnSynchronizedRecoveryQuadraticCost
   nlinarith
 
@@ -371,7 +371,7 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_quadraticJet_zero
     (P : Finset Nat.Primes) :
     Tendsto
       (fun x : ℝ =>
-        (gammaSewnSynchronizedRecoveryRatio nu x P - 1) / x ^ 2)
+        (gammaSewnSynchronizedRecoveryRatio nu x P - 1) / x ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ))
       (𝓝 (-gammaSewnSynchronizedRecoveryQuadraticCost P)) := by
   classical
@@ -385,7 +385,7 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_quadraticJet_zero
     gammaSewnMobiusValuationContractionMultiplier x p *
       exponentialChordFactor (x * Real.log (p : ℝ))
   let totalLog : ℝ := ∑ p ∈ P, Real.log (p : ℝ)
-  let squareLog : ℝ := ∑ p ∈ P, Real.log (p : ℝ) ^ 2
+  let squareLog : ℝ := ∑ p ∈ P, Real.log (p : ℝ) ^ (2 : ℕ)
   have hlog (p : Nat.Primes) : 0 < Real.log (p : ℝ) :=
     Real.log_pos (by exact_mod_cast p.2.one_lt)
   have htotal : 0 < totalLog := by
@@ -412,15 +412,15 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_quadraticJet_zero
   have hlocal2 (p : Nat.Primes) :
       Tendsto
         (fun x : ℝ =>
-          (localChord p x - 1 - x * (-Real.log (p : ℝ) / 2)) / x ^ 2)
+          (localChord p x - 1 - x * (-Real.log (p : ℝ) / 2)) / x ^ (2 : ℕ))
         (𝓝[>] (0 : ℝ))
-        (𝓝 (-(5 / 24 : ℝ) * Real.log (p : ℝ) ^ 2)) := by
+        (𝓝 (-(5 / 24 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))) := by
     convert tendsto_gammaSewnLocalChord_quadraticJet_zero p using 1
     funext x
     ring
   have hnumRaw := tendsto_finset_prod_secondJet P localChord
     (fun p ↦ -Real.log (p : ℝ) / 2)
-    (fun p ↦ -(5 / 24 : ℝ) * Real.log (p : ℝ) ^ 2)
+    (fun p ↦ -(5 / 24 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))
     (fun p hp ↦ hlocal0 p)
     (fun p hp ↦ hlocal1 p)
     (fun p hp ↦ hlocal2 p)
@@ -438,29 +438,29 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_quadraticJet_zero
         dsimp only [totalLog]
         ring
   have hsumASq :
-      (∑ p ∈ P, (-Real.log (p : ℝ) / 2) ^ 2) = squareLog / 4 := by
+      (∑ p ∈ P, (-Real.log (p : ℝ) / 2) ^ (2 : ℕ)) = squareLog / 4 := by
     calc
-      (∑ p ∈ P, (-Real.log (p : ℝ) / 2) ^ 2) =
-          ∑ p ∈ P, (1 / 4 : ℝ) * Real.log (p : ℝ) ^ 2 := by
+      (∑ p ∈ P, (-Real.log (p : ℝ) / 2) ^ (2 : ℕ)) =
+          ∑ p ∈ P, (1 / 4 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ) := by
             apply Finset.sum_congr rfl
             intro p hp
             ring
-      _ = (1 / 4 : ℝ) * ∑ p ∈ P, Real.log (p : ℝ) ^ 2 :=
+      _ = (1 / 4 : ℝ) * ∑ p ∈ P, Real.log (p : ℝ) ^ (2 : ℕ) :=
         by rw [Finset.mul_sum]
       _ = squareLog / 4 := by
         dsimp only [squareLog]
         ring
   have hsumB :
-      (∑ p ∈ P, -(5 / 24 : ℝ) * Real.log (p : ℝ) ^ 2) =
+      (∑ p ∈ P, -(5 / 24 : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) =
         -(5 / 24 : ℝ) * squareLog := by
     dsimp only [squareLog]
     rw [Finset.mul_sum]
   have hnum :
       Tendsto
         (fun x : ℝ =>
-          ((∏ p ∈ P, localChord p x) - 1 + x * totalLog / 2) / x ^ 2)
+          ((∏ p ∈ P, localChord p x) - 1 + x * totalLog / 2) / x ^ (2 : ℕ))
         (𝓝[>] (0 : ℝ))
-        (𝓝 (totalLog ^ 2 / 8 - squareLog / 3)) := by
+        (𝓝 (totalLog ^ (2 : ℕ) / 8 - squareLog / 3)) := by
     rw [hsumA, hsumASq, hsumB] at hnumRaw
     convert hnumRaw using 1
     · funext x
@@ -480,41 +480,41 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_quadraticJet_zero
       Tendsto
         (fun x : ℝ =>
           (exponentialChordFactor (x * totalLog) - 1 +
-            x * totalLog / 2) / x ^ 2)
-        (𝓝[>] (0 : ℝ)) (𝓝 (totalLog ^ 2 / 6)) :=
+            x * totalLog / 2) / x ^ (2 : ℕ))
+        (𝓝[>] (0 : ℝ)) (𝓝 (totalLog ^ (2 : ℕ) / 6)) :=
     tendsto_exponentialChordFactor_scaledQuadraticJet_zero totalLog htotal
   have hdiff := hnum.sub hden2
   have hquot := hdiff.div hden0 one_ne_zero
   have hquotPoint :
       Tendsto
         (fun x : ℝ =>
-          ((((∏ p ∈ P, localChord p x) - 1 + x * totalLog / 2) / x ^ 2 -
+          ((((∏ p ∈ P, localChord p x) - 1 + x * totalLog / 2) / x ^ (2 : ℕ) -
               (exponentialChordFactor (x * totalLog) - 1 +
-                x * totalLog / 2) / x ^ 2) /
+                x * totalLog / 2) / x ^ (2 : ℕ)) /
             exponentialChordFactor (x * totalLog)))
         (𝓝[>] (0 : ℝ))
-        (𝓝 ((totalLog ^ 2 / 8 - squareLog / 3 - totalLog ^ 2 / 6) / 1)) := by
+        (𝓝 ((totalLog ^ (2 : ℕ) / 8 - squareLog / 3 - totalLog ^ (2 : ℕ) / 6) / 1)) := by
     change Tendsto
       (fun x : ℝ =>
-        (((∏ p ∈ P, localChord p x) - 1 + x * totalLog / 2) / x ^ 2 -
+        (((∏ p ∈ P, localChord p x) - 1 + x * totalLog / 2) / x ^ (2 : ℕ) -
             (exponentialChordFactor (x * totalLog) - 1 +
-              x * totalLog / 2) / x ^ 2) /
+              x * totalLog / 2) / x ^ (2 : ℕ)) /
           exponentialChordFactor (x * totalLog))
       (𝓝[>] (0 : ℝ))
-      (𝓝 ((totalLog ^ 2 / 8 - squareLog / 3 - totalLog ^ 2 / 6) / 1)) at hquot
+      (𝓝 ((totalLog ^ (2 : ℕ) / 8 - squareLog / 3 - totalLog ^ (2 : ℕ) / 6) / 1)) at hquot
     exact hquot
   have hquot' :
       Tendsto
         (fun x : ℝ =>
-          ((((∏ p ∈ P, localChord p x) - 1 + x * totalLog / 2) / x ^ 2 -
+          ((((∏ p ∈ P, localChord p x) - 1 + x * totalLog / 2) / x ^ (2 : ℕ) -
               (exponentialChordFactor (x * totalLog) - 1 +
-                x * totalLog / 2) / x ^ 2) /
+                x * totalLog / 2) / x ^ (2 : ℕ)) /
             exponentialChordFactor (x * totalLog)))
         (𝓝[>] (0 : ℝ))
         (𝓝 (-gammaSewnSynchronizedRecoveryQuadraticCost P)) := by
     have hcost :
         gammaSewnSynchronizedRecoveryQuadraticCost P =
-          squareLog / 3 + totalLog ^ 2 / 24 := by
+          squareLog / 3 + totalLog ^ (2 : ℕ) / 24 := by
       simp only [gammaSewnSynchronizedRecoveryQuadraticCost,
         squareLog, totalLog]
       ring
@@ -555,7 +555,7 @@ theorem tendsto_gammaSewnSynchronizedRecoveryQuadraticCost_primesBelow_atTop :
   let L : ℝ := ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
     Real.log (p : ℝ)
   let S : ℝ := ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
-    Real.log (p : ℝ) ^ 2
+    Real.log (p : ℝ) ^ (2 : ℕ)
   have hN' : max 1 (24 * B) ≤ L := by
     dsimp only [L]
     rw [hsumEq N]
@@ -565,7 +565,7 @@ theorem tendsto_gammaSewnSynchronizedRecoveryQuadraticCost_primesBelow_atTop :
   have hS : 0 ≤ S := by
     dsimp only [S]
     positivity
-  change B ≤ (1 / 3 : ℝ) * S + (1 / 24 : ℝ) * L ^ 2
+  change B ≤ (1 / 3 : ℝ) * S + (1 / 24 : ℝ) * L ^ (2 : ℕ)
   nlinarith [sq_nonneg (L - 1)]
 
 /-- A diagonal aperture can expose the diverging all-prime quadratic recovery curvature while
@@ -580,13 +580,13 @@ theorem exists_gammaSewnSynchronizedRecovery_cofinal_quadraticLoss_schedule
         (fun N : ℕ =>
           (1 - gammaSewnSynchronizedRecoveryRatio nu (aperture N)
               (GaloisForLFunctions.primesBelowSubtype N)) /
-            (aperture N) ^ 2)
+            (aperture N) ^ (2 : ℕ))
         atTop atTop := by
   have hlimit (N : ℕ) :
       Tendsto
         (fun x : ℝ =>
           (1 - gammaSewnSynchronizedRecoveryRatio nu x
-              (GaloisForLFunctions.primesBelowSubtype N)) / x ^ 2)
+              (GaloisForLFunctions.primesBelowSubtype N)) / x ^ (2 : ℕ))
         (𝓝[>] (0 : ℝ))
         (𝓝 (gammaSewnSynchronizedRecoveryQuadraticCost
           (GaloisForLFunctions.primesBelowSubtype N))) := by
@@ -602,13 +602,13 @@ theorem exists_gammaSewnSynchronizedRecovery_cofinal_quadraticLoss_schedule
           gammaSewnSynchronizedRecoveryQuadraticCost
                 (GaloisForLFunctions.primesBelowSubtype N) - 1 <
             (1 - gammaSewnSynchronizedRecoveryRatio nu x
-                (GaloisForLFunctions.primesBelowSubtype N)) / x ^ 2 := by
+                (GaloisForLFunctions.primesBelowSubtype N)) / x ^ (2 : ℕ) := by
     let C := gammaSewnSynchronizedRecoveryQuadraticCost
       (GaloisForLFunctions.primesBelowSubtype N)
     have hlarge :
         ∀ᶠ x : ℝ in 𝓝[>] (0 : ℝ), C - 1 <
           (1 - gammaSewnSynchronizedRecoveryRatio nu x
-              (GaloisForLFunctions.primesBelowSubtype N)) / x ^ 2 :=
+              (GaloisForLFunctions.primesBelowSubtype N)) / x ^ (2 : ℕ) :=
       (hlimit N).eventually (Ioi_mem_nhds (by linarith : C - 1 < C))
     have hsmallNhds :
         ∀ᶠ x : ℝ in 𝓝 (0 : ℝ), x < 1 / ((N : ℝ) + 1) :=

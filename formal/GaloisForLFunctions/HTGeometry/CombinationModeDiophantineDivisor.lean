@@ -157,9 +157,9 @@ theorem summable_modeDivisor_of_diophantine {s : ℕ} (ℓ : Fin s → ℝ) {γ 
     (ĝ : (Fin s → ℤ) → ℂ)
     (hĝ : ∀ m, ‖ĝ m‖ ≤ Real.exp (-ρ * (modeNorm m : ℝ))) :
     Summable (fun m : {m : Fin s → ℤ // m ≠ 0} =>
-      ‖ĝ (m : Fin s → ℤ)‖ ^ 2 / (modeForm ℓ (m : Fin s → ℤ)) ^ 2) := by
+      ‖ĝ (m : Fin s → ℤ)‖ ^ (2 : ℕ) / (modeForm ℓ (m : Fin s → ℤ)) ^ (2 : ℕ)) := by
   have hmaj : Summable (fun m : Fin s → ℤ =>
-      (γ⁻¹) ^ 2 * ((3 + (modeNorm m : ℝ)) ^ (2 * κ)
+      (γ⁻¹) ^ (2 : ℕ) * ((3 + (modeNorm m : ℝ)) ^ (2 * κ)
         * Real.exp (-(2 * ρ) * (modeNorm m : ℝ)))) :=
     (summable_modeWeight s (2 * κ) hρ).mul_left _
   refine Summable.of_nonneg_of_le (fun m => by positivity) (fun m => ?_) (hmaj.subtype _)
@@ -170,23 +170,23 @@ theorem summable_modeDivisor_of_diophantine {s : ℕ} (ℓ : Fin s → ℝ) {γ 
   have hHpos : (0 : ℝ) < (modeHeight m : ℝ) := by linarith
   have hlow : γ / (modeHeight m : ℝ) ^ κ ≤ |modeForm ℓ m| := hdioph m hm
   have hlowpos : (0 : ℝ) < γ / (modeHeight m : ℝ) ^ κ := by positivity
-  have hsq : (γ / (modeHeight m : ℝ) ^ κ) ^ 2 ≤ (modeForm ℓ m) ^ 2 := by
+  have hsq : (γ / (modeHeight m : ℝ) ^ κ) ^ (2 : ℕ) ≤ (modeForm ℓ m) ^ (2 : ℕ) := by
     rw [← sq_abs (modeForm ℓ m)]
     exact pow_le_pow_left₀ hlowpos.le hlow 2
-  have hnum : ‖ĝ m‖ ^ 2 ≤ Real.exp (-(2 * ρ) * (modeNorm m : ℝ)) := by
-    have h1 : ‖ĝ m‖ ^ 2 ≤ (Real.exp (-ρ * (modeNorm m : ℝ))) ^ 2 :=
+  have hnum : ‖ĝ m‖ ^ (2 : ℕ) ≤ Real.exp (-(2 * ρ) * (modeNorm m : ℝ)) := by
+    have h1 : ‖ĝ m‖ ^ (2 : ℕ) ≤ (Real.exp (-ρ * (modeNorm m : ℝ))) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) (hĝ m) 2
-    have h2 : (Real.exp (-ρ * (modeNorm m : ℝ))) ^ 2
+    have h2 : (Real.exp (-ρ * (modeNorm m : ℝ))) ^ (2 : ℕ)
         = Real.exp (-(2 * ρ) * (modeNorm m : ℝ)) := by
       rw [sq, ← Real.exp_add]
       ring_nf
     rwa [h2] at h1
-  have hstep : ‖ĝ m‖ ^ 2 / (modeForm ℓ m) ^ 2
-      ≤ Real.exp (-(2 * ρ) * (modeNorm m : ℝ)) / (γ / (modeHeight m : ℝ) ^ κ) ^ 2 := by
+  have hstep : ‖ĝ m‖ ^ (2 : ℕ) / (modeForm ℓ m) ^ (2 : ℕ)
+      ≤ Real.exp (-(2 * ρ) * (modeNorm m : ℝ)) / (γ / (modeHeight m : ℝ) ^ κ) ^ (2 : ℕ) := by
     gcongr
   refine hstep.trans ?_
-  have hrewrite : Real.exp (-(2 * ρ) * (modeNorm m : ℝ)) / (γ / (modeHeight m : ℝ) ^ κ) ^ 2
-      = (γ⁻¹) ^ 2 * ((modeHeight m : ℝ) ^ (2 * κ)
+  have hrewrite : Real.exp (-(2 * ρ) * (modeNorm m : ℝ)) / (γ / (modeHeight m : ℝ) ^ κ) ^ (2 : ℕ)
+      = (γ⁻¹) ^ (2 : ℕ) * ((modeHeight m : ℝ) ^ (2 * κ)
         * Real.exp (-(2 * ρ) * (modeNorm m : ℝ))) := by
     rw [div_pow, pow_mul]
     field_simp

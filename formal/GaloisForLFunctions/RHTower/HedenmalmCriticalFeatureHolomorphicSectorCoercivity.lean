@@ -4,8 +4,8 @@ import GaloisForLFunctions.RHTower.HedenmalmCriticalFeaturePrimeGammaDecompositi
 /-!
 # Holomorphic-sector coercivity of the Hedenmalm critical feature
 
-Off the critical line, a Weil diagonal is holomorphic: it contains `F(z)^2`, not the Hermitian
-energy `|F(z)|^2`.  For a generic test this distinction prevents a source formula from bounding
+Off the critical line, a Weil diagonal is holomorphic: it contains `F(z)^(2 : ℕ)`, not the Hermitian
+energy `|F(z)|^(2 : ℕ)`.  For a generic test this distinction prevents a source formula from bounding
 same-copy energy.  The real-centered Hedenmalm critical feature lies in a uniformly acute sector
 throughout the whole critical strip.  Its holomorphic square therefore controls half its Hermitian
 energy pointwise.
@@ -28,7 +28,7 @@ open HedenmalmThetaSource
 theorem criticalFeatureCauchyKernelTest_eq
     (t : ℝ) {z : ℂ} (hz : |z.im| < 1 / 2) :
     criticalFeatureCauchyKernelTest t z =
-      2 / (1 + (z - (t : ℂ)) ^ 2) := by
+      2 / (1 + (z - (t : ℂ)) ^ (2 : ℕ)) := by
   unfold criticalFeatureCauchyKernelTest
   rw [← criticalEvaluation_realCriticalFeature_eq_hardyCauchySum t hz]
   rw [criticalEvaluation_criticalFeature_eq (by norm_num) hz]
@@ -46,9 +46,9 @@ theorem xiWeilSharp_criticalFeatureCauchyKernelTest (t : ℝ) :
 
 /-- Exact algebraic sector factorization for the critical-feature denominator. -/
 theorem criticalFeatureDenominator_sector_factorization (x y : ℝ) :
-    (1 + x ^ 2 - y ^ 2) ^ 2 - 3 * (2 * x * y) ^ 2 =
-      (x ^ 2 - (1 - y ^ 2)) ^ 2 +
-        4 * x ^ 2 * (1 - 4 * y ^ 2) := by
+    (1 + x ^ (2 : ℕ) - y ^ (2 : ℕ)) ^ (2 : ℕ) - 3 * (2 * x * y) ^ (2 : ℕ) =
+      (x ^ (2 : ℕ) - (1 - y ^ (2 : ℕ))) ^ (2 : ℕ) +
+        4 * x ^ (2 : ℕ) * (1 - 4 * y ^ (2 : ℕ)) := by
   ring
 
 /-- **Critical-strip sector coercivity.**  The real part of the holomorphic square of every
@@ -56,27 +56,27 @@ real-centered critical feature controls half of its same-copy Hermitian energy. 
 theorem half_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq
     (t : ℝ) {z : ℂ} (hz : |z.im| < 1 / 2) :
     (1 / 2 : ℝ) * Complex.normSq (criticalFeatureCauchyKernelTest t z) ≤
-      ((criticalFeatureCauchyKernelTest t z) ^ 2).re := by
+      ((criticalFeatureCauchyKernelTest t z) ^ (2 : ℕ)).re := by
   let x : ℝ := z.re - t
   let y : ℝ := z.im
-  let A : ℝ := 1 + x ^ 2 - y ^ 2
+  let A : ℝ := 1 + x ^ (2 : ℕ) - y ^ (2 : ℕ)
   let B : ℝ := 2 * x * y
-  let D : ℝ := A ^ 2 + B ^ 2
-  have hy2 : y ^ 2 < 1 / 4 := by
+  let D : ℝ := A ^ (2 : ℕ) + B ^ (2 : ℕ)
+  have hy2 : y ^ (2 : ℕ) < 1 / 4 := by
     have hsq := (sq_lt_sq₀ (abs_nonneg y)
       (by norm_num : (0 : ℝ) ≤ 1 / 2)).2 (by simpa [y] using hz)
     rw [sq_abs] at hsq
     norm_num at hsq ⊢
     exact hsq
-  have hfour : 0 ≤ 1 - 4 * y ^ 2 := by linarith
-  have hsector : 3 * B ^ 2 ≤ A ^ 2 := by
-    have hid : A ^ 2 - 3 * B ^ 2 =
-        (x ^ 2 - (1 - y ^ 2)) ^ 2 +
-          4 * x ^ 2 * (1 - 4 * y ^ 2) := by
+  have hfour : 0 ≤ 1 - 4 * y ^ (2 : ℕ) := by linarith
+  have hsector : 3 * B ^ (2 : ℕ) ≤ A ^ (2 : ℕ) := by
+    have hid : A ^ (2 : ℕ) - 3 * B ^ (2 : ℕ) =
+        (x ^ (2 : ℕ) - (1 - y ^ (2 : ℕ))) ^ (2 : ℕ) +
+          4 * x ^ (2 : ℕ) * (1 - 4 * y ^ (2 : ℕ)) := by
       simpa only [A, B] using criticalFeatureDenominator_sector_factorization x y
     have hright : 0 ≤
-        (x ^ 2 - (1 - y ^ 2)) ^ 2 +
-          4 * x ^ 2 * (1 - 4 * y ^ 2) := by positivity
+        (x ^ (2 : ℕ) - (1 - y ^ (2 : ℕ))) ^ (2 : ℕ) +
+          4 * x ^ (2 : ℕ) * (1 - 4 * y ^ (2 : ℕ)) := by positivity
     linarith
   have hApos : 0 < A := by
     dsimp [A]
@@ -84,22 +84,22 @@ theorem half_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq
   have hDpos : 0 < D := by
     dsimp [D]
     nlinarith [sq_pos_of_pos hApos, sq_nonneg B]
-  have hden : Complex.normSq (1 + (z - (t : ℂ)) ^ 2) = D := by
+  have hden : Complex.normSq (1 + (z - (t : ℂ)) ^ (2 : ℕ)) = D := by
     dsimp [D, A, B, x, y]
     rw [Complex.normSq_apply]
     simp [pow_two, Complex.mul_re]
     ring
   have hre :
-      ((2 / (1 + (z - (t : ℂ)) ^ 2)) ^ 2).re =
-        4 * (A ^ 2 - B ^ 2) / D ^ 2 := by
+      ((2 / (1 + (z - (t : ℂ)) ^ (2 : ℕ))) ^ (2 : ℕ)).re =
+        4 * (A ^ (2 : ℕ) - B ^ (2 : ℕ)) / D ^ (2 : ℕ) := by
     rw [pow_two, Complex.mul_re, Complex.div_re, Complex.div_im]
     norm_num
     rw [hden]
-    have hreDen : ((z - (t : ℂ)) ^ 2).re = A - 1 := by
+    have hreDen : ((z - (t : ℂ)) ^ (2 : ℕ)).re = A - 1 := by
       dsimp [A, x, y]
       simp [pow_two, Complex.mul_re]
       ring
-    have himDen : ((z - (t : ℂ)) ^ 2).im = B := by
+    have himDen : ((z - (t : ℂ)) ^ (2 : ℕ)).im = B := by
       dsimp [B, x, y]
       simp [pow_two, Complex.mul_im]
       ring
@@ -107,14 +107,14 @@ theorem half_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq
     field_simp [ne_of_gt hDpos]
     ring
   have hnorm :
-      Complex.normSq (2 / (1 + (z - (t : ℂ)) ^ 2)) = 4 / D := by
+      Complex.normSq (2 / (1 + (z - (t : ℂ)) ^ (2 : ℕ))) = 4 / D := by
     rw [Complex.normSq_div]
     norm_num [Complex.normSq_apply]
-    have hreDen : ((z - (t : ℂ)) ^ 2).re = A - 1 := by
+    have hreDen : ((z - (t : ℂ)) ^ (2 : ℕ)).re = A - 1 := by
       dsimp [A, x, y]
       simp [pow_two, Complex.mul_re]
       ring
-    have himDen : ((z - (t : ℂ)) ^ 2).im = B := by
+    have himDen : ((z - (t : ℂ)) ^ (2 : ℕ)).im = B := by
       dsimp [B, x, y]
       simp [pow_two, Complex.mul_im]
       ring
@@ -151,27 +151,27 @@ theorem criticalFeatureHermitianEnergyTrace_le_two_re_xiWeilPolarization (t : �
         (criticalFeatureCauchyKernelTest t)
         (criticalFeatureCauchyKernelTest t)).re := by
   let F : ℂ → ℂ := criticalFeatureCauchyKernelTest t
-  have hF : Summable (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ 2) := by
+  have hF : Summable (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ)) := by
     exact criticalFeatureCauchyKernelTest_squareSummable t
   have hnormSq : Summable (fun q : XiZeroCopy =>
       Complex.normSq (F (xiSpectralPoint q))) := by
     simpa only [Complex.normSq_eq_norm_sq] using hF
   have hsquareNorm : Summable (fun q : XiZeroCopy =>
-      ‖(F (xiSpectralPoint q)) ^ 2‖) := by
+      ‖(F (xiSpectralPoint q)) ^ (2 : ℕ)‖) := by
     simpa only [norm_pow] using hF
   have hsquare : Summable (fun q : XiZeroCopy =>
-      (F (xiSpectralPoint q)) ^ 2) :=
+      (F (xiSpectralPoint q)) ^ (2 : ℕ)) :=
     summable_norm_iff.mp hsquareNorm
   have hre : Summable (fun q : XiZeroCopy =>
-      ((F (xiSpectralPoint q)) ^ 2).re) := by
+      ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re) := by
     refine (hsquare.map Complex.reCLM Complex.reCLM.continuous).congr ?_
     intro q
     rfl
   have htwoRe : Summable (fun q : XiZeroCopy =>
-      2 * ((F (xiSpectralPoint q)) ^ 2).re) := hre.mul_left 2
+      2 * ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re) := hre.mul_left 2
   have hpoint (q : XiZeroCopy) :
       Complex.normSq (F (xiSpectralPoint q)) ≤
-        2 * ((F (xiSpectralPoint q)) ^ 2).re := by
+        2 * ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
     have hsector := half_mul_normSq_criticalFeatureCauchyKernelTest_le_re_sq t
       (abs_xiSpectralPoint_im_lt_half q)
     dsimp only [F]
@@ -181,10 +181,10 @@ theorem criticalFeatureHermitianEnergyTrace_le_two_re_xiWeilPolarization (t : �
     criticalFeatureHermitianEnergyTrace t =
         ∑' q : XiZeroCopy, Complex.normSq (F (xiSpectralPoint q)) := by
       rfl
-    _ ≤ ∑' q : XiZeroCopy, 2 * ((F (xiSpectralPoint q)) ^ 2).re := hsum
-    _ = 2 * (∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ 2).re) := by
+    _ ≤ ∑' q : XiZeroCopy, 2 * ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re := hsum
+    _ = 2 * (∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ (2 : ℕ)).re) := by
       rw [tsum_mul_left]
-    _ = 2 * (∑' q : XiZeroCopy, (F (xiSpectralPoint q)) ^ 2).re := by
+    _ = 2 * (∑' q : XiZeroCopy, (F (xiSpectralPoint q)) ^ (2 : ℕ)).re := by
       rw [Complex.re_tsum hsquare]
     _ = 2 * (xiWeilPolarization F F).re := by
       unfold xiWeilPolarization

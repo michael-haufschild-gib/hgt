@@ -150,7 +150,7 @@ private theorem nullKernel_eq (nu : ℂ) {p q a b : ℝ} (ha : a ≤ p) (hb : b 
   rw [max_eq_right (invariant_causal ⟨_,_,_,null_cone ha hb⟩)]
 
 private def nullPotential (nu : ℂ) (c d : ℝ) : ℂ :=
-  nu*(nu+1)/(4*(Real.cosh ((c-d)/2):ℂ)^2)
+  nu*(nu+1)/(4*(Real.cosh ((c-d)/2):ℂ)^(2 : ℕ))
 
 private theorem nullPotential_continuous (nu : ℂ) :
     Continuous (fun p : ℝ × ℝ => nullPotential nu p.1 p.2) := by
@@ -493,7 +493,7 @@ theorem radialResponse_goursat (nu s amplitude : ℂ) {p q : ℝ}
       (1/4:ℂ)*(∫ a in (0:ℝ)..p, ∫ b in (0:ℝ)..q,
         oddSource s amplitude ((a+b)/2) ((a-b)/2))+
       ∫ c in (0:ℝ)..p, ∫ d in (0:ℝ)..q,
-        nu*(nu+1)/(4*(Real.cosh ((c-d)/2):ℂ)^2)*
+        nu*(nu+1)/(4*(Real.cosh ((c-d)/2):ℂ)^(2 : ℕ))*
           radialResponse nu s amplitude ((c+d)/2) ((c-d)/2) := by
   rw [radialResponse_null nu s amplitude hp hq,
     nullResponse_goursat nu (nullSource s amplitude) (nullSource_continuous s amplitude) hp hq]
@@ -566,7 +566,7 @@ theorem radialResponse_null_wave (nu s amplitude : ℂ) {p q : ℝ}
     deriv (fun d => deriv (fun c =>
       radialResponse nu s amplitude ((c+d)/2) ((c-d)/2)) p) q =
       (1/4:ℂ)*oddSource s amplitude ((p+q)/2) ((p-q)/2)+
-      nu*(nu+1)/(4*(Real.cosh ((p-q)/2):ℂ)^2)*
+      nu*(nu+1)/(4*(Real.cosh ((p-q)/2):ℂ)^(2 : ℕ))*
         radialResponse nu s amplitude ((p+q)/2) ((p-q)/2) := by
   have hi := (nullEffective_continuous nu s amplitude).comp
     (show Continuous (fun d : ℝ => (p,d)) by fun_prop)
@@ -583,11 +583,11 @@ theorem radialResponse_null_wave (nu s amplitude : ℂ) {p q : ℝ}
 
 private def staticEffective (nu s amplitude : ℂ) (z : ℝ × ℝ) : ℂ :=
   oddSource s amplitude z.1 z.2+
-    nu*(nu+1)/(Real.cosh z.2:ℂ)^2*radialResponse nu s amplitude z.1 z.2
+    nu*(nu+1)/(Real.cosh z.2:ℂ)^(2 : ℕ)*radialResponse nu s amplitude z.1 z.2
 
 private theorem staticEffective_continuous (nu s amplitude : ℂ) :
     Continuous (staticEffective nu s amplitude) := by
-  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(Real.cosh z.2:ℂ)^2) := by
+  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(Real.cosh z.2:ℂ)^(2 : ℕ)) := by
     apply Continuous.div continuous_const
     · fun_prop
     · intro z
@@ -611,7 +611,7 @@ theorem radialResponse_freeDuhamel (nu s amplitude : ℂ) {τ : ℝ} (hτ : 0 �
     radialResponse nu s amplitude τ x = (1/2:ℂ)*∫ σ in (0:ℝ)..τ,
       ∫ y in x-(τ-σ)..x+(τ-σ),
         oddSource s amplitude σ y+
-          nu*(nu+1)/(Real.cosh y:ℂ)^2*radialResponse nu s amplitude σ y := by
+          nu*(nu+1)/(Real.cosh y:ℂ)^(2 : ℕ)*radialResponse nu s amplitude σ y := by
   change _ = (1/2:ℂ)*∫ σ in (0:ℝ)..τ,
     ∫ y in x-(τ-σ)..x+(τ-σ), staticEffective nu s amplitude (σ,y)
   by_cases hx : |x| ≤ τ

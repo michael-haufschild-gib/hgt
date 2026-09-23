@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.PrimeBooleanMassHankelQuantumFusion
 
 The even reciprocal-character packet has positive Prony data
 
-`x_i = lambda_i^2`, `b_i = a_i * lambda_i^2`.
+`x_i = lambda_i^(2 : ℕ)`, `b_i = a_i * lambda_i^(2 : ℕ)`.
 
 This module certifies the reconstruction part of the real-form fusion law: the first `2r`
 moments determine the unordered squared-clock spectrum and every later moment; once clock labels
@@ -19,11 +19,11 @@ noncomputable section
 
 /-- Positive node underlying the even reciprocal-character jet packet. -/
 def reciprocalMomentNode {r : ℕ} (lambda : Fin r → ℝ) (i : Fin r) : ℝ :=
-  lambda i ^ 2
+  lambda i ^ (2 : ℕ)
 
 /-- Positive weight underlying the even reciprocal-character jet packet. -/
 def reciprocalMomentWeight {r : ℕ} (a lambda : Fin r → ℝ) (i : Fin r) : ℝ :=
-  a i * lambda i ^ 2
+  a i * lambda i ^ (2 : ℕ)
 
 /-- Moment packet reconstructed from even split-real jets. -/
 def reciprocalCharacterMoment {r : ℕ} (a lambda : Fin r → ℝ) (n : ℕ) : ℂ :=

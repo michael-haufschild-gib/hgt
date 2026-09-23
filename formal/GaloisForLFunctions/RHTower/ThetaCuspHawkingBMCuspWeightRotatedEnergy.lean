@@ -8,7 +8,7 @@ noncomputable section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-private theorem self_re {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E] (u : E) : (inner ℂ u u).re = ‖u‖^2 :=
+private theorem self_re {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E] (u : E) : (inner ℂ u u).re = ‖u‖^(2 : ℕ) :=
   inner_self_eq_norm_sq (𝕜 := ℂ) u
 private theorem self_im {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E] (u : E) : (inner ℂ u u).im = 0 :=
   inner_self_im (𝕜 := ℂ) u
@@ -61,27 +61,27 @@ theorem jointCuspWeight_energy_complex (N : ℝ) (hN : 0 < N) (u : jointDomain) 
   linear_combination hc
 
 private theorem mass_vertical_le (u : jointDomain) :
-    ‖jointEmbedding u‖^2+‖(u : JointEnergySpace) 3‖^2 ≤ ‖u‖^2 := by
+    ‖jointEmbedding u‖^(2 : ℕ)+‖(u : JointEnergySpace) 3‖^(2 : ℕ) ≤ ‖u‖^(2 : ℕ) := by
   have he := congrArg Complex.re (joint_inner_decomposition u u)
-  have hs : (inner ℂ u u).re = ‖u‖^2 := inner_self_eq_norm_sq (𝕜 := ℂ) u
+  have hs : (inner ℂ u u).re = ‖u‖^(2 : ℕ) := inner_self_eq_norm_sq (𝕜 := ℂ) u
   rw [hs] at he
   simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero,Complex.add_re,self_re] at he
-  change ‖u‖^2 = ‖jointEmbedding u‖^2+(‖(u : JointEnergySpace) 1‖^2+
-    (‖(u : JointEnergySpace) 2‖^2+‖(u : JointEnergySpace) 3‖^2)) at he
+  change ‖u‖^(2 : ℕ) = ‖jointEmbedding u‖^(2 : ℕ)+(‖(u : JointEnergySpace) 1‖^(2 : ℕ)+
+    (‖(u : JointEnergySpace) 2‖^(2 : ℕ)+‖(u : JointEnergySpace) 3‖^(2 : ℕ))) at he
   nlinarith only [he,sq_nonneg ‖(u : JointEnergySpace) 1‖,sq_nonneg ‖(u : JointEnergySpace) 2‖]
 
 /-- Rotation by the actual conjugate frequency preserves the complete derivative commutator. -/
 theorem jointCuspWeight_rotated_identity (N : ℝ) (hN : 0 < N) (w : ℂ)
     (F : SpatialSpace) (u : jointDomain) (hu : JointWaveSolution w F u) :
-    w.re*‖jointCuspWeight N hN u‖^2+
-      w.re*(w.re^2+w.im^2-1)*‖cuspSpatialMultiply N hN (jointEmbedding u)‖^2-
-      w.re*‖cuspSpatialLogSlope N hN (cuspSpatialMultiply N hN (jointEmbedding u))‖^2+
+    w.re*‖jointCuspWeight N hN u‖^(2 : ℕ)+
+      w.re*(w.re^(2 : ℕ)+w.im^(2 : ℕ)-1)*‖cuspSpatialMultiply N hN (jointEmbedding u)‖^(2 : ℕ)-
+      w.re*‖cuspSpatialLogSlope N hN (cuspSpatialMultiply N hN (jointEmbedding u))‖^(2 : ℕ)+
       2*w.im*(inner ℂ (cuspSpatialLogSlope N hN (cuspSpatialMultiply N hN (jointEmbedding u)))
         ((jointCuspWeight N hN u : JointEnergySpace) 3)).im =
     (conj w*inner ℂ (cuspSpatialMultiply N hN (jointEmbedding u)) (cuspSpatialMultiply N hN F)).re := by
   have he := hu (jointCuspWeight N hN (jointCuspWeight N hN u))
   change inner ℂ (jointCuspWeight N hN (jointCuspWeight N hN u)) u+
-      (w^2-1)*inner ℂ (jointEmbedding (jointCuspWeight N hN (jointCuspWeight N hN u)))
+      (w^(2 : ℕ)-1)*inner ℂ (jointEmbedding (jointCuspWeight N hN (jointCuspWeight N hN u)))
         (jointEmbedding u) = inner ℂ (jointEmbedding (jointCuspWeight N hN (jointCuspWeight N hN u))) F at he
   simp only [jointCuspWeight_mass] at he
   rw [cuspSpatialMultiply_inner N hN (cuspSpatialMultiply N hN (jointEmbedding u)) (jointEmbedding u),
@@ -94,7 +94,7 @@ theorem jointCuspWeight_rotated_identity (N : ℝ) (hN : 0 < N) (w : ℂ)
     have hc : conj (inner ℂ r d) = inner ℂ d r := inner_conj_symm d r
     exact (congrArg Complex.im hc).symm
   have hsR : (inner ℂ (jointCuspWeight N hN u) (jointCuspWeight N hN u)).re =
-      ‖jointCuspWeight N hN u‖^2 := self_re (jointCuspWeight N hN u)
+      ‖jointCuspWeight N hN u‖^(2 : ℕ) := self_re (jointCuspWeight N hN u)
   have hsI : (inner ℂ (jointCuspWeight N hN u) (jointCuspWeight N hN u)).im = 0 :=
     self_im (jointCuspWeight N hN u)
   have hc := congrArg (fun z : ℂ => (conj w*z).re) he
@@ -111,18 +111,18 @@ theorem jointCuspWeight_rotated_identity (N : ℝ) (hN : 0 < N) (w : ℂ)
 theorem jointWaveResponse_cuspWeight_rotated_bound (N : ℝ) (hN : 0 < N) (w : ℂ)
     (hw : 0 < w.re) (ha : 3/2 < w.re) (F : SpatialSpace) :
     ‖cuspSpatialMultiply N hN (jointEmbedding (jointWaveResponse w hw F))‖ ≤
-      (w.re*‖w‖/((w.re^2+w.im^2)*(w.re^2-9/4)))*‖cuspSpatialMultiply N hN F‖ := by
+      (w.re*‖w‖/((w.re^(2 : ℕ)+w.im^(2 : ℕ))*(w.re^(2 : ℕ)-9/4)))*‖cuspSpatialMultiply N hN F‖ := by
   let u := jointWaveResponse w hw F
   let v := cuspSpatialMultiply N hN (jointEmbedding u)
   let r := cuspSpatialLogSlope N hN v
   let d := (jointCuspWeight N hN u : JointEnergySpace) 3
-  let S := w.re^2+w.im^2
+  let S := w.re^(2 : ℕ)+w.im^(2 : ℕ)
   have hS : 0 < S := by dsimp [S]; nlinarith [sq_nonneg w.im]
-  have hδ : 0 < w.re^2-(9/4:ℝ) := by nlinarith
+  have hδ : 0 < w.re^(2 : ℕ)-(9/4:ℝ) := by nlinarith
   have he := jointCuspWeight_rotated_identity N hN w F u (jointWaveResponse_spec w hw F)
-  have hg : ‖v‖^2+‖d‖^2 ≤ ‖jointCuspWeight N hN u‖^2 :=
+  have hg : ‖v‖^(2 : ℕ)+‖d‖^(2 : ℕ) ≤ ‖jointCuspWeight N hN u‖^(2 : ℕ) :=
     mass_vertical_le (jointCuspWeight N hN u)
-  have hs : ‖r‖^2 ≤ (9/4:ℝ)*‖v‖^2 := by
+  have hs : ‖r‖^(2 : ℕ) ≤ (9/4:ℝ)*‖v‖^(2 : ℕ) := by
     have h := pow_le_pow_left₀ (norm_nonneg _) (cuspSpatialLogSlope_bound N hN v) 2
     nlinarith only [h]
   have hi : |(inner ℂ r d).im| ≤ ‖r‖*‖d‖ :=
@@ -140,7 +140,7 @@ theorem jointWaveResponse_cuspWeight_rotated_bound (N : ℝ) (hN : 0 < N) (w : �
       _ ≤ _ := by
         have h := mul_le_mul_of_nonneg_left (norm_inner_le_norm (𝕜 := ℂ) v (cuspSpatialMultiply N hN F)) (norm_nonneg w)
         nlinarith only [h]
-  have hc : S*(w.re^2-9/4)*‖v‖^2 ≤ w.re*‖w‖*‖v‖*‖cuspSpatialMultiply N hN F‖ := by
+  have hc : S*(w.re^(2 : ℕ)-9/4)*‖v‖^(2 : ℕ) ≤ w.re*‖w‖*‖v‖*‖cuspSpatialMultiply N hN F‖ := by
     have h1 := mul_le_mul_of_nonneg_left hg (sq_nonneg w.re)
     have h2 := mul_le_mul_of_nonneg_left hs hS.le
     have h3 := mul_le_mul_of_nonneg_left hm (show 0 ≤ 2*w.re by positivity)
@@ -148,11 +148,11 @@ theorem jointWaveResponse_cuspWeight_rotated_bound (N : ℝ) (hN : 0 < N) (w : �
     have he' := congrArg (fun x : ℝ => w.re*x) he
     have hsq := sq_nonneg (w.re*‖d‖-|w.im| *‖r‖)
     simp only [sub_sq,mul_pow,sq_abs] at hsq
-    change w.re*(w.re*‖jointCuspWeight N hN u‖^2+w.re*(S-1)*‖v‖^2-
-      w.re*‖r‖^2+2*w.im*(inner ℂ r d).im) = _ at he'
+    change w.re*(w.re*‖jointCuspWeight N hN u‖^(2 : ℕ)+w.re*(S-1)*‖v‖^(2 : ℕ)-
+      w.re*‖r‖^(2 : ℕ)+2*w.im*(inner ℂ r d).im) = _ at he'
     dsimp only [S] at h2 ⊢
-    change w.re*(w.re*‖jointCuspWeight N hN u‖^2+w.re*(w.re^2+w.im^2-1)*‖v‖^2-
-      w.re*‖r‖^2+2*w.im*(inner ℂ r d).im) =
+    change w.re*(w.re*‖jointCuspWeight N hN u‖^(2 : ℕ)+w.re*(w.re^(2 : ℕ)+w.im^(2 : ℕ)-1)*‖v‖^(2 : ℕ)-
+      w.re*‖r‖^(2 : ℕ)+2*w.im*(inner ℂ r d).im) =
       w.re*(conj w*inner ℂ v (cuspSpatialMultiply N hN F)).re at he' 
     nlinarith only [h1,h2,h3,h4,he',hsq]
   by_cases hz : ‖v‖ = 0
@@ -160,7 +160,7 @@ theorem jointWaveResponse_cuspWeight_rotated_bound (N : ℝ) (hN : 0 < N) (w : �
     rw [hz]
     positivity
   · have hv : 0 < ‖v‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hz)
-    change ‖v‖ ≤ (w.re*‖w‖/(S*(w.re^2-9/4)))*‖cuspSpatialMultiply N hN F‖
+    change ‖v‖ ≤ (w.re*‖w‖/(S*(w.re^(2 : ℕ)-9/4)))*‖cuspSpatialMultiply N hN F‖
     rw [div_mul_eq_mul_div]
     apply (le_div_iff₀ (mul_pos hS hδ)).mpr
     nlinarith only [hc,hv]

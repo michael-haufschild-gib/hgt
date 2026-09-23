@@ -24,23 +24,23 @@ namespace RHTower
 /-- Squared-variable angular approximant used by the Route-U hard-edge normal-family limit. -/
 def routeUHardEdgeSquaredAngularApprox (a : ℝ) (p : Polynomial ℝ) (u : ℂ) : ℂ :=
   evalRealPolynomial (routeUHardEdgeAngularPoly a p)
-    ((((a : ℂ) ^ 2) - u) / (((a : ℂ) ^ 2) + u))
+    ((((a : ℂ) ^ (2 : ℕ)) - u) / (((a : ℂ) ^ (2 : ℕ)) + u))
 
 /-- A squared-angular approximant is analytic away from its single possible pole `-a²`. -/
 theorem analyticAt_routeUHardEdgeSquaredAngularApprox {a : ℝ} (p : Polynomial ℝ) {u : ℂ}
-    (hden : (a : ℂ) ^ 2 + u ≠ 0) :
+    (hden : (a : ℂ) ^ (2 : ℕ) + u ≠ 0) :
     AnalyticAt ℂ (routeUHardEdgeSquaredAngularApprox a p) u := by
   have hquot : AnalyticAt ℂ
-      (fun v : ℂ => (((a : ℂ) ^ 2) - v) / (((a : ℂ) ^ 2) + v)) u := by
+      (fun v : ℂ => (((a : ℂ) ^ (2 : ℕ)) - v) / (((a : ℂ) ^ (2 : ℕ)) + v)) u := by
     exact (analyticAt_const.sub analyticAt_id).div
       (analyticAt_const.add analyticAt_id) hden
   let P : Polynomial ℂ :=
     (routeUHardEdgeAngularPoly a p).map (algebraMap ℝ ℂ)
   have hpoly : AnalyticAt ℂ (fun z : ℂ => P.eval z)
-      ((((a : ℂ) ^ 2) - u) / (((a : ℂ) ^ 2) + u)) :=
+      ((((a : ℂ) ^ (2 : ℕ)) - u) / (((a : ℂ) ^ (2 : ℕ)) + u)) :=
     (P.differentiable.differentiableOn.analyticOnNhd isOpen_univ) _ (Set.mem_univ _)
   exact AnalyticAt.comp
-    (f := fun v : ℂ => (((a : ℂ) ^ 2) - v) / (((a : ℂ) ^ 2) + v)) hpoly hquot
+    (f := fun v : ℂ => (((a : ℂ) ^ (2 : ℕ)) - v) / (((a : ℂ) ^ (2 : ℕ)) + v)) hpoly hquot
 
 /-- **Escaping poles force an entire limit.**  If `aₙ → ∞`, then on every fixed unit ball the
 possible poles `-aₙ²` are eventually absent.  The locally uniform limit is therefore entire by
@@ -71,13 +71,13 @@ theorem analyticOnNhd_routeUHardEdge_angularLocallyUniformLimit
           gcongr
           simpa [dist_eq_norm] using hu
         _ = ‖z‖ + 1 := by ring
-    have hnormlt : ‖u‖ < (a n) ^ 2 := by
-      have haa : a n < (a n) ^ 2 := by nlinarith [ha1]
+    have hnormlt : ‖u‖ < (a n) ^ (2 : ℕ) := by
+      have haa : a n < (a n) ^ (2 : ℕ) := by nlinarith [ha1]
       exact huNorm.trans (haz.trans haa)
-    have hden : ((a n : ℂ) ^ 2) + u ≠ 0 := by
+    have hden : ((a n : ℂ) ^ (2 : ℕ)) + u ≠ 0 := by
       intro hzero
-      have hueq : u = -((a n : ℂ) ^ 2) := by linear_combination hzero
-      have hunorm : ‖u‖ = (a n) ^ 2 := by
+      have hueq : u = -((a n : ℂ) ^ (2 : ℕ)) := by linear_combination hzero
+      have hunorm : ‖u‖ = (a n) ^ (2 : ℕ) := by
         rw [hueq, norm_neg, norm_pow, Complex.norm_real, Real.norm_eq_abs,
           abs_of_pos (ha n)]
       rw [hunorm] at hnormlt
@@ -94,7 +94,7 @@ theorem norm_routeUHardEdge_strongLimit_eq_one
     {a : ℕ → ℝ} {p : ℕ → Polynomial ℝ}
     (ha : ∀ k : ℕ, 0 < a k)
     (hnorm : ∀ k : ℕ,
-      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2) = 1)
+      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ (2 : ℕ)) = 1)
     {L : Lp ℝ 2 (volume : Measure ℝ)}
     (hL : Tendsto (fun k : ℕ =>
       (memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
@@ -106,8 +106,8 @@ theorem norm_routeUHardEdge_strongLimit_eq_one
     intro k
     have hsq :
         ‖(memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
-          (routeUHardEdgeRationalTest (a k) (p k))‖ ^ 2 =
-          ∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2 :=
+          (routeUHardEdgeRationalTest (a k) (p k))‖ ^ (2 : ℕ) =
+          ∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ (2 : ℕ) :=
       norm_toLp_sq _
     rw [hnorm k] at hsq
     nlinarith [norm_nonneg
@@ -130,7 +130,7 @@ theorem exists_ne_zero_routeUHardEdge_angularLocallyUniformLimit
     (ha : ∀ k : ℕ, 0 < a k)
     (haT : Tendsto a atTop atTop)
     (hnorm : ∀ k : ℕ,
-      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2) = 1)
+      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ (2 : ℕ)) = 1)
     {L : Lp ℝ 2 (volume : Measure ℝ)}
     (hL : Tendsto (fun k : ℕ =>
       (memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
@@ -138,16 +138,16 @@ theorem exists_ne_zero_routeUHardEdge_angularLocallyUniformLimit
     {F : ℂ → ℂ}
     (hFlocal : TendstoLocallyUniformly
       (fun n u => evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u))) F atTop) :
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u))) F atTop) :
     ∃ z : ℂ, F z ≠ 0 := by
   obtain ⟨hf2, hrep⟩ :=
     exists_memLp_routeUHardEdge_angularLocallyUniformLimit_toLp_eq ha haT hL hFlocal
   have hLnorm : ‖L‖ = 1 := norm_routeUHardEdge_strongLimit_eq_one ha hnorm hL
   by_contra hnone
   push Not at hnone
-  have hzero : hf2.toLp (fun x : ℝ => F ((x : ℂ) ^ 2)) = 0 := by
+  have hzero : hf2.toLp (fun x : ℝ => F ((x : ℂ) ^ (2 : ℕ))) = 0 := by
     exact MemLp.toLp_congr hf2 MemLp.zero
-      (Filter.Eventually.of_forall fun x => hnone ((x : ℂ) ^ 2))
+      (Filter.Eventually.of_forall fun x => hnone ((x : ℂ) ^ (2 : ℕ)))
   have hofzero : ofRealLp L = 0 := hrep.symm.trans hzero
   have hnormzero := congrArg norm hofzero
   rw [norm_ofRealLp, hLnorm, norm_zero] at hnormzero
@@ -160,7 +160,7 @@ theorem exists_positive_entireRootFactor_routeUHardEdge_angularLocallyUniformLim
     (ha : ∀ k : ℕ, 0 < a k)
     (haT : Tendsto a atTop atTop)
     (hnorm : ∀ k : ℕ,
-      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2) = 1)
+      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ (2 : ℕ)) = 1)
     {L : Lp ℝ 2 (volume : Measure ℝ)}
     (hL : Tendsto (fun k : ℕ =>
       (memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
@@ -168,11 +168,11 @@ theorem exists_positive_entireRootFactor_routeUHardEdge_angularLocallyUniformLim
     {F : ℂ → ℂ}
     (hFlocal : TendstoLocallyUniformly
       (fun n u => evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u))) F atTop)
-    {r : ℝ} (hroot : F ((r : ℂ) ^ 2) = 0) :
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u))) F atTop)
+    {r : ℝ} (hroot : F ((r : ℂ) ^ (2 : ℕ)) = 0) :
     ∃ (m : ℕ) (H : ℂ → ℂ), 0 < m ∧ AnalyticOnNhd ℂ H Set.univ ∧
-      H ((r : ℂ) ^ 2) ≠ 0 ∧
-      ∀ u : ℂ, F u = (u - (r : ℂ) ^ 2) ^ m * H u := by
+      H ((r : ℂ) ^ (2 : ℕ)) ≠ 0 ∧
+      ∀ u : ℂ, F u = (u - (r : ℂ) ^ (2 : ℕ)) ^ m * H u := by
   have hFlocal' : TendstoLocallyUniformly
       (fun n => routeUHardEdgeSquaredAngularApprox (a n) (p n)) F atTop := by
     convert hFlocal using 1
@@ -197,7 +197,7 @@ theorem routeUHardEdge_angularLocallyUniformLimit_root_has_literal_compact_facto
         Polynomial.C (b k j) * Polynomial.Chebyshev.T ℝ (j : ℤ))
     (hNC : ∀ k : ℕ, ((N k : ℕ) : ℝ) ≤ C * a k)
     (hnorm : ∀ k : ℕ,
-      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2) = 1)
+      (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ (2 : ℕ)) = 1)
     {L : Lp ℝ 2 (volume : Measure ℝ)}
     (hL : Tendsto (fun k : ℕ =>
       (memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
@@ -205,15 +205,15 @@ theorem routeUHardEdge_angularLocallyUniformLimit_root_has_literal_compact_facto
     {F : ℂ → ℂ}
     (hFlocal : TendstoLocallyUniformly
       (fun n u => evalRealPolynomial (routeUHardEdgeAngularPoly (a n) (p n))
-        ((((a n : ℂ) ^ 2) - u) / (((a n : ℂ) ^ 2) + u))) F atTop)
-    {r : ℝ} (hroot : F ((r : ℂ) ^ 2) = 0) :
+        ((((a n : ℂ) ^ (2 : ℕ)) - u) / (((a n : ℂ) ^ (2 : ℕ)) + u))) F atTop)
+    {r : ℝ} (hroot : F ((r : ℂ) ^ (2 : ℕ)) = 0) :
     ∃ (m : ℕ) (H : ℂ → ℂ) (q : ℝ → ℂ) (G : ℝ → ℂ),
-      0 < m ∧ AnalyticOnNhd ℂ H Set.univ ∧ H ((r : ℂ) ^ 2) ≠ 0 ∧
-      (∀ u : ℂ, F u = (u - (r : ℂ) ^ 2) ^ m * H u) ∧
+      0 < m ∧ AnalyticOnNhd ℂ H Set.univ ∧ H ((r : ℂ) ^ (2 : ℕ)) ≠ 0 ∧
+      (∀ u : ℂ, F u = (u - (r : ℂ) ^ (2 : ℕ)) ^ m * H u) ∧
       Integrable q ∧ MemLp q 2 volume ∧ Continuous G ∧
       (∀ x : ℝ, x ≤ -(C / Real.pi) ∨ C / Real.pi ≤ x → q x = 0) ∧
       (∀ w : ℝ, routeURealFourier q w =
-        (((w ^ 2 - (2 * Real.pi * r) ^ 2 : ℝ) : ℂ) ^ m) * G (w ^ 2)) := by
+        (((w ^ (2 : ℕ) - (2 * Real.pi * r) ^ (2 : ℕ) : ℝ) : ℂ) ^ m) * G (w ^ (2 : ℕ))) := by
   obtain ⟨m, H, hm, hHanalytic, hHroot, hfactor⟩ :=
     exists_positive_entireRootFactor_routeUHardEdge_angularLocallyUniformLimit
       ha haT hnorm hL hFlocal hroot

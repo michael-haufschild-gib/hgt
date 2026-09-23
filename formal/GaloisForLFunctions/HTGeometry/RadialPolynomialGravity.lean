@@ -18,11 +18,11 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Equation (13), as a functional of the actual radial metric. -/
 def radialEinsteinDensity (f : ℝ → ℝ) (r : ℝ) : ℝ :=
-  (1 - f r - r * deriv f r) / (8 * Real.pi * r ^ 2)
+  (1 - f r - r * deriv f r) / (8 * Real.pi * r ^ (2 : ℕ))
 
 /-- Equation (9), including the actual first and second derivatives. -/
 def radialRicciScalar (f : ℝ → ℝ) (r : ℝ) : ℝ :=
-  (r ^ 2 * deriv (deriv f) r + 4 * r * deriv f r + 2 * f r - 2) / r ^ 2
+  (r ^ (2 : ℕ) * deriv (deriv f) r + 4 * r * deriv f r + 2 * f r - 2) / r ^ (2 : ℕ)
 
 /-- Insert the constructed regular correction into an existing radial metric. -/
 def radialCorrectedMetric (f : ℝ → ℝ) (P : ℝ[X]) (β r : ℝ) : ℝ :=
@@ -31,7 +31,7 @@ def radialCorrectedMetric (f : ℝ → ℝ) (P : ℝ[X]) (β r : ℝ) : ℝ :=
 theorem radialPolynomialCorrection_derivative_balance (P : ℝ[X]) (r : ℝ) :
     (radialPolynomialCorrection P).eval r +
       r * deriv (fun s => (radialPolynomialCorrection P).eval s) r =
-        8 * Real.pi * r ^ 2 * P.eval r := by
+        8 * Real.pi * r ^ (2 : ℕ) * P.eval r := by
   rw [((radialPolynomialCorrection P).hasDerivAt r).deriv]
   have h := congrArg (fun Q : ℝ[X] => Q.eval r) (radialPolynomialCorrection_equation P)
   simpa only [radialPolynomialOperator, radialPolynomialSource, eval_add, eval_mul,
@@ -72,7 +72,7 @@ theorem einastoPolynomialCorrection_density (d l a β t : ℝ) (P : ℝ[X]) :
   rw [(einastoMetric_derivative d l a t).deriv] at he
   unfold radialEinsteinDensity radialCorrectedMetric
   rw [hd.deriv]
-  apply (div_eq_iff (by positivity : 8 * Real.pi * Real.exp t ^ 2 ≠ 0)).mpr
+  apply (div_eq_iff (by positivity : 8 * Real.pi * Real.exp t ^ (2 : ℕ) ≠ 0)).mpr
   linear_combination he - β * hb
 
 /-- The corrected Einasto center remains normalized for every polynomial source. -/
@@ -101,7 +101,7 @@ theorem burkertPolynomialCorrection_density (d l β t : ℝ) (P : ℝ[X]) :
   rw [(scaledBurkertMetric_derivative d l t).deriv] at he
   unfold radialEinsteinDensity radialCorrectedMetric
   rw [hd.deriv]
-  apply (div_eq_iff (by positivity : 8 * Real.pi * Real.exp t ^ 2 ≠ 0)).mpr
+  apply (div_eq_iff (by positivity : 8 * Real.pi * Real.exp t ^ (2 : ℕ) ≠ 0)).mpr
   linear_combination he - β * hb
 
 theorem burkertPolynomialCorrection_center (d l β : ℝ) (P : ℝ[X]) :
@@ -109,7 +109,7 @@ theorem burkertPolynomialCorrection_center (d l β : ℝ) (P : ℝ[X]) :
   simp [radialCorrectedMetric, radialPolynomialCorrection_zero, scaledBurkertMetric]
 
 /-- Constant-curvature core metric in the convention used by the paper. -/
-def quadraticCoreMetric (c r : ℝ) : ℝ := 1 - c * r ^ 2
+def quadraticCoreMetric (c r : ℝ) : ℝ := 1 - c * r ^ (2 : ℕ)
 
 theorem quadraticCoreMetric_hasDerivAt (c r : ℝ) :
     HasDerivAt (quadraticCoreMetric c) (-2 * c * r) r := by

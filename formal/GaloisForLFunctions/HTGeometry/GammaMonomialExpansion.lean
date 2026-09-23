@@ -156,7 +156,7 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
           (analyticAt_polyEval_inv _ (hzne z hz))
       -- the logarithmic derivative is small
       have hLnorm : ∀ z : ℂ, R₀ < z.re →
-          ‖∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ))‖ ≤ K1 / ‖z‖ ^ 2 := by
+          ‖∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ))‖ ≤ K1 / ‖z‖ ^ (2 : ℕ) := by
         intro z hz
         have hb := hL1b z (by linarith) (le_of_lt (lt_of_le_of_lt hRL1le (hnormlt z hz)))
         have hsum : ∑ m ∈ Finset.range 1,
@@ -247,7 +247,7 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
         rw [hfd0.deriv]
         have hid : (∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
               * gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
-            - (derivative (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1))).eval z⁻¹ * (-(z ^ 2)⁻¹)
+            - (derivative (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1))).eval z⁻¹ * (-(z ^ (2 : ℕ))⁻¹)
             = (∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
                 * (gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
                   - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)
@@ -259,14 +259,14 @@ theorem exists_norm_gammaMonomial_expansion {r : ℕ} (lam : Fin r → ℝ) (hla
             Polynomial.eval_pow, Polynomial.eval_X]
           ring
         rw [hid]
-        have hpowsplit : ‖z‖ ^ (N + 1 + 2) = ‖z‖ ^ 2 * ‖z‖ ^ (N + 1) := by ring
+        have hpowsplit : ‖z‖ ^ (N + 1 + 2) = ‖z‖ ^ (2 : ℕ) * ‖z‖ ^ (N + 1) := by ring
         have ha : ‖(∑ k, ((g k : ℤ) : ℂ) * Complex.digamma (z + ((lam k : ℝ) : ℂ)))
               * (gammaMonomial (fun i => ((lam i : ℝ) : ℂ)) g z
                 - (inverseSeriesLadderExpPoly (gammaLadderCoeff lam g) (N + 1)).eval z⁻¹)‖
             ≤ K1 * (AN + ‖cN‖) / ‖z‖ ^ (N + 1 + 2) := by
           rw [norm_mul]
           have hmul := mul_le_mul (hLnorm z hz) (hfbound z hz) (norm_nonneg _)
-            (by positivity : (0:ℝ) ≤ K1 / ‖z‖ ^ 2)
+            (by positivity : (0:ℝ) ≤ K1 / ‖z‖ ^ (2 : ℕ))
           refine le_trans hmul (le_of_eq ?_)
           rw [hpowsplit]
           field_simp

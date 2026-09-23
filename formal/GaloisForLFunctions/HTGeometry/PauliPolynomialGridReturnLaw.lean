@@ -25,7 +25,7 @@ def twoLocalPauliAllPauliReturnTubeEvent
         (unitaryEvolution (realActivePauliHamiltonian x) t -
           (finitePauliUnitary P.1 :
             Matrix (FiniteQubitConfiguration (Fin n))
-              (FiniteQubitConfiguration (Fin n)) ℂ))) ^ 2 ≤
+              (FiniteQubitConfiguration (Fin n)) ℂ))) ^ (2 : ℕ) ≤
       (gaussianIntervalActivationMass / 2) *
         (4 * (2 : ℝ) ^ n *
           (2 * pauliWeight P.1 *
@@ -36,7 +36,7 @@ theorem stdGaussian_twoLocalPauli_measure_allPauliReturnTubeEvent_le_binomial
     (stdGaussian (TwoLocalPauliCoefficientSpace n)).real
         (twoLocalPauliAllPauliReturnTubeEvent n t) ≤
       (1 + 3 * Real.exp
-        (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1 := by
+        (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1 := by
   simpa [twoLocalPauliAllPauliReturnTubeEvent] using
     stdGaussian_twoLocalPauli_measure_iUnion_allPauliReturnTube_le_binomial
       (n := n) t
@@ -49,7 +49,7 @@ theorem stdGaussian_twoLocalPauli_measure_iUnion_time_allPauliReturnTube_le
         (⋃ j : iota, twoLocalPauliAllPauliReturnTubeEvent n (time j)) ≤
       (Fintype.card iota : ℝ) *
         ((1 + 3 * Real.exp
-          (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1) := by
+          (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1) := by
   apply measureReal_iUnion_le_card_mul
   intro j
   exact stdGaussian_twoLocalPauli_measure_allPauliReturnTubeEvent_le_binomial (time j)
@@ -89,7 +89,7 @@ theorem tendsto_pow_mul_pauliIncidenceCompensatedBinomial_atTop
     have hcast : Tendsto (fun n : ℕ => (n : ℝ)) atTop atTop :=
       tendsto_natCast_atTop_atTop
     have hcomp : Tendsto
-        ((fun y : ℝ => 3 * (y ^ 1 * Real.exp (-(2 * a * y)))) ∘
+        ((fun y : ℝ => 3 * (y ^ (1 : ℕ) * Real.exp (-(2 * a * y)))) ∘
           fun n : ℕ => (n : ℝ)) atTop (nhds 0) := by
       simpa using hreal.comp hcast
     apply hcomp.congr'
@@ -155,7 +155,7 @@ theorem tendsto_stdGaussian_twoLocalPauli_polynomialGridReturnTubeProbability_at
     (g := fun n =>
       (n : ℝ) ^ d *
         ((1 + 3 * Real.exp
-          (-2 * (gaussianIntervalActivationMass ^ 2 / 2) * n)) ^ n - 1))
+          (-2 * (gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * n)) ^ n - 1))
     ?_ ?_ ?_
   · intro n
     exact measureReal_nonneg
@@ -164,7 +164,7 @@ theorem tendsto_stdGaussian_twoLocalPauli_polynomialGridReturnTubeProbability_at
       stdGaussian_twoLocalPauli_measure_iUnion_time_allPauliReturnTube_le
         (n := n) (time n)
   · exact tendsto_pow_mul_pauliIncidenceCompensatedBinomial_atTop
-      (a := gaussianIntervalActivationMass ^ 2 / 2)
+      (a := gaussianIntervalActivationMass ^ (2 : ℕ) / 2)
       (by nlinarith [gaussianIntervalActivationMass_pos]) d
 
 end

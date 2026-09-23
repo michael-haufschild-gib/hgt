@@ -32,13 +32,13 @@ theorem integrable_scaledCauchy_product {ν : Measure ℝ} {a b y : ℝ} (hy : y
     (hgi : Integrable (fun t : ℝ => atomKernel b y t) ν) :
     Integrable (fun t : ℝ => ((y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹) *
       (starRingEnd ℂ) ((y : ℂ) * ((t : ℂ) - upperNode b y)⁻¹)) ν := by
-  have hfsq : Integrable (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ 2) ν :=
+  have hfsq : Integrable (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ (2 : ℕ)) ν :=
     (integrable_normSq_scaled_cauchy_iff ν a y).2 hfi
-  have hgsq : Integrable (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode b y)⁻¹‖ ^ 2) ν :=
+  have hgsq : Integrable (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode b y)⁻¹‖ ^ (2 : ℕ)) ν :=
     (integrable_normSq_scaled_cauchy_iff ν b y).2 hgi
   have hbound : Integrable (fun t : ℝ =>
-      (‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ 2
-        + ‖(y : ℂ) * ((t : ℂ) - upperNode b y)⁻¹‖ ^ 2) / 2) ν :=
+      (‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖ ^ (2 : ℕ)
+        + ‖(y : ℂ) * ((t : ℂ) - upperNode b y)⁻¹‖ ^ (2 : ℕ)) / 2) ν :=
     (hfsq.add hgsq).div_const 2
   refine hbound.mono' ?_ ?_
   · exact ((continuous_scaledCauchy hy).mul

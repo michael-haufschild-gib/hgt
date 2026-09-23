@@ -38,7 +38,7 @@ def fieldCurrent (f : (Fin 2 → ℝ) → ℂ) (j : Fin 2) (z : Fin 2 → ℝ) :
 
 /-- Divergence in the original hyperbolic volume density. -/
 def fieldDivergence (f : (Fin 2 → ℝ) → ℂ) (z : Fin 2 → ℝ) : ℂ :=
-  (z 1 : ℂ)^2 * (coordDeriv 0 (fieldCurrent f 0) z + coordDeriv 1 (fieldCurrent f 1) z)
+  (z 1 : ℂ)^(2 : ℕ) * (coordDeriv 0 (fieldCurrent f 0) z + coordDeriv 1 (fieldCurrent f 1) z)
 
 /-- The physical reader current, retaining every Fourier mode. -/
 abbrev current (q : XiZeroCopy) := fieldCurrent (reader q)
@@ -82,9 +82,9 @@ theorem divergence_eq_spectral_density (q : XiZeroCopy) (z : Point) :
       I * (((q.1 : ℂ).re - 1) * (q.1 : ℂ).im : ℝ) *
         (normSq (reader q z.val) : ℂ) := by
   have hL : hyperbolicLaplacian (reader q) z.val =
-      (physicalAngularParameter q^2-1/4) * reader q z.val :=
+      (physicalAngularParameter q^(2 : ℕ)-1/4) * reader q z.val :=
     scalarCusp_hyperbolicLaplacian (physicalAngularParameter q) z.val z.property
-  have hc : physicalAngularParameter q^2-1/4 - conj (physicalAngularParameter q^2-1/4) =
+  have hc : physicalAngularParameter q^(2 : ℕ)-1/4 - conj (physicalAngularParameter q^(2 : ℕ)-1/4) =
       I * (((q.1 : ℂ).re - 1) * (q.1 : ℂ).im : ℝ) := by
     apply Complex.ext <;>
       simp only [Complex.sub_re,Complex.sub_im,Complex.conj_re,Complex.conj_im] <;>
@@ -93,14 +93,14 @@ theorem divergence_eq_spectral_density (q : XiZeroCopy) (z : Point) :
   change fieldDivergence (reader q) z.val = _
   rw [fieldDivergence_eq (reader q) z (reader_smooth q z), hL, map_mul]
   calc
-    _ = (physicalAngularParameter q^2-1/4-conj (physicalAngularParameter q^2-1/4)) *
+    _ = (physicalAngularParameter q^(2 : ℕ)-1/4-conj (physicalAngularParameter q^(2 : ℕ)-1/4)) *
         (reader q z.val * conj (reader q z.val)) := by ring
     _ = _ := by rw [hc, Complex.mul_conj]
 
 /-- The reader current retains a positive density with the original spectral orientation. -/
 theorem oriented_divergence_eq_positive_density (q : XiZeroCopy) (z : Point) :
     -(q.1 : ℂ).im * (divergence q z.val).im =
-      (1-(q.1 : ℂ).re) * (q.1 : ℂ).im^2 * normSq (reader q z.val) := by
+      (1-(q.1 : ℂ).re) * (q.1 : ℂ).im^(2 : ℕ) * normSq (reader q z.val) := by
   rw [divergence_eq_spectral_density]
   simp only [Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
     Complex.ofReal_im, zero_mul, one_mul, zero_add]
@@ -165,17 +165,17 @@ theorem source_divergence (q : XiZeroCopy) (z : Point) :
   have hf : ContDiffAt ℝ 2 (scalar (center q)) z.val :=
     cuspLeg_contDiffAt .scalar (center q) 2 z.val z.property
   have hL : hyperbolicLaplacian (scalar (center q)) z.val =
-      (center q^2-1/4)*scalar (center q) z.val :=
+      (center q^(2 : ℕ)-1/4)*scalar (center q) z.val :=
     scalarCusp_hyperbolicLaplacian (center q) z.val z.property
   rw [fieldDivergence_eq (scalar (center q)) z hf, hL, map_mul]
-  have hc : center q^2-1/4-conj (center q^2-1/4) =
+  have hc : center q^(2 : ℕ)-1/4-conj (center q^(2 : ℕ)-1/4) =
       4 * I * (((q.1 : ℂ).re - 1/2) * (q.1 : ℂ).im : ℝ) := by
     apply Complex.ext <;>
       simp only [Complex.sub_re,Complex.sub_im,Complex.conj_re,Complex.conj_im] <;>
       norm_num [D4BMGlobalAngularResponse.center,Complex.mul_re,Complex.mul_im,pow_two]
     all_goals ring
   calc
-    _ = (center q^2-1/4-conj (center q^2-1/4)) *
+    _ = (center q^(2 : ℕ)-1/4-conj (center q^(2 : ℕ)-1/4)) *
         (scalar (center q) z.val * conj (scalar (center q) z.val)) := by ring
     _ = _ := by rw [hc, Complex.mul_conj]
 
@@ -212,7 +212,7 @@ theorem square_divergence_sub_gradient_contact (q : XiZeroCopy) (z : Point) :
 theorem square_oriented_contact_balance (q : XiZeroCopy) (z : Point) :
     (((q.1 : ℂ).re-1/2)*(q.1 : ℂ).im) *
         (fieldDivergence (fullSquarePotential q) z.val - squareGradientContact q z.val).im =
-      8*((q.1 : ℂ).re-1/2)^2*(q.1 : ℂ).im^2*normSq (fullSquarePotential q z.val) := by
+      8*((q.1 : ℂ).re-1/2)^(2 : ℕ)*(q.1 : ℂ).im^(2 : ℕ)*normSq (fullSquarePotential q z.val) := by
   rw [square_divergence_sub_gradient_contact]
   norm_num [Complex.mul_im,Complex.mul_re]
   ring

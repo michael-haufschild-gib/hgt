@@ -36,7 +36,7 @@ surjective with kernel exactly `(ε̂²)` (computed by the repo's own
 fiber-sum exactness applied to the hat cover, `liftCoverData`), so the
 quotient hypotheses of `BocksteinLift.bockstein_element_form` hold with
 `Ann(ε̂) = (ε̂³)` supplied by L2a
-(`BBEpsFree.epsFree_one_add_single_of_addOrderOf` at `2^2`), and the span
+(`BBEpsFree.epsFree_one_add_single_of_addOrderOf` at `2^(2 : ℕ)`), and the span
 conclusion descends along `ρ` and transports to convolution language
 through `convEquiv`.
 
@@ -147,10 +147,10 @@ identity descends along `ρ` (the `(ε̂²)`-ambiguity dies because
 theorem bockstein_span_of_ringHom {Rh Rg : Type*} [CommRing Rh] [CommRing Rg]
     (ρ : Rh →+* Rg) (εh : Rh) (εg : Rg)
     (hchar : (2 : Rh) = 0)
-    (hann : ∀ w : Rh, εh * w = 0 → ∃ v, w = εh ^ 3 * v)
-    (hker : ∀ x : Rh, ρ x = 0 → x ∈ Ideal.span {εh ^ 2})
+    (hann : ∀ w : Rh, εh * w = 0 → ∃ v, w = εh ^ (3 : ℕ) * v)
+    (hker : ∀ x : Rh, ρ x = 0 → x ∈ Ideal.span {εh ^ (2 : ℕ)})
     (hρε : ρ εh = εg)
-    (hεg2 : εg ^ 2 = 0)
+    (hεg2 : εg ^ (2 : ℕ) = 0)
     (hsurj : Function.Surjective ⇑ρ)
     {Am Bm Z a b : Rg}
     (hAZ : Am * Z = εg * a)
@@ -162,33 +162,33 @@ theorem bockstein_span_of_ringHom {Rh Rg : Type*} [CommRing Rh] [CommRing Rg]
   obtain ⟨ah, hah⟩ := hsurj a
   obtain ⟨bh, hbh⟩ := hsurj b
   have hmk : ∀ x : Rh, ρ x = 0 →
-      Ideal.Quotient.mk (Ideal.span {εh ^ 2}) x = 0 := fun x hx =>
+      Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) x = 0 := fun x hx =>
     Ideal.Quotient.eq_zero_iff_mem.mpr (hker x hx)
   -- the two quotient-level `ε`-divisibility hypotheses
-  have hQA : Ideal.Quotient.mk (Ideal.span {εh ^ 2}) Amh
-        * Ideal.Quotient.mk (Ideal.span {εh ^ 2}) Zh
-      = Ideal.Quotient.mk (Ideal.span {εh ^ 2}) εh
-        * Ideal.Quotient.mk (Ideal.span {εh ^ 2}) ah := by
+  have hQA : Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) Amh
+        * Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) Zh
+      = Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) εh
+        * Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) ah := by
     rw [← map_mul, ← map_mul, ← sub_eq_zero, ← map_sub]
     apply hmk
     rw [map_sub, map_mul, map_mul, hAmh, hZh, hρε, hah, hAZ, sub_self]
-  have hQB : Ideal.Quotient.mk (Ideal.span {εh ^ 2}) Bmh
-        * Ideal.Quotient.mk (Ideal.span {εh ^ 2}) Zh
-      = Ideal.Quotient.mk (Ideal.span {εh ^ 2}) εh
-        * Ideal.Quotient.mk (Ideal.span {εh ^ 2}) bh := by
+  have hQB : Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) Bmh
+        * Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) Zh
+      = Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) εh
+        * Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) bh := by
     rw [← map_mul, ← map_mul, ← sub_eq_zero, ← map_sub]
     apply hmk
     rw [map_sub, map_mul, map_mul, hBmh, hZh, hρε, hbh, hBZ, sub_self]
   -- the element form upstairs, in the quotient
   have hmem := BocksteinLift.bockstein_element_form εh Amh Bmh hchar hann
-    (Ideal.Quotient.mk (Ideal.span {εh ^ 2}) Zh)
-    (Ideal.Quotient.mk (Ideal.span {εh ^ 2}) ah)
-    (Ideal.Quotient.mk (Ideal.span {εh ^ 2}) bh) hQA hQB
+    (Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) Zh)
+    (Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) ah)
+    (Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)}) bh) hQA hQB
   obtain ⟨U, V, hUV⟩ := Ideal.mem_span_pair.mp hmem
   obtain ⟨Uh, rfl⟩ := Ideal.Quotient.mk_surjective U
   obtain ⟨Vh, rfl⟩ := Ideal.Quotient.mk_surjective V
   -- collapse the witness identity to a single `(ε̂²)`-membership
-  have hzero : Ideal.Quotient.mk (Ideal.span {εh ^ 2})
+  have hzero : Ideal.Quotient.mk (Ideal.span {εh ^ (2 : ℕ)})
       (Uh * (εh * Amh) + Vh * (εh * Bmh) - (Amh * bh + Bmh * ah)) = 0 := by
     simp only [map_sub, map_add, map_mul]
     rw [hUV]
@@ -574,14 +574,14 @@ theorem elementForm_of_orderFourLift {Ghat : Type}
     exact h
   have hann := BBEpsFree.hann_of_epsFree hEF4
   -- ### `ε̂²` and `ε²` in single form
-  have hsq : (1 + AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ 2
+  have hsq : (1 + AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ (2 : ℕ)
       = 1 + AddMonoidAlgebra.single (shat + shat) (1 : ZMod 2) := by
-    have hpow : (AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ 2
+    have hpow : (AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ (2 : ℕ)
         = AddMonoidAlgebra.single (shat + shat) (1 : ZMod 2) := by
       rw [BBEpsFree.single_pow_one, two_nsmul]
     rw [add_sq, one_pow, mul_one, h2hat, zero_mul, add_zero, hpow]
-  have hεGsq : (1 + AddMonoidAlgebra.single D.deckS (1 : ZMod 2)) ^ 2 = 0 := by
-    have hpow : (AddMonoidAlgebra.single D.deckS (1 : ZMod 2)) ^ 2
+  have hεGsq : (1 + AddMonoidAlgebra.single D.deckS (1 : ZMod 2)) ^ (2 : ℕ) = 0 := by
+    have hpow : (AddMonoidAlgebra.single D.deckS (1 : ZMod 2)) ^ (2 : ℕ)
         = AddMonoidAlgebra.single (D.deckS + D.deckS) (1 : ZMod 2) := by
       rw [BBEpsFree.single_pow_one, two_nsmul]
     rw [add_sq, one_pow, mul_one, h2G, zero_mul, add_zero, hpow,
@@ -608,7 +608,7 @@ theorem elementForm_of_orderFourLift {Ghat : Type}
   -- ### the kernel bound `ker ρ ⊆ (ε̂²)` via the hat-cover exactness
   have hkerspan : ∀ x : AddMonoidAlgebra (ZMod 2) Ghat,
       AddMonoidAlgebra.mapDomainRingHom (ZMod 2) q x = 0 →
-      x ∈ Ideal.span {(1 + AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ 2} := by
+      x ∈ Ideal.span {(1 + AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ (2 : ℕ)} := by
     intro x hx
     have hσne : ∀ g : Ghat, g + (shat + shat) ≠ g := by
       intro g hcon
@@ -623,11 +623,11 @@ theorem elementForm_of_orderFourLift {Ghat : Type}
       rw [hu, ← Dh.pull0_eq_conv_deckPoly_liftC2 u]
       rfl
     have hconvsq : convEquiv
-        ((1 + AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ 2)
+        ((1 + AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ (2 : ℕ))
         = Dh.deckPoly := by
       rw [hsq, convEquiv_one_add_single]
       rfl
-    have hx_eq : x = (1 + AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ 2
+    have hx_eq : x = (1 + AddMonoidAlgebra.single shat (1 : ZMod 2)) ^ (2 : ℕ)
         * convEquiv.symm (Dh.liftC2 u) := by
       apply convEquiv.injective
       rw [convEquiv_mul, hconvsq, LinearEquiv.apply_symm_apply]

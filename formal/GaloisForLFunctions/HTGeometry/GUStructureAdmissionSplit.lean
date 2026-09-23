@@ -72,9 +72,9 @@ theorem portOrientation_not_determinedBy_hankelFace
     ¬ DeterminedBy (fun t : ℕ → ℝ => momentHankelMatrix t (n + 1))
         (fun t : ℕ → ℝ =>
           0 < momentFunctional t
-                (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ 2) -
+                (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) -
               momentFunctional t
-                (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ 2)) := by
+                (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ))) := by
   obtain ⟨t₁, hface₁, hd₁⟩ :=
     exists_momentSequence_same_face_christoffelPortDifference_eq s c hc hlast 1
   obtain ⟨t₂, hface₂, hd₂⟩ :=

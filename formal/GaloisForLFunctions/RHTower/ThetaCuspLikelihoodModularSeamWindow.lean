@@ -37,7 +37,7 @@ theorem thetaCuspLikelihoodCoordinate_pos_iff_boundaryPoint_lt (x : ℝ) :
     apply (div_lt_iff₀ (show 0 < 2 * Real.pi by positivity)).2
     nlinarith [Real.pi_pos]
   · intro h
-    have hsq : 3 / (2 * Real.pi) < Real.exp x ^ 2 :=
+    have hsq : 3 / (2 * Real.pi) < Real.exp x ^ (2 : ℕ) :=
       (Real.sqrt_lt' (Real.exp_pos x)).1 h
     unfold thetaCuspLikelihoodCoordinate
     have hscaled :=
@@ -180,7 +180,7 @@ theorem thetaCuspLikelihoodCoordinate_neg_quarter_pos :
     0 < thetaCuspLikelihoodCoordinate (-(1 / 4 : ℝ)) := by
   have hexpLower := Real.add_one_le_exp (-(1 / 2 : ℝ))
   have hexpSquare :
-      Real.exp (-(1 / 4 : ℝ)) ^ 2 = Real.exp (-(1 / 2 : ℝ)) := by
+      Real.exp (-(1 / 4 : ℝ)) ^ (2 : ℕ) = Real.exp (-(1 / 2 : ℝ)) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring

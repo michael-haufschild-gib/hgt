@@ -41,7 +41,7 @@ theorem hatanoNelsonSymbol_im (κ θ : ℝ) :
   rw [Real.sinh_eq]
   ring
 
-theorem sinh_pos_of_pos {κ : ℝ} (hκ : 0 < κ) : 0 < Real.sinh κ := by
+theorem sinh_pos_of_pos_suzukiHatanoNelsonWall {κ : ℝ} (hκ : 0 < κ) : 0 < Real.sinh κ := by
   rw [Real.sinh_eq]
   have h : Real.exp (-κ) < Real.exp κ := Real.exp_lt_exp.mpr (by linarith)
   linarith
@@ -51,7 +51,7 @@ symbol nonreal at the quarter frequency. -/
 theorem hatanoNelsonSymbol_im_ne_zero {κ : ℝ} (hκ : 0 < κ) :
     (hatanoNelsonSymbol κ (Real.pi / 2)).im ≠ 0 := by
   rw [hatanoNelsonSymbol_im, Real.sin_pi_div_two, mul_one]
-  have hsinh : 0 < Real.sinh κ := sinh_pos_of_pos hκ
+  have hsinh : 0 < Real.sinh κ := sinh_pos_of_pos_suzukiHatanoNelsonWall hκ
   positivity
 
 /-- The propagator modulus at one frequency is the exponential of the symbol's imaginary part. -/
@@ -122,7 +122,7 @@ theorem exists_no_polynomial_bound {κ : ℝ} (hκ : 0 < κ) (C : ℝ) (m : ℕ)
     ∃ x : ℝ, 0 < x ∧
       C * (1 + x) ^ m
         < ‖Complex.exp (-((x : ℂ) * I) * hatanoNelsonSymbol κ (Real.pi / 2))‖ := by
-  have hsinh : 0 < Real.sinh κ := sinh_pos_of_pos hκ
+  have hsinh : 0 < Real.sinh κ := sinh_pos_of_pos_suzukiHatanoNelsonWall hκ
   obtain ⟨x, hx0, hlt⟩ := exists_exponential_beats_polynomial
     (c := 2 * Real.sinh κ) (by positivity) C m
   refine ⟨x, hx0, ?_⟩

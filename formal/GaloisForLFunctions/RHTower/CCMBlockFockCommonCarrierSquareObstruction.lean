@@ -6,7 +6,7 @@ import Mathlib.Analysis.Matrix.PosDef
 
 The complete odd block--Fock resolvent
 
-`F(r) = r + r^5 + r^9 + ... = r / (1 - r^4)`
+`F(r) = r + r^(5 : ℕ) + r^(9 : ℕ) + ... = r / (1 - r^(4 : ℕ))`
 
 is strictly increasing on `0 < r < 1`.  Positivity gives an exact law for the two-node matrix
 whose first diagonal and both cross entries equal `F(r)`: its second diagonal capacity is at

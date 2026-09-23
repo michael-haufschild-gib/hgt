@@ -23,7 +23,7 @@ noncomputable section
 /-- Cauchy--Schwarz bound for a polynomial sum in terms of its coefficient energy. -/
 theorem norm_polySum_le (M : ℕ) (c : ℕ → ℂ) (w : ℂ) :
     ‖∑ k ∈ Finset.range M, c k * w ^ k‖
-      ≤ Real.sqrt M * Real.sqrt (∑ k ∈ Finset.range M, ‖c k‖ ^ 2) * (max 1 ‖w‖) ^ M := by
+      ≤ Real.sqrt M * Real.sqrt (∑ k ∈ Finset.range M, ‖c k‖ ^ (2 : ℕ)) * (max 1 ‖w‖) ^ M := by
   have hmax : (1 : ℝ) ≤ max 1 ‖w‖ := le_max_left _ _
   have hpow : ∀ k ∈ Finset.range M, ‖c k * w ^ k‖ ≤ ‖c k‖ * (max 1 ‖w‖) ^ M := by
     intro k hk
@@ -36,50 +36,50 @@ theorem norm_polySum_le (M : ℕ) (c : ℕ → ℂ) (w : ℂ) :
   have hsum : ‖∑ k ∈ Finset.range M, c k * w ^ k‖
       ≤ ∑ k ∈ Finset.range M, ‖c k‖ * (max 1 ‖w‖) ^ M :=
     (norm_sum_le _ _).trans (Finset.sum_le_sum hpow)
-  have hcs : (∑ k ∈ Finset.range M, ‖c k‖) ^ 2
-      ≤ (M : ℝ) * ∑ k ∈ Finset.range M, ‖c k‖ ^ 2 := by
+  have hcs : (∑ k ∈ Finset.range M, ‖c k‖) ^ (2 : ℕ)
+      ≤ (M : ℝ) * ∑ k ∈ Finset.range M, ‖c k‖ ^ (2 : ℕ) := by
     have h := sq_sum_le_card_mul_sum_sq (s := Finset.range M) (f := fun k => ‖c k‖)
     simpa using h
   have hnonneg : 0 ≤ ∑ k ∈ Finset.range M, ‖c k‖ :=
     Finset.sum_nonneg fun k _ => norm_nonneg _
   have hroot : ∑ k ∈ Finset.range M, ‖c k‖
-      ≤ Real.sqrt M * Real.sqrt (∑ k ∈ Finset.range M, ‖c k‖ ^ 2) := by
+      ≤ Real.sqrt M * Real.sqrt (∑ k ∈ Finset.range M, ‖c k‖ ^ (2 : ℕ)) := by
     rw [← Real.sqrt_mul (Nat.cast_nonneg M)]
     have := Real.sqrt_le_sqrt hcs
     rwa [Real.sqrt_sq hnonneg] at this
   calc ‖∑ k ∈ Finset.range M, c k * w ^ k‖
       ≤ ∑ k ∈ Finset.range M, ‖c k‖ * (max 1 ‖w‖) ^ M := hsum
     _ = (∑ k ∈ Finset.range M, ‖c k‖) * (max 1 ‖w‖) ^ M := by rw [Finset.sum_mul]
-    _ ≤ (Real.sqrt M * Real.sqrt (∑ k ∈ Finset.range M, ‖c k‖ ^ 2)) * (max 1 ‖w‖) ^ M := by
+    _ ≤ (Real.sqrt M * Real.sqrt (∑ k ∈ Finset.range M, ‖c k‖ ^ (2 : ℕ))) * (max 1 ‖w‖) ^ M := by
         exact mul_le_mul_of_nonneg_right hroot (pow_nonneg (le_trans zero_le_one hmax) M)
 
 /-- **The coefficient energy of a polynomial is its mean square on the unit circle.** -/
 theorem sum_normSq_coeff_eq_circleAverage (M : ℕ) (c : ℕ → ℂ) :
-    (∑ k ∈ Finset.range M, ‖c k‖ ^ 2)
+    (∑ k ∈ Finset.range M, ‖c k‖ ^ (2 : ℕ))
       = (2 * Real.pi)⁻¹ * ∫ theta in (0 : ℝ)..2 * Real.pi,
-          ‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ 2 := by
+          ‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ (2 : ℕ) := by
   have hpar := circleAverage_poly_mul_conj 1 M c c
   have hint : ∀ theta : ℝ,
       (∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k) *
           conj (∑ j ∈ Finset.range M, c j * circleMap 0 1 theta ^ j)
-        = ((‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ 2 : ℝ) : ℂ) := by
+        = ((‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro theta
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   have hrhs : (∑ k ∈ Finset.range M, c k * conj (c k) * ((1 : ℝ) : ℂ) ^ (2 * k))
-      = ((∑ k ∈ Finset.range M, ‖c k‖ ^ 2 : ℝ) : ℂ) := by
+      = ((∑ k ∈ Finset.range M, ‖c k‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
     simp
   rw [intervalIntegral.integral_congr (g := fun theta =>
-    ((‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ 2 : ℝ) : ℂ))
+    ((‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ (2 : ℕ) : ℝ) : ℂ))
     (fun theta _ => hint theta), hrhs] at hpar
   rw [intervalIntegral.integral_ofReal] at hpar
   have hreal : ((2 * Real.pi : ℝ) : ℂ)⁻¹ *
       ((∫ theta in (0 : ℝ)..2 * Real.pi,
-        ‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ 2 : ℝ) : ℂ)
+        ‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = (((2 * Real.pi)⁻¹ * ∫ theta in (0 : ℝ)..2 * Real.pi,
-        ‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ 2 : ℝ) : ℂ) := by
+        ‖∑ k ∈ Finset.range M, c k * circleMap 0 1 theta ^ k‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     ring
   rw [hreal] at hpar
@@ -90,7 +90,7 @@ theorem sum_normSq_coeff_eq_circleAverage (M : ℕ) (c : ℕ → ℂ) :
 /-- `w ^ d · P((w + w⁻¹)/2)`, written as a polynomial in `w` of degree at most `2d`. -/
 def zhukovskyLift (d : ℕ) (P : Polynomial ℂ) : Polynomial ℂ :=
   ∑ k ∈ Finset.range (d + 1), Polynomial.C (P.coeff k) * Polynomial.C ((2 : ℂ)⁻¹) ^ k *
-    Polynomial.X ^ (d - k) * (Polynomial.X ^ 2 + 1) ^ k
+    Polynomial.X ^ (d - k) * (Polynomial.X ^ (2 : ℕ) + 1) ^ k
 
 theorem natDegree_zhukovskyLift_le (d : ℕ) (P : Polynomial ℂ) :
     (zhukovskyLift d P).natDegree ≤ 2 * d := by
@@ -105,13 +105,13 @@ theorem natDegree_zhukovskyLift_le (d : ℕ) (P : Polynomial ℂ) :
       rw [Polynomial.natDegree_C, ← Polynomial.C_pow, Polynomial.natDegree_C]
     rw [Polynomial.natDegree_X_pow]
     omega
-  have h3 : ((Polynomial.X ^ 2 + 1 : Polynomial ℂ) ^ k).natDegree ≤ 2 * k := by
+  have h3 : ((Polynomial.X ^ (2 : ℕ) + 1 : Polynomial ℂ) ^ k).natDegree ≤ 2 * k := by
     refine le_trans (Polynomial.natDegree_pow_le) ?_
-    have h4 : (Polynomial.X ^ 2 + 1 : Polynomial ℂ).natDegree ≤ 2 := by
+    have h4 : (Polynomial.X ^ (2 : ℕ) + 1 : Polynomial ℂ).natDegree ≤ 2 := by
       refine le_trans (Polynomial.natDegree_add_le _ _) ?_
       rw [Polynomial.natDegree_X_pow, Polynomial.natDegree_one]
       omega
-    calc k * (Polynomial.X ^ 2 + 1 : Polynomial ℂ).natDegree ≤ k * 2 :=
+    calc k * (Polynomial.X ^ (2 : ℕ) + 1 : Polynomial ℂ).natDegree ≤ k * 2 :=
           Nat.mul_le_mul_left k h4
       _ = 2 * k := by ring
   omega
@@ -127,7 +127,7 @@ theorem eval_zhukovskyLift (d : ℕ) (P : Polynomial ℂ) (hd : P.natDegree ≤ 
     rw [← pow_add]
     congr 1
     omega
-  have hkey : w ^ k * (w + w⁻¹) ^ k = (w ^ 2 + 1) ^ k := by
+  have hkey : w ^ k * (w + w⁻¹) ^ k = (w ^ (2 : ℕ) + 1) ^ k := by
     rw [← mul_pow]
     congr 1
     field_simp
@@ -139,7 +139,7 @@ theorem eval_zhukovskyLift (d : ℕ) (P : Polynomial ℂ) (hd : P.natDegree ≤ 
 /-- The mean square of `P` on the Cayley interval, taken on the unit circle. -/
 def cayleyEnergy (P : Polynomial ℂ) : ℝ :=
   (2 * Real.pi)⁻¹ * ∫ theta in (0 : ℝ)..2 * Real.pi,
-    ‖P.eval ((circleMap 0 1 theta + (circleMap 0 1 theta)⁻¹) / 2)‖ ^ 2
+    ‖P.eval ((circleMap 0 1 theta + (circleMap 0 1 theta)⁻¹) / 2)‖ ^ (2 : ℕ)
 
 /-- **A polynomial on the Cayley interval is bounded off the interval by its circle energy.**
 This is the uniform bound that makes a family of controlled degree and controlled energy normal. -/
@@ -158,7 +158,7 @@ theorem norm_eval_cayley_le (d : ℕ) (P : Polynomial ℂ) (hd : P.natDegree ≤
     have := norm_circleMap_zero 1 theta
     rw [hcon] at this
     simp at this
-  have henergy : (∑ k ∈ Finset.range (2 * d + 2), ‖Q.coeff k‖ ^ 2) = cayleyEnergy P := by
+  have henergy : (∑ k ∈ Finset.range (2 * d + 2), ‖Q.coeff k‖ ^ (2 : ℕ)) = cayleyEnergy P := by
     rw [sum_normSq_coeff_eq_circleAverage (2 * d + 2) (fun k => Q.coeff k), cayleyEnergy]
     congr 1
     refine intervalIntegral.integral_congr fun theta _ => ?_

@@ -46,7 +46,7 @@ noncomputable def thetaTwo (τ : ℂ) : ℂ := Complex.exp ((Real.pi : ℂ) * I 
 /-- **The modular lambda function** `λ(τ) = (θ₂(τ)/θ₃(τ))⁴` — the Hauptmodul for `Γ(2)`, conjecturally
 the universal covering `ℍ → ℂ∖{0,1}` whose covering property is the keystone of the three-value Montel
 theorem (via `normal_of_omitting_lift`). -/
-noncomputable def modularLambda (τ : ℂ) : ℂ := (thetaTwo τ / thetaThree τ) ^ 4
+noncomputable def modularLambda (τ : ℂ) : ℂ := (thetaTwo τ / thetaThree τ) ^ (4 : ℕ)
 
 /-- `θ₃` is holomorphic on the upper half plane. -/
 theorem differentiableAt_thetaThree {τ : ℂ} (hτ : 0 < τ.im) : DifferentiableAt ℂ thetaThree τ :=
@@ -123,10 +123,10 @@ theorem thetaFour_eq (τ : ℂ) : thetaFour τ = jacobiTheta (τ + 1) := by
   refine tsum_congr (fun n => ?_)
   simp only [jacobiTheta₂_term]
   rw [Complex.exp_eq_exp_iff_exists_int]
-  obtain ⟨k, hk⟩ : ∃ k : ℤ, (n : ℤ) ^ 2 - n = 2 * k := by
+  obtain ⟨k, hk⟩ : ∃ k : ℤ, (n : ℤ) ^ (2 : ℕ) - n = 2 * k := by
     obtain ⟨m, hm⟩ := Int.even_mul_succ_self (n - 1)
     exact ⟨m, by linear_combination hm⟩
-  have hcast : ((n : ℂ)) ^ 2 - (n : ℂ) = 2 * (k : ℂ) := by exact_mod_cast hk
+  have hcast : ((n : ℂ)) ^ (2 : ℕ) - (n : ℂ) = 2 * (k : ℂ) := by exact_mod_cast hk
   refine ⟨-k, ?_⟩
   push_cast
   linear_combination (-(↑Real.pi : ℂ) * I) * hcast
@@ -163,18 +163,18 @@ Since `n²+n = n(n+1) ≥ |n|` for `n ∉ {0,-1}`, the tail `∑_{n∉{0,-1}}` i
 (`< 2` on the fundamental domain), giving `jacobiTheta₂(τ/2,τ) ≠ 0` and hence `θ₂ ≠ 0` — the last step
 to the theta-constant trio. -/
 theorem norm_jacobiTheta₂_half_term (τ : ℂ) (n : ℤ) :
-    ‖jacobiTheta₂_term n (τ / 2) τ‖ = Real.exp (-Real.pi * ((n : ℝ) ^ 2 + n) * τ.im) := by
+    ‖jacobiTheta₂_term n (τ / 2) τ‖ = Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) + n) * τ.im) := by
   rw [jacobiTheta₂_term, Complex.norm_exp]
   congr 1
-  have h1 : (2 * ↑Real.pi * I * ↑n * (τ / 2) + ↑Real.pi * I * (↑n) ^ 2 * τ)
-      = ((Real.pi * ((n : ℝ) ^ 2 + n) : ℝ) : ℂ) * (I * τ) := by push_cast; ring
+  have h1 : (2 * ↑Real.pi * I * ↑n * (τ / 2) + ↑Real.pi * I * (↑n) ^ (2 : ℕ) * τ)
+      = ((Real.pi * ((n : ℝ) ^ (2 : ℕ) + n) : ℝ) : ℂ) * (I * τ) := by push_cast; ring
   rw [h1, Complex.re_ofReal_mul, show (I * τ).re = -τ.im from by simp [Complex.mul_re]]
   ring_nf
 
 /-- **`n² + n ≥ |n|` for `n ≠ -1`** — the exponent comparison collapsing the `(τ/2)`-theta tail
 `∑ exp(-π(n²+n)·im τ)` (over `n ∉ {0,-1}`) into a geometric series `∑ exp(-π|n|·im τ)`, the last
 analytic input to `θ₂ ≠ 0` on the fundamental domain. (Fails only at `n = -1`, where `n²+n = 0 < 1`.) -/
-theorem sq_add_self_ge_abs (n : ℤ) (hn : n ≠ -1) : |(n : ℝ)| ≤ (n : ℝ) ^ 2 + n := by
+theorem sq_add_self_ge_abs (n : ℤ) (hn : n ≠ -1) : |(n : ℝ)| ≤ (n : ℝ) ^ (2 : ℕ) + n := by
   by_cases h : 0 ≤ n
   · rw [abs_of_nonneg (by exact_mod_cast h : (0 : ℝ) ≤ (n : ℝ))]; nlinarith [sq_nonneg (n : ℝ)]
   · have hn2 : n ≤ -2 := by omega
@@ -238,7 +238,7 @@ theorem thetaTwo_ne_zero_of_im_ge {τ : ℂ} (hτ : (4:ℝ)/5 ≤ τ.im) : theta
     · have hc0 : c n = 0 := by rw [hc_def]; simp only; rw [if_neg h]
       rw [hc0, sub_zero, hf_def, norm_jacobiTheta₂_half_term]
       have hne : n ≠ -1 := fun he => h (Or.inr he)
-      have hcomp : |(n:ℝ)| ≤ (n:ℝ)^2 + n := sq_add_self_ge_abs n hne
+      have hcomp : |(n:ℝ)| ≤ (n:ℝ)^(2 : ℕ) + n := sq_add_self_ge_abs n hne
       have habs : (n.natAbs : ℝ) = |(n:ℝ)| := by rw [← Int.cast_natCast, Int.natCast_natAbs, Int.cast_abs]
       rw [hr_def, ← Real.exp_nat_mul]
       apply Real.exp_le_exp.mpr
@@ -281,7 +281,7 @@ theorem thetaThree_add_two (τ : ℂ) : thetaThree (τ + 2) = thetaThree τ := b
 
 /-- **`θ₂(τ) = ∑ exp(πi(n+½)²τ)`** — the clean series form of `θ₂` (pull `exp(πiτ/4)` into the sum). -/
 theorem thetaTwo_eq_tsum (τ : ℂ) :
-    thetaTwo τ = ∑' n : ℤ, Complex.exp ((Real.pi : ℂ) * I * ((n : ℂ) + 1/2) ^ 2 * τ) := by
+    thetaTwo τ = ∑' n : ℤ, Complex.exp ((Real.pi : ℂ) * I * ((n : ℂ) + 1/2) ^ (2 : ℕ) * τ) := by
   unfold thetaTwo
   rw [jacobiTheta₂, ← tsum_mul_left]
   refine tsum_congr (fun n => ?_)
@@ -294,10 +294,10 @@ theorem thetaTwo_add_one (τ : ℂ) :
   rw [thetaTwo_eq_tsum, thetaTwo_eq_tsum, ← tsum_mul_left]
   refine tsum_congr (fun n => ?_)
   rw [← Complex.exp_add, Complex.exp_eq_exp_iff_exists_int]
-  obtain ⟨k, hk⟩ : ∃ k : ℤ, (n : ℤ) ^ 2 + n = 2 * k := by
+  obtain ⟨k, hk⟩ : ∃ k : ℤ, (n : ℤ) ^ (2 : ℕ) + n = 2 * k := by
     obtain ⟨m, hm⟩ := Int.even_mul_succ_self n
     exact ⟨m, by linear_combination hm⟩
-  have hcast : ((n : ℂ)) ^ 2 + (n : ℂ) = 2 * (k : ℂ) := by exact_mod_cast hk
+  have hcast : ((n : ℂ)) ^ (2 : ℕ) + (n : ℂ) = 2 * (k : ℂ) := by exact_mod_cast hk
   exact ⟨k, by linear_combination ((↑Real.pi : ℂ) * I) * hcast⟩
 
 /-- **`(θ₂θ₃θ₄)(τ+1) = exp(πi/4)·(θ₂θ₃θ₄)(τ)`** — the product is `T`-modular with a non-zero multiplier
@@ -314,7 +314,7 @@ theorem thetaThree_S (τ : ℂ) (hτ : τ ≠ 0) :
     thetaThree (-1/τ) = (-I*τ)^(1/2:ℂ) * thetaThree τ := by
   unfold thetaThree
   have hFE := jacobiTheta₂_functional_equation 0 τ
-  rw [show ((0:ℂ))^2 = 0 by ring, show ((0:ℂ))/τ = 0 by simp] at hFE
+  rw [show ((0:ℂ))^(2 : ℕ) = 0 by ring, show ((0:ℂ))/τ = 0 by simp] at hFE
   simp only [neg_mul, mul_zero, zero_div, Complex.exp_zero, mul_one] at hFE
   have hmul : -I * τ ≠ 0 := mul_ne_zero (by simp) hτ
   have hne : (-I*τ)^(1/2:ℂ) ≠ 0 :=
@@ -328,7 +328,7 @@ theorem thetaFour_S (τ : ℂ) (hτ : τ ≠ 0) :
   have h1 : (-I * (-1 / τ)) = I / τ := by ring
   have h2 : ((1 : ℂ) / 2) / (-1 / τ) = -(τ / 2) := by field_simp
   have h3 : (-1 : ℂ) / (-1 / τ) = τ := by field_simp
-  have h4 : (-↑Real.pi * I * ((1 : ℂ) / 2) ^ 2 / (-1 / τ)) = ↑Real.pi * I * τ / 4 := by
+  have h4 : (-↑Real.pi * I * ((1 : ℂ) / 2) ^ (2 : ℕ) / (-1 / τ)) = ↑Real.pi * I * τ / 4 := by
     field_simp; ring
   have hFE := jacobiTheta₂_functional_equation (1 / 2) (-1 / τ)
   rw [h1, h2, h3, h4, jacobiTheta₂_neg_left] at hFE
@@ -343,7 +343,7 @@ theorem thetaTwo_S (τ : ℂ) (hτ : τ ≠ 0) :
   have h1 : (-I * (-1 / τ)) = I / τ := by ring
   have h2 : ((-1/(2*τ)) / (-1 / τ)) = 1/2 := by field_simp
   have h3 : (-1 : ℂ) / (-1 / τ) = τ := by field_simp
-  have h4 : (-↑Real.pi * I * (-1/(2*τ)) ^ 2 / (-1 / τ)) = ↑Real.pi * I / (4*τ) := by
+  have h4 : (-↑Real.pi * I * (-1/(2*τ)) ^ (2 : ℕ) / (-1 / τ)) = ↑Real.pi * I / (4*τ) := by
     field_simp; ring
   have hFE := jacobiTheta₂_functional_equation (-1/(2*τ)) (-1 / τ)
   rw [h1, h2, h3, h4] at hFE
@@ -506,7 +506,7 @@ namespace Bottcher
 combined factor squares to `(I/τ)(-Iτ) = 1`, so its fourth power is `1` and `λ(-1/τ)` reduces to
 `(θ₄/θ₃)⁴`. No quartic identity needed — pure `S`-automorphy. -/
 theorem modularLambda_S {τ : ℂ} (hτ : 0 < τ.im) :
-    modularLambda (-1/τ) = (thetaFour τ / thetaThree τ) ^ 4 := by
+    modularLambda (-1/τ) = (thetaFour τ / thetaThree τ) ^ (4 : ℕ) := by
   have hτ0 : τ ≠ 0 := fun h => by rw [h] at hτ; simp at hτ
   have hθ3 : thetaThree τ ≠ 0 := thetaThree_ne_zero_of_im_pos hτ
   have hIτ : Complex.I / τ ≠ 0 := div_ne_zero Complex.I_ne_zero hτ0
@@ -519,19 +519,19 @@ theorem modularLambda_S {τ : ℂ} (hτ : 0 < τ.im) :
     (Complex.cpow_ne_zero_iff_of_exponent_ne_zero (by norm_num)).mpr hIτ
   have hQne : Q ≠ 0 :=
     (Complex.cpow_ne_zero_iff_of_exponent_ne_zero (by norm_num)).mpr hmIτ
-  have hP2 : P ^ 2 = Complex.I / τ := by
+  have hP2 : P ^ (2 : ℕ) = Complex.I / τ := by
     rw [hP, pow_two, ← Complex.cpow_add _ _ hIτ, show (1/2 : ℂ) + 1/2 = 1 by norm_num,
       Complex.cpow_one]
-  have hQ2 : Q ^ 2 = -Complex.I * τ := by
+  have hQ2 : Q ^ (2 : ℕ) = -Complex.I * τ := by
     rw [hQ, pow_two, ← Complex.cpow_add _ _ hmIτ, show (1/2 : ℂ) + 1/2 = 1 by norm_num,
       Complex.cpow_one]
-  have hPQ4 : (P * Q) ^ 4 = 1 := by
-    have h2 : (P * Q) ^ 2 = 1 := by
+  have hPQ4 : (P * Q) ^ (4 : ℕ) = 1 := by
+    have h2 : (P * Q) ^ (2 : ℕ) = 1 := by
       rw [mul_pow, hP2, hQ2]
-      have he : (Complex.I / τ) * (-Complex.I * τ) = -(Complex.I ^ 2) * (τ / τ) := by ring
+      have he : (Complex.I / τ) * (-Complex.I * τ) = -(Complex.I ^ (2 : ℕ)) * (τ / τ) := by ring
       rw [he, Complex.I_sq, div_self hτ0]; norm_num
-    calc (P * Q) ^ 4 = ((P * Q) ^ 2) ^ 2 := by ring
-      _ = (1 : ℂ) ^ 2 := by rw [h2]
+    calc (P * Q) ^ (4 : ℕ) = ((P * Q) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ = (1 : ℂ) ^ (2 : ℕ) := by rw [h2]
       _ = 1 := one_pow 2
   have hbase : (1 : ℂ) / P * thetaFour τ / (Q * thetaThree τ)
       = thetaFour τ / (P * Q * thetaThree τ) := by
@@ -542,10 +542,10 @@ theorem modularLambda_S {τ : ℂ} (hτ : 0 < τ.im) :
 (`θ₂ ↦ exp(πi/4)·θ₂`) and `thetaThree_add_one` (`θ₃ ↦ θ₄`): the prefactor `exp(πi/4)⁴ = exp(πi) = -1`.
 Purely algebraic — holds for every `τ`. -/
 theorem modularLambda_T (τ : ℂ) :
-    modularLambda (τ + 1) = -(thetaTwo τ / thetaFour τ) ^ 4 := by
+    modularLambda (τ + 1) = -(thetaTwo τ / thetaFour τ) ^ (4 : ℕ) := by
   unfold modularLambda
   rw [thetaTwo_add_one, thetaThree_add_one]
-  have hexp : (Complex.exp ((Real.pi : ℂ) * Complex.I / 4)) ^ 4 = -1 := by
+  have hexp : (Complex.exp ((Real.pi : ℂ) * Complex.I / 4)) ^ (4 : ℕ) = -1 := by
     rw [← Complex.exp_nat_mul, show ((4 : ℕ) : ℂ) * ((Real.pi : ℂ) * Complex.I / 4) = (Real.pi : ℂ) * Complex.I by
       push_cast; ring]
     exact Complex.exp_pi_mul_I

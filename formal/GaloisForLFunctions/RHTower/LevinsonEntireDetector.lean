@@ -5,13 +5,13 @@ import GaloisForLFunctions.RHTower.BoundedExponentPoissonNonlanding
 # The entire form of Levinson's detector
 
 `ζ` has a simple pole and `ζ'` a double pole at `s = 1`, so `G = ζ + λζ'` becomes entire after
-multiplication by `(s-1)^2`.  The resulting entire function
+multiplication by `(s-1)^(2 : ℕ)`.  The resulting entire function
 
 ```text
 G♯(s) = (s-1)·zetaEntire(s) + λ·((s-1)·zetaEntire'(s) - zetaEntire(s))
 ```
 
-agrees with `(s-1)^2·G(s)` away from the pole, has the same zeros there, and its logarithmic
+agrees with `(s-1)^(2 : ℕ)·G(s)` away from the pole, has the same zeros there, and its logarithmic
 derivative differs from that of `G` by the explicit rational term `2/(s-1)`.  This is the form the
 rectangle argument principle consumes.
 -/
@@ -22,7 +22,7 @@ noncomputable section
 
 namespace RHTower
 
-/-- The entire function agreeing with `(s-1)^2·(ζ + λζ')` away from the pole. -/
+/-- The entire function agreeing with `(s-1)^(2 : ℕ)·(ζ + λζ')` away from the pole. -/
 def levinsonGEntire (lam : ℂ) (s : ℂ) : ℂ :=
   (s - 1) * zetaEntire s + lam * ((s - 1) * deriv zetaEntire s - zetaEntire s)
 
@@ -58,14 +58,14 @@ theorem deriv_zetaEntire_eq {s : ℂ} (hs : s ≠ 1) :
   rw [hev.deriv_eq, hd.deriv, one_mul]
 
 theorem levinsonGEntire_eq (lam : ℂ) {s : ℂ} (hs : s ≠ 1) :
-    levinsonGEntire lam s = (s - 1) ^ 2 * levinsonG lam s := by
+    levinsonGEntire lam s = (s - 1) ^ (2 : ℕ) * levinsonG lam s := by
   rw [levinsonGEntire, deriv_zetaEntire_eq hs, zetaEntire_eq hs, levinsonG]
   ring
 
 theorem levinsonGEntire_eq_zero_iff (lam : ℂ) {s : ℂ} (hs : s ≠ 1) :
     levinsonGEntire lam s = 0 ↔ levinsonG lam s = 0 := by
   rw [levinsonGEntire_eq lam hs, mul_eq_zero]
-  have h : (s - 1) ^ 2 ≠ 0 := pow_ne_zero 2 (sub_ne_zero.mpr hs)
+  have h : (s - 1) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (sub_ne_zero.mpr hs)
   simp [h]
 
 /-- The value at the pole is `-λ`; in particular the entire detector is not identically zero. -/
@@ -85,18 +85,18 @@ theorem logDeriv_levinsonGEntire (lam : ℂ) {s : ℂ} (hs : s ≠ 1)
     (hG : levinsonG lam s ≠ 0) :
     logDeriv (levinsonGEntire lam) s = 2 / (s - 1) + logDeriv (levinsonG lam) s := by
   have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr hs
-  have hev : levinsonGEntire lam =ᶠ[nhds s] fun z => (z - 1) ^ 2 * levinsonG lam z := by
+  have hev : levinsonGEntire lam =ᶠ[nhds s] fun z => (z - 1) ^ (2 : ℕ) * levinsonG lam z := by
     filter_upwards [isOpen_ne.mem_nhds hs] with z hz using levinsonGEntire_eq lam hz
   have hcong : logDeriv (levinsonGEntire lam) s
-      = logDeriv (fun z => (z - 1) ^ 2 * levinsonG lam z) s := by
+      = logDeriv (fun z => (z - 1) ^ (2 : ℕ) * levinsonG lam z) s := by
     rw [logDeriv_apply, logDeriv_apply, hev.deriv_eq, hev.eq_of_nhds]
-  have hpow : ((s : ℂ) - 1) ^ 2 ≠ 0 := pow_ne_zero 2 hs1
-  have hdpow : DifferentiableAt ℂ (fun z : ℂ => (z - 1) ^ 2) s :=
+  have hpow : ((s : ℂ) - 1) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hs1
+  have hdpow : DifferentiableAt ℂ (fun z : ℂ => (z - 1) ^ (2 : ℕ)) s :=
     (((differentiableAt_id).sub_const 1).pow 2)
   have hdG : DifferentiableAt ℂ (levinsonG lam) s :=
     (analyticAt_levinsonG lam hs).differentiableAt
-  have hlogpow : logDeriv (fun z : ℂ => (z - 1) ^ 2) s = 2 / (s - 1) := by
-    have hd : HasDerivAt (fun z : ℂ => (z - 1) ^ 2) (2 * (s - 1)) s := by
+  have hlogpow : logDeriv (fun z : ℂ => (z - 1) ^ (2 : ℕ)) s = 2 / (s - 1) := by
+    have hd : HasDerivAt (fun z : ℂ => (z - 1) ^ (2 : ℕ)) (2 * (s - 1)) s := by
       have h : HasDerivAt (fun z : ℂ => z - 1) 1 s := (hasDerivAt_id s).sub_const 1
       refine (h.pow 2).congr_deriv ?_
       push_cast

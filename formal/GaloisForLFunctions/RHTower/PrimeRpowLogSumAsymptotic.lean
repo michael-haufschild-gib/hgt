@@ -112,9 +112,9 @@ def primeRpowLogSumIoc (a x : ℝ) : ℝ :=
   ∑ k ∈ Finset.Ioc 2 ⌊x⌋₊, (if k.Prime then ((k : ℕ) : ℝ) ^ (a - 1) * Real.log k else 0)
 
 theorem rpowSubOne_mul_primeLogWeight {a : ℝ} (k : ℕ) :
-    ((k : ℝ)) ^ (a - 1) * primeLogWeight k =
+    ((k : ℝ)) ^ (a - 1) * primeLogWeight_primeRpowAbelSummation k =
       (if k.Prime then ((k : ℕ) : ℝ) ^ (a - 1) * Real.log k else 0) := by
-  rw [primeLogWeight]
+  rw [primeLogWeight_primeRpowAbelSummation]
   by_cases hp : k.Prime
   · rw [if_pos hp, if_pos hp]
   · rw [if_neg hp, if_neg hp, mul_zero]
@@ -148,7 +148,7 @@ theorem primeRpowLogSumIoc_eq {a x : ℝ} (hx : 2 ≤ x) :
     primeRpowLogSumIoc a x =
       x ^ (a - 1) * Chebyshev.theta x - (2 : ℝ) ^ (a - 1) * Chebyshev.theta 2 -
         ∫ t in (2 : ℝ)..x, ((a - 1) * t ^ (a - 2)) * Chebyshev.theta t := by
-  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight
+  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight_primeRpowAbelSummation
     (f := fun s : ℝ => s ^ (a - 1)) (a := (2 : ℝ)) (b := x) (by norm_num) hx
     (fun t ht => (hasDerivAt_rpowSubOne (a := a) (by
       have := ht.1

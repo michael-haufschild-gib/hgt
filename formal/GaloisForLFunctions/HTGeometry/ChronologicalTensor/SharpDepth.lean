@@ -26,7 +26,7 @@ theorem chebyshev_escape (r : ℕ) (k : Fin ((r+2)*(r+1))) :
   rw [Polynomial.Chebyshev.derivative_T_eval_one] at ht
   have hx := (hasDerivAt_id (1 : ℝ)).pow (r+2+k.val)
   simp only [id_eq,one_pow,mul_one] at hx
-  have hd : HasDerivAt f (((r+2 : ℕ) : ℝ)^2-((r+2+k.val : ℕ) : ℝ)) 1 := by
+  have hd : HasDerivAt f (((r+2 : ℕ) : ℝ)^(2 : ℕ)-((r+2+k.val : ℕ) : ℝ)) 1 := by
     exact ht.sub hx
   have hk : (k.val : ℝ) < (((r+2)*(r+1) : ℕ) : ℝ) := by exact_mod_cast k.isLt
   have hp : 0 < deriv f 1 := by

@@ -30,7 +30,7 @@ theorem laguerreA_pos : 0 < laguerreA := by
   unfold laguerreA
   exact Real.sqrt_pos.mpr (by positivity)
 
-theorem pi_mul_laguerreA_sq : π * laguerreA ^ 2 = 1 / 10 := by
+theorem pi_mul_laguerreA_sq : π * laguerreA ^ (2 : ℕ) = 1 / 10 := by
   unfold laguerreA
   rw [Real.sq_sqrt (by positivity)]
   field_simp
@@ -43,7 +43,7 @@ theorem laguerreOmega_pos : 0 < laguerreOmega := by
   have := laguerreA_pos
   positivity
 
-theorem laguerreOmega_sq : laguerreOmega ^ 2 = 2 * π / 5 := by
+theorem laguerreOmega_sq : laguerreOmega ^ (2 : ℕ) = 2 * π / 5 := by
   unfold laguerreOmega
   have h := pi_mul_laguerreA_sq
   nlinarith [h]
@@ -64,11 +64,11 @@ theorem laguerreAmp_lt : laguerreAmp < 6 / 5 := by
 
 /-- The kernel `Φ(u) = e^{−πu²} (cosh(ωu) + 6/5)`. -/
 def laguerreKernel (u : ℝ) : ℝ :=
-  Real.exp (-π * u ^ 2) * (Real.cosh (laguerreOmega * u) + 6 / 5)
+  Real.exp (-π * u ^ (2 : ℕ)) * (Real.cosh (laguerreOmega * u) + 6 / 5)
 
 /-- The transform `H(t) = e^{−πt²} (A cos(ωt) + 6/5)`. -/
 def laguerreTransform (t : ℝ) : ℝ :=
-  Real.exp (-π * t ^ 2) * (laguerreAmp * Real.cos (laguerreOmega * t) + 6 / 5)
+  Real.exp (-π * t ^ (2 : ℕ)) * (laguerreAmp * Real.cos (laguerreOmega * t) + 6 / 5)
 
 /-! ## Positivity and evenness -/
 
@@ -94,8 +94,8 @@ def laguerreLogDeriv1 (u : ℝ) : ℝ :=
 
 /-- The second derivative of `log Φ`. -/
 def laguerreLogDeriv2 (u : ℝ) : ℝ :=
-  -(2 * π) + laguerreOmega ^ 2 * (1 + 6 / 5 * Real.cosh (laguerreOmega * u))
-    / (Real.cosh (laguerreOmega * u) + 6 / 5) ^ 2
+  -(2 * π) + laguerreOmega ^ (2 : ℕ) * (1 + 6 / 5 * Real.cosh (laguerreOmega * u))
+    / (Real.cosh (laguerreOmega * u) + 6 / 5) ^ (2 : ℕ)
 
 theorem hasDerivAt_omega_mul (u : ℝ) :
     HasDerivAt (fun v : ℝ => laguerreOmega * v) laguerreOmega u := by
@@ -104,12 +104,12 @@ theorem hasDerivAt_omega_mul (u : ℝ) :
 theorem hasDerivAt_log_laguerreKernel (u : ℝ) :
     HasDerivAt (fun v => Real.log (laguerreKernel v)) (laguerreLogDeriv1 u) u := by
   have hlog : (fun v => Real.log (laguerreKernel v))
-      = fun v => -π * v ^ 2 + Real.log (Real.cosh (laguerreOmega * v) + 6 / 5) := by
+      = fun v => -π * v ^ (2 : ℕ) + Real.log (Real.cosh (laguerreOmega * v) + 6 / 5) := by
     funext v
     unfold laguerreKernel
     rw [Real.log_mul (Real.exp_pos _).ne' (cosh_add_ne_zero v), Real.log_exp]
   rw [hlog]
-  have h1 : HasDerivAt (fun v : ℝ => -π * v ^ 2) (-π * (2 * u)) u := by
+  have h1 : HasDerivAt (fun v : ℝ => -π * v ^ (2 : ℕ)) (-π * (2 * u)) u := by
     have := (hasDerivAt_pow 2 u).const_mul (-π)
     simpa using this
   have hcosh : HasDerivAt (fun v : ℝ => Real.cosh (laguerreOmega * v) + 6 / 5)
@@ -140,19 +140,19 @@ theorem hasDerivAt_laguerreLogDeriv1 (u : ℝ) :
   have hc := Real.cosh_sq (laguerreOmega * u)
   congr 1
   rw [div_left_inj' (pow_ne_zero 2 (cosh_add_ne_zero u))]
-  linear_combination laguerreOmega ^ 2 * hc
+  linear_combination laguerreOmega ^ (2 : ℕ) * hc
 
 theorem laguerreLogDeriv2_nonpos (u : ℝ) : laguerreLogDeriv2 u ≤ 0 := by
   unfold laguerreLogDeriv2
   rw [laguerreOmega_sq]
   set y := Real.cosh (laguerreOmega * u) with hy
   have hy1 : 1 ≤ y := Real.one_le_cosh _
-  have hpos : 0 < (y + 6 / 5) ^ 2 := by positivity
+  have hpos : 0 < (y + 6 / 5) ^ (2 : ℕ) := by positivity
   have hπ := Real.pi_pos
-  have h0 : (1 + 6 / 5 * y) / 5 ≤ (y + 6 / 5) ^ 2 := by nlinarith [hy1]
-  have key : 2 * π / 5 * (1 + 6 / 5 * y) ≤ 2 * π * (y + 6 / 5) ^ 2 := by
+  have h0 : (1 + 6 / 5 * y) / 5 ≤ (y + 6 / 5) ^ (2 : ℕ) := by nlinarith [hy1]
+  have key : 2 * π / 5 * (1 + 6 / 5 * y) ≤ 2 * π * (y + 6 / 5) ^ (2 : ℕ) := by
     nlinarith [mul_nonneg hπ.le (sub_nonneg.mpr h0)]
-  have : 2 * π / 5 * (1 + 6 / 5 * y) / (y + 6 / 5) ^ 2 ≤ 2 * π := by
+  have : 2 * π / 5 * (1 + 6 / 5 * y) / (y + 6 / 5) ^ (2 : ℕ) ≤ 2 * π := by
     rw [div_le_iff₀ hpos]
     exact key
   linarith
@@ -176,7 +176,7 @@ theorem laguerreKernel_logConcave :
 
 /-- The Gaussian piece `x ↦ exp(−πx² + 2πc x)`. -/
 def gaussPiece (c : ℂ) (x : ℝ) : ℂ :=
-  cexp (-(π : ℂ) * 1 * (x : ℂ) ^ 2 + 2 * π * c * x)
+  cexp (-(π : ℂ) * 1 * (x : ℂ) ^ (2 : ℕ) + 2 * π * c * x)
 
 theorem integrable_gaussPiece (c : ℂ) : Integrable (gaussPiece c) := by
   have h := integrable_cexp_quadratic' (b := -(π : ℂ)) (by simp [Real.pi_pos]) (2 * π * c) 0
@@ -192,17 +192,17 @@ theorem laguerreKernel_eq_pieces (u : ℝ) :
         + (6 / 5 : ℂ) * gaussPiece 0 u := by
   unfold laguerreKernel gaussPiece
   rw [Real.cosh_eq]
-  have e1 : -(π : ℂ) * 1 * (u : ℂ) ^ 2 + 2 * π * (laguerreA : ℂ) * u
-      = ((-π * u ^ 2 : ℝ) : ℂ) + ((laguerreOmega * u : ℝ) : ℂ) := by
+  have e1 : -(π : ℂ) * 1 * (u : ℂ) ^ (2 : ℕ) + 2 * π * (laguerreA : ℂ) * u
+      = ((-π * u ^ (2 : ℕ) : ℝ) : ℂ) + ((laguerreOmega * u : ℝ) : ℂ) := by
     unfold laguerreOmega
     push_cast
     ring
-  have e2 : -(π : ℂ) * 1 * (u : ℂ) ^ 2 + 2 * π * (-(laguerreA : ℂ)) * u
-      = ((-π * u ^ 2 : ℝ) : ℂ) + ((-(laguerreOmega * u) : ℝ) : ℂ) := by
+  have e2 : -(π : ℂ) * 1 * (u : ℂ) ^ (2 : ℕ) + 2 * π * (-(laguerreA : ℂ)) * u
+      = ((-π * u ^ (2 : ℕ) : ℝ) : ℂ) + ((-(laguerreOmega * u) : ℝ) : ℂ) := by
     unfold laguerreOmega
     push_cast
     ring
-  have e3 : -(π : ℂ) * 1 * (u : ℂ) ^ 2 + 2 * π * 0 * u = ((-π * u ^ 2 : ℝ) : ℂ) := by
+  have e3 : -(π : ℂ) * 1 * (u : ℂ) ^ (2 : ℕ) + 2 * π * 0 * u = ((-π * u ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     ring
   rw [e1, e2, e3, Complex.exp_add, Complex.exp_add]
@@ -219,7 +219,7 @@ theorem integrable_char_mul_gaussPiece (c : ℂ) (w : ℝ) :
 
 /-- The Fourier transform of a Gaussian piece, pointwise. -/
 theorem fourier_gaussPiece (c : ℂ) (w : ℝ) :
-    𝓕 (gaussPiece c) w = cexp (-(π : ℂ) * ((w : ℂ) + I * c) ^ 2) := by
+    𝓕 (gaussPiece c) w = cexp (-(π : ℂ) * ((w : ℂ) + I * c) ^ (2 : ℕ)) := by
   have h := congrFun (fourier_gaussian_pi' (b := 1) (by simp) c) w
   unfold gaussPiece
   rw [h, one_cpow, div_one, one_mul, div_one]
@@ -260,26 +260,26 @@ theorem fourier_laguerreKernel (w : ℝ) :
   rw [integral_add hAB hC, integral_add hA hB, integral_const_mul, integral_const_mul,
     integral_const_mul]
   have hF : ∀ c : ℂ, ∫ v : ℝ, cexp (((2 * π * -(v * w) : ℝ) : ℂ) * I) * gaussPiece c v
-      = cexp (-(π : ℂ) * ((w : ℂ) + I * c) ^ 2) := by
+      = cexp (-(π : ℂ) * ((w : ℂ) + I * c) ^ (2 : ℕ)) := by
     intro c
     rw [← fourier_gaussPiece c w, Real.fourier_real_eq]
     simp only [Circle.smul_def, smul_eq_mul, Real.fourierChar_apply]
   rw [hF, hF, hF]
   -- assemble the transform
   unfold laguerreTransform laguerreAmp laguerreOmega
-  have hI : I ^ 2 = -1 := I_sq
-  have hpa : (π : ℂ) * (laguerreA : ℂ) ^ 2 = 1 / 10 := by
+  have hI : I ^ (2 : ℕ) = -1 := I_sq
+  have hpa : (π : ℂ) * (laguerreA : ℂ) ^ (2 : ℕ) = 1 / 10 := by
     rw [← Complex.ofReal_pow, ← Complex.ofReal_mul, pi_mul_laguerreA_sq]
     norm_num
-  have e1 : -(π : ℂ) * ((w : ℂ) + I * (laguerreA : ℂ)) ^ 2
-      = ((-π * w ^ 2 : ℝ) : ℂ) + ((1 / 10 : ℝ) : ℂ) + (-(((2 * π * laguerreA * w : ℝ) : ℂ) * I)) := by
+  have e1 : -(π : ℂ) * ((w : ℂ) + I * (laguerreA : ℂ)) ^ (2 : ℕ)
+      = ((-π * w ^ (2 : ℕ) : ℝ) : ℂ) + ((1 / 10 : ℝ) : ℂ) + (-(((2 * π * laguerreA * w : ℝ) : ℂ) * I)) := by
     push_cast
-    linear_combination (-(π : ℂ) * (laguerreA : ℂ) ^ 2) * hI + hpa
-  have e2 : -(π : ℂ) * ((w : ℂ) + I * -(laguerreA : ℂ)) ^ 2
-      = ((-π * w ^ 2 : ℝ) : ℂ) + ((1 / 10 : ℝ) : ℂ) + (((2 * π * laguerreA * w : ℝ) : ℂ) * I) := by
+    linear_combination (-(π : ℂ) * (laguerreA : ℂ) ^ (2 : ℕ)) * hI + hpa
+  have e2 : -(π : ℂ) * ((w : ℂ) + I * -(laguerreA : ℂ)) ^ (2 : ℕ)
+      = ((-π * w ^ (2 : ℕ) : ℝ) : ℂ) + ((1 / 10 : ℝ) : ℂ) + (((2 * π * laguerreA * w : ℝ) : ℂ) * I) := by
     push_cast
-    linear_combination (-(π : ℂ) * (laguerreA : ℂ) ^ 2) * hI + hpa
-  have e3 : -(π : ℂ) * ((w : ℂ) + I * 0) ^ 2 = ((-π * w ^ 2 : ℝ) : ℂ) := by
+    linear_combination (-(π : ℂ) * (laguerreA : ℂ) ^ (2 : ℕ)) * hI + hpa
+  have e3 : -(π : ℂ) * ((w : ℂ) + I * 0) ^ (2 : ℕ) = ((-π * w ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     ring
   rw [e1, e2, e3, Complex.exp_add, Complex.exp_add, Complex.exp_add, Complex.exp_add]
@@ -295,19 +295,19 @@ theorem fourier_laguerreKernel (w : ℝ) :
 
 /-- The first derivative of `H`. -/
 def laguerreTransformD1 (t : ℝ) : ℝ :=
-  Real.exp (-π * t ^ 2)
+  Real.exp (-π * t ^ (2 : ℕ))
     * (-(laguerreAmp * laguerreOmega * Real.sin (laguerreOmega * t))
         - 2 * π * t * (laguerreAmp * Real.cos (laguerreOmega * t) + 6 / 5))
 
 /-- The second derivative of `H`. -/
 def laguerreTransformD2 (t : ℝ) : ℝ :=
-  Real.exp (-π * t ^ 2)
-    * (-(laguerreAmp * laguerreOmega ^ 2 * Real.cos (laguerreOmega * t))
+  Real.exp (-π * t ^ (2 : ℕ))
+    * (-(laguerreAmp * laguerreOmega ^ (2 : ℕ) * Real.cos (laguerreOmega * t))
         + 4 * π * t * (laguerreAmp * laguerreOmega * Real.sin (laguerreOmega * t))
-        + (4 * π ^ 2 * t ^ 2 - 2 * π) * (laguerreAmp * Real.cos (laguerreOmega * t) + 6 / 5))
+        + (4 * π ^ (2 : ℕ) * t ^ (2 : ℕ) - 2 * π) * (laguerreAmp * Real.cos (laguerreOmega * t) + 6 / 5))
 
 theorem hasDerivAt_gaussFactor (t : ℝ) :
-    HasDerivAt (fun s : ℝ => Real.exp (-π * s ^ 2)) (Real.exp (-π * t ^ 2) * (-π * (2 * t))) t := by
+    HasDerivAt (fun s : ℝ => Real.exp (-π * s ^ (2 : ℕ))) (Real.exp (-π * t ^ (2 : ℕ)) * (-π * (2 * t))) t := by
   have := ((hasDerivAt_pow 2 t).const_mul (-π)).exp
   simpa using this
 
@@ -316,7 +316,7 @@ theorem hasDerivAt_laguerreTransform (t : ℝ) :
   have hg : HasDerivAt (fun s : ℝ => laguerreAmp * Real.cos (laguerreOmega * s) + 6 / 5)
       (laguerreAmp * (-Real.sin (laguerreOmega * t) * laguerreOmega)) t :=
     ((hasDerivAt_omega_mul t).cos.const_mul laguerreAmp).add_const _
-  have hfun : laguerreTransform = fun s => Real.exp (-π * s ^ 2)
+  have hfun : laguerreTransform = fun s => Real.exp (-π * s ^ (2 : ℕ))
       * (laguerreAmp * Real.cos (laguerreOmega * s) + 6 / 5) := rfl
   rw [hfun]
   refine ((hasDerivAt_gaussFactor t).mul hg).congr_deriv ?_
@@ -340,7 +340,7 @@ theorem hasDerivAt_laguerreTransformD1 (t : ℝ) :
           - (2 * π * (laguerreAmp * Real.cos (laguerreOmega * t) + 6 / 5)
               + 2 * π * t * (laguerreAmp * (-Real.sin (laguerreOmega * t) * laguerreOmega)))) t :=
     hsin.neg.sub (hlin.mul hg)
-  have hfun : laguerreTransformD1 = fun s => Real.exp (-π * s ^ 2)
+  have hfun : laguerreTransformD1 = fun s => Real.exp (-π * s ^ (2 : ℕ))
       * (-(laguerreAmp * laguerreOmega * Real.sin (laguerreOmega * s))
           - 2 * π * s * (laguerreAmp * Real.cos (laguerreOmega * s) + 6 / 5)) := rfl
   rw [hfun]
@@ -357,28 +357,28 @@ theorem laguerreOmega_mul_T0 : laguerreOmega * laguerreT0 = π := by
 
 /-- **The Laguerre expression of `H` is negative at `t₀`.** -/
 theorem laguerreTransform_laguerre_neg :
-    deriv laguerreTransform laguerreT0 ^ 2
+    deriv laguerreTransform laguerreT0 ^ (2 : ℕ)
       - laguerreTransform laguerreT0 * deriv (deriv laguerreTransform) laguerreT0 < 0 := by
   have hd1 : deriv laguerreTransform = laguerreTransformD1 :=
     funext fun t => (hasDerivAt_laguerreTransform t).deriv
   rw [hd1, (hasDerivAt_laguerreTransformD1 _).deriv]
   unfold laguerreTransform laguerreTransformD1 laguerreTransformD2
   rw [laguerreOmega_mul_T0, Real.cos_pi, Real.sin_pi]
-  set E := Real.exp (-π * laguerreT0 ^ 2) with hE
+  set E := Real.exp (-π * laguerreT0 ^ (2 : ℕ)) with hE
   have hEpos : 0 < E := Real.exp_pos _
   have hω := laguerreOmega_sq
   set A := laguerreAmp with hA
   have hA1 : 1 < A := one_lt_laguerreAmp
   have hA2 : A < 6 / 5 := laguerreAmp_lt
-  have hkey : (E * (-(A * laguerreOmega * 0) - 2 * π * laguerreT0 * (A * -1 + 6 / 5))) ^ 2
+  have hkey : (E * (-(A * laguerreOmega * 0) - 2 * π * laguerreT0 * (A * -1 + 6 / 5))) ^ (2 : ℕ)
       - E * (A * -1 + 6 / 5)
-        * (E * (-(A * laguerreOmega ^ 2 * -1) + 4 * π * laguerreT0 * (A * laguerreOmega * 0)
-            + (4 * π ^ 2 * laguerreT0 ^ 2 - 2 * π) * (A * -1 + 6 / 5)))
-      = E ^ 2 * ((6 / 5 - A) * (12 * π / 5) * (1 - A)) := by
-    linear_combination (-(E ^ 2 * (6 / 5 - A) * A)) * hω
+        * (E * (-(A * laguerreOmega ^ (2 : ℕ) * -1) + 4 * π * laguerreT0 * (A * laguerreOmega * 0)
+            + (4 * π ^ (2 : ℕ) * laguerreT0 ^ (2 : ℕ) - 2 * π) * (A * -1 + 6 / 5)))
+      = E ^ (2 : ℕ) * ((6 / 5 - A) * (12 * π / 5) * (1 - A)) := by
+    linear_combination (-(E ^ (2 : ℕ) * (6 / 5 - A) * A)) * hω
   rw [hkey]
   have hπ := Real.pi_pos
-  have h1 : 0 < E ^ 2 * ((6 / 5 - A) * (12 * π / 5)) := by
+  have h1 : 0 < E ^ (2 : ℕ) * ((6 / 5 - A) * (12 * π / 5)) := by
     have : 0 < 6 / 5 - A := by linarith
     positivity
   have h2 : 1 - A < 0 := by linarith

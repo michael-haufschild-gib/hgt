@@ -58,7 +58,7 @@ theorem horizonGauss_uniform_second_bound (w chi : ℂ) (hw : w.im ≠ 0)
     ∃ R C L : ℝ, 0 < R ∧ 0 ≤ C ∧ 0 ≤ L ∧
       ∀ u ∈ ball w R, ‖horizonGaussFirstCoefficient u chi‖ ≤ L ∧
         ∀ z ∈ Icc (0:ℝ) b,
-          ‖gaussFactor u chi false (z:ℂ)-1-horizonGaussFirstCoefficient u chi*(z:ℂ)‖ ≤ C*z^2 := by
+          ‖gaussFactor u chi false (z:ℂ)-1-horizonGaussFirstCoefficient u chi*(z:ℂ)‖ ≤ C*z^(2 : ℕ) := by
   obtain ⟨R,B,δ,hR,_,hB,hδ,hp⟩ := horizonGauss_parameter_neighborhood w chi hw
   obtain ⟨N,hN⟩ := exists_nat_ge (B+1)
   have hsep (u : ℂ) (hu : u ∈ ball w R) (j : ℕ) : δ ≤ ‖gaussC u+j‖ := by

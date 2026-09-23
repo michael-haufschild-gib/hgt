@@ -32,7 +32,7 @@ noncomputable section
 def suzukiCriticalApertureDepthFusionRadius
     (h a : ℝ) (p : Nat.Primes) : ℝ :=
   Real.exp (-(1 / 4 : ℝ) * Real.log (p : ℝ)) *
-    xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ 2
+    xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ (2 : ℕ)
 
 /-- Half-prime-log phase carried by every valuation step on one prime ray. -/
 def suzukiCriticalApertureDepthFusionPhase
@@ -87,7 +87,7 @@ theorem suzukiCriticalApertureDepthFusionRadius_lt_one
     (mul_pos (half_pos hh) ha) p
   rw [suzukiCriticalApertureDepthFusionRadius]
   exact mul_lt_one_of_nonneg_of_lt_one_left (Real.exp_nonneg _) hexp
-    (by nlinarith : xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ 2 ≤ 1)
+    (by nlinarith : xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ (2 : ℕ) ≤ 1)
 
 /-- The existing complex depth ratio is exactly positive radius times prime-log phase. -/
 theorem suzukiCriticalApertureDepthRatio_eq_radius_mul_phase
@@ -144,7 +144,7 @@ theorem suzukiCriticalApertureDepthFusedAtom_eq_mobius
 
 private theorem normSq_one_sub_real_mul_exp_I (r θ : ℝ) :
     Complex.normSq (1 - (r : ℂ) * Complex.exp ((θ : ℂ) * I)) =
-      1 - 2 * r * Real.cos θ + r ^ 2 := by
+      1 - 2 * r * Real.cos θ + r ^ (2 : ℕ) := by
   rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
     Complex.normSq_apply]
   simp only [Complex.sub_re, Complex.one_re, Complex.mul_re, Complex.ofReal_re,
@@ -157,10 +157,10 @@ private theorem normSq_one_sub_real_mul_exp_I (r θ : ℝ) :
 theorem normSq_suzukiCriticalApertureDepthFusedAtom_eq
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) (t : ℝ) (p : Nat.Primes) :
     Complex.normSq (suzukiCriticalApertureDepthFusedAtom h a t p) =
-      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ 2 /
+      suzukiCriticalEntryWallEndpointAmplitude h a p 0 ^ (2 : ℕ) /
         (1 - 2 * suzukiCriticalApertureDepthFusionRadius h a p *
             Real.cos (t * Real.log (p : ℝ) / 2) +
-          suzukiCriticalApertureDepthFusionRadius h a p ^ 2) := by
+          suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) := by
   rw [suzukiCriticalApertureDepthFusedAtom_eq_mobius hh ha,
     Complex.normSq_mul, Complex.normSq_mul, Complex.normSq_ofReal,
     Complex.normSq_inv]
@@ -203,21 +203,21 @@ theorem normSq_suzukiCriticalApertureDepthFusedAtom_eq_zero_mul_frostmanProfile
   have hr : suzukiCriticalApertureDepthFusionRadius h a p ≠ 0 := ne_of_gt hr0
   have hD : 0 < 1 - 2 * suzukiCriticalApertureDepthFusionRadius h a p *
       Real.cos (t * Real.log (p : ℝ) / 2) +
-        suzukiCriticalApertureDepthFusionRadius h a p ^ 2 := by
+        suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ) := by
     have hc := Real.cos_le_one (t * Real.log (p : ℝ) / 2)
     nlinarith [sq_pos_of_pos (sub_pos.mpr hr1)]
   have hprofile : suzukiCriticalApertureDepthFrostmanProfile h a t p =
-      (1 - suzukiCriticalApertureDepthFusionRadius h a p) ^ 2 /
+      (1 - suzukiCriticalApertureDepthFusionRadius h a p) ^ (2 : ℕ) /
         (1 - 2 * suzukiCriticalApertureDepthFusionRadius h a p *
             Real.cos (t * Real.log (p : ℝ) / 2) +
-          suzukiCriticalApertureDepthFusionRadius h a p ^ 2) := by
+          suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) := by
     rw [suzukiCriticalApertureDepthFrostmanProfile, ccmFrostmanPoissonProfile]
     field_simp [hr, hD.ne']
   rw [hprofile]
   have hD0eq :
       1 - 2 * suzukiCriticalApertureDepthFusionRadius h a p * 1 +
-          suzukiCriticalApertureDepthFusionRadius h a p ^ 2 =
-        (1 - suzukiCriticalApertureDepthFusionRadius h a p) ^ 2 := by
+          suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ) =
+        (1 - suzukiCriticalApertureDepthFusionRadius h a p) ^ (2 : ℕ) := by
     ring
   rw [hD0eq]
   have hs : 1 - suzukiCriticalApertureDepthFusionRadius h a p ≠ 0 :=
@@ -270,7 +270,7 @@ theorem suzukiCriticalApertureDepthFrostmanProfile_le_one
 private theorem ccmFrostmanPoissonProfile_eq_one_iff_cos
     {q θ : ℝ} (hq : 1 < q) :
     ccmFrostmanPoissonProfile q θ = 1 ↔ Real.cos θ = 1 := by
-  have hD : 0 < q ^ 2 - 2 * q * Real.cos θ + 1 :=
+  have hD : 0 < q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1 :=
     ccmFrostman_denominator_pos hq
   rw [ccmFrostmanPoissonProfile, div_eq_one_iff_eq hD.ne']
   constructor <;> intro h

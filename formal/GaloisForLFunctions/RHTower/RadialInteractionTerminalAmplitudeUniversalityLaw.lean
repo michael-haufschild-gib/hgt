@@ -128,7 +128,7 @@ theorem norm_radialInteractionPlus_sub_le_totalTransport
     {c a B b : ℝ} (hc : c ≠ 0) (hab : a ≤ b) {W V psi : ℝ → ℂ}
     (hW : ∀ x ∈ Ici a, HasDerivAt W (V x) x)
     (hV : ∀ x ∈ Ici a,
-      HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x)
+      HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x)
     (hWbound : ∀ x ∈ Ici a, ‖W x‖ ≤ B)
     (hpsi : IntegrableOn psi (Ioi a) volume) :
     ‖radialInteractionPlus c W V b - radialInteractionPlus c W V a‖ ≤
@@ -162,7 +162,7 @@ theorem norm_radialInteractionMinus_sub_le_totalTransport
     {c a B b : ℝ} (hc : c ≠ 0) (hab : a ≤ b) {W V psi : ℝ → ℂ}
     (hW : ∀ x ∈ Ici a, HasDerivAt W (V x) x)
     (hV : ∀ x ∈ Ici a,
-      HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x)
+      HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x)
     (hWbound : ∀ x ∈ Ici a, ‖W x‖ ≤ B)
     (hpsi : IntegrableOn psi (Ioi a) volume) :
     ‖radialInteractionMinus c W V b - radialInteractionMinus c W V a‖ ≤
@@ -201,7 +201,7 @@ theorem radialInteractionTerminalAmplitudeUniversality
     {c a B : ℝ} (hc : c ≠ 0) {W V psi : ℝ → ℂ}
     (hW : ∀ x ∈ Ici a, HasDerivAt W (V x) x)
     (hV : ∀ x ∈ Ici a,
-      HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x)
+      HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x)
     (hWbound : ∀ x ∈ Ici a, ‖W x‖ ≤ B)
     (hpsi : IntegrableOn psi (Ioi a) volume) :
     (∀ x : ℝ,

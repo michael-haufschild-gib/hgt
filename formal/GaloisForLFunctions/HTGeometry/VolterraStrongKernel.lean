@@ -60,23 +60,23 @@ theorem norm_volterraIterate_succ_sub_le_of_strong {f : ℝ → X} {K : ℝ → 
         = ∫ s in (0 : ℝ)..t, K t s (f s) := by
       rw [volterraIterate_succ, volterraIterate_zero]
       abel
-    have hbound : ∀ s ∈ Ι (0 : ℝ) t, ‖K t s (f s)‖ ≤ F * M * |s| ^ 0 := by
+    have hbound : ∀ s ∈ Ι (0 : ℝ) t, ‖K t s (f s)‖ ≤ F * M * |s| ^ (0 : ℕ) := by
       intro s _
       have h1 : ‖K t s (f s)‖ ≤ ‖K t s‖ * ‖f s‖ := (K t s).le_opNorm (f s)
       have h2 : ‖K t s‖ * ‖f s‖ ≤ M * F :=
         mul_le_mul (hKb t s) (hfb s) (norm_nonneg _) hM
       calc ‖K t s (f s)‖ ≤ M * F := le_trans h1 h2
-        _ = F * M * |s| ^ 0 := by ring
+        _ = F * M * |s| ^ (0 : ℕ) := by ring
     have hcont : Continuous fun s : ℝ => K t s (f s) := by
       have := hK _ hf
       exact this.comp (continuous_const.prodMk continuous_id)
     have hle := norm_integral_le_abs_of_norm_le (a := (0 : ℝ)) (b := t)
-      (f := fun s => K t s (f s)) (g := fun s => F * M * |s| ^ 0)
+      (f := fun s => K t s (f s)) (g := fun s => F * M * |s| ^ (0 : ℕ))
       (hcont.norm.intervalIntegrable 0 t)
       ((continuous_const.mul ((continuous_abs.pow 0))).intervalIntegrable 0 t) hbound
     rw [hdiff]
     refine le_trans hle ?_
-    have hval : (∫ s in (0 : ℝ)..t, F * M * |s| ^ 0) = F * M * ∫ s in (0 : ℝ)..t, |s| ^ 0 := by
+    have hval : (∫ s in (0 : ℝ)..t, F * M * |s| ^ (0 : ℕ)) = F * M * ∫ s in (0 : ℝ)..t, |s| ^ (0 : ℕ) := by
       rw [intervalIntegral.integral_const_mul]
     rw [hval, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ F * M), abs_integral_abs_pow]
     simp

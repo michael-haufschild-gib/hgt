@@ -85,7 +85,7 @@ theorem le_fidelityReturnTime {D : ℕ} {E p : Fin D → ℝ} {t₀ δ : ℝ}
 
 /-- **A winding return produces a fidelity return.**  If a whole number of clock windings puts
 every projective gap ratio within `r` of the integer lattice, the corresponding time realises a
-fidelity deficit below `8 pi^2 r^2`. -/
+fidelity deficit below `8 pi^(2 : ℕ) r^(2 : ℕ)`. -/
 theorem fidelityReturnTime_le_of_windingReturn (E p : Fin (e + 3) → ℝ)
     (hp1 : ∑ j, p j = 1) (hpnn : ∀ j, 0 ≤ p j) (hg0 : 0 < E 1 - E 0)
     {r δ t₀ : ℝ} (hr : 0 < r) (hδ : 8 * π ^ 2 * r ^ 2 < δ) {q : ℕ} (hq1 : 1 ≤ q)

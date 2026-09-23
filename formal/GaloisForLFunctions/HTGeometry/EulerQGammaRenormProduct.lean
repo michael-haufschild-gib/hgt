@@ -17,7 +17,7 @@ noncomputable section
 
 /-! ## Prime power sums -/
 
-theorem summable_prime_rpow_neg {t : ℝ} (ht : 1 < t) :
+theorem summable_prime_rpow_neg_eulerQGammaRenormProduct {t : ℝ} (ht : 1 < t) :
     Summable (fun p : Nat.Primes => ((p : ℕ) : ℝ) ^ (-t)) := by
   have h : Summable (fun n : ℕ => ((n : ℝ) ^ t)⁻¹) := Real.summable_nat_rpow_inv.mpr ht
   have h2 : Summable (fun n : ℕ => (n : ℝ) ^ (-t)) := by
@@ -63,14 +63,14 @@ theorem half_lt_eqgShiftExponent (σ : EulerSigma) {s : ℂ}
 
 theorem summable_prime_sq (σ : EulerSigma) :
     Summable (fun p : Nat.Primes => ((p : ℕ) : ℝ) ^ (-(2 * σ.val))) := by
-  refine summable_prime_rpow_neg ?_
+  refine summable_prime_rpow_neg_eulerQGammaRenormProduct ?_
   have := σ.one_lt
   linarith
 
 theorem summable_prime_shift_sq (σ : EulerSigma) {s : ℂ}
     (hs : 1 / (2 * σ.val) - 1 < s.re) :
     Summable (fun p : Nat.Primes => ((p : ℕ) : ℝ) ^ (-(2 * eqgShiftExponent σ s))) := by
-  refine summable_prime_rpow_neg ?_
+  refine summable_prime_rpow_neg_eulerQGammaRenormProduct ?_
   have := half_lt_eqgShiftExponent σ hs
   linarith
 
@@ -78,7 +78,7 @@ theorem summable_prime_shift_mul (σ : EulerSigma) {s : ℂ}
     (hs : 1 / (2 * σ.val) - 1 < s.re) :
     Summable (fun p : Nat.Primes =>
       ((p : ℕ) : ℝ) ^ (-(eqgShiftExponent σ s + σ.val))) := by
-  refine summable_prime_rpow_neg ?_
+  refine summable_prime_rpow_neg_eulerQGammaRenormProduct ?_
   have h1 := half_lt_eqgShiftExponent σ hs
   have h2 := σ.one_lt
   linarith
@@ -122,7 +122,7 @@ theorem eqgDenomMajor_nonneg (σ : EulerSigma) (s : ℂ) (p : Nat.Primes) :
 
 /-! ## The local deviations -/
 
-theorem shift_re (σ : EulerSigma) (s : ℂ) (p : Nat.Primes) :
+theorem shift_re_eulerQGammaRenormProduct (σ : EulerSigma) (s : ℂ) (p : Nat.Primes) :
     (eqgNome σ p).val ^ ((1 + s).re) = ((p : ℕ) : ℝ) ^ (-eqgShiftExponent σ s) := by
   have hre : (1 + s).re = 1 + s.re := by simp
   rw [eqgNome_rpow, eqgShiftExponent, hre]
@@ -161,7 +161,7 @@ theorem norm_eqgDenomFactorRenorm_prime_le (σ : EulerSigma) (s : ℂ) (p : Nat.
     ‖eqgDenomFactorRenorm (eqgNome σ p) s - 1‖ ≤ eqgDenomMajor σ s p := by
   have hq := eqgNome_le_half σ p
   have hre : (eqgNome σ p).val ^ ((1 + s).re) = ((p : ℕ) : ℝ) ^ (-eqgShiftExponent σ s) :=
-    shift_re σ s p
+    shift_re_eulerQGammaRenormProduct σ s p
   have hz' : (eqgNome σ p).val ^ ((1 + s).re) ≤ 1 / 2 := by
     rw [hre]
     exact hz
@@ -373,15 +373,15 @@ theorem summable_eqgPowerMajorAt (σ : EulerSigma) (M : ℝ) :
 theorem summable_eqgDenomMajorAt (σ : EulerSigma) {w : ℝ} (hw : 1 / 2 < w) :
     Summable (eqgDenomMajorAt σ w) := by
   have hσ := σ.one_lt
-  have h1 := ((summable_prime_rpow_neg (t := w + σ.val) (by linarith)).mul_left (3 * Real.exp 2))
-  have h2 := ((summable_prime_rpow_neg (t := 2 * w) (by linarith)).mul_left genusOneBoundConst)
+  have h1 := ((summable_prime_rpow_neg_eulerQGammaRenormProduct (t := w + σ.val) (by linarith)).mul_left (3 * Real.exp 2))
+  have h2 := ((summable_prime_rpow_neg_eulerQGammaRenormProduct (t := 2 * w) (by linarith)).mul_left genusOneBoundConst)
   refine (h1.add h2).congr fun p => ?_
   rw [eqgDenomMajorAt]
 
 theorem eventually_prime_rpow_le_half {w : ℝ} (hw : 1 / 2 < w) :
     ∀ᶠ p : Nat.Primes in cofinite, ((p : ℕ) : ℝ) ^ (-w) ≤ 1 / 2 := by
   have hsum : Summable (fun p : Nat.Primes => ((p : ℕ) : ℝ) ^ (-(2 * w))) :=
-    summable_prime_rpow_neg (by linarith)
+    summable_prime_rpow_neg_eulerQGammaRenormProduct (by linarith)
   have h2 : ∀ᶠ p : Nat.Primes in cofinite, ((p : ℕ) : ℝ) ^ (-(2 * w)) < 1 / 4 :=
     hsum.tendsto_cofinite_zero.eventually_lt_const (by norm_num)
   filter_upwards [h2] with p hp

@@ -41,9 +41,9 @@ Weighted admission, the noncompact angular test limit, and all source channels a
 theorem physicalCuspResponse_radial_equation (q r : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (hw : 0 < w.re) (hd : 3/2 < w.re) (hwi : w.im ≠ 0) (hwr : |w.re| < 2) (f : RadialCore) :
     inner ℂ (radialDerivative f.differentiate) (physicalCuspResponse q r branch w a hw hd hwi hwr)+
-      (physicalAngularParameter r^2-1/4)*inner ℂ (radialWeightedValue f.angularWeighted)
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*inner ℂ (radialWeightedValue f.angularWeighted)
         (physicalCuspResponse q r branch w a hw hd hwi hwr)-
-      w^2*inner ℂ (radialValue f) (physicalCuspResponse q r branch w a hw hd hwi hwr) =
+      w^(2 : ℕ)*inner ℂ (radialValue f) (physicalCuspResponse q r branch w a hw hd hwi hwr) =
       -inner ℂ (radialValue f) (continuedAngularSourceL2 q branch (physicalAngularParameter r) a w) := by
   have h0 := physicalCuspResponse_compact_test_limit q r branch w a hw hd hwi hwr (radialDerivative f.differentiate)
   have h1 := physicalCoreCutoff_laplacian_inner_tendsto r (radialWeightedValue f.angularWeighted)
@@ -53,7 +53,7 @@ theorem physicalCuspResponse_radial_equation (q r : XiZeroCopy) (branch : Bool) 
   have hF := physicalCoreCutoff_inner_tendsto r (radialValue f) (continuedCuspResidualL2 q branch a w)
     (continuedCuspResidualL2_height_memLp q branch w a hwi hwr)
   rw [physicalCuspSource_height_projection q r branch w a hwi hwr] at hF
-  have hleft := (h0.add h1).sub (h2.const_mul (w^2))
+  have hleft := (h0.add h1).sub (h2.const_mul (w^(2 : ℕ)))
   have hright := hF.neg
   apply tendsto_nhds_unique hleft
   apply hright.congr'

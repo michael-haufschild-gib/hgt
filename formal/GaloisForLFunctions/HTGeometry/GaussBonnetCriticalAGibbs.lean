@@ -20,11 +20,11 @@ def egbCriticalALogGibbs (x θ l u : ℝ) : ℝ :=
 
 /-- The exponential part of the n-th logarithmic-radius derivative. -/
 def egbCriticalAGibbsJet (x θ : ℝ) (n : ℕ) (u : ℝ) : ℝ :=
-  exp u / 2 + (-1 : ℝ) ^ n * exp x ^ 2 * (1 - 6 * egbCriticalAShape θ) /
+  exp u / 2 + (-1 : ℝ) ^ n * exp x ^ (2 : ℕ) * (1 - 6 * egbCriticalAShape θ) /
     (12 * (1 + 2 * egbCriticalAShape θ) * exp u) +
-    (3 : ℝ) ^ n * (3 - 2 * egbCriticalAShape θ) * exp u ^ 3 /
-      (36 * exp x ^ 2 * (1 + 2 * egbCriticalAShape θ)) -
-    (2 : ℝ) ^ n * exp u ^ 2 / (3 * exp x * (1 + 2 * egbCriticalAShape θ))
+    (3 : ℝ) ^ n * (3 - 2 * egbCriticalAShape θ) * exp u ^ (3 : ℕ) /
+      (36 * exp x ^ (2 : ℕ) * (1 + 2 * egbCriticalAShape θ)) -
+    (2 : ℝ) ^ n * exp u ^ (2 : ℕ) / (3 * exp x * (1 + 2 * egbCriticalAShape θ))
 
 def egbCriticalAEntropySlope (x θ : ℝ) : ℝ :=
   4 * exp x * egbCriticalAShape θ / (3 * (1 + 2 * egbCriticalAShape θ))
@@ -50,13 +50,13 @@ theorem egbCriticalALogGibbs_formula (x θ l u : ℝ) :
 theorem egbCriticalAGibbsJet_hasDerivAt (x θ u : ℝ) (n : ℕ) :
     HasDerivAt (egbCriticalAGibbsJet x θ n) (egbCriticalAGibbsJet x θ (n + 1) u) u := by
   have he := hasDerivAt_exp u
-  have hq := (hasDerivAt_const u ((-1 : ℝ) ^ n * exp x ^ 2 * (1 - 6 * egbCriticalAShape θ))).div
+  have hq := (hasDerivAt_const u ((-1 : ℝ) ^ n * exp x ^ (2 : ℕ) * (1 - 6 * egbCriticalAShape θ))).div
     (he.const_mul (12 * (1 + 2 * egbCriticalAShape θ))) (by
       have hb := (egbCriticalAShape_bounds θ).1
       positivity)
   have h := (((he.div_const 2).add hq).add
     (((he.pow 3).const_mul ((3 : ℝ) ^ n * (3 - 2 * egbCriticalAShape θ))).div_const
-      (36 * exp x ^ 2 * (1 + 2 * egbCriticalAShape θ)))).sub
+      (36 * exp x ^ (2 : ℕ) * (1 + 2 * egbCriticalAShape θ)))).sub
     (((he.pow 2).const_mul ((2 : ℝ) ^ n)).div_const (3 * exp x * (1 + 2 * egbCriticalAShape θ)))
   apply h.congr_deriv
   unfold egbCriticalAGibbsJet
@@ -81,7 +81,7 @@ theorem egbCriticalALogGibbs_hasDerivAt (x θ l u : ℝ) :
 /-- Exact factorization of the actual derivative over the entire positive-radius domain. -/
 theorem egbCriticalALogGibbs_derivative_factorization (x θ l u : ℝ) :
     deriv (egbCriticalALogGibbs x θ l) u =
-      4 * Real.pi * egbCriticalAPressure x θ / exp u * (exp u - exp x) ^ 3 *
+      4 * Real.pi * egbCriticalAPressure x θ / exp u * (exp u - exp x) ^ (3 : ℕ) *
         (exp u + egbCriticalATail θ * exp x) := by
   rw [(egbCriticalALogGibbs_hasDerivAt x θ l u).deriv]
   unfold egbCriticalAGibbsJet egbCriticalAEntropySlope egbCriticalAPressure egbCriticalATail

@@ -14,11 +14,11 @@ noncomputable section
 namespace HTGeometry
 
 /-- Cubic momentum deformation, with `b = beta * PlanckLength²`. -/
-def gupMomentum (b k : ℝ) : ℝ := k * (1 + b * k ^ 2)
+def gupMomentum (b k : ℝ) : ℝ := k * (1 + b * k ^ (2 : ℕ))
 
 /-- Exact symbolic derivative of the momentum deformation. -/
 theorem hasDerivAt_gupMomentum (b k : ℝ) :
-    HasDerivAt (gupMomentum b) (1 + 3 * b * k ^ 2) k := by
+    HasDerivAt (gupMomentum b) (1 + 3 * b * k ^ (2 : ℕ)) k := by
   have h := (hasDerivAt_id k).mul
     ((hasDerivAt_const k 1).add ((hasDerivAt_id k).pow 2 |>.const_mul b))
   exact h.congr_deriv (by dsimp; ring)
@@ -26,22 +26,22 @@ theorem hasDerivAt_gupMomentum (b k : ℝ) :
 
 /-- Logarithm of positive deformed momentum, in logarithmic input coordinates. -/
 def gupLogMomentum (a t : ℝ) : ℝ :=
-  Real.log (gupMomentum (a ^ 2) (Real.exp t))
+  Real.log (gupMomentum (a ^ (2 : ℕ)) (Real.exp t))
 
 /-- The chain-rule conversion from logarithmic deformed momentum to logarithmic momentum. -/
 def gupLogSlopeCorrection (a t : ℝ) : ℝ :=
-  (1 + a ^ 2 * Real.exp t ^ 2) / (1 + 3 * a ^ 2 * Real.exp t ^ 2)
+  (1 + a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ)) / (1 + 3 * a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ))
 
 theorem gupMomentum_positive (a t : ℝ) :
-    0 < gupMomentum (a ^ 2) (Real.exp t) := by
+    0 < gupMomentum (a ^ (2 : ℕ)) (Real.exp t) := by
   unfold gupMomentum
   positivity
 
 /-- The exact Jacobian has a cubic coefficient in its numerator. -/
 theorem hasDerivAt_gupLogMomentum (a t : ℝ) :
     HasDerivAt (gupLogMomentum a)
-      ((1 + 3 * a ^ 2 * Real.exp t ^ 2) / (1 + a ^ 2 * Real.exp t ^ 2)) t := by
-  have h := ((hasDerivAt_gupMomentum (a ^ 2) (Real.exp t)).comp t
+      ((1 + 3 * a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ)) / (1 + a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ))) t := by
+  have h := ((hasDerivAt_gupMomentum (a ^ (2 : ℕ)) (Real.exp t)).comp t
     (Real.hasDerivAt_exp t)).log (gupMomentum_positive a t).ne'
   convert h using 1
   · rfl
@@ -53,8 +53,8 @@ theorem gupLogSlopeCorrection_inverse (a t : ℝ) :
     gupLogSlopeCorrection a t * deriv (gupLogMomentum a) t = 1 := by
   rw [(hasDerivAt_gupLogMomentum a t).deriv]
   unfold gupLogSlopeCorrection
-  have h1 : 1 + a ^ 2 * Real.exp t ^ 2 ≠ 0 := by positivity
-  have h3 : 1 + 3 * a ^ 2 * Real.exp t ^ 2 ≠ 0 := by positivity
+  have h1 : 1 + a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ) ≠ 0 := by positivity
+  have h3 : 1 + 3 * a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp
 
 /-- Positive deformation can only reduce the exact logarithmic slope. -/
@@ -74,21 +74,21 @@ theorem one_third_lt_gupLogSlopeCorrection (a t : ℝ) :
 
 /-- Exact residual of the paper's multiplier against the logarithmic chain rule. -/
 theorem gup_paper_multiplier_residual (a t : ℝ) :
-    (1 + a ^ 2 * Real.exp t ^ 2) - gupLogSlopeCorrection a t =
-      3 * (a ^ 2 * Real.exp t ^ 2) * (1 + a ^ 2 * Real.exp t ^ 2) /
-        (1 + 3 * a ^ 2 * Real.exp t ^ 2) := by
+    (1 + a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ)) - gupLogSlopeCorrection a t =
+      3 * (a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ)) * (1 + a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ)) /
+        (1 + 3 * a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ)) := by
   unfold gupLogSlopeCorrection
   field_simp
   ring
 
 /-- The paper multiplier equals the exact chain-rule factor only at zero deformation. -/
 theorem gup_paper_multiplier_eq_iff (a t : ℝ) :
-    (1 + a ^ 2 * Real.exp t ^ 2) = gupLogSlopeCorrection a t ↔ a = 0 := by
+    (1 + a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ)) = gupLogSlopeCorrection a t ↔ a = 0 := by
   constructor
   · intro h
     have hm := gupLogSlopeCorrection_le_one a t
     rw [← h] at hm
-    have hz : a ^ 2 * Real.exp t ^ 2 = 0 := by
+    have hz : a ^ (2 : ℕ) * Real.exp t ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg (a * Real.exp t)]
     simpa [mul_eq_zero, Real.exp_ne_zero] using hz
   · rintro rfl
@@ -103,24 +103,24 @@ theorem gup_negative_turning_point :
 
 /-- A quotient-free consistency law remains meaningful at every deformation value. -/
 theorem gup_consistency_polynomial (b k epsilon : ℝ) :
-    (1 + b * k ^ 2) * (16 * epsilon) +
-      8 * (-(1 + b * k ^ 2) * (2 * epsilon)) = 0 := by
+    (1 + b * k ^ (2 : ℕ)) * (16 * epsilon) +
+      8 * (-(1 + b * k ^ (2 : ℕ)) * (2 * epsilon)) = 0 := by
   ring
 
 /-- Exact difference factorization classifies collisions of the deformed momentum map. -/
 theorem gupMomentum_difference (b k l : ℝ) :
     gupMomentum b k - gupMomentum b l =
-      (k - l) * (1 + b * (k ^ 2 + k * l + l ^ 2)) := by
+      (k - l) * (1 + b * (k ^ (2 : ℕ) + k * l + l ^ (2 : ℕ))) := by
   unfold gupMomentum
   ring
 
 /-- Positive deformation never identifies distinct input momenta. -/
-theorem gupMomentum_sq_injective (a : ℝ) : Function.Injective (gupMomentum (a ^ 2)) := by
+theorem gupMomentum_sq_injective (a : ℝ) : Function.Injective (gupMomentum (a ^ (2 : ℕ))) := by
   intro k l h
-  have hr := gupMomentum_difference (a ^ 2) k l
+  have hr := gupMomentum_difference (a ^ (2 : ℕ)) k l
   rw [h, sub_self] at hr
-  have hs : 0 ≤ k ^ 2 + k * l + l ^ 2 := by nlinarith [sq_nonneg (k + l), sq_nonneg k, sq_nonneg l]
-  have hp : 1 + a ^ 2 * (k ^ 2 + k * l + l ^ 2) ≠ 0 := by positivity
+  have hs : 0 ≤ k ^ (2 : ℕ) + k * l + l ^ (2 : ℕ) := by nlinarith [sq_nonneg (k + l), sq_nonneg k, sq_nonneg l]
+  have hp : 1 + a ^ (2 : ℕ) * (k ^ (2 : ℕ) + k * l + l ^ (2 : ℕ)) ≠ 0 := by positivity
   exact sub_eq_zero.mp ((mul_eq_zero.mp hr.symm).resolve_right hp)
 
 /-- Negative deformation has an exact three-point collision. -/

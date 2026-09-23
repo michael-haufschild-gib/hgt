@@ -375,7 +375,7 @@ def so4B : PauliTriangle 2 where
   xor_closed := by decide
 
 /-- The two-ideal generator family `g = A ⊕ B` of `so(4)`. -/
-def so4Gens : Fin 2 → Set (Matrix (Fin (2 ^ 2)) (Fin (2 ^ 2)) ℂ) :=
+def so4Gens : Fin 2 → Set (Matrix (Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ))) ℂ) :=
   Fin.cons so4A.triGens (Fin.cons so4B.triGens Fin.elim0)
 
 /-- The two-ideal Hermitian bases of `so(4)` (a dependent family). -/
@@ -414,7 +414,7 @@ def so4Ai0 : Fin so4A.basis.dim := ⟨0, so4A.basis_dim_pos⟩
 
 /-- The Hermitian witness operator for the `so(4)` reductive bundle: the first basis element of
 ideal `A` (a normalized odd-`#Y` Pauli matrix, hence Hermitian), used for both slots. -/
-noncomputable def so4Obs : Matrix (Fin (2 ^ 2)) (Fin (2 ^ 2)) ℂ := so4A.basis.B so4Ai0
+noncomputable def so4Obs : Matrix (Fin (2 ^ (2 : ℕ))) (Fin (2 ^ (2 : ℕ))) ℂ := so4A.basis.B so4Ai0
 
 theorem so4Obs_isHermitian : so4Obsᴴ = so4Obs := so4A.basis.herm so4Ai0
 

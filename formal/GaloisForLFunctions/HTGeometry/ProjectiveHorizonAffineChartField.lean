@@ -71,7 +71,7 @@ theorem linearJetFieldEquiv_shift (g : SpecialLinearGroup n K)
     IsFractionRing.div_surjective (A := MvPolynomial (n × ℕ) K) f
   have hquot : ∀ a b : HomogeneousJetField n K,
       homogeneousJetShift n K (a / b) =
-        (b⁻¹) ^ 2 * (b * homogeneousJetShift n K a - a * homogeneousJetShift n K b) := by
+        (b⁻¹) ^ (2 : ℕ) * (b * homogeneousJetShift n K a - a * homogeneousJetShift n K b) := by
     intro a b
     rw [Derivation.leibniz_div]
     simp [smul_eq_mul]

@@ -204,7 +204,7 @@ theorem ppDim_le_one_simplex (faces : A → Finset V)
         rfl
     · intro i
       rcases i with _ | ⟨v, hv⟩
-      · show (1 : ℂ) * 1 = τ ^ 0
+      · show (1 : ℂ) * 1 = τ ^ (0 : ℕ)
         rw [mul_one, pow_zero]
       · show (1 : ℂ) * ∑ j : Fin 1, 1 * onePencilVector τ (v : V) j = τ ^ vertexExponent (v : V)
         rw [Fin.sum_univ_one]

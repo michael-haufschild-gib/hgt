@@ -145,7 +145,7 @@ theorem suzukiProjectiveAffineSecant_oppositeShift_pair_is_symmetric
     v0 * v1 *
         (b0 * d1 * (t0 * t1 - ((-shift) + shift) * t1 + (-shift) * shift) +
           b1 * d0 * (t0 * t1 - ((-shift) + shift) * t0 + (-shift) * shift)) =
-      v0 * v1 * (t0 * t1 - shift ^ 2) * (b0 * d1 + b1 * d0) := by
+      v0 * v1 * (t0 * t1 - shift ^ (2 : ℕ)) * (b0 * d1 + b1 * d0) := by
   ring
 
 /-- Physical rank-one check.  With `B=L-KA` and `c=K(e)`, marked secant quotient recovers affine

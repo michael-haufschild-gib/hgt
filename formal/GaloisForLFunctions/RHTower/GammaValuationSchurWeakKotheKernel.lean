@@ -170,14 +170,14 @@ theorem norm_gammaValuationWeakKernel_le
     _ = _ := rfl
 
 def gammaValuationWeakEnergy (a : DeningerHeightKothe) : ℝ :=
-  ∑' e : ℕ, ‖gammaValuationLayerSum e a‖ ^ 2
+  ∑' e : ℕ, ‖gammaValuationLayerSum e a‖ ^ (2 : ℕ)
 
 theorem gammaValuationWeakEnergy_nonneg (a : DeningerHeightKothe) :
     0 ≤ gammaValuationWeakEnergy a := by
   exact tsum_nonneg fun _ => sq_nonneg _
 
 theorem summable_gammaValuationWeakEnergy (a : DeningerHeightKothe) :
-    Summable (fun e : ℕ => ‖gammaValuationLayerSum e a‖ ^ 2) := by
+    Summable (fun e : ℕ => ‖gammaValuationLayerSum e a‖ ^ (2 : ℕ)) := by
   let C := deningerHeightSeminorm 0 a
   have hC : 0 ≤ C := apply_nonneg _ _
   have hbase : Summable (fun e : ℕ => ‖gammaValuationLayerSum e a‖ * C) :=
@@ -197,7 +197,7 @@ theorem summable_gammaValuationWeakEnergy (a : DeningerHeightKothe) :
   nlinarith [norm_nonneg (gammaValuationLayerSum e a)]
 
 theorem gammaValuationWeakEnergy_le (a : DeningerHeightKothe) :
-    gammaValuationWeakEnergy a ≤ deningerHeightSeminorm 0 a ^ 2 := by
+    gammaValuationWeakEnergy a ≤ deningerHeightSeminorm 0 a ^ (2 : ℕ) := by
   let C := deningerHeightSeminorm 0 a
   have hC : 0 ≤ C := apply_nonneg _ _
   have hE := summable_gammaValuationWeakEnergy a
@@ -222,7 +222,7 @@ theorem gammaValuationWeakEnergy_le (a : DeningerHeightKothe) :
     _ = (∑' e : ℕ, ‖gammaValuationLayerSum e a‖) * C := tsum_mul_right
     _ ≤ C * C := mul_le_mul_of_nonneg_right
       (by simpa [C] using tsum_norm_gammaValuationLayerSum_le a) hC
-    _ = deningerHeightSeminorm 0 a ^ 2 := by simp [C, pow_two]
+    _ = deningerHeightSeminorm 0 a ^ (2 : ℕ) := by simp [C, pow_two]
 
 theorem gammaValuationWeakKernel_self_eq_energy (a : DeningerHeightKothe) :
     gammaValuationWeakKernel a a = (gammaValuationWeakEnergy a : ℂ) := by

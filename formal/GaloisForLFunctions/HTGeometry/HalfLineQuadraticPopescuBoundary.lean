@@ -37,7 +37,7 @@ def oneDimQuadraticInverseCurvatureObservable
 /-- Pointwise derivative value of the quadratic inverse-curvature observable. -/
 def oneDimQuadraticInverseCurvatureScore
     (x V₂ V₃ : ℝ) : ℝ :=
-  2 * (V₂ - x * V₃) / V₂ ^ 2
+  2 * (V₂ - x * V₃) / V₂ ^ (2 : ℕ)
 
 /-- Differentiating `2x / V''` uses only the curvature value and its first jet. -/
 theorem hasDerivAt_oneDimQuadraticInverseCurvatureObservable
@@ -79,7 +79,7 @@ theorem oneDimQuadraticInverseCurvatureScore_zero
 /-- The pointwise first Popescu correction density selected by the quadratic observable. -/
 def oneDimQuadraticPopescuCorrectionDensity
     (x V₁ V₂ V₃ V₄ : ℝ) : ℝ :=
-  oneDimQuadraticInverseCurvatureScore x V₂ V₃ ^ 2 /
+  oneDimQuadraticInverseCurvatureScore x V₂ V₃ ^ (2 : ℕ) /
     (1 + oneDimBrascampLiebCorrectionA V₁ V₂ (1 / V₂)
       (inverseCurvatureFirstJet V₂ V₃)
       (inverseCurvatureSecondJet V₂ V₃ V₄))
@@ -90,7 +90,7 @@ theorem oneDimQuadraticPopescuCorrectionDensity_eq
     (hV₂ : V₂ ≠ 0)
     (hN : oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄ ≠ 0) :
     oneDimQuadraticPopescuCorrectionDensity x V₁ V₂ V₃ V₄ =
-      16 * (V₂ - x * V₃) ^ 2 /
+      16 * (V₂ - x * V₃) ^ (2 : ℕ) /
         (V₂ * oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄) := by
   rw [oneDimQuadraticPopescuCorrectionDensity,
     one_add_oneDimBrascampLiebCorrectionA_inverseCurvature hV₂]

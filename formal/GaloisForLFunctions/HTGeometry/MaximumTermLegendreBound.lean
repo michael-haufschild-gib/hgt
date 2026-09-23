@@ -128,7 +128,7 @@ the excess `n - nu(e^x)`: the step `u` is free, and choosing it proportional to 
 linear discount into a square. -/
 
 /-- **Gaussian decay above the central index.**  Under a linear bound on the rise of the central
-index over the window, the exponent may be optimised in the step, giving decay `exp(-k^2 / (4 L))`
+index over the window, the exponent may be optimised in the step, giving decay `exp(-k^(2 : ℕ) / (4 L))`
 in the excess `k` of the index over the central index. -/
 theorem term_le_maxTerm_exp_gaussian_above
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L v₀ : ℝ} (_hH : 0 < H) (hL : 0 < L)
@@ -137,7 +137,7 @@ theorem term_le_maxTerm_exp_gaussian_above
     {n : ℕ} {k : ℝ} (hk : k = (n : ℝ) - (centralIndex a (Real.exp x) : ℝ)) (hk0 : 0 < k)
     (hkH : k ≤ 2 * L * H) (hkv : 2 * L * v₀ ≤ k) :
     ‖a n‖ * Real.exp x ^ n
-      ≤ maxTerm a (Real.exp x) * Real.exp (-(k ^ 2 / (4 * L))) := by
+      ≤ maxTerm a (Real.exp x) * Real.exp (-(k ^ (2 : ℕ) / (4 * L))) := by
   set u : ℝ := k / (2 * L) with hu
   have hupos : 0 < u := by
     rw [hu]
@@ -157,7 +157,7 @@ theorem term_le_maxTerm_exp_gaussian_above
   have hlipu := hlip u hu₀ huH
   have hexp : k - L * u ≤ (n : ℝ) - (centralIndex a (Real.exp (x + u)) : ℝ) := by
     rw [hk]; linarith
-  have hval : (k - L * u) * u = k ^ 2 / (4 * L) := by
+  have hval : (k - L * u) * u = k ^ (2 : ℕ) / (4 * L) := by
     rw [hu]
     field_simp
     ring
@@ -174,7 +174,7 @@ theorem term_le_maxTerm_exp_gaussian_below
     {n : ℕ} {k : ℝ} (hk : k = (centralIndex a (Real.exp x) : ℝ) - (n : ℝ)) (hk0 : 0 < k)
     (hkH : k ≤ 2 * L * H) (hkv : 2 * L * v₀ ≤ k) :
     ‖a n‖ * Real.exp x ^ n
-      ≤ maxTerm a (Real.exp x) * Real.exp (-(k ^ 2 / (4 * L))) := by
+      ≤ maxTerm a (Real.exp x) * Real.exp (-(k ^ (2 : ℕ) / (4 * L))) := by
   set u : ℝ := k / (2 * L) with hu
   have hupos : 0 < u := by
     rw [hu]
@@ -194,7 +194,7 @@ theorem term_le_maxTerm_exp_gaussian_below
   have hlipu := hlip u hu₀ huH
   have hexp : k - L * u ≤ (centralIndex a (Real.exp (x - u)) : ℝ) - (n : ℝ) := by
     rw [hk]; linarith
-  have hval : (k - L * u) * u = k ^ 2 / (4 * L) := by
+  have hval : (k - L * u) * u = k ^ (2 : ℕ) / (4 * L) := by
     rw [hu]
     field_simp
     ring

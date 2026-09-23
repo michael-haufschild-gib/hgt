@@ -36,9 +36,9 @@ section Real
 variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
 private theorem hasDerivAt_norm_sq {u u' : ℝ → F} (hu : ∀ x, HasDerivAt u (u' x) x) (x : ℝ) :
-    HasDerivAt (fun y => ‖u y‖ ^ 2) (2 * inner ℝ (u' x) (u x)) x := by
+    HasDerivAt (fun y => ‖u y‖ ^ (2 : ℕ)) (2 * inner ℝ (u' x) (u x)) x := by
   have h := (hu x).inner ℝ (hu x)
-  have heq : (fun t => (inner ℝ (u t) (u t) : ℝ)) = fun t => ‖u t‖ ^ 2 := by
+  have heq : (fun t => (inner ℝ (u t) (u t) : ℝ)) = fun t => ‖u t‖ ^ (2 : ℕ) := by
     funext t
     exact real_inner_self_eq_norm_sq (u t)
   rw [heq] at h
@@ -52,13 +52,13 @@ private theorem hasDerivAt_norm_sq {u u' : ℝ → F} (hu : ∀ x, HasDerivAt u 
 anti-causal part vanishes at the base point, the squared derivative of the anti-causal block is the
 causal curvature minus the causal derivative energy. -/
 theorem norm_sq_antiCausal_deriv_eq {a c a' c' : ℝ → F} {a'' c'' : F}
-    (hunit : ∀ x : ℝ, ‖a x‖ ^ 2 + ‖c x‖ ^ 2 = 1)
+    (hunit : ∀ x : ℝ, ‖a x‖ ^ (2 : ℕ) + ‖c x‖ ^ (2 : ℕ) = 1)
     (hc0 : c 0 = 0)
     (ha : ∀ x, HasDerivAt a (a' x) x) (ha' : HasDerivAt a' a'' 0)
     (hc : ∀ x, HasDerivAt c (c' x) x) (hc' : HasDerivAt c' c'' 0) :
-    ‖c' 0‖ ^ 2 = -(inner ℝ a'' (a 0) : ℝ) - ‖a' 0‖ ^ 2 := by
+    ‖c' 0‖ ^ (2 : ℕ) = -(inner ℝ a'' (a 0) : ℝ) - ‖a' 0‖ ^ (2 : ℕ) := by
   -- the first derivative of the unitarity relation vanishes identically
-  have hsum : ∀ x : ℝ, HasDerivAt (fun y => ‖a y‖ ^ 2 + ‖c y‖ ^ 2)
+  have hsum : ∀ x : ℝ, HasDerivAt (fun y => ‖a y‖ ^ (2 : ℕ) + ‖c y‖ ^ (2 : ℕ))
       (2 * inner ℝ (a' x) (a x) + 2 * inner ℝ (c' x) (c x)) x :=
     fun x => HasDerivAt.fun_add (hasDerivAt_norm_sq ha x) (hasDerivAt_norm_sq hc x)
   have hzero : ∀ x : ℝ,
@@ -81,8 +81,8 @@ theorem norm_sq_antiCausal_deriv_eq {a c a' c' : ℝ → F} {a'' c'' : F}
   have hval := hsecond.unique (hasDerivAt_const (0 : ℝ) (0 : ℝ))
   -- the anti-causal block vanishes at the base point
   rw [hc0, inner_zero_right] at hval
-  have hA : (inner ℝ (a' 0) (a' 0) : ℝ) = ‖a' 0‖ ^ 2 := real_inner_self_eq_norm_sq (a' 0)
-  have hC : (inner ℝ (c' 0) (c' 0) : ℝ) = ‖c' 0‖ ^ 2 := real_inner_self_eq_norm_sq (c' 0)
+  have hA : (inner ℝ (a' 0) (a' 0) : ℝ) = ‖a' 0‖ ^ (2 : ℕ) := real_inner_self_eq_norm_sq (a' 0)
+  have hC : (inner ℝ (c' 0) (c' 0) : ℝ) = ‖c' 0‖ ^ (2 : ℕ) := real_inner_self_eq_norm_sq (c' 0)
   rw [hA, hC] at hval
   linarith
 

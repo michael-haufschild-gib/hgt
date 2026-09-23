@@ -104,7 +104,7 @@ theorem monicOrthoBeta_le_of_momentInner_le {s t : ℕ → ℝ} (hs : PositiveMo
     (ht : PositiveMomentForm t) {K : ℝ} (hKpos : 0 < K)
     (hKts : ∀ p : Polynomial ℝ, momentInner t p p ≤ K * momentInner s p p)
     (hKst : ∀ p : Polynomial ℝ, momentInner s p p ≤ K * momentInner t p p) (n : ℕ) :
-    monicOrthoBeta t (n + 1) ≤ K ^ 2 * monicOrthoBeta s (n + 1) := by
+    monicOrthoBeta t (n + 1) ≤ K ^ (2 : ℕ) * monicOrthoBeta s (n + 1) := by
   have hup : monicOrthoNormSq t (n + 1) ≤ K * monicOrthoNormSq s (n + 1) :=
     monicOrthoNormSq_le_of_momentInner_le ht hKts (n + 1)
   have hdown : monicOrthoNormSq s n ≤ K * monicOrthoNormSq t n :=
@@ -114,7 +114,7 @@ theorem monicOrthoBeta_le_of_momentInner_le {s t : ℕ → ℝ} (hs : PositiveMo
   have hsn1 : 0 < monicOrthoNormSq s (n + 1) := monicOrthoNormSq_pos hs (n + 1)
   have htn1 : 0 < monicOrthoNormSq t (n + 1) := monicOrthoNormSq_pos ht (n + 1)
   have key : monicOrthoNormSq t (n + 1) * monicOrthoNormSq s n
-      ≤ K ^ 2 * monicOrthoNormSq s (n + 1) * monicOrthoNormSq t n := by
+      ≤ K ^ (2 : ℕ) * monicOrthoNormSq s (n + 1) * monicOrthoNormSq t n := by
     have h1 : monicOrthoNormSq t (n + 1) * monicOrthoNormSq s n
         ≤ (K * monicOrthoNormSq s (n + 1)) * monicOrthoNormSq s n :=
       mul_le_mul_of_nonneg_right hup hsn.le
@@ -122,13 +122,13 @@ theorem monicOrthoBeta_le_of_momentInner_le {s t : ℕ → ℝ} (hs : PositiveMo
         ≤ (K * monicOrthoNormSq s (n + 1)) * (K * monicOrthoNormSq t n) :=
       mul_le_mul_of_nonneg_left hdown (by positivity)
     have h3 : (K * monicOrthoNormSq s (n + 1)) * (K * monicOrthoNormSq t n)
-        = K ^ 2 * monicOrthoNormSq s (n + 1) * monicOrthoNormSq t n := by ring
+        = K ^ (2 : ℕ) * monicOrthoNormSq s (n + 1) * monicOrthoNormSq t n := by ring
     linarith
   have hgoal : monicOrthoNormSq t (n + 1) / monicOrthoNormSq t n
-      ≤ K ^ 2 * (monicOrthoNormSq s (n + 1) / monicOrthoNormSq s n) := by
+      ≤ K ^ (2 : ℕ) * (monicOrthoNormSq s (n + 1) / monicOrthoNormSq s n) := by
     rw [div_le_iff₀ htn]
-    have hrw : K ^ 2 * (monicOrthoNormSq s (n + 1) / monicOrthoNormSq s n) * monicOrthoNormSq t n
-        = K ^ 2 * monicOrthoNormSq s (n + 1) * monicOrthoNormSq t n / monicOrthoNormSq s n := by
+    have hrw : K ^ (2 : ℕ) * (monicOrthoNormSq s (n + 1) / monicOrthoNormSq s n) * monicOrthoNormSq t n
+        = K ^ (2 : ℕ) * monicOrthoNormSq s (n + 1) * monicOrthoNormSq t n / monicOrthoNormSq s n := by
       field_simp
     rw [hrw, le_div_iff₀ hsn]
     exact key
@@ -218,7 +218,7 @@ theorem monicOrthoNormSq_of_orthogonal_family {s : ℕ → ℝ} (h : PositiveMom
     {f : ℕ → Polynomial ℝ} (hdeg : ∀ k, (f k).natDegree = k) (hne : ∀ k, f k ≠ 0)
     (horth : ∀ m n : ℕ, m ≠ n → momentInner s (f m) (f n) = 0) (n : ℕ) :
     monicOrthoNormSq s n =
-      (((f n).leadingCoeff)⁻¹) ^ 2 * momentInner s (f n) (f n) := by
+      (((f n).leadingCoeff)⁻¹) ^ (2 : ℕ) * momentInner s (f n) (f n) := by
   rw [monicOrthoNormSq, monicOrtho_eq_of_orthogonal_family h hdeg hne horth n,
     momentInner_smul_left, momentInner_smul_right]
   ring

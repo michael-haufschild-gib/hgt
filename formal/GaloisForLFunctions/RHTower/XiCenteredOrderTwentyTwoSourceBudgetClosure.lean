@@ -39,7 +39,7 @@ theorem normalizedPrimeArchMoment_one_lt_nine_over_oneHundredThousand :
     normalizedPrimeArchMoment_zero_lt_fourThousandSixHundredThirtyThree_over_oneHundredThousand
   have hM0 : 0 < M := by
     simpa only [M] using normalizedPrimeArchMoment_zero_pos
-  have hMsq : M ^ 2 < (4633 / 100000 : ℝ) ^ 2 := by
+  have hMsq : M ^ (2 : ℕ) < (4633 / 100000 : ℝ) ^ (2 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr (by simpa only [M] using hM))
       (add_pos (by norm_num : (0 : ℝ) < 4633 / 100000) hM0)
     nlinarith
@@ -48,21 +48,21 @@ theorem normalizedPrimeArchMoment_one_lt_nine_over_oneHundredThousand :
   rw [normalizedPrimeArchMoment_one_eq_thetaCuspNormalizedEvenMoment,
     ← normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
   simpa only [M] using (by nlinarith :
-    M ^ 2 / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 9 / 100000)
+    M ^ (2 : ℕ) / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 9 / 100000)
 
 theorem orderTwentyTwoReciprocalPower_re_pos_of_sectorRatio
-    {A B : ℝ} (hA : 0 < A) (hsector : 205 * B ^ 2 < A ^ 2) :
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 22).re :=
+    {A B : ℝ} (hA : 0 < A) (hsector : 205 * B ^ (2 : ℕ) < A ^ (2 : ℕ)) :
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ (22 : ℕ)).re :=
   GaloisForLFunctions.HTGeometry.re_inv_sub_mul_I_pow_pos_of_sq_lt
     (t := 7 / 100) hA (by norm_num) (by norm_num) hsector
     (by norm_num; nlinarith [Real.pi_gt_d20])
 
 theorem xiCenteredOrderTwentyTwoSectorRatio_of_offLine_inner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
-    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (2365 / 13152 : ℝ)) :
-    205 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
-  have hv : (2365 / 16 : ℝ) ≤ (q.1 : ℂ).im ^ 2 :=
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ≤ (2365 / 13152 : ℝ)) :
+    205 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
+  have hv : (2365 / 16 : ℝ) ≤ (q.1 : ℂ).im ^ (2 : ℕ) :=
     le_of_not_gt fun hvlt => hoff (xiZeroCopy_re_eq_half_of_im_sq_lt_2365_over_16 q hvlt)
   simpa only [add_zero] using
     GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 205)
@@ -70,9 +70,9 @@ theorem xiCenteredOrderTwentyTwoSectorRatio_of_offLine_inner
       (by norm_num) le_rfl hinner hv (by norm_num) (by norm_num)
 
 theorem xiCenteredOrderTwentyTwoSectorRatio_of_fourHundredElevenHalves_le_im_sq
-    (q : XiZeroCopy) (hhigh : 411 / 2 ≤ (q.1 : ℂ).im ^ 2) :
-    205 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
+    (q : XiZeroCopy) (hhigh : 411 / 2 ≤ (q.1 : ℂ).im ^ (2 : ℕ)) :
+    205 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) := by
   simpa only [add_zero] using
     GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 205)
       (u₀ := 1 / 4) (v₀ := 411 / 2) (y₀ := 0) (y := 0)
@@ -82,16 +82,16 @@ theorem xiCenteredOrderTwentyTwoSectorRatio_of_fourHundredElevenHalves_le_im_sq
 
 def XiCenteredOrderTwentyTwoResidualAnnulus (q : XiZeroCopy) : Prop :=
   (q.1 : ℂ).re ≠ 1 / 2 ∧
-    (2365 / 13152 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-        2365 / 16 ≤ (q.1 : ℂ).im ^ 2 ∧
-          (q.1 : ℂ).im ^ 2 < 411 / 2
+    (2365 / 13152 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+        2365 / 16 ≤ (q.1 : ℂ).im ^ (2 : ℕ) ∧
+          (q.1 : ℂ).im ^ (2 : ℕ) < 411 / 2
 
 theorem xiCenteredOrderTwentyTwoSectorFailure_mem_residualAnnulus
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
     (hfail :
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
-        205 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2) :
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+        205 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ)) :
     XiCenteredOrderTwentyTwoResidualAnnulus q := by
   refine ⟨hoff, ?_, xi_divisor_support_centered_re_sq_lt_quarter q.1, ?_, ?_⟩
   · by_contra h
@@ -108,7 +108,7 @@ theorem xiCenteredOrderTwentyTwoSectorFailure_mem_residualAnnulus
 
 theorem xiZeroCopyReciprocalSquare_pow_twentyTwo_re_pos_of_not_mem_residualAnnulus
     (q : XiZeroCopy) (hnot : ¬ XiCenteredOrderTwentyTwoResidualAnnulus q) :
-    0 < (xiZeroCopyReciprocalSquare q ^ 22).re :=
+    0 < (xiZeroCopyReciprocalSquare q ^ (22 : ℕ)).re :=
   xiZeroCopyReciprocalSquare_pow_re_pos_of_window_empty q
     (fun _ _ hA h => orderTwentyTwoReciprocalPower_re_pos_of_sectorRatio hA h)
     (fun hoff hfail => xiCenteredOrderTwentyTwoSectorFailure_mem_residualAnnulus q hoff hfail)
@@ -119,13 +119,13 @@ def XiCenteredOrderTwentyTwoResidualAnnulusEmpty : Prop :=
 
 theorem nine_over_fourHundredThousand_lt_xiFourthReciprocalTraceAtom_orderTwentyTwo
     (q : XiZeroCopy)
-    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 411 / 2) :
-    (9 / 400000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+    (huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 2365 / 16 ≤ (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 411 / 2) :
+    (9 / 400000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   let w : ℝ := u + v
   let W : ℝ := 823 / 4
   have hu0 : 0 < u := by simpa only [u] using huLower
@@ -137,21 +137,21 @@ theorem nine_over_fourHundredThousand_lt_xiFourthReciprocalTraceAtom_orderTwenty
   have hwLower : 2365 / 16 < w := by dsimp only [w]; linarith
   have hwUpper : w < W := by dsimp only [w, W]; linarith
   have hW0 : 0 < W := by dsimp only [W]; norm_num
-  have hsqUpper : w ^ 2 < W ^ 2 :=
+  have hsqUpper : w ^ (2 : ℕ) < W ^ (2 : ℕ) :=
     (sq_lt_sq₀ hw0.le hW0.le).2 hwUpper
-  have hsqLower : (2365 / 16 : ℝ) ^ 2 < w ^ 2 :=
+  have hsqLower : (2365 / 16 : ℝ) ^ (2 : ℕ) < w ^ (2 : ℕ) :=
     (sq_lt_sq₀ (by norm_num) hw0.le).2 hwLower
-  have hsecond : 0 < 9 * (W ^ 2 + w ^ 2) - 400000 := by
+  have hsecond : 0 < 9 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 400000 := by
     dsimp only [W] at hsqLower ⊢
     nlinarith
   have hshape :
-      400000 * W ^ 2 - 9 * W ^ 4 <
-        400000 * w ^ 2 - 9 * w ^ 4 := by
+      400000 * W ^ (2 : ℕ) - 9 * W ^ (4 : ℕ) <
+        400000 * w ^ (2 : ℕ) - 9 * w ^ (4 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr hsqUpper) hsecond
     have hid :
-        (400000 * w ^ 2 - 9 * w ^ 4) -
-            (400000 * W ^ 2 - 9 * W ^ 4) =
-          (W ^ 2 - w ^ 2) * (9 * (W ^ 2 + w ^ 2) - 400000) := by
+        (400000 * w ^ (2 : ℕ) - 9 * w ^ (4 : ℕ)) -
+            (400000 * W ^ (2 : ℕ) - 9 * W ^ (4 : ℕ)) =
+          (W ^ (2 : ℕ) - w ^ (2 : ℕ)) * (9 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 400000) := by
       ring
     nlinarith
   have huv : u * v < 411 / 8 := by
@@ -162,23 +162,23 @@ theorem nine_over_fourHundredThousand_lt_xiFourthReciprocalTraceAtom_orderTwenty
       _ = 411 / 8 := by ring
   have hendpoint :
       3200000 * (411 / 8 : ℝ) <
-        400000 * W ^ 2 - 9 * W ^ 4 := by
+        400000 * W ^ (2 : ℕ) - 9 * W ^ (4 : ℕ) := by
     norm_num [W]
   have huvScaled : 3200000 * (u * v) < 3200000 * (411 / 8 : ℝ) :=
     mul_lt_mul_of_pos_left huv (by norm_num)
   have hchain :
-      3200000 * (u * v) < 400000 * w ^ 2 - 9 * w ^ 4 :=
+      3200000 * (u * v) < 400000 * w ^ (2 : ℕ) - 9 * w ^ (4 : ℕ) :=
     huvScaled.trans (hendpoint.trans hshape)
   have hG :
-      0 < 400000 * (v ^ 2 - 6 * u * v + u ^ 2) - 9 * w ^ 4 := by
-    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
+      0 < 400000 * (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) - 9 * w ^ (4 : ℕ) := by
+    have hN : v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ) = w ^ (2 : ℕ) - 8 * u * v := by
       dsimp only [w]
       ring
     rw [hN]
     nlinarith [hchain]
   have hformula :
-      (xiZeroCopyReciprocalSquare q ^ 2).re =
-        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
+        (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) / w ^ (4 : ℕ) := by
     simp only [u, v, w]
     exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]
@@ -202,7 +202,7 @@ theorem xiCenteredOrderTwentyTwoResidualAnnulusEmpty :
   linarith
 
 theorem xiZeroCopyReciprocalSquare_pow_twentyTwo_re_pos (q : XiZeroCopy) :
-    0 < (xiZeroCopyReciprocalSquare q ^ 22).re :=
+    0 < (xiZeroCopyReciprocalSquare q ^ (22 : ℕ)).re :=
   xiZeroCopyReciprocalSquare_pow_twentyTwo_re_pos_of_not_mem_residualAnnulus q
     (fun hq => xiCenteredOrderTwentyTwoResidualAnnulusEmpty ⟨q, hq⟩)
 

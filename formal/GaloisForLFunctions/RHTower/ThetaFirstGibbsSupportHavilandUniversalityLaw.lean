@@ -71,7 +71,7 @@ structure ThetaFirstGibbsSupportHavilandCertificate : Prop where
           (fun m => thetaCuspLiouvilleGibbsMoment m 1) q
   squareNonnegative : ∀ p : Polynomial ℝ,
     0 ≤ HTGeometry.momentFunctional
-      (fun m => thetaCuspLiouvilleGibbsMoment m 1) (p ^ 2)
+      (fun m => thetaCuspLiouvilleGibbsMoment m 1) (p ^ (2 : ℕ))
 
 /-- **Theta first-Gibbs support-Haviland universality law.** -/
 theorem thetaFirstGibbs_supportHavilandUniversality :
@@ -83,7 +83,7 @@ theorem thetaFirstGibbs_supportHavilandUniversality :
     momentFunctional_thetaCuspFirstAtomGibbs_mono_on_Ioi
   squareNonnegative := fun p =>
     momentFunctional_thetaCuspFirstAtomGibbs_nonneg_of_nonneg_on_Ioi
-      (p ^ 2) (fun x _ => by
+      (p ^ (2 : ℕ)) (fun x _ => by
         rw [eval_pow]
         exact sq_nonneg _)
 

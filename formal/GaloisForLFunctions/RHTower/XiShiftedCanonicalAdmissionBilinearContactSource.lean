@@ -194,7 +194,7 @@ def xiShiftedAdaptiveBilinearCompletedArithmeticSource
 /-- Completed cross packet equals its rational-Gamma-minus-von-Mangoldt formation. -/
 theorem xiShiftedCompletedMomentAggregate_adaptiveBilinearPacket_eq_arithmeticSource
     {w : ℝ} (hw : 1 / 2 < w) (A B : Polynomial ℝ) :
-    xiShiftedCompletedMomentAggregate (w ^ 2) 2
+    xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
         (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
           (xiShiftedBilinearCrossingCoefficientPacket A B)) =
       xiShiftedAdaptiveBilinearCompletedArithmeticSource w A B := by
@@ -208,7 +208,7 @@ theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_shear
     {w : ℝ} (hw : 1 / 2 < w) (A B : Polynomial ℝ) :
     xiShiftedAdaptiveBilinearCompletedArithmeticSource w A B =
       HTGeometry.momentFunctional
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re)
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re)
         (xiShiftedBoundaryAdaptiveBilinearShearPolynomial A B) := by
   rw [← xiShiftedCompletedMomentAggregate_adaptiveBilinearPacket_eq_arithmeticSource hw]
   exact xiShiftedCompletedMomentAggregate_adaptiveBilinearPacket_eq_shear
@@ -222,13 +222,13 @@ theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_firstPadeDefect
     (hij : i + j + 2 = d) (c : Fin (n + 1) → ℝ)
     (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + d,
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0) :
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     let A := P * X ^ i
     let B := P * X ^ j
     xiShiftedAdaptiveBilinearCompletedArithmeticSource w A B =
       ((2 * n + d : ℕ) : ℝ) *
-        xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d) := by
+        xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d) := by
   dsimp only
   let P := HTGeometry.finiteHankelNullMonicPolynomial c
   let A := P * X ^ i
@@ -264,15 +264,15 @@ theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_firstPadeDefect
     ring
   obtain ⟨R, hQR⟩ := hfactor
   have hdefect : HTGeometry.momentFunctional
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) Q =
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) Q =
       HTGeometry.momentFunctional
-        (xiShiftedHankelBoundaryPadeDefect (w ^ 2) c) Q := by
+        (xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c) Q := by
     rw [hQR]
     exact (momentFunctional_finiteHankelBoundaryPadeDefect_null_mul
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) c R).symm
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) c R).symm
   rw [xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_shear hw]
   change HTGeometry.momentFunctional
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) Q = _
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) Q = _
   rw [hdefect,
     momentFunctional_eq_top_of_sequence_eq_zero_below hzero hQdeg, hQcoeff]
 
@@ -282,12 +282,12 @@ theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_canonicalAdmission_eq
     {w : ℝ} (hw : 1 / 2 < w) {n d i j : ℕ} (hd : 2 ≤ d)
     (hij : i + j + 2 = d)
     (hzero : ∀ k < 2 * n + d,
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2)
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ))
         (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) k = 0) :
     let P := HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n
     xiShiftedAdaptiveBilinearCompletedArithmeticSource w (P * X ^ i) (P * X ^ j) =
       ((2 * n + d : ℕ) : ℝ) *
-        xiShiftedHankelBoundaryPadeDefect (w ^ 2)
+        xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ))
           (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n)
           (2 * n + d) := by
   dsimp only
@@ -331,8 +331,8 @@ theorem xiShiftedAdaptiveBilinearSourcePairMatrix_neither_posSemidef_of_first_co
     {w : ℝ} (hw : 1 / 2 < w) {n d : ℕ} (hd : 3 ≤ d)
     (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
     (hzero : ∀ k < 2 * n + d,
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0)
-    (hcontact : xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d) ≠ 0) :
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0)
+    (hcontact : xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d) ≠ 0) :
     let P := HTGeometry.finiteHankelNullMonicPolynomial c
     let B := P * X ^ (d - 2)
     ¬ (xiShiftedAdaptiveBilinearSourcePairMatrix w P B).PosSemidef ∧
@@ -343,7 +343,7 @@ theorem xiShiftedAdaptiveBilinearSourcePairMatrix_neither_posSemidef_of_first_co
   let M := xiShiftedAdaptiveBilinearSourcePairMatrix w P B
   let e : Fin 2 → ℝ := ![1, 0]
   have hzeroTwo : ∀ k < 2 * n + 2,
-      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0 := by
+      xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c k = 0 := by
     intro k hk
     exact hzero k (by omega)
   have hdiag : xiShiftedAdaptiveBilinearCompletedArithmeticSource w P P = 0 := by
@@ -352,7 +352,7 @@ theorem xiShiftedAdaptiveBilinearSourcePairMatrix_neither_posSemidef_of_first_co
         (by omega : 0 + 0 + 2 = 2) c hlast hzeroTwo
     have h' : xiShiftedAdaptiveBilinearCompletedArithmeticSource w P P =
         ((2 * n + 2 : ℕ) : ℝ) *
-          xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + 2) := by
+          xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + 2) := by
       simpa [P] using h
     rw [h', hzero _ (by omega), mul_zero]
   have hoff : xiShiftedAdaptiveBilinearCompletedArithmeticSource w B P ≠ 0 := by
@@ -361,7 +361,7 @@ theorem xiShiftedAdaptiveBilinearSourcePairMatrix_neither_posSemidef_of_first_co
         (by omega : (d - 2) + 0 + 2 = d) c hlast hzero
     have h' : xiShiftedAdaptiveBilinearCompletedArithmeticSource w B P =
         ((2 * n + d : ℕ) : ℝ) *
-          xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d) := by
+          xiShiftedHankelBoundaryPadeDefect (w ^ (2 : ℕ)) c (2 * n + d) := by
       simpa [P, B] using h
     rw [h']
     exact mul_ne_zero (by positivity) hcontact

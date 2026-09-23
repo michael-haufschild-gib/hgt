@@ -47,7 +47,7 @@ def mobiusPadeContactSeries
     (a : ℕ → ℝ) (P : Polynomial ℝ) (n : ℕ) : PowerSeries ℝ :=
   PowerSeries.mk fun j =>
     (-1 : ℝ) ^ j * (Nat.choose (2 * n + j) j : ℝ) *
-      momentFunctional a (P ^ 2 * X ^ j)
+      momentFunctional a (P ^ (2 : ℕ) * X ^ j)
 
 /-- Analytic scalar-series form of `mobiusPadeContactSeries`. -/
 def mobiusPadeContactFPowerSeries
@@ -59,7 +59,7 @@ def mobiusPadeContactFPowerSeries
     (a : ℕ → ℝ) (P : Polynomial ℝ) (n j : ℕ) :
     PowerSeries.coeff j (mobiusPadeContactSeries a P n) =
       (-1 : ℝ) ^ j * (Nat.choose (2 * n + j) j : ℝ) *
-        momentFunctional a (P ^ 2 * X ^ j) := by
+        momentFunctional a (P ^ (2 : ℕ) * X ^ j) := by
   simp [mobiusPadeContactSeries]
 
 /-- All contact coefficients before the first possible defect vanish. -/
@@ -69,13 +69,13 @@ theorem coeff_mobiusPadeContactSeries_eq_zero_before_contact
     (hzero : ∀ k < 2 * n + d, a k = 0) (hj : j < d) :
     PowerSeries.coeff j (mobiusPadeContactSeries a P n) = 0 := by
   rw [coeff_mobiusPadeContactSeries]
-  have hP2 : (P ^ 2).natDegree = 2 * n := by
+  have hP2 : (P ^ (2 : ℕ)).natDegree = 2 * n := by
     rw [pow_two, hP.natDegree_mul hP, hPdeg]
     omega
   have hmonicX : (X : Polynomial ℝ) ^ j |>.Monic := Polynomial.monic_X_pow j
-  have hdeg : (P ^ 2 * X ^ j).natDegree = 2 * n + j := by
+  have hdeg : (P ^ (2 : ℕ) * X ^ j).natDegree = 2 * n + j := by
     rw [(hP.pow 2).natDegree_mul hmonicX, hP2, Polynomial.natDegree_X_pow]
-  have hlt : (P ^ 2 * X ^ j).natDegree < 2 * n + d := by omega
+  have hlt : (P ^ (2 : ℕ) * X ^ j).natDegree < 2 * n + d := by omega
   rw [momentFunctional_eq_zero_of_sequence_eq_zero_below hzero hlt, mul_zero]
 
 /-- At the first nonzero normal coordinate, monicity removes every lower term of `P²`. -/
@@ -83,15 +83,15 @@ theorem momentFunctional_monic_first_contact
     {a : ℕ → ℝ} {P : Polynomial ℝ} {n d : ℕ}
     (hP : P.Monic) (hPdeg : P.natDegree = n) (hd : 0 < d)
     (hzero : ∀ k < 2 * n + d, a k = 0) :
-    momentFunctional a (P ^ 2 * X ^ d) = a (2 * n + d) := by
+    momentFunctional a (P ^ (2 : ℕ) * X ^ d) = a (2 * n + d) := by
   let top : Polynomial ℝ := X ^ (2 * n + d)
-  let body : Polynomial ℝ := P ^ 2 * X ^ d
+  let body : Polynomial ℝ := P ^ (2 : ℕ) * X ^ d
   let rem : Polynomial ℝ := body - top
   have hbodyMonic : body.Monic := (hP.pow 2).mul (Polynomial.monic_X_pow d)
   have hbodyDeg : body.natDegree = 2 * n + d := by
     dsimp only [body]
     rw [(hP.pow 2).natDegree_mul (Polynomial.monic_X_pow d),
-      show (P ^ 2).natDegree = 2 * n by
+      show (P ^ (2 : ℕ)).natDegree = 2 * n by
         rw [pow_two, hP.natDegree_mul hP, hPdeg]
         omega,
       Polynomial.natDegree_X_pow]
@@ -119,7 +119,7 @@ theorem momentFunctional_monic_first_contact
   have hsplit : body = rem + top := by
     dsimp only [rem]
     ring
-  rw [show P ^ 2 * X ^ d = body by rfl, hsplit, momentFunctional_add, hremZero,
+  rw [show P ^ (2 : ℕ) * X ^ d = body by rfl, hsplit, momentFunctional_add, hremZero,
     zero_add]
   dsimp only [top]
   rw [momentFunctional_X_pow]

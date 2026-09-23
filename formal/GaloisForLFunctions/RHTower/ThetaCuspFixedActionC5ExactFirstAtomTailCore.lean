@@ -12,12 +12,12 @@ theorem thetaCuspSingleAtomReflectionStrength_lt_physicalEnvelope
     thetaCuspSingleAtomReflectionLambda
           (thetaCuspSingleAtomReflectionScale 1 u) *
         thetaCuspSingleAtomReflectionDefect t <
-      (thetaCuspSingleAtomReflectionScale 1 u - 3) ^ 2 /
-        (2 * (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ 2) := by
+      (thetaCuspSingleAtomReflectionScale 1 u - 3) ^ (2 : ℕ) /
+        (2 * (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ (2 : ℕ)) := by
   let Y := Real.exp (2 * u)
   let A := thetaCuspSingleAtomReflectionScale 1 u
   let z := thetaCuspSingleAtomReflectionDefect t
-  let Z := (Y - 1) ^ 2 / (2 * Y)
+  let Z := (Y - 1) ^ (2 : ℕ) / (2 * Y)
   have hu : 0 ≤ u := le_trans ht htu
   have hY : 0 < Y := by dsimp only [Y]; positivity
   have hYone : 1 ≤ Y := by
@@ -44,27 +44,27 @@ theorem thetaCuspSingleAtomReflectionStrength_lt_physicalEnvelope
     simpa only [A] using
       three_lt_thetaCuspSingleAtomReflectionScale
         (n := 1) (by norm_num) hu
-  have hden : 0 < (A - 3 / 2) ^ 2 :=
+  have hden : 0 < (A - 3 / 2) ^ (2 : ℕ) :=
     sq_pos_of_pos (by linarith)
-  have hAZ : 3 * A * Z = 3 * Real.pi * (Y - 1) ^ 2 / 2 := by
+  have hAZ : 3 * A * Z = 3 * Real.pi * (Y - 1) ^ (2 : ℕ) / 2 := by
     rw [hAeq]
     dsimp only [Z]
     field_simp [hY.ne']
-  have hgap : 3 * Real.pi * (Y - 1) ^ 2 < (A - 3) ^ 2 := by
+  have hgap : 3 * Real.pi * (Y - 1) ^ (2 : ℕ) < (A - 3) ^ (2 : ℕ) := by
     have hpiGap : 0 < Real.pi - 3 := sub_pos.mpr Real.pi_gt_three
-    have hYsq : 1 ≤ Y ^ 2 := by nlinarith [sq_nonneg (Y - 1)]
-    have hsecond : 0 < Real.pi * Y ^ 2 - 3 := by
+    have hYsq : 1 ≤ Y ^ (2 : ℕ) := by nlinarith [sq_nonneg (Y - 1)]
+    have hsecond : 0 < Real.pi * Y ^ (2 : ℕ) - 3 := by
       nlinarith [Real.pi_gt_three]
     have hid :
-        (A - 3) ^ 2 - 3 * Real.pi * (Y - 1) ^ 2 =
-          (Real.pi - 3) * (Real.pi * Y ^ 2 - 3) := by
+        (A - 3) ^ (2 : ℕ) - 3 * Real.pi * (Y - 1) ^ (2 : ℕ) =
+          (Real.pi - 3) * (Real.pi * Y ^ (2 : ℕ) - 3) := by
       rw [hAeq]
       ring
-    have hprod : 0 < (Real.pi - 3) * (Real.pi * Y ^ 2 - 3) :=
+    have hprod : 0 < (Real.pi - 3) * (Real.pi * Y ^ (2 : ℕ) - 3) :=
       mul_pos hpiGap hsecond
     rw [← hid] at hprod
     linarith
-  have hnum : 3 * A * z < (A - 3) ^ 2 / 2 := by
+  have hnum : 3 * A * z < (A - 3) ^ (2 : ℕ) / 2 := by
     have hle : 3 * A * z ≤ 3 * A * Z := by
       exact mul_le_mul_of_nonneg_left hzle (by positivity)
     rw [hAZ] at hle
@@ -72,16 +72,16 @@ theorem thetaCuspSingleAtomReflectionStrength_lt_physicalEnvelope
   unfold thetaCuspSingleAtomReflectionLambda
   calc
     3 * thetaCuspSingleAtomReflectionScale 1 u /
-          (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ 2 *
+          (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ (2 : ℕ) *
         thetaCuspSingleAtomReflectionDefect t =
       (3 * thetaCuspSingleAtomReflectionScale 1 u *
         thetaCuspSingleAtomReflectionDefect t) /
-          (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ 2 := by ring
-    _ < ((thetaCuspSingleAtomReflectionScale 1 u - 3) ^ 2 / 2) /
-          (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ 2 :=
+          (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ (2 : ℕ) := by ring
+    _ < ((thetaCuspSingleAtomReflectionScale 1 u - 3) ^ (2 : ℕ) / 2) /
+          (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ (2 : ℕ) :=
       div_lt_div_of_pos_right hnum hden
-    _ = (thetaCuspSingleAtomReflectionScale 1 u - 3) ^ 2 /
-        (2 * (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ 2) := by
+    _ = (thetaCuspSingleAtomReflectionScale 1 u - 3) ^ (2 : ℕ) /
+        (2 * (thetaCuspSingleAtomReflectionScale 1 u - 3 / 2) ^ (2 : ℕ)) := by
       rw [div_div]
 
 /-- Möbius-coordinate form of the physical reflection-strength envelope. -/
@@ -93,13 +93,13 @@ theorem thetaCuspSingleAtomReflectionOdds_lt_physicalEnvelope
           (thetaCuspSingleAtomReflectionScale 1 u)
           (thetaCuspSingleAtomReflectionDefect t) *
         thetaCuspSingleAtomReflectionDefect t <
-      (thetaCuspSingleAtomReflectionScale 1 u - 3) ^ 2 /
-        (thetaCuspSingleAtomReflectionScale 1 u ^ 2 - 9 / 2) := by
+      (thetaCuspSingleAtomReflectionScale 1 u - 3) ^ (2 : ℕ) /
+        (thetaCuspSingleAtomReflectionScale 1 u ^ (2 : ℕ) - 9 / 2) := by
   let A := thetaCuspSingleAtomReflectionScale 1 u
   let z := thetaCuspSingleAtomReflectionDefect t
   let l := thetaCuspSingleAtomReflectionLambda A
   let eta := l * z
-  let E := (A - 3) ^ 2 / (2 * (A - 3 / 2) ^ 2)
+  let E := (A - 3) ^ (2 : ℕ) / (2 * (A - 3 / 2) ^ (2 : ℕ))
   have hu : 0 ≤ u := le_trans ht htu
   have hA : 3 < A := by
     simpa only [A] using
@@ -109,7 +109,7 @@ theorem thetaCuspSingleAtomReflectionOdds_lt_physicalEnvelope
     simpa only [eta, E, A, z, l] using
       thetaCuspSingleAtomReflectionStrength_lt_physicalEnvelope ht htu
   have hEhalf : E < 1 / 2 := by
-    have hden : 0 < 2 * (A - 3 / 2) ^ 2 := by
+    have hden : 0 < 2 * (A - 3 / 2) ^ (2 : ℕ) := by
       exact mul_pos (by norm_num) (sq_pos_of_pos (by linarith))
     rw [div_lt_iff₀ hden]
     nlinarith [mul_pos (sub_pos.mpr hA) (by linarith : 0 < 3 * A - 9 / 2)]
@@ -120,17 +120,17 @@ theorem thetaCuspSingleAtomReflectionOdds_lt_physicalEnvelope
     rw [div_lt_div_iff₀ hr hEr]
     nlinarith
   have hA0 : 0 < A := lt_trans (by norm_num) hA
-  have hdenA : 0 < A ^ 2 - 9 / 2 := by
+  have hdenA : 0 < A ^ (2 : ℕ) - 9 / 2 := by
     nlinarith [mul_pos hA0 hA0]
-  have hEeq : E / (1 - E) = (A - 3) ^ 2 / (A ^ 2 - 9 / 2) := by
+  have hEeq : E / (1 - E) = (A - 3) ^ (2 : ℕ) / (A ^ (2 : ℕ) - 9 / 2) := by
     have hratio (N D : ℝ) (hD : D ≠ 0) (hDN : D - N ≠ 0) :
         (N / D) / (1 - N / D) = N / (D - N) := by
       field_simp [hD, hDN]
-    have hD : 2 * (A - 3 / 2) ^ 2 ≠ 0 :=
+    have hD : 2 * (A - 3 / 2) ^ (2 : ℕ) ≠ 0 :=
       mul_ne_zero (by norm_num) (pow_ne_zero 2 (by linarith))
     have hdiff :
-        2 * (A - 3 / 2) ^ 2 - (A - 3) ^ 2 = A ^ 2 - 9 / 2 := by ring
-    have hDN : 2 * (A - 3 / 2) ^ 2 - (A - 3) ^ 2 ≠ 0 := by
+        2 * (A - 3 / 2) ^ (2 : ℕ) - (A - 3) ^ (2 : ℕ) = A ^ (2 : ℕ) - 9 / 2 := by ring
+    have hDN : 2 * (A - 3 / 2) ^ (2 : ℕ) - (A - 3) ^ (2 : ℕ) ≠ 0 := by
       rw [hdiff]
       exact hdenA.ne'
     dsimp only [E]
@@ -161,12 +161,12 @@ theorem thetaCuspSingleAtomReflectionSlopeCorrection_lt_physicalEnvelope
           (thetaCuspSingleAtomReflectionScale 1 u)
           (thetaCuspSingleAtomReflectionDefect t) <
       6 * thetaCuspSingleAtomReflectionScale 1 u /
-        (thetaCuspSingleAtomReflectionScale 1 u ^ 2 - 9 / 2) := by
+        (thetaCuspSingleAtomReflectionScale 1 u ^ (2 : ℕ) - 9 / 2) := by
   let A := thetaCuspSingleAtomReflectionScale 1 u
   let z := thetaCuspSingleAtomReflectionDefect t
   let l := thetaCuspSingleAtomReflectionLambda A
   let eta := l * z
-  let E := (A - 3) ^ 2 / (2 * (A - 3 / 2) ^ 2)
+  let E := (A - 3) ^ (2 : ℕ) / (2 * (A - 3 / 2) ^ (2 : ℕ))
   have hu : 0 ≤ u := le_trans ht htu
   have hA : 3 < A := by
     simpa only [A] using
@@ -178,7 +178,7 @@ theorem thetaCuspSingleAtomReflectionSlopeCorrection_lt_physicalEnvelope
     simpa only [eta, E, A, z, l] using
       thetaCuspSingleAtomReflectionStrength_lt_physicalEnvelope ht htu
   have hEhalf : E < 1 / 2 := by
-    have hden : 0 < 2 * (A - 3 / 2) ^ 2 :=
+    have hden : 0 < 2 * (A - 3 / 2) ^ (2 : ℕ) :=
       mul_pos (by norm_num) (sq_pos_of_pos (by linarith))
     rw [div_lt_iff₀ hden]
     nlinarith [mul_pos (sub_pos.mpr hA) (by linarith : 0 < 3 * A - 9 / 2)]
@@ -187,15 +187,15 @@ theorem thetaCuspSingleAtomReflectionSlopeCorrection_lt_physicalEnvelope
   have hfrac : l / (1 - eta) < l / (1 - E) :=
     div_lt_div_of_pos_left hl hEr (by linarith)
   have hA0 : 0 < A := lt_trans (by norm_num) hA
-  have hdenA : 0 < A ^ 2 - 9 / 2 := by
+  have hdenA : 0 < A ^ (2 : ℕ) - 9 / 2 := by
     nlinarith [mul_pos hA0 hA0]
-  have hidentity : l / (1 - E) = 6 * A / (A ^ 2 - 9 / 2) := by
-    let D := 2 * (A - 3 / 2) ^ 2
-    let N := (A - 3) ^ 2
+  have hidentity : l / (1 - E) = 6 * A / (A ^ (2 : ℕ) - 9 / 2) := by
+    let D := 2 * (A - 3 / 2) ^ (2 : ℕ)
+    let N := (A - 3) ^ (2 : ℕ)
     have hD : D ≠ 0 := by
       dsimp only [D]
       exact mul_ne_zero (by norm_num) (pow_ne_zero 2 (by linarith))
-    have hdiff : D - N = A ^ 2 - 9 / 2 := by
+    have hdiff : D - N = A ^ (2 : ℕ) - 9 / 2 := by
       dsimp only [D, N]
       ring
     have hDN : D - N ≠ 0 := by rw [hdiff]; exact hdenA.ne'
@@ -220,8 +220,8 @@ private theorem c5PhysicalEnvelopeScaleSlope_pos
     {A : ℝ} (hA : 6 ≤ A) :
     0 < 4 * A -
       (2 * (A + 3 / 2) / (A - 3 / 2)) *
-        (6 * A / (A ^ 2 - 9 / 2)) := by
-  let D := A ^ 2 - 9 / 2
+        (6 * A / (A ^ (2 : ℕ) - 9 / 2)) := by
+  let D := A ^ (2 : ℕ) - 9 / 2
   have hA0 : 0 < A := lt_of_lt_of_le (by norm_num) hA
   have hB : 0 < A - 3 / 2 := by linarith
   have hD : 0 < D := by
@@ -250,18 +250,18 @@ private theorem c5PhysicalEnvelopeScaleSlope_pos
 
 private theorem c5PhysicalEnvelopeHighestReserveLossRatio_lt_one
     {A : ℝ} (hA : 6 ≤ A) :
-    let D := A ^ 2 - 9 / 2
+    let D := A ^ (2 : ℕ) - 9 / 2
     let X := 6 * A / D
-    let W := (A - 3) ^ 2 / D
+    let W := (A - 3) ^ (2 : ℕ) / D
     let R := 2 * (A + 3 / 2) / (A - 3 / 2)
     let L₀ := 4 * A - R * X
     R * W * (W + X) / L₀ +
         2 * R * W * (1 + W) * (W + 2 * X) / L₀ +
         3 * W * (W + X) / (2 * A) +
-        2 * W ^ 2 * (W + 2 * X) / (2 * A) < 1 := by
+        2 * W ^ (2 : ℕ) * (W + 2 * X) / (2 * A) < 1 := by
   dsimp only
-  let D := A ^ 2 - 9 / 2
-  let N := (A - 3) ^ 2
+  let D := A ^ (2 : ℕ) - 9 / 2
+  let N := (A - 3) ^ (2 : ℕ)
   let X := 6 * A / D
   let W := N / D
   let R := 2 * (A + 3 / 2) / (A - 3 / 2)
@@ -298,7 +298,7 @@ private theorem c5PhysicalEnvelopeHighestReserveLossRatio_lt_one
     linarith
   have hcore₁ :
       2 * (A + 3 / 2) * (8 * N * (N + 6 * A) + 6 * A * D) <
-        4 * A * (A - 3 / 2) * D ^ 2 := by
+        4 * A * (A - 3 / 2) * D ^ (2 : ℕ) := by
     let b := A - 6
     have hb : 0 ≤ b := by dsimp only [b]; linarith
     have hAeq : A = b + 6 := by dsimp only [b]; ring
@@ -311,7 +311,7 @@ private theorem c5PhysicalEnvelopeHighestReserveLossRatio_lt_one
     have hcombined : R * (8 * W * (W + X) + X) < 4 * A := by
       rw [show R * (8 * W * (W + X) + X) =
           (2 * (A + 3 / 2) * (8 * N * (N + 6 * A) + 6 * A * D)) /
-            ((A - 3 / 2) * D ^ 2) by
+            ((A - 3 / 2) * D ^ (2 : ℕ)) by
         dsimp only [R, W, X]
         field_simp [hB.ne', hD.ne']
         ]
@@ -322,8 +322,8 @@ private theorem c5PhysicalEnvelopeHighestReserveLossRatio_lt_one
     nlinarith
   have hcore₂ :
       12 * (A + 3 / 2) *
-          (N * (D + N) * (N + 12 * A) + A * D ^ 2) <
-        4 * A * (A - 3 / 2) * D ^ 3 := by
+          (N * (D + N) * (N + 12 * A) + A * D ^ (2 : ℕ)) <
+        4 * A * (A - 3 / 2) * D ^ (3 : ℕ) := by
     let b := A - 6
     have hb : 0 ≤ b := by dsimp only [b]; linarith
     have hAeq : A = b + 6 := by dsimp only [b]; ring
@@ -339,8 +339,8 @@ private theorem c5PhysicalEnvelopeHighestReserveLossRatio_lt_one
         6 * R * W * (1 + W) * (W + 2 * X) + R * X < 4 * A := by
       rw [show 6 * R * W * (1 + W) * (W + 2 * X) + R * X =
           (12 * (A + 3 / 2) *
-            (N * (D + N) * (N + 12 * A) + A * D ^ 2)) /
-              ((A - 3 / 2) * D ^ 3) by
+            (N * (D + N) * (N + 12 * A) + A * D ^ (2 : ℕ))) /
+              ((A - 3 / 2) * D ^ (3 : ℕ)) by
         dsimp only [R, W, X]
         field_simp [hB.ne', hD.ne']
         ring]
@@ -349,7 +349,7 @@ private theorem c5PhysicalEnvelopeHighestReserveLossRatio_lt_one
     rw [div_lt_iff₀ hL₀]
     dsimp only [L₀] at hcombined ⊢
     nlinarith
-  have hcore₃ : 12 * N * (N + 6 * A) < A * D ^ 2 := by
+  have hcore₃ : 12 * N * (N + 6 * A) < A * D ^ (2 : ℕ) := by
     let b := A - 6
     have hb : 0 ≤ b := by dsimp only [b]; linarith
     have hAeq : A = b + 6 := by dsimp only [b]; ring
@@ -360,13 +360,13 @@ private theorem c5PhysicalEnvelopeHighestReserveLossRatio_lt_one
       pow_nonneg hb 5]
   have hterm₃ : 3 * W * (W + X) / (2 * A) < 1 / 8 := by
     rw [show 3 * W * (W + X) / (2 * A) =
-        (3 * N * (N + 6 * A)) / (2 * A * D ^ 2) by
+        (3 * N * (N + 6 * A)) / (2 * A * D ^ (2 : ℕ)) by
       dsimp only [W, X]
       field_simp [hD.ne']
       ]
     rw [div_lt_iff₀ (mul_pos (mul_pos (by norm_num) hA0) (sq_pos_of_pos hD))]
     nlinarith
-  have hcore₄ : 16 * N ^ 2 * (N + 12 * A) < A * D ^ 3 := by
+  have hcore₄ : 16 * N ^ (2 : ℕ) * (N + 12 * A) < A * D ^ (3 : ℕ) := by
     let b := A - 6
     have hb : 0 ≤ b := by dsimp only [b]; linarith
     have hAeq : A = b + 6 := by dsimp only [b]; ring
@@ -375,9 +375,9 @@ private theorem c5PhysicalEnvelopeHighestReserveLossRatio_lt_one
     ring_nf
     nlinarith [pow_nonneg hb 2, pow_nonneg hb 3, pow_nonneg hb 4,
       pow_nonneg hb 5, pow_nonneg hb 6, pow_nonneg hb 7]
-  have hterm₄ : 2 * W ^ 2 * (W + 2 * X) / (2 * A) < 1 / 16 := by
-    rw [show 2 * W ^ 2 * (W + 2 * X) / (2 * A) =
-        N ^ 2 * (N + 12 * A) / (A * D ^ 3) by
+  have hterm₄ : 2 * W ^ (2 : ℕ) * (W + 2 * X) / (2 * A) < 1 / 16 := by
+    rw [show 2 * W ^ (2 : ℕ) * (W + 2 * X) / (2 * A) =
+        N ^ (2 : ℕ) * (N + 12 * A) / (A * D ^ (3 : ℕ)) by
       dsimp only [W, X]
       field_simp [hD.ne']
       ring]
@@ -386,19 +386,19 @@ private theorem c5PhysicalEnvelopeHighestReserveLossRatio_lt_one
   change R * W * (W + X) / L₀ +
       2 * R * W * (1 + W) * (W + 2 * X) / L₀ +
       3 * W * (W + X) / (2 * A) +
-      2 * W ^ 2 * (W + 2 * X) / (2 * A) < 1
+      2 * W ^ (2 : ℕ) * (W + 2 * X) / (2 * A) < 1
   nlinarith
 
 private theorem c5PhysicalEnvelopeSlopeDefect_lt_three
     {A : ℝ} (hA : 6 ≤ A) :
-    (A - 3) ^ 2 / (A ^ 2 - 9 / 2) +
-        2 * (6 * A / (A ^ 2 - 9 / 2)) < 3 := by
+    (A - 3) ^ (2 : ℕ) / (A ^ (2 : ℕ) - 9 / 2) +
+        2 * (6 * A / (A ^ (2 : ℕ) - 9 / 2)) < 3 := by
   have hA0 : 0 < A := lt_of_lt_of_le (by norm_num) hA
-  have hD : 0 < A ^ 2 - 9 / 2 := by
+  have hD : 0 < A ^ (2 : ℕ) - 9 / 2 := by
     nlinarith [mul_pos hA0 hA0]
-  rw [show (A - 3) ^ 2 / (A ^ 2 - 9 / 2) +
-      2 * (6 * A / (A ^ 2 - 9 / 2)) =
-      ((A - 3) ^ 2 + 12 * A) / (A ^ 2 - 9 / 2) by ring]
+  rw [show (A - 3) ^ (2 : ℕ) / (A ^ (2 : ℕ) - 9 / 2) +
+      2 * (6 * A / (A ^ (2 : ℕ) - 9 / 2)) =
+      ((A - 3) ^ (2 : ℕ) + 12 * A) / (A ^ (2 : ℕ) - 9 / 2) by ring]
   rw [div_lt_iff₀ hD]
   have hprod : 0 ≤ (A - 6) * (2 * A + 6) := by positivity
   nlinarith
@@ -407,7 +407,7 @@ private theorem c5PhysicalEnvelopeSlopeDefect_lt_three
 def c5HyperbolicGaussianBaseShape (t : ℝ) : ℝ :=
   let z := thetaCuspSingleAtomReflectionDefect t
   let e := 2 * Real.sinh (2 * t)
-  z * ((25 + 72 * z) * e - t * (140 + 328 * z)) + 20 * t ^ 2 * e
+  z * ((25 + 72 * z) * e - t * (140 + 328 * z)) + 20 * t ^ (2 : ℕ) * e
 
 theorem c5HyperbolicGaussianBaseShape_pos {t : ℝ} (ht : 0 < t) :
     0 < c5HyperbolicGaussianBaseShape t := by
@@ -427,9 +427,9 @@ theorem c5SingleAtomVelocityCenterNumerator_eq_factor (A t : ℝ) :
     let d := c5SingleAtomScaleLambdaJetOne A
     let r := thetaCuspSingleAtomReflectionFactor A z
     let p := 2 * A + l / r
-    let g := l ^ 2 / r ^ 2
+    let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
     let L := 4 * A + d / r
-    let M := 4 * A + d / r ^ 2
+    let M := 4 * A + d / r ^ (2 : ℕ)
     c5SingleAtomVelocityCenterNumerator A t =
       z * (4 * t * p * (z + 2) * M - p * e * L -
         4 * t * (g * z * (z + 2) + p * (z + 1)) * L) := by
@@ -440,9 +440,9 @@ theorem c5SingleAtomVelocityCenterNumerator_eq_factor (A t : ℝ) :
   let d := c5SingleAtomScaleLambdaJetOne A
   let r := thetaCuspSingleAtomReflectionFactor A z
   let p := 2 * A + l / r
-  let g := l ^ 2 / r ^ 2
+  let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
   let L := 4 * A + d / r
-  let M := 4 * A + d / r ^ 2
+  let M := 4 * A + d / r ^ (2 : ℕ)
   have ha : thetaCuspSingleAtomReflectedActionJetOne A z e = p * e := by
     unfold thetaCuspSingleAtomReflectedActionJetOne
       thetaCuspSingleAtomReflectionSlope
@@ -460,13 +460,13 @@ theorem c5SingleAtomVelocityCenterNumerator_eq_factor (A t : ℝ) :
   have hm : c5SingleAtomScaleMixedJetOne A z e = M * e := by
     unfold c5SingleAtomScaleMixedJetOne
     dsimp only [M, d, r]
-  have hesq : e ^ 2 = 4 * z * (z + 2) := by
+  have hesq : e ^ (2 : ℕ) = 4 * z * (z + 2) := by
     dsimp only [e, z]
     exact sq_two_mul_sinh_two t
   unfold c5SingleAtomVelocityCenterNumerator
   dsimp only
   rw [ha, hb, hs, hm]
-  rw [show p * e * (t * (M * e)) = t * p * M * e ^ 2 by ring, hesq]
+  rw [show p * e * (t * (M * e)) = t * p * M * e ^ (2 : ℕ) by ring, hesq]
   ring
 
 /-- Exact factorization of the first-atom velocity--slope centre numerator. -/
@@ -477,16 +477,16 @@ theorem c5SingleAtomVelocitySlopeCenterNumerator_eq_factor (A t : ℝ) :
     let d := c5SingleAtomScaleLambdaJetOne A
     let r := thetaCuspSingleAtomReflectionFactor A z
     let p := 2 * A + l / r
-    let g := l ^ 2 / r ^ 2
-    let k := l ^ 3 / r ^ 3
+    let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
+    let k := l ^ (3 : ℕ) / r ^ (3 : ℕ)
     let L := 4 * A + d / r
-    let M := 4 * A + d / r ^ 2
+    let M := 4 * A + d / r ^ (2 : ℕ)
     let B := g * z * (z + 2) + p * (z + 1)
     let C := 8 * k * z * (z + 2) + 12 * g * (z + 1) + 4 * p
-    let N := 2 * l * d / r ^ 3 * z * (z + 2) + M * (z + 1)
+    let N := 2 * l * d / r ^ (3 : ℕ) * z * (z + 2) + M * (z + 1)
     c5SingleAtomVelocitySlopeCenterNumerator A t =
       z * (4 * t * p * (z + 2) * M - p * e * L - 12 * t * B * L) +
-        t ^ 2 * e * (4 * p * N - z * C * L) := by
+        t ^ (2 : ℕ) * e * (4 * p * N - z * C * L) := by
   dsimp only
   let z := thetaCuspSingleAtomReflectionDefect t
   let e := 2 * Real.sinh (2 * t)
@@ -494,13 +494,13 @@ theorem c5SingleAtomVelocitySlopeCenterNumerator_eq_factor (A t : ℝ) :
   let d := c5SingleAtomScaleLambdaJetOne A
   let r := thetaCuspSingleAtomReflectionFactor A z
   let p := 2 * A + l / r
-  let g := l ^ 2 / r ^ 2
-  let k := l ^ 3 / r ^ 3
+  let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
+  let k := l ^ (3 : ℕ) / r ^ (3 : ℕ)
   let L := 4 * A + d / r
-  let M := 4 * A + d / r ^ 2
+  let M := 4 * A + d / r ^ (2 : ℕ)
   let B := g * z * (z + 2) + p * (z + 1)
   let C := 8 * k * z * (z + 2) + 12 * g * (z + 1) + 4 * p
-  let N := 2 * l * d / r ^ 3 * z * (z + 2) + M * (z + 1)
+  let N := 2 * l * d / r ^ (3 : ℕ) * z * (z + 2) + M * (z + 1)
   have ha : thetaCuspSingleAtomReflectedActionJetOne A z e = p * e := by
     unfold thetaCuspSingleAtomReflectedActionJetOne
       thetaCuspSingleAtomReflectionSlope
@@ -524,14 +524,14 @@ theorem c5SingleAtomVelocitySlopeCenterNumerator_eq_factor (A t : ℝ) :
   have hn : c5SingleAtomScaleMixedJetTwo A z = 4 * N := by
     unfold c5SingleAtomScaleMixedJetTwo
     dsimp only [N, M, l, d, r]
-  have hesq : e ^ 2 = 4 * z * (z + 2) := by
+  have hesq : e ^ (2 : ℕ) = 4 * z * (z + 2) := by
     dsimp only [e, z]
     exact sq_two_mul_sinh_two t
   unfold c5SingleAtomVelocitySlopeCenterNumerator
   dsimp only
   rw [ha, hb, hc, hs, hm, hn]
-  rw [show p * e * (t * (M * e) + t ^ 2 * (4 * N)) =
-      t * p * M * e ^ 2 + 4 * t ^ 2 * p * e * N by ring, hesq]
+  rw [show p * e * (t * (M * e) + t ^ (2 : ℕ) * (4 * N)) =
+      t * p * M * e ^ (2 : ℕ) + 4 * t ^ (2 : ℕ) * p * e * N by ring, hesq]
   ring
 
 /-- Exact rational-hyperbolic normal form of the base compensation margin. -/
@@ -542,18 +542,18 @@ theorem c5SingleAtomBaseCompensationMargin_eq_factor (A t : ℝ) :
     let d := c5SingleAtomScaleLambdaJetOne A
     let r := thetaCuspSingleAtomReflectionFactor A z
     let p := 2 * A + l / r
-    let g := l ^ 2 / r ^ 2
-    let k := l ^ 3 / r ^ 3
+    let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
+    let k := l ^ (3 : ℕ) / r ^ (3 : ℕ)
     let L := 4 * A + d / r
-    let M := 4 * A + d / r ^ 2
+    let M := 4 * A + d / r ^ (2 : ℕ)
     let B := g * z * (z + 2) + p * (z + 1)
     let C := 8 * k * z * (z + 2) + 12 * g * (z + 1) + 4 * p
-    let N := 2 * l * d / r ^ 3 * z * (z + 2) + M * (z + 1)
+    let N := 2 * l * d / r ^ (3 : ℕ) * z * (z + 2) + M * (z + 1)
     c5SingleAtomBaseCompensationMargin A t =
       z * ((25 + 72 * z) * p * e * L -
         4 * t * (25 + 72 * z) * p * M * (z + 2) +
         12 * t * (5 + 24 * z) * B * L) +
-      5 * t ^ 2 * e * (4 * p * N - z * C * L) := by
+      5 * t ^ (2 : ℕ) * e * (4 * p * N - z * C * L) := by
   dsimp only
   unfold c5SingleAtomBaseCompensationMargin
   dsimp only
@@ -568,16 +568,16 @@ theorem c5SingleAtomHighestReserve_eq_gaussian_sub_losses
     let d := c5SingleAtomScaleLambdaJetOne A
     let r := thetaCuspSingleAtomReflectionFactor A z
     let p := 2 * A + l / r
-    let g := l ^ 2 / r ^ 2
-    let k := l ^ 3 / r ^ 3
+    let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
+    let k := l ^ (3 : ℕ) / r ^ (3 : ℕ)
     let L := 4 * A + d / r
-    let M := 4 * A + d / r ^ 2
+    let M := 4 * A + d / r ^ (2 : ℕ)
     let C := 8 * k * z * (z + 2) + 12 * g * (z + 1) + 4 * p
-    let N := 2 * l * d / r ^ 3 * z * (z + 2) + M * (z + 1)
+    let N := 2 * l * d / r ^ (3 : ℕ) * z * (z + 2) + M * (z + 1)
     4 * p * N - z * C * L =
       4 * p * L + 4 * p * (M - L) * (z + 1) +
-        8 * p * l * d / r ^ 3 * z * (z + 2) -
-        12 * g * z * (z + 1) * L - 8 * k * z ^ 2 * (z + 2) * L := by
+        8 * p * l * d / r ^ (3 : ℕ) * z * (z + 2) -
+        12 * g * z * (z + 1) * L - 8 * k * z ^ (2 : ℕ) * (z + 2) * L := by
   dsimp only
   ring
 
@@ -587,12 +587,12 @@ def c5SingleAtomHighestJetReserve (A z : ℝ) : ℝ :=
   let d := c5SingleAtomScaleLambdaJetOne A
   let r := thetaCuspSingleAtomReflectionFactor A z
   let p := 2 * A + l / r
-  let g := l ^ 2 / r ^ 2
-  let k := l ^ 3 / r ^ 3
+  let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
+  let k := l ^ (3 : ℕ) / r ^ (3 : ℕ)
   let L := 4 * A + d / r
-  let M := 4 * A + d / r ^ 2
+  let M := 4 * A + d / r ^ (2 : ℕ)
   let C := 8 * k * z * (z + 2) + 12 * g * (z + 1) + 4 * p
-  let N := 2 * l * d / r ^ 3 * z * (z + 2) + M * (z + 1)
+  let N := 2 * l * d / r ^ (3 : ℕ) * z * (z + 2) + M * (z + 1)
   4 * p * N - z * C * L
 
 /-- Dimensionless loss of exact highest-jet reserve relative to its Gaussian carrier. -/
@@ -608,7 +608,7 @@ def c5SingleAtomHighestJetLossRatio (A z : ℝ) : ℝ :=
   ρ * w * (w + x) / L +
     2 * ρ * w * (1 + w) * (w + 2 * x) / L +
     3 * w * (w + x) / p +
-    2 * w ^ 2 * (w + 2 * x) / p
+    2 * w ^ (2 : ℕ) * (w + 2 * x) / p
 
 /-- Exact reserve factorization: Gaussian carrier times one minus rational loss ratio. -/
 theorem c5SingleAtomHighestJetReserve_eq_factor
@@ -628,12 +628,12 @@ theorem c5SingleAtomHighestJetReserve_eq_factor
   let d := c5SingleAtomScaleLambdaJetOne A
   let r := thetaCuspSingleAtomReflectionFactor A z
   let p := 2 * A + l / r
-  let g := l ^ 2 / r ^ 2
-  let k := l ^ 3 / r ^ 3
+  let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
+  let k := l ^ (3 : ℕ) / r ^ (3 : ℕ)
   let L := 4 * A + d / r
-  let M := 4 * A + d / r ^ 2
+  let M := 4 * A + d / r ^ (2 : ℕ)
   let C := 8 * k * z * (z + 2) + 12 * g * (z + 1) + 4 * p
-  let N := 2 * l * d / r ^ 3 * z * (z + 2) + M * (z + 1)
+  let N := 2 * l * d / r ^ (3 : ℕ) * z * (z + 2) + M * (z + 1)
   let ρ := 2 * (A + 3 / 2) / (A - 3 / 2)
   let x := l / r
   let w := x * z
@@ -654,7 +654,7 @@ theorem c5SingleAtomHighestJetReserve_eq_factor
     field_simp [hr']
     rw [hrdef]
     ring
-  have hld : l * d / r ^ 3 * z = -ρ * x * w * (1 + w) := by
+  have hld : l * d / r ^ (3 : ℕ) * z = -ρ * x * w * (1 + w) := by
     dsimp only [x, w]
     rw [hd]
     field_simp [hr']
@@ -663,15 +663,15 @@ theorem c5SingleAtomHighestJetReserve_eq_factor
   have hg : g * z = x * w := by
     dsimp only [g, x, w]
     ring
-  have hk : k * z ^ 2 = x * w ^ 2 := by
+  have hk : k * z ^ (2 : ℕ) = x * w ^ (2 : ℕ) := by
     dsimp only [k, x, w]
     ring
   have hsub := c5SingleAtomHighestReserve_eq_gaussian_sub_losses A z
   dsimp only at hsub
   change 4 * p * N - z * C * L =
       4 * p * L + 4 * p * (M - L) * (z + 1) +
-        8 * p * l * d / r ^ 3 * z * (z + 2) -
-        12 * g * z * (z + 1) * L - 8 * k * z ^ 2 * (z + 2) * L at hsub
+        8 * p * l * d / r ^ (3 : ℕ) * z * (z + 2) -
+        12 * g * z * (z + 1) * L - 8 * k * z ^ (2 : ℕ) * (z + 2) * L at hsub
   unfold c5SingleAtomHighestJetReserve c5SingleAtomHighestJetLossRatio
   dsimp only
   change 4 * p * N - z * C * L =
@@ -679,14 +679,14 @@ theorem c5SingleAtomHighestJetReserve_eq_factor
       (1 - (ρ * w * (w + x) / L +
         2 * ρ * w * (1 + w) * (w + 2 * x) / L +
         3 * w * (w + x) / p +
-        2 * w ^ 2 * (w + 2 * x) / p))
+        2 * w ^ (2 : ℕ) * (w + 2 * x) / p))
   rw [hsub, hML]
-  rw [show 8 * p * l * d / r ^ 3 * z * (z + 2) =
-      8 * p * (l * d / r ^ 3 * z) * (z + 2) by ring, hld]
+  rw [show 8 * p * l * d / r ^ (3 : ℕ) * z * (z + 2) =
+      8 * p * (l * d / r ^ (3 : ℕ) * z) * (z + 2) by ring, hld]
   rw [show 12 * g * z * (z + 1) * L =
       12 * (g * z) * (z + 1) * L by ring, hg]
-  rw [show 8 * k * z ^ 2 * (z + 2) * L =
-      8 * (k * z ^ 2) * (z + 2) * L by ring, hk]
+  rw [show 8 * k * z ^ (2 : ℕ) * (z + 2) * L =
+      8 * (k * z ^ (2 : ℕ)) * (z + 2) * L by ring, hk]
   field_simp [hp', hL']
   dsimp only [w]
   ring
@@ -705,7 +705,7 @@ def c5SingleAtomBaseRationalCorrection (A t : ℝ) : ℝ :=
   let w := x * z
   4 * t * x * w * z * (z + 2) *
       ((25 + 72 * z) * p * ρ + 3 * (5 + 24 * z) * L) -
-    20 * t ^ 2 * e * p * L * c5SingleAtomHighestJetLossRatio A z
+    20 * t ^ (2 : ℕ) * e * p * L * c5SingleAtomHighestJetLossRatio A z
 
 /-- Exact atom base margin is Gaussian carrier plus one rational correction. -/
 theorem c5SingleAtomBaseCompensationMargin_eq_gaussian_add_correction
@@ -733,13 +733,13 @@ theorem c5SingleAtomBaseCompensationMargin_eq_gaussian_add_correction
   let d := c5SingleAtomScaleLambdaJetOne A
   let r := thetaCuspSingleAtomReflectionFactor A z
   let p := 2 * A + l / r
-  let g := l ^ 2 / r ^ 2
-  let k := l ^ 3 / r ^ 3
+  let g := l ^ (2 : ℕ) / r ^ (2 : ℕ)
+  let k := l ^ (3 : ℕ) / r ^ (3 : ℕ)
   let L := 4 * A + d / r
-  let M := 4 * A + d / r ^ 2
+  let M := 4 * A + d / r ^ (2 : ℕ)
   let B := g * z * (z + 2) + p * (z + 1)
   let C := 8 * k * z * (z + 2) + 12 * g * (z + 1) + 4 * p
-  let N := 2 * l * d / r ^ 3 * z * (z + 2) + M * (z + 1)
+  let N := 2 * l * d / r ^ (3 : ℕ) * z * (z + 2) + M * (z + 1)
   let ρ := 2 * (A + 3 / 2) / (A - 3 / 2)
   let x := l / r
   let w := x * z
@@ -773,7 +773,7 @@ theorem c5SingleAtomBaseCompensationMargin_eq_gaussian_add_correction
       z * ((25 + 72 * z) * p * e * L -
         4 * t * (25 + 72 * z) * p * M * (z + 2) +
         12 * t * (5 + 24 * z) * B * L) +
-      5 * t ^ 2 * e * (4 * p * N - z * C * L) at hbase
+      5 * t ^ (2 : ℕ) * e * (4 * p * N - z * C * L) at hbase
   have hreserve := c5SingleAtomHighestJetReserve_eq_factor
     hA hr hp hL
   unfold c5SingleAtomHighestJetReserve at hreserve
@@ -785,10 +785,10 @@ theorem c5SingleAtomBaseCompensationMargin_eq_gaussian_add_correction
   change c5SingleAtomBaseCompensationMargin A t =
       p * L *
           (z * ((25 + 72 * z) * e - t * (140 + 328 * z)) +
-            20 * t ^ 2 * e) +
+            20 * t ^ (2 : ℕ) * e) +
         (4 * t * x * w * z * (z + 2) *
             ((25 + 72 * z) * p * ρ + 3 * (5 + 24 * z) * L) -
-          20 * t ^ 2 * e * p * L *
+          20 * t ^ (2 : ℕ) * e * p * L *
             c5SingleAtomHighestJetLossRatio A z)
   rw [hbase, hreserve, hM, hB]
   ring
@@ -810,9 +810,9 @@ theorem c5SingleAtomHighestJetLossRatio_lt_one_of_sameHalfLine
   let ρ := 2 * (A + 3 / 2) / (A - 3 / 2)
   let x := l / r
   let w := x * z
-  let D := A ^ 2 - 9 / 2
+  let D := A ^ (2 : ℕ) - 9 / 2
   let X := 6 * A / D
-  let W := (A - 3) ^ 2 / D
+  let W := (A - 3) ^ (2 : ℕ) / D
   let L₀ := 4 * A - ρ * X
   have hA : 6 ≤ A := by simpa only [A] using hscale
   have hA0 : 0 < A := lt_of_lt_of_le (by norm_num) hA
@@ -868,7 +868,7 @@ theorem c5SingleAtomHighestJetLossRatio_lt_one_of_sameHalfLine
   have hsum : w + x < W + X := add_lt_add hw hx
   have hsumTwo : w + 2 * x < W + 2 * X := by linarith
   have hone : 1 + w < 1 + W := by linarith
-  have hwsq : w ^ 2 < W ^ 2 := by
+  have hwsq : w ^ (2 : ℕ) < W ^ (2 : ℕ) := by
     nlinarith [mul_pos (sub_pos.mpr hw) (add_pos hw0 hW)]
   have hnum₁ : ρ * w * (w + x) < ρ * W * (W + X) := by
     calc
@@ -914,31 +914,31 @@ theorem c5SingleAtomHighestJetLossRatio_lt_one_of_sameHalfLine
         div_lt_div_of_pos_right hnum₃ hp
       _ < 3 * W * (W + X) / (2 * A) :=
         div_lt_div_of_pos_left (by positivity) (by positivity) hpbase
-  have hnum₄ : 2 * w ^ 2 * (w + 2 * x) <
-      2 * W ^ 2 * (W + 2 * X) := by
+  have hnum₄ : 2 * w ^ (2 : ℕ) * (w + 2 * x) <
+      2 * W ^ (2 : ℕ) * (W + 2 * X) := by
     calc
-      2 * w ^ 2 * (w + 2 * x) < 2 * W ^ 2 * (w + 2 * x) := by gcongr
-      _ < 2 * W ^ 2 * (W + 2 * X) := by gcongr
-  have hterm₄ : 2 * w ^ 2 * (w + 2 * x) / p <
-      2 * W ^ 2 * (W + 2 * X) / (2 * A) := by
+      2 * w ^ (2 : ℕ) * (w + 2 * x) < 2 * W ^ (2 : ℕ) * (w + 2 * x) := by gcongr
+      _ < 2 * W ^ (2 : ℕ) * (W + 2 * X) := by gcongr
+  have hterm₄ : 2 * w ^ (2 : ℕ) * (w + 2 * x) / p <
+      2 * W ^ (2 : ℕ) * (W + 2 * X) / (2 * A) := by
     calc
-      2 * w ^ 2 * (w + 2 * x) / p <
-          2 * W ^ 2 * (W + 2 * X) / p :=
+      2 * w ^ (2 : ℕ) * (w + 2 * x) / p <
+          2 * W ^ (2 : ℕ) * (W + 2 * X) / p :=
         div_lt_div_of_pos_right hnum₄ hp
-      _ < 2 * W ^ 2 * (W + 2 * X) / (2 * A) :=
+      _ < 2 * W ^ (2 : ℕ) * (W + 2 * X) / (2 * A) :=
         div_lt_div_of_pos_left (by positivity) (by positivity) hpbase
   have henv := c5PhysicalEnvelopeHighestReserveLossRatio_lt_one hA
   dsimp only at henv
   change ρ * W * (W + X) / L₀ +
       2 * ρ * W * (1 + W) * (W + 2 * X) / L₀ +
       3 * W * (W + X) / (2 * A) +
-      2 * W ^ 2 * (W + 2 * X) / (2 * A) < 1 at henv
+      2 * W ^ (2 : ℕ) * (W + 2 * X) / (2 * A) < 1 at henv
   unfold c5SingleAtomHighestJetLossRatio
   dsimp only
   change ρ * w * (w + x) / L +
       2 * ρ * w * (1 + w) * (w + 2 * x) / L +
       3 * w * (w + x) / p +
-      2 * w ^ 2 * (w + 2 * x) / p < 1
+      2 * w ^ (2 : ℕ) * (w + 2 * x) / p < 1
   nlinarith
 
 /-- Physical tail keeps the exact centre-scale action slope positive. -/
@@ -958,7 +958,7 @@ theorem c5SingleAtomScaleActionSlope_pos_of_sameHalfLine
   let r := thetaCuspSingleAtomReflectionFactor A z
   let ρ := 2 * (A + 3 / 2) / (A - 3 / 2)
   let x := l / r
-  let D := A ^ 2 - 9 / 2
+  let D := A ^ (2 : ℕ) - 9 / 2
   let X := 6 * A / D
   have hA : 6 ≤ A := by simpa only [A] using hscale
   have hx : x < X := by
@@ -998,9 +998,9 @@ theorem c5SingleAtomSlopeCorrection_mul_defect_add_two_lt_three_of_sameHalfLine
   let r := thetaCuspSingleAtomReflectionFactor A z
   let x := l / r
   let w := x * z
-  let D := A ^ 2 - 9 / 2
+  let D := A ^ (2 : ℕ) - 9 / 2
   let X := 6 * A / D
-  let W := (A - 3) ^ 2 / D
+  let W := (A - 3) ^ (2 : ℕ) / D
   have hA : 6 ≤ A := by simpa only [A] using hscale
   have hx : x < X := by
     simpa only [x, X, D, A, z, l, r] using
@@ -1081,18 +1081,18 @@ theorem c5SingleAtomBaseRationalCorrection_pos_of_sameHalfLine
     dsimp only [e]
     have hs := self_lt_sinh (by linarith : 0 < 2 * t)
     linarith
-  have hesq : e ^ 2 = 4 * z * (z + 2) := by
+  have hesq : e ^ (2 : ℕ) = 4 * z * (z + 2) := by
     dsimp only [e, z]
     exact sq_two_mul_sinh_two t
-  have hfirst : t * e * T < e ^ 2 / 4 * T := by
+  have hfirst : t * e * T < e ^ (2 : ℕ) / 4 * T := by
     have hmulPos : 0 < e * T / 4 :=
       div_pos (mul_pos he hT) (by norm_num)
     have hmul := mul_lt_mul_of_pos_right hefour hmulPos
     have hleft : 4 * t * (e * T / 4) = t * e * T := by ring
-    have hright : e * (e * T / 4) = e ^ 2 / 4 * T := by ring
+    have hright : e * (e * T / 4) = e ^ (2 : ℕ) / 4 * T := by ring
     rw [hleft, hright] at hmul
     exact hmul
-  have hsecond : e ^ 2 / 4 * T < e ^ 2 / 4 * S :=
+  have hsecond : e ^ (2 : ℕ) / 4 * T < e ^ (2 : ℕ) / 4 * S :=
     mul_lt_mul_of_pos_left hST (by positivity)
   have hmain : 0 < z * (z + 2) * S - t * e * T := by
     have hchain := lt_trans hfirst hsecond
@@ -1106,11 +1106,11 @@ theorem c5SingleAtomBaseRationalCorrection_pos_of_sameHalfLine
     dsimp only
     change
       4 * t * x * w * z * (z + 2) * S -
-          20 * t ^ 2 * e * p * L *
+          20 * t ^ (2 : ℕ) * e * p * L *
             (ρ * w * (w + x) / L +
               2 * ρ * w * (1 + w) * (w + 2 * x) / L +
               3 * w * (w + x) / p +
-              2 * w ^ 2 * (w + 2 * x) / p) =
+              2 * w ^ (2 : ℕ) * (w + 2 * x) / p) =
         4 * t * x * w * (z * (z + 2) * S - t * e * T)
     field_simp [hp.ne', hL.ne']
     dsimp only [T, w]
@@ -1146,7 +1146,7 @@ theorem c5SingleAtomHighestJetReserve_pos_of_sameHalfLine
     have hA : 6 ≤ A := by simpa only [A] using hscale
     let ρ := 2 * (A + 3 / 2) / (A - 3 / 2)
     let x := l / r
-    let D := A ^ 2 - 9 / 2
+    let D := A ^ (2 : ℕ) - 9 / 2
     let X := 6 * A / D
     have hx : x < X := by
       simpa only [x, X, D, A, z, l, r] using

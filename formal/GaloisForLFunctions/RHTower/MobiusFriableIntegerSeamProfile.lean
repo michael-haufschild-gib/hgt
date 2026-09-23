@@ -17,7 +17,7 @@ def mobiusFriableDelayBelowTwo (u : ℝ) : ℝ :=
 
 /-- The actual leading profile is the second derivative of the delay solution. -/
 def mobiusFriableLeadingProfileBelowTwo (u : ℝ) : ℝ :=
-  -(u ^ 2)⁻¹
+  -(u ^ (2 : ℕ))⁻¹
 
 /-- On `2 < u < 3`, the first derivative of the delay solution has this formula. -/
 def mobiusFriableDelayDerivativeAboveTwo (u : ℝ) : ℝ :=
@@ -40,15 +40,15 @@ theorem mobiusFriableDelayFirstDerivative_hasDerivAt
 dependence on the aperture parameter `u`. -/
 theorem mobiusFriableLeadingProfile_apertureIndependent
     (X L u : ℝ) (hL : L ≠ 0) (hu : u ≠ 0) :
-    X / (L / u) ^ 2 * mobiusFriableLeadingProfileBelowTwo u =
-      -(X / L ^ 2) := by
+    X / (L / u) ^ (2 : ℕ) * mobiusFriableLeadingProfileBelowTwo u =
+      -(X / L ^ (2 : ℕ)) := by
   rw [mobiusFriableLeadingProfileBelowTwo]
   field_simp [hL, hu]
 
 /-- The normalized left-seam charge is exactly `-1` at every nonzero aperture below `2`. -/
 theorem mobiusFriableLeadingProfile_scaled
     (u : ℝ) (hu : u ≠ 0) :
-    u ^ 2 * mobiusFriableLeadingProfileBelowTwo u = -1 := by
+    u ^ (2 : ℕ) * mobiusFriableLeadingProfileBelowTwo u = -1 := by
   rw [mobiusFriableLeadingProfileBelowTwo]
   field_simp [hu]
 
@@ -77,7 +77,7 @@ theorem mobiusFriableDelayDerivativeAboveTwo_hasDerivAt_two :
       (hasDerivAt_id (2 : ℝ)) (by norm_num : (2 : ℝ) ≠ 0)
   have hdiv' :
       HasDerivAt (fun u : ℝ => (1 + Real.log (u - 1)) / u)
-        ((1 * 2 - (1 + Real.log (2 - 1)) * 1) / (2 : ℝ) ^ 2) 2 :=
+        ((1 * 2 - (1 + Real.log (2 - 1)) * 1) / (2 : ℝ) ^ (2 : ℕ)) 2 :=
     hdiv.congr_of_eventuallyEq
       (Filter.Eventually.of_forall (fun _ => rfl))
   norm_num [Real.log_one] at hdiv'
@@ -90,8 +90,8 @@ theorem mobiusFriableLeadingProfile_jumpAtTwo :
 
 /-- Multiplying by `u²`, as forced by `log Y = log X / u`, quantizes the jump to `2`. -/
 theorem mobiusFriableScaledProfile_jumpAtTwo :
-    (2 : ℝ) ^ 2 * (1 / 4) -
-        (2 : ℝ) ^ 2 * mobiusFriableLeadingProfileBelowTwo 2 = 2 := by
+    (2 : ℝ) ^ (2 : ℕ) * (1 / 4) -
+        (2 : ℝ) ^ (2 : ℕ) * mobiusFriableLeadingProfileBelowTwo 2 = 2 := by
   norm_num [mobiusFriableLeadingProfileBelowTwo]
 
 end RHTower

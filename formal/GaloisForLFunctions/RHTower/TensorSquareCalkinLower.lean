@@ -284,8 +284,8 @@ omit [CompleteSpace H] in
 survives every compact perturbation of the Hilbert tensor square.** -/
 theorem ShellDatum.tensor_calkin_lower (d : ι × ι → ℂ)
     (K : Completion (H ⊗[ℂ] H) →L[ℂ] Completion (H ⊗[ℂ] H)) (hK : IsCompactOperator K) :
-    Real.sqrt (∑ a : ι × ι, ‖d a‖ ^ 2) ≤ ‖(S.pairSection d).completion - K‖ := by
-  set E : ℝ := ∑ a : ι × ι, ‖d a‖ ^ 2 with hE
+    Real.sqrt (∑ a : ι × ι, ‖d a‖ ^ (2 : ℕ)) ≤ ‖(S.pairSection d).completion - K‖ := by
+  set E : ℝ := ∑ a : ι × ι, ‖d a‖ ^ (2 : ℕ) with hE
   have hEnonneg : 0 ≤ E := by
     rw [hE]
     refine Finset.sum_nonneg fun a _ => ?_
@@ -300,7 +300,7 @@ theorem ShellDatum.tensor_calkin_lower (d : ι × ι → ℂ)
   have hRC : (R : ℂ) ≠ 0 := by exact_mod_cast hRpos.ne'
   have husum : (∑ a : ι × ι, (starRingEnd ℂ) (u a) * u a) = 1 := by
     have hterm : ∀ a : ι × ι, (starRingEnd ℂ) (u a) * u a
-        = ((‖d a‖ ^ 2 : ℝ) : ℂ) / ((R : ℂ) * (R : ℂ)) := by
+        = ((‖d a‖ ^ (2 : ℕ) : ℝ) : ℂ) / ((R : ℂ) * (R : ℂ)) := by
       intro a
       rw [hu]
       simp only [map_div₀, Complex.conj_conj, Complex.conj_ofReal]
@@ -315,7 +315,7 @@ theorem ShellDatum.tensor_calkin_lower (d : ι × ι → ℂ)
     rw [hE]
     exact div_self (by exact_mod_cast hEpos.ne')
   have hdusum : (∑ a : ι × ι, d a * u a) = ((R : ℝ) : ℂ) := by
-    have hterm : ∀ a : ι × ι, d a * u a = ((‖d a‖ ^ 2 : ℝ) : ℂ) / (R : ℂ) := by
+    have hterm : ∀ a : ι × ι, d a * u a = ((‖d a‖ ^ (2 : ℕ) : ℝ) : ℂ) / (R : ℂ) := by
       intro a
       rw [hu, mul_div_assoc']
       congr 1
@@ -326,14 +326,14 @@ theorem ShellDatum.tensor_calkin_lower (d : ι × ι → ℂ)
     rw [show ((E : ℝ) : ℂ) = ((R : ℂ) * (R : ℂ)) by exact_mod_cast hRsq.symm]
     field_simp
   -- the two-particle sequences
-  have hsq : ∀ n, ((‖S.pairInput u n‖ ^ 2 : ℝ) : ℂ)
+  have hsq : ∀ n, ((‖S.pairInput u n‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = inner ℂ (S.pairInput u n) (S.pairInput u n) := by
     intro n
     exact_mod_cast (inner_self_eq_norm_sq_to_K (S.pairInput u n)).symm
-  have hnormsq : Tendsto (fun n => ‖S.pairInput u n‖ ^ 2) atTop (𝓝 1) := by
+  have hnormsq : Tendsto (fun n => ‖S.pairInput u n‖ ^ (2 : ℕ)) atTop (𝓝 1) := by
     have h := S.inner_pairInput_tendsto u
     rw [husum] at h
-    have h2 : Tendsto (fun n => ((‖S.pairInput u n‖ ^ 2 : ℝ) : ℂ)) atTop (𝓝 (1 : ℂ)) := by
+    have h2 : Tendsto (fun n => ((‖S.pairInput u n‖ ^ (2 : ℕ) : ℝ) : ℂ)) atTop (𝓝 (1 : ℂ)) := by
       simpa [hsq] using h
     have h3 := (Complex.continuous_re.tendsto (1 : ℂ)).comp h2
     simp only [Function.comp_def, Complex.ofReal_re, Complex.one_re] at h3
@@ -341,7 +341,7 @@ theorem ShellDatum.tensor_calkin_lower (d : ι × ι → ℂ)
   have hnorm1 : Tendsto (fun n => ‖S.pairInput u n‖) atTop (𝓝 1) := by
     have h := (Real.continuous_sqrt.tendsto (1 : ℝ)).comp hnormsq
     simp only [Function.comp_def] at h
-    have hrw : ∀ n, Real.sqrt (‖S.pairInput u n‖ ^ 2) = ‖S.pairInput u n‖ := fun n =>
+    have hrw : ∀ n, Real.sqrt (‖S.pairInput u n‖ ^ (2 : ℕ)) = ‖S.pairInput u n‖ := fun n =>
       Real.sqrt_sq (norm_nonneg _)
     simpa [hrw, Real.sqrt_one] using h
   -- compact operator kills the weakly null lifted sequence

@@ -82,8 +82,8 @@ section Defect
 /-- The quadratic defect of one labelling of the spectral action, on the joint ring. -/
 def jointActionDefect (k : Fin D → ℝ) (b : ℝ) (π : Equiv.Perm (Fin D)) :
     MvPolynomial (Fin D ⊕ Fin N) ℝ :=
-  (jointAction k π) ^ 2
-    - MvPolynomial.C (b ^ 2) * MvPolynomial.rename Sum.inr (normSqPoly N)
+  (jointAction k π) ^ (2 : ℕ)
+    - MvPolynomial.C (b ^ (2 : ℕ)) * MvPolynomial.rename Sum.inr (normSqPoly N)
 
 /-- The product of the quadratic defects over all labellings. -/
 def jointActionDefectProduct (k : Fin D → ℝ) (b : ℝ) : MvPolynomial (Fin D ⊕ Fin N) ℝ :=
@@ -92,14 +92,14 @@ def jointActionDefectProduct (k : Fin D → ℝ) (b : ℝ) : MvPolynomial (Fin D
 theorem eval_jointActionDefect (k : Fin D → ℝ) (b : ℝ) (π : Equiv.Perm (Fin D))
     (lam : Fin D → ℝ) (θ : Fin N → ℝ) :
     MvPolynomial.eval (Sum.elim lam θ) (jointActionDefect k b π)
-      = (∑ j, k j * lam (π j)) ^ 2 - b ^ 2 * (∑ a, (θ a) ^ 2) := by
+      = (∑ j, k j * lam (π j)) ^ (2 : ℕ) - b ^ (2 : ℕ) * (∑ a, (θ a) ^ (2 : ℕ)) := by
   rw [jointActionDefect, MvPolynomial.eval_sub, MvPolynomial.eval_pow, eval_jointAction,
     MvPolynomial.eval_mul, MvPolynomial.eval_C, eval_rename_inr, eval_normSqPoly]
 
 theorem eval_jointActionDefectProduct (k : Fin D → ℝ) (b : ℝ) (lam : Fin D → ℝ)
     (θ : Fin N → ℝ) :
     MvPolynomial.eval (Sum.elim lam θ) (jointActionDefectProduct (N := N) k b)
-      = ∏ π : Equiv.Perm (Fin D), ((∑ j, k j * lam (π j)) ^ 2 - b ^ 2 * (∑ a, (θ a) ^ 2)) := by
+      = ∏ π : Equiv.Perm (Fin D), ((∑ j, k j * lam (π j)) ^ (2 : ℕ) - b ^ (2 : ℕ) * (∑ a, (θ a) ^ (2 : ℕ))) := by
   classical
   rw [jointActionDefectProduct, map_prod]
   exact Finset.prod_congr rfl fun π _ => eval_jointActionDefect k b π lam θ
@@ -140,7 +140,7 @@ theorem exists_shellPoly_jointActionDefectProduct {P : Fin N → Matrix (Fin D) 
     ((MvPolynomial.sumAlgEquiv ℝ (Fin D) (Fin N)) (jointActionDefectProduct k b))
     (isSymmetric_sumAlgEquiv_jointActionDefectProduct k b)
   refine ⟨G, fun θ => ?_⟩
-  rw [← hG θ, eval_sumAlgEquiv]
+  rw [← hG θ, eval_sumAlgEquiv_jointGradingBridge]
 
 end Defect
 
@@ -155,8 +155,8 @@ theorem exists_ne_spectralActionPhase_of_witness
     {P : Fin m → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
     (k : Fin D → ℝ)
     (hwit : ∀ b : ℝ, ∃ θ₀ : Fin m → ℝ, ∀ π : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
-        ≠ b ^ 2 * (∑ a, (θ₀ a) ^ 2))
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ (2 : ℕ)
+        ≠ b ^ (2 : ℕ) * (∑ a, (θ₀ a) ^ (2 : ℕ)))
     {V : Set (EuclideanSpace ℝ (Fin m))} (hV : IsOpen V) (hVne : V.Nonempty)
     (hV0 : (0 : EuclideanSpace ℝ (Fin m)) ∉ V) :
     ∃ p ∈ V, ∃ q ∈ V, spectralActionPhase hP k p ≠ spectralActionPhase hP k q := by
@@ -196,7 +196,7 @@ theorem exists_ne_spectralActionPhase_of_witness
         (isHermitian_spectralEnsembleMatrix hP (WithLp.ofLp y)).eigenvalues
           (Tuple.sort (isHermitian_spectralEnsembleMatrix hP (WithLp.ofLp y)).eigenvalues j))
         = sortedSpectralAction hP k (WithLp.ofLp y) := rfl
-    have hnorm : ∑ a, ((WithLp.ofLp y) a) ^ 2 = ‖y‖ ^ 2 := by
+    have hnorm : ∑ a, ((WithLp.ofLp y) a) ^ (2 : ℕ) = ‖y‖ ^ (2 : ℕ) := by
       rw [norm_eq_sqrt_sum_sq y, Real.sq_sqrt
         (Finset.sum_nonneg fun a _ => sq_nonneg _)]
     rw [hleft, hnorm, haction y hy]
@@ -216,8 +216,8 @@ theorem tendsto_integral_exp_sortedSpectralAction_zero_of_witness
     {P : Fin m → Matrix (Fin D) (Fin D) ℂ} (hP : ∀ a, (P a).IsHermitian)
     (hDisc : spectralDiscriminantPoly P ≠ 0) (k : Fin D → ℝ)
     (hwit : ∀ b : ℝ, ∃ θ₀ : Fin m → ℝ, ∀ π : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
-        ≠ b ^ 2 * (∑ a, (θ₀ a) ^ 2))
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ (2 : ℕ)
+        ≠ b ^ (2 : ℕ) * (∑ a, (θ₀ a) ^ (2 : ℕ)))
     (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 → ℂ) (hg : Measurable g)
     {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖g x‖ ≤ C) :
     Filter.Tendsto (fun t : ℝ => ∫ x, g x *

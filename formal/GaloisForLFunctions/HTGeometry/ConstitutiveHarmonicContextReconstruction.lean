@@ -27,12 +27,12 @@ def harmonicTreeSum : ResponseTree ℝ → ℝ
 
 /-- Positive square mass of the generated leaves. -/
 def harmonicTreeSqMass : ResponseTree ℝ → ℝ
-  | .leaf a => a ^ 2
+  | .leaf a => a ^ (2 : ℕ)
   | .fork t u => harmonicTreeSqMass t + harmonicTreeSqMass u
 
 /-- Within-block harmonic refinement energy. -/
 def harmonicTreeEnergy (t : ResponseTree ℝ) : ℝ :=
-  harmonicTreeSqMass t - harmonicTreeSum t ^ 2 / harmonicTreeCount t
+  harmonicTreeSqMass t - harmonicTreeSum t ^ (2 : ℕ) / harmonicTreeCount t
 
 @[simp] theorem harmonicTreeCount_leaf (a : ℝ) :
     harmonicTreeCount (.leaf a) = 1 := rfl
@@ -47,7 +47,7 @@ def harmonicTreeEnergy (t : ResponseTree ℝ) : ℝ :=
     harmonicTreeSum (.fork t u) = harmonicTreeSum t + harmonicTreeSum u := rfl
 
 @[simp] theorem harmonicTreeSqMass_leaf (a : ℝ) :
-    harmonicTreeSqMass (.leaf a) = a ^ 2 := rfl
+    harmonicTreeSqMass (.leaf a) = a ^ (2 : ℕ) := rfl
 
 @[simp] theorem harmonicTreeSqMass_fork (t u : ResponseTree ℝ) :
     harmonicTreeSqMass (.fork t u) = harmonicTreeSqMass t + harmonicTreeSqMass u := rfl
@@ -66,8 +66,8 @@ def harmonicCalibrationResponse (t : ResponseTree ℝ) (a : ℝ) : ℝ :=
 
 theorem harmonicCalibrationResponse_formula (t : ResponseTree ℝ) (a : ℝ) :
     harmonicCalibrationResponse t a =
-      harmonicTreeSqMass t + a ^ 2 -
-        (harmonicTreeSum t + a) ^ 2 / (harmonicTreeCount t + 1) := by
+      harmonicTreeSqMass t + a ^ (2 : ℕ) -
+        (harmonicTreeSum t + a) ^ (2 : ℕ) / (harmonicTreeCount t + 1) := by
   simp [harmonicCalibrationResponse, harmonicTreeEnergy]
 
 /-- Second calibration difference recovers the formed population coefficient. -/
@@ -115,7 +115,7 @@ theorem harmonicCalibration_reconstruct_sum (t : ResponseTree ℝ) :
 theorem harmonicCalibration_reconstruct_sqMass (t : ResponseTree ℝ) :
     harmonicTreeSqMass t =
       harmonicCalibrationResponse t 0 +
-        harmonicTreeSum t ^ 2 / (harmonicTreeCount t + 1) := by
+        harmonicTreeSum t ^ (2 : ℕ) / (harmonicTreeCount t + 1) := by
   rw [harmonicCalibrationResponse_formula]
   ring
 
@@ -181,10 +181,10 @@ theorem sameMoments_of_sameHarmonicCalibrations {t u : ResponseTree ℝ}
   have hsq : harmonicTreeSqMass t = harmonicTreeSqMass u := by
     calc
       harmonicTreeSqMass t = harmonicCalibrationResponse t 0 +
-          harmonicTreeSum t ^ 2 / (harmonicTreeCount t + 1) :=
+          harmonicTreeSum t ^ (2 : ℕ) / (harmonicTreeCount t + 1) :=
         harmonicCalibration_reconstruct_sqMass t
       _ = harmonicCalibrationResponse u 0 +
-          harmonicTreeSum u ^ 2 / (harmonicTreeCount u + 1) := by rw [hzero, hsum, hcount]
+          harmonicTreeSum u ^ (2 : ℕ) / (harmonicTreeCount u + 1) := by rw [hzero, hsum, hcount]
       _ = harmonicTreeSqMass u := (harmonicCalibration_reconstruct_sqMass u).symm
   exact ⟨hcount, hsum, hsq⟩
 
@@ -216,7 +216,7 @@ theorem contextEquivalent_harmonicTreeEnergy_iff_sameMoments (t u : ResponseTree
 theorem harmonicTreeEnergy_fork (t u : ResponseTree ℝ) :
     harmonicTreeEnergy (.fork t u) = harmonicTreeEnergy t + harmonicTreeEnergy u +
       (((harmonicTreeCount u : ℝ) * harmonicTreeSum t -
-          (harmonicTreeCount t : ℝ) * harmonicTreeSum u) ^ 2) /
+          (harmonicTreeCount t : ℝ) * harmonicTreeSum u) ^ (2 : ℕ)) /
         ((harmonicTreeCount t : ℝ) * harmonicTreeCount u *
           (harmonicTreeCount t + harmonicTreeCount u)) := by
   have htpos : (0 : ℝ) < harmonicTreeCount t := by exact_mod_cast harmonicTreeCount_pos t
@@ -239,7 +239,7 @@ theorem harmonicTreeEnergy_fusion_surplus_nonneg (t u : ResponseTree ℝ) :
       (harmonicTreeCount t + harmonicTreeCount u) := by
     exact mul_pos (mul_pos htpos hupos) (add_pos htpos hupos)
   have hfrac : 0 ≤ (((harmonicTreeCount u : ℝ) * harmonicTreeSum t -
-      (harmonicTreeCount t : ℝ) * harmonicTreeSum u) ^ 2) /
+      (harmonicTreeCount t : ℝ) * harmonicTreeSum u) ^ (2 : ℕ)) /
       ((harmonicTreeCount t : ℝ) * harmonicTreeCount u *
         (harmonicTreeCount t + harmonicTreeCount u)) :=
     div_nonneg (sq_nonneg _) (le_of_lt hden)
@@ -258,11 +258,11 @@ theorem harmonicTreeEnergy_fork_eq_add_iff (t u : ResponseTree ℝ) :
   constructor
   · intro h
     have hz : (((harmonicTreeCount u : ℝ) * harmonicTreeSum t -
-        (harmonicTreeCount t : ℝ) * harmonicTreeSum u) ^ 2) /
+        (harmonicTreeCount t : ℝ) * harmonicTreeSum u) ^ (2 : ℕ)) /
         ((harmonicTreeCount t : ℝ) * harmonicTreeCount u *
           (harmonicTreeCount t + harmonicTreeCount u)) = 0 := by linarith
     have hsquare : ((harmonicTreeCount u : ℝ) * harmonicTreeSum t -
-        (harmonicTreeCount t : ℝ) * harmonicTreeSum u) ^ 2 = 0 :=
+        (harmonicTreeCount t : ℝ) * harmonicTreeSum u) ^ (2 : ℕ) = 0 :=
       (div_eq_zero_iff).mp hz |>.resolve_right hden
     exact sub_eq_zero.mp (sq_eq_zero_iff.mp hsquare)
   · intro h

@@ -36,9 +36,9 @@ theorem thetaPhysicalEndpointSymmetricQuartetHardyGreenEnergy_eq
     (h : primeDepthBVWoldXiCenteredRate q.1 ≠ 0) :
     thetaPhysicalEndpointSymmetricQuartetHardyGreenEnergy q =
       2 * (∫ x in Ioi (0 : ℝ),
-        thetaPhysicalEndpointHardyGreenResidual q x ^ 2) +
+        thetaPhysicalEndpointHardyGreenResidual q x ^ (2 : ℕ)) +
       4 * |(xiSpectralPoint q).im| /
-        (|(xiSpectralPoint q).im| ^ 2 + (xiSpectralPoint q).re ^ 2) := by
+        (|(xiSpectralPoint q).im| ^ (2 : ℕ) + (xiSpectralPoint q).re ^ (2 : ℕ)) := by
   have him : (xiSpectralPoint q).im ≠ 0 := by
     intro him
     apply h
@@ -57,7 +57,7 @@ theorem two_mul_integral_sq_thetaPhysicalEndpointHardyGreenResidual_lt_quartetEn
     (q : XiZeroCopy)
     (h : primeDepthBVWoldXiCenteredRate q.1 ≠ 0) :
     2 * (∫ x in Ioi (0 : ℝ),
-      thetaPhysicalEndpointHardyGreenResidual q x ^ 2) <
+      thetaPhysicalEndpointHardyGreenResidual q x ^ (2 : ℕ)) <
       thetaPhysicalEndpointSymmetricQuartetHardyGreenEnergy q := by
   rw [thetaPhysicalEndpointSymmetricQuartetHardyGreenEnergy_eq q h]
   have him : (xiSpectralPoint q).im ≠ 0 := by
@@ -66,10 +66,10 @@ theorem two_mul_integral_sq_thetaPhysicalEndpointHardyGreenResidual_lt_quartetEn
     rw [primeDepthBVWoldXiCenteredRate_eq_neg_two_spectralIm, him]
     norm_num
   have ha : 0 < |(xiSpectralPoint q).im| := abs_pos.mpr him
-  have hden : 0 < |(xiSpectralPoint q).im| ^ 2 +
-      (xiSpectralPoint q).re ^ 2 := by positivity
+  have hden : 0 < |(xiSpectralPoint q).im| ^ (2 : ℕ) +
+      (xiSpectralPoint q).re ^ (2 : ℕ) := by positivity
   have hterm : 0 < 4 * |(xiSpectralPoint q).im| /
-      (|(xiSpectralPoint q).im| ^ 2 + (xiSpectralPoint q).re ^ 2) :=
+      (|(xiSpectralPoint q).im| ^ (2 : ℕ) + (xiSpectralPoint q).re ^ (2 : ℕ)) :=
     div_pos (mul_pos (by norm_num) ha) hden
   linarith
 

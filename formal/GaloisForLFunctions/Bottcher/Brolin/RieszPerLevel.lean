@@ -184,7 +184,7 @@ theorem isRieszMeasureOfSmooth_preBrolinMeasure (c : ℂ) (n : ℕ) :
         intro z hz
         rw [Set.mem_setOf_eq] at hz
         rw [Finset.mem_coe, Multiset.mem_toFinset,
-          Polynomial.mem_roots (quadraticPolyIterate_monic c n).ne_zero,
+          Polynomial.mem_roots (quadraticPolyIterate_monic_finiteMeasures c n).ne_zero,
           Polynomial.IsRoot.def, quadraticPolyIterate_eval]
         exact hz
       exact Set.Finite.subset (Finset.finite_toSet _) hsub
@@ -194,7 +194,7 @@ theorem isRieszMeasureOfSmooth_preBrolinMeasure (c : ℂ) (n : ℕ) :
     filter_upwards [haefin] with z hz
     have hzeval : (quadraticPolyIterate c n).eval z ≠ 0 := by
       rw [quadraticPolyIterate_eval]; exact hz
-    rw [greenApprox, rootLogSum_eq_log_eval_of_monic (quadraticPolyIterate_monic c n) hzeval,
+    rw [greenApprox, rootLogSum_eq_log_eval_of_monic (quadraticPolyIterate_monic_finiteMeasures c n) hzeval,
       quadraticPolyIterate_eval]
     ring
   rw [integral_preBrolinMeasure_eq_root_average c n φ, integral_congr_ae haeI,

@@ -102,16 +102,16 @@ theorem deriv_linearQuartic_ne_zero {r₀ r₁ r₂ r₃ ρ : ℂ}
 
 /-- The on-line model `(z² + b₁²)(z² + b₂²)` in the variable `z = s - 1/2`. -/
 def onQuartic (b₁ b₂ : ℝ) : ℂ → ℂ :=
-  fun s => ((s - 1 / 2) ^ 2 + (b₁ : ℂ) ^ 2) * ((s - 1 / 2) ^ 2 + (b₂ : ℂ) ^ 2)
+  fun s => ((s - 1 / 2) ^ (2 : ℕ) + (b₁ : ℂ) ^ (2 : ℕ)) * ((s - 1 / 2) ^ (2 : ℕ) + (b₂ : ℂ) ^ (2 : ℕ))
 
 /-- The off-line model `((z - a)² + b²)((z + a)² + b²)` in the variable `z = s - 1/2`. -/
 def offQuartic (a b : ℝ) : ℂ → ℂ :=
-  fun s => (((s - 1 / 2) - (a : ℂ)) ^ 2 + (b : ℂ) ^ 2) *
-    (((s - 1 / 2) + (a : ℂ)) ^ 2 + (b : ℂ) ^ 2)
+  fun s => (((s - 1 / 2) - (a : ℂ)) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ)) *
+    (((s - 1 / 2) + (a : ℂ)) ^ (2 : ℕ) + (b : ℂ) ^ (2 : ℕ))
 
-theorem sq_add_sq_factor (z c : ℂ) : z ^ 2 + c ^ 2 = (z - I * c) * (z + I * c) := by
-  have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
-  linear_combination (c ^ 2) * hI
+theorem sq_add_sq_factor (z c : ℂ) : z ^ (2 : ℕ) + c ^ (2 : ℕ) = (z - I * c) * (z + I * c) := by
+  have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
+  linear_combination (c ^ (2 : ℕ)) * hI
 
 theorem onQuartic_eq_linearQuartic (b₁ b₂ : ℝ) :
     onQuartic b₁ b₂ = linearQuartic (1 / 2 + I * b₁) (1 / 2 - I * b₁)

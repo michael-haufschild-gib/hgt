@@ -23,10 +23,10 @@ theorem Ioc_zero_eq_Icc_one (m : ℕ) : Finset.Ioc 0 m = Finset.Icc 1 m := by
 
 /-- **The squarefree count up to `m`, with square-root error.** -/
 theorem abs_sum_moebius_sq_Icc_sub_le (m : ℕ) :
-    |∑ n ∈ Finset.Icc 1 m, ((moebius n : ℤ) : ℝ) ^ 2 - (m : ℝ) * squarefreeDensity|
+    |∑ n ∈ Finset.Icc 1 m, ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) - (m : ℝ) * squarefreeDensity|
       ≤ 2 * Real.sqrt m + 1 := by
   have hR1 : 1 ≤ Nat.sqrt m + 1 := by omega
-  have hRM : 0 + m ≤ (Nat.sqrt m + 1) ^ 2 := by
+  have hRM : 0 + m ≤ (Nat.sqrt m + 1) ^ (2 : ℕ) := by
     have h := Nat.lt_succ_sqrt' m
     rw [zero_add]
     have hs : Nat.sqrt m + 1 = Nat.succ (Nat.sqrt m) := rfl

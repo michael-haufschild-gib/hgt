@@ -63,8 +63,8 @@ theorem exists_integral_scaling (c : ℚ) (u : Fin (m + 1) → ℚ) :
   by_cases hxy : x = y
   · rw [if_pos hxy]
     obtain ⟨zc', hzc'⟩ := hc
-    refine ⟨zc' + N * (occZ x) ^ 2, ?_⟩
-    have hd : twoLocalDiagonal c 0 witnessCoupling x = c + ((occZ x : ℤ) : ℚ) ^ 2 := by
+    refine ⟨zc' + N * (occZ x) ^ (2 : ℕ), ?_⟩
+    have hd : twoLocalDiagonal c 0 witnessCoupling x = c + ((occZ x : ℤ) : ℚ) ^ (2 : ℕ) := by
       have := witnessDiagonal_eq c x
       rw [witnessDiagonal] at this
       rw [this]

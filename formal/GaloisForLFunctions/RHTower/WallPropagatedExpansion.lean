@@ -39,7 +39,7 @@ omit [Nontrivial X] in
 /-- **The propagated expansion at a single position.**  The transport cancels at the moving endpoint
 and survives only in front of the threshold terms. -/
 theorem stripPropagator_expansion_apply
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (L x Y : ℝ) (R : X →L[ℂ] X) (v : X) :
     stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
         ((((Complex.I : ℂ) • (wallPhaseMap E T σ L x * invFamily (wallGeneratorShift T σ L) x

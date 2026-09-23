@@ -187,9 +187,9 @@ theorem kgCosOp_comp_kgSinOp_comm (t : ℝ) :
 
 /-- The energy of a state of the Klein–Gordon evolution: the sum of the squared `L²` norms of the
 two components. It is the square of the norm of the energy space. -/
-def kgEnergy (v : KGEnergy E) : ℝ := ‖v.fst‖ ^ 2 + ‖v.snd‖ ^ 2
+def kgEnergy (v : KGEnergy E) : ℝ := ‖v.fst‖ ^ (2 : ℕ) + ‖v.snd‖ ^ (2 : ℕ)
 
-theorem kgEnergy_eq_norm_sq (v : KGEnergy E) : kgEnergy v = ‖v‖ ^ 2 :=
+theorem kgEnergy_eq_norm_sq (v : KGEnergy E) : kgEnergy v = ‖v‖ ^ (2 : ℕ) :=
   (WithLp.prod_norm_sq_eq_of_L2 v).symm
 
 theorem kgEnergy_nonneg (v : KGEnergy E) : 0 ≤ kgEnergy v :=
@@ -197,7 +197,7 @@ theorem kgEnergy_nonneg (v : KGEnergy E) : 0 ≤ kgEnergy v :=
 
 /-- The Pythagorean identity, read on a single vector. -/
 theorem norm_kgCosOp_sq_add_norm_kgSinOp_sq (t : ℝ) (v : Lp (α := E) ℂ 2) :
-    ‖kgCosOp t v‖ ^ 2 + ‖kgSinOp t v‖ ^ 2 = ‖v‖ ^ 2 := by
+    ‖kgCosOp t v‖ ^ (2 : ℕ) + ‖kgSinOp t v‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) := by
   have hsum : kgCosOp (E := E) t (kgCosOp t v) + kgSinOp t (kgSinOp t v) = v := by
     have happ := congrArg (fun T : Lp (α := E) ℂ 2 →L[ℂ] Lp (α := E) ℂ 2 => T v)
       (kgCosOp_sq_add_kgSinOp_sq (E := E) t)

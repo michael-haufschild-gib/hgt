@@ -35,13 +35,13 @@ noncomputable section
 def d4BMActualScalarTripleHyperbolicDensityAt
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (w : ℝ × ℝ) : ℂ :=
   d4BMActualFirstStokesScalarDensity (d4BMStokesPairCoordinate w) P Q /
-    (w.2 : ℂ) ^ 2
+    (w.2 : ℂ) ^ (2 : ℕ)
 
 /-- Actual balanced `++-` density with hyperbolic measure factor on pair coordinates. -/
 def d4BMActualBalancedSpinTwoHyperbolicDensityAt
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (w : ℝ × ℝ) : ℂ :=
   d4BMActualBalancedSpinTwoDensity (d4BMStokesPairCoordinate w) P Q /
-    (w.2 : ℂ) ^ 2
+    (w.2 : ℂ) ^ (2 : ℕ)
 
 theorem continuousOn_d4BMActualScalarTripleHyperbolicDensityAt_stokesCompactCell
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) {Y : ℝ} :
@@ -95,7 +95,7 @@ theorem continuousOn_d4BMActualBalancedSpinTwoHyperbolicDensityAt_stokesCompactC
     fun_prop
   have hR : ContinuousWithinAt
       (fun w : ℝ × ℝ =>
-        ((d4BMStokesPairCoordinate w).y : ℂ) ^ 2 *
+        ((d4BMStokesPairCoordinate w).y : ℂ) ^ (2 : ℕ) *
             (d4BMCompletedPoincareVerticalSecondJet (d4BMStokesPairCoordinate w) P -
               d4BMCompletedPoincareHorizontalSecondJet (d4BMStokesPairCoordinate w) P +
               2 * Complex.I *
@@ -112,7 +112,7 @@ theorem continuousOn_d4BMActualBalancedSpinTwoHyperbolicDensityAt_stokesCompactC
         ((hFy w hw).add ((hFx w hw).const_mul Complex.I)))
   have hL : ContinuousWithinAt
       (fun w : ℝ × ℝ =>
-        ((d4BMStokesPairCoordinate w).y : ℂ) ^ 2 *
+        ((d4BMStokesPairCoordinate w).y : ℂ) ^ (2 : ℕ) *
             (d4BMCompletedPoincareVerticalSecondJet (d4BMStokesPairCoordinate w) P -
               d4BMCompletedPoincareHorizontalSecondJet (d4BMStokesPairCoordinate w) P -
               2 * Complex.I *
@@ -129,7 +129,7 @@ theorem continuousOn_d4BMActualBalancedSpinTwoHyperbolicDensityAt_stokesCompactC
         ((hFy w hw).sub ((hFx w hw).const_mul Complex.I)))
   have hcont : ContinuousWithinAt
       (fun w : ℝ × ℝ =>
-        ((((d4BMStokesPairCoordinate w).y : ℂ) ^ 2 *
+        ((((d4BMStokesPairCoordinate w).y : ℂ) ^ (2 : ℕ) *
               (d4BMCompletedPoincareVerticalSecondJet (d4BMStokesPairCoordinate w) P -
                 d4BMCompletedPoincareHorizontalSecondJet (d4BMStokesPairCoordinate w) P +
                 2 * Complex.I *
@@ -138,7 +138,7 @@ theorem continuousOn_d4BMActualBalancedSpinTwoHyperbolicDensityAt_stokesCompactC
               (d4BMCompletedPoincareVerticalFirstJet (d4BMStokesPairCoordinate w) P +
                 Complex.I *
                   d4BMCompletedPoincareHorizontalFirstJet (d4BMStokesPairCoordinate w) P)) *
-          (((d4BMStokesPairCoordinate w).y : ℂ) ^ 2 *
+          (((d4BMStokesPairCoordinate w).y : ℂ) ^ (2 : ℕ) *
               (d4BMCompletedPoincareVerticalSecondJet (d4BMStokesPairCoordinate w) P -
                 d4BMCompletedPoincareHorizontalSecondJet (d4BMStokesPairCoordinate w) P -
                 2 * Complex.I *
@@ -148,13 +148,13 @@ theorem continuousOn_d4BMActualBalancedSpinTwoHyperbolicDensityAt_stokesCompactC
                 Complex.I *
                   d4BMCompletedPoincareHorizontalFirstJet (d4BMStokesPairCoordinate w) P)) *
           d4BMCompletedEisensteinPoincareSeries (d4BMStokesPairCoordinate w) Q) /
-            (w.2 : ℂ) ^ 2)
+            (w.2 : ℂ) ^ (2 : ℕ))
         (d4BMStokesCompactCell Y) w :=
     ((hR.mul hL).mul (hG w hw)).div (hyc.pow 2)
       (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hy))
   rw [show d4BMActualBalancedSpinTwoHyperbolicDensityAt P Q =
       (fun w : ℝ × ℝ =>
-        ((((d4BMStokesPairCoordinate w).y : ℂ) ^ 2 *
+        ((((d4BMStokesPairCoordinate w).y : ℂ) ^ (2 : ℕ) *
               (d4BMCompletedPoincareVerticalSecondJet (d4BMStokesPairCoordinate w) P -
                 d4BMCompletedPoincareHorizontalSecondJet (d4BMStokesPairCoordinate w) P +
                 2 * Complex.I *
@@ -163,7 +163,7 @@ theorem continuousOn_d4BMActualBalancedSpinTwoHyperbolicDensityAt_stokesCompactC
               (d4BMCompletedPoincareVerticalFirstJet (d4BMStokesPairCoordinate w) P +
                 Complex.I *
                   d4BMCompletedPoincareHorizontalFirstJet (d4BMStokesPairCoordinate w) P)) *
-          (((d4BMStokesPairCoordinate w).y : ℂ) ^ 2 *
+          (((d4BMStokesPairCoordinate w).y : ℂ) ^ (2 : ℕ) *
               (d4BMCompletedPoincareVerticalSecondJet (d4BMStokesPairCoordinate w) P -
                 d4BMCompletedPoincareHorizontalSecondJet (d4BMStokesPairCoordinate w) P -
                 2 * Complex.I *
@@ -173,7 +173,7 @@ theorem continuousOn_d4BMActualBalancedSpinTwoHyperbolicDensityAt_stokesCompactC
                 Complex.I *
                   d4BMCompletedPoincareHorizontalFirstJet (d4BMStokesPairCoordinate w) P)) *
           d4BMCompletedEisensteinPoincareSeries (d4BMStokesPairCoordinate w) Q) /
-            (w.2 : ℂ) ^ 2) by
+            (w.2 : ℂ) ^ (2 : ℕ)) by
       funext v
       unfold d4BMActualBalancedSpinTwoHyperbolicDensityAt
         d4BMActualBalancedSpinTwoDensity
@@ -269,28 +269,28 @@ theorem d4BM_actualBalancedSpinTwoTruncatedMoment_defect_decomposition_of_one_le
   rw [← hD1eq, ← hD2eq]
   calc
     d4BMActualBalancedSpinTwoDensity (d4BMStokesPairCoordinate w) P Q /
-          (w.2 : ℂ) ^ 2 -
+          (w.2 : ℂ) ^ (2 : ℕ) -
         d4BMHyperbolicBalancedSpinTwoBochnerCoefficient
           (P.s * (P.s - 1)) (Q.s * (Q.s - 1)) *
           (d4BMActualFirstStokesScalarDensity (d4BMStokesPairCoordinate w) P Q /
-            (w.2 : ℂ) ^ 2) =
+            (w.2 : ℂ) ^ (2 : ℕ)) =
       (d4BMActualBalancedSpinTwoDensity (d4BMStokesPairCoordinate w) P Q -
         d4BMHyperbolicBalancedSpinTwoBochnerCoefficient
           (P.s * (P.s - 1)) (Q.s * (Q.s - 1)) *
           d4BMActualFirstStokesScalarDensity (d4BMStokesPairCoordinate w) P Q) /
-            (w.2 : ℂ) ^ 2 := by ring
+            (w.2 : ℂ) ^ (2 : ℕ) := by ring
     _ = (2 *
           d4BMActualSecondStokesDefectDensity (d4BMStokesPairCoordinate w) P Q +
         2 * (d4BMHyperbolicDiagonalGradientShift
           (P.s * (P.s - 1)) (Q.s * (Q.s - 1)) + 1) *
           d4BMActualFirstStokesDefectDensity (d4BMStokesPairCoordinate w) P Q) /
-            (w.2 : ℂ) ^ 2 := by rw [hpoint]
+            (w.2 : ℂ) ^ (2 : ℕ) := by rw [hpoint]
     _ = 2 * d4BMActualSecondStokesDefectDensity
-            (d4BMStokesPairCoordinate w) P Q / (w.2 : ℂ) ^ 2 +
+            (d4BMStokesPairCoordinate w) P Q / (w.2 : ℂ) ^ (2 : ℕ) +
         (d4BMHyperbolicDiagonalGradientShift
           (P.s * (P.s - 1)) (Q.s * (Q.s - 1)) + 1) *
           (2 * d4BMActualFirstStokesDefectDensity
-            (d4BMStokesPairCoordinate w) P Q / (w.2 : ℂ) ^ 2) := by ring
+            (d4BMStokesPairCoordinate w) P Q / (w.2 : ℂ) ^ (2 : ℕ)) := by ring
 
 /-- Premise-free subtype form of the integrated exhaustive decomposition. -/
 theorem d4BM_actualBalancedSpinTwoTruncatedMoment_defect_decomposition

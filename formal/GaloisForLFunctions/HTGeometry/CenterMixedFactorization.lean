@@ -35,7 +35,7 @@ theorem kernelTransform_exp_mul (F : ℝ → ℂ) (c : ℝ) (ζ : ℂ) :
     rw [← Complex.exp_add]
     congr 1
     have hsplit : Complex.I * (ζ - Complex.I * (c : ℂ)) * (x : ℂ)
-        = Complex.I * ζ * (x : ℂ) - Complex.I ^ 2 * (c : ℂ) * (x : ℂ) := by ring
+        = Complex.I * ζ * (x : ℂ) - Complex.I ^ (2 : ℕ) * (c : ℂ) * (x : ℂ) := by ring
     rw [hsplit, Complex.I_sq]
     ring
   simp only [hexp]

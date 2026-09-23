@@ -31,29 +31,29 @@ theorem artin_stark_simpleZero_order_classifier
     (degree : I → ℕ) (order : I → ℤ)
     (hdegree : ∀ i, 0 < degree i)
     (hweighted : ∑ i, (degree i : ℤ) * order i = 1)
-    (hnorm : ∑ i, order i ^ 2 ≤ 1) :
+    (hnorm : ∑ i, order i ^ (2 : ℕ) ≤ 1) :
     ∃! i₀ : I,
       degree i₀ = 1 ∧ order i₀ = 1 ∧
         ∀ i, i ≠ i₀ → order i = 0 := by
   classical
-  have hsquare_nonneg (i : I) : 0 ≤ order i ^ 2 := sq_nonneg (order i)
+  have hsquare_nonneg (i : I) : 0 ≤ order i ^ (2 : ℕ) := sq_nonneg (order i)
   have horder_nonneg : ∀ i, 0 ≤ order i := by
     intro i
     by_contra hi
     have hi_neg : order i ≤ -1 := by omega
-    have hi_square : 1 ≤ order i ^ 2 := by nlinarith
+    have hi_square : 1 ≤ order i ^ (2 : ℕ) := by nlinarith
     have hsplit :
-        (∑ j ∈ Finset.univ.erase i, order j ^ 2) + order i ^ 2 ≤ 1 := by
+        (∑ j ∈ Finset.univ.erase i, order j ^ (2 : ℕ)) + order i ^ (2 : ℕ) ≤ 1 := by
       simpa [Finset.sum_erase_add _ _ (Finset.mem_univ i)] using hnorm
-    have herase_nonneg : 0 ≤ ∑ j ∈ Finset.univ.erase i, order j ^ 2 :=
+    have herase_nonneg : 0 ≤ ∑ j ∈ Finset.univ.erase i, order j ^ (2 : ℕ) :=
       Finset.sum_nonneg fun j _ ↦ hsquare_nonneg j
-    have herase_zero : ∑ j ∈ Finset.univ.erase i, order j ^ 2 = 0 := by
+    have herase_zero : ∑ j ∈ Finset.univ.erase i, order j ^ (2 : ℕ) = 0 := by
       omega
     have hi_eq : order i = -1 := by nlinarith
     have hother : ∀ j, j ≠ i → order j = 0 := by
       intro j hji
       have hjmem : j ∈ Finset.univ.erase i := by simp [hji]
-      have hjle : order j ^ 2 ≤ ∑ k ∈ Finset.univ.erase i, order k ^ 2 :=
+      have hjle : order j ^ (2 : ℕ) ≤ ∑ k ∈ Finset.univ.erase i, order k ^ (2 : ℕ) :=
         Finset.single_le_sum (fun k _ ↦ hsquare_nonneg k) hjmem
       rw [herase_zero] at hjle
       nlinarith [hsquare_nonneg j]

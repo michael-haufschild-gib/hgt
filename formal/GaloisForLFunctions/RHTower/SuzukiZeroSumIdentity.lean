@@ -36,13 +36,13 @@ theorem XiC_ne_zero_of_im_pos (hRH : RiemannHypothesis) {w : ℂ} (hw : 0 < w.im
   linarith
 
 theorem im_xiRelativeResolventTerm (hRH : RiemannHypothesis) (w : ℂ) (q : XiZeroCopy) :
-    (xiRelativeResolventTerm w q).im = -(w.im / ‖w - xiSpectralPoint q‖ ^ 2) := by
+    (xiRelativeResolventTerm w q).im = -(w.im / ‖w - xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   have hreal := xiSpectralPoint_eq_ofReal_of_rh hRH q
   rw [xiRelativeResolventTerm, hreal, Complex.sub_im, Complex.inv_im, Complex.inv_im]
   have h1 : (((xiRealSpectralPoint q : ℝ) : ℂ)).im = 0 := by simp
   have h2 : (((xiRealSpectralPoint q : ℝ) : ℂ) - w).im = -w.im := by simp
   rw [h1, h2]
-  have h3 : ‖w - ((xiRealSpectralPoint q : ℝ) : ℂ)‖ ^ 2
+  have h3 : ‖w - ((xiRealSpectralPoint q : ℝ) : ℂ)‖ ^ (2 : ℕ)
       = Complex.normSq (((xiRealSpectralPoint q : ℝ) : ℂ) - w) := by
     rw [Complex.sq_norm, ← Complex.normSq_neg]
     congr 1
@@ -51,14 +51,14 @@ theorem im_xiRelativeResolventTerm (hRH : RiemannHypothesis) (w : ℂ) (q : XiZe
   simp
 
 theorem hasSum_xiZeroCopy_inv_normSq (hRH : RiemannHypothesis) {w : ℂ} (hw : 0 < w.im) :
-    HasSum (fun q : XiZeroCopy => 1 / ‖w - xiSpectralPoint q‖ ^ 2)
+    HasSum (fun q : XiZeroCopy => 1 / ‖w - xiSpectralPoint q‖ ^ (2 : ℕ))
       (-((logDeriv XiC w).im) / w.im) := by
   have hXi := XiC_ne_zero_of_im_pos hRH hw
   have hls : HasSum (xiRelativeResolventTerm w) (logDeriv XiC w) := by
     rw [logDeriv_XiC_eq_relativeResolventTrace hXi, xiRelativeResolventTrace]
     exact (summable_xiRelativeResolventTerm hXi).hasSum
   have him := Complex.hasSum_im hls
-  have hcong : HasSum (fun q : XiZeroCopy => (-w.im) * (1 / ‖w - xiSpectralPoint q‖ ^ 2))
+  have hcong : HasSum (fun q : XiZeroCopy => (-w.im) * (1 / ‖w - xiSpectralPoint q‖ ^ (2 : ℕ)))
       ((logDeriv XiC w).im) := by
     refine him.congr_fun ?_
     intro q
@@ -80,15 +80,15 @@ theorem hasSum_xiZeroCopy_inv_normSq (hRH : RiemannHypothesis) {w : ℂ} (hw : 0
 zeros is the imaginary part of the logarithmic derivative, divided by the height. -/
 theorem hasSum_xiSupport_mult_inv_normSq (hRH : RiemannHypothesis) {w : ℂ} (hw : 0 < w.im) :
     HasSum (fun ρ : XiDivisorSupport =>
-        (xiSupportMult ρ : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ 2)
+        (xiSupportMult ρ : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ (2 : ℕ))
       (-((logDeriv XiC w).im) / w.im) := by
   refine (hasSum_xiZeroCopy_inv_normSq hRH hw).sigma ?_
   intro ρ
   have hbase := hasSum_fintype (fun _i : Fin (xiSupportMult ρ) =>
-    (1 : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ 2)
+    (1 : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ (2 : ℕ))
   have hsum : (∑ _i : Fin (xiSupportMult ρ),
-      (1 : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ 2)
-      = (xiSupportMult ρ : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ 2 := by
+      (1 : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ (2 : ℕ))
+      = (xiSupportMult ρ : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ (2 : ℕ) := by
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     ring
   rw [hsum] at hbase
@@ -98,20 +98,20 @@ theorem hasSum_xiSupport_mult_inv_normSq (hRH : RiemannHypothesis) {w : ℂ} (hw
 
 /-- The real algebra behind the energy identity: with `A = a + bi` and `A' = c + di`, both
 `Re(A/E) - |A/E|²` and `-|A/E|² Im(A'/A)` equal `(bc - ad)/|E|²`. -/
-theorem halfInner_algebraic (a b c d : ℝ) (hp : a ^ 2 + b ^ 2 ≠ 0)
-    (hE : (a - d) ^ 2 + (b + c) ^ 2 ≠ 0) :
-    (a * (a - d) + b * (b + c)) / ((a - d) ^ 2 + (b + c) ^ 2)
-        - (a ^ 2 + b ^ 2) / ((a - d) ^ 2 + (b + c) ^ 2)
-      = -((a ^ 2 + b ^ 2) / ((a - d) ^ 2 + (b + c) ^ 2)
-          * ((d * a - c * b) / (a ^ 2 + b ^ 2))) := by
+theorem halfInner_algebraic (a b c d : ℝ) (hp : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0)
+    (hE : (a - d) ^ (2 : ℕ) + (b + c) ^ (2 : ℕ) ≠ 0) :
+    (a * (a - d) + b * (b + c)) / ((a - d) ^ (2 : ℕ) + (b + c) ^ (2 : ℕ))
+        - (a ^ (2 : ℕ) + b ^ (2 : ℕ)) / ((a - d) ^ (2 : ℕ) + (b + c) ^ (2 : ℕ))
+      = -((a ^ (2 : ℕ) + b ^ (2 : ℕ)) / ((a - d) ^ (2 : ℕ) + (b + c) ^ (2 : ℕ))
+          * ((d * a - c * b) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)))) := by
   field_simp
   ring
 
 /-- **The energy identity.**  On the upper half-plane the defect `Re(A/E) - |A/E|²` is the
 logarithmic derivative of `A` weighted by that same energy. -/
 theorem re_sub_normSq_suzukiHalfInner (hRH : RiemannHypothesis) {w : ℂ} (hw : 0 < w.im) :
-    (suzukiHalfInner w).re - ‖suzukiHalfInner w‖ ^ 2
-      = -(‖suzukiHalfInner w‖ ^ 2 * (logDeriv XiC w).im) := by
+    (suzukiHalfInner w).re - ‖suzukiHalfInner w‖ ^ (2 : ℕ)
+      = -(‖suzukiHalfInner w‖ ^ (2 : ℕ) * (logDeriv XiC w).im) := by
   have hp : XiC w ≠ 0 := XiC_ne_zero_of_im_pos hRH hw
   have hEne : xiHedenmalmDeBrangesE w ≠ 0 :=
     xiHedenmalmDeBrangesE_ne_zero_upperHalf_of_rh hRH hw
@@ -126,31 +126,31 @@ theorem re_sub_normSq_suzukiHalfInner (hRH : RiemannHypothesis) {w : ℂ} (hw : 
   have hEim : (xiHedenmalmDeBrangesE w).im = b + c := by
     rw [xiHedenmalmDeBrangesE]
     simp [Complex.add_im, Complex.mul_im, hb, hc]
-  have hpsq : a ^ 2 + b ^ 2 ≠ 0 := by
+  have hpsq : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0 := by
     have := (map_ne_zero Complex.normSq).mpr hp
     rw [Complex.normSq_apply] at this
     rw [← ha, ← hb] at this
     intro h
     exact this (by nlinarith)
-  have hEsq : (a - d) ^ 2 + (b + c) ^ 2 ≠ 0 := by
+  have hEsq : (a - d) ^ (2 : ℕ) + (b + c) ^ (2 : ℕ) ≠ 0 := by
     have := (map_ne_zero Complex.normSq).mpr hEne
     rw [Complex.normSq_apply, hEre, hEim] at this
     intro h
     exact this (by nlinarith)
-  have hnsq : Complex.normSq (xiHedenmalmDeBrangesE w) = (a - d) ^ 2 + (b + c) ^ 2 := by
+  have hnsq : Complex.normSq (xiHedenmalmDeBrangesE w) = (a - d) ^ (2 : ℕ) + (b + c) ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, hEre, hEim]
     ring
-  have hnp : Complex.normSq (XiC w) = a ^ 2 + b ^ 2 := by
+  have hnp : Complex.normSq (XiC w) = a ^ (2 : ℕ) + b ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, ← ha, ← hb]
     ring
   have hre : (suzukiHalfInner w).re
-      = (a * (a - d) + b * (b + c)) / ((a - d) ^ 2 + (b + c) ^ 2) := by
+      = (a * (a - d) + b * (b + c)) / ((a - d) ^ (2 : ℕ) + (b + c) ^ (2 : ℕ)) := by
     rw [suzukiHalfInner, Complex.div_re, hnsq, hEre, hEim, ← ha, ← hb]
     ring
-  have hnorm : ‖suzukiHalfInner w‖ ^ 2
-      = (a ^ 2 + b ^ 2) / ((a - d) ^ 2 + (b + c) ^ 2) := by
+  have hnorm : ‖suzukiHalfInner w‖ ^ (2 : ℕ)
+      = (a ^ (2 : ℕ) + b ^ (2 : ℕ)) / ((a - d) ^ (2 : ℕ) + (b + c) ^ (2 : ℕ)) := by
     rw [suzukiHalfInner, Complex.sq_norm, Complex.normSq_div, hnsq, hnp]
-  have hlog : (logDeriv XiC w).im = (d * a - c * b) / (a ^ 2 + b ^ 2) := by
+  have hlog : (logDeriv XiC w).im = (d * a - c * b) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
     rw [logDeriv_apply, Complex.div_im, hnp, ← ha, ← hb, ← hc, ← hd]
     ring
   rw [hre, hnorm, hlog]
@@ -161,7 +161,7 @@ theorem re_sub_normSq_suzukiHalfInner (hRH : RiemannHypothesis) {w : ℂ} (hw : 
 number. -/
 theorem suzukiModelKernel_self {w : ℂ} (hw : 0 < w.im) :
     suzukiModelKernel w w
-      = ((((suzukiHalfInner w).re - ‖suzukiHalfInner w‖ ^ 2) / (Real.pi * w.im) : ℝ) : ℂ) := by
+      = ((((suzukiHalfInner w).re - ‖suzukiHalfInner w‖ ^ (2 : ℕ)) / (Real.pi * w.im) : ℝ) : ℂ) := by
   have hpi := Real.pi_pos
   have hsub : w - (starRingEnd ℂ) w = 2 * I * ((w.im : ℝ) : ℂ) := by
     apply Complex.ext
@@ -172,12 +172,12 @@ theorem suzukiModelKernel_self {w : ℂ} (hw : 0 < w.im) :
       = ((Complex.normSq (suzukiThetaMero w) : ℝ) : ℂ) := by
     rw [mul_comm, Complex.mul_conj]
   have hnorm : Complex.normSq (suzukiThetaMero w)
-      = 4 * ‖suzukiHalfInner w‖ ^ 2 - 4 * (suzukiHalfInner w).re + 1 := by
+      = 4 * ‖suzukiHalfInner w‖ ^ (2 : ℕ) - 4 * (suzukiHalfInner w).re + 1 := by
     rw [suzukiThetaMero, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
     simp [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im]
     ring
   set r : ℝ := (suzukiHalfInner w).re with hr
-  set s : ℝ := ‖suzukiHalfInner w‖ ^ 2 with hs
+  set s : ℝ := ‖suzukiHalfInner w‖ ^ (2 : ℕ) with hs
   set t : ℝ := w.im with ht
   have him : ((t : ℝ) : ℂ) ≠ 0 := by
     simp only [ne_eq, Complex.ofReal_eq_zero, ht]
@@ -195,9 +195,9 @@ theorem suzukiModelKernel_self {w : ℂ} (hw : 0 < w.im) :
 
 theorem normSq_suzukiFGammaFun_upper (hRH : RiemannHypothesis) (ρ : XiDivisorSupport)
     {w : ℂ} (hw : 0 < w.im) :
-    ‖suzukiFGammaFun (xiRealSpectralPointSupport ρ) (xiSupportMult ρ) w‖ ^ 2
-      = (‖suzukiHalfInner w‖ ^ 2 / Real.pi)
-        * ((xiSupportMult ρ : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ 2) := by
+    ‖suzukiFGammaFun (xiRealSpectralPointSupport ρ) (xiSupportMult ρ) w‖ ^ (2 : ℕ)
+      = (‖suzukiHalfInner w‖ ^ (2 : ℕ) / Real.pi)
+        * ((xiSupportMult ρ : ℝ) / ‖w - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ)‖ ^ (2 : ℕ)) := by
   have hpi := Real.pi_pos
   have hγ := XiC_xiRealSpectralPointSupport hRH ρ
   have hne : w ≠ ((xiRealSpectralPointSupport ρ : ℝ) : ℂ) := by
@@ -215,12 +215,12 @@ theorem normSq_suzukiFGammaFun_upper (hRH : RiemannHypothesis) (ρ : XiDivisorSu
 the diagonal value of the reproducing kernel. -/
 theorem hasSum_normSq_suzukiFGammaFun (hRH : RiemannHypothesis) {w : ℂ} (hw : 0 < w.im) :
     HasSum (fun ρ : XiDivisorSupport =>
-        ‖suzukiFGammaFun (xiRealSpectralPointSupport ρ) (xiSupportMult ρ) w‖ ^ 2)
+        ‖suzukiFGammaFun (xiRealSpectralPointSupport ρ) (xiSupportMult ρ) w‖ ^ (2 : ℕ))
       ((suzukiModelKernel w w).re) := by
   have hpi := Real.pi_pos
   have hbase := (hasSum_xiSupport_mult_inv_normSq hRH hw).mul_left
-    (‖suzukiHalfInner w‖ ^ 2 / Real.pi)
-  have hval : (‖suzukiHalfInner w‖ ^ 2 / Real.pi) * (-((logDeriv XiC w).im) / w.im)
+    (‖suzukiHalfInner w‖ ^ (2 : ℕ) / Real.pi)
+  have hval : (‖suzukiHalfInner w‖ ^ (2 : ℕ) / Real.pi) * (-((logDeriv XiC w).im) / w.im)
       = (suzukiModelKernel w w).re := by
     rw [suzukiModelKernel_self hw, Complex.ofReal_re,
       re_sub_normSq_suzukiHalfInner hRH hw]

@@ -36,7 +36,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionTerminalEdge_eq_clearedSourceWork
     (hnorm : xiShiftedCanonicalAdmissionNorm y N ≠ 0) :
     HasDerivAt
       (fun v => xiShiftedCanonicalAdmissionAdjacentEdge v (N + 1))
-      (xiShiftedCanonicalAdmissionClearedTerminalSourceWork y N / xiShiftedCanonicalAdmissionNorm y N ^ 2) y := by
+      (xiShiftedCanonicalAdmissionClearedTerminalSourceWork y N / xiShiftedCanonicalAdmissionNorm y N ^ (2 : ℕ)) y := by
   have hcur := hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_normFlux_of_det
     hy hN hdetN
   have hnext := hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_normFlux_of_det
@@ -57,7 +57,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionWeightedTerminalEdge_eq_clearedSou
       (fun v => 4 * (N + 1 : ℝ) *
         xiShiftedCanonicalAdmissionAdjacentEdge v (N + 1))
       (4 * (N + 1 : ℝ) *
-        xiShiftedCanonicalAdmissionClearedTerminalSourceWork y N / xiShiftedCanonicalAdmissionNorm y N ^ 2) y := by
+        xiShiftedCanonicalAdmissionClearedTerminalSourceWork y N / xiShiftedCanonicalAdmissionNorm y N ^ (2 : ℕ)) y := by
   have h := hasDerivAt_xiShiftedCanonicalAdmissionTerminalEdge_eq_clearedSourceWork hy hN hdetN hdetNext hnorm
   simpa only [mul_div_assoc] using h.const_mul (4 * (N + 1 : ℝ))
 
@@ -282,7 +282,7 @@ theorem adaptiveMixedTerminalSourceChargeAtMass_eq_terminalAdmissionEdge
     (hH : (xiShiftedMomentHankelMatrix y (N + 2)).PosDef) :
     xiShiftedCanonicalAdmissionAdaptiveMixedTerminalSourceChargeAtMass y N =
       4 * (N + 1 : ℝ) * xiShiftedCanonicalAdmissionAdjacentEdge y (N + 1) := by
-  have hsquare : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt (by positivity)
+  have hsquare : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt (by positivity)
   have hsqrt : 1 / 2 < Real.sqrt y := by
     nlinarith [Real.sqrt_nonneg y]
   have hseq : xiShiftedRealMomentSequence (Real.sqrt y) =
@@ -299,7 +299,7 @@ theorem hasDerivAt_adaptiveMixedTerminalSourceChargeAtMass_eq_clearedSourceWork
     (hH : (xiShiftedMomentHankelMatrix y (N + 2)).PosDef) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionAdaptiveMixedTerminalSourceChargeAtMass v N)
       (4 * (N + 1 : ℝ) * xiShiftedCanonicalAdmissionClearedTerminalSourceWork y N /
-        xiShiftedCanonicalAdmissionNorm y N ^ 2) y := by
+        xiShiftedCanonicalAdmissionNorm y N ^ (2 : ℕ)) y := by
   have hy0 : 0 < y := lt_trans (by norm_num) hy
   have hheadN : (xiShiftedMomentHankelMatrix y N).PosDef :=
     xiShiftedMomentHankel_posDef_of_le (by omega) hH
@@ -390,7 +390,7 @@ theorem tendsto_adaptiveMixedTerminalSourceWork_div_pow_pred_at_strictFrontierCo
   have hlimit : 4 * (n + 2 : ℝ) *
         (((d : ℝ) * xiShiftedCanonicalAdmissionNorm y (n + 1) *
           xiShiftedStrictFrontierAdmissionNormContactCoefficient n d) /
-          xiShiftedCanonicalAdmissionNorm y (n + 1) ^ 2) =
+          xiShiftedCanonicalAdmissionNorm y (n + 1) ^ (2 : ℕ)) =
       xiShiftedStrictFrontierAdaptiveMixedTerminalSourceWorkResidue n d := by
     rw [xiShiftedStrictFrontierAdaptiveMixedTerminalSourceWorkResidue]
     dsimp only [y]
@@ -398,7 +398,7 @@ theorem tendsto_adaptiveMixedTerminalSourceWork_div_pow_pred_at_strictFrontierCo
   rw [hlimit] at hratio
   have hratio' : Tendsto
       (fun u : ℝ => 4 * (n + 2 : ℝ) *
-        ((xiShiftedCanonicalAdmissionClearedTerminalSourceWork (y + u) (n + 1) / u ^ (d - 1)) / H u ^ 2))
+        ((xiShiftedCanonicalAdmissionClearedTerminalSourceWork (y + u) (n + 1) / u ^ (d - 1)) / H u ^ (2 : ℕ)))
       (𝓝[>] (0 : ℝ)) (𝓝 (xiShiftedStrictFrontierAdaptiveMixedTerminalSourceWorkResidue n d)) := by
     simpa only [H, Pi.div_apply] using hratio
   have hright : ∀ᶠ u : ℝ in 𝓝[>] (0 : ℝ),
@@ -443,7 +443,7 @@ theorem xiShiftedStrictFrontierAdaptiveMixedTerminalSourceWorkResidue_pos
           (xiShiftedHigherBlockTerminalFrontier (n + 1)) (n + 1) *
           xiShiftedStrictFrontierAdmissionNormContactCoefficient n d) /
         xiShiftedCanonicalAdmissionNorm
-          (xiShiftedHigherBlockTerminalFrontier (n + 1)) (n + 1) ^ 2) := by
+          (xiShiftedHigherBlockTerminalFrontier (n + 1)) (n + 1) ^ (2 : ℕ)) := by
     rw [xiShiftedStrictFrontierAdaptiveMixedTerminalSourceWorkResidue]
     field_simp [hnorm.ne']
   rw [hrewrite]

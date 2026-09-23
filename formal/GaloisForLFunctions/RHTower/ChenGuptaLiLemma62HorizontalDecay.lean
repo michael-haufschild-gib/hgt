@@ -131,7 +131,7 @@ CGL equation (6.3). -/
 theorem cglLemma62_mellinTransform_firstShift_uniformQuadraticDecay
     (w : CGLRealSmoothBump) (sigma : CGLLemma62FirstShiftAbscissa) (tau : ℝ) :
     ‖cglLemma62MellinTransform w ((sigma.value : ℂ) + (tau : ℂ) * I)‖ ≤
-      cglLemma62MellinFirstShiftQuadraticBudget w * (1 + tau ^ 2)⁻¹ := by
+      cglLemma62MellinFirstShiftQuadraticBudget w * (1 + tau ^ (2 : ℕ))⁻¹ := by
   have hsigma0 : 0 ≤ 2 - sigma.value := by linarith [sigma.upper]
   have hsigmac : 2 - sigma.value ≤ 3 := by linarith [sigma.lower]
   have hstrong := norm_deningerMeyerStrongLogMellin_le_inv_one_add_sq
@@ -156,7 +156,7 @@ contour rectangle.  The strip qualification is carried by `sigma`, never by a
 caller-supplied proposition. -/
 theorem cglLemma62_mellinTransform_firstShift_uniformQuinticDecay
     (w : CGLRealSmoothBump) (sigma : CGLLemma62FirstShiftAbscissa) (tau : ℝ) :
-    |tau| ^ 5 * ‖cglLemma62MellinTransform w ((sigma.value : ℂ) + (tau : ℂ) * I)‖ ≤
+    |tau| ^ (5 : ℕ) * ‖cglLemma62MellinTransform w ((sigma.value : ℂ) + (tau : ℂ) * I)‖ ≤
       cglLemma62MellinFirstShiftQuinticBudget w := by
   let sigma' : DeningerMeyerQuinticStripAbscissa :=
     ⟨2 - sigma.value, by linarith [sigma.upper], by linarith [sigma.lower]⟩

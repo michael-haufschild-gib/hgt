@@ -93,7 +93,7 @@ theorem continuousLinearMapRankAtLeast_adjoint_of
   have hsum : ∑ i, c i • T (v i) = T (∑ i, c i • v i) := by
     simp only [map_sum, map_smul]
   rw [hsum] at hzero ⊢
-  have hnorm : ‖∑ i, c i • T (v i)‖ ^ 2 = 0 := by
+  have hnorm : ‖∑ i, c i • T (v i)‖ ^ (2 : ℕ) = 0 := by
     rw [hsum]
     rw [InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ)]
     rw [← ContinuousLinearMap.adjoint_inner_right, hzero]

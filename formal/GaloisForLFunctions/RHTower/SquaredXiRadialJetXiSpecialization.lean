@@ -15,11 +15,11 @@ Specializing the identity gives the card's completed source polynomial
 
 together with its exact radial meaning: the radial operator `D = (2w)^{-1} d/dw` iterated `n` times
 on the profile `F w = L(1/2+w)/w` is twice the `n`-th derivative of the squared-coordinate field
-`g y = xi'(1/2+sqrt y)/(2 sqrt y * xi(1/2+sqrt y))` at `y = w^2`.  Hence
+`g y = xi'(1/2+sqrt y)/(2 sqrt y * xi(1/2+sqrt y))` at `y = w^(2 : ℕ)`.  Hence
 
-`Q_n w = (-1)^n 2^{n+1} w^{2n+1} g^{(n)}(w^2)`,
+`Q_n w = (-1)^n 2^{n+1} w^{2n+1} g^{(n)}(w^(2 : ℕ))`,
 
-so `Q_n w < 0` and `(-1)^n g^{(n)}(w^2) < 0` are the same statement.  Combined with the
+so `Q_n w < 0` and `(-1)^n g^{(n)}(w^(2 : ℕ)) < 0` are the same statement.  Combined with the
 unconditional complete monotonicity of `g` through order eighteen, this makes the completed source
 jet strictly positive at every positive radius through that order: the order-fourteen witness
 window of the reduction is empty.
@@ -60,7 +60,7 @@ theorem xiRayLogDeriv_shift (v : ℝ) : xiRayLogDeriv (1 / 2 + v) = xiRealLogDer
   rfl
 
 theorem radialProfile_xiRayLogDeriv {v : ℝ} (hv : 0 < v) :
-    radialProfile xiRayLogDeriv v = 2 * squaredXiRadialField (v ^ 2) := by
+    radialProfile xiRayLogDeriv v = 2 * squaredXiRadialField (v ^ (2 : ℕ)) := by
   have hv0 : v ≠ 0 := ne_of_gt hv
   rw [radialProfile, xiRayLogDeriv_shift, squaredXiRadialField_sq_eq hv]
   field_simp
@@ -109,10 +109,10 @@ theorem hasDerivAt_iteratedDeriv_squaredXiRadialField (n : ℕ) {y : ℝ} (hy : 
   rw [hval]
   exact hd.congr_of_eventuallyEq hEq
 
-/-- The radial operator is the pullback of `d/dy` under `y = w^2`. -/
+/-- The radial operator is the pullback of `d/dy` under `y = w^(2 : ℕ)`. -/
 theorem radialOp_iterate_comp_sq (n : ℕ) : ∀ {w : ℝ}, 0 < w →
-    (radialOp)^[n] (fun v : ℝ => squaredXiRadialField (v ^ 2)) w
-      = iteratedDeriv n squaredXiRadialField (w ^ 2) := by
+    (radialOp)^[n] (fun v : ℝ => squaredXiRadialField (v ^ (2 : ℕ))) w
+      = iteratedDeriv n squaredXiRadialField (w ^ (2 : ℕ)) := by
   induction n with
   | zero =>
       intro w _
@@ -120,13 +120,13 @@ theorem radialOp_iterate_comp_sq (n : ℕ) : ∀ {w : ℝ}, 0 < w →
   | succ n ih =>
       intro w hw
       have hw0 : w ≠ 0 := ne_of_gt hw
-      have hEq : (radialOp)^[n] (fun v : ℝ => squaredXiRadialField (v ^ 2)) =ᶠ[nhds w]
-          fun v : ℝ => iteratedDeriv n squaredXiRadialField (v ^ 2) := by
+      have hEq : (radialOp)^[n] (fun v : ℝ => squaredXiRadialField (v ^ (2 : ℕ))) =ᶠ[nhds w]
+          fun v : ℝ => iteratedDeriv n squaredXiRadialField (v ^ (2 : ℕ)) := by
         filter_upwards [Ioi_mem_nhds hw] with v hv using ih hv
-      have hsq : HasDerivAt (fun v : ℝ => v ^ 2) (2 * w) w := by
+      have hsq : HasDerivAt (fun v : ℝ => v ^ (2 : ℕ)) (2 * w) w := by
         simpa using hasDerivAt_pow 2 w
-      have hcomp : HasDerivAt (fun v : ℝ => iteratedDeriv n squaredXiRadialField (v ^ 2))
-          (iteratedDeriv (n + 1) squaredXiRadialField (w ^ 2) * (2 * w)) w :=
+      have hcomp : HasDerivAt (fun v : ℝ => iteratedDeriv n squaredXiRadialField (v ^ (2 : ℕ)))
+          (iteratedDeriv (n + 1) squaredXiRadialField (w ^ (2 : ℕ)) * (2 * w)) w :=
         HasDerivAt.comp w (hasDerivAt_iteratedDeriv_squaredXiRadialField n (by positivity)) hsq
       rw [Function.iterate_succ_apply', radialOp, hEq.deriv_eq, hcomp.deriv]
       field_simp
@@ -135,10 +135,10 @@ theorem radialOp_iterate_comp_sq (n : ℕ) : ∀ {w : ℝ}, 0 < w →
 `xi'/xi` is twice the `n`-th derivative of the squared-coordinate field. -/
 theorem radialOp_iterate_radialProfile_xi (n : ℕ) {w : ℝ} (hw : 0 < w) :
     (radialOp)^[n] (radialProfile xiRayLogDeriv) w
-      = 2 * iteratedDeriv n squaredXiRadialField (w ^ 2) := by
-  rw [radialOp_iterate_congr_of_pos n (g := fun v : ℝ => 2 * squaredXiRadialField (v ^ 2))
+      = 2 * iteratedDeriv n squaredXiRadialField (w ^ (2 : ℕ)) := by
+  rw [radialOp_iterate_congr_of_pos n (g := fun v : ℝ => 2 * squaredXiRadialField (v ^ (2 : ℕ)))
       (fun v hv => radialProfile_xiRayLogDeriv hv) hw,
-    radialOp_iterate_const_mul n 2 (fun v : ℝ => squaredXiRadialField (v ^ 2)) w,
+    radialOp_iterate_const_mul n 2 (fun v : ℝ => squaredXiRadialField (v ^ (2 : ℕ))) w,
     radialOp_iterate_comp_sq n hw]
 
 /-! ### The completed source polynomial -/
@@ -152,11 +152,11 @@ def completedSourceJet (n : ℕ) (w : ℝ) : ℝ :=
 
 /-- **Equations (4)–(5) and (7) for the completed Xi.**  The completed source polynomial is the
 positively rescaled alternating squared-coordinate derivative of the radial field, so `Q_n w < 0`
-and `(-1)^n g^(n)(w^2) < 0` are the same statement. -/
+and `(-1)^n g^(n)(w^(2 : ℕ)) < 0` are the same statement. -/
 theorem completedSourceJet_eq (n : ℕ) {w : ℝ} (hw : 0 < w) :
     completedSourceJet n w
       = (-1 : ℝ) ^ n * 2 ^ (n + 1) * w ^ (2 * n + 1) *
-          iteratedDeriv n squaredXiRadialField (w ^ 2) := by
+          iteratedDeriv n squaredXiRadialField (w ^ (2 : ℕ)) := by
   rw [completedSourceJet, ← radialJet_positive_rescaling (contDiff_xiRayLogDeriv ⊤) n w hw,
     radialOp_iterate_radialProfile_xi n hw]
   ring
@@ -165,14 +165,14 @@ theorem completedSourceJet_eq (n : ℕ) {w : ℝ} (hw : 0 < w) :
 radius and unconditionally.  No negative witness exists below order nineteen. -/
 theorem completedSourceJet_pos {n : ℕ} (hn : n ≤ 18) {w : ℝ} (hw : 0 < w) :
     0 < completedSourceJet n w := by
-  have hy : (0:ℝ) < w ^ 2 := by positivity
+  have hy : (0:ℝ) < w ^ (2 : ℕ) := by positivity
   have hpos := alternating_iteratedDeriv_squaredXiRadialField_pos hy hn
   have hscale : (0:ℝ) < 2 ^ (n + 1) * w ^ (2 * n + 1) := by positivity
   rw [completedSourceJet_eq n hw,
     show (-1 : ℝ) ^ n * 2 ^ (n + 1) * w ^ (2 * n + 1) *
-        iteratedDeriv n squaredXiRadialField (w ^ 2)
+        iteratedDeriv n squaredXiRadialField (w ^ (2 : ℕ))
       = (2 ^ (n + 1) * w ^ (2 * n + 1)) *
-        ((-1 : ℝ) ^ n * iteratedDeriv n squaredXiRadialField (w ^ 2)) from by ring]
+        ((-1 : ℝ) ^ n * iteratedDeriv n squaredXiRadialField (w ^ (2 : ℕ))) from by ring]
   exact mul_pos hscale hpos
 
 /-- **The order-fourteen witness window is empty.**  The reduction's target inequality

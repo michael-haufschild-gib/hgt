@@ -96,15 +96,15 @@ theorem abs_windowSum_sub_le (hf : ∀ n, |f n| ≤ 1) (z ℓ z' ℓ' : ℕ) :
 theorem fixedWindowSq_le_of_close (hf : ∀ n, |f n| ≤ 1) (z ℓ z' ℓ' : ℕ) :
     fixedWindowSq f ℓ z
       ≤ 2 * fixedWindowSq f ℓ' z'
-        + 2 * (|((z + ℓ : ℕ) : ℝ) - ((z' + ℓ' : ℕ) : ℝ)| + |(z : ℝ) - (z' : ℝ)|) ^ 2 := by
+        + 2 * (|((z + ℓ : ℕ) : ℝ) - ((z' + ℓ' : ℕ) : ℝ)| + |(z : ℝ) - (z' : ℝ)|) ^ (2 : ℕ) := by
   set u : ℝ := partialSum f (z + ℓ) - partialSum f z with hu
   set v : ℝ := partialSum f (z' + ℓ') - partialSum f z' with hv
   have hdiff := abs_windowSum_sub_le hf z ℓ z' ℓ'
-  have hsq : (u - v) ^ 2
-      ≤ (|((z + ℓ : ℕ) : ℝ) - ((z' + ℓ' : ℕ) : ℝ)| + |(z : ℝ) - (z' : ℝ)|) ^ 2 := by
+  have hsq : (u - v) ^ (2 : ℕ)
+      ≤ (|((z + ℓ : ℕ) : ℝ) - ((z' + ℓ' : ℕ) : ℝ)| + |(z : ℝ) - (z' : ℝ)|) ^ (2 : ℕ) := by
     rw [← sq_abs (u - v)]
     exact pow_le_pow_left₀ (abs_nonneg _) hdiff 2
-  have hbase : u ^ 2 ≤ 2 * v ^ 2 + 2 * (u - v) ^ 2 := by nlinarith [sq_nonneg (u - 2 * v)]
+  have hbase : u ^ (2 : ℕ) ≤ 2 * v ^ (2 : ℕ) + 2 * (u - v) ^ (2 : ℕ) := by nlinarith [sq_nonneg (u - 2 * v)]
   rw [fixedWindowSq, fixedWindowSq, ← hu, ← hv]
   nlinarith [hsq, sq_nonneg (u - v)]
 

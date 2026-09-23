@@ -103,7 +103,7 @@ theorem xiEndpointCompletedCurvature_pos :
     exact ⟨rho, ⟨0, hn⟩⟩
   have hlower := endpoint_cross_term_re_ge_inv_one_add_im_sq q
   have hupper := endpoint_cross_term_re_le_curvature q
-  exact (show 0 < 1 / ((q.1 : ℂ).im ^ 2 + 1) by positivity).trans_le
+  exact (show 0 < 1 / ((q.1 : ℂ).im ^ (2 : ℕ) + 1) by positivity).trans_le
     (hlower.trans hupper)
 
 /-- The scalar source hypothesis required by the source-only endpoint budget is
@@ -120,11 +120,11 @@ theorem xiEndpointDefectEnergy_le_unconditional_source_factor :
   xiEndpointDefectEnergy_le_source_factor xiEndpointCompletedCurvature_lt_one
 
 /-- The source-only endpoint factor is pointwise strict.  The open critical strip gives
-`(1 - 2 * re rho)^2 < 1`, while the completed source-height law pays for the remaining
+`(1 - 2 * re rho)^(2 : ℕ) < 1`, while the completed source-height law pays for the remaining
 denominator. -/
 theorem endpoint_defect_term_lt_unconditional_source_factor_cross (q : XiZeroCopy) :
     ‖xiRawReciprocalCoordinate q -
-      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2 <
+      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ) <
       (xiEndpointCompletedCurvature / (1 - xiEndpointCompletedCurvature)) *
         (xiRawReciprocalCoordinate q *
           (starRingEnd ℂ)
@@ -135,63 +135,63 @@ theorem endpoint_defect_term_lt_unconditional_source_factor_cross (q : XiZeroCop
   have hstrip := xi_divisor_support_re_mem_open_unit q.1
   have hβ : 0 < β ∧ β < 1 := by
     simpa only [β] using hstrip
-  have hApos : 0 < β ^ 2 + γ ^ 2 := by
+  have hApos : 0 < β ^ (2 : ℕ) + γ ^ (2 : ℕ) := by
     dsimp [β, γ]
     nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
-  have hBpos : 0 < (1 - β) ^ 2 + γ ^ 2 := by
+  have hBpos : 0 < (1 - β) ^ (2 : ℕ) + γ ^ (2 : ℕ) := by
     dsimp [β, γ]
     nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
   have hdenpos : 0 <
-      (β ^ 2 + γ ^ 2) * ((1 - β) ^ 2 + γ ^ 2) :=
+      (β ^ (2 : ℕ) + γ ^ (2 : ℕ)) * ((1 - β) ^ (2 : ℕ) + γ ^ (2 : ℕ)) :=
     mul_pos hApos hBpos
   have hCden : 0 < 1 - xiEndpointCompletedCurvature :=
     sub_pos.mpr xiEndpointCompletedCurvature_lt_one
   have hheight := xiZeroCopy_endpoint_source_height_law q
-  have hsquare : (1 - 2 * β) ^ 2 < 1 := by
+  have hsquare : (1 - 2 * β) ^ (2 : ℕ) < 1 := by
     nlinarith [mul_pos hβ.1 (sub_pos.mpr hβ.2)]
   have hleft :
-      (1 - xiEndpointCompletedCurvature) * (1 - 2 * β) ^ 2 <
+      (1 - xiEndpointCompletedCurvature) * (1 - 2 * β) ^ (2 : ℕ) <
         1 - xiEndpointCompletedCurvature :=
     by simpa using mul_lt_mul_of_pos_left hsquare hCden
   have hmiddle :
       1 - xiEndpointCompletedCurvature ≤
-        xiEndpointCompletedCurvature * γ ^ 2 := by
+        xiEndpointCompletedCurvature * γ ^ (2 : ℕ) := by
     dsimp only [γ]
     nlinarith
   have hright :
-      xiEndpointCompletedCurvature * γ ^ 2 <
-        xiEndpointCompletedCurvature * (γ ^ 2 + β * (1 - β)) := by
+      xiEndpointCompletedCurvature * γ ^ (2 : ℕ) <
+        xiEndpointCompletedCurvature * (γ ^ (2 : ℕ) + β * (1 - β)) := by
     nlinarith [xiEndpointCompletedCurvature_pos,
       mul_pos hβ.1 (sub_pos.mpr hβ.2)]
   have hnum :
-      (1 - β * 2) ^ 2 <
+      (1 - β * 2) ^ (2 : ℕ) <
         (xiEndpointCompletedCurvature / (1 - xiEndpointCompletedCurvature)) *
-          (γ ^ 2 + β * (1 - β)) := by
-    rw [show (1 - β * 2) ^ 2 = (1 - 2 * β) ^ 2 by ring]
+          (γ ^ (2 : ℕ) + β * (1 - β)) := by
+    rw [show (1 - β * 2) ^ (2 : ℕ) = (1 - 2 * β) ^ (2 : ℕ) by ring]
     rw [show xiEndpointCompletedCurvature /
           (1 - xiEndpointCompletedCurvature) *
-            (γ ^ 2 + β * (1 - β)) =
+            (γ ^ (2 : ℕ) + β * (1 - β)) =
         (xiEndpointCompletedCurvature *
-          (γ ^ 2 + β * (1 - β))) /
+          (γ ^ (2 : ℕ) + β * (1 - β))) /
             (1 - xiEndpointCompletedCurvature) by ring]
     rw [lt_div_iff₀ hCden]
     simpa [mul_comm] using (hleft.trans_le hmiddle).trans hright
-  change (1 - 2 * β) ^ 2 /
-      ((β ^ 2 + γ ^ 2) * ((1 - β) ^ 2 + γ ^ 2)) <
+  change (1 - 2 * β) ^ (2 : ℕ) /
+      ((β ^ (2 : ℕ) + γ ^ (2 : ℕ)) * ((1 - β) ^ (2 : ℕ) + γ ^ (2 : ℕ))) <
         (xiEndpointCompletedCurvature / (1 - xiEndpointCompletedCurvature)) *
-          ((γ ^ 2 + β * (1 - β)) /
-            ((β ^ 2 + γ ^ 2) * ((1 - β) ^ 2 + γ ^ 2)))
+          ((γ ^ (2 : ℕ) + β * (1 - β)) /
+            ((β ^ (2 : ℕ) + γ ^ (2 : ℕ)) * ((1 - β) ^ (2 : ℕ) + γ ^ (2 : ℕ))))
   calc
-    (1 - 2 * β) ^ 2 /
-        ((β ^ 2 + γ ^ 2) * ((1 - β) ^ 2 + γ ^ 2)) <
+    (1 - 2 * β) ^ (2 : ℕ) /
+        ((β ^ (2 : ℕ) + γ ^ (2 : ℕ)) * ((1 - β) ^ (2 : ℕ) + γ ^ (2 : ℕ))) <
       ((xiEndpointCompletedCurvature / (1 - xiEndpointCompletedCurvature)) *
-          (γ ^ 2 + β * (1 - β))) /
-        ((β ^ 2 + γ ^ 2) * ((1 - β) ^ 2 + γ ^ 2)) :=
+          (γ ^ (2 : ℕ) + β * (1 - β))) /
+        ((β ^ (2 : ℕ) + γ ^ (2 : ℕ)) * ((1 - β) ^ (2 : ℕ) + γ ^ (2 : ℕ))) :=
       (div_lt_div_iff_of_pos_right hdenpos).2 (by simpa [mul_comm] using hnum)
     _ = _ := by ring
 
 /-- **Strict exact endpoint contraction.**  The total reflection defect is strictly below the
-exact source-only budget `C^2 / (1-C)`, not merely below the coarser budget `C`. -/
+exact source-only budget `C^(2 : ℕ) / (1-C)`, not merely below the coarser budget `C`. -/
 theorem xiEndpointDefectEnergy_lt_unconditional_source_factor :
     xiEndpointReflectionDefectEnergy <
       (xiEndpointCompletedCurvature / (1 - xiEndpointCompletedCurvature)) *
@@ -215,7 +215,7 @@ theorem xiEndpointDefectEnergy_lt_unconditional_source_factor :
     exact ⟨rho, ⟨0, hn⟩⟩
   have hle : ∀ j : XiZeroCopy,
       ‖xiRawReciprocalCoordinate j -
-          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv j)‖ ^ 2 ≤
+          xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv j)‖ ^ (2 : ℕ) ≤
         (xiEndpointCompletedCurvature / (1 - xiEndpointCompletedCurvature)) *
           (xiRawReciprocalCoordinate j *
             (starRingEnd ℂ)

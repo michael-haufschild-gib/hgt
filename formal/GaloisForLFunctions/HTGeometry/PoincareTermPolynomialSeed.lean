@@ -36,28 +36,28 @@ theorem one_add_pow_le_exp {t : ℝ} (ht : 0 ≤ t) (N : ℕ) :
 theorem poly_gaussian_absorb {N : ℕ} {Cv sigma t s : ℝ} (hsigma : 0 < sigma)
     (hs : 0 ≤ s) (ht0 : 0 ≤ t) (ht : t ≤ Cv * Real.sqrt s) :
     (1 + t) ^ N * Real.exp (-sigma * s)
-      ≤ Real.exp (((N : ℝ) * Cv) ^ 2 / (2 * sigma)) * Real.exp (-(sigma / 2) * s) := by
-  have hu : Real.sqrt s ^ 2 = s := Real.sq_sqrt hs
+      ≤ Real.exp (((N : ℝ) * Cv) ^ (2 : ℕ) / (2 * sigma)) * Real.exp (-(sigma / 2) * s) := by
+  have hu : Real.sqrt s ^ (2 : ℕ) = s := Real.sq_sqrt hs
   have hunn : 0 ≤ Real.sqrt s := Real.sqrt_nonneg s
   have hpow : (1 + t) ^ N ≤ Real.exp ((N : ℝ) * t) := one_add_pow_le_exp ht0 N
   have hexp : Real.exp ((N : ℝ) * t) * Real.exp (-sigma * s)
-      ≤ Real.exp (((N : ℝ) * Cv) ^ 2 / (2 * sigma)) * Real.exp (-(sigma / 2) * s) := by
+      ≤ Real.exp (((N : ℝ) * Cv) ^ (2 : ℕ) / (2 * sigma)) * Real.exp (-(sigma / 2) * s) := by
     rw [← Real.exp_add, ← Real.exp_add]
     refine Real.exp_le_exp.mpr ?_
     have hNt : (N : ℝ) * t ≤ (N : ℝ) * (Cv * Real.sqrt s) :=
       mul_le_mul_of_nonneg_left ht (Nat.cast_nonneg N)
     have hkey : (N : ℝ) * (Cv * Real.sqrt s) - sigma * s
-        ≤ ((N : ℝ) * Cv) ^ 2 / (2 * sigma) - sigma / 2 * s := by
+        ≤ ((N : ℝ) * Cv) ^ (2 : ℕ) / (2 * sigma) - sigma / 2 * s := by
       have hcore : (N : ℝ) * Cv * Real.sqrt s
-          ≤ sigma / 2 * Real.sqrt s ^ 2 + ((N : ℝ) * Cv) ^ 2 / (2 * sigma) := by
-        have h2 : 0 ≤ (sigma * Real.sqrt s - (N : ℝ) * Cv) ^ 2 := sq_nonneg _
-        have hrhs : 2 * sigma * (sigma / 2 * Real.sqrt s ^ 2
-            + ((N : ℝ) * Cv) ^ 2 / (2 * sigma))
-            = sigma ^ 2 * Real.sqrt s ^ 2 + ((N : ℝ) * Cv) ^ 2 := by
+          ≤ sigma / 2 * Real.sqrt s ^ (2 : ℕ) + ((N : ℝ) * Cv) ^ (2 : ℕ) / (2 * sigma) := by
+        have h2 : 0 ≤ (sigma * Real.sqrt s - (N : ℝ) * Cv) ^ (2 : ℕ) := sq_nonneg _
+        have hrhs : 2 * sigma * (sigma / 2 * Real.sqrt s ^ (2 : ℕ)
+            + ((N : ℝ) * Cv) ^ (2 : ℕ) / (2 * sigma))
+            = sigma ^ (2 : ℕ) * Real.sqrt s ^ (2 : ℕ) + ((N : ℝ) * Cv) ^ (2 : ℕ) := by
           field_simp
         have h3 : 2 * sigma * ((N : ℝ) * Cv * Real.sqrt s)
-            ≤ 2 * sigma * (sigma / 2 * Real.sqrt s ^ 2
-              + ((N : ℝ) * Cv) ^ 2 / (2 * sigma)) := by
+            ≤ 2 * sigma * (sigma / 2 * Real.sqrt s ^ (2 : ℕ)
+              + ((N : ℝ) * Cv) ^ (2 : ℕ) / (2 * sigma)) := by
           rw [hrhs]
           nlinarith [h2]
         exact le_of_mul_le_mul_left h3 (by positivity)
@@ -74,7 +74,7 @@ variable {d : ℕ} {Hu Hl : (Fin d → ℂ) → (Fin d → ℂ) → ℂ} {χu : 
 theorem norm_poincareTerm_appellHumbert_poly_le (hHu : IsHermitianForm Hu)
     (hHl : IsHermitianForm Hl) (hχu : ∀ γ, ‖χu γ‖ = 1)
     (hpos : ∀ w : Fin d → ℂ, 0 ≤ (Hu w w - Hl w w).re)
-    {C : ℝ} (hC : 0 ≤ C) {z : Fin d → ℂ} (hz : (Hu z z - Hl z z).re ≤ C ^ 2)
+    {C : ℝ} (hC : 0 ≤ C) {z : Fin d → ℂ} (hz : (Hu z z - Hl z z).re ≤ C ^ (2 : ℕ))
     {Γ : AddSubgroup (Fin d → ℂ)}
     (hsemiu : IsSemicharacterOn Hu χu Γ)
     (seed : MultivariateEntire d) {M : ℝ} {N : ℕ} (hM : 0 ≤ M)
@@ -83,7 +83,7 @@ theorem norm_poincareTerm_appellHumbert_poly_le (hHu : IsHermitianForm Hu)
     (γ : Γ) :
     ‖poincareTerm (appellHumbertAutomorphicFactor hHu hχu hsemiu) seed γ z‖
       ≤ M * (1 + ‖z‖ + ‖γ.1‖) ^ N * Real.exp (Real.pi / 2 * (Hl z z).re)
-          * Real.exp (Real.pi * C ^ 2)
+          * Real.exp (Real.pi * C ^ (2 : ℕ))
           * Real.exp (-(Real.pi / 4) * (Hu γ.1 γ.1 - Hl γ.1 γ.1).re) := by
   have hM' : (0 : ℝ) ≤ M * (1 + ‖z‖ + ‖γ.1‖) ^ N := by positivity
   have hseedz : ‖seed.1 (z + γ.1)‖

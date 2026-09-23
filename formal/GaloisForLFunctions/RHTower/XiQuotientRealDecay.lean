@@ -225,7 +225,7 @@ theorem XiWeilSquareSummable.add {F G : ℂ → ℂ} (hF : XiWeilSquareSummable 
 theorem XiWeilSquareSummable.const_smul {F : ℂ → ℂ} (hF : XiWeilSquareSummable F) (c : ℂ) :
     XiWeilSquareSummable (fun z => c * F z) := by
   rw [XiWeilSquareSummable] at hF ⊢
-  refine (hF.mul_left (‖c‖ ^ 2)).congr fun q => ?_
+  refine (hF.mul_left (‖c‖ ^ (2 : ℕ))).congr fun q => ?_
   rw [norm_mul, mul_pow]
 
 /-- **Additivity of the Weil polarization on the square-summable class**, unconditionally. -/
@@ -272,7 +272,7 @@ theorem xiWeilPolarization_sub_left {F₁ F₂ G : ℂ → ℂ} (h₁ : XiWeilSq
   rw [hadd]
   ring
 
-/-- **The Weil polarization is Lipschitz in the left argument for the divisor `ell^2` distance.**
+/-- **The Weil polarization is Lipschitz in the left argument for the divisor `ell^(2 : ℕ)` distance.**
 This is what lets an identity proved on a subclass pass to its closure. -/
 theorem norm_xiWeilPolarization_sub_left_le {F₁ F₂ G : ℂ → ℂ} (h₁ : XiWeilSquareSummable F₁)
     (h₂ : XiWeilSquareSummable F₂) (hG : XiWeilSquareSummable G) :
@@ -348,7 +348,7 @@ theorem xiWeilEvaluationLp_cauchyPacket_mem {s : Finset ℂ} (c : ℂ → ℂ)
   exact Submodule.smul_mem _ _ (Submodule.subset_span (Set.mem_range_self _))
 
 
-/-- **The prime-plus-Gamma packet values converge along every `ell^2`-convergent sequence of
+/-- **The prime-plus-Gamma packet values converge along every `ell^(2 : ℕ)`-convergent sequence of
 Cauchy packets.**  The polarization is an inner product against a fixed vector, so it is continuous;
 on packets it equals the prime-plus-Gamma double sum. -/
 theorem tendsto_primeArchSource_packetSum_of_tendsto

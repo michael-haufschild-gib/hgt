@@ -94,11 +94,11 @@ theorem suzukiCompressedHankelKernel_eq_zero_of_le_one
 /-- Every row of Suzuki's literal compressed multiplicative Hankel kernel has finite energy. -/
 theorem integrableOn_sq_norm_suzukiCompressedHankelKernel_slice {omega a : ℝ}
     (homega : 1 / 2 < omega) (ha : 1 < a) {x : ℝ} (hx : x ∈ Ioc 0 a) :
-    IntegrableOn (fun y : ℝ => ‖suzukiSourceHFinite omega (x * y)‖ ^ 2) (Ioc 0 a) := by
-  let q : ℝ → ℝ := fun u => ‖suzukiSourceHFinite omega u‖ ^ 2
-  have ha2 : 1 < a ^ 2 := by nlinarith
+    IntegrableOn (fun y : ℝ => ‖suzukiSourceHFinite omega (x * y)‖ ^ (2 : ℕ)) (Ioc 0 a) := by
+  let q : ℝ → ℝ := fun u => ‖suzukiSourceHFinite omega u‖ ^ (2 : ℕ)
+  have ha2 : 1 < a ^ (2 : ℕ) := by nlinarith
   have hH := memLp_suzukiSourceHFinite_local_two homega ha2
-  have hq : IntegrableOn q (Ioc 1 (a ^ 2)) :=
+  have hq : IntegrableOn q (Ioc 1 (a ^ (2 : ℕ))) :=
     (memLp_two_iff_integrable_sq_norm (by
       have heq : suzukiSourceHFinite omega = suzukiSourceH omega := by
         funext u
@@ -124,9 +124,9 @@ theorem integrableOn_sq_norm_suzukiCompressedHankelKernel_slice {omega a : ℝ}
       · simp
       · have hyx : y * x ≤ 1 := (le_div_iff₀ hx0).1 hy.2
         exact not_lt_of_ge (by simpa [mul_comm] using hyx)
-    have hqInt : IntervalIntegrable q volume 1 (a ^ 2) :=
+    have hqInt : IntervalIntegrable q volume 1 (a ^ (2 : ℕ)) :=
       (intervalIntegrable_iff_integrableOn_Ioc_of_le ha2.le).mpr hq
-    have hxa2 : x * a ≤ a ^ 2 := by nlinarith [hx.2, ha]
+    have hxa2 : x * a ≤ a ^ (2 : ℕ) := by nlinarith [hx.2, ha]
     have hqShort : IntervalIntegrable q volume 1 (x * a) :=
       (intervalIntegrable_iff_integrableOn_Ioc_of_le hxa.le).mpr
         (hq.mono_set (Ioc_subset_Ioc le_rfl hxa2))
@@ -146,11 +146,11 @@ theorem integrableOn_sq_norm_suzukiCompressedHankelKernel_slice {omega a : ℝ}
 theorem exists_uniform_sq_norm_suzukiCompressedHankelKernel_slice_bound
     {omega a : ℝ} (homega : 1 / 2 < omega) (ha : 1 < a) :
     ∃ C : ℝ, ∀ x ∈ Ioc 0 a,
-      ∫ y in Ioc 0 a, ‖suzukiSourceHFinite omega (x * y)‖ ^ 2 ≤ C := by
-  let q : ℝ → ℝ := fun u => ‖suzukiSourceHFinite omega u‖ ^ 2
-  have ha2 : 1 < a ^ 2 := by nlinarith
+      ∫ y in Ioc 0 a, ‖suzukiSourceHFinite omega (x * y)‖ ^ (2 : ℕ) ≤ C := by
+  let q : ℝ → ℝ := fun u => ‖suzukiSourceHFinite omega u‖ ^ (2 : ℕ)
+  have ha2 : 1 < a ^ (2 : ℕ) := by nlinarith
   have hH := memLp_suzukiSourceHFinite_local_two homega ha2
-  have hq : IntegrableOn q (Ioc 1 (a ^ 2)) :=
+  have hq : IntegrableOn q (Ioc 1 (a ^ (2 : ℕ))) :=
     (memLp_two_iff_integrable_sq_norm
       (by
         have heq : suzukiSourceHFinite omega = suzukiSourceH omega := by
@@ -158,7 +158,7 @@ theorem exists_uniform_sq_norm_suzukiCompressedHankelKernel_slice_bound
           exact (suzukiSourceH_eq_finite omega u).symm
         rw [heq]
         exact (measurable_suzukiSourceH omega).aestronglyMeasurable)).mp hH
-  let C : ℝ := a * ∫ u in Ioc 1 (a ^ 2), q u
+  let C : ℝ := a * ∫ u in Ioc 1 (a ^ (2 : ℕ)), q u
   refine ⟨C, ?_⟩
   intro x hx
   by_cases hsmall : x * a ≤ 1
@@ -186,9 +186,9 @@ theorem exists_uniform_sq_norm_suzukiCompressedHankelKernel_slice_bound
       rw [intervalIntegral.integral_of_le hroot.le,
         setIntegral_congr_fun measurableSet_Ioc hzero]
       simp
-    have hqInt : IntervalIntegrable q volume 1 (a ^ 2) :=
+    have hqInt : IntervalIntegrable q volume 1 (a ^ (2 : ℕ)) :=
       (intervalIntegrable_iff_integrableOn_Ioc_of_le ha2.le).mpr hq
-    have hxa2 : x * a ≤ a ^ 2 := by nlinarith [hx.2, ha]
+    have hxa2 : x * a ≤ a ^ (2 : ℕ) := by nlinarith [hx.2, ha]
     have hqShort : IntervalIntegrable q volume 1 (x * a) :=
       (intervalIntegrable_iff_integrableOn_Ioc_of_le hxa.le).mpr
         (hq.mono_set (Ioc_subset_Ioc le_rfl hxa2))
@@ -213,11 +213,11 @@ theorem exists_uniform_sq_norm_suzukiCompressedHankelKernel_slice_bound
             simpa only [smul_eq_mul, hident] using
               (intervalIntegral.integral_comp_mul_left (a := 1 / x) (b := a)
                 q hx0.ne')
-      _ ≤ x⁻¹ * ∫ u in (1 : ℝ)..(a ^ 2), q u := by
+      _ ≤ x⁻¹ * ∫ u in (1 : ℝ)..(a ^ (2 : ℕ)), q u := by
             gcongr
             exact intervalIntegral.integral_mono_interval le_rfl hxa.le hxa2
               (Filter.Eventually.of_forall fun _ => sq_nonneg _) hqInt
-      _ ≤ a * ∫ u in (1 : ℝ)..(a ^ 2), q u := by
+      _ ≤ a * ∫ u in (1 : ℝ)..(a ^ (2 : ℕ)), q u := by
             have hxinv : x⁻¹ < a := by
               simpa only [one_div] using hroota
             exact mul_le_mul_of_nonneg_right hxinv.le
@@ -235,7 +235,7 @@ theorem memLp_suzukiCompressedHankelKernel_two
       ((volume.restrict (Ioc 0 a)).prod (volume.restrict (Ioc 0 a))) := by
   let mu : Measure ℝ := volume.restrict (Ioc 0 a)
   let K : ℝ × ℝ → ℂ := fun p => suzukiSourceHFinite omega (p.1 * p.2)
-  let f : ℝ × ℝ → ℝ := fun p => ‖K p‖ ^ 2
+  let f : ℝ × ℝ → ℝ := fun p => ‖K p‖ ^ (2 : ℕ)
   have hKmeas : Measurable K := by
     have heq : suzukiSourceHFinite omega = suzukiSourceH omega := by
       funext u
@@ -250,7 +250,7 @@ theorem memLp_suzukiCompressedHankelKernel_two
   have hslices : ∀ᵐ x ∂mu, Integrable (fun y => f (x, y)) mu := by
     filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
     change IntegrableOn (fun y : ℝ =>
-      ‖suzukiSourceHFinite omega (x * y)‖ ^ 2) (Ioc 0 a)
+      ‖suzukiSourceHFinite omega (x * y)‖ ^ (2 : ℕ)) (Ioc 0 a)
     exact integrableOn_sq_norm_suzukiCompressedHankelKernel_slice homega ha hx
   have hinnerMeas : AEStronglyMeasurable (fun x => ∫ y, ‖f (x, y)‖ ∂mu) mu :=
     hfae.norm.integral_prod_right'
@@ -258,7 +258,7 @@ theorem memLp_suzukiCompressedHankelKernel_two
     filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
     have hnonneg : 0 ≤ ∫ y, ‖f (x, y)‖ ∂mu := integral_nonneg fun _ => norm_nonneg _
     rw [Real.norm_eq_abs, abs_of_nonneg hnonneg]
-    change (∫ y in Ioc 0 a, ‖‖K (x, y)‖ ^ 2‖) ≤ C
+    change (∫ y in Ioc 0 a, ‖‖K (x, y)‖ ^ (2 : ℕ)‖) ≤ C
     convert hC x hx using 1
     apply setIntegral_congr_fun measurableSet_Ioc
     intro y hy

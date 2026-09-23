@@ -17,12 +17,12 @@ open Finset
 noncomputable section
 
 /-- The cofactor scale: a perfect square, so its square root is exact. -/
-def liftScale (u : ℕ) : ℝ := ((2 * u : ℕ) : ℝ) ^ 2
+def liftScale (u : ℕ) : ℝ := ((2 * u : ℕ) : ℝ) ^ (2 : ℕ)
 
 theorem sqrt_liftScale (u : ℕ) : Real.sqrt (liftScale u) = ((2 * u : ℕ) : ℝ) := by
   rw [liftScale, Real.sqrt_sq (by positivity)]
 
-theorem liftScale_eq (u : ℕ) : liftScale u = 4 * (u : ℝ) ^ 2 := by
+theorem liftScale_eq (u : ℕ) : liftScale u = 4 * (u : ℝ) ^ (2 : ℕ) := by
   rw [liftScale]
   push_cast
   ring

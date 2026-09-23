@@ -71,7 +71,7 @@ theorem criticalFeatureCanonicalAsymptoticUpper_comp_add
         mul_le_mul_of_nonneg_left hNshift.le hcdelta
       _ = _ := by ring
   have hcoeff : (c + delta) * (1 + delta) ≤ c + eps := by
-    have hdeltaSq : delta ^ 2 ≤ delta := by nlinarith
+    have hdeltaSq : delta ^ (2 : ℕ) ≤ delta := by nlinarith
     nlinarith
   exact hmain.trans (mul_le_mul_of_nonneg_right hcoeff hN.le)
 

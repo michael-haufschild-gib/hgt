@@ -18,8 +18,8 @@ exactly the exponential metric increasing property, and its analytic input is th
 inequality for the norm.
 
 The chain is: the distance dominates the logarithm of the operator norm of the relative form, the
-relative form is `exp (-T/2) exp S exp (-T/2)` whose norm is `‖exp (S/2) exp (-T/2)‖ ^ 2`, and
-Golden–Thompson bounds that below by `‖exp ((S - T)/2)‖ ^ 2 = ‖exp (S - T)‖`, whose norm is at
+relative form is `exp (-T/2) exp S exp (-T/2)` whose norm is `‖exp (S/2) exp (-T/2)‖ ^ (2 : ℕ)`, and
+Golden–Thompson bounds that below by `‖exp ((S - T)/2)‖ ^ (2 : ℕ) = ‖exp (S - T)‖`, whose norm is at
 least the exponential of any eigenvalue of `S - T`.
 -/
 
@@ -33,11 +33,11 @@ variable {n : ℕ} {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [
 
 omit [FiniteDimensional ℂ E] in
 theorem norm_sq_eq_sum_repr_of_frame (b : OrthonormalBasis (Fin n) ℂ E) (v : E) :
-    ‖v‖ ^ 2 = ∑ i, ‖b.repr v i‖ ^ 2 := by
+    ‖v‖ ^ (2 : ℕ) = ∑ i, ‖b.repr v i‖ ^ (2 : ℕ) := by
   have h := inner_self_of_diagonal b (f := LinearMap.id) (d := fun _ => (1 : ℝ))
     (fun i => by simp) v
   rw [LinearMap.id_apply] at h
-  have h2 : RCLike.re (inner ℂ v v : ℂ) = ∑ i, 1 * ‖b.repr v i‖ ^ 2 := by
+  have h2 : RCLike.re (inner ℂ v v : ℂ) = ∑ i, 1 * ‖b.repr v i‖ ^ (2 : ℕ) := by
     rw [h]
     simp [-Complex.ofReal_pow]
   rw [inner_self_eq_norm_sq] at h2
@@ -56,7 +56,7 @@ theorem norm_diagOp_apply_le (b : OrthonormalBasis (Fin n) ℂ E) (w : Fin n →
     (hc0 : 0 ≤ c) (hc : ∀ i, |w i| ≤ c) (v : E) : ‖diagOp b w v‖ ≤ c * ‖v‖ := by
   have hsym := isSymmetric_diagOp b w
   have hinner : (inner ℂ (diagOp b w v) (diagOp b w v) : ℂ)
-      = ((∑ i, (w i * w i) * ‖b.repr v i‖ ^ 2 : ℝ) : ℂ) := by
+      = ((∑ i, (w i * w i) * ‖b.repr v i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [hsym v (diagOp b w v)]
     have hd : ∀ i, (diagOp b w ∘ₗ diagOp b w) (b i) = ((w i * w i : ℝ) : ℂ) • b i := by
       intro i
@@ -65,13 +65,13 @@ theorem norm_diagOp_apply_le (b : OrthonormalBasis (Fin n) ℂ E) (w : Fin n →
       (d := fun i => w i * w i) hd v
     rw [LinearMap.comp_apply] at this
     exact this
-  have hnormsq : ‖diagOp b w v‖ ^ 2 = ∑ i, (w i * w i) * ‖b.repr v i‖ ^ 2 := by
+  have hnormsq : ‖diagOp b w v‖ ^ (2 : ℕ) = ∑ i, (w i * w i) * ‖b.repr v i‖ ^ (2 : ℕ) := by
     have h : RCLike.re (inner ℂ (diagOp b w v) (diagOp b w v) : ℂ)
-        = ∑ i, (w i * w i) * ‖b.repr v i‖ ^ 2 := by
+        = ∑ i, (w i * w i) * ‖b.repr v i‖ ^ (2 : ℕ) := by
       rw [hinner]
       simp [-Complex.ofReal_pow]
     rwa [inner_self_eq_norm_sq] at h
-  have hbound : ‖diagOp b w v‖ ^ 2 ≤ (c * ‖v‖) ^ 2 := by
+  have hbound : ‖diagOp b w v‖ ^ (2 : ℕ) ≤ (c * ‖v‖) ^ (2 : ℕ) := by
     rw [hnormsq, mul_pow, norm_sq_eq_sum_repr_of_frame b v, Finset.mul_sum]
     refine Finset.sum_le_sum fun i _ => ?_
     refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
@@ -248,7 +248,7 @@ theorem eigenvector_le_observerDist {T S : E →ₗ[ℂ] E} (hT : T.IsSymmetric)
   refine le_trans (le_abs_self _) ?_
   rw [← Real.sqrt_sq_eq_abs]
   refine Real.sqrt_le_sqrt ?_
-  exact Finset.single_le_sum (f := fun k => Real.log (lam k) ^ 2)
+  exact Finset.single_le_sum (f := fun k => Real.log (lam k) ^ (2 : ℕ))
     (fun k _ => sq_nonneg _) (Finset.mem_univ j)
 
 /-! ## Distinct traceless directions give diverging rays -/

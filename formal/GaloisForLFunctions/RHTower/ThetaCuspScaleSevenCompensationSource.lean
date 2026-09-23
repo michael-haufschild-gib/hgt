@@ -28,27 +28,27 @@ theorem abs_deriv_firstAtom_le_two_scale_of_seven_le {x : ℝ}
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let e := Real.exp (x/2-q)
   have hqp : 0 ≤ q := by dsimp [q]; linarith
-  have hq2 : 7*q ≤ q^2 := by
+  have hq2 : 7*q ≤ q^(2 : ℕ) := by
     have h := mul_le_mul_of_nonneg_right hq hqp
     change 7*q ≤ q*q at h
     nlinarith only [h]
-  have hq3 : 7*q^2 ≤ q^3 := by
+  have hq3 : 7*q^(2 : ℕ) ≤ q^(3 : ℕ) := by
     have h := mul_le_mul_of_nonneg_right hq (sq_nonneg q)
-    change 7*q^2 ≤ q*q^2 at h
+    change 7*q^(2 : ℕ) ≤ q*q^(2 : ℕ) at h
     nlinarith only [h]
   have he : 0 < e := Real.exp_pos _
   have hd : deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x =
-      e*(-8*q^3+30*q^2-15*q) := by
+      e*(-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q) := by
     have h := iteratedDeriv_firstAtom_eq_gaussianScaleJets 1 x
     rw [iteratedDeriv_one] at h
     rw [h]
     dsimp [thetaCuspGaussianScaleJet, thetaCuspGaussianScaleMoment, e, q]
     ring
-  have hpoly : |-8*q^3+30*q^2-15*q| ≤ 2*q*(4*q^2-6*q) := by
+  have hpoly : |-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q| ≤ 2*q*(4*q^(2 : ℕ)-6*q) := by
     apply abs_le.mpr
     constructor <;> nlinarith only [hq2, hq3, hqp]
   rw [hd, abs_mul, abs_of_pos he, thetaCuspSourceTerm_one_eq_scale_profile]
-  change e*|-8*q^3+30*q^2-15*q| ≤ 2*q*(e*(4*q^2-6*q))
+  change e*|-8*q^(3 : ℕ)+30*q^(2 : ℕ)-15*q| ≤ 2*q*(e*(4*q^(2 : ℕ)-6*q))
   have hm := mul_le_mul_of_nonneg_left hpoly he.le
   nlinarith only [hm]
 
@@ -94,8 +94,8 @@ theorem thetaCuspFullSource_mass_slope_le_scaleSeven {x : ℝ}
 /-- The normalized adverse compensation is bounded uniformly on the entire scale-seven ray. -/
 theorem thetaCuspCenterCompensationSource_scaleSeven_normalized_lower {x : ℝ}
     (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    -(13/50 : ℝ)/7^3 ≤ thetaCuspCenterCompensationSource x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^5) := by
+    -(13/50 : ℝ)/7^(3 : ℕ) ≤ thetaCuspCenterCompensationSource x /
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(5 : ℕ)) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let f := thetaCuspSourceTerm x 1
   let F := thetaCuspFullSource x
@@ -107,26 +107,26 @@ theorem thetaCuspCenterCompensationSource_scaleSeven_normalized_lower {x : ℝ}
   have hb := thetaCuspFullSource_mass_slope_le_scaleSeven hq
   change F ≤ (101/100)*f ∧ |d| ≤ (201/100)*q*f at hb
   have hprod := mul_le_mul hb.1 hb.2 (abs_nonneg d) (by positivity : (0 : ℝ) ≤ (101/100)*f)
-  have hprod1 : F*|d| ≤ (52/25)*q*f^2 := by
-    have hpos : 0 ≤ q*f^2 := by positivity
+  have hprod1 : F*|d| ≤ (52/25)*q*f^(2 : ℕ) := by
+    have hpos : 0 ≤ q*f^(2 : ℕ) := by positivity
     nlinarith only [hprod, hpos]
   have hprod2 := mul_le_mul_of_nonneg_left hprod1 (by positivity : (0 : ℝ) ≤ 2*x)
   have hxd := sixteen_mul_center_le_firstAtomScale hx.le
   change 16*x ≤ q at hxd
-  have hscale := mul_le_mul_of_nonneg_right hxd (by positivity : (0 : ℝ) ≤ (13/50)*q*f^2)
+  have hscale := mul_le_mul_of_nonneg_right hxd (by positivity : (0 : ℝ) ≤ (13/50)*q*f^(2 : ℕ))
   have hd := neg_abs_le d
   have hneg := mul_le_mul_of_nonneg_left hd (by positivity : (0 : ℝ) ≤ 2*x*F)
-  have hraw : -(13/50)*q^2*f^2 ≤ thetaCuspCenterCompensationSource x := by
-    change -(13/50)*q^2*f^2 ≤ 3*F^2+2*x*F*d
+  have hraw : -(13/50)*q^(2 : ℕ)*f^(2 : ℕ) ≤ thetaCuspCenterCompensationSource x := by
+    change -(13/50)*q^(2 : ℕ)*f^(2 : ℕ) ≤ 3*F^(2 : ℕ)+2*x*F*d
     nlinarith only [hprod2, hscale, hneg, sq_nonneg F]
-  have hnorm : -(13/50 : ℝ)/q^3 ≤ thetaCuspCenterCompensationSource x/(f^2*q^5) := by
-    apply (le_div_iff₀ (by positivity : 0 < f^2*q^5)).mpr
+  have hnorm : -(13/50 : ℝ)/q^(3 : ℕ) ≤ thetaCuspCenterCompensationSource x/(f^(2 : ℕ)*q^(5 : ℕ)) := by
+    apply (le_div_iff₀ (by positivity : 0 < f^(2 : ℕ)*q^(5 : ℕ))).mpr
     calc
-      (-(13/50 : ℝ)/q^3)*(f^2*q^5) = -(13/50)*q^2*f^2 := by field_simp
+      (-(13/50 : ℝ)/q^(3 : ℕ))*(f^(2 : ℕ)*q^(5 : ℕ)) = -(13/50)*q^(2 : ℕ)*f^(2 : ℕ) := by field_simp
       _ ≤ thetaCuspCenterCompensationSource x := hraw
-  have hp3 : (7 : ℝ)^3 ≤ q^3 := pow_le_pow_left₀ (by norm_num) hq 3
-  have hi : (1 : ℝ)/q^3 ≤ 1/(7 : ℝ)^3 := one_div_le_one_div_of_le (by norm_num) hp3
-  change -(13/50 : ℝ)/7^3 ≤ thetaCuspCenterCompensationSource x/(f^2*q^5)
+  have hp3 : (7 : ℝ)^(3 : ℕ) ≤ q^(3 : ℕ) := pow_le_pow_left₀ (by norm_num) hq 3
+  have hi : (1 : ℝ)/q^(3 : ℕ) ≤ 1/(7 : ℝ)^(3 : ℕ) := one_div_le_one_div_of_le (by norm_num) hp3
+  change -(13/50 : ℝ)/7^(3 : ℕ) ≤ thetaCuspCenterCompensationSource x/(f^(2 : ℕ)*q^(5 : ℕ))
   simp only [div_eq_mul_inv] at hi hnorm ⊢
   linarith only [hi, hnorm]
 

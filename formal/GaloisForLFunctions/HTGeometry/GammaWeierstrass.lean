@@ -108,13 +108,13 @@ theorem multipliable_weierstrassFactor (s : ℂ) :
   rw [key]
   apply multipliable_one_add_of_summable
   apply Summable.of_norm_bounded_eventually_nat
-    (g := fun k : ℕ => 3 * ‖s‖ ^ 2 / ((k : ℝ) + 1) ^ 2)
-  · have hbase : Summable (fun k : ℕ => (1 : ℝ) / ((k : ℝ) + 1) ^ 2) := by
-      have h2 : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) :=
+    (g := fun k : ℕ => 3 * ‖s‖ ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ))
+  · have hbase : Summable (fun k : ℕ => (1 : ℝ) / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
+      have h2 : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) :=
         Real.summable_one_div_nat_pow.mpr (by norm_num)
-      have := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) 1).mpr h2
+      have := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) 1).mpr h2
       simpa using this
-    have := hbase.mul_left (3 * ‖s‖ ^ 2)
+    have := hbase.mul_left (3 * ‖s‖ ^ (2 : ℕ))
     apply this.congr; intro k; rw [mul_one_div]
   · filter_upwards [Filter.eventually_ge_atTop (Nat.ceil ‖s‖)] with k hk
     have hkpos : (0 : ℝ) < (k : ℝ) + 1 := by positivity
@@ -128,18 +128,18 @@ theorem multipliable_weierstrassFactor (s : ℂ) :
       calc ‖s‖ ≤ (Nat.ceil ‖s‖ : ℝ) := Nat.le_ceil _
         _ ≤ (k : ℝ) := by exact_mod_cast hk
         _ ≤ (k : ℝ) + 1 := by linarith
-    have hbd : ‖(1 + w) * Complex.exp (-w) - 1‖ ≤ 3 * ‖w‖ ^ 2 := by
+    have hbd : ‖(1 + w) * Complex.exp (-w) - 1‖ ≤ 3 * ‖w‖ ^ (2 : ℕ) := by
       have hnx : ‖(-w)‖ ≤ 1 := by rwa [norm_neg]
       have hdecomp : (1 + w) * Complex.exp (-w) - 1
           = (Complex.exp (-w) - 1 - (-w)) - (-w) * (Complex.exp (-w) - 1) := by ring
       rw [hdecomp]
       calc ‖(Complex.exp (-w) - 1 - (-w)) - (-w) * (Complex.exp (-w) - 1)‖
           ≤ ‖Complex.exp (-w) - 1 - (-w)‖ + ‖(-w) * (Complex.exp (-w) - 1)‖ := norm_sub_le _ _
-        _ ≤ ‖(-w)‖ ^ 2 + ‖(-w)‖ * (2 * ‖(-w)‖) := by
+        _ ≤ ‖(-w)‖ ^ (2 : ℕ) + ‖(-w)‖ * (2 * ‖(-w)‖) := by
             gcongr
             · exact Complex.norm_exp_sub_one_sub_id_le hnx
             · rw [norm_mul]; gcongr; exact Complex.norm_exp_sub_one_le hnx
-        _ = 3 * ‖w‖ ^ 2 := by rw [norm_neg]; ring
+        _ = 3 * ‖w‖ ^ (2 : ℕ) := by rw [norm_neg]; ring
     rw [norm_norm]; refine hbd.trans ?_; rw [hwn, div_pow]; exact le_of_eq (by ring)
 
 /-- **The Gamma Weierstrass product.**  For `s` off the non-positive integers,
@@ -192,13 +192,13 @@ theorem fredholmDet_diagMul_eq_inv_gammaFactor (s : ℂ) (hs : ∀ m : ℕ, s �
     fredholmDet (diagMul (fun n : ℕ => -s / ((n : ℂ) + 1))) 1
       = (s * Complex.exp ((Real.eulerMascheroniConstant : ℂ) * s) * Complex.Gamma s)⁻¹ := by
   set g : ℕ → ℂ := fun n => -s / ((n : ℂ) + 1) with hg
-  have hs2 : Summable (fun i => ‖g i‖ ^ 2) := by
-    have hbase : Summable (fun k : ℕ => (1 : ℝ) / ((k : ℝ) + 1) ^ 2) := by
-      have h2 : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) :=
+  have hs2 : Summable (fun i => ‖g i‖ ^ (2 : ℕ)) := by
+    have hbase : Summable (fun k : ℕ => (1 : ℝ) / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
+      have h2 : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) :=
         Real.summable_one_div_nat_pow.mpr (by norm_num)
-      have := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) 1).mpr h2
+      have := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) 1).mpr h2
       simpa using this
-    have hmul := hbase.mul_left (‖s‖ ^ 2)
+    have hmul := hbase.mul_left (‖s‖ ^ (2 : ℕ))
     apply hmul.congr; intro k
     have hkpos : (0 : ℝ) < (k : ℝ) + 1 := by positivity
     have hnorm1 : ‖(k : ℂ) + 1‖ = (k : ℝ) + 1 := by

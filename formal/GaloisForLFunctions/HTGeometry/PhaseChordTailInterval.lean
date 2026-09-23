@@ -10,12 +10,12 @@ namespace GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLa
 
 /-- On `[0,1]`, the unit-circle chord is strictly larger than the cubic Taylor minorant. -/
 theorem phase_chord_gt_sub_cube {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1) :
-    x - x ^ 3 / 24 <
+    x - x ^ (3 : ℕ) / 24 <
       ‖Complex.exp (-(Complex.I * (x : ℂ))) - 1‖ := by
   have hxhalf : 0 < x / 2 := by linarith
   have hsin := Real.sin_gt_sub_cube hxhalf
   have hsin0 : 0 < Real.sin (x / 2) := by
-    have hsubpos : 0 < x / 2 - (x / 2) ^ 3 / 6 := by
+    have hsubpos : 0 < x / 2 - (x / 2) ^ (3 : ℕ) / 6 := by
       have hx0 : 0 < x := hx
       nlinarith [sq_nonneg x]
     linarith
@@ -32,7 +32,7 @@ theorem phase_chord_gt_sub_cube {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1) :
 /-- The cubic minorant `x - x³/24` is increasing on `[0,1]`. -/
 theorem sub_cube_div_twentyfour_mono_on_unit {x y : ℝ}
     (hx0 : 0 ≤ x) (hxy : x ≤ y) (hy1 : y ≤ 1) :
-    x - x ^ 3 / 24 ≤ y - y ^ 3 / 24 := by
+    x - x ^ (3 : ℕ) / 24 ≤ y - y ^ (3 : ℕ) / 24 := by
   have hy0 : 0 ≤ y := le_trans hx0 hxy
   have hx1 : x ≤ 1 := hxy.trans hy1
   have hxx0 : 0 ≤ x * (1 - x) := mul_nonneg hx0 (sub_nonneg.mpr hx1)
@@ -44,7 +44,7 @@ theorem sub_cube_div_twentyfour_mono_on_unit {x y : ℝ}
   have hcoef : 0 ≤ 24 - (y * y + y * x + x * x) := by nlinarith
   have hgap : 0 ≤ y - x := sub_nonneg.mpr hxy
   have hprod := mul_nonneg hgap hcoef
-  nlinarith [show y ^ 3 - x ^ 3 = (y - x) * (y * y + y * x + x * x) by ring]
+  nlinarith [show y ^ (3 : ℕ) - x ^ (3 : ℕ) = (y - x) * (y * y + y * x + x * x) by ring]
 
 /-- If every possible residual phase lies between a certified small tail and `3π/2`, its chord
 stays above `4ε`.  This is the analytic interval lemma used by the explicit monotonicity
@@ -52,7 +52,7 @@ counterexample. -/
 theorem phase_chord_gt_four_mul_of_tail_interval {tau phi ε : ℝ}
     (htau0 : 0 < tau)
     (htauphi : tau ≤ phi) (hphi : phi < 3 * Real.pi / 2)
-    (hcubic : 4 * ε < tau - tau ^ 3 / 24)
+    (hcubic : 4 * ε < tau - tau ^ (3 : ℕ) / 24)
     (hsmall : 4 * ε < 1 / 2) :
     4 * ε < ‖Complex.exp (-(Complex.I * (phi : ℂ))) - 1‖ := by
   have hphi0 : 0 < phi := lt_of_lt_of_le htau0 htauphi

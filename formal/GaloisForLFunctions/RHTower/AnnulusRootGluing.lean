@@ -226,14 +226,14 @@ theorem exists_global_sqrt_of_deckClass_one {f G₁ G₂ : ℂ → ℂ} {a : ℂ
     (h0 : 0 ≤ r₀) (hrR : r₀ < R)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hfP : f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hfM : f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hdeck : deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
         (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) = 1) :
     ∃ F : ℂ → ℂ, AnalyticOnNhd ℂ F (ball a R \ closedBall a r₀) ∧
-      ∀ z ∈ ball a R \ closedBall a r₀, F z ^ 2 = f z := by
+      ∀ z ∈ ball a R \ closedBall a r₀, F z ^ (2 : ℕ) = f z := by
   classical
   obtain ⟨hpPT, hpMB⟩ := basepoints_mem_overlaps h0 hrR
   obtain ⟨hεsq, hEqT⟩ := pow_root_ratio (by norm_num : (0 : ℕ) < 2)
@@ -284,7 +284,7 @@ theorem exists_global_sqrt_of_deckClass_one {f G₁ G₂ : ℂ → ℂ} {a : ℂ
         exact (hEqOverlap w ⟨hwRA, hw⟩).symm
       · rw [if_neg hwRA]
   · intro z hz
-    show (if z ∈ chartRA a r₀ R then G₁ z else ε * G₂ z) ^ 2 = f z
+    show (if z ∈ chartRA a r₀ R then G₁ z else ε * G₂ z) ^ (2 : ℕ) = f z
     by_cases hzRA : z ∈ chartRA a r₀ R
     · rw [if_pos hzRA]
       exact hpG₁ z hzRA
@@ -302,10 +302,10 @@ theorem deckClass_eq_one_of_global_sqrt {f G₁ G₂ F : ℂ → ℂ} {a : ℂ} 
     (h0 : 0 ≤ r₀) (hrR : r₀ < R)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hF : AnalyticOnNhd ℂ F (ball a R \ closedBall a r₀))
-    (hpF : ∀ z ∈ ball a R \ closedBall a r₀, F z ^ 2 = f z)
+    (hpF : ∀ z ∈ ball a R \ closedBall a r₀, F z ^ (2 : ℕ) = f z)
     (hfP : f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hfM : f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0) :
     deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
@@ -366,15 +366,15 @@ theorem no_global_sqrt_along_sweep_of_deckClass_ne_one {P : Finset ℕ}
     (hre : ∀ z ∈ ball a R \ closedBall a r₀, 0 < z.re)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hfP : f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hfM : f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hdeck : deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
         (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 1) (t : ℝ) :
     ¬∃ F : ℂ → ℂ, AnalyticOnNhd ℂ F (ball a R \ closedBall a r₀) ∧
       ∀ z ∈ ball a R \ closedBall a r₀,
-        F z ^ 2 = anchorSweep P t z * f z := by
+        F z ^ (2 : ℕ) = anchorSweep P t z * f z := by
   rintro ⟨F, hFan, hpF⟩
   have h1 := deckClass_eq_one_of_global_sqrt (f := fun z => anchorSweep P t z * f z)
     h0 hrR

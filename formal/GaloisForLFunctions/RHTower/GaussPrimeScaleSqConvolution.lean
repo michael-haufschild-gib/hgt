@@ -91,7 +91,7 @@ theorem isExpPiecewise_gaussPrimeScaleSqCircle {p : ℝ} (hp : 1 < p) :
 /-- Harmonic kernel bound for `B²`. -/
 theorem norm_fourierCoeff_gaussPrimeScaleSqCircle_le {p : ℝ} (hp : 1 < p) (x : ℤ) :
     ‖fourierCoeff (gaussPrimeScaleSqCircle p) x‖ ≤
-      2 * p ^ 2 / (1 + (x.natAbs : ℝ)) := by
+      2 * p ^ (2 : ℕ) / (1 + (x.natAbs : ℝ)) := by
   have hM : ∀ i : ℕ, ‖((p : ℝ) : ℂ)‖ ≤ p := by
     intro i
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
@@ -107,7 +107,7 @@ theorem norm_fourierCoeff_gaussPrimeScaleSqCircle_le {p : ℝ} (hp : 1 < p) (x :
 theorem norm_fourierCoeff_gaussPrimeScaleSqBlock_le {p : ℝ} (hp : 1 < p)
     (w : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) (j : ℤ) :
     ‖fourierCoeff ((gaussPrimeScaleSqBlock hp w : AddCircle (1 : ℝ) → ℂ)) j‖ ≤
-      ∑' l : ℤ, 2 * p ^ 2 / (1 + ((l - j).natAbs : ℝ)) *
+      ∑' l : ℤ, 2 * p ^ (2 : ℕ) / (1 + ((l - j).natAbs : ℝ)) *
         ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) l‖ := by
   have hsum := hasSum_fourierCoeff_lpBoundedMulCLM
     (measurable_gaussPrimeScaleSqCircle p) (by linarith : 0 ≤ p)
@@ -116,7 +116,7 @@ theorem norm_fourierCoeff_gaussPrimeScaleSqBlock_le {p : ℝ} (hp : 1 < p)
       ‖starRingEnd ℂ (fourierCoeff (gaussPrimeScaleSqCircle p) (l - j)) *
         fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) l‖) := by
     have hbase := summable_harmonicKernel_mul_fourierCoeff
-      (κ := fun x => ‖fourierCoeff (gaussPrimeScaleSqCircle p) x‖) (A := 2 * p ^ 2)
+      (κ := fun x => ‖fourierCoeff (gaussPrimeScaleSqCircle p) x‖) (A := 2 * p ^ (2 : ℕ))
       (fun x => norm_nonneg _) (fun x => norm_fourierCoeff_gaussPrimeScaleSqCircle_le hp x) w j
     refine hbase.congr fun l => ?_
     rw [norm_mul, RCLike.norm_conj]
@@ -125,10 +125,10 @@ theorem norm_fourierCoeff_gaussPrimeScaleSqBlock_le {p : ℝ} (hp : 1 < p)
         fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) l := hsum.tsum_eq.symm
   rw [heq]
   refine (norm_tsum_le_tsum_norm hmaj).trans ?_
-  have hterm : Summable (fun l : ℤ => 2 * p ^ 2 / (1 + ((l - j).natAbs : ℝ)) *
+  have hterm : Summable (fun l : ℤ => 2 * p ^ (2 : ℕ) / (1 + ((l - j).natAbs : ℝ)) *
       ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) l‖) :=
     summable_harmonicKernel_mul_fourierCoeff
-      (κ := fun x => 2 * p ^ 2 / (1 + (x.natAbs : ℝ))) (A := 2 * p ^ 2)
+      (κ := fun x => 2 * p ^ (2 : ℕ) / (1 + (x.natAbs : ℝ))) (A := 2 * p ^ (2 : ℕ))
       (fun x => by positivity) (fun x => le_rfl) w j
   refine hmaj.tsum_le_tsum (fun l => ?_) hterm
   rw [norm_mul, RCLike.norm_conj]

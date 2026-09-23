@@ -29,7 +29,7 @@ def ccmActualHeadWallPositiveLightRateEnergy
     (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
       normSq (suzukiCriticalWallPositiveLightAmplitude
         (2 * Real.pi * xi) p e)) *
-      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
 
 /-- Actual-head pairing of the negative Suzuki light channel. -/
 def ccmActualHeadWallNegativeLightRateEnergy
@@ -38,7 +38,7 @@ def ccmActualHeadWallNegativeLightRateEnergy
     (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
       normSq (suzukiCriticalWallNegativeLightAmplitude
         (2 * Real.pi * xi) p e)) *
-      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
 
 /-- Spectral derivative current of the actual scalar wall chord on one actual head. -/
 def ccmActualHeadWallChordJetCurrent
@@ -47,7 +47,7 @@ def ccmActualHeadWallChordJetCurrent
     deriv (fun x : ℝ =>
       normSq (ccmActualHeadMellinWallChord x
         (xiGammaEulerValuationNat (p, e)))) xi *
-      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+      ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
 
 /-- Positive light is the complementary center-reserve sheet to negative light. -/
 theorem normSq_suzukiCriticalWallPositiveLightAmplitude_eq_centerReserve_add_imbalance
@@ -104,16 +104,16 @@ theorem integrable_ccmActualHeadMatchedWallLightImbalance_mul_density
     (p : Nat.Primes) (e : ℕ) (f : SoninL2) :
     Integrable (fun xi : ℝ =>
       ccmActualHeadMatchedWallLightImbalance p e xi *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
   let n := xiGammaEulerValuationNat (p, e)
   let w := criticalMellinAtomWeight n
-  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
   have hD : Integrable D := by
     dsimp only [D]
     exact integrable_norm_sq (fourierUnitary f)
   have hw : 0 ≤ w := by
     dsimp only [w]
-    exact criticalMellinAtomWeight_nonneg n
+    exact criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
   have h := Integrable.mul_bdd (c := w) hD
     (by
       exact (by fun_prop : Continuous fun xi : ℝ =>
@@ -134,9 +134,9 @@ theorem integrable_ccmActualHeadWallPositiveLight_mul_density
     Integrable (fun xi : ℝ =>
       normSq (suzukiCriticalWallPositiveLightAmplitude
         (2 * Real.pi * xi) p e) *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
   let w := criticalMellinAtomWeight (xiGammaEulerValuationNat (p, e))
-  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
   have hD : Integrable D := by
     dsimp only [D]
     exact integrable_norm_sq (fourierUnitary f)
@@ -156,9 +156,9 @@ theorem integrable_ccmActualHeadWallNegativeLight_mul_density
     Integrable (fun xi : ℝ =>
       normSq (suzukiCriticalWallNegativeLightAmplitude
         (2 * Real.pi * xi) p e) *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
   let w := criticalMellinAtomWeight (xiGammaEulerValuationNat (p, e))
-  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+  let D : ℝ → ℝ := fun xi => ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
   have hD : Integrable D := by
     dsimp only [D]
     exact integrable_norm_sq (fourierUnitary f)
@@ -179,7 +179,7 @@ theorem integrable_ccmActualHeadWallPositiveLightRateEnergy_integrand
       (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
         normSq (suzukiCriticalWallPositiveLightAmplitude
           (2 * Real.pi * xi) p e)) *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
   have h := (integrable_ccmActualHeadWallPositiveLight_mul_density p e f).const_mul
     (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)))
   exact h.congr (Filter.Eventually.of_forall fun _ => by ring)
@@ -190,7 +190,7 @@ theorem integrable_ccmActualHeadWallNegativeLightRateEnergy_integrand
       (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
         normSq (suzukiCriticalWallNegativeLightAmplitude
           (2 * Real.pi * xi) p e)) *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
   have h := (integrable_ccmActualHeadWallNegativeLight_mul_density p e f).const_mul
     (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)))
   exact h.congr (Filter.Eventually.of_forall fun _ => by ring)
@@ -201,7 +201,7 @@ theorem integrable_ccmActualHeadWallChordJetCurrent_integrand
       deriv (fun x : ℝ =>
         normSq (ccmActualHeadMellinWallChord x
           (xiGammaEulerValuationNat (p, e)))) xi *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
   have h :=
     (integrable_ccmActualHeadMatchedWallLightImbalance_mul_density p e f).const_mul
       (4 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)))
@@ -209,11 +209,11 @@ theorem integrable_ccmActualHeadWallChordJetCurrent_integrand
   change
     4 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
         (ccmActualHeadMatchedWallLightImbalance p e xi *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) =
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) =
       deriv (fun x : ℝ =>
         normSq (ccmActualHeadMellinWallChord x
           (xiGammaEulerValuationNat (p, e)))) xi *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)
   rw [congrFun (deriv_normSq_ccmActualHeadMellinWallChord_primePower p e) xi]
   ring
 
@@ -222,7 +222,7 @@ theorem wallNegativeLightRateEnergy_add_chordJetCurrent_eq_centerReserve
     (p : Nat.Primes) (e : ℕ) (f : SoninL2) :
     ccmActualHeadWallNegativeLightRateEnergy p e f +
         ccmActualHeadWallChordJetCurrent p e f =
-      ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ 2 := by
+      ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ (2 : ℕ) := by
   rw [ccmActualHeadWallNegativeLightRateEnergy, ccmActualHeadWallChordJetCurrent,
     ← integral_add
       (integrable_ccmActualHeadWallNegativeLightRateEnergy_integrand p e f)
@@ -232,13 +232,13 @@ theorem wallNegativeLightRateEnergy_add_chordJetCurrent_eq_centerReserve
       (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
           normSq (suzukiCriticalWallNegativeLightAmplitude
             (2 * Real.pi * xi) p e)) *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 +
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) +
         deriv (fun x : ℝ =>
           normSq (ccmActualHeadMellinWallChord x
             (xiGammaEulerValuationNat (p, e)))) xi *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) =
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) =
       ∫ xi : ℝ, ccmActualHeadWallCenterReserveRate p e *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards with xi
       have hpoint := actualWallChord_deriv_add_negativeLight_eq_centerReserve xi p e
@@ -248,22 +248,22 @@ theorem wallNegativeLightRateEnergy_add_chordJetCurrent_eq_centerReserve
         8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
                 normSq (suzukiCriticalWallNegativeLightAmplitude
                   (2 * Real.pi * xi) p e) *
-              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 +
+              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) +
             deriv (fun x : ℝ =>
               normSq (ccmActualHeadMellinWallChord x
                 (xiGammaEulerValuationNat (p, e)))) xi *
-              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 =
+              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) =
           (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
                 normSq (suzukiCriticalWallNegativeLightAmplitude
                   (2 * Real.pi * xi) p e) +
             deriv (fun x : ℝ =>
               normSq (ccmActualHeadMellinWallChord x
                 (xiGammaEulerValuationNat (p, e)))) xi) *
-              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by ring
+              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by ring
         _ = (4 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
               criticalMellinAtomWeight (xiGammaEulerValuationNat (p, e))) *
-              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by rw [hpoint]
-    _ = ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ 2 := by
+              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by rw [hpoint]
+    _ = ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ (2 : ℕ) := by
       rw [integral_const_mul,
         ← HTGeometry.norm_l2_sq_eq_integral_norm_sq,
         fourierUnitary.norm_map]
@@ -273,7 +273,7 @@ theorem wallPositiveLightRateEnergy_sub_chordJetCurrent_eq_centerReserve
     (p : Nat.Primes) (e : ℕ) (f : SoninL2) :
     ccmActualHeadWallPositiveLightRateEnergy p e f -
         ccmActualHeadWallChordJetCurrent p e f =
-      ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ 2 := by
+      ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ (2 : ℕ) := by
   rw [ccmActualHeadWallPositiveLightRateEnergy, ccmActualHeadWallChordJetCurrent,
     ← integral_sub
       (integrable_ccmActualHeadWallPositiveLightRateEnergy_integrand p e f)
@@ -283,13 +283,13 @@ theorem wallPositiveLightRateEnergy_sub_chordJetCurrent_eq_centerReserve
       (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
           normSq (suzukiCriticalWallPositiveLightAmplitude
             (2 * Real.pi * xi) p e)) *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 -
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) -
         deriv (fun x : ℝ =>
           normSq (ccmActualHeadMellinWallChord x
             (xiGammaEulerValuationNat (p, e)))) xi *
-          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2) =
+          ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ)) =
       ∫ xi : ℝ, ccmActualHeadWallCenterReserveRate p e *
-        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by
+        ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards with xi
       have hpoint := positiveLight_sub_actualWallChord_deriv_eq_centerReserve xi p e
@@ -299,22 +299,22 @@ theorem wallPositiveLightRateEnergy_sub_chordJetCurrent_eq_centerReserve
         8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
                 normSq (suzukiCriticalWallPositiveLightAmplitude
                   (2 * Real.pi * xi) p e) *
-              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 -
+              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) -
             deriv (fun x : ℝ =>
               normSq (ccmActualHeadMellinWallChord x
                 (xiGammaEulerValuationNat (p, e)))) xi *
-              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 =
+              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) =
           (8 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
                 normSq (suzukiCriticalWallPositiveLightAmplitude
                   (2 * Real.pi * xi) p e) -
             deriv (fun x : ℝ =>
               normSq (ccmActualHeadMellinWallChord x
                 (xiGammaEulerValuationNat (p, e)))) xi) *
-              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by ring
+              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by ring
         _ = (4 * Real.pi * Real.log (xiGammaEulerValuationNat (p, e)) *
               criticalMellinAtomWeight (xiGammaEulerValuationNat (p, e))) *
-              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ 2 := by rw [hpoint]
-    _ = ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ 2 := by
+              ‖(fourierUnitary f : ℝ → ℂ) xi‖ ^ (2 : ℕ) := by rw [hpoint]
+    _ = ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ (2 : ℕ) := by
       rw [integral_const_mul,
         ← HTGeometry.norm_l2_sq_eq_integral_norm_sq,
         fourierUnitary.norm_map]
@@ -351,7 +351,7 @@ theorem ccmActualHeadWallNegativeLightRateEnergy_nonneg
 theorem abs_ccmActualHeadWallChordJetCurrent_le_centerReserve
     (p : Nat.Primes) (e : ℕ) (f : SoninL2) :
     |ccmActualHeadWallChordJetCurrent p e f| ≤
-      ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ 2 := by
+      ccmActualHeadWallCenterReserveRate p e * ‖f‖ ^ (2 : ℕ) := by
   rw [abs_le]
   constructor
   · have hpos := ccmActualHeadWallPositiveLightRateEnergy_nonneg p e f
@@ -377,17 +377,17 @@ def ccmActualHeadWallPacketChordJetCurrent
 theorem abs_ccmActualHeadWallPacketChordJetCurrent_le_centerReserve
     (S : Finset (Nat.Primes × ℕ)) (f : SoninL2) :
     |ccmActualHeadWallPacketChordJetCurrent S f| ≤
-      ccmActualHeadWallPacketCenterReserveRate S * ‖f‖ ^ 2 := by
+      ccmActualHeadWallPacketCenterReserveRate S * ‖f‖ ^ (2 : ℕ) := by
   rw [ccmActualHeadWallPacketChordJetCurrent]
   calc
     |∑ pe ∈ S, ccmActualHeadWallChordJetCurrent pe.1 pe.2 f| ≤
         ∑ pe ∈ S, |ccmActualHeadWallChordJetCurrent pe.1 pe.2 f| :=
       Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ pe ∈ S,
-        ccmActualHeadWallCenterReserveRate pe.1 pe.2 * ‖f‖ ^ 2 := by
+        ccmActualHeadWallCenterReserveRate pe.1 pe.2 * ‖f‖ ^ (2 : ℕ) := by
       gcongr with pe hpe
       exact abs_ccmActualHeadWallChordJetCurrent_le_centerReserve pe.1 pe.2 f
-    _ = ccmActualHeadWallPacketCenterReserveRate S * ‖f‖ ^ 2 := by
+    _ = ccmActualHeadWallPacketCenterReserveRate S * ‖f‖ ^ (2 : ℕ) := by
       rw [ccmActualHeadWallPacketCenterReserveRate]
       simp only [Finset.sum_mul]
 

@@ -60,7 +60,7 @@ theorem ceiling_not_scale_invariant :
 the double sum into two squares. -/
 theorem pair_correlation_eq_squares {n : ℕ} (w γ : Fin n → ℝ) (α : ℝ) :
     ∑ j, ∑ k, w j * w k * Real.cos (α * (γ j - γ k))
-      = (∑ j, w j * Real.cos (α * γ j)) ^ 2 + (∑ j, w j * Real.sin (α * γ j)) ^ 2 := by
+      = (∑ j, w j * Real.cos (α * γ j)) ^ (2 : ℕ) + (∑ j, w j * Real.sin (α * γ j)) ^ (2 : ℕ) := by
   have hexp : ∀ j k : Fin n, w j * w k * Real.cos (α * (γ j - γ k))
       = (w j * Real.cos (α * γ j)) * (w k * Real.cos (α * γ k))
         + (w j * Real.sin (α * γ j)) * (w k * Real.sin (α * γ k)) := by
@@ -75,7 +75,7 @@ theorem pair_correlation_eq_squares {n : ℕ} (w γ : Fin n → ℝ) (α : ℝ) 
           + (∑ j, ∑ k, (w j * Real.sin (α * γ j)) * (w k * Real.sin (α * γ k))) := by
         rw [← Finset.sum_add_distrib]
         exact Finset.sum_congr rfl (fun j _ => Finset.sum_add_distrib)
-    _ = (∑ j, w j * Real.cos (α * γ j)) ^ 2 + (∑ j, w j * Real.sin (α * γ j)) ^ 2 := by
+    _ = (∑ j, w j * Real.cos (α * γ j)) ^ (2 : ℕ) + (∑ j, w j * Real.sin (α * γ j)) ^ (2 : ℕ) := by
         rw [← Finset.sum_mul_sum, ← Finset.sum_mul_sum]
         ring
 

@@ -96,10 +96,10 @@ theorem GreedyBumpSpurHazardData.sum_cumulantTwo
     (data : GreedyBumpSpurHazardData) :
     (∑ i : Fin data.depth,
       ((data.channelCount i).factorialCumulantTwo)) =
-      -(rescalePowerSum 2 data.depth / (data.denominator : ℝ) ^ 2) := by
+      -(rescalePowerSum 2 data.depth / (data.denominator : ℝ) ^ (2 : ℕ)) := by
   calc
     (∑ i : Fin data.depth, (data.channelCount i).factorialCumulantTwo) =
-        ∑ i : Fin data.depth, -(data.probability i) ^ 2 := by
+        ∑ i : Fin data.depth, -(data.probability i) ^ (2 : ℕ) := by
           apply Finset.sum_congr rfl
           intro i hi
           simpa [GreedyBumpSpurHazardData.channelCount,
@@ -107,13 +107,13 @@ theorem GreedyBumpSpurHazardData.sum_cumulantTwo
             StrictProbabilityParameter.toProbabilityParameter] using
             greedyBumpBernoulli_factorialCumulantTwo
               (data.strictProbability i).toProbabilityParameter
-    _ = -(rescalePowerSum 2 data.depth / (data.denominator : ℝ) ^ 2) := by
-      rw [show (∑ i : Fin data.depth, -(data.probability i) ^ 2) =
+    _ = -(rescalePowerSum 2 data.depth / (data.denominator : ℝ) ^ (2 : ℕ)) := by
+      rw [show (∑ i : Fin data.depth, -(data.probability i) ^ (2 : ℕ)) =
           ∑ i ∈ Finset.range data.depth,
-            -(((i : ℝ) / (data.denominator : ℝ)) ^ 2) by
+            -(((i : ℝ) / (data.denominator : ℝ)) ^ (2 : ℕ)) by
         simpa only [GreedyBumpSpurHazardData.probability] using
           (Fin.sum_univ_eq_sum_range
-            (fun i => -(((i : ℝ) / (data.denominator : ℝ)) ^ 2)) data.depth)]
+            (fun i => -(((i : ℝ) / (data.denominator : ℝ)) ^ (2 : ℕ))) data.depth)]
       rw [Finset.sum_neg_distrib]
       apply congrArg Neg.neg
       simp only [rescalePowerSum]

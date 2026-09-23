@@ -11,9 +11,9 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance fokasLenellsCausalBoundedSlowDecayInst1 : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance fokasLenellsCausalBoundedSlowDecayInst2 : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance fokasLenellsCausalBoundedSlowDecayInst3 : CompleteSpace causalBoundedChain := causalBoundedChain_complete
 local instance : IsTopologicalAddGroup causalBoundedChain :=
   (norm_withSeminorms ℂ causalBoundedChain).topologicalAddGroup
 local instance : ContinuousSMul ℂ causalBoundedChain :=

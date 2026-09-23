@@ -42,8 +42,8 @@ theorem thetaCuspNativeEvenFourDet_eq_head_mul_schur {x : ℝ} (hx : 0 ≤ x) :
 
 /-- The positive seam head determinant has its exact mass-normalized polynomial. -/
 theorem thetaCuspNativeEvenHead_zero_det_eq_polynomial :
-    (thetaCuspNativeEvenHead 0).det = thetaCuspSelfDualThetaMass^6 *
-      HTGeometry.modularThetaEvenSeamHeadPolynomial (thetaCuspSelfDualModularScale^2) := by
+    (thetaCuspNativeEvenHead 0).det = thetaCuspSelfDualThetaMass^(6 : ℕ) *
+      HTGeometry.modularThetaEvenSeamHeadPolynomial (thetaCuspSelfDualModularScale^(2 : ℕ)) := by
   have h0 := thetaCuspNativeEvenMoment_zero_eq_polynomial (0 : Fin 7)
   have h1 := thetaCuspNativeEvenMoment_zero_eq_polynomial (1 : Fin 7)
   have h2 := thetaCuspNativeEvenMoment_zero_eq_polynomial (2 : Fin 7)
@@ -54,18 +54,18 @@ theorem thetaCuspNativeEvenHead_zero_det_eq_polynomial :
   norm_num [thetaCuspNativeEvenHead, finiteHankelMatrix, Matrix.det_fin_three] at ⊢
   rw [h0, h2, h4]
   have he1 : thetaCuspNativeReflectionJet 2 0 =
-      -thetaCuspSelfDualThetaMass^2*HTGeometry.modularThetaEvenSeamMomentPolynomial 1
-        (thetaCuspSelfDualModularScale^2) := by nlinarith only [h1]
+      -thetaCuspSelfDualThetaMass^(2 : ℕ)*HTGeometry.modularThetaEvenSeamMomentPolynomial 1
+        (thetaCuspSelfDualModularScale^(2 : ℕ)) := by nlinarith only [h1]
   have he3 : thetaCuspNativeReflectionJet 6 0 =
-      -thetaCuspSelfDualThetaMass^2*HTGeometry.modularThetaEvenSeamMomentPolynomial 3
-        (thetaCuspSelfDualModularScale^2) := by nlinarith only [h3]
+      -thetaCuspSelfDualThetaMass^(2 : ℕ)*HTGeometry.modularThetaEvenSeamMomentPolynomial 3
+        (thetaCuspSelfDualModularScale^(2 : ℕ)) := by nlinarith only [h3]
   rw [he1, he3]
   ring
 
 /-- Exact normalized even rank-four determinant, with all infinite source incidence retained. -/
 theorem thetaCuspNativeEvenFourDet_zero_eq_polynomial :
-    thetaCuspNativeEvenFourDet 0 = thetaCuspSelfDualThetaMass^8 *
-      HTGeometry.modularThetaEvenSeamFourPolynomial (thetaCuspSelfDualModularScale^2) := by
+    thetaCuspNativeEvenFourDet 0 = thetaCuspSelfDualThetaMass^(8 : ℕ) *
+      HTGeometry.modularThetaEvenSeamFourPolynomial (thetaCuspSelfDualModularScale^(2 : ℕ)) := by
   have hj (k : Fin 7) := thetaCuspNativeEvenMoment_zero_eq_polynomial k
   rw [thetaCuspNativeEvenFourDet_eq, ← HTGeometry.modularThetaEvenSeamFourPolynomial_eq]
   have h0 := hj 0

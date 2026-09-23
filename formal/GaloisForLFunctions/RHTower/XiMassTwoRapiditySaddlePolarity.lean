@@ -124,12 +124,12 @@ theorem xiMassTwoRapidityCorrelation_timelike_stationary_curvature_sign
   constructor
   · unfold xiMassTwoRapidityCorrelationLeftCurvature
     rw [massPhase_timelike hu hh hhu (-timelikeRapidity u h)]
-    simpa using mul_pos (Real.sqrt_pos.2 (by nlinarith : 0 < u ^ 2 - h ^ 2))
+    simpa using mul_pos (Real.sqrt_pos.2 (by nlinarith : 0 < u ^ (2 : ℕ) - h ^ (2 : ℕ)))
       (Real.cosh_pos 0)
   · unfold xiMassTwoRapidityCorrelationRightCurvature
     rw [massPhase_timelike hu hk hku (-timelikeRapidity u k)]
     simpa using neg_lt_zero.mpr
-      (mul_pos (Real.sqrt_pos.2 (by nlinarith : 0 < u ^ 2 - k ^ 2)) (Real.cosh_pos 0))
+      (mul_pos (Real.sqrt_pos.2 (by nlinarith : 0 < u ^ (2 : ℕ) - k ^ (2 : ℕ))) (Real.cosh_pos 0))
 
 /-- The timelike stationary Hessian determinant is strictly negative. -/
 theorem xiMassTwoRapidityCorrelation_timelike_stationary_curvature_product_neg

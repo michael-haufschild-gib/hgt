@@ -117,7 +117,7 @@ theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_le_productHarmonic
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     ‖kloostermanDistinctModulusTerminalGramQuadratic M Q w B b‖ ≤
-      (∑ n ∈ B, ‖b n‖) ^ 2 * kloostermanDistinctModulusProductHarmonicBudget Q w := by
+      (∑ n ∈ B, ‖b n‖) ^ (2 : ℕ) * kloostermanDistinctModulusProductHarmonicBudget Q w := by
   calc
     ‖kloostermanDistinctModulusTerminalGramQuadratic M Q w B b‖ ≤
         ∑ n ∈ B, ‖star (b n) * ∑ k ∈ B, b k *
@@ -149,7 +149,7 @@ theorem norm_kloostermanDistinctModulusTerminalGramQuadratic_le_productHarmonic
       intro n hn
       gcongr with k hk
       exact norm_kloostermanDistinctModulusTerminalGram_le_productHarmonic M Q w n k
-    _ = (∑ n ∈ B, ‖b n‖) ^ 2 * kloostermanDistinctModulusProductHarmonicBudget Q w := by
+    _ = (∑ n ∈ B, ‖b n‖) ^ (2 : ℕ) * kloostermanDistinctModulusProductHarmonicBudget Q w := by
       rw [← Finset.sum_mul, ← Finset.sum_mul]
       ring
 
@@ -158,7 +158,7 @@ theorem norm_kloostermanDistinctModulusTerminalGramOffDiagonal_le_productHarmoni
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     ‖kloostermanDistinctModulusTerminalGramOffDiagonal M Q w B b‖ ≤
-      (∑ n ∈ B, ‖b n‖) ^ 2 * kloostermanDistinctModulusProductHarmonicBudget Q w := by
+      (∑ n ∈ B, ‖b n‖) ^ (2 : ℕ) * kloostermanDistinctModulusProductHarmonicBudget Q w := by
   calc
     ‖kloostermanDistinctModulusTerminalGramOffDiagonal M Q w B b‖ ≤
         ∑ n ∈ B, ‖star (b n) * ∑ k ∈ B.erase n, b k *
@@ -199,7 +199,7 @@ theorem norm_kloostermanDistinctModulusTerminalGramOffDiagonal_le_productHarmoni
           rw [← Finset.sum_erase_add _ _ hn]
           exact le_add_of_nonneg_right
             (mul_nonneg (norm_nonneg _) (kloostermanDistinctModulusProductHarmonicBudget_nonneg Q w))
-    _ = (∑ n ∈ B, ‖b n‖) ^ 2 * kloostermanDistinctModulusProductHarmonicBudget Q w := by
+    _ = (∑ n ∈ B, ‖b n‖) ^ (2 : ℕ) * kloostermanDistinctModulusProductHarmonicBudget Q w := by
       rw [← Finset.sum_mul, ← Finset.sum_mul]
       ring
 

@@ -159,7 +159,7 @@ theorem exists_poleClearedFirstTrace_lowerCusp_arithmetic_extension_of_zeroFree
     ∃ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g (firstTraceZeroFreeLowerCusp T) ∧
         (∀ s ∈ firstTraceZeroFreeLowerCusp T,
-          g s ^ 2 = poleClearedFirstTraceExponentialContinuation s) ∧
+          g s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s) ∧
         EqOn g poleClearedPrimeZetaHalfEulerGerm
           (firstTraceZeroFreeLowerCusp T ∩ farHalf) := by
   have hlowerOpen := isOpen_firstTraceZeroFreeLowerCusp hT
@@ -182,7 +182,7 @@ theorem exists_poleClearedFirstTrace_lowerCusp_arithmetic_extension_of_zeroFree
       linarith
     exact ⟨him, hedge.trans (by norm_num [a])⟩
   have haFar : a ∈ farHalf := by rw [mem_farHalf]; norm_num [a]
-  have hsquares : g a ^ 2 = poleClearedPrimeZetaHalfEulerGerm a ^ 2 := by
+  have hsquares : g a ^ (2 : ℕ) = poleClearedPrimeZetaHalfEulerGerm a ^ (2 : ℕ) := by
     rw [hgsq a haLower, poleClearedPrimeZetaHalfEulerGerm_sq haFar]
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsquares with hmatch | hmatch
   · refine ⟨g, hg, hgsq, ?_⟩
@@ -216,7 +216,7 @@ theorem exists_poleClearedFirstTrace_symmetricZeroFreeCusp_arithmetic_extension 
     ∃ T : ℝ, 4 ≤ T ∧ ∃ g : ℂ → ℂ,
       AnalyticOnNhd ℂ g (firstTraceSymmetricZeroFreeCusp T) ∧
         (∀ s ∈ firstTraceSymmetricZeroFreeCusp T,
-          g s ^ 2 = poleClearedFirstTraceExponentialContinuation s) ∧
+          g s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s) ∧
         EqOn g poleClearedPrimeZetaHalfEulerGerm farHalf := by
   obtain ⟨TU, hTU, gU, hgU, hgUsq, hgUEuler⟩ :=
     exists_poleClearedFirstTrace_zeroFreeCusp_arithmetic_extension
@@ -229,7 +229,7 @@ theorem exists_poleClearedFirstTrace_symmetricZeroFreeCusp_arithmetic_extension 
     firstTraceZeroFreeCusp_mono_height hTUT
   have hgU' : AnalyticOnNhd ℂ gU (firstTraceZeroFreeCusp T) := hgU.mono hupperSub
   have hgUsq' : ∀ s ∈ firstTraceZeroFreeCusp T,
-      gU s ^ 2 = poleClearedFirstTraceExponentialContinuation s :=
+      gU s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s :=
     fun s hs => hgUsq s (hupperSub hs)
   have hgUEuler' : EqOn gU poleClearedPrimeZetaHalfEulerGerm
       (firstTraceZeroFreeCusp T ∩ farHalf) := by

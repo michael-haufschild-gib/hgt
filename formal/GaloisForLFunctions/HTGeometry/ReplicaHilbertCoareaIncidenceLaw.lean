@@ -65,7 +65,7 @@ theorem norm_finitePureTensorPowerEuclidean_eq_one
         (finitePureTensorPowerEuclidean r ψ) = 1 := by
     rw [inner_finitePureTensorPowerEuclidean, hψ, one_pow]
   rw [inner_self_eq_norm_sq_to_K] at hinner
-  have hsquare : ‖finitePureTensorPowerEuclidean r ψ‖ ^ 2 = 1 := by
+  have hsquare : ‖finitePureTensorPowerEuclidean r ψ‖ ^ (2 : ℕ) = 1 := by
     apply Complex.ofReal_injective
     simpa using hinner
   nlinarith [norm_nonneg (finitePureTensorPowerEuclidean r ψ)]
@@ -276,7 +276,7 @@ noncomputable def replicaTargetProjectionMass
     {C α : Type*} [Fintype α]
     (r : ℕ) (target : C → α → ℂ) (ψ : α → ℂ) : ℝ :=
   ‖(replicaTargetSpan r target).orthogonalProjectionOnto
-      (finitePureTensorPowerEuclidean r ψ)‖ ^ 2
+      (finitePureTensorPowerEuclidean r ψ)‖ ^ (2 : ℕ)
 
 /-- Projection mass is invariant under duplicate target labels. -/
 theorem replicaTargetProjectionMass_duplicated
@@ -327,7 +327,7 @@ theorem finitePureStateFidelity_pow_le_replicaTargetProjectionMass
       _ = ‖S.orthogonalProjectionOnto u‖ := mul_one _
   have hfid :
       finitePureStateFidelity ψ (target c) ^ r =
-        ‖inner ℂ u v‖ ^ 2 := by
+        ‖inner ℂ u v‖ ^ (2 : ℕ) := by
     rw [← finitePureStateFidelity_tensorPower r ψ (target c)]
     rw [finitePureStateFidelity, show inner ℂ u v =
       finiteComplexInner (finitePureTensorPower r ψ)

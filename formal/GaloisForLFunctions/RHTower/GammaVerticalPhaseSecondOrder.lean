@@ -19,10 +19,10 @@ namespace RHTower
 
 /-- A second-order real-part estimate on the vertical line through `1`. -/
 theorem abs_re_digamma_one_sub_log_le {t : ℝ} (ht : 2 ≤ t) :
-    |(Complex.digamma ((1 : ℂ) + (t : ℂ) * I)).re - Real.log t| ≤ 8 / t ^ 2 := by
+    |(Complex.digamma ((1 : ℂ) + (t : ℂ) * I)).re - Real.log t| ≤ 8 / t ^ (2 : ℕ) := by
   have ht0 : 0 < t := by linarith
   let z : ℂ := (1 : ℂ) + (t : ℂ) * I
-  have hzsq : ‖z‖ ^ 2 = t ^ 2 + 1 := by
+  have hzsq : ‖z‖ ^ (2 : ℕ) = t ^ (2 : ℕ) + 1 := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp [z]
     ring
@@ -32,11 +32,11 @@ theorem abs_re_digamma_one_sub_log_le {t : ℝ} (ht : 2 ≤ t) :
     have hre := congrArg Complex.re hz
     simp [z] at hre
   have hnormge : t ≤ ‖z‖ := by
-    have hsquare : t ^ 2 ≤ ‖z‖ ^ 2 := by rw [hzsq]; norm_num
+    have hsquare : t ^ (2 : ℕ) ≤ ‖z‖ ^ (2 : ℕ) := by rw [hzsq]; norm_num
     nlinarith [norm_nonneg z]
   have hnormle : ‖z‖ ≤ t + 1 / (2 * t) := by
     have hupper0 : 0 ≤ t + 1 / (2 * t) := by positivity
-    have hsquare : ‖z‖ ^ 2 ≤ (t + 1 / (2 * t)) ^ 2 := by
+    have hsquare : ‖z‖ ^ (2 : ℕ) ≤ (t + 1 / (2 * t)) ^ (2 : ℕ) := by
       rw [hzsq]
       field_simp [ht0.ne']
       nlinarith
@@ -44,28 +44,28 @@ theorem abs_re_digamma_one_sub_log_le {t : ℝ} (ht : 2 ≤ t) :
   have hlognonneg : 0 ≤ Real.log ‖z‖ - Real.log t :=
     sub_nonneg.mpr (Real.log_le_log ht0 hnormge)
   have hratio0 : 0 < ‖z‖ / t := div_pos hznorm0 ht0
-  have hratiole : ‖z‖ / t ≤ 1 + 1 / (2 * t ^ 2) := by
+  have hratiole : ‖z‖ / t ≤ 1 + 1 / (2 * t ^ (2 : ℕ)) := by
     rw [div_le_iff₀ ht0]
     calc
       ‖z‖ ≤ t + 1 / (2 * t) := hnormle
-      _ = (1 + 1 / (2 * t ^ 2)) * t := by field_simp [ht0.ne']
-  have hlogupper : Real.log ‖z‖ - Real.log t ≤ 1 / (2 * t ^ 2) := by
+      _ = (1 + 1 / (2 * t ^ (2 : ℕ))) * t := by field_simp [ht0.ne']
+  have hlogupper : Real.log ‖z‖ - Real.log t ≤ 1 / (2 * t ^ (2 : ℕ)) := by
     rw [← Real.log_div hznorm0.ne' ht0.ne']
     exact le_trans (Real.log_le_sub_one_of_pos hratio0) (by linarith)
-  have hlogabs : |Real.log ‖z‖ - Real.log t| ≤ 1 / (2 * t ^ 2) := by
+  have hlogabs : |Real.log ‖z‖ - Real.log t| ≤ 1 / (2 * t ^ (2 : ℕ)) := by
     rw [abs_of_nonneg hlognonneg]
     exact hlogupper
   have hrem := GaloisForLFunctions.HTGeometry.norm_digamma_sub_log_add_half_inv_le
     (by norm_num : (0 : ℝ) < 1) ht
-  change ‖Complex.digamma z - Complex.log z + 1 / (2 * z)‖ ≤ (20 / 3) / t ^ 2 at hrem
+  change ‖Complex.digamma z - Complex.log z + 1 / (2 * z)‖ ≤ (20 / 3) / t ^ (2 : ℕ) at hrem
   have hreRem : |(Complex.digamma z - Complex.log z + 1 / (2 * z)).re| ≤
-      (20 / 3) / t ^ 2 := le_trans (Complex.abs_re_le_norm _) hrem
-  have hinvre : (1 / (2 * z) : ℂ).re = 1 / (2 * (1 + t ^ 2)) := by
+      (20 / 3) / t ^ (2 : ℕ) := le_trans (Complex.abs_re_le_norm _) hrem
+  have hinvre : (1 / (2 * z) : ℂ).re = 1 / (2 * (1 + t ^ (2 : ℕ))) := by
     rw [one_div, Complex.inv_re, Complex.normSq_apply]
     simp [z]
     field_simp
   have hinvnonneg : 0 ≤ (1 / (2 * z) : ℂ).re := by rw [hinvre]; positivity
-  have hinvle : |(1 / (2 * z) : ℂ).re| ≤ 1 / (2 * t ^ 2) := by
+  have hinvle : |(1 / (2 * z) : ℂ).re| ≤ 1 / (2 * t ^ (2 : ℕ)) := by
     rw [abs_of_nonneg hinvnonneg, hinvre]
     gcongr
     nlinarith
@@ -85,9 +85,9 @@ theorem abs_re_digamma_one_sub_log_le {t : ℝ} (ht : 2 ≤ t) :
         _ ≤ |(Complex.digamma z - Complex.log z + 1 / (2 * z)).re +
               (Real.log ‖z‖ - Real.log t)| + |(1 / (2 * z) : ℂ).re| := abs_sub _ _
         _ ≤ _ := add_le_add (abs_add_le _ _) le_rfl
-    _ ≤ (20 / 3) / t ^ 2 + 1 / (2 * t ^ 2) + 1 / (2 * t ^ 2) := by
+    _ ≤ (20 / 3) / t ^ (2 : ℕ) + 1 / (2 * t ^ (2 : ℕ)) + 1 / (2 * t ^ (2 : ℕ)) := by
       gcongr
-    _ ≤ 8 / t ^ 2 := by
+    _ ≤ 8 / t ^ (2 : ℕ) := by
       field_simp [ht0.ne']
       nlinarith
 
@@ -198,21 +198,21 @@ theorem abs_gammaVerticalPhase_half_sub_main_le {t : ℝ} (ht : 2 ≤ t) :
       simpa [e] using hasDerivAt_gammaVerticalPhaseRemainder (by norm_num : (0 : ℝ) < 1)
         (lt_of_lt_of_le ht0 hu.1)
     · exact hecont.intervalIntegrable
-  have hbound : ∀ u ∈ Set.uIoc t (2 * t), ‖e u‖ ≤ 8 / t ^ 2 := by
+  have hbound : ∀ u ∈ Set.uIoc t (2 * t), ‖e u‖ ≤ 8 / t ^ (2 : ℕ) := by
     intro u hu
     rw [Set.uIoc_of_le h2t] at hu
     have hu2 : 2 ≤ u := ht.trans hu.1.le
-    have heu : |e u| ≤ 8 / u ^ 2 := by simpa [e] using abs_re_digamma_one_sub_log_le hu2
+    have heu : |e u| ≤ 8 / u ^ (2 : ℕ) := by simpa [e] using abs_re_digamma_one_sub_log_le hu2
     rw [Real.norm_eq_abs]
     refine heu.trans ?_
-    have hsquare : t ^ 2 ≤ u ^ 2 := by nlinarith [ht0, hu.1.le]
+    have hsquare : t ^ (2 : ℕ) ≤ u ^ (2 : ℕ) := by nlinarith [ht0, hu.1.le]
     exact div_le_div_of_nonneg_left (by norm_num) (sq_pos_of_pos ht0) hsquare
   have hintegral := intervalIntegral.norm_integral_le_of_norm_le_const hbound
   rw [Real.norm_eq_abs, hint] at hintegral
   have habs : |2 * t - t| = t := by
     rw [show 2 * t - t = t by ring, abs_of_pos ht0]
   rw [habs] at hintegral
-  rw [show (8 / t ^ 2) * t = 8 / t by field_simp [ht0.ne']] at hintegral
+  rw [show (8 / t ^ (2 : ℕ)) * t = 8 / t by field_simp [ht0.ne']] at hintegral
   change |gammaVerticalPhaseRemainder (1 / 2) t| ≤ 8 / t
   rw [gammaVerticalPhaseRemainder_half_eq_sub ht0]
   exact hintegral

@@ -387,7 +387,7 @@ theorem twoLocalSymmetricIsolatedEdgeEnergy_isDistinguishedStarTwoLocal
 unit transverse coupling and complex longitudinal parameter `w`. -/
 def twoLocalEdgeBranchRadicand {m : ℕ}
     (z₀ z : Fin m → Bool) (w : ℂ) : ℂ :=
-  ((starIsingBinaryCode z₀ z : ℂ) + w) ^ 2 + 1
+  ((starIsingBinaryCode z₀ z : ℂ) + w) ^ (2 : ℕ) + 1
 
 /-- The `λI-H` matrix for the two-level block with diagonal field
 `c+w` and unit transverse coupling. -/
@@ -401,7 +401,7 @@ def twoLocalEdgeCharacteristicMatrix {m : ℕ}
 theorem det_twoLocalEdgeCharacteristicMatrix {m : ℕ}
     (z₀ z : Fin m → Bool) (w lam : ℂ) :
     (twoLocalEdgeCharacteristicMatrix z₀ z w lam).det =
-      lam ^ 2 - twoLocalEdgeBranchRadicand z₀ z w := by
+      lam ^ (2 : ℕ) - twoLocalEdgeBranchRadicand z₀ z w := by
   simp [twoLocalEdgeCharacteristicMatrix, Matrix.det_fin_two,
     twoLocalEdgeBranchRadicand]
   ring
@@ -421,7 +421,7 @@ theorem twoLocalEdgeBranchRadicand_I_eq_zero_iff {m : ℕ}
     norm_num [twoLocalEdgeBranchRadicand, pow_two, Complex.ext_iff]
 
 /-- The selected branch zero is simple: the derivative of
-`(c+w)^2+1` with respect to `w` is nonzero at `c=0,w=i`. -/
+`(c+w)^(2 : ℕ)+1` with respect to `w` is nonzero at `c=0,w=i`. -/
 theorem twoLocalEdgeBranchDerivative_I_ne_zero {m : ℕ}
     (z₀ : Fin m → Bool) :
     2 * ((starIsingBinaryCode z₀ z₀ : ℂ) + Complex.I) ≠ 0 := by
@@ -431,7 +431,7 @@ theorem twoLocalEdgeBranchDerivative_I_ne_zero {m : ℕ}
 noncomputable def twoLocalEdgeBranchPolynomial {m : ℕ}
     (z₀ z : Fin m → Bool) : Polynomial ℂ :=
   (Polynomial.X +
-      Polynomial.C (starIsingBinaryCode z₀ z : ℂ)) ^ 2 +
+      Polynomial.C (starIsingBinaryCode z₀ z : ℂ)) ^ (2 : ℕ) +
     Polynomial.C 1
 
 theorem twoLocalEdgeBranchPolynomial_eval {m : ℕ}

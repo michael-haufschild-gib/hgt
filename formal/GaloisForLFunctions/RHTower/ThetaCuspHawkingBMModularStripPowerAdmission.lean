@@ -39,11 +39,11 @@ theorem modularStrip_integrable_of_two_bounds (F : UpperHalfPlane → ℂ) (hf :
       exact hp.2
     have hb := hlo z hmem (by rw [him]; exact hp.1.2)
     rw [him] at hb
-    change ‖(p.1^2)⁻¹ • F z‖ ≤ ‖C*p.1^(r-2)*1‖
+    change ‖(p.1^(2 : ℕ))⁻¹ • F z‖ ≤ ‖C*p.1^(r-2)*1‖
     simp only [norm_smul,Real.norm_eq_abs,mul_one]
     rw [abs_of_pos (inv_pos.mpr (sq_pos_of_pos hy))]
     calc
-      (p.1^2)⁻¹*‖F z‖ ≤ (p.1^2)⁻¹*(C*p.1^r) :=
+      (p.1^(2 : ℕ))⁻¹*‖F z‖ ≤ (p.1^(2 : ℕ))⁻¹*(C*p.1^r) :=
         mul_le_mul_of_nonneg_left hb (by positivity)
       _ = C*p.1^(r-2) := by rw [Real.rpow_sub hy,Real.rpow_two]; ring
       _ ≤ |C*p.1^(r-2)| := le_abs_self _
@@ -66,11 +66,11 @@ theorem modularStrip_integrable_of_two_bounds (F : UpperHalfPlane → ℂ) (hf :
       rw [ofComplex_apply_of_im_pos (by simpa using hy)]
       exact hp.2
     have hb := hhi z hmem (by rw [him]; exact hp.1)
-    change ‖(p.1^2)⁻¹ • F z‖ ≤ ‖D*p.1^(-2:ℝ)*1‖
+    change ‖(p.1^(2 : ℕ))⁻¹ • F z‖ ≤ ‖D*p.1^(-2:ℝ)*1‖
     simp only [norm_smul,Real.norm_eq_abs,mul_one]
     rw [abs_of_pos (inv_pos.mpr (sq_pos_of_pos hy))]
     calc
-      (p.1^2)⁻¹*‖F z‖ ≤ (p.1^2)⁻¹*D := mul_le_mul_of_nonneg_left hb (by positivity)
+      (p.1^(2 : ℕ))⁻¹*‖F z‖ ≤ (p.1^(2 : ℕ))⁻¹*D := mul_le_mul_of_nonneg_left hb (by positivity)
       _ = D*p.1^(-2:ℝ) := by rw [Real.rpow_neg hy.le,Real.rpow_two]; ring
       _ ≤ |D*p.1^(-2:ℝ)| := le_abs_self _
   apply (hsmall.union hlarge).mono_set

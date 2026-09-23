@@ -80,7 +80,7 @@ set_option maxHeartbeats 1600000 in
 /-- **The tent transform**: `𝓕(perronTent a)(w) = (a + 2πiw)⁻²`. -/
 theorem fourier_perronTent {a : ℝ} (ha : 0 < a) (w : ℝ) :
     FourierTransform.fourier (perronTent a) w
-      = 1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2 := by
+      = 1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ) := by
   have hcre : 0 < ((a : ℂ) + 2 * Real.pi * w * Complex.I).re := by
     simp [Complex.add_re, Complex.mul_re, Complex.mul_im]
     exact ha
@@ -113,7 +113,7 @@ theorem fourier_perronTent {a : ℝ} (ha : 0 < a) (w : ℝ) :
           (v : ℂ) * Complex.exp (-(((a : ℂ)
             + 2 * Real.pi * w * Complex.I) * v)) :=
         integral_indicator measurableSet_Ioi
-    _ = 1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ 2 :=
+    _ = 1 / ((a : ℂ) + 2 * Real.pi * w * Complex.I) ^ (2 : ℕ) :=
         integral_mul_exp_neg_mul_Ioi hcre
 
 end RHTower

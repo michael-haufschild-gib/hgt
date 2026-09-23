@@ -14,14 +14,14 @@ open scoped BigOperators
 def weightedLagrangeEvaluationCapacity {k : ℕ}
     (x : Fin k → ℝ) (z : ℂ) : ℝ :=
   ‖z‖ * ∑ i : Fin k,
-    ‖(Lagrange.basis Finset.univ (fun j => (x j : ℂ)) i).eval z‖ ^ 2 / x i
+    ‖(Lagrange.basis Finset.univ (fun j => (x j : ℂ)) i).eval z‖ ^ (2 : ℕ) / x i
 
 /-- Uniform disk bound for weighted Lagrange capacity. -/
 def weightedLagrangeEvaluationCapacityBound {k : ℕ} (x : Fin k → ℝ) : ℝ :=
   ∑ i : Fin k,
     (GaloisForLFunctions.HTGeometry.coeffNormSum
       (Lagrange.basis Finset.univ (fun j => (x j : ℂ)) i) *
-        2 ^ (Lagrange.basis Finset.univ (fun j => (x j : ℂ)) i).natDegree) ^ 2 / x i
+        2 ^ (Lagrange.basis Finset.univ (fun j => (x j : ℂ)) i).natDegree) ^ (2 : ℕ) / x i
 
 theorem weightedLagrangeEvaluationCapacity_nonneg
     {k : ℕ} (x : Fin k → ℝ) (hx : ∀ i, 0 < x i) (z : ℂ) :
@@ -64,18 +64,18 @@ theorem weightedLagrangeEvaluationCapacity_at_node
   unfold weightedLagrangeEvaluationCapacity
   rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hx i)]
   have hsum : (∑ j : Fin k,
-      ‖(Lagrange.basis Finset.univ xc j).eval (x i : ℂ)‖ ^ 2 / x j) =
+      ‖(Lagrange.basis Finset.univ xc j).eval (x i : ℂ)‖ ^ (2 : ℕ) / x j) =
       1 / x i := by
     rw [Finset.sum_eq_single i]
     · rw [Lagrange.eval_basis_self hcinj.injOn (Finset.mem_univ i)]
       norm_num
     · intro j _ hji
-      change ‖(Lagrange.basis Finset.univ xc j).eval (xc i)‖ ^ 2 / x j = 0
+      change ‖(Lagrange.basis Finset.univ xc j).eval (xc i)‖ ^ (2 : ℕ) / x j = 0
       rw [Lagrange.eval_basis_of_ne hji (Finset.mem_univ i)]
       norm_num
     · simp
   change x i * (∑ j : Fin k,
-      ‖(Lagrange.basis Finset.univ xc j).eval (x i : ℂ)‖ ^ 2 / x j) = 1
+      ‖(Lagrange.basis Finset.univ xc j).eval (x i : ℂ)‖ ^ (2 : ℕ) / x j) = 1
   rw [hsum, mul_div_cancel₀ _ (hx i).ne']
 
 /-- Total shifted-Xi Lagrange capacity is automatically summable. -/
@@ -98,10 +98,10 @@ theorem norm_evalRealPolynomial_sq_le_weightedLagrange_energy
     {k : ℕ} (x : Fin k → ℝ) (hx : ∀ i, 0 < x i)
     (hinj : Function.Injective x) (p : Polynomial ℝ) (hp : p ≠ 0)
     (hdegree : p.natDegree < k) (z : ℂ) :
-    ‖evalRealPolynomial p z‖ ^ 2 ≤
+    ‖evalRealPolynomial p z‖ ^ (2 : ℕ) ≤
       (∑ i : Fin k,
-          ‖(Lagrange.basis Finset.univ (fun j => (x j : ℂ)) i).eval z‖ ^ 2 / x i) *
-        ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ 2 := by
+          ‖(Lagrange.basis Finset.univ (fun j => (x j : ℂ)) i).eval z‖ ^ (2 : ℕ) / x i) *
+        ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ (2 : ℕ) := by
   classical
   let pc : Polynomial ℂ := p.map Complex.ofRealHom
   let xc : Fin k → ℂ := fun i => (x i : ℂ)
@@ -138,16 +138,16 @@ theorem norm_evalRealPolynomial_sq_le_weightedLagrange_energy
         rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
   have hsum_nonneg : 0 ≤ ∑ i : Fin k, |Polynomial.eval (x i) p| *
       ‖(Lagrange.basis Finset.univ xc i).eval z‖ := by positivity
-  have hsq : ‖evalRealPolynomial p z‖ ^ 2 ≤
+  have hsq : ‖evalRealPolynomial p z‖ ^ (2 : ℕ) ≤
       (∑ i : Fin k, |Polynomial.eval (x i) p| *
-        ‖(Lagrange.basis Finset.univ xc i).eval z‖) ^ 2 :=
+        ‖(Lagrange.basis Finset.univ xc i).eval z‖) ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) hsum_nonneg).2 htri
   have hcauchy := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul
     (Finset.univ : Finset (Fin k))
     (r := fun i => |Polynomial.eval (x i) p| *
       ‖(Lagrange.basis Finset.univ xc i).eval z‖)
-    (f := fun i => ‖(Lagrange.basis Finset.univ xc i).eval z‖ ^ 2 / x i)
-    (g := fun i => x i * Polynomial.eval (x i) p ^ 2)
+    (f := fun i => ‖(Lagrange.basis Finset.univ xc i).eval z‖ ^ (2 : ℕ) / x i)
+    (g := fun i => x i * Polynomial.eval (x i) p ^ (2 : ℕ))
     (fun i _ => div_nonneg (sq_nonneg _) (hx i).le)
     (fun i _ => mul_nonneg (hx i).le (sq_nonneg _))
     (fun i _ => by
@@ -161,9 +161,9 @@ theorem norm_weighted_evalRealPolynomial_sq_le_capacity_mul_energy
     {k : ℕ} (x : Fin k → ℝ) (hx : ∀ i, 0 < x i)
     (hinj : Function.Injective x) (p : Polynomial ℝ) (hp : p ≠ 0)
     (hdegree : p.natDegree < k) (z : ℂ) :
-    ‖z‖ * ‖evalRealPolynomial p z‖ ^ 2 ≤
+    ‖z‖ * ‖evalRealPolynomial p z‖ ^ (2 : ℕ) ≤
       weightedLagrangeEvaluationCapacity x z *
-        ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ 2 := by
+        ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ (2 : ℕ) := by
   rw [weightedLagrangeEvaluationCapacity, mul_assoc]
   gcongr
   exact norm_evalRealPolynomial_sq_le_weightedLagrange_energy
@@ -176,14 +176,14 @@ theorem neg_xiShiftedHankelPairTerm_le_weightedLagrange_capacity
     (hdegree : p.natDegree < k) (y : ℝ) (q : XiZeroCopy) :
     -xiShiftedApertureHankelPairTerm y p p q ≤
       weightedLagrangeEvaluationCapacity x (xiShiftedReciprocalSquare y q) *
-        ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ 2 := by
+        ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ (2 : ℕ) := by
   let z := xiShiftedReciprocalSquare y q
   let w := evalRealPolynomial p z
   have hreal : -(z * w * w).re ≤ ‖z * w * w‖ := by
     have h := Complex.abs_re_le_norm (z * w * w)
     have hlower := (abs_le.mp h).1
     linarith
-  have hnorm : ‖z * w * w‖ = ‖z‖ * ‖w‖ ^ 2 := by
+  have hnorm : ‖z * w * w‖ = ‖z‖ * ‖w‖ ^ (2 : ℕ) := by
     rw [norm_mul, norm_mul]
     ring
   rw [xiShiftedApertureHankelPairTerm]
@@ -196,7 +196,7 @@ theorem sum_xiShiftedHankelPairTerm_eq_weighted_nodal_energy
     {k : ℕ} (x : Fin k → ℝ) (qcrit : Fin k → XiZeroCopy) (p : Polynomial ℝ)
     (y : ℝ) (hcoord : ∀ i, xiShiftedReciprocalSquare y (qcrit i) = (x i : ℂ)) :
     (∑ i : Fin k, xiShiftedApertureHankelPairTerm y p p (qcrit i)) =
-      ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ 2 := by
+      ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ (2 : ℕ) := by
   apply Finset.sum_congr rfl
   intro i _
   rw [xiShiftedApertureHankelPairTerm, hcoord i]
@@ -223,14 +223,14 @@ theorem weighted_nodal_energy_pos
     {k : ℕ} (x : Fin k → ℝ) (hx : ∀ i, 0 < x i)
     (hinj : Function.Injective x) (p : Polynomial ℝ) (hp : p ≠ 0)
     (hdegree : p.natDegree < k) :
-    0 < ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ 2 := by
-  have hnonneg : 0 ≤ ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ 2 := by
+    0 < ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ (2 : ℕ) := by
+  have hnonneg : 0 ≤ ∑ i : Fin k, x i * Polynomial.eval (x i) p ^ (2 : ℕ) := by
     apply Finset.sum_nonneg
     intro i _
     exact mul_nonneg (hx i).le (sq_nonneg _)
   refine lt_of_le_of_ne hnonneg ?_
   intro hzero
-  have heach : ∀ i : Fin k, x i * Polynomial.eval (x i) p ^ 2 = 0 := by
+  have heach : ∀ i : Fin k, x i * Polynomial.eval (x i) p ^ (2 : ℕ) = 0 := by
     intro i
     exact (Finset.sum_eq_zero_iff_of_nonneg fun j (_ : j ∈ (Finset.univ : Finset (Fin k))) =>
       mul_nonneg (hx j).le (sq_nonneg (Polynomial.eval (x j) p))).mp
@@ -398,7 +398,7 @@ theorem full_xiShiftedHankelPair_tsum_pos_of_saturated_capacity_lt_one
     rw [xiShiftedApertureHankelPairTerm, htcoord]
     simp only [evalRealPolynomial_ofReal, ← Complex.ofReal_mul, Complex.ofReal_re]
     calc
-      0 ≤ t * Polynomial.eval t p ^ 2 := mul_nonneg ht.le (sq_nonneg _)
+      0 ≤ t * Polynomial.eval t p ^ (2 : ℕ) := mul_nonneg ht.le (sq_nonneg _)
       _ = t * Polynomial.eval t p * Polynomial.eval t p := by ring
   have hprefixLower : E ≤
       ∑ q ∈ S, xiShiftedApertureHankelPairTerm y p p q := by

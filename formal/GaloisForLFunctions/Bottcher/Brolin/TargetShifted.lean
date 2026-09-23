@@ -42,7 +42,7 @@ theorem logPotential_preBrolinMeasureAt_eq_scaled_rootLogKernelSum
 /-- `f_c^[n](X) - a` is monic. -/
 theorem quadraticPolyIterate_sub_C_monic (c a : ℂ) (n : ℕ) :
     (quadraticPolyIterate c n - Polynomial.C a).Monic := by
-  refine (quadraticPolyIterate_monic c n).sub_of_left ?_
+  refine (quadraticPolyIterate_monic_finiteMeasures c n).sub_of_left ?_
   have hpos : 0 < (quadraticPolyIterate c n).degree := by
     rw [← Polynomial.natDegree_pos_iff_degree_pos, quadraticPolyIterate_natDegree]
     positivity
@@ -189,7 +189,7 @@ theorem greenFunctionDyn_eq_scaled_target_of_mem_roots_quadraticPolyIterate_sub_
       (Polynomial.mem_roots hp).mp hz
     rwa [Polynomial.IsRoot.def, Polynomial.eval_sub, Polynomial.eval_C,
       quadraticPolyIterate_eval, sub_eq_zero] at hisroot
-  have hscale := greenFunctionDyn_iterate c z n
+  have hscale := greenFunctionDyn_iterate_basic c z n
   rw [hzroot] at hscale
   have hpow : (2 ^ n : ℝ) ≠ 0 := by positivity
   calc

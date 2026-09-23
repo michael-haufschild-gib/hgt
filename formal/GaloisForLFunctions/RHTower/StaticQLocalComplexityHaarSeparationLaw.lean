@@ -69,7 +69,7 @@ theorem pauliBounded_complexityAlternation_and_permanentHaarSeparation
           (((((2 ^ n - 1) + 1 : ℕ)) : ℝ) *
             Real.exp (((((2 ^ n - 1) + 1 : ℕ)) : ℝ) / 2) *
             Real.sqrt
-              (Real.pi * (2 * (Real.sqrt 2 * ε) ^ 2) / 2) ^
+              (Real.pi * (2 * (Real.sqrt 2 * ε) ^ (2 : ℕ)) / 2) ^
                 ((((2 ^ n - 1) + 1 : ℕ)) - 1)) < 1)
     (hsep :
       Fintype.card (FiniteQLocalPauliLabel (Fin n) q) * 3 ^ q <

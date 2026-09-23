@@ -22,7 +22,7 @@ noncomputable section
 
 /-- The space-time phase in equation (5.1). -/
 def scatteringAngle (κ t x : ℝ) : ℝ :=
-  (Real.exp κ)^2*x-t/(4*(Real.exp κ)^2)
+  (Real.exp κ)^(2 : ℕ)*x-t/(4*(Real.exp κ)^(2 : ℕ))
 
 /-- Lower-left reflection coefficient, including the signs of (3.3) and (5.4). -/
 def spaceTimeReflection (q : SchwartzMap ℝ ℂ) (κ t x : ℝ) : ℂ :=
@@ -42,7 +42,7 @@ theorem spaceTimeReverseReflection_norm (q : SchwartzMap ℝ ℂ) (κ t x : ℝ)
 /-- The time factor for `r` is the positive exponential in (5.4). -/
 theorem spaceTimeReflection_time_factor (q : SchwartzMap ℝ ℂ) (κ t x : ℝ) :
     spaceTimeReflection q κ t x =
-      phase (-t) ((Real.exp κ)^2)*spaceTimeReflection q κ 0 x := by
+      phase (-t) ((Real.exp κ)^(2 : ℕ))*spaceTimeReflection q κ 0 x := by
   unfold spaceTimeReflection FDNLS.staggerPhase scatteringAngle phase
   simp only [Complex.ofReal_sub, Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_pow,
     Complex.ofReal_neg, Complex.ofReal_ofNat, zero_div, sub_zero]
@@ -53,7 +53,7 @@ theorem spaceTimeReflection_time_factor (q : SchwartzMap ℝ ℂ) (κ t x : ℝ)
 /-- The reverse reflection carries the opposite time factor. -/
 theorem spaceTimeReverseReflection_time_factor (q : SchwartzMap ℝ ℂ) (κ t x : ℝ) :
     spaceTimeReverseReflection q κ t x =
-      phase t ((Real.exp κ)^2)*spaceTimeReverseReflection q κ 0 x := by
+      phase t ((Real.exp κ)^(2 : ℕ))*spaceTimeReverseReflection q κ 0 x := by
   unfold spaceTimeReverseReflection FDNLS.staggerPhase scatteringAngle phase
   simp only [Complex.ofReal_sub, Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_pow,
     Complex.ofReal_neg, Complex.ofReal_ofNat, zero_div, sub_zero]

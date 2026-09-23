@@ -23,11 +23,11 @@ namespace RHTower
 /-- One oriented exponential summand of Suzuki's Xi screw divisor. -/
 def xiScrewExponentialTerm (t : ℝ) (q : XiZeroCopy) : ℂ :=
   (1 - Complex.exp (I * xiSpectralPoint q * (t : ℂ))) /
-    xiSpectralPoint q ^ 2
+    xiSpectralPoint q ^ (2 : ℕ)
 
 theorem norm_xiScrewExponentialTerm_le (t : ℝ) (q : XiZeroCopy) :
     ‖xiScrewExponentialTerm t q‖ ≤
-      (1 + Real.exp (|t| / 2)) / ‖xiSpectralPoint q‖ ^ 2 := by
+      (1 + Real.exp (|t| / 2)) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have hstrip : |(I * xiSpectralPoint q).re| ≤ (1 / 2 : ℝ) :=
     le_of_lt (abs_re_I_mul_xiSpectralPoint_le_half q)
   have hre : (I * xiSpectralPoint q * (t : ℂ)).re ≤ |t| / 2 := by
@@ -42,17 +42,17 @@ theorem norm_xiScrewExponentialTerm_le (t : ℝ) (q : XiZeroCopy) :
   rw [xiScrewExponentialTerm, norm_div, norm_pow]
   calc
     ‖1 - Complex.exp (I * xiSpectralPoint q * (t : ℂ))‖ /
-          ‖xiSpectralPoint q‖ ^ 2 ≤
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤
         (‖(1 : ℂ)‖ +
           ‖Complex.exp (I * xiSpectralPoint q * (t : ℂ))‖) /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       gcongr
       exact norm_sub_le (1 : ℂ)
         (Complex.exp (I * xiSpectralPoint q * (t : ℂ)))
     _ = (1 + Real.exp (I * xiSpectralPoint q * (t : ℂ)).re) /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       rw [norm_one, Complex.norm_exp]
-    _ ≤ (1 + Real.exp (|t| / 2)) / ‖xiSpectralPoint q‖ ^ 2 := by
+    _ ≤ (1 + Real.exp (|t| / 2)) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       gcongr
 
 theorem xiScrewExponentialTerm_summable (t : ℝ) :
@@ -62,10 +62,10 @@ theorem xiScrewExponentialTerm_summable (t : ℝ) :
   intro q
   calc
     ‖xiScrewExponentialTerm t q‖ ≤
-        (1 + Real.exp (|t| / 2)) / ‖xiSpectralPoint q‖ ^ 2 :=
+        (1 + Real.exp (|t| / 2)) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
       norm_xiScrewExponentialTerm_le t q
     _ = (1 + Real.exp (|t| / 2)) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 theorem xiScrewExponentialTerm_add_reflect (t : ℝ) (q : XiZeroCopy) :
     xiScrewExponentialTerm t q +
@@ -117,7 +117,7 @@ theorem xiScrewDivisor_eq_tsum_exponential (t : ℝ) :
 def xiScrewKernelExponentialTerm (t u : ℝ) (q : XiZeroCopy) : ℂ :=
   ((Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1) *
       (Complex.exp (-(I * xiSpectralPoint q * (u : ℂ))) - 1)) /
-    xiSpectralPoint q ^ 2
+    xiSpectralPoint q ^ (2 : ℕ)
 
 theorem xiScrewKernelExponentialTerm_eq (t u : ℝ) (q : XiZeroCopy) :
     xiScrewKernelExponentialTerm t u q =
@@ -471,8 +471,8 @@ theorem norm_xiScrewKernelExponentialTerm_le_of_mem_Icc
     {a t u : ℝ} (ha : 0 ≤ a) (ht : t ∈ Icc (-a) a)
     (hu : u ∈ Icc (-a) a) (q : XiZeroCopy) :
     ‖xiScrewKernelExponentialTerm t u q‖ ≤
-      (Real.exp (a / 2) + 1) ^ 2 *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+      (Real.exp (a / 2) + 1) ^ (2 : ℕ) *
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   have hneg : -u ∈ Icc (-a) a := by
     constructor <;> linarith [hu.1, hu.2]
   have htbound := norm_cexp_i_xi_sub_one_le_of_mem_Icc ha ht q
@@ -488,19 +488,19 @@ theorem norm_xiScrewKernelExponentialTerm_le_of_mem_Icc
   calc
     (‖Complex.exp (I * xiSpectralPoint q * (t : ℂ)) - 1‖ *
           ‖Complex.exp (-(I * xiSpectralPoint q * (u : ℂ))) - 1‖) /
-        ‖xiSpectralPoint q‖ ^ 2 ≤
+        ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤
       ((Real.exp (a / 2) + 1) * (Real.exp (a / 2) + 1)) /
-        ‖xiSpectralPoint q‖ ^ 2 := by gcongr
-    _ = (Real.exp (a / 2) + 1) ^ 2 *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+        ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by gcongr
+    _ = (Real.exp (a / 2) + 1) ^ (2 : ℕ) *
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 /-- Pointwise reciprocal-square majorant for one differentiated divisor pairing. -/
 theorem norm_suzukiScrewWeilPairingIntegrand_le {a : ℝ}
     (ha : 0 ≤ a) (ψ₁ ψ₂ : SuzukiSmoothCompactTest a)
     (q : XiZeroCopy) (p : ℝ × ℝ) :
     ‖suzukiScrewWeilPairingIntegrand ψ₁ ψ₂ q p‖ ≤
-      ((Real.exp (a / 2) + 1) ^ 2 *
-          (1 / ‖xiSpectralPoint q‖ ^ 2)) *
+      ((Real.exp (a / 2) + 1) ^ (2 : ℕ) *
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) *
         (‖deriv ψ₂ p.1‖ * ‖deriv ψ₁ p.2‖) := by
   by_cases h₁ : deriv ψ₁ p.2 = 0
   · simp [suzukiScrewWeilPairingIntegrand, h₁]
@@ -513,11 +513,11 @@ theorem norm_suzukiScrewWeilPairingIntegrand_le {a : ℝ}
   calc
     ‖xiScrewKernelExponentialTerm p.1 p.2 q‖ * ‖deriv ψ₁ p.2‖ *
         ‖deriv ψ₂ p.1‖ ≤
-      ((Real.exp (a / 2) + 1) ^ 2 *
-          (1 / ‖xiSpectralPoint q‖ ^ 2)) * ‖deriv ψ₁ p.2‖ *
+      ((Real.exp (a / 2) + 1) ^ (2 : ℕ) *
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) * ‖deriv ψ₁ p.2‖ *
         ‖deriv ψ₂ p.1‖ := by gcongr
-    _ = ((Real.exp (a / 2) + 1) ^ 2 *
-          (1 / ‖xiSpectralPoint q‖ ^ 2)) *
+    _ = ((Real.exp (a / 2) + 1) ^ (2 : ℕ) *
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) *
         (‖deriv ψ₂ p.1‖ * ‖deriv ψ₁ p.2‖) := by ring
 
 /-- `L¹` mass of the derivative of a compact smooth source test. -/
@@ -532,8 +532,8 @@ theorem suzukiDerivativeL1Mass_nonneg {a : ℝ}
 def suzukiScrewWeilPairingMajorant {a : ℝ}
     (ψ₁ ψ₂ : SuzukiSmoothCompactTest a) (q : XiZeroCopy)
     (p : ℝ × ℝ) : ℝ :=
-  ((Real.exp (a / 2) + 1) ^ 2 *
-      (1 / ‖xiSpectralPoint q‖ ^ 2)) *
+  ((Real.exp (a / 2) + 1) ^ (2 : ℕ) *
+      (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) *
     (‖deriv ψ₂ p.1‖ * ‖deriv ψ₁ p.2‖)
 
 theorem continuous_suzukiScrewWeilPairingMajorant {a : ℝ}
@@ -572,11 +572,11 @@ theorem integral_suzukiScrewWeilPairingMajorant {a : ℝ}
     (ψ₁ ψ₂ : SuzukiSmoothCompactTest a) (q : XiZeroCopy) :
     (∫ p : ℝ × ℝ, suzukiScrewWeilPairingMajorant ψ₁ ψ₂ q p
         ∂(volume.prod volume)) =
-      ((Real.exp (a / 2) + 1) ^ 2 *
-          (1 / ‖xiSpectralPoint q‖ ^ 2)) *
+      ((Real.exp (a / 2) + 1) ^ (2 : ℕ) *
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) *
         (suzukiDerivativeL1Mass ψ₂ * suzukiDerivativeL1Mass ψ₁) := by
   change (∫ p : ℝ × ℝ,
-      ((Real.exp (a / 2) + 1) ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2)) *
+      ((Real.exp (a / 2) + 1) ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) *
         (‖deriv ψ₂ p.1‖ * ‖deriv ψ₁ p.2‖) ∂(volume.prod volume)) = _
   have hprod := integral_prod_mul (μ := (volume : Measure ℝ))
     (ν := (volume : Measure ℝ))
@@ -588,9 +588,9 @@ theorem integral_norm_suzukiScrewWeilPairingIntegrand_le {a : ℝ}
     (ha : 0 ≤ a) (ψ₁ ψ₂ : SuzukiSmoothCompactTest a) (q : XiZeroCopy) :
     (∫ p : ℝ × ℝ, ‖suzukiScrewWeilPairingIntegrand ψ₁ ψ₂ q p‖
         ∂(volume.prod volume)) ≤
-      ((Real.exp (a / 2) + 1) ^ 2 *
+      ((Real.exp (a / 2) + 1) ^ (2 : ℕ) *
           (suzukiDerivativeL1Mass ψ₂ * suzukiDerivativeL1Mass ψ₁)) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   have hF := (integrable_suzukiScrewWeilPairingIntegrand ψ₁ ψ₂ q).norm
   have hM := integrable_suzukiScrewWeilPairingMajorant ψ₁ ψ₂ q
   calc
@@ -599,20 +599,20 @@ theorem integral_norm_suzukiScrewWeilPairingIntegrand_le {a : ℝ}
       ∫ p : ℝ × ℝ, suzukiScrewWeilPairingMajorant ψ₁ ψ₂ q p
         ∂(volume.prod volume) :=
       integral_mono hF hM (norm_suzukiScrewWeilPairingIntegrand_le ha ψ₁ ψ₂ q)
-    _ = ((Real.exp (a / 2) + 1) ^ 2 *
-          (1 / ‖xiSpectralPoint q‖ ^ 2)) *
+    _ = ((Real.exp (a / 2) + 1) ^ (2 : ℕ) *
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) *
         (suzukiDerivativeL1Mass ψ₂ * suzukiDerivativeL1Mass ψ₁) :=
       integral_suzukiScrewWeilPairingMajorant ψ₁ ψ₂ q
-    _ = ((Real.exp (a / 2) + 1) ^ 2 *
+    _ = ((Real.exp (a / 2) + 1) ^ (2 : ℕ) *
           (suzukiDerivativeL1Mass ψ₂ * suzukiDerivativeL1Mass ψ₁)) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 theorem summable_integral_norm_suzukiScrewWeilPairingIntegrand {a : ℝ}
     (ha : 0 ≤ a) (ψ₁ ψ₂ : SuzukiSmoothCompactTest a) :
     Summable fun q : XiZeroCopy =>
       ∫ p : ℝ × ℝ, ‖suzukiScrewWeilPairingIntegrand ψ₁ ψ₂ q p‖
         ∂(volume.prod volume) := by
-  let C : ℝ := (Real.exp (a / 2) + 1) ^ 2 *
+  let C : ℝ := (Real.exp (a / 2) + 1) ^ (2 : ℕ) *
     (suzukiDerivativeL1Mass ψ₂ * suzukiDerivativeL1Mass ψ₁)
   apply Summable.of_nonneg_of_le
     (fun q => integral_nonneg fun _ => norm_nonneg _)
@@ -731,7 +731,7 @@ theorem integral_suzukiScrewWeilPairingIntegrand_eq_fourier {a : ℝ}
       rw [hBexp]]
     exact integral_cexp_sub_one_mul_deriv ψ₁ (-gamma)
   have hpoint : suzukiScrewWeilPairingIntegrand ψ₁ ψ₂ q =
-      fun p : ℝ × ℝ => gamma⁻¹ ^ 2 * (A p.1 * B p.2) := by
+      fun p : ℝ × ℝ => gamma⁻¹ ^ (2 : ℕ) * (A p.1 * B p.2) := by
     funext p
     rw [suzukiScrewWeilPairingIntegrand, xiScrewKernelExponentialTerm]
     dsimp only [gamma, A, B]

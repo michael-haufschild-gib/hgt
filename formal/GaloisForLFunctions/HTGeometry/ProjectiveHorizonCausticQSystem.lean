@@ -58,7 +58,7 @@ theorem det_fromBlocks_twoBorder_mul_center
 /-- The rectangular Schur Q-system at rank one. -/
 theorem rectangularSchurQSystem_rank_one
     {K : Type*} [CommRing K] (h : ℕ → K) {n : ℕ} (hn : 0 < n) :
-    (rectangularSchurToeplitz h n 1).det ^ 2 =
+    (rectangularSchurToeplitz h n 1).det ^ (2 : ℕ) =
       (rectangularSchurToeplitz h (n - 1) 1).det *
           (rectangularSchurToeplitz h (n + 1) 1).det +
         (rectangularSchurToeplitz h n 0).det *
@@ -69,7 +69,7 @@ theorem rectangularSchurQSystem_rank_one
 /-- The first genuinely three-by-three rectangular Schur Q-system instance. -/
 theorem rectangularSchurQSystem_rank_two
     {K : Type*} [CommRing K] (h : ℕ → K) {n : ℕ} (hn : 2 ≤ n) :
-    (rectangularSchurToeplitz h n 2).det ^ 2 =
+    (rectangularSchurToeplitz h n 2).det ^ (2 : ℕ) =
       (rectangularSchurToeplitz h (n - 1) 2).det *
           (rectangularSchurToeplitz h (n + 1) 2).det +
         (rectangularSchurToeplitz h n 1).det *
@@ -85,7 +85,7 @@ This is the local algebraic propagation rule for adjacent horizon caustics. -/
 theorem qSystem_zero_propagation
     {K : Type*} [CommRing K] [IsDomain K]
     {center left right up down : K}
-    (hq : center ^ 2 = left * right + up * down)
+    (hq : center ^ (2 : ℕ) = left * right + up * down)
     (hcenter : center = 0) (hleft : left = 0) :
     up = 0 ∨ down = 0 := by
   have hud : up * down = 0 := by

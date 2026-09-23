@@ -98,7 +98,7 @@ theorem not_exists_bound_squarefreeHalfDirichletPartialSum_boundaryExteriorPoint
       hright0.comp (tendsto_add_atTop_nat 1)
     exact tendsto_nhds_unique hleft' hright
   let H : ℂ → ℂ := fun s =>
-    (s - 1) * F s ^ 2 * riemannZeta (2 * s) - zetaResidueUnit s
+    (s - 1) * F s ^ (2 : ℕ) * riemannZeta (2 * s) - zetaResidueUnit s
   have hHana : AnalyticOnNhd ℂ H U := by
     intro s hs
     have htwo : 2 * s ≠ 1 := by

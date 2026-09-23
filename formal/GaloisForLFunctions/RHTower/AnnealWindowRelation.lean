@@ -149,7 +149,7 @@ theorem anneal_mod_two_window_relation {N : ℕ}
     ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z
       ≡ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z [MOD 2] := by
   have h4 : (4 : ℕ) = 2 ^ (1 + 1) := by norm_num
-  have h2 : (2 : ℕ) = 2 ^ 1 := by norm_num
+  have h2 : (2 : ℕ) = 2 ^ (1 : ℕ) := by norm_num
   rw [h4] at hD hL
   rw [h2]
   exact anneal_window_parity_transport 1 hm₁ hcl₁ hstrip hm₂ hcl₂ hD hL
@@ -469,10 +469,10 @@ theorem anneal_deck_transport_of_relative_close_gN_nonzero {N : ℕ}
     (hchartStrip : ∀ z ∈ chartR a R ∪ chartL a R, 0 < z.re ∧ z ≠ 1)
     (hF₁ : AnalyticOnNhd ℂ F₁ (chartR a R)) (hF₂ : AnalyticOnNhd ℂ F₂ (chartL a R))
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartR a R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartL a R))
-    (hpF₁ : ∀ z ∈ chartR a R, F₁ z ^ 2 ^ k = xi z)
-    (hpF₂ : ∀ z ∈ chartL a R, F₂ z ^ 2 ^ k = xi z)
-    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ 2 ^ k = completedGN N z)
-    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ 2 ^ k = completedGN N z)
+    (hpF₁ : ∀ z ∈ chartR a R, F₁ z ^ (2 : ℕ) ^ k = xi z)
+    (hpF₂ : ∀ z ∈ chartL a R, F₂ z ^ (2 : ℕ) ^ k = xi z)
+    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ (2 : ℕ) ^ k = completedGN N z)
+    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ (2 : ℕ) ^ k = completedGN N z)
     (hgN0 : ∀ z ∈ chartR a R ∪ chartL a R, gN N z ≠ 0)
     (hrel : ∀ z ∈ chartR a R ∪ chartL a R,
       ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η) :
@@ -499,10 +499,10 @@ theorem anneal_deck_transport_of_relative_close_carrierFloorOn {N : ℕ}
     (hchartStrip : ∀ z ∈ chartR a R ∪ chartL a R, 0 < z.re ∧ z ≠ 1)
     (hF₁ : AnalyticOnNhd ℂ F₁ (chartR a R)) (hF₂ : AnalyticOnNhd ℂ F₂ (chartL a R))
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartR a R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartL a R))
-    (hpF₁ : ∀ z ∈ chartR a R, F₁ z ^ 2 ^ k = xi z)
-    (hpF₂ : ∀ z ∈ chartL a R, F₂ z ^ 2 ^ k = xi z)
-    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ 2 ^ k = completedGN N z)
-    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ 2 ^ k = completedGN N z)
+    (hpF₁ : ∀ z ∈ chartR a R, F₁ z ^ (2 : ℕ) ^ k = xi z)
+    (hpF₂ : ∀ z ∈ chartL a R, F₂ z ^ (2 : ℕ) ^ k = xi z)
+    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ (2 : ℕ) ^ k = completedGN N z)
+    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ (2 : ℕ) ^ k = completedGN N z)
     (hrel : ∀ z ∈ chartR a R ∪ chartL a R,
       ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η) :
     deckClass F₁ F₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) =
@@ -532,9 +532,9 @@ theorem anneal_seam_L_transport_of_relative_close_gN_nonzero {N : ℕ}
     (hUstrip : ∀ z ∈ U, 0 < z.re ∧ z.re < 1)
     (hg₁ : AnalyticOnNhd ℂ g₁ U) (hg₂ : AnalyticOnNhd ℂ g₂ (lineReflect ⁻¹' U))
     (hG₁ : AnalyticOnNhd ℂ G₁ U) (hG₂ : AnalyticOnNhd ℂ G₂ (lineReflect ⁻¹' U))
-    (hp₁ : ∀ s ∈ U, g₁ s ^ 2 = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ 2 = xi s)
-    (hP₁ : ∀ s ∈ U, G₁ s ^ 2 = completedGN N s)
-    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ 2 = completedGN N s)
+    (hp₁ : ∀ s ∈ U, g₁ s ^ (2 : ℕ) = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ (2 : ℕ) = xi s)
+    (hP₁ : ∀ s ∈ U, G₁ s ^ (2 : ℕ) = completedGN N s)
+    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ (2 : ℕ) = completedGN N s)
     {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
     (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2)
     (hgN0P : gN N pP ≠ 0) (hgN0M : gN N pM ≠ 0)
@@ -587,9 +587,9 @@ theorem anneal_seam_L_transport_of_relative_close_carrierFloorOn {N : ℕ}
     (hUstrip : ∀ z ∈ U, 0 < z.re ∧ z.re < 1)
     (hg₁ : AnalyticOnNhd ℂ g₁ U) (hg₂ : AnalyticOnNhd ℂ g₂ (lineReflect ⁻¹' U))
     (hG₁ : AnalyticOnNhd ℂ G₁ U) (hG₂ : AnalyticOnNhd ℂ G₂ (lineReflect ⁻¹' U))
-    (hp₁ : ∀ s ∈ U, g₁ s ^ 2 = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ 2 = xi s)
-    (hP₁ : ∀ s ∈ U, G₁ s ^ 2 = completedGN N s)
-    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ 2 = completedGN N s)
+    (hp₁ : ∀ s ∈ U, g₁ s ^ (2 : ℕ) = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ (2 : ℕ) = xi s)
+    (hP₁ : ∀ s ∈ U, G₁ s ^ (2 : ℕ) = completedGN N s)
+    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ (2 : ℕ) = completedGN N s)
     {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
     (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2)
     (hrelP : ‖(xi pP - completedGN N pP) / completedGN N pP‖ ≤ η)

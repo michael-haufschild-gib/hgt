@@ -58,8 +58,8 @@ theorem inner_eulerPositivePreScalarGammaRadial_transverse_eq_zero
 /-- Exact radial-channel energy. -/
 theorem norm_eulerPositivePreScalarGammaRadialSource_sq
     {sigma : ℝ} (hsigma : 1 < sigma) :
-    ‖eulerPositivePreScalarGammaRadialSource sigma hsigma‖ ^ 2 =
-      (2 * (sigma - 1) * eulerPositiveLogMoment 1 sigma) ^ 2 := by
+    ‖eulerPositivePreScalarGammaRadialSource sigma hsigma‖ ^ (2 : ℕ) =
+      (2 * (sigma - 1) * eulerPositiveLogMoment 1 sigma) ^ (2 : ℕ) := by
   rw [eulerPositivePreScalarGammaRadialSource, norm_smul,
     norm_eulerPositiveStateLp hsigma, mul_one, Complex.norm_real,
     Real.norm_eq_abs, sq_abs]
@@ -67,7 +67,7 @@ theorem norm_eulerPositivePreScalarGammaRadialSource_sq
 /-- Exact transverse-channel energy. -/
 theorem norm_eulerPositivePreScalarGammaTransverseSource_sq
     {sigma : ℝ} (hsigma : 1 < sigma) :
-    ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ 2 =
+    ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ (2 : ℕ) =
       eulerPositiveCriticalProjectiveFisherEnergy sigma := by
   rw [eulerPositivePreScalarGammaTransverseSource, norm_neg,
     norm_eulerPositiveCriticalFisherTangentLp_sq hsigma]
@@ -75,9 +75,9 @@ theorem norm_eulerPositivePreScalarGammaTransverseSource_sq
 /-- Exact Pythagorean energy decomposition of the pre-scalar reporter. -/
 theorem norm_eulerPositivePreScalarGammaSource_sq_eq_radial_add_transverse
     {sigma : ℝ} (hsigma : 1 < sigma) :
-    ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ 2 =
-      ‖eulerPositivePreScalarGammaRadialSource sigma hsigma‖ ^ 2 +
-        ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ 2 := by
+    ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ (2 : ℕ) =
+      ‖eulerPositivePreScalarGammaRadialSource sigma hsigma‖ ^ (2 : ℕ) +
+        ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ (2 : ℕ) := by
   rw [norm_eulerPositivePreScalarGammaSource_sq hsigma,
     norm_eulerPositivePreScalarGammaRadialSource_sq hsigma,
     norm_eulerPositivePreScalarGammaTransverseSource_sq hsigma,
@@ -89,14 +89,14 @@ theorem tendsto_norm_eulerPositivePreScalarGammaRadialSource_sq :
     Tendsto
       (fun sigma : ℝ =>
         if hsigma : 1 < sigma then
-          ‖eulerPositivePreScalarGammaRadialSource sigma hsigma‖ ^ 2
+          ‖eulerPositivePreScalarGammaRadialSource sigma hsigma‖ ^ (2 : ℕ)
         else 0)
       (nhdsWithin 1 (Ioi 1)) (nhds 4) := by
   have hmean := tendsto_eulerSquarefreeAffineCriticalClockMean
   have hfour :
       Tendsto
         (fun sigma : ℝ =>
-          4 * eulerSquarefreeAffineCriticalClockMean sigma ^ 2)
+          4 * eulerSquarefreeAffineCriticalClockMean sigma ^ (2 : ℕ))
         (nhdsWithin 1 (Ioi 1)) (nhds 4) := by
     convert
       ((tendsto_const_nhds : Tendsto (fun _ : ℝ => (4 : ℝ))
@@ -116,7 +116,7 @@ theorem tendsto_norm_eulerPositivePreScalarGammaTransverseSource_sq :
     Tendsto
       (fun sigma : ℝ =>
         if hsigma : 1 < sigma then
-          ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ 2
+          ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ (2 : ℕ)
         else 0)
       (nhdsWithin 1 (Ioi 1)) (nhds 4) := by
   apply tendsto_eulerPositiveCriticalProjectiveFisherEnergy.congr'
@@ -132,19 +132,19 @@ theorem eulerPositivePreScalarGamma_orthogonal_four_plus_four_law :
     Tendsto
         (fun sigma : ℝ =>
           if hsigma : 1 < sigma then
-            ‖eulerPositivePreScalarGammaRadialSource sigma hsigma‖ ^ 2
+            ‖eulerPositivePreScalarGammaRadialSource sigma hsigma‖ ^ (2 : ℕ)
           else 0)
         (nhdsWithin 1 (Ioi 1)) (nhds 4) ∧
       Tendsto
         (fun sigma : ℝ =>
           if hsigma : 1 < sigma then
-            ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ 2
+            ‖eulerPositivePreScalarGammaTransverseSource sigma hsigma‖ ^ (2 : ℕ)
           else 0)
         (nhdsWithin 1 (Ioi 1)) (nhds 4) ∧
       Tendsto
         (fun sigma : ℝ =>
           if hsigma : 1 < sigma then
-            ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ 2
+            ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ (2 : ℕ)
           else 0)
         (nhdsWithin 1 (Ioi 1)) (nhds 8) :=
   ⟨tendsto_norm_eulerPositivePreScalarGammaRadialSource_sq,

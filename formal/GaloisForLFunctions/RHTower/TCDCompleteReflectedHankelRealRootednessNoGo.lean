@@ -57,7 +57,7 @@ theorem twoCoshReflectedNode_injective : Function.Injective twoCoshReflectedNode
     simp_all [twoCoshReflectedNode]
 
 private theorem twoCoshReflectedFrequency_sq (i : Fin 5) :
-    twoCoshReflectedFrequency i ^ 2 = twoCoshReflectedNode i := by
+    twoCoshReflectedFrequency i ^ (2 : ℕ) = twoCoshReflectedNode i := by
   fin_cases i <;> norm_num [twoCoshReflectedFrequency, twoCoshReflectedNode]
 
 private theorem two_mul_real_cosh_mul_cosh (a b : ℝ) :
@@ -137,7 +137,7 @@ private theorem momentFunctional_twoCoshReflectedMoment (x : ℝ) (p : Polynomia
   ring
 
 theorem twoCoshReflectedMoment_square_nonneg (x : ℝ) (p : Polynomial ℝ) :
-    0 ≤ HTGeometry.momentFunctional (twoCoshReflectedMoment x) (p ^ 2) := by
+    0 ≤ HTGeometry.momentFunctional (twoCoshReflectedMoment x) (p ^ (2 : ℕ)) := by
   rw [momentFunctional_twoCoshReflectedMoment]
   apply Finset.sum_nonneg
   intro i hi
@@ -148,7 +148,7 @@ private theorem twoCoshReflectedMoment_rankThree_quad
     (x : ℝ) (a : Fin 3 → ℝ) :
     a ⬝ᵥ (HTGeometry.momentHankelMatrix (twoCoshReflectedMoment x) 3).mulVec a =
       ∑ k : Fin 5, twoCoshReflectedWeight x k *
-        ((Polynomial.ofFn 3 a).eval (twoCoshReflectedNode k)) ^ 2 := by
+        ((Polynomial.ofFn 3 a).eval (twoCoshReflectedNode k)) ^ (2 : ℕ) := by
   simp only [dotProduct, Matrix.mulVec, HTGeometry.momentHankelMatrix,
     twoCoshReflectedMoment, Polynomial.ofFn_eq_sum_monomial,
     Polynomial.eval_finsetSum, Polynomial.eval_monomial]
@@ -207,11 +207,11 @@ theorem twoCoshReflectedMoment_rankThree_posDef (x : ℝ) :
       (Polynomial.ofFn 3 a) twoCoshReflectedNode_injective hall hdeg)
   obtain ⟨i, hi⟩ := not_forall.mp hnotall
   have hnonneg : ∀ k, 0 ≤ twoCoshReflectedWeight x k *
-      ((Polynomial.ofFn 3 a).eval (twoCoshReflectedNode k)) ^ 2 := by
+      ((Polynomial.ofFn 3 a).eval (twoCoshReflectedNode k)) ^ (2 : ℕ) := by
     intro k
     exact mul_nonneg (twoCoshReflectedWeight_pos x k).le (sq_nonneg _)
   have hpos : 0 < twoCoshReflectedWeight x i *
-      ((Polynomial.ofFn 3 a).eval (twoCoshReflectedNode i)) ^ 2 := by
+      ((Polynomial.ofFn 3 a).eval (twoCoshReflectedNode i)) ^ (2 : ℕ) := by
     exact mul_pos (twoCoshReflectedWeight_pos x i) (sq_pos_of_ne_zero hi)
   exact hpos.trans_le
     (Finset.single_le_sum (fun k _ => hnonneg k) (Finset.mem_univ i))
@@ -277,7 +277,7 @@ theorem completeReflectedHankel_realRootedness_noGo :
     (∀ x : ℝ, twoCoshEntireSource x = twoCoshRealSource x) ∧
     (∀ x : ℝ, 0 < twoCoshRealSource x) ∧
     (∀ x : ℝ, ∀ p : Polynomial ℝ,
-      0 ≤ HTGeometry.momentFunctional (twoCoshReflectedMoment x) (p ^ 2)) ∧
+      0 ≤ HTGeometry.momentFunctional (twoCoshReflectedMoment x) (p ^ (2 : ℕ))) ∧
     (∀ x : ℝ,
       0 < HilbertMetric.signedEvenHankelThreeDet
         (twoCoshReflectedMoment x 0) (twoCoshReflectedMoment x 1)

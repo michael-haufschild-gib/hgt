@@ -91,16 +91,16 @@ theorem thetaCuspSourceTerm_eq_boundaryDesingularizer_mul_scaledBoundaryTerm
         thetaCuspLikelihoodScaledBoundaryTerm n
           (thetaCuspLikelihoodCoordinate x) := by
   have hsource : thetaCuspSourceTerm x n =
-      Real.exp (x / 2) * 2 * Real.pi * Real.exp x ^ 2 * (n : ℝ) ^ 2 *
-        (2 * (Real.pi * Real.exp x ^ 2) * (n : ℝ) ^ 2 - 3) *
-        Real.exp (-(Real.pi * Real.exp x ^ 2) * (n : ℝ) ^ 2) := by
+      Real.exp (x / 2) * 2 * Real.pi * Real.exp x ^ (2 : ℕ) * (n : ℝ) ^ (2 : ℕ) *
+        (2 * (Real.pi * Real.exp x ^ (2 : ℕ)) * (n : ℝ) ^ (2 : ℕ) - 3) *
+        Real.exp (-(Real.pi * Real.exp x ^ (2 : ℕ)) * (n : ℝ) ^ (2 : ℕ)) := by
     unfold thetaCuspSourceTerm thetaCuspSeed
     ring
   have hexp :
-      Real.exp (-(Real.pi * Real.exp x ^ 2) * (n : ℝ) ^ 2) =
-        Real.exp (-(Real.pi * Real.exp x ^ 2)) *
-          Real.exp (-(Real.pi * Real.exp x ^ 2 - 3 / 2) * ((n : ℝ) ^ 2 - 1)) *
-            Real.exp (-(3 / 2 : ℝ) * ((n : ℝ) ^ 2 - 1)) := by
+      Real.exp (-(Real.pi * Real.exp x ^ (2 : ℕ)) * (n : ℝ) ^ (2 : ℕ)) =
+        Real.exp (-(Real.pi * Real.exp x ^ (2 : ℕ))) *
+          Real.exp (-(Real.pi * Real.exp x ^ (2 : ℕ) - 3 / 2) * ((n : ℝ) ^ (2 : ℕ) - 1)) *
+            Real.exp (-(3 / 2 : ℝ) * ((n : ℝ) ^ (2 : ℕ) - 1)) := by
     rw [← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
@@ -220,7 +220,7 @@ theorem thetaCuspLikelihoodMassShellPhase_realScale_current_lt_zero
   have heq :
       (((c : ℂ) * thetaCuspLikelihoodMassShellPhaseDerivative k z) *
         (starRingEnd ℂ) ((c : ℂ) * thetaCuspLikelihoodMassShellPhase k z)).im =
-        c ^ 2 *
+        c ^ (2 : ℕ) *
           (thetaCuspLikelihoodMassShellPhaseDerivative k z *
             (starRingEnd ℂ) (thetaCuspLikelihoodMassShellPhase k z)).im := by
     rw [map_mul, Complex.conj_ofReal]

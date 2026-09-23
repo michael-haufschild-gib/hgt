@@ -26,22 +26,22 @@ def divisorCoreMellinContourMean (P : Finset ℕ) (a : ℝ) : ℂ :=
 
 private def corePoleLine (P : Finset ℕ) (a t : ℝ) : ℂ :=
   (2*divisorCoreMellinPairResidue P*Complex.exp (a:ℂ))*
-    (Complex.exp (((t*a:ℝ):ℂ)*I)*((1+t^2:ℝ):ℂ)⁻¹)
+    (Complex.exp (((t*a:ℝ):ℂ)*I)*((1+t^(2 : ℕ):ℝ):ℂ)⁻¹)
 
 private lemma corePoleLine_integrable (P : Finset ℕ) (a : ℝ) :
     Integrable (corePoleLine P a) := by
-  have hc : Continuous (fun t : ℝ => Complex.exp (((t*a:ℝ):ℂ)*I)*((1+t^2:ℝ):ℂ)⁻¹) := by
+  have hc : Continuous (fun t : ℝ => Complex.exp (((t*a:ℝ):ℂ)*I)*((1+t^(2 : ℕ):ℝ):ℂ)⁻¹) := by
     apply Continuous.mul (by fun_prop)
     apply Continuous.inv₀ (by fun_prop)
     intro t
-    exact Complex.ofReal_ne_zero.mpr (by positivity : (1+t^2:ℝ) ≠ 0)
+    exact Complex.ofReal_ne_zero.mpr (by positivity : (1+t^(2 : ℕ):ℝ) ≠ 0)
   have hi : Integrable (fun t : ℝ =>
-      Complex.exp (((t*a:ℝ):ℂ)*I)*((1+t^2:ℝ):ℂ)⁻¹) := by
+      Complex.exp (((t*a:ℝ):ℂ)*I)*((1+t^(2 : ℕ):ℝ):ℂ)⁻¹) := by
     apply integrable_inv_one_add_sq.mono' hc.aestronglyMeasurable
     filter_upwards with t
     rw [norm_mul,norm_inv,Complex.norm_real,Real.norm_eq_abs]
     have hp : ‖Complex.exp (((t*a:ℝ):ℂ)*I)‖=1 := by simp [norm_exp]
-    rw [hp,one_mul,abs_of_pos (show 0 < (1+t^2:ℝ) by positivity)]
+    rw [hp,one_mul,abs_of_pos (show 0 < (1+t^(2 : ℕ):ℝ) by positivity)]
   exact hi.const_mul _
 
 private lemma paired_one_split (P : Finset ℕ) (a t : ℝ) :
@@ -52,7 +52,7 @@ private lemma paired_one_split (P : Finset ℕ) (a t : ℝ) :
     intro h; have := congrArg Complex.re h; norm_num at this
   have hs2 : (1:ℂ)+(t:ℂ)*I ≠ 2 := by
     intro h; have := congrArg Complex.re h; norm_num at this
-  have hd : ((1:ℂ)+(t:ℂ)*I)*(2-((1:ℂ)+(t:ℂ)*I))=((1+t^2:ℝ):ℂ) := by
+  have hd : ((1:ℂ)+(t:ℂ)*I)*(2-((1:ℂ)+(t:ℂ)*I))=((1+t^(2 : ℕ):ℝ):ℂ) := by
     push_cast
     ring_nf
     simp

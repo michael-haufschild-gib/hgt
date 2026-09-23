@@ -28,11 +28,11 @@ omit [CompleteSpace E] in
 /-- **Orthonormal sequences are weakly null.**  Bessel makes the coefficients square summable. -/
 theorem tendsto_inner_orthonormal_atTop_zero {v : ℕ → E} (hv : Orthonormal ℂ v) (y : E) :
     Tendsto (fun n => ⟪v n, y⟫_ℂ) atTop (𝓝 0) := by
-  have hsummable : Summable fun n => ‖⟪v n, y⟫_ℂ‖ ^ 2 :=
+  have hsummable : Summable fun n => ‖⟪v n, y⟫_ℂ‖ ^ (2 : ℕ) :=
     Orthonormal.inner_products_summable y hv
-  have hzero : Tendsto (fun n => ‖⟪v n, y⟫_ℂ‖ ^ 2) atTop (𝓝 0) := hsummable.tendsto_atTop_zero
+  have hzero : Tendsto (fun n => ‖⟪v n, y⟫_ℂ‖ ^ (2 : ℕ)) atTop (𝓝 0) := hsummable.tendsto_atTop_zero
   rw [tendsto_zero_iff_norm_tendsto_zero]
-  have hsq : Tendsto (fun n => Real.sqrt (‖⟪v n, y⟫_ℂ‖ ^ 2)) atTop (𝓝 0) := by
+  have hsq : Tendsto (fun n => Real.sqrt (‖⟪v n, y⟫_ℂ‖ ^ (2 : ℕ))) atTop (𝓝 0) := by
     have h := (Real.continuous_sqrt.tendsto (0 : ℝ)).comp hzero
     simpa [Function.comp_def] using h
   refine hsq.congr fun n => ?_

@@ -52,17 +52,17 @@ theorem suzukiFixedScaleDressedWardBudget_le
     (hpositive : 0 < positiveBlock) (t m d r s coupling : ℝ) :
     suzukiFixedScaleDressedWardBudget
         h a t m d r s positiveBlock coupling ≤
-      (2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+      (2 * ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) *
         (∑' p : Nat.Primes,
-          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹)) +
-      (2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+          Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹)) +
+      (2 * ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) *
         (∑' p : Nat.Primes,
-          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹)) *
-        (r - m * s) ^ 2 +
-      (2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+          Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹)) *
+        (r - m * s) ^ (2 : ℕ) +
+      (2 * ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) *
         (∑' p : Nat.Primes,
-          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹)) *
-        (coupling ^ 2 / positiveBlock) := by
+          Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹)) *
+        (coupling ^ (2 : ℕ) / positiveBlock) := by
   unfold suzukiFixedScaleDressedWardBudget
   exact add_le_add
     (add_le_add

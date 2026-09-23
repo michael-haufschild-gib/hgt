@@ -61,12 +61,12 @@ theorem fareySet_fibre_prime {p : ℕ} (hp : p.Prime) {Q : ℕ} (hpQ : p ≤ Q) 
 /-- **The lower-bound index set is the prime fibre.** -/
 theorem sum_fareySet_fibre_eq {p : ℕ} (hp : p.Prime) {Q : ℕ} (hpQ : p ≤ Q) (A : Finset ℕ) :
     ∑ x ∈ (fareySet Q).filter (fun x => x.2 = p),
-        ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ 2
+        ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ (2 : ℕ)
       = ∑ j ∈ (Finset.univ : Finset (Fin p)).erase ⟨0, hp.pos⟩,
-          ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (p : ℝ))‖ ^ 2 := by
+          ‖∑ n ∈ A, circleFreq (((n * (j : ℕ) : ℕ) : ℝ) / (p : ℝ))‖ ^ (2 : ℕ) := by
   classical
   rw [sum_erase_fin_eq_range hp.pos
-    (fun a => ‖∑ n ∈ A, circleFreq (((n * a : ℕ) : ℝ) / (p : ℝ))‖ ^ 2)]
+    (fun a => ‖∑ n ∈ A, circleFreq (((n * a : ℕ) : ℝ) / (p : ℝ))‖ ^ (2 : ℕ))]
   rw [fareySet_fibre_prime hp hpQ]
   have hinj : ∀ a ∈ (Finset.range p).erase 0, ∀ a' ∈ (Finset.range p).erase 0,
       ((a, p) : ℕ × ℕ) = (a', p) → a = a' := fun a _ a' _ heq => congrArg Prod.fst heq
@@ -76,7 +76,7 @@ theorem sum_fareySet_fibre_eq {p : ℕ} (hp : p.Prime) {Q : ℕ} (hpQ : p ≤ Q)
     push_cast
     ring
   refine Finset.sum_congr rfl fun a _ => ?_
-  refine congrArg (fun z : ℂ => ‖z‖ ^ 2) ?_
+  refine congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) ?_
   refine Finset.sum_congr rfl fun n _ => ?_
   rw [harg]
 

@@ -19,17 +19,17 @@ open scoped Topology
 
 /-- Exact mass of the positive remainder tail produced by logarithmic phase integration by parts. -/
 theorem integral_Ioi_logTailWeight_eq (U : ℝ) (hU : 1 < U) :
-    ∫ t in Ioi U, (t * (Real.log t) ^ 2)⁻¹ = (Real.log U)⁻¹ := by
+    ∫ t in Ioi U, (t * (Real.log t) ^ (2 : ℕ))⁻¹ = (Real.log U)⁻¹ := by
   have hcont : ContinuousWithinAt (fun x : ℝ => -(Real.log x)⁻¹) (Ici U) U := by
     have hlog : Real.log U ≠ 0 := (Real.log_pos hU).ne'
     exact ((Real.continuousAt_log (by linarith)).inv₀ hlog).neg.continuousWithinAt
   have hderiv : ∀ x ∈ Ioi U,
       HasDerivAt (fun x : ℝ => -(Real.log x)⁻¹)
-        ((x * (Real.log x) ^ 2)⁻¹) x := by
+        ((x * (Real.log x) ^ (2 : ℕ))⁻¹) x := by
     intro x hx
     have hxU : U < x := hx
-    exact hasDerivAt_negInvLog (lt_trans hU hxU)
-  have hpos : ∀ x ∈ Ioi U, 0 ≤ (x * (Real.log x) ^ 2)⁻¹ := by
+    exact hasDerivAt_negInvLog_oscillatoryLogIntegral (lt_trans hU hxU)
+  have hpos : ∀ x ∈ Ioi U, 0 ≤ (x * (Real.log x) ^ (2 : ℕ))⁻¹ := by
     intro x hx
     have hxU : U < x := hx
     have hx1 : 1 < x := lt_trans hU hxU
@@ -42,13 +42,13 @@ theorem integral_Ioi_logTailWeight_eq (U : ℝ) (hU : 1 < U) :
 
 /-- The positive logarithmic tail weight is integrable from every cutoff above one. -/
 theorem integrableOn_logTailWeight_Ioi (U : ℝ) (hU : 1 < U) :
-    IntegrableOn (fun t : ℝ => (t * (Real.log t) ^ 2)⁻¹) (Ioi U) := by
+    IntegrableOn (fun t : ℝ => (t * (Real.log t) ^ (2 : ℕ))⁻¹) (Ioi U) := by
   refine integrableOn_Ioi_deriv_of_nonneg (g := fun x : ℝ => -(Real.log x)⁻¹) (l := 0)
     ?_ ?_ ?_ ?_
   · have hlog : Real.log U ≠ 0 := (Real.log_pos hU).ne'
     exact ((Real.continuousAt_log (by linarith)).inv₀ hlog).neg.continuousWithinAt
   · intro x hx
-    exact hasDerivAt_negInvLog (lt_trans hU hx)
+    exact hasDerivAt_negInvLog_oscillatoryLogIntegral (lt_trans hU hx)
   · intro x hx
     have hx1 : 1 < x := lt_trans hU hx
     positivity
@@ -68,7 +68,7 @@ theorem norm_integral_Ioi_oscLogRemainder_le {lam U : ℝ} (hU : 1 < U) :
   rw [integral_const_mul] at hbound
   calc
     ‖∫ t in Ioi U, oscLogRemainder lam t‖ ≤
-        |lam|⁻¹ * ∫ t in Ioi U, (t * (Real.log t) ^ 2)⁻¹ := hbound
+        |lam|⁻¹ * ∫ t in Ioi U, (t * (Real.log t) ^ (2 : ℕ))⁻¹ := hbound
     _ = |lam|⁻¹ * (Real.log U)⁻¹ := by
       rw [integral_Ioi_logTailWeight_eq U hU]
 

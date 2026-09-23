@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
 /-- **Finite Pythagoras.**  Pairwise orthogonal vectors add in squares. -/
 theorem norm_sum_sq_of_pairwise_inner_eq_zero {ι : Type*} (s : Finset ι) (v : ι → E)
     (h : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ⟪v i, v j⟫_𝕜 = 0) :
-    ‖∑ i ∈ s, v i‖ ^ 2 = ∑ i ∈ s, ‖v i‖ ^ 2 := by
+    ‖∑ i ∈ s, v i‖ ^ (2 : ℕ) = ∑ i ∈ s, ‖v i‖ ^ (2 : ℕ) := by
   classical
   induction s using Finset.induction_on with
   | empty => simp
@@ -59,9 +59,9 @@ theorem inner_layer_apply_eq_zero_of_ne (a r : ℝ) (ha : 0 < a) (hr : 1 < r) (u
 squared layer logarithm times the squared layer mass. -/
 theorem norm_sq_evenLogShellChannel_apply (a r : ℝ) (ha : 0 < a) (hr : 1 < r) (n : ℕ)
     (u : evenSubspace) :
-    ‖evenLogShellChannel a r n u‖ ^ 2 =
-      ∑ k ∈ Finset.range n, |Real.log (logShellRadius a r k)| ^ 2 *
-        ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 := by
+    ‖evenLogShellChannel a r n u‖ ^ (2 : ℕ) =
+      ∑ k ∈ Finset.range n, |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
+        ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) := by
   classical
   set v : ℕ → evenSubspace := fun k =>
     ((Real.log (logShellRadius a r k) : ℝ) : ℂ) •
@@ -88,11 +88,11 @@ theorem norm_sq_evenLogShellChannel_apply (a r : ℝ) (ha : 0 < a) (hr : 1 < r) 
         (evenIndicatorLayer (logShellRadius a r j) (logShellRadius a r (j + 1)) u)
         (evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u),
       inner_layer_apply_eq_zero_of_ne a r ha hr u hjk, mul_zero, mul_zero]
-  have hterm : ∀ k : ℕ, ‖v k‖ ^ 2 = |Real.log (logShellRadius a r k)| ^ 2 *
-      ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 := by
+  have hterm : ∀ k : ℕ, ‖v k‖ ^ (2 : ℕ) = |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
+      ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) := by
     intro k
     show ‖((Real.log (logShellRadius a r k) : ℝ) : ℂ) •
-      evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 = _
+      evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) = _
     rw [norm_smul, Complex.norm_real, Real.norm_eq_abs, mul_pow]
   rw [happly, norm_sum_sq_of_pairwise_inner_eq_zero (𝕜 := ℂ) _ v hortho]
   exact Finset.sum_congr rfl fun k _ => hterm k
@@ -104,14 +104,14 @@ theorem sq_le_norm_sq_evenLogShellChannel_apply
     (a r : ℝ) (ha : 0 < a) (hr : 1 < r) (n m : ℕ) (hmn : m ≤ n) (u : evenSubspace)
     (L : ℝ) (hL0 : 0 ≤ L)
     (hL : ∀ k, m ≤ k → k < n → L ≤ |Real.log (logShellRadius a r k)|) :
-    L ^ 2 * (‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r n) u‖ ^ 2 -
-        ‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r m) u‖ ^ 2) ≤
-      ‖evenLogShellChannel a r n u‖ ^ 2 := by
+    L ^ (2 : ℕ) * (‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r n) u‖ ^ (2 : ℕ) -
+        ‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r m) u‖ ^ (2 : ℕ)) ≤
+      ‖evenLogShellChannel a r n u‖ ^ (2 : ℕ) := by
   classical
   set P : ℕ → evenSubspace := fun k =>
     evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u with hP
-  have hmass : ∀ j : ℕ, ∑ k ∈ Finset.range j, ‖P k‖ ^ 2 =
-      ‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r j) u‖ ^ 2 := by
+  have hmass : ∀ j : ℕ, ∑ k ∈ Finset.range j, ‖P k‖ ^ (2 : ℕ) =
+      ‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r j) u‖ ^ (2 : ℕ) := by
     intro j
     have hsum := DFunLike.congr_fun (sum_evenIndicatorLayer (fun k => logShellRadius a r k) j) u
     rw [sum_apply] at hsum
@@ -119,30 +119,30 @@ theorem sq_le_norm_sq_evenLogShellChannel_apply
       (fun i _ k _ hik => inner_layer_apply_eq_zero_of_ne a r ha hr u hik)
     rw [← hpy, hsum]
     rfl
-  have hsplit : ∑ k ∈ Finset.range m, ‖P k‖ ^ 2 + ∑ k ∈ Finset.Ico m n, ‖P k‖ ^ 2 =
-      ∑ k ∈ Finset.range n, ‖P k‖ ^ 2 := by
+  have hsplit : ∑ k ∈ Finset.range m, ‖P k‖ ^ (2 : ℕ) + ∑ k ∈ Finset.Ico m n, ‖P k‖ ^ (2 : ℕ) =
+      ∑ k ∈ Finset.range n, ‖P k‖ ^ (2 : ℕ) := by
     rw [Finset.range_eq_Ico, Finset.range_eq_Ico]
     exact Finset.sum_Ico_consecutive _ (Nat.zero_le m) hmn
-  have hIco : L ^ 2 * (∑ k ∈ Finset.Ico m n, ‖P k‖ ^ 2) ≤
-      ∑ k ∈ Finset.Ico m n, |Real.log (logShellRadius a r k)| ^ 2 * ‖P k‖ ^ 2 := by
+  have hIco : L ^ (2 : ℕ) * (∑ k ∈ Finset.Ico m n, ‖P k‖ ^ (2 : ℕ)) ≤
+      ∑ k ∈ Finset.Ico m n, |Real.log (logShellRadius a r k)| ^ (2 : ℕ) * ‖P k‖ ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_le_sum fun k hk => ?_
     obtain ⟨hmk, hkn⟩ := Finset.mem_Ico.mp hk
-    have hsq : L ^ 2 ≤ |Real.log (logShellRadius a r k)| ^ 2 := by
+    have hsq : L ^ (2 : ℕ) ≤ |Real.log (logShellRadius a r k)| ^ (2 : ℕ) := by
       have := hL k hmk hkn
       nlinarith
     exact mul_le_mul_of_nonneg_right hsq (by positivity)
-  have hdrop : ∑ k ∈ Finset.Ico m n, |Real.log (logShellRadius a r k)| ^ 2 * ‖P k‖ ^ 2 ≤
-      ∑ k ∈ Finset.range n, |Real.log (logShellRadius a r k)| ^ 2 * ‖P k‖ ^ 2 := by
+  have hdrop : ∑ k ∈ Finset.Ico m n, |Real.log (logShellRadius a r k)| ^ (2 : ℕ) * ‖P k‖ ^ (2 : ℕ) ≤
+      ∑ k ∈ Finset.range n, |Real.log (logShellRadius a r k)| ^ (2 : ℕ) * ‖P k‖ ^ (2 : ℕ) := by
     refine Finset.sum_le_sum_of_subset_of_nonneg ?_ fun i _ _ => by positivity
     intro k hk
     exact Finset.mem_range.mpr (Finset.mem_Ico.mp hk).2
   have hid := norm_sq_evenLogShellChannel_apply a r ha hr n u
   have hmn' := hmass n
   have hmm := hmass m
-  have hgap : ∑ k ∈ Finset.Ico m n, ‖P k‖ ^ 2 =
-      ‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r n) u‖ ^ 2 -
-        ‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r m) u‖ ^ 2 := by
+  have hgap : ∑ k ∈ Finset.Ico m n, ‖P k‖ ^ (2 : ℕ) =
+      ‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r n) u‖ ^ (2 : ℕ) -
+        ‖evenIndicatorLayer (logShellRadius a r 0) (logShellRadius a r m) u‖ ^ (2 : ℕ) := by
     rw [← hmn', ← hmm, ← hsplit]
     ring
   rw [hid, ← hgap]
@@ -176,24 +176,24 @@ theorem le_norm_evenLogShellChannel_apply
     have h := DFunLike.congr_fun (sum_evenIndicatorLayer (fun k => logShellRadius a r k) n) u
     rw [sum_apply, sub_apply, hhigh, hkill _ (logShellRadius_mono ha hr (Nat.zero_le m))] at h
     simpa using h
-  have hnormu : ‖u‖ ^ 2 = ∑ k ∈ Finset.range n,
-      ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 := by
+  have hnormu : ‖u‖ ^ (2 : ℕ) = ∑ k ∈ Finset.range n,
+      ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) := by
     conv_lhs => rw [← hsum]
     exact norm_sum_sq_of_pairwise_inner_eq_zero (𝕜 := ℂ) (Finset.range n)
       (fun k => evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u)
       (fun j _ k _ hjk => inner_layer_apply_eq_zero_of_ne a r ha hr u hjk)
   have hterm : ∀ k ∈ Finset.range n,
-      L ^ 2 * ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 ≤
-        |Real.log (logShellRadius a r k)| ^ 2 *
-          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 := by
+      L ^ (2 : ℕ) * ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤
+        |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
+          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) := by
     intro k hk
     rcases lt_or_ge k m with hkm | hkm
     · rw [hlayer_zero k hkm]
       simp
     · have hLk := hL k hkm (Finset.mem_range.mp hk)
-      have hsq : L ^ 2 ≤ |Real.log (logShellRadius a r k)| ^ 2 := by nlinarith
+      have hsq : L ^ (2 : ℕ) ≤ |Real.log (logShellRadius a r k)| ^ (2 : ℕ) := by nlinarith
       exact mul_le_mul_of_nonneg_right hsq (by positivity)
-  have hchain : L ^ 2 * ‖u‖ ^ 2 ≤ ‖evenLogShellChannel a r n u‖ ^ 2 := by
+  have hchain : L ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) ≤ ‖evenLogShellChannel a r n u‖ ^ (2 : ℕ) := by
     rw [norm_sq_evenLogShellChannel_apply a r ha hr n u, hnormu, Finset.mul_sum]
     exact Finset.sum_le_sum hterm
   nlinarith [norm_nonneg (evenLogShellChannel a r n u), norm_nonneg u,

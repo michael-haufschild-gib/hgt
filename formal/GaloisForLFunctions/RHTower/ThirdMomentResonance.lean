@@ -78,7 +78,7 @@ lemma integral_cexp_int (j : ℤ) :
 
 /-- The cube of a finite sum, expanded as a triple sum. -/
 lemma sum_cube {ι : Type*} (S : Finset ι) (g : ι → ℂ) :
-    (∑ k ∈ S, g k)^3 = ∑ k ∈ S, ∑ l ∈ S, ∑ m ∈ S, g k * g l * g m := by
+    (∑ k ∈ S, g k)^(3 : ℕ) = ∑ k ∈ S, ∑ l ∈ S, ∑ m ∈ S, g k * g l * g m := by
   rw [pow_three, Finset.sum_mul_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [Finset.mul_sum]
@@ -94,11 +94,11 @@ def trigField (c : ℤ → ℂ) (S : Finset ℤ) (θ : ℝ) : ℂ :=
 
 /-- The normalised third moment `(2π)⁻¹ ∫₀^{2π} f(θ)³ dθ` of the field `f = trigField c S`. -/
 def thirdMoment (c : ℤ → ℂ) (S : Finset ℤ) : ℂ :=
-  (1/(2*Real.pi)) * ∫ θ in (0:ℝ)..(2*Real.pi), (trigField c S θ)^3
+  (1/(2*Real.pi)) * ∫ θ in (0:ℝ)..(2*Real.pi), (trigField c S θ)^(3 : ℕ)
 
 /-- The cube of the field, expanded as a triple sum over frequency triples. -/
 lemma trigField_cube (c : ℤ → ℂ) (S : Finset ℤ) (θ : ℝ) :
-    (trigField c S θ)^3
+    (trigField c S θ)^(3 : ℕ)
       = ∑ k ∈ S, ∑ l ∈ S, ∑ m ∈ S,
           (c k * c l * c m) * Complex.exp (((k+l+m : ℤ):ℝ) * θ * I) := by
   unfold trigField
@@ -114,7 +114,7 @@ lemma trigField_cube (c : ℤ → ℂ) (S : Finset ℤ) (θ : ℝ) :
 
 /-- The integral of the field cube, evaluated by character orthogonality. -/
 lemma integral_field_cube (c : ℤ → ℂ) (S : Finset ℤ) :
-    (∫ θ in (0:ℝ)..(2*Real.pi), (trigField c S θ)^3)
+    (∫ θ in (0:ℝ)..(2*Real.pi), (trigField c S θ)^(3 : ℕ))
       = ∑ k ∈ S, ∑ l ∈ S, ∑ m ∈ S,
           (if k + l + m = 0 then (c k * c l * c m) * (2*Real.pi) else 0) := by
   rw [intervalIntegral.integral_congr (fun θ _ => trigField_cube c S θ)]
@@ -177,7 +177,7 @@ moment `(3/4)·a²·b`.  The fundamental alone (`b = 0`) gives zero; the second 
 what activates the `1+1=2` resonance and makes the third moment nonzero.  This is the codim-2 cause:
 the third cumulant sees the second harmonic, and nothing lower does. -/
 theorem thirdMoment_two_harmonic (a b : ℂ) :
-    thirdMoment (towerCoeff a b) {-2, -1, 1, 2} = 3/4 * a^2 * b := by
+    thirdMoment (towerCoeff a b) {-2, -1, 1, 2} = 3/4 * a^(2 : ℕ) * b := by
   rw [thirdMoment_eq_resonance]
   simp only [towerCoeff]
   norm_num
@@ -188,7 +188,7 @@ theorem thirdMoment_two_harmonic (a b : ℂ) :
 second-harmonic amplitude is the square of the fundamental over two, `b = a²/2`.  With this
 multiplicatively-forced relation the third moment is `(3/8)·a⁴`. -/
 theorem thirdMoment_multiplicative (a : ℂ) :
-    thirdMoment (towerCoeff a (a^2/2)) {-2, -1, 1, 2} = 3/8 * a^4 := by
+    thirdMoment (towerCoeff a (a^(2 : ℕ)/2)) {-2, -1, 1, 2} = 3/8 * a^(4 : ℕ) := by
   rw [thirdMoment_two_harmonic]; ring
 
 /-- **The discriminator.**  A tower-free field (second harmonic `b = 0`, i.e. no prime-square term)
@@ -197,7 +197,7 @@ whenever the fundamental `a ≠ 0`.  So the third moment separates a field carry
 prime-power tower from a tower-free one. -/
 theorem thirdMoment_discriminator (a : ℂ) (ha : a ≠ 0) :
     thirdMoment (towerCoeff a 0) {-2, -1, 1, 2} = 0 ∧
-      thirdMoment (towerCoeff a (a^2/2)) {-2, -1, 1, 2} ≠ 0 := by
+      thirdMoment (towerCoeff a (a^(2 : ℕ)/2)) {-2, -1, 1, 2} ≠ 0 := by
   refine ⟨by rw [thirdMoment_two_harmonic]; ring, ?_⟩
   rw [thirdMoment_multiplicative]
   exact mul_ne_zero (by norm_num) (pow_ne_zero 4 ha)
@@ -208,8 +208,8 @@ tower (all Euler coefficients positive) produces a strictly positive third-momen
 every prime, `a = p^{-1/2}` giving `(3/8)p^{-2}`.  The positivity of the sign is ζ-specific (positive
 Euler coefficients); for a general L-function the second-harmonic amplitude need not be positive. -/
 theorem thirdMoment_multiplicative_pos (a : ℝ) (ha : a ≠ 0) :
-    thirdMoment (towerCoeff (a:ℂ) ((a:ℂ)^2/2)) {-2, -1, 1, 2} = ((3/8 * a^4 : ℝ) : ℂ)
-      ∧ 0 < 3/8 * a^4 := by
+    thirdMoment (towerCoeff (a:ℂ) ((a:ℂ)^(2 : ℕ)/2)) {-2, -1, 1, 2} = ((3/8 * a^(4 : ℕ) : ℝ) : ℂ)
+      ∧ 0 < 3/8 * a^(4 : ℕ) := by
   refine ⟨?_, by positivity⟩
   rw [thirdMoment_multiplicative]; push_cast; ring
 

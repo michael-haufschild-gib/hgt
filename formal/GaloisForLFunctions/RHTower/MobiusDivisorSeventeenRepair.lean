@@ -98,7 +98,7 @@ private lemma source_profile (R : Finset ℕ) :
 
 private lemma energy_profile {P : Finset ℕ} {A B C D : ℝ}
     (hf : ∀ R,mobiusDivisorSelectionFibre 17 P R=profile A B C D R) :
-    mobiusDivisorSelectionEnergy 17 P=A^2+B^2+C^2+D^2 := by
+    mobiusDivisorSelectionEnergy 17 P=A^(2 : ℕ)+B^(2 : ℕ)+C^(2 : ℕ)+D^(2 : ℕ) := by
   let L : Finset (Finset ℕ) := {∅,{2},{11},{13}}
   have hs : L ⊆ (mobiusDivisorSelectionPrimes 17).powerset := by
     intro R hR
@@ -106,15 +106,15 @@ private lemma energy_profile {P : Finset ℕ} {A B C D : ℝ}
     rcases hR with rfl|rfl|rfl|rfl
     all_goals norm_num [mem_powerset,insert_subset_iff,singleton_subset_iff,mobiusDivisorSelectionPrimes]
   have hz (R : Finset ℕ) (_ : R∈(mobiusDivisorSelectionPrimes 17).powerset) (hn : R∉L) :
-      (mobiusDivisorSelectionFibre 17 P R)^2=0 := by
+      (mobiusDivisorSelectionFibre 17 P R)^(2 : ℕ)=0 := by
     have h0 : R≠∅ := fun he => hn (by simp [L,he])
     have h2 : R≠{2} := fun he => hn (by simp [L,he])
     have h11 : R≠{11} := fun he => hn (by simp [L,he])
     have h13 : R≠{13} := fun he => hn (by simp [L,he])
     simp [hf,profile,h0,h2,h11,h13]
-  have he := sum_subset (f:=fun R => (mobiusDivisorSelectionFibre 17 P R)^2) hs hz
+  have he := sum_subset (f:=fun R => (mobiusDivisorSelectionFibre 17 P R)^(2 : ℕ)) hs hz
   change (∑ R∈(mobiusDivisorSelectionPrimes 17).powerset,
-    (mobiusDivisorSelectionFibre 17 P R)^2)=_
+    (mobiusDivisorSelectionFibre 17 P R)^(2 : ℕ))=_
   rw [← he]
   simp_rw [hf]
   simp [L,profile]
@@ -170,20 +170,20 @@ private lemma profile_repair_thirteen (R : Finset ℕ) :
   rw [mobiusDivisorSelectionFibre_insert,profile_repair,profile_repair]
   exact (profile_mergers (a+c+b) 0 0 d R).2.2
 private lemma energy_formulas :
-    mobiusDivisorSelectionEnergy 17 repairCore=a^2+b^2+c^2+d^2 ∧
-    mobiusDivisorSelectionEnergy 17 (insert 2 repairCore)=(a+b)^2+c^2+d^2 ∧
-    mobiusDivisorSelectionEnergy 17 (insert 11 repairCore)=(a+c)^2+b^2+d^2 ∧
-    mobiusDivisorSelectionEnergy 17 (insert 13 repairCore)=(a+d)^2+b^2+c^2 ∧
-    mobiusDivisorSelectionEnergy 17 (insert 2 (insert 11 repairCore))=(a+c+b)^2+d^2 ∧
-    mobiusDivisorSelectionEnergy 17 (insert 13 (insert 11 repairCore))=(a+c+d)^2+b^2 ∧
-    mobiusDivisorSelectionEnergy 17 (insert 13 (insert 2 (insert 11 repairCore)))=(a+c+b+d)^2 := by
+    mobiusDivisorSelectionEnergy 17 repairCore=a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+d^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 17 (insert 2 repairCore)=(a+b)^(2 : ℕ)+c^(2 : ℕ)+d^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 17 (insert 11 repairCore)=(a+c)^(2 : ℕ)+b^(2 : ℕ)+d^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 17 (insert 13 repairCore)=(a+d)^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 17 (insert 2 (insert 11 repairCore))=(a+c+b)^(2 : ℕ)+d^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 17 (insert 13 (insert 11 repairCore))=(a+c+d)^(2 : ℕ)+b^(2 : ℕ) ∧
+    mobiusDivisorSelectionEnergy 17 (insert 13 (insert 2 (insert 11 repairCore)))=(a+c+b+d)^(2 : ℕ) := by
   exact ⟨energy_profile source_profile,by simpa using energy_profile profile_two,
     by simpa using energy_profile profile_eleven,by simpa using energy_profile profile_thirteen,
     by simpa using energy_profile profile_repair,by simpa using energy_profile profile_forced_thirteen,
     by simpa using energy_profile profile_repair_thirteen⟩
 
 private lemma initial_energy : mobiusDivisorSelectionEnergy 17 ∅=
-    ∑ d∈({1,2,3,5,6,7,10,11,13,14,15}:Finset ℕ),(divisorUnsignedDilationChannel 17 d)^2 := by
+    ∑ d∈({1,2,3,5,6,7,10,11,13,14,15}:Finset ℕ),(divisorUnsignedDilationChannel 17 d)^(2 : ℕ) := by
   have hp7 : Nat.Prime 7 := by norm_num
   have hp11 : Nat.Prime 11 := by norm_num
   have hp13 : Nat.Prime 13 := by norm_num
@@ -207,7 +207,7 @@ private lemma budget_box : (0.360:ℝ) ≤ mobiusDivisorSelectionEnergy 17 ∅ �
   rw [initial_energy]
   exact sum_divisorUnsignedDilationChannel_seventeen_sq_bounds
 private lemma square_box {x l u : ℝ} (hl : 0≤l) (h : l≤x ∧ x≤u) :
-    l^2≤x^2 ∧ x^2≤u^2 := by
+    l^(2 : ℕ)≤x^(2 : ℕ) ∧ x^(2 : ℕ)≤u^(2 : ℕ) := by
   have hx := hl.trans h.1
   constructor
   · simpa only [pow_two] using mul_le_mul h.1 h.1 hl hx

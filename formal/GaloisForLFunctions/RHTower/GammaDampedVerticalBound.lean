@@ -57,7 +57,7 @@ theorem norm_term_le_inv_sq {f : ℕ → ℂ} {s : ℂ} (hs : 2 ≤ s.re) (hf : 
     have hcmp : ((n : ℝ) ^ (2 : ℕ)) ≤ (n : ℝ) ^ s.re := by
       rw [hsq]
       exact Real.rpow_le_rpow_of_exponent_le hnR hs
-    rw [term_of_ne_zero hn, norm_div, norm_natCast_cpow hn1, div_le_iff₀ hpospow]
+    rw [term_of_ne_zero hn, norm_div, norm_natCast_cpow_zetaVerticalLineBound hn1, div_le_iff₀ hpospow]
     have h1 : (1 : ℝ) ≤ ((n : ℝ) ^ (2 : ℕ))⁻¹ * (n : ℝ) ^ s.re := by
       rw [inv_mul_eq_div, le_div_iff₀ hsqpos]
       linarith
@@ -94,7 +94,7 @@ theorem norm_gammaDampedCorrectionLSeries_le {z : ℂ} (hz : 0 ≤ z.re) :
       have hcoeff := norm_gammaDampedCorrectionCoeff_le n
       have hpospow : (0 : ℝ) < (n : ℝ) ^ z.re := Real.rpow_pos_of_pos hpos _
       have hone : (1 : ℝ) ≤ (n : ℝ) ^ z.re := Real.one_le_rpow hnR hz
-      rw [term_of_ne_zero hn, norm_div, norm_natCast_cpow hn1, div_le_iff₀ hpospow]
+      rw [term_of_ne_zero hn, norm_div, norm_natCast_cpow_zetaVerticalLineBound hn1, div_le_iff₀ hpospow]
       have hquart : (n : ℝ) ^ (-4 : ℝ) ≤ ((n : ℝ) ^ (2 : ℕ))⁻¹ := by
         rw [show ((n : ℝ) ^ (2 : ℕ))⁻¹ = (n : ℝ) ^ (-(2 : ℝ)) by
           rw [Real.rpow_neg hpos.le, show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num,

@@ -402,7 +402,7 @@ theorem routePOneStepWildSaddleSignedOperator_memSchattenClass_two :
     (memSchattenClass_two_iff_isHilbertSchmidt _).mp
       routePTwoStepWildSaddleSignedOperator_memSchattenClass_two
   have hsumTwo : Summable (fun i : RouteKSignedPrimeIndex =>
-      ‖routePTwoStepWildSaddleSignedMultiplier i‖ ^ 2) :=
+      ‖routePTwoStepWildSaddleSignedMultiplier i‖ ^ (2 : ℕ)) :=
     (HTGeometry.isHilbertSchmidt_ellTwoDiagonal_iff
       routePTwoStepWildSaddleSignedMultiplier
       norm_routePTwoStepWildSaddleSignedMultiplier_le_one).mp htwoHS
@@ -426,7 +426,7 @@ theorem routePOneStepWildSaddleSignedOperator_memSchattenClass_two :
           abs_of_nonneg (routePTwoStepWildSaddlePrimeReciprocal_nonneg p)] using
           routePOneStepWildSaddlePrimeReciprocal_le_twoStep p
   have hsumOne : Summable (fun i : RouteKSignedPrimeIndex =>
-      ‖routePOneStepWildSaddleSignedMultiplier i‖ ^ 2) := by
+      ‖routePOneStepWildSaddleSignedMultiplier i‖ ^ (2 : ℕ)) := by
     refine Summable.of_nonneg_of_le (fun i => sq_nonneg _) ?_ hsumTwo
     intro i
     have hle := hnormLe i

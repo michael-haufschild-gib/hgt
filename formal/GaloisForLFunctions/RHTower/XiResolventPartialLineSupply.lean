@@ -8,12 +8,12 @@ not a consequence of the abstract structure of the resolvent chart: a conjugatio
 configuration with one non-real pair and a small tail makes it negative.  It becomes a
 theorem the moment two genuinely arithmetic inputs are supplied: every divisor copy above a
 resolvent modulus `δ` lies on the critical line, and the two-scale mass inequality
-`8 ε S ≤ 2 r₁ r₂ (r₁ - r₂)^2` holds, where `ε` is the sub-`δ` tail of the norm mass, `S` the
+`8 ε S ≤ 2 r₁ r₂ (r₁ - r₂)^(2 : ℕ)` holds, where `ε` is the sub-`δ` tail of the norm mass, `S` the
 total norm mass, and `r₁ ≠ r₂` the moduli of two above-`δ` copies.
 
 The proof splits the variance pair expansion at the scale `δ`: above `δ` all atoms are
 positive reals, so the block is a sum of nonnegative terms dominating the separated witness
-pair; the remaining pair interactions are controlled by `4 (S^2 - (S - ε)^2) ≤ 8 ε S`.
+pair; the remaining pair interactions are controlled by `4 (S^(2 : ℕ) - (S - ε)^(2 : ℕ)) ≤ 8 ε S`.
 -/
 
 open Complex
@@ -25,7 +25,7 @@ noncomputable section
 /-- The `p = 1` weighted moments are the plain resolvent moments. -/
 theorem xiPolyMoment_one (k : ℕ) (X : ℝ) : xiPolyMoment 1 k X = xiResolventMoment k X := by
   rw [show xiPolyMoment 1 k X = ∑' q : XiZeroCopy, xiResolventPoint X q ^ (k + 1) *
-      evalRealPolynomial 1 (xiResolventPoint X q) ^ 2 from rfl,
+      evalRealPolynomial 1 (xiResolventPoint X q) ^ (2 : ℕ) from rfl,
     show xiResolventMoment k X = ∑' q : XiZeroCopy,
       xiResolventPoint X q ^ (k + 1) from rfl]
   refine tsum_congr fun q => ?_
@@ -45,9 +45,9 @@ theorem xiResolventTuranMinor_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 
         ‖xiResolventPoint X (q : XiZeroCopy)‖) *
         (∑' q : XiZeroCopy, ‖xiResolventPoint X q‖) ≤
       2 * (‖xiResolventPoint X q₁‖ * ‖xiResolventPoint X q₂‖) *
-        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ 2) :
+        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ (2 : ℕ)) :
     0 ≤ (xiResolventMoment 0 X * xiResolventMoment 2 X -
-      xiResolventMoment 1 X ^ 2).re := by
+      xiResolventMoment 1 X ^ (2 : ℕ)).re := by
   classical
   set u : XiZeroCopy → ℂ := fun q => xiResolventPoint X q with hu
   set S : ℝ := ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ with hS
@@ -73,18 +73,18 @@ theorem xiResolventTuranMinor_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 
       (by simpa using hsummS) (by simpa using hsummS)
     simpa using h
   have hpairsummable : Summable (fun z : XiZeroCopy × XiZeroCopy =>
-      (u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ 2) := by
+      (u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ (2 : ℕ)) := by
     refine Summable.of_norm_bounded (g := fun z => ‖u z.1‖ * ‖u z.2‖ * 4)
       (hprodsum.mul_right 4) fun z => ?_
     rw [norm_mul, norm_pow, norm_mul, pow_one]
-    have hd : ‖u z.1 - u z.2‖ ^ 2 ≤ 4 := by
+    have hd : ‖u z.1 - u z.2‖ ^ (2 : ℕ) ≤ 4 := by
       have h4 : ‖u z.1 - u z.2‖ ≤ 2 := by
         calc ‖u z.1 - u z.2‖ ≤ ‖u z.1‖ + ‖u z.2‖ := norm_sub_le _ _
           _ ≤ 1 + 1 := add_le_add (norm_xiResolventPoint_le_one hX z.1)
               (norm_xiResolventPoint_le_one hX z.2)
           _ = 2 := by norm_num
       nlinarith [norm_nonneg (u z.1 - u z.2)]
-    have hd2 : ‖(u z.1 - u z.2) ^ 2‖ ≤ 4 := by
+    have hd2 : ‖(u z.1 - u z.2) ^ (2 : ℕ)‖ ≤ 4 := by
       rw [norm_pow]
       exact hd
     exact mul_le_mul_of_nonneg_left hd2 (by positivity)
@@ -98,17 +98,17 @@ theorem xiResolventTuranMinor_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 
   set r₁ : ℝ := ‖xiResolventPoint X q₁‖ with hr₁
   set r₂ : ℝ := ‖xiResolventPoint X q₂‖ with hr₂
   have hterm_re : ∀ z : XiZeroCopy × XiZeroCopy, z ∈ F ×ˢ F →
-      ((u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ 2).re =
+      ((u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ (2 : ℕ)).re =
       (‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖) *
-        (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ 2 := by
+        (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ (2 : ℕ) := by
     intro z hz
     rw [Finset.mem_product] at hz
     rw [hreal z.1 ((hmemF z.1).mp hz.1), hreal z.2 ((hmemF z.2).mp hz.2),
       ← Complex.ofReal_mul, ← Complex.ofReal_sub, ← Complex.ofReal_pow,
       ← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.ofReal_re]
     ring
-  have hblock : 2 * (r₁ * r₂) * (r₁ - r₂) ^ 2 ≤
-      (∑ z ∈ F ×ˢ F, (u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ 2).re := by
+  have hblock : 2 * (r₁ * r₂) * (r₁ - r₂) ^ (2 : ℕ) ≤
+      (∑ z ∈ F ×ˢ F, (u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ (2 : ℕ)).re := by
     rw [Complex.re_sum, Finset.sum_congr rfl hterm_re]
     have hsub : ({(q₁, q₂), (q₂, q₁)} : Finset (XiZeroCopy × XiZeroCopy)) ⊆ F ×ˢ F := by
       intro z hz
@@ -119,17 +119,17 @@ theorem xiResolventTuranMinor_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 
       exact hqne (congrArg Prod.fst h)
     have hpairsum : ∑ z ∈ ({(q₁, q₂), (q₂, q₁)} : Finset (XiZeroCopy × XiZeroCopy)),
         (‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖) *
-          (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ 2 =
-        2 * (r₁ * r₂) * (r₁ - r₂) ^ 2 := by
+          (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ (2 : ℕ) =
+        2 * (r₁ * r₂) * (r₁ - r₂) ^ (2 : ℕ) := by
       rw [Finset.sum_pair hpairne]
       ring_nf
       nlinarith [sq_nonneg (r₁ - r₂), sq_nonneg (r₂ - r₁)]
-    calc 2 * (r₁ * r₂) * (r₁ - r₂) ^ 2
+    calc 2 * (r₁ * r₂) * (r₁ - r₂) ^ (2 : ℕ)
         = ∑ z ∈ ({(q₁, q₂), (q₂, q₁)} : Finset (XiZeroCopy × XiZeroCopy)),
             (‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖) *
-              (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ 2 := hpairsum.symm
+              (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ (2 : ℕ) := hpairsum.symm
       _ ≤ ∑ z ∈ F ×ˢ F, (‖xiResolventPoint X z.1‖ * ‖xiResolventPoint X z.2‖) *
-            (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ 2 := by
+            (‖xiResolventPoint X z.1‖ - ‖xiResolventPoint X z.2‖) ^ (2 : ℕ) := by
           refine Finset.sum_le_sum_of_subset_of_nonneg hsub fun z _ _ => ?_
           positivity
   -- the tail mass
@@ -174,7 +174,7 @@ theorem xiResolventTuranMinor_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 
   -- the complement pair term is controlled by the complement pair mass
   have hcompl : ‖∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
       (u (↑z : XiZeroCopy × XiZeroCopy).1 * u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (0 + 1) *
-        (u (↑z : XiZeroCopy × XiZeroCopy).1 - u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2‖ ≤
+        (u (↑z : XiZeroCopy × XiZeroCopy).1 - u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖ ≤
       4 * (2 * ε * S) := by
     have hsubpair := (hpairsummable.norm.subtype
       ((↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ))
@@ -183,12 +183,12 @@ theorem xiResolventTuranMinor_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 
           (u (↑z : XiZeroCopy × XiZeroCopy).1 *
             u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (0 + 1) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2‖
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖
         ≤ ∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
             ‖(u (↑z : XiZeroCopy × XiZeroCopy).1 *
               u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (0 + 1) *
               (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-                u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2‖ :=
+                u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖ :=
           norm_tsum_le_tsum_norm hsubpair
       _ ≤ ∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
             4 * (‖u (↑z : XiZeroCopy × XiZeroCopy).1‖ *
@@ -196,7 +196,7 @@ theorem xiResolventTuranMinor_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 
           refine Summable.tsum_le_tsum (fun z => ?_) hsubpair (hsubprod.mul_left 4)
           rw [norm_mul, norm_pow, norm_mul, pow_one]
           have hd : ‖u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2‖ ^ 2 ≤ 4 := by
+              u (↑z : XiZeroCopy × XiZeroCopy).2‖ ^ (2 : ℕ) ≤ 4 := by
             have h4 : ‖u (↑z : XiZeroCopy × XiZeroCopy).1 -
                 u (↑z : XiZeroCopy × XiZeroCopy).2‖ ≤ 2 := by
               calc ‖u (↑z : XiZeroCopy × XiZeroCopy).1 -
@@ -209,13 +209,13 @@ theorem xiResolventTuranMinor_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 
             nlinarith [norm_nonneg (u (↑z : XiZeroCopy × XiZeroCopy).1 -
               u (↑z : XiZeroCopy × XiZeroCopy).2)]
           have hd2 : ‖(u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2‖ ≤ 4 := by
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖ ≤ 4 := by
             rw [norm_pow]
             exact hd
           calc ‖u (↑z : XiZeroCopy × XiZeroCopy).1‖ *
               ‖u (↑z : XiZeroCopy × XiZeroCopy).2‖ *
               ‖(u (↑z : XiZeroCopy × XiZeroCopy).1 -
-                u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2‖
+                u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)‖
               ≤ ‖u (↑z : XiZeroCopy × XiZeroCopy).1‖ *
                 ‖u (↑z : XiZeroCopy × XiZeroCopy).2‖ * 4 := by
                 exact mul_le_mul_of_nonneg_left hd2 (by positivity)
@@ -228,41 +228,41 @@ theorem xiResolventTuranMinor_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 
           refine mul_le_mul_of_nonneg_left hcomplprod (by norm_num)
   -- assemble
   have hmain : 0 ≤ (2 * (xiResolventMoment 0 X * xiResolventMoment 2 X -
-      xiResolventMoment 1 X ^ 2)).re := by
+      xiResolventMoment 1 X ^ (2 : ℕ))).re := by
     rw [hpair]
     have hEq : (∑' z : XiZeroCopy × XiZeroCopy,
-        (u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ 2) =
-        (∑ z ∈ F ×ˢ F, (u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ 2) +
+        (u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ (2 : ℕ)) =
+        (∑ z ∈ F ×ˢ F, (u z.1 * u z.2) ^ (0 + 1) * (u z.1 - u z.2) ^ (2 : ℕ)) +
         ∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
           (u (↑z : XiZeroCopy × XiZeroCopy).1 *
             u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (0 + 1) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2 := hsplit.symm
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ) := hsplit.symm
     rw [hEq, Complex.add_re]
     have htailre : -(4 * (2 * ε * S)) ≤
         (∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
           (u (↑z : XiZeroCopy × XiZeroCopy).1 *
             u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (0 + 1) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2).re := by
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)).re := by
       have ha := Complex.abs_re_le_norm
         (∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
           (u (↑z : XiZeroCopy × XiZeroCopy).1 *
             u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (0 + 1) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2)
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ))
       have hb := neg_abs_le
         (∑' z : ↑(↑(F ×ˢ F) : Set (XiZeroCopy × XiZeroCopy))ᶜ,
           (u (↑z : XiZeroCopy × XiZeroCopy).1 *
             u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (0 + 1) *
             (u (↑z : XiZeroCopy × XiZeroCopy).1 -
-              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ 2).re
+              u (↑z : XiZeroCopy × XiZeroCopy).2) ^ (2 : ℕ)).re
       linarith
     linarith [hmass]
   have h2 : (2 * (xiResolventMoment 0 X * xiResolventMoment 2 X -
-      xiResolventMoment 1 X ^ 2)).re =
+      xiResolventMoment 1 X ^ (2 : ℕ))).re =
       2 * (xiResolventMoment 0 X * xiResolventMoment 2 X -
-        xiResolventMoment 1 X ^ 2).re := by
+        xiResolventMoment 1 X ^ (2 : ℕ)).re := by
     simp [Complex.mul_re]
   rw [h2] at hmain
   linarith
@@ -279,8 +279,8 @@ theorem polyTuranMinor_one_zero_re_nonneg_of_partial_line {X δ : ℝ} (hX : 0 �
         ‖xiResolventPoint X (q : XiZeroCopy)‖) *
         (∑' q : XiZeroCopy, ‖xiResolventPoint X q‖) ≤
       2 * (‖xiResolventPoint X q₁‖ * ‖xiResolventPoint X q₂‖) *
-        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ 2) :
-    0 ≤ (xiPolyMoment 1 0 X * xiPolyMoment 1 2 X - xiPolyMoment 1 1 X ^ 2).re := by
+        (‖xiResolventPoint X q₁‖ - ‖xiResolventPoint X q₂‖) ^ (2 : ℕ)) :
+    0 ≤ (xiPolyMoment 1 0 X * xiPolyMoment 1 2 X - xiPolyMoment 1 1 X ^ (2 : ℕ)).re := by
   rw [xiPolyMoment_one, xiPolyMoment_one, xiPolyMoment_one]
   exact xiResolventTuranMinor_zero_re_nonneg_of_partial_line hX hδ hline h1 h2 hne hmass
 

@@ -59,17 +59,17 @@ theorem mertensFirst_general_block {A B : ℕ} (hA : 1 ≤ A) (hAB : A ≤ B) :
 at the right endpoint, because natural division is antitone in its denominator. -/
 theorem sum_block_outer_le {A B N : ℕ} (hA : 1 ≤ A) (hAB : A ≤ B) (hBN : 2 ≤ N / B) :
     ∑ p ∈ Nat.primesLE B \ Nat.primesLE A,
-        Real.log (p : ℝ) / ((p : ℝ) * (Real.log ((N / p : ℕ) : ℝ)) ^ 2)
+        Real.log (p : ℝ) / ((p : ℝ) * (Real.log ((N / p : ℕ) : ℝ)) ^ (2 : ℕ))
       ≤ (Real.log B - Real.log A + mertensBlockGapConst)
-          / (Real.log ((N / B : ℕ) : ℝ)) ^ 2 := by
+          / (Real.log ((N / B : ℕ) : ℝ)) ^ (2 : ℕ) := by
   classical
   have hBN2 : (2 : ℝ) ≤ ((N / B : ℕ) : ℝ) := by exact_mod_cast hBN
   have hlogB : (0 : ℝ) < Real.log ((N / B : ℕ) : ℝ) := Real.log_pos (by linarith)
-  have hsqB : (0 : ℝ) < (Real.log ((N / B : ℕ) : ℝ)) ^ 2 := by positivity
+  have hsqB : (0 : ℝ) < (Real.log ((N / B : ℕ) : ℝ)) ^ (2 : ℕ) := by positivity
   -- termwise: the scale at `p` is at least the scale at `B`
   have hterm : ∀ p ∈ Nat.primesLE B \ Nat.primesLE A,
-      Real.log (p : ℝ) / ((p : ℝ) * (Real.log ((N / p : ℕ) : ℝ)) ^ 2)
-        ≤ (Real.log (p : ℝ) / (p : ℝ)) / (Real.log ((N / B : ℕ) : ℝ)) ^ 2 := by
+      Real.log (p : ℝ) / ((p : ℝ) * (Real.log ((N / p : ℕ) : ℝ)) ^ (2 : ℕ))
+        ≤ (Real.log (p : ℝ) / (p : ℝ)) / (Real.log ((N / B : ℕ) : ℝ)) ^ (2 : ℕ) := by
     intro p hp
     rw [Finset.mem_sdiff, Nat.mem_primesLE] at hp
     obtain ⟨⟨hpB, hpp⟩, -⟩ := hp
@@ -80,14 +80,14 @@ theorem sum_block_outer_le {A B N : ℕ} (hA : 1 ≤ A) (hAB : A ≤ B) (hBN : 2
     have hdivR : ((N / B : ℕ) : ℝ) ≤ ((N / p : ℕ) : ℝ) := by exact_mod_cast hdiv
     have hlogle : Real.log ((N / B : ℕ) : ℝ) ≤ Real.log ((N / p : ℕ) : ℝ) :=
       Real.log_le_log (by linarith) hdivR
-    have hsqle : (Real.log ((N / B : ℕ) : ℝ)) ^ 2 ≤ (Real.log ((N / p : ℕ) : ℝ)) ^ 2 := by
+    have hsqle : (Real.log ((N / B : ℕ) : ℝ)) ^ (2 : ℕ) ≤ (Real.log ((N / p : ℕ) : ℝ)) ^ (2 : ℕ) := by
       nlinarith [hlogB.le, hlogle]
-    have hden : (0 : ℝ) < (p : ℝ) * (Real.log ((N / B : ℕ) : ℝ)) ^ 2 := by positivity
-    have hden' : (p : ℝ) * (Real.log ((N / B : ℕ) : ℝ)) ^ 2
-        ≤ (p : ℝ) * (Real.log ((N / p : ℕ) : ℝ)) ^ 2 :=
+    have hden : (0 : ℝ) < (p : ℝ) * (Real.log ((N / B : ℕ) : ℝ)) ^ (2 : ℕ) := by positivity
+    have hden' : (p : ℝ) * (Real.log ((N / B : ℕ) : ℝ)) ^ (2 : ℕ)
+        ≤ (p : ℝ) * (Real.log ((N / p : ℕ) : ℝ)) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hsqle hp0.le
-    have hgoal : Real.log (p : ℝ) / ((p : ℝ) * (Real.log ((N / p : ℕ) : ℝ)) ^ 2)
-        ≤ Real.log (p : ℝ) / ((p : ℝ) * (Real.log ((N / B : ℕ) : ℝ)) ^ 2) :=
+    have hgoal : Real.log (p : ℝ) / ((p : ℝ) * (Real.log ((N / p : ℕ) : ℝ)) ^ (2 : ℕ))
+        ≤ Real.log (p : ℝ) / ((p : ℝ) * (Real.log ((N / B : ℕ) : ℝ)) ^ (2 : ℕ)) :=
       div_le_div_of_nonneg_left hlogp hden hden'
     refine le_trans hgoal (le_of_eq ?_)
     field_simp

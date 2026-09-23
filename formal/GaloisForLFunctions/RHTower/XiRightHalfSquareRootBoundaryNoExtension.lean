@@ -22,13 +22,13 @@ namespace RHTower
 theorem no_local_analytic_sqrt_xi_of_odd_order
     {rho : ℂ} (hodd : Odd (analyticOrderAt xi rho).toNat) :
     ¬ ∃ g : ℂ → ℂ, AnalyticAt ℂ g rho ∧
-      (fun s => g s ^ 2) =ᶠ[𝓝 rho] xi := by
+      (fun s => g s ^ (2 : ℕ)) =ᶠ[𝓝 rho] xi := by
   rintro ⟨g, hg, hsq⟩
   have hord :
-      analyticOrderAt (fun s => g s ^ 2) rho = analyticOrderAt xi rho :=
+      analyticOrderAt (fun s => g s ^ (2 : ℕ)) rho = analyticOrderAt xi rho :=
     analyticOrderAt_congr hsq
   have heven : Even (analyticOrderAt xi rho).toNat := by
-    rw [← hord, show (fun s => g s ^ 2) = g ^ 2 by rfl,
+    rw [← hord, show (fun s => g s ^ (2 : ℕ)) = g ^ (2 : ℕ) by rfl,
       analyticOrderAt_pow hg]
     rw [show (2 • analyticOrderAt g rho).toNat =
         2 * (analyticOrderAt g rho).toNat by
@@ -41,13 +41,13 @@ theorem no_local_analytic_sqrt_xi_of_odd_order
 theorem exists_odd_order_line_zero_no_local_analytic_sqrt_gt (T : ℝ) :
     ∃ tau : ℝ, T < tau ∧ xi (linePt tau) = 0 ∧
       ¬ ∃ g : ℂ → ℂ, AnalyticAt ℂ g (linePt tau) ∧
-        (fun s => g s ^ 2) =ᶠ[𝓝 (linePt tau)] xi := by
+        (fun s => g s ^ (2 : ℕ)) =ᶠ[𝓝 (linePt tau)] xi := by
   obtain ⟨tau, hT, hzero, hodd⟩ := exists_odd_order_line_zero_gt T
   exact ⟨tau, hT, hzero, no_local_analytic_sqrt_xi_of_odd_order hodd⟩
 
 /-- Xi has no globally entire square root. -/
 theorem not_exists_entire_sqrt_xi :
-    ¬ ∃ g : ℂ → ℂ, Differentiable ℂ g ∧ ∀ s, g s ^ 2 = xi s := by
+    ¬ ∃ g : ℂ → ℂ, Differentiable ℂ g ∧ ∀ s, g s ^ (2 : ℕ) = xi s := by
   rintro ⟨g, hg, hsq⟩
   obtain ⟨rho, _hzero, hodd⟩ := exists_odd_order_zero_xi
   exact no_local_analytic_sqrt_xi_of_odd_order hodd
@@ -55,15 +55,15 @@ theorem not_exists_entire_sqrt_xi :
 
 /-- Any exact square root of Xi on the strict right half-plane is necessarily non-entire. -/
 theorem rightHalf_sqrt_not_entire {g : ℂ → ℂ}
-    (hgsq : ∀ s ∈ rightHalf, g s ^ 2 = xi s) :
+    (hgsq : ∀ s ∈ rightHalf, g s ^ (2 : ℕ) = xi s) :
     ¬ Differentiable ℂ g := by
   intro hg
   apply not_exists_entire_sqrt_xi
   refine ⟨g, hg, ?_⟩
-  have hgan : AnalyticOnNhd ℂ (fun s => g s ^ 2) Set.univ := by
+  have hgan : AnalyticOnNhd ℂ (fun s => g s ^ (2 : ℕ)) Set.univ := by
     intro s _hs
     exact (hg.analyticAt s).pow 2
-  have heq : (fun s => g s ^ 2) =ᶠ[𝓝 (1 : ℂ)] xi := by
+  have heq : (fun s => g s ^ (2 : ℕ)) =ᶠ[𝓝 (1 : ℂ)] xi := by
     filter_upwards [isOpen_rightHalf.mem_nhds
       (show (1 : ℂ) ∈ rightHalf by rw [mem_rightHalf]; norm_num)] with s hs
     exact hgsq s hs
@@ -75,7 +75,7 @@ theorem rightHalf_sqrt_not_entire {g : ℂ → ℂ}
 root.  The extra non-entire clause is forced unconditionally by Hardy's odd seam zeros. -/
 theorem rhLadder_one_iff_exists_rightHalf_sqrt_not_entire :
     RHLadder 1 ↔ ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g rightHalf ∧
-      (∀ s ∈ rightHalf, g s ^ 2 = xi s) ∧ ¬ Differentiable ℂ g := by
+      (∀ s ∈ rightHalf, g s ^ (2 : ℕ) = xi s) ∧ ¬ Differentiable ℂ g := by
   rw [rhLadder_one_iff_sqrt_rightHalf]
   constructor
   · rintro ⟨g, hg, hsq⟩

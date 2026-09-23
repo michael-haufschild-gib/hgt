@@ -51,25 +51,25 @@ of `1 - y t`. -/
 theorem outlierPairing_hausdorff_neg (n : ℕ) {ε t y : ℝ}
     (hε : 0 < ε) (ht : 1 < y * t) (htne : (monicOrtho s (n + 1)).eval t ≠ 0) :
     outlierPairing s n ε t
-      ((1 - Polynomial.C y * Polynomial.X) * (monicOrtho s (n + 1)) ^ 2) < 0 := by
+      ((1 - Polynomial.C y * Polynomial.X) * (monicOrtho s (n + 1)) ^ (2 : ℕ)) < 0 := by
   have hnodes : ∀ x ∈ gaussNodes s n,
       christoffel s n x *
-        ((1 - Polynomial.C y * Polynomial.X) * (monicOrtho s (n + 1)) ^ 2).eval x = 0 := by
+        ((1 - Polynomial.C y * Polynomial.X) * (monicOrtho s (n + 1)) ^ (2 : ℕ)).eval x = 0 := by
     intro x hx
     have hroot : (monicOrtho s (n + 1)).eval x = 0 := (mem_gaussNodes_iff n x).1 hx
     simp [hroot]
   have hsum : (∑ x ∈ gaussNodes s n, christoffel s n x *
-      ((1 - Polynomial.C y * Polynomial.X) * (monicOrtho s (n + 1)) ^ 2).eval x) = 0 :=
+      ((1 - Polynomial.C y * Polynomial.X) * (monicOrtho s (n + 1)) ^ (2 : ℕ)).eval x) = 0 :=
     Finset.sum_eq_zero hnodes
   rw [outlierPairing, hsum, mul_zero, zero_add]
-  have heval : ((1 - Polynomial.C y * Polynomial.X) * (monicOrtho s (n + 1)) ^ 2).eval t
-      = (1 - y * t) * (monicOrtho s (n + 1)).eval t ^ 2 := by
+  have heval : ((1 - Polynomial.C y * Polynomial.X) * (monicOrtho s (n + 1)) ^ (2 : ℕ)).eval t
+      = (1 - y * t) * (monicOrtho s (n + 1)).eval t ^ (2 : ℕ) := by
     simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_one, Polynomial.eval_C,
       Polynomial.eval_X, Polynomial.eval_pow]
   rw [heval]
-  have hsq : 0 < (monicOrtho s (n + 1)).eval t ^ 2 := by positivity
+  have hsq : 0 < (monicOrtho s (n + 1)).eval t ^ (2 : ℕ) := by positivity
   have hneg : 1 - y * t < 0 := by linarith
-  have hprod : (1 - y * t) * (monicOrtho s (n + 1)).eval t ^ 2 < 0 :=
+  have hprod : (1 - y * t) * (monicOrtho s (n + 1)).eval t ^ (2 : ℕ) < 0 :=
     mul_neg_of_neg_of_pos hneg hsq
   exact mul_neg_of_pos_of_neg hε hprod
 

@@ -53,13 +53,13 @@ theorem thetaCuspCenterMixedSignedHankel_six_posDef
     exact neg_pos.mpr (thetaCuspCenterMixedDensitySecondJet_zero_neg ha0 ha)
   have h2 : 0 < thetaCuspCenterMixedDensity a 0 *
       iteratedDeriv 4 (thetaCuspCenterMixedDensity a) 0-
-      (-iteratedDeriv 2 (thetaCuspCenterMixedDensity a) 0)^2 := by
+      (-iteratedDeriv 2 (thetaCuspCenterMixedDensity a) 0)^(2 : ℕ) := by
     rw [iteratedDeriv_four_thetaCuspCenterMixedDensity ha0.le ha,
       iteratedDeriv_two_thetaCuspCenterMixedDensity ha0.le ha]
     simpa only [neg_sq] using thetaCuspCenterMixedDensity_fourthHankel_pos ha0 ha
   have h3 : 0 < (-iteratedDeriv 2 (thetaCuspCenterMixedDensity a) 0)*
       (-iteratedDeriv 6 (thetaCuspCenterMixedDensity a) 0)-
-      (iteratedDeriv 4 (thetaCuspCenterMixedDensity a) 0)^2 := by
+      (iteratedDeriv 4 (thetaCuspCenterMixedDensity a) 0)^(2 : ℕ) := by
     simpa only [neg_mul_neg] using
       thetaCuspCenterMixedDensity_iteratedDeriv_secondSixthHankel_pos ha0 ha
   have h4 : 0 < HilbertMetric.signedEvenHankelThreeDet

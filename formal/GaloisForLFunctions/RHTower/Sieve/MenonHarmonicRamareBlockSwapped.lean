@@ -44,16 +44,16 @@ theorem setIntegral_normSq_harmonicPrimeBlockPoly_le_HM_recip
     (B : Finset ℕ) {L N : ℕ} (hL : 1 ≤ L) (hN : 1 ≤ N)
     (hB : B ⊆ Finset.Icc L N) {E : Set ℝ} (hE : MeasurableSet E)
     {W : ℝ} (hW : 1 ≤ W) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ 2)
+    (∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi)⁻¹
         * (hmMassRecip N (2 * Real.pi * W) (2 * Real.pi * volume.real E)
-            * ((1 / (L : ℝ)) ^ 2 * (B.card : ℝ))) := by
+            * ((1 / (L : ℝ)) ^ (2 : ℕ) * (B.card : ℝ))) := by
   have hBI : B ⊆ Finset.Icc 1 N := by
     intro n hn
     have hn' := Finset.mem_Icc.1 (hB hn)
     exact Finset.mem_Icc.2 ⟨le_trans hL hn'.1, hn'.2⟩
-  have hrw : (∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ 2)
-      = ∫ w in E, ‖logPoly harmonicMoebiusC B w‖ ^ 2 := by
+  have hrw : (∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ (2 : ℕ))
+      = ∫ w in E, ‖logPoly harmonicMoebiusC B w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun hE fun w _ => ?_
     rw [harmonicPrimeBlockPoly_eq_logPoly]
   rw [hrw]
@@ -78,11 +78,11 @@ theorem setIntegral_normSq_harmonicBlockProduct_le_meanSquareSup
     (a : ℕ → ℂ) (B D : Finset ℕ) {W U I : ℝ}
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (hbound : ∀ w ∈ E, ‖logPoly a D w‖ ≤ U)
-    (hI : (∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ 2) ≤ I) :
-    (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ 2)
-      ≤ U ^ 2 * I := by
-  have hrw : (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ 2)
-      = ∫ w in E, ‖logPoly a D w‖ ^ 2 * ‖harmonicPrimeBlockPoly B w‖ ^ 2 := by
+    (hI : (∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ (2 : ℕ)) ≤ I) :
+    (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      ≤ U ^ (2 : ℕ) * I := by
+  have hrw : (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      = ∫ w in E, ‖logPoly a D w‖ ^ (2 : ℕ) * ‖harmonicPrimeBlockPoly B w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun hEm fun w _ => ?_
     rw [norm_mul, mul_pow, mul_comm]
   rw [hrw]
@@ -115,14 +115,14 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le_HM_swapped
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
     (∫ w in E,
       ‖harmonicRamareBlock P (Finset.Icc A₀ B₀)
-        (geomBlock P Q (1 + eta) j) w‖ ^ 2)
-      ≤ 2 * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2 *
+        (geomBlock P Q (1 + eta) j) w‖ ^ (2 : ℕ))
+      ≤ 2 * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ) *
           ((2 * Real.pi)⁻¹ *
             (hmMassRecip ⌊Q * (1 + eta) ^ (j + 1)⌋₊
               (2 * Real.pi * W) (2 * Real.pi * volume.real E) *
-                ((1 / ((⌊Q * (1 + eta) ^ j⌋₊ + 1 : ℕ) : ℝ)) ^ 2 *
+                ((1 / ((⌊Q * (1 + eta) ^ j⌋₊ + 1 : ℕ) : ℝ)) ^ (2 : ℕ) *
                   ((geomBlock P Q (1 + eta) j).card : ℝ))))
-        + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ 2 *
+        + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ (2 : ℕ) *
             harmonicCofactorSupportError A₀ B₀ Q eta W j := by
   have hHM := setIntegral_normSq_harmonicPrimeBlockPoly_le_HM_recip
     (geomBlock P Q (1 + eta) j)

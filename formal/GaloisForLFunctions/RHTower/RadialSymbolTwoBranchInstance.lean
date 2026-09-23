@@ -128,8 +128,8 @@ theorem symbolTwoBranch_of_composition_on {a b C C' K K' : ℝ}
     (hA : ∀ x ∈ Icc a b, |A x| ≤ C / Real.sqrt x)
     (hA'b : ∀ x ∈ Icc a b, |A' x| ≤ C' / (x * Real.sqrt x))
     (hPb : ∀ x ∈ Icc a b, |P (Φ x)| ≤ K) (hQb : ∀ x ∈ Icc a b, |Q (Φ x)| ≤ K)
-    (hP'b : ∀ x ∈ Icc a b, |P' (Φ x) * Φ' x| ≤ K' / x ^ 2)
-    (hQ'b : ∀ x ∈ Icc a b, |Q' (Φ x) * Φ' x| ≤ K' / x ^ 2) :
+    (hP'b : ∀ x ∈ Icc a b, |P' (Φ x) * Φ' x| ≤ K' / x ^ (2 : ℕ))
+    (hQ'b : ∀ x ∈ Icc a b, |Q' (Φ x) * Φ' x| ≤ K' / x ^ (2 : ℕ)) :
     SymbolTwoBranch a b (C * K) (C' * K + C * K')
       (fun x => A x * P (Φ x)) (fun x => A x * Q (Φ x))
       (fun x => A' x * P (Φ x) + A x * (P' (Φ x) * Φ' x))
@@ -137,7 +137,7 @@ theorem symbolTwoBranch_of_composition_on {a b C C' K K' : ℝ}
   have hxpos : ∀ x ∈ Icc a b, (0 : ℝ) < x := fun x hx => lt_of_lt_of_le zero_lt_one
     (le_trans ha hx.1)
   have hbound : ∀ (R R' : ℝ → ℝ), (∀ x ∈ Icc a b, |R (Φ x)| ≤ K) →
-      (∀ x ∈ Icc a b, |R' (Φ x) * Φ' x| ≤ K' / x ^ 2) →
+      (∀ x ∈ Icc a b, |R' (Φ x) * Φ' x| ≤ K' / x ^ (2 : ℕ)) →
       (∀ x ∈ Icc a b, |A x * R (Φ x)| ≤ C * K / Real.sqrt x) ∧
       (∀ x ∈ Icc a b, |A' x * R (Φ x) + A x * (R' (Φ x) * Φ' x)|
         ≤ (C' * K + C * K') / (x * Real.sqrt x)) := by
@@ -162,13 +162,13 @@ theorem symbolTwoBranch_of_composition_on {a b C C' K K' : ℝ}
           _ = C' * K / (x * Real.sqrt x) := by ring
       have h2 : |A x * (R' (Φ x) * Φ' x)| ≤ C * K' / (x * Real.sqrt x) := by
         rw [abs_mul]
-        have hstep : |A x| * |R' (Φ x) * Φ' x| ≤ (C / Real.sqrt x) * (K' / x ^ 2) :=
+        have hstep : |A x| * |R' (Φ x) * Φ' x| ≤ (C / Real.sqrt x) * (K' / x ^ (2 : ℕ)) :=
           mul_le_mul (hA x hx) (hR'b x hx) (abs_nonneg _) (div_nonneg hC hs.le)
-        have hval : (C / Real.sqrt x) * (K' / x ^ 2) = C * K' / (x ^ 2 * Real.sqrt x) := by
+        have hval : (C / Real.sqrt x) * (K' / x ^ (2 : ℕ)) = C * K' / (x ^ (2 : ℕ) * Real.sqrt x) := by
           ring
-        have hmono : C * K' / (x ^ 2 * Real.sqrt x) ≤ C * K' / (x * Real.sqrt x) := by
+        have hmono : C * K' / (x ^ (2 : ℕ) * Real.sqrt x) ≤ C * K' / (x * Real.sqrt x) := by
           refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
-          have hxx : x ≤ x ^ 2 := by nlinarith
+          have hxx : x ≤ x ^ (2 : ℕ) := by nlinarith
           nlinarith [hs, hxx]
         rw [hval] at hstep
         exact hstep.trans hmono
@@ -229,16 +229,16 @@ theorem symbolTwoBranch_radialPSWF
     (ha : 1 ≤ a) (hc : 0 < c) (hK' : 0 ≤ K')
     {W V psi : ℝ → ℂ}
     (hW : ∀ x, HasDerivAt W (V x) x)
-    (hV : ∀ x, HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x)
+    (hV : ∀ x, HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x)
     (hWc : Continuous W) (hpsic : Continuous psi)
     (hPb : ∀ x ∈ Icc a b, |radialAmpCos c W V (dilatedRadialPhase s r x)| ≤ K)
     (hQb : ∀ x ∈ Icc a b, |radialAmpSin c W V (dilatedRadialPhase s r x)| ≤ K)
     (hP'b : ∀ x ∈ Icc a b,
       |radialAmpCosDeriv c W psi (dilatedRadialPhase s r x) * dilatedPhaseSpeed s r x|
-        ≤ K' / x ^ 2)
+        ≤ K' / x ^ (2 : ℕ))
     (hQ'b : ∀ x ∈ Icc a b,
       |radialAmpSinDeriv c W psi (dilatedRadialPhase s r x) * dilatedPhaseSpeed s r x|
-        ≤ K' / x ^ 2) :
+        ≤ K' / x ^ (2 : ℕ)) :
     SymbolTwoBranch a b (4 / Real.sqrt r * K) (4 / Real.sqrt r * K + 4 / Real.sqrt r * K')
       (fun x => dilatedXiAmplitude s r x * radialAmpCos c W V (dilatedRadialPhase s r x))
       (fun x => dilatedXiAmplitude s r x * radialAmpSin c W V (dilatedRadialPhase s r x))
@@ -293,10 +293,10 @@ theorem symbolTwoBranch_radialPSWF_of_bounds
     (ha : 1 ≤ a) (hc : 0 < c) (hκ : 0 ≤ κ) (hKt : 0 ≤ Kt)
     {W V psi : ℝ → ℂ}
     (hW : ∀ x, HasDerivAt W (V x) x)
-    (hV : ∀ x, HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x)
+    (hV : ∀ x, HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x)
     (hWc : Continuous W) (hpsic : Continuous psi)
     (hAmp : ∀ x ∈ Icc a b, radialInteractionTotal c W V (dilatedRadialPhase s r x) ≤ Kt)
-    (hDecay : ∀ x ∈ Icc a b, ‖psi (dilatedRadialPhase s r x)‖ ≤ κ / x ^ 2) :
+    (hDecay : ∀ x ∈ Icc a b, ‖psi (dilatedRadialPhase s r x)‖ ≤ κ / x ^ (2 : ℕ)) :
     SymbolTwoBranch a b (4 / Real.sqrt r * (2 * Kt))
       (4 / Real.sqrt r * (2 * Kt) + 4 / Real.sqrt r * (κ * Kt * (4 / 3 * r) / c))
       (fun x => dilatedXiAmplitude s r x * radialAmpCos c W V (dilatedRadialPhase s r x))
@@ -327,18 +327,18 @@ theorem symbolTwoBranch_radialPSWF_of_bounds
   · have hx0 : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one (le_trans ha hx.1)
     have hbase := abs_transport_deriv_im_le hc psi W (dilatedRadialPhase s r x)
     have hmul : ‖psi (dilatedRadialPhase s r x)‖ * ‖W (dilatedRadialPhase s r x)‖
-        ≤ (κ / x ^ 2) * Kt :=
+        ≤ (κ / x ^ (2 : ℕ)) * Kt :=
       mul_le_mul (hDecay x hx) (hWb x hx) (norm_nonneg _) (by positivity)
     rw [radialAmpSinDeriv, abs_mul]
     have hstep : |(-(2 * (Complex.exp (-Complex.I * (c : ℂ)
           * ((dilatedRadialPhase s r x : ℝ) : ℂ)) * psi (dilatedRadialPhase s r x)
           * W (dilatedRadialPhase s r x) / (2 * Complex.I * (c : ℂ))).im))|
-        * |dilatedPhaseSpeed s r x| ≤ ((κ / x ^ 2) * Kt / c) * (4 / 3 * r) := by
+        * |dilatedPhaseSpeed s r x| ≤ ((κ / x ^ (2 : ℕ)) * Kt / c) * (4 / 3 * r) := by
       refine mul_le_mul ?_ (hspeed x hx) (abs_nonneg _) (by positivity)
       refine hbase.trans ?_
       gcongr
-    have hval : ((κ / x ^ 2) * Kt / c) * (4 / 3 * r)
-        = (κ * Kt * (4 / 3 * r) / c) / x ^ 2 := by
+    have hval : ((κ / x ^ (2 : ℕ)) * Kt / c) * (4 / 3 * r)
+        = (κ * Kt * (4 / 3 * r) / c) / x ^ (2 : ℕ) := by
       field_simp
     linarith [hstep, hval.le, hval.ge]
 
@@ -354,12 +354,12 @@ theorem abs_integral_radial_entry_le
     (hκ : 0 ≤ κ) (hKt : 0 ≤ Kt)
     {W V psi : ℝ → ℂ}
     (hW : ∀ x, HasDerivAt W (V x) x)
-    (hV : ∀ x, HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x)
+    (hV : ∀ x, HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x)
     (hWc : Continuous W) (hpsic : Continuous psi)
     (hAmpJ : ∀ x ∈ Icc a b, radialInteractionTotal c W V (dilatedRadialPhase s j x) ≤ Kt)
     (hAmpK : ∀ x ∈ Icc a b, radialInteractionTotal c W V (dilatedRadialPhase s k x) ≤ Kt)
-    (hDecayJ : ∀ x ∈ Icc a b, ‖psi (dilatedRadialPhase s j x)‖ ≤ κ / x ^ 2)
-    (hDecayK : ∀ x ∈ Icc a b, ‖psi (dilatedRadialPhase s k x)‖ ≤ κ / x ^ 2) :
+    (hDecayJ : ∀ x ∈ Icc a b, ‖psi (dilatedRadialPhase s j x)‖ ≤ κ / x ^ (2 : ℕ))
+    (hDecayK : ∀ x ∈ Icc a b, ‖psi (dilatedRadialPhase s k x)‖ ≤ κ / x ^ (2 : ℕ)) :
     |∫ x in a..b,
         (dilatedXiAmplitude s j x * radialAmpCos c W V (dilatedRadialPhase s j x)
               * Real.cos (c * dilatedRadialPhase s j x)
@@ -377,7 +377,7 @@ theorem abs_integral_radial_entry_le
                 * (4 / Real.sqrt k * (2 * Kt) + 4 / Real.sqrt k * (κ * Kt * (4 / 3 * k) / c)))
             / (2 / 3 * (j - k))
           + (4 / Real.sqrt j * (2 * Kt) * (4 / Real.sqrt k * (2 * Kt))) * (16 / 9)
-            / (3 * (2 / 3 * (j - k)) ^ 2)) / c := by
+            / (3 * (2 / 3 * (j - k)) ^ (2 : ℕ))) / c := by
   have hjge : (2 : ℝ) ≤ j := le_trans hk2 hkj.le
   have hj0 : (0 : ℝ) < j := lt_of_lt_of_le (by norm_num) hjge
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le (by norm_num) hk2

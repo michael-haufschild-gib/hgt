@@ -33,14 +33,14 @@ open scoped Topology
 /-! ## The elementary bound -/
 
 /-- **A square is dominated by four times the exponential.** -/
-theorem sq_le_four_mul_exp {s : ℝ} (hs : 0 ≤ s) : s ^ 2 ≤ 4 * Real.exp s := by
+theorem sq_le_four_mul_exp {s : ℝ} (hs : 0 ≤ s) : s ^ (2 : ℕ) ≤ 4 * Real.exp s := by
   have h1 : 1 + s / 2 ≤ Real.exp (s / 2) := by
     have h := Real.add_one_le_exp (s / 2)
     linarith
   have h2 : (0 : ℝ) ≤ s / 2 := by linarith
-  have h3 : (s / 2) ^ 2 ≤ (Real.exp (s / 2)) ^ 2 := by
+  have h3 : (s / 2) ^ (2 : ℕ) ≤ (Real.exp (s / 2)) ^ (2 : ℕ) := by
     nlinarith [h1, h2, Real.exp_pos (s / 2)]
-  have hexp : (Real.exp (s / 2)) ^ 2 = Real.exp s := by
+  have hexp : (Real.exp (s / 2)) ^ (2 : ℕ) = Real.exp s := by
     rw [sq, ← Real.exp_add]
     ring_nf
   rw [hexp] at h3
@@ -48,17 +48,17 @@ theorem sq_le_four_mul_exp {s : ℝ} (hs : 0 ≤ s) : s ^ 2 ≤ 4 * Real.exp s :
 
 /-- **The derivative-loss inequality.** Two derivatives cost `4 / δ²` in radius `δ`. -/
 theorem sq_mul_exp_neg_le {δ t : ℝ} (hδ : 0 < δ) (ht : 0 ≤ t) :
-    t ^ 2 * Real.exp (-(δ * t)) ≤ 4 / δ ^ 2 := by
+    t ^ (2 : ℕ) * Real.exp (-(δ * t)) ≤ 4 / δ ^ (2 : ℕ) := by
   have hs : (0 : ℝ) ≤ δ * t := mul_nonneg hδ.le ht
   have hbase := sq_le_four_mul_exp hs
   have hexp : Real.exp (-(δ * t)) * Real.exp (δ * t) = 1 := by
     rw [← Real.exp_add]
     simp
   have hpos : (0 : ℝ) < Real.exp (-(δ * t)) := Real.exp_pos _
-  have hδ2 : (0 : ℝ) < δ ^ 2 := by positivity
+  have hδ2 : (0 : ℝ) < δ ^ (2 : ℕ) := by positivity
   rw [le_div_iff₀ hδ2]
-  calc t ^ 2 * Real.exp (-(δ * t)) * δ ^ 2
-      = (δ * t) ^ 2 * Real.exp (-(δ * t)) := by ring
+  calc t ^ (2 : ℕ) * Real.exp (-(δ * t)) * δ ^ (2 : ℕ)
+      = (δ * t) ^ (2 : ℕ) * Real.exp (-(δ * t)) := by ring
     _ ≤ 4 * Real.exp (δ * t) * Real.exp (-(δ * t)) := by
         exact mul_le_mul_of_nonneg_right hbase hpos.le
     _ = 4 := by
@@ -96,15 +96,15 @@ theorem wienerNorm_mono {ρ' ρ : ℝ} (hρ : ρ' ≤ ρ) {g : ℤ → ℝ} (hg 
 /-! ## The transverse Laplacian loses two derivatives -/
 
 /-- Multiplication of Fourier coefficients by `k²`: the transverse Laplacian up to sign. -/
-noncomputable def sqMul (g : ℤ → ℝ) : ℤ → ℝ := fun k => (k : ℝ) ^ 2 * g k
+noncomputable def sqMul (g : ℤ → ℝ) : ℤ → ℝ := fun k => (k : ℝ) ^ (2 : ℕ) * g k
 
-theorem abs_sqMul (g : ℤ → ℝ) (k : ℤ) : |sqMul g k| = (k : ℝ) ^ 2 * |g k| := by
+theorem abs_sqMul (g : ℤ → ℝ) (k : ℤ) : |sqMul g k| = (k : ℝ) ^ (2 : ℕ) * |g k| := by
   rw [sqMul, abs_mul, abs_pow, sq_abs]
 
 /-- The pointwise form of the loss: the weight at the smaller radius absorbs `k²`. -/
 theorem abs_sqMul_weight_le {ρ' ρ : ℝ} (hρ : ρ' < ρ) (g : ℤ → ℝ) (k : ℤ) :
     |sqMul g k| * Real.exp (ρ' * |(k : ℝ)|)
-      ≤ 4 / (ρ - ρ') ^ 2 * (|g k| * Real.exp (ρ * |(k : ℝ)|)) := by
+      ≤ 4 / (ρ - ρ') ^ (2 : ℕ) * (|g k| * Real.exp (ρ * |(k : ℝ)|)) := by
   have hδ : 0 < ρ - ρ' := by linarith
   have ht : (0 : ℝ) ≤ |(k : ℝ)| := abs_nonneg _
   have hkey := sq_mul_exp_neg_le (δ := ρ - ρ') (t := |(k : ℝ)|) hδ ht
@@ -114,27 +114,27 @@ theorem abs_sqMul_weight_le {ρ' ρ : ℝ} (hρ : ρ' < ρ) (g : ℤ → ℝ) (k
     congr 1
     ring
   calc |sqMul g k| * Real.exp (ρ' * |(k : ℝ)|)
-      = |(k : ℝ)| ^ 2 * Real.exp (-((ρ - ρ') * |(k : ℝ)|))
+      = |(k : ℝ)| ^ (2 : ℕ) * Real.exp (-((ρ - ρ') * |(k : ℝ)|))
           * (|g k| * Real.exp (ρ * |(k : ℝ)|)) := by
         rw [abs_sqMul, hsplit, sq_abs]
         ring
-    _ ≤ 4 / (ρ - ρ') ^ 2 * (|g k| * Real.exp (ρ * |(k : ℝ)|)) :=
+    _ ≤ 4 / (ρ - ρ') ^ (2 : ℕ) * (|g k| * Real.exp (ρ * |(k : ℝ)|)) :=
         mul_le_mul_of_nonneg_right hkey (by positivity)
 
 /-- **The transverse Laplacian maps radius `ρ` to radius `ρ'` with norm at most
 `4 / (ρ - ρ')²`.** -/
 theorem wienerSummable_sqMul {ρ' ρ : ℝ} (hρ : ρ' < ρ) {g : ℤ → ℝ}
     (hg : WienerSummable ρ g) : WienerSummable ρ' (sqMul g) :=
-  (hg.mul_left (4 / (ρ - ρ') ^ 2)).of_nonneg_of_le
+  (hg.mul_left (4 / (ρ - ρ') ^ (2 : ℕ))).of_nonneg_of_le
     (fun _ => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le)
     (abs_sqMul_weight_le hρ g)
 
 theorem wienerNorm_sqMul_le {ρ' ρ : ℝ} (hρ : ρ' < ρ) {g : ℤ → ℝ}
     (hg : WienerSummable ρ g) :
-    wienerNorm ρ' (sqMul g) ≤ 4 / (ρ - ρ') ^ 2 * wienerNorm ρ g := by
+    wienerNorm ρ' (sqMul g) ≤ 4 / (ρ - ρ') ^ (2 : ℕ) * wienerNorm ρ g := by
   rw [wienerNorm, wienerNorm, ← tsum_mul_left]
   exact Summable.tsum_le_tsum (abs_sqMul_weight_le hρ g) (wienerSummable_sqMul hρ hg)
-    (hg.mul_left (4 / (ρ - ρ') ^ 2))
+    (hg.mul_left (4 / (ρ - ρ') ^ (2 : ℕ)))
 
 /-! ## Multiplication: the scale is an algebra at each radius
 

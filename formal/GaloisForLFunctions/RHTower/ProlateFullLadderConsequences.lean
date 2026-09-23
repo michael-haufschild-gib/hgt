@@ -21,12 +21,12 @@ open GaloisForLFunctions.RHTower
 
 theorem fullProlateLadder_sum :
     ∀ᶠ lam : ℝ in atTop,
-      Summable fun j : ℕ => ‖evenProlateConstraintCoord lam j‖ ^ 2 :=
+      Summable fun j : ℕ => ‖evenProlateConstraintCoord lam j‖ ^ (2 : ℕ) :=
   Eventually.of_forall fun lam => summable_evenProlateConstraintCoord_sq lam
 
 theorem fullProlateLadder_bessel :
     ∀ᶠ lam : ℝ in atTop,
-      (∑' j : ℕ, ‖evenProlateConstraintCoord lam j‖ ^ 2) ≤ 2 * lam := by
+      (∑' j : ℕ, ‖evenProlateConstraintCoord lam j‖ ^ (2 : ℕ)) ≤ 2 * lam := by
   filter_upwards [Filter.eventually_ge_atTop (0 : ℝ)] with lam hlam
   exact tsum_evenProlateConstraintCoord_sq_le hlam
 
@@ -50,10 +50,10 @@ theorem constrainedProlateFull_ground_distance_tendsto_zero :
     Tendsto (fun lam : ℝ => min
         (‖(‖secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))‖)⁻¹
             • secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))
-          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2)
+          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ))
         (‖(‖secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))‖)⁻¹
             • secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))
-          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2))
+          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ)))
       atTop (nhds 0) := by
   have ha0 : constrainedProlateHermiteCoordinate 0 ≠ 0 :=
     constrainedProlateHermiteCoordinate_ne_zero 0
@@ -133,21 +133,21 @@ theorem tendsto_norm_evenProlateConstraintCoord_full (j : ℕ) :
     exact tendsto_norm_evenProlateConstraintCoord_negative_atTop i
 
 theorem fullLadderCoordinate_squareSum_pos (k : ℕ) :
-    0 < ∑ j ∈ Finset.range (k + 1), fullLadderCoordinate j ^ 2 := by
+    0 < ∑ j ∈ Finset.range (k + 1), fullLadderCoordinate j ^ (2 : ℕ) := by
   have hmem : (0 : ℕ) ∈ Finset.range (k + 1) := Finset.mem_range.2 (by omega)
-  have hnn : ∀ j ∈ Finset.range (k + 1), (0 : ℝ) ≤ fullLadderCoordinate j ^ 2 :=
+  have hnn : ∀ j ∈ Finset.range (k + 1), (0 : ℝ) ≤ fullLadderCoordinate j ^ (2 : ℕ) :=
     fun j _ => sq_nonneg _
-  have h0 : (0 : ℝ) < fullLadderCoordinate 0 ^ 2 := by
+  have h0 : (0 : ℝ) < fullLadderCoordinate 0 ^ (2 : ℕ) := by
     have := fullLadderCoordinate_ne_zero 0
     positivity
-  have hle := Finset.single_le_sum (f := fun j => fullLadderCoordinate j ^ 2) hnn hmem
+  have hle := Finset.single_le_sum (f := fun j => fullLadderCoordinate j ^ (2 : ℕ)) hnn hmem
   linarith [hle, h0]
 
 /-- The step-one contrast: the Hermite theta of the interleaved coordinate sequence. -/
 def fullLadderTheta (k : ℕ) : ℝ :=
-  (∑ j ∈ Finset.range (k + 1), fullLadderCoordinate j ^ 2)
-    / ((∑ j ∈ Finset.range (k + 1), fullLadderCoordinate j ^ 2)
-      + fullLadderCoordinate (k + 1) ^ 2)
+  (∑ j ∈ Finset.range (k + 1), fullLadderCoordinate j ^ (2 : ℕ))
+    / ((∑ j ∈ Finset.range (k + 1), fullLadderCoordinate j ^ (2 : ℕ))
+      + fullLadderCoordinate (k + 1) ^ (2 : ℕ))
 
 /-- **The step-one analogue of `(8)`.**  The depth-`k` constrained eigenvalue of the FULL signed
 leakage ladder, normalized by the next leakage, converges to the contrast of the interleaved
@@ -172,9 +172,9 @@ theorem constrainedProlateFull_depth_ratio_tendsto (k : ℕ) :
 
 
 theorem fullLadderTheta_pos (k : ℕ) : 0 < fullLadderTheta k := by
-  have hS : 0 < ∑ j ∈ Finset.range (k + 1), fullLadderCoordinate j ^ 2 :=
+  have hS : 0 < ∑ j ∈ Finset.range (k + 1), fullLadderCoordinate j ^ (2 : ℕ) :=
     fullLadderCoordinate_squareSum_pos k
-  have hA : (0 : ℝ) ≤ fullLadderCoordinate (k + 1) ^ 2 := sq_nonneg _
+  have hA : (0 : ℝ) ≤ fullLadderCoordinate (k + 1) ^ (2 : ℕ) := sq_nonneg _
   rw [fullLadderTheta]
   exact div_pos hS (by linarith)
 

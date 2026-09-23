@@ -6,7 +6,7 @@ import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 
 P-G187 identifies the sharp forward damping semigroup on the positive Burnol aperture ray. This
 module constructs its exact missing energy channels. The translated tail has multiplier
-`((u-c)/u)^2`; its complement splits into the interval deleted at the aperture boundary and a
+`((u-c)/u)^(2 : ℕ)`; its complement splits into the interval deleted at the aperture boundary and a
 positive tail cocycle. Their explicit square-root features satisfy an exact three-channel energy
 identity for every continuous finite-energy datum.
 

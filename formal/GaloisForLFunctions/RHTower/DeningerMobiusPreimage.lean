@@ -52,25 +52,25 @@ theorem deningerLogPull_norm_le {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchw
 
 /-- The pullback at a positive point is bounded by an inverse square in the dilation parameter. -/
 theorem deningerLogPull_norm_le_inv_sq {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, 0 < y → ‖deningerLogPull h y‖ ≤ C * y ^ 2 ∧
-      ‖deningerLogPull h y‖ ≤ C / y ^ 2 := by
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, 0 < y → ‖deningerLogPull h y‖ ≤ C * y ^ (2 : ℕ) ∧
+      ‖deningerLogPull h y‖ ≤ C / y ^ (2 : ℕ) := by
   obtain ⟨C, hCnn, hC⟩ := deningerLogPull_norm_le hh 2
   refine ⟨C, hCnn, fun y hy => ?_⟩
   have hbase := hC y hy
   have hlog : Real.exp (Real.log y) = y := Real.exp_log hy
-  have hup : Real.exp (-(2 * |Real.log y|)) ≤ y ^ 2 := by
+  have hup : Real.exp (-(2 * |Real.log y|)) ≤ y ^ (2 : ℕ) := by
     have hle : -(2 * |Real.log y|) ≤ 2 * Real.log y := by
       have := neg_abs_le (Real.log y)
       linarith [abs_nonneg (Real.log y)]
     have := Real.exp_le_exp.mpr hle
     rwa [show (2 : ℝ) * Real.log y = Real.log y + Real.log y by ring, Real.exp_add, hlog,
       ← pow_two] at this
-  have hdown : Real.exp (-(2 * |Real.log y|)) ≤ 1 / y ^ 2 := by
+  have hdown : Real.exp (-(2 * |Real.log y|)) ≤ 1 / y ^ (2 : ℕ) := by
     have hle : -(2 * |Real.log y|) ≤ -(2 * Real.log y) := by
       have := le_abs_self (Real.log y)
       linarith
     have hexp := Real.exp_le_exp.mpr hle
-    have hval : Real.exp (-(2 * Real.log y)) = 1 / y ^ 2 := by
+    have hval : Real.exp (-(2 * Real.log y)) = 1 / y ^ (2 : ℕ) := by
       rw [Real.exp_neg, show (2 : ℝ) * Real.log y = Real.log y + Real.log y by ring,
         Real.exp_add, hlog, ← pow_two, one_div]
     rwa [hval] at hexp
@@ -88,9 +88,9 @@ theorem deningerMobiusRay_summable {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpS
     Summable fun n : ℕ =>
       ((moebius n : ℤ) : ℂ) * deningerLogPull h ((n : ℝ) * x) := by
   obtain ⟨C, hCnn, hC⟩ := deningerLogPull_norm_le_inv_sq hh
-  have hxsq : (0 : ℝ) < x ^ 2 := by positivity
+  have hxsq : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
   refine Summable.of_norm_bounded
-    (g := fun n : ℕ => (C / x ^ 2) * (1 / (n : ℝ) ^ 2)) ?_ ?_
+    (g := fun n : ℕ => (C / x ^ (2 : ℕ)) * (1 / (n : ℝ) ^ (2 : ℕ))) ?_ ?_
   · exact (Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left _
   · intro n
     rcases Nat.eq_zero_or_pos n with rfl | hn
@@ -123,14 +123,14 @@ theorem deningerMobiusPreimage_eq (h : 𝓢(ℝ, ℂ)) (x : ℝ) :
 theorem deningerMobiusPreimage_norm_le {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) {x : ℝ}
     (hx : 0 < x) :
     ∃ C : ℝ, 0 ≤ C ∧ ‖deningerMobiusPreimage h x‖
-      ≤ (C / x ^ 2) * ∑' n : ℕ, 1 / (n : ℝ) ^ 2 := by
+      ≤ (C / x ^ (2 : ℕ)) * ∑' n : ℕ, 1 / (n : ℝ) ^ (2 : ℕ) := by
   obtain ⟨C, hCnn, hC⟩ := deningerLogPull_norm_le_inv_sq hh
-  have hxsq : (0 : ℝ) < x ^ 2 := by positivity
-  have hsum : Summable fun n : ℕ => (C / x ^ 2) * (1 / (n : ℝ) ^ 2) :=
+  have hxsq : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
+  have hsum : Summable fun n : ℕ => (C / x ^ (2 : ℕ)) * (1 / (n : ℝ) ^ (2 : ℕ)) :=
     (Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left _
   have hbound : ∀ n : ℕ,
       ‖((moebius n : ℤ) : ℂ) * deningerLogPull h ((n : ℝ) * x)‖
-        ≤ (C / x ^ 2) * (1 / (n : ℝ) ^ 2) := by
+        ≤ (C / x ^ (2 : ℕ)) * (1 / (n : ℝ) ^ (2 : ℕ)) := by
     intro n
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · have hmu : ((moebius 0 : ℤ) : ℂ) = 0 := by simp

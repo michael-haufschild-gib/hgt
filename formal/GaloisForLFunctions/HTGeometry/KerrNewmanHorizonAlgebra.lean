@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 theorem kerrNewmanDelta_completeSquare
     (mass spin charge radius : ℝ) :
     kerrNewmanDelta mass spin charge radius =
-      (radius - mass) ^ 2 - (mass ^ 2 - spin ^ 2 - charge ^ 2) := by
+      (radius - mass) ^ (2 : ℕ) - (mass ^ (2 : ℕ) - spin ^ (2 : ℕ) - charge ^ (2 : ℕ)) := by
   simp [kerrNewmanDelta]
   ring
 
@@ -27,14 +27,14 @@ square is the Kerr--Newman discriminant. -/
 theorem kerrNewmanDelta_zero_iff
     (mass spin charge radius : ℝ) :
     kerrNewmanDelta mass spin charge radius = 0 ↔
-      (radius - mass) ^ 2 = mass ^ 2 - spin ^ 2 - charge ^ 2 := by
+      (radius - mass) ^ (2 : ℕ) = mass ^ (2 : ℕ) - spin ^ (2 : ℕ) - charge ^ (2 : ℕ) := by
   rw [kerrNewmanDelta_completeSquare]
   exact sub_eq_zero
 
 /-- The mass-centered radius is an algebraic horizon exactly at Kerr--Newman extremality. -/
 theorem kerrNewmanDelta_at_mass_zero_iff_extremal
     (mass spin charge : ℝ) :
-    kerrNewmanDelta mass spin charge mass = 0 ↔ mass ^ 2 = spin ^ 2 + charge ^ 2 := by
+    kerrNewmanDelta mass spin charge mass = 0 ↔ mass ^ (2 : ℕ) = spin ^ (2 : ℕ) + charge ^ (2 : ℕ) := by
   rw [kerrNewmanDelta_completeSquare]
   constructor <;> intro h <;> nlinarith
 
@@ -42,8 +42,8 @@ theorem kerrNewmanDelta_at_mass_zero_iff_extremal
 square, so its algebraic horizon has multiplicity two at `r = M`. -/
 theorem kerrNewmanDelta_extremal_iff_perfectSquare
     (mass spin charge : ℝ) :
-    (∀ radius, kerrNewmanDelta mass spin charge radius = (radius - mass) ^ 2) ↔
-      mass ^ 2 = spin ^ 2 + charge ^ 2 := by
+    (∀ radius, kerrNewmanDelta mass spin charge radius = (radius - mass) ^ (2 : ℕ)) ↔
+      mass ^ (2 : ℕ) = spin ^ (2 : ℕ) + charge ^ (2 : ℕ) := by
   constructor
   · intro h
     have hmass := h mass
@@ -59,13 +59,13 @@ extremality factor.  This remains valid at coordinate-singular values because th
 cleared. -/
 theorem kerrNewmanKillingBlock_det_cleared_at_mass
     (mass spin charge polar : ℝ) :
-    kerrNewmanSigma spin mass polar ^ 2 *
+    kerrNewmanSigma spin mass polar ^ (2 : ℕ) *
         (kerrNewmanKillingBlock mass spin charge mass polar).det =
-      -(spin ^ 2 + charge ^ 2 - mass ^ 2) * Real.sin polar ^ 2 *
-        kerrNewmanSigma spin mass polar ^ 2 := by
+      -(spin ^ (2 : ℕ) + charge ^ (2 : ℕ) - mass ^ (2 : ℕ)) * Real.sin polar ^ (2 : ℕ) *
+        kerrNewmanSigma spin mass polar ^ (2 : ℕ) := by
   rw [kerrNewmanKillingBlock_det_cleared]
   have hdelta : kerrNewmanDelta mass spin charge mass =
-      spin ^ 2 + charge ^ 2 - mass ^ 2 := by
+      spin ^ (2 : ℕ) + charge ^ (2 : ℕ) - mass ^ (2 : ℕ) := by
     simp [kerrNewmanDelta]
     ring
   rw [hdelta]
@@ -74,14 +74,14 @@ theorem kerrNewmanKillingBlock_det_cleared_at_mass
 cleared stationary-block determinant. -/
 theorem belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_det_cleared_at_mass
     (spectral pole residue mass spin charge polar : ℝ) :
-    kerrNewmanSigma spin mass polar ^ 2 *
+    kerrNewmanSigma spin mass polar ^ (2 : ℕ) *
         (belinskiZakharovDressing (belinskiZakharovOnePoleDressing spectral pole residue)
           (kerrNewmanKillingBlock mass spin charge mass polar)).det =
-      -(spin ^ 2 + charge ^ 2 - mass ^ 2) * Real.sin polar ^ 2 *
-        kerrNewmanSigma spin mass polar ^ 2 := by
+      -(spin ^ (2 : ℕ) + charge ^ (2 : ℕ) - mass ^ (2 : ℕ)) * Real.sin polar ^ (2 : ℕ) *
+        kerrNewmanSigma spin mass polar ^ (2 : ℕ) := by
   rw [belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_det_cleared]
   have hdelta : kerrNewmanDelta mass spin charge mass =
-      spin ^ 2 + charge ^ 2 - mass ^ 2 := by
+      spin ^ (2 : ℕ) + charge ^ (2 : ℕ) - mass ^ (2 : ℕ) := by
     simp [kerrNewmanDelta]
     ring
   rw [hdelta]
@@ -89,14 +89,14 @@ theorem belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_det_cleared_at_mass
 /-- The same extremality factor is preserved by every constant unipotent BZ dressing. -/
 theorem belinskiZakharovDressedKerrNewmanKillingBlock_det_cleared_at_mass
     (parameter mass spin charge polar : ℝ) :
-    kerrNewmanSigma spin mass polar ^ 2 *
+    kerrNewmanSigma spin mass polar ^ (2 : ℕ) *
         (belinskiZakharovDressing (belinskiZakharovUnipotentDressing parameter)
           (kerrNewmanKillingBlock mass spin charge mass polar)).det =
-      -(spin ^ 2 + charge ^ 2 - mass ^ 2) * Real.sin polar ^ 2 *
-        kerrNewmanSigma spin mass polar ^ 2 := by
+      -(spin ^ (2 : ℕ) + charge ^ (2 : ℕ) - mass ^ (2 : ℕ)) * Real.sin polar ^ (2 : ℕ) *
+        kerrNewmanSigma spin mass polar ^ (2 : ℕ) := by
   rw [belinskiZakharovDressedKerrNewmanKillingBlock_det_cleared]
   have hdelta : kerrNewmanDelta mass spin charge mass =
-      spin ^ 2 + charge ^ 2 - mass ^ 2 := by
+      spin ^ (2 : ℕ) + charge ^ (2 : ℕ) - mass ^ (2 : ℕ) := by
     simp [kerrNewmanDelta]
     ring
   rw [hdelta]

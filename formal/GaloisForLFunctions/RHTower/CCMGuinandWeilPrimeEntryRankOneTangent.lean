@@ -128,7 +128,7 @@ theorem ccmGuinandWeilPrimeEntryMatrixRate_neg
 theorem ccmGuinandWeilPrimeEntryRankOneTangent_quadratic
     (k : ℕ) (N : ℕ) (v : Fin (2 * N + 1) → ℝ) :
     dotProduct v (ccmGuinandWeilPrimeEntryRankOneTangent k N *ᵥ v) =
-      ccmGuinandWeilPrimeEntryMatrixRate k * (∑ i, v i) ^ 2 := by
+      ccmGuinandWeilPrimeEntryMatrixRate k * (∑ i, v i) ^ (2 : ℕ) := by
   simp only [ccmGuinandWeilPrimeEntryRankOneTangent, dotProduct, Matrix.mulVec,
     Matrix.smul_apply, Matrix.vecMulVec_apply, ccmConstantBoundary,
     smul_eq_mul, one_mul]

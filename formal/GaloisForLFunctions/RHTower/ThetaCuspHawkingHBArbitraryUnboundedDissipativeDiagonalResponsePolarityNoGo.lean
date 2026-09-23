@@ -11,7 +11,7 @@ closedness, density, and even response existence from the polarity obstruction.
 For any partial dissipative operator `A`, any upper-half-plane parameter `z`, and any nonzero source
 `s`, every solution of `(A-z)x=s` satisfies
 
-`Im <x,s> = Im <x,A x> - Im(z)||x||^2 < 0`.
+`Im <x,s> = Im <x,A x> - Im(z)||x||^(2 : ℕ) < 0`.
 
 The antidissipative lower-half-plane law has the strict reverse sign. Applied to the exact
 doubled-weight Teukolsky sources at a tilted Xi copy and its Schwarz copy, every existing diagonal
@@ -48,11 +48,11 @@ theorem pmapDissipative_shiftedResponse_inner_im_neg
     rw [← hx, hxsub, map_zero]
   have him :
       (⟪(x : H), source⟫_ℂ).im =
-        (⟪(x : H), A x⟫_ℂ).im - z.im * ‖(x : H)‖ ^ 2 := by
+        (⟪(x : H), A x⟫_ℂ).im - z.im * ‖(x : H)‖ ^ (2 : ℕ) := by
     rw [← hx]
     simp [shiftedMap_apply, pow_two, Complex.mul_im]
-  have hnorm : 0 < ‖(x : H)‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hx0)
-  have hstrict : 0 < z.im * ‖(x : H)‖ ^ 2 := mul_pos hz hnorm
+  have hnorm : 0 < ‖(x : H)‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hx0)
+  have hstrict : 0 < z.im * ‖(x : H)‖ ^ (2 : ℕ) := mul_pos hz hnorm
   rw [him]
   linarith [hA x]
 
@@ -69,11 +69,11 @@ theorem pmapAntidissipative_shiftedResponse_inner_im_pos
     rw [← hx, hxsub, map_zero]
   have him :
       (⟪(x : H), source⟫_ℂ).im =
-        (⟪(x : H), A x⟫_ℂ).im - z.im * ‖(x : H)‖ ^ 2 := by
+        (⟪(x : H), A x⟫_ℂ).im - z.im * ‖(x : H)‖ ^ (2 : ℕ) := by
     rw [← hx]
     simp [shiftedMap_apply, pow_two, Complex.mul_im]
-  have hnorm : 0 < ‖(x : H)‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hx0)
-  have hstrict : z.im * ‖(x : H)‖ ^ 2 < 0 := mul_neg_of_neg_of_pos hz hnorm
+  have hnorm : 0 < ‖(x : H)‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hx0)
+  have hstrict : z.im * ‖(x : H)‖ ^ (2 : ℕ) < 0 := mul_neg_of_neg_of_pos hz hnorm
   rw [him]
   linarith [hA x]
 

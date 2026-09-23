@@ -92,10 +92,10 @@ theorem exists_norm_partialSum_le_halasz {f : ℕ → ℂ}
     ∃ C : ℝ, 0 ≤ C ∧
       ‖∑ n ∈ Finset.range (K + 1), f n‖
         ≤ ((((K : ℝ) + H) ^ σ / σ) * ((1 + 1 / (σ - 1)) *
-                Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) * (2 * T)
+                Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ (2 : ℕ)) * (2 * T)
               + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
                 ((2 * T * Real.log (z : ℝ) / Real.pi + 1) *
-                  (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z))))
+                  (2 * Real.sqrt (2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) / logSqWeight z))))
             + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
                 (C * (Real.pi - 2 * Real.arctan T))) / (2 * Real.pi) + H := by
   have hKR : (0 : ℝ) < (K : ℝ) := by exact_mod_cast hK

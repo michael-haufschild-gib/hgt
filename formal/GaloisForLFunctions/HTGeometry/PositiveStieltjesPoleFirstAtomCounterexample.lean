@@ -83,9 +83,9 @@ theorem stieltjesEval_two (p : StieltjesCoeff) :
 
 theorem stieltjesBulk_apply (p : StieltjesCoeff) :
     stieltjesBulk p =
-      (1 / 5 : ℝ) * (stieltjesEval 0 p) ^ 2 +
-        (12 / 23 : ℝ) * (stieltjesEval 1 p) ^ 2 +
-          (1 / 21 : ℝ) * (stieltjesEval 2 p) ^ 2 := by
+      (1 / 5 : ℝ) * (stieltjesEval 0 p) ^ (2 : ℕ) +
+        (12 / 23 : ℝ) * (stieltjesEval 1 p) ^ (2 : ℕ) +
+          (1 / 21 : ℝ) * (stieltjesEval 2 p) ^ (2 : ℕ) := by
   simp [stieltjesBulk, stieltjesAtom, QuadraticMap.sq_apply]
   ring
 
@@ -97,9 +97,9 @@ theorem stieltjesBulk_nonnegative (p : StieltjesCoeff) : 0 ≤ stieltjesBulk p :
 theorem stieltjesBulk_posDef : stieltjesBulk.PosDef := by
   intro p hp
   rw [stieltjesBulk_apply]
-  have h0nonneg : 0 ≤ (1 / 5 : ℝ) * (stieltjesEval 0 p) ^ 2 := by positivity
-  have h1nonneg : 0 ≤ (12 / 23 : ℝ) * (stieltjesEval 1 p) ^ 2 := by positivity
-  have h2nonneg : 0 ≤ (1 / 21 : ℝ) * (stieltjesEval 2 p) ^ 2 := by positivity
+  have h0nonneg : 0 ≤ (1 / 5 : ℝ) * (stieltjesEval 0 p) ^ (2 : ℕ) := by positivity
+  have h1nonneg : 0 ≤ (12 / 23 : ℝ) * (stieltjesEval 1 p) ^ (2 : ℕ) := by positivity
+  have h2nonneg : 0 ≤ (1 / 21 : ℝ) * (stieltjesEval 2 p) ^ (2 : ℕ) := by positivity
   by_cases h0 : stieltjesEval 0 p = 0
   · by_cases h1 : stieltjesEval 1 p = 0
     · by_cases h2 : stieltjesEval 2 p = 0
@@ -113,19 +113,19 @@ theorem stieltjesBulk_posDef : stieltjesBulk.PosDef := by
         apply hp
         funext j
         fin_cases j <;> simp [hp0, hp1, hp2]
-      · have h2pos : 0 < (1 / 21 : ℝ) * (stieltjesEval 2 p) ^ 2 := by
+      · have h2pos : 0 < (1 / 21 : ℝ) * (stieltjesEval 2 p) ^ (2 : ℕ) := by
           exact mul_pos (by norm_num) (sq_pos_of_ne_zero h2)
         nlinarith
-    · have h1pos : 0 < (12 / 23 : ℝ) * (stieltjesEval 1 p) ^ 2 := by
+    · have h1pos : 0 < (12 / 23 : ℝ) * (stieltjesEval 1 p) ^ (2 : ℕ) := by
         exact mul_pos (by norm_num) (sq_pos_of_ne_zero h1)
       nlinarith
-  · have h0pos : 0 < (1 / 5 : ℝ) * (stieltjesEval 0 p) ^ 2 := by
+  · have h0pos : 0 < (1 / 5 : ℝ) * (stieltjesEval 0 p) ^ (2 : ℕ) := by
       exact mul_pos (by norm_num) (sq_pos_of_ne_zero h0)
     nlinarith
 
 /-- Restoring the removed pole square is exactly the positive Stieltjes bulk. -/
 theorem stieltjesPoleForm_add_square_eq_bulk (p : StieltjesCoeff) :
-    stieltjesPoleForm p + (stieltjesPoleLinear p) ^ 2 = stieltjesBulk p := by
+    stieltjesPoleForm p + (stieltjesPoleLinear p) ^ (2 : ℕ) = stieltjesBulk p := by
   simp [stieltjesPoleForm, stieltjesAtom, stieltjesPoleLinear, QuadraticMap.sq_apply]
   ring
 

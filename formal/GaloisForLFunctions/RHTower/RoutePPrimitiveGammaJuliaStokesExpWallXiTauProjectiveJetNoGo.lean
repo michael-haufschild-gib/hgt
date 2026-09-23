@@ -10,7 +10,7 @@ Irregular Riemann--Hilbert theory permits multiplication of a tau function by a 
 one-time model also permits rescaling its irregular time. The logarithmic two-jet
 
 ```text
-J(L) = -L''(0) / (2 L'(0)^2)
+J(L) = -L''(0) / (2 L'(0)^(2 : ℕ))
 ```
 
 removes both freedoms. This file extracts that invariant from the literal exponential SP-E wall

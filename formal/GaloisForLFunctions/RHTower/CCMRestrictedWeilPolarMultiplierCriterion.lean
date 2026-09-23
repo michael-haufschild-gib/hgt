@@ -22,7 +22,7 @@ theorem le_polarGroundEnergy_iff_polarMultiplier_floor
     (a : SuzukiPositiveAperture) (m : ℝ) :
     m ≤ ccmRestrictedWeilPolarGroundEnergy a ↔
       ∀ g : CCMComplexSmoothInteriorSource a,
-        m * ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ 2 ≤
+        m * ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ (2 : ℕ) ≤
           ccmRestrictedWeilSourceQuadratic a g.polarMultiplier.toCCMFormVector := by
   constructor
   · intro hm g
@@ -35,7 +35,7 @@ theorem le_polarGroundEnergy_iff_polarMultiplier_floor
     obtain ⟨g, hg⟩ := exists_polarMultiplier_preimage f hf
     have hbound := hfloor g
     rw [hg] at hbound
-    have hmass : 0 < ‖ccmArchimedeanFormToAperture a f.toCCMFormVector‖ ^ 2 :=
+    have hmass : 0 < ‖ccmArchimedeanFormToAperture a f.toCCMFormVector‖ ^ (2 : ℕ) :=
       pow_pos (norm_pos_iff.mpr hne) 2
     have hlower := (le_div_iff₀ hmass).mpr hbound
     linarith
@@ -96,7 +96,7 @@ theorem polarSmoothSource_pos_of_smaller_groundEnergy_pos
   have hfb : IsPolarConstrained b fb.toCCMFormVector :=
     (isPolarConstrained_iff_of_val_eq hba.le hval).mp hf
   have hnorm := norm_ccmArchimedeanFormToAperture_eq_of_val_eq hval
-  have hbmass : 0 < ‖ccmArchimedeanFormToAperture b fb.toCCMFormVector‖ ^ 2 := by
+  have hbmass : 0 < ‖ccmArchimedeanFormToAperture b fb.toCCMFormVector‖ ^ (2 : ℕ) := by
     rw [← hnorm]
     exact pow_pos (norm_pos_iff.mpr hne) 2
   rw [ccmRestrictedWeilSourceQuadratic_eq_of_val_eq hba.le hval]
@@ -112,9 +112,9 @@ theorem polarMultiplier_firstZero_no_uniform_positive_floor
     ∃ g : CCMComplexSmoothInteriorSource a,
       ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector ≠ 0 ∧
       0 < ccmRestrictedWeilSourceQuadratic a g.polarMultiplier.toCCMFormVector /
-        ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ 2 ∧
+        ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ (2 : ℕ) ∧
       ccmRestrictedWeilSourceQuadratic a g.polarMultiplier.toCCMFormVector /
-        ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ 2 < ε := by
+        ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ (2 : ℕ) < ε := by
   obtain ⟨f, hf, hne, hR⟩ := exists_polarConstrained_smooth_rayleigh_lt a hε
   obtain ⟨g, hg⟩ := exists_polarMultiplier_preimage f hf
   refine ⟨g, ?_⟩
@@ -137,9 +137,9 @@ theorem riemannHypothesis_or_polar_firstZero_core_boundary :
       (∀ ε : ℝ, 0 < ε → ∃ g : CCMComplexSmoothInteriorSource a,
         ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector ≠ 0 ∧
         0 < ccmRestrictedWeilSourceQuadratic a g.polarMultiplier.toCCMFormVector /
-          ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ 2 ∧
+          ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ (2 : ℕ) ∧
         ccmRestrictedWeilSourceQuadratic a g.polarMultiplier.toCCMFormVector /
-          ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ 2 < ε) := by
+          ‖ccmArchimedeanFormToAperture a g.polarMultiplier.toCCMFormVector‖ ^ (2 : ℕ) < ε) := by
   classical
   by_cases hRH : RiemannHypothesis
   · exact Or.inl hRH

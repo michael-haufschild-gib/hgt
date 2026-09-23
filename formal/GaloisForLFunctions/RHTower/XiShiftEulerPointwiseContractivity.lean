@@ -97,7 +97,7 @@ theorem eulerXiShiftPick_eq_xiShiftPick (ω : ℝ) (z w : ℂ) :
   by_cases hzw : z - conj w = 0
   · simp [hzw]
   · field_simp [hzw]
-    rw [show I ^ 2 = (-1 : ℂ) by simp [pow_two]]
+    rw [show I ^ (2 : ℕ) = (-1 : ℂ) by simp [pow_two]]
     ring
 
 /-- Strict contractivity in the literal Euler sampling region `Im z > 1/2+ω`. -/

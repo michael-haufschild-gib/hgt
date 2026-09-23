@@ -61,13 +61,13 @@ theorem routeUHardEdgeEvenForm_log_nat_half_eq_incoming_sub_primeJumpResponse
 
 theorem routeUHardEdgePrimeJumpEvenResponse_eq_zero_of_two_bandSupports
     {n : ℕ} (hn : 2 ≤ n) {H K : ℝ → ℝ}
-    (hg : MemLp (fun x : ℝ => H (x ^ 2)) 2 volume)
-    (hk : MemLp (fun x : ℝ => K (x ^ 2)) 2 volume)
+    (hg : MemLp (fun x : ℝ => H (x ^ (2 : ℕ))) 2 volume)
+    (hk : MemLp (fun x : ℝ => K (x ^ (2 : ℕ))) 2 volume)
     (hbandg : ∀ᵐ ξ : ℝ, Real.log n / (4 * Real.pi) < |ξ| →
-      (𝓕 (ofRealLp (hg.toLp (fun x : ℝ => H (x ^ 2)))) :
+      (𝓕 (ofRealLp (hg.toLp (fun x : ℝ => H (x ^ (2 : ℕ))))) :
         Lp ℂ 2 (volume : Measure ℝ)) ξ = 0)
     (hbandk : ∀ᵐ ξ : ℝ, Real.log n / (4 * Real.pi) < |ξ| →
-      (𝓕 (ofRealLp (hk.toLp (fun x : ℝ => K (x ^ 2)))) :
+      (𝓕 (ofRealLp (hk.toLp (fun x : ℝ => K (x ^ (2 : ℕ))))) :
         Lp ℂ 2 (volume : Measure ℝ)) ξ = 0) :
     routeUHardEdgePrimeJumpEvenResponse n H K = 0 := by
   have hnreal : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn
@@ -80,12 +80,12 @@ theorem routeUHardEdgePrimeJumpEvenResponse_eq_zero_of_two_bandSupports
       Real.log (n : ℝ) := by
     field_simp [Real.pi_ne_zero]
   have hendpoint' :
-      (∫ x : ℝ, (H (x ^ 2) * K (x ^ 2)) * Real.cos (Real.log n * x)) = 0 := by
+      (∫ x : ℝ, (H (x ^ (2 : ℕ)) * K (x ^ (2 : ℕ))) * Real.cos (Real.log n * x)) = 0 := by
     simpa only [hscale] using hendpoint
   have hcos :
-      (∫ x : ℝ, (H (x ^ 2) * K (x ^ 2)) * Real.cos (x * Real.log n)) = 0 := by
-    rw [show (fun x : ℝ => (H (x ^ 2) * K (x ^ 2)) * Real.cos (x * Real.log n)) =
-        fun x : ℝ => (H (x ^ 2) * K (x ^ 2)) * Real.cos (Real.log n * x) by
+      (∫ x : ℝ, (H (x ^ (2 : ℕ)) * K (x ^ (2 : ℕ))) * Real.cos (x * Real.log n)) = 0 := by
+    rw [show (fun x : ℝ => (H (x ^ (2 : ℕ)) * K (x ^ (2 : ℕ))) * Real.cos (x * Real.log n)) =
+        fun x : ℝ => (H (x ^ (2 : ℕ)) * K (x ^ (2 : ℕ))) * Real.cos (Real.log n * x) by
       funext x
       rw [mul_comm x (Real.log n)]]
     exact hendpoint'
@@ -94,10 +94,10 @@ theorem routeUHardEdgePrimeJumpEvenResponse_eq_zero_of_two_bandSupports
     (fun u : ℝ => (H u * K u) * routeUHardEdgePrimeJumpDensity n (Real.sqrt u))
   rw [← hsub]
   calc
-    (∫ x : ℝ, (H (x ^ 2) * K (x ^ 2)) *
-        routeUHardEdgePrimeJumpDensity n (Real.sqrt (x ^ 2))) =
+    (∫ x : ℝ, (H (x ^ (2 : ℕ)) * K (x ^ (2 : ℕ))) *
+        routeUHardEdgePrimeJumpDensity n (Real.sqrt (x ^ (2 : ℕ)))) =
       ∫ x : ℝ, ((ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n) *
-        ((H (x ^ 2) * K (x ^ 2)) * Real.cos (x * Real.log n)) := by
+        ((H (x ^ (2 : ℕ)) * K (x ^ (2 : ℕ))) * Real.cos (x * Real.log n)) := by
           apply integral_congr_ae
           filter_upwards with x
           rw [routeUHardEdgePrimeJumpDensity, Real.sqrt_sq_eq_abs]
@@ -109,16 +109,16 @@ theorem routeUHardEdgePrimeJumpEvenResponse_eq_zero_of_two_bandSupports
           rw [hcosabs]
           ring
     _ = ((ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n) *
-        ∫ x : ℝ, (H (x ^ 2) * K (x ^ 2)) * Real.cos (x * Real.log n) := by
+        ∫ x : ℝ, (H (x ^ (2 : ℕ)) * K (x ^ (2 : ℕ))) * Real.cos (x * Real.log n) := by
           rw [integral_const_mul]
     _ = 0 := by rw [hcos, mul_zero]
 
 /-- The diagonal even response vanishes at the endpoint frequency. -/
 theorem routeUHardEdgePrimeJumpEvenResponse_eq_zero_of_bandSupport
     {n : ℕ} (hn : 2 ≤ n) {H : ℝ → ℝ}
-    (hg : MemLp (fun x : ℝ => H (x ^ 2)) 2 volume)
+    (hg : MemLp (fun x : ℝ => H (x ^ (2 : ℕ))) 2 volume)
     (hband : ∀ᵐ ξ : ℝ, Real.log n / (4 * Real.pi) < |ξ| →
-      (𝓕 (ofRealLp (hg.toLp (fun x : ℝ => H (x ^ 2)))) :
+      (𝓕 (ofRealLp (hg.toLp (fun x : ℝ => H (x ^ (2 : ℕ))))) :
         Lp ℂ 2 (volume : Measure ℝ)) ξ = 0) :
     routeUHardEdgePrimeJumpEvenResponse n H H = 0 :=
   routeUHardEdgePrimeJumpEvenResponse_eq_zero_of_two_bandSupports
@@ -134,9 +134,9 @@ theorem routeUHardEdgeEvenForm_log_nat_half_nonneg_of_incoming_and_bandSupport
     (hjump : IntegrableOn (fun u : ℝ =>
       (H u * H u) * routeUHardEdgePrimeJumpDensity n (Real.sqrt u) /
         Real.sqrt u) (Ioi 0))
-    (hg : MemLp (fun x : ℝ => H (x ^ 2)) 2 volume)
+    (hg : MemLp (fun x : ℝ => H (x ^ (2 : ℕ))) 2 volume)
     (hband : ∀ᵐ ξ : ℝ, Real.log n / (4 * Real.pi) < |ξ| →
-      (𝓕 (ofRealLp (hg.toLp (fun x : ℝ => H (x ^ 2)))) :
+      (𝓕 (ofRealLp (hg.toLp (fun x : ℝ => H (x ^ (2 : ℕ))))) :
         Lp ℂ 2 (volume : Measure ℝ)) ξ = 0)
     (hincoming : 0 ≤ routeUHardEdgeEvenForm
       (routeUHardEdgeIncomingAperture n) H H) :
@@ -149,15 +149,15 @@ theorem routeUHardEdgeEvenForm_log_nat_half_nonneg_of_incoming_and_bandSupport
 
 theorem routeUHardEdgePrimeJumpEvenResponse_eq_zero_of_two_suzukiHlogAdmissions
     {n : ℕ} (hn : 2 ≤ n) {H K : ℝ → ℝ}
-    (hg : MemLp (fun x : ℝ => H (x ^ 2)) 2 volume)
-    (hk : MemLp (fun x : ℝ => K (x ^ 2)) 2 volume)
+    (hg : MemLp (fun x : ℝ => H (x ^ (2 : ℕ))) 2 volume)
+    (hk : MemLp (fun x : ℝ => K (x ^ (2 : ℕ))) 2 volume)
     (a : SuzukiPositiveAperture)
     (ha : a.1 = Real.log n / (4 * Real.pi))
     (qH qK : SuzukiHlogFormDomain a)
     (hqH : suzukiHlogWeightedToL2 qH.1 =
-      ofRealLp (hg.toLp (fun x : ℝ => H (x ^ 2))))
+      ofRealLp (hg.toLp (fun x : ℝ => H (x ^ (2 : ℕ)))))
     (hqK : suzukiHlogWeightedToL2 qK.1 =
-      ofRealLp (hk.toLp (fun x : ℝ => K (x ^ 2)))) :
+      ofRealLp (hk.toLp (fun x : ℝ => K (x ^ (2 : ℕ))))) :
     routeUHardEdgePrimeJumpEvenResponse n H K = 0 := by
   apply routeUHardEdgePrimeJumpEvenResponse_eq_zero_of_two_bandSupports hn hg hk
   · have hs := suzukiHlogFormDomain_fourier_bandSupport a qH
@@ -176,15 +176,15 @@ theorem routeUHardEdgeEvenForm_log_nat_half_eq_incoming_of_two_suzukiHlogAdmissi
     (hjump : IntegrableOn (fun u : ℝ =>
       (H u * K u) * routeUHardEdgePrimeJumpDensity n (Real.sqrt u) /
         Real.sqrt u) (Ioi 0))
-    (hg : MemLp (fun x : ℝ => H (x ^ 2)) 2 volume)
-    (hk : MemLp (fun x : ℝ => K (x ^ 2)) 2 volume)
+    (hg : MemLp (fun x : ℝ => H (x ^ (2 : ℕ))) 2 volume)
+    (hk : MemLp (fun x : ℝ => K (x ^ (2 : ℕ))) 2 volume)
     (a : SuzukiPositiveAperture)
     (ha : a.1 = Real.log n / (4 * Real.pi))
     (qH qK : SuzukiHlogFormDomain a)
     (hqH : suzukiHlogWeightedToL2 qH.1 =
-      ofRealLp (hg.toLp (fun x : ℝ => H (x ^ 2))))
+      ofRealLp (hg.toLp (fun x : ℝ => H (x ^ (2 : ℕ)))))
     (hqK : suzukiHlogWeightedToL2 qK.1 =
-      ofRealLp (hk.toLp (fun x : ℝ => K (x ^ 2)))) :
+      ofRealLp (hk.toLp (fun x : ℝ => K (x ^ (2 : ℕ))))) :
     routeUHardEdgeEvenForm (Real.log n / 2) H K =
       routeUHardEdgeEvenForm (routeUHardEdgeIncomingAperture n) H K := by
   rw [routeUHardEdgeEvenForm_log_nat_half_eq_incoming_sub_primeJumpResponse

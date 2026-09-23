@@ -28,7 +28,7 @@ theorem integrable_forward_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of
       (by simpa [Metric.mem_ball, dist_zero_right] using hz)
   let hrootExists := Oouter.exists_squareRoot_of_zeroFree hOzero
   let Hroot : DiskMultiplier := Classical.choose hrootExists
-  have hHsq : ∀ z ∈ ball (0 : ℂ) 1, Hroot.fn z ^ 2 = Oouter.fn z :=
+  have hHsq : ∀ z ∈ ball (0 : ℂ) 1, Hroot.fn z ^ (2 : ℕ) = Oouter.fn z :=
     Classical.choose_spec hrootExists
   have hHnonzero : ∃ z ∈ ball (0 : ℂ) 1, Hroot.fn z ≠ 0 := by
     refine ⟨0, by simp [Metric.mem_ball], ?_⟩

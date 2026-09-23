@@ -20,7 +20,7 @@ variable {K : Type u} [Field K]
 
 /-- The nondegenerate projective conic potential. -/
 def conicHorizonPotential (c : Fin 3 → K) : K :=
-  c 0 * c 2 - c 1 ^ 2
+  c 0 * c 2 - c 1 ^ (2 : ℕ)
 
 /-- The symmetric linear matrix pencil defining the conic. -/
 def conicHorizonMatrix (c : Fin 3 → K) : Matrix (Fin 2) (Fin 2) K :=

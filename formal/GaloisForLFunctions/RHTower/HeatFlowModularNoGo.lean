@@ -25,7 +25,7 @@ theorem quadraticPolynomialHeat_X (t : ℂ) : quadraticPolynomialHeat t X = X :=
 
 @[simp]
 theorem quadraticPolynomialHeat_X_sq (t : ℂ) :
-    quadraticPolynomialHeat t (X ^ 2) = X ^ 2 + C t * 2 := by
+    quadraticPolynomialHeat t (X ^ (2 : ℕ)) = X ^ (2 : ℕ) + C t * 2 := by
   simp [quadraticPolynomialHeat]
   norm_num
 
@@ -34,7 +34,7 @@ whereas every modular automorphism is.  The failure is the carré-du-champ cross
 theorem quadraticPolynomialHeat_not_multiplicative {t : ℂ} (ht : t ≠ 0) :
     quadraticPolynomialHeat t (X * X) ≠
       quadraticPolynomialHeat t X * quadraticPolynomialHeat t X := by
-  rw [show X * X = X ^ 2 by ring, quadraticPolynomialHeat_X_sq,
+  rw [show X * X = X ^ (2 : ℕ) by ring, quadraticPolynomialHeat_X_sq,
     quadraticPolynomialHeat_X]
   intro h
   have hcoeff := congrArg (fun P : Polynomial ℂ => P.coeff 0) h

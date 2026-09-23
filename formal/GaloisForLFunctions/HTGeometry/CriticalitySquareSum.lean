@@ -32,7 +32,7 @@ def criticalityPoly (m : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) (i : Fin N)
 /-- The sum over all coordinate directions of the squared criticality expressions. -/
 def criticalitySquareSum (m : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) :
     Polynomial (MvPolynomial (Fin N) ℝ) :=
-  ∑ i : Fin N, (criticalityPoly m c i) ^ 2
+  ∑ i : Fin N, (criticalityPoly m c i) ^ (2 : ℕ)
 
 theorem eval_map_criticalityPoly (m : ℕ) (c : ℕ → MvPolynomial (Fin N) ℝ) (i : Fin N)
     (θ : Fin N → ℝ) (y : ℝ) :
@@ -50,7 +50,7 @@ theorem eval_map_criticalitySquareSum (m : ℕ) (c : ℕ → MvPolynomial (Fin N
     (θ : Fin N → ℝ) (y : ℝ) :
     Polynomial.eval y (Polynomial.map (MvPolynomial.eval θ) (criticalitySquareSum m c))
       = ∑ i : Fin N,
-        (Polynomial.eval y (Polynomial.map (MvPolynomial.eval θ) (criticalityPoly m c i))) ^ 2 := by
+        (Polynomial.eval y (Polynomial.map (MvPolynomial.eval θ) (criticalityPoly m c i))) ^ (2 : ℕ) := by
   rw [criticalitySquareSum, ← Polynomial.coe_mapRingHom]
   simp only [map_sum, map_pow, Polynomial.coe_mapRingHom, Polynomial.eval_finsetSum,
     Polynomial.eval_pow]

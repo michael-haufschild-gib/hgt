@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.ProjectiveHorizonSchurCaustic
 # Landau--Ginzburg Hessian and rank--level pairing duality
 
 After fixing the raw tail, the reversed reciprocal packet is the gradient of the top logarithmic
-coefficient of the raw polynomial.  Its Hessian is the symmetric Hankel form of `-Y^2`; reversing
+coefficient of the raw polynomial.  Its Hessian is the symmetric Hankel form of `-Y^(2 : ℕ)`; reversing
 the rows recovers the Schur--Toeplitz critical Jacobian.
 
 The paper theorem also has a dual potential with the horizon depths exchanged.  This file verifies

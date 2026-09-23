@@ -25,12 +25,12 @@ class to equal its rank value.
 -/
 theorem deningerHyperbolicLocalization_epsilon_eq_one
     (epsilon hyperbolicInv : A)
-    (hsquare : epsilon ^ 2 = 1)
+    (hsquare : epsilon ^ (2 : ℕ) = 1)
     (hinverse : (1 + epsilon) * hyperbolicInv = 1) :
     epsilon = 1 := by
   have hfactor : (1 - epsilon) * (1 + epsilon) = 0 := by
     calc
-      (1 - epsilon) * (1 + epsilon) = 1 - epsilon ^ 2 := by ring
+      (1 - epsilon) * (1 + epsilon) = 1 - epsilon ^ (2 : ℕ) := by ring
       _ = 0 := by rw [hsquare, sub_self]
   have hcollapse : 1 - epsilon = 0 := by
     calc
@@ -48,7 +48,7 @@ finite-syntomic degree.
 -/
 theorem deningerHyperbolicLocalization_quadraticInteger_eq_degree
     (epsilon hyperbolicInv : A)
-    (hsquare : epsilon ^ 2 = 1)
+    (hsquare : epsilon ^ (2 : ℕ) = 1)
     (hinverse : (1 + epsilon) * hyperbolicInv = 1)
     (n : ℕ) :
     (∑ j ∈ Finset.range n, epsilon ^ j) = n • (1 : A) := by
@@ -71,7 +71,7 @@ the hyperbolically localized coefficient channel.
 -/
 theorem deningerHyperbolicLocalization_push_pull_eq_degree
     (epsilon hyperbolicInv : A)
-    (hsquare : epsilon ^ 2 = 1)
+    (hsquare : epsilon ^ (2 : ℕ) = 1)
     (hinverse : (1 + epsilon) * hyperbolicInv = 1)
     (pull push : V → V)
     (n : ℕ)

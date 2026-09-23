@@ -19,7 +19,7 @@ private theorem height_coord_deriv (f : ℝ → ℂ) (hf : Differentiable ℝ f)
 
 /-- The literal hyperbolic Laplacian of any smooth height field. -/
 theorem height_laplacian (f : ℝ → ℂ) (hf : ContDiff ℝ ∞ f) (z : Fin 2 → ℝ) :
-    hyperbolicLaplacian (fun w => f (w 1)) z = (z 1:ℂ)^2*deriv (deriv f) (z 1) := by
+    hyperbolicLaplacian (fun w => f (w 1)) z = (z 1:ℂ)^(2 : ℕ)*deriv (deriv f) (z 1) := by
   have h0 : coordDeriv 0 (fun w : Fin 2 → ℝ => f (w 1)) = fun _ => 0 := by
     funext w
     simpa using height_coord_deriv f (hf.differentiable (by simp)) 0 w

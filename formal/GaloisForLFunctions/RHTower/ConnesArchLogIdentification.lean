@@ -143,12 +143,12 @@ theorem connes_gauss_fourierLogMoment :
   have hreal : (∫ u : ℝ, GaloisForLFunctions.gaussReal u * Real.log u)
       = -((1:ℝ)/2 * Real.log π + Real.eulerMascheroniConstant / 2 + Real.log 2) := by
     have hA := connes_integral_neg_log_abs_mul_gaussian
-    have hcongr : (∫ u : ℝ, (-Real.log |u|) * Real.exp (-π * u ^ 2))
+    have hcongr : (∫ u : ℝ, (-Real.log |u|) * Real.exp (-π * u ^ (2 : ℕ)))
         = - ∫ u : ℝ, GaloisForLFunctions.gaussReal u * Real.log u := by
       rw [← MeasureTheory.integral_neg]
       refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
-      have hexp : Real.exp (-π * u ^ 2) = Real.exp (-(π * u ^ 2)) := by ring_nf
-      show (-Real.log |u|) * Real.exp (-π * u ^ 2)
+      have hexp : Real.exp (-π * u ^ (2 : ℕ)) = Real.exp (-(π * u ^ (2 : ℕ))) := by ring_nf
+      show (-Real.log |u|) * Real.exp (-π * u ^ (2 : ℕ))
           = -(GaloisForLFunctions.gaussReal u * Real.log u)
       unfold GaloisForLFunctions.gaussReal
       rw [Real.log_abs, hexp]

@@ -36,13 +36,13 @@ theorem einastoCore_length_scale (d l a r : ℝ) :
   rw [mul_assoc, einastoDensity_length_scale]
 
 theorem einastoLogCompactness_length_scale (l a t : ℝ) :
-    einastoLogCompactness l a (l + t) = exp l ^ 2 * einastoLogCompactness 0 a t := by
+    einastoLogCompactness l a (l + t) = exp l ^ (2 : ℕ) * einastoLogCompactness 0 a t := by
   rw [einastoLogCompactness_core, exp_add, einastoCore_length_scale, einastoLogCompactness_core]
   ring
 
 theorem einastoHorizonBalance_length_scale (d l a t : ℝ) :
     einastoHorizonBalance d l a (exp (l + t)) =
-      exp l ^ 3 * einastoHorizonBalance d 0 a (exp t) := by
+      exp l ^ (3 : ℕ) * einastoHorizonBalance d 0 a (exp t) := by
   rw [einastoHorizonBalance, einastoHorizonBalance, einastoMass_core, einastoMass_core,
     exp_add, einastoDensity_length_scale, einastoCore_length_scale]
   ring
@@ -59,7 +59,7 @@ theorem einastoCriticalLogDensity_length_scale (l a : ℝ) :
     einastoCriticalLogDensity l a = einastoCriticalLogDensity 0 a - 2 * l := by
   rw [einastoCriticalLogDensity, einastoBalanceZeroLogRadius_length_scale,
     einastoLogCompactness_length_scale]
-  rw [log_mul (by positivity : exp l ^ 2 ≠ 0) (einastoLogCompactness_pos _ _ _).ne']
+  rw [log_mul (by positivity : exp l ^ (2 : ℕ) ≠ 0) (einastoLogCompactness_pos _ _ _).ne']
   rw [log_pow, log_exp, einastoCriticalLogDensity]
   ring
 
@@ -68,20 +68,20 @@ theorem einastoMetric_length_similarity (d l a t : ℝ) :
     einastoMetric (d - 2 * l) l a (exp (l + t)) = einastoMetric d 0 a (exp t) := by
   rw [einastoMetric_compactness, einastoLogCompactness_length_scale, einastoMetric_compactness,
     exp_sub]
-  have he : exp (2 * l) = exp l ^ 2 := exp_nat_mul l 2
+  have he : exp (2 * l) = exp l ^ (2 : ℕ) := exp_nat_mul l 2
   rw [he]
   field_simp
 
 /-- Total mass at the unique critical central density. -/
 def einastoCriticalTotalMass (l a : ℝ) : ℝ :=
-  4 * Real.pi * exp (einastoCriticalLogDensity l a) * exp l ^ 3 * exp a * Gamma (3 * exp a)
+  4 * Real.pi * exp (einastoCriticalLogDensity l a) * exp l ^ (3 : ℕ) * exp a * Gamma (3 * exp a)
 
 /-- Critical mass scales linearly with length, exactly as the paper's `M/η` parameter requires. -/
 theorem einastoCriticalTotalMass_length_scale (l a : ℝ) :
     einastoCriticalTotalMass l a = exp l * einastoCriticalTotalMass 0 a := by
   rw [einastoCriticalTotalMass, einastoCriticalLogDensity_length_scale, einastoCriticalTotalMass,
     exp_sub]
-  have he : exp (2 * l) = exp l ^ 2 := exp_nat_mul l 2
+  have he : exp (2 * l) = exp l ^ (2 : ℕ) := exp_nat_mul l 2
   rw [he, exp_zero]
   field_simp
 
@@ -102,7 +102,7 @@ theorem einastoMetric_length_similarity_radial (d l a r : ℝ) :
     einastoMetric (d - 2 * l) l a (exp l * r) = einastoMetric d 0 a r := by
   rw [einastoMetric_core, einastoMetric_core, einastoCore_length_scale,
     einastoCore_amplitude (d - 2 * l), einastoCore_amplitude d, exp_sub]
-  have he : exp (2 * l) = exp l ^ 2 := exp_nat_mul l 2
+  have he : exp (2 * l) = exp l ^ (2 : ℕ) := exp_nat_mul l 2
   rw [he]
   field_simp
 

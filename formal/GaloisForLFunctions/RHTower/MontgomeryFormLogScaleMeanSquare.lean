@@ -31,7 +31,7 @@ namespace RHTower
 open Complex MeasureTheory Set Finset Filter
 
 /-- Montgomery's weight `w(u) = 4/(4 − u²)`. -/
-def montgomeryWeight (u : ℂ) : ℂ := 4 / (4 - u ^ 2)
+def montgomeryWeight (u : ℂ) : ℂ := 4 / (4 - u ^ (2 : ℕ))
 
 /-- The zero power sum `Σ_j y^{ρ_j − 1/2}` of a finite family at the scale `y`. -/
 def zeroPowerSum {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) (y : ℝ) : ℂ :=
@@ -159,8 +159,8 @@ theorem integral_exp_neg_two_abs_mul_cexp {u : ℂ} (hu : |u.re| < 2) :
     have := congrArg Complex.re h
     simp at this
     linarith
-  have h4 : (4 : ℂ) - u ^ 2 ≠ 0 := by
-    have : (4 : ℂ) - u ^ 2 = (2 - u) * (2 + u) := by ring
+  have h4 : (4 : ℂ) - u ^ (2 : ℕ) ≠ 0 := by
+    have : (4 : ℂ) - u ^ (2 : ℕ) = (2 - u) * (2 + u) := by ring
     rw [this]
     exact mul_ne_zero h2u' h2u
   calc ∫ ξ : ℝ, f ξ = (∫ ξ in Iio (0 : ℝ), f ξ) + ∫ ξ in Ici (0 : ℝ), f ξ := hsplit.symm
@@ -214,7 +214,7 @@ theorem montgomeryForm_eq_integral {ι : Type*} (s : Finset ι) (ρ : ι → ℂ
     (hρ : ∀ j ∈ s, 0 < (ρ j).re ∧ (ρ j).re < 1) :
     montgomeryForm s ρ x
       = ∫ ξ : ℝ, ((Real.exp (-2 * |ξ|) : ℝ) : ℂ) *
-          ((‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ 2 : ℝ) : ℂ) := by
+          ((‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
   -- the pair exponents lie in the admissible strip
   have hstrip : ∀ j ∈ s, ∀ k ∈ s, |(ρ j + (starRingEnd ℂ) (ρ k) - 1).re| < 2 := by
@@ -226,7 +226,7 @@ theorem montgomeryForm_eq_integral {ι : Type*} (s : Finset ι) (ρ : ι → ℂ
     constructor <;> linarith
   -- rewrite the integrand as a double sum of pair terms
   have hpt : ∀ ξ : ℝ, ((Real.exp (-2 * |ξ|) : ℝ) : ℂ) *
-      ((‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ 2 : ℝ) : ℂ)
+      ((‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ j ∈ s, ∑ k ∈ s, (x : ℂ) ^ (ρ j + (starRingEnd ℂ) (ρ k) - 1) *
           (((Real.exp (-2 * |ξ|) : ℝ) : ℂ) * cexp (-((ρ j + (starRingEnd ℂ) (ρ k) - 1) * ξ))) := by
     intro ξ
@@ -235,7 +235,7 @@ theorem montgomeryForm_eq_integral {ι : Type*} (s : Finset ι) (ρ : ι → ℂ
       unfold zeroPowerSum
       refine Finset.sum_congr rfl fun j _ => ?_
       exact cpow_mul_exp_neg hx ξ (ρ j - 1 / 2)
-    have hnorm : ((‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ 2 : ℝ) : ℂ)
+    have hnorm : ((‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ (2 : ℕ) : ℝ) : ℂ)
         = zeroPowerSum s ρ (x * Real.exp (-ξ)) *
             (starRingEnd ℂ) (zeroPowerSum s ρ (x * Real.exp (-ξ))) := by
       rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
@@ -262,11 +262,11 @@ theorem montgomeryForm_eq_integral {ι : Type*} (s : Finset ι) (ρ : ι → ℂ
 theorem montgomeryForm_eq_ofReal {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) {x : ℝ} (hx : 0 < x)
     (hρ : ∀ j ∈ s, 0 < (ρ j).re ∧ (ρ j).re < 1) :
     montgomeryForm s ρ x
-      = ((∫ ξ : ℝ, Real.exp (-2 * |ξ|) * ‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ 2 : ℝ) : ℂ) := by
+      = ((∫ ξ : ℝ, Real.exp (-2 * |ξ|) * ‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [montgomeryForm_eq_integral s ρ hx hρ]
   rw [show (fun ξ : ℝ => ((Real.exp (-2 * |ξ|) : ℝ) : ℂ) *
-      ((‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ 2 : ℝ) : ℂ))
-      = fun ξ : ℝ => ((Real.exp (-2 * |ξ|) * ‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ 2 : ℝ) : ℂ) from
+      ((‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ (2 : ℕ) : ℝ) : ℂ))
+      = fun ξ : ℝ => ((Real.exp (-2 * |ξ|) * ‖zeroPowerSum s ρ (x * Real.exp (-ξ))‖ ^ (2 : ℕ) : ℝ) : ℂ) from
     funext fun ξ => by push_cast; ring]
   exact_mod_cast (integral_ofReal (𝕜 := ℂ))
 

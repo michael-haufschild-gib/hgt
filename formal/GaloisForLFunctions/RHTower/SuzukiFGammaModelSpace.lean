@@ -92,7 +92,7 @@ theorem integral_suzukiFGammaFun_div_eq_zero (hRH : RiemannHypothesis) {γ : ℝ
       _ ≤ (c / (‖z‖ / 2)) / (‖z‖ / 2) := by
           gcongr
           exact le_trans (norm_suzukiFGammaFun_le hRH m hγ hz hne) (by gcongr)
-      _ = 4 * c / ‖z‖ ^ 2 := by
+      _ = 4 * c / ‖z‖ ^ (2 : ℕ) := by
           field_simp
           ring
 

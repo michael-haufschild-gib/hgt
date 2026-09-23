@@ -20,7 +20,7 @@ open scoped BigOperators
 /-- Positive ultrametric shell `k`, corresponding to spectral level `k + 1`. -/
 def ultrametricThermalShell
     {K : Type*} [Field K] (p : ℕ) (w : K) (k : ℕ) : K :=
-  (((p : K) - 1) ^ 2) * (p : K) ^ k * w ^ (p ^ (k + 1))
+  (((p : K) - 1) ^ (2 : ℕ)) * (p : K) ^ k * w ^ (p ^ (k + 1))
 
 /-- The reduced ultrametric thermal trace with its base shell and the first `N` positive shells. -/
 def ultrametricThermalTruncation

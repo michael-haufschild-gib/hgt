@@ -64,14 +64,14 @@ theorem nonstationaryMoment_leading_bound (n : ℕ) :
       (-1:ℂ)^(n+1)*(c-nonstationaryIteratedMoment n (n+2) w) := by
     dsimp only [c]
     simp only [pow_succ]
-    linear_combination (w+1)^2*hh+(-1:ℂ)^n*(w+1)*h0-(-1:ℂ)^n*h1
+    linear_combination (w+1)^(2 : ℕ)*hh+(-1:ℂ)^n*(w+1)*h0-(-1:ℂ)^n*h1
   rw [he]
   simp only [norm_mul,norm_pow,norm_neg,norm_one,one_pow,one_mul]
   exact (norm_sub_le _ _).trans (add_le_add le_rfl hb)
 
 theorem nonstationaryMoment_second_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ w : ℂ, w.re ∈ Icc (-(3/2):ℝ) (-1) → w+1 ≠ 0 →
-      ‖(w+1)*((w+1)^3*nonstationaryMoment ((1-Polynomial.X)^2) 0 w-(2/125:ℂ))‖ ≤ C := by
+      ‖(w+1)*((w+1)^(3 : ℕ)*nonstationaryMoment ((1-Polynomial.X)^(2 : ℕ)) 0 w-(2/125:ℂ))‖ ≤ C := by
   obtain ⟨C,hC0,hC⟩ := nonstationaryMoment_leading_bound 2
   refine ⟨C,hC0,?_⟩
   intro w hw hw1
@@ -81,7 +81,7 @@ theorem nonstationaryMoment_second_bound :
 
 theorem nonstationaryMoment_fourth_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ w : ℂ, w.re ∈ Icc (-(3/2):ℝ) (-1) → w+1 ≠ 0 →
-      ‖(w+1)*((w+1)^5*nonstationaryMoment ((1-Polynomial.X)^4) 0 w-(24/3125:ℂ))‖ ≤ C := by
+      ‖(w+1)*((w+1)^(5 : ℕ)*nonstationaryMoment ((1-Polynomial.X)^(4 : ℕ)) 0 w-(24/3125:ℂ))‖ ≤ C := by
   obtain ⟨C,hC0,hC⟩ := nonstationaryMoment_leading_bound 4
   refine ⟨C,hC0,?_⟩
   intro w hw hw1

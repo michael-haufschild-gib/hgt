@@ -16,7 +16,7 @@ the extension it defines is abelian, the lattice is free, so the extension split
 is a coboundary.
 
 * `cocycleCommutator`, `cocycleCommutator_add_left`, `cocycleCommutator_eq_zero_of_basis`;
-* `exists_coboundary₁_of_symm_cocycle` — a symmetric `2`-cocycle is a coboundary;
+* `exists_coboundary₁_of_symm` — a symmetric `2`-cocycle is a coboundary;
 * `exists_coboundary₁_of_cocycle_of_basis` — the vanishing of the three basis commutators suffices;
 * `exists_coboundary₁_iff_basis` — the three basis commutators are a complete obstruction;
 * `eq_add_coboundary₁_of_coboundary₂_eq_of_basis` — the comparison, for a trivial action;
@@ -252,7 +252,7 @@ theorem coboundary₁_add (h₁ h₂ : TripticLattice → M) :
 
 /-- **A symmetric `2`-cocycle on the triptic lattice is a coboundary.**  The twisted product it
 defines is an abelian group, and the lattice is free, so the extension splits. -/
-theorem exists_coboundary₁_of_symm_cocycle {c : TripticLattice → TripticLattice → M}
+theorem exists_coboundary₁_of_symm {c : TripticLattice → TripticLattice → M}
     (hc : coboundary₂ c = 0) (hsym : ∀ a b, c a b = c b a) :
     ∃ h : TripticLattice → M, c = coboundary₁ h := by
   set k : M := c 0 0 with hk
@@ -290,7 +290,7 @@ theorem exists_coboundary₁_of_cocycle_of_basis {c : TripticLattice → Triptic
     (hc : coboundary₂ c = 0)
     (hbasis : ∀ i j : Fin 3, cocycleCommutator c (basisVec i) (basisVec j) = 0) :
     ∃ h : TripticLattice → M, c = coboundary₁ h := by
-  refine exists_coboundary₁_of_symm_cocycle hc fun a b => ?_
+  refine exists_coboundary₁_of_symm hc fun a b => ?_
   have h := cocycleCommutator_eq_zero_of_basis hc hbasis a b
   simpa only [cocycleCommutator, sub_eq_zero] using h
 

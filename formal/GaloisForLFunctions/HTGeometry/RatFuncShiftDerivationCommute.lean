@@ -22,14 +22,14 @@ open scoped Differential
 variable {K : Type*} [Field K] [CharZero K] [Differential K]
 
 omit [CharZero K] in
-@[simp] theorem coeffDeriv_C (a : K) : coeffDeriv (Polynomial.C a) = Polynomial.C (a′) := by
+@[simp] theorem coeffDeriv_C_ratFuncShiftDerivationCommute (a : K) : coeffDeriv (Polynomial.C a) = Polynomial.C (a′) := by
   have hC : (Polynomial.C a : K[X]) = Polynomial.monomial 0 a := by
     rw [Polynomial.monomial_zero_left]
   rw [hC, coeffDeriv_monomial]
   simp
 
 omit [CharZero K] in
-@[simp] theorem coeffDeriv_X : coeffDeriv (Polynomial.X : K[X]) = 0 := by
+@[simp] theorem coeffDeriv_X_ratFuncShiftDerivationCommute : coeffDeriv (Polynomial.X : K[X]) = 0 := by
   have hX : (Polynomial.X : K[X]) = Polynomial.monomial 1 (1 : K) :=
     (Polynomial.monomial_one_one_eq_X).symm
   rw [hX, coeffDeriv_monomial]
@@ -39,7 +39,7 @@ omit [CharZero K] in
 theorem coeffDeriv_pow_X_add_C {c : K} (hc : (c : K)′ = 0) (k : ℕ) :
     coeffDeriv ((Polynomial.X + Polynomial.C c) ^ k) = 0 := by
   have hbase : coeffDeriv (Polynomial.X + Polynomial.C c : K[X]) = 0 := by
-    rw [coeffDeriv_add, coeffDeriv_X, coeffDeriv_C, hc, map_zero, add_zero]
+    rw [coeffDeriv_add, coeffDeriv_X_ratFuncShiftDerivationCommute, coeffDeriv_C_ratFuncShiftDerivationCommute, hc, map_zero, add_zero]
   induction k with
   | zero => simp
   | succ k ih =>
@@ -54,7 +54,7 @@ theorem coeffDeriv_comp_X_add_C {c : K} (hc : (c : K)′ = 0) (p : K[X]) :
   | add p q hp hq =>
       rw [Polynomial.add_comp, coeffDeriv_add, coeffDeriv_add, hp, hq, Polynomial.add_comp]
   | monomial k a =>
-      rw [Polynomial.monomial_comp, coeffDeriv_mul, coeffDeriv_C,
+      rw [Polynomial.monomial_comp, coeffDeriv_mul, coeffDeriv_C_ratFuncShiftDerivationCommute,
         coeffDeriv_pow_X_add_C hc, mul_zero, add_zero, coeffDeriv_monomial,
         Polynomial.mul_comp, Polynomial.C_comp, Polynomial.pow_comp, Polynomial.X_comp]
 

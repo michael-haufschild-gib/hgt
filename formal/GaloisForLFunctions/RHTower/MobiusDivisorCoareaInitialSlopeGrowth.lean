@@ -63,7 +63,7 @@ theorem mobiusDivisorFibreAbsoluteMass_two_head_le (M : ℕ) :
 theorem mobiusDivisorNonemptyCoarea_two_ge_lateMass (N : ℕ) :
     mobiusDivisorLatePrimeMass (4*N) ≤ mobiusDivisorNonemptyCoarea (4*N) {2} := by
   let L := GaloisForLFunctions.HTGeometry.primesInIoc ((4*N)/2) (4*N)
-  let t := fun R => (mobiusDivisorSelectionFibre (4*N) {2} R)^2 /
+  let t := fun R => (mobiusDivisorSelectionFibre (4*N) {2} R)^(2 : ℕ) /
     mobiusDivisorFibreAbsoluteMass (4*N) {2} R
   have hprime (p : ℕ) (hp : p ∈ L) : p.Prime ∧ p<4*N ∧ 4*N≤2*p ∧ p ∉ ({2}:Finset ℕ) := by
     obtain ⟨hpr,hlo,hhi⟩ := GaloisForLFunctions.HTGeometry.mem_primesInIoc hp

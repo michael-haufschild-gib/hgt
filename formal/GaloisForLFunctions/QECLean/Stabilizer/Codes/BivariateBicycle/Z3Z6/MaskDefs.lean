@@ -139,11 +139,11 @@ theorem idxOf36_lt : ∀ g : G36, idxOf36 g < 18 := by
 
 /-- Masks of 2-chains stay below `2¹⁸` (fold invariant via
 `Nat.xor_lt_two_pow`). -/
-theorem maskOf_lt (f : G36 → ZMod 2) : maskOf f < 2 ^ 18 := by
+theorem maskOf_lt (f : G36 → ZMod 2) : maskOf f < 2 ^ (18 : ℕ) := by
   unfold maskOf
-  have key : ∀ L : List Nat, (∀ i ∈ L, i < 18) → ∀ a0 : Nat, a0 < 2 ^ 18 →
+  have key : ∀ L : List Nat, (∀ i ∈ L, i < 18) → ∀ a0 : Nat, a0 < 2 ^ (18 : ℕ) →
       (L.foldl (fun acc i =>
-        if f (cellOf36 i) = 1 then acc ^^^ (1 <<< i) else acc) a0) < 2 ^ 18 := by
+        if f (cellOf36 i) = 1 then acc ^^^ (1 <<< i) else acc) a0) < 2 ^ (18 : ℕ) := by
     intro L
     induction L with
     | nil =>
@@ -155,7 +155,7 @@ theorem maskOf_lt (f : G36 → ZMod 2) : maskOf f < 2 ^ 18 := by
       refine ih (fun i hi => hmem i (List.mem_cons_of_mem j hi)) _ ?_
       by_cases hj : f (cellOf36 j) = 1
       · rw [if_pos hj]
-        have hjlt : (1 <<< j) < 2 ^ 18 := by
+        have hjlt : (1 <<< j) < 2 ^ (18 : ℕ) := by
           rw [Nat.shiftLeft_eq, one_mul]
           exact Nat.pow_lt_pow_right (by norm_num)
             (hmem j List.mem_cons_self)
@@ -335,7 +335,7 @@ theorem maskOf_single (g : G36) : maskOf (Pi.single g 1) = 1 <<< idxOf36 g := by
     have hidx : idxOf36 g ≠ i := by have := idxOf36_lt g; omega
     simp [hi, hidx]
 
-theorem maskOf_chainOf {m : Nat} (hm : m < 2 ^ 18) : maskOf (chainOf m) = m := by
+theorem maskOf_chainOf {m : Nat} (hm : m < 2 ^ (18 : ℕ)) : maskOf (chainOf m) = m := by
   apply Nat.eq_of_testBit_eq; intro i
   rw [testBit_maskOf]
   by_cases hi : i ∈ List.range 18
@@ -347,7 +347,7 @@ theorem maskOf_chainOf {m : Nat} (hm : m < 2 ^ 18) : maskOf (chainOf m) = m := b
   · have h18 : ¬ i < 18 := by simpa [List.mem_range] using hi
     have hbit : m.testBit i = false := by
       apply Nat.testBit_lt_two_pow
-      calc m < 2 ^ 18 := hm
+      calc m < 2 ^ (18 : ℕ) := hm
         _ ≤ 2 ^ i := Nat.pow_le_pow_right (by norm_num) (by omega)
     simp [hi, hbit]
 
@@ -359,7 +359,7 @@ theorem chainOf_apply_eq_zero_iff (m : Nat) (g : G36) :
   unfold chainOf
   cases htb : m.testBit (idxOf36 g) <;> simp
 
-theorem chainOf_eq_zero_iff {m : Nat} (hm : m < 2 ^ 18) : chainOf m = 0 ↔ m = 0 := by
+theorem chainOf_eq_zero_iff {m : Nat} (hm : m < 2 ^ (18 : ℕ)) : chainOf m = 0 ↔ m = 0 := by
   constructor
   · intro h
     have hround := maskOf_chainOf hm
@@ -550,11 +550,11 @@ theorem bndMask_maskOf (f : G36 → ZMod 2) :
 
 /-! ## The assembled sweep bridges -/
 
-theorem bnd_c1MaskOf {m : Nat} (hm : m < 2 ^ 18) :
+theorem bnd_c1MaskOf {m : Nat} (hm : m < 2 ^ (18 : ℕ)) :
     c1MaskOf (bbBoundary2Fn a36 b36 (chainOf m)) = bndMask m := by
   rw [← bndMask_maskOf, maskOf_chainOf hm]
 
-theorem bnd_eq_zero_iff {m : Nat} (hm : m < 2 ^ 18) :
+theorem bnd_eq_zero_iff {m : Nat} (hm : m < 2 ^ (18 : ℕ)) :
     bbBoundary2Fn a36 b36 (chainOf m) = 0 ↔ bndMask m = 0 := by
   rw [← c1MaskOf_eq_zero_iff, bnd_c1MaskOf hm]
 

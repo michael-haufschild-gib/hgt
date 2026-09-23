@@ -9,7 +9,7 @@ open MeasureTheory
 /-- Literal normalized source equality is exactly equality of the squared ratio parameter. -/
 theorem egbFixedChargeAGibbsTunable_normalized_source_eq_iff (t u : ℝ) :
     egbFixedChargeAGibbsTunableNormalizedSource t = egbFixedChargeAGibbsTunableNormalizedSource u ↔
-      t ^ 2 = u ^ 2 := by
+      t ^ (2 : ℕ) = u ^ (2 : ℕ) := by
   constructor
   · intro h
     have hm := congrArg (fun μ : Measure HausdorffSourceSpace => hausdorffMoment μ 0) h

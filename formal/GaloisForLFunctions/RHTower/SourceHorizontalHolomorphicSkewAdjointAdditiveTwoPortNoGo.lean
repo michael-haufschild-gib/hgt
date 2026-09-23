@@ -10,7 +10,7 @@ import GaloisForLFunctions.RHTower.SuzukiCarlemanCentralFlux
 Unrestricted additive SC two-port determinants are compact-open universal because their two odd
 legs are independent. The Stokes-natural skew-adjoint reality condition ties the lower leg to the
 negative Schwarz reflection of the upper leg. That tie forces the determinant's central quadratic
-jet to be `2 * |A'(0)|^2`, hence nonnegative. Normalized centered Xi has strictly negative central
+jet to be `2 * |A'(0)|^(2 : ℕ)`, hence nonnegative. Normalized centered Xi has strictly negative central
 quadratic jet. Cauchy jet convergence therefore excludes every compact-open Xi landing through
 these stages.
 

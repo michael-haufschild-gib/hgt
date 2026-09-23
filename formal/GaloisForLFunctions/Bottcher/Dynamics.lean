@@ -22,9 +22,9 @@ open Bornology Metric
 namespace Bottcher
 
 /-- The quadratic map `f_c(z) = z² + c`. -/
-noncomputable def quadratic (c : ℂ) : ℂ → ℂ := fun z => z ^ 2 + c
+noncomputable def quadratic (c : ℂ) : ℂ → ℂ := fun z => z ^ (2 : ℕ) + c
 
-@[simp] theorem quadratic_apply (c z : ℂ) : quadratic c z = z ^ 2 + c := rfl
+@[simp] theorem quadratic_apply (c z : ℂ) : quadratic c z = z ^ (2 : ℕ) + c := rfl
 
 /-- **The two `f_c`-preimages of a point are antipodal:** `f_c z = f_c w` iff `z = w` or `z = -w`.
 The fibre of `f_c(z) = z² + c` is `{z, -z}`, the deck of the squaring 2-cover. -/
@@ -32,7 +32,7 @@ theorem quadratic_fiber {c z w : ℂ} : quadratic c z = quadratic c w ↔ z = w 
   simp only [quadratic_apply]
   constructor
   · intro h
-    have hsq : z ^ 2 = w ^ 2 := by linear_combination h
+    have hsq : z ^ (2 : ℕ) = w ^ (2 : ℕ) := by linear_combination h
     have hfac : (z - w) * (z + w) = 0 := by linear_combination hsq
     rcases mul_eq_zero.mp hfac with h1 | h1
     · left; exact sub_eq_zero.mp h1
@@ -56,7 +56,7 @@ theorem mem_filledJulia_iff (c z : ℂ) :
 
 /-- The critical orbit step: `f_c` applied to the orbit shifts the index. -/
 theorem quadratic_iterate_succ (c z : ℂ) (n : ℕ) :
-    (quadratic c)^[n + 1] z = (quadratic c)^[n] z ^ 2 + c := by
+    (quadratic c)^[n + 1] z = (quadratic c)^[n] z ^ (2 : ℕ) + c := by
   rw [Function.iterate_succ', Function.comp_apply, quadratic_apply]
 
 /-- **Escape estimate.** Beyond radius `2` (and `‖c‖ ≤ ‖z‖`), one quadratic step expands
@@ -64,8 +64,8 @@ the modulus: `‖f_c z‖ ≥ ‖z‖·(‖z‖-1)`. The geometric driver of esc
 theorem quadratic_norm_ge {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (_hz : 2 < ‖z‖) :
     ‖z‖ * (‖z‖ - 1) ≤ ‖quadratic c z‖ := by
   rw [quadratic_apply]
-  have h1 : ‖z‖ ^ 2 - ‖c‖ ≤ ‖z ^ 2 + c‖ := by
-    have h := norm_sub_norm_le (z ^ 2) (-c)
+  have h1 : ‖z‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖z ^ (2 : ℕ) + c‖ := by
+    have h := norm_sub_norm_le (z ^ (2 : ℕ)) (-c)
     rw [norm_neg, sub_neg_eq_add, norm_pow] at h
     exact h
   nlinarith [hc, h1]
@@ -232,7 +232,7 @@ theorem disconnected_of_norm_gt {c : ℂ} (hc : 2 < ‖c‖) : Disconnected c :=
   have h1 : (quadratic c)^[1] 0 ∈ filledJulia c := filledJulia_forward h0 1
   rw [Function.iterate_one] at h1
   simp only [quadratic_apply] at h1
-  rw [show (0 : ℂ) ^ 2 + c = c by ring] at h1
+  rw [show (0 : ℂ) ^ (2 : ℕ) + c = c by ring] at h1
   exact not_mem_filledJulia (le_refl ‖c‖) hc h1
 
 end Bottcher

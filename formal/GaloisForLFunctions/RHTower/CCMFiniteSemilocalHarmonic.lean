@@ -89,13 +89,13 @@ theorem ccmFiniteSemilocalHarmonic_sigma_integral_of_scaled_integral
     (ell m : ℕ) :
     CCMRationalIntegral
       ((Nat.centralBinom ell : ℚ) * (Nat.centralBinom m : ℚ) *
-        ccmFiniteSemilocalHarmonic ell m ^ 2) := by
+        ccmFiniteSemilocalHarmonic ell m ^ (2 : ℕ)) := by
   obtain ⟨a, ha⟩ := hscaled ell m
   obtain ⟨b, hb⟩ := hscaled m ell
   refine ⟨a * b, ?_⟩
   calc
     (Nat.centralBinom ell : ℚ) * (Nat.centralBinom m : ℚ) *
-        ccmFiniteSemilocalHarmonic ell m ^ 2 =
+        ccmFiniteSemilocalHarmonic ell m ^ (2 : ℕ) =
         ((Nat.centralBinom ell : ℚ) * ccmFiniteSemilocalHarmonic ell m) *
           ((Nat.centralBinom m : ℚ) * ccmFiniteSemilocalHarmonic m ell) := by
             rw [ccmFiniteSemilocalHarmonic_symm]

@@ -31,7 +31,7 @@ theorem line_mul_eq_zero (mul : (ℂ × L) →ₗ[ℂ] (ℂ × L) →ₗ[ℂ] (�
     (hnat : ∀ lam : ℂ, lam ≠ 0 → ∀ z w : ℂ × L,
       mul (z.1, lam • z.2) (w.1, lam • w.2) = ((mul z w).1, lam • (mul z w).2))
     (x y : L) : mul (0, x) (0, y) = 0 := by
-  have hbil : ∀ lam : ℂ, mul (0, lam • x) (0, lam • y) = (lam ^ 2) • mul (0, x) (0, y) := by
+  have hbil : ∀ lam : ℂ, mul (0, lam • x) (0, lam • y) = (lam ^ (2 : ℕ)) • mul (0, x) (0, y) := by
     intro lam
     have h1 : ((0 : ℂ), lam • x) = lam • ((0 : ℂ), x) := by ext <;> simp
     have h2 : ((0 : ℂ), lam • y) = lam • ((0 : ℂ), y) := by ext <;> simp
@@ -41,17 +41,17 @@ theorem line_mul_eq_zero (mul : (ℂ × L) →ₗ[ℂ] (ℂ × L) →ₗ[ℂ] (�
       = ((mul (0, x) (0, y)).1, (2 : ℂ) • (mul (0, x) (0, y)).2) :=
     hnat 2 two_ne_zero (0, x) (0, y)
   rw [hbil 2] at hkey
-  have hfst : (2 : ℂ) ^ 2 * (mul (0, x) (0, y)).1 = (mul (0, x) (0, y)).1 := by
+  have hfst : (2 : ℂ) ^ (2 : ℕ) * (mul (0, x) (0, y)).1 = (mul (0, x) (0, y)).1 := by
     have h := congrArg Prod.fst hkey
     simpa using h
-  have hsnd : ((2 : ℂ) ^ 2) • (mul (0, x) (0, y)).2 = (2 : ℂ) • (mul (0, x) (0, y)).2 := by
+  have hsnd : ((2 : ℂ) ^ (2 : ℕ)) • (mul (0, x) (0, y)).2 = (2 : ℂ) • (mul (0, x) (0, y)).2 := by
     have h := congrArg Prod.snd hkey
     simpa using h
   have h1 : (mul (0, x) (0, y)).1 = 0 := by linear_combination hfst / 3
   have h2 : (mul (0, x) (0, y)).2 = 0 := by
-    have hdiff : ((2 : ℂ) ^ 2 - 2) • (mul (0, x) (0, y)).2 = 0 := by
+    have hdiff : ((2 : ℂ) ^ (2 : ℕ) - 2) • (mul (0, x) (0, y)).2 = 0 := by
       rw [sub_smul, hsnd, sub_self]
-    rw [show (2 : ℂ) ^ 2 - 2 = 2 by ring] at hdiff
+    rw [show (2 : ℂ) ^ (2 : ℕ) - 2 = 2 by ring] at hdiff
     rcases smul_eq_zero.1 hdiff with h | h
     · exact absurd h two_ne_zero
     · exact h
@@ -95,13 +95,13 @@ end RankOne
 /-! ## The framed quadratic classification -/
 
 /-- The framed quadratic law `e² = a e + b`. -/
-noncomputable def quadPoly (a b : ℂ) : ℂ[X] := X ^ 2 - C a * X - C b
+noncomputable def quadPoly (a b : ℂ) : ℂ[X] := X ^ (2 : ℕ) - C a * X - C b
 
 /-- The framed two-dimensional monogenic algebra `ℂ[e]/(e² − a e − b)`. -/
 noncomputable abbrev quadAlgebra (a b : ℂ) : Type := AdjoinRoot (quadPoly a b)
 
 /-- The discriminant `Δ = a² + 4b`. -/
-def quadDiscr (a b : ℂ) : ℂ := a ^ 2 + 4 * b
+def quadDiscr (a b : ℂ) : ℂ := a ^ (2 : ℕ) + 4 * b
 
 theorem quadPoly_natDegree (a b : ℂ) : (quadPoly a b).natDegree = 2 := by
   unfold quadPoly
@@ -122,12 +122,12 @@ theorem finrank_quadAlgebra (a b : ℂ) : Module.finrank ℂ (quadAlgebra a b) =
 
 /-- Evaluation of the framed quadratic in any commutative ring. -/
 theorem eval₂_quadPoly {S : Type*} [CommRing S] (f : ℂ →+* S) (x : S) (a b : ℂ) :
-    (quadPoly a b).eval₂ f x = x ^ 2 - f a * x - f b := by
+    (quadPoly a b).eval₂ f x = x ^ (2 : ℕ) - f a * x - f b := by
   simp [quadPoly]
 
 /-- The defining relation of the framed algebra. -/
 theorem root_sq (a b : ℂ) :
-    (AdjoinRoot.root (quadPoly a b)) ^ 2
+    (AdjoinRoot.root (quadPoly a b)) ^ (2 : ℕ)
       = AdjoinRoot.of (quadPoly a b) a * AdjoinRoot.root (quadPoly a b)
         + AdjoinRoot.of (quadPoly a b) b := by
   have h := AdjoinRoot.eval₂_root (quadPoly a b)
@@ -151,8 +151,8 @@ theorem root_ne_zero (a b : ℂ) : AdjoinRoot.root (quadPoly a b) ≠ 0 := by
 /-- **Split type.**  A nonzero discriminant makes the framed algebra the product `ℂ × ℂ`. -/
 theorem exists_algEquiv_prod_of_discr_ne_zero (a b : ℂ) (h : quadDiscr a b ≠ 0) :
     Nonempty (quadAlgebra a b ≃ₐ[ℂ] ℂ × ℂ) := by
-  obtain ⟨d, hd⟩ : ∃ d : ℂ, d ^ 2 = a ^ 2 + 4 * b :=
-    IsAlgClosed.exists_pow_nat_eq (a ^ 2 + 4 * b) (n := 2) two_pos
+  obtain ⟨d, hd⟩ : ∃ d : ℂ, d ^ (2 : ℕ) = a ^ (2 : ℕ) + 4 * b :=
+    IsAlgClosed.exists_pow_nat_eq (a ^ (2 : ℕ) + 4 * b) (n := 2) two_pos
   have hd0 : d ≠ 0 := by
     intro hzero
     rw [hzero] at hd
@@ -164,8 +164,8 @@ theorem exists_algEquiv_prod_of_discr_ne_zero (a b : ℂ) (h : quadDiscr a b ≠
     exact hd0 (by rw [hr, hs] at hEq; linear_combination hEq)
   have hsub : r - s ≠ 0 := sub_ne_zero.2 hrs
   have hsub' : s - r ≠ 0 := sub_ne_zero.2 (Ne.symm hrs)
-  have hroot_r : r ^ 2 - a * r - b = 0 := by rw [hr]; linear_combination hd / 4
-  have hroot_s : s ^ 2 - a * s - b = 0 := by rw [hs]; linear_combination hd / 4
+  have hroot_r : r ^ (2 : ℕ) - a * r - b = 0 := by rw [hr]; linear_combination hd / 4
+  have hroot_s : s ^ (2 : ℕ) - a * s - b = 0 := by rw [hs]; linear_combination hd / 4
   have heval : (quadPoly a b).eval₂ (Algebra.ofId ℂ (ℂ × ℂ)).toRingHom ((r, s) : ℂ × ℂ) = 0 := by
     rw [eval₂_quadPoly]
     refine Prod.ext ?_ ?_
@@ -204,15 +204,15 @@ theorem exists_algEquiv_prod_of_discr_ne_zero (a b : ℂ) (h : quadDiscr a b ≠
 /-- **Degenerate type.**  A vanishing discriminant makes the framed algebra the dual numbers. -/
 theorem exists_algEquiv_dual_of_discr_eq_zero (a b : ℂ) (h : quadDiscr a b = 0) :
     Nonempty (quadAlgebra a b ≃ₐ[ℂ] quadAlgebra 0 0) := by
-  have hdisc : a ^ 2 + 4 * b = 0 := h
-  have hb : b = -((a / 2) ^ 2) := by linear_combination hdisc / 4
+  have hdisc : a ^ (2 : ℕ) + 4 * b = 0 := h
+  have hb : b = -((a / 2) ^ (2 : ℕ)) := by linear_combination hdisc / 4
   have hι_a : AdjoinRoot.of (quadPoly a b) a
       = 2 * AdjoinRoot.of (quadPoly a b) (a / 2) := by
     rw [← map_ofNat (AdjoinRoot.of (quadPoly a b)) 2, ← map_mul]
     congr 1
     ring
   have hι_b : AdjoinRoot.of (quadPoly a b) b
-      = -(AdjoinRoot.of (quadPoly a b) (a / 2)) ^ 2 := by
+      = -(AdjoinRoot.of (quadPoly a b) (a / 2)) ^ (2 : ℕ) := by
     rw [← map_pow, ← map_neg]
     congr 1
   have hι₀_a : AdjoinRoot.of (quadPoly (0 : ℂ) 0) a
@@ -221,14 +221,14 @@ theorem exists_algEquiv_dual_of_discr_eq_zero (a b : ℂ) (h : quadDiscr a b = 0
     congr 1
     ring
   have hι₀_b : AdjoinRoot.of (quadPoly (0 : ℂ) 0) b
-      = -(AdjoinRoot.of (quadPoly (0 : ℂ) 0) (a / 2)) ^ 2 := by
+      = -(AdjoinRoot.of (quadPoly (0 : ℂ) 0) (a / 2)) ^ (2 : ℕ) := by
     rw [← map_pow, ← map_neg]
     congr 1
-  have hzeroSq : (AdjoinRoot.root (quadPoly (0 : ℂ) 0)) ^ 2 = 0 := by
+  have hzeroSq : (AdjoinRoot.root (quadPoly (0 : ℂ) 0)) ^ (2 : ℕ) = 0 := by
     have hz := root_sq (0 : ℂ) 0
     simpa using hz
   have hshiftUp :
-      (AdjoinRoot.root (quadPoly (0 : ℂ) 0) + AdjoinRoot.of (quadPoly (0 : ℂ) 0) (a / 2)) ^ 2
+      (AdjoinRoot.root (quadPoly (0 : ℂ) 0) + AdjoinRoot.of (quadPoly (0 : ℂ) 0) (a / 2)) ^ (2 : ℕ)
         = AdjoinRoot.of (quadPoly (0 : ℂ) 0) a
             * (AdjoinRoot.root (quadPoly (0 : ℂ) 0)
               + AdjoinRoot.of (quadPoly (0 : ℂ) 0) (a / 2))
@@ -236,7 +236,7 @@ theorem exists_algEquiv_dual_of_discr_eq_zero (a b : ℂ) (h : quadDiscr a b = 0
     rw [hι₀_a, hι₀_b, add_sq, hzeroSq]
     ring
   have hshiftDown :
-      (AdjoinRoot.root (quadPoly a b) - AdjoinRoot.of (quadPoly a b) (a / 2)) ^ 2 = 0 := by
+      (AdjoinRoot.root (quadPoly a b) - AdjoinRoot.of (quadPoly a b) (a / 2)) ^ (2 : ℕ) = 0 := by
     have hr := root_sq a b
     rw [hι_a, hι_b] at hr
     rw [sub_sq, hr]
@@ -271,7 +271,7 @@ theorem exists_algEquiv_dual_of_discr_eq_zero (a b : ℂ) (h : quadDiscr a b = 0
 /-! ### The two types are not isomorphic -/
 
 theorem exists_nilpotent_quadAlgebra_zero :
-    ∃ x : quadAlgebra (0 : ℂ) 0, x ≠ 0 ∧ x ^ 2 = 0 := by
+    ∃ x : quadAlgebra (0 : ℂ) 0, x ≠ 0 ∧ x ^ (2 : ℕ) = 0 := by
   refine ⟨AdjoinRoot.root (quadPoly 0 0), root_ne_zero 0 0, ?_⟩
   have := root_sq (0 : ℂ) 0
   simpa using this
@@ -282,7 +282,7 @@ theorem not_nonempty_algEquiv_dual_prod :
     ¬ Nonempty (quadAlgebra (0 : ℂ) 0 ≃ₐ[ℂ] ℂ × ℂ) := by
   rintro ⟨e⟩
   obtain ⟨x, hx0, hx2⟩ := exists_nilpotent_quadAlgebra_zero
-  have hex : (e x) ^ 2 = 0 := by rw [← map_pow, hx2, map_zero]
+  have hex : (e x) ^ (2 : ℕ) = 0 := by rw [← map_pow, hx2, map_zero]
   have hex0 : e x = 0 := (IsNilpotent.eq_zero ⟨2, hex⟩ : e x = 0)
   exact hx0 (by simpa using e.injective (by simpa using hex0))
 

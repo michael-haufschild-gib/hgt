@@ -8,10 +8,10 @@ This file proves two unconditional arithmetic divergence statements used to test
 prime-log sampling maps.
 
 * The shifted-sinc profile
-  `∑_{3 < p ≤ x} 1 / (1 + (log p)^2)`
+  `∑_{3 < p ≤ x} 1 / (1 + (log p)^(2 : ℕ))`
   tends to infinity.
 * The critical explicit-formula profile
-  `∑_{p ≤ X} (log p)^2 / (p (1 + (log p)^2))`
+  `∑_{p ≤ X} (log p)^(2 : ℕ) / (p (1 + (log p)^(2 : ℕ)))`
   dominates a positive constant times the prime-harmonic sum, hence has an explicit
   `log log` lower bound.
 
@@ -29,14 +29,14 @@ noncomputable section
 
 /-- A positive comparison constant valid for every prime-log square. -/
 def primeCriticalPWProfileConstant : ℝ :=
-  Real.log 2 ^ 2 / (1 + Real.log 2 ^ 2)
+  Real.log 2 ^ (2 : ℕ) / (1 + Real.log 2 ^ (2 : ℕ))
 
 theorem primeCriticalPWProfileConstant_pos : 0 < primeCriticalPWProfileConstant := by
   exact div_pos (sq_pos_of_pos (Real.log_pos (by norm_num))) (by positivity)
 
 /-- The finite shifted-sinc profile over prime logarithms in `(log 3, log x]`. -/
 def primeShiftedSincProfileSum (x : ℝ) : ℝ :=
-  ∑ p ∈ windowPrimes 3 x, 1 / (1 + Real.log p ^ 2)
+  ∑ p ∈ windowPrimes 3 x, 1 / (1 + Real.log p ^ (2 : ℕ))
 
 /-- The shifted-sinc profile dominates a fixed positive multiple of the reciprocal-log-square
 prime tail. -/
@@ -54,7 +54,7 @@ theorem criticalConstant_mul_primeReciprocalLogSqTailSum_le_primeShiftedSincProf
   have hlogp : 0 < Real.log p := Real.log_pos (by exact_mod_cast hprime.one_lt)
   have hlogle : Real.log 2 ≤ Real.log p :=
     Real.log_le_log (by norm_num) hp2
-  have hsqle : Real.log 2 ^ 2 ≤ Real.log p ^ 2 := by nlinarith
+  have hsqle : Real.log 2 ^ (2 : ℕ) ≤ Real.log p ^ (2 : ℕ) := by nlinarith
   dsimp [primeCriticalPWProfileConstant]
   field_simp
   nlinarith
@@ -71,7 +71,7 @@ theorem tendsto_primeShiftedSincProfileSum_atTop :
 /-- The critical explicit-formula profile over primes below `X + 1`. -/
 def primeCriticalPWProfileSum (X : ℕ) : ℝ :=
   ∑ p ∈ Nat.primesBelow (X + 1),
-    Real.log p ^ 2 / ((p : ℝ) * (1 + Real.log p ^ 2))
+    Real.log p ^ (2 : ℕ) / ((p : ℝ) * (1 + Real.log p ^ (2 : ℕ)))
 
 /-- The critical profile dominates a fixed positive multiple of the prime-harmonic sum. -/
 theorem primeCriticalPWProfileConstant_mul_primeHarmonic_le (X : ℕ) :
@@ -87,7 +87,7 @@ theorem primeCriticalPWProfileConstant_mul_primeHarmonic_le (X : ℕ) :
   have hlogp : 0 < Real.log p := Real.log_pos (by exact_mod_cast hpPrime.one_lt)
   have hlogle : Real.log 2 ≤ Real.log p :=
     Real.log_le_log (by norm_num) hp2
-  have hsqle : Real.log 2 ^ 2 ≤ Real.log p ^ 2 := by nlinarith
+  have hsqle : Real.log 2 ^ (2 : ℕ) ≤ Real.log p ^ (2 : ℕ) := by nlinarith
   dsimp [primeCriticalPWProfileConstant, primeCriticalPWProfileSum]
   field_simp
   nlinarith

@@ -475,7 +475,7 @@ namespace RHTower
 
 /-- **Cross-multiplied slope budget.**  The slope constraint
 `η + (1 + η) / 2 < 1`, with `η = R * (2 * (M / P)) / (P * κ)`, follows from the
-plain product inequality `6 * R * M < P^2 * κ` when the denominator is positive. -/
+plain product inequality `6 * R * M < P^(2 : ℕ) * κ` when the denominator is positive. -/
 theorem slope_budget_of_cross_mul {R M P κ : ℝ} (hP : 0 < P) (hκ : 0 < κ)
     (hcross : 6 * R * M < P ^ 2 * κ) :
     R * (2 * (M / P)) / (P * κ)
@@ -491,7 +491,7 @@ theorem slope_budget_of_cross_mul {R M P κ : ℝ} (hP : 0 < P) (hκ : 0 < κ)
 
 /-- **Center-floor scalar certificate with cross-multiplied slope budget.**  This replaces the
 nested `ηC` slope inequality in `xi_window_pinned_of_center_floor_canonical_kappa` by the product
-inequality `6 * R * M_G < P^2 * κ`, with `κ` fixed to the canonical minimum-modulus derivative
+inequality `6 * R * M_G < P^(2 : ℕ) * κ`, with `κ` fixed to the canonical minimum-modulus derivative
 floor. -/
 theorem xi_window_pinned_of_center_floor_cross_slope
     {N M : ℕ} (hM : 1 ≤ M) {ε₁ δ : ℝ} (hεδ : 0 ≤ ε₁ + δ)
@@ -536,7 +536,7 @@ theorem xi_window_pinned_of_center_floor_cross_slope
     hengine ha₀ ha₀0 hMG hηC hE hclose hfl
 
 /-- **RH gate with cross-multiplied canonical slope budgets.**  Each window now proves the slope
-face by the product inequality `6 * R * M_G < P^2 * κ`, where `κ` is the canonical derivative
+face by the product inequality `6 * R * M_G < P^(2 : ℕ) * κ`, where `κ` is the canonical derivative
 floor from the same center anchor and carrier sup. -/
 theorem riemannHypothesis_of_center_floor_cross_slope_windows
     (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →

@@ -33,7 +33,7 @@ theorem rescale_compact {phi : ℂ → ℝ} (hc : HasCompactSupport phi) (c : �
 
 /-- The actual real planar Laplacian scales by the inverse squared radius. -/
 theorem rescale_laplacian {phi : ℂ → ℝ} (hp : ContDiff ℝ 2 phi) (c : ℂ) (r : ℝ) (z : ℂ) :
-    realLaplacian (rescale phi c r) z = r⁻¹ ^ 2 * realLaplacian phi (r⁻¹ • (z - c)) := by
+    realLaplacian (rescale phi c r) z = r⁻¹ ^ (2 : ℕ) * realLaplacian phi (r⁻¹ • (z - c)) := by
   let T : ℂ → ℂ := fun w => r⁻¹ • (w - c)
   have hT : ContDiff ℂ 2 T := by
     simpa only [T, Complex.real_smul] using
@@ -53,7 +53,7 @@ theorem rescale_laplacian {phi : ℂ → ℝ} (hp : ContDiff ℝ 2 phi) (c : ℂ
 
 /-- In real dimension two, chart rescaling multiplies every test integral by r². -/
 theorem integral_rescale (phi : ℂ → ℝ) (c : ℂ) (r : ℝ) :
-    (∫ z, rescale phi c r z) = r ^ 2 * ∫ z, phi z := by
+    (∫ z, rescale phi c r z) = r ^ (2 : ℕ) * ∫ z, phi z := by
   unfold rescale
   rw [integral_sub_right_eq_self (fun z : ℂ => phi (r⁻¹ • z)) c,
     Measure.integral_comp_inv_smul volume phi r, Complex.finrank_real_complex]
@@ -65,7 +65,7 @@ theorem integral_norm_rescale_laplacian {phi : ℂ → ℝ} (hp : ContDiff ℝ 2
     (∫ z, ‖realLaplacian (rescale phi c r) z‖) = ∫ z, ‖realLaplacian phi z‖ := by
   simp_rw [rescale_laplacian hp, norm_mul, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg r⁻¹)]
   rw [integral_const_mul]
-  change r⁻¹ ^ 2 * (∫ z, rescale (fun w => |realLaplacian phi w|) c r z) = _
+  change r⁻¹ ^ (2 : ℕ) * (∫ z, rescale (fun w => |realLaplacian phi w|) c r z) = _
   rw [integral_rescale]
   field_simp
 
@@ -120,7 +120,7 @@ theorem cutoff_support_upper (c : ℂ) {r : ℝ} (hr : 0 < r) (hcr : 2 * r < c.i
 
 /-- Shrinking planar cutoffs have exactly quadratic L¹ mass. -/
 theorem integral_norm_cutoff (c : ℂ) (r : ℝ) :
-    (∫ z, ‖cutoff c r z‖) = r ^ 2 * ∫ z, ‖unitCutoff z‖ :=
+    (∫ z, ‖cutoff c r z‖) = r ^ (2 : ℕ) * ∫ z, ‖unitCutoff z‖ :=
   integral_rescale (fun z => ‖unitCutoff z‖) c r
 
 /-- Shrinking planar cutoff Laplacians have fixed L¹ mass. -/

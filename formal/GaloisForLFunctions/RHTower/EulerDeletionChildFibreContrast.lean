@@ -918,13 +918,13 @@ theorem two_mul_historyLayer_parent_child_energy_eq_pairwise
     2 * cellMeasure.real (historyFibre l u) *
         (∑ b ∈ range (clock (l + 1) / clock l),
           cellMeasure.real (historyFibre (l + 1) (u + b * clock l)) *
-            (historyLayer l (predictableDrift N)) (u + b * clock l) ^ 2) =
+            (historyLayer l (predictableDrift N)) (u + b * clock l) ^ (2 : ℕ)) =
       ∑ b ∈ range (clock (l + 1) / clock l),
         ∑ c ∈ range (clock (l + 1) / clock l),
           cellMeasure.real (historyFibre (l + 1) (u + b * clock l)) *
             cellMeasure.real (historyFibre (l + 1) (u + c * clock l)) *
             ((historyLayer l (predictableDrift N)) (u + b * clock l) -
-              (historyLayer l (predictableDrift N)) (u + c * clock l)) ^ 2 := by
+              (historyLayer l (predictableDrift N)) (u + c * clock l)) ^ (2 : ℕ) := by
   let q := clock (l + 1) / clock l
   let w : ℕ → ℝ := fun b => cellMeasure.real (historyFibre (l + 1) (u + b * clock l))
   let value : ℕ → ℝ := fun b => (historyLayer l (predictableDrift N)) (u + b * clock l)
@@ -1004,7 +1004,7 @@ theorem two_mul_historyLayer_parent_child_energy_eq_sourceCofactor_pairwise
     2 * cellMeasure.real (historyFibre l u) *
         (∑ b ∈ range (clock (l + 1) / clock l),
           cellMeasure.real (historyFibre (l + 1) (u + b * clock l)) *
-            (historyLayer l (predictableDrift N)) (u + b * clock l) ^ 2) =
+            (historyLayer l (predictableDrift N)) (u + b * clock l) ^ (2 : ℕ)) =
       ∑ b ∈ range (clock (l + 1) / clock l),
         ∑ c ∈ range (clock (l + 1) / clock l),
           cellMeasure.real (historyFibre (l + 1) (u + b * clock l)) *
@@ -1013,7 +1013,7 @@ theorem two_mul_historyLayer_parent_child_energy_eq_sourceCofactor_pairwise
                 cellMeasure.real (historyFibre (l + 1) (u + b * clock l)) -
               (∫ x in (0 : ℝ)..1, childSourceCofactorBlock N l u c x) /
                 cellMeasure.real (historyFibre (l + 1) (u + c * clock l))) -
-              (signedInnovation l (u + b * clock l) - signedInnovation l (u + c * clock l))) ^ 2 := by
+              (signedInnovation l (u + b * clock l) - signedInnovation l (u + c * clock l))) ^ (2 : ℕ) := by
   rw [two_mul_historyLayer_parent_child_energy_eq_pairwise l N u hu]
   apply Finset.sum_congr rfl
   intro b hb
@@ -1032,7 +1032,7 @@ theorem two_mul_terminal_historyLayer_parent_child_energy_eq_tail_pairwise (n : 
     2 * cellMeasure.real (historyFibre n (clock n - 1)) *
         (∑ b ∈ range (clock (n + 1) / clock n),
           cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) *
-            (historyLayer n (predictableDrift (n + 1)) (clock n - 1 + b * clock n)) ^ 2) =
+            (historyLayer n (predictableDrift (n + 1)) (clock n - 1 + b * clock n)) ^ (2 : ℕ)) =
       ∑ b ∈ range (clock (n + 1) / clock n),
         ∑ c ∈ range (clock (n + 1) / clock n),
           cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) *
@@ -1042,7 +1042,7 @@ theorem two_mul_terminal_historyLayer_parent_child_energy_eq_tail_pairwise (n : 
               (∫ x in (0 : ℝ)..1, terminalChildTailKernel n c x) /
                 cellMeasure.real (historyFibre (n + 1) (clock n - 1 + c * clock n))) -
               (signedInnovation n (clock n - 1 + b * clock n) -
-                signedInnovation n (clock n - 1 + c * clock n))) ^ 2 := by
+                signedInnovation n (clock n - 1 + c * clock n))) ^ (2 : ℕ) := by
   have hu : clock n - 1 < clock n := by
     have hpos : 0 < clock n := clock_pos n
     omega
@@ -1121,7 +1121,7 @@ theorem two_mul_terminal_historyLayer_parent_child_energy_eq_physicalCell_pairwi
     2 * cellMeasure.real (historyFibre n (clock n - 1)) *
         (∑ b ∈ range (clock (n + 1) / clock n),
           cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) *
-            (historyLayer n (predictableDrift (n + 1)) (clock n - 1 + b * clock n)) ^ 2) =
+            (historyLayer n (predictableDrift (n + 1)) (clock n - 1 + b * clock n)) ^ (2 : ℕ)) =
       ∑ b ∈ range (clock (n + 1) / clock n),
         ∑ c ∈ range (clock (n + 1) / clock n),
           cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) *
@@ -1133,7 +1133,7 @@ theorem two_mul_terminal_historyLayer_parent_child_energy_eq_physicalCell_pairwi
                   (clock n * (c + 1)) * terminalChildTailWeight n c) /
                 cellMeasure.real (historyFibre (n + 1) (clock n - 1 + c * clock n))) -
               (signedInnovation n (clock n - 1 + b * clock n) -
-                signedInnovation n (clock n - 1 + c * clock n))) ^ 2 := by
+                signedInnovation n (clock n - 1 + c * clock n))) ^ (2 : ℕ) := by
   rw [two_mul_terminal_historyLayer_parent_child_energy_eq_tail_pairwise]
   apply Finset.sum_congr rfl
   intro b hb
@@ -1148,7 +1148,7 @@ theorem two_mul_terminal_historyLayer_parent_child_energy_eq_weighted_tail_pairw
     2 * cellMeasure.real (historyFibre n (clock n - 1)) *
         (∑ b ∈ range (clock (n + 1) / clock n),
           cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) *
-            (historyLayer n (predictableDrift (n + 1)) (clock n - 1 + b * clock n)) ^ 2) =
+            (historyLayer n (predictableDrift (n + 1)) (clock n - 1 + b * clock n)) ^ (2 : ℕ)) =
       ∑ b ∈ range (clock (n + 1) / clock n),
         ∑ c ∈ range (clock (n + 1) / clock n),
           cellMeasure.real (historyFibre (n + 1) (clock n - 1 + b * clock n)) *
@@ -1160,7 +1160,7 @@ theorem two_mul_terminal_historyLayer_parent_child_energy_eq_weighted_tail_pairw
                 terminalChildWindowDeviation n (c + s)) * terminalChildTailWeight n c) /
                 cellMeasure.real (historyFibre (n + 1) (clock n - 1 + c * clock n))) -
               (signedInnovation n (clock n - 1 + b * clock n) -
-                signedInnovation n (clock n - 1 + c * clock n))) ^ 2 := by
+                signedInnovation n (clock n - 1 + c * clock n))) ^ (2 : ℕ) := by
   rw [two_mul_terminal_historyLayer_parent_child_energy_eq_tail_pairwise]
   apply Finset.sum_congr rfl
   intro b hb

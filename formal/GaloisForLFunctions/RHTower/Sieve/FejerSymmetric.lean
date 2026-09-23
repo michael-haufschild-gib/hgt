@@ -34,7 +34,7 @@ theorem integral_fejer_symm (L : ℝ) (hL : L ≠ 0) {T : ℝ} (hT : 0 < T) :
     (∫ t in (0 : ℝ)..T, ((1 - t / T : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I))
       + (∫ t in (0 : ℝ)..T,
           ((1 - t / T : ℝ) : ℂ) * Complex.exp (((t * (-L) : ℝ) : ℂ) * Complex.I))
-      = (2 - 2 * Complex.cos (((T * L : ℝ)) : ℂ)) / ((T : ℂ) * (L : ℂ) ^ 2) := by
+      = (2 - 2 * Complex.cos (((T * L : ℝ)) : ℂ)) / ((T : ℂ) * (L : ℂ) ^ (2 : ℕ)) := by
   have hLne : (-L) ≠ 0 := neg_ne_zero.mpr hL
   have hL' : (L : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hL
   have hT' : (T : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hT)

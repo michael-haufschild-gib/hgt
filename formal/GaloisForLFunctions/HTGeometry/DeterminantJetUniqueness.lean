@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-theorem infinite_ball_complex {r : ℝ} (hr : 0 < r) : (ball (0 : ℂ) r).Infinite := by
+theorem infinite_ball_complex_determinantJetUniqueness {r : ℝ} (hr : 0 < r) : (ball (0 : ℂ) r).Infinite := by
   refine Set.infinite_of_injective_forall_mem
     (f := fun n : ℕ => ((r / ((n : ℝ) + 2) : ℝ) : ℂ)) ?_ ?_
   · intro i j hij
@@ -67,7 +67,7 @@ theorem eq_of_exp_eval_eq_on_ball {Q Q' : Polynomial ℂ}
     · exact absurd hc (Complex.exp_ne_zero _)
     · exact hc
   have hroots : {x : ℂ | (Polynomial.derivative g).IsRoot x}.Infinite := by
-    refine Set.Infinite.mono ?_ (infinite_ball_complex hr)
+    refine Set.Infinite.mono ?_ (infinite_ball_complex_determinantJetUniqueness hr)
     intro z hz
     exact hderiv z hz
   have hdg : Polynomial.derivative g = 0 :=

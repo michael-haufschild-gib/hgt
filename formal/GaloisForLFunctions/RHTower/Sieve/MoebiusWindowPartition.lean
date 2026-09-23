@@ -51,16 +51,16 @@ theorem integral_Icc_normSq_logPoly_moebius_le_partition (M : ℕ) {W w₀ : ℝ
     {T : Set ℝ} (hTm : MeasurableSet T) (hTs : T ⊆ Set.Icc (-W) W)
     {Bdisc Bsmall Blarge : ℝ}
     (hdisc : (∫ w in Set.Icc (-w₀) w₀,
-        ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2) ≤ Bdisc)
+        ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)) ≤ Bdisc)
     (hsmall : (∫ w in annulusSmall T w₀,
-        ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2) ≤ Bsmall)
+        ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)) ≤ Bsmall)
     (hlarge : (∫ w in annulusLarge T W w₀,
-        ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2) ≤ Blarge) :
+        ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)) ≤ Blarge) :
     (∫ w in Set.Icc (-W) W,
-        ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
+        ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
       ≤ Bdisc + Bsmall + Blarge := by
   have hcont : Continuous fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 :=
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly _ _).norm).pow 2
   rw [setIntegral_split_three hcont hwW hTm hTs]
   exact add_le_add (add_le_add hdisc hsmall) hlarge

@@ -31,24 +31,24 @@ def residueWeightedConjugatePairTransversePickBlock
 /-- A residue weight `m` contributes quadratically to the normalized determinant. -/
 theorem residueWeightedConjugatePairTransversePickBlock_renormalized_det
     (m : ℝ) (t : ℂ) (ht : t.im ≠ 0) :
-    t.im ^ 4 *
+    t.im ^ (4 : ℕ) *
         (residueWeightedConjugatePairTransversePickBlock m t).det.re =
-      (-16 / 9) * m ^ 2 := by
+      (-16 / 9) * m ^ (2 : ℕ) := by
   rw [residueWeightedConjugatePairTransversePickBlock, Matrix.det_smul]
   simp only [Fintype.card_fin]
   have hbase := conjugatePairTransversePickBlock_renormalized_det t ht
   calc
-    t.im ^ 4 *
-        (((m : ℂ) ^ 2 * (conjugatePairTransversePickBlock t).det).re) =
-        m ^ 2 * (t.im ^ 4 * (conjugatePairTransversePickBlock t).det.re) := by
-      have hmre : ((m : ℂ) ^ 2).re = m ^ 2 := by
+    t.im ^ (4 : ℕ) *
+        (((m : ℂ) ^ (2 : ℕ) * (conjugatePairTransversePickBlock t).det).re) =
+        m ^ (2 : ℕ) * (t.im ^ (4 : ℕ) * (conjugatePairTransversePickBlock t).det.re) := by
+      have hmre : ((m : ℂ) ^ (2 : ℕ)).re = m ^ (2 : ℕ) := by
         norm_num [pow_two, Complex.mul_re]
-      have hmim : ((m : ℂ) ^ 2).im = 0 := by
+      have hmim : ((m : ℂ) ^ (2 : ℕ)).im = 0 := by
         norm_num [pow_two, Complex.mul_im]
       rw [Complex.mul_re, hmre, hmim]
       ring
-    _ = m ^ 2 * (-16 / 9) := by rw [hbase]
-    _ = (-16 / 9) * m ^ 2 := by ring
+    _ = m ^ (2 : ℕ) * (-16 / 9) := by rw [hbase]
+    _ = (-16 / 9) * m ^ (2 : ℕ) := by ring
 
 /-- Conjugate-pair pole in the centered spectral coordinate of a proposed divisor point. -/
 def xiFirstTraceKreinPole (rho : ℂ) : ℂ :=
@@ -77,10 +77,10 @@ def xiFirstTraceAnomalyKreinPickBlock
 /-- The source anomaly multiplicity is the complete local normalized determinant charge. -/
 theorem xiFirstTraceAnomalyKreinPickBlock_renormalized_det
     (rho : ℂ) (hright : 1 / 2 < rho.re) :
-    (rho.re - 1 / 2) ^ 4 *
+    (rho.re - 1 / 2) ^ (4 : ℕ) *
         (xiFirstTraceAnomalyKreinPickBlock rho).det.re =
       (-16 / 9) *
-        (hedenmalmSquarefreeFirstTraceAnomalyMultiplicity rho : ℝ) ^ 2 := by
+        (hedenmalmSquarefreeFirstTraceAnomalyMultiplicity rho : ℝ) ^ (2 : ℕ) := by
   have ht : (xiFirstTraceKreinPole rho).im ≠ 0 := by
     rw [xiFirstTraceKreinPole_im]
     linarith
@@ -93,7 +93,7 @@ theorem xiFirstTraceAnomalyKreinPickBlock_renormalized_det
 residue-square anomaly, with universal ratio `4/9`. -/
 theorem xiFirstTraceAnomalyKreinPickBlock_eq_completedAperture
     (rho : XiDivisorSupport) (hright : 1 / 2 < (rho : ℂ).re) :
-    ((rho : ℂ).re - 1 / 2) ^ 4 *
+    ((rho : ℂ).re - 1 / 2) ^ (4 : ℕ) *
         (xiFirstTraceAnomalyKreinPickBlock (rho : ℂ)).det.re =
       (4 / 9) * xiCompletedApertureRegularizedResonantTwoPointDet rho 0 := by
   rw [xiFirstTraceAnomalyKreinPickBlock_renormalized_det (rho : ℂ) hright,
@@ -119,7 +119,7 @@ theorem xiFirstTraceAnomalyKreinPickBlock_eq_actualXiBlock
 local determinant `-16m²/9` into the two-oriented charge `2m²`. -/
 def hedenmalmSquarefreeFirstTraceKreinDeterminantCharge (T : ℝ) : ℝ :=
   ∑ rho ∈ (hedenmalmSquarefreeFirstTraceRightSourceZeros_finite T).toFinset,
-    (-9 / 8) * ((rho.re - 1 / 2) ^ 4 *
+    (-9 / 8) * ((rho.re - 1 / 2) ^ (4 : ℕ) *
       (xiFirstTraceAnomalyKreinPickBlock rho).det.re)
 
 /-- Finite source anomaly reflection charge is exactly its normalized transverse determinant

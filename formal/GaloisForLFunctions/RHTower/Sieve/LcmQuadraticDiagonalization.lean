@@ -44,7 +44,7 @@ theorem div_lcm_eq_sum_totient (a : ℕ → ℝ) {m n : ℕ} (hm : 0 < m) (hn : 
 theorem sum_div_lcm_eq_totient_diagonal (S : Finset ℕ) (hS : ∀ m ∈ S, 0 < m) (a : ℕ → ℝ) :
     ∑ p ∈ S ×ˢ S, a p.1 * a p.2 / (Nat.lcm p.1 p.2 : ℝ)
       = ∑ e ∈ S.biUnion Nat.divisors, (Nat.totient e : ℝ) *
-          (∑ m ∈ S.filter (fun m => e ∣ m), a m / (m : ℝ)) ^ 2 := by
+          (∑ m ∈ S.filter (fun m => e ∣ m), a m / (m : ℝ)) ^ (2 : ℕ) := by
   classical
   have hexp : ∀ p ∈ S ×ˢ S, a p.1 * a p.2 / (Nat.lcm p.1 p.2 : ℝ)
       = ∑ e ∈ (Nat.gcd p.1 p.2).divisors,

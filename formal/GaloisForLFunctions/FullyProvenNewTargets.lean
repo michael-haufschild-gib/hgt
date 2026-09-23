@@ -704,16 +704,16 @@ alias q62_hdisc_uniform_two_zfixing_deck_towers_formal_proof := Bottcher.exterio
 alias q62_hdisc_full_zfixing_monoFG_steps_formal_proof := Bottcher.exteriorAnnulus_loop_and_full_zfixing_monoFG_steps
 
 /-- Conditional deep-data reduction for the q62 disconnected lane. -/
-alias q62_hdisc_deep_data_escape_support := Bottcher.q62_disconnected_of_deepData_escape
+alias q62_hdisc_deep_data_escape := Bottcher.q62_disconnected_of_deepData_escape
 
 /-- Conditional image-winding deep-data reduction for the q62 disconnected lane. -/
-alias q62_hdisc_image_winding_deep_data_escape_support := Bottcher.q62_disconnected_of_imageWindingDeepData_escape
+alias q62_hdisc_image_winding_deep_data_escape := Bottcher.q62_disconnected_of_imageWindingDeepData_escape
 
 /-- Conditional additive loop/deck reduction for the q62 disconnected lane. -/
-alias q62_hdisc_additive_loop_deck_support := Bottcher.q62_independence_disconnected_of_dyadic_additive_loop_and_two_zfixing_decks
+alias q62_hdisc_additive_loop_deck := Bottcher.q62_independence_disconnected_of_dyadic_additive_loop_and_two_zfixing_decks
 
 /-- Conditional vertical-strip loop/deck reduction for the q62 disconnected lane. -/
-alias q62_hdisc_vertical_strip_loop_deck_support := Bottcher.q62_independence_disconnected_of_dyadic_verticalStrip_loop_and_two_zfixing_decks
+alias q62_hdisc_vertical_strip_loop_deck := Bottcher.q62_independence_disconnected_of_dyadic_verticalStrip_loop_and_two_zfixing_decks
 
 /-! ## q62 connected / hRigid branch surfaces -/
 

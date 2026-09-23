@@ -27,7 +27,7 @@ theorem exists_hall_injection_lifted_markers {X H M₀ Q z Y K : ℕ} {S : Finse
         ((((bigPrimeSet M₀ (Q * M₀)).filter
           (fun p => p + d ∈ bigPrimeSet M₀ (Q * M₀))).card : ℕ) : ℝ) ≤ Pi)
     (hthr : ((S.card : ℕ) : ℝ) * ((((bigPrimeSet M₀ (Q * M₀)).card : ℕ) : ℝ) + 2 * Pi)
-      ≤ ((((bigPrimeSet M₀ (Q * M₀)).card : ℕ) : ℝ)) ^ 2 / 4)
+      ≤ ((((bigPrimeSet M₀ (Q * M₀)).card : ℕ) : ℝ)) ^ (2 : ℕ) / 4)
     (hCsub : ∀ p, C p ⊆ windowCell X H p)
     (hc : ∀ p ∈ (bigPrimeSet M₀ (Q * M₀)).filter (fun p => X / p ∉ S),
       c ≤ (((C p).card : ℕ) : ℝ))

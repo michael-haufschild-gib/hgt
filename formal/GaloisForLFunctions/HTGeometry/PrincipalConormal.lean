@@ -4,7 +4,7 @@ import Mathlib
 # The conormal module of a principal ideal
 
 For a nonzero `g` in an integral domain `R`, multiplication by `g` identifies `R / (g)` with the
-conormal module `(g) / (g)^2`.  This is the algebraic content of "the conormal module of a
+conormal module `(g) / (g)^(2 : ℕ)`.  This is the algebraic content of "the conormal module of a
 principal divisor is the free rank-one module over the structure sheaf of the divisor".
 
 * `principalCotangentEquiv` — the `R`-linear equivalence.
@@ -53,7 +53,7 @@ theorem ker_toPrincipalCotangent {g : R} (hg : ∀ a b : R, g * a = g * b → a 
     exact ⟨c, by rw [hc]; ring⟩
 
 /-- **The conormal module of a principal ideal.**  Multiplication by a cancellable `g` identifies
-`R / (g)` with `(g) / (g)^2`. -/
+`R / (g)` with `(g) / (g)^(2 : ℕ)`. -/
 def principalCotangentEquiv {g : R} (hg : ∀ a b : R, g * a = g * b → a = b) :
     (R ⧸ Ideal.span ({g} : Set R)) ≃ₗ[R] (Ideal.span ({g} : Set R)).Cotangent :=
   (Submodule.quotEquivOfEq _ _ (ker_toPrincipalCotangent hg).symm).trans

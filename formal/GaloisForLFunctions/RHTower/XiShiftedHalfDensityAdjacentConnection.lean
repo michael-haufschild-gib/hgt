@@ -480,7 +480,7 @@ theorem coeff_finitePolynomialVelocity_xiShiftedCanonicalAdmission_prev_eq_jacob
       (xiShiftedCanonicalAdmissionVelocity y n)).coeff (n - 1) =
       (∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoAlpha
-          (fun k => (xiShiftedReciprocalMoment y k).re) j ^ 2) +
+          (fun k => (xiShiftedReciprocalMoment y k).re) j ^ (2 : ℕ)) +
         2 * (∑ j ∈ Finset.range n,
           HTGeometry.monicOrthoBeta
             (fun k => (xiShiftedReciprocalMoment y k).re) j) +
@@ -504,7 +504,7 @@ theorem coeff_finitePolynomialVelocity_xiShiftedCanonicalAdmission_prev_pos
       (xiShiftedCanonicalAdmissionVelocity y n)).coeff (n - 1) := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
-  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2 :=
+  have hsquares : 0 ≤ ∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hbetas : 0 ≤ ∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j := by
     apply Finset.sum_nonneg
@@ -519,7 +519,7 @@ theorem coeff_finitePolynomialVelocity_xiShiftedCanonicalAdmission_prev_pos
       (HTGeometry.monicOrthoBeta_pos_below hbelow hn (by omega))
   rw [coeff_finitePolynomialVelocity_xiShiftedCanonicalAdmission_prev_eq_jacobiEnergy
     hy hn hH]
-  change 0 < (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+  change 0 < (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
     2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
     2 * (n : ℝ) * HTGeometry.monicOrthoBeta s n
   positivity
@@ -542,7 +542,7 @@ theorem xiShiftedCanonicalAdmissionHalfDensityDissipationReserve_eq_terminalJaco
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     xiShiftedCanonicalAdmissionHalfDensityDissipationReserve y n =
       (n + 1 : ℝ) * HTGeometry.monicOrthoAlpha
-          (fun k => (xiShiftedReciprocalMoment y k).re) n ^ 2 +
+          (fun k => (xiShiftedReciprocalMoment y k).re) n ^ (2 : ℕ) +
         HTGeometry.monicOrthoAlpha
             (fun k => (xiShiftedReciprocalMoment y k).re) n *
           (∑ j ∈ Finset.range n,
@@ -556,14 +556,14 @@ theorem xiShiftedCanonicalAdmissionHalfDensityDissipationReserve_eq_terminalJaco
   let alpha := HTGeometry.monicOrthoAlpha s n
   have hsquares :
       (∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2) =
-        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ)) =
+        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
           alpha * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-          (n : ℝ) * alpha ^ 2 / 4 := by
+          (n : ℝ) * alpha ^ (2 : ℕ) / 4 := by
     have hpoint (j : ℕ) :
-        (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2 =
-          HTGeometry.monicOrthoAlpha s j ^ 2 +
-            alpha * HTGeometry.monicOrthoAlpha s j + alpha ^ 2 / 4 := by ring
+        (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ) =
+          HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) +
+            alpha * HTGeometry.monicOrthoAlpha s j + alpha ^ (2 : ℕ) / 4 := by ring
     simp_rw [hpoint]
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
     simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -574,12 +574,12 @@ theorem xiShiftedCanonicalAdmissionHalfDensityDissipationReserve_eq_terminalJaco
     xiShiftedAdaptiveMonicHalfDensityLandingEnergy]
   change
       ((∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2) +
-        (3 * (n : ℝ) / 4 + 1) * alpha ^ 2 +
+          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ)) +
+        (3 * (n : ℝ) / 4 + 1) * alpha ^ (2 : ℕ) +
         2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
         (n + 1 : ℝ) *
           (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1))) -
-      ((∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+      ((∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
         2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
         ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoBeta s n) -
       ((n : ℝ) - 1 / 2) * HTGeometry.monicOrthoBeta s n = _
@@ -597,7 +597,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionAlpha_eq_adjacentJacobiFlow
         2 * ((n : ℝ) + 1) * HTGeometry.monicOrthoBeta
           (fun k => (xiShiftedReciprocalMoment y k).re) (n + 1) -
         HTGeometry.monicOrthoAlpha
-          (fun k => (xiShiftedReciprocalMoment y k).re) n ^ 2) y := by
+          (fun k => (xiShiftedReciprocalMoment y k).re) n ^ (2 : ℕ)) y := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let alpha := HTGeometry.monicOrthoAlpha s n
   let Vcoeff := (finitePolynomialVelocity
@@ -619,14 +619,14 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionAlpha_eq_adjacentJacobiFlow
     (by omega : n ≤ n + 2)
   have hsquares :
       (∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2) =
-        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ)) =
+        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
           alpha * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-          (n : ℝ) * alpha ^ 2 / 4 := by
+          (n : ℝ) * alpha ^ (2 : ℕ) / 4 := by
     have hpoint (j : ℕ) :
-        (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2 =
-          HTGeometry.monicOrthoAlpha s j ^ 2 +
-            alpha * HTGeometry.monicOrthoAlpha s j + alpha ^ 2 / 4 := by ring
+        (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ) =
+          HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) +
+            alpha * HTGeometry.monicOrthoAlpha s j + alpha ^ (2 : ℕ) / 4 := by ring
     simp_rw [hpoint]
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
     simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -647,12 +647,12 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionAlpha_eq_adjacentJacobiFlow
 /-- Terminal diagonal growth relative to the cumulative current and forced quadratic drift. -/
 def xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (y : ℝ) (n : ℕ) : ℝ :=
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
-  2 * (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ 2 +
+  2 * (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
     HTGeometry.monicOrthoAlpha s n *
       xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n -
     (2 * ((n : ℝ) - 1) * HTGeometry.monicOrthoBeta s n -
       2 * ((n : ℝ) + 1) * HTGeometry.monicOrthoBeta s (n + 1) -
-      HTGeometry.monicOrthoAlpha s n ^ 2)
+      HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ))
 
 /-- The reserve is exactly half the terminal diagonal Riccati defect. -/
 theorem two_mul_xiShiftedCanonicalAdmissionHalfDensityDissipationReserve_eq_terminalRiccatiDefect

@@ -135,10 +135,10 @@ theorem sum_sqMultCount_Icc (P : Finset ℕ) (M : ℕ) :
 
 /-- **The energy of the square-multiple polynomial.** -/
 theorem sum_energy_sqMultCoeff_le (P : Finset ℕ) (M : ℕ) :
-    ∑ n ∈ Finset.Icc 1 M, ‖sqMultCoeff P n‖ ^ 2
+    ∑ n ∈ Finset.Icc 1 M, ‖sqMultCoeff P n‖ ^ (2 : ℕ)
       ≤ ∑ p ∈ P, (M : ℝ) / ((p : ℝ) * (p : ℝ)) := by
   classical
-  have hterm : ∀ n ∈ Finset.Icc 1 M, ‖sqMultCoeff P n‖ ^ 2 ≤ (sqMultCount P n : ℝ) := by
+  have hterm : ∀ n ∈ Finset.Icc 1 M, ‖sqMultCoeff P n‖ ^ (2 : ℕ) ≤ (sqMultCount P n : ℝ) := by
     intro n _
     have h1 := norm_sqMultCoeff_le P n
     have h2 := norm_sqMultCoeff_le_one P n
@@ -153,7 +153,7 @@ theorem sum_energy_sqMultCoeff_le (P : Finset ℕ) (M : ℕ) :
 
 /-- **The mean square of the square-multiple polynomial.** -/
 theorem integral_Icc_normSq_sqMultPoly_le (P : Finset ℕ) (M : ℕ) {W : ℝ} (hW : 1 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
           * (∑ p ∈ P, (M : ℝ) / ((p : ℝ) * (p : ℝ))) := by
   classical
@@ -283,13 +283,13 @@ theorem logPoly_moebius_eq_ramare_add_rough {P : Finset ℕ}
 
 /-- A weighted triangle inequality for squared norms: the main term keeps a factor `1 + δ`. -/
 theorem normSq_add_le_weighted (a u : ℂ) {δ : ℝ} (hδ : 0 < δ) :
-    ‖a + u‖ ^ 2 ≤ (1 + δ) * ‖a‖ ^ 2 + (1 + 1 / δ) * ‖u‖ ^ 2 := by
-  have h2 : ‖a + u‖ ^ 2 ≤ (‖a‖ + ‖u‖) ^ 2 :=
+    ‖a + u‖ ^ (2 : ℕ) ≤ (1 + δ) * ‖a‖ ^ (2 : ℕ) + (1 + 1 / δ) * ‖u‖ ^ (2 : ℕ) := by
+  have h2 : ‖a + u‖ ^ (2 : ℕ) ≤ (‖a‖ + ‖u‖) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) (norm_add_le a u) 2
-  have h3 : 2 * ‖a‖ * ‖u‖ ≤ δ * ‖a‖ ^ 2 + (1 / δ) * ‖u‖ ^ 2 := by
+  have h3 : 2 * ‖a‖ * ‖u‖ ≤ δ * ‖a‖ ^ (2 : ℕ) + (1 / δ) * ‖u‖ ^ (2 : ℕ) := by
     rw [← sub_nonneg]
-    have hid : δ * ‖a‖ ^ 2 + (1 / δ) * ‖u‖ ^ 2 - 2 * ‖a‖ * ‖u‖
-        = (1 / δ) * (δ * ‖a‖ - ‖u‖) ^ 2 := by
+    have hid : δ * ‖a‖ ^ (2 : ℕ) + (1 / δ) * ‖u‖ ^ (2 : ℕ) - 2 * ‖a‖ * ‖u‖
+        = (1 / δ) * (δ * ‖a‖ - ‖u‖) ^ (2 : ℕ) := by
       field_simp
       ring
     rw [hid]
@@ -299,33 +299,33 @@ theorem normSq_add_le_weighted (a u : ℂ) {δ : ℝ} (hδ : 0 < δ) :
 /-- **The Möbius mean square splits into the bilinear form and two negligible polynomials.** -/
 theorem integral_Icc_normSq_logPoly_moebius_le_decomp {P : Finset ℕ}
     (hPprime : ∀ q ∈ P, q.Prime) (M : ℕ) {W δ : ℝ} (hW : 1 ≤ W) (hδ : 0 < δ) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
-      ≤ (1 + δ) * (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+      ≤ (1 + δ) * (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
         + 2 * (1 + 1 / δ)
-            * ((∫ w in Set.Icc (-W) W, ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2)
+            * ((∫ w in Set.Icc (-W) W, ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
               + (∫ w in Set.Icc (-W) W,
-                  ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)) := by
+                  ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ))) := by
   classical
   have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
   have hcontF : Continuous fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 :=
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly _ _).norm).pow 2
-  have hcontB : Continuous fun w : ℝ => ‖ramareBilinear P M w‖ ^ 2 :=
+  have hcontB : Continuous fun w : ℝ => ‖ramareBilinear P M w‖ ^ (2 : ℕ) :=
     ((continuous_ramareBilinear P M).norm).pow 2
-  have hcontS : Continuous fun w : ℝ => ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2 :=
+  have hcontS : Continuous fun w : ℝ => ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly _ _).norm).pow 2
   have hcontR : Continuous fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2 :=
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly _ _).norm).pow 2
   set F : ℝ → ℝ := fun w =>
-    (1 + δ) * ‖ramareBilinear P M w‖ ^ 2
-      + 2 * (1 + 1 / δ) * (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2
-        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2) with hFdef
+    (1 + δ) * ‖ramareBilinear P M w‖ ^ (2 : ℕ)
+      + 2 * (1 + 1 / δ) * (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
+        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ)) with hFdef
   have hcontMaj : Continuous F := by
     rw [hFdef]
     exact (hcontB.const_mul _).add ((hcontS.add hcontR).const_mul _)
   have hle : ∀ w ∈ Set.Icc (-W) W,
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 ≤ F w := by
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ) ≤ F w := by
     intro w _
     rw [logPoly_moebius_eq_ramare_decomp hPprime M w, hFdef]
     have hgroup : ramareBilinear P M w + logPoly (sqMultCoeff P) (Finset.Icc 1 M) w
@@ -335,9 +335,9 @@ theorem integral_Icc_normSq_logPoly_moebius_le_decomp {P : Finset ℕ}
     rw [hgroup]
     refine le_trans (normSq_add_le_weighted _ _ hδ) ?_
     have hpair : ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w
-          + logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2
-        ≤ 2 * (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2
-            + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2) := by
+          + logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ)
+        ≤ 2 * (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
+            + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ)) := by
       have h1 := pow_le_pow_left₀ (norm_nonneg _)
         (norm_add_le (logPoly (sqMultCoeff P) (Finset.Icc 1 M) w)
           (logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w)) 2
@@ -346,27 +346,27 @@ theorem integral_Icc_normSq_logPoly_moebius_le_decomp {P : Finset ℕ}
     have hc0 : (0 : ℝ) ≤ 1 + 1 / δ := by positivity
     nlinarith [hpair, hc0]
   have hintF : IntegrableOn (fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := hcontF.integrableOn_Icc
   have hintMaj : IntegrableOn F (Set.Icc (-W) W) volume := hcontMaj.integrableOn_Icc
   have hmono := setIntegral_mono_on hintF hintMaj measurableSet_Icc hle
-  have hintB : IntegrableOn (fun w : ℝ => ‖ramareBilinear P M w‖ ^ 2)
+  have hintB : IntegrableOn (fun w : ℝ => ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := hcontB.integrableOn_Icc
-  have hintS : IntegrableOn (fun w : ℝ => ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2)
+  have hintS : IntegrableOn (fun w : ℝ => ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := hcontS.integrableOn_Icc
   have hintR : IntegrableOn (fun w : ℝ =>
-      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2)
+      ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := hcontR.integrableOn_Icc
-  have h1 : IntegrableOn (fun w : ℝ => (1 + δ) * ‖ramareBilinear P M w‖ ^ 2)
+  have h1 : IntegrableOn (fun w : ℝ => (1 + δ) * ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := hintB.const_mul _
   have h2 : IntegrableOn (fun w : ℝ => 2 * (1 + 1 / δ) *
-      (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2
-        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2))
+      (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
+        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ)))
       (Set.Icc (-W) W) volume := (hintS.add hintR).const_mul _
   refine le_trans hmono (le_of_eq ?_)
-  show (∫ w in Set.Icc (-W) W, ((1 + δ) * ‖ramareBilinear P M w‖ ^ 2
-      + 2 * (1 + 1 / δ) * (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2
-        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ 2))) = _
+  show (∫ w in Set.Icc (-W) W, ((1 + δ) * ‖ramareBilinear P M w‖ ^ (2 : ℕ)
+      + 2 * (1 + 1 / δ) * (‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)
+        + ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (supportMeanSquareRoughSet P M) w‖ ^ (2 : ℕ)))) = _
   rw [integral_add h1 h2, integral_const_mul, integral_const_mul, integral_add hintS hintR]
 
 /-- **Everything except the bilinear form is inside the budget.**  With the designated primes
@@ -377,23 +377,23 @@ theorem integral_Icc_normSq_logPoly_moebius_le_bilinear_budget {P : Finset ℕ}
     (hε : 0 < ε) (hε1 : ε ≤ 1) (hPM : (P.card : ℝ) ≤ (M : ℝ))
     (hA : 15 * Real.exp 1 / (2 * ε) ≤ ∑ p ∈ P, (1 : ℝ) / (p : ℝ))
     (hsq : ∑ p ∈ P, (M : ℝ) / ((p : ℝ) * (p : ℝ)) ≤ ε * (M : ℝ)) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
-      ≤ (1 + δ) * (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+      ≤ (1 + δ) * (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
         + 2 * (1 + 1 / δ)
-            * (12 * W * (M : ℝ) + (1 + 5 * Real.exp 1 / 2) * ε * (M : ℝ) ^ 2) := by
+            * (12 * W * (M : ℝ) + (1 + 5 * Real.exp 1 / 2) * ε * (M : ℝ) ^ (2 : ℕ)) := by
   have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
   have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
   have hpi : Real.pi ≤ 4 := Real.pi_le_four
   have hE : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
-  have hsqm : (∫ w in Set.Icc (-W) W, ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ 2)
-      ≤ 10 * W * (M : ℝ) + 5 * Real.exp 1 / 2 * ε * (M : ℝ) ^ 2 := by
+  have hsqm : (∫ w in Set.Icc (-W) W, ‖logPoly (sqMultCoeff P) (Finset.Icc 1 M) w‖ ^ (2 : ℕ))
+      ≤ 10 * W * (M : ℝ) + 5 * Real.exp 1 / 2 * ε * (M : ℝ) ^ (2 : ℕ) := by
     refine le_trans (integral_Icc_normSq_sqMultPoly_le P M hW) ?_
     have hc0 : (0 : ℝ) ≤ 5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ) := by
       have := Real.pi_pos
       positivity
     refine le_trans (mul_le_mul_of_nonneg_left hsq hc0) ?_
     have hexpand : (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (ε * (M : ℝ))
-        = (5 * Real.pi / 2 * ε) * (W * (M : ℝ)) + 5 * Real.exp 1 / 2 * ε * (M : ℝ) ^ 2 := by
+        = (5 * Real.pi / 2 * ε) * (W * (M : ℝ)) + 5 * Real.exp 1 / 2 * ε * (M : ℝ) ^ (2 : ℕ) := by
       ring
     rw [hexpand]
     have hkey : 5 * Real.pi / 2 * ε ≤ 10 := by

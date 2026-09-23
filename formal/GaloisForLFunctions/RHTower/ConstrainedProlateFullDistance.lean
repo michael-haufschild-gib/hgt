@@ -58,7 +58,7 @@ variable {D L : ℝ → ℕ → ℝ} {M : ℝ → ℝ}
 
 /-- The squared norm of an `ℓ²` vector is the sum of its squared coordinates. -/
 theorem lp_norm_sq_eq_tsum (f : lp (fun _ : ℕ => ℝ) 2) :
-    ‖f‖ ^ 2 = ∑' j : ℕ, (f : ℕ → ℝ) j ^ 2 := by
+    ‖f‖ ^ (2 : ℕ) = ∑' j : ℕ, (f : ℕ → ℝ) j ^ (2 : ℕ) := by
   rw [← real_inner_self_eq_norm_sq, lp_inner_eq_tsum_mul]
   exact tsum_congr fun j => (sq _).symm
 
@@ -76,9 +76,9 @@ theorem lp_inner_twoModeSeed (V G : lp (fun _ : ℕ => ℝ) 2) {ℓ : ℕ → �
 /-- The squared norm of the seed. -/
 theorem lp_norm_sq_twoModeSeed (G : lp (fun _ : ℕ => ℝ) 2) {ℓ : ℕ → ℝ}
     (hG : (G : ℕ → ℝ) = twoModeSeedFun ℓ) :
-    ‖G‖ ^ 2 = ℓ 0 ^ 2 + ℓ 1 ^ 2 := by
+    ‖G‖ ^ (2 : ℕ) = ℓ 0 ^ (2 : ℕ) + ℓ 1 ^ (2 : ℕ) := by
   rw [lp_norm_sq_eq_tsum]
-  rw [tsum_of_support_le_two (f := fun j => (G : ℕ → ℝ) j ^ 2) ?_]
+  rw [tsum_of_support_le_two (f := fun j => (G : ℕ → ℝ) j ^ (2 : ℕ)) ?_]
   · rw [hG, twoModeSeedFun_zero, twoModeSeedFun_one]
     ring
   · intro j hj
@@ -108,8 +108,8 @@ theorem tendsto_ratio_one_of_tendsto_zero {T Hd : ℝ → ℝ}
 /-- The squared norm of the full eigenvector splits into head and tail mass. -/
 theorem lp_norm_sq_split (V : lp (fun _ : ℕ => ℝ) 2) {d ℓ : ℕ → ℝ} {μ : ℝ}
     (hV : (V : ℕ → ℝ) = secularVector d ℓ μ)
-    (hsum : Summable fun j => secularVector d ℓ μ j ^ 2) :
-    ‖V‖ ^ 2 = ‖secularHead d ℓ μ‖ ^ 2 + ∑' j : ℕ, secularVector d ℓ μ (j + 2) ^ 2 := by
+    (hsum : Summable fun j => secularVector d ℓ μ j ^ (2 : ℕ)) :
+    ‖V‖ ^ (2 : ℕ) = ‖secularHead d ℓ μ‖ ^ (2 : ℕ) + ∑' j : ℕ, secularVector d ℓ μ (j + 2) ^ (2 : ℕ) := by
   rw [lp_norm_sq_eq_tsum, hV, norm_sq_secularHead, ← Summable.sum_add_tsum_nat_add 2 hsum]
   congr 1
   simp [Finset.sum_range_succ]
@@ -126,51 +126,51 @@ theorem tendsto_min_norm_lp_normalize_sub_twoModeSeed
     (hV : ∀ᶠ lam in atTop, ((V lam : lp (fun _ : ℕ => ℝ) 2) : ℕ → ℝ)
       = secularVector (D lam) (L lam) (M lam))
     (hG : ∀ᶠ lam in atTop, ((G lam : lp (fun _ : ℕ => ℝ) 2) : ℕ → ℝ) = twoModeSeedFun (L lam))
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => secularVector (D lam) (L lam) (M lam) j ^ 2)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => secularVector (D lam) (L lam) (M lam) j ^ (2 : ℕ))
     (hv0 : ∀ᶠ lam in atTop, secularVector (D lam) (L lam) (M lam) 0 ≠ 0)
     (hL0 : ∀ᶠ lam in atTop, L lam 0 ≠ 0)
     (hdefect : Tendsto (fun lam =>
       (L lam 0 * secularVector (D lam) (L lam) (M lam) 0
-          + L lam 1 * secularVector (D lam) (L lam) (M lam) 1) ^ 2
-        / ((secularVector (D lam) (L lam) (M lam) 0 ^ 2
-              + secularVector (D lam) (L lam) (M lam) 1 ^ 2)
-            * (L lam 0 ^ 2 + L lam 1 ^ 2))) atTop (nhds 0))
+          + L lam 1 * secularVector (D lam) (L lam) (M lam) 1) ^ (2 : ℕ)
+        / ((secularVector (D lam) (L lam) (M lam) 0 ^ (2 : ℕ)
+              + secularVector (D lam) (L lam) (M lam) 1 ^ (2 : ℕ))
+            * (L lam 0 ^ (2 : ℕ) + L lam 1 ^ (2 : ℕ)))) atTop (nhds 0))
     (htailfrac : Tendsto (fun lam =>
-      (∑' j : ℕ, secularVector (D lam) (L lam) (M lam) (j + 2) ^ 2)
-        / secularVector (D lam) (L lam) (M lam) 0 ^ 2) atTop (nhds 0)) :
+      (∑' j : ℕ, secularVector (D lam) (L lam) (M lam) (j + 2) ^ (2 : ℕ))
+        / secularVector (D lam) (L lam) (M lam) 0 ^ (2 : ℕ)) atTop (nhds 0)) :
     Tendsto (fun lam => min
-        (‖(‖V lam‖)⁻¹ • V lam - (‖G lam‖)⁻¹ • G lam‖ ^ 2)
-        (‖(‖V lam‖)⁻¹ • V lam + (‖G lam‖)⁻¹ • G lam‖ ^ 2)) atTop (nhds 0) := by
-  have hHpos : ∀ᶠ lam in atTop, 0 < ‖secularHead (D lam) (L lam) (M lam)‖ ^ 2 := by
+        (‖(‖V lam‖)⁻¹ • V lam - (‖G lam‖)⁻¹ • G lam‖ ^ (2 : ℕ))
+        (‖(‖V lam‖)⁻¹ • V lam + (‖G lam‖)⁻¹ • G lam‖ ^ (2 : ℕ))) atTop (nhds 0) := by
+  have hHpos : ∀ᶠ lam in atTop, 0 < ‖secularHead (D lam) (L lam) (M lam)‖ ^ (2 : ℕ) := by
     filter_upwards [hv0] with lam h0
     exact pow_pos (norm_pos_iff.mpr (secularHead_ne_zero _ _ _ h0)) 2
   have hTnn : ∀ᶠ lam in atTop,
-      0 ≤ ∑' j : ℕ, secularVector (D lam) (L lam) (M lam) (j + 2) ^ 2 :=
+      0 ≤ ∑' j : ℕ, secularVector (D lam) (L lam) (M lam) (j + 2) ^ (2 : ℕ) :=
     Eventually.of_forall fun lam => tsum_nonneg fun j => sq_nonneg _
   -- the tail is small relative to the head mass
   have hratio : Tendsto (fun lam =>
-      (∑' j : ℕ, secularVector (D lam) (L lam) (M lam) (j + 2) ^ 2)
-        / ‖secularHead (D lam) (L lam) (M lam)‖ ^ 2) atTop (nhds 0) := by
+      (∑' j : ℕ, secularVector (D lam) (L lam) (M lam) (j + 2) ^ (2 : ℕ))
+        / ‖secularHead (D lam) (L lam) (M lam)‖ ^ (2 : ℕ)) atTop (nhds 0) := by
     refine squeeze_zero' (Eventually.of_forall fun lam =>
       div_nonneg (tsum_nonneg fun j => sq_nonneg _) (sq_nonneg _)) ?_ htailfrac
     filter_upwards [hv0] with lam h0
     rw [norm_sq_secularHead]
-    have hv0sq : 0 < secularVector (D lam) (L lam) (M lam) 0 ^ 2 :=
+    have hv0sq : 0 < secularVector (D lam) (L lam) (M lam) 0 ^ (2 : ℕ) :=
       lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 h0))
     exact div_le_div_of_nonneg_left (tsum_nonneg fun j => sq_nonneg _) hv0sq
       (by nlinarith [sq_nonneg (secularVector (D lam) (L lam) (M lam) 1)])
   have hmass := tendsto_ratio_one_of_tendsto_zero hHpos hTnn hratio
   -- the head alignment tends to one
   have halign : Tendsto (fun lam =>
-      inner ℝ (secularHead (D lam) (L lam) (M lam)) (twoModeSeed (L lam)) ^ 2
-        / (‖secularHead (D lam) (L lam) (M lam)‖ ^ 2 * ‖twoModeSeed (L lam)‖ ^ 2))
+      inner ℝ (secularHead (D lam) (L lam) (M lam)) (twoModeSeed (L lam)) ^ (2 : ℕ)
+        / (‖secularHead (D lam) (L lam) (M lam)‖ ^ (2 : ℕ) * ‖twoModeSeed (L lam)‖ ^ (2 : ℕ)))
       atTop (nhds 1) := by
     have h1 : Tendsto (fun lam => 1 -
         (L lam 0 * secularVector (D lam) (L lam) (M lam) 0
-            + L lam 1 * secularVector (D lam) (L lam) (M lam) 1) ^ 2
-          / ((secularVector (D lam) (L lam) (M lam) 0 ^ 2
-                + secularVector (D lam) (L lam) (M lam) 1 ^ 2)
-              * (L lam 0 ^ 2 + L lam 1 ^ 2))) atTop (nhds (1 - 0)) :=
+            + L lam 1 * secularVector (D lam) (L lam) (M lam) 1) ^ (2 : ℕ)
+          / ((secularVector (D lam) (L lam) (M lam) 0 ^ (2 : ℕ)
+                + secularVector (D lam) (L lam) (M lam) 1 ^ (2 : ℕ))
+              * (L lam 0 ^ (2 : ℕ) + L lam 1 ^ (2 : ℕ)))) atTop (nhds (1 - 0)) :=
       Filter.Tendsto.sub tendsto_const_nhds hdefect
     rw [sub_zero] at h1
     refine h1.congr' ?_
@@ -178,11 +178,11 @@ theorem tendsto_min_norm_lp_normalize_sub_twoModeSeed
     rw [defect_eq_inner_sq_div]
     exact (align_eq_one_sub_defect (D lam) (L lam) (M lam) h0 h1').symm
   have hprod : Tendsto (fun lam =>
-      (inner ℝ (secularHead (D lam) (L lam) (M lam)) (twoModeSeed (L lam)) ^ 2
-        / (‖secularHead (D lam) (L lam) (M lam)‖ ^ 2 * ‖twoModeSeed (L lam)‖ ^ 2))
-      * (‖secularHead (D lam) (L lam) (M lam)‖ ^ 2
-          / (‖secularHead (D lam) (L lam) (M lam)‖ ^ 2
-            + ∑' j : ℕ, secularVector (D lam) (L lam) (M lam) (j + 2) ^ 2)))
+      (inner ℝ (secularHead (D lam) (L lam) (M lam)) (twoModeSeed (L lam)) ^ (2 : ℕ)
+        / (‖secularHead (D lam) (L lam) (M lam)‖ ^ (2 : ℕ) * ‖twoModeSeed (L lam)‖ ^ (2 : ℕ)))
+      * (‖secularHead (D lam) (L lam) (M lam)‖ ^ (2 : ℕ)
+          / (‖secularHead (D lam) (L lam) (M lam)‖ ^ (2 : ℕ)
+            + ∑' j : ℕ, secularVector (D lam) (L lam) (M lam) (j + 2) ^ (2 : ℕ))))
       atTop (nhds (1 * 1)) := halign.mul hmass
   rw [one_mul] at hprod
   refine tendsto_min_norm_sub_sq_normalize_of_inner_sq ?_ ?_ ?_
@@ -205,7 +205,7 @@ theorem tendsto_min_norm_lp_normalize_sub_twoModeSeed
     rw [lp_inner_twoModeSeed (V lam) (G lam) hGl, hVl,
       lp_norm_sq_split (V lam) hVl hsm, lp_norm_sq_twoModeSeed (G lam) hGl,
       inner_secularHead_twoModeSeed, norm_sq_twoModeSeed]
-    have hHne : ‖secularHead (D lam) (L lam) (M lam)‖ ^ 2 ≠ 0 :=
+    have hHne : ‖secularHead (D lam) (L lam) (M lam)‖ ^ (2 : ℕ) ≠ 0 :=
       ne_of_gt (pow_pos (norm_pos_iff.mpr (secularHead_ne_zero _ _ _ h0)) 2)
     rw [norm_sq_secularHead] at hHne ⊢
     field_simp

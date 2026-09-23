@@ -59,17 +59,17 @@ theorem log_two_le_abs_log {y : ℝ} (hy0 : 0 < y) (h : y ≤ 1 / 2 ∨ 2 ≤ y)
 /-- **The Lorentzian cell comparison.**  On a unit cell centred at `h` the Cauchy weight is
 comparable to its value at the centre. -/
 theorem inv_one_add_sq_le_cell {t h : ℝ} (hth : |t - h| ≤ 1 / 2) :
-    1 / (1 + t ^ 2) ≤ 4 / (1 + h ^ 2) := by
+    1 / (1 + t ^ (2 : ℕ)) ≤ 4 / (1 + h ^ (2 : ℕ)) := by
   have habs : |h| ≤ |t| + 1 / 2 := by
     have := abs_sub_abs_le_abs_sub h t
     have h2 : |h - t| = |t - h| := abs_sub_comm h t
     linarith [h2 ▸ this]
-  have ht : |t| ≤ (t ^ 2 + 1) / 2 := by
+  have ht : |t| ≤ (t ^ (2 : ℕ) + 1) / 2 := by
     nlinarith [sq_nonneg (|t| - 1), sq_abs t]
-  have hh : h ^ 2 ≤ (|t| + 1 / 2) ^ 2 := by
+  have hh : h ^ (2 : ℕ) ≤ (|t| + 1 / 2) ^ (2 : ℕ) := by
     have habs0 : (0 : ℝ) ≤ |h| := abs_nonneg h
     nlinarith [sq_abs h, habs, habs0]
-  have hkey : 1 + h ^ 2 ≤ 4 * (1 + t ^ 2) := by
+  have hkey : 1 + h ^ (2 : ℕ) ≤ 4 * (1 + t ^ (2 : ℕ)) := by
     nlinarith [hh, ht, sq_abs t, abs_nonneg t]
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   linarith

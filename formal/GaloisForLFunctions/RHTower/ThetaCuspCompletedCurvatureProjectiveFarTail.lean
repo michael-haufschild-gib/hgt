@@ -10,8 +10,8 @@ finite computation, that this ratio is strictly decreasing on a cofinal positive
 
 The first atom has the exact reserve
 
-`A' * A'' - A * A''' = (2q+3)^2 *
-  (1296/q^3 + 4536/q^4 + 4536/q^5 + 2916/q^6 + 2916/q^7)`.
+`A' * A'' - A * A''' = (2q+3)^(2 : ℕ) *
+  (1296/q^(3 : ℕ) + 4536/q^(4 : ℕ) + 4536/q^(5 : ℕ) + 2916/q^(6 : ℕ) + 2916/q^(7 : ℕ))`.
 
 After multiplication by first-atom scale this tends to `5184`.  Every likelihood
 correction, with two additional powers of scale, tends to zero by the fixed spectral
@@ -49,7 +49,7 @@ private theorem thetaCuspC5FarTail_scale_ne_zero (x : ℝ) :
 
 private theorem thetaCuspC5FarTail_scale_sq_likelihoodJetTwo_tendsto_zero :
     Tendsto (fun x : ℝ =>
-      thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+      thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
         thetaCuspLikelihoodSourceLogPartitionJetTwo x) atTop (nhds 0) := by
   have hv := thetaCuspC5FarTail_scaled_likelihoodVariance_source_tendsto_zero 4
   have hm := thetaCuspC5FarTail_scaled_likelihoodMean_source_tendsto_zero 3
@@ -62,7 +62,7 @@ private theorem thetaCuspC5FarTail_scale_sq_likelihoodJetTwo_tendsto_zero :
 
 private theorem thetaCuspC5FarTail_scale_sq_likelihoodJetThree_tendsto_zero :
     Tendsto (fun x : ℝ =>
-      thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+      thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
         thetaCuspLikelihoodSourceLogPartitionJetThree x) atTop (nhds 0) := by
   have hk := thetaCuspC5FarTail_scaled_likelihoodThirdCumulant_source_tendsto_zero 5
   have hv := thetaCuspC5FarTail_scaled_likelihoodVariance_source_tendsto_zero 4
@@ -76,7 +76,7 @@ private theorem thetaCuspC5FarTail_scale_sq_likelihoodJetThree_tendsto_zero :
 
 private theorem thetaCuspC5FarTail_scale_sq_likelihoodJetFour_tendsto_zero :
     Tendsto (fun x : ℝ =>
-      thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+      thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
         thetaCuspLikelihoodSourceLogPartitionJetFour x) atTop (nhds 0) := by
   have hk4 := thetaCuspC5FarTail_scaled_likelihoodFourthCumulant_source_tendsto_zero 6
   have hk3 := thetaCuspC5FarTail_scaled_likelihoodThirdCumulant_source_tendsto_zero 5
@@ -92,7 +92,7 @@ private theorem thetaCuspC5FarTail_scale_sq_likelihoodJetFour_tendsto_zero :
 
 private theorem thetaCuspC5FarTail_scale_sq_likelihoodJetFive_tendsto_zero :
     Tendsto (fun x : ℝ =>
-      thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+      thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
         thetaCuspLikelihoodSourceLogPartitionJetFive x) atTop (nhds 0) := by
   have hk5 := thetaCuspC5FarTail_scaled_likelihoodFifthCumulant_source_tendsto_zero 7
   have hk4 := thetaCuspC5FarTail_scaled_likelihoodFourthCumulant_source_tendsto_zero 6
@@ -119,9 +119,9 @@ private theorem thetaCuspBornWittenCurvatureProjectiveEnergy_formula
     {x : ℝ} (hx : 0 ≤ x) :
     let q := thetaCuspBornWittenWeight 1 x
     thetaCuspBornWittenCurvatureProjectiveEnergy x =
-      (2 * q + 3) ^ 2 *
-        (1296 / q ^ 3 + 4536 / q ^ 4 + 4536 / q ^ 5 +
-          2916 / q ^ 6 + 2916 / q ^ 7) := by
+      (2 * q + 3) ^ (2 : ℕ) *
+        (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ) + 4536 / q ^ (5 : ℕ) +
+          2916 / q ^ (6 : ℕ) + 2916 / q ^ (7 : ℕ)) := by
   dsimp only
   let q := thetaCuspBornWittenWeight 1 x
   have hq : 0 < q := by
@@ -131,22 +131,22 @@ private theorem thetaCuspBornWittenCurvatureProjectiveEnergy_formula
     thetaCuspBornWittenLogFourthDerivative
     thetaCuspBornWittenLogFifthDerivative
   have hcurv : thetaCuspBornWittenLogCurvature 1 x =
-      (2 * q + 3) * (2 + 3 / q ^ 2) := by
+      (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) := by
     rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile (by norm_num) hx]
-    change 4 * q + 6 + 6 / q + 9 / q ^ 2 =
-      (2 * q + 3) * (2 + 3 / q ^ 2)
+    change 4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ) =
+      (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ))
     field_simp [hq.ne']
     ring
   rw [hcurv]
   change
-    (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) *
-          ((2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4)) -
-        ((2 * q + 3) * (2 + 3 / q ^ 2)) *
-          ((2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 -
-            1944 / q ^ 4 - 1944 / q ^ 5)) =
-      (2 * q + 3) ^ 2 *
-        (1296 / q ^ 3 + 4536 / q ^ 4 + 4536 / q ^ 5 +
-          2916 / q ^ 6 + 2916 / q ^ 7)
+    (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) *
+          ((2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ))) -
+        ((2 * q + 3) * (2 + 3 / q ^ (2 : ℕ))) *
+          ((2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) -
+            1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ))) =
+      (2 * q + 3) ^ (2 : ℕ) *
+        (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ) + 4536 / q ^ (5 : ℕ) +
+          2916 / q ^ (6 : ℕ) + 2916 / q ^ (7 : ℕ))
   field_simp [hq.ne']
   ring
 
@@ -168,11 +168,11 @@ private theorem thetaCuspC5FarTail_bornProjectiveEnergy_scaled_tendsto_5184 :
       ((hratio.mul hq3).const_mul 11664)).add
       ((hratio.mul hq4).const_mul 11664)
   have h0 : Tendsto (fun x : ℝ =>
-      5184 * (S x / q x) ^ 3 +
-        18144 * ((S x / q x) ^ 3 * (1 / q x ^ 1)) +
-        18144 * ((S x / q x) ^ 3 * (1 / q x ^ 2)) +
-        11664 * ((S x / q x) ^ 3 * (1 / q x ^ 3)) +
-        11664 * ((S x / q x) ^ 3 * (1 / q x ^ 4)))
+      5184 * (S x / q x) ^ (3 : ℕ) +
+        18144 * ((S x / q x) ^ (3 : ℕ) * (1 / q x ^ (1 : ℕ))) +
+        18144 * ((S x / q x) ^ (3 : ℕ) * (1 / q x ^ (2 : ℕ))) +
+        11664 * ((S x / q x) ^ (3 : ℕ) * (1 / q x ^ (3 : ℕ))) +
+        11664 * ((S x / q x) ^ (3 : ℕ) * (1 / q x ^ (4 : ℕ))))
       atTop (nhds 5184) := by
     simpa only [one_pow, mul_one, mul_zero, add_zero] using h
   refine h0.congr' ?_
@@ -287,7 +287,7 @@ theorem hasDerivAt_thetaCuspLogCurvatureJetTwo (x : ℝ) :
 theorem hasDerivAt_thetaCuspCompletedCurvatureProjectiveRatio (x : ℝ) :
     HasDerivAt thetaCuspCompletedCurvatureProjectiveRatio
       (-thetaCuspCompletedCurvatureProjectiveEnergy x /
-        thetaCuspLogCurvature x ^ 2) x := by
+        thetaCuspLogCurvature x ^ (2 : ℕ)) x := by
   have hB := hasDerivAt_thetaCuspLogCurvatureJetTwo x
   have hA := hasDerivAt_thetaCuspLogCurvature x
   have hApos := thetaCuspLogCurvature_pos x

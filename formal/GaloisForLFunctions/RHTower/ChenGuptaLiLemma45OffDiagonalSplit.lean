@@ -74,7 +74,7 @@ theorem cglLemma45_cubicTrace_eq_diagonal_add_zeroOffDiagonal_add_nonzero
     (rows : Fin R → CGLCharacterDyadicRowData Q.value) :
     cglCharacterDyadicWeightedGramCubicTrace N.value Q.value R
       (cglSmoothBumpDyadicWeight w.toCGLSmoothBump N) rows =
-      (R : ℂ) * cglLemma45DiagonalPoissonMass w N Q ^ 3 +
+      (R : ℂ) * cglLemma45DiagonalPoissonMass w N Q ^ (3 : ℕ) +
         cglLemma45OffDiagonalFrequencyTerm w N Q R rows 0 +
         ∑' m : {m : (ℤ × ℤ) × ℤ // m ∉ ({0} : Finset ((ℤ × ℤ) × ℤ))},
           cglLemma45OffDiagonalNonzeroFrequencyTerm w N Q R rows m := by

@@ -36,7 +36,7 @@ theorem exists_sign_chain_of_phase_increase_level {φ ρ : ℝ → ℝ} {c₀ : 
   set c : ℕ → ℝ := fun i => c₀ + (i : ℝ) * Real.pi with hc
   have hstepAll : ∀ i : ℕ, c (i + 1) = c i + Real.pi := by
     intro i; simp only [hc]; push_cast; ring
-  have hsqAll : ∀ i : ℕ, Real.cos (c i) ^ 2 = Real.cos c₀ ^ 2 := by
+  have hsqAll : ∀ i : ℕ, Real.cos (c i) ^ (2 : ℕ) = Real.cos c₀ ^ (2 : ℕ) := by
     intro i
     induction i with
     | zero => simp [hc]
@@ -78,7 +78,7 @@ theorem exists_sign_chain_of_phase_increase_level {φ ρ : ℝ → ℝ} {c₀ : 
     have h2 : φ (g (i + 1)) = c (i + 1) := hgphase (i + 1) (by omega)
     have hcosstep : Real.cos (c (i + 1)) = -Real.cos (c i) := by
       rw [hstepAll i, Real.cos_add_pi]
-    have hsqpos : 0 < Real.cos (c i) ^ 2 := by
+    have hsqpos : 0 < Real.cos (c i) ^ (2 : ℕ) := by
       rw [hsqAll i]
       exact lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hcos))
     have hρ1 : 0 < ρ (g i) := hρ _ (hgmem i (by omega))

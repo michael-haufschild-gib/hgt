@@ -11,8 +11,8 @@ unit-modulus points, none equal to `1`, with weights `W` satisfying `v i = v j �
 
 The two symmetry hypotheses are exactly what makes the second-moment expansion sign-definite at
 the resonant pairs: `v i * conj (v j) = 1` forces `v j = v i`, hence coefficient
-`W i * conj (W j) = ‖W i‖^2`, and `v i * v j = 1` forces `v j = conj (v i)`, hence coefficient
-`W i * W j = ‖W i‖^2`.  Both hold automatically for weight systems inherited from
+`W i * conj (W j) = ‖W i‖^(2 : ℕ)`, and `v i * v j = 1` forces `v j = conj (v i)`, hence coefficient
+`W i * W j = ‖W i‖^(2 : ℕ)`.  Both hold automatically for weight systems inherited from
 conjugation-stable divisors.
 -/
 
@@ -98,9 +98,9 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
             (norm_sum_pow_succ_le (le_of_eq (hnorm i hi)) (hne i hi) N) (norm_nonneg _)
       _ = C₁ := hC₁.symm
   -- (2) linear growth of the norm-square sums
-  have hsum2 : ∀ N : ℕ, ‖W i₀‖ ^ 2 * N - C₄ ≤ ∑ n ∈ Finset.range N, ‖A n‖ ^ 2 := by
+  have hsum2 : ∀ N : ℕ, ‖W i₀‖ ^ (2 : ℕ) * N - C₄ ≤ ∑ n ∈ Finset.range N, ‖A n‖ ^ (2 : ℕ) := by
     intro N
-    have hAsq : ∀ n, (‖A n‖ : ℝ) ^ 2 = (A n * (starRingEnd ℂ) (A n)).re := by
+    have hAsq : ∀ n, (‖A n‖ : ℝ) ^ (2 : ℕ) = (A n * (starRingEnd ℂ) (A n)).re := by
       intro n
       rw [Complex.mul_conj, Complex.ofReal_re, Complex.sq_norm]
     have hexp : ∑ n ∈ Finset.range N, A n * (starRingEnd ℂ) (A n) =
@@ -130,10 +130,10 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
               ∑ n ∈ Finset.range N, (v i * (starRingEnd ℂ) (v j)) ^ (n + 1) :=
             Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
               (Finset.mul_sum _ _ _).symm
-    have hre : ∑ n ∈ Finset.range N, ‖A n‖ ^ 2 =
+    have hre : ∑ n ∈ Finset.range N, ‖A n‖ ^ (2 : ℕ) =
         ∑ i ∈ s, ∑ j ∈ s, ((W i * (starRingEnd ℂ) (W j)) *
           ∑ n ∈ Finset.range N, (v i * (starRingEnd ℂ) (v j)) ^ (n + 1)).re := by
-      calc ∑ n ∈ Finset.range N, ‖A n‖ ^ 2
+      calc ∑ n ∈ Finset.range N, ‖A n‖ ^ (2 : ℕ)
           = ∑ n ∈ Finset.range N, (A n * (starRingEnd ℂ) (A n)).re :=
             Finset.sum_congr rfl fun n _ => hAsq n
         _ = (∑ n ∈ Finset.range N, A n * (starRingEnd ℂ) (A n)).re :=
@@ -144,7 +144,7 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
             exact Finset.sum_congr rfl fun i _ => Complex.re_sum _ _
     rw [hre]
     have hterm : ∀ i ∈ s, ∀ j ∈ s, (if v i * (starRingEnd ℂ) (v j) = 1
-        then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ 2 * N else 0) else -(B i j)) ≤
+        then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ (2 : ℕ) * N else 0) else -(B i j)) ≤
         ((W i * (starRingEnd ℂ) (W j)) *
           ∑ n ∈ Finset.range N, (v i * (starRingEnd ℂ) (v j)) ^ (n + 1)).re := by
       intro i hi j hj
@@ -153,7 +153,7 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
         have hvij : v j = v i := hres i hi j hj hcase
         have hWij : W j = W i := hclass j hj i hi hvij
         have hval : ((W i * (starRingEnd ℂ) (W j)) *
-            ∑ n ∈ Finset.range N, (1 : ℂ) ^ (n + 1)).re = ‖W i‖ ^ 2 * N := by
+            ∑ n ∈ Finset.range N, (1 : ℂ) ^ (n + 1)).re = ‖W i‖ ^ (2 : ℕ) * N := by
           rw [hWij, Complex.mul_conj]
           simp only [one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
           rw [← Complex.ofReal_natCast, ← Complex.ofReal_mul, Complex.ofReal_re,
@@ -178,14 +178,14 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
           exact mul_le_mul_of_nonneg_left hb (by positivity)
         linarith
     have hlower : ∑ i ∈ s, ∑ j ∈ s, (if v i * (starRingEnd ℂ) (v j) = 1
-        then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ 2 * (N : ℝ) else 0) else -(B i j)) ≥
-        ‖W i₀‖ ^ 2 * N - C₄ := by
+        then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ (2 : ℕ) * (N : ℝ) else 0) else -(B i j)) ≥
+        ‖W i₀‖ ^ (2 : ℕ) * N - C₄ := by
       have hdiag : v i₀ * (starRingEnd ℂ) (v i₀) = 1 := by
         rw [Complex.mul_conj, ← Complex.sq_norm, hnorm i₀ hi₀]
         norm_num
       have hone : ∀ i ∈ s, ∀ j ∈ s, (if v i * (starRingEnd ℂ) (v j) = 1
-          then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ 2 * (N : ℝ) else 0) else -(B i j)) ≥
-          (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ 2 * (N : ℝ) else 0) - B i j := by
+          then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ (2 : ℕ) * (N : ℝ) else 0) else -(B i j)) ≥
+          (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ (2 : ℕ) * (N : ℝ) else 0) - B i j := by
         intro i hi j hj
         by_cases hcase : v i * (starRingEnd ℂ) (v j) = 1
         · rw [if_pos hcase]
@@ -198,15 +198,15 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
           rw [if_neg hne2]
           linarith
       calc ∑ i ∈ s, ∑ j ∈ s, (if v i * (starRingEnd ℂ) (v j) = 1
-          then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ 2 * (N : ℝ) else 0) else -(B i j))
+          then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ (2 : ℕ) * (N : ℝ) else 0) else -(B i j))
           ≥ ∑ i ∈ s, ∑ j ∈ s,
-              ((if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ 2 * (N : ℝ) else 0) - B i j) :=
+              ((if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ (2 : ℕ) * (N : ℝ) else 0) - B i j) :=
             Finset.sum_le_sum fun i hi => Finset.sum_le_sum fun j hj => hone i hi j hj
         _ = (∑ i ∈ s, ∑ j ∈ s,
-              (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ 2 * (N : ℝ) else 0)) - C₄ := by
+              (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ (2 : ℕ) * (N : ℝ) else 0)) - C₄ := by
             rw [hC₄, ← Finset.sum_sub_distrib]
             exact Finset.sum_congr rfl fun i _ => by rw [← Finset.sum_sub_distrib]
-        _ = ‖W i₀‖ ^ 2 * N - C₄ := by
+        _ = ‖W i₀‖ ^ (2 : ℕ) * N - C₄ := by
             congr 1
             rw [Finset.sum_eq_single i₀]
             · rw [Finset.sum_eq_single i₀]
@@ -219,27 +219,27 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
               rw [Finset.sum_eq_zero fun j _ => by rw [if_neg (by tauto)]]
             · intro h
               exact absurd hi₀ h
-    calc ‖W i₀‖ ^ 2 * N - C₄
+    calc ‖W i₀‖ ^ (2 : ℕ) * N - C₄
         ≤ ∑ i ∈ s, ∑ j ∈ s, (if v i * (starRingEnd ℂ) (v j) = 1
-            then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ 2 * (N : ℝ) else 0) else -(B i j)) :=
+            then (if i = i₀ ∧ j = i₀ then ‖W i₀‖ ^ (2 : ℕ) * (N : ℝ) else 0) else -(B i j)) :=
           hlower
       _ ≤ ∑ i ∈ s, ∑ j ∈ s, ((W i * (starRingEnd ℂ) (W j)) *
             ∑ n ∈ Finset.range N, (v i * (starRingEnd ℂ) (v j)) ^ (n + 1)).re :=
           Finset.sum_le_sum fun i hi => Finset.sum_le_sum fun j hj => hterm i hi j hj
   -- (3) bounded square sums
-  have hsum3 : ∀ N : ℕ, -C₅ ≤ ∑ n ∈ Finset.range N, ((A n) ^ 2).re := by
+  have hsum3 : ∀ N : ℕ, -C₅ ≤ ∑ n ∈ Finset.range N, ((A n) ^ (2 : ℕ)).re := by
     intro N
-    have hexp : ∑ n ∈ Finset.range N, (A n) ^ 2 =
+    have hexp : ∑ n ∈ Finset.range N, (A n) ^ (2 : ℕ) =
         ∑ i ∈ s, ∑ j ∈ s, (W i * W j) *
           ∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1) := by
-      have h1 : ∀ n, (A n) ^ 2 = ∑ i ∈ s, ∑ j ∈ s,
+      have h1 : ∀ n, (A n) ^ (2 : ℕ) = ∑ i ∈ s, ∑ j ∈ s,
           (W i * W j) * (v i * v j) ^ (n + 1) := by
         intro n
         rw [hA, pow_two, Finset.sum_mul_sum]
         refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
         rw [mul_pow]
         ring
-      calc ∑ n ∈ Finset.range N, (A n) ^ 2
+      calc ∑ n ∈ Finset.range N, (A n) ^ (2 : ℕ)
           = ∑ n ∈ Finset.range N, ∑ i ∈ s, ∑ j ∈ s,
               (W i * W j) * (v i * v j) ^ (n + 1) :=
             Finset.sum_congr rfl fun n _ => h1 n
@@ -252,11 +252,11 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
               ∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1) :=
             Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
               (Finset.mul_sum _ _ _).symm
-    have hre : ∑ n ∈ Finset.range N, ((A n) ^ 2).re =
+    have hre : ∑ n ∈ Finset.range N, ((A n) ^ (2 : ℕ)).re =
         ∑ i ∈ s, ∑ j ∈ s, ((W i * W j) *
           ∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1)).re := by
-      calc ∑ n ∈ Finset.range N, ((A n) ^ 2).re
-          = (∑ n ∈ Finset.range N, (A n) ^ 2).re := (Complex.re_sum _ _).symm
+      calc ∑ n ∈ Finset.range N, ((A n) ^ (2 : ℕ)).re
+          = (∑ n ∈ Finset.range N, (A n) ^ (2 : ℕ)).re := (Complex.re_sum _ _).symm
         _ = ∑ i ∈ s, ∑ j ∈ s, ((W i * W j) *
               ∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1)).re := by
             rw [hexp, Complex.re_sum]
@@ -269,14 +269,14 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
       · have hvij : v j = (starRingEnd ℂ) (v i) := hres' i hi j hj hcase
         have hWij : W j = (starRingEnd ℂ) (W i) := hconj i hi j hj hvij
         have hval : ((W i * W j) * ∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1)).re =
-            ‖W i‖ ^ 2 * N := by
+            ‖W i‖ ^ (2 : ℕ) * N := by
           rw [hWij, Complex.mul_conj, hcase]
           simp only [one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
           rw [← Complex.ofReal_natCast, ← Complex.ofReal_mul, Complex.ofReal_re,
             ← Complex.sq_norm]
         rw [hval]
         have h1 := hB'nn i j
-        have h2 : (0 : ℝ) ≤ ‖W i‖ ^ 2 * N := by positivity
+        have h2 : (0 : ℝ) ≤ ‖W i‖ ^ (2 : ℕ) * N := by positivity
         linarith
       · have hznorm : ‖v i * v j‖ = 1 := by
           rw [norm_mul, hnorm i hi, hnorm j hj, one_mul]
@@ -297,13 +297,13 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
             ∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1)).re :=
           Finset.sum_le_sum fun i hi => Finset.sum_le_sum fun j hj => hterm i hi j hj
   -- (4) pointwise identity
-  have hid : ∀ n, ((A n).re) ^ 2 = (‖A n‖ ^ 2 + ((A n) ^ 2).re) / 2 := by
+  have hid : ∀ n, ((A n).re) ^ (2 : ℕ) = (‖A n‖ ^ (2 : ℕ) + ((A n) ^ (2 : ℕ)).re) / 2 := by
     intro n
     rw [Complex.sq_norm, Complex.normSq_apply, pow_two (A n), Complex.mul_re]
     ring
   -- (5) upper bound
   have h1κ : (0 : ℝ) < 1 - κ := by linarith
-  have hup : ∀ N : ℕ, ∑ n ∈ Finset.range N, ((A n).re) ^ 2 ≤
+  have hup : ∀ N : ℕ, ∑ n ∈ Finset.range N, ((A n).re) ^ (2 : ℕ) ≤
       K₁ * (C₁ + 2 * C / (1 - κ)) := by
     intro N
     have habs : ∀ n, |(A n).re| ≤ (A n).re + 2 * C * κ ^ n := by
@@ -320,7 +320,7 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
         neg_div_neg_eq]
       rw [div_le_div_iff₀ h1κ h1κ]
       nlinarith [pow_nonneg hκ0 N]
-    calc ∑ n ∈ Finset.range N, ((A n).re) ^ 2
+    calc ∑ n ∈ Finset.range N, ((A n).re) ^ (2 : ℕ)
         ≤ ∑ n ∈ Finset.range N, K₁ * |(A n).re| := by
           refine Finset.sum_le_sum fun n _ => ?_
           have h1 : |(A n).re| ≤ K₁ := le_trans (Complex.abs_re_le_norm _) (hAbound n)
@@ -342,22 +342,22 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
                 have h3 : 2 * C * (1 / (1 - κ)) = 2 * C / (1 - κ) := by ring
                 linarith
   -- (6) contradiction
-  have hlowN : ∀ N : ℕ, (‖W i₀‖ ^ 2 * N - (C₄ + C₅)) / 2 ≤
-      ∑ n ∈ Finset.range N, ((A n).re) ^ 2 := by
+  have hlowN : ∀ N : ℕ, (‖W i₀‖ ^ (2 : ℕ) * N - (C₄ + C₅)) / 2 ≤
+      ∑ n ∈ Finset.range N, ((A n).re) ^ (2 : ℕ) := by
     intro N
     have h2 := hsum2 N
     have h3 := hsum3 N
-    have hEq : (2 : ℝ) * ∑ n ∈ Finset.range N, ((A n).re) ^ 2 =
-        (∑ n ∈ Finset.range N, ‖A n‖ ^ 2) +
-          ∑ n ∈ Finset.range N, ((A n) ^ 2).re := by
+    have hEq : (2 : ℝ) * ∑ n ∈ Finset.range N, ((A n).re) ^ (2 : ℕ) =
+        (∑ n ∈ Finset.range N, ‖A n‖ ^ (2 : ℕ)) +
+          ∑ n ∈ Finset.range N, ((A n) ^ (2 : ℕ)).re := by
       rw [Finset.mul_sum, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun n _ => ?_
       rw [hid n]
       ring
     linarith
-  have hW₀pos : (0 : ℝ) < ‖W i₀‖ ^ 2 := by positivity
+  have hW₀pos : (0 : ℝ) < ‖W i₀‖ ^ (2 : ℕ) := by positivity
   obtain ⟨N, hN⟩ := exists_nat_gt
-    ((K₁ * (C₁ + 2 * C / (1 - κ)) * 2 + (C₄ + C₅)) / (‖W i₀‖ ^ 2))
+    ((K₁ * (C₁ + 2 * C / (1 - κ)) * 2 + (C₄ + C₅)) / (‖W i₀‖ ^ (2 : ℕ)))
   rw [div_lt_iff₀ hW₀pos] at hN
   have hfin1 := hlowN N
   have hfin2 := hup N

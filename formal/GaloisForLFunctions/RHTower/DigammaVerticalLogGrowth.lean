@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.DigammaVerticalMinimum
 
 Every Gauss summand of `psi(a + iy)` has real part
 
-`1/(n+1) - (a+n)/((a+n)^2 + y^2)`,
+`1/(n+1) - (a+n)/((a+n)^(2 : ℕ) + y^(2 : ℕ))`,
 
 which is at least `1/(n+1) - 1/(a+n)` for every height and at least `1/(n+1) - 1/(M+a)` once the
 height exceeds `M + a` and the index is below `M`.  Summing the first `M` terms against the harmonic
@@ -47,9 +47,9 @@ theorem digammaGaussDefect_eq {a : ℝ} (ha0 : 0 < a) (n : ℕ) :
 
 theorem summable_digammaGaussDefect {a : ℝ} (ha0 : 0 < a) (ha1 : a ≤ 1) :
     Summable (digammaGaussDefect a) := by
-  have h0 : Summable fun n : ℕ => 1 / ((n : ℝ)) ^ 2 :=
+  have h0 : Summable fun n : ℕ => 1 / ((n : ℝ)) ^ (2 : ℕ) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
-  have hshift : Summable fun n : ℕ => 1 / (((n : ℝ) + 1)) ^ 2 := by
+  have hshift : Summable fun n : ℕ => 1 / (((n : ℝ) + 1)) ^ (2 : ℕ) := by
     have h := (summable_nat_add_iff 1).2 h0
     refine h.congr fun n => ?_
     push_cast
@@ -60,15 +60,15 @@ theorem summable_digammaGaussDefect {a : ℝ} (ha0 : 0 < a) (ha1 : a ≤ 1) :
   have h1 : (0 : ℝ) < a + n := by linarith
   have h2 : (0 : ℝ) < (n : ℝ) + 1 := by linarith
   rw [digammaGaussDefect_eq ha0]
-  have hden : a * ((n : ℝ) + 1) ^ 2 ≤ (a + n) * ((n : ℝ) + 1) := by
+  have hden : a * ((n : ℝ) + 1) ^ (2 : ℕ) ≤ (a + n) * ((n : ℝ) + 1) := by
     nlinarith [mul_nonneg (mul_nonneg h2.le hn) (sub_nonneg.2 ha1), hn, ha0, ha1]
   rw [div_le_iff₀ (by positivity : (0 : ℝ) < (a + n) * ((n : ℝ) + 1))]
-  have hval : 1 / a * (1 / (((n : ℝ) + 1)) ^ 2) * ((a + n) * ((n : ℝ) + 1))
-      = (a + n) * ((n : ℝ) + 1) / (a * ((n : ℝ) + 1) ^ 2) := by
+  have hval : 1 / a * (1 / (((n : ℝ) + 1)) ^ (2 : ℕ)) * ((a + n) * ((n : ℝ) + 1))
+      = (a + n) * ((n : ℝ) + 1) / (a * ((n : ℝ) + 1) ^ (2 : ℕ)) := by
     field_simp
   rw [hval]
-  have hone : (1 : ℝ) ≤ (a + n) * ((n : ℝ) + 1) / (a * ((n : ℝ) + 1) ^ 2) := by
-    rw [le_div_iff₀ (by positivity : (0 : ℝ) < a * ((n : ℝ) + 1) ^ 2)]
+  have hone : (1 : ℝ) ≤ (a + n) * ((n : ℝ) + 1) / (a * ((n : ℝ) + 1) ^ (2 : ℕ)) := by
+    rw [le_div_iff₀ (by positivity : (0 : ℝ) < a * ((n : ℝ) + 1) ^ (2 : ℕ))]
     linarith [hden]
   linarith [hone, ha1]
 
@@ -106,7 +106,7 @@ theorem log_le_harmonic (M : ℕ) :
 theorem re_gaussDigammaSeriesTerm_vertical (a y : ℝ) (n : ℕ) :
     (gaussDigammaSeriesTerm
         ((a : ℂ) + (y : ℂ) * Complex.I) n).re
-      = 1 / ((n : ℝ) + 1) - (a + n) / ((a + n) ^ 2 + y ^ 2) := by
+      = 1 / ((n : ℝ) + 1) - (a + n) / ((a + n) ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
   rw [gaussDigammaSeriesTerm, Complex.sub_re]
   have h1 : ((1 : ℂ) / ((n : ℂ) + 1)).re = 1 / ((n : ℝ) + 1) := by
     rw [show ((n : ℂ) + 1) = (((n : ℝ) + 1 : ℝ) : ℂ) by push_cast; ring,
@@ -116,7 +116,7 @@ theorem re_gaussDigammaSeriesTerm_vertical (a y : ℝ) (n : ℕ) :
     push_cast
     ring
   have h2 : ((1 : ℂ) / ((a : ℂ) + (y : ℂ) * Complex.I + (n : ℂ))).re
-      = (a + n) / ((a + n) ^ 2 + y ^ 2) := by
+      = (a + n) / ((a + n) ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
     rw [hshift, one_div, Complex.inv_re, Complex.normSq_apply]
     simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
       Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im, mul_zero, mul_one,
@@ -162,8 +162,8 @@ theorem neg_digammaGaussDefect_le_re_gaussDigammaSeriesTerm {a : ℝ} (ha0 : 0 <
   have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   have h1 : (0 : ℝ) < a + n := by linarith
   rw [re_gaussDigammaSeriesTerm_vertical, digammaGaussDefect]
-  have hle : (a + n) / ((a + n) ^ 2 + y ^ 2) ≤ 1 / (a + n) := by
-    rw [div_le_div_iff₀ (by positivity : (0 : ℝ) < (a + n) ^ 2 + y ^ 2) h1]
+  have hle : (a + n) / ((a + n) ^ (2 : ℕ) + y ^ (2 : ℕ)) ≤ 1 / (a + n) := by
+    rw [div_le_div_iff₀ (by positivity : (0 : ℝ) < (a + n) ^ (2 : ℕ) + y ^ (2 : ℕ)) h1]
     nlinarith [sq_nonneg y]
   linarith
 
@@ -233,34 +233,34 @@ theorem re_digamma_vertical_ge {a : ℝ} (ha0 : 0 < a) (ha1 : a ≤ 1) (y : ℝ)
         ≤ ∑ n ∈ Finset.range M,
             (gaussDigammaSeriesTerm ((a : ℂ) + (y : ℂ) * Complex.I) n).re := by
       have hterm : ∀ n ∈ Finset.range M,
-          1 / ((n : ℝ) + 1) - ((M : ℝ) + a) / y ^ 2
+          1 / ((n : ℝ) + 1) - ((M : ℝ) + a) / y ^ (2 : ℕ)
             ≤ (gaussDigammaSeriesTerm ((a : ℂ) + (y : ℂ) * Complex.I) n).re := by
         intro n hn
         simp only [Finset.mem_range] at hn
         have hnc : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
         have hnM : (n : ℝ) ≤ (M : ℝ) := by exact_mod_cast Nat.le_of_lt hn
-        have hy2 : (0 : ℝ) < y ^ 2 := by
-          have : y ^ 2 = |y| ^ 2 := (sq_abs y).symm
+        have hy2 : (0 : ℝ) < y ^ (2 : ℕ) := by
+          have : y ^ (2 : ℕ) = |y| ^ (2 : ℕ) := (sq_abs y).symm
           rw [this]
           positivity
         rw [re_gaussDigammaSeriesTerm_vertical]
-        have hb1 : (a + n) / ((a + n) ^ 2 + y ^ 2) ≤ (a + n) / y ^ 2 :=
+        have hb1 : (a + n) / ((a + n) ^ (2 : ℕ) + y ^ (2 : ℕ)) ≤ (a + n) / y ^ (2 : ℕ) :=
           div_le_div_of_nonneg_left (by linarith) hy2 (by nlinarith [sq_nonneg (a + n)])
-        have hb2 : (a + n) / y ^ 2 ≤ ((M : ℝ) + a) / y ^ 2 := by
+        have hb2 : (a + n) / y ^ (2 : ℕ) ≤ ((M : ℝ) + a) / y ^ (2 : ℕ) := by
           rw [div_le_div_iff₀ hy2 hy2]
           nlinarith [hnM, hy2]
         linarith [hb1, hb2]
       refine le_trans ?_ (Finset.sum_le_sum hterm)
       rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
       have hharm := log_le_harmonic M
-      have hy2 : (0 : ℝ) < y ^ 2 := by
-        have : y ^ 2 = |y| ^ 2 := (sq_abs y).symm
+      have hy2 : (0 : ℝ) < y ^ (2 : ℕ) := by
+        have : y ^ (2 : ℕ) = |y| ^ (2 : ℕ) := (sq_abs y).symm
         rw [this]
         positivity
-      have hsmall : (M : ℝ) * (((M : ℝ) + a) / y ^ 2) ≤ 1 := by
+      have hsmall : (M : ℝ) * (((M : ℝ) + a) / y ^ (2 : ℕ)) ≤ 1 := by
         rw [mul_div_assoc'] at *
         rw [div_le_one hy2]
-        have hy2eq : y ^ 2 = |y| * |y| := by
+        have hy2eq : y ^ (2 : ℕ) = |y| * |y| := by
           rw [← sq_abs y]
           ring
         rw [hy2eq]
@@ -284,7 +284,7 @@ theorem re_digamma_vertical_ge {a : ℝ} (ha0 : 0 < a) (ha1 : a ≤ 1) (y : ℝ)
           = Real.log 4 + Real.log ((M : ℝ) + 1) := by
         rw [Real.log_mul (by norm_num) (by positivity)]
       have h4 : Real.log 4 = 2 * Real.log 2 := by
-        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+        rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.log_pow]
         push_cast
         ring
       rw [h3, h4] at h2

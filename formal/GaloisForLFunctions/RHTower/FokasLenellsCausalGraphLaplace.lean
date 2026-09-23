@@ -17,8 +17,8 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalGeneratorGraph := isClosed_causalGeneratorGraph.completeSpace_coe
+local instance fokasLenellsCausalGraphLaplaceInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalGraphLaplaceInst2 : CompleteSpace causalGeneratorGraph := isClosed_causalGeneratorGraph.completeSpace_coe
 local instance : SecondCountableTopologyEither ℝ causalGeneratorGraph :=
   secondCountableTopologyEither_of_left ℝ causalGeneratorGraph
 

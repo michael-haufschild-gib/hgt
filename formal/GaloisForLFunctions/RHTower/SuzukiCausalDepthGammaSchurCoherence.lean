@@ -79,7 +79,7 @@ theorem normSq_suzukiCriticalApertureBoundaryAtom_eq_causalDepthGammaWeight_sq
     (h a t : ℝ) (pe : Nat.Primes × ℕ) :
     Complex.normSq
         (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2) =
-      suzukiCausalDepthGammaWeight h a pe ^ 2 := by
+      suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ) := by
   rw [normSq_suzukiCriticalApertureBoundaryAtom_eq_geometricDepth]
   unfold suzukiCausalDepthGammaWeight
   rw [mul_pow, ← pow_mul, ← pow_mul]

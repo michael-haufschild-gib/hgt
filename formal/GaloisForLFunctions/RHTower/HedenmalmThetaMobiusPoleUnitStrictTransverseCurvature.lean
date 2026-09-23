@@ -17,7 +17,7 @@ regular squarefree current.  This module proves its strict sign without numerica
 The new bridge is an endpoint spectral budget.  The second logarithmic derivative of `xi` at
 `s = 1` is the negative raw reciprocal-square divisor trace.  Its norm is bounded by the raw
 Hermitian endpoint mass, already strictly below `3/43`.  The completed factorization then leaves
-the archimedean reserve `pi^2/8 - 1`, which is larger than `1/8`.  The Euler squarefree correction
+the archimedean reserve `pi^(2 : ℕ)/8 - 1`, which is larger than `1/8`.  The Euler squarefree correction
 has the same favorable sign.  Hence the pole unit is strictly log-concave at `1`, and the literal
 finite source Gram has strictly positive arithmetic transverse curvature.
 

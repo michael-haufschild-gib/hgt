@@ -24,22 +24,22 @@ theorem rawScatteringCubicCoefficient_lower (q : SchwartzMap ℝ ℂ) :
   have h1 : Integrable (fun x : ℝ => (-I)*(deriv q x*rawMixedPrimitive q x)) := hn.const_mul (-I)
   have h2 : Integrable (fun x : ℝ => (I*q 0)*(deriv q x*q (-x))) :=
     (integrable_derivative_reflected_product q).const_mul (I*q 0)
-  have h3 : Integrable (fun x : ℝ => (I*(q 0)^2)*deriv q x) := by
-    have hh : Integrable (fun x : ℝ => (I*(q 0)^2)*(SchwartzMap.derivCLM ℂ ℂ q) x) :=
+  have h3 : Integrable (fun x : ℝ => (I*(q 0)^(2 : ℕ))*deriv q x) := by
+    have hh : Integrable (fun x : ℝ => (I*(q 0)^(2 : ℕ))*(SchwartzMap.derivCLM ℂ ℂ q) x) :=
       (SchwartzMap.derivCLM ℂ ℂ q).integrable.const_mul _
     simpa only [SchwartzMap.derivCLM_apply] using hh
   have h4 : Integrable (fun x : ℝ => (2 : ℂ)*((x : ℂ)*deriv q x)) :=
     (integrable_coordinate_derivative q).const_mul 2
   have he : (fun x : ℝ => (rawThirdIntegrand q 0 (1,0) x).2) =
       fun x => (-I)*(deriv q x*rawMixedPrimitive q x)+(I*q 0)*(deriv q x*q (-x))-
-        (I*(q 0)^2)*deriv q x-(2 : ℂ)*((x : ℂ)*deriv q x) := by
+        (I*(q 0)^(2 : ℕ))*deriv q x-(2 : ℂ)*((x : ℂ)*deriv q x) := by
     funext x
     rw [rawThirdIntegrand_zero_lower]
     ring
   have h12 : Integrable (fun x : ℝ => (-I)*(deriv q x*rawMixedPrimitive q x)+
       (I*q 0)*(deriv q x*q (-x))) := by convert! h1.add h2
   have h123 : Integrable (fun x : ℝ => (-I)*(deriv q x*rawMixedPrimitive q x)+
-      (I*q 0)*(deriv q x*q (-x))-(I*(q 0)^2)*deriv q x) := by convert! h12.sub h3
+      (I*q 0)*(deriv q x*q (-x))-(I*(q 0)^(2 : ℕ))*deriv q x) := by convert! h12.sub h3
   rw [rawScatteringCubicCoefficient_lower_integral,he,
     integral_sub h123 h4,integral_sub h12 h3,integral_add h1 h2]
   simp only [integral_const_mul,integral_q_deriv_mul_rawMixedPrimitive,
@@ -55,13 +55,13 @@ theorem rawScatteringCubicCoefficient_lower_zero_iff (q : SchwartzMap ℝ ℂ) :
 
 /-- The actual reflection quotient converges, with its coefficient evaluated in closed form. -/
 theorem rawReflection_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ) :
-    Tendsto (fun k : ℝ => rawScatteringMatrix q k 1 0/(k : ℂ)^3)
+    Tendsto (fun k : ℝ => rawScatteringMatrix q k 1 0/(k : ℂ)^(3 : ℕ))
       (𝓝[≠] 0) (𝓝 (2*compatibilityMoment q)) := by
   have hc : Continuous (fun M : Matrix (Fin 2) (Fin 2) ℂ => M 1 0) := by fun_prop
   have hh := (hc.tendsto (rawScatteringCubicCoefficient q)).comp
     (rawScatteringMatrix_cubic_quotient_tendsto q)
   change Tendsto (fun k : ℝ =>
-    (((k : ℂ)^3)⁻¹ • (rawScatteringMatrix q k-1-(k : ℂ)^2 • rawScatteringQuadraticCoefficient q)) 1 0)
+    (((k : ℂ)^(3 : ℕ))⁻¹ • (rawScatteringMatrix q k-1-(k : ℂ)^(2 : ℕ) • rawScatteringQuadraticCoefficient q)) 1 0)
     (𝓝[≠] 0) (𝓝 (rawScatteringCubicCoefficient q 1 0)) at hh
   simpa only [Matrix.smul_apply,Matrix.sub_apply,Matrix.one_apply_ne (by omega : (1 : Fin 2) ≠ 0),
     rawScatteringQuadraticCoefficient_lower,smul_zero,sub_zero,smul_eq_mul,mul_zero,zero_mul,

@@ -23,7 +23,7 @@ namespace RHTower
 /-- `rcsch² = 1/sinh²` is convex on `[a,∞)` for `a > 0`: its derivative `−2·rphi` is monotone since
 `rphi` is antitone on the positive reals. -/
 theorem rcsch_sq_convexOn {a : ℝ} (ha : 0 < a) :
-    ConvexOn ℝ (Ici a) (fun x => (rcsch x)^2) := by
+    ConvexOn ℝ (Ici a) (fun x => (rcsch x)^(2 : ℕ)) := by
   apply MonotoneOn.convexOn_of_deriv (convex_Ici a)
   · apply ContinuousOn.pow
     apply ContinuousOn.div continuousOn_const (Real.continuous_sinh.continuousOn)

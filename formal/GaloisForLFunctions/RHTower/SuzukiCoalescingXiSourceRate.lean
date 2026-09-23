@@ -101,21 +101,21 @@ theorem suzukiXiCoalescingSourceRate_eq_theta :
 
 /-- Movable-anchor Xi defect in the squared reciprocal-moment coordinate. -/
 def suzukiXiCoalescingDefect (c : ℝ) : ℝ :=
-  1 - 2 * c ^ 2 *
-    (xiShiftedReciprocalMoment (c ^ 2) 1).re /
-      (xiShiftedReciprocalMoment (c ^ 2) 0).re
+  1 - 2 * c ^ (2 : ℕ) *
+    (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 1).re /
+      (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re
 
 /-- Source-only presentation of the same coalescing defect inside the convergent
 negative-binomial source disk. -/
 def suzukiPrimeArchCoalescingDefect (c : ℝ) : ℝ :=
-  1 - 2 * c ^ 2 *
-    (primeArchShiftedReciprocalMoment (c ^ 2) 1).re /
-      (primeArchShiftedReciprocalMoment (c ^ 2) 0).re
+  1 - 2 * c ^ (2 : ℕ) *
+    (primeArchShiftedReciprocalMoment (c ^ (2 : ℕ)) 1).re /
+      (primeArchShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re
 
 /-- The divisor and prime--Gamma presentations of the movable defect agree exactly throughout the
 source transport window. -/
 theorem suzukiXiCoalescingDefect_eq_primeArch
-    {c : ℝ} (hcmax : c ^ 2 < 41 / 2) :
+    {c : ℝ} (hcmax : c ^ (2 : ℕ) < 41 / 2) :
     suzukiXiCoalescingDefect c = suzukiPrimeArchCoalescingDefect c := by
   rw [suzukiXiCoalescingDefect, suzukiPrimeArchCoalescingDefect,
     xiShiftedReciprocalMoment_eq_primeArchShiftedReciprocalMoment
@@ -128,7 +128,7 @@ theorem suzukiXiCoalescingDefect_eq_logDeriv_ratio
     {c : ℝ} (hc : 0 < c) :
     suzukiXiCoalescingDefect c =
       c * deriv xiRealLogDeriv c / xiRealLogDeriv c := by
-  have hm0 : 0 < (xiShiftedReciprocalMoment (c ^ 2) 0).re :=
+  have hm0 : 0 < (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re :=
     re_xiShiftedReciprocalMoment_pos (sq_pos_of_pos hc) (by norm_num)
   rw [suzukiXiCoalescingDefect, deriv_xiRealLogDeriv_eq hc,
     xiRealLogDeriv_eq_mul_re_xiShiftedReciprocalMoment hc]
@@ -137,38 +137,38 @@ theorem suzukiXiCoalescingDefect_eq_logDeriv_ratio
 /-- Every positive movable anchor has a strict defect below the pure endpoint. -/
 theorem suzukiXiCoalescingDefect_lt_one {c : ℝ} (hc : 0 < c) :
     suzukiXiCoalescingDefect c < 1 := by
-  have hm0 : 0 < (xiShiftedReciprocalMoment (c ^ 2) 0).re :=
+  have hm0 : 0 < (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re :=
     re_xiShiftedReciprocalMoment_pos (sq_pos_of_pos hc) (by norm_num)
-  have hm1 : 0 < (xiShiftedReciprocalMoment (c ^ 2) 1).re :=
+  have hm1 : 0 < (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 1).re :=
     re_xiShiftedReciprocalMoment_pos (sq_pos_of_pos hc) (by norm_num)
   rw [suzukiXiCoalescingDefect]
-  have hterm : 0 < 2 * c ^ 2 *
-      (xiShiftedReciprocalMoment (c ^ 2) 1).re /
-        (xiShiftedReciprocalMoment (c ^ 2) 0).re := by positivity
+  have hterm : 0 < 2 * c ^ (2 : ℕ) *
+      (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 1).re /
+        (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re := by positivity
   linarith
 
 /-- Exact central tangent of the movable Xi defect.  This is equation `(13)` at its invariant
 scale: `(1-kappa(c))/(2c²) -> tau_src`. -/
 theorem tendsto_suzukiXiCoalescingDefect_rate :
     Tendsto
-      (fun c : ℝ => (1 - suzukiXiCoalescingDefect c) / (2 * c ^ 2))
+      (fun c : ℝ => (1 - suzukiXiCoalescingDefect c) / (2 * c ^ (2 : ℕ)))
       (𝓝[>] (0 : ℝ)) (𝓝 suzukiXiCoalescingSourceRate) := by
-  have hc2 : Tendsto (fun c : ℝ => c ^ 2)
+  have hc2 : Tendsto (fun c : ℝ => c ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ)) (𝓝[≥] (0 : ℝ)) := by
     apply tendsto_nhdsWithin_iff.mpr
     constructor
-    · have hcont : ContinuousAt (fun c : ℝ => c ^ 2) 0 := by fun_prop
+    · have hcont : ContinuousAt (fun c : ℝ => c ^ (2 : ℕ)) 0 := by fun_prop
       simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
     · exact Eventually.of_forall fun c => sq_nonneg c
   have hm0 : Tendsto
-      (fun c : ℝ => (xiShiftedReciprocalMoment (c ^ 2) 0).re)
+      (fun c : ℝ => (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re)
       (𝓝[>] (0 : ℝ)) (𝓝 (normalizedPrimeArchMoment 0)) := by
     have h := (Complex.continuous_re.tendsto
       (normalizedPrimeArchMoment 0 : ℂ)).comp
         ((tendsto_xiShiftedReciprocalMoment_nhdsGE_zero 0).comp hc2)
     simpa [Function.comp_def] using h
   have hm1 : Tendsto
-      (fun c : ℝ => (xiShiftedReciprocalMoment (c ^ 2) 1).re)
+      (fun c : ℝ => (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 1).re)
       (𝓝[>] (0 : ℝ)) (𝓝 (normalizedPrimeArchMoment 1)) := by
     have h := (Complex.continuous_re.tendsto
       (normalizedPrimeArchMoment 1 : ℂ)).comp
@@ -178,9 +178,9 @@ theorem tendsto_suzukiXiCoalescingDefect_rate :
   apply hratio.congr'
   filter_upwards [self_mem_nhdsWithin] with c hc
   have hcne : c ≠ 0 := hc.ne'
-  change (xiShiftedReciprocalMoment (c ^ 2) 1).re /
-      (xiShiftedReciprocalMoment (c ^ 2) 0).re =
-    (1 - suzukiXiCoalescingDefect c) / (2 * c ^ 2)
+  change (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 1).re /
+      (xiShiftedReciprocalMoment (c ^ (2 : ℕ)) 0).re =
+    (1 - suzukiXiCoalescingDefect c) / (2 * c ^ (2 : ℕ))
   rw [suzukiXiCoalescingDefect]
   field_simp [hcne]
   ring
@@ -189,14 +189,14 @@ theorem tendsto_suzukiXiCoalescingDefect_rate :
 theorem tendsto_suzukiXiCoalescingDefect_one :
     Tendsto suzukiXiCoalescingDefect
       (𝓝[>] (0 : ℝ)) (𝓝 1) := by
-  have hsq : Tendsto (fun c : ℝ => 2 * c ^ 2)
+  have hsq : Tendsto (fun c : ℝ => 2 * c ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    have hcont : ContinuousAt (fun c : ℝ => 2 * c ^ 2) 0 := by fun_prop
+    have hcont : ContinuousAt (fun c : ℝ => 2 * c ^ (2 : ℕ)) 0 := by fun_prop
     simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hgapScaled := tendsto_suzukiXiCoalescingDefect_rate.mul hsq
   have hgapScaled' : Tendsto
       (fun c : ℝ =>
-        (1 - suzukiXiCoalescingDefect c) / (2 * c ^ 2) * (2 * c ^ 2))
+        (1 - suzukiXiCoalescingDefect c) / (2 * c ^ (2 : ℕ)) * (2 * c ^ (2 : ℕ)))
       (𝓝[>] (0 : ℝ)) (𝓝 0) := by
     simpa using hgapScaled
   have hgap : Tendsto (fun c : ℝ => 1 - suzukiXiCoalescingDefect c)

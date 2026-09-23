@@ -33,10 +33,10 @@ theorem dirPoly_conj_neg (N : ℕ) (c : Fin N → ℂ) (t : ℝ) :
 
 /-- **The mean value theorem on a symmetric range.** -/
 theorem integral_Icc_normSq_dirPoly_symm_le (N : ℕ) (c : Fin N → ℂ) {T : ℝ} (hT : 0 ≤ T) :
-    (∫ t in Set.Icc (-T) T, ‖dirPoly N c t‖ ^ 2)
-      ≤ 2 * ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖c m‖ ^ 2) := by
+    (∫ t in Set.Icc (-T) T, ‖dirPoly N c t‖ ^ (2 : ℕ))
+      ≤ 2 * ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖c m‖ ^ (2 : ℕ)) := by
   classical
-  set g : ℝ → ℝ := fun t => ‖dirPoly N c t‖ ^ 2 with hg
+  set g : ℝ → ℝ := fun t => ‖dirPoly N c t‖ ^ (2 : ℕ) with hg
   have hcg : Continuous g := ((continuous_dirPoly N c).norm).pow 2
   have hii : ∀ x y : ℝ, IntervalIntegrable g volume x y := fun x y =>
     hcg.intervalIntegrable x y
@@ -45,7 +45,7 @@ theorem integral_Icc_normSq_dirPoly_symm_le (N : ℕ) (c : Fin N → ℂ) {T : �
     ← intervalIntegral.integral_add_adjacent_intervals (hii (-T) 0) (hii 0 T)]
   -- the positive half
   have hpos : (∫ t in (0 : ℝ)..T, g t)
-      ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖c m‖ ^ 2 :=
+      ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖c m‖ ^ (2 : ℕ) :=
     integral_normSq_dirPoly_le N c T
   -- the negative half, reflected
   have hrefl : (∫ t in (-T : ℝ)..0, g t) = ∫ t in (0 : ℝ)..T, g (-t) := by
@@ -54,18 +54,18 @@ theorem integral_Icc_normSq_dirPoly_symm_le (N : ℕ) (c : Fin N → ℂ) {T : �
     simp only [neg_one_mul, neg_zero] at h
     rw [h, intervalIntegral.integral_symm (-T) 0, smul_eq_mul]
     ring
-  have hconj : ∀ t : ℝ, g (-t) = ‖dirPoly N (fun n => (starRingEnd ℂ) (c n)) t‖ ^ 2 := by
+  have hconj : ∀ t : ℝ, g (-t) = ‖dirPoly N (fun n => (starRingEnd ℂ) (c n)) t‖ ^ (2 : ℕ) := by
     intro t
     rw [hg, dirPoly_conj_neg N c t, RCLike.norm_conj]
   have hneg : (∫ t in (-T : ℝ)..0, g t)
-      ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖c m‖ ^ 2 := by
+      ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖c m‖ ^ (2 : ℕ) := by
     rw [hrefl]
     have hcongr : (∫ t in (0 : ℝ)..T, g (-t))
-        = ∫ t in (0 : ℝ)..T, ‖dirPoly N (fun n => (starRingEnd ℂ) (c n)) t‖ ^ 2 := by
+        = ∫ t in (0 : ℝ)..T, ‖dirPoly N (fun n => (starRingEnd ℂ) (c n)) t‖ ^ (2 : ℕ) := by
       exact intervalIntegral.integral_congr fun t _ => hconj t
     rw [hcongr]
     have hbase := integral_normSq_dirPoly_le N (fun n => (starRingEnd ℂ) (c n)) T
-    have hnorm : ∑ m : Fin N, ‖(starRingEnd ℂ) (c m)‖ ^ 2 = ∑ m : Fin N, ‖c m‖ ^ 2 := by
+    have hnorm : ∑ m : Fin N, ‖(starRingEnd ℂ) (c m)‖ ^ (2 : ℕ) = ∑ m : Fin N, ‖c m‖ ^ (2 : ℕ) := by
       refine Finset.sum_congr rfl fun m _ => ?_
       rw [RCLike.norm_conj]
     rwa [hnorm] at hbase
@@ -85,15 +85,15 @@ theorem logPoly_eq_dirPoly (a : ℕ → ℂ) (N : ℕ) (w : ℝ) :
 /-- **The frequency mean square of the Gallagher polynomial is a rescaled Dirichlet-polynomial mean
 square.**  The frequency scaling `t = 2πw` is the whole content. -/
 theorem integral_Icc_normSq_logPoly_eq (a : ℕ → ℂ) (N : ℕ) {W : ℝ} (hW : 0 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ))
       = (2 * Real.pi)⁻¹ * ∫ t in Set.Icc (-(2 * Real.pi * W)) (2 * Real.pi * W),
-          ‖dirPoly N (fun n : Fin N => a ((n : ℕ) + 1)) t‖ ^ 2 := by
+          ‖dirPoly N (fun n : Fin N => a ((n : ℕ) + 1)) t‖ ^ (2 : ℕ) := by
   classical
   set c : Fin N → ℂ := fun n : Fin N => a ((n : ℕ) + 1) with hc
-  set g : ℝ → ℝ := fun t => ‖dirPoly N c t‖ ^ 2 with hg
+  set g : ℝ → ℝ := fun t => ‖dirPoly N c t‖ ^ (2 : ℕ) with hg
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   have hle : -W ≤ W := by linarith
-  have hstep : (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2)
+  have hstep : (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ))
       = ∫ w in (-W : ℝ)..W, g (2 * Real.pi * w) := by
     rw [MeasureTheory.integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hle]
     refine intervalIntegral.integral_congr fun w _ => ?_
@@ -109,9 +109,9 @@ theorem integral_Icc_normSq_logPoly_eq (a : ℕ → ℂ) (N : ℕ) {W : ℝ} (hW
 
 /-- **The frequency mean square of the Gallagher polynomial.** -/
 theorem integral_Icc_normSq_logPoly_le (a : ℕ → ℂ) (N : ℕ) {W : ℝ} (hW : 0 ≤ W) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi * W + 4 * (N : ℝ) * (1 + Real.log N)) / Real.pi
-          * ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2 := by
+          * ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ) := by
   rw [integral_Icc_normSq_logPoly_eq a N hW]
   have hsymm := integral_Icc_normSq_dirPoly_symm_le N (fun n : Fin N => a ((n : ℕ) + 1))
     (T := 2 * Real.pi * W) (by positivity)

@@ -55,7 +55,7 @@ def cuspPacketTest (tau : ℝ) (L : ℝ) (hL : 0 < L) : CuspLogTest where
 
 /-- The carrier's modulus is exactly the real compact window, since its phase has unit norm. -/
 theorem cuspPacketField_norm_sq (tau L t : ℝ) :
-    ‖cuspPacketField tau L t‖^2 = cuspWindow (cuspPacketCoordinate L t)^2 := by
+    ‖cuspPacketField tau L t‖^(2 : ℕ) = cuspWindow (cuspPacketCoordinate L t)^(2 : ℕ) := by
   rw [cuspPacketField,norm_mul,cuspPacketPhase_norm,one_mul,Complex.norm_real,
     Real.norm_eq_abs,sq_abs]
 

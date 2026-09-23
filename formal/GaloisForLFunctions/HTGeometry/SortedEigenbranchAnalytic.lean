@@ -13,7 +13,7 @@ Main results:
   Hermitian matrix is one of its eigenvalues.
 * `realEmbed`, `analyticAt_re_comp_realEmbed` — the real restriction of a holomorphic function.
 * `exists_analyticBranches_spectralEnsemble` — analytic branches of the ensemble at a simple point.
-* `analyticAt_sortedTuple_eigenvalues` — **the sorted spectrum is real-analytic at a simple
+* `analyticAt_sortedTuple` — **the sorted spectrum is real-analytic at a simple
   point**.
 * `analyticAt_sortedSpectralAction` — **hence so is the spectral action**.
 -/

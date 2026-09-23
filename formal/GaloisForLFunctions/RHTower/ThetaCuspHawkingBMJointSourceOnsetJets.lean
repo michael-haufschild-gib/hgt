@@ -19,7 +19,7 @@ def timeOnsetFirst (v : ℂ) (u : ℝ) : ℂ :=
 
 def timeOnsetSecond (v : ℂ) (u : ℝ) : ℂ :=
   (((deriv (deriv Real.smoothTransition) u:ℝ):ℂ)+2*v*((deriv Real.smoothTransition u:ℝ):ℂ)+
-    v^2*(Real.smoothTransition u:ℂ))*Complex.exp (v*(u:ℂ))
+    v^(2 : ℕ)*(Real.smoothTransition u:ℂ))*Complex.exp (v*(u:ℂ))
 
 /-- Third original-time jet of the fixed smooth causal onset.  This is the first
 new source jet needed to upgrade the cap from a first trace to a strong second-order
@@ -27,8 +27,8 @@ Goursat candidate. -/
 def timeOnsetThird (v : ℂ) (u : ℝ) : ℂ :=
   (((deriv (deriv (deriv Real.smoothTransition)) u:ℝ):ℂ)+
     3*v*((deriv (deriv Real.smoothTransition) u:ℝ):ℂ)+
-    3*v^2*((deriv Real.smoothTransition u:ℝ):ℂ)+
-    v^3*(Real.smoothTransition u:ℂ))*Complex.exp (v*(u:ℂ))
+    3*v^(2 : ℕ)*((deriv Real.smoothTransition u:ℝ):ℂ)+
+    v^(3 : ℕ)*(Real.smoothTransition u:ℂ))*Complex.exp (v*(u:ℂ))
 
 private theorem transition_hasDerivAt (u : ℝ) :
     HasDerivAt Real.smoothTransition (deriv Real.smoothTransition u) u :=
@@ -69,7 +69,7 @@ theorem timeOnsetSecond_hasDerivAt (v : ℂ) (u : ℝ) :
   have hχ' := (transitionFirst_hasDerivAt u).ofReal_comp
   have hχ'' := (transitionSecond_hasDerivAt u).ofReal_comp
   have hE := ((hasDerivAt_id u).ofReal_comp.const_mul v).cexp
-  apply (((hχ''.add (hχ'.const_mul (2*v))).add (hχ.const_mul (v^2))).mul hE).congr_deriv
+  apply (((hχ''.add (hχ'.const_mul (2*v))).add (hχ.const_mul (v^(2 : ℕ)))).mul hE).congr_deriv
   simp only [timeOnsetThird,Complex.ofReal_one,mul_one,id_eq,Pi.add_apply]
   ring
 

@@ -99,9 +99,9 @@ theorem phiFour_pow_pMap (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
   phiFour_pow_iterate (annW_subset_ball hz) m
 
 theorem quadratic_analyticOnNhd_univ : AnalyticOnNhd ℂ (quadratic (4 : ℂ)) univ := by
-  have h : AnalyticOnNhd ℂ (fun z : ℂ => z ^ 2 + 4) univ :=
+  have h : AnalyticOnNhd ℂ (fun z : ℂ => z ^ (2 : ℕ) + 4) univ :=
     (analyticOnNhd_id.pow 2).add analyticOnNhd_const
-  have he : (quadratic (4 : ℂ)) = fun z : ℂ => z ^ 2 + 4 := by
+  have he : (quadratic (4 : ℂ)) = fun z : ℂ => z ^ (2 : ℕ) + 4 := by
     funext z; exact quadratic_apply 4 z
   rw [he]
   exact h
@@ -132,9 +132,9 @@ theorem pMap_hasDerivAt_ne_zero (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
     simp at h1
     linarith
   have hq : HasDerivAt (quadratic (4 : ℂ)) (2 * z) z := by
-    have h : HasDerivAt (fun w : ℂ => w ^ 2 + 4) ((2 : ℕ) * z ^ (2 - 1)) z :=
+    have h : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 4) ((2 : ℕ) * z ^ (2 - 1)) z :=
       (hasDerivAt_pow 2 z).add_const 4
-    have he : (quadratic (4 : ℂ)) = fun w : ℂ => w ^ 2 + 4 := by
+    have he : (quadratic (4 : ℂ)) = fun w : ℂ => w ^ (2 : ℕ) + 4 := by
       funext w; exact quadratic_apply 4 w
     rw [he]
     convert h using 1
@@ -156,9 +156,9 @@ theorem pMap_hasDerivAt_ne_zero (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
     have hfar : pMap m z ∈ farW := pMap_mem_farW m hz
     have hne : pMap m z ≠ 0 := farW_ne_zero hfar
     have hqm : HasDerivAt (quadratic (4 : ℂ)) (2 * pMap m z) (pMap m z) := by
-      have h : HasDerivAt (fun w : ℂ => w ^ 2 + 4) ((2 : ℕ) * (pMap m z) ^ (2 - 1)) (pMap m z) :=
+      have h : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 4) ((2 : ℕ) * (pMap m z) ^ (2 - 1)) (pMap m z) :=
         (hasDerivAt_pow 2 (pMap m z)).add_const 4
-      have he : (quadratic (4 : ℂ)) = fun w : ℂ => w ^ 2 + 4 := by
+      have he : (quadratic (4 : ℂ)) = fun w : ℂ => w ^ (2 : ℕ) + 4 := by
         funext w; exact quadratic_apply 4 w
       rw [he]
       convert h using 1

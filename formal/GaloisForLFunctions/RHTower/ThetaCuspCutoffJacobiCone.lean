@@ -56,30 +56,30 @@ private theorem step {s : ℕ → ℝ} (hs : PositiveMomentFormBelow s 6)
 
 private theorem shape {s : ℕ → ℝ} (hs : PositiveMomentFormBelow s 6)
     (ho : ∀ n, Odd n → s n = 0) :
-    monicOrtho s 6 = X^6 -
+    monicOrtho s 6 = X^(6 : ℕ) -
       C (monicOrthoBeta s 1 + monicOrthoBeta s 2 + monicOrthoBeta s 3 +
-        monicOrthoBeta s 4 + monicOrthoBeta s 5) * X^4 +
+        monicOrthoBeta s 4 + monicOrthoBeta s 5) * X^(4 : ℕ) +
       C (monicOrthoBeta s 1 * monicOrthoBeta s 3 +
         monicOrthoBeta s 1 * monicOrthoBeta s 4 +
         monicOrthoBeta s 2 * monicOrthoBeta s 4 +
         monicOrthoBeta s 1 * monicOrthoBeta s 5 +
         monicOrthoBeta s 2 * monicOrthoBeta s 5 +
-        monicOrthoBeta s 3 * monicOrthoBeta s 5) * X^2 -
+        monicOrthoBeta s 3 * monicOrthoBeta s 5) * X^(2 : ℕ) -
       C (monicOrthoBeta s 1 * monicOrthoBeta s 3 * monicOrthoBeta s 5) := by
   let b := monicOrthoBeta s
   have p1 : monicOrtho s 1 = X := by
     have h := step hs ho 0 (by omega) (Or.inl (by simp))
     simpa [monicOrthoBeta] using h
-  have p2 : monicOrtho s 2 = X^2 - C (b 1) := by
+  have p2 : monicOrtho s 2 = X^(2 : ℕ) - C (b 1) := by
     rw [step hs ho 1 (by omega) (Or.inr (by simp [p1])), p1, monicOrtho_zero]
     dsimp [b]; ring
-  have p3 : monicOrtho s 3 = X^3 - C (b 1+b 2)*X := by
+  have p3 : monicOrtho s 3 = X^(3 : ℕ) - C (b 1+b 2)*X := by
     rw [step hs ho 2 (by omega) (Or.inl (by simp [p2])), p2, p1]
     simp only [b, map_add]; ring
-  have p4 : monicOrtho s 4 = X^4 - C (b 1+b 2+b 3)*X^2+C (b 1*b 3) := by
+  have p4 : monicOrtho s 4 = X^(4 : ℕ) - C (b 1+b 2+b 3)*X^(2 : ℕ)+C (b 1*b 3) := by
     rw [step hs ho 3 (by omega) (Or.inr (by simp [p3]; ring)), p3, p2]
     simp only [b, map_add, map_mul]; ring
-  have p5 : monicOrtho s 5 = X^5-C (b 1+b 2+b 3+b 4)*X^3+
+  have p5 : monicOrtho s 5 = X^(5 : ℕ)-C (b 1+b 2+b 3+b 4)*X^(3 : ℕ)+
       C (b 1*b 3+b 1*b 4+b 2*b 4)*X := by
     rw [step hs ho 4 (by omega) (Or.inl (by simp [p4]; ring)), p4, p3]
     simp only [b, map_add, map_mul]; ring
@@ -90,15 +90,15 @@ private theorem functional_C_mul_X_pow (s : ℕ → ℝ) (c : ℝ) (k : ℕ) :
   rw [← Polynomial.smul_eq_C_mul, momentFunctional_smul, momentFunctional_X_pow]
 
 private theorem shape_square (s : ℕ → ℝ) (S E F : ℝ) :
-    momentInner s (X^6-C S*X^4+C E*X^2-C F)
-      (X^6-C S*X^4+C E*X^2-C F) =
-      s 12-2*S*s 10+(S^2+2*E)*s 8-2*(S*E+F)*s 6+
-        (E^2+2*S*F)*s 4-2*E*F*s 2+F^2*s 0 := by
+    momentInner s (X^(6 : ℕ)-C S*X^(4 : ℕ)+C E*X^(2 : ℕ)-C F)
+      (X^(6 : ℕ)-C S*X^(4 : ℕ)+C E*X^(2 : ℕ)-C F) =
+      s 12-2*S*s 10+(S^(2 : ℕ)+2*E)*s 8-2*(S*E+F)*s 6+
+        (E^(2 : ℕ)+2*S*F)*s 4-2*E*F*s 2+F^(2 : ℕ)*s 0 := by
   unfold momentInner
-  have hp : (X^6-C S*X^4+C E*X^2-C F)*(X^6-C S*X^4+C E*X^2-C F) =
-      C 1*X^12 + C (-2*S)*X^10+C (S^2+2*E)*X^8+
-        C (-2*(S*E+F))*X^6+C (E^2+2*S*F)*X^4+
-        C (-2*E*F)*X^2+C (F^2)*X^0 := by
+  have hp : (X^(6 : ℕ)-C S*X^(4 : ℕ)+C E*X^(2 : ℕ)-C F)*(X^(6 : ℕ)-C S*X^(4 : ℕ)+C E*X^(2 : ℕ)-C F) =
+      C 1*X^(12 : ℕ) + C (-2*S)*X^(10 : ℕ)+C (S^(2 : ℕ)+2*E)*X^(8 : ℕ)+
+        C (-2*(S*E+F))*X^(6 : ℕ)+C (E^(2 : ℕ)+2*S*F)*X^(4 : ℕ)+
+        C (-2*E*F)*X^(2 : ℕ)+C (F^(2 : ℕ))*X^(0 : ℕ) := by
     simp only [map_one, map_add, map_mul, map_neg, map_pow, map_ofNat]
     ring
   rw [hp]
@@ -131,8 +131,8 @@ private theorem cutoff_positive_below {a : ℝ} (ha0 : 0<a) (ha : a<1/2) :
 /-- The actual cutoff has alternating even coefficients fixed by the lower Jacobi data. -/
 theorem thetaCuspCenterMixedCutoffPolynomial_eq_jacobi
     {a : ℝ} (ha0 : 0<a) (ha : a<1/2) :
-    thetaCuspCenterMixedCutoffPolynomial a = X^6-C (thetaCuspCutoffJacobiSum a)*X^4+
-      C (thetaCuspCutoffJacobiPairs a)*X^2-C (thetaCuspCutoffJacobiProduct a) := by
+    thetaCuspCenterMixedCutoffPolynomial a = X^(6 : ℕ)-C (thetaCuspCutoffJacobiSum a)*X^(4 : ℕ)+
+      C (thetaCuspCutoffJacobiPairs a)*X^(2 : ℕ)-C (thetaCuspCutoffJacobiProduct a) := by
   apply ThetaCuspCutoffJacobiAlgebra.shape (cutoff_positive_below ha0 ha)
   intro n hn
   obtain ⟨k,hk⟩ := hn
@@ -167,7 +167,7 @@ theorem thetaCuspCenterMixedCutoffPolynomial_even
 
 /-- Positive real magnitude of the cutoff on the imaginary axis. -/
 def thetaCuspCutoffImaginarySymbol (a d : ℝ) : ℝ :=
-  d^6+thetaCuspCutoffJacobiSum a*d^4+thetaCuspCutoffJacobiPairs a*d^2+
+  d^(6 : ℕ)+thetaCuspCutoffJacobiSum a*d^(4 : ℕ)+thetaCuspCutoffJacobiPairs a*d^(2 : ℕ)+
     thetaCuspCutoffJacobiProduct a
 
 /-- The imaginary-axis readout retains every Jacobi coefficient with positive sign. -/
@@ -179,8 +179,8 @@ theorem thetaCuspCenterMixedCutoffPolynomial_eval_imaginary
   simp only [eval₂_sub, eval₂_add, eval₂_pow, eval₂_mul, eval₂_C, eval₂_X,
     Complex.ofRealHom_eq_coe, thetaCuspCutoffImaginarySymbol, Complex.ofReal_add,
     Complex.ofReal_mul, Complex.ofReal_pow, mul_pow]
-  have hI6 : (Complex.I : ℂ)^6 = -1 := by
-    calc Complex.I^6 = (Complex.I^2)^3 := by ring
+  have hI6 : (Complex.I : ℂ)^(6 : ℕ) = -1 := by
+    calc Complex.I^(6 : ℕ) = (Complex.I^(2 : ℕ))^(3 : ℕ) := by ring
          _ = -1 := by norm_num
   norm_num [hI6]
   ring
@@ -188,10 +188,10 @@ theorem thetaCuspCenterMixedCutoffPolynomial_eval_imaginary
 /-- A mixed geometric jet cannot cancel the actual cutoff's leading or constant terms. -/
 theorem thetaCuspCutoffImaginarySymbol_square_lower
     {a : ℝ} (ha0 : 0<a) (ha : a<1/2) (d : ℝ) :
-    (d^6+thetaCuspCutoffJacobiProduct a)^2 ≤ (thetaCuspCutoffImaginarySymbol a d)^2 := by
+    (d^(6 : ℕ)+thetaCuspCutoffJacobiProduct a)^(2 : ℕ) ≤ (thetaCuspCutoffImaginarySymbol a d)^(2 : ℕ) := by
   obtain ⟨hS,hE,hF⟩ := thetaCuspCutoffJacobi_coefficients_pos ha0 ha
-  have h0 : 0 ≤ d^6+thetaCuspCutoffJacobiProduct a := by positivity
-  have hle : d^6+thetaCuspCutoffJacobiProduct a ≤ thetaCuspCutoffImaginarySymbol a d := by
+  have h0 : 0 ≤ d^(6 : ℕ)+thetaCuspCutoffJacobiProduct a := by positivity
+  have hle : d^(6 : ℕ)+thetaCuspCutoffJacobiProduct a ≤ thetaCuspCutoffImaginarySymbol a d := by
     unfold thetaCuspCutoffImaginarySymbol
     nlinarith [mul_nonneg hS.le (pow_nonneg (sq_nonneg d) 2),
       mul_nonneg hE.le (sq_nonneg d)]
@@ -206,8 +206,8 @@ theorem thetaCuspCenterMixedCutoffPolynomial_norm_eq_raw_jacobi
     let d := fun n => iteratedDeriv n (thetaCuspCenterMixedDensity a) 0
     momentInner (thetaCuspCenterMixedSignedJet a) (thetaCuspCenterMixedCutoffPolynomial a)
       (thetaCuspCenterMixedCutoffPolynomial a) =
-      d 12+2*S*d 10+(S^2+2*E)*d 8+2*(S*E+F)*d 6+
-        (E^2+2*S*F)*d 4+2*E*F*d 2+F^2*d 0 := by
+      d 12+2*S*d 10+(S^(2 : ℕ)+2*E)*d 8+2*(S*E+F)*d 6+
+        (E^(2 : ℕ)+2*S*F)*d 4+2*E*F*d 2+F^(2 : ℕ)*d 0 := by
   dsimp only
   rw [thetaCuspCenterMixedCutoffPolynomial_eq_jacobi ha0 ha, ThetaCuspCutoffJacobiAlgebra.shape_square]
   have hj := thetaCuspCenterMixedSignedJet_even a

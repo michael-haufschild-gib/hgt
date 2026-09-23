@@ -81,9 +81,9 @@ theorem norm_shiftedSquaredNode_le_two_mul_re
   let A : ℝ := y + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
   have hA : 0 < A := add_pos hy (xiSquaredNode_re_pos q)
-  have hsector : 84 * B ^ 2 < A ^ 2 := by
+  have hsector : 84 * B ^ (2 : ℕ) < A ^ (2 : ℕ) := by
     simpa [A, B] using eightyFour_mul_xiSquaredNode_im_sq_lt hy q
-  have hB : B ^ 2 ≤ A ^ 2 := by nlinarith [sq_nonneg B]
+  have hB : B ^ (2 : ℕ) ≤ A ^ (2 : ℕ) := by nlinarith [sq_nonneg B]
   apply (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (by norm_num) hA.le)).mp
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
   simp only [Complex.add_re, Complex.ofReal_re, Complex.add_im, Complex.ofReal_im,

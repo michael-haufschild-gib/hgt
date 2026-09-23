@@ -40,7 +40,7 @@ lemma binary_mean (t : ℝ) :
 
 lemma binary_variance (t : ℝ) :
     finiteTiltVariance binaryEscortWeight binaryEscortScore t =
-    Real.exp t / (1 + Real.exp t) ^ 2 := by
+    Real.exp t / (1 + Real.exp t) ^ (2 : ℕ) := by
   rw [finiteTiltVariance_eq_second_sub_sq
     (by simp [binaryEscortWeight]) binaryEscortWeight_sum]
   rw [finiteTiltSecondMoment_eq_div, finiteTiltMean_eq_div]
@@ -50,9 +50,9 @@ lemma binary_variance (t : ℝ) :
 
 lemma binary_variance_cosh (t : ℝ) :
     finiteTiltVariance binaryEscortWeight binaryEscortScore t =
-    1 / (4 * Real.cosh (t / 2) ^ 2) := by
+    1 / (4 * Real.cosh (t / 2) ^ (2 : ℕ)) := by
   rw [binary_variance, Real.cosh_eq, Real.exp_neg]
-  have hexp : Real.exp t = Real.exp (t / 2) ^ 2 := by
+  have hexp : Real.exp t = Real.exp (t / 2) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
@@ -64,7 +64,7 @@ private lemma tanh_eq_expTwoRatio (y : ℝ) :
     Real.tanh y = (Real.exp (2 * y) - 1) / (Real.exp (2 * y) + 1) := by
   rw [Real.tanh_eq, show Real.exp (2 * y) = Real.exp y * Real.exp y by
     rw [show 2 * y = y + y by ring, Real.exp_add], Real.exp_neg]
-  have hden : Real.exp y ^ 2 + 1 ≠ 0 := by positivity
+  have hden : Real.exp y ^ (2 : ℕ) + 1 ≠ 0 := by positivity
   field_simp [Real.exp_ne_zero y, hden]
 
 lemma binary_mean_reflection (t : ℝ) :
@@ -86,13 +86,13 @@ lemma binary_sqrt_variance (t : ℝ) :
     √(finiteTiltVariance binaryEscortWeight binaryEscortScore t) =
     Real.exp (t / 2) / (1 + Real.exp t) := by
   rw [binary_variance]
-  have hsquare : Real.exp t / (1 + Real.exp t) ^ 2 =
-      (Real.exp (t / 2) / (1 + Real.exp t)) ^ 2 := by
-    rw [show Real.exp t = Real.exp (t / 2) ^ 2 by
+  have hsquare : Real.exp t / (1 + Real.exp t) ^ (2 : ℕ) =
+      (Real.exp (t / 2) / (1 + Real.exp t)) ^ (2 : ℕ) := by
+    rw [show Real.exp t = Real.exp (t / 2) ^ (2 : ℕ) by
       rw [← Real.exp_nat_mul]
       congr 1
       ring]
-    field_simp [show 1 + Real.exp (t / 2) ^ 2 ≠ 0 by positivity]
+    field_simp [show 1 + Real.exp (t / 2) ^ (2 : ℕ) ≠ 0 by positivity]
   rw [hsquare, Real.sqrt_sq_eq_abs, abs_of_pos (by positivity)]
 
 lemma hasDerivAt_binaryFisherCoordinate (t : ℝ) :
@@ -103,13 +103,13 @@ lemma hasDerivAt_binaryFisherCoordinate (t : ℝ) :
   have hexp := hinner.exp
   have hatan := (Real.hasDerivAt_arctan (Real.exp (t / 2))).comp t hexp
   have h := hatan.const_mul 2
-  have hval : 2 * (1 / (1 + Real.exp (t / 2) ^ 2) *
+  have hval : 2 * (1 / (1 + Real.exp (t / 2) ^ (2 : ℕ)) *
       (Real.exp (t / 2) * (1 / 2))) = Real.exp (t / 2) / (1 + Real.exp t) := by
-    rw [show Real.exp t = Real.exp (t / 2) ^ 2 by
+    rw [show Real.exp t = Real.exp (t / 2) ^ (2 : ℕ) by
       rw [← Real.exp_nat_mul]
       congr 1
       ring]
-    field_simp [show 1 + Real.exp (t / 2) ^ 2 ≠ 0 by positivity]
+    field_simp [show 1 + Real.exp (t / 2) ^ (2 : ℕ) ≠ 0 by positivity]
   rw [hval] at h
   change HasDerivAt (fun y : ℝ => 2 * Real.arctan (Real.exp (y / 2)))
     (Real.exp (t / 2) / (1 + Real.exp t)) t
@@ -129,7 +129,7 @@ lemma binary_fisher_interval (a b : ℝ) :
     (fun t _ => hasDerivAt_binaryFisherCoordinate_sqrt_variance t)
     ((Real.continuous_sqrt.comp (by
       rw [show finiteTiltVariance binaryEscortWeight binaryEscortScore =
-          fun t => Real.exp t / (1 + Real.exp t) ^ 2 by
+          fun t => Real.exp t / (1 + Real.exp t) ^ (2 : ℕ) by
         funext t
         exact binary_variance t]
       exact Real.continuous_exp.div

@@ -84,7 +84,7 @@ theorem nonvanishing_of_nowhereZero_homotopy {H : ℝ → ℝ → ℂ}
 /-! ### Cancelling crossings -/
 
 /-- A section with two simple zeros of opposite crossing sign. -/
-def crossingExample (t : ℝ) : ℝ := t ^ 2 - 1
+def crossingExample (t : ℝ) : ℝ := t ^ (2 : ℕ) - 1
 
 theorem crossingExample_eq_zero_iff (t : ℝ) : crossingExample t = 0 ↔ t = 1 ∨ t = -1 := by
   rw [crossingExample, sub_eq_zero]
@@ -97,7 +97,7 @@ theorem crossingExample_eq_zero_iff (t : ℝ) : crossingExample t = 0 ↔ t = 1 
   · rintro (rfl | rfl) <;> norm_num
 
 theorem crossingExample_hasDerivAt (t : ℝ) : HasDerivAt crossingExample (2 * t) t := by
-  have h : HasDerivAt (fun x : ℝ => x ^ 2 - 1) (2 * t) t := by
+  have h : HasDerivAt (fun x : ℝ => x ^ (2 : ℕ) - 1) (2 * t) t := by
     simpa using ((hasDerivAt_pow 2 t).sub_const 1)
   exact h
 

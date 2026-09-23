@@ -62,7 +62,7 @@ theorem thetaCuspCenterMixedFourierCurrent_eq_normSq_mul_logDeriv
     simp [Complex.normSq]
   · rw [logDeriv_apply]
     rw [Complex.div_re, Complex.normSq_apply]
-    have hnorm : (xi s).re ^ 2 + (xi s).im ^ 2 ≠ 0 := by
+    have hnorm : (xi s).re ^ (2 : ℕ) + (xi s).im ^ (2 : ℕ) ≠ 0 := by
       simpa [Complex.normSq_apply, pow_two] using
         (mt Complex.normSq_eq_zero.mp hs0)
     field_simp [hnorm]

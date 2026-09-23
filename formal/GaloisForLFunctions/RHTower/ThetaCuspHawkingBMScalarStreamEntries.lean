@@ -1326,7 +1326,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_metric_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).metric 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * P * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * P * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1338,7 +1338,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_metric_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).metric 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * P * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * P * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1398,7 +1398,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_first_0_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).first 0 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * P * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * P * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1410,7 +1410,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_first_0_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).first 0 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * P * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * P * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1470,7 +1470,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_first_1_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).first 1 2 2 =
-      r * y⁻¹ ^ 2 * H * P * 4 + r ^ 2 * y⁻¹ ^ 2 * P * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * P * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * P * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1482,7 +1482,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_first_1_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).first 1 3 3 =
-      r * y⁻¹ ^ 2 * H * P * 4 + r ^ 2 * y⁻¹ ^ 2 * P * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * P * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * P * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1542,7 +1542,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_first_2_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).first 2 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Px * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Px * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1554,7 +1554,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_first_2_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).first 2 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Px * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Px * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1614,7 +1614,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_first_3_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).first 3 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Py * 2 - r ^ 2 * y⁻¹ ^ 3 * H * P * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Py * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * P * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1626,7 +1626,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_first_3_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).first 3 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Py * 2 - r ^ 2 * y⁻¹ ^ 3 * H * P * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Py * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * P * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1638,7 +1638,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_0_0_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 0 0 0 =
-      w ^ 2 * F0 * P := by
+      w ^ (2 : ℕ) * F0 * P := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1650,7 +1650,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_0_0_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 0 0 1 =
-      w ^ 2 * F1 * P := by
+      w ^ (2 : ℕ) * F1 * P := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1662,7 +1662,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_0_1_0 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 0 1 0 =
-      w ^ 2 * F1 * P := by
+      w ^ (2 : ℕ) * F1 * P := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1674,7 +1674,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_0_1_1 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 0 1 1 =
-      w ^ 2 * F2 * P := by
+      w ^ (2 : ℕ) * F2 * P := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1686,7 +1686,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_0_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 0 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w ^ 2 * P * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w ^ (2 : ℕ) * P * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1698,7 +1698,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_0_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 0 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w ^ 2 * P * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w ^ (2 : ℕ) * P * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1758,7 +1758,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_1_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 1 2 2 =
-      r * y⁻¹ ^ 2 * H * w * P * 4 + r ^ 2 * y⁻¹ ^ 2 * w * P * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * w * P * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * w * P * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1770,7 +1770,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_1_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 1 3 3 =
-      r * y⁻¹ ^ 2 * H * w * P * 4 + r ^ 2 * y⁻¹ ^ 2 * w * P * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * w * P * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * w * P * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1830,7 +1830,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_2_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 2 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * Px * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * Px * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1842,7 +1842,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_2_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 2 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * Px * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * Px * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1902,7 +1902,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_3_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 3 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * Py * 2 - r ^ 2 * y⁻¹ ^ 3 * H * w * P * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * Py * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * w * P * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1914,7 +1914,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_0_3_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 0 3 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * Py * 2 - r ^ 2 * y⁻¹ ^ 3 * H * w * P * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * Py * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * w * P * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1974,7 +1974,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_1_0_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 1 0 2 2 =
-      r * y⁻¹ ^ 2 * H * w * P * 4 + r ^ 2 * y⁻¹ ^ 2 * w * P * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * w * P * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * w * P * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -1986,7 +1986,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_1_0_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 1 0 3 3 =
-      r * y⁻¹ ^ 2 * H * w * P * 4 + r ^ 2 * y⁻¹ ^ 2 * w * P * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * w * P * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * w * P * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2046,7 +2046,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_1_1_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 1 1 2 2 =
-      r * y⁻¹ ^ 2 * H1 * P * 8 + r ^ 2 * y⁻¹ ^ 2 * P * H2 * 2 + y⁻¹ ^ 2 * P * H * 4 := by
+      r * y⁻¹ ^ (2 : ℕ) * H1 * P * 8 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * P * H2 * 2 + y⁻¹ ^ (2 : ℕ) * P * H * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2058,7 +2058,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_1_1_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 1 1 3 3 =
-      r * y⁻¹ ^ 2 * H1 * P * 8 + r ^ 2 * y⁻¹ ^ 2 * P * H2 * 2 + y⁻¹ ^ 2 * P * H * 4 := by
+      r * y⁻¹ ^ (2 : ℕ) * H1 * P * 8 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * P * H2 * 2 + y⁻¹ ^ (2 : ℕ) * P * H * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2118,7 +2118,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_1_2_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 1 2 2 2 =
-      r * y⁻¹ ^ 2 * H * Px * 4 + r ^ 2 * y⁻¹ ^ 2 * Px * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * Px * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * Px * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2130,7 +2130,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_1_2_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 1 2 3 3 =
-      r * y⁻¹ ^ 2 * H * Px * 4 + r ^ 2 * y⁻¹ ^ 2 * Px * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * Px * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * Px * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2190,7 +2190,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_1_3_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 1 3 2 2 =
-      r * y⁻¹ ^ 2 * H * Py * 4 - r * y⁻¹ ^ 3 * H * P * 8 + r ^ 2 * y⁻¹ ^ 2 * Py * H1 * 2 - r ^ 2 * y⁻¹ ^ 3 * P * H1 * 4 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * Py * 4 - r * y⁻¹ ^ (3 : ℕ) * H * P * 8 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * Py * H1 * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * P * H1 * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2202,7 +2202,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_1_3_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 1 3 3 3 =
-      r * y⁻¹ ^ 2 * H * Py * 4 - r * y⁻¹ ^ 3 * H * P * 8 + r ^ 2 * y⁻¹ ^ 2 * Py * H1 * 2 - r ^ 2 * y⁻¹ ^ 3 * P * H1 * 4 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * Py * 4 - r * y⁻¹ ^ (3 : ℕ) * H * P * 8 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * Py * H1 * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * P * H1 * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2262,7 +2262,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_2_0_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 2 0 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * Px * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * Px * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2274,7 +2274,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_2_0_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 2 0 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * Px * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * Px * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2334,7 +2334,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_2_1_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 2 1 2 2 =
-      r * y⁻¹ ^ 2 * H * Px * 4 + r ^ 2 * y⁻¹ ^ 2 * Px * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * Px * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * Px * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2346,7 +2346,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_2_1_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 2 1 3 3 =
-      r * y⁻¹ ^ 2 * H * Px * 4 + r ^ 2 * y⁻¹ ^ 2 * Px * H1 * 2 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * Px * 4 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * Px * H1 * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2406,7 +2406,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_2_2_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 2 2 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Pxx * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Pxx * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2418,7 +2418,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_2_2_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 2 2 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Pxx * 2 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Pxx * 2 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2478,7 +2478,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_2_3_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 2 3 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Pxy * 2 - r ^ 2 * y⁻¹ ^ 3 * H * Px * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Pxy * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * Px * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2490,7 +2490,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_2_3_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 2 3 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Pxy * 2 - r ^ 2 * y⁻¹ ^ 3 * H * Px * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Pxy * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * Px * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2550,7 +2550,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_3_0_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 3 0 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * Py * 2 - r ^ 2 * y⁻¹ ^ 3 * H * w * P * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * Py * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * w * P * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2562,7 +2562,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_3_0_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 3 0 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * w * Py * 2 - r ^ 2 * y⁻¹ ^ 3 * H * w * P * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * w * Py * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * w * P * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2622,7 +2622,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_3_1_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 3 1 2 2 =
-      r * y⁻¹ ^ 2 * H * Py * 4 - r * y⁻¹ ^ 3 * H * P * 8 + r ^ 2 * y⁻¹ ^ 2 * Py * H1 * 2 - r ^ 2 * y⁻¹ ^ 3 * P * H1 * 4 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * Py * 4 - r * y⁻¹ ^ (3 : ℕ) * H * P * 8 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * Py * H1 * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * P * H1 * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2634,7 +2634,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_3_1_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 3 1 3 3 =
-      r * y⁻¹ ^ 2 * H * Py * 4 - r * y⁻¹ ^ 3 * H * P * 8 + r ^ 2 * y⁻¹ ^ 2 * Py * H1 * 2 - r ^ 2 * y⁻¹ ^ 3 * P * H1 * 4 := by
+      r * y⁻¹ ^ (2 : ℕ) * H * Py * 4 - r * y⁻¹ ^ (3 : ℕ) * H * P * 8 + r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * Py * H1 * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * P * H1 * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2694,7 +2694,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_3_2_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 3 2 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Pxy * 2 - r ^ 2 * y⁻¹ ^ 3 * H * Px * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Pxy * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * Px * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2706,7 +2706,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_3_2_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 3 2 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Pxy * 2 - r ^ 2 * y⁻¹ ^ 3 * H * Px * 4 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Pxy * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * Px * 4 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2766,7 +2766,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_3_3_2_2 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 3 3 2 2 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Pyy * 2 - r ^ 2 * y⁻¹ ^ 3 * H * Py * 8 + r ^ 2 * y⁻¹ ^ 4 * H * P * 12 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Pyy * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * Py * 8 + r ^ (2 : ℕ) * y⁻¹ ^ (4 : ℕ) * H * P * 12 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
@@ -2778,7 +2778,7 @@ variable {w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy : �
 
 @[bmStreamEntry] theorem metricJet_second_3_3_3_3 (_hr : r ≠ 0) (_hy : y ≠ 0) :
     (metricJet w r y F0 F01 F02 F1 F11 F12 F2 F21 F22 H H1 H2 P Px Py Pxx Pxy Pyy).second 3 3 3 3 =
-      r ^ 2 * y⁻¹ ^ 2 * H * Pyy * 2 - r ^ 2 * y⁻¹ ^ 3 * H * Py * 8 + r ^ 2 * y⁻¹ ^ 4 * H * P * 12 := by
+      r ^ (2 : ℕ) * y⁻¹ ^ (2 : ℕ) * H * Pyy * 2 - r ^ (2 : ℕ) * y⁻¹ ^ (3 : ℕ) * H * Py * 8 + r ^ (2 : ℕ) * y⁻¹ ^ (4 : ℕ) * H * P * 12 := by
   simp only [metricJet, orbitJet, angularJet, coord, ScalarTwoJet.mul, ScalarTwoJet.add,
     ScalarTwoJet.neg, ScalarTwoJet.inv, ScalarTwoJet.constant, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,

@@ -8,11 +8,11 @@ Squaring zeta turns the shifted pole `z = 1-s` in the smooth Mellin contour from
 This file supplies the required Hermite, rather than Lagrange, principal-part decomposition.  For
 an analytic numerator `N` and nonzero `a`, it decomposes
 
-`N(z) / (z (z-a)^2)`
+`N(z) / (z (z-a)^(2 : ℕ))`
 
 into a simple pole at zero, a double and a simple pole at `a`, and an analytic threefold divided-
 difference remainder.  It then identifies the simple residue at zero of the literal
-`Gamma(z) zeta(s+z)^2` integrand as `zeta(s)^2` on the critical line.
+`Gamma(z) zeta(s+z)^(2 : ℕ)` integrand as `zeta(s)^(2 : ℕ)` on the critical line.
 -/
 
 noncomputable section
@@ -21,10 +21,10 @@ open Complex Set
 
 namespace RHTower.Sieve
 
-/-- Coefficient of the simple pole at zero in a `z (z-a)^2` quotient. -/
+/-- Coefficient of the simple pole at zero in a `z (z-a)^(2 : ℕ)` quotient. -/
 def confluentSimpleCoeff (N : ℂ → ℂ) (a : ℂ) : ℂ := N 0 / a ^ 2
 
-/-- Coefficient of the double pole at `a` in a `z (z-a)^2` quotient. -/
+/-- Coefficient of the double pole at `a` in a `z (z-a)^(2 : ℕ)` quotient. -/
 def confluentDoubleCoeff (N : ℂ → ℂ) (a : ℂ) : ℂ := N a / a
 
 /-- Residue of the double-pole packet at `a`. -/
@@ -270,7 +270,7 @@ theorem differentiableOn_inghamZetaSquareConfluentRemainder_shiftDomain
   · apply isOpen_inghamZetaSquareShiftDomain.mem_nhds
     norm_num [inghamZetaSquareShiftDomain]
 
-/-- The residue at the Gamma pole `z=0` is exactly the desired `zeta(s)^2` term. -/
+/-- The residue at the Gamma pole `z=0` is exactly the desired `zeta(s)^(2 : ℕ)` term. -/
 theorem confluentSimpleCoeff_inghamZetaSquarePoleNumerator
     (tau : ℝ) (x : ℝ) :
     confluentSimpleCoeff (inghamZetaSquarePoleNumerator (linePt tau) x)

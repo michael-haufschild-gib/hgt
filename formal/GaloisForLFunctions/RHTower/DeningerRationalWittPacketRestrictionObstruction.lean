@@ -105,12 +105,12 @@ vector forbids pointwise square summability, hence any global Bessel assembly co
 theorem deningerPacket_not_summable_norm_sq_of_cofinite_floor
     (restriction : ∀ p, E → Kp p) (x : E) {ε : ℝ} (hε : 0 < ε)
     (hfloor : ∀ᶠ p in cofinite, ε ≤ ‖restriction p x‖) :
-    ¬ Summable (fun p => ‖restriction p x‖ ^ 2) := by
+    ¬ Summable (fun p => ‖restriction p x‖ ^ (2 : ℕ)) := by
   intro hsum
   have hzero :
-      Tendsto (fun p => ‖restriction p x‖ ^ 2) cofinite (𝓝 0) :=
+      Tendsto (fun p => ‖restriction p x‖ ^ (2 : ℕ)) cofinite (𝓝 0) :=
     hsum.tendsto_cofinite_zero
-  have hsmall : ∀ᶠ p in cofinite, ‖restriction p x‖ ^ 2 < ε ^ 2 :=
+  have hsmall : ∀ᶠ p in cofinite, ‖restriction p x‖ ^ (2 : ℕ) < ε ^ (2 : ℕ) :=
     hzero.eventually_lt_const (sq_pos_of_pos hε)
   obtain ⟨p, hp, hp'⟩ := (hfloor.and hsmall).exists
   exact (not_lt_of_ge (sq_le_sq₀ hε.le (norm_nonneg _)|>.2 hp)) hp'
@@ -120,10 +120,10 @@ theorem deningerPacket_not_summable_graphGreenEnergy_of_cofinite_unit_norm
     (f : ∀ p, Kp p)
     (hunit : ∀ᶠ p in cofinite, ‖f p‖ = 1) :
     ¬ Summable (fun p =>
-      deningerPrimeGraphGreenCoefficient p * ‖f p‖ ^ 2) := by
+      deningerPrimeGraphGreenCoefficient p * ‖f p‖ ^ (2 : ℕ)) := by
   intro hsum
   have heq :
-      (fun p => deningerPrimeGraphGreenCoefficient p * ‖f p‖ ^ 2)
+      (fun p => deningerPrimeGraphGreenCoefficient p * ‖f p‖ ^ (2 : ℕ))
         =ᶠ[cofinite] deningerPrimeGraphGreenCoefficient := by
     filter_upwards [hunit] with p hp
     rw [hp, one_pow, mul_one]

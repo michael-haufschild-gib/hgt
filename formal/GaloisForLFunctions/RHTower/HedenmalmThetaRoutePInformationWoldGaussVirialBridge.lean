@@ -35,7 +35,7 @@ theorem deriv_sourceHorizontalHolonomyVirial (u : ℝ) :
 /-- Exact differential weld to inverse-Euler Green carrier. -/
 theorem deriv_sourceHorizontalHolonomyVirial_eq_woldEulerGreenResponse (u : ℝ) :
     deriv sourceHorizontalHolonomyVirial u =
-      u ^ 2 * deriv RHTower.sourceHorizontalWoldEulerGreenProfile u := by
+      u ^ (2 : ℕ) * deriv RHTower.sourceHorizontalWoldEulerGreenProfile u := by
   rw [deriv_sourceHorizontalHolonomyVirial,
     RHTower.sourceHorizontalWoldEulerGreenProfile_euler]
 

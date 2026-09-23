@@ -36,7 +36,7 @@ Cassini intrinsic velocity. -/
 def xiHeatCassiniOrientationTerm (y : ℝ) (q : XiZeroCopy) : ℝ :=
   let A := y + (xiSquaredNode q).re
   let B := (xiSquaredNode q).im
-  B ^ 2 / (A * (A ^ 2 + B ^ 2))
+  B ^ (2 : ℕ) / (A * (A ^ (2 : ℕ) + B ^ (2 : ℕ)))
 
 /-- Complete phase-blind Stieltjes envelope. -/
 def xiHeatStieltjesEnvelope (y : ℝ) : ℝ :=
@@ -63,7 +63,7 @@ theorem xiHeatCassiniOrientationTerm_eq_envelope_sub_re
   let A : ℝ := y + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
   have hA : 0 < A := by simpa only [A] using xiHeatShiftedDenominator_pos hy q
-  have hD : 0 < A ^ 2 + B ^ 2 := by
+  have hD : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg B]
   have hcoord : (y : ℂ) + xiSquaredNode q = (A : ℂ) + (B : ℂ) * I := by
     apply Complex.ext <;> simp [A, B]
@@ -84,7 +84,7 @@ theorem xiHeatCassiniOrientationTerm_eq_re_sub_velocity
   let A : ℝ := y + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
   have hA : 0 < A := by simpa only [A] using xiHeatShiftedDenominator_pos hy q
-  have hD : 0 < A ^ 2 + B ^ 2 := by
+  have hD : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg B]
   have hcoord : (y : ℂ) + xiSquaredNode q = (A : ℂ) + (B : ℂ) * I := by
     apply Complex.ext <;> simp [A, B]
@@ -104,12 +104,12 @@ defect is transverse phase squared divided by positive longitudinal mass. -/
 theorem xiHeatCassiniOrientationTerm_eq_im_sq_div_re
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
     xiHeatCassiniOrientationTerm y q =
-      (xiShiftedReciprocalSquare y q).im ^ 2 /
+      (xiShiftedReciprocalSquare y q).im ^ (2 : ℕ) /
         (xiShiftedReciprocalSquare y q).re := by
   let A : ℝ := y + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
   have hA : 0 < A := by simpa only [A] using xiHeatShiftedDenominator_pos hy q
-  have hD : 0 < A ^ 2 + B ^ 2 := by
+  have hD : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg B]
   have hcoord : (y : ℂ) + xiSquaredNode q = (A : ℂ) + (B : ℂ) * I := by
     apply Complex.ext <;> simp [A, B]
@@ -137,7 +137,7 @@ theorem xiHeatCassiniOrientationTerm_nonneg
   let A : ℝ := y + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
   have hA : 0 < A := by simpa only [A] using xiHeatShiftedDenominator_pos hy q
-  have hD : 0 < A ^ 2 + B ^ 2 := by
+  have hD : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg B]
   rw [xiHeatCassiniOrientationTerm]
   exact div_nonneg (sq_nonneg B) (mul_pos hA hD).le
@@ -149,9 +149,9 @@ theorem xiHeatCassiniOrientationTerm_eq_zero_iff
   let A : ℝ := y + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
   have hA : 0 < A := by simpa only [A] using xiHeatShiftedDenominator_pos hy q
-  have hD : 0 < A ^ 2 + B ^ 2 := by
+  have hD : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg B]
-  change B ^ 2 / (A * (A ^ 2 + B ^ 2)) = 0 ↔ B = 0
+  change B ^ (2 : ℕ) / (A * (A ^ (2 : ℕ) + B ^ (2 : ℕ))) = 0 ↔ B = 0
   constructor
   · intro h
     field_simp [hA.ne', hD.ne'] at h
@@ -176,9 +176,9 @@ theorem xiHeatCassiniOrientationTerm_le_envelope
   let A : ℝ := y + (xiSquaredNode q).re
   let B : ℝ := (xiSquaredNode q).im
   have hA : 0 < A := by simpa only [A] using xiHeatShiftedDenominator_pos hy q
-  have hD : 0 < A ^ 2 + B ^ 2 := by
+  have hD : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg B]
-  change B ^ 2 / (A * (A ^ 2 + B ^ 2)) ≤ 1 / A
+  change B ^ (2 : ℕ) / (A * (A ^ (2 : ℕ) + B ^ (2 : ℕ))) ≤ 1 / A
   rw [div_le_iff₀ (mul_pos hA hD)]
   field_simp [hA.ne']
   nlinarith [sq_nonneg A]

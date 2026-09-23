@@ -74,7 +74,7 @@ theorem re_inner_kgBandOp_kgMulOp (hV : Measurable V) (hbV0 : 0 ≤ bV)
     (hbV : ∀ a : E, |V a| ≤ bV) (R : ℝ) (u : Lp ℂ 2 (volume : Measure E)) :
     RCLike.re (inner ℂ (kgBandOp (kgMulOp hV hbV0 hbV) R u) u)
       = RCLike.re ((∫ a : E,
-          ((V a * ‖(kgLowPassOp R u : E → ℂ) a‖ ^ 2 : ℝ) : ℂ)) : ℂ) := by
+          ((V a * ‖(kgLowPassOp R u : E → ℂ) a‖ ^ (2 : ℕ) : ℝ) : ℂ)) : ℂ) := by
   rw [kgBandOp_apply, inner_kgLowPassOp]
   exact re_inner_kgMulOp hV hbV0 hbV (kgLowPassOp R u)
 
@@ -83,7 +83,7 @@ theorem re_inner_kgBandSwitchedPotential (hV : Measurable V) (hbV0 : 0 ≤ bV)
     (hbV : ∀ a : E, |V a| ≤ bV) (R s : ℝ) (u : Lp ℂ 2 (volume : Measure E)) :
     RCLike.re (inner ℂ (kgBandSwitchedPotential hV hbV0 hbV φ R s u) u)
       = φ s * RCLike.re ((∫ a : E,
-          ((V a * ‖(kgLowPassOp R u : E → ℂ) a‖ ^ 2 : ℝ) : ℂ)) : ℂ) := by
+          ((V a * ‖(kgLowPassOp R u : E → ℂ) a‖ ^ (2 : ℕ) : ℝ) : ℂ)) : ℂ) := by
   rw [kgBandSwitchedPotential, re_inner_kgScaledPotential,
     re_inner_kgBandOp_kgMulOp hV hbV0 hbV R u]
 
@@ -103,12 +103,12 @@ theorem kgBandSwitched_energy_eq (hV : Measurable V) (hbV0 : 0 ≤ bV)
     kgAdiabaticEnergy (kgBandSwitchedPotential hV hbV0 hbV φ R) (kgFreqLowOp R x)
         (kgLowPassOp R y) t
       = ‖kgFreqLowOp R (kgFieldMildT (kgBandSwitchedPotential hV hbV0 hbV φ R)
-            (kgLowPassOp R x) (kgLowPassOp R y) t)‖ ^ 2
+            (kgLowPassOp R x) (kgLowPassOp R y) t)‖ ^ (2 : ℕ)
         + ‖kgFieldVelT (kgBandSwitchedPotential hV hbV0 hbV φ R) (kgFreqLowOp R x)
-            (kgLowPassOp R y) t‖ ^ 2
+            (kgLowPassOp R y) t‖ ^ (2 : ℕ)
         - φ t * RCLike.re ((∫ a : E, ((V a
             * ‖(kgFieldMildT (kgBandSwitchedPotential hV hbV0 hbV φ R) (kgLowPassOp R x)
-                (kgLowPassOp R y) t : E → ℂ) a‖ ^ 2 : ℝ) : ℂ)) : ℂ) := by
+                (kgLowPassOp R y) t : E → ℂ) a‖ ^ (2 : ℕ) : ℝ) : ℂ)) : ℂ) := by
   set W : ℝ → (Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E)) :=
     kgSwitchedPotential hV hbV0 hbV φ with hWdef
   have hWb : ∀ r : ℝ, ‖W r‖ ≤ b := fun r =>
@@ -147,7 +147,7 @@ theorem kgBandSwitched_work (hV : Measurable V) (hbV0 : 0 ≤ bV) (hbV : ∀ a :
           (kgLowPassOp R y) 0
       = -∫ s in (0 : ℝ)..t, φ' s * RCLike.re ((∫ a : E, ((V a
           * ‖(kgFieldMildT (kgBandSwitchedPotential hV hbV0 hbV φ R) (kgLowPassOp R x)
-              (kgLowPassOp R y) s : E → ℂ) a‖ ^ 2 : ℝ) : ℂ)) : ℂ) := by
+              (kgLowPassOp R y) s : E → ℂ) a‖ ^ (2 : ℕ) : ℝ) : ℂ)) : ℂ) := by
   have hφd : Differentiable ℝ φ := fun r => (hφ r).differentiableAt
   have hφc : Continuous φ := hφd.continuous
   set W : ℝ → (Lp ℂ 2 (volume : Measure E) →L[ℂ] Lp ℂ 2 (volume : Measure E)) :=

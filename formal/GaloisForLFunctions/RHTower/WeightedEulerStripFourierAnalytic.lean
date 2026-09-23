@@ -29,7 +29,7 @@ namespace RHTower
 open Complex MeasureTheory Set
 
 /-- Two-sided exponential decay is integrable on the line. -/
-theorem integrable_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
+theorem integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic {c : ℝ} (hc : 0 < c) :
     Integrable fun x : ℝ => Real.exp (-(c * |x|)) := by
   rw [← integrableOn_univ, ← Set.Iic_union_Ioi (a := (0 : ℝ))]
   have hIoi : IntegrableOn (fun x : ℝ => Real.exp (-c * x)) (Ioi 0) :=
@@ -53,10 +53,10 @@ theorem integrable_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
     ring
 
 /-- The linear weight is absorbed by halving the exponential rate. -/
-theorem integrable_abs_mul_exp_neg_mul_abs {c : ℝ} (hc : 0 < c) :
+theorem integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic {c : ℝ} (hc : 0 < c) :
     Integrable fun x : ℝ => |x| * Real.exp (-(c * |x|)) := by
   have hhalf : (0:ℝ) < c / 2 := by positivity
-  apply Integrable.mono' ((integrable_exp_neg_mul_abs hhalf).const_mul (2 / c))
+  apply Integrable.mono' ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hhalf).const_mul (2 / c))
   · exact (continuous_abs.mul
       ((continuous_const.mul continuous_abs).neg.rexp)).aestronglyMeasurable
   · refine ae_of_all _ fun x => ?_
@@ -88,7 +88,7 @@ theorem integrable_stripFourier_kernel {g : ℂ → ℂ} (hgc : Continuous g)
     {w : ℂ} (hw : |w.im| < ε) :
     Integrable fun x : ℝ => g x * Complex.exp (-(I * w * x)) := by
   have hc : 0 < ε - |w.im| := by linarith
-  apply Integrable.mono' ((integrable_exp_neg_mul_abs hc).const_mul K)
+  apply Integrable.mono' ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hc).const_mul K)
   · apply Continuous.aestronglyMeasurable
     exact (hgc.comp Complex.continuous_ofReal).mul
       (Complex.continuous_exp.comp (by fun_prop))
@@ -182,7 +182,7 @@ theorem hasDerivAt_stripFourier {g : ℂ → ℂ} (hg : Differentiable ℂ g)
           apply Real.exp_le_exp.2
           have hεsplit : ε = |w₀.im| + 2 * r := by rw [hr]; ring
           nlinarith [abs_nonneg x]
-  · exact (integrable_abs_mul_exp_neg_mul_abs hr0).const_mul K
+  · exact (integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hr0).const_mul K
   · refine ae_of_all _ fun x w _ => ?_
     have h1 : HasDerivAt (fun w : ℂ => -(I * (x : ℂ)) * w)
         (-(I * (x : ℂ))) w := by

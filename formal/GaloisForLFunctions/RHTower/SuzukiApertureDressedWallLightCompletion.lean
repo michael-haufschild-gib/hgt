@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.EulerFisherCurvature
 The raw critical wall field has the correct reflected phase but divergent all-prime diagonal.
 The actual cubically normalized dyadic aperture innovation acts before the reflected light split.
 This file proves that the resulting source field is square summable over all primes and valuation
-depths.  Its positive and negative reflected parts therefore define genuine `ell^2` vectors and
+depths.  Its positive and negative reflected parts therefore define genuine `ell^(2 : ℕ)` vectors and
 completed positive-semidefinite Gram kernels, with the exact Ward identity
 
 `reflected current + negative light = positive light`.

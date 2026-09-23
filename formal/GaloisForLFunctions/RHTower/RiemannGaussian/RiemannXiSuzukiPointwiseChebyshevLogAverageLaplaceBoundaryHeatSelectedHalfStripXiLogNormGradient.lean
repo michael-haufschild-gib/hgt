@@ -41,7 +41,7 @@ theorem hasDerivAt_log_norm_of_hasDerivAt_mul_self
     {g : ℝ → ℂ} {D : ℂ} {x : ℝ}
     (hne : g x ≠ 0) (hg : HasDerivAt g (D * g x) x) :
     HasDerivAt (fun u => Real.log ‖g u‖) D.re x := by
-  let q : ℝ → ℝ := fun u => ‖g u‖ ^ 2
+  let q : ℝ → ℝ := fun u => ‖g u‖ ^ (2 : ℕ)
   have hinner : inner ℝ (g x) (D * g x) = q x * D.re := by
     rw [Complex.inner]
     dsimp [q]

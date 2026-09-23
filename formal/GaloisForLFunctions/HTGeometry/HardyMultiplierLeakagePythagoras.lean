@@ -140,7 +140,7 @@ theorem norm_adjoint_hardyMul_le_of_isometry
     (B : DiskMultiplier) (hB : HardyMultiplierIsometry B) (x : HardyDisk) :
     ‖(hardyMul B).adjoint x‖ ≤ ‖x‖ := by
   have hsquare := norm_sq_adjoint_hardyMul_of_isometry B hB x
-  have hle : ‖(hardyMul B).adjoint x‖ ^ 2 ≤ ‖x‖ ^ 2 := by
+  have hle : ‖(hardyMul B).adjoint x‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ) := by
     exact le_of_eq_of_le hsquare (sub_le_self _ (sq_nonneg _))
   nlinarith [norm_nonneg ((hardyMul B).adjoint x), norm_nonneg x]
 

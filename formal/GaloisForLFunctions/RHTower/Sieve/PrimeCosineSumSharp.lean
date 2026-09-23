@@ -57,25 +57,25 @@ theorem log_norm_riemannZeta_ge_three_four_one {x t : ℝ} (hx0 : 0 < x) (hx1 : 
   set B : ℝ := ‖riemannZeta (1 + (x : ℂ) + Complex.I * (t : ℂ))‖ with hB
   have hB0 : (0 : ℝ) ≤ B := norm_nonneg _
   -- the product bound
-  have hmaj : ‖riemannZeta (1 + (x : ℂ))‖ ^ 3
+  have hmaj : ‖riemannZeta (1 + (x : ℂ))‖ ^ (3 : ℕ)
         * ‖riemannZeta (1 + (x : ℂ) + 2 * Complex.I * (t : ℂ))‖
-      ≤ (1 / x + 2) ^ 3 * (Real.log (2 * |t|) + 5) := by
-    have h1 : ‖riemannZeta (1 + (x : ℂ))‖ ^ 3 ≤ (1 / x + 2) ^ 3 :=
+      ≤ (1 / x + 2) ^ (3 : ℕ) * (Real.log (2 * |t|) + 5) := by
+    have h1 : ‖riemannZeta (1 + (x : ℂ))‖ ^ (3 : ℕ) ≤ (1 / x + 2) ^ (3 : ℕ) :=
       pow_le_pow_left₀ hA0 hA 3
     exact mul_le_mul h1 hC hC0 (by positivity)
-  have hkey : 1 ≤ (1 / x + 2) ^ 3 * (Real.log (2 * |t|) + 5) * B ^ 4 := by
-    have hstep : ‖riemannZeta (1 + (x : ℂ))‖ ^ 3 * B ^ 4
+  have hkey : 1 ≤ (1 / x + 2) ^ (3 : ℕ) * (Real.log (2 * |t|) + 5) * B ^ (4 : ℕ) := by
+    have hstep : ‖riemannZeta (1 + (x : ℂ))‖ ^ (3 : ℕ) * B ^ (4 : ℕ)
           * ‖riemannZeta (1 + (x : ℂ) + 2 * Complex.I * (t : ℂ))‖
-        ≤ (1 / x + 2) ^ 3 * (Real.log (2 * |t|) + 5) * B ^ 4 := by
+        ≤ (1 / x + 2) ^ (3 : ℕ) * (Real.log (2 * |t|) + 5) * B ^ (4 : ℕ) := by
       nlinarith [hmaj, pow_nonneg hB0 4, hA0, hC0, pow_nonneg hA0 3]
     linarith [hprod, hstep]
-  have hden : (0 : ℝ) < (1 / x + 2) ^ 3 * (Real.log (2 * |t|) + 5) := by positivity
-  have hB4 : ((1 / x + 2) ^ 3 * (Real.log (2 * |t|) + 5))⁻¹ ≤ B ^ 4 := by
+  have hden : (0 : ℝ) < (1 / x + 2) ^ (3 : ℕ) * (Real.log (2 * |t|) + 5) := by positivity
+  have hB4 : ((1 / x + 2) ^ (3 : ℕ) * (Real.log (2 * |t|) + 5))⁻¹ ≤ B ^ (4 : ℕ) := by
     rw [inv_le_iff_one_le_mul₀ hden]
-    calc (1 : ℝ) ≤ (1 / x + 2) ^ 3 * (Real.log (2 * |t|) + 5) * B ^ 4 := hkey
-      _ = B ^ 4 * ((1 / x + 2) ^ 3 * (Real.log (2 * |t|) + 5)) := by ring
-  have hB4pos : (0 : ℝ) < B ^ 4 := by
-    have hpos : (0 : ℝ) < ((1 / x + 2) ^ 3 * (Real.log (2 * |t|) + 5))⁻¹ := by positivity
+    calc (1 : ℝ) ≤ (1 / x + 2) ^ (3 : ℕ) * (Real.log (2 * |t|) + 5) * B ^ (4 : ℕ) := hkey
+      _ = B ^ (4 : ℕ) * ((1 / x + 2) ^ (3 : ℕ) * (Real.log (2 * |t|) + 5)) := by ring
+  have hB4pos : (0 : ℝ) < B ^ (4 : ℕ) := by
+    have hpos : (0 : ℝ) < ((1 / x + 2) ^ (3 : ℕ) * (Real.log (2 * |t|) + 5))⁻¹ := by positivity
     linarith
   have hBpos : (0 : ℝ) < B := by
     rcases hB0.lt_or_eq with h | h
@@ -84,7 +84,7 @@ theorem log_norm_riemannZeta_ge_three_four_one {x t : ℝ} (hx0 : 0 < x) (hx1 : 
   -- take logarithms
   have hlog := Real.log_le_log (by positivity) hB4
   rw [Real.log_pow] at hlog
-  have hval : Real.log (((1 / x + 2) ^ 3 * (Real.log (2 * |t|) + 5))⁻¹)
+  have hval : Real.log (((1 / x + 2) ^ (3 : ℕ) * (Real.log (2 * |t|) + 5))⁻¹)
       = -(3 * Real.log (1 / x + 2)) - Real.log (Real.log (2 * |t|) + 5) := by
     rw [Real.log_inv, Real.log_mul (by positivity) (by positivity), Real.log_pow]
     push_cast
@@ -100,7 +100,7 @@ theorem exists_sum_cos_div_prime_ge_sharp :
       -(3 / 4) * Real.log (Real.log (z : ℝ) + 2)
           - (1 / 4) * Real.log (Real.log (2 * |t|) + 5) - C
         ≤ ∑ p ∈ Nat.primesLE z, Real.cos (t * Real.log p) / (p : ℝ) := by
-  refine ⟨Real.pi ^ 2 / 6
+  refine ⟨Real.pi ^ (2 : ℕ) / 6
     + 2 * (Real.log 2 + 2 * (2 * mertensFirstConst + 1 / 2)) / Real.log 2
     + (1 + Real.log 4), ?_⟩
   intro z t hz ht

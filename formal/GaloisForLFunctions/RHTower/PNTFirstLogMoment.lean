@@ -65,7 +65,7 @@ theorem hasDerivAt_mul_log {t : ℝ} (ht : 0 < t) :
   field_simp
 
 theorem hasDerivAt_halfSqLog {t : ℝ} (ht : 0 < t) :
-    HasDerivAt (fun s : ℝ => s ^ 2 * Real.log s / 2 + s ^ 2 / 4) (t * (Real.log t + 1)) t := by
+    HasDerivAt (fun s : ℝ => s ^ (2 : ℕ) * Real.log s / 2 + s ^ (2 : ℕ) / 4) (t * (Real.log t + 1)) t := by
   have h1 := ((hasDerivAt_pow 2 t).mul (Real.hasDerivAt_log ht.ne')).div_const 2
   have h2 := (hasDerivAt_pow 2 t).div_const 4
   refine (h1.add h2).congr_deriv ?_
@@ -75,7 +75,7 @@ theorem hasDerivAt_halfSqLog {t : ℝ} (ht : 0 < t) :
 
 /-- `∫_1^x t (log t + 1) dt = ½ x² log x + ¼ x² − ¼`. -/
 theorem integral_mul_log_add_one {x : ℝ} (hx : 1 ≤ x) :
-    ∫ t in (1 : ℝ)..x, t * (Real.log t + 1) = x ^ 2 * Real.log x / 2 + x ^ 2 / 4 - 1 / 4 := by
+    ∫ t in (1 : ℝ)..x, t * (Real.log t + 1) = x ^ (2 : ℕ) * Real.log x / 2 + x ^ (2 : ℕ) / 4 - 1 / 4 := by
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => hasDerivAt_halfSqLog
     (by rw [uIcc_of_le hx] at ht; linarith [ht.1]))]
   · simp
@@ -90,23 +90,23 @@ theorem continuousOn_log_add_one : ContinuousOn (fun t : ℝ => Real.log t + 1) 
 
 theorem tendsto_integral_mul_log_add_one :
     Tendsto (fun x : ℝ => ∫ t in (1 : ℝ)..x, t * (Real.log t + 1)) atTop atTop := by
-  have h : Tendsto (fun x : ℝ => x ^ 2 / 4 - 1 / 4) atTop atTop := by
+  have h : Tendsto (fun x : ℝ => x ^ (2 : ℕ) / 4 - 1 / 4) atTop atTop := by
     have := (tendsto_pow_atTop (two_ne_zero)).atTop_div_const (by norm_num : (0 : ℝ) < 4)
     exact tendsto_atTop_add_const_right _ _ this
   refine tendsto_atTop_mono' atTop ?_ h
   filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
   rw [integral_mul_log_add_one hx]
-  have : 0 ≤ x ^ 2 * Real.log x / 2 := by
+  have : 0 ≤ x ^ (2 : ℕ) * Real.log x / 2 := by
     have := Real.log_nonneg hx; positivity
   linarith
 
 /-- `(½ x² log x + ¼ x² − ¼)/(x² log x) → 1/2`. -/
 theorem tendsto_integral_mul_log_add_one_div :
-    Tendsto (fun x : ℝ => (∫ t in (1 : ℝ)..x, t * (Real.log t + 1)) / (x ^ 2 * Real.log x))
+    Tendsto (fun x : ℝ => (∫ t in (1 : ℝ)..x, t * (Real.log t + 1)) / (x ^ (2 : ℕ) * Real.log x))
       atTop (𝓝 (1 / 2)) := by
   have hlog : Tendsto (fun x : ℝ => (4 * Real.log x)⁻¹) atTop (𝓝 0) :=
     (Real.tendsto_log_atTop.const_mul_atTop (by norm_num : (0 : ℝ) < 4)).inv_tendsto_atTop
-  have hsq : Tendsto (fun x : ℝ => (4 * (x ^ 2 * Real.log x))⁻¹) atTop (𝓝 0) :=
+  have hsq : Tendsto (fun x : ℝ => (4 * (x ^ (2 : ℕ) * Real.log x))⁻¹) atTop (𝓝 0) :=
     (((tendsto_pow_atTop two_ne_zero).atTop_mul_atTop₀ Real.tendsto_log_atTop).const_mul_atTop
       (by norm_num : (0 : ℝ) < 4)).inv_tendsto_atTop
   have h := (tendsto_const_nhds (x := (1 / 2 : ℝ))).add (hlog.sub hsq)
@@ -125,7 +125,7 @@ theorem tendsto_integral_mul_log_add_one_div :
 theorem tendsto_sum_mul_log_div_sq_log {c : ℕ → ℝ} (hc0 : c 0 = 0) (hc : ∀ n, 0 ≤ c n)
     (hlim : Tendsto (fun t : ℝ => partialSumReal c t / t) atTop (𝓝 1)) :
     Tendsto (fun x : ℝ =>
-      (∑ k ∈ Finset.Icc 0 ⌊x⌋₊, ((k : ℝ) * Real.log k) * c k) / (x ^ 2 * Real.log x))
+      (∑ k ∈ Finset.Icc 0 ⌊x⌋₊, ((k : ℝ) * Real.log k) * c k) / (x ^ (2 : ℕ) * Real.log x))
       atTop (𝓝 (1 / 2)) := by
   -- Abel summation identity
   have habel : ∀ x : ℝ, 1 ≤ x →

@@ -66,11 +66,11 @@ theorem no_nonnegativeCoboundary_realizes_binaryGaugeOppositeCrossing
 
 /-- Quadratic truncation of the full-shift/free-word zeta packet on two nonzero branches. -/
 def freeWordQuadraticPacket (x y : ℂ) : ℂ :=
-  1 + (x + y) + (x + y) ^ 2
+  1 + (x + y) + (x + y) ^ (2 : ℕ)
 
 /-- Quadratic truncation of the commutative two-prime Euler packet. -/
 def commutativeEulerQuadraticPacket (x y : ℂ) : ℂ :=
-  1 + x + y + x ^ 2 + x * y + y ^ 2
+  1 + x + y + x ^ (2 : ℕ) + x * y + y ^ (2 : ℕ)
 
 /-- The free-word packet has one extra mixed word: ordered words `xy` and `yx` collapse to the
 same commutative integer, doubling its coefficient. -/

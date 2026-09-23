@@ -43,7 +43,7 @@ theorem bgvEtaleEquation_formallyEtale (p : ℕ) [CharP R p] (a b : R) :
     have he : y - x ∈ I := by
       apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem y x).mp
       exact (congrArg (fun k => k (AdjoinRoot.root f)) hgh).symm
-    have hs : (y - x) ^ 2 = 0 := hI.le (Ideal.pow_mem_pow he 2)
+    have hs : (y - x) ^ (2 : ℕ) = 0 := hI.le (Ideal.pow_mem_pow he 2)
     have hroot := AdjoinRoot.aeval_algHom_eq_zero f h
     have hTaylor := Polynomial.aeval_add_of_sq_eq_zero f x (y - x) hs
     have hxroot : Polynomial.aeval x f = 0 := AdjoinRoot.aeval_algHom_eq_zero f g
@@ -58,7 +58,7 @@ theorem bgvEtaleEquation_formallyEtale (p : ℕ) [CharP R p] (a b : R) :
       rw [← Ideal.Quotient.mkₐ_eq_mk R, ← Polynomial.aeval_algHom_apply,
         Ideal.Quotient.mkₐ_eq_mk, hx]
       exact AdjoinRoot.aeval_algHom_eq_zero f g
-    have hs : (-Polynomial.aeval x f) ^ 2 = 0 :=
+    have hs : (-Polynomial.aeval x f) ^ (2 : ℕ) = 0 :=
       hI.le (Ideal.pow_mem_pow (I.neg_mem hxI) 2)
     have hroot : Polynomial.aeval (x + -Polynomial.aeval x f) f = 0 := by
       rw [Polynomial.aeval_add_of_sq_eq_zero f _ _ hs, hd, map_one, one_mul, add_neg_cancel]

@@ -49,23 +49,23 @@ def ccmActualHeadMatchedQuantileParabolicOrientationLedger (m n : ℕ) : ℝ :=
 /-- Forced nonnegative squared displacement debt of one literal parabolic cross kernel. -/
 def ccmActualHeadMatchedQuantileParabolicDisplacementDebt (m n : ℕ) : ℝ :=
   (ccmActualHeadMatchedQuantilePolarDisplacement n -
-      ccmActualHeadMatchedQuantilePolarDisplacement m) ^ 2 / 2 *
+      ccmActualHeadMatchedQuantilePolarDisplacement m) ^ (2 : ℕ) / 2 *
     (criticalMellinAtomWeight m * criticalMellinAtomWeight n)
 
 /-- The matched-cell barycentre is determined exactly by the arithmetic node and the atom width. -/
 theorem ccmActualHeadMatchedPolarCentroid_sq (n : ℕ) (hn : 0 < n) :
-    ccmActualHeadMatchedPolarCentroid n ^ 2 =
-      4 * (n : ℝ) + criticalMellinAtomWeight n ^ 2 / 4 := by
+    ccmActualHeadMatchedPolarCentroid n ^ (2 : ℕ) =
+      4 * (n : ℝ) + criticalMellinAtomWeight n ^ (2 : ℕ) / 4 := by
   have hprod := ccmActualHeadMatchedPolarLower_mul_upper n hn
   have hwidth := ccmActualHeadMatchedPolarUpper_sub_lower_eq_atomWeight n
   unfold ccmActualHeadMatchedPolarCentroid
   calc
     ((ccmActualHeadMatchedPolarLowerCoordinate n +
-        ccmActualHeadMatchedPolarUpperCoordinate n) / 2) ^ 2 =
+        ccmActualHeadMatchedPolarUpperCoordinate n) / 2) ^ (2 : ℕ) =
         ccmActualHeadMatchedPolarLowerCoordinate n *
           ccmActualHeadMatchedPolarUpperCoordinate n +
         (ccmActualHeadMatchedPolarUpperCoordinate n -
-          ccmActualHeadMatchedPolarLowerCoordinate n) ^ 2 / 4 := by ring
+          ccmActualHeadMatchedPolarLowerCoordinate n) ^ (2 : ℕ) / 4 := by ring
     _ = _ := by rw [hprod, hwidth]
 
 theorem ccmActualHeadMatchedPolarCentroid_pos (n : ℕ) :
@@ -86,9 +86,9 @@ theorem strictMono_ccmActualHeadMatchedPolarCentroid_shift_two :
   have hnsq := ccmActualHeadMatchedPolarCentroid_sq (n + 2) hnpos
   norm_num [Nat.cast_add] at hmsq hnsq
   have hwm0 : 0 ≤ criticalMellinAtomWeight (m + 2) :=
-    criticalMellinAtomWeight_nonneg _
+    criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
   have hwn0 : 0 ≤ criticalMellinAtomWeight (n + 2) :=
-    criticalMellinAtomWeight_nonneg _
+    criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
   have hwm2 : criticalMellinAtomWeight (m + 2) ≤ 2 :=
     criticalMellinAtomWeight_le_two_of_pos hmpos
   have hmcenter : 0 < ccmActualHeadMatchedPolarCentroid (m + 2) :=
@@ -97,8 +97,8 @@ theorem strictMono_ccmActualHeadMatchedPolarCentroid_shift_two :
     ccmActualHeadMatchedPolarCentroid_pos _
   have hsucc : m + 1 ≤ n := Nat.succ_le_iff.mpr hmn
   have hcast_succ : (m : ℝ) + 1 ≤ n := by exact_mod_cast hsucc
-  have hsq_lt : ccmActualHeadMatchedPolarCentroid (m + 2) ^ 2 <
-      ccmActualHeadMatchedPolarCentroid (n + 2) ^ 2 := by
+  have hsq_lt : ccmActualHeadMatchedPolarCentroid (m + 2) ^ (2 : ℕ) <
+      ccmActualHeadMatchedPolarCentroid (n + 2) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (criticalMellinAtomWeight (m + 2)),
       sq_nonneg (criticalMellinAtomWeight (n + 2))]
   nlinarith
@@ -106,8 +106,8 @@ theorem strictMono_ccmActualHeadMatchedPolarCentroid_shift_two :
 theorem ccmActualHeadMatchedParabolicMoment_one_eq_weight_mul_centroid (n : ℕ) :
     ccmActualHeadMatchedParabolicMoment n 1 =
       criticalMellinAtomWeight n * ccmActualHeadMatchedPolarCentroid n := by
-  change (ccmActualHeadMatchedPolarUpperCoordinate n ^ 2 -
-      ccmActualHeadMatchedPolarLowerCoordinate n ^ 2) / 2 =
+  change (ccmActualHeadMatchedPolarUpperCoordinate n ^ (2 : ℕ) -
+      ccmActualHeadMatchedPolarLowerCoordinate n ^ (2 : ℕ)) / 2 =
     criticalMellinAtomWeight n *
       ((ccmActualHeadMatchedPolarLowerCoordinate n +
         ccmActualHeadMatchedPolarUpperCoordinate n) / 2)
@@ -137,7 +137,7 @@ theorem ccmActualHeadMatchedQuantileParabolicDisplacementDebt_nonneg (m n : ℕ)
   unfold ccmActualHeadMatchedQuantileParabolicDisplacementDebt
   exact mul_nonneg
     (div_nonneg (sq_nonneg _) (by norm_num))
-    (mul_nonneg (criticalMellinAtomWeight_nonneg _) (criticalMellinAtomWeight_nonneg _))
+    (mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _) (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _))
 
 /-- After adding the sole signed orientation ledger, every two-cell source current is
 unconditionally dissipative. -/
@@ -155,7 +155,7 @@ theorem ccmActualHeadMatchedQuantileParabolicOrientationCoefficient_nonneg_of_lt
     0 ≤ ccmActualHeadMatchedQuantileParabolicOrientationCoefficient (m + 2) (n + 2) := by
   unfold ccmActualHeadMatchedQuantileParabolicOrientationCoefficient
   exact mul_nonneg
-    (mul_nonneg (criticalMellinAtomWeight_nonneg _) (criticalMellinAtomWeight_nonneg _))
+    (mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _) (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _))
     (sub_nonneg.mpr (strictMono_ccmActualHeadMatchedPolarCentroid_shift_two hmn).le)
 
 /-- Adjacent orientation is exactly the literal signed matched-cell overlap/gap times its

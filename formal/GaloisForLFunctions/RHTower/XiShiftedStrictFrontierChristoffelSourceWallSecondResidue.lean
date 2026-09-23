@@ -37,7 +37,7 @@ noncomputable def xiShiftedStrictFrontierQuadraticResidue (n : ℕ) : ℝ :=
 /-- Distance-squared rescaling of the preceding actual source wall. -/
 noncomputable def xiShiftedStrictFrontierQuadraticallyScaledChristoffelSourceWall
     (n : ℕ) (v : ℝ) : ℝ :=
-  (v - xiShiftedHigherBlockTerminalFrontier (n + 1)) ^ 2 *
+  (v - xiShiftedHigherBlockTerminalFrontier (n + 1)) ^ (2 : ℕ) *
     xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1)
 
 /-- **Tangential source jet.**  If the first omitted remainder vanishes at an occupied strict
@@ -50,7 +50,7 @@ theorem tendsto_xiShiftedCanonicalAdmissionNorm_div_sq_at_strict_frontier_of_rem
     (hrem : xiShiftedStrictFrontierFirstOmittedRemainder n = 0) :
     Tendsto
       (fun v => xiShiftedCanonicalAdmissionNorm v (n + 2) /
-        (v - xiShiftedHigherBlockTerminalFrontier (n + 1)) ^ 2)
+        (v - xiShiftedHigherBlockTerminalFrontier (n + 1)) ^ (2 : ℕ))
       (𝓝[>] xiShiftedHigherBlockTerminalFrontier (n + 1))
       (𝓝 (((2 * (n + 2) + 1 : ℕ) : ℝ) *
         xiShiftedStrictFrontierTangentialSource n)) := by
@@ -128,8 +128,8 @@ theorem tendsto_xiShiftedCanonicalAdmissionNorm_div_sq_at_strict_frontier_of_rem
     have hc : Tendsto N (𝓝[>] y) (𝓝 (N y)) := by
       simpa only [N] using hNderiv0.continuousAt.mono_left nhdsWithin_le_nhds
     simpa only [hNzero] using hc
-  have hga : Tendsto (fun v : ℝ => (v - y) ^ 2) (𝓝[>] y) (𝓝 0) := by
-    have hcont : Tendsto (fun v : ℝ => (v - y) ^ 2) (𝓝 y) (𝓝 ((y - y) ^ 2)) :=
+  have hga : Tendsto (fun v : ℝ => (v - y) ^ (2 : ℕ)) (𝓝[>] y) (𝓝 0) := by
+    have hcont : Tendsto (fun v : ℝ => (v - y) ^ (2 : ℕ)) (𝓝 y) (𝓝 ((y - y) ^ (2 : ℕ))) :=
       ((continuousAt_id.sub continuousAt_const).pow 2)
     simpa using hcont.mono_left nhdsWithin_le_nhds
   have hga' : Tendsto ((fun x : ℝ => x - y) * (fun x : ℝ => x - y))
@@ -150,7 +150,7 @@ theorem tendsto_xiShiftedCanonicalAdmissionNorm_div_sq_at_strict_frontier_of_rem
     dsimp only [K, S, xiShiftedStrictFrontierTangentialSource, m, y]
     ring
   rw [hK] at hquot
-  have hquot' : Tendsto (fun v => N v / (v - y) ^ 2) (𝓝[>] y)
+  have hquot' : Tendsto (fun v => N v / (v - y) ^ (2 : ℕ)) (𝓝[>] y)
       (𝓝 (((2 * (n + 2) + 1 : ℕ) : ℝ) *
         xiShiftedStrictFrontierTangentialSource n)) := by
     apply hquot.congr'
@@ -170,7 +170,7 @@ theorem xiShiftedStrictFrontierTangentialSource_nonneg_of_remainder_eq_zero
       hne hstrict hrem
   have hnonneg : ∀ᶠ v in 𝓝[>] xiShiftedHigherBlockTerminalFrontier (n + 1),
       0 ≤ xiShiftedCanonicalAdmissionNorm v (n + 2) /
-        (v - xiShiftedHigherBlockTerminalFrontier (n + 1)) ^ 2 := by
+        (v - xiShiftedHigherBlockTerminalFrontier (n + 1)) ^ (2 : ℕ) := by
     filter_upwards [self_mem_nhdsWithin] with v hv
     have hy : 0 < xiShiftedHigherBlockTerminalFrontier (n + 1) := by
       obtain ⟨u, hu⟩ := hne
@@ -203,7 +203,7 @@ theorem two_mul_xiShiftedStrictFrontierTangentialSource_eq_arithmeticSource
       xiShiftedStrictFrontierTangentialArithmeticSource n := by
   let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
   have hy0 : 0 ≤ y := by dsimp only [y]; linarith
-  have hsq : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy0
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy0
   have hsqrt0 : 0 ≤ Real.sqrt y := Real.sqrt_nonneg y
   have hsqrt : 1 / 2 < Real.sqrt y := by
     nlinarith
@@ -275,15 +275,15 @@ theorem tendsto_xiShiftedStrictFrontierQuadraticallyScaledChristoffelSourceWall_
   have hsourceTendsto : Tendsto (fun v => source v / 16) (𝓝[>] y)
       (𝓝 (source y / 16)) :=
     (hsourceCont.div_const 16).mono_left nhdsWithin_le_nhds
-  have hquad : Tendsto (fun v => N v / (v - y) ^ 2) (𝓝[>] y) (𝓝 b) := by
+  have hquad : Tendsto (fun v => N v / (v - y) ^ (2 : ℕ)) (𝓝[>] y) (𝓝 b) := by
     simpa only [N, y, b] using
       tendsto_xiShiftedCanonicalAdmissionNorm_div_sq_at_strict_frontier_of_remainder_eq_zero
         hne hstrict hrem
   have hb : 0 < b := by dsimp only [b]; positivity
-  have hinv : Tendsto (fun v => (N v / (v - y) ^ 2)⁻¹) (𝓝[>] y) (𝓝 b⁻¹) :=
+  have hinv : Tendsto (fun v => (N v / (v - y) ^ (2 : ℕ))⁻¹) (𝓝[>] y) (𝓝 b⁻¹) :=
     hquad.inv₀ (ne_of_gt hb)
   have hprod : Tendsto
-      (fun v => source v / 16 * (N v / (v - y) ^ 2)⁻¹)
+      (fun v => source v / 16 * (N v / (v - y) ^ (2 : ℕ))⁻¹)
       (𝓝[>] y) (𝓝 (source y / (16 * b))) := by
     convert hsourceTendsto.mul hinv using 1
     field_simp [ne_of_gt hb]
@@ -343,20 +343,20 @@ theorem tendsto_xiShiftedStrictFrontierQuadraticallyScaledChristoffelSourceWall_
   have hsourceTendsto : Tendsto (fun v => source v / 16) (𝓝[>] y)
       (𝓝 (source y / 16)) :=
     (hsourceCont.div_const 16).mono_left nhdsWithin_le_nhds
-  have hquad : Tendsto (fun v => N v / (v - y) ^ 2) (𝓝[>] y) (𝓝 0) := by
+  have hquad : Tendsto (fun v => N v / (v - y) ^ (2 : ℕ)) (𝓝[>] y) (𝓝 0) := by
     have h :=
       tendsto_xiShiftedCanonicalAdmissionNorm_div_sq_at_strict_frontier_of_remainder_eq_zero
         hne hstrict hrem
     simpa only [N, y, hsourceNext, mul_zero] using h
   have hnorm :=
     eventually_pos_xiShiftedCanonicalAdmissionNorm_at_strict_frontier hne hstrict
-  have hquadPos : ∀ᶠ v in 𝓝[>] y, 0 < N v / (v - y) ^ 2 := by
+  have hquadPos : ∀ᶠ v in 𝓝[>] y, 0 < N v / (v - y) ^ (2 : ℕ) := by
     filter_upwards [hnorm, self_mem_nhdsWithin] with v hNv hv
     exact div_pos (by simpa only [N] using hNv) (sq_pos_of_pos (sub_pos.mpr hv))
-  have hquadWithin : Tendsto (fun v => N v / (v - y) ^ 2)
+  have hquadWithin : Tendsto (fun v => N v / (v - y) ^ (2 : ℕ))
       (𝓝[>] y) (𝓝[>] (0 : ℝ)) :=
     tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hquad hquadPos
-  have hinv : Tendsto (fun v => (N v / (v - y) ^ 2)⁻¹)
+  have hinv : Tendsto (fun v => (N v / (v - y) ^ (2 : ℕ))⁻¹)
       (𝓝[>] y) atTop := tendsto_inv_nhdsGT_zero.comp hquadWithin
   have hprod := Filter.Tendsto.pos_mul_atTop
     (div_pos hsourcePos (by norm_num)) hsourceTendsto hinv

@@ -51,10 +51,10 @@ theorem two_mul_lowEdge_lt_adaptiveOrthoJacobiEnergy_sub_nextEdge
         (n + 1 : ℝ) * HTGeometry.monicOrthoBeta s (n + 1) := by
   have hsquares : 0 ≤ ∑ j ∈ Finset.range n,
       (HTGeometry.monicOrthoAlpha s j +
-        HTGeometry.monicOrthoAlpha s n / 2) ^ 2 :=
+        HTGeometry.monicOrthoAlpha s n / 2) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hdiag : 0 ≤ (3 * (n : ℝ) / 4 + 1) *
-      HTGeometry.monicOrthoAlpha s n ^ 2 := by
+      HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) := by
     positivity
   have hbeta_nonneg : ∀ j ∈ Finset.range n,
       0 ≤ HTGeometry.monicOrthoBeta s j := by
@@ -159,7 +159,7 @@ theorem exists_uniform_strictFrontier_right_relativeArithmeticGaussBulk_eighth :
       ∀ {n : ℕ}, 0 < n → (xiShiftedHigherBlockFailureSet n).Nonempty →
         xiShiftedHigherBlockTerminalFrontier n <
           xiShiftedHigherBlockTerminalFrontier (n + 1) →
-        W ^ 2 ≤ xiShiftedHigherBlockTerminalFrontier (n + 1) →
+        W ^ (2 : ℕ) ≤ xiShiftedHigherBlockTerminalFrontier (n + 1) →
         ∀ {v : ℝ}, xiShiftedHigherBlockTerminalFrontier (n + 1) < v →
           (1 / 8 : ℝ) < relativeArithmeticGaussBulk (Real.sqrt v) (n + 1) := by
   obtain ⟨W₀, hW₀⟩ := exists_uniform_relativeArithmeticGaussBulk_eighth_of_actual
@@ -181,7 +181,7 @@ theorem exists_uniform_strictFrontier_right_relativeArithmeticGaussBulk_eighth :
     have hactual := xiShiftedHigherBlock_posDef_of_terminalFrontier_lt
       (n := n + 1) hv0 hv
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt v) ^ 2) k).re)
+      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt v) ^ (2 : ℕ)) k).re)
       ((n + 1) + 2)).PosDef
     rw [Real.sq_sqrt hv0]
     exact hactual
@@ -207,7 +207,7 @@ theorem riemannHypothesis_or_cofinal_uniform_relativeArithmeticGaussBulk_eighth 
       exists_uniform_strictFrontier_right_relativeArithmeticGaussBulk_eighth
     refine ⟨W, hW2, ?_⟩
     intro A
-    let T := max (max A (W ^ 2)) (xiShiftedHigherBlockTerminalFrontier 0)
+    let T := max (max A (W ^ (2 : ℕ))) (xiShiftedHigherBlockTerminalFrontier 0)
     obtain ⟨n, hne, hTn, hstrict, _⟩ :=
       exists_cofinal_sourceAdaptive_frontierCertificate_of_not_riemannHypothesis hRH T
     have hn : 0 < n := by
@@ -217,9 +217,9 @@ theorem riemannHypothesis_or_cofinal_uniform_relativeArithmeticGaussBulk_eighth 
       exact (not_lt_of_ge (le_max_right _ _)) hTn
     have hAn : A < xiShiftedHigherBlockTerminalFrontier n :=
       (le_trans (le_max_left _ _) (le_max_left _ _)).trans_lt hTn
-    have hWfrontier : W ^ 2 ≤
+    have hWfrontier : W ^ (2 : ℕ) ≤
         xiShiftedHigherBlockTerminalFrontier (n + 1) := by
-      have hWn : W ^ 2 < xiShiftedHigherBlockTerminalFrontier n :=
+      have hWn : W ^ (2 : ℕ) < xiShiftedHigherBlockTerminalFrontier n :=
         (le_trans (le_max_right _ _) (le_max_left _ _)).trans_lt hTn
       exact hWn.trans hstrict |>.le
     refine ⟨n, hn, hne, hAn, hstrict, ?_⟩

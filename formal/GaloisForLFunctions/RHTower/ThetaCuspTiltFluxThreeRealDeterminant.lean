@@ -41,29 +41,29 @@ def threeRealXiRescaledCoefficients (x y z : ℝ) (c : Fin 3 → ℂ) : Fin 3 �
 
 private def realThreePointEnergy
     (A B G P Q R u v w : ℝ) : ℝ :=
-  A * u ^ 2 + B * v ^ 2 + G * w ^ 2 +
+  A * u ^ (2 : ℕ) + B * v ^ (2 : ℕ) + G * w ^ (2 : ℕ) +
     2 * P * u * v + 2 * Q * u * w + 2 * R * v * w
 
 private def realThreePointDet (A B G P Q R : ℝ) : ℝ :=
-  A * B * G + 2 * P * Q * R - A * R ^ 2 - B * Q ^ 2 - G * P ^ 2
+  A * B * G + 2 * P * Q * R - A * R ^ (2 : ℕ) - B * Q ^ (2 : ℕ) - G * P ^ (2 : ℕ)
 
 /-- Denominator-free `LDLᵀ` completion for a general real symmetric three-point form. -/
 private theorem realThreePointEnergy_scaled_completion
     (A B G P Q R u v w : ℝ) :
-    A * (A * B - P ^ 2) * realThreePointEnergy A B G P Q R u v w =
-      (A * B - P ^ 2) * (A * u + P * v + Q * w) ^ 2 +
-        ((A * B - P ^ 2) * v + (A * R - P * Q) * w) ^ 2 +
-        A * realThreePointDet A B G P Q R * w ^ 2 := by
+    A * (A * B - P ^ (2 : ℕ)) * realThreePointEnergy A B G P Q R u v w =
+      (A * B - P ^ (2 : ℕ)) * (A * u + P * v + Q * w) ^ (2 : ℕ) +
+        ((A * B - P ^ (2 : ℕ)) * v + (A * R - P * Q) * w) ^ (2 : ℕ) +
+        A * realThreePointDet A B G P Q R * w ^ (2 : ℕ) := by
   unfold realThreePointEnergy realThreePointDet
   ring
 
 /-- Once the first two leading principal minors are positive, the cubic determinant is the exact
 wall for nonnegativity of a real symmetric three-point form. -/
 private theorem forall_realThreePointEnergy_nonneg_iff
-    {A B G P Q R : ℝ} (hA : 0 < A) (hminor : 0 < A * B - P ^ 2) :
+    {A B G P Q R : ℝ} (hA : 0 < A) (hminor : 0 < A * B - P ^ (2 : ℕ)) :
     (∀ u v w : ℝ, 0 ≤ realThreePointEnergy A B G P Q R u v w) ↔
       0 ≤ realThreePointDet A B G P Q R := by
-  let Δ := A * B - P ^ 2
+  let Δ := A * B - P ^ (2 : ℕ)
   have hΔ : 0 < Δ := by simpa only [Δ] using hminor
   constructor
   · intro henergy
@@ -77,8 +77,8 @@ private theorem forall_realThreePointEnergy_nonneg_iff
     have hscaled := realThreePointEnergy_scaled_completion A B G P Q R u v w
     have hscaled' :
         A * Δ * realThreePointEnergy A B G P Q R u v w =
-          A * realThreePointDet A B G P Q R * (A * Δ) ^ 2 := by
-      rw [show Δ = A * B - P ^ 2 by rfl]
+          A * realThreePointDet A B G P Q R * (A * Δ) ^ (2 : ℕ) := by
+      rw [show Δ = A * B - P ^ (2 : ℕ) by rfl]
       rw [hscaled]
       dsimp only [u, v, w, S, Δ]
       ring
@@ -86,7 +86,7 @@ private theorem forall_realThreePointEnergy_nonneg_iff
         0 ≤ A * Δ * realThreePointEnergy A B G P Q R u v w :=
       mul_nonneg (mul_pos hA hΔ).le hnonneg
     have hright :
-        A * realThreePointDet A B G P Q R * (A * Δ) ^ 2 < 0 :=
+        A * realThreePointDet A B G P Q R * (A * Δ) ^ (2 : ℕ) < 0 :=
       mul_neg_of_neg_of_pos (mul_neg_of_pos_of_neg hA hdetneg)
         (sq_pos_of_pos (mul_pos hA hΔ))
     rw [hscaled'] at hleft
@@ -94,12 +94,12 @@ private theorem forall_realThreePointEnergy_nonneg_iff
   · intro hdet u v w
     have hscaled := realThreePointEnergy_scaled_completion A B G P Q R u v w
     have hrhs :
-        0 ≤ (A * B - P ^ 2) * (A * u + P * v + Q * w) ^ 2 +
-            ((A * B - P ^ 2) * v + (A * R - P * Q) * w) ^ 2 +
-            A * realThreePointDet A B G P Q R * w ^ 2 := by
+        0 ≤ (A * B - P ^ (2 : ℕ)) * (A * u + P * v + Q * w) ^ (2 : ℕ) +
+            ((A * B - P ^ (2 : ℕ)) * v + (A * R - P * Q) * w) ^ (2 : ℕ) +
+            A * realThreePointDet A B G P Q R * w ^ (2 : ℕ) := by
       positivity
     have hprod :
-        0 ≤ A * (A * B - P ^ 2) * realThreePointEnergy A B G P Q R u v w := by
+        0 ≤ A * (A * B - P ^ (2 : ℕ)) * realThreePointEnergy A B G P Q R u v w := by
       rw [hscaled]
       exact hrhs
     exact nonneg_of_mul_nonneg_right hprod (mul_pos hA hminor)
@@ -117,7 +117,7 @@ theorem threeRealEulerResponseEnergy_nonneg_iff_det_nonneg
   let Q := xiSquaredEulerFullKernel x z
   let R := xiSquaredEulerFullKernel y z
   have hA : 0 < A := xiSquaredEulerFullKernel_diag_pos hx
-  have hminor : 0 < A * B - P ^ 2 := by
+  have hminor : 0 < A * B - P ^ (2 : ℕ) := by
     exact xiSquaredEulerFullKernel_twoPoint_det_pos hx hxy
   have hreal := forall_realThreePointEnergy_nonneg_iff
     (G := G) (Q := Q) (R := R) hA hminor

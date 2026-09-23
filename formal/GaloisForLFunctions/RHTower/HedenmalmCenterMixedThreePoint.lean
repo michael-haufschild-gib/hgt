@@ -168,9 +168,9 @@ center value, the actual three-node Hedenmalm matrix is positive semidefinite un
 theorem thetaCuspCenterMixedThreePointMatrix_posSemidef_of_far_chamber
     {a x y : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2)
     (hx : 0 ≤ x) (hy : 0 ≤ y)
-    (hfar : thetaCuspCenterMixedDensity a x ^ 2 +
-        thetaCuspCenterMixedDensity a y ^ 2 ≤
-          thetaCuspCenterMixedDensity a 0 ^ 2) :
+    (hfar : thetaCuspCenterMixedDensity a x ^ (2 : ℕ) +
+        thetaCuspCenterMixedDensity a y ^ (2 : ℕ) ≤
+          thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ)) :
     Matrix.PosSemidef (thetaCuspCenterMixedThreePointMatrix a x y) := by
   let d := thetaCuspCenterMixedDensity a 0
   let p := thetaCuspCenterMixedDensity a x
@@ -188,7 +188,7 @@ theorem thetaCuspCenterMixedThreePointMatrix_posSemidef_of_far_chamber
   have hrq : r ≤ q := by
     dsimp [r, q]
     exact hanti hy hxy0 hyxy
-  have hfar' : p ^ 2 + q ^ 2 ≤ d ^ 2 := by simpa [d, p, q] using hfar
+  have hfar' : p ^ (2 : ℕ) + q ^ (2 : ℕ) ≤ d ^ (2 : ℕ) := by simpa [d, p, q] using hfar
   have hpsd := HilbertMetric.threePointCorrelationMatrix_posSemidef_of_far_chamber
     (hnonneg 0) (hnonneg x) (hnonneg y) (hnonneg (x + y)) hrp hrq hfar'
   simpa [thetaCuspCenterMixedThreePointMatrix, d, p, q, r] using hpsd
@@ -210,8 +210,8 @@ theorem thetaCuspCenterMixedThreePointMatrix_posSemidef_iff
 /-- The exact open near-center scalar wall left after the unconditional far-separated chamber. -/
 def ThetaCuspCenterMixedNearCenterThreePointWall : Prop :=
   ∀ a x y : ℝ, 0 < a → a < 1 / 2 → 0 < x → 0 < y →
-    thetaCuspCenterMixedDensity a 0 ^ 2 <
-      thetaCuspCenterMixedDensity a x ^ 2 + thetaCuspCenterMixedDensity a y ^ 2 →
+    thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ) <
+      thetaCuspCenterMixedDensity a x ^ (2 : ℕ) + thetaCuspCenterMixedDensity a y ^ (2 : ℕ) →
     0 ≤ thetaCuspCenterMixedThreePointDeterminant a x y
 
 /-- The named near-center wall is exactly what remains to make every ordered positive-gap
@@ -226,9 +226,9 @@ theorem thetaCuspCenterMixedThreePointMatrices_posSemidef_iff_nearCenterWall :
       (hall a x y ha0 ha hx hy)
   · intro hwall a x y ha0 ha hx hy
     by_cases hfar :
-        thetaCuspCenterMixedDensity a x ^ 2 +
-            thetaCuspCenterMixedDensity a y ^ 2 ≤
-          thetaCuspCenterMixedDensity a 0 ^ 2
+        thetaCuspCenterMixedDensity a x ^ (2 : ℕ) +
+            thetaCuspCenterMixedDensity a y ^ (2 : ℕ) ≤
+          thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ)
     · exact thetaCuspCenterMixedThreePointMatrix_posSemidef_of_far_chamber
         ha0 ha hx.le hy.le hfar
     · apply (thetaCuspCenterMixedThreePointMatrix_posSemidef_iff ha0 ha hx).2

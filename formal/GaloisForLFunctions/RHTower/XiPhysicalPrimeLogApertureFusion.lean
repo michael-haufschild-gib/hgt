@@ -1299,7 +1299,7 @@ theorem exists_pos_forall_xiPhysicalPrimeLogBulkCrossDefect_compensatedCurvature
   ring
 
 /-- Pointwise quadratic-flatness no-go.  At an ordinary-prime ratio site there is no finite
-constant which bounds the compensated width curvature by `K * h^2` throughout a punctured right
+constant which bounds the compensated width curvature by `K * h^(2 : ℕ)` throughout a punctured right
 neighborhood: the exact prime-pair cusp is linear in `h`. -/
 theorem not_exists_local_quadratic_bound_xiPhysicalPrimeLogBulkCrossDefect_compensatedCurvature
     (P : Finset Nat.Primes) (A : ℝ) (p q : Nat.Primes)

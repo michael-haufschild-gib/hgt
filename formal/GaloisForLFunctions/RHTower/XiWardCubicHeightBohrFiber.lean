@@ -97,7 +97,7 @@ theorem xiGammaEulerPrimitiveJointDepthKreinPair_oppositeVerticalShift
 
 /-- Genuine one-variable cubic Laplace Gram entry. -/
 def holomorphicCubicLaplaceKernel (x delta : ℝ) : ℂ :=
-  2 / ((x : ℂ) + (delta : ℂ) * I) ^ 3
+  2 / ((x : ℂ) + (delta : ℂ) * I) ^ (3 : ℕ)
 
 /-- Holomorphic translation character of a right-half-plane point `a+i gamma`. -/
 def holomorphicHeightTranslate (tau a gamma : ℝ) : ℂ :=
@@ -137,7 +137,7 @@ theorem not_exists_scalar_normalizer_holomorphicHeightTranslate
   nlinarith
 
 theorem holomorphicCubicLaplaceKernel_zero_gap (x : ℝ) :
-    holomorphicCubicLaplaceKernel x 0 = (2 / x ^ 3 : ℝ) := by
+    holomorphicCubicLaplaceKernel x 0 = (2 / x ^ (3 : ℕ) : ℝ) := by
   rw [holomorphicCubicLaplaceKernel]
   norm_num
 
@@ -153,7 +153,7 @@ def finiteHolomorphicCubicPhaseTrace {ι : Type*}
 def finiteHolomorphicCubicOrdinateFiberEnergy {ι : Type*}
     (s : Finset ι) (a gamma : ι → ℝ) (m : ι → ℕ) : ℝ :=
   ∑ p ∈ s.product s with gamma p.1 = gamma p.2,
-    (m p.1 : ℝ) * (m p.2 : ℝ) * (2 / (a p.1 + a p.2) ^ 3)
+    (m p.1 : ℝ) * (m p.2 : ℝ) * (2 / (a p.1 + a p.2) ^ (3 : ℕ))
 
 /-- Bohr mean deletes every distinct-ordinate cubic cross entry and retains the complete
 equal-ordinate fibre. -/
@@ -200,47 +200,47 @@ theorem two_mul_sum_multiplicity_le_finiteHolomorphicCubicOrdinateFiberEnergy
     obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hp
     exact Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hi, hi⟩, rfl⟩
   have hterm_nonneg : ∀ p ∈ (s.product s).filter fun p => gamma p.1 = gamma p.2,
-      0 ≤ (m p.1 : ℝ) * (m p.2 : ℝ) * (2 / (a p.1 + a p.2) ^ 3) := by
+      0 ≤ (m p.1 : ℝ) * (m p.2 : ℝ) * (2 / (a p.1 + a p.2) ^ (3 : ℕ)) := by
     intro p hp
     have hp' := Finset.mem_product.mp (Finset.mem_filter.mp hp).1
-    have hden : 0 < (a p.1 + a p.2) ^ 3 := by
+    have hden : 0 < (a p.1 + a p.2) ^ (3 : ℕ) := by
       positivity [ha0 p.1 hp'.1, ha0 p.2 hp'.2]
     exact mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))
       (div_nonneg (by norm_num) hden.le)
   calc
     2 * ∑ i ∈ s, (m i : ℝ) ≤
-        ∑ i ∈ s, (m i : ℝ) * (m i : ℝ) * (2 / (a i + a i) ^ 3) := by
+        ∑ i ∈ s, (m i : ℝ) * (m i : ℝ) * (2 / (a i + a i) ^ (3 : ℕ)) := by
           rw [Finset.mul_sum]
           apply Finset.sum_le_sum
           intro i hi
-          have hmi : (m i : ℝ) ≤ (m i : ℝ) ^ 2 := by
+          have hmi : (m i : ℝ) ≤ (m i : ℝ) ^ (2 : ℕ) := by
             have hm : (m i : ℝ) = 0 ∨ 1 ≤ (m i : ℝ) := by
               exact_mod_cast (Nat.eq_zero_or_pos (m i))
             rcases hm with hm | hm
             · simp [hm]
             · nlinarith
-          have hself : 2 ≤ 2 / (a i + a i) ^ 3 := by
+          have hself : 2 ≤ 2 / (a i + a i) ^ (3 : ℕ) := by
             have hai := ha i hi
             have hai0 := ha0 i hi
             rw [show a i + a i = 2 * a i by ring]
-            rw [le_div_iff₀ (by positivity : 0 < (2 * a i) ^ 3)]
+            rw [le_div_iff₀ (by positivity : 0 < (2 * a i) ^ (3 : ℕ))]
             nlinarith [sq_nonneg (a i), mul_self_nonneg (a i - 1 / 2)]
           calc
-            2 * (m i : ℝ) ≤ 2 * (m i : ℝ) ^ 2 :=
+            2 * (m i : ℝ) ≤ 2 * (m i : ℝ) ^ (2 : ℕ) :=
               mul_le_mul_of_nonneg_left hmi (by norm_num)
-            _ = (m i : ℝ) ^ 2 * 2 := by ring
-            _ ≤ (m i : ℝ) ^ 2 * (2 / (a i + a i) ^ 3) :=
+            _ = (m i : ℝ) ^ (2 : ℕ) * 2 := by ring
+            _ ≤ (m i : ℝ) ^ (2 : ℕ) * (2 / (a i + a i) ^ (3 : ℕ)) :=
               mul_le_mul_of_nonneg_left hself (sq_nonneg _)
-            _ = (m i : ℝ) * (m i : ℝ) * (2 / (a i + a i) ^ 3) := by ring
+            _ = (m i : ℝ) * (m i : ℝ) * (2 / (a i + a i) ^ (3 : ℕ)) := by ring
     _ = ∑ p ∈ diag,
-        (m p.1 : ℝ) * (m p.2 : ℝ) * (2 / (a p.1 + a p.2) ^ 3) := by
+        (m p.1 : ℝ) * (m p.2 : ℝ) * (2 / (a p.1 + a p.2) ^ (3 : ℕ)) := by
           have hinj : Set.InjOn (fun i : ι => (i, i)) s := by
             intro i hi j hj hij
             exact (Prod.mk.inj hij).1
           dsimp only [diag]
           rw [Finset.sum_image hinj]
     _ ≤ ∑ p ∈ (s.product s).filter fun p => gamma p.1 = gamma p.2,
-        (m p.1 : ℝ) * (m p.2 : ℝ) * (2 / (a p.1 + a p.2) ^ 3) :=
+        (m p.1 : ℝ) * (m p.2 : ℝ) * (2 / (a p.1 + a p.2) ^ (3 : ℕ)) :=
           Finset.sum_le_sum_of_subset_of_nonneg hdiag_sub
             (fun p hp _ => hterm_nonneg p hp)
 

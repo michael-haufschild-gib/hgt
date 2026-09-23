@@ -109,8 +109,8 @@ theorem deningerHalfDensityPoisson_capFlow
   ring
 
 def meyerPoissonTestPolynomial : Polynomial ℝ :=
-  Polynomial.X ^ 2 *
-    (Polynomial.X ^ 2 - Polynomial.C (3 / (2 * Real.pi)))
+  Polynomial.X ^ (2 : ℕ) *
+    (Polynomial.X ^ (2 : ℕ) - Polynomial.C (3 / (2 * Real.pi)))
 
 def meyerPoissonTestSchwartz : 𝓢(ℝ, ℂ) :=
   polyGaussSchwartz meyerPoissonTestPolynomial

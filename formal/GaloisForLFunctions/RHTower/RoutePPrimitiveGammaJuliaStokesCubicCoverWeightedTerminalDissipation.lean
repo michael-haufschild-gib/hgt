@@ -44,8 +44,8 @@ private theorem coefficientGenerated_terminalEnergy_div_coverDegree_le_blockEner
   let edgeTerm : Fin d.edgeCount → ℝ := fun edge =>
     d.toOrbitCoareaDatum.cuts.length edge *
       (∑ a, d.toOrbitCoareaDatum.liftCharge x a *
-        d.toOrbitCoareaDatum.cuts.side edge a) ^ 2
-  have hselected_term : ∀ i, edgeTerm (selected i) = (1 / (N : ℝ)) * x i ^ 2 := by
+        d.toOrbitCoareaDatum.cuts.side edge a) ^ (2 : ℕ)
+  have hselected_term : ∀ i, edgeTerm (selected i) = (1 / (N : ℝ)) * x i ^ (2 : ℕ) := by
     intro i
     have hcoordinate :=
       d.toOrbitCoareaDatum.cuts.toPositivePendantCutFamily.pendant_coordinate_sum
@@ -125,9 +125,9 @@ theorem routePPrimitiveGammaJuliaStokesCubicMovingLanding_coverWeighted_rankTerm
     (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a)) +
           (∑ a, (1 / (N a : ℝ)) *
             (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a)) +
-          (-globalRankCoefficient genus d) * commonRankLinear d x₀.1 ^ 2 ≤
+          (-globalRankCoefficient genus d) * commonRankLinear d x₀.1 ^ (2 : ℕ) ≤
         (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₀.1.1 a)) +
-          (-globalRankCoefficient genus d) * commonRankLinear d x₁.1 ^ 2 ∧
+          (-globalRankCoefficient genus d) * commonRankLinear d x₁.1 ^ (2 : ℕ) ∧
       0 < ∑ a, (1 / (N a : ℝ)) *
         (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a) := by
   obtain ⟨hbalance, _, _, _⟩ :=
@@ -148,7 +148,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicRankMagnitudePreservingMovingLanding
       genus d (fun _ _ => 0))
     (x₁ : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
       genus d (fun _ _ => 1))
-    (hrank : commonRankLinear d x₀.1 ^ 2 = commonRankLinear d x₁.1 ^ 2) :
+    (hrank : commonRankLinear d x₀.1 ^ (2 : ℕ) = commonRankLinear d x₁.1 ^ (2 : ℕ)) :
     (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a)) +
           (∑ a, (1 / (N a : ℝ)) *
             (d a).toOrbitCoareaDatum.terminalEnergy (x₁.1.1 a)) ≤

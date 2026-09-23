@@ -65,7 +65,7 @@ theorem norm_sub_le_schwarzPick {f : ℂ → ℂ} {z : ℂ}
     (hdiff : DifferentiableOn ℂ f (ball (0 : ℂ) 1))
     (hbd : ∀ w ∈ ball (0 : ℂ) 1, ‖f w‖ ≤ 1)
     (h0 : ‖f 0‖ < 1) (hz : ‖z‖ < 1) :
-    ‖f z - f 0‖ ≤ ‖z‖ * (1 - ‖f 0‖ ^ 2) / (1 - ‖f 0‖ * ‖z‖) := by
+    ‖f z - f 0‖ ≤ ‖z‖ * (1 - ‖f 0‖ ^ (2 : ℕ)) / (1 - ‖f 0‖ * ‖z‖) := by
   classical
   set c : ℂ := f 0 with hc
   set t : ℝ := ‖c‖ with ht
@@ -76,9 +76,9 @@ theorem norm_sub_le_schwarzPick {f : ℂ → ℂ} {z : ℂ}
   have hkey : b * (1 - (starRingEnd ℂ) c * f z) = f z - c := by
     rw [hbdef]
     exact div_mul_cancel₀ _ hden
-  have hnormsq : (starRingEnd ℂ) c * c = ((t ^ 2 : ℝ) : ℂ) := by
+  have hnormsq : (starRingEnd ℂ) c * c = ((t ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [← Complex.normSq_eq_conj_mul_self, ht, Complex.sq_norm]
-  have hprod : (f z - c) * (1 + (starRingEnd ℂ) c * b) = b * (1 - ((t ^ 2 : ℝ) : ℂ)) := by
+  have hprod : (f z - c) * (1 + (starRingEnd ℂ) c * b) = b * (1 - ((t ^ (2 : ℕ) : ℝ) : ℂ)) := by
     have hexp : (f z - c) * (1 + (starRingEnd ℂ) c * b) =
         b * (1 - (starRingEnd ℂ) c * f z) * (1 + (starRingEnd ℂ) c * b) := by
       rw [hkey]
@@ -101,21 +101,21 @@ theorem norm_sub_le_schwarzPick {f : ℂ → ℂ} {z : ℂ}
         _ = ‖(1 + (starRingEnd ℂ) c * b) - (starRingEnd ℂ) c * b‖ := by rw [← hsplit]
         _ ≤ ‖1 + (starRingEnd ℂ) c * b‖ + ‖(starRingEnd ℂ) c * b‖ := norm_sub_le _ _
     linarith
-  have hnorms : ‖f z - c‖ * ‖1 + (starRingEnd ℂ) c * b‖ = ‖b‖ * (1 - t ^ 2) := by
+  have hnorms : ‖f z - c‖ * ‖1 + (starRingEnd ℂ) c * b‖ = ‖b‖ * (1 - t ^ (2 : ℕ)) := by
     have h := congrArg norm hprod
     rw [norm_mul, norm_mul] at h
     rw [h]
     congr 1
-    have hcast : (1 : ℂ) - ((t ^ 2 : ℝ) : ℂ) = (((1 - t ^ 2 : ℝ)) : ℂ) := by push_cast; ring
+    have hcast : (1 : ℂ) - ((t ^ (2 : ℕ) : ℝ) : ℂ) = (((1 - t ^ (2 : ℕ) : ℝ)) : ℂ) := by push_cast; ring
     rw [hcast, Complex.norm_real, Real.norm_eq_abs,
-      abs_of_nonneg (by nlinarith : (0:ℝ) ≤ 1 - t ^ 2)]
+      abs_of_nonneg (by nlinarith : (0:ℝ) ≤ 1 - t ^ (2 : ℕ))]
   have hpos : (0 : ℝ) < 1 - t * ‖z‖ := by linarith
-  have hsq : (0 : ℝ) ≤ 1 - t ^ 2 := by nlinarith
+  have hsq : (0 : ℝ) ≤ 1 - t ^ (2 : ℕ) := by nlinarith
   rw [le_div_iff₀ hpos]
   calc ‖f z - c‖ * (1 - t * ‖z‖) ≤ ‖f z - c‖ * ‖1 + (starRingEnd ℂ) c * b‖ :=
         mul_le_mul_of_nonneg_left hlow (norm_nonneg _)
-    _ = ‖b‖ * (1 - t ^ 2) := hnorms
-    _ ≤ ‖z‖ * (1 - t ^ 2) := mul_le_mul_of_nonneg_right hb hsq
+    _ = ‖b‖ * (1 - t ^ (2 : ℕ)) := hnorms
+    _ ≤ ‖z‖ * (1 - t ^ (2 : ℕ)) := mul_le_mul_of_nonneg_right hb hsq
 
 /-! ## The narrow-sector Schur lemma -/
 
@@ -127,7 +127,7 @@ theorem narrowSectorSchur_norm_le
     (hsum : Summable (fun j => ‖u j‖))
     (hR0 : 0 ≤ R) (hR1 : R < 1) (hbd : ∀ j, ‖u j‖ ≤ R)
     (hM : ∑' j, u j = (M : ℂ)) (hMpos : 0 < M)
-    (hA : ∑' j, ‖u j‖ ^ 2 = A)
+    (hA : ∑' j, ‖u j‖ ^ (2 : ℕ) = A)
     (hbal : 2 * A ≤ (1 - R) * M)
     {f : ℂ → ℂ}
     (hdiff : DifferentiableOn ℂ f (ball (0 : ℂ) 1))
@@ -138,9 +138,9 @@ theorem narrowSectorSchur_norm_le
     intro j
     have := (hbd j).trans_lt hR1
     simpa [mem_ball, dist_zero_right] using this
-  have hsq : Summable (fun j => ‖u j‖ ^ 2) := by
+  have hsq : Summable (fun j => ‖u j‖ ^ (2 : ℕ)) := by
     refine Summable.of_nonneg_of_le (fun j => by positivity) (fun j => ?_) (hsum.mul_left R)
-    have h1 : ‖u j‖ ^ 2 = ‖u j‖ * ‖u j‖ := by ring
+    have h1 : ‖u j‖ ^ (2 : ℕ) = ‖u j‖ * ‖u j‖ := by ring
     rw [h1]
     exact mul_le_mul_of_nonneg_right (hbd j) (norm_nonneg _)
   set c : ℂ := f 0 with hc
@@ -175,52 +175,52 @@ theorem narrowSectorSchur_norm_le
       abs_of_pos hMpos, ← ht, htop, one_mul]
   · -- the interior case: the sharp Schwarz--Pick estimate
     have hden : (0 : ℝ) < 1 - t * R := by nlinarith
-    have hdisp : ∀ j, ‖u j‖ * ‖f (u j) - c‖ ≤ ((1 - t ^ 2) / (1 - t * R)) * ‖u j‖ ^ 2 := by
+    have hdisp : ∀ j, ‖u j‖ * ‖f (u j) - c‖ ≤ ((1 - t ^ (2 : ℕ)) / (1 - t * R)) * ‖u j‖ ^ (2 : ℕ) := by
       intro j
       have hzj : ‖u j‖ < 1 := (hbd j).trans_lt hR1
       have hsp := norm_sub_le_schwarzPick hdiff hf htlt hzj
       have hdenj : (0 : ℝ) < 1 - t * ‖u j‖ := by nlinarith [norm_nonneg (u j)]
-      have hmono : ‖u j‖ * (1 - t ^ 2) / (1 - t * ‖u j‖) ≤
-          ‖u j‖ * (1 - t ^ 2) / (1 - t * R) := by
+      have hmono : ‖u j‖ * (1 - t ^ (2 : ℕ)) / (1 - t * ‖u j‖) ≤
+          ‖u j‖ * (1 - t ^ (2 : ℕ)) / (1 - t * R) := by
         have hmul : t * ‖u j‖ ≤ t * R := mul_le_mul_of_nonneg_left (hbd j) htnn
-        have hsqle : t ^ 2 ≤ 1 := by nlinarith
+        have hsqle : t ^ (2 : ℕ) ≤ 1 := by nlinarith
         apply div_le_div_of_nonneg_left
           (mul_nonneg (norm_nonneg _) (by linarith)) hden
         linarith
-      have hsp' : ‖f (u j) - c‖ ≤ ‖u j‖ * (1 - t ^ 2) / (1 - t * R) := by
+      have hsp' : ‖f (u j) - c‖ ≤ ‖u j‖ * (1 - t ^ (2 : ℕ)) / (1 - t * R) := by
         rw [← hc] at hsp
         exact le_trans hsp hmono
-      calc ‖u j‖ * ‖f (u j) - c‖ ≤ ‖u j‖ * (‖u j‖ * (1 - t ^ 2) / (1 - t * R)) :=
+      calc ‖u j‖ * ‖f (u j) - c‖ ≤ ‖u j‖ * (‖u j‖ * (1 - t ^ (2 : ℕ)) / (1 - t * R)) :=
             mul_le_mul_of_nonneg_left hsp' (norm_nonneg _)
-        _ = ((1 - t ^ 2) / (1 - t * R)) * ‖u j‖ ^ 2 := by field_simp
+        _ = ((1 - t ^ (2 : ℕ)) / (1 - t * R)) * ‖u j‖ ^ (2 : ℕ) := by field_simp
     have htailsum : Summable (fun j => u j * (f (u j) - c)) := by
-      refine Summable.of_norm_bounded (hsq.mul_left ((1 - t ^ 2) / (1 - t * R))) (fun j => ?_)
+      refine Summable.of_norm_bounded (hsq.mul_left ((1 - t ^ (2 : ℕ)) / (1 - t * R))) (fun j => ?_)
       rw [norm_mul]
       exact hdisp j
     have hsplit : ∑' j, u j * f (u j) = c * (M : ℂ) + ∑' j, u j * (f (u j) - c) := by
       have hrw : (fun j => u j * f (u j)) = fun j => c * u j + u j * (f (u j) - c) := by
         funext j; ring
       rw [hrw, (hsum.of_norm.mul_left c).tsum_add htailsum, tsum_mul_left, hM]
-    have htail : ‖∑' j, u j * (f (u j) - c)‖ ≤ ((1 - t ^ 2) / (1 - t * R)) * A := by
+    have htail : ‖∑' j, u j * (f (u j) - c)‖ ≤ ((1 - t ^ (2 : ℕ)) / (1 - t * R)) * A := by
       have hnormsum : Summable (fun j => ‖u j * (f (u j) - c)‖) := by
         refine Summable.of_nonneg_of_le (fun j => norm_nonneg _) (fun j => ?_)
-          (hsq.mul_left ((1 - t ^ 2) / (1 - t * R)))
+          (hsq.mul_left ((1 - t ^ (2 : ℕ)) / (1 - t * R)))
         rw [norm_mul]
         exact hdisp j
       calc ‖∑' j, u j * (f (u j) - c)‖ ≤ ∑' j, ‖u j * (f (u j) - c)‖ :=
             norm_tsum_le_tsum_norm hnormsum
-        _ ≤ ∑' j, ((1 - t ^ 2) / (1 - t * R)) * ‖u j‖ ^ 2 :=
+        _ ≤ ∑' j, ((1 - t ^ (2 : ℕ)) / (1 - t * R)) * ‖u j‖ ^ (2 : ℕ) :=
             hnormsum.tsum_mono (hsq.mul_left _)
               (fun j => by dsimp only; rw [norm_mul]; exact hdisp j)
-        _ = ((1 - t ^ 2) / (1 - t * R)) * A := by rw [tsum_mul_left, hA]
+        _ = ((1 - t ^ (2 : ℕ)) / (1 - t * R)) * A := by rw [tsum_mul_left, hA]
     have hAnn : 0 ≤ A := by
       rw [← hA]
       exact tsum_nonneg (fun j => by positivity)
-    have hfrac : ((1 - t ^ 2) / (1 - t * R)) * A ≤ (1 - t) * M := by
+    have hfrac : ((1 - t ^ (2 : ℕ)) / (1 - t * R)) * A ≤ (1 - t) * M := by
       have hkey : (1 + t) / (1 - t * R) ≤ 2 / (1 - R) := by
         rw [div_le_div_iff₀ hden (by linarith : (0:ℝ) < 1 - R)]
         nlinarith
-      have hexp : ((1 - t ^ 2) / (1 - t * R)) * A = (1 - t) * (((1 + t) / (1 - t * R)) * A) := by
+      have hexp : ((1 - t ^ (2 : ℕ)) / (1 - t * R)) * A = (1 - t) * (((1 + t) / (1 - t * R)) * A) := by
         field_simp
         ring
       rw [hexp]

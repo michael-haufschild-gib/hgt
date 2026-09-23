@@ -48,7 +48,7 @@ lemma gaussAmplitudeCircleComplex_apply (p : ℝ) (m : ℕ) (x : AddCircle (1 : 
 theorem intervalIntegral_gaussAmplitudeSegment
     (p : ℝ) (hp : 1 < p) (m : ℕ) (hm : 1 ≤ m) :
     ∫ δ in (0 : ℝ)..1, gaussAmplitudeSegment p m δ =
-      (p ^ m - 1) ^ 2 / (p ^ m * (m : ℝ) ^ 2 * (Real.log p) ^ 2) := by
+      (p ^ m - 1) ^ (2 : ℕ) / (p ^ m * (m : ℝ) ^ (2 : ℕ) * (Real.log p) ^ (2 : ℕ)) := by
   have hp0 : 0 < p := lt_trans zero_lt_one hp
   have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
   let c : ℝ := (m : ℝ) * Real.log p
@@ -56,8 +56,8 @@ theorem intervalIntegral_gaussAmplitudeSegment
     dsimp [c]
     exact mul_pos hmR (Real.log_pos hp)
   let F : ℝ → ℝ := fun x =>
-    Real.exp (c * x) * ((1 - x) / c + 1 / c ^ 2) +
-      Real.exp (c * (x - 1)) * (x / c - 1 / c ^ 2)
+    Real.exp (c * x) * ((1 - x) / c + 1 / c ^ (2 : ℕ)) +
+      Real.exp (c * (x - 1)) * (x / c - 1 / c ^ (2 : ℕ))
   have hseg : ∀ x : ℝ,
       gaussAmplitudeSegment p m x =
         (1 - x) * Real.exp (c * x) + x * Real.exp (c * (x - 1)) := by
@@ -73,12 +73,12 @@ theorem intervalIntegral_gaussAmplitudeSegment
     have hcx1 : HasDerivAt (fun y : ℝ => c * (y - 1)) c x := by
       convert! ((hasDerivAt_id x).sub_const 1).const_mul c using 1
       ring
-    have hlin1 : HasDerivAt (fun y : ℝ => (1 - y) / c + 1 / c ^ 2) (-1 / c) x := by
+    have hlin1 : HasDerivAt (fun y : ℝ => (1 - y) / c + 1 / c ^ (2 : ℕ)) (-1 / c) x := by
       convert! (((hasDerivAt_const x 1).sub (hasDerivAt_id x)).div_const c).add_const
-        (1 / c ^ 2) using 1
+        (1 / c ^ (2 : ℕ)) using 1
       ring
-    have hlin2 : HasDerivAt (fun y : ℝ => y / c - 1 / c ^ 2) (1 / c) x := by
-      convert! (((hasDerivAt_id x).div_const c).sub_const (1 / c ^ 2)) using 1
+    have hlin2 : HasDerivAt (fun y : ℝ => y / c - 1 / c ^ (2 : ℕ)) (1 / c) x := by
+      convert! (((hasDerivAt_id x).div_const c).sub_const (1 / c ^ (2 : ℕ))) using 1
     convert! ((hcx.exp.mul hlin1).add (hcx1.exp.mul hlin2)) using 1
     field_simp [hc.ne']
     ring
@@ -103,7 +103,7 @@ theorem intervalIntegral_gaussAmplitudeSegment
 theorem integral_gaussAmplitudeCircle
     (p : ℝ) (hp : 1 < p) (m : ℕ) (hm : 1 ≤ m) :
     ∫ x, gaussAmplitudeCircle p m x ∂GaloisForLFunctions.unitCircleHaar =
-      (p ^ m - 1) ^ 2 / (p ^ m * (m : ℝ) ^ 2 * (Real.log p) ^ 2) := by
+      (p ^ m - 1) ^ (2 : ℕ) / (p ^ m * (m : ℝ) ^ (2 : ℕ) * (Real.log p) ^ (2 : ℕ)) := by
   change ∫ x, AddCircle.liftIoc 1 0 (gaussAmplitudeSegment p m) x
       ∂AddCircle.haarAddCircle = _
   rw [AddCircle.integral_haarAddCircle]
@@ -116,7 +116,7 @@ theorem integral_gaussAmplitudeCircleComplex
     (p : ℝ) (hp : 1 < p) (m : ℕ) (hm : 1 ≤ m) :
     ∫ x, gaussAmplitudeCircleComplex p m x
         ∂GaloisForLFunctions.unitCircleHaar =
-      (((p ^ m - 1) ^ 2 / (p ^ m * (m : ℝ) ^ 2 * (Real.log p) ^ 2) : ℝ) : ℂ) := by
+      (((p ^ m - 1) ^ (2 : ℕ) / (p ^ m * (m : ℝ) ^ (2 : ℕ) * (Real.log p) ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [show (∫ x, gaussAmplitudeCircleComplex p m x
         ∂GaloisForLFunctions.unitCircleHaar) =
       ((∫ x, gaussAmplitudeCircle p m x
@@ -140,8 +140,8 @@ theorem gaussPrincipalDiagonalTerm_logResidue
     Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range N, gaussPrincipalDiagonalTerm k p n) /
         (Real.log N : ℂ)) atTop
-      (nhds ((2 * ((p : ℝ) ^ m - 1) ^ 2 /
-        ((m : ℝ) ^ 2 * Real.log (p : ℝ)) : ℝ) : ℂ)) := by
+      (nhds ((2 * ((p : ℝ) ^ m - 1) ^ (2 : ℕ) /
+        ((m : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ)) : ℝ) : ℂ)) := by
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
   have hbase := gaussComponentPrimeMagnitudeEnergy_phase_logResidue hm k p
     (gaussAmplitudeCircleComplex (p : ℝ) m)
@@ -152,18 +152,18 @@ theorem gaussPrincipalDiagonalTerm_logResidue
   have hscalar :
       (2 * ((p : ℝ) ^ m)) *
           (Real.log (p : ℝ) *
-            (((p : ℝ) ^ m - 1) ^ 2 /
-              ((p : ℝ) ^ m * (m : ℝ) ^ 2 * Real.log (p : ℝ) ^ 2))) =
-        2 * ((p : ℝ) ^ m - 1) ^ 2 /
-          ((m : ℝ) ^ 2 * Real.log (p : ℝ)) := by
+            (((p : ℝ) ^ m - 1) ^ (2 : ℕ) /
+              ((p : ℝ) ^ m * (m : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ) ^ (2 : ℕ)))) =
+        2 * ((p : ℝ) ^ m - 1) ^ (2 : ℕ) /
+          ((m : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ)) := by
     field_simp [hlog, hpow]
   have hscalarC :
       (2 * ((p : ℝ) ^ m) : ℂ) *
           ((Real.log (p : ℝ) : ℂ) *
-            ((((p : ℝ) ^ m - 1) ^ 2 /
-              ((p : ℝ) ^ m * (m : ℝ) ^ 2 * Real.log (p : ℝ) ^ 2) : ℝ) : ℂ)) =
-        ((2 * ((p : ℝ) ^ m - 1) ^ 2 /
-          ((m : ℝ) ^ 2 * Real.log (p : ℝ)) : ℝ) : ℂ) := by
+            ((((p : ℝ) ^ m - 1) ^ (2 : ℕ) /
+              ((p : ℝ) ^ m * (m : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ) ^ (2 : ℕ)) : ℝ) : ℂ)) =
+        ((2 * ((p : ℝ) ^ m - 1) ^ (2 : ℕ) /
+          ((m : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ)) : ℝ) : ℂ) := by
     exact_mod_cast hscalar
   rw [hscalarC] at hscaled
   refine hscaled.congr' ?_

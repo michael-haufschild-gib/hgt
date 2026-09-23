@@ -21,7 +21,7 @@ def modularCommutator (x y : A) : A := x * y - y * x
 
 /-- Failure of cubic projection displacement to add through an intermediate polarization. -/
 def cubicProjectionAssociatorAlgebra (r q p : A) : A :=
-  (r - p) ^ 3 - (r - q) ^ 3 - (q - p) ^ 3
+  (r - p) ^ (3 : ℕ) - (r - q) ^ (3 : ℕ) - (q - p) ^ (3 : ℕ)
 
 /-- A sigma-trace: cyclic rotation is accompanied by the source modular automorphism. -/
 def IsSigmaTrace (sigma : A →+* A) (tau : A →+ G) : Prop :=
@@ -33,9 +33,9 @@ def cubicProjectionModularAnomaly (sigma : A →+* A) (r q p : A) : A :=
   let b := q - p
   3 • ((sigma q - q) * (a * b)) +
     (sigma a - a) * (a * b) +
-    (sigma (a ^ 2) - a ^ 2) * b +
+    (sigma (a ^ (2 : ℕ)) - a ^ (2 : ℕ)) * b +
     (sigma (a * b) - a * b) * b +
-    (sigma a - a) * b ^ 2
+    (sigma a - a) * b ^ (2 : ℕ)
 
 /-- The cubic associator is a sum of five commutator channels.  Projection algebra collapses the
 distinguished mixed pair to the commutator with the intermediate projection. -/
@@ -46,26 +46,26 @@ theorem cubicProjectionAssociatorAlgebra_eq_commutators
       let b := q - p
       3 • modularCommutator (a * b) q +
         modularCommutator (a * b) a +
-        modularCommutator b (a ^ 2) +
+        modularCommutator b (a ^ (2 : ℕ)) +
         modularCommutator b (a * b) +
-        modularCommutator (b ^ 2) a := by
+        modularCommutator (b ^ (2 : ℕ)) a := by
   let a := r - q
   let b := q - p
   have hlong : r - p = a + b := by
     simp only [a, b]
     noncomm_ring
   have hqqp : q * (q * p) = q * p := by rw [← mul_assoc, hq]
-  have hcross : a ^ 2 * b + a * b ^ 2 = modularCommutator (a * b) q := by
+  have hcross : a ^ (2 : ℕ) * b + a * b ^ (2 : ℕ) = modularCommutator (a * b) q := by
     simp only [a, b, modularCommutator]
     noncomm_ring [hr, hq, hp, hqqp]
   rw [cubicProjectionAssociatorAlgebra, hlong]
-  change (a + b) ^ 3 - a ^ 3 - b ^ 3 = _
-  rw [show (a + b) ^ 3 - a ^ 3 - b ^ 3 =
-      3 • (a ^ 2 * b + a * b ^ 2) +
+  change (a + b) ^ (3 : ℕ) - a ^ (3 : ℕ) - b ^ (3 : ℕ) = _
+  rw [show (a + b) ^ (3 : ℕ) - a ^ (3 : ℕ) - b ^ (3 : ℕ) =
+      3 • (a ^ (2 : ℕ) * b + a * b ^ (2 : ℕ)) +
         modularCommutator (a * b) a +
-        modularCommutator b (a ^ 2) +
+        modularCommutator b (a ^ (2 : ℕ)) +
         modularCommutator b (a * b) +
-        modularCommutator (b ^ 2) a by
+        modularCommutator (b ^ (2 : ℕ)) a by
       simp only [modularCommutator]
       noncomm_ring]
   rw [hcross]

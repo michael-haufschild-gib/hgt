@@ -55,10 +55,10 @@ theorem cubicRadialCoordinates_middle (g : cubicProbeSection) :
 
 theorem cubicRadialBoundaryProbe_mode (g : cubicProbeSection) :
     cubicDecayMode 0 (cubicRadialBoundaryProbe g).val=
-      cubicRadialEdgeCoordinate g*(1-(g.val 0-g.val 4)^2)/4 := by
+      cubicRadialEdgeCoordinate g*(1-(g.val 0-g.val 4)^(2 : ℕ))/4 := by
   rw [cubicRadialBoundaryProbe,cubicRecoveryEdge_mode]
   change cubicRecoveryLower (cubicRadialEdgeCoordinate g)=_
-  have h (c : ℝ) : cubicRecoveryLower c=c*(1-(1-c)^2)/4 := by
+  have h (c : ℝ) : cubicRecoveryLower c=c*(1-(1-c)^(2 : ℕ))/4 := by
     unfold cubicRecoveryLower
     ring
   rw [h]
@@ -67,7 +67,7 @@ theorem cubicRadialBoundaryProbe_mode (g : cubicProbeSection) :
 theorem cubicRadialCoordinates_mode (g : cubicProbeSection) :
     cubicDecayMode 0 g.val=(cubicRadialParameter g).val*cubicDecayMode 0 (cubicRadialBoundaryProbe g).val := by
   rw [cubicRadialBoundaryProbe_mode]
-  change g.val 2*(1-(g.val 0-g.val 4)^2)/4=_
+  change g.val 2*(1-(g.val 0-g.val 4)^(2 : ℕ))/4=_
   have h := cubicRadialCoordinates_middle g
   change g.val 2=(cubicRadialParameter g).val*cubicRadialEdgeCoordinate g at h
   rw [h]

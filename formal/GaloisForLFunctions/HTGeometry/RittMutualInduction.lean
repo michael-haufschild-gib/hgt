@@ -44,9 +44,9 @@ theorem ritt_affine_or_excHom_two (Fr : RittFrame K L) {τ : L} {q : K}
       (∃ (v z : L) (κ ν : K), v ≠ 0 ∧ κ ≠ 0 ∧ ν ≠ 0 ∧
         v ∈ Fr.jetPrefixField τ 2 ∧ z ∈ Fr.jetPrefixField τ 2 ∧
         Fr.σ v = algebraMap K L (q⁻¹ * Fr.ρ ^ (2 - 1)) * v ∧
-        Fr.σ z = algebraMap K L (q / Fr.ρ ^ 2) * z + algebraMap K L κ / v
+        Fr.σ z = algebraMap K L (q / Fr.ρ ^ (2 : ℕ)) * z + algebraMap K L κ / v
           - algebraMap K L ν * (Fr.σ (Fr.d^[2] τ)
-              - algebraMap K L (q / Fr.ρ ^ 2) * Fr.d^[2] τ)) := by
+              - algebraMap K L (q / Fr.ρ ^ (2 : ℕ)) * Fr.d^[2] τ)) := by
   have hρ0 : Fr.ρ ≠ 0 := Fr.ρ_ne
   intro m
   induction m using Nat.strong_induction_on with
@@ -68,9 +68,9 @@ theorem ritt_affine_or_excHom_two (Fr : RittFrame K L) {τ : L} {q : K}
         (∃ (v z : L) (κ ν : K), v ≠ 0 ∧ κ ≠ 0 ∧ ν ≠ 0 ∧
           v ∈ Fr.jetPrefixField τ 2 ∧ z ∈ Fr.jetPrefixField τ 2 ∧
           Fr.σ v = algebraMap K L (q⁻¹ * Fr.ρ ^ (2 - 1)) * v ∧
-          Fr.σ z = algebraMap K L (q / Fr.ρ ^ 2) * z + algebraMap K L κ / v
+          Fr.σ z = algebraMap K L (q / Fr.ρ ^ (2 : ℕ)) * z + algebraMap K L κ / v
             - algebraMap K L ν * (Fr.σ (Fr.d^[2] τ)
-                - algebraMap K L (q / Fr.ρ ^ 2) * Fr.d^[2] τ)) := by
+                - algebraMap K L (q / Fr.ρ ^ (2 : ℕ)) * Fr.d^[2] τ)) := by
       intro m' hm'2 hm'lt hin
       have haK0 : q / Fr.ρ ^ m' ≠ 0 := div_ne_zero hq (pow_ne_zero _ hρ0)
       have hcq : q / Fr.ρ ^ (m' + 1) ≠ 0 := div_ne_zero hq (pow_ne_zero _ hρ0)

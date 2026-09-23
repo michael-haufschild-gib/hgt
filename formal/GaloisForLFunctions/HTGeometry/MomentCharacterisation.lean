@@ -42,7 +42,7 @@ theorem measure_compl_finset_pos_of_positiveMomentForm (h : PositiveMomentForm s
   rcases eq_or_ne (ν {x : ℝ | x ∉ F}) 0 with hzero | hne
   · exfalso
     set p := vanishingPoly F with hp
-    have hae : (fun x : ℝ => (Polynomial.eval x p) ^ 2) =ᵐ[ν] fun _ => (0 : ℝ) := by
+    have hae : (fun x : ℝ => (Polynomial.eval x p) ^ (2 : ℕ)) =ᵐ[ν] fun _ => (0 : ℝ) := by
       rw [Filter.EventuallyEq, ae_iff]
       refine measure_mono_null (fun x hx => ?_) hzero
       simp only [Set.mem_setOf_eq]

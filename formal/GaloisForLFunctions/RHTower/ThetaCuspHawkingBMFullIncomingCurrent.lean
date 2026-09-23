@@ -19,18 +19,18 @@ set_option maxHeartbeats 1400000
 /-- Pull an ingoing two-jet into the original static chart. Ordered mixed jets remain distinct. -/
 def staticJet (r : ℂ) (P : ScalarTwoJet (Fin 4) ℂ) : ScalarTwoJet (Fin 4) ℂ where
   value := P.value
-  first := ![P.first 0,P.first 1+P.first 0/(r^2-1),P.first 2,P.first 3]
+  first := ![P.first 0,P.first 1+P.first 0/(r^(2 : ℕ)-1),P.first 2,P.first 3]
   second :=
-    ![![P.second 0 0,P.second 0 1+P.second 0 0/(r^2-1),P.second 0 2,P.second 0 3],
-      ![P.second 1 0+P.second 0 0/(r^2-1),
-        P.second 1 1+(P.second 0 1+P.second 1 0)/(r^2-1)+
-          P.second 0 0/(r^2-1)^2-2*r*P.first 0/(r^2-1)^2,
-        P.second 1 2+P.second 0 2/(r^2-1),P.second 1 3+P.second 0 3/(r^2-1)],
-      ![P.second 2 0,P.second 2 1+P.second 2 0/(r^2-1),P.second 2 2,P.second 2 3],
-      ![P.second 3 0,P.second 3 1+P.second 3 0/(r^2-1),P.second 3 2,P.second 3 3]]
+    ![![P.second 0 0,P.second 0 1+P.second 0 0/(r^(2 : ℕ)-1),P.second 0 2,P.second 0 3],
+      ![P.second 1 0+P.second 0 0/(r^(2 : ℕ)-1),
+        P.second 1 1+(P.second 0 1+P.second 1 0)/(r^(2 : ℕ)-1)+
+          P.second 0 0/(r^(2 : ℕ)-1)^(2 : ℕ)-2*r*P.first 0/(r^(2 : ℕ)-1)^(2 : ℕ),
+        P.second 1 2+P.second 0 2/(r^(2 : ℕ)-1),P.second 1 3+P.second 0 3/(r^(2 : ℕ)-1)],
+      ![P.second 2 0,P.second 2 1+P.second 2 0/(r^(2 : ℕ)-1),P.second 2 2,P.second 2 3],
+      ![P.second 3 0,P.second 3 1+P.second 3 0/(r^(2 : ℕ)-1),P.second 3 2,P.second 3 3]]
 
 private def orbit (r : ℂ) (P : ScalarTwoJet (Fin 4) ℂ) : ℂ :=
-  r^2*(r^2-1)*P.second 1 1+r^2*(P.second 0 1+P.second 1 0)+
+  r^(2 : ℕ)*(r^(2 : ℕ)-1)*P.second 1 1+r^(2 : ℕ)*(P.second 0 1+P.second 1 0)+
     2*r*P.first 1-2*r*P.first 0
 
 private def curl (P : Fin 2 → ScalarTwoJet (Fin 4) ℂ) (k : Fin 4) : ℂ :=
@@ -42,11 +42,11 @@ private def cross (P Q : Fin 2 → ScalarTwoJet (Fin 4) ℂ)
 
 /-- The complete regular current. The two angular components retain the mixed time/radius curls. -/
 def regularCurrent (r y : ℂ) (P Q : Fin 2 → ScalarTwoJet (Fin 4) ℂ) : Fin 4 → ℂ :=
-  ![(∑ a : Fin 2, ((Q a).first 1*orbit r (P a)-(P a).first 1*orbit r (Q a)))/r^2,
-    (∑ a : Fin 2, (((r^2-1)*(Q a).first 1+(Q a).first 0)*orbit r (P a)-
-      ((r^2-1)*(P a).first 1+(P a).first 0)*orbit r (Q a)))/r^2,
-    -y^2/r^2*((r^2-1)*cross P Q 1 1 1+cross P Q 1 0 1+cross P Q 0 1 1),
-    y^2/r^2*((r^2-1)*cross P Q 1 1 0+cross P Q 1 0 0+cross P Q 0 1 0)]
+  ![(∑ a : Fin 2, ((Q a).first 1*orbit r (P a)-(P a).first 1*orbit r (Q a)))/r^(2 : ℕ),
+    (∑ a : Fin 2, (((r^(2 : ℕ)-1)*(Q a).first 1+(Q a).first 0)*orbit r (P a)-
+      ((r^(2 : ℕ)-1)*(P a).first 1+(P a).first 0)*orbit r (Q a)))/r^(2 : ℕ),
+    -y^(2 : ℕ)/r^(2 : ℕ)*((r^(2 : ℕ)-1)*cross P Q 1 1 1+cross P Q 1 0 1+cross P Q 0 1 1),
+    y^(2 : ℕ)/r^(2 : ℕ)*((r^(2 : ℕ)-1)*cross P Q 1 1 0+cross P Q 1 0 0+cross P Q 0 1 0)]
 
 /-- All four expressions are the original Einstein-action current in ingoing coordinates. -/
 theorem regular_current_is_action (p : D4BMBackground.ExteriorPoint)
@@ -54,7 +54,7 @@ theorem regular_current_is_action (p : D4BMBackground.ExteriorPoint)
     ingoingAction p (fun a => staticJet (p.val 1) (P a))
       (fun a => staticJet (p.val 1) (Q a)) = regularCurrent (p.val 1) (p.val 3) P Q := by
   have hr : (p.val 1:ℂ) ≠ 0 := by exact_mod_cast (show p.val 1 ≠ 0 by linarith [p.property.1])
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   unfold ingoingAction
   simp only [stream_complete_action_current]
   ext j
@@ -67,40 +67,40 @@ theorem regular_current_is_action (p : D4BMBackground.ExteriorPoint)
     ring
   · let r := (p.val 1:ℂ)
     let y := (p.val 3:ℂ)
-    change y^2/r^2*(-(r^2-1)*
-      (((P 1).first 1+(P 1).first 0/(r^2-1))*
-        ((Q 1).second 2 1+(Q 1).second 2 0/(r^2-1)-((Q 0).second 3 1+(Q 0).second 3 0/(r^2-1)))-
-       ((Q 1).first 1+(Q 1).first 0/(r^2-1))*
-        ((P 1).second 2 1+(P 1).second 2 0/(r^2-1)-((P 0).second 3 1+(P 0).second 3 0/(r^2-1))))+
+    change y^(2 : ℕ)/r^(2 : ℕ)*(-(r^(2 : ℕ)-1)*
+      (((P 1).first 1+(P 1).first 0/(r^(2 : ℕ)-1))*
+        ((Q 1).second 2 1+(Q 1).second 2 0/(r^(2 : ℕ)-1)-((Q 0).second 3 1+(Q 0).second 3 0/(r^(2 : ℕ)-1)))-
+       ((Q 1).first 1+(Q 1).first 0/(r^(2 : ℕ)-1))*
+        ((P 1).second 2 1+(P 1).second 2 0/(r^(2 : ℕ)-1)-((P 0).second 3 1+(P 0).second 3 0/(r^(2 : ℕ)-1))))+
       ((P 1).first 0*((Q 1).second 2 0-(Q 0).second 3 0)-
-       (Q 1).first 0*((P 1).second 2 0-(P 0).second 3 0))/(r^2-1)) =
-      -y^2/r^2*((r^2-1)*cross P Q 1 1 1+cross P Q 1 0 1+cross P Q 0 1 1)
+       (Q 1).first 0*((P 1).second 2 0-(P 0).second 3 0))/(r^(2 : ℕ)-1)) =
+      -y^(2 : ℕ)/r^(2 : ℕ)*((r^(2 : ℕ)-1)*cross P Q 1 1 1+cross P Q 1 0 1+cross P Q 0 1 1)
     dsimp [cross,curl,r,y]
     field_simp [hr,hf]
     ring
   · let r := (p.val 1:ℂ)
     let y := (p.val 3:ℂ)
-    change y^2/r^2*((r^2-1)*
-      (((P 0).first 1+(P 0).first 0/(r^2-1))*
-        ((Q 1).second 2 1+(Q 1).second 2 0/(r^2-1)-((Q 0).second 3 1+(Q 0).second 3 0/(r^2-1)))-
-       ((Q 0).first 1+(Q 0).first 0/(r^2-1))*
-        ((P 1).second 2 1+(P 1).second 2 0/(r^2-1)-((P 0).second 3 1+(P 0).second 3 0/(r^2-1))))-
+    change y^(2 : ℕ)/r^(2 : ℕ)*((r^(2 : ℕ)-1)*
+      (((P 0).first 1+(P 0).first 0/(r^(2 : ℕ)-1))*
+        ((Q 1).second 2 1+(Q 1).second 2 0/(r^(2 : ℕ)-1)-((Q 0).second 3 1+(Q 0).second 3 0/(r^(2 : ℕ)-1)))-
+       ((Q 0).first 1+(Q 0).first 0/(r^(2 : ℕ)-1))*
+        ((P 1).second 2 1+(P 1).second 2 0/(r^(2 : ℕ)-1)-((P 0).second 3 1+(P 0).second 3 0/(r^(2 : ℕ)-1))))-
       ((P 0).first 0*((Q 1).second 2 0-(Q 0).second 3 0)-
-       (Q 0).first 0*((P 1).second 2 0-(P 0).second 3 0))/(r^2-1)) =
-      y^2/r^2*((r^2-1)*cross P Q 1 1 0+cross P Q 1 0 0+cross P Q 0 1 0)
+       (Q 0).first 0*((P 1).second 2 0-(P 0).second 3 0))/(r^(2 : ℕ)-1)) =
+      y^(2 : ℕ)/r^(2 : ℕ)*((r^(2 : ℕ)-1)*cross P Q 1 1 0+cross P Q 1 0 0+cross P Q 0 1 0)
     dsimp [cross,curl,r,y]
     field_simp [hr,hf]
     ring
 
 /-- Radial factor multiplying the constructed full angular response. -/
-def responseProfile (s a : ℂ) (r : ℝ) : ℂ := a^2*power (2*s) (1+r⁻¹)
+def responseProfile (s a : ℂ) (r : ℝ) : ℂ := a^(2 : ℕ)*power (2*s) (1+r⁻¹)
 private def responseRate (s : ℂ) (r : ℝ) : ℂ := -2*s/((r:ℂ)*(1+r))
-private def responseRateFirst (s : ℂ) (r : ℝ) : ℂ := 2*s*(1+2*r)/((r:ℂ)^2*(1+r)^2)
+private def responseRateFirst (s : ℂ) (r : ℝ) : ℂ := 2*s*(1+2*r)/((r:ℂ)^(2 : ℕ)*(1+r)^(2 : ℕ))
 /-- First radial derivative of the full-response factor. -/
 def responseProfileFirst (s a : ℂ) (r : ℝ) : ℂ := responseProfile s a r*responseRate s r
 /-- Second radial derivative of the full-response factor. -/
 def responseProfileSecond (s a : ℂ) (r : ℝ) : ℂ :=
-  responseProfile s a r*((responseRate s r)^2+responseRateFirst s r)
+  responseProfile s a r*((responseRate s r)^(2 : ℕ)+responseRateFirst s r)
 
 /-- Actual first and second radial derivatives, at fixed ingoing time. -/
 theorem responseProfile_derivatives (s a : ℂ) (r : Ioi (0:ℝ)) :
@@ -114,7 +114,7 @@ theorem responseProfile_derivatives (s a : ℂ) (r : Ioi (0:ℝ)) :
   have hi := hasDerivAt_inv (ne_of_gt hr0)
   have hp := (power_derivatives (2*s) (show 0 < 1+r.val⁻¹ by positivity)).1.scomp r.val (hi.const_add 1)
   have h0 : HasDerivAt (responseProfile s a) (responseProfileFirst s a r) r := by
-    apply (hp.const_mul (a^2)).congr_deriv
+    apply (hp.const_mul (a^(2 : ℕ))).congr_deriv
     dsimp [responseProfileFirst,responseProfile,responseRate,powerFirst]
     push_cast
     field_simp [hr,hr1,hr2]
@@ -280,15 +280,15 @@ private def pair (P Q : Fin 2 → ScalarTwoJet (Fin 2) ℂ) : ℂ :=
 private def angularGreen (y : ℂ) (P Q : Fin 2 → ScalarTwoJet (Fin 2) ℂ) : Fin 2 → ℂ :=
   let CP := (P 1).first 0-(P 0).first 1
   let CQ := (Q 1).first 0-(Q 0).first 1
-  ![y^2*((P 1).value*CQ-(Q 1).value*CP),
-    -y^2*((P 0).value*CQ-(Q 0).value*CP)]
+  ![y^(2 : ℕ)*((P 1).value*CQ-(Q 1).value*CP),
+    -y^(2 : ℕ)*((P 0).value*CQ-(Q 0).value*CP)]
 
 /-- Exact coefficients of the fixed clock's mass, mixed term and derivative energy.
 Rows are the four physical current components; columns are mass, mixed, energy. -/
 def clockCoefficients (q : XiZeroCopy) (a b : ℂ) (z : Point) : Fin 4 → Fin 3 → ℂ :=
   let s := physicalRate q true
   let t := physicalRate q false
-  let c := a^2*b^2/64
+  let c := a^(2 : ℕ)*b^(2 : ℕ)/64
   let U := traceJet q true z
   let V := traceJet q false z
   let N := normalJet q true z
@@ -309,7 +309,7 @@ def incomingHorizonCurrent (q : XiZeroCopy) (a b : ℂ) (v : ℝ) (z : Point) (j
     clockCoefficients q a b z j 1*onsetMixed v+
     clockCoefficients q a b z j 2*onsetDerivativeSquare v
 
-private theorem responseProfile_one (s a : ℂ) : responseProfile s a 1=a^2*power (2*s) 2 := by
+private theorem responseProfile_one (s a : ℂ) : responseProfile s a 1=a^(2 : ℕ)*power (2*s) 2 := by
   norm_num [responseProfile]
 private theorem responseProfileFirst_one (s a : ℂ) :
     responseProfileFirst s a 1=-s*responseProfile s a 1 := by
@@ -325,7 +325,7 @@ private theorem profileFirst_one (s a : ℂ) :
 private theorem branch_factor (q : XiZeroCopy) (a b : ℂ) (v : ℝ) :
     (responseProfile (physicalRate q true) a 1*Complex.exp (2*physicalRate q true*(v:ℂ)))*
     (responseProfile (physicalRate q false) b 1*Complex.exp (2*physicalRate q false*(v:ℂ))) =
-      a^2*b^2/64*Complex.exp (-6*(v:ℂ)) := by
+      a^(2 : ℕ)*b^(2 : ℕ)/64*Complex.exp (-6*(v:ℂ)) := by
   have ht : physicalRate q false= -physicalRate q true-3 := by simp [physicalRate]; ring
   have hp : power (2*physicalRate q true) 2*power (2*(-physicalRate q true-3)) 2=1/64 := by
     unfold power
@@ -339,7 +339,7 @@ private theorem branch_factor (q : XiZeroCopy) (a b : ℂ) (v : ℝ) :
     rw [← Complex.exp_add]; congr 1; ring
   rw [ht,responseProfile_one,responseProfile_one]
   calc
-    _ = a^2*b^2*(power (2*physicalRate q true) 2*power (2*(-physicalRate q true-3)) 2)*
+    _ = a^(2 : ℕ)*b^(2 : ℕ)*(power (2*physicalRate q true) 2*power (2*(-physicalRate q true-3)) 2)*
         (Complex.exp (2*physicalRate q true*(v:ℂ))*Complex.exp (2*(-physicalRate q true-3)*(v:ℂ))) := by ring
     _ = _ := by rw [hp,he]; ring
 
@@ -347,7 +347,7 @@ private theorem branch_factor (q : XiZeroCopy) (a b : ℂ) (v : ℝ) :
 theorem incoming_current_horizon_value (q : XiZeroCopy) (a b : ℂ) (v : ℝ) (z : Point) :
     incomingCurrent q a b 1 v z = incomingHorizonCurrent q a b v z := by
   have ht : physicalRate q false= -physicalRate q true-3 := by simp [physicalRate]; ring
-  have hp : responseProfile (physicalRate q true) a 1*responseProfile (physicalRate q false) b 1=a^2*b^2/64 := by
+  have hp : responseProfile (physicalRate q true) a 1*responseProfile (physicalRate q false) b 1=a^(2 : ℕ)*b^(2 : ℕ)/64 := by
     simpa using branch_factor q a b 0
   have he : Complex.exp (2*physicalRate q true*(v:ℂ))*Complex.exp (2*physicalRate q false*(v:ℂ))=
       Complex.exp (-6*(v:ℂ)) := by
@@ -398,16 +398,16 @@ private theorem all_profiles_continuous (s a : ℂ) :
   have hz : ContinuousAt (fun r:ℝ => (r:ℂ)) 1 := Complex.continuous_ofReal.continuousAt
   have hn : ((1:ℝ):ℂ) ≠ 0 := by norm_num
   have hn1 : 1+((1:ℝ):ℂ) ≠ 0 := by norm_num
-  have hn2 : ((1:ℝ):ℂ)^2 ≠ 0 := by norm_num
-  have hn3 : (1+((1:ℝ):ℂ))^2 ≠ 0 := by norm_num
+  have hn2 : ((1:ℝ):ℂ)^(2 : ℕ) ≠ 0 := by norm_num
+  have hn3 : (1+((1:ℝ):ℂ))^(2 : ℕ) ≠ 0 := by norm_num
   have hnr : ((1:ℝ):ℂ)*(1+((1:ℝ):ℂ)) ≠ 0 := by norm_num
-  have hnrr : ((1:ℝ):ℂ)^2*(1+((1:ℝ):ℂ))^2 ≠ 0 := by norm_num
+  have hnrr : ((1:ℝ):ℂ)^(2 : ℕ)*(1+((1:ℝ):ℂ))^(2 : ℕ) ≠ 0 := by norm_num
   have hR : ContinuousAt (responseRate s) 1 := by unfold responseRate; fun_prop
   have hRR : ContinuousAt (responseRateFirst s) 1 := by unfold responseRateFirst; fun_prop
   refine ⟨h0.continuousAt,h1.continuousAt,?_,g0.continuousAt,g1.continuousAt,?_⟩
   · exact h0.continuousAt.mul ((hR.pow 2).add hRR)
   · change ContinuousAt (fun r:ℝ => profile s a r*
-      ((-(2+2*s)/(r:ℂ)+2*s/(1+(r:ℂ)))^2+((2+2*s)/(r:ℂ)^2-2*s/(1+(r:ℂ))^2))) 1
+      ((-(2+2*s)/(r:ℂ)+2*s/(1+(r:ℂ)))^(2 : ℕ)+((2+2*s)/(r:ℂ)^(2 : ℕ)-2*s/(1+(r:ℂ))^(2 : ℕ)))) 1
     have hg := g0.continuousAt
     fun_prop
 
@@ -419,7 +419,7 @@ theorem incoming_current_horizon_limit (q : XiZeroCopy) (a b : ℂ) (v : ℝ) (z
   obtain ⟨h0,h1,h2,h3,h4,h5⟩ := all_profiles_continuous (physicalRate q true) a
   obtain ⟨g0,g1,g2,g3,g4,g5⟩ := all_profiles_continuous (physicalRate q false) b
   have hz : ContinuousAt (fun r:ℝ => (r:ℂ)) 1 := Complex.continuous_ofReal.continuousAt
-  have hn : ((1:ℝ):ℂ)^2 ≠ 0 := by norm_num
+  have hn : ((1:ℝ):ℂ)^(2 : ℕ) ≠ 0 := by norm_num
   have hc : ContinuousAt (fun r => incomingCurrent q a b r v z j) 1 := by
     fin_cases j <;> simp only [incomingCurrent,regularCurrent,orbit,cross,curl,incomingJet,
       addJet,tensorJet,Fin.sum_univ_succ]

@@ -88,8 +88,8 @@ theorem multiset_esymm_eq_of_powerSum {S : Type*} [Field S] [CharZero S] (M : Mu
 
 /-- The zeroth power sum is the cardinality. -/
 theorem multiset_powerSum_zero {S : Type*} [CommRing S] (M : Multiset S) :
-    (M.map (fun x => x ^ 0)).sum = (Multiset.card M : S) := by
-  have hmap : M.map (fun x : S => x ^ 0) = Multiset.replicate (Multiset.card M) (1 : S) := by
+    (M.map (fun x => x ^ (0 : ℕ))).sum = (Multiset.card M : S) := by
+  have hmap : M.map (fun x : S => x ^ (0 : ℕ)) = Multiset.replicate (Multiset.card M) (1 : S) := by
     rw [← Multiset.map_const']
     exact Multiset.map_congr rfl fun x _ => pow_zero x
   rw [hmap, Multiset.sum_replicate, nsmul_eq_mul, mul_one]

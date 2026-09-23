@@ -31,14 +31,14 @@ theorem integral_norm_dirPoly_le_largeValues (N : ℕ) (hN : 2 ≤ N) (a : Fin N
     (∫ t in (Δ / 2)..(Δ / 2 + ((2 * n : ℕ) : ℝ) * Δ), ‖dirPoly N a t‖)
       ≤ 2 * Δ * Real.sqrt ((n : ℝ)
           * ((((2 * n + 1 : ℕ) : ℝ) * Δ + 4 * (N : ℝ) * (1 + Real.log N))
-              * (1 / Δ + 2 * Real.log N) * ∑ i : Fin N, ‖a i‖ ^ 2)) := by
+              * (1 / Δ + 2 * Real.log N) * ∑ i : Fin N, ‖a i‖ ^ (2 : ℕ))) := by
   classical
   set F : ℝ → ℝ := fun t => ‖dirPoly N a t‖ with hF
   have hcont : Continuous F := (continuous_dirPoly N a).norm
   set T : ℝ := ((2 * n + 1 : ℕ) : ℝ) * Δ with hT
   have hT0 : 0 ≤ T := by rw [hT]; positivity
   set B : ℝ := (T + 4 * (N : ℝ) * (1 + Real.log N)) * (1 / Δ + 2 * Real.log N)
-      * ∑ i : Fin N, ‖a i‖ ^ 2 with hB
+      * ∑ i : Fin N, ‖a i‖ ^ (2 : ℕ) with hB
   obtain ⟨c, hc, hint⟩ := exists_cell_max_integral_le hcont (Δ / 2) Δ hΔ (2 * n)
   -- one family per parity
   have hfam : ∀ r : ℕ, r ≤ 1 → (∑ j ∈ Finset.range n, F (c (2 * j + r)))

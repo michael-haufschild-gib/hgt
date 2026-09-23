@@ -12,10 +12,10 @@ nonnegative second gap. -/
 theorem thetaCuspCenterMixedGlobalCoalescedWall_nonneg
     {a y : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) (hy : 0 ≤ y) :
     0 ≤ (-thetaCuspCenterMixedDensitySecondJet a 0) *
-          (thetaCuspCenterMixedDensity a 0 ^ 2 -
-            thetaCuspCenterMixedDensity a y ^ 2) -
+          (thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ) -
+            thetaCuspCenterMixedDensity a y ^ (2 : ℕ)) -
         thetaCuspCenterMixedDensity a 0 *
-          thetaCuspCenterMixedDensityFirstJet a y ^ 2 := by
+          thetaCuspCenterMixedDensityFirstJet a y ^ (2 : ℕ) := by
   let f : ℝ → ℝ := thetaCuspCenterMixedDensity a
   let f' : ℝ → ℝ := thetaCuspCenterMixedDensityFirstJet a
   let f'' : ℝ → ℝ := thetaCuspCenterMixedDensitySecondJet a
@@ -46,7 +46,7 @@ theorem thetaCuspCenterMixedGlobalCoalescedWall_nonneg
     change Continuous (fun x =>
       2 * (f'' x * f y * f (x + y) + 2 * f' x * f y * f' (x + y) +
         f x * f y * f'' (x + y)) -
-      2 * f 0 * (f' x ^ 2 + f x * f'' x + f' (x + y) ^ 2 +
+      2 * f 0 * (f' x ^ (2 : ℕ) + f x * f'' x + f' (x + y) ^ (2 : ℕ) +
         f (x + y) * f'' (x + y)))
     fun_prop
   have hfirst : f' 0 = 0 := by
@@ -59,12 +59,12 @@ theorem thetaCuspCenterMixedGlobalCoalescedWall_nonneg
     simp [D', HilbertMetric.threePointCorrelationDeterminantPathFirstJet, hfirst]
     ring
   have hD''zero : D'' 0 =
-      2 * ((-f'' 0) * (f 0 ^ 2 - f y ^ 2) - f 0 * f' y ^ 2) := by
+      2 * ((-f'' 0) * (f 0 ^ (2 : ℕ) - f y ^ (2 : ℕ)) - f 0 * f' y ^ (2 : ℕ)) := by
     simp [D'', HilbertMetric.threePointCorrelationDeterminantPathSecondJet, hfirst]
     ring
   by_contra hnot
   have hwall :
-      (-f'' 0) * (f 0 ^ 2 - f y ^ 2) - f 0 * f' y ^ 2 < 0 := by
+      (-f'' 0) * (f 0 ^ (2 : ℕ) - f y ^ (2 : ℕ)) - f 0 * f' y ^ (2 : ℕ) < 0 := by
     simpa only [f, f', f''] using lt_of_not_ge hnot
   have hsecondNeg : 0 < -D'' 0 := by rw [hD''zero]; linarith
   obtain ⟨ε, hε, hright⟩ :=
@@ -87,9 +87,9 @@ theorem thetaCuspCenterMixedGlobalCoalescedWall_nonneg
 center speed.  This is the division form of the global coalesced wall. -/
 theorem thetaCuspCenterMixedCorrelationAngleSpeedSq_le_center
     {a y : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) (hy : 0 < y) :
-    thetaCuspCenterMixedDensityFirstJet a y ^ 2 /
-          (thetaCuspCenterMixedDensity a 0 ^ 2 -
-            thetaCuspCenterMixedDensity a y ^ 2) ≤
+    thetaCuspCenterMixedDensityFirstJet a y ^ (2 : ℕ) /
+          (thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ) -
+            thetaCuspCenterMixedDensity a y ^ (2 : ℕ)) ≤
       (-thetaCuspCenterMixedDensitySecondJet a 0) /
         thetaCuspCenterMixedDensity a 0 := by
   let f0 := thetaCuspCenterMixedDensity a 0
@@ -100,8 +100,8 @@ theorem thetaCuspCenterMixedCorrelationAngleSpeedSq_le_center
     simpa only [fy] using thetaCuspCenterMixedDensity_pos ha0 ha y
   have hlt : fy < f0 := by
     simpa only [fy, f0] using thetaCuspCenterMixedDensity_lt_zero ha0 ha hy
-  have hgap : 0 < f0 ^ 2 - fy ^ 2 := by
-    have hsquare : fy ^ 2 < f0 ^ 2 := (sq_lt_sq₀ hfy.le hf0.le).2 hlt
+  have hgap : 0 < f0 ^ (2 : ℕ) - fy ^ (2 : ℕ) := by
+    have hsquare : fy ^ (2 : ℕ) < f0 ^ (2 : ℕ) := (sq_lt_sq₀ hfy.le hf0.le).2 hlt
     linarith
   have hwall := thetaCuspCenterMixedGlobalCoalescedWall_nonneg ha0 ha hy.le
   apply (div_le_div_iff₀ hgap hf0).2

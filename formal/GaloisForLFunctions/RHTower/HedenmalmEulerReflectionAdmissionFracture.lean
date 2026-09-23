@@ -59,7 +59,7 @@ theorem continuous_eulerPrimitiveWeightedReflectionOddFun (a : ℝ) :
 
 theorem norm_sq_eulerPrimitiveWeightedReflectionOddFun
     (a : ℝ) {t : ℝ} (ht : 0 < t) :
-    ‖eulerPrimitiveWeightedReflectionOddFun a t‖ ^ 2 =
+    ‖eulerPrimitiveWeightedReflectionOddFun a t‖ ^ (2 : ℕ) =
       eulerPrimitiveBoundaryTailWeight t *
         Complex.normSq
           ((eulerPrimitiveBoundaryPolarizedReflectionOddProfile a).2 t) := by

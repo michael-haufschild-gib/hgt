@@ -127,7 +127,7 @@ theorem coefficient_mean_factorization (p q : ℕ) :
 
 /-- Strip only the prescribed Mellin factor from a literal weighted jump. -/
 theorem unweight_mellin_normSq (a : ℝ) (s : ℂ) {n : ℕ} (hn : 0 < n) :
-    (n : ℝ) ^ (2*s.re) * Complex.normSq ((a : ℂ)*(n : ℂ)^(-s)) = a^2 := by
+    (n : ℝ) ^ (2*s.re) * Complex.normSq ((a : ℂ)*(n : ℂ)^(-s)) = a^(2 : ℕ) := by
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn
   have hnorm : ‖(n : ℂ)^(-s)‖ = (n : ℝ)^(-s.re) := by
     simpa only [Complex.ofReal_natCast, Complex.neg_re] using
@@ -137,8 +137,8 @@ theorem unweight_mellin_normSq (a : ℝ) (s : ℂ) {n : ℕ} (hn : 0 < n) :
     ← Real.rpow_mul_natCast hnR.le (-s.re) 2]
   calc
     (n : ℝ)^(2*s.re) * (a*a * (n : ℝ)^(-s.re*2)) =
-        a^2 * ((n : ℝ)^(2*s.re) * (n : ℝ)^(-s.re*2)) := by ring
-    _ = a^2 := by rw [← Real.rpow_add hnR]; ring_nf; simp
+        a^(2 : ℕ) * ((n : ℝ)^(2*s.re) * (n : ℝ)^(-s.re*2)) := by ring
+    _ = a^(2 : ℕ) := by rw [← Real.rpow_add hnR]; ring_nf; simp
 
 def recoveredMass (s : ℂ) (f : ℕ → ℂ) (N : ℕ) : ℝ :=
   meanPrefix (fun n => (n : ℝ)^(2*s.re) * Complex.normSq (f n)) N

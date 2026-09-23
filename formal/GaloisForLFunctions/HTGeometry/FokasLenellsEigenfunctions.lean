@@ -37,7 +37,7 @@ theorem inverseGaugeVector_gauge_exp (u a : ℂ) (v : SpectralVector) :
 
 /-- The differentiated inverse gauge sends the uniformized ODE back to the original one. -/
 theorem inverseGaugeVector_derivative (u v w a : ℂ) (ψ : SpectralVector) :
-    (let d := matrixVector (uniformizedLax u v w ((Complex.exp a)^2)) ψ
+    (let d := matrixVector (uniformizedLax u v w ((Complex.exp a)^(2 : ℕ))) ψ
      (d.1, (w*ψ.1+u*d.1-d.2)/(2*Complex.exp a))) =
       matrixVector (spatialLax u v (Complex.exp a))
         (inverseGaugeVector u (Complex.exp a) ψ) := by
@@ -50,7 +50,7 @@ theorem inverseGaugeVector_derivative (u v w a : ℂ) (ψ : SpectralVector) :
 def spatialEigenfunction (q : SchwartzMap ℝ ℂ) (a : ℂ) (v : SpectralVector)
     (x : ℝ) : SpectralVector :=
   inverseGaugeVector (deriv q x) (Complex.exp a)
-    (initialSpectralSolution q ((Complex.exp a)^2)
+    (initialSpectralSolution q ((Complex.exp a)^(2 : ℕ))
       (gaugeVector (deriv q 0) (Complex.exp a) v) x)
 
 theorem spatialEigenfunction_initial (q : SchwartzMap ℝ ℂ) (a : ℂ)
@@ -64,11 +64,11 @@ theorem spatialEigenfunction_hasDerivAt (q : SchwartzMap ℝ ℂ) (a : ℂ)
     HasDerivAt (spatialEigenfunction q a v)
       (matrixVector (spatialLax (deriv q x) (deriv (fun y : ℝ => q (-y)) x)
         (Complex.exp a)) (spatialEigenfunction q a v x)) x := by
-  let ψ := initialSpectralSolution q ((Complex.exp a)^2)
+  let ψ := initialSpectralSolution q ((Complex.exp a)^(2 : ℕ))
     (gaugeVector (deriv q 0) (Complex.exp a) v)
   let d := matrixVector
     (uniformizedLax (deriv q x) (deriv (fun y : ℝ => q (-y)) x)
-      (deriv (deriv q) x) ((Complex.exp a)^2)) (ψ x)
+      (deriv (deriv q) x) ((Complex.exp a)^(2 : ℕ))) (ψ x)
   have hd : HasDerivAt ψ d x := initialSpectralSolution_hasDerivAt q _ _ x
   have hd1 : HasDerivAt (fun y => (ψ y).1) d.1 x :=
     (ContinuousLinearMap.fst ℝ ℂ ℂ).hasFDerivAt.comp_hasDerivAt x hd
@@ -92,7 +92,7 @@ theorem spatialEigenfunction_continuous (q : SchwartzMap ℝ ℂ) (a : ℂ)
 theorem spatialEigenfunction_first_hasDerivAt (q : SchwartzMap ℝ ℂ) (a : ℂ)
     (v : SpectralVector) (x : ℝ) :
     HasDerivAt (fun y => (spatialEigenfunction q a v y).1)
-      (I*(Complex.exp a)^2*(spatialEigenfunction q a v x).1 +
+      (I*(Complex.exp a)^(2 : ℕ)*(spatialEigenfunction q a v x).1 +
         I*Complex.exp a*deriv (fun y : ℝ => q (-y)) x*(spatialEigenfunction q a v x).2) x := by
   refine ((ContinuousLinearMap.fst ℝ ℂ ℂ).hasFDerivAt.comp_hasDerivAt x
     (spatialEigenfunction_hasDerivAt q a v x)).congr_deriv ?_
@@ -102,7 +102,7 @@ theorem spatialEigenfunction_second_hasDerivAt (q : SchwartzMap ℝ ℂ) (a : �
     (v : SpectralVector) (x : ℝ) :
     HasDerivAt (fun y => (spatialEigenfunction q a v y).2)
       (I*Complex.exp a*deriv q x*(spatialEigenfunction q a v x).1 -
-        I*(Complex.exp a)^2*(spatialEigenfunction q a v x).2) x := by
+        I*(Complex.exp a)^(2 : ℕ)*(spatialEigenfunction q a v x).2) x := by
   refine ((ContinuousLinearMap.snd ℝ ℂ ℂ).hasFDerivAt.comp_hasDerivAt x
     (spatialEigenfunction_hasDerivAt q a v x)).congr_deriv ?_
   simp [matrixVector, spatialLax, Matrix.mulVec, dotProduct, Fin.sum_univ_two]

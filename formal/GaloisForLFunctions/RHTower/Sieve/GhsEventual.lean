@@ -34,8 +34,8 @@ theorem exp_four_le : Real.exp 4 ≤ 81 := by
 theorem eventually_ghsHeight_admissible :
     ∀ᶠ N : ℕ in Filter.atTop,
       16 ≤ N ∧ (3 : ℝ) ≤ Real.log N ∧ Real.exp 4 ≤ ((ghsHeight N : ℕ) : ℝ)
-        ∧ (ghsHeight N) ^ 2 ≤ N ∧ 2 ≤ N / (ghsHeight N) ^ 2
-        ∧ (ghsHeight N) ^ 2 ≤ ghsScale N 1 := by
+        ∧ (ghsHeight N) ^ (2 : ℕ) ≤ N ∧ 2 ≤ N / (ghsHeight N) ^ (2 : ℕ)
+        ∧ (ghsHeight N) ^ (2 : ℕ) ≤ ghsScale N 1 := by
   have hlog3 : ∀ᶠ N : ℕ in Filter.atTop, (3 : ℝ) ≤ Real.log N :=
     tendsto_natCast_atTop_atTop.eventually (Real.tendsto_log_atTop.eventually_ge_atTop 3)
   filter_upwards [hlog3, eventually_pow_log_le_ghsScale, Filter.eventually_ge_atTop 16]
@@ -43,21 +43,21 @@ theorem eventually_ghsHeight_admissible :
   have hlog2 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
   have hlog2' : Real.log 2 < 0.6931471808 := Real.log_two_lt_d9
   have hL0 : (0 : ℝ) < Real.log N := by linarith
-  have hsq9 : (9 : ℝ) ≤ (Real.log N) ^ 2 := by nlinarith [hlog]
+  have hsq9 : (9 : ℝ) ≤ (Real.log N) ^ (2 : ℕ) := by nlinarith [hlog]
   have hlog1 : (1 : ℝ) ≤ Real.log N := by linarith
-  have h81 : (81 : ℝ) ≤ (Real.log N) ^ 4 := by nlinarith [hsq9, sq_nonneg ((Real.log N) ^ 2 - 9)]
-  have h46 : (Real.log N) ^ 4 ≤ (Real.log N) ^ 6 := pow_le_pow_right₀ hlog1 (by norm_num)
-  have hone : (1 : ℝ) ≤ (Real.log N) ^ 6 := by linarith
+  have h81 : (81 : ℝ) ≤ (Real.log N) ^ (4 : ℕ) := by nlinarith [hsq9, sq_nonneg ((Real.log N) ^ (2 : ℕ) - 9)]
+  have h46 : (Real.log N) ^ (4 : ℕ) ≤ (Real.log N) ^ (6 : ℕ) := pow_le_pow_right₀ hlog1 (by norm_num)
+  have hone : (1 : ℝ) ≤ (Real.log N) ^ (6 : ℕ) := by linarith
   have hhlow := log_pow_le_ghsHeight N
   have hhup := ghsHeight_le hone
   -- the square of the height is below the square root scale
-  have hsq : ((ghsHeight N ^ 2 : ℕ) : ℝ) ≤ ((ghsScale N 1 : ℕ) : ℝ) := by
+  have hsq : ((ghsHeight N ^ (2 : ℕ) : ℕ) : ℝ) ≤ ((ghsScale N 1 : ℕ) : ℝ) := by
     have h0 : (0 : ℝ) ≤ ((ghsHeight N : ℕ) : ℝ) := Nat.cast_nonneg _
-    have hstep : ((ghsHeight N : ℕ) : ℝ) ^ 2 ≤ 4 * (Real.log N) ^ 12 := by
+    have hstep : ((ghsHeight N : ℕ) : ℝ) ^ (2 : ℕ) ≤ 4 * (Real.log N) ^ (12 : ℕ) := by
       nlinarith [hhup, h0, hone]
     push_cast
     linarith [hstep, hscale]
-  have hsqN : ghsHeight N ^ 2 ≤ ghsScale N 1 := by exact_mod_cast hsq
+  have hsqN : ghsHeight N ^ (2 : ℕ) ≤ ghsScale N 1 := by exact_mod_cast hsq
   -- the scale is at least two
   have hk1 : (2 : ℝ) ^ (1 : ℕ) * Real.log 2 ≤ Real.log N := by
     norm_num
@@ -68,7 +68,7 @@ theorem eventually_ghsHeight_admissible :
     have hrw : ghsBlockRight N 0 = N / ghsScale N 1 := by norm_num [ghsBlockRight]
     rwa [hrw] at this
   have hhpos : 0 < ghsHeight N := by rw [ghsHeight]; omega
-  have hdiv : N / ghsScale N 1 ≤ N / ghsHeight N ^ 2 :=
+  have hdiv : N / ghsScale N 1 ≤ N / ghsHeight N ^ (2 : ℕ) :=
     Nat.div_le_div_left hsqN (pow_pos hhpos 2)
   refine ⟨hN16, hlog, ?_, ?_, ?_, hsqN⟩
   · exact le_trans exp_four_le (by linarith [hhlow, h81, h46])
@@ -77,7 +77,7 @@ theorem eventually_ghsHeight_admissible :
 
 /-- The fourth power of the logarithm is below the sixth. -/
 theorem ghs_log_pow_four_le (N : ℕ) (h : (3 : ℝ) ≤ Real.log N) :
-    (Real.log N) ^ 4 ≤ (Real.log N) ^ 6 :=
+    (Real.log N) ^ (4 : ℕ) ≤ (Real.log N) ^ (6 : ℕ) :=
   pow_le_pow_right₀ (by linarith) (by norm_num)
 
 /-- **The Granville–Harper–Soundararajan mean value, eventually.** -/

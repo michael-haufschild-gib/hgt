@@ -41,7 +41,7 @@ theorem originalSource_response (q : XiZeroCopy) (branch : Bool) (a T : ℂ) :
       F =ᵐ[radialMeasure.prod D4BMModularCore.measure] originalWaveResidual q branch w a T ∧
       JointWaveSolution w F u ∧
       (∃ hmem : jointEmbedding u ∈ jointEnergyOperator.domain,
-        jointEnergyOperator ⟨jointEmbedding u,hmem⟩+(w^2-1) • jointEmbedding u = F) ∧
+        jointEnergyOperator ⟨jointEmbedding u,hmem⟩+(w^(2 : ℕ)-1) • jointEmbedding u = F) ∧
       ‖jointEmbedding u‖ ≤ ‖F‖/(w.re*‖w‖) := by
   refine ⟨principalThreshold q,fun w hw => ?_⟩
   have hch := principalChamber_of_threshold q w hw

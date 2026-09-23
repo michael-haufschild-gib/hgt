@@ -179,8 +179,8 @@ def thetaCuspC5ExactCompletedSeamOrientation (u : ℝ) : ℝ :=
   let E := -iteratedDeriv 3 thetaCuspLogSource u
   let F := -iteratedDeriv 5 thetaCuspLogSource u
   let G := -iteratedDeriv 7 thetaCuspLogSource u
-  A ^ 2 * G - 3 * A * C * E - 2 * A * B * F + 4 * B ^ 2 * E -
-    18 * A ^ 3 * F + 36 * A ^ 2 * B * E
+  A ^ (2 : ℕ) * G - 3 * A * C * E - 2 * A * B * F + 4 * B ^ (2 : ℕ) * E -
+    18 * A ^ (3 : ℕ) * F + 36 * A ^ (2 : ℕ) * B * E
 
 /-- Exact arbitrary-centre derivative of the ninth-order completed seam orientation. Its even
 part is the already-closed direct fixed-action seam coefficient; remaining terms are odd-jet
@@ -193,22 +193,22 @@ def thetaCuspC5ExactCompletedSeamOrientationSlope (u : ℝ) : ℝ :=
   let E := -iteratedDeriv 3 thetaCuspLogSource u
   let F := -iteratedDeriv 5 thetaCuspLogSource u
   let G := -iteratedDeriv 7 thetaCuspLogSource u
-  A ^ 2 * D - 5 * A * B * C + 4 * B ^ 3 - 18 * A ^ 3 * C +
-      36 * A ^ 2 * B ^ 2 - A * E * G + 6 * B * E * F -
-    2 * A * F ^ 2 - 3 * C * E ^ 2 - 18 * A ^ 2 * E * F +
-    72 * A * B * E ^ 2
+  A ^ (2 : ℕ) * D - 5 * A * B * C + 4 * B ^ (3 : ℕ) - 18 * A ^ (3 : ℕ) * C +
+      36 * A ^ (2 : ℕ) * B ^ (2 : ℕ) - A * E * G + 6 * B * E * F -
+    2 * A * F ^ (2 : ℕ) - 3 * C * E ^ (2 : ℕ) - 18 * A ^ (2 : ℕ) * E * F +
+    72 * A * B * E ^ (2 : ℕ)
 
 /-- Intrinsic order-six reflected Hankel invariant in completed log-source coordinates. -/
 def thetaCuspC5ExactSeamSixthInvariant (u : ℝ) : ℝ :=
   let A := -iteratedDeriv 2 thetaCuspLogSource u
   let B := -iteratedDeriv 4 thetaCuspLogSource u
   let C := -iteratedDeriv 6 thetaCuspLogSource u
-  A * C - B ^ 2 - 18 * A ^ 2 * B + 24 * A ^ 4
+  A * C - B ^ (2 : ℕ) - 18 * A ^ (2 : ℕ) * B + 24 * A ^ (4 : ℕ)
 
 /-- Projectively normalized sixth invariant whose derivative controls exact C5 seam orientation. -/
 def thetaCuspC5ExactSeamNormalizedSixthInvariant (u : ℝ) : ℝ :=
   thetaCuspC5ExactSeamSixthInvariant u /
-    (-iteratedDeriv 2 thetaCuspLogSource u) ^ 4
+    (-iteratedDeriv 2 thetaCuspLogSource u) ^ (4 : ℕ)
 
 private theorem hasDerivAt_neg_iteratedDeriv_thetaCuspLogSource
     (n : ℕ) (u : ℝ) :
@@ -246,11 +246,11 @@ theorem hasDerivAt_thetaCuspC5ExactCompletedSeamOrientation (u : ℝ) :
   have h6 := (((hA.pow 2).mul hB).mul hE).const_mul 36
   have h := ((((h1.sub h2).sub h3).add h4).sub h5).add h6
   have heq :
-      (((((A ^ 2 * G - fun y => 3 * ((A * C) * E) y) -
+      (((((A ^ (2 : ℕ) * G - fun y => 3 * ((A * C) * E) y) -
           fun y => 2 * ((A * B) * F) y) +
-          fun y => 4 * (B ^ 2 * E) y) -
-          fun y => 18 * (A ^ 3 * F) y) +
-          fun y => 36 * ((A ^ 2 * B) * E) y) =ᶠ[nhds u]
+          fun y => 4 * (B ^ (2 : ℕ) * E) y) -
+          fun y => 18 * (A ^ (3 : ℕ) * F) y) +
+          fun y => 36 * ((A ^ (2 : ℕ) * B) * E) y) =ᶠ[nhds u]
         thetaCuspC5ExactCompletedSeamOrientation := by
     exact Filter.Eventually.of_forall fun x => by
       simp only [thetaCuspC5ExactCompletedSeamOrientation, A, B, C, E, F, G,
@@ -325,7 +325,7 @@ theorem hasDerivAt_thetaCuspC5ExactSeamSixthInvariant (u : ℝ) :
     let G := -iteratedDeriv 7 thetaCuspLogSource u
     HasDerivAt thetaCuspC5ExactSeamSixthInvariant
       (E * C + A * G - 2 * B * F - 36 * A * E * B -
-        18 * A ^ 2 * F + 96 * A ^ 3 * E) u := by
+        18 * A ^ (2 : ℕ) * F + 96 * A ^ (3 : ℕ) * E) u := by
   dsimp only
   let A : ℝ → ℝ := fun x => -iteratedDeriv 2 thetaCuspLogSource x
   let B : ℝ → ℝ := fun x => -iteratedDeriv 4 thetaCuspLogSource x
@@ -340,8 +340,8 @@ theorem hasDerivAt_thetaCuspC5ExactSeamSixthInvariant (u : ℝ) :
       (((hA.pow 2).mul hB).const_mul 18)).add
     ((hA.pow 4).const_mul 24)
   have heq :
-      ((A * C - B ^ 2 - fun y => 18 * (A ^ 2 * B) y) +
-          fun y => 24 * (A ^ 4) y) =ᶠ[nhds u]
+      ((A * C - B ^ (2 : ℕ) - fun y => 18 * (A ^ (2 : ℕ) * B) y) +
+          fun y => 24 * (A ^ (4 : ℕ)) y) =ᶠ[nhds u]
         thetaCuspC5ExactSeamSixthInvariant := by
     exact Filter.Eventually.of_forall fun x => by
       simp only [thetaCuspC5ExactSeamSixthInvariant, A, B, C,
@@ -354,18 +354,18 @@ theorem hasDerivAt_thetaCuspC5ExactSeamSixthInvariant (u : ℝ) :
       iteratedDeriv 3 thetaCuspLogSource u * iteratedDeriv 6 thetaCuspLogSource u +
               iteratedDeriv 3 thetaCuspLogSource u * iteratedDeriv 2 thetaCuspLogSource u *
                   iteratedDeriv 4 thetaCuspLogSource u * 36 +
-            iteratedDeriv 3 thetaCuspLogSource u * iteratedDeriv 2 thetaCuspLogSource u ^ 3 * 96 +
+            iteratedDeriv 3 thetaCuspLogSource u * iteratedDeriv 2 thetaCuspLogSource u ^ (3 : ℕ) * 96 +
           iteratedDeriv 2 thetaCuspLogSource u * iteratedDeriv 7 thetaCuspLogSource u +
-        iteratedDeriv 2 thetaCuspLogSource u ^ 2 * iteratedDeriv 5 thetaCuspLogSource u * 18 -
+        iteratedDeriv 2 thetaCuspLogSource u ^ (2 : ℕ) * iteratedDeriv 5 thetaCuspLogSource u * 18 -
       iteratedDeriv 4 thetaCuspLogSource u * iteratedDeriv 5 thetaCuspLogSource u * 2 =
       -iteratedDeriv 3 thetaCuspLogSource u * -iteratedDeriv 6 thetaCuspLogSource u +
               -iteratedDeriv 2 thetaCuspLogSource u * -iteratedDeriv 7 thetaCuspLogSource u -
             2 * -iteratedDeriv 4 thetaCuspLogSource u * -iteratedDeriv 5 thetaCuspLogSource u -
           36 * -iteratedDeriv 2 thetaCuspLogSource u * -iteratedDeriv 3 thetaCuspLogSource u *
             -iteratedDeriv 4 thetaCuspLogSource u -
-        18 * (-iteratedDeriv 2 thetaCuspLogSource u) ^ 2 *
+        18 * (-iteratedDeriv 2 thetaCuspLogSource u) ^ (2 : ℕ) *
           -iteratedDeriv 5 thetaCuspLogSource u +
-      96 * (-iteratedDeriv 2 thetaCuspLogSource u) ^ 3 *
+      96 * (-iteratedDeriv 2 thetaCuspLogSource u) ^ (3 : ℕ) *
         -iteratedDeriv 3 thetaCuspLogSource u := by
     ring
   rw [← hcoef]
@@ -390,7 +390,7 @@ by the fifth power of positive curvature. -/
 theorem hasDerivAt_thetaCuspC5ExactSeamNormalizedSixthInvariant (u : ℝ) :
     HasDerivAt thetaCuspC5ExactSeamNormalizedSixthInvariant
       (thetaCuspC5ExactCompletedSeamOrientation u /
-        (-iteratedDeriv 2 thetaCuspLogSource u) ^ 5) u := by
+        (-iteratedDeriv 2 thetaCuspLogSource u) ^ (5 : ℕ)) u := by
   let A : ℝ → ℝ := fun x => -iteratedDeriv 2 thetaCuspLogSource x
   let a := A u
   let e := -iteratedDeriv 3 thetaCuspLogSource u
@@ -405,9 +405,9 @@ theorem hasDerivAt_thetaCuspC5ExactSeamNormalizedSixthInvariant (u : ℝ) :
       36 * (-iteratedDeriv 2 thetaCuspLogSource u) *
           (-iteratedDeriv 3 thetaCuspLogSource u) *
           (-iteratedDeriv 4 thetaCuspLogSource u) -
-      18 * (-iteratedDeriv 2 thetaCuspLogSource u) ^ 2 *
+      18 * (-iteratedDeriv 2 thetaCuspLogSource u) ^ (2 : ℕ) *
           (-iteratedDeriv 5 thetaCuspLogSource u) +
-      96 * (-iteratedDeriv 2 thetaCuspLogSource u) ^ 3 *
+      96 * (-iteratedDeriv 2 thetaCuspLogSource u) ^ (3 : ℕ) *
           (-iteratedDeriv 3 thetaCuspLogSource u)
   have hA : HasDerivAt A (-iteratedDeriv 3 thetaCuspLogSource u) u := by
     simpa only [A] using hasDerivAt_neg_iteratedDeriv_thetaCuspLogSource 2 u
@@ -420,19 +420,19 @@ theorem hasDerivAt_thetaCuspC5ExactSeamNormalizedSixthInvariant (u : ℝ) :
   have hden0 := hA.pow 4
   have hquot := hK.div hden0 (pow_ne_zero 4 hAne)
   have heqquot : thetaCuspC5ExactSeamNormalizedSixthInvariant =ᶠ[nhds u]
-      thetaCuspC5ExactSeamSixthInvariant / A ^ 4 := by
+      thetaCuspC5ExactSeamSixthInvariant / A ^ (4 : ℕ) := by
     exact Filter.Eventually.of_forall fun x => by
       simp only [thetaCuspC5ExactSeamNormalizedSixthInvariant, A,
         Pi.div_apply, Pi.pow_apply]
   have hquot' := hquot.congr_of_eventuallyEq heqquot
   have hcoeff :
-      (J * a ^ 4 - K * ((4 : ℝ) * a ^ (4 - 1) * e)) / (a ^ 4) ^ 2 =
-        thetaCuspC5ExactCompletedSeamOrientation u / a ^ 5 := by
+      (J * a ^ (4 : ℕ) - K * ((4 : ℝ) * a ^ (4 - 1) * e)) / (a ^ (4 : ℕ)) ^ (2 : ℕ) =
+        thetaCuspC5ExactCompletedSeamOrientation u / a ^ (5 : ℕ) := by
     rw [thetaCuspC5ExactCompletedSeamOrientation_eq_sixth_projectiveDerivative,
       hK.deriv]
     change
-      (J * a ^ 4 - K * ((4 : ℝ) * a ^ (4 - 1) * e)) / (a ^ 4) ^ 2 =
-        (a * J - 4 * e * K) / a ^ 5
+      (J * a ^ (4 : ℕ) - K * ((4 : ℝ) * a ^ (4 - 1) * e)) / (a ^ (4 : ℕ)) ^ (2 : ℕ) =
+        (a * J - 4 * e * K) / a ^ (5 : ℕ)
     have hane : a ≠ 0 := by exact hAne
     field_simp [hane]
     ring

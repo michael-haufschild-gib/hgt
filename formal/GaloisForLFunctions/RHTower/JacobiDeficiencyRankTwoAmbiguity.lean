@@ -129,7 +129,7 @@ def sqSummable : Submodule ℂ (ℕ → ℂ) where
   smul_mem' := fun c _ hu => hu.const_smul c
 
 theorem mem_sqSummable_iff (u : ℕ → ℂ) :
-    u ∈ sqSummable ↔ Summable fun n => ‖u n‖ ^ 2 := by
+    u ∈ sqSummable ↔ Summable fun n => ‖u n‖ ^ (2 : ℕ) := by
   show Memℓp u 2 ↔ _
   rw [memℓp_gen_iff (by norm_num)]
   constructor

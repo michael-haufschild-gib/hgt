@@ -34,33 +34,33 @@ theorem ladderGroup_mvt_le {L : ℕ} {W θ S Bmax PP : ℝ} (B Cc Nn : ℕ → �
     (hS : ∑ j ∈ Finset.range L, B j * Nn j ≤ S) (_hS0 : 0 ≤ S)
     (hPP : ∑ j ∈ Finset.range L, B j ≤ PP) :
     2 * (L : ℝ) * ∑ j ∈ Finset.range L,
-        (θ * B j) ^ 2 * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * Nn j) * Cc j)
-      ≤ 5 * Real.pi * (L : ℝ) * θ ^ 2 * W * (Bmax * S + Bmax * PP)
-        + 5 * Real.exp 1 * (L : ℝ) * θ ^ 2 * (S ^ 2 + Bmax * S) := by
+        (θ * B j) ^ (2 : ℕ) * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * Nn j) * Cc j)
+      ≤ 5 * Real.pi * (L : ℝ) * θ ^ (2 : ℕ) * W * (Bmax * S + Bmax * PP)
+        + 5 * Real.exp 1 * (L : ℝ) * θ ^ (2 : ℕ) * (S ^ (2 : ℕ) + Bmax * S) := by
   classical
   have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
   have he : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
-  have hθ2 : (0 : ℝ) ≤ θ ^ 2 := sq_nonneg θ
+  have hθ2 : (0 : ℝ) ≤ θ ^ (2 : ℕ) := sq_nonneg θ
   have hL0 : (0 : ℝ) ≤ (L : ℝ) := Nat.cast_nonneg _
   -- the three aggregate bounds
-  have hBN2 : ∑ j ∈ Finset.range L, (B j * Nn j) ^ 2 ≤ S ^ 2 := by
+  have hBN2 : ∑ j ∈ Finset.range L, (B j * Nn j) ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
     refine le_trans (Finset.sum_sq_le_sq_sum_of_nonneg
       (fun j _ => mul_nonneg (hB j) (hNn j))) ?_
     exact pow_le_pow_left₀ (Finset.sum_nonneg fun j _ => mul_nonneg (hB j) (hNn j)) hS 2
-  have hB2N : ∑ j ∈ Finset.range L, B j ^ 2 * Nn j ≤ Bmax * S := by
-    have hstep : ∑ j ∈ Finset.range L, B j ^ 2 * Nn j
+  have hB2N : ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j ≤ Bmax * S := by
+    have hstep : ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j
         ≤ ∑ j ∈ Finset.range L, Bmax * (B j * Nn j) := by
       refine Finset.sum_le_sum fun j hj => ?_
-      have h1 : B j ^ 2 * Nn j = B j * (B j * Nn j) := by ring
+      have h1 : B j ^ (2 : ℕ) * Nn j = B j * (B j * Nn j) := by ring
       rw [h1]
       exact mul_le_mul_of_nonneg_right (hmax j hj) (mul_nonneg (hB j) (hNn j))
     refine hstep.trans ?_
     rw [← Finset.mul_sum]
     exact mul_le_mul_of_nonneg_left hS hBmax
-  have hB2 : ∑ j ∈ Finset.range L, B j ^ 2 ≤ Bmax * PP := by
-    have hstep : ∑ j ∈ Finset.range L, B j ^ 2 ≤ ∑ j ∈ Finset.range L, Bmax * B j := by
+  have hB2 : ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) ≤ Bmax * PP := by
+    have hstep : ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) ≤ ∑ j ∈ Finset.range L, Bmax * B j := by
       refine Finset.sum_le_sum fun j hj => ?_
-      have h1 : B j ^ 2 = B j * B j := by ring
+      have h1 : B j ^ (2 : ℕ) = B j * B j := by ring
       rw [h1]
       exact mul_le_mul_of_nonneg_right (hmax j hj) (hB j)
     refine hstep.trans ?_
@@ -68,9 +68,9 @@ theorem ladderGroup_mvt_le {L : ℕ} {W θ S Bmax PP : ℝ} (B Cc Nn : ℕ → �
     exact mul_le_mul_of_nonneg_left hPP hBmax
   -- the per-term majorant
   have hterm : ∀ j ∈ Finset.range L,
-      (θ * B j) ^ 2 * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * Nn j) * Cc j)
-        ≤ θ ^ 2 * ((5 * Real.pi / 2 * W) * (B j ^ 2 * Nn j + B j ^ 2)
-            + (5 * Real.exp 1 / 2) * ((B j * Nn j) ^ 2 + B j ^ 2 * Nn j)) := by
+      (θ * B j) ^ (2 : ℕ) * ((5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * Nn j) * Cc j)
+        ≤ θ ^ (2 : ℕ) * ((5 * Real.pi / 2 * W) * (B j ^ (2 : ℕ) * Nn j + B j ^ (2 : ℕ))
+            + (5 * Real.exp 1 / 2) * ((B j * Nn j) ^ (2 : ℕ) + B j ^ (2 : ℕ) * Nn j)) := by
     intro j hj
     have hCle : Cc j ≤ Nn j + 1 := hCN j hj
     have hcoef : (0 : ℝ) ≤ 5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * Nn j := by
@@ -79,42 +79,42 @@ theorem ladderGroup_mvt_le {L : ℕ} {W θ S Bmax PP : ℝ} (B Cc Nn : ℕ → �
     have hstep : (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * Nn j) * Cc j
         ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * Nn j) * (Nn j + 1) :=
       mul_le_mul_of_nonneg_left hCle hcoef
-    have hsq : (θ * B j) ^ 2 = θ ^ 2 * B j ^ 2 := by ring
+    have hsq : (θ * B j) ^ (2 : ℕ) = θ ^ (2 : ℕ) * B j ^ (2 : ℕ) := by ring
     rw [hsq]
     have hmul := mul_le_mul_of_nonneg_left hstep
-      (mul_nonneg hθ2 (sq_nonneg (B j)) : (0 : ℝ) ≤ θ ^ 2 * B j ^ 2)
+      (mul_nonneg hθ2 (sq_nonneg (B j)) : (0 : ℝ) ≤ θ ^ (2 : ℕ) * B j ^ (2 : ℕ))
     refine hmul.trans (le_of_eq ?_)
     ring
   refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum hterm) (by positivity)) ?_
   rw [← Finset.mul_sum]
   have hexp : ∑ j ∈ Finset.range L,
-      ((5 * Real.pi / 2 * W) * (B j ^ 2 * Nn j + B j ^ 2)
-        + (5 * Real.exp 1 / 2) * ((B j * Nn j) ^ 2 + B j ^ 2 * Nn j))
-      = (5 * Real.pi / 2 * W) * ((∑ j ∈ Finset.range L, B j ^ 2 * Nn j)
-            + ∑ j ∈ Finset.range L, B j ^ 2)
-        + (5 * Real.exp 1 / 2) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ 2)
-            + ∑ j ∈ Finset.range L, B j ^ 2 * Nn j) := by
+      ((5 * Real.pi / 2 * W) * (B j ^ (2 : ℕ) * Nn j + B j ^ (2 : ℕ))
+        + (5 * Real.exp 1 / 2) * ((B j * Nn j) ^ (2 : ℕ) + B j ^ (2 : ℕ) * Nn j))
+      = (5 * Real.pi / 2 * W) * ((∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j)
+            + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ))
+        + (5 * Real.exp 1 / 2) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ (2 : ℕ))
+            + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j) := by
     rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum, Finset.sum_add_distrib,
       Finset.sum_add_distrib]
   rw [hexp]
-  have hA : (5 * Real.pi / 2 * W) * ((∑ j ∈ Finset.range L, B j ^ 2 * Nn j)
-        + ∑ j ∈ Finset.range L, B j ^ 2)
+  have hA : (5 * Real.pi / 2 * W) * ((∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j)
+        + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2 * W) * (Bmax * S + Bmax * PP) :=
     mul_le_mul_of_nonneg_left (by linarith [hB2N, hB2]) (by positivity)
-  have hBexp : (5 * Real.exp 1 / 2) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ 2)
-        + ∑ j ∈ Finset.range L, B j ^ 2 * Nn j)
-      ≤ (5 * Real.exp 1 / 2) * (S ^ 2 + Bmax * S) :=
+  have hBexp : (5 * Real.exp 1 / 2) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ (2 : ℕ))
+        + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j)
+      ≤ (5 * Real.exp 1 / 2) * (S ^ (2 : ℕ) + Bmax * S) :=
     mul_le_mul_of_nonneg_left (by linarith [hBN2, hB2N]) (by positivity)
-  have hfinal : (2 : ℝ) * (L : ℝ) * (θ ^ 2 * ((5 * Real.pi / 2 * W) * (Bmax * S + Bmax * PP)
-        + (5 * Real.exp 1 / 2) * (S ^ 2 + Bmax * S)))
-      = 5 * Real.pi * (L : ℝ) * θ ^ 2 * W * (Bmax * S + Bmax * PP)
-        + 5 * Real.exp 1 * (L : ℝ) * θ ^ 2 * (S ^ 2 + Bmax * S) := by ring
-  have hmul2 : (2 : ℝ) * (L : ℝ) * (θ ^ 2 * ((5 * Real.pi / 2 * W)
-          * ((∑ j ∈ Finset.range L, B j ^ 2 * Nn j) + ∑ j ∈ Finset.range L, B j ^ 2)
-        + (5 * Real.exp 1 / 2) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ 2)
-            + ∑ j ∈ Finset.range L, B j ^ 2 * Nn j)))
-      ≤ (2 : ℝ) * (L : ℝ) * (θ ^ 2 * ((5 * Real.pi / 2 * W) * (Bmax * S + Bmax * PP)
-          + (5 * Real.exp 1 / 2) * (S ^ 2 + Bmax * S))) := by
+  have hfinal : (2 : ℝ) * (L : ℝ) * (θ ^ (2 : ℕ) * ((5 * Real.pi / 2 * W) * (Bmax * S + Bmax * PP)
+        + (5 * Real.exp 1 / 2) * (S ^ (2 : ℕ) + Bmax * S)))
+      = 5 * Real.pi * (L : ℝ) * θ ^ (2 : ℕ) * W * (Bmax * S + Bmax * PP)
+        + 5 * Real.exp 1 * (L : ℝ) * θ ^ (2 : ℕ) * (S ^ (2 : ℕ) + Bmax * S) := by ring
+  have hmul2 : (2 : ℝ) * (L : ℝ) * (θ ^ (2 : ℕ) * ((5 * Real.pi / 2 * W)
+          * ((∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j) + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ))
+        + (5 * Real.exp 1 / 2) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ (2 : ℕ))
+            + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j)))
+      ≤ (2 : ℝ) * (L : ℝ) * (θ ^ (2 : ℕ) * ((5 * Real.pi / 2 * W) * (Bmax * S + Bmax * PP)
+          + (5 * Real.exp 1 / 2) * (S ^ (2 : ℕ) + Bmax * S))) := by
     refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (by linarith [hA, hBexp]) hθ2)
       (by positivity)
   linarith [hmul2, hfinal]
@@ -130,39 +130,39 @@ theorem ladderGroup_hm_inner_le {L : ℕ} {ρ S Bmax PP FCmax v Λ : ℝ} (B Cc 
     (hS : ∑ j ∈ Finset.range L, B j * Nn j ≤ S)
     (hPP : ∑ j ∈ Finset.range L, B j ≤ PP) :
     ∑ j ∈ Finset.range L,
-        (ρ * B j) ^ 2 * ((2 * Nn j + FC j * v + 48 * Real.pi * Nn j * Λ) * Cc j)
-      ≤ ρ ^ 2 * ((2 + 48 * Real.pi * Λ) * (S ^ 2 + Bmax * S)
+        (ρ * B j) ^ (2 : ℕ) * ((2 * Nn j + FC j * v + 48 * Real.pi * Nn j * Λ) * Cc j)
+      ≤ ρ ^ (2 : ℕ) * ((2 + 48 * Real.pi * Λ) * (S ^ (2 : ℕ) + Bmax * S)
           + FCmax * v * (Bmax * S + Bmax * PP)) := by
   classical
   have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hρ2 : (0 : ℝ) ≤ ρ ^ 2 := sq_nonneg ρ
-  have hBN2 : ∑ j ∈ Finset.range L, (B j * Nn j) ^ 2 ≤ S ^ 2 := by
+  have hρ2 : (0 : ℝ) ≤ ρ ^ (2 : ℕ) := sq_nonneg ρ
+  have hBN2 : ∑ j ∈ Finset.range L, (B j * Nn j) ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
     refine le_trans (Finset.sum_sq_le_sq_sum_of_nonneg
       (fun j _ => mul_nonneg (hB j) (hNn j))) ?_
     exact pow_le_pow_left₀ (Finset.sum_nonneg fun j _ => mul_nonneg (hB j) (hNn j)) hS 2
-  have hB2N : ∑ j ∈ Finset.range L, B j ^ 2 * Nn j ≤ Bmax * S := by
-    have hstep : ∑ j ∈ Finset.range L, B j ^ 2 * Nn j
+  have hB2N : ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j ≤ Bmax * S := by
+    have hstep : ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j
         ≤ ∑ j ∈ Finset.range L, Bmax * (B j * Nn j) := by
       refine Finset.sum_le_sum fun j hj => ?_
-      have h1 : B j ^ 2 * Nn j = B j * (B j * Nn j) := by ring
+      have h1 : B j ^ (2 : ℕ) * Nn j = B j * (B j * Nn j) := by ring
       rw [h1]
       exact mul_le_mul_of_nonneg_right (hmax j hj) (mul_nonneg (hB j) (hNn j))
     refine hstep.trans ?_
     rw [← Finset.mul_sum]
     exact mul_le_mul_of_nonneg_left hS hBmax
-  have hB2 : ∑ j ∈ Finset.range L, B j ^ 2 ≤ Bmax * PP := by
-    have hstep : ∑ j ∈ Finset.range L, B j ^ 2 ≤ ∑ j ∈ Finset.range L, Bmax * B j := by
+  have hB2 : ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) ≤ Bmax * PP := by
+    have hstep : ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) ≤ ∑ j ∈ Finset.range L, Bmax * B j := by
       refine Finset.sum_le_sum fun j hj => ?_
-      have h1 : B j ^ 2 = B j * B j := by ring
+      have h1 : B j ^ (2 : ℕ) = B j * B j := by ring
       rw [h1]
       exact mul_le_mul_of_nonneg_right (hmax j hj) (hB j)
     refine hstep.trans ?_
     rw [← Finset.mul_sum]
     exact mul_le_mul_of_nonneg_left hPP hBmax
   have hterm : ∀ j ∈ Finset.range L,
-      (ρ * B j) ^ 2 * ((2 * Nn j + FC j * v + 48 * Real.pi * Nn j * Λ) * Cc j)
-        ≤ ρ ^ 2 * ((2 + 48 * Real.pi * Λ) * ((B j * Nn j) ^ 2 + B j ^ 2 * Nn j)
-            + FCmax * v * (B j ^ 2 * Nn j + B j ^ 2)) := by
+      (ρ * B j) ^ (2 : ℕ) * ((2 * Nn j + FC j * v + 48 * Real.pi * Nn j * Λ) * Cc j)
+        ≤ ρ ^ (2 : ℕ) * ((2 + 48 * Real.pi * Λ) * ((B j * Nn j) ^ (2 : ℕ) + B j ^ (2 : ℕ) * Nn j)
+            + FCmax * v * (B j ^ (2 : ℕ) * Nn j + B j ^ (2 : ℕ))) := by
     intro j hj
     have hCle : Cc j ≤ Nn j + 1 := hCN j hj
     have hFCle : FC j ≤ FCmax := hFC j hj
@@ -176,30 +176,30 @@ theorem ladderGroup_hm_inner_le {L : ℕ} {ρ S Bmax PP FCmax v Λ : ℝ} (B Cc 
         ≤ ((2 + 48 * Real.pi * Λ) * Nn j + FCmax * v) * (Nn j + 1) := by
       refine le_trans (mul_le_mul_of_nonneg_right hcoef hCC) ?_
       exact mul_le_mul_of_nonneg_left hCle hcoef0
-    have hsq : (ρ * B j) ^ 2 = ρ ^ 2 * B j ^ 2 := by ring
+    have hsq : (ρ * B j) ^ (2 : ℕ) = ρ ^ (2 : ℕ) * B j ^ (2 : ℕ) := by ring
     rw [hsq]
     have hmul := mul_le_mul_of_nonneg_left hstep
-      (mul_nonneg hρ2 (sq_nonneg (B j)) : (0 : ℝ) ≤ ρ ^ 2 * B j ^ 2)
+      (mul_nonneg hρ2 (sq_nonneg (B j)) : (0 : ℝ) ≤ ρ ^ (2 : ℕ) * B j ^ (2 : ℕ))
     refine hmul.trans (le_of_eq ?_)
     ring
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.mul_sum]
   have hexp : ∑ j ∈ Finset.range L,
-      ((2 + 48 * Real.pi * Λ) * ((B j * Nn j) ^ 2 + B j ^ 2 * Nn j)
-        + FCmax * v * (B j ^ 2 * Nn j + B j ^ 2))
-      = (2 + 48 * Real.pi * Λ) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ 2)
-            + ∑ j ∈ Finset.range L, B j ^ 2 * Nn j)
-        + FCmax * v * ((∑ j ∈ Finset.range L, B j ^ 2 * Nn j)
-            + ∑ j ∈ Finset.range L, B j ^ 2) := by
+      ((2 + 48 * Real.pi * Λ) * ((B j * Nn j) ^ (2 : ℕ) + B j ^ (2 : ℕ) * Nn j)
+        + FCmax * v * (B j ^ (2 : ℕ) * Nn j + B j ^ (2 : ℕ)))
+      = (2 + 48 * Real.pi * Λ) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ (2 : ℕ))
+            + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j)
+        + FCmax * v * ((∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j)
+            + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ)) := by
     rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum, Finset.sum_add_distrib,
       Finset.sum_add_distrib]
   rw [hexp]
-  have hA : (2 + 48 * Real.pi * Λ) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ 2)
-        + ∑ j ∈ Finset.range L, B j ^ 2 * Nn j)
-      ≤ (2 + 48 * Real.pi * Λ) * (S ^ 2 + Bmax * S) :=
+  have hA : (2 + 48 * Real.pi * Λ) * ((∑ j ∈ Finset.range L, (B j * Nn j) ^ (2 : ℕ))
+        + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j)
+      ≤ (2 + 48 * Real.pi * Λ) * (S ^ (2 : ℕ) + Bmax * S) :=
     mul_le_mul_of_nonneg_left (by linarith [hBN2, hB2N]) (by positivity)
-  have hBb : FCmax * v * ((∑ j ∈ Finset.range L, B j ^ 2 * Nn j)
-        + ∑ j ∈ Finset.range L, B j ^ 2)
+  have hBb : FCmax * v * ((∑ j ∈ Finset.range L, B j ^ (2 : ℕ) * Nn j)
+        + ∑ j ∈ Finset.range L, B j ^ (2 : ℕ))
       ≤ FCmax * v * (Bmax * S + Bmax * PP) :=
     mul_le_mul_of_nonneg_left (by linarith [hB2N, hB2]) (by positivity)
   exact mul_le_mul_of_nonneg_left (by linarith [hA, hBb]) hρ2

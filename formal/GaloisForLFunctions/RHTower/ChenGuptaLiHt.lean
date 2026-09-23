@@ -6,7 +6,7 @@ noncomputable section
 
 namespace RHTower
 
-/-- CGL's literal oscillatory kernel `h_t(u)=w(u)^2u^{it}`, represented by its positive-axis
+/-- CGL's literal oscillatory kernel `h_t(u)=w(u)^(2 : ℕ)u^{it}`, represented by its positive-axis
 Mellin phase.  The cutoff makes this globally smooth despite the logarithm at zero. -/
 def cglSmoothBumpHtValue (w : CGLSmoothBump) (t x : ℝ) : ℂ :=
   w.value x * w.value x * cglMellinPhase t x
@@ -54,7 +54,7 @@ theorem norm_cglSmoothBumpHt_phase (t x : ℝ) :
 
 /-- The norm of `h_t` is exactly the squared norm of the cutoff, uniformly in `t`. -/
 theorem norm_cglSmoothBumpHt_eq_normSq (w : CGLSmoothBump) (t x : ℝ) :
-    ‖cglSmoothBumpHt w t x‖ = ‖w.value x‖ ^ 2 := by
+    ‖cglSmoothBumpHt w t x‖ = ‖w.value x‖ ^ (2 : ℕ) := by
   rw [cglSmoothBumpHt_apply, cglSmoothBumpHtValue, norm_mul, norm_mul,
     norm_cglSmoothBumpHt_phase]
   ring

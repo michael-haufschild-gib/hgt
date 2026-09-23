@@ -116,7 +116,7 @@ theorem hsNormSq_centralSoninProjectionQuantumWalk_sub_adjoint_add_prolate_eq
         32 * hsNormSq
           (soninAlternatingBlock (centralPhysicalForbidden a)
             (centralFourierForbidden a)) =
-      128 * a ^ 2 := by
+      128 * a ^ (2 : ℕ) := by
   have hphase :=
     hsNormSq_centralSoninProjectionQuantumWalk_sub_adjoint_eq a ha
   have hbudget :=

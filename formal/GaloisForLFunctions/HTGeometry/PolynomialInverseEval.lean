@@ -17,8 +17,8 @@ noncomputable section
 
 theorem hasDerivAt_polyEval_inv (P : ℂ[X]) {s : ℂ} (hs : s ≠ 0) :
     HasDerivAt (fun z : ℂ => P.eval z⁻¹)
-      ((derivative P).eval s⁻¹ * (-(s ^ 2)⁻¹)) s := by
-  have h1 : HasDerivAt (fun y : ℂ => y⁻¹) (-(s ^ 2)⁻¹) s := hasDerivAt_inv hs
+      ((derivative P).eval s⁻¹ * (-(s ^ (2 : ℕ))⁻¹)) s := by
+  have h1 : HasDerivAt (fun y : ℂ => y⁻¹) (-(s ^ (2 : ℕ))⁻¹) s := hasDerivAt_inv hs
   have h2 : HasDerivAt (fun x : ℂ => P.eval x) ((derivative P).eval s⁻¹) s⁻¹ := P.hasDerivAt s⁻¹
   have hcomp := h2.comp s h1
   have hrw : ((fun x : ℂ => P.eval x) ∘ fun y : ℂ => y⁻¹) = fun z : ℂ => P.eval z⁻¹ := by

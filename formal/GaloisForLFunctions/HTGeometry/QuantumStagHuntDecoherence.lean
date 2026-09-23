@@ -14,7 +14,7 @@ set_option autoImplicit false
 namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
-/-- Depolarized `QQ` payoff, with `s = sin(Γ)^2`. -/
+/-- Depolarized `QQ` payoff, with `s = sin(Γ)^(2 : ℕ)`. -/
 def depolarizedStagHuntM (p s : ℝ) : ℝ :=
   4 - 5 * p / 2 + 3 * p ^ 2 / 4 - p * (1 - p) * s
 
@@ -111,7 +111,7 @@ theorem stagHuntPostADAttenuation_spinDecayMass_add
     stagHuntPostADAttenuation_spinDecayMass]
   ring
 
-/-- Resource-damped payoff table in `x = sin(Γ/2)^2` coordinates. -/
+/-- Resource-damped payoff table in `x = sin(Γ/2)^(2 : ℕ)` coordinates. -/
 def resourceDampedStagHuntM (p x : ℝ) : ℝ := 4 + (3 * p ^ 2 - 5 * p) * x
 def resourceDampedStagHuntN (p x : ℝ) : ℝ :=
   3 * x * (-p ^ 2 + 4 * p * x - 2 * p - 4 * x + 4)
@@ -176,7 +176,7 @@ theorem postDampedStagHuntField_branch_endpoint :
 def postDampedStagHuntNeutralRoot (p : ℝ) : ℝ :=
   (3 * p + Real.sqrt (9 * p ^ 2 + 120)) / 12
 
-/-- Closed radical solution of `5 - 6c^2 + 3pc = 0`. -/
+/-- Closed radical solution of `5 - 6c^(2 : ℕ) + 3pc = 0`. -/
 theorem postDampedStagHuntNeutralRoot_equation (p : ℝ) :
     5 - 6 * postDampedStagHuntNeutralRoot p ^ 2 +
       3 * p * postDampedStagHuntNeutralRoot p = 0 := by

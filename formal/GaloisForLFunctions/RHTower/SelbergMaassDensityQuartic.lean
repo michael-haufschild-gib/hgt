@@ -22,27 +22,27 @@ variable (N : ℕ) {lam : ℝ}
 
 /-- Squaring the literal finite deck density retains its two real directional current squares. -/
 theorem density_sq_realLaplacian (z : ℍ) :
-    realLaplacian (fun w => (density N f (ofComplex w)) ^ 2) (z : ℂ) =
+    realLaplacian (fun w => (density N f (ofComplex w)) ^ (2 : ℕ)) (z : ℂ) =
       2 * density N f z * realLaplacian (density N f ∘ ofComplex) (z : ℂ) +
-        2 * (current N f 1 z ^ 2 + current N f Complex.I z ^ 2) := by
+        2 * (current N f 1 z ^ (2 : ℕ) + current N f Complex.I z ^ (2 : ℕ)) := by
   have hF := (density_contDiffOn N f).contDiffAt
     (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
-  change realLaplacian (fun w => ((density N f ∘ ofComplex) w) ^ 2) (z : ℂ) = _
+  change realLaplacian (fun w => ((density N f ∘ ofComplex) w) ^ (2 : ℕ)) (z : ℂ) = _
   rw [realLaplacian_sq hF]
   unfold current dir
   simp only [Function.comp_apply, ofComplex_apply]
 
 /-- The hyperbolic square-density equation retains the density-gradient and angular source terms. -/
 theorem density_sq_hyperbolic_laplacian (z : ℍ) :
-    -z.im ^ 2 * realLaplacian (fun w => (density N f (ofComplex w)) ^ 2) (z : ℂ) =
-      4 * lam * density N f z ^ 2 -
-        3 * z.im ^ 2 * (current N f 1 z ^ 2 + current N f Complex.I z ^ 2) -
-          4 * z.im ^ 2 * density N f z * angularEnergy N f z := by
+    -z.im ^ (2 : ℕ) * realLaplacian (fun w => (density N f (ofComplex w)) ^ (2 : ℕ)) (z : ℂ) =
+      4 * lam * density N f z ^ (2 : ℕ) -
+        3 * z.im ^ (2 : ℕ) * (current N f 1 z ^ (2 : ℕ) + current N f Complex.I z ^ (2 : ℕ)) -
+          4 * z.im ^ (2 : ℕ) * density N f z * angularEnergy N f z := by
   rw [density_sq_realLaplacian, trace_laplacian]
   calc
-    _ = 4 * lam * density N f z ^ 2 -
-        4 * z.im ^ 2 * (density N f z * gradientDensity N f (z : ℂ)) -
-          2 * z.im ^ 2 * (current N f 1 z ^ 2 + current N f Complex.I z ^ 2) := by
+    _ = 4 * lam * density N f z ^ (2 : ℕ) -
+        4 * z.im ^ (2 : ℕ) * (density N f z * gradientDensity N f (z : ℂ)) -
+          2 * z.im ^ (2 : ℕ) * (current N f 1 z ^ (2 : ℕ) + current N f Complex.I z ^ (2 : ℕ)) := by
       field_simp [z.im_pos.ne']
       ring
     _ = _ := by

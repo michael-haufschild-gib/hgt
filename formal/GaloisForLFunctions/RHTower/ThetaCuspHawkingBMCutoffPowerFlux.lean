@@ -18,8 +18,8 @@ def cutoffPowerFlux (delta k : ℂ) (y : ℝ) : ℂ :=
     delta*(y:ℂ)^(delta-1)*powerCutoffHeight k y
 
 private theorem power_step (delta : ℂ) {y : ℝ} (hy : 0 < y) :
-    (y:ℂ)^delta = (y:ℂ)^(delta-2)*(y:ℂ)^2 := by
-  have he : (y:ℂ)^(2:ℂ) = (y:ℂ)^2 := by norm_cast
+    (y:ℂ)^delta = (y:ℂ)^(delta-2)*(y:ℂ)^(2 : ℕ) := by
+  have he : (y:ℂ)^(2:ℂ) = (y:ℂ)^(2 : ℕ) := by norm_cast
   rw [← he,← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hy.ne')]
   congr 1
   ring

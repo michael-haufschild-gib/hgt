@@ -169,10 +169,10 @@ theorem deriv_invPowFun (n : ℕ) {z : ℂ} (hz : z ≠ 0) :
   have hd : HasDerivAt (fun w : ℂ => w ^ (n + 1)) ((n + 1 : ℕ) * z ^ n) z := by
     simpa using (hasDerivAt_pow (n + 1) z)
   have hinv : HasDerivAt (fun w : ℂ => (w ^ (n + 1))⁻¹)
-      (-((n + 1 : ℕ) * z ^ n) / (z ^ (n + 1)) ^ 2) z := hd.inv hpow
+      (-((n + 1 : ℕ) * z ^ n) / (z ^ (n + 1)) ^ (2 : ℕ)) z := hd.inv hpow
   have hfull : HasDerivAt (invPowFun n)
       (((-1 : ℂ) ^ n * (n.factorial : ℂ)) *
-        (-((n + 1 : ℕ) * z ^ n) / (z ^ (n + 1)) ^ 2)) z :=
+        (-((n + 1 : ℕ) * z ^ n) / (z ^ (n + 1)) ^ (2 : ℕ))) z :=
     hinv.const_mul ((-1 : ℂ) ^ n * (n.factorial : ℂ))
   rw [hfull.deriv]
   show _ = ((-1 : ℂ) ^ (n + 1) * ((n + 1).factorial : ℂ)) * (z ^ (n + 1 + 1))⁻¹

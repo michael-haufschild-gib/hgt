@@ -98,7 +98,7 @@ theorem readerFullRegularPart_source_identity_below (s chi amp J K w : ℂ)
     (hw : Chamber w chi) (hwi : w.im≠0) (hs : (2*s).re<w.re) :
     ∃ B : ℝ, 0<B ∧ B≤1/2 ∧ ∀ b : ℝ, 0<b → b≤B →
       ∀ v : ℂ, Chamber v chi → v.im≠0 → 0<(w+v).re → 0<(w-v).re →
-      (v^2-w^2)*readerFullRegularPart s chi amp J K w b v=
+      (v^(2 : ℕ)-w^(2 : ℕ))*readerFullRegularPart s chi amp J K w b v=
         (∫ z in (0:ℝ)..1,sourceDensity s chi amp J K w v z)+
           (v+w)*incomingResponseEndpoint s chi amp J K w b*(connection v chi/(2*v)) := by
   have hwr : -2<w.re := by linarith [chamber_re_pos hw]
@@ -143,7 +143,7 @@ theorem readerFullRegularPart_source_identity_below (s chi amp J K w : ℂ)
     dsimp only [A,beta]
     ring
   rw [htotal] at hwhole
-  have hpole : (v^2-w^2)*(beta*incomingResponseEndpoint s chi amp J K w b/(w-v))=
+  have hpole : (v^(2 : ℕ)-w^(2 : ℕ))*(beta*incomingResponseEndpoint s chi amp J K w b/(w-v))=
       -(v+w)*incomingResponseEndpoint s chi amp J K w b*beta := by
     field_simp
     ring
@@ -235,7 +235,7 @@ theorem readerFullRegularPart_source_difference_below (s chi amp J K w : ℂ)
     rw [hsame,sub_self] at hminus
     simp at hminus
   have hJ : (∫ z in (0:ℝ)..1,sourceDensity s chi amp J K w v z)=
-      (v^2-w^2)*readerFullRegularPart s chi amp J K w b v-
+      (v^(2 : ℕ)-w^(2 : ℕ))*readerFullRegularPart s chi amp J K w b v-
         (v+w)*greenHorizonAmplitude s chi amp J K w*(connection v chi/(2*v)) := by
     linear_combination -hid
   rw [hJ]

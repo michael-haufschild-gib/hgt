@@ -143,7 +143,7 @@ def stageCoefficient {n : ℕ} (g : ElementaryDecoratedGraph n)
   | .inr (.inr ⟨ramification, lower⟩) =>
       if ramification.val = g.ramification i then
         g.thresholdCoefficient hacute
-          ((lower.val : ℚ) / (ramification.val : ℚ) ^ 2) i
+          ((lower.val : ℚ) / (ramification.val : ℚ) ^ (2 : ℕ)) i
       else 0
 
 /-- Finite coefficient packet before equal-exponent terms are collected. -/
@@ -196,7 +196,7 @@ theorem lowerCoefficient_eq_iff_of_ramification_eq
     g.stageCoefficient hacute i (.inr (.inr ⟨r, b⟩)) =
         g.stageCoefficient hacute j (.inr (.inr ⟨r, b⟩)) ↔
       i = j ∨ g.rescaledEdge i j <
-        (b.val : ℚ) / (g.ramification i : ℚ) ^ 2 := by
+        (b.val : ℚ) / (g.ramification i : ℚ) ^ (2 : ℕ) := by
   simp only [stageCoefficient, hri, hijRam, if_pos]
   exact g.thresholdCoefficient_eq_iff hacute _ i j
 
@@ -295,18 +295,18 @@ theorem lowerStage_isHighestDifference_sameRamification
     (hij : i ≠ j) (hir : g.ramification i = r)
     (hjr : g.ramification j = r) (hb : b < r)
     (hrmax : r ≤ g.maxRamification)
-    (hweight : g.rescaledEdge i j = (b : ℚ) / (r : ℚ) ^ 2) :
+    (hweight : g.rescaledEdge i j = (b : ℚ) / (r : ℚ) ^ (2 : ℕ)) :
     g.IsHighestDifferenceStage hacute i j (g.lowerStage r b hrmax hb) := by
   have hijRam : g.ramification i = g.ramification j := hir.trans hjr.symm
   have hrNat : 0 < r := Nat.zero_lt_of_lt hb
   have hrQ : (0 : ℚ) < r := by exact_mod_cast hrNat
-  have hrSqQ : (0 : ℚ) < (r : ℚ) ^ 2 := sq_pos_of_pos hrQ
-  have hbelowMandatory : (b : ℚ) / (r : ℚ) ^ 2 < 1 / (r : ℚ) := by
+  have hrSqQ : (0 : ℚ) < (r : ℚ) ^ (2 : ℕ) := sq_pos_of_pos hrQ
+  have hbelowMandatory : (b : ℚ) / (r : ℚ) ^ (2 : ℕ) < 1 / (r : ℚ) := by
     calc
-      (b : ℚ) / (r : ℚ) ^ 2 < (r : ℚ) / (r : ℚ) ^ 2 :=
+      (b : ℚ) / (r : ℚ) ^ (2 : ℕ) < (r : ℚ) / (r : ℚ) ^ (2 : ℕ) :=
         div_lt_div_of_pos_right (by exact_mod_cast hb) hrSqQ
       _ = 1 / (r : ℚ) := by field_simp
-  have hbelowOne : (b : ℚ) / (r : ℚ) ^ 2 < 1 := by
+  have hbelowOne : (b : ℚ) / (r : ℚ) ^ (2 : ℕ) < 1 := by
     exact hbelowMandatory.trans_le <| (div_le_one hrQ).mpr (by exact_mod_cast hrNat)
   constructor
   · intro heq
@@ -343,13 +343,13 @@ theorem lowerStage_isHighestDifference_sameRamification
       · have heqRam := g.lowerCoefficient_eq_iff_of_ramification_eq
           hacute hijRam otherR (hm.trans hir.symm) otherB
         have hnot : ¬(i = j ∨ g.rescaledEdge i j <
-            (otherB.val : ℚ) / (g.ramification i : ℚ) ^ 2) :=
+            (otherB.val : ℚ) / (g.ramification i : ℚ) ^ (2 : ℕ)) :=
           fun h => hother (heqRam.mpr h)
         have hleB : otherB.val ≤ b := by
           rw [hir, hweight] at hnot
           push Not at hnot
-          have hdiv : (otherB.val : ℚ) / (r : ℚ) ^ 2 ≤
-              (b : ℚ) / (r : ℚ) ^ 2 := hnot.2
+          have hdiv : (otherB.val : ℚ) / (r : ℚ) ^ (2 : ℕ) ≤
+              (b : ℚ) / (r : ℚ) ^ (2 : ℕ) := hnot.2
           have hcast : (otherB.val : ℚ) ≤ b :=
             (div_le_div_iff_of_pos_right hrSqQ).mp hdiv
           exact_mod_cast hcast
@@ -539,10 +539,10 @@ theorem pairPresentation_hasHighestDifferenceStage
         have hedgeMax := g.edge_le_maxEdge i j
         rw [hijEdge] at hedgeMax
         have hrPos : 0 < r₀ := Nat.zero_lt_of_lt hr
-        exact (show k ≤ r₀ ^ 2 * k from by
+        exact (show k ≤ r₀ ^ (2 : ℕ) * k from by
           calc
             k = 1 * k := by simp
-            _ ≤ (r₀ ^ 2) * k := Nat.mul_le_mul_right k (by nlinarith)).trans hedgeMax
+            _ ≤ (r₀ ^ (2 : ℕ)) * k := Nat.mul_le_mul_right k (by nlinarith)).trans hedgeMax
       refine ⟨g.highStage k hk hkmax, ?_⟩
       apply g.highStage_isHighestDifference hacute hij hk hkmax
       simp [rescaledEdge, hir₀, hjs₀, hijEdge]
@@ -689,7 +689,7 @@ theorem lowerStage_isUncancelledHighestDifference_sameRamification
     (hij : i ≠ j) (hir : g.ramification i = r)
     (hjr : g.ramification j = r) (hb : b < r)
     (hrmax : r ≤ g.maxRamification)
-    (hweight : g.rescaledEdge i j = (b : ℚ) / (r : ℚ) ^ 2) :
+    (hweight : g.rescaledEdge i j = (b : ℚ) / (r : ℚ) ^ (2 : ℕ)) :
     g.IsUncancelledHighestDifferenceStage hacute i j (g.lowerStage r b hrmax hb) := by
   refine ⟨g.lowerStage_isHighestDifference_sameRamification hacute hij hir hjr hb hrmax
     hweight, ?_⟩
@@ -895,10 +895,10 @@ theorem pairPresentation_hasUncancelledHighestDifferenceStage
       have hkmax : k ≤ g.maxEdge := by
         have hedgeMax := g.edge_le_maxEdge i j
         rw [hijEdge] at hedgeMax
-        exact (show k ≤ r₀ ^ 2 * k from by
+        exact (show k ≤ r₀ ^ (2 : ℕ) * k from by
           calc
             k = 1 * k := by simp
-            _ ≤ (r₀ ^ 2) * k := Nat.mul_le_mul_right k (by nlinarith)).trans hedgeMax
+            _ ≤ (r₀ ^ (2 : ℕ)) * k := Nat.mul_le_mul_right k (by nlinarith)).trans hedgeMax
       refine ⟨g.highStage k hk hkmax, ?_, ?_⟩
       · apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
         simp [rescaledEdge, hir₀, hjs₀, hijEdge]

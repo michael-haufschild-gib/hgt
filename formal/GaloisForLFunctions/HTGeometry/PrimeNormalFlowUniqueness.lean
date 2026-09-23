@@ -17,7 +17,7 @@ open Filter Topology
 theorem abs_sqrtSlope_le {a b s : ℝ} (hs : 0 < s) (ha : s ≤ Real.sqrt a) (hb : s ≤ Real.sqrt b)
     (hab : a ≠ b) :
     |(Real.sqrt b - Real.sqrt a) / (b - a) - (1 / 2) * (Real.sqrt a)⁻¹|
-      ≤ |b - a| / (8 * s ^ 3) := by
+      ≤ |b - a| / (8 * s ^ (3 : ℕ)) := by
   set p := Real.sqrt a with hpdef
   set q := Real.sqrt b with hqdef
   have hp0 : 0 < p := lt_of_lt_of_le hs ha
@@ -32,28 +32,28 @@ theorem abs_sqrtSlope_le {a b s : ℝ} (hs : 0 < s) (ha : s ≤ Real.sqrt a) (hb
     rw [not_lt] at hc
     rw [hqdef, Real.sqrt_eq_zero_of_nonpos hc] at hq0
     exact lt_irrefl 0 hq0
-  have hpa : p ^ 2 = a := Real.sq_sqrt hapos.le
-  have hqb : q ^ 2 = b := Real.sq_sqrt hbpos.le
-  have hd : q ^ 2 - p ^ 2 ≠ 0 := by rw [hpa, hqb]; exact sub_ne_zero.mpr (Ne.symm hab)
+  have hpa : p ^ (2 : ℕ) = a := Real.sq_sqrt hapos.le
+  have hqb : q ^ (2 : ℕ) = b := Real.sq_sqrt hbpos.le
+  have hd : q ^ (2 : ℕ) - p ^ (2 : ℕ) ≠ 0 := by rw [hpa, hqb]; exact sub_ne_zero.mpr (Ne.symm hab)
   have hpq : 0 < p + q := by linarith
   have hexpr : (q - p) / (b - a) - (1 / 2) * p⁻¹
-      = -((q ^ 2 - p ^ 2) / (2 * p * (p + q) ^ 2)) := by
+      = -((q ^ (2 : ℕ) - p ^ (2 : ℕ)) / (2 * p * (p + q) ^ (2 : ℕ))) := by
     rw [← hpa, ← hqb]
     field_simp
     ring
-  rw [hexpr, abs_neg, abs_div, abs_of_pos (by positivity : (0:ℝ) < 2 * p * (p + q) ^ 2), hpa, hqb]
+  rw [hexpr, abs_neg, abs_div, abs_of_pos (by positivity : (0:ℝ) < 2 * p * (p + q) ^ (2 : ℕ)), hpa, hqb]
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
-  have h2 : 8 * s ^ 3 ≤ 2 * p * (p + q) ^ 2 := by
-    have e1 : 2 * s * (2 * s) ^ 2 ≤ 2 * p * (p + q) ^ 2 := by
-      have hsq : (2 * s) ^ 2 ≤ (p + q) ^ 2 := by
+  have h2 : 8 * s ^ (3 : ℕ) ≤ 2 * p * (p + q) ^ (2 : ℕ) := by
+    have e1 : 2 * s * (2 * s) ^ (2 : ℕ) ≤ 2 * p * (p + q) ^ (2 : ℕ) := by
+      have hsq : (2 * s) ^ (2 : ℕ) ≤ (p + q) ^ (2 : ℕ) := by
         have : 2 * s ≤ p + q := by linarith
         nlinarith [hs.le, hpq.le]
       exact mul_le_mul (by linarith) hsq (by positivity) (by positivity)
-    calc 8 * s ^ 3 = 2 * s * (2 * s) ^ 2 := by ring
-      _ ≤ 2 * p * (p + q) ^ 2 := e1
-  calc |b - a| * (8 * s ^ 3) ≤ |b - a| * (2 * p * (p + q) ^ 2) :=
+    calc 8 * s ^ (3 : ℕ) = 2 * s * (2 * s) ^ (2 : ℕ) := by ring
+      _ ≤ 2 * p * (p + q) ^ (2 : ℕ) := e1
+  calc |b - a| * (8 * s ^ (3 : ℕ)) ≤ |b - a| * (2 * p * (p + q) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left h2 (abs_nonneg _)
-    _ = |b - a| * (2 * p * (p + q) ^ 2) := rfl
+    _ = |b - a| * (2 * p * (p + q) ^ (2 : ℕ)) := rfl
 
 section Flow
 
@@ -76,7 +76,7 @@ noncomputable def sqrtSlopeSymbol (L L' t : ℝ) : ℝ :=
 
 theorem abs_sqrtSlopeSymbol_le {T : A} {L L' t : ℝ} (hL : ‖T‖ / 2 < L)
     (hne : L' ≠ L) (hclose : |L' - L| < (L - ‖T‖ / 2) / 2) (ht : t ∈ spectrum ℝ T) :
-    |sqrtSlopeSymbol L L' t| ≤ |L' - L| / (8 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ 3) := by
+    |sqrtSlopeSymbol L L' t| ≤ |L' - L| / (8 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ (3 : ℕ)) := by
   have hδ : 0 < L - ‖T‖ / 2 := by linarith
   have hs : 0 < Real.sqrt ((L - ‖T‖ / 2) / 2) := Real.sqrt_pos.mpr (by linarith)
   have htn : t ≤ ‖T‖ := le_trans (le_abs_self t) (abs_le_norm_of_mem_spectrum ht)
@@ -140,12 +140,12 @@ theorem hasDerivAt_sqrtFlow {T : A} (hT : IsSelfAdjoint T) {L : ℝ} (hL : ‖T�
       ∀ t ∈ spectrum ℝ T, ‖sqrtSlopeSymbol L L' t‖ ≤ ε := by
     intro ε hε
     have hbound : Tendsto
-        (fun L' : ℝ => |L' - L| / (8 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ 3)) (𝓝[≠] L) (𝓝 0) := by
+        (fun L' : ℝ => |L' - L| / (8 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ (3 : ℕ))) (𝓝[≠] L) (𝓝 0) := by
       have h1 : Tendsto (fun L' : ℝ => |L' - L|) (𝓝[≠] L) (𝓝 0) := by
         have hc : ContinuousAt (fun L' : ℝ => |L' - L|) L := by fun_prop
         have h0 : Tendsto (fun L' : ℝ => |L' - L|) (𝓝 L) (𝓝 0) := by simpa using hc.tendsto
         exact h0.mono_left nhdsWithin_le_nhds
-      simpa using h1.div_const (8 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ 3)
+      simpa using h1.div_const (8 * Real.sqrt ((L - ‖T‖ / 2) / 2) ^ (3 : ℕ))
     filter_upwards [hwin, self_mem_nhdsWithin,
       hbound.eventually (eventually_lt_nhds hε)] with L' hw hne hsm t ht
     rw [Real.norm_eq_abs]
@@ -184,10 +184,10 @@ theorem primeNormalFlow_mul_sqrtFlow {T : A} (hT : IsSelfAdjoint T) {L : ℝ} (h
 
 /-- `2 S(L)² = 2L I − T`. -/
 theorem two_smul_sqrtFlow_sq {T : A} (hT : IsSelfAdjoint T) {L : ℝ} (hL : ‖T‖ / 2 < L) :
-    (2 : ℝ) • (sqrtFlow T L ^ 2) = (2 * L) • (1 : A) - T := by
-  show (2 : ℝ) • (cfc (sqrtSymbol L) T ^ 2) = (2 * L) • (1 : A) - T
+    (2 : ℝ) • (sqrtFlow T L ^ (2 : ℕ)) = (2 * L) • (1 : A) - T := by
+  show (2 : ℝ) • (cfc (sqrtSymbol L) T ^ (2 : ℕ)) = (2 * L) • (1 : A) - T
   have hpow := cfc_pow (sqrtSymbol L) 2 T (continuousOn_sqrtSymbol L)
-  have hsym : ∀ t ∈ spectrum ℝ T, sqrtSymbol L t ^ 2 = L - (1 / 2) * t := by
+  have hsym : ∀ t ∈ spectrum ℝ T, sqrtSymbol L t ^ (2 : ℕ) = L - (1 / 2) * t := by
     intro t ht
     rw [sqrtSymbol, Real.sq_sqrt (flow_shift_pos hL ht).le]
     ring
@@ -224,11 +224,11 @@ theorem tendsto_inv_sqrt_smul_sqrtFlow {T : A} (hT : IsSelfAdjoint T) :
   have hu : 0 < L - t / 2 := flow_shift_pos hL ht
   have hp : 0 < Real.sqrt (L - t / 2) := Real.sqrt_pos.mpr hu
   have hr : 0 < Real.sqrt L := Real.sqrt_pos.mpr hL0
-  have hp2 : Real.sqrt (L - t / 2) ^ 2 = L - t / 2 := Real.sq_sqrt hu.le
-  have hr2 : Real.sqrt L ^ 2 = L := Real.sq_sqrt hL0.le
+  have hp2 : Real.sqrt (L - t / 2) ^ (2 : ℕ) = L - t / 2 := Real.sq_sqrt hu.le
+  have hr2 : Real.sqrt L ^ (2 : ℕ) = L := Real.sq_sqrt hL0.le
   have hid : (Real.sqrt L)⁻¹ * sqrtSymbol L t - 1
       = -(t / 2) / (Real.sqrt L * (Real.sqrt (L - t / 2) + Real.sqrt L)) := by
-    have hkey : ∀ p r : ℝ, 0 < p → 0 < r → p ^ 2 - r ^ 2 = -(t / 2) →
+    have hkey : ∀ p r : ℝ, 0 < p → 0 < r → p ^ (2 : ℕ) - r ^ (2 : ℕ) = -(t / 2) →
         r⁻¹ * p - 1 = -(t / 2) / (r * (p + r)) := by
       intro p r hp' hr' hpr
       rw [eq_div_iff (by positivity)]
@@ -266,7 +266,7 @@ theorem primeNormalFlow_unique {T : A} (hT : IsSelfAdjoint T) {G G' : ℝ → A}
       set X := ((1 / 2 : ℝ) • primeNormalFlow T M) * G M + sqrtFlow T M * G' M with hXdef
       have e1 : (2 : ℝ) • (sqrtFlow T M * X)
           = (sqrtFlow T M * primeNormalFlow T M) * G M
-            + ((2 : ℝ) • (sqrtFlow T M ^ 2)) * G' M := by
+            + ((2 : ℝ) • (sqrtFlow T M ^ (2 : ℕ))) * G' M := by
         rw [hXdef, mul_add, smul_add]
         congr 1
         · have h1 : ((1 / 2 : ℝ) • primeNormalFlow T M) * G M

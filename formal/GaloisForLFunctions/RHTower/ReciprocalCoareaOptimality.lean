@@ -37,7 +37,7 @@ theorem coareaStationaryDefect_one : coareaStationaryDefect 1 = 0 := by
 
 theorem hasDerivAt_coareaStationaryDefect {r : ℝ} (hr : 0 < r) (hr2 : 2 * r - 1 ≠ 0) :
     HasDerivAt coareaStationaryDefect
-      ((4 * r ^ 2 - 6 * r + 1) / (r * (2 * r - 1) ^ 2)) r := by
+      ((4 * r ^ (2 : ℕ) - 6 * r + 1) / (r * (2 * r - 1) ^ (2 : ℕ))) r := by
   have hlog : HasDerivAt Real.log r⁻¹ r := Real.hasDerivAt_log (ne_of_gt hr)
   have hnum : HasDerivAt (fun s : ℝ => 2 * (s - 1)) 2 r := by
     have h := ((hasDerivAt_id r).sub_const 1).const_mul (2 : ℝ)
@@ -49,15 +49,15 @@ theorem hasDerivAt_coareaStationaryDefect {r : ℝ} (hr : 0 < r) (hr2 : 2 * r - 
   have hsub := hlog.sub hquot
   refine hsub.congr_deriv ?_
   have hrne : r ≠ 0 := ne_of_gt hr
-  have hsq : (2 * r - 1) ^ 2 ≠ 0 := pow_ne_zero 2 hr2
+  have hsq : (2 * r - 1) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hr2
   rw [inv_eq_one_div, div_sub_div _ _ hrne hsq]
   congr 1
   ring
 
 /-- The stationarity defect is strictly increasing past the inner critical ratio. -/
 theorem coareaStationaryDefect_deriv_pos {r : ℝ} (hr : (3 + Real.sqrt 5) / 4 < r) :
-    0 < (4 * r ^ 2 - 6 * r + 1) / (r * (2 * r - 1) ^ 2) := by
-  have hsqrt5 : Real.sqrt 5 ^ 2 = 5 := Real.sq_sqrt (by norm_num)
+    0 < (4 * r ^ (2 : ℕ) - 6 * r + 1) / (r * (2 * r - 1) ^ (2 : ℕ)) := by
+  have hsqrt5 : Real.sqrt 5 ^ (2 : ℕ) = 5 := Real.sq_sqrt (by norm_num)
   have hsqrt5pos : 0 < Real.sqrt 5 := Real.sqrt_pos.mpr (by norm_num)
   have hsqrt5lt : Real.sqrt 5 < 3 := by
     nlinarith [hsqrt5, hsqrt5pos]
@@ -65,11 +65,11 @@ theorem coareaStationaryDefect_deriv_pos {r : ℝ} (hr : (3 + Real.sqrt 5) / 4 <
     have : (3 + Real.sqrt 5) / 4 > 1 := by nlinarith [hsqrt5, hsqrt5pos]
     linarith
   have hr0 : 0 < r := by linarith
-  have hden : 0 < r * (2 * r - 1) ^ 2 := by
+  have hden : 0 < r * (2 * r - 1) ^ (2 : ℕ) := by
     have : (0 : ℝ) < 2 * r - 1 := by linarith
     positivity
-  have hnum : 0 < 4 * r ^ 2 - 6 * r + 1 := by
-    have hfac : 4 * r ^ 2 - 6 * r + 1
+  have hnum : 0 < 4 * r ^ (2 : ℕ) - 6 * r + 1 := by
+    have hfac : 4 * r ^ (2 : ℕ) - 6 * r + 1
         = 4 * (r - (3 + Real.sqrt 5) / 4) * (r - (3 - Real.sqrt 5) / 4) := by
       have h5 : Real.sqrt 5 * Real.sqrt 5 = 5 := Real.mul_self_sqrt (by norm_num)
       field_simp
@@ -84,15 +84,15 @@ theorem coareaStationaryDefect_deriv_pos {r : ℝ} (hr : (3 + Real.sqrt 5) / 4 <
 
 /-- The stationarity defect is strictly negative just past `1`. -/
 theorem coareaStationaryDefect_deriv_neg {r : ℝ} (hr1 : 1 < r) (hr : r < (3 + Real.sqrt 5) / 4) :
-    (4 * r ^ 2 - 6 * r + 1) / (r * (2 * r - 1) ^ 2) < 0 := by
-  have hsqrt5 : Real.sqrt 5 ^ 2 = 5 := Real.sq_sqrt (by norm_num)
+    (4 * r ^ (2 : ℕ) - 6 * r + 1) / (r * (2 * r - 1) ^ (2 : ℕ)) < 0 := by
+  have hsqrt5 : Real.sqrt 5 ^ (2 : ℕ) = 5 := Real.sq_sqrt (by norm_num)
   have hsqrt5pos : 0 < Real.sqrt 5 := Real.sqrt_pos.mpr (by norm_num)
   have hr0 : 0 < r := by linarith
-  have hden : 0 < r * (2 * r - 1) ^ 2 := by
+  have hden : 0 < r * (2 * r - 1) ^ (2 : ℕ) := by
     have : (0 : ℝ) < 2 * r - 1 := by linarith
     positivity
-  have hnum : 4 * r ^ 2 - 6 * r + 1 < 0 := by
-    have hfac : 4 * r ^ 2 - 6 * r + 1
+  have hnum : 4 * r ^ (2 : ℕ) - 6 * r + 1 < 0 := by
+    have hfac : 4 * r ^ (2 : ℕ) - 6 * r + 1
         = 4 * (r - (3 + Real.sqrt 5) / 4) * (r - (3 - Real.sqrt 5) / 4) := by
       have h5 : Real.sqrt 5 * Real.sqrt 5 = 5 := Real.mul_self_sqrt (by norm_num)
       field_simp
@@ -108,12 +108,12 @@ theorem coareaStationaryDefect_deriv_neg {r : ℝ} (hr1 : 1 < r) (hr : r < (3 + 
 /-! ## Monotonicity of the stationarity defect -/
 
 theorem sqrt5_lt_three : Real.sqrt 5 < 3 := by
-  have h5 : Real.sqrt 5 ^ 2 = 5 := Real.sq_sqrt (by norm_num)
+  have h5 : Real.sqrt 5 ^ (2 : ℕ) = 5 := Real.sq_sqrt (by norm_num)
   have hpos : 0 < Real.sqrt 5 := Real.sqrt_pos.mpr (by norm_num)
   nlinarith [h5, hpos]
 
 theorem two_lt_sqrt5 : 2 < Real.sqrt 5 := by
-  have h5 : Real.sqrt 5 ^ 2 = 5 := Real.sq_sqrt (by norm_num)
+  have h5 : Real.sqrt 5 ^ (2 : ℕ) = 5 := Real.sq_sqrt (by norm_num)
   have hpos : 0 < Real.sqrt 5 := Real.sqrt_pos.mpr (by norm_num)
   nlinarith [h5, hpos]
 
@@ -137,7 +137,7 @@ theorem continuousOn_coareaStationaryDefect :
   exact hcont.continuousWithinAt
 
 theorem deriv_coareaStationaryDefect {r : ℝ} (hr : 0 < r) (hr2 : 2 * r - 1 ≠ 0) :
-    deriv coareaStationaryDefect r = (4 * r ^ 2 - 6 * r + 1) / (r * (2 * r - 1) ^ 2) :=
+    deriv coareaStationaryDefect r = (4 * r ^ (2 : ℕ) - 6 * r + 1) / (r * (2 * r - 1) ^ (2 : ℕ)) :=
   (hasDerivAt_coareaStationaryDefect hr hr2).deriv
 
 theorem strictAntiOn_coareaStationaryDefect :
@@ -343,7 +343,7 @@ theorem coareaMinCost_mul_log_le_sum {u : ℕ → ℝ} {K : ℕ}
 theorem hasDerivAt_coareaRatioCost {r : ℝ} (hr : 1 < r) :
     HasDerivAt coareaRatioCost
       ((2 * r - 1) * coareaStationaryDefect r
-        / (2 * Real.sqrt (r * (r - 1)) * Real.log r ^ 2)) r := by
+        / (2 * Real.sqrt (r * (r - 1)) * Real.log r ^ (2 : ℕ))) r := by
   have hr0 : (0 : ℝ) < r := by linarith
   have hg : (0 : ℝ) < r * (r - 1) := by
     have : (0 : ℝ) < r - 1 := by linarith
@@ -422,7 +422,7 @@ theorem coareaRatioCost_min {r' : ℝ} (hr' : 1 < r') (hzero : coareaStationaryD
         positivity
       have hsqrt : 0 < Real.sqrt (s * (s - 1)) := Real.sqrt_pos.mpr hg
       have hlog : 0 < Real.log s := Real.log_pos hs1
-      have hden : 0 < 2 * Real.sqrt (s * (s - 1)) * Real.log s ^ 2 := by positivity
+      have hden : 0 < 2 * Real.sqrt (s * (s - 1)) * Real.log s ^ (2 : ℕ) := by positivity
       have hnum : (2 * s - 1) * coareaStationaryDefect s < 0 := by
         have h2s : (0 : ℝ) < 2 * s - 1 := by linarith
         exact mul_neg_of_pos_of_neg h2s hsign
@@ -445,7 +445,7 @@ theorem coareaRatioCost_min {r' : ℝ} (hr' : 1 < r') (hzero : coareaStationaryD
         positivity
       have hsqrt : 0 < Real.sqrt (s * (s - 1)) := Real.sqrt_pos.mpr hg
       have hlog : 0 < Real.log s := Real.log_pos hs1
-      have hden : 0 < 2 * Real.sqrt (s * (s - 1)) * Real.log s ^ 2 := by positivity
+      have hden : 0 < 2 * Real.sqrt (s * (s - 1)) * Real.log s ^ (2 : ℕ) := by positivity
       have hnum : 0 < (2 * s - 1) * coareaStationaryDefect s := by
         have h2s : (0 : ℝ) < 2 * s - 1 := by linarith
         exact mul_pos h2s hsign
@@ -472,12 +472,12 @@ theorem sqrt_pow_eq (x : ℝ) (hx : 0 ≤ x) (n : ℕ) : Real.sqrt (x ^ n) = Rea
 
 theorem sqrt_add_le_sqrt_add_sqrt {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     Real.sqrt (a + b) ≤ Real.sqrt a + Real.sqrt b := by
-  have h1 : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha
-  have h2 : Real.sqrt b ^ 2 = b := Real.sq_sqrt hb
+  have h1 : Real.sqrt a ^ (2 : ℕ) = a := Real.sq_sqrt ha
+  have h2 : Real.sqrt b ^ (2 : ℕ) = b := Real.sq_sqrt hb
   have hnn : 0 ≤ Real.sqrt a + Real.sqrt b := by positivity
-  have hexp : a + b ≤ (Real.sqrt a + Real.sqrt b) ^ 2 := by
+  have hexp : a + b ≤ (Real.sqrt a + Real.sqrt b) ^ (2 : ℕ) := by
     nlinarith [h1, h2, mul_nonneg (Real.sqrt_nonneg a) (Real.sqrt_nonneg b)]
-  calc Real.sqrt (a + b) ≤ Real.sqrt ((Real.sqrt a + Real.sqrt b) ^ 2) := Real.sqrt_le_sqrt hexp
+  calc Real.sqrt (a + b) ≤ Real.sqrt ((Real.sqrt a + Real.sqrt b) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hexp
     _ = Real.sqrt a + Real.sqrt b := Real.sqrt_sq hnn
 
 theorem geom_sum_le_inv_one_sub {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (K : ℕ) :

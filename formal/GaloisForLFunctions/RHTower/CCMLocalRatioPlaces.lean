@@ -23,9 +23,9 @@ a unimodular multiplier with `u_p(0) = 1` and `u_p'(0) = -i b_p`, `b_p = 2 log p
 * `primeRatioCharge_pos`, `two_div_le_primeRatioCharge` — positivity and the harmonic lower bound
   `b_p >= 2/p`, from `log x >= 1 - 1/x`.
 * `tendsto_primeCovarianceAnomaly_div_sq` — the quadratic jet of the prime-only anomaly, negative and
-  equal to `-((sum b)^2 - sum b^2)/2 = -sum_(p<q) b_p b_q`.
+  equal to `-((sum b)^(2 : ℕ) - sum b^(2 : ℕ))/2 = -sum_(p<q) b_p b_q`.
 * `tendsto_primeOffDiagCharge_atTop` — the cofinal divergence: the charge is unbounded along the
-  exhaustion of the primes, because `sum 1/p` diverges while `sum 1/p^2` converges.
+  exhaustion of the primes, because `sum 1/p` diverges while `sum 1/p^(2 : ℕ)` converges.
 -/
 
 noncomputable section
@@ -274,7 +274,7 @@ theorem summable_inv_sq : Summable fun n : ℕ => ((n : ℝ)⁻¹) ^ 2 := by
   rw [inv_pow, one_div]
 
 /-- **Equations (13)–(14).**  Along the exhaustion of the primes the off-diagonal charge diverges:
-`b_p >= 2/p`, `sum 1/p` diverges, and `sum 1/p^2` converges. -/
+`b_p >= 2/p`, `sum 1/p` diverges, and `sum 1/p^(2 : ℕ)` converges. -/
 theorem tendsto_primeOffDiagCharge_atTop :
     Tendsto (fun N : ℕ => ∑ x ∈ ((Finset.range N).filter Nat.Prime).offDiag,
       primeRatioCharge x.1 * primeRatioCharge x.2) atTop atTop := by

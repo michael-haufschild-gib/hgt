@@ -21,7 +21,7 @@ noncomputable section
 theorem projectiveRatio_reconstruct_transverse
     {K : Type*} [Field K] [Differential K]
     (x y : K) (hx : x ≠ 0) (hdx : x′ ≠ 0) :
-    y = (y′ * x - (y / x)′ * x ^ 2) / x′ := by
+    y = (y′ * x - (y / x)′ * x ^ (2 : ℕ)) / x′ := by
   rw [(Differential.deriv : Derivation ℤ K K).leibniz_div]
   simp only [smul_eq_mul]
   apply (eq_div_iff hdx).2
@@ -56,7 +56,7 @@ theorem projectiveTwoChart_transverse_mem
     y ∈ L := by
   have hxmem : x ∈ L :=
     projectiveTwoChart_denominator_mem L hL x hx hdx hx1 hinv1
-  have hnum : y′ * x - (y / x)′ * x ^ 2 ∈ L :=
+  have hnum : y′ * x - (y / x)′ * x ^ (2 : ℕ) ∈ L :=
     sub_mem (mul_mem hy1 hxmem) (mul_mem hratio1 (pow_mem hxmem 2))
   rw [projectiveRatio_reconstruct_transverse x y hx hdx]
   exact div_mem hnum hx1

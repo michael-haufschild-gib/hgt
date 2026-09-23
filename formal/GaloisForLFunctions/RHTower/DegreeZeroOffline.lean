@@ -88,7 +88,7 @@ def dzoCoeff : ArithmeticFunction ℂ :=
 private theorem dzoCoeff_apply (n : ℕ) :
     dzoCoeff n = if n = 1 then 1 else if n = 8 then -6 else if n = 64 then 8 else 0 := rfl
 
-/-- **`dzoCoeff` is multiplicative.**  The support `{1, 8, 64} = {2^0, 2^3, 2^6}` is a single prime
+/-- **`dzoCoeff` is multiplicative.**  The support `{1, 8, 64} = {2^(0 : ℕ), 2^(3 : ℕ), 2^(6 : ℕ)}` is a single prime
 column, so a coprime factorisation of a support point carries all its `2`-mass on one factor; the
 values then multiply, and any other coprime product has one vanishing factor. -/
 theorem dzoCoeff_multiplicative : ArithmeticFunction.IsMultiplicative dzoCoeff := by

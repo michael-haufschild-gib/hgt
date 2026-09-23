@@ -116,13 +116,13 @@ theorem hsNormSq_centralProlateBlock_add_semilocalSoninProlateFinitePart_eq_four
     hsNormSq
         (soninAlternatingBlock (centralPhysicalForbidden a.1)
           (centralFourierForbidden a.1)) +
-      semilocalSoninProlateFinitePart a = 4 * a.1 ^ 2 := by
+      semilocalSoninProlateFinitePart a = 4 * a.1 ^ (2 : ℕ) := by
   exact hsNormSq_centralProlateBlock_add_transition_eq_four_mul_sq a.1 a.2
 
 /-- Aperture-area upper bound for the source-free finite part. -/
 theorem semilocalSoninProlateFinitePart_le_apertureArea
     (a : SemilocalSoninAperture) :
-    semilocalSoninProlateFinitePart a ≤ 4 * a.1 ^ 2 := by
+    semilocalSoninProlateFinitePart a ≤ 4 * a.1 ^ (2 : ℕ) := by
   have hbudget :=
     hsNormSq_centralProlateBlock_add_semilocalSoninProlateFinitePart_eq_four_mul_sq a
   have hblock : 0 ≤ hsNormSq
@@ -135,7 +135,7 @@ theorem semilocalSoninProlateFinitePart_le_apertureArea
 theorem semilocalSoninProlateFinitePart_mem_apertureArea
     (a : SemilocalSoninAperture) :
     0 ≤ semilocalSoninProlateFinitePart a ∧
-      semilocalSoninProlateFinitePart a ≤ 4 * a.1 ^ 2 :=
+      semilocalSoninProlateFinitePart a ≤ 4 * a.1 ^ (2 : ℕ) :=
   ⟨semilocalSoninProlateFinitePart_nonneg a,
     semilocalSoninProlateFinitePart_le_apertureArea a⟩
 

@@ -238,7 +238,7 @@ def splitSourceFEParity (m : ℕ) : Matrix (Fin 2) (Fin 2) (Polynomial ℚ) :=
 theorem splitSourceFEParity_isFESemilinearInvolution (m : ℕ) :
     IsFESemilinearInvolution (splitSourceFEParity m) := by
   rw [IsFESemilinearInvolution]
-  have hsign : (((-1 : Polynomial ℚ) ^ m) ^ 2) = 1 := by
+  have hsign : (((-1 : Polynomial ℚ) ^ m) ^ (2 : ℕ)) = 1 := by
     rw [← pow_mul]
     simp
   apply Matrix.ext

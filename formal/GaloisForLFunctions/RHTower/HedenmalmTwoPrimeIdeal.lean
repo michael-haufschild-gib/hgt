@@ -140,7 +140,7 @@ theorem deningerEntireXi_cancel (A B : DeningerEntire)
   deningerEntire_cancel ⟨0, by simpa [deningerEntireXi_apply] using XiC_zero_ne⟩ h
 
 /-- **The conormal module of the Xi divisor is the Xi comparison quotient.**  This is the
-identification `I / I^2 ≃ (O(C)/(Xi_C))[Xi_C]`. -/
+identification `I / I^(2 : ℕ) ≃ (O(C)/(Xi_C))[Xi_C]`. -/
 def xiConormalEquiv :
     DeningerEntireH1 ≃ₗ[DeningerEntire] deningerEntireXiIdeal.Cotangent :=
   GaloisForLFunctions.HTGeometry.principalCotangentEquiv deningerEntireXi_cancel
@@ -154,7 +154,7 @@ def windowCotangent (n : ℕ) : deningerEntireXiIdeal.Cotangent :=
   deningerEntireXiIdeal.toCotangent ⟨entireCenteredWindow n, entireCenteredWindow_mem_xiIdeal n⟩
 
 /-- **The two prime window classes generate the conormal module.**  This is the generation clause
-`(12)`: `[hat c_2]` and `[hat c_3]` span `I / I^2` everywhere. -/
+`(12)`: `[hat c_2]` and `[hat c_3]` span `I / I^(2 : ℕ)` everywhere. -/
 theorem span_windowCotangent_eq_top :
     Submodule.span DeningerEntire {windowCotangent 2, windowCotangent 3} = ⊤ := by
   rw [eq_top_iff]

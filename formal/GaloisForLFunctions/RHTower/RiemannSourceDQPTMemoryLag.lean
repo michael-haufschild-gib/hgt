@@ -64,7 +64,7 @@ theorem dqptSigmaYLagReporter_riemannSourceDQPTMemoryLagCurvature_eq
     (rho : XiDivisorSupport) :
     dqptSigmaYLagReporter (riemannSourceDQPTMemoryLagCurvature rho) =
       ((riemannSourceGammaCoPoissonHorizontalParameter rho : ℂ) /
-        (1 + (riemannSourceGammaCoPoissonHorizontalParameter rho : ℂ) ^ 2)) *
+        (1 + (riemannSourceGammaCoPoissonHorizontalParameter rho : ℂ) ^ (2 : ℕ))) *
           (-4 * Complex.I) := by
   rw [riemannSourceDQPTMemoryLagCurvature,
     exponentialMemoryLagCurvature_axis_eq, LinearMap.map_smul,

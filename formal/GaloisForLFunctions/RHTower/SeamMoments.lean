@@ -25,26 +25,26 @@ two Dirichlet polynomials is a Dirichlet polynomial, so the mixed second moment 
 moment of the product. -/
 theorem tendsto_mixedSecondMoment_average_steinhaus
     (a b : ℕ → ℝ) (s t : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n) (ht : ∀ n ∈ t, 1 ≤ n) :
-    Tendsto (fun U : ℝ => (∫ τ in (0:ℝ)..U, ‖dpoly a s τ * dpoly b t τ‖ ^ 2) / U) atTop
-      (𝓝 (∫ ω, ‖(∑ n ∈ s, (a n : ℂ) * X n ω) * (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2
+    Tendsto (fun U : ℝ => (∫ τ in (0:ℝ)..U, ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ)) / U) atTop
+      (𝓝 (∫ ω, ‖(∑ n ∈ s, (a n : ℂ) * X n ω) * (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ)
               ∂steinhausMeasure)) := by
   have hsne : ∀ n ∈ s, n ≠ 0 := fun n hn => Nat.one_le_iff_ne_zero.mp (hs n hn)
   have htne : ∀ n ∈ t, n ≠ 0 := fun n hn => Nat.one_le_iff_ne_zero.mp (ht n hn)
   have hspos : ∀ k ∈ prodSupport s t, 1 ≤ k := fun k hk => one_le_of_mem_prodSupport hs ht hk
-  have hmodel : ∫ ω, ‖(∑ n ∈ s, (a n : ℂ) * X n ω) * (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2
+  have hmodel : ∫ ω, ‖(∑ n ∈ s, (a n : ℂ) * X n ω) * (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ)
               ∂steinhausMeasure
-        = ∑ k ∈ prodSupport s t, dpolyConv a b s t k ^ 2 := by
+        = ∑ k ∈ prodSupport s t, dpolyConv a b s t k ^ (2 : ℕ) := by
     have hrwM : ∀ ω : Omega,
-        ‖(∑ n ∈ s, (a n : ℂ) * X n ω) * (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ 2
-          = ‖∑ k ∈ prodSupport s t, (dpolyConv a b s t k : ℂ) * X k ω‖ ^ 2 := by
+        ‖(∑ n ∈ s, (a n : ℂ) * X n ω) * (∑ n ∈ t, (b n : ℂ) * X n ω)‖ ^ (2 : ℕ)
+          = ‖∑ k ∈ prodSupport s t, (dpolyConv a b s t k : ℂ) * X k ω‖ ^ (2 : ℕ) := by
       intro ω; rw [model_mul a b s t hsne htne ω]
     rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hrwM)]
     exact integral_normSq_dpoly (dpolyConv a b s t) (prodSupport s t)
       (fun k hk => Nat.one_le_iff_ne_zero.mp (hspos k hk))
   rw [hmodel]
   have hrw : ∀ τ : ℝ,
-      ‖dpoly a s τ * dpoly b t τ‖ ^ 2
-        = ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ 2 := by
+      ‖dpoly a s τ * dpoly b t τ‖ ^ (2 : ℕ)
+        = ‖dpoly (dpolyConv a b s t) (prodSupport s t) τ‖ ^ (2 : ℕ) := by
     intro τ; rw [dpoly_mul a b s t hsne htne τ]
   simp_rw [hrw]
   have := tendsto_secondMoment_average (dpolyConv a b s t) (prodSupport s t) 0 hspos

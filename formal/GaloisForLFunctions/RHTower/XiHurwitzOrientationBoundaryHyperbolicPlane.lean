@@ -63,7 +63,7 @@ theorem xiWeilLineConj_boundaryMinus :
 
 /-- Each null boundary ray carries exactly half the full orientation norm. -/
 theorem two_mul_norm_sq_xiHurwitzOrientationBoundaryPlus :
-    2 * ‖xiHurwitzOrientationBoundaryPlus‖ ^ 2 =
+    2 * ‖xiHurwitzOrientationBoundaryPlus‖ ^ (2 : ℕ) =
       xiHurwitzOrientationEnergy := by
   have h := xiHurwitzOrientationBoundaryMinus_exact.2
   rw [dist_eq_norm] at h
@@ -75,7 +75,7 @@ theorem two_mul_norm_sq_xiHurwitzOrientationBoundaryPlus :
   linarith
 
 theorem two_mul_norm_sq_xiHurwitzOrientationBoundaryMinus :
-    2 * ‖xiHurwitzOrientationBoundaryMinus‖ ^ 2 =
+    2 * ‖xiHurwitzOrientationBoundaryMinus‖ ^ (2 : ℕ) =
       xiHurwitzOrientationEnergy := by
   have h := xiHurwitzOrientationBoundaryPlus_exact.2
   rw [dist_eq_norm] at h
@@ -114,22 +114,22 @@ theorem xiWeilHilbertQuadratic_boundaryCoordinates (α β : ℝ) :
   rw [hcrossMP, hcrossPM]
   have hinnerPlus : (inner ℂ xiHurwitzOrientationBoundaryPlus
       xiHurwitzOrientationBoundaryPlus).re =
-      ‖xiHurwitzOrientationBoundaryPlus‖ ^ 2 := by
+      ‖xiHurwitzOrientationBoundaryPlus‖ ^ (2 : ℕ) := by
     change RCLike.re (inner ℂ xiHurwitzOrientationBoundaryPlus
       xiHurwitzOrientationBoundaryPlus) = _
     exact inner_self_eq_norm_sq (𝕜 := ℂ) xiHurwitzOrientationBoundaryPlus
   have hinnerMinus : (inner ℂ xiHurwitzOrientationBoundaryMinus
       xiHurwitzOrientationBoundaryMinus).re =
-      ‖xiHurwitzOrientationBoundaryMinus‖ ^ 2 := by
+      ‖xiHurwitzOrientationBoundaryMinus‖ ^ (2 : ℕ) := by
     change RCLike.re (inner ℂ xiHurwitzOrientationBoundaryMinus
       xiHurwitzOrientationBoundaryMinus) = _
     exact inner_self_eq_norm_sq (𝕜 := ℂ) xiHurwitzOrientationBoundaryMinus
   rw [hinnerPlus, hinnerMinus]
   have hp := two_mul_norm_sq_xiHurwitzOrientationBoundaryPlus
   have hm := two_mul_norm_sq_xiHurwitzOrientationBoundaryMinus
-  have hp' : ‖xiHurwitzOrientationBoundaryPlus‖ ^ 2 =
+  have hp' : ‖xiHurwitzOrientationBoundaryPlus‖ ^ (2 : ℕ) =
       xiHurwitzOrientationEnergy / 2 := by linarith
-  have hm' : ‖xiHurwitzOrientationBoundaryMinus‖ ^ 2 =
+  have hm' : ‖xiHurwitzOrientationBoundaryMinus‖ ^ (2 : ℕ) =
       xiHurwitzOrientationEnergy / 2 := by linarith
   rw [hp', hm']
   ring

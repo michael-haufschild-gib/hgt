@@ -113,10 +113,10 @@ theorem abs_tsum_invLogVar_mul_centred_le {N : ℕ} (hN : 2 ≤ N) {c₁ M : ℝ
 theorem one_div_le_exp_neg_sqrt_log {c : ℝ} (hc : 0 < c) :
     ∀ᶠ x : ℝ in atTop, 1 / x ≤ Real.exp (-c * Real.sqrt (Real.log x)) := by
   filter_upwards [eventually_gt_atTop (1 : ℝ),
-    Real.tendsto_log_atTop.eventually_ge_atTop (max 1 (c ^ 2))] with x hx1 hL
+    Real.tendsto_log_atTop.eventually_ge_atTop (max 1 (c ^ (2 : ℕ)))] with x hx1 hL
   have hx0 : (0 : ℝ) < x := by linarith
   have hL1 : (1 : ℝ) ≤ Real.log x := le_trans (le_max_left _ _) hL
-  have hLc : c ^ 2 ≤ Real.log x := le_trans (le_max_right _ _) hL
+  have hLc : c ^ (2 : ℕ) ≤ Real.log x := le_trans (le_max_right _ _) hL
   have hs0 : (0 : ℝ) ≤ Real.sqrt (Real.log x) := Real.sqrt_nonneg _
   have hs : Real.sqrt (Real.log x) * Real.sqrt (Real.log x) = Real.log x :=
     Real.mul_self_sqrt (by linarith)

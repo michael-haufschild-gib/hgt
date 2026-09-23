@@ -21,13 +21,13 @@ def feedForwardUnitField (r : ℝ) (n : ℕ) (i : Fin (n + 1)) : ℝ :=
   r ^ i.val / Real.sqrt (feedForwardBuildup r n)
 
 theorem feedForwardUnitField_sq (r : ℝ) (n : ℕ) (i : Fin (n + 1)) :
-    feedForwardUnitField r n i ^ 2 = feedForwardRetention r n i := by
+    feedForwardUnitField r n i ^ (2 : ℕ) = feedForwardRetention r n i := by
   rw [feedForwardUnitField, div_pow, Real.sq_sqrt (feedForwardBuildup_pos r n).le,
     ← pow_mul, Nat.mul_comm i.val 2, pow_mul]
   rfl
 
 theorem sum_sq_feedForwardUnitField (r : ℝ) (n : ℕ) :
-    ∑ i, feedForwardUnitField r n i ^ 2 = 1 := by
+    ∑ i, feedForwardUnitField r n i ^ (2 : ℕ) = 1 := by
   simp only [feedForwardUnitField_sq, sum_feedForwardRetention]
 
 /-- Orthogonal rank-one projector onto the field prepared by a single port. -/
@@ -47,7 +47,7 @@ theorem feedForwardProjector_idempotent (r : ℝ) (n : ℕ) :
     (∑ k, (feedForwardUnitField r n i * feedForwardUnitField r n k) *
         (feedForwardUnitField r n k * feedForwardUnitField r n j)) =
       (feedForwardUnitField r n i * feedForwardUnitField r n j) *
-        ∑ k, feedForwardUnitField r n k ^ 2 := by
+        ∑ k, feedForwardUnitField r n k ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro k _
@@ -77,7 +77,7 @@ theorem feedForwardProjector_fixes_unitField (r : ℝ) (n : ℕ) :
 
 /-- Cauchy--Schwarz gives the fixed-internal-resource response bound for every input. -/
 theorem feedForwardProjector_energy_le (r : ℝ) (n : ℕ) (x : Fin (n + 1) → ℝ) :
-    ∑ i, (feedForwardProjector r n *ᵥ x) i ^ 2 ≤ ∑ i, x i ^ 2 := by
+    ∑ i, (feedForwardProjector r n *ᵥ x) i ^ (2 : ℕ) ≤ ∑ i, x i ^ (2 : ℕ) := by
   have h := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (feedForwardUnitField r n) x
   rw [sum_sq_feedForwardUnitField, one_mul] at h
   simpa only [feedForwardProjector_mulVec, mul_pow, ← Finset.sum_mul,
@@ -85,7 +85,7 @@ theorem feedForwardProjector_energy_le (r : ℝ) (n : ℕ) (x : Fin (n + 1) → 
 
 /-- Attainable response intensities for one selected task in the reachable unit ball. -/
 def feedForwardSiteResponseSet (r : ℝ) (n : ℕ) (i : Fin (n + 1)) : Set ℝ :=
-  {t | ∃ c : ℝ, c ^ 2 ≤ 1 ∧ t = (c * feedForwardUnitField r n i) ^ 2}
+  {t | ∃ c : ℝ, c ^ (2 : ℕ) ≤ 1 ∧ t = (c * feedForwardUnitField r n i) ^ (2 : ℕ)}
 
 /-- The projector diagonal is the attained optimum over the reachable unit ball. -/
 theorem feedForwardSiteResponse_isGreatest (r : ℝ) (n : ℕ) (i : Fin (n + 1)) :

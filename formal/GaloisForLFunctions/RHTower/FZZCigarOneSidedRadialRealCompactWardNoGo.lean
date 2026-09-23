@@ -36,7 +36,7 @@ private theorem deriv_digamma_conj (z : ℂ) :
   simpa [Function.comp_def] using h
 
 private theorem sq_lt_sinh_sq_of_ne_zero {x : ℝ} (hx : x ≠ 0) :
-    x ^ 2 < Real.sinh x ^ 2 := by
+    x ^ (2 : ℕ) < Real.sinh x ^ (2 : ℕ) := by
   have self_lt_sinh {y : ℝ} (hy : 0 < y) : y < Real.sinh y := by
     have hmono : StrictMonoOn (fun t => Real.sinh t - t) (Set.Ici 0) := by
       apply strictMonoOn_of_deriv_pos (convex_Ici 0)
@@ -80,7 +80,7 @@ private theorem imaginary_axis_off_digamma_poles {q : ℝ} (hq : q ≠ 0) :
 /-- Exact real-part identity for trigamma on the unit vertical line away from the origin. -/
 theorem two_mul_re_deriv_digamma_one_add_mul_I {q : ℝ} (hq : q ≠ 0) :
     2 * (deriv Complex.digamma (1 + (q : ℂ) * I)).re =
-      1 / q ^ 2 - Real.pi ^ 2 / Real.sinh (Real.pi * q) ^ 2 := by
+      1 / q ^ (2 : ℕ) - Real.pi ^ (2 : ℕ) / Real.sinh (Real.pi * q) ^ (2 : ℕ) := by
   have href := RHTower.trigamma_reflection
     (z := (q : ℂ) * I) (imaginary_axis_off_integers hq)
   have hshift := GaloisForLFunctions.trigamma_recurrence
@@ -105,51 +105,51 @@ theorem two_mul_re_deriv_digamma_one_add_mul_I {q : ℝ} (hq : q ≠ 0) :
   have hsinh : Real.sinh (Real.pi * q) ≠ 0 := by
     rw [Real.sinh_ne_zero]
     exact mul_ne_zero Real.pi_ne_zero hq
-  have hsquare : ((((Real.sinh (Real.pi * q) : ℝ) : ℂ) * I) ^ 2) =
-      ((-(Real.sinh (Real.pi * q) ^ 2) : ℝ) : ℂ) := by
+  have hsquare : ((((Real.sinh (Real.pi * q) : ℝ) : ℂ) * I) ^ (2 : ℕ)) =
+      ((-(Real.sinh (Real.pi * q) ^ (2 : ℕ)) : ℝ) : ℂ) := by
     calc
-      (((Real.sinh (Real.pi * q) : ℝ) : ℂ) * I) ^ 2 =
-          ((Real.sinh (Real.pi * q) : ℂ) ^ 2) * I ^ 2 := by ring
-      _ = ((Real.sinh (Real.pi * q) : ℂ) ^ 2) * (-1) := by
-        rw [show I ^ 2 = (-1 : ℂ) by norm_num]
-      _ = ((-(Real.sinh (Real.pi * q) ^ 2) : ℝ) : ℂ) := by
+      (((Real.sinh (Real.pi * q) : ℝ) : ℂ) * I) ^ (2 : ℕ) =
+          ((Real.sinh (Real.pi * q) : ℂ) ^ (2 : ℕ)) * I ^ (2 : ℕ) := by ring
+      _ = ((Real.sinh (Real.pi * q) : ℂ) ^ (2 : ℕ)) * (-1) := by
+        rw [show I ^ (2 : ℕ) = (-1 : ℂ) by norm_num]
+      _ = ((-(Real.sinh (Real.pi * q) ^ (2 : ℕ)) : ℝ) : ℂ) := by
         rw [← Complex.ofReal_pow]
         push_cast
         ring
-  have hrhs : (Real.pi : ℂ) ^ 2 /
-      (((Real.sinh (Real.pi * q) : ℝ) : ℂ) * I) ^ 2 =
-        ((-(Real.pi ^ 2 / Real.sinh (Real.pi * q) ^ 2) : ℝ) : ℂ) := by
+  have hrhs : (Real.pi : ℂ) ^ (2 : ℕ) /
+      (((Real.sinh (Real.pi * q) : ℝ) : ℂ) * I) ^ (2 : ℕ) =
+        ((-(Real.pi ^ (2 : ℕ) / Real.sinh (Real.pi * q) ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [hsquare, ← Complex.ofReal_pow, ← Complex.ofReal_div]
     congr 1
     field_simp [hsinh]
   rw [hrhs] at href
   have hre := congrArg Complex.re href
   simp only [add_re, conj_re, ofReal_re] at hre
-  have hiqsquare : (((q : ℂ) * I) ^ 2) = ((-(q ^ 2) : ℝ) : ℂ) := by
+  have hiqsquare : (((q : ℂ) * I) ^ (2 : ℕ)) = ((-(q ^ (2 : ℕ)) : ℝ) : ℂ) := by
     calc
-      ((q : ℂ) * I) ^ 2 = ((q : ℂ) ^ 2) * I ^ 2 := by ring
-      _ = ((q : ℂ) ^ 2) * (-1) := by
-        rw [show I ^ 2 = (-1 : ℂ) by norm_num]
-      _ = ((-(q ^ 2) : ℝ) : ℂ) := by
+      ((q : ℂ) * I) ^ (2 : ℕ) = ((q : ℂ) ^ (2 : ℕ)) * I ^ (2 : ℕ) := by ring
+      _ = ((q : ℂ) ^ (2 : ℕ)) * (-1) := by
+        rw [show I ^ (2 : ℕ) = (-1 : ℂ) by norm_num]
+      _ = ((-(q ^ (2 : ℕ)) : ℝ) : ℂ) := by
         rw [← Complex.ofReal_pow]
         push_cast
         ring
-  have hrat : (-1 : ℂ) / (((q : ℂ) * I) ^ 2) =
-      ((1 / q ^ 2 : ℝ) : ℂ) := by
+  have hrat : (-1 : ℂ) / (((q : ℂ) * I) ^ (2 : ℕ)) =
+      ((1 / q ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [hiqsquare]
-    have hreal : (-1 : ℝ) / (-(q ^ 2)) = 1 / q ^ 2 := by
+    have hreal : (-1 : ℝ) / (-(q ^ (2 : ℕ))) = 1 / q ^ (2 : ℕ) := by
       rw [div_neg, neg_div, neg_neg]
     have hone : (-1 : ℂ) = ((-1 : ℝ) : ℂ) := by norm_num
     rw [hone, ← Complex.ofReal_div]
     exact congrArg (fun x : ℝ => (x : ℂ)) hreal
-  have hrat' : (1 : ℂ) / (((q : ℂ) * I) ^ 2) =
-      -((1 / q ^ 2 : ℝ) : ℂ) := by
+  have hrat' : (1 : ℂ) / (((q : ℂ) * I) ^ (2 : ℕ)) =
+      -((1 / q ^ (2 : ℕ) : ℝ) : ℂ) := by
     calc
-      (1 : ℂ) / (((q : ℂ) * I) ^ 2) =
-          -((-1 : ℂ) / (((q : ℂ) * I) ^ 2)) := by ring
-      _ = -((1 / q ^ 2 : ℝ) : ℂ) := by rw [hrat]
+      (1 : ℂ) / (((q : ℂ) * I) ^ (2 : ℕ)) =
+          -((-1 : ℂ) / (((q : ℂ) * I) ^ (2 : ℕ))) := by ring
+      _ = -((1 / q ^ (2 : ℕ) : ℝ) : ℂ) := by rw [hrat]
   have hshift' : deriv Complex.digamma ((q : ℂ) * I) =
-      deriv Complex.digamma (1 + (q : ℂ) * I) - (1 / q ^ 2 : ℝ) := by
+      deriv Complex.digamma (1 + (q : ℂ) * I) - (1 / q ^ (2 : ℕ) : ℝ) := by
     rw [show (q : ℂ) * I + 1 = 1 + (q : ℂ) * I by ring, hrat'] at hshift
     linear_combination -hshift
   have hshiftre := congrArg Complex.re hshift'
@@ -170,10 +170,10 @@ theorem re_deriv_digamma_one_add_mul_I_pos (q : ℝ) :
   · have hformula := two_mul_re_deriv_digamma_one_add_mul_I hq
     have hxne : Real.pi * q ≠ 0 := mul_ne_zero Real.pi_ne_zero hq
     have hsq := sq_lt_sinh_sq_of_ne_zero hxne
-    have hq2 : 0 < q ^ 2 := sq_pos_of_ne_zero hq
-    have hs2 : 0 < Real.sinh (Real.pi * q) ^ 2 :=
+    have hq2 : 0 < q ^ (2 : ℕ) := sq_pos_of_ne_zero hq
+    have hs2 : 0 < Real.sinh (Real.pi * q) ^ (2 : ℕ) :=
       sq_pos_of_ne_zero (Real.sinh_ne_zero.mpr hxne)
-    have hfrac : Real.pi ^ 2 / Real.sinh (Real.pi * q) ^ 2 < 1 / q ^ 2 := by
+    have hfrac : Real.pi ^ (2 : ℕ) / Real.sinh (Real.pi * q) ^ (2 : ℕ) < 1 / q ^ (2 : ℕ) := by
       rw [div_lt_div_iff₀ hs2 hq2]
       nlinarith
     linarith

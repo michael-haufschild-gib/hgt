@@ -40,19 +40,19 @@ def ContinuedXiWardCornerLiftLaw (c : ℝ) : Prop :=
 
 /-- Paired Cauchy self-energy of one strict-right Schwarz pair centered at `lam`. -/
 def xiWardPairEnergy (lam : ℂ) : ℝ :=
-  4 * (1 / lam.re + lam.re / (lam.re ^ 2 + lam.im ^ 2))
+  4 * (1 / lam.re + lam.re / (lam.re ^ (2 : ℕ) + lam.im ^ (2 : ℕ)))
 
 /-- Any point of the open strip `0 < Re lam < 1/2` has paired Cauchy self-energy strictly
 larger than eight. -/
 theorem eight_lt_xiWardPairEnergy {lam : ℂ}
     (ha : 0 < lam.re) (hhalf : lam.re < 1 / 2) :
     8 < xiWardPairEnergy lam := by
-  have hN : 0 < lam.re ^ 2 + lam.im ^ 2 := by
+  have hN : 0 < lam.re ^ (2 : ℕ) + lam.im ^ (2 : ℕ) := by
     nlinarith [pow_pos ha 2, sq_nonneg lam.im]
   have h1 : 2 < 1 / lam.re := by
     rw [lt_div_iff₀ ha]
     linarith
-  have h2 : 0 < lam.re / (lam.re ^ 2 + lam.im ^ 2) := div_pos ha hN
+  have h2 : 0 < lam.re / (lam.re ^ (2 : ℕ) + lam.im ^ (2 : ℕ)) := div_pos ha hN
   rw [xiWardPairEnergy]
   linarith
 
@@ -104,7 +104,7 @@ theorem re_two_mul_inv_pair_self_add_conj {lam : ℂ} (ha : 0 < lam.re) :
   have hane : lam.re ≠ 0 := ne_of_gt ha
   have hD : 0 < 2 * lam.re * (2 * lam.re) + 2 * lam.im * (2 * lam.im) := by
     nlinarith [mul_pos ha ha, mul_self_nonneg lam.im]
-  have hN : 0 < lam.re ^ 2 + lam.im ^ 2 := by
+  have hN : 0 < lam.re ^ (2 : ℕ) + lam.im ^ (2 : ℕ) := by
     nlinarith [pow_pos ha 2, sq_nonneg lam.im]
   have h2re : ∀ z : ℂ, ((2 : ℂ) * z).re = 2 * z.re := fun z => by
     norm_num [Complex.mul_re]
@@ -184,7 +184,7 @@ theorem xiWardCornerBudget_violation_core {c : ℝ} {lam r1 r2 : ℂ}
   have hane : lam.re ≠ 0 := ne_of_gt ha
   have hD : 0 < 2 * lam.re * (2 * lam.re) + 2 * lam.im * (2 * lam.im) := by
     nlinarith [mul_pos ha ha, mul_self_nonneg lam.im]
-  have hN : 0 < lam.re ^ 2 + lam.im ^ 2 := by
+  have hN : 0 < lam.re ^ (2 : ℕ) + lam.im ^ (2 : ℕ) := by
     nlinarith [pow_pos ha 2, sq_nonneg lam.im]
   have h4re : ∀ z : ℂ, ((4 : ℂ) * z).re = 4 * z.re := fun z => by
     norm_num [Complex.mul_re]

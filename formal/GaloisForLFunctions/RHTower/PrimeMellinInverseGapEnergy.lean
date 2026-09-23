@@ -56,7 +56,7 @@ theorem regularizedInverseGapCommutatorEnergy_eq_primePolarMellinIncidence
                 (HTGeometry.cauchyBoundaryNode ε x)) v i j +
             HTGeometry.gramValueCommutator
               (criticalMellinDefectRightHalfPlaneGram
-                (HTGeometry.cauchyBoundaryNode ε x)) v i j‖ ^ 2 := by
+                (HTGeometry.cauchyBoundaryNode ε x)) v i j‖ ^ (2 : ℕ) := by
   have hsource :=
     cauchyBoundaryValueCommutator_eq_prime_sub_shiftedPolar_add_mellinDefect
       ε hε x v

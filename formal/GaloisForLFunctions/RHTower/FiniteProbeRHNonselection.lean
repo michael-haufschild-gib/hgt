@@ -297,7 +297,7 @@ theorem norm_aeval_le (R : Polynomial ℝ) (z : ℂ) :
 
 theorem exists_polynomial_envelope (R : Polynomial ℝ) :
     ∃ C : ℝ, 0 < C ∧ ∀ t : ℂ,
-      ‖(Polynomial.aeval (t ^ 2) R : ℂ)‖ ≤ Real.exp (C * (1 + ‖t‖) * Real.log (2 + ‖t‖)) := by
+      ‖(Polynomial.aeval (t ^ (2 : ℕ)) R : ℂ)‖ ≤ Real.exp (C * (1 + ‖t‖) * Real.log (2 + ‖t‖)) := by
   set d : ℕ := R.natDegree with hd
   set A : ℝ := (∑ i ∈ Finset.range (d + 1), |R.coeff i|) + 1 with hA
   have hA1 : 1 ≤ A := by
@@ -312,20 +312,20 @@ theorem exists_polynomial_envelope (R : Polynomial ℝ) :
   set X : ℝ := (1 + ‖t‖) * Real.log (2 + ‖t‖) with hX
   have hXlog : Real.log 2 ≤ X := log_two_le_envelope t
   have hX0 : 0 < X := lt_of_lt_of_le (Real.log_pos (by norm_num)) hXlog
-  have hnormsq : ‖t ^ 2‖ = ‖t‖ ^ 2 := by rw [norm_pow]
-  have hstep1 : ‖(Polynomial.aeval (t ^ 2) R : ℂ)‖ ≤ A * (2 + ‖t‖ ^ 2) ^ d := by
-    refine le_trans (norm_aeval_le R (t ^ 2)) ?_
+  have hnormsq : ‖t ^ (2 : ℕ)‖ = ‖t‖ ^ (2 : ℕ) := by rw [norm_pow]
+  have hstep1 : ‖(Polynomial.aeval (t ^ (2 : ℕ)) R : ℂ)‖ ≤ A * (2 + ‖t‖ ^ (2 : ℕ)) ^ d := by
+    refine le_trans (norm_aeval_le R (t ^ (2 : ℕ))) ?_
     rw [hnormsq]
     refine mul_le_mul (by rw [hA]; linarith) le_rfl (by positivity) (by linarith)
-  have hlogsq : Real.log (2 + ‖t‖ ^ 2) ≤ 2 * Real.log (2 + ‖t‖) := by
+  have hlogsq : Real.log (2 + ‖t‖ ^ (2 : ℕ)) ≤ 2 * Real.log (2 + ‖t‖) := by
     have hn : 0 ≤ ‖t‖ := norm_nonneg t
-    have hle : (2 : ℝ) + ‖t‖ ^ 2 ≤ (2 + ‖t‖) ^ 2 := by nlinarith
+    have hle : (2 : ℝ) + ‖t‖ ^ (2 : ℕ) ≤ (2 + ‖t‖) ^ (2 : ℕ) := by nlinarith
     have := Real.log_le_log (by positivity) hle
     rwa [Real.log_pow] at this
-  have hstep2 : A * (2 + ‖t‖ ^ 2) ^ d ≤ Real.exp (Real.log A + d * (2 * Real.log (2 + ‖t‖))) := by
+  have hstep2 : A * (2 + ‖t‖ ^ (2 : ℕ)) ^ d ≤ Real.exp (Real.log A + d * (2 * Real.log (2 + ‖t‖))) := by
     rw [Real.exp_add, Real.exp_log hApos]
     refine mul_le_mul_of_nonneg_left ?_ hApos.le
-    have hpos : (0 : ℝ) < 2 + ‖t‖ ^ 2 := by positivity
+    have hpos : (0 : ℝ) < 2 + ‖t‖ ^ (2 : ℕ) := by positivity
     rw [← Real.exp_log hpos, ← Real.exp_nat_mul]
     refine Real.exp_le_exp.mpr ?_
     exact mul_le_mul_of_nonneg_left hlogsq (Nat.cast_nonneg d)
@@ -354,10 +354,10 @@ theorem exists_polynomial_envelope (R : Polynomial ℝ) :
 /-! ### The perturbed completed function -/
 
 /-- The centered completed function perturbed by an even real polynomial. -/
-def xiPerturbed (R : Polynomial ℝ) (t : ℂ) : ℂ := XiC t + (Polynomial.aeval (t ^ 2) R : ℂ)
+def xiPerturbed (R : Polynomial ℝ) (t : ℂ) : ℂ := XiC t + (Polynomial.aeval (t ^ (2 : ℕ)) R : ℂ)
 
 theorem xiPerturbed_even (R : Polynomial ℝ) (t : ℂ) : xiPerturbed R (-t) = xiPerturbed R t := by
-  have h : (-t) ^ 2 = t ^ 2 := by ring
+  have h : (-t) ^ (2 : ℕ) = t ^ (2 : ℕ) := by ring
   rw [xiPerturbed, xiPerturbed, XiC_even, h]
 
 theorem xiPerturbed_conj (R : Polynomial ℝ) (t : ℂ) :
@@ -373,15 +373,15 @@ theorem xiPerturbed_ofReal_im (R : Polynomial ℝ) (t : ℝ) : (xiPerturbed R (t
 
 theorem xiPerturbed_differentiable (R : Polynomial ℝ) : Differentiable ℂ (xiPerturbed R) := by
   refine XiC_differentiable.add ?_
-  have h : (fun t : ℂ => (Polynomial.aeval (t ^ 2) R : ℂ)) =
-      fun t : ℂ => (R.map (algebraMap ℝ ℂ)).eval (t ^ 2) := by
+  have h : (fun t : ℂ => (Polynomial.aeval (t ^ (2 : ℕ)) R : ℂ)) =
+      fun t : ℂ => (R.map (algebraMap ℝ ℂ)).eval (t ^ (2 : ℕ)) := by
     funext t
     rw [Polynomial.eval_map, Polynomial.aeval_def]
   rw [h]
   exact (R.map (algebraMap ℝ ℂ)).differentiable.comp (by fun_prop)
 
 theorem xiPerturbed_sub_XiC (R : Polynomial ℝ) (t : ℂ) :
-    xiPerturbed R t - XiC t = (Polynomial.aeval (t ^ 2) R : ℂ) := by
+    xiPerturbed R t - XiC t = (Polynomial.aeval (t ^ (2 : ℕ)) R : ℂ) := by
   rw [xiPerturbed]
   ring
 
@@ -408,7 +408,7 @@ theorem xiPerturbed_order (R : Polynomial ℝ) :
     rw [← Real.exp_add]
     congr 1
     ring
-  calc ‖xiPerturbed R t‖ ≤ ‖XiC t‖ + ‖(Polynomial.aeval (t ^ 2) R : ℂ)‖ := norm_add_le _ _
+  calc ‖xiPerturbed R t‖ ≤ ‖XiC t‖ + ‖(Polynomial.aeval (t ^ (2 : ℕ)) R : ℂ)‖ := norm_add_le _ _
     _ ≤ Real.exp (C₁ * (1 + ‖t‖) * Real.log (2 + ‖t‖)) +
           Real.exp (C₂ * (1 + ‖t‖) * Real.log (2 + ‖t‖)) := add_le_add (h₁ t) (h₂ t)
     _ ≤ Real.exp ((C₁ + C₂) * (1 + ‖t‖) * Real.log (2 + ‖t‖)) +
@@ -423,7 +423,7 @@ theorem xiPerturbed_order (R : Polynomial ℝ) :
 theorem xiPerturbed_seamJet {R : Polynomial ℝ} {N : ℕ}
     (hdvd : (X : Polynomial ℝ) ^ (N + 1) ∣ R) :
     ∃ S : Polynomial ℝ, ∀ t : ℂ,
-      xiPerturbed R t - XiC t = t ^ (2 * N + 2) * (Polynomial.aeval (t ^ 2) S : ℂ) := by
+      xiPerturbed R t - XiC t = t ^ (2 * N + 2) * (Polynomial.aeval (t ^ (2 : ℕ)) S : ℂ) := by
   obtain ⟨S, hS⟩ := hdvd
   refine ⟨S, fun t => ?_⟩
   have hexp : 2 * (N + 1) = 2 * N + 2 := by omega
@@ -440,13 +440,13 @@ theorem exists_offLine_perturbation (W : Submodule ℝ (Polynomial ℝ))
     [FiniteDimensional ℝ ((Polynomial ℝ) ⧸ W)] {m : ℕ}
     (hW : Module.finrank ℝ ((Polynomial ℝ) ⧸ W) ≤ m) (N : ℕ) :
     ∃ (R : Polynomial ℝ) (τ : ℂ),
-      R ∈ W ∧ ((X : Polynomial ℝ) ^ (N + 1) ∣ R) ∧ τ.im ≠ 0 ∧ (τ ^ 2).im ≠ 0 ∧
+      R ∈ W ∧ ((X : Polynomial ℝ) ^ (N + 1) ∣ R) ∧ τ.im ≠ 0 ∧ (τ ^ (2 : ℕ)).im ≠ 0 ∧
         xiPerturbed R τ = 0 ∧ xiPerturbed R (-τ) = 0 ∧
         xiPerturbed R ((starRingEnd ℂ) τ) = 0 ∧
         xiPerturbed R (-((starRingEnd ℂ) τ)) = 0 := by
   obtain ⟨P, Q, hPW, hQW, hPdvd, hQdvd, hPQ⟩ := exists_indep_pair_of_finiteCodim W hW N
   obtain ⟨u, hu, hspan⟩ := exists_nonreal_spanning hPQ
-  obtain ⟨τ, hτ⟩ : ∃ τ : ℂ, τ ^ 2 = u := IsAlgClosed.exists_pow_nat_eq u (by norm_num)
+  obtain ⟨τ, hτ⟩ : ∃ τ : ℂ, τ ^ (2 : ℕ) = u := IsAlgClosed.exists_pow_nat_eq u (by norm_num)
   have hτim : τ.im ≠ 0 := by
     intro h0
     refine hu ?_
@@ -461,25 +461,25 @@ theorem exists_offLine_perturbation (W : Submodule ℝ (Polynomial ℝ))
     · rw [Polynomial.smul_eq_C_mul]
       exact hQdvd.mul_left _
   · rw [hτ]; exact hu
-  · have hval : (Polynomial.aeval (τ ^ 2) (a • P + b • Q) : ℂ) = -(XiC τ) := by
+  · have hval : (Polynomial.aeval (τ ^ (2 : ℕ)) (a • P + b • Q) : ℂ) = -(XiC τ) := by
       rw [hτ, map_add, map_smul, map_smul]
       simpa [Algebra.smul_def] using hab
     rw [xiPerturbed, hval]
     ring
   · rw [xiPerturbed_even]
-    have hval : (Polynomial.aeval (τ ^ 2) (a • P + b • Q) : ℂ) = -(XiC τ) := by
+    have hval : (Polynomial.aeval (τ ^ (2 : ℕ)) (a • P + b • Q) : ℂ) = -(XiC τ) := by
       rw [hτ, map_add, map_smul, map_smul]
       simpa [Algebra.smul_def] using hab
     rw [xiPerturbed, hval]
     ring
   · rw [xiPerturbed_conj]
-    have hval : (Polynomial.aeval (τ ^ 2) (a • P + b • Q) : ℂ) = -(XiC τ) := by
+    have hval : (Polynomial.aeval (τ ^ (2 : ℕ)) (a • P + b • Q) : ℂ) = -(XiC τ) := by
       rw [hτ, map_add, map_smul, map_smul]
       simpa [Algebra.smul_def] using hab
     rw [xiPerturbed, hval]
     simp
   · rw [xiPerturbed_even, xiPerturbed_conj]
-    have hval : (Polynomial.aeval (τ ^ 2) (a • P + b • Q) : ℂ) = -(XiC τ) := by
+    have hval : (Polynomial.aeval (τ ^ (2 : ℕ)) (a • P + b • Q) : ℂ) = -(XiC τ) := by
       rw [hτ, map_add, map_smul, map_smul]
       simpa [Algebra.smul_def] using hab
     rw [xiPerturbed, hval]
@@ -489,7 +489,7 @@ theorem exists_offLine_perturbation (W : Submodule ℝ (Polynomial ℝ))
 theorem exists_offLine_perturbation_of_probes {m : ℕ}
     (L : Fin m → (Polynomial ℝ →ₗ[ℝ] ℝ)) (N : ℕ) :
     ∃ (R : Polynomial ℝ) (τ : ℂ),
-      (∀ j, L j R = 0) ∧ ((X : Polynomial ℝ) ^ (N + 1) ∣ R) ∧ τ.im ≠ 0 ∧ (τ ^ 2).im ≠ 0 ∧
+      (∀ j, L j R = 0) ∧ ((X : Polynomial ℝ) ^ (N + 1) ∣ R) ∧ τ.im ≠ 0 ∧ (τ ^ (2 : ℕ)).im ≠ 0 ∧
         xiPerturbed R τ = 0 ∧ xiPerturbed R (-τ) = 0 ∧
         xiPerturbed R ((starRingEnd ℂ) τ) = 0 ∧
         xiPerturbed R (-((starRingEnd ℂ) τ)) = 0 := by
@@ -513,19 +513,19 @@ theorem exists_offLine_perturbation_of_probes {m : ℕ}
 theorem exists_offLine_perturbation_of_finiteCodim (U : Submodule ℝ (Polynomial ℝ))
     [FiniteDimensional ℝ ((Polynomial ℝ) ⧸ U)] (N : ℕ) :
     ∃ (R : Polynomial ℝ) (τ : ℂ),
-      R ∈ U ∧ ((X : Polynomial ℝ) ^ (N + 1) ∣ R) ∧ τ.im ≠ 0 ∧ (τ ^ 2).im ≠ 0 ∧
+      R ∈ U ∧ ((X : Polynomial ℝ) ^ (N + 1) ∣ R) ∧ τ.im ≠ 0 ∧ (τ ^ (2 : ℕ)).im ≠ 0 ∧
         xiPerturbed R τ = 0 ∧ xiPerturbed R (-τ) = 0 ∧
         xiPerturbed R ((starRingEnd ℂ) τ) = 0 ∧
         xiPerturbed R (-((starRingEnd ℂ) τ)) = 0 :=
   exists_offLine_perturbation U (le_refl (Module.finrank ℝ ((Polynomial ℝ) ⧸ U))) N
 
 /-- **A prescribed non-real quartet is reachable at every seam-jet order.** -/
-theorem exists_offLine_perturbation_prescribed {τ : ℂ} (hτ : (τ ^ 2).im ≠ 0) (N : ℕ) :
+theorem exists_offLine_perturbation_prescribed {τ : ℂ} (hτ : (τ ^ (2 : ℕ)).im ≠ 0) (N : ℕ) :
     ∃ R : Polynomial ℝ, ((X : Polynomial ℝ) ^ (N + 1) ∣ R) ∧
       xiPerturbed R τ = 0 ∧ xiPerturbed R (-τ) = 0 ∧
       xiPerturbed R ((starRingEnd ℂ) τ) = 0 ∧
       xiPerturbed R (-((starRingEnd ℂ) τ)) = 0 := by
-  set u : ℂ := τ ^ 2 with hu
+  set u : ℂ := τ ^ (2 : ℕ) with hu
   have hune : u ≠ 0 := by
     intro h0
     rw [h0] at hτ
@@ -549,7 +549,7 @@ theorem exists_offLine_perturbation_prescribed {τ : ℂ} (hτ : (τ ^ 2).im ≠
     exact mul_ne_zero (pow_ne_zero _ hns) hτ
   obtain ⟨a, b, hab⟩ := exists_real_combination (w := -(XiC τ)) hcross
   set R : Polynomial ℝ := a • X ^ (N + 1) + b • X ^ (N + 2) with hR
-  have hval : (Polynomial.aeval (τ ^ 2) R : ℂ) = -(XiC τ) := by
+  have hval : (Polynomial.aeval (τ ^ (2 : ℕ)) R : ℂ) = -(XiC τ) := by
     rw [hR, map_add, map_smul, map_smul, map_pow, map_pow, Polynomial.aeval_X, ← hu]
     simpa [Algebra.smul_def] using hab
   have hzero : xiPerturbed R τ = 0 := by
@@ -575,7 +575,7 @@ theorem exists_offLine_perturbation_of_finiteType {m : ℕ} {β : Type*}
     (L : Fin m → (Polynomial ℝ →ₗ[ℝ] ℝ)) (G : (Fin m → ℝ) → β) (N : ℕ) :
     ∃ (R : Polynomial ℝ) (τ : ℂ),
       G (fun j => L j R) = G (fun j => L j 0) ∧
-        ((X : Polynomial ℝ) ^ (N + 1) ∣ R) ∧ τ.im ≠ 0 ∧ (τ ^ 2).im ≠ 0 ∧
+        ((X : Polynomial ℝ) ^ (N + 1) ∣ R) ∧ τ.im ≠ 0 ∧ (τ ^ (2 : ℕ)).im ≠ 0 ∧
         xiPerturbed R τ = 0 ∧ xiPerturbed R (-τ) = 0 ∧
         xiPerturbed R ((starRingEnd ℂ) τ) = 0 ∧
         xiPerturbed R (-((starRingEnd ℂ) τ)) = 0 := by

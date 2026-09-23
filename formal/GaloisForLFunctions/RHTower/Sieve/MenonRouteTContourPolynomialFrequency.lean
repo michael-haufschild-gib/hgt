@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.RouteTContourRateBounds
 # Route-T contour data on Menon's polynomial frequency range
 
 Menon's degree-three Heath--Brown argument uses a Mobius atom of length `N` at ordinates as
-large as `N^24`.  The all-height Route-T contour already applies there.  This file proves the
+large as `N^(24 : ℕ)`.  The all-height Route-T contour already applies there.  This file proves the
 uniform rate data needed to retain the same super-polylogarithmic saving on that full range.
 -/
 
@@ -14,7 +14,7 @@ open Filter Topology
 
 noncomputable section
 
-/-- On the range `S <= 2 N^24`, the Route-T log-height envelope is still bounded by a fixed
+/-- On the range `S <= 2 N^(24 : ℕ)`, the Route-T log-height envelope is still bounded by a fixed
 multiple of `log N`. -/
 theorem routeTLogHeightEnvelope_le_sixtyFour_log_of_le_pow_twentyFour
     {N S : ℝ} (hN0 : 0 < N) (hN : 3 ≤ Real.log N)
@@ -99,7 +99,7 @@ private theorem sixtyFour_log_polylog_le {L : ℝ} (hL : 1 ≤ L) :
 
 set_option maxHeartbeats 1000000 in
 /-- Route-T displacement, edge, and width data uniformly for
-`routeTInverseBaseHeight <= S <= 2 N^24`. -/
+`routeTInverseBaseHeight <= S <= 2 N^(24 : ℕ)`. -/
 theorem eventually_routeT_contour_rate_data_pow_twentyFour
     (A delta : ℝ) (hdelta : 0 < delta) :
     ∀ᶠ N : ℝ in atTop, ∀ S : ℝ,

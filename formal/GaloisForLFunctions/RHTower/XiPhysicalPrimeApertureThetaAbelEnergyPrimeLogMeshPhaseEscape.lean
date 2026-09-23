@@ -364,7 +364,7 @@ theorem physicalTwoEdgeSquare_logMesh_cofinally_not_realPartMonotone_at_gaussian
     ∀ N : ℕ, ∃ n : ℕ, N ≤ n ∧
       ¬ ComplexRealPartMonotoneMultiplier
         (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c (Real.log n / 2)
-          (primeFluxContourCoordinate (gaussianRatPoint q)) ^ 2) := by
+          (primeFluxContourCoordinate (gaussianRatPoint q)) ^ (2 : ℕ)) := by
   intro N
   obtain ⟨n, hnN, hnim⟩ :=
     xiPhysicalThetaAbelEnergyTwoEdgeTransform_logMesh_cofinally_nonreal_at_gaussianRatD2

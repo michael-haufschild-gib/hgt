@@ -53,7 +53,7 @@ def xiCanonicalReflectionPairFactor (z : ℂ) (q : XiZeroCopy) : ℂ :=
 
 lemma xiCanonicalReflectionPairFactor_eq (z : ℂ) (q : XiZeroCopy) :
     xiCanonicalReflectionPairFactor z q =
-      (1 - (z / xiSpectralPoint q) ^ 2) := by
+      (1 - (z / xiSpectralPoint q) ^ (2 : ℕ)) := by
   rw [xiCanonicalReflectionPairFactor, xiSpectralPoint_reflect]
   simp only [weierstrassE1]
   have hneg : z / -xiSpectralPoint q = -(z / xiSpectralPoint q) := by ring
@@ -71,7 +71,7 @@ lemma multipliable_xiCanonicalReflectionPairFactor (z : ℂ) :
 
 lemma tprod_xiCanonicalReflectionPairFactor (z : ℂ) :
     (∏' q : XiZeroCopy, xiCanonicalReflectionPairFactor z q) =
-      xiCanonicalProduct z ^ 2 := by
+      xiCanonicalProduct z ^ (2 : ℕ) := by
   have h := xiCanonicalProduct_multipliable z
   have hreflectMultipliable : Multipliable (fun q : XiZeroCopy =>
       weierstrassE1 (z / xiSpectralPoint (xiZeroCopyReflectEquiv q))) :=
@@ -136,32 +136,32 @@ lemma norm_xiCanonicalReflectionPairFactor_lineConj_lt
   have hplus := norm_add_lt_norm_add_vertical_shift w lambda c hw hupper
   rw [xiCanonicalReflectionPairFactor_eq, xiCanonicalReflectionPairFactor_eq,
     xiSpectralPoint_lineConj]
-  change ‖1 - ((w + (c : ℂ) * I) / (starRingEnd ℂ) lambda) ^ 2‖ <
-    ‖1 - ((w - (c : ℂ) * I) / lambda) ^ 2‖
+  change ‖1 - ((w + (c : ℂ) * I) / (starRingEnd ℂ) lambda) ^ (2 : ℕ)‖ <
+    ‖1 - ((w - (c : ℂ) * I) / lambda) ^ (2 : ℕ)‖
   have hlambda : lambda ≠ 0 := xiSpectralPoint_ne_zero q
   have hconj : (starRingEnd ℂ) lambda ≠ 0 :=
     (map_ne_zero (starRingEnd ℂ)).mpr hlambda
   have hleft :
-      ‖1 - ((w + (c : ℂ) * I) / (starRingEnd ℂ) lambda) ^ 2‖ =
+      ‖1 - ((w + (c : ℂ) * I) / (starRingEnd ℂ) lambda) ^ (2 : ℕ)‖ =
         (‖(w + (c : ℂ) * I) - (starRingEnd ℂ) lambda‖ *
           ‖(w + (c : ℂ) * I) + (starRingEnd ℂ) lambda‖) /
-            ‖lambda‖ ^ 2 := by
-    rw [show 1 - ((w + (c : ℂ) * I) / (starRingEnd ℂ) lambda) ^ 2 =
+            ‖lambda‖ ^ (2 : ℕ) := by
+    rw [show 1 - ((w + (c : ℂ) * I) / (starRingEnd ℂ) lambda) ^ (2 : ℕ) =
         (((starRingEnd ℂ) lambda - (w + (c : ℂ) * I)) *
           ((starRingEnd ℂ) lambda + (w + (c : ℂ) * I))) /
-            ((starRingEnd ℂ) lambda) ^ 2 by field_simp; ring]
+            ((starRingEnd ℂ) lambda) ^ (2 : ℕ) by field_simp; ring]
     rw [norm_div, norm_mul, norm_pow, norm_conj]
     congr 2
     · rw [norm_sub_rev]
     · congr 1
       ring_nf
   have hright :
-      ‖1 - ((w - (c : ℂ) * I) / lambda) ^ 2‖ =
+      ‖1 - ((w - (c : ℂ) * I) / lambda) ^ (2 : ℕ)‖ =
         (‖(w - (c : ℂ) * I) - lambda‖ *
-          ‖(w - (c : ℂ) * I) + lambda‖) / ‖lambda‖ ^ 2 := by
-    rw [show 1 - ((w - (c : ℂ) * I) / lambda) ^ 2 =
+          ‖(w - (c : ℂ) * I) + lambda‖) / ‖lambda‖ ^ (2 : ℕ) := by
+    rw [show 1 - ((w - (c : ℂ) * I) / lambda) ^ (2 : ℕ) =
         ((lambda - (w - (c : ℂ) * I)) *
-          (lambda + (w - (c : ℂ) * I))) / lambda ^ 2 by field_simp; ring]
+          (lambda + (w - (c : ℂ) * I))) / lambda ^ (2 : ℕ) by field_simp; ring]
     rw [norm_div, norm_mul, norm_pow]
     congr 2
     · rw [norm_sub_rev]
@@ -237,22 +237,22 @@ theorem norm_xiCanonicalProduct_vertical_shift_lt_of_halfPlaneBound
       norm_pos_iff.mpr
         (xiCanonicalReflectionPairFactor_ne_zero_of_canonicalProduct_ne_zero hPminus q)⟩
   let plusLimit : {x : ℝ // 0 < x} :=
-    ⟨‖xiCanonicalProduct zplus ^ 2‖, norm_pos_iff.mpr (pow_ne_zero 2 hPplusNe)⟩
+    ⟨‖xiCanonicalProduct zplus ^ (2 : ℕ)‖, norm_pos_iff.mpr (pow_ne_zero 2 hPplusNe)⟩
   let minusLimit : {x : ℝ // 0 < x} :=
-    ⟨‖xiCanonicalProduct zminus ^ 2‖, norm_pos_iff.mpr (pow_ne_zero 2 hPminus)⟩
+    ⟨‖xiCanonicalProduct zminus ^ (2 : ℕ)‖, norm_pos_iff.mpr (pow_ne_zero 2 hPminus)⟩
   have hplusComplex : HasProd
       (fun q : XiZeroCopy =>
         xiCanonicalReflectionPairFactor zplus (xiZeroCopyLineConjEquiv q))
-      (xiCanonicalProduct zplus ^ 2) := by
+      (xiCanonicalProduct zplus ^ (2 : ℕ)) := by
     have hbase : HasProd (xiCanonicalReflectionPairFactor zplus)
-        (xiCanonicalProduct zplus ^ 2) := by
+        (xiCanonicalProduct zplus ^ (2 : ℕ)) := by
       rw [← tprod_xiCanonicalReflectionPairFactor zplus]
       exact (multipliable_xiCanonicalReflectionPairFactor zplus).hasProd
     convert (xiZeroCopyLineConjEquiv.hasProd_iff).mpr hbase using 1
     rfl
   have hminusComplex : HasProd
       (xiCanonicalReflectionPairFactor zminus)
-      (xiCanonicalProduct zminus ^ 2) := by
+      (xiCanonicalProduct zminus ^ (2 : ℕ)) := by
     rw [← tprod_xiCanonicalReflectionPairFactor zminus]
     exact (multipliable_xiCanonicalReflectionPairFactor zminus).hasProd
   have hplusPos : HasProd plusFactor plusLimit := by
@@ -261,7 +261,7 @@ theorem norm_xiCanonicalProduct_vertical_shift_lt_of_halfPlaneBound
     have hr := hplusComplex.norm
     change Tendsto (fun s : Finset XiZeroCopy =>
       ∏ q ∈ s, ‖xiCanonicalReflectionPairFactor zplus (xiZeroCopyLineConjEquiv q)‖)
-      _ (𝓝 ‖xiCanonicalProduct zplus ^ 2‖) at hr
+      _ (𝓝 ‖xiCanonicalProduct zplus ^ (2 : ℕ)‖) at hr
     convert hr using 1
     funext s
     exact coe_positiveReal_finsetProd s plusFactor
@@ -271,7 +271,7 @@ theorem norm_xiCanonicalProduct_vertical_shift_lt_of_halfPlaneBound
     have hr := hminusComplex.norm
     change Tendsto (fun s : Finset XiZeroCopy =>
       ∏ q ∈ s, ‖xiCanonicalReflectionPairFactor zminus q‖)
-      _ (𝓝 ‖xiCanonicalProduct zminus ^ 2‖) at hr
+      _ (𝓝 ‖xiCanonicalProduct zminus ^ (2 : ℕ)‖) at hr
     convert hr using 1
     funext s
     exact coe_positiveReal_finsetProd s minusFactor
@@ -286,10 +286,10 @@ theorem norm_xiCanonicalProduct_vertical_shift_lt_of_halfPlaneBound
     hplusPos.multipliable.tprod_lt_tprod
       (fun q => (hfactor q).le) (hfactor q0) hminusPos.multipliable
   rw [hplusPos.tprod_eq, hminusPos.tprod_eq] at hprod
-  have hsq : ‖xiCanonicalProduct zplus‖ ^ 2 <
-      ‖xiCanonicalProduct zminus‖ ^ 2 := by
-    have hprodReal : ‖xiCanonicalProduct zplus ^ 2‖ <
-        ‖xiCanonicalProduct zminus ^ 2‖ := by
+  have hsq : ‖xiCanonicalProduct zplus‖ ^ (2 : ℕ) <
+      ‖xiCanonicalProduct zminus‖ ^ (2 : ℕ) := by
+    have hprodReal : ‖xiCanonicalProduct zplus ^ (2 : ℕ)‖ <
+        ‖xiCanonicalProduct zminus ^ (2 : ℕ)‖ := by
       change (plusLimit : ℝ) < (minusLimit : ℝ)
       exact hprod
     simpa only [norm_pow] using hprodReal

@@ -30,7 +30,7 @@ theorem secularVector_zero_ne_zero {d l : ℕ → ℝ} {μ : ℝ} (hμ : μ ∈ 
   linarith
 
 theorem LadderEnvelope.memℓp_secular (h : LadderEnvelope D)
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
     (h0 : ∀ᶠ lam in atTop, ℓ lam 0 ≠ 0) (h1 : ∀ᶠ lam in atTop, ℓ lam 1 ≠ 0) :
     ∀ᶠ lam in atTop, Memℓp (secularVector (D lam) (ℓ lam)
       (infiniteSecularRoot (D lam) (ℓ lam))) 2 := by
@@ -39,21 +39,21 @@ theorem LadderEnvelope.memℓp_secular (h : LadderEnvelope D)
   exact memℓp_secularVector h01 h12 hd2 hsm hl0 hl1
 
 theorem LadderEnvelope.summable_secular_sq (h : LadderEnvelope D)
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
     (h0 : ∀ᶠ lam in atTop, ℓ lam 0 ≠ 0) (h1 : ∀ᶠ lam in atTop, ℓ lam 1 ≠ 0) :
     ∀ᶠ lam in atTop, Summable fun j =>
-      secularVector (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam)) j ^ 2 := by
+      secularVector (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam)) j ^ (2 : ℕ) := by
   filter_upwards [h.first_struct, hsum, h0, h1] with lam hst hsm hl0 hl1
   obtain ⟨⟨_, h01, h12⟩, hd2⟩ := hst
   obtain ⟨hrmem, _, _⟩ := infiniteSecularRoot_spec h01 h12 hd2 hsm hl0 hl1
   have hlt : infiniteSecularRoot (D lam) (ℓ lam) < D lam 2 := by linarith [hrmem.2]
   exact (summable_nat_add_iff
       (f := fun j => secularVector (D lam) (ℓ lam)
-        (infiniteSecularRoot (D lam) (ℓ lam)) j ^ 2) 2).mp
+        (infiniteSecularRoot (D lam) (ℓ lam)) j ^ (2 : ℕ)) 2).mp
     (summable_secularVector_sq_tail hd2 hsm hlt)
 
 theorem LadderEnvelope.secularVector_zero_ne_zero (h : LadderEnvelope D)
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
     (h0 : ∀ᶠ lam in atTop, ℓ lam 0 ≠ 0) (h1 : ∀ᶠ lam in atTop, ℓ lam 1 ≠ 0) :
     ∀ᶠ lam in atTop,
       secularVector (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam)) 0 ≠ 0 := by
@@ -66,17 +66,17 @@ theorem LadderEnvelope.secularVector_zero_ne_zero (h : LadderEnvelope D)
 envelope.** -/
 theorem LadderEnvelope.tendsto_min_norm_ground_distance (h : LadderEnvelope D)
     {a0 a1 : ℝ} (ha0 : a0 ≠ 0) (ha1 : a1 ≠ 0)
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds a0))
     (hl1 : Tendsto (fun lam => ℓ lam 1) atTop (nhds a1)) :
     Tendsto (fun lam => min
         (‖(‖secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))‖)⁻¹
             • secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))
-          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2)
+          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ))
         (‖(‖secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))‖)⁻¹
             • secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))
-          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2))
+          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ)))
       atTop (nhds 0) := by
   have h0 : ∀ᶠ lam in atTop, ℓ lam 0 ≠ 0 := hl0.eventually_ne ha0
   have h1 : ∀ᶠ lam in atTop, ℓ lam 1 ≠ 0 := hl1.eventually_ne ha1
@@ -105,10 +105,10 @@ theorem constrainedProlateEven_ground_distance_tendsto_zero :
     Tendsto (fun lam : ℝ => min
         (‖(‖secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))‖)⁻¹
             • secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))
-          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2)
+          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ))
         (‖(‖secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))‖)⁻¹
             • secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))
-          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2))
+          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ)))
       atTop (nhds 0) := by
   refine ladderEnvelope_evenProlateSignedLeakage.tendsto_min_norm_ground_distance
     (constrainedProlateHermiteCoordinate_ne_zero 0)
@@ -125,10 +125,10 @@ theorem constrainedProlateNegative_ground_distance_tendsto_zero :
     Tendsto (fun lam : ℝ => min
         (‖(‖secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))‖)⁻¹
             • secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))
-          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2)
+          - (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ))
         (‖(‖secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))‖)⁻¹
             • secularLp (D lam) (ℓ lam) (infiniteSecularRoot (D lam) (ℓ lam))
-          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ 2))
+          + (‖twoModeSeedLp (ℓ lam)‖)⁻¹ • twoModeSeedLp (ℓ lam)‖ ^ (2 : ℕ)))
       atTop (nhds 0) := by
   have ha0 : constrainedProlateNegativeCoordinate 0 ≠ 0 :=
     (constrainedProlateNegativeCoordinate_pos 0).ne'

@@ -24,7 +24,7 @@ theorem egbFixedChargeAGibbsCollisionFisherValue_formula (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     egbFixedChargeAGibbsCollisionFisherValue n m β E =
       4 * egbFixedChargeAGibbsCollisionHankelDefect n m β E /
-        egbFixedChargeAGibbsCollisionExcess n (m + 1) β E ^ 2 := by
+        egbFixedChargeAGibbsCollisionExcess n (m + 1) β E ^ (2 : ℕ) := by
   rfl
 
 /-- The temporal Fisher value is always nonnegative, including the equilibrium convention. -/

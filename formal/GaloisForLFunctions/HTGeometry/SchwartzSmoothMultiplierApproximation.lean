@@ -41,7 +41,7 @@ theorem seminorm_zero_smulLeftCLM_ofReal_le_smoothMultiplierErrorEnvelope
     have hmTop : ContDiff ℝ (⊤ : ℕ∞) m := hm.1
     rw [show iteratedDeriv k
         (fun x => (SchwartzMap.smulLeftCLM ℂ (fun t => (m t : ℂ)) f) x) t =
-        iteratedDeriv k (fun x => (m x : ℂ) ^ 1 * f x) t by
+        iteratedDeriv k (fun x => (m x : ℂ) ^ (1 : ℕ) * f x) t by
       congr 1
       funext x
       rw [SchwartzMap.smulLeftCLM_apply_apply]
@@ -51,17 +51,17 @@ theorem seminorm_zero_smulLeftCLM_ofReal_le_smoothMultiplierErrorEnvelope
     by_cases ht : t ∈ tsupport f
     · calc
         ‖∑ i ∈ Finset.range (k + 1),
-            (k.choose i : ℂ) * iteratedDeriv i (fun x => (m x ^ 1 : ℂ)) t *
+            (k.choose i : ℂ) * iteratedDeriv i (fun x => (m x ^ (1 : ℕ) : ℂ)) t *
               iteratedDeriv (k - i) f t‖ ≤
           ∑ i ∈ Finset.range (k + 1),
-            ‖(k.choose i : ℂ) * iteratedDeriv i (fun x => (m x ^ 1 : ℂ)) t *
+            ‖(k.choose i : ℂ) * iteratedDeriv i (fun x => (m x ^ (1 : ℕ) : ℂ)) t *
               iteratedDeriv (k - i) f t‖ := norm_sum_le _ _
         _ ≤ smoothMultiplierErrorEnvelope f D k := by
           unfold smoothMultiplierErrorEnvelope
           rw [Finset.mul_sum]
           apply Finset.sum_le_sum
           intro i hi
-          have hcast : iteratedDeriv i (fun x => (m x ^ 1 : ℂ)) t =
+          have hcast : iteratedDeriv i (fun x => (m x ^ (1 : ℕ) : ℂ)) t =
               ((iteratedDeriv i m t : ℝ) : ℂ) := by
             simpa using iteratedDeriv_ofReal m hmTop i t
           rw [hcast, norm_mul, norm_mul, Complex.norm_natCast, Complex.norm_real]
@@ -85,7 +85,7 @@ theorem seminorm_zero_smulLeftCLM_ofReal_le_smoothMultiplierErrorEnvelope
         intro i _hi
         exact iteratedDeriv_eq_zero_of_not_mem_tsupport f (k - i) ht
       have hsumzero : ∑ i ∈ Finset.range (k + 1),
-          (k.choose i : ℂ) * iteratedDeriv i (fun x => (m x ^ 1 : ℂ)) t *
+          (k.choose i : ℂ) * iteratedDeriv i (fun x => (m x ^ (1 : ℕ) : ℂ)) t *
             iteratedDeriv (k - i) f t = 0 := by
         apply Finset.sum_eq_zero
         intro i hi

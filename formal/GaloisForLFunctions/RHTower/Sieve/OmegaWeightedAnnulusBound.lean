@@ -28,19 +28,19 @@ theorem integral_normSq_ladderProductPoly_annulus_le {P : Finset ℕ} {A₀ B₀
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ≤ U j) :
-    (∫ w in Set.Icc (-G) G, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2)
+    (∫ w in Set.Icc (-G) G, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
       ≤ (∑ j ∈ Finset.range L, 1 / v j)
         * ∑ j ∈ Finset.range L, v j
-            * (V j ^ 2 * ((5 * Real.pi / 2 * G
+            * (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * G
                   + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
                 * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))
-              + Vlow j ^ 2 * U j ^ 2 * (2 * w₀)) := by
+              + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)) := by
   classical
-  have hcontZ : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2 := by
+  have hcontZ : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ) := by
     refine ((continuous_finsetSum _ fun j _ => ?_).norm).pow 2
     exact (continuous_primeBlockPoly _).mul (continuous_logPoly _ _)
   have hsplit := setIntegral_Icc_split (f := fun w : ℝ =>
-    ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2) hcontZ hwG
+    ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ)) hcontZ hwG
   have hsubLow : Set.Icc (-w₀) w₀ ⊆ Set.Icc (-G) G := Set.Icc_subset_Icc (by linarith) hwG
   have hsubAnn : Set.Icc (-G) G \ Set.Icc (-w₀) w₀ ⊆ Set.Icc (-G) G := Set.sdiff_subset
   have houter : (0 : ℝ) ≤ ∑ j ∈ Finset.range L, 1 / v j :=
@@ -51,9 +51,9 @@ theorem integral_normSq_ladderProductPoly_annulus_le {P : Finset ℕ} {A₀ B₀
     (G := G) hsubAnn
   have hAnnStep : ∀ j ∈ Finset.range L,
       v j * ∫ w in Set.Icc (-G) G \ Set.Icc (-w₀) w₀,
-          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2
-        ≤ v j * (V j ^ 2 * ((5 * Real.pi / 2 * G
+          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ)
+        ≤ v j * (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * G
               + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
             * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))) := by
     intro j hj
@@ -73,9 +73,9 @@ theorem integral_normSq_ladderProductPoly_annulus_le {P : Finset ℕ} {A₀ B₀
     (E := Set.Icc (-w₀) w₀) measurableSet_Icc (G := G) hsubLow
   have hLowStep : ∀ j ∈ Finset.range L,
       v j * ∫ w in Set.Icc (-w₀) w₀,
-          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2
-        ≤ v j * (Vlow j ^ 2 * U j ^ 2 * (2 * w₀)) := by
+          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ)
+        ≤ v j * (Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)) := by
     intro j hj
     exact mul_le_mul_of_nonneg_left
       (integral_normSq_ladderStep_low_le hw₀ (hVlow j) (hU j) j (hlowP j hj) (hlowC j hj))
@@ -83,17 +83,17 @@ theorem integral_normSq_ladderProductPoly_annulus_le {P : Finset ℕ} {A₀ B₀
   have hAnnSum := mul_le_mul_of_nonneg_left (Finset.sum_le_sum hAnnStep) houter
   have hLowSum := mul_le_mul_of_nonneg_left (Finset.sum_le_sum hLowStep) houter
   have hcomb : (∑ j ∈ Finset.range L, 1 / v j)
-        * ∑ j ∈ Finset.range L, v j * (V j ^ 2 * ((5 * Real.pi / 2 * G
+        * ∑ j ∈ Finset.range L, v j * (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * G
               + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
             * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1)))
       + (∑ j ∈ Finset.range L, 1 / v j)
-        * ∑ j ∈ Finset.range L, v j * (Vlow j ^ 2 * U j ^ 2 * (2 * w₀))
+        * ∑ j ∈ Finset.range L, v j * (Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀))
       = (∑ j ∈ Finset.range L, 1 / v j)
         * ∑ j ∈ Finset.range L, v j
-            * (V j ^ 2 * ((5 * Real.pi / 2 * G
+            * (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * G
                   + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
                 * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))
-              + Vlow j ^ 2 * U j ^ 2 * (2 * w₀)) := by
+              + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)) := by
     rw [← mul_add, ← Finset.sum_add_distrib]
     congr 1
     exact Finset.sum_congr rfl fun j _ => by ring
@@ -117,19 +117,19 @@ theorem integral_normSq_omegaWeighted_annulus_le {P : Finset ℕ} {A₀ B₀ : �
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ≤ U j) :
-    (∫ w in Set.Icc (-G) G, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in Set.Icc (-G) G, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ j ∈ Finset.range L, 1 / v j)
             * ∑ j ∈ Finset.range L, v j
-                * (V j ^ 2 * ((5 * Real.pi / 2 * G
+                * (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * G
                       + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
                     * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))
-                  + Vlow j ^ 2 * U j ^ 2 * (2 * w₀)))
+                  + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)))
         + 2 * ((5 * Real.pi / 2 * G
               + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
             * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
               * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
                   * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2))) := by
+                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)))) := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_trans zero_lt_one hQ
   have hsplit := integral_normSq_omegaWeighted_le_split A₀ B₀ hQ0 hη hL hPprime hP G
@@ -159,16 +159,16 @@ theorem integral_normSq_omegaWeighted_annulus_aux {P : Finset ℕ} {A₀ B₀ : 
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ≤ U j) :
-    (∫ w in Set.Icc (-G) G, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in Set.Icc (-G) G, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ j ∈ Finset.range L, 1 / v j)
             * ∑ j ∈ Finset.range L, v j
-                * (V j ^ 2 * ladderStepMVT B₀ Q η G j + Vlow j ^ 2 * U j ^ 2 * (2 * w₀)))
+                * (V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)))
         + 2 * ((5 * Real.pi / 2 * G
               + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
             * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
               * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
                   * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2))) :=
+                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)))) :=
   integral_normSq_omegaWeighted_annulus_le hA hQ hη hG hw₀ hwG hL hPprime hPge hP v V U Vlow
     hv hV hU hVlow hann hlowP hlowC
 
@@ -183,23 +183,23 @@ theorem integral_normSq_omegaWeighted_annulus_optimal_le {P : Finset ℕ} {A₀ 
     (c V U Vlow : ℕ → ℝ)
     (hc : ∀ j ∈ Finset.range L, 0 < c j) (hV : ∀ j, 0 ≤ V j) (hU : ∀ j, 0 ≤ U j)
     (hVlow : ∀ j, 0 ≤ Vlow j)
-    (hcT : ∀ j ∈ Finset.range L, V j ^ 2 * ladderStepMVT B₀ Q η G j ≤ c j ^ 2)
+    (hcT : ∀ j ∈ Finset.range L, V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j ≤ c j ^ (2 : ℕ))
     (hann : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-G) G \ Set.Icc (-w₀) w₀,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ V j)
     (hlowP : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ≤ U j) :
-    (∫ w in Set.Icc (-G) G, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in Set.Icc (-G) G, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ j ∈ Finset.range L, c j)
             * ((∑ j ∈ Finset.range L, c j)
-              + ∑ j ∈ Finset.range L, Vlow j ^ 2 * U j ^ 2 * (2 * w₀) / c j))
+              + ∑ j ∈ Finset.range L, Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀) / c j))
         + 2 * ((5 * Real.pi / 2 * G
               + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
             * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
               * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
                   * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2))) := by
+                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)))) := by
   classical
   have hv : ∀ j ∈ Finset.range L, 0 < 1 / c j := fun j hj => div_pos one_pos (hc j hj)
   have hbase := integral_normSq_omegaWeighted_annulus_aux hA hQ hη hG hw₀ hwG hL
@@ -209,17 +209,17 @@ theorem integral_normSq_omegaWeighted_annulus_optimal_le {P : Finset ℕ} {A₀ 
   rw [houter] at hbase
   refine hbase.trans ?_
   have hinner : (∑ j ∈ Finset.range L, (1 / c j)
-        * (V j ^ 2 * ladderStepMVT B₀ Q η G j + Vlow j ^ 2 * U j ^ 2 * (2 * w₀)))
+        * (V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)))
       ≤ (∑ j ∈ Finset.range L, c j)
-        + ∑ j ∈ Finset.range L, Vlow j ^ 2 * U j ^ 2 * (2 * w₀) / c j := by
+        + ∑ j ∈ Finset.range L, Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀) / c j := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_le_sum fun j hj => ?_
     have hcj := hc j hj
-    have h1 : (1 / c j) * (V j ^ 2 * ladderStepMVT B₀ Q η G j) ≤ c j := by
+    have h1 : (1 / c j) * (V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j) ≤ c j := by
       rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ hcj]
       nlinarith [hcT j hj]
-    have h2 : (1 / c j) * (Vlow j ^ 2 * U j ^ 2 * (2 * w₀))
-        = Vlow j ^ 2 * U j ^ 2 * (2 * w₀) / c j := by
+    have h2 : (1 / c j) * (Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀))
+        = Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀) / c j := by
       rw [div_mul_eq_mul_div, one_mul]
     rw [mul_add, h2]
     linarith [h1]
@@ -242,17 +242,17 @@ theorem integral_normSq_ladderProductPoly_annulus_two_le {P : Finset ℕ} {A₀ 
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ≤ U j) :
-    (∫ w in Set.Icc (-G) G, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2)
+    (∫ w in Set.Icc (-G) G, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
       ≤ (∑ j ∈ Finset.range L, 1 / vA j)
-            * (∑ j ∈ Finset.range L, vA j * (V j ^ 2 * ladderStepMVT B₀ Q η G j))
+            * (∑ j ∈ Finset.range L, vA j * (V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j))
         + (∑ j ∈ Finset.range L, 1 / vD j)
-            * ∑ j ∈ Finset.range L, vD j * (Vlow j ^ 2 * U j ^ 2 * (2 * w₀)) := by
+            * ∑ j ∈ Finset.range L, vD j * (Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)) := by
   classical
-  have hcontZ : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2 := by
+  have hcontZ : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ) := by
     refine ((continuous_finsetSum _ fun j _ => ?_).norm).pow 2
     exact (continuous_primeBlockPoly _).mul (continuous_logPoly _ _)
   have hsplit := setIntegral_Icc_split (f := fun w : ℝ =>
-    ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2) hcontZ hwG
+    ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ)) hcontZ hwG
   have hsubLow : Set.Icc (-w₀) w₀ ⊆ Set.Icc (-G) G := Set.Icc_subset_Icc (by linarith) hwG
   have hsubAnn : Set.Icc (-G) G \ Set.Icc (-w₀) w₀ ⊆ Set.Icc (-G) G := Set.sdiff_subset
   have houterA : (0 : ℝ) ≤ ∑ j ∈ Finset.range L, 1 / vA j :=
@@ -264,9 +264,9 @@ theorem integral_normSq_ladderProductPoly_annulus_two_le {P : Finset ℕ} {A₀ 
     (G := G) hsubAnn
   have hAnnStep : ∀ j ∈ Finset.range L,
       vA j * ∫ w in Set.Icc (-G) G \ Set.Icc (-w₀) w₀,
-          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2
-        ≤ vA j * (V j ^ 2 * ladderStepMVT B₀ Q η G j) := by
+          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ)
+        ≤ vA j * (V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j) := by
     intro j hj
     refine mul_le_mul_of_nonneg_left ?_ (hvA j hj).le
     refine (integral_normSq_ladderStep_set_le hA hQ hη hG (hV j) j
@@ -284,9 +284,9 @@ theorem integral_normSq_ladderProductPoly_annulus_two_le {P : Finset ℕ} {A₀ 
     (E := Set.Icc (-w₀) w₀) measurableSet_Icc (G := G) hsubLow
   have hLowStep : ∀ j ∈ Finset.range L,
       vD j * ∫ w in Set.Icc (-w₀) w₀,
-          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2
-        ≤ vD j * (Vlow j ^ 2 * U j ^ 2 * (2 * w₀)) := by
+          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ)
+        ≤ vD j * (Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)) := by
     intro j hj
     exact mul_le_mul_of_nonneg_left
       (integral_normSq_ladderStep_low_le hw₀ (hVlow j) (hU j) j (hlowP j hj) (hlowC j hj))
@@ -305,22 +305,22 @@ theorem integral_normSq_omegaWeighted_annulus_optimal_two_le {P : Finset ℕ} {A
     (c d V U Vlow : ℕ → ℝ)
     (hc : ∀ j ∈ Finset.range L, 0 < c j) (hd : ∀ j ∈ Finset.range L, 0 < d j)
     (hV : ∀ j, 0 ≤ V j) (hU : ∀ j, 0 ≤ U j) (hVlow : ∀ j, 0 ≤ Vlow j)
-    (hcT : ∀ j ∈ Finset.range L, V j ^ 2 * ladderStepMVT B₀ Q η G j ≤ c j ^ 2)
-    (hdT : ∀ j ∈ Finset.range L, Vlow j ^ 2 * U j ^ 2 * (2 * w₀) ≤ d j ^ 2)
+    (hcT : ∀ j ∈ Finset.range L, V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j ≤ c j ^ (2 : ℕ))
+    (hdT : ∀ j ∈ Finset.range L, Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀) ≤ d j ^ (2 : ℕ))
     (hann : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-G) G \ Set.Icc (-w₀) w₀,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ V j)
     (hlowP : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ≤ U j) :
-    (∫ w in Set.Icc (-G) G, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2)
-      ≤ 2 * ((∑ j ∈ Finset.range L, c j) ^ 2 + (∑ j ∈ Finset.range L, d j) ^ 2)
+    (∫ w in Set.Icc (-G) G, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
+      ≤ 2 * ((∑ j ∈ Finset.range L, c j) ^ (2 : ℕ) + (∑ j ∈ Finset.range L, d j) ^ (2 : ℕ))
         + 2 * ((5 * Real.pi / 2 * G
               + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
             * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
               * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
                   * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2))) := by
+                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)))) := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_trans zero_lt_one hQ
   have hvA : ∀ j ∈ Finset.range L, (0 : ℝ) < 1 / c j := fun j hj => div_pos one_pos (hc j hj)
@@ -334,12 +334,12 @@ theorem integral_normSq_omegaWeighted_annulus_optimal_two_le {P : Finset ℕ} {A
     Finset.sum_congr rfl fun j _ => one_div_one_div _
   have hD1 : (∑ j ∈ Finset.range L, 1 / (1 / d j)) = ∑ j ∈ Finset.range L, d j :=
     Finset.sum_congr rfl fun j _ => one_div_one_div _
-  have hA2 : (∑ j ∈ Finset.range L, (1 / c j) * (V j ^ 2 * ladderStepMVT B₀ Q η G j))
+  have hA2 : (∑ j ∈ Finset.range L, (1 / c j) * (V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j))
       ≤ ∑ j ∈ Finset.range L, c j := by
     refine Finset.sum_le_sum fun j hj => ?_
     rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ (hc j hj)]
     nlinarith [hcT j hj]
-  have hD2 : (∑ j ∈ Finset.range L, (1 / d j) * (Vlow j ^ 2 * U j ^ 2 * (2 * w₀)))
+  have hD2 : (∑ j ∈ Finset.range L, (1 / d j) * (Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)))
       ≤ ∑ j ∈ Finset.range L, d j := by
     refine Finset.sum_le_sum fun j hj => ?_
     rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ (hd j hj)]
@@ -349,8 +349,8 @@ theorem integral_normSq_omegaWeighted_annulus_optimal_two_le {P : Finset ℕ} {A
   have hds0 : (0 : ℝ) ≤ ∑ j ∈ Finset.range L, d j :=
     Finset.sum_nonneg fun j hj => (hd j hj).le
   rw [hA1, hD1] at hprod
-  have hbound : (∫ w in Set.Icc (-G) G, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2)
-      ≤ (∑ j ∈ Finset.range L, c j) ^ 2 + (∑ j ∈ Finset.range L, d j) ^ 2 := by
+  have hbound : (∫ w in Set.Icc (-G) G, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
+      ≤ (∑ j ∈ Finset.range L, c j) ^ (2 : ℕ) + (∑ j ∈ Finset.range L, d j) ^ (2 : ℕ) := by
     have e1 := mul_le_mul_of_nonneg_left hA2 hcs0
     have e2 := mul_le_mul_of_nonneg_left hD2 hds0
     nlinarith [hprod, e1, e2]

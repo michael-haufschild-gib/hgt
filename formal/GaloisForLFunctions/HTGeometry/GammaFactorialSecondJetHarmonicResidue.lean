@@ -19,7 +19,7 @@ open Complex Filter Topology
 noncomputable section
 
 def shiftedHarmonicSquareSum (n : ℕ) (z : ℂ) : ℂ :=
-  ∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ 2)⁻¹
+  ∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ (2 : ℕ))⁻¹
 
 /-- The shifted inverse `p`-th power sum over the first `n` positive integers. -/
 def shiftedHarmonicPowerSum (p n : ℕ) (z : ℂ) : ℂ :=
@@ -85,7 +85,7 @@ theorem iteratedDeriv_digamma_neg_nat_add_of_ne_int (k : ℕ) (z : ℂ)
 theorem iteratedDeriv_one_digamma_neg_nat_add_of_ne_int (z : ℂ)
     (hz : ∀ k : ℤ, z ≠ (k : ℂ)) (n : ℕ) :
     iteratedDeriv 1 Complex.digamma (-(n : ℂ) + z) =
-      iteratedDeriv 1 Complex.digamma (1 + z) + z⁻¹ ^ 2 +
+      iteratedDeriv 1 Complex.digamma (1 + z) + z⁻¹ ^ (2 : ℕ) +
         shiftedHarmonicSquareSum n z := by
   simpa [shiftedHarmonicSquareSum, shiftedHarmonicPowerSum] using!
     iteratedDeriv_digamma_neg_nat_add_of_ne_int 1 z hz n
@@ -133,7 +133,7 @@ theorem norm_shiftedHarmonicPowerSum_le {z : ℂ} (hz : ‖z‖ ≤ 1 / 2)
       have hkpos : 0 < ((j + 1 : ℕ) : ℝ) := lt_of_lt_of_le zero_lt_one hk
       have hpow : ((j + 1 : ℕ) : ℝ) ≤ ((j + 1 : ℕ) : ℝ) ^ p := by
         calc
-          ((j + 1 : ℕ) : ℝ) = ((j + 1 : ℕ) : ℝ) ^ 1 := (pow_one _).symm
+          ((j + 1 : ℕ) : ℝ) = ((j + 1 : ℕ) : ℝ) ^ (1 : ℕ) := (pow_one _).symm
           _ ≤ ((j + 1 : ℕ) : ℝ) ^ p := pow_le_pow_right₀ hk hp
       calc
         ‖(((j + 1 : ℕ) : ℂ) - z)⁻¹‖ ^ p ≤ (2 / ((j + 1 : ℕ) : ℝ)) ^ p := by
@@ -154,7 +154,7 @@ theorem norm_shiftedHarmonicSquareSum_le {z : ℂ}
     (hz : ‖z‖ ≤ 1 / 2) (n : ℕ) :
     ‖shiftedHarmonicSquareSum n z‖ ≤ 4 * (harmonic n : ℝ) := by
   simpa [shiftedHarmonicSquareSum, shiftedHarmonicPowerSum,
-    show ((2 : ℝ)) ^ 2 = 4 from by norm_num] using
+    show ((2 : ℝ)) ^ (2 : ℕ) = 4 from by norm_num] using
     norm_shiftedHarmonicPowerSum_le hz (p := 2) (by norm_num) n
 
 /-- **Order-indexed scaled polygamma.**  The `k`-th digamma jet in the factorial microscope
@@ -166,7 +166,7 @@ def gammaFactorialScaledPolygamma (k n : ℕ) (x : ℂ) : ℂ :=
 
 
 def gammaFactorialScaledTrigamma (n : ℕ) (x : ℂ) : ℂ :=
-  reciprocalGammaFactorialScale n ^ 2 *
+  reciprocalGammaFactorialScale n ^ (2 : ℕ) *
     iteratedDeriv 1 Complex.digamma
       (-(n : ℂ) + reciprocalGammaFactorialScale n * x)
 
@@ -178,7 +178,7 @@ theorem gammaFactorialScaledTrigamma_eq_polygamma (n : ℕ) (x : ℂ) :
 theorem tendsto_gammaFactorialScaledTrigamma_first_harmonic
     {x : ℂ} (hx : x ≠ 0) :
     Tendsto (fun n : ℕ =>
-      (gammaFactorialScaledTrigamma n x - x⁻¹ ^ 2) /
+      (gammaFactorialScaledTrigamma n x - x⁻¹ ^ (2 : ℕ)) /
         gammaHarmonicMicroscopeScale n) atTop (𝓝 0) := by
   let s : ℕ → ℂ := reciprocalGammaFactorialScale
   let z : ℕ → ℂ := fun n => s n * x
@@ -241,7 +241,7 @@ theorem tendsto_gammaFactorialScaledTrigamma_first_harmonic
         (by exact_mod_cast Nat.factorial_ne_zero n)
     exact ne_intCast_of_ne_zero_of_norm_lt_one (mul_ne_zero hsn hx) hzn k
   have heq : ∀ᶠ n : ℕ in atTop,
-      (gammaFactorialScaledTrigamma n x - x⁻¹ ^ 2) /
+      (gammaFactorialScaledTrigamma n x - x⁻¹ ^ (2 : ℕ)) /
           gammaHarmonicMicroscopeScale n =
         (s n * (harmonic n : ℂ)⁻¹) *
             iteratedDeriv 1 Complex.digamma (1 + z n) +
@@ -257,7 +257,7 @@ theorem tendsto_gammaFactorialScaledTrigamma_first_harmonic
     have hformula := iteratedDeriv_one_digamma_neg_nat_add_of_ne_int
       (z n) hzn n
     rw [gammaFactorialScaledTrigamma, gammaHarmonicMicroscopeScale]
-    change (s n ^ 2 * iteratedDeriv 1 Complex.digamma (-↑n + z n) - x⁻¹ ^ 2) /
+    change (s n ^ (2 : ℕ) * iteratedDeriv 1 Complex.digamma (-↑n + z n) - x⁻¹ ^ (2 : ℕ)) /
       (s n * (harmonic n : ℂ)) = _
     rw [hformula]
     dsimp [z]
@@ -316,14 +316,14 @@ theorem tendsto_gammaFactorialZoom_first_harmonic {x : ℂ} (hx : x ≠ 0) :
     field_simp [hGamma, hx, hs]
     ring
   have hfinal := hquot.congr' (heq.mono fun _ h => h.symm)
-  have hlimval : x ^ 2 / (-x * x) = (-1 : ℂ) := by
+  have hlimval : x ^ (2 : ℕ) / (-x * x) = (-1 : ℂ) := by
     field_simp [hx]
   rw [hlimval] at hfinal
   exact hfinal
 
 def gammaFactorialSecondJetDefect (n : ℕ) (x : ℂ) : ℂ :=
   iteratedDeriv 2 (factorialBlowUpZoom Complex.Gamma n) x -
-    2 * factorialBlowUpZoom Complex.Gamma n x ^ 3
+    2 * factorialBlowUpZoom Complex.Gamma n x ^ (3 : ℕ)
 
 theorem gammaFactorialSecondJetDefect_eq
     (n : ℕ) (x : ℂ)
@@ -332,8 +332,8 @@ theorem gammaFactorialSecondJetDefect_eq
     gammaFactorialSecondJetDefect n x =
       factorialBlowUpZoom Complex.Gamma n x *
         (gammaFactorialScaledTrigamma n x +
-          gammaFactorialScaledDigamma n x ^ 2 -
-          2 * factorialBlowUpZoom Complex.Gamma n x ^ 2) := by
+          gammaFactorialScaledDigamma n x ^ (2 : ℕ) -
+          2 * factorialBlowUpZoom Complex.Gamma n x ^ (2 : ℕ)) := by
   let w : ℂ := -(n : ℂ) + reciprocalGammaFactorialScale n * x
   have hBell := iteratedDeriv_two_Gamma_eq_logDeriv w hpole
   have hpsi : (fun z => deriv Complex.Gamma z / Complex.Gamma z) =
@@ -356,7 +356,7 @@ theorem tendsto_gammaFactorialSecondJetDefect_div_harmonicScale
     {x : ℂ} (hx : x ≠ 0) :
     Tendsto (fun n : ℕ =>
       gammaFactorialSecondJetDefect n x / gammaHarmonicMicroscopeScale n)
-      atTop (𝓝 (6 / x ^ 2)) := by
+      atTop (𝓝 (6 / x ^ (2 : ℕ))) := by
   let g : ℕ → ℂ := fun n => factorialBlowUpZoom Complex.Gamma n x
   let q : ℕ → ℂ := fun n => gammaFactorialScaledDigamma n x
   let T : ℕ → ℂ := fun n => gammaFactorialScaledTrigamma n x
@@ -371,7 +371,7 @@ theorem tendsto_gammaFactorialSecondJetDefect_div_harmonicScale
   have hqcor : Tendsto (fun n => (q n - M) / a n) atTop (𝓝 1) := by
     simpa [q, M, a, sub_eq_add_neg] using
       tendsto_gammaFactorialScaledDigamma_first_harmonic hx
-  have hTcor : Tendsto (fun n => (T n - M ^ 2) / a n) atTop (𝓝 0) := by
+  have hTcor : Tendsto (fun n => (T n - M ^ (2 : ℕ)) / a n) atTop (𝓝 0) := by
     simpa [T, M, a] using tendsto_gammaFactorialScaledTrigamma_first_harmonic hx
   have hgdiff : Tendsto (fun n => g n - M) atTop (𝓝 0) := by
     have h := hgcor.mul ha0
@@ -385,9 +385,9 @@ theorem tendsto_gammaFactorialSecondJetDefect_div_harmonicScale
       filter_upwards [hane] with n hn
       field_simp [hn]
     simpa using h.congr' heq
-  have hTdiff : Tendsto (fun n => T n - M ^ 2) atTop (𝓝 0) := by
+  have hTdiff : Tendsto (fun n => T n - M ^ (2 : ℕ)) atTop (𝓝 0) := by
     have h := hTcor.mul ha0
-    have heq : ∀ᶠ n in atTop, (T n - M ^ 2) / a n * a n = T n - M ^ 2 := by
+    have heq : ∀ᶠ n in atTop, (T n - M ^ (2 : ℕ)) / a n * a n = T n - M ^ (2 : ℕ) := by
       filter_upwards [hane] with n hn
       field_simp [hn]
     simpa using h.congr' heq
@@ -397,33 +397,33 @@ theorem tendsto_gammaFactorialSecondJetDefect_div_harmonicScale
   have hq : Tendsto q atTop (𝓝 M) := by
     have h := hqdiff.add_const M
     simpa [sub_add_cancel] using h
-  have hT : Tendsto T atTop (𝓝 (M ^ 2)) := by
-    have h := hTdiff.add_const (M ^ 2)
+  have hT : Tendsto T atTop (𝓝 (M ^ (2 : ℕ))) := by
+    have h := hTdiff.add_const (M ^ (2 : ℕ))
     simpa [sub_add_cancel] using h
   have hqsum : Tendsto (fun n => q n + M) atTop (𝓝 (2 * M)) := by
     simpa [two_mul] using hq.add_const M
   have hgsum : Tendsto (fun n => g n + M) atTop (𝓝 (2 * M)) := by
     simpa [two_mul] using hg.add_const M
-  have hqSq : Tendsto (fun n => (q n ^ 2 - M ^ 2) / a n)
+  have hqSq : Tendsto (fun n => (q n ^ (2 : ℕ) - M ^ (2 : ℕ)) / a n)
       atTop (𝓝 (2 * M)) := by
     have h := hqcor.mul hqsum
     have heq : ∀ᶠ n in atTop,
-        (q n - M) / a n * (q n + M) = (q n ^ 2 - M ^ 2) / a n := by
+        (q n - M) / a n * (q n + M) = (q n ^ (2 : ℕ) - M ^ (2 : ℕ)) / a n := by
       filter_upwards [hane] with n hn
       field_simp [hn]
       ring
     simpa using h.congr' heq
-  have hgSq : Tendsto (fun n => (g n ^ 2 - M ^ 2) / a n)
+  have hgSq : Tendsto (fun n => (g n ^ (2 : ℕ) - M ^ (2 : ℕ)) / a n)
       atTop (𝓝 (-2 * M)) := by
     have h := hgcor.mul hgsum
     have heq : ∀ᶠ n in atTop,
-        (g n - M) / a n * (g n + M) = (g n ^ 2 - M ^ 2) / a n := by
+        (g n - M) / a n * (g n + M) = (g n ^ (2 : ℕ) - M ^ (2 : ℕ)) / a n := by
       filter_upwards [hane] with n hn
       field_simp [hn]
       ring
     simpa using h.congr' heq
   have hbracket : Tendsto (fun n =>
-      (T n + q n ^ 2 - 2 * g n ^ 2) / a n) atTop (𝓝 (6 * M)) := by
+      (T n + q n ^ (2 : ℕ) - 2 * g n ^ (2 : ℕ)) / a n) atTop (𝓝 (6 * M)) := by
     have h := (hTcor.add hqSq).sub (hgSq.const_mul 2)
     convert h using 1
     · funext n
@@ -456,13 +456,13 @@ theorem tendsto_gammaFactorialSecondJetDefect_div_harmonicScale
     linear_combination hpole
   have heq : ∀ᶠ n : ℕ in atTop,
       gammaFactorialSecondJetDefect n x / gammaHarmonicMicroscopeScale n =
-        g n * ((T n + q n ^ 2 - 2 * g n ^ 2) / a n) := by
+        g n * ((T n + q n ^ (2 : ℕ) - 2 * g n ^ (2 : ℕ)) / a n) := by
     filter_upwards [hregular] with n hn
     rw [gammaFactorialSecondJetDefect_eq n x hn]
     simp only [g, q, T, a]
     ring
   have hfinal := hproduct.congr' (heq.mono fun _ h => h.symm)
-  have hlimval : M * (6 * M) = 6 / x ^ 2 := by
+  have hlimval : M * (6 * M) = 6 / x ^ (2 : ℕ) := by
     dsimp [M]
     field_simp [hx]
   rw [hlimval] at hfinal
@@ -473,15 +473,15 @@ reciprocal boundary even though neither monomial is removed by derivative gradin
 def gammaFactorialSecondJetProjectiveDefect (n : ℕ) (x : ℂ) : ℂ :=
   factorialBlowUpZoom Complex.Gamma n x *
       iteratedDeriv 2 (factorialBlowUpZoom Complex.Gamma n) x -
-    2 * iteratedDeriv 1 (factorialBlowUpZoom Complex.Gamma n) x ^ 2
+    2 * iteratedDeriv 1 (factorialBlowUpZoom Complex.Gamma n) x ^ (2 : ℕ)
 
 theorem gammaFactorialSecondJetProjectiveDefect_eq
     (n : ℕ) (x : ℂ) :
     gammaFactorialSecondJetProjectiveDefect n x =
       factorialBlowUpZoom Complex.Gamma n x * gammaFactorialSecondJetDefect n x -
-        4 * factorialBlowUpZoom Complex.Gamma n x ^ 2 *
+        4 * factorialBlowUpZoom Complex.Gamma n x ^ (2 : ℕ) *
           gammaFactorialFirstJetDefect n x -
-        2 * gammaFactorialFirstJetDefect n x ^ 2 := by
+        2 * gammaFactorialFirstJetDefect n x ^ (2 : ℕ) := by
   rw [gammaFactorialSecondJetProjectiveDefect, gammaFactorialSecondJetDefect,
     gammaFactorialFirstJetDefect]
   ring
@@ -493,7 +493,7 @@ theorem tendsto_gammaFactorialSecondJetProjectiveDefect_div_harmonicScale
     {x : ℂ} (hx : x ≠ 0) :
     Tendsto (fun n : ℕ =>
       gammaFactorialSecondJetProjectiveDefect n x /
-        gammaHarmonicMicroscopeScale n) atTop (𝓝 (2 / x ^ 3)) := by
+        gammaHarmonicMicroscopeScale n) atTop (𝓝 (2 / x ^ (3 : ℕ))) := by
   let g : ℕ → ℂ := fun n => factorialBlowUpZoom Complex.Gamma n x
   let R : ℕ → ℂ := fun n => gammaFactorialFirstJetDefect n x
   let C : ℕ → ℂ := fun n => gammaFactorialSecondJetDefect n x
@@ -527,9 +527,9 @@ theorem tendsto_gammaFactorialSecondJetProjectiveDefect_div_harmonicScale
       filter_upwards [hane] with n hn
       field_simp [hn]
     simpa using h.congr' heq
-  have hCcor : Tendsto (fun n => C n / a n) atTop (𝓝 (6 * M ^ 2)) := by
+  have hCcor : Tendsto (fun n => C n / a n) atTop (𝓝 (6 * M ^ (2 : ℕ))) := by
     have h := tendsto_gammaFactorialSecondJetDefect_div_harmonicScale hx
-    have hval : 6 / x ^ 2 = 6 * M ^ 2 := by
+    have hval : 6 / x ^ (2 : ℕ) = 6 * M ^ (2 : ℕ) := by
       dsimp [M]
       field_simp [hx]
     rw [hval] at h
@@ -538,15 +538,15 @@ theorem tendsto_gammaFactorialSecondJetProjectiveDefect_div_harmonicScale
     ((hg.pow 2).mul hRcor |>.const_mul 4) |>.sub (hRcor.mul hR |>.const_mul 2)
   have heq : ∀ᶠ n : ℕ in atTop,
       gammaFactorialSecondJetProjectiveDefect n x / a n =
-        g n * (C n / a n) - 4 * (g n ^ 2 * (R n / a n)) -
+        g n * (C n / a n) - 4 * (g n ^ (2 : ℕ) * (R n / a n)) -
           2 * ((R n / a n) * R n) := by
     filter_upwards [hane] with n hn
     rw [gammaFactorialSecondJetProjectiveDefect_eq]
     simp only [g, R, C]
     field_simp [hn]
   have hfinal := hlimit.congr' (heq.mono fun _ h => h.symm)
-  have hlimval : M * (6 * M ^ 2) - 4 * (M ^ 2 * (2 * M)) -
-      2 * (2 * M * 0) = 2 / x ^ 3 := by
+  have hlimval : M * (6 * M ^ (2 : ℕ)) - 4 * (M ^ (2 : ℕ) * (2 * M)) -
+      2 * (2 * M * 0) = 2 / x ^ (3 : ℕ) := by
     dsimp [M]
     field_simp [hx]
     ring

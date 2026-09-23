@@ -77,7 +77,7 @@ theorem commonAnchorWeight_avoidance {c : ℕ} (hc : Squarefree c) (x y : ℤ) :
 variable {E : Type*} [SeminormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 /-- One sifted Gram term of the common packet. -/
-def gramTerm (g : ℤ → E) (c N : ℕ) (m n : ℤ) : ℂ :=
+def gramTerm_commonProfileGlobalCurvatureJoin (g : ℤ → E) (c N : ℕ) (m n : ℤ) : ℂ :=
   if (c : ℤ) ∣ m * n then ((inner ℝ (g m) (g n) : ℝ) : ℂ) *
     (sieveIndicator N m * sieveIndicator N n) else 0
 
@@ -85,25 +85,25 @@ def gramTerm (g : ℤ → E) (c N : ℕ) (m n : ℤ) : ℂ :=
 theorem siftedOccupancy_eq_finset_sum (W : 𝓢(ℝ, ℂ)) (g : ℤ → E) (indices : Finset ℤ)
     (h : ℤ) (hg : ∀ m, m ∉ indices → g m = 0)
     (hW : ∀ m : ℤ, W (m : ℝ) = ((inner ℝ (g m) (g (m + h)) : ℝ) : ℂ)) (c N : ℕ) :
-    siftedOccupancy W c N h = ∑ m ∈ indices, gramTerm g c N m (m + h) := by
+    siftedOccupancy W c N h = ∑ m ∈ indices, gramTerm_commonProfileGlobalCurvatureJoin g c N m (m + h) := by
   classical
   rw [siftedOccupancy]
   have hcongr : ∀ m : ℤ, (if (c : ℤ) ∣ m * (m + h) then
       W (m : ℝ) * (sieveIndicator N m * sieveIndicator N (m + h)) else 0) =
-      gramTerm g c N m (m + h) := by
+      gramTerm_commonProfileGlobalCurvatureJoin g c N m (m + h) := by
     intro m
-    rw [gramTerm, hW m]
+    rw [gramTerm_commonProfileGlobalCurvatureJoin, hW m]
   rw [tsum_congr hcongr]
   refine tsum_eq_sum fun m hm => ?_
-  rw [gramTerm, hg m hm]
+  rw [gramTerm_commonProfileGlobalCurvatureJoin, hg m hm]
   simp
 
 /-- **The global gap sum is the double Gram sum.** -/
 theorem sum_gaps_gramTerm (g : ℤ → E) (indices gaps : Finset ℤ)
     (hg : ∀ m, m ∉ indices → g m = 0)
     (hgaps : ∀ m ∈ indices, ∀ n ∈ indices, n - m ∈ gaps) (c N : ℕ) :
-    ∑ h ∈ gaps, ∑ m ∈ indices, gramTerm g c N m (m + h) =
-      ∑ m ∈ indices, ∑ n ∈ indices, gramTerm g c N m n := by
+    ∑ h ∈ gaps, ∑ m ∈ indices, gramTerm_commonProfileGlobalCurvatureJoin g c N m (m + h) =
+      ∑ m ∈ indices, ∑ n ∈ indices, gramTerm_commonProfileGlobalCurvatureJoin g c N m n := by
   classical
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun m hm => ?_
@@ -113,9 +113,9 @@ theorem sum_gaps_gramTerm (g : ℤ → E) (indices gaps : Finset ℤ)
     intro n hn
     refine Finset.mem_image.2 ⟨n - m, hgaps m hm n hn, by ring⟩
   have hzero : ∀ n ∈ gaps.image (fun h : ℤ => m + h), n ∉ indices →
-      gramTerm g c N m n = 0 := by
+      gramTerm_commonProfileGlobalCurvatureJoin g c N m n = 0 := by
     intro n _ hn
-    rw [gramTerm, hg n hn]
+    rw [gramTerm_commonProfileGlobalCurvatureJoin, hg n hn]
     simp
   rw [← Finset.sum_image hinj, ← Finset.sum_subset hsub hzero]
 
@@ -138,7 +138,7 @@ theorem sum_gaps_rootDensity_mul_futureResponse (W : ℤ → 𝓢(ℝ, ℂ)) (g 
   have hc0 : c ≠ 0 := hc.ne_zero
   have hstep : ∀ h ∈ gaps,
       rootDensity c h * futureResponse (schwartzFrequencyWeight (W h)) c N h =
-        (∑ m ∈ indices, gramTerm g c N m (m + h)) -
+        (∑ m ∈ indices, gramTerm_commonProfileGlobalCurvatureJoin g c N m (m + h)) -
           rootDensity c h * (𝓕 ((W h) : ℝ → ℂ) 0 * survivalProduct N h) := by
     intro h _
     rw [rootDensity_mul_futureResponse_schwartz (W h) hc0 hN hcN h,
@@ -154,7 +154,7 @@ theorem sum_gaps_rootDensity_mul_futureResponse (W : ℤ → 𝓢(ℝ, ℂ)) (g 
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [Complex.ofReal_sum]
   refine Finset.sum_congr rfl fun n _ => ?_
-  rw [gramTerm, commonAnchorWeight_avoidance hc m n]
+  rw [gramTerm_commonProfileGlobalCurvatureJoin, commonAnchorWeight_avoidance hc m n]
   push_cast
   rw [← coordinatePacketWeight_avoidance N m, ← coordinatePacketWeight_avoidance N n]
   by_cases hcd : (c : ℤ) ∣ m * n

@@ -27,7 +27,7 @@ only a real principal value.  The retarded-minus-advanced boundary concomitant i
 the complete horizon-plus-normalizable-boundary radiation flux.  After unit Wronskian
 normalization, the retarded period is therefore uniquely
 
-`P_ret = FP_conservative + I * ||Radiation(direct,mixing)||^2`.
+`P_ret = FP_conservative + I * ||Radiation(direct,mixing)||^(2 : ℕ)`.
 
 The exact BM radiation map has a nonzero direct coordinate for every nonzero theta seed.  Its
 orthogonal-helicity coordinate adds a nonnegative square.  Hence the total period cannot vanish,
@@ -216,7 +216,7 @@ theorem d4BMPlusPlusIntermediateCollision_forces_zeroModeEdge
 def d4BMXiGaugeFixedTotalAngularRadiationFlux
     (amplitude orthogonalMixing : ℂ) (q : XiZeroCopy) : ℝ :=
   ‖d4ThetaFullEinsteinGaugeFixedSecondHarmonicRadiation
-      amplitude orthogonalMixing q‖ ^ 2
+      amplitude orthogonalMixing q‖ ^ (2 : ℕ)
 
 /-- Direct and orthogonal-helicity fluxes are added only after the full gauge-fixed radiation map
 has been constructed. -/
@@ -225,8 +225,8 @@ theorem d4BMXiGaugeFixedTotalAngularRadiationFlux_decomposition
     d4BMXiGaugeFixedTotalAngularRadiationFlux amplitude orthogonalMixing q =
       ‖d4BMGaugeFixedSecondHarmonicRadiationMap q
           (d4ThetaHawkingSelfDualQuadraticCarrierCoefficient amplitude
-            (xiSpectralPoint q), 0)‖ ^ 2 +
-        ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, orthogonalMixing)‖ ^ 2 := by
+            (xiSpectralPoint q), 0)‖ ^ (2 : ℕ) +
+        ‖d4BMGaugeFixedSecondHarmonicRadiationMap q (0, orthogonalMixing)‖ ^ (2 : ℕ) := by
   exact d4BMGaugeFixedSecondHarmonicRadiation_norm_sq_decomposition q
     (d4ThetaHawkingSelfDualQuadraticCarrierCoefficient amplitude
       (xiSpectralPoint q)) orthogonalMixing

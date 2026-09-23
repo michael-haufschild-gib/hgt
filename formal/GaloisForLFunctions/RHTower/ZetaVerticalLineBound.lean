@@ -23,7 +23,7 @@ noncomputable section
 
 /-! ### Norms of natural powers -/
 
-theorem norm_natCast_cpow {n : ℕ} (hn : 1 ≤ n) (z : ℂ) :
+theorem norm_natCast_cpow_zetaVerticalLineBound {n : ℕ} (hn : 1 ≤ n) (z : ℂ) :
     ‖(n : ℂ) ^ z‖ = (n : ℝ) ^ z.re := by
   have hpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
   rw [show ((n : ℕ) : ℂ) = (((n : ℕ) : ℝ) : ℂ) by push_cast; ring,
@@ -38,7 +38,7 @@ theorem norm_dirichletPoly_le_one_add_log {N : ℕ} {s : ℂ} (hσ : 1 ≤ s.re)
     intro n hn
     have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
     have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
-    rw [norm_natCast_cpow hn1]
+    rw [norm_natCast_cpow_zetaVerticalLineBound hn1]
     have hle := Real.rpow_le_rpow_of_exponent_le hnR (by simp; linarith : (-s).re ≤ -1)
     rwa [Real.rpow_neg_one] at hle
   calc ‖dirichletPoly N s‖ ≤ ∑ n ∈ Finset.Icc 1 N, ‖(n : ℂ) ^ (-s)‖ := by
@@ -57,7 +57,7 @@ theorem norm_emPole_le {N : ℕ} (hN : 1 ≤ N) {s : ℂ} (hσ : 1 ≤ s.re) (ht
     ‖emPole N s‖ ≤ 1 / 2 := by
   have hNR : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   have hnum : ‖(N : ℂ) ^ (1 - s)‖ ≤ 1 := by
-    rw [norm_natCast_cpow hN]
+    rw [norm_natCast_cpow_zetaVerticalLineBound hN]
     have hle := Real.rpow_le_rpow_of_exponent_le hNR (by simp; linarith : (1 - s).re ≤ 0)
     rwa [Real.rpow_zero] at hle
   have hden : (2 : ℝ) ≤ ‖s - 1‖ := by

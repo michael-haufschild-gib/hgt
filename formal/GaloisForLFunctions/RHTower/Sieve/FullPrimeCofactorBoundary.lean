@@ -250,14 +250,14 @@ theorem fullPrimeCofactorSeries_bounds {σ : ℝ} (hσ : 1 < σ) :
 
 
 private theorem neg_log_one_sub_sub_le {x : ℝ} (_hx : 0 ≤ x) (hx2 : x ≤ 1/2) :
-    x ≤ -Real.log (1-x) ∧ -Real.log (1-x) - x ≤ 2*x^2 := by
+    x ≤ -Real.log (1-x) ∧ -Real.log (1-x) - x ≤ 2*x^(2 : ℕ) := by
   have hd : 0 < 1-x := by linarith
   constructor
   · have h := Real.log_le_sub_one_of_pos hd
     linarith
   · have h := Real.log_le_sub_one_of_pos (inv_pos.mpr hd)
     rw [Real.log_inv] at h
-    have hb : 1/(1-x) ≤ 1+x+2*x^2 := (div_le_iff₀ hd).mpr (by nlinarith)
+    have hb : 1/(1-x) ≤ 1+x+2*x^(2 : ℕ) := (div_le_iff₀ hd).mpr (by nlinarith)
     rw [← one_div] at h
     linarith
 
@@ -272,7 +272,7 @@ theorem fullPrimeEulerLog_mass_bounds {σ : ℝ} (hσ : 1 < σ) :
     (Real.rpow_nonneg (Nat.cast_nonneg _) _) (prime_rpow_le_half hσ p)
   constructor
   · exact Summable.tsum_le_tsum (fun p => (hloc p).1) hp hlog
-  · have hsq (p : Nat.Primes) : (((p:ℕ):ℝ)^(-σ))^2 ≤ ((p:ℕ):ℝ)^(-(2:ℝ)) := by
+  · have hsq (p : Nat.Primes) : (((p:ℕ):ℝ)^(-σ))^(2 : ℕ) ≤ ((p:ℕ):ℝ)^(-(2:ℝ)) := by
       rw [← Real.rpow_two, ← Real.rpow_mul (Nat.cast_nonneg _)]
       exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast p.2.one_lt.le) (by linarith)
     have hle : (∑' p : Nat.Primes, -Real.log (1-((p:ℕ):ℝ)^(-σ))) ≤

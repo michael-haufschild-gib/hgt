@@ -45,9 +45,9 @@ theorem exists_bound_regularized_edges {χ : DirichletCharacter ℂ N} (hχ : χ
     (hprim : χ.IsPrimitive) :
     ∃ C : ℝ, 0 < C ∧
       (∀ z : ℂ, z.re = 3 →
-        ‖DirichletCharacter.LFunction χ z / (z - 4) ^ 3‖ ≤ C) ∧
+        ‖DirichletCharacter.LFunction χ z / (z - 4) ^ (3 : ℕ)‖ ≤ C) ∧
       (∀ z : ℂ, z.re = -2 →
-        ‖DirichletCharacter.LFunction χ z / (z - 4) ^ 3‖ ≤ C) := by
+        ‖DirichletCharacter.LFunction χ z / (z - 4) ^ (3 : ℕ)‖ ≤ C) := by
   obtain ⟨C₁, hC₁, hright⟩ := exists_bound_LFunction_of_two_le_re χ
   obtain ⟨A, hA, hleft⟩ := exists_bound_LFunction_left_edge hprim
   obtain ⟨Bseg, hBseg, hseg⟩ := exists_bound_LFunction_segment hχ (-2 : ℝ) 2
@@ -60,13 +60,13 @@ theorem exists_bound_regularized_edges {χ : DirichletCharacter ℂ N} (hχ : χ
       have h := Complex.abs_re_le_norm (z - 4)
       rw [hre4] at h
       exact h
-    have hpow : (1 : ℝ) ≤ ‖z - 4‖ ^ 3 := one_le_pow₀ hge
+    have hpow : (1 : ℝ) ≤ ‖z - 4‖ ^ (3 : ℕ) := one_le_pow₀ hge
     have hLb : ‖DirichletCharacter.LFunction χ z‖ ≤ C₁ := hright z (by rw [hz]; norm_num)
     rw [norm_div, norm_pow, div_le_iff₀ (by positivity)]
     calc ‖DirichletCharacter.LFunction χ z‖ ≤ C₁ := hLb
       _ ≤ max C₁ (max A Bseg) := le_max_left _ _
       _ = max C₁ (max A Bseg) * 1 := by ring
-      _ ≤ max C₁ (max A Bseg) * ‖z - 4‖ ^ 3 :=
+      _ ≤ max C₁ (max A Bseg) * ‖z - 4‖ ^ (3 : ℕ) :=
           mul_le_mul_of_nonneg_left hpow (le_trans hC₁.le (le_max_left _ _))
   · intro z hz
     have hzeq : z = (-2 : ℂ) + (z.im : ℂ) * Complex.I := by
@@ -84,18 +84,18 @@ theorem exists_bound_regularized_edges {χ : DirichletCharacter ℂ N} (hχ : χ
       have h := Complex.abs_re_le_norm (z - 4)
       rw [hre4] at h
       exact h
-    have hpow1 : (1 : ℝ) ≤ ‖z - 4‖ ^ 3 := one_le_pow₀ (by linarith)
+    have hpow1 : (1 : ℝ) ≤ ‖z - 4‖ ^ (3 : ℕ) := one_le_pow₀ (by linarith)
     rw [norm_div, norm_pow, div_le_iff₀ (by positivity)]
     rcases le_or_gt 2 |z.im| with hbig | hsmall
-    · have hLb : ‖DirichletCharacter.LFunction χ z‖ ≤ A * |z.im| ^ 3 := by
+    · have hLb : ‖DirichletCharacter.LFunction χ z‖ ≤ A * |z.im| ^ (3 : ℕ) := by
         have h := hleft z.im hbig
         rwa [← hzeq] at h
-      have hcube : A * |z.im| ^ 3 ≤ max C₁ (max A Bseg) * ‖z - 4‖ ^ 3 := by
-        have h1 : |z.im| ^ 3 ≤ ‖z - 4‖ ^ 3 :=
+      have hcube : A * |z.im| ^ (3 : ℕ) ≤ max C₁ (max A Bseg) * ‖z - 4‖ ^ (3 : ℕ) := by
+        have h1 : |z.im| ^ (3 : ℕ) ≤ ‖z - 4‖ ^ (3 : ℕ) :=
           pow_le_pow_left₀ (abs_nonneg _) hgeim 3
         have h2 : A ≤ max C₁ (max A Bseg) :=
           le_trans (le_max_left A Bseg) (le_max_right _ _)
-        have h3 : (0 : ℝ) ≤ ‖z - 4‖ ^ 3 := by positivity
+        have h3 : (0 : ℝ) ≤ ‖z - 4‖ ^ (3 : ℕ) := by positivity
         nlinarith [h1, h2, h3, hA.le, abs_nonneg z.im]
       exact le_trans hLb hcube
     · have hLb : ‖DirichletCharacter.LFunction χ z‖ ≤ Bseg := by
@@ -106,7 +106,7 @@ theorem exists_bound_regularized_edges {χ : DirichletCharacter ℂ N} (hχ : χ
       calc ‖DirichletCharacter.LFunction χ z‖ ≤ Bseg := hLb
         _ ≤ max C₁ (max A Bseg) := h2
         _ = max C₁ (max A Bseg) * 1 := by ring
-        _ ≤ max C₁ (max A Bseg) * ‖z - 4‖ ^ 3 :=
+        _ ≤ max C₁ (max A Bseg) * ‖z - 4‖ ^ (3 : ℕ) :=
             mul_le_mul_of_nonneg_left hpow1 (le_trans hC₁.le (le_max_left _ _))
 
 end RHTower

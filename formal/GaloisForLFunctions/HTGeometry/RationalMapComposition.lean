@@ -99,9 +99,9 @@ theorem natDegree_ratIter_le {P Q : Polynomial C} {d : ℕ} (hP : P.natDegree �
   induction n with
   | zero =>
       refine ⟨?_, ?_⟩
-      · show (Polynomial.X : Polynomial C).natDegree ≤ d ^ 0
+      · show (Polynomial.X : Polynomial C).natDegree ≤ d ^ (0 : ℕ)
         simp
-      · show (1 : Polynomial C).natDegree ≤ d ^ 0
+      · show (1 : Polynomial C).natDegree ≤ d ^ (0 : ℕ)
         simp
   | succ n ih =>
       constructor

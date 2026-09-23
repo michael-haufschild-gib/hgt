@@ -24,7 +24,7 @@ open Complex Finset
 
 /-- **The damped size of the truncated factor at a single frequency.**  The pointwise form of
 `norm_LSeries_truncSeq_line_le_damped`: only the distance at `t` is used. -/
-theorem norm_LSeries_truncSeq_line_le_damped_at {f : ℕ → ℂ} (hf1 : f 1 = 1)
+theorem norm_LSeries_truncSeq_line_le_damped_at_pairBlockDampedChain {f : ℕ → ℂ} (hf1 : f 1 = 1)
     (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n) (hbdd : ∀ n, ‖f n‖ ≤ 1)
     {σ : ℝ} (hσ : 1 < σ) {z : ℕ} (hz : 1 ≤ z) {δ : ℝ} (hδ : 0 ≤ δ)
     {L : ℕ} (hL : 1 ≤ L) {t : ℝ}
@@ -121,9 +121,9 @@ theorem norm_sum_Icc_mul_log_le_pair_block_damped {f : ℕ → ℂ}
     (norm_convolution_vonMangoldtSeq_le_uniform hbdd hN)
     (fun m => dampedSize_nonneg hσ z N) (dampedSize_nonneg hσ z N) hσ.le ht₀ K
     (fun m hm t ht htop =>
-      norm_LSeries_truncSeq_line_le_damped_at hf1 hmul hbdd hσ hz (hδ m) hN
+      norm_LSeries_truncSeq_line_le_damped_at_pairBlockDampedChain hf1 hmul hbdd hσ hz (hδ m) hN
         (hfar m hm t ht htop))
-    (fun t ht => norm_LSeries_truncSeq_line_le_damped_at hf1 hmul hbdd hσ hz hδ₀ hN (hfar₀ t ht))
+    (fun t ht => norm_LSeries_truncSeq_line_le_damped_at_pairBlockDampedChain hf1 hmul hbdd hσ hz hδ₀ hN (hfar₀ t ht))
   rw [min_eq_right hNsq, ← sum_Icc_convolution_vonMangoldtSeq_eq hf] at hpair
   have hweight := norm_sum_Icc_mul_log_sub_le (f := f) hbdd N
   have hsplit : ‖(∑ n ∈ Finset.Icc 1 N, f n) * ((Real.log (N : ℝ) : ℝ) : ℂ)‖

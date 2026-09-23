@@ -137,7 +137,7 @@ theorem exists_norm_deriv_zetaChi_vertical_left_edge_le
     (hsigmaHigh : sigma ≤ -1 / 2) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
       ‖deriv zetaChi ((sigma : ℂ) + (t : ℂ) * I)‖ ≤
-        C * (1 + |t|) ^ 3 := by
+        C * (1 + |t|) ^ (3 : ℕ) := by
   obtain ⟨D, hD, hlogDeriv⟩ :=
     exists_norm_logDeriv_zetaChi_left_edge_strip_le
   obtain ⟨K, hK, hchi⟩ := exists_bound_norm_zetaChi_vertical
@@ -161,13 +161,13 @@ theorem exists_norm_deriv_zetaChi_vertical_left_edge_le
   rw [show ((sigma : ℂ) + (t : ℂ) * I) = z by rfl, hderiv, norm_mul]
   calc
     ‖logDeriv zetaChi z‖ * ‖zetaChi z‖
-      ≤ (D * (1 + |t|)) * (K * (1 + |t|) ^ 2) := by
+      ≤ (D * (1 + |t|)) * (K * (1 + |t|) ^ (2 : ℕ)) := by
         apply mul_le_mul
         · simpa only [z] using hlogDeriv sigma hsigmaLow hsigmaHigh t
         · simpa only [z] using hchi t
         · exact norm_nonneg _
         · positivity
-    _ = C * (1 + |t|) ^ 3 := by
+    _ = C * (1 + |t|) ^ (3 : ℕ) := by
       dsimp only [C]
       ring
 

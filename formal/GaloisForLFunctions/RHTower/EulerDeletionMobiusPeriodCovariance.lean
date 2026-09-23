@@ -48,7 +48,7 @@ private theorem sum_nat_real (m : ℕ) :
   | succ m ih => rw [Finset.sum_range_succ, ih]; push_cast; ring
 
 private theorem sum_nat_real_sq (m : ℕ) :
-    (∑ i ∈ Finset.range m, (i : ℝ)^2) = (m : ℝ)*((m : ℝ)-1)*(2*(m : ℝ)-1)/6 := by
+    (∑ i ∈ Finset.range m, (i : ℝ)^(2 : ℕ)) = (m : ℝ)*((m : ℝ)-1)*(2*(m : ℝ)-1)/6 := by
   induction m with
   | zero => simp
   | succ m ih => rw [Finset.sum_range_succ, ih]; push_cast; ring
@@ -66,10 +66,10 @@ theorem sum_centeredResidue (m : ℕ) : ∑ i ∈ Finset.range m, centeredResidu
 
 /-- The centered square moment, with no numerical evaluation of individual moduli. -/
 theorem sum_centeredResidue_sq (m : ℕ) :
-    (∑ i ∈ Finset.range m, centeredResidue m i^2) = (m : ℝ)*((m : ℝ)^2-1)/12 := by
-  have he : (∑ i ∈ Finset.range m, centeredResidue m i^2) =
+    (∑ i ∈ Finset.range m, centeredResidue m i^(2 : ℕ)) = (m : ℝ)*((m : ℝ)^(2 : ℕ)-1)/12 := by
+  have he : (∑ i ∈ Finset.range m, centeredResidue m i^(2 : ℕ)) =
       ∑ i ∈ Finset.range m,
-        ((i : ℝ)^2-((m : ℝ)-1)*(i : ℝ)+(((m : ℝ)-1)/2)^2) := by
+        ((i : ℝ)^(2 : ℕ)-((m : ℝ)-1)*(i : ℝ)+(((m : ℝ)-1)/2)^(2 : ℕ)) := by
     apply Finset.sum_congr rfl
     intro i hi
     rw [centeredResidue, Nat.mod_eq_of_lt (Finset.mem_range.mp hi)]
@@ -101,7 +101,7 @@ private theorem coprime_block_covariance {g a b : ℕ} (ha : 0 < a) (hb : 0 < b)
     (∑ j ∈ Finset.range (a*b),
       ((g : ℝ)*centeredResidue a j+centeredResidue g i)*
       ((g : ℝ)*centeredResidue b j+centeredResidue g i)) =
-      (a : ℝ)*(b : ℝ)*centeredResidue g i^2 := by
+      (a : ℝ)*(b : ℝ)*centeredResidue g i^(2 : ℕ) := by
   have hf : Function.Periodic (fun j => (g : ℝ)*centeredResidue a j+centeredResidue g i) a := by
     intro j
     dsimp only
@@ -119,9 +119,9 @@ private theorem scaled_coprime_covariance {g a b : ℕ} (ha : 0 < a) (hb : 0 < b
     (hab : a.Coprime b) :
     (∑ k ∈ Finset.range (g*(a*b)),
       centeredResidue (g*a) k*centeredResidue (g*b) k) =
-      (g*(a*b) : ℕ)*((g : ℝ)^2-1)/12 := by
+      (g*(a*b) : ℕ)*((g : ℝ)^(2 : ℕ)-1)/12 := by
   rw [sum_blocks, Finset.sum_comm]
-  calc _ = ∑ i ∈ Finset.range g, (a : ℝ)*(b : ℝ)*centeredResidue g i^2 := by
+  calc _ = ∑ i ∈ Finset.range g, (a : ℝ)*(b : ℝ)*centeredResidue g i^(2 : ℕ) := by
          apply Finset.sum_congr rfl
          intro i hi
          simp_rw [centeredResidue_mul_block ha (Finset.mem_range.mp hi),
@@ -133,7 +133,7 @@ private theorem scaled_coprime_covariance {g a b : ℕ} (ha : 0 < a) (hb : 0 < b
 theorem sum_centeredResidue_mul {m n P : ℕ} (hm : 0 < m) (hn : 0 < n)
     (hmP : m ∣ P) (hnP : n ∣ P) :
     (∑ k ∈ Finset.range P, centeredResidue m k*centeredResidue n k) =
-      (P : ℝ)*((Nat.gcd m n : ℝ)^2-1)/12 := by
+      (P : ℝ)*((Nat.gcd m n : ℝ)^(2 : ℕ)-1)/12 := by
   let g := Nat.gcd m n
   let a := m/g
   let b := n/g
@@ -162,7 +162,7 @@ theorem sum_centeredResidue_mul {m n P : ℕ} (hm : 0 < m) (hn : 0 < n)
   have hcore := scaled_coprime_covariance (g := g) ha hb hab
   rw [hma,hnb] at hcore
   rw [hcore]
-  change _ = (((g*(a*b))*K : ℕ) : ℝ)*((g : ℝ)^2-1)/12
+  change _ = (((g*(a*b))*K : ℕ) : ℝ)*((g : ℝ)^(2 : ℕ)-1)/12
   push_cast
   ring
 
@@ -183,7 +183,7 @@ def periodMean (S : Finset ℕ) (u : ℕ → ℝ) : ℝ :=
 /-- Full signed normalized gcd-square covariance, including every ordered pair. -/
 def periodCovariance (S : Finset ℕ) (u : ℕ → ℝ) : ℝ :=
   (1/12 : ℝ)*∑ m ∈ S, ∑ n ∈ S,
-    u m*u n*((Nat.gcd m n : ℝ)^2-1)/((m : ℝ)*(n : ℝ))
+    u m*u n*((Nat.gcd m n : ℝ)^(2 : ℕ)-1)/((m : ℝ)*(n : ℝ))
 
 private theorem combination_sub_mean (S : Finset ℕ) (u : ℕ → ℝ) (k : ℕ)
     (hpos : ∀ m ∈ S, 0 < m) :
@@ -216,7 +216,7 @@ theorem sum_residueCombination {S : Finset ℕ} (u : ℕ → ℝ) {P : ℕ}
 /-- Complete signed pair covariance equals the actual centered square moment. -/
 theorem sum_residueCombination_centered_sq {S : Finset ℕ} (u : ℕ → ℝ) {P : ℕ}
     (hpos : ∀ m ∈ S, 0 < m) (hP : ∀ m ∈ S, m ∣ P) :
-    (∑ k ∈ Finset.range P, (residueCombination S u k-periodMean S u)^2) =
+    (∑ k ∈ Finset.range P, (residueCombination S u k-periodMean S u)^(2 : ℕ)) =
       (P : ℝ)*periodCovariance S u := by
   simp_rw [combination_sub_mean S u _ hpos, pow_two, Finset.sum_mul_sum]
   rw [Finset.sum_comm]
@@ -242,13 +242,13 @@ theorem sum_residueCombination_centered_sq {S : Finset ℕ} (u : ℕ → ℝ) {P
 /-- The whole uncentered second moment splits into mean-square and signed gcd covariance. -/
 theorem sum_residueCombination_sq {S : Finset ℕ} (u : ℕ → ℝ) {P : ℕ}
     (hpos : ∀ m ∈ S, 0 < m) (hP : ∀ m ∈ S, m ∣ P) :
-    (∑ k ∈ Finset.range P, residueCombination S u k^2) =
-      (P : ℝ)*(periodMean S u^2+periodCovariance S u) := by
+    (∑ k ∈ Finset.range P, residueCombination S u k^(2 : ℕ)) =
+      (P : ℝ)*(periodMean S u^(2 : ℕ)+periodCovariance S u) := by
   have h := sum_residueCombination_centered_sq u hpos hP
-  have he : (∑ k ∈ Finset.range P, (residueCombination S u k-periodMean S u)^2) =
-      (∑ k ∈ Finset.range P, residueCombination S u k^2)-
+  have he : (∑ k ∈ Finset.range P, (residueCombination S u k-periodMean S u)^(2 : ℕ)) =
+      (∑ k ∈ Finset.range P, residueCombination S u k^(2 : ℕ))-
         2*periodMean S u*(∑ k ∈ Finset.range P, residueCombination S u k)+
-        (P : ℝ)*periodMean S u^2 := by
+        (P : ℝ)*periodMean S u^(2 : ℕ) := by
     simp_rw [sub_sq]
     simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
       Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -267,7 +267,7 @@ theorem periodCovariance_nonneg {S : Finset ℕ} (u : ℕ → ℝ) {P : ℕ}
     (hpos : ∀ m ∈ S, 0 < m) (hP : ∀ m ∈ S, m ∣ P) (hP0 : 0 < P) :
     0 ≤ periodCovariance S u := by
   have h := sum_residueCombination_centered_sq u hpos hP
-  have hnn : 0 ≤ ∑ k ∈ Finset.range P, (residueCombination S u k-periodMean S u)^2 :=
+  have hnn : 0 ≤ ∑ k ∈ Finset.range P, (residueCombination S u k-periodMean S u)^(2 : ℕ) :=
     Finset.sum_nonneg (fun k _ => sq_nonneg _)
   have hPr : (0 : ℝ) < P := by exact_mod_cast hP0
   nlinarith
@@ -291,8 +291,8 @@ theorem mobius_periodMean (N : ℕ) :
   field_simp
 
 private theorem primitive_norm_sq (N k : ℕ) :
-    ‖DeletionMobiusPrimitive.primitive N k‖^2 =
-      residueCombination (Finset.Icc 1 N) (fun m => ((moebius m : ℤ) : ℝ)) k^2 := by
+    ‖DeletionMobiusPrimitive.primitive N k‖^(2 : ℕ) =
+      residueCombination (Finset.Icc 1 N) (fun m => ((moebius m : ℤ) : ℝ)) k^(2 : ℕ) := by
   rw [DeletionMobiusPrimitive.primitive_eq_modular, norm_neg, Complex.norm_real,
     Real.norm_eq_abs, sq_abs, bdMobiusModularApproximant, neg_sq, residueCombination]
   congr 1
@@ -304,8 +304,8 @@ private theorem primitive_norm_sq (N k : ℕ) :
 common-factor covariance and the exact Mertens/harmonic mean. -/
 theorem mobius_primitive_period_energy {N P : ℕ}
     (hP : ∀ m ∈ Finset.Icc 1 N, m ∣ P) :
-    (∑ k ∈ Finset.range P, ‖DeletionMobiusPrimitive.primitive N k‖^2) =
-      (P : ℝ)*(((Sieve.mertensM N-deningerHarmonicPartial N)/2)^2+
+    (∑ k ∈ Finset.range P, ‖DeletionMobiusPrimitive.primitive N k‖^(2 : ℕ)) =
+      (P : ℝ)*(((Sieve.mertensM N-deningerHarmonicPartial N)/2)^(2 : ℕ)+
         periodCovariance (Finset.Icc 1 N) (fun m => ((moebius m : ℤ) : ℝ))) := by
   simp_rw [primitive_norm_sq]
   rw [sum_residueCombination_sq (hpos := fun m hm => (Finset.mem_Icc.mp hm).1)
@@ -320,7 +320,7 @@ private theorem stepGram_periodic {f : ℕ → ℝ} {B : ℝ} {P : ℕ}
     (hb : ∀ n, |f n| ≤ B) (hf : Function.Periodic f P) (hP : 0 < P) :
     haveI : NeZero P := ⟨hP.ne'⟩
     stepGram f f =
-      ∑ r : ZMod P, f r.val^2*periodWeight P r.val := by
+      ∑ r : ZMod P, f r.val^(2 : ℕ)*periodWeight P r.val := by
   letI : NeZero P := ⟨hP.ne'⟩
   let g (k : ℕ) : ℝ := f k*f k/((k : ℝ)*((k : ℝ)+1))
   have hinj : Function.Injective (fun n : ℕ => n+1) := by
@@ -347,7 +347,7 @@ private theorem stepGram_periodic {f : ℕ → ℝ} {B : ℝ} {P : ℕ}
   have he (j : ℕ) : f (r.val+P*j)=f r.val := by
     simpa only [Nat.cast_id,Nat.mul_comm] using (hf.nat_mul j) r.val
   calc (∑' j : ℕ, g (r.val+P*j)) =
-         ∑' j : ℕ, f r.val^2*((1 : ℝ)/
+         ∑' j : ℕ, f r.val^(2 : ℕ)*((1 : ℝ)/
            (((r.val+P*j : ℕ) : ℝ)*(((r.val+P*j : ℕ) : ℝ)+1))) := by
          apply tsum_congr
          intro j
@@ -377,19 +377,19 @@ This is not obtained by substituting an unweighted period mean. -/
 theorem mobius_modular_norm_sq_eq_weighted_period {N P : ℕ} (hP0 : 0 < P)
     (hP : ∀ m ∈ Finset.Icc 1 N, m ∣ P) :
     haveI : NeZero P := ⟨hP0.ne'⟩
-    ‖bdMobiusModularApproximantVec N‖^2 =
-      ∑ r : ZMod P, ‖DeletionMobiusPrimitive.primitive N r.val‖^2*periodWeight P r.val := by
+    ‖bdMobiusModularApproximantVec N‖^(2 : ℕ) =
+      ∑ r : ZMod P, ‖DeletionMobiusPrimitive.primitive N r.val‖^(2 : ℕ)*periodWeight P r.val := by
   have hf : Function.Periodic (bdMobiusModularApproximant N) P := by
     intro k
     have h := residueCombination_periodic (fun m => ((moebius m : ℤ) : ℝ)) hP k
     rw [combination_mobius,combination_mobius] at h
     exact neg_injective h
   have hi : (RCLike.re (inner ℂ (bdMobiusModularApproximantVec N)
-      (bdMobiusModularApproximantVec N)) : ℝ) = ‖bdMobiusModularApproximantVec N‖^2 :=
+      (bdMobiusModularApproximantVec N)) : ℝ) = ‖bdMobiusModularApproximantVec N‖^(2 : ℕ) :=
     inner_self_eq_norm_sq _
   rw [bdMobiusModularApproximantVec,inner_stepVec] at hi
   have hGram : stepGram (bdMobiusModularApproximant N) (bdMobiusModularApproximant N) =
-      ‖bdMobiusModularApproximantVec N‖^2 := hi
+      ‖bdMobiusModularApproximantVec N‖^(2 : ℕ) := hi
   rw [← hGram, stepGram_periodic (abs_bdMobiusModularApproximant_le N) hf hP0]
   apply Finset.sum_congr rfl
   intro r hr
@@ -398,8 +398,8 @@ theorem mobius_modular_norm_sq_eq_weighted_period {N P : ℕ} (hP0 : 0 < P)
 
 /-- Unconditional complete-period second moment for every literal channel cutoff. -/
 theorem mobius_primitive_factorial_energy (N : ℕ) :
-    (∑ k ∈ Finset.range N.factorial, ‖DeletionMobiusPrimitive.primitive N k‖^2) =
-      (N.factorial : ℝ)*(((Sieve.mertensM N-deningerHarmonicPartial N)/2)^2+
+    (∑ k ∈ Finset.range N.factorial, ‖DeletionMobiusPrimitive.primitive N k‖^(2 : ℕ)) =
+      (N.factorial : ℝ)*(((Sieve.mertensM N-deningerHarmonicPartial N)/2)^(2 : ℕ)+
         periodCovariance (Finset.Icc 1 N) (fun m => ((moebius m : ℤ) : ℝ))) := by
   apply mobius_primitive_period_energy
   intro m hm
@@ -409,9 +409,9 @@ theorem mobius_primitive_factorial_energy (N : ℕ) :
 residue carrying its actual infinite weight. -/
 theorem mobius_modular_norm_sq_eq_factorial_period (N : ℕ) :
     haveI : NeZero N.factorial := ⟨(Nat.factorial_pos N).ne'⟩
-    ‖bdMobiusModularApproximantVec N‖^2 =
+    ‖bdMobiusModularApproximantVec N‖^(2 : ℕ) =
       ∑ r : ZMod N.factorial,
-        ‖DeletionMobiusPrimitive.primitive N r.val‖^2*periodWeight N.factorial r.val := by
+        ‖DeletionMobiusPrimitive.primitive N r.val‖^(2 : ℕ)*periodWeight N.factorial r.val := by
   apply mobius_modular_norm_sq_eq_weighted_period (Nat.factorial_pos N)
   intro m hm
   exact Nat.dvd_factorial (Finset.mem_Icc.mp hm).1 (Finset.mem_Icc.mp hm).2

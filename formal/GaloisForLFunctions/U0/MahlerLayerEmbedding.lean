@@ -282,7 +282,7 @@ theorem mahlerSigma_monoRatEval_poly (q₀ : ℚ) (hq₀ : 0 < q₀) (p : Polyno
           Polynomial.X from (RatFunc.algebraMap_X).symm,
           MahlerPolynomial.mahlerHom_algebraMap]
         rw [show (Polynomial.X : Polynomial ℂ).comp
-          (Polynomial.X ^ 2 + Polynomial.C 0) = Polynomial.X ^ 2 from by
+          (Polynomial.X ^ (2 : ℕ) + Polynomial.C 0) = Polynomial.X ^ (2 : ℕ) from by
             rw [Polynomial.X_comp, map_zero, add_zero]]
         rw [map_pow, RatFunc.algebraMap_X, sq]
     rw [hC, hX]

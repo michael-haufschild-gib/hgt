@@ -11,13 +11,13 @@ theorem exchangeable_second_moment_sum
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : ι → ℝ) (A B : ℝ) :
     (∑ i, ∑ k, s i * s k * (if i = k then A else B)) =
-      B * (∑ i, s i) ^ 2 + (A - B) * ∑ i, (s i) ^ 2 := by
+      B * (∑ i, s i) ^ (2 : ℕ) + (A - B) * ∑ i, (s i) ^ (2 : ℕ) := by
   let diag := fun i k : ι => if i = k then s i * s k else 0
   have hterm (i k : ι) :
       s i * s k * (if i = k then A else B) =
         B * s i * s k + (A - B) * diag i k := by
     by_cases hik : i = k <;> simp [diag, hik] <;> ring
-  have hdiag : (∑ i, ∑ k, diag i k) = ∑ i, (s i) ^ 2 := by
+  have hdiag : (∑ i, ∑ k, diag i k) = ∑ i, (s i) ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro i _hi
     rw [Finset.sum_eq_single i]
@@ -37,7 +37,7 @@ theorem exchangeable_second_moment_sum
         exact Finset.sum_add_distrib
       _ = _ := Finset.sum_add_distrib
   have htotal :
-      (∑ i, ∑ k, B * s i * s k) = B * (∑ i, s i) ^ 2 := by
+      (∑ i, ∑ k, B * s i * s k) = B * (∑ i, s i) ^ (2 : ℕ) := by
     calc
       _ = B * ∑ i, ∑ k, s i * s k := by
         symm
@@ -70,7 +70,7 @@ theorem finiteUnitaryDiagonalProbeHaarSignal_eq_sq_sum_div
     (d : ℕ) (s : (Fin 2 ⊕ Fin d) → ℝ)
     (j : Fin 2 ⊕ Fin d) (hsum : ∑ i, s i = 0) :
     finiteUnitaryDiagonalProbeHaarSignal d s j =
-      (∑ i, (s i) ^ 2) /
+      (∑ i, (s i) ^ (2 : ℕ)) /
         (((d + 2 : ℕ) : ℝ) * ((d + 3 : ℕ) : ℝ)) := by
   rw [finiteUnitaryDiagonalProbeHaarSignal_eq_sum,
     exchangeable_second_moment_sum, hsum, zero_pow (by norm_num : (2 : ℕ) ≠ 0),
@@ -168,15 +168,15 @@ theorem sum_finiteUnitaryDiagonalCoordinate_eq_zero
 
 def finiteUnitaryDiagonalAdjointAutocorrelationHaarSignal
     (d : ℕ) (s : (Fin 2 ⊕ Fin d) → ℝ) : ℝ :=
-  ∫ U, (∑ j, s j * finiteUnitaryDiagonalCoordinate s U j) ^ 2
+  ∫ U, (∑ j, s j * finiteUnitaryDiagonalCoordinate s U j) ^ (2 : ℕ)
     ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)
 
 theorem finiteUnitaryDiagonalAdjointAutocorrelationHaarSignal_eq
     (d : ℕ) (s : (Fin 2 ⊕ Fin d) → ℝ)
     (hsum : ∑ i, s i = 0) :
     finiteUnitaryDiagonalAdjointAutocorrelationHaarSignal d s =
-      (∑ i, (s i) ^ 2) ^ 2 /
-        ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+      (∑ i, (s i) ^ (2 : ℕ)) ^ (2 : ℕ) /
+        ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
   let ι := Fin 2 ⊕ Fin d
   let μ := finiteUnitaryHaar ι
   let X := fun (j : ι) (U : Matrix.unitaryGroup ι ℂ) =>
@@ -187,7 +187,7 @@ theorem finiteUnitaryDiagonalAdjointAutocorrelationHaarSignal_eq
     intro h
     injection h with h'
     omega
-  let v : ℝ := (∑ i, (s i) ^ 2) /
+  let v : ℝ := (∑ i, (s i) ^ (2 : ℕ)) /
     (((d + 2 : ℕ) : ℝ) * ((d + 3 : ℕ) : ℝ))
   let c : ℝ := ∫ U, X a U * X b U ∂μ
   have hv : (∫ U, X a U * X a U ∂μ) = v := by
@@ -235,7 +235,7 @@ theorem finiteUnitaryDiagonalAdjointAutocorrelationHaarSignal_eq
       ring
     linarith [hsplit, herase, hzero]
   have hexpand (U : Matrix.unitaryGroup ι ℂ) :
-      (∑ j, s j * X j U) ^ 2 =
+      (∑ j, s j * X j U) ^ (2 : ℕ) =
         ∑ j, ∑ k, s j * s k * (X j U * X k U) := by
     rw [pow_two, Finset.sum_mul_sum]
     apply Finset.sum_congr rfl
@@ -244,7 +244,7 @@ theorem finiteUnitaryDiagonalAdjointAutocorrelationHaarSignal_eq
     intro k _hk
     ring
   have hint :
-      (∫ U, (∑ j, s j * X j U) ^ 2 ∂μ) =
+      (∫ U, (∑ j, s j * X j U) ^ (2 : ℕ) ∂μ) =
         ∑ j, ∑ k, s j * s k * (if j = k then v else c) := by
     rw [integral_congr_ae (Filter.Eventually.of_forall hexpand)]
     rw [integral_finsetSum Finset.univ]
@@ -264,7 +264,7 @@ theorem finiteUnitaryDiagonalAdjointAutocorrelationHaarSignal_eq
       exact (integrable_finiteUnitaryDiagonalCoordinate_mul s j k).const_mul
         (s j * s k)
   rw [finiteUnitaryDiagonalAdjointAutocorrelationHaarSignal]
-  change (∫ U, (∑ j, s j * X j U) ^ 2 ∂μ) = _
+  change (∫ U, (∑ j, s j * X j U) ^ (2 : ℕ) ∂μ) = _
   rw [hint, exchangeable_second_moment_sum, hsum,
     zero_pow (by norm_num : (2 : ℕ) ≠ 0), mul_zero, zero_add]
   have hd1 : (0 : ℝ) < d + 1 := by positivity
@@ -276,8 +276,8 @@ theorem finiteUnitaryDiagonalAdjointAutocorrelationHaarSignal_eq
     nlinarith [hvc]
   rw [hc]
   dsimp [v]
-  have hdenpos : (0 : ℝ) < (d + 2) ^ 2 - 1 := by nlinarith
-  have hden : (d + 2 : ℝ) ^ 2 - 1 ≠ 0 := ne_of_gt hdenpos
+  have hdenpos : (0 : ℝ) < (d + 2) ^ (2 : ℕ) - 1 := by nlinarith
+  have hden : (d + 2 : ℝ) ^ (2 : ℕ) - 1 ≠ 0 := ne_of_gt hdenpos
   field_simp [hden]
   push_cast
   ring
@@ -326,7 +326,7 @@ def finiteUnitaryAdjointAutocorrelationIntegrand
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (H : Matrix ι ι ℂ) (U : Matrix.unitaryGroup ι ℂ) : ℝ :=
     (Matrix.trace
-      (H * star (U : Matrix ι ι ℂ) * H * (U : Matrix ι ι ℂ))).re ^ 2
+      (H * star (U : Matrix ι ι ℂ) * H * (U : Matrix ι ι ℂ))).re ^ (2 : ℕ)
 
 def finiteUnitaryAdjointAutocorrelationHaarSignal
     (d : ℕ) (H : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) : ℝ :=
@@ -384,7 +384,7 @@ theorem finiteUnitaryAdjointAutocorrelationIntegrand_conjugate
           (K : Matrix ι ι ℂ) := by
     rw [hcoe, hstarMatrix]
   rw [hcoeStar, hcoe]
-  exact congrArg (fun z : ℂ => z.re ^ 2)
+  exact congrArg (fun z : ℂ => z.re ^ (2 : ℕ))
     (trace_conjugated_adjoint_autocorrelation H U K)
 
 theorem integral_finiteUnitaryHaar_conjugate
@@ -423,8 +423,8 @@ theorem finiteUnitaryAdjointAutocorrelationHaarSignal_eq_eigenvalues
     (d : ℕ) (H : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)
     (hH : H.IsHermitian) (htrace : H.trace = 0) :
     finiteUnitaryAdjointAutocorrelationHaarSignal d H =
-      (∑ i, (hH.eigenvalues i) ^ 2) ^ 2 /
-        ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+      (∑ i, (hH.eigenvalues i) ^ (2 : ℕ)) ^ (2 : ℕ) /
+        ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
   have hspec : H =
       (hH.eigenvectorUnitary : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
         Matrix.diagonal (fun i => (hH.eigenvalues i : ℂ)) *
@@ -453,7 +453,7 @@ theorem finiteUnitaryAdjointAutocorrelationHaarSignal_eq_eigenvalues
 theorem trace_mul_self_re_eq_sum_sq_eigenvalues
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (H : Matrix ι ι ℂ) (hH : H.IsHermitian) :
-    (Matrix.trace (H * H)).re = ∑ i, (hH.eigenvalues i) ^ 2 := by
+    (Matrix.trace (H * H)).re = ∑ i, (hH.eigenvalues i) ^ (2 : ℕ) := by
   let K := hH.eigenvectorUnitary
   let D := Matrix.diagonal (fun i => (hH.eigenvalues i : ℂ))
   have hspec : H = (K : Matrix ι ι ℂ) * D * star (K : Matrix ι ι ℂ) := by
@@ -503,7 +503,7 @@ theorem trace_mul_self_re_eq_sum_sq_eigenvalues
 theorem sum_sq_eigenvalues_pos_of_ne_zero
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (H : Matrix ι ι ℂ) (hH : H.IsHermitian) (hzero : H ≠ 0) :
-    0 < ∑ i, (hH.eigenvalues i) ^ 2 := by
+    0 < ∑ i, (hH.eigenvalues i) ^ (2 : ℕ) := by
   have heig : hH.eigenvalues ≠ 0 := by
     exact (not_congr hH.eigenvalues_eq_zero_iff).mpr hzero
   obtain ⟨i, hi⟩ := Function.ne_iff.mp heig
@@ -534,11 +534,11 @@ theorem haar_measureReal_half_energy_adjointAutocorrelation_le
     (d : ℕ) (H : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)
     (hH : H.IsHermitian) (htrace : H.trace = 0) (hzero : H ≠ 0) :
     (finiteUnitaryHaar (Fin 2 ⊕ Fin d)).real
-        {U | ((∑ i, (hH.eigenvalues i) ^ 2) / 2) ^ 2 ≤
+        {U | ((∑ i, (hH.eigenvalues i) ^ (2 : ℕ)) / 2) ^ (2 : ℕ) ≤
           finiteUnitaryAdjointAutocorrelationIntegrand H U} ≤
-      4 / ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
-  let S : ℝ := ∑ i, (hH.eigenvalues i) ^ 2
-  let ε : ℝ := (S / 2) ^ 2
+      4 / ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
+  let S : ℝ := ∑ i, (hH.eigenvalues i) ^ (2 : ℕ)
+  let ε : ℝ := (S / 2) ^ (2 : ℕ)
   have hS : 0 < S := sum_sq_eigenvalues_pos_of_ne_zero H hH hzero
   have hε : 0 < ε := sq_pos_of_pos (div_pos hS (by norm_num))
   have hnonneg :
@@ -557,17 +557,17 @@ theorem haar_measureReal_half_energy_adjointAutocorrelation_le
   have hraw :
       (finiteUnitaryHaar (Fin 2 ⊕ Fin d)).real
           {U | ε ≤ finiteUnitaryAdjointAutocorrelationIntegrand H U} ≤
-        (S ^ 2 / ((((d + 2 : ℕ) : ℝ) ^ 2) - 1)) / ε := by
+        (S ^ (2 : ℕ) / ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1)) / ε := by
     exact (le_div_iff₀ hε).2 (by simpa [S, mul_comm] using hmarkov)
-  have hden : 0 < ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+  have hden : 0 < ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
     have hn : 2 ≤ d + 2 := by omega
     have : (2 : ℝ) ≤ ((d + 2 : ℕ) : ℝ) := by exact_mod_cast hn
     nlinarith
   change (finiteUnitaryHaar (Fin 2 ⊕ Fin d)).real
       {U | ε ≤ finiteUnitaryAdjointAutocorrelationIntegrand H U} ≤ _
   calc
-    _ ≤ (S ^ 2 / ((((d + 2 : ℕ) : ℝ) ^ 2) - 1)) / ε := hraw
-    _ = 4 / ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+    _ ≤ (S ^ (2 : ℕ) / ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1)) / ε := hraw
+    _ = 4 / ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
       dsimp [ε]
       field_simp [ne_of_gt hS, ne_of_gt hden]
       ring
@@ -598,8 +598,8 @@ theorem haar_adjointAutocorrelationIntegral_eq_traceEnergy
     (H : Matrix κ κ ℂ) (hH : H.IsHermitian) (htrace : H.trace = 0) :
     (∫ U : Matrix.unitaryGroup κ ℂ,
         finiteUnitaryAdjointAutocorrelationIntegrand H U ∂finiteUnitaryHaar κ) =
-      (Matrix.trace (H * H)).re ^ 2 /
-        ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+      (Matrix.trace (H * H)).re ^ (2 : ℕ) /
+        ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
   let A : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ :=
     Matrix.reindexAlgEquiv ℂ ℂ e H
   have hA : A.IsHermitian := reindexAlgEquiv_isHermitian e hH
@@ -620,16 +620,16 @@ theorem haar_adjointAutocorrelationIntegral_eq_traceEnergy
             filter_upwards [] with U
             exact (finiteUnitaryAdjointAutocorrelationIntegrand_reindex e H U).symm
     _ = finiteUnitaryAdjointAutocorrelationHaarSignal d A := htrans
-    _ = (∑ i, (hA.eigenvalues i) ^ 2) ^ 2 /
-        ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) :=
+    _ = (∑ i, (hA.eigenvalues i) ^ (2 : ℕ)) ^ (2 : ℕ) /
+        ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) :=
       finiteUnitaryAdjointAutocorrelationHaarSignal_eq_eigenvalues d A hA hAtrace
-    _ = (Matrix.trace (A * A)).re ^ 2 /
-        ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+    _ = (Matrix.trace (A * A)).re ^ (2 : ℕ) /
+        ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
       rw [trace_mul_self_re_eq_sum_sq_eigenvalues A hA]
     _ = _ := by
       change (Matrix.trace
-        (Matrix.reindexAlgEquiv ℂ ℂ e H * Matrix.reindexAlgEquiv ℂ ℂ e H)).re ^ 2 /
-          ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) = _
+        (Matrix.reindexAlgEquiv ℂ ℂ e H * Matrix.reindexAlgEquiv ℂ ℂ e H)).re ^ (2 : ℕ) /
+          ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) = _
       rw [← map_mul, reindexAlgEquiv_trace]
 
 /-- **Register-independent half-energy Haar tail.** On every finite register of dimension
@@ -641,11 +641,11 @@ theorem haar_measureReal_half_traceEnergy_adjointAutocorrelation_le
     (H : Matrix κ κ ℂ) (hH : H.IsHermitian)
     (htrace : H.trace = 0) (hzero : H ≠ 0) :
     (finiteUnitaryHaar κ).real
-        {U | ((Matrix.trace (H * H)).re / 2) ^ 2 ≤
+        {U | ((Matrix.trace (H * H)).re / 2) ^ (2 : ℕ) ≤
           finiteUnitaryAdjointAutocorrelationIntegrand H U} ≤
-      4 / ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+      4 / ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
   let S : ℝ := (Matrix.trace (H * H)).re
-  let ε : ℝ := (S / 2) ^ 2
+  let ε : ℝ := (S / 2) ^ (2 : ℕ)
   have hS : 0 < S := by
     change 0 < (Matrix.trace (H * H)).re
     rw [trace_mul_self_re_eq_sum_sq_eigenvalues H hH]
@@ -662,17 +662,17 @@ theorem haar_measureReal_half_traceEnergy_adjointAutocorrelation_le
   have hraw :
       (finiteUnitaryHaar κ).real
           {U | ε ≤ finiteUnitaryAdjointAutocorrelationIntegrand H U} ≤
-        (S ^ 2 / ((((d + 2 : ℕ) : ℝ) ^ 2) - 1)) / ε := by
+        (S ^ (2 : ℕ) / ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1)) / ε := by
     exact (le_div_iff₀ hε).2 (by simpa [S, mul_comm] using hmarkov)
-  have hden : 0 < ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+  have hden : 0 < ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
     have hn : 2 ≤ d + 2 := by omega
     have hd : (2 : ℝ) ≤ ((d + 2 : ℕ) : ℝ) := by exact_mod_cast hn
     nlinarith
   change (finiteUnitaryHaar κ).real
       {U | ε ≤ finiteUnitaryAdjointAutocorrelationIntegrand H U} ≤ _
   calc
-    _ ≤ (S ^ 2 / ((((d + 2 : ℕ) : ℝ) ^ 2) - 1)) / ε := hraw
-    _ = 4 / ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
+    _ ≤ (S ^ (2 : ℕ) / ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1)) / ε := hraw
+    _ = 4 / ((((d + 2 : ℕ) : ℝ) ^ (2 : ℕ)) - 1) := by
       dsimp [ε]
       field_simp [ne_of_gt hS, ne_of_gt hden]
       ring

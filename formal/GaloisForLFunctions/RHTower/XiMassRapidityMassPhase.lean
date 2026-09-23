@@ -86,7 +86,7 @@ theorem xiMassRapidityPhaseKernel_timelike {a sigma u h : ℝ}
     (hu : 0 < u) (hh : 0 ≤ h) (hhu : h < u) (t : ℝ) :
     xiMassRapidityPhaseKernel a sigma u h t
       = (Real.cosh t : ℂ) * ((Real.exp (-(a * sigma) * Real.cosh t) : ℝ) : ℂ)
-        * Complex.exp (-(I * ((a * (Real.sqrt (u ^ 2 - h ^ 2)
+        * Complex.exp (-(I * ((a * (Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ))
             * Real.cosh (t + timelikeRapidity u h)) : ℝ) : ℂ))) := by
   rw [xiMassRapidityPhaseKernel, massPhase_timelike hu hh hhu t]
 
@@ -95,7 +95,7 @@ theorem xiMassRapidityPhaseKernel_spacelike {a sigma u h : ℝ}
     (hu : 0 ≤ u) (hh : 0 < h) (huh : u < h) (t : ℝ) :
     xiMassRapidityPhaseKernel a sigma u h t
       = (Real.cosh t : ℂ) * ((Real.exp (-(a * sigma) * Real.cosh t) : ℝ) : ℂ)
-        * Complex.exp (-(I * ((a * (Real.sqrt (h ^ 2 - u ^ 2)
+        * Complex.exp (-(I * ((a * (Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))
             * Real.sinh (t + spacelikeRapidity u h)) : ℝ) : ℂ))) := by
   rw [xiMassRapidityPhaseKernel, massPhase_spacelike hu hh huh t]
 

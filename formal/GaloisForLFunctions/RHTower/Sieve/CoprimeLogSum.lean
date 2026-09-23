@@ -40,7 +40,7 @@ theorem abs_weightErr_coprime_le {p : ℕ} (hp : p.Prime) (m : ℕ) :
     |weightErr (coprimeSquarefreeWeight p) (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1)) m|
       ≤ 3 * Real.sqrt m + 3 := by
   have hR1 : 1 ≤ Nat.sqrt m + 1 := by omega
-  have hRM : 0 + m ≤ (Nat.sqrt m + 1) ^ 2 := by
+  have hRM : 0 + m ≤ (Nat.sqrt m + 1) ^ (2 : ℕ) := by
     have h := Nat.lt_succ_sqrt' m
     rw [zero_add]
     have hs : Nat.sqrt m + 1 = Nat.succ (Nat.sqrt m) := rfl
@@ -51,7 +51,7 @@ theorem abs_weightErr_coprime_le {p : ℕ} (hp : p.Prime) (m : ℕ) :
   rw [zero_add, Ioc_zero_eq_Icc_one, coprime_density_eq hp] at hbase
   have hval : weightErr (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1)) m
-      = ∑ n ∈ Finset.Icc 1 m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)
+      = ∑ n ∈ Finset.Icc 1 m, (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
         - (m : ℝ) * (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1)) := by
     rw [weightErr, weightCount]
     congr 1

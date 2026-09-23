@@ -52,20 +52,20 @@ theorem pi_div_two_sub_inv_le_arctan {T : ℝ} (hT : 0 < T) :
 
 /-- The normalising radius attached to a ratio. -/
 theorem sqrt_one_add_div_sq {c x : ℝ} (hx : 0 < x) :
-    Real.sqrt (1 + (c / x) ^ 2) = Real.sqrt (x ^ 2 + c ^ 2) / x := by
-  have hrhs : 0 ≤ Real.sqrt (x ^ 2 + c ^ 2) / x := by positivity
-  have hsq : (Real.sqrt (x ^ 2 + c ^ 2) / x) ^ 2 = 1 + (c / x) ^ 2 := by
+    Real.sqrt (1 + (c / x) ^ (2 : ℕ)) = Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) / x := by
+  have hrhs : 0 ≤ Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) / x := by positivity
+  have hsq : (Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) / x) ^ (2 : ℕ) = 1 + (c / x) ^ (2 : ℕ) := by
     rw [div_pow, Real.sq_sqrt (by positivity)]
     field_simp
   rw [← hsq, Real.sqrt_sq hrhs]
 
 theorem cos_arctan_div {c x : ℝ} (hx : 0 < x) :
-    Real.cos (Real.arctan (c / x)) = x / Real.sqrt (x ^ 2 + c ^ 2) := by
+    Real.cos (Real.arctan (c / x)) = x / Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) := by
   rw [Real.cos_arctan, sqrt_one_add_div_sq hx, one_div_div]
 
 theorem sin_arctan_div {c x : ℝ} (hx : 0 < x) :
-    Real.sin (Real.arctan (c / x)) = c / Real.sqrt (x ^ 2 + c ^ 2) := by
-  have hr : 0 < Real.sqrt (x ^ 2 + c ^ 2) := Real.sqrt_pos.mpr (by positivity)
+    Real.sin (Real.arctan (c / x)) = c / Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) := by
+  have hr : 0 < Real.sqrt (x ^ (2 : ℕ) + c ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by positivity)
   rw [Real.sin_arctan, sqrt_one_add_div_sq hx]
   field_simp
 
@@ -79,16 +79,16 @@ theorem polePhase_eq_exp {u v x : ℝ} (hv : 0 < v) :
     ((x : ℂ) - ((u : ℂ) + (v : ℂ) * I)) / ((x : ℂ) - ((u : ℂ) - (v : ℂ) * I))
       = Complex.exp ((polePhase u v x : ℂ) * I) := by
   set s : ℝ := x - u with hs
-  have hr : 0 < Real.sqrt (v ^ 2 + s ^ 2) := Real.sqrt_pos.mpr (by positivity)
-  have hrC : ((Real.sqrt (v ^ 2 + s ^ 2) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hr
+  have hr : 0 < Real.sqrt (v ^ (2 : ℕ) + s ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by positivity)
+  have hrC : ((Real.sqrt (v ^ (2 : ℕ) + s ^ (2 : ℕ)) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hr
   have hexp : Complex.exp ((Real.arctan (s / v) : ℂ) * I)
-      = ((v : ℂ) + (s : ℂ) * I) / ((Real.sqrt (v ^ 2 + s ^ 2) : ℝ) : ℂ) := by
+      = ((v : ℂ) + (s : ℂ) * I) / ((Real.sqrt (v ^ (2 : ℕ) + s ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
       cos_arctan_div hv, sin_arctan_div hv]
     push_cast
     field_simp
   have hsq : Complex.exp ((polePhase u v x : ℂ) * I)
-      = -(Complex.exp ((Real.arctan (s / v) : ℂ) * I)) ^ 2 := by
+      = -(Complex.exp ((Real.arctan (s / v) : ℂ) * I)) ^ (2 : ℕ) := by
     have hsplit : ((polePhase u v x : ℝ) : ℂ) * I
         = ((Real.arctan (s / v) : ℂ) * I + (Real.arctan (s / v) : ℂ) * I) + (π : ℂ) * I := by
       rw [polePhase]
@@ -105,14 +105,14 @@ theorem polePhase_eq_exp {u v x : ℝ} (hv : 0 < v) :
     rw [hs]; push_cast; ring
   have hnum' : (x : ℂ) - ((u : ℂ) - (v : ℂ) * I) = (s : ℂ) + (v : ℂ) * I := by
     rw [hs]; push_cast; ring
-  have hrsq : (((Real.sqrt (v ^ 2 + s ^ 2) : ℝ) : ℂ)) ^ 2 = ((v : ℂ) ^ 2 + (s : ℂ) ^ 2) := by
+  have hrsq : (((Real.sqrt (v ^ (2 : ℕ) + s ^ (2 : ℕ)) : ℝ) : ℂ)) ^ (2 : ℕ) = ((v : ℂ) ^ (2 : ℕ) + (s : ℂ) ^ (2 : ℕ)) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by positivity)]
     push_cast
     ring
-  have hvs : ((v : ℂ) ^ 2 + (s : ℂ) ^ 2) ≠ 0 := by
+  have hvs : ((v : ℂ) ^ (2 : ℕ) + (s : ℂ) ^ (2 : ℕ)) ≠ 0 := by
     rw [← hrsq]
     exact pow_ne_zero 2 hrC
-  have hI3 : (I : ℂ) ^ 3 = -I := by
+  have hI3 : (I : ℂ) ^ (3 : ℕ) = -I := by
     rw [show (3 : ℕ) = 2 + 1 from rfl, pow_succ, Complex.I_sq, neg_one_mul]
   rw [hsq, hexp, hnum, hnum', div_pow, hrsq]
   field_simp
@@ -122,21 +122,21 @@ theorem polePhase_eq_exp {u v x : ℝ} (hv : 0 < v) :
 
 /-- The phase rate is the half-plane Poisson kernel. -/
 theorem hasDerivAt_polePhase (u : ℝ) {v : ℝ} (hv : 0 < v) (x : ℝ) :
-    HasDerivAt (polePhase u v) (2 * v / ((x - u) ^ 2 + v ^ 2)) x := by
+    HasDerivAt (polePhase u v) (2 * v / ((x - u) ^ (2 : ℕ) + v ^ (2 : ℕ))) x := by
   have hinner : HasDerivAt (fun y : ℝ => (y - u) / v) (1 / v) x := by
     simpa using ((hasDerivAt_id x).sub_const u).div_const v
-  have harc : HasDerivAt Real.arctan (1 / (1 + ((x - u) / v) ^ 2)) ((x - u) / v) :=
+  have harc : HasDerivAt Real.arctan (1 / (1 + ((x - u) / v) ^ (2 : ℕ))) ((x - u) / v) :=
     Real.hasDerivAt_arctan _
   have hcomp := harc.comp x hinner
   simp only [Function.comp_def] at hcomp
   have hres : HasDerivAt (polePhase u v)
-      (2 * ((1 / (1 + ((x - u) / v) ^ 2)) * (1 / v))) x := by
+      (2 * ((1 / (1 + ((x - u) / v) ^ (2 : ℕ))) * (1 / v))) x := by
     have hfun : polePhase u v = fun y : ℝ => 2 * Real.arctan ((y - u) / v) + π := rfl
     rw [hfun]
     exact (hcomp.const_mul 2).add_const π
   convert hres using 1
   have hvne : v ≠ 0 := ne_of_gt hv
-  have hsum : (1 : ℝ) + ((x - u) / v) ^ 2 ≠ 0 := by positivity
+  have hsum : (1 : ℝ) + ((x - u) / v) ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp
   ring
 

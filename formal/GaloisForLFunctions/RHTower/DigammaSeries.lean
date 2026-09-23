@@ -199,7 +199,7 @@ theorem integrableOn_Ioc_beta (m : ℕ) (t : ℂ) (ht : -1 < t.re) :
   apply Integrable.mono' h2 h3
   exact ae_restrict_of_forall_mem measurableSet_Ioc (fun u hu => norm_beta_le hu)
 
-/-- The beta integral at `n = 0`: `∫_0^1 u^{s-1} du = 1/s` for `0 < Re s`. -/
+/-- The beta integral at `n = 0`: `∫_0^(1 : ℕ) u^{s-1} du = 1/s` for `0 < Re s`. -/
 theorem beta_integral_zero (s : ℂ) (hs : 0 < s.re) :
     ∫ u in (0 : ℝ)..1, (u : ℂ) ^ (s - 1) = 1 / s := by
   have h1 : -1 < (s - 1).re := by
@@ -352,7 +352,7 @@ theorem beta_integral_succ_step (s : ℂ) (hs : 0 < s.re) (n : ℕ) :
   simp only [sub_self] at hsplit
   linear_combination hsplit
 
-/-- The finite beta integral: `∫_0^1 (1-u)^n u^{s-1} du = n! / (s(s+1)⋯(s+n))`
+/-- The finite beta integral: `∫_0^(1 : ℕ) (1-u)^n u^{s-1} du = n! / (s(s+1)⋯(s+n))`
 for `0 < Re s`. -/
 theorem beta_integral_eq (s : ℂ) (hs : 0 < s.re) (n : ℕ) :
     ∫ u in (0 : ℝ)..1, ((1 : ℂ) - u) ^ n * (u : ℂ) ^ (s - 1) =

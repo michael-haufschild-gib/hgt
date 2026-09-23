@@ -41,8 +41,8 @@ def suzukiEnergyKernelFun (ρ : XiDivisorSupport) (x : ℝ) : ℂ :=
   suzukiHalfInner ((x : ℝ) : ℂ) * suzukiCauchyKernel ρ x
 
 theorem norm_sq_suzukiEnergyKernelFun (ρ : XiDivisorSupport) (x : ℝ) :
-    ‖suzukiEnergyKernelFun ρ x‖ ^ 2
-      = ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / (x - xiRealSpectralPointSupport ρ) ^ 2 := by
+    ‖suzukiEnergyKernelFun ρ x‖ ^ (2 : ℕ)
+      = ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / (x - xiRealSpectralPointSupport ρ) ^ (2 : ℕ) := by
   rw [suzukiEnergyKernelFun, norm_mul, mul_pow, suzukiCauchyKernel, norm_inv]
   rw [show ((x : ℂ) - ((xiRealSpectralPointSupport ρ : ℝ) : ℂ))
       = (((x - xiRealSpectralPointSupport ρ : ℝ)) : ℂ) by push_cast; ring]
@@ -82,7 +82,7 @@ theorem inner_suzukiEnergyKernel (hRH : RiemannHypothesis) (ρ σ : XiDivisorSup
   rw [MeasureTheory.L2.inner_def]
   have hae : (fun x : ℝ => inner ℂ ((suzukiEnergyKernel hRH ρ : Lp ℂ 2 _) x)
         ((suzukiEnergyKernel hRH σ : Lp ℂ 2 _) x))
-      =ᵐ[volume] fun x : ℝ => ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ) *
+      =ᵐ[volume] fun x : ℝ => ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ) *
         ((starRingEnd ℂ) (suzukiCauchyKernel ρ x)) * (suzukiCauchyKernel σ x) := by
     simp only [suzukiEnergyKernel]
     filter_upwards [(memLp_suzukiEnergyKernelFun hRH ρ).coeFn_toLp,
@@ -91,7 +91,7 @@ theorem inner_suzukiEnergyKernel (hRH : RiemannHypothesis) (ρ σ : XiDivisorSup
     rw [map_mul]
     have hconj : (starRingEnd ℂ) (suzukiHalfInner ((x : ℝ) : ℂ)) *
         suzukiHalfInner ((x : ℝ) : ℂ)
-        = ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ) := by
+        = ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [mul_comm, Complex.mul_conj, Complex.sq_norm]
     rw [← hconj]
     ring
@@ -160,9 +160,9 @@ theorem suzukiCauchyPartial_sub (hRH : RiemannHypothesis) (a : XiDivisorSupport 
 
 theorem norm_sq_suzukiCauchyPartial_sub (hRH : RiemannHypothesis) (a : XiDivisorSupport → ℂ)
     {M N : ℕ} (hMN : M ≤ N) :
-    ‖suzukiCauchyPartial hRH a N - suzukiCauchyPartial hRH a M‖ ^ 2
+    ‖suzukiCauchyPartial hRH a N - suzukiCauchyPartial hRH a M‖ ^ (2 : ℕ)
       = ∑ n ∈ Finset.Ico M N,
-          ‖a (xiSupportEnum n)‖ ^ 2 * suzukiCauchyWeight (xiSupportEnum n) := by
+          ‖a (xiSupportEnum n)‖ ^ (2 : ℕ) * suzukiCauchyWeight (xiSupportEnum n) := by
   classical
   have hv : ∀ n l : ℕ,
       inner ℂ (suzukiEnergyKernel hRH (xiSupportEnum n))
@@ -191,26 +191,26 @@ theorem norm_sq_suzukiCauchyPartial_sub (hRH : RiemannHypothesis) (a : XiDivisor
 /-! ## Convergence of the Cauchy series -/
 
 theorem cauchySeq_suzukiCauchyPartial (hRH : RiemannHypothesis) (a : XiDivisorSupport → ℂ)
-    (hsum : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ 2 * suzukiCauchyWeight ρ) :
+    (hsum : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ) :
     CauchySeq (suzukiCauchyPartial hRH a) := by
   rw [Metric.cauchySeq_iff']
   intro ε hε
   have hsumN : Summable fun n : ℕ =>
-      ‖a (xiSupportEnum n)‖ ^ 2 * suzukiCauchyWeight (xiSupportEnum n) :=
+      ‖a (xiSupportEnum n)‖ ^ (2 : ℕ) * suzukiCauchyWeight (xiSupportEnum n) :=
     (xiSupportEnum.summable_iff
-      (f := fun ρ : XiDivisorSupport => ‖a ρ‖ ^ 2 * suzukiCauchyWeight ρ)).mpr hsum
+      (f := fun ρ : XiDivisorSupport => ‖a ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ)).mpr hsum
   have hc : CauchySeq fun N : ℕ => ∑ n ∈ Finset.range N,
-      ‖a (xiSupportEnum n)‖ ^ 2 * suzukiCauchyWeight (xiSupportEnum n) :=
+      ‖a (xiSupportEnum n)‖ ^ (2 : ℕ) * suzukiCauchyWeight (xiSupportEnum n) :=
     hsumN.hasSum.tendsto_sum_nat.cauchySeq
   rw [Metric.cauchySeq_iff'] at hc
-  obtain ⟨M, hM⟩ := hc (ε ^ 2) (by positivity)
+  obtain ⟨M, hM⟩ := hc (ε ^ (2 : ℕ)) (by positivity)
   refine ⟨M, fun N hN => ?_⟩
   have h1 := hM N hN
   rw [Real.dist_eq, ← Finset.sum_Ico_eq_sub _ hN] at h1
   have hnonneg : (0 : ℝ) ≤ ∑ n ∈ Finset.Ico M N,
-      ‖a (xiSupportEnum n)‖ ^ 2 * suzukiCauchyWeight (xiSupportEnum n) :=
+      ‖a (xiSupportEnum n)‖ ^ (2 : ℕ) * suzukiCauchyWeight (xiSupportEnum n) :=
     Finset.sum_nonneg fun n _ => mul_nonneg (sq_nonneg _) (suzukiCauchyWeight_pos _).le
-  have h2 : ‖suzukiCauchyPartial hRH a N - suzukiCauchyPartial hRH a M‖ ^ 2 < ε ^ 2 := by
+  have h2 : ‖suzukiCauchyPartial hRH a N - suzukiCauchyPartial hRH a M‖ ^ (2 : ℕ) < ε ^ (2 : ℕ) := by
     rw [norm_sq_suzukiCauchyPartial_sub hRH a hN]
     rw [abs_of_nonneg hnonneg] at h1
     exact h1
@@ -257,7 +257,7 @@ theorem coeFn_suzukiCauchyPartial (hRH : RiemannHypothesis) (a : XiDivisorSuppor
 /-! ## The pointwise sum is the `L²` sum -/
 
 theorem exists_lp_of_hasSum (hRH : RiemannHypothesis) (a : XiDivisorSupport → ℂ)
-    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ 2 * suzukiCauchyWeight ρ)
+    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ)
     (g : ℝ → ℂ)
     (hg : ∀ᵐ x ∂(volume : Measure ℝ),
       HasSum (fun ρ : XiDivisorSupport => a ρ * suzukiEnergyKernelFun ρ x) (g x)) :
@@ -279,8 +279,8 @@ theorem exists_lp_of_hasSum (hRH : RiemannHypothesis) (a : XiDivisorSupport → 
   exact (hx N).symm
 
 theorem summable_cross (a b : XiDivisorSupport → ℂ)
-    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ 2 * suzukiCauchyWeight ρ)
-    (hsb : Summable fun ρ : XiDivisorSupport => ‖b ρ‖ ^ 2 * suzukiCauchyWeight ρ) :
+    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ)
+    (hsb : Summable fun ρ : XiDivisorSupport => ‖b ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ) :
     Summable fun ρ : XiDivisorSupport =>
       (starRingEnd ℂ) (a ρ) * b ρ * ((suzukiCauchyWeight ρ : ℝ) : ℂ) := by
   refine Summable.of_norm_bounded ((hsa.add hsb).mul_left (1 / 2)) fun ρ => ?_
@@ -290,8 +290,8 @@ theorem summable_cross (a b : XiDivisorSupport → ℂ)
     norm_nonneg (b ρ), mul_nonneg (norm_nonneg (a ρ)) (norm_nonneg (b ρ))]
 
 theorem inner_of_tendsto (hRH : RiemannHypothesis) (a b : XiDivisorSupport → ℂ)
-    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ 2 * suzukiCauchyWeight ρ)
-    (hsb : Summable fun ρ : XiDivisorSupport => ‖b ρ‖ ^ 2 * suzukiCauchyWeight ρ)
+    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ)
+    (hsb : Summable fun ρ : XiDivisorSupport => ‖b ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ)
     {S T : Lp ℂ 2 (volume : Measure ℝ)}
     (hS : Tendsto (suzukiCauchyPartial hRH a) atTop (𝓝 S))
     (hT : Tendsto (suzukiCauchyPartial hRH b) atTop (𝓝 T)) :
@@ -322,8 +322,8 @@ theorem inner_of_tendsto (hRH : RiemannHypothesis) (a b : XiDivisorSupport → �
 weights, the `L²(ℝ)` inner product of the pointwise energy-weighted Cauchy series is the weighted
 `ℓ²` inner product of the coefficients. -/
 theorem integral_conj_of_hasSum (hRH : RiemannHypothesis) (a b : XiDivisorSupport → ℂ)
-    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ 2 * suzukiCauchyWeight ρ)
-    (hsb : Summable fun ρ : XiDivisorSupport => ‖b ρ‖ ^ 2 * suzukiCauchyWeight ρ)
+    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ)
+    (hsb : Summable fun ρ : XiDivisorSupport => ‖b ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ)
     (ga gb : ℝ → ℂ)
     (hga : ∀ᵐ x ∂(volume : Measure ℝ),
       HasSum (fun ρ : XiDivisorSupport => a ρ * suzukiEnergyKernelFun ρ x) (ga x))
@@ -343,7 +343,7 @@ theorem integral_conj_of_hasSum (hRH : RiemannHypothesis) (a b : XiDivisorSuppor
 
 /-- The pointwise sum of the energy-weighted Cauchy series lies in `L²(ℝ)`. -/
 theorem memLp_of_hasSum (hRH : RiemannHypothesis) (a : XiDivisorSupport → ℂ)
-    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ 2 * suzukiCauchyWeight ρ)
+    (hsa : Summable fun ρ : XiDivisorSupport => ‖a ρ‖ ^ (2 : ℕ) * suzukiCauchyWeight ρ)
     (g : ℝ → ℂ)
     (hg : ∀ᵐ x ∂(volume : Measure ℝ),
       HasSum (fun ρ : XiDivisorSupport => a ρ * suzukiEnergyKernelFun ρ x) (g x)) :

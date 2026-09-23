@@ -65,7 +65,7 @@ section Cardinality
 /-- The Z- and X-interior corner subtypes partition `Fin (L-1) × Fin (L-1)`. -/
 lemma card_ZInteriorCornerIdx_add_card_XInteriorCornerIdx :
     Fintype.card (ZInteriorCornerIdx L) +
-      Fintype.card (XInteriorCornerIdx L) = (L - 1) ^ 2 := by
+      Fintype.card (XInteriorCornerIdx L) = (L - 1) ^ (2 : ℕ) := by
   classical
   have hz : Fintype.card (ZInteriorCornerIdx L) =
       (Finset.univ.filter
@@ -114,16 +114,16 @@ lemma card_ZFaceIdx_add_card_XFaceIdx [Fact (Odd L)] :
   rw [card_ZFaceIdx_via_equiv, card_XFaceIdx_via_equiv]
   have hsum :
       Fintype.card (ZInteriorCornerIdx L) +
-        Fintype.card (XInteriorCornerIdx L) = (L - 1) ^ 2 :=
+        Fintype.card (XInteriorCornerIdx L) = (L - 1) ^ (2 : ℕ) :=
     card_ZInteriorCornerIdx_add_card_XInteriorCornerIdx
   have h_half : 2 * ((L - 1) / 2) = L - 1 := two_mul_half_pred
   have hL2 : 1 ≤ L * L := by nlinarith [hL_pos]
-  have hexpand : (L - 1) ^ 2 + 2 * (L - 1) = L * L - 1 := by
+  have hexpand : (L - 1) ^ (2 : ℕ) + 2 * (L - 1) = L * L - 1 := by
     zify [hL_pos, hL2]; ring
   have hcombine :
       (Fintype.card (ZInteriorCornerIdx L) + 2 * ((L - 1) / 2)) +
         (Fintype.card (XInteriorCornerIdx L) + 2 * ((L - 1) / 2)) =
-      (L - 1) ^ 2 + 2 * (L - 1) := by
+      (L - 1) ^ (2 : ℕ) + 2 * (L - 1) := by
     rw [h_half]; linarith
   rw [hcombine, hexpand]
 

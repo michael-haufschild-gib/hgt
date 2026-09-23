@@ -69,7 +69,7 @@ theorem abs_sinh_add_sub_le_transport {c b x y : ℝ} (hc : 0<c) (hb : 0≤b)
 
 /-- A relative amplitude error controls its complete square, including the cross term. -/
 theorem abs_sq_sub_sq_le_transport {u v a : ℝ} (ha : 0≤a) (h : |u-v|≤a*|v|) :
-    |u^2-v^2|≤a*(2+a)*v^2 := by
+    |u^(2 : ℕ)-v^(2 : ℕ)|≤a*(2+a)*v^(2 : ℕ) := by
   have hs : |u+v|≤(a+2)*|v| := by
     have he : u+v=(u-v)+(v+v) := by ring
     rw [he]
@@ -79,7 +79,7 @@ theorem abs_sq_sub_sq_le_transport {u v a : ℝ} (ha : 0≤a) (h : |u-v|≤a*|v|
   calc
     _ = |u-v| *|u+v| := by rw [←abs_mul]; congr 1; ring
     _ ≤ (a*|v|)*((a+2)*|v|) := mul_le_mul h hs (abs_nonneg _) (by positivity)
-    _ = _ := by rw [show (a*|v|)*((a+2)*|v|)=a*(2+a)*|v|^2 by ring,sq_abs]
+    _ = _ := by rw [show (a*|v|)*((a+2)*|v|)=a*(2+a)*|v|^(2 : ℕ) by ring,sq_abs]
 
 /-- The full literal prime energy has a relative source estimate; no zero premise is used. -/
 theorem abs_primeClockCutoffEnergy_sub_le_transport {N : ℕ} (hN : 2≤N)
@@ -94,7 +94,7 @@ theorem abs_primeClockCutoffEnergy_sub_le_transport {N : ℕ} (hN : 2≤N)
     ←Finset.sum_sub_distrib,Finset.mul_sum]
   calc
     _ ≤ ∑ p ∈ Nat.primesLE N,
-      |4*Real.sinh ((e+h)*Real.log p)^2/(p:ℝ)-4*Real.sinh (e*Real.log p)^2/(p:ℝ)| :=
+      |4*Real.sinh ((e+h)*Real.log p)^(2 : ℕ)/(p:ℝ)-4*Real.sinh (e*Real.log p)^(2 : ℕ)/(p:ℝ)| :=
         Finset.abs_sum_le_sum_abs _ _
     _ ≤ _ := by
       apply Finset.sum_le_sum
@@ -113,11 +113,11 @@ theorem abs_primeClockCutoffEnergy_sub_le_transport {N : ℕ} (hN : 2≤N)
       have hb := abs_sinh_add_sub_le_transport hc (mul_nonneg (abs_nonneg h) hlogN) hx hy
       rw [←add_mul] at hb
       have hs := abs_sq_sub_sq_le_transport ha hb
-      have heq : 4*Real.sinh ((e+h)*Real.log p)^2/(p:ℝ)-4*Real.sinh (e*Real.log p)^2/(p:ℝ)=
-          (4/(p:ℝ))*(Real.sinh ((e+h)*Real.log p)^2-Real.sinh (e*Real.log p)^2) := by ring
+      have heq : 4*Real.sinh ((e+h)*Real.log p)^(2 : ℕ)/(p:ℝ)-4*Real.sinh (e*Real.log p)^(2 : ℕ)/(p:ℝ)=
+          (4/(p:ℝ))*(Real.sinh ((e+h)*Real.log p)^(2 : ℕ)-Real.sinh (e*Real.log p)^(2 : ℕ)) := by ring
       rw [heq,abs_mul,abs_of_nonneg (by positivity : (0:ℝ)≤4/(p:ℝ))]
       calc
-        _ ≤ (4/(p:ℝ))*(a*(2+a)*Real.sinh (e*Real.log p)^2) :=
+        _ ≤ (4/(p:ℝ))*(a*(2+a)*Real.sinh (e*Real.log p)^(2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hs (by positivity)
         _ = _ := by dsimp [a]; ring
 
@@ -127,9 +127,9 @@ theorem primeClockCutoffEnergy_pos {N : ℕ} (hN : 2≤N) {e : ℝ} (he : e≠0)
   rw [primeClockCutoffEnergy_eq_sinh]
   have hne : Real.sinh (e*Real.log 2)≠0 :=
     Real.sinh_ne_zero.mpr (mul_ne_zero he (Real.log_pos (by norm_num)).ne')
-  have hpos : 0<4*Real.sinh (e*Real.log 2)^2/(2:ℝ) := by positivity
+  have hpos : 0<4*Real.sinh (e*Real.log 2)^(2 : ℕ)/(2:ℝ) := by positivity
   apply hpos.trans_le
-  simpa using (Finset.single_le_sum (f:=fun p : ℕ => 4*Real.sinh (e*Real.log p)^2/(p:ℝ))
+  simpa using (Finset.single_le_sum (f:=fun p : ℕ => 4*Real.sinh (e*Real.log p)^(2 : ℕ)/(p:ℝ))
     (fun p hp => by positivity) (Nat.mem_primesLE.mpr ⟨hN,Nat.prime_two⟩))
 
 /-- Logarithmically small perturbations preserve the full off-center prime energy relatively. -/
@@ -172,9 +172,9 @@ theorem tendsto_primeClockEnergy_zero_of_cofinal_log_motion
     {K : ℕ→ℕ} (hK : Tendsto K atTop atTop) {h : ℕ→ℝ}
     (hlog : Tendsto (fun j => h j*Real.log (K j)) atTop (𝓝 0)) :
     Tendsto (fun j => primeClockCutoffEnergy (K j) (h j)) atTop (𝓝 0) := by
-  have hs : Tendsto (fun j => (h j*Real.log (K j))^2) atTop (𝓝 0) := by simpa using hlog.pow 2
+  have hs : Tendsto (fun j => (h j*Real.log (K j))^(2 : ℕ)) atTop (𝓝 0) := by simpa using hlog.pow 2
   have hratio := tendsto_primeClockSusceptibility_div_log_sq.comp hK
-  have hu := (hs.mul hratio).const_mul (4*Real.cosh 1^2)
+  have hu := (hs.mul hratio).const_mul (4*Real.cosh 1^(2 : ℕ))
   simp only [zero_mul,mul_zero] at hu
   have hwindow : ∀ᶠj in atTop, |h j| * Real.log (K j)≤1 := by
     have ha := (tendsto_order.1 hlog.abs).2 1 (by norm_num)
@@ -208,28 +208,28 @@ theorem tendsto_primeClockEnergy_atTop_of_log_motion {e : ℝ} (he : e≠0)
 used by the finite-prime RH receiver. -/
 theorem eventually_center_sq_le_normalized_primeEnergy {K : ℕ→ℕ} (hK : Tendsto K atTop atTop)
     {e : ℕ→ℝ} {a : ℝ} (he : Tendsto e atTop (𝓝 a)) :
-    ∀ᶠj in atTop, a^2≤primeClockCutoffEnergy (K j) (e j)/Real.log (K j)^2 := by
+    ∀ᶠj in atTop, a^(2 : ℕ)≤primeClockCutoffEnergy (K j) (e j)/Real.log (K j)^(2 : ℕ) := by
   by_cases ha : a=0
   · subst a
     exact Eventually.of_forall (fun j => by
       simpa using div_nonneg (primeClockCutoffEnergy_nonneg (K j) (e j)) (sq_nonneg _))
   have hs := (he.pow 2).mul (tendsto_primeClockSusceptibility_div_log_sq.comp hK)
   have hh := hs.const_mul 4
-  have hn : Tendsto (fun j => 4*(e j)^2*(primeClockSusceptibility (K j)/Real.log (K j)^2))
-      atTop (𝓝 (2*a^2)) := by
-    have hh' : Tendsto (fun j => 4*(e j)^2*(primeClockSusceptibility (K j)/Real.log (K j)^2))
-        atTop (𝓝 (4*(a^2*(1/2)))) := by
+  have hn : Tendsto (fun j => 4*(e j)^(2 : ℕ)*(primeClockSusceptibility (K j)/Real.log (K j)^(2 : ℕ)))
+      atTop (𝓝 (2*a^(2 : ℕ))) := by
+    have hh' : Tendsto (fun j => 4*(e j)^(2 : ℕ)*(primeClockSusceptibility (K j)/Real.log (K j)^(2 : ℕ)))
+        atTop (𝓝 (4*(a^(2 : ℕ)*(1/2)))) := by
       apply hh.congr'
       exact Eventually.of_forall (fun j => by dsimp only [Function.comp_apply]; ring)
-    have heq : (4:ℝ)*(a^2*(1/2))=2*a^2 := by ring
+    have heq : (4:ℝ)*(a^(2 : ℕ)*(1/2))=2*a^(2 : ℕ) := by ring
     rwa [heq] at hh'
-  have hl := (tendsto_order.1 hn).1 (a^2) (by nlinarith [sq_pos_of_ne_zero ha])
+  have hl := (tendsto_order.1 hn).1 (a^(2 : ℕ)) (by nlinarith [sq_pos_of_ne_zero ha])
   filter_upwards [hl] with j hj
   apply hj.le.trans
   have hb := div_le_div_of_nonneg_right (primeClockCutoffEnergy_quadratic_lower (K j) (e j))
     (sq_nonneg (Real.log (K j)))
   calc
-    _ = (4*(e j)^2*primeClockSusceptibility (K j))/Real.log (K j)^2 := by ring
+    _ = (4*(e j)^(2 : ℕ)*primeClockSusceptibility (K j))/Real.log (K j)^(2 : ℕ) := by ring
     _ ≤ _ := hb
 
 /-- Actual finite-head zero motion has vanishing prime energy relative to its limiting zero.
@@ -245,8 +245,8 @@ theorem finite_zero_primeEnergy_transport (rho : RiemannGaussian.NontrivialZetaZ
       Tendsto (fun j => primeClockCutoffEnergy (K j) ((z j).re-1/2)/
         primeClockCutoffEnergy (K j) (rho.1.re-1/2)) atTop (𝓝 1) ∧
       Tendsto (fun j => primeClockCutoffEnergy (K j) ((z j).re-1/2)) atTop atTop) ∧
-    (∀ᶠj in atTop, (rho.1.re-1/2)^2≤
-      primeClockCutoffEnergy (K j) ((z j).re-1/2)/Real.log (K j)^2) := by
+    (∀ᶠj in atTop, (rho.1.re-1/2)^(2 : ℕ)≤
+      primeClockCutoffEnergy (K j) ((z j).re-1/2)/Real.log (K j)^(2 : ℕ)) := by
   obtain ⟨g,hg,hg0,hfactor,_,_⟩ := exists_finite_zero_displacement_coefficient rho
   have hrho := RiemannGaussian.NontrivialZetaZero.zero_lt_re rho
   have hmove := tendsto_moving_scaled_finite_zero hrho rho.2.2.2 hg.continuousAt hg0 hfactor hK hz hzero
@@ -274,8 +274,8 @@ theorem exists_cofinal_finite_zero_primeEnergy_transport (rho : RiemannGaussian.
     ∃ (K : ℕ→ℕ) (z : ℕ→ℂ), Tendsto K atTop atTop ∧ Tendsto z atTop (𝓝 rho.1) ∧
       (∀j, j≤K j ∧ z j≠rho.1 ∧ finiteCutoffResidual (K j) (z j)=0) ∧
       Tendsto (fun j => primeClockCutoffEnergy (K j) ((z j).re-rho.1.re)) atTop (𝓝 0) ∧
-      (∀ᶠj in atTop, (rho.1.re-1/2)^2≤
-        primeClockCutoffEnergy (K j) ((z j).re-1/2)/Real.log (K j)^2) := by
+      (∀ᶠj in atTop, (rho.1.re-1/2)^(2 : ℕ)≤
+        primeClockCutoffEnergy (K j) ((z j).re-1/2)/Real.log (K j)^(2 : ℕ)) := by
   obtain ⟨K,z,_,hK,hz,hzero,_,_⟩ := exists_cofinal_finite_zero_displacement_limit rho
   have h := finite_zero_primeEnergy_transport rho hK hz (Eventually.of_forall (fun j => (hzero j).2.2))
   exact ⟨K,z,hK,hz,hzero,h.1,h.2.2.2⟩

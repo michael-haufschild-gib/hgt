@@ -57,29 +57,29 @@ private theorem sum_range_shift_two (F : ℕ → ℝ)
 
 theorem ccmActualHeadQuantileParabolicAggregate_one_eq_mass_sq_div_two_add_two_mul_mass (K : ℕ) :
     ccmActualHeadQuantileParabolicAggregate K 1 =
-      ccmActualHeadParabolicMass K ^ 2 / 2 + 2 * ccmActualHeadParabolicMass K := by
+      ccmActualHeadParabolicMass K ^ (2 : ℕ) / 2 + 2 * ccmActualHeadParabolicMass K := by
   unfold ccmActualHeadQuantileParabolicAggregate
   simp only [Finset.sum_apply]
   have hterms : ∀ n ∈ Finset.range (K + 1),
       ccmActualHeadQuantileParabolicMoment (n + 2) 1 =
-        (ccmActualHeadQuantilePolarCoordinate (n + 3) ^ 2 -
-          ccmActualHeadQuantilePolarCoordinate (n + 2) ^ 2) / 2 := by
+        (ccmActualHeadQuantilePolarCoordinate (n + 3) ^ (2 : ℕ) -
+          ccmActualHeadQuantilePolarCoordinate (n + 2) ^ (2 : ℕ)) / 2 := by
     intro n hn
     rfl
   calc
     _ = ∑ n ∈ Finset.range (K + 1),
-        (ccmActualHeadQuantilePolarCoordinate (n + 3) ^ 2 -
-          ccmActualHeadQuantilePolarCoordinate (n + 2) ^ 2) / 2 := by
+        (ccmActualHeadQuantilePolarCoordinate (n + 3) ^ (2 : ℕ) -
+          ccmActualHeadQuantilePolarCoordinate (n + 2) ^ (2 : ℕ)) / 2 := by
         apply Finset.sum_congr rfl
         intro n hn
         exact hterms n hn
     _ = (∑ n ∈ Finset.range (K + 1),
-        (ccmActualHeadQuantilePolarCoordinate (n + 3) ^ 2 -
-          ccmActualHeadQuantilePolarCoordinate (n + 2) ^ 2)) / 2 := by
+        (ccmActualHeadQuantilePolarCoordinate (n + 3) ^ (2 : ℕ) -
+          ccmActualHeadQuantilePolarCoordinate (n + 2) ^ (2 : ℕ))) / 2 := by
         rw [Finset.sum_div]
     _ = _ := by
       have htel := Finset.sum_range_sub
-        (fun n : ℕ => ccmActualHeadQuantilePolarCoordinate (n + 2) ^ 2) (K + 1)
+        (fun n : ℕ => ccmActualHeadQuantilePolarCoordinate (n + 2) ^ (2 : ℕ)) (K + 1)
       rw [quantile_coordinate_terminal_eq_two_add_mass, quantile_coordinate_two] at htel
       rw [htel]
       ring
@@ -98,7 +98,7 @@ theorem ccmActualHeadMatchedQuantileParabolicSourceBoundary_one_eq_mass_centroid
     ccmActualHeadMatchedQuantileParabolicSourceBoundary K 1 =
       (∑ n ∈ Finset.range (K + 1),
         criticalMellinAtomWeight (n + 2) * ccmActualHeadMatchedPolarCentroid (n + 2)) +
-      ccmActualHeadParabolicMass K ^ 2 / 2 + 2 * ccmActualHeadParabolicMass K := by
+      ccmActualHeadParabolicMass K ^ (2 : ℕ) / 2 + 2 * ccmActualHeadParabolicMass K := by
   rw [ccmActualHeadMatchedQuantileParabolicSourceBoundary]
   simp only [Pi.add_apply]
   rw [matched_aggregate_one_eq_weighted_centroid_sum,
@@ -127,7 +127,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCenteredShift_le_neg_one_sub_mass_q
       criticalMellinAtomWeight (n + 2) * ccmActualHeadMatchedPolarCentroid (n + 2) := by
     apply Finset.sum_nonneg
     intro n hn
-    exact mul_nonneg (criticalMellinAtomWeight_nonneg _)
+    exact mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _)
       (ccmActualHeadMatchedPolarCentroid_pos _).le
   have hmass : 0 < ccmActualHeadParabolicMass K := ccmActualHeadParabolicMass_pos K
   have hdiv : 0 ≤
@@ -137,7 +137,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCenteredShift_le_neg_one_sub_mass_q
   linarith
 
 theorem speQuantileRiesz_terminalCoefficient_nonpos_of_le_mass_envelope (M K : ℕ)
-    (hM : (M : ℝ) ≤ (1 + ccmActualHeadParabolicMass K / 4) ^ 2) :
+    (hM : (M : ℝ) ≤ (1 + ccmActualHeadParabolicMass K / 4) ^ (2 : ℕ)) :
     Real.sqrt (M : ℝ) + ccmActualHeadMatchedQuantileParabolicCenteredShift K ≤ 0 := by
   apply speQuantileRiesz_terminalCoefficient_nonpos_iff M K |>.mpr
   have hshift := ccmActualHeadMatchedQuantileParabolicCenteredShift_le_neg_one_sub_mass_quarter K
@@ -153,32 +153,32 @@ theorem speQuantileRiesz_terminalCoefficient_nonpos_of_le_mass_envelope (M K : �
 
 theorem ccmActualHeadParabolicMass_tendsto_atTop :
     Tendsto ccmActualHeadParabolicMass atTop atTop := by
-  have hzero : criticalMellinAtomWeight 0 ^ 2 = 0 := by
+  have hzero : criticalMellinAtomWeight 0 ^ (2 : ℕ) = 0 := by
     simp [criticalMellinAtomWeight]
-  have hone : criticalMellinAtomWeight 1 ^ 2 = 0 := by
+  have hone : criticalMellinAtomWeight 1 ^ (2 : ℕ) = 0 := by
     simp [criticalMellinAtomWeight]
   have hsq : Tendsto (fun K : ℕ =>
-      ∑ n ∈ Finset.range (K + 1), criticalMellinAtomWeight (n + 2) ^ 2) atTop atTop := by
+      ∑ n ∈ Finset.range (K + 1), criticalMellinAtomWeight (n + 2) ^ (2 : ℕ)) atTop atTop := by
     have h := tendsto_criticalMellinAtomWeight_squarePartialSum_atTop.comp
       (tendsto_add_atTop_nat 3)
     refine h.congr' (Eventually.of_forall fun K => ?_)
-    exact sum_range_shift_two (fun n => criticalMellinAtomWeight n ^ 2) hzero hone K
+    exact sum_range_shift_two (fun n => criticalMellinAtomWeight n ^ (2 : ℕ)) hzero hone K
   have hscaled := Tendsto.const_mul_atTop (by norm_num : (0 : ℝ) < 1 / 2) hsq
   refine tendsto_atTop_mono' atTop ?_ hscaled
   filter_upwards with K
   unfold ccmActualHeadParabolicMass
   have hterm : ∀ n ∈ Finset.range (K + 1),
-      criticalMellinAtomWeight (n + 2) ^ 2 ≤
+      criticalMellinAtomWeight (n + 2) ^ (2 : ℕ) ≤
         2 * criticalMellinAtomWeight (n + 2) := by
     intro n hn
     have hnonneg : 0 ≤ criticalMellinAtomWeight (n + 2) :=
-      criticalMellinAtomWeight_nonneg _
+      criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
     have hupper : criticalMellinAtomWeight (n + 2) ≤ 2 :=
       criticalMellinAtomWeight_le_two_of_pos (by omega)
     nlinarith
   have hsum := Finset.sum_le_sum hterm
   calc
-    (1 / 2 : ℝ) * ∑ n ∈ Finset.range (K + 1), criticalMellinAtomWeight (n + 2) ^ 2 ≤
+    (1 / 2 : ℝ) * ∑ n ∈ Finset.range (K + 1), criticalMellinAtomWeight (n + 2) ^ (2 : ℕ) ≤
         (1 / 2 : ℝ) * ∑ n ∈ Finset.range (K + 1),
           2 * criticalMellinAtomWeight (n + 2) :=
       mul_le_mul_of_nonneg_left hsum (by norm_num)
@@ -194,7 +194,7 @@ theorem speQuantileRiesz_terminalCoefficient_eventually_nonpos_in_head (M : ℕ)
   have hmass := ccmActualHeadParabolicMass_tendsto_atTop
   filter_upwards [hmass.eventually_ge_atTop (4 * Real.sqrt (M : ℝ))] with K hK
   apply speQuantileRiesz_terminalCoefficient_nonpos_of_le_mass_envelope M K
-  have hroot : Real.sqrt (M : ℝ) ^ 2 = M :=
+  have hroot : Real.sqrt (M : ℝ) ^ (2 : ℕ) = M :=
     Real.sq_sqrt (Nat.cast_nonneg M)
   have hroot_nonneg : 0 ≤ Real.sqrt (M : ℝ) := Real.sqrt_nonneg _
   nlinarith

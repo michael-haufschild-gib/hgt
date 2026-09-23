@@ -94,12 +94,12 @@ theorem exists_sum_inv_primesIco_le_logLog_diff_add_exp :
 theorem exists_sum_sq_card_primeWindow_le_logLog_diff_add_exp :
     ∃ B c : ℝ, ∃ N₀ : ℕ, 0 < c ∧ 0 ≤ B ∧ 3 ≤ N₀ ∧
       ∀ ⦃a b Y : ℕ⦄, 1 ≤ a → a ≤ b → N₀ ≤ a - 1 →
-        ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ 2 ≤
+        ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ (2 : ℕ) ≤
           (Y : ℝ) *
             ((logLog (b - 1) - logLog (a - 1) +
                 2 * B * Real.exp (-c * Real.sqrt (Real.log ((a - 1 : ℕ) : ℝ)))) +
               (logLog (b - 1) - logLog (a - 1) +
-                2 * B * Real.exp (-c * Real.sqrt (Real.log ((a - 1 : ℕ) : ℝ)))) ^ 2) := by
+                2 * B * Real.exp (-c * Real.sqrt (Real.log ((a - 1 : ℕ) : ℝ)))) ^ (2 : ℕ)) := by
   obtain ⟨B, c, N₀, hc, hB, hN₀, hmass⟩ :=
     exists_sum_inv_primesIco_le_logLog_diff_add_exp
   refine ⟨B, c, N₀, hc, hB, hN₀, ?_⟩

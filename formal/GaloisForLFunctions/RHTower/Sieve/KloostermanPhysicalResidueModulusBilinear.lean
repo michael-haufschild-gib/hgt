@@ -110,10 +110,10 @@ theorem continuous_kloostermanPhysicalResidueModulusBilinear
 /-- Exact fixed-modulus operator baseline for the physical-residue carrier. -/
 theorem norm_kloostermanPhysicalResidueBilinear_sq_le
     (q N M : ℕ) (a b : ℕ → ℂ) (t : ℝ) :
-    ‖kloostermanPhysicalResidueBilinear q N M a b t‖ ^ 2 ≤
-      (((q + 1 : ℕ) : ℝ) ^ 2) *
-        (∑ r : ZMod (q + 1), ‖physicalResidueDirichletPoly q N a r t‖ ^ 2) *
-          ∑ s : ZMod (q + 1), ‖physicalResidueDirichletPoly q M b s t‖ ^ 2 := by
+    ‖kloostermanPhysicalResidueBilinear q N M a b t‖ ^ (2 : ℕ) ≤
+      (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ)) *
+        (∑ r : ZMod (q + 1), ‖physicalResidueDirichletPoly q N a r t‖ ^ (2 : ℕ)) *
+          ∑ s : ZMod (q + 1), ‖physicalResidueDirichletPoly q M b s t‖ ^ (2 : ℕ) := by
   exact norm_kloostermanBilinear_sq_le (q + 1)
     (fun r => physicalResidueDirichletPoly q N a r t)
     (fun s => physicalResidueDirichletPoly q M b s t)

@@ -9,8 +9,8 @@ noncomputable section
 
 /-- The moving completed-source quadratic Hankel test attached to one real polynomial. -/
 def completedOddLogDerivPolynomialHankel (p : Polynomial ℝ) (sigma : ℂ) : ℂ :=
-  ∑ k ∈ Finset.range (((p.map (algebraMap ℝ ℂ)) ^ 2).natDegree + 1),
-    ((p.map (algebraMap ℝ ℂ)) ^ 2).coeff k *
+  ∑ k ∈ Finset.range (((p.map (algebraMap ℝ ℂ)) ^ (2 : ℕ)).natDegree + 1),
+    ((p.map (algebraMap ℝ ℂ)) ^ (2 : ℕ)).coeff k *
       completedOddLogDerivMoment sigma k
 
 /-- The real-axis restriction of one moving polynomial Hankel test. -/
@@ -132,8 +132,8 @@ whose coefficients are those of the polynomial square. -/
 theorem completedOddLogDerivPolynomialHankelReal_eq_sum
     (p : Polynomial ℝ) (x : ℝ) :
     completedOddLogDerivPolynomialHankelReal p x =
-      ∑ k ∈ Finset.range ((p ^ 2).natDegree + 1),
-        (p ^ 2).coeff k * (completedOddLogDerivMoment (x : ℂ) k).re := by
+      ∑ k ∈ Finset.range ((p ^ (2 : ℕ)).natDegree + 1),
+        (p ^ (2 : ℕ)).coeff k * (completedOddLogDerivMoment (x : ℂ) k).re := by
   simp [completedOddLogDerivPolynomialHankelReal,
     completedOddLogDerivPolynomialHankel, ← Polynomial.map_pow,
     Polynomial.natDegree_map]
@@ -215,7 +215,7 @@ theorem completedOddLogDerivPolynomialFarRightPositive_of_momentAsymptotic
     CompletedOddLogDerivPolynomialFarRightPositive := by
   intro p hp
   let pR : Polynomial ℝ := p.map (Int.castRingHom ℝ)
-  let q : Polynomial ℝ := pR ^ 2
+  let q : Polynomial ℝ := pR ^ (2 : ℕ)
   have hpR : pR ≠ 0 := by
     dsimp [pR]
     exact (Polynomial.map_ne_zero_iff Int.cast_injective).mpr hp
@@ -246,8 +246,8 @@ theorem completedOddLogDerivPolynomialFarRightPositive_of_momentAsymptotic
   obtain ⟨R, hRlarge, hRscaled⟩ := (hlarge.and hscaledPos).exists
   refine ⟨R, hRlarge, ?_⟩
   rw [completedOddLogDerivPolynomialHankelReal_eq_sum]
-  change 0 < ∑ k ∈ Finset.range ((pR ^ 2).natDegree + 1),
-    (pR ^ 2).coeff k * (completedOddLogDerivMoment (R : ℂ) k).re
+  change 0 < ∑ k ∈ Finset.range ((pR ^ (2 : ℕ)).natDegree + 1),
+    (pR ^ (2 : ℕ)).coeff k * (completedOddLogDerivMoment (R : ℂ) k).re
   have hRpos : 0 < R := lt_trans (by norm_num) hRlarge
   have hscale : 0 < R ^ (2 * q.natTrailingDegree + 1) := pow_pos hRpos _
   change 0 < R ^ (2 * q.natTrailingDegree + 1) *

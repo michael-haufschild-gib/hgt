@@ -364,7 +364,7 @@ theorem riemannHypothesis_of_forall_abs_le_of_clean_shadows {b : ℕ} (hb : 2 �
     (hclean : ∀ q₀ : XiZeroCopy, 1 / 2 < (q₀.1 : ℂ).re →
       ∀ t ∈ segment ℝ (0 : ℂ) (baseNode b q₀)⁻¹, t ∉ closure (shadowPoles b q₀)) :
     RiemannHypothesis := by
-  apply riemannHypothesis_of_forall_xiZeroCopy_re_eq_half
+  apply riemannHypothesis_of_forall_xiZeroCopy_re_eq_half_weilLagFunctionSingleBase
   intro q
   by_contra hq
   rcases lt_or_gt_of_ne hq with hlt | hgt

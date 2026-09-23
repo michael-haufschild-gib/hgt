@@ -404,11 +404,11 @@ structure XiGlobalPreDivisorOnePortStabilization where
   reflected_continuous : ∀ x, Continuous (fun s => reflected s x)
   forward_stabilized : ∀ s x,
     (preDivisorSharedReservoirMatrix s primes).toQuadraticForm' x +
-        completedSourceBulkSlack s * (stabilizerPort s x) ^ 2 =
+        completedSourceBulkSlack s * (stabilizerPort s x) ^ (2 : ℕ) =
       globalWittForm genus localData (forward s x)
   reflected_stabilized : ∀ s x,
     (preDivisorSharedReservoirMatrix (preDivisorLineConj s) primes).toQuadraticForm' x +
-        completedSourceBulkSlack s * (stabilizerPort s x) ^ 2 =
+        completedSourceBulkSlack s * (stabilizerPort s x) ^ (2 : ℕ) =
       globalWittForm genus localData (reflected s x)
 
 /-- At a Xi zero the positive stabilizer vanishes, leaving an exact forward Stokes landing. -/
@@ -450,7 +450,7 @@ theorem XiGlobalPreDivisorOnePortStabilization.stabilizerPort_not_central_of_rig
       s hright S.primes
   have hpull : ∀ x,
       centralStabilizedReflectedReservoirForm w
-          (completedSourceBulkSlack s * c ^ 2) x =
+          (completedSourceBulkSlack s * c ^ (2 : ℕ)) x =
         globalWittForm S.genus S.localData (S.forward s x) := by
     intro x
     have h := S.forward_stabilized s x
@@ -463,23 +463,23 @@ theorem XiGlobalPreDivisorOnePortStabilization.stabilizerPort_not_central_of_rig
     simp only [smul_eq_mul]
     calc
       -reservoirWeightedForm w x +
-          completedSourceBulkSlack s * c ^ 2 *
+          completedSourceBulkSlack s * c ^ (2 : ℕ) *
             (reservoirWeightedCentralPort w x *
               reservoirWeightedCentralPort w x) =
         -reservoirWeightedForm w x +
           completedSourceBulkSlack s *
-            (c * reservoirWeightedCentralPort w x) ^ 2 := by ring
+            (c * reservoirWeightedCentralPort w x) ^ (2 : ℕ) := by ring
       _ = globalWittForm S.genus S.localData (S.forward s x) := h
   have hupper := sigNeg_le_one_of_onePort_pullback
     (centralStabilizedReflectedReservoirForm w
-      (completedSourceBulkSlack s * c ^ 2))
+      (completedSourceBulkSlack s * c ^ (2 : ℕ)))
     (globalWittForm S.genus S.localData) (S.forward s)
     (GlobalPuiseuxWittLanding.rankCorrection S.genus S.localData)
     (GlobalPuiseuxWittLanding.globalWittForm_add_rankCorrection_nonneg
       S.genus S.localData) hpull
   have hlower :=
     centralStabilizedReflectedReservoirForm_three_sigNeg_ge_two
-      w hw (completedSourceBulkSlack s * c ^ 2)
+      w hw (completedSourceBulkSlack s * c ^ (2 : ℕ))
   omega
 
 /-- The same classifier on either side of the critical line: any surviving bulk stabilizer must

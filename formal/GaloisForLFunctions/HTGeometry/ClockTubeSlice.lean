@@ -49,7 +49,7 @@ theorem norm_cpartial_le_of_sliceHolo {ρ ρ' M : ℝ} (hρ : ρ < ρ') {w : (Fi
 theorem norm_cpartial_cpartial_le_of_sliceHolo {ρ ρ' M : ℝ} (hρ : ρ < ρ')
     {w : (Fin k → ℂ) → ℂ} (hw : SliceHolo w ρ') (hM : ∀ z ∈ tube k ρ', ‖w z‖ ≤ M)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) (i : Fin k) :
-    ‖cpartial i (cpartial i w) z‖ ≤ 16 * M / (ρ' - ρ) ^ 2 := by
+    ‖cpartial i (cpartial i w) z‖ ≤ 16 * M / (ρ' - ρ) ^ (2 : ℕ) := by
   have hzt : z ∈ tube k ρ' := fun j => lt_of_le_of_lt (hz j) hρ
   rw [cpartial_cpartial_eq]
   exact norm_deriv_deriv_le_on_imStrip hρ (hw z hzt i)
@@ -60,17 +60,17 @@ theorem norm_tubeStep_le_of_sliceHolo {ρ ρ' Mv Mw : ℝ} (hρ : ρ < ρ') (hMv
     {V w : (Fin k → ℂ) → ℂ} (hw : SliceHolo w ρ')
     (hMw : ∀ z ∈ tube k ρ', ‖w z‖ ≤ Mw) (hMv : ∀ z ∈ tube k ρ', ‖V z‖ ≤ Mv)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
-    ‖tubeStep V w z‖ ≤ (4 * k / (ρ' - ρ) ^ 2 + Mv / 4) * Mw := by
+    ‖tubeStep V w z‖ ≤ (4 * k / (ρ' - ρ) ^ (2 : ℕ) + Mv / 4) * Mw := by
   have hgap : (0 : ℝ) < ρ' - ρ := by linarith
   have hzt : z ∈ tube k ρ' := fun j => lt_of_le_of_lt (hz j) hρ
   have hMw0 : (0 : ℝ) ≤ Mw := le_trans (norm_nonneg _) (hMw z hzt)
-  have hterm : ∀ i : Fin k, ‖cpartial i (cpartial i w) z‖ ≤ 16 * Mw / (ρ' - ρ) ^ 2 :=
+  have hterm : ∀ i : Fin k, ‖cpartial i (cpartial i w) z‖ ≤ 16 * Mw / (ρ' - ρ) ^ (2 : ℕ) :=
     fun i => norm_cpartial_cpartial_le_of_sliceHolo hρ hw hMw hz i
-  have hsum : ‖∑ i, cpartial i (cpartial i w) z‖ ≤ k * (16 * Mw / (ρ' - ρ) ^ 2) := by
+  have hsum : ‖∑ i, cpartial i (cpartial i w) z‖ ≤ k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) := by
     refine le_trans (norm_sum_le _ _) ?_
     calc ∑ i : Fin k, ‖cpartial i (cpartial i w) z‖
-        ≤ ∑ _i : Fin k, 16 * Mw / (ρ' - ρ) ^ 2 := Finset.sum_le_sum fun i _ => hterm i
-      _ = k * (16 * Mw / (ρ' - ρ) ^ 2) := by
+        ≤ ∑ _i : Fin k, 16 * Mw / (ρ' - ρ) ^ (2 : ℕ) := Finset.sum_le_sum fun i _ => hterm i
+      _ = k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) := by
           rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   have hpot : ‖V z * w z‖ ≤ Mv * Mw := by
     rw [norm_mul]
@@ -80,16 +80,16 @@ theorem norm_tubeStep_le_of_sliceHolo {ρ ρ' Mv Mw : ℝ} (hρ : ρ < ρ') (hMv
     rw [tubeStep, norm_div]
     norm_num
   have htri : ‖(∑ i, cpartial i (cpartial i w) z) + V z * w z‖
-      ≤ k * (16 * Mw / (ρ' - ρ) ^ 2) + Mv * Mw :=
+      ≤ k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) + Mv * Mw :=
     le_trans (norm_add_le _ _) (add_le_add hsum hpot)
-  have hfinal : (k * (16 * Mw / (ρ' - ρ) ^ 2) + Mv * Mw) / 4
-      = (4 * k / (ρ' - ρ) ^ 2 + Mv / 4) * Mw := by
+  have hfinal : (k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) + Mv * Mw) / 4
+      = (4 * k / (ρ' - ρ) ^ (2 : ℕ) + Mv / 4) * Mw := by
     field_simp
     ring
   rw [hdiv]
   calc ‖(∑ i, cpartial i (cpartial i w) z) + V z * w z‖ / 4
-      ≤ (k * (16 * Mw / (ρ' - ρ) ^ 2) + Mv * Mw) / 4 := by linarith
-    _ = (4 * k / (ρ' - ρ) ^ 2 + Mv / 4) * Mw := hfinal
+      ≤ (k * (16 * Mw / (ρ' - ρ) ^ (2 : ℕ)) + Mv * Mw) / 4 := by linarith
+    _ = (4 * k / (ρ' - ρ) ^ (2 : ℕ) + Mv / 4) * Mw := hfinal
 
 /-! ## Slice holomorphy of a parametric integral -/
 

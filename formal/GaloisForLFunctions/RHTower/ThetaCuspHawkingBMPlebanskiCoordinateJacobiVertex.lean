@@ -63,9 +63,9 @@ def ads4PlebanskiPlaneWaveLightConeTwoJet
   value := amplitude
   u := Complex.I * p * amplitude
   w := Complex.I * h * amplitude
-  uu := -(p ^ 2) * amplitude
+  uu := -(p ^ (2 : ℕ)) * amplitude
   uw := -(p * h) * amplitude
-  ww := -(h ^ 2) * amplitude
+  ww := -(h ^ (2 : ℕ)) * amplitude
 
 /-- Flat Hessian polarization on two plane-wave jets is one half the square of the kinematic
 bracket. -/
@@ -78,7 +78,7 @@ theorem ads4PlebanskiJacobiDoubleBracket_flat_planeWave
               (ads4PlebanskiPlaneWaveLightConeTwoJet p h P).ww) -
         (ads4PlebanskiPlaneWaveLightConeTwoJet p h P).uw *
           (ads4PlebanskiPlaneWaveLightConeTwoJet q k Q).uw =
-      (1 / 2 : ℂ) * ads4SelfDualKinematicBracket p h q k ^ 2 * P * Q := by
+      (1 / 2 : ℂ) * ads4SelfDualKinematicBracket p h q k ^ (2 : ℕ) * P * Q := by
   simp [ads4PlebanskiPlaneWaveLightConeTwoJet, ads4SelfDualKinematicBracket]
   ring
 
@@ -117,7 +117,7 @@ theorem ads4PlebanskiJacobiDoubleBracket_planeWave_eq_selfDualVertex
 theorem ads4PlebanskiJacobiDoubleBracketOnTwoJets_self
     (inverseUV : ℂ) (P : D4PlebanskiLightConeTwoJet) :
     ads4PlebanskiJacobiDoubleBracketOnTwoJets inverseUV P P =
-      P.uu * P.ww - P.uw ^ 2 +
+      P.uu * P.ww - P.uw ^ (2 : ℕ) +
         2 * inverseUV * (P.uw * P.w - P.ww * P.u) := by
   simp [ads4PlebanskiJacobiDoubleBracketOnTwoJets]
   ring

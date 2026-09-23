@@ -42,12 +42,12 @@ theorem coherentClockOverlap_formula {d : ℕ} (x v : Fin d → ℝ) :
 
 theorem coherentClockTangentSq_formula {d : ℕ} (x v : Fin d → ℝ) :
     coherentClockTangentSq x v =
-      ((∑ i, v i ^ 2) + (∑ i, x i * v i) ^ 2) * coherentClockMass x := by
+      ((∑ i, v i ^ (2 : ℕ)) + (∑ i, x i * v i) ^ (2 : ℕ)) * coherentClockMass x := by
   unfold coherentClockTangentSq gaussianCoherentJetBlock
   have hterm : ∀ i j : Fin d,
       v i * v j * (((if i = j then 1 else 0) + x j * x i) *
         Real.exp (coordinateDot (fun _ : Fin 1 => x) 0 0)) =
-      ((if i = j then v i ^ 2 else 0) + (x i * v i) * (x j * v j)) *
+      ((if i = j then v i ^ (2 : ℕ) else 0) + (x i * v i) * (x j * v j)) *
         coherentClockMass x := by
     intro i j
     by_cases hij : i = j
@@ -56,21 +56,21 @@ theorem coherentClockTangentSq_formula {d : ℕ} (x v : Fin d → ℝ) :
       ring
     · simp only [hij, ite_false, zero_add, coherentClockMass, gaussianCoherentGram]
       ring
-  have hdiag (i : Fin d) : (∑ j : Fin d, if i = j then v i ^ 2 else 0) = v i ^ 2 := by
+  have hdiag (i : Fin d) : (∑ j : Fin d, if i = j then v i ^ (2 : ℕ) else 0) = v i ^ (2 : ℕ) := by
     simp
-  have hcross : (∑ i, ∑ j, (x i * v i) * (x j * v j)) = (∑ i, x i * v i) ^ 2 := by
+  have hcross : (∑ i, ∑ j, (x i * v i) * (x j * v j)) = (∑ i, x i * v i) ^ (2 : ℕ) := by
     rw [pow_two, Finset.sum_mul]
     simp_rw [Finset.mul_sum]
   simp_rw [hterm]
   calc
-    _ = ((∑ i, ∑ j, if i = j then v i ^ 2 else 0) +
+    _ = ((∑ i, ∑ j, if i = j then v i ^ (2 : ℕ) else 0) +
         (∑ i, ∑ j, (x i * v i) * (x j * v j))) * coherentClockMass x := by
       simp only [Finset.sum_mul, Finset.sum_add_distrib, add_mul]
     _ = _ := by simp_rw [hdiag, hcross]
 
 /-- The projective correction cancels the exponentially large coherent-state mass exactly. -/
 theorem coherentClockInformation_formula {d : ℕ} (x v : Fin d → ℝ) :
-    coherentClockInformation x v = 4 * ∑ i, v i ^ 2 := by
+    coherentClockInformation x v = 4 * ∑ i, v i ^ (2 : ℕ) := by
   rw [coherentClockInformation, coherentClockOverlap_formula, coherentClockTangentSq_formula]
   unfold _root_.HTGeometry.pureStateQuantumFisherValue _root_.HTGeometry.projectiveQuantumTangentValue
   field_simp [(coherentClockMass_pos x).ne']
@@ -78,13 +78,13 @@ theorem coherentClockInformation_formula {d : ℕ} (x v : Fin d → ℝ) :
 
 /-- Every affine coherent trajectory has constant Fisher speed, independent of position. -/
 theorem coherentClock_speed {d : ℕ} (x v : Fin d → ℝ) :
-    Real.sqrt (coherentClockInformation x v) = 2 * Real.sqrt (∑ i, v i ^ 2) := by
+    Real.sqrt (coherentClockInformation x v) = 2 * Real.sqrt (∑ i, v i ^ (2 : ℕ)) := by
   rw [coherentClockInformation_formula, Real.sqrt_mul (by norm_num)]
   norm_num
 
 theorem coherentClock_integral {d : ℕ} (x v : Fin d → ℝ) (a b : ℝ) :
     (∫ t : ℝ in a..b, Real.sqrt (coherentClockInformation (fun i => x i + t * v i) v)) =
-      2 * Real.sqrt (∑ i, v i ^ 2) * (b - a) := by
+      2 * Real.sqrt (∑ i, v i ^ (2 : ℕ)) * (b - a) := by
   simp only [coherentClock_speed, intervalIntegral.integral_const, smul_eq_mul]
   ring
 
@@ -98,12 +98,12 @@ theorem coherentClockInformation_zero_iff {d : ℕ} (x v : Fin d → ℝ) :
 
 /-- Normalized squared overlap obtained from the same coherent Gram kernel. -/
 def coherentClockFidelity {d : ℕ} (x y : Fin d → ℝ) : ℝ :=
-  gaussianCoherentGram ![x, y] 0 1 ^ 2 /
+  gaussianCoherentGram ![x, y] 0 1 ^ (2 : ℕ) /
     (gaussianCoherentGram ![x, y] 0 0 * gaussianCoherentGram ![x, y] 1 1)
 
 /-- Endpoint distinguishability depends only on Euclidean separation, not absolute label size. -/
 theorem coherentClockFidelity_formula {d : ℕ} (x y : Fin d → ℝ) :
-    coherentClockFidelity x y = Real.exp (-(∑ i, (x i - y i) ^ 2)) := by
+    coherentClockFidelity x y = Real.exp (-(∑ i, (x i - y i) ^ (2 : ℕ))) := by
   unfold coherentClockFidelity gaussianCoherentGram coordinateDot
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   rw [pow_two, ← Real.exp_add, ← Real.exp_add, ← Real.exp_sub]

@@ -38,7 +38,7 @@ noncomputable section
 namespace RHTower
 
 /-- Conjugation passes through a real positive base in a complex power. -/
-theorem conj_ofReal_cpow {u : ℝ} (hu : 0 < u) (z : ℂ) :
+theorem conj_ofReal_cpow_baezDuarteDetectorGram {u : ℝ} (hu : 0 < u) (z : ℂ) :
     (starRingEnd ℂ) ((u : ℂ) ^ z) = (u : ℂ) ^ ((starRingEnd ℂ) z) := by
   have harg : ((u : ℂ)).arg ≠ Real.pi := by
     rw [Complex.arg_ofReal_of_nonneg hu.le]
@@ -64,7 +64,7 @@ theorem inner_bdDetector_bdDetector {s₁ s₂ : ℂ} (hs₁ : s₁.re < 1 / 2) 
     have hu0 : (0 : ℝ) < u := lt_trans zero_lt_one (mem_Ioi.mp hu)
     have hune : ((u : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hu0)
     rw [bdDetector, bdDetector, hu1, hu2, RCLike.inner_apply, bdDetectorFun, bdDetectorFun,
-      Complex.conj_conj, conj_ofReal_cpow hu0, ← Complex.cpow_add _ _ hune]
+      Complex.conj_conj, conj_ofReal_cpow_baezDuarteDetectorGram hu0, ← Complex.cpow_add _ _ hune]
     congr 1
     rw [map_sub, map_one]
     ring
@@ -148,8 +148,8 @@ theorem bdTarget_dist_floor_orthonormal {n : ℕ} {k : Type*} [Fintype k] (ρ : 
     (he : Orthonormal ℂ (fun i : k => ∑ j, a i j • bdDetector (one_sub_re_lt (hρ j))))
     {G : BDCarrier}
     (hG : G ∈ (Submodule.span ℂ (Set.range (fun i : bdIndex => bdGen i.1))).topologicalClosure) :
-    ∑ i : k, ‖inner ℂ (∑ j, a i j • bdDetector (one_sub_re_lt (hρ j))) bdTarget‖ ^ 2
-      ≤ ‖bdTarget - G‖ ^ 2 := by
+    ∑ i : k, ‖inner ℂ (∑ j, a i j • bdDetector (one_sub_re_lt (hρ j))) bdTarget‖ ^ (2 : ℕ)
+      ≤ ‖bdTarget - G‖ ^ (2 : ℕ) := by
   classical
   have hshift : ∀ i : k,
       inner ℂ (∑ j, a i j • bdDetector (one_sub_re_lt (hρ j))) (bdTarget - G)
@@ -157,11 +157,11 @@ theorem bdTarget_dist_floor_orthonormal {n : ℕ} {k : Type*} [Fintype k] (ρ : 
     intro i
     rw [inner_sub_right, inner_combination_bdDetector_eq_zero ρ hρ hρ1 hzero (a i) hG, sub_zero]
   have hbessel := he.sum_inner_products_le (s := (Finset.univ : Finset k)) (bdTarget - G)
-  calc ∑ i : k, ‖inner ℂ (∑ j, a i j • bdDetector (one_sub_re_lt (hρ j))) bdTarget‖ ^ 2
-      = ∑ i : k, ‖inner ℂ (∑ j, a i j • bdDetector (one_sub_re_lt (hρ j))) (bdTarget - G)‖ ^ 2 := by
+  calc ∑ i : k, ‖inner ℂ (∑ j, a i j • bdDetector (one_sub_re_lt (hρ j))) bdTarget‖ ^ (2 : ℕ)
+      = ∑ i : k, ‖inner ℂ (∑ j, a i j • bdDetector (one_sub_re_lt (hρ j))) (bdTarget - G)‖ ^ (2 : ℕ) := by
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [hshift i]
-    _ ≤ ‖bdTarget - G‖ ^ 2 := hbessel
+    _ ≤ ‖bdTarget - G‖ ^ (2 : ℕ) := hbessel
 
 end RHTower
 

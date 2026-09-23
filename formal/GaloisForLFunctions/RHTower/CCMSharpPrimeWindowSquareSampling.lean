@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.CCMRectangularDirectionalDerivative
 The all-epsilon sharp dyadic von-Mangoldt estimate need only be checked at perfect-square
 apertures.  For any positive `n`, the next strict square
 
-`N = (floor(sqrt n) + 1)^2`
+`N = (floor(sqrt n) + 1)^(2 : ℕ)`
 
 is at distance at most `2 * floor(sqrt n) + 1`.  The window at `n` is contained in the window at
 `N` together with a lower boundary slice of that length.  The elementary bound
@@ -464,7 +464,7 @@ theorem riemannHypothesis_of_eventually_squareAdjacentBlockDiagonalRightSlope_lo
   simpa only [Nat.cast_pow, Real.sqrt_sq (Nat.cast_nonneg m)] using hwindow
 
 /-- The same critical square-sampling reduction for the complete rectangular prime--polar source.
-Only the right diagonal slopes at `(log 2 / 2, log (m^2) / 2)` remain to be bounded. -/
+Only the right diagonal slopes at `(log 2 / 2, log (m^(2 : ℕ)) / 2)` remain to be bounded. -/
 theorem riemannHypothesis_of_eventually_squarePrimePolarSourceDiagonalRightSlope_lower
     {M : ℕ} (hM : 2 ≤ M)
     (hslope : ∀ epsilon : ℝ, 0 < epsilon →

@@ -25,8 +25,8 @@ theorem largeSieve_separated_log {ι : Type*} [DecidableEq ι] (N : ℕ) (s : Fi
     (hsep : ∀ a ∈ s, ∀ b ∈ s, a ≠ b → δ ≤ toIntDist (lam b - lam a))
     {M : ℕ} (hM : 1 / (2 * δ) ≤ (M : ℝ))
     (a : EuclideanSpace ℂ (Fin N)) :
-    ∑ r ∈ s, ‖⟪expRow N (circleFreq (lam r)), a⟫_ℂ‖ ^ 2
-      ≤ ((N : ℝ) + (1 / δ) * (1 + Real.log M)) * ‖a‖ ^ 2 := by
+    ∑ r ∈ s, ‖⟪expRow N (circleFreq (lam r)), a⟫_ℂ‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (1 / δ) * (1 + Real.log M)) * ‖a‖ ^ (2 : ℕ) := by
   have hbase := largeSieve_separated N s lam hδ0 hδ hsep hM a
   have hlog := sum_Icc_one_div_le_one_add_log M
   have hδinv : (0 : ℝ) ≤ 1 / δ := by positivity
@@ -41,8 +41,8 @@ theorem largeSieve_separated_explicit {ι : Type*} [DecidableEq ι] (N : ℕ) (s
     (lam : ι → ℝ) {δ : ℝ} (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 2)
     (hsep : ∀ a ∈ s, ∀ b ∈ s, a ≠ b → δ ≤ toIntDist (lam b - lam a))
     (a : EuclideanSpace ℂ (Fin N)) :
-    ∑ r ∈ s, ‖⟪expRow N (circleFreq (lam r)), a⟫_ℂ‖ ^ 2
-      ≤ ((N : ℝ) + (1 / δ) * (1 + Real.log (1 / (2 * δ) + 1))) * ‖a‖ ^ 2 := by
+    ∑ r ∈ s, ‖⟪expRow N (circleFreq (lam r)), a⟫_ℂ‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (1 / δ) * (1 + Real.log (1 / (2 * δ) + 1))) * ‖a‖ ^ (2 : ℕ) := by
   have hx : (0 : ℝ) < 1 / (2 * δ) := by positivity
   set M : ℕ := ⌈1 / (2 * δ)⌉₊ with hMdef
   have hM : 1 / (2 * δ) ≤ (M : ℝ) := Nat.le_ceil _

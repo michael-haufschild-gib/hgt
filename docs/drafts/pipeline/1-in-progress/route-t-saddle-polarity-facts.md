@@ -56,7 +56,7 @@
   The source argument for dilation `r` and shift `k` is `r*(s+k)-1`, and has positive real part
   for `Re s>0`, `r>=1`, `k>=1`; no divisor label occurs.  The resulting Lean capstone is
   `xiHeatCassiniWoldJointDepthMöbiusTransport_eq_woldLaplaceCurrent` in
-  `XiHeatCassiniWoldJointDepthMöbiusSourceTransport.lean`, direct-checked with `lake env lean`.
+  `XiHeatCassiniWoldJointDepthMobiusSourceTransport.lean`, direct-checked with `lake env lean`.
   The remaining hard step is genuinely local: prove normal meromorphic continuation of the
   dilated tail near a hypothetical off-line Wold pole, then show that only `(r,k)=(1,1)` has a
   residue there.

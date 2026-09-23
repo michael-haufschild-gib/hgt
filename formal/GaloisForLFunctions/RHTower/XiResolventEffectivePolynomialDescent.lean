@@ -37,48 +37,48 @@ theorem poly_minor_truncation_le_of_offline_level {X : ℝ} (hX : 0 ≤ X)
     {S : ℝ} (hS : ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ≤ S)
     {g : ℝ} (hg : 0 < g)
     (hgap : ∀ q q' : XiZeroCopy, ‖xiResolventPoint X q‖ = ℓ → ‖xiResolventPoint X q'‖ = ℓ →
-      xiResolventPoint X q * xiResolventPoint X q' ≠ (((ℓ : ℝ)) : ℂ) ^ 2 →
-      g ≤ ‖(xiResolventPoint X q * xiResolventPoint X q' / (((ℓ : ℝ)) : ℂ) ^ 2) ^ 2 - 1‖)
+      xiResolventPoint X q * xiResolventPoint X q' ≠ (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ) →
+      g ≤ ‖(xiResolventPoint X q * xiResolventPoint X q' / (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) - 1‖)
     {qh : XiZeroCopy} (hqhℓ : ‖xiResolventPoint X qh‖ = ℓ)
     (hoff : (xiSpectralPoint qh).im ≠ 0)
     (hPqh : evalRealPolynomial P (xiResolventPoint X qh) ≠ 0)
     {N : ℕ} (hminor : ∀ n : ℕ, n < N → 0 ≤ (xiPolyMoment P (2 * n) X *
-      xiPolyMoment P (2 * n + 2) X - xiPolyMoment P (2 * n + 1) X ^ 2).re) :
-    (N : ℝ) ≤ (2 * S ^ 2 * evalRealPolynomialNormBound P 1 ^ 4 / g +
-      evalRealPolynomialNormBound P 1 ^ 4 * S ^ 2 / (ℓ ^ 2 - ρ₂ ^ 2)) /
-      ((xiResolventPoint X qh).im ^ 2 *
-        ‖evalRealPolynomial P (xiResolventPoint X qh)‖ ^ 4) := by
+      xiPolyMoment P (2 * n + 2) X - xiPolyMoment P (2 * n + 1) X ^ (2 : ℕ)).re) :
+    (N : ℝ) ≤ (2 * S ^ (2 : ℕ) * evalRealPolynomialNormBound P 1 ^ (4 : ℕ) / g +
+      evalRealPolynomialNormBound P 1 ^ (4 : ℕ) * S ^ (2 : ℕ) / (ℓ ^ (2 : ℕ) - ρ₂ ^ (2 : ℕ))) /
+      ((xiResolventPoint X qh).im ^ (2 : ℕ) *
+        ‖evalRealPolynomial P (xiResolventPoint X qh)‖ ^ (4 : ℕ)) := by
   have hb := even_minor_truncation_le_of_offline_level (X := X) hX
-    (Wf := fun q => evalRealPolynomial P (xiResolventPoint X q) ^ 2)
-    (BW := evalRealPolynomialNormBound P 1 ^ 2)
+    (Wf := fun q => evalRealPolynomial P (xiResolventPoint X q) ^ (2 : ℕ))
+    (BW := evalRealPolynomialNormBound P 1 ^ (2 : ℕ))
     (fun q => by
-      show ‖evalRealPolynomial P (xiResolventPoint X q) ^ 2‖ ≤
-        evalRealPolynomialNormBound P 1 ^ 2
+      show ‖evalRealPolynomial P (xiResolventPoint X q) ^ (2 : ℕ)‖ ≤
+        evalRealPolynomialNormBound P 1 ^ (2 : ℕ)
       rw [norm_pow]
       exact pow_le_pow_left₀ (norm_nonneg _)
         (norm_evalRealPolynomial_le P (norm_xiResolventPoint_le_one hX q)) 2)
     (fun q q' hconj => by
-      show evalRealPolynomial P (xiResolventPoint X q') ^ 2 =
-        (starRingEnd ℂ) (evalRealPolynomial P (xiResolventPoint X q) ^ 2)
+      show evalRealPolynomial P (xiResolventPoint X q') ^ (2 : ℕ) =
+        (starRingEnd ℂ) (evalRealPolynomial P (xiResolventPoint X q) ^ (2 : ℕ))
       rw [hconj, evalRealPolynomial_conj, ← map_pow])
     hℓpos
     (fun q hq => by
-      show evalRealPolynomial P (xiResolventPoint X q) ^ 2 = 0
+      show evalRealPolynomial P (xiResolventPoint X q) ^ (2 : ℕ) = 0
       rw [hPkill q hq]
       norm_num)
     hρ₂0 hρ₂lt hρ₂bound hS hg hgap hqhℓ hoff (pow_ne_zero 2 hPqh) hminor
-  have hnsq : Complex.normSq (evalRealPolynomial P (xiResolventPoint X qh) ^ 2) =
-      ‖evalRealPolynomial P (xiResolventPoint X qh)‖ ^ 4 := by
+  have hnsq : Complex.normSq (evalRealPolynomial P (xiResolventPoint X qh) ^ (2 : ℕ)) =
+      ‖evalRealPolynomial P (xiResolventPoint X qh)‖ ^ (4 : ℕ) := by
     rw [← Complex.sq_norm, norm_pow]
     ring
-  calc (N : ℝ) ≤ (2 * S ^ 2 * (evalRealPolynomialNormBound P 1 ^ 2) ^ 2 / g +
-        (evalRealPolynomialNormBound P 1 ^ 2) ^ 2 * S ^ 2 / (ℓ ^ 2 - ρ₂ ^ 2)) /
-        ((xiResolventPoint X qh).im ^ 2 *
-          Complex.normSq (evalRealPolynomial P (xiResolventPoint X qh) ^ 2)) := hb
-    _ = (2 * S ^ 2 * evalRealPolynomialNormBound P 1 ^ 4 / g +
-        evalRealPolynomialNormBound P 1 ^ 4 * S ^ 2 / (ℓ ^ 2 - ρ₂ ^ 2)) /
-        ((xiResolventPoint X qh).im ^ 2 *
-          ‖evalRealPolynomial P (xiResolventPoint X qh)‖ ^ 4) := by
+  calc (N : ℝ) ≤ (2 * S ^ (2 : ℕ) * (evalRealPolynomialNormBound P 1 ^ (2 : ℕ)) ^ (2 : ℕ) / g +
+        (evalRealPolynomialNormBound P 1 ^ (2 : ℕ)) ^ (2 : ℕ) * S ^ (2 : ℕ) / (ℓ ^ (2 : ℕ) - ρ₂ ^ (2 : ℕ))) /
+        ((xiResolventPoint X qh).im ^ (2 : ℕ) *
+          Complex.normSq (evalRealPolynomial P (xiResolventPoint X qh) ^ (2 : ℕ))) := hb
+    _ = (2 * S ^ (2 : ℕ) * evalRealPolynomialNormBound P 1 ^ (4 : ℕ) / g +
+        evalRealPolynomialNormBound P 1 ^ (4 : ℕ) * S ^ (2 : ℕ) / (ℓ ^ (2 : ℕ) - ρ₂ ^ (2 : ℕ))) /
+        ((xiResolventPoint X qh).im ^ (2 : ℕ) *
+          ‖evalRealPolynomial P (xiResolventPoint X qh)‖ ^ (4 : ℕ)) := by
         rw [hnsq]
         ring
 
@@ -94,19 +94,19 @@ theorem poly_single_minor_truncation_le_of_offline_level {X : ℝ} (hX : 0 ≤ X
     {S : ℝ} (hS : ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ≤ S)
     {g : ℝ} (hg : 0 < g)
     (hgap : ∀ q q' : XiZeroCopy, ‖xiResolventPoint X q‖ = ℓ → ‖xiResolventPoint X q'‖ = ℓ →
-      xiResolventPoint X q * xiResolventPoint X q' ≠ (((ℓ : ℝ)) : ℂ) ^ 2 →
-      g ≤ ‖(xiResolventPoint X q * xiResolventPoint X q' / (((ℓ : ℝ)) : ℂ) ^ 2) ^ 2 - 1‖)
+      xiResolventPoint X q * xiResolventPoint X q' ≠ (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ) →
+      g ≤ ‖(xiResolventPoint X q * xiResolventPoint X q' / (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) - 1‖)
     {qh : XiZeroCopy} (hqhℓ : ‖xiResolventPoint X qh‖ = ℓ)
     (hoff : (xiSpectralPoint qh).im ≠ 0)
     (hPqh : evalRealPolynomial P (xiResolventPoint X qh) ≠ 0)
     {N : ℕ} (hminor : ∀ n : ℕ, n < N →
       0 ≤ (xiPolyMoment (Polynomial.X ^ n * P) 0 X *
         xiPolyMoment (Polynomial.X ^ n * P) 2 X -
-        xiPolyMoment (Polynomial.X ^ n * P) 1 X ^ 2).re) :
-    (N : ℝ) ≤ (2 * S ^ 2 * evalRealPolynomialNormBound P 1 ^ 4 / g +
-      evalRealPolynomialNormBound P 1 ^ 4 * S ^ 2 / (ℓ ^ 2 - ρ₂ ^ 2)) /
-      ((xiResolventPoint X qh).im ^ 2 *
-        ‖evalRealPolynomial P (xiResolventPoint X qh)‖ ^ 4) := by
+        xiPolyMoment (Polynomial.X ^ n * P) 1 X ^ (2 : ℕ)).re) :
+    (N : ℝ) ≤ (2 * S ^ (2 : ℕ) * evalRealPolynomialNormBound P 1 ^ (4 : ℕ) / g +
+      evalRealPolynomialNormBound P 1 ^ (4 : ℕ) * S ^ (2 : ℕ) / (ℓ ^ (2 : ℕ) - ρ₂ ^ (2 : ℕ))) /
+      ((xiResolventPoint X qh).im ^ (2 : ℕ) *
+        ‖evalRealPolynomial P (xiResolventPoint X qh)‖ ^ (4 : ℕ)) := by
   refine poly_minor_truncation_le_of_offline_level hX P hℓpos hPkill hρ₂0 hρ₂lt hρ₂bound
     hS hg hgap hqhℓ hoff hPqh (fun n hn => ?_)
   have h := hminor n hn
@@ -129,18 +129,18 @@ theorem level_criticalLine_of_poly_single_minors_window {X : ℝ} (hX : 0 ≤ X)
     {S : ℝ} (hS : ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ≤ S)
     {g : ℝ} (hg : 0 < g)
     (hgap : ∀ q q' : XiZeroCopy, ‖xiResolventPoint X q‖ = ℓ → ‖xiResolventPoint X q'‖ = ℓ →
-      xiResolventPoint X q * xiResolventPoint X q' ≠ (((ℓ : ℝ)) : ℂ) ^ 2 →
-      g ≤ ‖(xiResolventPoint X q * xiResolventPoint X q' / (((ℓ : ℝ)) : ℂ) ^ 2) ^ 2 - 1‖)
+      xiResolventPoint X q * xiResolventPoint X q' ≠ (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ) →
+      g ≤ ‖(xiResolventPoint X q * xiResolventPoint X q' / (((ℓ : ℝ)) : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) - 1‖)
     {N : ℕ} (hminor : ∀ n : ℕ, n < N →
       0 ≤ (xiPolyMoment (Polynomial.X ^ n * P) 0 X *
         xiPolyMoment (Polynomial.X ^ n * P) 2 X -
-        xiPolyMoment (Polynomial.X ^ n * P) 1 X ^ 2).re) :
+        xiPolyMoment (Polynomial.X ^ n * P) 1 X ^ (2 : ℕ)).re) :
     ∀ q : XiZeroCopy, ‖xiResolventPoint X q‖ = ℓ →
       evalRealPolynomial P (xiResolventPoint X q) ≠ 0 →
-      (2 * S ^ 2 * evalRealPolynomialNormBound P 1 ^ 4 / g +
-        evalRealPolynomialNormBound P 1 ^ 4 * S ^ 2 / (ℓ ^ 2 - ρ₂ ^ 2)) /
-        ((xiResolventPoint X q).im ^ 2 *
-          ‖evalRealPolynomial P (xiResolventPoint X q)‖ ^ 4) < (N : ℝ) →
+      (2 * S ^ (2 : ℕ) * evalRealPolynomialNormBound P 1 ^ (4 : ℕ) / g +
+        evalRealPolynomialNormBound P 1 ^ (4 : ℕ) * S ^ (2 : ℕ) / (ℓ ^ (2 : ℕ) - ρ₂ ^ (2 : ℕ))) /
+        ((xiResolventPoint X q).im ^ (2 : ℕ) *
+          ‖evalRealPolynomial P (xiResolventPoint X q)‖ ^ (4 : ℕ)) < (N : ℝ) →
       (xiSpectralPoint q).im = 0 := by
   intro q hq hPq hlt
   by_contra hoff

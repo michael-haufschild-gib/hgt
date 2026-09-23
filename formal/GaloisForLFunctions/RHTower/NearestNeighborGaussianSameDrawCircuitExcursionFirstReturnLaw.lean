@@ -36,7 +36,7 @@ def NearestNeighborPathCircuitExcursionFirstReturnGaps
         ((((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
           Real.exp
             (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-          Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+          Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
             ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1))) <
       mesh / (W + mesh) →
     ∀ A0 : ℝ, 0 ≤ A0 → ∃ u tExit tReturn : ℝ,
@@ -166,7 +166,7 @@ theorem nearestNeighborPath_sameDraw_growth_explicitConsecutiveCircuitFirstRetur
           ((((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
             Real.exp
               (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1))) <
         ((epsw - epsn) /
             projectiveChoiSpeed (nearestNeighborPathChoiEnergy L p)) /

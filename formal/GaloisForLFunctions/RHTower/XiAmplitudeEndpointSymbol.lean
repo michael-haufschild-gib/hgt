@@ -49,24 +49,24 @@ are bounded on the endpoint layer, so the derivative is. -/
 theorem abs_xiAmplitudeDeriv_le_near {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hx : 1 < x) (hx2 : x ≤ 2) : |xiAmplitudeDeriv s x| ≤ 6 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith [sq_nonneg (x - 1)]
-  have hratio : |x / (x ^ 2 - s)| ≤ 4 := by
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith [sq_nonneg (x - 1)]
+  have hratio : |x / (x ^ (2 : ℕ) - s)| ≤ 4 := by
     rw [abs_of_pos (div_pos hx0 hn), div_le_iff₀ hn]
     nlinarith [sq_nonneg (x - 1)]
   have hphase := abs_phaseLogDefect_le_near hs0 hs1 hx hx2
   have hAabs : |xiAmplitude s x| ≤ 2 := abs_xiAmplitude_le_two hs0 hs1 hx
   rw [xiAmplitudeDeriv, abs_mul]
-  have hhalf : x / (2 * (x ^ 2 - s)) = (x / (x ^ 2 - s)) / 2 := by
+  have hhalf : x / (2 * (x ^ (2 : ℕ) - s)) = (x / (x ^ (2 : ℕ) - s)) / 2 := by
     field_simp
-  have hsub := abs_sub (phaseLogDefect s x / 2) (x / (2 * (x ^ 2 - s)))
+  have hsub := abs_sub (phaseLogDefect s x / 2) (x / (2 * (x ^ (2 : ℕ) - s)))
   rw [abs_div, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2), hhalf,
     abs_div, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)] at hsub
-  have hsub' : |phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s))|
-      ≤ |phaseLogDefect s x| / 2 + |x / (x ^ 2 - s)| / 2 := by
+  have hsub' : |phaseLogDefect s x / 2 - x / (2 * (x ^ (2 : ℕ) - s))|
+      ≤ |phaseLogDefect s x| / 2 + |x / (x ^ (2 : ℕ) - s)| / 2 := by
     rw [hhalf]
     exact hsub
-  calc |xiAmplitude s x| * |phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s))|
-      ≤ 2 * (|phaseLogDefect s x| / 2 + |x / (x ^ 2 - s)| / 2) :=
+  calc |xiAmplitude s x| * |phaseLogDefect s x / 2 - x / (2 * (x ^ (2 : ℕ) - s))|
+      ≤ 2 * (|phaseLogDefect s x| / 2 + |x / (x ^ (2 : ℕ) - s)| / 2) :=
         mul_le_mul hAabs hsub' (abs_nonneg _) (by positivity)
     _ ≤ 6 := by linarith
 

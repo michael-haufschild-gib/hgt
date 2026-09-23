@@ -18,15 +18,15 @@ abbrev CoppoFockEnd := Module.End ℂ CoppoFock
 
 /-- The numerator of the orthogonally rotated sum of local Kerr interactions. -/
 def coppoRotatedKerrNumerator : CoppoFockEnd :=
-  (fockCre ℂ Bool false + fockCre ℂ Bool true) ^ 2 *
-      (fockAnn ℂ Bool false + fockAnn ℂ Bool true) ^ 2 +
-    (fockCre ℂ Bool false - fockCre ℂ Bool true) ^ 2 *
-      (fockAnn ℂ Bool false - fockAnn ℂ Bool true) ^ 2
+  (fockCre ℂ Bool false + fockCre ℂ Bool true) ^ (2 : ℕ) *
+      (fockAnn ℂ Bool false + fockAnn ℂ Bool true) ^ (2 : ℕ) +
+    (fockCre ℂ Bool false - fockCre ℂ Bool true) ^ (2 : ℕ) *
+      (fockAnn ℂ Bool false - fockAnn ℂ Bool true) ^ (2 : ℕ)
 
 /-- Pair conversion and local quartics, grouped in normal order. -/
 def coppoFockPairQuartic : CoppoFockEnd :=
-  (fockCre ℂ Bool false ^ 2 + fockCre ℂ Bool true ^ 2) *
-    (fockAnn ℂ Bool false ^ 2 + fockAnn ℂ Bool true ^ 2)
+  (fockCre ℂ Bool false ^ (2 : ℕ) + fockCre ℂ Bool true ^ (2 : ℕ)) *
+    (fockAnn ℂ Bool false ^ (2 : ℕ) + fockAnn ℂ Bool true ^ (2 : ℕ))
 
 /-- The product of the two occupation operators, in normal order. -/
 def coppoFockCrossNumber : CoppoFockEnd :=

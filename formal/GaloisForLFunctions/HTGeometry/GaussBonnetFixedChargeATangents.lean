@@ -13,13 +13,13 @@ open Real
 namespace GaloisForLFunctions.HTGeometry
 open CPV
 
-def egbThermalPressureResponseA (a r : ℝ) : ℝ := 2 * r ^ 3 / (r ^ 2 + 2 * a ^ 2)
+def egbThermalPressureResponseA (a r : ℝ) : ℝ := 2 * r ^ (3 : ℕ) / (r ^ (2 : ℕ) + 2 * a ^ (2 : ℕ))
 
 theorem egbTemperatureA_pressure_hasDerivAt (P Q a x : ℝ) :
     HasDerivAt (fun p => egbTemperatureA p Q a (exp x)) (egbThermalPressureResponseA a (exp x)) P := by
-  have h := (((((hasDerivAt_id P).const_mul (8 * Real.pi)).mul_const (exp x ^ 4)).add_const
-    (exp x ^ 2)).sub_const (Q ^ 2)).sub_const (a ^ 2)
-  apply (h.div_const (4 * Real.pi * exp x * (exp x ^ 2 + 2 * a ^ 2))).congr_deriv
+  have h := (((((hasDerivAt_id P).const_mul (8 * Real.pi)).mul_const (exp x ^ (4 : ℕ))).add_const
+    (exp x ^ (2 : ℕ))).sub_const (Q ^ (2 : ℕ))).sub_const (a ^ (2 : ℕ))
+  apply (h.div_const (4 * Real.pi * exp x * (exp x ^ (2 : ℕ) + 2 * a ^ (2 : ℕ)))).congr_deriv
   unfold egbThermalPressureResponseA
   field_simp
   ring
@@ -36,9 +36,9 @@ theorem egbFixedChargeA_large_equilibrium_derivative (w φ τ : ℝ) :
   have hr := ((egbFixedChargeALargeRadius_differentiable w φ) τ).hasDerivAt
   have hp := ((egbFixedChargeAPressure_differentiable w φ) τ).hasDerivAt
   have hN := (((((hp.const_mul (8 * Real.pi)).mul (hr.pow 4)).add (hr.pow 2)).sub_const
-    ((exp w * cos φ) ^ 2)).sub_const ((exp w * sin φ) ^ 2))
-  have hD := (hr.const_mul (4 * Real.pi)).mul ((hr.pow 2).add_const (2 * (exp w * sin φ) ^ 2))
-  have h := hN.div hD (by change 4 * Real.pi * (egbFixedChargeALargeRadius w φ τ) * ((egbFixedChargeALargeRadius w φ τ) ^ 2 + 2 * (exp w * sin φ) ^ 2) ≠ 0; positivity)
+    ((exp w * cos φ) ^ (2 : ℕ))).sub_const ((exp w * sin φ) ^ (2 : ℕ)))
+  have hD := (hr.const_mul (4 * Real.pi)).mul ((hr.pow 2).add_const (2 * (exp w * sin φ) ^ (2 : ℕ)))
+  have h := hN.div hD (by change 4 * Real.pi * (egbFixedChargeALargeRadius w φ τ) * ((egbFixedChargeALargeRadius w φ τ) ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ≠ 0; positivity)
   have h' := h.congr_of_eventuallyEq (Filter.Eventually.of_forall
     (fun u => (egbFixedChargeA_large_temperature w φ u).symm))
   have hRad := (egbTemperatureA_hasDerivAt (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) (log (egbFixedChargeALargeRadius w φ τ))).deriv
@@ -57,9 +57,9 @@ theorem egbFixedChargeA_small_equilibrium_derivative (w φ τ : ℝ) :
   have hr := ((egbFixedChargeASmallRadius_differentiable w φ) τ).hasDerivAt
   have hp := ((egbFixedChargeAPressure_differentiable w φ) τ).hasDerivAt
   have hN := (((((hp.const_mul (8 * Real.pi)).mul (hr.pow 4)).add (hr.pow 2)).sub_const
-    ((exp w * cos φ) ^ 2)).sub_const ((exp w * sin φ) ^ 2))
-  have hD := (hr.const_mul (4 * Real.pi)).mul ((hr.pow 2).add_const (2 * (exp w * sin φ) ^ 2))
-  have h := hN.div hD (by change 4 * Real.pi * (egbFixedChargeASmallRadius w φ τ) * ((egbFixedChargeASmallRadius w φ τ) ^ 2 + 2 * (exp w * sin φ) ^ 2) ≠ 0; positivity)
+    ((exp w * cos φ) ^ (2 : ℕ))).sub_const ((exp w * sin φ) ^ (2 : ℕ)))
+  have hD := (hr.const_mul (4 * Real.pi)).mul ((hr.pow 2).add_const (2 * (exp w * sin φ) ^ (2 : ℕ)))
+  have h := hN.div hD (by change 4 * Real.pi * (egbFixedChargeASmallRadius w φ τ) * ((egbFixedChargeASmallRadius w φ τ) ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ≠ 0; positivity)
   have h' := h.congr_of_eventuallyEq (Filter.Eventually.of_forall
     (fun u => (egbFixedChargeA_small_temperature w φ u).symm))
   have hRad := (egbTemperatureA_hasDerivAt (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) (log (egbFixedChargeASmallRadius w φ τ))).deriv

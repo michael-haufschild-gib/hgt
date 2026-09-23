@@ -69,7 +69,7 @@ theorem thetaXiRankTwoBoundaryFlux_eq_zero_iff_routeRHodgeMate_eq_zero
 corresponding individual Route P squared node. -/
 theorem thetaXiReciprocalEigenvalue_sq_positiveReal_iff_routeRHodgeMate_eq_zero
     (p : Nat.Primes) (q : XiZeroCopy) :
-    (∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ 2 = (r : ℂ)) ↔
+    (∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ (2 : ℕ) = (r : ℂ)) ↔
       ccmRationalAdelicPrimeXiHodgeMateCoefficient p q.1 = 0 := by
   rw [thetaXiReciprocalEigenvalue_sq_positiveReal_iff_boundaryFlux_zero,
     thetaXiRankTwoBoundaryFlux_eq_zero_iff_routeRHodgeMate_eq_zero]
@@ -113,7 +113,7 @@ theorem thetaXiRankTwoBoundaryFlux_eq_zero_iff_deningerBoundary_eq_zero
 corresponding individual Route P squared node. -/
 theorem thetaXiReciprocalEigenvalue_sq_positiveReal_iff_deningerBoundary_eq_zero
     (p : Nat.Primes) (q : XiZeroCopy) :
-    (∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ 2 = (r : ℂ)) ↔
+    (∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ (2 : ℕ) = (r : ℂ)) ↔
       routeRDeningerBVGreenReflectedBoundary q.1 = 0 := by
   rw [thetaXiReciprocalEigenvalue_sq_positiveReal_iff_boundaryFlux_zero,
     thetaXiRankTwoBoundaryFlux_eq_zero_iff_deningerBoundary_eq_zero (p := p)]

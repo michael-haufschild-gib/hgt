@@ -19,9 +19,9 @@ namespace RHTower
 /-- Square summability on positive indices is equivalent to square summability after restoring the
 single index-zero term.  This direction is the one used by ordinary Dirichlet series. -/
 theorem summable_norm_sq_nat_of_positive
-    {a : ℕ → ℂ} (ha : Summable (fun n : ℕ+ => ‖a n‖ ^ 2)) :
-    Summable (fun n : ℕ => ‖a n‖ ^ 2) := by
-  have hshift : Summable (fun n : ℕ => ‖a n.succPNat‖ ^ 2) :=
+    {a : ℕ → ℂ} (ha : Summable (fun n : ℕ+ => ‖a n‖ ^ (2 : ℕ))) :
+    Summable (fun n : ℕ => ‖a n‖ ^ (2 : ℕ)) := by
+  have hshift : Summable (fun n : ℕ => ‖a n.succPNat‖ ^ (2 : ℕ)) :=
     Equiv.pnatEquivNat.symm.summable_iff.mpr ha
   apply (summable_nat_add_iff 1).mp
   simpa [Nat.succPNat_coe, Nat.add_comm] using hshift
@@ -29,11 +29,11 @@ theorem summable_norm_sq_nat_of_positive
 /-- Complex Cauchy--Schwarz for ordinary Dirichlet series: an unweighted square-summable
 coefficient sequence converges absolutely at every real abscissa strictly above `1/2`. -/
 theorem LSeriesSummable_of_squareSummable
-    {a : ℕ → ℂ} (ha : Summable (fun n => ‖a n‖ ^ 2))
+    {a : ℕ → ℂ} (ha : Summable (fun n => ‖a n‖ ^ (2 : ℕ)))
     {sigma : ℝ} (hsigma : 1 / 2 < sigma) :
     LSeriesSummable a (sigma : ℂ) := by
   have hweighted : Summable
-      (realDirichletWeightedTerm (fun n => ‖a n‖ ^ 2) 0) := by
+      (realDirichletWeightedTerm (fun n => ‖a n‖ ^ (2 : ℕ)) 0) := by
     apply ha.congr_atTop
     filter_upwards [Filter.eventually_ge_atTop 1] with n hn
     have hn0 : n ≠ 0 := Nat.ne_of_gt hn
@@ -56,7 +56,7 @@ theorem LSeriesSummable_of_squareSummable
 
 /-- Positive-index form of `LSeriesSummable_of_squareSummable`. -/
 theorem LSeriesSummable_of_positive_squareSummable
-    {a : ℕ → ℂ} (ha : Summable (fun n : ℕ+ => ‖a n‖ ^ 2))
+    {a : ℕ → ℂ} (ha : Summable (fun n : ℕ+ => ‖a n‖ ^ (2 : ℕ)))
     {sigma : ℝ} (hsigma : 1 / 2 < sigma) :
     LSeriesSummable a (sigma : ℂ) :=
   LSeriesSummable_of_squareSummable (summable_norm_sq_nat_of_positive ha) hsigma
@@ -76,7 +76,7 @@ theorem differentiableOn_LSeries_rightHalf_of_summable
 /-- A square-summable ordinary coefficient sequence has a holomorphic L-series on
 `Re s > 1/2`. -/
 theorem differentiableOn_LSeries_rightHalf_of_squareSummable
-    {a : ℕ → ℂ} (ha : Summable (fun n => ‖a n‖ ^ 2)) :
+    {a : ℕ → ℂ} (ha : Summable (fun n => ‖a n‖ ^ (2 : ℕ))) :
     DifferentiableOn ℂ (LSeries a) {s : ℂ | 1 / 2 < s.re} := by
   intro s hs
   change 1 / 2 < s.re at hs
@@ -95,7 +95,7 @@ theorem differentiableOn_LSeries_rightHalf_of_squareSummable
 
 /-- Positive-index form of the square-summable Dirichlet--Hardy holomorphy theorem. -/
 theorem differentiableOn_LSeries_rightHalf_of_positive_squareSummable
-    {a : ℕ → ℂ} (ha : Summable (fun n : ℕ+ => ‖a n‖ ^ 2)) :
+    {a : ℕ → ℂ} (ha : Summable (fun n : ℕ+ => ‖a n‖ ^ (2 : ℕ))) :
     DifferentiableOn ℂ (LSeries a) {s : ℂ | 1 / 2 < s.re} :=
   differentiableOn_LSeries_rightHalf_of_squareSummable
     (summable_norm_sq_nat_of_positive ha)

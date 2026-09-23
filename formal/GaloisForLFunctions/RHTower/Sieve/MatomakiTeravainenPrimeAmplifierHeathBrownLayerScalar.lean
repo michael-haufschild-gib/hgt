@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.RankEnergyPowerSum
 
 Finite Jensen collapses the threshold layers at exponents `1/2` and `7/8`.  Their total
 cardinality is the exact coefficient mass, at most `P^ell`, while their number is only `ell!`.
-The resulting bound retains every `B^2` denominator from Lemma 3.4.
+The resulting bound retains every `B^(2 : ℕ)` denominator from Lemma 3.4.
 -/
 
 namespace RHTower.Sieve

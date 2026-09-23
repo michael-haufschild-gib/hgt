@@ -28,8 +28,8 @@ structure RouteASourceTraceHankelFinalVerdictPackage : Prop where
       -z * ∑' q : XiZeroCopy, xiReciprocalSquareResolventTerm z q
   finiteHankelMomentExpansion : ∀ p : Polynomial ℝ,
     xiCentralTraceHankel p =
-      ∑ k ∈ Finset.range ((p.map (algebraMap ℝ ℂ) ^ 2).natDegree + 1),
-        (p.map (algebraMap ℝ ℂ) ^ 2).coeff k * xiCentralReciprocalMoment k
+      ∑ k ∈ Finset.range ((p.map (algebraMap ℝ ℂ) ^ (2 : ℕ)).natDegree + 1),
+        (p.map (algebraMap ℝ ℂ) ^ (2 : ℕ)).coeff k * xiCentralReciprocalMoment k
   normalizedTraceMomentInversion : ∀ (g : ℂ → ℂ), DifferentiableAt ℂ g 0 →
     normalizedTraceMomentGerm
       (criticalTraceToCenteredOdd (evenMomentToCriticalTrace g)) = g

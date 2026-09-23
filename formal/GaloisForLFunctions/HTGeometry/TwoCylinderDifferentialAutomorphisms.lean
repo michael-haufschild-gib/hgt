@@ -129,12 +129,12 @@ theorem twoCylDerivation_cylinderCoeffScale (lam : RatFunc ℂ) {q : ℂ} (hq : 
   rw [← hA] at hpA
   rw [← hB] at hpB
   have hpush : cylinderCoeffScale hq
-        ((twoCylDerivation lam A * B - A * twoCylDerivation lam B) / B ^ 2)
+        ((twoCylDerivation lam A * B - A * twoCylDerivation lam B) / B ^ (2 : ℕ))
       = (cylinderCoeffScale hq (twoCylDerivation lam A) * cylinderCoeffScale hq B
           - cylinderCoeffScale hq A * cylinderCoeffScale hq (twoCylDerivation lam B))
-        / (cylinderCoeffScale hq B) ^ 2 := by
+        / (cylinderCoeffScale hq B) ^ (2 : ℕ) := by
     have hd2 := map_div₀ (cylinderCoeffScale hq)
-      (twoCylDerivation lam A * B - A * twoCylDerivation lam B) (B ^ 2)
+      (twoCylDerivation lam A * B - A * twoCylDerivation lam B) (B ^ (2 : ℕ))
     rw [hd2, map_sub, map_mul, map_mul, map_pow]
   rw [hdiv, leibniz_div (twoCylDerivation lam) hD hSB,
     leibniz_div (twoCylDerivation lam) hD hBne, hpA, hpB, hpush]

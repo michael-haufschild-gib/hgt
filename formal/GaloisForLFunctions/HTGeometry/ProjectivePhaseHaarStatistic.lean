@@ -28,7 +28,7 @@ set_option linter.unusedSectionVars false
 theorem norm_fourier_eq_one (k : ℤ) (x : UnitAddCircle) : ‖fourier k x‖ = 1 :=
   Circle.norm_coe _
 
-theorem fourier_add_point (k : ℤ) (x y : UnitAddCircle) :
+theorem fourier_add_point_projectivePhaseHaarStatistic (k : ℤ) (x y : UnitAddCircle) :
     fourier k (x + y) = fourier k x * fourier k y := by
   simp only [fourier_apply, smul_add, AddCircle.toCircle_add, Circle.coe_mul]
 
@@ -42,7 +42,7 @@ theorem fourier_mul_conj (k : ℤ) (x : UnitAddCircle) :
 theorem fourier_sub_arg (k : ℤ) (a b : UnitAddCircle) :
     fourier k (a - b) = fourier k a * (starRingEnd ℂ) (fourier k b) := by
   have hadd : fourier k (a - b) * fourier k b = fourier k a := by
-    rw [← fourier_add_point]
+    rw [← fourier_add_point_projectivePhaseHaarStatistic]
     congr 1
     abel
   calc fourier k (a - b)

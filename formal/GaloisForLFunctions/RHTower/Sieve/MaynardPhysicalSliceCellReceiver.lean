@@ -67,10 +67,10 @@ theorem physicalSlice_base_or_exists_dyadic_superlevel_energy_of_adjacent_defect
           ‖dirPoly B (routeTVonMangoldtSliceCoeff A B) (lam r)‖) ∧
         D / (16 * Δ * (Q : ℝ)) ≤
           (((2 ^ q : ℕ) : ℝ) * v) * (S.card : ℝ) ∧
-        (S.card : ℝ) * ((((2 ^ q : ℕ) : ℝ) * v) ^ 2) ≤
+        (S.card : ℝ) * ((((2 ^ q : ℕ) : ℝ) * v) ^ (2 : ℕ)) ≤
           (T + 4 * (B : ℝ) * (1 + Real.log B)) *
             (1 / Δ + 2 * Real.log B) *
-              (((B - A : ℕ) : ℝ) * (Real.log B / A) ^ 2) := by
+              (((B - A : ℕ) : ℝ) * (Real.log B / A) ^ (2 : ℕ)) := by
   let F : ℝ → ℂ := fun y =>
     dirPoly B (routeTVonMangoldtSliceCoeff A B) (-y)
   let K : ℝ → ℂ := fun y =>

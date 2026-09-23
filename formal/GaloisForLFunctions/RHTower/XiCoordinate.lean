@@ -28,20 +28,20 @@ namespace GaloisForLFunctions.RHTower
 /-- The phase is continuous at the singular endpoint, by the corpus's two-sided bracket. -/
 theorem continuousWithinAt_xiEndpointPhase_one {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1) :
     ContinuousWithinAt (xiEndpointPhase s) (Ici 1) 1 := by
-  have hup : Tendsto (fun x : ℝ => Real.sqrt (x ^ 2 - 1)) (nhdsWithin 1 (Ici 1)) (nhds 0) := by
-    have hc : ContinuousAt (fun x : ℝ => Real.sqrt (x ^ 2 - 1)) 1 := by fun_prop
-    have h2 : Tendsto (fun x : ℝ => Real.sqrt (x ^ 2 - 1)) (nhdsWithin 1 (Ici 1))
-        (nhds (Real.sqrt ((1 : ℝ) ^ 2 - 1))) := hc.continuousWithinAt
-    have hval : Real.sqrt ((1 : ℝ) ^ 2 - 1) = 0 := by norm_num
+  have hup : Tendsto (fun x : ℝ => Real.sqrt (x ^ (2 : ℕ) - 1)) (nhdsWithin 1 (Ici 1)) (nhds 0) := by
+    have hc : ContinuousAt (fun x : ℝ => Real.sqrt (x ^ (2 : ℕ) - 1)) 1 := by fun_prop
+    have h2 : Tendsto (fun x : ℝ => Real.sqrt (x ^ (2 : ℕ) - 1)) (nhdsWithin 1 (Ici 1))
+        (nhds (Real.sqrt ((1 : ℝ) ^ (2 : ℕ) - 1))) := hc.continuousWithinAt
+    have hval : Real.sqrt ((1 : ℝ) ^ (2 : ℕ) - 1) = 0 := by norm_num
     rwa [hval] at h2
   have hmem : ∀ᶠ x : ℝ in nhdsWithin 1 (Ici 1), x ∈ Ici (1 : ℝ) := eventually_mem_nhdsWithin
   have hlow : ∀ᶠ x : ℝ in nhdsWithin 1 (Ici 1), (0 : ℝ) ≤ xiEndpointPhase s x := by
     filter_upwards [hmem] with x hx
     have h := (xiEndpointPhase_bounds hs0 hs1 hx).1
-    have hnn : (0 : ℝ) ≤ Real.sqrt (1 - s) * Real.sqrt (x ^ 2 - 1) := by positivity
+    have hnn : (0 : ℝ) ≤ Real.sqrt (1 - s) * Real.sqrt (x ^ (2 : ℕ) - 1) := by positivity
     linarith
   have hhigh : ∀ᶠ x : ℝ in nhdsWithin 1 (Ici 1),
-      xiEndpointPhase s x ≤ Real.sqrt (x ^ 2 - 1) := by
+      xiEndpointPhase s x ≤ Real.sqrt (x ^ (2 : ℕ) - 1) := by
     filter_upwards [hmem] with x hx
     exact (xiEndpointPhase_bounds hs0 hs1 hx).2
   have : Tendsto (xiEndpointPhase s) (nhdsWithin 1 (Ici 1)) (nhds 0) :=
@@ -92,9 +92,9 @@ estimates apply to the transported integral. -/
 theorem xiEndpointPhase_le_two {s X : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1) (hX1 : 1 ≤ X)
     (hX : X ≤ 2) : xiEndpointPhase s X ≤ 2 := by
   have h := (xiEndpointPhase_bounds hs0 hs1 hX1).2
-  have hsq : Real.sqrt (X ^ 2 - 1) ≤ 2 := by
+  have hsq : Real.sqrt (X ^ (2 : ℕ) - 1) ≤ 2 := by
     rw [show (2 : ℝ) = Real.sqrt 4 by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]]
     exact Real.sqrt_le_sqrt (by nlinarith)
   linarith
 

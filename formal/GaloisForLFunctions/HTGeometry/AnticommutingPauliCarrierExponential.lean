@@ -85,7 +85,7 @@ theorem pauliCarrier_mul_self (A : Finset (NQubitPauliOperator n))
     (a : NQubitPauliOperator n → ℝ)
     (hanti : ∀ p ∈ A, ∀ q ∈ A, p ≠ q → symplecticInner p q = 1) :
     pauliCarrier A a * pauliCarrier A a
-      = (((∑ p ∈ A, a p ^ 2 : ℝ) : ℂ)) • (1 : Matrix (NQubitBasis n) (NQubitBasis n) ℂ) :=
+      = (((∑ p ∈ A, a p ^ (2 : ℕ) : ℝ) : ℂ)) • (1 : Matrix (NQubitBasis n) (NQubitBasis n) ℂ) :=
   HTGeometry.anticommutingCombination_mul_self A (fun p => p.toMatrix) a
     (fun p _ => toMatrix_mul_self p)
     (fun p hp q hq hpq => toMatrix_add_toMatrix_swap_eq_zero p q (hanti p hp q hq hpq))
@@ -98,9 +98,9 @@ theorem exp_neg_I_smul_pauliCarrier (A : Finset (NQubitPauliOperator n))
     (a : NQubitPauliOperator n → ℝ)
     (hanti : ∀ p ∈ A, ∀ q ∈ A, p ≠ q → symplecticInner p q = 1) :
     NormedSpace.exp ((-Complex.I) • pauliCarrier A a)
-      = ((Real.cos (Real.sqrt (∑ p ∈ A, a p ^ 2)) : ℝ) : ℂ) •
+      = ((Real.cos (Real.sqrt (∑ p ∈ A, a p ^ (2 : ℕ))) : ℝ) : ℂ) •
           (1 : Matrix (NQubitBasis n) (NQubitBasis n) ℂ)
-        - (Complex.I * ((Real.sinc (Real.sqrt (∑ p ∈ A, a p ^ 2)) : ℝ) : ℂ)) • pauliCarrier A a :=
+        - (Complex.I * ((Real.sinc (Real.sqrt (∑ p ∈ A, a p ^ (2 : ℕ))) : ℝ) : ℂ)) • pauliCarrier A a :=
   HTGeometry.exp_neg_I_smul_anticommutingCombination A (fun p => p.toMatrix) a
     (fun p _ => toMatrix_mul_self p)
     (fun p hp q hq hpq => toMatrix_add_toMatrix_swap_eq_zero p q (hanti p hp q hq hpq))
@@ -110,7 +110,7 @@ open scoped Matrix.Norms.Operator in
 theorem exp_neg_I_smul_pauliCarrier_eq_one (A : Finset (NQubitPauliOperator n))
     (a : NQubitPauliOperator n → ℝ)
     (hanti : ∀ p ∈ A, ∀ q ∈ A, p ≠ q → symplecticInner p q = 1)
-    (k : ℕ) (hk : Real.sqrt (∑ p ∈ A, a p ^ 2) = 2 * Real.pi * k) :
+    (k : ℕ) (hk : Real.sqrt (∑ p ∈ A, a p ^ (2 : ℕ)) = 2 * Real.pi * k) :
     NormedSpace.exp ((-Complex.I) • pauliCarrier A a)
       = (1 : Matrix (NQubitBasis n) (NQubitBasis n) ℂ) := by
   rw [exp_neg_I_smul_pauliCarrier A a hanti, hk]
@@ -119,9 +119,9 @@ theorem exp_neg_I_smul_pauliCarrier_eq_one (A : Finset (NQubitPauliOperator n))
     rw [this, Real.cos_int_mul_two_pi]
   rcases Nat.eq_zero_or_pos k with rfl | hkpos
   · have hzero : pauliCarrier A a = 0 := by
-      have hsum : (∑ p ∈ A, a p ^ 2) = 0 := by
-        have hnn : (0 : ℝ) ≤ ∑ p ∈ A, a p ^ 2 := Finset.sum_nonneg fun p _ => sq_nonneg _
-        have h0 : Real.sqrt (∑ p ∈ A, a p ^ 2) = 0 := by rw [hk]; simp
+      have hsum : (∑ p ∈ A, a p ^ (2 : ℕ)) = 0 := by
+        have hnn : (0 : ℝ) ≤ ∑ p ∈ A, a p ^ (2 : ℕ) := Finset.sum_nonneg fun p _ => sq_nonneg _
+        have h0 : Real.sqrt (∑ p ∈ A, a p ^ (2 : ℕ)) = 0 := by rw [hk]; simp
         exact (Real.sqrt_eq_zero hnn).mp h0
       have hcoef : ∀ p ∈ A, a p = 0 := by
         intro p hp

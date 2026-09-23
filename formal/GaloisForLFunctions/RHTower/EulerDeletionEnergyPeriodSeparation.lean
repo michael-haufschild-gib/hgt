@@ -38,7 +38,7 @@ theorem energy_div_uniformPeriodVariance_tendsto_zero :
       atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop uniformPeriodVariance_tendsto_atTop
   have hupper : Tendsto (fun N : ℕ =>
-      2 * (‖bdMobiusModularApproximantVec N‖ ^ 2 /
+      2 * (‖bdMobiusModularApproximantVec N‖ ^ (2 : ℕ) /
         DeletionPeriodGrowth.variance N) + 4 / DeletionPeriodGrowth.variance N)
       atTop (𝓝 0) :=
     by simpa using (hsource.const_mul 2).add hconst
@@ -55,9 +55,9 @@ theorem energy_div_uniformPeriodVariance_tendsto_zero :
     rw [add_div] at hdiv
     calc
       energy N / DeletionPeriodGrowth.variance N ≤
-          (2 * ‖bdMobiusModularApproximantVec N‖ ^ 2) /
+          (2 * ‖bdMobiusModularApproximantVec N‖ ^ (2 : ℕ)) /
             DeletionPeriodGrowth.variance N + 4 / DeletionPeriodGrowth.variance N := hdiv
-      _ = 2 * (‖bdMobiusModularApproximantVec N‖ ^ 2 /
+      _ = 2 * (‖bdMobiusModularApproximantVec N‖ ^ (2 : ℕ) /
             DeletionPeriodGrowth.variance N) + 4 / DeletionPeriodGrowth.variance N := by ring
 
 end RHTower.DeletionSignedResidueCovariance

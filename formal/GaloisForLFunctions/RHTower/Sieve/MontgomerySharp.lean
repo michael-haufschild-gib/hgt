@@ -45,13 +45,13 @@ theorem montgomery_sieve_sharp (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 ≤ Q) (
     (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime ∧ p ≤ Q) :
     (A.card : ℝ) * ∑ p ∈ P,
         ((p : ℝ) - ((occupiedClasses p A).card : ℝ)) / ((occupiedClasses p A).card : ℝ)
-      ≤ (Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ) := by
+      ≤ (Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ) := by
   classical
   have hlow : ∀ p ∈ P,
-      (A.card : ℝ) ^ 2
+      (A.card : ℝ) ^ (2 : ℕ)
           * (((p : ℝ) - ((occupiedClasses p A).card : ℝ)) / ((occupiedClasses p A).card : ℝ))
         ≤ ∑ x ∈ (properFareySet Q).filter (fun x => x.2 = p),
-            ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ 2 := by
+            ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ (2 : ℕ) := by
     intro p hp
     obtain ⟨hprime, hpQ⟩ := hP p hp
     have hc : (0 : ℝ) < ((occupiedClasses p A).card : ℝ) := by
@@ -61,7 +61,7 @@ theorem montgomery_sieve_sharp (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 ≤ Q) (
     rw [mul_div_assoc', div_le_iff₀ hc]
     linarith [hmont, mul_comm ((occupiedClasses p A).card : ℝ)
       (∑ x ∈ (properFareySet Q).filter (fun x => x.2 = p),
-        ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ 2)]
+        ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ (2 : ℕ))]
   have hdisj : (↑P : Set ℕ).PairwiseDisjoint
       (fun p => (properFareySet Q).filter (fun x => x.2 = p)) := by
     intro p _ p' _ hne
@@ -77,27 +77,27 @@ theorem montgomery_sieve_sharp (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 ≤ Q) (
     obtain ⟨p, _, hxp⟩ := hx
     exact (Finset.mem_filter.mp hxp).1
   have hfibres : ∑ p ∈ P, ∑ x ∈ (properFareySet Q).filter (fun x => x.2 = p),
-        ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ 2
+        ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ (2 : ℕ)
       ≤ ∑ x ∈ properFareySet Q,
-          ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ 2 := by
+          ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((x.1 : ℝ) / (x.2 : ℝ)))‖ ^ (2 : ℕ) := by
     rw [← Finset.sum_biUnion hdisj]
     exact Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => sq_nonneg _)
   have hbig := largeSieve_set_properFarey N hN hQ A hA
   have hcardpos : (0 : ℝ) < (A.card : ℝ) := by
     have := Finset.card_pos.mpr hAne
     exact_mod_cast this
-  have hchain : (A.card : ℝ) ^ 2 * ∑ p ∈ P,
+  have hchain : (A.card : ℝ) ^ (2 : ℕ) * ∑ p ∈ P,
       ((p : ℝ) - ((occupiedClasses p A).card : ℝ)) / ((occupiedClasses p A).card : ℝ)
-      ≤ ((Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ)) * (A.card : ℝ) := by
+      ≤ ((Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ)) * (A.card : ℝ) := by
     rw [Finset.mul_sum]
     exact le_trans (Finset.sum_le_sum hlow) (le_trans hfibres hbig)
   refine le_of_mul_le_mul_right ?_ hcardpos
   calc ((A.card : ℝ) * ∑ p ∈ P,
         ((p : ℝ) - ((occupiedClasses p A).card : ℝ)) / ((occupiedClasses p A).card : ℝ))
         * (A.card : ℝ)
-      = (A.card : ℝ) ^ 2 * ∑ p ∈ P,
+      = (A.card : ℝ) ^ (2 : ℕ) * ∑ p ∈ P,
           ((p : ℝ) - ((occupiedClasses p A).card : ℝ))
             / ((occupiedClasses p A).card : ℝ) := by ring
-    _ ≤ ((Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ)) * (A.card : ℝ) := hchain
+    _ ≤ ((Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ)) * (A.card : ℝ) := hchain
 
 end RHTower.Sieve

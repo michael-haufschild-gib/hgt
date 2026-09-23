@@ -26,9 +26,9 @@ namespace U0CurveSectors
 /-- On the dichotomy ring the escape fixed point is uniformly below `121/50`. -/
 theorem xStar_le_ring {B : ℝ} (hB : B ≤ 2 + Real.sqrt 2) : xStar B ≤ 121 / 50 := by
   have hs2 : Real.sqrt 2 ≤ 283 / 200 := by
-    have h := Real.sqrt_le_sqrt (show (2 : ℝ) ≤ (283 / 200) ^ 2 by norm_num)
+    have h := Real.sqrt_le_sqrt (show (2 : ℝ) ≤ (283 / 200) ^ (2 : ℕ) by norm_num)
     rwa [Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 283 / 200)] at h
-  have harg : 1 + 4 * B ≤ (96 / 25 : ℝ) ^ 2 := by
+  have harg : 1 + 4 * B ≤ (96 / 25 : ℝ) ^ (2 : ℕ) := by
     have : B ≤ 2 + 283 / 200 := le_trans hB (by linarith)
     nlinarith
   have hsq : Real.sqrt (1 + 4 * B) ≤ 96 / 25 := by
@@ -48,14 +48,14 @@ theorem viable_sector_ring {b : ℂ} (hb2 : 2 < ‖b‖) (hring : ‖b‖ ≤ 2 
 
 /-- The viable sector in `(‖b‖, Re b)` coordinates, via `‖b+1‖² = ‖b‖² + 2·Re b + 1`. -/
 theorem viable_sector_ring_re {b : ℂ} (hb2 : 2 < ‖b‖) (hring : ‖b‖ ≤ 2 + Real.sqrt 2)
-    (hcond : (121 / 50 + (2 * ‖b‖ + 1)) ^ 2 < ‖b‖ ^ 2 * (‖b‖ ^ 2 + 2 * b.re + 1)) :
+    (hcond : (121 / 50 + (2 * ‖b‖ + 1)) ^ (2 : ℕ) < ‖b‖ ^ (2 : ℕ) * (‖b‖ ^ (2 : ℕ) + 2 * b.re + 1)) :
     ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia b := by
   refine viable_sector_ring hb2 hring ?_
-  have hnorm1 : ‖b + 1‖ ^ 2 = ‖b‖ ^ 2 + 2 * b.re + 1 := by
+  have hnorm1 : ‖b + 1‖ ^ (2 : ℕ) = ‖b‖ ^ (2 : ℕ) + 2 * b.re + 1 := by
     rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq, Complex.normSq_apply,
       Complex.normSq_apply, Complex.add_re, Complex.add_im, Complex.one_re, Complex.one_im]
     ring
-  have hcond' : (121 / 50 + (2 * ‖b‖ + 1)) ^ 2 < ‖b‖ ^ 2 * ‖b + 1‖ ^ 2 := by
+  have hcond' : (121 / 50 + (2 * ‖b‖ + 1)) ^ (2 : ℕ) < ‖b‖ ^ (2 : ℕ) * ‖b + 1‖ ^ (2 : ℕ) := by
     rw [hnorm1]; exact hcond
   by_contra hcon
   push Not at hcon
@@ -76,9 +76,9 @@ theorem viable_modulus_three {b : ℂ} (hmod : ‖b‖ = 3) (hre : -(3 / 50) ≤
 disk.  (The identity `(1+s)/2 + (1−s²)/4 = −(s−3)(s+1)/4` makes the P1 condition exact —
 Cassini-type region, no square-root estimates.) -/
 theorem obstructed_of_s {s : ℂ} (hcond : ‖s - 3‖ * ‖s + 1‖ ≤ 4) :
-    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia ((1 - s ^ 2) / 4) := by
+    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia ((1 - s ^ (2 : ℕ)) / 4) := by
   refine U0ObstructionPatterns.filledJulia_meets_unit_disk_P1 (s := s) (by ring) ?_
-  have hid : (1 + s) / 2 + (1 - s ^ 2) / 4 = -((s - 3) * (s + 1)) / 4 := by ring
+  have hid : (1 + s) / 2 + (1 - s ^ (2 : ℕ)) / 4 = -((s - 3) * (s + 1)) / 4 := by ring
   rw [hid]
   rw [norm_div, norm_neg, norm_mul, Complex.norm_ofNat]
   linarith
@@ -86,9 +86,9 @@ theorem obstructed_of_s {s : ℂ} (hcond : ‖s - 3‖ * ‖s + 1‖ ≤ 4) :
 /-- The real-`s` segment recovers the negative-ray obstruction: for real `s ∈ [3, 1+2√2]` the
 parameter `b = (1−s²)/4` lies on the negative ray with `‖b‖ ∈ [2, 2+√2]`, obstructed. -/
 theorem obstructed_real_segment {s : ℝ} (h3 : 3 ≤ s) (hup : s ≤ 1 + 2 * Real.sqrt 2) :
-    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia ((1 - (s : ℂ) ^ 2) / 4) := by
+    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia ((1 - (s : ℂ) ^ (2 : ℕ)) / 4) := by
   refine obstructed_of_s ?_
-  have hs2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hs2 : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have h1 : ((s : ℂ) - 3) = ((s - 3 : ℝ) : ℂ) := by push_cast; ring
   have h2 : ((s : ℂ) + 1) = ((s + 1 : ℝ) : ℂ) := by push_cast; ring
   rw [h1, h2, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,

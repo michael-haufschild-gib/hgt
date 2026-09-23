@@ -39,7 +39,7 @@ private theorem lowerSource_one_le {U A W : ℝ}
 /-- Relative shear preserves enough favorable source slope to reuse the exact compact reserve. -/
 theorem thetaCuspCenterCompensationSource_energy_lower {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (8/95)) :
-    Bottcher.completedThetaProfile x^2 *
+    Bottcher.completedThetaProfile x^(2 : ℕ) *
       HTGeometry.oddCompactLowerSource (u x) (a x) (w x) ≤
         thetaCuspCenterCompensationSource x := by
   have hbox : 0 ≤ u x ∧ u x ≤ 1 ∧ 17 ≤ a x ∧ a x ≤ 20 ∧ 0 ≤ w x ∧ w x ≤ 1 :=
@@ -52,7 +52,7 @@ theorem thetaCuspCenterCompensationSource_energy_lower {x : ℝ}
   have hloss : 0 ≤ a x*w x/8+5*u x/16 := by positivity
   have haw := mul_le_mul_of_nonneg_left hrelative (by linarith : 0 ≤ a x)
   have hau := mul_nonneg hu0 (show 0 ≤ a x-5 by linarith)
-  have hu3 : 0 ≤ u x^3 := pow_nonneg hu0 3
+  have hu3 : 0 ≤ u x^(3 : ℕ) := pow_nonneg hu0 3
   have hfirst : -(2/3)*(a x*w x/8+5*u x/16) ≤
       HTGeometry.oddCompactSourceFirst (u x) (a x) (w x) := by
     unfold HTGeometry.oddCompactSourceFirst
@@ -63,7 +63,7 @@ theorem thetaCuspCenterCompensationSource_energy_lower {x : ℝ}
   have htq := mul_le_mul_of_nonneg_right ht
     (mul_nonneg hQ hloss)
   have hb : HTGeometry.oddCompactLowerSource (u x) (a x) (w x) ≤
-      3*(HTGeometry.oddCompactSourceZero (u x) (a x))^2+
+      3*(HTGeometry.oddCompactSourceZero (u x) (a x))^(2 : ℕ)+
       2*x*HTGeometry.oddCompactSourceZero (u x) (a x)*
         HTGeometry.oddCompactSourceFirst (u x) (a x) (w x) := by
     unfold HTGeometry.oddCompactLowerSource
@@ -71,9 +71,9 @@ theorem thetaCuspCenterCompensationSource_energy_lower {x : ℝ}
   have hm := mul_le_mul_of_nonneg_left hb (sq_nonneg (Bottcher.completedThetaProfile x))
   unfold thetaCuspCenterCompensationSource
   rw [thetaCuspFullSource_eq_compactSourceZero, deriv_thetaCuspFullSource_eq_compactSourceFirst]
-  change Bottcher.completedThetaProfile x^2*
+  change Bottcher.completedThetaProfile x^(2 : ℕ)*
     HTGeometry.oddCompactLowerSource (u x) (a x) (w x) ≤
-    3*(Bottcher.completedThetaProfile x*HTGeometry.oddCompactSourceZero (u x) (a x))^2+
+    3*(Bottcher.completedThetaProfile x*HTGeometry.oddCompactSourceZero (u x) (a x))^(2 : ℕ)+
     2*x*(Bottcher.completedThetaProfile x*HTGeometry.oddCompactSourceZero (u x) (a x))*
       (Bottcher.completedThetaProfile x*HTGeometry.oddCompactSourceFirst (u x) (a x) (w x))
   nlinarith only [hm]
@@ -81,7 +81,7 @@ theorem thetaCuspCenterCompensationSource_energy_lower {x : ℝ}
 /-- The complete correction retains one squared mass on the enlarged compact interval. -/
 theorem thetaCuspCenterCompensationSource_ge_mass_sq_on_energy_interval {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (8/95)) :
-    Bottcher.completedThetaProfile x^2 ≤ thetaCuspCenterCompensationSource x := by
+    Bottcher.completedThetaProfile x^(2 : ℕ) ≤ thetaCuspCenterCompensationSource x := by
   have hbox : 0 ≤ u x ∧ u x ≤ 1 ∧ 17 ≤ a x ∧ a x ≤ 20 ∧ 0 ≤ w x ∧ w x ≤ 1 :=
     thetaCuspModularState_energy_box hx
   obtain ⟨hu0, hu1, ha0, ha1, hw0, hw1⟩ := hbox
@@ -93,7 +93,7 @@ theorem thetaCuspCenterCompensationSource_ge_mass_sq_on_energy_interval {x : ℝ
 /-- A fixed positive reserve for every coefficient at least one billion, through 8/95. -/
 theorem thetaCuspNativeOddCompensatedDet_energy_lower {C x : ℝ}
     (hC : 1000000000 ≤ C) (hx : x ∈ Icc (0 : ℝ) (8/95)) :
-    Bottcher.completedThetaProfile x^6*100000000000000 ≤
+    Bottcher.completedThetaProfile x^(6 : ℕ)*100000000000000 ≤
       thetaCuspNativeOddCompensatedDet C x := by
   have hbox : 0 ≤ u x ∧ u x ≤ 1 ∧ 17 ≤ a x ∧ a x ≤ 20 ∧ 0 ≤ w x ∧ w x ≤ 1 :=
     thetaCuspModularState_energy_box hx
@@ -105,19 +105,19 @@ theorem thetaCuspNativeOddCompensatedDet_energy_lower {C x : ℝ}
   have hd := thetaCuspNativeOddHeadDet_pos x
   have hcg := mul_le_mul_of_nonneg_left hg
     (show 0 ≤ (1000000000 : ℝ)*thetaCuspNativeOddHeadDet x by positivity)
-  have hfixed : Bottcher.completedThetaProfile x^6*100000000000000 ≤
+  have hfixed : Bottcher.completedThetaProfile x^(6 : ℕ)*100000000000000 ≤
       thetaCuspNativeOddCompensatedDet 1000000000 x := by
     unfold thetaCuspNativeOddCompensatedDet
     rw [thetaCuspNativeOddHankelThreeDet_eq_compactPolynomial]
     rw [thetaCuspNativeOddHeadDet_eq_compactPolynomial] at hcg ⊢
-    change _ ≤ Bottcher.completedThetaProfile x^6*
+    change _ ≤ Bottcher.completedThetaProfile x^(6 : ℕ)*
       HTGeometry.oddCompactDet (u x) (a x) (w x)+_
-    change (1000000000*(Bottcher.completedThetaProfile x^4*HTGeometry.oddCompactHead (u x) (a x) (w x)))*
-      (Bottcher.completedThetaProfile x^2*HTGeometry.oddCompactLowerSource (u x) (a x) (w x)) ≤
-      (1000000000*(Bottcher.completedThetaProfile x^4*HTGeometry.oddCompactHead (u x) (a x) (w x)))*
+    change (1000000000*(Bottcher.completedThetaProfile x^(4 : ℕ)*HTGeometry.oddCompactHead (u x) (a x) (w x)))*
+      (Bottcher.completedThetaProfile x^(2 : ℕ)*HTGeometry.oddCompactLowerSource (u x) (a x) (w x)) ≤
+      (1000000000*(Bottcher.completedThetaProfile x^(4 : ℕ)*HTGeometry.oddCompactHead (u x) (a x) (w x)))*
         thetaCuspCenterCompensationSource x at hcg
-    change _ ≤ Bottcher.completedThetaProfile x^6*HTGeometry.oddCompactDet (u x) (a x) (w x)+
-      1000000000*(Bottcher.completedThetaProfile x^4*HTGeometry.oddCompactHead (u x) (a x) (w x))*
+    change _ ≤ Bottcher.completedThetaProfile x^(6 : ℕ)*HTGeometry.oddCompactDet (u x) (a x) (w x)+
+      1000000000*(Bottcher.completedThetaProfile x^(4 : ℕ)*HTGeometry.oddCompactHead (u x) (a x) (w x))*
         thetaCuspCenterCompensationSource x
     nlinarith only [hm, hcg]
   have hG : 0 ≤ thetaCuspCenterCompensationSource x :=

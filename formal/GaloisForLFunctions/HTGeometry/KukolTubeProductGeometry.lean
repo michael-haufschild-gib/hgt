@@ -44,11 +44,11 @@ theorem isOpen_kukolRegularTubeSaturation :
     exact UpperHalfPlane.continuous_coe
   apply continuous_induced_rng.mpr
   change Continuous (fun p : UpperHalfPlane × UpperHalfPlane × (κ → ℂ) =>
-    (Units.mk0 (p.1 : ℂ) p.1.ne_zero,(p.2.1 : ℂ)+(∑ k,p.2.2 k^2)/(p.1 : ℂ),p.2.2))
+    (Units.mk0 (p.1 : ℂ) p.1.ne_zero,(p.2.1 : ℂ)+(∑ k,p.2.2 k^(2 : ℕ))/(p.1 : ℂ),p.2.2))
   refine (hm.comp continuous_fst).prodMk ((Continuous.add ?_ ?_).prodMk continuous_snd.snd)
   · fun_prop
   · exact (by fun_prop : Continuous (fun p : UpperHalfPlane × UpperHalfPlane × (κ → ℂ) =>
-        ∑ k,p.2.2 k^2)).div (UpperHalfPlane.continuous_coe.comp continuous_fst)
+        ∑ k,p.2.2 k^(2 : ℕ))).div (UpperHalfPlane.continuous_coe.comp continuous_fst)
       (fun p => p.1.ne_zero)
 
 /-- The whole saturated tube is homeomorphic to two upper half-planes times the transverse complex space. -/
@@ -71,11 +71,11 @@ abbrev KukolComplexAmbient (κ : Type*) := ℂ × ℂ × (κ → ℂ)
 
 /-- The invariant coordinate change written in the original ambient complex vector space. -/
 def kukolAmbientNormalize (x : KukolComplexAmbient κ) : KukolComplexAmbient κ :=
-  (x.1,x.2.1-(∑ k,x.2.2 k^2)/x.1,x.2.2)
+  (x.1,x.2.1-(∑ k,x.2.2 k^(2 : ℕ))/x.1,x.2.2)
 
 /-- The explicit inverse change, also written in ordinary ambient coordinates. -/
 def kukolAmbientDenormalize (x : KukolComplexAmbient κ) : KukolComplexAmbient κ :=
-  (x.1,x.2.1+(∑ k,x.2.2 k^2)/x.1,x.2.2)
+  (x.1,x.2.1+(∑ k,x.2.2 k^(2 : ℕ))/x.1,x.2.2)
 
 /-- The two rational coordinate formulae are mutually inverse. -/
 def kukolAmbientCoordinateEquiv : KukolComplexAmbient κ ≃ KukolComplexAmbient κ where
@@ -95,7 +95,7 @@ theorem analyticOnNhd_kukolAmbientNormalize :
   have hm : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => y.1) x := analyticAt_fst
   have hp : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => y.2.1) x := analyticAt_fst.comp analyticAt_snd
   have hz : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => y.2.2) x := analyticAt_snd.comp analyticAt_snd
-  have hs : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => ∑ k,y.2.2 k^2) x := by
+  have hs : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => ∑ k,y.2.2 k^(2 : ℕ)) x := by
     apply Finset.analyticAt_fun_sum
     intro k _
     exact (((ContinuousLinearMap.proj k : (κ → ℂ) →L[ℂ] ℂ).analyticAt _).comp hz).pow 2
@@ -108,7 +108,7 @@ theorem analyticOnNhd_kukolAmbientDenormalize :
   have hm : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => y.1) x := analyticAt_fst
   have hp : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => y.2.1) x := analyticAt_fst.comp analyticAt_snd
   have hz : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => y.2.2) x := analyticAt_snd.comp analyticAt_snd
-  have hs : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => ∑ k,y.2.2 k^2) x := by
+  have hs : AnalyticAt ℂ (fun y : KukolComplexAmbient κ => ∑ k,y.2.2 k^(2 : ℕ)) x := by
     apply Finset.analyticAt_fun_sum
     intro k _
     exact (((ContinuousLinearMap.proj k : (κ → ℂ) →L[ℂ] ℂ).analyticAt _).comp hz).pow 2

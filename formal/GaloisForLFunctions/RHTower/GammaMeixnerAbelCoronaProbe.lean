@@ -143,8 +143,8 @@ theorem primeLogAbsWeight_nonneg (b : ℕ → ℝ) (n : ℕ) : 0 ≤ primeLogAbs
   mul_nonneg (mertensPrimeWeight_nonneg n) (abs_nonneg _)
 
 theorem weightPartialSum_primeLogAbsWeight (b : ℕ → ℝ) (N : ℕ) :
-    weightPartialSum (primeLogAbsWeight b) N = primeLogMass b N := by
-  rw [weightPartialSum, primeLogMass]
+    weightPartialSum (primeLogAbsWeight b) N = primeLogMass_weightedEulerCoefficientSpaces b N := by
+  rw [weightPartialSum, primeLogMass_weightedEulerCoefficientSpaces]
   simp only [primeLogAbsWeight, mertensPrimeWeight]
   rw [show Finset.Icc 0 N = insert 0 (Finset.Icc 1 N) by
       ext n
@@ -155,12 +155,12 @@ theorem weightPartialSum_primeLogAbsWeight (b : ℕ → ℝ) (N : ℕ) :
 
 theorem primeLogMass_le_logAffine {b : ℕ → ℝ} {C : ℝ}
     (hC : ∀ X : ℕ, 2 ≤ X → marcinkiewiczLogQuotient b X ≤ C) (N : ℕ) :
-    primeLogMass b N ≤ max C 0 * (Real.log N + 1) := by
+    primeLogMass_weightedEulerCoefficientSpaces b N ≤ max C 0 * (Real.log N + 1) := by
   have hK0 : (0 : ℝ) ≤ max C 0 := le_max_right _ _
   have hCK : C ≤ max C 0 := le_max_left _ _
   rcases lt_or_ge N 2 with hN | hN
-  · have hzero : primeLogMass b N = 0 := by
-      rw [primeLogMass]
+  · have hzero : primeLogMass_weightedEulerCoefficientSpaces b N = 0 := by
+      rw [primeLogMass_weightedEulerCoefficientSpaces]
       refine Finset.sum_eq_zero fun n hn => ?_
       simp only [Finset.mem_filter, Finset.mem_Icc] at hn
       obtain ⟨⟨h1, h2⟩, hp⟩ := hn
@@ -174,7 +174,7 @@ theorem primeLogMass_le_logAffine {b : ℕ → ℝ} {C : ℝ}
   · have hlogpos : 0 < Real.log N := log_cutoff_pos hN
     have hq := hC N hN
     rw [marcinkiewiczLogQuotient, div_le_iff₀ hlogpos] at hq
-    calc primeLogMass b N ≤ C * Real.log N := hq
+    calc primeLogMass_weightedEulerCoefficientSpaces b N ≤ C * Real.log N := hq
       _ ≤ max C 0 * Real.log N := mul_le_mul_of_nonneg_right hCK hlogpos.le
       _ ≤ max C 0 * (Real.log N + 1) := by nlinarith
 
@@ -294,7 +294,7 @@ theorem summable_gammaShapeTerm_head {θ : ℝ} (b : ℕ → ℝ) (P : ℕ) :
   simp [primeCoefficientHead, hP]
 
 theorem abs_gammaShapeAbelFunctional_head_le {θ : ℝ} (hθ : 0 < θ) (b : ℕ → ℝ) (P : ℕ) :
-    |gammaShapeAbelFunctional θ (primeCoefficientHead b P)| ≤ θ * primeLogMass b P := by
+    |gammaShapeAbelFunctional θ (primeCoefficientHead b P)| ≤ θ * primeLogMass_weightedEulerCoefficientSpaces b P := by
   have hzero : ∀ n ∉ Finset.range (P + 1),
       mertensPrimeWeight n * meixnerShape θ n * primeCoefficientHead b P n = 0 := by
     intro n hn
@@ -327,7 +327,7 @@ theorem abs_gammaShapeAbelFunctional_head_le {θ : ℝ} (hθ : 0 < θ) (b : ℕ 
           |mertensPrimeWeight n * meixnerShape θ n * primeCoefficientHead b P n| :=
         Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ n ∈ Finset.range (P + 1), primeLogAbsWeight b n := Finset.sum_le_sum hterm
-    _ = primeLogMass b P := by
+    _ = primeLogMass_weightedEulerCoefficientSpaces b P := by
         rw [← weightPartialSum_primeLogAbsWeight b P, weightPartialSum]
         congr 1
         ext n
@@ -343,8 +343,8 @@ theorem tendsto_gammaShapeAbelFunctional_vanishingTail {b : ℕ → ℝ}
   set ε' : ℝ := ε / (8 * Real.sqrt 2) with hε'def
   have hε'pos : 0 < ε' := by rw [hε'def]; positivity
   obtain ⟨P, hP⟩ := hb ε' hε'pos
-  set M : ℝ := primeLogMass b P with hMdef
-  have hM0 : 0 ≤ M := primeLogMass_nonneg b P
+  set M : ℝ := primeLogMass_weightedEulerCoefficientSpaces b P with hMdef
+  have hM0 : 0 ≤ M := primeLogMass_nonneg_weightedEulerCoefficientSpaces b P
   set c : ℝ := min 1 (ε / (2 * (M + 1))) with hcdef
   have hcpos : 0 < c := by
     rw [hcdef]

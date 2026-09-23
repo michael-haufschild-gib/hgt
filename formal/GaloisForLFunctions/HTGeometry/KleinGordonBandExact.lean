@@ -114,10 +114,10 @@ theorem kgFieldEnergyT_kgBandOp_eq (hw : ∀ r : ℝ, Measurable (w r)) (hb0 : 0
       Continuous fun r : ℝ => (fourierMulCLM (hw r) hb0 (hwb r)) x)
     {R : ℝ} {g h : Lp ℂ 2 (volume : Measure E)} (hg : kgLowPassOp R g = g)
     (hh : kgLowPassOp R h = h) (t : ℝ) :
-    ‖kgFieldGradT (fun r : ℝ => kgBandOp (fourierMulCLM (hw r) hb0 (hwb r)) R) g h t‖ ^ 2
-        + ‖kgFieldVelT (fun r : ℝ => kgBandOp (fourierMulCLM (hw r) hb0 (hwb r)) R) g h t‖ ^ 2
-      = ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ 2
-        + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ 2 := by
+    ‖kgFieldGradT (fun r : ℝ => kgBandOp (fourierMulCLM (hw r) hb0 (hwb r)) R) g h t‖ ^ (2 : ℕ)
+        + ‖kgFieldVelT (fun r : ℝ => kgBandOp (fourierMulCLM (hw r) hb0 (hwb r)) R) g h t‖ ^ (2 : ℕ)
+      = ‖kgFieldGradT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ (2 : ℕ)
+        + ‖kgFieldVelT (fun r : ℝ => fourierMulCLM (hw r) hb0 (hwb r)) g h t‖ ^ (2 : ℕ) := by
   have hstate := kgFieldStateT_kgBandOp_eq hw hb0 hwb hWs hg hh t
   rw [kgFieldEnergyT_eq_norm_sq, kgFieldEnergyT_eq_norm_sq, hstate]
 

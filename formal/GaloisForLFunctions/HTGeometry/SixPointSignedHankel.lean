@@ -7,7 +7,7 @@ noncomputable section
 
 /-- A strict leading plane and strict determinant give positivity in every nonzero direction. -/
 theorem hankelThreeQuadratic_pos {a b c d e x y z : ℝ}
-    (ha : 0 < a) (hhead : 0 < a*c-b^2)
+    (ha : 0 < a) (hhead : 0 < a*c-b^(2 : ℕ))
     (hdet : 0 < HilbertMetric.signedEvenHankelThreeDet a b c d e)
     (hxyz : x ≠ 0 ∨ y ≠ 0 ∨ z ≠ 0) :
     0 < hankelThreeQuadratic a b c d e x y z := by
@@ -28,7 +28,7 @@ def sixPointSignedHankel (m0 m1 m2 m3 m4 m5 : ℝ) : Matrix (Fin 6) (Fin 6) ℝ 
 /-- Both strict parity blocks give the full strict six-dimensional section. -/
 theorem sixPointSignedHankel_posDef {m0 m1 m2 m3 m4 m5 : ℝ}
     (h0 : 0 < m0) (h1 : 0 < m1)
-    (h2 : 0 < m0*m2-m1^2) (h3 : 0 < m1*m3-m2^2)
+    (h2 : 0 < m0*m2-m1^(2 : ℕ)) (h3 : 0 < m1*m3-m2^(2 : ℕ))
     (h4 : 0 < HilbertMetric.signedEvenHankelThreeDet m0 m1 m2 m3 m4)
     (h5 : 0 < HilbertMetric.signedEvenHankelThreeDet m1 m2 m3 m4 m5) :
     (sixPointSignedHankel m0 m1 m2 m3 m4 m5).PosDef := by

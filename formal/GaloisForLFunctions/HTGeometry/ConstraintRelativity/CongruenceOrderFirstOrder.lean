@@ -128,21 +128,21 @@ section SquareZero
 variable {R : Type*} [CommRing R] {a : R} {m : ℕ} [IsDomain R] [Invertible (2 : R)]
 
 omit [IsDomain R] [Invertible (2 : R)] in
-theorem sq_smul_cotangentModel (x : cotangentModel a m) : (a ^ 2) • x = 0 := by
+theorem sq_smul_cotangentModel (x : cotangentModel a m) : (a ^ (2 : ℕ)) • x = 0 := by
   refine Prod.ext (funext fun i => ?_) (funext fun p => ?_)
-  · show (a ^ 2) • (x.1 i) = 0
+  · show (a ^ (2 : ℕ)) • (x.1 i) = 0
     obtain ⟨r, hr⟩ := Submodule.Quotient.mk_surjective
-      (Ideal.span ({a ^ 2} : Set R)) (x.1 i)
+      (Ideal.span ({a ^ (2 : ℕ)} : Set R)) (x.1 i)
     rw [← hr, ← Submodule.Quotient.mk_smul, smul_eq_mul, Submodule.Quotient.mk_eq_zero]
     exact Ideal.mem_span_singleton.2 ⟨r, rfl⟩
-  · show (a ^ 2) • (x.2 p) = 0
+  · show (a ^ (2 : ℕ)) • (x.2 p) = 0
     obtain ⟨r, hr⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a} : Set R)) (x.2 p)
     rw [← hr, ← Submodule.Quotient.mk_smul, smul_eq_mul, Submodule.Quotient.mk_eq_zero]
     exact Ideal.mem_span_singleton.2 ⟨a * r, by ring⟩
 
 /-- The cotangent module of the congruence order is annihilated by `a²`. -/
 theorem sq_smul_kaehler (ha : a ≠ 0)
-    (ω : Ω[(MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)⁄R]) : (a ^ 2) • ω = 0 := by
+    (ω : Ω[(MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)⁄R]) : (a ^ (2 : ℕ)) • ω = 0 := by
   refine (kaehlerCongruenceEquiv (a := a) (m := m) ha).injective ?_
   rw [map_smul, map_zero]
   exact sq_smul_cotangentModel _

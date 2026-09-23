@@ -109,7 +109,7 @@ theorem card_heathBrownSelectionLabel_le (L X k : ℕ) :
 /-- Concrete `k=60` label ceiling used by Route T. -/
 theorem card_heathBrownSelectionLabel_sixty_le (L X : ℕ) :
     Fintype.card (HeathBrownSelectionLabel L X 60) ≤
-      60 * (Nat.log 2 X + 1) ^ 60 * (Nat.log 2 L + 1) ^ 60 * 2 ^ 120 := by
+      60 * (Nat.log 2 X + 1) ^ (60 : ℕ) * (Nat.log 2 L + 1) ^ (60 : ℕ) * 2 ^ (120 : ℕ) := by
   simpa using card_heathBrownSelectionLabel_le L X 60
 
 end RHTower.Sieve

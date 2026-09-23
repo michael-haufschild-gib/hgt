@@ -19,12 +19,12 @@ open scoped Differential RatFunc
 
 noncomputable section
 
-local instance : Differential (LaurentSeries ℂ) := laurentSDifferential
+local instance laurentShiftDichotomyInst1 : Differential (LaurentSeries ℂ) := laurentSDifferential
 attribute [local instance] ratFuncIntAlgebra'
-local instance : Differential (RatFunc ℂ) := ratFuncSDifferential
+local instance laurentShiftDichotomyInst2 : Differential (RatFunc ℂ) := ratFuncSDifferential
 attribute [local instance] ratLaurentAlgebra towerCRatLaurent towerCRatLaurentAlg
 
-local instance : DifferentialAlgebra (RatFunc ℂ) (LaurentSeries ℂ) :=
+local instance laurentShiftDichotomyInst3 : DifferentialAlgebra (RatFunc ℂ) (LaurentSeries ℂ) :=
   ⟨fun r => by rw [algebraMap_ratLaurent, algebraMap_ratLaurent, deriv_ratToLaurent]⟩
 
 local instance : CharZero (LaurentSeries ℂ) :=

@@ -56,7 +56,7 @@ theorem sectorLeakage_le_one (a : ℝ) (σ : ℕ → ℕ) (j : ℕ) : sectorLeak
   evenProlateSignedLeakage_le_one a (σ j)
 
 theorem summable_sectorCoord_sq (a : ℝ) {σ : ℕ → ℕ} (hσ : Function.Injective σ) :
-    Summable fun j : ℕ => sectorCoord a σ j ^ 2 :=
+    Summable fun j : ℕ => sectorCoord a σ j ^ (2 : ℕ) :=
   (summable_evenProlateConstraintCoord_sq a).comp_injective hσ
 
 /-- **The two real coordinate systems of a sector expansion.**  Splitting the complex coefficients
@@ -66,22 +66,22 @@ theorem sector_real_parts {a : ℝ} (ha : 0 < a) {σ : ℕ → ℕ} (hσ : Funct
     {x : ℕ → ℂ} {f : evenSubspace}
     (hf : HasSum (fun j : ℕ => x j • sectorMode a σ j) f)
     (hcon : inner ℂ (evenCentralIndicator a) f = 0) :
-    (Summable fun j : ℕ => (x j).re ^ 2) ∧ (Summable fun j : ℕ => (x j).im ^ 2) ∧
-      (Summable fun j : ℕ => sectorLeakage a σ j * (x j).re ^ 2) ∧
-      (Summable fun j : ℕ => sectorLeakage a σ j * (x j).im ^ 2) ∧
+    (Summable fun j : ℕ => (x j).re ^ (2 : ℕ)) ∧ (Summable fun j : ℕ => (x j).im ^ (2 : ℕ)) ∧
+      (Summable fun j : ℕ => sectorLeakage a σ j * (x j).re ^ (2 : ℕ)) ∧
+      (Summable fun j : ℕ => sectorLeakage a σ j * (x j).im ^ (2 : ℕ)) ∧
       (∑' j : ℕ, sectorCoord a σ j * (x j).re) = 0 ∧
       (∑' j : ℕ, sectorCoord a σ j * (x j).im) = 0 ∧
-      (∑' j : ℕ, (x j).re ^ 2) + (∑' j : ℕ, (x j).im ^ 2) = ‖f‖ ^ 2 ∧
-      (∑' j : ℕ, sectorLeakage a σ j * (x j).re ^ 2)
-        + (∑' j : ℕ, sectorLeakage a σ j * (x j).im ^ 2)
+      (∑' j : ℕ, (x j).re ^ (2 : ℕ)) + (∑' j : ℕ, (x j).im ^ (2 : ℕ)) = ‖f‖ ^ (2 : ℕ) ∧
+      (∑' j : ℕ, sectorLeakage a σ j * (x j).re ^ (2 : ℕ))
+        + (∑' j : ℕ, sectorLeakage a σ j * (x j).im ^ (2 : ℕ))
         = (inner ℂ (evenProlateLeakage a f) f : ℂ).re := by
   classical
   set D : ℕ → ℝ := sectorLeakage a σ with hDdef
   set L : ℕ → ℝ := sectorCoord a σ with hLdef
   have hvon := orthonormal_sectorMode ha hσ
-  have hns : HasSum (fun j : ℕ => ‖x j‖ ^ 2) (‖f‖ ^ 2) :=
+  have hns : HasSum (fun j : ℕ => ‖x j‖ ^ (2 : ℕ)) (‖f‖ ^ (2 : ℕ)) :=
     hasSum_norm_sq_of_hasSum_smul hvon hf
-  have hls : HasSum (fun j : ℕ => D j * ‖x j‖ ^ 2)
+  have hls : HasSum (fun j : ℕ => D j * ‖x j‖ ^ (2 : ℕ))
       ((inner ℂ (evenProlateLeakage a f) f : ℂ).re) :=
     hasSum_leakage_of_hasSum_smul hvon (evenProlateLeakage_apply_sectorMode a σ) hf
   have hcs : HasSum (fun j : ℕ => x j * ((L j : ℝ) : ℂ)) 0 := by
@@ -89,7 +89,7 @@ theorem sector_real_parts {a : ℝ} (ha : 0 < a) {σ : ℕ → ℕ} (hσ : Funct
     rwa [hcon] at h
   set u : ℕ → ℝ := fun j => (x j).re with hudef
   set w : ℕ → ℝ := fun j => (x j).im with hwdef
-  have hnormsplit : ∀ j : ℕ, ‖x j‖ ^ 2 = u j ^ 2 + w j ^ 2 := by
+  have hnormsplit : ∀ j : ℕ, ‖x j‖ ^ (2 : ℕ) = u j ^ (2 : ℕ) + w j ^ (2 : ℕ) := by
     intro j
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
     ring
@@ -109,29 +109,29 @@ theorem sector_real_parts {a : ℝ} (ha : 0 < a) {σ : ℕ → ℕ} (hσ : Funct
       funext fun j => by rw [hwdef]; ring
     rw [heq] at h
     exact h.tsum_eq
-  have hsu : Summable fun j : ℕ => u j ^ 2 :=
+  have hsu : Summable fun j : ℕ => u j ^ (2 : ℕ) :=
     Summable.of_nonneg_of_le (fun j => sq_nonneg _)
       (fun j => by rw [hnormsplit j]; linarith [sq_nonneg (w j)]) hns.summable
-  have hsw : Summable fun j : ℕ => w j ^ 2 :=
+  have hsw : Summable fun j : ℕ => w j ^ (2 : ℕ) :=
     Summable.of_nonneg_of_le (fun j => sq_nonneg _)
       (fun j => by rw [hnormsplit j]; linarith [sq_nonneg (u j)]) hns.summable
-  have hsdu : Summable fun j : ℕ => D j * u j ^ 2 :=
+  have hsdu : Summable fun j : ℕ => D j * u j ^ (2 : ℕ) :=
     Summable.of_nonneg_of_le (fun j => mul_nonneg (sectorLeakage_nonneg a σ j) (sq_nonneg _))
       (fun j => by
         have h1 := sectorLeakage_le_one a σ j
         nlinarith [sq_nonneg (u j)]) hsu
-  have hsdw : Summable fun j : ℕ => D j * w j ^ 2 :=
+  have hsdw : Summable fun j : ℕ => D j * w j ^ (2 : ℕ) :=
     Summable.of_nonneg_of_le (fun j => mul_nonneg (sectorLeakage_nonneg a σ j) (sq_nonneg _))
       (fun j => by
         have h1 := sectorLeakage_le_one a σ j
         nlinarith [sq_nonneg (w j)]) hsw
-  have e1 : (∑' j : ℕ, u j ^ 2) + (∑' j : ℕ, w j ^ 2) = ‖f‖ ^ 2 := by
+  have e1 : (∑' j : ℕ, u j ^ (2 : ℕ)) + (∑' j : ℕ, w j ^ (2 : ℕ)) = ‖f‖ ^ (2 : ℕ) := by
     rw [← hns.tsum_eq, tsum_congr hnormsplit, Summable.tsum_add hsu hsw]
-  have hsplit2 : ∀ j : ℕ, D j * ‖x j‖ ^ 2 = D j * u j ^ 2 + D j * w j ^ 2 := by
+  have hsplit2 : ∀ j : ℕ, D j * ‖x j‖ ^ (2 : ℕ) = D j * u j ^ (2 : ℕ) + D j * w j ^ (2 : ℕ) := by
     intro j
     rw [hnormsplit j]
     ring
-  have e2 : (∑' j : ℕ, D j * u j ^ 2) + (∑' j : ℕ, D j * w j ^ 2)
+  have e2 : (∑' j : ℕ, D j * u j ^ (2 : ℕ)) + (∑' j : ℕ, D j * w j ^ (2 : ℕ))
       = (inner ℂ (evenProlateLeakage a f) f : ℂ).re := by
     rw [← hls.tsum_eq, tsum_congr hsplit2, Summable.tsum_add hsdu hsdw]
   exact ⟨hsu, hsw, hsdu, hsdw, hconu, hconw, e1, e2⟩
@@ -147,10 +147,10 @@ theorem sector_rayleigh_ge_infiniteSecularRoot {a : ℝ} (ha : 0 < a)
     {x : ℕ → ℂ} {f : evenSubspace}
     (hf : HasSum (fun j : ℕ => x j • sectorMode a σ j) f)
     (hcon : inner ℂ (evenCentralIndicator a) f = 0) :
-    infiniteSecularRoot (sectorLeakage a σ) (sectorCoord a σ) * ‖f‖ ^ 2
+    infiniteSecularRoot (sectorLeakage a σ) (sectorCoord a σ) * ‖f‖ ^ (2 : ℕ)
       ≤ (inner ℂ (evenProlateLeakage a f) f : ℂ).re := by
   obtain ⟨hsu, hsw, hsdu, hsdw, hconu, hconw, e1, e2⟩ := sector_real_parts ha hσ hf hcon
-  have hsumL : Summable fun j : ℕ => sectorCoord a σ j ^ 2 := summable_sectorCoord_sq a hσ
+  have hsumL : Summable fun j : ℕ => sectorCoord a σ j ^ (2 : ℕ) := summable_sectorCoord_sq a hσ
   have hru := tsum_mul_sq_ge_infiniteSecularRoot h01 h12 hd2 hsumL hℓ0 hℓ1 hsu hsdu hconu
   have hrw := tsum_mul_sq_ge_infiniteSecularRoot h01 h12 hd2 hsumL hℓ0 hℓ1 hsw hsdw hconw
   rw [← e1, ← e2, mul_add]
@@ -168,7 +168,7 @@ theorem sector_coeff_eq_of_rayleigh_eq {a : ℝ} (ha : 0 < a)
     (hf : HasSum (fun j : ℕ => x j • sectorMode a σ j) f)
     (hcon : inner ℂ (evenCentralIndicator a) f = 0)
     (hval : (inner ℂ (evenProlateLeakage a f) f : ℂ).re
-      = infiniteSecularRoot (sectorLeakage a σ) (sectorCoord a σ) * ‖f‖ ^ 2) :
+      = infiniteSecularRoot (sectorLeakage a σ) (sectorCoord a σ) * ‖f‖ ^ (2 : ℕ)) :
     ∀ j : ℕ, x j
       = (x 0 / ((secularVector (sectorLeakage a σ) (sectorCoord a σ)
             (infiniteSecularRoot (sectorLeakage a σ) (sectorCoord a σ)) 0 : ℝ) : ℂ))
@@ -179,15 +179,15 @@ theorem sector_coeff_eq_of_rayleigh_eq {a : ℝ} (ha : 0 < a)
   set L : ℕ → ℝ := sectorCoord a σ with hLdef
   set μ := infiniteSecularRoot D L with hμdef
   set v : ℕ → ℝ := secularVector D L μ with hvdef
-  have hsumL : Summable fun j : ℕ => L j ^ 2 := summable_sectorCoord_sq a hσ
+  have hsumL : Summable fun j : ℕ => L j ^ (2 : ℕ) := summable_sectorCoord_sq a hσ
   have hru := tsum_mul_sq_ge_infiniteSecularRoot h01 h12 hd2 hsumL hℓ0 hℓ1 hsu hsdu hconu
   have hrw := tsum_mul_sq_ge_infiniteSecularRoot h01 h12 hd2 hsumL hℓ0 hℓ1 hsw hsdw hconw
-  have htotal : μ * ((∑' j : ℕ, (x j).re ^ 2) + (∑' j : ℕ, (x j).im ^ 2))
-      = (∑' j : ℕ, D j * (x j).re ^ 2) + (∑' j : ℕ, D j * (x j).im ^ 2) := by
+  have htotal : μ * ((∑' j : ℕ, (x j).re ^ (2 : ℕ)) + (∑' j : ℕ, (x j).im ^ (2 : ℕ)))
+      = (∑' j : ℕ, D j * (x j).re ^ (2 : ℕ)) + (∑' j : ℕ, D j * (x j).im ^ (2 : ℕ)) := by
     rw [e1, e2, hval]
-  have hequ : μ * ∑' j : ℕ, (x j).re ^ 2 = ∑' j : ℕ, D j * (x j).re ^ 2 := by
+  have hequ : μ * ∑' j : ℕ, (x j).re ^ (2 : ℕ) = ∑' j : ℕ, D j * (x j).re ^ (2 : ℕ) := by
     nlinarith [hru, hrw, htotal]
-  have heqw : μ * ∑' j : ℕ, (x j).im ^ 2 = ∑' j : ℕ, D j * (x j).im ^ 2 := by
+  have heqw : μ * ∑' j : ℕ, (x j).im ^ (2 : ℕ) = ∑' j : ℕ, D j * (x j).im ^ (2 : ℕ) := by
     nlinarith [hru, hrw, htotal]
   have hu := eq_smul_secularVector_of_rayleigh_eq h01 h12 hd2 hsumL hℓ0 hℓ1 hsu hsdu hconu hequ
   have hw := eq_smul_secularVector_of_rayleigh_eq h01 h12 hd2 hsumL hℓ0 hℓ1 hsw hsdw hconw heqw

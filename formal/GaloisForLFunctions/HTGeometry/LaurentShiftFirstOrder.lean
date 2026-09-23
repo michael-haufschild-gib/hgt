@@ -19,9 +19,9 @@ open scoped Differential RatFunc
 
 noncomputable section
 
-local instance : Differential (LaurentSeries ℂ) := laurentSDifferential
+local instance laurentShiftFirstOrderInst1 : Differential (LaurentSeries ℂ) := laurentSDifferential
 attribute [local instance] ratFuncIntAlgebra'
-local instance : Differential (RatFunc ℂ) := ratFuncSDifferential
+local instance laurentShiftFirstOrderInst2 : Differential (RatFunc ℂ) := ratFuncSDifferential
 attribute [local instance] ratLaurentAlgebra
 
 /-! ### The two translations of the rational function field agree -/

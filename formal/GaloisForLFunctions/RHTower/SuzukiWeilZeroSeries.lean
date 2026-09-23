@@ -52,7 +52,7 @@ def suzukiPtZeroSum (t : ℝ) (z : ℂ) : ℂ := ∑' q : XiZeroCopy, suzukiPtZe
 theorem summable_xiResolventProduct (z : ℂ) :
     Summable (fun q : XiZeroCopy => (xiSpectralPoint q * (xiSpectralPoint q - z))⁻¹) := by
   rcases eq_or_ne z 0 with rfl | hz
-  · have h : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ 2) :=
+  · have h : Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
       xiSpectralPoint_inv_sq_summable
     refine Summable.of_norm (h.congr fun q => ?_)
     rw [sub_zero, norm_inv, norm_mul, sq, one_div]

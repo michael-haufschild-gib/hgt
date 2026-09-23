@@ -30,7 +30,7 @@ def XiDerivativeCommonKummerRootRightHalf (d : ℕ) : Prop :=
 def XiDerivativeSquareRootRightHalf : Prop :=
   ∃ h : ℂ → ℂ,
     AnalyticOnNhd ℂ h rightHalf ∧
-      ∀ s ∈ rightHalf, h s ^ 2 = deriv xi s
+      ∀ s ∈ rightHalf, h s ^ (2 : ℕ) = deriv xi s
 
 /-- **Common Kummer-root collision.**  If Xi and its derivative both have analytic `d`-th roots
 on the right half-plane for one `d > 1`, then no right-half Xi zero can exist and RH follows. -/

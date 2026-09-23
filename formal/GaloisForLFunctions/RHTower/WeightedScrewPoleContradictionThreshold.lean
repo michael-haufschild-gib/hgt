@@ -260,16 +260,16 @@ theorem neg_le_im_of_thr {C : ℝ} (hC : 0 ≤ C) (hW : ∀ q, ‖W q‖ ≤ C)
   have hatomE : ∀ n, ∀ q ∈ E,
       (c n : ℂ) * suzukiPsiLaplaceAtom (sn n) (xiSpectralPoint q) = 1 / (sn n * (sn n + s₀)) := by
     intro n q hq
-    have hsq : xiSpectralPoint q ^ 2 = γ₀ ^ 2 := by
+    have hsq : xiSpectralPoint q ^ (2 : ℕ) = γ₀ ^ (2 : ℕ) := by
       rcases (hEmem q).mp hq with h | h
       · rw [h]
       · rw [h, neg_sq]
     unfold suzukiPsiLaplaceAtom
     rw [hsq]
-    have hs₀sq : s₀ ^ 2 = -γ₀ ^ 2 := by rw [hs₀, mul_pow, I_sq]; ring
-    have hfac : sn n ^ 2 + γ₀ ^ 2 = (c n : ℂ) * (sn n + s₀) := by
+    have hs₀sq : s₀ ^ (2 : ℕ) = -γ₀ ^ (2 : ℕ) := by rw [hs₀, mul_pow, I_sq]; ring
+    have hfac : sn n ^ (2 : ℕ) + γ₀ ^ (2 : ℕ) = (c n : ℂ) * (sn n + s₀) := by
       have : (sn n : ℂ) - s₀ = (c n : ℂ) := by dsimp only [sn]; ring
-      rw [← this, ← sub_neg_eq_add (sn n ^ 2), ← hs₀sq]
+      rw [← this, ← sub_neg_eq_add (sn n ^ (2 : ℕ)), ← hs₀sq]
       ring
     rw [hfac]
     have hc0 : (c n : ℂ) ≠ 0 := by exact_mod_cast (hc_pos n).ne'

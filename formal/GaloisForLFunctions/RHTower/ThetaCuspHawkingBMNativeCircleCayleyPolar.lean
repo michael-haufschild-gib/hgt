@@ -35,10 +35,10 @@ private theorem tanh_half_eq_sinh_div_cosh_add_one (d : ℝ) :
   have hsq := Real.cosh_sq_sub_sinh_sq (d / 2)
   have hsinh : Real.sinh d =
       Real.sinh (d / 2) * Real.cosh (d / 2) + Real.cosh (d / 2) * Real.sinh (d / 2) := by
-    convert Real.sinh_add (d / 2) (d / 2) using 1 <;> ring
+    convert Real.sinh_add (d / 2) (d / 2) using 1; ring
   have hcosh : Real.cosh d =
       Real.cosh (d / 2) * Real.cosh (d / 2) + Real.sinh (d / 2) * Real.sinh (d / 2) := by
-    convert Real.cosh_add (d / 2) (d / 2) using 1 <;> ring
+    convert Real.cosh_add (d / 2) (d / 2) using 1; ring
   rw [hsinh, hcosh]
   have hden : Real.cosh (d / 2) * Real.cosh (d / 2) +
       Real.sinh (d / 2) * Real.sinh (d / 2) + 1 =
@@ -125,13 +125,13 @@ theorem baseCayley_eq_polarCoord (d theta : ℝ) :
   apply Complex.ext
   · rw [hre, Complex.polarCoord_symm_apply]
     simp only [Real.cos_neg, Complex.mul_re, Complex.ofReal_re, Complex.add_re,
-      Complex.ofReal_im, Complex.mul_im, Complex.I_im, mul_one, Complex.I_re, mul_zero,
+      Complex.ofReal_im, Complex.I_im, mul_one, Complex.I_re, mul_zero,
       sub_zero, add_zero]
     ring
   · rw [him, Complex.polarCoord_symm_apply]
     simp only [Real.sin_neg, Complex.mul_im, Complex.ofReal_im, Complex.add_im,
-      Complex.ofReal_re, Complex.mul_re, Complex.I_im, mul_one, Complex.I_re, mul_zero,
-      sub_zero, add_zero]
+      Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero,
+      add_zero]
     ring
 
 /-- The Cayley Euclidean polar density is exactly the native hyperbolic radial density. -/
@@ -139,10 +139,10 @@ theorem baseCayley_polar_radial_density (d : ℝ) :
     (4 * Real.tanh (d / 2) / (1 - Real.tanh (d / 2) ^ 2) ^ 2) *
         (1 / (2 * Real.cosh (d / 2) ^ 2)) = Real.sinh d := by
   have hcosh : Real.cosh (d / 2) ≠ 0 := (Real.cosh_pos _).ne'
-  have hpyth := one_sub_tanh_sq (d / 2)
+  have hpyth := HTGeometry.one_sub_tanh_sq (d / 2)
   have hsinh : Real.sinh d =
       Real.sinh (d / 2) * Real.cosh (d / 2) + Real.cosh (d / 2) * Real.sinh (d / 2) := by
-    convert Real.sinh_add (d / 2) (d / 2) using 1 <;> ring
+    convert Real.sinh_add (d / 2) (d / 2) using 1; ring
   rw [hpyth, Real.tanh_eq_sinh_div_cosh, hsinh]
   field_simp [hcosh]
   ring
@@ -156,9 +156,9 @@ theorem diskToUpper_polar_eq_baseCircle (d theta : ℝ) :
   rw [← baseCayley_eq_polarCoord]
   have him : 0 < (baseCircleComplex d theta).im := by
     simp only [baseCircleComplex, Complex.add_im, Complex.ofReal_im, Complex.mul_im,
-      Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero]
+      Complex.ofReal_re, Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add]
     exact one_div_pos.mpr (denominator_pos d theta)
-  simpa only [baseCayley] using diskToUpper_upperToDisk him
+  simpa only [baseCayley, upperToDisk] using diskToUpper_upperToDisk him
 
 /-- At positive native radius, the exact disk-polar density is the literal
 native-circle density.  The angle sign is retained from `baseCayley_eq_polarCoord`. -/
@@ -168,6 +168,7 @@ theorem diskPolarDensity_tanh_eq_nativeCircle {E : Type*} [NormedAddCommGroup E]
         diskPolarDensity f (Real.tanh (d / 2), theta) =
       Real.sinh d • f (baseCircleComplex d (-theta)) := by
   have hradial : 0 < Real.tanh (d / 2) := by
+    have hd0 : 0 < d := Set.mem_Ioi.mp hd
     have hhalf : 0 < d / 2 := by linarith
     have hmono := HTGeometry.tanh_strictMono hhalf
     rwa [Real.tanh_zero] at hmono
@@ -192,6 +193,9 @@ theorem diskPolarDensity_tanh_eq_nativeCircle {E : Type*} [NormedAddCommGroup E]
       _ = Real.sinh d := baseCayley_polar_radial_density d
   rw [hcoefficient]
 
+attribute [instance] instInnerProductSpaceRealComplex RCLike.toInnerProductSpaceReal
+  NormedSpace.complexToReal
+
 /-- Literal global hyperbolic-area realization of the native circle about `I`.
 This transports the actual upper-half-plane source through inverse Cayley and
 the native polar chart; it does not substitute a proxy circle or reverse the
@@ -206,6 +210,7 @@ theorem integral_hyperbolic_eq_nativeCircle_polar {E : Type*} [NormedAddCommGrou
   rw [integral_diskToUpper_hyperbolic_polar_tanh f hf]
   apply setIntegral_congr_fun measurableSet_Ioi
   intro d hd
+  dsimp only
   rw [← integral_smul]
   apply setIntegral_congr_fun measurableSet_Ioo
   intro theta _

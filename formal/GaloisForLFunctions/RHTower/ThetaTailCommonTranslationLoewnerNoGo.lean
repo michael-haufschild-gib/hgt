@@ -137,9 +137,9 @@ theorem thetaTailCommonTranslationGenerator_twoNode_det
     (a x t : ℝ) :
     thetaTailCommonTranslationGenerator a x x *
           thetaTailCommonTranslationGenerator a t t -
-        thetaTailCommonTranslationGenerator a x t ^ 2 =
-      -(x - t) ^ 2 *
-        (thetaCuspFullSource (x + a) * thetaCuspFullSource (t + a)) ^ 2 := by
+        thetaTailCommonTranslationGenerator a x t ^ (2 : ℕ) =
+      -(x - t) ^ (2 : ℕ) *
+        (thetaCuspFullSource (x + a) * thetaCuspFullSource (t + a)) ^ (2 : ℕ) := by
   unfold thetaTailCommonTranslationGenerator
   ring
 
@@ -148,15 +148,15 @@ theorem thetaTailCommonTranslationGenerator_twoNode_det_neg
     (a x t : ℝ) (hxt : x ≠ t) :
     thetaTailCommonTranslationGenerator a x x *
           thetaTailCommonTranslationGenerator a t t -
-        thetaTailCommonTranslationGenerator a x t ^ 2 < 0 := by
+        thetaTailCommonTranslationGenerator a x t ^ (2 : ℕ) < 0 := by
   rw [thetaTailCommonTranslationGenerator_twoNode_det]
-  have hdiff : 0 < (x - t) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hxt)
+  have hdiff : 0 < (x - t) ^ (2 : ℕ) := sq_pos_of_ne_zero (sub_ne_zero.mpr hxt)
   have hx : 0 < thetaCuspFullSource (x + a) :=
     HedenmalmThetaSource.thetaCuspFullSource_pos _
   have ht : 0 < thetaCuspFullSource (t + a) :=
     HedenmalmThetaSource.thetaCuspFullSource_pos _
   have hsource : 0 <
-      (thetaCuspFullSource (x + a) * thetaCuspFullSource (t + a)) ^ 2 :=
+      (thetaCuspFullSource (x + a) * thetaCuspFullSource (t + a)) ^ (2 : ℕ) :=
     sq_pos_of_pos (mul_pos hx ht)
   exact mul_neg_of_neg_of_pos (neg_neg_of_pos hdiff) hsource
 
@@ -165,9 +165,9 @@ positive semidefiniteness of the infinitesimal generator without any spectral hy
 theorem thetaTailCommonTranslationGenerator_explicit_quadraticForm_neg :
     let c0 : ℝ := 3 * thetaCuspFullSource 2
     let c1 : ℝ := -2 * thetaCuspFullSource 1
-    c0 ^ 2 * thetaTailCommonTranslationGenerator 1 0 0 +
+    c0 ^ (2 : ℕ) * thetaTailCommonTranslationGenerator 1 0 0 +
           2 * c0 * c1 * thetaTailCommonTranslationGenerator 1 0 1 +
-        c1 ^ 2 * thetaTailCommonTranslationGenerator 1 1 1 < 0 := by
+        c1 ^ (2 : ℕ) * thetaTailCommonTranslationGenerator 1 1 1 < 0 := by
   dsimp [thetaTailCommonTranslationGenerator]
   have h1 : 0 < thetaCuspFullSource 1 :=
     HedenmalmThetaSource.thetaCuspFullSource_pos _
@@ -181,17 +181,17 @@ theorem thetaTailCommonTranslationGenerator_explicit_quadraticForm_neg :
 def thetaTailCommonTranslationWitnessQuadratic (u : ℝ) : ℝ :=
   let c0 : ℝ := 3 * thetaCuspFullSource 2
   let c1 : ℝ := -2 * thetaCuspFullSource 1
-  c0 ^ 2 * thetaTailFirstMomentKernel u u +
+  c0 ^ (2 : ℕ) * thetaTailFirstMomentKernel u u +
       2 * c0 * c1 * thetaTailFirstMomentKernel u (1 + u) +
-    c1 ^ 2 * thetaTailFirstMomentKernel (1 + u) (1 + u)
+    c1 ^ (2 : ℕ) * thetaTailFirstMomentKernel (1 + u) (1 + u)
 
 /-- Moving-cut integrand of the fixed scalar witness compression. -/
 def thetaTailCommonTranslationWitnessIntegrand (u : ℝ) : ℝ :=
   let c0 : ℝ := 3 * thetaCuspFullSource 2
   let c1 : ℝ := -2 * thetaCuspFullSource 1
-  c0 ^ 2 * thetaTailCommonTranslationGenerator u 0 0 +
+  c0 ^ (2 : ℕ) * thetaTailCommonTranslationGenerator u 0 0 +
       2 * c0 * c1 * thetaTailCommonTranslationGenerator u 0 1 +
-    c1 ^ 2 * thetaTailCommonTranslationGenerator u 1 1
+    c1 ^ (2 : ℕ) * thetaTailCommonTranslationGenerator u 1 1
 
 theorem integrable_thetaTailCommonTranslationWitnessIntegrand :
     Integrable thetaTailCommonTranslationWitnessIntegrand := by
@@ -210,14 +210,14 @@ theorem integrable_thetaTailCommonTranslationWitnessIntegrand :
     (integrable_thetaTailCommonTranslationIntegrand 1 1).congr
       (Filter.Eventually.of_forall fun _ => rfl)
   have h00 : Integrable (fun u : ℝ =>
-      c0 ^ 2 * thetaTailCommonTranslationGenerator u 0 0) :=
-    hg00.const_mul (c0 ^ 2)
+      c0 ^ (2 : ℕ) * thetaTailCommonTranslationGenerator u 0 0) :=
+    hg00.const_mul (c0 ^ (2 : ℕ))
   have h01 : Integrable (fun u : ℝ =>
       2 * c0 * c1 * thetaTailCommonTranslationGenerator u 0 1) :=
     hg01.const_mul (2 * c0 * c1)
   have h11 : Integrable (fun u : ℝ =>
-      c1 ^ 2 * thetaTailCommonTranslationGenerator u 1 1) :=
-    hg11.const_mul (c1 ^ 2)
+      c1 ^ (2 : ℕ) * thetaTailCommonTranslationGenerator u 1 1) :=
+    hg11.const_mul (c1 ^ (2 : ℕ))
   unfold thetaTailCommonTranslationWitnessIntegrand
   exact (h00.add h01).add h11
 
@@ -243,14 +243,14 @@ theorem thetaTailCommonTranslationWitnessQuadratic_eq_tail (u : ℝ) :
         ∫ r in Ioi u, thetaTailCommonTranslationIntegrand 1 1 r by
       simpa only using thetaTailFirstMomentKernel_commonShift_eq_tail u 1 1]
   let F00 : ℝ → ℝ := fun r =>
-    c0 ^ 2 * thetaTailCommonTranslationIntegrand 0 0 r
+    c0 ^ (2 : ℕ) * thetaTailCommonTranslationIntegrand 0 0 r
   let F01 : ℝ → ℝ := fun r =>
     2 * c0 * c1 * thetaTailCommonTranslationIntegrand 0 1 r
   let F11 : ℝ → ℝ := fun r =>
-    c1 ^ 2 * thetaTailCommonTranslationIntegrand 1 1 r
-  have hF00 : IntegrableOn F00 (Ioi u) := h00.const_mul (c0 ^ 2)
+    c1 ^ (2 : ℕ) * thetaTailCommonTranslationIntegrand 1 1 r
+  have hF00 : IntegrableOn F00 (Ioi u) := h00.const_mul (c0 ^ (2 : ℕ))
   have hF01 : IntegrableOn F01 (Ioi u) := h01.const_mul (2 * c0 * c1)
-  have hF11 : IntegrableOn F11 (Ioi u) := h11.const_mul (c1 ^ 2)
+  have hF11 : IntegrableOn F11 (Ioi u) := h11.const_mul (c1 ^ (2 : ℕ))
   calc
     _ = (∫ r in Ioi u, F00 r) + (∫ r in Ioi u, F01 r) +
         ∫ r in Ioi u, F11 r := by
@@ -307,11 +307,11 @@ theorem exists_thetaTailFirstMomentKernel_commonShift_difference_quadraticForm_n
     ∃ b : ℝ, 1 < b ∧
       let c0 : ℝ := 3 * thetaCuspFullSource 2
       let c1 : ℝ := -2 * thetaCuspFullSource 1
-      c0 ^ 2 *
+      c0 ^ (2 : ℕ) *
             (thetaTailFirstMomentKernel 1 1 - thetaTailFirstMomentKernel b b) +
           2 * c0 * c1 *
             (thetaTailFirstMomentKernel 1 2 - thetaTailFirstMomentKernel b (1 + b)) +
-        c1 ^ 2 *
+        c1 ^ (2 : ℕ) *
             (thetaTailFirstMomentKernel 2 2 -
               thetaTailFirstMomentKernel (1 + b) (1 + b)) < 0 := by
   have hgen := thetaTailCommonTranslationGenerator_explicit_quadraticForm_neg

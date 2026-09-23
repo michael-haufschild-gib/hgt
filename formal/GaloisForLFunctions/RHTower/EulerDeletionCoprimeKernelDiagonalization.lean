@@ -27,7 +27,7 @@ theorem sum_coprime_diagonal (S : Finset ℕ) (hS : ∀ m ∈ S, 0 < m) (a : ℕ
       (if p.1.Coprime p.2 then (1 : ℝ) else 0) *
         ((a p.1 / (p.1 : ℝ)) * (a p.2 / (p.2 : ℝ))) =
       ∑ e ∈ S.biUnion Nat.divisors, ((μ e : ℤ) : ℝ) *
-        (∑ m ∈ S.filter (fun m => e ∣ m), a m / (m : ℝ)) ^ 2 := by
+        (∑ m ∈ S.filter (fun m => e ∣ m), a m / (m : ℝ)) ^ (2 : ℕ) := by
   classical
   have hexp : ∀ p ∈ S ×ˢ S,
       (if p.1.Coprime p.2 then (1 : ℝ) else 0) *
@@ -129,7 +129,7 @@ Möbius inversion of the squared EDQ multiple sums. -/
 theorem coprimeHarmonicQuadratic_eq_signedMultiples {r N : ℕ} (hr : 0 < r) :
     coprimeHarmonicQuadratic r N =
       ∑ e ∈ Finset.Icc 1 (N / r), ((μ e : ℤ) : ℝ) *
-        harmonicMultiple (r * e) N ^ 2 := by
+        harmonicMultiple (r * e) N ^ (2 : ℕ) := by
   let S : Finset ℕ := Finset.Icc 1 (N / r)
   let a : ℕ → ℝ := fun m => ((μ (r * m) : ℤ) : ℝ) / (r : ℝ)
   have hS : ∀ m ∈ S, 0 < m := by
@@ -163,8 +163,8 @@ theorem coprimeHarmonicQuadratic_eq_signedMultiples {r N : ℕ} (hr : 0 < r) :
           (if p.1.Coprime p.2 then (1 : ℝ) else 0) *
             ((a p.1 / (p.1 : ℝ)) * (a p.2 / (p.2 : ℝ))) := hleft
     _ = ∑ e ∈ S.biUnion Nat.divisors, ((μ e : ℤ) : ℝ) *
-          (∑ m ∈ S.filter (fun m => e ∣ m), a m / (m : ℝ)) ^ 2 := hdiag
-    _ = ∑ e ∈ S, ((μ e : ℤ) : ℝ) * harmonicMultiple (r * e) N ^ 2 := by
+          (∑ m ∈ S.filter (fun m => e ∣ m), a m / (m : ℝ)) ^ (2 : ℕ) := hdiag
+    _ = ∑ e ∈ S, ((μ e : ℤ) : ℝ) * harmonicMultiple (r * e) N ^ (2 : ℕ) := by
       rw [hbi]
       apply Finset.sum_congr rfl
       intro e he

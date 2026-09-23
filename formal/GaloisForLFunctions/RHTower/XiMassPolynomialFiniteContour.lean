@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.XiMassPolynomialVerticalResolvent
 /-!
 # Exact finite Xi contour law for a polynomial-filtered analytic mass test
 
-Squaring an arbitrary real polynomial evaluated at `z ^ 2` gives an even entire weight.  Multiplied
+Squaring an arbitrary real polynomial evaluated at `z ^ (2 : ℕ)` gives an even entire weight.  Multiplied
 into the analytic mass test it stays analytic on the mass branch strip, so the local weighted
 argument principle applies to every closed Xi rectangle inside that strip and the symmetric
 rectangle still folds to twice its bottom Euler edge plus one right vertical edge.
@@ -16,12 +16,12 @@ namespace RHTower
 
 noncomputable section
 
-/-- The even real polynomial `P(X ^ 2) ^ 2`. -/
+/-- The even real polynomial `P(X ^ (2 : ℕ)) ^ (2 : ℕ)`. -/
 def xiMassPolySquare (P : Polynomial ℝ) : Polynomial ℝ :=
-  (P.comp (Polynomial.X ^ 2)) * (P.comp (Polynomial.X ^ 2))
+  (P.comp (Polynomial.X ^ (2 : ℕ))) * (P.comp (Polynomial.X ^ (2 : ℕ)))
 
 theorem evalRealPolynomial_comp_sq (P : Polynomial ℝ) (z : ℂ) :
-    evalRealPolynomial (P.comp (Polynomial.X ^ 2)) z = evalRealPolynomial P (z ^ 2) := by
+    evalRealPolynomial (P.comp (Polynomial.X ^ (2 : ℕ))) z = evalRealPolynomial P (z ^ (2 : ℕ)) := by
   rw [evalRealPolynomial, evalRealPolynomial, Polynomial.map_comp, Polynomial.eval_comp]
   simp
 
@@ -32,10 +32,10 @@ theorem analyticAt_evalRealPolynomial (Q : Polynomial ℝ) (z : ℂ) :
   exact (hdiff.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
 
 theorem evalRealPolynomial_xiMassPolySquare (P : Polynomial ℝ) (z : ℂ) :
-    evalRealPolynomial (xiMassPolySquare P) z = evalRealPolynomial P (z ^ 2) ^ 2 := by
+    evalRealPolynomial (xiMassPolySquare P) z = evalRealPolynomial P (z ^ (2 : ℕ)) ^ (2 : ℕ) := by
   rw [xiMassPolySquare, evalRealPolynomial, Polynomial.map_mul, Polynomial.eval_mul]
-  rw [show ((P.comp (Polynomial.X ^ 2)).map (algebraMap ℝ ℂ)).eval z =
-      evalRealPolynomial (P.comp (Polynomial.X ^ 2)) z from rfl,
+  rw [show ((P.comp (Polynomial.X ^ (2 : ℕ))).map (algebraMap ℝ ℂ)).eval z =
+      evalRealPolynomial (P.comp (Polynomial.X ^ (2 : ℕ))) z from rfl,
     evalRealPolynomial_comp_sq]
   ring
 
@@ -46,7 +46,7 @@ theorem evalRealPolynomial_xiMassPolySquare_neg (P : Polynomial ℝ) (z : ℂ) :
 
 /-- The polynomial-filtered analytic mass test. -/
 def xiMassPolyAnalyticTest (P : Polynomial ℝ) (a : ℝ) (τ : ℂ) (z : ℂ) : ℂ :=
-  evalRealPolynomial P (z ^ 2) ^ 2 * xiMassAnalyticTest a τ z
+  evalRealPolynomial P (z ^ (2 : ℕ)) ^ (2 : ℕ) * xiMassAnalyticTest a τ z
 
 theorem xiMassPolyAnalyticTest_neg (P : Polynomial ℝ) (a : ℝ) (τ z : ℂ) :
     xiMassPolyAnalyticTest P a τ (-z) = xiMassPolyAnalyticTest P a τ z := by
@@ -55,7 +55,7 @@ theorem xiMassPolyAnalyticTest_neg (P : Polynomial ℝ) (a : ℝ) (τ z : ℂ) :
 theorem analyticOnNhd_xiMassPolyAnalyticTest (P : Polynomial ℝ) {a : ℝ} (ha : 0 < a) (τ : ℂ) :
     AnalyticOnNhd ℂ (xiMassPolyAnalyticTest P a τ) (xiMassStrip a) := by
   intro z hz
-  have hw : AnalyticAt ℂ (fun w : ℂ => evalRealPolynomial P (w ^ 2) ^ 2) z := by
+  have hw : AnalyticAt ℂ (fun w : ℂ => evalRealPolynomial P (w ^ (2 : ℕ)) ^ (2 : ℕ)) z := by
     have hQ : AnalyticAt ℂ (evalRealPolynomial (xiMassPolySquare P)) z :=
       analyticAt_evalRealPolynomial _ z
     exact hQ.congr (Filter.Eventually.of_forall

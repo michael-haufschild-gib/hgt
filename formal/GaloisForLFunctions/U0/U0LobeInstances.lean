@@ -35,7 +35,7 @@ open Complex Set Bottcher
 namespace U0LobeInstances
 
 /-- Norm bound from the squared value: `‖z‖² ≤ 1` gives `‖z‖ ≤ 1`. -/
-private theorem norm_le_one_of_normSq_le {z : ℂ} (h : ‖z‖ ^ 2 ≤ 1) : ‖z‖ ≤ 1 := by
+private theorem norm_le_one_of_normSq_le {z : ℂ} (h : ‖z‖ ^ (2 : ℕ) ≤ 1) : ‖z‖ ≤ 1 := by
   nlinarith [norm_nonneg z, h]
 
 /-- **Period-3 obstruction at a mid-angle** (`arg b ≈ 111.8°`, `‖b‖ = √29/8`).  The exact
@@ -88,7 +88,7 @@ every direction).  The two parameters are colinear (`bv = 2·bo`), so this brack
 single ray — the radial companion of the angular `critical_curve_bracket`. -/
 theorem lobe_radial_bracket :
     ∃ bo bv : ℂ,
-      ‖bo‖ ^ 2 = 121 / 25 ∧ ‖bv‖ ^ 2 = 484 / 25 ∧
+      ‖bo‖ ^ (2 : ℕ) = 121 / 25 ∧ ‖bv‖ ^ (2 : ℕ) = 484 / 25 ∧
       bv.im * bo.re = bv.re * bo.im ∧
       (∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia bo) ∧
       (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia bv) := by
@@ -97,7 +97,7 @@ theorem lobe_radial_bracket :
   · rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; norm_num
   · show (88 / 25 : ℝ) * (-33 / 25) = (-66 / 25) * (44 / 25); norm_num
   · refine U0CurveSectors.viable_of_gt_sharp ?_
-    have hsq : ‖(⟨-66/25, 88/25⟩ : ℂ)‖ ^ 2 = 484 / 25 := by
+    have hsq : ‖(⟨-66/25, 88/25⟩ : ℂ)‖ ^ (2 : ℕ) = 484 / 25 := by
       rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; norm_num
     have hs2 : Real.sqrt 2 < 3 / 2 := by
       nlinarith [Real.sq_sqrt (show (0:ℝ) ≤ 2 by norm_num), Real.sqrt_nonneg 2]

@@ -76,10 +76,10 @@ not assumed alongside it. -/
 theorem bottcherFE_of_global_branch {c : ℂ} {β : ℂ → ℂ}
     (hβan : AnalyticOnNhd ℂ β (filledJulia c)ᶜ)
     (hβesc : ∀ z ∈ escapeOpen c, β z = bottcherCoord c z) :
-    ∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2 := by
+    ∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ (2 : ℕ) := by
   have hfbasin : ∀ z ∈ (filledJulia c)ᶜ, quadratic c z ∈ (filledJulia c)ᶜ := by
     intro z hz hcon; exact hz ((mem_filledJulia_iff_quadratic_mem c z).mpr hcon)
-  set D : ℂ → ℂ := fun z => β (quadratic c z) - (β z) ^ 2 with hDdef
+  set D : ℂ → ℂ := fun z => β (quadratic c z) - (β z) ^ (2 : ℕ) with hDdef
   have hcomp : AnalyticOnNhd ℂ (fun z => β (quadratic c z)) (filledJulia c)ᶜ := by
     intro z hz
     exact (hβan _ (hfbasin z hz)).comp (analyticAt_quadratic c z)
@@ -89,7 +89,7 @@ theorem bottcherFE_of_global_branch {c : ℂ} {β : ℂ → ℂ}
     have hfz : quadratic c z ∈ escapeOpen c := by
       have := escapeOpen_iterate hz 1; rwa [Function.iterate_one] at this
     obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
-    show β (quadratic c z) - (β z) ^ 2 = 0
+    show β (quadratic c z) - (β z) ^ (2 : ℕ) = 0
     rw [hβesc _ hfz, hβesc _ hz, bottcherCoord_quadratic hc hz2, sub_self]
   have hev : D =ᶠ[𝓝 ((max 2 ‖c‖ + 1 : ℝ) : ℂ)] (fun _ => (0 : ℂ)) := by
     filter_upwards [(isOpen_escapeOpen c).mem_nhds (deepPoint_mem_escapeOpen c)] with z hz
@@ -327,12 +327,12 @@ theorem levelBranch_coherent_of_pow (c : ℂ) (βlev : ℕ → ℂ → ℂ)
     have hzn1 : z ∈ escapeLevel c (n + 1) := hsub hz
     have hfn : (quadratic c)^[n] z ∈ escapeOpen c := hz
     obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hfn
-    have hnum : (βlev (n + 1) z) ^ (2 ^ (n + 1)) = bottcherCoord c ((quadratic c)^[n] z) ^ 2 := by
+    have hnum : (βlev (n + 1) z) ^ (2 ^ (n + 1)) = bottcherCoord c ((quadratic c)^[n] z) ^ (2 : ℕ) := by
       rw [hpow (n + 1) z hzn1]
       rw [show (quadratic c)^[n + 1] z = quadratic c ((quadratic c)^[n] z) from
         Function.iterate_succ_apply' (quadratic c) n z]
       exact bottcherCoord_quadratic hc hz2
-    have hden : (βlev n z) ^ (2 ^ (n + 1)) = bottcherCoord c ((quadratic c)^[n] z) ^ 2 := by
+    have hden : (βlev n z) ^ (2 ^ (n + 1)) = bottcherCoord c ((quadratic c)^[n] z) ^ (2 : ℕ) := by
       rw [show (2:ℕ) ^ (n + 1) = 2 ^ n * 2 from by rw [pow_succ], pow_mul, hpow n z hz]
     rw [hξdef]; simp only
     rw [div_pow, hnum, hden, div_self]
@@ -382,7 +382,7 @@ Induction: the base is the anchor; the step uses `(βlev(n+1))^{2^{n+1}} = ((βl
 SQUARE ROOT step `βlev (n+1) = √(βlev n ∘ f)`. -/
 theorem hpow_of_sqrt_family (c : ℂ) (βlev : ℕ → ℂ → ℂ)
     (hanchor0 : ∀ z ∈ escapeOpen c, βlev 0 z = bottcherCoord c z)
-    (hsqrt : ∀ n, ∀ z ∈ escapeLevel c (n + 1), (βlev (n + 1) z) ^ 2 = βlev n (quadratic c z)) :
+    (hsqrt : ∀ n, ∀ z ∈ escapeLevel c (n + 1), (βlev (n + 1) z) ^ (2 : ℕ) = βlev n (quadratic c z)) :
     ∀ n, ∀ z ∈ escapeLevel c n, (βlev n z) ^ (2 ^ n) = bottcherCoord c ((quadratic c)^[n] z) := by
   intro n
   induction n with
@@ -410,7 +410,7 @@ theorem exists_global_branch_of_sqrt_family (c : ℂ) (βlev : ℕ → ℂ → �
     (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
     (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0)
     (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z)
-    (hsqrt : ∀ n, ∀ z ∈ escapeLevel c (n + 1), (βlev (n + 1) z) ^ 2 = βlev n (quadratic c z)) :
+    (hsqrt : ∀ n, ∀ z ∈ escapeLevel c (n + 1), (βlev (n + 1) z) ^ (2 : ℕ) = βlev n (quadratic c z)) :
     ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
       (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) :=
   exists_global_branch_of_level_roots c βlev hanalytic
@@ -457,7 +457,7 @@ theorem exists_sqrt_pullback_on_simplyConnected (c : ℂ) (n : ℕ) {V : Set ℂ
     (hVsc : IsSimplyConnected V) (hVo : IsOpen V) (hVsub : V ⊆ escapeLevel c (n + 1))
     (βlevn : ℂ → ℂ) (hβan : AnalyticOnNhd ℂ βlevn (escapeLevel c n))
     (hβne : ∀ z ∈ escapeLevel c n, βlevn z ≠ 0) :
-    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s V ∧ ∀ z ∈ V, (s z) ^ 2 = βlevn (quadratic c z) := by
+    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s V ∧ ∀ z ∈ V, (s z) ^ (2 : ℕ) = βlevn (quadratic c z) := by
   have hmaps : Set.MapsTo (quadratic c) V (escapeLevel c n) :=
     (quadratic_mapsTo_escapeLevel c n).mono_left hVsub
   have hgan : AnalyticOnNhd ℂ (fun z => βlevn (quadratic c z)) V := by
@@ -478,11 +478,11 @@ theorem exists_levelBranch_succ_of_chart_agreement (c : ℂ) (n : ℕ)
     (hcover : escapeLevel c (n + 1) ⊆ V₁ ∪ V₂)
     (βlevn : ℂ → ℂ) (s₁ s₂ : ℂ → ℂ)
     (hs₁an : AnalyticOnNhd ℂ s₁ V₁) (hs₂an : AnalyticOnNhd ℂ s₂ V₂)
-    (hs₁sq : ∀ z ∈ V₁, (s₁ z) ^ 2 = βlevn (quadratic c z))
-    (hs₂sq : ∀ z ∈ V₂, (s₂ z) ^ 2 = βlevn (quadratic c z))
+    (hs₁sq : ∀ z ∈ V₁, (s₁ z) ^ (2 : ℕ) = βlevn (quadratic c z))
+    (hs₂sq : ∀ z ∈ V₂, (s₂ z) ^ (2 : ℕ) = βlevn (quadratic c z))
     (hagree : EqOn s₁ s₂ (V₁ ∩ V₂)) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
-      (∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z)) := by
+      (∀ z ∈ escapeLevel c (n + 1), (s z) ^ (2 : ℕ) = βlevn (quadratic c z)) := by
   obtain ⟨s, hsan, hs1, hs2⟩ := analyticOnNhd_glue_twoChart hV₁o hV₂o hs₁an hs₂an hagree
   refine ⟨s, hsan.mono hcover, ?_⟩
   intro z hz
@@ -500,11 +500,11 @@ via the far-field anchor** (`bottcherCoord` is already single-valued on `escapeO
 of every seam). -/
 theorem eqOn_sqrt_of_preconnected {W : Set ℂ} (hWc : IsPreconnected W) {s₁ s₂ : ℂ → ℂ}
     (hs₁ : ContinuousOn s₁ W) (hs₂ : ContinuousOn s₂ W)
-    (hsq : ∀ z ∈ W, (s₁ z) ^ 2 = (s₂ z) ^ 2) (hs₂0 : ∀ z ∈ W, s₂ z ≠ 0)
+    (hsq : ∀ z ∈ W, (s₁ z) ^ (2 : ℕ) = (s₂ z) ^ (2 : ℕ)) (hs₂0 : ∀ z ∈ W, s₂ z ≠ 0)
     {z₀ : ℂ} (hz₀ : z₀ ∈ W) (hanchor : s₁ z₀ = s₂ z₀) :
     EqOn s₁ s₂ W := by
   set ξ : ℂ → ℂ := fun z => s₁ z / s₂ z with hξdef
-  have hpow : ∀ z ∈ W, ξ z ^ 2 = 1 := by
+  have hpow : ∀ z ∈ W, ξ z ^ (2 : ℕ) = 1 := by
     intro z hz
     rw [hξdef]; simp only
     rw [div_pow, hsq z hz, div_self (pow_ne_zero _ (hs₂0 z hz))]
@@ -567,9 +567,9 @@ theorem exists_quadratic_inverse_branch (c : ℂ) {U : Set ℂ}
   have hsuban : AnalyticOnNhd ℂ (fun w => w - c) U := fun w _ => by fun_prop
   obtain ⟨g, hgan, hgsq⟩ := exists_analyticOnNhd_pow_eq hUsc hUo hsuban hne (by norm_num : 1 ≤ 2)
   refine ⟨g, hgan, fun w hw => ?_⟩
-  have hs : (g w) ^ 2 = w - c := by simpa using hgsq w hw
+  have hs : (g w) ^ (2 : ℕ) = w - c := by simpa using hgsq w hw
   calc
-    (g w) ^ 2 + c = (w - c) + c := by rw [hs]
+    (g w) ^ (2 : ℕ) + c = (w - c) + c := by rw [hs]
     _ = w := by ring
 
 end Bottcher
@@ -584,7 +584,7 @@ theorem exists_sqrt_pullback_on_simplyConnected_nonzero (c : ℂ) (n : ℕ) {V :
     (βlevn : ℂ → ℂ) (hβan : AnalyticOnNhd ℂ βlevn (escapeLevel c n))
     (hβne : ∀ z ∈ escapeLevel c n, βlevn z ≠ 0) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s V ∧
-      (∀ z ∈ V, (s z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ V, (s z) ^ (2 : ℕ) = βlevn (quadratic c z)) ∧
       (∀ z ∈ V, s z ≠ 0) := by
   obtain ⟨s, hsan, hsq⟩ :=
     exists_sqrt_pullback_on_simplyConnected c n hVsc hVo hVsub βlevn hβan hβne
@@ -609,7 +609,7 @@ theorem exists_sqrtLevel_succ_of_simplyConnected (c : ℂ) (n : ℕ)
     ∃ βnext : ℂ → ℂ,
       AnalyticOnNhd ℂ βnext (escapeLevel c (n + 1)) ∧
       (∀ z ∈ escapeLevel c (n + 1), βnext z ≠ 0) ∧
-      (∀ z ∈ escapeLevel c (n + 1), (βnext z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ escapeLevel c (n + 1), (βnext z) ^ (2 : ℕ) = βlevn (quadratic c z)) ∧
       (∀ z ∈ escapeOpen c, βnext z = bottcherCoord c z) := by
   obtain ⟨s, hsan, hsq, hs0⟩ :=
     exists_sqrt_pullback_on_simplyConnected_nonzero c n hsc (isOpen_escapeLevel c (n + 1))
@@ -625,7 +625,7 @@ theorem exists_sqrtLevel_succ_of_simplyConnected (c : ℂ) (n : ℕ)
     simpa [Function.iterate_one] using this
   have hsd0 : s d ≠ 0 := hs0 d hdlev
   let η : ℂ := bottcherCoord c d / s d
-  have hη2 : η ^ 2 = 1 := by
+  have hη2 : η ^ (2 : ℕ) = 1 := by
     rw [show η = bottcherCoord c d / s d from rfl, div_pow, hsq d hdlev,
       hβanchor (quadratic c d) hfd]
     obtain ⟨hc, hd2⟩ := mem_escapeOpen_regime hdesc
@@ -640,10 +640,10 @@ theorem exists_sqrtLevel_succ_of_simplyConnected (c : ℂ) (n : ℕ)
     exact mul_ne_zero (by
       rw [show η = bottcherCoord c d / s d from rfl]
       exact div_ne_zero (bottcherCoord_ne_zero c d) hsd0) (hs0 z hz)
-  have hβnext_sq : ∀ z ∈ escapeLevel c (n + 1), (βnext z) ^ 2 = βlevn (quadratic c z) := by
+  have hβnext_sq : ∀ z ∈ escapeLevel c (n + 1), (βnext z) ^ (2 : ℕ) = βlevn (quadratic c z) := by
     intro z hz
     calc
-      (βnext z) ^ 2 = η ^ 2 * (s z) ^ 2 := by simp [βnext, mul_pow]
+      (βnext z) ^ (2 : ℕ) = η ^ (2 : ℕ) * (s z) ^ (2 : ℕ) := by simp [βnext, mul_pow]
       _ = βlevn (quadratic c z) := by rw [hη2, one_mul, hsq z hz]
   have hβnext_anchor : ∀ z ∈ escapeOpen c, βnext z = bottcherCoord c z := by
     have hanchor_d : βnext d = bottcherCoord c d := by
@@ -677,7 +677,7 @@ theorem exists_sqrt_family_of_simplyConnected_levels (c : ℂ)
       (∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0) ∧
       (∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z) ∧
       (∀ n, ∀ z ∈ escapeLevel c (n + 1),
-        (βlev (n + 1) z) ^ 2 = βlev n (quadratic c z)) := by
+        (βlev (n + 1) z) ^ (2 : ℕ) = βlev n (quadratic c z)) := by
   classical
   let BranchData (n : ℕ) := {β : ℂ → ℂ //
     AnalyticOnNhd ℂ β (escapeLevel c n) ∧
@@ -691,7 +691,7 @@ theorem exists_sqrt_family_of_simplyConnected_levels (c : ℂ)
     · intro z _hz
       rfl
   have hsucc : ∀ n, (b : BranchData n) → ∃ bnext : BranchData (n + 1),
-      ∀ z ∈ escapeLevel c (n + 1), (bnext.1 z) ^ 2 = b.1 (quadratic c z) := by
+      ∀ z ∈ escapeLevel c (n + 1), (bnext.1 z) ^ (2 : ℕ) = b.1 (quadratic c z) := by
     intro n b
     obtain ⟨βnext, han, hne, hsqrt, hanchor⟩ :=
       exists_sqrtLevel_succ_of_simplyConnected c n (hsc n)
@@ -707,8 +707,8 @@ theorem exists_sqrt_family_of_simplyConnected_levels (c : ℂ)
   · intro n
     exact (data n).2.2.2
   · intro n z hz
-    change ((data (n + 1)).1 z) ^ 2 = (data n).1 (quadratic c z)
-    change ((Classical.choose (hsucc n (data n))).1 z) ^ 2 = (data n).1 (quadratic c z)
+    change ((data (n + 1)).1 z) ^ (2 : ℕ) = (data n).1 (quadratic c z)
+    change ((Classical.choose (hsucc n (data n))).1 z) ^ (2 : ℕ) = (data n).1 (quadratic c z)
     exact (Classical.choose_spec (hsucc n (data n))) z hz
 
 /-- **Two-chart successor level branch, with nonvanishing.** If two chart roots of `βlev n ∘ f` agree on
@@ -720,12 +720,12 @@ theorem exists_levelBranch_succ_of_chart_agreement_nonzero (c : ℂ) (n : ℕ)
     (hcover : escapeLevel c (n + 1) ⊆ V₁ ∪ V₂)
     (βlevn : ℂ → ℂ) (s₁ s₂ : ℂ → ℂ)
     (hs₁an : AnalyticOnNhd ℂ s₁ V₁) (hs₂an : AnalyticOnNhd ℂ s₂ V₂)
-    (hs₁sq : ∀ z ∈ V₁, (s₁ z) ^ 2 = βlevn (quadratic c z))
-    (hs₂sq : ∀ z ∈ V₂, (s₂ z) ^ 2 = βlevn (quadratic c z))
+    (hs₁sq : ∀ z ∈ V₁, (s₁ z) ^ (2 : ℕ) = βlevn (quadratic c z))
+    (hs₂sq : ∀ z ∈ V₂, (s₂ z) ^ (2 : ℕ) = βlevn (quadratic c z))
     (hs₁0 : ∀ z ∈ V₁, s₁ z ≠ 0) (hs₂0 : ∀ z ∈ V₂, s₂ z ≠ 0)
     (hagree : EqOn s₁ s₂ (V₁ ∩ V₂)) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
-      (∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ escapeLevel c (n + 1), (s z) ^ (2 : ℕ) = βlevn (quadratic c z)) ∧
       (∀ z ∈ escapeLevel c (n + 1), s z ≠ 0) := by
   obtain ⟨s, hsan, hs1, hs2⟩ := analyticOnNhd_glue_twoChart hV₁o hV₂o hs₁an hs₂an hagree
   refine ⟨s, hsan.mono hcover, ?_, ?_⟩
@@ -757,11 +757,11 @@ theorem exists_levelBranch_succ_of_chart_roots (c : ℂ) (n : ℕ)
     (βlevn : ℂ → ℂ) (hβne : ∀ z ∈ escapeLevel c n, βlevn z ≠ 0)
     (hroots : ∃ s₁ s₂ : ℂ → ℂ,
       AnalyticOnNhd ℂ s₁ V₁ ∧ AnalyticOnNhd ℂ s₂ V₂ ∧
-      (∀ z ∈ V₁, (s₁ z) ^ 2 = βlevn (quadratic c z)) ∧
-      (∀ z ∈ V₂, (s₂ z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ V₁, (s₁ z) ^ (2 : ℕ) = βlevn (quadratic c z)) ∧
+      (∀ z ∈ V₂, (s₂ z) ^ (2 : ℕ) = βlevn (quadratic c z)) ∧
       EqOn s₁ s₂ (V₁ ∩ V₂)) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
-      (∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ escapeLevel c (n + 1), (s z) ^ (2 : ℕ) = βlevn (quadratic c z)) ∧
       (∀ z ∈ escapeLevel c (n + 1), s z ≠ 0) := by
   obtain ⟨s₁, s₂, hs₁an, hs₂an, hs₁sq, hs₂sq, hagree⟩ := hroots
   have hs₁0 : ∀ z ∈ V₁, s₁ z ≠ 0 := by
@@ -931,7 +931,7 @@ theorem exists_global_branch_of_sqrt_family_modulus (c : ℂ) (βlev : ℕ → �
     (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
     (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0)
     (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z)
-    (hsqrt : ∀ n, ∀ z ∈ escapeLevel c (n + 1), (βlev (n + 1) z) ^ 2 = βlev n (quadratic c z)) :
+    (hsqrt : ∀ n, ∀ z ∈ escapeLevel c (n + 1), (βlev (n + 1) z) ^ (2 : ℕ) = βlev n (quadratic c z)) :
     ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
       (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) ∧
       (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧

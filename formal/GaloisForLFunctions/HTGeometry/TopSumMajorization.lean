@@ -10,7 +10,7 @@ every `k`-element subset and is attained by one of them.
 
 The majorization step is Karamata's inequality for the square, which is a single Abel summation:
 if the partial sums of an antitone tuple `a` are dominated by those of an antitone tuple `v`, with
-equal total sums, then `∑ a i ^ 2 ≤ ∑ v i ^ 2`, because the Abel weights `a i + v i` are antitone
+equal total sums, then `∑ a i ^ (2 : ℕ) ≤ ∑ v i ^ (2 : ℕ)`, because the Abel weights `a i + v i` are antitone
 and the partial sums of `a - v` are nonpositive with vanishing total.
 
 Combining the two: a tuple whose `k`-largest sums are dominated by the sum of those of two other
@@ -125,8 +125,8 @@ theorem antitone_sortDesc (v : Fin n → ℝ) : Antitone (sortDesc v) :=
 theorem sum_sortDesc (v : Fin n → ℝ) : ∑ i, sortDesc v i = ∑ i, v i :=
   Equiv.sum_comp (descPerm v) v
 
-theorem sum_sortDesc_sq (v : Fin n → ℝ) : ∑ i, sortDesc v i ^ 2 = ∑ i, v i ^ 2 :=
-  Equiv.sum_comp (descPerm v) fun i => v i ^ 2
+theorem sum_sortDesc_sq (v : Fin n → ℝ) : ∑ i, sortDesc v i ^ (2 : ℕ) = ∑ i, v i ^ (2 : ℕ) :=
+  Equiv.sum_comp (descPerm v) fun i => v i ^ (2 : ℕ)
 
 /-! ## The sum of the `k` largest entries -/
 
@@ -184,10 +184,10 @@ theorem sum_range_natExt_univ (v : Fin n → ℝ) :
 theorem sum_sq_le_of_partialSums {a v : Fin n → ℝ} (ha : Antitone a) (hv : Antitone v)
     (hpart : ∀ m ≤ n, ∑ i ∈ firstIdx n m, a i ≤ ∑ i ∈ firstIdx n m, v i)
     (htot : ∑ i, a i = ∑ i, v i) :
-    ∑ i, a i ^ 2 ≤ ∑ i, v i ^ 2 := by
+    ∑ i, a i ^ (2 : ℕ) ≤ ∑ i, v i ^ (2 : ℕ) := by
   set c : ℕ → ℝ := fun m => natExt a m + natExt v m with hcdef
   set e : ℕ → ℝ := fun m => natExt a m - natExt v m with hedef
-  have hce : ∀ m, c m * e m = natExt (fun i => a i ^ 2 - v i ^ 2) m := by
+  have hce : ∀ m, c m * e m = natExt (fun i => a i ^ (2 : ℕ) - v i ^ (2 : ℕ)) m := by
     intro m
     show (natExt a m + natExt v m) * (natExt a m - natExt v m) = _
     by_cases hm : m < n
@@ -211,32 +211,32 @@ theorem sum_sq_le_of_partialSums {a v : Fin n → ℝ} (ha : Antitone a) (hv : A
       linarith [hpart m hm]
     · rw [hEsum n le_rfl, firstIdx_self]
       linarith [htot]
-  have hrw : ∑ i ∈ Finset.range n, c i * e i = (∑ i, a i ^ 2) - ∑ i, v i ^ 2 := by
+  have hrw : ∑ i ∈ Finset.range n, c i * e i = (∑ i, a i ^ (2 : ℕ)) - ∑ i, v i ^ (2 : ℕ) := by
     rw [Finset.sum_congr rfl fun m _ => hce m, sum_range_natExt_univ, Finset.sum_sub_distrib]
   linarith [hkey, hrw.symm.le, hrw.le]
 
 /-! ## The Euclidean comparison -/
 
 theorem sqrt_sum_sq_add_le (x y : Fin n → ℝ) :
-    Real.sqrt (∑ i, (x i + y i) ^ 2)
-      ≤ Real.sqrt (∑ i, x i ^ 2) + Real.sqrt (∑ i, y i ^ 2) := by
-  have hcs : ∑ i, x i * y i ≤ Real.sqrt (∑ i, x i ^ 2) * Real.sqrt (∑ i, y i ^ 2) :=
+    Real.sqrt (∑ i, (x i + y i) ^ (2 : ℕ))
+      ≤ Real.sqrt (∑ i, x i ^ (2 : ℕ)) + Real.sqrt (∑ i, y i ^ (2 : ℕ)) := by
+  have hcs : ∑ i, x i * y i ≤ Real.sqrt (∑ i, x i ^ (2 : ℕ)) * Real.sqrt (∑ i, y i ^ (2 : ℕ)) :=
     Real.sum_mul_le_sqrt_mul_sqrt _ x y
-  have hx : (0:ℝ) ≤ ∑ i, x i ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
-  have hy : (0:ℝ) ≤ ∑ i, y i ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
-  have hexp : ∑ i, (x i + y i) ^ 2
-      = (∑ i, x i ^ 2) + 2 * (∑ i, x i * y i) + ∑ i, y i ^ 2 := by
+  have hx : (0:ℝ) ≤ ∑ i, x i ^ (2 : ℕ) := Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hy : (0:ℝ) ≤ ∑ i, y i ^ (2 : ℕ) := Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hexp : ∑ i, (x i + y i) ^ (2 : ℕ)
+      = (∑ i, x i ^ (2 : ℕ)) + 2 * (∑ i, x i * y i) + ∑ i, y i ^ (2 : ℕ) := by
     rw [Finset.sum_congr rfl fun (i : Fin n) _ =>
-        show (x i + y i) ^ 2 = x i ^ 2 + 2 * (x i * y i) + y i ^ 2 from by ring,
+        show (x i + y i) ^ (2 : ℕ) = x i ^ (2 : ℕ) + 2 * (x i * y i) + y i ^ (2 : ℕ) from by ring,
       Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
-  have hbound : ∑ i, (x i + y i) ^ 2
-      ≤ (Real.sqrt (∑ i, x i ^ 2) + Real.sqrt (∑ i, y i ^ 2)) ^ 2 := by
+  have hbound : ∑ i, (x i + y i) ^ (2 : ℕ)
+      ≤ (Real.sqrt (∑ i, x i ^ (2 : ℕ)) + Real.sqrt (∑ i, y i ^ (2 : ℕ))) ^ (2 : ℕ) := by
     rw [hexp, add_sq, Real.sq_sqrt hx, Real.sq_sqrt hy]
     linarith [hcs]
-  calc Real.sqrt (∑ i, (x i + y i) ^ 2)
-      ≤ Real.sqrt ((Real.sqrt (∑ i, x i ^ 2) + Real.sqrt (∑ i, y i ^ 2)) ^ 2) :=
+  calc Real.sqrt (∑ i, (x i + y i) ^ (2 : ℕ))
+      ≤ Real.sqrt ((Real.sqrt (∑ i, x i ^ (2 : ℕ)) + Real.sqrt (∑ i, y i ^ (2 : ℕ))) ^ (2 : ℕ)) :=
         Real.sqrt_le_sqrt hbound
-    _ = Real.sqrt (∑ i, x i ^ 2) + Real.sqrt (∑ i, y i ^ 2) :=
+    _ = Real.sqrt (∑ i, x i ^ (2 : ℕ)) + Real.sqrt (∑ i, y i ^ (2 : ℕ)) :=
         Real.sqrt_sq (by positivity)
 
 /-- **The Euclidean triangle comparison from dominated top sums.**  If every `k`-largest sum of
@@ -245,9 +245,9 @@ then the Euclidean norm of `a` is at most the sum of those of `b` and `c`. -/
 theorem sqrt_sum_sq_le_of_topSum_le {a b c : Fin n → ℝ}
     (h : ∀ m ≤ n, topSum m a ≤ topSum m b + topSum m c)
     (htot : ∑ i, a i = (∑ i, b i) + ∑ i, c i) :
-    Real.sqrt (∑ i, a i ^ 2)
-      ≤ Real.sqrt (∑ i, b i ^ 2) + Real.sqrt (∑ i, c i ^ 2) := by
-  have hkey : ∑ i, sortDesc a i ^ 2 ≤ ∑ i, (sortDesc b i + sortDesc c i) ^ 2 := by
+    Real.sqrt (∑ i, a i ^ (2 : ℕ))
+      ≤ Real.sqrt (∑ i, b i ^ (2 : ℕ)) + Real.sqrt (∑ i, c i ^ (2 : ℕ)) := by
+  have hkey : ∑ i, sortDesc a i ^ (2 : ℕ) ≤ ∑ i, (sortDesc b i + sortDesc c i) ^ (2 : ℕ) := by
     refine sum_sq_le_of_partialSums (antitone_sortDesc a)
       (fun i j hij => add_le_add (antitone_sortDesc b hij) (antitone_sortDesc c hij))
       (fun m hm => ?_) ?_
@@ -255,13 +255,13 @@ theorem sqrt_sum_sq_le_of_topSum_le {a b c : Fin n → ℝ}
       exact h m hm
     · rw [Finset.sum_add_distrib, sum_sortDesc a, sum_sortDesc b, sum_sortDesc c]
       exact htot
-  have hA : ∑ i, sortDesc a i ^ 2 = ∑ i, a i ^ 2 := sum_sortDesc_sq a
-  have hB : ∑ i, sortDesc b i ^ 2 = ∑ i, b i ^ 2 := sum_sortDesc_sq b
-  have hC : ∑ i, sortDesc c i ^ 2 = ∑ i, c i ^ 2 := sum_sortDesc_sq c
-  calc Real.sqrt (∑ i, a i ^ 2) = Real.sqrt (∑ i, sortDesc a i ^ 2) := by rw [hA]
-    _ ≤ Real.sqrt (∑ i, (sortDesc b i + sortDesc c i) ^ 2) := Real.sqrt_le_sqrt hkey
-    _ ≤ Real.sqrt (∑ i, sortDesc b i ^ 2) + Real.sqrt (∑ i, sortDesc c i ^ 2) :=
+  have hA : ∑ i, sortDesc a i ^ (2 : ℕ) = ∑ i, a i ^ (2 : ℕ) := sum_sortDesc_sq a
+  have hB : ∑ i, sortDesc b i ^ (2 : ℕ) = ∑ i, b i ^ (2 : ℕ) := sum_sortDesc_sq b
+  have hC : ∑ i, sortDesc c i ^ (2 : ℕ) = ∑ i, c i ^ (2 : ℕ) := sum_sortDesc_sq c
+  calc Real.sqrt (∑ i, a i ^ (2 : ℕ)) = Real.sqrt (∑ i, sortDesc a i ^ (2 : ℕ)) := by rw [hA]
+    _ ≤ Real.sqrt (∑ i, (sortDesc b i + sortDesc c i) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hkey
+    _ ≤ Real.sqrt (∑ i, sortDesc b i ^ (2 : ℕ)) + Real.sqrt (∑ i, sortDesc c i ^ (2 : ℕ)) :=
         sqrt_sum_sq_add_le _ _
-    _ = Real.sqrt (∑ i, b i ^ 2) + Real.sqrt (∑ i, c i ^ 2) := by rw [hB, hC]
+    _ = Real.sqrt (∑ i, b i ^ (2 : ℕ)) + Real.sqrt (∑ i, c i ^ (2 : ℕ)) := by rw [hB, hC]
 
 end GaloisForLFunctions.HTGeometry

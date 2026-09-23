@@ -167,7 +167,7 @@ theorem exists_mem_real_sliceLeaf_quadraticRate_ne_zero [Nonempty A] (hcard : 3 
           (localExtensionMatrix (fun a => (E a : ℂ)) (sliceShift (fun i => (q i : ℂ))) M
             (sliceEdge (fun i => (q i : ℂ))), energy i) = 0) →
         ∀ σ : Equiv.Perm (A × Bool),
-          (∑ j, c (σ.symm j) * energy j) ^ 2 - κ * ∑ j, energy j ^ 2 ≠ 0 := by
+          (∑ j, c (σ.symm j) * energy j) ^ (2 : ℕ) - κ * ∑ j, energy j ^ (2 : ℕ) ≠ 0 := by
   obtain ⟨q, hq, hqne⟩ := exists_mem_eval₂_ne_zero_of_exists _
     (exists_eval_sliceLeafPullback_ne_zero hcard hE hgap hMherm hM hbase C c κ hzero hcne)
     hUopen hUne

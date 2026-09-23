@@ -97,15 +97,15 @@ def reflectedBiHeatFiniteCommensurateApertureGap
     {N : ℕ} (a : Fin N → ℝ) (x : ℝ) (rho : XiDivisorSupport) : ℝ :=
   ∑ i, a i *
     (x ^ (((i : ℕ) + 1 : ℝ) / 2) *
-      (reflectedBiHeatLeftLeadingJetNorm rho (x ^ ((i : ℕ) + 1)) ^ 2 -
-        reflectedBiHeatRightLeadingJetNorm rho (x ^ ((i : ℕ) + 1)) ^ 2))
+      (reflectedBiHeatLeftLeadingJetNorm rho (x ^ ((i : ℕ) + 1)) ^ (2 : ℕ) -
+        reflectedBiHeatRightLeadingJetNorm rho (x ^ ((i : ℕ) + 1)) ^ (2 : ℕ)))
 
 /-- Exact physical finite-packet factorization. -/
 theorem reflectedBiHeatFiniteCommensurateApertureGap_eq_reporter
     {N : ℕ} (a : Fin N → ℝ) {x : ℝ} (hx : 0 < x)
     (rho : XiDivisorSupport) :
     reflectedBiHeatFiniteCommensurateApertureGap a x rho =
-      2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ 2 *
+      2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ (2 : ℕ) *
         reflectedBiHeatFiniteCommensurateReporter a
           (Real.log x * ((rho : ℂ).re - 1 / 2)) := by
   rw [reflectedBiHeatFiniteCommensurateApertureGap,
@@ -128,7 +128,7 @@ theorem reflectedBiHeatFiniteCommensurateApertureGap_eq_zero_iff
   rw [reflectedBiHeatFiniteCommensurateApertureGap_eq_reporter a
     (lt_trans zero_lt_one hx) rho]
   have hcoef :
-      2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ 2 ≠ 0 := by
+      2 * ‖reflectedBiHeatMultiplicityLeadingCoefficient rho‖ ^ (2 : ℕ) ≠ 0 := by
     exact mul_ne_zero (by norm_num)
       (pow_ne_zero 2 (norm_ne_zero_iff.mpr
         (reflectedBiHeatMultiplicityLeadingCoefficient_ne_zero rho)))

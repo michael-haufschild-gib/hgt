@@ -29,11 +29,11 @@ noncomputable section
 /-! ## The chord identity -/
 
 theorem dqpt_chord_sq_eq (a b : ℝ) :
-    (Real.cos a - Real.cos b) ^ 2 + (Real.sin a - Real.sin b) ^ 2
-      = 4 * Real.sin ((a - b) / 2) ^ 2 := by
+    (Real.cos a - Real.cos b) ^ (2 : ℕ) + (Real.sin a - Real.sin b) ^ (2 : ℕ)
+      = 4 * Real.sin ((a - b) / 2) ^ (2 : ℕ) := by
   have hcos : Real.cos (a - b) = Real.cos a * Real.cos b + Real.sin a * Real.sin b :=
     Real.cos_sub a b
-  have hhalf : Real.cos (a - b) = 1 - 2 * Real.sin ((a - b) / 2) ^ 2 := by
+  have hhalf : Real.cos (a - b) = 1 - 2 * Real.sin ((a - b) / 2) ^ (2 : ℕ) := by
     have h := Real.cos_two_mul' ((a - b) / 2)
     have hpy := Real.sin_sq_add_cos_sq ((a - b) / 2)
     have harg : 2 * ((a - b) / 2) = a - b := by ring
@@ -44,17 +44,17 @@ theorem dqpt_chord_sq_eq (a b : ℝ) :
   nlinarith [hcos, hhalf, hpa, hpb]
 
 theorem dqpt_chord_sq_le (a b : ℝ) :
-    (Real.cos a - Real.cos b) ^ 2 + (Real.sin a - Real.sin b) ^ 2 ≤ (a - b) ^ 2 := by
+    (Real.cos a - Real.cos b) ^ (2 : ℕ) + (Real.sin a - Real.sin b) ^ (2 : ℕ) ≤ (a - b) ^ (2 : ℕ) := by
   rw [dqpt_chord_sq_eq]
   have h := Real.abs_sin_le_abs (x := (a - b) / 2)
   have habs : |(a - b) / 2| = |a - b| / 2 := by
     rw [abs_div]
     norm_num
   rw [habs] at h
-  have hsq : Real.sin ((a - b) / 2) ^ 2 ≤ (|a - b| / 2) ^ 2 := by
+  have hsq : Real.sin ((a - b) / 2) ^ (2 : ℕ) ≤ (|a - b| / 2) ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ |a - b| / 2 := by positivity
     nlinarith [h, abs_nonneg (Real.sin ((a - b) / 2)), sq_abs (Real.sin ((a - b) / 2))]
-  have hab : (|a - b| / 2) ^ 2 = (a - b) ^ 2 / 4 := by
+  have hab : (|a - b| / 2) ^ (2 : ℕ) = (a - b) ^ (2 : ℕ) / 4 := by
     rw [div_pow, sq_abs]
     norm_num
   rw [hab] at hsq
@@ -65,29 +65,29 @@ theorem dqpt_chord_sq_le (a b : ℝ) :
 /-- **(4.13).**  With normalised weights `∑ c_w² = 1`, replacing every rotation angle `θ_w` by
 `θ'_w` moves the split state by at most `maxᵂ |θ'_w − θ_w|` in squared norm. -/
 theorem dqpt_angle_perturbation {ι : Type*} [Fintype ι] (c θ θ' : ι → ℝ)
-    (hnorm : ∑ w, c w ^ 2 = 1) {M : ℝ} (hM : ∀ w, |θ' w - θ w| ≤ M) :
-    ∑ w, c w ^ 2 * ((Real.cos (θ' w) - Real.cos (θ w)) ^ 2
-        + (Real.sin (θ' w) - Real.sin (θ w)) ^ 2) ≤ M ^ 2 := by
-  have hstep : ∀ w : ι, c w ^ 2 * ((Real.cos (θ' w) - Real.cos (θ w)) ^ 2
-      + (Real.sin (θ' w) - Real.sin (θ w)) ^ 2) ≤ c w ^ 2 * M ^ 2 := by
+    (hnorm : ∑ w, c w ^ (2 : ℕ) = 1) {M : ℝ} (hM : ∀ w, |θ' w - θ w| ≤ M) :
+    ∑ w, c w ^ (2 : ℕ) * ((Real.cos (θ' w) - Real.cos (θ w)) ^ (2 : ℕ)
+        + (Real.sin (θ' w) - Real.sin (θ w)) ^ (2 : ℕ)) ≤ M ^ (2 : ℕ) := by
+  have hstep : ∀ w : ι, c w ^ (2 : ℕ) * ((Real.cos (θ' w) - Real.cos (θ w)) ^ (2 : ℕ)
+      + (Real.sin (θ' w) - Real.sin (θ w)) ^ (2 : ℕ)) ≤ c w ^ (2 : ℕ) * M ^ (2 : ℕ) := by
     intro w
     refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
     refine (dqpt_chord_sq_le (θ' w) (θ w)).trans ?_
     have h := hM w
     nlinarith [h, abs_nonneg (θ' w - θ w), sq_abs (θ' w - θ w)]
-  calc ∑ w, c w ^ 2 * ((Real.cos (θ' w) - Real.cos (θ w)) ^ 2
-          + (Real.sin (θ' w) - Real.sin (θ w)) ^ 2)
-      ≤ ∑ w, c w ^ 2 * M ^ 2 := Finset.sum_le_sum (fun w _ => hstep w)
-    _ = M ^ 2 := by rw [← Finset.sum_mul, hnorm, one_mul]
+  calc ∑ w, c w ^ (2 : ℕ) * ((Real.cos (θ' w) - Real.cos (θ w)) ^ (2 : ℕ)
+          + (Real.sin (θ' w) - Real.sin (θ w)) ^ (2 : ℕ))
+      ≤ ∑ w, c w ^ (2 : ℕ) * M ^ (2 : ℕ) := Finset.sum_le_sum (fun w _ => hstep w)
+    _ = M ^ (2 : ℕ) := by rw [← Finset.sum_mul, hnorm, one_mul]
 
 /-! ## Supplementary Note 4 (4.76): the LCU mixing angle -/
 
 /-- The arctangent is `1`-Lipschitz. -/
 theorem dqpt_arctan_lipschitz (x y : ℝ) : |Real.arctan x - Real.arctan y| ≤ |x - y| := by
   rcases le_total x y with hxy | hxy
-  · have hderiv : ∀ z ∈ Icc x y, HasDerivWithinAt Real.arctan (1 / (1 + z ^ 2)) (Icc x y) z :=
+  · have hderiv : ∀ z ∈ Icc x y, HasDerivWithinAt Real.arctan (1 / (1 + z ^ (2 : ℕ))) (Icc x y) z :=
       fun z _ => (Real.hasDerivAt_arctan z).hasDerivWithinAt
-    have hbound : ∀ z ∈ Ico x y, ‖1 / (1 + z ^ 2)‖ ≤ 1 := by
+    have hbound : ∀ z ∈ Ico x y, ‖1 / (1 + z ^ (2 : ℕ))‖ ≤ 1 := by
       intro z _
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
       rw [div_le_one (by positivity)]
@@ -99,9 +99,9 @@ theorem dqpt_arctan_lipschitz (x y : ℝ) : |Real.arctan x - Real.arctan y| ≤ 
       _ ≤ 1 * (y - x) := key
       _ = -(x - y) := by ring
       _ = |x - y| := (abs_of_nonpos (by linarith : x - y ≤ 0)).symm
-  · have hderiv : ∀ z ∈ Icc y x, HasDerivWithinAt Real.arctan (1 / (1 + z ^ 2)) (Icc y x) z :=
+  · have hderiv : ∀ z ∈ Icc y x, HasDerivWithinAt Real.arctan (1 / (1 + z ^ (2 : ℕ))) (Icc y x) z :=
       fun z _ => (Real.hasDerivAt_arctan z).hasDerivWithinAt
-    have hbound : ∀ z ∈ Ico y x, ‖1 / (1 + z ^ 2)‖ ≤ 1 := by
+    have hbound : ∀ z ∈ Ico y x, ‖1 / (1 + z ^ (2 : ℕ))‖ ≤ 1 := by
       intro z _
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
       rw [div_le_one (by positivity)]
@@ -116,13 +116,13 @@ theorem dqpt_arctan_lipschitz (x y : ℝ) : |Real.arctan x - Real.arctan y| ≤ 
 /-- **(4.76).**  The two normalised mixing vectors `(1, γ)/√(1+γ²)` differ by at most `|γ − γ'|`
 — sharper than the paper's `√2 |γ − γ'|`. -/
 theorem dqpt_normalized_pair_dist (γ γ' : ℝ) :
-    (1 / Real.sqrt (1 + γ ^ 2) - 1 / Real.sqrt (1 + γ' ^ 2)) ^ 2
-        + (γ / Real.sqrt (1 + γ ^ 2) - γ' / Real.sqrt (1 + γ' ^ 2)) ^ 2
-      ≤ (γ - γ') ^ 2 := by
-  have hc : Real.cos (Real.arctan γ) = 1 / Real.sqrt (1 + γ ^ 2) := Real.cos_arctan γ
-  have hc' : Real.cos (Real.arctan γ') = 1 / Real.sqrt (1 + γ' ^ 2) := Real.cos_arctan γ'
-  have hs : Real.sin (Real.arctan γ) = γ / Real.sqrt (1 + γ ^ 2) := Real.sin_arctan γ
-  have hs' : Real.sin (Real.arctan γ') = γ' / Real.sqrt (1 + γ' ^ 2) := Real.sin_arctan γ'
+    (1 / Real.sqrt (1 + γ ^ (2 : ℕ)) - 1 / Real.sqrt (1 + γ' ^ (2 : ℕ))) ^ (2 : ℕ)
+        + (γ / Real.sqrt (1 + γ ^ (2 : ℕ)) - γ' / Real.sqrt (1 + γ' ^ (2 : ℕ))) ^ (2 : ℕ)
+      ≤ (γ - γ') ^ (2 : ℕ) := by
+  have hc : Real.cos (Real.arctan γ) = 1 / Real.sqrt (1 + γ ^ (2 : ℕ)) := Real.cos_arctan γ
+  have hc' : Real.cos (Real.arctan γ') = 1 / Real.sqrt (1 + γ' ^ (2 : ℕ)) := Real.cos_arctan γ'
+  have hs : Real.sin (Real.arctan γ) = γ / Real.sqrt (1 + γ ^ (2 : ℕ)) := Real.sin_arctan γ
+  have hs' : Real.sin (Real.arctan γ') = γ' / Real.sqrt (1 + γ' ^ (2 : ℕ)) := Real.sin_arctan γ'
   rw [← hc, ← hc', ← hs, ← hs']
   refine (dqpt_chord_sq_le (Real.arctan γ) (Real.arctan γ')).trans ?_
   have hlip := dqpt_arctan_lipschitz γ γ'
@@ -169,7 +169,7 @@ theorem dqpt_postselection_error {E : Type*} [NormedAddCommGroup E] [NormedSpace
     (hy : y ≠ 0) :
     ‖(‖x‖)⁻¹ • x - (‖y‖)⁻¹ • y‖ ≤ ε := by
   have hs2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
-  have hs2sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hs2sq : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hxn : (0 : ℝ) < ‖x‖ := lt_of_lt_of_le (by positivity) hx
   have hx0 : x ≠ 0 := norm_pos_iff.mp hxn
   refine (dqpt_normalize_dist_le hx0 hy).trans ?_
@@ -181,9 +181,9 @@ theorem dqpt_postselection_error {E : Type*} [NormedAddCommGroup E] [NormedSpace
 
 /-- **(4.91).**  The post-selection success probability is at least `1/2 − ε/3`. -/
 theorem dqpt_postselection_prob {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {x y : E} {ε : ℝ} (hε : 0 ≤ ε) (hx : (1 : ℝ) / 2 ≤ ‖x‖ ^ 2) (hx1 : ‖x‖ ≤ 1)
+    {x y : E} {ε : ℝ} (hε : 0 ≤ ε) (hx : (1 : ℝ) / 2 ≤ ‖x‖ ^ (2 : ℕ)) (hx1 : ‖x‖ ≤ 1)
     (hxy : ‖x - y‖ ≤ ε / 6) :
-    (1 : ℝ) / 2 - ε / 3 ≤ ‖y‖ ^ 2 := by
+    (1 : ℝ) / 2 - ε / 3 ≤ ‖y‖ ^ (2 : ℕ) := by
   have hxn : (0 : ℝ) ≤ ‖x‖ := norm_nonneg x
   have hyn : (0 : ℝ) ≤ ‖y‖ := norm_nonneg y
   have hdiff : ‖x‖ - ‖y‖ ≤ ε / 6 := le_trans (norm_sub_norm_le x y) hxy
@@ -194,7 +194,7 @@ theorem dqpt_postselection_prob {E : Type*} [NormedAddCommGroup E] [NormedSpace 
 
 /-! ## Supplementary Note 5 (5.8): the phase error -/
 
-theorem dqpt_norm_sq_eq_re_im (z : ℂ) : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+theorem dqpt_norm_sq_eq_re_im (z : ℂ) : ‖z‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
   simp only [Complex.norm_def, Complex.normSq_apply]
   rw [Real.sq_sqrt (add_nonneg (mul_self_nonneg _) (mul_self_nonneg _))]
   ring
@@ -209,8 +209,8 @@ theorem dqpt_exp_neg_I_mul (t : ℝ) :
   ring
 
 theorem dqpt_norm_sq_exp_sub_exp (a b : ℝ) :
-    ‖Complex.exp (-Complex.I * (a : ℂ)) - Complex.exp (-Complex.I * (b : ℂ))‖ ^ 2
-      = 4 * Real.sin ((a - b) / 2) ^ 2 := by
+    ‖Complex.exp (-Complex.I * (a : ℂ)) - Complex.exp (-Complex.I * (b : ℂ))‖ ^ (2 : ℕ)
+      = 4 * Real.sin ((a - b) / 2) ^ (2 : ℕ) := by
   rw [dqpt_exp_neg_I_mul a, dqpt_exp_neg_I_mul b, dqpt_norm_sq_eq_re_im]
   simp only [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re,
     Complex.ofReal_im, Complex.I_re, Complex.I_im]
@@ -219,11 +219,11 @@ theorem dqpt_norm_sq_exp_sub_exp (a b : ℝ) :
 
 /-- **(5.8).**  A phase error at most `ξ` moves a normalised superposition by at most `ξ`. -/
 theorem dqpt_phase_error {ι : Type*} [Fintype ι] (α : ι → ℂ) (a a' : ι → ℝ)
-    (hnorm : ∑ w, ‖α w‖ ^ 2 = 1) {ξ : ℝ} (hξ : ∀ w, |a' w - a w| ≤ ξ) :
-    ∑ w, ‖α w‖ ^ 2 * ‖Complex.exp (-Complex.I * ((a' w : ℝ) : ℂ))
-        - Complex.exp (-Complex.I * ((a w : ℝ) : ℂ))‖ ^ 2 ≤ ξ ^ 2 := by
-  have hstep : ∀ w : ι, ‖α w‖ ^ 2 * ‖Complex.exp (-Complex.I * ((a' w : ℝ) : ℂ))
-      - Complex.exp (-Complex.I * ((a w : ℝ) : ℂ))‖ ^ 2 ≤ ‖α w‖ ^ 2 * ξ ^ 2 := by
+    (hnorm : ∑ w, ‖α w‖ ^ (2 : ℕ) = 1) {ξ : ℝ} (hξ : ∀ w, |a' w - a w| ≤ ξ) :
+    ∑ w, ‖α w‖ ^ (2 : ℕ) * ‖Complex.exp (-Complex.I * ((a' w : ℝ) : ℂ))
+        - Complex.exp (-Complex.I * ((a w : ℝ) : ℂ))‖ ^ (2 : ℕ) ≤ ξ ^ (2 : ℕ) := by
+  have hstep : ∀ w : ι, ‖α w‖ ^ (2 : ℕ) * ‖Complex.exp (-Complex.I * ((a' w : ℝ) : ℂ))
+      - Complex.exp (-Complex.I * ((a w : ℝ) : ℂ))‖ ^ (2 : ℕ) ≤ ‖α w‖ ^ (2 : ℕ) * ξ ^ (2 : ℕ) := by
     intro w
     refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
     rw [dqpt_norm_sq_exp_sub_exp]
@@ -234,10 +234,10 @@ theorem dqpt_phase_error {ι : Type*} [Fintype ι] (α : ι → ℂ) (a a' : ι 
     have h3 := hξ w
     nlinarith [habs, h3, abs_nonneg (Real.sin ((a' w - a w) / 2)), abs_nonneg (a' w - a w),
       sq_abs (Real.sin ((a' w - a w) / 2)), sq_abs (a' w - a w)]
-  calc ∑ w, ‖α w‖ ^ 2 * ‖Complex.exp (-Complex.I * ((a' w : ℝ) : ℂ))
-          - Complex.exp (-Complex.I * ((a w : ℝ) : ℂ))‖ ^ 2
-      ≤ ∑ w, ‖α w‖ ^ 2 * ξ ^ 2 := Finset.sum_le_sum (fun w _ => hstep w)
-    _ = ξ ^ 2 := by rw [← Finset.sum_mul, hnorm, one_mul]
+  calc ∑ w, ‖α w‖ ^ (2 : ℕ) * ‖Complex.exp (-Complex.I * ((a' w : ℝ) : ℂ))
+          - Complex.exp (-Complex.I * ((a w : ℝ) : ℂ))‖ ^ (2 : ℕ)
+      ≤ ∑ w, ‖α w‖ ^ (2 : ℕ) * ξ ^ (2 : ℕ) := Finset.sum_le_sum (fun w _ => hstep w)
+    _ = ξ ^ (2 : ℕ) := by rw [← Finset.sum_mul, hnorm, one_mul]
 
 end
 

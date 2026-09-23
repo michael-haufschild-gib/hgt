@@ -22,15 +22,15 @@ section Stability
 variable {ω₁ ω₂ : ℝ → ℝ} {M δ b : ℝ}
 
 /-- The generators of two Hill systems differ by the difference of the squared frequencies. -/
-theorem norm_hillField_sub_le (hδ : ∀ s, |ω₁ s ^ 2 - ω₂ s ^ 2| ≤ δ) (hδ0 : 0 ≤ δ) (s : ℝ) :
+theorem norm_hillField_sub_le (hδ : ∀ s, |ω₁ s ^ (2 : ℕ) - ω₂ s ^ (2 : ℕ)| ≤ δ) (hδ0 : 0 ≤ δ) (s : ℝ) :
     ‖hillField ω₁ s - hillField ω₂ s‖ ≤ δ := by
   refine ContinuousLinearMap.opNorm_le_bound _ hδ0 fun y => ?_
-  have hval : (hillField ω₁ s - hillField ω₂ s) y = (0, -(ω₁ s ^ 2 - ω₂ s ^ 2) * y.1) := by
+  have hval : (hillField ω₁ s - hillField ω₂ s) y = (0, -(ω₁ s ^ (2 : ℕ) - ω₂ s ^ (2 : ℕ)) * y.1) := by
     have h₁ : (hillField ω₁ s - hillField ω₂ s) y = hillField ω₁ s y - hillField ω₂ s y := rfl
     rw [h₁, hillField_apply, hillField_apply]
     refine Prod.ext ?_ ?_
     · simp
-    · show -(ω₁ s ^ 2) * y.1 - -(ω₂ s ^ 2) * y.1 = -(ω₁ s ^ 2 - ω₂ s ^ 2) * y.1
+    · show -(ω₁ s ^ (2 : ℕ)) * y.1 - -(ω₂ s ^ (2 : ℕ)) * y.1 = -(ω₁ s ^ (2 : ℕ) - ω₂ s ^ (2 : ℕ)) * y.1
       ring
   rw [hval, Prod.norm_def]
   refine max_le ?_ ?_
@@ -38,16 +38,16 @@ theorem norm_hillField_sub_le (hδ : ∀ s, |ω₁ s ^ 2 - ω₂ s ^ 2| ≤ δ) 
   · have hy1 : ‖y.1‖ ≤ ‖y‖ := by
       rw [Prod.norm_def]
       exact le_max_left _ _
-    have hnorm : ‖-(ω₁ s ^ 2 - ω₂ s ^ 2) * y.1‖ = |ω₁ s ^ 2 - ω₂ s ^ 2| * ‖y.1‖ := by
+    have hnorm : ‖-(ω₁ s ^ (2 : ℕ) - ω₂ s ^ (2 : ℕ)) * y.1‖ = |ω₁ s ^ (2 : ℕ) - ω₂ s ^ (2 : ℕ)| * ‖y.1‖ := by
       rw [norm_mul, norm_neg, Real.norm_eq_abs]
     rw [hnorm]
     have hs := hδ s
-    nlinarith [norm_nonneg y.1, norm_nonneg y, abs_nonneg (ω₁ s ^ 2 - ω₂ s ^ 2)]
+    nlinarith [norm_nonneg y.1, norm_nonneg y, abs_nonneg (ω₁ s ^ (2 : ℕ) - ω₂ s ^ (2 : ℕ))]
 
 /-- **Quantitative dependence of the Hill flow on its frequency.** -/
 theorem norm_hillFlow_sub_le (hω₁ : Continuous ω₁) (hω₂ : Continuous ω₂) (hM1 : 1 ≤ M)
-    (hM₁ : ∀ s, ω₁ s ^ 2 ≤ M) (hM₂ : ∀ s, ω₂ s ^ 2 ≤ M)
-    (hδ : ∀ s, |ω₁ s ^ 2 - ω₂ s ^ 2| ≤ δ) (hδ0 : 0 ≤ δ) (y₀ : ℝ × ℝ)
+    (hM₁ : ∀ s, ω₁ s ^ (2 : ℕ) ≤ M) (hM₂ : ∀ s, ω₂ s ^ (2 : ℕ) ≤ M)
+    (hδ : ∀ s, |ω₁ s ^ (2 : ℕ) - ω₂ s ^ (2 : ℕ)| ≤ δ) (hδ0 : 0 ≤ δ) (y₀ : ℝ × ℝ)
     {t : ℝ} (ht : t ∈ Icc 0 b) :
     ‖hillFlow ω₁ y₀ t - hillFlow ω₂ y₀ t‖ ≤
       gronwallBound 0 M (δ * (‖y₀‖ * Real.exp (M * b))) t := by
@@ -108,43 +108,43 @@ section Scaled
 variable {c : ℝ → ℝ} {C S b : ℝ}
 
 /-- **The flow of the scaled family `ω = c·s`, compared at two scales.** -/
-theorem norm_hillFlow_scaled_sub_le (hc : Continuous c) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+theorem norm_hillFlow_scaled_sub_le (hc : Continuous c) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     {s₁ s₂ : ℝ} (hs₁ : |s₁| ≤ S) (hs₂ : |s₂| ≤ S) (hS : 0 ≤ S) (y₀ : ℝ × ℝ)
     {t : ℝ} (ht : t ∈ Icc 0 b) :
     ‖hillFlow (fun r => c r * s₁) y₀ t - hillFlow (fun r => c r * s₂) y₀ t‖ ≤
-      gronwallBound 0 (max 1 (C ^ 2 * S ^ 2))
-        (C ^ 2 * |s₁ ^ 2 - s₂ ^ 2| *
-          (‖y₀‖ * Real.exp (max 1 (C ^ 2 * S ^ 2) * b))) t := by
-  have hsq : ∀ s : ℝ, |s| ≤ S → s ^ 2 ≤ S ^ 2 := by
+      gronwallBound 0 (max 1 (C ^ (2 : ℕ) * S ^ (2 : ℕ)))
+        (C ^ (2 : ℕ) * |s₁ ^ (2 : ℕ) - s₂ ^ (2 : ℕ)| *
+          (‖y₀‖ * Real.exp (max 1 (C ^ (2 : ℕ) * S ^ (2 : ℕ)) * b))) t := by
+  have hsq : ∀ s : ℝ, |s| ≤ S → s ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by
     intro s hs
     have := abs_nonneg s
     nlinarith [sq_abs s]
-  have hM1 : (1 : ℝ) ≤ max 1 (C ^ 2 * S ^ 2) := le_max_left _ _
-  have hbound : ∀ (s : ℝ), |s| ≤ S → ∀ r, (c r * s) ^ 2 ≤ max 1 (C ^ 2 * S ^ 2) := by
+  have hM1 : (1 : ℝ) ≤ max 1 (C ^ (2 : ℕ) * S ^ (2 : ℕ)) := le_max_left _ _
+  have hbound : ∀ (s : ℝ), |s| ≤ S → ∀ r, (c r * s) ^ (2 : ℕ) ≤ max 1 (C ^ (2 : ℕ) * S ^ (2 : ℕ)) := by
     intro s hs r
-    have h1 : (c r * s) ^ 2 = c r ^ 2 * s ^ 2 := by ring
-    have h2 : c r ^ 2 * s ^ 2 ≤ C ^ 2 * S ^ 2 := by
-      have hcr : (0 : ℝ) ≤ c r ^ 2 := sq_nonneg _
-      have hss : (0 : ℝ) ≤ s ^ 2 := sq_nonneg _
+    have h1 : (c r * s) ^ (2 : ℕ) = c r ^ (2 : ℕ) * s ^ (2 : ℕ) := by ring
+    have h2 : c r ^ (2 : ℕ) * s ^ (2 : ℕ) ≤ C ^ (2 : ℕ) * S ^ (2 : ℕ) := by
+      have hcr : (0 : ℝ) ≤ c r ^ (2 : ℕ) := sq_nonneg _
+      have hss : (0 : ℝ) ≤ s ^ (2 : ℕ) := sq_nonneg _
       nlinarith [hC r, hsq s hs, sq_nonneg C, sq_nonneg S]
     exact h1 ▸ h2.trans (le_max_right _ _)
-  have hδ : ∀ r, |(c r * s₁) ^ 2 - (c r * s₂) ^ 2| ≤ C ^ 2 * |s₁ ^ 2 - s₂ ^ 2| := by
+  have hδ : ∀ r, |(c r * s₁) ^ (2 : ℕ) - (c r * s₂) ^ (2 : ℕ)| ≤ C ^ (2 : ℕ) * |s₁ ^ (2 : ℕ) - s₂ ^ (2 : ℕ)| := by
     intro r
-    have hfac : (c r * s₁) ^ 2 - (c r * s₂) ^ 2 = c r ^ 2 * (s₁ ^ 2 - s₂ ^ 2) := by ring
+    have hfac : (c r * s₁) ^ (2 : ℕ) - (c r * s₂) ^ (2 : ℕ) = c r ^ (2 : ℕ) * (s₁ ^ (2 : ℕ) - s₂ ^ (2 : ℕ)) := by ring
     rw [hfac, abs_mul, abs_of_nonneg (sq_nonneg (c r))]
     exact mul_le_mul_of_nonneg_right (hC r) (abs_nonneg _)
-  have hδ0 : 0 ≤ C ^ 2 * |s₁ ^ 2 - s₂ ^ 2| := mul_nonneg (sq_nonneg _) (abs_nonneg _)
+  have hδ0 : 0 ≤ C ^ (2 : ℕ) * |s₁ ^ (2 : ℕ) - s₂ ^ (2 : ℕ)| := mul_nonneg (sq_nonneg _) (abs_nonneg _)
   exact norm_hillFlow_sub_le (hc.mul continuous_const) (hc.mul continuous_const) hM1
     (hbound s₁ hs₁) (hbound s₂ hs₂) hδ hδ0 y₀ ht
 
 /-- **The flow is continuous in the frequency scale.** -/
-theorem continuousAt_hillFlow_scaled (hc : Continuous c) (hC : ∀ r, c r ^ 2 ≤ C ^ 2)
+theorem continuousAt_hillFlow_scaled (hc : Continuous c) (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ))
     (y₀ : ℝ × ℝ) {t : ℝ} (ht : t ∈ Icc 0 b) (s₀ : ℝ) :
     ContinuousAt (fun s => hillFlow (fun r => c r * s) y₀ t) s₀ := by
   set S : ℝ := |s₀| + 1 with hS
   have hS0 : 0 ≤ S := by positivity
   have hs₀ : |s₀| ≤ S := by simp [hS]
-  set M : ℝ := max 1 (C ^ 2 * S ^ 2) with hM
+  set M : ℝ := max 1 (C ^ (2 : ℕ) * S ^ (2 : ℕ)) with hM
   set B : ℝ := ‖y₀‖ * Real.exp (M * b) with hB
   have hnear : ∀ᶠ s in nhds s₀, |s| ≤ S := by
     have hball : Metric.ball s₀ 1 ∈ nhds s₀ := Metric.ball_mem_nhds s₀ one_pos
@@ -171,34 +171,34 @@ theorem continuousAt_hillFlow_scaled (hc : Continuous c) (hC : ∀ r, c r ^ 2 �
     linarith
   have hle : ∀ᶠ s in nhds s₀,
       dist (hillFlow (fun r => c r * s) y₀ t) (hillFlow (fun r => c r * s₀) y₀ t) ≤
-        gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) t := by
+        gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) t := by
     filter_upwards [hnear] with s hs
     rw [dist_eq_norm]
     exact norm_hillFlow_scaled_sub_le hc hC hs hs₀ hS0 y₀ ht
   have hzero : Filter.Tendsto
-      (fun s => gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) t) (nhds s₀) (nhds 0) := by
+      (fun s => gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) t) (nhds s₀) (nhds 0) := by
     have hcontε : Continuous fun ε : ℝ => gronwallBound 0 M ε t :=
       gronwallBound_continuous_ε 0 M t
-    have hmap : Filter.Tendsto (fun s : ℝ => C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) (nhds s₀) (nhds 0) := by
-      have hcont : Continuous fun s : ℝ => C ^ 2 * |s ^ 2 - s₀ ^ 2| * B := by fun_prop
+    have hmap : Filter.Tendsto (fun s : ℝ => C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) (nhds s₀) (nhds 0) := by
+      have hcont : Continuous fun s : ℝ => C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B := by fun_prop
       have := hcont.tendsto s₀
       simpa using this
     have hcomp := (hcontε.tendsto 0).comp hmap
     have hval : ((fun ε : ℝ => gronwallBound 0 M ε t) ∘
-        fun s : ℝ => C ^ 2 * |s ^ 2 - s₀ ^ 2| * B)
-        = fun s : ℝ => gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) t := rfl
+        fun s : ℝ => C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B)
+        = fun s : ℝ => gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) t := rfl
     rw [hval] at hcomp
     simpa [gronwallBound_ε0_δ0] using hcomp
   refine Metric.tendsto_nhds.mpr fun ε hε => ?_
   have hzero' := Metric.tendsto_nhds.mp hzero ε hε
   filter_upwards [hle, hzero'] with s hs hz
-  have hnn : (0 : ℝ) ≤ gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) t :=
+  have hnn : (0 : ℝ) ≤ gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) t :=
     le_trans dist_nonneg hs
-  have : |gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) t| < ε := by
+  have : |gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) t| < ε := by
     simpa [Real.dist_eq] using hz
   calc dist (hillFlow (fun r => c r * s) y₀ t) (hillFlow (fun r => c r * s₀) y₀ t)
-      ≤ gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) t := hs
-    _ ≤ |gronwallBound 0 M (C ^ 2 * |s ^ 2 - s₀ ^ 2| * B) t| := le_abs_self _
+      ≤ gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) t := hs
+    _ ≤ |gronwallBound 0 M (C ^ (2 : ℕ) * |s ^ (2 : ℕ) - s₀ ^ (2 : ℕ)| * B) t| := le_abs_self _
     _ < ε := this
 
 end Scaled

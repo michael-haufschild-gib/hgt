@@ -26,7 +26,7 @@ theorem kloostermanCompleteColumnCorrelationQuadratic_eq_transformEnergy
     (q : ℕ) [NeZero q] (B : Finset ℕ) (b : ℕ → ℂ) :
     (∑ n ∈ B, star (b n) * ∑ k ∈ B, b k *
       kloostermanCompleteColumnCorrelation q (n : ZMod q) (k : ZMod q)) =
-      ((∑ m : ZMod q, ‖kloostermanCompleteColumnTransform q B b m‖ ^ 2 : ℝ) : ℂ) := by
+      ((∑ m : ZMod q, ‖kloostermanCompleteColumnTransform q B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [Complex.ofReal_sum]
   simp_rw [← conj_mul_self]
   unfold kloostermanCompleteColumnCorrelation kloostermanCompleteColumnTransform
@@ -64,7 +64,7 @@ theorem kloostermanSameModulusRamanujanMainTermQuadratic_eq_transformEnergy
       kloostermanSameModulusRamanujanMainTerm M q n k) =
       ((((M : ℝ) / ((q + 1 : ℕ) : ℝ)) *
         ∑ m : ZMod (q + 1),
-          ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ 2 : ℝ) : ℂ) := by
+          ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   let d : ℝ := (M : ℝ) / ((q + 1 : ℕ) : ℝ)
   calc
     (∑ n ∈ B, star (b n) * ∑ k ∈ B, b k *
@@ -93,11 +93,11 @@ theorem kloostermanSameModulusRamanujanMainTermQuadratic_eq_transformEnergy
       ring
     _ = (d : ℂ) *
         ((∑ m : ZMod (q + 1),
-          ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ 2 : ℝ) : ℂ) := by
+          ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [kloostermanCompleteColumnCorrelationQuadratic_eq_transformEnergy]
     _ = ((((M : ℝ) / ((q + 1 : ℕ) : ℝ)) *
         ∑ m : ZMod (q + 1),
-          ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ 2 : ℝ) : ℂ) := by
+          ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       unfold d
       push_cast
       ring
@@ -108,10 +108,10 @@ theorem kloostermanSameModulusRamanujanMainQuadratic_eq_transformEnergy
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     kloostermanSameModulusRamanujanMainQuadratic M Q w B b =
-      ((∑ q ∈ Q, ‖w q‖ ^ 2 *
+      ((∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
         ((M : ℝ) / ((q + 1 : ℕ) : ℝ)) *
           ∑ m : ZMod (q + 1),
-            ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ 2 : ℝ) : ℂ) := by
+            ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold kloostermanSameModulusRamanujanMainQuadratic
     kloostermanSameModulusRamanujanGramMain
   calc
@@ -165,14 +165,14 @@ theorem kloostermanSameModulusRamanujanMainQuadratic_eq_transformEnergy
     _ = ∑ q ∈ Q, star (w q) * w q *
           ((((M : ℝ) / ((q + 1 : ℕ) : ℝ)) *
             ∑ m : ZMod (q + 1),
-              ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ 2 : ℝ) : ℂ) := by
+              ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       apply Finset.sum_congr rfl
       intro q hq
       rw [kloostermanSameModulusRamanujanMainTermQuadratic_eq_transformEnergy]
-    _ = ((∑ q ∈ Q, ‖w q‖ ^ 2 *
+    _ = ((∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
         ((M : ℝ) / ((q + 1 : ℕ) : ℝ)) *
           ∑ m : ZMod (q + 1),
-            ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ 2 : ℝ) : ℂ) := by
+            ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [Complex.ofReal_sum]
       apply Finset.sum_congr rfl
       intro q hq
@@ -186,10 +186,10 @@ theorem kloostermanSameModulusRamanujanMainQuadratic_im
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     (kloostermanSameModulusRamanujanMainQuadratic M Q w B b).im = 0 := by
-  let E : ℝ := ∑ q ∈ Q, ‖w q‖ ^ 2 *
+  let E : ℝ := ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
     ((M : ℝ) / ((q + 1 : ℕ) : ℝ)) *
       ∑ m : ZMod (q + 1),
-        ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ 2
+        ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ (2 : ℕ)
   have h : kloostermanSameModulusRamanujanMainQuadratic M Q w B b = (E : ℂ) := by
     simpa [E] using
       kloostermanSameModulusRamanujanMainQuadratic_eq_transformEnergy M Q w B b
@@ -201,10 +201,10 @@ theorem kloostermanSameModulusRamanujanMainQuadratic_re_nonneg
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     0 ≤ (kloostermanSameModulusRamanujanMainQuadratic M Q w B b).re := by
-  let E : ℝ := ∑ q ∈ Q, ‖w q‖ ^ 2 *
+  let E : ℝ := ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
     ((M : ℝ) / ((q + 1 : ℕ) : ℝ)) *
       ∑ m : ZMod (q + 1),
-        ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ 2
+        ‖kloostermanCompleteColumnTransform (q + 1) B b m‖ ^ (2 : ℕ)
   have h : kloostermanSameModulusRamanujanMainQuadratic M Q w B b = (E : ℂ) := by
     simpa [E] using
       kloostermanSameModulusRamanujanMainQuadratic_eq_transformEnergy M Q w B b

@@ -35,23 +35,23 @@ def PoleClearedFirstTraceHalfODESolvable : Prop :=
 theorem poleClearedFirstTraceHalfODE_of_sqrt
     {e : ℂ → ℂ} (he : AnalyticOnNhd ℂ e rightHalf)
     (hesq : ∀ s ∈ rightHalf,
-      e s ^ 2 = poleClearedFirstTraceExponentialContinuation s) :
+      e s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s) :
     ∀ s ∈ rightHalf,
       2 * poleClearedFirstTraceExponentialContinuation s * deriv e s =
         deriv poleClearedFirstTraceExponentialContinuation s * e s := by
   intro s hs
-  have heq : (fun z : ℂ => e z ^ 2) =ᶠ[𝓝 s]
+  have heq : (fun z : ℂ => e z ^ (2 : ℕ)) =ᶠ[𝓝 s]
       poleClearedFirstTraceExponentialContinuation := by
     filter_upwards [isOpen_rightHalf.mem_nhds hs] with z hz
     exact hesq z hz
-  have hderiv : deriv (fun z : ℂ => e z ^ 2) s =
+  have hderiv : deriv (fun z : ℂ => e z ^ (2 : ℕ)) s =
       deriv poleClearedFirstTraceExponentialContinuation s := heq.deriv_eq
   have he' : HasDerivAt e (deriv e s) s :=
     (he s hs).differentiableAt.hasDerivAt
-  have hfun : (fun z : ℂ => e z ^ 2) = e ^ 2 := by
+  have hfun : (fun z : ℂ => e z ^ (2 : ℕ)) = e ^ (2 : ℕ) := by
     funext z
     rfl
-  have hpow : deriv (fun z : ℂ => e z ^ 2) s = 2 * e s * deriv e s := by
+  have hpow : deriv (fun z : ℂ => e z ^ (2 : ℕ)) s = 2 * e s * deriv e s := by
     rw [hfun]
     simpa [mul_assoc] using (he'.pow 2).deriv
   rw [hpow] at hderiv
@@ -67,14 +67,14 @@ theorem poleClearedFirstTrace_sqrt_of_halfODE
       2 * poleClearedFirstTraceExponentialContinuation s * deriv e s =
         deriv poleClearedFirstTraceExponentialContinuation s * e s) :
     ∀ s ∈ rightHalf,
-      e s ^ 2 = poleClearedFirstTraceExponentialContinuation s := by
+      e s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s := by
   let E : ℂ → ℂ := poleClearedFirstTraceExponentialContinuation
-  let q : ℂ → ℂ := fun s => e s ^ 2 / E s
+  let q : ℂ → ℂ := fun s => e s ^ (2 : ℕ) / E s
   have htwoRH : (2 : ℂ) ∈ rightHalf := farHalf_subset_rightHalf two_mem_farHalf
   have hEan : AnalyticOnNhd ℂ E rightHalf :=
     analyticOnNhd_poleClearedFirstTraceExponentialContinuation_rightHalf
   have hE2 : E 2 ≠ 0 := by
-    rw [show E 2 = poleClearedPrimeZetaHalfEulerGerm 2 ^ 2 by
+    rw [show E 2 = poleClearedPrimeZetaHalfEulerGerm 2 ^ (2 : ℕ) by
       exact (poleClearedPrimeZetaHalfEulerGerm_sq two_mem_farHalf).symm]
     exact pow_ne_zero 2 (poleClearedPrimeZetaHalfEulerGerm_ne_zero 2)
   have hEne : {s : ℂ | E s ≠ 0} ∈ 𝓝 (2 : ℂ) :=
@@ -98,7 +98,7 @@ theorem poleClearedFirstTrace_sqrt_of_halfODE
       (hEan z (hballRH hz)).differentiableAt.hasDerivAt
     have hquot := (hez.pow 2).div hEz (hballE z hz)
     have hode := hODE z (hballRH hz)
-    change deriv (e ^ 2 / E) z = 0
+    change deriv (e ^ (2 : ℕ) / E) z = 0
     rw [hquot.deriv]
     dsimp only [E] at hode ⊢
     apply div_eq_zero_iff.mpr
@@ -111,21 +111,21 @@ theorem poleClearedFirstTrace_sqrt_of_halfODE
       (Metric.isConnected_ball hr).isPreconnected hqdiff hqderiv hz
       (Metric.mem_ball_self hr)
   have hq2 : q 2 = 1 := by
-    change e 2 ^ 2 / E 2 = 1
+    change e 2 ^ (2 : ℕ) / E 2 = 1
     rw [hanchor, show E 2 = poleClearedFirstTraceExponentialContinuation 2 by rfl,
       ← poleClearedPrimeZetaHalfEulerGerm_sq two_mem_farHalf]
     exact div_self (pow_ne_zero 2 (poleClearedPrimeZetaHalfEulerGerm_ne_zero 2))
-  have heqBall : EqOn (fun z : ℂ => e z ^ 2) E (Metric.ball (2 : ℂ) r) := by
+  have heqBall : EqOn (fun z : ℂ => e z ^ (2 : ℕ)) E (Metric.ball (2 : ℂ) r) := by
     intro z hz
     have hqz : q z = 1 := (hqconst z hz).trans hq2
     dsimp only [q] at hqz
     exact (div_eq_one_iff_eq (hballE z hz)).mp hqz
-  have hevent : (fun z : ℂ => e z ^ 2) =ᶠ[𝓝 (2 : ℂ)] E :=
+  have hevent : (fun z : ℂ => e z ^ (2 : ℕ)) =ᶠ[𝓝 (2 : ℂ)] E :=
     by
       filter_upwards [Metric.isOpen_ball.mem_nhds (Metric.mem_ball_self hr)] with z hz
       exact heqBall hz
-  have hsqAn : AnalyticOnNhd ℂ (fun z : ℂ => e z ^ 2) rightHalf := he.pow 2
-  have hEqOn : EqOn (fun z : ℂ => e z ^ 2) E rightHalf :=
+  have hsqAn : AnalyticOnNhd ℂ (fun z : ℂ => e z ^ (2 : ℕ)) rightHalf := he.pow 2
+  have hEqOn : EqOn (fun z : ℂ => e z ^ (2 : ℕ)) E rightHalf :=
     hsqAn.eqOn_of_preconnected_of_eventuallyEq hEan
       convex_rightHalf.isPreconnected htwoRH hevent
   exact hEqOn

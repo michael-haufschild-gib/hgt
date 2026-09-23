@@ -104,29 +104,29 @@ theorem nineThousandEightHundredNinetySixTenThousandths_mul_ordinaryJetFour_lt_l
       oneThousandSixHundredNinetyFive_mul_thetaCuspLikelihoodTailProbability_lt_one_of_29Over8_le
         hx hA
   have hpUpper : p < (1 / 1695 : ℝ) := by linarith
-  have hp3 : p ^ 3 < (1 / 1695 : ℝ) ^ 3 :=
+  have hp3 : p ^ (3 : ℕ) < (1 / 1695 : ℝ) ^ (3 : ℕ) :=
     pow_lt_pow_left₀ hpUpper hp.le (by norm_num)
   have hlinear : (35 / 2 : ℝ) * p < 35 / 3390 := by
     have h := mul_lt_mul_of_pos_left hpUpper (by norm_num : (0 : ℝ) < 35 / 2)
     norm_num at h ⊢
     exact h
-  have hcubic : 15 * p ^ 3 < (15 / 4869777375 : ℝ) := by
+  have hcubic : 15 * p ^ (3 : ℕ) < (15 / 4869777375 : ℝ) := by
     have h := mul_lt_mul_of_pos_left hp3 (by norm_num : (0 : ℝ) < 15)
     norm_num at h ⊢
     exact h
-  have hloss : (35 / 2 : ℝ) * p + 15 * p ^ 3 < 104 / 10000 := by
+  have hloss : (35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ) < 104 / 10000 := by
     calc
-      (35 / 2 : ℝ) * p + 15 * p ^ 3 < 35 / 3390 + 15 / 4869777375 :=
+      (35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ) < 35 / 3390 + 15 / 4869777375 :=
         add_lt_add hlinear hcubic
       _ < 104 / 10000 := by norm_num
   have hretention :
-      (9896 / 10000 : ℝ) < 1 - ((35 / 2 : ℝ) * p + 15 * p ^ 3) := by
+      (9896 / 10000 : ℝ) < 1 - ((35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ)) := by
     linarith
   have hord := thetaCuspLikelihoodSourceOrdinaryJetFour_pos hx
   have hscaled := mul_lt_mul_of_pos_right hretention hord
   have henvelope := tailPolynomial_mul_ordinaryJetFour_lt_sourceLogJetFour hx
   change
-    (1 - ((35 / 2 : ℝ) * p + 15 * p ^ 3)) *
+    (1 - ((35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ))) *
         thetaCuspLikelihoodSourceOrdinaryJetFour x <
       thetaCuspLikelihoodSourceLogPartitionJetFour x at henvelope
   exact hscaled.trans henvelope
@@ -145,18 +145,18 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_tenThousandNineteenTenTho
       oneThousandSixHundredNinetyFive_mul_thetaCuspLikelihoodTailProbability_lt_one_of_29Over8_le
         hx hA
   have hpUpper : p < (1 / 1695 : ℝ) := by nlinarith
-  have hp2 : p ^ 2 < (1 / 1695 : ℝ) ^ 2 :=
+  have hp2 : p ^ (2 : ℕ) < (1 / 1695 : ℝ) ^ (2 : ℕ) :=
     pow_lt_pow_left₀ hpUpper hp.le (by norm_num)
-  have hp4 : p ^ 4 < (1 / 1695 : ℝ) ^ 4 :=
+  have hp4 : p ^ (4 : ℕ) < (1 / 1695 : ℝ) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ hpUpper hp.le (by norm_num)
-  have hbudget : 1 + 5400 * p ^ 2 + 10800 * p ^ 4 < (10019 / 10000 : ℝ) := by
+  have hbudget : 1 + 5400 * p ^ (2 : ℕ) + 10800 * p ^ (4 : ℕ) < (10019 / 10000 : ℝ) := by
     norm_num at hp2 hp4 ⊢
     nlinarith
   have hord := thetaCuspLikelihoodSourceOrdinaryJetSix_pos hx
   have hscaled := mul_lt_mul_of_pos_right hbudget hord
   have henvelope := sourceLogJetSix_lt_tailPolynomial_mul_ordinaryJetSix hx
   change thetaCuspLikelihoodSourceLogPartitionJetSix x <
-    (1 + 5400 * p ^ 2 + 10800 * p ^ 4) *
+    (1 + 5400 * p ^ (2 : ℕ) + 10800 * p ^ (4 : ℕ)) *
       thetaCuspLikelihoodSourceOrdinaryJetSix x at henvelope
   exact henvelope.trans hscaled
 

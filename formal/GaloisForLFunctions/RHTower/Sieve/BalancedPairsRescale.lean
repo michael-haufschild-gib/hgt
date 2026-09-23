@@ -55,14 +55,14 @@ theorem mem_balancedPairs {x h : ℝ} (hx : 0 < x) (q : ℕ × ℕ) :
 
 /-- The rescaled square root. -/
 theorem sqrt_div_sq {x : ℝ} (hx : 0 ≤ x) {p : ℕ} (hp : 0 < p) :
-    Real.sqrt (x / (p : ℝ) ^ 2) = Real.sqrt x / (p : ℝ) := by
+    Real.sqrt (x / (p : ℝ) ^ (2 : ℕ)) = Real.sqrt x / (p : ℝ) := by
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
   rw [Real.sqrt_div hx, Real.sqrt_sq hp0.le]
 
 /-- The rescaled window endpoint. -/
 theorem rescaled_endpoint {x h : ℝ} (hx : 0 ≤ x) {p : ℕ} (hp : 0 < p) :
-    x / (p : ℝ) ^ 2 + h / (p : ℝ) * Real.sqrt (x / (p : ℝ) ^ 2)
-      = (x + h * Real.sqrt x) / (p : ℝ) ^ 2 := by
+    x / (p : ℝ) ^ (2 : ℕ) + h / (p : ℝ) * Real.sqrt (x / (p : ℝ) ^ (2 : ℕ))
+      = (x + h * Real.sqrt x) / (p : ℝ) ^ (2 : ℕ) := by
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
   rw [sqrt_div_sq hx hp]
   field_simp
@@ -70,11 +70,11 @@ theorem rescaled_endpoint {x h : ℝ} (hx : 0 ≤ x) {p : ℕ} (hp : 0 < p) :
 /-- **The shared-prime sector is a rescaled balanced pair set.** -/
 theorem balancedPairs_shared_eq_image {x h : ℝ} (hx : 0 < x) {p : ℕ} (hp : 0 < p) :
     (balancedPairs x h).filter (fun q => p ∣ q.1 ∧ p ∣ q.2)
-      = (balancedPairs (x / (p : ℝ) ^ 2) (h / (p : ℝ))).image
+      = (balancedPairs (x / (p : ℝ) ^ (2 : ℕ)) (h / (p : ℝ))).image
         (fun q => (p * q.1, p * q.2)) := by
   classical
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
-  have hXpos : (0 : ℝ) < x / (p : ℝ) ^ 2 := by positivity
+  have hXpos : (0 : ℝ) < x / (p : ℝ) ^ (2 : ℕ) := by positivity
   have hsq := sqrt_div_sq hx.le hp
   have hend := rescaled_endpoint (h := h) hx.le hp
   refine Finset.Subset.antisymm ?_ ?_
@@ -85,7 +85,7 @@ theorem balancedPairs_shared_eq_image {x h : ℝ} (hx : 0 < x) {p : ℕ} (hp : 0
     obtain ⟨b, hb⟩ := hd2
     rw [mem_balancedPairs hx, ha, hb] at hmem
     obtain ⟨h1, h2, h3, h4⟩ := hmem
-    have hab : ((p * a * (p * b) : ℕ) : ℝ) = (p : ℝ) ^ 2 * ((a * b : ℕ) : ℝ) := by
+    have hab : ((p * a * (p * b) : ℕ) : ℝ) = (p : ℝ) ^ (2 : ℕ) * ((a * b : ℕ) : ℝ) := by
       push_cast; ring
     have hpa : ((p * a : ℕ) : ℝ) = (p : ℝ) * ((a : ℕ) : ℝ) := by push_cast; ring
     rw [hab] at h1 h2
@@ -121,7 +121,7 @@ theorem balancedPairs_shared_eq_image {x h : ℝ} (hx : 0 < x) {p : ℕ} (hp : 0
     rw [Finset.mem_filter]
     refine ⟨?_, ⟨a, rfl⟩, ⟨b, rfl⟩⟩
     rw [mem_balancedPairs hx]
-    have hab : ((p * a * (p * b) : ℕ) : ℝ) = (p : ℝ) ^ 2 * ((a * b : ℕ) : ℝ) := by
+    have hab : ((p * a * (p * b) : ℕ) : ℝ) = (p : ℝ) ^ (2 : ℕ) * ((a * b : ℕ) : ℝ) := by
       push_cast; ring
     have hpa : ((p * a : ℕ) : ℝ) = (p : ℝ) * ((a : ℕ) : ℝ) := by push_cast; ring
     show x ≤ ((p * a * (p * b) : ℕ) : ℝ) ∧ ((p * a * (p * b) : ℕ) : ℝ) ≤ x + h * Real.sqrt x
@@ -132,11 +132,11 @@ theorem balancedPairs_shared_eq_image {x h : ℝ} (hx : 0 < x) {p : ℕ} (hp : 0
 
 /-- The weight of the card's step 2: squarefree and coprime to `p`. -/
 noncomputable def coprimeSquarefreeWeight (p : ℕ) (n : ℕ) : ℝ :=
-  if p ∣ n then 0 else ((ArithmeticFunction.moebius n : ℤ) : ℝ) ^ 2
+  if p ∣ n then 0 else ((ArithmeticFunction.moebius n : ℤ) : ℝ) ^ (2 : ℕ)
 
 /-- The squarefree weight of a multiple of `p` is the deleted weight. -/
 theorem moebius_sq_prime_mul {p : ℕ} (hp : p.Prime) (a : ℕ) :
-    ((ArithmeticFunction.moebius (p * a) : ℤ) : ℝ) ^ 2 = coprimeSquarefreeWeight p a := by
+    ((ArithmeticFunction.moebius (p * a) : ℤ) : ℝ) ^ (2 : ℕ) = coprimeSquarefreeWeight p a := by
   rw [coprimeSquarefreeWeight, moebius_prime_mul hp]
   by_cases ha : p ∣ a
   · rw [if_pos ha, if_pos ha]
@@ -147,13 +147,13 @@ theorem moebius_sq_prime_mul {p : ℕ} (hp : p.Prime) (a : ℕ) :
 /-- The shared-prime sector count. -/
 noncomputable def sharedSectorCount (x h : ℝ) (p : ℕ) : ℝ :=
   ∑ q ∈ (balancedPairs x h).filter (fun q => p ∣ q.1 ∧ p ∣ q.2),
-    ((ArithmeticFunction.moebius q.1 : ℤ) : ℝ) ^ 2
-      * ((ArithmeticFunction.moebius q.2 : ℤ) : ℝ) ^ 2
+    ((ArithmeticFunction.moebius q.1 : ℤ) : ℝ) ^ (2 : ℕ)
+      * ((ArithmeticFunction.moebius q.2 : ℤ) : ℝ) ^ (2 : ℕ)
 
 /-- **The shared-prime sector is a rescaled pair sum.**  Card equation `(9)`, before the limit. -/
 theorem sharedSectorCount_eq_pairSum {x h : ℝ} (hx : 0 < x) {p : ℕ} (hp : p.Prime) :
     sharedSectorCount x h p
-      = pairSum (coprimeSquarefreeWeight p) (x / (p : ℝ) ^ 2) (h / (p : ℝ)) := by
+      = pairSum (coprimeSquarefreeWeight p) (x / (p : ℝ) ^ (2 : ℕ)) (h / (p : ℝ)) := by
   classical
   have hp0 : 0 < p := hp.pos
   rw [sharedSectorCount, balancedPairs_shared_eq_image hx hp0]

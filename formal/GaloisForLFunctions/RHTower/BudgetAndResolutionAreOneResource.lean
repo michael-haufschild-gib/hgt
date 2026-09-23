@@ -48,10 +48,10 @@ namespace RHTower
 /-- **Modulus one on the critical line.**  For `s = ½ + it` the reflected point has the same modulus,
 so `(s-1)/s` lies on the unit circle. -/
 theorem critical_line_modulus (t : ℝ) :
-    (-(1 / 2 : ℝ)) ^ 2 + t ^ 2 = (1 / 2 : ℝ) ^ 2 + t ^ 2 := by ring
+    (-(1 / 2 : ℝ)) ^ (2 : ℕ) + t ^ (2 : ℕ) = (1 / 2 : ℝ) ^ (2 : ℕ) + t ^ (2 : ℕ) := by ring
 
 /-- **The Li integrand is the Fejér kernel.**  `1 - cos nθ = 2 sin²(nθ/2)`. -/
-theorem li_integrand_eq (x : ℝ) : 1 - Real.cos x = 2 * Real.sin (x / 2) ^ 2 := by
+theorem li_integrand_eq (x : ℝ) : 1 - Real.cos x = 2 * Real.sin (x / 2) ^ (2 : ℕ) := by
   have h := Real.cos_two_mul_eq_one_sub (x / 2)
   rw [show 2 * (x / 2) = x by ring] at h
   rw [h]; ring
@@ -64,8 +64,8 @@ theorem li_integrand_nonneg (x : ℝ) : 0 ≤ 1 - Real.cos x := by
 /-- **The scaling law.**  With `φ = nθ` the weighted kernel is `n²` times a fixed profile, so it peaks
 at `θ ≍ 1/n` with height `≍ n²` over width `≍ 1/n`. -/
 theorem fejer_scaling {n θ : ℝ} (hn : n ≠ 0) (hθ : θ ≠ 0) :
-    2 * Real.sin (n * θ / 2) ^ 2 / θ ^ 2
-      = n ^ 2 * (2 * Real.sin ((n * θ) / 2) ^ 2 / (n * θ) ^ 2) := by
+    2 * Real.sin (n * θ / 2) ^ (2 : ℕ) / θ ^ (2 : ℕ)
+      = n ^ (2 : ℕ) * (2 * Real.sin ((n * θ) / 2) ^ (2 : ℕ) / (n * θ) ^ (2 : ℕ)) := by
   field_simp
 
 /-- **The Fejér test excludes no window.**  It vanishes only where the sine does, a discrete set, so
@@ -73,7 +73,7 @@ no interval of the transformed variable is cut off. -/
 theorem fejer_vanishes_only_at_zeros {x : ℝ} (h : 1 - Real.cos x = 0) :
     Real.sin (x / 2) = 0 := by
   rw [li_integrand_eq] at h
-  have : Real.sin (x / 2) ^ 2 = 0 := by linarith
+  have : Real.sin (x / 2) ^ (2 : ℕ) = 0 := by linarith
   exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp this
 
 /-- **A compactly supported test does exclude a window.**  Outside its support it is identically zero,

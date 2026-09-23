@@ -216,13 +216,13 @@ theorem infinitePathPrefixShell_nestedCenter_isDiag (k : ℕ) :
 
 theorem sum_axis_infinitePathRadius_onsite (s : ℕ) :
     ∑ q : Fin 3, infinitePathRadius (Sum.inl (s, q)) =
-      3 / (1000000 * (((s + 1 : ℕ) : ℝ) ^ 2)) := by
+      3 / (1000000 * (((s + 1 : ℕ) : ℝ) ^ (2 : ℕ))) := by
   simp [infinitePathRadius]
   field_simp
 
 theorem sum_axes_infinitePathRadius_edge (e : ℕ) :
     ∑ ab : Fin 3 × Fin 3, infinitePathRadius (Sum.inr (e, ab)) =
-      9 / (1000000 * (((e + 1 : ℕ) : ℝ) ^ 2)) := by
+      9 / (1000000 * (((e + 1 : ℕ) : ℝ) ^ (2 : ℕ))) := by
   simp [infinitePathRadius]
   field_simp
 
@@ -266,12 +266,12 @@ theorem sum_abs_mobile_packetReference_error_le_majorant
 def mobileOnsiteRadiusMass (k K : ℕ) : ℝ :=
   ∑ s : Fin (k + 3),
     if 4 * K < s.val + 1 then
-      3 / (1000000 * (((s.val + 1 : ℕ) : ℝ) ^ 2)) else 0
+      3 / (1000000 * (((s.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) else 0
 
 def mobileEdgeRadiusMass (k K : ℕ) : ℝ :=
   ∑ e : Fin (k + 2),
     if 4 * K - 1 < e.val + 1 then
-      9 / (1000000 * (((e.val + 1 : ℕ) : ℝ) ^ 2)) else 0
+      9 / (1000000 * (((e.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) else 0
 
 def mobileCrossingCenterMass (k K : ℕ) : ℝ :=
   ∑ e : Fin (k + 2),
@@ -290,7 +290,7 @@ theorem mobilePathCoefficientMajorant_nested_eq
         if 4 * K ≤ s.val then infinitePathRadius (Sum.inl (s.val, q)) else 0) =
       ∑ s : Fin (k + 3),
         if 4 * K < s.val + 1 then
-          3 / (1000000 * (((s.val + 1 : ℕ) : ℝ) ^ 2)) else 0 := by
+          3 / (1000000 * (((s.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) else 0 := by
     apply Finset.sum_congr rfl
     intro s hs
     by_cases htail : 4 * K ≤ s.val
@@ -348,7 +348,7 @@ theorem mobileCrossingCenterMass_eq
 theorem nestedInfiniteEdgeWeight_mobileCrossing
     {K : ℕ} (hK : 1 ≤ K) :
     nestedInfiniteEdgeWeight (4 * K - 1) =
-      1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) := by
+      1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) := by
   unfold nestedInfiniteEdgeWeight
   have hodd : ¬Even (4 * K - 1) := by
     rintro ⟨r, hr⟩
@@ -364,7 +364,7 @@ inverse-square perturbation suffix. -/
 theorem mobilePathCoefficientMajorant_nested_le
     {k K : ℕ} (hK : 8 ≤ K) (hsize : 4 * K ≤ k + 2) :
     mobilePathCoefficientMajorant k K nestedInfinitePathCenter infinitePathRadius ≤
-      1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) +
+      1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) +
         12 / (1000000 * (K : ℝ)) := by
   have hK1 : 1 ≤ K := by omega
   have hOn := mobileOnsiteRadiusMass_le hK1 (show 4 * K ≤ k + 3 by omega)
@@ -383,17 +383,17 @@ theorem mobilePathCoefficientMajorant_nested_le
     gcongr
   have hWeight := nestedInfiniteEdgeWeight_mobileCrossing hK1
   have hCrossCoarse : mobileCrossingCenterMass k K ≤
-      1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) := by
+      1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) := by
     rw [hCross, hWeight]
-    have hw : 0 ≤ 1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) := by positivity
+    have hw : 0 ≤ 1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) := by positivity
     linarith
   rw [mobilePathCoefficientMajorant_nested_eq hK1]
   have hsum := add_le_add (add_le_add hOnCoarse hEdgeCoarse) hCrossCoarse
   calc
     mobileOnsiteRadiusMass k K + mobileEdgeRadiusMass k K + mobileCrossingCenterMass k K ≤
         3 / (1000000 * (K : ℝ)) + 9 / (1000000 * (K : ℝ)) +
-          1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) := hsum
-    _ = 1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) +
+          1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) := hsum
+    _ = 1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) +
         12 / (1000000 * (K : ℝ)) := by ring
 
 /-- Operator-norm distance from one selected finite prefix to its exact mobile packet reference. -/
@@ -405,7 +405,7 @@ theorem norm_thermodynamicPath_sub_mobileReference_le
       pathHamiltonianPacketReference (mobileInitialPathSites k K) (mobileTailPathSites k K)
         (infinitePathPrefixShell k p)
         (infinitePathPrefixShell k nestedInfinitePathCenter)‖ ≤
-      1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) +
+      1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) +
         12 / (1000000 * (K : ℝ)) := by
   calc
     ‖pathHamiltonian (infinitePathPrefixShell k p) -
@@ -420,7 +420,7 @@ theorem norm_thermodynamicPath_sub_mobileReference_le
       norm_pathHamiltonian_sub_packetReference_le _ _ _ _
     _ ≤ mobilePathCoefficientMajorant k K nestedInfinitePathCenter infinitePathRadius :=
       sum_abs_mobile_packetReference_error_le_majorant (fun i => le_of_lt (hp i))
-    _ ≤ 1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) +
+    _ ≤ 1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) +
         12 / (1000000 * (K : ℝ)) :=
       mobilePathCoefficientMajorant_nested_le hK hsize
 
@@ -436,7 +436,7 @@ theorem norm_unitaryEvolution_thermodynamicPath_sub_mobileReference_le
         (pathHamiltonianPacketReference (mobileInitialPathSites k K) (mobileTailPathSites k K)
           (infinitePathPrefixShell k p)
           (infinitePathPrefixShell k nestedInfinitePathCenter)) t‖ ≤
-      |t| * (1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4) +
+      |t| * (1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ)) +
         12 / (1000000 * (K : ℝ))) := by
   have href : IsSelfAdjoint
       (pathHamiltonianPacketReference (mobileInitialPathSites k K) (mobileTailPathSites k K)

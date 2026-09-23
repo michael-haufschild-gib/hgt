@@ -25,18 +25,18 @@ noncomputable section
 theorem adaptiveOrthoJacobiEnergy_eq_traceForm
     (s : ℕ → ℝ) (n : ℕ) :
     HTGeometry.adaptiveOrthoJacobiEnergy s n =
-      (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+      (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
       HTGeometry.monicOrthoAlpha s n *
         (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-      (n + 1 : ℝ) * HTGeometry.monicOrthoAlpha s n ^ 2 +
+      (n + 1 : ℝ) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
       2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
       (n + 1 : ℝ) *
         (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1)) := by
   have hpoint (j : ℕ) :
-      (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ 2 =
-        HTGeometry.monicOrthoAlpha s j ^ 2 +
+      (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ (2 : ℕ) =
+        HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) +
           HTGeometry.monicOrthoAlpha s n * HTGeometry.monicOrthoAlpha s j +
-          HTGeometry.monicOrthoAlpha s n ^ 2 / 4 := by ring
+          HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) / 4 := by ring
   rw [HTGeometry.adaptiveOrthoJacobiEnergy]
   simp_rw [hpoint]
   rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
@@ -52,8 +52,8 @@ theorem adaptiveOrthoJacobiEnergy_succ_sub_eq
           HTGeometry.monicOrthoAlpha s n) *
         (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
       HTGeometry.monicOrthoAlpha s n * HTGeometry.monicOrthoAlpha s (n + 1) -
-      (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ 2 +
-      (n + 2 : ℝ) * HTGeometry.monicOrthoAlpha s (n + 1) ^ 2 +
+      (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
+      (n + 2 : ℝ) * HTGeometry.monicOrthoAlpha s (n + 1) ^ (2 : ℕ) +
       (1 - (n : ℝ)) * HTGeometry.monicOrthoBeta s n +
       HTGeometry.monicOrthoBeta s (n + 1) +
       (n + 2 : ℝ) * HTGeometry.monicOrthoBeta s (n + 2) := by
@@ -74,8 +74,8 @@ theorem xiShiftedAdaptiveOrthoJacobiEnergy_succ_sub_eq_diagonalConnection
       (HTGeometry.monicOrthoAlpha s (n + 1) - HTGeometry.monicOrthoAlpha s n) *
           (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
         HTGeometry.monicOrthoAlpha s n * HTGeometry.monicOrthoAlpha s (n + 1) -
-        ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoAlpha s n ^ 2 +
-        ((n : ℝ) + 3 / 2) * HTGeometry.monicOrthoAlpha s (n + 1) ^ 2 -
+        ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
+        ((n : ℝ) + 3 / 2) * HTGeometry.monicOrthoAlpha s (n + 1) ^ (2 : ℕ) -
         1 / 2 *
           (deriv (fun v => xiShiftedCanonicalAdmissionAlpha v n) y +
             deriv (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) y) := by
@@ -109,11 +109,11 @@ theorem xiShiftedCanonicalArithmeticSource_succ_sub_eq_diagonalConnection
       (HTGeometry.monicOrthoAlpha s (n + 1) - HTGeometry.monicOrthoAlpha s n) *
           (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
         HTGeometry.monicOrthoAlpha s n * HTGeometry.monicOrthoAlpha s (n + 1) -
-        ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoAlpha s n ^ 2 +
-        ((n : ℝ) + 3 / 2) * HTGeometry.monicOrthoAlpha s (n + 1) ^ 2 -
+        ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
+        ((n : ℝ) + 3 / 2) * HTGeometry.monicOrthoAlpha s (n + 1) ^ (2 : ℕ) -
         1 / 2 *
-          (deriv (fun v => xiShiftedCanonicalAdmissionAlpha v n) (w ^ 2) +
-            deriv (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) (w ^ 2)) := by
+          (deriv (fun v => xiShiftedCanonicalAdmissionAlpha v n) (w ^ (2 : ℕ)) +
+            deriv (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) (w ^ (2 : ℕ))) := by
   dsimp only
   let s := xiShiftedRealMomentSequence w
   have hHn : (HTGeometry.momentHankelMatrix s (n + 2)).PosDef :=
@@ -168,7 +168,7 @@ theorem xiShiftedCanonicalArithmeticSource_succ_sub_eq_midpointGap
         (2 * HTGeometry.monicOrthoNormSq s n) =
       1 / 2 *
           (HTGeometry.monicOrthoAlpha s n +
-            HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 +
+            HTGeometry.monicOrthoAlpha s (n + 1)) ^ (2 : ℕ) +
         (HTGeometry.monicOrthoAlpha s (n + 1) -
             HTGeometry.monicOrthoAlpha s n) *
           ((∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
@@ -176,8 +176,8 @@ theorem xiShiftedCanonicalArithmeticSource_succ_sub_eq_midpointGap
               (HTGeometry.monicOrthoAlpha s n +
                 HTGeometry.monicOrthoAlpha s (n + 1))) -
         1 / 2 *
-          (deriv (fun v => xiShiftedCanonicalAdmissionAlpha v n) (w ^ 2) +
-            deriv (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) (w ^ 2)) := by
+          (deriv (fun v => xiShiftedCanonicalAdmissionAlpha v n) (w ^ (2 : ℕ)) +
+            deriv (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) (w ^ (2 : ℕ))) := by
   dsimp only
   have h := xiShiftedCanonicalArithmeticSource_succ_sub_eq_diagonalConnection
     hw hn hH
@@ -198,11 +198,11 @@ theorem xiShiftedCanonicalArithmeticSource_succ_ge_iff_midpointConnection
           (HTGeometry.monicMomentAdmissionPolynomial s (n + 1)) /
         (2 * HTGeometry.monicOrthoNormSq s (n + 1)) ↔
       1 / 2 *
-          (deriv (fun v => xiShiftedCanonicalAdmissionAlpha v n) (w ^ 2) +
-            deriv (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) (w ^ 2)) ≤
+          (deriv (fun v => xiShiftedCanonicalAdmissionAlpha v n) (w ^ (2 : ℕ)) +
+            deriv (fun v => xiShiftedCanonicalAdmissionAlpha v (n + 1)) (w ^ (2 : ℕ))) ≤
         1 / 2 *
             (HTGeometry.monicOrthoAlpha s n +
-              HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 +
+              HTGeometry.monicOrthoAlpha s (n + 1)) ^ (2 : ℕ) +
           (HTGeometry.monicOrthoAlpha s (n + 1) -
               HTGeometry.monicOrthoAlpha s n) *
             ((∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +

@@ -16,7 +16,7 @@ namespace RHTower
 
 /-- Finite critical-line clock-separation energy. -/
 def primeClockVerticalEnergy (N : ℕ) (h : ℝ) : ℝ :=
-  ∑ p ∈ Nat.primesLE N, 4 * Real.sin (h * Real.log p / 2) ^ 2 / p
+  ∑ p ∈ Nat.primesLE N, 4 * Real.sin (h * Real.log p / 2) ^ (2 : ℕ) / p
 
 /-- Cosine form of finite clock separation. -/
 theorem primeClockVerticalEnergy_eq_cos (N : ℕ) (h : ℝ) :
@@ -26,7 +26,7 @@ theorem primeClockVerticalEnergy_eq_cos (N : ℕ) (h : ℝ) :
   intro p hp
   let x : ℝ := h * Real.log p / 2
   have htrig :
-      4 * Real.sin (h * Real.log p / 2) ^ 2 =
+      4 * Real.sin (h * Real.log p / 2) ^ (2 : ℕ) =
         2 * (1 - Real.cos (h * Real.log p)) := by
     have hx : h * Real.log p = 2 * x := by dsimp [x]; ring
     have hxhalf : h * Real.log p / 2 = x := rfl
@@ -49,7 +49,7 @@ theorem primeClockVerticalEnergy_nonneg (N : ℕ) (h : ℝ) :
 
 /-- The vertical clock energy is bounded above by its Fisher susceptibility. -/
 theorem primeClockVerticalEnergy_quadratic_upper (N : ℕ) (h : ℝ) :
-    primeClockVerticalEnergy N h ≤ h ^ 2 * primeClockSusceptibility N := by
+    primeClockVerticalEnergy N h ≤ h ^ (2 : ℕ) * primeClockSusceptibility N := by
   rw [primeClockVerticalEnergy, primeClockSusceptibility, Finset.mul_sum]
   apply Finset.sum_le_sum
   intro p hp
@@ -59,27 +59,27 @@ theorem primeClockVerticalEnergy_quadratic_upper (N : ℕ) (h : ℝ) :
   rw [div_eq_mul_inv, div_eq_mul_inv]
   have hinv : 0 ≤ ((p : ℝ)⁻¹) := inv_nonneg.mpr hp0.le
   calc
-    4 * Real.sin (h * Real.log p / 2) ^ 2 * (p : ℝ)⁻¹ ≤
-        4 * (h * Real.log p / 2) ^ 2 * (p : ℝ)⁻¹ := by
+    4 * Real.sin (h * Real.log p / 2) ^ (2 : ℕ) * (p : ℝ)⁻¹ ≤
+        4 * (h * Real.log p / 2) ^ (2 : ℕ) * (p : ℝ)⁻¹ := by
       gcongr
-    _ = h ^ 2 * (Real.log p ^ 2 * (p : ℝ)⁻¹) := by ring
+    _ = h ^ (2 : ℕ) * (Real.log p ^ (2 : ℕ) * (p : ℝ)⁻¹) := by ring
 
 /-- **Wick anisotropy.** At equal coordinate displacement, trigonometric clock distance lies below
 the common Fisher quadratic form, while hyperbolic radial distance lies above it. -/
 theorem primeClock_wick_anisotropy (N : ℕ) (r : ℝ) :
-    primeClockVerticalEnergy N r ≤ r ^ 2 * primeClockSusceptibility N ∧
-      r ^ 2 * primeClockSusceptibility N ≤ primeClockCutoffEnergy N (r / 2) := by
+    primeClockVerticalEnergy N r ≤ r ^ (2 : ℕ) * primeClockSusceptibility N ∧
+      r ^ (2 : ℕ) * primeClockSusceptibility N ≤ primeClockCutoffEnergy N (r / 2) := by
   constructor
   · exact primeClockVerticalEnergy_quadratic_upper N r
   · have h := primeClockCutoffEnergy_quadratic_lower N (r / 2)
     calc
-      r ^ 2 * primeClockSusceptibility N =
-          4 * (r / 2) ^ 2 * primeClockSusceptibility N := by ring
+      r ^ (2 : ℕ) * primeClockSusceptibility N =
+          4 * (r / 2) ^ (2 : ℕ) * primeClockSusceptibility N := by ring
       _ ≤ primeClockCutoffEnergy N (r / 2) := h
 
 lemma sixteen_div_pi_sq_mul_sq_le_four_sin_sq {x : ℝ}
     (hx : |x| ≤ Real.pi / 2) :
-    16 / Real.pi ^ 2 * x ^ 2 ≤ 4 * Real.sin x ^ 2 := by
+    16 / Real.pi ^ (2 : ℕ) * x ^ (2 : ℕ) ≤ 4 * Real.sin x ^ (2 : ℕ) := by
   have hsin := Real.mul_abs_le_abs_sin hx
   have hnonneg : 0 ≤ 2 / Real.pi * |x| :=
     mul_nonneg (div_nonneg (by norm_num) Real.pi_pos.le) (abs_nonneg x)
@@ -93,7 +93,7 @@ lemma sixteen_div_pi_sq_mul_sq_le_four_sin_sq {x : ℝ}
 the radial reflected energy. -/
 theorem primeClockVerticalEnergy_quadratic_lower
     (N : ℕ) (h : ℝ) (hwindow : |h| * Real.log N ≤ Real.pi) :
-    4 / Real.pi ^ 2 * h ^ 2 * primeClockSusceptibility N ≤
+    4 / Real.pi ^ (2 : ℕ) * h ^ (2 : ℕ) * primeClockSusceptibility N ≤
       primeClockVerticalEnergy N h := by
   rw [primeClockVerticalEnergy, primeClockSusceptibility, Finset.mul_sum]
   apply Finset.sum_le_sum
@@ -113,20 +113,20 @@ theorem primeClockVerticalEnergy_quadratic_lower
   rw [div_eq_mul_inv, div_eq_mul_inv]
   have hinv : 0 ≤ ((p : ℝ)⁻¹) := inv_nonneg.mpr hp0.le
   calc
-    4 / Real.pi ^ 2 * h ^ 2 * (Real.log p ^ 2 * (p : ℝ)⁻¹) =
-        (16 / Real.pi ^ 2 * (h * Real.log p / 2) ^ 2) * (p : ℝ)⁻¹ := by ring
-    _ ≤ (4 * Real.sin (h * Real.log p / 2) ^ 2) * (p : ℝ)⁻¹ := by
+    4 / Real.pi ^ (2 : ℕ) * h ^ (2 : ℕ) * (Real.log p ^ (2 : ℕ) * (p : ℝ)⁻¹) =
+        (16 / Real.pi ^ (2 : ℕ) * (h * Real.log p / 2) ^ (2 : ℕ)) * (p : ℝ)⁻¹ := by ring
+    _ ≤ (4 * Real.sin (h * Real.log p / 2) ^ (2 : ℕ)) * (p : ℝ)⁻¹ := by
       exact mul_le_mul_of_nonneg_right hs hinv
-    _ = 4 * Real.sin (h * Real.log p / 2) ^ 2 * (p : ℝ)⁻¹ := rfl
+    _ = 4 * Real.sin (h * Real.log p / 2) ^ (2 : ℕ) * (p : ℝ)⁻¹ := rfl
 
 /-- Nondegenerate vertical clock separation throughout the first critical window. -/
 theorem primeClockVerticalEnergy_critical_scaled_sandwich
     (N : ℕ) (c : ℝ) (hN : 2 ≤ N) (hc : |c| ≤ Real.pi) :
-    4 / Real.pi ^ 2 * c ^ 2 *
-          (primeClockSusceptibility N / Real.log N ^ 2) ≤
+    4 / Real.pi ^ (2 : ℕ) * c ^ (2 : ℕ) *
+          (primeClockSusceptibility N / Real.log N ^ (2 : ℕ)) ≤
         primeClockVerticalEnergy N (c / Real.log N) ∧
       primeClockVerticalEnergy N (c / Real.log N) ≤
-        c ^ 2 * (primeClockSusceptibility N / Real.log N ^ 2) := by
+        c ^ (2 : ℕ) * (primeClockSusceptibility N / Real.log N ^ (2 : ℕ)) := by
   have hlogpos : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN)
   have hlogne : Real.log N ≠ 0 := hlogpos.ne'
   have hwindow : |c / Real.log N| * Real.log N ≤ Real.pi := by
@@ -136,16 +136,16 @@ theorem primeClockVerticalEnergy_critical_scaled_sandwich
   constructor
   · have h := primeClockVerticalEnergy_quadratic_lower N (c / Real.log N) hwindow
     calc
-      4 / Real.pi ^ 2 * c ^ 2 *
-          (primeClockSusceptibility N / Real.log N ^ 2) =
-          4 / Real.pi ^ 2 * (c / Real.log N) ^ 2 *
+      4 / Real.pi ^ (2 : ℕ) * c ^ (2 : ℕ) *
+          (primeClockSusceptibility N / Real.log N ^ (2 : ℕ)) =
+          4 / Real.pi ^ (2 : ℕ) * (c / Real.log N) ^ (2 : ℕ) *
             primeClockSusceptibility N := by field_simp
       _ ≤ primeClockVerticalEnergy N (c / Real.log N) := h
   · have h := primeClockVerticalEnergy_quadratic_upper N (c / Real.log N)
     calc
       primeClockVerticalEnergy N (c / Real.log N) ≤
-          (c / Real.log N) ^ 2 * primeClockSusceptibility N := h
-      _ = c ^ 2 * (primeClockSusceptibility N / Real.log N ^ 2) := by
+          (c / Real.log N) ^ (2 : ℕ) * primeClockSusceptibility N := h
+      _ = c ^ (2 : ℕ) * (primeClockSusceptibility N / Real.log N ^ (2 : ℕ)) := by
         field_simp
 
 end RHTower

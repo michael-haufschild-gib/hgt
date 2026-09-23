@@ -118,7 +118,7 @@ theorem core_energy_strict_negative_type {n : ℕ} (datum : CertifiedFissionDatu
 theorem core_energy_explicit_sqEmbedding {n : ℕ} (datum : CertifiedFissionDatum n)
     (i j : Fin n) :
     (∑ e, (datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature i e -
-      datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) =
+      datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ (2 : ℕ)) =
         datum.core.energy i j := by
   rw [← datum.rooted_energy_eq_core]
   exact datum.rooted.tree.energy_has_canonical_sqEmbedding i j
@@ -138,7 +138,7 @@ theorem universal_contact_package {n : ℕ} (datum : CertifiedFissionDatum n) :
       (∑ i, ∑ j, x i * x j * datum.core.energy i j) < 0) ∧
     (∀ i j,
       (∑ e, (datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature i e -
-        datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) =
+        datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ (2 : ℕ)) =
           datum.core.energy i j) := by
   exact ⟨fun _ _ hij => datum.strict_core_obstruction hij,
     fun _ _ _ _ => datum.core_energy_fourPoint _ _ _ _,
@@ -166,7 +166,7 @@ theorem universal_contact_master_law {n : ℕ} (datum : CertifiedFissionDatum n)
       (∑ i, ∑ j, x i * x j * datum.core.energy i j) < 0) ∧
     (∀ i j,
       (∑ e, (datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature i e -
-        datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) =
+        datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ (2 : ℕ)) =
           datum.core.energy i j) := by
   exact ⟨fun _ _ hij => datum.strict_core_obstruction hij,
     datum.hierarchy_eq_visibleHierarchy,

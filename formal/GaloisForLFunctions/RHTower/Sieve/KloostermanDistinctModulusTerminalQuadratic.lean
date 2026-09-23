@@ -93,7 +93,7 @@ theorem ofReal_sum_norm_kloostermanIntegerKernelTransform_sq_eq_sameModulus_add_
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     ((∑ m ∈ Finset.Icc 1 M,
-      ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 : ℝ) : ℂ) =
+      ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       kloostermanSameModulusGramQuadratic M Q w B b +
         kloostermanDistinctModulusTerminalGramQuadratic M Q w B b := by
   rw [ofReal_sum_norm_kloostermanIntegerKernelTransform_sq_eq_gramQuadratic,

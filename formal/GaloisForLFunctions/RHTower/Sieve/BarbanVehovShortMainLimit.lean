@@ -14,104 +14,104 @@ namespace RHTower.Sieve
 noncomputable section
 
 private theorem fortyNine_short_scale_condition {N : ℕ} (hN : 8 ≤ N) :
-    8 * (N ^ 49) ^ 2 ≤ N ^ 100 := by
+    8 * (N ^ (49 : ℕ)) ^ (2 : ℕ) ≤ N ^ (100 : ℕ) := by
   calc
-    8 * (N ^ 49) ^ 2 = 8 * N ^ 98 := by ring
-    _ ≤ N * N ^ 98 := Nat.mul_le_mul_right _ hN
-    _ = N ^ 99 := by ring
-    _ ≤ N ^ 99 * N := Nat.le_mul_of_pos_right _ (by omega)
-    _ = N ^ 100 := by ring
+    8 * (N ^ (49 : ℕ)) ^ (2 : ℕ) = 8 * N ^ (98 : ℕ) := by ring
+    _ ≤ N * N ^ (98 : ℕ) := Nat.mul_le_mul_right _ hN
+    _ = N ^ (99 : ℕ) := by ring
+    _ ≤ N ^ (99 : ℕ) * N := Nat.le_mul_of_pos_right _ (by omega)
+    _ = N ^ (100 : ℕ) := by ring
 
 private theorem log_pow_hundred_add_one_le_oneHundredOne_log
     {N : ℕ} (hN : 2 ≤ N) :
-    Real.log ((N ^ 100 + 1 : ℕ) : ℝ) ≤ 101 * Real.log N := by
-  have hpowPos : 0 < N ^ 100 := by positivity
-  have hpowOne : 1 ≤ N ^ 100 := hpowPos
-  have hle : N ^ 100 + 1 ≤ N ^ 101 := by
+    Real.log ((N ^ (100 : ℕ) + 1 : ℕ) : ℝ) ≤ 101 * Real.log N := by
+  have hpowPos : 0 < N ^ (100 : ℕ) := by positivity
+  have hpowOne : 1 ≤ N ^ (100 : ℕ) := hpowPos
+  have hle : N ^ (100 : ℕ) + 1 ≤ N ^ (101 : ℕ) := by
     calc
-      N ^ 100 + 1 ≤ N ^ 100 + N ^ 100 := Nat.add_le_add_left hpowOne _
-      _ = 2 * N ^ 100 := by ring
-      _ ≤ N * N ^ 100 := Nat.mul_le_mul_right _ hN
-      _ = N ^ 101 := by ring
-  have hleft : (0 : ℝ) < ((N ^ 100 + 1 : ℕ) : ℝ) := by positivity
-  have hcast : ((N ^ 100 + 1 : ℕ) : ℝ) ≤ ((N ^ 101 : ℕ) : ℝ) := by
+      N ^ (100 : ℕ) + 1 ≤ N ^ (100 : ℕ) + N ^ (100 : ℕ) := Nat.add_le_add_left hpowOne _
+      _ = 2 * N ^ (100 : ℕ) := by ring
+      _ ≤ N * N ^ (100 : ℕ) := Nat.mul_le_mul_right _ hN
+      _ = N ^ (101 : ℕ) := by ring
+  have hleft : (0 : ℝ) < ((N ^ (100 : ℕ) + 1 : ℕ) : ℝ) := by positivity
+  have hcast : ((N ^ (100 : ℕ) + 1 : ℕ) : ℝ) ≤ ((N ^ (101 : ℕ) : ℕ) : ℝ) := by
     exact_mod_cast hle
   have hlog := Real.log_le_log hleft hcast
-  rw [show ((N ^ 101 : ℕ) : ℝ) = (N : ℝ) ^ 101 by norm_num,
+  rw [show ((N ^ (101 : ℕ) : ℕ) : ℝ) = (N : ℝ) ^ (101 : ℕ) by norm_num,
     Real.log_pow] at hlog
   norm_num at hlog
   simpa only [Nat.cast_add, Nat.cast_pow, Nat.cast_one] using hlog
 
 private def fortyNineShortEndpointBound (N : ℕ) : ℝ :=
-  ((((N ^ 49 : ℕ) : ℝ) * Real.log (N ^ 49 : ℕ)) ^ 2 *
-          (1 / ((N ^ 100 : ℕ) : ℝ)) +
+  ((((N ^ (49 : ℕ) : ℕ) : ℝ) * Real.log (N ^ (49 : ℕ) : ℕ)) ^ (2 : ℕ) *
+          (1 / ((N ^ (100 : ℕ) : ℕ) : ℝ)) +
         2 * |(49 / 100 : ℝ) / (49 * Real.log N)| *
-          ((((N ^ 49 : ℕ) : ℝ) * Real.log (N ^ 49 : ℕ)) ^ 2 *
-            (2 * Real.log ((N ^ 100 + 1 : ℕ) : ℝ) / ((N ^ 100 : ℕ) : ℝ))) +
-        ((49 / 100 : ℝ) / (49 * Real.log N)) ^ 2 *
-          ((((N ^ 49 : ℕ) : ℝ) * Real.log (N ^ 49 : ℕ)) ^ 2 *
-            (4 * Real.log ((N ^ 100 + 1 : ℕ) : ℝ) ^ 2 / ((N ^ 100 : ℕ) : ℝ)))) /
-      Real.log (N ^ 49 : ℕ) ^ 2
+          ((((N ^ (49 : ℕ) : ℕ) : ℝ) * Real.log (N ^ (49 : ℕ) : ℕ)) ^ (2 : ℕ) *
+            (2 * Real.log ((N ^ (100 : ℕ) + 1 : ℕ) : ℝ) / ((N ^ (100 : ℕ) : ℕ) : ℝ))) +
+        ((49 / 100 : ℝ) / (49 * Real.log N)) ^ (2 : ℕ) *
+          ((((N ^ (49 : ℕ) : ℕ) : ℝ) * Real.log (N ^ (49 : ℕ) : ℕ)) ^ (2 : ℕ) *
+            (4 * Real.log ((N ^ (100 : ℕ) + 1 : ℕ) : ℝ) ^ (2 : ℕ) / ((N ^ (100 : ℕ) : ℕ) : ℝ)))) /
+      Real.log (N ^ (49 : ℕ) : ℕ) ^ (2 : ℕ)
 
 private theorem fortyNineShortEndpointBound_le {N : ℕ} (hN : 8 ≤ N) :
-    fortyNineShortEndpointBound N ≤ 10 / (N : ℝ) ^ 2 := by
+    fortyNineShortEndpointBound N ≤ 10 / (N : ℝ) ^ (2 : ℕ) := by
   have hN2 : 2 ≤ N := by omega
   have hNpos : 0 < N := by omega
-  let K := Real.log ((N ^ 100 + 1 : ℕ) : ℝ)
+  let K := Real.log ((N ^ (100 : ℕ) + 1 : ℕ) : ℝ)
   let L := Real.log (N : ℝ)
   have hL : 0 < L := Real.log_pos (by exact_mod_cast hN2)
   have hK0 : 0 ≤ K := Real.log_nonneg (by
-    exact_mod_cast (show 1 ≤ N ^ 100 + 1 by omega))
+    exact_mod_cast (show 1 ≤ N ^ (100 : ℕ) + 1 by omega))
   have hK : K ≤ 101 * L := by
     simpa only [K, L] using log_pow_hundred_add_one_le_oneHundredOne_log hN2
-  have hKsq : K ^ 2 ≤ (101 * L) ^ 2 := by nlinarith
+  have hKsq : K ^ (2 : ℕ) ≤ (101 * L) ^ (2 : ℕ) := by nlinarith
   have hlinear : K / (25 * L) ≤ (101 / 25 : ℝ) := by
     rw [div_le_iff₀ (by positivity : 0 < 25 * L)]
     nlinarith
-  have hquad : K ^ 2 / (2500 * L ^ 2) ≤ (10201 / 2500 : ℝ) := by
-    rw [div_le_iff₀ (by positivity : 0 < 2500 * L ^ 2)]
+  have hquad : K ^ (2 : ℕ) / (2500 * L ^ (2 : ℕ)) ≤ (10201 / 2500 : ℝ) := by
+    rw [div_le_iff₀ (by positivity : 0 < 2500 * L ^ (2 : ℕ))]
     nlinarith
-  have hbracket : 1 + K / (25 * L) + K ^ 2 / (2500 * L ^ 2) ≤ 10 := by
+  have hbracket : 1 + K / (25 * L) + K ^ (2 : ℕ) / (2500 * L ^ (2 : ℕ)) ≤ 10 := by
     linarith
   have hNR : (N : ℝ) ≠ 0 := by exact_mod_cast hNpos.ne'
   have hlogN : Real.log (N : ℝ) ≠ 0 := by simpa only [L] using hL.ne'
   have hboundEq :
       fortyNineShortEndpointBound N =
-        (1 / (N : ℝ) ^ 2) *
-          (1 + K / (25 * L) + K ^ 2 / (2500 * L ^ 2)) := by
+        (1 / (N : ℝ) ^ (2 : ℕ)) *
+          (1 + K / (25 * L) + K ^ (2 : ℕ) / (2500 * L ^ (2 : ℕ))) := by
     rw [fortyNineShortEndpointBound,
-      show Real.log (((N ^ 49 : ℕ) : ℝ)) = 49 * L by
+      show Real.log (((N ^ (49 : ℕ) : ℕ) : ℝ)) = 49 * L by
         simp only [L, Nat.cast_pow, Real.log_pow]
         norm_num,
-      show (((N ^ 49 : ℕ) : ℝ)) = (N : ℝ) ^ 49 by norm_num,
-      show (((N ^ 100 : ℕ) : ℝ)) = (N : ℝ) ^ 100 by norm_num,
+      show (((N ^ (49 : ℕ) : ℕ) : ℝ)) = (N : ℝ) ^ (49 : ℕ) by norm_num,
+      show (((N ^ (100 : ℕ) : ℕ) : ℝ)) = (N : ℝ) ^ (100 : ℕ) by norm_num,
       abs_of_pos (div_pos (by norm_num) (mul_pos (by norm_num) hL))]
     dsimp only [K, L]
     field_simp [hNR, hlogN]
     ring
   rw [hboundEq]
   calc
-    (1 / (N : ℝ) ^ 2) *
-        (1 + K / (25 * L) + K ^ 2 / (2500 * L ^ 2)) ≤
-      (1 / (N : ℝ) ^ 2) * 10 :=
+    (1 / (N : ℝ) ^ (2 : ℕ)) *
+        (1 + K / (25 * L) + K ^ (2 : ℕ) / (2500 * L ^ (2 : ℕ))) ≤
+      (1 / (N : ℝ) ^ (2 : ℕ)) * 10 :=
         mul_le_mul_of_nonneg_left hbracket (by positivity)
-    _ = 10 / (N : ℝ) ^ 2 := by ring
+    _ = 10 / (N : ℝ) ^ (2 : ℕ) := by ring
 
 /-- Uniform endpoint-replacement rate at the exact natural-power schedule. -/
 theorem abs_barbanVehovShortEnergyMain_sub_continuous_fortyNine_le
     {N : ℕ} (hN : 8 ≤ N) :
     |barbanVehovShortEnergyMain
-        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49) -
+        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)) -
       barbanVehovShortEnergyContinuous
-        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49)| ≤
-      10 / (N : ℝ) ^ 2 := by
+        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ))| ≤
+      10 / (N : ℝ) ^ (2 : ℕ) := by
   have hN2 : 2 ≤ N := by omega
   have hNpos : 0 < N := by omega
-  have hM : 1 < N ^ 49 := by
-    have hpow : N ≤ N ^ 49 := by
+  have hM : 1 < N ^ (49 : ℕ) := by
+    have hpow : N ≤ N ^ (49 : ℕ) := by
       calc
-        N ≤ N * N ^ 48 := Nat.le_mul_of_pos_right N (pow_pos hNpos 48)
-        _ = N ^ 49 := by ring
+        N ≤ N * N ^ (48 : ℕ) := Nat.le_mul_of_pos_right N (pow_pos hNpos 48)
+        _ = N ^ (49 : ℕ) := by ring
     omega
   have hraw := abs_barbanVehovShortEnergyMain_sub_continuous_le
     ((49 / 100 : ℝ) / (49 * Real.log N)) hM
@@ -120,7 +120,7 @@ theorem abs_barbanVehovShortEnergyMain_sub_continuous_fortyNine_le
     simpa only [fortyNineShortEndpointBound] using fortyNineShortEndpointBound_le hN)
 
 private theorem tendsto_ten_div_nat_sq_zero :
-    Tendsto (fun N : ℕ => (10 : ℝ) / (N : ℝ) ^ 2) atTop (𝓝 0) := by
+    Tendsto (fun N : ℕ => (10 : ℝ) / (N : ℝ) ^ (2 : ℕ)) atTop (𝓝 0) := by
   have hten : Tendsto (fun N : ℕ => (10 : ℝ) / (N : ℝ)) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
   have hone : Tendsto (fun N : ℕ => (1 : ℝ) / (N : ℝ)) atTop (𝓝 0) :=
@@ -136,14 +136,14 @@ private theorem tendsto_ten_div_nat_sq_zero :
 theorem tendsto_barbanVehovShortEnergyMain_fortyNine_reciprocal :
     Tendsto (fun N : ℕ =>
       barbanVehovShortEnergyMain
-        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49))
+        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)))
       atTop (𝓝 (7782751 / 5880000 : ℝ)) := by
   let A : ℕ → ℝ := fun N =>
     barbanVehovShortEnergyMain
-      ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49)
+      ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ))
   let C : ℕ → ℝ := fun N =>
     barbanVehovShortEnergyContinuous
-      ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49)
+      ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ))
   have herr : Tendsto (fun N : ℕ => A N - C N) atTop (𝓝 0) := by
     refine squeeze_zero_norm' ?_ tendsto_ten_div_nat_sq_zero
     filter_upwards [eventually_ge_atTop 8] with N hN
@@ -163,16 +163,16 @@ theorem tendsto_barbanVehovShortEnergyMain_fortyNine_reciprocal :
 theorem abs_barbanVehovShortEnergyLcm_sub_main_fortyNine_le
     {N : ℕ} (hN : 8 ≤ N) :
     |barbanVehovShortEnergyLcm
-        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49) -
+        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)) -
       barbanVehovShortEnergyMain
-        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49)| ≤
-      10 / (N : ℝ) ^ 2 := by
+        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ))| ≤
+      10 / (N : ℝ) ^ (2 : ℕ) := by
   have hNpos : 0 < N := by omega
-  have hM : 1 < N ^ 49 := by
-    have hpow : N ≤ N ^ 49 := by
+  have hM : 1 < N ^ (49 : ℕ) := by
+    have hpow : N ≤ N ^ (49 : ℕ) := by
       calc
-        N ≤ N * N ^ 48 := Nat.le_mul_of_pos_right N (pow_pos hNpos 48)
-        _ = N ^ 49 := by ring
+        N ≤ N * N ^ (48 : ℕ) := Nat.le_mul_of_pos_right N (pow_pos hNpos 48)
+        _ = N ^ (49 : ℕ) := by ring
     omega
   have hraw := abs_barbanVehovShortEnergyLcm_sub_main_le
     ((49 / 100 : ℝ) / (49 * Real.log N)) hM
@@ -184,14 +184,14 @@ theorem abs_barbanVehovShortEnergyLcm_sub_main_fortyNine_le
 theorem tendsto_barbanVehovShortEnergyLcm_fortyNine_reciprocal :
     Tendsto (fun N : ℕ =>
       barbanVehovShortEnergyLcm
-        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49))
+        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)))
       atTop (𝓝 (7782751 / 5880000 : ℝ)) := by
   let E : ℕ → ℝ := fun N =>
     barbanVehovShortEnergyLcm
-      ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49)
+      ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ))
   let A : ℕ → ℝ := fun N =>
     barbanVehovShortEnergyMain
-      ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49)
+      ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ))
   have herr : Tendsto (fun N : ℕ => E N - A N) atTop (𝓝 0) := by
     refine squeeze_zero_norm' ?_ tendsto_ten_div_nat_sq_zero
     filter_upwards [eventually_ge_atTop 8] with N hN

@@ -23,7 +23,7 @@ open Finset
 namespace RHTower
 
 /-- `Σ_{i=1}^{M} 1/i² ≤ 2`. -/
-theorem sum_Icc_inv_sq_le_two (M : ℕ) : ∑ i ∈ Finset.Icc 1 M, ((i : ℝ) ^ 2)⁻¹ ≤ 2 := by
+theorem sum_Icc_inv_sq_le_two (M : ℕ) : ∑ i ∈ Finset.Icc 1 M, ((i : ℝ) ^ (2 : ℕ))⁻¹ ≤ 2 := by
   rcases Nat.eq_zero_or_pos M with hM | hM
   · subst hM; simp
   · rw [← Finset.Ioc_insert_left hM, Finset.sum_insert (by simp)]
@@ -35,7 +35,7 @@ theorem sum_Icc_inv_sq_le_two (M : ℕ) : ∑ i ∈ Finset.Icc 1 M, ((i : ℝ) ^
 /-- For a `10`-spaced family, the sum of `1/(3 + (γ_j − γ_k)²)` over `k ≠ j` is at most `1/25`. -/
 theorem sum_inv_three_add_sq_le_of_spaced {ι : Type*} [DecidableEq ι] (A : Finset ι) (γ : ι → ℝ)
     (hsp : ∀ j ∈ A, ∀ k ∈ A, j ≠ k → 10 ≤ |γ j - γ k|) {j : ι} (hj : j ∈ A) :
-    ∑ k ∈ A.erase j, 1 / (3 + (γ j - γ k) ^ 2) ≤ 1 / 25 := by
+    ∑ k ∈ A.erase j, 1 / (3 + (γ j - γ k) ^ (2 : ℕ)) ≤ 1 / 25 := by
   classical
   let m : ι → ℕ := fun k => ⌊|γ j - γ k| / 10⌋₊
   let side : ι → Bool := fun k => decide (γ j < γ k)
@@ -44,14 +44,14 @@ theorem sum_inv_three_add_sq_le_of_spaced {ι : Type*} [DecidableEq ι] (A : Fin
     obtain ⟨hkj, hkA⟩ := Finset.mem_erase.mp hk
     have := hsp j hj k hkA (Ne.symm hkj)
     exact Nat.le_floor (by rw [Nat.cast_one, le_div_iff₀ (by norm_num)]; linarith)
-  have hterm : ∀ k ∈ A.erase j, 1 / (3 + (γ j - γ k) ^ 2) ≤ 1 / (100 * ((m k : ℝ)) ^ 2) := by
+  have hterm : ∀ k ∈ A.erase j, 1 / (3 + (γ j - γ k) ^ (2 : ℕ)) ≤ 1 / (100 * ((m k : ℝ)) ^ (2 : ℕ)) := by
     intro k hk
     have h1 := hm1 k hk
     have hfl : (m k : ℝ) ≤ |γ j - γ k| / 10 := Nat.floor_le (by positivity)
     have hm0 : (0 : ℝ) < m k := by exact_mod_cast h1
     have h10 : 10 * (m k : ℝ) ≤ |γ j - γ k| := by
       rw [le_div_iff₀ (by norm_num)] at hfl; linarith
-    have hsq : 100 * (m k : ℝ) ^ 2 ≤ (γ j - γ k) ^ 2 := by
+    have hsq : 100 * (m k : ℝ) ^ (2 : ℕ) ≤ (γ j - γ k) ^ (2 : ℕ) := by
       have := sq_abs (γ j - γ k)
       nlinarith [abs_nonneg (γ j - γ k)]
     apply one_div_le_one_div_of_le (by positivity)
@@ -84,22 +84,22 @@ theorem sum_inv_three_add_sq_le_of_spaced {ι : Type*} [DecidableEq ι] (A : Fin
     linarith
   obtain ⟨M, hM⟩ : ∃ M : ℕ, ∀ k ∈ A.erase j, m k ≤ M :=
     ⟨(A.erase j).sup m, fun k hk => Finset.le_sup (f := m) hk⟩
-  calc ∑ k ∈ A.erase j, 1 / (3 + (γ j - γ k) ^ 2)
-      ≤ ∑ k ∈ A.erase j, 1 / (100 * ((m k : ℝ)) ^ 2) := Finset.sum_le_sum hterm
-    _ = ∑ p ∈ (A.erase j).image (fun k => (side k, m k)), 1 / (100 * ((p.2 : ℝ)) ^ 2) := by
+  calc ∑ k ∈ A.erase j, 1 / (3 + (γ j - γ k) ^ (2 : ℕ))
+      ≤ ∑ k ∈ A.erase j, 1 / (100 * ((m k : ℝ)) ^ (2 : ℕ)) := Finset.sum_le_sum hterm
+    _ = ∑ p ∈ (A.erase j).image (fun k => (side k, m k)), 1 / (100 * ((p.2 : ℝ)) ^ (2 : ℕ)) := by
         rw [Finset.sum_image hinj]
-    _ ≤ ∑ p ∈ (Finset.univ : Finset Bool) ×ˢ Finset.Icc 1 M, 1 / (100 * ((p.2 : ℝ)) ^ 2) := by
+    _ ≤ ∑ p ∈ (Finset.univ : Finset Bool) ×ˢ Finset.Icc 1 M, 1 / (100 * ((p.2 : ℝ)) ^ (2 : ℕ)) := by
         apply Finset.sum_le_sum_of_subset_of_nonneg
         · intro p hp
           obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hp
           simp only [Finset.mem_product, Finset.mem_univ, true_and, Finset.mem_Icc]
           exact ⟨hm1 k hk, hM k hk⟩
         · intros; positivity
-    _ = 2 * ∑ i ∈ Finset.Icc 1 M, 1 / (100 * ((i : ℝ)) ^ 2) := by
+    _ = 2 * ∑ i ∈ Finset.Icc 1 M, 1 / (100 * ((i : ℝ)) ^ (2 : ℕ)) := by
         simp only [Finset.sum_product, Finset.sum_const, Finset.card_univ, Fintype.card_bool,
           nsmul_eq_mul, Nat.cast_ofNat]
-    _ = 2 * ((1 / 100) * ∑ i ∈ Finset.Icc 1 M, ((i : ℝ) ^ 2)⁻¹) := by
-        have hterm' : ∀ i : ℕ, (1 : ℝ) / (100 * ((i : ℝ)) ^ 2) = (1 / 100) * ((i : ℝ) ^ 2)⁻¹ :=
+    _ = 2 * ((1 / 100) * ∑ i ∈ Finset.Icc 1 M, ((i : ℝ) ^ (2 : ℕ))⁻¹) := by
+        have hterm' : ∀ i : ℕ, (1 : ℝ) / (100 * ((i : ℝ)) ^ (2 : ℕ)) = (1 / 100) * ((i : ℝ) ^ (2 : ℕ))⁻¹ :=
           fun i => by rw [one_div, mul_inv, one_div]
         simp only [hterm', Finset.mul_sum]
     _ ≤ 2 * ((1 / 100) * 2) := by gcongr; exact sum_Icc_inv_sq_le_two M
@@ -109,15 +109,15 @@ theorem sum_inv_three_add_sq_le_of_spaced {ι : Type*} [DecidableEq ι] (A : Fin
 theorem spaced_configuration_energy {ι : Type*} [DecidableEq ι] (Z : Finset ι) (P : ι → ι → ℂ)
     (a : ι → ℝ) (w : ι → ι → ℝ) {Θ L : ℝ} (hΘ : 0 < Θ) (hL : 1 ≤ L)
     (ha : ∀ j, 0 ≤ a j) (hw : ∀ j k, 0 ≤ w j k) (hwsymm : ∀ j k, w j k = w k j)
-    (h1 : ∀ j ∈ Z, a j ^ 2 ≤ (P j j).re)
+    (h1 : ∀ j ∈ Z, a j ^ (2 : ℕ) ≤ (P j j).re)
     (h2 : ∀ j ∈ Z, ∀ k ∈ Z, ‖P j k‖ ≤ 4 * a j * a k * w j k)
     (h3 : ∀ R ⊆ Z, 0 ≤ (∑ j ∈ R, ∑ k ∈ R, P j k).re)
     (h4 : ∀ j ∈ Z.filter (fun j => Θ ≤ a j),
       ∑ k ∈ (Z.filter (fun j => Θ ≤ a j)).erase j, w j k ≤ 1 / 25)
     (h5 : ∀ j ∈ Z, ∑ k ∈ Z, w j k ≤ 8 * L) :
-    ∑ j ∈ Z.filter (fun j => 200 * Θ * L ≤ a j), a j ^ 2
+    ∑ j ∈ Z.filter (fun j => 200 * Θ * L ≤ a j), a j ^ (2 : ℕ)
       ≤ 2 * (∑ j ∈ Z, ∑ k ∈ Z, P j k).re
-        + 25600 * Θ ^ 2 * L ^ 2 * (Z.filter (fun j => Θ ≤ a j)).card := by
+        + 25600 * Θ ^ (2 : ℕ) * L ^ (2 : ℕ) * (Z.filter (fun j => Θ ≤ a j)).card := by
   classical
   set A := Z.filter (fun j => Θ ≤ a j) with hA
   set R := Z.filter (fun j => ¬ Θ ≤ a j) with hR
@@ -137,12 +137,12 @@ theorem spaced_configuration_energy {ι : Type*} [DecidableEq ι] (Z : Finset ι
         + ((∑ j ∈ R, ∑ k ∈ A, P j k).re + (∑ j ∈ R, ∑ k ∈ R, P j k).re) := by
     rw [hsplit]; simp only [Complex.add_re]
   -- (i) the `A × A` block
-  have hAA : (21 / 25) * ∑ j ∈ A, a j ^ 2 ≤ (∑ j ∈ A, ∑ k ∈ A, P j k).re := by
+  have hAA : (21 / 25) * ∑ j ∈ A, a j ^ (2 : ℕ) ≤ (∑ j ∈ A, ∑ k ∈ A, P j k).re := by
     have hdiag : ∀ j ∈ A, ∑ k ∈ A, P j k = P j j + ∑ k ∈ A.erase j, P j k := fun j hj =>
       (Finset.add_sum_erase A (P j) hj).symm
     rw [Finset.sum_congr rfl hdiag, Finset.sum_add_distrib, Complex.add_re, Complex.re_sum,
       Complex.re_sum]
-    have hd : ∑ j ∈ A, a j ^ 2 ≤ ∑ j ∈ A, (P j j).re :=
+    have hd : ∑ j ∈ A, a j ^ (2 : ℕ) ≤ ∑ j ∈ A, (P j j).re :=
       Finset.sum_le_sum fun j hj => h1 j (hAZ hj)
     have hb : ∀ j ∈ A, -(∑ k ∈ A.erase j, 4 * a j * a k * w j k) ≤ (∑ k ∈ A.erase j, P j k).re := by
       intro j hj
@@ -151,17 +151,17 @@ theorem spaced_configuration_energy {ι : Type*} [DecidableEq ι] (Z : Finset ι
           h2 j (hAZ hj) k (hAZ (Finset.mem_of_mem_erase hk)))
       have := Complex.abs_re_le_norm (∑ k ∈ A.erase j, P j k)
       linarith [(abs_le.mp this).1]
-    have hcross : ∑ j ∈ A, ∑ k ∈ A.erase j, 4 * a j * a k * w j k ≤ (4 / 25) * ∑ j ∈ A, a j ^ 2 := by
+    have hcross : ∑ j ∈ A, ∑ k ∈ A.erase j, 4 * a j * a k * w j k ≤ (4 / 25) * ∑ j ∈ A, a j ^ (2 : ℕ) := by
       calc ∑ j ∈ A, ∑ k ∈ A.erase j, 4 * a j * a k * w j k
-          ≤ ∑ j ∈ A, ∑ k ∈ A.erase j, (2 * a j ^ 2 * w j k + 2 * a k ^ 2 * w j k) := by
+          ≤ ∑ j ∈ A, ∑ k ∈ A.erase j, (2 * a j ^ (2 : ℕ) * w j k + 2 * a k ^ (2 : ℕ) * w j k) := by
             gcongr with j hj k hk
             have := hw j k
             nlinarith [sq_nonneg (a j - a k)]
-        _ = ∑ j ∈ A, ∑ k ∈ A.erase j, 2 * a j ^ 2 * w j k
-            + ∑ j ∈ A, ∑ k ∈ A.erase j, 2 * a k ^ 2 * w j k := by
+        _ = ∑ j ∈ A, ∑ k ∈ A.erase j, 2 * a j ^ (2 : ℕ) * w j k
+            + ∑ j ∈ A, ∑ k ∈ A.erase j, 2 * a k ^ (2 : ℕ) * w j k := by
             simp only [Finset.sum_add_distrib]
-        _ = ∑ j ∈ A, ∑ k ∈ A.erase j, 2 * a j ^ 2 * w j k
-            + ∑ j ∈ A, ∑ k ∈ A.erase j, 2 * a j ^ 2 * w j k := by
+        _ = ∑ j ∈ A, ∑ k ∈ A.erase j, 2 * a j ^ (2 : ℕ) * w j k
+            + ∑ j ∈ A, ∑ k ∈ A.erase j, 2 * a j ^ (2 : ℕ) * w j k := by
             congr 1
             rw [Finset.sum_comm' (t' := A) (s' := fun k => A.erase k)]
             · simp only [hwsymm]
@@ -170,16 +170,16 @@ theorem spaced_configuration_energy {ι : Type*} [DecidableEq ι] (Z : Finset ι
               constructor
               · rintro ⟨hx, hyx, hy⟩; exact ⟨⟨fun h => hyx h.symm, hx⟩, hy⟩
               · rintro ⟨⟨hxy, hx⟩, hy⟩; exact ⟨hx, fun h => hxy h.symm, hy⟩
-        _ = 4 * ∑ j ∈ A, a j ^ 2 * ∑ k ∈ A.erase j, w j k := by
+        _ = 4 * ∑ j ∈ A, a j ^ (2 : ℕ) * ∑ k ∈ A.erase j, w j k := by
             rw [← two_mul]
             simp only [Finset.mul_sum]
             refine Finset.sum_congr rfl fun j _ => ?_
             refine Finset.sum_congr rfl fun k _ => ?_
             ring
-        _ ≤ 4 * ∑ j ∈ A, a j ^ 2 * (1 / 25) := by
+        _ ≤ 4 * ∑ j ∈ A, a j ^ (2 : ℕ) * (1 / 25) := by
             gcongr with j hj
             exact h4 j hj
-        _ = (4 / 25) * ∑ j ∈ A, a j ^ 2 := by rw [← Finset.sum_mul]; ring
+        _ = (4 / 25) * ∑ j ∈ A, a j ^ (2 : ℕ) := by rw [← Finset.sum_mul]; ring
     have hsum := Finset.sum_le_sum hb
     rw [Finset.sum_neg_distrib] at hsum
     linarith
@@ -225,21 +225,21 @@ theorem spaced_configuration_energy {ι : Type*} [DecidableEq ι] (Z : Finset ι
   -- (iii) the `R × R` block
   have hRR : 0 ≤ (∑ j ∈ R, ∑ k ∈ R, P j k).re := h3 R hRZ
   -- the lower bound `Re Σ P ≥ Σ_A ((21/25) a_j² − 64 Θ L a_j)`
-  have hlow : ∑ j ∈ A, ((21 / 25) * a j ^ 2 - 64 * Θ * L * a j) ≤ (∑ j ∈ Z, ∑ k ∈ Z, P j k).re := by
+  have hlow : ∑ j ∈ A, ((21 / 25) * a j ^ (2 : ℕ) - 64 * Θ * L * a j) ≤ (∑ j ∈ Z, ∑ k ∈ Z, P j k).re := by
     rw [hre, Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
     linarith
   -- threshold split of `A`
   have hΘL : 0 < Θ * L := by positivity
   have hsplitA := Finset.sum_filter_add_sum_filter_not A (fun j => 200 * Θ * L ≤ a j)
-    (fun j => (21 / 25) * a j ^ 2 - 64 * Θ * L * a j)
+    (fun j => (21 / 25) * a j ^ (2 : ℕ) - 64 * Θ * L * a j)
   have hhigh : ∀ j ∈ A.filter (fun j => 200 * Θ * L ≤ a j),
-      (1 / 2) * a j ^ 2 ≤ (21 / 25) * a j ^ 2 - 64 * Θ * L * a j := by
+      (1 / 2) * a j ^ (2 : ℕ) ≤ (21 / 25) * a j ^ (2 : ℕ) - 64 * Θ * L * a j := by
     intro j hj
     have hja := (Finset.mem_filter.mp hj).2
     have := ha j
     nlinarith
   have hlowterm : ∀ j ∈ A.filter (fun j => ¬ 200 * Θ * L ≤ a j),
-      -(12800 * Θ ^ 2 * L ^ 2) ≤ (21 / 25) * a j ^ 2 - 64 * Θ * L * a j := by
+      -(12800 * Θ ^ (2 : ℕ) * L ^ (2 : ℕ)) ≤ (21 / 25) * a j ^ (2 : ℕ) - 64 * Θ * L * a j := by
     intro j hj
     have hja := not_le.mp (Finset.mem_filter.mp hj).2
     have := ha j
@@ -258,8 +258,8 @@ theorem spaced_configuration_energy {ι : Type*} [DecidableEq ι] (Z : Finset ι
     · exact fun h => h.2
   rw [hfilt]
   rw [← Finset.mul_sum] at hsum1
-  have hc2 : 12800 * Θ ^ 2 * L ^ 2 * ((A.filter (fun j => ¬ 200 * Θ * L ≤ a j)).card : ℝ)
-      ≤ 12800 * Θ ^ 2 * L ^ 2 * (A.card : ℝ) := by gcongr
+  have hc2 : 12800 * Θ ^ (2 : ℕ) * L ^ (2 : ℕ) * ((A.filter (fun j => ¬ 200 * Θ * L ≤ a j)).card : ℝ)
+      ≤ 12800 * Θ ^ (2 : ℕ) * L ^ (2 : ℕ) * (A.card : ℝ) := by gcongr
   linarith [hsum1, hsum2, hlow, hsplitA, hc2]
 
 end RHTower

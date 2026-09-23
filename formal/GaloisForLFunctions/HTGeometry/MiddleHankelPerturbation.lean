@@ -22,7 +22,7 @@ theorem signedEvenHankelThreeDet_middle_error
     (hA : 8 ≤ A ∧ A ≤ 11) (hB : 180 ≤ B ∧ B ≤ 310)
     (hC : 100 ≤ C ∧ C ≤ 14000) (hD : 1000 ≤ D ∧ D ≤ 800000)
     (hE : 1000000 ≤ E ∧ E ≤ 55000000)
-    (hhead : |A*C-B^2| ≤ 55000)
+    (hhead : |A*C-B^(2 : ℕ)| ≤ 55000)
     (ea : |a-A| ≤ 1/1000000) (eb : |b-B| ≤ 1/1000) (ec : |c-C| ≤ 1)
     (ed : |d-D| ≤ 200) (ee : |e-E| ≤ 175000) :
     |HilbertMetric.signedEvenHankelThreeDet a b c d e-
@@ -48,7 +48,7 @@ theorem signedEvenHankelThreeDet_middle_error
   have heu : e ≤ 55175000 := by linarith [hE.2]
   have hce := mul_le_mul hC.2 heu he0 (by norm_num : (0 : ℝ) ≤ 14000)
   have hDD := pow_le_pow_left₀ hD0 hD.2 2
-  have ca : |C*e-D^2| ≤ 800000000000 := by
+  have ca : |C*e-D^(2 : ℕ)| ≤ 800000000000 := by
     apply abs_sub_le_box (mul_nonneg hC0 he0) (sq_nonneg D)
     · nlinarith only [hce]
     · nlinarith only [hDD]
@@ -65,7 +65,7 @@ theorem signedEvenHankelThreeDet_middle_error
   have hcc := pow_le_pow_left₀ hc0 hcu 2
   have hcC := mul_le_mul hcu hC.2 hC0 (by norm_num : (0 : ℝ) ≤ 14001)
   have hCC := pow_le_pow_left₀ hC0 hC.2 2
-  have cc : |a*e+2*b*D-(c^2+c*C+C^2)| ≤ 1110000000 := by
+  have cc : |a*e+2*b*D-(c^(2 : ℕ)+c*C+C^(2 : ℕ))| ≤ 1110000000 := by
     apply abs_sub_le_box (by positivity) (by positivity)
     · nlinarith only [hae, hbD]
     · nlinarith only [hcc, hcC, hCC]
@@ -78,16 +78,16 @@ theorem signedEvenHankelThreeDet_middle_error
     apply abs_sub_le_box (by positivity) (by positivity)
     · nlinarith only [hbc]
     · nlinarith only [had]
-  have t0 : |(e-E)*(A*C-B^2)| ≤ 175000*55000 := by
+  have t0 : |(e-E)*(A*C-B^(2 : ℕ))| ≤ 175000*55000 := by
     rw [abs_mul]
     exact mul_le_mul ee hhead (abs_nonneg _) (by norm_num)
-  have t1 : |(a-A)*(C*e-D^2)| ≤ (1/1000000)*800000000000 := by
+  have t1 : |(a-A)*(C*e-D^(2 : ℕ))| ≤ (1/1000000)*800000000000 := by
     rw [abs_mul]
     exact mul_le_mul ea ca (abs_nonneg _) (by norm_num)
   have t2 : |(b-B)*(-(b+B)*e+2*C*D)| ≤ (1/1000)*35000000000 := by
     rw [abs_mul]
     exact mul_le_mul eb cb (abs_nonneg _) (by norm_num)
-  have t3 : |(c-C)*(a*e+2*b*D-(c^2+c*C+C^2))| ≤ (1)*1110000000 := by
+  have t3 : |(c-C)*(a*e+2*b*D-(c^(2 : ℕ)+c*C+C^(2 : ℕ)))| ≤ (1)*1110000000 := by
     rw [abs_mul]
     exact mul_le_mul ec cc (abs_nonneg _) (by norm_num)
   have t4 : |(d-D)*(-a*(d+D)+2*b*c)| ≤ 200*17700000 := by
@@ -95,8 +95,8 @@ theorem signedEvenHankelThreeDet_middle_error
     exact mul_le_mul ed cd (abs_nonneg _) (by norm_num)
   have heq : HilbertMetric.signedEvenHankelThreeDet a b c d e-
       HilbertMetric.signedEvenHankelThreeDet A B C D E =
-      (e-E)*(A*C-B^2)+(a-A)*(C*e-D^2)+(b-B)*(-(b+B)*e+2*C*D)+
-      (c-C)*(a*e+2*b*D-(c^2+c*C+C^2))+(d-D)*(-a*(d+D)+2*b*c) := by
+      (e-E)*(A*C-B^(2 : ℕ))+(a-A)*(C*e-D^(2 : ℕ))+(b-B)*(-(b+B)*e+2*C*D)+
+      (c-C)*(a*e+2*b*D-(c^(2 : ℕ)+c*C+C^(2 : ℕ)))+(d-D)*(-a*(d+D)+2*b*c) := by
     unfold HilbertMetric.signedEvenHankelThreeDet
     ring
   have t0' := abs_le.mp t0
@@ -112,9 +112,9 @@ theorem signedEvenHankelThreeDet_middle_error
 /-- The same small entry errors preserve a leading-minor ceiling of thirty-three thousand one hundred. -/
 theorem signedOddHead_middle_upper {a b c A B C : ℝ}
     (hA : 8 ≤ A ∧ A ≤ 11) (hB : 180 ≤ B ∧ B ≤ 310)
-    (hC : 100 ≤ C ∧ C ≤ 14000) (hhead : A*C-B^2 ≤ 33000)
+    (hC : 100 ≤ C ∧ C ≤ 14000) (hhead : A*C-B^(2 : ℕ) ≤ 33000)
     (ea : |a-A| ≤ 1/1000000) (eb : |b-B| ≤ 1/1000) (ec : |c-C| ≤ 1) :
-    a*c-b^2 ≤ 33100 := by
+    a*c-b^(2 : ℕ) ≤ 33100 := by
   have ea' := abs_le.mp ea
   have eb' := abs_le.mp eb
   have ec' := abs_le.mp ec

@@ -4,14 +4,14 @@ import GaloisForLFunctions.HTGeometry.PeriodicCohomology
 /-!
 # The wedge product on the periodic de Rham complex
 
-The wedge product of two periodic forms of class `C^1` is again periodic of class `C^1`, because in
+The wedge product of two periodic forms of class `C^(1 : ℕ)` is again periodic of class `C^(1 : ℕ)`, because in
 coordinates it is a finite sum of products of the coefficients times constant forms.  By the Leibniz
 rule the wedge of two closed forms is closed, and the wedge of an exact form with a closed one is
 exact with a periodic primitive, so the product descends to cohomology.  On classes of invariant
 forms it is the product of the exterior algebra, so the comparison of the cohomology of the torus
 with the exterior power of the dual is multiplicative.
 
-* `wedgeForm_differentiable`, `wedgeForm_fderiv_continuous` : the wedge is of class `C^1`.
+* `wedgeForm_differentiable`, `wedgeForm_fderiv_continuous` : the wedge is of class `C^(1 : ℕ)`.
 * `wedgeForm_mem_closed` : the wedge of closed periodic forms is a closed periodic form.
 * `wedgeForm_extDeriv_left`, `wedgeForm_extDeriv_right` : wedging with a closed form commutes with
   the exterior derivative, up to the sign `(-1)^p` on the left.
@@ -30,7 +30,7 @@ section Regularity
 
 variable {𝕜 : Type*} [RCLike 𝕜] {r p q n : ℕ}
 
-/-- The coefficients of a form of class `C^1` are of class `C^1`. -/
+/-- The coefficients of a form of class `C^(1 : ℕ)` are of class `C^(1 : ℕ)`. -/
 theorem form_coeff_fderiv_continuous {ω : PeriodicFormSpace 𝕜 r n} (hω : Differentiable 𝕜 ω)
     (hcont : Continuous (fderiv 𝕜 ω)) (S : Set.powersetCard (Fin r) n) :
     Continuous (fderiv 𝕜 fun x => ω x (coordTuple 𝕜 S)) := by
@@ -41,7 +41,7 @@ theorem form_coeff_fderiv_continuous {ω : PeriodicFormSpace 𝕜 r n} (hω : Di
   rw [hfd]
   exact isBoundedBilinearMap_comp.continuous.comp (continuous_const.prodMk hcont)
 
-/-- A scalar function times a constant form is of class `C^1`. -/
+/-- A scalar function times a constant form is of class `C^(1 : ℕ)`. -/
 theorem fderiv_continuous_smul_const {c : (Fin r → 𝕜) → 𝕜} (hc : Differentiable 𝕜 c)
     (hc' : Continuous (fderiv 𝕜 c)) (K : (Fin r → 𝕜) [⋀^Fin n]→L[𝕜] 𝕜) :
     Continuous (fderiv 𝕜 fun y => c y • K) := by
@@ -52,7 +52,7 @@ theorem fderiv_continuous_smul_const {c : (Fin r → 𝕜) → 𝕜} (hc : Diffe
   exact (((ContinuousLinearMap.smulRightL 𝕜 (Fin r → 𝕜)
     ((Fin r → 𝕜) [⋀^Fin n]→L[𝕜] 𝕜)).flip K).continuous).comp hc'
 
-/-- A finite sum of forms of class `C^1` is of class `C^1`. -/
+/-- A finite sum of forms of class `C^(1 : ℕ)` is of class `C^(1 : ℕ)`. -/
 theorem fderiv_continuous_finset_sum {ι : Type*} (t : Finset ι) (F : ι → PeriodicFormSpace 𝕜 r n)
     (hF : ∀ i, Differentiable 𝕜 (F i)) (hF' : ∀ i, Continuous (fderiv 𝕜 (F i))) :
     Continuous (fderiv 𝕜 fun y => ∑ i ∈ t, F i y) := by
@@ -83,7 +83,7 @@ theorem wedgeForm_differentiable (h : p + q = n) {ω : PeriodicFormSpace 𝕜 r 
   refine DifferentiableAt.fun_sum fun T _ => ?_
   exact (((form_coeff_differentiable hω S) y).mul ((form_coeff_differentiable hη T) y)).smul_const _
 
-/-- **The wedge product of two forms of class `C^1` is of class `C^1`.** -/
+/-- **The wedge product of two forms of class `C^(1 : ℕ)` is of class `C^(1 : ℕ)`.** -/
 theorem wedgeForm_fderiv_continuous (h : p + q = n) {ω : PeriodicFormSpace 𝕜 r p}
     {η : PeriodicFormSpace 𝕜 r q} (hω : Differentiable 𝕜 ω) (hωc : Continuous (fderiv 𝕜 ω))
     (hη : Differentiable 𝕜 η) (hηc : Continuous (fderiv 𝕜 η)) :
@@ -170,7 +170,7 @@ theorem wedgeForm_zero_right (h : p + q = n) (α : (Fin r → 𝕜) [⋀^Fin p]�
   show (0 : 𝕜) * _ = (0 : 𝕜)
   rw [zero_mul]
 
-/-- **The wedge product of two closed periodic forms of class `C^1` is one.** -/
+/-- **The wedge product of two closed periodic forms of class `C^(1 : ℕ)` is one.** -/
 theorem wedgeForm_mem_closed {c : 𝕜} (h : p + q = n) {ω : PeriodicFormSpace 𝕜 r p}
     {η : PeriodicFormSpace 𝕜 r q} (hω : ω ∈ periodicClosedForms c r p)
     (hη : η ∈ periodicClosedForms c r q) :

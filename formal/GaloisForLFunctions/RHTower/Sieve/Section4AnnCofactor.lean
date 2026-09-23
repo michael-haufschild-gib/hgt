@@ -31,7 +31,7 @@ theorem setIntegral_normSq_cofactor_annulus_le {B : Finset ℕ} {B₁ NA m : ℕ
               + 4 * ((NA ^ m : ℕ) : ℝ) * (1 + Real.log ((NA ^ m : ℕ) : ℝ)))
             * ((m : ℝ) ^ m * (B.card : ℝ) ^ m)) / VP ^ (2 * m) ≤ Ej) :
     (∫ w in shortExceptionalOn (windowAnnulus w₀ W) B VP,
-        ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₁ RQ ηQ k) w‖ ^ 2)
+        ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₁ RQ ηQ k) w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi)⁻¹ * (2 * ((B₁ : ℝ) / (RQ * (1 + ηQ) ^ k)) + Cw * Ej)
           * ((B₁ : ℝ) / (RQ * (1 + ηQ) ^ k)) := by
   classical
@@ -93,7 +93,7 @@ theorem setIntegral_normSq_cofactor_annulus_le {B : Finset ℕ} {B₁ NA m : ℕ
     have hnn : (0 : ℝ) ≤ 2 * (ND : ℝ) + Cwk * Ejk := by linarith
     exact mul_le_mul hle hNDle hND0 (by linarith)
   have hpi0 : (0 : ℝ) ≤ (2 * Real.pi)⁻¹ := by positivity
-  calc (2 * Real.pi)⁻¹ * ((2 * (ND : ℝ) + Cwk * Ejk) * ((1 : ℝ) ^ 2 * (ND : ℝ)))
+  calc (2 * Real.pi)⁻¹ * ((2 * (ND : ℝ) + Cwk * Ejk) * ((1 : ℝ) ^ (2 : ℕ) * (ND : ℝ)))
       = (2 * Real.pi)⁻¹ * ((2 * (ND : ℝ) + Cwk * Ejk) * (ND : ℝ)) := by ring
     _ ≤ (2 * Real.pi)⁻¹ * ((2 * ((B₁ : ℝ) / (RQ * (1 + ηQ) ^ k)) + Cw * Ej)
           * ((B₁ : ℝ) / (RQ * (1 + ηQ) ^ k))) := by

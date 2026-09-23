@@ -23,14 +23,14 @@ def confocalLorentzCone : Set (ℝ × ℝ) :=
 
 /-- Distance-sum branch in Lorentz coordinates `(x,a)=(re z, |z|)`. -/
 def liftedConfocalBranch (q : ℝ × ℝ) (R : ℝ) : ℝ :=
-  q.2 + Real.sqrt ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))
+  q.2 + Real.sqrt ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))
 
 theorem liftedConfocalRadicand_nonneg
     {q : ℝ × ℝ} (hq : q ∈ confocalLorentzCone) (R : ℝ) :
-    0 ≤ (R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2) := by
+    0 ≤ (R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)) := by
   change |q.1| ≤ q.2 at hq
   have ha : 0 ≤ q.2 := (abs_nonneg q.1).trans hq
-  have hsq : q.1 ^ 2 ≤ q.2 ^ 2 := by
+  have hsq : q.1 ^ (2 : ℕ) ≤ q.2 ^ (2 : ℕ) := by
     rw [sq_le_sq]
     simpa only [abs_of_nonneg ha] using hq
   nlinarith [sq_nonneg (R - q.1)]
@@ -39,9 +39,9 @@ theorem liftedConfocalRadicand_nonneg
 theorem liftedConfocalBranch_le_iff_halfspace
     {q : ℝ × ℝ} (hq : q ∈ confocalLorentzCone) (R L : ℝ) :
     liftedConfocalBranch q R ≤ L ↔
-      q.2 ≤ L ∧ R * q.1 - L * q.2 ≥ (R ^ 2 - L ^ 2) / 2 := by
+      q.2 ≤ L ∧ R * q.1 - L * q.2 ≥ (R ^ (2 : ℕ) - L ^ (2 : ℕ)) / 2 := by
   have hrad := liftedConfocalRadicand_nonneg hq R
-  have hsqrt0 := Real.sqrt_nonneg ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))
+  have hsqrt0 := Real.sqrt_nonneg ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))
   have hsqrt2 := Real.sq_sqrt hrad
   constructor
   · intro h
@@ -56,7 +56,7 @@ theorem liftedConfocalBranch_le_iff_halfspace
     rw [liftedConfocalBranch]
     have hLa : 0 ≤ L - q.2 := sub_nonneg.mpr haL
     have hsqrtLe :
-        Real.sqrt ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2)) ≤ L - q.2 := by
+        Real.sqrt ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ))) ≤ L - q.2 := by
       nlinarith
     linarith
 
@@ -186,7 +186,7 @@ theorem convex_confocalHullOfField (D : Set ℝ) (G : ℝ → ℝ) :
   apply (liftedConfocalBranch_le_iff_halfspace hcone R (G R)).mpr
   change α * p.2 + β * q.2 ≤ G R ∧
     R * (α * p.1 + β * q.1) - G R * (α * p.2 + β * q.2) ≥
-      (R ^ 2 - G R ^ 2) / 2
+      (R ^ (2 : ℕ) - G R ^ (2 : ℕ)) / 2
   constructor <;> nlinarith
 
 /-- The canonical hull is closed. -/
@@ -216,14 +216,14 @@ theorem mem_confocalExposedFace_iff_halfspace_eq
     {D : Set ℝ} {G : ℝ → ℝ} {R : ℝ} (hR : R ∈ D) {q : ℝ × ℝ} :
     q ∈ confocalExposedFace D G R ↔
       q ∈ confocalHullOfField D G ∧
-        R * q.1 - G R * q.2 = (R ^ 2 - G R ^ 2) / 2 := by
+        R * q.1 - G R * q.2 = (R ^ (2 : ℕ) - G R ^ (2 : ℕ)) / 2 := by
   constructor
   · rintro ⟨hq, hactive⟩
     have hle := hq.2 R hR
     have hhalf := (liftedConfocalBranch_le_iff_halfspace hq.1 R (G R)).mp hle
     have hrad := liftedConfocalRadicand_nonneg hq.1 R
     have hsqrt2 := Real.sq_sqrt hrad
-    have hsqrt0 := Real.sqrt_nonneg ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))
+    have hsqrt0 := Real.sqrt_nonneg ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))
     refine ⟨hq, ?_⟩
     rw [liftedConfocalBranch] at hactive
     nlinarith
@@ -232,7 +232,7 @@ theorem mem_confocalExposedFace_iff_halfspace_eq
     have hhalf := (liftedConfocalBranch_le_iff_halfspace hq.1 R (G R)).mp (hq.2 R hR)
     have hrad := liftedConfocalRadicand_nonneg hq.1 R
     have hsqrt2 := Real.sq_sqrt hrad
-    have hsqrt0 := Real.sqrt_nonneg ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))
+    have hsqrt0 := Real.sqrt_nonneg ((R - q.1) ^ (2 : ℕ) + (q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ)))
     rw [liftedConfocalBranch]
     nlinarith
 
@@ -292,7 +292,7 @@ theorem liftedConfocalBranch_confocalLorentzLift (z : ℂ) (R : ℝ) :
 
 /-- A lifted point determines the complex conjugation orbit through `(re, |im|)`. -/
 theorem abs_im_eq_sqrt_lorentzLift (z : ℂ) :
-    Real.sqrt ((confocalLorentzLift z).2 ^ 2 - (confocalLorentzLift z).1 ^ 2) = |z.im| := by
+    Real.sqrt ((confocalLorentzLift z).2 ^ (2 : ℕ) - (confocalLorentzLift z).1 ^ (2 : ℕ)) = |z.im| := by
   rw [confocalLorentzLift, Complex.sq_norm_sub_sq_re, Real.sqrt_sq_eq_abs]
 
 /-- The unnormalized confocal upper field selected by a complex source. -/
@@ -307,7 +307,7 @@ theorem liftedConfocalBranch_eq_mul_affineAmplitude
   rw [liftedConfocalBranch_confocalLorentzLift, confocalBranch,
     affineAmplitude_eq_one_add_confocalDefect_div hR, confocalDefect]
   have hnormSub :
-      ‖(R : ℂ) - z‖ = Real.sqrt ((R - z.re) ^ 2 + z.im ^ 2) := by
+      ‖(R : ℂ) - z‖ = Real.sqrt ((R - z.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
     rw [Complex.norm_eq_sqrt_sq_add_sq]
     simp only [sub_re, ofReal_re, sub_im, ofReal_im, zero_sub, neg_sq]
   rw [← Complex.norm_eq_sqrt_sq_add_sq z, ← hnormSub]

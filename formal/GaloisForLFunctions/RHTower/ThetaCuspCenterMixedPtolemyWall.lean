@@ -16,8 +16,8 @@ intrinsic center-mixed chord. -/
 theorem thetaCuspCenterMixedOddParityWall_nonneg_iff_ptolemy
     {a t : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) (ht : 0 ≤ t) :
     0 ≤ thetaCuspCenterMixedOddParityWall a t ↔
-      thetaCuspCenterMixedChord a (2 * t) ^ 2 ≤
-        thetaCuspCenterMixedChord a t ^ 2 +
+      thetaCuspCenterMixedChord a (2 * t) ^ (2 : ℕ) ≤
+        thetaCuspCenterMixedChord a t ^ (2 : ℕ) +
           thetaCuspCenterMixedChord a t * thetaCuspCenterMixedChord a (3 * t) := by
   let f : ℝ → ℝ := thetaCuspCenterMixedDensity a
   let A : ℝ := f 0 - f t
@@ -37,13 +37,13 @@ theorem thetaCuspCenterMixedOddParityWall_nonneg_iff_ptolemy
       (mul_nonneg (by norm_num) ht) (by linarith)
   let P : ℝ := Real.sqrt A * Real.sqrt T
   have hP : 0 ≤ P := mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
-  have hPsq : P ^ 2 = A * T := by
+  have hPsq : P ^ (2 : ℕ) = A * T := by
     dsimp only [P]
     rw [mul_pow, Real.sq_sqrt hA, Real.sq_sqrt hT]
-  have hchord1 : thetaCuspCenterMixedChord a t ^ 2 = A := by
+  have hchord1 : thetaCuspCenterMixedChord a t ^ (2 : ℕ) = A := by
     dsimp only [thetaCuspCenterMixedChord, A, f]
     exact Real.sq_sqrt hA
-  have hchord2 : thetaCuspCenterMixedChord a (2 * t) ^ 2 = A + B := by
+  have hchord2 : thetaCuspCenterMixedChord a (2 * t) ^ (2 : ℕ) = A + B := by
     unfold thetaCuspCenterMixedChord
     rw [Real.sq_sqrt]
     · dsimp only [A, B, f]
@@ -57,19 +57,19 @@ theorem thetaCuspCenterMixedOddParityWall_nonneg_iff_ptolemy
       thetaCuspCenterMixedChord a t * thetaCuspCenterMixedChord a (3 * t) = P := by
     rfl
   have hwall :
-      thetaCuspCenterMixedOddParityWall a t = A * T - B ^ 2 := by
+      thetaCuspCenterMixedOddParityWall a t = A * T - B ^ (2 : ℕ) := by
     unfold thetaCuspCenterMixedOddParityWall toeplitzFourOddParityWall
     dsimp only [A, B, T, f]
     ring
   rw [hwall, hchord1, hchord2, hchordProd]
   constructor
   · intro h
-    have hsq : B ^ 2 ≤ P ^ 2 := by rw [hPsq]; linarith
+    have hsq : B ^ (2 : ℕ) ≤ P ^ (2 : ℕ) := by rw [hPsq]; linarith
     have hBP : B ≤ P := (sq_le_sq₀ hB hP).mp hsq
     linarith
   · intro h
     have hBP : B ≤ P := by linarith
-    have hsq : B ^ 2 ≤ P ^ 2 := (sq_le_sq₀ hB hP).2 hBP
+    have hsq : B ^ (2 : ℕ) ≤ P ^ (2 : ℕ) := (sq_le_sq₀ hB hP).2 hBP
     rw [hPsq] at hsq
     linarith
 
@@ -78,8 +78,8 @@ the equispaced packet. -/
 theorem thetaCuspCenterMixedGramFourEquispaced_posSemidef_iff_ptolemy
     {a t : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) (ht : 0 < t) :
     Matrix.PosSemidef (thetaCuspCenterMixedGramFourEquispaced a t) ↔
-      thetaCuspCenterMixedChord a (2 * t) ^ 2 ≤
-        thetaCuspCenterMixedChord a t ^ 2 +
+      thetaCuspCenterMixedChord a (2 * t) ^ (2 : ℕ) ≤
+        thetaCuspCenterMixedChord a t ^ (2 : ℕ) +
           thetaCuspCenterMixedChord a t * thetaCuspCenterMixedChord a (3 * t) := by
   rw [thetaCuspCenterMixedGramFourEquispaced_posSemidef_iff_oddParityWall ha0 ha ht]
   exact thetaCuspCenterMixedOddParityWall_nonneg_iff_ptolemy ha0 ha ht.le

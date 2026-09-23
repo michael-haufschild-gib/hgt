@@ -273,11 +273,11 @@ private theorem source_vertical_atHeight (q : XiZeroCopy) (d : ℝ) (z : Point) 
     unfold D4BMNativeAngularCurrent.principalJet P D4BMOriginalCirclePeriod.coefficient
     apply Finset.sum_congr rfl
     intro i _
-    change principalAmplitude q i*(principalExponent q i)^1*
+    change principalAmplitude q i*(principalExponent q i)^(1 : ℕ)*
       D4BMNativeCircle.powerCircle (principalExponent q i) d*
       Complex.exp (principalExponent q i*(z 1:ℂ)) =
       (principalAmplitude q i*D4BMNativeCircle.powerCircle (principalExponent q i) d)*
-      (principalExponent q i)^1*E (principalExponent q i) z
+      (principalExponent q i)^(1 : ℕ)*E (principalExponent q i) z
     unfold E
     ring
   change D 1 (circleField q d) ![z 0,Real.exp (z 1)]=_
@@ -452,7 +452,7 @@ private theorem domain_preimage (Y : ℝ) :
     have hx : u.re ∈ Icc (-(1/2:ℝ)) (1/2) := abs_le.mp hu.2
     have hs := arcHeight_sq hx
     have hp := arcHeight_pos hx
-    have hn : 1 ≤ u.re^2+u.im^2 := by simpa only [Complex.normSq_apply,pow_two,coe_re,coe_im] using hu.1
+    have hn : 1 ≤ u.re^(2 : ℕ)+u.im^(2 : ℕ) := by simpa only [Complex.normSq_apply,pow_two,coe_re,coe_im] using hu.1
     have ha : arcHeight u.re ≤ u.im := by nlinarith [u.im_pos]
     exact ⟨⟨hx,⟨(SelbergModularDomainSlices.arcHeight_half_le hx).trans ha,hY⟩⟩,ha⟩
 
@@ -460,7 +460,7 @@ private theorem domain_preimage (Y : ℝ) :
 with its original inverse-square density. -/
 theorem original_truncatedIntegral_area (F : (Fin 2 → ℝ) → ℂ) (Y : ℝ) :
     truncatedIntegral (fun z => F ![z.re,z.im]) Y =
-      ∫ w in SelbergModularDomainSlices.domain Y, F ![w.1,w.2]/(w.2:ℂ)^2 := by
+      ∫ w in SelbergModularDomainSlices.domain Y, F ![w.1,w.2]/(w.2:ℂ)^(2 : ℕ) := by
   let G : ℂ → ℂ := fun z => F ![z.re,z.im]
   let H : Set ℂ := {z | z.im ≤ Y}
   have hH : MeasurableSet H := measurableSet_le Complex.continuous_im.measurable measurable_const
@@ -470,12 +470,12 @@ theorem original_truncatedIntegral_area (F : (Fin 2 → ℝ) → ℂ) (Y : ℝ) 
     integral_withDensity_eq_integral_smul hden] at hm
   have harea := Complex.volume_preserving_equiv_real_prod.setIntegral_preimage_emb
     Complex.measurableEquivRealProd.measurableEmbedding
-    (fun w : ℝ × ℝ => F ![w.1,w.2]/(w.2:ℂ)^2) (SelbergModularDomainSlices.domain Y)
+    (fun w : ℝ × ℝ => F ![w.1,w.2]/(w.2:ℂ)^(2 : ℕ)) (SelbergModularDomainSlices.domain Y)
   rw [domain_preimage] at harea
   calc
     _ = ∫ z in H ∩ cellChart, chartDensity z • G z := by
       simpa only [G,H,Set.preimage_setOf_eq,coe_re,coe_im,truncatedIntegral] using hm.symm
-    _ = ∫ z in H ∩ cellChart, F ![z.re,z.im]/(z.im:ℂ)^2 := by
+    _ = ∫ z in H ∩ cellChart, F ![z.re,z.im]/(z.im:ℂ)^(2 : ℕ) := by
       apply setIntegral_congr_fun
         (hH.inter (UpperHalfPlane.measurableEmbedding_coe.measurableSet_image.mpr isClosed_fd.measurableSet))
       rintro z ⟨_,u,hu,rfl⟩
@@ -491,7 +491,7 @@ open D4BMJointSource D4BMOriginalCircleGreen
 /-- The actual native circle mean's defect against the unchanged reader eigenvalue. -/
 def scalarEquationDefect (q : XiZeroCopy) (d : ℝ) (z : Fin 2 → ℝ) : ℂ :=
   D4BMHorizon.scalarLaplacian (circleField q d) z-
-    (physicalAngularParameter q^2-1/4)*circleField q d z
+    (physicalAngularParameter q^(2 : ℕ)-1/4)*circleField q d z
 
 /-- The Green defect vanishes in the original hyperbolic finite part, with
 exactly the counterterm obtained from the original principal coefficients. -/

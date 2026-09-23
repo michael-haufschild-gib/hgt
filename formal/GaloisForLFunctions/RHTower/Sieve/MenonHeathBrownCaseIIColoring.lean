@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.MenonHeathBrownWindowRelevantDichotomy
 Every large sharp twisted interval is assigned its literal frequency cell, window-relevant
 Heath--Brown box, distinguished positive factor, and the exact medium/long alternative.  The
 selected ordinate is retained separately.  The signed binomial coefficient is removed with its
-literal degree-three cost `2^3 = 8`; no box, factor, or branch is averaged away.
+literal degree-three cost `2^(3 : ℕ) = 8`; no box, factor, or branch is averaged away.
 -/
 
 noncomputable section
@@ -117,15 +117,15 @@ theorem norm_heathBrownBoxTerm_three_le_eight_mul_core
 
 /-- Pointwise sharp-interval selection in complete finite-label form. -/
 theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt
-    (L X a b cells : ℕ) (hXL : X < (L + 1) ^ 3)
+    (L X a b cells : ℕ) (hXL : X < (L + 1) ^ (3 : ℕ))
     (hab : a ≤ b) (hbX : b ≤ X) (T0 t tau : ℝ) (hT0 : 1 < T0)
-    (hscale : ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ))
-    (ha : (64 : ℝ) ^ 8 ≤ (a : ℝ)) (hL : 1 ≤ L)
+    (hscale : ((2 ^ (6 : ℕ) : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ))
+    (ha : (64 : ℝ) ^ (8 : ℕ) ≤ (a : ℝ)) (hL : 1 ≤ L)
     (_hcut : (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ))
     {B sigma C V Δ : ℝ} (hsigma : 1 < sigma) (hC : 1 ≤ C)
     (hkernel : ∀ y : ℝ,
       ‖menonSharpIntervalMellinKernel (a : ℝ) (b : ℝ) sigma y‖ ≤
-        C * (1 + y ^ 2)⁻¹)
+        C * (1 + y ^ (2 : ℕ))⁻¹)
     (hV : 0 ≤ V) (hΔ : 0 < Δ) (hcells : 0 < cells)
     (hgrid : 2 * V = (cells : ℝ) * Δ)
     (hthreshold : 0 <
@@ -184,15 +184,15 @@ theorem exists_menonHeathBrownCaseIISelection_of_vonMangoldtTwist_Ioc_gt
 
 /-- Uniform finite coloring of a finite set of large sharp twisted intervals. -/
 theorem exists_menonHeathBrownCaseIISelection_coloring
-    (L X a b cells : ℕ) (hXL : X < (L + 1) ^ 3)
+    (L X a b cells : ℕ) (hXL : X < (L + 1) ^ (3 : ℕ))
     (hab : a ≤ b) (hbX : b ≤ X) (T0 t : ℝ) (hT0 : 1 < T0)
-    (hscale : ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ))
-    (ha : (64 : ℝ) ^ 8 ≤ (a : ℝ)) (hL : 1 ≤ L)
+    (hscale : ((2 ^ (6 : ℕ) : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ))
+    (ha : (64 : ℝ) ^ (8 : ℕ) ≤ (a : ℝ)) (hL : 1 ≤ L)
     (hcut : (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ))
     {B sigma C V Δ : ℝ} (hsigma : 1 < sigma) (hC : 1 ≤ C)
     (hkernel : ∀ y : ℝ,
       ‖menonSharpIntervalMellinKernel (a : ℝ) (b : ℝ) sigma y‖ ≤
-        C * (1 + y ^ 2)⁻¹)
+        C * (1 + y ^ (2 : ℕ))⁻¹)
     (hV : 0 ≤ V) (hΔ : 0 < Δ) (hcells : 0 < cells)
     (hgrid : 2 * V = (cells : ℝ) * Δ)
     (hthreshold : 0 <

@@ -94,7 +94,7 @@ theorem exists_norm_integral_conj_smoothAFEZetaDisplacedDirect_mul_frozenReflect
     exact hC0
   · exact hM0
 
-/-- Linear-mollifier `ell^1` specialization of the frozen displaced smooth-AFE cross bound. -/
+/-- Linear-mollifier `ell^(1 : ℕ)` specialization of the frozen displaced smooth-AFE cross bound. -/
 theorem exists_norm_integral_conj_smoothAFEZetaDisplacedDirect_mul_frozenReflected_le_explicit
     {d₀ : ℝ} (hd₀0 : 0 ≤ d₀) (hd₀quarter : d₀ ≤ 1 / 4) :
     ∃ K : ℝ, 0 ≤ K ∧

@@ -102,19 +102,19 @@ theorem memLp_gauss_mul_exp_abs (a : ℝ) :
     refine Continuous.mul ?_ ?_
     · exact Real.continuous_exp.comp (by fun_prop)
     · exact Real.continuous_exp.comp (by fun_prop)
-  have hdom : MemLp (fun x : ℝ => Real.exp (a ^ 2 / π) * Real.exp (-(3 * π / 4) * x ^ 2)) 2
+  have hdom : MemLp (fun x : ℝ => Real.exp (a ^ (2 : ℕ) / π) * Real.exp (-(3 * π / 4) * x ^ (2 : ℕ))) 2
       (volume : Measure ℝ) := by
     refine (memLp_two_iff_integrable_sq (by fun_prop)).mpr ?_
     have hint : Integrable (fun x : ℝ =>
-        Real.exp (a ^ 2 / π) ^ 2 * Real.exp (-(3 * π / 2) * x ^ 2)) (volume : Measure ℝ) :=
+        Real.exp (a ^ (2 : ℕ) / π) ^ (2 : ℕ) * Real.exp (-(3 * π / 2) * x ^ (2 : ℕ))) (volume : Measure ℝ) :=
       (integrable_exp_neg_mul_sq (by positivity)).const_mul _
     refine hint.congr ?_
     filter_upwards with x
-    rw [mul_pow, sq (Real.exp (-(3 * π / 4) * x ^ 2)), ← Real.exp_add]
+    rw [mul_pow, sq (Real.exp (-(3 * π / 4) * x ^ (2 : ℕ))), ← Real.exp_add]
     ring_nf
   refine hdom.of_le hcont.aestronglyMeasurable ?_
   filter_upwards with x
-  have hdomnn : (0 : ℝ) ≤ Real.exp (a ^ 2 / π) * Real.exp (-(3 * π / 4) * x ^ 2) := by
+  have hdomnn : (0 : ℝ) ≤ Real.exp (a ^ (2 : ℕ) / π) * Real.exp (-(3 * π / 4) * x ^ (2 : ℕ)) := by
     positivity
   rw [Real.norm_eq_abs, Real.norm_eq_abs,
     abs_of_nonneg (mul_nonneg (gaussReal_pos x).le (Real.exp_pos _).le),

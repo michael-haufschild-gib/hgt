@@ -29,7 +29,7 @@ theorem prolate_pos_on_right_forbidden_region
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = chi * Φ y)
     (hΦ1 : Φ 1 = 1) (hy₀0 : 0 ≤ y₀)
-    (hQ : ∀ y ∈ Icc y₀ 1, 0 ≤ chi + c ^ 2 * y ^ 2) :
+    (hQ : ∀ y ∈ Icc y₀ 1, 0 ≤ chi + c ^ (2 : ℕ) * y ^ (2 : ℕ)) :
     ∀ y ∈ Icc y₀ 1, 0 < Φ y := by
   intro x hx
   by_contra hnot
@@ -76,7 +76,7 @@ theorem prolate_pos_on_right_forbidden_region
   have hz0 : -1 < z := by
     have hx0 : 0 ≤ x := le_trans hy₀0 hx.1
     linarith [hzIcc.1]
-  have hQz : ∀ t ∈ Icc z 1, 0 ≤ chi + c ^ 2 * t ^ 2 := by
+  have hQz : ∀ t ∈ Icc z 1, 0 ≤ chi + c ^ (2 : ℕ) * t ^ (2 : ℕ) := by
     intro t ht
     exact hQ t ⟨le_trans hx.1 (le_trans hzIcc.1 ht.1), ht.2⟩
   have hanti := antitoneOn_of_turning hsm heig hz0 hpos hQz
@@ -90,7 +90,7 @@ theorem prolateOuterStart_mem_Ico {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s < 1) :
   have harg0 : 0 ≤ (1 + s) / 2 := by linarith
   have harg1 : (1 + s) / 2 < 1 := by linarith
   refine ⟨Real.sqrt_nonneg _, ?_⟩
-  have hsquare : Real.sqrt ((1 + s) / 2) ^ 2 = (1 + s) / 2 :=
+  have hsquare : Real.sqrt ((1 + s) / 2) ^ (2 : ℕ) = (1 + s) / 2 :=
     Real.sq_sqrt harg0
   dsimp only [prolateOuterStart]
   nlinarith [Real.sqrt_nonneg ((1 + s) / 2)]
@@ -100,13 +100,13 @@ theorem prolateOuterStart_mem_Ico {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s < 1) :
 theorem radial_separation_lt_sq_of_outerStart_le
     {s y : ℝ} (hs0 : 0 ≤ s) (hs1 : s < 1)
     (hy : prolateOuterStart s ≤ y) :
-    s < y ^ 2 := by
+    s < y ^ (2 : ℕ) := by
   have hstart0 : 0 ≤ prolateOuterStart s := Real.sqrt_nonneg _
   have hy0 : 0 ≤ y := hstart0.trans hy
   have harg0 : 0 ≤ (1 + s) / 2 := by linarith
-  have hstartSq : prolateOuterStart s ^ 2 = (1 + s) / 2 := by
+  have hstartSq : prolateOuterStart s ^ (2 : ℕ) = (1 + s) / 2 := by
     exact Real.sq_sqrt harg0
-  have hsq : prolateOuterStart s ^ 2 ≤ y ^ 2 :=
+  have hsq : prolateOuterStart s ^ (2 : ℕ) ≤ y ^ (2 : ℕ) :=
     pow_le_pow_left₀ hstart0 hy 2
   rw [hstartSq] at hsq
   linarith
@@ -115,13 +115,13 @@ theorem radial_separation_lt_sq_of_outerStart_le
 theorem outer_sign_of_prolateOuterStart_le
     {c s y : ℝ} (hs0 : 0 ≤ s)
     (hy : prolateOuterStart s ≤ y) :
-    c ^ 2 * (1 - 2 * y ^ 2) ≤ -(s * c ^ 2) := by
+    c ^ (2 : ℕ) * (1 - 2 * y ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)) := by
   have hstart0 : 0 ≤ prolateOuterStart s := Real.sqrt_nonneg _
   have hy0 : 0 ≤ y := hstart0.trans hy
   have harg0 : 0 ≤ (1 + s) / 2 := by linarith
-  have hstartSq : prolateOuterStart s ^ 2 = (1 + s) / 2 :=
+  have hstartSq : prolateOuterStart s ^ (2 : ℕ) = (1 + s) / 2 :=
     Real.sq_sqrt harg0
-  have hsq : prolateOuterStart s ^ 2 ≤ y ^ 2 :=
+  have hsq : prolateOuterStart s ^ (2 : ℕ) ≤ y ^ (2 : ℕ) :=
     pow_le_pow_left₀ hstart0 hy 2
   rw [hstartSq] at hsq
   nlinarith [sq_nonneg c]

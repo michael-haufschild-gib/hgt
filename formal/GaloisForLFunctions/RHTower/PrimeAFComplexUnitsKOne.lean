@@ -85,7 +85,7 @@ def additiveMultiplicativeIntEquiv : Additive (Multiplicative ℤ) ≃+ ℤ wher
 /-- Fundamental-group definition of the scalar circle operator-`K₁` group. -/
 abbrev ComplexUnitsOperatorKOne := Additive (FundamentalGroup (Units ℂ) 1)
 
-noncomputable local instance : CommGroup (FundamentalGroup (Units ℂ) 1) :=
+noncomputable local instance primeAFComplexUnitsKOneInst1 : CommGroup (FundamentalGroup (Units ℂ) 1) :=
   fundamentalGroupCommGroup
 
 /-- Exact Bott computation in the literal fundamental-group model. -/

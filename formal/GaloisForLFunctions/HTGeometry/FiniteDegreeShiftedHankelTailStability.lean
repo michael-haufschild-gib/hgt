@@ -22,7 +22,7 @@ def finiteDegreeShiftedHankel (m : ℕ → ℝ) (d : ℕ) :
 
 /-- The Frobenius tail budget formed from the shifted moment budgets. -/
 noncomputable def finiteDegreeShiftedHankelFrobeniusBudget (eta : ℕ → ℝ) (d : ℕ) : ℝ :=
-  √(∑ i : Fin (d + 1), ∑ j : Fin (d + 1), eta (i.1 + j.1 + 1) ^ 2)
+  √(∑ i : Fin (d + 1), ∑ j : Fin (d + 1), eta (i.1 + j.1 + 1) ^ (2 : ℕ))
 
 /-- The exact absolute row-sum tail budget of a shifted Hankel block. -/
 noncomputable def finiteDegreeShiftedHankelRowSumBudget (eta : ℕ → ℝ) (d : ℕ) : ℝ :=
@@ -55,7 +55,7 @@ theorem finiteDegreeShiftedHankel_add (L E : ℕ → ℝ) (d : ℕ) :
 theorem abs_dotProduct_mulVec_le_frobenius {n : ℕ}
     (R : Matrix (Fin n) (Fin n) ℝ) (x : Fin n → ℝ) :
     |x ⬝ᵥ R *ᵥ x| ≤
-      √(∑ i : Fin n, ∑ j : Fin n, |R i j| ^ 2) * (x ⬝ᵥ x) := by
+      √(∑ i : Fin n, ∑ j : Fin n, |R i j| ^ (2 : ℕ)) * (x ⬝ᵥ x) := by
   have hquad : x ⬝ᵥ R *ᵥ x = ∑ i, ∑ j, x i * R i j * x j := by
     rw [dotProduct]
     apply Finset.sum_congr rfl
@@ -84,8 +84,8 @@ theorem abs_dotProduct_mulVec_le_frobenius {n : ℕ}
         ring
   have hcs :
       (∑ i : Fin n, ∑ j : Fin n, |R i j| * |x i * x j|) ≤
-        √(∑ i : Fin n, ∑ j : Fin n, |R i j| ^ 2) *
-          √(∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ 2) := by
+        √(∑ i : Fin n, ∑ j : Fin n, |R i j| ^ (2 : ℕ)) *
+          √(∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ (2 : ℕ)) := by
     have h := Real.sum_mul_le_sqrt_mul_sqrt
       (Finset.univ : Finset (Fin n × Fin n))
       (fun ij : Fin n × Fin n => |R ij.1 ij.2|)
@@ -94,20 +94,20 @@ theorem abs_dotProduct_mulVec_le_frobenius {n : ℕ}
     rw [Finset.sum_product, Finset.sum_product, Finset.sum_product] at h
     simpa using h
   have hsquare :
-      √(∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ 2) = x ⬝ᵥ x := by
+      √(∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ (2 : ℕ)) = x ⬝ᵥ x := by
     have hsum :
-        (∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ 2) = (x ⬝ᵥ x) ^ 2 := by
+        (∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ (2 : ℕ)) = (x ⬝ᵥ x) ^ (2 : ℕ) := by
       calc
-        (∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ 2) =
-            ∑ i, ∑ j, x i ^ 2 * x j ^ 2 := by
+        (∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ (2 : ℕ)) =
+            ∑ i, ∑ j, x i ^ (2 : ℕ) * x j ^ (2 : ℕ) := by
               apply Finset.sum_congr rfl
               intro i _
               apply Finset.sum_congr rfl
               intro j _
               rw [sq_abs, mul_pow]
-        _ = (∑ i, x i ^ 2) * ∑ j, x j ^ 2 := by
+        _ = (∑ i, x i ^ (2 : ℕ)) * ∑ j, x j ^ (2 : ℕ) := by
               rw [Finset.sum_mul_sum]
-        _ = (x ⬝ᵥ x) ^ 2 := by
+        _ = (x ⬝ᵥ x) ^ (2 : ℕ) := by
               simp only [dotProduct, pow_two]
     rw [hsum, Real.sqrt_sq_eq_abs, abs_of_nonneg]
     rw [dotProduct]
@@ -115,9 +115,9 @@ theorem abs_dotProduct_mulVec_le_frobenius {n : ℕ}
   calc
     |∑ i, ∑ j, x i * R i j * x j| ≤
         ∑ i, ∑ j, |R i j| * |x i * x j| := habs
-    _ ≤ √(∑ i : Fin n, ∑ j : Fin n, |R i j| ^ 2) *
-          √(∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ 2) := hcs
-    _ = √(∑ i : Fin n, ∑ j : Fin n, |R i j| ^ 2) * (x ⬝ᵥ x) := by rw [hsquare]
+    _ ≤ √(∑ i : Fin n, ∑ j : Fin n, |R i j| ^ (2 : ℕ)) *
+          √(∑ i : Fin n, ∑ j : Fin n, |x i * x j| ^ (2 : ℕ)) := hcs
+    _ = √(∑ i : Fin n, ∑ j : Fin n, |R i j| ^ (2 : ℕ)) * (x ⬝ᵥ x) := by rw [hsquare]
 
 /-- Entrywise shifted-moment bounds control the exact Frobenius tail budget. -/
 theorem shiftedHankelFrobeniusBudget_le
@@ -125,7 +125,7 @@ theorem shiftedHankelFrobeniusBudget_le
     (hE : ∀ i j : Fin (d + 1),
       |E (i.1 + j.1 + 1)| ≤ eta (i.1 + j.1 + 1)) :
     √(∑ i : Fin (d + 1), ∑ j : Fin (d + 1),
-        |E (i.1 + j.1 + 1)| ^ 2) ≤
+        |E (i.1 + j.1 + 1)| ^ (2 : ℕ)) ≤
       finiteDegreeShiftedHankelFrobeniusBudget eta d := by
   unfold finiteDegreeShiftedHankelFrobeniusBudget
   apply Real.sqrt_le_sqrt
@@ -152,7 +152,7 @@ theorem abs_shiftedHankelTailQuadratic_le_frobeniusBudget
   calc
     |x ⬝ᵥ finiteDegreeShiftedHankel E d *ᵥ x| ≤
         √(∑ i : Fin (d + 1), ∑ j : Fin (d + 1),
-          |E (i.1 + j.1 + 1)| ^ 2) * (x ⬝ᵥ x) := by
+          |E (i.1 + j.1 + 1)| ^ (2 : ℕ)) * (x ⬝ᵥ x) := by
             simpa only [finiteDegreeShiftedHankel] using hquad
     _ ≤ finiteDegreeShiftedHankelFrobeniusBudget eta d * (x ⬝ᵥ x) :=
       mul_le_mul_of_nonneg_right hbudget hnorm
@@ -342,7 +342,7 @@ theorem abs_shiftedHankelTailQuadratic_le_rowSumBudget
       intro j _
       rw [abs_mul]
       ring
-    _ ≤ finiteDegreeShiftedHankelRowSumBudget eta d * ∑ i, (x i) ^ 2 := hbound
+    _ ≤ finiteDegreeShiftedHankelRowSumBudget eta d * ∑ i, (x i) ^ (2 : ℕ) := hbound
     _ = finiteDegreeShiftedHankelRowSumBudget eta d * (x ⬝ᵥ x) := by
       simp only [dotProduct, pow_two]
 

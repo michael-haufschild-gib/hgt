@@ -36,13 +36,13 @@ theorem exists_periodic_clock_energy_conserved [Nontrivial E] (hbpos : 0 < b) (h
             (measurable_kgRealPotSymbol (measurable_kgFlatPot (E := E) b)) hbpos.le
             (norm_kgRealPotSymbol_le (abs_kgFlatPot_le hbpos.le))) (Real.sqrt b))
           (kgFreqLowOp (Real.sqrt b) z) (kgLowPassOp (Real.sqrt b) y)
-          ((n : ℝ) * (2 * Real.pi))‖ ^ 2
+          ((n : ℝ) * (2 * Real.pi))‖ ^ (2 : ℕ)
         + ‖kgFieldVelT (fun _ : ℝ => kgBandOp (fourierMulCLM
             (measurable_kgRealPotSymbol (measurable_kgFlatPot (E := E) b)) hbpos.le
             (norm_kgRealPotSymbol_le (abs_kgFlatPot_le hbpos.le))) (Real.sqrt b))
           (kgFreqLowOp (Real.sqrt b) z) (kgLowPassOp (Real.sqrt b) y)
-          ((n : ℝ) * (2 * Real.pi))‖ ^ 2
-        = ‖kgFreqLowOp (Real.sqrt b) z‖ ^ 2 + ‖kgLowPassOp (Real.sqrt b) y‖ ^ 2 := by
+          ((n : ℝ) * (2 * Real.pi))‖ ^ (2 : ℕ)
+        = ‖kgFreqLowOp (Real.sqrt b) z‖ ^ (2 : ℕ) + ‖kgLowPassOp (Real.sqrt b) y‖ ^ (2 : ℕ) := by
   have hb0 : (0 : ℝ) ≤ b := hbpos.le
   have hRpos : 0 < Real.sqrt b := Real.sqrt_pos.mpr hbpos
   obtain ⟨z, hzfix, hzne⟩ := exists_ne_zero_eigen_state (E := E) hRpos y

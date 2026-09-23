@@ -50,9 +50,9 @@ private theorem radial_second_continuous {F : ℝ × ℝ → ℂ} (hF : ContDiff
 /-- Darboux's equation for the circular mean of the specified original Maass form. -/
 theorem mean_polar {Γ : Subgroup SL2R} {lam : ℝ}
     (f : MaassCuspEigenform Γ lam) (z : ℍ) (r : ℝ) :
-    (Real.sinh r : ℂ)^2 * deriv (deriv (mean (ofMaass f) z)) r +
+    (Real.sinh r : ℂ)^(2 : ℕ) * deriv (deriv (mean (ofMaass f) z)) r +
       (Real.sinh r : ℂ)*(Real.cosh r : ℂ)*deriv (mean (ofMaass f) z) r =
-      -(Real.sinh r : ℂ)^2*(lam : ℂ)*mean (ofMaass f) z r := by
+      -(Real.sinh r : ℂ)^(2 : ℕ)*(lam : ℂ)*mean (ofMaass f) z r := by
   let F : ℝ × ℝ → ℂ := fun p => f.1.1 (circlePoint p.1 p.2 z)
   have hF : ContDiff ℝ ∞ F := circle_source_smooth (ofMaass f) z
   have hA : ContDiff ℝ ∞ (fun theta => F (r,theta)) :=
@@ -64,14 +64,14 @@ theorem mean_polar {Γ : Subgroup SL2R} {lam : ℝ}
   have hang : average (deriv (deriv (fun theta => F (r,theta)))) = 0 :=
     average_periodic_deriv hA1 (periodic_deriv hA hp)
   have hpoint : (fun theta =>
-      (Real.sinh r : ℂ)^2 * deriv (deriv (fun t => F (t,theta))) r +
+      (Real.sinh r : ℂ)^(2 : ℕ) * deriv (deriv (fun t => F (t,theta))) r +
       (Real.sinh r : ℂ)*(Real.cosh r : ℂ)*deriv (fun t => F (t,theta)) r +
       deriv (deriv (fun t => F (r,t))) theta) =
-      fun theta => -(Real.sinh r : ℂ)^2*(lam : ℂ)*F (r,theta) :=
+      fun theta => -(Real.sinh r : ℂ)^(2 : ℕ)*(lam : ℂ)*F (r,theta) :=
     funext fun theta => maass_circle_polar f r theta z
   have h := congrArg average hpoint
   have hc1 : Continuous (fun theta =>
-      (Real.sinh r : ℂ)^2 * deriv (deriv (fun t => F (t,theta))) r) :=
+      (Real.sinh r : ℂ)^(2 : ℕ) * deriv (deriv (fun t => F (t,theta))) r) :=
     (radial_second_continuous hF r).const_mul _
   have hc2 : Continuous (fun theta =>
       (Real.sinh r : ℂ)*(Real.cosh r : ℂ)*deriv (fun t => F (t,theta)) r) :=

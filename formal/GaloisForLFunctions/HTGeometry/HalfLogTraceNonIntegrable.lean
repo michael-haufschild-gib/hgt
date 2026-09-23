@@ -46,37 +46,37 @@ theorem norm_ge_of_halfLog_asymptotic {X : Type*} [NormedAddCommGroup X] [Normed
 theorem not_integrableOn_sq_of_halfLog_trace {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     {F : ℝ → X} {β : X} {C L₁ : ℝ} (hβ : β ≠ 0) (hL₁ : 0 < L₁)
     (hasymp : ∀ L ∈ Ioi L₁, ‖F L - (1 / Real.sqrt L) • β‖ ≤ C / L) :
-    ¬ IntegrableOn (fun L => ‖F L‖ ^ 2) (Ioi L₁) volume := by
+    ¬ IntegrableOn (fun L => ‖F L‖ ^ (2 : ℕ)) (Ioi L₁) volume := by
   intro hint
   have hβ0 : 0 < ‖β‖ := norm_pos_iff.mpr hβ
-  set L₂ : ℝ := max L₁ (1 + (2 * C / ‖β‖) ^ 2) with hL₂
+  set L₂ : ℝ := max L₁ (1 + (2 * C / ‖β‖) ^ (2 : ℕ)) with hL₂
   have hL₂pos : 0 < L₂ := lt_of_lt_of_le hL₁ (le_max_left _ _)
   have hL₂ge : L₁ ≤ L₂ := le_max_left _ _
-  have hlower : ∀ L ∈ Ioi L₂, ‖β‖ ^ 2 / (4 * L) ≤ ‖F L‖ ^ 2 := by
+  have hlower : ∀ L ∈ Ioi L₂, ‖β‖ ^ (2 : ℕ) / (4 * L) ≤ ‖F L‖ ^ (2 : ℕ) := by
     intro L hL
     have hL2 : L₂ < L := hL
     have hLpos : 0 < L := lt_trans hL₂pos hL2
-    have hLbig : 1 + (2 * C / ‖β‖) ^ 2 ≤ L := le_trans (le_max_right _ _) hL2.le
+    have hLbig : 1 + (2 * C / ‖β‖) ^ (2 : ℕ) ≤ L := le_trans (le_max_right _ _) hL2.le
     have hsq : 0 < Real.sqrt L := Real.sqrt_pos.mpr hLpos
     have hC : 2 * C ≤ ‖β‖ * Real.sqrt L := by
       rcases le_or_gt C 0 with hC0 | hC0
       · nlinarith [hsq, hβ0]
       · have hsqrtge : 2 * C / ‖β‖ ≤ Real.sqrt L := by
           have hnn : 0 ≤ 2 * C / ‖β‖ := by positivity
-          have hle : (2 * C / ‖β‖) ^ 2 ≤ L := by linarith
+          have hle : (2 * C / ‖β‖) ^ (2 : ℕ) ≤ L := by linarith
           nlinarith [Real.sq_sqrt hLpos.le, Real.sqrt_nonneg L, hle, hnn]
         rw [div_le_iff₀ hβ0] at hsqrtge
         linarith
     have hin : L ∈ Ioi L₁ := lt_of_le_of_lt hL₂ge hL2
     have hnorm := norm_ge_of_halfLog_asymptotic hβ hLpos hC (hasymp L hin)
-    have hval : ‖β‖ ^ 2 / (4 * L) = (‖β‖ / (2 * Real.sqrt L)) ^ 2 := by
+    have hval : ‖β‖ ^ (2 : ℕ) / (4 * L) = (‖β‖ / (2 * Real.sqrt L)) ^ (2 : ℕ) := by
       rw [div_pow, mul_pow, Real.sq_sqrt hLpos.le]
       ring_nf
     rw [hval]
     exact pow_le_pow_left₀ (by positivity) hnorm 2
-  have hintL₂ : IntegrableOn (fun L => ‖F L‖ ^ 2) (Ioi L₂) volume :=
+  have hintL₂ : IntegrableOn (fun L => ‖F L‖ ^ (2 : ℕ)) (Ioi L₂) volume :=
     hint.mono_set (Ioi_subset_Ioi hL₂ge)
-  have hminor : IntegrableOn (fun L => ‖β‖ ^ 2 / (4 * L)) (Ioi L₂) volume := by
+  have hminor : IntegrableOn (fun L => ‖β‖ ^ (2 : ℕ) / (4 * L)) (Ioi L₂) volume := by
     refine Integrable.mono' hintL₂ ?_ ?_
     · apply Measurable.aestronglyMeasurable
       fun_prop
@@ -85,11 +85,11 @@ theorem not_integrableOn_sq_of_halfLog_trace {X : Type*} [NormedAddCommGroup X] 
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
       exact hlower L hL
   have hinv : IntegrableOn (fun L : ℝ => L⁻¹) (Ioi L₂) volume := by
-    have hscale : IntegrableOn (fun L : ℝ => 4 / ‖β‖ ^ 2 * (‖β‖ ^ 2 / (4 * L)))
-        (Ioi L₂) volume := hminor.const_mul (4 / ‖β‖ ^ 2)
+    have hscale : IntegrableOn (fun L : ℝ => 4 / ‖β‖ ^ (2 : ℕ) * (‖β‖ ^ (2 : ℕ) / (4 * L)))
+        (Ioi L₂) volume := hminor.const_mul (4 / ‖β‖ ^ (2 : ℕ))
     refine hscale.congr_fun (fun L hL => ?_) measurableSet_Ioi
     have hLpos : 0 < L := lt_trans hL₂pos hL
-    have hβ2 : ‖β‖ ^ 2 ≠ 0 := by positivity
+    have hβ2 : ‖β‖ ^ (2 : ℕ) ≠ 0 := by positivity
     field_simp
   exact not_integrableOn_Ioi_inv hinv
 

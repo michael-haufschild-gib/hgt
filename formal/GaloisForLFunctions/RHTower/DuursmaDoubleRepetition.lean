@@ -32,19 +32,19 @@ The coefficients `1,3,7` are the terms through degree two of
 after multiplying `(a+bT+cT²)` by `(y(1-T)+xT)⁴`. -/
 def binaryDegreeTwoDuursmaCoefficient
     (a b c x y : ℝ) : ℝ :=
-  a * (6 * y ^ 2 * (x - y) ^ 2) +
-    (3 * a + b) * (4 * y ^ 3 * (x - y)) +
-      (7 * a + 3 * b + c) * y ^ 4
+  a * (6 * y ^ (2 : ℕ) * (x - y) ^ (2 : ℕ)) +
+    (3 * a + b) * (4 * y ^ (3 : ℕ) * (x - y)) +
+      (7 * a + 3 * b + c) * y ^ (4 : ℕ)
 
 /-- `(W(x,y)-x⁴)/(2-1)` for the binary self-dual `[4,2,2]` double repetition code. -/
 def doubleRepetitionWeightRemainder (x y : ℝ) : ℝ :=
-  2 * x ^ 2 * y ^ 2 + y ^ 4
+  2 * x ^ (2 : ℕ) * y ^ (2 : ℕ) + y ^ (4 : ℕ)
 
 theorem binaryDegreeTwoDuursmaCoefficient_expanded
     (a b c x y : ℝ) :
     binaryDegreeTwoDuursmaCoefficient a b c x y =
-      6 * a * x ^ 2 * y ^ 2 + 4 * b * x * y ^ 3 +
-        (a - b + c) * y ^ 4 := by
+      6 * a * x ^ (2 : ℕ) * y ^ (2 : ℕ) + 4 * b * x * y ^ (3 : ℕ) +
+        (a - b + c) * y ^ (4 : ℕ) := by
   unfold binaryDegreeTwoDuursmaCoefficient
   ring
 
@@ -82,7 +82,7 @@ def repetitionDuursmaZeta (_ : ℂ) : ℂ := 1
 
 /-- Zeta polynomial of the binary self-dual `[4,2,2]` double repetition code. -/
 def doubleRepetitionDuursmaZeta (T : ℂ) : ℂ :=
-  (1 + 2 * T ^ 2) / 3
+  (1 + 2 * T ^ (2 : ℕ)) / 3
 
 theorem doubleRepetitionDuursmaZeta_eq_scaled_iharaBlock (T : ℂ) :
     doubleRepetitionDuursmaZeta T =
@@ -95,7 +95,7 @@ theorem doubleRepetitionDuursmaZeta_eq_scaled_iharaBlock (T : ℂ) :
 theorem doubleRepetitionDuursmaZeta_directSumInteraction (T : ℂ) :
     doubleRepetitionDuursmaZeta T =
       repetitionDuursmaZeta T * repetitionDuursmaZeta T +
-        (2 / 3 : ℂ) * (T ^ 2 - 1) := by
+        (2 / 3 : ℂ) * (T ^ (2 : ℕ) - 1) := by
   unfold doubleRepetitionDuursmaZeta repetitionDuursmaZeta
   ring
 

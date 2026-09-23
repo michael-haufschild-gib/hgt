@@ -92,8 +92,8 @@ theorem sourceCayleyResidueMode_horizonConservation_entropy
     let x := sourceCayleyObservationTime c rho tau
     x ^ r / r.factorial *
         ‖iteratedDeriv r
-          (cayleyPoleResidueMode m c rho) (x : ℂ)‖ ^ 2 =
-      ‖m‖ ^ 2 *
+          (cayleyPoleResidueMode m c rho) (x : ℂ)‖ ^ (2 : ℕ) =
+      ‖m‖ ^ (2 : ℕ) *
         Real.exp
           (-(leastAtomTransferEntropy q (2 * c.re - 1) rho -
               leastAtomTransferEntropy q (2 * c.re - 1)

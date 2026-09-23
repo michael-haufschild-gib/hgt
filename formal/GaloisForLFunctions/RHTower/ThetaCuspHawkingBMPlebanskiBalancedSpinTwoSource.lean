@@ -16,7 +16,7 @@ These two components are recovered exactly from the constructed jet, while its s
 data agree with the zero jet.  Nevertheless, at every positive physical rapidity, its diagonal
 BM-pulled Plebanski bracket is
 
-`-sech(xi)^2 * spinPlus * spinMinus / 64`.
+`-sech(xi)^(2 : ℕ) * spinPlus * spinMinus / 64`.
 
 Thus the local angular source is balanced: it pairs one `+2` component with one `-2` component,
 and no scalar Laplacian signature can recover the product.  Because the first jet vanishes, the
@@ -93,7 +93,7 @@ theorem ads4PlebanskiJacobiDoubleBracket_pureSpinTwo_eq
         0 (xi : ℝ) 1
         (d4BMPureSpinTwoHorizonHessianSecondJet spinPlus spinMinus)
         (d4BMPureSpinTwoHorizonHessianSecondJet spinPlus spinMinus) =
-      -(d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ 2 * spinPlus * spinMinus / 64 := by
+      -(d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ (2 : ℕ) * spinPlus * spinMinus / 64 := by
   have haR : Real.tanh (xi : ℝ) ≠ 0 := by
     rw [Real.tanh_eq_sinh_div_cosh]
     exact div_ne_zero (Real.sinh_ne_zero.mpr (ne_of_gt xi.property))
@@ -107,12 +107,12 @@ theorem ads4PlebanskiJacobiDoubleBracket_pureSpinTwo_eq
   have haComplex : Complex.tanh ((xi : ℝ) : ℂ) ≠ 0 := by
     simpa using ha
   have haCancel :
-      (Complex.tanh ((xi : ℝ) : ℂ))⁻¹ * Complex.tanh ((xi : ℝ) : ℂ) ^ 2 =
+      (Complex.tanh ((xi : ℝ) : ℂ))⁻¹ * Complex.tanh ((xi : ℝ) : ℂ) ^ (2 : ℕ) =
         Complex.tanh ((xi : ℝ) : ℂ) := by
     field_simp [haComplex]
   have hbCancel :
       (d4BMRindlerRapiditySech (xi : ℝ) : ℂ)⁻¹ *
-          (d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ 2 =
+          (d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ (2 : ℕ) =
         (d4BMRindlerRapiditySech (xi : ℝ) : ℂ) := by
     field_simp [hb]
   simp [ads4PlebanskiJacobiDoubleBracketOnBMFullSecondJets,
@@ -152,7 +152,7 @@ theorem ads4PlebanskiJacobiDoubleBracket_unitPureSpinTwo_ne_zero
     exact_mod_cast hbR
   simpa only [mul_one] using
     (div_ne_zero (neg_ne_zero.mpr (pow_ne_zero 2 hb)) (by norm_num) :
-      -(d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ 2 / 64 ≠ 0)
+      -(d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ (2 : ℕ) / 64 ≠ 0)
 
 end
 

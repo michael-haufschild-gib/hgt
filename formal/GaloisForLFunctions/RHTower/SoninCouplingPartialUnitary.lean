@@ -62,7 +62,7 @@ theorem tendsto_norm_adjoint_mul_soninApertureCoupling_soninPacketEven_sub
     (a b c : ℝ) (ha : 0 < a) (hb : 0 < b) (hab : a < b) (hbc : b < c) (q : ℝ)
     (haq : a < q) (hqb : q < b)
     (r : ℕ → ℝ) (hrpos : ∀ n, 0 < r n) (hrgt : ∀ n, 1 < r n)
-    (hsq : ∀ n, 0 < r n ^ 2) (hcr : ∀ n, c ≤ r n * a) (hr : Tendsto r atTop atTop) :
+    (hsq : ∀ n, 0 < r n ^ (2 : ℕ)) (hcr : ∀ n, c ≤ r n * a) (hr : Tendsto r atTop atTop) :
     Tendsto (fun n : ℕ =>
         ‖ContinuousLinearMap.adjoint
             (evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n))
@@ -106,7 +106,7 @@ theorem tendsto_norm_soninApertureCoupling_adjoint_soninDilatedPacket_sub
     (a b c : ℝ) (ha : 0 < a) (hb : 0 < b) (hab : a < b) (hbc : b < c) (q : ℝ)
     (haq : a < q) (hqb : q < b)
     (r : ℕ → ℝ) (hrpos : ∀ n, 0 < r n) (hrgt : ∀ n, 1 < r n)
-    (hsq : ∀ n, 0 < r n ^ 2) (hcr : ∀ n, c ≤ r n * a) (hr : Tendsto r atTop atTop) :
+    (hsq : ∀ n, 0 < r n ^ (2 : ℕ)) (hcr : ∀ n, c ≤ r n * a) (hr : Tendsto r atTop atTop) :
     Tendsto (fun n : ℕ =>
         ‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n)
             (ContinuousLinearMap.adjoint

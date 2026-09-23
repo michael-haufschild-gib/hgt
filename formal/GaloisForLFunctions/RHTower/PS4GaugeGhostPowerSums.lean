@@ -19,7 +19,7 @@ namespace RHTower
 
 /-- The PS4 inverse image of the quadratic gauge sequence, before multiplying by `c`. -/
 def ps4QuadraticGhost (j : ℕ) : ℤ :=
-  ∑ n ∈ range (j + 1), (-1 : ℤ) ^ (n + 1) * j.choose n * (n : ℤ) ^ 2
+  ∑ n ∈ range (j + 1), (-1 : ℤ) ^ (n + 1) * j.choose n * (n : ℤ) ^ (2 : ℕ)
 
 theorem neg_one_pow_ps4_sign {j n : ℕ} (hn : n ≤ j) :
     (-1 : ℤ) ^ (n + 1) = (-1 : ℤ) ^ (j + 1) * (-1 : ℤ) ^ (j - n) := by
@@ -30,14 +30,14 @@ theorem neg_one_pow_ps4_sign {j n : ℕ} (hn : n ≤ j) :
     _ = (-1 : ℤ) ^ (2 * (j - n) + (n + 1)) := by
       congr 1
       omega
-    _ = ((-1 : ℤ) ^ 2) ^ (j - n) * (-1 : ℤ) ^ (n + 1) := by
+    _ = ((-1 : ℤ) ^ (2 : ℕ)) ^ (j - n) * (-1 : ℤ) ^ (n + 1) := by
       rw [pow_add, pow_mul]
     _ = (-1 : ℤ) ^ (n + 1) := by norm_num
 
 theorem ps4QuadraticGhost_eq_signed_fwdDiff (j : ℕ) :
     ps4QuadraticGhost j =
       (-1 : ℤ) ^ (j + 1) *
-        Δ_[(1 : ℤ)]^[j] (fun r : ℤ => r ^ 2) 0 := by
+        Δ_[(1 : ℤ)]^[j] (fun r : ℤ => r ^ (2 : ℕ)) 0 := by
   rw [fwdDiff_iter_eq_sum_shift]
   simp only [ps4QuadraticGhost, zero_add, nsmul_eq_mul, Int.reduceNeg, mul_one]
   rw [Finset.mul_sum]
@@ -56,7 +56,7 @@ theorem ps4QuadraticGhost_two : ps4QuadraticGhost 2 = -2 := by
 theorem ps4QuadraticGhost_eq_zero {j : ℕ} (hj : 3 ≤ j) :
     ps4QuadraticGhost j = 0 := by
   rw [ps4QuadraticGhost_eq_signed_fwdDiff]
-  have hz : Δ_[(1 : ℤ)]^[j] (fun r : ℤ => r ^ 2) = 0 :=
+  have hz : Δ_[(1 : ℤ)]^[j] (fun r : ℤ => r ^ (2 : ℕ)) = 0 :=
     fwdDiff_iter_pow_eq_zero_of_lt (by omega)
   rw [hz]
   simp

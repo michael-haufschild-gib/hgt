@@ -31,20 +31,20 @@ theorem finite_symmetric_coupling_inner_eq_marginal_sub_half_dirichlet
     (hsymm : ∀ p ∈ P, ∀ q ∈ P, C p q = C q p)
     (hrow : ∀ p ∈ P, ∑ q ∈ P, C p q = m p) :
     (∑ p ∈ P, ∑ q ∈ P, C p q * inner ℝ (φ p) (φ q)) =
-      (∑ p ∈ P, m p * ‖φ p‖ ^ 2) -
+      (∑ p ∈ P, m p * ‖φ p‖ ^ (2 : ℕ)) -
         (1 / 2 : ℝ) *
-          ∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p - φ q‖ ^ 2 := by
+          ∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p - φ q‖ ^ (2 : ℕ) := by
   let L : ℝ := ∑ p ∈ P, ∑ q ∈ P, C p q * inner ℝ (φ p) (φ q)
-  let A : ℝ := ∑ p ∈ P, m p * ‖φ p‖ ^ 2
-  let D : ℝ := ∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p - φ q‖ ^ 2
+  let A : ℝ := ∑ p ∈ P, m p * ‖φ p‖ ^ (2 : ℕ)
+  let D : ℝ := ∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p - φ q‖ ^ (2 : ℕ)
   have hleft :
-      (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p‖ ^ 2) = A := by
+      (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p‖ ^ (2 : ℕ)) = A := by
     dsimp [A]
     apply Finset.sum_congr rfl
     intro p hp
     rw [← Finset.sum_mul, hrow p hp]
   have hright :
-      (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ q‖ ^ 2) = A := by
+      (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ q‖ ^ (2 : ℕ)) = A := by
     dsimp [A]
     rw [Finset.sum_comm]
     apply Finset.sum_congr rfl
@@ -60,9 +60,9 @@ theorem finite_symmetric_coupling_inner_eq_marginal_sub_half_dirichlet
   have hD : D = 2 * A - 2 * L := by
     dsimp [D, L]
     calc
-      (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p - φ q‖ ^ 2) =
+      (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p - φ q‖ ^ (2 : ℕ)) =
           (∑ p ∈ P, ∑ q ∈ P,
-            ((C p q * ‖φ p‖ ^ 2 + C p q * ‖φ q‖ ^ 2) -
+            ((C p q * ‖φ p‖ ^ (2 : ℕ) + C p q * ‖φ q‖ ^ (2 : ℕ)) -
               2 * (C p q * inner ℝ (φ p) (φ q)))) := by
         apply Finset.sum_congr rfl
         intro p hp
@@ -70,8 +70,8 @@ theorem finite_symmetric_coupling_inner_eq_marginal_sub_half_dirichlet
         intro q hq
         rw [norm_sub_sq_real]
         ring
-      _ = (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p‖ ^ 2) +
-          (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ q‖ ^ 2) -
+      _ = (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ p‖ ^ (2 : ℕ)) +
+          (∑ p ∈ P, ∑ q ∈ P, C p q * ‖φ q‖ ^ (2 : ℕ)) -
             2 * (∑ p ∈ P, ∑ q ∈ P,
               C p q * inner ℝ (φ p) (φ q)) := by
         simp_rw [Finset.sum_sub_distrib, Finset.sum_add_distrib,
@@ -148,7 +148,7 @@ def xiUnitDoubleCompletedRefinementApertureDirichletEnergy
   ∑ p ∈ P, ∑ q ∈ P,
     xiUnitDoubleCompletedRefinementCoupling P p q *
       ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p -
-        xiPhysicalPrimeLogCenteredApertureCarrier A m k q‖ ^ 2
+        xiPhysicalPrimeLogCenteredApertureCarrier A m k q‖ ^ (2 : ℕ)
 
 /-- **Forced pointed Dirichlet decomposition.** The previously unspecified completed response
 pairing is exactly its anchored source marginal minus half its indefinite prime-ratio energy. -/
@@ -156,7 +156,7 @@ theorem xiUnitDoubleCompletedRefinementAperturePairing_eq_marginal_sub_half_diri
     (P : Finset Nat.Primes) (A m k : ℝ) :
     xiUnitDoubleCompletedRefinementAperturePairing P A m k =
       (∑ p ∈ P, xiUnitDoubleCompletedRefinementMarginal p *
-        ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ 2) -
+        ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ (2 : ℕ)) -
       (1 / 2 : ℝ) *
         xiUnitDoubleCompletedRefinementApertureDirichletEnergy P A m k := by
   exact finite_symmetric_coupling_inner_eq_marginal_sub_half_dirichlet
@@ -184,7 +184,7 @@ def xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy
   ∑ p ∈ P, ∑ q ∈ P,
     xiPhysicalEndpointCompletedBalancedCoupling P p q *
       ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p -
-        xiPhysicalPrimeLogCenteredApertureCarrier A m k q‖ ^ 2
+        xiPhysicalPrimeLogCenteredApertureCarrier A m k q‖ ^ (2 : ℕ)
 
 /-- The corrected Dirichlet energy does not depend on the forced diagonal completion.  It is
 already the explicit off-diagonal source response, because the aperture distance vanishes on the
@@ -195,7 +195,7 @@ theorem xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy_eq_pairRespon
       ∑ p ∈ P, ∑ q ∈ P,
         xiPhysicalEndpointCompletedPairResponse p q *
           ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p -
-            xiPhysicalPrimeLogCenteredApertureCarrier A m k q‖ ^ 2 := by
+            xiPhysicalPrimeLogCenteredApertureCarrier A m k q‖ ^ (2 : ℕ) := by
   rw [xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy]
   apply Finset.sum_congr rfl
   intro p hp
@@ -214,7 +214,7 @@ theorem xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy_eq_kernel_dis
       ∑ p ∈ P, ∑ q ∈ P,
         physicalPrimeEndpointWeight p * physicalPrimeEndpointWeight q *
           xiPhysicalEndpointCompletedPrimeRatioRealKernel p q *
-            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ 2 := by
+            xiPhysicalPrimeLogApertureHilbertDistance A m k p q ^ (2 : ℕ) := by
   rw [xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy_eq_pairResponse]
   apply Finset.sum_congr rfl
   intro p hp
@@ -230,7 +230,7 @@ theorem xiPhysicalEndpointCompletedBalancedAperturePairing_eq_marginal_sub_half_
     (P : Finset Nat.Primes) (A m k : ℝ) :
     xiPhysicalEndpointCompletedBalancedAperturePairing P A m k =
       (∑ p ∈ P, physicalPrimeEndpointWeight p *
-        ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ 2) -
+        ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ (2 : ℕ)) -
       (1 / 2 : ℝ) *
         xiPhysicalEndpointCompletedBalancedApertureDirichletEnergy P A m k := by
   exact finite_symmetric_coupling_inner_eq_marginal_sub_half_dirichlet

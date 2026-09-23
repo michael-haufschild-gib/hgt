@@ -37,86 +37,86 @@ noncomputable section
 /-- **(24.93) without a nonvanishing transverse part.**  Any solution of the mass-shift equations
 has `M ≤ a + R`. -/
 theorem massOrbit_upper {R J a M K : ℝ} (hR : 0 ≤ R) (ha : 0 ≤ a) (hM : 0 < M)
-    (hsq : M ^ 2 - K ^ 2 = R ^ 2 - J ^ 2 + a ^ 2) (hprod : M * K = R * J) :
+    (hsq : M ^ (2 : ℕ) - K ^ (2 : ℕ) = R ^ (2 : ℕ) - J ^ (2 : ℕ) + a ^ (2 : ℕ)) (hprod : M * K = R * J) :
     M ≤ a + R := by
-  have hquart : M ^ 2 * (M ^ 2 - R ^ 2 + J ^ 2 - a ^ 2) = R ^ 2 * J ^ 2 := by
-    have hK : M ^ 2 * K ^ 2 = R ^ 2 * J ^ 2 := by
+  have hquart : M ^ (2 : ℕ) * (M ^ (2 : ℕ) - R ^ (2 : ℕ) + J ^ (2 : ℕ) - a ^ (2 : ℕ)) = R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
+    have hK : M ^ (2 : ℕ) * K ^ (2 : ℕ) = R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
       rw [← mul_pow, ← mul_pow, hprod]
     nlinarith [hsq, hK]
   have haR : 0 ≤ a + R := by linarith
   have haRnn : 0 ≤ a * R := mul_nonneg ha hR
-  have hkey : ((a + R) ^ 2 - M ^ 2) * (2 * a * R + M ^ 2 + J ^ 2)
-      = (a + R) ^ 2 * (2 * a * R + J ^ 2) - R ^ 2 * J ^ 2 := by
+  have hkey : ((a + R) ^ (2 : ℕ) - M ^ (2 : ℕ)) * (2 * a * R + M ^ (2 : ℕ) + J ^ (2 : ℕ))
+      = (a + R) ^ (2 : ℕ) * (2 * a * R + J ^ (2 : ℕ)) - R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
     linear_combination -hquart
-  have hfs : 0 ≤ (a + R) ^ 2 * (2 * a * R + J ^ 2) - R ^ 2 * J ^ 2 := by
+  have hfs : 0 ≤ (a + R) ^ (2 : ℕ) * (2 * a * R + J ^ (2 : ℕ)) - R ^ (2 : ℕ) * J ^ (2 : ℕ) := by
     nlinarith [haRnn, sq_nonneg J, sq_nonneg (a + R), sq_nonneg R]
-  have hfactor : 0 < 2 * a * R + M ^ 2 + J ^ 2 := by nlinarith [haRnn, sq_nonneg J, hM]
-  have hM2 : M ^ 2 ≤ (a + R) ^ 2 := by nlinarith [hkey, hfs, hfactor]
+  have hfactor : 0 < 2 * a * R + M ^ (2 : ℕ) + J ^ (2 : ℕ) := by nlinarith [haRnn, sq_nonneg J, hM]
+  have hM2 : M ^ (2 : ℕ) ≤ (a + R) ^ (2 : ℕ) := by nlinarith [hkey, hfs, hfactor]
   nlinarith [hM, haR]
 
 /-- **(24.108)** The mass gap of the orbit is bounded below by the real part of the spectral
 point. -/
 theorem parabolic_gap_lower {R J a M K : ℝ} (hR : 3 < R) (hJ : |J| ≤ 1 / 2) (ha : 0 < a)
-    (hM : 0 < M) (hsq : M ^ 2 - K ^ 2 = R ^ 2 - J ^ 2 + a ^ 2) (hprod : M * K = R * J) :
-    a * (R ^ 2 - 1 / 4) / (2 * a + R) ≤ a * (M - a) := by
+    (hM : 0 < M) (hsq : M ^ (2 : ℕ) - K ^ (2 : ℕ) = R ^ (2 : ℕ) - J ^ (2 : ℕ) + a ^ (2 : ℕ)) (hprod : M * K = R * J) :
+    a * (R ^ (2 : ℕ) - 1 / 4) / (2 * a + R) ≤ a * (M - a) := by
   have hRnn : (0 : ℝ) ≤ R := by linarith
   have hupper : M ≤ a + R := massOrbit_upper hRnn ha.le hM hsq hprod
-  have hJ2 : J ^ 2 ≤ 1 / 4 := by
+  have hJ2 : J ^ (2 : ℕ) ≤ 1 / 4 := by
     have habs := abs_le.1 hJ
     nlinarith [habs.1, habs.2]
-  have hprodlow : R ^ 2 - 1 / 4 ≤ (M - a) * (M + a) := by
+  have hprodlow : R ^ (2 : ℕ) - 1 / 4 ≤ (M - a) * (M + a) := by
     nlinarith [sq_nonneg K, hsq, hJ2]
   have hden : 0 < 2 * a + R := by linarith
   have hMa : M + a ≤ 2 * a + R := by linarith
   have hgapnn : 0 ≤ M - a := by
     nlinarith [hprodlow, hM, ha]
-  have hstep : (R ^ 2 - 1 / 4) / (2 * a + R) ≤ M - a := by
+  have hstep : (R ^ (2 : ℕ) - 1 / 4) / (2 * a + R) ≤ M - a := by
     rw [div_le_iff₀ hden]
     nlinarith [hprodlow, hgapnn, hMa, hM, ha]
-  calc a * (R ^ 2 - 1 / 4) / (2 * a + R) = a * ((R ^ 2 - 1 / 4) / (2 * a + R)) := by ring
+  calc a * (R ^ (2 : ℕ) - 1 / 4) / (2 * a + R) = a * ((R ^ (2 : ℕ) - 1 / 4) / (2 * a + R)) := by ring
     _ ≤ a * (M - a) := mul_le_mul_of_nonneg_left hstep ha.le
 
 /-- **(24.108)** The uniform form: the mass gap dominates a fixed positive multiple of the real
 part, for every mass at least one. -/
 theorem parabolic_gap_uniform_lower {R J a M K : ℝ} (hR : 3 < R) (hJ : |J| ≤ 1 / 2) (ha : 1 ≤ a)
-    (hM : 0 < M) (hsq : M ^ 2 - K ^ 2 = R ^ 2 - J ^ 2 + a ^ 2) (hprod : M * K = R * J) :
+    (hM : 0 < M) (hsq : M ^ (2 : ℕ) - K ^ (2 : ℕ) = R ^ (2 : ℕ) - J ^ (2 : ℕ) + a ^ (2 : ℕ)) (hprod : M * K = R * J) :
     35 / 108 * R ≤ a * (M - a) := by
   have hapos : 0 < a := by linarith
   have hbase := parabolic_gap_lower hR hJ hapos hM hsq hprod
   have hden : 0 < 2 * a + R := by linarith
   have hRpos : (0 : ℝ) < R := by linarith
-  have hsq9 : 9 ≤ R ^ 2 := by nlinarith
-  have hquarter : (35 : ℝ) / 36 * R ^ 2 ≤ R ^ 2 - 1 / 4 := by nlinarith
-  have hRle : R ≤ R ^ 2 := by nlinarith
-  have hkey : 35 / 108 * R ≤ a * (R ^ 2 - 1 / 4) / (2 * a + R) := by
+  have hsq9 : 9 ≤ R ^ (2 : ℕ) := by nlinarith
+  have hquarter : (35 : ℝ) / 36 * R ^ (2 : ℕ) ≤ R ^ (2 : ℕ) - 1 / 4 := by nlinarith
+  have hRle : R ≤ R ^ (2 : ℕ) := by nlinarith
+  have hkey : 35 / 108 * R ≤ a * (R ^ (2 : ℕ) - 1 / 4) / (2 * a + R) := by
     rw [le_div_iff₀ hden]
     rcases le_or_gt R a with hcase | hcase
     · have hA : 35 / 108 * R * (2 * a + R) ≤ 35 / 108 * R * (3 * a) := by nlinarith
-      have hC : 35 / 108 * R * (3 * a) ≤ a * (35 / 36 * R ^ 2) := by nlinarith
-      have hB : a * (35 / 36 * R ^ 2) ≤ a * (R ^ 2 - 1 / 4) := by nlinarith
+      have hC : 35 / 108 * R * (3 * a) ≤ a * (35 / 36 * R ^ (2 : ℕ)) := by nlinarith
+      have hB : a * (35 / 36 * R ^ (2 : ℕ)) ≤ a * (R ^ (2 : ℕ) - 1 / 4) := by nlinarith
       linarith
     · have hA : 35 / 108 * R * (2 * a + R) ≤ 35 / 108 * R * (3 * R) := by nlinarith
-      have hB : 35 / 108 * R * (3 * R) = 35 / 36 * R ^ 2 := by ring
-      have hC : 35 / 36 * R ^ 2 ≤ a * (R ^ 2 - 1 / 4) := by nlinarith
+      have hB : 35 / 108 * R * (3 * R) = 35 / 36 * R ^ (2 : ℕ) := by ring
+      have hC : 35 / 36 * R ^ (2 : ℕ) ≤ a * (R ^ (2 : ℕ) - 1 / 4) := by nlinarith
       linarith
   linarith
 
 /-! ## The exact remainder identity and the parabolic limit -/
 
 /-- **(24.106)** The exact square-root remainder identity. -/
-theorem parabolic_remainder_identity {a : ℝ} {w beta : ℂ} (hbeta : beta ^ 2 = (a : ℂ) ^ 2 + w)
+theorem parabolic_remainder_identity {a : ℝ} {w beta : ℂ} (hbeta : beta ^ (2 : ℕ) = (a : ℂ) ^ (2 : ℕ) + w)
     (hne : beta + (a : ℂ) ≠ 0) :
-    2 * (a : ℂ) * (beta - (a : ℂ)) = w - w ^ 2 / (beta + (a : ℂ)) ^ 2 := by
+    2 * (a : ℂ) * (beta - (a : ℂ)) = w - w ^ (2 : ℕ) / (beta + (a : ℂ)) ^ (2 : ℕ) := by
   have hw : w = (beta - (a : ℂ)) * (beta + (a : ℂ)) := by
     linear_combination -hbeta
-  have hne2 : (beta + (a : ℂ)) ^ 2 ≠ 0 := pow_ne_zero 2 hne
+  have hne2 : (beta + (a : ℂ)) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hne
   rw [hw]
   field_simp
   ring
 
 /-- The renormalized propagator is the exponential of the remainder. -/
 theorem parabolic_renormalized_exp (a t : ℝ) (beta : ℂ) :
-    Complex.exp ((2 * (a : ℂ) ^ 2 * (t : ℂ)))
+    Complex.exp ((2 * (a : ℂ) ^ (2 : ℕ) * (t : ℂ)))
         * Complex.exp (-(2 * (a : ℂ) * (t : ℂ) * beta))
       = Complex.exp (-(t : ℂ) * (2 * (a : ℂ) * (beta - (a : ℂ)))) := by
   rw [← Complex.exp_add]
@@ -125,12 +125,12 @@ theorem parabolic_renormalized_exp (a t : ℝ) (beta : ℂ) :
 
 /-- **(24.107)** The renormalized remainder converges to the spectral point. -/
 theorem tendsto_parabolic_remainder {w : ℂ} {beta : ℝ → ℂ}
-    (hbeta : ∀ a : ℝ, beta a ^ 2 = (a : ℂ) ^ 2 + w)
+    (hbeta : ∀ a : ℝ, beta a ^ (2 : ℕ) = (a : ℂ) ^ (2 : ℕ) + w)
     (hre : ∀ a : ℝ, 0 ≤ (beta a).re) :
     Tendsto (fun a : ℝ => 2 * (a : ℂ) * (beta a - (a : ℂ))) atTop (nhds w) := by
-  have hzero : Tendsto (fun a : ℝ => w ^ 2 / (beta a + (a : ℂ)) ^ 2) atTop (nhds 0) := by
+  have hzero : Tendsto (fun a : ℝ => w ^ (2 : ℕ) / (beta a + (a : ℂ)) ^ (2 : ℕ)) atTop (nhds 0) := by
     have hmajor : ∀ᶠ a : ℝ in atTop,
-        ‖w ^ 2 / (beta a + (a : ℂ)) ^ 2‖ ≤ ‖w‖ ^ 2 / a ^ 2 := by
+        ‖w ^ (2 : ℕ) / (beta a + (a : ℂ)) ^ (2 : ℕ)‖ ≤ ‖w‖ ^ (2 : ℕ) / a ^ (2 : ℕ) := by
       filter_upwards [eventually_gt_atTop (0 : ℝ)] with a ha
       have hre' : (a : ℝ) ≤ (beta a + (a : ℂ)).re := by
         simp only [Complex.add_re, Complex.ofReal_re]
@@ -143,12 +143,12 @@ theorem tendsto_parabolic_remainder {w : ℂ} {beta : ℝ → ℂ}
       rw [norm_div, norm_pow, norm_pow]
       refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
       nlinarith [hden, ha.le, norm_nonneg (beta a + (a : ℂ))]
-    have hgo : Tendsto (fun a : ℝ => ‖w‖ ^ 2 / a ^ 2) atTop (nhds 0) := by
-      have hinv : Tendsto (fun a : ℝ => a ^ 2) atTop atTop :=
+    have hgo : Tendsto (fun a : ℝ => ‖w‖ ^ (2 : ℕ) / a ^ (2 : ℕ)) atTop (nhds 0) := by
+      have hinv : Tendsto (fun a : ℝ => a ^ (2 : ℕ)) atTop atTop :=
         tendsto_pow_atTop (by norm_num)
       exact tendsto_const_nhds.div_atTop hinv
     exact squeeze_zero_norm' hmajor hgo
-  have hlim : Tendsto (fun a : ℝ => w - w ^ 2 / (beta a + (a : ℂ)) ^ 2) atTop (nhds (w - 0)) :=
+  have hlim : Tendsto (fun a : ℝ => w - w ^ (2 : ℕ) / (beta a + (a : ℂ)) ^ (2 : ℕ)) atTop (nhds (w - 0)) :=
     tendsto_const_nhds.sub hzero
   rw [sub_zero] at hlim
   refine hlim.congr' ?_
@@ -162,10 +162,10 @@ theorem tendsto_parabolic_remainder {w : ℂ} {beta : ℝ → ℂ}
 
 /-- **(24.107)** The renormalized propagator converges to the Gaussian heat factor. -/
 theorem tendsto_parabolic_heat {w : ℂ} {beta : ℝ → ℂ}
-    (hbeta : ∀ a : ℝ, beta a ^ 2 = (a : ℂ) ^ 2 + w)
+    (hbeta : ∀ a : ℝ, beta a ^ (2 : ℕ) = (a : ℂ) ^ (2 : ℕ) + w)
     (hre : ∀ a : ℝ, 0 ≤ (beta a).re) (t : ℝ) :
     Tendsto
-      (fun a : ℝ => Complex.exp (2 * (a : ℂ) ^ 2 * (t : ℂ))
+      (fun a : ℝ => Complex.exp (2 * (a : ℂ) ^ (2 : ℕ) * (t : ℂ))
         * Complex.exp (-(2 * (a : ℂ) * (t : ℂ) * beta a)))
       atTop (nhds (Complex.exp (-(t : ℂ) * w))) := by
   have hbase := (tendsto_parabolic_remainder hbeta hre).const_mul (-(t : ℂ))
@@ -177,7 +177,7 @@ theorem tendsto_parabolic_heat {w : ℂ} {beta : ℝ → ℂ}
 
 /-- The mass jet operator `L_a = ∂_τ² - a²`. -/
 def massJetOp (a : ℝ) (f : ℝ → ℂ) : ℝ → ℂ :=
-  fun tau => deriv (deriv f) tau - (a : ℂ) ^ 2 * f tau
+  fun tau => deriv (deriv f) tau - (a : ℂ) ^ (2 : ℕ) * f tau
 
 theorem hasDerivAt_expScaled (c beta : ℂ) (tau : ℝ) :
     HasDerivAt (fun s : ℝ => c * Complex.exp (-(s : ℂ) * beta))
@@ -203,7 +203,7 @@ theorem deriv_expScaled (c beta : ℂ) :
 /-- **(24.112)** The mass jet operator acts on the shifted exponential by the spectral point. -/
 theorem massJetOp_expScaled (a : ℝ) (c beta : ℂ) :
     massJetOp a (fun s : ℝ => c * Complex.exp (-(s : ℂ) * beta))
-      = fun tau : ℝ => c * (beta ^ 2 - (a : ℂ) ^ 2) * Complex.exp (-(tau : ℂ) * beta) := by
+      = fun tau : ℝ => c * (beta ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ)) * Complex.exp (-(tau : ℂ) * beta) := by
   funext tau
   rw [massJetOp, deriv_expScaled, deriv_expScaled]
   ring
@@ -211,7 +211,7 @@ theorem massJetOp_expScaled (a : ℝ) (c beta : ℂ) :
 /-- **(24.112)** Every power of the mass jet operator acts by the corresponding power. -/
 theorem massJetOp_iterate_expScaled (a : ℝ) (c beta : ℂ) (k : ℕ) :
     (massJetOp a)^[k] (fun s : ℝ => c * Complex.exp (-(s : ℂ) * beta))
-      = fun tau : ℝ => c * (beta ^ 2 - (a : ℂ) ^ 2) ^ k * Complex.exp (-(tau : ℂ) * beta) := by
+      = fun tau : ℝ => c * (beta ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ)) ^ k * Complex.exp (-(tau : ℂ) * beta) := by
   induction k generalizing c with
   | zero =>
     funext tau
@@ -230,7 +230,7 @@ def polyJet (a : ℝ) (P : Polynomial ℝ) (f : ℝ → ℂ) (tau : ℝ) : ℂ :
 polynomial in the spectral point. -/
 theorem polyJet_exp (a : ℝ) (P : Polynomial ℝ) (beta : ℂ) (tau : ℝ) :
     polyJet a P (fun s : ℝ => Complex.exp (-(s : ℂ) * beta)) tau
-      = (Polynomial.aeval (beta ^ 2 - (a : ℂ) ^ 2) P) * Complex.exp (-(tau : ℂ) * beta) := by
+      = (Polynomial.aeval (beta ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ)) P) * Complex.exp (-(tau : ℂ) * beta) := by
   have hfun : (fun s : ℝ => Complex.exp (-(s : ℂ) * beta))
       = fun s : ℝ => (1 : ℂ) * Complex.exp (-(s : ℂ) * beta) := by
     funext s
@@ -246,16 +246,16 @@ theorem polyJet_exp (a : ℝ) (P : Polynomial ℝ) (beta : ℂ) (tau : ℝ) :
 the spectral point. -/
 theorem polyJet_sq_exp (a : ℝ) (P : Polynomial ℝ) (beta : ℂ) (tau : ℝ) :
     polyJet a (P * P) (fun s : ℝ => Complex.exp (-(s : ℂ) * beta)) tau
-      = (Polynomial.aeval (beta ^ 2 - (a : ℂ) ^ 2) P) ^ 2 * Complex.exp (-(tau : ℂ) * beta) := by
+      = (Polynomial.aeval (beta ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ)) P) ^ (2 : ℕ) * Complex.exp (-(tau : ℂ) * beta) := by
   rw [polyJet_exp, map_mul, sq]
   ring
 
 /-- **(24.112)** In spectral coordinates, the eigenvalue is exactly the spectral point `w`. -/
-theorem polyJet_sq_exp_spectral {a : ℝ} {w beta : ℂ} (hbeta : beta ^ 2 = (a : ℂ) ^ 2 + w)
+theorem polyJet_sq_exp_spectral {a : ℝ} {w beta : ℂ} (hbeta : beta ^ (2 : ℕ) = (a : ℂ) ^ (2 : ℕ) + w)
     (P : Polynomial ℝ) (tau : ℝ) :
     polyJet a (P * P) (fun s : ℝ => Complex.exp (-(s : ℂ) * beta)) tau
-      = (Polynomial.aeval w P) ^ 2 * Complex.exp (-(tau : ℂ) * beta) := by
-  have hw : beta ^ 2 - (a : ℂ) ^ 2 = w := by
+      = (Polynomial.aeval w P) ^ (2 : ℕ) * Complex.exp (-(tau : ℂ) * beta) := by
+  have hw : beta ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ) = w := by
     rw [hbeta]
     ring
   rw [polyJet_sq_exp, hw]

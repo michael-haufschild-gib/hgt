@@ -24,7 +24,7 @@ def vortexBesselSeries (a : ℝ) (z : ℂ) : PowerSeries ℂ :=
 /-- Reciprocal Gamma, unlike totalized Pochhammer division, preserves the unregularized
 Ward equation at every complex order. -/
 theorem vortexBessel_ward (a : ℝ) (z : ℂ) :
-    vortexWard (fun n => (n : ℂ) * (z + n)) (fun _ => (a : ℂ) ^ 2)
+    vortexWard (fun n => (n : ℂ) * (z + n)) (fun _ => (a : ℂ) ^ (2 : ℕ))
       (vortexBesselSeries a z) = 0 := by
   apply (vortexWard_zero_iff _ _ _).2
   refine ⟨by simp, fun n => ?_⟩
@@ -35,7 +35,7 @@ theorem vortexBessel_ward (a : ℝ) (z : ℂ) :
 theorem vortexBessel_differential_equation (a : ℝ) (z : ℂ) :
     X * derivative ℂ (derivative ℂ (vortexBesselSeries a z)) +
       C (z + 1) * derivative ℂ (vortexBesselSeries a z) -
-        C ((a : ℂ) ^ 2) * vortexBesselSeries a z = 0 := by
+        C ((a : ℂ) ^ (2 : ℕ)) * vortexBesselSeries a z = 0 := by
   ext n
   cases n with
   | zero =>

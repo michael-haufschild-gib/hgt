@@ -7,8 +7,8 @@ An even real-rooted spectral factor has a positive logarithmic-derivative Pick k
 paired zero contributes the *sum* of two rank-one Gram kernels
 
 ```text
-kappa_gamma (w, v) = 2 [w/(w^2+gamma^2)] conj [v/(v^2+gamma^2)]
-                   + 2 [gamma/(w^2+gamma^2)] conj [gamma/(v^2+gamma^2)] ,
+kappa_gamma (w, v) = 2 [w/(w^(2 : ℕ)+gamma^(2 : ℕ))] conj [v/(v^(2 : ℕ)+gamma^(2 : ℕ))]
+                   + 2 [gamma/(w^(2 : ℕ)+gamma^(2 : ℕ))] conj [gamma/(v^(2 : ℕ)+gamma^(2 : ℕ))] ,
 ```
 
 and the zero mode contributes `2r/(w conj v)`.  Since the positive cone of finite Hermitian
@@ -34,25 +34,25 @@ namespace GaloisForLFunctions.RHTower
 
 /-- The paired-zero kernel `(15)`. -/
 def pairedZeroKernel (γ : ℝ) (w v : ℂ) : ℂ :=
-  2 * (w / (w ^ 2 + (γ : ℂ) ^ 2)) * (starRingEnd ℂ) (v / (v ^ 2 + (γ : ℂ) ^ 2))
-    + 2 * ((γ : ℂ) / (w ^ 2 + (γ : ℂ) ^ 2)) * (starRingEnd ℂ) ((γ : ℂ) / (v ^ 2 + (γ : ℂ) ^ 2))
+  2 * (w / (w ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ))) * (starRingEnd ℂ) (v / (v ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ)))
+    + 2 * ((γ : ℂ) / (w ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ))) * (starRingEnd ℂ) ((γ : ℂ) / (v ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ)))
 
 /-- **Equation (6).**  The logarithmic-derivative contribution of one paired zero is exactly the
 sum of two rank-one Gram kernels. -/
 theorem pairedZeroKernel_eq {γ : ℝ} {w v : ℂ}
-    (hw : w ^ 2 + (γ : ℂ) ^ 2 ≠ 0)
-    (hv : (starRingEnd ℂ) v ^ 2 + (γ : ℂ) ^ 2 ≠ 0)
+    (hw : w ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ) ≠ 0)
+    (hv : (starRingEnd ℂ) v ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ) ≠ 0)
     (hsum : w + (starRingEnd ℂ) v ≠ 0) :
     (1 / (w + (starRingEnd ℂ) v))
-        * (2 * w / (w ^ 2 + (γ : ℂ) ^ 2)
-          + 2 * (starRingEnd ℂ) v / ((starRingEnd ℂ) v ^ 2 + (γ : ℂ) ^ 2))
+        * (2 * w / (w ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ))
+          + 2 * (starRingEnd ℂ) v / ((starRingEnd ℂ) v ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ)))
       = pairedZeroKernel γ w v := by
   unfold pairedZeroKernel
-  have hcv : (starRingEnd ℂ) (v / (v ^ 2 + (γ : ℂ) ^ 2))
-      = (starRingEnd ℂ) v / ((starRingEnd ℂ) v ^ 2 + (γ : ℂ) ^ 2) := by
+  have hcv : (starRingEnd ℂ) (v / (v ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ)))
+      = (starRingEnd ℂ) v / ((starRingEnd ℂ) v ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ)) := by
     rw [map_div₀, map_add, map_pow, map_pow, Complex.conj_ofReal]
-  have hcg : (starRingEnd ℂ) ((γ : ℂ) / (v ^ 2 + (γ : ℂ) ^ 2))
-      = (γ : ℂ) / ((starRingEnd ℂ) v ^ 2 + (γ : ℂ) ^ 2) := by
+  have hcg : (starRingEnd ℂ) ((γ : ℂ) / (v ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ)))
+      = (γ : ℂ) / ((starRingEnd ℂ) v ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ)) := by
     rw [map_div₀, map_add, map_pow, map_pow, Complex.conj_ofReal]
   rw [hcv, hcg]
   field_simp
@@ -227,11 +227,11 @@ def relativeDeterminant {m : ℕ} (c d : Fin m → ℝ) (z : ℂ) : ℂ :=
 /-- **Equation (24).**  The imaginary part of the relative determinant. -/
 theorem im_relativeDeterminant {m : ℕ} (c d : Fin m → ℝ) (z : ℂ) :
     (relativeDeterminant c d z).im
-      = ∑ j, c j * z.im / ((d j - z.re) ^ 2 + z.im ^ 2) := by
+      = ∑ j, c j * z.im / ((d j - z.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)) := by
   unfold relativeDeterminant
   rw [Complex.im_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
-  have hnsq : Complex.normSq ((d j : ℂ) - z) = (d j - z.re) ^ 2 + z.im ^ 2 := by
+  have hnsq : Complex.normSq ((d j : ℂ) - z) = (d j - z.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
     simp [Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
     ring
   rw [div_eq_mul_inv, Complex.mul_im, Complex.inv_im, Complex.inv_re, hnsq]
@@ -245,7 +245,7 @@ theorem im_relativeDeterminant_nonneg {m : ℕ} {c d : Fin m → ℝ} (hc : ∀ 
     0 ≤ (relativeDeterminant c d z).im := by
   rw [im_relativeDeterminant c d z]
   refine Finset.sum_nonneg fun j _ => ?_
-  have hpos : (0 : ℝ) < (d j - z.re) ^ 2 + z.im ^ 2 := by positivity
+  have hpos : (0 : ℝ) < (d j - z.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by positivity
   exact div_nonneg (mul_nonneg (hc j) hz.le) hpos.le
 
 end GaloisForLFunctions.RHTower

@@ -39,7 +39,7 @@ theorem mem_complexLowerSupport {i : Fin n} {w : Fin n → ℂ} :
 def ComplexJacobiData.projNorm (J : ComplexJacobiData n)
     (i : Fin n) (v : Fin n → ℂ) : ℝ :=
   ∑ m ∈ Finset.univ.filter (fun m : Fin n => i ≤ m),
-    J.d m * ‖J.U.mulVec v m‖ ^ 2
+    J.d m * ‖J.U.mulVec v m‖ ^ (2 : ℕ)
 
 theorem ComplexJacobiData.projNorm_nonneg (J : ComplexJacobiData n)
     (i : Fin n) (v : Fin n → ℂ) : 0 ≤ J.projNorm i v :=
@@ -200,8 +200,8 @@ theorem ComplexJacobiData.projNorm_eq_form_sub (J : ComplexJacobiData n)
   obtain ⟨w, hw, hmatch⟩ := J.exists_proj i v
   refine ⟨w, hw, ?_⟩
   have hall : ∀ m : Fin n,
-      J.d m * ‖J.U.mulVec (v - w) m‖ ^ 2 =
-        if i ≤ m then J.d m * ‖J.U.mulVec v m‖ ^ 2 else 0 := by
+      J.d m * ‖J.U.mulVec (v - w) m‖ ^ (2 : ℕ) =
+        if i ≤ m then J.d m * ‖J.U.mulVec v m‖ ^ (2 : ℕ) else 0 := by
     intro m
     by_cases hm : i ≤ m
     · rw [if_pos hm]

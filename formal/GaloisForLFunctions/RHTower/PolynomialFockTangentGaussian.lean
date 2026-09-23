@@ -20,9 +20,9 @@ noncomputable section
 
 /-- Exact centered Gaussian mass on the complex plane. -/
 theorem integral_complex_gaussian (c : ℝ) (hc : 0 < c) :
-    (∫ z : ℂ, Real.exp (-c * ‖z‖ ^ 2)) = Real.pi / c := by
+    (∫ z : ℂ, Real.exp (-c * ‖z‖ ^ (2 : ℕ))) = Real.pi / c := by
   calc
-    (∫ z : ℂ, Real.exp (-c * ‖z‖ ^ 2)) =
+    (∫ z : ℂ, Real.exp (-c * ‖z‖ ^ (2 : ℕ))) =
         Real.pi * ∫ s in Ioi (0 : ℝ), Real.exp (-c * s) :=
       deningerRadial_integral_eq (fun s => Real.exp (-c * s))
     _ = Real.pi * (1 / c) := by
@@ -33,23 +33,23 @@ theorem integral_complex_gaussian (c : ℝ) (hc : 0 < c) :
 
 /-- Integrability of the centered complex Gaussian. -/
 theorem integrable_complex_gaussian (c : ℝ) (hc : 0 < c) :
-    Integrable (fun z : ℂ => Real.exp (-c * ‖z‖ ^ 2)) := by
-  change Integrable (fun z : ℂ => (fun r : ℝ => Real.exp (-c * r ^ 2)) ‖z‖)
+    Integrable (fun z : ℂ => Real.exp (-c * ‖z‖ ^ (2 : ℕ))) := by
+  change Integrable (fun z : ℂ => (fun r : ℝ => Real.exp (-c * r ^ (2 : ℕ))) ‖z‖)
   apply (MeasureTheory.integrable_fun_norm_addHaar (E := ℂ) (F := ℝ) volume
-    (f := fun r : ℝ => Real.exp (-c * r ^ 2))).2
+    (f := fun r : ℝ => Real.exp (-c * r ^ (2 : ℕ)))).2
   simpa [Complex.finrank_real_complex, smul_eq_mul] using
     (integrableOn_pow_mul_exp_neg_mul_sq_Ioi_zero 1 hc)
 
 /-- Translation does not alter complex Gaussian mass. -/
 theorem integral_complex_gaussian_sub_real (c x : ℝ) (hc : 0 < c) :
-    (∫ z : ℂ, Real.exp (-c * ‖z - (x : ℂ)‖ ^ 2)) = Real.pi / c := by
+    (∫ z : ℂ, Real.exp (-c * ‖z - (x : ℂ)‖ ^ (2 : ℕ))) = Real.pi / c := by
   have h := MeasureTheory.integral_add_right_eq_self (μ := volume)
-    (f := fun z : ℂ => Real.exp (-c * ‖z‖ ^ 2)) (-(x : ℂ))
+    (f := fun z : ℂ => Real.exp (-c * ‖z‖ ^ (2 : ℕ))) (-(x : ℂ))
   simpa [sub_eq_add_neg] using h.trans (integral_complex_gaussian c hc)
 
 /-- Integrability of a real-centered complex Gaussian. -/
 theorem integrable_complex_gaussian_sub_real (c x : ℝ) (hc : 0 < c) :
-    Integrable (fun z : ℂ => Real.exp (-c * ‖z - (x : ℂ)‖ ^ 2)) := by
+    Integrable (fun z : ℂ => Real.exp (-c * ‖z - (x : ℂ)‖ ^ (2 : ℕ))) := by
   have h := (integrable_complex_gaussian c hc).comp_add_right (-(x : ℂ))
   simpa [sub_eq_add_neg] using h
 
@@ -63,13 +63,13 @@ theorem polynomialFockTangentDensity_le_gaussian
     {m x : ℝ} (hm : 2 ≤ m) (z : ℂ) :
     polynomialFockTangentDensity m x z ≤
       Real.exp (-2 * polynomialFockPotential m x) *
-        Real.exp (-(m * (1 + x ^ 2) ^ (m / 2 - 1) * ‖z - (x : ℂ)‖ ^ 2)) := by
+        Real.exp (-(m * (1 + x ^ (2 : ℕ)) ^ (m / 2 - 1) * ‖z - (x : ℂ)‖ ^ (2 : ℕ))) := by
   have h := polynomialFockPotential_bregman_lower (m := m) (x := x) hm z
   have hexp :
       2 * polynomialFockRadialSlope m x * (z.re - x) -
           2 * polynomialFockPotential m ‖z‖ ≤
         -2 * polynomialFockPotential m x -
-          m * (1 + x ^ 2) ^ (m / 2 - 1) * ‖z - (x : ℂ)‖ ^ 2 := by
+          m * (1 + x ^ (2 : ℕ)) ^ (m / 2 - 1) * ‖z - (x : ℂ)‖ ^ (2 : ℕ) := by
     linarith
   rw [polynomialFockTangentDensity, ← Real.exp_add]
   exact Real.exp_le_exp.mpr (by simpa [sub_eq_add_neg] using hexp)
@@ -77,11 +77,11 @@ theorem polynomialFockTangentDensity_le_gaussian
 /-- The polynomial-Fock tangent density is integrable. -/
 theorem integrable_polynomialFockTangentDensity
     {m x : ℝ} (hm : 2 ≤ m) : Integrable (polynomialFockTangentDensity m x) := by
-  let c : ℝ := m * (1 + x ^ 2) ^ (m / 2 - 1)
+  let c : ℝ := m * (1 + x ^ (2 : ℕ)) ^ (m / 2 - 1)
   have hc : 0 < c := by dsimp [c]; positivity
   let g : ℂ → ℝ := fun z =>
     Real.exp (-2 * polynomialFockPotential m x) *
-      Real.exp (-c * ‖z - (x : ℂ)‖ ^ 2)
+      Real.exp (-c * ‖z - (x : ℂ)‖ ^ (2 : ℕ))
   have hg : Integrable g := by
     simpa [g] using (integrable_complex_gaussian_sub_real c x hc).const_mul
       (Real.exp (-2 * polynomialFockPotential m x))
@@ -104,12 +104,12 @@ theorem integral_polynomialFockTangentDensity_le
     {m x : ℝ} (hm : 2 ≤ m) :
     (∫ z : ℂ, polynomialFockTangentDensity m x z) ≤
       Real.exp (-2 * polynomialFockPotential m x) *
-        (Real.pi / (m * (1 + x ^ 2) ^ (m / 2 - 1))) := by
-  let c : ℝ := m * (1 + x ^ 2) ^ (m / 2 - 1)
+        (Real.pi / (m * (1 + x ^ (2 : ℕ)) ^ (m / 2 - 1))) := by
+  let c : ℝ := m * (1 + x ^ (2 : ℕ)) ^ (m / 2 - 1)
   have hc : 0 < c := by dsimp [c]; positivity
   let g : ℂ → ℝ := fun z =>
     Real.exp (-2 * polynomialFockPotential m x) *
-      Real.exp (-c * ‖z - (x : ℂ)‖ ^ 2)
+      Real.exp (-c * ‖z - (x : ℂ)‖ ^ (2 : ℕ))
   have hg : Integrable g := by
     simpa [g] using (integrable_complex_gaussian_sub_real c x hc).const_mul
       (Real.exp (-2 * polynomialFockPotential m x))

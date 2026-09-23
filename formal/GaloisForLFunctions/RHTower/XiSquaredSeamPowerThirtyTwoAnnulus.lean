@@ -9,19 +9,19 @@ namespace RHTower
 noncomputable section
 
 theorem orderThirtyTwoReciprocalPower_re_pos_of_sectorRatio
-    {A B : ℝ} (hA : 0 < A) (hsector : 417 * B ^ 2 < A ^ 2) :
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 32).re :=
+    {A B : ℝ} (hA : 0 < A) (hsector : 417 * B ^ (2 : ℕ) < A ^ (2 : ℕ)) :
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ (32 : ℕ)).re :=
   GaloisForLFunctions.HTGeometry.re_inv_sub_mul_I_pow_pos_of_sq_lt (t := 49 / 1000) hA
     (by norm_num) (by norm_num) hsector (by norm_num; nlinarith [Real.pi_gt_d20])
 
 theorem xiOrderNineteenSectorRatio_unconditional
     (q : XiZeroCopy) {y : ℝ} (hy : 1 / 4 < y) :
-    147 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y) ^ 2 := by
+    147 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + y) ^ (2 : ℕ) := by
   by_cases hoff : (q.1 : ℂ).re = 1 / 2
   · rw [hoff]
     norm_num
-    have himsq : 0 ≤ (q.1 : ℂ).im ^ 2 := sq_nonneg _
+    have himsq : 0 ≤ (q.1 : ℂ).im ^ (2 : ℕ) := sq_nonneg _
     nlinarith
   · by_contra hnot
     have hcorner := xiOrderNineteenSectorFailure_mem_edgeCorner q hoff hy
@@ -30,19 +30,19 @@ theorem xiOrderNineteenSectorRatio_unconditional
 
 theorem xiOrderThirtyTwoSectorRatio_of_offLine_inner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
-    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (1 / 20 : ℝ))
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ≤ (1 / 20 : ℝ))
     {y : ℝ} (hy : 1 / 4 < y) :
-    417 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y) ^ 2 := by
+    417 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + y) ^ (2 : ℕ) := by
   exact GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 417) (u₀ := 1 / 20)
     (v₀ := 85) (y₀ := 1 / 4) (by norm_num) hy.le hinner
     (xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff).le (by norm_num) (by norm_num)
 
 theorem xiOrderThirtyTwoSectorRatio_of_fourHundredSeventeen_le_im_sq
-    (q : XiZeroCopy) (hhigh : 417 ≤ (q.1 : ℂ).im ^ 2)
+    (q : XiZeroCopy) (hhigh : 417 ≤ (q.1 : ℂ).im ^ (2 : ℕ))
     {y : ℝ} (hy : 1 / 4 < y) :
-    417 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y) ^ 2 := by
+    417 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) <
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + y) ^ (2 : ℕ) := by
   exact GaloisForLFunctions.HTGeometry.sector_ratio_of_corner_of_lt_width (N := 417)
     (u₀ := 1 / 4) (v₀ := 417) (y₀ := 1 / 4) (by norm_num) hy.le
     (xi_divisor_support_centered_re_sq_lt_quarter q.1) hhigh (by norm_num) (by norm_num)
@@ -52,12 +52,12 @@ theorem xiOrderThirtyTwoSectorFailure_mem_edgeCorner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
     {y : ℝ} (hy : 1 / 4 < y)
     (hfail :
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y) ^ 2 ≤
-        417 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2) :
-    (1 / 20 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-      85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 417 :=
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + y) ^ (2 : ℕ) ≤
+        417 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ)) :
+    (1 / 20 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ (2 : ℕ) ∧
+      (q.1 : ℂ).im ^ (2 : ℕ) < 417 :=
   xiZeroCopy_sectorFailure_mem_edgeCorner q hoff
     (fun h => xiOrderThirtyTwoSectorRatio_of_offLine_inner q hoff h hy)
     (fun h => xiOrderThirtyTwoSectorRatio_of_fourHundredSeventeen_le_im_sq q h hy) hfail
@@ -66,16 +66,16 @@ theorem xiOrderThirtyTwoReciprocalPower_nonpos_mem_annulus
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
     {y : ℝ} (hy : 1 / 4 < y)
     (hnonpos :
-      let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+      let A : ℝ := (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + y
       let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-      ((((A : ℂ) - B * I)⁻¹) ^ 32).re ≤ 0) :
-    let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+      ((((A : ℂ) - B * I)⁻¹) ^ (32 : ℕ)).re ≤ 0) :
+    let A : ℝ := (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + y
     let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-    (1 / 20 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-      85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 417 ∧
-      147 * B ^ 2 < A ^ 2 ∧ A ^ 2 ≤ 417 * B ^ 2 :=
+    (1 / 20 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ (2 : ℕ) ∧
+      (q.1 : ℂ).im ^ (2 : ℕ) < 417 ∧
+      147 * B ^ (2 : ℕ) < A ^ (2 : ℕ) ∧ A ^ (2 : ℕ) ≤ 417 * B ^ (2 : ℕ) :=
   xiZeroCopy_reciprocalPower_nonpos_of_sector q hy
     (fun _ _ hA h => orderThirtyTwoReciprocalPower_re_pos_of_sectorRatio hA h)
     (fun hupper =>
@@ -87,12 +87,12 @@ theorem xiOrderThirtyTwoReciprocalPower_nonpos_mem_annulus
 /-- No fixed-shift Xi atom occupies the only angular annulus in which power `32` can fail. -/
 def XiSquaredSeamPowerThirtyTwoAnnulusEmpty : Prop :=
   ¬ ∃ q : XiZeroCopy,
-    147 * xiSquaredSeamTransverseB q ^ 2 < xiSquaredSeamOneRadialA q ^ 2 ∧
-      xiSquaredSeamOneRadialA q ^ 2 ≤ 417 * xiSquaredSeamTransverseB q ^ 2
+    147 * xiSquaredSeamTransverseB q ^ (2 : ℕ) < xiSquaredSeamOneRadialA q ^ (2 : ℕ) ∧
+      xiSquaredSeamOneRadialA q ^ (2 : ℕ) ≤ 417 * xiSquaredSeamTransverseB q ^ (2 : ℕ)
 
 theorem xiSquaredSeamDyadic_rung_five_pos_of_annulusEmpty
     (h : XiSquaredSeamPowerThirtyTwoAnnulusEmpty) (q : XiZeroCopy) :
-    0 < ((xiSquaredSeamOneCoordinate q) ^ (2 ^ 5)).re := by
+    0 < ((xiSquaredSeamOneCoordinate q) ^ (2 ^ (5 : ℕ))).re := by
   norm_num
   by_cases hoff : (q.1 : ℂ).re = 1 / 2
   · have hA := xiSquaredSeamOneRadialA_pos q
@@ -100,7 +100,7 @@ theorem xiSquaredSeamDyadic_rung_five_pos_of_annulusEmpty
     simp [xiSquaredSeamTransverseB, hoff]
     exact sq_pos_of_pos hA
   · by_contra hnot
-    have hnonpos : ((xiSquaredSeamOneCoordinate q) ^ 32).re ≤ 0 := le_of_not_gt hnot
+    have hnonpos : ((xiSquaredSeamOneCoordinate q) ^ (32 : ℕ)).re ≤ 0 := le_of_not_gt hnot
     have hann := xiOrderThirtyTwoReciprocalPower_nonpos_mem_annulus q hoff
       (y := 1) (by norm_num) (by
         simpa [xiSquaredSeamOneCoordinate, xiSquaredSeamOneRadialA,

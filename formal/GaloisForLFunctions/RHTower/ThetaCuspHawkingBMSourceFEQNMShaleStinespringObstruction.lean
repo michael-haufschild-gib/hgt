@@ -36,13 +36,13 @@ def hbXiPeierlsUnitSourceFEOvertoneBogoliubovPair
 
 /-- Overtone-diagonal Shale square-summability predicate for one reflected Xi orbit. -/
 def HBXiPeierlsUnitSourceFEOvertoneShaleImplementable (q : XiZeroCopy) : Prop :=
-  Summable (fun n : ℕ => ‖hbXiPeierlsUnitSourceFEOvertoneBogoliubovPair q n‖ ^ 2)
+  Summable (fun n : ℕ => ‖hbXiPeierlsUnitSourceFEOvertoneBogoliubovPair q n‖ ^ (2 : ℕ))
 
 /-- Finite Hilbert--Schmidt mass through overtone `N`. -/
 def hbXiPeierlsUnitSourceFEOvertonePartialShaleMass
     (N : ℕ) (q : XiZeroCopy) : ℝ :=
   ∑ n ∈ Finset.range (N + 1),
-    ‖hbXiPeierlsUnitSourceFEOvertoneBogoliubovPair q n‖ ^ 2
+    ‖hbXiPeierlsUnitSourceFEOvertoneBogoliubovPair q n‖ ^ (2 : ℕ)
 
 /-- Full orbitwise overtone-diagonal Shale square-summability predicate. -/
 def HBXiPeierlsUnitSourceFEGlobalOvertoneShaleImplementable : Prop :=
@@ -58,7 +58,7 @@ theorem hbXiPeierlsUnitSourceFEOvertoneBogoliubovPair_overtone_independent
 /-- Every overtone carries exactly the same source-orbit partner occupation. -/
 theorem norm_hbXiPeierlsUnitSourceFEOvertoneBogoliubovPair_sq
     (q : XiZeroCopy) (n : ℕ) :
-    ‖hbXiPeierlsUnitSourceFEOvertoneBogoliubovPair q n‖ ^ 2 =
+    ‖hbXiPeierlsUnitSourceFEOvertoneBogoliubovPair q n‖ ^ (2 : ℕ) =
       hbXiPeierlsUnitSourceFEOrbitPartnerNumber q := by
   exact norm_hbXiPeierlsUnitSourceFEOrbitBogoliubovPair_sq q
 

@@ -70,7 +70,7 @@ theorem sum_symClass_classRowSum (r : ℕ) [Nonempty α]
     set s : ℝ := ∑ a, t a with hs
     have hspos : 0 < s := Finset.sum_pos (fun a _ => ht a) Finset.univ_nonempty
     set u : α → ℝ := fun a => Real.sqrt (t a / s) with hu
-    have husq : ∀ a, u a ^ 2 = t a / s := by
+    have husq : ∀ a, u a ^ (2 : ℕ) = t a / s := by
       intro a
       rw [hu]
       exact Real.sq_sqrt (le_of_lt (div_pos (ht a) hspos))

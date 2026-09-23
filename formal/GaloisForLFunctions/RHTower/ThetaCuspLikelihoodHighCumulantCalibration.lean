@@ -34,11 +34,11 @@ theorem thetaCuspFirstAtomBoundaryLogSlope_lt_one_tenth :
       0 < (Real.pi - 157 / 50) *
         (20 * (Real.pi + 157 / 50) - 74) :=
     mul_pos (sub_pos.mpr hpi) hfactor
-  have hpoly : 0 < 20 * Real.pi ^ 2 - 74 * Real.pi + 36 := by
+  have hpoly : 0 < 20 * Real.pi ^ (2 : ℕ) - 74 * Real.pi + 36 := by
     nlinarith
   rw [thetaCuspFirstAtomBoundaryLogSlope]
   rw [show 9 / 2 - 2 * Real.pi + 6 / (2 * Real.pi - 3) =
-      (-8 * Real.pi ^ 2 + 30 * Real.pi - 15) /
+      (-8 * Real.pi ^ (2 : ℕ) + 30 * Real.pi - 15) /
         (2 * (2 * Real.pi - 3)) by
     field_simp [ne_of_gt (by nlinarith : 0 < 2 * Real.pi - 3)]
     ring]
@@ -57,11 +57,11 @@ theorem thetaCuspFirstAtomBoundaryLogSlope_lt_nine_two_hundredths :
       0 < (Real.pi - 6283 / 2000) *
         (800 * (Real.pi + 6283 / 2000) - 2982) :=
     mul_pos (sub_pos.mpr hpi) hfactor
-  have hpoly : 0 < 800 * Real.pi ^ 2 - 2982 * Real.pi + 1473 := by
+  have hpoly : 0 < 800 * Real.pi ^ (2 : ℕ) - 2982 * Real.pi + 1473 := by
     nlinarith
   rw [thetaCuspFirstAtomBoundaryLogSlope]
   rw [show 9 / 2 - 2 * Real.pi + 6 / (2 * Real.pi - 3) =
-      (-8 * Real.pi ^ 2 + 30 * Real.pi - 15) /
+      (-8 * Real.pi ^ (2 : ℕ) + 30 * Real.pi - 15) /
         (2 * (2 * Real.pi - 3)) by
     field_simp [ne_of_gt (by nlinarith : 0 < 2 * Real.pi - 3)]
     ring]
@@ -220,7 +220,7 @@ theorem thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul {B : ℝ}
         thetaCuspLikelihoodPartition B) =
       (thetaCuspHigherLikelihoodSpectralMoment B i *
         thetaCuspHigherLikelihoodSpectralMoment B j) /
-          thetaCuspLikelihoodPartition B ^ 2 by ring]
+          thetaCuspLikelihoodPartition B ^ (2 : ℕ) by ring]
   rw [show
     (thetaCuspHigherLikelihoodSpectralMoment B 0 /
         thetaCuspLikelihoodPartition B) *
@@ -228,7 +228,7 @@ theorem thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul {B : ℝ}
         thetaCuspLikelihoodPartition B) =
       (thetaCuspHigherLikelihoodSpectralMoment B 0 *
         thetaCuspHigherLikelihoodSpectralMoment B (i + j)) /
-          thetaCuspLikelihoodPartition B ^ 2 by ring]
+          thetaCuspLikelihoodPartition B ^ (2 : ℕ) by ring]
   exact (div_le_div_iff_of_pos_right (sq_pos_of_pos hpart)).2 hraw
 
 def thetaCuspLikelihoodFifthCumulant (B : ℝ) : ℝ :=
@@ -237,13 +237,13 @@ def thetaCuspLikelihoodFifthCumulant (B : ℝ) : ℝ :=
       thetaCuspLikelihoodNormalizedMoment B 4 -
     10 * thetaCuspLikelihoodNormalizedMoment B 2 *
       thetaCuspLikelihoodNormalizedMoment B 3 +
-    20 * thetaCuspLikelihoodMean B ^ 2 *
+    20 * thetaCuspLikelihoodMean B ^ (2 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B 3 +
     30 * thetaCuspLikelihoodMean B *
-      thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 -
-    60 * thetaCuspLikelihoodMean B ^ 3 *
+      thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) -
+    60 * thetaCuspLikelihoodMean B ^ (3 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B 2 +
-    24 * thetaCuspLikelihoodMean B ^ 5
+    24 * thetaCuspLikelihoodMean B ^ (5 : ℕ)
 
 def thetaCuspLikelihoodSixthCumulant (B : ℝ) : ℝ :=
   thetaCuspLikelihoodNormalizedMoment B 6 -
@@ -251,20 +251,20 @@ def thetaCuspLikelihoodSixthCumulant (B : ℝ) : ℝ :=
       thetaCuspLikelihoodNormalizedMoment B 5 -
     15 * thetaCuspLikelihoodNormalizedMoment B 2 *
       thetaCuspLikelihoodNormalizedMoment B 4 -
-    10 * thetaCuspLikelihoodNormalizedMoment B 3 ^ 2 +
-    30 * thetaCuspLikelihoodMean B ^ 2 *
+    10 * thetaCuspLikelihoodNormalizedMoment B 3 ^ (2 : ℕ) +
+    30 * thetaCuspLikelihoodMean B ^ (2 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B 4 +
     120 * thetaCuspLikelihoodMean B *
       thetaCuspLikelihoodNormalizedMoment B 2 *
       thetaCuspLikelihoodNormalizedMoment B 3 -
-    120 * thetaCuspLikelihoodMean B ^ 3 *
+    120 * thetaCuspLikelihoodMean B ^ (3 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B 3 +
-    30 * thetaCuspLikelihoodNormalizedMoment B 2 ^ 3 -
-    270 * thetaCuspLikelihoodMean B ^ 2 *
-      thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 +
-    360 * thetaCuspLikelihoodMean B ^ 4 *
+    30 * thetaCuspLikelihoodNormalizedMoment B 2 ^ (3 : ℕ) -
+    270 * thetaCuspLikelihoodMean B ^ (2 : ℕ) *
+      thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) +
+    360 * thetaCuspLikelihoodMean B ^ (4 : ℕ) *
       thetaCuspLikelihoodNormalizedMoment B 2 -
-    120 * thetaCuspLikelihoodMean B ^ 6
+    120 * thetaCuspLikelihoodMean B ^ (6 : ℕ)
 
 theorem hasDerivAt_thetaCuspLikelihoodFourthCumulant
     {B : ℝ} (hB : 0 < B) :
@@ -336,7 +336,7 @@ theorem thetaCuspLikelihoodFourthCumulant_lt_normalizedMoment_four_coordinate {x
     have hprod : 0 < (1 - m) * e2 :=
       mul_pos (sub_pos.mpr hmOne) he2
     nlinarith
-  have hdom : 12 * m ^ 2 * e2 < 4 * m * e3 := by
+  have hdom : 12 * m ^ (2 : ℕ) * e2 < 4 * m * e3 := by
     have := mul_lt_mul_of_pos_left hgap (show 0 < 4 * m by positivity)
     nlinarith
   dsimp only [B, m, e2, e3, e4] at *
@@ -382,20 +382,20 @@ theorem four_fifths_mul_thetaCuspLikelihoodNormalizedMoment_five_lt_fifthCumulan
     have hprod : 0 < (1 - 180 * p) * e5 := by positivity
     nlinarith
   have hmOne : m < 1 := by nlinarith
-  have hmSqOne : m ^ 2 < 1 := pow_lt_one₀ hm.le hmOne (by norm_num)
-  have hmCube : m ^ 3 < m := by
+  have hmSqOne : m ^ (2 : ℕ) < 1 := pow_lt_one₀ hm.le hmOne (by norm_num)
+  have hmCube : m ^ (3 : ℕ) < m := by
     calc
-      m ^ 3 = m * m ^ 2 := by ring
+      m ^ (3 : ℕ) = m * m ^ (2 : ℕ) := by ring
       _ < m * 1 := mul_lt_mul_of_pos_left hmSqOne hm
       _ = m := by ring
   have he25 : 27 * e2 ≤ e5 := by nlinarith
-  have hthird : 60 * m ^ 3 * e2 < e5 / 27 := by
-    have hcoef : 60 * m ^ 3 < 1 := by nlinarith
+  have hthird : 60 * m ^ (3 : ℕ) * e2 < e5 / 27 := by
+    have hcoef : 60 * m ^ (3 : ℕ) < 1 := by nlinarith
     have hmul := mul_lt_mul_of_pos_right hcoef he2
     nlinarith
-  have hpos1 : 0 ≤ 20 * m ^ 2 * e3 := by positivity
-  have hpos2 : 0 ≤ 30 * m * e2 ^ 2 := by positivity
-  have hpos3 : 0 ≤ 24 * m ^ 5 := by positivity
+  have hpos1 : 0 ≤ 20 * m ^ (2 : ℕ) * e3 := by positivity
+  have hpos2 : 0 ≤ 30 * m * e2 ^ (2 : ℕ) := by positivity
+  have hpos3 : 0 ≤ 24 * m ^ (5 : ℕ) := by positivity
   dsimp only [B, p, m, e2, e3, e4, e5] at *
   unfold thetaCuspLikelihoodFifthCumulant
   nlinarith
@@ -430,23 +430,23 @@ theorem thetaCuspLikelihoodFifthCumulant_lt_normalizedMoment_five_coordinate {x 
     have hprod : 0 < (1 - m) * e2 :=
       mul_pos (sub_pos.mpr hmOne) he2
     nlinarith
-  have hgroup1 : 20 * m ^ 2 * e3 < 5 * m * e4 := by
+  have hgroup1 : 20 * m ^ (2 : ℕ) * e3 < 5 * m * e4 := by
     have hbase : 4 * m * e3 < e4 := by
       have hcoef : 0 < 3 - 4 * m := by nlinarith
       have hprod : 0 < (3 - 4 * m) * e3 := mul_pos hcoef he3
       nlinarith
     have hmul := mul_lt_mul_of_pos_left hbase (show 0 < 5 * m by positivity)
     nlinarith
-  have hgroup2 : 30 * m * e2 ^ 2 < 10 * e2 * e3 := by
+  have hgroup2 : 30 * m * e2 ^ (2 : ℕ) < 10 * e2 * e3 := by
     have hmul := mul_lt_mul_of_pos_left hgap (show 0 < 10 * e2 by positivity)
     nlinarith
-  have hme2 : 2 * m ^ 2 < 5 * e2 := by
-    have hmSq : m ^ 2 < m := by
+  have hme2 : 2 * m ^ (2 : ℕ) < 5 * e2 := by
+    have hmSq : m ^ (2 : ℕ) < m := by
       have hmul := mul_lt_mul_of_pos_left hmOne hm
       nlinarith
     nlinarith
-  have hgroup3 : 24 * m ^ 5 < 60 * m ^ 3 * e2 := by
-    have hmul := mul_lt_mul_of_pos_left hme2 (show 0 < 12 * m ^ 3 by positivity)
+  have hgroup3 : 24 * m ^ (5 : ℕ) < 60 * m ^ (3 : ℕ) * e2 := by
+    have hmul := mul_lt_mul_of_pos_left hme2 (show 0 < 12 * m ^ (3 : ℕ) by positivity)
     nlinarith
   dsimp only [B, m, e2, e3, e4, e5] at *
   unfold thetaCuspLikelihoodFifthCumulant
@@ -514,10 +514,10 @@ theorem three_fourths_mul_thetaCuspLikelihoodNormalizedMoment_six_lt_sixthCumula
   have h24 : e2 * e4 ≤ p * e6 := by
     simpa only [B, p, e2, e4, e6, show 2 + 4 = 6 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 4
-  have h33 : e3 ^ 2 ≤ p * e6 := by
+  have h33 : e3 ^ (2 : ℕ) ≤ p * e6 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 3 3
     simpa only [B, p, e3, e6, show 3 + 3 = 6 by norm_num, pow_two] using h
-  have h22 : e2 ^ 2 ≤ p * e4 := by
+  have h22 : e2 ^ (2 : ℕ) ≤ p * e4 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h
   have hp : 0 < p := by nlinarith [sq_pos_of_pos he2]
@@ -527,56 +527,56 @@ theorem three_fourths_mul_thetaCuspLikelihoodNormalizedMoment_six_lt_sixthCumula
   have hsecond : 15 * e2 * e4 < e6 / 12 := by
     have hprod : 0 < (1 - 180 * p) * e6 := by positivity
     nlinarith
-  have hthird : 10 * e3 ^ 2 < e6 / 18 := by
+  have hthird : 10 * e3 ^ (2 : ℕ) < e6 / 18 := by
     have hprod : 0 < (1 - 180 * p) * e6 := by positivity
     nlinarith
   have hmOne : m < 1 := by nlinarith
-  have hmSqSmall : 3600 * m ^ 2 < 1 := by
+  have hmSqSmall : 3600 * m ^ (2 : ℕ) < 1 := by
     have hminus : 0 < 1 - 60 * m := by nlinarith
     have hplus : 0 < 1 + 60 * m := by positivity
     have hprod := mul_pos hminus hplus
     nlinarith
-  have hmCubeSq : m ^ 3 < m ^ 2 := by
+  have hmCubeSq : m ^ (3 : ℕ) < m ^ (2 : ℕ) := by
     calc
-      m ^ 3 = m ^ 2 * m := by ring
-      _ < m ^ 2 * 1 := mul_lt_mul_of_pos_left hmOne (pow_pos hm 2)
-      _ = m ^ 2 := by ring
+      m ^ (3 : ℕ) = m ^ (2 : ℕ) * m := by ring
+      _ < m ^ (2 : ℕ) * 1 := mul_lt_mul_of_pos_left hmOne (pow_pos hm 2)
+      _ = m ^ (2 : ℕ) := by ring
   have he36 : 27 * e3 ≤ e6 := by nlinarith
-  have hfourth : 120 * m ^ 3 * e3 < e6 / 810 := by
-    have hcoef : 120 * m ^ 3 < 1 / 30 := by nlinarith
+  have hfourth : 120 * m ^ (3 : ℕ) * e3 < e6 / 810 := by
+    have hcoef : 120 * m ^ (3 : ℕ) < 1 / 30 := by nlinarith
     have hmul := mul_lt_mul_of_pos_right hcoef he3
     nlinarith
   have hpOne : p < 1 := by nlinarith
-  have he2sq_lt_e4 : e2 ^ 2 < e4 := by
+  have he2sq_lt_e4 : e2 ^ (2 : ℕ) < e4 := by
     have hmul := mul_lt_mul_of_pos_right hpOne he4
     nlinarith
   have he46 : 9 * e4 ≤ e6 := by nlinarith
-  have hfifth : 270 * m ^ 2 * e2 ^ 2 < e6 / 120 := by
-    have hcoef : 270 * m ^ 2 < 3 / 40 := by nlinarith
+  have hfifth : 270 * m ^ (2 : ℕ) * e2 ^ (2 : ℕ) < e6 / 120 := by
+    have hcoef : 270 * m ^ (2 : ℕ) < 3 / 40 := by nlinarith
     have hleft := mul_lt_mul_of_pos_left he2sq_lt_e4
-      (show 0 < 270 * m ^ 2 by positivity)
+      (show 0 < 270 * m ^ (2 : ℕ) by positivity)
     have hright := mul_lt_mul_of_pos_right hcoef he4
     nlinarith
-  have hmFourOne : m ^ 4 < 1 := pow_lt_one₀ hm.le hmOne (by norm_num)
-  have hmFive : m ^ 5 < m := by
+  have hmFourOne : m ^ (4 : ℕ) < 1 := pow_lt_one₀ hm.le hmOne (by norm_num)
+  have hmFive : m ^ (5 : ℕ) < m := by
     calc
-      m ^ 5 = m * m ^ 4 := by ring
+      m ^ (5 : ℕ) = m * m ^ (4 : ℕ) := by ring
       _ < m * 1 := mul_lt_mul_of_pos_left hmFourOne hm
       _ = m := by ring
-  have hmSixSq : m ^ 6 < m ^ 2 := by
+  have hmSixSq : m ^ (6 : ℕ) < m ^ (2 : ℕ) := by
     have hmul := mul_lt_mul_of_pos_left hmFive hm
     nlinarith
   have he16 : 243 * m ≤ e6 := by nlinarith
-  have hsixth : 120 * m ^ 6 < (2 / 243 : ℝ) * e6 := by
-    have hcoef : 120 * m ^ 6 < 2 * m := by
+  have hsixth : 120 * m ^ (6 : ℕ) < (2 / 243 : ℝ) * e6 := by
+    have hcoef : 120 * m ^ (6 : ℕ) < 2 * m := by
       have hsmallMul := mul_lt_mul_of_pos_left hmSmall
         (show 0 < 2 * m by positivity)
       nlinarith
     nlinarith
-  have hpos1 : 0 ≤ 30 * m ^ 2 * e4 := by positivity
+  have hpos1 : 0 ≤ 30 * m ^ (2 : ℕ) * e4 := by positivity
   have hpos2 : 0 ≤ 120 * m * e2 * e3 := by positivity
-  have hpos3 : 0 ≤ 30 * e2 ^ 3 := by positivity
-  have hpos4 : 0 ≤ 360 * m ^ 4 * e2 := by positivity
+  have hpos3 : 0 ≤ 30 * e2 ^ (3 : ℕ) := by positivity
+  have hpos4 : 0 ≤ 360 * m ^ (4 : ℕ) * e2 := by positivity
   dsimp only [B, p, m, e2, e3, e4, e5, e6] at *
   unfold thetaCuspLikelihoodSixthCumulant
   nlinarith

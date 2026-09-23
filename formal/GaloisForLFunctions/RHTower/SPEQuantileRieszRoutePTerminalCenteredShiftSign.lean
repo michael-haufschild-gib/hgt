@@ -19,10 +19,10 @@ namespace RHTower
 private theorem ccmParabolicMoment_one_nonneg
     {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) :
     0 ≤ ccmParabolicMoment a b 1 := by
-  have hsquares : 0 ≤ b ^ 2 - a ^ 2 := by
+  have hsquares : 0 ≤ b ^ (2 : ℕ) - a ^ (2 : ℕ) := by
     calc
       0 ≤ (b - a) * (b + a) := mul_nonneg (sub_nonneg.mpr hab) (by linarith)
-      _ = b ^ 2 - a ^ 2 := by ring
+      _ = b ^ (2 : ℕ) - a ^ (2 : ℕ) := by ring
   simp [ccmParabolicMoment]
   positivity
 
@@ -30,10 +30,10 @@ private theorem ccmParabolicMoment_one_pos
     {a b : ℝ} (ha : 0 ≤ a) (hgap : 0 < b - a) :
     0 < ccmParabolicMoment a b 1 := by
   have hsum : 0 < b + a := by linarith
-  have hsquares : 0 < b ^ 2 - a ^ 2 := by
+  have hsquares : 0 < b ^ (2 : ℕ) - a ^ (2 : ℕ) := by
     calc
       0 < (b - a) * (b + a) := mul_pos hgap hsum
-      _ = b ^ 2 - a ^ 2 := by ring
+      _ = b ^ (2 : ℕ) - a ^ (2 : ℕ) := by ring
   simp [ccmParabolicMoment]
   linarith
 
@@ -44,7 +44,7 @@ private theorem ccmActualHeadMatchedParabolicMoment_one_nonneg (n : ℕ) :
     positivity
   · apply sub_nonneg.mp
     rw [ccmActualHeadMatchedPolarUpper_sub_lower_eq_atomWeight]
-    exact criticalMellinAtomWeight_nonneg n
+    exact criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
 
 private theorem ccmActualHeadMatchedParabolicMoment_two_one_pos :
     0 < ccmActualHeadMatchedParabolicMoment 2 1 := by
@@ -69,7 +69,7 @@ private theorem ccmActualHeadQuantileParabolicMoment_one_nonneg (n : ℕ) :
     rw [show b - a = ccmActualHeadQuantilePolarCoordinate (n + 1) -
         ccmActualHeadQuantilePolarCoordinate n by rfl,
       ccmActualHeadQuantilePolarCoordinate_succ_sub_eq_atomWeight]
-    exact criticalMellinAtomWeight_nonneg n
+    exact criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n
   exact ccmParabolicMoment_one_nonneg ha hab
 
 /-- The literal finite source boundary has strictly positive first moment.

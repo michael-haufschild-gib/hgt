@@ -90,8 +90,8 @@ theorem monomialEdge_hankelCurvature_eq
 theorem monomialEdge_adjacent_hankelCurvature_eq
     (a b : ℝ) (s : ℕ) :
     (a ^ (s + 2) - b ^ (s + 2)) * (a ^ s - b ^ s) -
-        (a ^ (s + 1) - b ^ (s + 1)) ^ 2 =
-      -(a - b) ^ 2 * (a * b) ^ s := by
+        (a ^ (s + 1) - b ^ (s + 1)) ^ (2 : ℕ) =
+      -(a - b) ^ (2 : ℕ) * (a * b) ^ s := by
   rw [show s + 2 = (s + 1) + 1 by omega, pow_succ, pow_succ, mul_pow]
   ring
 
@@ -100,10 +100,10 @@ curvature, at every order. -/
 theorem monomialEdge_adjacent_hankelCurvature_neg
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (hab : a ≠ b) (s : ℕ) :
     (a ^ (s + 2) - b ^ (s + 2)) * (a ^ s - b ^ s) -
-        (a ^ (s + 1) - b ^ (s + 1)) ^ 2 < 0 := by
+        (a ^ (s + 1) - b ^ (s + 1)) ^ (2 : ℕ) < 0 := by
   rw [monomialEdge_adjacent_hankelCurvature_eq]
   calc
-    -(a - b) ^ 2 * (a * b) ^ s = -((a - b) ^ 2 * (a * b) ^ s) := by ring
+    -(a - b) ^ (2 : ℕ) * (a * b) ^ s = -((a - b) ^ (2 : ℕ) * (a * b) ^ s) := by ring
     _ < 0 := neg_neg_of_pos (mul_pos (sq_pos_of_ne_zero (sub_ne_zero.mpr hab))
       (pow_pos (mul_pos ha hb) s))
 

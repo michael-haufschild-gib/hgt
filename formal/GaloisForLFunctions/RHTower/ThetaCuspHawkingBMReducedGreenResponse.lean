@@ -11,7 +11,7 @@ set_option backward.isDefEq.respectTransparency false
 
 /-- Original gradient coefficient at an arbitrary target angular frequency. -/
 def reducedGreenGradient (chi s J : ℂ) : ℂ :=
-  (-(1/4+chi^2)/2-(s+1)*(s+2))*J
+  (-(1/4+chi^(2 : ℕ))/2-(s+1)*(s+2))*J
 
 /-- The actual endpoint response with its original full-square lift subtracted. -/
 def reducedGreen (w chi s a J T : ℂ) (t : ℝ) : ℂ :=
@@ -35,8 +35,8 @@ theorem reducedGreen_hasDerivAt {w chi : ℂ} (h : Chamber w chi) (s a J T : ℂ
 /-- The angular gradient and lift cancel exactly, leaving the original reduced forcing times J. -/
 theorem reducedGreen_equation {w chi : ℂ} (h : Chamber w chi) (s a J T : ℂ)
     (t : ℝ) (ht : t < 0) :
-    w^2*reducedGreen w chi s a J T t-reducedGreenSecond w chi s a J T t+
-      (horizonCoordinate t:ℂ)*(1/4+chi^2)*reducedGreen w chi s a J T t =
+    w^(2 : ℕ)*reducedGreen w chi s a J T t-reducedGreenSecond w chi s a J T t+
+      (horizonCoordinate t:ℂ)*(1/4+chi^(2 : ℕ))*reducedGreen w chi s a J T t =
         reducedCoefficient s w a T t*J := by
   have he := tortoiseGreen_equation h s a J (reducedGreenGradient chi s J) T t ht
   dsimp only [reducedGreen,reducedGreenSecond]

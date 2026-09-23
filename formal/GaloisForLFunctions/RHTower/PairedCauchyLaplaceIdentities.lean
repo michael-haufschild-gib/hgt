@@ -56,7 +56,7 @@ def nodePacket (w : Fin n → ℂ) (r : Fin n → ℝ) : ℝ → ℂ :=
 
 /-- The energy `A` of `(2)`. -/
 def packetEnergy (w : Fin n → ℂ) (r : Fin n → ℝ) : ℝ :=
-  ∫ x in Ioi (0 : ℝ), (nodePacket w r x).im ^ 2
+  ∫ x in Ioi (0 : ℝ), (nodePacket w r x).im ^ (2 : ℕ)
 
 /-- The resolvent-weighted coefficients of `(3)`. -/
 def resolventCoeff (w : Fin n → ℂ) (r : Fin n → ℝ) (a : ℝ) (j : Fin n) : ℂ :=
@@ -68,7 +68,7 @@ def resolventValueIm (w : Fin n → ℂ) (r : Fin n → ℝ) (a : ℝ) : ℝ :=
 
 /-- `B_a` of `(3)`. -/
 def resolventEnergy (w : Fin n → ℂ) (r : Fin n → ℝ) (a : ℝ) : ℝ :=
-  ∫ x in Ioi (0 : ℝ), (halfLineExpPacket w (resolventCoeff w r a) x).im ^ 2
+  ∫ x in Ioi (0 : ℝ), (halfLineExpPacket w (resolventCoeff w r a) x).im ^ (2 : ℕ)
 
 /-- The lag-translated coefficients. -/
 def lagCoeff (w : Fin n → ℂ) (r : Fin n → ℝ) (tau : ℝ) (j : Fin n) : ℂ :=
@@ -225,7 +225,7 @@ theorem cauchyAtom_split {u v b : ℂ} (hu : u + b ≠ 0) (hv : v + b ≠ 0) (hu
 theorem paired_cauchyAtom_law {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r : Fin n → ℝ)
     (c a : ℝ) (ha : ∀ j, w j + (a : ℂ) ≠ 0) :
     pairedQuadratic w r (fun z => (c : ℂ) / (z + (a : ℂ)))
-      = 4 * c * (resolventValueIm w r a) ^ 2 + 8 * a * c * resolventEnergy w r a := by
+      = 4 * c * (resolventValueIm w r a) ^ (2 : ℕ) + 8 * a * c * resolventEnergy w r a := by
   classical
   set cc : Fin n → ℂ := resolventCoeff w r a with hcc
   have haconj : ∀ k, (starRingEnd ℂ) (w k) + (a : ℂ) ≠ 0 := by
@@ -281,17 +281,17 @@ theorem paired_cauchyAtom_law {w : Fin n → ℂ} (hw : ∀ j, 0 < (w j).re) (r 
   set Bs : ℂ := ∑ j, ∑ k, cc j * cc k / (w j + w k) with hBs
   have hgram : Hs.re - Bs.re = 2 * resolventEnergy w r a :=
     (integral_im_sq_expPacket (w := w) (c := cc) hw).symm
-  have hFsq : (F * (starRingEnd ℂ) F).re - (F * F).re = 2 * F.im ^ 2 := by
-    have h1 : (F * (starRingEnd ℂ) F).re = ‖F‖ ^ 2 := by
+  have hFsq : (F * (starRingEnd ℂ) F).re - (F * F).re = 2 * F.im ^ (2 : ℕ) := by
+    have h1 : (F * (starRingEnd ℂ) F).re = ‖F‖ ^ (2 : ℕ) := by
       rw [Complex.mul_re, Complex.conj_re, Complex.conj_im, ← Complex.normSq_eq_norm_sq,
         Complex.normSq_apply]
       ring
-    have h2 : (F * F).re = (F ^ 2).re := by rw [pow_two]
+    have h2 : (F * F).re = (F ^ (2 : ℕ)).re := by rw [pow_two]
     rw [h1, h2]
     exact normSq_sub_re_sq F
   have hXre : ((F * (starRingEnd ℂ) F + ((2 * a : ℝ) : ℂ) * Hs)
         - (F * F + ((2 * a : ℝ) : ℂ) * Bs)).re
-      = 2 * F.im ^ 2 + (2 * a) * (2 * resolventEnergy w r a) := by
+      = 2 * F.im ^ (2 : ℕ) + (2 * a) * (2 * resolventEnergy w r a) := by
     rw [Complex.sub_re, Complex.add_re, Complex.add_re, ofReal_mul_re, ofReal_mul_re]
     have hmul : 2 * a * Hs.re - 2 * a * Bs.re = 2 * a * (2 * resolventEnergy w r a) := by
       rw [← mul_sub, hgram]

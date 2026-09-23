@@ -57,7 +57,7 @@ theorem normSq_hbXiPeierlsSourceFECenteredQNMClockDefectCoefficient_eq
     (n : ℕ) (q : XiZeroCopy) :
     Complex.normSq
         (hbXiPeierlsSourceFECenteredQNMClockDefectCoefficient n q) =
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 *
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) *
         Complex.normSq (hbXiPeierlsUnitSourceFECocycle q) := by
   rw [hbXiPeierlsSourceFECenteredQNMClockDefectCoefficient_eq]
   norm_num [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]

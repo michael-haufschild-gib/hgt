@@ -45,7 +45,7 @@ theorem egbFixedChargeAGibbsEntropy_spectral_lower (n m : ℕ) (β : ℝ)
 theorem egbFixedChargeAGibbsHellinger_spectral_bound (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n m β E)
-      (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 ≤
+      (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) ≤
         (4 / 9 : ℝ) ^ m * ((2 : ℝ) ^ (n + 3) - 1) :=
   (egbFixedChargeAGibbsEntropyDeficit_hellinger_lower n m β E).trans
     (egbFixedChargeAGibbsEntropyDeficit_spectral_universal n m β E)

@@ -66,25 +66,25 @@ theorem waveDirDeriv_energyDensity_source (hu : ContDiff ℝ ∞ u)
 /-- **The energy of a slice dominates the `L²` norm of the time derivative there.** This is what
 bounds the source pairing in the inhomogeneous estimate. -/
 theorem integral_sq_dirDeriv_le_waveEnergy
-    (hsq : Integrable (fun x : Fin d → ℝ => (waveDirDeriv (timeDir d) u (t, x)) ^ 2)
+    (hsq : Integrable (fun x : Fin d → ℝ => (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ))
       (volume : Measure (Fin d → ℝ)))
     (hden : Integrable (fun x : Fin d → ℝ => energyDensity u (t, x))
       (volume : Measure (Fin d → ℝ))) :
-    (∫ x : Fin d → ℝ, (waveDirDeriv (timeDir d) u (t, x)) ^ 2) ≤ waveEnergy u t := by
+    (∫ x : Fin d → ℝ, (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ)) ≤ waveEnergy u t := by
   refine integral_mono hsq hden fun x => ?_
-  have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2 :=
+  have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun i _ => sq_nonneg _
   rw [energyDensity]
   nlinarith [sq_nonneg (u (t, x))]
 
 /-- **The energy of a slice dominates the `L²` norm of the field there.** -/
 theorem integral_sq_le_waveEnergy
-    (hsq : Integrable (fun x : Fin d → ℝ => (u (t, x)) ^ 2) (volume : Measure (Fin d → ℝ)))
+    (hsq : Integrable (fun x : Fin d → ℝ => (u (t, x)) ^ (2 : ℕ)) (volume : Measure (Fin d → ℝ)))
     (hden : Integrable (fun x : Fin d → ℝ => energyDensity u (t, x))
       (volume : Measure (Fin d → ℝ))) :
-    (∫ x : Fin d → ℝ, (u (t, x)) ^ 2) ≤ waveEnergy u t := by
+    (∫ x : Fin d → ℝ, (u (t, x)) ^ (2 : ℕ)) ≤ waveEnergy u t := by
   refine integral_mono hsq hden fun x => ?_
-  have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2 :=
+  have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun i _ => sq_nonneg _
   rw [energyDensity]
   nlinarith [sq_nonneg (waveDirDeriv (timeDir d) u (t, x))]
@@ -210,16 +210,16 @@ replacing `2‖f‖·√E` by `‖f‖² + E`. -/
 theorem abs_integral_source_le
     (hfg : Integrable (fun x : Fin d → ℝ => f (t, x) * waveDirDeriv (timeDir d) u (t, x))
       (volume : Measure (Fin d → ℝ)))
-    (hf2 : Integrable (fun x : Fin d → ℝ => (f (t, x)) ^ 2) (volume : Measure (Fin d → ℝ)))
-    (hg2 : Integrable (fun x : Fin d → ℝ => (waveDirDeriv (timeDir d) u (t, x)) ^ 2)
+    (hf2 : Integrable (fun x : Fin d → ℝ => (f (t, x)) ^ (2 : ℕ)) (volume : Measure (Fin d → ℝ)))
+    (hg2 : Integrable (fun x : Fin d → ℝ => (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ))
       (volume : Measure (Fin d → ℝ)))
     (hden : Integrable (fun x : Fin d → ℝ => energyDensity u (t, x))
       (volume : Measure (Fin d → ℝ))) :
     |2 * ∫ x : Fin d → ℝ, f (t, x) * waveDirDeriv (timeDir d) u (t, x)|
-      ≤ (∫ x : Fin d → ℝ, (f (t, x)) ^ 2) + waveEnergy u t := by
+      ≤ (∫ x : Fin d → ℝ, (f (t, x)) ^ (2 : ℕ)) + waveEnergy u t := by
   have hpt : ∀ x : Fin d → ℝ,
       |f (t, x) * waveDirDeriv (timeDir d) u (t, x)|
-        ≤ ((f (t, x)) ^ 2 + (waveDirDeriv (timeDir d) u (t, x)) ^ 2) / 2 := by
+        ≤ ((f (t, x)) ^ (2 : ℕ) + (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ)) / 2 := by
     intro x
     have h := two_mul_le_add_sq |f (t, x)| |waveDirDeriv (timeDir d) u (t, x)|
     rw [sq_abs, sq_abs] at h
@@ -227,12 +227,12 @@ theorem abs_integral_source_le
     linarith
   have hmono : (∫ x : Fin d → ℝ, |f (t, x) * waveDirDeriv (timeDir d) u (t, x)|)
       ≤ ∫ x : Fin d → ℝ,
-          ((f (t, x)) ^ 2 + (waveDirDeriv (timeDir d) u (t, x)) ^ 2) / 2 :=
+          ((f (t, x)) ^ (2 : ℕ) + (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ)) / 2 :=
     integral_mono hfg.abs ((hf2.add hg2).div_const 2) hpt
   have hsplit : (∫ x : Fin d → ℝ,
-      ((f (t, x)) ^ 2 + (waveDirDeriv (timeDir d) u (t, x)) ^ 2) / 2)
-      = ((∫ x : Fin d → ℝ, (f (t, x)) ^ 2)
-        + ∫ x : Fin d → ℝ, (waveDirDeriv (timeDir d) u (t, x)) ^ 2) / 2 := by
+      ((f (t, x)) ^ (2 : ℕ) + (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ)) / 2)
+      = ((∫ x : Fin d → ℝ, (f (t, x)) ^ (2 : ℕ))
+        + ∫ x : Fin d → ℝ, (waveDirDeriv (timeDir d) u (t, x)) ^ (2 : ℕ)) / 2 := by
     rw [integral_div, integral_add hf2 hg2]
   have hnorm : |∫ x : Fin d → ℝ, f (t, x) * waveDirDeriv (timeDir d) u (t, x)|
       ≤ ∫ x : Fin d → ℝ, |f (t, x) * waveDirDeriv (timeDir d) u (t, x)| := by

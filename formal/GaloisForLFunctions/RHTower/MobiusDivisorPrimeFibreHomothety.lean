@@ -189,24 +189,24 @@ theorem mobiusDivisorSelectionEnergy_insert_mul_prime {N p : ℕ} (hp : p.Prime)
     intro h
     have := (mem_powerset.mp hR) h
     simp at this
-  have hz : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre (p*N) (insert p P) (insert p R))^2)=0 := by
+  have hz : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre (p*N) (insert p P) (insert p R))^(2 : ℕ))=0 := by
     apply sum_eq_zero
     intro R hR
     rw [mobiusDivisorSelectionFibre_insert]
     simp
-  have ha : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre (p*N) (insert p P) R)^2) =
+  have ha : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre (p*N) (insert p P) R)^(2 : ℕ)) =
       ∑ R ∈ (U.erase p).powerset,
-        (mobiusDivisorSelectionFibre (p*N) P R-Real.sqrt p*mobiusDivisorSelectionFibre N P R)^2 := by
+        (mobiusDivisorSelectionFibre (p*N) P R-Real.sqrt p*mobiusDivisorSelectionFibre N P R)^(2 : ℕ) := by
     apply sum_congr rfl
     intro R hR
     rw [mobiusDivisorSelectionFibre_insert_mul_prime hp hNp P R hpP (hpR R hR)]
-  have hc : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre (p*N) P (insert p R))^2) =
-      ∑ R ∈ (U.erase p).powerset,(-Real.sqrt p*mobiusDivisorSelectionFibre N P R)^2 := by
+  have hc : (∑ R ∈ (U.erase p).powerset,(mobiusDivisorSelectionFibre (p*N) P (insert p R))^(2 : ℕ)) =
+      ∑ R ∈ (U.erase p).powerset,(-Real.sqrt p*mobiusDivisorSelectionFibre N P R)^(2 : ℕ) := by
     apply sum_congr rfl
     intro R hR
     rw [mobiusDivisorSelectionFibre_mul_prime hp hNp P R hpP (hpR R hR)]
-  change (∑ R ∈ U.powerset,(mobiusDivisorSelectionFibre (p*N) (insert p P) R)^2)-
-    (∑ R ∈ U.powerset,(mobiusDivisorSelectionFibre (p*N) P R)^2)=_
+  change (∑ R ∈ U.powerset,(mobiusDivisorSelectionFibre (p*N) (insert p P) R)^(2 : ℕ))-
+    (∑ R ∈ U.powerset,(mobiusDivisorSelectionFibre (p*N) P R)^(2 : ℕ))=_
   rw [hsplit,hsplit,hz,add_zero,ha,hc,← sum_add_distrib,← sum_sub_distrib,mul_sum]
   apply sum_congr rfl
   intro R hR

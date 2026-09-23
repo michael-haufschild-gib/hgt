@@ -16,12 +16,12 @@ noncomputable section
 
 /-- **The sub-critical rate function, from above.** -/
 theorem eventually_rvRate_le_quad {α : ℝ} (hα : α < 1 / 2) {A'' : ℝ} (hA''0 : 0 < A'')
-    (hA'' : A'' < (1 - α) ^ 2 / (4 * (1 - 2 * α))) :
-    ∀ᶠ q in nhdsWithin 0 (Set.Ioi (0 : ℝ)), rvRate α q ≤ q ^ 2 / (4 * A'') := by
+    (hA'' : A'' < (1 - α) ^ (2 : ℕ) / (4 * (1 - 2 * α))) :
+    ∀ᶠ q in nhdsWithin 0 (Set.Ioi (0 : ℝ)), rvRate α q ≤ q ^ (2 : ℕ) / (4 * A'') := by
   have hα1 : α < 1 := by linarith
   -- the cumulant dominates `A'' λ²` near the origin
   have hquad := tendsto_rvCumulant_div_sq hα
-  have hEv : ∀ᶠ lam in nhdsWithin 0 (Set.Ioi (0 : ℝ)), A'' < rvCumulant α lam / lam ^ 2 :=
+  have hEv : ∀ᶠ lam in nhdsWithin 0 (Set.Ioi (0 : ℝ)), A'' < rvCumulant α lam / lam ^ (2 : ℕ) :=
     hquad.eventually (eventually_gt_nhds hA'')
   obtain ⟨s, hs, hsP⟩ := Filter.eventually_iff_exists_mem.1 hEv
   obtain ⟨u, hu, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp hs
@@ -29,7 +29,7 @@ theorem eventually_rvRate_le_quad {α : ℝ} (hα : α < 1 / 2) {A'' : ℝ} (hA'
   set δ : ℝ := u / 2 with hδdef
   have hδ0 : 0 < δ := by rw [hδdef]; linarith
   have hδu : δ < u := by rw [hδdef]; linarith
-  have hlow : ∀ lam : ℝ, 0 < lam → lam ≤ δ → A'' * lam ^ 2 ≤ rvCumulant α lam := by
+  have hlow : ∀ lam : ℝ, 0 < lam → lam ≤ δ → A'' * lam ^ (2 : ℕ) ≤ rvCumulant α lam := by
     intro lam hlam0 hlamδ
     have hmem : lam ∈ Set.Ioo (0 : ℝ) u := ⟨hlam0, by linarith⟩
     have h := hsP lam (hsub hmem)
@@ -50,11 +50,11 @@ theorem eventually_rvRate_le_quad {α : ℝ} (hα : α < 1 / 2) {A'' : ℝ} (hA'
   rintro y ⟨lam, hlam, rfl⟩
   rcases eq_or_lt_of_le hlam with hzero | hpos
   · rw [← hzero, rvCumulant_zero]
-    have : (0 : ℝ) ≤ q ^ 2 / (4 * A'') := by positivity
+    have : (0 : ℝ) ≤ q ^ (2 : ℕ) / (4 * A'') := by positivity
     simpa using this
   · rcases le_or_gt lam δ with hle | hgt
     · have hb := hlow lam hpos hle
-      have hkey : lam * q - A'' * lam ^ 2 ≤ q ^ 2 / (4 * A'') := by
+      have hkey : lam * q - A'' * lam ^ (2 : ℕ) ≤ q ^ (2 : ℕ) / (4 * A'') := by
         rw [le_div_iff₀ (by positivity)]
         nlinarith [sq_nonneg (2 * A'' * lam - q), hA''0]
       linarith
@@ -65,7 +65,7 @@ theorem eventually_rvRate_le_quad {α : ℝ} (hα : α < 1 / 2) {A'' : ℝ} (hA'
       rw [hid] at hslope
       have : lam * q - rvCumulant α lam ≤ lam * q - lam * m := by linarith
       have hneg : lam * q - lam * m ≤ 0 := by nlinarith [hpos, hqm]
-      have hnn : (0 : ℝ) ≤ q ^ 2 / (4 * A'') := by positivity
+      have hnn : (0 : ℝ) ≤ q ^ (2 : ℕ) / (4 * A'') := by positivity
       linarith
 
 end

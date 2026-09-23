@@ -198,7 +198,7 @@ theorem response_transform_uniform (q : XiZeroCopy) (br : Bool) (amp : ℂ)
     (c : ℝ) (hc : principalKernelGrowth q<c) (hca : 3/2<c)
     (w : ℂ) (hw : w.re=c) (N : ℝ) (hN : 0<N) :
     ‖cuspSpatialMultiply N hN (causalJointFrequencyResponse q br amp w)‖≤
-      (c*sourceBound q br amp c/(c^2-9/4))*‖w⁻¹‖ := by
+      (c*sourceBound q br amp c/(c^(2 : ℕ)-9/4))*‖w⁻¹‖ := by
   have hw0 : 0<w.re := by linarith
   have he : causalJointFrequencyResponse q br amp w=
       jointEmbedding (jointWaveResponse w hw0 (causalCuspLaplace q br amp w)) := by
@@ -207,11 +207,11 @@ theorem response_transform_uniform (q : XiZeroCopy) (br : Bool) (amp : ℂ)
   rw [he]
   have hB := jointWaveResponse_cuspWeight_rotated_bound N hN w hw0 (by linarith) (causalCuspLaplace q br amp w)
   have hS := source_transform_uniform q br amp c hc w hw.ge N hN
-  have hn : c^2+w.im^2=‖w‖^2 := by
+  have hn : c^(2 : ℕ)+w.im^(2 : ℕ)=‖w‖^(2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq,Complex.normSq_apply,hw]
     ring
   have hn0 : ‖w‖≠0 := norm_ne_zero_iff.mpr (fun hz => by simp [hz] at hw0)
-  have hd : 0<c^2-(9/4:ℝ) := by nlinarith
+  have hd : 0<c^(2 : ℕ)-(9/4:ℝ) := by nlinarith
   rw [hw,hn] at hB
   apply (hB.trans (mul_le_mul_of_nonneg_left hS (by positivity))).trans_eq
   rw [norm_inv]
@@ -252,8 +252,8 @@ private theorem dampedOrbit_fourier (q : XiZeroCopy) (br : Bool) (amp : ℂ)
     (causalJointForcedResponse_laplace_of_native q br amp (rayLine c ξ) (by simpa using hc)))
 
 private theorem cauchy_line (c : ℝ) (hc : 0<c) :
-    Integrable (fun ξ : ℝ => ‖(rayLine c ξ)⁻¹‖^2) ∧
-      (∫ ξ : ℝ,‖(rayLine c ξ)⁻¹‖^2)=1/(2*c) := by
+    Integrable (fun ξ : ℝ => ‖(rayLine c ξ)⁻¹‖^(2 : ℕ)) ∧
+      (∫ ξ : ℝ,‖(rayLine c ξ)⁻¹‖^(2 : ℕ))=1/(2*c) := by
   have hc2 : 0<(c/2:ℝ) := by positivity
   have hp := memLp_two_expRay_restrict (show 0<((c/2:ℝ):ℂ).re by simpa using hc2) 0
   have he (ξ : ℝ) : laplaceRay (expRay ((c/2:ℝ):ℂ)) (rayLine (c/2) ξ)=(rayLine c ξ)⁻¹ := by
@@ -267,7 +267,7 @@ private theorem cauchy_line (c : ℝ) (hc : 0<c) :
   refine ⟨(memLp_two_iff_integrable_sq_norm hmem.aestronglyMeasurable).mp hmem,?_⟩
   have hi := integral_norm_sq_laplaceRay_line hp hc2
   simp_rw [he] at hi
-  have hpoint (t : ℝ) : Real.exp (-(2*(c/2)*t))*‖expRay ((c/2:ℝ):ℂ) t‖^2=‖expRay (c:ℂ) t‖^2 := by
+  have hpoint (t : ℝ) : Real.exp (-(2*(c/2)*t))*‖expRay ((c/2:ℝ):ℂ) t‖^(2 : ℕ)=‖expRay (c:ℂ) t‖^(2 : ℕ) := by
     rw [norm_sq_expRay,norm_sq_expRay]
     simp only [Complex.ofReal_re]
     rw [← Real.exp_add]
@@ -282,29 +282,29 @@ source and the original rotated resolvent. The cutoff size does not occur on the
 theorem original_cusp_time_energy_uniform (q : XiZeroCopy) (br : Bool) (amp : ℂ)
     (c : ℝ) (hc : principalKernelGrowth q<c) (hca : 3/2<c) (N : ℝ) (hN : 0<N) :
     (∫ t in Ioi (0:ℝ),Real.exp (-(2*c*t))*
-      ‖cuspSpatialMultiply N hN (causalJointForcedResponse q br amp t)‖^2)≤
-      (c*sourceBound q br amp c/(c^2-9/4))^2/(2*c) := by
+      ‖cuspSpatialMultiply N hN (causalJointForcedResponse q br amp t)‖^(2 : ℕ))≤
+      (c*sourceBound q br amp c/(c^(2 : ℕ)-9/4))^(2 : ℕ)/(2*c) := by
   have hc0 : 0<c := by linarith
-  let B := c*sourceBound q br amp c/(c^2-9/4)
-  have hd : 0<c^2-(9/4:ℝ) := by nlinarith
+  let B := c*sourceBound q br amp c/(c^(2 : ℕ)-9/4)
+  have hd : 0<c^(2 : ℕ)-(9/4:ℝ) := by nlinarith
   have hB : 0≤B := by dsimp [B]; have := sourceBound_nonneg q br amp c; positivity
   obtain ⟨h1,h2⟩ := dampedOrbit_admitted q br amp c hc N hN
   have hP := GaloisForLFunctions.RHTower.integral_norm_sq_fourier_eq_vector h1 h2
   have hFi := GaloisForLFunctions.RHTower.integrable_norm_sq_fourier_vector h1 h2
   have hk := cauchy_line c hc0
-  have hbound : (∫ ξ : ℝ,‖FourierTransform.fourier (dampedOrbit q br amp c N hN) ξ‖^2)≤B^2/(2*c) := by
+  have hbound : (∫ ξ : ℝ,‖FourierTransform.fourier (dampedOrbit q br amp c N hN) ξ‖^(2 : ℕ))≤B^(2 : ℕ)/(2*c) := by
     calc
-      _ ≤ ∫ ξ : ℝ,B^2*‖(rayLine c ξ)⁻¹‖^2 := by
-        apply integral_mono_ae hFi (hk.1.const_mul (B^2))
+      _ ≤ ∫ ξ : ℝ,B^(2 : ℕ)*‖(rayLine c ξ)⁻¹‖^(2 : ℕ) := by
+        apply integral_mono_ae hFi (hk.1.const_mul (B^(2 : ℕ)))
         filter_upwards with ξ
         rw [dampedOrbit_fourier q br amp c hc N hN ξ]
         have h := response_transform_uniform q br amp c hc hca (rayLine c ξ) (by simp) N hN
         simpa only [mul_pow] using pow_le_pow_left₀ (norm_nonneg _) h 2
       _ = _ := by rw [integral_const_mul,hk.2];ring
   rw [hP] at hbound
-  have he : (fun t : ℝ => ‖dampedOrbit q br amp c N hN t‖^2)=
+  have he : (fun t : ℝ => ‖dampedOrbit q br amp c N hN t‖^(2 : ℕ))=
       (Ioi (0:ℝ)).indicator (fun t => Real.exp (-(2*c*t))*
-        ‖cuspSpatialMultiply N hN (causalJointForcedResponse q br amp t)‖^2) := by
+        ‖cuspSpatialMultiply N hN (causalJointForcedResponse q br amp t)‖^(2 : ℕ)) := by
     funext t
     by_cases ht : t∈Ioi (0:ℝ)
     · simp only [dampedOrbit,Set.indicator_of_mem ht,norm_smul,mul_pow,norm_sq_expRay,Complex.ofReal_re]

@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.ReciprocalFibre
 `∑_{d > R} d^{-2} ≤ 1/R`, by the telescoping comparison `d^{-2} ≤ (d-1)^{-1} - d^{-1}`.
 
 The partial sums are handled by induction with the sharper invariant `1/R - 1/(N+R)`, which makes
-the inductive step the single inequality `(N+R)(N+R+1) ≤ (N+R+1)^2`.  Passing to the series then
+the inductive step the single inequality `(N+R)(N+R+1) ≤ (N+R+1)^(2 : ℕ)`.  Passing to the series then
 only needs that every finite subset of the index set sits inside an initial segment.
 -/
 
@@ -16,7 +16,7 @@ open Finset
 
 /-- Partial sums of the shifted inverse squares, with the telescoping invariant. -/
 theorem sum_range_inv_sq_shift_le (R N : ℕ) (hR : 1 ≤ R) :
-    ∑ n ∈ Finset.range N, (1 : ℝ) / ((n : ℝ) + R + 1) ^ 2
+    ∑ n ∈ Finset.range N, (1 : ℝ) / ((n : ℝ) + R + 1) ^ (2 : ℕ)
       ≤ 1 / (R : ℝ) - 1 / ((N : ℝ) + R) := by
   have hRR : (1 : ℝ) ≤ (R : ℝ) := by exact_mod_cast hR
   induction N with
@@ -27,7 +27,7 @@ theorem sum_range_inv_sq_shift_le (R N : ℕ) (hR : 1 ≤ R) :
         have : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg N
         linarith
       have hNR1 : (0 : ℝ) < (N : ℝ) + R + 1 := by linarith
-      have hstep : (1 : ℝ) / ((N : ℝ) + R + 1) ^ 2
+      have hstep : (1 : ℝ) / ((N : ℝ) + R + 1) ^ (2 : ℕ)
           ≤ 1 / ((N : ℝ) + R) - 1 / ((N : ℝ) + R + 1) := by
         have hprod : (0 : ℝ) < ((N : ℝ) + R) * ((N : ℝ) + R + 1) := by positivity
         have hkey : (1 : ℝ) / ((N : ℝ) + R) - 1 / ((N : ℝ) + R + 1)
@@ -42,10 +42,10 @@ theorem sum_range_inv_sq_shift_le (R N : ℕ) (hR : 1 ≤ R) :
 
 /-- The shifted inverse squares are summable. -/
 theorem summable_inv_sq_shift (R : ℕ) :
-    Summable (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + R + 1) ^ 2) := by
-  have hbase : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) :=
+    Summable (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + R + 1) ^ (2 : ℕ)) := by
+  have hbase : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.2 (by norm_num)
-  have hshift := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) (R + 1)).2 hbase
+  have hshift := (summable_nat_add_iff (f := fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)) (R + 1)).2 hbase
   refine hshift.congr ?_
   intro n
   push_cast
@@ -53,13 +53,13 @@ theorem summable_inv_sq_shift (R : ℕ) :
 
 /-- **Inverse-square tail.**  Beyond `R` the series is at most `1/R`. -/
 theorem tsum_inv_sq_shift_le {R : ℕ} (hR : 1 ≤ R) :
-    ∑' n : ℕ, (1 : ℝ) / ((n : ℝ) + R + 1) ^ 2 ≤ 1 / (R : ℝ) := by
+    ∑' n : ℕ, (1 : ℝ) / ((n : ℝ) + R + 1) ^ (2 : ℕ) ≤ 1 / (R : ℝ) := by
   refine (summable_inv_sq_shift R).tsum_le_of_sum_le ?_
   intro s
   obtain ⟨N, hN⟩ : ∃ N, s ⊆ Finset.range N := ⟨s.sup id + 1, fun x hx =>
     Finset.mem_range.2 (Nat.lt_succ_of_le (Finset.le_sup (f := id) hx))⟩
-  have hsub : ∑ n ∈ s, (1 : ℝ) / ((n : ℝ) + R + 1) ^ 2
-      ≤ ∑ n ∈ Finset.range N, (1 : ℝ) / ((n : ℝ) + R + 1) ^ 2 :=
+  have hsub : ∑ n ∈ s, (1 : ℝ) / ((n : ℝ) + R + 1) ^ (2 : ℕ)
+      ≤ ∑ n ∈ Finset.range N, (1 : ℝ) / ((n : ℝ) + R + 1) ^ (2 : ℕ) :=
     Finset.sum_le_sum_of_subset_of_nonneg hN (fun n _ _ => by positivity)
   have hbound := sum_range_inv_sq_shift_le R N hR
   have hpos : (0 : ℝ) < (N : ℝ) + R := by

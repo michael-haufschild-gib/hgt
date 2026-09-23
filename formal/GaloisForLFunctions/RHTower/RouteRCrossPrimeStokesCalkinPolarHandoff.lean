@@ -153,7 +153,7 @@ def routeRDegreeSixBVGreenModularSquare (a : ℝ) : ℝ :=
 
 theorem routeRDegreeSixBVGreenModularSquare_eq (a : ℝ) :
     routeRDegreeSixBVGreenModularSquare a =
-      4 * (6 : ℝ)⁻¹ ^ 2 * Real.sinh (a * Real.log 6 / 2) ^ 2 := by
+      4 * (6 : ℝ)⁻¹ ^ (2 : ℕ) * Real.sinh (a * Real.log 6 / 2) ^ (2 : ℕ) := by
   have hpos : 0 < (6 : ℝ) := by norm_num
   have hunit : Real.exp (-(a * Real.log 6 / 2)) *
       Real.exp (a * Real.log 6 / 2) = 1 := by
@@ -195,8 +195,8 @@ theorem routeRDegreeSixBVGreenModularSquare_eq (a : ℝ) :
 /-- At `(2,3)`, cross-prime Stokes curvature is exactly a positive-gauge realization of the
 degree-six physical modular square. -/
 theorem routeRTwoThreeStokesOddCurvature_sq_eq_modularSquare (a : ℝ) :
-    routeRCrossPrimeStokesOddCurvature 2 3 a ^ 2 =
-      36 * routeRCrossPrimeStokesGauge 2 3 a ^ 2 *
+    routeRCrossPrimeStokesOddCurvature 2 3 a ^ (2 : ℕ) =
+      36 * routeRCrossPrimeStokesGauge 2 3 a ^ (2 : ℕ) *
         routeRDegreeSixBVGreenModularSquare a := by
   rw [routeRCrossPrimeStokesOddCurvature_eq,
     routeRCrossPrimeStokesPhase_eq_log_mul (by norm_num) (by norm_num),

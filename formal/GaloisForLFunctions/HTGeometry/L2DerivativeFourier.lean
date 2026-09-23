@@ -26,15 +26,15 @@ namespace GaloisForLFunctions.HTGeometry
 /-! ## The `L²` norm as an integral -/
 
 theorem norm_lpTwo_sq {α : Type*} [MeasurableSpace α] {μ : Measure α} (u : Lp ℂ 2 μ) :
-    ‖u‖ ^ 2 = ∫ x, ‖u x‖ ^ 2 ∂μ := by
+    ‖u‖ ^ (2 : ℕ) = ∫ x, ‖u x‖ ^ (2 : ℕ) ∂μ := by
   have h : (inner ℂ u u : ℂ) = ∫ a, (inner ℂ (u a) (u a) : ℂ) ∂μ := L2.inner_def u u
-  have h3 : ∀ a : α, (inner ℂ (u a) (u a) : ℂ) = ((‖u a‖ ^ 2 : ℝ) : ℂ) := by
+  have h3 : ∀ a : α, (inner ℂ (u a) (u a) : ℂ) = ((‖u a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro a
     rw [inner_self_eq_norm_sq_to_K]
     norm_cast
   simp_rw [h3] at h
   rw [integral_complex_ofReal] at h
-  have h2 : ‖u‖ ^ 2 = (RCLike.re (inner ℂ u u : ℂ)) := (inner_self_eq_norm_sq _).symm
+  have h2 : ‖u‖ ^ (2 : ℕ) = (RCLike.re (inner ℂ u u : ℂ)) := (inner_self_eq_norm_sq _).symm
   rw [h2, h]
   simp
 
@@ -53,7 +53,7 @@ theorem coeFn_restrictLp (S : Set α) (u : Lp ℂ 2 μ) :
   MemLp.coeFn_toLp _
 
 theorem norm_restrictLp_sq (S : Set α) (u : Lp ℂ 2 μ) :
-    ‖restrictLp S u‖ ^ 2 = ∫ x in S, ‖u x‖ ^ 2 ∂μ := by
+    ‖restrictLp S u‖ ^ (2 : ℕ) = ∫ x in S, ‖u x‖ ^ (2 : ℕ) ∂μ := by
   rw [norm_lpTwo_sq]
   refine integral_congr_ae ?_
   filter_upwards [coeFn_restrictLp S u] with x hx
@@ -66,9 +66,9 @@ theorem restrictLp_add (S : Set α) (u v : Lp ℂ 2 μ) :
   exact (Lp.coeFn_add u v).filter_mono (Measure.restrict_le_self.absolutelyContinuous.ae_le)
 
 theorem norm_restrictLp_le (S : Set α) (u : Lp ℂ 2 μ) : ‖restrictLp S u‖ ≤ ‖u‖ := by
-  have hint : Integrable (fun x => ‖u x‖ ^ 2) μ :=
+  have hint : Integrable (fun x => ‖u x‖ ^ (2 : ℕ)) μ :=
     (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable u)).1 (Lp.memLp u)
-  have hle : ‖restrictLp S u‖ ^ 2 ≤ ‖u‖ ^ 2 := by
+  have hle : ‖restrictLp S u‖ ^ (2 : ℕ) ≤ ‖u‖ ^ (2 : ℕ) := by
     rw [norm_restrictLp_sq, norm_lpTwo_sq]
     exact setIntegral_le_integral hint (Filter.Eventually.of_forall fun x => by positivity)
   exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 hle
@@ -219,7 +219,7 @@ theorem measurableSet_highFrequencySet (r : ℝ) : MeasurableSet (highFrequencyS
   exact measurableSet_le measurable_const this.measurable
 
 theorem integrable_normSq_lpTwo (u : Lp ℂ 2 (volume : Measure ℝ)) :
-    Integrable (fun x : ℝ => ‖u x‖ ^ 2) volume :=
+    Integrable (fun x : ℝ => ‖u x‖ ^ (2 : ℕ)) volume :=
   (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable u)).1 (Lp.memLp u)
 
 /-- **The Paley–Wiener tail estimate.**  If the `m`-th derivative of `f 0` has small `L²` norm,
@@ -228,18 +228,18 @@ theorem highFrequency_integral_le {f : ℕ → ℝ → ℂ}
     (hmem : ∀ j : ℕ, MemLp (f j) 2 (volume : Measure ℝ))
     (hd : ∀ (j : ℕ) (x : ℝ), HasDerivAt (f j) (f (j + 1) x) x) {r : ℝ} (hr : 0 < r) (m : ℕ) :
     r ^ (2 * m) * (∫ ξ in highFrequencySet r,
-        ‖((𝓕 ((hmem 0).toLp (f 0)) : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) ξ‖ ^ 2)
-      ≤ ‖(hmem m).toLp (f m)‖ ^ 2 := by
+        ‖((𝓕 ((hmem 0).toLp (f 0)) : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) ξ‖ ^ (2 : ℕ))
+      ≤ ‖(hmem m).toLp (f m)‖ ^ (2 : ℕ) := by
   obtain ⟨w, hw⟩ : ∃ w : Lp ℂ 2 (volume : Measure ℝ), w = 𝓕 ((hmem 0).toLp (f 0)) := ⟨_, rfl⟩
   obtain ⟨v, hv⟩ : ∃ v : Lp ℂ 2 (volume : Measure ℝ), v = 𝓕 ((hmem m).toLp (f m)) := ⟨_, rfl⟩
   have hiter := coeFn_fourier_iter_ae hmem hd m
   rw [← hw, ← hv] at hiter
   rw [← hw]
-  have hwint : Integrable (fun x : ℝ => ‖(w : ℝ → ℂ) x‖ ^ 2) volume := integrable_normSq_lpTwo w
-  have hvint : Integrable (fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ 2) volume := integrable_normSq_lpTwo v
+  have hwint : Integrable (fun x : ℝ => ‖(w : ℝ → ℂ) x‖ ^ (2 : ℕ)) volume := integrable_normSq_lpTwo w
+  have hvint : Integrable (fun x : ℝ => ‖(v : ℝ → ℂ) x‖ ^ (2 : ℕ)) volume := integrable_normSq_lpTwo v
   have hmeas : MeasurableSet (highFrequencySet r) := measurableSet_highFrequencySet r
   have hstep : ∀ᵐ ξ : ℝ ∂(volume.restrict (highFrequencySet r)),
-      r ^ (2 * m) * ‖(w : ℝ → ℂ) ξ‖ ^ 2 ≤ ‖(v : ℝ → ℂ) ξ‖ ^ 2 := by
+      r ^ (2 * m) * ‖(w : ℝ → ℂ) ξ‖ ^ (2 : ℕ) ≤ ‖(v : ℝ → ℂ) ξ‖ ^ (2 : ℕ) := by
     rw [ae_restrict_iff' hmeas]
     filter_upwards [hiter] with ξ hξ hmem'
     have hge : r ≤ 2 * Real.pi * |ξ| := hmem'
@@ -254,15 +254,15 @@ theorem highFrequency_integral_le {f : ℕ → ℝ → ℂ}
     have hbase : r ^ (2 * m) ≤ (2 * Real.pi * |ξ|) ^ (m * 2) := by
       rw [mul_comm m 2]
       exact pow_le_pow_left₀ hr.le hge (2 * m)
-    have hnn : (0 : ℝ) ≤ ‖(w : ℝ → ℂ) ξ‖ ^ 2 := by positivity
+    have hnn : (0 : ℝ) ≤ ‖(w : ℝ → ℂ) ξ‖ ^ (2 : ℕ) := by positivity
     exact mul_le_mul_of_nonneg_right hbase hnn
-  have hle : (∫ ξ in highFrequencySet r, r ^ (2 * m) * ‖(w : ℝ → ℂ) ξ‖ ^ 2)
-      ≤ ∫ ξ in highFrequencySet r, ‖(v : ℝ → ℂ) ξ‖ ^ 2 :=
+  have hle : (∫ ξ in highFrequencySet r, r ^ (2 * m) * ‖(w : ℝ → ℂ) ξ‖ ^ (2 : ℕ))
+      ≤ ∫ ξ in highFrequencySet r, ‖(v : ℝ → ℂ) ξ‖ ^ (2 : ℕ) :=
     integral_mono_ae ((hwint.const_mul _).restrict) hvint.restrict hstep
-  have hfull : (∫ ξ in highFrequencySet r, ‖(v : ℝ → ℂ) ξ‖ ^ 2)
-      ≤ ∫ ξ : ℝ, ‖(v : ℝ → ℂ) ξ‖ ^ 2 :=
+  have hfull : (∫ ξ in highFrequencySet r, ‖(v : ℝ → ℂ) ξ‖ ^ (2 : ℕ))
+      ≤ ∫ ξ : ℝ, ‖(v : ℝ → ℂ) ξ‖ ^ (2 : ℕ) :=
     setIntegral_le_integral hvint (Filter.Eventually.of_forall fun x => by positivity)
-  have hnormv : (∫ ξ : ℝ, ‖(v : ℝ → ℂ) ξ‖ ^ 2) = ‖(hmem m).toLp (f m)‖ ^ 2 := by
+  have hnormv : (∫ ξ : ℝ, ‖(v : ℝ → ℂ) ξ‖ ^ (2 : ℕ)) = ‖(hmem m).toLp (f m)‖ ^ (2 : ℕ) := by
     rw [← norm_lpTwo_sq v, hv, Lp.norm_fourier_eq]
   rw [integral_const_mul] at hle
   rw [← hnormv]
@@ -277,8 +277,8 @@ theorem norm_restrictLp_fourier_le {f : ℕ → ℝ → ℂ}
       ≤ ‖(hmem m).toLp (f m)‖ := by
   have h := highFrequency_integral_le hmem hd hr m
   rw [← norm_restrictLp_sq] at h
-  have h2 : (r ^ m * ‖restrictLp (highFrequencySet r) (𝓕 ((hmem 0).toLp (f 0)))‖) ^ 2
-      ≤ ‖(hmem m).toLp (f m)‖ ^ 2 := by
+  have h2 : (r ^ m * ‖restrictLp (highFrequencySet r) (𝓕 ((hmem 0).toLp (f 0)))‖) ^ (2 : ℕ)
+      ≤ ‖(hmem m).toLp (f m)‖ ^ (2 : ℕ) := by
     rw [mul_pow, ← pow_mul, mul_comm m 2]
     exact h
   exact (pow_le_pow_iff_left₀ (by positivity) (norm_nonneg _) two_ne_zero).1 h2
@@ -287,7 +287,7 @@ theorem norm_restrictLp_fourier_le {f : ℕ → ℝ → ℂ}
 /-! ## The real-to-complex embedding of `L²` -/
 
 theorem norm_lpTwo_real_sq {α : Type*} [MeasurableSpace α] {μ : Measure α} (u : Lp ℝ 2 μ) :
-    ‖u‖ ^ 2 = ∫ x, u x ^ 2 ∂μ := by
+    ‖u‖ ^ (2 : ℕ) = ∫ x, u x ^ (2 : ℕ) ∂μ := by
   have h := @real_inner_self_eq_norm_sq (Lp ℝ 2 μ) _ _ u
   rw [← h, MeasureTheory.L2.inner_def]
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
@@ -303,7 +303,7 @@ theorem coeFn_ofRealLp {α : Type*} [MeasurableSpace α] {μ : Measure α} (u : 
 
 theorem norm_ofRealLp {α : Type*} [MeasurableSpace α] {μ : Measure α} (u : Lp ℝ 2 μ) :
     ‖ofRealLp u‖ = ‖u‖ := by
-  have hsq : ‖ofRealLp u‖ ^ 2 = ‖u‖ ^ 2 := by
+  have hsq : ‖ofRealLp u‖ ^ (2 : ℕ) = ‖u‖ ^ (2 : ℕ) := by
     rw [norm_lpTwo_sq, norm_lpTwo_real_sq]
     refine integral_congr_ae ?_
     filter_upwards [coeFn_ofRealLp u] with x hx

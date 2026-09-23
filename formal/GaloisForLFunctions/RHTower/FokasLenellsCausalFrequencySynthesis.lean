@@ -105,7 +105,7 @@ private theorem corr_gap (T : E →L[ℂ] E) (ℓ : E →L[ℂ] ℂ) (N : ℕ) (
 
 private theorem norm_corr_gap_le (T : E →L[ℂ] E)
     (ht : ∀ n u, ‖(T ^ n) u‖ ≤ ‖u‖) (ℓ : E →L[ℂ] ℂ) (N : ℕ) (u v : E) :
-    ‖obsCorr T ℓ N u u - obsCorr T ℓ N u v‖ ≤ ‖ℓ‖ ^ 2 * ‖u‖ * ‖u - v‖ := by
+    ‖obsCorr T ℓ N u u - obsCorr T ℓ N u v‖ ≤ ‖ℓ‖ ^ (2 : ℕ) * ‖u‖ * ‖u - v‖ := by
   rw [corr_gap]
   apply norm_scalar_cesaro_le _ _ (by positivity)
   intro n
@@ -117,7 +117,7 @@ private theorem norm_corr_gap_le (T : E →L[ℂ] E)
     ‖ℓ ((T ^ n) u) * star (ℓ ((T ^ n) (u - v)))‖ =
         ‖ℓ ((T ^ n) u)‖ * ‖ℓ ((T ^ n) (u - v))‖ := by rw [norm_mul, norm_star]
     _ ≤ (‖ℓ‖ * ‖u‖) * (‖ℓ‖ * ‖u - v‖) := mul_le_mul ha hb (norm_nonneg _) (by positivity)
-    _ = ‖ℓ‖ ^ 2 * ‖u‖ * ‖u - v‖ := by ring
+    _ = ‖ℓ‖ ^ (2 : ℕ) * ‖u‖ * ‖u - v‖ := by ring
 
 private theorem self_corr_tendsto_zero (T : E →L[ℂ] E)
     (ht : ∀ n u, ‖(T ^ n) u‖ ≤ ‖u‖) (ℓ : E →L[ℂ] ℂ) (u : E) (A : Set E)
@@ -125,7 +125,7 @@ private theorem self_corr_tendsto_zero (T : E →L[ℂ] E)
     (hu : u ∈ closure A) : Tendsto (fun N : ℕ => obsCorr T ℓ N u u) atTop (𝓝 0) := by
   apply Metric.tendsto_nhds.mpr
   intro ε hε
-  let C : ℝ := ‖ℓ‖ ^ 2 * ‖u‖
+  let C : ℝ := ‖ℓ‖ ^ (2 : ℕ) * ‖u‖
   have hC : 0 ≤ C := by positivity
   obtain ⟨v, hv, huv⟩ := Metric.mem_closure_iff.mp hu (ε / (2 * (C + 1))) (by positivity)
   have hvn : ‖u - v‖ < ε / (2 * (C + 1)) := by simpa only [dist_eq_norm] using huv
@@ -141,14 +141,14 @@ private theorem self_corr_tendsto_zero (T : E →L[ℂ] E)
   simp only [dist_zero_right] at hN ⊢
   linarith
 
-private theorem complex_self_square (z : ℂ) : z * star z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+private theorem complex_self_square (z : ℂ) : z * star z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   change z * (starRingEnd ℂ) z = _
   rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
 
 private theorem corr_self_re (T : E →L[ℂ] E) (ℓ : E →L[ℂ] ℂ) (N : ℕ) (u : E) :
-    (obsCorr T ℓ N u u).re = (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ 2 := by
+    (obsCorr T ℓ N u u).re = (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ (2 : ℕ) := by
   have h : obsCorr T ℓ N u u =
-      (((N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ 2 : ℝ) : ℂ) := by
+      (((N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     simp only [obsCorr, complex_self_square, ← Complex.ofReal_sum]
     rw [Complex.ofReal_mul, Complex.ofReal_inv]
   rw [h, Complex.ofReal_re]
@@ -159,7 +159,7 @@ private theorem mean_square_zero_of_modes (T : E →L[ℂ] E)
     (he : ∀ i n, (T ^ n) (v i) = (z i) ^ n • v i)
     (hm : ∀ i, Tendsto (fun N : ℕ => ℓ (rotatedMean T (z i) N u)) atTop (𝓝 0))
     (hu : u ∈ closure (Submodule.span ℂ (Set.range v) : Set E)) :
-    Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ 2)
+    Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ ((T ^ n) u)‖ ^ (2 : ℕ))
       atTop (𝓝 0) := by
   have hc := self_corr_tendsto_zero T ht ℓ u (Submodule.span ℂ (Set.range v))
     (fun w hw => core_corr_tendsto T ℓ u v z hz he hm hw) hu
@@ -169,7 +169,7 @@ private theorem mean_square_zero_of_modes (T : E →L[ℂ] E)
 private theorem compact_finite_norming (K : Set E) (hK : IsCompact K) (δ : ℝ)
     (hδ : 0 < δ) (hlow : ∀ v ∈ K, δ ≤ ‖v‖) :
     ∃ s : Finset (E →L[ℂ] ℂ), (∀ ℓ ∈ s, ‖ℓ‖ ≤ 1) ∧
-      ∀ v ∈ K, δ ^ 2 / 4 ≤ ∑ ℓ ∈ s, ‖ℓ v‖ ^ 2 := by
+      ∀ v ∈ K, δ ^ (2 : ℕ) / 4 ≤ ∑ ℓ ∈ s, ‖ℓ v‖ ^ (2 : ℕ) := by
   classical
   let J := {ℓ : E →L[ℂ] ℂ // ‖ℓ‖ ≤ 1}
   let U : J → Set E := fun ℓ => {v | δ / 2 < ‖ℓ.val v‖}
@@ -192,7 +192,7 @@ private theorem compact_finite_norming (K : Set E) (hK : IsCompact K) (δ : ℝ)
     simp only [Set.mem_iUnion] at hmem
     obtain ⟨ℓ, hℓ, hobs⟩ := hmem
     have hobs' : δ / 2 < ‖ℓ.val v‖ := hobs
-    have hsq : δ ^ 2 / 4 ≤ ‖ℓ.val v‖ ^ 2 := by
+    have hsq : δ ^ (2 : ℕ) / 4 ≤ ‖ℓ.val v‖ ^ (2 : ℕ) := by
       have hp : 0 ≤ (‖ℓ.val v‖ - δ / 2) * (‖ℓ.val v‖ + δ / 2) :=
         mul_nonneg (by linarith) (by positivity)
       nlinarith
@@ -209,22 +209,22 @@ private theorem le_cesaro_of_pointwise (f : ℕ → ℝ) (r : ℝ) (hf : ∀ n, 
     inv_mul_cancel₀ hn, one_mul] using hm
 
 private theorem sum_observation_means (s : Finset (E →L[ℂ] ℂ)) (x : ℕ → E) (N : ℕ) :
-    (∑ ℓ ∈ s, (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ 2) =
-      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ 2 := by
+    (∑ ℓ ∈ s, (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ (2 : ℕ)) =
+      (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ (2 : ℕ) := by
   rw [← Finset.mul_sum, Finset.sum_comm]
 
 private theorem finite_mean_square_floor (s : Finset (E →L[ℂ] ℂ)) (x : ℕ → E) (r : ℝ)
-    (hf : ∀ n, r ≤ ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ 2)
+    (hf : ∀ n, r ≤ ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ (2 : ℕ))
     (hm : ∀ ℓ ∈ s, Tendsto (fun N : ℕ => (N : ℝ)⁻¹ *
-      ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ 2) atTop (𝓝 0)) : r ≤ 0 := by
+      ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ (2 : ℕ)) atTop (𝓝 0)) : r ≤ 0 := by
   have hsum : Tendsto (fun N : ℕ => ∑ ℓ ∈ s, (N : ℝ)⁻¹ *
-      ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ 2) atTop (𝓝 0) := by
+      ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     simpa only [Finset.sum_const_zero] using tendsto_finsetSum s hm
   apply ge_of_tendsto hsum
   apply Filter.eventually_atTop.mpr
   refine ⟨1, ?_⟩
   intro N hN
-  exact (le_cesaro_of_pointwise (fun n => ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ 2)
+  exact (le_cesaro_of_pointwise (fun n => ∑ ℓ ∈ s, ‖ℓ (x n)‖ ^ (2 : ℕ))
     r hf N (by omega)).trans_eq (sum_observation_means s x N).symm
 
 private theorem eigen_span_invariant (T : E →L[ℂ] E) (v : I → E) (z : I → ℂ)
@@ -283,13 +283,13 @@ private theorem quotient_recurrent_power_norm (D : Submodule ℂ E) (T : E →L[
 private theorem compact_observation_zero (x : ℕ → E) (u : E) (K : Set E)
     (hK : IsCompact K) (hx : ∀ n, x n ∈ K) (hk : ∀ v ∈ K, ‖v‖ = ‖u‖)
     (hm : ∀ ℓ : E →L[ℂ] ℂ,
-      Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ 2)
+      Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖ℓ (x n)‖ ^ (2 : ℕ))
         atTop (𝓝 0)) : u = 0 := by
   by_contra hu
   have hp : 0 < ‖u‖ := norm_pos_iff.mpr hu
   obtain ⟨s, hs, hfloor⟩ := compact_finite_norming K hK ‖u‖ hp
     (fun v hv => (hk v hv).ge)
-  have hle := finite_mean_square_floor s x (‖u‖ ^ 2 / 4)
+  have hle := finite_mean_square_floor s x (‖u‖ ^ (2 : ℕ) / 4)
     (fun n => hfloor (x n) (hx n)) (fun ℓ hℓ => hm ℓ)
   nlinarith [sq_pos_of_pos hp]
 
@@ -301,7 +301,7 @@ private theorem quotient_zero_of_observed_means (D : Submodule ℂ E)
     (hc : IsCompact (closure (Set.range (fun n : ℕ => (T ^ n) u))))
     (hm : ∀ ℓ : (E ⧸ D) →L[ℂ] ℂ,
       Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-        ‖ℓ (D.mkQL ((T ^ n) u))‖ ^ 2) atTop (𝓝 0)) : D.mkQL u = 0 := by
+        ‖ℓ (D.mkQL ((T ^ n) u))‖ ^ (2 : ℕ)) atTop (𝓝 0)) : D.mkQL u = 0 := by
   let K : Set (E ⧸ D) := D.mkQL '' closure (Set.range (fun n : ℕ => (T ^ n) u))
   have hK : IsCompact K := hc.image D.mkQL.continuous
   have hx : ∀ n : ℕ, D.mkQL ((T ^ n) u) ∈ K := fun n =>

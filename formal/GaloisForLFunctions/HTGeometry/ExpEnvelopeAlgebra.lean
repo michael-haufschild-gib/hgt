@@ -93,7 +93,7 @@ theorem expKernel_mul_le_half {μ : ℝ} (hμ : 0 ≤ μ) (n m j : ℤ) :
 
 /-! ## Summability of the kernel row -/
 
-theorem summable_exp_neg_abs_int {ν : ℝ} (hν : 0 < ν) :
+theorem summable_exp_neg_abs_int_expEnvelopeAlgebra {ν : ℝ} (hν : 0 < ν) :
     Summable fun k : ℤ => Real.exp (-ν * |(k : ℝ)|) := by
   have hr : Real.exp (-ν) < 1 := by
     rw [Real.exp_lt_one_iff]
@@ -119,7 +119,7 @@ theorem summable_exp_neg_abs_int {ν : ℝ} (hν : 0 < ν) :
 theorem tsum_expKernel_ne_top {ν : ℝ} (hν : 0 < ν) (n : ℤ) :
     (∑' m : ℤ, expKernel ν n m) ≠ ⊤ := by
   have hsum : Summable fun m : ℤ => Real.exp (-ν * |(n : ℝ) - m|) := by
-    have hbase := summable_exp_neg_abs_int hν
+    have hbase := summable_exp_neg_abs_int_expEnvelopeAlgebra hν
     have hshift := (Equiv.subLeft n).summable_iff (f := fun k : ℤ =>
       Real.exp (-ν * |(k : ℝ)|))
     refine (hshift.mpr hbase).congr fun m => ?_

@@ -34,13 +34,13 @@ theorem tendsto_gaussFourierDiagonal_pow_logResidue (hm2 : 2 ≤ m) (k : Fin m) 
           inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
             ((gaussQuasiInnerGFull (le_trans one_le_two hm2) k p ^ m)
               (fourierLp 2 (-((n : ℤ) + 1)))))) / (Real.log N : ℂ))
-      atTop (nhds ((2 * ((p : ℝ) ^ m - 1) ^ 2 /
-        ((m : ℝ) ^ 2 * Real.log (p : ℝ)) : ℝ) : ℂ)) := by
+      atTop (nhds ((2 * ((p : ℝ) ^ m - 1) ^ (2 : ℕ) /
+        ((m : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ)) : ℝ) : ℂ)) := by
   have hm : (1 : ℕ) ≤ m := le_trans one_le_two hm2
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
   have hppos : (0 : ℝ) < (p : ℝ) := lt_trans zero_lt_one hp
   have harch : (0 : ℝ) ≤ gaussArchScale m ^ (2 * m) := pow_nonneg (gaussArchScale_pos hm).le _
-  obtain ⟨C, hC0, hCb⟩ := exists_norm_gaussSampleValue_pow_mul_succ_le hm k p
+  obtain ⟨C, hC0, hCb⟩ := exists_norm_gaussSampleValue_pow_mul_succ_le_gaussConjugationSymmetry hm k p
   set F : ℤ → ℝ := fun i =>
     ‖(inner ℂ (fourierLp 2 i) ((gaussQuasiInnerG hm k p ^ m) (fourierLp 2 i)) : ℂ) -
       ((((p : ℝ) : ℂ) *
@@ -183,7 +183,7 @@ theorem tendsto_gaussLocalDiagonal_pow_logResidue (hm2 : 2 ≤ m) (k : Fin m) (p
   have hbase := (tendsto_gaussFourierDiagonal_pow_logResidue hm2 k p).const_mul
     ((gaussLocalFactorWeight m p : ℝ) : ℂ)
   have hval : ((gaussLocalFactorWeight m p : ℝ) : ℂ) *
-      ((2 * ((p : ℝ) ^ m - 1) ^ 2 / ((m : ℝ) ^ 2 * Real.log (p : ℝ)) : ℝ) : ℂ)
+      ((2 * ((p : ℝ) ^ m - 1) ^ (2 : ℕ) / ((m : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ)) : ℝ) : ℂ)
       = ((gaussChannelResidue m p : ℝ) : ℂ) := by
     rw [← Complex.ofReal_mul, gaussLocalFactorWeight_mul_principalResidue hm p]
   rwa [hval] at hbase

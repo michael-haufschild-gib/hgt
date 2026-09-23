@@ -60,7 +60,7 @@ theorem routeTBandGrowthBound_lt_landauPhi_fourth (γ : ℝ) :
 /-- A Landau disc at any certified centre is controlled by that centre's rectangle. -/
 theorem norm_riemannZeta_lt_routeT_landauPhi_of_ball
     {γ c δ : ℝ} (hγ : 100000 ≤ γ) (hcγ : γ ≤ c) (hc4 : c ≤ 4 * γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight γ)
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight γ)
     (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16)
     (hcPhi : routeTBandGrowthBound c < routeTLandauPhi γ)
     {w : ℂ} (hw : w ∈ ball (((1 + δ : ℝ) : ℂ) + (c : ℂ) * Complex.I)
@@ -70,7 +70,7 @@ theorem norm_riemannZeta_lt_routeT_landauPhi_of_ball
   have hc0 : 0 < c := lt_of_lt_of_le hγ0 hcγ
   have hc100 : 100000 ≤ c := hγ.trans hcγ
   have hc4pos : 0 ≤ 4 * γ := by positivity
-  have hlargec : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight c :=
+  have hlargec : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight c :=
     hlarge.trans (routeTBinaryHeight_mono hcγ)
   have hd : ‖w - (((1 + δ : ℝ) : ℂ) + (c : ℂ) * Complex.I)‖ <
       routeTLandauRadius γ := by simpa [dist_eq_norm] using hw
@@ -113,7 +113,7 @@ theorem norm_riemannZeta_lt_routeT_landauPhi_of_ball
 /-- Growth on the first Landau disc. -/
 theorem routeT_landau_disc_growth_first
     {γ δ : ℝ} (hγ : 100000 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight γ)
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight γ)
     (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16)
     {w : ℂ} (hw : w ∈ ball (((1 + δ : ℝ) : ℂ) + (γ : ℂ) * Complex.I)
       (routeTLandauRadius γ)) :
@@ -124,7 +124,7 @@ theorem routeT_landau_disc_growth_first
 /-- Growth on the doubled-height Landau disc. -/
 theorem routeT_landau_disc_growth_second
     {γ δ : ℝ} (hγ : 100000 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight γ)
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight γ)
     (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16)
     {w : ℂ} (hw : w ∈ ball (((1 + δ : ℝ) : ℂ) + ((2 * γ : ℝ) : ℂ) * Complex.I)
       (routeTLandauRadius γ)) :
@@ -135,11 +135,11 @@ theorem routeT_landau_disc_growth_second
 /-- Growth at four times the height, the third input of the DLVP inequality. -/
 theorem routeT_landau_growth_fourth
     {γ δ : ℝ} (hγ : 100000 ≤ γ)
-    (hlarge : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight γ)
+    (hlarge : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight γ)
     (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 16) :
     ‖riemannZeta (((1 + δ : ℝ) : ℂ) + ((4 * γ : ℝ) : ℂ) * Complex.I)‖ <
       routeTLandauPhi γ := by
-  have hlarge4 : routeTBandDepthRootThreshold ^ 10 ≤ routeTBinaryHeight (4 * γ) :=
+  have hlarge4 : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight (4 * γ) :=
     hlarge.trans (routeTBinaryHeight_mono (by linarith))
   have hrect := norm_riemannZeta_le_routeT_band_rectangle
     (t := 4 * γ) (y := 4 * γ) (σ := 1 + δ) (by linarith) hlarge4

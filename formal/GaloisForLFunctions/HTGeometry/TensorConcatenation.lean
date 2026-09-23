@@ -98,14 +98,14 @@ private theorem tensorVec_apply (ψ : EuclideanSpace ℂ dA) (φ : EuclideanSpac
 theorem norm_tensorVec (ψ : EuclideanSpace ℂ dA) (φ : EuclideanSpace ℂ dB) :
     ‖tensorVec ψ φ‖ = ‖ψ‖ * ‖φ‖ := by
   classical
-  have hsq : ∑ p : dA × dB, ‖tensorVec ψ φ p‖ ^ 2
-      = (∑ i, ‖ψ i‖ ^ 2) * (∑ j, ‖φ j‖ ^ 2) := by
+  have hsq : ∑ p : dA × dB, ‖tensorVec ψ φ p‖ ^ (2 : ℕ)
+      = (∑ i, ‖ψ i‖ ^ (2 : ℕ)) * (∑ j, ‖φ j‖ ^ (2 : ℕ)) := by
     rw [Finset.sum_mul_sum, ← Finset.sum_product']
     exact Finset.sum_congr rfl fun p _ => by
       rw [tensorVec_apply, norm_mul, mul_pow]
-  have hA : ‖ψ‖ = Real.sqrt (∑ i, ‖ψ i‖ ^ 2) := EuclideanSpace.norm_eq ψ
-  have hB : ‖φ‖ = Real.sqrt (∑ j, ‖φ j‖ ^ 2) := EuclideanSpace.norm_eq φ
-  have hAB : ‖tensorVec ψ φ‖ = Real.sqrt (∑ p : dA × dB, ‖tensorVec ψ φ p‖ ^ 2) :=
+  have hA : ‖ψ‖ = Real.sqrt (∑ i, ‖ψ i‖ ^ (2 : ℕ)) := EuclideanSpace.norm_eq ψ
+  have hB : ‖φ‖ = Real.sqrt (∑ j, ‖φ j‖ ^ (2 : ℕ)) := EuclideanSpace.norm_eq φ
+  have hAB : ‖tensorVec ψ φ‖ = Real.sqrt (∑ p : dA × dB, ‖tensorVec ψ φ p‖ ^ (2 : ℕ)) :=
     EuclideanSpace.norm_eq _
   rw [hAB, hsq, hA, hB, ← Real.sqrt_mul (Finset.sum_nonneg fun i _ => by positivity)]
 

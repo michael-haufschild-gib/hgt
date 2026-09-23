@@ -151,23 +151,23 @@ theorem exists_continuumPrimeCoherenceLocalDifferentialSaturation
             signedPrimeNaturalShiftPalette
               (continuumSparsePrimeOrientation base e x) 0)) = Cardinal.continuum ∧
       (∀ x, weightedOrientationDistanceSq (primeCoherenceWeight sigma)
-        (continuumSparsePrimeOrientation base e x) base < eta ^ 2) ∧
+        (continuumSparsePrimeOrientation base e x) base < eta ^ (2 : ℕ)) ∧
       ∀ x y, weightedOrientationDistanceSq (primeCoherenceWeight sigma)
         (continuumSparsePrimeOrientation base e x)
-        (continuumSparsePrimeOrientation base e y) < eta ^ 2 := by
-  have hB : 0 < eta ^ 2 := sq_pos_of_pos heta
+        (continuumSparsePrimeOrientation base e y) < eta ^ (2 : ℕ) := by
+  have hB : 0 < eta ^ (2 : ℕ) := sq_pos_of_pos heta
   obtain ⟨e, hsum, hbudget⟩ :=
     exists_sparsePrefixEmbedding_of_cofinally_small
-      (primeCoherenceWeight sigma) (eta ^ 2) hB
+      (primeCoherenceWeight sigma) (eta ^ (2 : ℕ)) hB
       (primeCoherenceWeight_cofinally_small sigma hsigma)
   refine ⟨e, continuumSparsePrimeNaturalShiftPalette_differentialIndependent base e,
     continuumSparsePrimeUnshifted_differentialAdjoin_trdeg base e, ?_, ?_⟩
   · intro x
     exact basedSparsePrefixOrientation_distance_base_lt base e
-      (primeCoherenceWeight sigma) x (eta ^ 2) hsum hbudget
+      (primeCoherenceWeight sigma) x (eta ^ (2 : ℕ)) hsum hbudget
   · intro x y
     exact basedSparsePrefixOrientation_pair_distance_lt base e
-      (primeCoherenceWeight sigma) x y (eta ^ 2) hsum hbudget
+      (primeCoherenceWeight sigma) x y (eta ^ (2 : ℕ)) hsum hbudget
 
 end
 

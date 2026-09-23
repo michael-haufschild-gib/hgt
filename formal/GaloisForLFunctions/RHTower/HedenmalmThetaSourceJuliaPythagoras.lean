@@ -67,8 +67,8 @@ theorem xiWardHalfPlaneCayleyFactor_sourceApertures
 Cayley discrepancy are complementary orthogonal coordinates. -/
 theorem sq_mobiusCriticalTwoSidedCayleyDiscrepancy_add_sq_unitHardyGram
     {u v : ℝ} (hu : -(1 / 2 : ℝ) < u) (hv : -(1 / 2 : ℝ) < v) :
-    mobiusCriticalTwoSidedCayleyDiscrepancy u v ^ 2 +
-      mobiusCriticalTwoSidedUnitHardyGram u v ^ 2 = 1 := by
+    mobiusCriticalTwoSidedCayleyDiscrepancy u v ^ (2 : ℕ) +
+      mobiusCriticalTwoSidedUnitHardyGram u v ^ (2 : ℕ) = 1 := by
   have hxu : 0 ≤ 1 + 2 * u := by linarith
   have hxv : 0 ≤ 1 + 2 * v := by linarith
   have hsu := Real.sq_sqrt hxu
@@ -83,8 +83,8 @@ theorem sq_mobiusCriticalTwoSidedCayleyDiscrepancy_add_sq_unitHardyGram
 /-- Normalized Hardy loss in squared overlap is exactly Cayley energy. -/
 theorem one_sub_sq_unitHardyGram_eq_sq_cayleyDiscrepancy
     {u v : ℝ} (hu : -(1 / 2 : ℝ) < u) (hv : -(1 / 2 : ℝ) < v) :
-    1 - mobiusCriticalTwoSidedUnitHardyGram u v ^ 2 =
-      mobiusCriticalTwoSidedCayleyDiscrepancy u v ^ 2 := by
+    1 - mobiusCriticalTwoSidedUnitHardyGram u v ^ (2 : ℕ) =
+      mobiusCriticalTwoSidedCayleyDiscrepancy u v ^ (2 : ℕ) := by
   nlinarith [
     sq_mobiusCriticalTwoSidedCayleyDiscrepancy_add_sq_unitHardyGram hu hv]
 

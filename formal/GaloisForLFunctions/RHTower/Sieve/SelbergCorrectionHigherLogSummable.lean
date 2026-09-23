@@ -224,7 +224,7 @@ private theorem tsum_selbergCorrectionLogPowerMajorant_succ_le'
     (∑' ab : ℕ × ℕ,
       selbergCorrectionLogPowerMajorant (a + 1) p ab.1 ab.2) ≤
       (8 + 4 * (2 : ℝ) ^ (a + 1)) * Real.log (p : ℝ) ^ (a + 1) /
-        (p : ℝ) ^ 2 := by
+        (p : ℝ) ^ (2 : ℕ) := by
   rcases Nat.lt_or_ge p 2 with hp | hp
   · have hzero : (fun ab : ℕ × ℕ =>
         selbergCorrectionLogPowerMajorant (a + 1) p ab.1 ab.2) = fun _ => 0 := by
@@ -294,7 +294,7 @@ private theorem tsum_padicLogPowerMajorantTerm_le
       |selbergEulerCorrectionLogPowerCoeff lower mn.1 mn.2|)) :
     (∑' mn : ℕ × ℕ, padicLogPowerMajorantTerm a lower p mn) ≤
       ((8 + 4 * (2 : ℝ) ^ (a + 1)) * Real.log (p : ℝ) ^ (a + 1) /
-          (p : ℝ) ^ 2) *
+          (p : ℝ) ^ (2 : ℕ)) *
         (∑' mn : ℕ × ℕ,
           |selbergEulerCorrectionLogPowerCoeff lower mn.1 mn.2|) := by
   refine (summable_padicLogPowerMajorantTerm a lower p hLower).tsum_le_of_sum_le ?_

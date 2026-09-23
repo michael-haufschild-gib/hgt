@@ -33,7 +33,7 @@ noncomputable section
 set_option maxHeartbeats 1000000 in
 /-- **The third-rung gain**: no `1/z³` coefficient is needed. -/
 theorem norm_digammaStirlingDefectTwo_step_le' {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖) :
-    ‖digammaStirlingDefectTwo (z + 1) - digammaStirlingDefectTwo z‖ ≤ 4 / ‖z‖ ^ 5 := by
+    ‖digammaStirlingDefectTwo (z + 1) - digammaStirlingDefectTwo z‖ ≤ 4 / ‖z‖ ^ (5 : ℕ) := by
   have hzpos : (0 : ℝ) < ‖z‖ := by linarith
   have hz0 : z ≠ 0 := by
     intro h
@@ -58,24 +58,24 @@ theorem norm_digammaStirlingDefectTwo_step_le' {z : ℂ} (hz : 0 < z.re) (h2 : 2
     have hz : ‖(1 : ℂ) + u‖ = 0 := by rw [h]; simp
     rw [hz] at hulow
     linarith
-  have hu5 : ‖u‖ ^ 5 = 1 / ‖z‖ ^ 5 := by rw [hunorm, div_pow, one_pow]
+  have hu5 : ‖u‖ ^ (5 : ℕ) = 1 / ‖z‖ ^ (5 : ℕ) := by rw [hunorm, div_pow, one_pow]
   -- the three exact remainders
-  have hE1 : ‖u - Complex.log (1 + u) - u ^ 2 / 2 + u ^ 3 / 3 - u ^ 4 / 4‖ ≤ ‖u‖ ^ 5 := by
+  have hE1 : ‖u - Complex.log (1 + u) - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3 - u ^ (4 : ℕ) / 4‖ ≤ ‖u‖ ^ (5 : ℕ) := by
     have hbase := norm_log_one_add_sub_taylor_le' (u := u) huhalf (n := 5) (by omega)
     have hsum : ∑ j ∈ Finset.range 5, (-1 : ℂ) ^ (j + 1) * u ^ j / (j : ℂ)
-        = u - u ^ 2 / 2 + u ^ 3 / 3 - u ^ 4 / 4 := by
+        = u - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3 - u ^ (4 : ℕ) / 4 := by
       rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
         Finset.sum_range_succ, Finset.sum_range_one]
       norm_num
       ring
     rw [hsum] at hbase
-    have hid : u - Complex.log (1 + u) - u ^ 2 / 2 + u ^ 3 / 3 - u ^ 4 / 4
-        = -(Complex.log (1 + u) - (u - u ^ 2 / 2 + u ^ 3 / 3 - u ^ 4 / 4)) := by ring
+    have hid : u - Complex.log (1 + u) - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3 - u ^ (4 : ℕ) / 4
+        = -(Complex.log (1 + u) - (u - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3 - u ^ (4 : ℕ) / 4)) := by ring
     rw [hid, norm_neg]
     exact hbase
-  have hE2 : ‖-(1 / (2 * z * (z + 1))) + u ^ 2 / 2 - u ^ 3 / 2 + u ^ 4 / 2‖ ≤ ‖u‖ ^ 5 := by
-    have hid : -(1 / (2 * z * (z + 1))) + u ^ 2 / 2 - u ^ 3 / 2 + u ^ 4 / 2
-        = u ^ 5 / (2 * (1 + u)) := by
+  have hE2 : ‖-(1 / (2 * z * (z + 1))) + u ^ (2 : ℕ) / 2 - u ^ (3 : ℕ) / 2 + u ^ (4 : ℕ) / 2‖ ≤ ‖u‖ ^ (5 : ℕ) := by
+    have hid : -(1 / (2 * z * (z + 1))) + u ^ (2 : ℕ) / 2 - u ^ (3 : ℕ) / 2 + u ^ (4 : ℕ) / 2
+        = u ^ (5 : ℕ) / (2 * (1 + u)) := by
       rw [hudef]
       field_simp
       ring
@@ -84,10 +84,10 @@ theorem norm_digammaStirlingDefectTwo_step_le' {z : ℂ} (hz : 0 < z.re) (h2 : 2
     rw [h2n]
     rw [div_le_iff₀ (by positivity)]
     nlinarith [hulow, pow_nonneg (norm_nonneg u) 5]
-  have hE3 : ‖(1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2)) + u ^ 3 / 6 - u ^ 4 / 4‖
-      ≤ 2 * ‖u‖ ^ 5 := by
-    have hid : (1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2)) + u ^ 3 / 6 - u ^ 4 / 4
-        = -(u ^ 5 * (4 + 3 * u)) / (12 * (1 + u) ^ 2) := by
+  have hE3 : ‖(1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ))) + u ^ (3 : ℕ) / 6 - u ^ (4 : ℕ) / 4‖
+      ≤ 2 * ‖u‖ ^ (5 : ℕ) := by
+    have hid : (1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ))) + u ^ (3 : ℕ) / 6 - u ^ (4 : ℕ) / 4
+        = -(u ^ (5 : ℕ) * (4 + 3 * u)) / (12 * (1 + u) ^ (2 : ℕ)) := by
       rw [hudef]
       field_simp
       ring
@@ -101,23 +101,23 @@ theorem norm_digammaStirlingDefectTwo_step_le' {z : ℂ} (hz : 0 < z.re) (h2 : 2
       have h3 : ‖(3 : ℂ)‖ = 3 := by norm_num
       rw [h4, h3]
       linarith [huhalf]
-    have hden : (3 : ℝ) ≤ 12 * ‖(1 : ℂ) + u‖ ^ 2 := by
+    have hden : (3 : ℝ) ≤ 12 * ‖(1 : ℂ) + u‖ ^ (2 : ℕ) := by
       nlinarith [hulow, norm_nonneg ((1 : ℂ) + u)]
     rw [div_le_iff₀ (by positivity)]
     nlinarith [hnum, hden, pow_nonneg (norm_nonneg u) 5, norm_nonneg ((4 : ℂ) + 3 * u)]
   rw [digammaStirlingDefectTwo_step hz]
   have hsplit : (1 / z - Complex.log (1 + 1 / z) - 1 / (2 * z * (z + 1)))
-      + (1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2))
-      = (u - Complex.log (1 + u) - u ^ 2 / 2 + u ^ 3 / 3 - u ^ 4 / 4)
-        + (-(1 / (2 * z * (z + 1))) + u ^ 2 / 2 - u ^ 3 / 2 + u ^ 4 / 2)
-        + ((1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2)) + u ^ 3 / 6 - u ^ 4 / 4) := by
+      + (1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ)))
+      = (u - Complex.log (1 + u) - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3 - u ^ (4 : ℕ) / 4)
+        + (-(1 / (2 * z * (z + 1))) + u ^ (2 : ℕ) / 2 - u ^ (3 : ℕ) / 2 + u ^ (4 : ℕ) / 2)
+        + ((1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ))) + u ^ (3 : ℕ) / 6 - u ^ (4 : ℕ) / 4) := by
     rw [hudef]
     ring
   rw [hsplit]
-  have htotal : ‖(u - Complex.log (1 + u) - u ^ 2 / 2 + u ^ 3 / 3 - u ^ 4 / 4)
-      + (-(1 / (2 * z * (z + 1))) + u ^ 2 / 2 - u ^ 3 / 2 + u ^ 4 / 2)
-      + ((1 / (12 * (z + 1) ^ 2) - 1 / (12 * z ^ 2)) + u ^ 3 / 6 - u ^ 4 / 4)‖
-      ≤ ‖u‖ ^ 5 + ‖u‖ ^ 5 + 2 * ‖u‖ ^ 5 := by
+  have htotal : ‖(u - Complex.log (1 + u) - u ^ (2 : ℕ) / 2 + u ^ (3 : ℕ) / 3 - u ^ (4 : ℕ) / 4)
+      + (-(1 / (2 * z * (z + 1))) + u ^ (2 : ℕ) / 2 - u ^ (3 : ℕ) / 2 + u ^ (4 : ℕ) / 2)
+      + ((1 / (12 * (z + 1) ^ (2 : ℕ)) - 1 / (12 * z ^ (2 : ℕ))) + u ^ (3 : ℕ) / 6 - u ^ (4 : ℕ) / 4)‖
+      ≤ ‖u‖ ^ (5 : ℕ) + ‖u‖ ^ (5 : ℕ) + 2 * ‖u‖ ^ (5 : ℕ) := by
     refine le_trans (norm_add_le _ _) ?_
     refine add_le_add (le_trans (norm_add_le _ _) (add_le_add hE1 hE2)) hE3
   refine le_trans htotal (le_of_eq ?_)
@@ -127,7 +127,7 @@ theorem norm_digammaStirlingDefectTwo_step_le' {z : ℂ} (hz : 0 < z.re) (h2 : 2
 set_option maxHeartbeats 1000000 in
 /-- **The third-rung Stirling bound.**  `ψ(z) = log z − 1/(2z) − 1/(12 z²) + O(|z|⁻⁴)`. -/
 theorem norm_digammaStirlingDefectTwo_le' {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖) :
-    ‖digammaStirlingDefectTwo z‖ ≤ 12 / ‖z‖ ^ 4 := by
+    ‖digammaStirlingDefectTwo z‖ ≤ 12 / ‖z‖ ^ (4 : ℕ) := by
   have h := norm_le_of_step_bound (N := 3) (K := 4) (by norm_num)
     (fun w hw hw2 => norm_digammaStirlingDefectTwo_step_le' hw hw2) hz h2
     (tendsto_digammaStirlingDefectTwo_shift_zero hz.le)

@@ -32,18 +32,18 @@ theorem re_inner_neg_of_norm_add_lt_norm (S : H →L[ℂ] H) (x : H)
   have hxpos : 0 < ‖x‖ := lt_of_le_of_lt (norm_nonneg (x + S x)) h
   have hre : RCLike.re (inner ℂ (x + S x) x) ≤ ‖x + S x‖ * ‖x‖ :=
     (RCLike.re_le_norm _).trans (norm_inner_le_norm _ _)
-  have hmul : ‖x + S x‖ * ‖x‖ < ‖x‖ ^ 2 := by
+  have hmul : ‖x + S x‖ * ‖x‖ < ‖x‖ ^ (2 : ℕ) := by
     calc
       ‖x + S x‖ * ‖x‖ < ‖x‖ * ‖x‖ := mul_lt_mul_of_pos_right h hxpos
-      _ = ‖x‖ ^ 2 := by ring
+      _ = ‖x‖ ^ (2 : ℕ) := by ring
   have hform : RCLike.re (inner ℂ (S x) x) =
-      RCLike.re (inner ℂ (x + S x) x) - ‖x‖ ^ 2 := by
+      RCLike.re (inner ℂ (x + S x) x) - ‖x‖ ^ (2 : ℕ) := by
     have hS : S x = (x + S x) - x := by abel
     calc
       RCLike.re (inner ℂ (S x) x) =
           RCLike.re (inner ℂ ((x + S x) - x) x) :=
         congrArg (fun y : H => RCLike.re (inner ℂ y x)) hS
-      _ = RCLike.re (inner ℂ (x + S x) x) - ‖x‖ ^ 2 := by
+      _ = RCLike.re (inner ℂ (x + S x) x) - ‖x‖ ^ (2 : ℕ) := by
         rw [inner_sub_left, map_sub, inner_self_eq_norm_sq_to_K]
         rw [RCLike.re_ofReal_pow]
   rw [hform]
@@ -484,22 +484,22 @@ theorem eventually_strictlyPositiveOn_hermiteTrialSpace (n : ℕ) :
     ∀ᶠ a : ℝ in atTop, ∀ f : evenSubspace, f ∈ hermiteTrialSpace n → f ≠ 0 →
       0 < RCLike.re (inner ℂ (evenTimeBandFourier a f) f) := by
   let C : ℝ → ℝ := fun a =>
-    ((n + 1 : ℕ) : ℝ) * (2 * hermitePositiveTruncationSum a n) ^ 2
+    ((n + 1 : ℕ) : ℝ) * (2 * hermitePositiveTruncationSum a n) ^ (2 : ℕ)
   have hC : Tendsto C atTop (nhds 0) := by
     have hη := tendsto_hermitePositiveTruncationSum n
     have h2η : Tendsto (fun a : ℝ => 2 * hermitePositiveTruncationSum a n)
         atTop (nhds 0) := by simpa using hη.const_mul 2
-    have hsq : Tendsto (fun a : ℝ => (2 * hermitePositiveTruncationSum a n) ^ 2)
+    have hsq : Tendsto (fun a : ℝ => (2 * hermitePositiveTruncationSum a n) ^ (2 : ℕ))
         atTop (nhds 0) := by simpa using h2η.pow 2
     simpa [C] using hsq.const_mul (((n + 1 : ℕ) : ℝ))
   have hsmall : ∀ᶠ a : ℝ in atTop, C a < 1 := hC.eventually_lt_const one_pos
   filter_upwards [hsmall] with a ha f hf hf0
   have hsq := norm_sq_sub_timeBand_le_of_hermite_trial a n
     (fun j => norm_hermiteEvenUnit_sub_cut_le_truncationSum a n j) hf
-  have hfnorm : 0 < ‖f‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hf0)
-  have hdefectsq : ‖f - evenTimeBandFourier a f‖ ^ 2 < ‖f‖ ^ 2 := by
+  have hfnorm : 0 < ‖f‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hf0)
+  have hdefectsq : ‖f - evenTimeBandFourier a f‖ ^ (2 : ℕ) < ‖f‖ ^ (2 : ℕ) := by
     refine hsq.trans_lt ?_
-    change C a * ‖f‖ ^ 2 < ‖f‖ ^ 2
+    change C a * ‖f‖ ^ (2 : ℕ) < ‖f‖ ^ (2 : ℕ)
     nlinarith [mul_lt_mul_of_pos_right ha hfnorm]
   have hdefect : ‖f - evenTimeBandFourier a f‖ < ‖f‖ := by
     nlinarith [sq_nonneg ‖f - evenTimeBandFourier a f‖, sq_nonneg ‖f‖,
@@ -516,22 +516,22 @@ theorem eventually_strictlyNegativeOn_hermiteNegativeTrialSpace (n : ℕ) :
     ∀ᶠ a : ℝ in atTop, ∀ f : evenSubspace, f ∈ hermiteNegativeTrialSpace n → f ≠ 0 →
       RCLike.re (inner ℂ (evenTimeBandFourier a f) f) < 0 := by
   let C : ℝ → ℝ := fun a =>
-    ((n + 1 : ℕ) : ℝ) * (2 * hermiteNegativeTruncationSum a n) ^ 2
+    ((n + 1 : ℕ) : ℝ) * (2 * hermiteNegativeTruncationSum a n) ^ (2 : ℕ)
   have hC : Tendsto C atTop (nhds 0) := by
     have hη := tendsto_hermiteNegativeTruncationSum n
     have h2η : Tendsto (fun a : ℝ => 2 * hermiteNegativeTruncationSum a n)
         atTop (nhds 0) := by simpa using hη.const_mul 2
-    have hsq : Tendsto (fun a : ℝ => (2 * hermiteNegativeTruncationSum a n) ^ 2)
+    have hsq : Tendsto (fun a : ℝ => (2 * hermiteNegativeTruncationSum a n) ^ (2 : ℕ))
         atTop (nhds 0) := by simpa using h2η.pow 2
     simpa [C] using hsq.const_mul (((n + 1 : ℕ) : ℝ))
   have hsmall : ∀ᶠ a : ℝ in atTop, C a < 1 := hC.eventually_lt_const one_pos
   filter_upwards [hsmall] with a ha f hf hf0
   have hsq := norm_sq_add_timeBand_le_of_negative_hermite_trial a n
     (fun j => norm_hermiteEvenNegativeUnit_sub_cut_le_truncationSum a n j) hf
-  have hfnorm : 0 < ‖f‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hf0)
-  have hdefectsq : ‖f + evenTimeBandFourier a f‖ ^ 2 < ‖f‖ ^ 2 := by
+  have hfnorm : 0 < ‖f‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hf0)
+  have hdefectsq : ‖f + evenTimeBandFourier a f‖ ^ (2 : ℕ) < ‖f‖ ^ (2 : ℕ) := by
     refine hsq.trans_lt ?_
-    change C a * ‖f‖ ^ 2 < ‖f‖ ^ 2
+    change C a * ‖f‖ ^ (2 : ℕ) < ‖f‖ ^ (2 : ℕ)
     nlinarith [mul_lt_mul_of_pos_right ha hfnorm]
   have hdefect : ‖f + evenTimeBandFourier a f‖ < ‖f‖ := by
     nlinarith [sq_nonneg ‖f + evenTimeBandFourier a f‖, sq_nonneg ‖f‖,

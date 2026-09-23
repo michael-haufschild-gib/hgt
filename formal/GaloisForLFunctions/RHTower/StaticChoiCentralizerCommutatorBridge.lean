@@ -10,7 +10,7 @@ open RHTower GaloisForLFunctions.RHTower
 theorem sum_sq_norm_row_of_unitary
     {d : ℕ} {W : Matrix (Fin d) (Fin d) ℂ}
     (hW : W ∈ Matrix.unitaryGroup (Fin d) ℂ) (i : Fin d) :
-    ∑ j, ‖W i j‖ ^ 2 = 1 := by
+    ∑ j, ‖W i j‖ ^ (2 : ℕ) = 1 := by
   have hmat : W * star W = 1 := Matrix.mem_unitaryGroup_iff.mp hW
   have hi := congrArg (fun M : Matrix (Fin d) (Fin d) ℂ => M i i) hmat
   rw [Matrix.mul_apply] at hi
@@ -21,18 +21,18 @@ theorem sum_sq_norm_row_of_unitary
 theorem sum_sq_norm_of_unitary
     {d : ℕ} {W : Matrix (Fin d) (Fin d) ℂ}
     (hW : W ∈ Matrix.unitaryGroup (Fin d) ℂ) :
-    ∑ i, ∑ j, ‖W i j‖ ^ 2 = d := by
+    ∑ i, ∑ j, ‖W i j‖ ^ (2 : ℕ) = d := by
   simp_rw [sum_sq_norm_row_of_unitary hW]
   simp
 
 noncomputable def normalizedSpectralOffDiagonalMass
     {d : ℕ} (W : Matrix (Fin d) (Fin d) ℂ) : ℝ :=
-  (d : ℝ)⁻¹ * ∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ 2
+  (d : ℝ)⁻¹ * ∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ (2 : ℕ)
 
 noncomputable def normalizedSpectralCommutatorEnergy
     {d : ℕ} (energy : Fin d → ℝ) (W : Matrix (Fin d) (Fin d) ℂ) : ℝ :=
   (d : ℝ)⁻¹ * ∑ i, ∑ j,
-    if i = j then 0 else (energy i - energy j) ^ 2 * ‖W i j‖ ^ 2
+    if i = j then 0 else (energy i - energy j) ^ (2 : ℕ) * ‖W i j‖ ^ (2 : ℕ)
 
 noncomputable def spectralDiagonalMatrix
     {d : ℕ} (energy : Fin d → ℝ) : Matrix (Fin d) (Fin d) ℂ :=
@@ -53,13 +53,13 @@ theorem norm_choiVector_spectralCommutator_sq
     {d : ℕ} (hd : 0 < d) (energy : Fin d → ℝ)
     (W : Matrix (Fin d) (Fin d) ℂ) :
     ‖GaloisForLFunctions.RHTower.choiVector
-        (spectralDiagonalMatrix energy * W - W * spectralDiagonalMatrix energy)‖ ^ 2 =
+        (spectralDiagonalMatrix energy * W - W * spectralDiagonalMatrix energy)‖ ^ (2 : ℕ) =
       normalizedSpectralCommutatorEnergy energy W := by
   rw [EuclideanSpace.norm_sq_eq]
   simp only [GaloisForLFunctions.RHTower.choiVector, Fintype.sum_prod_type]
   unfold normalizedSpectralCommutatorEnergy
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd
-  have hsqrt : Real.sqrt (d : ℝ) ^ 2 = d := Real.sq_sqrt hdR.le
+  have hsqrt : Real.sqrt (d : ℝ) ^ (2 : ℕ) = d := Real.sq_sqrt hdR.le
   simp only [Fintype.card_fin]
   rw [Finset.mul_sum]
   simp_rw [Finset.mul_sum]
@@ -80,14 +80,14 @@ theorem norm_choiVector_spectralCommutator_sq
 
 theorem offDiagonal_add_diagonal_eq_total
     {d : ℕ} (W : Matrix (Fin d) (Fin d) ℂ) :
-    (∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ 2) +
-        ∑ i, ‖W i i‖ ^ 2 =
-      ∑ i, ∑ j, ‖W i j‖ ^ 2 := by
+    (∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ (2 : ℕ)) +
+        ∑ i, ‖W i i‖ ^ (2 : ℕ) =
+      ∑ i, ∑ j, ‖W i j‖ ^ (2 : ℕ) := by
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro i hi
-  rw [show ‖W i i‖ ^ 2 =
-      ∑ j : Fin d, if i = j then ‖W i j‖ ^ 2 else 0 by simp]
+  rw [show ‖W i i‖ ^ (2 : ℕ) =
+      ∑ j : Fin d, if i = j then ‖W i j‖ ^ (2 : ℕ) else 0 by simp]
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro j hj
@@ -100,11 +100,11 @@ theorem normalizedSpectralOffDiagonalMass_le_one_sub_centralizerMass_sq
     {d : ℕ} (hd : 0 < d) {W : Matrix (Fin d) (Fin d) ℂ}
     (hW : W ∈ Matrix.unitaryGroup (Fin d) ℂ) :
     normalizedSpectralOffDiagonalMass W ≤
-      1 - unitaryDiagonalCentralizerMass W ^ 2 := by
+      1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ) := by
   have htotal := sum_sq_norm_of_unitary hW
   have hsplit := offDiagonal_add_diagonal_eq_total W
-  have hdiag : (∑ i, ‖W i i‖) ^ 2 ≤
-      (d : ℝ) * ∑ i, ‖W i i‖ ^ 2 := by
+  have hdiag : (∑ i, ‖W i i‖) ^ (2 : ℕ) ≤
+      (d : ℝ) * ∑ i, ‖W i i‖ ^ (2 : ℕ) := by
     simpa using (sq_sum_le_card_mul_sum_sq
       (s := Finset.univ) (f := fun i : Fin d => ‖W i i‖))
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd
@@ -126,13 +126,13 @@ theorem abs_energy_sub_le_two_staticChoiSpeed
 theorem normalizedSpectralCommutatorEnergy_le_speed_sq_mul_offDiagonal
     {d : ℕ} (energy : Fin d → ℝ) (W : Matrix (Fin d) (Fin d) ℂ) :
     normalizedSpectralCommutatorEnergy energy W ≤
-      (2 * staticChoiSpeed energy) ^ 2 * normalizedSpectralOffDiagonalMass W := by
+      (2 * staticChoiSpeed energy) ^ (2 : ℕ) * normalizedSpectralOffDiagonalMass W := by
   have hspeed0 : 0 ≤ 2 * staticChoiSpeed energy := by
     exact mul_nonneg (by norm_num) (staticChoiSpeed_pos energy).le
   have hterm : ∀ i j : Fin d,
-      (if i = j then 0 else (energy i - energy j) ^ 2 * ‖W i j‖ ^ 2) ≤
-        (2 * staticChoiSpeed energy) ^ 2 *
-          (if i = j then 0 else ‖W i j‖ ^ 2) := by
+      (if i = j then 0 else (energy i - energy j) ^ (2 : ℕ) * ‖W i j‖ ^ (2 : ℕ)) ≤
+        (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+          (if i = j then 0 else ‖W i j‖ ^ (2 : ℕ)) := by
     intro i j
     by_cases hij : i = j
     · simp [hij]
@@ -144,41 +144,41 @@ theorem normalizedSpectralCommutatorEnergy_le_speed_sq_mul_offDiagonal
   unfold normalizedSpectralCommutatorEnergy normalizedSpectralOffDiagonalMass
   have hsum :
       (∑ i, ∑ j, if i = j then 0 else
-          (energy i - energy j) ^ 2 * ‖W i j‖ ^ 2) ≤
-        (2 * staticChoiSpeed energy) ^ 2 *
-          ∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ 2 := by
+          (energy i - energy j) ^ (2 : ℕ) * ‖W i j‖ ^ (2 : ℕ)) ≤
+        (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+          ∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ (2 : ℕ) := by
     calc
-      _ ≤ ∑ i, ∑ j, (2 * staticChoiSpeed energy) ^ 2 *
-            (if i = j then 0 else ‖W i j‖ ^ 2) := by
+      _ ≤ ∑ i, ∑ j, (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+            (if i = j then 0 else ‖W i j‖ ^ (2 : ℕ)) := by
         exact Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => hterm i j
       _ = _ := by simp_rw [Finset.mul_sum]
   calc
     (d : ℝ)⁻¹ * (∑ i, ∑ j, if i = j then 0 else
-        (energy i - energy j) ^ 2 * ‖W i j‖ ^ 2) ≤
-        (d : ℝ)⁻¹ * ((2 * staticChoiSpeed energy) ^ 2 *
-          ∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ 2) :=
+        (energy i - energy j) ^ (2 : ℕ) * ‖W i j‖ ^ (2 : ℕ)) ≤
+        (d : ℝ)⁻¹ * ((2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+          ∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hsum (inv_nonneg.mpr (Nat.cast_nonneg d))
-    _ = (2 * staticChoiSpeed energy) ^ 2 *
-        ((d : ℝ)⁻¹ * ∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ 2) := by ring
+    _ = (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+        ((d : ℝ)⁻¹ * ∑ i, ∑ j, if i = j then 0 else ‖W i j‖ ^ (2 : ℕ)) := by ring
 
 theorem normalizedSpectralCommutatorEnergy_le_centralizerDefect
     {d : ℕ} (hd : 0 < d) (energy : Fin d → ℝ)
     {W : Matrix (Fin d) (Fin d) ℂ}
     (hW : W ∈ Matrix.unitaryGroup (Fin d) ℂ) :
     normalizedSpectralCommutatorEnergy energy W ≤
-      (2 * staticChoiSpeed energy) ^ 2 *
-        choiDist (unitaryRadialDiagonalMatrix W) W ^ 2 := by
+      (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+        choiDist (unitaryRadialDiagonalMatrix W) W ^ (2 : ℕ) := by
   calc
     normalizedSpectralCommutatorEnergy energy W ≤
-        (2 * staticChoiSpeed energy) ^ 2 * normalizedSpectralOffDiagonalMass W :=
+        (2 * staticChoiSpeed energy) ^ (2 : ℕ) * normalizedSpectralOffDiagonalMass W :=
       normalizedSpectralCommutatorEnergy_le_speed_sq_mul_offDiagonal energy W
-    _ ≤ (2 * staticChoiSpeed energy) ^ 2 *
-        (1 - unitaryDiagonalCentralizerMass W ^ 2) := by
+    _ ≤ (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+        (1 - unitaryDiagonalCentralizerMass W ^ (2 : ℕ)) := by
       exact mul_le_mul_of_nonneg_left
         (normalizedSpectralOffDiagonalMass_le_one_sub_centralizerMass_sq hd hW)
         (sq_nonneg _)
-    _ = (2 * staticChoiSpeed energy) ^ 2 *
-        choiDist (unitaryRadialDiagonalMatrix W) W ^ 2 := by
+    _ = (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+        choiDist (unitaryRadialDiagonalMatrix W) W ^ (2 : ℕ) := by
       rw [choiDist_radialDiagonal_exact hd, Real.sq_sqrt]
       have hmass0 := unitaryDiagonalCentralizerMass_nonneg W
       have hmass1 := unitaryDiagonalCentralizerMass_le_one hd hW
@@ -204,10 +204,10 @@ theorem norm_choiVector_spectralCommutator_le_centralizerDistance
       choiDist (unitaryRadialDiagonalMatrix W) W :=
     mul_nonneg (mul_nonneg (by norm_num) (staticChoiSpeed_pos energy).le)
       (choiDist_nonneg _ _)
-  rw [show (2 * staticChoiSpeed energy) ^ 2 *
-      choiDist (unitaryRadialDiagonalMatrix W) W ^ 2 =
+  rw [show (2 * staticChoiSpeed energy) ^ (2 : ℕ) *
+      choiDist (unitaryRadialDiagonalMatrix W) W ^ (2 : ℕ) =
       (2 * staticChoiSpeed energy *
-        choiDist (unitaryRadialDiagonalMatrix W) W) ^ 2 by ring] at henergy
+        choiDist (unitaryRadialDiagonalMatrix W) W) ^ (2 : ℕ) by ring] at henergy
   exact (sq_le_sq₀ hleft hright).mp henergy
 
 theorem norm_choiVector_spectralCommutator_lt_of_centralizerDistance_lt

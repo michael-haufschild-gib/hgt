@@ -37,13 +37,13 @@ theorem unitRieszSqrtPrefixMass_lower (m : ℕ) :
   | succ m ih =>
       have hs1 : 0 ≤ Real.sqrt ((m : ℝ) + 1) := Real.sqrt_nonneg _
       have hs2 : 0 ≤ Real.sqrt ((m : ℝ) + 2) := Real.sqrt_nonneg _
-      have hs1sq : (Real.sqrt ((m : ℝ) + 1)) ^ 2 = (m : ℝ) + 1 :=
+      have hs1sq : (Real.sqrt ((m : ℝ) + 1)) ^ (2 : ℕ) = (m : ℝ) + 1 :=
         Real.sq_sqrt (by positivity)
-      have hs2sq : (Real.sqrt ((m : ℝ) + 2)) ^ 2 = (m : ℝ) + 2 :=
+      have hs2sq : (Real.sqrt ((m : ℝ) + 2)) ^ (2 : ℕ) = (m : ℝ) + 2 :=
         Real.sq_sqrt (by positivity)
       have hsq :
-          (2 * ((m : ℝ) + 1) * Real.sqrt ((m : ℝ) + 2)) ^ 2 ≤
-            ((2 * (m : ℝ) + 3) * Real.sqrt ((m : ℝ) + 1)) ^ 2 := by
+          (2 * ((m : ℝ) + 1) * Real.sqrt ((m : ℝ) + 2)) ^ (2 : ℕ) ≤
+            ((2 * (m : ℝ) + 3) * Real.sqrt ((m : ℝ) + 1)) ^ (2 : ℕ) := by
         simp only [mul_pow, hs1sq, hs2sq]
         nlinarith
       have hstep :

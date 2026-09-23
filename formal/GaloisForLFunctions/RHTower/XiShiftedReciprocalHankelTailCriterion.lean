@@ -30,7 +30,7 @@ noncomputable section
 def xiShiftedReciprocalTraceHankelTerm (y : ℝ) (p : Polynomial ℝ)
     (q : XiZeroCopy) : ℂ :=
   xiShiftedReciprocalSquare y q *
-    evalRealPolynomial p (xiShiftedReciprocalSquare y q) ^ 2
+    evalRealPolynomial p (xiShiftedReciprocalSquare y q) ^ (2 : ℕ)
 
 /-- Polynomial trace--Hankel value for the Möbius-shifted reciprocal Xi spectrum. -/
 def xiShiftedReciprocalTraceHankel (y : ℝ) (p : Polynomial ℝ) : ℂ :=
@@ -41,7 +41,7 @@ theorem summable_xiShiftedReciprocalTraceHankelTerm
     {y : ℝ} (hy : 0 ≤ y) (p : Polynomial ℝ) :
     Summable (xiShiftedReciprocalTraceHankelTerm y p) := by
   let lam : XiZeroCopy → ℂ := xiShiftedReciprocalSquare y
-  let r : Polynomial ℂ := (p.map (algebraMap ℝ ℂ)) ^ 2
+  let r : Polynomial ℂ := (p.map (algebraMap ℝ ℂ)) ^ (2 : ℕ)
   let moment : ℕ → XiZeroCopy → ℂ := fun k q => lam q ^ (k + 1)
   have hmoment (k : ℕ) : Summable (moment k) := by
     simpa only [lam, moment] using summable_xiShiftedReciprocalSquare_pow hy k
@@ -58,9 +58,9 @@ theorem summable_xiShiftedReciprocalTraceHankelTerm
   intro q
   symm
   rw [xiShiftedReciprocalTraceHankelTerm]
-  change lam q * evalRealPolynomial p (lam q) ^ 2 = _
+  change lam q * evalRealPolynomial p (lam q) ^ (2 : ℕ) = _
   calc
-    lam q * evalRealPolynomial p (lam q) ^ 2 = lam q * r.eval (lam q) := by
+    lam q * evalRealPolynomial p (lam q) ^ (2 : ℕ) = lam q * r.eval (lam q) := by
       simp [r, evalRealPolynomial]
     _ = lam q *
         (∑ k ∈ Finset.range (r.natDegree + 1), r.coeff k * lam q ^ k) := by
@@ -332,7 +332,7 @@ theorem xiShiftedReciprocalTraceHankel_X_pow_mul_ofFn
       rw [xiShiftedReciprocalTraceHankelTerm]
       change lam q *
           evalRealPolynomial
-            ((Polynomial.X : Polynomial ℝ) ^ M * Polynomial.ofFn N c) (lam q) ^ 2 = _
+            ((Polynomial.X : Polynomial ℝ) ^ M * Polynomial.ofFn N c) (lam q) ^ (2 : ℕ) = _
       rw [heval, pow_two]
       simp_rw [Finset.mul_sum, Finset.sum_mul]
       apply Finset.sum_congr rfl
@@ -498,7 +498,7 @@ theorem xiShiftedReciprocalSquare_one_eq_xiSquaredSeamOneCoordinate
     _ = (1 + z⁻¹)⁻¹ := by
       field_simp [hz, h1z]
       rw [show z + 1 = 1 + z by ring, div_self h1z]
-    _ = (1 - ((q.1 : ℂ) - 1 / 2) ^ 2)⁻¹ := by
+    _ = (1 - ((q.1 : ℂ) - 1 / 2) ^ (2 : ℕ))⁻¹ := by
       congr 1
       dsimp only [z]
       rw [xiZeroCopyReciprocalSquare_eq, xiCentralReciprocalSquare]

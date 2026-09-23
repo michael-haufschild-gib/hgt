@@ -75,20 +75,20 @@ theorem blockSplitMatrix_zero (m d : Z → ℝ) :
 
 /-- The real block root path. -/
 def blockSplitRoot (m d : Z → ℝ) (p : Fin 2 × Z) (u : ℝ) : ℝ :=
-  m p.2 + (if p.1 = 1 then -1 else 1) * Real.sqrt (d p.2 ^ 2 + u ^ 2)
+  m p.2 + (if p.1 = 1 then -1 else 1) * Real.sqrt (d p.2 ^ (2 : ℕ) + u ^ (2 : ℕ))
 
 omit [Fintype Z] [DecidableEq Z] in
 theorem blockSplitRoot_zero_eq (m d : Z → ℝ) (hd : ∀ z, 0 < d z) (p : Fin 2 × Z) :
     blockSplitRoot m d p 0 = blockEnergy m d p := by
   rw [blockSplitRoot, blockEnergy]
-  have hsq : Real.sqrt (d p.2 ^ 2 + 0 ^ 2) = d p.2 := by
-    rw [show d p.2 ^ 2 + 0 ^ 2 = d p.2 ^ 2 by ring, Real.sqrt_sq (hd p.2).le]
+  have hsq : Real.sqrt (d p.2 ^ (2 : ℕ) + 0 ^ (2 : ℕ)) = d p.2 := by
+    rw [show d p.2 ^ (2 : ℕ) + 0 ^ (2 : ℕ) = d p.2 ^ (2 : ℕ) by ring, Real.sqrt_sq (hd p.2).le]
   rw [hsq]
 
 omit [Fintype Z] [DecidableEq Z] in
 theorem continuous_blockSplitRoot_real (m d : Z → ℝ) (p : Fin 2 × Z) :
     Continuous fun u : ℝ => ((blockSplitRoot m d p u : ℝ) : ℂ) := by
-  have hsqrt : Continuous fun u : ℝ => Real.sqrt (d p.2 ^ 2 + u ^ 2) :=
+  have hsqrt : Continuous fun u : ℝ => Real.sqrt (d p.2 ^ (2 : ℕ) + u ^ (2 : ℕ)) :=
     Real.continuous_sqrt.comp (by fun_prop)
   exact Complex.continuous_ofReal.comp (by unfold blockSplitRoot; fun_prop)
 
@@ -241,7 +241,7 @@ theorem continuous_shiftedBlockSplitMatrix (m d : Z → ℝ) :
 omit [Fintype Z] [DecidableEq Z] in
 theorem continuous_shiftedBlockSplitRoot (m d : Z → ℝ) (p : Fin 2 × Z) :
     Continuous fun q : ℝ × ℝ => ((shiftedBlockSplitRoot m d p q : ℝ) : ℂ) := by
-  have hsqrt : Continuous fun q : ℝ × ℝ => Real.sqrt ((d p.2 + q.1) ^ 2 + q.2 ^ 2) :=
+  have hsqrt : Continuous fun q : ℝ × ℝ => Real.sqrt ((d p.2 + q.1) ^ (2 : ℕ) + q.2 ^ (2 : ℕ)) :=
     Real.continuous_sqrt.comp (by fun_prop)
   exact Complex.continuous_ofReal.comp
     (by unfold shiftedBlockSplitRoot blockSplitRoot; fun_prop)

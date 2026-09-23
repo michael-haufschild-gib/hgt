@@ -259,15 +259,15 @@ theorem fullNullResponse_native (q : XiZeroCopy) (s amplitude : ℂ) {p r : ℝ}
   rfl
 
 private def kernelAction (q : XiZeroCopy) (p r a b X k : ℝ) : ℂ :=
-  (Real.exp k:ℂ)^2*kernelJet q 2 2 p r a b X k+
+  (Real.exp k:ℂ)^(2 : ℕ)*kernelJet q 2 2 p r a b X k+
     kernelJet q 3 2 p r a b X k-kernelJet q 3 1 p r a b X k
 
 private def responseAction (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) : ℂ :=
-  (Real.exp k:ℂ)^2*responseJet q s amplitude 2 2 p r X k+
+  (Real.exp k:ℂ)^(2 : ℕ)*responseJet q s amplitude 2 2 p r X k+
     responseJet q s amplitude 3 2 p r X k-responseJet q s amplitude 3 1 p r X k
 
 private theorem responseAction_derivatives (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun x => fullNullResponse q s amplitude p r x k)) X+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun x => fullNullResponse q s amplitude p r x k)) X+
       deriv (deriv (fun x => fullNullResponse q s amplitude p r X x)) k-
       deriv (fun x => fullNullResponse q s amplitude p r X x) k = responseAction q s amplitude p r X k := by
   have hx : deriv (fun x => fullNullResponse q s amplitude p r x k) =
@@ -307,10 +307,10 @@ private theorem responseAction_integral (q : XiZeroCopy) (s amplitude : ℂ) (p 
   have hc (i : Fin 4) (n : ℕ) : Continuous (Function.uncurry (f i n)) := by
     dsimp only [Function.uncurry,f]; fun_prop
   have hi (a : ℝ) : (∫ b in (0:ℝ)..r, kernelAction q p r a b X k*nullSource s amplitude a b) =
-      (Real.exp k:ℂ)^2*(∫ b in (0:ℝ)..r, f 2 2 a b)+
+      (Real.exp k:ℂ)^(2 : ℕ)*(∫ b in (0:ℝ)..r, f 2 2 a b)+
         (∫ b in (0:ℝ)..r, f 3 2 a b)-(∫ b in (0:ℝ)..r, f 3 1 a b) := by
     simp only [kernelAction,sub_mul,add_mul,mul_assoc]
-    change (∫ b in (0:ℝ)..r, (Real.exp k:ℂ)^2*f 2 2 a b+f 3 2 a b-f 3 1 a b) = _
+    change (∫ b in (0:ℝ)..r, (Real.exp k:ℂ)^(2 : ℕ)*f 2 2 a b+f 3 2 a b-f 3 1 a b) = _
     rw [intervalIntegral.integral_sub,intervalIntegral.integral_add,intervalIntegral.integral_const_mul]
     · exact (((hc 2 2).uncurry_left a).const_mul _).intervalIntegrable 0 r
     · exact ((hc 3 2).uncurry_left a).intervalIntegrable 0 r
@@ -328,8 +328,8 @@ private theorem responseAction_integral (q : XiZeroCopy) (s amplitude : ℂ) (p 
   · exact (hI 3 1).intervalIntegrable 0 p
 
 private theorem circleJet_action (q : XiZeroCopy) (d X k : ℝ) :
-    (Real.exp k:ℂ)^2*circleJet q 2 2 d X k+circleJet q 3 2 d X k-circleJet q 3 1 d X k =
-      (Real.exp k:ℂ)^2*deriv (deriv (fun x => mean q d x k)) X+
+    (Real.exp k:ℂ)^(2 : ℕ)*circleJet q 2 2 d X k+circleJet q 3 2 d X k-circleJet q 3 1 d X k =
+      (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun x => mean q d x k)) X+
         deriv (deriv (fun x => mean q d X x)) k-deriv (fun x => mean q d X x) k := by
   have hx : deriv (fun x => mean q d x k) = fun x => circleJet q 2 1 d x k := by
     rw [← funext (fun x => circleJet_zero q 2 d x k)]
@@ -347,7 +347,7 @@ private theorem kernelAction_eq (q : XiZeroCopy) {p r a b : ℝ}
   rw [circleJet_action,nullRadius_eq ha hb]
   rfl
 
-private def nullWeight (p r : ℝ) : ℂ := 1/(4*(Real.cosh ((p-r)/2):ℂ)^2)
+private def nullWeight (p r : ℝ) : ℂ := 1/(4*(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ))
 
 @[fun_prop] private theorem nullWeight_comp {P : Type*} [TopologicalSpace P]
     (p r : P → ℝ) (hp : Continuous p) (hr : Continuous r) :
@@ -601,10 +601,10 @@ theorem fullNullResponse_wave (q : XiZeroCopy) (s amplitude : ℂ) {p r : ℝ}
     deriv (fun b => deriv (fun a => fullNullResponse q s amplitude a b X k) p) r =
       (1/4:ℂ)*(fullSquarePotential q ![X,Real.exp k]*
         oddSource s amplitude ((p+r)/2) ((p-r)/2))+
-      ((Real.exp k:ℂ)^2*deriv (deriv (fun x => fullNullResponse q s amplitude p r x k)) X+
+      ((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun x => fullNullResponse q s amplitude p r x k)) X+
         deriv (deriv (fun x => fullNullResponse q s amplitude p r X x)) k-
         deriv (fun x => fullNullResponse q s amplitude p r X x) k)/
-          (4*(Real.cosh ((p-r)/2):ℂ)^2) := by
+          (4*(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ)) := by
   have hi := Continuous.uncurry_left (f := fullEffective q s amplitude X k) p
     (fullEffective_continuous q s amplitude X k)
   have hd := intervalIntegral.integral_hasDerivAt_right (hi.intervalIntegrable 0 r)
@@ -629,10 +629,10 @@ theorem fullNullResponse_goursat (q : XiZeroCopy) (s amplitude : ℂ) {p r : ℝ
       (1/4:ℂ)*(∫ a in (0:ℝ)..p, ∫ b in (0:ℝ)..r,
         fullSquarePotential q ![X,Real.exp k]*oddSource s amplitude ((a+b)/2) ((a-b)/2))+
       ∫ c in (0:ℝ)..p, ∫ d in (0:ℝ)..r,
-        ((Real.exp k:ℂ)^2*deriv (deriv (fun x => fullNullResponse q s amplitude c d x k)) X+
+        ((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun x => fullNullResponse q s amplitude c d x k)) X+
           deriv (deriv (fun x => fullNullResponse q s amplitude c d X x)) k-
           deriv (fun x => fullNullResponse q s amplitude c d X x) k)/
-            (4*(Real.cosh ((c-d)/2):ℂ)^2) := by
+            (4*(Real.cosh ((c-d)/2):ℂ)^(2 : ℕ)) := by
   rw [fullResponse_goursat q s amplitude hp hr]
   congr 1
   apply intervalIntegral.integral_congr
@@ -699,7 +699,7 @@ private theorem cutoffLogPower_first (alpha : ℂ) (k : ℝ) :
 
 private theorem cutoffLogJet_first (alpha : ℂ) (k : ℝ) :
     HasDerivAt (cutoffLogJet alpha)
-      (cutoffLogJet alpha k+(Real.exp k:ℂ)^2*
+      (cutoffLogJet alpha k+(Real.exp k:ℂ)^(2 : ℕ)*
         deriv (deriv (powerCutoffHeight alpha)) (Real.exp k)) k := by
   have hs := (contDiff_infty_iff_deriv.mp (powerCutoffHeight_smooth alpha)).2
   have hd := ((hs.differentiable (by simp)) (Real.exp k)).hasDerivAt.scomp k
@@ -744,7 +744,7 @@ private theorem residualHeightJet_first (q : XiZeroCopy) (s amplitude : ℂ) (p 
     HasDerivAt (fun x => residualHeightJet q s amplitude p r X x)
       (responseJet q s amplitude 3 2 p r X k-
         ∑ i : Fin 3, principalNullResponse q s amplitude i p r*
-          (cutoffLogJet (principalExponent q i) k+(Real.exp k:ℂ)^2*
+          (cutoffLogJet (principalExponent q i) k+(Real.exp k:ℂ)^(2 : ℕ)*
             deriv (deriv (powerCutoffHeight (principalExponent q i))) (Real.exp k))) k := by
   exact (responseJet_k q s amplitude 1 p r X k).sub
     (HasDerivAt.fun_sum (u := Finset.univ) (fun i _ =>
@@ -754,10 +754,10 @@ private theorem residualHeightJet_first (q : XiZeroCopy) (s amplitude : ℂ) (p 
 private def residualAction (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) : ℂ :=
   responseAction q s amplitude p r X k-
     ∑ i : Fin 3, principalNullResponse q s amplitude i p r*
-      ((Real.exp k:ℂ)^2*deriv (deriv (powerCutoffHeight (principalExponent q i))) (Real.exp k))
+      ((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (powerCutoffHeight (principalExponent q i))) (Real.exp k))
 
 private theorem residualAction_derivatives (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun x => fullNullResidual q s amplitude p r x k)) X+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun x => fullNullResidual q s amplitude p r x k)) X+
       deriv (deriv (fun x => fullNullResidual q s amplitude p r X x)) k-
       deriv (fun x => fullNullResidual q s amplitude p r X x) k = residualAction q s amplitude p r X k := by
   have hx : deriv (fun x => fullNullResidual q s amplitude p r x k) =
@@ -837,7 +837,7 @@ private theorem principalNullResponse_primitive (q : XiZeroCopy) (s amplitude : 
       nullRectangle (principalEffective q s amplitude i) p r := by
   let alpha := principalExponent q i
   let f := nullSource s amplitude
-  let v := fun a b => (-alpha)*(-alpha+1)/(4*(Real.cosh ((a-b)/2):ℂ)^2)*
+  let v := fun a b => (-alpha)*(-alpha+1)/(4*(Real.cosh ((a-b)/2):ℂ)^(2 : ℕ))*
     radialResponse (-alpha) s amplitude ((a+b)/2) ((a-b)/2)
   have hv : Continuous (Function.uncurry v) := by
     have hu := (radialResponse_continuous (-alpha) s amplitude).comp
@@ -902,7 +902,7 @@ private theorem residualEffective_source (q : XiZeroCopy) (s amplitude : ℂ) (p
   let A := fun i : Fin 3 => principalAmplitude q i
   let L := fun i : Fin 3 => principalExponent q i*(principalExponent q i-1)
   have hcomm (i : Fin 3) : P i*cutoffCommutator (principalExponent q i) ![X,Real.exp k] =
-      P i*((Real.exp k:ℂ)^2*deriv (deriv (powerCutoffHeight (principalExponent q i))) (Real.exp k))-
+      P i*((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (powerCutoffHeight (principalExponent q i))) (Real.exp k))-
         (L i*P i)*C i := by
     rw [cutoffCommutator_height]
     dsimp only [P,C,L,cutoffLogPower,Matrix.cons_val_one,Matrix.cons_val_zero]
@@ -958,12 +958,12 @@ theorem fullNullResidual_wave (q : XiZeroCopy) (s amplitude : ℂ) {p r : ℝ}
     deriv (fun b => deriv (fun a => fullNullResidual q s amplitude a b X k) p) r =
       (1/4:ℂ)*(squareResidual q ![X,Real.exp k]*
         oddSource s amplitude ((p+r)/2) ((p-r)/2))+
-      ((Real.exp k:ℂ)^2*deriv (deriv (fun x => fullNullResidual q s amplitude p r x k)) X+
+      ((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun x => fullNullResidual q s amplitude p r x k)) X+
         deriv (deriv (fun x => fullNullResidual q s amplitude p r X x)) k-
         deriv (fun x => fullNullResidual q s amplitude p r X x) k+
         ∑ i : Fin 3, principalNullResponse q s amplitude i p r*
           cutoffCommutator (principalExponent q i) ![X,Real.exp k])/
-            (4*(Real.cosh ((p-r)/2):ℂ)^2) := by
+            (4*(Real.cosh ((p-r)/2):ℂ)^(2 : ℕ)) := by
   have hi := Continuous.uncurry_left (f := residualEffective q s amplitude X k) p
     (residualEffective_continuous q s amplitude X k)
   have hd := intervalIntegral.integral_hasDerivAt_right (hi.intervalIntegrable 0 r)
@@ -1007,12 +1007,12 @@ theorem fullNullResidual_goursat (q : XiZeroCopy) (s amplitude : ℂ) {p r : ℝ
       ∫ a in (0:ℝ)..p, ∫ b in (0:ℝ)..r,
         (1/4:ℂ)*(squareResidual q ![X,Real.exp k]*
           oddSource s amplitude ((a+b)/2) ((a-b)/2))+
-        ((Real.exp k:ℂ)^2*deriv (deriv (fun x => fullNullResidual q s amplitude a b x k)) X+
+        ((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun x => fullNullResidual q s amplitude a b x k)) X+
           deriv (deriv (fun x => fullNullResidual q s amplitude a b X x)) k-
           deriv (fun x => fullNullResidual q s amplitude a b X x) k+
           ∑ i : Fin 3, principalNullResponse q s amplitude i a b*
             cutoffCommutator (principalExponent q i) ![X,Real.exp k])/
-              (4*(Real.cosh ((a-b)/2):ℂ)^2) := by
+              (4*(Real.cosh ((a-b)/2):ℂ)^(2 : ℕ)) := by
   rw [fullNullResidual_primitive q s amplitude hp hr]
   apply intervalIntegral.integral_congr
   intro a ha
@@ -1453,11 +1453,11 @@ theorem nativeResidualTimePrimitive_radial_equation (q : XiZeroCopy) (s amplitud
       fullNullResidual q s amplitude (t+x) (t-x) X k-
       ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*
         (squareResidual q ![X,Real.exp k]*oddSource s amplitude u x+
-          ((Real.exp k:ℂ)^2*deriv (deriv (fun y => fullNullResidual q s amplitude (u+x) (u-x) y k)) X+
+          ((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun y => fullNullResidual q s amplitude (u+x) (u-x) y k)) X+
             deriv (deriv (fun y => fullNullResidual q s amplitude (u+x) (u-x) X y)) k-
             deriv (fun y => fullNullResidual q s amplitude (u+x) (u-x) X y) k+
             ∑ i : Fin 3, principalNullResponse q s amplitude i (u+x) (u-x)*
-              cutoffCommutator (principalExponent q i) ![X,Real.exp k])/(Real.cosh x:ℂ)^2) := by
+              cutoffCommutator (principalExponent q i) ![X,Real.exp k])/(Real.cosh x:ℂ)^(2 : ℕ)) := by
   rw [(nativeResidualTimePrimitive_spatial q s amplitude t x X k).deriv]
   congr 1
   unfold weighted
@@ -1512,12 +1512,12 @@ private theorem cutoffLogJet_continuous (alpha : ℂ) : Continuous (cutoffLogJet
   exact (cutoffLogJet_first alpha k).continuousAt
 
 private theorem cutoffLogSecond_continuous (alpha : ℂ) :
-    Continuous (fun k => cutoffLogJet alpha k+(Real.exp k:ℂ)^2*
+    Continuous (fun k => cutoffLogJet alpha k+(Real.exp k:ℂ)^(2 : ℕ)*
       deriv (deriv (powerCutoffHeight alpha)) (Real.exp k)) := by
   have h₁ := (contDiff_infty_iff_deriv.mp (powerCutoffHeight_smooth alpha)).2
   have h₂ := (contDiff_infty_iff_deriv.mp h₁).2
   exact (cutoffLogJet_continuous alpha).add
-    ((by fun_prop : Continuous (fun k : ℝ => (Real.exp k:ℂ)^2)).mul
+    ((by fun_prop : Continuous (fun k : ℝ => (Real.exp k:ℂ)^(2 : ℕ))).mul
       (h₂.continuous.comp Real.continuous_exp))
 
 private theorem residual_joint_continuous (q : XiZeroCopy) (s amplitude : ℂ) :
@@ -1535,7 +1535,7 @@ private theorem residual_joint_continuous (q : XiZeroCopy) (s amplitude : ℂ) :
 private def residualHeightSecond (q : XiZeroCopy) (s amplitude : ℂ) (p r X k : ℝ) : ℂ :=
   responseJet q s amplitude 3 2 p r X k-
     ∑ i : Fin 3, principalNullResponse q s amplitude i p r*
-      (cutoffLogJet (principalExponent q i) k+(Real.exp k:ℂ)^2*
+      (cutoffLogJet (principalExponent q i) k+(Real.exp k:ℂ)^(2 : ℕ)*
         deriv (deriv (powerCutoffHeight (principalExponent q i))) (Real.exp k))
 
 private theorem residualHeightJet_joint_continuous (q : XiZeroCopy) (s amplitude : ℂ) :
@@ -1603,7 +1603,7 @@ private theorem nativePrimitive_kk (q : XiZeroCopy) (s amplitude : ℂ) (t x X k
     (fun y u => residualHeightJet_first q s amplitude (u+x) (u-x) X y) t k).deriv
 
 private theorem nativePrimitive_angular_action (q : XiZeroCopy) (s amplitude : ℂ) (t x X k : ℝ) :
-    (Real.exp k:ℂ)^2*deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x y k)) X+
+    (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x y k)) X+
       deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y)) k-
       deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y) k =
       ∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*residualAction q s amplitude (u+x) (u-x) X k := by
@@ -1616,11 +1616,11 @@ private theorem nativePrimitive_angular_action (q : XiZeroCopy) (s amplitude : �
     convert! hw.mul ((residualHeightSecond_joint_continuous q s amplitude).comp hc) using 1
   have hJ : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)*residualHeightJet q s amplitude (u+x) (u-x) X k) := by
     convert! hw.mul ((residualHeightJet_joint_continuous q s amplitude).comp hc) using 1
-  have hsum : Continuous (fun u : ℝ => (Real.exp k:ℂ)^2*(((t-u:ℝ):ℂ)*responseJet q s amplitude 2 2 (u+x) (u-x) X k)+
+  have hsum : Continuous (fun u : ℝ => (Real.exp k:ℂ)^(2 : ℕ)*(((t-u:ℝ):ℂ)*responseJet q s amplitude 2 2 (u+x) (u-x) X k)+
       ((t-u:ℝ):ℂ)*residualHeightSecond q s amplitude (u+x) (u-x) X k) :=
-    (hX.const_mul ((Real.exp k:ℂ)^2)).add hK
+    (hX.const_mul ((Real.exp k:ℂ)^(2 : ℕ))).add hK
   rw [← intervalIntegral.integral_const_mul,
-    ← intervalIntegral.integral_add ((hX.const_mul ((Real.exp k:ℂ)^2)).intervalIntegrable 0 t) (hK.intervalIntegrable 0 t),
+    ← intervalIntegral.integral_add ((hX.const_mul ((Real.exp k:ℂ)^(2 : ℕ))).intervalIntegrable 0 t) (hK.intervalIntegrable 0 t),
     ← intervalIntegral.integral_sub (hsum.intervalIntegrable 0 t) (hJ.intervalIntegrable 0 t)]
   apply intervalIntegral.integral_congr
   intro u hu
@@ -1633,7 +1633,7 @@ Weyl coefficient and the original cutoff commutators. -/
 def nativeResidualStaticForcing (q : XiZeroCopy) (s amplitude : ℂ) (u x X k : ℝ) : ℂ :=
   squareResidual q ![X,Real.exp k]*oddSource s amplitude u x+
     (∑ i : Fin 3, principalNullResponse q s amplitude i (u+x) (u-x)*
-      cutoffCommutator (principalExponent q i) ![X,Real.exp k])/(Real.cosh x:ℂ)^2
+      cutoffCommutator (principalExponent q i) ![X,Real.exp k])/(Real.cosh x:ℂ)^(2 : ℕ)
 
 private theorem nativeResidualStaticForcing_continuous (q : XiZeroCopy) (s amplitude : ℂ)
     (x X k : ℝ) : Continuous (fun u => nativeResidualStaticForcing q s amplitude u x X k) := by
@@ -1655,7 +1655,7 @@ private theorem residualAction_static_continuous (q : XiZeroCopy) (s amplitude :
 private theorem effective_time_split (q : XiZeroCopy) (s amplitude : ℂ) (t x X k : ℝ) :
     4*weighted (residualEffective q s amplitude X k) t x =
       (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*nativeResidualStaticForcing q s amplitude u x X k)+
-      (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*residualAction q s amplitude (u+x) (u-x) X k)/(Real.cosh x:ℂ)^2 := by
+      (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*residualAction q s amplitude (u+x) (u-x) X k)/(Real.cosh x:ℂ)^(2 : ℕ) := by
   have hw : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)) := by fun_prop
   have hF : Continuous (fun u : ℝ => ((t-u:ℝ):ℂ)*nativeResidualStaticForcing q s amplitude u x X k) :=
     hw.mul (nativeResidualStaticForcing_continuous q s amplitude x X k)
@@ -1663,7 +1663,7 @@ private theorem effective_time_split (q : XiZeroCopy) (s amplitude : ℂ) (t x X
     hw.mul (residualAction_static_continuous q s amplitude x X k)
   unfold weighted
   rw [← intervalIntegral.integral_const_mul,← intervalIntegral.integral_div,
-    ← intervalIntegral.integral_add (hF.intervalIntegrable 0 t) ((hA.div_const ((Real.cosh x:ℂ)^2)).intervalIntegrable 0 t)]
+    ← intervalIntegral.integral_add (hF.intervalIntegrable 0 t) ((hA.div_const ((Real.cosh x:ℂ)^(2 : ℕ))).intervalIntegrable 0 t)]
   apply intervalIntegral.integral_congr
   intro u hu
   dsimp only
@@ -1679,9 +1679,9 @@ wave equation, trace, source identification or regularity premise. -/
 theorem nativeResidualTimePrimitive_elliptic_equation (q : XiZeroCopy) (s amplitude : ℂ)
     (t x X k : ℝ) :
     -deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t y X k)) x-
-      ((Real.exp k:ℂ)^2*deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x y k)) X+
+      ((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x y k)) X+
         deriv (deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y)) k-
-        deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y) k)/(Real.cosh x:ℂ)^2 =
+        deriv (fun y => nativeResidualTimePrimitive q s amplitude t x X y) k)/(Real.cosh x:ℂ)^(2 : ℕ) =
       (∫ u in (0:ℝ)..t, ((t-u:ℝ):ℂ)*nativeResidualStaticForcing q s amplitude u x X k)-
         fullNullResidual q s amplitude (t+x) (t-x) X k := by
   rw [(nativeResidualTimePrimitive_spatial q s amplitude t x X k).deriv,
@@ -1784,12 +1784,12 @@ pairing, with both endpoint currents already discharged. -/
 theorem nativeResidualTimePrimitive_radial_energy (q : XiZeroCopy) (s amplitude : ℂ)
     (t X k : ℝ) :
     let W := fun x => nativeResidualTimePrimitive q s amplitude t x X k
-    (∫ x in (-max t 0-1)..0, ‖deriv W x‖^2) =
+    (∫ x in (-max t 0-1)..0, ‖deriv W x‖^(2 : ℕ)) =
       -(∫ x in (-max t 0-1)..0, starRingEnd ℂ (W x)*deriv (deriv W) x).re := by
   let W := fun x => nativeResidualTimePrimitive q s amplitude t x X k
   have hdW : Continuous (deriv W) := continuous_iff_continuousAt.mpr
     (fun x => (nativePrimitive_radial_second q s amplitude t x X k).continuousAt)
-  have he (x : ℝ) : (starRingEnd ℂ (deriv W x)*deriv W x).re = ‖deriv W x‖^2 := by
+  have he (x : ℝ) : (starRingEnd ℂ (deriv W x)*deriv W x).re = ‖deriv W x‖^(2 : ℕ) := by
     rw [Complex.sq_norm]
     simp [Complex.mul_re,Complex.normSq_apply]
   have h := congrArg Complex.re (nativeResidualTimePrimitive_radial_green q s amplitude t X k)
@@ -1826,7 +1826,7 @@ private theorem residualEffective_joint_continuous (q : XiZeroCopy) (s amplitude
   have hA : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) =>
       responseAction q s amplitude z.1.1 z.1.2 z.2.1 z.2.2) := by
     unfold responseAction
-    exact (((by fun_prop : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) => (Real.exp z.2.2:ℂ)^2)).mul
+    exact (((by fun_prop : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) => (Real.exp z.2.2:ℂ)^(2 : ℕ))).mul
       (responseJet_continuous q s amplitude 2 2)).add (responseJet_continuous q s amplitude 3 2)).sub
       (responseJet_continuous q s amplitude 3 1)
   have hN : Continuous (fun z : (ℝ × ℝ) × (ℝ × ℝ) => nullWeight z.1.1 z.1.2) :=

@@ -52,25 +52,25 @@ theorem linePoint_sub_pairZero' (t η γ : ℝ) :
 
 /-- Distance from the line to the right pair member. -/
 theorem norm_linePoint_sub_pairZero (t η γ : ℝ) :
-    ‖linePoint t - pairZero η γ‖ = Real.sqrt (η ^ 2 + (t - γ) ^ 2) := by
+    ‖linePoint t - pairZero η γ‖ = Real.sqrt (η ^ (2 : ℕ) + (t - γ) ^ (2 : ℕ)) := by
   rw [linePoint_sub_pairZero, Complex.norm_def, Complex.normSq_add_mul_I]
   ring_nf
 
 /-- Distance from the line to the left pair member. -/
 theorem norm_linePoint_sub_pairZero' (t η γ : ℝ) :
-    ‖linePoint t - pairZero' η γ‖ = Real.sqrt (η ^ 2 + (t - γ) ^ 2) := by
+    ‖linePoint t - pairZero' η γ‖ = Real.sqrt (η ^ (2 : ℕ) + (t - γ) ^ (2 : ℕ)) := by
   rw [linePoint_sub_pairZero', Complex.norm_def, Complex.normSq_add_mul_I]
 
 theorem norm_linePoint_sub_pairZero_ge (t η γ : ℝ) :
     |η| ≤ ‖linePoint t - pairZero η γ‖ := by
   rw [norm_linePoint_sub_pairZero]
-  rw [show |η| = Real.sqrt (η ^ 2) from (Real.sqrt_sq_eq_abs η).symm]
+  rw [show |η| = Real.sqrt (η ^ (2 : ℕ)) from (Real.sqrt_sq_eq_abs η).symm]
   exact Real.sqrt_le_sqrt (by nlinarith [sq_nonneg (t - γ)])
 
 theorem norm_linePoint_sub_pairZero'_ge (t η γ : ℝ) :
     |η| ≤ ‖linePoint t - pairZero' η γ‖ := by
   rw [norm_linePoint_sub_pairZero']
-  rw [show |η| = Real.sqrt (η ^ 2) from (Real.sqrt_sq_eq_abs η).symm]
+  rw [show |η| = Real.sqrt (η ^ (2 : ℕ)) from (Real.sqrt_sq_eq_abs η).symm]
   exact Real.sqrt_le_sqrt (by nlinarith [sq_nonneg (t - γ)])
 
 theorem norm_foot_sub_pairZero (η γ : ℝ) :
@@ -91,11 +91,11 @@ envelope. -/
 theorem pair_dip_lower {Φ H : ℂ → ℂ} {U : Set ℂ} {η γ : ℝ}
     (hfact : ∀ z ∈ U, Φ z = (z - pairZero η γ) * (z - pairZero' η γ) * H z)
     {t : ℝ} (ht : linePoint t ∈ U) :
-    η ^ 2 * ‖H (linePoint t)‖ ≤ ‖Φ (linePoint t)‖ := by
+    η ^ (2 : ℕ) * ‖H (linePoint t)‖ ≤ ‖Φ (linePoint t)‖ := by
   rw [hfact _ ht, norm_mul, norm_mul]
   have h1 := norm_linePoint_sub_pairZero_ge t η γ
   have h2 := norm_linePoint_sub_pairZero'_ge t η γ
-  have hη2 : η ^ 2 = |η| * |η| := by
+  have hη2 : η ^ (2 : ℕ) = |η| * |η| := by
     rw [← abs_mul, abs_mul_self]
     ring
   rw [hη2]
@@ -111,10 +111,10 @@ pair's own height the line value is EXACTLY `η²` times the envelope. -/
 theorem pair_dip_foot {Φ H : ℂ → ℂ} {U : Set ℂ} {η γ : ℝ}
     (hfact : ∀ z ∈ U, Φ z = (z - pairZero η γ) * (z - pairZero' η γ) * H z)
     (hγ : linePoint γ ∈ U) :
-    ‖Φ (linePoint γ)‖ = η ^ 2 * ‖H (linePoint γ)‖ := by
+    ‖Φ (linePoint γ)‖ = η ^ (2 : ℕ) * ‖H (linePoint γ)‖ := by
   rw [hfact _ hγ, norm_mul, norm_mul, norm_foot_sub_pairZero,
     norm_foot_sub_pairZero']
-  rw [show |η| * |η| = η ^ 2 from by rw [← abs_mul, abs_mul_self]; ring]
+  rw [show |η| * |η| = η ^ (2 : ℕ) from by rw [← abs_mul, abs_mul_self]; ring]
 
 /-! ### The criterion -/
 
@@ -140,10 +140,10 @@ theorem registersAt_of_envelope_le {Φ H : ℂ → ℂ} {U : Set ℂ}
     (hfact : ∀ z ∈ U, Φ z = (z - pairZero η γ) * (z - pairZero' η γ) * H z)
     (hγU : linePoint γ ∈ U)
     (hM : ‖H (linePoint γ)‖ ≤ M) :
-    RegistersAt Φ γ w (h ^ 2 * M) := by
+    RegistersAt Φ γ w (h ^ (2 : ℕ) * M) := by
   refine ⟨γ, by simpa using hw, ?_⟩
   rw [pair_dip_foot hfact hγU]
-  have hsq : η ^ 2 ≤ h ^ 2 := by nlinarith
+  have hsq : η ^ (2 : ℕ) ≤ h ^ (2 : ℕ) := by nlinarith
   exact mul_le_mul hsq hM (norm_nonneg _) (by nlinarith)
 
 /-- **The registration gap, formal** (doc 82 §1 as a theorem): a pair whose
@@ -154,13 +154,13 @@ theorem not_registersAt_of_envelope_lower {Φ H : ℂ → ℂ} {U : Set ℂ}
     (hfact : ∀ z ∈ U, Φ z = (z - pairZero η γ) * (z - pairZero' η γ) * H z)
     (hU : ∀ t : ℝ, |t - γ| ≤ w → linePoint t ∈ U)
     (hM : ∀ t : ℝ, |t - γ| ≤ w → M ≤ ‖H (linePoint t)‖)
-    (hlam : lam < η ^ 2 * M) :
+    (hlam : lam < η ^ (2 : ℕ) * M) :
     ¬ RegistersAt Φ γ w lam := by
   rintro ⟨t, htw, hval⟩
   have hlow := pair_dip_lower hfact (hU t htw)
   have henv := hM t htw
-  have : η ^ 2 * M ≤ ‖Φ (linePoint t)‖ := by
-    calc η ^ 2 * M ≤ η ^ 2 * ‖H (linePoint t)‖ := by nlinarith [sq_nonneg η]
+  have : η ^ (2 : ℕ) * M ≤ ‖Φ (linePoint t)‖ := by
+    calc η ^ (2 : ℕ) * M ≤ η ^ (2 : ℕ) * ‖H (linePoint t)‖ := by nlinarith [sq_nonneg η]
       _ ≤ ‖Φ (linePoint t)‖ := hlow
   linarith
 
@@ -173,7 +173,7 @@ theorem registrationComplete_of_peeled_envelope {Φ : ℂ → ℂ}
       ∃ (H : ℂ → ℂ) (U : Set ℂ),
         (∀ z ∈ U, Φ z = (z - pairZero η γ) * (z - pairZero' η γ) * H z) ∧
         linePoint γ ∈ U ∧ ‖H (linePoint γ)‖ ≤ M) :
-    RegistrationComplete Φ P h w (h ^ 2 * M) := by
+    RegistrationComplete Φ P h w (h ^ (2 : ℕ) * M) := by
   intro η γ hP hη hηh
   obtain ⟨H, U, hfact, hγU, hM⟩ := hpeel η γ hP hη hηh
   exact registersAt_of_envelope_le hw hη hηh hfact hγU hM
@@ -188,7 +188,7 @@ theorem not_registrationComplete_of_gap_pair {Φ H : ℂ → ℂ} {U : Set ℂ}
     (hfact : ∀ z ∈ U, Φ z = (z - pairZero η γ) * (z - pairZero' η γ) * H z)
     (hU : ∀ t : ℝ, |t - γ| ≤ w → linePoint t ∈ U)
     (hM : ∀ t : ℝ, |t - γ| ≤ w → M ≤ ‖H (linePoint t)‖)
-    (hlam : lam < η ^ 2 * M) :
+    (hlam : lam < η ^ (2 : ℕ) * M) :
     ¬ RegistrationComplete Φ P h w lam := by
   intro hcomp
   exact not_registersAt_of_envelope_lower hfact hU hM hlam

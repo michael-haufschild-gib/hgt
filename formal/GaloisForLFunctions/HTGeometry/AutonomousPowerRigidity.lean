@@ -24,7 +24,7 @@ namespace GaloisForLFunctions.HTGeometry
 a zero forces `H` to vanish on a whole disc, hence everywhere, and a nowhere-vanishing `H` would make
 `1/H` an affine function with a zero. -/
 theorem eq_zero_of_deriv_eq_const_mul_sq {c : ℂ} (hc : c ≠ 0) {H : ℂ → ℂ}
-    (hH : Differentiable ℂ H) (heq : ∀ z, deriv H z = c * (H z) ^ 2) : H = 0 := by
+    (hH : Differentiable ℂ H) (heq : ∀ z, deriv H z = c * (H z) ^ (2 : ℕ)) : H = 0 := by
   classical
   by_contra hne
   obtain ⟨z₁, hz₁⟩ : ∃ z, H z ≠ 0 := by
@@ -70,23 +70,23 @@ theorem eq_zero_of_deriv_eq_const_mul_sq {c : ℂ} (hc : c ≠ 0) {H : ℂ → �
     have hMmax : ∀ z ∈ K, ‖H z‖ ≤ M := fun z hz => hwmax hz
     have hM0 : 0 ≤ M := norm_nonneg _
     have hM1 : M ≤ 1 := hKsmall w hwK
-    have hderivle : ∀ z ∈ K, ‖deriv H z‖ ≤ ‖c‖ * M ^ 2 := by
+    have hderivle : ∀ z ∈ K, ‖deriv H z‖ ≤ ‖c‖ * M ^ (2 : ℕ) := by
       intro z hz
       rw [heq z, norm_mul, norm_pow]
       have hzM : ‖H z‖ ≤ M := hMmax z hz
       refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg c)
       exact pow_le_pow_left₀ (norm_nonneg _) hzM 2
-    have hmvt : ‖H w - H z₀‖ ≤ (‖c‖ * M ^ 2) * ‖w - z₀‖ :=
+    have hmvt : ‖H w - H z₀‖ ≤ (‖c‖ * M ^ (2 : ℕ)) * ‖w - z₀‖ :=
       Convex.norm_image_sub_le_of_norm_deriv_le (fun x _ => hH x) hderivle
         (convex_closedBall z₀ ρ) (Metric.mem_closedBall_self hρ0.le) hwK
     have hdist : ‖w - z₀‖ ≤ ρ := by
       have := Metric.mem_closedBall.mp hwK
       rwa [dist_eq_norm] at this
-    have hMle : M ≤ ‖c‖ * M ^ 2 * ρ := by
+    have hMle : M ≤ ‖c‖ * M ^ (2 : ℕ) * ρ := by
       rw [hz₀, sub_zero] at hmvt
       calc M = ‖H w‖ := rfl
-        _ ≤ (‖c‖ * M ^ 2) * ‖w - z₀‖ := hmvt
-        _ ≤ (‖c‖ * M ^ 2) * ρ := by
+        _ ≤ (‖c‖ * M ^ (2 : ℕ)) * ‖w - z₀‖ := hmvt
+        _ ≤ (‖c‖ * M ^ (2 : ℕ)) * ρ := by
             refine mul_le_mul_of_nonneg_left hdist (by positivity)
     have hMzero : M = 0 := by
       nlinarith [hMle, hM0, hM1, hρc, hcpos, hρ0]
@@ -113,11 +113,11 @@ theorem eq_zero_of_deriv_eq_const_mul_sq {c : ℂ} (hc : c ≠ 0) {H : ℂ → �
     ((hH z).inv (hnz z))
   have hinvderiv : ∀ z, deriv (fun z => (H z)⁻¹) z = -c := by
     intro z
-    have h1 : HasDerivAt H (c * (H z) ^ 2) z := by
+    have h1 : HasDerivAt H (c * (H z) ^ (2 : ℕ)) z := by
       have := (hH z).hasDerivAt
       rwa [heq z] at this
     have h2 := h1.inv (hnz z)
-    have h3 : -(c * (H z) ^ 2) / (H z) ^ 2 = -c := by
+    have h3 : -(c * (H z) ^ (2 : ℕ)) / (H z) ^ (2 : ℕ) = -c := by
       field_simp
       rw [div_self (hnz z)]
     rw [h3] at h2
@@ -161,11 +161,11 @@ theorem eq_const_of_deriv_eq_const_mul_pow {gam a : ℂ} (hgam : gam ≠ 0) {d :
     simpa [hG] using h1.sub_const a
   set H : ℂ → ℂ := fun z => (G z) ^ (d - 1) with hH
   have hHdiff : Differentiable ℂ H := (hGdiff.pow (d - 1))
-  have hHderiv : ∀ z, deriv H z = ((d : ℂ) - 1) * gam * (H z) ^ 2 := by
+  have hHderiv : ∀ z, deriv H z = ((d : ℂ) - 1) * gam * (H z) ^ (2 : ℕ) := by
     intro z
     have hpow := (hGderiv z).pow (d - 1)
     have hval : ((d - 1 : ℕ) : ℂ) * G z ^ (d - 1 - 1) * (gam * G z ^ d)
-        = ((d : ℂ) - 1) * gam * ((G z) ^ (d - 1)) ^ 2 := by
+        = ((d : ℂ) - 1) * gam * ((G z) ^ (d - 1)) ^ (2 : ℕ) := by
       have hcast : ((d - 1 : ℕ) : ℂ) = (d : ℂ) - 1 := by
         have : (1 : ℕ) ≤ d := by omega
         push_cast [Nat.cast_sub this]
@@ -176,7 +176,7 @@ theorem eq_const_of_deriv_eq_const_mul_pow {gam a : ℂ} (hgam : gam ≠ 0) {d :
     have hpow2 : HasDerivAt (fun w => G w ^ (d - 1))
         (((d - 1 : ℕ) : ℂ) * G z ^ (d - 1 - 1) * (gam * G z ^ d)) z := hpow
     rw [hH]
-    show deriv (fun w => G w ^ (d - 1)) z = ((d : ℂ) - 1) * gam * (G z ^ (d - 1)) ^ 2
+    show deriv (fun w => G w ^ (d - 1)) z = ((d : ℂ) - 1) * gam * (G z ^ (d - 1)) ^ (2 : ℕ)
     rw [hpow2.deriv]
     exact hval
   have hc : ((d : ℂ) - 1) * gam ≠ 0 := by

@@ -98,15 +98,15 @@ theorem huxley_local_large_values_finset
     {S : Finset ℕ} (hS : S ⊆ Finset.range K)
     {lam : ℕ → ℝ} {delta U T B V G : ℝ}
     (hdelta : 0 < delta) (hU : 0 < U) (hV : 0 < V)
-    (hmass : ‖a‖ ^ 2 ≤ G)
+    (hmass : ‖a‖ ^ (2 : ℕ) ≤ G)
     (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N T ≤ 1)
     (hB : logDyadicSecondEnvelope N U T ≤ B) (hB1 : 1 ≤ B)
     (hdiam : ∀ r ∈ S, ∀ s ∈ S, |lam s - lam r| ≤ T)
     (hbig : ∀ r ∈ S, V ≤ ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖)
-    (habsorb : G * B ≤ V ^ 2 / 2) :
-    (S.card : ℝ) * V ^ 2 ≤
+    (habsorb : G * B ≤ V ^ (2 : ℕ) / 2) :
+    (S.card : ℝ) * V ^ (2 : ℕ) ≤
       2 * G * ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) *
         ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1)) := by
   let base : ℝ := (N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) *
@@ -124,12 +124,12 @@ theorem huxley_local_large_values_finset
       hN hS hdelta hgap hdiam hU hnear hlamT hB hB1 hr
   have hbessel := sum_norm_inner_sq_le_of_schur S
     (fun r => dyadicDirRow N (lam r)) hDelta0 hrow a
-  have hupper : ∑ r ∈ S, ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ 2 ≤ Delta * G :=
+  have hupper : ∑ r ∈ S, ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ (2 : ℕ) ≤ Delta * G :=
     hbessel.trans (mul_le_mul_of_nonneg_left hmass hDelta0)
-  have hlower : (S.card : ℝ) * V ^ 2 ≤
-      ∑ r ∈ S, ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ 2 := by
+  have hlower : (S.card : ℝ) * V ^ (2 : ℕ) ≤
+      ∑ r ∈ S, ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ (2 : ℕ) := by
     calc
-      (S.card : ℝ) * V ^ 2 = ∑ _r ∈ S, V ^ 2 := by
+      (S.card : ℝ) * V ^ (2 : ℕ) = ∑ _r ∈ S, V ^ (2 : ℕ) := by
         rw [Finset.sum_const, nsmul_eq_mul]
       _ ≤ _ := Finset.sum_le_sum fun r hr => pow_le_pow_left₀ hV.le (hbig r hr) 2
   have hmaster := hlower.trans hupper
@@ -145,7 +145,7 @@ theorem huxley_multiblock_large_values_finset
     (G U B : ι → ℝ) {S : Finset ℕ} (hS : S ⊆ Finset.range K)
     {lam : ℕ → ℝ} {delta T V : ℝ}
     (hdelta : 0 < delta) (hV : 0 < V)
-    (hmass : ∀ q, ‖a q‖ ^ 2 ≤ G q)
+    (hmass : ∀ q, ‖a q‖ ^ (2 : ℕ) ≤ G q)
     (hU : ∀ q, 0 < U q)
     (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
     (hnear : ∀ q, 3 * U q ≤ 4 * Real.pi * (N q : ℝ))
@@ -155,8 +155,8 @@ theorem huxley_multiblock_large_values_finset
     (hdiam : ∀ r ∈ S, ∀ s ∈ S, |lam s - lam r| ≤ T)
     (hbig : ∀ r ∈ S,
       V ≤ ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖)
-    (habsorb : (Fintype.card ι : ℝ) * ∑ q : ι, G q * B q ≤ V ^ 2 / 2) :
-    (S.card : ℝ) * V ^ 2 ≤
+    (habsorb : (Fintype.card ι : ℝ) * ∑ q : ι, G q * B q ≤ V ^ (2 : ℕ) / 2) :
+    (S.card : ℝ) * V ^ (2 : ℕ) ≤
       2 * (Fintype.card ι : ℝ) * ∑ q : ι,
         G q * ((N q : ℝ) + (12 * Real.pi * (N q : ℝ) / delta) *
           ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1)) := by
@@ -170,7 +170,7 @@ theorem huxley_multiblock_large_values_finset
     dsimp [Delta, base]
     positivity
   have henergy : ∀ q, ∑ r ∈ S,
-      ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 ≤ Delta q * G q := by
+      ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) ≤ Delta q * G q := by
     intro q
     have hrow : ∀ r ∈ S,
         ∑ s ∈ S, ‖⟪dyadicDirRow (N q) (lam r), dyadicDirRow (N q) (lam s)⟫_ℂ‖
@@ -181,22 +181,22 @@ theorem huxley_multiblock_large_values_finset
     have hbessel := sum_norm_inner_sq_le_of_schur S
       (fun r => dyadicDirRow (N q) (lam r)) (hDelta0 q) hrow (a q)
     exact hbessel.trans (mul_le_mul_of_nonneg_left (hmass q) (hDelta0 q))
-  have hpoint : ∀ r ∈ S, V ^ 2 ≤ (Fintype.card ι : ℝ) *
-      ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+  have hpoint : ∀ r ∈ S, V ^ (2 : ℕ) ≤ (Fintype.card ι : ℝ) *
+      ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) := by
     intro r hr
     exact (pow_le_pow_left₀ hV.le (hbig r hr) 2).trans
       (sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset ι))
         (f := fun q => ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖))
-  have htotal : (S.card : ℝ) * V ^ 2 ≤
+  have htotal : (S.card : ℝ) * V ^ (2 : ℕ) ≤
       (Fintype.card ι : ℝ) * ∑ q : ι, Delta q * G q := by
     calc
-      (S.card : ℝ) * V ^ 2 = ∑ _r ∈ S, V ^ 2 := by
+      (S.card : ℝ) * V ^ (2 : ℕ) = ∑ _r ∈ S, V ^ (2 : ℕ) := by
         rw [Finset.sum_const, nsmul_eq_mul]
       _ ≤ ∑ r ∈ S, (Fintype.card ι : ℝ) *
-          ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 :=
+          ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) :=
         Finset.sum_le_sum hpoint
       _ = (Fintype.card ι : ℝ) * ∑ q : ι,
-          ∑ r ∈ S, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+          ∑ r ∈ S, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) := by
         rw [Finset.mul_sum]
         simp_rw [Finset.mul_sum]
         rw [Finset.sum_comm]

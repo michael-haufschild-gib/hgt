@@ -11,7 +11,7 @@ even algebraic function of frequency.  Appendix B of K. K. Ng, C. Zhang, J. Louk
 
 with `eta=-2*M*omega` and
 
-`nu_a(omega)=(-1+sqrt((2*ell+1)^2-12*(2*M*omega)^2))/2`.
+`nu_a(omega)=(-1+sqrt((2*ell+1)^(2 : ℕ)-12*(2*M*omega)^(2 : ℕ)))/2`.
 
 The present meromorphic orbit-charge classifier only handles constant affine Gamma centers, so it
 does not yet classify the differential algebraicity of this moving-center carrier.  The exact
@@ -94,7 +94,7 @@ theorem movingCenterGammaOrientationValue_eq_square
     (hminus : Complex.Gamma
       (center omega - Complex.I * scale * omega) ≠ 0) :
     movingCenterGammaOrientationValue center scale omega =
-      (movingCenterGammaCarrierValue center scale omega) ^ 2 := by
+      (movingCenterGammaCarrierValue center scale omega) ^ (2 : ℕ) := by
   rw [movingCenterGammaOrientationValue,
     movingCenterGammaCarrierValue_neg center scale omega hcenter hplus hminus]
   field_simp [div_ne_zero hplus hminus]
@@ -104,8 +104,8 @@ asymptotics.  `massFrequencyScale` represents `2*M`. -/
 def schwarzschildDetectorRenormalizedAngularCenter
     (ell : ℕ) (massFrequencyScale omega : ℂ) : ℂ :=
   (-1 + Complex.sqrt
-    ((((2 * ell + 1 : ℕ) : ℂ) ^ 2) -
-      12 * (massFrequencyScale * omega) ^ 2)) / 2
+    ((((2 * ell + 1 : ℕ) : ℂ) ^ (2 : ℕ)) -
+      12 * (massFrequencyScale * omega) ^ (2 : ℕ))) / 2
 
 /-- The Schwarzschild detector's renormalized angular center is even in frequency. -/
 theorem schwarzschildDetectorRenormalizedAngularCenter_neg
@@ -154,7 +154,7 @@ theorem schwarzschildDetectorCoulombGammaOrientationValue_eq_square
         (schwarzschildDetectorRenormalizedAngularCenter ell massFrequencyScale)
         (-massFrequencyScale) omega =
       (schwarzschildDetectorCoulombGammaCarrierValue
-        ell massFrequencyScale omega) ^ 2 := by
+        ell massFrequencyScale omega) ^ (2 : ℕ) := by
   exact movingCenterGammaOrientationValue_eq_square _ _ _
     (schwarzschildDetectorRenormalizedAngularCenter_neg
       ell massFrequencyScale omega) hplus hminus

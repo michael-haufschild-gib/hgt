@@ -29,7 +29,7 @@ theorem ndPhaseExp_mul (T r : ℝ) (a b : ℕ) :
 def fibreBound (T r : ℝ) (A B b : ℕ) : ℝ :=
   2500 * Real.sqrt (T * (r / b) / (36 * Real.pi * (((A - 1) / b + 1 : ℕ) : ℝ)))
     + 22 * Real.sqrt (36 * Real.pi / (T * (r / b)))
-        * Real.sqrt (((((B - 1) / b + 1 : ℕ) : ℝ)) ^ 3)
+        * Real.sqrt (((((B - 1) / b + 1 : ℕ) : ℝ)) ^ (3 : ℕ))
 
 /-- **The `ζ`-convolution type-I estimate.** -/
 theorem norm_sum_zeta_conv_ndPhaseExp_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {A B L : ℕ}

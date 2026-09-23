@@ -3,6 +3,7 @@ import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.FDeriv.Star
 import Mathlib.MeasureTheory.Integral.DivergenceTheorem
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-!
 # Periodic strip Green formula
@@ -137,6 +138,41 @@ theorem complex_periodic_strip_green
     _ = (∫ x in a..b, stripDeriv (0, 1) U (x, d) * star (V (x, d))) -
         ∫ x in a..b, stripDeriv (0, 1) U (x, c) * star (V (x, c)) := by
           rfl
+
+/-- Continuous complex densities can be integrated over a finite rectangle in
+either order.  This is the Fubini bridge from coordinatewise strip Green
+identities to the summed boundary current. -/
+theorem intervalIntegral_intervalIntegral_swap_of_continuous
+    {F : ℝ → ℝ → ℂ} (hF : Continuous (Function.uncurry F))
+    (a b c d : ℝ) :
+    (∫ x in a..b, ∫ y in c..d, F x y) =
+      ∫ y in c..d, ∫ x in a..b, F x y := by
+  apply MeasureTheory.intervalIntegral_intervalIntegral_swap
+  exact (hF.continuousOn.integrableOn_compact
+    (isCompact_uIcc.prod isCompact_uIcc)).mono_set
+    (Set.prod_mono Set.uIoc_subset_uIcc Set.uIoc_subset_uIcc)
+
+/-- A continuous current whose finite-strip increments are the integral of a
+continuous density has that density as its literal derivative.  This turns a
+Green identity into a pointwise current derivative without a separate
+differentiation-under-the-integral argument. -/
+theorem hasDerivAt_current_of_integral_increment {J D : ℝ → ℂ}
+    (hD : Continuous D)
+    (hincrement : ∀ c d : ℝ, (∫ y in c..d, D y) = J d - J c)
+    (y : ℝ) :
+    HasDerivAt J (D y) y := by
+  have hJ : J = fun u => J y + ∫ t in y..u, D t := by
+    funext u
+    rw [hincrement y u]
+    ring
+  have hconst : HasDerivAt (fun _ : ℝ => J y) 0 y := hasDerivAt_const y (J y)
+  have hint : HasDerivAt (fun u => ∫ t in y..u, D t) (D y) y :=
+    intervalIntegral.integral_hasDerivAt_right
+      (a := y) (b := y) (f := D) (hD.intervalIntegrable _ _)
+      hD.aestronglyMeasurable.stronglyMeasurableAtFilter
+      hD.continuousAt
+  exact ((hconst.add hint).congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun u => congrFun hJ u)).congr_deriv (zero_add _)
 
 end
 

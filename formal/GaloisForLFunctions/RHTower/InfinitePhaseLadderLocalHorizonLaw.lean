@@ -230,11 +230,11 @@ theorem phaseLadderKet_norm
     (hweight : ∀ j, 0 ≤ weight j)
     (hsum : ∑ j, weight j = 1) :
     ‖phaseLadderKet weight hweight‖ = 1 := by
-  have hnormsq : ‖phaseLadderKet weight hweight‖ ^ 2 = 1 := by
+  have hnormsq : ‖phaseLadderKet weight hweight‖ ^ (2 : ℕ) = 1 := by
     rw [HilbertSchmidt.lp_norm_sq_eq]
     have hprod := phaseLadderProductWeight_summable weight hweight
     rw [show (∑' x : Fin (m + 1) × ℕ,
-        ‖phaseLadderKet weight hweight x‖ ^ 2) =
+        ‖phaseLadderKet weight hweight x‖ ^ (2 : ℕ)) =
         ∑' x : Fin (m + 1) × ℕ,
           weight x.1 * phaseLadderWeight x.2 by
       apply tsum_congr
@@ -255,11 +255,11 @@ theorem phaseLadderKetAt_norm
     (hsum : ∑ j, weight j = 1) (t : ℝ) :
     ‖phaseLadderKetAt T energy weight hweight t‖ = 1 := by
   have hnormsq :
-      ‖phaseLadderKetAt T energy weight hweight t‖ ^ 2 = 1 := by
+      ‖phaseLadderKetAt T energy weight hweight t‖ ^ (2 : ℕ) = 1 := by
     rw [HilbertSchmidt.lp_norm_sq_eq]
     have hprod := phaseLadderProductWeight_summable weight hweight
     rw [show (∑' x : Fin (m + 1) × ℕ,
-        ‖phaseLadderKetAt T energy weight hweight t x‖ ^ 2) =
+        ‖phaseLadderKetAt T energy weight hweight t x‖ ^ (2 : ℕ)) =
         ∑' x : Fin (m + 1) × ℕ,
           weight x.1 * phaseLadderWeight x.2 by
       apply tsum_congr
@@ -337,7 +337,7 @@ theorem phaseLadderReturnAmplitude_factor
           (Real.sqrt
             (weight x.1 * phaseLadderWeight x.2) : ℂ) =
         ((Real.sqrt
-          (weight x.1 * phaseLadderWeight x.2) ^ 2 : ℝ) : ℂ) *
+          (weight x.1 * phaseLadderWeight x.2) ^ (2 : ℕ) : ℝ) : ℂ) *
             Complex.exp
               (((phaseLadderEnergy T energy x * t : ℝ) : ℂ) * I) := by
           push_cast
@@ -381,14 +381,14 @@ def phaseLadderReturnProbability
     {m : ℕ} (T : ℝ) (energy weight : Fin (m + 1) → ℝ)
     (hweight : ∀ j, 0 ≤ weight j) (t : ℝ) : ℝ :=
   ‖inner ℂ (phaseLadderKet weight hweight)
-      (phaseLadderKetAt T energy weight hweight t)‖ ^ 2
+      (phaseLadderKetAt T energy weight hweight t)‖ ^ (2 : ℕ)
 
 theorem phaseLadderReturnProbability_factor
     {m : ℕ} (T : ℝ) (energy weight : Fin (m + 1) → ℝ)
     (hweight : ∀ j, 0 ≤ weight j) (t : ℝ) :
     phaseLadderReturnProbability T energy weight hweight t =
-      ‖finiteSpectralAmplitude energy weight t‖ ^ 2 *
-        ‖phaseLadderAmplitude T t‖ ^ 2 := by
+      ‖finiteSpectralAmplitude energy weight t‖ ^ (2 : ℕ) *
+        ‖phaseLadderAmplitude T t‖ ^ (2 : ℕ) := by
   rw [phaseLadderReturnProbability,
     phaseLadderReturnAmplitude_factor, norm_mul]
   ring
@@ -407,7 +407,7 @@ theorem infiniteInterpolatedReturnProbability_factor
     (t : ℝ) :
     infiniteInterpolatedReturnProbability T n θ hθ0 hθ1 t =
       scaledInterpolatedProbability T n θ t *
-        ‖phaseLadderAmplitude T t‖ ^ 2 := by
+        ‖phaseLadderAmplitude T t‖ ^ (2 : ℕ) := by
   rw [infiniteInterpolatedReturnProbability,
     phaseLadderReturnProbability_factor,
     finiteSpectralAmplitude_angular hT n hθ0 hθ1]
@@ -417,7 +417,7 @@ theorem infiniteInterpolatedReturnProbability_target
     {T : ℝ} (hT : 0 < T) {n : ℕ} (hn : 0 < n)
     {θ : ℝ} (hθ0 : 0 ≤ θ) (hθ1 : θ ≤ 1) :
     infiniteInterpolatedReturnProbability T n θ hθ0 hθ1 T =
-      θ ^ 2 := by
+      θ ^ (2 : ℕ) := by
   rw [infiniteInterpolatedReturnProbability_factor
       hT n hθ0 hθ1,
     scaledInterpolatedProbability_target hT hn hθ0,
@@ -439,8 +439,8 @@ theorem infiniteInterpolated_difference_le_finite
     infiniteInterpolatedReturnProbability_factor
       hT n hφ0 hφ1,
     ← sub_mul, abs_mul]
-  have hL0 : 0 ≤ ‖phaseLadderAmplitude T t‖ ^ 2 := sq_nonneg _
-  have hL1 : ‖phaseLadderAmplitude T t‖ ^ 2 ≤ 1 := by
+  have hL0 : 0 ≤ ‖phaseLadderAmplitude T t‖ ^ (2 : ℕ) := sq_nonneg _
+  have hL1 : ‖phaseLadderAmplitude T t‖ ^ (2 : ℕ) ≤ 1 := by
     nlinarith [phaseLadderAmplitude_norm_le_one T t,
       norm_nonneg (phaseLadderAmplitude T t)]
   rw [abs_of_nonneg hL0]

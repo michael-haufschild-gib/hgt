@@ -51,9 +51,9 @@ theorem xiUniversalBernsteinAmplitudeBase_lt_three_halves :
   nlinarith [xiOffLineNormalizedBernsteinRadius_lt_one_fourth]
 
 theorem xiUniversalBernsteinAmplitudeBase_sq_lt_nine_fourths :
-    xiUniversalBernsteinAmplitudeBase ^ 2 < 9 / 4 := by
+    xiUniversalBernsteinAmplitudeBase ^ (2 : ℕ) < 9 / 4 := by
   calc
-    xiUniversalBernsteinAmplitudeBase ^ 2 < (3 / 2 : ℝ) ^ 2 :=
+    xiUniversalBernsteinAmplitudeBase ^ (2 : ℕ) < (3 / 2 : ℝ) ^ (2 : ℕ) :=
       pow_lt_pow_left₀ xiUniversalBernsteinAmplitudeBase_lt_three_halves
         (zero_le_one.trans one_lt_xiUniversalBernsteinAmplitudeBase.le) (by norm_num)
     _ = 9 / 4 := by norm_num
@@ -189,7 +189,7 @@ private lemma bernsteinCoefficientL1_zero (m : ℕ → ℝ) :
 every degree. -/
 theorem primeArchEndpointBernsteinPurity_le_mass_sq_of_riemannHypothesis
     (hRH : RiemannHypothesis) (n : ℕ) :
-    primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ 2 := by
+    primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ (2 : ℕ) := by
   have hL1 :
       bernsteinCoefficientL1
           (radiusNormalizedMoment primeArchEndpointHausdorffRadius
@@ -207,9 +207,9 @@ theorem primeArchEndpointBernsteinPurity_le_mass_sq_of_riemannHypothesis
     primeArchEndpointBernsteinPurity n ≤
         (bernsteinCoefficientL1
           (radiusNormalizedMoment primeArchEndpointHausdorffRadius
-            normalizedPrimeArchMoment) n) ^ 2 :=
+            normalizedPrimeArchMoment) n) ^ (2 : ℕ) :=
       bernsteinCoefficientPurity_le_l1_sq _ _
-    _ = normalizedPrimeArchMoment 0 ^ 2 := by rw [hL1]
+    _ = normalizedPrimeArchMoment 0 ^ (2 : ℕ) := by rw [hL1]
 
 /-- **Bounded Loschmidt-purity RH law.**  The endpoint lies in the critical phase exactly when its
 positive dephased purity remains uniformly bounded in the Bernstein degree. -/
@@ -217,7 +217,7 @@ theorem riemannHypothesis_iff_primeArchEndpointBernsteinPurity_bounded :
     RiemannHypothesis ↔ PrimeArchEndpointBernsteinPurityBounded := by
   constructor
   · intro hRH
-    exact ⟨normalizedPrimeArchMoment 0 ^ 2,
+    exact ⟨normalizedPrimeArchMoment 0 ^ (2 : ℕ),
       primeArchEndpointBernsteinPurity_le_mass_sq_of_riemannHypothesis hRH⟩
   · rintro ⟨C, hC⟩
     apply riemannHypothesis_iff_primeArchEndpointBernsteinTotalVariation_subexponential.mpr
@@ -231,12 +231,12 @@ theorem riemannHypothesis_iff_primeArchEndpointBernsteinPurity_bounded :
 bound is needed. -/
 theorem riemannHypothesis_iff_primeArchEndpointBernsteinPurity_le_mass_sq :
     RiemannHypothesis ↔
-      ∀ n : ℕ, primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ 2 := by
+      ∀ n : ℕ, primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ (2 : ℕ) := by
   constructor
   · exact primeArchEndpointBernsteinPurity_le_mass_sq_of_riemannHypothesis
   · intro h
     exact riemannHypothesis_iff_primeArchEndpointBernsteinPurity_bounded.mpr
-      ⟨normalizedPrimeArchMoment 0 ^ 2, h⟩
+      ⟨normalizedPrimeArchMoment 0 ^ (2 : ℕ), h⟩
 
 /-- Sum of the norms of all degree-`n` Bernstein basis values at a complex point. -/
 theorem sum_norm_evalRealPolynomial_bernsteinPolynomial
@@ -351,7 +351,7 @@ theorem primeArchEndpointBernsteinTotalVariation_le_confinedPhase (n : ℕ) :
 theorem primeArchEndpointBernsteinPurity_le_confinedPhase (n : ℕ) :
     primeArchEndpointBernsteinPurity n ≤
       (xiReciprocalSquareAbsoluteMass *
-        xiUniversalBernsteinAmplitudeBase ^ n) ^ 2 :=
+        xiUniversalBernsteinAmplitudeBase ^ n) ^ (2 : ℕ) :=
   (bernsteinCoefficientPurity_le_l1_sq _ _).trans
     ((sq_le_sq₀
       (Finset.sum_nonneg fun _ _ => abs_nonneg _)
@@ -362,7 +362,7 @@ theorem primeArchEndpointBernsteinPurity_le_confinedPhase (n : ℕ) :
 
 /-- Conserved total coefficient mass supplies a universal polynomial lower bound for purity. -/
 theorem mass_sq_le_card_mul_primeArchEndpointBernsteinPurity (n : ℕ) :
-    normalizedPrimeArchMoment 0 ^ 2 ≤
+    normalizedPrimeArchMoment 0 ^ (2 : ℕ) ≤
       (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n := by
   have h := sq_sum_le_card_mul_sum_sq
     (s := Finset.range (n + 1))
@@ -377,19 +377,19 @@ theorem mass_sq_le_card_mul_primeArchEndpointBernsteinPurity (n : ℕ) :
 /-- Normalization above the square of the universal amplitude base kills the purity
 unconditionally. -/
 theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_universalBase_sq_lt
-    {r : ℝ} (hr : xiUniversalBernsteinAmplitudeBase ^ 2 < r) :
+    {r : ℝ} (hr : xiUniversalBernsteinAmplitudeBase ^ (2 : ℕ) < r) :
     Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
       atTop (nhds 0) := by
   have hrpos : 0 < r := lt_trans
     (sq_pos_of_pos (zero_lt_one.trans one_lt_xiUniversalBernsteinAmplitudeBase)) hr
-  let q : ℝ := xiUniversalBernsteinAmplitudeBase ^ 2 / r
+  let q : ℝ := xiUniversalBernsteinAmplitudeBase ^ (2 : ℕ) / r
   have hq0 : 0 ≤ q := div_nonneg
     (sq_nonneg xiUniversalBernsteinAmplitudeBase) hrpos.le
   have hq1 : q < 1 := (div_lt_one hrpos).2 hr
   have hpow : Tendsto (fun n : ℕ => q ^ n) atTop (nhds 0) :=
     tendsto_pow_atTop_nhds_zero_of_lt_one hq0 hq1
   have hupper : Tendsto
-      (fun n : ℕ => xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n)
+      (fun n : ℕ => xiReciprocalSquareAbsoluteMass ^ (2 : ℕ) * q ^ n)
       atTop (nhds 0) := by
     simpa using tendsto_const_nhds.mul hpow
   apply squeeze_zero
@@ -399,11 +399,11 @@ theorem tendsto_primeArchEndpointBernsteinPurity_div_pow_of_universalBase_sq_lt
   calc
     primeArchEndpointBernsteinPurity n / r ^ n ≤
         (xiReciprocalSquareAbsoluteMass *
-          xiUniversalBernsteinAmplitudeBase ^ n) ^ 2 / r ^ n :=
+          xiUniversalBernsteinAmplitudeBase ^ n) ^ (2 : ℕ) / r ^ n :=
       div_le_div_of_nonneg_right
         (primeArchEndpointBernsteinPurity_le_confinedPhase n)
         (pow_nonneg hrpos.le n)
-    _ = xiReciprocalSquareAbsoluteMass ^ 2 * q ^ n := by
+    _ = xiReciprocalSquareAbsoluteMass ^ (2 : ℕ) * q ^ n := by
       dsimp only [q]
       rw [div_pow]
       ring
@@ -413,7 +413,7 @@ the endpoint curvature confines that energy exponent below the square of `B_* < 
 theorem exists_confined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHypothesis
     (hRH : ¬ RiemannHypothesis) :
     ∃ r : ℝ,
-      1 < r ∧ r ≤ xiUniversalBernsteinAmplitudeBase ^ 2 ∧
+      1 < r ∧ r ≤ xiUniversalBernsteinAmplitudeBase ^ (2 : ℕ) ∧
         ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
           atTop (nhds 0) := by
   have hnsub :
@@ -426,7 +426,7 @@ theorem exists_confined_primeArchEndpointBernsteinPurity_phase_of_not_riemannHyp
   obtain ⟨r, hr, hnot⟩ := hnsub
   refine ⟨r, hr, ?_, hnot⟩
   by_contra hle
-  have hgt : xiUniversalBernsteinAmplitudeBase ^ 2 < r := lt_of_not_ge hle
+  have hgt : xiUniversalBernsteinAmplitudeBase ^ (2 : ℕ) < r := lt_of_not_ge hle
   exact hnot
     (tendsto_primeArchEndpointBernsteinPurity_div_pow_of_universalBase_sq_lt hgt)
 
@@ -437,18 +437,18 @@ window. -/
 theorem primeArchBernsteinConfinedLoschmidtPhaseMaster :
     xiUniversalBernsteinAmplitudeBase < 3 / 2 ∧
     (∀ n : ℕ,
-      normalizedPrimeArchMoment 0 ^ 2 ≤
+      normalizedPrimeArchMoment 0 ^ (2 : ℕ) ≤
           (n + 1 : ℝ) * primeArchEndpointBernsteinPurity n ∧
         primeArchEndpointBernsteinPurity n ≤
           (xiReciprocalSquareAbsoluteMass *
-            xiUniversalBernsteinAmplitudeBase ^ n) ^ 2) ∧
+            xiUniversalBernsteinAmplitudeBase ^ n) ^ (2 : ℕ)) ∧
     (RiemannHypothesis ↔
       ∀ n : ℕ,
-        primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ 2) ∧
+        primeArchEndpointBernsteinPurity n ≤ normalizedPrimeArchMoment 0 ^ (2 : ℕ)) ∧
     (RiemannHypothesis ↔ PrimeArchEndpointBernsteinPurityBounded) ∧
     (¬ RiemannHypothesis →
       ∃ r : ℝ,
-        1 < r ∧ r ≤ xiUniversalBernsteinAmplitudeBase ^ 2 ∧
+        1 < r ∧ r ≤ xiUniversalBernsteinAmplitudeBase ^ (2 : ℕ) ∧
           ¬ Tendsto (fun n : ℕ => primeArchEndpointBernsteinPurity n / r ^ n)
             atTop (nhds 0)) := by
   exact ⟨

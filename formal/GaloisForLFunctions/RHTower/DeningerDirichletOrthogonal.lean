@@ -69,7 +69,7 @@ theorem deningerDirichlet_orthogonal {m : ℝ}
     (hintv : IntegrableOn (fun r => ((starRingEnd ℂ) (v r) * p r).re) (Ioi (0 : ℝ)))
     (hintw : IntegrableOn (fun r => ((starRingEnd ℂ) (w r) * p r).re) (Ioi (0 : ℝ))) :
     (∫ r in Ioi (0 : ℝ), ((starRingEnd ℂ) (v r) * q r).re)
-      + m ^ 2 * ∫ r in Ioi (0 : ℝ), ((starRingEnd ℂ) (w r) * p r).re = 0 := by
+      + m ^ (2 : ℕ) * ∫ r in Ioi (0 : ℝ), ((starRingEnd ℂ) (w r) * p r).re = 0 := by
   have hpair := deningerPairing_integral_eq hderivw hderivp hcont hlim hint
   rw [hw0] at hpair
   simp only [map_zero, zero_mul, Complex.zero_re, neg_zero] at hpair

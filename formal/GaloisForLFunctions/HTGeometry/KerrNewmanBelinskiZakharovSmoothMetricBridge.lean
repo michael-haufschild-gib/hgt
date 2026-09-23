@@ -39,7 +39,7 @@ theorem belinskiZakharovKillingLift_det (parameter : ℝ) :
 
 /-- The full flat Kerr--Newman metric after the constant BZ two-Killing congruence. -/
 def kerrNewmanFlatBZDressedMetric (parameter : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
-  !![-1 + parameter ^ 2, 0, 0, parameter;
+  !![-1 + parameter ^ (2 : ℕ), 0, 0, parameter;
      0, 1, 0, 0;
      0, 0, 1, 0;
      parameter, 0, 0, 1]
@@ -49,7 +49,7 @@ def kerrNewmanFlatBZDressedMetricInverse (parameter : ℝ) : Matrix (Fin 4) (Fin
   !![-1, 0, 0, parameter;
      0, 1, 0, 0;
      0, 0, 1, 0;
-     parameter, 0, 0, 1 - parameter ^ 2]
+     parameter, 0, 0, 1 - parameter ^ (2 : ℕ)]
 
 /-- The full metric is the congruence of Minkowski space by the lifted BZ unipotent. -/
 theorem kerrNewmanFlatBZDressedMetric_eq_liftCongruence (parameter : ℝ) :

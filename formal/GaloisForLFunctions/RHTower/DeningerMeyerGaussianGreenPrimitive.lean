@@ -26,8 +26,8 @@ noncomputable section
 
 /-- The `r`-th half-density Gaussian Green term at Cartan displacement `a`. -/
 def greenTerm (a r t : ℝ) : ℝ :=
-  (Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ 2 / (4 * π))) *
-    Real.exp (-(π * t ^ 2 / r))
+  (Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ (2 : ℕ) / (4 * π))) *
+    Real.exp (-(π * t ^ (2 : ℕ) / r))
 
 theorem greenTerm_nonneg (a r t : ℝ) : 0 ≤ greenTerm a r t := by
   exact mul_nonneg (mul_nonneg (inv_nonneg.mpr (Real.sqrt_nonneg r))
@@ -37,34 +37,34 @@ theorem greenTerm_nonneg (a r t : ℝ) : 0 ≤ greenTerm a r t := by
 theorem greenTerm_eq_shifted (a r t : ℝ) (hr : 0 < r) :
     Real.exp (a * t) * greenTerm a r t =
       (Real.sqrt r)⁻¹ * Real.exp
-        (-(π / r) * (t - r * a / (2 * π)) ^ 2) := by
+        (-(π / r) * (t - r * a / (2 * π)) ^ (2 : ℕ)) := by
   have hexp :
-      a * t + -(r * a ^ 2 / (4 * π)) + -(π * t ^ 2 / r) =
-        -(π / r) * (t - r * a / (2 * π)) ^ 2 := by
+      a * t + -(r * a ^ (2 : ℕ) / (4 * π)) + -(π * t ^ (2 : ℕ) / r) =
+        -(π / r) * (t - r * a / (2 * π)) ^ (2 : ℕ) := by
     field_simp [hr.ne', Real.pi_ne_zero]
     ring
   rw [greenTerm]
   calc
     Real.exp (a * t) *
-          ((Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ 2 / (4 * π))) *
-            Real.exp (-(π * t ^ 2 / r))) =
+          ((Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ (2 : ℕ) / (4 * π))) *
+            Real.exp (-(π * t ^ (2 : ℕ) / r))) =
         (Real.sqrt r)⁻¹ *
-          (Real.exp (a * t) * Real.exp (-(r * a ^ 2 / (4 * π))) *
-            Real.exp (-(π * t ^ 2 / r))) := by ring
+          (Real.exp (a * t) * Real.exp (-(r * a ^ (2 : ℕ) / (4 * π))) *
+            Real.exp (-(π * t ^ (2 : ℕ) / r))) := by ring
     _ = (Real.sqrt r)⁻¹ * Real.exp
-          (a * t + -(r * a ^ 2 / (4 * π)) + -(π * t ^ 2 / r)) := by
+          (a * t + -(r * a ^ (2 : ℕ) / (4 * π)) + -(π * t ^ (2 : ℕ) / r)) := by
         rw [Real.exp_add, Real.exp_add]
     _ = _ := by rw [hexp]
 
 /-- Ordinary half-density mass of one Green term. -/
 theorem integral_greenTerm (a r : ℝ) (hr : 0 < r) :
-    ∫ t : ℝ, greenTerm a r t = Real.exp (-(r * a ^ 2 / (4 * π))) := by
+    ∫ t : ℝ, greenTerm a r t = Real.exp (-(r * a ^ (2 : ℕ) / (4 * π))) := by
   simp only [greenTerm]
   rw [show (fun t : ℝ =>
-      (Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ 2 / (4 * π))) *
-        Real.exp (-(π * t ^ 2 / r))) =
-      fun t : ℝ => ((Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ 2 / (4 * π)))) *
-        Real.exp (-(π / r) * t ^ 2) by
+      (Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ (2 : ℕ) / (4 * π))) *
+        Real.exp (-(π * t ^ (2 : ℕ) / r))) =
+      fun t : ℝ => ((Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ (2 : ℕ) / (4 * π)))) *
+        Real.exp (-(π / r) * t ^ (2 : ℕ)) by
       funext t
       congr 2
       field_simp [hr.ne']]
@@ -78,8 +78,8 @@ theorem integral_greenTerm (a r : ℝ) (hr : 0 < r) :
 theorem integrable_greenTerm (a r : ℝ) (hr : 0 < r) :
     Integrable (greenTerm a r) := by
   rw [show greenTerm a r = fun t : ℝ =>
-      ((Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ 2 / (4 * π)))) *
-        Real.exp (-(π / r) * t ^ 2) by
+      ((Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ (2 : ℕ) / (4 * π)))) *
+        Real.exp (-(π / r) * t ^ (2 : ℕ)) by
       funext t
       simp only [greenTerm]
       congr 2
@@ -91,12 +91,12 @@ theorem integral_tilt_greenTerm (a r : ℝ) (hr : 0 < r) :
     ∫ t : ℝ, Real.exp (a * t) * greenTerm a r t = 1 := by
   rw [show (fun t : ℝ => Real.exp (a * t) * greenTerm a r t) =
       fun t : ℝ => (Real.sqrt r)⁻¹ *
-        Real.exp (-(π / r) * (t - r * a / (2 * π)) ^ 2) by
+        Real.exp (-(π / r) * (t - r * a / (2 * π)) ^ (2 : ℕ)) by
       funext t
       exact greenTerm_eq_shifted a r t hr]
   rw [integral_const_mul]
   rw [integral_sub_right_eq_self
-    (fun t : ℝ => Real.exp (-(π / r) * t ^ 2)) (r * a / (2 * π))]
+    (fun t : ℝ => Real.exp (-(π / r) * t ^ (2 : ℕ))) (r * a / (2 * π))]
   rw [integral_gaussian]
   have hsqrt : Real.sqrt (π / (π / r)) = Real.sqrt r := by
     congr 1
@@ -108,7 +108,7 @@ theorem integrable_tilt_greenTerm (a r : ℝ) (hr : 0 < r) :
     Integrable (fun t : ℝ => Real.exp (a * t) * greenTerm a r t) := by
   rw [show (fun t : ℝ => Real.exp (a * t) * greenTerm a r t) =
       fun t : ℝ => (Real.sqrt r)⁻¹ *
-        Real.exp (-(π / r) * (t - r * a / (2 * π)) ^ 2) by
+        Real.exp (-(π / r) * (t - r * a / (2 * π)) ^ (2 : ℕ)) by
       funext t
       exact greenTerm_eq_shifted a r t hr]
   exact ((integrable_exp_neg_mul_sq (div_pos Real.pi_pos hr)).comp_sub_right
@@ -125,7 +125,7 @@ theorem greenPartial_nonneg (a : ℝ) (N : ℕ) (t : ℝ) :
 theorem integral_greenPartial (a : ℝ) (N : ℕ) :
     ∫ t : ℝ, greenPartial a N t =
       ∑ n ∈ Finset.range N,
-        Real.exp (-((n + 1 : ℝ) * a ^ 2 / (4 * π))) := by
+        Real.exp (-((n + 1 : ℝ) * a ^ (2 : ℕ) / (4 * π))) := by
   simp only [greenPartial]
   rw [integral_finsetSum]
   · apply Finset.sum_congr rfl
@@ -153,21 +153,21 @@ theorem integral_tilt_greenPartial (a : ℝ) (N : ℕ) :
 
 theorem integral_greenPartial_eq_geom (a : ℝ) (N : ℕ) :
     ∫ t : ℝ, greenPartial a N t =
-      Real.exp (-(a ^ 2 / (4 * π))) *
-        ∑ n ∈ Finset.range N, Real.exp (-(a ^ 2 / (4 * π))) ^ n := by
+      Real.exp (-(a ^ (2 : ℕ) / (4 * π))) *
+        ∑ n ∈ Finset.range N, Real.exp (-(a ^ (2 : ℕ) / (4 * π))) ^ n := by
   rw [integral_greenPartial]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro n hn
   calc
-    Real.exp (-((n + 1 : ℝ) * a ^ 2 / (4 * π))) =
-        Real.exp (-(a ^ 2 / (4 * π))) ^ (n + 1) := by
+    Real.exp (-((n + 1 : ℝ) * a ^ (2 : ℕ) / (4 * π))) =
+        Real.exp (-(a ^ (2 : ℕ) / (4 * π))) ^ (n + 1) := by
       rw [← Real.exp_nat_mul]
       congr 1
       push_cast
       ring
-    _ = Real.exp (-(a ^ 2 / (4 * π))) *
-        Real.exp (-(a ^ 2 / (4 * π))) ^ n := by
+    _ = Real.exp (-(a ^ (2 : ℕ) / (4 * π))) *
+        Real.exp (-(a ^ (2 : ℕ) / (4 * π))) ^ n := by
       rw [pow_succ]
       ring
 
@@ -175,15 +175,15 @@ theorem integral_greenPartial_eq_geom (a : ℝ) (N : ℕ) :
 theorem integral_greenPartial_le_geometric_bound
     {a : ℝ} (ha : a ≠ 0) (N : ℕ) :
     ∫ t : ℝ, greenPartial a N t ≤
-      Real.exp (-(a ^ 2 / (4 * π))) *
-        (1 - Real.exp (-(a ^ 2 / (4 * π))))⁻¹ := by
+      Real.exp (-(a ^ (2 : ℕ) / (4 * π))) *
+        (1 - Real.exp (-(a ^ (2 : ℕ) / (4 * π))))⁻¹ := by
   rw [integral_greenPartial_eq_geom]
-  let q := Real.exp (-(a ^ 2 / (4 * π)))
+  let q := Real.exp (-(a ^ (2 : ℕ) / (4 * π)))
   have hq0 : 0 ≤ q := (Real.exp_pos _).le
   have hq1 : q < 1 := by
     dsimp [q]
     rw [Real.exp_lt_one_iff]
-    have ha2 : 0 < a ^ 2 := sq_pos_of_ne_zero ha
+    have ha2 : 0 < a ^ (2 : ℕ) := sq_pos_of_ne_zero ha
     exact neg_lt_zero.mpr (div_pos ha2 (mul_pos (by norm_num) Real.pi_pos))
   have hsum : Summable (fun n : ℕ => q ^ n) :=
     summable_geometric_of_norm_lt_one (by
@@ -228,7 +228,7 @@ theorem integral_halfDensity_norm_greenSourcePartial
     (a tau : ℝ) (N : ℕ) :
     ∫ t : ℝ, Real.exp (t / 2) * ‖greenSourcePartial a tau N t‖ =
       ∑ n ∈ Finset.range N,
-        Real.exp (-((n + 1 : ℝ) * a ^ 2 / (4 * π))) := by
+        Real.exp (-((n + 1 : ℝ) * a ^ (2 : ℕ) / (4 * π))) := by
   rw [show (fun t : ℝ => Real.exp (t / 2) * ‖greenSourcePartial a tau N t‖) =
       greenPartial a N by
       funext t
@@ -287,19 +287,19 @@ theorem greenTerm_saddle_ray (a r : ℝ) (hr : 0 < r) :
     greenTerm a r (|a| * r / (2 * π)) =
       (Real.sqrt r)⁻¹ * Real.exp (-|a| * (|a| * r / (2 * π))) := by
   rw [greenTerm]
-  have hsq : |a| ^ 2 = a ^ 2 := sq_abs a
+  have hsq : |a| ^ (2 : ℕ) = a ^ (2 : ℕ) := sq_abs a
   have hexp :
-      -(r * a ^ 2 / (4 * π)) -
-          π * (|a| * r / (2 * π)) ^ 2 / r =
+      -(r * a ^ (2 : ℕ) / (4 * π)) -
+          π * (|a| * r / (2 * π)) ^ (2 : ℕ) / r =
         -|a| * (|a| * r / (2 * π)) := by
     field_simp [hr.ne', Real.pi_ne_zero]
     nlinarith [hsq]
   calc
-    (Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ 2 / (4 * π))) *
-          Real.exp (-(π * (|a| * r / (2 * π)) ^ 2 / r)) =
+    (Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ (2 : ℕ) / (4 * π))) *
+          Real.exp (-(π * (|a| * r / (2 * π)) ^ (2 : ℕ) / r)) =
         (Real.sqrt r)⁻¹ * Real.exp
-          (-(r * a ^ 2 / (4 * π)) -
-            π * (|a| * r / (2 * π)) ^ 2 / r) := by
+          (-(r * a ^ (2 : ℕ) / (4 * π)) -
+            π * (|a| * r / (2 * π)) ^ (2 : ℕ) / r) := by
       rw [mul_assoc, ← Real.exp_add]
       congr 2
     _ = _ := by rw [hexp]
@@ -313,8 +313,8 @@ theorem greenSourcePartial_bounded_halfDensity_divergent_mellin
     {a : ℝ} (ha : a ≠ 0) (tau : ℝ) :
     (∀ N : ℕ,
       ∫ t : ℝ, Real.exp (t / 2) * ‖greenSourcePartial a tau N t‖ ≤
-        Real.exp (-(a ^ 2 / (4 * π))) *
-          (1 - Real.exp (-(a ^ 2 / (4 * π))))⁻¹) ∧
+        Real.exp (-(a ^ (2 : ℕ) / (4 * π))) *
+          (1 - Real.exp (-(a ^ (2 : ℕ) / (4 * π))))⁻¹) ∧
       Tendsto (fun N : ℕ =>
         (∫ t : ℝ,
           Complex.exp
@@ -336,48 +336,48 @@ theorem greenSourcePartial_bounded_halfDensity_divergent_mellin
 /-- General Cartan tilt: completing the square leaves the exact moment ratio. -/
 theorem greenTerm_eq_general_shifted (a b r t : ℝ) (hr : 0 < r) :
     Real.exp (b * t) * greenTerm a r t =
-      Real.exp (r * (b ^ 2 - a ^ 2) / (4 * π)) * (Real.sqrt r)⁻¹ *
-        Real.exp (-(π / r) * (t - r * b / (2 * π)) ^ 2) := by
+      Real.exp (r * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) * (Real.sqrt r)⁻¹ *
+        Real.exp (-(π / r) * (t - r * b / (2 * π)) ^ (2 : ℕ)) := by
   have hexp :
-      b * t + -(r * a ^ 2 / (4 * π)) + -(π * t ^ 2 / r) =
-        r * (b ^ 2 - a ^ 2) / (4 * π) -
-          (π / r) * (t - r * b / (2 * π)) ^ 2 := by
+      b * t + -(r * a ^ (2 : ℕ) / (4 * π)) + -(π * t ^ (2 : ℕ) / r) =
+        r * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π) -
+          (π / r) * (t - r * b / (2 * π)) ^ (2 : ℕ) := by
     field_simp [hr.ne', Real.pi_ne_zero]
     ring
   rw [greenTerm]
   calc
     Real.exp (b * t) *
-          ((Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ 2 / (4 * π))) *
-            Real.exp (-(π * t ^ 2 / r))) =
+          ((Real.sqrt r)⁻¹ * Real.exp (-(r * a ^ (2 : ℕ) / (4 * π))) *
+            Real.exp (-(π * t ^ (2 : ℕ) / r))) =
         (Real.sqrt r)⁻¹ * Real.exp
-          (b * t + -(r * a ^ 2 / (4 * π)) + -(π * t ^ 2 / r)) := by
+          (b * t + -(r * a ^ (2 : ℕ) / (4 * π)) + -(π * t ^ (2 : ℕ) / r)) := by
       rw [Real.exp_add, Real.exp_add]
       ring
     _ = (Real.sqrt r)⁻¹ *
-          Real.exp (r * (b ^ 2 - a ^ 2) / (4 * π) -
-            (π / r) * (t - r * b / (2 * π)) ^ 2) := by rw [hexp]
+          Real.exp (r * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π) -
+            (π / r) * (t - r * b / (2 * π)) ^ (2 : ℕ)) := by rw [hexp]
     _ = _ := by
       rw [show
-        r * (b ^ 2 - a ^ 2) / (4 * π) -
-            (π / r) * (t - r * b / (2 * π)) ^ 2 =
-          r * (b ^ 2 - a ^ 2) / (4 * π) +
-            (-(π / r) * (t - r * b / (2 * π)) ^ 2) by ring,
+        r * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π) -
+            (π / r) * (t - r * b / (2 * π)) ^ (2 : ℕ) =
+          r * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π) +
+            (-(π / r) * (t - r * b / (2 * π)) ^ (2 : ℕ)) by ring,
         Real.exp_add]
       ring
 
 /-- Exact moment of one Green term at arbitrary real Cartan tilt `b`. -/
 theorem integral_general_tilt_greenTerm (a b r : ℝ) (hr : 0 < r) :
     ∫ t : ℝ, Real.exp (b * t) * greenTerm a r t =
-      Real.exp (r * (b ^ 2 - a ^ 2) / (4 * π)) := by
+      Real.exp (r * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) := by
   rw [show (fun t : ℝ => Real.exp (b * t) * greenTerm a r t) =
       fun t : ℝ =>
-        (Real.exp (r * (b ^ 2 - a ^ 2) / (4 * π)) * (Real.sqrt r)⁻¹) *
-          Real.exp (-(π / r) * (t - r * b / (2 * π)) ^ 2) by
+        (Real.exp (r * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) * (Real.sqrt r)⁻¹) *
+          Real.exp (-(π / r) * (t - r * b / (2 * π)) ^ (2 : ℕ)) by
       funext t
       rw [greenTerm_eq_general_shifted a b r t hr]]
   rw [integral_const_mul]
   rw [integral_sub_right_eq_self
-    (fun t : ℝ => Real.exp (-(π / r) * t ^ 2)) (r * b / (2 * π))]
+    (fun t : ℝ => Real.exp (-(π / r) * t ^ (2 : ℕ))) (r * b / (2 * π))]
   rw [integral_gaussian]
   have hsqrt : Real.sqrt (π / (π / r)) = Real.sqrt r := by
     congr 1
@@ -389,8 +389,8 @@ theorem integrable_general_tilt_greenTerm (a b r : ℝ) (hr : 0 < r) :
     Integrable (fun t : ℝ => Real.exp (b * t) * greenTerm a r t) := by
   rw [show (fun t : ℝ => Real.exp (b * t) * greenTerm a r t) =
       fun t : ℝ =>
-        (Real.exp (r * (b ^ 2 - a ^ 2) / (4 * π)) * (Real.sqrt r)⁻¹) *
-          Real.exp (-(π / r) * (t - r * b / (2 * π)) ^ 2) by
+        (Real.exp (r * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) * (Real.sqrt r)⁻¹) *
+          Real.exp (-(π / r) * (t - r * b / (2 * π)) ^ (2 : ℕ)) by
       funext t
       rw [greenTerm_eq_general_shifted a b r t hr]]
   exact ((integrable_exp_neg_mul_sq (div_pos Real.pi_pos hr)).comp_sub_right
@@ -399,7 +399,7 @@ theorem integrable_general_tilt_greenTerm (a b r : ℝ) (hr : 0 < r) :
 theorem integral_general_tilt_greenPartial (a b : ℝ) (N : ℕ) :
     ∫ t : ℝ, Real.exp (b * t) * greenPartial a N t =
       ∑ n ∈ Finset.range N,
-        Real.exp ((n + 1 : ℝ) * (b ^ 2 - a ^ 2) / (4 * π)) := by
+        Real.exp ((n + 1 : ℝ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) := by
   simp only [greenPartial]
   simp_rw [Finset.mul_sum]
   rw [integral_finsetSum]
@@ -411,33 +411,33 @@ theorem integral_general_tilt_greenPartial (a b : ℝ) (N : ℕ) :
 
 theorem integral_general_tilt_greenPartial_eq_geom (a b : ℝ) (N : ℕ) :
     ∫ t : ℝ, Real.exp (b * t) * greenPartial a N t =
-      Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) *
+      Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) *
         ∑ n ∈ Finset.range N,
-          Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) ^ n := by
+          Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) ^ n := by
   rw [integral_general_tilt_greenPartial, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro n hn
   calc
-    Real.exp ((n + 1 : ℝ) * (b ^ 2 - a ^ 2) / (4 * π)) =
-        Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) ^ (n + 1) := by
+    Real.exp ((n + 1 : ℝ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) =
+        Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) ^ (n + 1) := by
       rw [← Real.exp_nat_mul]
       congr 1
       push_cast
       ring
-    _ = Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) *
-        Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) ^ n := by
+    _ = Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) *
+        Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) ^ n := by
       rw [pow_succ]
       ring
 
 /-- At and beyond the Cartan boundary, every Green term contributes at least unit mass. -/
 theorem integral_general_tilt_greenPartial_ge_natCast
-    {a b : ℝ} (hab : a ^ 2 ≤ b ^ 2) (N : ℕ) :
+    {a b : ℝ} (hab : a ^ (2 : ℕ) ≤ b ^ (2 : ℕ)) (N : ℕ) :
     (N : ℝ) ≤ ∫ t : ℝ, Real.exp (b * t) * greenPartial a N t := by
   rw [integral_general_tilt_greenPartial]
   calc
     (N : ℝ) = ∑ n ∈ Finset.range N, (1 : ℝ) := by simp
     _ ≤ ∑ n ∈ Finset.range N,
-        Real.exp ((n + 1 : ℝ) * (b ^ 2 - a ^ 2) / (4 * π)) := by
+        Real.exp ((n + 1 : ℝ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) := by
       apply Finset.sum_le_sum
       intro n hn
       rw [Real.one_le_exp_iff]
@@ -445,7 +445,7 @@ theorem integral_general_tilt_greenPartial_ge_natCast
         (mul_nonneg (by norm_num) Real.pi_pos.le)
 
 theorem tendsto_integral_general_tilt_greenPartial_atTop
-    {a b : ℝ} (hab : a ^ 2 ≤ b ^ 2) :
+    {a b : ℝ} (hab : a ^ (2 : ℕ) ≤ b ^ (2 : ℕ)) :
     Tendsto (fun N : ℕ =>
       ∫ t : ℝ, Real.exp (b * t) * greenPartial a N t) atTop atTop := by
   apply tendsto_atTop_mono
@@ -458,10 +458,10 @@ def greenKernel (a t : ℝ) : ℝ :=
   ∑' n : ℕ, greenTerm a (n + 1 : ℝ) t
 
 theorem summable_integral_norm_general_tilt_greenTerm
-    {a b : ℝ} (hab : b ^ 2 < a ^ 2) :
+    {a b : ℝ} (hab : b ^ (2 : ℕ) < a ^ (2 : ℕ)) :
     Summable (fun n : ℕ =>
       ∫ t : ℝ, ‖Real.exp (b * t) * greenTerm a (n + 1 : ℝ) t‖) := by
-  let q := Real.exp ((b ^ 2 - a ^ 2) / (4 * π))
+  let q := Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π))
   have hq0 : 0 ≤ q := (Real.exp_pos _).le
   have hq1 : q < 1 := by
     dsimp [q]
@@ -483,14 +483,14 @@ theorem summable_integral_norm_general_tilt_greenTerm
   rw [integral_general_tilt_greenTerm a b (n + 1 : ℝ) (by positivity)]
   dsimp [q]
   calc
-    Real.exp ((n + 1 : ℝ) * (b ^ 2 - a ^ 2) / (4 * π)) =
-        Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) ^ (n + 1) := by
+    Real.exp ((n + 1 : ℝ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) =
+        Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) ^ (n + 1) := by
       rw [← Real.exp_nat_mul]
       congr 1
       push_cast
       ring
-    _ = Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) *
-        Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) ^ n := by
+    _ = Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) *
+        Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) ^ n := by
       rw [pow_succ]
       ring
 
@@ -499,10 +499,10 @@ Exact bilateral Laplace transform inside the Cartan strip `b² < a²`.  The geom
 is the completed Gaussian resolvent; its singular boundary is `|b| = |a|`.
 -/
 theorem integral_general_tilt_greenKernel
-    {a b : ℝ} (hab : b ^ 2 < a ^ 2) :
+    {a b : ℝ} (hab : b ^ (2 : ℕ) < a ^ (2 : ℕ)) :
     ∫ t : ℝ, Real.exp (b * t) * greenKernel a t =
-      Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) *
-        (1 - Real.exp ((b ^ 2 - a ^ 2) / (4 * π)))⁻¹ := by
+      Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) *
+        (1 - Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)))⁻¹ := by
   rw [show (fun t : ℝ => Real.exp (b * t) * greenKernel a t) =
       fun t : ℝ => ∑' n : ℕ,
         Real.exp (b * t) * greenTerm a (n + 1 : ℝ) t by
@@ -511,7 +511,7 @@ theorem integral_general_tilt_greenKernel
   rw [← MeasureTheory.integral_tsum_of_summable_integral_norm
     (fun n : ℕ => integrable_general_tilt_greenTerm a b (n + 1 : ℝ) (by positivity))
     (summable_integral_norm_general_tilt_greenTerm hab)]
-  let q := Real.exp ((b ^ 2 - a ^ 2) / (4 * π))
+  let q := Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π))
   have hq0 : 0 ≤ q := (Real.exp_pos _).le
   have hq1 : q < 1 := by
     dsimp [q]
@@ -525,14 +525,14 @@ theorem integral_general_tilt_greenKernel
       rw [integral_general_tilt_greenTerm a b (n + 1 : ℝ) (by positivity)]
       dsimp [q]
       calc
-        Real.exp ((n + 1 : ℝ) * (b ^ 2 - a ^ 2) / (4 * π)) =
-            Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) ^ (n + 1) := by
+        Real.exp ((n + 1 : ℝ) * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) =
+            Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) ^ (n + 1) := by
           rw [← Real.exp_nat_mul]
           congr 1
           push_cast
           ring
-        _ = Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) *
-            Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) ^ n := by
+        _ = Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) *
+            Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) ^ n := by
           rw [pow_succ]
           ring]
   rw [tsum_mul_left, tsum_geometric_of_lt_one hq0 hq1]
@@ -540,11 +540,11 @@ theorem integral_general_tilt_greenKernel
 /-- Exact ordinary mass of the infinite off-critical Green kernel. -/
 theorem integral_greenKernel {a : ℝ} (ha : a ≠ 0) :
     ∫ t : ℝ, greenKernel a t =
-      Real.exp (-(a ^ 2 / (4 * π))) *
-        (1 - Real.exp (-(a ^ 2 / (4 * π))))⁻¹ := by
-  have hab : (0 : ℝ) ^ 2 < a ^ 2 := by
+      Real.exp (-(a ^ (2 : ℕ) / (4 * π))) *
+        (1 - Real.exp (-(a ^ (2 : ℕ) / (4 * π))))⁻¹ := by
+  have hab : (0 : ℝ) ^ (2 : ℕ) < a ^ (2 : ℕ) := by
     simpa using sq_pos_of_ne_zero ha
-  have harg : ((0 : ℝ) ^ 2 - a ^ 2) / (4 * π) = -(a ^ 2 / (4 * π)) := by
+  have harg : ((0 : ℝ) ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π) = -(a ^ (2 : ℕ) / (4 * π)) := by
     ring
   simpa only [zero_mul, Real.exp_zero, one_mul, harg] using
     (integral_general_tilt_greenKernel (a := a) (b := 0) hab)
@@ -554,11 +554,11 @@ Exact Cartan moment wall: the completed Green transform is geometric precisely i
 `|b| < |a|`, whereas moments of finite source approximants diverge at and beyond the boundary.
 -/
 theorem greenKernel_exact_Cartan_moment_wall (a b : ℝ) :
-    (b ^ 2 < a ^ 2 →
+    (b ^ (2 : ℕ) < a ^ (2 : ℕ) →
       ∫ t : ℝ, Real.exp (b * t) * greenKernel a t =
-        Real.exp ((b ^ 2 - a ^ 2) / (4 * π)) *
-          (1 - Real.exp ((b ^ 2 - a ^ 2) / (4 * π)))⁻¹) ∧
-    (a ^ 2 ≤ b ^ 2 →
+        Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)) *
+          (1 - Real.exp ((b ^ (2 : ℕ) - a ^ (2 : ℕ)) / (4 * π)))⁻¹) ∧
+    (a ^ (2 : ℕ) ≤ b ^ (2 : ℕ) →
       Tendsto (fun N : ℕ =>
         ∫ t : ℝ, Real.exp (b * t) * greenPartial a N t) atTop atTop) := by
   exact ⟨integral_general_tilt_greenKernel,

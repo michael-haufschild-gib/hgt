@@ -5,7 +5,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 private theorem nonzero_frequency_bound (n : ℕ) (j : Fin (2 ^ (n + 3))) (hj : j ≠ 0) :
-    ‖egbFixedChargeAFiveModeSpectrum n egbFixedChargeACriticalMarkovEigenvalues j‖ ^ 2 ≤ 4 / 9 := by
+    ‖egbFixedChargeAFiveModeSpectrum n egbFixedChargeACriticalMarkovEigenvalues j‖ ^ (2 : ℕ) ≤ 4 / 9 := by
   by_cases hs : ∃ k : Fin 5, j = egbFixedChargeAFiveFourierModes n k
   · obtain ⟨k, rfl⟩ := hs
     rw [egbFixedChargeAFiveModeSpectrum_mode]
@@ -18,8 +18,8 @@ private theorem nonzero_frequency_bound (n : ℕ) (j : Fin (2 ^ (n + 3))) (hj : 
 
 private theorem centered_sum_sq_step (n : ℕ) (f : Fin (2 ^ (n + 3)) → ℝ) :
     ∑ i, ((egbFixedChargeACriticalMarkovIteratedKernel n 1).toFinitePositiveKernel.applyReal
-      (egbFixedChargeACriticalCenteredProfile n f) i) ^ 2 ≤
-        (4 / 9) * ∑ i, egbFixedChargeACriticalCenteredProfile n f i ^ 2 := by
+      (egbFixedChargeACriticalCenteredProfile n f) i) ^ (2 : ℕ) ≤
+        (4 / 9) * ∑ i, egbFixedChargeACriticalCenteredProfile n f i ^ (2 : ℕ) := by
   have he := egbFixedChargeACriticalMarkovMatrix_spectral_energy n 1
     (fun i => (egbFixedChargeACriticalCenteredProfile n f i : ℂ))
   rw [egbFixedChargeACriticalMarkov_complex_lift] at he

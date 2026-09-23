@@ -21,16 +21,16 @@ noncomputable section
 `ε < δ`. -/
 theorem neg_of_perturbed_negDef {E : Type*} [NormedAddCommGroup E]
     (Q Q₀ : E → ℝ) {δ ε : ℝ} (hε : ε < δ)
-    (h₀ : ∀ x, Q₀ x ≤ -δ * ‖x‖ ^ 2)
-    (hpert : ∀ x, |Q x - Q₀ x| ≤ ε * ‖x‖ ^ 2) :
+    (h₀ : ∀ x, Q₀ x ≤ -δ * ‖x‖ ^ (2 : ℕ))
+    (hpert : ∀ x, |Q x - Q₀ x| ≤ ε * ‖x‖ ^ (2 : ℕ)) :
     ∀ x : E, x ≠ 0 → Q x < 0 := by
   intro x hx
   have hnorm : 0 < ‖x‖ := norm_pos_iff.2 hx
-  have hsq : 0 < ‖x‖ ^ 2 := by positivity
-  have hupper : Q x ≤ Q₀ x + ε * ‖x‖ ^ 2 := by
+  have hsq : 0 < ‖x‖ ^ (2 : ℕ) := by positivity
+  have hupper : Q x ≤ Q₀ x + ε * ‖x‖ ^ (2 : ℕ) := by
     have := (abs_le.1 (hpert x)).2
     linarith
-  have hchain : Q x ≤ (-δ + ε) * ‖x‖ ^ 2 := by
+  have hchain : Q x ≤ (-δ + ε) * ‖x‖ ^ (2 : ℕ) := by
     have := h₀ x
     nlinarith [hupper, this]
   have hneg : (-δ + ε) < 0 := by linarith
@@ -41,8 +41,8 @@ modulus and the limiting form is negative definite with margin `δ`, then every 
 threshold is negative definite. -/
 theorem eventually_neg_of_tendsto_negDef {E : Type*} [NormedAddCommGroup E]
     {ι : Type*} {l : Filter ι} (Q : ι → E → ℝ) (Q₀ : E → ℝ) {δ : ℝ}
-    (h₀ : ∀ x, Q₀ x ≤ -δ * ‖x‖ ^ 2)
-    (hmod : ∀ᶠ i in l, ∀ x, |Q i x - Q₀ x| ≤ (δ / 2) * ‖x‖ ^ 2)
+    (h₀ : ∀ x, Q₀ x ≤ -δ * ‖x‖ ^ (2 : ℕ))
+    (hmod : ∀ᶠ i in l, ∀ x, |Q i x - Q₀ x| ≤ (δ / 2) * ‖x‖ ^ (2 : ℕ))
     (hδ : 0 < δ) :
     ∀ᶠ i in l, ∀ x : E, x ≠ 0 → Q i x < 0 := by
   filter_upwards [hmod] with i hi
@@ -52,10 +52,10 @@ theorem eventually_neg_of_tendsto_negDef {E : Type*} [NormedAddCommGroup E]
 /-- The negative diagonal form has the margin required above. -/
 theorem negDiagonal_le {n : ℕ} (c : Fin n → ℝ) {δ : ℝ} (hδ : ∀ j, c j ≤ -δ)
     (x : Fin n → ℝ) :
-    ∑ j, c j * (x j) ^ 2 ≤ -δ * ∑ j, (x j) ^ 2 := by
+    ∑ j, c j * (x j) ^ (2 : ℕ) ≤ -δ * ∑ j, (x j) ^ (2 : ℕ) := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun j _ => ?_
-  have hsq : 0 ≤ (x j) ^ 2 := sq_nonneg _
+  have hsq : 0 ≤ (x j) ^ (2 : ℕ) := sq_nonneg _
   exact mul_le_mul_of_nonneg_right (hδ j) hsq
 
 end

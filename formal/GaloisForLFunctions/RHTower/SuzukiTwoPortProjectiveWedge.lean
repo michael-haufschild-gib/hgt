@@ -70,7 +70,7 @@ therefore multiplied only by `m²`. -/
 theorem suzukiPortWedge_commonGauge
     (m dm : ℂ) (u du : V) :
     suzukiPortWedge (m • u) (dm • u + m • du) =
-      (m ^ 2) • suzukiPortWedge u du := by
+      (m ^ (2 : ℕ)) • suzukiPortWedge u du := by
   simp only [suzukiPortWedge_add_right, suzukiPortWedge_smul_left,
     suzukiPortWedge_smul_right, suzukiPortWedge_self, smul_zero, zero_add, smul_smul]
   rw [pow_two]
@@ -126,8 +126,8 @@ def suzukiTwoPortVelocity (a x : ℝ) (u v du dv : V) : V :=
 /-- Four non-aperture-leading transport wedges in the two-port derivative. -/
 def suzukiTwoPortWedgeRemainder (a x : ℝ) (u v du dv : V) :
     ExteriorAlgebra ℂ V :=
-  (suzukiRightPortPhase a x) ^ 2 • suzukiPortWedge u du +
-    (suzukiLeftPortPhase a x) ^ 2 • suzukiPortWedge v dv +
+  (suzukiRightPortPhase a x) ^ (2 : ℕ) • suzukiPortWedge u du +
+    (suzukiLeftPortPhase a x) ^ (2 : ℕ) • suzukiPortWedge v dv +
       suzukiPortWedge u dv + suzukiPortWedge v du
 
 /-! ## Exact port-wedge decomposition -/
@@ -139,8 +139,8 @@ theorem suzukiPortWedge_reciprocalPhases
         (p • (apertureFrequency • u + du) +
           q • ((-apertureFrequency) • v + dv)) =
       (-2 * apertureFrequency) • suzukiPortWedge u v +
-        (p ^ 2) • suzukiPortWedge u du +
-          (q ^ 2) • suzukiPortWedge v dv +
+        (p ^ (2 : ℕ)) • suzukiPortWedge u du +
+          (q ^ (2 : ℕ)) • suzukiPortWedge v dv +
             suzukiPortWedge u dv + suzukiPortWedge v du := by
   have hpAq : p * apertureFrequency * q = apertureFrequency := by
     calc
@@ -174,7 +174,7 @@ theorem suzukiTwoPortCarrier_wedge_velocity
 
 /-- Projective speed written as transverse wedge size divided by carrier size squared. -/
 def suzukiProjectiveWedgeSpeed (wedgeSize carrierSize : ℝ) : ℝ :=
-  wedgeSize / carrierSize ^ 2
+  wedgeSize / carrierSize ^ (2 : ℕ)
 
 /-- **Port-wedge death inequality.**  If the aperture-leading wedge dominates the remainder by
 `δ a S²` and the carrier norm is at most `S`, then projective speed is at least `δ a`.  This is the
@@ -183,14 +183,14 @@ theorem suzukiProjectiveWedgeSpeed_ge_aperture
     {a δ S carrierSize wedgeSize leadingSize remainderSize : ℝ}
     (ha : 0 ≤ a) (hδ : 0 ≤ δ) (hS : 0 ≤ S) (hcarrier : 0 < carrierSize)
     (hcarrierS : carrierSize ≤ S)
-    (hdominates : δ * a * S ^ 2 ≤ 2 * a * leadingSize - remainderSize)
+    (hdominates : δ * a * S ^ (2 : ℕ) ≤ 2 * a * leadingSize - remainderSize)
     (hwedge : 2 * a * leadingSize - remainderSize ≤ wedgeSize) :
     δ * a ≤ suzukiProjectiveWedgeSpeed wedgeSize carrierSize := by
   have hδa : 0 ≤ δ * a := mul_nonneg hδ ha
-  have hsq : carrierSize ^ 2 ≤ S ^ 2 := by nlinarith
-  have hbudget : δ * a * carrierSize ^ 2 ≤ wedgeSize := by
+  have hsq : carrierSize ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by nlinarith
+  have hbudget : δ * a * carrierSize ^ (2 : ℕ) ≤ wedgeSize := by
     calc
-      δ * a * carrierSize ^ 2 ≤ δ * a * S ^ 2 :=
+      δ * a * carrierSize ^ (2 : ℕ) ≤ δ * a * S ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hsq hδa
       _ ≤ 2 * a * leadingSize - remainderSize := hdominates
       _ ≤ wedgeSize := hwedge

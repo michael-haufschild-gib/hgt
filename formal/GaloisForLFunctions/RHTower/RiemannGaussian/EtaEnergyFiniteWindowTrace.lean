@@ -39,7 +39,7 @@ def frobSq (A : Matrix n n 𝕜) : ℝ :=
 
 /-- Squared Frobenius mass is the sum of squared entry norms. -/
 theorem frobSq_eq_sum_norm_sq_entries (A : Matrix n n 𝕜) :
-    frobSq A = ∑ i, ∑ j, ‖A j i‖ ^ 2 := by
+    frobSq A = ∑ i, ∑ j, ‖A j i‖ ^ (2 : ℕ) := by
   unfold frobSq Matrix.trace
   simp only [Matrix.diag_apply, Matrix.mul_apply,
     Matrix.conjTranspose_apply, map_sum]
@@ -71,8 +71,8 @@ private theorem rtrace_real_smul_vecMulVec
     (hv : star v = v) :
     HermitianInertia.rtrace
         ((c : ℂ) • Matrix.vecMulVec v v) =
-      c * ∑ j, ‖v j‖ ^ 2 := by
-  have hdot : v ⬝ᵥ v = ((∑ j, ‖v j‖ ^ 2 : ℝ) : ℂ) := by
+      c * ∑ j, ‖v j‖ ^ (2 : ℕ) := by
+  have hdot : v ⬝ᵥ v = ((∑ j, ‖v j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     unfold dotProduct
     push_cast
     refine Finset.sum_congr rfl fun j _ ↦ ?_
@@ -81,11 +81,11 @@ private theorem rtrace_real_smul_vecMulVec
       simpa only [Pi.star_apply, RCLike.star_def] using this
     calc
       v j * v j = starRingEnd ℂ (v j) * v j := by rw [hj]
-      _ = (‖v j‖ : ℂ) ^ 2 := by
+      _ = (‖v j‖ : ℂ) ^ (2 : ℕ) := by
         rw [RCLike.conj_mul, RCLike.ofReal_eq_complex_ofReal]
   unfold HermitianInertia.rtrace
   rw [Matrix.trace_smul, Matrix.trace_vecMulVec, hdot]
-  change ((c : ℂ) * ((∑ j, ‖v j‖ ^ 2 : ℝ) : ℂ)).re = _
+  change ((c : ℂ) * ((∑ j, ‖v j‖ ^ (2 : ℕ) : ℝ) : ℂ)).re = _
   rw [Complex.re_ofReal_mul, Complex.ofReal_re]
 
 private theorem rtrace_finsetSum
@@ -105,7 +105,7 @@ theorem pairedEtaTopPrefixFiniteZeroWindowOnLineBlock_rtrace_eq
         (pairedEtaTopPrefixFiniteZeroWindowOnLineBlock cutoff T) =
       ∑ rho ∈ spectralCriticalZetaZeroWindow T,
         (analyticZetaZeroMultiplicity rho : ℝ) *
-          ∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ 2 := by
+          ∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ (2 : ℕ) := by
   unfold pairedEtaTopPrefixFiniteZeroWindowOnLineBlock
   rw [rtrace_finsetSum]
   refine Finset.sum_congr rfl fun rho hrho ↦ ?_
@@ -139,7 +139,7 @@ theorem pairedEtaTopPrefixFiniteZeroWindowOffLineRealBlock_rtrace_eq
       ∑ rho ∈ spectralUpperZetaZeroWindow T,
         (2 * analyticZetaZeroMultiplicity rho : ℝ) *
           ∑ j, ‖complexVectorReal
-            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ 2 := by
+            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ (2 : ℕ) := by
   unfold pairedEtaTopPrefixFiniteZeroWindowOffLineRealBlock
   rw [rtrace_finsetSum]
   refine Finset.sum_congr rfl fun rho _hrho ↦ ?_
@@ -173,7 +173,7 @@ theorem pairedEtaTopPrefixFiniteZeroWindowOffLineImagBlock_rtrace_eq
       ∑ rho ∈ spectralUpperZetaZeroWindow T,
         (2 * analyticZetaZeroMultiplicity rho : ℝ) *
           ∑ j, ‖complexVectorImag
-            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ 2 := by
+            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ (2 : ℕ) := by
   unfold pairedEtaTopPrefixFiniteZeroWindowOffLineImagBlock
   rw [rtrace_finsetSum]
   refine Finset.sum_congr rfl fun rho _hrho ↦ ?_
@@ -208,11 +208,11 @@ theorem pairedEtaTopPrefixFiniteZeroWindowOffLineDifference_rtrace_eq
       (∑ rho ∈ spectralUpperZetaZeroWindow T,
         (2 * analyticZetaZeroMultiplicity rho : ℝ) *
           ∑ j, ‖complexVectorReal
-            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ 2) -
+            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ (2 : ℕ)) -
       ∑ rho ∈ spectralUpperZetaZeroWindow T,
         (2 * analyticZetaZeroMultiplicity rho : ℝ) *
           ∑ j, ‖complexVectorImag
-            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ 2 := by
+            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ (2 : ℕ) := by
   rw [HermitianInertia.rtrace_sub,
     pairedEtaTopPrefixFiniteZeroWindowOffLineRealBlock_rtrace_eq,
     pairedEtaTopPrefixFiniteZeroWindowOffLineImagBlock_rtrace_eq]
@@ -225,15 +225,15 @@ theorem pairedEtaTopPrefixFiniteZeroWindowBlock_rtrace_eq
         (pairedEtaTopPrefixFiniteZeroWindowBlock cutoff T) =
       (∑ rho ∈ spectralCriticalZetaZeroWindow T,
         (analyticZetaZeroMultiplicity rho : ℝ) *
-          ∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ 2) +
+          ∑ j, ‖pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j‖ ^ (2 : ℕ)) +
       ((∑ rho ∈ spectralUpperZetaZeroWindow T,
         (2 * analyticZetaZeroMultiplicity rho : ℝ) *
           ∑ j, ‖complexVectorReal
-            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ 2) -
+            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ (2 : ℕ)) -
       ∑ rho ∈ spectralUpperZetaZeroWindow T,
         (2 * analyticZetaZeroMultiplicity rho : ℝ) *
           ∑ j, ‖complexVectorImag
-            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ 2) := by
+            (pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho) j‖ ^ (2 : ℕ)) := by
   rw [pairedEtaTopPrefixFiniteZeroWindowBlock_eq_onLine_add_offLineReal_sub_imag
       cutoff hT,
     HermitianInertia.rtrace_add,
@@ -251,7 +251,7 @@ theorem pairedEtaTopPrefixFiniteZeroWindowBlock_frobSq_eq
       ∑ i, ∑ j, ‖∑ rho ∈ spectralZetaZeroWindow T,
         (analyticZetaZeroMultiplicity rho : ℂ) *
           pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho j *
-          pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho i‖ ^ 2 := by
+          pairedEtaTopPrefixFiniteCutoffFamilyFeature cutoff rho i‖ ^ (2 : ℕ) := by
   rw [HermitianInertia.frobSq_eq_sum_norm_sq_entries]
   congr 1
   funext i

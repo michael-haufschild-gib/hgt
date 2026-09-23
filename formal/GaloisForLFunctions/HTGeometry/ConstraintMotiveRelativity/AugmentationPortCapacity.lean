@@ -122,20 +122,20 @@ theorem augEmbed_augUniform (n : ℕ) :
   exact Finset.sum_congr rfl fun i _ => augEmbed_single e i _
 
 theorem normSq_augEmbed_augUniform (he : Orthonormal 𝕜 e) {n : ℕ} (hn : 1 ≤ n) :
-    ‖augEmbed (𝕜 := 𝕜) e (augUniform n)‖ ^ 2 = (n : ℝ)⁻¹ := by
+    ‖augEmbed (𝕜 := 𝕜) e (augUniform n)‖ ^ (2 : ℕ) = (n : ℝ)⁻¹ := by
   have hn0 : (n : 𝕜) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
   have hnR : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
   rw [augEmbed_augUniform]
   set c : 𝕜 := (n : 𝕜)⁻¹ with hc
   have hinner := Orthonormal.inner_sum he (fun _ => c) (fun _ => c) (Finset.range n)
-  have hnorm : ‖∑ i ∈ Finset.range n, c • e i‖ ^ 2
+  have hnorm : ‖∑ i ∈ Finset.range n, c • e i‖ ^ (2 : ℕ)
       = RCLike.re ⟪∑ i ∈ Finset.range n, c • e i, ∑ i ∈ Finset.range n, c • e i⟫_𝕜 :=
     (inner_self_eq_norm_sq _).symm
   rw [hnorm, hinner]
   have hsum : ∑ i ∈ Finset.range n, (starRingEnd 𝕜) c * c = (n : 𝕜) * ((starRingEnd 𝕜) c * c) := by
     simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
   rw [hsum]
-  have hcc : (starRingEnd 𝕜) c * c = ((‖c‖ ^ 2 : ℝ) : 𝕜) := by
+  have hcc : (starRingEnd 𝕜) c * c = ((‖c‖ ^ (2 : ℕ) : ℝ) : 𝕜) := by
     rw [RCLike.conj_mul]
     push_cast
     simp
@@ -143,7 +143,7 @@ theorem normSq_augEmbed_augUniform (he : Orthonormal 𝕜 e) {n : ℕ} (hn : 1 �
   have hcnorm : ‖c‖ = (n : ℝ)⁻¹ := by
     rw [hc, norm_inv, RCLike.norm_natCast]
   rw [hcnorm]
-  have : ((n : 𝕜) * (((((n : ℝ)⁻¹) ^ 2 : ℝ)) : 𝕜)) = (((n : ℝ) * ((n : ℝ)⁻¹) ^ 2 : ℝ) : 𝕜) := by
+  have : ((n : 𝕜) * (((((n : ℝ)⁻¹) ^ (2 : ℕ) : ℝ)) : 𝕜)) = (((n : ℝ) * ((n : ℝ)⁻¹) ^ (2 : ℕ) : ℝ) : 𝕜) := by
     push_cast
     ring
   rw [this, RCLike.ofReal_re]
@@ -151,9 +151,9 @@ theorem normSq_augEmbed_augUniform (he : Orthonormal 𝕜 e) {n : ℕ} (hn : 1 �
 
 theorem tendsto_norm_augEmbed_augUniform (he : Orthonormal 𝕜 e) :
     Tendsto (fun n => ‖augEmbed (𝕜 := 𝕜) e (augUniform n)‖) atTop (𝓝 0) := by
-  have hsq : Tendsto (fun n : ℕ => ‖augEmbed (𝕜 := 𝕜) e (augUniform (n + 1))‖ ^ 2) atTop
+  have hsq : Tendsto (fun n : ℕ => ‖augEmbed (𝕜 := 𝕜) e (augUniform (n + 1))‖ ^ (2 : ℕ)) atTop
       (𝓝 0) := by
-    have : ∀ n : ℕ, ‖augEmbed (𝕜 := 𝕜) e (augUniform (n + 1))‖ ^ 2 = ((n : ℝ) + 1)⁻¹ := by
+    have : ∀ n : ℕ, ‖augEmbed (𝕜 := 𝕜) e (augUniform (n + 1))‖ ^ (2 : ℕ) = ((n : ℝ) + 1)⁻¹ := by
       intro n
       rw [normSq_augEmbed_augUniform e he (Nat.le_add_left 1 n)]
       push_cast

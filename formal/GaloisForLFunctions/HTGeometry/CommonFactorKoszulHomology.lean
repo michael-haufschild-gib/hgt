@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.PrincipalConormal
 For a regular element `z` and units `a,b`, this file computes the actual homology quotients of
 the three-term Koszul complex on `(z*a,z*b)`.  Degree zero and degree one are both `R/(z)`, degree
 two vanishes, and the degree-one generator is the syzygy `(b,-a)`.  Composing degree one with the
-principal cotangent equivalence identifies it with `(z)/(z)^2`.
+principal cotangent equivalence identifies it with `(z)/(z)^(2 : ℕ)`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -198,7 +198,7 @@ theorem commonFactorKoszulH2_eq_bot {z : R} (a b : Rˣ) (hz : IsKoszulRegular z)
   · rintro rfl
     simp
 
-/-- The excess degree-one class is the principal Cartier conormal `(z)/(z)^2`. -/
+/-- The excess degree-one class is the principal Cartier conormal `(z)/(z)^(2 : ℕ)`. -/
 def commonFactorKoszulH1CotangentEquiv {z : R} (a b : Rˣ) (hz : IsKoszulRegular z) :
     commonFactorKoszulH1 z a b ≃ₗ[R] (Ideal.span ({z} : Set R)).Cotangent :=
   (commonFactorKoszulH1Equiv a b hz).trans

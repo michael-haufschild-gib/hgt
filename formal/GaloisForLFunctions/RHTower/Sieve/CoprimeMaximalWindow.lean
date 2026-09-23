@@ -39,28 +39,28 @@ theorem coprimeSquarefreeWeight_mem (p n : ℕ) :
 /-- **The pointwise truncation defect of the deleted weight.** -/
 theorem abs_coprime_sub_trunc_le {p n R M : ℕ} (hn : 0 < n) (hnM : n ≤ M) :
     |coprimeSquarefreeWeight p n
-        - ∑ d ∈ Finset.Icc 1 R, (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)|
-      ≤ ((((Finset.Icc (R + 1) M).filter (fun d => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+        - ∑ d ∈ Finset.Icc 1 R, (if d ^ (2 : ℕ) ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)|
+      ≤ ((((Finset.Icc (R + 1) M).filter (fun d => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
   classical
   by_cases hpn : p ∣ n
   · have hw : coprimeSquarefreeWeight p n = 0 := by
       rw [coprimeSquarefreeWeight, if_pos hpn]
     have hs : ∑ d ∈ Finset.Icc 1 R,
-        (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0) = 0 := by
+        (if d ^ (2 : ℕ) ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0) = 0 := by
       refine Finset.sum_eq_zero ?_
       intro d _
       rw [if_neg (by tauto)]
     rw [hw, hs, sub_zero, abs_zero]
     positivity
-  · have hw : coprimeSquarefreeWeight p n = ((moebius n : ℤ) : ℝ) ^ 2 := by
+  · have hw : coprimeSquarefreeWeight p n = ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) := by
       rw [coprimeSquarefreeWeight, if_neg hpn]
     have hs : ∑ d ∈ Finset.Icc 1 R,
-        (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)
-        = ∑ d ∈ (Finset.Icc 1 R).filter (fun d => d ^ 2 ∣ n), ((moebius d : ℤ) : ℝ) := by
+        (if d ^ (2 : ℕ) ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)
+        = ∑ d ∈ (Finset.Icc 1 R).filter (fun d => d ^ (2 : ℕ) ∣ n), ((moebius d : ℤ) : ℝ) := by
       rw [Finset.sum_filter]
       refine Finset.sum_congr rfl ?_
       intro d _
-      by_cases hdn : d ^ 2 ∣ n
+      by_cases hdn : d ^ (2 : ℕ) ∣ n
       · rw [if_pos ⟨hdn, hpn⟩, if_pos hdn]
       · rw [if_neg (by tauto), if_neg hdn]
     rw [hw, hs]
@@ -69,16 +69,16 @@ theorem abs_coprime_sub_trunc_le {p n R M : ℕ} (hn : 0 < n) (hnM : n ≤ M) :
 /-- Double counting the square divisors of a window. -/
 theorem sum_card_swap (t L R M : ℕ) :
     ∑ n ∈ Finset.Ioc t (t + L),
-        ((((Finset.Icc (R + 1) M).filter (fun d => d ^ 2 ∣ n)).card : ℕ) : ℝ)
+        ((((Finset.Icc (R + 1) M).filter (fun d => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)
       = ∑ d ∈ Finset.Icc (R + 1) M,
-        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
   classical
-  have hL : ∀ n : ℕ, ((((Finset.Icc (R + 1) M).filter (fun d => d ^ 2 ∣ n)).card : ℕ) : ℝ)
-      = ∑ d ∈ Finset.Icc (R + 1) M, (if d ^ 2 ∣ n then (1 : ℝ) else 0) := by
+  have hL : ∀ n : ℕ, ((((Finset.Icc (R + 1) M).filter (fun d => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)
+      = ∑ d ∈ Finset.Icc (R + 1) M, (if d ^ (2 : ℕ) ∣ n then (1 : ℝ) else 0) := by
     intro n
     rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_one]
-  have hR : ∀ d : ℕ, ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ)
-      = ∑ n ∈ Finset.Ioc t (t + L), (if d ^ 2 ∣ n then (1 : ℝ) else 0) := by
+  have hR : ∀ d : ℕ, ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)
+      = ∑ n ∈ Finset.Ioc t (t + L), (if d ^ (2 : ℕ) ∣ n then (1 : ℝ) else 0) := by
     intro d
     rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_one]
   rw [Finset.sum_congr rfl (fun n _ => hL n), Finset.sum_congr rfl (fun d _ => hR d),
@@ -88,16 +88,16 @@ theorem sum_card_swap (t L R M : ℕ) :
 theorem abs_window_coprime_sub_trunc_le (p t L R M : ℕ) (hM : t + L ≤ M) :
     |∑ n ∈ Finset.Ioc t (t + L), coprimeSquarefreeWeight p n
         - ∑ n ∈ Finset.Ioc t (t + L),
-            ∑ d ∈ Finset.Icc 1 R, (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)|
+            ∑ d ∈ Finset.Icc 1 R, (if d ^ (2 : ℕ) ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)|
       ≤ ∑ d ∈ Finset.Icc (R + 1) M,
-          ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+          ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
   classical
   rw [← Finset.sum_sub_distrib]
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   have hterm : ∀ n ∈ Finset.Ioc t (t + L),
       |coprimeSquarefreeWeight p n
-        - ∑ d ∈ Finset.Icc 1 R, (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)|
-        ≤ ((((Finset.Icc (R + 1) M).filter (fun d => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+        - ∑ d ∈ Finset.Icc 1 R, (if d ^ (2 : ℕ) ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)|
+        ≤ ((((Finset.Icc (R + 1) M).filter (fun d => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
     intro n hn
     rw [Finset.mem_Ioc] at hn
     have hn0 : 0 < n := lt_of_le_of_lt (Nat.zero_le t) hn.1
@@ -112,7 +112,7 @@ theorem abs_window_coprime_sub_le_defect {p : ℕ} (hp : p.Prime) (t L R M : ℕ
         - (L : ℝ) * (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))|
       ≤ 2 * (R : ℝ) + (L : ℝ) / (R : ℝ)
         + ∑ d ∈ Finset.Icc (R + 1) M,
-            ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+            ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
   classical
   have h1 := abs_window_coprime_sub_trunc_le p t L R M hM
   have h2 := abs_trunc_coprime_squarefree_sub_le (p := p) (t := t) (L := L) (R := R) hp hR
@@ -121,9 +121,9 @@ theorem abs_window_coprime_sub_le_defect {p : ℕ} (hp : p.Prime) (t L R M : ℕ
         - (L : ℝ) * (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
       = (∑ n ∈ Finset.Ioc t (t + L), coprimeSquarefreeWeight p n
           - ∑ n ∈ Finset.Ioc t (t + L),
-              ∑ d ∈ Finset.Icc 1 R, (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0))
+              ∑ d ∈ Finset.Icc 1 R, (if d ^ (2 : ℕ) ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0))
         + (∑ n ∈ Finset.Ioc t (t + L),
-              ∑ d ∈ Finset.Icc 1 R, (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)
+              ∑ d ∈ Finset.Icc 1 R, (if d ^ (2 : ℕ) ∣ n ∧ ¬ p ∣ n then ((moebius d : ℤ) : ℝ) else 0)
             - (L : ℝ) * (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))) := by ring
   rw [hsplit]
   refine le_trans (abs_add_le _ _) ?_
@@ -155,7 +155,7 @@ theorem maxWindowDevSq_coprime_le {p : ℕ} (hp : p.Prime) {y H R M : ℕ} (hy :
       ≤ ((H : ℝ) + 1) * (2 * (R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)
         + ∑ d ∈ Finset.Icc (R + 1) M,
             ((((Finset.Ioc (y - 1) ((y - 1) + (H + 1))).filter
-              (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ)) := by
+              (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)) := by
   classical
   refine Finset.sup'_le _ _ ?_
   intro m hm
@@ -179,7 +179,7 @@ theorem maxWindowDevSq_coprime_le {p : ℕ} (hp : p.Prime) {y H R M : ℕ} (hy :
   have hMle : t + (m + 1) ≤ M := by omega
   have hmain : |E| ≤ 2 * (R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)
       + ∑ d ∈ Finset.Icc (R + 1) M,
-          ((((Finset.Ioc t (t + (H + 1))).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+          ((((Finset.Ioc t (t + (H + 1))).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
     rw [hEeq]
     refine le_trans (abs_window_coprime_sub_le_defect hp t (m + 1) R M hR hMle) ?_
     have hmono := defect_mono (t := t) (L := m + 1) (L' := H + 1) (R := R) (M := M) (by omega)
@@ -191,8 +191,8 @@ theorem maxWindowDevSq_coprime_le {p : ℕ} (hp : p.Prime) {y H R M : ℕ} (hy :
     have hdiv : ((m + 1 : ℕ) : ℝ) / (R : ℝ) ≤ ((H : ℝ) + 1) / (R : ℝ) :=
       div_le_div_of_nonneg_right hlen hR0.le
     linarith
-  have hsq : E ^ 2 ≤ ((H : ℝ) + 1) * |E| := by
-    have habs : |E| ^ 2 = E ^ 2 := sq_abs E
+  have hsq : E ^ (2 : ℕ) ≤ ((H : ℝ) + 1) * |E| := by
+    have habs : |E| ^ (2 : ℕ) = E ^ (2 : ℕ) := sq_abs E
     nlinarith [abs_nonneg E, htriv]
   refine le_trans hsq ?_
   refine mul_le_mul_of_nonneg_left hmain (by positivity)
@@ -225,11 +225,11 @@ theorem sum_maxWindowDevSq_coprime_le_sqrt {p : ℕ} (hp : p.Prime) {A B H R : �
         ≤ ((H : ℝ) + 1) * (2 * (R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)
             + ∑ d ∈ Finset.Icc (R + 1) (B + (H + 1)),
                 ((((Finset.Ioc (y - 1) ((y - 1) + (H + 1))).filter
-                  (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ)) := hbase
+                  (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)) := hbase
       _ = ((H : ℝ) + 1) * (2 * (R : ℝ) + ((H : ℝ) + 1) / (R : ℝ))
             + ((H : ℝ) + 1) * ∑ d ∈ Finset.Icc (R + 1) (B + (H + 1)),
                 ((((Finset.Ioc (y - 1) ((y - 1) + (H + 1))).filter
-                  (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by ring
+                  (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by ring
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul, ← Finset.mul_sum]
   have himg : ∑ y ∈ Finset.Icc A B, tailDefect R (B + (H + 1)) H (y - 1)

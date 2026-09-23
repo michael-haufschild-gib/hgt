@@ -13,7 +13,7 @@ are the two-projection supersymmetry used in quantum spectral-subspace compariso
 idempotents are self-adjoint bounded operators, the first relation is a master-constraint
 partition of the identity.  Every state therefore obeys the exact value law
 
-`‖(P-Q) psi‖^2 + ‖(1-P-Q) psi‖^2 = ‖psi‖^2`.
+`‖(P-Q) psi‖^(2 : ℕ) + ‖(1-P-Q) psi‖^(2 : ℕ) = ‖psi‖^(2 : ℕ)`.
 
 In particular, both operators are contractions.  This is a static constraint relation; it does
 not introduce a flow.
@@ -73,7 +73,7 @@ theorem twoProjection_complement_isIdempotentElem_iff_anticommutator_eq_zero
 on both sides by the two idempotents `P,Q`.  Replacing the formal complement `1-P-Q` by its
 `Z`-corrected version `Z-(1-P-Q)` removes exactly the `Z` zero-mode energy:
 
-`(P-Q)^2 + (Z-(1-P-Q))^2 = 1-Z`.
+`(P-Q)^(2 : ℕ) + (Z-(1-P-Q))^(2 : ℕ) = 1-Z`.
 
 This is the algebraic form needed when `Z` projects onto the common kernel of two quantum
 constraints. -/
@@ -224,11 +224,11 @@ theorem norm_twoProjection_difference_sq_add_complement_sq
     (hP : IsIdempotentElem P) (hQ : IsIdempotentElem Q)
     (hPadj : ContinuousLinearMap.adjoint P = P)
     (hQadj : ContinuousLinearMap.adjoint Q = Q) (psi : E) :
-    ‖(P - Q) psi‖ ^ 2 + ‖(1 - P - Q) psi‖ ^ 2 = ‖psi‖ ^ 2 := by
+    ‖(P - Q) psi‖ ^ (2 : ℕ) + ‖(1 - P - Q) psi‖ ^ (2 : ℕ) = ‖psi‖ ^ (2 : ℕ) := by
   have hmaster := quantumMasterConstraint_twoProjection_partition
     P Q hP hQ hPadj hQadj
   calc
-    ‖(P - Q) psi‖ ^ 2 + ‖(1 - P - Q) psi‖ ^ 2 =
+    ‖(P - Q) psi‖ ^ (2 : ℕ) + ‖(1 - P - Q) psi‖ ^ (2 : ℕ) =
         RCLike.re (inner k psi (quantumMasterConstraint (P - Q) psi)) +
           RCLike.re (inner k psi
             (quantumMasterConstraint (1 - P - Q) psi)) := by
@@ -239,13 +239,13 @@ theorem norm_twoProjection_difference_sq_add_complement_sq
           quantumMasterConstraint (1 - P - Q) : E →L[k] E) psi)) := by
       simp only [_root_.add_apply, inner_add_right, map_add]
     _ = RCLike.re (inner k psi psi) := by rw [hmaster]; simp
-    _ = ‖psi‖ ^ 2 := inner_self_eq_norm_sq psi
+    _ = ‖psi‖ ^ (2 : ℕ) := inner_self_eq_norm_sq psi
 
 /-- **Active-space energy conservation.**  If `Z` is the orthogonal projection onto a joint
 zero-mode sector for the orthogonal projections `P,Q`, then the projection mismatch and the
 zero-mode-corrected complement exhaust exactly the norm outside `Z`:
 
-`||(P-Q) psi||^2 + ||(Z-(1-P-Q)) psi||^2 = ||(1-Z) psi||^2`.
+`||(P-Q) psi||^(2 : ℕ) + ||(Z-(1-P-Q)) psi||^(2 : ℕ) = ||(1-Z) psi||^(2 : ℕ)`.
 
 The identity is the statewise value form of the zero-mode-subtracted supersymmetric partition. -/
 theorem norm_twoProjection_difference_sq_add_corrected_complement_sq
@@ -257,8 +257,8 @@ theorem norm_twoProjection_difference_sq_add_corrected_complement_sq
     (hZadj : ContinuousLinearMap.adjoint Z = Z)
     (hPZ : P * Z = 0) (hZP : Z * P = 0)
     (hQZ : Q * Z = 0) (hZQ : Z * Q = 0) (psi : E) :
-    ‖(P - Q) psi‖ ^ 2 + ‖(Z - (1 - P - Q)) psi‖ ^ 2 =
-      ‖(1 - Z) psi‖ ^ 2 := by
+    ‖(P - Q) psi‖ ^ (2 : ℕ) + ‖(Z - (1 - P - Q)) psi‖ ^ (2 : ℕ) =
+      ‖(1 - Z) psi‖ ^ (2 : ℕ) := by
   have hAadj : ContinuousLinearMap.adjoint (P - Q) = P - Q := by
     rw [adjoint_sub_twoProjection, hPadj, hQadj]
   have hBadj : ContinuousLinearMap.adjoint (1 - P - Q) = 1 - P - Q := by
@@ -283,7 +283,7 @@ theorem norm_twoProjection_difference_sq_add_corrected_complement_sq
     change (1 - Z) * (1 - Z) = 1 - Z
     exact hIZsq
   calc
-    ‖(P - Q) psi‖ ^ 2 + ‖(Z - (1 - P - Q)) psi‖ ^ 2 =
+    ‖(P - Q) psi‖ ^ (2 : ℕ) + ‖(Z - (1 - P - Q)) psi‖ ^ (2 : ℕ) =
         RCLike.re (inner k psi (quantumMasterConstraint (P - Q) psi)) +
           RCLike.re (inner k psi
             (quantumMasterConstraint (Z - (1 - P - Q)) psi)) := by
@@ -296,7 +296,7 @@ theorem norm_twoProjection_difference_sq_add_corrected_complement_sq
     _ = RCLike.re (inner k psi ((1 - Z) psi)) := by rw [hpartition]
     _ = RCLike.re (inner k psi (quantumMasterConstraint (1 - Z) psi)) := by
       rw [hIZmaster]
-    _ = ‖(1 - Z) psi‖ ^ 2 := re_inner_quantumMasterConstraint_eq_normSq (1 - Z) psi
+    _ = ‖(1 - Z) psi‖ ^ (2 : ℕ) := re_inner_quantumMasterConstraint_eq_normSq (1 - Z) psi
 
 /-- The formal complement `1-P-Q` of two self-adjoint idempotents is a contraction.  This sharp
 bound replaces the triangle estimate `1 + ‖P‖ + ‖Q‖`. -/
@@ -310,7 +310,7 @@ theorem norm_twoProjection_complement_le_one
   intro psi
   have henergy := norm_twoProjection_difference_sq_add_complement_sq
     P Q hP hQ hPadj hQadj psi
-  have hsquares : ‖(1 - P - Q) psi‖ ^ 2 ≤ ‖psi‖ ^ 2 := by
+  have hsquares : ‖(1 - P - Q) psi‖ ^ (2 : ℕ) ≤ ‖psi‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ‖(P - Q) psi‖]
   have hnorm : ‖(1 - P - Q) psi‖ ≤ ‖psi‖ :=
     (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsquares
@@ -328,7 +328,7 @@ theorem norm_twoProjection_difference_le_one
   intro psi
   have henergy := norm_twoProjection_difference_sq_add_complement_sq
     P Q hP hQ hPadj hQadj psi
-  have hsquares : ‖(P - Q) psi‖ ^ 2 ≤ ‖psi‖ ^ 2 := by
+  have hsquares : ‖(P - Q) psi‖ ^ (2 : ℕ) ≤ ‖psi‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ‖(1 - P - Q) psi‖]
   have hnorm : ‖(P - Q) psi‖ ≤ ‖psi‖ :=
     (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsquares

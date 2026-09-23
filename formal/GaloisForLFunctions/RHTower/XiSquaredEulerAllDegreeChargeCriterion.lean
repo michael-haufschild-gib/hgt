@@ -31,10 +31,10 @@ theorem xiZeroCopyReciprocalSquare_normSq_div_re_le
       (85 / 84 : ℝ) * (xiZeroCopyReciprocalSquare q).re := by
   let z := xiZeroCopyReciprocalSquare q
   have hx : 0 < z.re := xiZeroCopyReciprocalSquare_re_pos q
-  have hsector : z.im ^ 2 ≤ (1 / 84 : ℝ) * z.re ^ 2 := by
+  have hsector : z.im ^ (2 : ℕ) ≤ (1 / 84 : ℝ) * z.re ^ (2 : ℕ) := by
     simpa only [z, xiThermalNode] using
       xiThermalOrientationTerm_le_one_over_eightyFour_node_sq q
-  have hnorm : Complex.normSq z ≤ (85 / 84 : ℝ) * z.re ^ 2 := by
+  have hnorm : Complex.normSq z ≤ (85 / 84 : ℝ) * z.re ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
     nlinarith
   apply (div_le_iff₀ hx).2
@@ -50,8 +50,8 @@ theorem summable_xiSquaredEulerApertureHankelTerm
   have hC : 0 ≤ C :=
     evalRealPolynomialNormBound_nonneg p (le_trans zero_le_one hMone)
   have hbase : Summable (fun q : XiZeroCopy =>
-      ‖xiZeroCopyReciprocalSquare q‖ * C ^ 2) :=
-    summable_xiZeroCopyReciprocalSquare.norm.mul_right (C ^ 2)
+      ‖xiZeroCopyReciprocalSquare q‖ * C ^ (2 : ℕ)) :=
+    summable_xiZeroCopyReciprocalSquare.norm.mul_right (C ^ (2 : ℕ))
   apply Summable.of_norm
   apply Summable.of_nonneg_of_le (fun q => norm_nonneg _)
     (fun q => ?_) hbase
@@ -61,12 +61,12 @@ theorem summable_xiSquaredEulerApertureHankelTerm
     apply norm_evalRealPolynomial_le p
     simpa only [z, xiZeroCopyReciprocalSquare_eq] using hM q.1
   calc
-    ‖xiSquaredEulerApertureHankelTerm p q‖ = |(z * w ^ 2).re| := by
+    ‖xiSquaredEulerApertureHankelTerm p q‖ = |(z * w ^ (2 : ℕ)).re| := by
       rw [Real.norm_eq_abs]
       rfl
-    _ ≤ ‖z * w ^ 2‖ := Complex.abs_re_le_norm _
-    _ = ‖z‖ * ‖w‖ ^ 2 := by rw [norm_mul, norm_pow]
-    _ ≤ ‖z‖ * C ^ 2 := by
+    _ ≤ ‖z * w ^ (2 : ℕ)‖ := Complex.abs_re_le_norm _
+    _ = ‖z‖ * ‖w‖ ^ (2 : ℕ) := by rw [norm_mul, norm_pow]
+    _ ≤ ‖z‖ * C ^ (2 : ℕ) := by
       gcongr
 
 /-- Complex parent of the trace-Hankel summand is absolutely summable. -/
@@ -74,14 +74,14 @@ theorem summable_xiSquaredEulerApertureComplexHankelTerm
     (p : Polynomial ℝ) :
     Summable (fun q : XiZeroCopy =>
       xiZeroCopyReciprocalSquare q *
-        evalRealPolynomial p (xiZeroCopyReciprocalSquare q) ^ 2) := by
+        evalRealPolynomial p (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ)) := by
   obtain ⟨M, hMone, hM⟩ := exists_xi_central_reciprocal_square_norm_bound
   let C := evalRealPolynomialNormBound p M
   have hC : 0 ≤ C :=
     evalRealPolynomialNormBound_nonneg p (le_trans zero_le_one hMone)
   have hbase : Summable (fun q : XiZeroCopy =>
-      ‖xiZeroCopyReciprocalSquare q‖ * C ^ 2) :=
-    summable_xiZeroCopyReciprocalSquare.norm.mul_right (C ^ 2)
+      ‖xiZeroCopyReciprocalSquare q‖ * C ^ (2 : ℕ)) :=
+    summable_xiZeroCopyReciprocalSquare.norm.mul_right (C ^ (2 : ℕ))
   apply Summable.of_norm
   apply Summable.of_nonneg_of_le (fun q => norm_nonneg _)
     (fun q => ?_) hbase
@@ -105,9 +105,9 @@ theorem summable_xiSquaredEulerApertureTransverseTerm
       (xiZeroCopyReciprocalSquare q).re) :=
     Complex.reCLM.summable summable_xiZeroCopyReciprocalSquare
   have hbound : Summable (fun q : XiZeroCopy =>
-      ((85 / 84 : ℝ) * C ^ 2) *
+      ((85 / 84 : ℝ) * C ^ (2 : ℕ)) *
         (xiZeroCopyReciprocalSquare q).re) :=
-    hre.mul_left ((85 / 84 : ℝ) * C ^ 2)
+    hre.mul_left ((85 / 84 : ℝ) * C ^ (2 : ℕ))
   apply Summable.of_nonneg_of_le
     (fun q => xiSquaredEulerApertureTransverseTerm_nonneg p q)
     (fun q => ?_) hbound
@@ -116,7 +116,7 @@ theorem summable_xiSquaredEulerApertureTransverseTerm
   have hw : ‖w‖ ≤ C := by
     apply norm_evalRealPolynomial_le p
     simpa only [z, xiZeroCopyReciprocalSquare_eq] using hM q.1
-  have him : w.im ^ 2 ≤ C ^ 2 := by
+  have him : w.im ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
     have hi := Complex.abs_im_le_norm w
     have habs : |w.im| ≤ C := hi.trans hw
     have hprod : 0 ≤ (C - |w.im|) * (C + |w.im|) :=
@@ -124,16 +124,16 @@ theorem summable_xiSquaredEulerApertureTransverseTerm
     nlinarith [sq_abs w.im]
   have hratio := xiZeroCopyReciprocalSquare_normSq_div_re_le q
   unfold xiSquaredEulerApertureTransverseTerm
-  change Complex.normSq z / z.re * w.im ^ 2 ≤
-    ((85 / 84 : ℝ) * C ^ 2) * z.re
+  change Complex.normSq z / z.re * w.im ^ (2 : ℕ) ≤
+    ((85 / 84 : ℝ) * C ^ (2 : ℕ)) * z.re
   have hratio0 : 0 ≤ Complex.normSq z / z.re := by
     exact div_nonneg (Complex.normSq_nonneg z)
       (xiZeroCopyReciprocalSquare_re_pos q).le
   calc
-    Complex.normSq z / z.re * w.im ^ 2 ≤
-        Complex.normSq z / z.re * C ^ 2 := by gcongr
-    _ ≤ ((85 / 84 : ℝ) * z.re) * C ^ 2 := by gcongr
-    _ = ((85 / 84 : ℝ) * C ^ 2) * z.re := by ring
+    Complex.normSq z / z.re * w.im ^ (2 : ℕ) ≤
+        Complex.normSq z / z.re * C ^ (2 : ℕ) := by gcongr
+    _ ≤ ((85 / 84 : ℝ) * z.re) * C ^ (2 : ℕ) := by gcongr
+    _ = ((85 / 84 : ℝ) * C ^ (2 : ℕ)) * z.re := by ring
 
 /-- The complete positive Hilbert channel is summable at every degree. -/
 theorem summable_xiSquaredEulerApertureHilbertTerm
@@ -177,7 +177,7 @@ theorem tsum_xiSquaredEulerApertureComplexHankelTerm_eq
     (p : Polynomial ℝ) :
     (∑' q : XiZeroCopy,
       xiZeroCopyReciprocalSquare q *
-        evalRealPolynomial p (xiZeroCopyReciprocalSquare q) ^ 2) =
+        evalRealPolynomial p (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ)) =
       xiCentralTraceHankel p := by
   have hcopy := summable_xiSquaredEulerApertureComplexHankelTerm p
   rw [hcopy.tsum_sigma, xiCentralTraceHankel]
@@ -209,11 +209,11 @@ theorem xiSquaredEulerApertureHankelValue_eq_traceHankel_re
     xiSquaredEulerApertureHankelValue p =
         ∑' q : XiZeroCopy,
           (xiZeroCopyReciprocalSquare q *
-            evalRealPolynomial p (xiZeroCopyReciprocalSquare q) ^ 2).re := by
+            evalRealPolynomial p (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ)).re := by
       rfl
     _ = (∑' q : XiZeroCopy,
           xiZeroCopyReciprocalSquare q *
-            evalRealPolynomial p (xiZeroCopyReciprocalSquare q) ^ 2).re := by
+            evalRealPolynomial p (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ)).re := by
       exact (Complex.re_tsum hsum).symm
     _ = (xiCentralTraceHankel p).re := by
       rw [tsum_xiSquaredEulerApertureComplexHankelTerm_eq]

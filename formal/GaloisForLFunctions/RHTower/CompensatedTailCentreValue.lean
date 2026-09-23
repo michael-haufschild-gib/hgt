@@ -27,7 +27,7 @@ namespace RHTower
 
 /-- The compensation factor in terms of the leakages `d = 1 - χ²`. -/
 theorem one_sub_div_eq_leakage_difference {χ₀ χ : ℂ} (h₀ : χ₀ ≠ 0) (hsum : χ₀ + χ ≠ 0) :
-    1 - χ / χ₀ = ((1 - χ ^ 2) - (1 - χ₀ ^ 2)) / (χ₀ * (χ₀ + χ)) := by
+    1 - χ / χ₀ = ((1 - χ ^ (2 : ℕ)) - (1 - χ₀ ^ (2 : ℕ))) / (χ₀ * (χ₀ + χ)) := by
   field_simp
   ring
 

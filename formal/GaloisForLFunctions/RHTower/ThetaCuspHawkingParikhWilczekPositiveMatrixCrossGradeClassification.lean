@@ -30,7 +30,7 @@ def schwarzschildParikhWilczekBorelWallFactor (s : ℂ) : ℝ :=
 def schwarzschildParikhWilczekBorelGradeResidual (s : ℂ) (k : ℕ) : ℝ :=
   (2 * (k : ℝ) + s.re + 1 / 2) *
       (2 * (k : ℝ) + 3 / 2 - s.re) +
-    s.im ^ 2 + 1 / 4
+    s.im ^ (2 : ℕ) + 1 / 4
 
 /-- Exact common-factor decomposition of each recoil phase. -/
 theorem schwarzschildParikhWilczekBorelRecoilHolonomy_im_factorization
@@ -72,7 +72,7 @@ def schwarzschildParikhWilczekMatrixResidualEnergy
 theorem schwarzschildParikhWilczekMatrixCrossGradeEnergy_factorization
     {N : ℕ} (M : Fin N → Fin N → ℝ) (s : ℂ) :
     schwarzschildParikhWilczekMatrixCrossGradeEnergy M s =
-      schwarzschildParikhWilczekBorelWallFactor s ^ 2 *
+      schwarzschildParikhWilczekBorelWallFactor s ^ (2 : ℕ) *
         schwarzschildParikhWilczekMatrixResidualEnergy M s := by
   rw [schwarzschildParikhWilczekMatrixCrossGradeEnergy,
     schwarzschildParikhWilczekMatrixResidualEnergy]
@@ -125,7 +125,7 @@ theorem schwarzschildParikhWilczekMatrixCrossGradeEnergy_eq_zero_iff
     s hs0 hs1 hMnonneg hMpos
   constructor
   · intro hzero
-    have hwallSq : schwarzschildParikhWilczekBorelWallFactor s ^ 2 = 0 :=
+    have hwallSq : schwarzschildParikhWilczekBorelWallFactor s ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hzero).resolve_right hres.ne'
     have hwall : schwarzschildParikhWilczekBorelWallFactor s = 0 :=
       (sq_eq_zero_iff).mp hwallSq

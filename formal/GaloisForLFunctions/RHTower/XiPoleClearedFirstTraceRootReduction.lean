@@ -39,7 +39,7 @@ def squarefreeCarlemanHalfDet (s : ℂ) : ℂ :=
 
 /-- The explicit half-determinant squares to the full Carleman determinant. -/
 theorem squarefreeCarlemanHalfDet_sq (s : ℂ) :
-    squarefreeCarlemanHalfDet s ^ 2 = squarefreeCarlemanDet s := by
+    squarefreeCarlemanHalfDet s ^ (2 : ℕ) = squarefreeCarlemanDet s := by
   rw [squarefreeCarlemanHalfDet, squarefreeCarlemanDet, ← Complex.exp_nat_mul]
   congr 1
   ring
@@ -132,7 +132,7 @@ theorem analyticOnNhd_poleClearedPrimeZetaHalfEulerGerm_farHalf :
 /-- The fixed Euler germ squares to the pole-cleared valuation-one continuation. -/
 theorem poleClearedPrimeZetaHalfEulerGerm_sq
     {s : ℂ} (hs : s ∈ farHalf) :
-    poleClearedPrimeZetaHalfEulerGerm s ^ 2 =
+    poleClearedPrimeZetaHalfEulerGerm s ^ (2 : ℕ) =
       poleClearedFirstTraceExponentialContinuation s := by
   have hs1 : s - 1 ≠ 0 := by
     apply sub_ne_zero.mpr
@@ -158,9 +158,9 @@ theorem poleClearedPrimeZetaHalfEulerGerm_ne_zero (s : ℂ) :
 /-- The pole unit has a right-half square root iff its valuation-one factor does. -/
 theorem exists_rightHalf_sqrt_squarefreeMobiusCriticalPoleUnit_iff_poleClearedFirstTrace :
     (∃ h : ℂ → ℂ, AnalyticOnNhd ℂ h rightHalf ∧
-        ∀ s ∈ rightHalf, h s ^ 2 = squarefreeMobiusCriticalPoleUnit s) ↔
+        ∀ s ∈ rightHalf, h s ^ (2 : ℕ) = squarefreeMobiusCriticalPoleUnit s) ↔
       ∃ e : ℂ → ℂ, AnalyticOnNhd ℂ e rightHalf ∧
-        ∀ s ∈ rightHalf, e s ^ 2 = poleClearedFirstTraceExponentialContinuation s := by
+        ∀ s ∈ rightHalf, e s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s := by
   constructor
   · rintro ⟨h, hh, hhsq⟩
     refine ⟨fun s => h s / squarefreeCarlemanHalfDet s,
@@ -180,7 +180,7 @@ theorem exists_rightHalf_sqrt_squarefreeMobiusCriticalPoleUnit_iff_poleClearedFi
 /-- Exact valuation-one arithmetic form of the first ladder rung. -/
 theorem rhLadder_one_iff_poleClearedFirstTrace_sqrt :
     RHLadder 1 ↔ ∃ e : ℂ → ℂ, AnalyticOnNhd ℂ e rightHalf ∧
-      ∀ s ∈ rightHalf, e s ^ 2 = poleClearedFirstTraceExponentialContinuation s := by
+      ∀ s ∈ rightHalf, e s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s := by
   rw [rhLadder_one_iff_squarefreeMobiusCriticalPoleUnit_sqrt,
     exists_rightHalf_sqrt_squarefreeMobiusCriticalPoleUnit_iff_poleClearedFirstTrace]
 
@@ -188,12 +188,12 @@ theorem rhLadder_one_iff_poleClearedFirstTrace_sqrt :
 analytically to a square root of the pole-cleared valuation-one field on `rightHalf`. -/
 theorem rhLadder_one_iff_poleClearedPrimeZetaHalfEulerGerm_extends :
     RHLadder 1 ↔ ∃ e : ℂ → ℂ, AnalyticOnNhd ℂ e rightHalf ∧
-      (∀ s ∈ rightHalf, e s ^ 2 = poleClearedFirstTraceExponentialContinuation s) ∧
+      (∀ s ∈ rightHalf, e s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s) ∧
       EqOn e poleClearedPrimeZetaHalfEulerGerm farHalf := by
   rw [rhLadder_one_iff_poleClearedFirstTrace_sqrt]
   constructor
   · rintro ⟨e, he, hesq⟩
-    have hsquares : e 2 ^ 2 = poleClearedPrimeZetaHalfEulerGerm 2 ^ 2 := by
+    have hsquares : e 2 ^ (2 : ℕ) = poleClearedPrimeZetaHalfEulerGerm 2 ^ (2 : ℕ) := by
       rw [hesq 2 (farHalf_subset_rightHalf two_mem_farHalf),
         poleClearedPrimeZetaHalfEulerGerm_sq two_mem_farHalf]
     rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsquares with hmatch | hmatch

@@ -25,7 +25,7 @@ noncomputable section
 
 theorem exists_norm_gaussSampleValue_sq_mul_succ_le (k : Fin 1) (p : Nat.Primes) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ,
-      ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 * ((n : ℝ) + 1) ≤ C := by
+      ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) * ((n : ℝ) + 1) ≤ C := by
   obtain ⟨c, C, hc, hC, hb⟩ :=
     exists_gaussComponentPrimeMagnitudeEnergy_bounds (le_refl 1) k p
   have harch : 0 < gaussArchConst 1 := gaussArchConst_pos (le_refl 1)
@@ -35,10 +35,10 @@ theorem exists_norm_gaussSampleValue_sq_mul_succ_le (k : Fin 1) (p : Nat.Primes)
   rw [gaussComponentPrimeMagnitudeEnergy_eq (le_refl 1) k p n, le_div_iff₀ hden] at hub
   rw [le_div_iff₀ harch]
   have hpow : ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 * 1)
-      = ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 := by norm_num
+      = ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) := by norm_num
   rw [hpow] at hub
-  calc ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 * ((n : ℝ) + 1) * gaussArchConst 1
-      = gaussArchConst 1 * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 * ((n : ℝ) + 1) := by ring
+  calc ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) * ((n : ℝ) + 1) * gaussArchConst 1
+      = gaussArchConst 1 * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) * ((n : ℝ) + 1) := by ring
     _ ≤ C := hub
 
 /-! ## The two frequencies carry the same scalar -/
@@ -51,7 +51,7 @@ theorem gaussStepScalar_neg {m : ℕ} (k : Fin m) (p : Nat.Primes) (i : ℤ) :
 
 theorem norm_gaussStepScalar_eq {m : ℕ} (k : Fin m) (p : Nat.Primes) (i : ℤ) :
     ‖((p : ℝ) : ℂ) * (gaussSampleValue k p i * starRingEnd ℂ (gaussSampleValue k p i))‖
-      = (p : ℝ) * ‖gaussSampleValue k p i‖ ^ 2 := by
+      = (p : ℝ) * ‖gaussSampleValue k p i‖ ^ (2 : ℕ) := by
   have hppos : (0 : ℝ) < (p : ℝ) := by
     have h : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
     linarith
@@ -68,11 +68,11 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
     Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range N,
         ((inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-            ((gaussQuasiInnerGFull (le_refl 1) k p ^ 1) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
+            ((gaussQuasiInnerGFull (le_refl 1) k p ^ (1 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
           inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-            ((gaussQuasiInnerGFull (le_refl 1) k p ^ 1)
+            ((gaussQuasiInnerGFull (le_refl 1) k p ^ (1 : ℕ))
               (fourierLp 2 (-((n : ℤ) + 1)))))) / (Real.log N : ℂ))
-      atTop (nhds ((2 * ((p : ℝ) - 1) ^ 2 / Real.log (p : ℝ) : ℝ) : ℂ)) := by
+      atTop (nhds ((2 * ((p : ℝ) - 1) ^ (2 : ℕ) / Real.log (p : ℝ) : ℝ) : ℂ)) := by
   have hm : (1 : ℕ) ≤ 1 := le_refl 1
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
   have hppos : (0 : ℝ) < (p : ℝ) := lt_trans zero_lt_one hp
@@ -103,9 +103,9 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
     tendsto_gaussRelativeDiagonalFactor hm k p hp hιm
   set S : ℕ → ℂ := fun n =>
     (inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-        ((gaussQuasiInnerGFull hm k p ^ 1) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
+        ((gaussQuasiInnerGFull hm k p ^ (1 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
       inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-        ((gaussQuasiInnerGFull hm k p ^ 1) (fourierLp 2 (-((n : ℤ) + 1)))) with hSdef
+        ((gaussQuasiInnerGFull hm k p ^ (1 : ℕ)) (fourierLp 2 (-((n : ℤ) + 1)))) with hSdef
   set err : ℕ → ℂ := fun n => S n - gaussPrincipalDiagonalTerm k p n with herrdef
   -- the pointwise relative bound
   have hbound : ∀ n : ℕ, ((n : ℝ) + 1) * ‖err n‖
@@ -149,15 +149,15 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
       rw [gaussSampleValue_neg, RCLike.norm_conj]
     rw [hvalneg] at h2
     have hstep : ‖err n‖ ≤ gaussArchScale 1 ^ (2 * 1) *
-        ((p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 *
+        ((p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) *
           (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1)))) := by
       rw [hsplit, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg harch]
       refine mul_le_mul_of_nonneg_left ?_ harch
       calc ‖X + Y‖ ≤ ‖X‖ + ‖Y‖ := norm_add_le _ _
-        _ ≤ (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 * F ((n : ℤ) + 1) +
-              (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 * F (-((n : ℤ) + 1)) :=
+        _ ≤ (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) * F ((n : ℤ) + 1) +
+              (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) * F (-((n : ℤ) + 1)) :=
             add_le_add h1 h2
-        _ = (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 *
+        _ = (p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) *
               (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by ring
     have hFsum : (0 : ℝ) ≤ F ((n : ℤ) + 1) + F (-((n : ℤ) + 1)) :=
       add_nonneg (hFnn _) (hFnn _)
@@ -165,11 +165,11 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
       mul_nonneg harch hppos.le
     calc ((n : ℝ) + 1) * ‖err n‖
         ≤ ((n : ℝ) + 1) * (gaussArchScale 1 ^ (2 * 1) *
-            ((p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 *
+            ((p : ℝ) * ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) *
               (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))))) :=
           mul_le_mul_of_nonneg_left hstep hnn
       _ = gaussArchScale 1 ^ (2 * 1) * (p : ℝ) *
-            (‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ 2 * ((n : ℝ) + 1)) *
+            (‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 : ℕ) * ((n : ℝ) + 1)) *
             (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) := by ring
       _ ≤ gaussArchScale 1 ^ (2 * 1) * (p : ℝ) * C *
             (F ((n : ℤ) + 1) + F (-((n : ℤ) + 1))) :=
@@ -199,9 +199,9 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
     rw [Finset.sum_congr rfl fun n _ => hinner n, Complex.real_smul,
       Complex.ofReal_inv, div_eq_mul_inv, mul_comm]
   have hPDT := gaussPrincipalDiagonalTerm_logResidue hm k p
-  have hval : ((2 * ((p : ℝ) ^ (1 : ℕ) - 1) ^ 2 /
-      (((1 : ℕ) : ℝ) ^ 2 * Real.log (p : ℝ)) : ℝ) : ℂ)
-      = ((2 * ((p : ℝ) - 1) ^ 2 / Real.log (p : ℝ) : ℝ) : ℂ) := by norm_num
+  have hval : ((2 * ((p : ℝ) ^ (1 : ℕ) - 1) ^ (2 : ℕ) /
+      (((1 : ℕ) : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ)) : ℝ) : ℂ)
+      = ((2 * ((p : ℝ) - 1) ^ (2 : ℕ) / Real.log (p : ℝ) : ℝ) : ℂ) := by norm_num
   rw [hval] at hPDT
   have hsum := hPDT.add herr
   rw [add_zero] at hsum
@@ -216,21 +216,21 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
 
 /-- **Formula (A) for the operator, at `m = 1`.**  Restoring the local-factor coefficient of the
 source reduction turns the logarithmic mean of the Fourier diagonal into the exact critical
-residue `2(p-1)^4/(p^2 log p)`. -/
+residue `2(p-1)^(4 : ℕ)/(p^(2 : ℕ) log p)`. -/
 theorem tendsto_gaussLocalDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
     Tendsto (fun N : ℕ =>
       ((gaussLocalFactorWeight 1 p : ℝ) : ℂ) *
         ((∑ n ∈ Finset.range N,
           ((inner ℂ (fourierLp 2 ((n : ℤ) + 1))
-              ((gaussQuasiInnerGFull (le_refl 1) k p ^ 1) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
+              ((gaussQuasiInnerGFull (le_refl 1) k p ^ (1 : ℕ)) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
             inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
-              ((gaussQuasiInnerGFull (le_refl 1) k p ^ 1)
+              ((gaussQuasiInnerGFull (le_refl 1) k p ^ (1 : ℕ))
                 (fourierLp 2 (-((n : ℤ) + 1)))))) / (Real.log N : ℂ)))
       atTop (nhds ((gaussChannelResidue 1 p : ℝ) : ℂ)) := by
   have hbase := (tendsto_gaussFourierDiagonal_logResidue k p).const_mul
     ((gaussLocalFactorWeight 1 p : ℝ) : ℂ)
   have hval : ((gaussLocalFactorWeight 1 p : ℝ) : ℂ) *
-      ((2 * ((p : ℝ) - 1) ^ 2 / Real.log (p : ℝ) : ℝ) : ℂ)
+      ((2 * ((p : ℝ) - 1) ^ (2 : ℕ) / Real.log (p : ℝ) : ℝ) : ℂ)
       = ((gaussChannelResidue 1 p : ℝ) : ℂ) := by
     rw [← Complex.ofReal_mul]
     have h := gaussLocalFactorWeight_mul_principalResidue (le_refl 1) p

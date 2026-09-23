@@ -130,17 +130,17 @@ variable {K W : Type*}
 
 /-- Squared-norm cost manufactured around the repair selector `h`. -/
 def constitutiveRepairCost (h : W →ₗ[ℝ] K) (x : K × W) : ℝ :=
-  ‖x.1 - h x.2‖ ^ 2 + ‖x.2‖ ^ 2
+  ‖x.1 - h x.2‖ ^ (2 : ℕ) + ‖x.2‖ ^ (2 : ℕ)
 
 /-- The selected lift has only the target contribution to its manufactured cost. -/
 theorem constitutiveRepairCost_section (h : W →ₗ[ℝ] K) (w : W) :
-    constitutiveRepairCost h (constitutiveRepairSection h w) = ‖w‖ ^ 2 := by
+    constitutiveRepairCost h (constitutiveRepairSection h w) = ‖w‖ ^ (2 : ℕ) := by
   simp [constitutiveRepairCost, constitutiveRepairSection]
 
 /-- Exact Pythagorean decomposition of every lift around the selected repair. -/
 theorem constitutiveRepairCost_decomposition (h : W →ₗ[ℝ] K) (w : W) (z : K) :
     constitutiveRepairCost h (h w + z, w) =
-      constitutiveRepairCost h (constitutiveRepairSection h w) + ‖z‖ ^ 2 := by
+      constitutiveRepairCost h (constitutiveRepairSection h w) + ‖z‖ ^ (2 : ℕ) := by
   simp [constitutiveRepairCost, constitutiveRepairSection, add_comm]
 
 /-- Every repair selector is a minimum-cost lift for the cost manufactured around it. -/
@@ -167,7 +167,7 @@ theorem constitutiveRepairCost_eq_min_iff (h : W →ₗ[ℝ] K) (w : W) (x : K �
   simp only [constitutiveRepairCost]
   constructor
   · intro heq
-    have hz : ‖x.1 - h x.2‖ ^ 2 = 0 := by linarith
+    have hz : ‖x.1 - h x.2‖ ^ (2 : ℕ) = 0 := by linarith
     have hfirst : x.1 = h x.2 := by
       have hnorm : ‖x.1 - h x.2‖ = 0 := (sq_eq_zero_iff).mp hz
       exact sub_eq_zero.mp (norm_eq_zero.mp hnorm)

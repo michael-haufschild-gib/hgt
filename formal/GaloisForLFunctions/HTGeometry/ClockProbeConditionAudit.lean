@@ -75,7 +75,7 @@ theorem exists_ne_potential_with_eq_solutionSet :
 /-- **`NoCommonZero` is two-sided.** It holds in the oscillatory case and fails in the degenerate
 one, so it is a genuine hypothesis and not a formality. -/
 theorem noCommonZero_satisfiable_and_falsifiable :
-    (∃ k : ℝ, NoCommonZero secondDeriv (fun _ => k ^ 2)) ∧
+    (∃ k : ℝ, NoCommonZero secondDeriv (fun _ => k ^ (2 : ℕ))) ∧
       (∃ potential : ℝ → ℝ, ¬ NoCommonZero identityWave potential) :=
   ⟨⟨1, noCommonZero_oscillatory 1⟩,
     ⟨fun _ => 0, not_noCommonZero_identityWave (fun x => by norm_num)⟩⟩

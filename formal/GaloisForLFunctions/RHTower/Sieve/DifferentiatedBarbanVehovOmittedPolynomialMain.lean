@@ -28,7 +28,7 @@ def barbanVehovOmittedLongCrossPolynomialMain (ell : ℝ) (M : ℕ) : ℝ :=
     let u := Real.log ((M : ℝ) / ((max p.1 p.2 : ℕ) : ℝ))
     (-1 : ℝ) * (barbanVehovWeight M p.1 * barbanVehovWeight M p.2 /
       (Nat.lcm p.1 p.2 : ℝ)) *
-        (u * (ell + B) - u ^ 2 / 2)
+        (u * (ell + B) - u ^ (2 : ℕ) / 2)
 
 /-- Polynomial boundary form for the omitted-head differentiated square moment. -/
 def barbanVehovOmittedLongDerivativePolynomialMain (ell : ℝ) (M : ℕ) : ℝ :=
@@ -39,7 +39,7 @@ def barbanVehovOmittedLongDerivativePolynomialMain (ell : ℝ) (M : ℕ) : ℝ :
     barbanVehovWeight M p.1 * barbanVehovWeight M p.2 /
       (Nat.lcm p.1 p.2 : ℝ) *
         (u * (ell + A) * (ell + B) -
-          u ^ 2 / 2 * (2 * ell + A + B) + u ^ 3 / 3)
+          u ^ (2 : ℕ) / 2 * (2 * ell + A + B) + u ^ (3 : ℕ) / 3)
 
 /-- The omitted base continuous form has no dependence on the detector scale after its endpoint
 is reduced to logarithmic boundary coordinates. -/

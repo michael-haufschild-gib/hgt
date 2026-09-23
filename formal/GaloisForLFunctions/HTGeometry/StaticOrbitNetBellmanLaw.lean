@@ -46,17 +46,17 @@ theorem isSelfAdjoint_coefficientHamiltonian {P : Fin m → A}
 /-- The euclidean `ℓ¹`–`ℓ²` comparison on `m` coordinates. -/
 theorem sum_abs_le_sqrt_card_mul_norm (v : E) :
     ∑ a, |v a| ≤ Real.sqrt m * ‖v‖ := by
-  have hsq : (∑ a, |v a|) ^ 2 ≤ (m : ℝ) * ∑ a, |v a| ^ 2 := by
+  have hsq : (∑ a, |v a|) ^ (2 : ℕ) ≤ (m : ℝ) * ∑ a, |v a| ^ (2 : ℕ) := by
     have := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset (Fin m)))
       (f := fun a => |v a|)
     simpa using this
-  have hnorm : ‖v‖ ^ 2 = ∑ a, |v a| ^ 2 := by
+  have hnorm : ‖v‖ ^ (2 : ℕ) = ∑ a, |v a| ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt]
     · exact Finset.sum_congr rfl fun a _ => by rw [Real.norm_eq_abs]
     · positivity
   have hnn : 0 ≤ ∑ a, |v a| := Finset.sum_nonneg fun a _ => abs_nonneg _
   have hmn : 0 ≤ Real.sqrt m * ‖v‖ := by positivity
-  have hle : (∑ a, |v a|) ^ 2 ≤ (Real.sqrt m * ‖v‖) ^ 2 := by
+  have hle : (∑ a, |v a|) ^ (2 : ℕ) ≤ (Real.sqrt m * ‖v‖) ^ (2 : ℕ) := by
     rw [mul_pow, Real.sq_sqrt (by positivity : (0 : ℝ) ≤ (m : ℝ)), hnorm]
     exact hsq
   nlinarith [hnn, hmn, hle]
@@ -316,14 +316,14 @@ reachable layer is the maximum of the `s`-th layer value and its values at the a
 argument. -/
 theorem sSup_unitaryOverlap_reachSet_succ [Finite Γ] [Nonempty Γ]
     (u : Γ → (V ≃ₗᵢ[ℂ] V)) (chi : V) (s : ℕ) (v : V) :
-    sSup ((fun z => ‖(inner ℂ z v : ℂ)‖ ^ 2) ''
+    sSup ((fun z => ‖(inner ℂ z v : ℂ)‖ ^ (2 : ℕ)) ''
         reachSet (fun g => (u g : V → V)) chi (s + 1)) =
-      max (sSup ((fun z => ‖(inner ℂ z v : ℂ)‖ ^ 2) ''
+      max (sSup ((fun z => ‖(inner ℂ z v : ℂ)‖ ^ (2 : ℕ)) ''
             reachSet (fun g => (u g : V → V)) chi s))
-        (⨆ g : Γ, sSup ((fun z => ‖(inner ℂ z ((u g).symm v) : ℂ)‖ ^ 2) ''
+        (⨆ g : Γ, sSup ((fun z => ‖(inner ℂ z ((u g).symm v) : ℂ)‖ ^ (2 : ℕ)) ''
             reachSet (fun g => (u g : V → V)) chi s)) := by
   refine sSup_image_reachSet_succ (act := fun g => (u g : V → V))
-    (pair := fun z v => ‖(inner ℂ z v : ℂ)‖ ^ 2)
+    (pair := fun z v => ‖(inner ℂ z v : ℂ)‖ ^ (2 : ℕ))
     (pull := fun g v => (u g).symm v) ?_ s v
   intro g z w
   have : (inner ℂ ((u g) z) w : ℂ) = (inner ℂ z ((u g).symm w) : ℂ) := by

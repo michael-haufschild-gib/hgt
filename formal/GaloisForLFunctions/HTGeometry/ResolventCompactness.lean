@@ -191,8 +191,8 @@ theorem not_isCompactOperator_resolventCLM {A : H →ₗ.[ℂ] H} (hA : IsSelfAd
     rw [h0, norm_zero] at hvnorm
     exact zero_ne_one hvnorm
   have hRv0 : R v ≠ 0 := fun h0 => hv0 (resolventCLM_injective hA hz (by rw [← hR, h0, map_zero]))
-  have hmunorm : (mu : ℝ) = ‖R v‖ ^ 2 := by
-    have h2 : ((mu : ℝ) : ℂ) = ((‖R v‖ ^ 2 : ℝ) : ℂ) := by
+  have hmunorm : (mu : ℝ) = ‖R v‖ ^ (2 : ℕ) := by
+    have h2 : ((mu : ℝ) : ℂ) = ((‖R v‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [hmu_eq, inner_self_eq_norm_sq_to_K]
       simp
     exact_mod_cast h2
@@ -263,24 +263,24 @@ theorem not_isCompactOperator_resolventCLM {A : H →ₗ.[ℂ] H} (hA : IsSelfAd
     rw [hzw, add_comm, Complex.add_conj]
   have hzw' : z * w = ((Complex.normSq z : ℝ) : ℂ) := by
     rw [hzw, Complex.mul_conj]
-  have hnormSq : Complex.normSq z = z.re ^ 2 + z.im ^ 2 := by
+  have hnormSq : Complex.normSq z = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
     ring
   -- the imaginary lower bound bounds the eigenvalue
-  have hd : 0 ≤ (mu : ℝ)⁻¹ - z.im ^ 2 := by
+  have hd : 0 ≤ (mu : ℝ)⁻¹ - z.im ^ (2 : ℕ) := by
     have hlow := norm_sub_smul_lower_bound hA z ⟨R v, hRvmem⟩
     have hval : A (⟨R v, hRvmem⟩ : A.domain) - z • (R v) = v :=
       shiftedMap_resolventLinear hA hz v
     rw [hval, hvnorm] at hlow
     have h3 : 0 ≤ |z.im| * ‖R v‖ := by positivity
-    have hsq : z.im ^ 2 * mu ≤ 1 := by
+    have hsq : z.im ^ (2 : ℕ) * mu ≤ 1 := by
       rw [hmunorm]
       nlinarith [sq_abs z.im, hlow, h3]
     have hinv : mu * (mu : ℝ)⁻¹ = 1 := mul_inv_cancel₀ hmupos.ne'
     have hipos : (0 : ℝ) < (mu : ℝ)⁻¹ := inv_pos.2 hmupos
     nlinarith [hsq, hmupos, hipos, hinv]
-  obtain ⟨c, hc2⟩ : ∃ c : ℝ, c ^ 2 = (mu : ℝ)⁻¹ - z.im ^ 2 :=
-    ⟨Real.sqrt ((mu : ℝ)⁻¹ - z.im ^ 2), Real.sq_sqrt hd⟩
+  obtain ⟨c, hc2⟩ : ∃ c : ℝ, c ^ (2 : ℕ) = (mu : ℝ)⁻¹ - z.im ^ (2 : ℕ) :=
+    ⟨Real.sqrt ((mu : ℝ)⁻¹ - z.im ^ (2 : ℕ)), Real.sq_sqrt hd⟩
   -- the factorized eigenvector
   set u : H := p - (((z.re : ℝ) : ℂ) - ((c : ℝ) : ℂ)) • v with hu
   have humem : u ∈ A.domain := A.domain.sub_mem hAvmem (A.domain.smul_mem _ hvmem)
@@ -294,8 +294,8 @@ theorem not_isCompactOperator_resolventCLM {A : H →ₗ.[ℂ] H} (hA : IsSelfAd
     rw [hzw']
     rw [hnormSq]
     rw [hu]
-    have hcs : ((c : ℝ) : ℂ) ^ 2 = ((mu : ℂ))⁻¹ - ((z.im : ℝ) : ℂ) ^ 2 := by
-      have h : (((c ^ 2 : ℝ)) : ℂ) = (((mu : ℝ)⁻¹ - z.im ^ 2 : ℝ) : ℂ) := by rw [hc2]
+    have hcs : ((c : ℝ) : ℂ) ^ (2 : ℕ) = ((mu : ℂ))⁻¹ - ((z.im : ℝ) : ℂ) ^ (2 : ℕ) := by
+      have h : (((c ^ (2 : ℕ) : ℝ)) : ℂ) = (((mu : ℝ)⁻¹ - z.im ^ (2 : ℕ) : ℝ) : ℂ) := by rw [hc2]
       push_cast at h
       exact h
     push_cast

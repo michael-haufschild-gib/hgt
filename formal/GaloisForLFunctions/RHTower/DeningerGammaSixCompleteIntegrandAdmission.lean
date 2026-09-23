@@ -273,7 +273,7 @@ theorem integral_norm_deningerGammaSixInternalJetTensorRemainder_le
     (hmz : 1 / (m : ℝ) < (mobiusThetaCenteredParameter z).re) :
     (∫ xy : ℝ × ℝ, ‖deningerGammaSixTensorFourierLaplaceIntegrand
       (deningerGammaSixInternalJetTensorRemainder k l m) w z xy‖ ∂(volume.prod volume)) ≤
-      deningerGammaSixHalfWeight m ^ 2 * deningerGammaSixTensorRemainderNormMajorant k l m w z := by
+      deningerGammaSixHalfWeight m ^ (2 : ℕ) * deningerGammaSixTensorRemainderNormMajorant k l m w z := by
   let H := deningerGammaSixInternalJetLeading k m
   let J := deningerGammaSixInternalJetLeading l m
   let T := deningerGammaSixInternalJetTail k m
@@ -363,7 +363,7 @@ theorem integral_norm_deningerGammaSixAdmittedRemainderIntegrand_le
     have hbound := mul_le_mul_of_nonneg_left
       (integral_norm_deningerGammaSixInternalJetTensorRemainder_le k l (deningerGammaSixShellHonestDepth n) hw hz h.2.1 h.2.2)
       (deningerGammaSixShellFlattening_pos n).le
-    have hsquare : deningerGammaSixHalfWeight (deningerGammaSixShellHonestDepth n) ^ 2 =
+    have hsquare : deningerGammaSixHalfWeight (deningerGammaSixShellHonestDepth n) ^ (2 : ℕ) =
         deningerGammaSixShellEigenvalue n := by
       rw [pow_two, deningerGammaSixHalfWeight_sq]
       rfl
@@ -478,7 +478,7 @@ theorem deningerGammaSixInternalJetTensor_full_fourierLaplace_data_of_admitted
     deningerGammaSixTensorFourierLaplace
       (l2SeparatedProduct (deningerGammaSixInternalJetSource k m)
         (deningerGammaSixInternalJetSource l m)) w z =
-      (deningerGammaSixHalfWeight m : ℂ) ^ 2 *
+      (deningerGammaSixHalfWeight m : ℂ) ^ (2 : ℕ) *
         (mobiusThetaPrimeNormalResidualMultiplier 6 m w * mobiusThetaPrimeNormalResidualMultiplier 6 m z) *
         (iteratedDeriv k XiC w * iteratedDeriv l XiC z) := by
   have hW := deningerGammaSixInternalJetSource_fourierLaplace_data k m hw hmw
@@ -745,7 +745,7 @@ theorem tendsto_deningerGammaSixIntegralTailOperator_second_of_admitted
     (hrw : 0 < (mobiusThetaCenteredParameter w).re)
     (had : ∀ m : ℕ, M ≤ m → 1 / (m : ℝ) < (mobiusThetaCenteredParameter w).re) (hM : 3 ≤ M) :
     Tendsto (fun ε : ℝ => deningerOrdinaryIntegerAbelDefect ε (6 : PNat)
-      (deningerGammaSixIntegralTailOperator k l M w) / (ε : ℂ)^2)
+      (deningerGammaSixIntegralTailOperator k l M w) / (ε : ℂ)^(2 : ℕ))
       (𝓝[>] 0) (𝓝 (deningerGammaSixShellTailBoundary k l M w)) := by
   have h := tendsto_deningerOrdinaryIntegerAbelDefect_second
     (deningerGammaSixIntegralTailOperator k l M w) 0
@@ -904,7 +904,7 @@ theorem eventually_deningerGammaSixIntegral_top_finite_repair_fixed_six_all_divi
             (xiSpectralPointSupport rho) (xiSpectralPointSupport rho) + F) -
               (iteratedDeriv (xiSupportMultiplicity rho) XiC (xiSpectralPointSupport rho) *
                 iteratedDeriv (xiSupportMultiplicity rho) XiC (xiSpectralPointSupport rho)) •
-                  deningerOrdinaryIntegerReciprocalGreen)) / (ε : ℂ)^2)
+                  deningerOrdinaryIntegerReciprocalGreen)) / (ε : ℂ)^(2 : ℕ))
       (𝓝[>] 0) (𝓝 0) := by
   let w := xiSpectralPointSupport rho
   let r := xiSupportMultiplicity rho

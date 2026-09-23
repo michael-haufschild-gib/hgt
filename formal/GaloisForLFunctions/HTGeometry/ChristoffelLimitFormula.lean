@@ -33,12 +33,12 @@ theorem cdKernel_eval_self_le_inv_christoffelLimit (h : PositiveMomentForm s) (x
 /-- **Closed form.**  Where the kernel series converges, the limit Christoffel function is its
 reciprocal. -/
 theorem christoffelLimit_eq_inv_tsum (h : PositiveMomentForm s) (x : ℝ)
-    (hsum : Summable fun k => ((monicOrtho s k).eval x) ^ 2 /
+    (hsum : Summable fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
       momentInner s (monicOrtho s k) (monicOrtho s k)) :
     christoffelLimit s x
-      = (∑' k, ((monicOrtho s k).eval x) ^ 2 /
+      = (∑' k, ((monicOrtho s k).eval x) ^ (2 : ℕ) /
           momentInner s (monicOrtho s k) (monicOrtho s k))⁻¹ := by
-  set f : ℕ → ℝ := fun k => ((monicOrtho s k).eval x) ^ 2 /
+  set f : ℕ → ℝ := fun k => ((monicOrtho s k).eval x) ^ (2 : ℕ) /
     momentInner s (monicOrtho s k) (monicOrtho s k) with hf
   have hnn : ∀ k, 0 ≤ f k := fun k =>
     div_nonneg (sq_nonneg _) (monicOrtho_inner_self_pos h k).le

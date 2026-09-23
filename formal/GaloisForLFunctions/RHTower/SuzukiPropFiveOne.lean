@@ -32,7 +32,7 @@ namespace RHTower
 set_option maxHeartbeats 400000
 
 theorem re_peak_term_le {δ : ℝ} {x y : ℂ} (hx : ‖x‖ ≤ δ) (hy : ‖y‖ ≤ δ) :
-    ((I - I * x) * (starRingEnd ℂ) (I * y - I)).re ≤ -1 + 2 * δ + δ ^ 2 := by
+    ((I - I * x) * (starRingEnd ℂ) (I * y - I)).re ≤ -1 + 2 * δ + δ ^ (2 : ℕ) := by
   have hexp : (I - I * x) * (starRingEnd ℂ) (I * y - I)
       = -((1 - x) * (1 - (starRingEnd ℂ) y)) := by
     simp only [map_sub, map_mul, Complex.conj_I]
@@ -42,7 +42,7 @@ theorem re_peak_term_le {δ : ℝ} {x y : ℂ} (hx : ‖x‖ ≤ δ) (hy : ‖y�
   have hyre : |((starRingEnd ℂ) y).re| ≤ δ := by
     rw [Complex.conj_re]
     exact le_trans (Complex.abs_re_le_norm y) hy
-  have hprod : |(x * (starRingEnd ℂ) y).re| ≤ δ ^ 2 := by
+  have hprod : |(x * (starRingEnd ℂ) y).re| ≤ δ ^ (2 : ℕ) := by
     refine le_trans (Complex.abs_re_le_norm _) ?_
     rw [norm_mul, RCLike.norm_conj]
     have hn1 := norm_nonneg x
@@ -65,7 +65,7 @@ theorem peak_term_swap (u v : ℂ) :
 
 /-- Suzuki Proposition 5.1, condition (1). -/
 def SuzukiV0MassCondition : Prop :=
-  ∀ ψ ∈ suzukiV0, ((‖ψ‖ ^ 2 : ℝ) : ℂ) = (Real.pi : ℂ) * suzukiV0WeilForm ψ ψ
+  ∀ ψ ∈ suzukiV0, ((‖ψ‖ ^ (2 : ℕ) : ℝ) : ℂ) = (Real.pi : ℂ) * suzukiV0WeilForm ψ ψ
 
 /-- Suzuki Proposition 5.1, condition (2), with the source's `δ` taken to be `1/2`. -/
 def SuzukiV0PeakCondition : Prop :=
@@ -109,15 +109,15 @@ theorem riemannHypothesis_of_suzukiV0_conditions
   have hVnn : ∀ q, 0 ≤ V q := fun q => div_nonneg zero_le_one (by positivity)
   have hUs : Summable U := summable_xiSpectralPoint_shift_three_halves g0
   have hVs : Summable V := summable_xiSpectralPoint_shift_three_halves c
-  have hW : Summable (fun q => (U q + V q) ^ 2) :=
+  have hW : Summable (fun q => (U q + V q) ^ (2 : ℕ)) :=
     summable_sq_of_summable_nonneg (fun q => by linarith [hUnn q, hVnn q]) (hUs.add hVs)
-  set K : ℝ := ∑' q : XiZeroCopy, (U q + V q) ^ 2 with hKdef
+  set K : ℝ := ∑' q : XiZeroCopy, (U q + V q) ^ (2 : ℕ) with hKdef
   have hK0 : 0 ≤ K := tsum_nonneg fun q => sq_nonneg _
   set L : ℝ := 1 / (‖g0 - c‖ * Real.sqrt ‖g0 - c‖) with hLdef
   have hL0 : 0 < L := by
     have : 0 < Real.sqrt ‖g0 - c‖ := Real.sqrt_pos.mpr hdpos
     rw [hLdef]; positivity
-  set M : ℝ := L + L ^ 2 + K + 1 with hMdef
+  set M : ℝ := L + L ^ (2 : ℕ) + K + 1 with hMdef
   have hM1 : 1 ≤ M := by rw [hMdef]; nlinarith [sq_nonneg L]
   have hM0 : (0:ℝ) < M := by linarith
   set ε : ℝ := min 1 (1 / (8 * M)) with hepsdef
@@ -132,9 +132,9 @@ theorem riemannHypothesis_of_suzukiV0_conditions
       rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ (by positivity)]
       nlinarith [hMdef, sq_nonneg L, hK0]
     rw [hδdef]; linarith
-  have hεK : ε ^ 2 * K ≤ 1 / 8 := by
-    have hsq : ε ^ 2 ≤ ε := by nlinarith
-    have hstep : ε ^ 2 * K ≤ ε * K := by nlinarith
+  have hεK : ε ^ (2 : ℕ) * K ≤ 1 / 8 := by
+    have hsq : ε ^ (2 : ℕ) ≤ ε := by nlinarith
+    have hstep : ε ^ (2 : ℕ) * K ≤ ε * K := by nlinarith
     have hstep2 : ε * K ≤ (1 / (8 * M)) * K := by nlinarith
     have hstep3 : (1 / (8 * M)) * K ≤ 1 / 8 := by
       rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ (by positivity)]
@@ -166,7 +166,7 @@ theorem riemannHypothesis_of_suzukiV0_conditions
   set t : XiZeroCopy → ℂ := fun q => suzukiV0Eval ψ (xiSpectralPoint q)
       * (starRingEnd ℂ) (suzukiV0Eval ψ ((starRingEnd ℂ) (xiSpectralPoint q))) with htdef
   have hspecial : ∀ q : XiZeroCopy, xiSpectralPoint q = g0 ∨ xiSpectralPoint q = c →
-      (t q).re ≤ -1 + 2 * δ + δ ^ 2 := by
+      (t q).re ≤ -1 + 2 * δ + δ ^ (2 : ℕ) := by
     intro q hq
     rcases hq with h | h
     · rw [htdef]
@@ -178,7 +178,7 @@ theorem riemannHypothesis_of_suzukiV0_conditions
       rw [h, hcg, hg0ev, hcev, peak_term_swap]
       exact re_peak_term_le hv hu
   have hfar : ∀ q : XiZeroCopy, xiSpectralPoint q ≠ g0 → xiSpectralPoint q ≠ c →
-      ‖t q‖ ≤ ε ^ 2 * (U q + V q) ^ 2 := by
+      ‖t q‖ ≤ ε ^ (2 : ℕ) * (U q + V q) ^ (2 : ℕ) := by
     intro q hq1 hq2
     have hz : XiC (xiSpectralPoint q) = 0 := XiC_xiSpectralPoint_eq_zero q
     have hzc : XiC ((starRingEnd ℂ) (xiSpectralPoint q)) = 0 := XiC_conj_eq_zero_of_XiC_zero hz
@@ -227,7 +227,7 @@ theorem riemannHypothesis_of_suzukiV0_conditions
           * ‖suzukiV0Eval ψ ((starRingEnd ℂ) (xiSpectralPoint q))‖
         ≤ (ε * (U q + V q)) * (ε * (U q + V q)) := by
           exact mul_le_mul hA hB (norm_nonneg _) hnn
-      _ = ε ^ 2 * (U q + V q) ^ 2 := by ring
+      _ = ε ^ (2 : ℕ) * (U q + V q) ^ (2 : ℕ) := by ring
   -- the two peaked zeros form a finite set of copies
   have hSp : {q : XiZeroCopy | xiSpectralPoint q = g0 ∨ xiSpectralPoint q = c}.Finite := by
     refine Set.Finite.subset (finite_xiSpectralPoint_norm_le ‖g0‖) ?_
@@ -239,7 +239,7 @@ theorem riemannHypothesis_of_suzukiV0_conditions
   have hts : Summable t := by
     rw [← hSp.summable_compl_iff]
     refine Summable.of_norm_bounded
-      ((hW.mul_left (ε ^ 2)).subtype
+      ((hW.mul_left (ε ^ (2 : ℕ))).subtype
         {q : XiZeroCopy | xiSpectralPoint q = g0 ∨ xiSpectralPoint q = c}ᶜ) ?_
     rintro ⟨q, hq⟩
     simp only [Set.mem_compl_iff, Set.mem_setOf_eq, not_or] at hq
@@ -251,24 +251,24 @@ theorem riemannHypothesis_of_suzukiV0_conditions
   have hq₀ : xiSpectralPoint q₀ = g0 := by
     rw [xiSpectralPoint_eq_support]
     exact hρ₀
-  have hsmall : -1 + 2 * δ + δ ^ 2 ≤ 0 := by nlinarith
-  have hbound : ∀ q, (t q).re ≤ ε ^ 2 * (U q + V q) ^ 2 := by
+  have hsmall : -1 + 2 * δ + δ ^ (2 : ℕ) ≤ 0 := by nlinarith
+  have hbound : ∀ q, (t q).re ≤ ε ^ (2 : ℕ) * (U q + V q) ^ (2 : ℕ) := by
     intro q
     by_cases hq : xiSpectralPoint q = g0 ∨ xiSpectralPoint q = c
     · have hsp := hspecial q hq
-      have hnn : 0 ≤ ε ^ 2 * (U q + V q) ^ 2 := by positivity
+      have hnn : 0 ≤ ε ^ (2 : ℕ) * (U q + V q) ^ (2 : ℕ) := by positivity
       linarith
     · push Not at hq
       exact le_trans (Complex.re_le_norm _) (hfar q hq.1 hq.2)
-  set K0 : ℝ := (-1 + 2 * δ + δ ^ 2) - ε ^ 2 * (U q₀ + V q₀) ^ 2 with hK0def
+  set K0 : ℝ := (-1 + 2 * δ + δ ^ (2 : ℕ)) - ε ^ (2 : ℕ) * (U q₀ + V q₀) ^ (2 : ℕ) with hK0def
   set B : XiZeroCopy → ℝ :=
-    fun q => ε ^ 2 * (U q + V q) ^ 2 + (if q = q₀ then K0 else 0) with hBdef
-  have hBsum : Summable B := (hW.mul_left (ε ^ 2)).add (hasSum_ite_eq q₀ K0).summable
-  have hBval : ∑' q, B q = ε ^ 2 * K + K0 := by
-    rw [hBdef, Summable.tsum_add (hW.mul_left (ε ^ 2)) (hasSum_ite_eq q₀ K0).summable,
+    fun q => ε ^ (2 : ℕ) * (U q + V q) ^ (2 : ℕ) + (if q = q₀ then K0 else 0) with hBdef
+  have hBsum : Summable B := (hW.mul_left (ε ^ (2 : ℕ))).add (hasSum_ite_eq q₀ K0).summable
+  have hBval : ∑' q, B q = ε ^ (2 : ℕ) * K + K0 := by
+    rw [hBdef, Summable.tsum_add (hW.mul_left (ε ^ (2 : ℕ))) (hasSum_ite_eq q₀ K0).summable,
       tsum_ite_eq, Summable.tsum_mul_left]
     exact hW
-  have hle : ∑' q, (t q).re ≤ ε ^ 2 * K + K0 := by
+  have hle : ∑' q, (t q).re ≤ ε ^ (2 : ℕ) * K + K0 := by
     rw [← hBval]
     refine Summable.tsum_le_tsum (fun q => ?_) hrs hBsum
     rw [hBdef]
@@ -279,15 +279,15 @@ theorem riemannHypothesis_of_suzukiV0_conditions
       linarith
     · rw [if_neg hq, add_zero]
       exact hbound q
-  have hneg : ε ^ 2 * K + K0 < 0 := by
+  have hneg : ε ^ (2 : ℕ) * K + K0 < 0 := by
     rw [hK0def]
-    have hnn : 0 ≤ ε ^ 2 * (U q₀ + V q₀) ^ 2 := by positivity
+    have hnn : 0 ≤ ε ^ (2 : ℕ) * (U q₀ + V q₀) ^ (2 : ℕ) := by positivity
     nlinarith
   have hmass := h1 ψ hψ
   have hWre : (suzukiV0WeilForm ψ ψ).re = ∑' q, (t q).re := by
     rw [suzukiV0WeilForm]
     exact Complex.re_tsum hts
-  have hre : ‖ψ‖ ^ 2 = Real.pi * (suzukiV0WeilForm ψ ψ).re := by
+  have hre : ‖ψ‖ ^ (2 : ℕ) = Real.pi * (suzukiV0WeilForm ψ ψ).re := by
     have hc2 := congrArg Complex.re hmass
     rw [Complex.ofReal_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
       sub_zero] at hc2

@@ -25,7 +25,7 @@ theorem exists_full_disk_model_of_mem_mandelbrot (c : ℂ) (hcM : c ∈ mandelbr
     ∃ (h β ψ : ℂ → ℂ),
       DifferentiableOn ℂ h (ball 0 1) ∧
       (∀ t ∈ ball (0:ℂ) 1, h (-t) = h t) ∧
-      (∀ t ∈ ball (0:ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2) ∧
+      (∀ t ∈ ball (0:ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ)) ∧
       h 0 = 1 ∧
       (∀ t : ℂ, t ≠ 0 → ‖t‖ < 1 → h t = t * ψ (1 / t)) ∧
       AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
@@ -43,7 +43,7 @@ theorem exists_full_disk_model_of_mem_mandelbrot (c : ℂ) (hcM : c ∈ mandelbr
   have hmax2 : (2:ℝ) ≤ max 2 ‖c‖ := le_max_left _ _
   have hR1 : 2 * max 2 ‖c‖ < R := by rw [hRdef]; linarith
   have hRgt1 : (1:ℝ) < R := by rw [hRdef]; linarith
-  have hR2 : 16 * ‖c‖ < R ^ 2 := by
+  have hR2 : 16 * ‖c‖ < R ^ (2 : ℕ) := by
     have h16R : 16 * ‖c‖ + 1 ≤ R := by rw [hRdef]; linarith
     nlinarith
   have hRpos : (0:ℝ) < R := by linarith
@@ -122,7 +122,7 @@ theorem exists_full_disk_model_of_mem_mandelbrot (c : ℂ) (hcM : c ∈ mandelbr
       rw [inv_eq_one_div]; exact this
     linarith
   -- ψf is odd and satisfies FE beyond S (transfer from exists_far_inverse-style lemmas)
-  have hψffe : ∀ w : ℂ, S < ‖w‖ → ψf (w ^ 2) = (ψf w) ^ 2 + c := by
+  have hψffe : ∀ w : ℂ, S < ‖w‖ → ψf (w ^ (2 : ℕ)) = (ψf w) ^ (2 : ℕ) + c := by
     intro w hw
     obtain ⟨z, hzR, hzw⟩ := hRpre w (lt_of_le_of_lt (le_max_left R' 1) hw)
     rw [← hzw]
@@ -135,7 +135,7 @@ theorem exists_full_disk_model_of_mem_mandelbrot (c : ℂ) (hcM : c ∈ mandelbr
   -- h even and FE on the annulus 0<‖t‖<ε
   have hmodel : ∀ t : ℂ, t ≠ 0 → ‖t‖ < ε →
       ((-t) * ψf (1 / -t) = t * ψf (1 / t) ∧
-       (t ^ 2) * ψf (1 / t ^ 2) = (t * ψf (1 / t)) ^ 2 + c * t ^ 2) := by
+       (t ^ (2 : ℕ)) * ψf (1 / t ^ (2 : ℕ)) = (t * ψf (1 / t)) ^ (2 : ℕ) + c * t ^ (2 : ℕ)) := by
     intro t ht0 htε
     have hSinv : ‖t‖ < S⁻¹ := by
       have h1 : S < ‖(1:ℂ)/t‖ := hfarS t ht0 htε
@@ -154,15 +154,15 @@ theorem exists_full_disk_model_of_mem_mandelbrot (c : ℂ) (hcM : c ∈ mandelbr
     rw [hh₀far (-t) hnt0 hntε, hh₀far t ht0 htε]
     exact (hmodel t ht0 htε).1
   -- FE on annulus
-  have hfeann : ∀ t : ℂ, t ≠ 0 → ‖t‖ < ε → h (t ^ 2) = (h t) ^ 2 + c * t ^ 2 := by
+  have hfeann : ∀ t : ℂ, t ≠ 0 → ‖t‖ < ε → h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ) := by
     intro t ht0 htε
-    have ht20 : t ^ 2 ≠ 0 := pow_ne_zero 2 ht0
-    have ht2ε : ‖t ^ 2‖ < ε := by
+    have ht20 : t ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 ht0
+    have ht2ε : ‖t ^ (2 : ℕ)‖ < ε := by
       rw [norm_pow]
-      calc ‖t‖ ^ 2 ≤ ‖t‖ * 1 := by nlinarith [norm_nonneg t, htε, hεlt1]
+      calc ‖t‖ ^ (2 : ℕ) ≤ ‖t‖ * 1 := by nlinarith [norm_nonneg t, htε, hεlt1]
         _ = ‖t‖ := mul_one _
         _ < ε := htε
-    rw [hh₀far (t^2) ht20 ht2ε, hh₀far t ht0 htε]
+    rw [hh₀far (t^(2 : ℕ)) ht20 ht2ε, hh₀far t ht0 htε]
     exact (hmodel t ht0 htε).2
   -- identity theorem: even and FE propagate to the whole ball
   have hAan : AnalyticOnNhd ℂ h (ball 0 1) := hdisk.analyticOnNhd isOpen_ball
@@ -197,21 +197,21 @@ theorem exists_full_disk_model_of_mem_mandelbrot (c : ℂ) (hcM : c ∈ mandelbr
     exact fun t ht =>
       (h1.eqOn_of_preconnected_of_eventuallyEq hAan (convex_ball 0 1).isPreconnected ht₀ball hev) ht
   -- FE everywhere
-  have hfe : ∀ t ∈ ball (0:ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2 := by
-    have h1 : AnalyticOnNhd ℂ (fun t => h (t ^ 2)) (ball 0 1) := by
+  have hfe : ∀ t ∈ ball (0:ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ) := by
+    have h1 : AnalyticOnNhd ℂ (fun t => h (t ^ (2 : ℕ))) (ball 0 1) := by
       intro t ht
-      have ht2 : t ^ 2 ∈ ball (0:ℂ) 1 := by
+      have ht2 : t ^ (2 : ℕ) ∈ ball (0:ℂ) 1 := by
         rw [mem_ball_zero_iff, norm_pow]
         rw [mem_ball_zero_iff] at ht
         nlinarith [norm_nonneg t]
-      have hsq : AnalyticAt ℂ (fun z : ℂ => z ^ 2) t := (analyticAt_id).pow 2
-      show AnalyticAt ℂ (h ∘ fun z : ℂ => z ^ 2) t
-      exact AnalyticAt.comp (f := fun z : ℂ => z ^ 2) (x := t) (hAan (t^2) ht2) hsq
-    have h2 : AnalyticOnNhd ℂ (fun t => (h t) ^ 2 + c * t ^ 2) (ball 0 1) := by
+      have hsq : AnalyticAt ℂ (fun z : ℂ => z ^ (2 : ℕ)) t := (analyticAt_id).pow 2
+      show AnalyticAt ℂ (h ∘ fun z : ℂ => z ^ (2 : ℕ)) t
+      exact AnalyticAt.comp (f := fun z : ℂ => z ^ (2 : ℕ)) (x := t) (hAan (t^(2 : ℕ)) ht2) hsq
+    have h2 : AnalyticOnNhd ℂ (fun t => (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ)) (ball 0 1) := by
       intro t ht
-      have hsq : AnalyticAt ℂ (fun z : ℂ => z ^ 2) t := (analyticAt_id).pow 2
+      have hsq : AnalyticAt ℂ (fun z : ℂ => z ^ (2 : ℕ)) t := (analyticAt_id).pow 2
       exact ((hAan t ht).pow 2).add ((analyticAt_const).mul hsq)
-    have hev : (fun t => h (t ^ 2)) =ᶠ[𝓝 t₀] (fun t => (h t) ^ 2 + c * t ^ 2) := by
+    have hev : (fun t => h (t ^ (2 : ℕ))) =ᶠ[𝓝 t₀] (fun t => (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ)) := by
       have hball : Metric.ball t₀ (ε/2) ∈ 𝓝 t₀ := isOpen_ball.mem_nhds (mem_ball_self (by linarith))
       filter_upwards [hball] with t ht
       have htnorm : ‖t‖ < ε := by

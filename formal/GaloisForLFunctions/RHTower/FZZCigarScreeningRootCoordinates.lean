@@ -142,7 +142,7 @@ private theorem rootJacobian_eval_matrix {n : ℕ} (w : Fin n → ℂ) :
     exact Finset.prod_eq_zero (Finset.mem_erase.mpr ⟨h,Finset.mem_univ i⟩) (sub_self _)
 
 private theorem root_derivative_norm_product {n : ℕ} (w : Fin n → ℂ) :
-    (∏ j, ∏ k ∈ Finset.univ.erase j, ‖w j-w k‖) = ‖(Matrix.vandermonde w).det‖^2 := by
+    (∏ j, ∏ k ∈ Finset.univ.erase j, ‖w j-w k‖) = ‖(Matrix.vandermonde w).det‖^(2 : ℕ) := by
   have h := Finset.prod_prod_Ioi_mul_eq_prod_prod_off_diag (fun i j : Fin n => ‖w j-w i‖)
   rw [Matrix.det_vandermonde]
   simp only [norm_prod]
@@ -191,7 +191,7 @@ theorem fzzScreeningRootJacobian_norm_det {n : ℕ} (w : Fin n → ℂ) :
 
 /-- The real Jacobian is exactly the squared Vandermonde factor in the source measure. -/
 theorem fzzScreeningRootCoefficients_real_jacobian {n : ℕ} (w : Fin n → ℂ) :
-    (fderiv ℝ fzzScreeningRootCoefficients w).det = ‖(Matrix.vandermonde w).det‖^2 := by
+    (fderiv ℝ fzzScreeningRootCoefficients w).det = ‖(Matrix.vandermonde w).det‖^(2 : ℕ) := by
   have hc := (fzzScreeningRootCoefficients_contDiff (n := n)).differentiable (by simp)
   rw [(hc w).hasFDerivAt.restrictScalars ℝ |>.fderiv]
   change LinearMap.det ((fderiv ℂ fzzScreeningRootCoefficients w).toLinearMap.restrictScalars ℝ) = _
@@ -272,7 +272,7 @@ theorem fzzScreeningRootChamber_open (n : ℕ) : IsOpen (fzzScreeningRootChamber
 theorem fzzScreeningRootChamber_lintegral (n : ℕ) (g : (Fin n → ℂ) → ℝ≥0∞) :
     (∫⁻ c in fzzScreeningRootCoefficients '' fzzScreeningRootChamber n, g c) =
       ∫⁻ w in fzzScreeningRootChamber n,
-        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2) * g (fzzScreeningRootCoefficients w) := by
+        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ)) * g (fzzScreeningRootCoefficients w) := by
   have hd := (fzzScreeningRootCoefficients_contDiff (n := n)).differentiable (by simp)
   have h := lintegral_image_eq_lintegral_abs_det_fderiv_mul volume
     (fzzScreeningRootChamber_open n).measurableSet
@@ -280,7 +280,7 @@ theorem fzzScreeningRootChamber_lintegral (n : ℕ) (g : (Fin n → ℂ) → ℝ
     (fzzScreeningRootChamber_injective n) g
   have hj (w : Fin n → ℂ) :
       |((fderiv ℂ fzzScreeningRootCoefficients w).restrictScalars ℝ).det| =
-        ‖(Matrix.vandermonde w).det‖^2 := by
+        ‖(Matrix.vandermonde w).det‖^(2 : ℕ) := by
     rw [← (hd w).hasFDerivAt.restrictScalars ℝ |>.fderiv,
       fzzScreeningRootCoefficients_real_jacobian,abs_of_nonneg (sq_nonneg _)]
   simpa only [hj] using h
@@ -382,7 +382,7 @@ private theorem permRootChamber_disjoint (n : ℕ) :
 private theorem permRootChamber_lintegral {n : ℕ} (σ : Equiv.Perm (Fin n))
     (g : (Fin n → ℂ) → ℝ≥0∞) :
     (∫⁻ w in permRootChamber σ,
-      ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2)*g (fzzScreeningRootCoefficients w)) =
+      ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ))*g (fzzScreeningRootCoefficients w)) =
         ∫⁻ c in fzzScreeningRootCoefficients '' fzzScreeningRootChamber n, g c := by
   have hd := (fzzScreeningRootCoefficients_contDiff (n := n)).differentiable (by simp)
   have h := lintegral_image_eq_lintegral_abs_det_fderiv_mul volume
@@ -391,7 +391,7 @@ private theorem permRootChamber_lintegral {n : ℕ} (σ : Equiv.Perm (Fin n))
     (permRootChamber_injective σ) g
   have hj (w : Fin n → ℂ) :
       |((fderiv ℂ fzzScreeningRootCoefficients w).restrictScalars ℝ).det| =
-        ‖(Matrix.vandermonde w).det‖^2 := by
+        ‖(Matrix.vandermonde w).det‖^(2 : ℕ) := by
     rw [← (hd w).hasFDerivAt.restrictScalars ℝ |>.fderiv,
       fzzScreeningRootCoefficients_real_jacobian,abs_of_nonneg (sq_nonneg _)]
   simpa only [hj,permRootChamber_image] using h.symm
@@ -399,7 +399,7 @@ private theorem permRootChamber_lintegral {n : ℕ} (σ : Equiv.Perm (Fin n))
 /-- All original root orderings contribute; their exact multiplicity is the factorial. -/
 theorem fzzScreeningRootCoefficients_factorial_lintegral (n : ℕ)
     (g : (Fin n → ℂ) → ℝ≥0∞) :
-    (∫⁻ w, ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2)*g (fzzScreeningRootCoefficients w)) =
+    (∫⁻ w, ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ))*g (fzzScreeningRootCoefficients w)) =
       (n.factorial : ℝ≥0∞) *
         ∫⁻ c in fzzScreeningRootCoefficients '' fzzScreeningRootChamber n, g c := by
   have hg : ∀ᵐ w : Fin n → ℂ, Function.Injective (fun i => (w i).re) := by
@@ -413,11 +413,11 @@ theorem fzzScreeningRootCoefficients_factorial_lintegral (n : ℕ)
     exact iff_true_intro hw
   calc
     _ = ∫⁻ w in ⋃ σ : Equiv.Perm (Fin n), permRootChamber σ,
-        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2)*g (fzzScreeningRootCoefficients w) := by
+        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ))*g (fzzScreeningRootCoefficients w) := by
       simpa only [Measure.restrict_univ] using (setLIntegral_congr (f := fun w : Fin n → ℂ =>
-        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2)*g (fzzScreeningRootCoefficients w)) hu).symm
+        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ))*g (fzzScreeningRootCoefficients w)) hu).symm
     _ = ∑' σ : Equiv.Perm (Fin n), ∫⁻ w in permRootChamber σ,
-        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2)*g (fzzScreeningRootCoefficients w) :=
+        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ))*g (fzzScreeningRootCoefficients w) :=
       lintegral_iUnion (fun σ => (permRootChamber_open σ).measurableSet) (permRootChamber_disjoint n) _
     _ = _ := by
       simp only [permRootChamber_lintegral,tsum_fintype,Finset.sum_const,Finset.card_univ,
@@ -482,7 +482,7 @@ private theorem rootChamber_image_ae_univ (n : ℕ) :
 /-- Full original root-to-coefficient transformation, including exact multiplicity and null sets. -/
 theorem fzzScreeningRootCoefficients_lintegral (n : ℕ)
     (g : (Fin n → ℂ) → ℝ≥0∞) :
-    (∫⁻ w, ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2)*g (fzzScreeningRootCoefficients w)) =
+    (∫⁻ w, ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ))*g (fzzScreeningRootCoefficients w)) =
       (n.factorial : ℝ≥0∞) * ∫⁻ c, g c := by
   rw [fzzScreeningRootCoefficients_factorial_lintegral,
     setLIntegral_congr (rootChamber_image_ae_univ n),Measure.restrict_univ]
@@ -523,15 +523,15 @@ private theorem rootChargeDomain_coefficient_mem {m n : ℕ} (z : Fin m → ℂ)
 /-- Exact transformation with all original finite position cutoffs retained. -/
 theorem fzzScreeningRootCoefficients_cutoff_lintegral {m : ℕ} (z : Fin m → ℂ)
     (R T : ℝ) (n : ℕ) (g : (Fin n → ℂ) → ℝ≥0∞) :
-    (∫⁻ w, ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2)*g (fzzScreeningRootCoefficients w)
+    (∫⁻ w, ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ))*g (fzzScreeningRootCoefficients w)
       ∂fzzScreeningChargeMeasure z R T n) =
       (n.factorial : ℝ≥0∞) * ∫⁻ c in fzzScreeningCoefficientDomain z R T n, g c := by
   have h := fzzScreeningRootCoefficients_lintegral n
     ((fzzScreeningCoefficientDomain z R T n).indicator g)
-  have hf : (fun w : Fin n → ℂ => ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2)*
+  have hf : (fun w : Fin n → ℂ => ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ))*
       (fzzScreeningCoefficientDomain z R T n).indicator g (fzzScreeningRootCoefficients w)) =
       (rootChargeDomain z R T n).indicator (fun w =>
-        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^2)*g (fzzScreeningRootCoefficients w)) := by
+        ENNReal.ofReal (‖(Matrix.vandermonde w).det‖^(2 : ℕ))*g (fzzScreeningRootCoefficients w)) := by
     funext w
     by_cases hw : w ∈ rootChargeDomain z R T n
     · rw [Set.indicator_of_mem ((rootChargeDomain_coefficient_mem z R T w).mpr hw),
@@ -562,7 +562,7 @@ private theorem coefficientPolynomial_roots {n : ℕ} (w : Fin n → ℂ) :
 
 /-- Every original opposite-charge factor survives as a polynomial evaluation. -/
 def fzzScreeningCoefficientWeight {m n : ℕ} (z : Fin m → ℂ) (c : Fin n → ℂ) : ℝ :=
-  ∏ i, (‖(fzzScreeningCoefficientPolynomial c).eval (z i)‖^6)⁻¹
+  ∏ i, (‖(fzzScreeningCoefficientPolynomial c).eval (z i)‖^(6 : ℕ))⁻¹
 
 private theorem coefficientWeight_roots {m n : ℕ} (z : Fin m → ℂ) (w : Fin n → ℂ) :
     fzzScreeningCoefficientWeight z (fzzScreeningRootCoefficients w) =

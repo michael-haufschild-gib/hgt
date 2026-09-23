@@ -83,7 +83,7 @@ noncomputable section
 
 theorem constantCoeff_subst_eq_zero {a f : ℂ⟦X⟧} (ha : constantCoeff a = 0)
     (hf : constantCoeff f = 0) : constantCoeff (subst a f) = 0 := by
-  have h1 : (X : ℂ⟦X⟧) ^ 1 ∣ f := by rw [pow_one]; exact X_dvd_iff.mpr hf
+  have h1 : (X : ℂ⟦X⟧) ^ (1 : ℕ) ∣ f := by rw [pow_one]; exact X_dvd_iff.mpr hf
   have h2 := X_pow_dvd_subst ha h1
   rw [pow_one, X_dvd_iff] at h2
   exact h2

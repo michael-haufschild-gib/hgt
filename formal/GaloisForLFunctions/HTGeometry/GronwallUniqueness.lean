@@ -72,16 +72,16 @@ theorem sq_add_sq_eq_zero_of_double_zero {u Du DDu : ℝ → ℝ} {a b K : ℝ} 
     (hbound : ∀ x ∈ Icc a b, |DDu x| ≤ K * (|u x| + |Du x|))
     (hK : 0 ≤ K) (hu0 : u a = 0) (hDu0 : Du a = 0) :
     ∀ x ∈ Icc a b, u x = 0 ∧ Du x = 0 := by
-  set E : ℝ → ℝ := fun x => u x ^ 2 + Du x ^ 2 with hEdef
+  set E : ℝ → ℝ := fun x => u x ^ (2 : ℕ) + Du x ^ (2 : ℕ) with hEdef
   set E' : ℝ → ℝ := fun x => 2 * u x * Du x + 2 * Du x * DDu x with hE'def
   have hEd : ∀ x ∈ Icc a b, HasDerivAt E (E' x) x := by
     intro x hx
-    have h1 : HasDerivAt (fun t : ℝ => u t ^ 2) (2 * u x * Du x) x := by
+    have h1 : HasDerivAt (fun t : ℝ => u t ^ (2 : ℕ)) (2 * u x * Du x) x := by
       have h := (hu x hx).pow 2
       have hv : ((2 : ℕ) : ℝ) * u x ^ (2 - 1) * Du x = 2 * u x * Du x := by norm_num
       rw [hv] at h
       exact h
-    have h2 : HasDerivAt (fun t : ℝ => Du t ^ 2) (2 * Du x * DDu x) x := by
+    have h2 : HasDerivAt (fun t : ℝ => Du t ^ (2 : ℕ)) (2 * Du x * DDu x) x := by
       have h := (hDu x hx).pow 2
       have hv : ((2 : ℕ) : ℝ) * Du x ^ (2 - 1) * DDu x = 2 * Du x * DDu x := by norm_num
       rw [hv] at h
@@ -94,16 +94,16 @@ theorem sq_add_sq_eq_zero_of_double_zero {u Du DDu : ℝ → ℝ} {a b K : ℝ} 
   have hle : ∀ x ∈ Icc a b, E' x ≤ (2 + 3 * K) * E x := by
     intro x hx
     have hb := hbound x hx
-    have h1 : 2 * u x * Du x ≤ u x ^ 2 + Du x ^ 2 := by
+    have h1 : 2 * u x * Du x ≤ u x ^ (2 : ℕ) + Du x ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (u x - Du x)]
     have h2 : 2 * Du x * DDu x ≤ 2 * |Du x| * (K * (|u x| + |Du x|)) := by
       have habs : Du x * DDu x ≤ |Du x| * |DDu x| := by
         calc Du x * DDu x ≤ |Du x * DDu x| := le_abs_self _
           _ = |Du x| * |DDu x| := abs_mul _ _
       nlinarith [abs_nonneg (Du x), hb, habs]
-    have h3 : 2 * |Du x| * (K * (|u x| + |Du x|)) ≤ 3 * K * (u x ^ 2 + Du x ^ 2) := by
-      have hu2 : |u x| ^ 2 = u x ^ 2 := sq_abs _
-      have hd2 : |Du x| ^ 2 = Du x ^ 2 := sq_abs _
+    have h3 : 2 * |Du x| * (K * (|u x| + |Du x|)) ≤ 3 * K * (u x ^ (2 : ℕ) + Du x ^ (2 : ℕ)) := by
+      have hu2 : |u x| ^ (2 : ℕ) = u x ^ (2 : ℕ) := sq_abs _
+      have hd2 : |Du x| ^ (2 : ℕ) = Du x ^ (2 : ℕ) := sq_abs _
       nlinarith [mul_nonneg hK (sq_nonneg (|u x| - |Du x|)),
         mul_nonneg hK (sq_nonneg (|u x|)), abs_nonneg (u x), abs_nonneg (Du x), hK,
         hu2, hd2]
@@ -179,16 +179,16 @@ theorem eq_zero_of_double_zero_interior {u Du DDu : ℝ → ℝ} {a b K x₀ : �
       (fun y hy => hDu y (hsub hy)) (fun y hy => hbound y (hsub hy)) hK hu0 hDu0 x hx).1
   have hleft : ∀ x ∈ Icc a x₀, u x = 0 := by
     have hsub : Icc a x₀ ⊆ Icc a b := Icc_subset_Icc le_rfl hx₀.2
-    set E : ℝ → ℝ := fun x => u x ^ 2 + Du x ^ 2 with hEdef
+    set E : ℝ → ℝ := fun x => u x ^ (2 : ℕ) + Du x ^ (2 : ℕ) with hEdef
     set E' : ℝ → ℝ := fun x => 2 * u x * Du x + 2 * Du x * DDu x with hE'def
     have hEd : ∀ x ∈ Icc a x₀, HasDerivAt E (E' x) x := by
       intro x hx
-      have h1 : HasDerivAt (fun t : ℝ => u t ^ 2) (2 * u x * Du x) x := by
+      have h1 : HasDerivAt (fun t : ℝ => u t ^ (2 : ℕ)) (2 * u x * Du x) x := by
         have h := (hu x (hsub hx)).pow 2
         have hv : ((2 : ℕ) : ℝ) * u x ^ (2 - 1) * Du x = 2 * u x * Du x := by norm_num
         rw [hv] at h
         exact h
-      have h2 : HasDerivAt (fun t : ℝ => Du t ^ 2) (2 * Du x * DDu x) x := by
+      have h2 : HasDerivAt (fun t : ℝ => Du t ^ (2 : ℕ)) (2 * Du x * DDu x) x := by
         have h := (hDu x (hsub hx)).pow 2
         have hv : ((2 : ℕ) : ℝ) * Du x ^ (2 - 1) * DDu x = 2 * Du x * DDu x := by norm_num
         rw [hv] at h
@@ -201,16 +201,16 @@ theorem eq_zero_of_double_zero_interior {u Du DDu : ℝ → ℝ} {a b K x₀ : �
     have hge : ∀ x ∈ Icc a x₀, -((2 + 3 * K) * E x) ≤ E' x := by
       intro x hx
       have hb := hbound x (hsub hx)
-      have h1 : -(u x ^ 2 + Du x ^ 2) ≤ 2 * u x * Du x := by
+      have h1 : -(u x ^ (2 : ℕ) + Du x ^ (2 : ℕ)) ≤ 2 * u x * Du x := by
         nlinarith [sq_nonneg (u x + Du x)]
       have h2 : -(2 * |Du x| * (K * (|u x| + |Du x|))) ≤ 2 * Du x * DDu x := by
         have habs : -(|Du x| * |DDu x|) ≤ Du x * DDu x := by
           calc -(|Du x| * |DDu x|) = -|Du x * DDu x| := by rw [abs_mul]
             _ ≤ Du x * DDu x := neg_abs_le _
         nlinarith [abs_nonneg (Du x), hb, habs]
-      have h3 : 2 * |Du x| * (K * (|u x| + |Du x|)) ≤ 3 * K * (u x ^ 2 + Du x ^ 2) := by
-        have hu2 : |u x| ^ 2 = u x ^ 2 := sq_abs _
-        have hd2 : |Du x| ^ 2 = Du x ^ 2 := sq_abs _
+      have h3 : 2 * |Du x| * (K * (|u x| + |Du x|)) ≤ 3 * K * (u x ^ (2 : ℕ) + Du x ^ (2 : ℕ)) := by
+        have hu2 : |u x| ^ (2 : ℕ) = u x ^ (2 : ℕ) := sq_abs _
+        have hd2 : |Du x| ^ (2 : ℕ) = Du x ^ (2 : ℕ) := sq_abs _
         nlinarith [mul_nonneg hK (sq_nonneg (|u x| - |Du x|)),
           mul_nonneg hK (sq_nonneg (|u x|)), abs_nonneg (u x), abs_nonneg (Du x), hK,
           hu2, hd2]

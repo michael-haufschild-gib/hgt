@@ -120,8 +120,8 @@ theorem eventually_card_growingReciprocalMarkerLengthGrid_le_breadth :
 theorem tendsto_growingReciprocalMarkerGridQuantizationError :
     Tendsto (fun x : ℝ =>
       (((Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊).card : ℝ) *
-          (growingReciprocalMarkerGridMesh x : ℝ) ^ 2) /
-        (growingReciprocalMarkerH x ^ 2 * Real.sqrt x)) atTop (𝓝 0) := by
+          (growingReciprocalMarkerGridMesh x : ℝ) ^ (2 : ℕ)) /
+        (growingReciprocalMarkerH x ^ (2 : ℕ) * Real.sqrt x)) atTop (𝓝 0) := by
   have hsqrtTop : Tendsto (fun x : ℝ => Real.sqrt x) atTop atTop :=
     Real.tendsto_sqrt_atTop
   have hinvSqrt : Tendsto (fun x : ℝ => 1 / Real.sqrt x) atTop (𝓝 0) :=
@@ -158,34 +158,34 @@ theorem tendsto_growingReciprocalMarkerGridQuantizationError :
       ring
     have hnum := mul_le_mul_of_nonneg_right hcard
       (sq_nonneg (growingReciprocalMarkerGridMesh x : ℝ))
-    have hden : 0 < growingReciprocalMarkerH x ^ 2 * Real.sqrt x :=
+    have hden : 0 < growingReciprocalMarkerH x ^ (2 : ℕ) * Real.sqrt x :=
       mul_pos (sq_pos_of_pos (growingReciprocalMarkerH_pos x)) hs0
     have hdiv := div_le_div_of_nonneg_right hnum hden.le
     calc
       (((Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊).card : ℝ) *
-          (growingReciprocalMarkerGridMesh x : ℝ) ^ 2) /
-          (growingReciprocalMarkerH x ^ 2 * Real.sqrt x)
-        ≤ ((Real.sqrt x + 2) * (growingReciprocalMarkerGridMesh x : ℝ) ^ 2) /
-          (growingReciprocalMarkerH x ^ 2 * Real.sqrt x) := hdiv
+          (growingReciprocalMarkerGridMesh x : ℝ) ^ (2 : ℕ)) /
+          (growingReciprocalMarkerH x ^ (2 : ℕ) * Real.sqrt x)
+        ≤ ((Real.sqrt x + 2) * (growingReciprocalMarkerGridMesh x : ℝ) ^ (2 : ℕ)) /
+          (growingReciprocalMarkerH x ^ (2 : ℕ) * Real.sqrt x) := hdiv
       _ = (Real.sqrt x + 2) / Real.sqrt x *
           ((growingReciprocalMarkerGridMesh x : ℝ) /
-            growingReciprocalMarkerH x) ^ 2 := by
+            growingReciprocalMarkerH x) ^ (2 : ℕ) := by
         field_simp [ne_of_gt hs0, ne_of_gt (growingReciprocalMarkerH_pos x)]
 
 /-- Exact finite normalization at the card's growing low-breadth grid schedule. -/
 theorem sum_innerFibre_sq_le_growingReciprocalMarkerGrid (f : ℕ → ℝ)
     (hf : ∀ n, |f n| ≤ 1) {x : ℝ} (hx : 4 < x) :
     (∑ a ∈ outerBlock x (growingReciprocalMarkerH x),
-        (∑ b ∈ innerFibre x (growingReciprocalMarkerH x) a, f b) ^ 2)
+        (∑ b ∈ innerFibre x (growingReciprocalMarkerH x) a, f b) ^ (2 : ℕ))
       ≤ 16 * ∑ ℓ ∈
           (Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊).image
             (lengthGridQuantizer (growingReciprocalMarkerGridMesh x)
               (movingFibreWindowLength x (growingReciprocalMarkerH x))),
             dyadicMeanSquare f ℓ (⌈Real.sqrt x / 2⌉₊ - 1) (⌈Real.sqrt x⌉₊ - 1)
         + 16 * ((Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊).card : ℝ) *
-            (growingReciprocalMarkerGridMesh x : ℝ) ^ 2
+            (growingReciprocalMarkerGridMesh x : ℝ) ^ (2 : ℕ)
         + 2 * ((outerBlock x (growingReciprocalMarkerH x)).card : ℝ) *
-            (growingReciprocalMarkerH x / Real.sqrt x + 2) ^ 2 := by
+            (growingReciprocalMarkerH x / Real.sqrt x + 2) ^ (2 : ℕ) := by
   exact sum_innerFibre_sq_le_lengthGridPartition f hf hx
     (growingReciprocalMarkerH_pos x).le (growingReciprocalMarkerGridMesh x)
     (growingReciprocalMarkerGridMesh_pos x)

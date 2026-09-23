@@ -88,7 +88,7 @@ width `7π/4` and the base angle is normalized to `[−π/4, 7π/4]`.  The slots
 theorem sq_window_decomposition {ra RW α β : ℝ} (hra1 : 1 < ra) (hRW1 : 1 ≤ RW)
     (hβ : β = α + 7 * Real.pi / 4)
     (hαlo : -(Real.pi / 4) ≤ α) (hαhi : α ≤ 7 * Real.pi / 4) :
-    {w : ℂ | w ∈ arcAnnulus ra RW α β ∧ w ^ 2 ∈ arcAnnulus ra RW α β}
+    {w : ℂ | w ∈ arcAnnulus ra RW α β ∧ w ^ (2 : ℕ) ∈ arcAnnulus ra RW α β}
       = arcAnnulus ra (Real.sqrt RW) (max α (α / 2)) (min β (β / 2))
         ∪ arcAnnulus ra (Real.sqrt RW) (max α (α / 2 + Real.pi)) (min β (β / 2 + Real.pi))
         ∪ arcAnnulus ra (Real.sqrt RW)
@@ -102,7 +102,7 @@ theorem sq_window_decomposition {ra RW α β : ℝ} (hra1 : 1 < ra) (hRW1 : 1 �
   simp only [Set.mem_setOf_eq, Set.mem_union]
   constructor
   · rintro ⟨⟨ξ, ⟨hr1, hr2, hi1, hi2⟩, rfl⟩, ⟨η, ⟨hs1, hs2, hj1, hj2⟩, hsq⟩⟩
-    have h2ξ : Complex.exp ξ ^ 2 = Complex.exp (2 * ξ) := by
+    have h2ξ : Complex.exp ξ ^ (2 : ℕ) = Complex.exp (2 * ξ) := by
       rw [sq, ← Complex.exp_add]
       ring_nf
     rw [h2ξ] at hsq
@@ -175,7 +175,7 @@ theorem sq_window_decomposition {ra RW α β : ℝ} (hra1 : 1 < ra) (hRW1 : 1 �
         Real.log ra < ξ.re → ξ.re < Real.log (Real.sqrt RW) →
         max α (α / 2 + m * Real.pi) < ξ.im → ξ.im < min β (β / 2 + m * Real.pi) →
         Complex.exp ξ ∈ arcAnnulus ra RW α β ∧
-          Complex.exp ξ ^ 2 ∈ arcAnnulus ra RW α β := by
+          Complex.exp ξ ^ (2 : ℕ) ∈ arcAnnulus ra RW α β := by
       intro m ξ h1 h2 h3 h4
       rw [max_lt_iff] at h3
       rw [lt_min_iff] at h4
@@ -288,7 +288,7 @@ theorem scaffold_orbit_ne_zero {c z : ℂ} {j k : ℕ} {t : ℝ}
     exact (mul_left_cancel₀ (ne_of_gt h2k) h3).symm
   rcases Nat.lt_or_ge k j with hkj | hkj
   · have h4 : (2:ℝ) ≤ 2 ^ (j - k) := by
-      calc (2:ℝ) = 2 ^ 1 := (pow_one 2).symm
+      calc (2:ℝ) = 2 ^ (1 : ℕ) := (pow_one 2).symm
         _ ≤ 2 ^ (j - k) := by
             apply pow_le_pow_right₀ (by norm_num)
             omega
@@ -303,15 +303,15 @@ theorem scaffold_orbit_ne_zero {c z : ℂ} {j k : ℕ} {t : ℝ}
 `(w, −w)` spanning them would give `σ_j(w) = σ_{j+1}(w²) = σ_{j+1}((−w)²) = σ_j(−w)`, against
 the injectivity of `σ_j` — the kill that pins the agreement locus to a single slot. -/
 theorem not_both_adjacent_folds_agree {ra RW α β a b : ℝ}
-    (hra1 : 1 < ra) (hraRW : ra ^ 2 < RW) (hβ : β = α + 7 * Real.pi / 4)
+    (hra1 : 1 < ra) (hraRW : ra ^ (2 : ℕ) < RW) (hβ : β = α + 7 * Real.pi / 4)
     {σj σj1 : ℂ → ℂ}
     (hinj : Set.InjOn σj (arcAnnulus ra RW α β))
     (hAm : max α a < min β b)
     (hAm1 : max α (a + Real.pi) < min β (b + Real.pi))
-    (hag : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) (max α a) (min β b), σj1 (w ^ 2) = σj w)
+    (hag : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) (max α a) (min β b), σj1 (w ^ (2 : ℕ)) = σj w)
     (hag1 : ∀ w ∈ arcAnnulus ra (Real.sqrt RW)
       (max α (a + Real.pi)) (min β (b + Real.pi)),
-      σj1 (w ^ 2) = σj w) : False := by
+      σj1 (w ^ (2 : ℕ)) = σj w) : False := by
   have hπ := Real.pi_pos
   have hra0 : (0:ℝ) < ra := by linarith
   have hRW1 : (1:ℝ) < RW := by nlinarith
@@ -376,7 +376,7 @@ theorem not_both_adjacent_folds_agree {ra RW α β a b : ℝ}
   have hneg : Complex.exp (ξ + Real.pi * Complex.I) = -Complex.exp ξ := by
     rw [Complex.exp_add, Complex.exp_pi_mul_I]
     ring
-  have hsq : Complex.exp (ξ + Real.pi * Complex.I) ^ 2 = Complex.exp ξ ^ 2 := by
+  have hsq : Complex.exp (ξ + Real.pi * Complex.I) ^ (2 : ℕ) = Complex.exp ξ ^ (2 : ℕ) := by
     rw [hneg]
     ring
   have h1 := hag _ hw
@@ -461,7 +461,7 @@ the overlap `σ_j''A ∩ σ_{j+1}''A` equals `σ_j''S₁` — the image of the c
 theorem scaffold_scaffold_overlap_preconnected
     {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
     {ra RW α β J₁ J₂ : ℝ} {σj σj1 : ℂ → ℂ} {j : ℕ}
-    (hrlo : 1 < rlo) (hra : rlo < ra) (hraRW : ra ^ 2 < RW) (hRWR : RW < R₀)
+    (hrlo : 1 < rlo) (hra : rlo < ra) (hraRW : ra ^ (2 : ℕ) < RW) (hRWR : RW < R₀)
     (hh0 : 0 < greenFunctionDyn c 0)
     (hra54 : 5 * greenFunctionDyn c 0 / 4 ≤ Real.log ra)
     (hRW72 : Real.log RW ≤ 7 * greenFunctionDyn c 0 / 2)
@@ -471,7 +471,7 @@ theorem scaffold_scaffold_overlap_preconnected
     (hPj1 : ScaffoldProps c S.T (arcAnnulus ra RW α β) (j + 1) σj1)
     (_hαJ₁ : α ≤ J₁) (hJ₁J₂ : J₁ < J₂) (hJ₂β : J₂ ≤ β)
     (hJ₁dbl : α ≤ 2 * J₁ - 2 * Real.pi) (hJ₂dbl : 2 * J₂ - 2 * Real.pi ≤ β)
-    (hdbl : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, σj1 (w ^ 2) = σj w) :
+    (hdbl : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, σj1 (w ^ (2 : ℕ)) = σj w) :
     IsPreconnected (σj '' arcAnnulus ra RW α β ∩ σj1 '' arcAnnulus ra RW α β) := by
   classical
   have hπ := Real.pi_pos
@@ -494,38 +494,38 @@ theorem scaffold_scaffold_overlap_preconnected
     (max α (α / 2 + Real.pi)) (min β (β / 2 + Real.pi)) with hS₁def
   set S₂ : Set ℂ := arcAnnulus ra (Real.sqrt RW)
     (max α (α / 2 + 2 * Real.pi)) (min β (β / 2 + 2 * Real.pi)) with hS₂def
-  have hdec : {w : ℂ | w ∈ A ∧ w ^ 2 ∈ A} = S₀ ∪ S₁ ∪ S₂ :=
+  have hdec : {w : ℂ | w ∈ A ∧ w ^ (2 : ℕ) ∈ A} = S₀ ∪ S₁ ∪ S₂ :=
     sq_window_decomposition hra1 hRW1 hβ hαlo hαhi
-  have hWsubA : ∀ {w : ℂ}, w ∈ A → w ^ 2 ∈ A → w ∈ S₀ ∪ S₁ ∪ S₂ := by
+  have hWsubA : ∀ {w : ℂ}, w ∈ A → w ^ (2 : ℕ) ∈ A → w ∈ S₀ ∪ S₁ ∪ S₂ := by
     intro w h1 h2
     rw [← hdec]
     exact ⟨h1, h2⟩
-  have hslotW : ∀ {w : ℂ}, w ∈ S₀ ∪ S₁ ∪ S₂ → w ∈ A ∧ w ^ 2 ∈ A := by
+  have hslotW : ∀ {w : ℂ}, w ∈ S₀ ∪ S₁ ∪ S₂ → w ∈ A ∧ w ^ (2 : ℕ) ∈ A := by
     intro w hw
     rw [← hdec] at hw
     exact hw
   -- local propagation of agreement on the squaring window
-  have hloc : ∀ w₀ : ℂ, w₀ ∈ A → w₀ ^ 2 ∈ A → σj1 (w₀ ^ 2) = σj w₀ →
-      ∀ᶠ w in nhds w₀, σj1 (w ^ 2) = σj w := by
+  have hloc : ∀ w₀ : ℂ, w₀ ∈ A → w₀ ^ (2 : ℕ) ∈ A → σj1 (w₀ ^ (2 : ℕ)) = σj w₀ →
+      ∀ᶠ w in nhds w₀, σj1 (w ^ (2 : ℕ)) = σj w := by
     intro w₀ hw₀A hw₀sq heq
-    have hWopen : IsOpen {w : ℂ | w ∈ A ∧ w ^ 2 ∈ A} := by
-      have h1 : Continuous fun w : ℂ => w ^ 2 := continuous_pow 2
+    have hWopen : IsOpen {w : ℂ | w ∈ A ∧ w ^ (2 : ℕ) ∈ A} := by
+      have h1 : Continuous fun w : ℂ => w ^ (2 : ℕ) := continuous_pow 2
       exact hAopen.inter (hAopen.preimage h1)
-    have hWnhds : {w : ℂ | w ∈ A ∧ w ^ 2 ∈ A} ∈ nhds w₀ :=
+    have hWnhds : {w : ℂ | w ∈ A ∧ w ^ (2 : ℕ) ∈ A} ∈ nhds w₀ :=
       hWopen.mem_nhds ⟨hw₀A, hw₀sq⟩
-    have hp₁ : ∀ᶠ w in nhds w₀, (quadratic c)^[j + 1] (σj1 (w ^ 2)) = S.T (w ^ 2) := by
+    have hp₁ : ∀ᶠ w in nhds w₀, (quadratic c)^[j + 1] (σj1 (w ^ (2 : ℕ))) = S.T (w ^ (2 : ℕ)) := by
       filter_upwards [hWnhds] with w hw
-      exact hitj1 (w ^ 2) hw.2
-    have hp₂ : ∀ᶠ w in nhds w₀, (quadratic c)^[j + 1] (σj w) = S.T (w ^ 2) := by
+      exact hitj1 (w ^ (2 : ℕ)) hw.2
+    have hp₂ : ∀ᶠ w in nhds w₀, (quadratic c)^[j + 1] (σj w) = S.T (w ^ (2 : ℕ)) := by
       filter_upwards [hWnhds] with w hw
       have hwann := hAann w hw.1
-      have hw2ann := hAann (w ^ 2) hw.2
+      have hw2ann := hAann (w ^ (2 : ℕ)) hw.2
       have h1 : (quadratic c)^[j + 1] (σj w) = quadratic c (S.T w) := by
         rw [Function.iterate_succ_apply', hitj w hw.1]
       rw [h1, quadratic_apply, ← S.fe w hwann hw2ann]
-    have hc₁ : ContinuousAt (fun w : ℂ => σj1 (w ^ 2)) w₀ := by
-      have h1 : ContinuousAt σj1 (w₀ ^ 2) := (hanj1 _ hw₀sq).continuousAt
-      exact ContinuousAt.comp (f := fun w : ℂ => w ^ 2) h1 ((continuous_pow 2).continuousAt)
+    have hc₁ : ContinuousAt (fun w : ℂ => σj1 (w ^ (2 : ℕ))) w₀ := by
+      have h1 : ContinuousAt σj1 (w₀ ^ (2 : ℕ)) := (hanj1 _ hw₀sq).continuousAt
+      exact ContinuousAt.comp (f := fun w : ℂ => w ^ (2 : ℕ)) h1 ((continuous_pow 2).continuousAt)
     have hc₂ : ContinuousAt σj w₀ := (hanj _ hw₀A).continuousAt
     -- noncriticality at the common value
     have hlev := hlevj w₀ hw₀A
@@ -534,10 +534,10 @@ theorem scaffold_scaffold_overlap_preconnected
       have h2 : Real.log ra < Real.log ‖w₀‖ := Real.log_lt_log hra0 h1
       linarith
     have hthi : Real.log ‖w₀‖ < 7 * greenFunctionDyn c 0 / 4 := by
-      have h1 : ‖w₀ ^ 2‖ < RW := (hAsub hw₀sq).2
+      have h1 : ‖w₀ ^ (2 : ℕ)‖ < RW := (hAsub hw₀sq).2
       rw [norm_pow] at h1
       have hw₀pos : (0:ℝ) < ‖w₀‖ := lt_trans hra0 (hAsub hw₀A).1
-      have h2 : Real.log (‖w₀‖ ^ 2) < Real.log RW :=
+      have h2 : Real.log (‖w₀‖ ^ (2 : ℕ)) < Real.log RW :=
         Real.log_lt_log (by nlinarith) h1
       rw [Real.log_pow] at h2
       push_cast at h2
@@ -545,22 +545,22 @@ theorem scaffold_scaffold_overlap_preconnected
     have hnc : ∀ k, k < j + 1 → (quadratic c)^[k] (σj w₀) ≠ 0 := by
       intro k hk
       exact scaffold_orbit_ne_zero hh0 hlev htlo hthi (by omega)
-    have heq' : (fun w : ℂ => σj1 (w ^ 2)) w₀ = σj w₀ := heq
-    have hnc' : ∀ k, k < j + 1 → (quadratic c)^[k] ((fun w : ℂ => σj1 (w ^ 2)) w₀) ≠ 0 := by
+    have heq' : (fun w : ℂ => σj1 (w ^ (2 : ℕ))) w₀ = σj w₀ := heq
+    have hnc' : ∀ k, k < j + 1 → (quadratic c)^[k] ((fun w : ℂ => σj1 (w ^ (2 : ℕ))) w₀) ≠ 0 := by
       intro k hk
-      show (quadratic c)^[k] (σj1 (w₀ ^ 2)) ≠ 0
+      show (quadratic c)^[k] (σj1 (w₀ ^ (2 : ℕ))) ≠ 0
       rw [heq]
       exact hnc k hk
     exact sections_eventuallyEq_of_orbit_ne_zero hc₁ hc₂ hp₁ hp₂ heq' hnc'
   -- per-slot dichotomy
   have hdich : ∀ (T : Set ℂ), T ⊆ S₀ ∪ S₁ ∪ S₂ → IsPreconnected T →
-      (∀ w ∈ T, σj1 (w ^ 2) = σj w) ∨ (∀ w ∈ T, σj1 (w ^ 2) ≠ σj w) := by
+      (∀ w ∈ T, σj1 (w ^ (2 : ℕ)) = σj w) ∨ (∀ w ∈ T, σj1 (w ^ (2 : ℕ)) ≠ σj w) := by
     intro T hTsub hTconn
     apply agree_locus_all_or_none hTconn
     · intro w hw
       have h1 := hslotW (hTsub hw)
-      have h2 : ContinuousAt σj1 (w ^ 2) := (hanj1 _ h1.2).continuousAt
-      exact ContinuousAt.comp (f := fun w : ℂ => w ^ 2) h2 ((continuous_pow 2).continuousAt)
+      have h2 : ContinuousAt σj1 (w ^ (2 : ℕ)) := (hanj1 _ h1.2).continuousAt
+      exact ContinuousAt.comp (f := fun w : ℂ => w ^ (2 : ℕ)) h2 ((continuous_pow 2).continuousAt)
     · intro w hw
       exact (hanj _ (hslotW (hTsub hw)).1).continuousAt
     · intro w hw heq
@@ -587,7 +587,7 @@ theorem scaffold_scaffold_overlap_preconnected
     exact (isConnected_arcAnnulus hra0 hsqrt (lt_trans g3 g4)).isPreconnected
   have hS₁sub : S₁ ⊆ S₀ ∪ S₁ ∪ S₂ := fun w hw => Or.inl (Or.inr hw)
   -- slot 1 agrees everywhere
-  have hE₁ : ∀ w ∈ S₁, σj1 (w ^ 2) = σj w := by
+  have hE₁ : ∀ w ∈ S₁, σj1 (w ^ (2 : ℕ)) = σj w := by
     rcases hdich S₁ hS₁sub hS₁conn with h | h
     · exact h
     · obtain ⟨w, hw⟩ := hwinne
@@ -598,7 +598,7 @@ theorem scaffold_scaffold_overlap_preconnected
     obtain ⟨ξ, ⟨_, _, g3, g4⟩, _⟩ := hwinsub hw
     exact lt_trans g3 g4
   -- the agreement locus avoids slots 0 and 2
-  have hE₀ : ∀ w ∈ S₀, σj1 (w ^ 2) ≠ σj w := by
+  have hE₀ : ∀ w ∈ S₀, σj1 (w ^ (2 : ℕ)) ≠ σj w := by
     have hS₀sub : S₀ ⊆ S₀ ∪ S₁ ∪ S₂ := fun w hw => Or.inl (Or.inl hw)
     by_cases hne : max α (α / 2) < min β (β / 2)
     · rcases hdich S₀ hS₀sub (isConnected_arcAnnulus hra0 hsqrt hne).isPreconnected with h | h
@@ -610,7 +610,7 @@ theorem scaffold_scaffold_overlap_preconnected
       exfalso
       obtain ⟨ξ, ⟨_, _, g3, g4⟩, _⟩ := hw
       exact hne (lt_trans g3 g4)
-  have hE₂ : ∀ w ∈ S₂, σj1 (w ^ 2) ≠ σj w := by
+  have hE₂ : ∀ w ∈ S₂, σj1 (w ^ (2 : ℕ)) ≠ σj w := by
     have hS₂sub : S₂ ⊆ S₀ ∪ S₁ ∪ S₂ := fun w hw => Or.inr hw
     by_cases hne : max α (α / 2 + 2 * Real.pi) < min β (β / 2 + 2 * Real.pi)
     · rcases hdich S₂ hS₂sub (isConnected_arcAnnulus hra0 hsqrt hne).isPreconnected with h | h
@@ -630,7 +630,7 @@ theorem scaffold_scaffold_overlap_preconnected
     ext z
     constructor
     · rintro ⟨⟨w, hw, rfl⟩, v, hv, hveq⟩
-      have hforce : v = w ^ 2 := by
+      have hforce : v = w ^ (2 : ℕ) := by
         have hfam : ∀ n : ℕ, (fun k : ℕ => if k = j then σj else σj1) n
             = if n = j then σj else σj1 := fun _ => rfl
         apply scaffold_overlap_forcing (σ := fun k : ℕ => if k = j then σj else σj1)
@@ -650,7 +650,7 @@ theorem scaffold_scaffold_overlap_preconnected
       · exact absurd hveq (hE₂ w h2)
     · rintro ⟨w, hw, rfl⟩
       have h1 := hslotW (hS₁sub hw)
-      exact ⟨⟨w, h1.1, rfl⟩, w ^ 2, h1.2, hE₁ w hw⟩
+      exact ⟨⟨w, h1.1, rfl⟩, w ^ (2 : ℕ), h1.2, hE₁ w hw⟩
   rw [hover]
   apply hS₁conn.image
   apply (hanj.mono ?_).continuousOn
@@ -730,7 +730,7 @@ theorem filledJulia_subset_closedBall_sqrt (c : ℂ) :
   push Not at hlt
   set s : ℝ := Real.sqrt ‖c‖ with hsdef
   have hs0 : (0:ℝ) ≤ s := Real.sqrt_nonneg _
-  have hs2 : s ^ 2 = ‖c‖ := Real.sq_sqrt (norm_nonneg c)
+  have hs2 : s ^ (2 : ℕ) = ‖c‖ := Real.sq_sqrt (norm_nonneg c)
   set d : ℝ := ‖z‖ - (s + 1) with hddef
   have hd0 : (0:ℝ) < d := by rw [hddef]; linarith
   have hgrow : ∀ n : ℕ, ‖z‖ + n * d ≤ ‖(quadratic c)^[n] z‖ := by
@@ -744,11 +744,11 @@ theorem filledJulia_subset_closedBall_sqrt (c : ℂ) :
         have hw1' : (1:ℝ) ≤ ‖w‖ := by
           have h1 : s + 1 + d = ‖z‖ := by rw [hddef]; ring
           linarith [ih]
-        have hstep : ‖w‖ ^ 2 - ‖c‖ ≤ ‖quadratic c w‖ := by
-          have h1 : ‖w ^ 2‖ ≤ ‖w ^ 2 + c‖ + ‖c‖ := by
-            calc ‖w ^ 2‖ = ‖w ^ 2 + c + -c‖ := by ring_nf
-              _ ≤ ‖w ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
-              _ = ‖w ^ 2 + c‖ + ‖c‖ := by rw [norm_neg]
+        have hstep : ‖w‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖quadratic c w‖ := by
+          have h1 : ‖w ^ (2 : ℕ)‖ ≤ ‖w ^ (2 : ℕ) + c‖ + ‖c‖ := by
+            calc ‖w ^ (2 : ℕ)‖ = ‖w ^ (2 : ℕ) + c + -c‖ := by ring_nf
+              _ ≤ ‖w ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
+              _ = ‖w ^ (2 : ℕ) + c‖ + ‖c‖ := by rw [norm_neg]
           rw [quadratic_apply]
           rw [norm_pow] at h1
           linarith
@@ -759,8 +759,8 @@ theorem filledJulia_subset_closedBall_sqrt (c : ℂ) :
           nlinarith [ih]
         have hprod : (1 + ((m : ℝ) + 1) * d) * ‖w‖ ≤ (‖w‖ - s) * (‖w‖ + s) := by
           apply mul_le_mul hws (by linarith) (by linarith) (by linarith)
-        have hkey : ‖z‖ + ((m : ℝ) + 1) * d ≤ ‖w‖ ^ 2 - ‖c‖ := by
-          have h2 : (‖w‖ - s) * (‖w‖ + s) = ‖w‖ ^ 2 - s ^ 2 := by ring
+        have hkey : ‖z‖ + ((m : ℝ) + 1) * d ≤ ‖w‖ ^ (2 : ℕ) - ‖c‖ := by
+          have h2 : (‖w‖ - s) * (‖w‖ + s) = ‖w‖ ^ (2 : ℕ) - s ^ (2 : ℕ) := by ring
           have h3 : (1 + ((m : ℝ) + 1) * d) * ‖w‖
               = ‖w‖ + ((m : ℝ) + 1) * d * ‖w‖ := by ring
           have h4 : ((m : ℝ) + 1) * d ≤ ((m : ℝ) + 1) * d * ‖w‖ := by

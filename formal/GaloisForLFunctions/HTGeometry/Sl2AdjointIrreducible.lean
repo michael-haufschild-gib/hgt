@@ -38,7 +38,7 @@ def lowerConj (t : U) (A : Matrix (Fin 2) (Fin 2) U) : Matrix (Fin 2) (Fin 2) U 
 
 theorem upperConj_entry (t : U) (A : Matrix (Fin 2) (Fin 2) U) :
     upperConj t A 0 0 = A 0 0 + t * A 1 0 ∧
-    upperConj t A 0 1 = A 0 1 + t * (A 1 1 - A 0 0) - t ^ 2 * A 1 0 ∧
+    upperConj t A 0 1 = A 0 1 + t * (A 1 1 - A 0 0) - t ^ (2 : ℕ) * A 1 0 ∧
     upperConj t A 1 0 = A 1 0 ∧
     upperConj t A 1 1 = A 1 1 - t * A 1 0 := by
   refine ⟨?_, ?_, ?_, ?_⟩
@@ -50,7 +50,7 @@ theorem upperConj_entry (t : U) (A : Matrix (Fin 2) (Fin 2) U) :
 theorem lowerConj_entry (t : U) (A : Matrix (Fin 2) (Fin 2) U) :
     lowerConj t A 0 0 = A 0 0 - t * A 0 1 ∧
     lowerConj t A 0 1 = A 0 1 ∧
-    lowerConj t A 1 0 = A 1 0 + t * (A 0 0 - A 1 1) - t ^ 2 * A 0 1 ∧
+    lowerConj t A 1 0 = A 1 0 + t * (A 0 0 - A 1 1) - t ^ (2 : ℕ) * A 0 1 ∧
     lowerConj t A 1 1 = A 1 1 + t * A 0 1 := by
   refine ⟨?_, ?_, ?_, ?_⟩
   all_goals

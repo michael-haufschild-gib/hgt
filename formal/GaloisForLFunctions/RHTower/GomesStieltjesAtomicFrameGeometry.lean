@@ -18,13 +18,13 @@ open scoped BigOperators
 
 /-- Finite atomic moments with arbitrary real amplitudes and nonnegative squared weights. -/
 def gomesAtomicMoment (S : Finset ℝ) (w : ℝ → ℝ) (n : ℕ) : ℝ :=
-  ∑ x ∈ S, (w x)^2*x^n
+  ∑ x ∈ S, (w x)^(2 : ℕ)*x^n
 
 /-- The exact source quadratic form is the sum of its squared weighted observations. -/
 theorem gomesAtomicMoment_inner (S : Finset ℝ) (w : ℝ → ℝ) (p : Polynomial ℝ) :
-    momentInner (gomesAtomicMoment S w) p p = ∑ x ∈ S, (w x*p.eval x)^2 := by
+    momentInner (gomesAtomicMoment S w) p p = ∑ x ∈ S, (w x*p.eval x)^(2 : ℕ) := by
   rw [momentInner_def]
-  change momentFunctional (fun n => ∑ x ∈ S, (w x)^2*x^n) (p*p) = _
+  change momentFunctional (fun n => ∑ x ∈ S, (w x)^(2 : ℕ)*x^n) (p*p) = _
   rw [momentFunctional_finiteAtomicMoment]
   apply Finset.sum_congr rfl
   intro x hx

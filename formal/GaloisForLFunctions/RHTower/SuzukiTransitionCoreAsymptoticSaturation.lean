@@ -58,7 +58,7 @@ theorem suzukiTransitionCoreAsymptoticallySaturates_of_rectangularWardDefect_bdd
       n hward hcore hroot hlow hn hlogn
   have hn0 : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
   have hsqrt0 : 0 ≤ Real.sqrt (n : ℝ) := Real.sqrt_nonneg _
-  have hsqrtSq : Real.sqrt (n : ℝ) ^ 2 = (n : ℝ) := Real.sq_sqrt hn0
+  have hsqrtSq : Real.sqrt (n : ℝ) ^ (2 : ℕ) = (n : ℝ) := Real.sq_sqrt hn0
   have hroot' : 1728 * C ≤ ε * Real.sqrt (n : ℝ) := by
     simpa only [mul_comm] using (div_le_iff₀ hε).mp hroot
   have hrootMul := mul_le_mul_of_nonneg_right hroot' hsqrt0

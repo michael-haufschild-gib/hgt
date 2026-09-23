@@ -110,12 +110,12 @@ theorem finiteHankelNullPolynomial_aeval_ne_zero
   have hzero : momentInner s p g = 0 := by
     exact momentInner_finiteHankelNullPolynomial_eq_zero_of_kernel hc hglt
   have hpoly : conjQuadratic z * g * g =
-      ((X - C z.re) * g) * ((X - C z.re) * g) + (z.im ^ 2) • (g * g) := by
+      ((X - C z.re) * g) * ((X - C z.re) * g) + (z.im ^ (2 : ℕ)) • (g * g) := by
     simp only [conjQuadratic, Polynomial.smul_eq_C_mul]
     ring
   have hexp : momentInner s p g =
       momentInner s ((X - C z.re) * g) ((X - C z.re) * g) +
-        z.im ^ 2 * momentInner s g g := by
+        z.im ^ (2 : ℕ) * momentInner s g g := by
     rw [hpg, momentInner_def, hpoly, momentFunctional_add, momentFunctional_smul,
       momentInner_def, momentInner_def]
   have hgdeg : g.natDegree < n := by omega
@@ -127,7 +127,7 @@ theorem finiteHankelNullPolynomial_aeval_ne_zero
     momentInner_self_pos_of_natDegree_lt hhead hxgne hxgdeg
   have h2 : 0 < momentInner s g g :=
     momentInner_self_pos_of_natDegree_lt hhead hgne hgdeg
-  have h3 : 0 < z.im ^ 2 := sq_pos_of_ne_zero hz
+  have h3 : 0 < z.im ^ (2 : ℕ) := sq_pos_of_ne_zero hz
   rw [hexp] at hzero
   nlinarith
 
@@ -146,17 +146,17 @@ theorem finiteHankelNullPolynomial_not_sq_dvd
     (hhead : (momentHankelMatrix s n).PosDef)
     (hc : momentHankelMatrix s (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) (r : ℝ) :
-    ¬ (((X - C r) ^ 2 : Polynomial ℝ) ∣ finiteHankelNullPolynomial c) := by
+    ¬ (((X - C r) ^ (2 : ℕ) : Polynomial ℝ) ∣ finiteHankelNullPolynomial c) := by
   rintro ⟨g, hpg⟩
   let p := finiteHankelNullPolynomial c
-  have hpgp : p = (X - C r) ^ 2 * g := by simpa only [p] using hpg
+  have hpgp : p = (X - C r) ^ (2 : ℕ) * g := by simpa only [p] using hpg
   have hpne : p ≠ 0 := finiteHankelNullPolynomial_ne_zero c hlast
   have hgne : g ≠ 0 := by
     intro hg
     rw [hg, mul_zero] at hpg
     exact hpne hpg
   have hpdeg : p.natDegree = n := finiteHankelNullPolynomial_natDegree c hlast
-  have hsqne : ((X - C r) ^ 2 : Polynomial ℝ) ≠ 0 :=
+  have hsqne : ((X - C r) ^ (2 : ℕ) : Polynomial ℝ) ≠ 0 :=
     pow_ne_zero 2 (X_sub_C_ne_zero r)
   have hnd : n = 2 + g.natDegree := by
     rw [← hpdeg, hpgp, natDegree_mul hsqne hgne, natDegree_pow,

@@ -18,18 +18,18 @@ noncomputable section
 def pwGammaRayFirstMomentSource (x : ℝ) : ℂ := (x : ℂ)*pwGammaRaySource x
 
 private theorem pwGammaCoordinateEndpoint_second_eq {x : ℝ} (hx : 0 < x) :
-    x^2*‖pwGammaRaySource x‖ = Real.exp (-x)*x^((7/2 : ℝ)-1) := by
+    x^(2 : ℕ)*‖pwGammaRaySource x‖ = Real.exp (-x)*x^((7/2 : ℝ)-1) := by
   rw [pwGammaRaySource_eq hx, Complex.norm_real, Real.norm_of_nonneg (by positivity),
     Real.sqrt_eq_rpow, show (7/2 : ℝ)-1=2+1/2 by ring, Real.rpow_add hx, Real.rpow_two]
   ring
 
 theorem pwGammaRaySource_second_moment_integrable :
-    IntegrableOn (fun x : ℝ => x^2*‖pwGammaRaySource x‖) (Ioi 0) :=
+    IntegrableOn (fun x : ℝ => x^(2 : ℕ)*‖pwGammaRaySource x‖) (Ioi 0) :=
   IntegrableOn.congr_fun (Real.GammaIntegral_convergent (s := 7/2) (by positivity))
     (fun _ hx => (pwGammaCoordinateEndpoint_second_eq hx).symm) measurableSet_Ioi
 
 theorem pwGammaRaySource_second_moment_integral :
-    (∫ x in Ioi (0 : ℝ), x^2*‖pwGammaRaySource x‖) = Real.Gamma (7/2) := by
+    (∫ x in Ioi (0 : ℝ), x^(2 : ℕ)*‖pwGammaRaySource x‖) = Real.Gamma (7/2) := by
   rw [Real.Gamma_eq_integral (s := 7/2) (by positivity)]
   exact setIntegral_congr_fun measurableSet_Ioi fun _ hx => pwGammaCoordinateEndpoint_second_eq hx
 
@@ -49,15 +49,15 @@ private theorem pwGammaCoordinateEndpoint_first_integrable {r : ℝ} (hr : 0 < r
   field_simp
 
 private theorem pwGammaCoordinateEndpoint_second_integrable {r : ℝ} (hr : 0 < r) :
-    IntegrableOn (fun x => x^2*‖pwGammaRaySource (r*x)‖) (Ioi 0) := by
-  have hh : IntegrableOn (fun x => (r*x)^2*‖pwGammaRaySource (r*x)‖) (Ioi 0) := by
-    apply (integrableOn_Ioi_comp_mul_left_iff (fun y => y^2*‖pwGammaRaySource y‖) 0 hr).mpr
+    IntegrableOn (fun x => x^(2 : ℕ)*‖pwGammaRaySource (r*x)‖) (Ioi 0) := by
+  have hh : IntegrableOn (fun x => (r*x)^(2 : ℕ)*‖pwGammaRaySource (r*x)‖) (Ioi 0) := by
+    apply (integrableOn_Ioi_comp_mul_left_iff (fun y => y^(2 : ℕ)*‖pwGammaRaySource y‖) 0 hr).mpr
     simpa only [mul_zero] using pwGammaRaySource_second_moment_integrable
-  refine IntegrableOn.congr_fun (hh.const_mul ((r⁻¹)^2)) (fun x _ => ?_) measurableSet_Ioi
+  refine IntegrableOn.congr_fun (hh.const_mul ((r⁻¹)^(2 : ℕ))) (fun x _ => ?_) measurableSet_Ioi
   field_simp
 
 private theorem pwGammaCoordinateEndpoint_first_integral {r : ℝ} (hr : 0 < r) :
-    (∫ x in Ioi (0 : ℝ), x*‖pwGammaRaySource (r*x)‖) = Real.Gamma (5/2)/r^2 := by
+    (∫ x in Ioi (0 : ℝ), x*‖pwGammaRaySource (r*x)‖) = Real.Gamma (5/2)/r^(2 : ℕ) := by
   have hf : (fun x => x*‖pwGammaRaySource (r*x)‖) =
       (fun x => r⁻¹*((r*x)*‖pwGammaRaySource (r*x)‖)) := by funext x; field_simp
   rw [hf, integral_const_mul, integral_comp_mul_left_Ioi (fun y => y*‖pwGammaRaySource y‖) 0 hr,
@@ -65,16 +65,16 @@ private theorem pwGammaCoordinateEndpoint_first_integral {r : ℝ} (hr : 0 < r) 
   ring
 
 private theorem pwGammaCoordinateEndpoint_second_integral {r : ℝ} (hr : 0 < r) :
-    (∫ x in Ioi (0 : ℝ), x^2*‖pwGammaRaySource (r*x)‖) = Real.Gamma (7/2)/r^3 := by
-  have hf : (fun x => x^2*‖pwGammaRaySource (r*x)‖) =
-      (fun x => (r⁻¹)^2*((r*x)^2*‖pwGammaRaySource (r*x)‖)) := by funext x; field_simp
-  rw [hf, integral_const_mul, integral_comp_mul_left_Ioi (fun y => y^2*‖pwGammaRaySource y‖) 0 hr,
+    (∫ x in Ioi (0 : ℝ), x^(2 : ℕ)*‖pwGammaRaySource (r*x)‖) = Real.Gamma (7/2)/r^(3 : ℕ) := by
+  have hf : (fun x => x^(2 : ℕ)*‖pwGammaRaySource (r*x)‖) =
+      (fun x => (r⁻¹)^(2 : ℕ)*((r*x)^(2 : ℕ)*‖pwGammaRaySource (r*x)‖)) := by funext x; field_simp
+  rw [hf, integral_const_mul, integral_comp_mul_left_Ioi (fun y => y^(2 : ℕ)*‖pwGammaRaySource y‖) 0 hr,
     mul_zero, smul_eq_mul, pwGammaRaySource_second_moment_integral]
   ring
 
 theorem pwGammaRayFirstMomentSource_adjacent_norm_le {r x : ℝ} (hr : 0 < r) (hx : 0 < x) :
     ‖pwGammaRayFirstMomentSource ((r+1)*x)-pwGammaRayFirstMomentSource (r*x)‖ ≤
-      x*‖pwGammaRaySource ((r+1)*x)‖ + x*‖pwGammaRaySource (r*x)‖ + r*(x^2*‖pwGammaRaySource (r*x)‖) := by
+      x*‖pwGammaRaySource ((r+1)*x)‖ + x*‖pwGammaRaySource (r*x)‖ + r*(x^(2 : ℕ)*‖pwGammaRaySource (r*x)‖) := by
   have heq : pwGammaRayFirstMomentSource ((r+1)*x)-pwGammaRayFirstMomentSource (r*x) =
       (x : ℂ)*pwGammaRaySource ((r+1)*x) + ((r*x : ℝ) : ℂ)*
         (pwGammaRaySource ((r+1)*x)-pwGammaRaySource (r*x)) := by
@@ -95,7 +95,7 @@ theorem pwGammaRayFirstMomentSource_adjacent_norm_le {r x : ℝ} (hr : 0 < r) (h
 
 theorem pwGammaRayFirstMomentSource_adjacent_integral_norm_le {r : ℝ} (hr : 0 < r) :
     (∫ x in Ioi (0 : ℝ), ‖pwGammaRayFirstMomentSource ((r+1)*x)-pwGammaRayFirstMomentSource (r*x)‖) ≤
-      (2*Real.Gamma (5/2)+Real.Gamma (7/2))/r^2 := by
+      (2*Real.Gamma (5/2)+Real.Gamma (7/2))/r^(2 : ℕ) := by
   have hr1 : 0 < r+1 := by positivity
   have h1 := pwGammaCoordinateEndpoint_first_integrable hr1
   have h0 := pwGammaCoordinateEndpoint_first_integrable hr
@@ -103,16 +103,16 @@ theorem pwGammaRayFirstMomentSource_adjacent_integral_norm_le {r : ℝ} (hr : 0 
   have h10 : IntegrableOn (fun x => x*‖pwGammaRaySource ((r+1)*x)‖ + x*‖pwGammaRaySource (r*x)‖) (Ioi 0) := h1.add h0
   calc
     _ ≤ ∫ x in Ioi (0 : ℝ), x*‖pwGammaRaySource ((r+1)*x)‖ + x*‖pwGammaRaySource (r*x)‖ +
-        r*(x^2*‖pwGammaRaySource (r*x)‖) := by
+        r*(x^(2 : ℕ)*‖pwGammaRaySource (r*x)‖) := by
       apply integral_mono_ae ((pwGammaCoordinateEndpoint_R_integrable hr1).sub
         (pwGammaCoordinateEndpoint_R_integrable hr)).norm ((h1.add h0).add h2)
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
       exact pwGammaRayFirstMomentSource_adjacent_norm_le hr hx
-    _ = Real.Gamma (5/2)/(r+1)^2 + Real.Gamma (5/2)/r^2 + r*(Real.Gamma (7/2)/r^3) := by
+    _ = Real.Gamma (5/2)/(r+1)^(2 : ℕ) + Real.Gamma (5/2)/r^(2 : ℕ) + r*(Real.Gamma (7/2)/r^(3 : ℕ)) := by
       rw [integral_add h10 h2, integral_add h1 h0, integral_const_mul,
         pwGammaCoordinateEndpoint_first_integral hr1, pwGammaCoordinateEndpoint_first_integral hr,
         pwGammaCoordinateEndpoint_second_integral hr]
-    _ ≤ Real.Gamma (5/2)/r^2 + Real.Gamma (5/2)/r^2 + r*(Real.Gamma (7/2)/r^3) := by
+    _ ≤ Real.Gamma (5/2)/r^(2 : ℕ) + Real.Gamma (5/2)/r^(2 : ℕ) + r*(Real.Gamma (7/2)/r^(3 : ℕ)) := by
       gcongr
       linarith
     _ = _ := by field_simp; ring
@@ -136,7 +136,7 @@ theorem pwGammaMobiusCoordinateAbelAtom_integrable (n : ℕ) :
 
 theorem pwGammaMobiusCoordinateAbelAtom_integral_norm_le (n : ℕ) :
     (∫ x in Ioi (0 : ℝ), ‖pwGammaMobiusCoordinateAbelAtom n x‖) ≤
-      (2*Real.Gamma (5/2)+Real.Gamma (7/2))*(|Sieve.mertensM n|/(n : ℝ)^2) := by
+      (2*Real.Gamma (5/2)+Real.Gamma (7/2))*(|Sieve.mertensM n|/(n : ℝ)^(2 : ℕ)) := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [pwGammaCoordinateEndpoint_abel_zero]
   have hnr : (0 : ℝ) < n := by exact_mod_cast hn
@@ -148,7 +148,7 @@ theorem pwGammaMobiusCoordinateAbelAtom_integral_norm_le (n : ℕ) :
     Real.norm_eq_abs, integral_const_mul]
   rw [hrev]
   calc
-    _ ≤ |Sieve.mertensM n| *((2*Real.Gamma (5/2)+Real.Gamma (7/2))/(n : ℝ)^2) :=
+    _ ≤ |Sieve.mertensM n| *((2*Real.Gamma (5/2)+Real.Gamma (7/2))/(n : ℝ)^(2 : ℕ)) :=
       mul_le_mul_of_nonneg_left (pwGammaRayFirstMomentSource_adjacent_integral_norm_le hnr) (abs_nonneg _)
     _ = _ := by ring
 

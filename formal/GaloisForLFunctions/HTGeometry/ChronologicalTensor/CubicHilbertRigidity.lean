@@ -37,7 +37,7 @@ def cubicCuspGradedInnerForm : LinearMap.BilinForm ℝ
 
 def cubicCompatibleInnerForms : Set (LinearMap.BilinForm ℝ
     (Polynomial (Polynomial ℝ) ⧸ cubicCuspAlgebra.toSubmodule)) :=
-  {B | (∀ k, B (cubicCuspDefectBasis k) (cubicCuspDefectBasis k)=(cubicGradedRecoveryGap k)^2) ∧
+  {B | (∀ k, B (cubicCuspDefectBasis k) (cubicCuspDefectBasis k)=(cubicGradedRecoveryGap k)^(2 : ℕ)) ∧
     ∀ x y, B (cubicCuspDefectFlow (1/2) x) y=B x (cubicCuspDefectFlow (1/2) y)}
 
 theorem cubicCuspGradedInnerForm_mem : cubicCuspGradedInnerForm ∈ cubicCompatibleInnerForms := by
@@ -54,7 +54,7 @@ theorem cubicCompatibleInnerForms_basis
     (B : LinearMap.BilinForm ℝ (Polynomial (Polynomial ℝ) ⧸ cubicCuspAlgebra.toSubmodule)) :
     B ∈ cubicCompatibleInnerForms → ∀ i j,
       B (cubicCuspDefectBasis i) (cubicCuspDefectBasis j)=
-        if i=j then (cubicGradedRecoveryGap i)^2 else 0 := by
+        if i=j then (cubicGradedRecoveryGap i)^(2 : ℕ) else 0 := by
   rintro ⟨hd,hs⟩ i j
   by_cases hij : i=j
   · subst j

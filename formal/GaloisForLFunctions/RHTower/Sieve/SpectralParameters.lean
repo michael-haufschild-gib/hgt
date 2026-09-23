@@ -311,7 +311,7 @@ theorem ladderMass_lower {β γ : ℝ} (hβ0 : 0 < β) (hγ0 : 0 < γ) (hγ1 : �
         rw [le_div_iff₀ (by norm_num : (0:ℝ) < 4), cardLength]
         have hle : Real.log 8 ≤ (Real.log x) ^ β := by
           have h84 : Real.log 8 ≤ 2 * Real.log 4 := by
-            rw [show (8:ℝ) = 2^3 by norm_num, show (4:ℝ) = 2^2 by norm_num,
+            rw [show (8:ℝ) = 2^(3 : ℕ) by norm_num, show (4:ℝ) = 2^(2 : ℕ) by norm_num,
               Real.log_pow, Real.log_pow]
             have := Real.log_pos (by norm_num : (1:ℝ) < 2)
             push_cast

@@ -21,7 +21,7 @@ variable {α : Type*} [TopologicalSpace α] [MeasurableSpace α] [BorelSpace α]
 
 /-- Exact energy for arbitrary continuous real dispersion and arbitrary spectral measure. -/
 theorem multiplier_energy (ω : C(α, ℝ)) (x : Lp ℂ 2 μ) (d t : ℝ) :
-    energy d t (fun s => freeGroup ω ω.continuous.measurable s x) = mass d t * ‖x‖ ^ 2 := by
+    energy d t (fun s => freeGroup ω ω.continuous.measurable s x) = mass d t * ‖x‖ ^ (2 : ℕ) := by
   unfold energy
   simp_rw [norm_freeGroup_apply]
   rw [intervalIntegral.integral_mul_const, integral_weight]
@@ -29,14 +29,14 @@ theorem multiplier_energy (ω : C(α, ℝ)) (x : Lp ℂ 2 μ) (d t : ℝ) :
 /-- Initial-state errors retain the same exact weighted energy identity. -/
 theorem multiplier_difference_energy (ω : C(α, ℝ)) (x y : Lp ℂ 2 μ) (d t : ℝ) :
     energy d t (fun s => freeGroup ω ω.continuous.measurable s x -
-      freeGroup ω ω.continuous.measurable s y) = mass d t * ‖x - y‖ ^ 2 := by
+      freeGroup ω ω.continuous.measurable s y) = mass d t * ‖x - y‖ ^ (2 : ℕ) := by
   simp_rw [← map_sub]
   exact multiplier_energy μ ω (x - y) d t
 
 /-- Two independent dispersion directions saturate the rectangle constant. -/
 theorem multiplier_rectangle_energy (ω ν : C(α, ℝ)) (x : Lp ℂ 2 μ) (d u v : ℝ) :
     rectangleEnergy d u v (fun p => freeGroup ω ω.continuous.measurable p.1
-      (freeGroup ν ν.continuous.measurable p.2 x)) = mass d u * mass d v * ‖x‖ ^ 2 := by
+      (freeGroup ν ν.continuous.measurable p.2 x)) = mass d u * mass d v * ‖x‖ ^ (2 : ℕ) := by
   unfold rectangleEnergy energy
   simp_rw [norm_freeGroup_apply]
   rw [intervalIntegral.integral_mul_const, integral_weight,
@@ -59,7 +59,7 @@ theorem bohr_modulation_energy (f : ℝ → ℂ) (lam d t : ℝ) :
 /-- Finite harmonic synthesis has a rate-dependent bound uniform in all frequencies and collisions. -/
 theorem finite_bohr_energy_le {ι : Type*} (S : Finset ι) (c : ι → ℂ) (lam : ι → ℝ) (d t : ℝ) :
     energy d t (fun s => ∑ i ∈ S, c i * bcfChar (lam i) s) ≤
-      (∑ i ∈ S, ‖c i‖) ^ 2 / (2 * Real.exp d) := by
+      (∑ i ∈ S, ‖c i‖) ^ (2 : ℕ) / (2 * Real.exp d) := by
   let f : BoundedContinuousFunction ℝ ℂ := ∑ i ∈ S, c i • bcfChar (lam i)
   have he (s : ℝ) : f s = ∑ i ∈ S, c i * bcfChar (lam i) s := by simp [f]
   have hb : ‖f‖ ≤ ∑ i ∈ S, ‖c i‖ := by

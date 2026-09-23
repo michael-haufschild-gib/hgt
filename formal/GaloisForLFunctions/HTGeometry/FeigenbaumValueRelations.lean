@@ -248,20 +248,20 @@ theorem feigenbaum_quadratic_postcritical_deriv
     rw [hfun]
     rw [iteratedDeriv_const_mul_field]
     rw [show iteratedDeriv 2 (fun x => g (alpha ^ n * x)) 0 =
-        (alpha ^ n) ^ 2 * iteratedDeriv 2 g ((alpha ^ n) * 0) by
+        (alpha ^ n) ^ (2 : ℕ) * iteratedDeriv 2 g ((alpha ^ n) * 0) by
       exact congrFun (iteratedDeriv_comp_const_mul hg (alpha ^ n)) 0]
     simp only [mul_zero]
     ring
   have heq : deriv h 1 = lam ^ n * alpha ^ (2 * n) := by
     apply mul_right_cancel₀ hquad
     rw [← hleft, hright]
-  have hbase : lam * alpha ^ 2 = -alpha := by
+  have hbase : lam * alpha ^ (2 : ℕ) = -alpha := by
     calc
-      lam * alpha ^ 2 = alpha * (alpha * lam) := by ring
+      lam * alpha ^ (2 : ℕ) = alpha * (alpha * lam) := by ring
       _ = -alpha := by rw [hscale]; ring
   calc
     deriv (g^[2 ^ n - 1]) 1 = lam ^ n * alpha ^ (2 * n) := by simpa [h, N] using heq
-    _ = (lam * alpha ^ 2) ^ n := by rw [mul_pow]; ring
+    _ = (lam * alpha ^ (2 : ℕ)) ^ n := by rw [mul_pow]; ring
     _ = (-alpha) ^ n := by rw [hbase]
 
 /-- **Quadratic Feigenbaum postcritical product law.**  The product of all derivative values

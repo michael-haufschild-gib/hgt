@@ -27,24 +27,24 @@ theorem norm_evenLogShellChannel_apply_le_of_powerTail {a r : ℝ} (ha : 0 < a) 
     (hM : ∀ k, k < K → |Real.log (logShellRadius a r k)| ≤ M)
     (hC : 0 ≤ C) (hone : 1 ≤ logShellRadius a r K)
     (hdecay : ∀ k, K ≤ k → ‖evenIndicatorLayer (logShellRadius a r k)
-        (logShellRadius a r (k + 1)) u‖ ^ 2 ≤ C / logShellRadius a r k ^ (p + 1)) :
+        (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤ C / logShellRadius a r k ^ (p + 1)) :
     ‖evenLogShellChannel a r n u‖ ≤
-      Real.sqrt (M ^ 2 * ‖u‖ ^ 2 + 4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹)) :=
+      Real.sqrt (M ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) + 4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹)) :=
   norm_evenLogShellChannel_apply_le_of_tail a r ha hr n K u M _ hM
     (sum_Ico_logShellRadius_weight_le ha hr hp K n u hC hone hdecay)
 
 /-- The shell masses inherit a power decay from the mass outside a ball. -/
 theorem norm_sq_evenIndicatorLayer_le_of_highTail {a r : ℝ} (ha : 0 < a) (hr : 1 < r)
     (K : ℕ) (u : evenSubspace) {C : ℝ} {p : ℕ}
-    (htail : ∀ t : ℝ, logShellRadius a r K ≤ t → ‖u - evenIndicatorCutoff t u‖ ^ 2 ≤
+    (htail : ∀ t : ℝ, logShellRadius a r K ≤ t → ‖u - evenIndicatorCutoff t u‖ ^ (2 : ℕ) ≤
       C / t ^ (p + 1)) :
     ∀ k, K ≤ k → ‖evenIndicatorLayer (logShellRadius a r k)
-        (logShellRadius a r (k + 1)) u‖ ^ 2 ≤ C / logShellRadius a r k ^ (p + 1) := by
+        (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤ C / logShellRadius a r k ^ (p + 1) := by
   intro k hKk
   have hshell := norm_evenIndicatorLayer_apply_le_high
     (logShellRadius_mono ha hr (Nat.le_succ k)) u
-  have hsq : ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 ≤
-      ‖u - evenIndicatorCutoff (logShellRadius a r k) u‖ ^ 2 := by
+  have hsq : ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤
+      ‖u - evenIndicatorCutoff (logShellRadius a r k) u‖ ^ (2 : ℕ) := by
     rw [pow_two, pow_two]
     exact mul_self_le_mul_self (norm_nonneg _) hshell
   exact le_trans hsq (htail _ (logShellRadius_mono ha hr hKk))
@@ -54,10 +54,10 @@ theorem norm_evenLogShellChannel_apply_le_of_highTail {a r : ℝ} (ha : 0 < a) (
     {p : ℕ} (hp : p ≠ 0) (n K : ℕ) (u : evenSubspace) {M C : ℝ}
     (hM : ∀ k, k < K → |Real.log (logShellRadius a r k)| ≤ M)
     (hC : 0 ≤ C) (hone : 1 ≤ logShellRadius a r K)
-    (htail : ∀ t : ℝ, logShellRadius a r K ≤ t → ‖u - evenIndicatorCutoff t u‖ ^ 2 ≤
+    (htail : ∀ t : ℝ, logShellRadius a r K ≤ t → ‖u - evenIndicatorCutoff t u‖ ^ (2 : ℕ) ≤
       C / t ^ (p + 1)) :
     ‖evenLogShellChannel a r n u‖ ≤
-      Real.sqrt (M ^ 2 * ‖u‖ ^ 2 + 4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹)) :=
+      Real.sqrt (M ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) + 4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹)) :=
   norm_evenLogShellChannel_apply_le_of_powerTail ha hr hp n K u hM hC hone
     (norm_sq_evenIndicatorLayer_le_of_highTail ha hr K u htail)
 
@@ -68,10 +68,10 @@ theorem norm_evenFourierLogShellChannel_apply_le_of_highTail {a r : ℝ} (ha : 0
     (hM : ∀ k, k < K → |Real.log (logShellRadius a r k)| ≤ M)
     (hC : 0 ≤ C) (hone : 1 ≤ logShellRadius a r K)
     (htail : ∀ t : ℝ, logShellRadius a r K ≤ t →
-      ‖evenFourierTransform w - evenIndicatorCutoff t (evenFourierTransform w)‖ ^ 2 ≤
+      ‖evenFourierTransform w - evenIndicatorCutoff t (evenFourierTransform w)‖ ^ (2 : ℕ) ≤
         C / t ^ (p + 1)) :
     ‖evenFourierLogShellChannel a r n w‖ ≤
-      Real.sqrt (M ^ 2 * ‖w‖ ^ 2 + 4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹)) := by
+      Real.sqrt (M ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) + 4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹)) := by
   rw [norm_evenFourierLogShellChannel_apply]
   have h := norm_evenLogShellChannel_apply_le_of_highTail ha hr hp n K (evenFourierTransform w)
     hM hC hone htail
@@ -84,10 +84,10 @@ theorem re_inner_evenFourierLogShellChannel_le {a r : ℝ} (ha : 0 < a) (hr : 1 
     (hM : ∀ k, k < K → |Real.log (logShellRadius a r k)| ≤ M)
     (hC : 0 ≤ C) (hone : 1 ≤ logShellRadius a r K)
     (htail : ∀ t : ℝ, logShellRadius a r K ≤ t →
-      ‖evenFourierTransform w - evenIndicatorCutoff t (evenFourierTransform w)‖ ^ 2 ≤
+      ‖evenFourierTransform w - evenIndicatorCutoff t (evenFourierTransform w)‖ ^ (2 : ℕ) ≤
         C / t ^ (p + 1)) :
     (⟪w, evenFourierLogShellChannel a r n w⟫_ℂ).re ≤
-      ‖w‖ * Real.sqrt (M ^ 2 * ‖w‖ ^ 2 + 4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹)) := by
+      ‖w‖ * Real.sqrt (M ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) + 4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹)) := by
   have h1 : (⟪w, evenFourierLogShellChannel a r n w⟫_ℂ).re ≤ ‖(⟪w,
       evenFourierLogShellChannel a r n w⟫_ℂ)‖ := Complex.re_le_norm _
   have h2 : ‖(⟪w, evenFourierLogShellChannel a r n w⟫_ℂ)‖ ≤

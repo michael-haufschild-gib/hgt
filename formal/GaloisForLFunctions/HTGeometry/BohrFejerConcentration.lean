@@ -38,7 +38,7 @@ theorem fejerSum_eq_geom (β : ℝ) (N : ℕ) (u : ℝ) :
 
 /-- The squared distance of a character from `1`. -/
 theorem norm_expChar_sub_one_sq (β u : ℝ) :
-    ‖expChar β u - 1‖ ^ 2 = 2 - 2 * Real.cos (β * u) := by
+    ‖expChar β u - 1‖ ^ (2 : ℕ) = 2 - 2 * Real.cos (β * u) := by
   have h := norm_expChar_sub_sq (β * u) 0
   simp only [Complex.ofReal_zero, zero_mul, Complex.exp_zero, sub_zero] at h
   exact h
@@ -46,7 +46,7 @@ theorem norm_expChar_sub_one_sq (β u : ℝ) :
 /-- **Concentration bound.**  Away from the zeros of `1 − cos(βu)` the Fejér kernel is at most
 `4/((N+1)(2 − 2cos βu))`. -/
 theorem fejerKernel_norm_le (β : ℝ) (N : ℕ) {u : ℝ} (hu : Real.cos (β * u) < 1) :
-    ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1)
+    ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1)
       ≤ 4 / (((N : ℝ) + 1) * (2 - 2 * Real.cos (β * u))) := by
   have hpos : (0 : ℝ) < 2 - 2 * Real.cos (β * u) := by linarith
   have hznorm : ‖expChar β u‖ = 1 := norm_expChar β u
@@ -70,12 +70,12 @@ theorem fejerKernel_norm_le (β : ℝ) (N : ℕ) {u : ℝ} (hu : Real.cos (β * 
   have hbound : ‖fejerSum β N u‖ ≤ 2 / ‖expChar β u - 1‖ := by
     rw [hgeom, norm_div]
     exact div_le_div₀ (by norm_num) hnum hdennorm le_rfl
-  have hsq : ‖fejerSum β N u‖ ^ 2 * (2 - 2 * Real.cos (β * u)) ≤ 4 := by
-    have h1 : ‖fejerSum β N u‖ ^ 2 ≤ (2 / ‖expChar β u - 1‖) ^ 2 :=
+  have hsq : ‖fejerSum β N u‖ ^ (2 : ℕ) * (2 - 2 * Real.cos (β * u)) ≤ 4 := by
+    have h1 : ‖fejerSum β N u‖ ^ (2 : ℕ) ≤ (2 / ‖expChar β u - 1‖) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hbound 2
     rw [div_pow, norm_expChar_sub_one_sq] at h1
     rw [← le_div_iff₀ hpos]
-    calc ‖fejerSum β N u‖ ^ 2 ≤ (2 : ℝ) ^ 2 / (2 - 2 * Real.cos (β * u)) := h1
+    calc ‖fejerSum β N u‖ ^ (2 : ℕ) ≤ (2 : ℝ) ^ (2 : ℕ) / (2 - 2 * Real.cos (β * u)) := h1
       _ = 4 / (2 - 2 * Real.cos (β * u)) := by norm_num
   have hN : (0 : ℝ) ≤ (N : ℝ) + 1 := by positivity
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
@@ -84,7 +84,7 @@ theorem fejerKernel_norm_le (β : ℝ) (N : ℕ) {u : ℝ} (hu : Real.cos (β * 
 /-- **Uniform smallness off a neighbourhood of the kernel's peaks.** -/
 theorem fejerKernel_norm_le_of_cos_le (β : ℝ) (N : ℕ) {u δ : ℝ} (hδ : 0 < δ)
     (hu : Real.cos (β * u) ≤ 1 - δ) :
-    ‖fejerSum β N u‖ ^ 2 / ((N : ℝ) + 1) ≤ 2 / (((N : ℝ) + 1) * δ) := by
+    ‖fejerSum β N u‖ ^ (2 : ℕ) / ((N : ℝ) + 1) ≤ 2 / (((N : ℝ) + 1) * δ) := by
   have hlt : Real.cos (β * u) < 1 := by linarith
   refine (fejerKernel_norm_le β N hlt).trans ?_
   have hden : (0 : ℝ) < 2 - 2 * Real.cos (β * u) := by linarith

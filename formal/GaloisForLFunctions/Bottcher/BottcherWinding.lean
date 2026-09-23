@@ -21,7 +21,7 @@ theorem escapeOpen_coe_ne_zero (c : ℂ) (z : escapeOpen c) : (z : ℂ) ≠ 0 :=
   exact lt_of_le_of_lt (le_trans (by norm_num : (0 : ℝ) ≤ 2) (le_max_left 2 ‖c‖)) z.2
 
 /-- Points of the far-field escape set satisfy the size hypothesis needed by `wind_quadratic`. -/
-theorem escapeOpen_norm_c_lt_norm_sq (c : ℂ) (z : escapeOpen c) : ‖c‖ < ‖(z : ℂ)‖ ^ 2 := by
+theorem escapeOpen_norm_c_lt_norm_sq (c : ℂ) (z : escapeOpen c) : ‖c‖ < ‖(z : ℂ)‖ ^ (2 : ℕ) := by
   have hc_lt : ‖c‖ < ‖(z : ℂ)‖ :=
     lt_of_le_of_lt (le_max_right 2 ‖c‖) z.2
   have htwo_lt : (2 : ℝ) < ‖(z : ℂ)‖ :=
@@ -173,15 +173,15 @@ theorem wind_quadratic_of_image_escapeOpen {X : Type*} [TopologicalSpace X]
   have hCslit : ∀ t : I, C (p t) ∈ Complex.slitPlane := fun t => by
     rw [Complex.mem_slitPlane_iff]
     exact Or.inl (hCpos (p t))
-  have hfun : (fun x => g x ^ 2) = fun x => H x * C x := by
+  have hfun : (fun x => g x ^ (2 : ℕ)) = fun x => H x * C x := by
     funext x
     rw [hHdef, hCdef]
-    show g x ^ 2 = quadratic c (g x) * (1 - c / quadratic c (g x))
+    show g x ^ (2 : ℕ) = quadratic c (g x) * (1 - c / quadratic c (g x))
     rw [mul_sub, mul_one, mul_div_cancel₀ c (by
       exact escapeOpen_coe_ne_zero c ⟨quadratic c (g x), hesc x⟩)]
     simp [quadratic]
   have hsquare :
-      wind (fun x => g x ^ 2) (hg.pow 2) (fun x => pow_ne_zero 2 (gne x)) p
+      wind (fun x => g x ^ (2 : ℕ)) (hg.pow 2) (fun x => pow_ne_zero 2 (gne x)) p
         = wind H hHcont hHne p := by
     rw [wind_congr hfun (hg.pow 2) (fun x => pow_ne_zero 2 (gne x))
       (hHcont.mul hCcont) (fun x => mul_ne_zero (hHne x) (hCne x)) p]
@@ -235,7 +235,7 @@ theorem wind_quadratic_iterate_escapeOpen (c : ℂ) (n : ℕ) {x₀ : escapeOpen
   | zero =>
       simp
   | succ n ih =>
-      have hbig : ∀ x : escapeOpen c, ‖c‖ < ‖(quadratic c)^[n] (x : ℂ)‖ ^ 2 :=
+      have hbig : ∀ x : escapeOpen c, ‖c‖ < ‖(quadratic c)^[n] (x : ℂ)‖ ^ (2 : ℕ) :=
         fun x => escapeOpen_norm_c_lt_norm_sq c
           ⟨(quadratic c)^[n] (x : ℂ), escapeOpen_iterate x.2 n⟩
       have hquad :=

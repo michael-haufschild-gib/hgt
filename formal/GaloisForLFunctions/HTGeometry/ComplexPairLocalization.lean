@@ -46,7 +46,7 @@ theorem convexOn_expSum (c a : Fin m → ℝ) (hc : ∀ i, 0 ≤ c i) :
   · rw [Function.iterate_succ, Function.iterate_one, Function.comp_apply, deriv_expSum,
       deriv_expSum, expSum]
     refine Finset.sum_nonneg (fun i _ => ?_)
-    have hrw : c i * a i * a i = c i * a i ^ 2 := by ring
+    have hrw : c i * a i * a i = c i * a i ^ (2 : ℕ) := by ring
     rw [hrw]
     exact mul_nonneg (mul_nonneg (hc i) (sq_nonneg _)) (Real.exp_pos _).le
 

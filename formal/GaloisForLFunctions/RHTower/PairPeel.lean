@@ -80,8 +80,8 @@ theorem pair_peel_depth {Z : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
     (hnz : ∀ σ ∈ U, σ ≠ Complex.I * (η : ℂ) → σ ≠ -(Complex.I * (η : ℂ)) →
       Z σ ≠ 0) :
     ∃ h : ℂ → ℂ, AnalyticOnNhd ℂ h U ∧ (∀ σ ∈ U, h σ ≠ 0) ∧
-      (∀ v ∈ U, Z v = (v ^ 2 + ((η : ℂ)) ^ 2) * h v) ∧
-      (0 ∈ U → ((η : ℂ)) ^ 2 = Z 0 / h 0) := by
+      (∀ v ∈ U, Z v = (v ^ (2 : ℕ) + ((η : ℂ)) ^ (2 : ℕ)) * h v) ∧
+      (0 ∈ U → ((η : ℂ)) ^ (2 : ℕ) = Z 0 / h 0) := by
   have hne : Complex.I * (η : ℂ) ≠ -(Complex.I * (η : ℂ)) := by
     intro hc
     have hη0 : ((η : ℝ) : ℂ) ≠ 0 := by
@@ -92,13 +92,13 @@ theorem pair_peel_depth {Z : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
     · exact Complex.I_ne_zero h
     · exact hη0 h
   obtain ⟨h, han, hnz', hfac⟩ := pair_peel hU hZ h1 h2 hne ho1 ho2 hnz
-  have hquad : ∀ v ∈ U, Z v = (v ^ 2 + ((η : ℂ)) ^ 2) * h v := by
+  have hquad : ∀ v ∈ U, Z v = (v ^ (2 : ℕ) + ((η : ℂ)) ^ (2 : ℕ)) * h v := by
     intro v hv
     rw [hfac v hv]
     have hexp : (v - Complex.I * (η : ℂ)) * (v - -(Complex.I * (η : ℂ)))
-        = v ^ 2 + ((η : ℂ)) ^ 2 := by
+        = v ^ (2 : ℕ) + ((η : ℂ)) ^ (2 : ℕ) := by
       have h1' : (v - Complex.I * (η : ℂ)) * (v - -(Complex.I * (η : ℂ)))
-          = v ^ 2 - Complex.I ^ 2 * ((η : ℂ)) ^ 2 := by
+          = v ^ (2 : ℕ) - Complex.I ^ (2 : ℕ) * ((η : ℂ)) ^ (2 : ℕ) := by
         ring
       rw [h1', Complex.I_sq]
       ring

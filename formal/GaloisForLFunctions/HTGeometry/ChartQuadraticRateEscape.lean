@@ -63,8 +63,8 @@ theorem chart_quadraticRate_eq_zero [Nonempty A] (hcard : 3 ≤ Fintype.card A)
     (hbase : Function.Injective (layeredEnergy (fun a => (E a : ℂ)) (boolShift z₀)))
     (C : LocalExtensionEigenbranchChart (fun a => (E a : ℂ)) (boolShift z₀) M)
     (c : A × Bool → ℂ) (κ : ℂ)
-    (hident : ∀ p ∈ C.U, (∑ i, c i * C.branch i p) ^ 2
-      = κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ 2).trace)
+    (hident : ∀ p ∈ C.U, (∑ i, c i * C.branch i p) ^ (2 : ℕ)
+      = κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ (2 : ℕ)).trace)
     (hzero : ∑ i, c i = 0) : c = 0 := by
   classical
   obtain ⟨D⟩ := exists_selectedLayerSliceData E (boolShift z₀) M hbase C
@@ -76,7 +76,7 @@ theorem chart_quadraticRate_eq_zero [Nonempty A] (hcard : 3 ≤ Fintype.card A)
       exact Fintype.exists_pair_of_one_lt_card this
     intro h0
     exact hM a b hab (by rw [h0]; simp)
-  have hQv : (V ^ 2).trace ≠ 0 := trace_sq_layerCrossPerturbation_ne_zero hMherm hMne
+  have hQv : (V ^ (2 : ℕ)).trace ≠ 0 := trace_sq_layerCrossPerturbation_ne_zero hMherm hMne
   set bad : Set ℂ := Set.range (fun p : A × A => (E p.2 : ℂ) - (E p.1 : ℂ)) with hbad
   set S' : Set ℂ := D.S \ bad with hS'
   have hS'inf : S'.Infinite := D.infinite.sdiff (Set.finite_range _)
@@ -120,8 +120,8 @@ theorem chart_quadraticRate_eq_zero [Nonempty A] (hcard : 3 ≤ Fintype.card A)
     filter_upwards [hr] with g hg
     rwa [hshiftline z, layeredEnergy_boolShift, selectedLayerCoupling_bool] at hg
   have hidentSlice : ∀ z ∈ S', ∀ᶠ g in 𝓝 (0 : ℂ),
-      (∑ i, c i * C.branch i (selectedPairChartPoint (boolShift z₀) false true z g)) ^ 2
-        = κ * ((∑ x, layerSplitEnergy (fun a => (E a : ℂ)) z x ^ 2) + g ^ 2 * (V ^ 2).trace) := by
+      (∑ i, c i * C.branch i (selectedPairChartPoint (boolShift z₀) false true z g)) ^ (2 : ℕ)
+        = κ * ((∑ x, layerSplitEnergy (fun a => (E a : ℂ)) z x ^ (2 : ℕ)) + g ^ (2 : ℕ) * (V ^ (2 : ℕ)).trace) := by
     intro z hz
     filter_upwards [D.memChart z hz.1] with g hg
     have h := hident (selectedPairChartPoint (boolShift z₀) false true z g) hg
@@ -143,8 +143,8 @@ theorem exists_chart_quadraticRate_ne [Nonempty A] (hcard : 3 ≤ Fintype.card A
     (hbase : Function.Injective (layeredEnergy (fun a => (E a : ℂ)) (boolShift z₀)))
     (C : LocalExtensionEigenbranchChart (fun a => (E a : ℂ)) (boolShift z₀) M)
     (c : A × Bool → ℂ) (κ : ℂ) (hzero : ∑ i, c i = 0) (hcne : c ≠ 0) :
-    ∃ p ∈ C.U, (∑ i, c i * C.branch i p) ^ 2
-      ≠ κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ 2).trace := by
+    ∃ p ∈ C.U, (∑ i, c i * C.branch i p) ^ (2 : ℕ)
+      ≠ κ * ((localExtensionMatrix (fun a => (E a : ℂ)) p.1 M p.2) ^ (2 : ℕ)).trace := by
   by_contra hcon
   push Not at hcon
   exact hcne (chart_quadraticRate_eq_zero hcard hE hgap hMherm hM hbase C c κ hcon hzero)

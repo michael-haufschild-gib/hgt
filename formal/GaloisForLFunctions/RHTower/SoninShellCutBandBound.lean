@@ -20,8 +20,8 @@ namespace RHTower
 open ContinuousLinearMap
 
 /-- A squared bound gives a bound by the square root. -/
-theorem norm_le_sqrt_of_sq_le {x X : ℝ} (hx : 0 ≤ x) (h : x ^ 2 ≤ X) : x ≤ Real.sqrt X := by
-  rw [show x = Real.sqrt (x ^ 2) from (Real.sqrt_sq hx).symm]
+theorem norm_le_sqrt_of_sq_le {x X : ℝ} (hx : 0 ≤ x) (h : x ^ (2 : ℕ) ≤ X) : x ≤ Real.sqrt X := by
+  rw [show x = Real.sqrt (x ^ (2 : ℕ)) from (Real.sqrt_sq hx).symm]
   exact Real.sqrt_le_sqrt h
 
 /-- **The band budget from three squared estimates.** -/
@@ -29,9 +29,9 @@ theorem soninCouplingBandTotal_le_of_sq_bounds
     (a b : ℝ) {r : ℝ} (hr : 0 < r) (x : evenSubspace) (Bhigh Bra Bb : ℝ)
     (hphys : (evenIndicatorCutoff b - evenIndicatorCutoff a)
       (evenDilationCLM r⁻¹ (inv_pos.mpr hr) x) = 0)
-    (h1 : ‖x - evenFourierCutoff (r * b) x‖ ^ 2 ≤ Bhigh)
-    (h2 : ‖evenFourierCutoff (r * a) x‖ ^ 2 ≤ Bra)
-    (h3 : ‖evenFourierCutoff b x‖ ^ 2 ≤ Bb) :
+    (h1 : ‖x - evenFourierCutoff (r * b) x‖ ^ (2 : ℕ) ≤ Bhigh)
+    (h2 : ‖evenFourierCutoff (r * a) x‖ ^ (2 : ℕ) ≤ Bra)
+    (h3 : ‖evenFourierCutoff b x‖ ^ (2 : ℕ) ≤ Bb) :
     soninCouplingBandTotal a b (inv_pos.mpr hr) x ≤
       Real.sqrt Bhigh + Real.sqrt Bra + Real.sqrt Bb := by
   rw [soninCouplingBandTotal_eq_packetTerms a b hr x, hphys, norm_zero, zero_add]
@@ -52,13 +52,13 @@ theorem soninCouplingBandTotal_soninShellCutPacket_le_of_sq_bounds
           (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN) -
         evenFourierCutoff (r * b)
           (soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
-            (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ 2 ≤ Bhigh)
+            (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ (2 : ℕ) ≤ Bhigh)
     (h2 : ‖evenFourierCutoff (r * a)
         (soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
-          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ 2 ≤ Bra)
+          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ (2 : ℕ) ≤ Bra)
     (h3 : ‖evenFourierCutoff b
         (soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
-          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ 2 ≤ Bb) :
+          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN))‖ ^ (2 : ℕ) ≤ Bb) :
     soninCouplingBandTotal a b (inv_pos.mpr (zero_lt_one.trans hr))
         (soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
           (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN)) ≤

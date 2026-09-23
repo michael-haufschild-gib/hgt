@@ -29,7 +29,7 @@ open scoped BigOperators
 /-- The positive-integer geometric-derivative tail is dominated by the full
 natural-number series `ρ/(1-ρ)²`. -/
 theorem tsum_pnat_coe_mul_geometric_le {ρ : ℝ} (hρ0 : 0 ≤ ρ) (hρ1 : ρ < 1) :
-    ∑' n : ℕ+, ((n : ℕ) : ℝ) * ρ ^ (n : ℕ) ≤ ρ / (1 - ρ) ^ 2 := by
+    ∑' n : ℕ+, ((n : ℕ) : ℝ) * ρ ^ (n : ℕ) ≤ ρ / (1 - ρ) ^ (2 : ℕ) := by
   have hnorm : ‖ρ‖ < 1 := by
     rw [Real.norm_eq_abs, abs_of_nonneg hρ0]; exact hρ1
   have hnat : Summable fun m : ℕ => (m : ℝ) * ρ ^ m := by
@@ -102,15 +102,15 @@ theorem norm_first_le_of_weightedLambert_decay
     _ ≤ ∑' n : ℕ+, D * (((n : ℕ) : ℝ) * ρ ^ (n : ℕ)) :=
         hnormsum.tsum_le_tsum hterm hmajor
     _ = D * ∑' n : ℕ+, ((n : ℕ) : ℝ) * ρ ^ (n : ℕ) := tsum_mul_left
-    _ ≤ D * (ρ / (1 - ρ) ^ 2) :=
+    _ ≤ D * (ρ / (1 - ρ) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left (tsum_pnat_coe_mul_geometric_le hρ0 hρ1) hD
     _ ≤ 4 * D * ρ := by
-        have hquarter : (1/4 : ℝ) ≤ (1 - ρ) ^ 2 := by nlinarith
-        have : ρ / (1 - ρ) ^ 2 ≤ 4 * ρ := by
-          calc ρ / (1 - ρ) ^ 2 ≤ ρ / (1/4) :=
+        have hquarter : (1/4 : ℝ) ≤ (1 - ρ) ^ (2 : ℕ) := by nlinarith
+        have : ρ / (1 - ρ) ^ (2 : ℕ) ≤ 4 * ρ := by
+          calc ρ / (1 - ρ) ^ (2 : ℕ) ≤ ρ / (1/4) :=
                 div_le_div_of_nonneg_left hρ0 (by norm_num) hquarter
             _ = 4 * ρ := by ring
-        calc D * (ρ / (1 - ρ) ^ 2) ≤ D * (4 * ρ) :=
+        calc D * (ρ / (1 - ρ) ^ (2 : ℕ)) ≤ D * (4 * ρ) :=
               mul_le_mul_of_nonneg_left this hD
           _ = 4 * D * ρ := by ring
 

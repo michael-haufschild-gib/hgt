@@ -19,33 +19,33 @@ def streamMasterFirst (w r B : ℂ) (square : Bool) (V : Covector) (k : Fin 2) (
     (streamRadialSecond w r B square) (streamRadialThird w r B square) (V k z) (streamAngularOperator V k z)
 
 /-- Differentiating the full two-factor master defect retains exactly the original current derivative. -/
-theorem masterFirst_resolvent_defect (s r B J K A D : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
-    masterFirst (2*s) r (streamRadialValue (2*s) r (B^2) false)
-      (streamRadialFirst (2*s) r (B^2) false) (streamRadialSecond (2*s) r (B^2) false)
-      (streamRadialThird (2*s) r (B^2) false) A D -
-    (s*(s-1)/4)*masterFirst (2*s) r (streamRadialValue (2*s) r (B^2) true)
-      (streamRadialFirst (2*s) r (B^2) true) (streamRadialSecond (2*s) r (B^2) true)
-      (streamRadialThird (2*s) r (B^2) true) J (2*(s+1)*(s+2)*J+2*K) -
+theorem masterFirst_resolvent_defect (s r B J K A D : ℂ) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
+    masterFirst (2*s) r (streamRadialValue (2*s) r (B^(2 : ℕ)) false)
+      (streamRadialFirst (2*s) r (B^(2 : ℕ)) false) (streamRadialSecond (2*s) r (B^(2 : ℕ)) false)
+      (streamRadialThird (2*s) r (B^(2 : ℕ)) false) A D -
+    (s*(s-1)/4)*masterFirst (2*s) r (streamRadialValue (2*s) r (B^(2 : ℕ)) true)
+      (streamRadialFirst (2*s) r (B^(2 : ℕ)) true) (streamRadialSecond (2*s) r (B^(2 : ℕ)) true)
+      (streamRadialThird (2*s) r (B^(2 : ℕ)) true) J (2*(s+1)*(s+2)*J+2*K) -
     2*currentFirst s r B J K =
-    (B^2*(2*s)/(r*(r^2-1)))*(D-(2*s+1)*(2*s+2)*A-2*(s+1)*(2*s+1)*J) := by
+    (B^(2 : ℕ)*(2*s)/(r*(r^(2 : ℕ)-1)))*(D-(2*s+1)*(2*s+2)*A-2*(s+1)*(2*s+1)*J) := by
   dsimp [masterFirst,streamRadialValue,streamRadialFirst,streamRadialSecond,streamRadialThird,
     currentFirst,current]
   field_simp [hr,hf]
   ring
 
 private theorem exterior_radius (p : D4BMBackground.ExteriorPoint) :
-    (p.val 1 : ℂ) ≠ 0 ∧ (p.val 1 : ℂ)^2-1 ≠ 0 := by
+    (p.val 1 : ℂ) ≠ 0 ∧ (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
   constructor
   · exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
-  · exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  · exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
 
 /-- The original current is produced by the full actual angular fields and both radial factors. -/
 theorem forced_stream_master (q : XiZeroCopy) (branch : Bool) (p : D4BMBackground.ExteriorPoint)
     (B : ℂ) (k : Fin 2) :
     let s := physicalRate q branch
     let z := angularPoint p.val
-    streamMaster (2*s) (p.val 1) (B^2) false (fullAngularCovector q branch) k z -
-      (s*(s-1)/4)*streamMaster (2*s) (p.val 1) (B^2) true (fullSquareCovector q) k z =
+    streamMaster (2*s) (p.val 1) (B^(2 : ℕ)) false (fullAngularCovector q branch) k z -
+      (s*(s-1)/4)*streamMaster (2*s) (p.val 1) (B^(2 : ℕ)) true (fullSquareCovector q) k z =
       2*current s (p.val 1) B (fullSquareCovector q k z) (fullGradientCovector q branch k z) := by
   dsimp only
   have h := master_resolvent_defect (physicalRate q branch) (p.val 1) B
@@ -66,8 +66,8 @@ theorem forced_stream_masterFirst (q : XiZeroCopy) (branch : Bool) (p : D4BMBack
     (B : ℂ) (k : Fin 2) :
     let s := physicalRate q branch
     let z := angularPoint p.val
-    streamMasterFirst (2*s) (p.val 1) (B^2) false (fullAngularCovector q branch) k z -
-      (s*(s-1)/4)*streamMasterFirst (2*s) (p.val 1) (B^2) true (fullSquareCovector q) k z =
+    streamMasterFirst (2*s) (p.val 1) (B^(2 : ℕ)) false (fullAngularCovector q branch) k z -
+      (s*(s-1)/4)*streamMasterFirst (2*s) (p.val 1) (B^(2 : ℕ)) true (fullSquareCovector q) k z =
       2*currentFirst s (p.val 1) B (fullSquareCovector q k z) (fullGradientCovector q branch k z) := by
   dsimp only
   have h := masterFirst_resolvent_defect (physicalRate q branch) (p.val 1) B

@@ -68,7 +68,7 @@ theorem finrank_eigenspace_eq_ncard_sgVal_fiber
           rw [i.2] at hval
           exact (hc hval).elim
         · exact hone
-      change ((‖sgVec S i.1‖ : ℝ) : ℂ) ^ 2 = 1
+      change ((‖sgVec S i.1‖ : ℝ) : ℂ) ^ (2 : ℕ) = 1
       rw [hnorm]
       norm_num
     · rw [if_neg hij]

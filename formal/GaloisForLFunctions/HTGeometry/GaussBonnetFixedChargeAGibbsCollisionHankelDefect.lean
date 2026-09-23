@@ -16,7 +16,7 @@ def egbFixedChargeAGibbsCollisionHankelDefect (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) : ℝ :=
   egbFixedChargeAGibbsCollisionExcess n (m + 1) β E *
     egbFixedChargeAGibbsCollisionExcess n (m + 3) β E -
-      egbFixedChargeAGibbsCollisionExcess n (m + 2) β E ^ 2
+      egbFixedChargeAGibbsCollisionExcess n (m + 2) β E ^ (2 : ℕ)
 
 /-- The determinant is a positive geometric factor times the product of the two spectral energies. -/
 theorem egbFixedChargeAGibbsCollisionHankelDefect_formula (n m : ℕ) (β : ℝ)
@@ -70,7 +70,7 @@ theorem egbFixedChargeAGibbsCollisionHankelDefect_pos_iff (n m : ℕ) (β : ℝ)
 /-- Positive-time collision excess is log-convex at every adjacent triple of times. -/
 theorem egbFixedChargeAGibbsCollisionExcess_logConvex (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
-    egbFixedChargeAGibbsCollisionExcess n (m + 2) β E ^ 2 ≤
+    egbFixedChargeAGibbsCollisionExcess n (m + 2) β E ^ (2 : ℕ) ≤
       egbFixedChargeAGibbsCollisionExcess n (m + 1) β E *
         egbFixedChargeAGibbsCollisionExcess n (m + 3) β E := by
   have h := egbFixedChargeAGibbsCollisionHankelDefect_nonneg n m β E

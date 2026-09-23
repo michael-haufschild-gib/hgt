@@ -19,11 +19,11 @@ noncomputable section
 the frequency set exposed as a scalar. -/
 def menonHarmonicProductCostVolume
     (_P : Finset ℕ) (A₀ B₀ : ℕ) (Q eta W V volE : ℝ) (j : ℕ) : ℝ :=
-  V ^ 2 * ((2 * Real.pi)⁻¹ *
+  V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
     (hmMassRecip ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊
       (2 * Real.pi * W) (2 * Real.pi * volE) *
         ((1 / (⌈(A₀ : ℝ) /
-          ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2 *
+          ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ) *
           ((geomCofactorBlockAt A₀ B₀ Q eta j).card : ℝ))))
 
 /-- The product cost is monotone in the exposed frequency-set measure. -/
@@ -54,7 +54,7 @@ theorem setIntegral_normSq_harmonicProduct_geom_le_HM
     (∫ w in E,
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w *
         logPoly (harmonicRamareCofactorCoeff P)
-          (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ 2) ≤
+          (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ (2 : ℕ)) ≤
       menonHarmonicProductCostVolume P A₀ B₀ Q eta W V (volume.real E) j := by
   let D : Finset ℕ := geomCofactorBlockAt A₀ B₀ Q eta j
   let L₀ : ℕ := ⌈(A₀ : ℝ) / ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊
@@ -84,7 +84,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_global_localMoments
     (hright : ∀ j ∈ Finset.range L,
       1 ≤ ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊) :
     (∫ w in Set.Icc (-W) W,
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2) ≤
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤
       2 * (L : ℝ) * ∑ j ∈ Finset.range L,
         (menonHarmonicProductCostVolume P A₀ B₀ Q eta W (V j) (2 * W) j +
           menonHarmonicProductCostVolume P A₀ B₀ Q eta W
@@ -118,7 +118,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_global_localMoments
   let f : ℝ → ℝ := fun w =>
     ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w *
       logPoly (harmonicRamareCofactorCoeff P)
-        (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ 2
+        (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ (2 : ℕ)
   have hf : Continuous f := by
     dsimp only [f]
     exact (((continuous_harmonicPrimeBlockPoly _).mul (continuous_logPoly _ _)).norm).pow 2
@@ -147,7 +147,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_global_localMoments
     (∫ w in Set.Icc (-W) W,
       ‖harmonicPrimeBlockPoly (geomBlock P Q (1 + eta) j) w *
         logPoly (harmonicRamareCofactorCoeff P)
-          (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ 2) =
+          (geomCofactorBlockAt A₀ B₀ Q eta j) w‖ ^ (2 : ℕ)) =
         (∫ w in Es, f w) + ∫ w in El, f w := by
           simpa only [f, Es, El] using hsplit
     _ ≤ _ := add_le_add hsmall' hlarge'
@@ -164,7 +164,7 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_global_localMoments
     (hright : ∀ j ∈ Finset.range L,
       1 ≤ ⌊(menonFinalRangeTopNat x : ℝ) / (Q * (1 + eta) ^ j)⌋₊) :
     (∫ w in Set.Icc (-x) x,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2) ≤
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ)) ≤
       2 * (2 * (L : ℝ) * ∑ j ∈ Finset.range L,
         (menonHarmonicProductCostVolume (menonFinalRangePrimes x) ⌈x⌉₊
             (menonFinalRangeTopNat x) Q eta x (V j) (2 * x) j +
@@ -196,12 +196,12 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_global_localMoments
   rw [menonFinalRangeHarmonicRoughEnergy]
   calc
     (∫ w in Set.Icc (-x) x,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2) ≤
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ)) ≤
         2 * (∫ w in Set.Icc (-x) x,
           ‖harmonicRamareBilinear (menonFinalRangePrimes x)
-            (menonFinalRangeShell x) w‖ ^ 2) +
+            (menonFinalRangeShell x) w‖ ^ (2 : ℕ)) +
         2 * ∫ w in Set.Icc (-x) x,
-          ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 := by
+          ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ) := by
             simpa only [logPoly_harmonicMoebius_eq_menonFinalRange_ramare_add_rough,
               menonFinalRangeHarmonicRoughSet] using hsplit
     _ ≤ _ := add_le_add (mul_le_mul_of_nonneg_left hbil (by norm_num)) le_rfl

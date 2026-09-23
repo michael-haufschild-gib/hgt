@@ -11,7 +11,7 @@ tail coordinates drop out because the currents annihilate every Schwarzian jet, 
 three equations in the three derivatives along `x`, `x'`, `x''`.
 
 The translation equation kills the first derivative outright; substituting into the other two leaves
-`(x')^2` times the third, so all three vanish and the observable is a rational function of the
+`(x')^(2 : ℕ)` times the third, so all three vanish and the observable is a rational function of the
 Schwarzian.
 -/
 

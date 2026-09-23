@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 /-!
 # Unconditional Hilbert realization of the Xi Weil form
 
-Critical-line reflection permutes the multiplicity-exact Xi divisor.  Reindexing an `ell^2`
+Critical-line reflection permutes the multiplicity-exact Xi divisor.  Reindexing an `ell^(2 : ℕ)`
 evaluation vector by this permutation realizes the Weil polarization as an ordinary Hilbert inner
 product without assuming RH.  The reindexing preserves the norm, so the zero-side Weil form is a
 bounded Hermitian form on its complete square-summable evaluation carrier.
@@ -20,7 +20,7 @@ namespace RHTower
 
 noncomputable section
 
-/-- Critical-line reflection acting on the multiplicity-exact Xi `ell^2` carrier. -/
+/-- Critical-line reflection acting on the multiplicity-exact Xi `ell^(2 : ℕ)` carrier. -/
 def xiWeilLineConjLp (v : lp (fun _ : XiZeroCopy => ℂ) 2) :
     lp (fun _ : XiZeroCopy => ℂ) 2 :=
   ⟨fun q => v (xiZeroCopyLineConjEquiv q),
@@ -32,15 +32,15 @@ def xiWeilLineConjLp (v : lp (fun _ : XiZeroCopy => ℂ) 2) :
     (v : lp (fun _ : XiZeroCopy => ℂ) 2) (q : XiZeroCopy) :
     xiWeilLineConjLp v q = v (xiZeroCopyLineConjEquiv q) := rfl
 
-/-- Critical-line reflection preserves the `ell^2` norm unconditionally. -/
+/-- Critical-line reflection preserves the `ell^(2 : ℕ)` norm unconditionally. -/
 theorem norm_xiWeilLineConjLp (v : lp (fun _ : XiZeroCopy => ℂ) 2) :
     ‖xiWeilLineConjLp v‖ = ‖v‖ := by
-  have hsq : ‖xiWeilLineConjLp v‖ ^ 2 = ‖v‖ ^ 2 := by
+  have hsq : ‖xiWeilLineConjLp v‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) := by
     rw [HilbertSchmidt.lp_norm_sq_eq, HilbertSchmidt.lp_norm_sq_eq]
-    exact xiZeroCopyLineConjEquiv.tsum_eq (fun q => ‖v q‖ ^ 2)
+    exact xiZeroCopyLineConjEquiv.tsum_eq (fun q => ‖v q‖ ^ (2 : ℕ))
   nlinarith [norm_nonneg (xiWeilLineConjLp v), norm_nonneg v]
 
-/-- Critical-line reflection as a linear isometry of the Xi `ell^2` carrier. -/
+/-- Critical-line reflection as a linear isometry of the Xi `ell^(2 : ℕ)` carrier. -/
 def xiWeilLineConjLinearIsometry :
     lp (fun _ : XiZeroCopy => ℂ) 2 →ₗᵢ[ℂ] lp (fun _ : XiZeroCopy => ℂ) 2 where
   toFun := xiWeilLineConjLp
@@ -58,7 +58,7 @@ def xiWeilLineConjLinearIsometry :
     (v : lp (fun _ : XiZeroCopy => ℂ) 2) :
     xiWeilLineConjLinearIsometry v = xiWeilLineConjLp v := rfl
 
-/-- The real quadratic form carried by critical-line reflection on the Xi `ell^2` space. -/
+/-- The real quadratic form carried by critical-line reflection on the Xi `ell^(2 : ℕ)` space. -/
 def xiWeilHilbertQuadratic (v : lp (fun _ : XiZeroCopy => ℂ) 2) : ℝ :=
   (inner ℂ (xiWeilLineConjLinearIsometry v) v).re
 

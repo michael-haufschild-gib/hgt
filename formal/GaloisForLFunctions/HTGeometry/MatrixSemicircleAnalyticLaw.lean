@@ -80,7 +80,7 @@ theorem freeFockTraceMoment_even_nonneg [Nonempty I]
 theorem matrixDysonFormalTraceSeries_coeff_bound [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (n : ℕ) :
     ‖PowerSeries.coeff n (matrixDysonFormalTraceSeries A)‖ ≤
-      (freeFockSpectralRadius A ^ 2) ^ n := by
+      (freeFockSpectralRadius A ^ (2 : ℕ)) ^ n := by
   rw [coeff_matrixDysonFormalTraceSeries A hA]
   simp only [Complex.norm_real]
   rw [Real.norm_eq_abs]
@@ -90,9 +90,9 @@ theorem matrixDysonFormalTraceSeries_coeff_bound [Nonempty I]
 
 theorem matrixDysonFormalTraceSeries_absoluteSummableAt [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (v : ℂ)
-    (hv : freeFockSpectralRadius A ^ 2 * ‖v‖ < 1) :
+    (hv : freeFockSpectralRadius A ^ (2 : ℕ) * ‖v‖ < 1) :
     (matrixDysonFormalTraceSeries A).AbsoluteSummableAt v := by
-  let q : ℝ := freeFockSpectralRadius A ^ 2 * ‖v‖
+  let q : ℝ := freeFockSpectralRadius A ^ (2 : ℕ) * ‖v‖
   have hq0 : 0 ≤ q := by positivity
   have hqnorm : ‖q‖ < 1 := by simpa [q, Real.norm_eq_abs, abs_of_nonneg hq0] using hv
   have hgeom : Summable (fun n : ℕ ↦ q ^ n) := summable_geometric_of_norm_lt_one hqnorm
@@ -100,7 +100,7 @@ theorem matrixDysonFormalTraceSeries_absoluteSummableAt [Nonempty I]
     (fun n ↦ ?_) hgeom
   calc
     ‖PowerSeries.coeff n (matrixDysonFormalTraceSeries A) * v ^ n‖ ≤
-        (freeFockSpectralRadius A ^ 2) ^ n * ‖v ^ n‖ := by
+        (freeFockSpectralRadius A ^ (2 : ℕ)) ^ n * ‖v ^ n‖ := by
           rw [norm_mul]
           gcongr
           exact matrixDysonFormalTraceSeries_coeff_bound A hA n
@@ -197,17 +197,17 @@ theorem compactMomentGeneratingFunction_freeFockTrace_eq_absoluteEval
       (Set.Icc (-freeFockSpectralRadius A) (freeFockSpectralRadius A))ᶜ = 0)
     (u : ℂ) (hu : ‖u‖ * freeFockSpectralRadius A < 1) :
     compactMomentGeneratingFunction mu u =
-      (matrixDysonFormalTraceSeries A).absoluteEval (u ^ 2) := by
+      (matrixDysonFormalTraceSeries A).absoluteEval (u ^ (2 : ℕ)) := by
   let R := freeFockSpectralRadius A
   have hR : 0 < R := freeFockSpectralRadius_pos A
   have hq0 : 0 ≤ ‖u‖ * R := mul_nonneg (norm_nonneg _) hR.le
-  have hsq : R ^ 2 * ‖u ^ 2‖ < 1 := by
+  have hsq : R ^ (2 : ℕ) * ‖u ^ (2 : ℕ)‖ < 1 := by
     rw [norm_pow]
     calc
-      R ^ 2 * ‖u‖ ^ 2 = (‖u‖ * R) ^ 2 := by ring
-      _ < 1 ^ 2 := (sq_lt_sq₀ hq0 zero_le_one).mpr hu
+      R ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) = (‖u‖ * R) ^ (2 : ℕ) := by ring
+      _ < 1 ^ (2 : ℕ) := (sq_lt_sq₀ hq0 zero_le_one).mpr hu
       _ = 1 := one_pow 2
-  have habs := matrixDysonFormalTraceSeries_absoluteSummableAt A hA (u ^ 2) hsq
+  have habs := matrixDysonFormalTraceSeries_absoluteSummableAt A hA (u ^ (2 : ℕ)) hsq
   have heven : Summable (fun n : ℕ ↦
       (freeFockTraceMoment A (2 * n) : ℂ) * u ^ (2 * n)) := by
     convert habs.summable using 1
@@ -245,7 +245,7 @@ theorem matrixDysonFormalTraceSeries_exterior_stieltjes_relation
       (Set.Icc (-freeFockSpectralRadius A) (freeFockSpectralRadius A))ᶜ = 0) :
     ∃ P : Polynomial (Polynomial ℂ), P.leadingCoeff ≠ 0 ∧
       ∀ z : ℂ, freeFockSpectralRadius A < ‖z‖ →
-        P.eval₂ (Polynomial.evalRingHom (z⁻¹ ^ 2))
+        P.eval₂ (Polynomial.evalRingHom (z⁻¹ ^ (2 : ℕ)))
           (-z * (∫ x : ℝ, ((x : ℂ) - z)⁻¹ ∂mu)) = 0 := by
   obtain ⟨P, hPlead, hPformal⟩ :=
     matrixDysonFormalTraceSeries_exists_bivariateRelation A
@@ -264,16 +264,16 @@ theorem matrixDysonFormalTraceSeries_exterior_stieltjes_relation
   have hM := compactMomentGeneratingFunction_freeFockTrace_eq_absoluteEval
     A hA mu hmu hcarry u hu
   have hrel := PowerSeries.polynomial_relation_absoluteEval P
-    (matrixDysonFormalTraceSeries A) (u ^ 2)
-    (matrixDysonFormalTraceSeries_absoluteSummableAt A hA (u ^ 2) (by
+    (matrixDysonFormalTraceSeries A) (u ^ (2 : ℕ))
+    (matrixDysonFormalTraceSeries_absoluteSummableAt A hA (u ^ (2 : ℕ)) (by
       have hR := freeFockSpectralRadius_pos A
       have hq0 : 0 ≤ ‖u‖ * freeFockSpectralRadius A :=
         mul_nonneg (norm_nonneg _) hR.le
       rw [norm_pow]
       calc
-        freeFockSpectralRadius A ^ 2 * ‖u‖ ^ 2 =
-            (‖u‖ * freeFockSpectralRadius A) ^ 2 := by ring
-        _ < 1 ^ 2 := (sq_lt_sq₀ hq0 zero_le_one).mpr hu
+        freeFockSpectralRadius A ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) =
+            (‖u‖ * freeFockSpectralRadius A) ^ (2 : ℕ) := by ring
+        _ < 1 ^ (2 : ℕ) := (sq_lt_sq₀ hq0 zero_le_one).mpr hu
         _ = 1 := one_pow 2)) hPformal
   have hS := stieltjesTransform_inv_eq_neg_mul_compactMomentGeneratingFunction
     mu u hu0
@@ -287,13 +287,13 @@ theorem matrixDysonFormalTraceSeries_exterior_stieltjes_relation
           (z * u) * compactMomentGeneratingFunction mu u := by rw [hzu, one_mul]
       _ = -z * (-u * compactMomentGeneratingFunction mu u) := by ring
       _ = -z * (∫ x : ℝ, ((x : ℂ) - z)⁻¹ ∂mu) := by rw [← hS]
-  have hu2 : u ^ 2 = z⁻¹ ^ 2 := by simp [u]
+  have hu2 : u ^ (2 : ℕ) = z⁻¹ ^ (2 : ℕ) := by simp [u]
   rw [← hu2, ← hMstieltjes, hM]
   exact hrel
 
 def reciprocalStieltjesRelation
     (P : Polynomial (Polynomial ℂ)) (mu : Measure ℝ) (z : ℂ) : ℂ :=
-  P.eval₂ (Polynomial.evalRingHom (z⁻¹ ^ 2))
+  P.eval₂ (Polynomial.evalRingHom (z⁻¹ ^ (2 : ℕ)))
     (-z * (∫ x : ℝ, ((x : ℂ) - z)⁻¹ ∂mu))
 
 theorem reciprocalStieltjesRelation_differentiableOn
@@ -303,7 +303,7 @@ theorem reciprocalStieltjesRelation_differentiableOn
   have hz0 : z ≠ 0 := by
     intro hzero
     simp [hzero] at hz
-  have hInv : DifferentiableAt ℂ (fun w : ℂ ↦ w⁻¹ ^ 2) z :=
+  have hInv : DifferentiableAt ℂ (fun w : ℂ ↦ w⁻¹ ^ (2 : ℕ)) z :=
     ((differentiableAt_id.inv hz0).pow 2)
   have hS : DifferentiableAt ℂ
       (fun w : ℂ ↦ ∫ x : ℝ, ((x : ℂ) - w)⁻¹ ∂mu) z :=
@@ -318,13 +318,13 @@ theorem reciprocalStieltjesRelation_differentiableOn
       exact hP.add hQ
   | monomial n p =>
       have hterm : DifferentiableWithinAt ℂ
-          (fun w : ℂ ↦ p.eval (w⁻¹ ^ 2) *
+          (fun w : ℂ ↦ p.eval (w⁻¹ ^ (2 : ℕ)) *
             (-w * (∫ x : ℝ, ((x : ℂ) - w)⁻¹ ∂mu)) ^ n)
           {w : ℂ | 0 < w.im} z :=
         ((p.differentiableAt.comp z hInv).mul
           (((differentiableAt_id.neg).mul hS).pow n)).differentiableWithinAt
       rw [show reciprocalStieltjesRelation (Polynomial.monomial n p) mu =
-          fun w : ℂ ↦ p.eval (w⁻¹ ^ 2) *
+          fun w : ℂ ↦ p.eval (w⁻¹ ^ (2 : ℕ)) *
             (-w * (∫ x : ℝ, ((x : ℂ) - w)⁻¹ ∂mu)) ^ n by
         funext w
         simp [reciprocalStieltjesRelation]]
@@ -371,11 +371,11 @@ theorem matrixDysonFormalTraceSeries_upperHalfPlane_stieltjes_relation
 
 def reciprocalStieltjesNonexceptionalSet
     (P : Polynomial (Polynomial ℂ)) : Set ℝ :=
-  {x | x ≠ 0 ∧ P.leadingCoeff.eval (((x : ℂ)⁻¹) ^ 2) ≠ 0}
+  {x | x ≠ 0 ∧ P.leadingCoeff.eval (((x : ℂ)⁻¹) ^ (2 : ℕ)) ≠ 0}
 
 def reciprocalStieltjesComplexNonexceptionalSet
     (P : Polynomial (Polynomial ℂ)) : Set ℂ :=
-  {z | z ≠ 0 ∧ P.leadingCoeff.eval (z⁻¹ ^ 2) ≠ 0}
+  {z | z ≠ 0 ∧ P.leadingCoeff.eval (z⁻¹ ^ (2 : ℕ)) ≠ 0}
 
 theorem isOpen_reciprocalStieltjesComplexNonexceptionalSet
     (P : Polynomial (Polynomial ℂ)) :
@@ -383,10 +383,10 @@ theorem isOpen_reciprocalStieltjesComplexNonexceptionalSet
   rw [isOpen_iff_mem_nhds]
   intro z hz
   have hz0 : z ≠ 0 := hz.1
-  have hInv : ContinuousAt (fun w : ℂ ↦ w⁻¹ ^ 2) z :=
+  have hInv : ContinuousAt (fun w : ℂ ↦ w⁻¹ ^ (2 : ℕ)) z :=
     (continuousAt_id.inv₀ hz0).pow 2
   have hPoly : ContinuousAt
-      (fun w : ℂ ↦ P.leadingCoeff.eval (w⁻¹ ^ 2)) z :=
+      (fun w : ℂ ↦ P.leadingCoeff.eval (w⁻¹ ^ (2 : ℕ))) z :=
     P.leadingCoeff.continuous.continuousAt.comp hInv
   exact Filter.inter_mem (isOpen_ne.mem_nhds hz0)
     (hPoly (isOpen_ne.mem_nhds hz.2))
@@ -426,10 +426,10 @@ theorem reciprocal_algebraic_stieltjes_restrict_absolutelyContinuous
   have hLcompact : IsCompact L := hKC.cthickening
   have hLN : L ⊆ N :=
     (Metric.cthickening_mono (by linarith : delta / 2 ≤ delta) KC).trans hdeltasub
-  have hInvSqCont : ContinuousOn (fun z : ℂ ↦ z⁻¹ ^ 2) L := by
+  have hInvSqCont : ContinuousOn (fun z : ℂ ↦ z⁻¹ ^ (2 : ℕ)) L := by
     intro z hz
     exact ((continuousAt_id.inv₀ (hLN hz).1).pow 2).continuousWithinAt
-  let T : Set ℂ := (fun z : ℂ ↦ z⁻¹ ^ 2) '' L
+  let T : Set ℂ := (fun z : ℂ ↦ z⁻¹ ^ (2 : ℕ)) '' L
   have hTcompact : IsCompact T := hLcompact.image_of_continuousOn hInvSqCont
   have hTlead : ∀ xi ∈ T, P.leadingCoeff.eval xi ≠ 0 := by
     intro xi hxi
@@ -485,9 +485,9 @@ theorem reciprocal_algebraic_stieltjes_restrict_absolutelyContinuous
   let z : ℂ := (x : ℂ) + (y : ℂ) * Complex.I
   have hzL : z ∈ L := hgeom x hx y hy.le hydelta
   have hzN := hLN hzL
-  have hxiT : z⁻¹ ^ 2 ∈ T := ⟨z, hzL, rfl⟩
-  have hlead : P.leadingCoeff.eval (z⁻¹ ^ 2) ≠ 0 := hTlead _ hxiT
-  have hQne : bivariatePolynomialSpecialize P (z⁻¹ ^ 2) ≠ 0 := by
+  have hxiT : z⁻¹ ^ (2 : ℕ) ∈ T := ⟨z, hzL, rfl⟩
+  have hlead : P.leadingCoeff.eval (z⁻¹ ^ (2 : ℕ)) ≠ 0 := hTlead _ hxiT
+  have hQne : bivariatePolynomialSpecialize P (z⁻¹ ^ (2 : ℕ)) ≠ 0 := by
     intro hzero
     have h := congrArg (fun q : Polynomial ℂ ↦ q.leadingCoeff) hzero
     rw [bivariatePolynomialSpecialize_leadingCoeff P _ hlead,
@@ -495,12 +495,12 @@ theorem reciprocal_algebraic_stieltjes_restrict_absolutelyContinuous
     exact hlead h
   let S : ℂ := ∫ t : ℝ, ((t : ℂ) - z)⁻¹ ∂mu
   have hzIm : z.im = y := by simp [z]
-  have hroot : (bivariatePolynomialSpecialize P (z⁻¹ ^ 2)).IsRoot (-z * S) := by
+  have hroot : (bivariatePolynomialSpecialize P (z⁻¹ ^ (2 : ℕ))).IsRoot (-z * S) := by
     rw [Polynomial.IsRoot, bivariatePolynomialSpecialize, Polynomial.eval_map]
     exact hAlg z (by rw [hzIm]; exact hy)
   have hrootBoundNN := hroot.norm_lt_cauchyBound hQne
   have hrootBound : ‖-z * S‖ <
-      (Polynomial.cauchyBound (bivariatePolynomialSpecialize P (z⁻¹ ^ 2)) : ℝ) := by
+      (Polynomial.cauchyBound (bivariatePolynomialSpecialize P (z⁻¹ ^ (2 : ℕ))) : ℝ) := by
     exact_mod_cast hrootBoundNN
   have hrootC : ‖-z * S‖ ≤ C := hrootBound.le.trans (hC _ hxiT)
   have hSbound : ‖S‖ ≤ D * C := by
@@ -514,11 +514,11 @@ theorem reciprocal_algebraic_stieltjes_restrict_absolutelyContinuous
   exact (Complex.im_le_norm S).trans hSbound
 
 def reciprocalRootFiber (r : ℂ) : Set ℝ :=
-  {x | x ≠ 0 ∧ ((x : ℂ)⁻¹) ^ 2 = r}
+  {x | x ≠ 0 ∧ ((x : ℂ)⁻¹) ^ (2 : ℕ) = r}
 
 theorem reciprocalRootFiber_finite (r : ℂ) :
     (reciprocalRootFiber r).Finite := by
-  let q : Polynomial ℂ := Polynomial.C r * Polynomial.X ^ 2 - 1
+  let q : Polynomial ℂ := Polynomial.C r * Polynomial.X ^ (2 : ℕ) - 1
   have hqne : q ≠ 0 := by
     intro hzero
     have h := congrArg (fun p : Polynomial ℂ ↦ p.eval 0) hzero
@@ -535,7 +535,7 @@ theorem reciprocalRootFiber_finite (r : ℂ) :
   simp only [q, Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_C,
     Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_one]
   calc
-    r * (x : ℂ) ^ 2 - 1 = ((x : ℂ)⁻¹) ^ 2 * (x : ℂ) ^ 2 - 1 := by
+    r * (x : ℂ) ^ (2 : ℕ) - 1 = ((x : ℂ)⁻¹) ^ (2 : ℕ) * (x : ℂ) ^ (2 : ℕ) - 1 := by
       rw [hx.2]
     _ = 0 := by field_simp; ring
 
@@ -552,12 +552,12 @@ theorem reciprocalStieltjesNonexceptionalSet_compl_finite
   intro x hx
   by_cases hx0 : x = 0
   · exact Set.mem_union_left _ (by simp [hx0])
-  · have hroot : P.leadingCoeff.IsRoot (((x : ℂ)⁻¹) ^ 2) := by
+  · have hroot : P.leadingCoeff.IsRoot (((x : ℂ)⁻¹) ^ (2 : ℕ)) := by
       rw [Polynomial.IsRoot]
       simpa [reciprocalStieltjesNonexceptionalSet, hx0] using hx
     apply Set.mem_union_right
     exact Set.mem_iUnion₂.mpr
-      ⟨((x : ℂ)⁻¹) ^ 2, hroot, ⟨hx0, rfl⟩⟩
+      ⟨((x : ℂ)⁻¹) ^ (2 : ℕ), hroot, ⟨hx0, rfl⟩⟩
 
 theorem atomless_reciprocal_algebraic_stieltjes_absolutelyContinuous
     (mu : Measure ℝ) [IsFiniteMeasure mu] [NullSingletonClass mu]

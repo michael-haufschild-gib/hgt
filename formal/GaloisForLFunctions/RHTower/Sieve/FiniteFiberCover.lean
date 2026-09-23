@@ -45,15 +45,15 @@ theorem finiteFiberEnergyWith_le_cover
   classical
   unfold finiteFiberEnergyWith
   calc
-    (∑ b : β, finiteFiberCountWith f p b ^ 2) ≤
+    (∑ b : β, finiteFiberCountWith f p b ^ (2 : ℕ)) ≤
         ∑ b : β, (∑ i : ι,
-          finiteFiberCountWith f (fun a => p a ∧ cover i a) b) ^ 2 := by
+          finiteFiberCountWith f (fun a => p a ∧ cover i a) b) ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro b _
       exact Nat.pow_le_pow_left
         (finiteFiberCountWith_le_cover f p cover hcover b) 2
     _ ≤ ∑ b : β, Fintype.card ι *
-        ∑ i : ι, finiteFiberCountWith f (fun a => p a ∧ cover i a) b ^ 2 := by
+        ∑ i : ι, finiteFiberCountWith f (fun a => p a ∧ cover i a) b ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro b _
       simpa using (sq_sum_le_card_mul_sum_sq
@@ -62,7 +62,7 @@ theorem finiteFiberEnergyWith_le_cover
           finiteFiberCountWith f (fun a => p a ∧ cover i a) b))
     _ = Fintype.card ι *
         ∑ i : ι, ∑ b : β,
-          finiteFiberCountWith f (fun a => p a ∧ cover i a) b ^ 2 := by
+          finiteFiberCountWith f (fun a => p a ∧ cover i a) b ^ (2 : ℕ) := by
       simp_rw [← Finset.mul_sum]
       rw [Finset.sum_comm]
 

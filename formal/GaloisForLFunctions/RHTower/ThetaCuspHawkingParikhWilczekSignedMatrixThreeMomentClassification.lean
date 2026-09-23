@@ -25,7 +25,7 @@ noncomputable section
 
 /-- Common scalar spectral coordinate carried by every Borel-grade residual. -/
 def schwarzschildParikhWilczekBorelSpectralCoordinate (s : ℂ) : ℝ :=
-  s.re * (1 - s.re) + s.im ^ 2 + 1
+  s.re * (1 - s.re) + s.im ^ (2 : ℕ) + 1
 
 /-- Grade-dependent shift complementary to the common spectral coordinate. -/
 def schwarzschildParikhWilczekBorelGradeShift (k : ℕ) : ℝ :=
@@ -65,7 +65,7 @@ def schwarzschildParikhWilczekSignedMatrixMomentTwo
 def schwarzschildParikhWilczekSignedMatrixResidualPolynomial
     {N : ℕ} (M : Fin N → Fin N → ℝ) (s : ℂ) : ℝ :=
   schwarzschildParikhWilczekSignedMatrixMomentZero M *
-      schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2 +
+      schwarzschildParikhWilczekBorelSpectralCoordinate s ^ (2 : ℕ) +
     schwarzschildParikhWilczekSignedMatrixMomentOne M *
       schwarzschildParikhWilczekBorelSpectralCoordinate s +
     schwarzschildParikhWilczekSignedMatrixMomentTwo M
@@ -84,7 +84,7 @@ theorem schwarzschildParikhWilczekMatrixResidualEnergy_three_moment
   apply Eq.symm
   calc
     _ = ∑ i, ∑ j,
-        (M i j * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2 +
+        (M i j * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ (2 : ℕ) +
           M i j *
             (schwarzschildParikhWilczekBorelGradeShift (i : ℕ) +
               schwarzschildParikhWilczekBorelGradeShift (j : ℕ)) *
@@ -103,7 +103,7 @@ theorem schwarzschildParikhWilczekMatrixResidualEnergy_three_moment
 theorem schwarzschildParikhWilczekMatrixCrossGradeEnergy_three_moment
     {N : ℕ} (M : Fin N → Fin N → ℝ) (s : ℂ) :
     schwarzschildParikhWilczekMatrixCrossGradeEnergy M s =
-      schwarzschildParikhWilczekBorelWallFactor s ^ 2 *
+      schwarzschildParikhWilczekBorelWallFactor s ^ (2 : ℕ) *
         schwarzschildParikhWilczekSignedMatrixResidualPolynomial M s := by
   rw [schwarzschildParikhWilczekMatrixCrossGradeEnergy_factorization,
     schwarzschildParikhWilczekMatrixResidualEnergy_three_moment]
@@ -218,7 +218,7 @@ theorem schwarzschildParikhWilczekThreeGradeDarkMatrix_has_negative_entry :
 /-- Any finite real rank-one quadratic form is a square. -/
 theorem finite_rankOneQuadraticForm_eq_sq
     {N : ℕ} (w v : Fin N → ℝ) :
-    (∑ i, ∑ j, v i * (w i * w j) * v j) = (∑ i, v i * w i) ^ 2 := by
+    (∑ i, ∑ j, v i * (w i * w j) * v j) = (∑ i, v i * w i) ^ (2 : ℕ) := by
   calc
     (∑ i, ∑ j, v i * (w i * w j) * v j) =
         ∑ i, ∑ j, (v i * w i) * (v j * w j) := by
@@ -239,7 +239,7 @@ theorem schwarzschildParikhWilczekThreeGradeDarkMatrix_quadraticForm_nonneg
       v i * schwarzschildParikhWilczekThreeGradeDarkMatrix i j * v j := by
   rw [show (∑ i, ∑ j,
       v i * schwarzschildParikhWilczekThreeGradeDarkMatrix i j * v j) =
-      (∑ i, v i * schwarzschildParikhWilczekThreeGradeDarkWeight i) ^ 2 by
+      (∑ i, v i * schwarzschildParikhWilczekThreeGradeDarkWeight i) ^ (2 : ℕ) by
         simpa only [schwarzschildParikhWilczekThreeGradeDarkMatrix] using
           finite_rankOneQuadraticForm_eq_sq
             schwarzschildParikhWilczekThreeGradeDarkWeight v]
@@ -272,7 +272,7 @@ theorem schwarzschildParikhWilczekThreeGradeDarkMatrix_energy_zero (s : ℂ) :
           (schwarzschildParikhWilczekBorelRecoilHolonomy s (i : ℕ)).im *
             (schwarzschildParikhWilczekBorelRecoilHolonomy s (j : ℕ)).im) =
       (∑ i, schwarzschildParikhWilczekThreeGradeDarkWeight i *
-        (schwarzschildParikhWilczekBorelRecoilHolonomy s (i : ℕ)).im) ^ 2 := by
+        (schwarzschildParikhWilczekBorelRecoilHolonomy s (i : ℕ)).im) ^ (2 : ℕ) := by
           rw [← finite_rankOneQuadraticForm_eq_sq]
           apply Finset.sum_congr rfl
           intro i _

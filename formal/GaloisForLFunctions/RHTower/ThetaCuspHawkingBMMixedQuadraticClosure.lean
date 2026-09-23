@@ -23,7 +23,7 @@ set_option autoImplicit false
 
 private theorem source_syy (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0 < z 1) :
     coordDeriv 1 (coordDeriv 1 (source q)) z =
-      (physicalRate q branch+1)*(physicalRate q branch+2)*source q z/(z 1:ℂ)^2-
+      (physicalRate q branch+1)*(physicalRate q branch+2)*source q z/(z 1:ℂ)^(2 : ℕ)-
         coordDeriv 0 (coordDeriv 0 (source q)) z := by
   have he := scalar_physical_equation q branch z hz
   change scalarLaplacian (source q) z =
@@ -35,7 +35,7 @@ private theorem source_syy (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0 
 
 private theorem source_sxyy (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0 < z 1) :
     coordDeriv 0 (coordDeriv 1 (coordDeriv 1 (source q))) z =
-      (physicalRate q branch+1)*(physicalRate q branch+2)*coordDeriv 0 (source q) z/(z 1:ℂ)^2-
+      (physicalRate q branch+1)*(physicalRate q branch+2)*coordDeriv 0 (source q) z/(z 1:ℂ)^(2 : ℕ)-
         coordDeriv 0 (coordDeriv 0 (coordDeriv 0 (source q))) z := by
   have hs : ContDiffAt ℝ 3 (source q) z :=
     D4BMLiteralCusp.scalar_contDiffAt (D4BMGlobalAngularResponse.center q) 3 z hz
@@ -48,7 +48,7 @@ private theorem source_sxyy (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0
   rw [scalarLaplacian_partial _ z hz hs 0] at hd
   rw [((hs.differentiableAt (by norm_num)).hasFDerivAt.const_mul
     ((physicalRate q branch+1)*(physicalRate q branch+2))).fderiv] at hd
-  change (0:ℂ)*_+(z 1:ℂ)^2*(_+_) =
+  change (0:ℂ)*_+(z 1:ℂ)^(2 : ℕ)*(_+_) =
     (physicalRate q branch+1)*(physicalRate q branch+2)*coordDeriv 0 (source q) z at hd
   have hy : (z 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz.ne'
   field_simp
@@ -73,7 +73,7 @@ private def contactExpr (s : ℂ) : Matrix (Fin 4) (Fin 4) Expr :=
   !![Z,Z,X,Y; Z,Z,Z,Z; X,Z,Z,Z; Y,Z,Z,Z]
 
 private def atoms (q : XiZeroCopy) (branch : Bool) (a : ℂ) (k : Fin 5) (x : Fin 4 → ℝ) : ℂ :=
-  ![(x 1 : ℂ), envelope (2*physicalRate q branch) (a^2) x,
+  ![(x 1 : ℂ), envelope (2*physicalRate q branch) (a^(2 : ℕ)) x,
     source q (angularPoint x),
     D4BMLiteralCusp.vector (D4BMGlobalAngularResponse.center q) 0 (angularPoint x),
     D4BMLiteralCusp.vector (D4BMGlobalAngularResponse.center q) 1 (angularPoint x)] k
@@ -147,7 +147,7 @@ theorem contactFieldBilinear_reflect (q : XiZeroCopy) (branch : Bool) (a d : ℂ
 
 private theorem contactField_amplitude_square (q : XiZeroCopy) (branch : Bool)
     (a : ℂ) (x : Fin 4 → ℝ) :
-    contactField q branch a x = (a^2) • contactField q branch 1 x := by
+    contactField q branch a x = (a^(2 : ℕ)) • contactField q branch 1 x := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [contactField,contactExpr,atoms,D4BMFundamentalScalarMetric.envelope,
@@ -235,12 +235,12 @@ private def atomJets (q : XiZeroCopy) (branch : Bool) (a : ℂ)
   let Sxxx := coordDeriv 0 (coordDeriv 0 (coordDeriv 0 (source q))) z
   let Sxxy := coordDeriv 0 (coordDeriv 0 (coordDeriv 1 (source q))) z
   ![coord (p.val 1) 1,
-    temporalRadial (2*s) (p.val 1) ((envelope s a p.val)^2),
+    temporalRadial (2*s) (p.val 1) ((envelope s a p.val)^(2 : ℕ)),
     angular s y S Sx Sy Sxx Sxy,
-    D4BMVectorLinearEquation.angular0 s y Sy Sxy ((s+1)*(s+2)*S/y^2-Sxx)
-      (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx),
+    D4BMVectorLinearEquation.angular0 s y Sy Sxy ((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx)
+      (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx),
     D4BMVectorLinearEquation.angular1 s y (-Sx) Sxy (-Sxx)
-      Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx)]
+      Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx)]
 
 private theorem scalar_atom_jet (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (p : D4BMBackground.ExteriorPoint) :
@@ -298,8 +298,8 @@ private theorem atoms_jet (q : XiZeroCopy) (branch : Bool) (a : ℂ)
   funext k
   fin_cases k
   · exact coordinate_jet p.val 1
-  · change ofField (envelope (2*physicalRate q branch) (a^2)) p.val =
-      temporalRadial (2*physicalRate q branch) (p.val 1) (envelope (physicalRate q branch) a p.val^2)
+  · change ofField (envelope (2*physicalRate q branch) (a^(2 : ℕ))) p.val =
+      temporalRadial (2*physicalRate q branch) (p.val 1) (envelope (physicalRate q branch) a p.val^(2 : ℕ))
     rw [envelope_jet, envelope_double]
     rfl
   · exact scalar_atom_jet q branch a p
@@ -329,22 +329,22 @@ private theorem map_cross_matrix {α β : Type} (f : α → β) (X Y Z : α) (i 
 
 private theorem contactExpr_jet (s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) :
     assemble (fun i j => (contactExpr s i j).evalJet
-      ![coord r 1, temporalRadial (2*s) r (B^2), angular s y S Sx Sy Sxx Sxy,
-        D4BMVectorLinearEquation.angular0 s y Sy Sxy ((s+1)*(s+2)*S/y^2-Sxx)
-          (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx),
+      ![coord r 1, temporalRadial (2*s) r (B^(2 : ℕ)), angular s y S Sx Sy Sxx Sxy,
+        D4BMVectorLinearEquation.angular0 s y Sy Sxy ((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx)
+          (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx),
         D4BMVectorLinearEquation.angular1 s y (-Sx) Sxy (-Sxx)
-          Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx)]) =
+          Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx)]) =
       D4BMQuadraticMixedSource.correctionJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy := by
   change assemble _ = assemble _
   congr 1
   funext i j
   unfold contactExpr
   exact map_cross_matrix (fun e : Expr => e.evalJet
-    ![coord r 1, temporalRadial (2*s) r (B^2), angular s y S Sx Sy Sxx Sxy,
-      D4BMVectorLinearEquation.angular0 s y Sy Sxy ((s+1)*(s+2)*S/y^2-Sxx)
-        (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx),
+    ![coord r 1, temporalRadial (2*s) r (B^(2 : ℕ)), angular s y S Sx Sy Sxx Sxy,
+      D4BMVectorLinearEquation.angular0 s y Sy Sxy ((s+1)*(s+2)*S/y^(2 : ℕ)-Sxx)
+        (-Sxx) Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx),
       D4BMVectorLinearEquation.angular1 s y (-Sx) Sxy (-Sxx)
-        Sxxy ((s+1)*(s+2)*Sx/y^2-Sxxx)]) _ _ _ i j
+        Sxxy ((s+1)*(s+2)*Sx/y^(2 : ℕ)-Sxxx)]) _ _ _ i j
 
 /-- The contact table is the actual metric field's full two-jet, not supplied jet data. -/
 theorem contactField_jet (q : XiZeroCopy) (branch : Bool) (a : ℂ)
@@ -371,8 +371,8 @@ theorem contactField_einstein (q : XiZeroCopy) (branch : Bool) (a : ℂ)
       (angularPoint p.val) i j := by
   have hr : (p.val 1 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith [p.property.1])
   have hy : (p.val 3 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
   have hs : ContDiffAt ℝ 2 (source q) (angularPoint p.val) :=
     D4BMLiteralCusp.scalar_contDiffAt _ 2 _ p.property.2
   have he : scalarLaplacian (source q) (angularPoint p.val) =

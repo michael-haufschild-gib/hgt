@@ -24,7 +24,7 @@ namespace GaloisForLFunctions.RHTower
 
 /-- Full-line real translation-difference energy. -/
 def suzukiRealTranslationDifferenceEnergy (u : ℝ → ℝ) (h : ℝ) : ℝ :=
-  ∫ x : ℝ, (u x - u (x + h)) ^ 2
+  ∫ x : ℝ, (u x - u (x + h)) ^ (2 : ℕ)
 
 private def suzukiSymmetricDividedKernel (u : ℝ → ℝ) (h x : ℝ) : ℝ :=
   u x * ((2 * u x - u (x + h) - u (x - h)) / h)
@@ -35,8 +35,8 @@ private theorem core_eq_zero_of_not_mem_aperture {a : ℝ}
   exact hx (u.support_subset_aperture hux)
 
 private theorem core_square_integrable {a : ℝ} (u : SuzukiRestrictedWeilCore a) :
-    Integrable (fun x : ℝ => u x ^ 2) := by
-  have hsupp : Function.support (fun x : ℝ => u x ^ 2) ⊆
+    Integrable (fun x : ℝ => u x ^ (2 : ℕ)) := by
+  have hsupp : Function.support (fun x : ℝ => u x ^ (2 : ℕ)) ⊆
       Icc (-u.supportRadius) u.supportRadius := by
     intro x hx
     exact u.support_subset (fun hzero => hx (by simp [hzero]))
@@ -59,11 +59,11 @@ private theorem core_cross_sub_integrable {a : ℝ} (u : SuzukiRestrictedWeilCor
 
 private theorem core_shift_square_integrable {a : ℝ}
     (u : SuzukiRestrictedWeilCore a) (h : ℝ) :
-    Integrable (fun x : ℝ => u (x + h) ^ 2) :=
+    Integrable (fun x : ℝ => u (x + h) ^ (2 : ℕ)) :=
   (core_square_integrable u).comp_add_right h
 
 private theorem core_mass_interval_eq {a : ℝ} (u : SuzukiRestrictedWeilCore a) :
-    (∫ x in (-a)..a, u x ^ 2) = ∫ x : ℝ, u x ^ 2 := by
+    (∫ x in (-a)..a, u x ^ (2 : ℕ)) = ∫ x : ℝ, u x ^ (2 : ℕ) := by
   apply intervalIntegral.integral_eq_integral_of_support_subset
   intro x hx
   have hux : u x ≠ 0 := fun hzero => hx (by simp [hzero])
@@ -78,33 +78,33 @@ private theorem translationDifferenceEnergy_eq_symmetric_integral {a : ℝ}
   have hu2shift := core_shift_square_integrable u h
   have hcross := core_cross_integrable u h
   have hcrossSub := core_cross_sub_integrable u h
-  have hshiftSq : (∫ x : ℝ, u (x + h) ^ 2) = ∫ x : ℝ, u x ^ 2 := by
-    simpa using integral_add_right_eq_self (μ := volume) (fun x : ℝ => u x ^ 2) h
+  have hshiftSq : (∫ x : ℝ, u (x + h) ^ (2 : ℕ)) = ∫ x : ℝ, u x ^ (2 : ℕ) := by
+    simpa using integral_add_right_eq_self (μ := volume) (fun x : ℝ => u x ^ (2 : ℕ)) h
   have hcrossShift : (∫ x : ℝ, u x * u (x - h)) =
       ∫ x : ℝ, u x * u (x + h) := by
     have hs := integral_sub_right_eq_self (μ := volume)
       (fun x : ℝ => u (x + h) * u x) h
     simpa [sub_add_cancel, mul_comm] using hs
   have hdiff : suzukiRealTranslationDifferenceEnergy u h =
-      2 * (∫ x : ℝ, u x ^ 2) - 2 * (∫ x : ℝ, u x * u (x + h)) := by
+      2 * (∫ x : ℝ, u x ^ (2 : ℕ)) - 2 * (∫ x : ℝ, u x * u (x + h)) := by
     unfold suzukiRealTranslationDifferenceEnergy
     calc
-      (∫ x : ℝ, (u x - u (x + h)) ^ 2) =
-          ∫ x : ℝ, (u x ^ 2 + u (x + h) ^ 2) - 2 * (u x * u (x + h)) := by
+      (∫ x : ℝ, (u x - u (x + h)) ^ (2 : ℕ)) =
+          ∫ x : ℝ, (u x ^ (2 : ℕ) + u (x + h) ^ (2 : ℕ)) - 2 * (u x * u (x + h)) := by
             refine integral_congr_ae (ae_of_all _ fun x => by ring)
-      _ = ((∫ x : ℝ, u x ^ 2) + ∫ x : ℝ, u (x + h) ^ 2) -
+      _ = ((∫ x : ℝ, u x ^ (2 : ℕ)) + ∫ x : ℝ, u (x + h) ^ (2 : ℕ)) -
           2 * (∫ x : ℝ, u x * u (x + h)) := by
             calc
-              (∫ x : ℝ, (u x ^ 2 + u (x + h) ^ 2) -
+              (∫ x : ℝ, (u x ^ (2 : ℕ) + u (x + h) ^ (2 : ℕ)) -
                   2 * (u x * u (x + h))) =
-                  (∫ x : ℝ, u x ^ 2 + u (x + h) ^ 2) -
+                  (∫ x : ℝ, u x ^ (2 : ℕ) + u (x + h) ^ (2 : ℕ)) -
                     ∫ x : ℝ, 2 * (u x * u (x + h)) :=
                       integral_sub (hu2.add hu2shift) (hcross.const_mul 2)
-              _ = ((∫ x : ℝ, u x ^ 2) + ∫ x : ℝ, u (x + h) ^ 2) -
+              _ = ((∫ x : ℝ, u x ^ (2 : ℕ)) + ∫ x : ℝ, u (x + h) ^ (2 : ℕ)) -
                   2 * (∫ x : ℝ, u x * u (x + h)) := by
                     rw [integral_add hu2 hu2shift,
                       MeasureTheory.integral_const_mul]
-      _ = 2 * (∫ x : ℝ, u x ^ 2) - 2 * (∫ x : ℝ, u x * u (x + h)) := by
+      _ = 2 * (∫ x : ℝ, u x ^ (2 : ℕ)) - 2 * (∫ x : ℝ, u x * u (x + h)) := by
             rw [hshiftSq]
             ring
   rw [hdiff]
@@ -119,16 +119,16 @@ private theorem translationDifferenceEnergy_eq_symmetric_integral {a : ℝ}
   rw [intervalIntegral.integral_eq_integral_of_support_subset hsupp]
   have hreprInt : (∫ x : ℝ,
       u x * (2 * u x - u (x + h) - u (x - h))) =
-          (∫ x : ℝ, 2 * (u x ^ 2)) - (∫ x : ℝ, u x * u (x + h)) -
+          (∫ x : ℝ, 2 * (u x ^ (2 : ℕ))) - (∫ x : ℝ, u x * u (x + h)) -
             ∫ x : ℝ, u x * u (x - h) := by
     calc
       (∫ x : ℝ, u x * (2 * u x - u (x + h) - u (x - h))) =
-          ∫ x : ℝ, (2 * u x ^ 2 - u x * u (x + h)) - u x * u (x - h) := by
+          ∫ x : ℝ, (2 * u x ^ (2 : ℕ) - u x * u (x + h)) - u x * u (x - h) := by
             refine integral_congr_ae (ae_of_all _ fun x => by ring)
-      _ = (∫ x : ℝ, 2 * u x ^ 2 - u x * u (x + h)) -
+      _ = (∫ x : ℝ, 2 * u x ^ (2 : ℕ) - u x * u (x + h)) -
           ∫ x : ℝ, u x * u (x - h) :=
             integral_sub ((hu2.const_mul 2).sub hcross) hcrossSub
-      _ = ((∫ x : ℝ, 2 * u x ^ 2) - ∫ x : ℝ, u x * u (x + h)) -
+      _ = ((∫ x : ℝ, 2 * u x ^ (2 : ℕ)) - ∫ x : ℝ, u x * u (x + h)) -
           ∫ x : ℝ, u x * u (x - h) := by
             rw [integral_sub (hu2.const_mul 2) hcross]
   rw [hreprInt, hcrossShift, MeasureTheory.integral_const_mul]
@@ -375,7 +375,7 @@ private theorem integral_symmetricDividedKernel_slice {a x : ℝ} (ha : 0 < a)
     (∫ h in (0 : ℝ)..(2 * a), suzukiSymmetricDividedKernel u h x) =
       -(((∫ y in (-a)..x, (u y - u x) * (x - y)⁻¹) +
           ∫ y in x..a, (u y - u x) * (y - x)⁻¹) * u x) +
-        (2 * Real.log (2 * a) - Real.log (a ^ 2 - x ^ 2)) * u x ^ 2 := by
+        (2 * Real.log (2 * a) - Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) * u x ^ (2 : ℕ) := by
   have hb : 0 ≤ 2 * a := by linarith
   have hr := right_divided_integral_eq ha hx u
   have hl := left_divided_integral_eq ha hx u
@@ -401,8 +401,8 @@ private theorem integral_symmetricDividedKernel_slice {a x : ℝ} (ha : 0 < a)
       simp only [div_eq_mul_inv]
       ring
   rw [hrSource, hlSource]
-  have hlog : Real.log (a ^ 2 - x ^ 2) = Real.log (a - x) + Real.log (a + x) := by
-    rw [show a ^ 2 - x ^ 2 = (a - x) * (a + x) by ring,
+  have hlog : Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) = Real.log (a - x) + Real.log (a + x) := by
+    rw [show a ^ (2 : ℕ) - x ^ (2 : ℕ) = (a - x) * (a + x) by ring,
       Real.log_mul (by linarith [hx.2]) (by linarith [hx.1])]
   rw [hlog]
   ring
@@ -412,7 +412,7 @@ private theorem integrated_symmetricDividedKernel_eq {a : ℝ} (ha : 0 < a)
     (∫ h in (0 : ℝ)..(2 * a), ∫ x in (-a)..a,
         suzukiSymmetricDividedKernel u h x) =
       (1 / 2 : ℝ) * suzukiFinitePartDifferenceEnergy a u +
-        2 * Real.log (2 * a) * (∫ x in (-a)..a, u x ^ 2) -
+        2 * Real.log (2 * a) * (∫ x in (-a)..a, u x ^ (2 : ℕ)) -
           suzukiFinitePartLogPotential a u := by
   rw [integral_symmetricDividedKernel_swap ha u]
   let S : ℝ → ℝ := fun x =>
@@ -421,7 +421,7 @@ private theorem integrated_symmetricDividedKernel_eq {a : ℝ} (ha : 0 < a)
   have hsymm := suzukiFinitePartDividedDifference_symmetrization ha u.smooth
   have hlog := suzukiFinitePartLogPotential_integrable_upper ha
     u.supportRadius_nonneg u.supportRadius_lt_aperture u.continuous u.support_subset
-  have hmass : IntervalIntegrable (fun x : ℝ => u x ^ 2) volume (-a) a :=
+  have hmass : IntervalIntegrable (fun x : ℝ => u x ^ (2 : ℕ)) volume (-a) a :=
     (u.continuous.pow 2).intervalIntegrable _ _
   have hSint : IntervalIntegrable S volume (-a) a := by
     simpa [S] using hsymm.1
@@ -429,12 +429,12 @@ private theorem integrated_symmetricDividedKernel_eq {a : ℝ} (ha : 0 < a)
       -(1 / 2 : ℝ) * suzukiFinitePartDifferenceEnergy a u := by
     simpa [S, suzukiFinitePartDifferenceEnergy] using hsymm.2.1
   have htail : IntervalIntegrable
-      (fun x : ℝ => (2 * Real.log (2 * a) - Real.log (a ^ 2 - x ^ 2)) * u x ^ 2)
+      (fun x : ℝ => (2 * Real.log (2 * a) - Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) * u x ^ (2 : ℕ))
       volume (-a) a := by
     have hrepr : (fun x : ℝ =>
-        (2 * Real.log (2 * a) - Real.log (a ^ 2 - x ^ 2)) * u x ^ 2) =
-      (fun x => 2 * Real.log (2 * a) * u x ^ 2) -
-        (fun x => Real.log (a ^ 2 - x ^ 2) * u x ^ 2) := by
+        (2 * Real.log (2 * a) - Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) * u x ^ (2 : ℕ)) =
+      (fun x => 2 * Real.log (2 * a) * u x ^ (2 : ℕ)) -
+        (fun x => Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) * u x ^ (2 : ℕ)) := by
       funext x
       dsimp
       ring
@@ -443,7 +443,7 @@ private theorem integrated_symmetricDividedKernel_eq {a : ℝ} (ha : 0 < a)
   have hslice : (∫ x in (-a)..a, ∫ h in (0 : ℝ)..(2 * a),
       suzukiSymmetricDividedKernel u h x) =
       ∫ x in (-a)..a, -S x +
-        (2 * Real.log (2 * a) - Real.log (a ^ 2 - x ^ 2)) * u x ^ 2 := by
+        (2 * Real.log (2 * a) - Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) * u x ^ (2 : ℕ) := by
     refine intervalIntegral.integral_congr fun x hx => ?_
     by_cases hux : u x = 0
     · have hpoint : ∀ h : ℝ, suzukiSymmetricDividedKernel u h x = 0 := by
@@ -454,23 +454,23 @@ private theorem integrated_symmetricDividedKernel_eq {a : ℝ} (ha : 0 < a)
       simpa [S] using integral_symmetricDividedKernel_slice ha hxa u
   rw [hslice]
   have htailEval : (∫ x in (-a)..a,
-      (2 * Real.log (2 * a) - Real.log (a ^ 2 - x ^ 2)) * u x ^ 2) =
-      2 * Real.log (2 * a) * (∫ x in (-a)..a, u x ^ 2) -
+      (2 * Real.log (2 * a) - Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) * u x ^ (2 : ℕ)) =
+      2 * Real.log (2 * a) * (∫ x in (-a)..a, u x ^ (2 : ℕ)) -
         suzukiFinitePartLogPotential a u := by
     unfold suzukiFinitePartLogPotential
     rw [show (∫ x in (-a)..a,
-        (2 * Real.log (2 * a) - Real.log (a ^ 2 - x ^ 2)) * u x ^ 2) =
-      (∫ x in (-a)..a, 2 * Real.log (2 * a) * u x ^ 2) -
-        ∫ x in (-a)..a, Real.log (a ^ 2 - x ^ 2) * u x ^ 2 by
+        (2 * Real.log (2 * a) - Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) * u x ^ (2 : ℕ)) =
+      (∫ x in (-a)..a, 2 * Real.log (2 * a) * u x ^ (2 : ℕ)) -
+        ∫ x in (-a)..a, Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) * u x ^ (2 : ℕ) by
       rw [← intervalIntegral.integral_sub (hmass.const_mul _) hlog.1]
       refine intervalIntegral.integral_congr fun x _ => by ring,
       intervalIntegral.integral_const_mul]
   have hsum := intervalIntegral.integral_add hSint.neg htail
   have hsum' : (∫ x in (-a)..a, -S x +
-      (2 * Real.log (2 * a) - Real.log (a ^ 2 - x ^ 2)) * u x ^ 2) =
+      (2 * Real.log (2 * a) - Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) * u x ^ (2 : ℕ)) =
       (∫ x in (-a)..a, -S x) +
         ∫ x in (-a)..a,
-          (2 * Real.log (2 * a) - Real.log (a ^ 2 - x ^ 2)) * u x ^ 2 := by
+          (2 * Real.log (2 * a) - Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) * u x ^ (2 : ℕ) := by
     simpa only [Pi.neg_apply, Pi.add_apply] using hsum
   rw [hsum', intervalIntegral.integral_neg, hSval, htailEval]
   unfold suzukiFinitePartDifferenceEnergy
@@ -515,11 +515,11 @@ difference energy is exactly twice the mass. -/
 theorem suzukiRealTranslationDifferenceEnergy_eq_two_mass_of_two_aperture_le
     (a : RHTower.SuzukiPositiveAperture) (u : SuzukiRestrictedWeilCore a.1)
     {h : ℝ} (hh : 2 * a.1 ≤ h) :
-    suzukiRealTranslationDifferenceEnergy u h = 2 * ∫ x : ℝ, u x ^ 2 := by
+    suzukiRealTranslationDifferenceEnergy u h = 2 * ∫ x : ℝ, u x ^ (2 : ℕ) := by
   rw [translationDifferenceEnergy_eq_symmetric_integral]
   have hpoint : (∫ x in (-a.1)..a.1,
       u x * (2 * u x - u (x + h) - u (x - h))) =
-      ∫ x in (-a.1)..a.1, 2 * u x ^ 2 := by
+      ∫ x in (-a.1)..a.1, 2 * u x ^ (2 : ℕ) := by
     refine intervalIntegral.integral_congr fun x hx => ?_
     rw [uIcc_of_le (show -a.1 ≤ a.1 by linarith [a.property])] at hx
     have hbounds : -a.1 ≤ x ∧ x ≤ a.1 := hx
@@ -540,7 +540,7 @@ theorem suzukiFinitePartEnergy_eq_translationDifference
     suzukiFinitePartEnergy a.1 u =
       (1 / 2 : ℝ) * (∫ h in (0 : ℝ)..(2 * a.1),
         suzukiRealTranslationDifferenceEnergy u h / h) -
-          Real.log (2 * a.1) * (∫ x : ℝ, u x ^ 2) := by
+          Real.log (2 * a.1) * (∫ x : ℝ, u x ^ (2 : ℕ)) := by
   have hkernel : (∫ h in (0 : ℝ)..(2 * a.1),
       suzukiRealTranslationDifferenceEnergy u h / h) =
       ∫ h in (0 : ℝ)..(2 * a.1), ∫ x in (-a.1)..a.1,

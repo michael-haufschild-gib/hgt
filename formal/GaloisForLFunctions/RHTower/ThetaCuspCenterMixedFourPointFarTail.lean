@@ -19,7 +19,7 @@ noncomputable section
 theorem tendsto_thetaCuspCenterMixedEvenParityWall_atTop
     {a : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) :
     Tendsto (thetaCuspCenterMixedEvenParityWall a) atTop
-      (𝓝 (thetaCuspCenterMixedDensity a 0 ^ 2)) := by
+      (𝓝 (thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ))) := by
   let f : ℝ → ℝ := thetaCuspCenterMixedDensity a
   have hconst : Tendsto (fun _ : ℝ => f 0) atTop (𝓝 (f 0)) := tendsto_const_nhds
   have hf : Tendsto f atTop (𝓝 0) := by
@@ -29,8 +29,8 @@ theorem tendsto_thetaCuspCenterMixedEvenParityWall_atTop
   have hf3 : Tendsto (fun t : ℝ => f (3 * t)) atTop (𝓝 0) := by
     exact hf.comp (tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 3))
   change Tendsto
-    (fun t : ℝ => (f 0 + f (3 * t)) * (f 0 + f t) - (f t + f (2 * t)) ^ 2)
-    atTop (𝓝 (f 0 ^ 2))
+    (fun t : ℝ => (f 0 + f (3 * t)) * (f 0 + f t) - (f t + f (2 * t)) ^ (2 : ℕ))
+    atTop (𝓝 (f 0 ^ (2 : ℕ)))
   simpa [pow_two] using
     ((hconst.add hf3).mul (hconst.add hf)).sub
       ((hf.add hf2).pow 2)
@@ -39,7 +39,7 @@ theorem tendsto_thetaCuspCenterMixedEvenParityWall_atTop
 theorem tendsto_thetaCuspCenterMixedOddParityWall_atTop
     {a : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) :
     Tendsto (thetaCuspCenterMixedOddParityWall a) atTop
-      (𝓝 (thetaCuspCenterMixedDensity a 0 ^ 2)) := by
+      (𝓝 (thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ))) := by
   let f : ℝ → ℝ := thetaCuspCenterMixedDensity a
   have hconst : Tendsto (fun _ : ℝ => f 0) atTop (𝓝 (f 0)) := tendsto_const_nhds
   have hf : Tendsto f atTop (𝓝 0) := by
@@ -49,8 +49,8 @@ theorem tendsto_thetaCuspCenterMixedOddParityWall_atTop
   have hf3 : Tendsto (fun t : ℝ => f (3 * t)) atTop (𝓝 0) := by
     exact hf.comp (tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 3))
   change Tendsto
-    (fun t : ℝ => (f 0 - f (3 * t)) * (f 0 - f t) - (f t - f (2 * t)) ^ 2)
-    atTop (𝓝 (f 0 ^ 2))
+    (fun t : ℝ => (f 0 - f (3 * t)) * (f 0 - f t) - (f t - f (2 * t)) ^ (2 : ℕ))
+    atTop (𝓝 (f 0 ^ (2 : ℕ)))
   simpa [pow_two] using
     ((hconst.sub hf3).mul (hconst.sub hf)).sub
       ((hf.sub hf2).pow 2)
@@ -61,7 +61,7 @@ theorem eventually_thetaCuspCenterMixedGramFourEquispaced_posDef_atTop
     {a : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) :
     ∀ᶠ t : ℝ in atTop,
       Matrix.PosDef (thetaCuspCenterMixedGramFourEquispaced a t) := by
-  have hA2 : 0 < thetaCuspCenterMixedDensity a 0 ^ 2 :=
+  have hA2 : 0 < thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ) :=
     sq_pos_of_pos (thetaCuspCenterMixedDensity_pos ha0 ha 0)
   have hEven := tendsto_thetaCuspCenterMixedEvenParityWall_atTop ha0 ha
   have hOdd := tendsto_thetaCuspCenterMixedOddParityWall_atTop ha0 ha
@@ -106,7 +106,7 @@ theorem hasDerivAt_thetaCuspCenterMixedEvenParityWall
     dsimp only [p]
     ring
   change HasDerivAt
-    (fun s : ℝ => (f 0 + f (3 * s)) * (f 0 + f s) - (f s + f (2 * s)) ^ 2) _ t
+    (fun s : ℝ => (f 0 + f (3 * s)) * (f 0 + f s) - (f s + f (2 * s)) ^ (2 : ℕ)) _ t
   have hraw := ((h0.add h3).mul (h0.add h1)).sub ((h1.add h2).pow 2)
   refine (hraw.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
   dsimp only [f, p]
@@ -142,7 +142,7 @@ theorem hasDerivAt_thetaCuspCenterMixedOddParityWall
     dsimp only [p]
     ring
   change HasDerivAt
-    (fun s : ℝ => (f 0 - f (3 * s)) * (f 0 - f s) - (f s - f (2 * s)) ^ 2) _ t
+    (fun s : ℝ => (f 0 - f (3 * s)) * (f 0 - f s) - (f s - f (2 * s)) ^ (2 : ℕ)) _ t
   have hraw := ((h0.sub h3).mul (h0.sub h1)).sub ((h1.sub h2).pow 2)
   refine (hraw.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
   dsimp only [f, p]
@@ -162,7 +162,7 @@ theorem exists_thetaCuspCenterMixedEvenParityWall_stationary_neg_of_neg
         2 * (thetaCuspCenterMixedDensity a t + thetaCuspCenterMixedDensity a (2 * t)) *
           (thetaCuspCenterMixedDensityFirstJet a t +
             2 * thetaCuspCenterMixedDensityFirstJet a (2 * t)) = 0 := by
-  have hA2 : 0 < thetaCuspCenterMixedDensity a 0 ^ 2 :=
+  have hA2 : 0 < thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ) :=
     sq_pos_of_pos (thetaCuspCenterMixedDensity_pos ha0 ha 0)
   have hposEventually : ∀ᶠ t : ℝ in atTop,
       0 < thetaCuspCenterMixedEvenParityWall a t :=
@@ -213,7 +213,7 @@ theorem exists_thetaCuspCenterMixedOddParityWall_stationary_neg_of_neg
         2 * (thetaCuspCenterMixedDensity a t - thetaCuspCenterMixedDensity a (2 * t)) *
           (thetaCuspCenterMixedDensityFirstJet a t -
             2 * thetaCuspCenterMixedDensityFirstJet a (2 * t)) = 0 := by
-  have hA2 : 0 < thetaCuspCenterMixedDensity a 0 ^ 2 :=
+  have hA2 : 0 < thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ) :=
     sq_pos_of_pos (thetaCuspCenterMixedDensity_pos ha0 ha 0)
   have hposEventually : ∀ᶠ t : ℝ in atTop,
       0 < thetaCuspCenterMixedOddParityWall a t :=
@@ -284,7 +284,7 @@ theorem isCompact_thetaCuspCenterMixedFourPointObstructionSet
     exact isClosed_Ici.inter
       ((isClosed_le hEvenCont continuous_const).union
         (isClosed_le hOddCont continuous_const))
-  have hA2 : 0 < thetaCuspCenterMixedDensity a 0 ^ 2 :=
+  have hA2 : 0 < thetaCuspCenterMixedDensity a 0 ^ (2 : ℕ) :=
     sq_pos_of_pos (thetaCuspCenterMixedDensity_pos ha0 ha 0)
   have hEvenPos : ∀ᶠ t : ℝ in atTop, 0 < thetaCuspCenterMixedEvenParityWall a t :=
     (tendsto_thetaCuspCenterMixedEvenParityWall_atTop ha0 ha).eventually

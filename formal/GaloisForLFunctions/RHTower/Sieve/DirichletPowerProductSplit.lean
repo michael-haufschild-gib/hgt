@@ -24,29 +24,29 @@ theorem integral_normSq_mul_le_of_pow (N M : ℕ) (a : Fin N → ℂ) (b : Fin M
     {T V Bf Bg A : ℝ}
     (hBf : ∀ t : ℝ, ‖dirPoly N a t‖ ≤ Bf) (hBg : ∀ t : ℝ, ‖dirPoly M b t‖ ≤ Bg)
     (hA : V ^ (2 * k) * volume.real {t ∈ Set.Ioc (0 : ℝ) T | V ≤ ‖dirPoly M b t‖} ≤ A) :
-    V ^ (2 * k) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ 2 * ‖dirPoly M b t‖ ^ 2)
-      ≤ V ^ (2 * k + 2) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ 2)
-        + Bf ^ 2 * Bg ^ 2 * A := by
+    V ^ (2 * k) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ (2 : ℕ) * ‖dirPoly M b t‖ ^ (2 : ℕ))
+      ≤ V ^ (2 * k + 2) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+        + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ) * A := by
   have hsplit := integral_normSq_mul_split N M a b hBf hBg (V := V) (T := T)
   have hVk : (0 : ℝ) ≤ V ^ (2 * k) := by
     rw [pow_mul]
     positivity
-  have hK : (0 : ℝ) ≤ Bf ^ 2 * Bg ^ 2 := by positivity
+  have hK : (0 : ℝ) ≤ Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ) := by positivity
   have hmul := mul_le_mul_of_nonneg_left hsplit hVk
   have hexc := mul_le_mul_of_nonneg_left hA hK
   calc V ^ (2 * k)
-        * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ 2 * ‖dirPoly M b t‖ ^ 2)
+        * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ (2 : ℕ) * ‖dirPoly M b t‖ ^ (2 : ℕ))
       ≤ V ^ (2 * k)
-          * (V ^ 2 * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ 2)
-            + Bf ^ 2 * Bg ^ 2
+          * (V ^ (2 : ℕ) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+            + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
               * volume.real {t ∈ Set.Ioc (0 : ℝ) T | V ≤ ‖dirPoly M b t‖}) := hmul
-    _ = V ^ (2 * k + 2) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ 2)
-          + Bf ^ 2 * Bg ^ 2
+    _ = V ^ (2 * k + 2) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+          + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
             * (V ^ (2 * k) * volume.real {t ∈ Set.Ioc (0 : ℝ) T | V ≤ ‖dirPoly M b t‖}) := by
         rw [pow_add]
         ring
-    _ ≤ V ^ (2 * k + 2) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ 2)
-          + Bf ^ 2 * Bg ^ 2 * A := by linarith [hexc]
+    _ ≤ V ^ (2 * k + 2) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+          + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ) * A := by linarith [hexc]
 
 /-- **The product split, fully instantiated at a prime-supported second factor.**  The exceptional
 term carries `k^k` and no power of the length. -/
@@ -55,11 +55,11 @@ theorem integral_normSq_mul_le_pow_prime_support (N M : ℕ) (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin M, b n ≠ 0 → Nat.Prime ((n : ℕ) + 1))
     {T V Bf Bg : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V)
     (hBf : ∀ t : ℝ, ‖dirPoly N a t‖ ≤ Bf) (hBg : ∀ t : ℝ, ‖dirPoly M b t‖ ≤ Bg) :
-    V ^ (2 * k) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ 2 * ‖dirPoly M b t‖ ^ 2)
-      ≤ V ^ (2 * k + 2) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ 2)
-        + Bf ^ 2 * Bg ^ 2
+    V ^ (2 * k) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ (2 : ℕ) * ‖dirPoly M b t‖ ^ (2 : ℕ))
+      ≤ V ^ (2 * k + 2) * (∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+        + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
             * ((T + 4 * ((M ^ k : ℕ) : ℝ) * (1 + Real.log ((M ^ k : ℕ) : ℝ)))
-                * ((k : ℝ) ^ k * (∑ n : Fin M, ‖b n‖ ^ 2) ^ k)) :=
+                * ((k : ℝ) ^ k * (∑ n : Fin M, ‖b n‖ ^ (2 : ℕ)) ^ k)) :=
   integral_normSq_mul_le_of_pow N M a b k hBf hBg
     (volume_largeValues_pow_le_of_prime_support k M hk b hsupp hT hV)
 
@@ -71,33 +71,33 @@ theorem integral_normSq_mul_symm_le_pow_prime_support (N M : ℕ) (a : Fin N →
     (hsupp : ∀ n : Fin M, b n ≠ 0 → Nat.Prime ((n : ℕ) + 1))
     {T V Bf Bg : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V)
     (hBf : ∀ t : ℝ, ‖dirPoly N a t‖ ≤ Bf) (hBg : ∀ t : ℝ, ‖dirPoly M b t‖ ≤ Bg) :
-    V ^ (2 * k) * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ 2 * ‖dirPoly M b t‖ ^ 2)
-      ≤ V ^ (2 * k + 2) * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ 2)
-        + Bf ^ 2 * Bg ^ 2
+    V ^ (2 * k) * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ (2 : ℕ) * ‖dirPoly M b t‖ ^ (2 : ℕ))
+      ≤ V ^ (2 * k + 2) * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+        + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
             * (2 * ((T + 4 * ((M ^ k : ℕ) : ℝ) * (1 + Real.log ((M ^ k : ℕ) : ℝ)))
-                * ((k : ℝ) ^ k * (∑ n : Fin M, ‖b n‖ ^ 2) ^ k))) := by
+                * ((k : ℝ) ^ k * (∑ n : Fin M, ‖b n‖ ^ (2 : ℕ)) ^ k))) := by
   have hsplit := integral_normSq_mul_split_symm N M a b hBf hBg (V := V) (T := T)
   have hVk : (0 : ℝ) ≤ V ^ (2 * k) := by
     rw [pow_mul]
     positivity
-  have hK : (0 : ℝ) ≤ Bf ^ 2 * Bg ^ 2 := by positivity
+  have hK : (0 : ℝ) ≤ Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ) := by positivity
   have hA := volume_largeValues_pow_symm_le_of_prime_support k M hk b hsupp hT hV
   have hmul := mul_le_mul_of_nonneg_left hsplit hVk
   have hexc := mul_le_mul_of_nonneg_left hA hK
   calc V ^ (2 * k)
-        * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ 2 * ‖dirPoly M b t‖ ^ 2)
+        * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ (2 : ℕ) * ‖dirPoly M b t‖ ^ (2 : ℕ))
       ≤ V ^ (2 * k)
-          * (V ^ 2 * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ 2)
-            + Bf ^ 2 * Bg ^ 2
+          * (V ^ (2 : ℕ) * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+            + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
               * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly M b t‖}) := hmul
-    _ = V ^ (2 * k + 2) * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ 2)
-          + Bf ^ 2 * Bg ^ 2
+    _ = V ^ (2 * k + 2) * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+          + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
             * (V ^ (2 * k) * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly M b t‖}) := by
         rw [pow_add]
         ring
-    _ ≤ V ^ (2 * k + 2) * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ 2)
-          + Bf ^ 2 * Bg ^ 2
+    _ ≤ V ^ (2 * k + 2) * (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ (2 : ℕ))
+          + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
             * (2 * ((T + 4 * ((M ^ k : ℕ) : ℝ) * (1 + Real.log ((M ^ k : ℕ) : ℝ)))
-                * ((k : ℝ) ^ k * (∑ n : Fin M, ‖b n‖ ^ 2) ^ k))) := by linarith [hexc]
+                * ((k : ℝ) ^ k * (∑ n : Fin M, ‖b n‖ ^ (2 : ℕ)) ^ k))) := by linarith [hexc]
 
 end RHTower.Sieve

@@ -87,7 +87,7 @@ theorem abs_harmonicLogWindowMoment_zero_sub_log_le
 theorem abs_harmonicLogWindowMoment_one_sub_logSquare_le
     {A B : ℕ} (hA : 8 ≤ A) (hAB : A ≤ B) :
     |harmonicLogWindowMoment 1 A B -
-        (Real.log (B + 1 : ℕ) ^ 2 / 2 - Real.log (A + 1 : ℕ) ^ 2 / 2)| ≤
+        (Real.log (B + 1 : ℕ) ^ (2 : ℕ) / 2 - Real.log (A + 1 : ℕ) ^ (2 : ℕ) / 2)| ≤
       RHTower.logPowDivId 1 (A + 1 : ℕ) -
         RHTower.logPowDivId 1 (B + 1 : ℕ) := by
   have hanti : AntitoneOn (RHTower.logPowDivId 1)
@@ -106,7 +106,7 @@ theorem harmonicLogWindowMoment_zero_zero_eight_le :
     harmonicLogWindowMoment 0 0 8 ≤ 8 := by
   rw [harmonicLogWindowMoment]
   calc
-    (∑ j ∈ Finset.Ioc (0 : ℕ) 8, Real.log (j : ℝ) ^ 0 / (j : ℝ)) ≤
+    (∑ j ∈ Finset.Ioc (0 : ℕ) 8, Real.log (j : ℝ) ^ (0 : ℕ) / (j : ℝ)) ≤
         ∑ _j ∈ Finset.Ioc (0 : ℕ) 8, (1 : ℝ) := by
       apply Finset.sum_le_sum
       intro j hj
@@ -121,7 +121,7 @@ theorem harmonicLogWindowMoment_one_zero_eight_le :
     harmonicLogWindowMoment 1 0 8 ≤ 56 := by
   rw [harmonicLogWindowMoment]
   calc
-    (∑ j ∈ Finset.Ioc (0 : ℕ) 8, Real.log (j : ℝ) ^ 1 / (j : ℝ)) ≤
+    (∑ j ∈ Finset.Ioc (0 : ℕ) 8, Real.log (j : ℝ) ^ (1 : ℕ) / (j : ℝ)) ≤
         ∑ _j ∈ Finset.Ioc (0 : ℕ) 8, (7 : ℝ) := by
       apply Finset.sum_le_sum
       intro j hj
@@ -161,7 +161,7 @@ theorem harmonicLogMomentPrimitive_one_nat_succ_le
     have h := Real.log_le_sub_one_of_pos hpos
     have hcast : (((N + 1 : ℕ) : ℝ)) ≤ 9 := by exact_mod_cast Nat.add_le_add_right hN 1
     linarith
-  have hsq : Real.log ((N + 1 : ℕ) : ℝ) ^ 2 ≤ 64 := by nlinarith
+  have hsq : Real.log ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) ≤ 64 := by nlinarith
   norm_num [harmonicLogMomentPrimitive, Nat.cast_add, Nat.cast_one] at hsq ⊢
   linarith
 
@@ -279,26 +279,26 @@ theorem abs_harmonicLogWindowMoment_zero_sub_log_uniform_le
 
 private theorem abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le_of_le_eight
     {N : ℕ} (hN : N ≤ 8) :
-    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ 2 / 2| ≤ 100 := by
+    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2| ≤ 100 := by
   have hsplit := harmonicLogWindowMoment_add 1 (A := 0) (B := N) (C := 8)
     (Nat.zero_le N) hN
   have hwindowLe : harmonicLogWindowMoment 1 0 N ≤
       harmonicLogWindowMoment 1 0 8 := by
     have htail := harmonicLogWindowMoment_nonneg 1 N 8
     linarith
-  have hmainLe : Real.log (N + 1 : ℕ) ^ 2 / 2 ≤ 32 := by
+  have hmainLe : Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2 ≤ 32 := by
     have h := harmonicLogMomentPrimitive_one_nat_succ_le hN
     norm_num [harmonicLogMomentPrimitive, Nat.cast_add, Nat.cast_one] at h ⊢
     exact h
   have hwindowNonneg := harmonicLogWindowMoment_nonneg 1 0 N
-  have hmainNonneg : 0 ≤ Real.log (N + 1 : ℕ) ^ 2 / 2 := by positivity
+  have hmainNonneg : 0 ≤ Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2 := by positivity
   calc
-    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ 2 / 2| ≤
-        |harmonicLogWindowMoment 1 0 N| + |-(Real.log (N + 1 : ℕ) ^ 2 / 2)| := by
+    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2| ≤
+        |harmonicLogWindowMoment 1 0 N| + |-(Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2)| := by
           simpa [sub_eq_add_neg] using
             abs_add_le (harmonicLogWindowMoment 1 0 N)
-              (-(Real.log (N + 1 : ℕ) ^ 2 / 2))
-    _ = harmonicLogWindowMoment 1 0 N + Real.log (N + 1 : ℕ) ^ 2 / 2 := by
+              (-(Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2))
+    _ = harmonicLogWindowMoment 1 0 N + Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2 := by
       rw [abs_of_nonneg hwindowNonneg, abs_neg, abs_of_nonneg hmainNonneg]
     _ ≤ 56 + 32 := add_le_add
       (hwindowLe.trans harmonicLogWindowMoment_one_zero_eight_le) hmainLe
@@ -306,23 +306,23 @@ private theorem abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le_of_le_eigh
 
 private theorem abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le_of_eight_le
     {N : ℕ} (hN : 8 ≤ N) :
-    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ 2 / 2| ≤ 100 := by
+    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2| ≤ 100 := by
   have hsplit := harmonicLogWindowMoment_add 1 (A := 0) (B := 8) (C := N)
     (by norm_num) hN
-  have hheadMainNonneg : 0 ≤ Real.log (9 : ℕ) ^ 2 / 2 := by positivity
-  have hheadMainLe : Real.log (9 : ℕ) ^ 2 / 2 ≤ 32 := by
+  have hheadMainNonneg : 0 ≤ Real.log (9 : ℕ) ^ (2 : ℕ) / 2 := by positivity
+  have hheadMainLe : Real.log (9 : ℕ) ^ (2 : ℕ) / 2 ≤ 32 := by
     have h := harmonicLogMomentPrimitive_one_nat_succ_le (N := 8) (by norm_num)
     norm_num [harmonicLogMomentPrimitive] at h ⊢
     exact h
   have hheadNonneg := harmonicLogWindowMoment_nonneg 1 0 8
-  have hheadAbs : |harmonicLogWindowMoment 1 0 8 - Real.log (9 : ℕ) ^ 2 / 2| ≤ 88 := by
+  have hheadAbs : |harmonicLogWindowMoment 1 0 8 - Real.log (9 : ℕ) ^ (2 : ℕ) / 2| ≤ 88 := by
     calc
-      |harmonicLogWindowMoment 1 0 8 - Real.log (9 : ℕ) ^ 2 / 2| ≤
-          |harmonicLogWindowMoment 1 0 8| + |-(Real.log (9 : ℕ) ^ 2 / 2)| := by
+      |harmonicLogWindowMoment 1 0 8 - Real.log (9 : ℕ) ^ (2 : ℕ) / 2| ≤
+          |harmonicLogWindowMoment 1 0 8| + |-(Real.log (9 : ℕ) ^ (2 : ℕ) / 2)| := by
             simpa [sub_eq_add_neg] using
               abs_add_le (harmonicLogWindowMoment 1 0 8)
-                (-(Real.log (9 : ℕ) ^ 2 / 2))
-      _ = harmonicLogWindowMoment 1 0 8 + Real.log (9 : ℕ) ^ 2 / 2 := by
+                (-(Real.log (9 : ℕ) ^ (2 : ℕ) / 2))
+      _ = harmonicLogWindowMoment 1 0 8 + Real.log (9 : ℕ) ^ (2 : ℕ) / 2 := by
         rw [abs_of_nonneg hheadNonneg, abs_neg, abs_of_nonneg hheadMainNonneg]
       _ ≤ 56 + 32 := add_le_add harmonicLogWindowMoment_one_zero_eight_le hheadMainLe
       _ = 88 := by norm_num
@@ -335,23 +335,23 @@ private theorem abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le_of_eight_l
     exact div_nonneg (pow_nonneg (Real.log_nonneg hOne) 1) (by positivity)
   have htailAbs :
       |harmonicLogWindowMoment 1 8 N -
-          (Real.log (N + 1 : ℕ) ^ 2 / 2 - Real.log (9 : ℕ) ^ 2 / 2)| ≤ 1 :=
+          (Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2 - Real.log (9 : ℕ) ^ (2 : ℕ) / 2)| ≤ 1 :=
     htail.trans ((sub_le_self _ hendNonneg).trans logPowDivId_one_nine_le)
   calc
-    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ 2 / 2| =
-        |(harmonicLogWindowMoment 1 0 8 - Real.log (9 : ℕ) ^ 2 / 2) +
+    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2| =
+        |(harmonicLogWindowMoment 1 0 8 - Real.log (9 : ℕ) ^ (2 : ℕ) / 2) +
           (harmonicLogWindowMoment 1 8 N -
-            (Real.log (N + 1 : ℕ) ^ 2 / 2 - Real.log (9 : ℕ) ^ 2 / 2))| := by
+            (Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2 - Real.log (9 : ℕ) ^ (2 : ℕ) / 2))| := by
               rw [← hsplit]
               ring_nf
-    _ ≤ |harmonicLogWindowMoment 1 0 8 - Real.log (9 : ℕ) ^ 2 / 2| +
+    _ ≤ |harmonicLogWindowMoment 1 0 8 - Real.log (9 : ℕ) ^ (2 : ℕ) / 2| +
         |harmonicLogWindowMoment 1 8 N -
-          (Real.log (N + 1 : ℕ) ^ 2 / 2 - Real.log (9 : ℕ) ^ 2 / 2)| := abs_add_le _ _
+          (Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2 - Real.log (9 : ℕ) ^ (2 : ℕ) / 2)| := abs_add_le _ _
     _ ≤ 88 + 1 := add_le_add hheadAbs htailAbs
     _ ≤ 100 := by norm_num
 
 theorem abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le (N : ℕ) :
-    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ 2 / 2| ≤ 100 := by
+    |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2| ≤ 100 := by
   by_cases hN : N ≤ 8
   · exact abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le_of_le_eight hN
   · exact abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le_of_eight_le (by omega)
@@ -359,23 +359,23 @@ theorem abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le (N : ℕ) :
 theorem abs_harmonicLogWindowMoment_one_sub_logSquare_uniform_le
     {A B : ℕ} (hAB : A ≤ B) :
     |harmonicLogWindowMoment 1 A B -
-        (Real.log (B + 1 : ℕ) ^ 2 / 2 - Real.log (A + 1 : ℕ) ^ 2 / 2)| ≤ 200 := by
+        (Real.log (B + 1 : ℕ) ^ (2 : ℕ) / 2 - Real.log (A + 1 : ℕ) ^ (2 : ℕ) / 2)| ≤ 200 := by
   have hsplit := harmonicLogWindowMoment_add 1 (A := 0) (B := A) (C := B)
     (Nat.zero_le A) hAB
   have hA := abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le A
   have hB := abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le B
   calc
     |harmonicLogWindowMoment 1 A B -
-        (Real.log (B + 1 : ℕ) ^ 2 / 2 - Real.log (A + 1 : ℕ) ^ 2 / 2)| =
-      |(harmonicLogWindowMoment 1 0 B - Real.log (B + 1 : ℕ) ^ 2 / 2) -
-        (harmonicLogWindowMoment 1 0 A - Real.log (A + 1 : ℕ) ^ 2 / 2)| := by
+        (Real.log (B + 1 : ℕ) ^ (2 : ℕ) / 2 - Real.log (A + 1 : ℕ) ^ (2 : ℕ) / 2)| =
+      |(harmonicLogWindowMoment 1 0 B - Real.log (B + 1 : ℕ) ^ (2 : ℕ) / 2) -
+        (harmonicLogWindowMoment 1 0 A - Real.log (A + 1 : ℕ) ^ (2 : ℕ) / 2)| := by
           rw [← hsplit]
           ring_nf
-    _ ≤ |harmonicLogWindowMoment 1 0 B - Real.log (B + 1 : ℕ) ^ 2 / 2| +
-        |harmonicLogWindowMoment 1 0 A - Real.log (A + 1 : ℕ) ^ 2 / 2| := by
+    _ ≤ |harmonicLogWindowMoment 1 0 B - Real.log (B + 1 : ℕ) ^ (2 : ℕ) / 2| +
+        |harmonicLogWindowMoment 1 0 A - Real.log (A + 1 : ℕ) ^ (2 : ℕ) / 2| := by
           have htri := abs_sub_le
-            (harmonicLogWindowMoment 1 0 B - Real.log (B + 1 : ℕ) ^ 2 / 2) 0
-            (harmonicLogWindowMoment 1 0 A - Real.log (A + 1 : ℕ) ^ 2 / 2)
+            (harmonicLogWindowMoment 1 0 B - Real.log (B + 1 : ℕ) ^ (2 : ℕ) / 2) 0
+            (harmonicLogWindowMoment 1 0 A - Real.log (A + 1 : ℕ) ^ (2 : ℕ) / 2)
           rw [sub_zero, zero_sub, abs_neg] at htri
           exact htri
     _ ≤ 100 + 100 := add_le_add hB hA

@@ -18,7 +18,7 @@ theorem sealedCapacity_nonneg {n r m : ℕ} (D : Fin m → Fin r → Finset (Fin
 
 theorem sealedCapacity_logconvex {n r m : ℕ} (D : Fin m → Fin r → Finset (Fin n))
     (c : Fin m → ℝ) (k : ℕ) :
-    sealedCapacity D c (k+1)^2 ≤ sealedCapacity D c k * sealedCapacity D c (k+2) := by
+    sealedCapacity D c (k+1)^(2 : ℕ) ≤ sealedCapacity D c k * sealedCapacity D c (k+2) := by
   let A := sealedCapacity D c k
   let B := sealedCapacity D c (k+1)
   let C := sealedCapacity D c (k+2)
@@ -35,7 +35,7 @@ theorem sealedCapacity_logconvex {n r m : ℕ} (D : Fin m → Fin r → Finset (
     have hr := sealedCapacity_probe_bound D c (k+2) g
     rw [abs_mul,abs_pow] at hl hr
     have hm := mul_le_mul hl hr (by positivity) hA
-    have hid : (|displacement (normalizeProbe g)|^(k+1)*|familyValue D c (normalizeProbe g)|)^2 =
+    have hid : (|displacement (normalizeProbe g)|^(k+1)*|familyValue D c (normalizeProbe g)|)^(2 : ℕ) =
         (|displacement (normalizeProbe g)|^k*|familyValue D c (normalizeProbe g)|)*
         (|displacement (normalizeProbe g)|^(k+2)*|familyValue D c (normalizeProbe g)|) := by
       simp only [pow_add,pow_one,pow_two]
@@ -44,7 +44,7 @@ theorem sealedCapacity_logconvex {n r m : ℕ} (D : Fin m → Fin r → Finset (
     exact hm
   have hs := Real.sq_sqrt (mul_nonneg hA hC)
   have hn := Real.sqrt_nonneg (A*C)
-  change B^2 ≤ A*C
+  change B^(2 : ℕ) ≤ A*C
   nlinarith only [hb,hB,hs,hn]
 
 theorem sealedCapacity_plateau_iff {n r m : ℕ} (D : Fin m → Fin r → Finset (Fin (n+1)))

@@ -75,7 +75,7 @@ theorem bottcherLog_injOn_of_bottcherCoord_injOn {c : ℂ} {E : Set ℂ}
 /-- Far-field Böttcher-coordinate univalence gives injectivity of the selected Böttcher logarithm
 on every subset of the far field. -/
 theorem bottcherLog_injOn_far_subset {c : ℂ} {R : ℝ} {E : Set ℂ}
-    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ (2 : ℕ))
     (hEfar : E ⊆ {z | R < ‖z‖}) :
     Set.InjOn (bottcherLog c) E :=
   bottcherLog_injOn_of_bottcherCoord_injOn
@@ -139,7 +139,7 @@ subset.  This is the analytic error term used by the principal-log sector route.
 theorem bottcherLog_log_error_le_on_far
     {c : ℂ} {R : ℝ} {E : Set ℂ}
     (hRgt2 : 2 < R) (hcR : ‖c‖ ≤ R) (hEfar : E ⊆ {z | R < ‖z‖}) :
-    ∀ w ∈ E, ‖bottcherLog c w - Complex.log w‖ ≤ 2 * ‖c‖ / R ^ 2 := by
+    ∀ w ∈ E, ‖bottcherLog c w - Complex.log w‖ ≤ 2 * ‖c‖ / R ^ (2 : ℕ) := by
   intro w hw
   have hRw : R < ‖w‖ := hEfar hw
   have hw2 : 2 < ‖w‖ := lt_trans hRgt2 hRw
@@ -147,8 +147,8 @@ theorem bottcherLog_log_error_le_on_far
   have hb := norm_bottcherLog_sub_log_le hcw hw2
   refine le_trans hb ?_
   have hRpos : 0 < R := lt_trans (by norm_num) hRgt2
-  have hRsqpos : 0 < R ^ 2 := sq_pos_of_pos hRpos
-  have hsq : R ^ 2 ≤ ‖w‖ ^ 2 := by
+  have hRsqpos : 0 < R ^ (2 : ℕ) := sq_pos_of_pos hRpos
+  have hsq : R ^ (2 : ℕ) ≤ ‖w‖ ^ (2 : ℕ) := by
     nlinarith [hRw, hRpos, norm_nonneg w]
   exact div_le_div_of_nonneg_left (by positivity : 0 ≤ 2 * ‖c‖) hRsqpos hsq
 
@@ -333,7 +333,7 @@ of the far field and the slit plane; `bottcherLog` injectivity is then discharge
 univalence of `bottcherCoord`. -/
 theorem ForwardCollarData.of_stepwise_antipodalFree_far
     {c₁ c₂ : ℂ} {n : ℕ} {A E : Set ℂ} {y₀ R : ℝ}
-    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ (2 : ℕ))
     (hAo : IsOpen A) (hAc : IsPreconnected A) (hAne : A.Nonempty)
     (himage : ((quadratic c₁)^[n]) '' A ⊆ E)
     (hEfar : E ⊆ {z | R < ‖z‖})
@@ -360,7 +360,7 @@ most convenient endpoint for future estimates based on
 `bottcherLog c z = Complex.log z + ∑ k, bottcherLogTerm c z k`. -/
 theorem ForwardCollarData.of_stepwise_antipodalFree_far_im_bounds
     {c₁ c₂ : ℂ} {n : ℕ} {A E : Set ℂ} {y₀ R : ℝ}
-    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ (2 : ℕ))
     (hAo : IsOpen A) (hAc : IsPreconnected A) (hAne : A.Nonempty)
     (himage : ((quadratic c₁)^[n]) '' A ⊆ E)
     (hEfar : E ⊆ {z | R < ‖z‖})
@@ -380,7 +380,7 @@ two independent obligations: place the principal argument in a wide sector, and 
 Böttcher-log normalization error. -/
 theorem ForwardCollarData.of_stepwise_antipodalFree_far_log_im_bounds_error
     {c₁ c₂ : ℂ} {n : ℕ} {A E : Set ℂ} {y₀ R δ : ℝ}
-    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ (2 : ℕ))
     (hAo : IsOpen A) (hAc : IsPreconnected A) (hAne : A.Nonempty)
     (himage : ((quadratic c₁)^[n]) '' A ⊆ E)
     (hEfar : E ⊆ {z | R < ‖z‖})
@@ -402,7 +402,7 @@ forward image only has to fit inside some open half-plane through `0`, which exc
 collisions and hence makes every quadratic step injective. -/
 theorem ForwardCollarData.of_forward_halfplane_far_log_im_bounds_error
     {c₁ c₂ : ℂ} {n : ℕ} {A E : Set ℂ} {y₀ R δ : ℝ} (a : ℕ → ℂ)
-    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ (2 : ℕ))
     (hAo : IsOpen A) (hAc : IsPreconnected A) (hAne : A.Nonempty)
     (himage : ((quadratic c₁)^[n]) '' A ⊆ E)
     (hEfar : E ⊆ {z | R < ‖z‖})
@@ -423,15 +423,15 @@ normalization estimate.  The remaining geometric obligations are: construct the 
 prove finite forward half-plane containment, and place the principal log in the widened strip. -/
 theorem ForwardCollarData.of_forward_halfplane_far_log_im_bounds
     {c₁ c₂ : ℂ} {n : ℕ} {A E : Set ℂ} {y₀ R : ℝ} (a : ℕ → ℂ)
-    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ (2 : ℕ))
     (hAo : IsOpen A) (hAc : IsPreconnected A) (hAne : A.Nonempty)
     (himage : ((quadratic c₁)^[n]) '' A ⊆ E)
     (hEfar : E ⊆ {z | R < ‖z‖})
     (hEslit : E ⊆ Complex.slitPlane)
     (hoff : A ⊆ (filledJulia c₂)ᶜ)
     (hhalf : ∀ j < n, ∀ w ∈ ((quadratic c₁)^[j]) '' A, 0 < (a j * w).re)
-    (hlog : ∀ w ∈ E, y₀ * (2 : ℝ) ^ n + 2 * ‖c₁‖ / R ^ 2 < (Complex.log w).im ∧
-      (Complex.log w).im + 2 * ‖c₁‖ / R ^ 2 ≤
+    (hlog : ∀ w ∈ E, y₀ * (2 : ℝ) ^ n + 2 * ‖c₁‖ / R ^ (2 : ℕ) < (Complex.log w).im ∧
+      (Complex.log w).im + 2 * ‖c₁‖ / R ^ (2 : ℕ) ≤
         (y₀ + 2 * Real.pi) * (2 : ℝ) ^ n) :
     ForwardCollarData c₁ c₂ n A E y₀ := by
   have hRgt2 : 2 < R := by
@@ -451,7 +451,7 @@ lies in a ball whose radius is smaller than the ball center's distance from `0`,
 half-plane through `0`. -/
 theorem ForwardCollarData.of_forward_ball_separated_far_log_im_bounds
     {c₁ c₂ : ℂ} {n : ℕ} {A E : Set ℂ} {y₀ R : ℝ} (center : ℕ → ℂ)
-    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ (2 : ℕ))
     (hAo : IsOpen A) (hAc : IsPreconnected A) (hAne : A.Nonempty)
     (himage : ((quadratic c₁)^[n]) '' A ⊆ E)
     (hEfar : E ⊆ {z | R < ‖z‖})
@@ -459,8 +459,8 @@ theorem ForwardCollarData.of_forward_ball_separated_far_log_im_bounds
     (hoff : A ⊆ (filledJulia c₂)ᶜ)
     (hball : ∀ j < n, ∀ w ∈ ((quadratic c₁)^[j]) '' A,
       ‖w - center j‖ < ‖center j‖)
-    (hlog : ∀ w ∈ E, y₀ * (2 : ℝ) ^ n + 2 * ‖c₁‖ / R ^ 2 < (Complex.log w).im ∧
-      (Complex.log w).im + 2 * ‖c₁‖ / R ^ 2 ≤
+    (hlog : ∀ w ∈ E, y₀ * (2 : ℝ) ^ n + 2 * ‖c₁‖ / R ^ (2 : ℕ) < (Complex.log w).im ∧
+      (Complex.log w).im + 2 * ‖c₁‖ / R ^ (2 : ℕ) ≤
         (y₀ + 2 * Real.pi) * (2 : ℝ) ^ n) :
     ForwardCollarData c₁ c₂ n A E y₀ :=
   ForwardCollarData.of_forward_halfplane_far_log_im_bounds (a := fun j => (center j)⁻¹)
@@ -477,7 +477,7 @@ theorem ForwardCollarData.of_forward_ball_separated_far_log_im_bounds
 by external-ray or angular-pruning geometry. -/
 theorem ForwardCollarData.of_forward_ball_separated_far_arg_bounds
     {c₁ c₂ : ℂ} {n : ℕ} {A E : Set ℂ} {y₀ R : ℝ} (center : ℕ → ℂ)
-    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ 2)
+    (hR1 : 2 * max 2 ‖c₁‖ < R) (hR2 : 16 * ‖c₁‖ < R ^ (2 : ℕ))
     (hAo : IsOpen A) (hAc : IsPreconnected A) (hAne : A.Nonempty)
     (himage : ((quadratic c₁)^[n]) '' A ⊆ E)
     (hEfar : E ⊆ {z | R < ‖z‖})
@@ -485,8 +485,8 @@ theorem ForwardCollarData.of_forward_ball_separated_far_arg_bounds
     (hoff : A ⊆ (filledJulia c₂)ᶜ)
     (hball : ∀ j < n, ∀ w ∈ ((quadratic c₁)^[j]) '' A,
       ‖w - center j‖ < ‖center j‖)
-    (harg : ∀ w ∈ E, y₀ * (2 : ℝ) ^ n + 2 * ‖c₁‖ / R ^ 2 < w.arg ∧
-      w.arg + 2 * ‖c₁‖ / R ^ 2 ≤ (y₀ + 2 * Real.pi) * (2 : ℝ) ^ n) :
+    (harg : ∀ w ∈ E, y₀ * (2 : ℝ) ^ n + 2 * ‖c₁‖ / R ^ (2 : ℕ) < w.arg ∧
+      w.arg + 2 * ‖c₁‖ / R ^ (2 : ℕ) ≤ (y₀ + 2 * Real.pi) * (2 : ℝ) ^ n) :
     ForwardCollarData c₁ c₂ n A E y₀ :=
   ForwardCollarData.of_forward_ball_separated_far_log_im_bounds center
     hR1 hR2 hAo hAc hAne himage hEfar hEslit hoff hball

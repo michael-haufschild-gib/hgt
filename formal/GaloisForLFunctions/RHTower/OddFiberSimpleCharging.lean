@@ -21,7 +21,7 @@ noncomputable section
 
 namespace RHTower
 
-theorem eq_linePt_of_re_eq_half {z : ℂ} (hz : z.re = 1 / 2) : z = linePt z.im := by
+theorem eq_linePt_of_re_eq_half_oddFiberSimpleCharging {z : ℂ} (hz : z.re = 1 / 2) : z = linePt z.im := by
   refine Complex.ext ?_ ?_
   · rw [hz]; simp [linePt]
   · simp [linePt]
@@ -57,7 +57,7 @@ theorem three_mul_xiOddFiberCount_le_simple (T : ℝ) :
     obtain ⟨_, _, _, _, hzero⟩ := mem_stripFinsetPos.mp hmem
     have hone : 1 ≤ (analyticOrderAt xi z).toNat :=
       Nat.one_le_iff_ne_zero.mpr (xi_order_toNat_ne_zero hzero)
-    have hzeq : z = linePt z.im := eq_linePt_of_re_eq_half hre
+    have hzeq : z = linePt z.im := eq_linePt_of_re_eq_half_oddFiberSimpleCharging hre
     have hoddz : Odd ((analyticOrderAt xi z).toNat) := by
       rw [hzeq]
       exact (xiHorizontalMultiplicity_odd_iff z.im).mp hodd

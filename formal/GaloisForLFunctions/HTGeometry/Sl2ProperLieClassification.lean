@@ -170,11 +170,11 @@ theorem traceless_det_zero_submodule_eq_span_singleton
     have hY11 : Y 1 1 = -(Y 0 0) := by
       rw [Matrix.trace_fin_two] at hYtr
       linear_combination hYtr
-    have hXrel : X 0 0 ^ 2 + X 0 1 * X 1 0 = 0 := by
+    have hXrel : X 0 0 ^ (2 : ℕ) + X 0 1 * X 1 0 = 0 := by
       have hx := hdet X hX
       rw [Matrix.det_fin_two, hX11] at hx
       linear_combination -hx
-    have hYrel : Y 0 0 ^ 2 + Y 0 1 * Y 1 0 = 0 := by
+    have hYrel : Y 0 0 ^ (2 : ℕ) + Y 0 1 * Y 1 0 = 0 := by
       have hy := hdet Y hY
       rw [Matrix.det_fin_two, hY11] at hy
       linear_combination -hy
@@ -205,9 +205,9 @@ theorem traceless_det_zero_submodule_eq_span_singleton
       ext i j
       fin_cases i <;> fin_cases j <;>
         simp [Matrix.smul_apply, ha, hb, hc, hd, he, hX11, hY11]
-    · have hsq : (X 0 1 * Y 0 0 - Y 0 1 * X 0 0) ^ 2 = 0 := by
+    · have hsq : (X 0 1 * Y 0 0 - Y 0 1 * X 0 0) ^ (2 : ℕ) = 0 := by
         linear_combination
-          (X 0 1) ^ 2 * hYrel + (Y 0 1) ^ 2 * hXrel -
+          (X 0 1) ^ (2 : ℕ) * hYrel + (Y 0 1) ^ (2 : ℕ) * hXrel -
             (X 0 1 * Y 0 1) * hcross
       have hlin : X 0 1 * Y 0 0 = Y 0 1 * X 0 0 := by
         have hs := sq_eq_zero_iff.mp hsq

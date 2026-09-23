@@ -429,11 +429,11 @@ def finiteMatrixMulVec {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ)
 theorem finiteMatrixBilinear_mulVec
     {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (x : Fin n → ℂ) :
     finiteMatrixBilinear A x (finiteMatrixMulVec A x) =
-      ((∑ i, ‖finiteMatrixMulVec A x i‖ ^ 2 : ℝ) : ℂ) := by
+      ((∑ i, ‖finiteMatrixMulVec A x i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   classical
   unfold finiteMatrixBilinear
-  rw [show ((∑ i, ‖finiteMatrixMulVec A x i‖ ^ 2 : ℝ) : ℂ) =
-      ∑ i, ((‖finiteMatrixMulVec A x i‖ ^ 2 : ℝ) : ℂ) by
+  rw [show ((∑ i, ‖finiteMatrixMulVec A x i‖ ^ (2 : ℕ) : ℝ) : ℂ) =
+      ∑ i, ((‖finiteMatrixMulVec A x i‖ ^ (2 : ℕ) : ℝ) : ℂ) by
     push_cast
     rfl]
   apply Finset.sum_congr rfl
@@ -450,11 +450,11 @@ theorem finiteMatrixBilinear_mulVec
       rw [finiteMatrixMulVec, starRingEnd_apply]
     _ = (Complex.normSq (finiteMatrixMulVec A x i) : ℂ) := by
       rw [← Complex.normSq_eq_conj_mul_self]
-    _ = ((‖finiteMatrixMulVec A x i‖ ^ 2 : ℝ) : ℂ) := by
+    _ = ((‖finiteMatrixMulVec A x i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [Complex.sq_norm]
 
 theorem finiteCoefficientL2Norm_sq {n : ℕ} (x : Fin n → ℂ) :
-    finiteCoefficientL2Norm x ^ 2 = ∑ i, ‖x i‖ ^ 2 := by
+    finiteCoefficientL2Norm x ^ (2 : ℕ) = ∑ i, ‖x i‖ ^ (2 : ℕ) := by
   unfold finiteCoefficientL2Norm
   exact Real.sq_sqrt (Finset.sum_nonneg fun i hi => sq_nonneg ‖x i‖)
 
@@ -477,9 +477,9 @@ theorem finiteCoefficientL2Norm_matrixMulVec_le_norm_finitePrimeEvenDilationGram
   have hbilinear :=
     norm_finiteMatrixBilinear_le_norm_finitePrimeEvenDilationGram_sub_compact
       a ha p hp hinj A hdiag x y K hK
-  have hvalue : ‖finiteMatrixBilinear A x y‖ = finiteCoefficientL2Norm y ^ 2 := by
+  have hvalue : ‖finiteMatrixBilinear A x y‖ = finiteCoefficientL2Norm y ^ (2 : ℕ) := by
     rw [show finiteMatrixBilinear A x y =
-        ((∑ i, ‖y i‖ ^ 2 : ℝ) : ℂ) by
+        ((∑ i, ‖y i‖ ^ (2 : ℕ) : ℝ) : ℂ) by
       simpa [y] using finiteMatrixBilinear_mulVec A x]
     rw [Complex.norm_real, Real.norm_of_nonneg
       (Finset.sum_nonneg fun i hi => sq_nonneg ‖y i‖)]
@@ -503,34 +503,34 @@ theorem finiteCoefficientL2Norm_matrixMulVec_le_norm_finitePrimeEvenDilationGram
 def finiteWeightMass {n : ℕ} (w : Fin n → ℝ) : ℝ := ∑ i, w i
 
 def finiteWeightedNormSq {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) : ℝ :=
-  ∑ i, w i * ‖u i‖ ^ 2
+  ∑ i, w i * ‖u i‖ ^ (2 : ℕ)
 
 def finiteWeightedMean {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) : ℂ :=
   ∑ i, ((w i : ℝ) : ℂ) * u i
 
 def finiteWeightedDifferenceEnergy {n : ℕ}
     (w : Fin n → ℝ) (u : Fin n → ℂ) : ℝ :=
-  ∑ i, ∑ j, w i * w j * ‖u i - u j‖ ^ 2
+  ∑ i, ∑ j, w i * w j * ‖u i - u j‖ ^ (2 : ℕ)
 
 /-- Finite complex weighted variance on a `Fin` carrier. -/
 theorem finiteWeightedDifferenceEnergy_eq_variance
     {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) :
     finiteWeightedDifferenceEnergy w u =
       2 * finiteWeightMass w * finiteWeightedNormSq w u -
-        2 * ‖finiteWeightedMean w u‖ ^ 2 := by
+        2 * ‖finiteWeightedMean w u‖ ^ (2 : ℕ) := by
   have hre0 := two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion
     (Finset.univ : Finset (Fin n)) w (fun i => (u i).re) (fun i => (u i).re)
   have him0 := two_mul_weightedBilinear_eq_rankOne_add_pairwiseDispersion
     (Finset.univ : Finset (Fin n)) w (fun i => (u i).im) (fun i => (u i).im)
   have hre :
-      2 * (∑ i, w i) * (∑ i, w i * (u i).re ^ 2) =
-        2 * (∑ i, w i * (u i).re) ^ 2 +
-          ∑ i, ∑ j, w i * w j * ((u i).re - (u j).re) ^ 2 := by
+      2 * (∑ i, w i) * (∑ i, w i * (u i).re ^ (2 : ℕ)) =
+        2 * (∑ i, w i * (u i).re) ^ (2 : ℕ) +
+          ∑ i, ∑ j, w i * w j * ((u i).re - (u j).re) ^ (2 : ℕ) := by
     simpa only [pow_two, mul_assoc] using hre0
   have him :
-      2 * (∑ i, w i) * (∑ i, w i * (u i).im ^ 2) =
-        2 * (∑ i, w i * (u i).im) ^ 2 +
-          ∑ i, ∑ j, w i * w j * ((u i).im - (u j).im) ^ 2 := by
+      2 * (∑ i, w i) * (∑ i, w i * (u i).im ^ (2 : ℕ)) =
+        2 * (∑ i, w i * (u i).im) ^ (2 : ℕ) +
+          ∑ i, ∑ j, w i * w j * ((u i).im - (u j).im) ^ (2 : ℕ) := by
     simpa only [pow_two, mul_assoc] using him0
   have hmeanRe : (finiteWeightedMean w u).re = ∑ i, w i * (u i).re := by
     simp [finiteWeightedMean]
@@ -561,30 +561,30 @@ theorem finiteWeightedDifferenceEnergy_eq_variance
 
 theorem sum_weighted_centered_sq
     {n : ℕ} (w a : Fin n → ℝ) :
-    (∑ i, w i * ((∑ j, w j) * a i - ∑ j, w j * a j) ^ 2) =
+    (∑ i, w i * ((∑ j, w j) * a i - ∑ j, w j * a j) ^ (2 : ℕ)) =
       (∑ i, w i) *
-        ((∑ i, w i) * (∑ i, w i * a i ^ 2) -
-          (∑ i, w i * a i) ^ 2) := by
+        ((∑ i, w i) * (∑ i, w i * a i ^ (2 : ℕ)) -
+          (∑ i, w i * a i) ^ (2 : ℕ)) := by
   let M : ℝ := ∑ i, w i
   let A : ℝ := ∑ i, w i * a i
-  let S : ℝ := ∑ i, w i * a i ^ 2
-  change (∑ i, w i * (M * a i - A) ^ 2) = M * (M * S - A ^ 2)
-  have h1 : (∑ i, M ^ 2 * (w i * a i ^ 2)) = M ^ 2 * S := by
-    exact (Finset.mul_sum Finset.univ (fun i => w i * a i ^ 2) (M ^ 2)).symm
+  let S : ℝ := ∑ i, w i * a i ^ (2 : ℕ)
+  change (∑ i, w i * (M * a i - A) ^ (2 : ℕ)) = M * (M * S - A ^ (2 : ℕ))
+  have h1 : (∑ i, M ^ (2 : ℕ) * (w i * a i ^ (2 : ℕ))) = M ^ (2 : ℕ) * S := by
+    exact (Finset.mul_sum Finset.univ (fun i => w i * a i ^ (2 : ℕ)) (M ^ (2 : ℕ))).symm
   have h2 : (∑ i, (2 * M * A) * (w i * a i)) = (2 * M * A) * A := by
     exact (Finset.mul_sum Finset.univ (fun i => w i * a i) (2 * M * A)).symm
-  have h3 : (∑ i, A ^ 2 * w i) = A ^ 2 * M := by
-    exact (Finset.mul_sum Finset.univ w (A ^ 2)).symm
+  have h3 : (∑ i, A ^ (2 : ℕ) * w i) = A ^ (2 : ℕ) * M := by
+    exact (Finset.mul_sum Finset.univ w (A ^ (2 : ℕ))).symm
   calc
-    (∑ i, w i * (M * a i - A) ^ 2) =
-        ∑ i, (M ^ 2 * (w i * a i ^ 2) -
-          (2 * M * A) * (w i * a i) + A ^ 2 * w i) := by
+    (∑ i, w i * (M * a i - A) ^ (2 : ℕ)) =
+        ∑ i, (M ^ (2 : ℕ) * (w i * a i ^ (2 : ℕ)) -
+          (2 * M * A) * (w i * a i) + A ^ (2 : ℕ) * w i) := by
       apply Finset.sum_congr rfl
       intro i hi
       ring
-    _ = M ^ 2 * S - (2 * M * A) * A + A ^ 2 * M := by
+    _ = M ^ (2 : ℕ) * S - (2 * M * A) * A + A ^ (2 : ℕ) * M := by
       rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, h1, h2, h3]
-    _ = M * (M * S - A ^ 2) := by ring
+    _ = M * (M * S - A ^ (2 : ℕ)) := by ring
 
 /-- The zero-diagonal weighted difference matrix whose coefficient norm is the full pair
 energy. -/
@@ -603,7 +603,7 @@ theorem finiteWeightedDifferenceMatrix_diagonal
 
 theorem finiteCoefficientL2Norm_finiteSqrtWeightVector_sq
     {n : ℕ} (w : Fin n → ℝ) (hw : ∀ i, 0 ≤ w i) :
-    finiteCoefficientL2Norm (finiteSqrtWeightVector w) ^ 2 = finiteWeightMass w := by
+    finiteCoefficientL2Norm (finiteSqrtWeightVector w) ^ (2 : ℕ) = finiteWeightMass w := by
   rw [finiteCoefficientL2Norm_sq]
   unfold finiteSqrtWeightVector finiteWeightMass
   apply Finset.sum_congr rfl
@@ -658,10 +658,10 @@ theorem finiteWeightedDifferenceMatrix_mulVec_sqrtWeight
 theorem sum_weighted_complex_centered_norm_sq
     {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) :
     (∑ i, w i *
-      ‖((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u‖ ^ 2) =
+      ‖((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u‖ ^ (2 : ℕ)) =
       finiteWeightMass w *
         (finiteWeightMass w * finiteWeightedNormSq w u -
-          ‖finiteWeightedMean w u‖ ^ 2) := by
+          ‖finiteWeightedMean w u‖ ^ (2 : ℕ)) := by
   have hre := sum_weighted_centered_sq w (fun i => (u i).re)
   have him := sum_weighted_centered_sq w (fun i => (u i).im)
   have hmeanRe : (finiteWeightedMean w u).re = ∑ i, w i * (u i).re := by
@@ -695,14 +695,14 @@ theorem finiteCoefficientL2Norm_weightedDifference_mulVec_sq
     {n : ℕ} (w : Fin n → ℝ) (u : Fin n → ℂ) (hw : ∀ i, 0 ≤ w i) :
     finiteCoefficientL2Norm
         (finiteMatrixMulVec (finiteWeightedDifferenceMatrix w u)
-          (finiteSqrtWeightVector w)) ^ 2 =
+          (finiteSqrtWeightVector w)) ^ (2 : ℕ) =
       finiteWeightMass w * finiteWeightedDifferenceEnergy w u / 2 := by
   rw [finiteCoefficientL2Norm_sq]
   simp_rw [finiteWeightedDifferenceMatrix_mulVec_sqrtWeight w u hw]
   have hterm : ∀ i : Fin n,
       ‖(Real.sqrt (w i) : ℂ) *
-        (((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u)‖ ^ 2 =
-      w i * ‖((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u‖ ^ 2 := by
+        (((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u)‖ ^ (2 : ℕ) =
+      w i * ‖((finiteWeightMass w : ℝ) : ℂ) * u i - finiteWeightedMean w u‖ ^ (2 : ℕ) := by
     intro i
     rw [norm_mul, mul_pow]
     rw [Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg _), Real.sq_sqrt (hw i)]
@@ -731,19 +731,19 @@ theorem sqrt_half_finiteWeightedDifferenceEnergy_le_norm_primeGram_sub_compact
     finiteCoefficientL2Norm_matrixMulVec_le_norm_finitePrimeEvenDilationGram_sub_compact
       a ha p hp hinj (finiteWeightedDifferenceMatrix w u)
         (finiteWeightedDifferenceMatrix_diagonal w u) x K hK
-  have hxSq : finiteCoefficientL2Norm x ^ 2 = finiteWeightMass w := by
+  have hxSq : finiteCoefficientL2Norm x ^ (2 : ℕ) = finiteWeightMass w := by
     simpa [x] using finiteCoefficientL2Norm_finiteSqrtWeightVector_sq w hw
-  have hySq : finiteCoefficientL2Norm y ^ 2 =
+  have hySq : finiteCoefficientL2Norm y ^ (2 : ℕ) =
       finiteWeightMass w * finiteWeightedDifferenceEnergy w u / 2 := by
     simpa [x, y] using finiteCoefficientL2Norm_weightedDifference_mulVec_sq w u hw
   have hyNonneg : 0 ≤ finiteCoefficientL2Norm y := finiteCoefficientL2Norm_nonneg y
   have hxNonneg : 0 ≤ finiteCoefficientL2Norm x := finiteCoefficientL2Norm_nonneg x
   have hnormNonneg : 0 ≤ ‖T - K‖ := ContinuousLinearMap.opNorm_nonneg (T - K)
-  have hsquared : finiteCoefficientL2Norm y ^ 2 ≤
-      (finiteCoefficientL2Norm x * ‖T - K‖) ^ 2 :=
+  have hsquared : finiteCoefficientL2Norm y ^ (2 : ℕ) ≤
+      (finiteCoefficientL2Norm x * ‖T - K‖) ^ (2 : ℕ) :=
     (sq_le_sq₀ hyNonneg (mul_nonneg hxNonneg hnormNonneg)).2 (by
       simpa [x, y, T] using hcompression)
-  have henergy : finiteWeightedDifferenceEnergy w u / 2 ≤ ‖T - K‖ ^ 2 := by
+  have henergy : finiteWeightedDifferenceEnergy w u / 2 ≤ ‖T - K‖ ^ (2 : ℕ) := by
     rw [mul_pow, hxSq, hySq] at hsquared
     nlinarith
   rw [Real.sqrt_le_iff]

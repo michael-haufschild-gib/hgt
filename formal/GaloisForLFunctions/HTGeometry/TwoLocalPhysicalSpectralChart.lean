@@ -214,7 +214,7 @@ theorem exists_twoLocalFin_optimalContinuousReturn_ae (n : ℕ) :
     rw [Fintype.card_fun, Fintype.card_fin, Fintype.card_bool]
   have htwo : 2 ≤ 2 ^ N := by
     calc
-      2 = 2 ^ 1 := by norm_num
+      2 = 2 ^ (1 : ℕ) := by norm_num
       _ ≤ 2 ^ N := Nat.pow_le_pow_right (by norm_num) (by simp [N])
   have hadd : (2 ^ N - 2) + 2 = Fintype.card (Fin N → Bool) := by
     rw [hcard]
@@ -250,7 +250,7 @@ theorem exists_twoLocalFin_optimalContinuousReturn_ae (n : ℕ) :
   have hr : 0 < 2 ^ N - 2 := by
     have hfour : 4 ≤ 2 ^ N := by
       calc
-        4 = 2 ^ 2 := by norm_num
+        4 = 2 ^ (2 : ℕ) := by norm_num
         _ ≤ 2 ^ N := Nat.pow_le_pow_right (by norm_num) (by simp [N])
     omega
   have hden : ∀ q ∈ U, energy 1 q - energy 0 q ≠ 0 := by

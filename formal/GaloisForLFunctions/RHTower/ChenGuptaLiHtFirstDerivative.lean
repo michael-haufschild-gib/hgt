@@ -2,7 +2,7 @@
 # Chen--Gupta--Li `h_t`: first derivative
 
 This is the first parameter-sensitive analytic layer for CGL Lemma 4.3.  It
-identifies the literal derivative of `h_t(x)=w(x)^2 x^{it}` globally, including
+identifies the literal derivative of `h_t(x)=w(x)^(2 : ℕ) x^{it}` globally, including
 the nonpositive region where compact support kills the logarithmic phase.
 -/
 
@@ -99,7 +99,7 @@ theorem deriv_cglSmoothBumpHtValue (w : CGLSmoothBump) (t x : ℝ) :
 theorem norm_cglSmoothBumpHtDerivativeValue_le (w : CGLSmoothBump) (t x : ℝ) :
     ‖cglSmoothBumpHtDerivativeValue w t x‖ ≤
       2 * ‖deriv w.value x‖ * ‖w.value x‖ +
-        |t| * ‖w.value x‖ ^ 2 * |x⁻¹| := by
+        |t| * ‖w.value x‖ ^ (2 : ℕ) * |x⁻¹| := by
   unfold cglSmoothBumpHtDerivativeValue
   calc
     ‖(deriv w.value x * w.value x + w.value x * deriv w.value x) *
@@ -126,7 +126,7 @@ theorem norm_cglSmoothBumpHtDerivativeValue_le (w : CGLSmoothBump) (t x : ℝ) :
       exact add_le_add (mul_le_mul_of_nonneg_right hfirst zero_le_one)
         (le_of_eq (by ring))
     _ = 2 * ‖deriv w.value x‖ * ‖w.value x‖ +
-        |t| * ‖w.value x‖ ^ 2 * |x⁻¹| := by
+        |t| * ‖w.value x‖ ^ (2 : ℕ) * |x⁻¹| := by
       simp only [norm_mul, norm_cglMellinPhase, Complex.norm_real, Complex.norm_I,
         norm_inv, Real.norm_eq_abs, abs_inv]
       ring
@@ -135,7 +135,7 @@ theorem norm_cglSmoothBumpHtDerivativeValue_le (w : CGLSmoothBump) (t x : ℝ) :
 theorem norm_deriv_cglSmoothBumpHtValue_le (w : CGLSmoothBump) (t x : ℝ) :
     ‖deriv (cglSmoothBumpHtValue w t) x‖ ≤
       2 * ‖deriv w.value x‖ * ‖w.value x‖ +
-        |t| * ‖w.value x‖ ^ 2 * |x⁻¹| := by
+        |t| * ‖w.value x‖ ^ (2 : ℕ) * |x⁻¹| := by
   rw [deriv_cglSmoothBumpHtValue]
   exact norm_cglSmoothBumpHtDerivativeValue_le w t x
 

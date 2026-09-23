@@ -34,7 +34,7 @@ theorem diskMultiplierOuterTruncatedWeight_lower
 
 theorem diskMultiplierOuterTruncatedWeight_le
     (phi : DiskMultiplier) (n : ℕ) (theta : ℝ) :
-    diskMultiplierOuterTruncatedWeight phi n theta ≤ (max 1 phi.bd) ^ 2 := by
+    diskMultiplierOuterTruncatedWeight phi n theta ≤ (max 1 phi.bd) ^ (2 : ℕ) := by
   apply max_le
   · exact diskMultiplierOuterWeight_le phi theta
   · have hn : 0 ≤ (n : ℝ) := by positivity
@@ -118,8 +118,8 @@ theorem normSq_szegoOuter_mono_of_log_le
       0 (2 * Real.pi))
     (huv : ∀ theta, Real.log (u theta) ≤ Real.log (v theta))
     {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (varphi : ℝ) :
-    ‖szegoOuter u (circleMap 0 r varphi)‖ ^ 2 ≤
-      ‖szegoOuter v (circleMap 0 r varphi)‖ ^ 2 := by
+    ‖szegoOuter u (circleMap 0 r varphi)‖ ^ (2 : ℕ) ≤
+      ‖szegoOuter v (circleMap 0 r varphi)‖ ^ (2 : ℕ) := by
   rw [normSq_szegoOuter_circleMap hlogu hr0 hr1 varphi,
     normSq_szegoOuter_circleMap hlogv hr0 hr1 varphi]
   apply Real.exp_le_exp.mpr
@@ -310,11 +310,11 @@ theorem tendsto_hardyOf_of_bound_one_of_tendsto_zero
     (hubd : ∀ n, (u n).bd = 1)
     (hu0 : Tendsto (fun n => (u n).fn 0) atTop (𝓝 (1 : ℂ))) :
     Tendsto (fun n => hardyOf (u n)) atTop (𝓝 hardyOne) := by
-  have hnormSq (n : ℕ) : ‖hardyOf (u n)‖ ^ 2 ≤ 1 := by
+  have hnormSq (n : ℕ) : ‖hardyOf (u n)‖ ^ (2 : ℕ) ≤ 1 := by
     have h := (hardyMulCoeff_bound (u n) hardyOne).2
-    change ‖hardyOf (u n)‖ ^ 2 ≤ 1
+    change ‖hardyOf (u n)‖ ^ (2 : ℕ) ≤ 1
     rw [hardyOf, hardyDisk_norm_sq]
-    change (∑' k, ‖hardyMulCoeff (u n) hardyOne k‖ ^ 2) ≤ 1
+    change (∑' k, ‖hardyMulCoeff (u n) hardyOne k‖ ^ (2 : ℕ)) ≤ 1
     rw [hubd n, norm_hardyOne_eq_one] at h
     norm_num at h
     exact h
@@ -330,13 +330,13 @@ theorem tendsto_hardyOf_of_bound_one_of_tendsto_zero
       _ = (hardyOf (u n)) 0 := hardyFun_zero _
       _ = (u n).fn 0 := (hardyFun_zero _).symm.trans hzero
   have hdistSq (n : ℕ) :
-      ‖hardyOf (u n) - hardyOne‖ ^ 2 ≤
+      ‖hardyOf (u n) - hardyOne‖ ^ (2 : ℕ) ≤
         2 - 2 * ((u n).fn 0).re := by
     have hnormSub := norm_sub_sq (𝕜 := ℂ) hardyOne (hardyOf (u n))
     rw [norm_sub_rev] at hnormSub
     rw [norm_hardyOne_eq_one, hinner] at hnormSub
-    change ‖hardyOf (u n) - hardyOne‖ ^ 2 =
-      1 ^ 2 - 2 * ((u n).fn 0).re + ‖hardyOf (u n)‖ ^ 2 at hnormSub
+    change ‖hardyOf (u n) - hardyOne‖ ^ (2 : ℕ) =
+      1 ^ (2 : ℕ) - 2 * ((u n).fn 0).re + ‖hardyOf (u n)‖ ^ (2 : ℕ) at hnormSub
     nlinarith [hnormSq n]
   have hupper : Tendsto (fun n => 2 - 2 * ((u n).fn 0).re)
       atTop (𝓝 0) := by
@@ -347,7 +347,7 @@ theorem tendsto_hardyOf_of_bound_one_of_tendsto_zero
     have hconst : Tendsto (fun _n : ℕ => (2 : ℝ)) atTop (𝓝 2) :=
       tendsto_const_nhds
     simpa using hconst.sub (hre.const_mul 2)
-  have hsq : Tendsto (fun n => ‖hardyOf (u n) - hardyOne‖ ^ 2)
+  have hsq : Tendsto (fun n => ‖hardyOf (u n) - hardyOne‖ ^ (2 : ℕ))
       atTop (𝓝 0) :=
     tendsto_of_tendsto_of_tendsto_of_le_of_le'
       tendsto_const_nhds hupper
@@ -356,7 +356,7 @@ theorem tendsto_hardyOf_of_bound_one_of_tendsto_zero
   rw [tendsto_iff_norm_sub_tendsto_zero]
   have hsqrt := (Real.continuous_sqrt.tendsto 0).comp hsq
   change Tendsto
-    (fun n => Real.sqrt (‖hardyOf (u n) - hardyOne‖ ^ 2))
+    (fun n => Real.sqrt (‖hardyOf (u n) - hardyOne‖ ^ (2 : ℕ)))
     atTop (𝓝 (Real.sqrt 0)) at hsqrt
   simpa only [Real.sqrt_sq_eq_abs, abs_of_nonneg (norm_nonneg _), Real.sqrt_zero] using hsqrt
 

@@ -54,7 +54,7 @@ theorem physical_oppositeCoefficient_hasDerivAt (q : XiZeroCopy) (side : Bool) :
     ((hasDerivAt_id w).const_mul 2) (mul_ne_zero (by norm_num) hw0)
   apply hd.congr_deriv
   rw [physicalFundamentalFrequency_connection_zero, physical_connectionSlope_eq_norm]
-  change (2*w*normFinitePart w*(2*w)-0* (2*1)) / (2*w)^2 = normFinitePart w
+  change (2*w*normFinitePart w*(2*w)-0* (2*1)) / (2*w)^(2 : ℕ) = normFinitePart w
   field_simp
   ring
 
@@ -62,7 +62,7 @@ theorem physical_oppositeCoefficient_hasDerivAt (q : XiZeroCopy) (side : Bool) :
 including the case of a vanishing source residue. -/
 theorem physical_response_derivative_leading (q : XiZeroCopy) (branch side : Bool)
     (a : ℂ) (t : Iio (0 : ℝ)) :
-    Tendsto (fun w => (w-physicalFundamentalFrequency q side)^2 *
+    Tendsto (fun w => (w-physicalFundamentalFrequency q side)^(2 : ℕ) *
       deriv (fun u => continuedPhysicalSelfResponse q branch u a t) w)
       (𝓝[≠] physicalFundamentalFrequency q side)
       (𝓝 (-physicalSelfResidueCoefficient q branch side a t)) := by
@@ -73,7 +73,7 @@ theorem physical_response_derivative_leading (q : XiZeroCopy) (branch side : Boo
   change (fun w => continuedPhysicalSelfResponse q branch w a t) =ᶠ[𝓝[≠] w₀]
     (fun w => R/(w-w₀)+g w) at he
   have hd := he.nhdsNE_deriv
-  have hlim : Tendsto (fun w => -R+(w-w₀)^2*deriv g w) (𝓝 w₀) (𝓝 (-R)) := by
+  have hlim : Tendsto (fun w => -R+(w-w₀)^(2 : ℕ)*deriv g w) (𝓝 w₀) (𝓝 (-R)) := by
     simpa using (tendsto_const_nhds.add
       (((tendsto_id.sub_const w₀).pow 2).mul hg.deriv.continuousAt.tendsto))
   apply (hlim.mono_left nhdsWithin_le_nhds).congr'
@@ -81,7 +81,7 @@ theorem physical_response_derivative_leading (q : XiZeroCopy) (branch side : Boo
     self_mem_nhdsWithin] with w hw hgw hn
   have hn' : w-w₀ ≠ 0 := sub_ne_zero.mpr hn
   have hp := (hasDerivAt_const w R).div ((hasDerivAt_id w).sub_const w₀) hn'
-  have hder : deriv (fun u : ℂ => R/(u-w₀)+g u) w = -R/(w-w₀)^2+deriv g w := by
+  have hder : deriv (fun u : ℂ => R/(u-w₀)+g u) w = -R/(w-w₀)^(2 : ℕ)+deriv g w := by
     simpa only [Pi.add_def, Pi.div_def, id_eq, zero_mul, zero_sub, mul_one] using
       (hp.add hgw.differentiableAt.hasDerivAt).deriv
   rw [hw, hder]
@@ -107,7 +107,7 @@ theorem physical_opposite_response_derivative_residue (q : XiZeroCopy) (branch s
   have hn : w-w₀ ≠ 0 := sub_ne_zero.mpr hw
   simp only [slope_def_field, physicalFundamentalFrequency_connection_zero, zero_div, sub_zero]
   change (connection w (physicalRadialFrequency q)/(2*w)/(w-w₀))*
-      ((w-w₀)^2 * deriv (fun u => continuedPhysicalSelfResponse q branch u a t) w) = _
+      ((w-w₀)^(2 : ℕ) * deriv (fun u => continuedPhysicalSelfResponse q branch u a t) w) = _
   dsimp only [w₀] at hn ⊢
   field_simp [hn]
 
@@ -117,7 +117,7 @@ theorem physical_radial_residue_source_value (q : XiZeroCopy) (branch side : Boo
     (a : ℂ) (zang : D4BMHorizon.Point) :
     physicalTemporalFundamentalRadialResidue q branch side a zang =
       D4BMPhysicalModeAction.modeAngularSquare (D4BMPhysicalModeAction.physicalModeAngularJet q zang) *
-      (physicalAngularParameter q^2-1/4-2) * physicalSelfSourceCoefficient q *
+      (physicalAngularParameter q^(2 : ℕ)-1/4-2) * physicalSelfSourceCoefficient q *
       fundamentalSourceMoment (physicalFundamentalFrequency q side) (physicalRate q branch) a *
       clearedOnset (physicalRate q branch) (physicalFundamentalFrequency q side) /
       (physicalFundamentalFrequency q side-2*physicalRate q branch) := by

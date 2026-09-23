@@ -31,7 +31,7 @@ def primeHodgeCubicBirthVector (d : ℝ) (p : Nat.Primes) : ℂ :=
 /-- Exact prime-coordinate PCOB cubic birth law for the normalized cofinal Stokes kernel. -/
 theorem primeHodgeCubicClock_normalizedStokesKernel
     {d : ℝ} (hd : 0 < d) (p q : Nat.Primes) :
-    ((Real.log (p : ℝ) + Real.log (q : ℝ) : ℝ) : ℂ) ^ 3 *
+    ((Real.log (p : ℝ) + Real.log (q : ℝ) : ℝ) : ℂ) ^ (3 : ℕ) *
         normalizedStokesPrimeKernel d (p, q) =
       8 * primeHodgeCubicBirthVector d p * star (primeHodgeCubicBirthVector d q) := by
   have hp : 0 < Real.log (p : ℝ) :=
@@ -54,7 +54,7 @@ theorem primeHodgeCubicClock_normalizedStokesKernel
   simp only [Complex.conj_ofReal]
   rw [show routePBaseCauchyCubicKernel 1 (Real.log (p : ℝ))
       (Real.log (q : ℝ)) 0 =
-      2 / (((Real.log (p : ℝ) + Real.log (q : ℝ) : ℝ) : ℂ) ^ 3) by
+      2 / (((Real.log (p : ℝ) + Real.log (q : ℝ) : ℝ) : ℂ) ^ (3 : ℕ)) by
     rw [routePBaseCauchyCubicKernel, routePCollisionPairFrequency]
     push_cast
     ring]
@@ -81,19 +81,19 @@ theorem primeHodgeCubicBirthVector_diagonal
     primeHodgeCubicBirthVector d p * star (primeHodgeCubicBirthVector d p) =
       ((routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d p /
         gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d *
-          Real.log (p : ℝ) ^ 3 : ℝ) : ℂ) := by
+          Real.log (p : ℝ) ^ (3 : ℕ) : ℝ) : ℂ) := by
   have h := primeHodgeCubicClock_normalizedStokesKernel hd p p
   rw [normalizedStokesPrimeKernel_diagonal hd p] at h
   apply (mul_left_cancel₀ (show (8 : ℂ) ≠ 0 by norm_num))
   calc
     8 * (primeHodgeCubicBirthVector d p * star (primeHodgeCubicBirthVector d p)) =
         8 * primeHodgeCubicBirthVector d p * star (primeHodgeCubicBirthVector d p) := by ring
-    _ = ((Real.log (p : ℝ) + Real.log (p : ℝ) : ℝ) : ℂ) ^ 3 *
+    _ = ((Real.log (p : ℝ) + Real.log (p : ℝ) : ℝ) : ℂ) ^ (3 : ℕ) *
         ((routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d p /
           gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d : ℝ) : ℂ) := h.symm
     _ = 8 * ((routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d p /
           gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d *
-            Real.log (p : ℝ) ^ 3 : ℝ) : ℂ) := by
+            Real.log (p : ℝ) ^ (3 : ℕ) : ℝ) : ℂ) := by
       push_cast
       ring
 
@@ -101,7 +101,7 @@ theorem primeHodgeCubicBirthVector_diagonal
 def primeHodgeHistoryCubicClock
     (X : PrimeHodgeHistoryIndex × PrimeHodgeHistoryIndex → ℂ)
     (ab : PrimeHodgeHistoryIndex × PrimeHodgeHistoryIndex) : ℂ :=
-  ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ 3 *
+  ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ (3 : ℕ) *
     X ab
 
 /-- Cubic clock on the actual finite prime--history source core. -/
@@ -127,11 +127,11 @@ theorem primeHodgeHistoryCubicClockCore_eq_birth
       primeHodgeHistoryDefectKernel,
       if_pos hhistory, primeHodgeHistoryCubicBirthKernel, dif_pos hhistory]
     calc
-      ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ 3 *
+      ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ (3 : ℕ) *
           ((PrimeHodgeHistory.w ab.1.1 : ℂ) *
             normalizedStokesPrimeKernel d (ab.1.2, ab.2.2)) =
           (PrimeHodgeHistory.w ab.1.1 : ℂ) *
-            (((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ 3 *
+            (((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ (3 : ℕ) *
               normalizedStokesPrimeKernel d (ab.1.2, ab.2.2)) := by ring
       _ = (PrimeHodgeHistory.w ab.1.1 : ℂ) *
           (8 * primeHodgeCubicBirthVector d ab.1.2 *
@@ -158,16 +158,16 @@ theorem primeHodgeHistoryDefectKernel_unique_of_cubicClock
       (Real.log_pos (by exact_mod_cast ab.1.2.property.one_lt))
       (Real.log_pos (by exact_mod_cast ab.2.2.property.one_lt))
   have hclockNe :
-      ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ 3 ≠ 0 := by
+      ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ (3 : ℕ) ≠ 0 := by
     exact pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hrate.ne')
   apply (mul_left_cancel₀ hclockNe)
   calc
-    ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ 3 * X ab =
+    ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ (3 : ℕ) * X ab =
         primeHodgeHistoryCubicClock X ab := rfl
     _ = 8 * primeHodgeHistoryCubicBirthKernel d ab := hX ab
     _ = primeHodgeHistoryCubicClockCore d ab :=
       (primeHodgeHistoryCubicClockCore_eq_birth hd ab).symm
-    _ = ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ 3 *
+    _ = ((Real.log (ab.1.2 : ℝ) + Real.log (ab.2.2 : ℝ) : ℝ) : ℂ) ^ (3 : ℕ) *
         primeHodgeHistoryDefectKernel d ab := rfl
 
 /-- Every literal prime label survives in the cubic birth vector. -/
@@ -183,14 +183,14 @@ theorem primeHodgeCubicBirthVector_ne_zero
   have hmass : 0 <
       routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d p /
         gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d *
-          Real.log (p : ℝ) ^ 3 :=
+          Real.log (p : ℝ) ^ (3 : ℕ) :=
     mul_pos (div_pos hw hJ) (pow_pos hlog _)
   intro hzero
   have hdiag := primeHodgeCubicBirthVector_diagonal hd p
   have hcontra : (0 : ℂ) =
       ((routePPrimitiveGammaJuliaStokesTransportedPrimeWeight d p /
         gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d *
-          Real.log (p : ℝ) ^ 3 : ℝ) : ℂ) := by
+          Real.log (p : ℝ) ^ (3 : ℕ) : ℝ) : ℂ) := by
     simpa [hzero] using hdiag
   exact (Complex.ofReal_ne_zero.mpr hmass.ne') hcontra.symm
 

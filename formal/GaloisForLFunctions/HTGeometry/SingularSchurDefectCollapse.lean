@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.FAndMRieszConsequences
 
 The finite defect used here is the consecutive Toeplitz determinant ratio.  By the exact
 Gram--Schmidt identity already proved in the OPUC layer, it is the squared norm of the next monic
-orthogonal polynomial, hence the coordinate-free form of `1 - |alpha_N|^2` needed by the card.
+orthogonal polynomial, hence the coordinate-free form of `1 - |alpha_N|^(2 : ℕ)` needed by the card.
 
 This module joins the existing pieces at their strongest proved interfaces:
 

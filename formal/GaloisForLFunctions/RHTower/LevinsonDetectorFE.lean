@@ -32,7 +32,7 @@ def levinsonG (lam : ℂ) (s : ℂ) : ℂ := riemannZeta s + lam * deriv riemann
 def levinsonY (lam : ℂ) (s : ℂ) : ℂ :=
   2 - lam * logDeriv Complex.Gammaℝ s - lam * logDeriv Complex.Gammaℝ (1 - s)
 
-theorem completedRiemannZeta_eq_Gammaℝ_mul {s : ℂ} (hs : 0 < s.re) :
+theorem completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE {s : ℂ} (hs : 0 < s.re) :
     completedRiemannZeta s = Complex.Gammaℝ s * riemannZeta s := by
   have hs0 : s ≠ 0 := by
     intro h; rw [h, Complex.zero_re] at hs; exact lt_irrefl 0 hs
@@ -86,7 +86,7 @@ theorem hasDerivAt_completedRiemannZeta_of_strip {s : ℂ} (hs : 0 < s.re) (hs1 
   have hopen : {z : ℂ | 0 < z.re} ∈ nhds s :=
     (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs
   filter_upwards [hopen] with z hz
-  exact completedRiemannZeta_eq_Gammaℝ_mul hz
+  exact completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE hz
 
 /-- **The functional equation of Levinson's detector.**  In the open critical strip
 
@@ -116,9 +116,9 @@ theorem levinsonY_mul_completedRiemannZeta (lam : ℂ) {s : ℂ}
   have hGs : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos h0
   have hGs' : Complex.Gammaℝ (1 - s) ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos h0'
   have hΛs : completedRiemannZeta s = Complex.Gammaℝ s * riemannZeta s :=
-    completedRiemannZeta_eq_Gammaℝ_mul h0
+    completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE h0
   have hΛs' : completedRiemannZeta (1 - s) = Complex.Gammaℝ (1 - s) * riemannZeta (1 - s) :=
-    completedRiemannZeta_eq_Gammaℝ_mul h0'
+    completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE h0'
   have hFE : completedRiemannZeta (1 - s) = completedRiemannZeta s :=
     completedRiemannZeta_one_sub s
   have hd : deriv completedRiemannZeta s

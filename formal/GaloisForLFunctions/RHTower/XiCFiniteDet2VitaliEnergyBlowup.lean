@@ -62,7 +62,7 @@ theorem locallyBoundedEntireSequence_xiCNormalizedFiniteDet2_of_hsEnergy_le
   intro z
   have hB0 : 0 ≤ B :=
     (matHSNormSq_nonneg (M 0)).trans (hB 0)
-  refine ⟨1, by norm_num, ‖XiC 0‖ * Real.exp ((‖z‖ + 1) ^ 2 * B / 2), ?_⟩
+  refine ⟨1, by norm_num, ‖XiC 0‖ * Real.exp ((‖z‖ + 1) ^ (2 : ℕ) * B / 2), ?_⟩
   intro k w hw
   have hwDiff : ‖w - z‖ < 1 := by
     simpa only [Metric.mem_ball, dist_eq_norm] using hw
@@ -71,11 +71,11 @@ theorem locallyBoundedEntireSequence_xiCNormalizedFiniteDet2_of_hsEnergy_le
       ‖w‖ = ‖(w - z) + z‖ := by rw [sub_add_cancel]
       _ ≤ ‖w - z‖ + ‖z‖ := norm_add_le _ _
       _ ≤ ‖z‖ + 1 := by linarith
-  have hwSq : ‖w‖ ^ 2 ≤ (‖z‖ + 1) ^ 2 := by
+  have hwSq : ‖w‖ ^ (2 : ℕ) ≤ (‖z‖ + 1) ^ (2 : ℕ) := by
     nlinarith [norm_nonneg w, norm_nonneg z]
   have hExponent :
-      ‖w‖ ^ 2 * matHSNormSq (M k) / 2 ≤
-        (‖z‖ + 1) ^ 2 * B / 2 := by
+      ‖w‖ ^ (2 : ℕ) * matHSNormSq (M k) / 2 ≤
+        (‖z‖ + 1) ^ (2 : ℕ) * B / 2 := by
     nlinarith [matHSNormSq_nonneg (M k), hB k]
   change ‖XiC 0 * finiteDet2 (M k) w‖ ≤ _
   rw [norm_mul]

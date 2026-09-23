@@ -9,13 +9,13 @@ noncomputable section
 set_option autoImplicit false
 
 def fundamentalSourceForcingMoment (w s a : ℂ) : ℂ :=
-  2*a^2*(fundamentalMomentConstant s*fundamentalJacobiForcingMoment 2 w s+
+  2*a^(2 : ℕ)*(fundamentalMomentConstant s*fundamentalJacobiForcingMoment 2 w s+
     fundamentalMomentQuadratic w s*fundamentalJacobiForcingMoment 4 w s)
 
 theorem fundamentalSourceDensity_forcing_coordinate (w s a : ℂ) {x : ℝ}
     (hx : 0<x) (hx1 : x≤1) :
     ((2*(1-x):ℝ):ℂ)*((x*(2-x):ℝ):ℂ)^(w-1)*fundamentalSourceCore w s a (x*(2-x))=
-      2*a^2*(fundamentalMomentConstant s*((x:ℂ)^(w-1)*fundamentalJacobiCore 2 (s-1/2) x)+
+      2*a^(2 : ℕ)*(fundamentalMomentConstant s*((x:ℂ)^(w-1)*fundamentalJacobiCore 2 (s-1/2) x)+
         fundamentalMomentQuadratic w s*((x:ℂ)^(w-1)*fundamentalJacobiCore 4 (s-1/2) x)) := by
   have hx2 : 0<2-x := by linarith
   have hs := fundamentalSourceDensity_polynomial_coordinate w s a hx hx1
@@ -34,7 +34,7 @@ theorem fundamentalSourceDensity_forcing_coordinate (w s a : ℂ) {x : ℝ}
 theorem fundamentalSourceForcing_polynomial_cutoff (w s a : ℂ) {e : ℝ}
     (he : 0<e) (he1 : e≤1) :
     (∫ z in (e*(2-e))..1, (z:ℂ)^(w-1)*fundamentalSourceCore w s a z)=
-      2*a^2*(fundamentalMomentConstant s*
+      2*a^(2 : ℕ)*(fundamentalMomentConstant s*
         (∫ x in e..1, (x:ℂ)^(w-1)*fundamentalJacobiCore 2 (s-1/2) x)+
       fundamentalMomentQuadratic w s*
         (∫ x in e..1, (x:ℂ)^(w-1)*fundamentalJacobiCore 4 (s-1/2) x)) := by
@@ -49,7 +49,7 @@ theorem fundamentalSourceForcing_polynomial_cutoff (w s a : ℂ) {e : ℝ}
   norm_num only [sub_self,sub_zero,mul_one,one_mul] at hi
   rw [← hi]
   calc
-    _ = ∫ x in e..1, 2*a^2*(fundamentalMomentConstant s*
+    _ = ∫ x in e..1, 2*a^(2 : ℕ)*(fundamentalMomentConstant s*
         ((x:ℂ)^(w-1)*fundamentalJacobiCore 2 (s-1/2) x)+
       fundamentalMomentQuadratic w s*((x:ℂ)^(w-1)*fundamentalJacobiCore 4 (s-1/2) x)) := by
       apply intervalIntegral.integral_congr
@@ -67,11 +67,11 @@ theorem fundamentalSourceForcing_polynomial_cutoff (w s a : ℂ) {e : ℝ}
 /-- Exact transported value and slope of the actual degree-four source. -/
 theorem fundamentalSourceForcing_endpoint_coefficients (w s a : ℂ) :
     fundamentalSourceCore w s a 0*(2:ℂ)^w=
-      2*a^2*(fundamentalMomentConstant s*fundamentalJacobiCore 2 (s-1/2) 0+
+      2*a^(2 : ℕ)*(fundamentalMomentConstant s*fundamentalJacobiCore 2 (s-1/2) 0+
         fundamentalMomentQuadratic w s*fundamentalJacobiCore 4 (s-1/2) 0) ∧
     -(w+1)*fundamentalSourceCore w s a 0*(2:ℂ)^w/2+
         (2:ℂ)^(w+1)*fundamentalSourceCoreSlope w s a=
-      2*a^2*(fundamentalMomentConstant s*fundamentalJacobiCoreFirst 2 (s-1/2) 0+
+      2*a^(2 : ℕ)*(fundamentalMomentConstant s*fundamentalJacobiCoreFirst 2 (s-1/2) 0+
         fundamentalMomentQuadratic w s*fundamentalJacobiCoreFirst 4 (s-1/2) 0) := by
   have htwo : (2:ℂ)≠0 := by norm_num
   have hp : (2:ℂ)^(2*s-w)*(2:ℂ)^w=(2:ℂ)^(2*s) := by
@@ -84,7 +84,7 @@ theorem fundamentalSourceForcing_endpoint_coefficients (w s a : ℂ) :
   constructor
   · simp only [fundamentalJacobiCore_zero,hhalf]
     calc
-      _ = ((2:ℂ)^(2*s-w)*(2:ℂ)^w)*a^2*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s) := by ring
+      _ = ((2:ℂ)^(2*s-w)*(2:ℂ)^w)*a^(2 : ℕ)*(fundamentalMomentConstant s+fundamentalMomentQuadratic w s) := by ring
       _ = _ := by rw [hp];ring
   · rw [Complex.cpow_add _ _ htwo,Complex.cpow_one,fundamentalSourceCoreSlope]
     dsimp only [fundamentalJacobiCoreFirst,powerFirst,power]
@@ -92,7 +92,7 @@ theorem fundamentalSourceForcing_endpoint_coefficients (w s a : ℂ) :
     rw [hhalf]
     calc
       _ = ((2:ℂ)^(2*s-w)*(2:ℂ)^w)*
-        (-(a^2)/2*((2*s+3)*fundamentalMomentConstant s+(2*s+7)*fundamentalMomentQuadratic w s)) := by ring
+        (-(a^(2 : ℕ))/2*((2*s+3)*fundamentalMomentConstant s+(2*s+7)*fundamentalMomentQuadratic w s)) := by ring
       _ = _ := by rw [hp];ring
 
 /-- The original physical-radius forcing finite part is the exact retained
@@ -105,7 +105,7 @@ theorem fundamentalSourceForcingMoment_original_cutoff (w s a : ℂ)
       w*fundamentalSourceCoreSlope w s a*((e*(2-e):ℝ):ℂ)^(w+1)/(w+1))
       (𝓝[>] (0:ℝ)) (𝓝 (fundamentalSourceForcingMoment w s a)) := by
   have hj := (((fundamentalJacobiForcingMoment_cutoff 2 (by norm_num) w s hw hw1).const_mul (fundamentalMomentConstant s)).add
-    ((fundamentalJacobiForcingMoment_cutoff 4 (by norm_num) w s hw hw1).const_mul (fundamentalMomentQuadratic w s))).const_mul (2*a^2)
+    ((fundamentalJacobiForcingMoment_cutoff 4 (by norm_num) w s hw hw1).const_mul (fundamentalMomentQuadratic w s))).const_mul (2*a^(2 : ℕ))
   have hc := fundamentalMoment_forcing_counterterm_transport
     (fundamentalSourceCore w s a 0) (fundamentalSourceCoreSlope w s a) w hw hw1
   have h := hj.add hc

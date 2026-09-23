@@ -52,7 +52,7 @@ theorem suzukiWeldNegativeLightForm_apply (theta : ℝ) (x y : ℝ × ℝ) :
 theorem suzukiWeldPositiveLightForm_self_nonneg {theta : ℝ} (htheta : 0 ≤ theta) (x : ℝ × ℝ) :
     0 ≤ suzukiWeldPositiveLightForm theta x x := by
   rw [suzukiWeldPositiveLightForm_apply]
-  have : theta / 2 * (x.1 + x.2) * (x.1 + x.2) = theta / 2 * (x.1 + x.2) ^ 2 := by ring
+  have : theta / 2 * (x.1 + x.2) * (x.1 + x.2) = theta / 2 * (x.1 + x.2) ^ (2 : ℕ) := by ring
   rw [this]
   exact mul_nonneg (div_nonneg htheta (by norm_num)) (sq_nonneg _)
 
@@ -60,7 +60,7 @@ theorem suzukiWeldPositiveLightForm_self_nonneg {theta : ℝ} (htheta : 0 ≤ th
 theorem suzukiWeldNegativeLightForm_self_nonneg {theta : ℝ} (htheta : 0 ≤ theta) (x : ℝ × ℝ) :
     0 ≤ suzukiWeldNegativeLightForm theta x x := by
   rw [suzukiWeldNegativeLightForm_apply]
-  have : theta / 2 * (x.1 - x.2) * (x.1 - x.2) = theta / 2 * (x.1 - x.2) ^ 2 := by ring
+  have : theta / 2 * (x.1 - x.2) * (x.1 - x.2) = theta / 2 * (x.1 - x.2) ^ (2 : ℕ) := by ring
   rw [this]
   exact mul_nonneg (div_nonneg htheta (by norm_num)) (sq_nonneg _)
 
@@ -138,8 +138,8 @@ light-cone tests simultaneously. -/
 theorem suzukiWeld_completedQuadratic_eq
     (theta kappa : ℝ) (x : ℝ × ℝ) :
     weldFEKreinQ theta x x + suzukiWeldNegativeLightForm kappa x x =
-      theta / 2 * (x.1 + x.2) ^ 2 +
-        (kappa - theta) / 2 * (x.1 - x.2) ^ 2 := by
+      theta / 2 * (x.1 + x.2) ^ (2 : ℕ) +
+        (kappa - theta) / 2 * (x.1 - x.2) ^ (2 : ℕ) := by
   rw [weldFEKreinQ_apply, suzukiWeldNegativeLightForm_apply]
   ring
 
@@ -161,9 +161,9 @@ theorem suzukiWeldCompletedNonnegative_iff (theta kappa : ℝ) :
     constructor <;> linarith
   · rintro ⟨htheta, hkappa⟩ x
     rw [suzukiWeld_completedQuadratic_eq]
-    have hplus : 0 ≤ theta / 2 * (x.1 + x.2) ^ 2 :=
+    have hplus : 0 ≤ theta / 2 * (x.1 + x.2) ^ (2 : ℕ) :=
       mul_nonneg (div_nonneg htheta (by norm_num)) (sq_nonneg _)
-    have hminus : 0 ≤ (kappa - theta) / 2 * (x.1 - x.2) ^ 2 :=
+    have hminus : 0 ≤ (kappa - theta) / 2 * (x.1 - x.2) ^ (2 : ℕ) :=
       mul_nonneg (div_nonneg (sub_nonneg.mpr hkappa) (by norm_num)) (sq_nonneg _)
     exact add_nonneg hplus hminus
 

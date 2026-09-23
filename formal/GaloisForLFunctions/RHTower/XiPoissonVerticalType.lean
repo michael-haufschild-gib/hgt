@@ -6,9 +6,9 @@ import GaloisForLFunctions.RHTower.CCMFirstClockVolterra
 /-!
 # The Poisson zero trace and its unconditional exponential type
 
-The Gaussian trace `sum_q exp (-t * w q)`, `w = xiSpectralPoint ^ 2`, grows on vertical lines at the
+The Gaussian trace `sum_q exp (-t * w q)`, `w = xiSpectralPoint ^ (2 : ℕ)`, grows on vertical lines at the
 rate `|Im w| = 2 g delta`, which is *linear in the height* `g` and therefore unbounded over the
-divisor, while the decay rate `Re w = g^2 - delta^2` is quadratic in `g`.  The mismatch is what makes
+divisor, while the decay rate `Re w = g^(2 : ℕ) - delta^(2 : ℕ)` is quadratic in `g`.  The mismatch is what makes
 its vertical envelope Gaussian rather than exponential.
 
 Taking the square root of the spectral parameter repairs it exactly.  Let `xiPoissonPoint q` be the
@@ -38,7 +38,7 @@ def xiPoissonPoint (q : XiZeroCopy) : ℂ :=
   if 0 ≤ (xiSpectralPoint q).re then xiSpectralPoint q else -(xiSpectralPoint q)
 
 theorem xiPoissonPoint_sq (q : XiZeroCopy) :
-    xiPoissonPoint q ^ 2 = xiSpectralPoint q ^ 2 := by
+    xiPoissonPoint q ^ (2 : ℕ) = xiSpectralPoint q ^ (2 : ℕ) := by
   unfold xiPoissonPoint
   split_ifs with h
   · rfl
@@ -132,11 +132,11 @@ theorem exists_norm_xiPoissonTerm_gt (σ : ℝ) {q : XiZeroCopy}
 /-! ## §3 Summability of the Poisson weight -/
 
 /-- The Poisson weight is summable on the divisor for every positive real time, by comparison with
-the canonical-product exponent `sum 1 / ‖xiSpectralPoint‖ ^ 2`. -/
+the canonical-product exponent `sum 1 / ‖xiSpectralPoint‖ ^ (2 : ℕ)`. -/
 theorem summable_xiPoissonWeight {σ : ℝ} (hσ : 0 < σ) :
     Summable (fun q : XiZeroCopy => xiPoissonWeight σ q) := by
   have hbase : Summable (fun q : XiZeroCopy =>
-      2 * Real.exp (σ / 2) / σ ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
+      2 * Real.exp (σ / 2) / σ ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
     xiSpectralPoint_inv_sq_summable.mul_left _
   refine Summable.of_nonneg_of_le (fun q => (xiPoissonWeight_pos σ q).le) (fun q => ?_) hbase
   have hN : (4 : ℝ) < ‖xiSpectralPoint q‖ := four_lt_norm_xiSpectralPoint q
@@ -159,18 +159,18 @@ theorem summable_xiPoissonWeight {σ : ℝ} (hσ : 0 < σ) :
     rw [hexpand] at hmul
     linarith
   have hstep3 : Real.exp (-(σ * ‖xiSpectralPoint q‖)) ≤
-      2 / (σ * ‖xiSpectralPoint q‖) ^ 2 := by
+      2 / (σ * ‖xiSpectralPoint q‖) ^ (2 : ℕ) := by
     have hxpos : 0 < σ * ‖xiSpectralPoint q‖ := mul_pos hσ hNpos
     have hq := Real.pow_div_factorial_le_exp (σ * ‖xiSpectralPoint q‖) hxpos.le 2
     norm_num [Nat.factorial] at hq
-    rw [le_div_iff₀ (by positivity : (0 : ℝ) < (σ * ‖xiSpectralPoint q‖) ^ 2),
+    rw [le_div_iff₀ (by positivity : (0 : ℝ) < (σ * ‖xiSpectralPoint q‖) ^ (2 : ℕ)),
       Real.exp_neg, inv_mul_eq_div, div_le_iff₀ (Real.exp_pos _)]
     linarith
   calc xiPoissonWeight σ q
       ≤ Real.exp (σ / 2) * Real.exp (-(σ * ‖xiSpectralPoint q‖)) := hstep2
-    _ ≤ Real.exp (σ / 2) * (2 / (σ * ‖xiSpectralPoint q‖) ^ 2) :=
+    _ ≤ Real.exp (σ / 2) * (2 / (σ * ‖xiSpectralPoint q‖) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hstep3 (Real.exp_pos _).le
-    _ = 2 * Real.exp (σ / 2) / σ ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+    _ = 2 * Real.exp (σ / 2) / σ ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         field_simp
 
 /-! ## §4 The Poisson trace and the vertical criterion -/

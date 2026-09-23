@@ -14,7 +14,7 @@ and prove perturbative quantum focusing. This supplies a positive null-translati
 entropy concavity, but not Markov/Petz saturation or a uniform edge-energy bound.
 
 For an off-critical Xi orbit, write the stimulated Hawking kernel as
-`K_lambda = B + lambda A`, where `lambda = cosh(r)^2`. Exact three-shell passivity asks for the
+`K_lambda = B + lambda A`, where `lambda = cosh(r)^(2 : ℕ)`. Exact three-shell passivity asks for the
 remote correction
 `K_lambda(x,y) * K_lambda(y,z) / K_lambda(y,y) - K_lambda(x,z)`.
 After division by `lambda`, this converges to the corresponding correction for `A`. Positive
@@ -83,7 +83,7 @@ theorem tendsto_threePointPassiveRemoteCorrection_div_atTop
 theorem xiSquaredEulerOrbitKernel_eq_responseKernel (q : XiZeroCopy) :
     xiSquaredEulerOrbitKernel q =
       eulerRayResponseKernel
-        (fun x => x * xiSquaredEulerOrbitResponse q (x ^ 2)) := by
+        (fun x => x * xiSquaredEulerOrbitResponse q (x ^ (2 : ℕ))) := by
   rfl
 
 theorem xiSquaredEulerOrbitKernel_diag_pos
@@ -97,20 +97,20 @@ theorem xiSquaredEulerOrbitKernel_twoPoint_det_pos
     (q : XiZeroCopy) {x y : ℝ} (hx : 0 < x) (hxy : x < y) :
     0 < xiSquaredEulerOrbitKernel q x x *
         xiSquaredEulerOrbitKernel q y y -
-      xiSquaredEulerOrbitKernel q x y ^ 2 := by
+      xiSquaredEulerOrbitKernel q x y ^ (2 : ℕ) := by
   have hy : 0 < y := hx.trans hxy
-  have hsq : x ^ 2 < y ^ 2 := by nlinarith
+  have hsq : x ^ (2 : ℕ) < y ^ (2 : ℕ) := by nlinarith
   have hdecreaseProfile := strictAntiOn_xiSquaredEulerOrbitResponse q
     (sq_nonneg x) (sq_nonneg y) hsq
   have hincreaseProfile := strictMonoOn_mul_xiSquaredEulerOrbitResponse q
     (sq_nonneg x) (sq_nonneg y) hsq
   have hdecrease :
-      (y * xiSquaredEulerOrbitResponse q (y ^ 2)) / y <
-        (x * xiSquaredEulerOrbitResponse q (x ^ 2)) / x := by
+      (y * xiSquaredEulerOrbitResponse q (y ^ (2 : ℕ))) / y <
+        (x * xiSquaredEulerOrbitResponse q (x ^ (2 : ℕ))) / x := by
     simpa [hx.ne', hy.ne'] using hdecreaseProfile
   have hincrease :
-      x * (x * xiSquaredEulerOrbitResponse q (x ^ 2)) <
-        y * (y * xiSquaredEulerOrbitResponse q (y ^ 2)) := by
+      x * (x * xiSquaredEulerOrbitResponse q (x ^ (2 : ℕ))) <
+        y * (y * xiSquaredEulerOrbitResponse q (y ^ (2 : ℕ))) := by
     simpa [pow_two, mul_assoc] using hincreaseProfile
   rw [xiSquaredEulerOrbitKernel_eq_responseKernel]
   exact eulerRayResponseKernel_twoPoint_det_pos _ hx hxy hdecrease hincrease
@@ -123,9 +123,9 @@ theorem xiSquaredEulerOrbit_passiveRemoteCorrection_ne_zero
   let A := xiSquaredEulerOrbitKernel q
   have hy : 0 < y := hx.trans hxy
   have hdiag : 0 < A y y := xiSquaredEulerOrbitKernel_diag_pos q hy
-  have hleft : 0 < A x x * A y y - A x y ^ 2 :=
+  have hleft : 0 < A x x * A y y - A x y ^ (2 : ℕ) :=
     xiSquaredEulerOrbitKernel_twoPoint_det_pos q hx hxy
-  have hright : 0 < A y y * A z z - A y z ^ 2 :=
+  have hright : 0 < A y y * A z z - A y z ^ (2 : ℕ) :=
     xiSquaredEulerOrbitKernel_twoPoint_det_pos q hy hyz
   have hpass := symmetricThreePointLongEdgeDet_passive_pos A hdiag hleft hright
   have hraw := xiSquaredEulerOrbitKernel_threePointDet_neg q hoff hx hxy hyz
@@ -216,11 +216,11 @@ theorem horizonEdgeMode_two_abs_remote_le_endpointLoad
   rcases hE with ⟨hxx, hzz, hminor⟩
   have hsum : 0 ≤ E x x + E z z := add_nonneg hxx hzz
   have habs : 0 ≤ 2 * |E x z| := by positivity
-  have hsquare : (2 * |E x z|) ^ 2 ≤ (E x x + E z z) ^ 2 := by
+  have hsquare : (2 * |E x z|) ^ (2 : ℕ) ≤ (E x x + E z z) ^ (2 : ℕ) := by
     calc
-      (2 * |E x z|) ^ 2 = 4 * |E x z| ^ 2 := by ring
-      _ = 4 * E x z ^ 2 := by rw [sq_abs]
-      _ ≤ (E x x + E z z) ^ 2 := by
+      (2 * |E x z|) ^ (2 : ℕ) = 4 * |E x z| ^ (2 : ℕ) := by ring
+      _ = 4 * E x z ^ (2 : ℕ) := by rw [sq_abs]
+      _ ≤ (E x x + E z z) ^ (2 : ℕ) := by
         nlinarith [sq_nonneg (E x x - E z z)]
   nlinarith
 

@@ -20,7 +20,7 @@ theorem egbFixedChargeALinearJetObservable_uniform_first_zero_limit
     (w φ l₁ l₂ a b c : ℝ) (j k m : ℕ) :
     TendstoUniformly (fun τ ψ =>
       (egbFixedChargeALinearJetObservable a b c j k m (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ -
-       egbFixedChargeALinearJetObservable a b c j k m (fun x : ℝ => cos x ^ 4) ψ) /
+       egbFixedChargeALinearJetObservable a b c j k m (fun x : ℝ => cos x ^ (4 : ℕ)) ψ) /
         egbCoexistenceASymmetricRatio τ) (fun _ => (0 : ℝ)) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
@@ -40,9 +40,9 @@ theorem egbFixedChargeALinearJetObservable_uniform_first_zero_limit
   have hm := hm ψ
   simp only [Real.dist_eq, zero_sub, abs_neg] at hj hk hm ⊢
   let e := fun r : ℕ => (iteratedDeriv r (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ -
-    iteratedDeriv r (fun x : ℝ => cos x ^ 4) ψ) / egbCoexistenceASymmetricRatio τ
+    iteratedDeriv r (fun x : ℝ => cos x ^ (4 : ℕ)) ψ) / egbCoexistenceASymmetricRatio τ
   have hid : (egbFixedChargeALinearJetObservable a b c j k m (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ -
-      egbFixedChargeALinearJetObservable a b c j k m (fun x : ℝ => cos x ^ 4) ψ) /
+      egbFixedChargeALinearJetObservable a b c j k m (fun x : ℝ => cos x ^ (4 : ℕ)) ψ) /
         egbCoexistenceASymmetricRatio τ = a * e j + b * e k + c * e m := by
     dsimp [egbFixedChargeALinearJetObservable, e]
     ring
@@ -68,7 +68,7 @@ theorem egbFixedChargeALinearJetObservable_uniform_limit
     (w φ l₁ l₂ a b c : ℝ) (j k m : ℕ) :
     TendstoUniformly (fun τ ψ =>
       egbFixedChargeALinearJetObservable a b c j k m (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ)
-      (egbFixedChargeALinearJetObservable a b c j k m (fun x : ℝ => cos x ^ 4)) atBot := by
+      (egbFixedChargeALinearJetObservable a b c j k m (fun x : ℝ => cos x ^ (4 : ℕ))) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
   have he := (Metric.tendstoUniformly_iff.mp
@@ -87,7 +87,7 @@ theorem egbFixedChargeALinearJetObservable_moving_first_zero_limit
     (w φ l₁ l₂ a b c : ℝ) (j k m : ℕ) (ψ : ℝ → ℝ) :
     Tendsto (fun τ =>
       (egbFixedChargeALinearJetObservable a b c j k m (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) (ψ τ) -
-       egbFixedChargeALinearJetObservable a b c j k m (fun x : ℝ => cos x ^ 4) (ψ τ)) /
+       egbFixedChargeALinearJetObservable a b c j k m (fun x : ℝ => cos x ^ (4 : ℕ)) (ψ τ)) /
         egbCoexistenceASymmetricRatio τ) atBot (𝓝 (0 : ℝ)) := by
   apply Metric.tendsto_nhds.mpr
   intro ε hε

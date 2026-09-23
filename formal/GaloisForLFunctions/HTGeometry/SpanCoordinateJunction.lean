@@ -47,12 +47,12 @@ theorem exists_mem_real_shell_quadraticRate_ne_zero_of_mem_span
     {energy₀ : S → ℂ} (hinj₀ : Function.Injective energy₀)
     (hroot₀ : ∀ i, matrixCharpolyRelation (H₀, energy₀ i) = 0)
     (hfail : ∀ σ : Equiv.Perm S,
-      (∑ j, c (σ.symm j) * energy₀ j) ^ 2 - κ * ∑ j, energy₀ j ^ 2 ≠ 0)
+      (∑ j, c (σ.symm j) * energy₀ j) ^ (2 : ℕ) - κ * ∑ j, energy₀ j ^ (2 : ℕ) ≠ 0)
     {V : Set (Fin m → ℝ)} (hVopen : IsOpen V) (hVne : V.Nonempty) :
     ∃ q ∈ V, ∀ energy : S → ℂ, Function.Injective energy →
       (∀ i, matrixCharpolyRelation (∑ a, ((q a : ℝ) : ℂ) • P a, energy i) = 0) →
       ∀ σ : Equiv.Perm S,
-        (∑ j, c (σ.symm j) * energy j) ^ 2 - κ * ∑ j, energy j ^ 2 ≠ 0 := by
+        (∑ j, c (σ.symm j) * energy j) ^ (2 : ℕ) - κ * ∑ j, energy j ^ (2 : ℕ) ≠ 0 := by
   obtain ⟨θ, hθ⟩ := exists_realCoeff_of_mem_span P hspan
   refine exists_mem_real_shell_quadraticRate_ne_zero P c κ (θ₀ := fun a => ((θ a : ℝ) : ℂ))
     hinj₀ ?_ hfail hVopen hVne

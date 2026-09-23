@@ -54,7 +54,7 @@ theorem cglLemma45FibreZeroModeRowBound_le_scale
     {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
     (S : CGLLemma45SourceScale P N) (w : CGLRealSmoothBump) (n : ℕ) :
     cglLemma45FibreZeroModeRowBound P w N n ≤
-      S.separation.base ^ 6 *
+      S.separation.base ^ (6 : ℕ) *
         (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump n / P.spacing ^ n) *
           cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
             cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 := by
@@ -62,7 +62,7 @@ theorem cglLemma45FibreZeroModeRowBound_le_scale
   let C : ℝ := cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump n / P.spacing ^ n
   let D : ℝ := cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0
   have hbase : 0 ≤ S.separation.base := le_trans zero_le_one S.separation.base_one
-  have hphi : ((Q.value.totient : ℝ) ^ 3) ≤ S.separation.base ^ 3 :=
+  have hphi : ((Q.value.totient : ℝ) ^ (3 : ℕ)) ≤ S.separation.base ^ (3 : ℕ) :=
     pow_le_pow_left₀ (by positivity) S.totient_le _
   have hC : 0 ≤ C := by
     unfold C
@@ -71,12 +71,12 @@ theorem cglLemma45FibreZeroModeRowBound_le_scale
   have hD : 0 ≤ D := cglLogFourierAmplitudeAllOrderBudget_nonneg w.toCGLSmoothBump 0
   have hscale : 0 ≤ cglAffineFourierScale N Q := (cglAffineFourierScale_pos N Q).le
   have hscale_le : cglAffineFourierScale N Q ≤ S.separation.base := S.fourierScale_le
-  change (Q.value.totient : ℝ) ^ 3 *
+  change (Q.value.totient : ℝ) ^ (3 : ℕ) *
       ((cglAffineFourierScale N Q * C) *
         (cglAffineFourierScale N Q * D) *
           (cglAffineFourierScale N Q * D)) ≤ _
   calc
-    _ ≤ S.separation.base ^ 3 *
+    _ ≤ S.separation.base ^ (3 : ℕ) *
         ((S.separation.base * C) * (S.separation.base * D) *
           (S.separation.base * D)) := by gcongr
     _ = _ := by ring
@@ -90,9 +90,9 @@ theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_scale
         (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump n / P.spacing ^ n) *
           cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
             cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 := by
-  have hR3 : (R : ℝ) ^ 3 ≤ S.separation.base ^ (3 * S.rowCountExponent) := by
+  have hR3 : (R : ℝ) ^ (3 : ℕ) ≤ S.separation.base ^ (3 * S.rowCountExponent) := by
     calc
-      (R : ℝ) ^ 3 ≤ (S.separation.base ^ S.rowCountExponent) ^ 3 :=
+      (R : ℝ) ^ (3 : ℕ) ≤ (S.separation.base ^ S.rowCountExponent) ^ (3 : ℕ) :=
         pow_le_pow_left₀ (by positivity) S.rowCount_le _
       _ = S.separation.base ^ (3 * S.rowCountExponent) := by
         rw [← pow_mul, Nat.mul_comm]
@@ -100,10 +100,10 @@ theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_scale
   calc
     ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
         (cglLemma45FibreRows P) 0‖ ≤
-        (R : ℝ) ^ 3 * cglLemma45FibreZeroModeRowBound P w N n :=
+        (R : ℝ) ^ (3 : ℕ) * cglLemma45FibreZeroModeRowBound P w N n :=
       norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_cubicRowBudget P w N n
     _ ≤ S.separation.base ^ (3 * S.rowCountExponent) *
-        (S.separation.base ^ 6 *
+        (S.separation.base ^ (6 : ℕ) *
           (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump n / P.spacing ^ n) *
             cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
               cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0) := by
@@ -112,11 +112,11 @@ theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_scale
     _ = _ := by
       calc
         S.separation.base ^ (3 * S.rowCountExponent) *
-            (S.separation.base ^ 6 *
+            (S.separation.base ^ (6 : ℕ) *
               (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump n / P.spacing ^ n) *
                 cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
                   cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0) =
-            (S.separation.base ^ (3 * S.rowCountExponent) * S.separation.base ^ 6) *
+            (S.separation.base ^ (3 * S.rowCountExponent) * S.separation.base ^ (6 : ℕ)) *
               (cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump n / P.spacing ^ n) *
                 cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
                   cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 := by ring

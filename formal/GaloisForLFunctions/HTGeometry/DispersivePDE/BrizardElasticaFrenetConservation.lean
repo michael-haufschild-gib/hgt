@@ -42,7 +42,7 @@ noncomputable def elasticaForce
     (E : FrenetElasticaData V) (s : ℝ) : V :=
   E.curvature₁ s • E.normal s +
     (E.curvature s * E.torsion s) • E.binormal s -
-    (E.curvature s ^ 2 + E.lagrange s) • E.tangent s
+    (E.curvature s ^ (2 : ℕ) + E.lagrange s) • E.tangent s
 
 /-- Exact three-component derivative in paper equation (10). -/
 theorem hasDerivAt_elasticaForce
@@ -53,7 +53,7 @@ theorem hasDerivAt_elasticaForce
        (2 * E.curvature₁ s * E.torsion s +
           E.curvature s * E.torsion₁ s) • E.binormal s +
        (E.curvature₂ s - E.curvature s *
-          (E.curvature s ^ 2 + E.torsion s ^ 2 + E.lagrange s)) • E.normal s) s := by
+          (E.curvature s ^ (2 : ℕ) + E.torsion s ^ (2 : ℕ) + E.lagrange s)) • E.normal s) s := by
   have hcurvatureTorsion : HasDerivAt
       (fun x => E.curvature x * E.torsion x)
       (E.curvature₁ s * E.torsion s + E.curvature s * E.torsion₁ s) s :=
@@ -79,7 +79,7 @@ structure StationaryElasticaData (V : Type*) [NormedAddCommGroup V] [NormedSpace
   tangent_euler : ∀ s, 3 * curvature s * curvature₁ s + lagrange₁ s = 0
   binormal_euler : ∀ s, 2 * curvature₁ s * torsion s + curvature s * torsion₁ s = 0
   normal_euler : ∀ s,
-    curvature₂ s - curvature s * (curvature s ^ 2 + torsion s ^ 2 + lagrange s) = 0
+    curvature₂ s - curvature s * (curvature s ^ (2 : ℕ) + torsion s ^ (2 : ℕ) + lagrange s) = 0
 
 /-- Euler components make the full variational force stationary. -/
 theorem stationaryElasticaForce_hasDerivAt_zero
@@ -112,13 +112,13 @@ theorem stationaryElasticaForce_constant
 noncomputable def elasticaLambdaScale
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (E : StationaryElasticaData V) : ℝ :=
-  3 * E.curvature 0 ^ 2 + 2 * E.lagrange 0
+  3 * E.curvature 0 ^ (2 : ℕ) + 2 * E.lagrange 0
 
 /-- Tangent Euler component integrates to paper's multiplier formula. -/
 theorem stationaryElastica_lagrange_eq
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (E : StationaryElasticaData V) (s : ℝ) :
-    E.lagrange s = -3 / 2 * E.curvature s ^ 2 + elasticaLambdaScale E / 2 := by
+    E.lagrange s = -3 / 2 * E.curvature s ^ (2 : ℕ) + elasticaLambdaScale E / 2 := by
   let F : ℝ → ℝ :=
     (fun _ => (3 : ℝ)) * (E.curvature * E.curvature) +
       (fun _ => (2 : ℝ)) * E.lagrange
@@ -143,8 +143,8 @@ theorem stationaryElastica_lagrange_eq
     rw [(hzero x).hasFDerivAt.fderiv]
     simp
   have hconst := is_const_of_fderiv_eq_zero hdiff hfderiv s 0
-  have hconst' : 3 * E.curvature s ^ 2 + 2 * E.lagrange s =
-      3 * E.curvature 0 ^ 2 + 2 * E.lagrange 0 := by
+  have hconst' : 3 * E.curvature s ^ (2 : ℕ) + 2 * E.lagrange s =
+      3 * E.curvature 0 ^ (2 : ℕ) + 2 * E.lagrange 0 := by
     simpa [F, pow_two] using hconst
   rw [elasticaLambdaScale]
   linarith
@@ -153,7 +153,7 @@ theorem stationaryElastica_lagrange_eq
 theorem stationaryElastica_curvatureSq_mul_torsion_constant
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (E : StationaryElasticaData V) (s : ℝ) :
-    E.curvature s ^ 2 * E.torsion s = E.curvature 0 ^ 2 * E.torsion 0 := by
+    E.curvature s ^ (2 : ℕ) * E.torsion s = E.curvature 0 ^ (2 : ℕ) * E.torsion 0 := by
   let F : ℝ → ℝ := E.curvature * E.curvature * E.torsion
   have hzero : ∀ x : ℝ, HasDerivAt F 0 x := by
     intro x
@@ -185,8 +185,8 @@ theorem stationaryElastica_curvatureSq_mul_torsion_constant
 theorem stationaryElastica_torsion_eq
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (E : StationaryElasticaData V) (s : ℝ) :
-    E.torsion s = E.curvature 0 ^ 2 * E.torsion 0 / E.curvature s ^ 2 := by
-  have hne : E.curvature s ^ 2 ≠ 0 := pow_ne_zero 2 (ne_of_gt (E.curvature_pos s))
+    E.torsion s = E.curvature 0 ^ (2 : ℕ) * E.torsion 0 / E.curvature s ^ (2 : ℕ) := by
+  have hne : E.curvature s ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (ne_of_gt (E.curvature_pos s))
   apply (eq_div_iff hne).2
   simpa [mul_comm] using stationaryElastica_curvatureSq_mul_torsion_constant E s
 
@@ -194,8 +194,8 @@ theorem stationaryElastica_torsion_eq
 theorem stationaryElastica_curvature_ode
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (E : StationaryElasticaData V) (s : ℝ) :
-    E.curvature₂ s = -1 / 2 * E.curvature s ^ 3 +
-      E.curvature 0 ^ 4 * E.torsion 0 ^ 2 / E.curvature s ^ 3 +
+    E.curvature₂ s = -1 / 2 * E.curvature s ^ (3 : ℕ) +
+      E.curvature 0 ^ (4 : ℕ) * E.torsion 0 ^ (2 : ℕ) / E.curvature s ^ (3 : ℕ) +
       elasticaLambdaScale E / 2 * E.curvature s := by
   have hk : E.curvature s ≠ 0 := ne_of_gt (E.curvature_pos s)
   have hnormal := E.normal_euler s

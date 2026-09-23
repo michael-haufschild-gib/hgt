@@ -32,15 +32,15 @@ theorem xiCompletedApertureOddRealKernel_swap
 def xiCompletedApertureResonantTwoPointDet
     (rho : XiDivisorSupport) (epsilon : ℝ) : ℝ :=
   let u := (rho : ℂ).re - 1 / 2 + epsilon
-  (xiCompletedApertureOddRealKernel u 0 0) ^ 2 -
-    (xiCompletedApertureOddRealKernel u (rho : ℂ).im 0) ^ 2
+  (xiCompletedApertureOddRealKernel u 0 0) ^ (2 : ℕ) -
+    (xiCompletedApertureOddRealKernel u (rho : ℂ).im 0) ^ (2 : ℕ)
 
 /-- Residue-filled scaling of the resonant two-node determinant. -/
 def xiCompletedApertureRegularizedResonantTwoPointDet
     (rho : XiDivisorSupport) (epsilon : ℝ) : ℝ :=
   (2 * epsilon *
-      (seamFluxCochain ((((rho : ℂ).re + epsilon : ℝ) : ℂ))).re) ^ 2 -
-    (2 * (completedFluxGermAt (rho : ℂ) (epsilon : ℂ)).re) ^ 2
+      (seamFluxCochain ((((rho : ℂ).re + epsilon : ℝ) : ℂ))).re) ^ (2 : ℕ) -
+    (2 * (completedFluxGermAt (rho : ℂ) (epsilon : ℂ)).re) ^ (2 : ℕ)
 
 theorem xiCompletedApertureOffDiagonalKernel_resonant
     (rho : XiDivisorSupport) (epsilon : ℝ) :
@@ -87,12 +87,12 @@ theorem epsilon_mul_xiCompletedApertureOddRealKernel_resonant_diagonal
     xiCompletedApertureOffDiagonalKernel_resonant_diagonal]
   ring
 
-/-- Away from the collision, the residue-filled expression is exactly `epsilon^2` times the
+/-- Away from the collision, the residue-filled expression is exactly `epsilon^(2 : ℕ)` times the
 unregularized two-node determinant. -/
 theorem xiCompletedApertureRegularizedResonantTwoPointDet_eq_scaled
     (rho : XiDivisorSupport) {epsilon : ℝ} (hepsilon : epsilon ≠ 0) :
     xiCompletedApertureRegularizedResonantTwoPointDet rho epsilon =
-      epsilon ^ 2 * xiCompletedApertureResonantTwoPointDet rho epsilon := by
+      epsilon ^ (2 : ℕ) * xiCompletedApertureResonantTwoPointDet rho epsilon := by
   have hdiag :=
     epsilon_mul_xiCompletedApertureOddRealKernel_resonant_diagonal rho epsilon
   have hoff :=
@@ -146,7 +146,7 @@ Xi divisor multiplicity. -/
 theorem xiCompletedApertureRegularizedResonantTwoPointDet_zero
     (rho : XiDivisorSupport) :
     xiCompletedApertureRegularizedResonantTwoPointDet rho 0 =
-      -4 * (xiSupportMultiplicity rho : ℝ) ^ 2 := by
+      -4 * (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ) := by
   simp only [xiCompletedApertureRegularizedResonantTwoPointDet,
     ofReal_zero, completedFluxGermAt_zero]
   rw [← xiSupportMultiplicity_eq_analyticOrderAt_toNat]
@@ -157,7 +157,7 @@ theorem xiCompletedApertureRegularizedResonantTwoPointDet_zero
 theorem tendsto_xiCompletedApertureRegularizedResonantTwoPointDet
     (rho : XiDivisorSupport) :
     Tendsto (xiCompletedApertureRegularizedResonantTwoPointDet rho) (nhds 0)
-      (nhds (-4 * (xiSupportMultiplicity rho : ℝ) ^ 2)) := by
+      (nhds (-4 * (xiSupportMultiplicity rho : ℝ) ^ (2 : ℕ))) := by
   simpa [xiCompletedApertureRegularizedResonantTwoPointDet_zero] using
     (continuousAt_xiCompletedApertureRegularizedResonantTwoPointDet rho).tendsto
 
@@ -187,7 +187,7 @@ theorem exists_pos_xiCompletedApertureResonantTwoPointDet_neg
   change xiCompletedApertureRegularizedResonantTwoPointDet rho epsilon < 0 at hregNeg
   rw [xiCompletedApertureRegularizedResonantTwoPointDet_eq_scaled rho
     (ne_of_gt hepsilon)] at hregNeg
-  have hepsilonSq : 0 < epsilon ^ 2 := sq_pos_of_pos hepsilon
+  have hepsilonSq : 0 < epsilon ^ (2 : ℕ) := sq_pos_of_pos hepsilon
   nlinarith
 
 end

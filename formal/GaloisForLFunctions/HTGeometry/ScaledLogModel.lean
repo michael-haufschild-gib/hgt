@@ -28,7 +28,7 @@ theorem logFactor_mul_fact_eq (j : ℕ) :
 /-- **The derivative of the scaled logarithmic derivative is the Wronskian over the square.** -/
 theorem fpderiv_logFactor_mul_fact {j : ℕ} (hQ : Q j ≠ 0) :
     fpderiv j (logFactor (Q j) j * fact (v j) j)
-      = fact (scaledLogWronskian (Q j) (v j)) j / fact (Q j) j ^ 2 := by
+      = fact (scaledLogWronskian (Q j) (v j)) j / fact (Q j) j ^ (2 : ℕ) := by
   have hne : fact (Q j) j ≠ 0 := fact_ne_zero hQ j
   rw [logFactor_mul_fact_eq Q v j, div_eq_mul_inv, Derivation.leibniz,
     Derivation.leibniz_inv, derivation_fact, derivation_fact, fpderiv_fx_self,
@@ -46,7 +46,7 @@ theorem fpderiv_logSum_top {n : ℕ} (hQ : Q (n + 1) ≠ 0) :
     fpderiv (n + 1) (logSum Q v (n + 2))
       = prodHead Q (n + 1)
         * (fact (scaledLogWronskian (Q (n + 1)) (v (n + 1))) (n + 1)
-            / fact (Q (n + 1)) (n + 1) ^ 2) := by
+            / fact (Q (n + 1)) (n + 1) ^ (2 : ℕ)) := by
   rw [logSum, Finset.sum_range_succ, map_add]
   have hlow : fpderiv (n + 1)
       (∑ j ∈ Finset.range (n + 1), logFactor (Q j) j * prodJet Q v j) = 0 := by
@@ -105,7 +105,7 @@ theorem fpderiv_logSum_row {Q : ℕ → Polynomial ℂ} (v : ℕ → Polynomial 
     fpderiv (j + 1) (logSum Q v (n + 2))
       = prodHead Q (j + 1)
           * (fact (scaledLogWronskian (Q (j + 1)) (v (j + 1))) (j + 1)
-              / fact (Q (j + 1)) (j + 1) ^ 2)
+              / fact (Q (j + 1)) (j + 1) ^ (2 : ℕ))
         + logFactor (Q (j + 1)) (j + 1)
           * (logSum Q v (n + 2) - logSum Q v (j + 2)) := by
   have hsplit := logSum_split (Q := Q) (v := v) hj

@@ -39,12 +39,12 @@ def suzukiPointwiseLerchGapSummand (t : ℝ) (n : ℕ) : ℝ :=
       suzukiHurwitzLerchTwoSummand (Real.exp (-2 * t)) n
 
 /-- A gap summand has the elementary exponential form
-`(1 - exp (-2 (n + 1/4) t)) / (n + 1/4)^2`. -/
+`(1 - exp (-2 (n + 1/4) t)) / (n + 1/4)^(2 : ℕ)`. -/
 theorem suzukiPointwiseLerchGapSummand_eq
     (t : ℝ) (n : ℕ) :
     suzukiPointwiseLerchGapSummand t n =
       (1 - Real.exp (-2 * ((n : ℝ) + 1 / 4) * t)) /
-        ((n : ℝ) + 1 / 4) ^ 2 := by
+        ((n : ℝ) + 1 / 4) ^ (2 : ℕ) := by
   have hexp :
       Real.exp (-t / 2) * (Real.exp (-2 * t)) ^ n =
         Real.exp (-2 * ((n : ℝ) + 1 / 4) * t) := by
@@ -55,13 +55,13 @@ theorem suzukiPointwiseLerchGapSummand_eq
     suzukiHurwitzLerchTwoSummand
   rw [one_pow]
   calc
-    1 / ((n : ℝ) + 1 / 4) ^ 2 -
+    1 / ((n : ℝ) + 1 / 4) ^ (2 : ℕ) -
         Real.exp (-t / 2) *
-          ((Real.exp (-2 * t)) ^ n / ((n : ℝ) + 1 / 4) ^ 2) =
+          ((Real.exp (-2 * t)) ^ n / ((n : ℝ) + 1 / 4) ^ (2 : ℕ)) =
       (1 - Real.exp (-t / 2) * (Real.exp (-2 * t)) ^ n) /
-        ((n : ℝ) + 1 / 4) ^ 2 := by ring
+        ((n : ℝ) + 1 / 4) ^ (2 : ℕ) := by ring
     _ = (1 - Real.exp (-2 * ((n : ℝ) + 1 / 4) * t)) /
-        ((n : ℝ) + 1 / 4) ^ 2 := by rw [hexp]
+        ((n : ℝ) + 1 / 4) ^ (2 : ℕ) := by rw [hexp]
 
 /-- Every Lerch-gap summand is nonnegative at nonnegative time. -/
 theorem suzukiPointwiseLerchGapSummand_nonnegative
@@ -125,17 +125,17 @@ theorem two_thirds_mul_time_div_le_suzukiPointwiseLerchGapSummand
     hat (by simpa [a] using hsmall)
   rw [suzukiPointwiseLerchGapSummand_eq]
   change (2 / 3 : ℝ) * t / a ≤
-    (1 - Real.exp (-2 * a * t)) / a ^ 2
+    (1 - Real.exp (-2 * a * t)) / a ^ (2 : ℕ)
   have hrewrite :
       (2 / 3 : ℝ) * t / a =
-        ((2 / 3 : ℝ) * (a * t)) / a ^ 2 := by
+        ((2 / 3 : ℝ) * (a * t)) / a ^ (2 : ℕ) := by
     field_simp [ha.ne']
   rw [hrewrite]
   calc
-    ((2 / 3 : ℝ) * (a * t)) / a ^ 2 ≤
-        (1 - Real.exp (-2 * (a * t))) / a ^ 2 :=
+    ((2 / 3 : ℝ) * (a * t)) / a ^ (2 : ℕ) ≤
+        (1 - Real.exp (-2 * (a * t))) / a ^ (2 : ℕ) :=
       div_le_div_of_nonneg_right hbase (sq_nonneg a)
-    _ = (1 - Real.exp (-2 * a * t)) / a ^ 2 := by
+    _ = (1 - Real.exp (-2 * a * t)) / a ^ (2 : ℕ) := by
       rw [show -2 * (a * t) = -2 * a * t by ring]
 
 /-! ## Prime-free initial interval -/
@@ -171,7 +171,7 @@ theorem suzukiPointwiseElementary_nonnegative (t : ℝ) :
   have hamgm : (2 : ℝ) ≤ Real.exp (t / 2) + Real.exp (-t / 2) := by
     have h := two_mul_le_add_of_sq_le_mul
       (Real.exp_pos (t / 2)).le (Real.exp_pos (-t / 2)).le
-      (show (1 : ℝ) ^ 2 ≤
+      (show (1 : ℝ) ^ (2 : ℕ) ≤
         Real.exp (t / 2) * Real.exp (-t / 2) by
           rw [hproduct]
           norm_num)

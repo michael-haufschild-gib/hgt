@@ -47,7 +47,7 @@ theorem hasDerivAt_clm {x : ℝ → Lp ℂ 2 (volume : Measure E)} {x' : Lp ℂ 
 /-- The squared norm of a differentiable curve in a Hilbert space is differentiable. -/
 theorem hasDerivAt_norm_sq {x : ℝ → Lp ℂ 2 (volume : Measure E)} {x' : Lp ℂ 2 (volume : Measure E)} {t : ℝ}
     (h : HasDerivAt x x' t) :
-    HasDerivAt (fun s => ‖x s‖ ^ 2)
+    HasDerivAt (fun s => ‖x s‖ ^ (2 : ℕ))
       (RCLike.re (inner ℂ (x t) x' + inner ℂ x' (x t))) t := by
   have hi := HasDerivAt.inner ℂ h h
   have hre := (RCLike.reCLM (K := ℂ)).hasFDerivAt.comp_hasDerivAt t hi
@@ -64,7 +64,7 @@ def SolvesKG (u v a : ℝ → Lp ℂ 2 (volume : Measure E)) : Prop :=
 
 /-- The conserved energy of a strong solution. -/
 def kgStrongEnergy (u v : ℝ → Lp ℂ 2 (volume : Measure E)) (t : ℝ) : ℝ :=
-  ‖kgFreqInvOp (v t)‖ ^ 2 + ‖u t‖ ^ 2
+  ‖kgFreqInvOp (v t)‖ ^ (2 : ℕ) + ‖u t‖ ^ (2 : ℕ)
 
 theorem kgStrongEnergy_nonneg (u v : ℝ → Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     0 ≤ kgStrongEnergy u v t :=
@@ -113,9 +113,9 @@ theorem eq_zero_of_solvesKG {u v a : ℝ → Lp ℂ 2 (volume : Measure E)} (h :
     rw [kgStrongEnergy, hu0, hv0, map_zero, norm_zero]
     norm_num
   rw [hzero] at hconst
-  have hle : ‖u t‖ ^ 2 ≤ 0 := by
-    have h1 : (0 : ℝ) ≤ ‖kgFreqInvOp (E := E) (v t)‖ ^ 2 := sq_nonneg _
-    have h2 : ‖kgFreqInvOp (E := E) (v t)‖ ^ 2 + ‖u t‖ ^ 2 = 0 := hconst
+  have hle : ‖u t‖ ^ (2 : ℕ) ≤ 0 := by
+    have h1 : (0 : ℝ) ≤ ‖kgFreqInvOp (E := E) (v t)‖ ^ (2 : ℕ) := sq_nonneg _
+    have h2 : ‖kgFreqInvOp (E := E) (v t)‖ ^ (2 : ℕ) + ‖u t‖ ^ (2 : ℕ) = 0 := hconst
     linarith
   have : ‖u t‖ = 0 := by
     have hnn : (0 : ℝ) ≤ ‖u t‖ := norm_nonneg _

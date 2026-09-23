@@ -12,9 +12,9 @@ adjacent phase difference contributes one prime-log gap.
 The decisive observation is elementary and does not use a prime-gap asymptotic.  Bertrand gives
 `h_(n+1) <= 2 h_n` for `h_n = log p_n`; hence
 
-`(h_(n+1)-h_n)/h_n^2 <= 2 (1/h_n - 1/h_(n+1))`.
+`(h_(n+1)-h_n)/h_n^(2 : ℕ) <= 2 (1/h_n - 1/h_(n+1))`.
 
-Square-root-exponential decay is eventually bounded by `C/h^2`, so the residual variation against
+Square-root-exponential decay is eventually bounded by `C/h^(2 : ℕ)`, so the residual variation against
 the logarithmic mesh is summable by a reciprocal-height telescope.  Therefore the physical
 lower-half residual connection is absolutely convergent at every source coordinate.
 -/
@@ -62,7 +62,7 @@ theorem xiMassNthPrimeLogHeight_succ_le_two_mul (N : ℕ) :
 /-- One damped logarithmic cell is charged to a telescoping reciprocal-height drop. -/
 theorem xiHeatCassiniOrderedPrimeLogGap_div_sq_le_reciprocal_drop (N : ℕ) :
     xiHeatCassiniOrderedPrimeLogGap N /
-        xiMassNthPrimeLogHeight N ^ 2 ≤
+        xiMassNthPrimeLogHeight N ^ (2 : ℕ) ≤
       2 * (1 / xiMassNthPrimeLogHeight N -
         1 / xiMassNthPrimeLogHeight (N + 1)) := by
   let x : ℝ := xiMassNthPrimeLogHeight N
@@ -73,23 +73,23 @@ theorem xiHeatCassiniOrderedPrimeLogGap_div_sq_le_reciprocal_drop (N : ℕ) :
   have hy2x : y ≤ 2 * x := xiMassNthPrimeLogHeight_succ_le_two_mul N
   have hdrop : 1 / x - 1 / y = (y - x) / (x * y) := by
     field_simp [hx.ne', hy.ne']
-  change (y - x) / x ^ 2 ≤ 2 * (1 / x - 1 / y)
+  change (y - x) / x ^ (2 : ℕ) ≤ 2 * (1 / x - 1 / y)
   rw [hdrop]
   rw [show 2 * ((y - x) / (x * y)) = (2 * (y - x)) / (x * y) by ring]
   rw [div_le_div_iff₀ (sq_pos_of_pos hx) (mul_pos hx hy)]
   nlinarith [mul_le_mul_of_nonneg_left hy2x (sub_nonneg.mpr hxy)]
 
-/-- Reciprocal-height telescope: all prime-log gaps weighted by `1/(log p)^2` are summable. -/
+/-- Reciprocal-height telescope: all prime-log gaps weighted by `1/(log p)^(2 : ℕ)` are summable. -/
 theorem summable_xiHeatCassiniOrderedPrimeLogGap_div_logHeight_sq :
     Summable (fun N : ℕ =>
-      xiHeatCassiniOrderedPrimeLogGap N / xiMassNthPrimeLogHeight N ^ 2) := by
+      xiHeatCassiniOrderedPrimeLogGap N / xiMassNthPrimeLogHeight N ^ (2 : ℕ)) := by
   apply summable_of_sum_range_le
   · intro N
     exact div_nonneg (xiHeatCassiniOrderedPrimeLogGap_nonneg N) (sq_nonneg _)
   · intro M
     calc
       (∑ N ∈ Finset.range M,
-          xiHeatCassiniOrderedPrimeLogGap N / xiMassNthPrimeLogHeight N ^ 2) ≤
+          xiHeatCassiniOrderedPrimeLogGap N / xiMassNthPrimeLogHeight N ^ (2 : ℕ)) ≤
           ∑ N ∈ Finset.range M,
             2 * (1 / xiMassNthPrimeLogHeight N -
               1 / xiMassNthPrimeLogHeight (N + 1)) :=
@@ -121,17 +121,17 @@ theorem summable_exp_neg_sqrt_primeLog_mul_successorGap
   have hrateN := hrate (xiMassNthPrimeLogHeight N) hheight
   have hrateN' :
       Real.exp (-c * Real.sqrt (xiMassNthPrimeLogHeight N)) ≤
-        C / xiMassNthPrimeLogHeight N ^ 2 := by
+        C / xiMassNthPrimeLogHeight N ^ (2 : ℕ) := by
     simpa [show 2 * (c / 2) = c by ring] using hrateN
   calc
     Real.exp (-c * Real.sqrt (xiMassNthPrimeLogHeight N)) *
         xiHeatCassiniOrderedPrimeLogGap N ≤
-      (C / xiMassNthPrimeLogHeight N ^ 2) *
+      (C / xiMassNthPrimeLogHeight N ^ (2 : ℕ)) *
         xiHeatCassiniOrderedPrimeLogGap N :=
       mul_le_mul_of_nonneg_right hrateN'
         (xiHeatCassiniOrderedPrimeLogGap_nonneg N)
     _ = C * (xiHeatCassiniOrderedPrimeLogGap N /
-        xiMassNthPrimeLogHeight N ^ 2) := by ring
+        xiMassNthPrimeLogHeight N ^ (2 : ℕ)) := by ring
 
 /-- **Finite physical variation of the centered Wold primitive.** -/
 theorem summable_abs_xiHeatCassiniOrderedWoldResidual_mul_primeLogGap :

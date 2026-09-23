@@ -24,7 +24,7 @@ noncomputable section
 /-- Static critical majorant on proper prime powers. -/
 def suzukiCheckpointCriticalProperPrimePowerWeight (n : ℕ) : ℝ :=
   if IsProperPrimePow n then
-    1 / (Real.sqrt (n : ℝ) * Real.log (n : ℝ) ^ 2)
+    1 / (Real.sqrt (n : ℝ) * Real.log (n : ℝ) ^ (2 : ℕ))
   else 0
 
 private theorem exp_one_le_three : Real.exp 1 ≤ (3 : ℝ) := by
@@ -36,9 +36,9 @@ private theorem exp_one_le_three : Real.exp 1 ≤ (3 : ℝ) := by
 uses the all-integer integral-test tail after the injective shift `p ↦ p - 2`. -/
 private theorem summable_prime_reciprocal_log_sq :
     Summable (fun p : Nat.Primes =>
-      1 / ((p : ℝ) * Real.log (p : ℝ) ^ 2)) := by
+      1 / ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))) := by
   let g : ℕ → ℝ := fun i =>
-    1 / ((3 + ((i : ℝ) + 1)) * Real.log (3 + ((i : ℝ) + 1)) ^ 2)
+    1 / ((3 + ((i : ℝ) + 1)) * Real.log (3 + ((i : ℝ) + 1)) ^ (2 : ℕ))
   have hg : Summable g :=
     GaloisForLFunctions.HTGeometry.summable_one_div_mul_log_pow_succ
       (p := 1) (by omega) exp_one_le_three
@@ -70,37 +70,37 @@ private theorem summable_prime_reciprocal_log_sq :
         _ = 2 * Real.log (p : ℝ) := by rw [Real.log_mul hp0.ne' hp0.ne']; ring
     have hlogshift0 : 0 ≤ Real.log ((p : ℝ) + 2) :=
       Real.log_nonneg (by linarith)
-    have hlogsq : Real.log ((p : ℝ) + 2) ^ 2 ≤ 4 * Real.log (p : ℝ) ^ 2 := by
+    have hlogsq : Real.log ((p : ℝ) + 2) ^ (2 : ℕ) ≤ 4 * Real.log (p : ℝ) ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (Real.log ((p : ℝ) + 2) - 2 * Real.log (p : ℝ))]
     have hlinear : (p : ℝ) + 2 ≤ 2 * (p : ℝ) := by linarith
-    have hden : ((p : ℝ) + 2) * Real.log ((p : ℝ) + 2) ^ 2 ≤
-        8 * ((p : ℝ) * Real.log (p : ℝ) ^ 2) := by
+    have hden : ((p : ℝ) + 2) * Real.log ((p : ℝ) + 2) ^ (2 : ℕ) ≤
+        8 * ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) := by
       calc
-        ((p : ℝ) + 2) * Real.log ((p : ℝ) + 2) ^ 2 ≤
-            (2 * (p : ℝ)) * (4 * Real.log (p : ℝ) ^ 2) := by gcongr
-        _ = 8 * ((p : ℝ) * Real.log (p : ℝ) ^ 2) := by ring
-    have hden0 : 0 < ((p : ℝ) + 2) * Real.log ((p : ℝ) + 2) ^ 2 := by
+        ((p : ℝ) + 2) * Real.log ((p : ℝ) + 2) ^ (2 : ℕ) ≤
+            (2 * (p : ℝ)) * (4 * Real.log (p : ℝ) ^ (2 : ℕ)) := by gcongr
+        _ = 8 * ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) := by ring
+    have hden0 : 0 < ((p : ℝ) + 2) * Real.log ((p : ℝ) + 2) ^ (2 : ℕ) := by
       have : 0 < Real.log ((p : ℝ) + 2) := Real.log_pos (by linarith)
       positivity
-    change 1 / ((p : ℝ) * Real.log (p : ℝ) ^ 2) ≤
+    change 1 / ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) ≤
       8 * g ((p : ℕ) - 2)
     dsimp only [g]
     rw [Nat.cast_sub p.2.two_le]
     norm_num
     rw [show (3 + (((p : ℝ) - 2) + 1)) = (p : ℝ) + 2 by ring]
-    have hratio : 1 / ((p : ℝ) * Real.log (p : ℝ) ^ 2) ≤
-        8 / (((p : ℝ) + 2) * Real.log ((p : ℝ) + 2) ^ 2) :=
+    have hratio : 1 / ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ)) ≤
+        8 / (((p : ℝ) + 2) * Real.log ((p : ℝ) + 2) ^ (2 : ℕ)) :=
       (div_le_div_iff₀ (by positivity) hden0).mpr (by nlinarith)
     convert hratio using 1 <;> field_simp
 
 private def suzukiCheckpointCriticalProperPrimePowerMajor
     (pk : Nat.Primes × ℕ) : ℝ :=
-  (1 / ((pk.1 : ℝ) * Real.log (pk.1 : ℝ) ^ 2)) * (3 / 4 : ℝ) ^ pk.2
+  (1 / ((pk.1 : ℝ) * Real.log (pk.1 : ℝ) ^ (2 : ℕ))) * (3 / 4 : ℝ) ^ pk.2
 
 private theorem summable_suzukiCheckpointCriticalProperPrimePowerMajor :
     Summable suzukiCheckpointCriticalProperPrimePowerMajor := by
   let f : Nat.Primes → ℝ := fun p =>
-    1 / ((p : ℝ) * Real.log (p : ℝ) ^ 2)
+    1 / ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))
   let g : ℕ → ℝ := fun j => (3 / 4 : ℝ) ^ j
   have hf : Summable f := summable_prime_reciprocal_log_sq
   have hg : Summable g := summable_geometric_of_norm_lt_one (by
@@ -129,17 +129,17 @@ private theorem sqrt_pow_lower_geometric (p j : ℕ) (hp : 2 ≤ p) :
   have hpow : (16 / 9 : ℝ) ^ j ≤ (p : ℝ) ^ j :=
     pow_le_pow_left₀ (by norm_num) hbase j
   calc
-    ((p : ℝ) * (4 / 3 : ℝ) ^ j) ^ 2 =
-        (p : ℝ) ^ 2 * (16 / 9 : ℝ) ^ j := by
+    ((p : ℝ) * (4 / 3 : ℝ) ^ j) ^ (2 : ℕ) =
+        (p : ℝ) ^ (2 : ℕ) * (16 / 9 : ℝ) ^ j := by
       rw [mul_pow]
       congr 1
       calc
-        ((4 / 3 : ℝ) ^ j) ^ 2 = ((4 / 3 : ℝ) ^ 2) ^ j := by
+        ((4 / 3 : ℝ) ^ j) ^ (2 : ℕ) = ((4 / 3 : ℝ) ^ (2 : ℕ)) ^ j := by
           rw [← pow_mul, ← pow_mul]
           congr 1
           omega
         _ = (16 / 9 : ℝ) ^ j := by norm_num
-    _ ≤ (p : ℝ) ^ 2 * (p : ℝ) ^ j :=
+    _ ≤ (p : ℝ) ^ (2 : ℕ) * (p : ℝ) ^ j :=
       mul_le_mul_of_nonneg_left hpow (sq_nonneg _)
     _ = (p : ℝ) ^ (j + 2) := by
       rw [← pow_add]
@@ -168,41 +168,41 @@ private theorem suzukiCheckpointCriticalProperPrimePowerWeight_comp_le_major
       Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) := by
     rw [hlogpow]
     nlinarith
-  have hlogsq : Real.log (p : ℝ) ^ 2 ≤
-      Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ 2 := by
+  have hlogsq : Real.log (p : ℝ) ^ (2 : ℕ) ≤
+      Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg
       (Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) - Real.log (p : ℝ))]
   have hsqrt := sqrt_pow_lower_geometric (p : ℕ) j hp2
   have hsqrt0 : 0 < Real.sqrt ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) :=
     Real.sqrt_pos.mpr hpow0
-  have hden : (p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ 2 ≤
+  have hden : (p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ (2 : ℕ) ≤
       Real.sqrt ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) *
-        Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ 2 := by
+        Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ (2 : ℕ) := by
     have hleft0 : 0 ≤ (p : ℝ) * (4 / 3 : ℝ) ^ j := by positivity
     have hright0 : 0 ≤ Real.sqrt ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) :=
       Real.sqrt_nonneg _
     calc
-      (p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ 2 ≤
-          Real.sqrt ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) * Real.log (p : ℝ) ^ 2 := by
+      (p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ (2 : ℕ) ≤
+          Real.sqrt ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) * Real.log (p : ℝ) ^ (2 : ℕ) := by
         gcongr
       _ ≤ Real.sqrt ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) *
-          Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ 2 := by
+          Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ (2 : ℕ) := by
         gcongr
-  have hden0 : 0 < (p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ 2 := by
+  have hden0 : 0 < (p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ (2 : ℕ) := by
     positivity
   unfold suzukiCheckpointCriticalProperPrimePowerWeight
     suzukiCheckpointCriticalProperPrimePowerMajor properPowMap
   rw [if_pos hproper]
   have hrecip :
       1 / (Real.sqrt ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) *
-        Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ 2) ≤
-        1 / ((p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ 2) :=
+        Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ (2 : ℕ)) ≤
+        1 / ((p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ (2 : ℕ)) :=
     one_div_le_one_div_of_le hden0 hden
   calc
     1 / (Real.sqrt ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) *
-        Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ 2) ≤
-        1 / ((p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ 2) := hrecip
-    _ = (1 / ((p : ℝ) * Real.log (p : ℝ) ^ 2)) * (3 / 4 : ℝ) ^ j := by
+        Real.log ((((p : ℕ) ^ (j + 2) : ℕ) : ℝ)) ^ (2 : ℕ)) ≤
+        1 / ((p : ℝ) * (4 / 3 : ℝ) ^ j * Real.log (p : ℝ) ^ (2 : ℕ)) := hrecip
+    _ = (1 / ((p : ℝ) * Real.log (p : ℝ) ^ (2 : ℕ))) * (3 / 4 : ℝ) ^ j := by
       have hpow : (4 / 3 : ℝ) ^ j * (3 / 4 : ℝ) ^ j = 1 := by
         rw [← mul_pow]
         norm_num
@@ -342,12 +342,12 @@ private theorem abs_properPrimePowerAtomicCell_le
             rw [if_pos hproper]
             have hsqrt : Real.sqrt ((j + 3 : ℕ) : ℝ) ≠ 0 :=
               (Real.sqrt_pos.mpr hn0).ne'
-            have hsquare : Real.sqrt ((j + 3 : ℕ) : ℝ) ^ 2 =
+            have hsquare : Real.sqrt ((j + 3 : ℕ) : ℝ) ^ (2 : ℕ) =
                 ((j + 3 : ℕ) : ℝ) := Real.sq_sqrt hn0.le
             have hcast : ((j + 3 : ℕ) : ℝ) = (j : ℝ) + 3 := by
               push_cast
               ring
-            have hsquare' : Real.sqrt ((j : ℝ) + 3) ^ 2 = (j : ℝ) + 3 := by
+            have hsquare' : Real.sqrt ((j : ℝ) + 3) ^ (2 : ℕ) = (j : ℝ) + 3 := by
               rw [← hcast]
               exact hsquare
             rw [hcast]

@@ -20,7 +20,7 @@ theorem finite_submonoid_of_finite_detOne
     {C : Type u} [Field C]
     (S : Submonoid (Matrix (Fin 2) (Fin 2) C))
     (hright : ∀ x : S, ∃ y : S, x * y = 1)
-    (hdetSq : ∀ x : S, x.1.det ^ 2 = 1)
+    (hdetSq : ∀ x : S, x.1.det ^ (2 : ℕ) = 1)
     (hdetOne : ({x : S | x.1.det = 1} : Set S).Finite) :
     Finite S := by
   classical

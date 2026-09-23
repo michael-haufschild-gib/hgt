@@ -21,12 +21,12 @@ def primitiveRatio (p : CausalPoint) : ℝ :=
 /-- The normalized acceleration coefficient in the original causal kernel. -/
 def accelerationRatio (p : CausalPoint) : ℝ :=
   invariantTimeSecond p.time p.target p.source*(invariant p.time p.target p.source-1)/
-    (invariantTimeFirst p.time p.target p.source)^2
+    (invariantTimeFirst p.time p.target p.source)^(2 : ℕ)
 
 private theorem ratio_forms (p : CausalPoint) :
     primitiveRatio p=(Real.cosh p.time-Real.cosh (p.target-p.source))/Real.sinh p.time ∧
     accelerationRatio p=Real.cosh p.time*(Real.cosh p.time-Real.cosh (p.target-p.source))/
-      (Real.sinh p.time)^2 := by
+      (Real.sinh p.time)^(2 : ℕ) := by
   have hd := (mul_pos (Real.cosh_pos p.target) (Real.cosh_pos p.source)).ne'
   by_cases hs : Real.sinh p.time=0
   · simp [primitiveRatio,accelerationRatio,invariantTimeFirst,hs]
@@ -35,24 +35,24 @@ private theorem ratio_forms (p : CausalPoint) :
     constructor <;> field_simp [hd,hs] <;> ring
 
 private theorem scalar_bounds (c s e : ℝ) (hc : 1 ≤ c) (hs : 0 < s)
-    (he : 1 ≤ e) (hec : e ≤ c) (hcs : c^2-s^2=1) :
+    (he : 1 ≤ e) (hec : e ≤ c) (hcs : c^(2 : ℕ)-s^(2 : ℕ)=1) :
     0 ≤ (c-e)/s ∧ (c-e)/s ≤ 1 ∧
-    0 ≤ c*(c-e)/s^2 ∧ c*(c-e)/s^2 ≤ 1 ∧
-    0 ≤ 3*(c*(c-e)/s^2)^2-((c-e)/s)^2 ∧
-    3*(c*(c-e)/s^2)^2-((c-e)/s)^2 ≤ 2 := by
+    0 ≤ c*(c-e)/s^(2 : ℕ) ∧ c*(c-e)/s^(2 : ℕ) ≤ 1 ∧
+    0 ≤ 3*(c*(c-e)/s^(2 : ℕ))^(2 : ℕ)-((c-e)/s)^(2 : ℕ) ∧
+    3*(c*(c-e)/s^(2 : ℕ))^(2 : ℕ)-((c-e)/s)^(2 : ℕ) ≤ 2 := by
   have hc0 : 0 < c := by linarith
-  have hs2 : 0 < s^2 := sq_pos_of_pos hs
-  have hs4 : 0 < s^4 := pow_pos hs 4
+  have hs2 : 0 < s^(2 : ℕ) := sq_pos_of_pos hs
+  have hs4 : 0 < s^(4 : ℕ) := pow_pos hs 4
   have hce : 0 ≤ c-e := sub_nonneg.mpr hec
   have hcle : c-e ≤ c-1 := by linarith
-  have hcs2 : s^2=(c-1)*(c+1) := by nlinarith
+  have hcs2 : s^(2 : ℕ)=(c-1)*(c+1) := by nlinarith
   have hsmall : c-1 ≤ s := by nlinarith [sq_nonneg (c-1-s)]
-  have hthird : 3*(c*(c-e)/s^2)^2-((c-e)/s)^2=
-      (2*c^2+1)*(c-e)^2/s^4 := by
+  have hthird : 3*(c*(c-e)/s^(2 : ℕ))^(2 : ℕ)-((c-e)/s)^(2 : ℕ)=
+      (2*c^(2 : ℕ)+1)*(c-e)^(2 : ℕ)/s^(4 : ℕ) := by
     field_simp [hs.ne']
     nlinarith [hcs]
-  have hcSq : (c-e)^2 ≤ (c-1)^2 := by nlinarith
-  have hfour : s^4=(c-1)^2*(c+1)^2 := by nlinarith [sq_nonneg (s^2-(c-1)*(c+1))]
+  have hcSq : (c-e)^(2 : ℕ) ≤ (c-1)^(2 : ℕ) := by nlinarith
+  have hfour : s^(4 : ℕ)=(c-1)^(2 : ℕ)*(c+1)^(2 : ℕ) := by nlinarith [sq_nonneg (s^(2 : ℕ)-(c-1)*(c+1))]
   refine ⟨div_nonneg hce hs.le, (div_le_one hs).mpr (hcle.trans hsmall),
     div_nonneg (mul_nonneg hc0.le hce) hs2.le, ?_, ?_, ?_⟩
   · apply (div_le_one hs2).mpr
@@ -61,9 +61,9 @@ private theorem scalar_bounds (c s e : ℝ) (hc : 1 ≤ c) (hs : 0 < s)
     positivity
   · rw [hthird]
     apply (div_le_iff₀ hs4).mpr
-    have hfactor : 0 ≤ 2*c^2+1 := by positivity
+    have hfactor : 0 ≤ 2*c^(2 : ℕ)+1 := by positivity
     have hprod := mul_le_mul_of_nonneg_left hcSq hfactor
-    have hlast : (2*c^2+1)*(c-1)^2 ≤ 2*((c-1)^2*(c+1)^2) := by
+    have hlast : (2*c^(2 : ℕ)+1)*(c-1)^(2 : ℕ) ≤ 2*((c-1)^(2 : ℕ)*(c+1)^(2 : ℕ)) := by
       nlinarith [mul_nonneg (sq_nonneg (c-1)) (show 0 ≤ 4*c+1 by linarith)]
     rw [hfour]
     exact hprod.trans hlast
@@ -72,8 +72,8 @@ private theorem scalar_bounds (c s e : ℝ) (hc : 1 ≤ c) (hs : 0 < s)
 theorem causal_coefficient_bounds (p : CausalPoint) :
     0 ≤ primitiveRatio p ∧ primitiveRatio p ≤ 1 ∧
     0 ≤ accelerationRatio p ∧ accelerationRatio p ≤ 1 ∧
-    0 ≤ 3*(accelerationRatio p)^2-(primitiveRatio p)^2 ∧
-    3*(accelerationRatio p)^2-(primitiveRatio p)^2 ≤ 2 := by
+    0 ≤ 3*(accelerationRatio p)^(2 : ℕ)-(primitiveRatio p)^(2 : ℕ) ∧
+    3*(accelerationRatio p)^(2 : ℕ)-(primitiveRatio p)^(2 : ℕ) ≤ 2 := by
   have ht : 0 ≤ p.time := (abs_nonneg _).trans p.inside
   obtain ⟨hr,hb⟩ := ratio_forms p
   rw [hr,hb]
@@ -113,8 +113,8 @@ private abbrev W (q : XiZeroCopy) (branch : Bool) (x y V : ℝ) :=
   clockDensity q branch (radialUnit x) (radialUnit y) V
 
 private theorem normalized_algebra (j u a b w0 w1 w2 : ℂ) :
-    j^2*u*(w2/a^2-3*b*w1/a^3+(3*b^2-a^2)*w0/a^4)=
-    u*((j/a)^2*w2-3*(j/a)*(b*j/a^2)*w1+(3*(b*j/a^2)^2-(j/a)^2)*w0) := by
+    j^(2 : ℕ)*u*(w2/a^(2 : ℕ)-3*b*w1/a^(3 : ℕ)+(3*b^(2 : ℕ)-a^(2 : ℕ))*w0/a^(4 : ℕ))=
+    u*((j/a)^(2 : ℕ)*w2-3*(j/a)*(b*j/a^(2 : ℕ))*w1+(3*(b*j/a^(2 : ℕ))^(2 : ℕ)-(j/a)^(2 : ℕ))*w0) := by
   by_cases ha : a=0
   · simp [ha]
   · field_simp [ha]
@@ -124,22 +124,22 @@ theorem delay_bulk_normalized (image : Bool) (q : XiZeroCopy) (branch : Bool)
     (x y : Iic (0:ℝ)) (V X k : ℝ) (h : Ici (causalDelayStart image x y)) :
     delayBulk image q branch x y V X k h=
       secondMoment q X k (delayArgument image x y h)*
-        ((primitiveRatio (physicalPoint image x y h):ℂ)^2*deriv (deriv (W q branch x y V)) h-
+        ((primitiveRatio (physicalPoint image x y h):ℂ)^(2 : ℕ)*deriv (deriv (W q branch x y V)) h-
           3*(primitiveRatio (physicalPoint image x y h):ℂ)*
             (accelerationRatio (physicalPoint image x y h):ℂ)*deriv (W q branch x y V) h+
-          (3*(accelerationRatio (physicalPoint image x y h):ℂ)^2-
-            (primitiveRatio (physicalPoint image x y h):ℂ)^2)*W q branch x y V h) := by
+          (3*(accelerationRatio (physicalPoint image x y h):ℂ)^(2 : ℕ)-
+            (primitiveRatio (physicalPoint image x y h):ℂ)^(2 : ℕ))*W q branch x y V h) := by
   let p := physicalPoint image x y h
   have hz : 1 ≤ delayArgument image x y h := invariant_causal p
   have hJ := (primitive_factor q X k ⟨delayArgument image x y h,hz⟩).1
-  change primitive q X k (delayArgument image x y h)=(delayArgument image x y h-1:ℂ)^2*_
+  change primitive q X k (delayArgument image x y h)=(delayArgument image x y h-1:ℂ)^(2 : ℕ)*_
     at hJ
   change primitive q X k (delayArgument image x y h)*
-    (deriv (deriv (W q branch x y V)) h/(delaySlope image x y h:ℂ)^2-
+    (deriv (deriv (W q branch x y V)) h/(delaySlope image x y h:ℂ)^(2 : ℕ)-
       3*(invariantTimeSecond (h-x+y) x (reflected image y):ℂ)*deriv (W q branch x y V) h/
-        (delaySlope image x y h:ℂ)^3+
-      (3*(invariantTimeSecond (h-x+y) x (reflected image y):ℂ)^2-(delaySlope image x y h:ℂ)^2)*
-        W q branch x y V h/(delaySlope image x y h:ℂ)^4)=_
+        (delaySlope image x y h:ℂ)^(3 : ℕ)+
+      (3*(invariantTimeSecond (h-x+y) x (reflected image y):ℂ)^(2 : ℕ)-(delaySlope image x y h:ℂ)^(2 : ℕ))*
+        W q branch x y V h/(delaySlope image x y h:ℂ)^(4 : ℕ))=_
   rw [hJ]
   simp only [primitiveRatio,accelerationRatio,physicalPoint,Complex.ofReal_div,Complex.ofReal_sub,
     Complex.ofReal_mul,Complex.ofReal_pow,Complex.ofReal_one]
@@ -147,10 +147,10 @@ theorem delay_bulk_normalized (image : Bool) (q : XiZeroCopy) (branch : Bool)
 
 private theorem norm_normalized_le (r b : ℝ) (w0 w1 w2 : ℂ)
     (hr0 : 0 ≤ r) (hr1 : r ≤ 1) (hb0 : 0 ≤ b) (hb1 : b ≤ 1)
-    (hc0 : 0 ≤ 3*b^2-r^2) (hc1 : 3*b^2-r^2 ≤ 2) :
-    ‖(r:ℂ)^2*w2-3*(r:ℂ)*(b:ℂ)*w1+(3*(b:ℂ)^2-(r:ℂ)^2)*w0‖ ≤
+    (hc0 : 0 ≤ 3*b^(2 : ℕ)-r^(2 : ℕ)) (hc1 : 3*b^(2 : ℕ)-r^(2 : ℕ) ≤ 2) :
+    ‖(r:ℂ)^(2 : ℕ)*w2-3*(r:ℂ)*(b:ℂ)*w1+(3*(b:ℂ)^(2 : ℕ)-(r:ℂ)^(2 : ℕ))*w0‖ ≤
       ‖w2‖+3*‖w1‖+2*‖w0‖ := by
-  have h1 : ‖(r:ℂ)^2‖ ≤ 1 := by
+  have h1 : ‖(r:ℂ)^(2 : ℕ)‖ ≤ 1 := by
     rw [norm_pow,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hr0]
     nlinarith
   have h2 : ‖(3:ℂ)*(r:ℂ)*(b:ℂ)‖ ≤ 3 := by
@@ -158,12 +158,12 @@ private theorem norm_normalized_le (r b : ℝ) (w0 w1 w2 : ℂ)
       Real.norm_eq_abs,abs_of_nonneg hr0,abs_of_nonneg hb0]
     norm_num
     nlinarith [mul_le_mul hr1 hb1 hb0 (by norm_num : (0:ℝ) ≤ 1)]
-  have h3 : ‖(3:ℂ)*(b:ℂ)^2-(r:ℂ)^2‖ ≤ 2 := by
-    have he : (3:ℂ)*(b:ℂ)^2-(r:ℂ)^2=((3*b^2-r^2:ℝ):ℂ) := by push_cast; rfl
+  have h3 : ‖(3:ℂ)*(b:ℂ)^(2 : ℕ)-(r:ℂ)^(2 : ℕ)‖ ≤ 2 := by
+    have he : (3:ℂ)*(b:ℂ)^(2 : ℕ)-(r:ℂ)^(2 : ℕ)=((3*b^(2 : ℕ)-r^(2 : ℕ):ℝ):ℂ) := by push_cast; rfl
     rw [he,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hc0]
     exact hc1
   calc
-    _ ≤ ‖(r:ℂ)^2*w2‖+‖3*(r:ℂ)*(b:ℂ)*w1‖+‖(3*(b:ℂ)^2-(r:ℂ)^2)*w0‖ :=
+    _ ≤ ‖(r:ℂ)^(2 : ℕ)*w2‖+‖3*(r:ℂ)*(b:ℂ)*w1‖+‖(3*(b:ℂ)^(2 : ℕ)-(r:ℂ)^(2 : ℕ))*w0‖ :=
       (norm_add_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
     _ ≤ 1*‖w2‖+3*‖w1‖+2*‖w0‖ := by
       simp only [norm_mul] at h1 h2 h3 ⊢
@@ -242,7 +242,7 @@ theorem source_moments_bounded (q : XiZeroCopy) (X k : ℝ) (R : Ici (1:ℝ)) :
     constructor <;> dsimp [C] <;> nlinarith [norm_nonneg (firstMoment q X k 1),norm_nonneg (secondMoment q X k 1)]
   · obtain ⟨hb0,hb1⟩ := hbound z
     obtain ⟨hf0,hf1⟩ := primitive_factor q X k ⟨z,z.property.1⟩
-    change primitive q X k z.val=(z.val-1:ℂ)^2*secondMoment q X k z.val at hf0
+    change primitive q X k z.val=(z.val-1:ℂ)^(2 : ℕ)*secondMoment q X k z.val at hf0
     change primitiveFirst q X k z.val=(z.val-1:ℂ)*firstMoment q X k z.val at hf1
     rw [hf0,norm_mul,norm_pow,← Complex.ofReal_one,← Complex.ofReal_sub,Complex.norm_real,Real.norm_eq_abs,
       abs_of_pos (sub_pos.mpr hz)] at hb0
@@ -493,7 +493,7 @@ def horizonSlope (y h : ℝ) : ℝ := Real.exp h*(1-radialUnit y)
 def horizonRatio (image : Bool) (y h : ℝ) : ℝ := 1-Real.exp (horizonStart image y-h)
 
 private theorem radial_limit : Tendsto radialUnit atBot (𝓝 (1:ℝ)) := by
-  have heq : (fun x : ℝ => Real.exp (2*x))=fun x => (Real.exp x)^2 := by
+  have heq : (fun x : ℝ => Real.exp (2*x))=fun x => (Real.exp x)^(2 : ℕ) := by
     funext x
     rw [pow_two,← Real.exp_add]
     congr 1
@@ -582,7 +582,7 @@ private theorem horizon_gap (image : Bool) (y h : ℝ) :
 
 private theorem horizon_ratio_identity (image : Bool) (y : Iic (0:ℝ)) (h : ℝ) :
     (horizonArgument image y h-1)/horizonSlope y h=horizonRatio image y h ∧
-    horizonSlope y h*(horizonArgument image y h-1)/(horizonSlope y h)^2=horizonRatio image y h := by
+    horizonSlope y h*(horizonArgument image y h-1)/(horizonSlope y h)^(2 : ℕ)=horizonRatio image y h := by
   have hw := (sub_pos.mpr (radial_lt_one y)).ne'
   have he := (Real.exp_pos h).ne'
   rw [horizon_gap]
@@ -601,7 +601,7 @@ theorem horizon_ratio_limits (image : Bool) (y : Iic (0:ℝ)) (h : ℝ) :
     Tendsto (fun x => (delayArgument image x y h-1)/delaySlope image x y h) atBot
       (𝓝 (horizonRatio image y h)) ∧
     Tendsto (fun x => invariantTimeSecond (h-x+y) x (reflected image y)*
-      (delayArgument image x y h-1)/(delaySlope image x y h)^2) atBot (𝓝 (horizonRatio image y h)) := by
+      (delayArgument image x y h-1)/(delaySlope image x y h)^(2 : ℕ)) atBot (𝓝 (horizonRatio image y h)) := by
   obtain ⟨hZ,hA,hB⟩ := horizon_geometry_limits image y h
   have hn := (horizonSlope_pos y h).ne'
   obtain ⟨hr,hb⟩ := horizon_ratio_identity image y h
@@ -612,8 +612,8 @@ theorem horizon_ratio_limits (image : Bool) (y : Iic (0:ℝ)) (h : ℝ) :
     rwa [hr] at ht
   · have ht := (hB.mul (hZ.sub_const 1)).div (hA.pow 2) (pow_ne_zero _ hn)
     change Tendsto (fun x => invariantTimeSecond (h-x+y) x (reflected image y)*
-      (delayArgument image x y h-1)/(delaySlope image x y h)^2) atBot
-      (𝓝 (horizonSlope y h*(horizonArgument image y h-1)/(horizonSlope y h)^2)) at ht
+      (delayArgument image x y h-1)/(delaySlope image x y h)^(2 : ℕ)) atBot
+      (𝓝 (horizonSlope y h*(horizonArgument image y h-1)/(horizonSlope y h)^(2 : ℕ))) at ht
     rwa [hb] at ht
 
 /-- The actual clock and both delay derivatives converge to their ORIGINAL compact target
@@ -652,22 +652,22 @@ theorem clock_horizon_limits (q : XiZeroCopy) (branch : Bool) (y : Iic (0:ℝ)) 
   · exact hx2.symm
 
 private theorem moment_quotient (q : XiZeroCopy) (X k : ℝ) (z : Ioi (1:ℝ)) :
-    secondMoment q X k z=primitive q X k z/(z.val-1:ℂ)^2 := by
+    secondMoment q X k z=primitive q X k z/(z.val-1:ℂ)^(2 : ℕ) := by
   have hz : (z.val-1:ℂ) ≠ 0 := by exact_mod_cast (sub_pos.mpr z.property).ne'
   have he := (primitive_factor q X k ⟨z,(show (1:ℝ) < z.val from z.property).le⟩).1
   apply (eq_div_iff (pow_ne_zero _ hz)).mpr
-  change primitive q X k z.val=(z.val-1:ℂ)^2*secondMoment q X k z.val at he
+  change primitive q X k z.val=(z.val-1:ℂ)^(2 : ℕ)*secondMoment q X k z.val at he
   rw [he]
   ring
 
 private theorem moment_continuousAt (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
     ContinuousAt (secondMoment q X k) z := by
   have hn : (z-1:ℂ) ≠ 0 := by exact_mod_cast (sub_pos.mpr hz).ne'
-  have hden : Continuous (fun r : ℝ => (r-1:ℂ)^2) := by fun_prop
+  have hden : Continuous (fun r : ℝ => (r-1:ℂ)^(2 : ℕ)) := by fun_prop
   have ht := ((primitive_derivatives q X k hz).1.continuousAt.div hden.continuousAt
     (pow_ne_zero _ hn)).tendsto
-  change Tendsto (fun r : ℝ => primitive q X k r/(r-1:ℂ)^2) (𝓝 z)
-    (𝓝 (primitive q X k z/(z-1:ℂ)^2)) at ht
+  change Tendsto (fun r : ℝ => primitive q X k r/(r-1:ℂ)^(2 : ℕ)) (𝓝 z)
+    (𝓝 (primitive q X k z/(z-1:ℂ)^(2 : ℕ))) at ht
   rw [← moment_quotient q X k ⟨z,hz⟩] at ht
   exact ht.congr' (by
     filter_upwards [isOpen_Ioi.mem_nhds hz] with r hr
@@ -676,7 +676,7 @@ private theorem moment_continuousAt (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz :
 /-- The literal horizon bulk retains the original source moment and factors the physical
 clock operator as (partial_h-1)(partial_h-2). -/
 def horizonBulk (image : Bool) (q : XiZeroCopy) (branch : Bool) (y V X k h : ℝ) : ℂ :=
-  secondMoment q X k (horizonArgument image y h)*(horizonRatio image y h:ℂ)^2*
+  secondMoment q X k (horizonArgument image y h)*(horizonRatio image y h:ℂ)^(2 : ℕ)*
     (deriv (deriv (clockDensity q branch 1 (radialUnit y) V)) h-
       3*deriv (clockDensity q branch 1 (radialUnit y) V) h+
       2*clockDensity q branch 1 (radialUnit y) V h)
@@ -704,9 +704,9 @@ theorem original_bulk_horizon_limit (image : Bool) (q : XiZeroCopy) (branch : Bo
     (((h3.mul hrc).mul hbc).mul hW1)).add
       (((h3.mul (hbc.pow 2)).sub (hrc.pow 2)).mul hW))
   have he : secondMoment q X k (horizonArgument image y h)*
-      ((horizonRatio image y h:ℂ)^2*deriv (deriv (clockDensity q branch 1 (radialUnit y) V)) h-
+      ((horizonRatio image y h:ℂ)^(2 : ℕ)*deriv (deriv (clockDensity q branch 1 (radialUnit y) V)) h-
         3*(horizonRatio image y h:ℂ)*(horizonRatio image y h:ℂ)*deriv (clockDensity q branch 1 (radialUnit y) V) h+
-        (3*(horizonRatio image y h:ℂ)^2-(horizonRatio image y h:ℂ)^2)*clockDensity q branch 1 (radialUnit y) V h)=
+        (3*(horizonRatio image y h:ℂ)^(2 : ℕ)-(horizonRatio image y h:ℂ)^(2 : ℕ))*clockDensity q branch 1 (radialUnit y) V h)=
       horizonBulk image q branch y V X k h := by unfold horizonBulk; ring
   change Tendsto _ atBot (𝓝 (_)) at ht
   rw [he] at ht

@@ -22,7 +22,7 @@ theorem eventually_liRemoteQuartetGaugedCarrierCoefficient_pos_prefix
     {alpha : ℝ} (halpha : 0 < alpha)
     (hT : Tendsto T l atTop)
     (ha : ∀ᶠ i in l, 0 < a i ∧ a i < 1 / 2)
-    (hsub : Tendsto (fun i => (N i : ℝ) * a i / T i ^ 2) l (nhds 0)) :
+    (hsub : Tendsto (fun i => (N i : ℝ) * a i / T i ^ (2 : ℕ)) l (nhds 0)) :
     ∀ᶠ i in l, ∀ n : ℕ, 1 ≤ n → n ≤ N i →
       0 < liRemoteQuartetGaugedCarrierCoefficient alpha n (a i) (T i) := by
   have hrad := tendsto_liRemoteRadialScale hT ha
@@ -143,7 +143,7 @@ theorem eventually_liRemoteLogPhaseAlignedGaugedCarrierCoefficient_neg
       liRemoteQuartetProfile (liRemoteLogPhaseAlignedDegree (a i) (T i))
           (liRemoteRadialCoordinate (a i) (T i))
           (liRemoteAngularCoordinate (a i) (T i)) /
-        (-2 * liRemoteVisibilityScale (a i) (T i) ^ 4) :=
+        (-2 * liRemoteVisibilityScale (a i) (T i) ^ (4 : ℕ)) :=
     (tendsto_order.1 hnormalized).1 (1 / 2) (by norm_num)
   have hcarrier :=
     eventually_liReflectedGammaCarrierCoefficient_logPhaseAligned_le halpha hT ha
@@ -153,35 +153,35 @@ theorem eventually_liRemoteLogPhaseAlignedGaugedCarrierCoefficient_neg
   filter_upwards [hprofileRatio, hcarrier, hHgt] with i hqi hci hHi
   let H := liRemoteVisibilityScale (a i) (T i)
   have hHpos : 0 < H := by dsimp [H]; linarith
-  have hH4pos : 0 < H ^ 4 := pow_pos hHpos _
-  have hdenneg : -2 * H ^ 4 < 0 := by nlinarith
+  have hH4pos : 0 < H ^ (4 : ℕ) := pow_pos hHpos _
+  have hdenneg : -2 * H ^ (4 : ℕ) < 0 := by nlinarith
   have hquartet :
       liRemoteQuartetProfile (liRemoteLogPhaseAlignedDegree (a i) (T i))
           (liRemoteRadialCoordinate (a i) (T i))
-          (liRemoteAngularCoordinate (a i) (T i)) < -H ^ 4 := by
+          (liRemoteAngularCoordinate (a i) (T i)) < -H ^ (4 : ℕ) := by
     have hm := (lt_div_iff_of_neg hdenneg).mp hqi
     dsimp [H] at hm ⊢
     nlinarith
   have hlog : Real.log H ≤ H := Real.log_le_self hHpos.le
   have hcarrierLt :
       liReflectedGammaCarrierCoefficient alpha
-          (liRemoteLogPhaseAlignedDegree (a i) (T i)) < H ^ 4 := by
+          (liRemoteLogPhaseAlignedDegree (a i) (T i)) < H ^ (4 : ℕ) := by
     dsimp [H] at hci ⊢
-    have hpoly : 60 * H ^ 2 < H ^ 4 := by
-      have hsq : 60 < H ^ 2 := by nlinarith [sq_nonneg H]
+    have hpoly : 60 * H ^ (2 : ℕ) < H ^ (4 : ℕ) := by
+      have hsq : 60 < H ^ (2 : ℕ) := by nlinarith [sq_nonneg H]
       have hm := mul_lt_mul_of_pos_right hsq (sq_pos_of_pos hHpos)
       nlinarith
     calc
       liReflectedGammaCarrierCoefficient alpha
           (liRemoteLogPhaseAlignedDegree (a i) (T i))
           ≤ 60 * (H * Real.log H) := by simpa [H] using hci
-      _ ≤ 60 * H ^ 2 := by nlinarith
-      _ < H ^ 4 := hpoly
+      _ ≤ 60 * H ^ (2 : ℕ) := by nlinarith
+      _ < H ^ (4 : ℕ) := hpoly
   rw [liRemoteQuartetGaugedCarrierCoefficient]
   linarith
 
 /-- Algebraic approximation `T² / a` to the inverse radial visibility scale. -/
-def liRemoteAlgebraicVisibilityScale (a T : ℝ) : ℝ := T ^ 2 / a
+def liRemoteAlgebraicVisibilityScale (a T : ℝ) : ℝ := T ^ (2 : ℕ) / a
 
 theorem tendsto_liRemoteAlgebraicVisibilityScale_atTop
     {ι : Type*} {l : Filter ι} {a T : ι → ℝ}

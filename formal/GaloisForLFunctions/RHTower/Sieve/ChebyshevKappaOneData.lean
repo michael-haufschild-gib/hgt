@@ -77,11 +77,11 @@ theorem exists_cheb_kappa_one_data :
           riemannZeta s ≠ 0)
       ∧ (∀ y ∈ Set.uIcc (-T) T, riemannZeta ((chebLeftTwo T : ℂ) + (y : ℝ) * Complex.I) ≠ 0)
       ∧ (∀ y ∈ Set.Icc (-T) T,
-          ‖zetaLogDerivReg ((chebLeftTwo T : ℂ) + (y : ℝ) * Complex.I)‖ ≤ Cr * Real.log T ^ 2)
+          ‖zetaLogDerivReg ((chebLeftTwo T : ℂ) + (y : ℝ) * Complex.I)‖ ≤ Cr * Real.log T ^ (2 : ℕ))
       ∧ (∀ x ∈ Set.uIoc (chebLeftTwo T) (chebRightTwo T),
-          ‖zetaLogDerivReg ((x : ℂ) + ((T : ℝ) : ℂ) * Complex.I)‖ ≤ Cr * Real.log T ^ 2)
+          ‖zetaLogDerivReg ((x : ℂ) + ((T : ℝ) : ℂ) * Complex.I)‖ ≤ Cr * Real.log T ^ (2 : ℕ))
       ∧ (∀ x ∈ Set.uIoc (chebLeftTwo T) (chebRightTwo T),
-          ‖zetaLogDerivReg ((x : ℂ) + ((-T : ℝ) : ℂ) * Complex.I)‖ ≤ Cr * Real.log T ^ 2) := by
+          ‖zetaLogDerivReg ((x : ℂ) + ((-T : ℝ) : ℂ) * Complex.I)‖ ≤ Cr * Real.log T ^ (2 : ℕ)) := by
   obtain ⟨Cr, L₁, hCr0, hL₁1, hreg⟩ := exists_bound_zetaLogDerivReg_uniform
   obtain ⟨L₂, hL₂1, hzf⟩ := exists_zeta_uniform_kappa_one_zero_free
   refine ⟨Cr, max 8 (max L₁ L₂), hCr0, le_max_left _ _, fun T hT1 hT => ?_⟩

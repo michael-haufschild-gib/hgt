@@ -88,7 +88,7 @@ theorem timeOnset_derivative_pair_bound (v : ℂ) (hv : v.re ≤ 0) :
   obtain ⟨B,hB,hb⟩ := timeOnset_pair_bound v 0 (by simpa using hv)
   obtain ⟨Λ,hΛ,hLam⟩ := exists_bound_deriv_smoothTransition
   obtain ⟨K,hK,hk⟩ := transition_second_bound
-  refine ⟨B+K+2*‖v‖*Λ+‖v‖^2,by positivity,fun u => ?_⟩
+  refine ⟨B+K+2*‖v‖*Λ+‖v‖^(2 : ℕ),by positivity,fun u => ?_⟩
   by_cases hu : u < 0
   · rw [timeOnsetFirst_zero_of_neg v hu,timeOnsetSecond_zero_of_neg v hu]
     simp only [norm_zero,zero_add]
@@ -104,16 +104,16 @@ theorem timeOnset_derivative_pair_bound (v : ℂ) (hv : v.re ≤ 0) :
     rw [Complex.norm_exp,← Real.exp_zero]
     apply Real.exp_le_exp.mpr
     simpa using mul_nonpos_of_nonpos_of_nonneg hv (le_of_not_gt hu)
-  have hD : ‖timeOnsetSecond v u‖ ≤ K+2*‖v‖*Λ+‖v‖^2 := by
+  have hD : ‖timeOnsetSecond v u‖ ≤ K+2*‖v‖*Λ+‖v‖^(2 : ℕ) := by
     unfold timeOnsetSecond
     rw [norm_mul]
     apply (mul_le_mul_of_nonneg_left hE (norm_nonneg _)).trans
     rw [mul_one]
     calc
       _ ≤ ‖((deriv (deriv Real.smoothTransition) u:ℝ):ℂ)‖+
-          ‖2*v*((deriv Real.smoothTransition u:ℝ):ℂ)‖+‖v^2*(Real.smoothTransition u:ℂ)‖ :=
+          ‖2*v*((deriv Real.smoothTransition u:ℝ):ℂ)‖+‖v^(2 : ℕ)*(Real.smoothTransition u:ℂ)‖ :=
         (norm_add_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
-      _ ≤ K+2*‖v‖*Λ+‖v‖^2 := by
+      _ ≤ K+2*‖v‖*Λ+‖v‖^(2 : ℕ) := by
         simp only [norm_mul,norm_pow,Complex.norm_ofNat]
         exact add_le_add (add_le_add hχ''
           (mul_le_mul_of_nonneg_left hχ' (by positivity)))
@@ -127,7 +127,7 @@ the cap calculation. -/
 private theorem timeOnsetSecond_shift (v : ℂ) (c u : ℝ) :
     timeOnsetSecond v u = Complex.exp (-(c:ℂ)*(u:ℂ))*
       (timeOnsetSecond (v+c) u-2*c*timeOnsetFirst (v+c) u+
-        (c:ℂ)^2*timeOnset (v+c) u) := by
+        (c:ℂ)^(2 : ℕ)*timeOnset (v+c) u) := by
   unfold timeOnsetSecond timeOnsetFirst timeOnset
   have he : Complex.exp (-(c:ℂ)*(u:ℂ))*Complex.exp ((v+c)*(u:ℂ)) =
       Complex.exp (v*(u:ℂ)) := by
@@ -137,7 +137,7 @@ private theorem timeOnsetSecond_shift (v : ℂ) (c u : ℝ) :
   calc
     _ = Complex.exp (v*(u:ℂ))*
         (((deriv (deriv Real.smoothTransition) u:ℝ):ℂ)+
-          2*v*((deriv Real.smoothTransition u:ℝ):ℂ)+v^2*(Real.smoothTransition u:ℂ)) := by ring
+          2*v*((deriv Real.smoothTransition u:ℝ):ℂ)+v^(2 : ℕ)*(Real.smoothTransition u:ℂ)) := by ring
     _ = _ := by rw [← he]; ring
 
 /-- The first two literal onset derivatives retain every nonnegative decay
@@ -152,7 +152,7 @@ theorem timeOnset_derivative_pair_decay (v : ℂ) (c : ℝ)
   obtain ⟨B,hB,hb⟩ := timeOnset_pair_bound v c hv
   obtain ⟨D,hD,hd⟩ := timeOnset_derivative_pair_bound (v+c) hvc
   obtain ⟨A,hA,ha⟩ := timeOnset_pair_bound (v+c) 0 (by simpa using hvc)
-  refine ⟨B+D+2*c*D+c^2*A,by positivity,fun u => ?_⟩
+  refine ⟨B+D+2*c*D+c^(2 : ℕ)*A,by positivity,fun u => ?_⟩
   have h0 : ‖timeOnset (v+c) u‖ ≤ A := by
     have h := ha u
     simp only [neg_zero,zero_mul,Real.exp_zero,mul_one] at h
@@ -162,16 +162,16 @@ theorem timeOnset_derivative_pair_decay (v : ℂ) (c : ℝ)
   have h2 : ‖timeOnsetSecond (v+c) u‖ ≤ D := by
     linarith [hd u,norm_nonneg (timeOnsetFirst (v+c) u)]
   have hSecond : ‖timeOnsetSecond v u‖ ≤
-      Real.exp (-c*u)*(D+2*c*D+c^2*A) := by
+      Real.exp (-c*u)*(D+2*c*D+c^(2 : ℕ)*A) := by
     rw [timeOnsetSecond_shift v c u,norm_mul,Complex.norm_exp]
     have he : (-(c:ℂ)*(u:ℂ)).re = -c*u := by simp
     rw [he]
     apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
     calc
       _ ≤ ‖timeOnsetSecond (v+c) u‖+‖2*(c:ℂ)*timeOnsetFirst (v+c) u‖+
-          ‖(c:ℂ)^2*timeOnset (v+c) u‖ :=
+          ‖(c:ℂ)^(2 : ℕ)*timeOnset (v+c) u‖ :=
         (norm_add_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
-      _ ≤ D+2*c*D+c^2*A := by
+      _ ≤ D+2*c*D+c^(2 : ℕ)*A := by
         simp only [norm_mul,norm_pow,Complex.norm_ofNat,Complex.norm_real,
           Real.norm_eq_abs,abs_of_nonneg hc]
         gcongr
@@ -187,7 +187,7 @@ theorem timeOnset_second_derivative_pair_bound (v : ℂ) (hv : v.re ≤ 0) :
   obtain ⟨Λ,hΛ,hLam⟩ := exists_bound_deriv_smoothTransition
   obtain ⟨K,hK,hk⟩ := transition_second_bound
   obtain ⟨L,hL,hℓ⟩ := transition_third_bound
-  refine ⟨B+L+3*‖v‖*K+3*‖v‖^2*Λ+‖v‖^3,by positivity,fun u => ?_⟩
+  refine ⟨B+L+3*‖v‖*K+3*‖v‖^(2 : ℕ)*Λ+‖v‖^(3 : ℕ),by positivity,fun u => ?_⟩
   by_cases hu : u < 0
   · rw [timeOnsetSecond_zero_of_neg v hu,timeOnsetThird_zero_of_neg v hu]
     simp only [norm_zero,zero_add]
@@ -205,7 +205,7 @@ theorem timeOnset_second_derivative_pair_bound (v : ℂ) (hv : v.re ≤ 0) :
     rw [Complex.norm_exp,← Real.exp_zero]
     apply Real.exp_le_exp.mpr
     simpa using mul_nonpos_of_nonpos_of_nonneg hv (le_of_not_gt hu)
-  have hThird : ‖timeOnsetThird v u‖ ≤ L+3*‖v‖*K+3*‖v‖^2*Λ+‖v‖^3 := by
+  have hThird : ‖timeOnsetThird v u‖ ≤ L+3*‖v‖*K+3*‖v‖^(2 : ℕ)*Λ+‖v‖^(3 : ℕ) := by
     unfold timeOnsetThird
     rw [norm_mul]
     apply (mul_le_mul_of_nonneg_left hE (norm_nonneg _)).trans
@@ -213,11 +213,11 @@ theorem timeOnset_second_derivative_pair_bound (v : ℂ) (hv : v.re ≤ 0) :
     calc
       _ ≤ (‖((deriv (deriv (deriv Real.smoothTransition)) u:ℝ):ℂ)‖+
           ‖3*v*((deriv (deriv Real.smoothTransition) u:ℝ):ℂ)‖+
-          ‖3*v^2*((deriv Real.smoothTransition u:ℝ):ℂ)‖)+
-          ‖v^3*(Real.smoothTransition u:ℂ)‖ := by
+          ‖3*v^(2 : ℕ)*((deriv Real.smoothTransition u:ℝ):ℂ)‖)+
+          ‖v^(3 : ℕ)*(Real.smoothTransition u:ℂ)‖ := by
         exact (norm_add_le _ _).trans ((add_le_add (norm_add_le _ _) le_rfl).trans
           (add_le_add (add_le_add (norm_add_le _ _) le_rfl) le_rfl))
-      _ ≤ L+3*‖v‖*K+3*‖v‖^2*Λ+‖v‖^3 := by
+      _ ≤ L+3*‖v‖*K+3*‖v‖^(2 : ℕ)*Λ+‖v‖^(3 : ℕ) := by
         simp only [norm_mul,norm_pow,Complex.norm_ofNat]
         gcongr
         exact mul_le_of_le_one_right (by positivity) hχ

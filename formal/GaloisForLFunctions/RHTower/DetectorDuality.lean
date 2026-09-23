@@ -86,7 +86,7 @@ theorem norm_inner_le_norm_mul_infDist_span (S : Set H) (x w : H)
 
 /-- The component of `x` orthogonal to a subspace pairs with `x` at its own squared norm. -/
 theorem inner_starProjection_orthogonal_self (K : Submodule 𝕜 H) (x : H) :
-    inner 𝕜 (Kᗮ.starProjection x) x = ((‖Kᗮ.starProjection x‖ ^ 2 : ℝ) : 𝕜) := by
+    inner 𝕜 (Kᗮ.starProjection x) x = ((‖Kᗮ.starProjection x‖ ^ (2 : ℕ) : ℝ) : 𝕜) := by
   have hPmem : Kᗮ.starProjection x ∈ Kᗮ := Submodule.starProjection_apply_mem _ x
   have hsub : x - Kᗮ.starProjection x ∈ Kᗮᗮ := Submodule.sub_starProjection_mem_orthogonal x
   have hz : inner 𝕜 (Kᗮ.starProjection x) (x - Kᗮ.starProjection x) = 0 :=
@@ -122,7 +122,7 @@ theorem infDist_span_eq_norm_starProjection_orthogonal (S : Set H) (x : H) :
       have hbound := norm_inner_le_norm_mul_infDist_span S x P
         ((mem_orthogonal_span_iff S P).1 hPmem)
       rw [inner_starProjection_orthogonal_self K x, RCLike.norm_ofReal,
-        abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖P‖ ^ 2), sq] at hbound
+        abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖P‖ ^ (2 : ℕ)), sq] at hbound
       exact le_of_mul_le_mul_left hbound hppos
 
 /-- **The bound is attained.**  Some vector orthogonal to the family, of norm at most one, pairs with the
@@ -151,7 +151,7 @@ theorem exists_detector_norm_inner_eq_infDist_span (S : Set H) (x : H) :
     · rw [inner_smul_left, inner_starProjection_orthogonal_self K x, RCLike.conj_ofReal,
         norm_mul, RCLike.norm_ofReal, RCLike.norm_ofReal,
         abs_of_pos (by positivity : (0 : ℝ) < ‖P‖⁻¹),
-        abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖P‖ ^ 2), hdual, sq, ← mul_assoc,
+        abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖P‖ ^ (2 : ℕ)), hdual, sq, ← mul_assoc,
         inv_mul_cancel₀ (ne_of_gt hppos), one_mul]
 
 /-- **Approximability is the nonexistence of a detector.** -/
@@ -239,8 +239,8 @@ theorem exists_detector_norm_inner_eq_infDist_range {I : Type*} (v : I → H) (x
 /-- **The exact mass split.**  The squared distance to the span and the squared norm of the component in
 the closed span `Kᗮᗮ` add up to the squared norm of the target. -/
 theorem infDist_span_sq_add_norm_sq_starProjection (S : Set H) (x : H) :
-    Metric.infDist x (Submodule.span 𝕜 S : Set H) ^ 2
-      + ‖(Submodule.span 𝕜 S)ᗮᗮ.starProjection x‖ ^ 2 = ‖x‖ ^ 2 := by
+    Metric.infDist x (Submodule.span 𝕜 S : Set H) ^ (2 : ℕ)
+      + ‖(Submodule.span 𝕜 S)ᗮᗮ.starProjection x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
   rw [infDist_span_eq_norm_starProjection_orthogonal]
   exact (Submodule.norm_sq_eq_add_norm_sq_starProjection x (Submodule.span 𝕜 S)ᗮ).symm
 
@@ -258,8 +258,8 @@ theorem bdDist_eq_norm_starProjection {I : Type*} (θ : I → ℝ) :
 /-- **The exact explained-mass identity.**  The target is a unit vector, so the squared Báez-Duarte
 distance is exactly the mass of `1/u` that the generators fail to explain. -/
 theorem bdDist_sq_add_explained_mass {I : Type*} (θ : I → ℝ) :
-    bdDist θ ^ 2
-      + ‖(Submodule.span ℂ (Set.range fun i : I => bdGen (θ i)))ᗮᗮ.starProjection bdTarget‖ ^ 2
+    bdDist θ ^ (2 : ℕ)
+      + ‖(Submodule.span ℂ (Set.range fun i : I => bdGen (θ i)))ᗮᗮ.starProjection bdTarget‖ ^ (2 : ℕ)
         = 1 := by
   have h := infDist_span_sq_add_norm_sq_starProjection (𝕜 := ℂ)
     (Set.range fun i : I => bdGen (θ i)) bdTarget

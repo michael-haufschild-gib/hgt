@@ -8,11 +8,11 @@ degree `k`.  The first natural objection is functional-equation reflection: perh
 opposite nodes `± log p` turns that finite approximation into a compatible source.
 
 This file gives the exact answer.  Antisymmetric evaluation on each reflected pair kills every even
-degree, while its odd degree `2j+1` is a Vandermonde moment at the squared node `(log p)^2`.
+degree, while its odd degree `2j+1` is a Vandermonde moment at the squared node `(log p)^(2 : ℕ)`.
 Consequently, `k` distinct reflected prime pairs uniquely match the derivation at every degree
 below `2k+1`.  The first omitted odd defect is not merely nonzero; it is exactly
 
-`-∏ i, (-(log p_i)^2)`.
+`-∏ i, (-(log p_i)^(2 : ℕ))`.
 
 Functional-equation symmetry therefore doubles the finite matching depth but does not produce a
 compatible finite source.  Moreover, a packet cannot be extended by appending one pair while
@@ -43,7 +43,7 @@ theorem fePairedMoment_even {k : ℕ} (r a : Fin k → ℂ) (j : ℕ) :
 
 theorem fePairedMoment_odd_eq {k : ℕ} (r a : Fin k → ℂ) (j : ℕ) :
     fePairedMoment r a (2 * j + 1) =
-      ∑ i : Fin k, (2 * a i * r i) * (r i ^ 2) ^ j := by
+      ∑ i : Fin k, (2 * a i * r i) * (r i ^ (2 : ℕ)) ^ j := by
   classical
   unfold fePairedMoment
   apply Finset.sum_congr rfl
@@ -54,9 +54,9 @@ theorem fePairedMoment_odd_eq {k : ℕ} (r a : Fin k → ℂ) (j : ℕ) :
 /-- Distinct positive natural labels have distinct squared positive logarithms. -/
 theorem log_sq_nat_injective {k : ℕ} (p : Fin k → ℕ)
     (hp : ∀ i, 1 < p i) (hpinj : Function.Injective p) :
-    Function.Injective (fun i => (Real.log (p i) : ℂ) ^ 2) := by
+    Function.Injective (fun i => (Real.log (p i) : ℂ) ^ (2 : ℕ)) := by
   intro i j hij
-  have hsqR : Real.log (p i) ^ 2 = Real.log (p j) ^ 2 := by
+  have hsqR : Real.log (p i) ^ (2 : ℕ) = Real.log (p j) ^ (2 : ℕ) := by
     have h := congrArg Complex.re hij
     simpa only [pow_two, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
       mul_zero, sub_zero] using h
@@ -77,7 +77,7 @@ theorem existsUnique_fePairedPrimeDerivationInterpolation {k : ℕ}
       fePairedMoment (fun i => (Real.log (p i) : ℂ)) a (2 * (j : ℕ) + 1) =
         archimedeanDerivationMoment (2 * (j : ℕ) + 1) := by
   obtain ⟨a, ha, hua⟩ := existsUnique_weightedFiniteMoments
-    (fun i => (Real.log (p i) : ℂ) ^ 2)
+    (fun i => (Real.log (p i) : ℂ) ^ (2 : ℕ))
     (fun i => 2 * (Real.log (p i) : ℂ))
     (log_sq_nat_injective p hp hpinj)
     (fun i => mul_ne_zero (by norm_num)
@@ -209,12 +209,12 @@ theorem fePairedPrimeDerivationInterpolation_firstOmitted_eq {k : ℕ}
         archimedeanDerivationMoment (2 * (j : ℕ) + 1)) :
     fePairedMoment (fun i => (Real.log (p i) : ℂ)) a (2 * k + 1) -
         archimedeanDerivationMoment (2 * k + 1) =
-      -(((negativeNodePolynomial (fun i => Real.log (p i) ^ 2)).eval
+      -(((negativeNodePolynomial (fun i => Real.log (p i) ^ (2 : ℕ))).eval
         (0 : ℝ) : ℝ) : ℂ) := by
   have hmom : ∀ j : Fin k,
       (∑ i : Fin k,
         (2 * a i * (Real.log (p i) : ℂ)) *
-          ((Real.log (p i) ^ 2 : ℝ) : ℂ) ^ (j : ℕ)) =
+          ((Real.log (p i) ^ (2 : ℕ) : ℝ) : ℂ) ^ (j : ℕ)) =
         originValueMoment (j : ℕ) := by
     intro j
     have hj := hmatch j
@@ -222,10 +222,10 @@ theorem fePairedPrimeDerivationInterpolation_firstOmitted_eq {k : ℕ}
     calc
       (∑ i : Fin k,
           (2 * a i * (Real.log (p i) : ℂ)) *
-            ((Real.log (p i) ^ 2 : ℝ) : ℂ) ^ (j : ℕ)) =
+            ((Real.log (p i) ^ (2 : ℕ) : ℝ) : ℂ) ^ (j : ℕ)) =
           ∑ i : Fin k,
             (2 * a i * (Real.log (p i) : ℂ)) *
-              ((Real.log (p i) : ℂ) ^ 2) ^ (j : ℕ) := by
+              ((Real.log (p i) : ℂ) ^ (2 : ℕ)) ^ (j : ℕ) := by
         apply Finset.sum_congr rfl
         intro i _
         congr 2
@@ -234,7 +234,7 @@ theorem fePairedPrimeDerivationInterpolation_firstOmitted_eq {k : ℕ}
       _ = originValueMoment (j : ℕ) :=
         archimedeanDerivationMoment_odd_eq_originValueMoment (j : ℕ)
   have hdef := finiteOriginValueInterpolation_nextOrderDefect_eq hk
-    (fun i => Real.log (p i) ^ 2)
+    (fun i => Real.log (p i) ^ (2 : ℕ))
     (fun i => 2 * a i * (Real.log (p i) : ℂ)) hmom
   rw [fePairedMoment_odd_eq]
   have htarget : archimedeanDerivationMoment (2 * k + 1) = 0 := by
@@ -271,7 +271,7 @@ theorem fePairedPrimeDerivationInterpolation_firstOmitted_eq_neg_prod {k : ℕ}
         archimedeanDerivationMoment (2 * (j : ℕ) + 1)) :
     fePairedMoment (fun i => (Real.log (p i) : ℂ)) a (2 * k + 1) -
         archimedeanDerivationMoment (2 * k + 1) =
-      -(((∏ i : Fin k, -(Real.log (p i) ^ 2)) : ℝ) : ℂ) := by
+      -(((∏ i : Fin k, -(Real.log (p i) ^ (2 : ℕ))) : ℝ) : ℂ) := by
   rw [fePairedPrimeDerivationInterpolation_firstOmitted_eq hk p a hmatch,
     negativeNodePolynomial_eval_zero_eq_prod_neg]
 
@@ -288,11 +288,11 @@ theorem fePairedPrimeDerivationInterpolation_firstOmitted_ne {k : ℕ}
   have hdef := fePairedPrimeDerivationInterpolation_firstOmitted_eq hk p a hmatch
   rw [heq, sub_self] at hdef
   have hnode :
-      (negativeNodePolynomial (fun i => Real.log (p i) ^ 2)).eval 0 ≠ 0 :=
+      (negativeNodePolynomial (fun i => Real.log (p i) ^ (2 : ℕ))).eval 0 ≠ 0 :=
     negativeNodePolynomial_eval_zero_ne_zero _ fun i =>
       pow_ne_zero 2 (Real.log_pos (by exact_mod_cast hp i)).ne'
   have hrhs :
-      -(((negativeNodePolynomial (fun i => Real.log (p i) ^ 2)).eval
+      -(((negativeNodePolynomial (fun i => Real.log (p i) ^ (2 : ℕ))).eval
         (0 : ℝ) : ℝ) : ℂ) ≠ 0 :=
     neg_ne_zero.mpr (Complex.ofReal_ne_zero.mpr hnode)
   exact hrhs hdef.symm
@@ -340,7 +340,7 @@ theorem existsUnique_fePairedPrimeDerivationInterpolation_with_firstOmittedDefec
           archimedeanDerivationMoment n) ∧
       fePairedMoment (fun i => (Real.log (p i) : ℂ)) a (2 * k + 1) -
           archimedeanDerivationMoment (2 * k + 1) =
-        -(((∏ i : Fin k, -(Real.log (p i) ^ 2)) : ℝ) : ℂ) ∧
+        -(((∏ i : Fin k, -(Real.log (p i) ^ (2 : ℕ))) : ℝ) : ℂ) ∧
       fePairedMoment (fun i => (Real.log (p i) : ℂ)) a (2 * k + 1) ≠
         archimedeanDerivationMoment (2 * k + 1) := by
   obtain ⟨a, ha, hua⟩ :=
@@ -396,10 +396,10 @@ theorem no_fePairedPrimeDerivationInterpolation_coefficientPreserving_extension 
   have holdk :
       (∑ i : Fin k,
         (2 * b i.castSucc * (Real.log (p i.castSucc) : ℂ)) *
-          ((Real.log (p i.castSucc) : ℂ) ^ 2) ^ k) =
+          ((Real.log (p i.castSucc) : ℂ) ^ (2 : ℕ)) ^ k) =
         ∑ i : Fin k,
           (2 * a i * (Real.log (p i.castSucc) : ℂ)) *
-            ((Real.log (p i.castSucc) : ℂ) ^ 2) ^ k := by
+            ((Real.log (p i.castSucc) : ℂ) ^ (2 : ℕ)) ^ k := by
     apply Finset.sum_congr rfl
     intro i _
     rw [hrestrict]

@@ -57,7 +57,7 @@ theorem kloostermanSameModulusGram_Icc_eq_ramanujanMain_add_remainder
 theorem norm_kloostermanSameModulusRemainderGram_le
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ) (n k : ℕ) :
     ‖kloostermanSameModulusRemainderGram M Q w n k‖ ≤
-      ∑ q ∈ Q, ‖w q‖ ^ 2 *
+      ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
         (((q + 1 : ℕ) : ℝ) * Nat.totient (q + 1)) := by
   calc
     ‖kloostermanSameModulusRemainderGram M Q w n k‖ ≤
@@ -66,14 +66,14 @@ theorem norm_kloostermanSameModulusRemainderGram_le
             (Int.cast (n : ℤ)) (Int.cast (k : ℤ)))‖ := by
       unfold kloostermanSameModulusRemainderGram
       exact norm_sum_le _ _
-    _ = ∑ q ∈ Q, ‖w q‖ ^ 2 *
+    _ = ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
           ‖kloostermanIntervalColumnRemainder M (q + 1)
             (Int.cast (n : ℤ)) (Int.cast (k : ℤ))‖ := by
       apply Finset.sum_congr rfl
       intro q hq
       rw [norm_mul, norm_star, norm_mul]
       ring
-    _ ≤ ∑ q ∈ Q, ‖w q‖ ^ 2 *
+    _ ≤ ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
         (((q + 1 : ℕ) : ℝ) * Nat.totient (q + 1)) := by
       apply Finset.sum_le_sum
       intro q hq
@@ -157,7 +157,7 @@ theorem ofReal_sum_norm_kloostermanIntegerKernelTransform_sq_eq_ramanujan_add_re
     (M : ℕ) (Q : Finset ℕ) (w : ℕ → ℂ)
     (B : Finset ℕ) (b : ℕ → ℂ) :
     ((∑ m ∈ Finset.Icc 1 M,
-      ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 : ℝ) : ℂ) =
+      ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       kloostermanSameModulusRamanujanMainQuadratic M Q w B b +
         kloostermanSameModulusRemainderQuadratic M Q w B b +
           kloostermanDistinctModulusTerminalGramQuadratic M Q w B b := by
@@ -182,7 +182,7 @@ theorem norm_kloostermanSameModulusRemainderOffDiagonal_le
     (B : Finset ℕ) (b : ℕ → ℂ) :
     ‖kloostermanSameModulusRemainderOffDiagonal M Q w B b‖ ≤
       ∑ n ∈ B, ‖b n‖ * ∑ k ∈ B.erase n, ‖b k‖ *
-        ∑ q ∈ Q, ‖w q‖ ^ 2 *
+        ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
           (((q + 1 : ℕ) : ℝ) * Nat.totient (q + 1)) := by
   calc
     ‖kloostermanSameModulusRemainderOffDiagonal M Q w B b‖ ≤
@@ -210,7 +210,7 @@ theorem norm_kloostermanSameModulusRemainderOffDiagonal_le
       intro k hk
       rw [norm_mul]
     _ ≤ ∑ n ∈ B, ‖b n‖ * ∑ k ∈ B.erase n, ‖b k‖ *
-        ∑ q ∈ Q, ‖w q‖ ^ 2 *
+        ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) *
           (((q + 1 : ℕ) : ℝ) * Nat.totient (q + 1)) := by
       apply Finset.sum_le_sum
       intro n hn

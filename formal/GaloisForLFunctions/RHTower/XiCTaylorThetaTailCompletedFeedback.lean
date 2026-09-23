@@ -86,13 +86,13 @@ theorem xiCTaylorPolynomial_oddCutoff_eval_sum (d : ℕ) (z : ℂ) :
           (-1 : ℂ) ^ k * z ^ (2 * k)) := by
   rw [xiCTaylorPolynomial_eval, xiCTaylorApprox_oddCutoff_eq_evenMagnitude_eval]
   rw [xiCTaylorEvenMagnitudePolynomial]
-  rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+  rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
       (∑ k ∈ Finset.range (d + 1),
         C (thetaCuspRawEvenMoment k / (2 * k).factorial) * X ^ k) =
       ∑ k ∈ Finset.range (d + 1),
-        eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+        eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
           (C (thetaCuspRawEvenMoment k / (2 * k).factorial) * X ^ k) by
-    change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ 2))
+    change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)))
         (∑ k ∈ Finset.range (d + 1),
           C (thetaCuspRawEvenMoment k / (2 * k).factorial) * X ^ k) = _
     rw [map_sum]
@@ -247,12 +247,12 @@ theorem integrableOn_thetaCuspFullSource_mul_tailSecondCoreAtom
   rw [show (fun x : ℝ => (thetaCuspFullSource x : ℂ) *
       thetaCuspTailSecondCoreAtom d z x) =
       fun x : ℝ => (thetaCuspFullSource x : ℂ) -
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           ((thetaCuspFullSource x : ℂ) * thetaCuspTailSecondSection d z x) by
     funext x
     unfold thetaCuspTailSecondCoreAtom
     ring]
-  exact hbase.sub (hsection.const_mul (z ^ 2 + 1 / 4))
+  exact hbase.sub (hsection.const_mul (z ^ (2 : ℕ) + 1 / 4))
 
 theorem integrableOn_thetaCuspFullSource_mul_tailSecondCoreAtomDerivative
     (d : ℕ) (z : ℂ) :
@@ -265,40 +265,40 @@ theorem integrableOn_thetaCuspFullSource_mul_tailSecondCoreAtomDerivative
       thetaCuspTailSecondCoreAtomDerivative d z x) =
       fun x : ℝ => (-2 * z) *
           ((thetaCuspFullSource x : ℂ) * thetaCuspTailSecondSection d z x) -
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           ((thetaCuspFullSource x : ℂ) *
             thetaCuspTailSecondSectionDerivative d z x) by
     funext x
     unfold thetaCuspTailSecondCoreAtomDerivative
     ring]
-  exact (hs.const_mul (-2 * z)).sub (hsd.const_mul (z ^ 2 + 1 / 4))
+  exact (hs.const_mul (-2 * z)).sub (hsd.const_mul (z ^ (2 : ℕ) + 1 / 4))
 
 /-- Differentiated completion identity for one finite core atom. -/
 theorem sq_mul_tailSecondCoreAtomDerivative_add
     (d : ℕ) (z : ℂ) (x : ℝ) :
-    z ^ 2 * thetaCuspTailSecondCoreAtomDerivative d z x +
+    z ^ (2 : ℕ) * thetaCuspTailSecondCoreAtomDerivative d z x +
         2 * z * thetaCuspTailSecondCoreAtom d z x =
-      (z ^ 2 + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
+      (z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
         2 * z * truncatedCosineSection (d + 1) z x := by
   let f : ℂ → ℂ := fun w =>
-    w ^ 2 * thetaCuspTailSecondCoreAtom d w x
+    w ^ (2 : ℕ) * thetaCuspTailSecondCoreAtom d w x
   let g : ℂ → ℂ := fun w =>
-    (w ^ 2 + 1 / 4) * truncatedCosineSection (d + 1) w x - 1 / 4
+    (w ^ (2 : ℕ) + 1 / 4) * truncatedCosineSection (d + 1) w x - 1 / 4
   have hfun : f = g := by
     funext w
     exact sq_mul_thetaCuspTailSecondCoreAtom_eq_completion_mul_cosine_sub d w x
   have hf : HasDerivAt f
-      (z ^ 2 * thetaCuspTailSecondCoreAtomDerivative d z x +
+      (z ^ (2 : ℕ) * thetaCuspTailSecondCoreAtomDerivative d z x +
         2 * z * thetaCuspTailSecondCoreAtom d z x) z := by
     dsimp only [f]
     simpa only [Pi.mul_apply] using!
       ((hasDerivAt_pow 2 z).mul
         (hasDerivAt_thetaCuspTailSecondCoreAtom d z x)).congr_deriv (by ring)
   have hg : HasDerivAt g
-      ((z ^ 2 + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
+      ((z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
         2 * z * truncatedCosineSection (d + 1) z x) z := by
     dsimp only [g]
-    have hquad : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
+    have hquad : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 1 / 4) (2 * z) z := by
       simpa only [Pi.add_apply] using!
         ((hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ)).congr_deriv (by ring)
     simpa only [Pi.mul_apply, Pi.sub_apply] using!
@@ -310,14 +310,14 @@ theorem sq_mul_tailSecondCoreAtomDerivative_add
 /-- Integrated derivative balance: the completed core atom and the next Xi Taylor section carry
 the same finite derivative data after the completion multiplier. -/
 theorem completedFullSource_coreAtom_derivative_balance (d : ℕ) (z : ℂ) :
-    z ^ 2 *
+    z ^ (2 : ℕ) *
         (2 * ∫ x : ℝ in Ioi 0,
           (thetaCuspFullSource x : ℂ) *
             thetaCuspTailSecondCoreAtomDerivative d z x) +
       2 * z *
         (2 * ∫ x : ℝ in Ioi 0,
           (thetaCuspFullSource x : ℂ) * thetaCuspTailSecondCoreAtom d z x) =
-      (z ^ 2 + 1 / 4) *
+      (z ^ (2 : ℕ) + 1 / 4) *
           (xiCTaylorPolynomial (2 * (d + 1) + 1)).derivative.eval z +
         2 * z * xiCTaylorApprox (2 * (d + 1) + 1) z := by
   have hcore := integrableOn_thetaCuspFullSource_mul_tailSecondCoreAtom d z
@@ -330,44 +330,44 @@ theorem completedFullSource_coreAtom_derivative_balance (d : ℕ) (z : ℂ) :
     xiCTaylorApprox_oddCutoff_eq_fullSource_truncatedCosine (d + 1) z]
   have hpoint : (fun x : ℝ =>
       (thetaCuspFullSource x : ℂ) *
-        (z ^ 2 * thetaCuspTailSecondCoreAtomDerivative d z x +
+        (z ^ (2 : ℕ) * thetaCuspTailSecondCoreAtomDerivative d z x +
           2 * z * thetaCuspTailSecondCoreAtom d z x)) =
       fun x : ℝ =>
         (thetaCuspFullSource x : ℂ) *
-          ((z ^ 2 + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
+          ((z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
             2 * z * truncatedCosineSection (d + 1) z x) := by
     funext x
     rw [sq_mul_tailSecondCoreAtomDerivative_add]
   have hint :
       (∫ x : ℝ in Ioi 0,
         (thetaCuspFullSource x : ℂ) *
-          (z ^ 2 * thetaCuspTailSecondCoreAtomDerivative d z x +
+          (z ^ (2 : ℕ) * thetaCuspTailSecondCoreAtomDerivative d z x +
             2 * z * thetaCuspTailSecondCoreAtom d z x)) =
         ∫ x : ℝ in Ioi 0,
           (thetaCuspFullSource x : ℂ) *
-            ((z ^ 2 + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
+            ((z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
               2 * z * truncatedCosineSection (d + 1) z x) := by
     apply MeasureTheory.integral_congr_ae
     exact Filter.Eventually.of_forall fun x => congrFun hpoint x
   rw [show (fun x : ℝ => (thetaCuspFullSource x : ℂ) *
-      (z ^ 2 * thetaCuspTailSecondCoreAtomDerivative d z x +
+      (z ^ (2 : ℕ) * thetaCuspTailSecondCoreAtomDerivative d z x +
         2 * z * thetaCuspTailSecondCoreAtom d z x)) =
-      fun x : ℝ => z ^ 2 * ((thetaCuspFullSource x : ℂ) *
+      fun x : ℝ => z ^ (2 : ℕ) * ((thetaCuspFullSource x : ℂ) *
           thetaCuspTailSecondCoreAtomDerivative d z x) +
         2 * z * ((thetaCuspFullSource x : ℂ) *
           thetaCuspTailSecondCoreAtom d z x) by
     funext x; ring,
-    integral_add (hcoreD.const_mul (z ^ 2)) (hcore.const_mul (2 * z)),
+    integral_add (hcoreD.const_mul (z ^ (2 : ℕ))) (hcore.const_mul (2 * z)),
     integral_const_mul, integral_const_mul] at hint
   rw [show (fun x : ℝ => (thetaCuspFullSource x : ℂ) *
-      ((z ^ 2 + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
+      ((z ^ (2 : ℕ) + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
         2 * z * truncatedCosineSection (d + 1) z x)) =
-      fun x : ℝ => (z ^ 2 + 1 / 4) * ((thetaCuspFullSource x : ℂ) *
+      fun x : ℝ => (z ^ (2 : ℕ) + 1 / 4) * ((thetaCuspFullSource x : ℂ) *
           truncatedCosineSectionDerivative (d + 1) z x) +
         2 * z * ((thetaCuspFullSource x : ℂ) *
           truncatedCosineSection (d + 1) z x) by
     funext x; ring,
-    integral_add (hcosD.const_mul (z ^ 2 + 1 / 4)) (hcos.const_mul (2 * z)),
+    integral_add (hcosD.const_mul (z ^ (2 : ℕ) + 1 / 4)) (hcos.const_mul (2 * z)),
     integral_const_mul, integral_const_mul] at hint
   linear_combination 2 * hint
 
@@ -376,18 +376,18 @@ derivative is exactly the next Xi Taylor derivative plus the fixed central seam.
 denominator-free and remains valid at `z=0`. -/
 theorem pow_four_mul_two_fullSource_coreAtomDerivative_integral_eq_taylor_feedback
     (d : ℕ) (z : ℂ) :
-    z ^ 4 *
+    z ^ (4 : ℕ) *
         (2 * ∫ x : ℝ in Ioi 0,
           (thetaCuspFullSource x : ℂ) *
             thetaCuspTailSecondCoreAtomDerivative d z x) =
-      z ^ 2 * (z ^ 2 + 1 / 4) *
+      z ^ (2 : ℕ) * (z ^ (2 : ℕ) + 1 / 4) *
           (xiCTaylorPolynomial (2 * (d + 1) + 1)).derivative.eval z +
         (z / 2) *
           (xiCTaylorApprox 1 0 - xiCTaylorApprox (2 * (d + 1) + 1) z) := by
   have hbalance := completedFullSource_coreAtom_derivative_balance d z
   have hvalue :=
     sq_mul_two_fullSource_coreAtom_integral_eq_completion_mul_taylor_sub_seam d z
-  linear_combination z ^ 2 * hbalance - 2 * z * hvalue
+  linear_combination z ^ (2 : ℕ) * hbalance - 2 * z * hvalue
 
 end
 

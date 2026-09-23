@@ -292,10 +292,10 @@ theorem PhysicallyRealizedEndpointCompleteSystem.exists_leafLocal_simple_energy_
         ∀ π : Equiv.Perm (Fin (Fintype.card (Z.PhysicalState × Bool))),
         (∑ j, k j *
           (isHermitian_spectralEnsembleMatrix
-            Z.leafLocalTraceGeneratorFin_isHermitian θ).eigenvalues (π j)) ^ 2 ≠
+            Z.leafLocalTraceGeneratorFin_isHermitian θ).eigenvalues (π j)) ^ (2 : ℕ) ≠
           κ * ∑ i,
             ((isHermitian_spectralEnsembleMatrix
-              Z.leafLocalTraceGeneratorFin_isHermitian θ).eigenvalues i) ^ 2 := by
+              Z.leafLocalTraceGeneratorFin_isHermitian θ).eigenvalues i) ^ (2 : ℕ) := by
   classical
   let M : Matrix Z.State Z.State ℂ := Z.endpointTransition
   have hMherm : M.IsHermitian :=
@@ -449,9 +449,9 @@ theorem PhysicallyRealizedEndpointCompleteSystem.exists_leafLocal_simple_energy_
     rw [hL1, hL2, Complex.ofReal_sum]
     exact Finset.sum_congr rfl fun x _ => by push_cast; ring
   have hR :
-      (∑ j : Z.State × Bool, (hHfin.eigenvalues (e j) : ℂ) ^ 2) =
-      (((∑ y, (hHfin.eigenvalues y) ^ 2 : ℝ)) : ℂ) := by
-    rw [Equiv.sum_comp e (fun y => (hHfin.eigenvalues y : ℂ) ^ 2),
+      (∑ j : Z.State × Bool, (hHfin.eigenvalues (e j) : ℂ) ^ (2 : ℕ)) =
+      (((∑ y, (hHfin.eigenvalues y) ^ (2 : ℕ) : ℝ)) : ℂ) := by
+    rw [Equiv.sum_comp e (fun y => (hHfin.eigenvalues y : ℂ) ^ (2 : ℕ)),
       Complex.ofReal_sum]
     exact Finset.sum_congr rfl fun j _ => by push_cast; ring
   rw [hL, hR, ← Complex.ofReal_pow, ← Complex.ofReal_mul,
@@ -467,10 +467,10 @@ theorem PhysicallyRealizedEndpointCompleteSystem.exists_leafLocal_energy_witness
       ∀ π : Equiv.Perm (Fin (Fintype.card (Z.PhysicalState × Bool))),
         (∑ j, k j *
           (isHermitian_spectralEnsembleMatrix
-            Z.leafLocalTraceGeneratorFin_isHermitian θ).eigenvalues (π j)) ^ 2 ≠
+            Z.leafLocalTraceGeneratorFin_isHermitian θ).eigenvalues (π j)) ^ (2 : ℕ) ≠
           κ * ∑ i,
             ((isHermitian_spectralEnsembleMatrix
-              Z.leafLocalTraceGeneratorFin_isHermitian θ).eigenvalues i) ^ 2 := by
+              Z.leafLocalTraceGeneratorFin_isHermitian θ).eigenvalues i) ^ (2 : ℕ) := by
   obtain ⟨θ, -, hθ⟩ := Z.exists_leafLocal_simple_energy_witness k hksum hkne κ
   exact ⟨θ, hθ⟩
 
@@ -496,12 +496,12 @@ theorem PhysicallyRealizedEndpointCompleteSystem.exists_leafLocal_disjoint_actio
       ∀ π₁ π₂ : Equiv.Perm (Fin (Fintype.card (Z.PhysicalState × Bool))),
         (∑ j, k j *
             (isHermitian_spectralEnsembleMatrix
-              Z.leafLocalTraceGeneratorFin_isHermitian θ₁).eigenvalues (π₁ j)) ^ 2
-              * (∑ a, (θ₂ a) ^ 2)
+              Z.leafLocalTraceGeneratorFin_isHermitian θ₁).eigenvalues (π₁ j)) ^ (2 : ℕ)
+              * (∑ a, (θ₂ a) ^ (2 : ℕ))
           ≠ (∑ j, k j *
             (isHermitian_spectralEnsembleMatrix
-              Z.leafLocalTraceGeneratorFin_isHermitian θ₂).eigenvalues (π₂ j)) ^ 2
-              * (∑ a, (θ₁ a) ^ 2) := by
+              Z.leafLocalTraceGeneratorFin_isHermitian θ₂).eigenvalues (π₂ j)) ^ (2 : ℕ)
+              * (∑ a, (θ₁ a) ^ (2 : ℕ)) := by
   let hP : ∀ a, (Z.leafLocalTraceGeneratorFin a).IsHermitian :=
     Z.leafLocalTraceGeneratorFin_isHermitian
   apply exists_disjoint_actionRatio_pair_of_witness_of_pos hP k
@@ -536,13 +536,13 @@ theorem exists_physicalEndpointCompleteQubitPath_disjoint_actionRatio_pair
         (∑ j, k j *
             (isHermitian_spectralEnsembleMatrix
               (physicalEndpointCompleteQubitPath n).leafLocalTraceGeneratorFin_isHermitian
-                θ₁).eigenvalues (π₁ j)) ^ 2
-              * (∑ a, (θ₂ a) ^ 2)
+                θ₁).eigenvalues (π₁ j)) ^ (2 : ℕ)
+              * (∑ a, (θ₂ a) ^ (2 : ℕ))
           ≠ (∑ j, k j *
             (isHermitian_spectralEnsembleMatrix
               (physicalEndpointCompleteQubitPath n).leafLocalTraceGeneratorFin_isHermitian
-                θ₂).eigenvalues (π₂ j)) ^ 2
-              * (∑ a, (θ₁ a) ^ 2) :=
+                θ₂).eigenvalues (π₂ j)) ^ (2 : ℕ)
+              * (∑ a, (θ₁ a) ^ (2 : ℕ)) :=
   (physicalEndpointCompleteQubitPath n).exists_leafLocal_disjoint_actionRatio_pair
     k hksum hkne
 

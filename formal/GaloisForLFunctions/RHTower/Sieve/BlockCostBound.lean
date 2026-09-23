@@ -18,7 +18,7 @@ namespace RHTower.Sieve
 theorem blockCost_le {L Y ε M₁ M₂ W : ℝ} (hL : 0 ≤ L) (hY : 0 < Y) (hε : 0 ≤ ε) (hW : 0 < W)
     (hM₁ : 0 ≤ M₁) :
     blockCost L Y ε M₁ M₂ W
-      ≤ 2 * M₁ * (L / Y) + 4 * M₂ / (Real.pi ^ 2 * W) + 2 * (ε * L + 1) ^ 2 * ε := by
+      ≤ 2 * M₁ * (L / Y) + 4 * M₂ / (Real.pi ^ (2 : ℕ) * W) + 2 * (ε * L + 1) ^ (2 : ℕ) * ε := by
   have hLY : 0 ≤ L / Y := by positivity
   have hlog1 : Real.log (1 + L / Y) ≤ L / Y := by
     have := Real.log_le_sub_one_of_pos (x := 1 + L / Y) (by linarith)
@@ -26,13 +26,13 @@ theorem blockCost_le {L Y ε M₁ M₂ W : ℝ} (hL : 0 ≤ L) (hY : 0 < Y) (hε
   have hlog2 : Real.log (1 + ε) ≤ ε := by
     have := Real.log_le_sub_one_of_pos (x := 1 + ε) (by linarith)
     linarith
-  have hsq : (0 : ℝ) ≤ (ε * L + 1) ^ 2 := sq_nonneg _
+  have hsq : (0 : ℝ) ≤ (ε * L + 1) ^ (2 : ℕ) := sq_nonneg _
   rw [blockCost]
   have h1 : M₁ * Real.log (1 + L / Y) ≤ M₁ * (L / Y) :=
     mul_le_mul_of_nonneg_left hlog1 hM₁
-  have h2 : 2 * (ε * L + 1) ^ 2 * Real.log (1 + ε) ≤ 2 * (ε * L + 1) ^ 2 * ε :=
+  have h2 : 2 * (ε * L + 1) ^ (2 : ℕ) * Real.log (1 + ε) ≤ 2 * (ε * L + 1) ^ (2 : ℕ) * ε :=
     mul_le_mul_of_nonneg_left hlog2 (by positivity)
-  have h3 : (2 : ℝ) * (M₂ * (2 / (Real.pi ^ 2 * W))) = 4 * M₂ / (Real.pi ^ 2 * W) := by
+  have h3 : (2 : ℝ) * (M₂ * (2 / (Real.pi ^ (2 : ℕ) * W))) = 4 * M₂ / (Real.pi ^ (2 : ℕ) * W) := by
     field_simp
     ring
   linarith [h1, h2, h3]

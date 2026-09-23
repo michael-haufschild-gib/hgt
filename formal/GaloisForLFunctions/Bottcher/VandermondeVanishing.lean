@@ -20,7 +20,7 @@ open scoped Matrix
 
 namespace Bottcher
 
-/-- **Vandermonde vanishing.**  Let `ζ ∈ ℂ` with the powers `ζ^0, …, ζ^d` pairwise distinct
+/-- **Vandermonde vanishing.**  Let `ζ ∈ ℂ` with the powers `ζ^(0 : ℕ), …, ζ^d` pairwise distinct
 (`j ↦ ζ^j` injective on `Fin (d+1)`).  If `∑_{j} a_j · ζ^{r·j} = 0` for every `r = 0, …, d`, then
 every `a_j = 0`. -/
 theorem eq_zero_of_vandermonde_sum {d : ℕ} {ζ : ℂ}

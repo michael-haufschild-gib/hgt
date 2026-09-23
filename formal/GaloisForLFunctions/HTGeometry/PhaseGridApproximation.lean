@@ -30,21 +30,21 @@ theorem norm_exp_mul_I_sub_one_le (t : ℝ) :
     ring
   rw [hexp]
   have hnorm : ‖((Real.cos t - 1 : ℝ) : ℂ) + ((Real.sin t : ℝ) : ℂ) * Complex.I‖
-      = Real.sqrt ((Real.cos t - 1) ^ 2 + Real.sin t ^ 2) := by
+      = Real.sqrt ((Real.cos t - 1) ^ (2 : ℕ) + Real.sin t ^ (2 : ℕ)) := by
     rw [Complex.norm_def, Complex.normSq_apply]
     congr 1
     simp only [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
       Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
     ring
   rw [hnorm]
-  have hid : (Real.cos t - 1) ^ 2 + Real.sin t ^ 2 = 2 - 2 * Real.cos t := by
+  have hid : (Real.cos t - 1) ^ (2 : ℕ) + Real.sin t ^ (2 : ℕ) = 2 - 2 * Real.cos t := by
     nlinarith [Real.sin_sq_add_cos_sq t]
-  have hhalf : Real.cos t = 1 - 2 * Real.sin (t / 2) ^ 2 := by
+  have hhalf : Real.cos t = 1 - 2 * Real.sin (t / 2) ^ (2 : ℕ) := by
     have := Real.cos_two_mul_eq_one_sub (t / 2)
     rw [show 2 * (t / 2) = t by ring] at this
     exact this
   rw [hid, hhalf]
-  have h4 : (2 : ℝ) - 2 * (1 - 2 * Real.sin (t / 2) ^ 2) = (2 * Real.sin (t / 2)) ^ 2 := by ring
+  have h4 : (2 : ℝ) - 2 * (1 - 2 * Real.sin (t / 2) ^ (2 : ℕ)) = (2 * Real.sin (t / 2)) ^ (2 : ℕ) := by ring
   rw [h4, Real.sqrt_sq_eq_abs, abs_mul]
   have hs := Real.abs_sin_le_abs (x := t / 2)
   have htwo : |(2:ℝ)| = 2 := by norm_num

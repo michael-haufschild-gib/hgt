@@ -18,8 +18,8 @@ noncomputable section
 /-- The unweighted `M₂ M₄ - M₃²` dispersion of a finite real alphabet. -/
 def finiteAlphabetDispersion {ι : Type*}
     (S : Finset ι) (x : ι → ℝ) : ℝ :=
-  (∑ i ∈ S, x i ^ 2) * (∑ i ∈ S, x i ^ 4) -
-    (∑ i ∈ S, x i ^ 3) ^ 2
+  (∑ i ∈ S, x i ^ (2 : ℕ)) * (∑ i ∈ S, x i ^ (4 : ℕ)) -
+    (∑ i ∈ S, x i ^ (3 : ℕ)) ^ (2 : ℕ)
 
 /-- The same dispersion formed from the pair-product moments of finite prime and archimedean
 alphabets. -/
@@ -27,7 +27,7 @@ def finitePrimeArchPairDispersion {ι κ : Type*}
     (P : Finset ι) (A : Finset κ) (x : ι → ℝ) (y : κ → ℝ) : ℝ :=
   finitePrimeArchPairPowerSum P A x y 2 *
       finitePrimeArchPairPowerSum P A x y 4 -
-    finitePrimeArchPairPowerSum P A x y 3 ^ 2
+    finitePrimeArchPairPowerSum P A x y 3 ^ (2 : ℕ)
 
 /-- Every finite real alphabet has nonnegative power dispersion. -/
 theorem finiteAlphabetDispersion_nonneg {ι : Type*}
@@ -43,33 +43,33 @@ theorem finiteAlphabetDispersion_eq_zero_iff_constant
     finiteAlphabetDispersion S x = 0 ↔
       ∀ i ∈ S, ∀ j ∈ S, x i = x j := by
   have hid : 2 * finiteAlphabetDispersion S x =
-      ∑ i ∈ S, ∑ j ∈ S, x i ^ 2 * x j ^ 2 * (x i - x j) ^ 2 := by
+      ∑ i ∈ S, ∑ j ∈ S, x i ^ (2 : ℕ) * x j ^ (2 : ℕ) * (x i - x j) ^ (2 : ℕ) := by
     simpa [finiteAlphabetDispersion] using
       (ZetaFisher.two_mul_dispersion S (fun _ => (1 : ℝ)) x)
   constructor
   · intro hzero i hi j hj
     have hsumzero :
-        (∑ a ∈ S, ∑ b ∈ S, x a ^ 2 * x b ^ 2 * (x a - x b) ^ 2) = 0 := by
+        (∑ a ∈ S, ∑ b ∈ S, x a ^ (2 : ℕ) * x b ^ (2 : ℕ) * (x a - x b) ^ (2 : ℕ)) = 0 := by
       rw [← hid, hzero, mul_zero]
     have houter : ∀ a ∈ S,
-        0 ≤ ∑ b ∈ S, x a ^ 2 * x b ^ 2 * (x a - x b) ^ 2 := by
+        0 ≤ ∑ b ∈ S, x a ^ (2 : ℕ) * x b ^ (2 : ℕ) * (x a - x b) ^ (2 : ℕ) := by
       intro a ha
       exact Finset.sum_nonneg fun b hb =>
         mul_nonneg (mul_nonneg (sq_nonneg _) (sq_nonneg _)) (sq_nonneg _)
     have hiZero := (Finset.sum_eq_zero_iff_of_nonneg houter).mp hsumzero i hi
     have hinner : ∀ b ∈ S,
-        0 ≤ x i ^ 2 * x b ^ 2 * (x i - x b) ^ 2 := by
+        0 ≤ x i ^ (2 : ℕ) * x b ^ (2 : ℕ) * (x i - x b) ^ (2 : ℕ) := by
       intro b hb
       exact mul_nonneg (mul_nonneg (sq_nonneg _) (sq_nonneg _)) (sq_nonneg _)
     have hij := (Finset.sum_eq_zero_iff_of_nonneg hinner).mp hiZero j hj
-    have hcoeff : x i ^ 2 * x j ^ 2 ≠ 0 :=
+    have hcoeff : x i ^ (2 : ℕ) * x j ^ (2 : ℕ) ≠ 0 :=
       mul_ne_zero (pow_ne_zero _ (hx i hi).ne') (pow_ne_zero _ (hx j hj).ne')
-    have hgap : (x i - x j) ^ 2 = 0 :=
+    have hgap : (x i - x j) ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hij).resolve_left hcoeff
     exact sub_eq_zero.mp (sq_eq_zero_iff.mp hgap)
   · intro hconstant
     have hsumzero :
-        (∑ i ∈ S, ∑ j ∈ S, x i ^ 2 * x j ^ 2 * (x i - x j) ^ 2) = 0 := by
+        (∑ i ∈ S, ∑ j ∈ S, x i ^ (2 : ℕ) * x j ^ (2 : ℕ) * (x i - x j) ^ (2 : ℕ)) = 0 := by
       apply Finset.sum_eq_zero
       intro i hi
       apply Finset.sum_eq_zero
@@ -86,8 +86,8 @@ theorem finitePrimeArchPairDispersion_decomposition
     (P : Finset ι) (A : Finset κ) (x : ι → ℝ) (y : κ → ℝ) :
     finitePrimeArchPairDispersion P A x y =
       finiteAlphabetDispersion P x *
-          ((∑ j ∈ A, y j ^ 2) * (∑ j ∈ A, y j ^ 4)) +
-        (∑ i ∈ P, x i ^ 3) ^ 2 * finiteAlphabetDispersion A y := by
+          ((∑ j ∈ A, y j ^ (2 : ℕ)) * (∑ j ∈ A, y j ^ (4 : ℕ))) +
+        (∑ i ∈ P, x i ^ (3 : ℕ)) ^ (2 : ℕ) * finiteAlphabetDispersion A y := by
   rw [finitePrimeArchPairDispersion,
     finitePrimeArchPairPowerSum_eq_mul P A x y 2,
     finitePrimeArchPairPowerSum_eq_mul P A x y 4,
@@ -110,30 +110,30 @@ theorem finitePrimeArchPairDispersion_eq_zero_iff_both_constant
     finiteAlphabetDispersion_nonneg P x
   have hDA : 0 ≤ finiteAlphabetDispersion A y :=
     finiteAlphabetDispersion_nonneg A y
-  have hy2 : 0 < ∑ j ∈ A, y j ^ 2 :=
+  have hy2 : 0 < ∑ j ∈ A, y j ^ (2 : ℕ) :=
     Finset.sum_pos (fun j hj => pow_pos (hy j hj) _) hA
-  have hy4 : 0 < ∑ j ∈ A, y j ^ 4 :=
+  have hy4 : 0 < ∑ j ∈ A, y j ^ (4 : ℕ) :=
     Finset.sum_pos (fun j hj => pow_pos (hy j hj) _) hA
-  have hx3 : 0 < ∑ i ∈ P, x i ^ 3 :=
+  have hx3 : 0 < ∑ i ∈ P, x i ^ (3 : ℕ) :=
     Finset.sum_pos (fun i hi => pow_pos (hx i hi) _) hP
   constructor
   · intro hzero
     have hsumzero :
         finiteAlphabetDispersion P x *
-            ((∑ j ∈ A, y j ^ 2) * (∑ j ∈ A, y j ^ 4)) +
-          (∑ i ∈ P, x i ^ 3) ^ 2 * finiteAlphabetDispersion A y = 0 := by
+            ((∑ j ∈ A, y j ^ (2 : ℕ)) * (∑ j ∈ A, y j ^ (4 : ℕ))) +
+          (∑ i ∈ P, x i ^ (3 : ℕ)) ^ (2 : ℕ) * finiteAlphabetDispersion A y = 0 := by
       rw [← hdec, hzero]
     have hfirstNonneg : 0 ≤ finiteAlphabetDispersion P x *
-        ((∑ j ∈ A, y j ^ 2) * (∑ j ∈ A, y j ^ 4)) :=
+        ((∑ j ∈ A, y j ^ (2 : ℕ)) * (∑ j ∈ A, y j ^ (4 : ℕ))) :=
       mul_nonneg hDP (mul_nonneg hy2.le hy4.le)
     have hsecondNonneg : 0 ≤
-        (∑ i ∈ P, x i ^ 3) ^ 2 * finiteAlphabetDispersion A y :=
+        (∑ i ∈ P, x i ^ (3 : ℕ)) ^ (2 : ℕ) * finiteAlphabetDispersion A y :=
       mul_nonneg (sq_nonneg _) hDA
     have hfirstZero : finiteAlphabetDispersion P x *
-        ((∑ j ∈ A, y j ^ 2) * (∑ j ∈ A, y j ^ 4)) = 0 := by
+        ((∑ j ∈ A, y j ^ (2 : ℕ)) * (∑ j ∈ A, y j ^ (4 : ℕ))) = 0 := by
       nlinarith
     have hsecondZero :
-        (∑ i ∈ P, x i ^ 3) ^ 2 * finiteAlphabetDispersion A y = 0 := by
+        (∑ i ∈ P, x i ^ (3 : ℕ)) ^ (2 : ℕ) * finiteAlphabetDispersion A y = 0 := by
       nlinarith
     have hDPzero : finiteAlphabetDispersion P x = 0 :=
       (mul_eq_zero.mp hfirstZero).resolve_right (mul_pos hy2 hy4).ne'

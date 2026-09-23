@@ -22,15 +22,15 @@ theorem norm_one_add_le_three_halves_of_unit_re_nonpos (z : ℂ)
     (hz : ‖z‖ = 1) (hre : z.re ≤ 0) :
     ‖1 + z‖ ≤ (3 : ℝ) / 2 := by
   have hs := norm_add_sq (𝕜 := ℂ) (1 : ℂ) z
-  have hsq : ‖1 + z‖ ^ 2 ≤ 2 := by
+  have hsq : ‖1 + z‖ ^ (2 : ℕ) ≤ 2 := by
     simp [RCLike.inner_apply, hz] at hs
     nlinarith
   nlinarith [sq_nonneg (‖1 + z‖ - 3 / 2), norm_nonneg (1 + z)]
 
 theorem two_phase_pair_energy_le (P Q z : ℂ)
     (hz : ‖z‖ = 1) (hre : z.re ≤ 0) :
-    ‖P + Q‖ ^ 2 + ‖P + z * Q‖ ^ 2 ≤
-      ((7 : ℝ) / 2) * (‖P‖ ^ 2 + ‖Q‖ ^ 2) := by
+    ‖P + Q‖ ^ (2 : ℕ) + ‖P + z * Q‖ ^ (2 : ℕ) ≤
+      ((7 : ℝ) / 2) * (‖P‖ ^ (2 : ℕ) + ‖Q‖ ^ (2 : ℕ)) := by
   have h1 := norm_add_sq (𝕜 := ℂ) P Q
   have h2 := norm_add_sq (𝕜 := ℂ) P (z * Q)
   have hzQ : ‖z * Q‖ = ‖Q‖ := by rw [norm_mul, hz, one_mul]
@@ -108,12 +108,12 @@ theorem trace_kronecker_conj_productControlledPhaseTarget
 
 theorem norm_sum_sq_le_card_mul_sum_sq {ι : Type*} [Fintype ι]
     (w : ι → ℂ) :
-    ‖∑ i : ι, w i‖ ^ 2 ≤
-      (Fintype.card ι : ℝ) * ∑ i : ι, ‖w i‖ ^ 2 := by
+    ‖∑ i : ι, w i‖ ^ (2 : ℕ) ≤
+      (Fintype.card ι : ℝ) * ∑ i : ι, ‖w i‖ ^ (2 : ℕ) := by
   classical
   have h1 : ‖∑ i : ι, w i‖ ≤ ∑ i : ι, ‖w i‖ := norm_sum_le _ _
-  have h2 : (∑ i : ι, ‖w i‖) ^ 2 ≤
-      (Fintype.card ι : ℝ) * ∑ i : ι, ‖w i‖ ^ 2 := by
+  have h2 : (∑ i : ι, ‖w i‖) ^ (2 : ℕ) ≤
+      (Fintype.card ι : ℝ) * ∑ i : ι, ‖w i‖ ^ (2 : ℕ) := by
     simpa using (sq_sum_le_card_mul_sum_sq (s := Finset.univ)
       (f := fun i => ‖w i‖))
   have h0 := norm_nonneg (∑ i : ι, w i)
@@ -121,16 +121,16 @@ theorem norm_sum_sq_le_card_mul_sum_sq {ι : Type*} [Fintype ι]
   nlinarith
 
 theorem norm_two_term_sq_le (a b x y : ℂ) :
-    ‖a * x + b * y‖ ^ 2 ≤
-      (‖a‖ ^ 2 + ‖b‖ ^ 2) * (‖x‖ ^ 2 + ‖y‖ ^ 2) := by
+    ‖a * x + b * y‖ ^ (2 : ℕ) ≤
+      (‖a‖ ^ (2 : ℕ) + ‖b‖ ^ (2 : ℕ)) * (‖x‖ ^ (2 : ℕ) + ‖y‖ ^ (2 : ℕ)) := by
   have htri : ‖a * x + b * y‖ ≤ ‖a‖ * ‖x‖ + ‖b‖ * ‖y‖ := by
     calc
       ‖a * x + b * y‖ ≤ ‖a * x‖ + ‖b * y‖ := norm_add_le _ _
       _ = _ := by rw [norm_mul, norm_mul]
   have hleft := norm_nonneg (a * x + b * y)
   have hright : 0 ≤ ‖a‖ * ‖x‖ + ‖b‖ * ‖y‖ := by positivity
-  have hsquare : ‖a * x + b * y‖ ^ 2 ≤
-      (‖a‖ * ‖x‖ + ‖b‖ * ‖y‖) ^ 2 := by nlinarith
+  have hsquare : ‖a * x + b * y‖ ^ (2 : ℕ) ≤
+      (‖a‖ * ‖x‖ + ‖b‖ * ‖y‖) ^ (2 : ℕ) := by nlinarith
   nlinarith [sq_nonneg (‖a‖ * ‖y‖ - ‖b‖ * ‖x‖)]
 
 def phaseFibreSum (B : Matrix (Bool × γ) (Bool × γ) ℂ)
@@ -155,14 +155,14 @@ theorem trace_kronecker_conj_productControlledPhaseTarget_eq_pair
   ring_nf
 
 noncomputable def diagonalEnergy {ι : Type*} [Fintype ι]
-    (M : Matrix ι ι ℂ) : ℝ := ∑ i : ι, ‖M i i‖ ^ 2
+    (M : Matrix ι ι ℂ) : ℝ := ∑ i : ι, ‖M i i‖ ^ (2 : ℕ)
 
 omit [DecidableEq γ] in
 theorem phaseFibreSum_norm_sq_le
     (B : Matrix (Bool × γ) (Bool × γ) ℂ) (r : Bool × γ → ℂ)
     (hr : ∀ y, ‖r y‖ = 1) (b : Bool) :
-    ‖phaseFibreSum B r b‖ ^ 2 ≤
-      (Fintype.card γ : ℝ) * ∑ g : γ, ‖B (b, g) (b, g)‖ ^ 2 := by
+    ‖phaseFibreSum B r b‖ ^ (2 : ℕ) ≤
+      (Fintype.card γ : ℝ) * ∑ g : γ, ‖B (b, g) (b, g)‖ ^ (2 : ℕ) := by
   unfold phaseFibreSum
   refine (norm_sum_sq_le_card_mul_sum_sq
     (fun g : γ => starRingEnd ℂ (B (b, g) (b, g)) * r (b, g))).trans_eq ?_
@@ -176,8 +176,8 @@ theorem phase_pair_energy_le_diagonalEnergy
     (B : Matrix (Bool × γ) (Bool × γ) ℂ) (z : ℂ)
     (r : Bool × γ → ℂ) (hz : ‖z‖ = 1) (hre : z.re ≤ 0)
     (hr : ∀ y, ‖r y‖ = 1) :
-    ‖phaseFibreSum B r false + phaseFibreSum B r true‖ ^ 2 +
-        ‖phaseFibreSum B r false + z * phaseFibreSum B r true‖ ^ 2 ≤
+    ‖phaseFibreSum B r false + phaseFibreSum B r true‖ ^ (2 : ℕ) +
+        ‖phaseFibreSum B r false + z * phaseFibreSum B r true‖ ^ (2 : ℕ) ≤
       ((7 : ℝ) / 2) * (Fintype.card γ : ℝ) * diagonalEnergy B := by
   let P := phaseFibreSum B r false
   let Q := phaseFibreSum B r true
@@ -186,8 +186,8 @@ theorem phase_pair_energy_le_diagonalEnergy
   have hpair := two_phase_pair_energy_le P Q z hz hre
   have hcard : 0 ≤ (Fintype.card γ : ℝ) := by positivity
   have hdiag : diagonalEnergy B =
-      (∑ g : γ, ‖B (false, g) (false, g)‖ ^ 2) +
-        ∑ g : γ, ‖B (true, g) (true, g)‖ ^ 2 := by
+      (∑ g : γ, ‖B (false, g) (false, g)‖ ^ (2 : ℕ)) +
+        ∑ g : γ, ‖B (true, g) (true, g)‖ ^ (2 : ℕ) := by
     unfold diagonalEnergy
     rw [Fintype.sum_prod_type]
     simp only [Fintype.sum_bool]
@@ -200,7 +200,7 @@ theorem trace_productControlledPhaseTarget_norm_sq_le
     (A : Matrix Bool Bool ℂ) (B : Matrix (Bool × γ) (Bool × γ) ℂ)
     (z : ℂ) (r : Bool × γ → ℂ) (hz : ‖z‖ = 1) (hre : z.re ≤ 0)
     (hr : ∀ y, ‖r y‖ = 1) :
-    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ 2 ≤
+    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ (2 : ℕ) ≤
       diagonalEnergy A * (((7 : ℝ) / 2) * (Fintype.card γ : ℝ) *
         diagonalEnergy B) := by
   rw [trace_kronecker_conj_productControlledPhaseTarget_eq_pair]
@@ -210,7 +210,7 @@ theorem trace_productControlledPhaseTarget_norm_sq_le
     (starRingEnd ℂ (A false false)) (starRingEnd ℂ (A true true))
     (P + Q) (P + z * Q)
   have hpair := phase_pair_energy_le_diagonalEnergy B z r hz hre hr
-  have hdiagA : diagonalEnergy A = ‖A false false‖ ^ 2 + ‖A true true‖ ^ 2 := by
+  have hdiagA : diagonalEnergy A = ‖A false false‖ ^ (2 : ℕ) + ‖A true true‖ ^ (2 : ℕ) := by
     unfold diagonalEnergy
     simp
     ring
@@ -266,8 +266,8 @@ theorem trace_productControlledPhaseTarget_norm_sq_le_seven_eighth
     (z : ℂ) (r : Bool × γ → ℂ) (hz : ‖z‖ = 1) (hre : z.re ≤ 0)
     (hr : ∀ y, ‖r y‖ = 1)
     (hW : (A ⊗ₖ B)ᴴ * (A ⊗ₖ B) = 1) :
-    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ 2 ≤
-      ((7 : ℝ) / 8) * (Fintype.card (ProductIndex γ) : ℝ) ^ 2 := by
+    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ (2 : ℕ) ≤
+      ((7 : ℝ) / 8) * (Fintype.card (ProductIndex γ) : ℝ) ^ (2 : ℕ) := by
   have htrace := trace_productControlledPhaseTarget_norm_sq_le A B z r hz hre hr
   have hprod := diagonalEnergy_product_le_card_of_kronecker_unitary A B hW
   have hcoef : 0 ≤ (7 / 2 : ℝ) * (Fintype.card γ : ℝ) := by positivity
@@ -279,14 +279,14 @@ theorem trace_productControlledPhaseTarget_norm_sq_le_seven_eighth
     simp [ProductIndex]
     ring
   calc
-    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ 2
+    ‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ ^ (2 : ℕ)
         ≤ diagonalEnergy A * ((7 / 2 : ℝ) * (Fintype.card γ : ℝ) *
             diagonalEnergy B) := htrace
     _ = ((7 / 2 : ℝ) * (Fintype.card γ : ℝ)) *
           (diagonalEnergy A * diagonalEnergy B) := by ring
     _ ≤ ((7 / 2 : ℝ) * (Fintype.card γ : ℝ)) *
           (Fintype.card (ProductIndex γ) : ℝ) := hscaled
-    _ = ((7 : ℝ) / 8) * (Fintype.card (ProductIndex γ) : ℝ) ^ 2 := by
+    _ = ((7 : ℝ) / 8) * (Fintype.card (ProductIndex γ) : ℝ) ^ (2 : ℕ) := by
       rw [hcard]
       ring
 
@@ -332,7 +332,7 @@ theorem choiDist_kronecker_productControlledPhaseTarget_ge
   have htrace := trace_productControlledPhaseTarget_norm_sq_le_seven_eighth
     A B z r hz hre hr hW
   have hratio :
-      (‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ / D) ^ 2 ≤
+      (‖Matrix.trace ((A ⊗ₖ B)ᴴ * productControlledPhaseTarget z r)‖ / D) ^ (2 : ℕ) ≤
         (7 : ℝ) / 8 := by
     rw [div_pow, div_le_iff₀ (sq_pos_of_pos hD)]
     dsimp only [D]

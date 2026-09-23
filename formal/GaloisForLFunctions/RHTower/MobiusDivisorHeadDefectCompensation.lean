@@ -26,7 +26,7 @@ def mobiusDivisorTransverseLabels (M q : ℕ) : Finset (Finset ℕ) :=
 /-- Complete squared transverse field after the proposed prime differences. -/
 def mobiusDivisorTransverseResidualEnergy (M : ℕ) (P : Finset ℕ) (q : ℕ) : ℝ :=
   ∑ R ∈ mobiusDivisorTransverseLabels M q,
-    (mobiusDivisorOrientedFibre M P R - mobiusDivisorOrientedFibre M P (insert q R))^2
+    (mobiusDivisorOrientedFibre M P R - mobiusDivisorOrientedFibre M P (insert q R))^(2 : ℕ)
 
 /-- Complete inner product of the nonempty prime-free field and its prime partners. -/
 def mobiusDivisorTransverseOverlap (M : ℕ) (P : Finset ℕ) (q : ℕ) : ℝ :=
@@ -62,7 +62,7 @@ private lemma sum_labels_head_pair (M q : ℕ) (hq : q ∈ mobiusDivisorSelectio
 
 /-- The radius squares to the complete energy plus its geometric parity reserve. -/
 theorem mobiusDivisorParityRadius_sq (M : ℕ) (P : Finset ℕ) :
-    (mobiusDivisorParityRadius M P)^2 = mobiusDivisorSelectionEnergy M P +
+    (mobiusDivisorParityRadius M P)^(2 : ℕ) = mobiusDivisorSelectionEnergy M P +
       2 * Real.sqrt (mobiusDivisorParityGoodEnergy M P) *
         Real.sqrt (mobiusDivisorParityDefectEnergy M P) := by
   have hg := Real.sq_sqrt (mobiusDivisorParityGoodEnergy_nonneg M P)
@@ -109,10 +109,10 @@ private lemma head_defect_decomposition (M : ℕ) (P : Finset ℕ) (q : ℕ)
     let a := mobiusDivisorOrientedFibre M P {q}
     let T := mobiusDivisorTransverseResidualEnergy M P q
     let C := mobiusDivisorTransverseOverlap M P q
-    mobiusDivisorParityGoodEnergy M P = a^2 + T + 2*C ∧
-    mobiusDivisorParityDefectEnergy M P = h^2 ∧
+    mobiusDivisorParityGoodEnergy M P = a^(2 : ℕ) + T + 2*C ∧
+    mobiusDivisorParityDefectEnergy M P = h^(2 : ℕ) ∧
     mobiusDivisorParityGoodEnergy M (insert q P) = T ∧
-    mobiusDivisorParityDefectEnergy M (insert q P) = (h-a)^2 := by
+    mobiusDivisorParityDefectEnergy M (insert q P) = (h-a)^(2 : ℕ) := by
   dsimp only
   have ha := hpos {q} (mem_powerset.mpr (singleton_subset_iff.mpr hq)) (singleton_ne_empty q)
   have hnext := mobiusDivisorHeadDefect_insert_preserves M P q hq hh hpos htrans
@@ -140,8 +140,8 @@ private lemma head_defect_decomposition (M : ℕ) (P : Finset ℕ) (q : ℕ)
     rw [sum_labels_head_pair M q hq, max_eq_left (neg_nonneg.mpr hh),
       max_eq_right (neg_nonpos.mpr ha)]
     have hz : (∑ R ∈ mobiusDivisorTransverseLabels M q,
-        ((max (-mobiusDivisorOrientedFibre M P R) 0)^2 +
-        (max (-mobiusDivisorOrientedFibre M P (insert q R)) 0)^2)) = 0 := by
+        ((max (-mobiusDivisorOrientedFibre M P R) 0)^(2 : ℕ) +
+        (max (-mobiusDivisorOrientedFibre M P (insert q R)) 0)^(2 : ℕ))) = 0 := by
       apply sum_eq_zero
       intro R hR
       obtain ⟨hne, _, hRU, hqRU⟩ := transverse_mem hq hR
@@ -162,8 +162,8 @@ private lemma head_defect_decomposition (M : ℕ) (P : Finset ℕ) (q : ℕ)
   · unfold mobiusDivisorParityDefectEnergy
     rw [sum_labels_head_pair M q hq, max_eq_left (neg_nonneg.mpr hnext.1), hqzero]
     have hz : (∑ R ∈ mobiusDivisorTransverseLabels M q,
-        ((max (-mobiusDivisorOrientedFibre M (insert q P) R) 0)^2 +
-        (max (-mobiusDivisorOrientedFibre M (insert q P) (insert q R)) 0)^2)) = 0 := by
+        ((max (-mobiusDivisorOrientedFibre M (insert q P) R) 0)^(2 : ℕ) +
+        (max (-mobiusDivisorOrientedFibre M (insert q P) (insert q R)) 0)^(2 : ℕ))) = 0 := by
       apply sum_eq_zero
       intro R hR
       obtain ⟨hne, _, hRU, _⟩ := transverse_mem hq hR

@@ -143,7 +143,7 @@ theorem windowRieszGapTarget_equivalent
   have hwinding : jordanFredholmBoundaryWinding J A =
       (jordanFredholmRootMultiplicity J A : ℤ) := by
     exact windingNumber_unitCircle_eq_unitDiscZeroMultiplicity hfan hfc hfboundary
-  have hdet_iff_winding :
+  have hdet_iff :
       (∀ z ∈ J.interior, A.determinant z ≠ 0) ↔
         jordanFredholmBoundaryWinding J A = 0 := by
     rw [← hroot_iff_det]
@@ -170,9 +170,9 @@ theorem windowRieszGapTarget_equivalent
             hC (J.chart w) ⟨w, hw, rfl⟩, horbit (J.chart w) ⟨w, hw, rfl⟩]
         · rw [if_neg hw]
       exact hroot_iff_det.mp hcount0
-  refine ⟨?_, hinv_iff_det, hdet_iff_winding, ?_⟩
+  refine ⟨?_, hinv_iff_det, hdet_iff, ?_⟩
   · exact hroot_iff_det.trans hinv_iff_det.symm
-  · exact hdet_iff_winding.symm.trans hdet_iff_orbit
+  · exact hdet_iff.symm.trans hdet_iff_orbit
 
 end
 

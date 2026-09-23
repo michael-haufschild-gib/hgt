@@ -9,7 +9,7 @@ noncomputable section
 
 /-- Exponential Morse coordinate carried by one theta-cusp atom. -/
 def thetaCuspMorseScale (n : ℕ) (x : ℝ) : ℝ :=
-  Real.pi * ((n : ℝ) * Real.exp x) ^ 2
+  Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)
 
 /-- Morse superpotential with parameter `A`. -/
 def thetaCuspMorseSuperpotential (A : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
@@ -26,11 +26,11 @@ def thetaCuspMorseGroundState (n : ℕ) (x : ℝ) : ℝ :=
 
 /-- The `A`-dependent lower supersymmetric Morse potential. -/
 def thetaCuspMorsePotentialMinus (A : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  thetaCuspMorseSuperpotential A n x ^ 2 - 2 * thetaCuspMorseScale n x
+  thetaCuspMorseSuperpotential A n x ^ (2 : ℕ) - 2 * thetaCuspMorseScale n x
 
 /-- The `A`-dependent partner supersymmetric Morse potential. -/
 def thetaCuspMorsePotentialPlus (A : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  thetaCuspMorseSuperpotential A n x ^ 2 + 2 * thetaCuspMorseScale n x
+  thetaCuspMorseSuperpotential A n x ^ (2 : ℕ) + 2 * thetaCuspMorseScale n x
 
 theorem hasDerivAt_thetaCuspMorseScale (n : ℕ) (x : ℝ) :
     HasDerivAt (thetaCuspMorseScale n) (2 * thetaCuspMorseScale n x) x := by
@@ -80,14 +80,14 @@ theorem hasDerivAt_thetaCuspMorseGroundState (n : ℕ) (x : ℝ) :
   exact hasDerivAt_thetaCuspMorseZeroMode (5 / 4 : ℝ) n x
 
 theorem thetaCuspMorseGroundState_sq (n : ℕ) (x : ℝ) :
-    thetaCuspMorseGroundState n x ^ 2 =
+    thetaCuspMorseGroundState n x ^ (2 : ℕ) =
       thetaCuspLiouvilleGibbsAtom n x := by
-  have hA : Real.exp ((5 / 4 : ℝ) * x) ^ 2 =
+  have hA : Real.exp ((5 / 4 : ℝ) * x) ^ (2 : ℕ) =
       Real.exp ((5 / 2 : ℝ) * x) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have hB : Real.exp (-thetaCuspMorseScale n x / 2) ^ 2 =
+  have hB : Real.exp (-thetaCuspMorseScale n x / 2) ^ (2 : ℕ) =
       Real.exp (-thetaCuspMorseScale n x) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
@@ -98,24 +98,24 @@ theorem thetaCuspMorseGroundState_sq (n : ℕ) (x : ℝ) :
     congr 1
     ring
   calc
-    thetaCuspMorseGroundState n x ^ 2 =
-        (n : ℝ) ^ 2 * Real.exp ((5 / 4 : ℝ) * x) ^ 2 *
-          Real.exp (-thetaCuspMorseScale n x / 2) ^ 2 := by
+    thetaCuspMorseGroundState n x ^ (2 : ℕ) =
+        (n : ℝ) ^ (2 : ℕ) * Real.exp ((5 / 4 : ℝ) * x) ^ (2 : ℕ) *
+          Real.exp (-thetaCuspMorseScale n x / 2) ^ (2 : ℕ) := by
             simp only [thetaCuspMorseGroundState]
             simp only [thetaCuspMorseZeroMode]
             ring
-    _ = (n : ℝ) ^ 2 * Real.exp ((5 / 2 : ℝ) * x) *
+    _ = (n : ℝ) ^ (2 : ℕ) * Real.exp ((5 / 2 : ℝ) * x) *
           Real.exp (-thetaCuspMorseScale n x) := by rw [hA, hB]
     _ = thetaCuspLiouvilleGibbsAtom n x := by
       rw [thetaCuspLiouvilleGibbsAtom_apply]
       simp only [thetaCuspMorseScale]
-      rw [show Real.exp (x / 2) * ((n : ℝ) * Real.exp x) ^ 2 =
-          (n : ℝ) ^ 2 * Real.exp ((5 / 2 : ℝ) * x) by
+      rw [show Real.exp (x / 2) * ((n : ℝ) * Real.exp x) ^ (2 : ℕ) =
+          (n : ℝ) ^ (2 : ℕ) * Real.exp ((5 / 2 : ℝ) * x) by
             calc
-              Real.exp (x / 2) * ((n : ℝ) * Real.exp x) ^ 2 =
-                  (n : ℝ) ^ 2 *
+              Real.exp (x / 2) * ((n : ℝ) * Real.exp x) ^ (2 : ℕ) =
+                  (n : ℝ) ^ (2 : ℕ) *
                     (Real.exp (x / 2) * Real.exp x * Real.exp x) := by ring
-              _ = (n : ℝ) ^ 2 * Real.exp ((5 / 2 : ℝ) * x) := by rw [hxexp]]
+              _ = (n : ℝ) ^ (2 : ℕ) * Real.exp ((5 / 2 : ℝ) * x) := by rw [hxexp]]
       congr 1
       ring
 
@@ -166,7 +166,7 @@ theorem thetaCuspMorseScale_pi_le
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hexp : (1 : ℝ) ≤ Real.exp x := Real.one_le_exp hx
   have hu : (1 : ℝ) ≤ (n : ℝ) * Real.exp x := by nlinarith
-  have hu2 : (1 : ℝ) ≤ ((n : ℝ) * Real.exp x) ^ 2 := by nlinarith
+  have hu2 : (1 : ℝ) ≤ ((n : ℝ) * Real.exp x) ^ (2 : ℕ) := by nlinarith
   simpa only [thetaCuspMorseScale, mul_one] using
     (mul_le_mul_of_nonneg_left hu2 Real.pi_pos.le)
 
@@ -174,7 +174,7 @@ theorem thetaCuspMorseScale_pi_le
 half-line.  This is a potential bound, not yet a spectral-gap theorem. -/
 theorem thetaCuspMorsePotentialPlus_floor
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
-    Real.pi ^ 2 - Real.pi / 2 + 25 / 16 ≤
+    Real.pi ^ (2 : ℕ) - Real.pi / 2 + 25 / 16 ≤
       thetaCuspMorsePotentialPlus (5 / 4 : ℝ) n x := by
   have ht := thetaCuspMorseScale_pi_le hn hx
   have hfactor :
@@ -189,14 +189,14 @@ theorem thetaCuspSourceTerm_eq_morseBornObservable (n : ℕ) (x : ℝ) :
     thetaCuspSourceTerm x n =
       4 * Real.pi *
         (thetaCuspMorseSuperpotential (5 / 4 : ℝ) n x - 1 / 4) *
-          thetaCuspMorseGroundState n x ^ 2 := by
+          thetaCuspMorseGroundState n x ^ (2 : ℕ) := by
   rw [thetaCuspSourceTerm_eq_liouvilleWard]
   have hfun : thetaCuspLiouvilleGibbsAtom n = fun y : ℝ =>
-      thetaCuspMorseGroundState n y ^ 2 := by
+      thetaCuspMorseGroundState n y ^ (2 : ℕ) := by
     funext y
     exact (thetaCuspMorseGroundState_sq n y).symm
   rw [hfun]
-  have hsq : HasDerivAt (fun y : ℝ => thetaCuspMorseGroundState n y ^ 2)
+  have hsq : HasDerivAt (fun y : ℝ => thetaCuspMorseGroundState n y ^ (2 : ℕ))
       (2 * thetaCuspMorseGroundState n x *
         (-thetaCuspMorseSuperpotential (5 / 4 : ℝ) n x *
           thetaCuspMorseGroundState n x)) x := by
@@ -213,7 +213,7 @@ theorem thetaCuspMorseBornObservable_pos
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hexp : (1 : ℝ) ≤ Real.exp x := Real.one_le_exp hx
   have hu : (1 : ℝ) ≤ (n : ℝ) * Real.exp x := by nlinarith
-  have hu2 : (1 : ℝ) ≤ ((n : ℝ) * Real.exp x) ^ 2 := by nlinarith
+  have hu2 : (1 : ℝ) ≤ ((n : ℝ) * Real.exp x) ^ (2 : ℕ) := by nlinarith
   simp only [thetaCuspMorseSuperpotential, thetaCuspMorseScale]
   nlinarith [Real.pi_gt_three, Real.pi_pos,
     mul_le_mul_of_nonneg_left hu2 Real.pi_pos.le]
@@ -223,7 +223,7 @@ def thetaCuspMorseBornMoment (j n : ℕ) : ℝ :=
   4 * ∫ x : ℝ in Ioi 0,
     x ^ (2 * j) *
       (thetaCuspMorseSuperpotential (5 / 4 : ℝ) n x - 1 / 4) *
-        thetaCuspMorseGroundState n x ^ 2
+        thetaCuspMorseGroundState n x ^ (2 : ℕ)
 
 theorem thetaCuspMorseBornMoment_nonneg (j : ℕ) {n : ℕ} (hn : 0 < n) :
     0 ≤ thetaCuspMorseBornMoment j n := by
@@ -244,7 +244,7 @@ theorem thetaCuspAtomRawEvenMoment_eq_morseBornMoment
       fun x => 4 * Real.pi *
         (x ^ (2 * j) *
           (thetaCuspMorseSuperpotential (5 / 4 : ℝ) n x - 1 / 4) *
-            thetaCuspMorseGroundState n x ^ 2) by
+            thetaCuspMorseGroundState n x ^ (2 : ℕ)) by
     funext x
     rw [thetaCuspSourceTerm_eq_morseBornObservable]
     ring]
@@ -269,12 +269,12 @@ theorem thetaCuspRawEvenMoment_between_morseBornMoment (j : ℕ) :
 
 theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_morseBorn
     (hupper :
-      14 * ((3005 / 2997 : ℝ) * thetaCuspMorseBornMoment 2 1) ^ 2 ≤
+      14 * ((3005 / 2997 : ℝ) * thetaCuspMorseBornMoment 2 1) ^ (2 : ℕ) ≤
         9 * thetaCuspMorseBornMoment 1 1 * thetaCuspMorseBornMoment 3 1)
     (hrelaxed :
       16 * ((3005 / 2997 : ℝ) * thetaCuspMorseBornMoment 0 1) *
           ((3005 / 2997 : ℝ) * thetaCuspMorseBornMoment 2 1) ≤
-        45 * thetaCuspMorseBornMoment 1 1 ^ 2) :
+        45 * thetaCuspMorseBornMoment 1 1 ^ (2 : ℕ)) :
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re := by
   apply forall_primeArchSourceTraceHankel_linear_nonneg_of_liouvilleWard
   · simpa only [thetaCuspFirstAtomWardMoment_eq_morseBornMoment] using hupper

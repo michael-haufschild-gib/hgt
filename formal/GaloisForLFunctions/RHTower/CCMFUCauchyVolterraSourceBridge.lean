@@ -33,11 +33,11 @@ theorem suzukiCheckpointCriticalTriangularMultiplier_div_eq_cauchyVolterraFUProf
     ccmGuinandWeilThirdGradeWeight
     cauchyVolterraFUProfile
   simp only [Nat.cast_add, Nat.cast_ofNat]
-  change Real.sqrt x * (32 / Real.log x ^ 3 * (1 - Real.log x / H)) / x =
-    4 / (Real.sqrt x * Real.log (Real.sqrt x) ^ 3) *
+  change Real.sqrt x * (32 / Real.log x ^ (3 : ℕ) * (1 - Real.log x / H)) / x =
+    4 / (Real.sqrt x * Real.log (Real.sqrt x) ^ (3 : ℕ)) *
       (1 - 2 * Real.log (Real.sqrt x) / H)
   rw [hlogsqrt]
-  have hxsq : (Real.sqrt x) ^ 2 = x := Real.sq_sqrt hx.le
+  have hxsq : (Real.sqrt x) ^ (2 : ℕ) = x := Real.sq_sqrt hx.le
   field_simp [hx.ne', hsqrt.ne']
   rw [hxsq]
   ring

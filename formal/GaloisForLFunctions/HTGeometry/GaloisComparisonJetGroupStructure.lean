@@ -71,7 +71,7 @@ theorem comparisonJetGaloisMonoid_detOne_inverse_adjoint
     (w : R ⊗[K] R)
     (hZ : leftFundamental K Y * Z = rightFundamental K Y)
     (hw : Z.det * w = 1)
-    (_hdet : Z.det ^ 2 = 1)
+    (_hdet : Z.det ^ (2 : ℕ) = 1)
     (u : R) (hu : Y.det * u = 1)
     :
     ∀ g ∈ galoisMonoid (comparisonJetAlgebra (C := C) Z w) Z

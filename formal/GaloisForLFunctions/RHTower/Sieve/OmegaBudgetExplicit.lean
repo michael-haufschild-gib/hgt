@@ -19,14 +19,14 @@ noncomputable section
 /-- The head of the Gallagher split, as a single explicit quantity. -/
 def spectralHead (z₀ z L B₀ : ℕ) (Q η w₀ G ρ s : ℝ) : ℝ :=
   2 * ((ρ * Real.sqrt (5 * Real.pi / 2 + 5 * Real.exp 1 / 2)
-        * ((L : ℝ) * (B₀ : ℝ) + Q * (((1 + η) ^ L - 1) / η))) ^ 2
-      + (∑ j ∈ Finset.range L, discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ 2)
+        * ((L : ℝ) * (B₀ : ℝ) + Q * (((1 + η) ^ L - 1) / η))) ^ (2 : ℕ)
+      + (∑ j ∈ Finset.range L, discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ (2 : ℕ))
     + 2 * ((5 * Real.pi / 2 * G
           + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
         * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
           * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
               * ((1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2)))
+                + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ))))
 
 /-- **The Route E budget in closed form.** -/
 theorem omegaBudget_le_explicit {x h : ℝ} {z₀ z L B₀ : ℕ} {Q η w₀ G ρ s : ℝ}
@@ -41,18 +41,18 @@ theorem omegaBudget_le_explicit {x h : ℝ} {z₀ z L B₀ : ℕ} {Q η w₀ G �
         ≤ s * ((B₀ : ℝ) / (Q * (1 + η) ^ j))) :
     omegaBudget x h z₀ z
       ≤ 16 * Real.sqrt x
-          * (2 * (fibreWidth x h) ^ 2 * spectralHead z₀ z L B₀ Q η w₀ G ρ s
+          * (2 * (fibreWidth x h) ^ (2 : ℕ) * spectralHead z₀ z L B₀ Q η w₀ G ρ s
             + (4 * (5 * Real.pi / 2
-                  * ∑ n ∈ fibreIndex x h, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2)
-                / (Real.pi ^ 2 * G)
+                  * ∑ n ∈ fibreIndex x h, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ))
+                / (Real.pi ^ (2 : ℕ) * G)
               + 4 * (spectralHead z₀ z L B₀ Q η w₀ G ρ s
                     + 5 * Real.exp 1 / 2 * ((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ)
-                    * ∑ n ∈ fibreIndex x h, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2)
-                / (3 * Real.pi ^ 2 * G ^ 2)))
-        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ 2 * (Real.sqrt x + 1)
+                    * ∑ n ∈ fibreIndex x h, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ))
+                / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ))))
+        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ (2 : ℕ) * (Real.sqrt x + 1)
         + 2 * (h + 1) * (2 * h + 1)
             * (4 * (Real.sqrt x / 2 + h + 1) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-              + 8 * ((Nat.primesLE z).card : ℝ) ^ 2) := by
+              + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ)) := by
   classical
   have hhead := integral_normSq_omegaWeighted_head_closed (z₀ := z₀) (z := z) (L := L) (B₀ := B₀)
     hQ hQ1 hη hG hw₀ hwG hL hρ hs hz hGle hV hU
@@ -60,7 +60,7 @@ theorem omegaBudget_le_explicit {x h : ℝ} {z₀ z L B₀ : ℕ} {Q η w₀ G �
     rw [hB₀]
     rfl
   have hhead' : (∫ w in Set.Icc (-G) G,
-      ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (fibreIndex x h) w‖ ^ 2)
+      ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (fibreIndex x h) w‖ ^ (2 : ℕ))
       ≤ spectralHead z₀ z L B₀ Q η w₀ G ρ s := by
     rw [hidx, spectralHead]
     exact hhead

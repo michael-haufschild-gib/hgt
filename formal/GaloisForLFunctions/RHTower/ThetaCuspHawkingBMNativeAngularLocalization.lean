@@ -13,7 +13,7 @@ set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 private theorem cutoff_square_identity (c d w a : ℂ) (hc : conj c = c) :
-    ‖d*w+c*a‖^2 = (conj a*((d*c+c*d)*w+c*c*a)).re + ‖d*w‖^2 := by
+    ‖d*w+c*a‖^(2 : ℕ) = (conj a*((d*c+c*d)*w+c*c*a)).re + ‖d*w‖^(2 : ℕ) := by
   have hc0 : c.im = 0 := by
     have h := congrArg Complex.im hc
     simp only [Complex.conj_im] at h
@@ -25,11 +25,11 @@ private theorem cutoff_square_identity (c d w a : ℂ) (hc : conj c = c) :
 private theorem nativeCutoff_energy_pointwise (q : XiZeroCopy) (s amplitude : ℂ)
     (t x : ℝ) (n : ℕ) (z : UpperHalfPlane) :
     (∑ i : Fin 2, ‖weightedDeriv (direction i)
-      (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z‖^2) =
+      (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z‖^(2 : ℕ)) =
     (frameEnergy (globalNativeTimePrimitive q s amplitude t x)
       (nativeTimePrimitiveCutoff q s amplitude t x n 1).field z).re +
     ∑ i : Fin 2, ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) z *
-      globalNativeTimePrimitive q s amplitude t x z‖^2 := by
+      globalNativeTimePrimitive q s amplitude t x z‖^(2 : ℕ) := by
   let eta := modularCuspCutoff ((n:ℝ)+1)
   let W := globalNativeTimePrimitive q s amplitude t x
   have hN : (1:ℝ) ≤ (n:ℝ)+1 := by
@@ -50,16 +50,16 @@ private theorem nativeCutoff_energy_pointwise (q : XiZeroCopy) (s amplitude : �
     rw [weightedDeriv_mul eta eta heta heta] at h
     simpa only [Nat.reduceAdd,pow_two] using h
   have hs (v : ℂ) :
-      ‖weightedDeriv v (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z‖^2 =
+      ‖weightedDeriv v (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z‖^(2 : ℕ) =
       (conj (weightedDeriv v W z)*
         weightedDeriv v (nativeTimePrimitiveCutoff q s amplitude t x n 1).field z).re +
-      ‖weightedDeriv v eta z*W z‖^2 := by
+      ‖weightedDeriv v eta z*W z‖^(2 : ℕ) := by
     rw [hf,hg]
     exact cutoff_square_identity _ _ _ _ (modularCuspCutoff_real _ z)
   change (∑ i : Fin 2, ‖weightedDeriv (direction i)
-      (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z‖^2) =
+      (nativeTimePrimitiveCutoff q s amplitude t x n 0).field z‖^(2 : ℕ)) =
     (frameEnergy W (nativeTimePrimitiveCutoff q s amplitude t x n 1).field z).re +
-      ∑ i : Fin 2, ‖weightedDeriv (direction i) eta z*W z‖^2
+      ∑ i : Fin 2, ‖weightedDeriv (direction i) eta z*W z‖^(2 : ℕ)
   simp only [frameEnergy,Fin.sum_univ_two,Complex.add_re]
   rw [hs,hs]
   ring
@@ -73,11 +73,11 @@ theorem nativeTimePrimitive_compact_angular_localization (q : XiZeroCopy) (s amp
     let f := nativeTimePrimitiveCutoff q s amplitude t x n 0
     let g := nativeTimePrimitiveCutoff q s amplitude t x n 1
     let err := fun z : UpperHalfPlane => ∑ i : Fin 2,
-      ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) z*W z‖^2
-    Integrable (fun z => ∑ i : Fin 2, ‖weightedDeriv (direction i) f.field z‖^2)
+      ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) z*W z‖^(2 : ℕ)
+    Integrable (fun z => ∑ i : Fin 2, ‖weightedDeriv (direction i) f.field z‖^(2 : ℕ))
       D4BMModularCore.measure ∧
     Integrable err D4BMModularCore.measure ∧
-    (∫ z : UpperHalfPlane, ∑ i : Fin 2, ‖weightedDeriv (direction i) f.field z‖^2
+    (∫ z : UpperHalfPlane, ∑ i : Fin 2, ‖weightedDeriv (direction i) f.field z‖^(2 : ℕ)
       ∂D4BMModularCore.measure) =
       -(∫ z : UpperHalfPlane, conj (chartLaplacian W z)*g.field z
         ∂D4BMModularCore.measure).re + ∫ z, err z ∂D4BMModularCore.measure := by
@@ -85,10 +85,10 @@ theorem nativeTimePrimitive_compact_angular_localization (q : XiZeroCopy) (s amp
   let f := nativeTimePrimitiveCutoff q s amplitude t x n 0
   let g := nativeTimePrimitiveCutoff q s amplitude t x n 1
   let W := globalNativeTimePrimitive q s amplitude t x
-  let E := fun z : UpperHalfPlane => ∑ i : Fin 2, ‖weightedDeriv (direction i) f.field z‖^2
+  let E := fun z : UpperHalfPlane => ∑ i : Fin 2, ‖weightedDeriv (direction i) f.field z‖^(2 : ℕ)
   let H := fun z : UpperHalfPlane => (frameEnergy W g.field z).re
   let err := fun z : UpperHalfPlane => ∑ i : Fin 2,
-    ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) z*W z‖^2
+    ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) z*W z‖^(2 : ℕ)
   have hE : Integrable E D4BMModularCore.measure := by
     apply integrable_finsetSum
     intro i hi
@@ -156,7 +156,7 @@ native primitive and both original hyperbolic frame derivatives of the cusp cuto
 def nativeJointCutoffError (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) (n : ℕ)
     (p : ℝ × UpperHalfPlane) : ℝ :=
   ∑ i : Fin 2, ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) p.2 *
-    nativeJointTimePrimitiveField q s amplitude t p‖^2
+    nativeJointTimePrimitiveField q s amplitude t p‖^(2 : ℕ)
 
 private theorem nativeJointCutoffError_measurable (q : XiZeroCopy) (s amplitude : ℂ)
     (t : ℝ) (n : ℕ) : AEStronglyMeasurable (nativeJointCutoffError q s amplitude t n)
@@ -166,7 +166,7 @@ private theorem nativeJointCutoffError_measurable (q : XiZeroCopy) (s amplitude 
     linarith
   have hi (i : Fin 2) : AEStronglyMeasurable (fun p : ℝ × UpperHalfPlane =>
       ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) p.2 *
-        nativeJointTimePrimitiveField q s amplitude t p‖^2)
+        nativeJointTimePrimitiveField q s amplitude t p‖^(2 : ℕ))
       (radialMeasure.prod D4BMModularCore.measure) := by
     have hd := ((weightedDeriv_continuous (direction i) _ (modularCuspCutoff_smooth _ hN)).comp
       (continuous_snd : Continuous (fun p : ℝ × UpperHalfPlane => p.2))).aestronglyMeasurable
@@ -181,7 +181,7 @@ private theorem nativeJointCutoffError_measurable (q : XiZeroCopy) (s amplitude 
     rw [pow_two]
   change AEStronglyMeasurable (fun p : ℝ × UpperHalfPlane => ∑ i : Fin 2,
     ‖weightedDeriv (direction i) (modularCuspCutoff ((n:ℝ)+1)) p.2 *
-      nativeJointTimePrimitiveField q s amplitude t p‖^2) _
+      nativeJointTimePrimitiveField q s amplitude t p‖^(2 : ℕ)) _
   apply ((hi 0).add (hi 1)).congr
   filter_upwards [] with p
   simp only [Pi.add_apply,Fin.sum_univ_two]
@@ -189,7 +189,7 @@ private theorem nativeJointCutoffError_measurable (q : XiZeroCopy) (s amplitude 
 private theorem nativeJointCutoffError_bound (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (n : ℕ) (p : ℝ × UpperHalfPlane), p.2 ∈ ModularGroup.fd →
       ‖nativeJointCutoffError q s amplitude t n p‖ ≤
-        C^2*‖nativeJointTimePrimitiveField q s amplitude t p‖^2 := by
+        C^(2 : ℕ)*‖nativeJointTimePrimitiveField q s amplitude t p‖^(2 : ℕ) := by
   obtain ⟨C,hC,hbound⟩ := scaledCuspCutoff_derivative_bounds
   refine ⟨C,hC,?_⟩
   intro n p hp
@@ -220,18 +220,18 @@ theorem nativeJointCutoffError_tendsto_zero (q : XiZeroCopy) (s amplitude : ℂ)
     Tendsto (fun n : ℕ => ∫ p, nativeJointCutoffError q s amplitude t n p
       ∂radialMeasure.prod D4BMModularCore.measure) atTop (𝓝 (0:ℝ)) := by
   obtain ⟨C,hC,hbound⟩ := nativeJointCutoffError_bound q s amplitude t
-  have hdom := (nativeJointTimePrimitiveField_memLp q s amplitude t).norm.integrable_sq.const_mul (C^2)
+  have hdom := (nativeJointTimePrimitiveField_memLp q s amplitude t).norm.integrable_sq.const_mul (C^(2 : ℕ))
   have hfd : ∀ᵐ p : ℝ × UpperHalfPlane ∂radialMeasure.prod D4BMModularCore.measure,
       p.2 ∈ ModularGroup.fd :=
     Measure.quasiMeasurePreserving_snd.ae (ae_restrict_mem ModularGroup.isClosed_fd.measurableSet)
   have hb (n : ℕ) : ∀ᵐ p : ℝ × UpperHalfPlane ∂radialMeasure.prod D4BMModularCore.measure,
       ‖nativeJointCutoffError q s amplitude t n p‖ ≤
-        C^2*‖nativeJointTimePrimitiveField q s amplitude t p‖^2 := by
+        C^(2 : ℕ)*‖nativeJointTimePrimitiveField q s amplitude t p‖^(2 : ℕ) := by
     filter_upwards [hfd] with p hp
     exact hbound n p hp
   refine ⟨fun n => hdom.mono' (nativeJointCutoffError_measurable q s amplitude t n) (hb n),?_⟩
   have h := tendsto_integral_of_dominated_convergence
-    (fun p => C^2*‖nativeJointTimePrimitiveField q s amplitude t p‖^2)
+    (fun p => C^(2 : ℕ)*‖nativeJointTimePrimitiveField q s amplitude t p‖^(2 : ℕ))
     (nativeJointCutoffError_measurable q s amplitude t) hdom hb
     (f := fun _ => (0:ℝ)) ?_
   · simpa only [integral_zero] using h
@@ -246,25 +246,25 @@ theorem nativeJointCutoffError_tendsto_zero (q : XiZeroCopy) (s amplitude : ℂ)
 Its integrability and limit are consequences of the stronger unweighted estimate. -/
 theorem nativeJointCutoffError_weighted_tendsto_zero (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) :
     (∀ n : ℕ, Integrable (fun p : ℝ × UpperHalfPlane =>
-      nativeJointCutoffError q s amplitude t n p/(Real.cosh p.1)^2)
+      nativeJointCutoffError q s amplitude t n p/(Real.cosh p.1)^(2 : ℕ))
       (radialMeasure.prod D4BMModularCore.measure)) ∧
     Tendsto (fun n : ℕ => ∫ p : ℝ × UpperHalfPlane,
-      nativeJointCutoffError q s amplitude t n p/(Real.cosh p.1)^2
+      nativeJointCutoffError q s amplitude t n p/(Real.cosh p.1)^(2 : ℕ)
       ∂radialMeasure.prod D4BMModularCore.measure) atTop (𝓝 (0:ℝ)) := by
   obtain ⟨hi,ht⟩ := nativeJointCutoffError_tendsto_zero q s amplitude t
   have hpos (n : ℕ) (p : ℝ × UpperHalfPlane) : 0 ≤ nativeJointCutoffError q s amplitude t n p := by
     unfold nativeJointCutoffError
     positivity
-  have hcosh (p : ℝ × UpperHalfPlane) : (1:ℝ) ≤ (Real.cosh p.1)^2 := by
+  have hcosh (p : ℝ × UpperHalfPlane) : (1:ℝ) ≤ (Real.cosh p.1)^(2 : ℕ) := by
     nlinarith [Real.one_le_cosh p.1]
   have hle (n : ℕ) (p : ℝ × UpperHalfPlane) :
-      nativeJointCutoffError q s amplitude t n p/(Real.cosh p.1)^2 ≤
+      nativeJointCutoffError q s amplitude t n p/(Real.cosh p.1)^(2 : ℕ) ≤
         nativeJointCutoffError q s amplitude t n p := div_le_self (hpos n p) (hcosh p)
   have hw (n : ℕ) : Integrable (fun p : ℝ × UpperHalfPlane =>
-      nativeJointCutoffError q s amplitude t n p/(Real.cosh p.1)^2)
+      nativeJointCutoffError q s amplitude t n p/(Real.cosh p.1)^(2 : ℕ))
       (radialMeasure.prod D4BMModularCore.measure) := by
     apply (hi n).mono'
-    · have hc : Continuous (fun p : ℝ × UpperHalfPlane => (Real.cosh p.1)^2) := by fun_prop
+    · have hc : Continuous (fun p : ℝ × UpperHalfPlane => (Real.cosh p.1)^(2 : ℕ)) := by fun_prop
       exact ((nativeJointCutoffError_measurable q s amplitude t n).aemeasurable.div
         hc.aemeasurable).aestronglyMeasurable
     · exact Filter.Eventually.of_forall (fun p => by

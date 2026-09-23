@@ -31,7 +31,7 @@ theorem continuedHorizonSourcePairing_eq_mellin (s chi a J K w : ℂ)
     {b : ℝ} (hb : b ∈ Ioo 0 1) :
     continuedHorizonSourcePairing s chi a J K w b =
       (b:ℂ)^w*horizonMellinCore s chi a J K w b*(1/(w-2*s)+onsetCorrection (2*s) w)/2 := by
-  have hs : (Real.sqrt (1-b):ℂ)^2=1-(b:ℂ) := by
+  have hs : (Real.sqrt (1-b):ℂ)^(2 : ℕ)=1-(b:ℂ) := by
     exact_mod_cast Real.sq_sqrt (sub_nonneg.mpr hb.2.le)
   have hn : 1-(b:ℂ) ≠ 0 := by exact_mod_cast (sub_pos.mpr hb.2).ne'
   calc

@@ -41,34 +41,34 @@ theorem norm_twist (a : ℕ → ℂ) (u : ℝ) (n : ℕ) :
 `integral_Icc_normSq_logPoly_le_prime_sharp` holds on every interval of the admissible length. -/
 theorem integral_Icc_normSq_logPoly_shift_le_prime_sharp (a : ℕ → ℂ) (s : Finset ℕ)
     (hs : ∀ m ∈ s, m.Prime) (u : ℝ) {W : ℝ} (hW0 : 0 ≤ W) (hW : 2 * Real.pi * 1 * W ≤ 1) :
-    (∫ w in Set.Icc (u - W) (u + W), ‖logPoly a s w‖ ^ 2)
-      ≤ (5 / 4) * ∑ q ∈ s, (700 * ((q : ℝ) / Real.log q) + 1) * ‖a q‖ ^ 2 := by
+    (∫ w in Set.Icc (u - W) (u + W), ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ (5 / 4) * ∑ q ∈ s, (700 * ((q : ℝ) / Real.log q) + 1) * ‖a q‖ ^ (2 : ℕ) := by
   set b : ℕ → ℂ := fun n => a n
     * Complex.exp (((2 * Real.pi * (u * Real.log n) : ℝ) : ℂ) * Complex.I) with hb
   have hWle : u - W ≤ u + W := by linarith
   have hWle' : -W ≤ W := by linarith
   -- move to the interval integral and translate
-  have hstep1 : (∫ w in Set.Icc (u - W) (u + W), ‖logPoly a s w‖ ^ 2)
-      = ∫ w in (u - W)..(u + W), ‖logPoly a s w‖ ^ 2 := by
+  have hstep1 : (∫ w in Set.Icc (u - W) (u + W), ‖logPoly a s w‖ ^ (2 : ℕ))
+      = ∫ w in (u - W)..(u + W), ‖logPoly a s w‖ ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_of_le hWle, MeasureTheory.integral_Icc_eq_integral_Ioc]
-  have hshift : (∫ w in (-W)..W, ‖logPoly a s (w + u)‖ ^ 2)
-      = ∫ w in (u - W)..(u + W), ‖logPoly a s w‖ ^ 2 := by
+  have hshift : (∫ w in (-W)..W, ‖logPoly a s (w + u)‖ ^ (2 : ℕ))
+      = ∫ w in (u - W)..(u + W), ‖logPoly a s w‖ ^ (2 : ℕ) := by
     have h := intervalIntegral.integral_comp_add_right
-      (a := -W) (b := W) (fun w : ℝ => ‖logPoly a s w‖ ^ 2) u
+      (a := -W) (b := W) (fun w : ℝ => ‖logPoly a s w‖ ^ (2 : ℕ)) u
     rw [h]
     congr 1 <;> ring
-  have hcongr : (∫ w in (-W)..W, ‖logPoly a s (w + u)‖ ^ 2)
-      = ∫ w in (-W)..W, ‖logPoly b s w‖ ^ 2 := by
+  have hcongr : (∫ w in (-W)..W, ‖logPoly a s (w + u)‖ ^ (2 : ℕ))
+      = ∫ w in (-W)..W, ‖logPoly b s w‖ ^ (2 : ℕ) := by
     refine intervalIntegral.integral_congr ?_
     intro w _
     simp only []
     rw [logPoly_add_right a s u w, hb]
-  have hstep2 : (∫ w in (-W)..W, ‖logPoly b s w‖ ^ 2)
-      = ∫ w in Set.Icc (-W) W, ‖logPoly b s w‖ ^ 2 := by
+  have hstep2 : (∫ w in (-W)..W, ‖logPoly b s w‖ ^ (2 : ℕ))
+      = ∫ w in Set.Icc (-W) W, ‖logPoly b s w‖ ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_of_le hWle', MeasureTheory.integral_Icc_eq_integral_Ioc]
   have hmain := integral_Icc_normSq_logPoly_le_prime_sharp b s hs hW
-  have hnorms : ∀ q ∈ s, (700 * ((q : ℝ) / Real.log q) + 1) * ‖b q‖ ^ 2
-      = (700 * ((q : ℝ) / Real.log q) + 1) * ‖a q‖ ^ 2 := by
+  have hnorms : ∀ q ∈ s, (700 * ((q : ℝ) / Real.log q) + 1) * ‖b q‖ ^ (2 : ℕ)
+      = (700 * ((q : ℝ) / Real.log q) + 1) * ‖a q‖ ^ (2 : ℕ) := by
     intro q _
     rw [hb, norm_twist]
   rw [Finset.sum_congr rfl hnorms] at hmain

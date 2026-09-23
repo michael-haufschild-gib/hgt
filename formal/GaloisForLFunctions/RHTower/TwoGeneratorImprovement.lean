@@ -30,7 +30,7 @@ namespace RHTower
 
 /-- **A two-generator bound with rational coefficients.** -/
 theorem bdDist_sq_le_two_generator :
-    bdDist (![1 / (2 : ℝ), 1 / (4 : ℝ)]) ^ 2
+    bdDist (![1 / (2 : ℝ), 1 / (4 : ℝ)]) ^ (2 : ℕ)
       ≤ 1 - 3 * Real.log 2 / 8 - 5 * Real.pi / 32 := by
   have hθ : ∀ i : Fin 2, 0 < (![1 / (2 : ℝ), 1 / (4 : ℝ)]) i
       ∧ (![1 / (2 : ℝ), 1 / (4 : ℝ)]) i ≤ 1 := by
@@ -43,7 +43,7 @@ theorem bdDist_sq_le_two_generator :
   have hlog2 : Real.log (1 / (2 : ℝ)) = -Real.log 2 := by
     rw [one_div, Real.log_inv]
   have hlog4 : Real.log (1 / (4 : ℝ)) = -(2 * Real.log 2) := by
-    rw [one_div, Real.log_inv, show (4 : ℝ) = (2 : ℝ) ^ 2 from by norm_num, Real.log_pow]
+    rw [one_div, Real.log_inv, show (4 : ℝ) = (2 : ℝ) ^ (2 : ℕ) from by norm_num, Real.log_pow]
     push_cast
     ring
   simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]

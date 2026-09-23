@@ -65,7 +65,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicContractedLanding_unit_sub_target_eq
     (x : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
       genus d (fun _ _ => 0)) :
     globalReesWittForm genus d (fun _ _ => 1) x.1 -
-        (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) =
+        (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) =
       ∑ a, (d a).toOrbitCoareaDatum.blockEnergy (x.1.1 a) := by
   have hzero := x.2
   have hdecompZero := globalReesWittForm_eq_positive_add_oneRank
@@ -87,7 +87,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicContractedLanding_unit_gt_target
     {genus : ℕ} {d : LocalData p n m K N}
     (x : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
       genus d (fun _ _ => 0)) :
-    normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4 <
+    normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4 <
       globalReesWittForm genus d (fun _ _ => 1) x.1 := by
   have hblock :=
     routePPrimitiveGammaJuliaStokesCubicContractedLanding_totalBlockEnergy_pos x

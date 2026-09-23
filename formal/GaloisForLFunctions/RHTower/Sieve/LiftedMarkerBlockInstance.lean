@@ -26,7 +26,7 @@ theorem card_sign_window_ge_lifted {β : ℝ} {u : ℕ} {σ : ℤ} {S B Pi b : �
             (2 * liftMarkerScale u))).card : ℕ) : ℝ) ≤ Pi)
     (hbthr : (((badStart (liftScale u) (cardLength β (liftScale u))).card : ℕ) : ℝ)
       * ((((bigPrimeSet (liftMarkerScale u) (2 * liftMarkerScale u)).card : ℕ) : ℝ) + 2 * Pi)
-        ≤ b ^ 2)
+        ≤ b ^ (2 : ℕ))
     (hb0 : 0 ≤ b)
     (hS : S ≤ (∑ p ∈ bigPrimeSet (liftMarkerScale u) (2 * liftMarkerScale u), 1 / (p : ℝ))
       - b / ((liftMarkerScale u : ℕ) : ℝ))

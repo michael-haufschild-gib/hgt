@@ -31,7 +31,7 @@ variable {K : Type*} [Field K]
 section Equations
 
 /-- **The four scalar equations of a fibre point at both depths two.** -/
-theorem fibre_two_two_coeffs {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V)
+theorem fibre_two_two_coeffs {U V : K[X]} (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (p : criticalFibre K 2 2 U V) :
     p.1.1.coeff 0 * p.1.2.coeff 0 = 1 ∧
     p.1.1.coeff 0 * p.1.2.coeff 1 + p.1.1.coeff 1 * p.1.2.coeff 0 = 0 ∧
@@ -72,17 +72,17 @@ theorem fibre_two_two_coeffs {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X :
     by linear_combination h3⟩
 
 /-- **The two equations left after eliminating the reciprocal.** -/
-theorem fibre_two_two_eliminated {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V)
+theorem fibre_two_two_eliminated {U V : K[X]} (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (p : criticalFibre K 2 2 U V) :
-    V.coeff 2 * p.1.1.coeff 0 ^ 3 - p.1.1.coeff 1 ^ 2
+    V.coeff 2 * p.1.1.coeff 0 ^ (3 : ℕ) - p.1.1.coeff 1 ^ (2 : ℕ)
         + U.coeff 2 * p.1.1.coeff 0 = 0 ∧
-      V.coeff 3 * p.1.1.coeff 0 ^ 3 + V.coeff 2 * p.1.1.coeff 1 * p.1.1.coeff 0 ^ 2
+      V.coeff 3 * p.1.1.coeff 0 ^ (3 : ℕ) + V.coeff 2 * p.1.1.coeff 1 * p.1.1.coeff 0 ^ (2 : ℕ)
         - U.coeff 2 * p.1.1.coeff 1 + U.coeff 3 * p.1.1.coeff 0 = 0 := by
   obtain ⟨e0, e1, e2, e3⟩ := fibre_two_two_coeffs hU hV p
   constructor
-  · linear_combination p.1.1.coeff 0 ^ 2 * e2 - p.1.1.coeff 1 * p.1.1.coeff 0 * e1
-      + (p.1.1.coeff 1 ^ 2 - U.coeff 2 * p.1.1.coeff 0) * e0
-  · linear_combination p.1.1.coeff 0 ^ 2 * e3 - U.coeff 2 * p.1.1.coeff 0 * e1
+  · linear_combination p.1.1.coeff 0 ^ (2 : ℕ) * e2 - p.1.1.coeff 1 * p.1.1.coeff 0 * e1
+      + (p.1.1.coeff 1 ^ (2 : ℕ) - U.coeff 2 * p.1.1.coeff 0) * e0
+  · linear_combination p.1.1.coeff 0 ^ (2 : ℕ) * e3 - U.coeff 2 * p.1.1.coeff 0 * e1
       + (U.coeff 2 * p.1.1.coeff 1 - U.coeff 3 * p.1.1.coeff 0) * e0
 
 end Equations
@@ -93,29 +93,29 @@ section Sextic
 
 /-- **The eliminant of the depth-two system**: a sextic in the first jet coefficient. -/
 noncomputable def criticalSextic (u₂ u₃ v₂ v₃ : K) : K[X] :=
-  (C v₂ * X ^ 2 + C u₂) * (C v₂ * X ^ 2 - C u₂) ^ 2 - X * (C v₃ * X ^ 2 + C u₃) ^ 2
+  (C v₂ * X ^ (2 : ℕ) + C u₂) * (C v₂ * X ^ (2 : ℕ) - C u₂) ^ (2 : ℕ) - X * (C v₃ * X ^ (2 : ℕ) + C u₃) ^ (2 : ℕ)
 
 theorem natDegree_criticalSextic {u₂ u₃ v₂ v₃ : K} (hv₂ : v₂ ≠ 0) :
     (criticalSextic u₂ u₃ v₂ v₃).natDegree = 6 := by
-  have hq : ∀ c d : K, c ≠ 0 → (C c * X ^ 2 + C d : K[X]).natDegree = 2 := by
+  have hq : ∀ c d : K, c ≠ 0 → (C c * X ^ (2 : ℕ) + C d : K[X]).natDegree = 2 := by
     intro c d hc
     rw [Polynomial.natDegree_add_C, Polynomial.natDegree_C_mul_X_pow 2 c hc]
-  have hq0 : ∀ c d : K, c ≠ 0 → (C c * X ^ 2 + C d : K[X]) ≠ 0 := by
+  have hq0 : ∀ c d : K, c ≠ 0 → (C c * X ^ (2 : ℕ) + C d : K[X]) ≠ 0 := by
     intro c d hc h0
     have := hq c d hc
     rw [h0, Polynomial.natDegree_zero] at this
     omega
-  have hsub : (C v₂ * X ^ 2 - C u₂ : K[X]) = C v₂ * X ^ 2 + C (-u₂) := by
+  have hsub : (C v₂ * X ^ (2 : ℕ) - C u₂ : K[X]) = C v₂ * X ^ (2 : ℕ) + C (-u₂) := by
     rw [map_neg]
     ring
-  have hleft : ((C v₂ * X ^ 2 + C u₂) * (C v₂ * X ^ 2 - C u₂) ^ 2 : K[X]).natDegree = 6 := by
+  have hleft : ((C v₂ * X ^ (2 : ℕ) + C u₂) * (C v₂ * X ^ (2 : ℕ) - C u₂) ^ (2 : ℕ) : K[X]).natDegree = 6 := by
     rw [hsub, Polynomial.natDegree_mul (hq0 v₂ u₂ hv₂) (pow_ne_zero _ (hq0 v₂ (-u₂) hv₂)),
       Polynomial.natDegree_pow, hq v₂ u₂ hv₂, hq v₂ (-u₂) hv₂]
-  have hright : (X * (C v₃ * X ^ 2 + C u₃) ^ 2 : K[X]).natDegree ≤ 5 := by
+  have hright : (X * (C v₃ * X ^ (2 : ℕ) + C u₃) ^ (2 : ℕ) : K[X]).natDegree ≤ 5 := by
     refine le_trans (Polynomial.natDegree_mul_le) ?_
-    have : ((C v₃ * X ^ 2 + C u₃ : K[X]) ^ 2).natDegree ≤ 4 := by
+    have : ((C v₃ * X ^ (2 : ℕ) + C u₃ : K[X]) ^ (2 : ℕ)).natDegree ≤ 4 := by
       refine le_trans (Polynomial.natDegree_pow_le) ?_
-      have h1 : (C v₃ * X ^ 2 + C u₃ : K[X]).natDegree ≤ 2 := by
+      have h1 : (C v₃ * X ^ (2 : ℕ) + C u₃ : K[X]).natDegree ≤ 2 := by
         refine le_trans (Polynomial.natDegree_add_le _ _) ?_
         simp only [max_le_iff]
         exact ⟨le_trans (Polynomial.natDegree_mul_le) (by simp), by simp⟩
@@ -132,7 +132,7 @@ theorem criticalSextic_ne_zero {u₂ u₃ v₂ v₃ : K} (hv₂ : v₂ ≠ 0) :
   omega
 
 /-- **The first jet coefficient of a fibre point is a root of the sextic.** -/
-theorem isRoot_criticalSextic {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V)
+theorem isRoot_criticalSextic {U V : K[X]} (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (p : criticalFibre K 2 2 U V) :
     (criticalSextic (U.coeff 2) (U.coeff 3) (V.coeff 2) (V.coeff 3)).IsRoot
       (p.1.1.coeff 0) := by
@@ -148,9 +148,9 @@ theorem isRoot_criticalSextic {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X 
         (p.1.1.coeff 0) = 0 := by
     simp only [criticalSextic, Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_add,
       Polynomial.eval_pow, Polynomial.eval_C, Polynomial.eval_X]
-    linear_combination (V.coeff 2 * p.1.1.coeff 0 ^ 2 - U.coeff 2) ^ 2 * E1
-      + (p.1.1.coeff 1 * (V.coeff 2 * p.1.1.coeff 0 ^ 2 - U.coeff 2)
-          - p.1.1.coeff 0 * (V.coeff 3 * p.1.1.coeff 0 ^ 2 + U.coeff 3)) * E2
+    linear_combination (V.coeff 2 * p.1.1.coeff 0 ^ (2 : ℕ) - U.coeff 2) ^ (2 : ℕ) * E1
+      + (p.1.1.coeff 1 * (V.coeff 2 * p.1.1.coeff 0 ^ (2 : ℕ) - U.coeff 2)
+          - p.1.1.coeff 0 * (V.coeff 3 * p.1.1.coeff 0 ^ (2 : ℕ) + U.coeff 3)) * E2
   rcases mul_eq_zero.1 hmul with h | h
   · exact absurd h ha₀
   · exact h
@@ -163,8 +163,8 @@ section Injective
 
 /-- **At both depths two the first jet coefficient determines the fibre point**, away from the
 locus where the second equation degenerates in the second jet coefficient. -/
-theorem coeff_zero_injective_two_two {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U)
-    (hV : (X : K[X]) ^ 2 ∣ V)
+theorem coeff_zero_injective_two_two {U V : K[X]} (hU : (X : K[X]) ^ (2 : ℕ) ∣ U)
+    (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (hgen : U.coeff 2 * V.coeff 3 + U.coeff 3 * V.coeff 2 ≠ 0) :
     Function.Injective (fun p : criticalFibre K 2 2 U V => p.1.1.coeff 0) := by
   intro p q hpq
@@ -177,11 +177,11 @@ theorem coeff_zero_injective_two_two {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U)
     have hne := coeff_zero_add_ne_zero_of_dvd (L := 2 + 2) (by omega) hU0 hV0 p.2.2.2
     rw [Polynomial.coeff_add, hU0, add_zero] at hne
     exact hne
-  have hlead : V.coeff 2 * p.1.1.coeff 0 ^ 2 - U.coeff 2 ≠ 0 := by
+  have hlead : V.coeff 2 * p.1.1.coeff 0 ^ (2 : ℕ) - U.coeff 2 ≠ 0 := by
     intro hz
-    have hz3 : p.1.1.coeff 0 * (V.coeff 3 * p.1.1.coeff 0 ^ 2 + U.coeff 3) = 0 := by
+    have hz3 : p.1.1.coeff 0 * (V.coeff 3 * p.1.1.coeff 0 ^ (2 : ℕ) + U.coeff 3) = 0 := by
       linear_combination E2p - p.1.1.coeff 1 * hz
-    have hz3' : V.coeff 3 * p.1.1.coeff 0 ^ 2 + U.coeff 3 = 0 := by
+    have hz3' : V.coeff 3 * p.1.1.coeff 0 ^ (2 : ℕ) + U.coeff 3 = 0 := by
       rcases mul_eq_zero.1 hz3 with h | h
       · exact absurd h ha₀
       · exact h
@@ -189,10 +189,10 @@ theorem coeff_zero_injective_two_two {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U)
     linear_combination -V.coeff 3 * hz + V.coeff 2 * hz3'
   have h1 : p.1.1.coeff 1 = q.1.1.coeff 1 := by
     have hdiff : (p.1.1.coeff 1 - q.1.1.coeff 1)
-        * (V.coeff 2 * p.1.1.coeff 0 ^ 2 - U.coeff 2) = 0 := by
+        * (V.coeff 2 * p.1.1.coeff 0 ^ (2 : ℕ) - U.coeff 2) = 0 := by
       linear_combination E2p - E2q
-        - (V.coeff 3 * (p.1.1.coeff 0 ^ 2 + p.1.1.coeff 0 * q.1.1.coeff 0
-            + q.1.1.coeff 0 ^ 2) + U.coeff 3) * h0
+        - (V.coeff 3 * (p.1.1.coeff 0 ^ (2 : ℕ) + p.1.1.coeff 0 * q.1.1.coeff 0
+            + q.1.1.coeff 0 ^ (2 : ℕ)) + U.coeff 3) * h0
         - q.1.1.coeff 1 * V.coeff 2 * (p.1.1.coeff 0 + q.1.1.coeff 0) * h0
     rcases mul_eq_zero.1 hdiff with h | h
     · exact sub_eq_zero.1 h
@@ -219,7 +219,7 @@ section Bound
 binomial multiplicity of points.**  The genericity condition rules out the locus where the second
 equation degenerates in the second jet coefficient. -/
 theorem nat_card_criticalFibre_two_two_le {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V) (hv₂ : V.coeff 2 ≠ 0)
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V) (hv₂ : V.coeff 2 ≠ 0)
     (hgen : U.coeff 2 * V.coeff 3 + U.coeff 3 * V.coeff 2 ≠ 0) :
     Nat.card (criticalFibre K 2 2 U V) ≤ criticalHorizonMultiplicity 2 2 := by
   classical
@@ -248,8 +248,8 @@ end Bound
 section Surjective
 
 /-- **A solution of the four scalar equations is a fibre point.** -/
-theorem exists_criticalFibre_two_two_of_coeffs {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U)
-    (hV : (X : K[X]) ^ 2 ∣ V) {a₀ a₁ b₀ b₁ : K}
+theorem exists_criticalFibre_two_two_of_coeffs {U V : K[X]} (hU : (X : K[X]) ^ (2 : ℕ) ∣ U)
+    (hV : (X : K[X]) ^ (2 : ℕ) ∣ V) {a₀ a₁ b₀ b₁ : K}
     (e0 : a₀ * b₀ = 1) (e1 : a₀ * b₁ + a₁ * b₀ = 0)
     (e2 : a₀ * V.coeff 2 + a₁ * b₁ + U.coeff 2 * b₀ = 0)
     (e3 : a₀ * V.coeff 3 + a₁ * V.coeff 2 + U.coeff 2 * b₁ + U.coeff 3 * b₀ = 0) :
@@ -297,13 +297,13 @@ theorem exists_criticalFibre_two_two_of_coeffs {U V : K[X]} (hU : (X : K[X]) ^ 2
   simp [hA]
 
 /-- **Every root of the sextic is the first jet coefficient of a fibre point.** -/
-theorem exists_criticalFibre_of_isRoot {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U)
-    (hV : (X : K[X]) ^ 2 ∣ V) (hu₂ : U.coeff 2 ≠ 0)
+theorem exists_criticalFibre_of_isRoot {U V : K[X]} (hU : (X : K[X]) ^ (2 : ℕ) ∣ U)
+    (hV : (X : K[X]) ^ (2 : ℕ) ∣ V) (hu₂ : U.coeff 2 ≠ 0)
     (hgen : U.coeff 2 * V.coeff 3 + U.coeff 3 * V.coeff 2 ≠ 0) {a₀ : K}
     (hroot : (criticalSextic (U.coeff 2) (U.coeff 3) (V.coeff 2) (V.coeff 3)).IsRoot a₀) :
     ∃ p : criticalFibre K 2 2 U V, p.1.1.coeff 0 = a₀ := by
-  have hev : (V.coeff 2 * a₀ ^ 2 + U.coeff 2) * (V.coeff 2 * a₀ ^ 2 - U.coeff 2) ^ 2
-      - a₀ * (V.coeff 3 * a₀ ^ 2 + U.coeff 3) ^ 2 = 0 := by
+  have hev : (V.coeff 2 * a₀ ^ (2 : ℕ) + U.coeff 2) * (V.coeff 2 * a₀ ^ (2 : ℕ) - U.coeff 2) ^ (2 : ℕ)
+      - a₀ * (V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3) ^ (2 : ℕ) = 0 := by
     have := hroot
     simp only [Polynomial.IsRoot, criticalSextic, Polynomial.eval_sub, Polynomial.eval_mul,
       Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_C, Polynomial.eval_X] at this
@@ -312,42 +312,42 @@ theorem exists_criticalFibre_of_isRoot {U V : K[X]} (hU : (X : K[X]) ^ 2 ∣ U)
     intro h0
     rw [h0] at hev
     refine hu₂ ?_
-    have hcube : U.coeff 2 ^ 3 = 0 := by linear_combination hev
+    have hcube : U.coeff 2 ^ (3 : ℕ) = 0 := by linear_combination hev
     exact pow_eq_zero_iff (n := 3) (by omega) |>.1 hcube
-  have hD : V.coeff 2 * a₀ ^ 2 - U.coeff 2 ≠ 0 := by
+  have hD : V.coeff 2 * a₀ ^ (2 : ℕ) - U.coeff 2 ≠ 0 := by
     intro hz
-    have hW : a₀ * (V.coeff 3 * a₀ ^ 2 + U.coeff 3) ^ 2 = 0 := by
-      linear_combination -hev + (V.coeff 2 * a₀ ^ 2 + U.coeff 2)
-        * (V.coeff 2 * a₀ ^ 2 - U.coeff 2) * hz
-    have hW2 : (V.coeff 3 * a₀ ^ 2 + U.coeff 3) ^ 2 = 0 := by
+    have hW : a₀ * (V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3) ^ (2 : ℕ) = 0 := by
+      linear_combination -hev + (V.coeff 2 * a₀ ^ (2 : ℕ) + U.coeff 2)
+        * (V.coeff 2 * a₀ ^ (2 : ℕ) - U.coeff 2) * hz
+    have hW2 : (V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3) ^ (2 : ℕ) = 0 := by
       rcases mul_eq_zero.1 hW with h | h
       · exact absurd h ha₀
       · exact h
-    have hW0 : V.coeff 3 * a₀ ^ 2 + U.coeff 3 = 0 := pow_eq_zero_iff (n := 2) (by omega) |>.1 hW2
+    have hW0 : V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3 = 0 := pow_eq_zero_iff (n := 2) (by omega) |>.1 hW2
     refine hgen ?_
     linear_combination -V.coeff 3 * hz + V.coeff 2 * hW0
-  set D : K := V.coeff 2 * a₀ ^ 2 - U.coeff 2 with hDdef
-  set a₁ : K := -a₀ * (V.coeff 3 * a₀ ^ 2 + U.coeff 3) / D with ha₁
-  have hE2 : a₁ * D = -(a₀ * (V.coeff 3 * a₀ ^ 2 + U.coeff 3)) := by
+  set D : K := V.coeff 2 * a₀ ^ (2 : ℕ) - U.coeff 2 with hDdef
+  set a₁ : K := -a₀ * (V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3) / D with ha₁
+  have hE2 : a₁ * D = -(a₀ * (V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3)) := by
     rw [ha₁]
     field_simp
-  have hWD : a₀ * (V.coeff 3 * a₀ ^ 2 + U.coeff 3) ^ 2
-      = (V.coeff 2 * a₀ ^ 2 + U.coeff 2) * D ^ 2 := by
+  have hWD : a₀ * (V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3) ^ (2 : ℕ)
+      = (V.coeff 2 * a₀ ^ (2 : ℕ) + U.coeff 2) * D ^ (2 : ℕ) := by
     linear_combination -hev
-  have hE1 : a₁ ^ 2 = a₀ * (V.coeff 2 * a₀ ^ 2 + U.coeff 2) := by
+  have hE1 : a₁ ^ (2 : ℕ) = a₀ * (V.coeff 2 * a₀ ^ (2 : ℕ) + U.coeff 2) := by
     refine mul_right_cancel₀ (pow_ne_zero 2 hD) ?_
-    calc a₁ ^ 2 * D ^ 2 = (a₁ * D) ^ 2 := by ring
-      _ = a₀ ^ 2 * (V.coeff 3 * a₀ ^ 2 + U.coeff 3) ^ 2 := by rw [hE2]; ring
-      _ = a₀ * (a₀ * (V.coeff 3 * a₀ ^ 2 + U.coeff 3) ^ 2) := by ring
-      _ = a₀ * ((V.coeff 2 * a₀ ^ 2 + U.coeff 2) * D ^ 2) := by rw [hWD]
-      _ = a₀ * (V.coeff 2 * a₀ ^ 2 + U.coeff 2) * D ^ 2 := by ring
-  have hE2' : a₁ * (V.coeff 2 * a₀ ^ 2 - U.coeff 2)
-      = -(a₀ * (V.coeff 3 * a₀ ^ 2 + U.coeff 3)) := by
+    calc a₁ ^ (2 : ℕ) * D ^ (2 : ℕ) = (a₁ * D) ^ (2 : ℕ) := by ring
+      _ = a₀ ^ (2 : ℕ) * (V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3) ^ (2 : ℕ) := by rw [hE2]; ring
+      _ = a₀ * (a₀ * (V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3) ^ (2 : ℕ)) := by ring
+      _ = a₀ * ((V.coeff 2 * a₀ ^ (2 : ℕ) + U.coeff 2) * D ^ (2 : ℕ)) := by rw [hWD]
+      _ = a₀ * (V.coeff 2 * a₀ ^ (2 : ℕ) + U.coeff 2) * D ^ (2 : ℕ) := by ring
+  have hE2' : a₁ * (V.coeff 2 * a₀ ^ (2 : ℕ) - U.coeff 2)
+      = -(a₀ * (V.coeff 3 * a₀ ^ (2 : ℕ) + U.coeff 3)) := by
     rw [← hDdef]
     exact hE2
   clear_value a₁ D
   refine exists_criticalFibre_two_two_of_coeffs hU hV (a₁ := a₁) (b₀ := a₀⁻¹)
-    (b₁ := -a₁ / a₀ ^ 2) ?_ ?_ ?_ ?_
+    (b₁ := -a₁ / a₀ ^ (2 : ℕ)) ?_ ?_ ?_ ?_
   · field_simp
   · field_simp
     ring
@@ -369,7 +369,7 @@ omit [IsAlgClosed K] in
 separability is assumed: the count is the number of distinct roots, whatever the sextic's
 multiplicities. -/
 theorem nat_card_criticalFibre_two_two_eq_card_roots [DecidableEq K] {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V)
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (hu₂ : U.coeff 2 ≠ 0) (hv₂ : V.coeff 2 ≠ 0)
     (hgen : U.coeff 2 * V.coeff 3 + U.coeff 3 * V.coeff 2 ≠ 0) :
     Nat.card (criticalFibre K 2 2 U V)
@@ -391,7 +391,7 @@ theorem nat_card_criticalFibre_two_two_eq_card_roots [DecidableEq K] {U V : K[X]
 /-- **The exact count at both depths two, for a general observed packet.**  The fibre is in
 bijection with the roots of the sextic, and a separable sextic of degree six has six of them. -/
 theorem nat_card_criticalFibre_two_two {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V)
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (hu₂ : U.coeff 2 ≠ 0) (hv₂ : V.coeff 2 ≠ 0)
     (hgen : U.coeff 2 * V.coeff 3 + U.coeff 3 * V.coeff 2 ≠ 0)
     (hsep : (criticalSextic (U.coeff 2) (U.coeff 3) (V.coeff 2) (V.coeff 3)).Separable) :
@@ -412,7 +412,7 @@ theorem nat_card_criticalFibre_two_two {U V : K[X]}
 multiplicity exactly when the sextic has no repeated root — the count of distinct roots reaches the
 degree precisely then. -/
 theorem nat_card_criticalFibre_two_two_eq_iff [DecidableEq K] {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V)
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (hu₂ : U.coeff 2 ≠ 0) (hv₂ : V.coeff 2 ≠ 0)
     (hgen : U.coeff 2 * V.coeff 3 + U.coeff 3 * V.coeff 2 ≠ 0) :
     Nat.card (criticalFibre K 2 2 U V) = criticalHorizonMultiplicity 2 2 ↔
@@ -430,7 +430,7 @@ theorem nat_card_criticalFibre_two_two_eq_iff [DecidableEq K] {U V : K[X]}
 
 /-- **The depth-two exactness criterion in the separability phrasing.** -/
 theorem nat_card_criticalFibre_two_two_eq_iff_separable [DecidableEq K] {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V)
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (hu₂ : U.coeff 2 ≠ 0) (hv₂ : V.coeff 2 ≠ 0)
     (hgen : U.coeff 2 * V.coeff 3 + U.coeff 3 * V.coeff 2 ≠ 0) :
     Nat.card (criticalFibre K 2 2 U V) = criticalHorizonMultiplicity 2 2 ↔
@@ -441,7 +441,7 @@ theorem nat_card_criticalFibre_two_two_eq_iff_separable [DecidableEq K] {U V : K
 
 /-- **A degenerate sextic strictly loses jets at both depths two.** -/
 theorem nat_card_criticalFibre_two_two_lt_of_not_separable [DecidableEq K] {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V)
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V)
     (hu₂ : U.coeff 2 ≠ 0) (hv₂ : V.coeff 2 ≠ 0)
     (hgen : U.coeff 2 * V.coeff 3 + U.coeff 3 * V.coeff 2 ≠ 0)
     (hsep : ¬ (criticalSextic (U.coeff 2) (U.coeff 3) (V.coeff 2) (V.coeff 3)).Separable) :
@@ -463,7 +463,7 @@ coefficient is a root of the sextic, and the first equation determines the secon
 sign, so the fibre injects into a set of at most twelve pairs.  No genericity condition is used
 beyond criticality of the observed reciprocal packet. -/
 theorem nat_card_criticalFibre_two_two_le_of_critical {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ 2 ∣ V) (hv₂ : V.coeff 2 ≠ 0) :
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ (2 : ℕ) ∣ V) (hv₂ : V.coeff 2 ≠ 0) :
     Nat.card (criticalFibre K 2 2 U V) ≤ 12 := by
   classical
   set S : K[X] := criticalSextic (U.coeff 2) (U.coeff 3) (V.coeff 2) (V.coeff 3) with hS
@@ -471,12 +471,12 @@ theorem nat_card_criticalFibre_two_two_le_of_critical {U V : K[X]}
   have hU0 : U.coeff 0 = 0 := Polynomial.X_pow_dvd_iff.1 hU 0 (by omega)
   have hV0 : V.coeff 0 = 0 := Polynomial.X_pow_dvd_iff.1 hV 0 (by omega)
   set R : Finset K := S.roots.toFinset with hR
-  set Q : K → K[X] := fun a => X ^ 2 - C (V.coeff 2 * a ^ 3 + U.coeff 2 * a) with hQ
+  set Q : K → K[X] := fun a => X ^ (2 : ℕ) - C (V.coeff 2 * a ^ (3 : ℕ) + U.coeff 2 * a) with hQ
   have hQ0 : ∀ a : K, Q a ≠ 0 := by
     intro a h0
     have hdeg : (Q a).natDegree = 2 := by
-      have hlt : (C (V.coeff 2 * a ^ 3 + U.coeff 2 * a) : K[X]).natDegree
-          < ((X : K[X]) ^ 2).natDegree := by
+      have hlt : (C (V.coeff 2 * a ^ (3 : ℕ) + U.coeff 2 * a) : K[X]).natDegree
+          < ((X : K[X]) ^ (2 : ℕ)).natDegree := by
         rw [Polynomial.natDegree_C, Polynomial.natDegree_X_pow]
         omega
       rw [hQ, Polynomial.natDegree_sub_eq_left_of_natDegree_lt hlt, Polynomial.natDegree_X_pow]

@@ -29,10 +29,10 @@ theorem egbFixedChargeACriticalMarkov_topSum_le
 /-- Total squared-norm loss is exactly the transition-weighted conditional variance. -/
 theorem egbFixedChargeACriticalMarkov_variance_identity
     (n m : ℕ) (f : Fin (2 ^ (n + 3)) → ℝ) :
-    (∑ i, f i ^ 2) - (∑ i,
-      (egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f i ^ 2) =
+    (∑ i, f i ^ (2 : ℕ)) - (∑ i,
+      (egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f i ^ (2 : ℕ)) =
         ∑ i, ∑ j, ((egbFixedChargeACriticalMarkovMatrix n ^ m) i j).re *
-          (f j - (egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f i) ^ 2 := by
+          (f j - (egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f i) ^ (2 : ℕ) := by
   have h := bistochasticMixing_variance_identity (egbFixedChargeACriticalBistochastic n m) f
   rw [egbFixedChargeACriticalBistochastic_action] at h
   exact h
@@ -40,16 +40,16 @@ theorem egbFixedChargeACriticalMarkov_variance_identity
 /-- The critical Markov action cannot increase the squared norm of any real profile. -/
 theorem egbFixedChargeACriticalMarkov_sum_sq_le
     (n m : ℕ) (f : Fin (2 ^ (n + 3)) → ℝ) :
-    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f i ^ 2) ≤
-      ∑ i, f i ^ 2 := by
+    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f i ^ (2 : ℕ)) ≤
+      ∑ i, f i ^ (2 : ℕ) := by
   simpa only [egbFixedChargeACriticalBistochastic_action] using
     bistochasticMixing_sum_sq_le (egbFixedChargeACriticalBistochastic n m) f
 
 /-- Norm preservation is exactly constancy along every occupied transition edge. -/
 theorem egbFixedChargeACriticalMarkov_sum_sq_eq_iff
     (n m : ℕ) (f : Fin (2 ^ (n + 3)) → ℝ) :
-    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f i ^ 2) =
-      (∑ i, f i ^ 2) ↔
+    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f i ^ (2 : ℕ)) =
+      (∑ i, f i ^ (2 : ℕ)) ↔
         ∀ i j : Fin (2 ^ (n + 3)), ((egbFixedChargeACriticalMarkovMatrix n ^ m) i j).re = 0 ∨
           f j = (egbFixedChargeACriticalMarkovIteratedKernel n m).toFinitePositiveKernel.applyReal f i := by
   have h := bistochasticMixing_sum_sq_eq_iff (egbFixedChargeACriticalBistochastic n m) f

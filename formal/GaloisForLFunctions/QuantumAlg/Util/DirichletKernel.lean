@@ -46,7 +46,7 @@ open scoped BigOperators
 (real-valued; the subtractions are over `ℝ`, so the `R = 0` case is `0`). Mathlib
 provides the linear analogue but not this one. -/
 theorem sum_sq_range (R : ℕ) :
-    ∑ ℓ ∈ Finset.range R, (ℓ : ℝ) ^ 2 = (R : ℝ) * ((R : ℝ) - 1) * (2 * (R : ℝ) - 1) / 6 := by
+    ∑ ℓ ∈ Finset.range R, (ℓ : ℝ) ^ (2 : ℕ) = (R : ℝ) * ((R : ℝ) - 1) * (2 * (R : ℝ) - 1) / 6 := by
   induction R with
   | zero => norm_num
   | succ n ih =>
@@ -56,7 +56,7 @@ theorem sum_sq_range (R : ℕ) :
 
 /-- Closed form for the same square sum over the interval `1 ≤ ℓ ≤ R - 1`. -/
 theorem sum_sq_Icc_one_sub (R : ℕ) :
-    ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2
+    ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ)
       = (R : ℝ) * ((R : ℝ) - 1) * (2 * (R : ℝ) - 1) / 6 := by
   induction R with
   | zero => norm_num
@@ -82,14 +82,14 @@ noncomputable def psPoint (R μ : ℕ) : ℝ := (2 * (μ : ℝ) - 1) * Real.pi /
 
 /-- Weight for the first-derivative rule: `(-1)^{μ-1} / (4R sin²((2μ-1)π/(4R)))`. -/
 noncomputable def psWeight (R μ : ℕ) : ℝ :=
-  (-1 : ℝ) ^ (μ - 1) / (4 * R * Real.sin ((2 * (μ : ℝ) - 1) * Real.pi / (4 * R)) ^ 2)
+  (-1 : ℝ) ^ (μ - 1) / (4 * R * Real.sin ((2 * (μ : ℝ) - 1) * Real.pi / (4 * R)) ^ (2 : ℕ))
 
 /-- Evaluation point for the second-derivative rule: `μπ/R`. -/
 noncomputable def psPoint2 (R μ : ℕ) : ℝ := (μ : ℝ) * Real.pi / R
 
 /-- Weight for the second-derivative rule: `(-1)^{μ-1} / (2 sin²(μπ/(2R)))`. -/
 noncomputable def psWeight2 (R μ : ℕ) : ℝ :=
-  (-1 : ℝ) ^ (μ - 1) / (2 * Real.sin ((μ : ℝ) * Real.pi / (2 * R)) ^ 2)
+  (-1 : ℝ) ^ (μ - 1) / (2 * Real.sin ((μ : ℝ) * Real.pi / (2 * R)) ^ (2 : ℕ))
 
 /-! ### Odd-node evaluations of the kernel arguments
 
@@ -154,7 +154,7 @@ theorem dirichlet_master (R : ℕ) (hR : 1 ≤ R) (x : ℝ) :
           + 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1), Real.cos ((ℓ : ℝ) * x)) := by
   induction R, hR using Nat.le_induction with
   | base =>
-    have hcosx : Real.cos x = 2 * Real.cos (x / 2) ^ 2 - 1 := by
+    have hcosx : Real.cos x = 2 * Real.cos (x / 2) ^ (2 : ℕ) - 1 := by
       have h := Real.cos_sq (x / 2)
       rw [show 2 * (x / 2) = x from by ring] at h; linarith
     have hsinx : Real.sin x = 2 * Real.sin (x / 2) * Real.cos (x / 2) := by
@@ -244,7 +244,7 @@ theorem dirichlet_master_deriv (R : ℕ) (hR : 1 ≤ R) (x : ℝ) :
 the even nodes, where `sin(R x) = 0`; it resolves the second-derivative weights into a
 finite cosine polynomial. -/
 theorem dirichlet_master_deriv2 (R : ℕ) (hR : 1 ≤ R) (x : ℝ) :
-    -((R : ℝ) ^ 2) * Real.sin ((R : ℝ) * x) * Real.cos (x / 2)
+    -((R : ℝ) ^ (2 : ℕ)) * Real.sin ((R : ℝ) * x) * Real.cos (x / 2)
         - (R : ℝ) * Real.cos ((R : ℝ) * x) * Real.sin (x / 2)
         - (1 / 4) * Real.sin ((R : ℝ) * x) * Real.cos (x / 2)
       = -(1 / 4) * Real.sin (x / 2)
@@ -253,9 +253,9 @@ theorem dirichlet_master_deriv2 (R : ℕ) (hR : 1 ≤ R) (x : ℝ) :
           * (-(Real.sin ((R : ℝ) * x) * (R : ℝ))
               + 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.sin ((ℓ : ℝ) * x) * (ℓ : ℝ))
         + Real.sin (x / 2)
-          * (-((R : ℝ) ^ 2) * Real.cos ((R : ℝ) * x)
+          * (-((R : ℝ) ^ (2 : ℕ)) * Real.cos ((R : ℝ) * x)
               + 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-                -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ 2) := by
+                -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ (2 : ℕ)) := by
   have hRt : HasDerivAt (fun t : ℝ => (R : ℝ) * t) (R : ℝ) x := by
     simpa using (hasDerivAt_id x).const_mul (R : ℝ)
   have hhalf : HasDerivAt (fun t : ℝ => t / 2) (1 / 2 : ℝ) x := by
@@ -276,10 +276,10 @@ theorem dirichlet_master_deriv2 (R : ℕ) (hR : 1 ≤ R) (x : ℝ) :
     exact hs
   have hsum2 : HasDerivAt
       (fun t => ∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.sin ((ℓ : ℝ) * t) * (ℓ : ℝ))
-      (∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ 2) x := by
+      (∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ (2 : ℕ)) x := by
     have hterm : ∀ ℓ ∈ Finset.Icc 1 (R - 1),
         HasDerivAt (fun t : ℝ => -Real.sin ((ℓ : ℝ) * t) * (ℓ : ℝ))
-          (-Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ 2) x := by
+          (-Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ (2 : ℕ)) x := by
       intro ℓ _
       have hℓ : HasDerivAt (fun t : ℝ => (ℓ : ℝ) * t) (ℓ : ℝ) x := by
         simpa using (hasDerivAt_id x).const_mul (ℓ : ℝ)
@@ -290,7 +290,7 @@ theorem dirichlet_master_deriv2 (R : ℕ) (hR : 1 ≤ R) (x : ℝ) :
         funext t; ring
       rw [hfun] at ht
       have hder : -(ℓ : ℝ) * (Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ))
-          = -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ 2 := by ring
+          = -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ (2 : ℕ) := by ring
       rw [hder] at ht
       exact ht
     have hs := HasDerivAt.sum hterm
@@ -307,15 +307,15 @@ theorem dirichlet_master_deriv2 (R : ℕ) (hR : 1 ≤ R) (x : ℝ) :
   have hQ : HasDerivAt
       (fun t => -(Real.sin ((R : ℝ) * t) * (R : ℝ))
           + 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.sin ((ℓ : ℝ) * t) * (ℓ : ℝ))
-      (-((R : ℝ) ^ 2) * Real.cos ((R : ℝ) * x)
-          + 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ 2) x := by
+      (-((R : ℝ) ^ (2 : ℕ)) * Real.cos ((R : ℝ) * x)
+          + 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ (2 : ℕ)) x := by
     have htop0 := hRt.sin.const_mul (-(R : ℝ))
     have htop_fun : (fun t : ℝ => -(R : ℝ) * Real.sin ((R : ℝ) * t))
         = fun t : ℝ => -(Real.sin ((R : ℝ) * t) * (R : ℝ)) := by
       funext t; ring
     rw [htop_fun] at htop0
     have htop_der : -(R : ℝ) * (Real.cos ((R : ℝ) * x) * (R : ℝ))
-        = -((R : ℝ) ^ 2) * Real.cos ((R : ℝ) * x) := by ring
+        = -((R : ℝ) ^ (2 : ℕ)) * Real.cos ((R : ℝ) * x) := by ring
     rw [htop_der] at htop0
     exact htop0.add (hsum2.const_mul 2)
   have hF₁ :=
@@ -363,28 +363,28 @@ the singular weight `sin(R x)/(4R sin²(x/2))` equals a trigonometric polynomial
 This is the identity that removes the `1/sin²` from the parameter-shift weights. -/
 theorem weight_odd_resolve (R : ℕ) (hR : 1 ≤ R) (x : ℝ)
     (hcos : Real.cos ((R : ℝ) * x) = 0) (hsin : Real.sin (x / 2) ≠ 0) :
-    Real.sin ((R : ℝ) * x) / (4 * (R : ℝ) * Real.sin (x / 2) ^ 2)
+    Real.sin ((R : ℝ) * x) / (4 * (R : ℝ) * Real.sin (x / 2) ^ (2 : ℕ))
       = (1 / 2) * Real.sin ((R : ℝ) * x)
         - (1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.sin ((ℓ : ℝ) * x) * (ℓ : ℝ) := by
   have hR0 : (R : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-  have hpyth : Real.sin (x / 2) ^ 2 + Real.cos (x / 2) ^ 2 = 1 := Real.sin_sq_add_cos_sq (x / 2)
+  have hpyth : Real.sin (x / 2) ^ (2 : ℕ) + Real.cos (x / 2) ^ (2 : ℕ) = 1 := Real.sin_sq_add_cos_sq (x / 2)
   have hM := dirichlet_master R hR x
   have hD := dirichlet_master_deriv R hR x
   rw [hcos] at hM hD
   -- eliminate the `1/sin²` and the shared cosine sum, leaving a clean quadratic relation
-  have hstar : Real.sin (x / 2) ^ 2
+  have hstar : Real.sin (x / 2) ^ (2 : ℕ)
         * (Real.sin ((R : ℝ) * x) * (R : ℝ)
             - 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.sin ((ℓ : ℝ) * x) * (ℓ : ℝ))
       = (1 / 2) * Real.sin ((R : ℝ) * x) := by
     linear_combination Real.sin (x / 2) * hD - (Real.cos (x / 2) / 2) * hM
       + (Real.sin ((R : ℝ) * x) / 2) * hpyth
-  have hne : 4 * (R : ℝ) * Real.sin (x / 2) ^ 2 ≠ 0 :=
+  have hne : 4 * (R : ℝ) * Real.sin (x / 2) ^ (2 : ℕ) ≠ 0 :=
     mul_ne_zero (mul_ne_zero (by norm_num) hR0) (pow_ne_zero 2 hsin)
   rw [div_eq_iff hne]
   have hclear : ((1 / 2) * Real.sin ((R : ℝ) * x)
         - (1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.sin ((ℓ : ℝ) * x) * (ℓ : ℝ))
-        * (4 * (R : ℝ) * Real.sin (x / 2) ^ 2)
-      = 2 * (Real.sin (x / 2) ^ 2
+        * (4 * (R : ℝ) * Real.sin (x / 2) ^ (2 : ℕ))
+      = 2 * (Real.sin (x / 2) ^ (2 : ℕ)
           * (Real.sin ((R : ℝ) * x) * (R : ℝ)
               - 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.sin ((ℓ : ℝ) * x) * (ℓ : ℝ))) := by
     field_simp
@@ -396,13 +396,13 @@ theorem weight_odd_resolve (R : ℕ) (hR : 1 ≤ R) (x : ℝ)
 the second-derivative singular weight is a finite cosine polynomial. -/
 theorem weight_even_resolve (R : ℕ) (hR : 1 ≤ R) (x : ℝ)
     (hsinR : Real.sin ((R : ℝ) * x) = 0) (hsin : Real.sin (x / 2) ≠ 0) :
-    -Real.cos ((R : ℝ) * x) / (2 * Real.sin (x / 2) ^ 2)
+    -Real.cos ((R : ℝ) * x) / (2 * Real.sin (x / 2) ^ (2 : ℕ))
       = -((R : ℝ) / 2) * Real.cos ((R : ℝ) * x)
         - (1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-          (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * x) := by
+          (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * x) := by
   have hR0 : (R : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-  have hs2 : Real.sin (x / 2) ^ 2 ≠ 0 := pow_ne_zero 2 hsin
-  have hpyth : Real.sin (x / 2) ^ 2 + Real.cos (x / 2) ^ 2 = 1 :=
+  have hs2 : Real.sin (x / 2) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hsin
+  have hpyth : Real.sin (x / 2) ^ (2 : ℕ) + Real.cos (x / 2) ^ (2 : ℕ) = 1 :=
     Real.sin_sq_add_cos_sq (x / 2)
   have hM := dirichlet_master R hR x
   rw [hsinR] at hM
@@ -416,13 +416,13 @@ theorem weight_even_resolve (R : ℕ) (hR : 1 ≤ R) (x : ℝ)
   have hD := dirichlet_master_deriv R hR x
   have hD2 := dirichlet_master_deriv2 R hR x
   rw [hsinR, hP0] at hD hD2
-  rw [show (∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ 2)
-      = -∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2 * Real.cos (x * (ℓ : ℝ)) by
+  rw [show (∑ ℓ ∈ Finset.Icc 1 (R - 1), -Real.cos ((ℓ : ℝ) * x) * (ℓ : ℝ) ^ (2 : ℕ))
+      = -∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ) * Real.cos (x * (ℓ : ℝ)) by
       rw [← Finset.sum_neg_distrib]
       exact Finset.sum_congr rfl fun ℓ _ => by
         ring_nf] at hD2
   ring_nf at hD hD2
-  have hpyth' : Real.sin (x * (1 / 2)) ^ 2 + Real.cos (x * (1 / 2)) ^ 2 = 1 := by
+  have hpyth' : Real.sin (x * (1 / 2)) ^ (2 : ℕ) + Real.cos (x * (1 / 2)) ^ (2 : ℕ) = 1 := by
     convert hpyth using 1
     ring_nf
   have hD' :
@@ -433,29 +433,29 @@ theorem weight_even_resolve (R : ℕ) (hR : 1 ≤ R) (x : ℝ)
       using hD
   have hD2' :
       -((R : ℝ) * Real.cos (x * (R : ℝ)) * Real.sin (x * (1 / 2)))
-        = -((R : ℝ) ^ 2 * Real.cos (x * (R : ℝ)) * Real.sin (x * (1 / 2)))
+        = -((R : ℝ) ^ (2 : ℕ) * Real.cos (x * (R : ℝ)) * Real.sin (x * (1 / 2)))
           + 2 * (Real.cos (x * (1 / 2))
             * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -((ℓ : ℝ) * Real.sin (x * (ℓ : ℝ))))
           - 2 * (Real.sin (x * (1 / 2))
-            * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2 * Real.cos (x * (ℓ : ℝ))) := by
+            * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ) * Real.cos (x * (ℓ : ℝ))) := by
     simpa [show (R : ℝ) * x = x * (R : ℝ) by ring, mul_comm, mul_left_comm, mul_assoc,
       sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using hD2
-  have hstar : Real.sin (x * (1 / 2)) ^ 2
-        * (-((R : ℝ) ^ 2) * Real.cos (x * (R : ℝ))
+  have hstar : Real.sin (x * (1 / 2)) ^ (2 : ℕ)
+        * (-((R : ℝ) ^ (2 : ℕ)) * Real.cos (x * (R : ℝ))
           - 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-            (ℓ : ℝ) ^ 2 * Real.cos (x * (ℓ : ℝ)))
+            (ℓ : ℝ) ^ (2 : ℕ) * Real.cos (x * (ℓ : ℝ)))
       = -(R : ℝ) * Real.cos (x * (R : ℝ)) := by
     have hcomb :
         -((R : ℝ) * Real.cos (x * (R : ℝ)))
-            * (Real.sin (x * (1 / 2)) ^ 2 + Real.cos (x * (1 / 2)) ^ 2)
+            * (Real.sin (x * (1 / 2)) ^ (2 : ℕ) + Real.cos (x * (1 / 2)) ^ (2 : ℕ))
           =
-        Real.sin (x * (1 / 2)) ^ 2
-          * (-((R : ℝ) ^ 2) * Real.cos (x * (R : ℝ))
+        Real.sin (x * (1 / 2)) ^ (2 : ℕ)
+          * (-((R : ℝ) ^ (2 : ℕ)) * Real.cos (x * (R : ℝ))
             - 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-              (ℓ : ℝ) ^ 2 * Real.cos (x * (ℓ : ℝ))) := by
+              (ℓ : ℝ) ^ (2 : ℕ) * Real.cos (x * (ℓ : ℝ))) := by
       calc
         -((R : ℝ) * Real.cos (x * (R : ℝ)))
-            * (Real.sin (x * (1 / 2)) ^ 2 + Real.cos (x * (1 / 2)) ^ 2)
+            * (Real.sin (x * (1 / 2)) ^ (2 : ℕ) + Real.cos (x * (1 / 2)) ^ (2 : ℕ))
             =
           Real.sin (x * (1 / 2))
               * (-((R : ℝ) * Real.cos (x * (R : ℝ)) * Real.sin (x * (1 / 2))))
@@ -464,33 +464,33 @@ theorem weight_even_resolve (R : ℕ) (hR : 1 ≤ R) (x : ℝ)
           ring
         _ =
           Real.sin (x * (1 / 2))
-              * (-((R : ℝ) ^ 2 * Real.cos (x * (R : ℝ)) * Real.sin (x * (1 / 2)))
+              * (-((R : ℝ) ^ (2 : ℕ) * Real.cos (x * (R : ℝ)) * Real.sin (x * (1 / 2)))
                 + 2 * (Real.cos (x * (1 / 2))
                   * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -((ℓ : ℝ) * Real.sin (x * (ℓ : ℝ))))
                 - 2 * (Real.sin (x * (1 / 2))
-                  * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2 * Real.cos (x * (ℓ : ℝ))))
+                  * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ) * Real.cos (x * (ℓ : ℝ))))
             - Real.cos (x * (1 / 2))
               * (2 * (Real.sin (x * (1 / 2))
                 * ∑ ℓ ∈ Finset.Icc 1 (R - 1), -((ℓ : ℝ) * Real.sin (x * (ℓ : ℝ))))) := by
           rw [hD2', hD']
-        _ = Real.sin (x * (1 / 2)) ^ 2
-          * (-((R : ℝ) ^ 2) * Real.cos (x * (R : ℝ))
+        _ = Real.sin (x * (1 / 2)) ^ (2 : ℕ)
+          * (-((R : ℝ) ^ (2 : ℕ)) * Real.cos (x * (R : ℝ))
             - 2 * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-              (ℓ : ℝ) ^ 2 * Real.cos (x * (ℓ : ℝ))) := by
+              (ℓ : ℝ) ^ (2 : ℕ) * Real.cos (x * (ℓ : ℝ))) := by
           ring
     rw [← hcomb, hpyth']
     ring
   rw [show x / 2 = x * (1 / 2) by ring]
-  rw [show (∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * x))
-      = ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2 * Real.cos (x * (ℓ : ℝ)) by
+  rw [show (∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * x))
+      = ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ) * Real.cos (x * (ℓ : ℝ)) by
       exact Finset.sum_congr rfl fun ℓ _ => by
         congr 1
         ring_nf]
   rw [show (R : ℝ) * x = x * (R : ℝ) by ring]
-  have hs2' : Real.sin (x * (1 / 2)) ^ 2 ≠ 0 := by
+  have hs2' : Real.sin (x * (1 / 2)) ^ (2 : ℕ) ≠ 0 := by
     simpa [show x / 2 = x * (1 / 2) by ring] using hs2
   field_simp [hR0, hs2']
-  rw [show Real.sin (x / 2) ^ 2 = Real.sin (x * (1 / 2)) ^ 2 by
+  rw [show Real.sin (x / 2) ^ (2 : ℕ) = Real.sin (x * (1 / 2)) ^ (2 : ℕ) by
     congr 1
     ring_nf]
   convert hstar.symm using 1 <;> ring_nf
@@ -1058,7 +1058,7 @@ theorem sin_half_psPoint2_ne (R μ : ℕ) (hR : 1 ≤ R) (hμ : 1 ≤ μ) (hμR 
 /-- The second-derivative weight rewritten with `-cos(R y_μ)` in the numerator. -/
 theorem psWeight2_eq (R μ : ℕ) (hR : 1 ≤ R) (hμ : 1 ≤ μ) :
     psWeight2 R μ
-      = -Real.cos ((R : ℝ) * psPoint2 R μ) / (2 * Real.sin (psPoint2 R μ / 2) ^ 2) := by
+      = -Real.cos ((R : ℝ) * psPoint2 R μ) / (2 * Real.sin (psPoint2 R μ / 2) ^ (2 : ℕ)) := by
   have hhalf : psPoint2 R μ / 2 = (μ : ℝ) * Real.pi / (2 * R) := by
     unfold psPoint2
     ring
@@ -1076,12 +1076,12 @@ theorem psWeight2_eq (R μ : ℕ) (hR : 1 ≤ R) (hμ : 1 ≤ μ) :
 /-- **(E0)** The second-derivative weights sum to the constant-cancellation coefficient. -/
 theorem sum_psWeight2_eq (R : ℕ) (hR : 1 ≤ R) :
     ∑ μ ∈ Finset.Icc 1 (2 * R - 1), psWeight2 R μ
-      = (2 * (R : ℝ) ^ 2 + 1) / 6 := by
+      = (2 * (R : ℝ) ^ (2 : ℕ) + 1) / 6 := by
   have hstep : ∀ μ ∈ Finset.Icc 1 (2 * R - 1),
       psWeight2 R μ
         = -((R : ℝ) / 2) * Real.cos ((R : ℝ) * psPoint2 R μ)
           - (1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-            (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ) := by
+            (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ) := by
     intro μ hμ
     obtain ⟨hμ1, hμ2⟩ := Finset.mem_Icc.mp hμ
     rw [psWeight2_eq R μ hR hμ1]
@@ -1089,12 +1089,12 @@ theorem sum_psWeight2_eq (R : ℕ) (hR : 1 ≤ R) :
       (sin_half_psPoint2_ne R μ hR hμ1 hμ2)
   have hinner : ∀ ℓ ∈ Finset.Icc 1 (R - 1),
       ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
-        (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ) = -((ℓ : ℝ) ^ 2) := by
+        (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ) = -((ℓ : ℝ) ^ (2 : ℕ)) := by
     intro ℓ hℓ
     obtain ⟨hℓ1, hℓR⟩ := Finset.mem_Icc.mp hℓ
     rw [show (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
-          (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))
-        = (ℓ : ℝ) ^ 2 * ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
+          (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))
+        = (ℓ : ℝ) ^ (2 : ℕ) * ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             Real.cos ((ℓ : ℝ) * psPoint2 R μ) by
         rw [Finset.mul_sum]]
     rw [sum_cos_psPoint2_of_lt R ℓ hR hℓ1 (by omega)]
@@ -1103,27 +1103,27 @@ theorem sum_psWeight2_eq (R : ℕ) (hR : 1 ≤ R) :
     sum_cos_psPoint2_of_lt R R hR hR (by omega)]
   rw [show (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
         1 / (R : ℝ) * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-          (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))
+          (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))
       =
         1 / (R : ℝ) * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
           ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
-            (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ) by
+            (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ) by
       calc
         (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
           1 / (R : ℝ) * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-            (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))
+            (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))
             =
           1 / (R : ℝ) * ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-              (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ) := by
+              (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ) := by
           rw [Finset.mul_sum]
         _ = 1 / (R : ℝ) * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
             ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
-              (ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ) := by
+              (ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ) := by
           rw [Finset.sum_comm]]
   rw [Finset.sum_congr rfl hinner]
-  rw [show (∑ ℓ ∈ Finset.Icc 1 (R - 1), -((ℓ : ℝ) ^ 2))
-      = -∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2 by
+  rw [show (∑ ℓ ∈ Finset.Icc 1 (R - 1), -((ℓ : ℝ) ^ (2 : ℕ)))
+      = -∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ) by
       rw [Finset.sum_neg_distrib]]
   rw [sum_sq_Icc_one_sub R]
   have hR0 : (R : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
@@ -1140,7 +1140,7 @@ theorem sum_sin_mul_psWeight2_eq_zero (R p : ℕ) (hR : 1 ≤ R) :
             * (Real.sin ((p : ℝ) * psPoint2 R μ) * Real.cos ((R : ℝ) * psPoint2 R μ))
           - Real.sin ((p : ℝ) * psPoint2 R μ)
               * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-                (1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ)) := by
+                (1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ)) := by
     intro μ hμ
     obtain ⟨hμ1, hμ2⟩ := Finset.mem_Icc.mp hμ
     rw [psWeight2_eq R μ hR hμ1]
@@ -1151,12 +1151,12 @@ theorem sum_sin_mul_psWeight2_eq_zero (R p : ℕ) (hR : 1 ≤ R) :
   have hinner : ∀ ℓ ∈ Finset.Icc 1 (R - 1),
       ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
         Real.sin ((p : ℝ) * psPoint2 R μ)
-          * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) = 0 := by
+          * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) = 0 := by
     intro ℓ _
     rw [show (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
           Real.sin ((p : ℝ) * psPoint2 R μ)
-            * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
-        = ((ℓ : ℝ) ^ 2 * (1 / (R : ℝ))) * ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
+            * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
+        = ((ℓ : ℝ) ^ (2 : ℕ) * (1 / (R : ℝ))) * ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             Real.sin ((p : ℝ) * psPoint2 R μ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ) by
         rw [Finset.mul_sum]
         exact Finset.sum_congr rfl fun μ _ => by ring]
@@ -1166,29 +1166,29 @@ theorem sum_sin_mul_psWeight2_eq_zero (R p : ℕ) (hR : 1 ≤ R) :
   rw [show (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
         Real.sin ((p : ℝ) * psPoint2 R μ)
           * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-            (1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
+            (1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
       =
         ∑ ℓ ∈ Finset.Icc 1 (R - 1),
           ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             Real.sin ((p : ℝ) * psPoint2 R μ)
-              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) by
+              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) by
       calc
         (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
           Real.sin ((p : ℝ) * psPoint2 R μ)
             * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-              (1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
+              (1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
             =
           ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             ∑ ℓ ∈ Finset.Icc 1 (R - 1),
               Real.sin ((p : ℝ) * psPoint2 R μ)
-                * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) := by
+                * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) := by
           apply Finset.sum_congr rfl
           intro μ _
           rw [Finset.mul_sum]
         _ = ∑ ℓ ∈ Finset.Icc 1 (R - 1),
             ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
               Real.sin ((p : ℝ) * psPoint2 R μ)
-                * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) := by
+                * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) := by
           rw [Finset.sum_comm]]
   rw [Finset.sum_congr rfl hinner, Finset.sum_const_zero]
   ring
@@ -1198,7 +1198,7 @@ theorem sum_sin_mul_psWeight2_eq_zero (R p : ℕ) (hR : 1 ≤ R) :
 theorem sum_cos_mul_psWeight2_eq (R p : ℕ) (hR : 1 ≤ R) (hp1 : 1 ≤ p) (hpR : p ≤ R) :
     ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
       Real.cos ((p : ℝ) * psPoint2 R μ) * psWeight2 R μ
-        = (2 * (R : ℝ) ^ 2 + 1) / 6 - (p : ℝ) ^ 2 := by
+        = (2 * (R : ℝ) ^ (2 : ℕ) + 1) / 6 - (p : ℝ) ^ (2 : ℕ) := by
   have hR0 : (R : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
   have hstep : ∀ μ ∈ Finset.Icc 1 (2 * R - 1),
       Real.cos ((p : ℝ) * psPoint2 R μ) * psWeight2 R μ
@@ -1206,7 +1206,7 @@ theorem sum_cos_mul_psWeight2_eq (R p : ℕ) (hR : 1 ≤ R) (hp1 : 1 ≤ p) (hpR
             * (Real.cos ((p : ℝ) * psPoint2 R μ) * Real.cos ((R : ℝ) * psPoint2 R μ))
           - Real.cos ((p : ℝ) * psPoint2 R μ)
               * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-                (1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ)) := by
+                (1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ)) := by
     intro μ hμ
     obtain ⟨hμ1, hμ2⟩ := Finset.mem_Icc.mp hμ
     rw [psWeight2_eq R μ hR hμ1]
@@ -1219,29 +1219,29 @@ theorem sum_cos_mul_psWeight2_eq (R p : ℕ) (hR : 1 ≤ R) (hp1 : 1 ≤ p) (hpR
   rw [show (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
         Real.cos ((p : ℝ) * psPoint2 R μ)
           * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-            (1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
+            (1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
       =
         ∑ ℓ ∈ Finset.Icc 1 (R - 1),
           ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             Real.cos ((p : ℝ) * psPoint2 R μ)
-              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) by
+              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) by
       calc
         (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
           Real.cos ((p : ℝ) * psPoint2 R μ)
             * ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-              (1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
+              (1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
             =
           ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             ∑ ℓ ∈ Finset.Icc 1 (R - 1),
               Real.cos ((p : ℝ) * psPoint2 R μ)
-                * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) := by
+                * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) := by
           apply Finset.sum_congr rfl
           intro μ _
           rw [Finset.mul_sum]
         _ = ∑ ℓ ∈ Finset.Icc 1 (R - 1),
             ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
               Real.cos ((p : ℝ) * psPoint2 R μ)
-                * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) := by
+                * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))) := by
           rw [Finset.sum_comm]]
   by_cases hp : p = R
   · subst p
@@ -1249,20 +1249,20 @@ theorem sum_cos_mul_psWeight2_eq (R p : ℕ) (hR : 1 ≤ R) (hp1 : 1 ≤ p) (hpR
         ∑ ℓ ∈ Finset.Icc 1 (R - 1),
           ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             Real.cos ((R : ℝ) * psPoint2 R μ)
-              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
-          = -(1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2 := by
+              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
+          = -(1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ) := by
       rw [show (∑ ℓ ∈ Finset.Icc 1 (R - 1),
           ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             Real.cos ((R : ℝ) * psPoint2 R μ)
-              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
-          = ∑ ℓ ∈ Finset.Icc 1 (R - 1), -((1 / (R : ℝ)) * (ℓ : ℝ) ^ 2) by
+              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
+          = ∑ ℓ ∈ Finset.Icc 1 (R - 1), -((1 / (R : ℝ)) * (ℓ : ℝ) ^ (2 : ℕ)) by
           apply Finset.sum_congr rfl
           intro ℓ hℓ
           obtain ⟨hℓ1, hℓR⟩ := Finset.mem_Icc.mp hℓ
           rw [show (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
                 Real.cos ((R : ℝ) * psPoint2 R μ)
-                  * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
-              = (1 / (R : ℝ)) * (ℓ : ℝ) ^ 2
+                  * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
+              = (1 / (R : ℝ)) * (ℓ : ℝ) ^ (2 : ℕ)
                   * ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
                     Real.cos ((ℓ : ℝ) * psPoint2 R μ) * Real.cos ((R : ℝ) * psPoint2 R μ) by
               rw [Finset.mul_sum]
@@ -1281,32 +1281,32 @@ theorem sum_cos_mul_psWeight2_eq (R p : ℕ) (hR : 1 ≤ R) (hp1 : 1 ≤ p) (hpR
         ∑ ℓ ∈ Finset.Icc 1 (R - 1),
           ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             Real.cos ((p : ℝ) * psPoint2 R μ)
-              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
-          = (p : ℝ) ^ 2 - (1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2 := by
+              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ)))
+          = (p : ℝ) ^ (2 : ℕ) - (1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ) := by
       calc
         (∑ ℓ ∈ Finset.Icc 1 (R - 1),
           ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
             Real.cos ((p : ℝ) * psPoint2 R μ)
-              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
+              * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
             =
           ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-            (1 / (R : ℝ)) * (ℓ : ℝ) ^ 2
+            (1 / (R : ℝ)) * (ℓ : ℝ) ^ (2 : ℕ)
               * (if p = ℓ then ((R : ℝ) - 1) else (-1 : ℝ)) := by
           apply Finset.sum_congr rfl
           intro ℓ hℓ
           obtain ⟨hℓ1, hℓR⟩ := Finset.mem_Icc.mp hℓ
           rw [show (∑ μ ∈ Finset.Icc 1 (2 * R - 1),
                 Real.cos ((p : ℝ) * psPoint2 R μ)
-                  * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ 2 * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
-              = (1 / (R : ℝ)) * (ℓ : ℝ) ^ 2
+                  * ((1 / (R : ℝ)) * ((ℓ : ℝ) ^ (2 : ℕ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ))))
+              = (1 / (R : ℝ)) * (ℓ : ℝ) ^ (2 : ℕ)
                   * ∑ μ ∈ Finset.Icc 1 (2 * R - 1),
                     Real.cos ((p : ℝ) * psPoint2 R μ) * Real.cos ((ℓ : ℝ) * psPoint2 R μ) by
               rw [Finset.mul_sum]
               exact Finset.sum_congr rfl fun μ _ => by ring]
           rw [sum_cos_mul_cos_psPoint2_of_lt R p ℓ hR hp1 hpR hℓ1 hℓR]
         _ = ∑ ℓ ∈ Finset.Icc 1 (R - 1),
-              (-((1 / (R : ℝ)) * (ℓ : ℝ) ^ 2)
-                + if ℓ = p then (1 / (R : ℝ)) * (ℓ : ℝ) ^ 2 * (R : ℝ) else 0) := by
+              (-((1 / (R : ℝ)) * (ℓ : ℝ) ^ (2 : ℕ))
+                + if ℓ = p then (1 / (R : ℝ)) * (ℓ : ℝ) ^ (2 : ℕ) * (R : ℝ) else 0) := by
           apply Finset.sum_congr rfl
           intro ℓ _
           by_cases hℓp : ℓ = p
@@ -1315,13 +1315,13 @@ theorem sum_cos_mul_psWeight2_eq (R p : ℕ) (hR : 1 ≤ R) (hp1 : 1 ≤ p) (hpR
             ring
           · rw [if_neg (by intro h; exact hℓp h.symm), if_neg hℓp]
             ring
-        _ = -(1 / (R : ℝ)) * (∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2)
-              + (1 / (R : ℝ)) * (p : ℝ) ^ 2 * (R : ℝ) := by
+        _ = -(1 / (R : ℝ)) * (∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ))
+              + (1 / (R : ℝ)) * (p : ℝ) ^ (2 : ℕ) * (R : ℝ) := by
           rw [Finset.sum_add_distrib, Finset.sum_neg_distrib, ← Finset.mul_sum]
           have hcorr :
               (∑ ℓ ∈ Finset.Icc 1 (R - 1),
-                if ℓ = p then (1 / (R : ℝ)) * (ℓ : ℝ) ^ 2 * (R : ℝ) else 0)
-                = (1 / (R : ℝ)) * (p : ℝ) ^ 2 * (R : ℝ) := by
+                if ℓ = p then (1 / (R : ℝ)) * (ℓ : ℝ) ^ (2 : ℕ) * (R : ℝ) else 0)
+                = (1 / (R : ℝ)) * (p : ℝ) ^ (2 : ℕ) * (R : ℝ) := by
             rw [Finset.sum_eq_single p]
             · rw [if_pos rfl]
             · intro ℓ hℓ hℓp
@@ -1330,7 +1330,7 @@ theorem sum_cos_mul_psWeight2_eq (R p : ℕ) (hR : 1 ≤ R) (hp1 : 1 ≤ p) (hpR
               exact False.elim (hp_not_mem hp_mem)
           rw [hcorr]
           ring
-        _ = (p : ℝ) ^ 2 - (1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ 2 := by
+        _ = (p : ℝ) ^ (2 : ℕ) - (1 / (R : ℝ)) * ∑ ℓ ∈ Finset.Icc 1 (R - 1), (ℓ : ℝ) ^ (2 : ℕ) := by
           field_simp [hR0]
           ring
     rw [if_neg hp, hinner, sum_sq_Icc_one_sub R]
@@ -1342,7 +1342,7 @@ theorem sum_cos_mul_psWeight2_eq (R p : ℕ) (hR : 1 ≤ R) (hp1 : 1 ≤ p) (hpR
 /-- The parameter-shift weight rewritten with `sin(R x_μ)` in the numerator. -/
 theorem psWeight_eq (R μ : ℕ) (hR : 1 ≤ R) (hμ : 1 ≤ μ) :
     psWeight R μ
-      = Real.sin ((R : ℝ) * psPoint R μ) / (4 * (R : ℝ) * Real.sin (psPoint R μ / 2) ^ 2) := by
+      = Real.sin ((R : ℝ) * psPoint R μ) / (4 * (R : ℝ) * Real.sin (psPoint R μ / 2) ^ (2 : ℕ)) := by
   have h2 : psPoint R μ / 2 = (2 * (μ : ℝ) - 1) * Real.pi / (4 * R) := by unfold psPoint; ring
   unfold psWeight
   rw [sin_R_mul_psPoint R μ hR hμ, h2]

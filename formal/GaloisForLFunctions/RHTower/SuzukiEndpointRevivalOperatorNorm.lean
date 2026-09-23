@@ -98,13 +98,13 @@ theorem integral_windowDensity (L x : ℝ) :
 
 /-- The squared `L²(0,L)` norm of the limiting window mass. -/
 theorem integral_windowMassLimit_sq (L : ℝ) :
-    (∫ x in (0 : ℝ)..L, windowMassLimit L x ^ 2)
-      = 4 * (1 - Real.exp (-L / 2)) ^ 2 * (1 - Real.exp (-L)) := by
-  have hsq : ∀ x : ℝ, windowMassLimit L x ^ 2
-      = (4 * (1 - Real.exp (-L / 2)) ^ 2) * Real.exp (-x) := by
+    (∫ x in (0 : ℝ)..L, windowMassLimit L x ^ (2 : ℕ))
+      = 4 * (1 - Real.exp (-L / 2)) ^ (2 : ℕ) * (1 - Real.exp (-L)) := by
+  have hsq : ∀ x : ℝ, windowMassLimit L x ^ (2 : ℕ)
+      = (4 * (1 - Real.exp (-L / 2)) ^ (2 : ℕ)) * Real.exp (-x) := by
     intro x
     rw [windowMassLimit]
-    have hx2 : Real.exp (-x / 2) ^ 2 = Real.exp (-x) := by
+    have hx2 : Real.exp (-x / 2) ^ (2 : ℕ) = Real.exp (-x) := by
       rw [sq, ← Real.exp_add]
       congr 1
       ring
@@ -120,7 +120,7 @@ theorem integral_windowMassLimit_sq (L : ℝ) :
     ring
   have hcont : IntervalIntegrable (fun u : ℝ => Real.exp (-u)) volume 0 L :=
     (Continuous.intervalIntegrable (by fun_prop) _ _)
-  rw [intervalIntegral.integral_congr (g := fun x => (4 * (1 - Real.exp (-L / 2)) ^ 2) * Real.exp (-x))
+  rw [intervalIntegral.integral_congr (g := fun x => (4 * (1 - Real.exp (-L / 2)) ^ (2 : ℕ)) * Real.exp (-x))
       (fun x _ => hsq x), intervalIntegral.integral_const_mul,
     integral_eq_sub_of_hasDerivAt hderiv hcont]
   rw [neg_zero, Real.exp_zero]
@@ -143,7 +143,7 @@ theorem windowRevivalAmplitude_pos {L : ℝ} (hL : 0 < L) :
 
 /-- The `L²(0,L)` norm of the limiting window mass, divided by `√L`, is the revival amplitude. -/
 theorem sqrt_integral_windowMassLimit_sq_div (L : ℝ) (hL : 0 < L) :
-    Real.sqrt (∫ x in (0 : ℝ)..L, windowMassLimit L x ^ 2) / Real.sqrt L
+    Real.sqrt (∫ x in (0 : ℝ)..L, windowMassLimit L x ^ (2 : ℕ)) / Real.sqrt L
       = 2 * (1 - Real.exp (-L / 2)) * Real.sqrt ((1 - Real.exp (-L)) / L) := by
   have h1 : Real.exp (-L / 2) < 1 := by
     rw [Real.exp_lt_one_iff]
@@ -152,8 +152,8 @@ theorem sqrt_integral_windowMassLimit_sq_div (L : ℝ) (hL : 0 < L) :
     rw [Real.exp_lt_one_iff]
     linarith
   rw [integral_windowMassLimit_sq]
-  have hfac : 4 * (1 - Real.exp (-L / 2)) ^ 2 * (1 - Real.exp (-L))
-      = (2 * (1 - Real.exp (-L / 2))) ^ 2 * (1 - Real.exp (-L)) := by ring
+  have hfac : 4 * (1 - Real.exp (-L / 2)) ^ (2 : ℕ) * (1 - Real.exp (-L))
+      = (2 * (1 - Real.exp (-L / 2))) ^ (2 : ℕ) * (1 - Real.exp (-L)) := by ring
   rw [hfac, Real.sqrt_mul (by positivity), Real.sqrt_sq (by linarith)]
   rw [mul_div_assoc, ← Real.sqrt_div (by linarith : (0:ℝ) ≤ 1 - Real.exp (-L)) L]
 

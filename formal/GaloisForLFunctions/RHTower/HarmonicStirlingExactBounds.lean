@@ -13,10 +13,10 @@ open Finset Filter Topology
 namespace RHTower
 
 private theorem log_ge_cubic {x : ℝ} (hx : 1 ≤ x) :
-    2*((x-1)/(x+1))+2/3*((x-1)/(x+1))^3 ≤ Real.log x := by
-  let f : ℝ → ℝ := fun x => Real.log x-2*((x-1)/(x+1))-2/3*((x-1)/(x+1))^3
+    2*((x-1)/(x+1))+2/3*((x-1)/(x+1))^(3 : ℕ) ≤ Real.log x := by
+  let f : ℝ → ℝ := fun x => Real.log x-2*((x-1)/(x+1))-2/3*((x-1)/(x+1))^(3 : ℕ)
   have hd (u : ℝ) (hu : 1 ≤ u) :
-      HasDerivAt f (u⁻¹-4/(u+1)^2-4*((u-1)/(u+1))^2/(u+1)^2) u := by
+      HasDerivAt f (u⁻¹-4/(u+1)^(2 : ℕ)-4*((u-1)/(u+1))^(2 : ℕ)/(u+1)^(2 : ℕ)) u := by
     have hu0 : u ≠ 0 := by linarith
     have hu1 : u+1 ≠ 0 := by linarith
     have hq := ((hasDerivAt_id u).sub_const 1).div ((hasDerivAt_id u).add_const 1) hu1
@@ -32,8 +32,8 @@ private theorem log_ge_cubic {x : ℝ} (hx : 1 ≤ x) :
       have hu0 : u ≠ 0 := by linarith
       have hu2 : u+1 ≠ 0 := by linarith
       rw [(hd u hu1).deriv]
-      have he : u⁻¹-4/(u+1)^2-4*((u-1)/(u+1))^2/(u+1)^2 =
-          (u-1)^4/(u*(u+1)^4) := by field_simp; ring
+      have he : u⁻¹-4/(u+1)^(2 : ℕ)-4*((u-1)/(u+1))^(2 : ℕ)/(u+1)^(2 : ℕ) =
+          (u-1)^(4 : ℕ)/(u*(u+1)^(4 : ℕ)) := by field_simp; ring
       rw [he]
       positivity
   have h := hm (show (1:ℝ) ∈ Set.Ici 1 by simp) hx hx
@@ -41,26 +41,26 @@ private theorem log_ge_cubic {x : ℝ} (hx : 1 ≤ x) :
   linarith only [h]
 
 private theorem harmonic_lower_step {x : ℝ} (hx : 0 < x) :
-    1/(2*x)+1/(2*(x+1))-1/(12*x^2)+1/(12*(x+1)^2) ≤
+    1/(2*x)+1/(2*(x+1))-1/(12*x^(2 : ℕ))+1/(12*(x+1)^(2 : ℕ)) ≤
       Real.log (x+1)-Real.log x := by
   have h := log_ge_cubic (x := (x+1)/x) (by rw [le_div_iff₀ hx]; linarith)
   rw [Real.log_div (by positivity) hx.ne'] at h
-  have he : 2*(((x+1)/x-1)/((x+1)/x+1))+2/3*(((x+1)/x-1)/((x+1)/x+1))^3 =
-      2/(2*x+1)+2/(3*(2*x+1)^3) := by field_simp; ring
+  have he : 2*(((x+1)/x-1)/((x+1)/x+1))+2/3*(((x+1)/x-1)/((x+1)/x+1))^(3 : ℕ) =
+      2/(2*x+1)+2/(3*(2*x+1)^(3 : ℕ)) := by field_simp; ring
   rw [he] at h
   refine le_trans ?_ h
-  have he' : 2/(2*x+1)+2/(3*(2*x+1)^3)-
-      (1/(2*x)+1/(2*(x+1))-1/(12*x^2)+1/(12*(x+1)^2)) =
-      (2*x^2+2*x+1)/(12*x^2*(x+1)^2*(2*x+1)^3) := by field_simp; ring
-  have hp : 0 ≤ (2*x^2+2*x+1)/(12*x^2*(x+1)^2*(2*x+1)^3) := by positivity
+  have he' : 2/(2*x+1)+2/(3*(2*x+1)^(3 : ℕ))-
+      (1/(2*x)+1/(2*(x+1))-1/(12*x^(2 : ℕ))+1/(12*(x+1)^(2 : ℕ))) =
+      (2*x^(2 : ℕ)+2*x+1)/(12*x^(2 : ℕ)*(x+1)^(2 : ℕ)*(2*x+1)^(3 : ℕ)) := by field_simp; ring
+  have hp : 0 ≤ (2*x^(2 : ℕ)+2*x+1)/(12*x^(2 : ℕ)*(x+1)^(2 : ℕ)*(2*x+1)^(3 : ℕ)) := by positivity
   linarith only [he',hp]
 
 /-- The lower twelfth-square correction keeps the leading harmonic constant. -/
 theorem harmonic_mascheroni_ge_half_sub_twelfth {n : ℕ} (hn : 1 ≤ n) :
-    1/(2*(n:ℝ))-1/(12*(n:ℝ)^2) ≤
+    1/(2*(n:ℝ))-1/(12*(n:ℝ)^(2 : ℕ)) ≤
       ((harmonic n:ℚ):ℝ)-Real.log n-Real.eulerMascheroniConstant := by
   let f : ℕ → ℝ := fun k => ((harmonic (k+1):ℚ):ℝ)-Real.log (k+1:ℕ)-
-    1/(2*(k+1:ℕ))+1/(12*(k+1:ℕ)^2)
+    1/(2*(k+1:ℕ))+1/(12*(k+1:ℕ)^(2 : ℕ))
   have hm : Antitone f := by
     apply antitone_nat_of_succ_le
     intro k
@@ -76,10 +76,10 @@ theorem harmonic_mascheroni_ge_half_sub_twelfth {n : ℕ} (hn : 1 ≤ n) :
     (tendsto_natCast_atTop_atTop.comp hn').const_mul_atTop (by norm_num)
   have hcorr : Tendsto (fun k : ℕ => (1:ℝ)/(2*(k+1:ℕ))) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop hden
-  have hden2 : Tendsto (fun k : ℕ => 12*((k+1:ℕ):ℝ)^2) atTop atTop :=
+  have hden2 : Tendsto (fun k : ℕ => 12*((k+1:ℕ):ℝ)^(2 : ℕ)) atTop atTop :=
     ((tendsto_pow_atTop (by norm_num : (2:ℕ) ≠ 0)).comp
       (tendsto_natCast_atTop_atTop.comp hn')).const_mul_atTop (by norm_num)
-  have hcorr2 : Tendsto (fun k : ℕ => (1:ℝ)/(12*(k+1:ℕ)^2)) atTop (𝓝 0) :=
+  have hcorr2 : Tendsto (fun k : ℕ => (1:ℝ)/(12*(k+1:ℕ)^(2 : ℕ))) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop hden2
   have hf : Tendsto f atTop (𝓝 Real.eulerMascheroniConstant) := by
     simpa only [f,Function.comp_def,sub_zero,add_zero] using (hmain.sub hcorr).add hcorr2

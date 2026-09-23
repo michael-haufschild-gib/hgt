@@ -18,14 +18,14 @@ noncomputable section
 set_option autoImplicit false
 
 def sourceClockConstant (q : XiZeroCopy) (br side : Bool) (a : ℂ) : ℂ :=
-  let mu := physicalAngularParameter q^2-1/4;
+  let mu := physicalAngularParameter q^(2 : ℕ)-1/4;
   -mu*physicalSelfSourceCoefficient q*
     ((mu-2)*fundamentalSourceTortoiseMoment (physicalFundamentalFrequency q side)
       (physicalRate q br) a+
       fundamentalSourceForcingMoment (physicalFundamentalFrequency q side) (physicalRate q br) a)
 
 def sourceClockSlope (q : XiZeroCopy) (br side : Bool) (a : ℂ) : ℂ :=
-  let mu := physicalAngularParameter q^2-1/4
+  let mu := physicalAngularParameter q^(2 : ℕ)-1/4
   mu*physicalSelfSourceCoefficient q*(mu-2)*
     fundamentalSourceMoment (physicalFundamentalFrequency q side) (physicalRate q br) a
 
@@ -76,8 +76,8 @@ single clock character would discard. -/
 theorem sourceClock_two_step_determinant (q : XiZeroCopy) (br side : Bool) (a : ℂ)
     (u T : ℝ) (hu : 1≤u) (hT : 0≤T) :
     canonicalCausalSourceProfile q br side a u*canonicalCausalSourceProfile q br side a (u+2*T)-
-      canonicalCausalSourceProfile q br side a (u+T)^2 =
-        -(T:ℂ)^2*sourceClockCompanion q br side a (u+T)^2 := by
+      canonicalCausalSourceProfile q br side a (u+T)^(2 : ℕ) =
+        -(T:ℂ)^(2 : ℕ)*sourceClockCompanion q br side a (u+T)^(2 : ℕ) := by
   obtain ⟨h1,g1⟩ := sourceClock_translation q br side a u T hu hT
   have h2 := (sourceClock_translation q br side a (u+T) T (by linarith) hT).1
   rw [show u+2*T=(u+T)+T by ring,h2,h1,g1]
@@ -87,7 +87,7 @@ theorem sourceClock_two_step_determinant_ne_zero (q : XiZeroCopy) (br side : Boo
     (a : ℂ) (hB : sourceClockSlope q br side a≠0)
     (u T : ℝ) (hu : 1≤u) (hT : 0<T) :
     canonicalCausalSourceProfile q br side a u*canonicalCausalSourceProfile q br side a (u+2*T)-
-      canonicalCausalSourceProfile q br side a (u+T)^2 ≠ 0 := by
+      canonicalCausalSourceProfile q br side a (u+T)^(2 : ℕ) ≠ 0 := by
   rw [sourceClock_two_step_determinant q br side a u T hu hT.le]
   exact mul_ne_zero (neg_ne_zero.mpr (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hT.ne')))
     (pow_ne_zero 2 (mul_ne_zero (Complex.exp_ne_zero _) hB))
@@ -234,16 +234,16 @@ theorem sourceClockSlope_eq_zero_of_finite_exponentials (q : XiZeroCopy) (br sid
   exact sub_eq_zero.mp (hg z)
 
 private theorem physical_source_clock_factors_ne_zero (q : XiZeroCopy) :
-    physicalAngularParameter q^2-1/4≠0 ∧ physicalAngularParameter q^2-1/4-2≠0 := by
+    physicalAngularParameter q^(2 : ℕ)-1/4≠0 ∧ physicalAngularParameter q^(2 : ℕ)-1/4-2≠0 := by
   have hn (c : ℝ) : (q.1:ℂ)-(c:ℂ)≠0 := by
     intro h
     have hi := congrArg Complex.im h
     simp only [Complex.sub_im,Complex.ofReal_im,sub_zero,Complex.zero_im] at hi
     exact xi_divisor_support_im_ne_zero q.1 hi
-  have h0 : physicalAngularParameter q^2-1/4=((q.1:ℂ)-0)*((q.1:ℂ)-2)/4 := by
+  have h0 : physicalAngularParameter q^(2 : ℕ)-1/4=((q.1:ℂ)-0)*((q.1:ℂ)-2)/4 := by
     rw [physicalAngularParameter_eq]
     ring
-  have h2 : physicalAngularParameter q^2-1/4-2=((q.1:ℂ)-4)*((q.1:ℂ)-(-2))/4 := by
+  have h2 : physicalAngularParameter q^(2 : ℕ)-1/4-2=((q.1:ℂ)-4)*((q.1:ℂ)-(-2))/4 := by
     rw [physicalAngularParameter_eq]
     ring
   constructor
@@ -352,7 +352,7 @@ theorem physicalSourceExp_fourfold_clock (q : XiZeroCopy) (br : Bool) (n : ℕ) 
       Complex.exp (-3*(u:ℂ))*
         (hbXiPeierlsCenteredQNMPhysicalClockStep n u
           (Finsupp.single (if br then xiZeroCopyReflectEquiv q else q) 1)
-          (if br then xiZeroCopyReflectEquiv q else q))^4 := by
+          (if br then xiZeroCopyReflectEquiv q else q))^(4 : ℕ) := by
   rw [hbXiPeierlsCenteredQNMPhysicalClockStep_apply,Finsupp.single_eq_same,mul_one,
     ← Complex.exp_nat_mul,← Complex.exp_add]
   congr 1
@@ -369,7 +369,7 @@ theorem canonicalCausalSourceProfile_physicalClock (q : XiZeroCopy) (br side : B
       (Real.smoothTransition u:ℂ)*Complex.exp (-3*(u:ℂ))*
         (hbXiPeierlsCenteredQNMPhysicalClockStep n u
           (Finsupp.single (if br then xiZeroCopyReflectEquiv q else q) 1)
-          (if br then xiZeroCopyReflectEquiv q else q))^4*
+          (if br then xiZeroCopyReflectEquiv q else q))^(4 : ℕ)*
         (sourceClockConstant q br side a+(u:ℂ)*sourceClockSlope q br side a) := by
   rw [canonicalCausalSourceProfile_normal_form,physicalSourceExp_fourfold_clock q br n u]
   ring
@@ -383,7 +383,7 @@ theorem canonicalQNMValue_physicalClock_integral (q : XiZeroCopy) (br side : Boo
         ((Real.smoothTransition u:ℂ)*Complex.exp (-3*(u:ℂ))*
           (hbXiPeierlsCenteredQNMPhysicalClockStep n u
             (Finsupp.single (if br then xiZeroCopyReflectEquiv q else q) 1)
-            (if br then xiZeroCopyReflectEquiv q else q))^4*
+            (if br then xiZeroCopyReflectEquiv q else q))^(4 : ℕ)*
           (sourceClockConstant q br side a+(u:ℂ)*sourceClockSlope q br side a));
     IntegrableOn f (Ioi 0) ∧
       (∫ u in Ioi (0:ℝ), f u)=D4BMOriginalCanonicalAction.canonicalQNMValue q br side a := by

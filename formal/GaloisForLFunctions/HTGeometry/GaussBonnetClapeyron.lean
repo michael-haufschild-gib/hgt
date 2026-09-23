@@ -25,7 +25,7 @@ def egbFixedChargeTemperature (w tau : ℝ) : ℝ :=
   egbCoexistenceTemperature (egbFixedChargeLogScale w tau) tau
 
 /-- Thermodynamic volume of a spherical state. -/
-def egbThermodynamicVolume (r : ℝ) : ℝ := 4 * Real.pi * r ^ 3 / 3
+def egbThermodynamicVolume (r : ℝ) : ℝ := 4 * Real.pi * r ^ (3 : ℕ) / 3
 
 def egbFixedChargeEntropyJump (w tau : ℝ) : ℝ :=
   egbEntropyB (egbCoexistenceLargeRadius (egbFixedChargeLogScale w tau)) -
@@ -65,7 +65,7 @@ theorem egbFixedCharge_radii (w tau : ℝ) :
 
 theorem egbFixedChargePressure_formula (w tau : ℝ) :
     egbFixedChargePressure w tau =
-      3 * thermalRatio tau ^ 2 / (8 * Real.pi * Real.exp w ^ 2 * egbCoexistenceShape tau ^ 2) := by
+      3 * thermalRatio tau ^ (2 : ℕ) / (8 * Real.pi * Real.exp w ^ (2 : ℕ) * egbCoexistenceShape tau ^ (2 : ℕ)) := by
   unfold egbFixedChargePressure egbCoexistencePressure
   rw [egbFixedChargeLogScale_exp]
   simp only [div_pow, mul_pow, Real.sq_sqrt (egbCoexistenceShape_pos tau).le]
@@ -81,14 +81,14 @@ theorem egbFixedChargeTemperature_formula (w tau : ℝ) :
 /-- Volume is verified as the actual pressure derivative of the existing mass/enthalpy. -/
 theorem egbMass_pressure_derivative (P Q a r : ℝ) :
     HasDerivAt (fun p => egbMass p Q a r) (egbThermodynamicVolume r) P := by
-  have h : HasDerivAt (fun p => egbMass p Q a r) (0 + 4 * Real.pi * 1 * r ^ 3 / 3) P :=
-    (hasDerivAt_const P (r / 2 + (Q^2 + a^2) / (2*r))).add
-      ((((hasDerivAt_id P).const_mul (4 * Real.pi)).mul_const (r ^ 3)).div_const 3)
+  have h : HasDerivAt (fun p => egbMass p Q a r) (0 + 4 * Real.pi * 1 * r ^ (3 : ℕ) / 3) P :=
+    (hasDerivAt_const P (r / 2 + (Q^(2 : ℕ) + a^(2 : ℕ)) / (2*r))).add
+      ((((hasDerivAt_id P).const_mul (4 * Real.pi)).mul_const (r ^ (3 : ℕ))).div_const 3)
   exact h.congr_deriv (by simp only [zero_add, mul_one, egbThermodynamicVolume])
 
 theorem egbFixedChargeEntropyJump_formula (w tau : ℝ) :
     egbFixedChargeEntropyJump w tau =
-      Real.pi * Real.exp w ^ 2 * egbCoexistenceShape tau * (1 - thermalRatio tau ^ 2) / thermalRatio tau ^ 2 := by
+      Real.pi * Real.exp w ^ (2 : ℕ) * egbCoexistenceShape tau * (1 - thermalRatio tau ^ (2 : ℕ)) / thermalRatio tau ^ (2 : ℕ) := by
   unfold egbFixedChargeEntropyJump
   rw [(egbFixedCharge_radii w tau).1, (egbFixedCharge_radii w tau).2]
   unfold egbEntropyB
@@ -97,12 +97,12 @@ theorem egbFixedChargeEntropyJump_formula (w tau : ℝ) :
 
 theorem egbFixedChargeVolumeJump_formula (w tau : ℝ) :
     egbFixedChargeVolumeJump w tau =
-      4 * Real.pi * Real.exp w ^ 3 * egbCoexistenceShape tau * Real.sqrt (egbCoexistenceShape tau) *
-        (1 - thermalRatio tau ^ 3) / (3 * thermalRatio tau ^ 3) := by
+      4 * Real.pi * Real.exp w ^ (3 : ℕ) * egbCoexistenceShape tau * Real.sqrt (egbCoexistenceShape tau) *
+        (1 - thermalRatio tau ^ (3 : ℕ)) / (3 * thermalRatio tau ^ (3 : ℕ)) := by
   unfold egbFixedChargeVolumeJump
   rw [(egbFixedCharge_radii w tau).1, (egbFixedCharge_radii w tau).2]
   unfold egbThermodynamicVolume
-  have hs : Real.sqrt (egbCoexistenceShape tau) ^ 3 =
+  have hs : Real.sqrt (egbCoexistenceShape tau) ^ (3 : ℕ) =
       egbCoexistenceShape tau * Real.sqrt (egbCoexistenceShape tau) := by
     rw [pow_succ, Real.sq_sqrt (egbCoexistenceShape_pos tau).le]
   simp only [div_pow, mul_pow, hs]
@@ -113,7 +113,7 @@ theorem egbFixedChargeEntropyJump_pos (w tau : ℝ) : 0 < egbFixedChargeEntropyJ
 
 theorem egbFixedChargeVolumeJump_pos (w tau : ℝ) : 0 < egbFixedChargeVolumeJump w tau := by
   rw [egbFixedChargeVolumeJump_formula]
-  have hc : thermalRatio tau ^ 3 < 1 := pow_lt_one₀ (thermalRatio_pos tau).le (thermalRatio_lt_one tau) (by norm_num)
+  have hc : thermalRatio tau ^ (3 : ℕ) < 1 := pow_lt_one₀ (thermalRatio_pos tau).le (thermalRatio_lt_one tau) (by norm_num)
   have hd := egbCoexistenceShape_pos tau
   have hr := thermalRatio_pos tau
   have hs := Real.sqrt_pos.mpr hd
@@ -125,7 +125,7 @@ theorem egbCoexistenceShape_hasDerivAt (tau : ℝ) :
     HasDerivAt egbCoexistenceShape (-Real.exp tau * thermalRatio tau * (2 * thermalRatio tau + 4)) tau := by
   have hr := thermalRatio_hasDerivAt tau
   have h : HasDerivAt egbCoexistenceShape
-      (2 * thermalRatio tau ^ 1 * (-Real.exp tau * thermalRatio tau) +
+      (2 * thermalRatio tau ^ (1 : ℕ) * (-Real.exp tau * thermalRatio tau) +
         4 * (-Real.exp tau * thermalRatio tau) + 0) tau :=
     ((hr.pow 2).add (hr.const_mul 4)).add (hasDerivAt_const tau 1)
   exact h.congr_deriv (by ring)
@@ -133,13 +133,13 @@ theorem egbCoexistenceShape_hasDerivAt (tau : ℝ) :
 /-- Actual derivative of coexistence pressure while both charge and coupling stay fixed. -/
 theorem egbFixedChargePressure_hasDerivAt (w tau : ℝ) :
     HasDerivAt (egbFixedChargePressure w)
-      (-3 * Real.exp tau * thermalRatio tau ^ 2 * (1 - thermalRatio tau ^ 2) /
-        (4 * Real.pi * Real.exp w ^ 2 * egbCoexistenceShape tau ^ 3)) tau := by
-  rw [show egbFixedChargePressure w = (fun s => 3 * thermalRatio s ^ 2 /
-    (8 * Real.pi * Real.exp w ^ 2 * egbCoexistenceShape s ^ 2)) from funext (egbFixedChargePressure_formula w)]
+      (-3 * Real.exp tau * thermalRatio tau ^ (2 : ℕ) * (1 - thermalRatio tau ^ (2 : ℕ)) /
+        (4 * Real.pi * Real.exp w ^ (2 : ℕ) * egbCoexistenceShape tau ^ (3 : ℕ))) tau := by
+  rw [show egbFixedChargePressure w = (fun s => 3 * thermalRatio s ^ (2 : ℕ) /
+    (8 * Real.pi * Real.exp w ^ (2 : ℕ) * egbCoexistenceShape s ^ (2 : ℕ))) from funext (egbFixedChargePressure_formula w)]
   have hn := ((thermalRatio_hasDerivAt tau).pow 2).const_mul 3
-  have hd := ((egbCoexistenceShape_hasDerivAt tau).pow 2).const_mul (8 * Real.pi * Real.exp w ^ 2)
-  have hne : 8 * Real.pi * Real.exp w ^ 2 * egbCoexistenceShape tau ^ 2 ≠ 0 := by
+  have hd := ((egbCoexistenceShape_hasDerivAt tau).pow 2).const_mul (8 * Real.pi * Real.exp w ^ (2 : ℕ))
+  have hne : 8 * Real.pi * Real.exp w ^ (2 : ℕ) * egbCoexistenceShape tau ^ (2 : ℕ) ≠ 0 := by
     have hp := egbCoexistenceShape_pos tau
     positivity
   apply (hn.div hd hne).congr_deriv
@@ -151,8 +151,8 @@ theorem egbFixedChargePressure_hasDerivAt (w tau : ℝ) :
 /-- Actual derivative of coexistence temperature on the same fixed-charge curve. -/
 theorem egbFixedChargeTemperature_hasDerivAt (w tau : ℝ) :
     HasDerivAt (egbFixedChargeTemperature w)
-      (-Real.exp tau * thermalRatio tau * (1 - thermalRatio tau ^ 3) /
-        (Real.pi * Real.exp w * egbCoexistenceShape tau ^ 2 * Real.sqrt (egbCoexistenceShape tau))) tau := by
+      (-Real.exp tau * thermalRatio tau * (1 - thermalRatio tau ^ (3 : ℕ)) /
+        (Real.pi * Real.exp w * egbCoexistenceShape tau ^ (2 : ℕ) * Real.sqrt (egbCoexistenceShape tau))) tau := by
   rw [show egbFixedChargeTemperature w = (fun s => thermalRatio s * (1 + thermalRatio s) /
     (Real.pi * Real.exp w * egbCoexistenceShape s * Real.sqrt (egbCoexistenceShape s))) from
       funext (egbFixedChargeTemperature_formula w)]
@@ -175,7 +175,7 @@ theorem egbFixedChargeTemperature_hasDerivAt (w tau : ℝ) :
 theorem egbFixedChargePressure_derivative_neg (w tau : ℝ) : deriv (egbFixedChargePressure w) tau < 0 := by
   rw [(egbFixedChargePressure_hasDerivAt w tau).deriv]
   have hr := thermalRatio_pos tau
-  have h1 : 0 < 1 - thermalRatio tau ^ 2 := by nlinarith [thermalRatio_lt_one tau]
+  have h1 : 0 < 1 - thermalRatio tau ^ (2 : ℕ) := by nlinarith [thermalRatio_lt_one tau]
   have hd := egbCoexistenceShape_pos tau
   apply div_neg_of_neg_of_pos
   · exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos
@@ -185,7 +185,7 @@ theorem egbFixedChargePressure_derivative_neg (w tau : ℝ) : deriv (egbFixedCha
 theorem egbFixedChargeTemperature_derivative_neg (w tau : ℝ) : deriv (egbFixedChargeTemperature w) tau < 0 := by
   rw [(egbFixedChargeTemperature_hasDerivAt w tau).deriv]
   have hr := thermalRatio_pos tau
-  have hc : thermalRatio tau ^ 3 < 1 := pow_lt_one₀ hr.le (thermalRatio_lt_one tau) (by norm_num)
+  have hc : thermalRatio tau ^ (3 : ℕ) < 1 := pow_lt_one₀ hr.le (thermalRatio_lt_one tau) (by norm_num)
   have hd := egbCoexistenceShape_pos tau
   apply div_neg_of_neg_of_pos
   · exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos (neg_neg_of_pos (Real.exp_pos tau)) hr)

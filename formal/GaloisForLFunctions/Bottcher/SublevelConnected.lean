@@ -24,20 +24,20 @@ only at `0`; the deck involution `z ↦ -z` fixes `0`, and a separation of the p
 through the open map `z ↦ z²` and the fiber-saturated pieces `U∩(−U)`, `V∩(−V)`, `(U∩−V)∪(V∩−U)` — to
 a separation of `T`, contradicting `IsPreconnected T`. -/
 theorem isPreconnected_sq_preimage {T : Set ℂ} (hT : IsPreconnected T) (h0 : (0 : ℂ) ∈ T) :
-    IsPreconnected {z : ℂ | z ^ 2 ∈ T} := by
-  have hsqopen : IsOpenMap (fun z : ℂ => z ^ 2) := (Complex.isOpenQuotientMap_pow 2).isOpenMap
-  have hsqsurj : Function.Surjective (fun z : ℂ => z ^ 2) :=
+    IsPreconnected {z : ℂ | z ^ (2 : ℕ) ∈ T} := by
+  have hsqopen : IsOpenMap (fun z : ℂ => z ^ (2 : ℕ)) := (Complex.isOpenQuotientMap_pow 2).isOpenMap
+  have hsqsurj : Function.Surjective (fun z : ℂ => z ^ (2 : ℕ)) :=
     (Complex.isOpenQuotientMap_pow 2).surjective
-  set A : Set ℂ := {z | z ^ 2 ∈ T} with hAdef
-  have hmemA : ∀ {z : ℂ}, z ∈ A ↔ z ^ 2 ∈ T := fun {z} => Iff.rfl
+  set A : Set ℂ := {z | z ^ (2 : ℕ) ∈ T} with hAdef
+  have hmemA : ∀ {z : ℂ}, z ∈ A ↔ z ^ (2 : ℕ) ∈ T := fun {z} => Iff.rfl
   have hnegA : ∀ {z : ℂ}, z ∈ A → -z ∈ A := by
     intro z hz; rw [hmemA] at hz ⊢; simpa [neg_pow] using hz
   have himg : ∀ w : Set ℂ,
-      (fun z : ℂ => z ^ 2) '' (A ∩ w) = T ∩ (fun z : ℂ => z ^ 2) '' w := by
+      (fun z : ℂ => z ^ (2 : ℕ)) '' (A ∩ w) = T ∩ (fun z : ℂ => z ^ (2 : ℕ)) '' w := by
     intro w; ext y; constructor
     · rintro ⟨z, ⟨hzA, hzw⟩, rfl⟩; exact ⟨hzA, z, hzw, rfl⟩
     · rintro ⟨hyT, z, hzw, rfl⟩; exact ⟨z, ⟨hyT, hzw⟩, rfl⟩
-  have hkey : ∀ z₁ z₂ : ℂ, z₁ ^ 2 = z₂ ^ 2 → z₂ = z₁ ∨ z₂ = -z₁ := by
+  have hkey : ∀ z₁ z₂ : ℂ, z₁ ^ (2 : ℕ) = z₂ ^ (2 : ℕ) → z₂ = z₁ ∨ z₂ = -z₁ := by
     intro z₁ z₂ h
     have hfac : (z₂ - z₁) * (z₂ + z₁) = 0 := by linear_combination -h
     rcases mul_eq_zero.mp hfac with h' | h'
@@ -50,21 +50,21 @@ theorem isPreconnected_sq_preimage {T : Set ℂ} (hT : IsPreconnected T) (h0 : (
     (Set.eq_empty_iff_forall_notMem.mp hcon z) ⟨hz, hzu, hzv⟩
   have hnu : IsOpen (Neg.neg ⁻¹' u : Set ℂ) := hu.preimage continuous_neg
   have hnv : IsOpen (Neg.neg ⁻¹' v : Set ℂ) := hv.preimage continuous_neg
-  set OU : Set ℂ := (fun z : ℂ => z ^ 2) '' (u ∩ Neg.neg ⁻¹' u) with hOUdef
-  set OV : Set ℂ := (fun z : ℂ => z ^ 2) '' (v ∩ Neg.neg ⁻¹' v) with hOVdef
+  set OU : Set ℂ := (fun z : ℂ => z ^ (2 : ℕ)) '' (u ∩ Neg.neg ⁻¹' u) with hOUdef
+  set OV : Set ℂ := (fun z : ℂ => z ^ (2 : ℕ)) '' (v ∩ Neg.neg ⁻¹' v) with hOVdef
   set OM : Set ℂ :=
-    (fun z : ℂ => z ^ 2) '' ((u ∩ Neg.neg ⁻¹' v) ∪ (v ∩ Neg.neg ⁻¹' u)) with hOMdef
+    (fun z : ℂ => z ^ (2 : ℕ)) '' ((u ∩ Neg.neg ⁻¹' v) ∪ (v ∩ Neg.neg ⁻¹' u)) with hOMdef
   have hOU : IsOpen OU := hsqopen _ (hu.inter hnu)
   have hOV : IsOpen OV := hsqopen _ (hv.inter hnv)
   have hOM : IsOpen OM := hsqopen _ ((hu.inter hnv).union (hv.inter hnu))
-  have hTU : T ∩ OU = (fun z : ℂ => z ^ 2) '' (A ∩ (u ∩ Neg.neg ⁻¹' u)) := (himg _).symm
-  have hTV : T ∩ OV = (fun z : ℂ => z ^ 2) '' (A ∩ (v ∩ Neg.neg ⁻¹' v)) := (himg _).symm
+  have hTU : T ∩ OU = (fun z : ℂ => z ^ (2 : ℕ)) '' (A ∩ (u ∩ Neg.neg ⁻¹' u)) := (himg _).symm
+  have hTV : T ∩ OV = (fun z : ℂ => z ^ (2 : ℕ)) '' (A ∩ (v ∩ Neg.neg ⁻¹' v)) := (himg _).symm
   have hTM : T ∩ OM =
-      (fun z : ℂ => z ^ 2) '' (A ∩ ((u ∩ Neg.neg ⁻¹' v) ∪ (v ∩ Neg.neg ⁻¹' u))) := (himg _).symm
+      (fun z : ℂ => z ^ (2 : ℕ)) '' (A ∩ ((u ∩ Neg.neg ⁻¹' v) ∪ (v ∩ Neg.neg ⁻¹' u))) := (himg _).symm
   have hcover : T ⊆ OU ∪ (OV ∪ OM) := by
     intro w hwT
     obtain ⟨z, hz⟩ := hsqsurj w
-    have hzsq : z ^ 2 = w := hz
+    have hzsq : z ^ (2 : ℕ) = w := hz
     have hzA : z ∈ A := by rw [hmemA, hzsq]; exact hwT
     have hnzA : -z ∈ A := hnegA hzA
     rcases hAuv hzA with hzu | hzv
@@ -111,8 +111,8 @@ theorem isPreconnected_sq_preimage {T : Set ℂ} (hT : IsPreconnected T) (h0 : (
     have hn2 : (T ∩ (OV ∪ OM)).Nonempty := by
       obtain ⟨zv, hzvA, hzvv⟩ := hAv
       rcases hAuv (hnegA hzvA) with hnzu | hnzvv
-      · exact ⟨zv ^ 2, hzvA, Or.inr ⟨zv, Or.inr ⟨hzvv, hnzu⟩, rfl⟩⟩
-      · exact ⟨zv ^ 2, hzvA, Or.inl ⟨zv, ⟨hzvv, hnzvv⟩, rfl⟩⟩
+      · exact ⟨zv ^ (2 : ℕ), hzvA, Or.inr ⟨zv, Or.inr ⟨hzvv, hnzu⟩, rfl⟩⟩
+      · exact ⟨zv ^ (2 : ℕ), hzvA, Or.inl ⟨zv, ⟨hzvv, hnzvv⟩, rfl⟩⟩
     obtain ⟨y, hyT, hyOU, hyrest⟩ := hsep hn1 hn2
     rcases hyrest with hyOV | hyOM
     · exact Set.notMem_empty y (hdisjUV ▸ (⟨⟨hyT, hyOU⟩, hyT, hyOV⟩ : y ∈ (T ∩ OU) ∩ (T ∩ OV)))
@@ -127,8 +127,8 @@ theorem isPreconnected_sq_preimage {T : Set ℂ} (hT : IsPreconnected T) (h0 : (
     have hn2 : (T ∩ (OU ∪ OM)).Nonempty := by
       obtain ⟨zu, hzuA, hzuu⟩ := hAu
       rcases hAuv (hnegA hzuA) with hnzuu | hnzuv
-      · exact ⟨zu ^ 2, hzuA, Or.inl ⟨zu, ⟨hzuu, hnzuu⟩, rfl⟩⟩
-      · exact ⟨zu ^ 2, hzuA, Or.inr ⟨zu, Or.inl ⟨hzuu, hnzuv⟩, rfl⟩⟩
+      · exact ⟨zu ^ (2 : ℕ), hzuA, Or.inl ⟨zu, ⟨hzuu, hnzuu⟩, rfl⟩⟩
+      · exact ⟨zu ^ (2 : ℕ), hzuA, Or.inr ⟨zu, Or.inl ⟨hzuu, hnzuv⟩, rfl⟩⟩
     obtain ⟨y, hyT, hyOV, hyrest⟩ := hsep hn1 hn2
     rcases hyrest with hyOU | hyOM
     · exact Set.notMem_empty y (hdisjUV ▸ (⟨⟨hyT, hyOU⟩, hyT, hyOV⟩ : y ∈ (T ∩ OU) ∩ (T ∩ OV)))
@@ -169,7 +169,7 @@ theorem isPreconnected_escapeLevel_compl (c : ℂ) (hc : ∀ n, c ∉ escapeLeve
     have h0T : (0 : ℂ) ∈ T := by
       show (0 : ℂ) + c ∈ Ck
       rw [zero_add]; exact hc k
-    have hEq : (escapeLevel c (k + 1))ᶜ = {z : ℂ | z ^ 2 ∈ T} := by
+    have hEq : (escapeLevel c (k + 1))ᶜ = {z : ℂ | z ^ (2 : ℕ) ∈ T} := by
       rw [escapeLevel_succ]
       ext z
       simp only [Set.mem_compl_iff, Set.mem_preimage, Set.mem_setOf_eq, hT, hCk, quadratic_apply]

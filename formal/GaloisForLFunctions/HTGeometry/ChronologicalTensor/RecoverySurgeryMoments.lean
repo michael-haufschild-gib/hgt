@@ -16,19 +16,19 @@ noncomputable section
 open Polynomial Set MeasureTheory
 open _root_.HTGeometry
 
-def recoveryWedgeMoment (k : ℕ) : ℝ := 1 / ((4 : ℝ)^k*(k+1 : ℝ)^2)
+def recoveryWedgeMoment (k : ℕ) : ℝ := 1 / ((4 : ℝ)^k*(k+1 : ℝ)^(2 : ℕ))
 
-def recoverySurgeryMoment (n k : ℕ) : ℝ := (recoverySurgeryGap n k / recoverySurgeryGap n 0)^2
+def recoverySurgeryMoment (n k : ℕ) : ℝ := (recoverySurgeryGap n k / recoverySurgeryGap n 0)^(2 : ℕ)
 
 theorem recoveryWedgeMoment_positive (k : ℕ) : 0 < recoveryWedgeMoment k := by
   unfold recoveryWedgeMoment
   positivity
 
 theorem recoveryWedgeMoment_normalized (k : ℕ) :
-    (recoveryWedgeGap k / recoveryWedgeGap 0)^2 = recoveryWedgeMoment k := by
+    (recoveryWedgeGap k / recoveryWedgeGap 0)^(2 : ℕ) = recoveryWedgeMoment k := by
   have hk : (k+1 : ℝ) ≠ 0 := by positivity
   have ht : (2 : ℝ)^k ≠ 0 := by positivity
-  have hp : (4 : ℝ)^k = ((2 : ℝ)^k)^2 := by rw [← pow_mul, mul_comm k 2, pow_mul]; congr 1; ring
+  have hp : (4 : ℝ)^k = ((2 : ℝ)^k)^(2 : ℕ) := by rw [← pow_mul, mul_comm k 2, pow_mul]; congr 1; ring
   unfold recoveryWedgeGap recoveryWedgeMoment
   simp only [Nat.cast_zero, zero_add, pow_succ, hp]
   field_simp
@@ -39,7 +39,7 @@ theorem recoverySurgeryMoment_prefix (n : ℕ) (k : Fin (n+1)) :
     recoverySurgeryGap_prefix n ⟨0,by omega⟩, recoveryWedgeMoment_normalized]
 
 theorem recoverySurgeryMoment_drop_upper (n : ℕ) :
-    recoverySurgeryMoment n (n+1) ≤ (recoverySurgeryHeight n)^2*recoveryWedgeMoment (n+1) := by
+    recoverySurgeryMoment n (n+1) ≤ (recoverySurgeryHeight n)^(2 : ℕ)*recoveryWedgeMoment (n+1) := by
   have hb := (div_le_div_iff_of_pos_right (recoverySurgeryGap_positive n 0)).mpr
     (recoverySurgeryGap_drop_upper n)
   rw [recoverySurgeryGap_prefix n ⟨0,by omega⟩] at hb
@@ -124,7 +124,7 @@ theorem recoveryWedgeMoment_eval_le (P : ℝ[X]) (b : ℝ)
   simpa only [intervalIntegral.integral_const, sub_zero, one_smul] using h
 
 theorem recoveryWedgeMoment_square_positive (P : ℝ[X]) (hP : P ≠ 0) :
-    0 < momentFunctional recoveryWedgeMoment (P^2) := by
+    0 < momentFunctional recoveryWedgeMoment (P^(2 : ℕ)) := by
   have hex : ∃ x ∈ Icc (0 : ℝ) (1/4), P.eval x ≠ 0 := by
     by_contra! he
     apply hP
@@ -133,7 +133,7 @@ theorem recoveryWedgeMoment_square_positive (P : ℝ[X]) (hP : P ≠ 0) :
   obtain ⟨x,hx,he⟩ := hex
   rw [recoveryWedgeMoment_integral]
   apply intervalIntegral.integral_pos zero_lt_one
-    (recoveryPolynomial_inner_continuous (P^2)).continuousOn
+    (recoveryPolynomial_inner_continuous (P^(2 : ℕ))).continuousOn
   · intro s hs
     apply intervalIntegral.integral_nonneg zero_le_one
     intro t ht
@@ -141,7 +141,7 @@ theorem recoveryWedgeMoment_square_positive (P : ℝ[X]) (hP : P ≠ 0) :
     exact sq_nonneg _
   · refine ⟨1,⟨zero_le_one,le_refl _⟩,?_⟩
     apply intervalIntegral.integral_pos zero_lt_one
-      ((P^2).continuous.comp (show Continuous (fun t : ℝ => 1*t/4) by fun_prop)).continuousOn
+      ((P^(2 : ℕ)).continuous.comp (show Continuous (fun t : ℝ => 1*t/4) by fun_prop)).continuousOn
     · intro t ht
       simp only [Function.comp_apply, eval_pow]
       exact sq_nonneg _
@@ -184,8 +184,8 @@ theorem recoverySurgeryMomentFunctional_top_change (n : ℕ) (P : ℝ[X])
 
 theorem recoverySurgeryMoment_square_prefix_positive (n : ℕ) (P : ℝ[X])
     (hP : P ≠ 0) (hd : 2*P.natDegree ≤ n) :
-    0 < momentFunctional (recoverySurgeryMoment n) (P^2) := by
-  rw [recoverySurgeryMomentFunctional_prefix n (P^2) (by rw [natDegree_pow]; omega)]
+    0 < momentFunctional (recoverySurgeryMoment n) (P^(2 : ℕ)) := by
+  rw [recoverySurgeryMomentFunctional_prefix n (P^(2 : ℕ)) (by rw [natDegree_pow]; omega)]
   exact recoveryWedgeMoment_square_positive P hP
 
 end

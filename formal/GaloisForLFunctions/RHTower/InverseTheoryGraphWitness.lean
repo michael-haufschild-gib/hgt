@@ -125,7 +125,7 @@ def prismAdjSum (v : PrismV → ℝ) (p : PrismV) : ℝ :=
 def prismEnergy (v : PrismV → ℝ) : ℝ := ∑ p : PrismV, prismAdjSum v p * v p
 
 /-- The squared norm `⟨v, v⟩`. -/
-def prismNormSq (v : PrismV → ℝ) : ℝ := ∑ p : PrismV, v p ^ 2
+def prismNormSq (v : PrismV → ℝ) : ℝ := ∑ p : PrismV, v p ^ (2 : ℕ)
 
 private theorem cos_div16_mod (m : ℕ) :
     Real.cos (2 * Real.pi * ((m % 16 : ℕ) : ℝ) / 16) = Real.cos (2 * Real.pi * m / 16) := by
@@ -185,9 +185,9 @@ private theorem range16_cos_sum :
 
 /-- The squared-cosine sum over one period is `8`. -/
 private theorem range16_cos_sq_sum :
-    ∑ j ∈ Finset.range 16, Real.cos (2 * Real.pi * (j : ℝ) / 16) ^ 2 = 8 := by
+    ∑ j ∈ Finset.range 16, Real.cos (2 * Real.pi * (j : ℝ) / 16) ^ (2 : ℕ) = 8 := by
   have h2 := HTGeometry.cos_sample_sum_zero 16 2 (by omega) (by omega)
-  have hpt : ∀ j : ℕ, Real.cos (2 * Real.pi * (j : ℝ) / 16) ^ 2
+  have hpt : ∀ j : ℕ, Real.cos (2 * Real.pi * (j : ℝ) / 16) ^ (2 : ℕ)
       = 1 / 2 + Real.cos (2 * Real.pi * (2 : ℕ) * (j : ℝ) / 16) / 2 := by
     intro j
     have := Real.cos_sq (2 * Real.pi * (j : ℝ) / 16)
@@ -252,14 +252,14 @@ theorem prismVec_mean_zero : ∑ p : PrismV, prismVec p = 0 := by
 theorem prismNormSq_value : prismNormSq prismVec = 16 := by
   unfold prismNormSq
   rw [Fintype.sum_prod_type]
-  have hj : ∀ j : ZMod 16, ∑ s : Bool, prismVec (j, s) ^ 2
-      = 2 * Real.cos (2 * Real.pi * (j.val : ℝ) / 16) ^ 2 := by
+  have hj : ∀ j : ZMod 16, ∑ s : Bool, prismVec (j, s) ^ (2 : ℕ)
+      = 2 * Real.cos (2 * Real.pi * (j.val : ℝ) / 16) ^ (2 : ℕ) := by
     intro j
     rw [Fintype.sum_bool]
     unfold prismVec
     ring
   rw [Finset.sum_congr rfl fun j _ => hj j, ← Finset.mul_sum]
-  have := zmod_sum_eq_range (fun m => Real.cos (2 * Real.pi * (m : ℝ) / 16) ^ 2)
+  have := zmod_sum_eq_range (fun m => Real.cos (2 * Real.pi * (m : ℝ) / 16) ^ (2 : ℕ))
   rw [this, range16_cos_sq_sum]
   norm_num
 
@@ -291,7 +291,7 @@ theorem prismEnergy_value :
             * Real.cos (2 * Real.pi * (j : ℝ) / 16))
         + (∑ j ∈ Finset.range 16, Real.cos (2 * Real.pi * ((j : ℝ) + 15) / 16)
             * Real.cos (2 * Real.pi * (j : ℝ) / 16))
-        + ∑ j ∈ Finset.range 16, Real.cos (2 * Real.pi * (j : ℝ) / 16) ^ 2 := by
+        + ∑ j ∈ Finset.range 16, Real.cos (2 * Real.pi * (j : ℝ) / 16) ^ (2 : ℕ) := by
     rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
     ring
@@ -314,7 +314,7 @@ theorem prismEnergy_value :
 /-- **The Ramanujan margin.**  `2cos(π/8) + 1 > 2√2`, by `cos²(π/8) = (2+√2)/4` and
 `5√2 > 7 ⟺ 50 > 49`. -/
 theorem prism_margin : 2 * Real.sqrt 2 < 2 * Real.cos (Real.pi / 8) + 1 := by
-  have hcos_sq : Real.cos (Real.pi / 8) ^ 2 = (2 + Real.sqrt 2) / 4 := by
+  have hcos_sq : Real.cos (Real.pi / 8) ^ (2 : ℕ) = (2 + Real.sqrt 2) / 4 := by
     have h := Real.cos_sq (Real.pi / 8)
     rw [show 2 * (Real.pi / 8) = Real.pi / 4 by ring, Real.cos_pi_div_four] at h
     rw [h]
@@ -327,7 +327,7 @@ theorem prism_margin : 2 * Real.sqrt 2 < 2 * Real.cos (Real.pi / 8) + 1 := by
     · have := Real.pi_pos
       linarith
   have h75 : (7 / 5 : ℝ) < Real.sqrt 2 := by
-    have h : ((7 / 5 : ℝ)) ^ 2 < 2 := by norm_num
+    have h : ((7 / 5 : ℝ)) ^ (2 : ℕ) < 2 := by norm_num
     nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ 2 by norm_num),
       Real.sqrt_nonneg 2, sq_nonneg (Real.sqrt 2 - 7 / 5)]
   nlinarith [hcos_sq, hcos_pos, h75, Real.sq_sqrt (show (0 : ℝ) ≤ 2 by norm_num),
@@ -446,13 +446,13 @@ theorem prismOp_isSymmetric : (prismOp).IsSymmetric := by
 energy. -/
 theorem prism_laplacian_identity (v : PrismE) :
     3 * ⟪v, v⟫_ℝ - ⟪prismOp v, v⟫_ℝ
-      = (∑ p : PrismV, (v p - v (shiftUp p)) ^ 2)
-        + (1 / 2) * ∑ p : PrismV, (v p - v (rungFlip p)) ^ 2 := by
+      = (∑ p : PrismV, (v p - v (shiftUp p)) ^ (2 : ℕ))
+        + (1 / 2) * ∑ p : PrismV, (v p - v (rungFlip p)) ^ (2 : ℕ) := by
   rw [prism_inner_eq, prism_inner_eq]
-  have hupsq : ∑ p : PrismV, v (shiftUp p) ^ 2 = ∑ p : PrismV, v p ^ 2 :=
-    sum_comp_equiv shiftUp (fun q => v q ^ 2)
-  have hflsq : ∑ p : PrismV, v (rungFlip p) ^ 2 = ∑ p : PrismV, v p ^ 2 :=
-    sum_comp_equiv rungFlip (fun q => v q ^ 2)
+  have hupsq : ∑ p : PrismV, v (shiftUp p) ^ (2 : ℕ) = ∑ p : PrismV, v p ^ (2 : ℕ) :=
+    sum_comp_equiv shiftUp (fun q => v q ^ (2 : ℕ))
+  have hflsq : ∑ p : PrismV, v (rungFlip p) ^ (2 : ℕ) = ∑ p : PrismV, v p ^ (2 : ℕ) :=
+    sum_comp_equiv rungFlip (fun q => v q ^ (2 : ℕ))
   have hdn : ∑ p : PrismV, v (shiftDown p) * v p = ∑ p : PrismV, v (shiftUp p) * v p := by
     rw [sum_down_mul]
     refine Finset.sum_congr rfl fun p _ => ?_
@@ -468,24 +468,24 @@ theorem prism_laplacian_identity (v : PrismE) :
       ring
     rw [h1, hdn]
     ring
-  have hsq1 : ∑ p : PrismV, (v p - v (shiftUp p)) ^ 2
-      = 2 * (∑ p : PrismV, v p ^ 2) - 2 * ∑ p : PrismV, v (shiftUp p) * v p := by
-    calc ∑ p : PrismV, (v p - v (shiftUp p)) ^ 2
-        = ∑ p : PrismV, (v p ^ 2 + v (shiftUp p) ^ 2 - 2 * (v (shiftUp p) * v p)) :=
+  have hsq1 : ∑ p : PrismV, (v p - v (shiftUp p)) ^ (2 : ℕ)
+      = 2 * (∑ p : PrismV, v p ^ (2 : ℕ)) - 2 * ∑ p : PrismV, v (shiftUp p) * v p := by
+    calc ∑ p : PrismV, (v p - v (shiftUp p)) ^ (2 : ℕ)
+        = ∑ p : PrismV, (v p ^ (2 : ℕ) + v (shiftUp p) ^ (2 : ℕ) - 2 * (v (shiftUp p) * v p)) :=
           Finset.sum_congr rfl fun p _ => by ring
-      _ = (∑ p : PrismV, (v p ^ 2 + v (shiftUp p) ^ 2))
+      _ = (∑ p : PrismV, (v p ^ (2 : ℕ) + v (shiftUp p) ^ (2 : ℕ)))
           - ∑ p : PrismV, 2 * (v (shiftUp p) * v p) := by rw [Finset.sum_sub_distrib]
-      _ = 2 * (∑ p : PrismV, v p ^ 2) - 2 * ∑ p : PrismV, v (shiftUp p) * v p := by
+      _ = 2 * (∑ p : PrismV, v p ^ (2 : ℕ)) - 2 * ∑ p : PrismV, v (shiftUp p) * v p := by
           rw [Finset.sum_add_distrib, ← Finset.mul_sum, hupsq]
           ring
-  have hsq2 : ∑ p : PrismV, (v p - v (rungFlip p)) ^ 2
-      = 2 * (∑ p : PrismV, v p ^ 2) - 2 * ∑ p : PrismV, v (rungFlip p) * v p := by
-    calc ∑ p : PrismV, (v p - v (rungFlip p)) ^ 2
-        = ∑ p : PrismV, (v p ^ 2 + v (rungFlip p) ^ 2 - 2 * (v (rungFlip p) * v p)) :=
+  have hsq2 : ∑ p : PrismV, (v p - v (rungFlip p)) ^ (2 : ℕ)
+      = 2 * (∑ p : PrismV, v p ^ (2 : ℕ)) - 2 * ∑ p : PrismV, v (rungFlip p) * v p := by
+    calc ∑ p : PrismV, (v p - v (rungFlip p)) ^ (2 : ℕ)
+        = ∑ p : PrismV, (v p ^ (2 : ℕ) + v (rungFlip p) ^ (2 : ℕ) - 2 * (v (rungFlip p) * v p)) :=
           Finset.sum_congr rfl fun p _ => by ring
-      _ = (∑ p : PrismV, (v p ^ 2 + v (rungFlip p) ^ 2))
+      _ = (∑ p : PrismV, (v p ^ (2 : ℕ) + v (rungFlip p) ^ (2 : ℕ)))
           - ∑ p : PrismV, 2 * (v (rungFlip p) * v p) := by rw [Finset.sum_sub_distrib]
-      _ = 2 * (∑ p : PrismV, v p ^ 2) - 2 * ∑ p : PrismV, v (rungFlip p) * v p := by
+      _ = 2 * (∑ p : PrismV, v p ^ (2 : ℕ)) - 2 * ∑ p : PrismV, v (rungFlip p) * v p := by
           rw [Finset.sum_add_distrib, ← Finset.mul_sum, hflsq]
           ring
   rw [hexpA, hsq1, hsq2]
@@ -494,9 +494,9 @@ theorem prism_laplacian_identity (v : PrismE) :
 /-- The operator bound: the Rayleigh numerator never exceeds `3⟨v,v⟩`. -/
 theorem prism_energy_le (v : PrismE) : ⟪prismOp v, v⟫_ℝ ≤ 3 * ⟪v, v⟫_ℝ := by
   have h := prism_laplacian_identity v
-  have h1 : 0 ≤ ∑ p : PrismV, (v p - v (shiftUp p)) ^ 2 :=
+  have h1 : 0 ≤ ∑ p : PrismV, (v p - v (shiftUp p)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun p _ => sq_nonneg _
-  have h2 : 0 ≤ ∑ p : PrismV, (v p - v (rungFlip p)) ^ 2 :=
+  have h2 : 0 ≤ ∑ p : PrismV, (v p - v (rungFlip p)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun p _ => sq_nonneg _
   nlinarith
 
@@ -637,19 +637,19 @@ theorem prism_nonRamanujan_eigenvalue :
     exact prismVecE_ne_zero (by simpa using congrArg Subtype.val hcontra)
   have hEig := prismT_isSymmetric.hasEigenvalue_iSup_of_finiteDimensional
   set μ : ℝ := ⨆ x : { x : meanZero // x ≠ 0 },
-    RCLike.re ⟪prismT x, (x : meanZero)⟫_ℝ / ‖(x : meanZero)‖ ^ 2 with hμ
+    RCLike.re ⟪prismT x, (x : meanZero)⟫_ℝ / ‖(x : meanZero)‖ ^ (2 : ℕ) with hμ
   -- the quotient bound `≤ 3`
   have hquot3 : ∀ x : { x : meanZero // x ≠ 0 },
-      RCLike.re ⟪prismT x, (x : meanZero)⟫_ℝ / ‖(x : meanZero)‖ ^ 2 ≤ 3 := by
+      RCLike.re ⟪prismT x, (x : meanZero)⟫_ℝ / ‖(x : meanZero)‖ ^ (2 : ℕ) ≤ 3 := by
     rintro ⟨x, hxne⟩
-    have hnorm : (0 : ℝ) < ‖x‖ ^ 2 := by
+    have hnorm : (0 : ℝ) < ‖x‖ ^ (2 : ℕ) := by
       have : x ≠ 0 := hxne
       positivity
     rw [div_le_iff₀ hnorm]
     have hle := prism_energy_le (x : PrismE)
     have hinner : ⟪prismT x, x⟫_ℝ = ⟪prismOp (x : PrismE), (x : PrismE)⟫_ℝ := by
       rw [Submodule.coe_inner, prismT_coe]
-    have hnormcoe : ‖x‖ ^ 2 = ⟪(x : PrismE), (x : PrismE)⟫_ℝ := by
+    have hnormcoe : ‖x‖ ^ (2 : ℕ) = ⟪(x : PrismE), (x : PrismE)⟫_ℝ := by
       rw [real_inner_self_eq_norm_sq, Submodule.coe_norm]
     simp only [RCLike.re_to_real]
     rw [hinner, hnormcoe]
@@ -658,7 +658,7 @@ theorem prism_nonRamanujan_eigenvalue :
     refine ⟨⟨⟨prismVecE, prismVecE_mem_meanZero⟩, fun hcontra => ?_⟩⟩
     exact prismVecE_ne_zero (by simpa using congrArg Subtype.val hcontra)
   have hbdd : BddAbove (Set.range fun x : { x : meanZero // x ≠ 0 } =>
-      RCLike.re ⟪prismT x, (x : meanZero)⟫_ℝ / ‖(x : meanZero)‖ ^ 2) := by
+      RCLike.re ⟪prismT x, (x : meanZero)⟫_ℝ / ‖(x : meanZero)‖ ^ (2 : ℕ)) := by
     refine ⟨3, ?_⟩
     rintro y ⟨x, rfl⟩
     exact hquot3 x
@@ -667,14 +667,14 @@ theorem prism_nonRamanujan_eigenvalue :
   have hlow : 2 * Real.cos (Real.pi / 8) + 1 ≤ μ := by
     let hx₀ : { x : meanZero // x ≠ 0 } := ⟨⟨prismVecE, prismVecE_mem_meanZero⟩,
       fun hcontra => prismVecE_ne_zero (by simpa using congrArg Subtype.val hcontra)⟩
-    have hval : RCLike.re ⟪prismT hx₀, (hx₀ : meanZero)⟫_ℝ / ‖(hx₀ : meanZero)‖ ^ 2
+    have hval : RCLike.re ⟪prismT hx₀, (hx₀ : meanZero)⟫_ℝ / ‖(hx₀ : meanZero)‖ ^ (2 : ℕ)
         = 2 * Real.cos (Real.pi / 8) + 1 := by
       have hinner : ⟪prismT hx₀, (hx₀ : meanZero)⟫_ℝ
           = 16 * (2 * Real.cos (Real.pi / 8) + 1) := by
         rw [Submodule.coe_inner, prismT_coe]
         show ⟪prismOp prismVecE, prismVecE⟫_ℝ = _
         exact inner_prismOp_prismVecE
-      have hnorm : ‖(hx₀ : meanZero)‖ ^ 2 = 16 := by
+      have hnorm : ‖(hx₀ : meanZero)‖ ^ (2 : ℕ) = 16 := by
         rw [Submodule.coe_norm, ← real_inner_self_eq_norm_sq]
         show ⟪prismVecE, prismVecE⟫_ℝ = _
         exact inner_prismVecE_self
@@ -701,16 +701,16 @@ theorem prism_nonRamanujan_eigenvalue :
         = 3 * ⟪(u : PrismE), (u : PrismE)⟫_ℝ := by
       rw [hAu3, real_inner_smul_left]
     rw [hinner3] at hlap
-    have hzero : (∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (shiftUp p)) ^ 2)
-        + (1 / 2) * ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (rungFlip p)) ^ 2 = 0 := by
+    have hzero : (∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (shiftUp p)) ^ (2 : ℕ))
+        + (1 / 2) * ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (rungFlip p)) ^ (2 : ℕ) = 0 := by
       linarith
-    have h1 : 0 ≤ ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (shiftUp p)) ^ 2 :=
+    have h1 : 0 ≤ ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (shiftUp p)) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun p _ => sq_nonneg _
-    have h2 : 0 ≤ ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (rungFlip p)) ^ 2 :=
+    have h2 : 0 ≤ ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (rungFlip p)) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun p _ => sq_nonneg _
-    have h1z : ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (shiftUp p)) ^ 2 = 0 := by
+    have h1z : ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (shiftUp p)) ^ (2 : ℕ) = 0 := by
       linarith
-    have h2z : ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (rungFlip p)) ^ 2 = 0 := by
+    have h2z : ∑ p : PrismV, ((u : PrismE) p - (u : PrismE) (rungFlip p)) ^ (2 : ℕ) = 0 := by
       linarith
     have hcyc : ∀ p : PrismV, (u : PrismE) p = (u : PrismE) (shiftUp p) := by
       intro p

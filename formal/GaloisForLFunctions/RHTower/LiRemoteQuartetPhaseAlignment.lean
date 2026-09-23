@@ -398,14 +398,14 @@ theorem tendsto_liRemotePhaseAlignedDegreeScale
     (hT : Tendsto T l atTop)
     (ha : ∀ᶠ i in l, 0 < a i ∧ a i < 1 / 2) :
     Tendsto (fun i => (liRemotePhaseAlignedDegree c (a i) (T i) : ℝ) *
-      a i / T i ^ 2) l (nhds c) := by
+      a i / T i ^ (2 : ℕ)) l (nhds c) := by
   have hnell := tendsto_liRemotePhaseAlignedDegree_mul_radial hc hT ha
   have hrad := tendsto_liRemoteRadialScale hT ha
   have hdiv := hnell.div hrad (by norm_num : (1 : ℝ) ≠ 0)
   have hTpos : ∀ᶠ i in l, 0 < T i := hT.eventually_gt_atTop 0
   have hpos := eventually_liRemoteCoordinates_pos hT ha
   have hdiv' : Tendsto (fun i =>
-      (liRemotePhaseAlignedDegree c (a i) (T i) : ℝ) * a i / T i ^ 2)
+      (liRemotePhaseAlignedDegree c (a i) (T i) : ℝ) * a i / T i ^ (2 : ℕ))
       l (nhds (c / 1)) := hdiv.congr' (by
         filter_upwards [ha, hTpos, hpos] with i hai hTi hcoord
         have ha0 := ne_of_gt hai.1

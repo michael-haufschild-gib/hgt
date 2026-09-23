@@ -51,7 +51,7 @@ def d4ThetaHawkingCuspCasimir (weight : ℂ) : ℂ :=
 
 /-- Chiral stress coefficient of squared outgoing residue term. -/
 def d4ThetaHawkingEisensteinLaurentResidueStressCoefficient (z : ℂ) : ℂ :=
-  d4ThetaHawkingEisensteinLaurentResidueWeight z ^ 2 / 2
+  d4ThetaHawkingEisensteinLaurentResidueWeight z ^ (2 : ℕ) / 2
 
 /-- Chiral stress coefficient of residue--finite cross term, excluding residue amplitude. -/
 def d4ThetaHawkingEisensteinLaurentMixedStressCoefficient (z : ℂ) : ℂ :=
@@ -95,12 +95,12 @@ theorem d4ThetaHawkingEisensteinLaurentFiniteSquareWeight_shadow (z : ℂ) :
     d4ThetaTeukolskyRho_shadow]
   ring
 
-/-- At Xi divisor, squared residue stress has coefficient `(2-rho)^2/8`. -/
+/-- At Xi divisor, squared residue stress has coefficient `(2-rho)^(2 : ℕ)/8`. -/
 theorem d4ThetaHawkingEisensteinLaurentResidueStressCoefficient_xi_eq
     (q : XiZeroCopy) :
     d4ThetaHawkingEisensteinLaurentResidueStressCoefficient
         (xiSpectralPoint q) =
-      (2 - (q.1 : ℂ)) ^ 2 / 8 := by
+      (2 - (q.1 : ℂ)) ^ (2 : ℕ) / 8 := by
   rw [d4ThetaHawkingEisensteinLaurentResidueStressCoefficient,
     d4ThetaHawkingEisensteinLaurentResidueWeight,
     d4ThetaTeukolskyLinearCuspWeight_eq_half_rho,

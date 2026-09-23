@@ -14,7 +14,7 @@ namespace RHTower
 noncomputable section
 
 /-- Elementary exponential input for the scale-`11/3` cooling step. -/
-theorem exp_neg_threeHalves_lt_oneFourth :
+theorem exp_neg_threeHalves_lt_oneFourth_thetaCuspLikelihoodScaleLocalTailCoolingElevenThirds :
     Real.exp (-(3 / 2 : ℝ)) < (1 / 4 : ℝ) := by
   have hone : (2.7182818283 : ℝ) < Real.exp 1 := Real.exp_one_gt_d9
   have he := Real.sum_le_exp_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2) 2
@@ -58,7 +58,7 @@ theorem oneThousandFiveHundredNinetySix_mul_thetaCuspLikelihoodTailProbability_l
   rw [thetaCuspHigherLikelihoodSpectralMoment_zero_eq_response hB,
     thetaCuspHigherLikelihoodSpectralMoment_zero_eq_response hB₀] at hcompare
   have hexp : Real.exp (-3 * (B - B₀)) < (1 / 4 : ℝ) := by
-    exact (Real.exp_lt_exp.mpr (by linarith)).trans exp_neg_threeHalves_lt_oneFourth
+    exact (Real.exp_lt_exp.mpr (by linarith)).trans exp_neg_threeHalves_lt_oneFourth_thetaCuspLikelihoodScaleLocalTailCoolingElevenThirds
   have hr₀0 : 0 ≤ r₀ := by
     dsimp only [r₀]
     rw [← thetaCuspHigherLikelihoodSpectralMoment_zero_eq_response hB₀]
@@ -103,8 +103,8 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_11
   let e3 := thetaCuspLikelihoodNormalizedMoment B 3
   let e4 := thetaCuspLikelihoodNormalizedMoment B 4
   let b1 := 2 * A * e1
-  let b2 := 4 * (A ^ 2 * e2 - A * e1)
-  let b3 := 8 * (A ^ 3 * e3 - 3 * A ^ 2 * e2 + A * e1)
+  let b2 := 4 * (A ^ (2 : ℕ) * e2 - A * e1)
+  let b3 := 8 * (A ^ (3 : ℕ) * e3 - 3 * A ^ (2 : ℕ) * e2 + A * e1)
   let b4 := thetaCuspLikelihoodSourceOrdinaryJetFour x
   have hB : 0 < B := by simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx
   have hA : 3 < A := by
@@ -129,10 +129,10 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_11
         hx hScale
   have hp : 0 < p := by
     have h22 := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
-    have h22' : e2 ^ 2 ≤ p * e4 := by
+    have h22' : e2 ^ (2 : ℕ) ≤ p * e4 := by
       simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h22
     nlinarith [sq_pos_of_pos he2]
-  have h11 : e1 ^ 2 ≤ p * e2 := by
+  have h11 : e1 ^ (2 : ℕ) ≤ p * e2 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
     simpa only [B, p, e1, e2, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 1 = 2 by norm_num, pow_two] using h
@@ -140,7 +140,7 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_11
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 3
     simpa only [B, p, e1, e3, e4, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
       show 1 + 3 = 4 by norm_num] using h
-  have h22 : e2 ^ 2 ≤ p * e4 := by
+  have h22 : e2 ^ (2 : ℕ) ≤ p * e4 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h
   have hb1 : 0 < b1 := by dsimp only [b1]; positivity
@@ -151,7 +151,7 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_11
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b2]
     nlinarith
-  have hb2Upper : b2 ≤ 4 * A ^ 2 * e2 := by
+  have hb2Upper : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by
     dsimp only [b2]
     nlinarith [mul_pos hA0 he1]
   have hAe3 : 3 * e2 < A * e3 := by
@@ -161,92 +161,92 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_11
     have hmul := mul_lt_mul_of_pos_left hAe3 (pow_pos hA0 2)
     dsimp only [b3]
     nlinarith [mul_pos hA0 he1]
-  have hb3Upper : b3 ≤ 8 * A ^ 3 * e3 := by
+  have hb3Upper : b3 ≤ 8 * A ^ (3 : ℕ) * e3 := by
     dsimp only [b3]
-    have hcross : A * e1 ≤ 3 * A ^ 2 * e2 := by
+    have hcross : A * e1 ≤ 3 * A ^ (2 : ℕ) * e2 := by
       have hleft : A * e1 ≤ A * (e2 / 3) := by
         apply mul_le_mul_of_nonneg_left (by linarith) hA0.le
-      have hright : A * (e2 / 3) ≤ 3 * A ^ 2 * e2 := by
+      have hright : A * (e2 / 3) ≤ 3 * A ^ (2 : ℕ) * e2 := by
         nlinarith [mul_pos hA0 he2]
       exact hleft.trans hright
     nlinarith
-  have hb4Lower : (32 / 5 : ℝ) * A ^ 4 * e4 ≤ b4 := by
+  have hb4Lower : (32 / 5 : ℝ) * A ^ (4 : ℕ) * e4 ≤ b4 := by
     simpa only [A, B, e4, b4] using two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour hx
   have hb4 : 0 < b4 := lt_of_lt_of_le (by positivity) hb4Lower
-  have hb1b3Core : b1 * b3 ≤ 16 * A ^ 4 * (e1 * e3) := by
+  have hb1b3Core : b1 * b3 ≤ 16 * A ^ (4 : ℕ) * (e1 * e3) := by
     calc
-      b1 * b3 ≤ (2 * A * e1) * (8 * A ^ 3 * e3) := by
+      b1 * b3 ≤ (2 * A * e1) * (8 * A ^ (3 : ℕ) * e3) := by
         dsimp only [b1]
         gcongr
-      _ = 16 * A ^ 4 * (e1 * e3) := by ring
-  have hb1b3Moment : 16 * A ^ 4 * (e1 * e3) ≤ 16 * A ^ 4 * (p * e4) := by
+      _ = 16 * A ^ (4 : ℕ) * (e1 * e3) := by ring
+  have hb1b3Moment : 16 * A ^ (4 : ℕ) * (e1 * e3) ≤ 16 * A ^ (4 : ℕ) * (p * e4) := by
     gcongr
   have hb1b3 : 4 * b1 * b3 ≤ 10 * p * b4 := by
     have hcore := hb1b3Core.trans hb1b3Moment
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower (by positivity : 0 ≤ 10 * p)
     nlinarith
-  have hb2sqCore : b2 ^ 2 ≤ 16 * A ^ 4 * e2 ^ 2 := by
+  have hb2sqCore : b2 ^ (2 : ℕ) ≤ 16 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) := by
     have hpow := pow_le_pow_left₀ hb2.le hb2Upper 2
     calc
-      b2 ^ 2 ≤ (4 * A ^ 2 * e2) ^ 2 := hpow
-      _ = 16 * A ^ 4 * e2 ^ 2 := by ring
-  have hb2sqMoment : 16 * A ^ 4 * e2 ^ 2 ≤ 16 * A ^ 4 * (p * e4) := by
+      b2 ^ (2 : ℕ) ≤ (4 * A ^ (2 : ℕ) * e2) ^ (2 : ℕ) := hpow
+      _ = 16 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) := by ring
+  have hb2sqMoment : 16 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) ≤ 16 * A ^ (4 : ℕ) * (p * e4) := by
     gcongr
-  have hb2sq : 3 * b2 ^ 2 ≤ (15 / 2 : ℝ) * p * b4 := by
+  have hb2sq : 3 * b2 ^ (2 : ℕ) ≤ (15 / 2 : ℝ) * p * b4 := by
     have hcore := hb2sqCore.trans hb2sqMoment
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower
       (by positivity : 0 ≤ (15 / 2 : ℝ) * p)
     nlinarith
-  have he1four : e1 ^ 4 ≤ p ^ 3 * e4 := by
+  have he1four : e1 ^ (4 : ℕ) ≤ p ^ (3 : ℕ) * e4 := by
     have h11sq := pow_le_pow_left₀ (sq_nonneg e1) h11 2
     have hp0 : 0 ≤ p := hp.le
-    have hstep : (p * e2) ^ 2 ≤ p ^ 2 * (p * e4) := by
+    have hstep : (p * e2) ^ (2 : ℕ) ≤ p ^ (2 : ℕ) * (p * e4) := by
       rw [mul_pow]
       gcongr
     calc
-      e1 ^ 4 = (e1 ^ 2) ^ 2 := by ring
-      _ ≤ (p * e2) ^ 2 := h11sq
-      _ ≤ p ^ 2 * (p * e4) := hstep
-      _ = p ^ 3 * e4 := by ring
-  have hb1four : 6 * b1 ^ 4 ≤ 15 * p ^ 3 * b4 := by
-    have hcore : 6 * b1 ^ 4 ≤ 96 * A ^ 4 * (p ^ 3 * e4) := by
+      e1 ^ (4 : ℕ) = (e1 ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ ≤ (p * e2) ^ (2 : ℕ) := h11sq
+      _ ≤ p ^ (2 : ℕ) * (p * e4) := hstep
+      _ = p ^ (3 : ℕ) * e4 := by ring
+  have hb1four : 6 * b1 ^ (4 : ℕ) ≤ 15 * p ^ (3 : ℕ) * b4 := by
+    have hcore : 6 * b1 ^ (4 : ℕ) ≤ 96 * A ^ (4 : ℕ) * (p ^ (3 : ℕ) * e4) := by
       dsimp only [b1]
       have hscaled := mul_le_mul_of_nonneg_left he1four
-        (by positivity : 0 ≤ 96 * A ^ 4)
+        (by positivity : 0 ≤ 96 * A ^ (4 : ℕ))
       nlinarith
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower
-      (by positivity : 0 ≤ 15 * p ^ 3)
+      (by positivity : 0 ≤ 15 * p ^ (3 : ℕ))
     nlinarith
-  have hcoeff : (35 / 2 : ℝ) * p + 15 * p ^ 3 < 11 / 1000 := by
+  have hcoeff : (35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ) < 11 / 1000 := by
     have hpUpper : p < (1 / 1596 : ℝ) := by linarith
-    have hp3 : p ^ 3 < (1 / 1596 : ℝ) ^ 3 :=
+    have hp3 : p ^ (3 : ℕ) < (1 / 1596 : ℝ) ^ (3 : ℕ) :=
       pow_lt_pow_left₀ hpUpper hp.le (by norm_num)
     have hlinear : (35 / 2 : ℝ) * p < 35 / 3192 := by
       have h := mul_lt_mul_of_pos_left hpUpper (by norm_num : (0 : ℝ) < 35 / 2)
       norm_num at h ⊢
       exact h
-    have hcubic : 15 * p ^ 3 < (15 / 4065356736 : ℝ) := by
+    have hcubic : 15 * p ^ (3 : ℕ) < (15 / 4065356736 : ℝ) := by
       have h := mul_lt_mul_of_pos_left hp3 (by norm_num : (0 : ℝ) < 15)
       norm_num at h ⊢
       exact h
     calc
-      (35 / 2 : ℝ) * p + 15 * p ^ 3 < 35 / 3192 + 15 / 4065356736 :=
+      (35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ) < 35 / 3192 + 15 / 4065356736 :=
         add_lt_add hlinear hcubic
       _ < 11 / 1000 := by norm_num
   have hloss :
-      4 * b1 * b3 + 3 * b2 ^ 2 + 6 * b1 ^ 4 < (11 / 1000 : ℝ) * b4 := by
+      4 * b1 * b3 + 3 * b2 ^ (2 : ℕ) + 6 * b1 ^ (4 : ℕ) < (11 / 1000 : ℝ) * b4 := by
     have hsum :
-        4 * b1 * b3 + 3 * b2 ^ 2 + 6 * b1 ^ 4 ≤
-          ((35 / 2 : ℝ) * p + 15 * p ^ 3) * b4 := by
+        4 * b1 * b3 + 3 * b2 ^ (2 : ℕ) + 6 * b1 ^ (4 : ℕ) ≤
+          ((35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ)) * b4 := by
       calc
-        4 * b1 * b3 + 3 * b2 ^ 2 + 6 * b1 ^ 4 ≤
-            10 * p * b4 + (15 / 2 : ℝ) * p * b4 + 15 * p ^ 3 * b4 :=
+        4 * b1 * b3 + 3 * b2 ^ (2 : ℕ) + 6 * b1 ^ (4 : ℕ) ≤
+            10 * p * b4 + (15 / 2 : ℝ) * p * b4 + 15 * p ^ (3 : ℕ) * b4 :=
           add_le_add (add_le_add hb1b3 hb2sq) hb1four
-        _ = ((35 / 2 : ℝ) * p + 15 * p ^ 3) * b4 := by ring
+        _ = ((35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ)) * b4 := by ring
     exact lt_of_le_of_lt hsum (mul_lt_mul_of_pos_right hcoeff hb4)
   have hdecomp :
       thetaCuspLikelihoodSourceLogPartitionJetFour x =
-        b4 - 4 * b1 * b3 - 3 * b2 ^ 2 + 12 * b1 ^ 2 * b2 - 6 * b1 ^ 4 := by
+        b4 - 4 * b1 * b3 - 3 * b2 ^ (2 : ℕ) + 12 * b1 ^ (2 : ℕ) * b2 - 6 * b1 ^ (4 : ℕ) := by
     dsimp only [b1, b2, b3, b4, A, B, e1, e2, e3, e4]
     unfold thetaCuspLikelihoodSourceOrdinaryJetFour
       thetaCuspLikelihoodSourceLogPartitionJetFour thetaCuspLikelihoodFourthCumulant
@@ -255,7 +255,7 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_11
     unfold thetaCuspLikelihoodNormalizedMoment thetaCuspLikelihoodMean
     ring
   rw [hdecomp]
-  have hpositive : 0 < 12 * b1 ^ 2 * b2 := by positivity
+  have hpositive : 0 < 12 * b1 ^ (2 : ℕ) * b2 := by positivity
   nlinarith
 
 end

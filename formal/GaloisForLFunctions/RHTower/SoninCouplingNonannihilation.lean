@@ -19,7 +19,7 @@ open scoped Topology
 
 /-- The packet's squared norm is the integral of its square. -/
 theorem norm_sq_soninPacketEven (b c : ℝ) (hb : 0 < b) (hbc : b < c) (κ : ℝ) :
-    ‖soninPacketEven b c hb hbc κ‖ ^ 2 = ∫ x : ℝ, soninPacket b c hbc κ x ^ 2 := by
+    ‖soninPacketEven b c hb hbc κ‖ ^ (2 : ℕ) = ∫ x : ℝ, soninPacket b c hbc κ x ^ (2 : ℕ) := by
   rw [show ‖soninPacketEven b c hb hbc κ‖ = ‖soninPacketL2 b c hb hbc κ‖ from rfl,
     norm_sq_eq_integral]
   refine integral_congr_ae ?_
@@ -30,20 +30,20 @@ theorem norm_sq_soninPacketEven (b c : ℝ) (hb : 0 < b) (hbc : b < c) (κ : ℝ
 theorem tendsto_norm_soninPacketEven (b c : ℝ) (hb : 0 < b) (hbc : b < c)
     (κ : ℕ → ℝ) (hκ : Tendsto κ atTop atTop) :
     Tendsto (fun n : ℕ => ‖soninPacketEven b c hb hbc (κ n)‖) atTop
-      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2))) := by
-  have hsq : Tendsto (fun n : ℕ => ‖soninPacketEven b c hb hbc (κ n)‖ ^ 2) atTop
-      (𝓝 ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2)) := by
+      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)))) := by
+  have hsq : Tendsto (fun n : ℕ => ‖soninPacketEven b c hb hbc (κ n)‖ ^ (2 : ℕ)) atTop
+      (𝓝 ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ))) := by
     refine ((tendsto_integral_soninPacket_sq_atTop b c hb hbc).comp hκ).congr fun n => ?_
     exact (norm_sq_soninPacketEven b c hb hbc (κ n)).symm
   have hsqrt := (Real.continuous_sqrt.tendsto
-    ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2)).comp hsq
+    ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ))).comp hsq
   simp only [Function.comp_def] at hsqrt
   refine hsqrt.congr fun n => ?_
   rw [Real.sqrt_sq (norm_nonneg _)]
 
 /-- The limiting packet norm is positive. -/
 theorem sqrt_half_energy_pos (b c : ℝ) (hb : 0 < b) (hbc : b < c) :
-    0 < Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) := by
+    0 < Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) := by
   refine Real.sqrt_pos.mpr ?_
   have := integral_soninAnnulusBump_sq_pos b c hb hbc
   positivity
@@ -58,7 +58,7 @@ theorem tendsto_norm_soninApertureCoupling_apply_soninPacketEven
     Tendsto (fun n : ℕ =>
         ‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n)
           (soninPacketEven b c hb hbc (2 * Real.pi * (r n * q)))‖) atTop
-      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2))) := by
+      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)))) := by
   have hq : 0 < q := ha.trans haq
   have hfreq : Tendsto (fun n : ℕ => 2 * Real.pi * (r n * q)) atTop atTop := by
     have h1 : Tendsto (fun n : ℕ => r n * q) atTop atTop :=
@@ -70,7 +70,7 @@ theorem tendsto_norm_soninApertureCoupling_apply_soninPacketEven
     (fun n : ℕ => 2 * Real.pi * (r n * q)) hfreq
   have hdil : Tendsto (fun n : ℕ =>
       ‖soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n) (hrpos n)‖) atTop
-      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2))) := by
+      (𝓝 (Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)))) := by
     refine hpacket.congr fun n => ?_
     exact (norm_soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n) (hrpos n)).symm
   have hclose : Tendsto (fun n : ℕ =>

@@ -39,8 +39,8 @@ theorem curvatureFirstExitWeight_nonneg (n : ℕ) :
   exact (w_pos n).le
 
 theorem summable_sq_curvatureFirstExitWeight :
-    Summable fun n => curvatureFirstExitWeight n ^ 2 := by
-  have hw2 : Summable fun n => w n ^ 2 := by
+    Summable fun n => curvatureFirstExitWeight n ^ (2 : ℕ) := by
+  have hw2 : Summable fun n => w n ^ (2 : ℕ) := by
     refine Summable.of_nonneg_of_le (fun n => sq_nonneg _) ?_
       (summable_w.mul_left (2 / 3))
     intro n

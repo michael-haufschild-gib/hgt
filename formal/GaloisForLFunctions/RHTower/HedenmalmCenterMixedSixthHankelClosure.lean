@@ -194,7 +194,7 @@ theorem thetaCuspSourceReflectionJetSix_neg (x : ℝ) :
   have hdet := thetaCuspFullSourceReflectionSecondSixthCurvature_pos x
   have hid : thetaCuspFullSourceReflectionSecondSixthCurvature x =
       thetaCuspSourceReflectionJetTwo x * thetaCuspSourceReflectionJetSix x -
-        thetaCuspSourceReflectionJetFour x ^ 2 := by
+        thetaCuspSourceReflectionJetFour x ^ (2 : ℕ) := by
     unfold thetaCuspFullSourceReflectionSecondSixthCurvature
       thetaCuspSourceReflectionJetTwo thetaCuspSourceReflectionJetFour
       thetaCuspSourceReflectionJetSix HilbertMetric.reflectedProductSecondJet
@@ -212,7 +212,7 @@ theorem thetaCuspCenterMixedDensity_secondSixthHankel_pos
     {a : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) :
     0 < thetaCuspCenterMixedDensitySecondJet a 0 *
         thetaCuspCenterMixedDensitySixthJet a 0 -
-      thetaCuspCenterMixedDensityFourthJet a 0 ^ 2 := by
+      thetaCuspCenterMixedDensityFourthJet a 0 ^ (2 : ℕ) := by
   let p0 : ℝ → ℝ := fun r => -thetaCuspCenterMixedReflectionJetTwoIntegrand a r
   let p2 : ℝ → ℝ := thetaCuspCenterMixedReflectionJetFourIntegrand a
   let p4 : ℝ → ℝ := fun r => -thetaCuspCenterMixedReflectionJetSixIntegrand a r
@@ -227,7 +227,7 @@ theorem thetaCuspCenterMixedDensity_secondSixthHankel_pos
     rw [integral_neg, integral_thetaCuspCenterMixedReflectionJetTwoIntegrand ha0.le ha]
     linarith [thetaCuspCenterMixedDensitySecondJet_zero_neg ha0 ha]
   have hpoint : ∀ᵐ r : ℝ ∂volume.restrict (Ioi 0),
-      0 < p0 r ∧ 0 < p0 r * p4 r - p2 r ^ 2 := by
+      0 < p0 r ∧ 0 < p0 r * p4 r - p2 r ^ (2 : ℕ) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
     have hweight : 0 < r * Real.sinh (a * r) :=
       mul_pos hr (Real.sinh_pos_iff.mpr (mul_pos ha0 hr))
@@ -237,7 +237,7 @@ theorem thetaCuspCenterMixedDensity_secondSixthHankel_pos
     have hraw : thetaCuspFullSourceReflectionSecondSixthCurvature (r / 2) =
         thetaCuspSourceReflectionJetTwo (r / 2) *
             thetaCuspSourceReflectionJetSix (r / 2) -
-          thetaCuspSourceReflectionJetFour (r / 2) ^ 2 := by
+          thetaCuspSourceReflectionJetFour (r / 2) ^ (2 : ℕ) := by
       unfold thetaCuspFullSourceReflectionSecondSixthCurvature
         thetaCuspSourceReflectionJetTwo thetaCuspSourceReflectionJetFour
         thetaCuspSourceReflectionJetSix HilbertMetric.reflectedProductSecondJet
@@ -251,7 +251,7 @@ theorem thetaCuspCenterMixedDensity_secondSixthHankel_pos
         thetaCuspCenterMixedReflectionJetTwoIntegrand,
         thetaCuspCenterMixedReflectionJetFourIntegrand,
         thetaCuspCenterMixedReflectionJetSixIntegrand]
-      have hsquare : 0 < (r * Real.sinh (a * r)) ^ 2 := sq_pos_of_pos hweight
+      have hsquare : 0 < (r * Real.sinh (a * r)) ^ (2 : ℕ) := sq_pos_of_pos hweight
       nlinarith
   have hmix := GaloisForLFunctions.HilbertMetric.integral_twoByTwo_det_pos
     p0 p2 p4 hp0I hp2I hp4I hmass hpoint
@@ -268,7 +268,7 @@ theorem thetaCuspCenterMixedDensity_iteratedDeriv_secondSixthHankel_pos
     {a : ℝ} (ha0 : 0 < a) (ha : a < 1 / 2) :
     0 < iteratedDeriv 2 (thetaCuspCenterMixedDensity a) 0 *
         iteratedDeriv 6 (thetaCuspCenterMixedDensity a) 0 -
-      iteratedDeriv 4 (thetaCuspCenterMixedDensity a) 0 ^ 2 := by
+      iteratedDeriv 4 (thetaCuspCenterMixedDensity a) 0 ^ (2 : ℕ) := by
   rw [iteratedDeriv_two_thetaCuspCenterMixedDensity ha0.le ha,
     iteratedDeriv_four_thetaCuspCenterMixedDensity ha0.le ha,
     iteratedDeriv_six_thetaCuspCenterMixedDensity ha0.le ha]
@@ -279,7 +279,7 @@ theorem thetaCuspCenterMixedDensity_iteratedDeriv_secondSixthHankel_pos_all :
     ∀ a : ℝ, 0 < a → a < 1 / 2 →
       0 < iteratedDeriv 2 (thetaCuspCenterMixedDensity a) 0 *
           iteratedDeriv 6 (thetaCuspCenterMixedDensity a) 0 -
-        iteratedDeriv 4 (thetaCuspCenterMixedDensity a) 0 ^ 2 := by
+        iteratedDeriv 4 (thetaCuspCenterMixedDensity a) 0 ^ (2 : ℕ) := by
   intro a ha0 ha
   exact thetaCuspCenterMixedDensity_iteratedDeriv_secondSixthHankel_pos ha0 ha
 

@@ -5,7 +5,7 @@
 - **Stage:** 5-failed
 - **Type:** FALSIFIED (the short-span repayment candidate only)
 - **Source:** [own fact log](../1-in-progress/rh-exhaustive-clock-continuation-facts.md)
-- **Statement:** Increasing helper count and depth inside a short delayed logarithmic span does not suffice to pay every actual omitted-prime debt.
+- **Statement:** After fixing a short delayed logarithmic window, increasing helper count and depth does not pay every actual omitted-prime debt on the eventual cutoff tail.
 
 ## Goal
 
@@ -33,12 +33,10 @@ RH goal and constructions using older helpers or wider spans remain open.
   `W(P+r+S,M)-W(P,M)>=delta*M^2*(1+log(M))`.
   The full mixed source terms and original logarithmic clock weight remain
   in W. There is no bound on helper cardinality or inverse-square-root mass.
-- **New insight:** A delayed batch must span a positive fraction of its
-  starting logarithmic clock to pay these debts. Arbitrary cardinality,
-  child depth and favorable final insertion sign within a shorter span
-  do not remove the inherited net debt. The finite-clock bound is uniform
-  over every helper subset after the window is fixed; its onset still
-  depends on that window.
+- **New insight:** A fixed delayed window has a positive residual debt,
+  regardless of helper cardinality. Its finite-clock onset still depends
+  on that window. Moving windows tau=tau(M) are not excluded by this
+  quantifier order; a uniform onset needs a separate finite-counting proof.
 - **Scope:** This is a restriction on helper timing, not an RH
   counterexample or a proof that every exhaustive construction fails.
 
@@ -79,3 +77,14 @@ both passed without new-leaf warnings. The axiom audit contains only
 `RHTower.lean`; no full or umbrella build ran. Corpus index refresh passed.
 Repository lint reports four unrelated umbrella-reachability errors;
 none concerns this leaf. Owned processes exited and scratch files were removed.
+
+## Separate moving-window upgrade
+
+[Uniform finite-clock debt](../3-formalized/rh-moving-helper-clock-debt.md)
+now provides the separate finite-counting argument required above.
+`exists_mobiusDivisorMovingClockSpanDebt` produces one cutoff M0 before
+all window positions tau, giving the lower bound for every M>=M0 and
+every tau>=T simultaneously. Its unchanged-cofactor argument preserves
+the original weight and counts multiples of only the actual helpers.
+This stronger theorem still does not exclude broader helper sets or prove
+paid exhaustive continuation.

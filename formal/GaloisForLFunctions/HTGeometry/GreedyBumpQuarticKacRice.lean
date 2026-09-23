@@ -32,7 +32,7 @@ structure GreedyBumpQuarticKacRiceScaling where
     (𝓝[>] 0) (𝓝 slopeCoefficient)
   phase_scaled : Tendsto (fun x => antisymmetricPhaseVolume x / x)
     (𝓝[>] 0) (𝓝 phaseCoefficient)
-  curvature_scaled : Tendsto (fun x => curvatureProduct x / x ^ 4)
+  curvature_scaled : Tendsto (fun x => curvatureProduct x / x ^ (4 : ℕ))
     (𝓝[>] 0) (𝓝 curvatureCoefficient)
 
 /-- Two-point intensity assembled from the three Kac--Rice factors. -/
@@ -43,7 +43,7 @@ def GreedyBumpQuarticKacRiceScaling.pairIntensity
 /-- Singular `x⁻¹`, phase-volume `x`, and curvature `x⁴` factors compose to quartic exclusion. -/
 theorem GreedyBumpQuarticKacRiceScaling.pairIntensity_ratio_four_tendsto
     (M : GreedyBumpQuarticKacRiceScaling) :
-    Tendsto (fun x => M.pairIntensity x / x ^ 4) (𝓝[>] 0)
+    Tendsto (fun x => M.pairIntensity x / x ^ (4 : ℕ)) (𝓝[>] 0)
       (𝓝 (M.slopeCoefficient * M.phaseCoefficient * M.curvatureCoefficient)) := by
   have h := (M.slope_scaled.mul M.phase_scaled).mul M.curvature_scaled
   refine h.congr' ?_
@@ -59,7 +59,7 @@ abbrev GreedyBumpPositiveThreshold := {u : ℝ // 0 < u}
 
 /-- Standard-normal density `φ`. -/
 def greedyBumpStandardNormalPDF (z : ℝ) : ℝ :=
-  Real.exp (-(z ^ 2 / 2)) / Real.sqrt (2 * Real.pi)
+  Real.exp (-(z ^ (2 : ℕ) / 2)) / Real.sqrt (2 * Real.pi)
 
 /-- Standard-normal upper tail `Φ̅`. -/
 def greedyBumpStandardNormalUpperTail (z : ℝ) : ℝ :=
@@ -71,7 +71,7 @@ def greedyBumpGaussianThresholdCoordinate (u : ℝ) : ℝ :=
 
 /-- Appendix B, Eq. (230), in terms of the corpus standard-normal CDF. -/
 def greedyBumpGaussianQuarticIntegralCoefficient (z₀ : ℝ) : ℝ :=
-  greedyBumpStandardNormalPDF z₀ * (z₀ ^ 2 + 14) * stdGaussianCDF (z₀ / 2) +
+  greedyBumpStandardNormalPDF z₀ * (z₀ ^ (2 : ℕ) + 14) * stdGaussianCDF (z₀ / 2) +
     2 * z₀ * greedyBumpStandardNormalPDF z₀ * greedyBumpStandardNormalPDF (z₀ / 2) +
     25 * Real.sqrt (2 / (5 * Real.pi)) *
       greedyBumpStandardNormalUpperTail (Real.sqrt 5 / 2 * z₀)
@@ -112,7 +112,7 @@ theorem greedyBumpGaussianQuarticIntegralCoefficient_pos
     rw [stdGaussianCDF_zero] at hmono
     linarith
   have hfirst : 0 < greedyBumpStandardNormalPDF z₀ *
-      (z₀ ^ 2 + 14) * stdGaussianCDF (z₀ / 2) := by
+      (z₀ ^ (2 : ℕ) + 14) * stdGaussianCDF (z₀ / 2) := by
     exact mul_pos (mul_pos (greedyBumpStandardNormalPDF_pos z₀) (by positivity)) hcdf
   have hmiddle : 0 ≤ 2 * z₀ * greedyBumpStandardNormalPDF z₀ *
       greedyBumpStandardNormalPDF (z₀ / 2) := by
@@ -137,7 +137,7 @@ theorem greedyBumpGaussianQuarticCoefficient_pos (u : GreedyBumpPositiveThreshol
 /-- Leading conditional curvature-product contribution after integrating principal coordinates.
 Its normalization is chosen so the exact zero-slope coefficient composes to Eq. (231). -/
 def greedyBumpGaussianLeadingCurvatureProduct (u x : ℝ) : ℝ :=
-  (3 * Real.pi / Real.sqrt 6) * greedyBumpGaussianQuarticCoefficient u * x ^ 4
+  (3 * Real.pi / Real.sqrt 6) * greedyBumpGaussianQuarticCoefficient u * x ^ (4 : ℕ)
 
 /-- Appendix B principal curvatures, Eq. (227), without the vanishing remainder. -/
 def greedyBumpGaussianLeftPrincipalCurvature (z ξ y : ℝ) : ℝ :=
@@ -151,21 +151,21 @@ def greedyBumpGaussianRightPrincipalCurvature (z ξ y : ℝ) : ℝ :=
 theorem greedyBumpGaussianPrincipalCurvature_product (z ξ y : ℝ) :
     greedyBumpGaussianLeftPrincipalCurvature z ξ y *
       greedyBumpGaussianRightPrincipalCurvature z ξ y =
-    ((z + 2 * ξ) / (8 * Real.sqrt 6)) ^ 2 - 3 / 16 * y ^ 2 := by
-  have hs3 : Real.sqrt (3 : ℝ) ^ 2 = 3 := Real.sq_sqrt (by positivity)
+    ((z + 2 * ξ) / (8 * Real.sqrt 6)) ^ (2 : ℕ) - 3 / 16 * y ^ (2 : ℕ) := by
+  have hs3 : Real.sqrt (3 : ℝ) ^ (2 : ℕ) = 3 := Real.sq_sqrt (by positivity)
   unfold greedyBumpGaussianLeftPrincipalCurvature
     greedyBumpGaussianRightPrincipalCurvature
   calc
     ((z + 2 * ξ) / (8 * Real.sqrt 6) + Real.sqrt 3 / 4 * y) *
         ((z + 2 * ξ) / (8 * Real.sqrt 6) - Real.sqrt 3 / 4 * y) =
-      ((z + 2 * ξ) / (8 * Real.sqrt 6)) ^ 2 -
-        (Real.sqrt 3 / 4 * y) ^ 2 := by ring
-    _ = ((z + 2 * ξ) / (8 * Real.sqrt 6)) ^ 2 - 3 / 16 * y ^ 2 := by
-      have hb : (Real.sqrt 3 * y / 4) ^ 2 = 3 / 16 * y ^ 2 := by
+      ((z + 2 * ξ) / (8 * Real.sqrt 6)) ^ (2 : ℕ) -
+        (Real.sqrt 3 / 4 * y) ^ (2 : ℕ) := by ring
+    _ = ((z + 2 * ξ) / (8 * Real.sqrt 6)) ^ (2 : ℕ) - 3 / 16 * y ^ (2 : ℕ) := by
+      have hb : (Real.sqrt 3 * y / 4) ^ (2 : ℕ) = 3 / 16 * y ^ (2 : ℕ) := by
         field_simp
         nlinarith
       simpa only [div_mul_eq_mul_div] using congrArg
-        (fun t : ℝ => ((z + 2 * ξ) / (8 * Real.sqrt 6)) ^ 2 - t) hb
+        (fun t : ℝ => ((z + 2 * ξ) / (8 * Real.sqrt 6)) ^ (2 : ℕ) - t) hb
 
 /-- Certified Gaussian leading model carrying the exact determinant and closed paper coefficient. -/
 def greedyBumpGaussianQuarticKacRiceScaling
@@ -185,7 +185,7 @@ def greedyBumpGaussianQuarticKacRiceScaling
     exact tendsto_const_nhds.congr' (Filter.EventuallyEq.symm h)
   curvature_scaled := by
     have h : ∀ᶠ x : ℝ in 𝓝[>] 0,
-        greedyBumpGaussianLeadingCurvatureProduct u x / x ^ 4 =
+        greedyBumpGaussianLeadingCurvatureProduct u x / x ^ (4 : ℕ) =
           (3 * Real.pi / Real.sqrt 6) * greedyBumpGaussianQuarticCoefficient u := by
       filter_upwards [self_mem_nhdsWithin] with x hx
       have hxpos : 0 < x := by simpa only [Set.mem_Ioi] using hx
@@ -208,7 +208,7 @@ theorem greedyBumpGaussianKacRice_coefficient_cancellation
 theorem greedyBumpGaussianLeadingPairIntensity_ratio_four_tendsto
     (u : GreedyBumpPositiveThreshold) :
     Tendsto
-      (fun x => (greedyBumpGaussianQuarticKacRiceScaling u).pairIntensity x / x ^ 4)
+      (fun x => (greedyBumpGaussianQuarticKacRiceScaling u).pairIntensity x / x ^ (4 : ℕ))
       (𝓝[>] 0) (𝓝 (greedyBumpGaussianQuarticCoefficient u)) := by
   have h := (greedyBumpGaussianQuarticKacRiceScaling u).pairIntensity_ratio_four_tendsto
   simpa only [greedyBumpGaussianQuarticKacRiceScaling,

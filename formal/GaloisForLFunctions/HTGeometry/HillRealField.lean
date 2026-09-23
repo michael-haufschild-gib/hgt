@@ -32,7 +32,7 @@ noncomputable def hillRealField (m : ℝ) (c : ℝ → ℝ) (G₀ : E → ℂ) (
 /-- **The real field is differentiable in time.** -/
 theorem hasDerivAt_hillRealField_time (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) (volume : Measure E))
     (x : E) {t : ℝ} (ht0 : 0 < t) (htb : t < b) :
@@ -45,17 +45,17 @@ theorem hasDerivAt_hillRealField_time (hm : 0 < m) (hc : Continuous c)
 /-- **The second time derivative of the real field is the real part of the equation.** -/
 theorem hasDerivAt_deriv_hillRealField_time (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) (volume : Measure E))
-    (hweight2 : Integrable (fun ξ : E => (m ^ 2 + C ^ 2 * ‖ξ‖ ^ 2) * ‖G₀ ξ‖) (volume : Measure E))
-    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ 2 * ‖G₀ ξ‖) (volume : Measure E))
+    (hweight2 : Integrable (fun ξ : E => (m ^ (2 : ℕ) + C ^ (2 : ℕ) * ‖ξ‖ ^ (2 : ℕ)) * ‖G₀ ξ‖) (volume : Measure E))
+    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ (2 : ℕ) * ‖G₀ ξ‖) (volume : Measure E))
     (bas : OrthonormalBasis ι ℝ E) (x : E) {t : ℝ} (ht0 : 0 < t) (htb : t < b) :
     HasDerivAt (fun r => (hillSynthesisDeriv m c G₀ (kgChar x) (volume : Measure E) r).re)
-      ((((c t ^ 2 / (2 * Real.pi) ^ 2 : ℝ) : ℂ) *
-          (∑ i, (∫ ξ, (2 * Real.pi * Complex.I * ((⟪ξ, bas i⟫ : ℝ) : ℂ)) ^ 2 * kgChar x ξ *
+      ((((c t ^ (2 : ℕ) / (2 * Real.pi) ^ (2 : ℕ) : ℝ) : ℂ) *
+          (∑ i, (∫ ξ, (2 * Real.pi * Complex.I * ((⟪ξ, bas i⟫ : ℝ) : ℂ)) ^ (2 : ℕ) * kgChar x ξ *
             hillDensity m c G₀ t ξ)) -
-        ((m ^ 2 : ℝ) : ℂ) * hillEvolutionField m c G₀ t x).re) t := by
+        ((m ^ (2 : ℕ) : ℝ) : ℂ) * hillEvolutionField m c G₀ t x).re) t := by
   have hbase := hasDerivAt_hillSynthesisDeriv (b := b) hm hc hcd hcpos hK hC hcmin hclow hG
     ((continuous_kgChar' x).aestronglyMeasurable) (fun ξ => le_of_eq (norm_kgChar x ξ))
     hweight hweight2 ht0 htb
@@ -66,7 +66,7 @@ theorem hasDerivAt_deriv_hillRealField_time (hm : 0 < m) (hc : Continuous c)
 synthesis.** -/
 theorem eventually_hillRealField_ne_zero (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
     (hG : Continuous G₀) (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     {x₀ : E} (hne : (kgSynthesis G₀ x₀).re ≠ 0) :
     ∀ᶠ p : ℝ × E in nhds ((0 : ℝ), x₀), hillRealField m c G₀ p.1 p.2 ≠ 0 := by

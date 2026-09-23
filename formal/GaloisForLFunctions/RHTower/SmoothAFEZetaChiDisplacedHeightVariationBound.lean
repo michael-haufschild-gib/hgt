@@ -20,7 +20,7 @@ theorem norm_logDeriv_zetaChi_displacedLinePt_sub_le
     (hu : 4 ≤ u) (htu : 2 * |t - u| ≤ u) :
     ‖logDeriv zetaChi (displacedLinePt d t) -
         logDeriv zetaChi (displacedLinePt d u)‖ ≤
-      2 * (16 / u ^ 2 + 2 * Real.pi / u) * (1 + |t - u|) := by
+      2 * (16 / u ^ (2 : ℕ) + 2 * Real.pi / u) * (1 + |t - u|) := by
   have hdhalf : d < 1 / 2 := by linarith
   have htre0 : 0 < (displacedLinePt d t).re := by
     rw [displacedLinePt_re]
@@ -73,7 +73,7 @@ theorem norm_logDeriv_zetaChi_displacedLinePt_sub_le
       ring
     · norm_num [displacedLinePt]
       ring
-  let K : ℝ := 2 * (16 / u ^ 2 + 2 * Real.pi / u) * (1 + |v|)
+  let K : ℝ := 2 * (16 / u ^ (2 : ℕ) + 2 * Real.pi / u) * (1 + |v|)
   have hA :
       ‖Complex.digamma (displacedLinePt d t / 2) -
           Complex.digamma (displacedLinePt d u / 2)‖ ≤ K := by
@@ -120,7 +120,7 @@ theorem norm_logDeriv_zetaChi_displacedLinePt_sub_le
           rw [norm_div, norm_neg, norm_div]
           norm_num
     _ ≤ K / 2 + K / 2 := by gcongr
-    _ = 2 * (16 / u ^ 2 + 2 * Real.pi / u) * (1 + |t - u|) := by
+    _ = 2 * (16 / u ^ (2 : ℕ) + 2 * Real.pi / u) * (1 + |t - u|) := by
       rw [← hvabs]
       dsimp only [K]
       ring
@@ -134,12 +134,12 @@ theorem norm_logDeriv_zetaChi_displacedLinePt_sub_le_coarse
       (8 + 4 * Real.pi) * (1 + |t - u|) / u := by
   have h := norm_logDeriv_zetaChi_displacedLinePt_sub_le hd hdquarter hu htu
   have hu0 : 0 < u := by linarith
-  have hpow : 16 / u ^ 2 ≤ 4 / u := by
+  have hpow : 16 / u ^ (2 : ℕ) ≤ 4 / u := by
     rw [div_le_div_iff₀ (sq_pos_of_pos hu0) hu0]
     nlinarith
   refine h.trans ?_
   calc
-    2 * (16 / u ^ 2 + 2 * Real.pi / u) * (1 + |t - u|)
+    2 * (16 / u ^ (2 : ℕ) + 2 * Real.pi / u) * (1 + |t - u|)
         ≤ 2 * (4 / u + 2 * Real.pi / u) * (1 + |t - u|) := by
           gcongr
     _ = (8 + 4 * Real.pi) * (1 + |t - u|) / u := by

@@ -69,13 +69,13 @@ theorem integral_oddInitialPart (q : SchwartzMap ℝ ℂ) : ∫ x : ℝ, oddInit
 
 /-- The cubic total derivative has zero integral, by the existing CCM Schwartz trace lemma. -/
 theorem integral_cubic_derivative (q : SchwartzMap ℝ ℂ) :
-    ∫ x : ℝ, (q x)^2*deriv (q : ℝ → ℂ) x = 0 := by
+    ∫ x : ℝ, (q x)^(2 : ℕ)*deriv (q : ℝ → ℂ) x = 0 := by
   let g := mulS (mulS q q) q
-  have he : (g : ℝ → ℂ) = fun x => (q x)^3 := by
+  have he : (g : ℝ → ℂ) = fun x => (q x)^(3 : ℕ) := by
     funext x
     simp only [g,mulS_apply]
     ring
-  have hd (x : ℝ) : deriv (g : ℝ → ℂ) x = (3 : ℂ)*((q x)^2*deriv (q : ℝ → ℂ) x) := by
+  have hd (x : ℝ) : deriv (g : ℝ → ℂ) x = (3 : ℂ)*((q x)^(2 : ℕ)*deriv (q : ℝ → ℂ) x) := by
     rw [he]
     convert! ((q.hasDerivAt x).pow 3).deriv using 1
     ring
@@ -119,7 +119,7 @@ theorem compatibilityMoment_oddInitialPart (q : SchwartzMap ℝ ℂ) :
     compatibilityMoment (oddInitialPart q) = 0 := by
   rw [compatibilityMoment_eq,integral_oddInitialPart]
   have he (x : ℝ) : oddInitialPart q x*oddInitialPart q (-x)*deriv (oddInitialPart q : ℝ → ℂ) x =
-      -((oddInitialPart q x)^2*deriv (oddInitialPart q : ℝ → ℂ) x) := by
+      -((oddInitialPart q x)^(2 : ℕ)*deriv (oddInitialPart q : ℝ → ℂ) x) := by
     rw [oddInitialPart_reflection]
     ring
   simp_rw [he]

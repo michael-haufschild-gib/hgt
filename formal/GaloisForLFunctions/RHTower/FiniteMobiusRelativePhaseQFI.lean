@@ -24,12 +24,12 @@ open GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- Squared mass of two phase-coded source channels. -/
-def compensatedPairMass (x y : ℂ) : ℝ := ‖x‖ ^ 2 + ‖y‖ ^ 2
+def compensatedPairMass (x y : ℂ) : ℝ := ‖x‖ ^ (2 : ℕ) + ‖y‖ ^ (2 : ℕ)
 
 /-- Normalized weights of two source channels. -/
 def compensatedPairPhaseWeights (x y : ℂ) : Fin 2 → ℝ :=
-  ![‖x‖ ^ 2 / compensatedPairMass x y,
-    ‖y‖ ^ 2 / compensatedPairMass x y]
+  ![‖x‖ ^ (2 : ℕ) / compensatedPairMass x y,
+    ‖y‖ ^ (2 : ℕ) / compensatedPairMass x y]
 
 /-- Opposite phase velocities distinguish the two source laws. -/
 def relativePhaseVelocity : Fin 2 → ℤ := ![1, -1]
@@ -41,7 +41,7 @@ def compensatedPairRelativePhaseQFI (x y : ℂ) : ℝ :=
 /-- Exact two-channel relative-phase QFI formula. -/
 theorem compensatedPairRelativePhaseQFI_eq (x y : ℂ) :
     compensatedPairRelativePhaseQFI x y =
-      16 * ‖x‖ ^ 2 * ‖y‖ ^ 2 / (‖x‖ ^ 2 + ‖y‖ ^ 2) ^ 2 := by
+      16 * ‖x‖ ^ (2 : ℕ) * ‖y‖ ^ (2 : ℕ) / (‖x‖ ^ (2 : ℕ) + ‖y‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
   simp [compensatedPairRelativePhaseQFI, velVar, velMean,
     compensatedPairPhaseWeights, compensatedPairMass, relativePhaseVelocity]
   field_simp
@@ -57,10 +57,10 @@ theorem tendsto_compensatedPairRelativePhaseQFI_of_ratio
   have hnormRatio : Tendsto (fun n => ‖y n * (x n)⁻¹‖) l (nhds 1) := by
     simpa using hratio.norm
   have hmodel : Tendsto (fun n =>
-      16 * ‖y n * (x n)⁻¹‖ ^ 2 / (1 + ‖y n * (x n)⁻¹‖ ^ 2) ^ 2)
+      16 * ‖y n * (x n)⁻¹‖ ^ (2 : ℕ) / (1 + ‖y n * (x n)⁻¹‖ ^ (2 : ℕ)) ^ (2 : ℕ))
       l (nhds 4) := by
     have hcontinuous : ContinuousAt (fun r : ℝ =>
-        16 * r ^ 2 / (1 + r ^ 2) ^ 2) 1 := by
+        16 * r ^ (2 : ℕ) / (1 + r ^ (2 : ℕ)) ^ (2 : ℕ)) 1 := by
       exact (continuousAt_const.mul (continuousAt_id.pow 2)).div
         ((continuousAt_const.add (continuousAt_id.pow 2)).pow 2) (by norm_num)
     convert hcontinuous.tendsto.comp hnormRatio using 1

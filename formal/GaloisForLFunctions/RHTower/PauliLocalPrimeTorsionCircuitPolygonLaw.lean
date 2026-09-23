@@ -41,7 +41,7 @@ theorem pauliBounded_completeCircuitPolygon_and_permanentHaarSeparation
       (((k - 1) * Fintype.card Y : ℕ) : ℝ) *
           (replica.factorial : ℝ) *
           (((((2 ^ n - 1) + 1 : ℕ)) : ℝ)⁻¹) ^ replica <
-        (Real.sqrt (1 - 4 * epsilon ^ 2)) ^ (2 * replica))
+        (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ))) ^ (2 * replica))
     (hsep :
       Fintype.card (FiniteQLocalPauliLabel (Fin n) q) * 3 ^ q <
         2 ^ n + 1) :

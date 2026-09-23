@@ -58,7 +58,7 @@ theorem norm_routeUComplexHardEdgePeriodizationAt_le_uniform
   have hcentral : ‖routeUComplexPositiveFourierExtension n f z‖ ≤ B := by
     simpa only [B, pow_zero, Nat.mul_zero, one_mul] using
       routeUComplexPositiveFourierExtension_uniform_decay n f hzIm 0
-  have htail : ‖routeUComplexHardEdgeAliasTail n f r z‖ ≤ D / L ^ 4 := by
+  have htail : ‖routeUComplexHardEdgeAliasTail n f r z‖ ≤ D / L ^ (4 : ℕ) := by
     simpa only [D, L,
       GaloisForLFunctions.RHTower.ccmRationalArchimedeanDecayExponent] using
       norm_routeUComplexHardEdgeAliasTail_uniform_le n f r z hzIm hzRe 1
@@ -68,7 +68,7 @@ theorem norm_routeUComplexHardEdgePeriodizationAt_le_uniform
         routeUComplexHardEdgeAliasTail n f r z‖ ≤
         ‖routeUComplexPositiveFourierExtension n f z‖ +
           ‖routeUComplexHardEdgeAliasTail n f r z‖ := norm_add_le _ _
-    _ ≤ B + D / L ^ 4 := add_le_add hcentral htail
+    _ ≤ B + D / L ^ (4 : ℕ) := add_le_add hcentral htail
     _ ≤ B + D := by
       gcongr
       exact div_le_self hD (one_le_pow₀ hL)
@@ -80,8 +80,8 @@ theorem norm_routeUComplexPositiveFourierExtension_outer_le
     (hzIm : |z.im| ≤ 1)
     (hzOuter : routeUHardEdgeAliasPeriod r / 2 ≤ |z.re|) :
     ‖routeUComplexPositiveFourierExtension n f z‖ ≤
-      routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ 4 /
-        routeUHardEdgeAliasPeriod r ^ 4 := by
+      routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ (4 : ℕ) /
+        routeUHardEdgeAliasPeriod r ^ (4 : ℕ) := by
   let C : ℝ := routeUComplexTiltUniformDecay n f 2
   let L : ℝ := routeUHardEdgeAliasPeriod r
   let w : ℝ := -z.re / (2 * Real.pi)
@@ -98,22 +98,22 @@ theorem norm_routeUComplexPositiveFourierExtension_outer_le
   have hkgLower : L / (4 * Real.pi) ≤ kgFreq w :=
     hfreqLower.trans (abs_le_kgFreq_real w)
   have hdecay :
-      kgFreq w ^ 4 * ‖routeUComplexPositiveFourierExtension n f z‖ ≤ C := by
+      kgFreq w ^ (4 : ℕ) * ‖routeUComplexPositiveFourierExtension n f z‖ ≤ C := by
     simpa only [w, C] using
       routeUComplexPositiveFourierExtension_uniform_decay n f hzIm 2
   have hnorm :
-      ‖routeUComplexPositiveFourierExtension n f z‖ ≤ C / kgFreq w ^ 4 := by
+      ‖routeUComplexPositiveFourierExtension n f z‖ ≤ C / kgFreq w ^ (4 : ℕ) := by
     apply (le_div_iff₀ (pow_pos (kgFreq_pos w) 4)).2
     simpa only [mul_comm] using hdecay
-  have hden : C / kgFreq w ^ 4 ≤ C / (L / (4 * Real.pi)) ^ 4 := by
+  have hden : C / kgFreq w ^ (4 : ℕ) ≤ C / (L / (4 * Real.pi)) ^ (4 : ℕ) := by
     gcongr
   calc
-    ‖routeUComplexPositiveFourierExtension n f z‖ ≤ C / kgFreq w ^ 4 := hnorm
-    _ ≤ C / (L / (4 * Real.pi)) ^ 4 := hden
-    _ = C * (4 * Real.pi) ^ 4 / L ^ 4 := by
+    ‖routeUComplexPositiveFourierExtension n f z‖ ≤ C / kgFreq w ^ (4 : ℕ) := hnorm
+    _ ≤ C / (L / (4 * Real.pi)) ^ (4 : ℕ) := hden
+    _ = C * (4 * Real.pi) ^ (4 : ℕ) / L ^ (4 : ℕ) := by
       field_simp [hL.ne', Real.pi_ne_zero]
-    _ = routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ 4 /
-        routeUHardEdgeAliasPeriod r ^ 4 := rfl
+    _ = routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ (4 : ℕ) /
+        routeUHardEdgeAliasPeriod r ^ (4 : ℕ) := rfl
 
 /-- Divisor-independent constant controlling the complementary dyadic alias current. -/
 def routeUDyadicXiNyquistUniformConstant
@@ -122,7 +122,7 @@ def routeUDyadicXiNyquistUniformConstant
     (routeUComplexTiltUniformDecay n f 0 +
       routeUComplexHardEdgeUniformAliasTailConstant n f 1) *
     (routeUComplexHardEdgeUniformAliasTailConstant n f 1 +
-      routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ 4)
+      routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ (4 : ℕ))
 
 theorem routeUDyadicXiNyquistUniformConstant_nonneg
     (n : ℕ) (f : SchwartzMap ℝ ℂ) :
@@ -162,8 +162,8 @@ theorem norm_routeUXiComplexHardEdgeSample_fine_outer_le
       |(routeUDyadicFinePhase k (xiSpectralPoint q)).re|) :
     ‖routeUXiComplexHardEdgeSample n f (routeUDyadicFineIndex k : ℝ) q‖ ≤
       (routeUComplexHardEdgeUniformAliasTailConstant n f 1 +
-        routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ 4) /
-          routeUHardEdgeAliasPeriod (k : ℝ) ^ 4 := by
+        routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ (4 : ℕ)) /
+          routeUHardEdgeAliasPeriod (k : ℝ) ^ (4 : ℕ) := by
   let z : ℂ := routeUDyadicFinePhase k (xiSpectralPoint q)
   let L : ℝ := routeUHardEdgeAliasPeriod (k : ℝ)
   let D : ℝ := routeUComplexHardEdgeUniformAliasTailConstant n f 1
@@ -180,27 +180,27 @@ theorem norm_routeUXiComplexHardEdgeSample_fine_outer_le
   have hD : 0 ≤ D := routeUComplexHardEdgeUniformAliasTailConstant_nonneg n f 1
   have hL : 0 < L := routeUHardEdgeAliasPeriod_pos (k : ℝ)
   have hcentral : ‖routeUComplexPositiveFourierExtension n f z‖ ≤
-      C * (4 * Real.pi) ^ 4 / L ^ 4 := by
+      C * (4 * Real.pi) ^ (4 : ℕ) / L ^ (4 : ℕ) := by
     simpa only [C, L, z] using
       norm_routeUComplexPositiveFourierExtension_outer_le n f (k : ℝ) z hzIm
         (by simpa only [L, z] using hOuter)
   have htailRaw :
       ‖routeUComplexHardEdgeAliasTail n f (routeUDyadicFineIndex k : ℝ) z‖ ≤
-        D / routeUHardEdgeAliasPeriod (routeUDyadicFineIndex k : ℝ) ^ 4 := by
+        D / routeUHardEdgeAliasPeriod (routeUDyadicFineIndex k : ℝ) ^ (4 : ℕ) := by
     simpa only [D,
       GaloisForLFunctions.RHTower.ccmRationalArchimedeanDecayExponent] using
       norm_routeUComplexHardEdgeAliasTail_uniform_le n f
         (routeUDyadicFineIndex k : ℝ) z hzIm hzFine 1
   have htail :
       ‖routeUComplexHardEdgeAliasTail n f (routeUDyadicFineIndex k : ℝ) z‖ ≤
-        D / L ^ 4 := by
+        D / L ^ (4 : ℕ) := by
     refine htailRaw.trans ?_
     rw [routeUHardEdgeAliasPeriod_fineIndex]
     gcongr
     nlinarith
   rw [routeUXiComplexHardEdgeSample_eq_periodizationAt]
   change ‖routeUComplexHardEdgePeriodizationAt n f
-      (routeUDyadicFineIndex k : ℝ) z‖ ≤ (D + C * (4 * Real.pi) ^ 4) / L ^ 4
+      (routeUDyadicFineIndex k : ℝ) z‖ ≤ (D + C * (4 * Real.pi) ^ (4 : ℕ)) / L ^ (4 : ℕ)
   rw [routeUComplexHardEdgePeriodizationAt_eq_extension_add_tail
     n f (routeUDyadicFineIndex k : ℝ) z hzFine]
   calc
@@ -209,9 +209,9 @@ theorem norm_routeUXiComplexHardEdgeSample_fine_outer_le
       ‖routeUComplexPositiveFourierExtension n f z‖ +
         ‖routeUComplexHardEdgeAliasTail n f (routeUDyadicFineIndex k : ℝ) z‖ :=
           norm_add_le _ _
-    _ ≤ C * (4 * Real.pi) ^ 4 / L ^ 4 + D / L ^ 4 :=
+    _ ≤ C * (4 * Real.pi) ^ (4 : ℕ) / L ^ (4 : ℕ) + D / L ^ (4 : ℕ) :=
       add_le_add hcentral htail
-    _ = (D + C * (4 * Real.pi) ^ 4) / L ^ 4 := by ring
+    _ = (D + C * (4 * Real.pi) ^ (4 : ℕ)) / L ^ (4 : ℕ) := by ring
 
 theorem norm_routeUDyadicXiComplementaryAlias_inner_le
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) (q : XiZeroCopy)
@@ -221,7 +221,7 @@ theorem norm_routeUDyadicXiComplementaryAlias_inner_le
           (routeUDyadicFinePhase k (xiSpectralPoint q)) -
         routeUXiComplexHardEdgeSample n f (routeUDyadicFineIndex k : ℝ) q‖ ≤
       2 * routeUComplexHardEdgeUniformAliasTailConstant n f 1 /
-        routeUHardEdgeAliasPeriod (k : ℝ) ^ 4 := by
+        routeUHardEdgeAliasPeriod (k : ℝ) ^ (4 : ℕ) := by
   let z : ℂ := routeUDyadicFinePhase k (xiSpectralPoint q)
   let L : ℝ := routeUHardEdgeAliasPeriod (k : ℝ)
   let D : ℝ := routeUComplexHardEdgeUniformAliasTailConstant n f 1
@@ -239,19 +239,19 @@ theorem norm_routeUDyadicXiComplementaryAlias_inner_le
         (routeUDyadicFineIndex k : ℝ) (xiSpectralPoint q)
   have hD : 0 ≤ D := routeUComplexHardEdgeUniformAliasTailConstant_nonneg n f 1
   have hL : 0 < L := routeUHardEdgeAliasPeriod_pos (k : ℝ)
-  have hTcoarse : ‖Tcoarse‖ ≤ D / L ^ 4 := by
+  have hTcoarse : ‖Tcoarse‖ ≤ D / L ^ (4 : ℕ) := by
     simpa only [Tcoarse, D, L,
       GaloisForLFunctions.RHTower.ccmRationalArchimedeanDecayExponent,
       z] using
       norm_routeUComplexHardEdgeAliasTail_uniform_le n f (k : ℝ) z hzIm
         (by simpa only [z, L] using hInner) 1
   have hTfineRaw : ‖Tfine‖ ≤
-      D / routeUHardEdgeAliasPeriod (routeUDyadicFineIndex k : ℝ) ^ 4 := by
+      D / routeUHardEdgeAliasPeriod (routeUDyadicFineIndex k : ℝ) ^ (4 : ℕ) := by
     simpa only [Tfine, D,
       GaloisForLFunctions.RHTower.ccmRationalArchimedeanDecayExponent] using
       norm_routeUComplexHardEdgeAliasTail_uniform_le n f
         (routeUDyadicFineIndex k : ℝ) z hzIm hzFine 1
-  have hTfine : ‖Tfine‖ ≤ D / L ^ 4 := by
+  have hTfine : ‖Tfine‖ ≤ D / L ^ (4 : ℕ) := by
     refine hTfineRaw.trans ?_
     rw [routeUHardEdgeAliasPeriod_fineIndex]
     gcongr
@@ -259,20 +259,20 @@ theorem norm_routeUDyadicXiComplementaryAlias_inner_le
   rw [routeUXiComplexHardEdgeSample_eq_periodizationAt]
   change ‖routeUComplexHardEdgePeriodizationAt n f (k : ℝ) z -
       routeUComplexHardEdgePeriodizationAt n f
-        (routeUDyadicFineIndex k : ℝ) z‖ ≤ 2 * D / L ^ 4
+        (routeUDyadicFineIndex k : ℝ) z‖ ≤ 2 * D / L ^ (4 : ℕ)
   rw [routeUComplexHardEdgePeriodizationAt_eq_extension_add_tail
       n f (k : ℝ) z (by simpa only [z, L] using hInner),
     routeUComplexHardEdgePeriodizationAt_eq_extension_add_tail
       n f (routeUDyadicFineIndex k : ℝ) z hzFine]
   change ‖(routeUComplexPositiveFourierExtension n f z + Tcoarse) -
-      (routeUComplexPositiveFourierExtension n f z + Tfine)‖ ≤ 2 * D / L ^ 4
+      (routeUComplexPositiveFourierExtension n f z + Tfine)‖ ≤ 2 * D / L ^ (4 : ℕ)
   rw [show (routeUComplexPositiveFourierExtension n f z + Tcoarse) -
       (routeUComplexPositiveFourierExtension n f z + Tfine) =
         Tcoarse - Tfine by ring]
   calc
     ‖Tcoarse - Tfine‖ ≤ ‖Tcoarse‖ + ‖Tfine‖ := norm_sub_le _ _
-    _ ≤ D / L ^ 4 + D / L ^ 4 := add_le_add hTcoarse hTfine
-    _ = 2 * D / L ^ 4 := by ring
+    _ ≤ D / L ^ (4 : ℕ) + D / L ^ (4 : ℕ) := add_le_add hTcoarse hTfine
+    _ = 2 * D / L ^ (4 : ℕ) := by ring
 
 theorem norm_routeUComplexHardEdgePeriodizationAt_coarse_le_uniform
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) (q : XiZeroCopy) :
@@ -337,12 +337,12 @@ theorem norm_routeUDyadicXiNyquistCurrent_le
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) (q : XiZeroCopy) :
     ‖routeUDyadicXiNyquistCurrent n f k q‖ ≤
       routeUDyadicXiNyquistUniformConstant n f /
-        routeUHardEdgeAliasPeriod (k : ℝ) ^ 4 := by
+        routeUHardEdgeAliasPeriod (k : ℝ) ^ (4 : ℕ) := by
   let z : ℂ := routeUDyadicFinePhase k (xiSpectralPoint q)
   let L : ℝ := routeUHardEdgeAliasPeriod (k : ℝ)
   let B : ℝ := routeUComplexTiltUniformDecay n f 0
   let D : ℝ := routeUComplexHardEdgeUniformAliasTailConstant n f 1
-  let C : ℝ := routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ 4
+  let C : ℝ := routeUComplexTiltUniformDecay n f 2 * (4 * Real.pi) ^ (4 : ℕ)
   have hB : 0 ≤ B := routeUComplexTiltUniformDecay_nonneg n f 0
   have hD : 0 ≤ D := routeUComplexHardEdgeUniformAliasTailConstant_nonneg n f 1
   have hC : 0 ≤ C := mul_nonneg
@@ -356,20 +356,20 @@ theorem norm_routeUDyadicXiNyquistCurrent_le
     change ‖routeUXiComplexHardEdgeSample n f (routeUDyadicFineIndex k : ℝ) q‖ *
         ‖routeUComplexHardEdgePeriodizationAt n f (k : ℝ) z -
           routeUXiComplexHardEdgeSample n f (routeUDyadicFineIndex k : ℝ) q‖ ≤
-      routeUDyadicXiNyquistUniformConstant n f / L ^ 4
+      routeUDyadicXiNyquistUniformConstant n f / L ^ (4 : ℕ)
     calc
-      _ ≤ (B + D) * (2 * D / L ^ 4) := by
+      _ ≤ (B + D) * (2 * D / L ^ (4 : ℕ)) := by
         exact mul_le_mul (by simpa only [B, D] using hFine)
           (by simpa only [z, L, D] using hDefect)
           (norm_nonneg _) (add_nonneg hB hD)
-      _ ≤ 2 * (B + D) * (D + C) / L ^ 4 := by
+      _ ≤ 2 * (B + D) * (D + C) / L ^ (4 : ℕ) := by
         have hBD : 0 ≤ B + D := add_nonneg hB hD
         have hDC : D ≤ D + C := le_add_of_nonneg_right hC
         calc
-          (B + D) * (2 * D / L ^ 4) =
-              (2 * (B + D) * D) / L ^ 4 := by ring
-          _ ≤ (2 * (B + D) * (D + C)) / L ^ 4 := by gcongr
-      _ = routeUDyadicXiNyquistUniformConstant n f / L ^ 4 := by
+          (B + D) * (2 * D / L ^ (4 : ℕ)) =
+              (2 * (B + D) * D) / L ^ (4 : ℕ) := by ring
+          _ ≤ (2 * (B + D) * (D + C)) / L ^ (4 : ℕ) := by gcongr
+      _ = routeUDyadicXiNyquistUniformConstant n f / L ^ (4 : ℕ) := by
         rw [routeUDyadicXiNyquistUniformConstant]
   · have hOuter : L / 2 ≤ |z.re| := le_of_not_ge hInner
     have hFineOuter := norm_routeUXiComplexHardEdgeSample_fine_outer_le
@@ -392,13 +392,13 @@ theorem norm_routeUDyadicXiNyquistCurrent_le
     change ‖routeUXiComplexHardEdgeSample n f (routeUDyadicFineIndex k : ℝ) q‖ *
         ‖routeUComplexHardEdgePeriodizationAt n f (k : ℝ) z -
           routeUXiComplexHardEdgeSample n f (routeUDyadicFineIndex k : ℝ) q‖ ≤
-      routeUDyadicXiNyquistUniformConstant n f / L ^ 4
+      routeUDyadicXiNyquistUniformConstant n f / L ^ (4 : ℕ)
     calc
-      _ ≤ ((D + C) / L ^ 4) * (2 * (B + D)) := by
+      _ ≤ ((D + C) / L ^ (4 : ℕ)) * (2 * (B + D)) := by
         exact mul_le_mul (by simpa only [z, L, D, C, add_comm] using hFineOuter)
           hDefect (norm_nonneg _) (by positivity)
-      _ = 2 * (B + D) * (D + C) / L ^ 4 := by ring
-      _ = routeUDyadicXiNyquistUniformConstant n f / L ^ 4 := by
+      _ = 2 * (B + D) * (D + C) / L ^ (4 : ℕ) := by ring
+      _ = routeUDyadicXiNyquistUniformConstant n f / L ^ (4 : ℕ) := by
         rw [routeUDyadicXiNyquistUniformConstant]
 
 /-- Native shifted-resolvent weighting of the signed dyadic Nyquist current. -/
@@ -410,9 +410,9 @@ def routeUDyadicXiWeightedNyquistCurrent
 /-- Divisor-independent reciprocal-square coefficient for the weighted current. -/
 def routeUDyadicXiWeightedNyquistMajorantCoefficient
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) : ℝ :=
-  routeUHardEdgeMass (routeUDyadicFineIndex k : ℝ) ^ 2 *
+  routeUHardEdgeMass (routeUDyadicFineIndex k : ℝ) ^ (2 : ℕ) *
       routeUDyadicXiNyquistUniformConstant n f /
-    routeUHardEdgeAliasPeriod (k : ℝ) ^ 4
+    routeUHardEdgeAliasPeriod (k : ℝ) ^ (4 : ℕ)
 
 theorem routeUDyadicXiWeightedNyquistMajorantCoefficient_nonneg
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) :
@@ -432,10 +432,10 @@ theorem norm_routeUDyadicXiWeightedNyquistCurrent_le
   calc
     ‖routeUXiHardEdgeResolventWeight (routeUDyadicFineIndex k : ℝ) q‖ *
         ‖routeUDyadicXiNyquistCurrent n f k q‖ ≤
-      (routeUHardEdgeMass (routeUDyadicFineIndex k : ℝ) ^ 2 *
+      (routeUHardEdgeMass (routeUDyadicFineIndex k : ℝ) ^ (2 : ℕ) *
           ‖xiZeroCopyReciprocalSquare q‖) *
         (routeUDyadicXiNyquistUniformConstant n f /
-          routeUHardEdgeAliasPeriod (k : ℝ) ^ 4) := by
+          routeUHardEdgeAliasPeriod (k : ℝ) ^ (4 : ℕ)) := by
       exact mul_le_mul
         (norm_routeUXiHardEdgeResolventWeight_le
           (routeUDyadicFineIndex k : ℝ) q)
@@ -484,13 +484,13 @@ theorem tendsto_routeUDyadicXiWeightedNyquistMajorantCoefficient_zero
   have hmass : Tendsto (fun k : ℕ => 1 + (k : ℝ)) atTop atTop := by
     simpa only [add_comm] using
       tendsto_atTop_add_const_right atTop (1 : ℝ) tendsto_natCast_atTop_atTop
-  have hmassSq : Tendsto (fun k : ℕ => (1 + (k : ℝ)) ^ 2) atTop atTop := by
+  have hmassSq : Tendsto (fun k : ℕ => (1 + (k : ℝ)) ^ (2 : ℕ)) atTop atTop := by
     simpa only [pow_two] using hmass.atTop_mul_atTop₀ hmass
   have hden : Tendsto
-      (fun k : ℕ => Real.pi ^ 4 * (1 + (k : ℝ)) ^ 2) atTop atTop :=
+      (fun k : ℕ => Real.pi ^ (4 : ℕ) * (1 + (k : ℝ)) ^ (2 : ℕ)) atTop atTop :=
     Tendsto.const_mul_atTop (pow_pos Real.pi_pos 4) hmassSq
   have hlim : Tendsto
-      (fun k : ℕ => (4 * K) / (Real.pi ^ 4 * (1 + (k : ℝ)) ^ 2))
+      (fun k : ℕ => (4 * K) / (Real.pi ^ (4 : ℕ) * (1 + (k : ℝ)) ^ (2 : ℕ)))
       atTop (nhds 0) := tendsto_const_nhds.div_atTop hden
   apply hlim.congr'
   filter_upwards with k
@@ -498,9 +498,9 @@ theorem tendsto_routeUDyadicXiWeightedNyquistMajorantCoefficient_zero
     routeUHardEdgeMass_fineIndex, routeUHardEdgeAliasPeriod,
     routeUHardEdgeMass]
   simp only [abs_of_nonneg (Nat.cast_nonneg (α := ℝ) k)]
-  change (4 * K) / (Real.pi ^ 4 * (1 + (k : ℝ)) ^ 2) =
-    (2 * (1 + (k : ℝ))) ^ 2 * K /
-      (Real.pi * (1 + (k : ℝ))) ^ 4
+  change (4 * K) / (Real.pi ^ (4 : ℕ) * (1 + (k : ℝ)) ^ (2 : ℕ)) =
+    (2 * (1 + (k : ℝ))) ^ (2 : ℕ) * K /
+      (Real.pi * (1 + (k : ℝ))) ^ (4 : ℕ)
   field_simp [Real.pi_ne_zero, show (1 + (k : ℝ)) ≠ 0 by positivity]
   ring
 

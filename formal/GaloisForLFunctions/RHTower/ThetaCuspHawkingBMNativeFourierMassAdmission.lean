@@ -51,7 +51,7 @@ theorem nativeAmplitudeMass_lower_integrable (q : XiZeroCopy) (r : ℝ) (hr : 2 
     (weighted_mass_measurable _ _ measurableSet_Ioc (fun _ hy => hy.1))
   apply ae_restrict_of_forall_mem measurableSet_Ioc
   intro y hy
-  have he2 : y^(r-2)*y^2 = y^r := by
+  have he2 : y^(r-2)*y^(2 : ℕ) = y^r := by
     rw [← Real.rpow_two,← Real.rpow_add hy.1]
     congr 1
     ring
@@ -61,11 +61,11 @@ theorem nativeAmplitudeMass_lower_integrable (q : XiZeroCopy) (r : ℝ) (hr : 2 
     ring
   rw [Real.norm_eq_abs,abs_of_nonneg (mul_nonneg (Real.rpow_nonneg hy.1.le _) (amplitudeMass_nonneg _ _))]
   calc
-    _ ≤ y^(r-2)*(A+B*(y^2+cuspReflectionNorm 2*y^(-1:ℝ))) :=
+    _ ≤ y^(r-2)*(A+B*(y^(2 : ℕ)+cuspReflectionNorm 2*y^(-1:ℝ))) :=
       mul_le_mul_of_nonneg_left (hb y hy.1) (Real.rpow_nonneg hy.1.le _)
     _ = A*y^(r-2)+B*(y^r+cuspReflectionNorm 2*y^(r-3)) := by
       calc
-        _ = A*y^(r-2)+B*(y^(r-2)*y^2+cuspReflectionNorm 2*(y^(r-2)*y^(-1:ℝ))) := by ring
+        _ = A*y^(r-2)+B*(y^(r-2)*y^(2 : ℕ)+cuspReflectionNorm 2*(y^(r-2)*y^(-1:ℝ))) := by ring
         _ = _ := by rw [he2,he3]
 
 /-- At the upper height end every Mellin weight is admitted for the full coefficient mass. -/

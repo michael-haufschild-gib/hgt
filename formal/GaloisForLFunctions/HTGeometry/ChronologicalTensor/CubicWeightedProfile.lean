@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.ChronologicalTensor.CubicHomogeneousCoordi
 # The physical homogeneous norm is a weighted polynomial norm
 
 Exact coefficient coordinates give a univariate polynomial R of degree at
-most k. On the realized edge, the observation is c^k R(c/2-c^2/4).
+most k. On the realized edge, the observation is c^k R(c/2-c^(2 : ℕ)/4).
 The physical capacity is precisely the weighted supremum on [0,1], with
 no division by c and no exception at the origin.
 -/
@@ -43,7 +43,7 @@ theorem cubicDehomogeneousPolynomial_evaluation (k : ℕ) (α : Fin (k+1) → �
     (cubicDehomogeneousPolynomial k α).eval r=∑ i : Fin (k+1), α i*r^i.val := by
   simp only [cubicDehomogeneousPolynomial,Polynomial.eval_finsetSum,Polynomial.eval_monomial]
 
-def cubicEdgeRatio (c : ℝ) : ℝ := c/2-c^2/4
+def cubicEdgeRatio (c : ℝ) : ℝ := c/2-c^(2 : ℕ)/4
 
 theorem cubicHomogeneousPolynomial_edge (k : ℕ) (α : Fin (k+1) → ℝ) (c : ℝ) :
     cubicEdgeProfile (cubicHomogeneousPolynomial k α) c=

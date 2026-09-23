@@ -34,7 +34,7 @@ theorem card_ladderGapSetAt_le {P : Finset ℕ} (A₀ B₀ : ℕ) {Q η : ℝ} (
     (hPprime : ∀ q ∈ P, q.Prime) :
     ((ladderGapSetAt A₀ B₀ Q η x).card : ℝ)
       ≤ ((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ x.1) + 4
-        + ((B₀ : ℝ) / (Q * (1 + η) ^ x.1) ^ 2 + 1) := by
+        + ((B₀ : ℝ) / (Q * (1 + η) ^ x.1) ^ (2 : ℕ) + 1) := by
   classical
   set Qj : ℝ := Q * (1 + η) ^ x.1 with hQj
   have hr1 : (1 : ℝ) ≤ 1 + η := by linarith
@@ -62,26 +62,26 @@ theorem sum_card_ladderGapSetAt_le {P : Finset ℕ} (A₀ B₀ : ℕ) {Q η : �
     (∑ x ∈ ladderIndex P Q η L, ((ladderGapSetAt A₀ B₀ Q η x).card : ℝ))
       ≤ ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
           * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-            + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2) := by
+            + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by
   classical
   have hstep : ∀ x ∈ ladderIndex P Q η L, ((ladderGapSetAt A₀ B₀ Q η x).card : ℝ)
       ≤ ((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ x.1) + 5
-        + (B₀ : ℝ) / (Q * (1 + η) ^ x.1) ^ 2 := by
+        + (B₀ : ℝ) / (Q * (1 + η) ^ x.1) ^ (2 : ℕ) := by
     intro x hx
     have h := card_ladderGapSetAt_le A₀ B₀ hQ hη hx hPprime
     linarith
   refine (Finset.sum_le_sum hstep).trans ?_
   have hflat : (∑ x ∈ ladderIndex P Q η L,
       (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ x.1) + 5
-        + (B₀ : ℝ) / (Q * (1 + η) ^ x.1) ^ 2))
+        + (B₀ : ℝ) / (Q * (1 + η) ^ x.1) ^ (2 : ℕ)))
       = ∑ j ∈ Finset.range L, ((geomBlock P Q (1 + η) j).card : ℝ)
           * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-            + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2) := by
+            + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by
     rw [ladderIndex, Finset.sum_sigma]
     refine Finset.sum_congr rfl fun j _ => ?_
     show (∑ _p ∈ geomBlock P Q (1 + η) j,
         (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-          + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2)) = _
+          + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ))) = _
     rw [Finset.sum_const, nsmul_eq_mul]
   rw [hflat]
   refine Finset.sum_le_sum fun j _ => ?_
@@ -89,9 +89,9 @@ theorem sum_card_ladderGapSetAt_le {P : Finset ℕ} (A₀ B₀ : ℕ) {Q η : �
     have : (0 : ℝ) < (1 + η) ^ j := by positivity
     positivity
   have hfac : (0 : ℝ) ≤ ((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-      + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2 := by
+      + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ) := by
     have h1 : (0 : ℝ) ≤ ((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) := by positivity
-    have h2 : (0 : ℝ) ≤ (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2 := by positivity
+    have h2 : (0 : ℝ) ≤ (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ) := by positivity
     linarith
   exact mul_le_mul_of_nonneg_right (card_geomBlock_le P hQ hη j) hfac
 

@@ -16,8 +16,8 @@ theorem egbFixedChargeACriticalMarkovMatrix_pow_laurent
         (egbFixedChargeAFourierCharacter (n + 3) i j +
           star (egbFixedChargeAFourierCharacter (n + 3) i j)) +
         (1 / 6 : ℂ) ^ (m + 1) *
-        (egbFixedChargeAFourierCharacter (n + 3) i j ^ 2 +
-          star (egbFixedChargeAFourierCharacter (n + 3) i j) ^ 2) := by
+        (egbFixedChargeAFourierCharacter (n + 3) i j ^ (2 : ℕ) +
+          star (egbFixedChargeAFourierCharacter (n + 3) i j) ^ (2 : ℕ)) := by
   rw [egbFixedChargeACriticalMarkovMatrix_pow_QFT, egbFixedChargeAFiveModeSpectrum_scaled_entry]
   have hm (k : Fin 5) := congrFun (egbFixedChargeAFourierCharacter_modes n i j) k
   simp only [hm, egbFixedChargeACriticalMarkovEigenvalues, Fin.sum_univ_succ,

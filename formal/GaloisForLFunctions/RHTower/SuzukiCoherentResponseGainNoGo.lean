@@ -45,7 +45,7 @@ theorem suzukiCriticalApertureDepthFusionRadius_le_sharpWallResponseCap
   have hd0 : 0 ≤ d := (xiMobiusContinuousApertureDiskNode_pos _ p).le
   have hd1 : d < 1 := xiMobiusContinuousApertureDiskNode_lt_one
     (mul_pos (half_pos hh) ha) p
-  have hdSq : d ^ 2 ≤ 1 := by nlinarith [sq_nonneg d]
+  have hdSq : d ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg d]
   have hlog : Real.log 2 ≤ Real.log (p : ℝ) := by
     apply Real.log_le_log (by norm_num)
     exact_mod_cast p.property.two_le
@@ -97,14 +97,14 @@ theorem suzukiCriticalEntryWallEndpointAmplitude_zero_le_source_div_prime
   have hbare : 0 ≤ suzukiCriticalEntryWallBareAmplitude p 0 := Real.sqrt_nonneg _
   have hinvh : 0 ≤ (h * Real.sqrt h)⁻¹ := by positivity
   have hinvp : 0 ≤ ((p : ℝ) + 1)⁻¹ := by positivity
-  have hdsq : (1 - d) ^ 2 ≤ 1 := by nlinarith [sq_nonneg d]
+  have hdsq : (1 - d) ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg d]
   change suzukiCriticalEntryWallBareAmplitude p 0 *
-      ((h * Real.sqrt h)⁻¹ * (((p : ℝ) + 1)⁻¹ * (1 - d) ^ 2)) ≤
+      ((h * Real.sqrt h)⁻¹ * (((p : ℝ) + 1)⁻¹ * (1 - d) ^ (2 : ℕ))) ≤
     (h * Real.sqrt h)⁻¹ * ((p : ℝ) + 1)⁻¹ *
       suzukiCriticalEntryWallBareAmplitude p 0
   calc
     suzukiCriticalEntryWallBareAmplitude p 0 *
-        ((h * Real.sqrt h)⁻¹ * (((p : ℝ) + 1)⁻¹ * (1 - d) ^ 2))
+        ((h * Real.sqrt h)⁻¹ * (((p : ℝ) + 1)⁻¹ * (1 - d) ^ (2 : ℕ)))
         ≤ suzukiCriticalEntryWallBareAmplitude p 0 *
           ((h * Real.sqrt h)⁻¹ * (((p : ℝ) + 1)⁻¹ * 1)) := by gcongr
     _ = (h * Real.sqrt h)⁻¹ * ((p : ℝ) + 1)⁻¹ *
@@ -196,7 +196,7 @@ amplitude. -/
 theorem suzukiRectangularWallGramKernel_movingPrime_diagonal_eq_bare_sq
     (t : ℝ) (p : Nat.Primes) (hp : 1 ≤ Real.log (p : ℝ)) :
     suzukiRectangularWallGramKernel 1 (suzukiPrimeMovingWallAperture p) t t p 0 =
-      ((suzukiCriticalEntryWallBareAmplitude p 0 ^ 2 : ℝ) : ℂ) := by
+      ((suzukiCriticalEntryWallBareAmplitude p 0 ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [suzukiRectangularWallGramKernel_diagonal_eq_primeCell,
     suzukiRectangularPrimePowerWallCell,
     suzukiRectangularWallGramGate_movingPrime_eq_one p hp, one_mul,
@@ -205,7 +205,7 @@ theorem suzukiRectangularWallGramKernel_movingPrime_diagonal_eq_bare_sq
 /-- The observer-free sharp wall amplitude is strictly positive. -/
 theorem suzukiCriticalEntryWallBareAmplitude_zero_pos (p : Nat.Primes) :
     0 < suzukiCriticalEntryWallBareAmplitude p 0 := by
-  have hsq : 0 < suzukiCriticalEntryWallBareAmplitude p 0 ^ 2 := by
+  have hsq : 0 < suzukiCriticalEntryWallBareAmplitude p 0 ^ (2 : ℕ) := by
     rw [sq_suzukiCriticalEntryWallBareAmplitude_eq_vonMangoldt_div_sqrt]
     exact suzukiCriticalFarHingeWeight_pos p 0
   have hnonneg : 0 ≤ suzukiCriticalEntryWallBareAmplitude p 0 := Real.sqrt_nonneg _

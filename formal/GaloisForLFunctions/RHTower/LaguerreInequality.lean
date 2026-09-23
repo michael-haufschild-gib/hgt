@@ -41,7 +41,7 @@ open Polynomial Filter Topology
 /-- The first Laguerre form of a polynomial: `L₁[p] = (p')² − p·p''`.  Its evaluation at `x`
 is `(p'(x))² − p(x)·p''(x)`, the quantity the first Laguerre inequality bounds below by `0`. -/
 noncomputable def laguerreL1 (p : Polynomial ℝ) : Polynomial ℝ :=
-  (derivative p) ^ 2 - p * derivative (derivative p)
+  (derivative p) ^ (2 : ℕ) - p * derivative (derivative p)
 
 /-- **Linear peel identity.**  Attaching one monic linear factor turns `L₁` into a sum of
 two squares plus the previous `L₁`:
@@ -49,7 +49,7 @@ two squares plus the previous `L₁`:
 Mechanism: `((X − r)q)' = q + (X − r)q'` and `((X − r)q)'' = 2q' + (X − r)q''`; substituting
 and expanding, the cross term `2(X − r)qq'` cancels, leaving `q²` and `(X − r)²(q'² − qq'')`. -/
 lemma laguerreL1_linear_mul (r : ℝ) (q : Polynomial ℝ) :
-    laguerreL1 ((X - C r) * q) = q ^ 2 + (X - C r) ^ 2 * laguerreL1 q := by
+    laguerreL1 ((X - C r) * q) = q ^ (2 : ℕ) + (X - C r) ^ (2 : ℕ) * laguerreL1 q := by
   have hu : derivative (X - C r) = 1 := by
     simp [derivative_sub, derivative_X, derivative_C]
   have e1 : derivative ((X - C r) * q) = q + (X - C r) * derivative q := by
@@ -64,7 +64,7 @@ lemma laguerreL1_linear_mul (r : ℝ) (q : Polynomial ℝ) :
 /-- **Constant-multiple scaling.**  `L₁` is quadratically homogeneous: `L₁[c·q] = c²·L₁[q]`,
 since `(c·q)' = c·q'` and `(c·q)'' = c·q''`. -/
 lemma laguerreL1_C_mul (c : ℝ) (q : Polynomial ℝ) :
-    laguerreL1 (C c * q) = (C c) ^ 2 * laguerreL1 q := by
+    laguerreL1 (C c * q) = (C c) ^ (2 : ℕ) * laguerreL1 q := by
   have hd1 : derivative (C c * q) = C c * derivative q := by
     rw [derivative_mul, derivative_C]; ring
   have hd2 : derivative (derivative (C c * q)) = C c * derivative (derivative q) := by
@@ -101,7 +101,7 @@ theorem laguerreL1_eval_nonneg {p : Polynomial ℝ} (hsp : p.Splits) (x : ℝ) :
 roots are real, `p(x)·p''(x) ≤ (p'(x))²` at every real `x`.  Immediate from
 `laguerreL1_eval_nonneg` by expanding `L₁ = (p')² − p·p''`. -/
 theorem laguerre_inequality_poly {p : Polynomial ℝ} (hsp : p.Splits) (x : ℝ) :
-    p.eval x * (derivative (derivative p)).eval x ≤ ((derivative p).eval x) ^ 2 := by
+    p.eval x * (derivative (derivative p)).eval x ≤ ((derivative p).eval x) ^ (2 : ℕ) := by
   have h := laguerreL1_eval_nonneg hsp x
   unfold laguerreL1 at h
   rw [eval_sub, eval_pow, eval_mul] at h
@@ -127,13 +127,13 @@ of real-split polynomials together with its first two derivatives, then `(f'(x))
 at every `x`.  Proof: the polynomial inequality `pₙ·pₙ'' ≤ (pₙ')²` holds for every `n`
 (§1); its two sides converge to `f·f''` and `(f')²`, and `≤` is closed. -/
 theorem laguerre_inequality_lp {f : ℝ → ℝ} (hf : LaguerrePolya f) :
-    ∀ x, (deriv f x) ^ 2 ≥ f x * deriv (deriv f) x := by
+    ∀ x, (deriv f x) ^ (2 : ℕ) ≥ f x * deriv (deriv f) x := by
   obtain ⟨p, hsplit, h0, h1, h2⟩ := hf
   intro x
   have hprod : Tendsto (fun n => (p n).eval x * (derivative (derivative (p n))).eval x)
       atTop (𝓝 (f x * deriv (deriv f) x)) := (h0 x).mul (h2 x)
-  have hsq : Tendsto (fun n => ((derivative (p n)).eval x) ^ 2) atTop
-      (𝓝 ((deriv f x) ^ 2)) := (h1 x).pow 2
+  have hsq : Tendsto (fun n => ((derivative (p n)).eval x) ^ (2 : ℕ)) atTop
+      (𝓝 ((deriv f x) ^ (2 : ℕ))) := (h1 x).pow 2
   exact le_of_tendsto_of_tendsto' hprod hsq (fun n => laguerre_inequality_poly (hsplit n) x)
 
 /-! ### §3 The Ξ detector on the completed Riemann ξ -/
@@ -168,7 +168,7 @@ at which the first Laguerre inequality *strictly fails* — `(Ξ'(t))² < Ξ(t)�
 Riemann hypothesis.  Contrapositive of `laguerre_inequality_lp` composed with `hPolya`. -/
 theorem laguerre_margin_neg_not_RH_of_polya
     (hPolya : RiemannHypothesis → LaguerrePolya Xi)
-    (h : ∃ t : ℝ, (deriv Xi t) ^ 2 < Xi t * deriv (deriv Xi) t) :
+    (h : ∃ t : ℝ, (deriv Xi t) ^ (2 : ℕ) < Xi t * deriv (deriv Xi) t) :
     ¬ RiemannHypothesis := by
   intro hRH
   obtain ⟨t, ht⟩ := h

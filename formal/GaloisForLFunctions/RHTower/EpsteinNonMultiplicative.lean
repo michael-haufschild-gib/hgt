@@ -39,7 +39,7 @@ open Finset
 realised as a `Finset` of integer pairs. -/
 noncomputable def repFinset (n : ℕ) : Finset (ℤ × ℤ) :=
   (Finset.Icc (-(n : ℤ)) n ×ˢ Finset.Icc (-(n : ℤ)) n).filter
-    fun p => p.1 ^ 2 + 5 * p.2 ^ 2 = n
+    fun p => p.1 ^ (2 : ℕ) + 5 * p.2 ^ (2 : ℕ) = n
 
 /-- The representation number of `n` by `x² + 5y²`: the number of integer pairs
 `(x, y)` solving `x² + 5y² = n`, counted over the bounding box. -/
@@ -51,13 +51,13 @@ noncomputable def repCount (n : ℕ) : ℕ := (repFinset n).card
 turns this into `-n ≤ x ≤ n`; symmetrically for `y`. This justifies that
 `repCount` counts all solutions. -/
 theorem repFinset_complete (n : ℕ) :
-    ∀ x y : ℤ, x ^ 2 + 5 * y ^ 2 = n → (x, y) ∈ repFinset n := by
+    ∀ x y : ℤ, x ^ (2 : ℕ) + 5 * y ^ (2 : ℕ) = n → (x, y) ∈ repFinset n := by
   intro x y h
-  have hx2 : x ^ 2 ≤ (n : ℤ) := by nlinarith [sq_nonneg y]
-  have hy2 : y ^ 2 ≤ (n : ℤ) := by nlinarith [sq_nonneg x]
+  have hx2 : x ^ (2 : ℕ) ≤ (n : ℤ) := by nlinarith [sq_nonneg y]
+  have hy2 : y ^ (2 : ℕ) ≤ (n : ℤ) := by nlinarith [sq_nonneg x]
   have hn0 : (0 : ℤ) ≤ (n : ℤ) := Int.natCast_nonneg n
-  have hxsq : x ^ 2 ≤ (n : ℤ) ^ 2 := le_trans hx2 (Int.le_self_sq _)
-  have hysq : y ^ 2 ≤ (n : ℤ) ^ 2 := le_trans hy2 (Int.le_self_sq _)
+  have hxsq : x ^ (2 : ℕ) ≤ (n : ℤ) ^ (2 : ℕ) := le_trans hx2 (Int.le_self_sq _)
+  have hysq : y ^ (2 : ℕ) ≤ (n : ℤ) ^ (2 : ℕ) := le_trans hy2 (Int.le_self_sq _)
   have hxb := abs_le_of_sq_le_sq' hxsq hn0
   have hyb := abs_le_of_sq_le_sq' hysq hn0
   rw [repFinset, Finset.mem_filter, Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc]

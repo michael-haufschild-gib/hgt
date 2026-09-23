@@ -29,7 +29,7 @@ theorem compactHorizonField_hasDerivAt (w : ℂ) (V : ℝ → Point → ℂ) (z 
     HasDerivAt (fun r => compactHorizonField w V r z)
       ((coordinateFirst t:ℂ)*dressFirst w (fun b => V b z) D (horizonCoordinate t)) t ∧
     HasDerivAt (fun r => (coordinateFirst r:ℂ)*dressFirst w (fun b => V b z) D (horizonCoordinate r))
-      ((coordinateFirst t:ℂ)^2*dressSecond w (fun b => V b z) D DD (horizonCoordinate t)+
+      ((coordinateFirst t:ℂ)^(2 : ℕ)*dressSecond w (fun b => V b z) D DD (horizonCoordinate t)+
         (coordinateSecond t:ℂ)*dressFirst w (fun b => V b z) D (horizonCoordinate t)) t := by
   dsimp only
   have hb := horizonCoordinate_interior t ht
@@ -61,13 +61,13 @@ theorem compactHorizonField_original_wave (w : ℂ) (V : ℝ → Point → ℂ) 
   have hdd := (compactHorizonField_hasDerivAt w V z hV t ht).2.deriv
   have hb0 : (horizonCoordinate t:ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (ne_of_gt (horizonCoordinate_interior t ht).1)
-  have hu : (radialUnit t:ℂ)^2 = 1-(horizonCoordinate t:ℂ) := by
+  have hu : (radialUnit t:ℂ)^(2 : ℕ) = 1-(horizonCoordinate t:ℂ) := by
     simp only [horizonCoordinate,Complex.ofReal_sub,Complex.ofReal_one,Complex.ofReal_pow]
     ring
   unfold fieldWave
   rw [he.deriv_eq,hdd]
   simp_rw [scalarLaplacian_eq _ z hz]
-  change w^2*compactHorizonField w V t z-_
+  change w^(2 : ℕ)*compactHorizonField w V t z-_
       -(horizonCoordinate t:ℂ)*hyperbolicLaplacian
         (fun y => power (w/2) (horizonCoordinate t)*V (horizonCoordinate t) y) z = _
   rw [hyperbolicLaplacian_const_mul hA]

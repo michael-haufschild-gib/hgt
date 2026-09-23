@@ -133,7 +133,7 @@ theorem exists_logDeriv_zeta_bound_of_littlewood {c T₀ : ℝ} (hc0 : 0 < c) (h
       ∀ σ γ : ℝ, max (Real.exp 16) (T₀ + 1) ≤ |γ| →
         1 - littlewoodWidth c γ / 8 ≤ σ → σ ≤ 9 / 8 →
         ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
-          ≤ C * Real.log |γ| ^ 2 / Real.log (Real.log |γ|) := by
+          ≤ C * Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|) := by
   obtain ⟨E, hE0, hcount⟩ := exists_wide_zero_count
   refine ⟨320 / 21 * wideD + 8 * E / c, ?_, ?_⟩
   · have h1 : (0 : ℝ) < 320 / 21 * wideD := by nlinarith [wideD_pos]
@@ -234,27 +234,27 @@ theorem exists_logDeriv_zeta_bound_of_littlewood {c T₀ : ℝ} (hc0 : 0 < c) (h
       (∑ ρ ∈ Z, (m ρ : ℂ) / (((σ : ℂ) + (γ : ℂ) * Complex.I) - ρ))
     simpa using h
   have hprod : (∑ ρ ∈ Z, (m ρ : ℝ)) * (8 / W)
-      ≤ 8 * E / c * (Real.log |γ| ^ 2 / Real.log (Real.log |γ|)) := by
+      ≤ 8 * E / c * (Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|)) := by
     have hfac : (0 : ℝ) ≤ 8 / W := by positivity
     have hstep := mul_le_mul_of_nonneg_right hcnt hfac
     have heq : (E * Real.log |γ|) * (8 / W)
-        = 8 * E / c * (Real.log |γ| ^ 2 / Real.log (Real.log |γ|)) := by
+        = 8 * E / c * (Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|)) := by
       rw [hWdef, littlewoodWidth]
       field_simp
     linarith [hstep, heq.le, heq.ge]
   have hlin : 320 / 21 * wideD * Real.log |γ|
-      ≤ 320 / 21 * wideD * (Real.log |γ| ^ 2 / Real.log (Real.log |γ|)) := by
-    have hge : Real.log |γ| ≤ Real.log |γ| ^ 2 / Real.log (Real.log |γ|) := by
+      ≤ 320 / 21 * wideD * (Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|)) := by
+    have hge : Real.log |γ| ≤ Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|) := by
       rw [le_div_iff₀ hLL0]
       nlinarith [hratio, hL0]
     nlinarith [hge, wideD_pos]
   have hfinal : ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
-      ≤ 320 / 21 * wideD * (Real.log |γ| ^ 2 / Real.log (Real.log |γ|))
-        + 8 * E / c * (Real.log |γ| ^ 2 / Real.log (Real.log |γ|)) := by
+      ≤ 320 / 21 * wideD * (Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|))
+        + 8 * E / c * (Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|)) := by
     linarith [hsplit, hkeyz, hsumz, hlin, hprod]
-  have hcollect : 320 / 21 * wideD * (Real.log |γ| ^ 2 / Real.log (Real.log |γ|))
-      + 8 * E / c * (Real.log |γ| ^ 2 / Real.log (Real.log |γ|))
-      = (320 / 21 * wideD + 8 * E / c) * Real.log |γ| ^ 2 / Real.log (Real.log |γ|) := by
+  have hcollect : 320 / 21 * wideD * (Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|))
+      + 8 * E / c * (Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|))
+      = (320 / 21 * wideD + 8 * E / c) * Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|) := by
     field_simp
   linarith [hfinal, hcollect.le, hcollect.ge]
 
@@ -264,7 +264,7 @@ theorem exists_logDeriv_zeta_bound_littlewood :
       ∀ σ γ : ℝ, T ≤ |γ| →
         1 - c * Real.log (Real.log |γ|) / Real.log |γ| ≤ σ → σ ≤ 9 / 8 →
         ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
-          ≤ C * Real.log |γ| ^ 2 / Real.log (Real.log |γ|) := by
+          ≤ C * Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|) := by
   obtain ⟨c₀, T₀, hc₀0, hT₀, hregion⟩ := exists_littlewood_zero_free_region_abs
   set c : ℝ := min c₀ (1 / 10) with hcdef
   have hc0 : 0 < c := lt_min hc₀0 (by norm_num)

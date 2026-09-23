@@ -31,24 +31,24 @@ theorem integral_Icc_normSq_heathBrown_fullUnit_le_sqrtScale
     let I : ℝ := ∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
       ‖heathBrownSparseFactor A (fun _ => 1) t *
         heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-          heathBrownDenseUnitWeight t‖ ^ 2
+          heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)
     let k : ℝ :=
       ((5 * Real.pi * Real.exp 1 * X +
           (5 * Real.pi / 2) * (heathBrownHalfHeight T : ℝ)) * (A.card : ℝ)) *
-        (heathBrownSquareDivisorScale N.sqrt eta ^ 2 * (25 * Real.pi / 8) *
+        (heathBrownSquareDivisorScale N.sqrt eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
           (25 * Real.pi / 8))
-    I ≤ 75 * Real.pi * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
-      5 * Real.pi * (T : ℝ) * ((2 * N.sqrt + 5 : ℕ) : ℝ) * (A.card : ℝ) ^ 2 +
-      ((25 * Real.pi / 4) * ((N.sqrt + 3 : ℕ) : ℝ)) ^ 2 * k := by
+    I ≤ 75 * Real.pi * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
+      5 * Real.pi * (T : ℝ) * ((2 * N.sqrt + 5 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ) +
+      ((25 * Real.pi / 4) * ((N.sqrt + 3 : ℕ) : ℝ)) ^ (2 : ℕ) * k := by
   dsimp only
   let I : ℝ := ∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
     ‖heathBrownSparseFactor A (fun _ => 1) t *
       heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-        heathBrownDenseUnitWeight t‖ ^ 2
+        heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)
   let k : ℝ :=
     ((5 * Real.pi * Real.exp 1 * X +
         (5 * Real.pi / 2) * (heathBrownHalfHeight T : ℝ)) * (A.card : ℝ)) *
-      (heathBrownSquareDivisorScale N.sqrt eta ^ 2 * (25 * Real.pi / 8) *
+      (heathBrownSquareDivisorScale N.sqrt eta ^ (2 : ℕ) * (25 * Real.pi / 8) *
         (25 * Real.pi / 8))
   have hK : 1 ≤ N.sqrt := Nat.sqrt_pos.mpr (by omega)
   have hKsq : N.sqrt * N.sqrt ≤ N := heathBrown_sqrt_mul_sqrt_le N
@@ -70,37 +70,37 @@ theorem integral_Icc_normSq_heathBrown_fullUnit_le_sqrtScale
     dsimp only [k]
     positivity
   have hclean : I ≤
-      75 * Real.pi * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+      75 * Real.pi * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
         5 * Real.pi * (T : ℝ) * ((2 * (N / N.sqrt) + 1 : ℕ) : ℝ) *
-          (A.card : ℝ) ^ 2 +
-        ((25 * Real.pi / 4) * ((N / N.sqrt + 1 : ℕ) : ℝ)) ^ 2 * k := by
+          (A.card : ℝ) ^ (2 : ℕ) +
+        ((25 * Real.pi / 4) * ((N / N.sqrt + 1 : ℕ) : ℝ)) ^ (2 : ℕ) * k := by
     calc
       I ≤ 2 * ((5 * Real.pi / 2) * (T : ℝ) *
-          (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
-            ((2 * (N / N.sqrt) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2)) +
+          (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
+            ((2 * (N / N.sqrt) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ))) +
           ((5 * Real.pi / 2) * (T : ℝ) *
-            (((N / N.sqrt + 1 : ℕ) : ℝ) * (5 / (2 * (T : ℝ))))) ^ 2 * k := by
+            (((N / N.sqrt + 1 : ℕ) : ℝ) * (5 / (2 * (T : ℝ))))) ^ (2 : ℕ) * k := by
         simpa only [I, k] using hbase
-      _ = 75 * Real.pi * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+      _ = 75 * Real.pi * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           5 * Real.pi * (T : ℝ) * ((2 * (N / N.sqrt) + 1 : ℕ) : ℝ) *
-            (A.card : ℝ) ^ 2 +
-          ((25 * Real.pi / 4) * ((N / N.sqrt + 1 : ℕ) : ℝ)) ^ 2 * k := by
+            (A.card : ℝ) ^ (2 : ℕ) +
+          ((25 * Real.pi / 4) * ((N / N.sqrt + 1 : ℕ) : ℝ)) ^ (2 : ℕ) * k := by
         have hT0 : (T : ℝ) ≠ 0 := ne_of_gt T.property
         field_simp
         ring
   have hterm2 :
       5 * Real.pi * (T : ℝ) * ((2 * (N / N.sqrt) + 1 : ℕ) : ℝ) *
-          (A.card : ℝ) ^ 2 ≤
+          (A.card : ℝ) ^ (2 : ℕ) ≤
         5 * Real.pi * (T : ℝ) * ((2 * N.sqrt + 5 : ℕ) : ℝ) *
-          (A.card : ℝ) ^ 2 := by
+          (A.card : ℝ) ^ (2 : ℕ) := by
     gcongr
   have hbsmall : 0 ≤ (25 * Real.pi / 4) * ((N / N.sqrt + 1 : ℕ) : ℝ) := by positivity
   have hbbig : 0 ≤ (25 * Real.pi / 4) * ((N.sqrt + 3 : ℕ) : ℝ) := by positivity
   have hb : (25 * Real.pi / 4) * ((N / N.sqrt + 1 : ℕ) : ℝ) ≤
       (25 * Real.pi / 4) * ((N.sqrt + 3 : ℕ) : ℝ) := by gcongr
   have hterm3 :
-      ((25 * Real.pi / 4) * ((N / N.sqrt + 1 : ℕ) : ℝ)) ^ 2 * k ≤
-        ((25 * Real.pi / 4) * ((N.sqrt + 3 : ℕ) : ℝ)) ^ 2 * k := by
+      ((25 * Real.pi / 4) * ((N / N.sqrt + 1 : ℕ) : ℝ)) ^ (2 : ℕ) * k ≤
+        ((25 * Real.pi / 4) * ((N.sqrt + 3 : ℕ) : ℝ)) ^ (2 : ℕ) * k := by
     gcongr
   exact hclean.trans (add_le_add (add_le_add_right hterm2 _) hterm3)
 

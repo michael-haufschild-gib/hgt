@@ -178,14 +178,14 @@ variable {e : ℕ → H} {κ : H →ₗ[ℝ] ℝ} {c : ℝ}
 
 theorem norm_sum_range_orthonormal (he : Orthonormal ℝ e) (N : ℕ) :
     ‖∑ i ∈ Finset.range N, e i‖ = Real.sqrt N := by
-  have hsq : ‖∑ i ∈ Finset.range N, e i‖ ^ 2 = (N : ℝ) := by
+  have hsq : ‖∑ i ∈ Finset.range N, e i‖ ^ (2 : ℕ) = (N : ℝ) := by
     rw [← real_inner_self_eq_norm_sq]
     have := he.inner_sum (fun _ => (1 : ℝ)) (fun _ => (1 : ℝ)) (Finset.range N)
     simpa using this
   rw [← hsq, Real.sqrt_sq (norm_nonneg _)]
 
 theorem norm_sum_range_smul_orthonormal (he : Orthonormal ℝ e) (a : ℕ → ℝ) (N : ℕ) :
-    ‖∑ i ∈ Finset.range N, a i • e i‖ ^ 2 = ∑ i ∈ Finset.range N, a i ^ 2 := by
+    ‖∑ i ∈ Finset.range N, a i • e i‖ ^ (2 : ℕ) = ∑ i ∈ Finset.range N, a i ^ (2 : ℕ) := by
   rw [← real_inner_self_eq_norm_sq]
   have := he.inner_sum a a (Finset.range N)
   simpa [sq] using this
@@ -202,17 +202,17 @@ theorem abs_apply_le (he : Orthonormal ℝ e) (hκ : ∀ n, κ (e n) = c) (a : �
     |κ (∑ i ∈ Finset.range N, a i • e i)| ≤
       |c| * Real.sqrt N * ‖∑ i ∈ Finset.range N, a i • e i‖ := by
   set x := ∑ i ∈ Finset.range N, a i • e i with hx
-  have hcs : (∑ i ∈ Finset.range N, a i) ^ 2 ≤ (N : ℝ) * ∑ i ∈ Finset.range N, a i ^ 2 := by
+  have hcs : (∑ i ∈ Finset.range N, a i) ^ (2 : ℕ) ≤ (N : ℝ) * ∑ i ∈ Finset.range N, a i ^ (2 : ℕ) := by
     have := sq_sum_le_card_mul_sum_sq (s := Finset.range N) (f := a)
     simpa using this
-  have hnorm : ‖x‖ ^ 2 = ∑ i ∈ Finset.range N, a i ^ 2 := norm_sum_range_smul_orthonormal he a N
-  have hsq : (κ x) ^ 2 ≤ (|c| * Real.sqrt N * ‖x‖) ^ 2 := by
+  have hnorm : ‖x‖ ^ (2 : ℕ) = ∑ i ∈ Finset.range N, a i ^ (2 : ℕ) := norm_sum_range_smul_orthonormal he a N
+  have hsq : (κ x) ^ (2 : ℕ) ≤ (|c| * Real.sqrt N * ‖x‖) ^ (2 : ℕ) := by
     rw [apply_sum_range hκ a N, mul_pow, mul_pow, mul_pow, sq_abs,
       Real.sq_sqrt (by positivity), hnorm]
     nlinarith [sq_nonneg c, hcs]
   have hnn : 0 ≤ |c| * Real.sqrt N * ‖x‖ := by positivity
-  calc |κ x| = Real.sqrt ((κ x) ^ 2) := (Real.sqrt_sq_eq_abs _).symm
-    _ ≤ Real.sqrt ((|c| * Real.sqrt N * ‖x‖) ^ 2) := Real.sqrt_le_sqrt hsq
+  calc |κ x| = Real.sqrt ((κ x) ^ (2 : ℕ)) := (Real.sqrt_sq_eq_abs _).symm
+    _ ≤ Real.sqrt ((|c| * Real.sqrt N * ‖x‖) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsq
     _ = |c| * Real.sqrt N * ‖x‖ := Real.sqrt_sq hnn
 
 /-- **Theorem 6.2, attainment.**  The bound `|c|√N` is achieved on the all-ones atom sum, so the

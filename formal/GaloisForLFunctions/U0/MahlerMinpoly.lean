@@ -27,8 +27,8 @@ and on `X` (`hτφ`). -/
 theorem aeval_map_mahler {K L : Type*} [Field K] [Field L] [Algebra K L]
     (σ : K →+* K) (τ : L →+* L)
     (hcompat : ∀ k : K, τ (algebraMap K L k) = algebraMap K L (σ k))
-    {φ : L} (hτφ : τ φ = φ ^ 2) (p : K[X]) :
-    aeval (φ ^ 2) (p.map σ) = τ (aeval φ p) := by
+    {φ : L} (hτφ : τ φ = φ ^ (2 : ℕ)) (p : K[X]) :
+    aeval (φ ^ (2 : ℕ)) (p.map σ) = τ (aeval φ p) := by
   induction p using Polynomial.induction_on with
   | C k => simp [hcompat]
   | add p q hp hq => simp [hp, hq]
@@ -44,10 +44,10 @@ minimal polynomial of `φ` over `K` divides `(minpoly K φ).map σ ∘ (X²)` �
 theorem minpoly_dvd_mahler {K L : Type*} [Field K] [Field L] [Algebra K L]
     (σ : K →+* K) (τ : L →+* L)
     (hcompat : ∀ k : K, τ (algebraMap K L k) = algebraMap K L (σ k))
-    {φ : L} (hτφ : τ φ = φ ^ 2) :
-    minpoly K φ ∣ ((minpoly K φ).map σ).comp (X ^ 2) := by
+    {φ : L} (hτφ : τ φ = φ ^ (2 : ℕ)) :
+    minpoly K φ ∣ ((minpoly K φ).map σ).comp (X ^ (2 : ℕ)) := by
   apply minpoly.dvd
-  rw [aeval_comp, show aeval φ (X ^ 2 : K[X]) = φ ^ 2 by simp,
+  rw [aeval_comp, show aeval φ (X ^ (2 : ℕ) : K[X]) = φ ^ (2 : ℕ) by simp,
       aeval_map_mahler σ τ hcompat hτφ, minpoly.aeval, map_zero]
 
 /-- **Bivariate Mahler identity from the divisibility (PROVED).** If `σ : K → K` is an injective field
@@ -59,31 +59,31 @@ the norm-descent. -/
 @[aesop safe]
 theorem mahler_identity_of_coprime {K : Type*} [Field K] {σ : K →+* K} (hσ : Function.Injective σ)
     {m : K[X]} (hdeg : 0 < m.natDegree)
-    (hdvd : m ∣ (m.map σ).comp (X ^ 2)) (hcop : IsCoprime m (m.comp (-X))) :
-    ∃ s : K, (m.map σ).comp (X ^ 2) = C s * m * m.comp (-X) := by
+    (hdvd : m ∣ (m.map σ).comp (X ^ (2 : ℕ))) (hcop : IsCoprime m (m.comp (-X))) :
+    ∃ s : K, (m.map σ).comp (X ^ (2 : ℕ)) = C s * m * m.comp (-X) := by
   have hmne : m ≠ 0 := fun h => by simp [h] at hdeg
   have hmcdeg : (m.comp (-X)).natDegree = m.natDegree := by
     rw [natDegree_comp, natDegree_neg, natDegree_X, mul_one]
   have hmcne : m.comp (-X) ≠ 0 := fun h => by rw [h, natDegree_zero] at hmcdeg; omega
-  have hdvd2 : m.comp (-X) ∣ (m.map σ).comp (X ^ 2) := by
+  have hdvd2 : m.comp (-X) ∣ (m.map σ).comp (X ^ (2 : ℕ)) := by
     obtain ⟨c, hc⟩ := hdvd
     refine ⟨c.comp (-X), ?_⟩
-    have hQeven : ((m.map σ).comp (X ^ 2)).comp (-X) = (m.map σ).comp (X ^ 2) := by
+    have hQeven : ((m.map σ).comp (X ^ (2 : ℕ))).comp (-X) = (m.map σ).comp (X ^ (2 : ℕ)) := by
       rw [comp_assoc, pow_comp, X_comp, neg_sq]
     rw [← mul_comp, ← hc, hQeven]
   obtain ⟨R, hR⟩ := hcop.mul_dvd hdvd hdvd2
-  have hQne : (m.map σ).comp (X ^ 2) ≠ 0 := by
+  have hQne : (m.map σ).comp (X ^ (2 : ℕ)) ≠ 0 := by
     rw [Ne, comp_eq_zero_iff]
     rintro (h1 | ⟨_, h2⟩)
     · exact (Polynomial.map_ne_zero_iff hσ).mpr hmne h1
-    · have : (X ^ 2 : K[X]).natDegree = 2 := natDegree_X_pow 2
+    · have : (X ^ (2 : ℕ) : K[X]).natDegree = 2 := natDegree_X_pow 2
       rw [h2, natDegree_C] at this; exact absurd this (by norm_num)
   have hRne : R ≠ 0 := by
     intro h; rw [h, mul_zero] at hR; exact hQne hR
-  have hdegQ : ((m.map σ).comp (X ^ 2)).natDegree = 2 * m.natDegree := by
+  have hdegQ : ((m.map σ).comp (X ^ (2 : ℕ))).natDegree = 2 * m.natDegree := by
     rw [natDegree_comp, natDegree_X_pow, natDegree_map_eq_of_injective hσ]; ring
   have hRdeg : R.natDegree = 0 := by
-    have key : ((m.map σ).comp (X ^ 2)).natDegree
+    have key : ((m.map σ).comp (X ^ (2 : ℕ))).natDegree
         = (m * m.comp (-X)).natDegree + R.natDegree := by
       rw [hR, natDegree_mul (mul_ne_zero hmne hmcne) hRne]
     rw [hdegQ, natDegree_mul hmne hmcne, hmcdeg] at key
@@ -100,9 +100,9 @@ term `m.coeff 0` is, up to sign, the norm of the algebraic element; with `s` the
 supplies the divisibility `hdvd` (via `minpoly_dvd_mahler`). -/
 @[aesop safe]
 theorem mahler_norm_relation {c : ℂ} {m : (RatFunc ℂ)[X]} (hdeg : 0 < m.natDegree)
-    (hdvd : m ∣ (m.map (mahlerHom c).toRingHom).comp (X ^ 2))
+    (hdvd : m ∣ (m.map (mahlerHom c).toRingHom).comp (X ^ (2 : ℕ)))
     (hcop : IsCoprime m (m.comp (-X))) :
-    ∃ s : RatFunc ℂ, mahlerHom c (m.coeff 0) = s * (m.coeff 0) ^ 2 := by
+    ∃ s : RatFunc ℂ, mahlerHom c (m.coeff 0) = s * (m.coeff 0) ^ (2 : ℕ) := by
   obtain ⟨s, hs⟩ := mahler_identity_of_coprime
     (σ := (mahlerHom c).toRingHom) (mahlerHom c).toRingHom.injective hdeg hdvd hcop
   exact ⟨s, mahler_coeff_zero_of_identity hs⟩
@@ -121,11 +121,11 @@ theorem carrier_norm_relation {c : ℂ} {L : Type*} [Field L] [Algebra (RatFunc 
     (τ : L →+* L)
     (hcompat : ∀ k : RatFunc ℂ,
       τ (algebraMap (RatFunc ℂ) L k) = algebraMap (RatFunc ℂ) L (mahlerHom c k))
-    {φ : L} (hτφ : τ φ = φ ^ 2)
+    {φ : L} (hτφ : τ φ = φ ^ (2 : ℕ))
     (hdeg : 0 < (minpoly (RatFunc ℂ) φ).natDegree)
     (hcop : IsCoprime (minpoly (RatFunc ℂ) φ) ((minpoly (RatFunc ℂ) φ).comp (-X))) :
     ∃ s : RatFunc ℂ, mahlerHom c ((minpoly (RatFunc ℂ) φ).coeff 0)
-      = s * ((minpoly (RatFunc ℂ) φ).coeff 0) ^ 2 :=
+      = s * ((minpoly (RatFunc ℂ) φ).coeff 0) ^ (2 : ℕ) :=
   mahler_norm_relation hdeg
     (minpoly_dvd_mahler (mahlerHom c).toRingHom τ hcompat hτφ) hcop
 
@@ -139,20 +139,20 @@ higher-degree `b₁` — is Ritt-type semi-conjugacy rigidity). -/
 @[aesop safe]
 theorem candidate_forces_exceptional {R : Type*} [CommRing R] [Algebra ℂ R] [Nontrivial R]
     {z φ : R} {c : ℂ}
-    (h1 : φ ^ 2 = z * φ + algebraMap ℂ R (c / 2))
-    (h2 : φ ^ 4 = (z ^ 2 + algebraMap ℂ R c) * φ ^ 2 + algebraMap ℂ R (c / 2)) :
-    c ^ 2 + 2 * c = 0 := by
+    (h1 : φ ^ (2 : ℕ) = z * φ + algebraMap ℂ R (c / 2))
+    (h2 : φ ^ (4 : ℕ) = (z ^ (2 : ℕ) + algebraMap ℂ R c) * φ ^ (2 : ℕ) + algebraMap ℂ R (c / 2)) :
+    c ^ (2 : ℕ) + 2 * c = 0 := by
   have hinj := FaithfulSMul.algebraMap_injective ℂ R
   have hhalf : algebraMap ℂ R (c / 2) + algebraMap ℂ R (c / 2) = algebraMap ℂ R c := by
     rw [← map_add]; congr 1; ring
-  have e : (z * φ + algebraMap ℂ R (c / 2)) ^ 2
-      = (z ^ 2 + algebraMap ℂ R c) * φ ^ 2 + algebraMap ℂ R (c / 2) := by
+  have e : (z * φ + algebraMap ℂ R (c / 2)) ^ (2 : ℕ)
+      = (z ^ (2 : ℕ) + algebraMap ℂ R c) * φ ^ (2 : ℕ) + algebraMap ℂ R (c / 2) := by
     rw [← h1, ← h2]; ring
-  have hkey : algebraMap ℂ R (c ^ 2 + 2 * c) = 0 := by
-    have hc2 : algebraMap ℂ R (c ^ 2 + 2 * c)
+  have hkey : algebraMap ℂ R (c ^ (2 : ℕ) + 2 * c) = 0 := by
+    have hc2 : algebraMap ℂ R (c ^ (2 : ℕ) + 2 * c)
         = algebraMap ℂ R (c / 2) * algebraMap ℂ R (c / 2) * 4
           + (algebraMap ℂ R (c / 2) + algebraMap ℂ R (c / 2)) * 2 := by
-      rw [show (c ^ 2 + 2 * c : ℂ) = (c / 2) * (c / 2) * 4 + ((c / 2) + (c / 2)) * 2 by ring]
+      rw [show (c ^ (2 : ℕ) + 2 * c : ℂ) = (c / 2) * (c / 2) * 4 + ((c / 2) + (c / 2)) * 2 by ring]
       push_cast [map_add, map_mul, map_ofNat]
       ring
     rw [hc2]
@@ -168,7 +168,7 @@ satisfies the semi-conjugacy `b₁(z²+c) = −b₁² + 2β`, then `a₀ = 0` an
 minimal polynomial to the candidate `Y²−zY−c/2`, which `candidate_forces_exceptional` then refutes. -/
 @[aesop safe]
 theorem semiconj_degree_one {a₀ β c : ℂ}
-    (h : (-X + C a₀ : ℂ[X]).comp (X ^ 2 + C c) = -((-X + C a₀) ^ 2) + C (2 * β)) :
+    (h : (-X + C a₀ : ℂ[X]).comp (X ^ (2 : ℕ) + C c) = -((-X + C a₀) ^ (2 : ℕ)) + C (2 * β)) :
     a₀ = 0 ∧ c = -2 * β := by
   have h0 := congrArg (Polynomial.eval (0 : ℂ)) h
   have h1 := congrArg (Polynomial.eval (1 : ℂ)) h
@@ -185,7 +185,7 @@ limit is `≠0`), the leading-coefficient asymptotic (limit `= leadingCoeff = �
 @[aesop safe]
 theorem b1_pinned {c β : ℂ} {b₁ : ℂ[X]}
     (htend : Tendsto (fun t : ℝ => b₁.eval (t : ℂ) / (t : ℂ)) atTop (𝓝 (-1)))
-    (hsc : b₁.comp (X ^ 2 + C c) = -(b₁ ^ 2) + C (2 * β)) :
+    (hsc : b₁.comp (X ^ (2 : ℕ) + C c) = -(b₁ ^ (2 : ℕ)) + C (2 * β)) :
     b₁ = -X ∧ c = -2 * β := by
   have hdeg : b₁.natDegree ≤ 1 := PolyAsymptotics.natDegree_le_one_of_div_id_tendsto htend
   have hd1 : b₁.natDegree = 1 := by

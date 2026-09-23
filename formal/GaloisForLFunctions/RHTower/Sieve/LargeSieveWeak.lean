@@ -61,7 +61,7 @@ theorem largeSieve_bilinear {ι : Type*} [DecidableEq ι] (N : ℕ) (s : Finset 
     {Δ : ℝ}
     (hΔ : ∀ r ∈ s, (N : ℝ) + ∑ t ∈ s.erase r, 2 / ‖(starRingEnd ℂ) (ξ r) * ξ t - 1‖ ≤ Δ)
     (c : ι → ℂ) :
-    ‖∑ r ∈ s, c r • expRow N (ξ r)‖ ^ 2 ≤ Δ * ∑ r ∈ s, ‖c r‖ ^ 2 :=
+    ‖∑ r ∈ s, c r • expRow N (ξ r)‖ ^ (2 : ℕ) ≤ Δ * ∑ r ∈ s, ‖c r‖ ^ (2 : ℕ) :=
   norm_sum_smul_sq_le_of_schur s (fun r => expRow N (ξ r))
     (fun r hr => expRow_gram_row_le N s ξ hξ hne hΔ r hr) c
 
@@ -72,7 +72,7 @@ theorem largeSieve_bessel {ι : Type*} [DecidableEq ι] (N : ℕ) (s : Finset ι
     {Δ : ℝ} (hΔ0 : 0 ≤ Δ)
     (hΔ : ∀ r ∈ s, (N : ℝ) + ∑ t ∈ s.erase r, 2 / ‖(starRingEnd ℂ) (ξ r) * ξ t - 1‖ ≤ Δ)
     (a : EuclideanSpace ℂ (Fin N)) :
-    ∑ r ∈ s, ‖⟪expRow N (ξ r), a⟫_ℂ‖ ^ 2 ≤ Δ * ‖a‖ ^ 2 :=
+    ∑ r ∈ s, ‖⟪expRow N (ξ r), a⟫_ℂ‖ ^ (2 : ℕ) ≤ Δ * ‖a‖ ^ (2 : ℕ) :=
   sum_norm_inner_sq_le_of_schur s (fun r => expRow N (ξ r)) hΔ0
     (fun r hr => expRow_gram_row_le N s ξ hξ hne hΔ r hr) a
 

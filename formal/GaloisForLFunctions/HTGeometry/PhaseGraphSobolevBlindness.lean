@@ -69,20 +69,20 @@ def completedExpectation (μ : Measure Ω) (F : Ω → (d → ℝ) → ℂ) : �
 
 /-- The completed mean square of a phase observable. -/
 def completedSq (μ : Measure Ω) (F : Ω → (d → ℝ) → ℂ) : ℝ :=
-  ∫ ω, (∫ x in torusBox d, ‖F ω x‖ ^ 2) ∂μ
+  ∫ ω, (∫ x in torusBox d, ‖F ω x‖ ^ (2 : ℕ)) ∂μ
 
 /-- The completed variance of a phase observable. -/
 def completedVar (μ : Measure Ω) (F : Ω → (d → ℝ) → ℂ) : ℝ :=
-  completedSq μ F - ‖completedExpectation μ F‖ ^ 2
+  completedSq μ F - ‖completedExpectation μ F‖ ^ (2 : ℕ)
 
 /-- The completed phase Dirichlet energy of a phase observable. -/
 def completedDirichlet (μ : Measure Ω) (F : Ω → (d → ℝ) → ℂ) : ℝ :=
-  ∑ i : d, ∫ ω, (∫ x in torusBox d, ‖pderiv i (F ω) x‖ ^ 2) ∂μ
+  ∑ i : d, ∫ ω, (∫ x in torusBox d, ‖pderiv i (F ω) x‖ ^ (2 : ℕ)) ∂μ
 
 /-- The completed phase Sobolev quantity of integer order `k`. -/
 def phaseSobolevSq (μ : Measure Ω) (F : Ω → (d → ℝ) → ℂ) (k : ℕ) : ℝ :=
   ∑ α ∈ multiIndexSet d k,
-    ∫ ω, (∫ x in torusBox d, ‖pderivList (sobolevMultiIndexList α) (F ω) x‖ ^ 2) ∂μ
+    ∫ ω, (∫ x in torusBox d, ‖pderivList (sobolevMultiIndexList α) (F ω) x‖ ^ (2 : ℕ)) ∂μ
 
 /-- The detector family adapted to a phase map. -/
 def graphDetector (N : ℕ) (Φ : Ω → (d → ℝ)) : Ω → (d → ℝ) → ℂ :=
@@ -121,17 +121,17 @@ theorem completedExpectation_graphDetector (N : ℕ) (Φ : Ω → (d → ℝ)) :
 
 /-- The completed mean square of a derivative of the detector does not depend on the sample. -/
 theorem integral_graphDetector_pderivList (N : ℕ) (Φ : Ω → (d → ℝ)) (l : List d) :
-    (∫ ω, (∫ x in torusBox d, ‖pderivList l (graphDetector N Φ ω) x‖ ^ 2) ∂μ) =
-      ∫ x in torusBox d, ‖pderivList l (phaseDetector N (0 : d → ℝ)) x‖ ^ 2 := by
-  have hpt : ∀ ω : Ω, (∫ x in torusBox d, ‖pderivList l (graphDetector N Φ ω) x‖ ^ 2) =
-      ∫ x in torusBox d, ‖pderivList l (phaseDetector N (0 : d → ℝ)) x‖ ^ 2 := fun ω =>
+    (∫ ω, (∫ x in torusBox d, ‖pderivList l (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) ∂μ) =
+      ∫ x in torusBox d, ‖pderivList l (phaseDetector N (0 : d → ℝ)) x‖ ^ (2 : ℕ) := by
+  have hpt : ∀ ω : Ω, (∫ x in torusBox d, ‖pderivList l (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) =
+      ∫ x in torusBox d, ‖pderivList l (phaseDetector N (0 : d → ℝ)) x‖ ^ (2 : ℕ) := fun ω =>
     integral_box_normSq_pderivList_phaseDetector_eq N (Φ ω) l
   rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
   simp
 
 theorem integral_graphDetector_pderivList_le (N : ℕ) (Φ : Ω → (d → ℝ)) (l : List d) :
-    (∫ ω, (∫ x in torusBox d, ‖pderivList l (graphDetector N Φ ω) x‖ ^ 2) ∂μ) ≤
-      ((2 * Real.pi * (N : ℝ)) ^ l.length) ^ 2 / ((N : ℝ) + 1) ^ Fintype.card d := by
+    (∫ ω, (∫ x in torusBox d, ‖pderivList l (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) ∂μ) ≤
+      ((2 * Real.pi * (N : ℝ)) ^ l.length) ^ (2 : ℕ) / ((N : ℝ) + 1) ^ Fintype.card d := by
   rw [integral_graphDetector_pderivList μ N Φ l]
   exact integral_box_normSq_pderivList_phaseDetector_le N (0 : d → ℝ) l
 
@@ -154,19 +154,19 @@ theorem completedVar_graphDetector_le (N : ℕ) (Φ : Ω → (d → ℝ)) :
 squared resolution frequency over the resolution power of the phase dimension. -/
 theorem completedDirichlet_graphDetector_le (N : ℕ) (Φ : Ω → (d → ℝ)) :
     completedDirichlet μ (graphDetector N Φ) ≤
-      (Fintype.card d : ℝ) * ((2 * Real.pi * (N : ℝ)) ^ 2 /
+      (Fintype.card d : ℝ) * ((2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) /
         ((N : ℝ) + 1) ^ Fintype.card d) := by
   rw [completedDirichlet]
-  have hterm : ∀ i : d, (∫ ω, (∫ x in torusBox d, ‖pderiv i (graphDetector N Φ ω) x‖ ^ 2) ∂μ) ≤
-      (2 * Real.pi * (N : ℝ)) ^ 2 / ((N : ℝ) + 1) ^ Fintype.card d := by
+  have hterm : ∀ i : d, (∫ ω, (∫ x in torusBox d, ‖pderiv i (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) ∂μ) ≤
+      (2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) / ((N : ℝ) + 1) ^ Fintype.card d := by
     intro i
     have h := integral_graphDetector_pderivList_le μ N Φ [i]
     rw [List.length_cons, List.length_nil, zero_add, pow_one] at h
     exact h
-  calc ∑ i : d, ∫ ω, (∫ x in torusBox d, ‖pderiv i (graphDetector N Φ ω) x‖ ^ 2) ∂μ
-      ≤ ∑ _i : d, (2 * Real.pi * (N : ℝ)) ^ 2 / ((N : ℝ) + 1) ^ Fintype.card d :=
+  calc ∑ i : d, ∫ ω, (∫ x in torusBox d, ‖pderiv i (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) ∂μ
+      ≤ ∑ _i : d, (2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) / ((N : ℝ) + 1) ^ Fintype.card d :=
         Finset.sum_le_sum fun i _ => hterm i
-    _ = (Fintype.card d : ℝ) * ((2 * Real.pi * (N : ℝ)) ^ 2 /
+    _ = (Fintype.card d : ℝ) * ((2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) /
           ((N : ℝ) + 1) ^ Fintype.card d) := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
@@ -178,7 +178,7 @@ theorem phaseSobolevSq_graphDetector_le (N k : ℕ) (Φ : Ω → (d → ℝ)) :
         ((1 + 2 * Real.pi * (N : ℝ)) ^ (2 * k) / ((N : ℝ) + 1) ^ Fintype.card d) := by
   rw [phaseSobolevSq]
   have hterm : ∀ α ∈ multiIndexSet d k,
-      (∫ ω, (∫ x in torusBox d, ‖pderivList (sobolevMultiIndexList α) (graphDetector N Φ ω) x‖ ^ 2) ∂μ) ≤
+      (∫ ω, (∫ x in torusBox d, ‖pderivList (sobolevMultiIndexList α) (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) ∂μ) ≤
         (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * k) / ((N : ℝ) + 1) ^ Fintype.card d := by
     intro α hα
     refine le_trans (integral_graphDetector_pderivList_le μ N Φ (sobolevMultiIndexList α)) ?_
@@ -186,7 +186,7 @@ theorem phaseSobolevSq_graphDetector_le (N k : ℕ) (Φ : Ω → (d → ℝ)) :
       rw [length_sobolevMultiIndexList]
       exact sum_le_of_mem_multiIndexSet hα
     have hb : (0 : ℝ) ≤ 2 * Real.pi * (N : ℝ) := by positivity
-    have h1 : ((2 * Real.pi * (N : ℝ)) ^ (sobolevMultiIndexList α).length) ^ 2
+    have h1 : ((2 * Real.pi * (N : ℝ)) ^ (sobolevMultiIndexList α).length) ^ (2 : ℕ)
         ≤ (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * k) := by
       rw [← pow_mul, mul_comm ((sobolevMultiIndexList α).length) 2]
       calc (2 * Real.pi * (N : ℝ)) ^ (2 * (sobolevMultiIndexList α).length)
@@ -197,7 +197,7 @@ theorem phaseSobolevSq_graphDetector_le (N k : ℕ) (Φ : Ω → (d → ℝ)) :
     rw [div_eq_mul_inv, div_eq_mul_inv]
     exact mul_le_mul_of_nonneg_right h1 (by positivity)
   calc ∑ α ∈ multiIndexSet d k,
-        ∫ ω, (∫ x in torusBox d, ‖pderivList (sobolevMultiIndexList α) (graphDetector N Φ ω) x‖ ^ 2) ∂μ
+        ∫ ω, (∫ x in torusBox d, ‖pderivList (sobolevMultiIndexList α) (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) ∂μ
       ≤ ∑ _α ∈ multiIndexSet d k,
           (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * k) / ((N : ℝ) + 1) ^ Fintype.card d :=
         Finset.sum_le_sum hterm
@@ -265,7 +265,7 @@ theorem phaseSobolevSq_nonneg (N k : ℕ) (Φ : Ω → (d → ℝ)) :
 theorem completedSq_nonneg (N : ℕ) (Φ : Ω → (d → ℝ)) :
     0 ≤ completedSq μ (graphDetector N Φ) := by
   have h : completedSq μ (graphDetector N Φ) =
-      ∫ ω, (∫ x in torusBox d, ‖pderivList ([] : List d) (graphDetector N Φ ω) x‖ ^ 2) ∂μ := rfl
+      ∫ ω, (∫ x in torusBox d, ‖pderivList ([] : List d) (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) ∂μ := rfl
   rw [h, integral_graphDetector_pderivList]
   exact integral_nonneg fun x => sq_nonneg _
 
@@ -273,8 +273,8 @@ theorem completedDirichlet_nonneg (N : ℕ) (Φ : Ω → (d → ℝ)) :
     0 ≤ completedDirichlet μ (graphDetector N Φ) := by
   rw [completedDirichlet]
   refine Finset.sum_nonneg fun i _ => ?_
-  have h : (∫ ω, (∫ x in torusBox d, ‖pderiv i (graphDetector N Φ ω) x‖ ^ 2) ∂μ) =
-      ∫ ω, (∫ x in torusBox d, ‖pderivList [i] (graphDetector N Φ ω) x‖ ^ 2) ∂μ := rfl
+  have h : (∫ ω, (∫ x in torusBox d, ‖pderiv i (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) ∂μ) =
+      ∫ ω, (∫ x in torusBox d, ‖pderivList [i] (graphDetector N Φ ω) x‖ ^ (2 : ℕ)) ∂μ := rfl
   rw [h, integral_graphDetector_pderivList]
   exact integral_nonneg fun x => sq_nonneg _
 
@@ -303,10 +303,10 @@ theorem tendsto_completed_control (hd : 3 ≤ Fintype.card d) (Φ : Ω → (d �
     squeeze_zero (fun N => completedSq_nonneg μ N Φ)
       (fun N => completedSq_graphDetector_le μ N Φ)
       (tendsto_inv_pow_succ (m := Fintype.card d) (by omega))
-  have hE : Tendsto (fun N : ℕ => ‖completedExpectation μ (graphDetector N Φ)‖ ^ 2)
+  have hE : Tendsto (fun N : ℕ => ‖completedExpectation μ (graphDetector N Φ)‖ ^ (2 : ℕ))
       atTop (𝓝 0) := by
-    have hpt : ∀ N : ℕ, ‖completedExpectation μ (graphDetector N Φ)‖ ^ 2 =
-        ((((N : ℝ) + 1) ^ Fintype.card d)⁻¹) ^ 2 := by
+    have hpt : ∀ N : ℕ, ‖completedExpectation μ (graphDetector N Φ)‖ ^ (2 : ℕ) =
+        ((((N : ℝ) + 1) ^ Fintype.card d)⁻¹) ^ (2 : ℕ) := by
       intro N
       rw [completedExpectation_graphDetector, Complex.norm_real,
         Real.norm_of_nonneg (by positivity)]
@@ -320,7 +320,7 @@ theorem tendsto_completed_control (hd : 3 ≤ Fintype.card d) (Φ : Ω → (d �
         (fun N : ℕ => (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * 1) / ((N : ℝ) + 1) ^ Fintype.card d)
         atTop (𝓝 0) := tendsto_freq_pow_div_pow (by omega)
     have hcomp : ∀ N : ℕ, (Fintype.card d : ℝ) *
-        ((2 * Real.pi * (N : ℝ)) ^ 2 / ((N : ℝ) + 1) ^ Fintype.card d) ≤
+        ((2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) / ((N : ℝ) + 1) ^ Fintype.card d) ≤
         (Fintype.card d : ℝ) *
           ((1 + 2 * Real.pi * (N : ℝ)) ^ (2 * 1) / ((N : ℝ) + 1) ^ Fintype.card d) := by
       intro N
@@ -459,37 +459,37 @@ a dimensional constant times the resolution scale to the phase codimension of a 
 theorem completedDirichlet_graphDetector_le_scale (hd : 2 ≤ Fintype.card d) (N : ℕ)
     (Φ : Ω → (d → ℝ)) :
     completedDirichlet μ (graphDetector N Φ) ≤
-      4 * Real.pi ^ 2 * (Fintype.card d : ℝ) * phaseScale N ^ (Fintype.card d - 2) := by
+      4 * Real.pi ^ (2 : ℕ) * (Fintype.card d : ℝ) * phaseScale N ^ (Fintype.card d - 2) := by
   refine le_trans (completedDirichlet_graphDetector_le μ N Φ) ?_
   have hN : (0 : ℝ) < (N : ℝ) + 1 := by positivity
   have hsplit : ((N : ℝ) + 1) ^ Fintype.card d =
-      ((N : ℝ) + 1) ^ 2 * ((N : ℝ) + 1) ^ (Fintype.card d - 2) := by
+      ((N : ℝ) + 1) ^ (2 : ℕ) * ((N : ℝ) + 1) ^ (Fintype.card d - 2) := by
     rw [← pow_add]
     congr 1
     omega
-  have hnum : (2 * Real.pi * (N : ℝ)) ^ 2 ≤ 4 * Real.pi ^ 2 * ((N : ℝ) + 1) ^ 2 := by
-    have h1 : (2 * Real.pi * (N : ℝ)) ^ 2 = 4 * Real.pi ^ 2 * (N : ℝ) ^ 2 := by ring
+  have hnum : (2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) ≤ 4 * Real.pi ^ (2 : ℕ) * ((N : ℝ) + 1) ^ (2 : ℕ) := by
+    have h1 : (2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) = 4 * Real.pi ^ (2 : ℕ) * (N : ℝ) ^ (2 : ℕ) := by ring
     rw [h1]
-    have h2 : ((N : ℝ)) ^ 2 ≤ ((N : ℝ) + 1) ^ 2 :=
+    have h2 : ((N : ℝ)) ^ (2 : ℕ) ≤ ((N : ℝ) + 1) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (Nat.cast_nonneg N) (by linarith) 2
     nlinarith [Real.pi_pos, sq_nonneg Real.pi]
   rw [phaseScale_pow, hsplit]
-  have hrw : (2 * Real.pi * (N : ℝ)) ^ 2 /
-      (((N : ℝ) + 1) ^ 2 * ((N : ℝ) + 1) ^ (Fintype.card d - 2)) =
-      ((2 * Real.pi * (N : ℝ)) ^ 2 / ((N : ℝ) + 1) ^ 2) *
+  have hrw : (2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) /
+      (((N : ℝ) + 1) ^ (2 : ℕ) * ((N : ℝ) + 1) ^ (Fintype.card d - 2)) =
+      ((2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) / ((N : ℝ) + 1) ^ (2 : ℕ)) *
         (((N : ℝ) + 1) ^ (Fintype.card d - 2))⁻¹ := by
     field_simp
   rw [hrw]
-  have hfrac : (2 * Real.pi * (N : ℝ)) ^ 2 / ((N : ℝ) + 1) ^ 2 ≤ 4 * Real.pi ^ 2 := by
+  have hfrac : (2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) / ((N : ℝ) + 1) ^ (2 : ℕ) ≤ 4 * Real.pi ^ (2 : ℕ) := by
     rw [div_le_iff₀ (by positivity)]
     exact hnum
-  calc (Fintype.card d : ℝ) * (((2 * Real.pi * (N : ℝ)) ^ 2 / ((N : ℝ) + 1) ^ 2) *
+  calc (Fintype.card d : ℝ) * (((2 * Real.pi * (N : ℝ)) ^ (2 : ℕ) / ((N : ℝ) + 1) ^ (2 : ℕ)) *
         (((N : ℝ) + 1) ^ (Fintype.card d - 2))⁻¹)
-      ≤ (Fintype.card d : ℝ) * (4 * Real.pi ^ 2 *
+      ≤ (Fintype.card d : ℝ) * (4 * Real.pi ^ (2 : ℕ) *
           (((N : ℝ) + 1) ^ (Fintype.card d - 2))⁻¹) := by
         refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
         exact mul_le_mul_of_nonneg_right hfrac (by positivity)
-    _ = 4 * Real.pi ^ 2 * (Fintype.card d : ℝ) *
+    _ = 4 * Real.pi ^ (2 : ℕ) * (Fintype.card d : ℝ) *
           (((N : ℝ) + 1) ^ (Fintype.card d - 2))⁻¹ := by ring
 
 /-- **Sobolev quantity at scale.**  Below half the phase dimension the detector's Sobolev quantity

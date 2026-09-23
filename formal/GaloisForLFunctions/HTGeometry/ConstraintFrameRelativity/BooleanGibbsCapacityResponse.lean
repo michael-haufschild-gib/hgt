@@ -80,8 +80,8 @@ theorem bernoulliCov_lam_lam (q lam : ι → ℝ) :
 /-- **The capacity as an ordered clock-gap ratio.** -/
 theorem schurCapacity_eq_ordered_ratio [LinearOrder ι] {w lam : ι → ℝ} (hC : 0 < capC w lam) :
     schurCapacity w lam
-      = Real.pi ^ 2 *
-        ((∑ p, ∑ r ∈ Finset.univ.filter (fun r => p < r), w p * w r * (lam p - lam r) ^ 2)
+      = Real.pi ^ (2 : ℕ) *
+        ((∑ p, ∑ r ∈ Finset.univ.filter (fun r => p < r), w p * w r * (lam p - lam r) ^ (2 : ℕ))
           / capC w lam) := by
   rw [schurCapacity_eq_ratio hC, capA_mul_capC_sub_capB_sq_lt]
 
@@ -92,14 +92,14 @@ theorem schurCapacity_eq_ordered_ratio [LinearOrder ι] {w lam : ι → ℝ} (hC
 theorem hasDerivAt_booleanTiltCapacity (q lam : ι → ℝ) (r : Finset ι → ℝ)
     (hC : capC (bernoulliVar q) lam ≠ 0) :
     HasDerivAt
-      (fun e => Real.pi ^ 2 *
+      (fun e => Real.pi ^ (2 : ℕ) *
         (tiltCov (bernoulliWeight q) r e (linearStat fun _ => 1) (linearStat fun _ => 1)
-          - tiltCov (bernoulliWeight q) r e (linearStat fun _ => 1) (linearStat lam) ^ 2
+          - tiltCov (bernoulliWeight q) r e (linearStat fun _ => 1) (linearStat lam) ^ (2 : ℕ)
             / tiltCov (bernoulliWeight q) r e (linearStat lam) (linearStat lam)))
-      (Real.pi ^ 2 * wcov (bernoulliWeight q) r (fun S =>
+      (Real.pi ^ (2 : ℕ) * wcov (bernoulliWeight q) r (fun S =>
         ((linearStat (fun _ => 1) S - wexp (bernoulliWeight q) (linearStat fun _ => 1))
           - (capB (bernoulliVar q) lam / capC (bernoulliVar q) lam)
-            * (linearStat lam S - wexp (bernoulliWeight q) (linearStat lam))) ^ 2)) 0 := by
+            * (linearStat lam S - wexp (bernoulliWeight q) (linearStat lam))) ^ (2 : ℕ))) 0 := by
   have hμ : ∑ S : Finset ι, bernoulliWeight q S = 1 := sum_bernoulliWeight q
   have hgg : wcov (bernoulliWeight q) (linearStat lam) (linearStat lam)
       = capC (bernoulliVar q) lam := by
@@ -120,9 +120,9 @@ omit [DecidableEq ι] in
 theorem hasDerivAt_fugacitySchurCapacity (x s lam : ι → ℝ) (hx : ∀ p, 0 < x p)
     (hC : capC (fun p => fugacityVar (x p) (s p) 0) lam ≠ 0) :
     HasDerivAt (fun e => schurCapacity (fun p => fugacityVar (x p) (s p) e) lam)
-      (Real.pi ^ 2 * ∑ p, (fugacityVar (x p) (s p) 0 * (1 - 2 * fugacityProb (x p) (s p) 0) * s p)
+      (Real.pi ^ (2 : ℕ) * ∑ p, (fugacityVar (x p) (s p) 0 * (1 - 2 * fugacityProb (x p) (s p) 0) * s p)
         * (1 - (capB (fun p => fugacityVar (x p) (s p) 0) lam
-            / capC (fun p => fugacityVar (x p) (s p) 0) lam) * lam p) ^ 2) 0 := by
+            / capC (fun p => fugacityVar (x p) (s p) 0) lam) * lam p) ^ (2 : ℕ)) 0 := by
   set w' : ι → ℝ :=
     fun p => fugacityVar (x p) (s p) 0 * (1 - 2 * fugacityProb (x p) (s p) 0) * s p with hw'
   have hderiv : ∀ p : ι, HasDerivAt (fun e => fugacityVar (x p) (s p) e) (w' p) 0 :=
@@ -133,15 +133,15 @@ theorem hasDerivAt_fugacitySchurCapacity (x s lam : ι → ℝ) (hx : ∀ p, 0 <
       (∑ p, w' p * lam p) 0 :=
     HasDerivAt.fun_sum fun p _ => (hderiv p).mul_const (lam p)
   have hC' : HasDerivAt (fun e => capC (fun p => fugacityVar (x p) (s p) e) lam)
-      (∑ p, w' p * lam p ^ 2) 0 :=
-    HasDerivAt.fun_sum fun p _ => (hderiv p).mul_const (lam p ^ 2)
+      (∑ p, w' p * lam p ^ (2 : ℕ)) 0 :=
+    HasDerivAt.fun_sum fun p _ => (hderiv p).mul_const (lam p ^ (2 : ℕ))
   have h := hasDerivAt_capacityOfMoments hA hB hC' hC
   simp only [schurCapacity]
   refine h.congr_deriv ?_
   set β := capB (fun p => fugacityVar (x p) (s p) 0) lam
     / capC (fun p => fugacityVar (x p) (s p) 0) lam with hβ
-  have hexpand : ∑ p, w' p * (1 - β * lam p) ^ 2
-      = (∑ p, w' p) - 2 * β * (∑ p, w' p * lam p) + β ^ 2 * ∑ p, w' p * lam p ^ 2 := by
+  have hexpand : ∑ p, w' p * (1 - β * lam p) ^ (2 : ℕ)
+      = (∑ p, w' p) - 2 * β * (∑ p, w' p * lam p) + β ^ (2 : ℕ) * ∑ p, w' p * lam p ^ (2 : ℕ) := by
     rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
     exact Finset.sum_congr rfl fun p _ => by ring
   rw [hexpand]

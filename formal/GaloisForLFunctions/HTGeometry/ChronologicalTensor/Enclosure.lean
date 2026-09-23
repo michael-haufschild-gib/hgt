@@ -41,11 +41,11 @@ theorem reversalProduct_monotone_bound (n : ℕ) (a b c d e : Fin n → ℝ) :
   calc
     _ = (n : ℝ)^(3*n) * ∏ i, |reversalResponse |a i| |b i| |c i| |d i| (|e i|)| := by
       rw [reversalProduct, abs_mul, abs_of_nonneg (by positivity), Finset.abs_prod]
-    _ ≤ (n : ℝ)^(3*n) * ∏ i, sixCost (a i) (b i) (c i) (d i) (e i)^3 :=
+    _ ≤ (n : ℝ)^(3*n) * ∏ i, sixCost (a i) (b i) (c i) (d i) (e i)^(3 : ℕ) :=
       mul_le_mul_of_nonneg_left hp (by positivity)
-    _ = ((n : ℝ)^n * ∏ i, sixCost (a i) (b i) (c i) (d i) (e i))^3 := by
+    _ = ((n : ℝ)^n * ∏ i, sixCost (a i) (b i) (c i) (d i) (e i))^(3 : ℕ) := by
       rw [prod_pow, mul_pow, ← pow_mul, Nat.mul_comm n 3]
-    _ ≤ ((∑ i, sixCost (a i) (b i) (c i) (d i) (e i))^n)^3 := hm3
+    _ ≤ ((∑ i, sixCost (a i) (b i) (c i) (d i) (e i))^n)^(3 : ℕ) := hm3
     _ = _ := by rw [← pow_mul, Nat.mul_comm n 3]; rfl
 
 theorem enclosed_monotone_bound (n k : ℕ) (a b c d e : Fin n → ℝ) :
@@ -63,7 +63,7 @@ theorem reversalProduct_repeated (n : ℕ) (a b c d e : ℝ) :
     reversalProduct (n+1) (fun _ => a/(n+1)) (fun _ => b/(n+1)) (fun _ => c/(n+1))
       (fun _ => d/(n+1)) (fun _ => e/(n+1)) = (reversalResponse a b c d e)^(n+1) := by
   have hr : reversalResponse (a/(n+1)) (b/(n+1)) (c/(n+1)) (d/(n+1)) (e/(n+1)) =
-      reversalResponse a b c d e / (n+1)^3 := by
+      reversalResponse a b c d e / (n+1)^(3 : ℕ) := by
     unfold reversalResponse separatedThree rainbowThree
     field_simp
   simp only [reversalProduct, hr, prod_const, card_univ, Fintype.card_fin,
@@ -112,7 +112,7 @@ theorem enclosed_reversed_witness (n k : ℕ) :
 theorem enclosure_growth (k : ℕ) :
     (3 : ℝ) ≤ (28/27 : ℝ)^(54*(k+1)) * (1/3 : ℝ)^k := by
   have hb := one_add_mul_le_pow (a := (1/27 : ℝ)) (by linarith) 54
-  have hb' : (3 : ℝ) ≤ (28/27 : ℝ)^54 := by
+  have hb' : (3 : ℝ) ≤ (28/27 : ℝ)^(54 : ℕ) := by
     have hbase : (1 : ℝ)+1/27 = 28/27 := by ring
     have hleft : (1 : ℝ)+((54 : ℕ) : ℝ)*(1/27) = 3 := by ring
     rw [hbase, hleft] at hb

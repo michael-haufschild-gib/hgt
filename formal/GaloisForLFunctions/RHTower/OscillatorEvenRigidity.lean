@@ -41,19 +41,19 @@ theorem odd_hermiteFun {n : ℕ} (hn : Odd n) (x : ℝ) : hermiteFun n (-x) = -h
     exact aeval_hermite_neg_of_odd hn _
   show probHermiteFun n (Real.sqrt 2 * -x) = -probHermiteFun n (Real.sqrt 2 * x)
   rw [probHermiteFun, probHermiteFun, hp]
-  have hsq : (Real.sqrt 2 * -x) ^ 2 = (Real.sqrt 2 * x) ^ 2 := by ring
+  have hsq : (Real.sqrt 2 * -x) ^ (2 : ℕ) = (Real.sqrt 2 * x) ^ (2 : ℕ) := by ring
   rw [hsq]
   ring
 
 /-- The Hermite function is square integrable. -/
-theorem integrable_hermiteFun_sq (n : ℕ) : Integrable fun x => hermiteFun n x ^ 2 := by
+theorem integrable_hermiteFun_sq (n : ℕ) : Integrable fun x => hermiteFun n x ^ (2 : ℕ) := by
   obtain ⟨p, hp⟩ := exists_poly_hermiteFun n
   have h := integrable_polyEval_mul_gauss (p * p) (by norm_num : (0 : ℝ) < 1)
   refine h.congr (Filter.Eventually.of_forall fun x => ?_)
-  show Polynomial.eval x (p * p) * Real.exp (-(1 * x ^ 2)) = hermiteFun n x ^ 2
+  show Polynomial.eval x (p * p) * Real.exp (-(1 * x ^ (2 : ℕ))) = hermiteFun n x ^ (2 : ℕ)
   rw [hp x, Polynomial.eval_mul,
-    show Real.exp (-(1 * x ^ 2))
-      = Real.exp (-(1 / 2 * x ^ 2)) * Real.exp (-(1 / 2 * x ^ 2)) by
+    show Real.exp (-(1 * x ^ (2 : ℕ)))
+      = Real.exp (-(1 / 2 * x ^ (2 : ℕ))) * Real.exp (-(1 / 2 * x ^ (2 : ℕ))) by
       rw [← Real.exp_add]; congr 1; ring]
   ring
 
@@ -63,7 +63,7 @@ theorem hermiteFun_nontrivial (n : ℕ) (y : ℝ) :
   by_contra hcon
   rw [not_or, not_not, not_not] at hcon
   obtain ⟨h1, h2⟩ := hcon
-  have hP : Continuous fun x : ℝ => x ^ 2 - (2 * (n : ℝ) + 1) :=
+  have hP : Continuous fun x : ℝ => x ^ (2 : ℕ) - (2 * (n : ℝ) + 1) :=
     (continuous_pow 2).sub continuous_const
   have hzero : hermiteFun n = fun _ : ℝ => (0 : ℝ) := by
     refine secondOrder_eq_at hP y (hasDerivAt_hermiteFun n) ?_
@@ -80,8 +80,8 @@ theorem hermiteFun_nontrivial (n : ℕ) (y : ℝ) :
 /-- **Even oscillator rigidity.**  An even square-integrable solution sits at an even rung and is a
 multiple of the Hermite function there. -/
 theorem even_integrable_solution_rung {mu : ℝ} {v v' : ℝ → ℝ}
-    (hv : ∀ x, HasDerivAt v (v' x) x) (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
-    (hnt : ∀ y, v y ≠ 0 ∨ v' y ≠ 0) (hint : Integrable fun x => v x ^ 2)
+    (hv : ∀ x, HasDerivAt v (v' x) x) (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
+    (hnt : ∀ y, v y ≠ 0 ∨ v' y ≠ 0) (hint : Integrable fun x => v x ^ (2 : ℕ))
     (heven : Function.Even v) (heven' : ∀ x, v' (-x) = -v' x) :
     ∃ n : ℕ, Even n ∧ mu = 2 * (n : ℝ) + 1 ∧
       hermiteFun n = fun x => (hermiteFun n 0 / v 0) * v x := by
@@ -98,7 +98,7 @@ theorem even_integrable_solution_rung {mu : ℝ} {v v' : ℝ → ℝ}
     · exact h h0'
   -- the Hermite function at the same rung
   have hmu : mu = 2 * (n : ℝ) + 1 := hn
-  have hHeq : ∀ x, HasDerivAt (deriv (hermiteFun n)) ((x ^ 2 - mu) * hermiteFun n x) x := by
+  have hHeq : ∀ x, HasDerivAt (deriv (hermiteFun n)) ((x ^ (2 : ℕ) - mu) * hermiteFun n x) x := by
     intro x
     have h := hasDerivAt_deriv_hermiteFun n x
     rw [hermiteRungP, ← hmu] at h

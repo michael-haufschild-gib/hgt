@@ -27,7 +27,7 @@ root of its coherence component. -/
 def graphRootChordEnergy {V : Type*} [Fintype V]
     (G : SimpleGraph V) (z : V → ℂ) : ℝ :=
   ∑ v : graphNonRoot G,
-    ‖z v.1 - z (graphComponentRoot G (G.connectedComponentMk v.1))‖ ^ 2
+    ‖z v.1 - z (graphComponentRoot G (G.connectedComponentMk v.1))‖ ^ (2 : ℕ)
 
 theorem norm_mul_star_sub_one_eq_norm_sub
     (x y : ℂ) (hy : ‖y‖ = 1) :
@@ -52,7 +52,7 @@ theorem finiteQuantumObserverPhaseEnergy_nonneg
 
 theorem vertexRootChordSq_le_graphRootChordEnergy
     {V : Type*} [Fintype V] (G : SimpleGraph V) (z : V → ℂ) (v : V) :
-    ‖z v - z (graphComponentRoot G (G.connectedComponentMk v))‖ ^ 2 ≤
+    ‖z v - z (graphComponentRoot G (G.connectedComponentMk v))‖ ^ (2 : ℕ) ≤
       graphRootChordEnergy G z := by
   classical
   by_cases hv : IsGraphComponentRoot G v
@@ -66,7 +66,7 @@ theorem vertexRootChordSq_le_graphRootChordEnergy
     exact Finset.single_le_sum
       (f := fun u : graphNonRoot G =>
         ‖z u.1 - z (graphComponentRoot G
-          (G.connectedComponentMk u.1))‖ ^ 2)
+          (G.connectedComponentMk u.1))‖ ^ (2 : ℕ))
       (fun u _ => sq_nonneg _) (Finset.mem_univ ⟨v, hv⟩)
 
 theorem graphRootChordEnergy_nonneg
@@ -92,7 +92,7 @@ theorem observerPhaseEnergy_le_rootChordEnergy
   rw [finiteQuantumObserverPhaseEnergy]
   calc
     (∑ i, ∑ j, finiteObserverUnionWeight lam block i j *
-        ‖finiteQuantumObserverPhase z i j - 1‖ ^ 2) ≤
+        ‖finiteQuantumObserverPhase z i j - 1‖ ^ (2 : ℕ)) ≤
         ∑ i, ∑ j, finiteObserverUnionWeight lam block i j *
           (4 * graphRootChordEnergy G z) := by
       apply Finset.sum_le_sum
@@ -133,10 +133,10 @@ theorem observerPhaseEnergy_le_rootChordEnergy
             _ ≤ _ := norm_sub_le _ _
         have hi := vertexRootChordSq_le_graphRootChordEnergy G z i
         have hj := vertexRootChordSq_le_graphRootChordEnergy G z j
-        change ‖z i - z r‖ ^ 2 ≤ graphRootChordEnergy G z at hi
+        change ‖z i - z r‖ ^ (2 : ℕ) ≤ graphRootChordEnergy G z at hi
         rw [hrj] at hj
-        have htriSq : ‖z i - z j‖ ^ 2 ≤
-            (‖z i - z r‖ + ‖z j - z r‖) ^ 2 :=
+        have htriSq : ‖z i - z j‖ ^ (2 : ℕ) ≤
+            (‖z i - z r‖ + ‖z j - z r‖) ^ (2 : ℕ) :=
           (sq_le_sq₀ (norm_nonneg _)
             (add_nonneg (norm_nonneg _) (norm_nonneg _))).2 htri
         nlinarith [htriSq, sq_nonneg (‖z i - z r‖ - ‖z j - z r‖)]
@@ -157,7 +157,7 @@ theorem edgeChordSq_le_observerPhaseEnergy_mul
     (hij : (finiteObserverCoherenceGraph lam block).Adj i j) :
     ∃ C : ℝ, 0 < C ∧
       ∀ (z : Fin d → ℂ), (∀ i, ‖z i‖ = 1) →
-        ‖z i - z j‖ ^ 2 ≤
+        ‖z i - z j‖ ^ (2 : ℕ) ≤
           C * finiteQuantumObserverPhaseEnergy lam z block := by
   classical
   rcases hij.2 with hpos | hpos
@@ -165,29 +165,29 @@ theorem edgeChordSq_le_observerPhaseEnergy_mul
     refine ⟨1 / w, by dsimp [w]; positivity, ?_⟩
     intro z hunit
     have hterm :
-        w * ‖z i - z j‖ ^ 2 ≤
+        w * ‖z i - z j‖ ^ (2 : ℕ) ≤
           finiteQuantumObserverPhaseEnergy lam z block := by
       rw [finiteQuantumObserverPhaseEnergy]
       have hj :
           finiteObserverUnionWeight lam block i j *
-              ‖finiteQuantumObserverPhase z i j - 1‖ ^ 2 ≤
+              ‖finiteQuantumObserverPhase z i j - 1‖ ^ (2 : ℕ) ≤
             ∑ k, finiteObserverUnionWeight lam block i k *
-              ‖finiteQuantumObserverPhase z i k - 1‖ ^ 2 :=
+              ‖finiteQuantumObserverPhase z i k - 1‖ ^ (2 : ℕ) :=
         Finset.single_le_sum
           (f := fun k : Fin d => finiteObserverUnionWeight lam block i k *
-            ‖finiteQuantumObserverPhase z i k - 1‖ ^ 2)
+            ‖finiteQuantumObserverPhase z i k - 1‖ ^ (2 : ℕ))
           (fun k _ => mul_nonneg
             (finiteObserverUnionWeight_nonneg lam block hlam i k)
             (sq_nonneg _)) (Finset.mem_univ j)
       have hi :
           (∑ k, finiteObserverUnionWeight lam block i k *
-              ‖finiteQuantumObserverPhase z i k - 1‖ ^ 2) ≤
+              ‖finiteQuantumObserverPhase z i k - 1‖ ^ (2 : ℕ)) ≤
             ∑ u, ∑ k, finiteObserverUnionWeight lam block u k *
-              ‖finiteQuantumObserverPhase z u k - 1‖ ^ 2 :=
+              ‖finiteQuantumObserverPhase z u k - 1‖ ^ (2 : ℕ) :=
         Finset.single_le_sum
           (f := fun u : Fin d =>
             ∑ k, finiteObserverUnionWeight lam block u k *
-              ‖finiteQuantumObserverPhase z u k - 1‖ ^ 2)
+              ‖finiteQuantumObserverPhase z u k - 1‖ ^ (2 : ℕ))
           (fun u _ => Finset.sum_nonneg fun k _ => mul_nonneg
             (finiteObserverUnionWeight_nonneg lam block hlam u k)
             (sq_nonneg _)) (Finset.mem_univ i)
@@ -201,29 +201,29 @@ theorem edgeChordSq_le_observerPhaseEnergy_mul
     refine ⟨1 / w, by dsimp [w]; positivity, ?_⟩
     intro z hunit
     have hterm :
-        w * ‖z j - z i‖ ^ 2 ≤
+        w * ‖z j - z i‖ ^ (2 : ℕ) ≤
           finiteQuantumObserverPhaseEnergy lam z block := by
       rw [finiteQuantumObserverPhaseEnergy]
       have hi :
           finiteObserverUnionWeight lam block j i *
-              ‖finiteQuantumObserverPhase z j i - 1‖ ^ 2 ≤
+              ‖finiteQuantumObserverPhase z j i - 1‖ ^ (2 : ℕ) ≤
             ∑ k, finiteObserverUnionWeight lam block j k *
-              ‖finiteQuantumObserverPhase z j k - 1‖ ^ 2 :=
+              ‖finiteQuantumObserverPhase z j k - 1‖ ^ (2 : ℕ) :=
         Finset.single_le_sum
           (f := fun k : Fin d => finiteObserverUnionWeight lam block j k *
-            ‖finiteQuantumObserverPhase z j k - 1‖ ^ 2)
+            ‖finiteQuantumObserverPhase z j k - 1‖ ^ (2 : ℕ))
           (fun k _ => mul_nonneg
             (finiteObserverUnionWeight_nonneg lam block hlam j k)
             (sq_nonneg _)) (Finset.mem_univ i)
       have hj :
           (∑ k, finiteObserverUnionWeight lam block j k *
-              ‖finiteQuantumObserverPhase z j k - 1‖ ^ 2) ≤
+              ‖finiteQuantumObserverPhase z j k - 1‖ ^ (2 : ℕ)) ≤
             ∑ u, ∑ k, finiteObserverUnionWeight lam block u k *
-              ‖finiteQuantumObserverPhase z u k - 1‖ ^ 2 :=
+              ‖finiteQuantumObserverPhase z u k - 1‖ ^ (2 : ℕ) :=
         Finset.single_le_sum
           (f := fun u : Fin d =>
             ∑ k, finiteObserverUnionWeight lam block u k *
-              ‖finiteQuantumObserverPhase z u k - 1‖ ^ 2)
+              ‖finiteQuantumObserverPhase z u k - 1‖ ^ (2 : ℕ))
           (fun u _ => Finset.sum_nonneg fun k _ => mul_nonneg
             (finiteObserverUnionWeight_nonneg lam block hlam u k)
             (sq_nonneg _)) (Finset.mem_univ j)
@@ -242,7 +242,7 @@ theorem reachableChordSq_le_observerPhaseEnergy_mul
     (hij : (finiteObserverCoherenceGraph lam block).Reachable i j) :
     ∃ C : ℝ, 0 < C ∧
       ∀ (z : Fin d → ℂ), (∀ i, ‖z i‖ = 1) →
-        ‖z i - z j‖ ^ 2 ≤
+        ‖z i - z j‖ ^ (2 : ℕ) ≤
           C * finiteQuantumObserverPhaseEnergy lam z block := by
   obtain ⟨p⟩ := hij
   induction p with
@@ -271,8 +271,8 @@ theorem reachableChordSq_le_observerPhaseEnergy_mul
           _ ≤ ‖z u - z v‖ + ‖z w - z v‖ := norm_sub_le _ _
           _ = ‖z u - z v‖ + ‖z v - z w‖ := by
             rw [show ‖z w - z v‖ = ‖z v - z w‖ from norm_sub_rev _ _]
-      have htriSq : ‖z u - z w‖ ^ 2 ≤
-          (‖z u - z v‖ + ‖z v - z w‖) ^ 2 :=
+      have htriSq : ‖z u - z w‖ ^ (2 : ℕ) ≤
+          (‖z u - z v‖ + ‖z v - z w‖) ^ (2 : ℕ) :=
         (sq_le_sq₀ (norm_nonneg _)
           (add_nonneg (norm_nonneg _) (norm_nonneg _))).2 htri
       have henergy :
@@ -297,7 +297,7 @@ theorem graphRootChordEnergy_le_observerPhaseEnergy_mul
       ∃ C : ℝ, 0 < C ∧
         ∀ (z : Fin d → ℂ), (∀ i, ‖z i‖ = 1) →
           ‖z v.1 - z (graphComponentRoot G
-            (G.connectedComponentMk v.1))‖ ^ 2 ≤
+            (G.connectedComponentMk v.1))‖ ^ (2 : ℕ) ≤
             C * finiteQuantumObserverPhaseEnergy lam z block := by
     have hcomponent :
         G.connectedComponentMk v.1 =
@@ -313,7 +313,7 @@ theorem graphRootChordEnergy_le_observerPhaseEnergy_mul
   have hCbound (v : graphNonRoot G) :
       ∀ (z : Fin d → ℂ), (∀ i, ‖z i‖ = 1) →
         ‖z v.1 - z (graphComponentRoot G
-          (G.connectedComponentMk v.1))‖ ^ 2 ≤
+          (G.connectedComponentMk v.1))‖ ^ (2 : ℕ) ≤
           C v * finiteQuantumObserverPhaseEnergy lam z block :=
     (Classical.choose_spec (hvertex v)).2
   refine ⟨1 + ∑ v, C v, by
@@ -324,7 +324,7 @@ theorem graphRootChordEnergy_le_observerPhaseEnergy_mul
   calc
     (∑ v : graphNonRoot G,
         ‖z v.1 - z (graphComponentRoot G
-          (G.connectedComponentMk v.1))‖ ^ 2) ≤
+          (G.connectedComponentMk v.1))‖ ^ (2 : ℕ)) ≤
         ∑ v : graphNonRoot G,
           C v * finiteQuantumObserverPhaseEnergy lam z block := by
       exact Finset.sum_le_sum fun v _ => hCbound v z hunit

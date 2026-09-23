@@ -23,21 +23,21 @@ variable {n m e : ℕ}
 /-- Polynomial associated-graded coarea over the multi-Rees base. -/
 def polynomialReesBlockEnergy (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) :
     MvPolynomial (Fin e) ℝ :=
-  ∑ edge, X edge ^ 2 * C (d.cuts.length edge * d.cutCharge x edge ^ 2)
+  ∑ edge, X edge ^ (2 : ℕ) * C (d.cuts.length edge * d.cutCharge x edge ^ (2 : ℕ))
 
 /-- Polynomial multi-Rees Cartan form.  Only positive threshold channels carry Rees degree; the
 terminal energy and unique physical-rank channel are degree zero. -/
 def polynomialReesCartanQuadratic (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) :
     MvPolynomial (Fin e) ℝ :=
   C (d.terminalEnergy x) + d.polynomialReesBlockEnergy x -
-    C ((d.cuts.root - 1) * d.physicalRank x ^ 2)
+    C ((d.cuts.root - 1) * d.physicalRank x ^ (2 : ℕ))
 
 /-- Evaluation of the polynomial Rees block form is exactly the real weighted deformation with
-nonnegative weights `parameter edge ^ 2`. -/
+nonnegative weights `parameter edge ^ (2 : ℕ)`. -/
 theorem eval_polynomialReesBlockEnergy (d : OrbitCoareaDatum n m e)
     (parameter : Fin e → ℝ) (x : Fin n → ℝ) :
     eval parameter (d.polynomialReesBlockEnergy x) =
-      d.reesBlockEnergy (fun edge => parameter edge ^ 2) x := by
+      d.reesBlockEnergy (fun edge => parameter edge ^ (2 : ℕ)) x := by
   simp [polynomialReesBlockEnergy, reesBlockEnergy]
   apply Finset.sum_congr rfl
   intro edge _
@@ -48,7 +48,7 @@ specialization. -/
 theorem eval_polynomialReesCartanQuadratic (d : OrbitCoareaDatum n m e)
     (parameter : Fin e → ℝ) (x : Fin n → ℝ) :
     eval parameter (d.polynomialReesCartanQuadratic x) =
-      d.reesCartanQuadratic (fun edge => parameter edge ^ 2) x := by
+      d.reesCartanQuadratic (fun edge => parameter edge ^ (2 : ℕ)) x := by
   simp [polynomialReesCartanQuadratic, d.eval_polynomialReesBlockEnergy,
     reesCartanQuadratic]
 
@@ -76,10 +76,10 @@ theorem eval_polynomialReesBlockEnergy_zero_deleted
     eval (fun edge => if retained edge then parameter edge else 0)
         (d.polynomialReesBlockEnergy x) =
       ∑ edge ∈ Finset.univ.filter retained,
-        parameter edge ^ 2 * d.cuts.length edge * d.cutCharge x edge ^ 2 := by
+        parameter edge ^ (2 : ℕ) * d.cuts.length edge * d.cutCharge x edge ^ (2 : ℕ) := by
   rw [d.eval_polynomialReesBlockEnergy]
   simp only [ite_pow, zero_pow (by omega : 2 ≠ 0)]
-  exact d.reesBlockEnergy_specialize (fun edge => parameter edge ^ 2) retained x
+  exact d.reesBlockEnergy_specialize (fun edge => parameter edge ^ (2 : ℕ)) retained x
 
 end
 

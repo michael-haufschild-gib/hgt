@@ -138,10 +138,10 @@ theorem RealTrigDeg.smul {D : ℕ} {F : ℝ → ℝ} (hF : RealTrigDeg D F) (c :
 /-- **The `L²` Bernstein inequality for real trigonometric polynomials.** -/
 theorem RealTrigDeg.integral_deriv_sq_le {D : ℕ} {F F' : ℝ → ℝ} (hF : RealTrigDeg D F)
     (hderiv : ∀ θ : ℝ, HasDerivAt F (F' θ) θ) :
-    (∫ θ in (-Real.pi)..Real.pi, F' θ ^ 2)
-      ≤ (D : ℝ) ^ 2 * ∫ θ in (-Real.pi)..Real.pi, F θ ^ 2 := by
+    (∫ θ in (-Real.pi)..Real.pi, F' θ ^ (2 : ℕ))
+      ≤ (D : ℝ) ^ (2 : ℕ) * ∫ θ in (-Real.pi)..Real.pi, F θ ^ (2 : ℕ) := by
   obtain ⟨f, hsupp, hval⟩ := hF
-  have hFsq : ∀ θ : ℝ, F θ ^ 2 = ‖trigExp D f θ‖ ^ 2 := by
+  have hFsq : ∀ θ : ℝ, F θ ^ (2 : ℕ) = ‖trigExp D f θ‖ ^ (2 : ℕ) := by
     intro θ
     rw [← hval θ, Complex.norm_real, Real.norm_eq_abs, sq_abs]
   have hderivVal : ∀ θ : ℝ,
@@ -155,7 +155,7 @@ theorem RealTrigDeg.integral_deriv_sq_le {D : ℕ} {F F' : ℝ → ℝ} (hF : Re
       exact (hval u).symm
     exact hc'.unique (hasDerivAt_trigExp D f θ)
   have hF'sq : ∀ θ : ℝ,
-      F' θ ^ 2 = ‖trigExp D (fun k => f k * ((k : ℂ) * Complex.I)) θ‖ ^ 2 := by
+      F' θ ^ (2 : ℕ) = ‖trigExp D (fun k => f k * ((k : ℂ) * Complex.I)) θ‖ ^ (2 : ℕ) := by
     intro θ
     rw [← hderivVal θ, Complex.norm_real, Real.norm_eq_abs, sq_abs]
   rw [intervalIntegral.integral_congr (fun θ _ => hF'sq θ),
@@ -181,74 +181,74 @@ theorem RealTrigDeg.congr {D : ℕ} {F G : ℝ → ℝ} (hF : RealTrigDeg D F) (
   exact ⟨f, hsupp, fun θ => by rw [← h θ, hval θ]⟩
 
 /-- The `L²` norm of a function on the period. -/
-def trigNorm (F : ℝ → ℝ) : ℝ := Real.sqrt (∫ θ in (-Real.pi)..Real.pi, F θ ^ 2)
+def trigNorm (F : ℝ → ℝ) : ℝ := Real.sqrt (∫ θ in (-Real.pi)..Real.pi, F θ ^ (2 : ℕ))
 
 theorem trigNorm_nonneg (F : ℝ → ℝ) : 0 ≤ trigNorm F := Real.sqrt_nonneg _
 
-theorem integral_sq_nonneg (F : ℝ → ℝ) : 0 ≤ ∫ θ in (-Real.pi)..Real.pi, F θ ^ 2 := by
+theorem integral_sq_nonneg (F : ℝ → ℝ) : 0 ≤ ∫ θ in (-Real.pi)..Real.pi, F θ ^ (2 : ℕ) := by
   rw [intervalIntegral.integral_of_le neg_pi_le_pi]
   exact MeasureTheory.integral_nonneg fun θ => sq_nonneg _
 
-theorem trigNorm_sq (F : ℝ → ℝ) : trigNorm F ^ 2 = ∫ θ in (-Real.pi)..Real.pi, F θ ^ 2 :=
+theorem trigNorm_sq (F : ℝ → ℝ) : trigNorm F ^ (2 : ℕ) = ∫ θ in (-Real.pi)..Real.pi, F θ ^ (2 : ℕ) :=
   Real.sq_sqrt (integral_sq_nonneg F)
 
 /-- **Minkowski on the period.** -/
 theorem trigNorm_add_le {A B : ℝ → ℝ} (hA : Continuous A) (hB : Continuous B) :
     trigNorm (fun θ => A θ + B θ) ≤ trigNorm A + trigNorm B := by
-  have hcA0 : Continuous fun θ : ℝ => A θ ^ 2 := hA.pow 2
-  have hcB0 : Continuous fun θ : ℝ => B θ ^ 2 := hB.pow 2
+  have hcA0 : Continuous fun θ : ℝ => A θ ^ (2 : ℕ) := hA.pow 2
+  have hcB0 : Continuous fun θ : ℝ => B θ ^ (2 : ℕ) := hB.pow 2
   have hcAB0 : Continuous fun θ : ℝ => A θ * B θ := hA.mul hB
-  have hIA : IntegrableOn (fun θ : ℝ => A θ ^ 2) (Set.Ioc (-Real.pi) Real.pi) volume :=
+  have hIA : IntegrableOn (fun θ : ℝ => A θ ^ (2 : ℕ)) (Set.Ioc (-Real.pi) Real.pi) volume :=
     (hcA0.intervalIntegrable (-Real.pi) Real.pi).1
-  have hIB : IntegrableOn (fun θ : ℝ => B θ ^ 2) (Set.Ioc (-Real.pi) Real.pi) volume :=
+  have hIB : IntegrableOn (fun θ : ℝ => B θ ^ (2 : ℕ)) (Set.Ioc (-Real.pi) Real.pi) volume :=
     (hcB0.intervalIntegrable (-Real.pi) Real.pi).1
   have hIAB : IntegrableOn (fun θ : ℝ => A θ * B θ) (Set.Ioc (-Real.pi) Real.pi) volume :=
     (hcAB0.intervalIntegrable (-Real.pi) Real.pi).1
   have hcs := sq_integral_mul_le (μ := (volume : Measure ℝ).restrict (Set.Ioc (-Real.pi) Real.pi))
     hA.aestronglyMeasurable hB.aestronglyMeasurable hIA hIB
-  have hexp : ∀ θ : ℝ, (A θ + B θ) ^ 2 = A θ ^ 2 + 2 * (A θ * B θ) + B θ ^ 2 := by
+  have hexp : ∀ θ : ℝ, (A θ + B θ) ^ (2 : ℕ) = A θ ^ (2 : ℕ) + 2 * (A θ * B θ) + B θ ^ (2 : ℕ) := by
     intro θ
     ring
-  have hsplit : (∫ θ in (-Real.pi)..Real.pi, (A θ + B θ) ^ 2)
-      = (∫ θ in (-Real.pi)..Real.pi, A θ ^ 2) + 2 * (∫ θ in (-Real.pi)..Real.pi, A θ * B θ)
-        + ∫ θ in (-Real.pi)..Real.pi, B θ ^ 2 := by
-    have hcA : Continuous fun θ : ℝ => A θ ^ 2 := hA.pow 2
-    have hcB : Continuous fun θ : ℝ => B θ ^ 2 := hB.pow 2
+  have hsplit : (∫ θ in (-Real.pi)..Real.pi, (A θ + B θ) ^ (2 : ℕ))
+      = (∫ θ in (-Real.pi)..Real.pi, A θ ^ (2 : ℕ)) + 2 * (∫ θ in (-Real.pi)..Real.pi, A θ * B θ)
+        + ∫ θ in (-Real.pi)..Real.pi, B θ ^ (2 : ℕ) := by
+    have hcA : Continuous fun θ : ℝ => A θ ^ (2 : ℕ) := hA.pow 2
+    have hcB : Continuous fun θ : ℝ => B θ ^ (2 : ℕ) := hB.pow 2
     have hcAB : Continuous fun θ : ℝ => A θ * B θ := hA.mul hB
-    have hi3 : IntervalIntegrable (fun θ : ℝ => A θ ^ 2) volume (-Real.pi) Real.pi :=
+    have hi3 : IntervalIntegrable (fun θ : ℝ => A θ ^ (2 : ℕ)) volume (-Real.pi) Real.pi :=
       hcA.intervalIntegrable _ _
-    have hi2 : IntervalIntegrable (fun θ : ℝ => B θ ^ 2) volume (-Real.pi) Real.pi :=
+    have hi2 : IntervalIntegrable (fun θ : ℝ => B θ ^ (2 : ℕ)) volume (-Real.pi) Real.pi :=
       hcB.intervalIntegrable _ _
     have hi4 : IntervalIntegrable (fun θ : ℝ => 2 * (A θ * B θ)) volume (-Real.pi) Real.pi :=
       (hcAB.intervalIntegrable _ _).const_mul 2
-    have hi1 : IntervalIntegrable (fun θ : ℝ => A θ ^ 2 + 2 * (A θ * B θ))
+    have hi1 : IntervalIntegrable (fun θ : ℝ => A θ ^ (2 : ℕ) + 2 * (A θ * B θ))
         volume (-Real.pi) Real.pi := hi3.add hi4
     rw [intervalIntegral.integral_congr (fun θ _ => hexp θ),
       intervalIntegral.integral_add hi1 hi2, intervalIntegral.integral_add hi3 hi4,
       intervalIntegral.integral_const_mul]
-  have hIocA : (∫ θ in (-Real.pi)..Real.pi, A θ ^ 2)
-      = ∫ θ in Set.Ioc (-Real.pi) Real.pi, A θ ^ 2 :=
+  have hIocA : (∫ θ in (-Real.pi)..Real.pi, A θ ^ (2 : ℕ))
+      = ∫ θ in Set.Ioc (-Real.pi) Real.pi, A θ ^ (2 : ℕ) :=
     intervalIntegral.integral_of_le neg_pi_le_pi
-  have hIocB : (∫ θ in (-Real.pi)..Real.pi, B θ ^ 2)
-      = ∫ θ in Set.Ioc (-Real.pi) Real.pi, B θ ^ 2 :=
+  have hIocB : (∫ θ in (-Real.pi)..Real.pi, B θ ^ (2 : ℕ))
+      = ∫ θ in Set.Ioc (-Real.pi) Real.pi, B θ ^ (2 : ℕ) :=
     intervalIntegral.integral_of_le neg_pi_le_pi
   have hIocAB : (∫ θ in (-Real.pi)..Real.pi, A θ * B θ)
       = ∫ θ in Set.Ioc (-Real.pi) Real.pi, A θ * B θ :=
     intervalIntegral.integral_of_le neg_pi_le_pi
   have hmid : (∫ θ in (-Real.pi)..Real.pi, A θ * B θ) ≤ trigNorm A * trigNorm B := by
-    have habs : (∫ θ in Set.Ioc (-Real.pi) Real.pi, A θ * B θ) ^ 2
-        ≤ (trigNorm A * trigNorm B) ^ 2 := by
+    have habs : (∫ θ in Set.Ioc (-Real.pi) Real.pi, A θ * B θ) ^ (2 : ℕ)
+        ≤ (trigNorm A * trigNorm B) ^ (2 : ℕ) := by
       rw [mul_pow, trigNorm_sq, trigNorm_sq, hIocA, hIocB]
       exact hcs
     have hnn : (0 : ℝ) ≤ trigNorm A * trigNorm B :=
       mul_nonneg (trigNorm_nonneg A) (trigNorm_nonneg B)
     rw [hIocAB]
     nlinarith [habs, hnn]
-  have hfinal : (∫ θ in (-Real.pi)..Real.pi, (A θ + B θ) ^ 2)
-      ≤ (trigNorm A + trigNorm B) ^ 2 := by
+  have hfinal : (∫ θ in (-Real.pi)..Real.pi, (A θ + B θ) ^ (2 : ℕ))
+      ≤ (trigNorm A + trigNorm B) ^ (2 : ℕ) := by
     rw [hsplit]
-    have h1 : trigNorm A ^ 2 = ∫ θ in (-Real.pi)..Real.pi, A θ ^ 2 := trigNorm_sq A
-    have h2 : trigNorm B ^ 2 = ∫ θ in (-Real.pi)..Real.pi, B θ ^ 2 := trigNorm_sq B
+    have h1 : trigNorm A ^ (2 : ℕ) = ∫ θ in (-Real.pi)..Real.pi, A θ ^ (2 : ℕ) := trigNorm_sq A
+    have h2 : trigNorm B ^ (2 : ℕ) = ∫ θ in (-Real.pi)..Real.pi, B θ ^ (2 : ℕ) := trigNorm_sq B
     nlinarith [hmid, h1, h2]
   have hsq := Real.sqrt_le_sqrt hfinal
   rw [Real.sqrt_sq (add_nonneg (trigNorm_nonneg A) (trigNorm_nonneg B))] at hsq
@@ -256,20 +256,20 @@ theorem trigNorm_add_le {A B : ℝ → ℝ} (hA : Continuous A) (hB : Continuous
 
 theorem trigNorm_le_of_sq_le {F G : ℝ → ℝ} {M : ℝ} (hM : 0 ≤ M)
     (hF : Continuous F) (hG : Continuous G)
-    (h : ∀ θ : ℝ, F θ ^ 2 ≤ M ^ 2 * G θ ^ 2) : trigNorm F ≤ M * trigNorm G := by
-  have hint : (∫ θ in (-Real.pi)..Real.pi, F θ ^ 2)
-      ≤ M ^ 2 * ∫ θ in (-Real.pi)..Real.pi, G θ ^ 2 := by
+    (h : ∀ θ : ℝ, F θ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) * G θ ^ (2 : ℕ)) : trigNorm F ≤ M * trigNorm G := by
+  have hint : (∫ θ in (-Real.pi)..Real.pi, F θ ^ (2 : ℕ))
+      ≤ M ^ (2 : ℕ) * ∫ θ in (-Real.pi)..Real.pi, G θ ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_of_le neg_pi_le_pi,
       intervalIntegral.integral_of_le neg_pi_le_pi, ← MeasureTheory.integral_const_mul]
-    have hcF : Continuous fun θ : ℝ => F θ ^ 2 := hF.pow 2
-    have hcG : Continuous fun θ : ℝ => G θ ^ 2 := hG.pow 2
+    have hcF : Continuous fun θ : ℝ => F θ ^ (2 : ℕ) := hF.pow 2
+    have hcG : Continuous fun θ : ℝ => G θ ^ (2 : ℕ) := hG.pow 2
     refine MeasureTheory.setIntegral_mono_on (hcF.intervalIntegrable _ _).1
       ((hcG.intervalIntegrable _ _).1.const_mul _) measurableSet_Ioc fun θ _ => h θ
   have hsq := Real.sqrt_le_sqrt hint
   rw [trigNorm, trigNorm]
-  calc Real.sqrt (∫ θ in (-Real.pi)..Real.pi, F θ ^ 2)
-      ≤ Real.sqrt (M ^ 2 * ∫ θ in (-Real.pi)..Real.pi, G θ ^ 2) := hsq
-    _ = M * Real.sqrt (∫ θ in (-Real.pi)..Real.pi, G θ ^ 2) := by
+  calc Real.sqrt (∫ θ in (-Real.pi)..Real.pi, F θ ^ (2 : ℕ))
+      ≤ Real.sqrt (M ^ (2 : ℕ) * ∫ θ in (-Real.pi)..Real.pi, G θ ^ (2 : ℕ)) := hsq
+    _ = M * Real.sqrt (∫ θ in (-Real.pi)..Real.pi, G θ ^ (2 : ℕ)) := by
         rw [Real.sqrt_mul (sq_nonneg M), Real.sqrt_sq hM]
 
 theorem trigNorm_deriv_le {D : ℕ} {F F' : ℝ → ℝ} (hF : RealTrigDeg D F)
@@ -277,9 +277,9 @@ theorem trigNorm_deriv_le {D : ℕ} {F F' : ℝ → ℝ} (hF : RealTrigDeg D F)
   have hbase := hF.integral_deriv_sq_le hderiv
   have hsq := Real.sqrt_le_sqrt hbase
   rw [trigNorm, trigNorm]
-  calc Real.sqrt (∫ θ in (-Real.pi)..Real.pi, F' θ ^ 2)
-      ≤ Real.sqrt ((D : ℝ) ^ 2 * ∫ θ in (-Real.pi)..Real.pi, F θ ^ 2) := hsq
-    _ = (D : ℝ) * Real.sqrt (∫ θ in (-Real.pi)..Real.pi, F θ ^ 2) := by
+  calc Real.sqrt (∫ θ in (-Real.pi)..Real.pi, F' θ ^ (2 : ℕ))
+      ≤ Real.sqrt ((D : ℝ) ^ (2 : ℕ) * ∫ θ in (-Real.pi)..Real.pi, F θ ^ (2 : ℕ)) := hsq
+    _ = (D : ℝ) * Real.sqrt (∫ θ in (-Real.pi)..Real.pi, F θ ^ (2 : ℕ)) := by
         rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (Nat.cast_nonneg D)]
 
 
@@ -326,31 +326,31 @@ theorem trigNorm_trigCayleyStep_le {D : ℕ} {a : ℝ} (ha : 0 < a) {F F' : ℝ 
       ≤ (1 / (2 * a)) * trigNorm F := by
     refine trigNorm_le_of_sq_le (by positivity) hA hFc fun θ => ?_
     have hs : |Real.sin θ| ≤ 1 := Real.abs_sin_le_one θ
-    have hs2 : Real.sin θ ^ 2 ≤ 1 := by nlinarith [abs_nonneg (Real.sin θ), sq_abs (Real.sin θ)]
+    have hs2 : Real.sin θ ^ (2 : ℕ) ≤ 1 := by nlinarith [abs_nonneg (Real.sin θ), sq_abs (Real.sin θ)]
     have hane : a ≠ 0 := ne_of_gt ha
-    have hFsq : (0 : ℝ) ≤ F θ ^ 2 := sq_nonneg _
-    have hexp : ((1 / a) * (-(1 / 2) * Real.sin θ * F θ)) ^ 2
-        = (1 / (2 * a)) ^ 2 * (Real.sin θ ^ 2 * F θ ^ 2) := by
+    have hFsq : (0 : ℝ) ≤ F θ ^ (2 : ℕ) := sq_nonneg _
+    have hexp : ((1 / a) * (-(1 / 2) * Real.sin θ * F θ)) ^ (2 : ℕ)
+        = (1 / (2 * a)) ^ (2 : ℕ) * (Real.sin θ ^ (2 : ℕ) * F θ ^ (2 : ℕ)) := by
       field_simp
     rw [hexp]
-    have hnn : (0 : ℝ) ≤ (1 / (2 * a)) ^ 2 := sq_nonneg _
+    have hnn : (0 : ℝ) ≤ (1 / (2 * a)) ^ (2 : ℕ) := sq_nonneg _
     nlinarith [mul_le_mul_of_nonneg_right hs2 hFsq, hnn]
   have h2 : trigNorm (fun θ : ℝ => (1 / a) * ((1 + Real.cos θ) * F' θ))
       ≤ (2 / a) * trigNorm F' := by
     refine trigNorm_le_of_sq_le (by positivity) hB hF'c fun θ => ?_
     have hc : |Real.cos θ| ≤ 1 := Real.abs_cos_le_one θ
     obtain ⟨hc1, hc2⟩ := abs_le.mp hc
-    have hcsq : (1 + Real.cos θ) ^ 2 ≤ 4 := by nlinarith
+    have hcsq : (1 + Real.cos θ) ^ (2 : ℕ) ≤ 4 := by nlinarith
     have hane : a ≠ 0 := ne_of_gt ha
-    have hFsq : (0 : ℝ) ≤ F' θ ^ 2 := sq_nonneg _
-    have hexp : ((1 / a) * ((1 + Real.cos θ) * F' θ)) ^ 2
-        = (1 / a) ^ 2 * ((1 + Real.cos θ) ^ 2 * F' θ ^ 2) := by
+    have hFsq : (0 : ℝ) ≤ F' θ ^ (2 : ℕ) := sq_nonneg _
+    have hexp : ((1 / a) * ((1 + Real.cos θ) * F' θ)) ^ (2 : ℕ)
+        = (1 / a) ^ (2 : ℕ) * ((1 + Real.cos θ) ^ (2 : ℕ) * F' θ ^ (2 : ℕ)) := by
       ring
-    have hexp2 : (2 / a) ^ 2 * F' θ ^ 2 = (1 / a) ^ 2 * (4 * F' θ ^ 2) := by
+    have hexp2 : (2 / a) ^ (2 : ℕ) * F' θ ^ (2 : ℕ) = (1 / a) ^ (2 : ℕ) * (4 * F' θ ^ (2 : ℕ)) := by
       field_simp
       ring
     rw [hexp, hexp2]
-    have hnn : (0 : ℝ) ≤ (1 / a) ^ 2 := sq_nonneg _
+    have hnn : (0 : ℝ) ≤ (1 / a) ^ (2 : ℕ) := sq_nonneg _
     nlinarith [mul_le_mul_of_nonneg_right hcsq hFsq, hnn]
   have h3 : trigNorm F' ≤ (D : ℝ) * trigNorm F := trigNorm_deriv_le hF hderiv
   have hn : 0 ≤ trigNorm F := trigNorm_nonneg F

@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.XiHeightAdaptiveLinearQuadraticCensusCollisio
 # Lamzouri bounds for finite right-half Xi boxes
 
 The height-adaptive Xi development already names the linear census `sum m`
-and quadratic census `sum m^2` on each finite box.  This module identifies
+and quadratic census `sum m^(2 : ℕ)` on each finite box.  This module identifies
 those with the generic multiplicity mass and collision energy, then transports
 Lamzouri's simple-point and distinct-point inequalities to the box census.
 -/

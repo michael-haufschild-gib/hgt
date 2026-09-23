@@ -31,8 +31,8 @@ namespace RHTower
 
 /-- **A uniform bound on the whole sequence of Báez-Duarte distances.** -/
 theorem bdDistDiscrete_sq_le_quarter {N : ℕ} (hN : 4 ≤ N) :
-    bdDistDiscrete N ^ 2
-      ≤ 1 - Real.log 2 ^ 2 / (4 * (3 * Real.log 2 / 8 - Real.pi / 32)) := by
+    bdDistDiscrete N ^ (2 : ℕ)
+      ≤ 1 - Real.log 2 ^ (2 : ℕ) / (4 * (3 * Real.log 2 / 8 - Real.pi / 32)) := by
   have hmem : (3 : ℕ) ∈ Finset.range N := Finset.mem_range.mpr (by omega)
   have hsub : Set.range (fun _ : Fin 1 => bdGen (1 / (4 : ℝ)))
       ⊆ Set.range (fun i : {x // x ∈ Finset.range N} => bdGen (bdDiscrete i)) := by

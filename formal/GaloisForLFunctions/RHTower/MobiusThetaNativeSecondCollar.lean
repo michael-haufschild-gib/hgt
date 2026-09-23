@@ -196,7 +196,7 @@ theorem mobiusThetaNativeCollarDualParameter_centered (m : ℕ+) (v : ℂ) :
   have hshift : I * (I * ((1 - (m : ℝ)⁻¹ : ℝ) : ℂ)) = (m : ℂ)⁻¹ - 1 := by
     push_cast
     calc
-      _ = I ^ 2 * (1 - (m : ℂ)⁻¹) := by ring
+      _ = I ^ (2 : ℕ) * (1 - (m : ℂ)⁻¹) := by ring
       _ = _ := by rw [I_sq]; ring
   have hid : I * (-v + I * ((1 - (m : ℝ)⁻¹ : ℝ) : ℂ)) =
       -I * v + ((m : ℂ)⁻¹ - 1) := by

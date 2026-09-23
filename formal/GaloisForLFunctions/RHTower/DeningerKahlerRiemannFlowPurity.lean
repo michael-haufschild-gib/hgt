@@ -141,9 +141,9 @@ and imaginary parts. -/
 theorem deningerLeafHodgeJ_pos {star : V →ₗ[ℝ] V} {T : V →ₗ[ℝ] V →ₗ[ℝ] ℝ}
     (hT : ∀ u v : V, T u (star v) = inner ℝ u v) (a : V × V) :
     deningerLeafCupTrace T a (deningerLeafHodgeJ star a)
-      = (‖a.1‖ ^ 2 + ‖a.2‖ ^ 2, 0) := by
+      = (‖a.1‖ ^ (2 : ℕ) + ‖a.2‖ ^ (2 : ℕ), 0) := by
   refine Prod.ext ?_ ?_
-  · show T a.1 (star a.1) - T a.2 (-star a.2) = ‖a.1‖ ^ 2 + ‖a.2‖ ^ 2
+  · show T a.1 (star a.1) - T a.2 (-star a.2) = ‖a.1‖ ^ (2 : ℕ) + ‖a.2‖ ^ (2 : ℕ)
     rw [map_neg, hT, hT, sub_neg_eq_add, real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
   · show T a.1 (-star a.2) + T a.2 (star a.1) = 0
     rw [map_neg, hT, hT, real_inner_comm]

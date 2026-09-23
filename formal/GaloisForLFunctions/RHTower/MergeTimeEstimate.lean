@@ -50,12 +50,12 @@ theorem sq_decay_of_merge {y dy : ℝ} (_hy : 0 < y) (hode : y * dy ≤ -1) :
 
 /-- **Merge time bound.**  From `y(t)² ≤ y(0)² - 2t` the pair reaches the real axis by
 `t = y(0)²/2`. -/
-theorem merge_time_le {y₀ t : ℝ} (_hy₀ : 0 ≤ y₀) (hsq : 0 ≤ y₀ ^ 2 - 2 * t) : t ≤ y₀ ^ 2 / 2 := by
+theorem merge_time_le {y₀ t : ℝ} (_hy₀ : 0 ≤ y₀) (hsq : 0 ≤ y₀ ^ (2 : ℕ) - 2 * t) : t ≤ y₀ ^ (2 : ℕ) / 2 := by
   linarith
 
 /-- With `|y₀| ≤ 1/2` — the critical strip — the conditional merge time is at most `1/8`. -/
 theorem merge_time_le_eighth {y₀ t : ℝ} (hy₀ : 0 ≤ y₀) (hhalf : y₀ ≤ 1 / 2)
-    (hsq : 0 ≤ y₀ ^ 2 - 2 * t) : t ≤ 1 / 8 := by
+    (hsq : 0 ≤ y₀ ^ (2 : ℕ) - 2 * t) : t ≤ 1 / 8 := by
   have h := merge_time_le hy₀ hsq
   nlinarith [hy₀, hhalf]
 

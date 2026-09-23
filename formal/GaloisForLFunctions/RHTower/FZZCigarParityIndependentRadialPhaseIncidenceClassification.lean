@@ -48,7 +48,7 @@ theorem fzzCigarParityIndependentFermiRadial_lt_one
     fzzCigarParityIndependentFermiRadial beta < 1 := by
   have hnorm :=
     norm_fzzCigarParityDilatedKreinEigenlineBalancedCoordinate hbeta
-  have hnormsq := congrArg (fun x : ℝ => x ^ 2) hnorm
+  have hnormsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hnorm
   rw [Complex.sq_norm, Complex.normSq_apply] at hnormsq
   have him :=
     fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_im_pos hbeta

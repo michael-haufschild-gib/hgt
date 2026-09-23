@@ -221,11 +221,11 @@ theorem digamma_sub_quarter_eq {w : ℂ} (hw : 0 < w.re) :
 
 /-! ## Continuity of the kernel at the base point -/
 
-/-- The second-order kernel `∑_n e^{-2nt}/((n+w)(n+1/4)^2)`. -/
+/-- The second-order kernel `∑_n e^{-2nt}/((n+w)(n+1/4)^(2 : ℕ))`. -/
 def suzukiLerchKernel2Term (t : ℝ) (w : ℂ) (n : ℕ) : ℂ :=
   (Real.exp (-(2 * n * t)) : ℂ) / (((n : ℂ) + w) * ((n : ℂ) + 1 / 4) ^ 2)
 
-/-- The second-order Lerch kernel `∑_n e^{-2nt}/((n+w)(n+1/4)^2)`. -/
+/-- The second-order Lerch kernel `∑_n e^{-2nt}/((n+w)(n+1/4)^(2 : ℕ))`. -/
 def suzukiLerchKernel2 (t : ℝ) (w : ℂ) : ℂ := ∑' n : ℕ, suzukiLerchKernel2Term t w n
 
 /-- Uniform majorant for the second-order kernel terms. -/

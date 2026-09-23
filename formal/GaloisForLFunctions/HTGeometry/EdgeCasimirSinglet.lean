@@ -93,7 +93,7 @@ theorem inner_edgeOrientationCasimir_self {i j : I} (hij : i ≠ j)
     (x : EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R)) :
     @inner ℂ _ _ x ((edgeOrientationCasimir I R i j).toEuclideanLin x) =
       ∑ a : Fin 3, ∑ b : Fin 3,
-        ((‖(fixedEdgeCommutatorMatrix I R i j a b).toEuclideanLin x‖ : ℂ)) ^ 2 := by
+        ((‖(fixedEdgeCommutatorMatrix I R i j a b).toEuclideanLin x‖ : ℂ)) ^ (2 : ℕ) := by
   classical
   rw [edgeOrientationCasimir]
   simp only [map_sum, LinearMap.sum_apply, inner_sum]
@@ -116,9 +116,9 @@ theorem edgeOrientationCasimir_apply_eq_zero_iff {i j : I} (hij : i ≠ j)
       rw [hzero, inner_zero_right]
     rw [inner_edgeOrientationCasimir_self hij] at hinner
     have hreal : (∑ a : Fin 3, ∑ b : Fin 3,
-        ‖(fixedEdgeCommutatorMatrix I R i j a b).toEuclideanLin x‖ ^ 2) = 0 := by
+        ‖(fixedEdgeCommutatorMatrix I R i j a b).toEuclideanLin x‖ ^ (2 : ℕ)) = 0 := by
       have hcast : ((∑ a : Fin 3, ∑ b : Fin 3,
-          ‖(fixedEdgeCommutatorMatrix I R i j a b).toEuclideanLin x‖ ^ 2 : ℝ) : ℂ) = 0 := by
+          ‖(fixedEdgeCommutatorMatrix I R i j a b).toEuclideanLin x‖ ^ (2 : ℕ) : ℝ) : ℂ) = 0 := by
         push_cast
         exact hinner
       exact_mod_cast hcast

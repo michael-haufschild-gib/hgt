@@ -26,7 +26,7 @@ section GaussianWitness
 open Filter Topology
 
 /-- The Gaussian germ. -/
-noncomputable def expSq (z : ℂ) : ℂ := Complex.exp (z ^ 2)
+noncomputable def expSq (z : ℂ) : ℂ := Complex.exp (z ^ (2 : ℕ))
 
 /-- The Hermite-type polynomial coefficients of the jets of `exp (z²)`. -/
 noncomputable def gaussianJetPoly : ℕ → Polynomial ℂ
@@ -34,10 +34,10 @@ noncomputable def gaussianJetPoly : ℕ → Polynomial ℂ
   | n + 1 => Polynomial.derivative (gaussianJetPoly n) + 2 * Polynomial.X * gaussianJetPoly n
 
 theorem hasDerivAt_expSq (z : ℂ) : HasDerivAt expSq (2 * z * expSq z) z := by
-  have h : HasDerivAt (fun w : ℂ => Complex.exp (w ^ 2))
-      (Complex.exp (z ^ 2) * (2 * z ^ 1)) z := by
+  have h : HasDerivAt (fun w : ℂ => Complex.exp (w ^ (2 : ℕ)))
+      (Complex.exp (z ^ (2 : ℕ)) * (2 * z ^ (1 : ℕ))) z := by
     simpa using (hasDerivAt_pow 2 z).cexp
-  have hmul : Complex.exp (z ^ 2) * (2 * z ^ 1) = 2 * z * expSq z := by
+  have hmul : Complex.exp (z ^ (2 : ℕ)) * (2 * z ^ (1 : ℕ)) = 2 * z * expSq z := by
     rw [expSq, pow_one]
     ring
   rwa [hmul] at h
@@ -165,7 +165,7 @@ theorem not_germConstantODE_expSq : ¬ GermConstantODE expSq := by
 theorem not_bddHankelRank_expSq : ¬ BddHankelRank (respSeq expSq) := by
   intro h
   have hana : AnalyticAt ℂ expSq 0 := by
-    have : AnalyticAt ℂ (fun z : ℂ => z ^ 2) 0 := (analyticAt_id.pow 2)
+    have : AnalyticAt ℂ (fun z : ℂ => z ^ (2 : ℕ)) 0 := (analyticAt_id.pow 2)
     exact this.cexp
   exact not_germConstantODE_expSq
     ((seqConstantRecurrence_respSeq_iff_germConstantODE hana).mp
@@ -351,7 +351,7 @@ theorem InJetSpan.deriv_mem {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
     rw [hL.deriv, hR.deriv] at this
     exact this
   -- clear the new denominator
-  have hkey : InJetSpan f U n fun z => (d ^ 2).eval z * deriv g z := by
+  have hkey : InJetSpan f U n fun z => (d ^ (2 : ℕ)).eval z * deriv g z := by
     have hpieces : InJetSpan f U n fun z =>
         d.eval z * (∑ i ∈ Finset.range n, ((Polynomial.derivative (c i)).eval z
             * iteratedDeriv i f z + (c i).eval z * iteratedDeriv (i + 1) f z))
@@ -380,7 +380,7 @@ theorem InJetSpan.deriv_mem {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
     refine hpieces.congr fun z hz => ?_
     have h1 := hderiv z hz
     have h2 := hrel z hz
-    have hd2 : (d ^ 2).eval z = d.eval z * d.eval z := by
+    have hd2 : (d ^ (2 : ℕ)).eval z = d.eval z * d.eval z := by
       rw [Polynomial.eval_pow]; ring
     rw [hd2]
     linear_combination (Polynomial.derivative d).eval z * h2 - d.eval z * h1
@@ -529,10 +529,10 @@ theorem isOpen_tanRegular : IsOpen tanRegular :=
 /-- The polynomial expressing the `i`-th jet of `tan` as a polynomial in `tan`. -/
 noncomputable def tanJetPoly : ℕ → Polynomial ℂ
   | 0 => Polynomial.X
-  | i + 1 => (1 + Polynomial.X ^ 2) * Polynomial.derivative (tanJetPoly i)
+  | i + 1 => (1 + Polynomial.X ^ (2 : ℕ)) * Polynomial.derivative (tanJetPoly i)
 
 theorem tan_sq_add_one {z : ℂ} (hz : Complex.cos z ≠ 0) :
-    1 + Complex.tan z ^ 2 = 1 / Complex.cos z ^ 2 := by
+    1 + Complex.tan z ^ (2 : ℕ) = 1 / Complex.cos z ^ (2 : ℕ) := by
   rw [Complex.tan_eq_sin_div_cos, div_pow]
   field_simp
   linear_combination Complex.sin_sq_add_cos_sq z
@@ -550,11 +550,11 @@ theorem eventually_iteratedDeriv_tan (i : ℕ) {a : ℂ} (ha : a ∈ tanRegular)
     filter_upwards [hnhds] with z hz
     have hev : iteratedDeriv i Complex.tan
         =ᶠ[𝓝 z] fun w => (tanJetPoly i).eval (Complex.tan w) := ih hz
-    have hdtan : HasDerivAt Complex.tan (1 / Complex.cos z ^ 2) z :=
+    have hdtan : HasDerivAt Complex.tan (1 / Complex.cos z ^ (2 : ℕ)) z :=
       Complex.hasDerivAt_tan hz
     have hcomp : HasDerivAt (fun w => (tanJetPoly i).eval (Complex.tan w))
         ((Polynomial.derivative (tanJetPoly i)).eval (Complex.tan z)
-          * (1 / Complex.cos z ^ 2)) z :=
+          * (1 / Complex.cos z ^ (2 : ℕ))) z :=
       ((tanJetPoly i).hasDerivAt (Complex.tan z)).comp z hdtan
     rw [iteratedDeriv_succ, hev.deriv_eq, hcomp.deriv, tanJetPoly]
     rw [← tan_sq_add_one hz]
@@ -573,12 +573,12 @@ theorem natDegree_tanJetPoly (i : ℕ) : (tanJetPoly i).natDegree = i + 1 := by
     have hderiv : (Polynomial.derivative (tanJetPoly i)).natDegree = i := by
       rw [Polynomial.natDegree_derivative, ih]
       omega
-    have hquad : ((1 : Polynomial ℂ) + Polynomial.X ^ 2).natDegree = 2 := by
+    have hquad : ((1 : Polynomial ℂ) + Polynomial.X ^ (2 : ℕ)).natDegree = 2 := by
       compute_degree!
     have hne : Polynomial.derivative (tanJetPoly i) ≠ 0 := by
       rw [Polynomial.derivative_ne_zero, ih]
       omega
-    have hquadne : (1 : Polynomial ℂ) + Polynomial.X ^ 2 ≠ 0 := by
+    have hquadne : (1 : Polynomial ℂ) + Polynomial.X ^ (2 : ℕ) ≠ 0 := by
       intro h0
       rw [h0] at hquad
       simp at hquad
@@ -733,14 +733,14 @@ theorem not_dFiniteOn_tan : ¬ DFiniteOn Complex.tan tanRegular := by
 /-- **Equation (11).**  `tan` satisfies the order-one algebraic differential equation
 `f' = 1 + f²` on its regular set. -/
 theorem differentiallyAlgebraicOn_tan : DifferentiallyAlgebraicOn Complex.tan tanRegular := by
-  refine ⟨1, MvPolynomial.X 2 - 1 - MvPolynomial.X 1 ^ 2, ?_, ?_⟩
+  refine ⟨1, MvPolynomial.X 2 - 1 - MvPolynomial.X 1 ^ (2 : ℕ), ?_, ?_⟩
   · intro h0
     have hev := congrArg
       (MvPolynomial.eval (fun i : Fin 3 => if i = 2 then (2 : ℂ) else 0)) h0
     simp at hev
     exact absurd hev (by norm_num)
   · intro z hz
-    have hd : iteratedDeriv 1 Complex.tan z = 1 + Complex.tan z ^ 2 := by
+    have hd : iteratedDeriv 1 Complex.tan z = 1 + Complex.tan z ^ (2 : ℕ) := by
       rw [iteratedDeriv_one, (Complex.hasDerivAt_tan hz).deriv, tan_sq_add_one hz]
     have h0 : iteratedDeriv 0 Complex.tan z = Complex.tan z := by rw [iteratedDeriv_zero]
     have hc0 : ((Fin.cons z fun j : Fin 2 => iteratedDeriv (j : ℕ) Complex.tan z : Fin 3 → ℂ)) 1
@@ -868,7 +868,7 @@ theorem not_algebraicOn_tan : ¬ AlgebraicOn Complex.tan tanRegular := by
 exponential, a polynomial relation forces its leading coefficient to decay like `e^{-x}`. -/
 theorem not_algebraicOn_expSq : ¬ AlgebraicOn expSq (Set.univ : Set ℂ) := by
   rintro ⟨d, c, hcd, hrel⟩
-  have hexp : ∀ x : ℝ, expSq ((x : ℝ) : ℂ) = ((Real.exp (x ^ 2) : ℝ) : ℂ) := by
+  have hexp : ∀ x : ℝ, expSq ((x : ℝ) : ℂ) = ((Real.exp (x ^ (2 : ℕ)) : ℝ) : ℂ) := by
     intro x
     rw [expSq, ← Complex.ofReal_pow, ← Complex.ofReal_exp]
   rcases Nat.eq_zero_or_pos d with hd0 | hdpos
@@ -881,46 +881,46 @@ theorem not_algebraicOn_expSq : ¬ AlgebraicOn expSq (Set.univ : Set ℂ) := by
         ‖(c d).eval ((x : ℝ) : ℂ)‖ ≤ S.eval x / Real.exp x := by
       intro x hx
       have hx0 : (0 : ℝ) ≤ x := le_trans zero_le_one hx
-      have hEpos : (0 : ℝ) < Real.exp (x ^ 2) := Real.exp_pos _
-      have hE1 : (1 : ℝ) ≤ Real.exp (x ^ 2) := Real.one_le_exp (by positivity)
+      have hEpos : (0 : ℝ) < Real.exp (x ^ (2 : ℕ)) := Real.exp_pos _
+      have hE1 : (1 : ℝ) ≤ Real.exp (x ^ (2 : ℕ)) := Real.one_le_exp (by positivity)
       have hzero := hrel ((x : ℝ) : ℂ) (Set.mem_univ _)
       rw [Finset.sum_range_succ, hexp x] at hzero
-      have hlead : (c d).eval ((x : ℝ) : ℂ) * ((Real.exp (x ^ 2) : ℝ) : ℂ) ^ d
+      have hlead : (c d).eval ((x : ℝ) : ℂ) * ((Real.exp (x ^ (2 : ℕ)) : ℝ) : ℂ) ^ d
           = -∑ j ∈ Finset.range d,
-            (c j).eval ((x : ℝ) : ℂ) * ((Real.exp (x ^ 2) : ℝ) : ℂ) ^ j := by
+            (c j).eval ((x : ℝ) : ℂ) * ((Real.exp (x ^ (2 : ℕ)) : ℝ) : ℂ) ^ j := by
         linear_combination hzero
-      have hnormlead : ‖(c d).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ 2) ^ d
-          ≤ ∑ j ∈ Finset.range d, ‖(c j).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ 2) ^ j := by
-        have h1 : ‖(c d).eval ((x : ℝ) : ℂ) * ((Real.exp (x ^ 2) : ℝ) : ℂ) ^ d‖
-            = ‖(c d).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ 2) ^ d := by
+      have hnormlead : ‖(c d).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ (2 : ℕ)) ^ d
+          ≤ ∑ j ∈ Finset.range d, ‖(c j).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ (2 : ℕ)) ^ j := by
+        have h1 : ‖(c d).eval ((x : ℝ) : ℂ) * ((Real.exp (x ^ (2 : ℕ)) : ℝ) : ℂ) ^ d‖
+            = ‖(c d).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ (2 : ℕ)) ^ d := by
           rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hEpos]
         rw [← h1, hlead, norm_neg]
         refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun j _ => ?_)
         rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hEpos]
-      have hupper : ∑ j ∈ Finset.range d, ‖(c j).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ 2) ^ j
-          ≤ S.eval x * Real.exp (x ^ 2) ^ (d - 1) := by
+      have hupper : ∑ j ∈ Finset.range d, ‖(c j).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ (2 : ℕ)) ^ j
+          ≤ S.eval x * Real.exp (x ^ (2 : ℕ)) ^ (d - 1) := by
         rw [hS, Polynomial.eval_finsetSum, Finset.sum_mul]
         refine Finset.sum_le_sum fun j hj => ?_
         have hjd : j < d := Finset.mem_range.mp hj
-        have hpow : Real.exp (x ^ 2) ^ j ≤ Real.exp (x ^ 2) ^ (d - 1) :=
+        have hpow : Real.exp (x ^ (2 : ℕ)) ^ j ≤ Real.exp (x ^ (2 : ℕ)) ^ (d - 1) :=
           pow_le_pow_right₀ hE1 (by omega)
         have hnn : (0 : ℝ) ≤ (normPoly (c j)).eval x :=
           le_trans (norm_nonneg _) (norm_eval_le_normPoly (c j) hx0)
-        calc ‖(c j).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ 2) ^ j
-            ≤ (normPoly (c j)).eval x * Real.exp (x ^ 2) ^ j :=
+        calc ‖(c j).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ (2 : ℕ)) ^ j
+            ≤ (normPoly (c j)).eval x * Real.exp (x ^ (2 : ℕ)) ^ j :=
               mul_le_mul_of_nonneg_right (norm_eval_le_normPoly (c j) hx0) (by positivity)
-          _ ≤ (normPoly (c j)).eval x * Real.exp (x ^ 2) ^ (d - 1) :=
+          _ ≤ (normPoly (c j)).eval x * Real.exp (x ^ (2 : ℕ)) ^ (d - 1) :=
               mul_le_mul_of_nonneg_left hpow hnn
-      have hsplit : Real.exp (x ^ 2) ^ d = Real.exp (x ^ 2) ^ (d - 1) * Real.exp (x ^ 2) := by
+      have hsplit : Real.exp (x ^ (2 : ℕ)) ^ d = Real.exp (x ^ (2 : ℕ)) ^ (d - 1) * Real.exp (x ^ (2 : ℕ)) := by
         rw [← pow_succ]
         congr 1
         omega
-      have hpow1 : (0 : ℝ) < Real.exp (x ^ 2) ^ (d - 1) := pow_pos hEpos _
-      have hkey : ‖(c d).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ 2) ≤ S.eval x := by
+      have hpow1 : (0 : ℝ) < Real.exp (x ^ (2 : ℕ)) ^ (d - 1) := pow_pos hEpos _
+      have hkey : ‖(c d).eval ((x : ℝ) : ℂ)‖ * Real.exp (x ^ (2 : ℕ)) ≤ S.eval x := by
         have h := le_trans hnormlead hupper
         rw [hsplit] at h
         nlinarith [h, hpow1, norm_nonneg ((c d).eval ((x : ℝ) : ℂ))]
-      have hxle : Real.exp x ≤ Real.exp (x ^ 2) := by
+      have hxle : Real.exp x ≤ Real.exp (x ^ (2 : ℕ)) := by
         refine Real.exp_le_exp.mpr ?_
         nlinarith
       have hexpos : (0 : ℝ) < Real.exp x := Real.exp_pos _

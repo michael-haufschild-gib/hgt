@@ -189,7 +189,7 @@ theorem deningerRectangularComplexEnergy_realRescale
     (r a : ℝ) (v : ℂ × ℂ) :
     deningerRectangularComplexEnergy r
         (deningerRectangularRealRescale a v) =
-      a ^ 2 * deningerRectangularComplexEnergy r v := by
+      a ^ (2 : ℕ) * deningerRectangularComplexEnergy r v := by
   rcases v with ⟨z, w⟩
   simp only [deningerRectangularComplexEnergy, deningerRectangularRealRescale]
   rw [Complex.normSq_mul, Complex.normSq_ofReal,
@@ -199,7 +199,7 @@ theorem deningerRectangularComplexEnergy_realRescale
 /-- Centering by any `a` satisfying `a² q = 1` makes the prime map unitary. -/
 theorem deningerRectangularCenteredScale_energy
     {a q r : ℝ} (hq : q ≠ 0) (hr : r ≠ 0)
-    (hnorm : a ^ 2 * q = 1) (v : ℂ × ℂ) :
+    (hnorm : a ^ (2 : ℕ) * q = 1) (v : ℂ × ℂ) :
     deningerRectangularComplexEnergy (q * r)
         (deningerRectangularCenteredScale a q v) =
       deningerRectangularComplexEnergy r v := by
@@ -207,8 +207,8 @@ theorem deningerRectangularCenteredScale_energy
     deningerRectangularComplexEnergy_realRescale,
     deningerRectangularComplexEnergy_scale hq hr]
   calc
-    a ^ 2 * (q * deningerRectangularComplexEnergy r v) =
-        (a ^ 2 * q) * deningerRectangularComplexEnergy r v := by ring
+    a ^ (2 : ℕ) * (q * deningerRectangularComplexEnergy r v) =
+        (a ^ (2 : ℕ) * q) * deningerRectangularComplexEnergy r v := by ring
     _ = deningerRectangularComplexEnergy r v := by rw [hnorm, one_mul]
 
 /-- Every real-centered prime map remains a Hodge intertwiner. -/
@@ -247,8 +247,8 @@ def deningerRectangularUnitaryScale (q : ℝ) (v : ℂ × ℂ) : ℂ × ℂ :=
 
 /-- The canonical centering satisfies the unitary normalization. -/
 theorem deningerRectangularUnitaryScale_norm {q : ℝ} (hq : 0 < q) :
-    ((Real.sqrt q)⁻¹) ^ 2 * q = 1 := by
-  have hsq : (Real.sqrt q) ^ 2 = q := Real.sq_sqrt (le_of_lt hq)
+    ((Real.sqrt q)⁻¹) ^ (2 : ℕ) * q = 1 := by
+  have hsq : (Real.sqrt q) ^ (2 : ℕ) = q := Real.sq_sqrt (le_of_lt hq)
   have hne : Real.sqrt q ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hq)
   field_simp
   exact hsq.symm

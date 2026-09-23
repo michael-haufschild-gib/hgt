@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.FokasLenellsSignedOrigin
 /-!
 # Concrete compatibility classes for weighted scattering at the origin
 
-The local L^2 criterion is applied mechanically to existing parity
+The local L^(2 : ℕ) criterion is applied mechanically to existing parity
 projections, Schwartz derivatives, amplitude rescalings, spatial reflection,
 and the corpus's explicit globally small scattering normalization.
 -/
@@ -18,7 +18,7 @@ theorem signedOriginWeightedReflection_memLp_two_iff_uniform_fifth (q : Schwartz
     (∃ δ : ℝ, 0 < δ ∧ MemLp (signedOriginWeightedReflection q) 2
       (volume.restrict (Ioo (-δ) δ))) ↔
     ((fun κ : ℝ => fun vertical negative : Bool => contourReflectionAmplitude q vertical negative κ)
-      =O[atBot] fun κ => (Real.exp κ : ℂ)^5) := by
+      =O[atBot] fun κ => (Real.exp κ : ℂ)^(5 : ℕ)) := by
   rw [signedOriginWeightedReflection_locally_memLp_two_iff,contourReflections_uniform_isBigO_fifth_iff]
 
 /-- General profiles obey the nonlinear balance between their mass and even/odd coupling. -/
@@ -34,7 +34,7 @@ theorem signedOriginWeightedReflection_oddInitialPart_memLp_all (q : SchwartzMap
         (volume.restrict (Ioo (-δ) δ)) :=
   (signedOriginWeightedReflection_locally_memLp_all_iff _).2 (compatibilityMoment_oddInitialPart q)
 
-/-- For even profiles the complete weighted L^2 obstruction reduces to their ordinary mass. -/
+/-- For even profiles the complete weighted L^(2 : ℕ) obstruction reduces to their ordinary mass. -/
 theorem signedOriginWeightedReflection_evenInitialPart_memLp_two_iff (q : SchwartzMap ℝ ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ MemLp (signedOriginWeightedReflection (evenInitialPart q)) 2
       (volume.restrict (Ioo (-δ) δ))) ↔ (∫ x : ℝ, q x) = 0 := by
@@ -52,7 +52,7 @@ theorem signedOriginWeightedReflection_evenDerivative_memLp_all (q : SchwartzMap
 theorem signedOriginWeightedReflection_scaling_memLp_two_iff (q : SchwartzMap ℝ ℂ) (c : ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ MemLp (signedOriginWeightedReflection (c • q)) 2
       (volume.restrict (Ioo (-δ) δ))) ↔
-      c = 0 ∨ (∫ x : ℝ, q x) = I*c^2*parityCoupling q := by
+      c = 0 ∨ (∫ x : ℝ, q x) = I*c^(2 : ℕ)*parityCoupling q := by
   rw [signedOriginWeightedReflection_locally_memLp_two_iff,← rawReflection_isBigO_fifth_iff]
   exact rawReflection_scaling_isBigO_fifth_iff q c
 
@@ -78,7 +78,7 @@ theorem signedOriginWeightedReflection_both_reflections_memLp_two_iff (q : Schwa
 theorem signedOriginWeightedReflection_globalSmall_memLp_two_iff (q : SchwartzMap ℝ ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ MemLp (signedOriginWeightedReflection (globalSmallScatteringPotential q)) 2
       (volume.restrict (Ioo (-δ) δ))) ↔
-      (∫ x : ℝ, q x) = I*(globalScatteringScale q : ℂ)^2*parityCoupling q := by
+      (∫ x : ℝ, q x) = I*(globalScatteringScale q : ℂ)^(2 : ℕ)*parityCoupling q := by
   rw [signedOriginWeightedReflection_locally_memLp_two_iff,← rawReflection_isBigO_fifth_iff]
   exact rawReflection_globalSmall_isBigO_fifth_iff q
 

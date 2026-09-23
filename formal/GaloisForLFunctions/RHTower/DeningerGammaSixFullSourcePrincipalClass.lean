@@ -505,7 +505,7 @@ theorem deningerGammaSixDepthFiber_tsum_remainderColumn
 
 /-- **Ordinary-integer trace-order theorem.**  After exact shell
 replication, the full corrected tensor-square source differs from its leading
-Gamma-six atom by an `ell^1` family of Hilbert vectors. -/
+Gamma-six atom by an `ell^(1 : ℕ)` family of Hilbert vectors. -/
 theorem summable_norm_deningerGammaSixSourceTensorRemainderColumn :
     Summable (fun n : ℕ =>
       ‖deningerGammaSixSourceTensorRemainderColumn n‖) := by

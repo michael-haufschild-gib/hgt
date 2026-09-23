@@ -48,7 +48,7 @@ theorem integral_Ioi_eq_intervalIntegral_add_tail {Y : Type*} [NormedAddCommGrou
 /-- The three-fold remainder integrand is integrable on a terminal ray past the threshold. -/
 theorem integrableOn_wallThirdIntegrand {σ L μ₀ K₂ : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀)
     (hb₂ : ∀ y : ℝ, ‖stripPropagatorInv E T ((y : ℂ) + (σ : ℂ) * Complex.I)‖
@@ -87,7 +87,7 @@ def wallFinitePart (E : ℂ → ℂ) (T : X →L[ℂ] X) (σ L Y : ℝ) : X →L
 evaluation point is either a boundary term at that point or the absolutely convergent tail. -/
 theorem wall_phase_finitePart_decomposition {σ L μ₀ K₂ : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀)
     (hb₂ : ∀ y : ℝ, ‖stripPropagatorInv E T ((y : ℂ) + (σ : ℂ) * Complex.I)‖

@@ -51,7 +51,7 @@ theorem abs_re_boundedPolarizedExteriorHermitianEnergy_le
       |height i - height j| ≤ D) :
     |(boundedPolarizedExteriorHermitianEnergy
       packet amplitude height multiplier).re| ≤
-      B ^ 2 * D * (∑ i ∈ packet, amplitude i) ^ 2 := by
+      B ^ (2 : ℕ) * D * (∑ i ∈ packet, amplitude i) ^ (2 : ℕ) := by
   let term := fun i j =>
     star (multiplier i) *
       (Complex.I *
@@ -59,7 +59,7 @@ theorem abs_re_boundedPolarizedExteriorHermitianEnergy_le
       multiplier j
   have hterm :
       ∀ i ∈ packet, ∀ j ∈ packet,
-        ‖term i j‖ ≤ B ^ 2 * D * (amplitude i * amplitude j) := by
+        ‖term i j‖ ≤ B ^ (2 : ℕ) * D * (amplitude i * amplitude j) := by
     intro i hi j hj
     have hai : 0 ≤ amplitude i := hamp i hi
     have haj : 0 ≤ amplitude j := hamp j hj
@@ -94,12 +94,12 @@ theorem abs_re_boundedPolarizedExteriorHermitianEnergy_le
       _ ≤ B * (amplitude i * amplitude j * D) * B := by
             exact mul_le_mul_of_nonneg_left
               (hmultiplier j hj) (mul_nonneg hB (mul_nonneg haij hD))
-      _ = B ^ 2 * D * (amplitude i * amplitude j) := by ring
+      _ = B ^ (2 : ℕ) * D * (amplitude i * amplitude j) := by ring
   have hnorm :
       ‖boundedPolarizedExteriorHermitianEnergy
           packet amplitude height multiplier‖ ≤
         ∑ i ∈ packet, ∑ j ∈ packet,
-          B ^ 2 * D * (amplitude i * amplitude j) := by
+          B ^ (2 : ℕ) * D * (amplitude i * amplitude j) := by
     unfold boundedPolarizedExteriorHermitianEnergy
     calc
       ‖∑ i ∈ packet, ∑ j ∈ packet, term i j‖
@@ -108,17 +108,17 @@ theorem abs_re_boundedPolarizedExteriorHermitianEnergy_le
       _ ≤ ∑ i ∈ packet, ∑ j ∈ packet, ‖term i j‖ := by
         exact Finset.sum_le_sum fun i hi => norm_sum_le _ _
       _ ≤ ∑ i ∈ packet, ∑ j ∈ packet,
-          B ^ 2 * D * (amplitude i * amplitude j) := by
+          B ^ (2 : ℕ) * D * (amplitude i * amplitude j) := by
         exact Finset.sum_le_sum fun i hi =>
           Finset.sum_le_sum fun j hj => hterm i hi j hj
   have hfactor :
       (∑ i ∈ packet, ∑ j ∈ packet,
-          B ^ 2 * D * (amplitude i * amplitude j)) =
-        B ^ 2 * D * (∑ i ∈ packet, amplitude i) ^ 2 := by
+          B ^ (2 : ℕ) * D * (amplitude i * amplitude j)) =
+        B ^ (2 : ℕ) * D * (∑ i ∈ packet, amplitude i) ^ (2 : ℕ) := by
     calc
       (∑ i ∈ packet, ∑ j ∈ packet,
-          B ^ 2 * D * (amplitude i * amplitude j)) =
-          B ^ 2 * D *
+          B ^ (2 : ℕ) * D * (amplitude i * amplitude j)) =
+          B ^ (2 : ℕ) * D *
             (∑ i ∈ packet, ∑ j ∈ packet,
               amplitude i * amplitude j) := by
         symm
@@ -126,11 +126,11 @@ theorem abs_re_boundedPolarizedExteriorHermitianEnergy_le
         apply Finset.sum_congr rfl
         intro i hi
         rw [Finset.mul_sum]
-      _ = B ^ 2 * D *
+      _ = B ^ (2 : ℕ) * D *
           ((∑ i ∈ packet, amplitude i) *
             (∑ j ∈ packet, amplitude j)) := by
         rw [Finset.sum_mul_sum]
-      _ = B ^ 2 * D * (∑ i ∈ packet, amplitude i) ^ 2 := by ring
+      _ = B ^ (2 : ℕ) * D * (∑ i ∈ packet, amplitude i) ^ (2 : ℕ) := by ring
   exact (Complex.abs_re_le_norm _).trans (hnorm.trans_eq hfactor)
 
 /-- Euler depth-zero amplitude on the macroscopic prime block. -/
@@ -180,7 +180,7 @@ theorem xiGammaEulerBoundaryExteriorCell_zero_depthZero_eq
 def ccmFirstClockEulerDepthZeroBoundedExteriorEnergy
     (m : ℕ) (multiplier : ℕ → ℂ) : ℂ :=
   boundedPolarizedExteriorHermitianEnergy
-    (suzukiMangoldtFivePrimeBlock (m ^ 4))
+    (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
     ccmFirstClockEulerDepthZeroExteriorAmplitude
     ccmFirstClockEulerDepthZeroExteriorHeight
     multiplier
@@ -193,8 +193,8 @@ theorem ccmFirstClockEulerDepthZeroExteriorAmplitude_nonneg (p : ℕ) :
 /-- The Euler half-height diameter on every first-clock block is at most one. -/
 theorem ccmFirstClockEulerDepthZeroExteriorHeight_diameter_le_one
     {m p q : ℕ} (hm : 25 ≤ m)
-    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4))
-    (hq : q ∈ suzukiMangoldtFivePrimeBlock (m ^ 4)) :
+    (hp : p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
+    (hq : q ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))) :
     |ccmFirstClockEulerDepthZeroExteriorHeight p -
       ccmFirstClockEulerDepthZeroExteriorHeight q| ≤ 1 := by
   have hlog :=
@@ -244,12 +244,12 @@ theorem card_mul_log_two_mul_le_suzukiMangoldtFivePrimeBlock_logMass
 theorem sum_sq_ccmFirstClockEulerDepthZeroExteriorAmplitude_le
     {n : ℕ} (hn : 1 ≤ n) :
     (∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-      ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ 2) ≤
+      ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ (2 : ℕ)) ≤
       (5 / 2 : ℝ) * Real.log 4 := by
   have hnR : (0 : ℝ) < n := by positivity
   have hterm :
       ∀ p ∈ suzukiMangoldtFivePrimeBlock n,
-        ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ 2 ≤
+        ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ (2 : ℕ) ≤
           Real.log (p : ℝ) / (2 * (n : ℝ)) := by
     intro p hp
     obtain ⟨hpPrime, hpLower, _hpUpper⟩ :=
@@ -264,7 +264,7 @@ theorem sum_sq_ccmFirstClockEulerDepthZeroExteriorAmplitude_le
       (by positivity : (0 : ℝ) < 2 * (n : ℝ)) hpLowerR.le
   calc
     (∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-        ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ 2)
+        ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ (2 : ℕ))
         ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
             Real.log (p : ℝ) / (2 * (n : ℝ)) :=
       Finset.sum_le_sum hterm
@@ -279,8 +279,8 @@ theorem sum_sq_ccmFirstClockEulerDepthZeroExteriorAmplitude_le
 theorem sq_sum_ccmFirstClockEulerDepthZeroExteriorAmplitude_le
     {n : ℕ} (hn : 1 ≤ n) :
     (∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-      ccmFirstClockEulerDepthZeroExteriorAmplitude p) ^ 2 ≤
-      (25 / 2 : ℝ) * Real.log 4 ^ 2 *
+      ccmFirstClockEulerDepthZeroExteriorAmplitude p) ^ (2 : ℕ) ≤
+      (25 / 2 : ℝ) * Real.log 4 ^ (2 : ℕ) *
         (n : ℝ) / Real.log (2 * (n : ℝ)) := by
   have hnR : (0 : ℝ) < n := by positivity
   have hnOneR : (1 : ℝ) ≤ n := by exact_mod_cast hn
@@ -299,42 +299,42 @@ theorem sq_sum_ccmFirstClockEulerDepthZeroExteriorAmplitude_le
     sum_sq_ccmFirstClockEulerDepthZeroExteriorAmplitude_le hn
   have hcs :
       (∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-        ccmFirstClockEulerDepthZeroExteriorAmplitude p) ^ 2 ≤
+        ccmFirstClockEulerDepthZeroExteriorAmplitude p) ^ (2 : ℕ) ≤
         ((suzukiMangoldtFivePrimeBlock n).card : ℝ) *
           ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-            ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ 2 :=
+            ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ (2 : ℕ) :=
     sq_sum_le_card_mul_sum_sq
   have hsqNonneg :
       0 ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-        ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ 2 :=
+        ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ (2 : ℕ) :=
     Finset.sum_nonneg fun p _ => sq_nonneg _
   have hlogFour : 0 ≤ Real.log 4 := (Real.log_pos (by norm_num)).le
   calc
     (∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-        ccmFirstClockEulerDepthZeroExteriorAmplitude p) ^ 2
+        ccmFirstClockEulerDepthZeroExteriorAmplitude p) ^ (2 : ℕ)
         ≤ ((suzukiMangoldtFivePrimeBlock n).card : ℝ) *
           ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
-            ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ 2 := hcs
+            ccmFirstClockEulerDepthZeroExteriorAmplitude p ^ (2 : ℕ) := hcs
     _ ≤ (5 * (n : ℝ) * Real.log 4 / Real.log (2 * (n : ℝ))) *
           ((5 / 2 : ℝ) * Real.log 4) :=
       mul_le_mul hcard hsq hsqNonneg
         (by positivity)
-    _ = (25 / 2 : ℝ) * Real.log 4 ^ 2 *
+    _ = (25 / 2 : ℝ) * Real.log 4 ^ (2 : ℕ) *
           (n : ℝ) / Real.log (2 * (n : ℝ)) := by ring
 
 /-- Every unit-bounded complex polarization of the first-clock Euler exterior block has only
 `m⁴ / log(m⁴)`-scale scalar energy. -/
 theorem abs_re_ccmFirstClockEulerDepthZeroBoundedExteriorEnergy_le
     {m : ℕ} (hm : 25 ≤ m) (multiplier : ℕ → ℂ)
-    (hmultiplier : ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    (hmultiplier : ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
       ‖multiplier p‖ ≤ 1) :
     |(ccmFirstClockEulerDepthZeroBoundedExteriorEnergy m multiplier).re| ≤
-      (25 / 2 : ℝ) * Real.log 4 ^ 2 *
-        ((m ^ 4 : ℕ) : ℝ) / Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by
-  have hmOne : 1 ≤ m ^ 4 := one_le_pow₀ (by omega : 1 ≤ m)
+      (25 / 2 : ℝ) * Real.log 4 ^ (2 : ℕ) *
+        ((m ^ (4 : ℕ) : ℕ) : ℝ) / Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by
+  have hmOne : 1 ≤ m ^ (4 : ℕ) := one_le_pow₀ (by omega : 1 ≤ m)
   have hgeneric :=
     abs_re_boundedPolarizedExteriorHermitianEnergy_le
-      (suzukiMangoldtFivePrimeBlock (m ^ 4))
+      (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)))
       ccmFirstClockEulerDepthZeroExteriorAmplitude
       ccmFirstClockEulerDepthZeroExteriorHeight multiplier 1 1
       (fun p _ => ccmFirstClockEulerDepthZeroExteriorAmplitude_nonneg p)
@@ -350,32 +350,32 @@ than the certified squared pure-bad mass on the same first-clock block. -/
 theorem ccmFirstClockEulerDepthZeroBoundedExteriorEnergy_lt_badMass_sq
     {m : ℕ} (hmLarge : Real.exp 7201 < (m : ℝ))
     (multiplier : ℕ → ℂ)
-    (hmultiplier : ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    (hmultiplier : ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
       ‖multiplier p‖ ≤ 1) :
     |(ccmFirstClockEulerDepthZeroBoundedExteriorEnergy m multiplier).re| <
-      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 := by
+          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) := by
   have hmPos : (0 : ℝ) < m := (Real.exp_pos 7201).trans hmLarge
   have hm25 : 25 ≤ m := by
     have hexp := Real.add_one_le_exp (7201 : ℝ)
     exact_mod_cast (show (25 : ℝ) ≤ m by linarith)
-  have hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ) := by
+  have hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ) := by
     have h20 : Real.exp 20 < Real.exp 7201 :=
       Real.exp_lt_exp.mpr (by norm_num)
-    have hmLePow : m ≤ m ^ 4 := by
+    have hmLePow : m ≤ m ^ (4 : ℕ) := by
       have hmNatPos : 0 < m := by exact_mod_cast hmPos
       simpa using
         (Nat.pow_le_pow_right hmNatPos (show 1 ≤ 4 by omega) :
-          m ^ 1 ≤ m ^ 4)
+          m ^ (1 : ℕ) ≤ m ^ (4 : ℕ))
     exact (h20.trans hmLarge).le.trans (by exact_mod_cast hmLePow)
   have hlogm : 7201 < Real.log (m : ℝ) := by
     have h := Real.log_lt_log (Real.exp_pos 7201) hmLarge
     rwa [Real.log_exp] at h
   have hlogDen :
-      28800 < Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by
+      28800 < Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by
     have hmNe : (m : ℝ) ≠ 0 := ne_of_gt hmPos
-    rw [show ((m ^ 4 : ℕ) : ℝ) = (m : ℝ) ^ 4 by norm_num,
+    rw [show ((m ^ (4 : ℕ) : ℕ) : ℝ) = (m : ℝ) ^ (4 : ℕ) by norm_num,
       Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (pow_ne_zero 4 hmNe),
       Real.log_pow]
     norm_num
@@ -387,22 +387,22 @@ theorem ccmFirstClockEulerDepthZeroBoundedExteriorEnergy_lt_badMass_sq
     rw [Real.log_four_eq]
     nlinarith [Real.log_two_lt_d9]
   have hlogFour0 : 0 ≤ Real.log 4 := (Real.log_pos (by norm_num)).le
-  have hmPowPos : (0 : ℝ) < ((m ^ 4 : ℕ) : ℝ) := by positivity
-  have hdenPos : 0 < Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by linarith
+  have hmPowPos : (0 : ℝ) < ((m ^ (4 : ℕ) : ℕ) : ℝ) := by positivity
+  have hdenPos : 0 < Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by linarith
   have hcoarse :
-      (25 / 2 : ℝ) * Real.log 4 ^ 2 *
-          ((m ^ 4 : ℕ) : ℝ) / Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) <
-        ((m ^ 4 : ℕ) : ℝ) / 576 := by
-    have hlogSq : Real.log 4 ^ 2 < 4 := by nlinarith
+      (25 / 2 : ℝ) * Real.log 4 ^ (2 : ℕ) *
+          ((m ^ (4 : ℕ) : ℕ) : ℝ) / Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) <
+        ((m ^ (4 : ℕ) : ℕ) : ℝ) / 576 := by
+    have hlogSq : Real.log 4 ^ (2 : ℕ) < 4 := by nlinarith
     apply (div_lt_iff₀ hdenPos).2
-    have hdenScaled : 50 * 576 < Real.log (2 * ((m ^ 4 : ℕ) : ℝ)) := by
+    have hdenScaled : 50 * 576 < Real.log (2 * ((m ^ (4 : ℕ) : ℕ) : ℝ)) := by
       norm_num
       simpa only [Nat.cast_pow] using hlogDen
     nlinarith
   have hbadMass :=
     ccmFirstClockJuliaSixthPower_block_badMass_lower hm25 hmCheb
   have hbadNonneg :
-      0 ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      0 ≤ ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
           (ccmFirstClockJuliaSixthPowerAperture m) p := by
     apply Finset.sum_nonneg
@@ -411,12 +411,12 @@ theorem ccmFirstClockEulerDepthZeroBoundedExteriorEnergy_lt_badMass_sq
     rw [ccmFirstClockReducedBadNatTerm_of_prime _ hpPrime]
     exact (ccmFirstClockJuliaSixthPower_block_badTerm_pos hm25 hp).le
   have hbadSq :
-      ((m ^ 4 : ℕ) : ℝ) / 576 ≤
-        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      ((m ^ (4 : ℕ) : ℕ) : ℝ) / 576 ≤
+        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           ccmFirstClockReducedBadNatTerm
-            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 := by
+            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) := by
     have hmassSq :=
-      (sq_le_sq₀ (by positivity : 0 ≤ (m : ℝ) ^ 2 / 24) hbadNonneg).2 hbadMass
+      (sq_le_sq₀ (by positivity : 0 ≤ (m : ℝ) ^ (2 : ℕ) / 24) hbadNonneg).2 hbadMass
     push_cast at hmassSq ⊢
     nlinarith
   exact henergy.trans_lt (hcoarse.trans_le hbadSq)
@@ -425,11 +425,11 @@ theorem ccmFirstClockEulerDepthZeroBoundedExteriorEnergy_lt_badMass_sq
 theorem not_ccmFirstClock_badMass_sq_le_EulerDepthZeroBoundedExteriorEnergy_re
     {m : ℕ} (hmLarge : Real.exp 7201 < (m : ℝ))
     (multiplier : ℕ → ℂ)
-    (hmultiplier : ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    (hmultiplier : ∀ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
       ‖multiplier p‖ ≤ 1) :
-    ¬ (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+    ¬ (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 ≤
+          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) ≤
       (ccmFirstClockEulerDepthZeroBoundedExteriorEnergy m multiplier).re := by
   have hstrict :=
     ccmFirstClockEulerDepthZeroBoundedExteriorEnergy_lt_badMass_sq

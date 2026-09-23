@@ -58,7 +58,7 @@ theorem eventually_forall_ne_zero_on_compact_of_tendstoLocallyUniformly
 /-- Compact window of bounded, non-small, transversely separated spectral nodes. -/
 def thetaSchurBadSpectralWindow (R δ η : ℝ) : Set ℂ :=
   (closedBall (0 : ℂ) R ∩ {z | δ ≤ Complex.normSq z}) ∩
-    {z | η ≤ z.im ^ 2}
+    {z | η ≤ z.im ^ (2 : ℕ)}
 
 theorem thetaSchurBadSpectralWindow_isCompact (R δ η : ℝ) :
     IsCompact (thetaSchurBadSpectralWindow R δ η) := by
@@ -90,7 +90,7 @@ theorem normalizedXi_ne_zero_on_thetaSchurBadReciprocalWindow
   obtain ⟨w, hw, rfl⟩ := hz
   have hwim : w.im ≠ 0 := by
     intro hwzero
-    have htrans : η ≤ w.im ^ 2 := hw.2
+    have htrans : η ≤ w.im ^ (2 : ℕ) := hw.2
     rw [hwzero] at htrans
     norm_num at htrans
     linarith
@@ -158,7 +158,7 @@ theorem hsNorm_thetaSourceSignedKernel_le_ceiling (k : ℕ) :
 /-- Every actual finite theta-stage matrix has Hilbert--Schmidt energy below the fixed source
 ceiling squared. -/
 theorem matHSNormSq_thetaSourceSignedStageFinMatrix_le_ceiling (k : ℕ) :
-    matHSNormSq (thetaSourceSignedStageFinMatrix k) ≤ thetaSourceSignedHSCeiling ^ 2 := by
+    matHSNormSq (thetaSourceSignedStageFinMatrix k) ≤ thetaSourceSignedHSCeiling ^ (2 : ℕ) := by
   have hblock :
       matHSNormSq (thetaSourceSignedStageFinMatrix k) ≤
         HilbertSchmidt.hsNormSq (thetaSourceSignedKernel k) := by
@@ -167,7 +167,7 @@ theorem matHSNormSq_thetaSourceSignedStageFinMatrix_le_ceiling (k : ℕ) :
       (thetaSourceSignedCutoff k)
   have hsq :
       HilbertSchmidt.hsNormSq (thetaSourceSignedKernel k) =
-        HilbertSchmidt.hsNorm (thetaSourceSignedKernel k) ^ 2 := by
+        HilbertSchmidt.hsNorm (thetaSourceSignedKernel k) ^ (2 : ℕ) := by
     rw [HilbertSchmidt.hsNorm,
       Real.sq_sqrt (HilbertSchmidt.hsNormSq_nonneg _)]
   rw [hsq] at hblock
@@ -183,7 +183,7 @@ theorem norm_thetaSourceStageSchurDiagonal_le_ceiling
   have hdiag := norm_diag_le_of_schur S.unitary_right S.conjugates_stage i
   have hsqrt :
       Real.sqrt (matHSNormSq (thetaSourceSignedStageFinMatrix k)) ≤
-        Real.sqrt (thetaSourceSignedHSCeiling ^ 2) :=
+        Real.sqrt (thetaSourceSignedHSCeiling ^ (2 : ℕ)) :=
     Real.sqrt_le_sqrt (matHSNormSq_thetaSourceSignedStageFinMatrix_le_ceiling k)
   rw [Real.sqrt_sq_eq_abs, abs_of_pos thetaSourceSignedHSCeiling_pos] at hsqrt
   exact hdiag.trans hsqrt
@@ -212,14 +212,14 @@ strictly inside the transverse threshold. -/
 theorem eventually_thetaSourceStageSchurDiagonal_im_sq_lt_of_rh
     (hRH : RiemannHypothesis) {δ η : ℝ} (hδ : 0 < δ) (hη : 0 < η) :
     ∀ᶠ k in atTop, ∀ (S : ThetaSourceStageSchurPacket k) i,
-      δ < Complex.normSq (S.T i i) → (S.T i i).im ^ 2 < η := by
+      δ < Complex.normSq (S.T i i) → (S.T i i).im ^ (2 : ℕ) < η := by
   have hfree :=
     eventually_thetaSourceSignedOrdinaryDet_ne_zero_on_badReciprocalWindow_of_rh
       hRH hδ hη (R := thetaSourceSignedHSCeiling)
   filter_upwards [hfree] with k hk
   intro S i hlarge
   by_contra hnot
-  have him : η ≤ (S.T i i).im ^ 2 := le_of_not_gt hnot
+  have him : η ≤ (S.T i i).im ^ (2 : ℕ) := le_of_not_gt hnot
   have hi : S.T i i ≠ 0 := Complex.normSq_pos.mp (hδ.trans hlarge)
   have hmem :
       S.T i i ∈ thetaSchurBadSpectralWindow thetaSourceSignedHSCeiling δ η := by
@@ -236,15 +236,15 @@ theorem eventually_thetaSourceStageSchurPositiveQuarticCharge_lt_of_rh
     ∀ᶠ k in atTop, ∀ S : ThetaSourceStageSchurPacket k,
       thetaSourceStageSchurPositiveQuarticCharge S < ε := by
   let C : ℝ := thetaSourceSignedHSCeiling
-  let t : ℝ := ε / (9200 * (C ^ 2 + 1))
+  let t : ℝ := ε / (9200 * (C ^ (2 : ℕ) + 1))
   have hC : 0 < C := thetaSourceSignedHSCeiling_pos
-  have hden : 0 < 9200 * (C ^ 2 + 1) := by positivity
+  have hden : 0 < 9200 * (C ^ (2 : ℕ) + 1) := by positivity
   have ht : 0 < t := div_pos hε hden
   have him := eventually_thetaSourceStageSchurDiagonal_im_sq_lt_of_rh hRH ht ht
-  have hnumeric : 2300 * (t + t) * C ^ 2 < ε := by
-    have hsmallDen : 0 < 2 * (C ^ 2 + 1) := by positivity
+  have hnumeric : 2300 * (t + t) * C ^ (2 : ℕ) < ε := by
+    have hsmallDen : 0 < 2 * (C ^ (2 : ℕ) + 1) := by positivity
     calc
-      2300 * (t + t) * C ^ 2 = ε * C ^ 2 / (2 * (C ^ 2 + 1)) := by
+      2300 * (t + t) * C ^ (2 : ℕ) = ε * C ^ (2 : ℕ) / (2 * (C ^ (2 : ℕ) + 1)) := by
         dsimp [t]
         field_simp
         ring
@@ -259,7 +259,7 @@ theorem eventually_thetaSourceStageSchurPositiveQuarticCharge_lt_of_rh
       (fun i hi => (hk S i hi).le)
   change thetaSourceStageSchurPositiveQuarticCharge S ≤
     2300 * (t + t) * matHSNormSq (thetaSourceSignedStageFinMatrix k) at hsplit
-  have henergy : matHSNormSq (thetaSourceSignedStageFinMatrix k) ≤ C ^ 2 := by
+  have henergy : matHSNormSq (thetaSourceSignedStageFinMatrix k) ≤ C ^ (2 : ℕ) := by
     exact matHSNormSq_thetaSourceSignedStageFinMatrix_le_ceiling k
   have hcoeff : 0 ≤ 2300 * (t + t) := by positivity
   exact hsplit.trans_lt <|

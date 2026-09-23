@@ -79,7 +79,7 @@ theorem suzukiMangoldtFiveFlankContraction_isSharp
 /-- A symbolic exponential bound used to keep the Chebyshev threshold computation-free. -/
 theorem exp_ten_gt_thousand : (1000 : ℝ) < Real.exp 10 := by
   have he1 : (2 : ℝ) < Real.exp 1 := by nlinarith [Real.exp_one_gt_d9]
-  have hp : (2 : ℝ) ^ 10 < Real.exp 1 ^ 10 :=
+  have hp : (2 : ℝ) ^ (10 : ℕ) < Real.exp 1 ^ (10 : ℕ) :=
     pow_lt_pow_left₀ he1 (by norm_num) (by norm_num)
   rw [← Real.exp_nat_mul] at hp
   norm_num at hp
@@ -420,10 +420,10 @@ theorem suzukiMangoldtFivePrimeBlockSurplus_unbounded
       suzukiMangoldtFiveFlankContraction_mem_Ioo.2
     positivity
   obtain ⟨n, hn⟩ := exists_nat_gt
-    (max (Real.exp 20) ((max B 0 / c) ^ 2))
+    (max (Real.exp 20) ((max B 0 / c) ^ (2 : ℕ)))
   have hN : Real.exp 20 ≤ (n : ℝ) :=
     (le_max_left _ _).trans hn.le
-  have hsq : (max B 0 / c) ^ 2 < (n : ℝ) :=
+  have hsq : (max B 0 / c) ^ (2 : ℕ) < (n : ℝ) :=
     (le_max_right _ _).trans_lt hn
   have hratioNonneg : 0 ≤ max B 0 / c := div_nonneg (le_max_right _ _) hc.le
   have hratioSqrt : max B 0 / c < Real.sqrt (n : ℝ) :=

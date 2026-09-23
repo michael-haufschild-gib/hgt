@@ -52,7 +52,7 @@ theorem spectralPoint_mem_Ioo {lam : ℝ} (h0 : 0 < lam) (h1 : lam < 1 / 4) :
   · have hlt : Real.sqrt (1 / 4 - lam) < Real.sqrt (1 / 4) := by
       exact Real.sqrt_lt_sqrt (by linarith) (by linarith)
     have hq : Real.sqrt (1 / 4 : ℝ) = 1 / 2 := by
-      rw [show (1 / 4 : ℝ) = (1 / 2) ^ 2 from by norm_num,
+      rw [show (1 / 4 : ℝ) = (1 / 2) ^ (2 : ℕ) from by norm_num,
         Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 1 / 2)]
     rw [hq] at hlt
     exact hlt
@@ -68,9 +68,9 @@ theorem tempered_gives_critical {lam : ℝ} (h : 1 / 4 ≤ lam) :
 would need `¼ - lam = (a + iγ)²` for a real `lam`, forcing `2aγ = 0`.  So a genuinely complex
 quadruple is incompatible with any self-adjoint spectral problem. -/
 theorem no_real_preimage {a gam : ℝ} (ha : a ≠ 0) (hgam : gam ≠ 0) (lam : ℝ) :
-    ((a : ℂ) + (gam : ℂ) * I) ^ 2 ≠ ((1 / 4 : ℝ) - lam : ℝ) := by
+    ((a : ℂ) + (gam : ℂ) * I) ^ (2 : ℕ) ≠ ((1 / 4 : ℝ) - lam : ℝ) := by
   intro h
-  have him : (((a : ℂ) + (gam : ℂ) * I) ^ 2).im = 2 * a * gam := by
+  have him : (((a : ℂ) + (gam : ℂ) * I) ^ (2 : ℕ)).im = 2 * a * gam := by
     rw [pow_two]
     simp [Complex.mul_im, Complex.mul_re, Complex.add_re, Complex.add_im]
     ring

@@ -47,7 +47,7 @@ theorem hsNormSq_soninAllPrimeResidualKernel_sub_eq_tsum_block
   let K := soninAllPrimeResidualKernel b - soninAllPrimeResidualKernel a
   have hK : HilbertSchmidt.IsHS K := HilbertSchmidt.isHS_sub
     (soninAllPrimeResidualKernel_isHS b hb) (soninAllPrimeResidualKernel_isHS a ha)
-  let energy : SoninAllPrimeIndex × SoninAllPrimeIndex → ℝ := fun z => ‖K z‖ ^ 2
+  let energy : SoninAllPrimeIndex × SoninAllPrimeIndex → ℝ := fun z => ‖K z‖ ^ (2 : ℕ)
   have henergy : Summable energy := by
     simpa only [energy, HilbertSchmidt.IsHS] using hK
   have hoff : ∀ z, z ∉ soninAllPrimeBlockDiagonalSupport → energy z = 0 := by
@@ -70,7 +70,7 @@ theorem hsNormSq_soninAllPrimeResidualKernel_sub_eq_tsum_block
     fun pji => ‖inner ℂ (ContinuousLinearMap.hsBasis ℂ SoninL2 pji.2.2)
       ((centralSoninWeightedPrimePowerResidual b pji.1 -
           centralSoninWeightedPrimePowerResidual a pji.1)
-        (ContinuousLinearMap.hsBasis ℂ SoninL2 pji.2.1))‖ ^ 2
+        (ContinuousLinearMap.hsBasis ℂ SoninL2 pji.2.1))‖ ^ (2 : ℕ)
   have hF : Summable F := by
     have hequiv : Summable (fun pji =>
         energy (soninAllPrimeBlockDiagonalEquivDiff pji)) :=
@@ -134,12 +134,12 @@ theorem tendsto_tsum_hsNormSq_centralSoninWeightedPrimePowerResidual_sub
   let B : ℝ := a + 1
   let s : Set ℝ := Set.Ioo 0 B
   let majorant : (Nat.Primes × ℕ) → ℝ := fun pk =>
-    (512 * B ^ 2) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2
+    (512 * B ^ (2 : ℕ)) * ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ)
   have hB : 0 < B := by dsimp [B]; linarith
   have hs : s ∈ 𝓝 a := by
     exact Ioo_mem_nhds ha (by dsimp [B]; linarith)
   have hmajorant : Summable majorant := by
-    exact summable_norm_soninLogPrimePowerCoefficient_sq.mul_left (512 * B ^ 2)
+    exact summable_norm_soninLogPrimePowerCoefficient_sq.mul_left (512 * B ^ (2 : ℕ))
   have hbound : ∀ pk : Nat.Primes × ℕ, ∀ b ∈ s,
       ‖((ContinuousLinearMap.hsNormSq
         (centralSoninWeightedPrimePowerResidual b pk -
@@ -147,10 +147,10 @@ theorem tendsto_tsum_hsNormSq_centralSoninWeightedPrimePowerResidual_sub
     intro pk b hb
     have hbpos : 0 < b := hb.1
     have hbB : b < B := hb.2
-    have hbSq : b ^ 2 ≤ B ^ 2 :=
+    have hbSq : b ^ (2 : ℕ) ≤ B ^ (2 : ℕ) :=
       (sq_le_sq₀ hbpos.le hB.le).2 hbB.le
     have haB : a ≤ B := by dsimp [B]; linarith
-    have haSq : a ^ 2 ≤ B ^ 2 :=
+    have haSq : a ^ (2 : ℕ) ≤ B ^ (2 : ℕ) :=
       (sq_le_sq₀ ha.le hB.le).2 haB
     have hWb := centralSoninWeightedPrimePowerResidual_hsNormSq_le_128_mul_sq
       b hbpos pk
@@ -159,20 +159,20 @@ theorem tendsto_tsum_hsNormSq_centralSoninWeightedPrimePowerResidual_sub
     have hdiff := ContinuousLinearMap.hsNormSq_sub_le
       (centralSoninWeightedPrimePowerResidual_isHilbertSchmidt b hbpos pk)
       (centralSoninWeightedPrimePowerResidual_isHilbertSchmidt a ha pk)
-    have hc : 0 ≤ ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := sq_nonneg _
+    have hc : 0 ≤ ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) := sq_nonneg _
     have hWb' : ContinuousLinearMap.hsNormSq
         (centralSoninWeightedPrimePowerResidual b pk) ≤
-        (128 * B ^ 2) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+        (128 * B ^ (2 : ℕ)) * ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) := by
       calc
-        _ ≤ (128 * b ^ 2) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := hWb
-        _ ≤ (128 * B ^ 2) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+        _ ≤ (128 * b ^ (2 : ℕ)) * ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) := hWb
+        _ ≤ (128 * B ^ (2 : ℕ)) * ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) := by
           gcongr
     have hWa' : ContinuousLinearMap.hsNormSq
         (centralSoninWeightedPrimePowerResidual a pk) ≤
-        (128 * B ^ 2) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+        (128 * B ^ (2 : ℕ)) * ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) := by
       calc
-        _ ≤ (128 * a ^ 2) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := hWa
-        _ ≤ (128 * B ^ 2) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+        _ ≤ (128 * a ^ (2 : ℕ)) * ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) := hWa
+        _ ≤ (128 * B ^ (2 : ℕ)) * ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) := by
           gcongr
     rw [Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (ContinuousLinearMap.hsNormSq_nonneg _)]
@@ -198,7 +198,7 @@ theorem summable_hsNormSq_centralSoninWeightedPrimePowerResidual_sub
       (centralSoninWeightedPrimePowerResidual b pk -
         centralSoninWeightedPrimePowerResidual a pk)) := by
   let majorant : (Nat.Primes × ℕ) → ℝ := fun pk =>
-    (256 * (b ^ 2 + a ^ 2)) * ‖soninLogPrimePowerCoefficient pk‖ ^ 2
+    (256 * (b ^ (2 : ℕ) + a ^ (2 : ℕ))) * ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ)
   have hle : ∀ pk : Nat.Primes × ℕ,
       ContinuousLinearMap.hsNormSq
         (centralSoninWeightedPrimePowerResidual b pk -
@@ -213,7 +213,7 @@ theorem summable_hsNormSq_centralSoninWeightedPrimePowerResidual_sub
     linarith
   have hmajorant : Summable majorant := by
     exact summable_norm_soninLogPrimePowerCoefficient_sq.mul_left
-      (256 * (b ^ 2 + a ^ 2))
+      (256 * (b ^ (2 : ℕ) + a ^ (2 : ℕ)))
   exact Summable.of_nonneg_of_le
     (fun pk => ContinuousLinearMap.hsNormSq_nonneg _) hle hmajorant
 
@@ -396,17 +396,17 @@ theorem tendsto_soninAllPrimeEnergyMoment_of_tendsto
     · rw [soninAllPrimeEnergyMoment, HilbertSchmidt.hsPow,
         trace_soninAllPrimeResidualEnergyKernel a ha]
   · have hrform : r - 1 + 1 = r := Nat.sub_add_cancel (Nat.one_le_iff_ne_zero.2 hr)
-    let MT : ℝ := M ^ 2
+    let MT : ℝ := M ^ (2 : ℕ)
     have hMT : 0 ≤ MT := sq_nonneg M
     have hTBound : HilbertSchmidt.hsNorm T ≤ MT := by
       calc
         HilbertSchmidt.hsNorm T ≤ HilbertSchmidt.hsNorm (HilbertSchmidt.hsAdjoint K) *
             HilbertSchmidt.hsNorm K :=
           HilbertSchmidt.hsNorm_hsComp_le (HilbertSchmidt.isHS_hsAdjoint hK) hK
-        _ = HilbertSchmidt.hsNorm K ^ 2 := by
+        _ = HilbertSchmidt.hsNorm K ^ (2 : ℕ) := by
           rw [HilbertSchmidt.hsNorm_hsAdjoint]
           ring
-        _ ≤ M ^ 2 := by
+        _ ≤ M ^ (2 : ℕ) := by
           exact (sq_le_sq₀ (HilbertSchmidt.hsNorm_nonneg K) hM.le).2
             (by dsimp [M]; linarith)
     have hTnBound : ∀ᶠ n in atTop, HilbertSchmidt.hsNorm (Tn n) ≤ MT := by
@@ -417,10 +417,10 @@ theorem tendsto_soninAllPrimeEnergyMoment_of_tendsto
               HilbertSchmidt.hsNorm (Kn n) :=
           HilbertSchmidt.hsNorm_hsComp_le
             (HilbertSchmidt.isHS_hsAdjoint (hKn n)) (hKn n)
-        _ = HilbertSchmidt.hsNorm (Kn n) ^ 2 := by
+        _ = HilbertSchmidt.hsNorm (Kn n) ^ (2 : ℕ) := by
           rw [HilbertSchmidt.hsNorm_hsAdjoint]
           ring
-        _ ≤ M ^ 2 := (sq_le_sq₀ (HilbertSchmidt.hsNorm_nonneg _) hM.le).2 hn
+        _ ≤ M ^ (2 : ℕ) := (sq_le_sq₀ (HilbertSchmidt.hsNorm_nonneg _) hM.le).2 hn
     apply tendsto_iff_norm_sub_tendsto_zero.mpr
     refine squeeze_zero'
       (g := fun n => ((r + 1 : ℝ) * MT ^ r) * HilbertSchmidt.hsNorm (Tn n - T))

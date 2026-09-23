@@ -27,7 +27,7 @@ K t = e^(t/2) - e^(-5t/2) / (1 - e^(-2t)),
 ```
 
 and its sign is decided by the plastic number: `K t > 0` iff `e^(3t) - e^t - 1 > 0` iff `t > log ρ`,
-where `ρ` is the unique real root of `ρ^3 - ρ - 1 = 0`.
+where `ρ` is the unique real root of `ρ^(3 : ℕ) - ρ - 1 = 0`.
 
 ## Structure of the computation
 
@@ -35,8 +35,8 @@ where `ρ` is the unique real root of `ρ^3 - ρ - 1 = 0`.
 * the prime-power hinge sum is **locally affine** off the atoms — this is
   `exists_locallyAffine_screwPrimeSum`, proved by showing that the index set `{n : log n ≤ t}` is
   locally constant — so it contributes nothing;
-* the Lerch tail is the series `∑_k e^(-λ k t) / (λ k)^2` with `λ k = 2k + 1/2 = 2(k + 1/4)`; since
-  `(λ k)^2` is exactly the square of the exponent, differentiating twice termwise collapses all
+* the Lerch tail is the series `∑_k e^(-λ k t) / (λ k)^(2 : ℕ)` with `λ k = 2k + 1/2 = 2(k + 1/4)`; since
+  `(λ k)^(2 : ℕ)` is exactly the square of the exponent, differentiating twice termwise collapses all
   weights to `1` and leaves the geometric series `∑_k e^(-λ k t) = e^(-t/2) / (1 - e^(-2t))`.  This
   is the identity `(8)`–`(9)` of the card; termwise differentiation is justified on every ray
   `(δ, ∞)` by `hasDerivAt_tsum_of_isPreconnected`.
@@ -57,7 +57,7 @@ open Filter Topology Set
 
 /-- The exponents of the archimedean Lerch tail of Suzuki's screw function:
 `lerchExp k = 2k + 1/2 = 2 (k + 1/4)`.  The point of the normalisation is that the Lerch weight
-`1/(4 (k + 1/4)^2)` is exactly the reciprocal square of the exponent, so two termwise
+`1/(4 (k + 1/4)^(2 : ℕ))` is exactly the reciprocal square of the exponent, so two termwise
 differentiations cancel it. -/
 def lerchExp (k : ℕ) : ℝ := 2 * k + 1 / 2
 
@@ -77,7 +77,7 @@ theorem quarter_le_lerchExp_sq (k : ℕ) : (1 : ℝ) / 4 ≤ (lerchExp k) ^ 2 :=
   have h := half_le_lerchExp k
   nlinarith
 
-/-- `(lerchExp k)^2 = 4 (k + 1/4)^2`: the Lerch weight is the reciprocal square of the exponent. -/
+/-- `(lerchExp k)^(2 : ℕ) = 4 (k + 1/4)^(2 : ℕ)`: the Lerch weight is the reciprocal square of the exponent. -/
 theorem lerchExp_sq (k : ℕ) : (lerchExp k) ^ 2 = 4 * ((k : ℝ) + 1 / 4) ^ 2 := by
   simp only [lerchExp]; ring
 
@@ -98,7 +98,7 @@ theorem summable_exp_neg_lerchExp {t : ℝ} (ht : 0 < t) :
     summable_geometric_of_lt_one (Real.exp_nonneg _) hr
   simpa [exp_neg_lerchExp_mul] using hgeom.mul_left (Real.exp (-(t / 2)))
 
-/-- The Lerch tail `(1/4) e^(-t/2) Φ(e^(-2t), 2, 1/4) = ∑_k e^(-λ k t) / (λ k)^2`. -/
+/-- The Lerch tail `(1/4) e^(-t/2) Φ(e^(-2t), 2, 1/4) = ∑_k e^(-λ k t) / (λ k)^(2 : ℕ)`. -/
 def screwLerchTail (t : ℝ) : ℝ := ∑' k : ℕ, Real.exp (-(lerchExp k * t)) / (lerchExp k) ^ 2
 
 /-- The termwise first derivative of the Lerch tail. -/
@@ -492,7 +492,7 @@ theorem exists_plasticRoot : ∃ x, x ∈ Ioo (1 : ℝ) 2 ∧ x ^ 3 - x - 1 = 0 
   obtain ⟨x, hx, hx0⟩ := h h0
   exact ⟨x, hx, hx0⟩
 
-/-- The plastic number: the unique real root of `x^3 - x - 1`. -/
+/-- The plastic number: the unique real root of `x^(3 : ℕ) - x - 1`. -/
 def plasticRoot : ℝ := exists_plasticRoot.choose
 
 theorem plasticRoot_mem_Ioo : plasticRoot ∈ Ioo (1 : ℝ) 2 := exists_plasticRoot.choose_spec.1
@@ -504,7 +504,7 @@ theorem one_lt_plasticRoot : 1 < plasticRoot := plasticRoot_mem_Ioo.1
 
 theorem plasticRoot_pos : 0 < plasticRoot := by linarith [one_lt_plasticRoot]
 
-/-- `x^3 - x - 1` is strictly positive exactly beyond the plastic number, on `x ≥ 1`. -/
+/-- `x^(3 : ℕ) - x - 1` is strictly positive exactly beyond the plastic number, on `x ≥ 1`. -/
 theorem cubic_pos_iff_plasticRoot_lt {x : ℝ} (hx : 1 ≤ x) :
     0 < x ^ 3 - x - 1 ↔ plasticRoot < x := by
   have hρ : 1 < plasticRoot := one_lt_plasticRoot

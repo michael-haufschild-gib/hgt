@@ -18,7 +18,7 @@ set_option maxRecDepth 8192
 private def momentStep (n : ℕ) (P : ℝ[X]) := (C 3*X+C (n+1 : ℝ))*P-X*P.derivative
 private theorem moment_succ (n : ℕ) : thetaCuspSecondMomentNumerator (n+1) = momentStep n (thetaCuspSecondMomentNumerator n) := rfl
 private theorem second_numerator_twelve_bound : (thetaCuspSecondMomentNumerator 12).eval (11/5 : ℝ) ≤
-    65000*3^12/100*(11/5 : ℝ)^13 := by
+    65000*3^(12 : ℕ)/100*(11/5 : ℝ)^(13 : ℕ) := by
   conv_lhs =>
     arg 2
     rw [moment_succ]
@@ -110,11 +110,11 @@ private theorem second_numerator_twelve_bound : (thetaCuspSecondMomentNumerator 
 
 /-- The physical lower tilt admits the twelfth second-atom moment with the same coefficient. -/
 theorem thetaCuspSecondAtomMoment_twelve_at_eleven_fifths_le :
-    thetaCuspSecondAtomMoment (11/5) 12 ≤ (3 : ℝ)^12/100 := by
+    thetaCuspSecondAtomMoment (11/5) 12 ≤ (3 : ℝ)^(12 : ℕ)/100 := by
   rw [thetaCuspSecondAtomMoment_eq_allOrderProfile 12 (by norm_num)]
   unfold thetaCuspSecondMomentProfile
-  have hn : (thetaCuspSecondMomentNumerator 12).eval (11/5)/(11/5 : ℝ)^13 ≤
-      65000*3^12/100 := by
+  have hn : (thetaCuspSecondMomentNumerator 12).eval (11/5)/(11/5 : ℝ)^(13 : ℕ) ≤
+      65000*3^(12 : ℕ)/100 := by
     have h := second_numerator_twelve_bound
     norm_num at h ⊢
     linarith only [h]
@@ -122,8 +122,8 @@ theorem thetaCuspSecondAtomMoment_twelve_at_eleven_fifths_le :
   norm_num [HTGeometry.twoAtomLowerEnvelope] at he
   have hmul := mul_le_mul_of_nonneg_left hn (Real.exp_pos (-(111/10 : ℝ))).le
   have heq : Real.exp (-(9/2 : ℝ))*(Real.exp (-3*(11/5))*
-      (thetaCuspSecondMomentNumerator 12).eval (11/5)/(11/5)^13) =
-      Real.exp (-(111/10 : ℝ))*((thetaCuspSecondMomentNumerator 12).eval (11/5)/(11/5)^13) := by
+      (thetaCuspSecondMomentNumerator 12).eval (11/5)/(11/5)^(13 : ℕ)) =
+      Real.exp (-(111/10 : ℝ))*((thetaCuspSecondMomentNumerator 12).eval (11/5)/(11/5)^(13 : ℕ)) := by
     rw [show -(111/10 : ℝ) = -(9/2)+(-3*(11/5)) by norm_num,Real.exp_add]
     ring
   rw [heq]
@@ -132,7 +132,7 @@ theorem thetaCuspSecondAtomMoment_twelve_at_eleven_fifths_le :
 /-- The support edge transfers the physical twelfth-moment bound to every required order. -/
 theorem thetaCuspSecondAtomMoment_le_middle_twelve {n : ℕ} (hn : n ≤ 12)
     {B : ℝ} (hB : 11/5 ≤ B) : thetaCuspSecondAtomMoment B n ≤ (3 : ℝ)^n/100 := by
-  have hscaled : (3 : ℝ)^12*thetaCuspSecondAtomMoment (11/5) n ≤
+  have hscaled : (3 : ℝ)^(12 : ℕ)*thetaCuspSecondAtomMoment (11/5) n ≤
       (3 : ℝ)^n*thetaCuspSecondAtomMoment (11/5) 12 := by
     unfold thetaCuspSecondAtomMoment
     rw [← integral_const_mul,← integral_const_mul]
@@ -142,9 +142,9 @@ theorem thetaCuspSecondAtomMoment_le_middle_twelve {n : ℕ} (hn : n ≤ 12)
     filter_upwards [ae_three_le_thetaCuspSecondAtomSpectralMeasure] with t ht
     have hp := pow_le_pow_right₀ (show (1 : ℝ) ≤ t/3 by linarith) hn
     rw [div_pow,div_pow] at hp
-    have hp' : (3 : ℝ)^12*t^n ≤ (3 : ℝ)^n*t^12 := by
+    have hp' : (3 : ℝ)^(12 : ℕ)*t^n ≤ (3 : ℝ)^n*t^(12 : ℕ) := by
       have h := (div_le_div_iff₀ (by positivity : (0 : ℝ) < 3^n)
-        (by norm_num : (0 : ℝ) < 3^12)).mp hp
+        (by norm_num : (0 : ℝ) < 3^(12 : ℕ))).mp hp
       nlinarith only [h]
     have he := mul_le_mul_of_nonneg_right hp' (Real.exp_pos (-(11/5)*t)).le
     nlinarith only [he]

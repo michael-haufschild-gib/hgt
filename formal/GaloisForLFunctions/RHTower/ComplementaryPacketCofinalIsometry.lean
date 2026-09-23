@@ -8,7 +8,7 @@ At separation `a` the boundary affine packet path with kernel `k` and incoming c
 squared distance
 
 ```text
-D(a) = ∫_0^a (k r + c)^2 dr + ∫_0^∞ (k (r + a) - k r)^2 dr .
+D(a) = ∫_0^a (k r + c)^(2 : ℕ) dr + ∫_0^∞ (k (r + a) - k r)^(2 : ℕ) dr .
 ```
 
 The first term is the outgoing branch swept by the translation, the second is the translation
@@ -16,10 +16,10 @@ modulus of the kernel itself.  If `k` is measurable, integrable and square integ
 line, then
 
 ```text
-|D(a) - c^2 a| ≤ 5 B + 2 |c| A ,       A ≥ ∫_0^∞ |k| ,  B ≥ ∫_0^∞ k^2 ,
+|D(a) - c^(2 : ℕ) a| ≤ 5 B + 2 |c| A ,       A ≥ ∫_0^∞ |k| ,  B ≥ ∫_0^∞ k^(2 : ℕ) ,
 ```
 
-uniformly in `a ≥ 0`, and consequently `D(a)/a → c^2`.  No pointwise contraction is claimed and
+uniformly in `a ≥ 0`, and consequently `D(a)/a → c^(2 : ℕ)`.  No pointwise contraction is claimed and
 none is available; the law is cofinal.
 
 The bound depends on `k` only through `A` and `B`, which is what makes it apply uniformly to the
@@ -119,7 +119,7 @@ theorem setIntegral_translationModulus_le (hmk : Measurable k)
 end Bounds
 
 /-- **Cofinal affine isometry.**  The two-point modulus of the boundary packet path differs from
-the affine profile `c^2 a` by at most `5 B + 2 |c| A`, uniformly in the separation. -/
+the affine profile `c^(2 : ℕ) a` by at most `5 B + 2 |c| A`, uniformly in the separation. -/
 theorem abs_packetTranslationModulus_sub_le
     {k : ℝ → ℝ} {A B c : ℝ} (hmk : Measurable k)
     (hint : IntegrableOn k (Ioi 0)) (hsq : IntegrableOn (fun r => k r ^ 2) (Ioi 0))

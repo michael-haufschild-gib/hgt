@@ -12,7 +12,7 @@ The other two biquadratic-residue factors are `[41 / 5] = 1` and
 This file proves the complete finite residue calculation:
 
 * `(41 / 5) = 1`;
-* `5 ^ 10 = -1` in `ZMod 41`, hence `[5 / 41] = -1`;
+* `5 ^ (10 : ℕ) = -1` in `ZMod 41`, hence `[5 / 41] = -1`;
 * their product is `-1`.
 
 The resulting value is deliberately named `deningerQ8FroehlichFiniteSign`,
@@ -38,7 +38,7 @@ The exponent `10 = (41 - 1) / 4` is the quartic Euler exponent.  The
 following theorem proves that its residue is exactly `-1`, so this branch
 does not hide a choice of primitive quartic character. -/
 def deningerQ8FroehlichBeta : ℤ :=
-  if (((5 : ℤ) : ZMod 41) ^ 10) = 1 then 1 else -1
+  if (((5 : ℤ) : ZMod 41) ^ (10 : ℕ)) = 1 then 1 else -1
 
 /-- Finite residue side of Fröhlich's root-number formula for the actual
 SST quaternion field. -/
@@ -59,9 +59,9 @@ theorem deningerQ8FroehlichAlpha_eq_one : deningerQ8FroehlichAlpha = 1 := by
     rw [ZMod.intCast_eq_intCast_iff'] at h
     norm_num at h
 
-/-- Exact quartic-residue calculation `5^10 = -1 (mod 41)`. -/
+/-- Exact quartic-residue calculation `5^(10 : ℕ) = -1 (mod 41)`. -/
 theorem deningerQ8_five_pow_ten_eq_neg_one_mod_fortyOne :
-    ((5 : ZMod 41) ^ 10) = -1 := by
+    ((5 : ZMod 41) ^ (10 : ℕ)) = -1 := by
   change ((9765625 : ℕ) : ZMod 41) = -1
   have hneg : (-1 : ZMod 41) = (40 : ℕ) := by
     change ((-1 : ℤ) : ZMod 41) = ((40 : ℤ) : ZMod 41)
@@ -73,7 +73,7 @@ theorem deningerQ8_five_pow_ten_eq_neg_one_mod_fortyOne :
 theorem deningerQ8FroehlichBeta_eq_neg_one : deningerQ8FroehlichBeta = -1 := by
   rw [deningerQ8FroehlichBeta, if_neg]
   intro h
-  have hq : (((5 : ℤ) : ZMod 41) ^ 10) = -1 := by
+  have hq : (((5 : ℤ) : ZMod 41) ^ (10 : ℕ)) = -1 := by
     simpa using deningerQ8_five_pow_ten_eq_neg_one_mod_fortyOne
   rw [hq] at h
   have hne : (-1 : ZMod 41) ≠ 1 := by
@@ -93,7 +93,7 @@ theorem deningerQ8FroehlichFiniteSign_eq_neg_one :
 /-- Single certificate exposing both source factors and their product. -/
 theorem deningerQ8FroehlichFiveFortyOneResidueCertificate :
     deningerQ8FroehlichAlpha = 1 ∧
-      ((5 : ZMod 41) ^ 10) = -1 ∧
+      ((5 : ZMod 41) ^ (10 : ℕ)) = -1 ∧
       deningerQ8FroehlichFiniteSign = -1 :=
   ⟨deningerQ8FroehlichAlpha_eq_one,
     deningerQ8_five_pow_ten_eq_neg_one_mod_fortyOne,

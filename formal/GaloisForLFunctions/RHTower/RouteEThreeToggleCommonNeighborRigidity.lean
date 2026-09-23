@@ -77,7 +77,7 @@ theorem routeE_threeToggle_common_neighbor_exact_overlap
   have hsymm : ((S ∆ T) ∆ (S ∆ U)).card = 3 := by
     rw [routeE_symmDiff_symmDiff_left]
     simpa only [routeEThreeToggleAdjacent, symmDiff_comm] using hUT
-  have hcard := card_add_eq_card_symmDiff_add_twice_inter (S ∆ T) (S ∆ U)
+  have hcard := card_add_eq_card_symmDiff_add_twice_inter_routeEIncidenceSwitchParityRigidity (S ∆ T) (S ∆ U)
   rw [hST] at hcard
   rw [hsymm] at hcard
   omega
@@ -132,7 +132,7 @@ theorem mem_routeEThreeToggleDistanceSixCommonNeighbors_iff
     · rw [routeEThreeToggleAdjacent, routeE_symmDiff_self_left, hAcard]
     · rw [routeEThreeToggleAdjacent, routeE_symmDiff_three_reassociate]
       have hinter : A ∩ (S ∆ U) = A := inter_eq_left.mpr hAD
-      have hcard := card_add_eq_card_symmDiff_add_twice_inter A (S ∆ U)
+      have hcard := card_add_eq_card_symmDiff_add_twice_inter_routeEIncidenceSwitchParityRigidity A (S ∆ U)
       rw [hAcard, hSU, hinter, hAcard] at hcard
       omega
   · rintro ⟨hST, hUT⟩

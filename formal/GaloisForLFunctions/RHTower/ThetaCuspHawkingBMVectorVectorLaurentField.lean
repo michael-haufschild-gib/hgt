@@ -29,7 +29,7 @@ theorem vvLaurentMetricField_einstein (s μ a : ℂ) (hs : s ≠ 0) (hμ : (2 : 
     (hres : μ - (2 * s + 1) * (2 * s + 2) ≠ 0) (Y : (Fin 2 → ℝ) → ℂ)
     (hY : ∀ z : Fin 2 → ℝ, 0 < z 1 → ContDiffAt ℝ 2 Y z)
     (hYeig : ∀ z : Fin 2 → ℝ, 0 < z 1 →
-      coordDeriv 1 (coordDeriv 1 Y) z = μ * Y z / (z 1 : ℂ) ^ 2 - coordDeriv 0 (coordDeriv 0 Y) z)
+      coordDeriv 1 (coordDeriv 1 Y) z = μ * Y z / (z 1 : ℂ) ^ (2 : ℕ) - coordDeriv 0 (coordDeriv 0 Y) z)
     (p : D4BMBackground.ExteriorPoint) (i j : Fin 4) :
     Linearization.cosmological (D4BMBackground.jet (p.val 1) (p.val 3))
       (ofMetricField (harmonicMetricField s a
@@ -52,10 +52,10 @@ Laurent particular response is a sourced Einstein solution for every harmonic pr
 theorem physical_vvLaurentMetricField_einstein (q : XiZeroCopy) (branch : Bool) (k : ℝ) (a : ℂ)
     (Y : (Fin 2 → ℝ) → ℂ) (hY : ∀ z : Fin 2 → ℝ, 0 < z 1 → ContDiffAt ℝ 2 Y z)
     (hYeig : ∀ z : Fin 2 → ℝ, 0 < z 1 →
-      coordDeriv 1 (coordDeriv 1 Y) z = -(k : ℂ) ^ 2 * Y z / (z 1 : ℂ) ^ 2 - coordDeriv 0 (coordDeriv 0 Y) z)
+      coordDeriv 1 (coordDeriv 1 Y) z = -(k : ℂ) ^ (2 : ℕ) * Y z / (z 1 : ℂ) ^ (2 : ℕ) - coordDeriv 0 (coordDeriv 0 Y) z)
     (p : D4BMBackground.ExteriorPoint) (i j : Fin 4) :
     let s := D4BMModularCore.physicalRate q branch
-    let μ : ℂ := -(k : ℂ) ^ 2
+    let μ : ℂ := -(k : ℂ) ^ (2 : ℕ)
     Linearization.cosmological (D4BMBackground.jet (p.val 1) (p.val 3))
       (ofMetricField (harmonicMetricField s a
         (recF0R s μ (vvLaurentMaster s μ) (vvSrcTT s μ) (vvSrcTR s μ) (vvSrcRR s μ) (vvSrcT s μ) (vvSrcR s μ) (vvSrcTF s μ) (vvSrcL s μ))
@@ -72,9 +72,9 @@ theorem physical_vvLaurentMetricField_einstein (q : XiZeroCopy) (branch : Bool) 
   obtain ⟨hr, hi⟩ := physicalLaurentRate_bounds q branch
   have hs : s ≠ 0 := fun h => hi (congrArg Complex.im h)
   have hμ : (2 : ℂ) - μ ≠ 0 := by
-    show (2 : ℂ) - (-(k : ℂ) ^ 2) ≠ 0
-    exact_mod_cast (show (2 : ℝ) - (-k ^ 2) ≠ 0 by nlinarith [sq_nonneg k])
-  have hres := laurentPole_ne_zero s hr hi (-k ^ 2)
+    show (2 : ℂ) - (-(k : ℂ) ^ (2 : ℕ)) ≠ 0
+    exact_mod_cast (show (2 : ℝ) - (-k ^ (2 : ℕ)) ≠ 0 by nlinarith [sq_nonneg k])
+  have hres := laurentPole_ne_zero s hr hi (-k ^ (2 : ℕ))
   push_cast at hres
   exact vvLaurentMetricField_einstein s μ a hs hμ hres Y hY hYeig p i j
 

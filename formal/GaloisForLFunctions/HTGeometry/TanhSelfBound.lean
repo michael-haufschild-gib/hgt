@@ -63,7 +63,7 @@ theorem artanh_neg_self {x : ℝ} (hx : |x| < 1) : Real.artanh (-x) = -Real.arta
   ring
 
 /-- `(LPC.25)`, pointwise: the contrast rapidity dominates the contrast quadratically. -/
-theorem sq_le_mul_artanh {d : ℝ} (hd : |d| < 1) : d ^ 2 ≤ d * Real.artanh d := by
+theorem sq_le_mul_artanh {d : ℝ} (hd : |d| < 1) : d ^ (2 : ℕ) ≤ d * Real.artanh d := by
   rw [abs_lt] at hd
   rcases le_total 0 d with h | h
   · nlinarith [self_le_artanh h hd.2]

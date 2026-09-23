@@ -88,7 +88,7 @@ theorem selbergWeights_eq_zero (d : ℕ) (hd : ¬d ^ 2 ≤ y) :
     apply Finset.sum_eq_zero
     refine fun m hm => if_neg ?_
     intro hyp
-    have : (d^2:ℝ) ≤ (d*m)^2 := by
+    have : (d^(2 : ℕ):ℝ) ≤ (d*m)^(2 : ℕ) := by
       norm_cast;
       refine Nat.pow_le_pow_left ?h 2
       exact Nat.le_mul_of_pos_right _ (Nat.pos_of_mem_divisors hm)
@@ -100,7 +100,7 @@ theorem selbergWeights_mul_mu_nonneg (d : ℕ) (hdP : d ∣ P) :
     0 ≤ γ d * μ d := by
   dsimp only [selbergWeights]
   rw [if_pos hdP, mul_assoc]
-  trans ((μ d :ℝ)^2 * (ν d)⁻¹ * g d * S⁻¹ * ∑ m ∈ divisors P,
+  trans ((μ d :ℝ)^(2 : ℕ) * (ν d)⁻¹ * g d * S⁻¹ * ∑ m ∈ divisors P,
           if (d * m) ^ 2 ≤ y ∧ Coprime m d then g m else 0)
   swap
   · apply le_of_eq; ring
@@ -223,7 +223,7 @@ theorem selbergWeights_diagonalisation (l : ℕ) (hl : l ∈ divisors P) :
       · tauto
       intro _; ring
     _ = if l ^ 2 ≤ y then g l * μ l * S⁻¹ else 0 := by
-      rw [← sum_ite_eq_of_mem' (divisors P) l (fun _ => if l^2 ≤ y then g l * μ l * S⁻¹ else 0) hl]
+      rw [← sum_ite_eq_of_mem' (divisors P) l (fun _ => if l^(2 : ℕ) ≤ y then g l * μ l * S⁻¹ else 0) hl]
       apply sum_congr rfl; intro k hk
       rw [Aux.moebius_inv_dvd_lower_bound_real s.prodPrimes_squarefree l _ (dvd_of_mem_divisors hk),
         ←ite_and, ite_zero_mul, ite_zero_mul, ← ite_and]
@@ -269,7 +269,7 @@ theorem selberg_bound_simple_mainSum :
   · apply sum_congr rfl; intro l hl
     rw [s.selbergWeights_diagonalisation l hl, ite_pow, zero_pow two_ne_zero, mul_ite_zero]
     apply if_congr Iff.rfl _ rfl
-    trans (1/g l * g l * g l * (μ l:ℝ)^2  * (S⁻¹) ^ 2)
+    trans (1/g l * g l * g l * (μ l:ℝ)^(2 : ℕ)  * (S⁻¹) ^ 2)
     · ring
     norm_cast; rw [moebius_sq_eq_one_of_squarefree <| squarefree_of_mem_divisors_prodPrimes hl]
     rw [one_div_mul_cancel <| _root_.ne_of_gt <| selbergTerms_pos _ l <| dvd_of_mem_divisors hl]
@@ -356,7 +356,7 @@ theorem selbergBoundingSum_ge {d : ℕ} (hdP : d ∣ P) :
       · rfl
       · exfalso; apply h'
         refine ⟨?_, h.2⟩
-        · trans ((d*m)^2:ℝ)
+        · trans ((d*m)^(2 : ℕ):ℝ)
           · norm_cast; gcongr
             refine Nat.le_of_dvd ?_ hkd
             apply Nat.pos_of_ne_zero; apply ne_zero_of_dvd_ne_zero prodPrimes_ne_zero hdP
@@ -370,7 +370,7 @@ theorem selbergBoundingSum_ge {d : ℕ} (hdP : d ∣ P) :
   _ = _ := by
     conv => enter [1, 2, k]; rw [← ite_zero_mul]
     rw [←sum_mul, conv_selbergTerms_eq_selbergTerms_mul_nu _ hdP]
-    trans (S * S⁻¹ * (μ d:ℝ)^2 * (ν d)⁻¹ * g d * (∑ m ∈ divisors P, if (d*m) ^ 2 ≤ y ∧
+    trans (S * S⁻¹ * (μ d:ℝ)^(2 : ℕ) * (ν d)⁻¹ * g d * (∑ m ∈ divisors P, if (d*m) ^ 2 ≤ y ∧
       Coprime m d then g m else 0))
     · rw [mul_inv_cancel₀, ←Int.cast_pow, moebius_sq_eq_one_of_squarefree]
       · ring

@@ -41,7 +41,7 @@ theorem polySymbol_eq_zero_of_dampedFactor {v : ℝ → ℂ} {p : Polynomial ℂ
     (hzero : ∀ ξ : ℝ, dampedFactor p N ξ * v ξ = 0) (ξ : ℝ) :
     p.eval (ξ : ℂ) * v ξ = 0 := by
   have hstep : p.eval (ξ : ℂ) * v ξ
-      = ((1 : ℂ) + (ξ : ℂ) ^ 2) ^ N * (dampedFactor p N ξ * v ξ) := by
+      = ((1 : ℂ) + (ξ : ℂ) ^ (2 : ℕ)) ^ N * (dampedFactor p N ξ * v ξ) := by
     rw [← localOperator_dampedFactor p N ξ]
     ring
   rw [hstep, hzero, mul_zero]
@@ -55,9 +55,9 @@ theorem contDiff_of_mem_solutionSpace {L : Polynomial ℂ} {v : ℝ → ℂ}
 /-- **Equation (8).**  Every interior solution is square-integrable on each bounded interval. -/
 theorem integrableOn_normSq_of_mem_solutionSpace {L : Polynomial ℂ} {v : ℝ → ℂ}
     (hv : v ∈ solutionSpace L) (a b : ℝ) :
-    IntegrableOn (fun x => ‖v x‖ ^ 2) (Icc a b) volume := by
+    IntegrableOn (fun x => ‖v x‖ ^ (2 : ℕ)) (Icc a b) volume := by
   have hcont : Continuous v := (contDiff_of_mem_solutionSpace hv).continuous
-  have hsq : Continuous fun x : ℝ => ‖v x‖ ^ 2 := by fun_prop
+  have hsq : Continuous fun x : ℝ => ‖v x‖ ^ (2 : ℕ) := by fun_prop
   exact (hsq.continuousOn).integrableOn_compact isCompact_Icc
 
 /-- **Equation (4).**  The interior trace of a null vector lies in the finite characteristic

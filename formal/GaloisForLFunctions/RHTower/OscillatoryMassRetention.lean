@@ -40,7 +40,7 @@ theorem abs_integral_weight_mul_cos_sq_sub_half_le
     (hφ''c : ContinuousOn φ'' (Icc a b))
     (hnn : ∀ x ∈ Icc a b, 0 ≤ φ'' x)
     (hbound : ∀ x ∈ Icc a b, lam ≤ |φ' x|) :
-    |(∫ t in a..b, w t * Real.cos (φ t) ^ 2) - (1 / 2) * ∫ t in a..b, w t|
+    |(∫ t in a..b, w t * Real.cos (φ t) ^ (2 : ℕ)) - (1 / 2) * ∫ t in a..b, w t|
       ≤ (|w b| + |w a| + ∫ t in a..b, |w' t|) / lam := by
   have hwc : ContinuousOn w (Icc a b) := fun x hx => (hw x hx).continuousAt.continuousWithinAt
   have hφc : ContinuousOn φ (Icc a b) := fun x hx => (hφ x hx).continuousAt.continuousWithinAt
@@ -94,9 +94,9 @@ theorem abs_integral_weight_mul_cos_sq_sub_half_le
       ring
     rw [h2] at hkey
     exact h1.trans hkey
-  have hsplit : (∫ t in a..b, w t * Real.cos (φ t) ^ 2)
+  have hsplit : (∫ t in a..b, w t * Real.cos (φ t) ^ (2 : ℕ))
       = (1 / 2) * (∫ t in a..b, w t) + (1 / 2) * ∫ t in a..b, w t * Real.cos (Φ t) := by
-    have hcongr : ∀ t : ℝ, w t * Real.cos (φ t) ^ 2
+    have hcongr : ∀ t : ℝ, w t * Real.cos (φ t) ^ (2 : ℕ)
         = (1 / 2 : ℝ) * w t + (1 / 2) * (w t * Real.cos (Φ t)) := by
       intro t
       rw [hΦdef, Real.cos_sq]
@@ -107,7 +107,7 @@ theorem abs_integral_weight_mul_cos_sq_sub_half_le
       Real.continuous_cos.comp_continuousOn (continuousOn_const.mul hφc)
     have hi2 : IntervalIntegrable (fun t => (1 / 2 : ℝ) * (w t * Real.cos (Φ t))) volume a b :=
       (uIcc_of_le hab ▸ (continuousOn_const.mul (hwc.mul hcosc))).intervalIntegrable
-    rw [show (fun t => w t * Real.cos (φ t) ^ 2)
+    rw [show (fun t => w t * Real.cos (φ t) ^ (2 : ℕ))
         = fun t => (1 / 2 : ℝ) * w t + (1 / 2) * (w t * Real.cos (Φ t)) from funext hcongr,
       intervalIntegral.integral_add hi1 hi2,
       intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
@@ -129,7 +129,7 @@ theorem abs_integral_weight_mul_cos_sq_sub_half_le'
     (hφ''c : ContinuousOn φ'' (Icc a b))
     (hnp : ∀ x ∈ Icc a b, φ'' x ≤ 0)
     (hbound : ∀ x ∈ Icc a b, lam ≤ |φ' x|) :
-    |(∫ t in a..b, w t * Real.cos (φ t) ^ 2) - (1 / 2) * ∫ t in a..b, w t|
+    |(∫ t in a..b, w t * Real.cos (φ t) ^ (2 : ℕ)) - (1 / 2) * ∫ t in a..b, w t|
       ≤ (|w b| + |w a| + ∫ t in a..b, |w' t|) / lam := by
   have hmain := abs_integral_weight_mul_cos_sq_sub_half_le (φ := fun t => -φ t)
     (φ' := fun t => -φ' t) (φ'' := fun t => -φ'' t) hab hlam hw hw'c
@@ -151,7 +151,7 @@ theorem quarter_integral_le_integral_weight_mul_cos_sq
     (hnp : ∀ x ∈ Icc a b, φ'' x ≤ 0)
     (hbound : ∀ x ∈ Icc a b, lam ≤ |φ' x|)
     (hbudget : (|w b| + |w a| + ∫ t in a..b, |w' t|) / lam ≤ (1 / 4) * ∫ t in a..b, w t) :
-    (1 / 4) * (∫ t in a..b, w t) ≤ ∫ t in a..b, w t * Real.cos (φ t) ^ 2 := by
+    (1 / 4) * (∫ t in a..b, w t) ≤ ∫ t in a..b, w t * Real.cos (φ t) ^ (2 : ℕ) := by
   have hmain := abs_integral_weight_mul_cos_sq_sub_half_le' hab hlam hw hw'c hφ hφ' hφ''c hnp hbound
   linarith [neg_le_of_abs_le hmain]
 

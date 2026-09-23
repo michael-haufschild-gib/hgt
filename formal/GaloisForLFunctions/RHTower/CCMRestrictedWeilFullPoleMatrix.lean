@@ -95,9 +95,9 @@ private theorem gamma_pole_pair_split (a : SuzukiPositiveAperture) (s : ℝ) :
 
 private theorem integral_bulk_cross (a : SuzukiPositiveAperture) :
     (∫ x in centralInterval a.1, poleGammaBulk a x) =
-      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)-2*a.1^2 := by
+      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)-2*a.1^(2 : ℕ) := by
   have hd (x : ℝ) : HasDerivAt
-      (fun y => y^2/2-(a.1+Real.eulerMascheroniConstant+Real.log (2*Real.pi))*y)
+      (fun y => y^(2 : ℕ)/2-(a.1+Real.eulerMascheroniConstant+Real.log (2*Real.pi))*y)
       (poleGammaBulk a x) x := by
     convert! (((hasDerivAt_id x).pow 2).div_const 2).sub
       ((hasDerivAt_id x).const_mul (a.1+Real.eulerMascheroniConstant+Real.log (2*Real.pi))) using 1
@@ -141,7 +141,7 @@ theorem ccmPolarGammaImage_inner_self (a : SuzukiPositiveAperture) :
 /-- Exact opposite-pole Gamma entry, with the unweighted boundary mass retained. -/
 theorem ccmPolarGammaImage_inner_cross (a : SuzukiPositiveAperture) :
     inner ℂ (ccmPolarGammaImage a) (ccmPolarApertureVector a (-1/2)) =
-      (((-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)-2*a.1^2+
+      (((-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)-2*a.1^(2 : ℕ)+
         ccmGammaPoleCrossBoundaryMass a:ℝ):ℂ) := by
   rw [gamma_pole_pair_split a (-1/2), show (-1/2:ℝ)+1/2=0 by ring]
   simp only [zero_mul, Real.exp_zero, one_mul, integral_bulk_cross, ccmGammaPoleCrossBoundaryMass]
@@ -228,8 +228,8 @@ theorem ccmWeilPoleDiagonal_eq_error (a : SuzukiPositiveAperture) :
 /-- The opposite-pole full Weil entry is real and retains the complete moving prime tent. -/
 theorem ccmRestrictedWeilForm_pole_cross_eq (a : SuzukiPositiveAperture) :
     ccmRestrictedWeilForm a (ccmPolarFormVector a (1/2)) (ccmPolarFormVector a (-1/2)) =
-      (((-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)+2*a.1^2+
-        (2*Real.sinh a.1)^2+ccmGammaPoleCrossBoundaryMass a-ccmPolarPrimeTent a:ℝ):ℂ) := by
+      (((-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)+2*a.1^(2 : ℕ)+
+        (2*Real.sinh a.1)^(2 : ℕ)+ccmGammaPoleCrossBoundaryMass a-ccmPolarPrimeTent a:ℝ):ℂ) := by
   rw [weil_pole_pair, ccmPolarGammaImage_inner_cross, ccmFinitePrimeOperator_polar_cross,
     ccmPolarOperator_polarPlus_apply, inner_add_left]
   have hc : inner ℂ (ccmPolarApertureVector a (1/2)) (ccmPolarApertureVector a (-1/2)) =
@@ -244,8 +244,8 @@ theorem ccmRestrictedWeilForm_pole_cross_eq (a : SuzukiPositiveAperture) :
 /-- Exact real cross entry of the full Weil pole matrix. -/
 theorem ccmWeilPoleCross_eq (a : SuzukiPositiveAperture) :
     ccmWeilPoleCross a =
-      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)+2*a.1^2+
-        (2*Real.sinh a.1)^2+ccmGammaPoleCrossBoundaryMass a-ccmPolarPrimeTent a := by
+      (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)+2*a.1^(2 : ℕ)+
+        (2*Real.sinh a.1)^(2 : ℕ)+ccmGammaPoleCrossBoundaryMass a-ccmPolarPrimeTent a := by
   rw [ccmWeilPoleCross, ccmRestrictedWeilForm_pole_cross_eq, Complex.ofReal_re]
 
 end RHTower

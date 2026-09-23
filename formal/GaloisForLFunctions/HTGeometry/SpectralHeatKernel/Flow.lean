@@ -76,8 +76,8 @@ theorem spectralHeatFlow_add (b : HilbertBasis ℕ ℂ E) (lam : ℕ → ℝ) {s
 /-- **The squared norm of the heat flow is the damped spectral sum.** -/
 theorem norm_spectralHeatFlow_sq (b : HilbertBasis ℕ ℂ E) (lam : ℕ → ℝ) {t : ℝ}
     (ht : 0 ≤ t) (hlam : ∀ n, 0 ≤ lam n) (v : E) :
-    ‖spectralHeatFlow b lam ht hlam v‖ ^ 2
-      = ∑' n, Real.exp (-(2 * t * lam n)) * ‖(inner ℂ (b n) v : ℂ)‖ ^ 2 := by
+    ‖spectralHeatFlow b lam ht hlam v‖ ^ (2 : ℕ)
+      = ∑' n, Real.exp (-(2 * t * lam n)) * ‖(inner ℂ (b n) v : ℂ)‖ ^ (2 : ℕ) := by
   rw [← tsum_norm_inner_sq b (spectralHeatFlow b lam ht hlam v)]
   refine tsum_congr fun n => ?_
   rw [← HilbertBasis.repr_apply_apply, repr_spectralHeatFlow, HilbertBasis.repr_apply_apply]

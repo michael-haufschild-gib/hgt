@@ -19,7 +19,7 @@ noncomputable section
 
 /-- The explicit majorant for a sharp twisted Möbius sum. -/
 def moebiusSharpBound (N : ℝ) : ℝ :=
-  3 * N * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ 2 / 2)) / Real.pi
+  3 * N * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ (2 : ℕ) / 2)) / Real.pi
     + (smoothWidth N + 1)
 
 /-- The Möbius coefficient against the Gallagher phase is the twisted Möbius coefficient. -/
@@ -67,7 +67,7 @@ theorem moebiusSharpBound_nonneg {N : ℝ} (hN : 3 ≤ N) : 0 ≤ moebiusSharpBo
   have hW := one_le_smoothWidth hN0 hlog
   rw [moebiusSharpBound]
   have h1 : (0 : ℝ)
-      ≤ 3 * N * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ 2 / 2))
+      ≤ 3 * N * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ (2 : ℕ) / 2))
         / Real.pi := by positivity
   linarith
 

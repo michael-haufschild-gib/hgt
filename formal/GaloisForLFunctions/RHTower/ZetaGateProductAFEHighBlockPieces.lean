@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.HighBlockParameters
 # The block inequality with the crude parameters
 
 The block `[a, v]` with `20 ≤ a ≤ v ≤ 2a` is windowed with the overhang `η = u^{95}` and scale
-`x = a = u^{100}`, where `u = a^{1/100}`; the mollifier length satisfies `N ≤ u^8`.  All error
+`x = a = u^{100}`, where `u = a^{1/100}`; the mollifier length satisfies `N ≤ u^(8 : ℕ)`.  All error
 terms of the block inequality then carry an explicit negative power of `u` times the window mass
 `q − p + 2η`.  This module collects the individual estimates.
 -/
@@ -411,7 +411,7 @@ theorem dualStar_nonneg {C₁ C₂ : ℝ} (hC₁ : 0 ≤ C₁) (hC₂ : 0 ≤ C�
   have := oscStar_nonneg hC₁
   positivity
 
-/-- The dual off-diagonal envelope with `K = 20`, `K'' = 40`, `V = u^5`, `Y₀ = u^{110}`. -/
+/-- The dual off-diagonal envelope with `K = 20`, `K'' = 40`, `V = u^(5 : ℕ)`, `Y₀ = u^{110}`. -/
 theorem tsum_dualOffDiagTerm_le_param {d u p q : ℝ} (hd : 0 < d) (hd8 : d ≤ 1 / 8) (hu : 2 ≤ u)
     (hp : p = u ^ 100) (hpq : p ≤ q) (hq : q ≤ 2 * u ^ 100) {N h k : ℕ} (hN : (N : ℝ) ≤ u ^ 8)
     (hh : h ∈ Finset.Icc 1 N) (hk : k ∈ Finset.Icc 1 N) {C₁ C₂ : ℝ} (hC₁ : 0 ≤ C₁) (hC₂ : 0 ≤ C₂)

@@ -192,7 +192,7 @@ lemma cdGam_add (hs : ∀ x y : V, B x y = B y x) (hf : ∀ x y, B (f x) (f y) =
   simp only [cdGam, map_add, LinearMap.add_apply] at *
   linear_combination h
 
-lemma cdGam_smul (c : K) (x : V) : cdGam B f (c • x) = c ^ 2 * cdGam B f x := by
+lemma cdGam_smul (c : K) (x : V) : cdGam B f (c • x) = c ^ (2 : ℕ) * cdGam B f x := by
   simp only [cdGam, map_smul, LinearMap.smul_apply, smul_eq_mul]; ring
 
 lemma cdGam_neg (x : V) : cdGam B f (-x) = cdGam B f x := by

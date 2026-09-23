@@ -115,7 +115,7 @@ the local scale, the archimedean winding phase already exceeds `π`.  This is th
 instrument in the form the Euler-tail lemma consumes for its target-phase advance. -/
 theorem windingPhase_ge_pi_of_long {a b : ℝ} (ha : 0 < a) (hab : a ≤ b)
     (hlong : Real.pi ≤
-      (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)) :
+      (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)) :
     Real.pi ≤ windingPhase a b :=
   le_trans hlong (windingPhase_ge_of_floor ha hab)
 

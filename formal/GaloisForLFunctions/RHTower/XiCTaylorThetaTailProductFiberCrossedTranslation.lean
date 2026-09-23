@@ -117,7 +117,7 @@ crossed packets with both crossed top edges and the completion seam still joined
 theorem finiteCoreArithmeticTwoPhaseValue_eq_crossed
     (d : ℕ) (z : ℂ) (u a : ℝ) :
     finiteCoreArithmeticTwoPhaseValue d z u a =
-      (z ^ 2 + 1 / 4) *
+      (z ^ (2 : ℕ) + 1 / 4) *
           (((finitePositiveNegativeCrossedTranslationPacket (d + 1) u a -
                 finitePositiveNegativeCrossedTranslationTopEdge (d + 1) u a).eval z) +
             ((finiteNegativePositiveCrossedTranslationPacket (d + 1) u a -
@@ -135,7 +135,7 @@ theorem finiteCoreArithmeticTwoPhaseValue_eq_crossed
 theorem finiteCoreArithmeticTwoPhaseDerivative_eq_crossed
     (d : ℕ) (z : ℂ) (u a : ℝ) :
     finiteCoreArithmeticTwoPhaseDerivative d z u a =
-      (z ^ 2 + 1 / 4) *
+      (z ^ (2 : ℕ) + 1 / 4) *
           ((finitePositiveNegativeCrossedTranslationPacket (d + 1) u a -
                 finitePositiveNegativeCrossedTranslationTopEdge (d + 1) u a).derivative.eval z +
             (finiteNegativePositiveCrossedTranslationPacket (d + 1) u a -

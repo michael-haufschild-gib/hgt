@@ -12,7 +12,7 @@ noncomputable section
 theorem tendsto_selbergPrincipalScaledMixedModel_div_log_sq_one
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :
     Tendsto (fun N : ℕ =>
-      selbergPrincipalScaledMixedModel a b N / Real.log N ^ 2)
+      selbergPrincipalScaledMixedModel a b N / Real.log N ^ (2 : ℕ))
       atTop (𝓝 1) := by
   let C : ℝ := 6 + |Real.eulerMascheroniConstant|
   have hC : 0 < C := by
@@ -30,7 +30,7 @@ theorem tendsto_selbergPrincipalScaledMixedModel_div_log_sq_one
         (coprimeLogMoebius 1 ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
             moebiusDoubleLogKernelReal ((N : ℝ) / ((b * d : ℕ) : ℝ)) -
           2 * Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ))) /
-          (d : ℝ)) / Real.log N ^ 2) atTop (𝓝 0) := by
+          (d : ℝ)) / Real.log N ^ (2 : ℕ)) atTop (𝓝 0) := by
     rw [Metric.tendsto_atTop]
     intro ε hε
     let δ : ℝ := ε / 8
@@ -225,9 +225,9 @@ theorem tendsto_selbergPrincipalScaledMixedModel_div_log_sq_one
         (coprimeLogMoebius 1 ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
             moebiusDoubleLogKernelReal ((N : ℝ) / ((b * d : ℕ) : ℝ)) -
           2 * Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ))) /
-          (d : ℝ)| / Real.log N ^ 2 ≤
+          (d : ℝ)| / Real.log N ^ (2 : ℕ) ≤
           (δ * Real.log N * (harmonic (N / c) : ℝ) +
-            B * Real.log N * K * (c : ℝ)) / Real.log N ^ 2 :=
+            B * Real.log N * K * (c : ℝ)) / Real.log N ^ (2 : ℕ) :=
         div_le_div_of_nonneg_right habssum (pow_pos hlogpos 2).le
       _ = δ * ((harmonic (N / c) : ℝ) / Real.log N) +
           B * K * (c : ℝ) / Real.log N := by field_simp [hlogpos.ne']
@@ -261,11 +261,11 @@ theorem tendsto_selbergPrincipalScaledMixedModel_div_log_sq_one
 theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :
     Tendsto (fun N : ℕ =>
-      selbergPrincipalScaledQuadraticModel a b N / Real.log N ^ 3)
+      selbergPrincipalScaledQuadraticModel a b N / Real.log N ^ (3 : ℕ))
       atTop (𝓝 (4 / 3 : ℝ)) := by
   obtain ⟨D, hD, hDbound⟩ :=
     exists_abs_moebiusDoubleLogKernelReal_le_const_mul_log
-  let B : ℝ := D ^ 2 + 4
+  let B : ℝ := D ^ (2 : ℕ) + 4
   have hB : 0 ≤ B := by dsimp [B]; positivity
   let c : ℕ := max a b
   have hc : 0 < c := lt_of_lt_of_le ha (le_max_left a b)
@@ -276,7 +276,7 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
             moebiusDoubleLogKernelReal ((N : ℝ) / ((b * d : ℕ) : ℝ)) -
           4 * (Real.log ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
             Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)))) /
-          (d : ℝ)) / Real.log N ^ 3) atTop (𝓝 0) := by
+          (d : ℝ)) / Real.log N ^ (3 : ℕ)) atTop (𝓝 0) := by
     rw [Metric.tendsto_atTop]
     intro ε hε
     let δ : ℝ := ε / 8
@@ -327,8 +327,8 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
             4 * (Real.log ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
               Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)))) /
             (d : ℝ)| ≤
-          δ * Real.log N ^ 2 * (1 / (d : ℝ)) +
-            B * Real.log N ^ 2 * (K * (c : ℝ) / (N : ℝ)) := by
+          δ * Real.log N ^ (2 : ℕ) * (1 / (d : ℝ)) +
+            B * Real.log N ^ (2 : ℕ) * (K * (c : ℝ) / (N : ℝ)) := by
       intro d hd
       have hdpos : 0 < d := (Finset.mem_Icc.mp hd).1
       have hdR : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hdpos
@@ -348,12 +348,12 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
       have hLBnonneg : 0 ≤ LB := Real.log_nonneg hYBone
       have hLAle : LA ≤ Real.log N := Real.log_le_log (by positivity) hYAle
       have hLBle : LB ≤ Real.log N := Real.log_le_log (by positivity) hYBle
-      have hlogprod : LA * LB ≤ Real.log N ^ 2 := by
+      have hlogprod : LA * LB ≤ Real.log N ^ (2 : ℕ) := by
         have := mul_le_mul hLAle hLBle hLBnonneg hlogpos.le
         nlinarith
       have hQA : |QA| ≤ D * LA := hDbound YA hYAone
       have hQB : |QB| ≤ D * LB := hDbound YB hYBone
-      have hglobal : |QA * QB - 4 * (LA * LB)| ≤ B * Real.log N ^ 2 := by
+      have hglobal : |QA * QB - 4 * (LA * LB)| ≤ B * Real.log N ^ (2 : ℕ) := by
         calc
           |QA * QB - 4 * (LA * LB)| ≤ |QA * QB| + |4 * (LA * LB)| :=
             abs_sub _ _
@@ -366,7 +366,7 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
               (mul_nonneg hD hLAnonneg)
             nlinarith
           _ = B * (LA * LB) := by dsimp [B]; ring
-          _ ≤ B * Real.log N ^ 2 := mul_le_mul_of_nonneg_left hlogprod hB
+          _ ≤ B * Real.log N ^ (2 : ℕ) := mul_le_mul_of_nonneg_left hlogprod hB
       by_cases hya : K ≤ YA
       · by_cases hyb : K ≤ YB
         · have hQAn : |QA / LA - 2| < η := hKQ _ (hKQge.trans hya)
@@ -398,7 +398,7 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
               _ = δ := by
                 dsimp [η]
                 field_simp
-          have hprod : |QA * QB - 4 * (LA * LB)| ≤ δ * Real.log N ^ 2 := by
+          have hprod : |QA * QB - 4 * (LA * LB)| ≤ δ * Real.log N ^ (2 : ℕ) := by
             have heq : QA * QB - 4 * (LA * LB) =
                 ((QA / LA) * (QB / LB) - 4) * (LA * LB) := by
               field_simp [hLApos.ne', hLBpos.ne']
@@ -408,7 +408,7 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
           rw [abs_div, abs_of_pos hdR]
           calc
             |QA * QB - 4 * (LA * LB)| / (d : ℝ) ≤
-                δ * Real.log N ^ 2 * (1 / (d : ℝ)) := by
+                δ * Real.log N ^ (2 : ℕ) * (1 / (d : ℝ)) := by
               have := mul_le_mul_of_nonneg_right hprod (by positivity : 0 ≤ 1 / (d : ℝ))
               simpa [div_eq_mul_inv, mul_assoc] using this
             _ ≤ _ := le_add_of_nonneg_right (by positivity)
@@ -418,10 +418,10 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
           rw [abs_div, abs_of_pos hdR]
           calc
             |QA * QB - 4 * (LA * LB)| / (d : ℝ) ≤
-                B * Real.log N ^ 2 * (1 / (d : ℝ)) := by
+                B * Real.log N ^ (2 : ℕ) * (1 / (d : ℝ)) := by
               have := mul_le_mul_of_nonneg_right hglobal (by positivity : 0 ≤ 1 / (d : ℝ))
               simpa [div_eq_mul_inv, mul_assoc] using this
-            _ ≤ B * Real.log N ^ 2 * (K * (c : ℝ) / (N : ℝ)) :=
+            _ ≤ B * Real.log N ^ (2 : ℕ) * (K * (c : ℝ) / (N : ℝ)) :=
               mul_le_mul_of_nonneg_left hfrac (by positivity)
             _ ≤ _ := le_add_of_nonneg_left (by positivity)
       · have hfrac : 1 / (d : ℝ) ≤ K * (c : ℝ) / (N : ℝ) :=
@@ -430,10 +430,10 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
         rw [abs_div, abs_of_pos hdR]
         calc
           |QA * QB - 4 * (LA * LB)| / (d : ℝ) ≤
-              B * Real.log N ^ 2 * (1 / (d : ℝ)) := by
+              B * Real.log N ^ (2 : ℕ) * (1 / (d : ℝ)) := by
             have := mul_le_mul_of_nonneg_right hglobal (by positivity : 0 ≤ 1 / (d : ℝ))
             simpa [div_eq_mul_inv, mul_assoc] using this
-          _ ≤ B * Real.log N ^ 2 * (K * (c : ℝ) / (N : ℝ)) :=
+          _ ≤ B * Real.log N ^ (2 : ℕ) * (K * (c : ℝ) / (N : ℝ)) :=
             mul_le_mul_of_nonneg_left hfrac (by positivity)
           _ ≤ _ := le_add_of_nonneg_left (by positivity)
     have habssum :
@@ -443,8 +443,8 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
             4 * (Real.log ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
               Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)))) /
             (d : ℝ)| ≤
-          δ * Real.log N ^ 2 * (harmonic (N / c) : ℝ) +
-            B * Real.log N ^ 2 * K * (c : ℝ) := by
+          δ * Real.log N ^ (2 : ℕ) * (harmonic (N / c) : ℝ) +
+            B * Real.log N ^ (2 : ℕ) * K * (c : ℝ) := by
       calc
         |∑ d ∈ Finset.Icc 1 (N / c),
           (moebiusDoubleLogKernelReal ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
@@ -459,11 +459,11 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
                 Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)))) /
               (d : ℝ)| := Finset.abs_sum_le_sum_abs _ _
         _ ≤ ∑ d ∈ Finset.Icc 1 (N / c),
-            (δ * Real.log N ^ 2 * (1 / (d : ℝ)) +
-              B * Real.log N ^ 2 * (K * (c : ℝ) / (N : ℝ))) :=
+            (δ * Real.log N ^ (2 : ℕ) * (1 / (d : ℝ)) +
+              B * Real.log N ^ (2 : ℕ) * (K * (c : ℝ) / (N : ℝ))) :=
           Finset.sum_le_sum hterm
-        _ ≤ δ * Real.log N ^ 2 * (harmonic (N / c) : ℝ) +
-            B * Real.log N ^ 2 * K * (c : ℝ) := by
+        _ ≤ δ * Real.log N ^ (2 : ℕ) * (harmonic (N / c) : ℝ) +
+            B * Real.log N ^ (2 : ℕ) * K * (c : ℝ) := by
           rw [Finset.sum_add_distrib, ← Finset.mul_sum,
             sum_Icc_one_div_eq_harmonic]
           rw [Finset.sum_const, nsmul_eq_mul, Nat.card_Icc]
@@ -471,11 +471,11 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
           have hqle : ((N / c : ℕ) : ℝ) ≤ (N : ℝ) := by
             exact_mod_cast Nat.div_le_self N c
           have htailnonneg :
-              0 ≤ B * Real.log N ^ 2 * (K * (c : ℝ) / (N : ℝ)) := by positivity
+              0 ≤ B * Real.log N ^ (2 : ℕ) * (K * (c : ℝ) / (N : ℝ)) := by positivity
           have hmul := mul_le_mul_of_nonneg_right hqle htailnonneg
           have heq : (N : ℝ) *
-              (B * Real.log N ^ 2 * (K * (c : ℝ) / (N : ℝ))) =
-              B * Real.log N ^ 2 * K * (c : ℝ) := by
+              (B * Real.log N ^ (2 : ℕ) * (K * (c : ℝ) / (N : ℝ))) =
+              B * Real.log N ^ (2 : ℕ) * K * (c : ℝ) := by
             field_simp [hNR.ne']
           nlinarith
     rw [Real.dist_eq, sub_zero, abs_div, abs_of_pos (pow_pos hlogpos 3)]
@@ -485,9 +485,9 @@ theorem tendsto_selbergPrincipalScaledQuadraticModel_div_log_cube_four_thirds
             moebiusDoubleLogKernelReal ((N : ℝ) / ((b * d : ℕ) : ℝ)) -
           4 * (Real.log ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
             Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)))) /
-          (d : ℝ)| / Real.log N ^ 3 ≤
-          (δ * Real.log N ^ 2 * (harmonic (N / c) : ℝ) +
-            B * Real.log N ^ 2 * K * (c : ℝ)) / Real.log N ^ 3 :=
+          (d : ℝ)| / Real.log N ^ (3 : ℕ) ≤
+          (δ * Real.log N ^ (2 : ℕ) * (harmonic (N / c) : ℝ) +
+            B * Real.log N ^ (2 : ℕ) * K * (c : ℝ)) / Real.log N ^ (3 : ℕ) :=
         div_le_div_of_nonneg_right habssum (pow_pos hlogpos 3).le
       _ = δ * ((harmonic (N / c) : ℝ) / Real.log N) +
           B * K * (c : ℝ) / Real.log N := by field_simp [hlogpos.ne']

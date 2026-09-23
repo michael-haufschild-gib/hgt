@@ -44,7 +44,7 @@ def fzzTwoMarkedOPEExponent (k q δ ε : ℝ) : ℝ :=
 
 /-- The mixed source coefficient before any position integration. -/
 def fzzTwoMarkedContact (k q : ℝ) : ℝ :=
-  k * q / 2 - k ^ 2 / (2 * (k - 2))
+  k * q / 2 - k ^ (2 : ℕ) / (2 * (k - 2))
 
 theorem fzzTwoMarkedOPEExponent_normalForm (u q δ ε : ℝ) :
     fzzTwoMarkedOPEExponent (fzzTwoMarkedPhysicalLevel u) q δ ε =
@@ -120,19 +120,19 @@ theorem fzzTwoMarkedOPEExponent_mixedDeriv (u q δ ε : ℝ) :
 
 /-- The quadratic form on the two winding-charge channels of the mixed source coefficient. -/
 def fzzTwoMarkedChargeForm (k x y : ℝ) : ℝ :=
-  fzzTwoMarkedContact k 1 * (x ^ 2 + y ^ 2) +
+  fzzTwoMarkedContact k 1 * (x ^ (2 : ℕ) + y ^ (2 : ℕ)) +
     2 * fzzTwoMarkedContact k (-1) * x * y
 
 /-- Exact radial and winding decomposition of the double-insertion charge coefficient. -/
 theorem fzzTwoMarkedChargeForm_split (k x y : ℝ) :
     fzzTwoMarkedChargeForm k x y =
-      k / 2 * (x - y) ^ 2 - k ^ 2 / (2 * (k - 2)) * (x + y) ^ 2 := by
+      k / 2 * (x - y) ^ (2 : ℕ) - k ^ (2 : ℕ) / (2 * (k - 2)) * (x + y) ^ (2 : ℕ) := by
   unfold fzzTwoMarkedChargeForm fzzTwoMarkedContact
   ring
 
 theorem fzzTwoMarkedChargeForm_radial (u x : ℝ) :
     fzzTwoMarkedChargeForm (fzzTwoMarkedPhysicalLevel u) x x =
-      -(2 * fzzTwoMarkedPhysicalLevel u ^ 2 / (fzzTwoMarkedPhysicalLevel u - 2)) * x ^ 2 := by
+      -(2 * fzzTwoMarkedPhysicalLevel u ^ (2 : ℕ) / (fzzTwoMarkedPhysicalLevel u - 2)) * x ^ (2 : ℕ) := by
   rw [fzzTwoMarkedChargeForm_split]
   have hk := fzzTwoMarkedPhysicalLevel_gt_two u
   have hd : fzzTwoMarkedPhysicalLevel u - 2 ≠ 0 := by linarith
@@ -140,7 +140,7 @@ theorem fzzTwoMarkedChargeForm_radial (u x : ℝ) :
   ring
 
 theorem fzzTwoMarkedChargeForm_winding (k x : ℝ) :
-    fzzTwoMarkedChargeForm k x (-x) = 2 * k * x ^ 2 := by
+    fzzTwoMarkedChargeForm k x (-x) = 2 * k * x ^ (2 : ℕ) := by
   rw [fzzTwoMarkedChargeForm_split]
   ring
 
@@ -151,7 +151,7 @@ theorem fzzTwoMarkedChargeForm_indefinite (u : ℝ) :
   have hk := fzzTwoMarkedPhysicalLevel_gt_two u
   constructor
   · rw [fzzTwoMarkedChargeForm_radial]
-    have hp : 0 < 2 * fzzTwoMarkedPhysicalLevel u ^ 2 /
+    have hp : 0 < 2 * fzzTwoMarkedPhysicalLevel u ^ (2 : ℕ) /
         (fzzTwoMarkedPhysicalLevel u - 2) := by positivity
     simpa using neg_neg_of_pos hp
   · rw [fzzTwoMarkedChargeForm_winding]

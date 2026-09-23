@@ -26,7 +26,7 @@ theorem eventually_log_le_mul {η : ℝ} (hη : 0 < η) :
 
 /-- Every fixed combination of `1`, `log T`, `(log T)²` and `T` is `o(T log T)`. -/
 theorem eventually_lower_order_le {a b d e : ℝ} (ha : 0 ≤ a) (hd : 0 ≤ d) {η : ℝ} (hη : 0 < η) :
-    ∀ᶠ T : ℝ in atTop, a + b * Real.log T + d * (Real.log T) ^ 2 + e * T
+    ∀ᶠ T : ℝ in atTop, a + b * Real.log T + d * (Real.log T) ^ (2 : ℕ) + e * T
       ≤ η * (T * Real.log T) := by
   have hdlog := eventually_log_le_mul (η := η / (4 * (d + 1))) (by positivity)
   filter_upwards [hdlog, eventually_ge_atTop (Real.exp (4 * e / η + 1)),
@@ -55,7 +55,7 @@ theorem eventually_lower_order_le {a b d e : ℝ} (ha : 0 ≤ a) (hd : 0 ≤ d) 
       rw [div_le_iff₀ hη] at hTb'
       linarith
     nlinarith [hlog1, hη, hT0]
-  have h3 : d * (Real.log T) ^ 2 ≤ (η / 4) * (T * Real.log T) := by
+  have h3 : d * (Real.log T) ^ (2 : ℕ) ≤ (η / 4) * (T * Real.log T) := by
     have hstep : d * Real.log T ≤ (η / 4) * T := by
       have hdd : (0 : ℝ) < d + 1 := by linarith
       have hmono := mul_le_mul_of_nonneg_left hTd hd

@@ -74,10 +74,10 @@ theorem tendsto_sqrtNat_mul_xiEndpointCoordinateDiagonalPurity_div_pow
     (hD : ∀ q ∈ D, xiEndpointBernsteinAtomAmplitudeBase q = B) :
     Tendsto
       (fun n : ℕ => Real.sqrt n * xiEndpointCoordinateDiagonalPurity D n /
-        (B ^ 2) ^ n)
+        (B ^ (2 : ℕ)) ^ n)
       atTop
       (nhds (∑ u ∈ xiEndpointCoordinateSet D,
-        ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+        ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant u)) := by
   exact tendsto_sqrtNat_mul_finiteBernsteinCoordinateDiagonalEnergy_div_pow
     (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D)
@@ -90,7 +90,7 @@ the open maximal-packet collar. -/
 theorem hasSum_xiEndpointCoordinateDiagonalPurity_eq_squareRootKernel
     {D : Finset XiZeroCopy} {B t : ℝ} (hB : 1 < B)
     (hD : ∀ q ∈ D, xiEndpointBernsteinAtomAmplitudeBase q = B)
-    (ht0 : 0 < t) (htB : t < 1 / B ^ 2) :
+    (ht0 : 0 < t) (htB : t < 1 / B ^ (2 : ℕ)) :
     HasSum
       (fun n : ℕ => xiEndpointCoordinateDiagonalPurity D n * t ^ n)
       (finiteBernsteinCoordinateDiagonalSquareRootKernel
@@ -112,34 +112,34 @@ theorem exists_exact_maximalDiagonalSquareRootDecomposition_of_not_rh
       (∀ q ∈ D, xiEndpointBernsteinAtomAmplitudeBase q = B) ∧
       (∀ q ∉ D, xiEndpointBernsteinAtomAmplitudeBase q ≤ beta) ∧
       L = ∑ u ∈ xiEndpointCoordinateSet D,
-        ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+        ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant u ∧
       0 < L ∧
-      PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ 2) ∧
-      (∀ t : ℝ, 0 < t → t < 1 / B ^ 2 →
+      PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ (2 : ℕ)) ∧
+      (∀ t : ℝ, 0 < t → t < 1 / B ^ (2 : ℕ) →
         HasSum
           (fun n : ℕ => xiEndpointCoordinateDiagonalPurity D n * t ^ n)
           (finiteBernsteinCoordinateDiagonalSquareRootKernel
             (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) B t)) ∧
-      (∀ t : ℝ, 0 < t → t < 1 / B ^ 2 →
+      (∀ t : ℝ, 0 < t → t < 1 / B ^ (2 : ℕ) →
         primeArchEndpointBernsteinAbelSusceptibility t =
           finiteBernsteinCoordinateDiagonalSquareRootKernel
             (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) B t +
           primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t) ∧
       Tendsto
-        (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+        (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
           primeArchEndpointBernsteinDiagonalRemainderAbelSusceptibility D t)
-        (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2)))
+        (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ))))
         (nhds 0) ∧
       Tendsto
-        (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+        (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
           xiEndpointCoordinateDiagonalAbelSusceptibility D t)
-        (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2)))
+        (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ))))
         (nhds (Real.sqrt Real.pi * L)) ∧
       Tendsto
-        (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+        (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
           primeArchEndpointBernsteinAbelSusceptibility t)
-        (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2)))
+        (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ))))
         (nhds (Real.sqrt Real.pi * L)) := by
   obtain ⟨D, B, beta, L, hB, hbeta1, hbeta, hDne, hD, hDsub,
       hL, hLpos, hfullCoeff⟩ :=
@@ -149,7 +149,7 @@ theorem exists_exact_maximalDiagonalSquareRootDecomposition_of_not_rh
     tendsto_sqrtNat_mul_xiEndpointCoordinateDiagonalPurity_div_pow hB hD
   have hremCoeff : Tendsto
       (fun n : ℕ => Real.sqrt n *
-        primeArchEndpointBernsteinDiagonalRemainder D n / (B ^ 2) ^ n)
+        primeArchEndpointBernsteinDiagonalRemainder D n / (B ^ (2 : ℕ)) ^ n)
       atTop (nhds 0) := by
     have hsub := hfullCoeff.sub hdiagCoeff
     convert hsub using 1
@@ -174,10 +174,10 @@ theorem exists_exact_maximalDiagonalSquareRootDecomposition_of_not_rh
         · exact (hD q' hqmem).le
         · exact (hDsub q' hqmem).trans hbeta.le
   have hBB' : B = B' := le_antisymm hB_le hB'_le
-  have hcriticalB : PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ 2) := by
+  have hcriticalB : PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ (2 : ℕ)) := by
     rw [hBB']
     exact hcritical
-  have hdiagExact : ∀ t : ℝ, 0 < t → t < 1 / B ^ 2 →
+  have hdiagExact : ∀ t : ℝ, 0 < t → t < 1 / B ^ (2 : ℕ) →
       HasSum
         (fun n : ℕ => xiEndpointCoordinateDiagonalPurity D n * t ^ n)
         (finiteBernsteinCoordinateDiagonalSquareRootKernel
@@ -185,7 +185,7 @@ theorem exists_exact_maximalDiagonalSquareRootDecomposition_of_not_rh
     intro t ht0 htB
     exact hasSum_xiEndpointCoordinateDiagonalPurity_eq_squareRootKernel
       hB hD ht0 htB
-  have hpointDecomp : ∀ t : ℝ, 0 < t → t < 1 / B ^ 2 →
+  have hpointDecomp : ∀ t : ℝ, 0 < t → t < 1 / B ^ (2 : ℕ) →
       primeArchEndpointBernsteinAbelSusceptibility t =
         finiteBernsteinCoordinateDiagonalSquareRootKernel
           (xiEndpointCoordinateSet D) (xiEndpointCoordinateWeight D) B t +

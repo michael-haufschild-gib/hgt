@@ -270,7 +270,7 @@ theorem norm_xiMassSpectralCrossMoment_deepShift_le
   have hmajor : Integrable (fun x : ℝ =>
       (Real.exp (|u| * d - h * d) * xiMassShiftedMomentConstant sigma d k) *
         Real.exp (-(sigma / 2 * |x|))) :=
-    (integrable_exp_neg_mul_abs (half_pos hsigma)).const_mul _
+    (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (half_pos hsigma)).const_mul _
   calc
     ‖∫ x : ℝ, Q ((x : ℂ) - (d : ℂ) * I)‖ ≤
         ∫ x : ℝ,

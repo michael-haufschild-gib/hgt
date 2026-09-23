@@ -25,7 +25,7 @@ profile. -/
 theorem mobiusCriticalSoftHardReporterEscapeUniversality :
     Tendsto
       (fun u : ℝ => squarefreeMobiusCriticalFisherCutoffWardLimit u /
-        (2 * u / (1 + u) ^ 2))
+        (2 * u / (1 + u) ^ (2 : ℕ)))
       (nhdsWithin 0 (Set.Ioi 0)) (nhds 4) ∧
     ∀ (f : Lp ℂ 2 (volume : Measure ℝ))
         (ell : InfiniteMobiusShiftChannel →L[ℂ] ℂ),
@@ -40,7 +40,7 @@ theorem mobiusCriticalSoftHardReporterEscapeUniversality :
             ell (mobiusCriticalShiftChannel sigma f) -
               ((squarefreeMobiusCriticalFisherCutoffWardLimit u / 4 : ℝ) : ℂ))
           (nhdsWithin 1 (Set.Ioi 1)) (nhds 0)) := by
-  have hscale : Tendsto (fun u : ℝ => (1 + u) ^ 2)
+  have hscale : Tendsto (fun u : ℝ => (1 + u) ^ (2 : ℕ))
       (nhdsWithin 0 (Set.Ioi 0)) (nhds 1) := by
     have hu : Tendsto (fun u : ℝ => u)
         (nhdsWithin 0 (Set.Ioi 0)) (nhds 0) :=
@@ -53,7 +53,7 @@ theorem mobiusCriticalSoftHardReporterEscapeUniversality :
   norm_num at hratio
   have hratio' : Tendsto
       (fun u : ℝ => squarefreeMobiusCriticalFisherCutoffWardLimit u /
-        (2 * u / (1 + u) ^ 2))
+        (2 * u / (1 + u) ^ (2 : ℕ)))
       (nhdsWithin 0 (Set.Ioi 0)) (nhds 4) := by
     refine hratio.congr' ?_
     filter_upwards [self_mem_nhdsWithin] with u hu
@@ -63,11 +63,11 @@ theorem mobiusCriticalSoftHardReporterEscapeUniversality :
   intro f ell
   have hratioPos : ∀ᶠ u : ℝ in nhdsWithin 0 (Set.Ioi 0),
       0 < squarefreeMobiusCriticalFisherCutoffWardLimit u /
-        (2 * u / (1 + u) ^ 2) :=
+        (2 * u / (1 + u) ^ (2 : ℕ)) :=
     hratio'.eventually (isOpen_Ioi.mem_nhds (by norm_num))
   filter_upwards [self_mem_nhdsWithin, hratioPos] with u hu hpositive
   have hu0 : 0 < u := hu
-  have hsoftPos : 0 < 2 * u / (1 + u) ^ 2 := by
+  have hsoftPos : 0 < 2 * u / (1 + u) ^ (2 : ℕ) := by
     exact div_pos (mul_pos (by norm_num) hu0)
       (sq_pos_of_pos (add_pos zero_lt_one hu0))
   have hhardPos : 0 < squarefreeMobiusCriticalFisherCutoffWardLimit u := by
@@ -81,9 +81,9 @@ theorem mobiusCriticalSoftHardReporterEscapeUniversality :
       tendsto_infiniteMobiusCriticalFisherTangentDampedCoefficient hu.le
     have hlimit := hweak.sub hmoving
     have heq := tendsto_nhds_unique hlimit htrack
-    have hne : ((2 * u / (1 + u) ^ 2 : ℝ) : ℂ) ≠ 0 :=
+    have hne : ((2 * u / (1 + u) ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr hsoftPos.ne'
-    have heq' : -((2 * u / (1 + u) ^ 2 : ℝ) : ℂ) = 0 := by
+    have heq' : -((2 * u / (1 + u) ^ (2 : ℕ) : ℝ) : ℂ) = 0 := by
       simpa using heq
     exact hne (neg_eq_zero.mp heq')
   · intro htrack

@@ -23,7 +23,7 @@ open GaloisForLFunctions.HTGeometry
 open D4BMHorizon D4BMFundamentalScalarMetric D4BMModularCore
 open D4BMMetricReconstruction
 open D4BMCausalKernel D4BMFullAngularReconstruction D4BMFullAngularGoursat
-open D4BMFullAngularGrowth D4BMNativeCircle
+open D4BMFullAngularGrowth D4BMFullAngularCircle D4BMNativeCircle
 open D4BMLiteralPeierlsPhysicalFrequency D4BMLiteralPeierlsStream
 
 noncomputable section

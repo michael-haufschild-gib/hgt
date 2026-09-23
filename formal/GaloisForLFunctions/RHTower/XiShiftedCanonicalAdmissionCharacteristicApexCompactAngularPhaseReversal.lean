@@ -21,21 +21,21 @@ def xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity (y : ℝ) (n : ℕ)
       (fun v => xiShiftedCanonicalAdmissionApexValue v n) y -
     xiShiftedCanonicalAdmissionApexValue y n * deriv
       (fun v => xiShiftedCanonicalAdmissionApexValue v (n + 1)) y) /
-    (xiShiftedCanonicalAdmissionApexValue y n ^ 2 +
-      xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2)
+    (xiShiftedCanonicalAdmissionApexValue y n ^ (2 : ℕ) +
+      xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ))
 
 theorem xiShiftedCanonicalAdmissionApexProjectiveNormSq_pos
     {y : ℝ} (hy : 0 < y) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 3)).PosDef) :
-    0 < xiShiftedCanonicalAdmissionApexValue y n ^ 2 +
-      xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ 2 := by
+    0 < xiShiftedCanonicalAdmissionApexValue y n ^ (2 : ℕ) +
+      xiShiftedCanonicalAdmissionApexValue y (n + 1) ^ (2 : ℕ) := by
   by_cases hAn : xiShiftedCanonicalAdmissionApexValue y n = 0
   · have hNextNe := xiShiftedCanonicalAdmissionApexValue_succ_ne_zero_of_contact
       hy hn hH hAn
     rw [hAn]
     simpa using sq_pos_of_ne_zero hNextNe
-  · have hAnSq : 0 < xiShiftedCanonicalAdmissionApexValue y n ^ 2 :=
+  · have hAnSq : 0 < xiShiftedCanonicalAdmissionApexValue y n ^ (2 : ℕ) :=
       sq_pos_of_ne_zero hAn
     nlinarith [sq_nonneg (xiShiftedCanonicalAdmissionApexValue y (n + 1))]
 
@@ -46,7 +46,7 @@ theorem xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity_eq_deriv_ratio
     (hdenom : xiShiftedCanonicalAdmissionApexValue y (n + 1) ≠ 0) :
     xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity y n =
       deriv (fun v => xiShiftedCanonicalAdmissionApexProjectiveTopRatio v n) y /
-        (1 + xiShiftedCanonicalAdmissionApexProjectiveTopRatio y n ^ 2) := by
+        (1 + xiShiftedCanonicalAdmissionApexProjectiveTopRatio y n ^ (2 : ℕ)) := by
   rw [(hasDerivAt_xiShiftedCanonicalAdmissionApexProjectiveTopRatio_eq_riccati
     hy hn hH hdenom).deriv]
   unfold xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity
@@ -115,23 +115,23 @@ theorem xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity_denominator_con
 
 theorem tendsto_fourth_mul_xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity_quarter
     {n : ℕ} (hn : 0 < n) :
-    Tendsto (fun w : ℝ => w ^ 4 * xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity (w ^ 2) n)
+    Tendsto (fun w : ℝ => w ^ (4 : ℕ) * xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity (w ^ (2 : ℕ)) n)
       atTop (nhds (1 / 4 : ℝ)) := by
   let r : ℝ → ℝ := fun w =>
-    xiShiftedCanonicalAdmissionApexProjectiveTopRatio (w ^ 2) n / w ^ 2
+    xiShiftedCanonicalAdmissionApexProjectiveTopRatio (w ^ (2 : ℕ)) n / w ^ (2 : ℕ)
   let d : ℝ → ℝ := fun w => deriv
-    (fun y => xiShiftedCanonicalAdmissionApexProjectiveTopRatio y n) (w ^ 2)
+    (fun y => xiShiftedCanonicalAdmissionApexProjectiveTopRatio y n) (w ^ (2 : ℕ))
   have hr : Tendsto r atTop (nhds 4) :=
     tendsto_xiShiftedCanonicalAdmissionApexProjectiveTopRatio_square_div_square_four hn
   have hd : Tendsto d atTop (nhds 4) :=
     tendsto_deriv_xiShiftedCanonicalAdmissionApexProjectiveTopRatio_square_four hn
-  have hinv4 : Tendsto (fun w : ℝ => w⁻¹ ^ 4) atTop (nhds 0) :=
+  have hinv4 : Tendsto (fun w : ℝ => w⁻¹ ^ (4 : ℕ)) atTop (nhds 0) :=
     by simpa using ((tendsto_inv_atTop_zero (𝕜 := ℝ)).pow 4)
-  have hden : Tendsto (fun w : ℝ => w⁻¹ ^ 4 + r w ^ 2) atTop (nhds 16) := by
+  have hden : Tendsto (fun w : ℝ => w⁻¹ ^ (4 : ℕ) + r w ^ (2 : ℕ)) atTop (nhds 16) := by
     have hraw := hinv4.add (hr.pow 2)
     convert hraw using 1
     · norm_num
-  have hlim : Tendsto (fun w : ℝ => d w / (w⁻¹ ^ 4 + r w ^ 2)) atTop
+  have hlim : Tendsto (fun w : ℝ => d w / (w⁻¹ ^ (4 : ℕ) + r w ^ (2 : ℕ))) atTop
       (nhds (1 / 4 : ℝ)) := by
     have hraw := hd.div hden (by norm_num : (16 : ℝ) ≠ 0)
     convert hraw using 1
@@ -154,7 +154,7 @@ theorem tendsto_fourth_mul_xiShiftedCanonicalAdmissionApexProjectiveAngularVeloc
       (xiShiftedFarRightNormalizedMoment w) (n + 4)).PosDef := by
     simpa [xiShiftedFarRightNormalizedHankelMatrix] using hN
   have hA' : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 4)).PosDef := hA
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 4)).PosDef := hA
   have hNnext := XiShiftedCanonicalAdmission.momentHankel_posDef_of_le
     (by omega : n + 1 ≤ n + 4) hN'
   have hAnext := XiShiftedCanonicalAdmission.momentHankel_posDef_of_le
@@ -162,7 +162,7 @@ theorem tendsto_fourth_mul_xiShiftedCanonicalAdmissionApexProjectiveAngularVeloc
   have hsourceNext :=
     XiShiftedCanonicalAdmission.sourceCoordinateAdmission_eq_actualAdmission
       hw (by omega : 0 < n + 1) (ne_of_gt hNnext.det_pos) (ne_of_gt hAnext.det_pos)
-  have hdenom : xiShiftedCanonicalAdmissionApexValue (w ^ 2) (n + 1) ≠ 0 := by
+  have hdenom : xiShiftedCanonicalAdmissionApexValue (w ^ (2 : ℕ)) (n + 1) ≠ 0 := by
     rw [xiShiftedCanonicalAdmissionApexValue, ← hsourceNext,
       xiShiftedSourceCoordinateAdmission_eval_inv_square hw0]
     exact mul_ne_zero (inv_ne_zero (pow_ne_zero _ hw0)) hQnextNe
@@ -175,11 +175,11 @@ theorem tendsto_fourth_mul_xiShiftedCanonicalAdmissionApexProjectiveAngularVeloc
 
 theorem xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity_square_eventually_pos
     {n : ℕ} (hn : 0 < n) :
-    ∀ᶠ w : ℝ in atTop, 0 < xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity (w ^ 2) n := by
+    ∀ᶠ w : ℝ in atTop, 0 < xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity (w ^ (2 : ℕ)) n := by
   have hscaled := (tendsto_fourth_mul_xiShiftedCanonicalAdmissionApexProjectiveAngularVelocity_quarter hn).eventually
     (Ioi_mem_nhds (by norm_num : (0 : ℝ) < 1 / 4))
   filter_upwards [hscaled, eventually_gt_atTop (0 : ℝ)] with w hscaledPos hw
-  have hw4 : 0 < w ^ 4 := pow_pos hw 4
+  have hw4 : 0 < w ^ (4 : ℕ) := pow_pos hw 4
   nlinarith
 
 end

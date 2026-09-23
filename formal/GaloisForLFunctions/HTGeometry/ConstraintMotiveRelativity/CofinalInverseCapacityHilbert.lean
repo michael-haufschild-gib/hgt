@@ -9,7 +9,7 @@ For a finite-dimensional port stage `S` inside the domain of `T` on which `T` is
 `T_S` for the restriction of `T` to `S` and `G_S = T_S T_S^*`.  Then `G_S` is invertible, `Q_S`
 denotes its inverse, the minimum-norm lift of `y` is `T_S^* Q_S y`, and
 
-`q_S(y)^2 = re ⟪Q_S y, y⟫`.
+`q_S(y)^(2 : ℕ) = re ⟪Q_S y, y⟫`.
 
 Along a tower the Gram quadratic forms increase and the inverse capacities decrease; the inverse
 capacities converge to an operator `Q_∞` whose quadratic form is the square of the limiting filling
@@ -72,7 +72,7 @@ theorem inner_portCoLift_portCoLift (z w : Y) :
   rw [inner_portCoLift T S h z _ (portCoLift_mem T S h w), portGram_apply]
 
 /-- The **stage capacity**: the Gram quadratic form. -/
-noncomputable def portCapacity (z : Y) : ℝ := ‖((portCoLift T S h z : T.domain) : X)‖ ^ 2
+noncomputable def portCapacity (z : Y) : ℝ := ‖((portCoLift T S h z : T.domain) : X)‖ ^ (2 : ℕ)
 
 theorem portCapacity_eq (z : Y) : portCapacity T S h z = RCLike.re ⟪z, portGram T S h z⟫_𝕜 := by
   have hz := inner_portCoLift_portCoLift T S h z z
@@ -176,7 +176,7 @@ theorem portMinLift_mem (hs : PortFilling T S) (y : Y) :
 
 /-- The squared minimum filling energy is the inverse-capacity quadratic form. -/
 theorem normSq_portMinLift (hs : PortFilling T S) (y : Y) :
-    ‖((portMinLift T S h hs y : T.domain) : X)‖ ^ 2 = RCLike.re ⟪portInvGram T S h hs y, y⟫_𝕜 := by
+    ‖((portMinLift T S h hs y : T.domain) : X)‖ ^ (2 : ℕ) = RCLike.re ⟪portInvGram T S h hs y, y⟫_𝕜 := by
   have hc := portCapacity_eq T S h (portInvGram T S h hs y)
   rw [portGram_portInvGram] at hc
   exact hc
@@ -207,7 +207,7 @@ theorem portFillNorm_eq (hs : PortFilling T S) (y : Y) :
 /-- **Exact inverse-capacity formula.**  The squared stage filling norm is the quadratic form of
 the inverse Gram operator. -/
 theorem portFillNorm_sq (hs : PortFilling T S) (y : Y) :
-    portFillNorm T S y ^ 2 = RCLike.re ⟪portInvGram T S h hs y, y⟫_𝕜 := by
+    portFillNorm T S y ^ (2 : ℕ) = RCLike.re ⟪portInvGram T S h hs y, y⟫_𝕜 := by
   rw [portFillNorm_eq T S h hs y, normSq_portMinLift]
 
 theorem inner_portMinLift (hs : PortFilling T S) (y z : Y) :
@@ -261,7 +261,7 @@ theorem inner_minLift (k : ℕ) (y z : Y) :
   inner_portMinLift T _ (P.toPortTower.stage_le _) (P.toPortTower.filling_add k) y z
 
 theorem re_inner_invGram (k : ℕ) (y : Y) :
-    RCLike.re ⟪P.invGram k y, y⟫_𝕜 = P.toPortTower.fillNorm k y ^ 2 :=
+    RCLike.re ⟪P.invGram k y, y⟫_𝕜 = P.toPortTower.fillNorm k y ^ (2 : ℕ) :=
   (portFillNorm_sq T (P.stage (P.base + k)) (P.toPortTower.stage_le _)
     (P.toPortTower.filling_add k) y).symm
 
@@ -301,7 +301,7 @@ theorem inner_minLift_sub {k l : ℕ} (hkl : k ≤ l) (y z : Y) :
 
 /-- The Pythagorean decomposition of nested minimum-norm lifts. -/
 theorem normSq_minLift_sub {k l : ℕ} (hkl : k ≤ l) (y : Y) :
-    ‖P.minLift k y - P.minLift l y‖ ^ 2 = ‖P.minLift k y‖ ^ 2 - ‖P.minLift l y‖ ^ 2 := by
+    ‖P.minLift k y - P.minLift l y‖ ^ (2 : ℕ) = ‖P.minLift k y‖ ^ (2 : ℕ) - ‖P.minLift l y‖ ^ (2 : ℕ) := by
   have hperp : ⟪P.minLift l y, P.minLift k y - P.minLift l y⟫_𝕜 = 0 :=
     P.inner_minLift_sub hkl y y
   have hpy := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (P.minLift l y)
@@ -340,7 +340,7 @@ theorem norm_invGram_le {C : ℝ} (hC0 : 0 ≤ C)
     (k : ℕ) (y : Y) : ‖P.invGram k y‖ ≤ C * ‖P.minLift k y‖ := by
   set w := P.invGram k y with hw
   have hinner : ⟪w, w⟫_𝕜 = ⟪P.minLift k y, P.minLift k w⟫_𝕜 := (P.inner_minLift k y w).symm
-  have hsq : ‖w‖ ^ 2 = RCLike.re ⟪w, w⟫_𝕜 := (inner_self_eq_norm_sq w).symm
+  have hsq : ‖w‖ ^ (2 : ℕ) = RCLike.re ⟪w, w⟫_𝕜 := (inner_self_eq_norm_sq w).symm
   have hbound : RCLike.re ⟪P.minLift k y, P.minLift k w⟫_𝕜 ≤ ‖P.minLift k y‖ * (C * ‖w‖) := by
     refine le_trans (RCLike.re_le_norm _) (le_trans (norm_inner_le_norm _ _) ?_)
     exact mul_le_mul_of_nonneg_left (hC k w) (norm_nonneg _)
@@ -359,7 +359,7 @@ theorem norm_invGram_sub_le {C : ℝ} (hC0 : 0 ≤ C)
   have hdefect := P.inner_invGram_sub hkl y w
   have hleft : ⟪w, w⟫_𝕜 = ⟪P.invGram k y, w⟫_𝕜 - ⟪P.invGram l y, w⟫_𝕜 := by
     rw [hw, inner_sub_left]
-  have hsq : ‖w‖ ^ 2 = RCLike.re ⟪w, w⟫_𝕜 := (inner_self_eq_norm_sq w).symm
+  have hsq : ‖w‖ ^ (2 : ℕ) = RCLike.re ⟪w, w⟫_𝕜 := (inner_self_eq_norm_sq w).symm
   rw [hleft, hdefect] at hsq
   have hbound : RCLike.re ⟪P.minLift k y - P.minLift l y, P.minLift k w⟫_𝕜
       ≤ ‖P.minLift k y - P.minLift l y‖ * (C * ‖w‖) := by
@@ -375,9 +375,9 @@ theorem cauchySeq_invGram (y : Y) : CauchySeq fun k => P.invGram k y := by
   obtain ⟨C, hCpos, hC⟩ := P.exists_minLift_bound
   rw [Metric.cauchySeq_iff]
   intro ε hε
-  have hsq : Tendsto (fun k => P.toPortTower.fillNorm k y ^ 2) atTop
-      (𝓝 (P.toPortTower.fillNormInf y ^ 2)) := (P.toPortTower.tendsto_fillNorm y).pow 2
-  obtain ⟨N, hN⟩ := Metric.cauchySeq_iff.mp hsq.cauchySeq ((ε / (C + 1)) ^ 2) (by positivity)
+  have hsq : Tendsto (fun k => P.toPortTower.fillNorm k y ^ (2 : ℕ)) atTop
+      (𝓝 (P.toPortTower.fillNormInf y ^ (2 : ℕ))) := (P.toPortTower.tendsto_fillNorm y).pow 2
+  obtain ⟨N, hN⟩ := Metric.cauchySeq_iff.mp hsq.cauchySeq ((ε / (C + 1)) ^ (2 : ℕ)) (by positivity)
   refine ⟨N, fun m hm n hn => ?_⟩
   have key : ∀ a b : ℕ, N ≤ a → N ≤ b → a ≤ b →
       ‖P.invGram a y - P.invGram b y‖ < ε := by
@@ -385,10 +385,10 @@ theorem cauchySeq_invGram (y : Y) : CauchySeq fun k => P.invGram k y := by
     have hd := hN b hb a ha
     have hpyth := P.normSq_minLift_sub hab y
     rw [P.norm_minLift, P.norm_minLift] at hpyth
-    have hlt : ‖P.minLift a y - P.minLift b y‖ ^ 2 < (ε / (C + 1)) ^ 2 := by
+    have hlt : ‖P.minLift a y - P.minLift b y‖ ^ (2 : ℕ) < (ε / (C + 1)) ^ (2 : ℕ) := by
       rw [hpyth]
-      have hgap : P.toPortTower.fillNorm a y ^ 2 - P.toPortTower.fillNorm b y ^ 2
-          ≤ dist (P.toPortTower.fillNorm b y ^ 2) (P.toPortTower.fillNorm a y ^ 2) := by
+      have hgap : P.toPortTower.fillNorm a y ^ (2 : ℕ) - P.toPortTower.fillNorm b y ^ (2 : ℕ)
+          ≤ dist (P.toPortTower.fillNorm b y ^ (2 : ℕ)) (P.toPortTower.fillNorm a y ^ (2 : ℕ)) := by
         rw [Real.dist_eq, abs_sub_comm]
         exact le_abs_self _
       linarith
@@ -433,7 +433,7 @@ theorem tendsto_limitInvGram (y : Y) :
 
 /-- **The limiting inverse capacity carries the limiting filling seminorm.** -/
 theorem re_inner_limitInvGram (y : Y) :
-    RCLike.re ⟪P.limitInvGram y, y⟫_𝕜 = P.toPortTower.fillNormInf y ^ 2 := by
+    RCLike.re ⟪P.limitInvGram y, y⟫_𝕜 = P.toPortTower.fillNormInf y ^ (2 : ℕ) := by
   have h1 : Tendsto (fun k => RCLike.re ⟪P.invGram k y, y⟫_𝕜) atTop
       (𝓝 (RCLike.re ⟪P.limitInvGram y, y⟫_𝕜)) := by
     have hinner : Tendsto (fun k => ⟪P.invGram k y, y⟫_𝕜) atTop
@@ -441,7 +441,7 @@ theorem re_inner_limitInvGram (y : Y) :
       (P.tendsto_limitInvGram y).inner tendsto_const_nhds
     exact (RCLike.continuous_re.tendsto _).comp hinner
   have h2 : Tendsto (fun k => RCLike.re ⟪P.invGram k y, y⟫_𝕜) atTop
-      (𝓝 (P.toPortTower.fillNormInf y ^ 2)) := by
+      (𝓝 (P.toPortTower.fillNormInf y ^ (2 : ℕ))) := by
     simp only [P.re_inner_invGram]
     exact (P.toPortTower.tendsto_fillNorm y).pow 2
   exact tendsto_nhds_unique h1 h2

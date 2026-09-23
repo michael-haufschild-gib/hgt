@@ -18,7 +18,7 @@ noncomputable section
 /-- **The mirrored distinct-node denominator.** -/
 theorem sub_mul_sub_conj_upperNode_mirrored (a b y : ℝ) :
     ((b : ℂ) - upperNode a y) * ((b : ℂ) - (starRingEnd ℂ) (upperNode b y))
-      = (y : ℂ) ^ 2 + Complex.I * (y : ℂ) * ((b : ℂ) - (a : ℂ)) := by
+      = (y : ℂ) ^ (2 : ℕ) + Complex.I * (y : ℂ) * ((b : ℂ) - (a : ℂ)) := by
   rw [sub_conj_upperNode_self, upperNode]
   ring_nf
   rw [Complex.I_sq]
@@ -28,7 +28,7 @@ theorem sub_mul_sub_conj_upperNode_mirrored (a b y : ℝ) :
 theorem im_sub_mul_sub_conj_mirrored (a b y : ℝ) :
     (((b : ℂ) - upperNode a y) *
       ((b : ℂ) - (starRingEnd ℂ) (upperNode b y))).im = y * (b - a) := by
-  have him2 : ((y : ℂ) ^ 2).im = 0 := by
+  have him2 : ((y : ℂ) ^ (2 : ℕ)).im = 0 := by
     rw [← Complex.ofReal_pow]
     exact Complex.ofReal_im _
   rw [sub_mul_sub_conj_upperNode_mirrored]
@@ -47,7 +47,7 @@ theorem norm_sub_mul_sub_conj_mirrored_ge (a b y : ℝ) :
 
 /-- **The mirrored distinct-node cross term is `O(y)`.** -/
 theorem norm_scaled_atomic_mirrored_le {a b : ℝ} {y : ℝ} (hy : y ≠ 0) (hab : b ≠ a) (c : ℂ) :
-    ‖(y : ℂ) ^ 2 * (c / (((b : ℂ) - upperNode a y) *
+    ‖(y : ℂ) ^ (2 : ℕ) * (c / (((b : ℂ) - upperNode a y) *
         ((b : ℂ) - (starRingEnd ℂ) (upperNode b y))))‖
       ≤ |y| * ‖c‖ / |b - a| := by
   have hyabs : (0 : ℝ) < |y| := abs_pos.2 hy
@@ -55,9 +55,9 @@ theorem norm_scaled_atomic_mirrored_le {a b : ℝ} {y : ℝ} (hy : y ≠ 0) (hab
   have hden := norm_sub_mul_sub_conj_mirrored_ge a b y
   have hdenpos : (0 : ℝ) < |y| * |b - a| := by positivity
   rw [norm_mul, norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs]
-  have hnum : |y| ^ 2 * (‖c‖ / ‖((b : ℂ) - upperNode a y) *
+  have hnum : |y| ^ (2 : ℕ) * (‖c‖ / ‖((b : ℂ) - upperNode a y) *
       ((b : ℂ) - (starRingEnd ℂ) (upperNode b y))‖)
-      ≤ |y| ^ 2 * (‖c‖ / (|y| * |b - a|)) := by
+      ≤ |y| ^ (2 : ℕ) * (‖c‖ / (|y| * |b - a|)) := by
     apply mul_le_mul_of_nonneg_left _ (by positivity)
     exact div_le_div_of_nonneg_left (norm_nonneg c) hdenpos hden
   refine le_trans hnum (le_of_eq ?_)

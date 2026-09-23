@@ -127,8 +127,8 @@ theorem tubeCosPotential_im (s t : ℝ) (y : Fin k → ℝ) :
 small rectangle. -/
 theorem tubeDatum_tubeCosPotential {ρ₀ ρ ρ₁ ρ₂ ρ₃ T : ℝ} (hρ₀ : 0 < ρ₀)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Real.cosh ((k : ℝ) * ρ₀) * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2
-      / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Real.cosh ((k : ℝ) * ρ₀) * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2
+      / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 < ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 < ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 < ρ₃) (hρ₃ : ρ₃ < ρ₂) :
     TubeDatum (tubeCosPotential (k := k)) tubeCosPotentialFst tubeCosPotentialSnd ρ₀
@@ -161,7 +161,7 @@ theorem exists_tubeDatum_coupled (k : ℕ) :
         (∃ (s s' t : ℝ) (z : Fin k → ℂ), V s t z ≠ V s' t z) := by
   classical
   obtain ⟨T, hTpos, hsmall⟩ := exists_small_side
-    (A := 4 * (k : ℝ) + Real.cosh ((k : ℝ) * 1) * (1 : ℝ) ^ 2 / 4)
+    (A := 4 * (k : ℝ) + Real.cosh ((k : ℝ) * 1) * (1 : ℝ) ^ (2 : ℕ) / 4)
     (B := ((1 : ℝ) - 1 / 2) / 2)
     (by positivity) (by norm_num)
   refine ⟨tubeCosPotential, tubeCosPotentialFst, tubeCosPotentialSnd, 1,

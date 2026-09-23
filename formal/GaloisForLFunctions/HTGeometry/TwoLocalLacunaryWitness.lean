@@ -234,7 +234,7 @@ theorem exists_twoLocal_lacunary_smallCollision (m : ℕ) (c : ℚ)
       linarith
     have hsum : B + 2 * K / w 0 < A := by linarith
     have hnn : 0 ≤ B + 2 * K / w 0 := by positivity
-    calc (B + 2 * K / w 0) ^ 2 < A ^ 2 := by nlinarith
+    calc (B + 2 * K / w 0) ^ (2 : ℕ) < A ^ (2 : ℕ) := by nlinarith
       _ = 4 * (2 / 3 : ℝ) ^ (m + 1) := by rw [sq]; exact hAsq
 
 end

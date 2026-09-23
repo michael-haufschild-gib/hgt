@@ -39,7 +39,7 @@ theorem egbFixedChargeA_large_heat_capacity_temperature_gap_limit (w φ l : ℝ)
 theorem egbFixedChargeA_small_heat_capacity_pressure_gap_limit (w φ l : ℝ) :
     Tendsto (fun τ => egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l
       (egbFixedChargeASmallRadius w φ τ) * (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ))
-      atBot (𝓝 ((1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ 2 /
+      atBot (𝓝 ((1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ) /
         (6 * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ)))) := by
   have h := (egbFixedChargeA_small_heat_capacity_amplitude w φ l).mul (egbFixedChargeAPressureGap_quadratic_critical_limit w φ)
   rw [egbFixedChargeACriticalHeatAmplitude_pressure_product] at h
@@ -51,7 +51,7 @@ theorem egbFixedChargeA_small_heat_capacity_pressure_gap_limit (w φ l : ℝ) :
 theorem egbFixedChargeA_large_heat_capacity_pressure_gap_limit (w φ l : ℝ) :
     Tendsto (fun τ => egbHeatCapacityA (egbFixedChargeAPressure w φ τ) (exp w * cos φ) (exp w * sin φ) l
       (egbFixedChargeALargeRadius w φ τ) * (egbFixedChargeACriticalPressure w φ - egbFixedChargeAPressure w φ τ))
-      atBot (𝓝 ((1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ 2 /
+      atBot (𝓝 ((1 + 2 * egbFixedChargeACriticalCouplingWeight φ) ^ (2 : ℕ) /
         (6 * (1 + 6 * egbFixedChargeACriticalCouplingWeight φ)))) := by
   have h := (egbFixedChargeA_large_heat_capacity_amplitude w φ l).mul (egbFixedChargeAPressureGap_quadratic_critical_limit w φ)
   rw [egbFixedChargeACriticalHeatAmplitude_pressure_product] at h

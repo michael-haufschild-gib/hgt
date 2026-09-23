@@ -28,7 +28,7 @@ private lemma bernsteinEllipsePhase_mul_relation
     rw [hu1] at him
     exact him rfl
   rw [bernsteinEllipsePhase]
-  have huu : u * (starRingEnd ℂ) u = (‖u‖ ^ 2 : ℂ) := by
+  have huu : u * (starRingEnd ℂ) u = (‖u‖ ^ (2 : ℕ) : ℂ) := by
     simpa using Complex.mul_conj' u
   rw [show u * ((starRingEnd ℂ u / (‖u‖ : ℂ)) *
       ((1 - u) / (‖1 - u‖ : ℂ))) =
@@ -60,9 +60,9 @@ private lemma bernsteinEllipsePhase_re_ne_one
     {u : ℂ} (him : u.im ≠ 0) : (bernsteinEllipsePhase u).re ≠ 1 := by
   intro hre
   have hnorm := bernsteinEllipsePhase_norm_eq_one him
-  have hnormSq : ‖bernsteinEllipsePhase u‖ ^ 2 = 1 := by
+  have hnormSq : ‖bernsteinEllipsePhase u‖ ^ (2 : ℕ) = 1 := by
     nlinarith
-  have hsq : (bernsteinEllipsePhase u).im ^ 2 = 0 := by
+  have hsq : (bernsteinEllipsePhase u).im ^ (2 : ℕ) = 0 := by
     rw [Complex.sq_norm, Complex.normSq_apply] at hnormSq
     nlinarith
   have him0 : (bernsteinEllipsePhase u).im = 0 := sq_eq_zero_iff.mp hsq
@@ -73,8 +73,8 @@ private lemma bernsteinEllipsePhase_re_ne_one
 
 private lemma norm_real_add_real_mul_sq
     (a b : ℝ) (w : ℂ) :
-    ‖(a : ℂ) + (b : ℂ) * w‖ ^ 2 =
-      a ^ 2 + b ^ 2 * ‖w‖ ^ 2 + 2 * a * b * w.re := by
+    ‖(a : ℂ) + (b : ℂ) * w‖ ^ (2 : ℕ) =
+      a ^ (2 : ℕ) + b ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) + 2 * a * b * w.re := by
   rw [Complex.sq_norm, Complex.normSq_apply]
   simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re,
     Complex.ofReal_im, zero_mul, sub_zero, Complex.add_im,
@@ -174,11 +174,11 @@ theorem eq_or_eq_one_sub_conj_of_bernsteinEllipsePhase_eq_of_amplitude_eq
     have h := bernsteinEllipse_den_norm hvim
     rw [hphase] at h
     simpa only [c, d, w] using h
-  have huSq : ‖(a : ℂ) + (b : ℂ) * w‖ ^ 2 = 1 := by nlinarith
-  have hvSq : ‖(c : ℂ) + (d : ℂ) * w‖ ^ 2 = 1 := by nlinarith
+  have huSq : ‖(a : ℂ) + (b : ℂ) * w‖ ^ (2 : ℕ) = 1 := by nlinarith
+  have hvSq : ‖(c : ℂ) + (d : ℂ) * w‖ ^ (2 : ℕ) = 1 := by nlinarith
   rw [norm_real_add_real_mul_sq, hw] at huSq hvSq
   have hsum : c + d = a + b := by simpa only [a, b, c, d] using hamp
-  have hsumSq : (c + d) ^ 2 = (a + b) ^ 2 := by rw [hsum]
+  have hsumSq : (c + d) ^ (2 : ℕ) = (a + b) ^ (2 : ℕ) := by rw [hsum]
   have hprod : c * d = a * b := by
     have hzero : (c * d - a * b) * (w.re - 1) = 0 := by
       nlinarith [hsumSq]
@@ -211,7 +211,7 @@ theorem eq_or_eq_one_sub_conj_of_bernsteinEllipsePhase_eq_of_amplitude_eq
     rw [hcb', hda] at hvRel
     have hstarw : star w * w = 1 := by
       calc
-        star w * w = (‖w‖ ^ 2 : ℂ) := by simpa using Complex.conj_mul' w
+        star w * w = (‖w‖ ^ (2 : ℕ) : ℂ) := by simpa using Complex.conj_mul' w
         _ = 1 := by rw [hw]; norm_num
     have huStar :
         (a : ℂ) * (1 - star u) = (b : ℂ) * (star u * star w) := by

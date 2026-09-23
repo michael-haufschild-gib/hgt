@@ -36,7 +36,7 @@ def recipSymbolJet (C : Type*) [Field C] (k : ℕ) : FreeScalarJetField C :=
 
 omit [CharZero C] in
 theorem recipSymbol_eq :
-    recipSymbol C = -((freeCoordinate C ℕ 0)⁻¹ ^ 2) := by
+    recipSymbol C = -((freeCoordinate C ℕ 0)⁻¹ ^ (2 : ℕ)) := by
   rw [recipSymbol, recipBase, Derivation.leibniz_inv,
     freeCoordinateDerivation_freeCoordinate_self, smul_eq_mul, mul_one]
 
@@ -76,7 +76,7 @@ theorem freeCoordinateDerivation_recipSymbolJet_top (k : ℕ) :
 
 theorem freeCoordinateDerivation_recipSymbol_eq :
     freeCoordinateDerivation C ℕ 0 (recipSymbol C) =
-      2 * ((freeCoordinate C ℕ 0)⁻¹) ^ 3 := by
+      2 * ((freeCoordinate C ℕ 0)⁻¹) ^ (3 : ℕ) := by
   rw [recipSymbol_eq, map_neg, Derivation.leibniz_pow, Derivation.leibniz_inv,
     freeCoordinateDerivation_freeCoordinate_self]
   simp only [smul_eq_mul, mul_one, nsmul_eq_mul, Nat.cast_ofNat]

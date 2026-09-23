@@ -66,15 +66,15 @@ theorem qnmLorentz_eliminated_residual (L1 L2 W : E →ₗ[ℂ] E)
     (g w d mu z : ℂ) (f : E) :
     qnmQuadraticPencil (qnmLorentzStiffness L1 g w)
       (qnmLorentzDamping L2 d) (qnmLorentzMass W mu) z
-      (f, (z ^ 2 + d * z + w ^ 2)⁻¹ • (g • f)) =
+      (f, (z ^ (2 : ℕ) + d * z + w ^ (2 : ℕ))⁻¹ • (g • f)) =
       (qnmQuadraticPencil L1 L2 W z f -
-          (z ^ 2 * mu * (z ^ 2 + d * z + w ^ 2)⁻¹ * g) • f,
-        if z ^ 2 + d * z + w ^ 2 = 0 then g • f else 0) := by
+          (z ^ (2 : ℕ) * mu * (z ^ (2 : ℕ) + d * z + w ^ (2 : ℕ))⁻¹ * g) • f,
+        if z ^ (2 : ℕ) + d * z + w ^ (2 : ℕ) = 0 then g • f else 0) := by
   rw [qnmLorentzQuadratic_residual]
   apply Prod.ext
   · simp [qnmQuadraticPencil, smul_add, smul_smul]
     module
-  · by_cases h : z ^ 2 + d * z + w ^ 2 = 0
+  · by_cases h : z ^ (2 : ℕ) + d * z + w ^ (2 : ℕ) = 0
     · simp [h]
     · simp [h, smul_smul]
 

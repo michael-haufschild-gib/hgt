@@ -11,8 +11,8 @@ truncated at `L`.  All three inputs the general theorem asks for are then closed
 the corpus:
 
 * the two prime weights are supported on primes in `[1, N₀]` and `[1, M]`;
-* the coefficients of the triple convolution are bounded by `(log n)^4/(log 2)^3`, hence uniformly by
-  `(log(N₀ML))^4/(log 2)^3` on the support;
+* the coefficients of the triple convolution are bounded by `(log n)^(4 : ℕ)/(log 2)^(3 : ℕ)`, hence uniformly by
+  `(log(N₀ML))^(4 : ℕ)/(log 2)^(3 : ℕ)` on the support;
 * the third factor's size on the line is its damped `ℓ¹` mass, at most `1 + log L`.
 
 So the Perron step of the recursion is an unconditional inequality in which the only free parameters are

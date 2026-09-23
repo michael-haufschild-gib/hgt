@@ -66,8 +66,8 @@ theorem main_recovery {t s r : ℕ} (hr : 0 < r) (hrt : r ∣ 2 ^ t)
 /-! ### Register-size bridges -/
 
 /-- If an order `r` is strictly below a modulus `N`, the Shor-style public
-register-size bound `N^2 <= 2^t` supplies the scaled-error hypothesis
-`r^2 < 2^t`. -/
+register-size bound `N^(2 : ℕ) <= 2^t` supplies the scaled-error hypothesis
+`r^(2 : ℕ) < 2^t`. -/
 theorem publicRegisterBound_implies_scaledError_of_order_lt_modulus {N r t : ℕ}
     (hrN : r < N) (hregister : N ^ 2 ≤ 2 ^ t) :
     (r : ℝ) ^ 2 < (2 : ℝ) ^ t := by
@@ -90,7 +90,7 @@ theorem largeRegister_of_order_le_modulus {N r t : ℕ}
     12 * r ≤ 2 ^ t := by
   nlinarith
 
-/-- For moduli at least `12`, Shor's public register lower bound `N^2 <= 2^t`
+/-- For moduli at least `12`, Shor's public register lower bound `N^(2 : ℕ) <= 2^t`
 already supplies the large-register hypothesis used by the current finite
 source-joint probability route [Sho95, source.tex:1183-1185]. -/
 theorem largeRegister_of_publicRegisterBound_of_modulus_ge_twelve
@@ -105,7 +105,7 @@ theorem largeRegister_of_publicRegisterBound_of_modulus_ge_twelve
     _ ≤ 2 ^ t := hregister
 
 /-- In the small-modulus Shor register window, the public upper bound
-`2^t < 2N^2` gives a uniform finite search bound for the phase-register size
+`2^t < 2N^(2 : ℕ)` gives a uniform finite search bound for the phase-register size
 [Sho95, source.tex:1183-1185]. -/
 theorem smallModulus_publicRegisterWindow_t_lt_nine
     {N t : ℕ} (hN_lt : N < 12) (hhi : 2 ^ t < 2 * N ^ 2) :

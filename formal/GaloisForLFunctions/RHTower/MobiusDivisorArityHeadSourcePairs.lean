@@ -41,7 +41,7 @@ theorem mobiusDivisorArityHeadEnergy_eq_pairs (M : ℕ) (P : Finset ℕ) :
         refine ⟨?_, hp⟩
         by_contra hs
         exact hp (h (Or.inr ⟨hx, hs⟩))
-  have hhead : (mobiusDivisorSelectionFibre M P ∅)^2 =
+  have hhead : (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ) =
       ∑ d ∈ mobiusDivisorSelectionIndices M, ∑ e ∈ mobiusDivisorSelectionIndices M,
         if d.primeFactors ∆ e.primeFactors ⊆ P ∧ d.primeFactors \ P = ∅ then
           mobiusDivisorDilationChannel M d * mobiusDivisorDilationChannel M e
@@ -316,7 +316,7 @@ theorem mobiusDivisorArityHeadEnergy_empty_eq_diagonal (M : ℕ) :
     mobiusDivisorArityHeadEnergy M ∅ =
       ∑ d ∈ mobiusDivisorSelectionIndices M,
         ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
-          (mobiusDivisorDilationChannel M d)^2 := by
+          (mobiusDivisorDilationChannel M d)^(2 : ℕ) := by
   rw [mobiusDivisorArityHeadEnergy_eq_pairs]
   simp only [sdiff_empty]
   apply sum_congr rfl
@@ -333,7 +333,7 @@ theorem mobiusDivisorArityHeadEnergy_empty_eq_diagonal (M : ℕ) :
   change (∑ e ∈ mobiusDivisorSelectionIndices M, f e) = _
   have hpoint : f d =
       ((d.primeFactors.card : ℝ) + if d.primeFactors = ∅ then 1 else 0) *
-        (mobiusDivisorDilationChannel M d)^2 := by
+        (mobiusDivisorDilationChannel M d)^(2 : ℕ) := by
     dsimp [f]
     rw [if_pos (by simp)]
     ring

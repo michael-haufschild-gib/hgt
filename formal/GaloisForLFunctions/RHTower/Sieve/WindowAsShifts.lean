@@ -47,13 +47,13 @@ theorem window_eq_sum_shifts (f : ℕ → ℝ) (ℓ z : ℕ) :
 
 /-- The fixed-length window square, as a square of translates. -/
 theorem fixedWindowSq_eq_shifts (f : ℕ → ℝ) {ℓ : ℕ} (hℓ : 1 ≤ ℓ) (z : ℕ) :
-    fixedWindowSq f ℓ z = (∑ j ∈ Finset.Icc 1 ℓ, f (z + j)) ^ 2 := by
+    fixedWindowSq f ℓ z = (∑ j ∈ Finset.Icc 1 ℓ, f (z + j)) ^ (2 : ℕ) := by
   rw [fixedWindowSq_eq f hℓ z, window_eq_sum_shifts f ℓ z]
 
 /-- The dyadic mean square, in translate form. -/
 theorem dyadicMeanSquare_eq_shifts (f : ℕ → ℝ) {ℓ : ℕ} (hℓ : 1 ≤ ℓ) (A B : ℕ) :
     dyadicMeanSquare f ℓ A B
-      = ∑ z ∈ Finset.Icc A B, (∑ j ∈ Finset.Icc 1 ℓ, f (z + j)) ^ 2 := by
+      = ∑ z ∈ Finset.Icc A B, (∑ j ∈ Finset.Icc 1 ℓ, f (z + j)) ^ (2 : ℕ) := by
   rw [dyadicMeanSquare]
   exact Finset.sum_congr rfl fun z _ => fixedWindowSq_eq_shifts f hℓ z
 

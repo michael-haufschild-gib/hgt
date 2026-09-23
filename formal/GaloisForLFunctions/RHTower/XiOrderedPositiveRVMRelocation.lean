@@ -91,7 +91,7 @@ theorem exists_eventually_abs_routeKSmoothRVMCount_ordered_sub_succ_le :
 
 /-- On the large-height chamber, the smooth count gains at least logarithmic slope. -/
 theorem routeKSmoothRVMCount_sub_lower_log {a b : ℝ}
-    (ha : routeKRVMBase ^ 2 ≤ a) (hab : a ≤ b) :
+    (ha : routeKRVMBase ^ (2 : ℕ) ≤ a) (hab : a ≤ b) :
     (b - a) * Real.log a / (4 * Real.pi) ≤
       routeKSmoothRVMCount b - routeKSmoothRVMCount a := by
   have hbase0 : 0 < routeKRVMBase := routeKRVMBase_pos
@@ -107,7 +107,7 @@ theorem routeKSmoothRVMCount_sub_lower_log {a b : ℝ}
     Real.strictMonoOn_log.monotoneOn ha0 hb0 hab
   have htwoLog : 2 * Real.log routeKRVMBase ≤ Real.log a := by
     calc
-      2 * Real.log routeKRVMBase = Real.log (routeKRVMBase ^ 2) := by
+      2 * Real.log routeKRVMBase = Real.log (routeKRVMBase ^ (2 : ℕ)) := by
         rw [Real.log_pow]
         norm_num
       _ ≤ Real.log a := Real.strictMonoOn_log.monotoneOn
@@ -152,7 +152,7 @@ theorem exists_eventually_abs_xiOrderedPositiveOrdinate_sub_routeKRVMQuantile_le
     rw [hDdef]
     positivity
   refine ⟨D, hD, ?_⟩
-  set K : ℝ := max (routeKRVMBase ^ 2 + D)
+  set K : ℝ := max (routeKRVMBase ^ (2 : ℕ) + D)
     (max (2 * D) (Real.exp (2 * Real.log 2 + 1))) with hKdef
   have hlarge : ∀ᶠ n : ℕ in atTop, K ≤ xiOrderedPositiveOrdinate n :=
     tendsto_xiOrderedPositiveOrdinate_atTop.eventually (eventually_ge_atTop K)
@@ -160,10 +160,10 @@ theorem exists_eventually_abs_xiOrderedPositiveOrdinate_sub_routeKRVMQuantile_le
   set gamma : ℝ := xiOrderedPositiveOrdinate n with hgamma
   set t : ℝ := routeKRVMQuantile n with ht
   have hgammaK : K ≤ gamma := by simpa [hgamma] using hn
-  have hgammaBaseD : routeKRVMBase ^ 2 + D ≤ gamma := by
+  have hgammaBaseD : routeKRVMBase ^ (2 : ℕ) + D ≤ gamma := by
     exact le_trans (le_max_left _ _) (hKdef ▸ hgammaK)
-  have hgammaBase : routeKRVMBase ^ 2 ≤ gamma := by linarith
-  have hgammaMinusBase : routeKRVMBase ^ 2 ≤ gamma - D := by linarith
+  have hgammaBase : routeKRVMBase ^ (2 : ℕ) ≤ gamma := by linarith
+  have hgammaMinusBase : routeKRVMBase ^ (2 : ℕ) ≤ gamma - D := by linarith
   have hgammaTwoD : 2 * D ≤ gamma := by
     exact le_trans (le_max_left _ _) (le_trans (le_max_right _ _)
       (hKdef ▸ hgammaK))
@@ -212,7 +212,7 @@ theorem exists_eventually_abs_xiOrderedPositiveOrdinate_sub_routeKRVMQuantile_le
   · by_contra hnot
     have hfar : t + D < gamma := by linarith
     have htLe : t ≤ gamma - D := by linarith
-    have hbaseSq : routeKRVMBase < routeKRVMBase ^ 2 := by
+    have hbaseSq : routeKRVMBase < routeKRVMBase ^ (2 : ℕ) := by
       nlinarith [routeKRVMBase_pos, one_lt_routeKRVMBase]
     have hminusBase : routeKRVMBase < gamma - D :=
       hbaseSq.trans_le hgammaMinusBase
@@ -255,7 +255,7 @@ theorem summable_abs_xiOrderedPositiveOrdinate_inv_sub_routeKRVMQuantile_inv :
   have htLarge : ∀ᶠ n : ℕ in atTop, 2 * D ≤ routeKRVMQuantile n :=
     tendsto_routeKRVMQuantile_atTop.eventually (eventually_ge_atTop (2 * D))
   have hmajor : Summable (fun n : ℕ =>
-      (2 * D) * (routeKRVMQuantile n)⁻¹ ^ 2) :=
+      (2 * D) * (routeKRVMQuantile n)⁻¹ ^ (2 : ℕ)) :=
     summable_routeKRVMQuantile_reciprocal_sq.mul_left (2 * D)
   apply hmajor.of_norm_bounded_eventually
   rw [Nat.cofinite_eq_atTop]
@@ -270,19 +270,19 @@ theorem summable_abs_xiOrderedPositiveOrdinate_inv_sub_routeKRVMQuantile_inv :
     rw [abs_le] at hdistN'
     linarith
   have hgamma0 : 0 < gamma := lt_of_lt_of_le (half_pos ht0) hgammaHalf
-  have hdenLower : t ^ 2 / 2 ≤ gamma * t := by
+  have hdenLower : t ^ (2 : ℕ) / 2 ≤ gamma * t := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hgammaHalf) ht0.le]
   have hinvSub : gamma⁻¹ - t⁻¹ = (t - gamma) / (gamma * t) := by
     field_simp [hgamma0.ne', ht0.ne']
-  have hpoint : |gamma⁻¹ - t⁻¹| ≤ (2 * D) * t⁻¹ ^ 2 := by
+  have hpoint : |gamma⁻¹ - t⁻¹| ≤ (2 * D) * t⁻¹ ^ (2 : ℕ) := by
     rw [hinvSub, abs_div, abs_mul, abs_of_pos hgamma0, abs_of_pos ht0,
       abs_sub_comm]
     calc
       |gamma - t| / (gamma * t) ≤ D / (gamma * t) := by
         gcongr
-      _ ≤ D / (t ^ 2 / 2) := by
+      _ ≤ D / (t ^ (2 : ℕ) / 2) := by
         gcongr
-      _ = (2 * D) * t⁻¹ ^ 2 := by
+      _ = (2 * D) * t⁻¹ ^ (2 : ℕ) := by
         field_simp [ht0.ne']
   simpa only [Real.norm_eq_abs, abs_abs, hgamma, ht] using hpoint
 

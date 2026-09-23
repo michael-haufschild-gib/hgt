@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.SuzukiAntiPickIdentity
 # Exact chiral AIME residue between topological-black-hole QNM branches
 
 Birmingham--Mokhtari's signs `+xi` and `-xi` are the two QNM-frequency branches associated with
-one horizon-Laplacian eigenvalue `Q = 1/4 + xi^2`. They are not two angular-momentum eigenspaces.
+one horizon-Laplacian eigenvalue `Q = 1/4 + xi^(2 : ℕ)`. They are not two angular-momentum eigenspaces.
 Consequently a genuine transition between them is a nonadiabatic QNM projection problem, not an
 angular Noether commutator.
 
@@ -25,7 +25,7 @@ cross-branch moment
 `B(alpha_+ + alpha_- + 1, 2) = B(-1/2,2) = -4`.
 
 The radial Jacobian contributes `1/2`, and scalar/vector parity-to-helicity conversion contributes
-another `1/2`. In normalization `omega_4 deltaM/l^2 = 1`, the chiral mass-jet numerator is
+another `1/2`. In normalization `omega_4 deltaM/l^(2 : ℕ) = 1`, the chiral mass-jet numerator is
 
 `K_-+ = 3 B(-1/2,2)/(Q+2) = -12/(Q+2)`.
 
@@ -122,7 +122,7 @@ theorem d4FundamentalQNMCrossBranchChiralMassJetNumerator_xi_ne_zero
   rw [d4FundamentalQNMCrossBranchChiralMassJetNumerator_eq]
   exact div_ne_zero (by norm_num) (d4ThetaTeukolskyAngularQ_xi_add_two_ne_zero q)
 
-/-- Cubic AIME numerator: seed amplitude times absorbed mass `|A|^2` times cross-branch chiral
+/-- Cubic AIME numerator: seed amplitude times absorbed mass `|A|^(2 : ℕ)` times cross-branch chiral
 mass jet. -/
 def d4FundamentalQNMCrossBranchAIMENumerator (amplitude z : ℂ) : ℂ :=
   amplitude * (Complex.normSq amplitude : ℂ) *

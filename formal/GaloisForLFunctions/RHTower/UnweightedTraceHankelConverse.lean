@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.FiniteRegularizedDeterminant
 The usual positive-root trace--Hankel criterion inserts a spectral weight.  For a finite
 characteristic packet no weight is necessary: positivity of the unweighted Hermite form
 
-`Re sum_z w_z p(z)^2`
+`Re sum_z w_z p(z)^(2 : ℕ)`
 
 for every real polynomial already forces every packet point to be real.  The proof is local and
 coefficient-faithful.  A real polynomial isolates one nonreal conjugacy orbit and takes the values
@@ -29,7 +29,7 @@ theorem finite_unweightedTraceHankel_nonneg_implies_real
     (F : Finset ℂ) (w : ℂ → ℝ)
     (hw : ∀ z ∈ F, 0 < w z)
     (hpos : ∀ p : Polynomial ℝ,
-      0 ≤ (∑ z ∈ F, (((w z : ℝ) : ℂ) * evalRealPolynomial p z ^ 2)).re) :
+      0 ≤ (∑ z ∈ F, (((w z : ℝ) : ℂ) * evalRealPolynomial p z ^ (2 : ℕ))).re) :
     ∀ z ∈ F, z.im = 0 := by
   intro α hα
   by_contra him
@@ -44,7 +44,7 @@ theorem finite_unweightedTraceHankel_nonneg_implies_real
   have hpconj : evalRealPolynomial p ((starRingEnd ℂ) α) = -Complex.I := by
     rw [evalRealPolynomial_conj, hpα]
     simp
-  let term : ℂ → ℂ := fun z => ((w z : ℝ) : ℂ) * evalRealPolynomial p z ^ 2
+  let term : ℂ → ℂ := fun z => ((w z : ℝ) : ℂ) * evalRealPolynomial p z ^ (2 : ℕ)
   have htermα : (term α).re = -w α := by
     simp only [term, hpα, pow_two, Complex.I_mul_I, mul_neg, mul_one,
       Complex.neg_re, Complex.ofReal_re]
@@ -54,7 +54,7 @@ theorem finite_unweightedTraceHankel_nonneg_implies_real
     have hzα : z ≠ α := (Finset.mem_erase.mp hz).1
     by_cases hzc : z = (starRingEnd ℂ) α
     · subst z
-      have hsquare : (-Complex.I) ^ 2 = (-1 : ℂ) := by
+      have hsquare : (-Complex.I) ^ (2 : ℕ) = (-1 : ℂ) := by
         rw [pow_two, neg_mul_neg, Complex.I_mul_I]
       dsimp only [term]
       rw [hpconj, hsquare]
@@ -81,7 +81,7 @@ literal positive multiplicity, so no deduplication or root enumeration is requir
 theorem finiteFamily_unweightedTraceHankel_nonneg_implies_real
     {ι : Type*} [Fintype ι] (lam : ι → ℂ)
     (hpos : ∀ p : Polynomial ℝ,
-      0 ≤ (∑ i : ι, evalRealPolynomial p (lam i) ^ 2).re) :
+      0 ≤ (∑ i : ι, evalRealPolynomial p (lam i) ^ (2 : ℕ)).re) :
     ∀ i : ι, (lam i).im = 0 := by
   classical
   intro i
@@ -101,7 +101,7 @@ theorem finiteFamily_unweightedTraceHankel_nonneg_implies_real
   have hpconj : evalRealPolynomial p ((starRingEnd ℂ) α) = -Complex.I := by
     rw [evalRealPolynomial_conj, hpα]
     simp
-  let term : ι → ℂ := fun j => evalRealPolynomial p (lam j) ^ 2
+  let term : ι → ℂ := fun j => evalRealPolynomial p (lam j) ^ (2 : ℕ)
   have htermi : (term i).re = -1 := by
     simp only [term, α] at hpα ⊢
     rw [hpα, pow_two, Complex.I_mul_I]
@@ -116,7 +116,7 @@ theorem finiteFamily_unweightedTraceHankel_nonneg_implies_real
     · by_cases hjc : lam j = (starRingEnd ℂ) α
       · dsimp only [term]
         rw [hjc, hpconj]
-        have hsquare : (-Complex.I) ^ 2 = (-1 : ℂ) := by
+        have hsquare : (-Complex.I) ^ (2 : ℕ) = (-1 : ℂ) := by
           rw [pow_two, neg_mul_neg, Complex.I_mul_I]
         rw [hsquare]
         norm_num
@@ -186,7 +186,7 @@ theorem finiteFamily_unweightedTraceHankel_nonneg_degree_le_implies_real
     {ι : Type*} [Fintype ι] (lam : ι → ℂ)
     (hpos : ∀ p : Polynomial ℝ,
       p.natDegree ≤ 2 * Fintype.card ι + 1 →
-      0 ≤ (∑ i : ι, evalRealPolynomial p (lam i) ^ 2).re) :
+      0 ≤ (∑ i : ι, evalRealPolynomial p (lam i) ^ (2 : ℕ)).re) :
     ∀ i : ι, (lam i).im = 0 := by
   classical
   intro i
@@ -218,7 +218,7 @@ theorem finiteFamily_unweightedTraceHankel_nonneg_degree_le_implies_real
   have hpconj : evalRealPolynomial p ((starRingEnd ℂ) α) = -Complex.I := by
     rw [evalRealPolynomial_conj, hpα]
     simp
-  let term : ι → ℂ := fun j => evalRealPolynomial p (lam j) ^ 2
+  let term : ι → ℂ := fun j => evalRealPolynomial p (lam j) ^ (2 : ℕ)
   have htermi : (term i).re = -1 := by
     simp only [term, α] at hpα ⊢
     rw [hpα, pow_two, Complex.I_mul_I]
@@ -233,7 +233,7 @@ theorem finiteFamily_unweightedTraceHankel_nonneg_degree_le_implies_real
     · by_cases hjc : lam j = (starRingEnd ℂ) α
       · dsimp only [term]
         rw [hjc, hpconj]
-        have hsquare : (-Complex.I) ^ 2 = (-1 : ℂ) := by
+        have hsquare : (-Complex.I) ^ (2 : ℕ) = (-1 : ℂ) := by
           rw [pow_two, neg_mul_neg, Complex.I_mul_I]
         rw [hsquare]
         norm_num
@@ -282,7 +282,7 @@ theorem finiteMatrixUnweightedTraceHankel_eq_schur
     (hT : T.BlockTriangular id) (hMT : Uᴴ * M * U = T)
     (p : Polynomial ℝ) :
     finiteMatrixUnweightedTraceHankel M p =
-      ∑ i : m, evalRealPolynomial p (T i i) ^ 2 := by
+      ∑ i : m, evalRealPolynomial p (T i i) ^ (2 : ℕ) := by
   classical
   rw [finiteMatrixUnweightedTraceHankel]
   simp_rw [GaloisForLFunctions.HTGeometry.trace_pow_eq_sum_diag
@@ -301,7 +301,7 @@ theorem finiteMatrixUnweightedTraceHankel_eq_schur
           ((p.coeff r : ℝ) : ℂ) * ((p.coeff s : ℝ) : ℂ) *
             (T i i) ^ (r + s) := by
       exact Finset.sum_comm
-    _ = ∑ i : m, evalRealPolynomial p (T i i) ^ 2 := by
+    _ = ∑ i : m, evalRealPolynomial p (T i i) ^ (2 : ℕ) := by
       apply Finset.sum_congr rfl
       intro i hi
       rw [evalRealPolynomial_eq_sum_support, pow_two, Finset.sum_mul]

@@ -11,7 +11,7 @@ full Christoffel sum.
 
 After the radial normalization by `y`, the derivative is a single top-edge observable:
 
-`d/dy [(1/y) ∑_{n=0}^N A_n(y)^2 / N_n(y)]
+`d/dy [(1/y) ∑_{n=0}^N A_n(y)^(2 : ℕ) / N_n(y)]
   = -((N+1/2)/y) F_N(y)`.
 
 The sum is proved equal to the diagonal finite Christoffel--Darboux kernel.  Thus the remaining
@@ -28,7 +28,7 @@ noncomputable section
 
 /-- Norm-normalized degree shell of the moving characteristic apex. -/
 def xiShiftedCanonicalAdmissionApexChristoffelShell (y : ℝ) (n : ℕ) : ℝ :=
-  xiShiftedCanonicalAdmissionApexValue y n ^ 2 /
+  xiShiftedCanonicalAdmissionApexValue y n ^ (2 : ℕ) /
     xiShiftedCanonicalAdmissionNorm y n
 
 /-- Full finite diagonal Christoffel energy through degree `N`, including degree zero. -/
@@ -455,7 +455,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionApexRadialChristoffelEnergy_eq_zer
 positive chamber, leaving no Hankel-positivity premise. -/
 theorem hasDerivAt_xiShiftedCanonicalAdmissionApexRadialChristoffelEnergy_of_parabolicDegreeHorizon
     {y : ℝ} (N : ℕ)
-    (hy : routeUParabolicDegreeHorizon * (((N + 2 : ℕ) : ℝ) ^ 2) ≤ y) :
+    (hy : routeUParabolicDegreeHorizon * (((N + 2 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ y) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionApexRadialChristoffelEnergy v N)
       (-(((N : ℝ) + 1 / 2) / y) *
         xiShiftedCanonicalAdmissionApexDegreeFlux y N) y := by
@@ -472,7 +472,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionApexRadialChristoffelEnergy_of_par
 /-- Source-native parabolic law in the explicit adjacent-degree top-product form. -/
 theorem hasDerivAt_xiShiftedCanonicalAdmissionApexRadialChristoffelEnergy_eq_topProduct_of_parabolicDegreeHorizon
     {y : ℝ} (N : ℕ)
-    (hy : routeUParabolicDegreeHorizon * (((N + 2 : ℕ) : ℝ) ^ 2) ≤ y) :
+    (hy : routeUParabolicDegreeHorizon * (((N + 2 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ y) :
     HasDerivAt (fun v => xiShiftedCanonicalAdmissionApexRadialChristoffelEnergy v N)
       (-(((2 * N + 1 : ℕ) : ℝ) / y) *
         (xiShiftedCanonicalAdmissionApexValue y (N + 1) *

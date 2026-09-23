@@ -28,7 +28,7 @@ private theorem eventually_two_channel_window_count :
     tendsto_natCast_atTop_atTop.const_mul_atTop (by norm_num)
   have hcount := hcast.eventually (GaloisForLFunctions.HTGeometry.eventually_primeCount_window_ge
     (K := (9:ℝ)/8) (by norm_num))
-  filter_upwards [hcount,eventually_ge_atTop (22400^2:ℕ)] with N hc hN
+  filter_upwards [hcount,eventually_ge_atTop (22400^(2 : ℕ):ℕ)] with N hc hN
   have harg : (9/8:ℝ)*(8*(N:ℝ))=(9*N:ℕ) := by push_cast; ring
   have height : 8*(N:ℝ)=((8*N:ℕ):ℝ) := by push_cast; rfl
   rw [harg,height,Nat.floor_natCast,Nat.floor_natCast] at hc
@@ -40,8 +40,8 @@ private theorem eventually_two_channel_window_count :
   have hsq := Real.sq_sqrt hx0.le
   have hroot0 := Real.sqrt_nonneg ((8*N:ℕ):ℝ)
   have hroot : (22400:ℝ)≤Real.sqrt (8*N:ℕ) := by
-    have hn : (22400:ℝ)^2≤(8*N:ℕ) := by
-      exact_mod_cast (show 22400^2≤8*N from hN.trans (by omega))
+    have hn : (22400:ℝ)^(2 : ℕ)≤(8*N:ℕ) := by
+      exact_mod_cast (show 22400^(2 : ℕ)≤8*N from hN.trans (by omega))
     nlinarith only [hn,hsq,hroot0]
   have hdiv : Real.sqrt (8*N:ℕ)/2≤((8*N:ℕ):ℝ)/Real.log (8*N:ℕ) := by
     rw [le_div_iff₀ (Real.log_pos hx1)]
@@ -174,7 +174,7 @@ theorem eventually_exists_mobiusDivisorTwoChannelPrimeBlock :
     · have hg := Real.one_half_lt_eulerMascheroniConstant
       norm_num [primeFreeDivisorDefect]
       linarith only [hg]
-  have hsquare : (mobiusDivisorSelectionFibre (20*N) L ∅)^2≤((20*N:ℕ):ℝ)/225 := by
+  have hsquare : (mobiusDivisorSelectionFibre (20*N) L ∅)^(2 : ℕ)≤((20*N:ℕ):ℝ)/225 := by
     have hm := mul_nonneg (sub_nonneg.mpr h1) (add_nonneg h0 (by positivity : 0≤Real.sqrt (20*N:ℕ)/15))
     have hs := Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) (20*N))
     nlinarith only [hm,hs]

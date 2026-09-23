@@ -96,9 +96,9 @@ theorem upperHalfPlanePickKernel_elementary_eq_feature_mul_conj
       elementaryPickFeature alpha z *
         starRingEnd ℂ (elementaryPickFeature alpha w) := by
   rw [upperHalfPlanePickKernel_elementary halpha hz hw]
-  have hsqrt : Real.sqrt (2 * alpha.im) ^ 2 = 2 * alpha.im := by
+  have hsqrt : Real.sqrt (2 * alpha.im) ^ (2 : ℕ) = 2 * alpha.im := by
     exact Real.sq_sqrt (by positivity)
-  have hsqrtC : ((Real.sqrt (2 * alpha.im) : ℂ) ^ 2) =
+  have hsqrtC : ((Real.sqrt (2 * alpha.im) : ℂ) ^ (2 : ℕ)) =
       (2 * alpha.im : ℂ) := by
     exact_mod_cast hsqrt
   unfold elementaryPickFeature

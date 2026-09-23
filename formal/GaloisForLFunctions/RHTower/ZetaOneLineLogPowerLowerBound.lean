@@ -29,7 +29,7 @@ def zetaLowerLogConst : ℝ := (-22 - 3 * Real.log 2 - Real.log 4) / 4
 /-- **A power-of-log lower bound for `ζ` on `1 ≤ σ ≤ 5/4`.** -/
 theorem exists_lower_bound_riemannZeta_near_one_line :
     ∃ c t₀ : ℝ, 0 < c ∧ 9 ≤ t₀ ∧ ∀ σ t : ℝ, 1 ≤ σ → σ ≤ 5 / 4 → t₀ ≤ |t| →
-      c / (Real.log |t|) ^ 11 ≤ ‖riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by
+      c / (Real.log |t|) ^ (11 : ℕ) ≤ ‖riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by
   set K : ℝ := zetaLowerLogConst with hKdef
   refine ⟨Real.exp K / 2, max 9 (Real.exp (220 * Real.exp (-K))), by positivity,
     le_max_left _ _, ?_⟩
@@ -48,9 +48,9 @@ theorem exists_lower_bound_riemannZeta_near_one_line :
     have h2 := Real.log_le_log (Real.exp_pos _) h1
     rwa [Real.log_exp] at h2
   -- the shift
-  set δ : ℝ := 1 / L ^ 14 with hδdef
+  set δ : ℝ := 1 / L ^ (14 : ℕ) with hδdef
   have hδ0 : (0 : ℝ) < δ := by rw [hδdef]; positivity
-  have hL14 : (2 : ℝ) ^ 14 ≤ L ^ 14 := pow_le_pow_left₀ (by norm_num) hL2 14
+  have hL14 : (2 : ℝ) ^ (14 : ℕ) ≤ L ^ (14 : ℕ) := pow_le_pow_left₀ (by norm_num) hL2 14
   have hδsmall : δ ≤ 1 / 4 := by
     rw [hδdef, div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [hL14]
@@ -61,23 +61,23 @@ theorem exists_lower_bound_riemannZeta_near_one_line :
   have hApos : (0 : ℝ) < ‖riemannZeta (σ' : ℂ)‖ := by
     refine norm_pos_iff.2 (riemannZeta_ne_zero_of_one_lt_re ?_)
     simpa using hσ'1
-  have hAval : ‖riemannZeta (σ' : ℂ)‖ ≤ 2 * L ^ 14 := by
+  have hAval : ‖riemannZeta (σ' : ℂ)‖ ≤ 2 * L ^ (14 : ℕ) := by
     have hx0 : (0 : ℝ) < σ' - 1 := by linarith
     have hcast : ((σ' : ℝ) : ℂ) = 1 + ((σ' - 1 : ℝ) : ℂ) := by push_cast; ring
     rw [hcast]
     have hb := abs_riemannZeta_one_add_le hx0
-    have hinv : 1 / (σ' - 1) ≤ L ^ 14 := by
+    have hinv : 1 / (σ' - 1) ≤ L ^ (14 : ℕ) := by
       rw [div_le_iff₀ hx0]
       have hδle : δ ≤ σ' - 1 := by rw [hσ'def]; linarith
-      have hprod : δ * L ^ 14 = 1 := by
+      have hprod : δ * L ^ (14 : ℕ) = 1 := by
         rw [hδdef]
         field_simp
       nlinarith [hδle, hL14, hprod]
-    have hpow : (1 : ℝ) ≤ L ^ 14 := by nlinarith [hL14]
+    have hpow : (1 : ℝ) ≤ L ^ (14 : ℕ) := by nlinarith [hL14]
     linarith
   have hA : Real.log ‖riemannZeta (σ' : ℂ)‖ ≤ Real.log 2 + 14 * Real.log L := by
     have h := Real.log_le_log hApos hAval
-    have hval : Real.log (2 * L ^ 14) = Real.log 2 + 14 * Real.log L := by
+    have hval : Real.log (2 * L ^ (14 : ℕ)) = Real.log 2 + 14 * Real.log L := by
       rw [Real.log_mul (by norm_num) (by positivity), Real.log_pow]
       push_cast
       ring
@@ -118,15 +118,15 @@ theorem exists_lower_bound_riemannZeta_near_one_line :
   have hshiftpos : (0 : ℝ) < ‖riemannZeta ((σ' : ℂ) + (t : ℂ) * Complex.I)‖ := by
     refine norm_pos_iff.2 (riemannZeta_ne_zero_of_one_lt_re ?_)
     simpa using hσ'1
-  have hmain : Real.exp K / L ^ 11
+  have hmain : Real.exp K / L ^ (11 : ℕ)
       ≤ ‖riemannZeta ((σ' : ℂ) + (t : ℂ) * Complex.I)‖ := by
-    have hpos : (0 : ℝ) < Real.exp K / L ^ 11 := by positivity
-    have hlogval : Real.log (Real.exp K / L ^ 11) = K - 11 * Real.log L := by
+    have hpos : (0 : ℝ) < Real.exp K / L ^ (11 : ℕ) := by positivity
+    have hlogval : Real.log (Real.exp K / L ^ (11 : ℕ)) = K - 11 * Real.log L := by
       rw [Real.log_div (ne_of_gt (Real.exp_pos K)) (by positivity), Real.log_exp,
         Real.log_pow]
       push_cast
       ring
-    have hle : Real.log (Real.exp K / L ^ 11)
+    have hle : Real.log (Real.exp K / L ^ (11 : ℕ))
         ≤ Real.log ‖riemannZeta ((σ' : ℂ) + (t : ℂ) * Complex.I)‖ := by
       rw [hlogval]
       linarith [hshift, hlogL0]
@@ -152,7 +152,7 @@ theorem exists_lower_bound_riemannZeta_near_one_line :
     rw [ht0, abs_zero] at ht9
     linarith
   have hM : ∀ u ∈ Set.Icc (0 : ℝ) 1,
-      ‖deriv riemannZeta (z + (u : ℂ) * (w - z))‖ ≤ 110 * L ^ 2 := by
+      ‖deriv riemannZeta (z + (u : ℂ) * (w - z))‖ ≤ 110 * L ^ (2 : ℕ) := by
     intro u hu
     rw [hpt u]
     have hre : (((σ + u * δ : ℝ) : ℂ) + (t : ℂ) * Complex.I).re = σ + u * δ := by simp
@@ -166,17 +166,17 @@ theorem exists_lower_bound_riemannZeta_near_one_line :
       (by rw [hre]; linarith) (by rw [hre]; linarith) (by rw [him]; linarith)
     rw [him] at hbound
     exact hbound
-  have hseg := Sieve.norm_riemannZeta_sub_le (z := z) (c := w) (M := 110 * L ^ 2) hne hM
+  have hseg := Sieve.norm_riemannZeta_sub_le (z := z) (c := w) (M := 110 * L ^ (2 : ℕ)) hne hM
   have hnormwz : ‖w - z‖ = δ := by
     rw [hwz, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hδ0]
   rw [hnormwz] at hseg
-  have herr : 110 * L ^ 2 * δ * 1 = 110 / L ^ 12 := by
+  have herr : 110 * L ^ (2 : ℕ) * δ * 1 = 110 / L ^ (12 : ℕ) := by
     rw [hδdef]
     field_simp
   rw [herr] at hseg
   -- assemble
-  have hLpow : (0 : ℝ) < L ^ 11 := by positivity
-  have hsplit : (110 : ℝ) / L ^ 12 = (110 / L) / L ^ 11 := by
+  have hLpow : (0 : ℝ) < L ^ (11 : ℕ) := by positivity
+  have hsplit : (110 : ℝ) / L ^ (12 : ℕ) = (110 / L) / L ^ (11 : ℕ) := by
     field_simp
   have hsmall : (110 : ℝ) / L ≤ Real.exp K / 2 := by
     rw [div_le_iff₀ hL0]
@@ -187,16 +187,16 @@ theorem exists_lower_bound_riemannZeta_near_one_line :
     have hstep := mul_le_mul_of_nonneg_right hLbig hexp.le
     have h220 : (220 : ℝ) ≤ L * Real.exp K := by nlinarith [hstep, hinv]
     linarith [h220]
-  have hfin : Real.exp K / 2 / L ^ 11 ≤ ‖riemannZeta z‖ := by
-    have hstep : Real.exp K / L ^ 11 - 110 / L ^ 12 ≤ ‖riemannZeta z‖ := by
+  have hfin : Real.exp K / 2 / L ^ (11 : ℕ) ≤ ‖riemannZeta z‖ := by
+    have hstep : Real.exp K / L ^ (11 : ℕ) - 110 / L ^ (12 : ℕ) ≤ ‖riemannZeta z‖ := by
       have hd : ‖riemannZeta w‖ - ‖riemannZeta z‖ ≤ ‖riemannZeta w - riemannZeta z‖ :=
         norm_sub_norm_le _ _
       linarith [hseg, hmain, hd]
     rw [hsplit] at hstep
-    have hdiv : (110 / L) / L ^ 11 ≤ (Real.exp K / 2) / L ^ 11 :=
+    have hdiv : (110 / L) / L ^ (11 : ℕ) ≤ (Real.exp K / 2) / L ^ (11 : ℕ) :=
       div_le_div_of_nonneg_right hsmall hLpow.le
-    have hhalf : Real.exp K / L ^ 11 - (Real.exp K / 2) / L ^ 11
-        = (Real.exp K / 2) / L ^ 11 := by
+    have hhalf : Real.exp K / L ^ (11 : ℕ) - (Real.exp K / 2) / L ^ (11 : ℕ)
+        = (Real.exp K / 2) / L ^ (11 : ℕ) := by
       field_simp
       ring
     linarith [hstep, hdiv, hhalf.le, hhalf.ge]

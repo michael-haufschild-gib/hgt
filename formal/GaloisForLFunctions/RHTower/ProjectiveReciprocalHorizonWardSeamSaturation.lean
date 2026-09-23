@@ -24,7 +24,7 @@ theorem hypertranscendentalOver_projectiveReciprocalWardSeam_complete
     [Field E] [CharZero E] [Algebra C E] [Differential E]
     [DifferentialAlgebra C E]
     (x : E) (hx : HypertranscendentalOver C x) :
-    (x⁻¹)′ / x′ = -x⁻¹ ^ 2 ∧
+    (x⁻¹)′ / x′ = -x⁻¹ ^ (2 : ℕ) ∧
       (x⁻¹)′′ / (x⁻¹)′ - x′′ / x′ = -2 * (x′ / x) ∧
       (jetTailField C x 1 ⊓ jetTailField C x⁻¹ 1 ≠ ⊥ ∧
         ∀ {m n : ℕ}, 1 ≤ m → 1 ≤ n → (2 ≤ m ∨ 2 ≤ n) →

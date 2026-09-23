@@ -52,14 +52,14 @@ def cubicRecoveryCommutator : cubicDefectHilbert →L[ℝ] cubicDefectHilbert :=
 
 theorem cubicRecoveryCommutator_zero_basis :
     cubicRecoveryCommutator (cubicHilbertBasis 0)=
-      (cubicRecoveryShiftWeight 0)^2 • cubicHilbertBasis 0 := by
+      (cubicRecoveryShiftWeight 0)^(2 : ℕ) • cubicHilbertBasis 0 := by
   simp only [cubicRecoveryCommutator,sub_apply,ContinuousLinearMap.comp_apply,
     cubicHilbertRecoveryShift_basis,map_smul,cubicHilbertRecoveryShift_adjoint_successor,
     cubicHilbertRecoveryShift_adjoint_zero,map_zero,sub_zero,smul_smul,pow_two]
 
 theorem cubicRecoveryCommutator_successor_basis (k : ℕ) :
     cubicRecoveryCommutator (cubicHilbertBasis (k+1))=
-      ((cubicRecoveryShiftWeight (k+1))^2-(cubicRecoveryShiftWeight k)^2) •
+      ((cubicRecoveryShiftWeight (k+1))^(2 : ℕ)-(cubicRecoveryShiftWeight k)^(2 : ℕ)) •
         cubicHilbertBasis (k+1) := by
   simp only [cubicRecoveryCommutator,sub_apply,ContinuousLinearMap.comp_apply,
     cubicHilbertRecoveryShift_basis,map_smul,cubicHilbertRecoveryShift_adjoint_successor,

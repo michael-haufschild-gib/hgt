@@ -18,10 +18,10 @@ open scoped Topology
 noncomputable section
 namespace RHTower
 
-private theorem sq_le_two_cosh_sub {s : ℝ} (hs : 0 ≤ s) : s^2 ≤ 2*(Real.cosh s-1) := by
+private theorem sq_le_two_cosh_sub {s : ℝ} (hs : 0 ≤ s) : s^(2 : ℕ) ≤ 2*(Real.cosh s-1) := by
   have hh : 0 ≤ s/2 := by linarith
   have hS := Real.self_le_sinh_iff.mpr hh
-  have hsq : (s/2)^2 ≤ Real.sinh (s/2)^2 := by
+  have hsq : (s/2)^(2 : ℕ) ≤ Real.sinh (s/2)^(2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hS) (show 0 ≤ Real.sinh (s/2)+s/2 by linarith)]
   have hC := Real.cosh_two_mul (s/2)
   rw [show 2*(s/2)=s by ring] at hC
@@ -46,7 +46,7 @@ theorem ccmWeilOddPoleChamber_shifted_second_neg (a b : SuzukiPositiveAperture)
   have hk : (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*b.1) ≤ 0 :=
     mul_nonpos_of_nonpos_of_nonneg (by linarith [Real.one_half_lt_eulerMascheroniConstant])
       (by linarith [b.2])
-  have hC : ccmWeilPoleCross b ≤ 2*b.1^2+4*Real.sinh b.1^2+7 := by
+  have hC : ccmWeilPoleCross b ≤ 2*b.1^(2 : ℕ)+4*Real.sinh b.1^(2 : ℕ)+7 := by
     have he := ccmWeilPoleCross_eq b
     have hT := ccmPolarPrimeTent_nonneg b
     nlinarith

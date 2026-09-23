@@ -48,7 +48,7 @@ theorem summable_xiHeatCassiniWoldResidual_primeLogMoment_mul_gap (k : ℕ) :
     calc
       y ^ k ≤ (2 * x) ^ k := pow_le_pow_left₀ hy.le hy2x k
       _ = (2 : ℝ) ^ k * x ^ k := by rw [mul_pow]
-  have hpowx : x ^ k * Real.exp (-c * Real.sqrt x) ≤ C / x ^ 2 := by
+  have hpowx : x ^ k * Real.exp (-c * Real.sqrt x) ≤ C / x ^ (2 : ℕ) := by
     simpa [show 2 * (c / 2) = c by ring] using hpow x hx
   rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg
     (mul_nonneg (pow_nonneg hy.le k) (abs_nonneg _)) hdelta)]
@@ -61,8 +61,8 @@ theorem summable_xiHeatCassiniWoldResidual_primeLogMoment_mul_gap (k : ℕ) :
           (B * Real.exp (-c * Real.sqrt x)) * delta := by gcongr
     _ = (B * (2 : ℝ) ^ k) *
           (x ^ k * Real.exp (-c * Real.sqrt x)) * delta := by ring
-    _ ≤ (B * (2 : ℝ) ^ k) * (C / x ^ 2) * delta := by gcongr
-    _ = (B * (2 : ℝ) ^ k * C) * (delta / x ^ 2) := by ring
+    _ ≤ (B * (2 : ℝ) ^ k) * (C / x ^ (2 : ℕ)) * delta := by gcongr
+    _ = (B * (2 : ℝ) ^ k * C) * (delta / x ^ (2 : ℕ)) := by ring
 
 /-- `k`th formal derivative atom of one primitive phase edge. -/
 def xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom

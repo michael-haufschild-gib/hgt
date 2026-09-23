@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.JetEigenRigidity
 
 Above jet level three the sliced shift is linear, and its coefficient satisfies
 
-`R'^2·Φ(u) = R'·u − m·R''`.
+`R'^(2 : ℕ)·Φ(u) = R'·u − m·R''`.
 
 Adding `m·z₂` turns this into the pure eigen-relation `R'·Φ(h) = h`, whose exponent is one; by
 rigidity the only torus-invariant solution is zero, so the coefficient is *exactly* `−m·z₂` — with no

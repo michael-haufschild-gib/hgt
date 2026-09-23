@@ -20,7 +20,7 @@ set_option linter.unusedSectionVars false
 variable {n : ℕ}
 
 theorem finiteComplexInner_self {α : Type*} [Fintype α] (ψ : α → ℂ) :
-    finiteComplexInner ψ ψ = ((∑ x, ‖ψ x‖ ^ 2 : ℝ) : ℂ) := by
+    finiteComplexInner ψ ψ = ((∑ x, ‖ψ x‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [finiteComplexInner, Complex.ofReal_sum]
   refine Finset.sum_congr rfl fun x _ => ?_
   have h := Complex.mul_conj (ψ x)
@@ -46,30 +46,30 @@ variable (e : FiniteQubitConfiguration (Fin n) → FiniteQubitConfiguration (Fin
 /-- The squared Pauli diagonal in one member of the family. -/
 def pauliDiagSq (e : FiniteQubitConfiguration (Fin n) → FiniteQubitConfiguration (Fin n) → ℂ)
     (v : PauliSymp n) (j : FiniteQubitConfiguration (Fin n)) : ℂ :=
-  (matDiag (pauliMat v) (e j)) ^ 2
+  (matDiag (pauliMat v) (e j)) ^ (2 : ℕ)
 
-theorem pauliDiagSq_zero (hunit : ∀ j, (∑ x, ‖e j x‖ ^ 2) = 1)
+theorem pauliDiagSq_zero (hunit : ∀ j, (∑ x, ‖e j x‖ ^ (2 : ℕ)) = 1)
     (j : FiniteQubitConfiguration (Fin n)) : pauliDiagSq e 0 j = 1 := by
   rw [pauliDiagSq, pauliMat_zero, matDiag_one, finiteComplexInner_self, hunit j]
   norm_num
 
-theorem sum_pauliDiagSq (hunit : ∀ j, (∑ x, ‖e j x‖ ^ 2) = 1)
+theorem sum_pauliDiagSq (hunit : ∀ j, (∑ x, ‖e j x‖ ^ (2 : ℕ)) = 1)
     (j : FiniteQubitConfiguration (Fin n)) :
     (∑ v : PauliSymp n, pauliDiagSq e v j) = (2 : ℂ) ^ n :=
   sum_matDiag_pauliMat_sq (e j) (hunit j)
 
 /-- **The sign-averaged collision of one ordered Lagrangian basis.** -/
 theorem sum_sign_collision_of_mem_lagrBases {b : Fin n → PauliSymp n} (hbmem : b ∈ lagrBases n) :
-    (∑ ε : Fin n → ZMod 2, ∑ j, (matDiag (stabProjectorOf b ε) (e j)) ^ 2) =
+    (∑ ε : Fin n → ZMod 2, ∑ j, (matDiag (stabProjectorOf b ε) (e j)) ^ (2 : ℕ)) =
       ((2 : ℂ) ^ n)⁻¹ * ∑ j, ∑ v ∈ spanOf b, pauliDiagSq e v j := by
   classical
   have hbasis := mem_lagrBases.mp hbmem
   have hb := hbasis.1
-  have hj : ∀ j, (∑ ε : Fin n → ZMod 2, (matDiag (stabProjectorOf b ε) (e j)) ^ 2) =
+  have hj : ∀ j, (∑ ε : Fin n → ZMod 2, (matDiag (stabProjectorOf b ε) (e j)) ^ (2 : ℕ)) =
       ((2 : ℂ) ^ n)⁻¹ * ∑ v ∈ spanOf b, pauliDiagSq e v j := by
     intro j
-    have hrepl : (∑ ε : Fin n → ZMod 2, (matDiag (stabProjectorOf b ε) (e j)) ^ 2) =
-        ∑ ε : Fin n → ZMod 2, (matDiag (stabProjector b hb ε) (e j)) ^ 2 :=
+    have hrepl : (∑ ε : Fin n → ZMod 2, (matDiag (stabProjectorOf b ε) (e j)) ^ (2 : ℕ)) =
+        ∑ ε : Fin n → ZMod 2, (matDiag (stabProjector b hb ε) (e j)) ^ (2 : ℕ) :=
       Finset.sum_congr rfl fun ε _ => by rw [stabProjectorOf_eq hb]
     rw [hrepl, sum_sign_matDiag_sq hb (e j)]
     congr 1
@@ -77,7 +77,7 @@ theorem sum_sign_collision_of_mem_lagrBases {b : Fin n → PauliSymp n} (hbmem :
   rw [Finset.sum_comm, Finset.sum_congr rfl fun j _ => hj j, ← Finset.mul_sum]
 
 /-- **The label incidence identity at one family member.** -/
-theorem sum_lagrBases_span_collision (hunit : ∀ j, (∑ x, ‖e j x‖ ^ 2) = 1)
+theorem sum_lagrBases_span_collision (hunit : ∀ j, (∑ x, ‖e j x‖ ^ (2 : ℕ)) = 1)
     (j : FiniteQubitConfiguration (Fin n)) :
     ((2 : ℂ) ^ n + 1) * (∑ b ∈ lagrBases n, ∑ v ∈ spanOf b, pauliDiagSq e v j) =
       ((lagrBases n).card : ℂ) * 2 ^ (n + 1) := by
@@ -137,9 +137,9 @@ theorem sum_lagrBases_span_collision (hunit : ∀ j, (∑ x, ‖e j x‖ ^ 2) = 
 
 /-- **The exact two-design collision law.**  Summed over ordered Lagrangian bases, sign patterns
 and family members, the collision of a stabilizer state totals `2/(D+1)` per state. -/
-theorem sum_lagrBases_sign_collision (hunit : ∀ j, (∑ x, ‖e j x‖ ^ 2) = 1) :
+theorem sum_lagrBases_sign_collision (hunit : ∀ j, (∑ x, ‖e j x‖ ^ (2 : ℕ)) = 1) :
     ((2 : ℂ) ^ n + 1) * (∑ b ∈ lagrBases n, ∑ ε : Fin n → ZMod 2,
-        ∑ j, (matDiag (stabProjectorOf b ε) (e j)) ^ 2) =
+        ∑ j, (matDiag (stabProjectorOf b ε) (e j)) ^ (2 : ℕ)) =
       ((lagrBases n).card : ℂ) * 2 ^ (n + 1) := by
   classical
   have hpow : ((2 : ℂ) ^ n) ≠ 0 := pow_ne_zero n two_ne_zero

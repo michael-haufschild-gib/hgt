@@ -15,16 +15,16 @@ namespace RHTower
 open Polynomial
 
 /-- The two-cluster witness: `A = (X(X−100))²`. -/
-noncomputable def twoCluster : ℝ[X] := (X * (X - 100)) ^ 2
+noncomputable def twoCluster : ℝ[X] := (X * (X - 100)) ^ (2 : ℕ)
 
 theorem twoCluster_expand :
-    twoCluster = X ^ 4 - 200 * X ^ 3 + 10000 * X ^ 2 := by
+    twoCluster = X ^ (4 : ℕ) - 200 * X ^ (3 : ℕ) + 10000 * X ^ (2 : ℕ) := by
   rw [twoCluster]
   ring
 
 theorem twoCluster_operator_expand :
     derivative (derivative twoCluster) + twoCluster
-      = X ^ 4 - 200 * X ^ 3 + 10012 * X ^ 2 - 1200 * X + 20000 := by
+      = X ^ (4 : ℕ) - 200 * X ^ (3 : ℕ) + 10012 * X ^ (2 : ℕ) - 1200 * X + 20000 := by
   rw [twoCluster_expand]
   simp only [derivative_sub, derivative_add, derivative_mul, derivative_X_pow,
     derivative_ofNat, zero_mul, zero_add, Nat.cast_ofNat, map_ofNat]
@@ -39,12 +39,12 @@ zeros form two non-real conjugate pairs. -/
 theorem twoCluster_operator_pos (y : ℝ) :
     0 < eval y (derivative (derivative twoCluster) + twoCluster) := by
   have hval : eval y (derivative (derivative twoCluster) + twoCluster)
-      = y ^ 4 - 200 * y ^ 3 + 10012 * y ^ 2 - 1200 * y + 20000 := by
+      = y ^ (4 : ℕ) - 200 * y ^ (3 : ℕ) + 10012 * y ^ (2 : ℕ) - 1200 * y + 20000 := by
     rw [twoCluster_operator_expand]
     simp only [eval_add, eval_sub, eval_mul, eval_pow, eval_X, eval_ofNat]
   rw [hval]
-  nlinarith [sq_nonneg (y * (y - 100)), sq_nonneg (y - 50), sq_nonneg ((y - 50) ^ 2 - 2450),
-    sq_nonneg (y ^ 2 - 100 * y + 50), sq_nonneg (y * (y - 100) + 50)]
+  nlinarith [sq_nonneg (y * (y - 100)), sq_nonneg (y - 50), sq_nonneg ((y - 50) ^ (2 : ℕ) - 2450),
+    sq_nonneg (y ^ (2 : ℕ) - 100 * y + 50), sq_nonneg (y * (y - 100) + 50)]
 
 /-- The witness is genuinely a two-pair configuration: the operator output has degree 4
 and no real roots. -/

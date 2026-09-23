@@ -61,8 +61,8 @@ private theorem weighted_integrable (n : ℤ) {F : ℂ → ℂ}
 /-- Both real height derivatives of every original response mode retain its complete forcing. -/
 theorem responseMode_equation (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : Ioi (0:ℝ)) :
     deriv (deriv (responseMode q b n)) y =
-      (((signedFrequency 1 n)^2:ℝ):ℂ)*responseMode q b n y +
-        (parameter q b*responseMode q b n y+forcingMode q b n y)/(y.val:ℂ)^2 := by
+      (((signedFrequency 1 n)^(2 : ℕ):ℝ):ℂ)*responseMode q b n y +
+        (parameter q b*responseMode q b n y+forcingMode q b n y)/(y.val:ℂ)^(2 : ℕ) := by
   let F := D4BMCuspResponse.responsePlanar q b
   let G := globalForcing q b ∘ ofComplex
   have hf := D4BMCuspResponse.responsePlanar_smooth q b
@@ -76,7 +76,7 @@ theorem responseMode_equation (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : Ioi (0:
   have he (x : ℝ) :
       directional 1 (directional 1 F) (point x y)+
         directional Complex.I (directional Complex.I F) (point x y) =
-      (parameter q b*F (point x y)+G (point x y))/(y.val:ℂ)^2 := by
+      (parameter q b*F (point x y)+G (point x y))/(y.val:ℂ)^(2 : ℕ) := by
     have hp : 0 < (point x y).im := by simpa only [point,Complex.add_im,
       Complex.ofReal_im,Complex.mul_I_im,Complex.ofReal_re,zero_add] using (show 0 < y.val from y.2)
     have h := globalResponse_classical_planar q b (point x y) hp
@@ -91,7 +91,7 @@ theorem responseMode_equation (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : Ioi (0:
       deningerFourierKernel 1 n x*directional 1 (directional 1 F) (point x y)+
         deningerFourierKernel 1 n x*directional Complex.I (directional Complex.I F) (point x y) =
       (parameter q b*(deningerFourierKernel 1 n x*F (point x y))+
-        deningerFourierKernel 1 n x*G (point x y))/(y.val:ℂ)^2 := by
+        deningerFourierKernel 1 n x*G (point x y))/(y.val:ℂ)^(2 : ℕ) := by
     linear_combination deningerFourierKernel 1 n x*he x
   have hi := integral_congr_ae (μ := volume.restrict (Ioc (0:ℝ) 1))
     (Filter.Eventually.of_forall hew)
@@ -105,15 +105,15 @@ theorem responseMode_equation (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : Ioi (0:
     integral_const_mul] at hi
   have hc : coefficient 1 n (directional 1 (directional 1 F)) y+
       coefficient 1 n (directional Complex.I (directional Complex.I F)) y =
-      (parameter q b*coefficient 1 n F y+coefficient 1 n G y)/(y.val:ℂ)^2 := by
+      (parameter q b*coefficient 1 n F y+coefficient 1 n G y)/(y.val:ℂ)^(2 : ℕ) := by
     simpa only [coefficient,deningerFourierCoeff,Complex.ofReal_one,div_one,one_mul,
       intervalIntegral.integral_of_le (by norm_num : (0:ℝ) ≤ 1)] using hi
   rw [coefficient_horizontal_second 1 (by norm_num) n (hf.of_le (WithTop.coe_le_coe.mpr le_top)) y.2
     (D4BMCuspResponse.responsePlanar_periodic q b y.2),
     ← (coefficient_second_hasDerivAt 1 (by norm_num) n (hf.of_le (WithTop.coe_le_coe.mpr le_top)) y.2).deriv] at hc
-  change -(signedFrequency 1 n:ℂ)^2*responseMode q b n y+
+  change -(signedFrequency 1 n:ℂ)^(2 : ℕ)*responseMode q b n y+
       deriv (deriv (responseMode q b n)) y =
-      (parameter q b*responseMode q b n y+forcingMode q b n y)/(y.val:ℂ)^2 at hc
+      (parameter q b*responseMode q b n y+forcingMode q b n y)/(y.val:ℂ)^(2 : ℕ) at hc
   push_cast
   linear_combination hc
 
@@ -123,7 +123,7 @@ def modeMass (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : ℝ) : ℝ :=
 
 /-- The original modal source work, with the changing hyperbolic metric weight. -/
 def modeWork (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : ℝ) : ℝ :=
-  (forcingMode q b n y*(starRingEnd ℂ) (responseMode q b n y)).re/y^2
+  (forcingMode q b n y*(starRingEnd ℂ) (responseMode q b n y)).re/y^(2 : ℕ)
 
 private theorem normSq_hasDerivAt {a : ℝ → ℂ} {v : ℂ} {y : ℝ} (ha : HasDerivAt a v y) :
     HasDerivAt (fun t => Complex.normSq (a t))
@@ -145,7 +145,7 @@ theorem modeMass_hasDerivAt (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : Ioi (0:�
 theorem modeMass_second_hasDerivAt (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : Ioi (0:ℝ)) :
     HasDerivAt (deriv (modeMass q b n))
       (2*Complex.normSq (deriv (responseMode q b n) y)+
-        2*((signedFrequency 1 n)^2+(parameter q b).re/y.val^2)*modeMass q b n y+
+        2*((signedFrequency 1 n)^(2 : ℕ)+(parameter q b).re/y.val^(2 : ℕ))*modeMass q b n y+
         2*modeWork q b n y) y := by
   let c := responseMode q b n
   have hc := mode_hasDerivAt q b n y.2
@@ -170,12 +170,12 @@ theorem modeMass_second_hasDerivAt (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : Io
 /-- A pointwise forced coercivity estimate for every actual mode, before taking a cusp limit. -/
 theorem modeMass_forced_lower (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : Ioi (0:ℝ)) :
     2*Complex.normSq (deriv (responseMode q b n) y)+
-      (2*(signedFrequency 1 n)^2+2*(parameter q b).re/y.val^2-1)*modeMass q b n y-
-      Complex.normSq (forcingMode q b n y)/y.val^4 ≤ deriv (deriv (modeMass q b n)) y := by
+      (2*(signedFrequency 1 n)^(2 : ℕ)+2*(parameter q b).re/y.val^(2 : ℕ)-1)*modeMass q b n y-
+      Complex.normSq (forcingMode q b n y)/y.val^(4 : ℕ) ≤ deriv (deriv (modeMass q b n)) y := by
   rw [(modeMass_second_hasDerivAt q b n y).deriv]
-  have h := Complex.normSq_nonneg (responseMode q b n y+forcingMode q b n y/(y.val:ℂ)^2)
+  have h := Complex.normSq_nonneg (responseMode q b n y+forcingMode q b n y/(y.val:ℂ)^(2 : ℕ))
   have hs : 0 ≤ modeMass q b n y+2*modeWork q b n y+
-      Complex.normSq (forcingMode q b n y)/y.val^4 := by
+      Complex.normSq (forcingMode q b n y)/y.val^(4 : ℕ) := by
     convert h using 1
     rw [Complex.normSq_add,Complex.normSq_div,map_pow,Complex.normSq_ofReal]
     simp only [modeMass,modeWork,Complex.mul_re,Complex.conj_re,Complex.conj_im,
@@ -191,35 +191,35 @@ def coercivityHeight (q : XiZeroCopy) (b : Bool) : ℝ := 1+2*|(parameter q b).r
 theorem modeMass_cusp_coercivity (q : XiZeroCopy) (b : Bool) (n : {n : ℤ // n ≠ 0})
     (y : Ici (coercivityHeight q b)) :
     2*Complex.normSq (deriv (responseMode q b n.val) y)+
-      (signedFrequency 1 n.val)^2*modeMass q b n.val y-
-      Complex.normSq (forcingMode q b n.val y)/y.val^4 ≤
+      (signedFrequency 1 n.val)^(2 : ℕ)*modeMass q b n.val y-
+      Complex.normSq (forcingMode q b n.val y)/y.val^(4 : ℕ) ≤
         deriv (deriv (modeMass q b n.val)) y := by
   have hy1 : 1 ≤ y.val := by
     have hh : 1+2*|(parameter q b).re| ≤ y.val := y.2
     linarith [abs_nonneg (parameter q b).re]
   have hy : 0 < y.val := lt_of_lt_of_le (by norm_num) hy1
-  have hy2 : 2*|(parameter q b).re| ≤ y.val^2 := by
+  have hy2 : 2*|(parameter q b).re| ≤ y.val^(2 : ℕ) := by
     have hh : 1+2*|(parameter q b).re| ≤ y.val := y.2
     nlinarith [sq_nonneg (y.val-1)]
-  have ha : -(1/2:ℝ) ≤ (parameter q b).re/y.val^2 := by
+  have ha : -(1/2:ℝ) ≤ (parameter q b).re/y.val^(2 : ℕ) := by
     rw [le_div_iff₀ (sq_pos_of_pos hy)]
     linarith [neg_abs_le (parameter q b).re]
-  have hnZ : (1:ℤ) ≤ n.val^2 := Int.add_one_le_iff.mpr (sq_pos_of_ne_zero n.2)
-  have hnR : (1:ℝ) ≤ (n.val:ℝ)^2 := by exact_mod_cast hnZ
-  have hk : 2 ≤ (signedFrequency 1 n.val)^2 := by
+  have hnZ : (1:ℤ) ≤ n.val^(2 : ℕ) := Int.add_one_le_iff.mpr (sq_pos_of_ne_zero n.2)
+  have hnR : (1:ℝ) ≤ (n.val:ℝ)^(2 : ℕ) := by exact_mod_cast hnZ
+  have hk : 2 ≤ (signedFrequency 1 n.val)^(2 : ℕ) := by
     have hm := mul_le_mul_of_nonneg_left hnR (sq_nonneg (2*Real.pi))
     have hp := Real.pi_gt_three
     dsimp only [signedFrequency]
     rw [div_one,mul_pow]
     nlinarith [sq_nonneg (Real.pi-3)]
-  have hcoeff : (signedFrequency 1 n.val)^2 ≤
-      2*(signedFrequency 1 n.val)^2+2*(parameter q b).re/y.val^2-1 := by
+  have hcoeff : (signedFrequency 1 n.val)^(2 : ℕ) ≤
+      2*(signedFrequency 1 n.val)^(2 : ℕ)+2*(parameter q b).re/y.val^(2 : ℕ)-1 := by
     rw [mul_div_assoc]
     linarith
   have hm := mul_le_mul_of_nonneg_right hcoeff (Complex.normSq_nonneg (responseMode q b n.val y))
   have h := modeMass_forced_lower q b n.val ⟨y.val,hy⟩
-  change (signedFrequency 1 n.val)^2*modeMass q b n.val y ≤
-      (2*(signedFrequency 1 n.val)^2+2*(parameter q b).re/y.val^2-1)*modeMass q b n.val y at hm
+  change (signedFrequency 1 n.val)^(2 : ℕ)*modeMass q b n.val y ≤
+      (2*(signedFrequency 1 n.val)^(2 : ℕ)+2*(parameter q b).re/y.val^(2 : ℕ)-1)*modeMass q b n.val y at hm
   dsimp only [Subtype.coe_mk] at h
   linarith
 
@@ -298,10 +298,10 @@ theorem modeMass_hasSum (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
   have hs := GaloisForLFunctions.RHTower.SelbergMaassParseval.coefficient_mass_hasSum 1
     (by norm_num) (D4BMCuspResponse.responsePlanar_smooth q b).continuousOn y.2
   have hp : Function.Periodic
-      (fun x => ‖D4BMCuspResponse.responsePlanar q b (point x y)‖^2) 1 := by
+      (fun x => ‖D4BMCuspResponse.responsePlanar q b (point x y)‖^(2 : ℕ)) 1 := by
     intro x
-    change ‖D4BMCuspResponse.responsePlanar q b (D4BMCuspResponse.point (x+1) y)‖^2 =
-      ‖D4BMCuspResponse.responsePlanar q b (D4BMCuspResponse.point x y)‖^2
+    change ‖D4BMCuspResponse.responsePlanar q b (D4BMCuspResponse.point (x+1) y)‖^(2 : ℕ) =
+      ‖D4BMCuspResponse.responsePlanar q b (D4BMCuspResponse.point x y)‖^(2 : ℕ)
     rw [D4BMCuspResponse.responsePlanar_periodic q b y.2 x]
   have hi := hp.intervalIntegral_add_eq 0 (-1/2)
   norm_num only [zero_add,show (-1/2:ℝ)+1=1/2 by ring] at hi
@@ -321,8 +321,8 @@ theorem modeMass_le_native_square (q : XiZeroCopy) (b : Bool) (n : ℤ) (y : Ioi
 /-- The full original modular energy gives integrability of every modal cusp mass.
 No modal decay, radiation condition, or zero boundary value is supplied. -/
 theorem modeMass_density_integrable (q : XiZeroCopy) (b : Bool) (n : ℤ) :
-    IntegrableOn (fun y : ℝ => modeMass q b n y/y^2) (Ioi (2:ℝ)) := by
-  have hc : ContinuousOn (fun y : ℝ => modeMass q b n y/y^2) (Ioi (2:ℝ)) := by
+    IntegrableOn (fun y : ℝ => modeMass q b n y/y^(2 : ℕ)) (Ioi (2:ℝ)) := by
+  have hc : ContinuousOn (fun y : ℝ => modeMass q b n y/y^(2 : ℕ)) (Ioi (2:ℝ)) := by
     intro y hy
     have hp : 0 < y := lt_trans (by norm_num : (0:ℝ)<2) hy
     exact ((modeMass_hasDerivAt q b n ⟨y,hp⟩).continuousAt.div

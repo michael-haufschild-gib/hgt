@@ -34,17 +34,17 @@ theorem integrable_phasePow_mul_jetIntegrand {a : ℝ} (ha : 0 < a) (k j : ℕ) 
   refine Integrable.mono' (integrable_polyPow_abs_mul_exp a k j hτ)
     (continuous_phasePow_mul_jetIntegrand ha k j τ h).aestronglyMeasurable ?_
   refine Filter.Eventually.of_forall fun x => ?_
-  have hnn : (0 : ℝ) ≤ (x ^ 2 + 4 * a ^ 4) ^ k * |x| ^ j * Real.exp (-(τ.re * |x|)) := by
-    have : (0 : ℝ) ≤ x ^ 2 + 4 * a ^ 4 := by positivity
+  have hnn : (0 : ℝ) ≤ (x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ)) ^ k * |x| ^ j * Real.exp (-(τ.re * |x|)) := by
+    have : (0 : ℝ) ≤ x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ) := by positivity
     positivity
   have hphase : ‖(-(I * (x : ℂ))) ^ j‖ = |x| ^ j := by
     rw [norm_pow, norm_neg, norm_mul, Complex.norm_I, one_mul, Complex.norm_real,
       Real.norm_eq_abs]
   rw [norm_mul, hphase]
   calc |x| ^ j * ‖xiMassJetIntegrand a k τ h x‖
-      ≤ |x| ^ j * ((x ^ 2 + 4 * a ^ 4) ^ k * Real.exp (-(τ.re * |x|))) :=
+      ≤ |x| ^ j * ((x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ)) ^ k * Real.exp (-(τ.re * |x|))) :=
         mul_le_mul_of_nonneg_left (norm_xiMassJetIntegrand_le ha k hτ.le h x) (by positivity)
-    _ = (x ^ 2 + 4 * a ^ 4) ^ k * |x| ^ j * Real.exp (-(τ.re * |x|)) := by ring
+    _ = (x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ)) ^ k * |x| ^ j * Real.exp (-(τ.re * |x|)) := by ring
 
 /-- **Differentiation under the integral in the height.** -/
 theorem hasDerivAt_xiMassJetFourierDeriv {a : ℝ} (ha : 0 < a) (k j : ℕ) {τ : ℂ}
@@ -63,11 +63,11 @@ theorem hasDerivAt_xiMassJetFourierDeriv {a : ℝ} (ha : 0 < a) (k j : ℕ) {τ 
       exact h1.neg
     have hexp := hlin.cexp
     have hconst := hexp.const_mul
-      ((-(I * (x : ℂ))) ^ j * (((x : ℂ) ^ 2 + 4 * (a : ℂ) ^ 4) ^ k *
+      ((-(I * (x : ℂ))) ^ j * (((x : ℂ) ^ (2 : ℕ) + 4 * (a : ℂ) ^ (4 : ℕ)) ^ k *
         xiMassAnalyticTest a τ (x : ℂ)))
     have hgoal : HasDerivAt
         (fun s : ℝ => (-(I * (x : ℂ))) ^ j * xiMassJetIntegrand a k τ s x)
-        ((-(I * (x : ℂ))) ^ j * (((x : ℂ) ^ 2 + 4 * (a : ℂ) ^ 4) ^ k *
+        ((-(I * (x : ℂ))) ^ j * (((x : ℂ) ^ (2 : ℕ) + 4 * (a : ℂ) ^ (4 : ℕ)) ^ k *
           xiMassAnalyticTest a τ (x : ℂ)) *
           (Complex.exp (-(I * (t : ℂ) * (x : ℂ))) * (-(I * (x : ℂ))))) t := by
       refine hconst.congr_of_eventuallyEq ?_
@@ -83,25 +83,25 @@ theorem hasDerivAt_xiMassJetFourierDeriv {a : ℝ} (ha : 0 < a) (k j : ℕ) {τ 
     (F' := fun t : ℝ => fun x : ℝ =>
       (-(I * (x : ℂ))) ^ (j + 1) * xiMassJetIntegrand a k τ t x)
     (x₀ := h) (s := Set.univ)
-    (bound := fun x : ℝ => (x ^ 2 + 4 * a ^ 4) ^ k * |x| ^ (j + 1) * Real.exp (-(τ.re * |x|)))
+    (bound := fun x : ℝ => (x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ)) ^ k * |x| ^ (j + 1) * Real.exp (-(τ.re * |x|)))
     Filter.univ_mem
     (Filter.Eventually.of_forall fun t =>
       (continuous_phasePow_mul_jetIntegrand ha k j τ t).aestronglyMeasurable)
     (integrable_phasePow_mul_jetIntegrand ha k j hτ h)
     (continuous_phasePow_mul_jetIntegrand ha k (j + 1) τ h).aestronglyMeasurable
     (Filter.Eventually.of_forall fun x => fun t _ => by
-      have hnn : (0 : ℝ) ≤ (x ^ 2 + 4 * a ^ 4) ^ k * |x| ^ (j + 1) * Real.exp (-(τ.re * |x|)) := by
-        have : (0 : ℝ) ≤ x ^ 2 + 4 * a ^ 4 := by positivity
+      have hnn : (0 : ℝ) ≤ (x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ)) ^ k * |x| ^ (j + 1) * Real.exp (-(τ.re * |x|)) := by
+        have : (0 : ℝ) ≤ x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ) := by positivity
         positivity
       have hphase : ‖(-(I * (x : ℂ))) ^ (j + 1)‖ = |x| ^ (j + 1) := by
         rw [norm_pow, norm_neg, norm_mul, Complex.norm_I, one_mul, Complex.norm_real,
           Real.norm_eq_abs]
       rw [norm_mul, hphase]
       calc |x| ^ (j + 1) * ‖xiMassJetIntegrand a k τ t x‖
-          ≤ |x| ^ (j + 1) * ((x ^ 2 + 4 * a ^ 4) ^ k * Real.exp (-(τ.re * |x|))) :=
+          ≤ |x| ^ (j + 1) * ((x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ)) ^ k * Real.exp (-(τ.re * |x|))) :=
             mul_le_mul_of_nonneg_left (norm_xiMassJetIntegrand_le ha k hτ.le t x)
               (by positivity)
-        _ = (x ^ 2 + 4 * a ^ 4) ^ k * |x| ^ (j + 1) * Real.exp (-(τ.re * |x|)) := by ring)
+        _ = (x ^ (2 : ℕ) + 4 * a ^ (4 : ℕ)) ^ k * |x| ^ (j + 1) * Real.exp (-(τ.re * |x|)) := by ring)
     (integrable_polyPow_abs_mul_exp a k (j + 1) hτ)
     (Filter.Eventually.of_forall fun x => fun t _ => hpoint x t)
   exact hmain.2
@@ -116,23 +116,23 @@ theorem integrable_xiMassJetIntegrand' {a : ℝ} (ha : 0 < a) (k : ℕ) {τ : �
 /-- One step of the dispersion recursion, pointwise on the real axis. -/
 theorem xiMassJetIntegrand_succ (a : ℝ) (k : ℕ) (τ : ℂ) (h x : ℝ) :
     xiMassJetIntegrand a (k + 1) τ h x
-      = 4 * (a : ℂ) ^ 4 * xiMassJetIntegrand a k τ h x
-        - (-(I * (x : ℂ))) ^ 2 * xiMassJetIntegrand a k τ h x := by
+      = 4 * (a : ℂ) ^ (4 : ℕ) * xiMassJetIntegrand a k τ h x
+        - (-(I * (x : ℂ))) ^ (2 : ℕ) * xiMassJetIntegrand a k τ h x := by
   have hI : (I : ℂ) * I = -1 := Complex.I_mul_I
   simp only [xiMassJetIntegrand, pow_succ]
-  linear_combination ((x : ℂ) ^ 2 + 4 * (a : ℂ) ^ 4) ^ k *
-    xiMassAnalyticTest a τ (x : ℂ) * Complex.exp (-(I * (h : ℂ) * (x : ℂ))) * (x : ℂ) ^ 2 * hI
+  linear_combination ((x : ℂ) ^ (2 : ℕ) + 4 * (a : ℂ) ^ (4 : ℕ)) ^ k *
+    xiMassAnalyticTest a τ (x : ℂ) * Complex.exp (-(I * (h : ℂ) * (x : ℂ))) * (x : ℂ) ^ (2 : ℕ) * hI
 
 /-- **The dispersion recursion.**  Raising the jet order multiplies by `4a⁴ − ∂_h²`. -/
 theorem xiMassJetFourierDeriv_succ {a : ℝ} (ha : 0 < a) (k : ℕ) {τ : ℂ} (hτ : 0 < τ.re)
     (h : ℝ) :
     xiMassJetFourierDeriv a (k + 1) 0 τ h
-      = 4 * (a : ℂ) ^ 4 * xiMassJetFourierDeriv a k 0 τ h
+      = 4 * (a : ℂ) ^ (4 : ℕ) * xiMassJetFourierDeriv a k 0 τ h
         - xiMassJetFourierDeriv a k 2 τ h := by
   rw [xiMassJetFourierDeriv_zero, xiMassJetFourierDeriv_zero, xiMassJetFourierDeriv]
   have hsplit : (∫ x : ℝ, xiMassJetIntegrand a (k + 1) τ h x)
-      = ∫ x : ℝ, (4 * (a : ℂ) ^ 4 * xiMassJetIntegrand a k τ h x
-          - (-(I * (x : ℂ))) ^ 2 * xiMassJetIntegrand a k τ h x) :=
+      = ∫ x : ℝ, (4 * (a : ℂ) ^ (4 : ℕ) * xiMassJetIntegrand a k τ h x
+          - (-(I * (x : ℂ))) ^ (2 : ℕ) * xiMassJetIntegrand a k τ h x) :=
     MeasureTheory.integral_congr_ae
       (Filter.Eventually.of_forall fun x => xiMassJetIntegrand_succ a k τ h x)
   rw [hsplit, MeasureTheory.integral_sub

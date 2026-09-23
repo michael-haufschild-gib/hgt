@@ -30,7 +30,7 @@ def diskEulerResponse (r theta : ℝ) : ℂ :=
 /-- The local Euler response is half the Poisson kernel minus its constant mode. -/
 theorem diskEulerResponse_re {r theta : ℝ} (hr : |r| < 1) :
     (diskEulerResponse r theta).re = (poissonKer r theta - 1) / 2 := by
-  have hden : 0 < 1 - 2 * r * Real.cos theta + r ^ 2 :=
+  have hden : 0 < 1 - 2 * r * Real.cos theta + r ^ (2 : ℕ) :=
     poissonKer_denom_pos hr theta
   rw [diskEulerResponse, Complex.exp_ofReal_mul_I]
   simp [Complex.div_re, Complex.normSq_apply, poissonKer, Real.cos_neg, Real.sin_neg,
@@ -38,10 +38,10 @@ theorem diskEulerResponse_re {r theta : ℝ} (hr : |r| < 1) :
   have hnormden :
       (1 - r * Real.cos theta) * (1 - r * Real.cos theta) +
           r * Real.sin theta * (r * Real.sin theta) =
-        1 - 2 * r * Real.cos theta + r ^ 2 := by
+        1 - 2 * r * Real.cos theta + r ^ (2 : ℕ) := by
     nlinarith [Real.sin_sq_add_cos_sq theta]
   rw [hnormden]
-  have hden' : 1 - r * Real.cos theta * 2 + r ^ 2 ≠ 0 := by
+  have hden' : 1 - r * Real.cos theta * 2 + r ^ (2 : ℕ) ≠ 0 := by
     simpa [mul_comm, mul_left_comm, mul_assoc] using hden.ne'
   field_simp [hden']
   nlinarith [Real.sin_sq_add_cos_sq theta]
@@ -52,23 +52,23 @@ theorem poissonKer_sub_factor {outer inner theta : ℝ}
     (hinner0 : 0 < inner) (hord : inner < outer) (houter1 : outer < 1) :
     poissonKer outer theta - poissonKer inner theta =
       (2 * (outer - inner) /
-        ((1 - 2 * outer * Real.cos theta + outer ^ 2) *
-          (1 - 2 * inner * Real.cos theta + inner ^ 2))) *
+        ((1 - 2 * outer * Real.cos theta + outer ^ (2 : ℕ)) *
+          (1 - 2 * inner * Real.cos theta + inner ^ (2 : ℕ)))) *
         ((1 + outer * inner) * Real.cos theta - (outer + inner)) := by
   have houter0 : 0 < outer := lt_trans hinner0 hord
-  have hdenOuter : 1 - 2 * outer * Real.cos theta + outer ^ 2 ≠ 0 :=
+  have hdenOuter : 1 - 2 * outer * Real.cos theta + outer ^ (2 : ℕ) ≠ 0 :=
     (poissonKer_denom_pos (by simpa [abs_of_pos houter0] using houter1) theta).ne'
-  have hdenInner : 1 - 2 * inner * Real.cos theta + inner ^ 2 ≠ 0 :=
+  have hdenInner : 1 - 2 * inner * Real.cos theta + inner ^ (2 : ℕ) ≠ 0 :=
     (poissonKer_denom_pos
       (by rw [abs_of_pos hinner0]; exact lt_trans hord houter1) theta).ne'
   rw [poissonKer, poissonKer]
-  have hdenOuter' : 1 - outer * 2 * Real.cos theta + outer ^ 2 ≠ 0 := by
+  have hdenOuter' : 1 - outer * 2 * Real.cos theta + outer ^ (2 : ℕ) ≠ 0 := by
     simpa [mul_comm, mul_left_comm, mul_assoc] using hdenOuter
-  have hdenInner' : 1 - 2 * Real.cos theta * inner + inner ^ 2 ≠ 0 := by
+  have hdenInner' : 1 - 2 * Real.cos theta * inner + inner ^ (2 : ℕ) ≠ 0 := by
     simpa [mul_comm, mul_left_comm, mul_assoc] using hdenInner
   have hdenProd' :
-      (1 - outer * 2 * Real.cos theta + outer ^ 2) *
-        (1 - 2 * Real.cos theta * inner + inner ^ 2) ≠ 0 :=
+      (1 - outer * 2 * Real.cos theta + outer ^ (2 : ℕ)) *
+        (1 - 2 * Real.cos theta * inner + inner ^ (2 : ℕ)) ≠ 0 :=
     mul_ne_zero hdenOuter' hdenInner'
   field_simp [hdenOuter', hdenInner', hdenProd']
   ring
@@ -77,8 +77,8 @@ theorem poissonKer_sub_factor {outer inner theta : ℝ}
 theorem poissonRadialScale_pos {outer inner theta : ℝ}
     (hinner0 : 0 < inner) (hord : inner < outer) (houter1 : outer < 1) :
     0 < 2 * (outer - inner) /
-      ((1 - 2 * outer * Real.cos theta + outer ^ 2) *
-        (1 - 2 * inner * Real.cos theta + inner ^ 2)) := by
+      ((1 - 2 * outer * Real.cos theta + outer ^ (2 : ℕ)) *
+        (1 - 2 * inner * Real.cos theta + inner ^ (2 : ℕ))) := by
   have houter0 : 0 < outer := lt_trans hinner0 hord
   exact div_pos (mul_pos (by norm_num) (sub_pos.mpr hord))
     (mul_pos

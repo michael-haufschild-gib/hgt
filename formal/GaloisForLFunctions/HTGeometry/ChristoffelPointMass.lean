@@ -34,18 +34,18 @@ theorem measureReal_singleton_le_momentInner
     (hint : ∀ k, Integrable (fun y : ℝ => (y : ℝ) ^ k) μ)
     (x : ℝ) (p : Polynomial ℝ) (hval : p.eval x = 1) :
     μ.real {x} ≤ momentInner s p p := by
-  have hmi : momentInner s p p = ∫ y, (Polynomial.eval y p) ^ 2 ∂μ := by
+  have hmi : momentInner s p p = ∫ y, (Polynomial.eval y p) ^ (2 : ℕ) ∂μ := by
     rw [momentInner_def, momentFunctional_mul_eq_integral s hs hint p p]
     refine integral_congr_ae (ae_of_all μ fun y => ?_)
     ring
-  have hIntegrable : Integrable (fun y : ℝ => (Polynomial.eval y p) ^ 2) μ := by
-    refine (integrable_eval hint (p ^ 2)).congr (Filter.Eventually.of_forall fun y => ?_)
+  have hIntegrable : Integrable (fun y : ℝ => (Polynomial.eval y p) ^ (2 : ℕ)) μ := by
+    refine (integrable_eval hint (p ^ (2 : ℕ))).congr (Filter.Eventually.of_forall fun y => ?_)
     simp [eval_pow]
-  have hsing : ∫ y in ({x} : Set ℝ), (Polynomial.eval y p) ^ 2 ∂μ = μ.real {x} := by
+  have hsing : ∫ y in ({x} : Set ℝ), (Polynomial.eval y p) ^ (2 : ℕ) ∂μ = μ.real {x} := by
     rw [integral_singleton, hval, one_pow, smul_eq_mul, mul_one]
   calc μ.real {x}
-      = ∫ y in ({x} : Set ℝ), (Polynomial.eval y p) ^ 2 ∂μ := hsing.symm
-    _ ≤ ∫ y, (Polynomial.eval y p) ^ 2 ∂μ :=
+      = ∫ y in ({x} : Set ℝ), (Polynomial.eval y p) ^ (2 : ℕ) ∂μ := hsing.symm
+    _ ≤ ∫ y, (Polynomial.eval y p) ^ (2 : ℕ) ∂μ :=
         setIntegral_le_integral hIntegrable
           (Filter.Eventually.of_forall fun y => sq_nonneg _)
     _ = momentInner s p p := hmi.symm

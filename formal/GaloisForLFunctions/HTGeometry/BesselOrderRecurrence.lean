@@ -108,7 +108,7 @@ private theorem norm_besselOrderCrossKernel_le
     {s R t : ℝ} {ν : ℂ} (hs : 0 < s) (ht : 0 ≤ t)
     (hν : ‖ν‖ + 1 ≤ R) :
     ‖besselOrderCrossKernel s ν t‖ ≤
-      Real.exp (2 * R ^ 2 / s) * Real.exp (-(s / 8) * t ^ 2) := by
+      Real.exp (2 * R ^ (2 : ℕ) / s) * Real.exp (-(s / 8) * t ^ (2 : ℕ)) := by
   have htcomplex : ‖(t : ℂ)‖ = t := by simp [abs_of_nonneg ht]
   have hνt : ‖ν * (t : ℂ)‖ ≤ ‖ν‖ * t := by
     rw [norm_mul, htcomplex]
@@ -133,11 +133,11 @@ private theorem norm_besselOrderCrossKernel_le
     _ = Real.exp (-s * Real.cosh t +
           (‖(t : ℂ)‖ + ‖ν * (t : ℂ)‖)) := by
       rw [Real.exp_add, Real.exp_add]
-    _ ≤ Real.exp (2 * R ^ 2 / s - s / 8 * t ^ 2) := by
+    _ ≤ Real.exp (2 * R ^ (2 : ℕ) / s - s / 8 * t ^ (2 : ℕ)) := by
       gcongr
       have hbase := bessel_exponent_bound s R hs ht
       nlinarith
-    _ = Real.exp (2 * R ^ 2 / s) * Real.exp (-(s / 8) * t ^ 2) := by
+    _ = Real.exp (2 * R ^ (2 : ℕ) / s) * Real.exp (-(s / 8) * t ^ (2 : ℕ)) := by
       rw [sub_eq_add_neg, neg_mul, Real.exp_add]
 
 private theorem integrableOn_besselOrderCrossKernel
@@ -145,11 +145,11 @@ private theorem integrableOn_besselOrderCrossKernel
     IntegrableOn (besselOrderCrossKernel s ν) (Ioi 0) := by
   let R : ℝ := ‖ν‖ + 1
   let B : ℝ → ℝ := fun t =>
-    Real.exp (2 * R ^ 2 / s) * Real.exp (-(s / 8) * t ^ 2)
+    Real.exp (2 * R ^ (2 : ℕ) / s) * Real.exp (-(s / 8) * t ^ (2 : ℕ))
   have hB : Integrable B := by
     simpa [B] using
       (integrable_exp_neg_mul_sq (div_pos hs (by norm_num : (0 : ℝ) < 8))).const_mul
-        (Real.exp (2 * R ^ 2 / s))
+        (Real.exp (2 * R ^ (2 : ℕ) / s))
   apply hB.integrableOn.mono'
   · unfold besselOrderCrossKernel
     fun_prop
@@ -206,7 +206,7 @@ private theorem integrableOn_besselOrderRecurrenceBoundaryDeriv
 private theorem norm_besselOrderRecurrenceBoundary_le
     {s R t : ℝ} {ν : ℂ} (hs : 0 < s) (ht : 0 ≤ t) (hν : ‖ν‖ ≤ R) :
     ‖besselOrderRecurrenceBoundary s ν t‖ ≤
-      Real.exp (2 * R ^ 2 / s) * Real.exp (-(s / 8) * t ^ 2) := by
+      Real.exp (2 * R ^ (2 : ℕ) / s) * Real.exp (-(s / 8) * t ^ (2 : ℕ)) := by
   have hνt : ‖ν * (t : ℂ)‖ ≤ R * t := by
     simpa [norm_mul, abs_of_nonneg ht] using mul_le_mul_of_nonneg_right hν ht
   have hexp :
@@ -222,14 +222,14 @@ private theorem norm_besselOrderRecurrenceBoundary_le
       mul_le_mul_of_nonneg_left (norm_complex_sinh_le_exp_norm _) (Real.exp_nonneg _)
     _ = Real.exp (-s * Real.cosh t + ‖ν * (t : ℂ)‖) := by
       rw [Real.exp_add]
-    _ ≤ Real.exp (2 * R ^ 2 / s - s / 8 * t ^ 2) := by
+    _ ≤ Real.exp (2 * R ^ (2 : ℕ) / s - s / 8 * t ^ (2 : ℕ)) := by
       gcongr
       calc
         -s * Real.cosh t + ‖ν * (t : ℂ)‖ ≤
             -s * Real.cosh t + R * t := by linarith
-        _ ≤ 2 * R ^ 2 / s - s / 8 * t ^ 2 :=
+        _ ≤ 2 * R ^ (2 : ℕ) / s - s / 8 * t ^ (2 : ℕ) :=
           bessel_exponent_bound s R hs ht
-    _ = Real.exp (2 * R ^ 2 / s) * Real.exp (-(s / 8) * t ^ 2) := by
+    _ = Real.exp (2 * R ^ (2 : ℕ) / s) * Real.exp (-(s / 8) * t ^ (2 : ℕ)) := by
       rw [sub_eq_add_neg, neg_mul, Real.exp_add]
 
 private theorem tendsto_besselOrderRecurrenceBoundary_atTop
@@ -237,14 +237,14 @@ private theorem tendsto_besselOrderRecurrenceBoundary_atTop
     Tendsto (besselOrderRecurrenceBoundary s ν) atTop (𝓝 0) := by
   rw [tendsto_zero_iff_norm_tendsto_zero]
   let B : ℝ → ℝ := fun t =>
-    Real.exp (2 * ‖ν‖ ^ 2 / s) * Real.exp (-(s / 8) * t ^ 2)
+    Real.exp (2 * ‖ν‖ ^ (2 : ℕ) / s) * Real.exp (-(s / 8) * t ^ (2 : ℕ))
   have hB : Tendsto B atTop (𝓝 0) := by
-    have hquad : Tendsto (fun t : ℝ => -(s / 8) * t ^ 2) atTop atBot :=
+    have hquad : Tendsto (fun t : ℝ => -(s / 8) * t ^ (2 : ℕ)) atTop atBot :=
       (tendsto_pow_atTop (α := ℝ) two_ne_zero).const_mul_atTop_of_neg
         (neg_neg_iff_pos.mpr (div_pos hs (by norm_num)))
     simpa [B, Function.comp_def] using
       (Real.tendsto_exp_atBot.comp hquad).const_mul
-        (Real.exp (2 * ‖ν‖ ^ 2 / s))
+        (Real.exp (2 * ‖ν‖ ^ (2 : ℕ) / s))
   apply squeeze_zero'
   · exact Filter.Eventually.of_forall fun _ => norm_nonneg _
   · filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht

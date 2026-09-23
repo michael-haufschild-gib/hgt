@@ -74,7 +74,7 @@ theorem branchingThermalSignal_eq_prefix_add_tail
 def ultrametricThermalTruncationPolynomial (p N : ℕ) : Polynomial ℂ :=
   Polynomial.C ((p : ℂ) - 2) * Polynomial.X +
     ∑ k ∈ Finset.range N,
-      Polynomial.C ((((p : ℂ) - 1) ^ 2) * (p : ℂ) ^ k) *
+      Polynomial.C ((((p : ℂ) - 1) ^ (2 : ℕ)) * (p : ℂ) ^ k) *
         Polynomial.X ^ (p ^ (k + 1))
 
 /-- Formal power-series image of the finite thermal truncation polynomial. -/
@@ -93,7 +93,7 @@ theorem ultrametricThermalPrefixSeries_eq_branchingPrefix
     {p : ℕ} (hp : 2 ≤ p) (N : ℕ) :
     ultrametricThermalPrefixSeries p N =
       PowerSeries.C (-1 / (p : ℂ)) * PowerSeries.X +
-        PowerSeries.C ((((p : ℂ) - 1) ^ 2) / (p : ℂ)) *
+        PowerSeries.C ((((p : ℂ) - 1) ^ (2 : ℕ)) / (p : ℂ)) *
           branchingThermalPrefix p (N + 1) := by
   rw [ultrametricThermalPrefixSeries, ultrametricThermalTruncationPolynomial,
     branchingThermalPrefix, Finset.sum_range_succ']
@@ -101,14 +101,14 @@ theorem ultrametricThermalPrefixSeries_eq_branchingPrefix
   have hp0 : (p : ℂ) ≠ 0 := by exact_mod_cast (by omega : p ≠ 0)
   have hcoe :
       ((∑ k ∈ Finset.range N,
-          Polynomial.C ((((p : ℂ) - 1) ^ 2) * (p : ℂ) ^ k) *
+          Polynomial.C ((((p : ℂ) - 1) ^ (2 : ℕ)) * (p : ℂ) ^ k) *
             Polynomial.X ^ (p ^ (k + 1)) : Polynomial ℂ) : ℂ⟦X⟧) =
         ∑ k ∈ Finset.range N,
-          PowerSeries.C ((((p : ℂ) - 1) ^ 2) * (p : ℂ) ^ k) *
+          PowerSeries.C ((((p : ℂ) - 1) ^ (2 : ℕ)) * (p : ℂ) ^ k) *
             PowerSeries.X ^ (p ^ (k + 1)) := by
     change Polynomial.coeToPowerSeries.ringHom
         (∑ k ∈ Finset.range N,
-          Polynomial.C ((((p : ℂ) - 1) ^ 2) * (p : ℂ) ^ k) *
+          Polynomial.C ((((p : ℂ) - 1) ^ (2 : ℕ)) * (p : ℂ) ^ k) *
             Polynomial.X ^ (p ^ (k + 1))) = _
     rw [map_sum]
     apply Finset.sum_congr rfl
@@ -116,7 +116,7 @@ theorem ultrametricThermalPrefixSeries_eq_branchingPrefix
     rw [map_mul, map_pow]
     simp only [Polynomial.coeToPowerSeries.ringHom_apply,
       Polynomial.coe_C, Polynomial.coe_X]
-  let A : ℂ := ((p : ℂ) - 1) ^ 2
+  let A : ℂ := ((p : ℂ) - 1) ^ (2 : ℕ)
   have hbase :
       PowerSeries.C ((p : ℂ) - 2) * PowerSeries.X =
         PowerSeries.C (-1 / (p : ℂ)) * PowerSeries.X +
@@ -166,7 +166,7 @@ theorem ultrametricThermalPrefixSeries_eq_branchingPrefix
 theorem ultrametricThermalSignal_eq_prefix_add_exact_tail
     {p : ℕ} (hp : 2 ≤ p) (N : ℕ) :
     ultrametricThermalSignal p = ultrametricThermalPrefixSeries p N +
-      PowerSeries.C ((((p : ℂ) - 1) ^ 2) / (p : ℂ)) *
+      PowerSeries.C ((((p : ℂ) - 1) ^ (2 : ℕ)) / (p : ℂ)) *
         branchingThermalTail p (N + 1) := by
   rw [ultrametricThermalSignal, ultrametricThermalPrefixSeries_eq_branchingPrefix hp N,
     branchingThermalSignal_eq_prefix_add_tail hp (N + 1)]
@@ -180,14 +180,14 @@ theorem ultrametricThermalCofinalCompletionUniversality
     (∀ w : ℂ, (ultrametricThermalTruncationPolynomial p N).eval w =
       ultrametricThermalTruncation p w N) ∧
     ultrametricThermalSignal p = ultrametricThermalPrefixSeries p N +
-      PowerSeries.C ((((p : ℂ) - 1) ^ 2) / (p : ℂ)) *
+      PowerSeries.C ((((p : ℂ) - 1) ^ (2 : ℕ)) / (p : ℂ)) *
         branchingThermalTail p (N + 1) ∧
     ∀ Y : ℂ⟦X⟧,
       Y = PowerSeries.C ((p : ℂ) - 2) * PowerSeries.X +
           PowerSeries.X ^ p + PowerSeries.C (p : ℂ) *
             PowerSeries.subst (PowerSeries.X ^ p) Y →
       Y = ultrametricThermalPrefixSeries p N +
-        PowerSeries.C ((((p : ℂ) - 1) ^ 2) / (p : ℂ)) *
+        PowerSeries.C ((((p : ℂ) - 1) ^ (2 : ℕ)) / (p : ℂ)) *
           branchingThermalTail p (N + 1) := by
   refine ⟨eval_ultrametricThermalTruncationPolynomial p N,
     ultrametricThermalSignal_eq_prefix_add_exact_tail hp N, ?_⟩

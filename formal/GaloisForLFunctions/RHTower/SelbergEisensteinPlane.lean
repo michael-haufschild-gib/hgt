@@ -117,7 +117,7 @@ theorem planeE_second_I (z : D4BMUpperHalfPlaneCoordinate) :
   exact h.unique hj
 
 /-- The literal planar Frechet Laplacian satisfies the original positive-sign eigen-equation. -/
-theorem planeE_eigen_equation {z : ℂ} (hz : 0 < z.im) : z.im ^ 2 * realLaplacian planeE z = 2 * planeE z := by
+theorem planeE_eigen_equation {z : ℂ} (hz : 0 < z.im) : z.im ^ (2 : ℕ) * realLaplacian planeE z = 2 * planeE z := by
   let w : D4BMUpperHalfPlaneCoordinate := ⟨z.re, z.im, hz⟩
   have hp : point w.x w.y = z := by apply Complex.ext <;> simp [point, w]
   have h := eigen_equation w

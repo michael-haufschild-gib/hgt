@@ -98,7 +98,7 @@ theorem deningerHalfDensityTrace_defect_same {L : ℝ} (hL : 0 < L) (h : Deninge
 theorem deningerFloquetTerm_defect_le (h : DeningerExpSchwartz) (M : ℝ) {q : ℕ}
     (hq : 2 ≤ q) :
     deningerFloquetTerm (deningerHalfDensityLift (deningerPeriodizationDefect M h)) q
-      ≤ (1 + Real.exp (-(M / 2))) ^ 2
+      ≤ (1 + Real.exp (-(M / 2))) ^ (2 : ℕ)
         * deningerFloquetTerm (deningerHalfDensityLift h) q := by
   have hqR : (2 : ℝ) ≤ (q : ℝ) := by exact_mod_cast hq
   have hLpos : 0 < Real.log q := Real.log_pos (by linarith)
@@ -111,24 +111,24 @@ theorem deningerFloquetTerm_defect_le (h : DeningerExpSchwartz) (M : ℝ) {q : �
       ((deningerHalfDensityLift h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log q) s
   have hfun : (fun t : ℝ => ‖deningerPeriodizationSum
       ((deningerHalfDensityLift (deningerPeriodizationDefect M h) : DeningerExpSchwartz) :
-        𝓢(ℝ, ℂ)) (Real.log q) t‖ ^ 2)
-      = fun t : ℝ => ‖F t - ((Real.exp (-(M / 2)) : ℝ) : ℂ) * F (t + M)‖ ^ 2 := by
+        𝓢(ℝ, ℂ)) (Real.log q) t‖ ^ (2 : ℕ))
+      = fun t : ℝ => ‖F t - ((Real.exp (-(M / 2)) : ℝ) : ℂ) * F (t + M)‖ ^ (2 : ℕ) := by
     funext t
     rw [deningerHalfDensityTrace_defect hLpos M h t]
   rw [deningerFloquetTerm, deningerFloquetTerm, hfun]
   have hbnd := intervalIntegral_normSq_sub_rotate_le hcont hLpos hper M
     (Real.exp_pos (-(M / 2))).le
-  have hnn : (0 : ℝ) ≤ ((q : ℝ) ^ 2)⁻¹ := by positivity
-  calc ((q : ℝ) ^ 2)⁻¹ * ∫ t in (0 : ℝ)..Real.log q,
-        ‖F t - ((Real.exp (-(M / 2)) : ℝ) : ℂ) * F (t + M)‖ ^ 2
-      ≤ ((q : ℝ) ^ 2)⁻¹ * ((1 + Real.exp (-(M / 2))) ^ 2
-          * ∫ t in (0 : ℝ)..Real.log q, ‖F t‖ ^ 2) := mul_le_mul_of_nonneg_left hbnd hnn
-    _ = (1 + Real.exp (-(M / 2))) ^ 2
-          * (((q : ℝ) ^ 2)⁻¹ * ∫ t in (0 : ℝ)..Real.log q, ‖F t‖ ^ 2) := by ring
+  have hnn : (0 : ℝ) ≤ ((q : ℝ) ^ (2 : ℕ))⁻¹ := by positivity
+  calc ((q : ℝ) ^ (2 : ℕ))⁻¹ * ∫ t in (0 : ℝ)..Real.log q,
+        ‖F t - ((Real.exp (-(M / 2)) : ℝ) : ℂ) * F (t + M)‖ ^ (2 : ℕ)
+      ≤ ((q : ℝ) ^ (2 : ℕ))⁻¹ * ((1 + Real.exp (-(M / 2))) ^ (2 : ℕ)
+          * ∫ t in (0 : ℝ)..Real.log q, ‖F t‖ ^ (2 : ℕ)) := mul_le_mul_of_nonneg_left hbnd hnn
+    _ = (1 + Real.exp (-(M / 2))) ^ (2 : ℕ)
+          * (((q : ℝ) ^ (2 : ℕ))⁻¹ * ∫ t in (0 : ℝ)..Real.log q, ‖F t‖ ^ (2 : ℕ)) := by ring
 
 theorem le_deningerFloquetTerm_defect (h : DeningerExpSchwartz) (M : ℝ) {q : ℕ}
     (hq : 2 ≤ q) :
-    (1 - Real.exp (-(M / 2))) ^ 2 * deningerFloquetTerm (deningerHalfDensityLift h) q
+    (1 - Real.exp (-(M / 2))) ^ (2 : ℕ) * deningerFloquetTerm (deningerHalfDensityLift h) q
       ≤ deningerFloquetTerm (deningerHalfDensityLift (deningerPeriodizationDefect M h)) q := by
   have hqR : (2 : ℝ) ≤ (q : ℝ) := by exact_mod_cast hq
   have hLpos : 0 < Real.log q := Real.log_pos (by linarith)
@@ -141,29 +141,29 @@ theorem le_deningerFloquetTerm_defect (h : DeningerExpSchwartz) (M : ℝ) {q : �
       ((deningerHalfDensityLift h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log q) s
   have hfun : (fun t : ℝ => ‖deningerPeriodizationSum
       ((deningerHalfDensityLift (deningerPeriodizationDefect M h) : DeningerExpSchwartz) :
-        𝓢(ℝ, ℂ)) (Real.log q) t‖ ^ 2)
-      = fun t : ℝ => ‖F t - ((Real.exp (-(M / 2)) : ℝ) : ℂ) * F (t + M)‖ ^ 2 := by
+        𝓢(ℝ, ℂ)) (Real.log q) t‖ ^ (2 : ℕ))
+      = fun t : ℝ => ‖F t - ((Real.exp (-(M / 2)) : ℝ) : ℂ) * F (t + M)‖ ^ (2 : ℕ) := by
     funext t
     rw [deningerHalfDensityTrace_defect hLpos M h t]
   rw [deningerFloquetTerm, deningerFloquetTerm, hfun]
   have hbnd := le_intervalIntegral_normSq_sub_rotate hcont hLpos hper M
     (Real.exp_pos (-(M / 2))).le
-  have hnn : (0 : ℝ) ≤ ((q : ℝ) ^ 2)⁻¹ := by positivity
-  calc (1 - Real.exp (-(M / 2))) ^ 2
-        * (((q : ℝ) ^ 2)⁻¹ * ∫ t in (0 : ℝ)..Real.log q, ‖F t‖ ^ 2)
-      = ((q : ℝ) ^ 2)⁻¹ * ((1 - Real.exp (-(M / 2))) ^ 2
-          * ∫ t in (0 : ℝ)..Real.log q, ‖F t‖ ^ 2) := by ring
-    _ ≤ ((q : ℝ) ^ 2)⁻¹ * ∫ t in (0 : ℝ)..Real.log q,
-          ‖F t - ((Real.exp (-(M / 2)) : ℝ) : ℂ) * F (t + M)‖ ^ 2 :=
+  have hnn : (0 : ℝ) ≤ ((q : ℝ) ^ (2 : ℕ))⁻¹ := by positivity
+  calc (1 - Real.exp (-(M / 2))) ^ (2 : ℕ)
+        * (((q : ℝ) ^ (2 : ℕ))⁻¹ * ∫ t in (0 : ℝ)..Real.log q, ‖F t‖ ^ (2 : ℕ))
+      = ((q : ℝ) ^ (2 : ℕ))⁻¹ * ((1 - Real.exp (-(M / 2))) ^ (2 : ℕ)
+          * ∫ t in (0 : ℝ)..Real.log q, ‖F t‖ ^ (2 : ℕ)) := by ring
+    _ ≤ ((q : ℝ) ^ (2 : ℕ))⁻¹ * ∫ t in (0 : ℝ)..Real.log q,
+          ‖F t - ((Real.exp (-(M / 2)) : ℝ) : ℂ) * F (t + M)‖ ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hbnd hnn
 
 /-- **`(19d)`: Euler depletion is a bounded-below embedding for the half-density Floquet
 energy.** -/
 theorem deningerHalfDensityFloquetEnergy_defect_bounds (h : DeningerExpSchwartz) (M : ℝ) :
-    (1 - Real.exp (-(M / 2))) ^ 2 * deningerHalfDensityFloquetEnergy h
+    (1 - Real.exp (-(M / 2))) ^ (2 : ℕ) * deningerHalfDensityFloquetEnergy h
         ≤ deningerHalfDensityFloquetEnergy (deningerPeriodizationDefect M h)
       ∧ deningerHalfDensityFloquetEnergy (deningerPeriodizationDefect M h)
-        ≤ (1 + Real.exp (-(M / 2))) ^ 2 * deningerHalfDensityFloquetEnergy h := by
+        ≤ (1 + Real.exp (-(M / 2))) ^ (2 : ℕ) * deningerHalfDensityFloquetEnergy h := by
   have hsum := deningerFloquetTerm_summable (deningerHalfDensityLift h)
   have hsum' := deningerFloquetTerm_summable
     (deningerHalfDensityLift (deningerPeriodizationDefect M h))

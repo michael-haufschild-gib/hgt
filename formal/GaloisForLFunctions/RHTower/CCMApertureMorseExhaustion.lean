@@ -96,9 +96,9 @@ theorem conjugate_pair_quadratic_eq {n : ℕ} (γ : ℂ) (t : Fin n → ℝ) (c 
     (∑ i, ∑ j, c i * (starRingEnd ℂ) (c j)
         * (screwFeature γ (t i) * (starRingEnd ℂ) (screwFeature ((starRingEnd ℂ) γ) (t j))
           + screwFeature ((starRingEnd ℂ) γ) (t i) * (starRingEnd ℂ) (screwFeature γ (t j))))
-      = (1 / 2) * ‖∑ i, c i * (screwFeature γ (t i) + screwFeature ((starRingEnd ℂ) γ) (t i))‖ ^ 2
+      = (1 / 2) * ‖∑ i, c i * (screwFeature γ (t i) + screwFeature ((starRingEnd ℂ) γ) (t i))‖ ^ (2 : ℕ)
         - (1 / 2)
-          * ‖∑ i, c i * (screwFeature γ (t i) - screwFeature ((starRingEnd ℂ) γ) (t i))‖ ^ 2 := by
+          * ‖∑ i, c i * (screwFeature γ (t i) - screwFeature ((starRingEnd ℂ) γ) (t i))‖ ^ (2 : ℕ) := by
   have hsplit : ∀ i j, c i * (starRingEnd ℂ) (c j)
       * (screwFeature γ (t i) * (starRingEnd ℂ) (screwFeature ((starRingEnd ℂ) γ) (t j))
         + screwFeature ((starRingEnd ℂ) γ) (t i) * (starRingEnd ℂ) (screwFeature γ (t j)))
@@ -127,8 +127,8 @@ perturbation smaller than its coercivity margin, with the same dimension.  This 
 replacement of the point Gram matrix. -/
 theorem hasNegDefSubspaceOfDim_of_perturbation {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] (Q Q₀ : E → ℝ) {δ ε : ℝ} (hε : ε < δ)
-    (h₀ : ∀ x, Q₀ x ≤ -δ * ‖x‖ ^ 2)
-    (hpert : ∀ x, |Q x - Q₀ x| ≤ ε * ‖x‖ ^ 2)
+    (h₀ : ∀ x, Q₀ x ≤ -δ * ‖x‖ ^ (2 : ℕ))
+    (hpert : ∀ x, |Q x - Q₀ x| ≤ ε * ‖x‖ ^ (2 : ℕ))
     {D W : Submodule ℝ E} (hWD : W ≤ D) {k : ℕ} (hdim : Module.finrank ℝ W = k) :
     HasNegDefSubspaceOfDim Q D k :=
   ⟨W, hWD, hdim, fun v _ hv =>
@@ -138,8 +138,8 @@ theorem hasNegDefSubspaceOfDim_of_perturbation {E : Type*} [NormedAddCommGroup E
 inertia `k` of the limiting point Gram matrix. -/
 theorem le_morseCharge_of_perturbation {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (Q Q₀ : E → ℝ) {δ ε : ℝ} (hε : ε < δ)
-    (h₀ : ∀ x, Q₀ x ≤ -δ * ‖x‖ ^ 2)
-    (hpert : ∀ x, |Q x - Q₀ x| ≤ ε * ‖x‖ ^ 2)
+    (h₀ : ∀ x, Q₀ x ≤ -δ * ‖x‖ ^ (2 : ℕ))
+    (hpert : ∀ x, |Q x - Q₀ x| ≤ ε * ‖x‖ ^ (2 : ℕ))
     {D W : Submodule ℝ E} (hWD : W ≤ D) {k : ℕ} (hdim : Module.finrank ℝ W = k)
     (hbdd : BddAbove {n : ℕ | HasNegDefSubspaceOfDim Q D n}) :
     k ≤ morseCharge Q D :=

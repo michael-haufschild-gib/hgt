@@ -11,7 +11,7 @@ balance point and `(K-1)! ≤ (K-1)^(K-1)`, it is enough that
 ```
 
 an explicit largeness condition on `t` in terms of `K` alone.  In the intended regime
-`K ≈ log₂ log t` the left side is `(log log t)^2 · log log log t`, far below `log t`.
+`K ≈ log₂ log t` the left side is `(log log t)^(2 : ℕ) · log log log t`, far below `log t`.
 -/
 
 namespace RHTower.Sieve

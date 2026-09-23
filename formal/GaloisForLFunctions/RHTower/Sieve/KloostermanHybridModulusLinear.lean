@@ -50,18 +50,18 @@ theorem continuous_kloostermanHybridModulusLinear
 theorem norm_kloostermanHybridModulusLinear_sq_le_baseline
     (Q : Finset ℕ) (w : ℕ → ℂ) (N : ℕ)
     (a : ℕ → ℕ → ℂ) (b : (q : ℕ) → ZMod (q + 1) → ℂ) (t : ℝ) :
-    ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ 2 ≤
-      (∑ q ∈ Q, ‖w q‖ ^ 2 * ((q + 1 : ℕ) : ℝ) ^ 2 *
+    ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ (2 : ℕ) ≤
+      (∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
         ∑ d : ZMod (q + 1),
-          ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ 2) *
-      ∑ q ∈ Q, ∑ n : ZMod (q + 1), ‖b q n‖ ^ 2 := by
+          ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ (2 : ℕ)) *
+      ∑ q ∈ Q, ∑ n : ZMod (q + 1), ‖b q n‖ ^ (2 : ℕ) := by
   rw [kloostermanHybridModulusLinear_eq]
   have hbase := norm_kloostermanModulusBilinear_sq_le_baseline Q w
     (fun q d => additiveHybridDirichletPoly q N (a q) d t) b
   have ha : ∀ q : ℕ, 0 ≤ ∑ d : ZMod (q + 1),
-      ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ 2 := fun q =>
+      ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ (2 : ℕ) := fun q =>
     Finset.sum_nonneg fun d _ => sq_nonneg _
-  have hb : ∀ q : ℕ, 0 ≤ ∑ n : ZMod (q + 1), ‖b q n‖ ^ 2 := fun q =>
+  have hb : ∀ q : ℕ, 0 ≤ ∑ n : ZMod (q + 1), ‖b q n‖ ^ (2 : ℕ) := fun q =>
     Finset.sum_nonneg fun n _ => sq_nonneg _
   simpa only [mul_pow, Real.sq_sqrt (ha _), Real.sq_sqrt (hb _), mul_assoc] using hbase
 
@@ -72,21 +72,21 @@ theorem integral_normSq_kloostermanHybridModulusLinear_le_baseline
     (a : ℕ → ℕ → ℂ) (b : (q : ℕ) → ZMod (q + 1) → ℂ)
     {T : ℝ} (hT : 1 ≤ T) :
     (∫ t in Set.Icc (-T) T,
-        ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ 2) ≤
-      (∑ q ∈ Q, ∑ n : ZMod (q + 1), ‖b q n‖ ^ 2) *
-        ∑ q ∈ Q, ‖w q‖ ^ 2 * ((q + 1 : ℕ) : ℝ) ^ 2 *
+        ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ (2 : ℕ)) ≤
+      (∑ q ∈ Q, ∑ n : ZMod (q + 1), ‖b q n‖ ^ (2 : ℕ)) *
+        ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
           ((5 * Real.pi * Real.exp 1 * (N : ℝ) +
               5 * Real.pi * ((q + 1 : ℕ) : ℝ) * T) *
-            ∑ m ∈ Finset.Icc 1 N, ‖a q m‖ ^ 2) := by
+            ∑ m ∈ Finset.Icc 1 N, ‖a q m‖ ^ (2 : ℕ)) := by
   let I : Set ℝ := Set.Icc (-T) T
-  let B : ℝ := ∑ q ∈ Q, ∑ n : ZMod (q + 1), ‖b q n‖ ^ 2
+  let B : ℝ := ∑ q ∈ Q, ∑ n : ZMod (q + 1), ‖b q n‖ ^ (2 : ℕ)
   let E : ℝ → ℝ := fun t =>
-    ∑ q ∈ Q, ‖w q‖ ^ 2 * ((q + 1 : ℕ) : ℝ) ^ 2 *
-      ∑ d : ZMod (q + 1), ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ 2
+    ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
+      ∑ d : ZMod (q + 1), ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ (2 : ℕ)
   have hB : 0 ≤ B := Finset.sum_nonneg fun q _ =>
     Finset.sum_nonneg fun n _ => sq_nonneg _
   have hleft : Integrable
-      (fun t => ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ 2)
+      (fun t => ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ (2 : ℕ))
       (volume.restrict I) :=
     ((continuous_kloostermanHybridModulusLinear Q w N a b).norm.pow 2).integrableOn_Icc
   have hright : Integrable (fun t => B * E t) (volume.restrict I) := by
@@ -100,19 +100,19 @@ theorem integral_normSq_kloostermanHybridModulusLinear_le_baseline
     intro d _hd
     exact (continuous_additiveHybridDirichletPoly q N (a q) d).norm.pow 2
   have hpoint : ∀ t : ℝ,
-      ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ 2 ≤ B * E t := by
+      ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ (2 : ℕ) ≤ B * E t := by
     intro t
     have hbase := norm_kloostermanHybridModulusLinear_sq_le_baseline Q w N a b t
     simpa only [B, E, mul_comm] using hbase
   have hmono :
-      (∫ t in I, ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ 2) ≤
+      (∫ t in I, ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ (2 : ℕ)) ≤
         ∫ t in I, B * E t :=
     MeasureTheory.integral_mono hleft hright hpoint
   have hEint :
       (∫ t in I, E t) =
-        ∑ q ∈ Q, ‖w q‖ ^ 2 * ((q + 1 : ℕ) : ℝ) ^ 2 *
+        ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
           ∑ d : ZMod (q + 1),
-            (∫ t in I, ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ 2) := by
+            (∫ t in I, ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ (2 : ℕ)) := by
     dsimp only [E]
     rw [MeasureTheory.integral_finsetSum Q]
     · apply Finset.sum_congr rfl
@@ -127,16 +127,16 @@ theorem integral_normSq_kloostermanHybridModulusLinear_le_baseline
       intro d _hd
       exact (continuous_additiveHybridDirichletPoly q N (a q) d).norm.pow 2 |>.integrableOn_Icc
   calc
-    (∫ t in I, ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ 2) ≤
+    (∫ t in I, ‖kloostermanHybridModulusLinear Q w N a b t‖ ^ (2 : ℕ)) ≤
         ∫ t in I, B * E t := hmono
-    _ = B * ∑ q ∈ Q, ‖w q‖ ^ 2 * ((q + 1 : ℕ) : ℝ) ^ 2 *
+    _ = B * ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
           ∑ d : ZMod (q + 1),
-            (∫ t in I, ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ 2) := by
+            (∫ t in I, ‖additiveHybridDirichletPoly q N (a q) d t‖ ^ (2 : ℕ)) := by
       rw [MeasureTheory.integral_const_mul, hEint]
-    _ ≤ B * ∑ q ∈ Q, ‖w q‖ ^ 2 * ((q + 1 : ℕ) : ℝ) ^ 2 *
+    _ ≤ B * ∑ q ∈ Q, ‖w q‖ ^ (2 : ℕ) * ((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
           ((5 * Real.pi * Real.exp 1 * (N : ℝ) +
               5 * Real.pi * ((q + 1 : ℕ) : ℝ) * T) *
-            ∑ m ∈ Finset.Icc 1 N, ‖a q m‖ ^ 2) := by
+            ∑ m ∈ Finset.Icc 1 N, ‖a q m‖ ^ (2 : ℕ)) := by
       apply mul_le_mul_of_nonneg_left _ hB
       apply Finset.sum_le_sum
       intro q _hq

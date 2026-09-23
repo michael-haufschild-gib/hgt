@@ -63,7 +63,7 @@ theorem eventually_linear_le_correction_of_transitionCoreWardDefect_bddBelow
       n hward hcore hnroot hnlower hn hLn
   have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
   have hroot0 : 0 ≤ Real.sqrt (n : ℝ) := Real.sqrt_nonneg _
-  have hrootSq : Real.sqrt (n : ℝ) ^ 2 = (n : ℝ) := Real.sq_sqrt hn0
+  have hrootSq : Real.sqrt (n : ℝ) ^ (2 : ℕ) = (n : ℝ) := Real.sq_sqrt hn0
   have hsqrtEight : Real.sqrt (8 : ℝ) ≤ 3 := by
     nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 8), Real.sqrt_nonneg (8 : ℝ)]
   have hsqrtMul : Real.sqrt (8 * n : ℕ) ≤ 3 * Real.sqrt (n : ℝ) := by

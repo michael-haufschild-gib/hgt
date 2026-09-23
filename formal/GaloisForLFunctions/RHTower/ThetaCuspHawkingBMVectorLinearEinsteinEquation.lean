@@ -14,7 +14,7 @@ def timeBlock (s a : ℂ) (x : Fin 4 → ℝ) : ℂ :=
 
 /-- Actual separated vector radial block. -/
 def radialBlock (s a : ℂ) (x : Fin 4 → ℝ) : ℂ :=
-  (-s*D4BMFundamentalScalarMetric.envelope s a x)*((x 1 : ℂ)^2-1)⁻¹
+  (-s*D4BMFundamentalScalarMetric.envelope s a x)*((x 1 : ℂ)^(2 : ℕ)-1)⁻¹
 
 /-- Full symmetric vector perturbation, with both horizon covector entries. -/
 def field (s a : ℂ) (V : D4BMHorizon.Covector) (x : Fin 4 → ℝ) :
@@ -34,8 +34,8 @@ theorem reconstruction_eq (s a q : ℂ) (S : D4BMHorizon.Field)
       field s a V p.val := by
   have hrR : 0 < p.val 1 := lt_trans zero_lt_one p.property.1
   have hr : (p.val 1 : ℂ) ≠ 0 := by exact_mod_cast hrR.ne'
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   have hd := (master_hasDerivAt (Complex.I*s) (bmCoordinate p.val)
     (exterior_coordinate_domain p).1 (exterior_coordinate_domain p).2).deriv
@@ -112,10 +112,10 @@ theorem angular_jets (s : ℂ) (V : D4BMHorizon.Covector)
   have hl1 := hL 1
   rw [D4BMHorizon.roughLaplacian_eq V z hz hV 0] at hl0
   rw [D4BMHorizon.roughLaplacian_eq V z hz hV 1] at hl1
-  change (p.val 3 : ℂ)^2*(coordDeriv 0 (coordDeriv 0 (V 0)) z +
+  change (p.val 3 : ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 (V 0)) z +
     coordDeriv 1 (coordDeriv 1 (V 0)) z)+2*(p.val 3 : ℂ)*
     (coordDeriv 1 (V 0) z-coordDeriv 0 (V 1) z)-V 0 z = _ at hl0
-  change (p.val 3 : ℂ)^2*(coordDeriv 0 (coordDeriv 0 (V 1)) z +
+  change (p.val 3 : ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 (V 1)) z +
     coordDeriv 1 (coordDeriv 1 (V 1)) z)+2*(p.val 3 : ℂ)*
     (coordDeriv 1 (V 1) z+coordDeriv 0 (V 0) z)-V 1 z = _ at hl1
   have hdy : coordDeriv 1 (V 1) z = -coordDeriv 0 (V 0) z := by linear_combination hd
@@ -126,13 +126,13 @@ theorem angular_jets (s : ℂ) (V : D4BMHorizon.Covector)
     rw [hc 0] at hd1
     linear_combination hd1
   have hxx : coordDeriv 0 (coordDeriv 0 (V 1)) z =
-      coordDeriv 0 (coordDeriv 1 (V 0)) z+(s+1)*(s+2)*V 1 z/(p.val 3 : ℂ)^2 := by
+      coordDeriv 0 (coordDeriv 1 (V 0)) z+(s+1)*(s+2)*V 1 z/(p.val 3 : ℂ)^(2 : ℕ) := by
     rw [hdy,hyy] at hl1
     field_simp
     linear_combination hl1
   have hyy0 : coordDeriv 1 (coordDeriv 1 (V 0)) z =
       ((s+1)*(s+2)*V 0 z-2*(p.val 3 : ℂ)*(coordDeriv 1 (V 0) z-coordDeriv 0 (V 1) z)) /
-        (p.val 3 : ℂ)^2 - coordDeriv 0 (coordDeriv 0 (V 0)) z := by
+        (p.val 3 : ℂ)^(2 : ℕ) - coordDeriv 0 (coordDeriv 0 (V 0)) z := by
     field_simp
     linear_combination hl0
   rw [D4BMScalarLinearEquation.angular_lift_jet (V 0) p.val (hV 0),
@@ -150,17 +150,17 @@ private theorem blocks_jets (s a : ℂ) (p : D4BMBackground.ExteriorPoint) :
     ofField (radialBlock s a) p.val = B.mul F.inv := by
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (lt_trans zero_lt_one p.property.1))
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   have hR : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ)) p.val :=
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ 1)).contDiffAt
-  have hF : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ)^2-1) p.val :=
+  have hF : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ)^(2 : ℕ)-1) p.val :=
     (hR.pow 2).sub contDiffAt_const
   have hB := D4BMFundamentalScalarMetric.envelope_contDiffAt s a p 2
-  have hFJ : ofField (fun x : Fin 4 → ℝ => (x 1 : ℂ)^2-1) p.val =
+  have hFJ : ofField (fun x : Fin 4 → ℝ => (x 1 : ℂ)^(2 : ℕ)-1) p.val =
       ((coord (p.val 1) 1).mul (coord (p.val 1) 1)).add (constant (-1)) := by
-    have he : (fun x : Fin 4 → ℝ => (x 1 : ℂ)^2-1) =
+    have he : (fun x : Fin 4 → ℝ => (x 1 : ℂ)^(2 : ℕ)-1) =
         fun x => (x 1 : ℂ)*(x 1 : ℂ)+(-1) := by funext x; ring
     rw [he, ofField_add (hR.mul hR) contDiffAt_const, ofField_mul hR hR,
       ofField_constant, D4BMFundamentalScalarMetric.coordinate_jet]
@@ -174,7 +174,7 @@ private theorem blocks_jets (s a : ℂ) (p : D4BMBackground.ExteriorPoint) :
     rfl
   · unfold radialBlock
     rw [ofField_mul (f := fun x => -s*D4BMFundamentalScalarMetric.envelope s a x)
-      (g := fun x : Fin 4 → ℝ => ((x 1 : ℂ)^2-1)⁻¹) (contDiffAt_const.mul hB) (hF.inv hf),
+      (g := fun x : Fin 4 → ℝ => ((x 1 : ℂ)^(2 : ℕ)-1)⁻¹) (contDiffAt_const.mul hB) (hF.inv hf),
       ofField_mul contDiffAt_const hB, ofField_constant, D4BMFundamentalScalarMetric.envelope_jet,
       ofField_inv hF hf, hFJ]
     rfl
@@ -183,8 +183,8 @@ private theorem blocks_contDiffAt (s a : ℂ) (p : D4BMBackground.ExteriorPoint)
     ContDiffAt ℝ 2 (timeBlock s a) p.val ∧ ContDiffAt ℝ 2 (radialBlock s a) p.val := by
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (lt_trans zero_lt_one p.property.1))
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   have hR : ContDiffAt ℝ 2 (fun x : Fin 4 → ℝ => (x 1 : ℂ)) p.val :=
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ 1)).contDiffAt
@@ -247,8 +247,8 @@ theorem field_residual_zero (s a : ℂ) (V : D4BMHorizon.Covector) (p : D4BMBack
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (lt_trans zero_lt_one p.property.1))
   have hy : (p.val 3 : ℂ) ≠ 0 := by exact_mod_cast p.property.2.ne'
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   rw [D4BMLinearizedEinsteinSource.residual, D4BMBackground.actualJet_eq, field_jet s a V p hV hD hL]
   exact D4BMVectorLinearEquation.cosmological_component _ _ _ _ _ _ _ _ _ _ _ hr hy hf i j

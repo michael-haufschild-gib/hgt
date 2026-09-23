@@ -155,7 +155,7 @@ private theorem angularMean_radial_eq_average (q : XiZeroCopy) (branch : Bool)
     deriv (fun r => angularMean q branch r X k) d =
       D4BMNativeCircle.average (fun theta =>
         deriv (fun r => circleSource q branch r theta X k) d) := by
-  simpa only [angularMean, circleSource] using
+  simpa only [angularMean, circleSource, angularSource, baseParameterDerivative] using
     (baseAverage_hasDerivAt (radialSliceFamily q branch X k) d).deriv
 
 /-- Literal radial--horizontal mixed jet of the full circular response. -/

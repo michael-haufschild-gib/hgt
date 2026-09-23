@@ -108,9 +108,9 @@ structure ClosedDispersiveAtlas : Prop where
       latticeHamiltonian 0 1 (quasiRieszKernel 1) (singleSiteFDNLS t₁) =
         latticeHamiltonian 0 1 (quasiRieszKernel 1) (singleSiteFDNLS t₂)
   miuraPlus : ∀ t x : ℝ,
-    modifiedKdVKinkJet.ux t x + modifiedKdVKink t x ^ 2 = 1
+    modifiedKdVKinkJet.ux t x + modifiedKdVKink t x ^ (2 : ℕ) = 1
   miuraMinus : ∀ t x : ℝ,
-    modifiedKdVKink t x ^ 2 - modifiedKdVKinkJet.ux t x =
+    modifiedKdVKink t x ^ (2 : ℕ) - modifiedKdVKinkJet.ux t x =
       1 - 2 * solitonQ (x + 2 * t)
   schrodingerProfile : ∀ x : ℝ,
     solitonA2 x + 2 * solitonQ x * solitonA x = solitonA x

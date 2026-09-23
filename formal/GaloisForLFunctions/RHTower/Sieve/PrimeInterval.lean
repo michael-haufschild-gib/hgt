@@ -95,7 +95,7 @@ theorem card_omegaLevel_one_notPrime_le (a b : ℕ) :
     have hsq : n.minFac ≤ Nat.sqrt b := by
       refine Nat.le_sqrt.2 ?_
       have hpow : n.minFac * n.minFac ≤ n.minFac ^ n.factorization n.minFac := by
-        calc n.minFac * n.minFac = n.minFac ^ 2 := by ring
+        calc n.minFac * n.minFac = n.minFac ^ (2 : ℕ) := by ring
           _ ≤ n.minFac ^ n.factorization n.minFac := Nat.pow_le_pow_right hprime.pos he2
       omega
     have hlg : n.factorization n.minFac ≤ Nat.log 2 b := by

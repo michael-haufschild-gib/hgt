@@ -143,13 +143,13 @@ def finiteFisherOneCornerCommonHardyReporter
 private theorem norm_sq_toLp_eq_integral_norm_sq
     {α : Type*} [MeasurableSpace α] {μ : Measure α}
     {f : α → ℂ} (hf : MemLp f 2 μ) :
-    ‖hf.toLp f‖ ^ 2 = ∫ a, ‖f a‖ ^ 2 ∂μ := by
+    ‖hf.toLp f‖ ^ (2 : ℕ) = ∫ a, ‖f a‖ ^ (2 : ℕ) ∂μ := by
   have key := inner_self_eq_norm_sq (𝕜 := ℂ) (hf.toLp f)
   rw [MeasureTheory.L2.inner_def] at key
   have hint :
       (∫ a, inner ℂ ((hf.toLp f : α → ℂ) a)
           ((hf.toLp f : α → ℂ) a) ∂μ) =
-        ((∫ a, ‖f a‖ ^ 2 ∂μ : ℝ) : ℂ) := by
+        ((∫ a, ‖f a‖ ^ (2 : ℕ) ∂μ : ℝ) : ℂ) := by
     rw [← integral_complex_ofReal]
     refine integral_congr_ae ?_
     filter_upwards [hf.coeFn_toLp] with a ha
@@ -164,14 +164,14 @@ theorem norm_sq_finiteFisherOneCornerCommonHardyReporter_le_half_holonomy
     (hp : ∀ i, 0 ≤ p i) (hpone : ∑ i, p i = 1)
     (hh : ∀ i, 0 ≤ h i) (hd : ∀ i, ‖d i‖ ≤ 1) :
     ‖finiteFisherOneCornerCommonHardyReporter
-        p h m d hp hpone hd‖ ^ 2 ≤
+        p h m d hp hpone hd‖ ^ (2 : ℕ) ≤
       (1 / 2 : ℝ) * finiteFisherSignedHolonomyEnergy p h m := by
   let f := finiteFisherOneCornerJoinedCodiagonal p h m d
   let hf := finiteFisherOneCornerJoinedCodiagonal_memLp
     p h m d hp hpone hd
   rw [finiteFisherOneCornerCommonHardyReporter,
     norm_sq_toLp_eq_integral_norm_sq hf]
-  have hfsq : Integrable (fun u => ‖f u‖ ^ 2)
+  have hfsq : Integrable (fun u => ‖f u‖ ^ (2 : ℕ))
       halfLineLaplaceMeasure :=
     (memLp_two_iff_integrable_sq_norm hf.aestronglyMeasurable).1 hf
   have hdensity : Integrable
@@ -181,7 +181,7 @@ theorem norm_sq_finiteFisherOneCornerCommonHardyReporter_le_half_holonomy
       (finiteFisherOneCornerCoareaDensity p h m) (Ioi 0)
     exact integrableOn_finiteFisherOneCornerCoareaDensity p h m
   calc
-    (∫ u, ‖f u‖ ^ 2 ∂halfLineLaplaceMeasure) ≤
+    (∫ u, ‖f u‖ ^ (2 : ℕ) ∂halfLineLaplaceMeasure) ≤
         ∫ u, (1 / 2 : ℝ) *
           finiteFisherOneCornerCoareaDensity p h m u
           ∂halfLineLaplaceMeasure := by

@@ -55,7 +55,7 @@ theorem sum_norm_moebiusC_shift_eq_card (R h : ℕ) :
 
 /-- **The variance of μ against squarefree pair counts.** -/
 theorem sum_normSq_window_moebius_le_pairs (X L : ℕ) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), moebiusC n‖ ^ 2
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), moebiusC n‖ ^ (2 : ℕ)
       ≤ (L : ℝ) * (((Finset.range (X + L + 1)).filter (fun n => Squarefree n)).card : ℝ)
         + 2 * ∑ h ∈ Finset.Ico 1 (X + L + 1), ((L - h : ℕ) : ℝ)
             * (((Finset.range (X + L + 1 - h)).filter

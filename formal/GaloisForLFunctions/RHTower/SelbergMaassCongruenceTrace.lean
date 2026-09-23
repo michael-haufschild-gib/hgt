@@ -199,7 +199,7 @@ theorem density_slice_mass_second_hasDerivAt (N : ℕ) {lam : ℝ}
     {y : ℝ} (hy : 0 < y) :
     HasDerivAt (deriv (fun t => ∫ x in (0 : ℝ)..1, density N f (ofComplex (point x t))))
       (2 * ∑ q : Deck N, (gradientEnergy N (quotientForm N f q) y -
-        lam / y ^ 2 * mass N (quotientForm N f q) y)) y := by
+        lam / y ^ (2 : ℕ) * mass N (quotientForm N f q) y)) y := by
   have h := (HasDerivAt.fun_sum (u := (Finset.univ : Finset (Deck N)))
     (fun q _ => flux_hasDerivAt N (quotientForm N f q) hy)).const_mul 2
   apply h.congr_of_eventuallyEq
@@ -212,7 +212,7 @@ open SelbergMaassTailEnergy SelbergMaassBoundaryForm SelbergMaassTrace SelbergBo
 theorem density_tail_mass_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
     {Y : ℝ} (hY : 0 < Y) :
-    IntegrableOn (fun y => (∫ x in (0 : ℝ)..1, density N f (ofComplex (point x y))) / y ^ 2)
+    IntegrableOn (fun y => (∫ x in (0 : ℝ)..1, density N f (ofComplex (point x y))) / y ^ (2 : ℕ))
       (Ioi Y) := by
   apply (integrable_finsetSum Finset.univ
     (fun q _ => hyperbolicMass_tail_integrable N lam (quotientForm N f q) hY)).congr
@@ -222,13 +222,13 @@ theorem density_tail_mass_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
 /-- Literal hyperbolic mass of the trace on the infinite unit-period strip. -/
 def tailMass (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) (Y : ℝ) : ℝ :=
-  ∫ y in Ioi Y, (∫ x in (0 : ℝ)..1, density N f (ofComplex (point x y))) / y ^ 2
+  ∫ y in Ioi Y, (∫ x in (0 : ℝ)..1, density N f (ofComplex (point x y))) / y ^ (2 : ℕ)
 
 /-- The literal trace tail mass equals the finite sum of actual normalized Maass tail masses. -/
 theorem tailMass_eq_sum (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
     {Y : ℝ} (hY : 0 < Y) :
-    tailMass N f Y = ∑ q : Deck N, ∫ y in Ioi Y, mass N (quotientForm N f q) y / y ^ 2 := by
+    tailMass N f Y = ∑ q : Deck N, ∫ y in Ioi Y, mass N (quotientForm N f q) y / y ^ (2 : ℕ) := by
   unfold tailMass
   rw [← integral_finsetSum Finset.univ (fun q _ =>
     hyperbolicMass_tail_integrable N lam (quotientForm N f q) hY)]

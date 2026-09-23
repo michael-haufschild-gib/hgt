@@ -88,9 +88,9 @@ theorem sourcePairing_eq_conj_of_energy_eq (q r : XiZeroCopy)
 
 /-- Diagonal source flux measures the imaginary native energy with the actual native mass. -/
 theorem sourcePairing_im (q : XiZeroCopy) :
-    (sourcePairing q).im = (energy q).im * ‖vector q‖ ^ 2 := by
+    (sourcePairing q).im = (energy q).im * ‖vector q‖ ^ (2 : ℕ) := by
   have h := congrArg Complex.im (gram_displacement q q)
-  have hg : (gram q q).re = ‖vector q‖ ^ 2 := by
+  have hg : (gram q q).re = ‖vector q‖ ^ (2 : ℕ) := by
     simpa only [gram, RCLike.re_to_complex] using
       (inner_self_eq_norm_sq (𝕜 := ℂ) (vector q))
   simp only [Complex.mul_im, Complex.sub_re, Complex.sub_im, Complex.conj_re,
@@ -134,7 +134,7 @@ theorem residual_inner (z : ℂ) (q r : XiZeroCopy) :
 /-- Exact residual energy of every finite packet of actual centered theta responses. -/
 theorem packet_residual_norm_sq {ι : Type*} [Fintype ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ) (z : ℂ) :
-    ‖∑ i, c i • residual z (q i)‖ ^ 2 =
+    ‖∑ i, c i • residual z (q i)‖ ^ (2 : ℕ) =
       (∑ i, ∑ j, conj (c i) * c j * residualKernel z (q i) (q j)).re := by
   have h := inner_self_eq_norm_sq (𝕜 := ℂ) (∑ i, c i • residual z (q i))
   simp only [sum_inner, inner_sum, inner_smul_left, inner_smul_right,
@@ -153,7 +153,7 @@ theorem packet_residual_norm_sq {ι : Type*} [Fintype ι]
 /-- The matching denominator energy uses the complete native vector Gram. -/
 theorem packet_norm_sq {ι : Type*} [Fintype ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ) :
-    ‖∑ i, c i • vector (q i)‖ ^ 2 =
+    ‖∑ i, c i • vector (q i)‖ ^ (2 : ℕ) =
       (∑ i, ∑ j, conj (c i) * c j * gram (q i) (q j)).re := by
   have h := inner_self_eq_norm_sq (𝕜 := ℂ) (∑ i, c i • vector (q i))
   simp only [sum_inner, inner_sum, inner_smul_left, inner_smul_right] at h
@@ -191,7 +191,7 @@ theorem packetDomain_residual {ι : Type*} [Fintype ι]
 
 theorem packetDomain_residual_norm_sq {ι : Type*} [Fintype ι]
     (q : ι → XiZeroCopy) (c : ι → ℂ) (z : ℂ) :
-    ‖energyOperator (packetDomain q c)-z • (packetDomain q c : Space)‖ ^ 2 =
+    ‖energyOperator (packetDomain q c)-z • (packetDomain q c : Space)‖ ^ (2 : ℕ) =
       (∑ i, ∑ j, conj (c i) * c j * residualKernel z (q i) (q j)).re := by
   rw [packetDomain_residual]
   exact packet_residual_norm_sq q c z

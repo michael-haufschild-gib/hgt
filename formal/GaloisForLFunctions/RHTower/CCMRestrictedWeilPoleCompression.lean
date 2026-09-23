@@ -52,7 +52,7 @@ matrix with entries given by the exact prime–Gamma formulas. -/
 theorem ccmWeilPoleCompression_quadratic (a : SuzukiPositiveAperture) (c d : ℂ) :
     ccmRestrictedWeilSourceQuadratic a
       (c • ccmPolarFormVector a (1/2)+d • ccmPolarFormVector a (-1/2)) =
-      ccmWeilPoleDiagonal a*(‖c‖^2+‖d‖^2)+
+      ccmWeilPoleDiagonal a*(‖c‖^(2 : ℕ)+‖d‖^(2 : ℕ))+
         2*ccmWeilPoleCross a*((starRingEnd ℂ) c*d).re := by
   rw [← ccmRestrictedWeilForm_self_re_eq_source, form_combination,
     (pole_matrix_reflection a).1, (pole_matrix_reflection a).2]
@@ -69,8 +69,8 @@ theorem ccmWeilPoleCompression_quadratic (a : SuzukiPositiveAperture) (c d : ℂ
 theorem ccmWeilPoleCompression_parity_decomposition (a : SuzukiPositiveAperture) (c d : ℂ) :
     ccmRestrictedWeilSourceQuadratic a
       (c • ccmPolarFormVector a (1/2)+d • ccmPolarFormVector a (-1/2)) =
-      (ccmWeilPoleDiagonal a+ccmWeilPoleCross a)/2*‖c+d‖^2+
-      (ccmWeilPoleDiagonal a-ccmWeilPoleCross a)/2*‖c-d‖^2 := by
+      (ccmWeilPoleDiagonal a+ccmWeilPoleCross a)/2*‖c+d‖^(2 : ℕ)+
+      (ccmWeilPoleDiagonal a-ccmWeilPoleCross a)/2*‖c-d‖^(2 : ℕ) := by
   rw [ccmWeilPoleCompression_quadratic]
   simp only [Complex.sq_norm, Complex.normSq_apply, Complex.add_re, Complex.add_im,
     Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.conj_re, Complex.conj_im]
@@ -126,7 +126,7 @@ theorem exists_normalized_polarGround_poleMatrix_gap (a : SuzukiPositiveAperture
       ‖ccmArchimedeanFormToAperture a u‖=1 ∧
       ccmArchimedeanFormReflection a u=(r:ℂ) • u ∧
       ccmRestrictedWeilSourceQuadratic a u=ccmRestrictedWeilPolarGroundEnergy a ∧
-      4*‖ccmPolarBoundarySourceFunctional a u‖^2 ≤
+      4*‖ccmPolarBoundarySourceFunctional a u‖^(2 : ℕ) ≤
         (ccmRestrictedWeilPolarGroundEnergy a-ccmRestrictedWeilGroundEnergy a)*
           (2*(ccmWeilPoleDiagonal a+r*ccmWeilPoleCross a)-
             2*ccmRestrictedWeilGroundEnergy a*(2*Real.sinh a.1+2*a.1*r)) := by

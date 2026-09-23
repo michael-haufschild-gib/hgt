@@ -84,13 +84,13 @@ theorem sum_sq_fibreSum_moebius_le_jointSpectralD {x h : ℝ} (hx : 4 ≤ x) (hh
     (hP : ∀ p ∈ P, p.Prime) (hQ : ∀ q ∈ Q, q.Prime) (hPQ : Disjoint P Q)
     {Bd : ℝ} (hBd0 : 0 < Bd)
     (hBd : ∀ n, |jointOmegaWeightR P Q ⌊Real.sqrt x + h⌋₊ n| ≤ Bd) :
-    (Joint.mass P * Joint.mass Q) ^ 2
+    (Joint.mass P * Joint.mass Q) ^ (2 : ℕ)
         * ∑ a ∈ outerBlock x h,
-            (∑ b ∈ innerFibre x h a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2
+            (∑ b ∈ innerFibre x h a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ)
       ≤ 16 * Real.sqrt x
-            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-                * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ 2)
-        + 204 * Bd ^ 2 * (Real.sqrt x + 1)
+            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+                * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ (2 : ℕ))
+        + 204 * Bd ^ (2 : ℕ) * (Real.sqrt x + 1)
         + 2 * (h + 1) * (2 * h + 1)
             * (((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ) * (Joint.mass P * Joint.mass Q)
                   * (Joint.mass P + Joint.mass Q + 1)
@@ -103,9 +103,9 @@ theorem sum_sq_fibreSum_moebius_le_jointSpectralD {x h : ℝ} (hx : 4 ≤ x) (hh
   have hbridge := sum_fibreSum_sq_le_integral_scaled (f := jointOmegaWeightR P Q N) hBd0 hBd
     hx hh0 hhx
   have hplanch : (∫ u : ℝ, ‖logWindowSum (fun n => ((jointOmegaWeightR P Q N n : ℝ) : ℂ))
-        (fibreIndex x h) (fibreWidth x h) u‖ ^ 2)
-      = ∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-          * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ 2 := by
+        (fibreIndex x h) (fibreWidth x h) u‖ ^ (2 : ℕ))
+      = ∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+          * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ (2 : ℕ) := by
     have hidx : fibreIndex x h = Finset.Icc 1 N := rfl
     rw [hidx]
     rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun u => by
@@ -133,9 +133,9 @@ theorem sum_sq_fibreSum_moebius_le_jointSpectralD {x h : ℝ} (hx : 4 ≤ x) (hh
 /-- The joint budget with the fibre bridge's rounding error carried by a parameter. -/
 def jointOmegaBudgetD (x h : ℝ) (P Q : Finset ℕ) (Bd : ℝ) : ℝ :=
   16 * Real.sqrt x
-      * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-          * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ 2)
-    + 204 * Bd ^ 2 * (Real.sqrt x + 1)
+      * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+          * ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ (2 : ℕ))
+    + 204 * Bd ^ (2 : ℕ) * (Real.sqrt x + 1)
     + 2 * (h + 1) * (2 * h + 1)
         * (((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ) * (Joint.mass P * Joint.mass Q)
               * (Joint.mass P + Joint.mass Q + 1)
@@ -154,7 +154,7 @@ theorem averagedMeanSquare_moebius_of_jointOmegaBudgetD {hh : ℝ → ℝ} {Pf Q
     (hBd : ∀ᶠ x in atTop,
       ∀ n, |jointOmegaWeightR (Pf x) (Qf x) ⌊Real.sqrt x + hh x⌋₊ n| ≤ Bdf x)
     (hlim : Tendsto (fun x => jointOmegaBudgetD x (hh x) (Pf x) (Qf x) (Bdf x)
-        / ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2 * hh x ^ 2 * Real.sqrt x))
+        / ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x))
       atTop (𝓝 0)) :
     AveragedMeanSquare (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) hh := by
   rw [AveragedMeanSquare]
@@ -163,23 +163,23 @@ theorem averagedMeanSquare_moebius_of_jointOmegaBudgetD {hh : ℝ → ℝ} {Pf Q
     with x hx1 hx2 hxP hxQ hxPQ hxW hxB0 hxB hx5
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
   have hden : (0 : ℝ)
-      < (Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2 * hh x ^ 2 * Real.sqrt x := by
-    have h1 : (0 : ℝ) < (Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2 := by positivity
+      < (Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x := by
+    have h1 : (0 : ℝ) < (Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ) := by positivity
     positivity
   have hnum0 : (0 : ℝ)
       ≤ ∑ a ∈ outerBlock x (hh x),
-          (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2 :=
+          (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun a _ => sq_nonneg _
   have hkey := sum_sq_fibreSum_moebius_le_jointSpectralD hx5 hx2.le hx1 hxP hxQ hxPQ hxB0 hxB
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   rw [div_le_div_iff₀ (by positivity) hden]
   have hval : (∑ a ∈ outerBlock x (hh x),
-        (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2)
-      * ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2 * hh x ^ 2 * Real.sqrt x)
-      = ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ 2
+        (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ))
+      * ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x)
+      = ((Joint.mass (Pf x) * Joint.mass (Qf x)) ^ (2 : ℕ)
           * ∑ a ∈ outerBlock x (hh x),
-            (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2)
-        * (hh x ^ 2 * Real.sqrt x) := by ring
+            (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ))
+        * (hh x ^ (2 : ℕ) * Real.sqrt x) := by ring
   rw [hval]
   refine mul_le_mul_of_nonneg_right ?_ (by positivity)
   rw [jointOmegaBudgetD]
@@ -190,14 +190,14 @@ theorem jointOmegaBudgetD_le {x h : ℝ} {P Q : Finset ℕ} {Bd : ℝ}
     {δ Wc T₀ β₀ : ℝ} (hδ : δ = fibreWidth x h) (hδ0 : 0 < δ)
     (hWc : 1 ≤ Wc) (hT₀ : 0 < T₀) (hδWc : δ * Wc ≤ 1)
     (hbound : (∫ w in Set.Icc (-T₀) T₀,
-        ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ 2) ≤ β₀) :
+        ‖jointOmegaPoly P Q (fibreIndex x h) w‖ ^ (2 : ℕ)) ≤ β₀) :
     jointOmegaBudgetD x h P Q Bd
       ≤ 16 * Real.sqrt x
           * (3 * ((5 * Real.pi / 2
                 + 5 * Real.exp 1 / 2 * ((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ) / T₀)
-              * ∑ n ∈ fibreIndex x h, ‖jointOmegaCoeff P Q n‖ ^ 2) / Wc
-            + 3 * β₀ / Wc ^ 2)
-        + 204 * Bd ^ 2 * (Real.sqrt x + 1)
+              * ∑ n ∈ fibreIndex x h, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ)) / Wc
+            + 3 * β₀ / Wc ^ (2 : ℕ))
+        + 204 * Bd ^ (2 : ℕ) * (Real.sqrt x + 1)
         + 2 * (h + 1) * (2 * h + 1)
             * (((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ) * (Joint.mass P * Joint.mass Q)
                   * (Joint.mass P + Joint.mass Q + 1)
@@ -205,7 +205,7 @@ theorem jointOmegaBudgetD_le {x h : ℝ} {P Q : Finset ℕ} {Bd : ℝ}
   classical
   have hidx : fibreIndex x h = Finset.Icc 1 ⌊Real.sqrt x + h⌋₊ := rfl
   have hbound' : (∫ w in Set.Icc (-T₀) T₀,
-      ‖jointOmegaPoly P Q (Finset.Icc 1 ⌊Real.sqrt x + h⌋₊) w‖ ^ 2) ≤ β₀ := by
+      ‖jointOmegaPoly P Q (Finset.Icc 1 ⌊Real.sqrt x + h⌋₊) w‖ ^ (2 : ℕ)) ≤ β₀ := by
     rw [← hidx]; exact hbound
   have hspec := integral_kernel_normSq_jointOmega_le' (P := P) (Q := Q) (A₀ := 1)
     (B₀ := ⌊Real.sqrt x + h⌋₊) (by omega) (δ := δ) hδ0 hWc hT₀ hδWc hbound'

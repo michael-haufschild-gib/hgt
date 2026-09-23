@@ -33,11 +33,11 @@ namespace GaloisForLFunctions.RHTower
 theorem xiEndpointPhase_le_sqrt_mul_endpointLog {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hx : 1 ≤ x) :
     xiEndpointPhase s x
-      ≤ Real.sqrt (x ^ 2 - s) * GaloisForLFunctions.HTGeometry.endpointLog x := by
+      ≤ Real.sqrt (x ^ (2 : ℕ) - s) * GaloisForLFunctions.HTGeometry.endpointLog x := by
   have hA : (0 : ℝ) < 1 - s := by linarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hconv : Real.sqrt (1 - s) * Real.sqrt (1 + (x ^ 2 - 1) / (1 - s))
-      = Real.sqrt (x ^ 2 - s) := by
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hconv : Real.sqrt (1 - s) * Real.sqrt (1 + (x ^ (2 : ℕ) - 1) / (1 - s))
+      = Real.sqrt (x ^ (2 : ℕ) - s) := by
     rw [← Real.sqrt_mul hA.le]
     congr 1
     field_simp
@@ -51,25 +51,25 @@ theorem xiEndpointPhase_le_sqrt_mul_endpointLog {s x : ℝ} (hs0 : 0 ≤ s) (hs1
 is at most `sqrt(x²-s)` times the endpoint logarithm, the logarithm is at most `sqrt(x²-1)`, and
 `xi' (x²-1) = sqrt(x²-s) sqrt(x²-1)`. -/
 theorem lgWeight_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    lgWeight s x ≤ x ^ 2 - 1 := by
+    lgWeight s x ≤ x ^ (2 : ℕ) - 1 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   have hV : 0 < xiSpeed s x := xiSpeed_pos hs1 hx
-  have hp : (0 : ℝ) < Real.sqrt (x ^ 2 - s) := Real.sqrt_pos.mpr hn
+  have hp : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - s) := Real.sqrt_pos.mpr hn
   have hphase : xiEndpointPhase s x
-      ≤ Real.sqrt (x ^ 2 - s) * GaloisForLFunctions.HTGeometry.endpointLog x :=
+      ≤ Real.sqrt (x ^ (2 : ℕ) - s) * GaloisForLFunctions.HTGeometry.endpointLog x :=
     xiEndpointPhase_le_sqrt_mul_endpointLog hs0 hs1 hx.le
-  have hlog : GaloisForLFunctions.HTGeometry.endpointLog x ≤ Real.sqrt (x ^ 2 - 1) :=
+  have hlog : GaloisForLFunctions.HTGeometry.endpointLog x ≤ Real.sqrt (x ^ (2 : ℕ) - 1) :=
     GaloisForLFunctions.HTGeometry.endpointLog_le_sqrt hx.le
-  have hmul : xiSpeed s x * (x ^ 2 - 1)
-      = Real.sqrt (x ^ 2 - s) * Real.sqrt (x ^ 2 - 1) := xiSpeed_mul_sub_one hs1 hx
+  have hmul : xiSpeed s x * (x ^ (2 : ℕ) - 1)
+      = Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (x ^ (2 : ℕ) - 1) := xiSpeed_mul_sub_one hs1 hx
   rw [lgWeight, div_le_iff₀ hV]
   calc xiEndpointPhase s x
-      ≤ Real.sqrt (x ^ 2 - s) * GaloisForLFunctions.HTGeometry.endpointLog x := hphase
-    _ ≤ Real.sqrt (x ^ 2 - s) * Real.sqrt (x ^ 2 - 1) := by
+      ≤ Real.sqrt (x ^ (2 : ℕ) - s) * GaloisForLFunctions.HTGeometry.endpointLog x := hphase
+    _ ≤ Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (x ^ (2 : ℕ) - 1) := by
         exact mul_le_mul_of_nonneg_left hlog hp.le
-    _ = (x ^ 2 - 1) * xiSpeed s x := by
+    _ = (x ^ (2 : ℕ) - 1) * xiSpeed s x := by
         rw [← hmul]
         ring
 
@@ -79,14 +79,14 @@ the accounting that makes the Volterra mass finite, and it holds without any res
 theorem lgWeight_mul_abs_defect_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     lgWeight s x * |lgNormalFormDefect s c (radialProlateQ s c) x| ≤ 40 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hm : 0 < lgWeight s x := lgWeight_pos hs0 hs1 hx
-  have hmle : lgWeight s x ≤ x ^ 2 - 1 := lgWeight_le hs0 hs1 hx
-  have ha : |lgNormalFormDefect s c (radialProlateQ s c) x| ≤ 40 / (x ^ 2 - 1) :=
+  have hmle : lgWeight s x ≤ x ^ (2 : ℕ) - 1 := lgWeight_le hs0 hs1 hx
+  have ha : |lgNormalFormDefect s c (radialProlateQ s c) x| ≤ 40 / (x ^ (2 : ℕ) - 1) :=
     abs_lgNormalFormDefect_radialProlate_le hs0 hs1 hx
   have habs : (0 : ℝ) ≤ |lgNormalFormDefect s c (radialProlateQ s c) x| := abs_nonneg _
   calc lgWeight s x * |lgNormalFormDefect s c (radialProlateQ s c) x|
-      ≤ (x ^ 2 - 1) * (40 / (x ^ 2 - 1)) := by
+      ≤ (x ^ (2 : ℕ) - 1) * (40 / (x ^ (2 : ℕ) - 1)) := by
         exact mul_le_mul hmle ha habs (by linarith)
     _ = 40 := by
         field_simp

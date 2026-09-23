@@ -31,14 +31,14 @@ namespace RHTower
 open Complex Set
 
 /-- The critical (`T_1`) norm of a coefficient field. -/
-def criticalNorm (b : ℕ → ℝ) : ℝ :=
+def criticalNorm_weightedEulerDualReduction (b : ℕ → ℝ) : ℝ :=
   ∑' n : ℕ, ({p : ℕ | p.Prime}.indicator fun n => Real.log n / n * |b n|) n
 
 /-- **Exact coordinate norm in `T_1`** (the critical coordinate norm):
 `‖e_p‖_{T_1} = (log p)/p`. -/
 theorem criticalNorm_coordinate {p : ℕ} (hp : p.Prime) :
-    criticalNorm (primeCoordinateField p) = Real.log p / p := by
-  unfold criticalNorm
+    criticalNorm_weightedEulerDualReduction (primeCoordinateField p) = Real.log p / p := by
+  unfold criticalNorm_weightedEulerDualReduction
   rw [tsum_eq_single p]
   · rw [Set.indicator_of_mem (show p ∈ {q : ℕ | q.Prime} from hp)]
     simp [primeCoordinateField]
@@ -101,12 +101,12 @@ theorem norm_lambert_primeLog_le_of_graph_annihilation_critical
     (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ)) {p : ℕ} (hp : p.Prime)
     {lam : ℂ} (hgraph : lam + L (compactPrimeEulerUnitTangent s p) = 0)
     {C : ℝ}
-    (hdual : ‖lam‖ ≤ C * criticalNorm (primeCoordinateField p)) :
+    (hdual : ‖lam‖ ≤ C * criticalNorm_weightedEulerDualReduction (primeCoordinateField p)) :
     ‖compactCarrierLambertTransform L s (Real.log p)‖ ≤ C / p := by
   have hp0 : (0:ℝ) < p := by exact_mod_cast hp.pos
   have hdual' : ‖lam‖ ≤ C * Real.log p * (p : ℝ) ^ (-(1:ℝ)) := by
     rw [Real.rpow_neg_one]
-    calc ‖lam‖ ≤ C * criticalNorm (primeCoordinateField p) := hdual
+    calc ‖lam‖ ≤ C * criticalNorm_weightedEulerDualReduction (primeCoordinateField p) := hdual
       _ = C * (Real.log p / p) := by rw [criticalNorm_coordinate hp]
       _ = C * Real.log p * ((p:ℝ))⁻¹ := by ring
   have h := norm_lambert_primeLog_le_of_graph_annihilation L s hp.two_le

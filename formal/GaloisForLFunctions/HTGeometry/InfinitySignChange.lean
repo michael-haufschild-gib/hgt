@@ -40,7 +40,7 @@ theorem nevBrealInf_opposite_signs (h : PositiveMomentForm s) (h0b : BoundedKern
       nevBrealInf s (ξ - δ) * nevBrealInf s (ξ + δ) < 0 := by
   obtain ⟨η, hη, hpos⟩ := eventually_kernelInf_pos h h0b ξ
   have hD : nevDrealInf s ξ ≠ 0 := nevDrealInf_ne_zero_of_nevBrealInf_eq_zero h h0b hξ
-  have hD2 : 0 < nevDrealInf s ξ ^ 2 := by positivity
+  have hD2 : 0 < nevDrealInf s ξ ^ (2 : ℕ) := by positivity
   have h0v : 0 < momentInner s (monicOrtho s 0) (monicOrtho s 0) := monicOrtho_inner_self_pos h 0
   refine ⟨η, hη, fun δ hδ hδη => ?_⟩
   have hplus := nevBrealInf_factor_at_zero h h0b hξ (ξ + δ)

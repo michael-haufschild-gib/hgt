@@ -18,7 +18,7 @@ block supported in a dyadic range `[N, 2N)` the bridge `logPoly_eq_blockPoly_of_
 into a Gram row against `dyadicDirRow N (−2πw)`.  Rescaling the frequency by `−2π` preserves
 one-spacing (it dilates by `2π > 1`) and multiplies the spread by `2π`.
 
-* `primeBlockPoly_eq_logPoly`, `primeBlockPoly_eq_inner` (reusing the corpus's `moebiusCoeff`);
+* `primeBlockPoly_eq_logPoly_primeBlockLevelSetCount`, `primeBlockPoly_eq_inner` (reusing the corpus's `moebiusCoeff`);
 * `normSq_moebiusBlockCoeff_le`;
 * `card_le_of_mem_primeBlockLevelSet` — the large-values count.
 -/
@@ -31,7 +31,7 @@ open scoped InnerProductSpace ArithmeticFunction.Moebius
 noncomputable section
 
 /-- **The prime block polynomial is a Möbius `logPoly`.** -/
-theorem primeBlockPoly_eq_logPoly (B : Finset ℕ) (w : ℝ) :
+theorem primeBlockPoly_eq_logPoly_primeBlockLevelSetCount (B : Finset ℕ) (w : ℝ) :
     primeBlockPoly B w = logPoly moebiusCoeff B w := by
   simp only [primeBlockPoly, logPoly, moebiusPhase, unitLogPhase, moebiusCoeff]
 
@@ -40,7 +40,7 @@ theorem primeBlockPoly_eq_inner {N : ℕ} {B : Finset ℕ} (hB : B ⊆ Finset.Ic
     primeBlockPoly B w
       = ⟪dyadicDirRow N (-(2 * Real.pi * w)),
           blockCoeff N (blockRestrictCoeff moebiusCoeff B) 0⟫_ℂ := by
-  rw [inner_dyadicDirRow_blockCoeff, primeBlockPoly_eq_logPoly,
+  rw [inner_dyadicDirRow_blockCoeff, primeBlockPoly_eq_logPoly_primeBlockLevelSetCount,
     logPoly_eq_blockPoly_of_subset hB]
 
 /-- The Hilbert energy of the Möbius block coefficient vector is at most the block size. -/

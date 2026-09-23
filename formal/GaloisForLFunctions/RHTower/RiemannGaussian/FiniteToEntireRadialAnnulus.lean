@@ -139,9 +139,9 @@ an ordinary xi disk and hence by an explicit quadratic expression. -/
 theorem riemannXiSpectralRadialDivisorCount_cast_le_of_growth
     {A R : ℝ} (hA : 1 ≤ A) (hR : 0 < R)
     (hbound : ∀ z : ℂ,
-      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ 2)) :
+      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ (2 : ℕ))) :
     (riemannXiSpectralRadialDivisorCount R : ℝ) ≤
-      A * (2 * (R + 1) + 1) ^ 2 / Real.log 2 := by
+      A * (2 * (R + 1) + 1) ^ (2 : ℕ) / Real.log 2 := by
   let S := spectralZetaZeroRadialWindow R
   have hSinBall : ∀ rho ∈ S, ‖(rho.1 : ℂ)‖ ≤ R + 1 := by
     intro rho hrho
@@ -163,7 +163,7 @@ theorem riemannXiSpectralRadialDivisorCount_cast_le_of_growth
     _ ≤ ((∑ᶠ u,
         divisor riemannXi (closedBall 0 (R + 1)) u : ℤ) : ℝ) :=
       sum_analyticZetaZeroMultiplicity_le_riemannXi_divisor S hSinBall
-    _ ≤ A * (2 * (R + 1) + 1) ^ 2 / Real.log 2 :=
+    _ ≤ A * (2 * (R + 1) + 1) ^ (2 : ℕ) / Real.log 2 :=
       jensen_riemannXi_divisor_le hA (by linarith) hbound
 
 /-- Spectral xi has one fixed quadratic upper bound for every positive radial
@@ -171,7 +171,7 @@ divisor count. -/
 theorem exists_riemannXiSpectralRadialDivisorCount_quadratic_bound :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ R : ℝ, 0 < R →
       (riemannXiSpectralRadialDivisorCount R : ℝ) ≤
-        A * (2 * (R + 1) + 1) ^ 2 / Real.log 2 := by
+        A * (2 * (R + 1) + 1) ^ (2 : ℕ) / Real.log 2 := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_quadraticGrowth
   exact ⟨A, hA, fun R hR ↦
     riemannXiSpectralRadialDivisorCount_cast_le_of_growth hA hR hbound⟩
@@ -185,7 +185,7 @@ theorem finiteUpperHeatInRadialAnnulus_le_card_mul_Gaussian
     finiteUpperHyperbolicHeatSum z
         (realPolynomialUpperRootMultisetInRadialAnnulus A r R) tau ≤
       ((realPolynomialUpperRootMultisetInRadialAnnulus A r R).card : ℝ) *
-        (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ 2 * tau))) := by
+        (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ (2 : ℕ) * tau))) := by
   let upper := realPolynomialUpperRootMultisetInRadialAnnulus A r R
   let d : ℝ := r - ‖z‖
   have hd : 0 ≤ d := sub_nonneg.mpr hrz
@@ -213,22 +213,22 @@ theorem finiteUpperHeatInRadialAnnulus_le_rootCount_mul_Gaussian
     finiteUpperHyperbolicHeatSum z
         (realPolynomialUpperRootMultisetInRadialAnnulus A r R) tau ≤
       (realPolynomialRootCountInBall A 0 R : ℝ) *
-        (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ 2 * tau))) := by
+        (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ (2 : ℕ) * tau))) := by
   have hcard :
       (realPolynomialUpperRootMultisetInRadialAnnulus A r R).card ≤
         realPolynomialRootCountInBall A 0 R :=
     upperRootMultisetInRadialAnnulus_card_le_rootCountInBall A r R
   have hGaussian :
-      0 ≤ tau⁻¹ * Real.exp (-((r - ‖z‖) ^ 2 * tau)) := by positivity
+      0 ≤ tau⁻¹ * Real.exp (-((r - ‖z‖) ^ (2 : ℕ) * tau)) := by positivity
   calc
     finiteUpperHyperbolicHeatSum z
         (realPolynomialUpperRootMultisetInRadialAnnulus A r R) tau ≤
         ((realPolynomialUpperRootMultisetInRadialAnnulus A r R).card : ℝ) *
-          (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ 2 * tau))) :=
+          (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ (2 : ℕ) * tau))) :=
       finiteUpperHeatInRadialAnnulus_le_card_mul_Gaussian
         A r R z htau hrz
     _ ≤ (realPolynomialRootCountInBall A 0 R : ℝ) *
-          (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ 2 * tau))) :=
+          (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ (2 : ℕ) * tau))) :=
       mul_le_mul_of_nonneg_right (by exact_mod_cast hcard) hGaussian
 
 /-- With exact spectral counts on the two boundary circles, the polynomial
@@ -245,12 +245,12 @@ theorem finiteUpperHeatInRadialAnnulus_le_spectralDivisorSub_mul_Gaussian
         (realPolynomialUpperRootMultisetInRadialAnnulus A r R) tau ≤
       ((riemannXiSpectralRadialDivisorCount R -
           riemannXiSpectralRadialDivisorCount r : ℕ) : ℝ) *
-        (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ 2 * tau))) := by
+        (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ (2 : ℕ) * tau))) := by
   have hcard :=
     upperRootMultisetInRadialAnnulus_card_le_spectralDivisor_sub
       A hrR hinner houter
   have hGaussian :
-      0 ≤ tau⁻¹ * Real.exp (-((r - ‖z‖) ^ 2 * tau)) := by positivity
+      0 ≤ tau⁻¹ * Real.exp (-((r - ‖z‖) ^ (2 : ℕ) * tau)) := by positivity
   exact (finiteUpperHeatInRadialAnnulus_le_card_mul_Gaussian
     A r R z htau hrz).trans
       (mul_le_mul_of_nonneg_right (by exact_mod_cast hcard) hGaussian)
@@ -261,7 +261,7 @@ theorem finiteUpperHeatInRadialAnnulus_le_quadraticGaussian_of_growth
     (P : ℝ[X]) {K r R : ℝ} (z : ℂ) {tau : ℝ}
     (hK : 1 ≤ K) (hR : 0 < R)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ (2 : ℕ)))
     (htau : 0 < tau) (hrz : ‖z‖ ≤ r) (hrR : r ≤ R)
     (hinner : realPolynomialRootCountInBall P 0 r =
       riemannXiSpectralRadialDivisorCount r)
@@ -269,12 +269,12 @@ theorem finiteUpperHeatInRadialAnnulus_le_quadraticGaussian_of_growth
       riemannXiSpectralRadialDivisorCount R) :
     finiteUpperHyperbolicHeatSum z
         (realPolynomialUpperRootMultisetInRadialAnnulus P r R) tau ≤
-      (K * (2 * (R + 1) + 1) ^ 2 / Real.log 2) *
-        (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ 2 * tau))) := by
+      (K * (2 * (R + 1) + 1) ^ (2 : ℕ) / Real.log 2) *
+        (tau⁻¹ * Real.exp (-((r - ‖z‖) ^ (2 : ℕ) * tau))) := by
   have hdivisorSub :
       ((riemannXiSpectralRadialDivisorCount R -
           riemannXiSpectralRadialDivisorCount r : ℕ) : ℝ) ≤
-        K * (2 * (R + 1) + 1) ^ 2 / Real.log 2 := by
+        K * (2 * (R + 1) + 1) ^ (2 : ℕ) / Real.log 2 := by
     have hsub :
         riemannXiSpectralRadialDivisorCount R -
             riemannXiSpectralRadialDivisorCount r ≤
@@ -288,7 +288,7 @@ theorem finiteUpperHeatInRadialAnnulus_le_quadraticGaussian_of_growth
       (riemannXiSpectralRadialDivisorCount_cast_le_of_growth
         hK hR hbound)
   have hGaussian :
-      0 ≤ tau⁻¹ * Real.exp (-((r - ‖z‖) ^ 2 * tau)) := by positivity
+      0 ≤ tau⁻¹ * Real.exp (-((r - ‖z‖) ^ (2 : ℕ) * tau)) := by positivity
   exact (finiteUpperHeatInRadialAnnulus_le_spectralDivisorSub_mul_Gaussian
     P z htau hrz hrR hinner houter).trans
       (mul_le_mul_of_nonneg_right hdivisorSub hGaussian)
@@ -300,7 +300,7 @@ theorem finiteUpperHeatInEarlierScheduledRadialAnnulus_le_quadraticGaussian
     (P : ℝ[X]) {K : ℝ}
     (hK : 1 ≤ K)
     (hbound : ∀ w : ℂ,
-      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ 2))
+      ‖riemannXi w‖ ≤ Real.exp (K * (‖w‖ + 1) ^ (2 : ℕ)))
     {m n : ℕ} (hmn : m + 2 ≤ n)
     (hcounts : ∀ k : ℕ, k + 1 ≤ n →
       realPolynomialRootCountInBall P 0
@@ -314,10 +314,10 @@ theorem finiteUpperHeatInEarlierScheduledRadialAnnulus_le_quadraticGaussian
           (quantitativeSpectralRadialBoundary m)
           (quantitativeSpectralRadialBoundary (m + 1))) tau ≤
       (K *
-          (2 * (quantitativeSpectralRadialBoundary (m + 1) + 1) + 1) ^ 2 /
+          (2 * (quantitativeSpectralRadialBoundary (m + 1) + 1) + 1) ^ (2 : ℕ) /
             Real.log 2) *
         (tau⁻¹ * Real.exp
-          (-((quantitativeSpectralRadialBoundary m - ‖z‖) ^ 2 * tau))) := by
+          (-((quantitativeSpectralRadialBoundary m - ‖z‖) ^ (2 : ℕ) * tau))) := by
   apply finiteUpperHeatInRadialAnnulus_le_quadraticGaussian_of_growth
     P z hK (quantitativeSpectralRadialBoundary_pos (m + 1)) hbound
       htau hrz

@@ -21,7 +21,7 @@ namespace RHTower.DeletionFlux
 /-- Complete time kernel of two literal modular divisor channels. -/
 def completeKernel (d e : ℕ) : ℝ :=
   ∑' j : ℕ, HTGeometry.centeredModularPrimitive e (d*(j+1)) /
-    ((d*(j+1) : ℕ) : ℝ)^2
+    ((d*(j+1) : ℕ) : ℝ)^(2 : ℕ)
 
 private theorem reciprocal_bound {q : ℕ} (hq : 0 < q) {C : ℝ}
     (hC : 0 ≤ C) (f : ℕ → ℝ)
@@ -56,16 +56,16 @@ private theorem primitive_abs (e k : ℕ) :
 
 private theorem kernel_series {d : ℕ} (hd : 0 < d) (e : ℕ) :
     Summable (fun j : ℕ => HTGeometry.centeredModularPrimitive e (d*(j+1)) /
-      ((d*(j+1) : ℕ) : ℝ)^2) ∧
-    |completeKernel d e| ≤ (e : ℝ)/(4*(d : ℝ)^2) := by
+      ((d*(j+1) : ℕ) : ℝ)^(2 : ℕ)) ∧
+    |completeKernel d e| ≤ (e : ℝ)/(4*(d : ℝ)^(2 : ℕ)) := by
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd
   have h := reciprocal_bound (q := 1) (by omega)
-    (C := (e : ℝ)/(4*(d : ℝ)^2)) (by positivity)
+    (C := (e : ℝ)/(4*(d : ℝ)^(2 : ℕ))) (by positivity)
     (fun j : ℕ => HTGeometry.centeredModularPrimitive e (d*(j+1)) /
-      ((d*(j+1) : ℕ) : ℝ)^2) (fun j => ?_)
+      ((d*(j+1) : ℕ) : ℝ)^(2 : ℕ)) (fun j => ?_)
   · simpa [completeKernel] using h
   rw [abs_div, abs_of_nonneg (sq_nonneg (((d*(j+1) : ℕ) : ℝ)))]
-  calc _ ≤ ((e : ℝ)/8) / ((d*(j+1) : ℕ) : ℝ)^2 := by
+  calc _ ≤ ((e : ℝ)/8) / ((d*(j+1) : ℕ) : ℝ)^(2 : ℕ) := by
              exact div_le_div_of_nonneg_right (primitive_abs e _) (sq_nonneg _)
        _ ≤ _ := by
          push_cast
@@ -90,7 +90,7 @@ private theorem mu_abs (n : ℕ) :
   exact_mod_cast (ArithmeticFunction.abs_moebius_le_one (n := n))
 
 private theorem term_bound {N b r : ℕ} (hr : 0 < r) (j : ℕ) :
-    |reducedTerm N b r j| ≤ (b : ℝ)/(4*r*((N/r+j+1 : ℕ) : ℝ)^2) := by
+    |reducedTerm N b r j| ≤ (b : ℝ)/(4*r*((N/r+j+1 : ℕ) : ℝ)^(2 : ℕ)) := by
   let a : ℕ := N/r+j+1
   have ha : 0 < a := Nat.zero_lt_succ _
   have hrR : (0 : ℝ) < r := by exact_mod_cast hr
@@ -102,9 +102,9 @@ private theorem term_bound {N b r : ℕ} (hr : 0 < r) (j : ℕ) :
   · calc _ ≤ 1*1*|completeKernel (r*a) (r*b)| := by
                rw [abs_mul, abs_mul]
                gcongr <;> apply mu_abs
-           _ ≤ ((r*b : ℕ) : ℝ)/(4*((r*a : ℕ) : ℝ)^2) := by simpa using hk
+           _ ≤ ((r*b : ℕ) : ℝ)/(4*((r*a : ℕ) : ℝ)^(2 : ℕ)) := by simpa using hk
            _ = _ := by
-             change ((r*b : ℕ) : ℝ)/(4*((r*a : ℕ) : ℝ)^2) = (b : ℝ)/(4*r*(a : ℝ)^2)
+             change ((r*b : ℕ) : ℝ)/(4*((r*a : ℕ) : ℝ)^(2 : ℕ)) = (b : ℝ)/(4*r*(a : ℝ)^(2 : ℕ))
              push_cast
              field_simp
   · simp only [abs_zero]
@@ -129,7 +129,7 @@ private theorem reduced_series {N b r : ℕ} (hr : 0 < r) (hrN : r ≤ N) :
     rw [div_div]
     apply div_le_div_of_nonneg_left (by positivity) (by positivity)
     nlinarith
-  calc _ ≤ (b : ℝ)/(4*r*((N/r+j+1 : ℕ) : ℝ)^2) := term_bound hr j
+  calc _ ≤ (b : ℝ)/(4*r*((N/r+j+1 : ℕ) : ℝ)^(2 : ℕ)) := term_bound hr j
        _ ≤ _ := by
          push_cast
          rw [div_div]

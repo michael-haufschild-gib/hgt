@@ -314,7 +314,7 @@ def modelLossSymbol (a x y : ℝ) : ℝ := 1 - 2 * a / (x + y)
 theorem det_modelLossSymbol {a x y : ℝ} (hx : 0 < x) (hy : 0 < y) :
     modelLossSymbol a x x * modelLossSymbol a y y
         - modelLossSymbol a x y * modelLossSymbol a y x
-      = -(a * (x + y - a) * (x - y) ^ 2) / (x * y * (x + y) ^ 2) := by
+      = -(a * (x + y - a) * (x - y) ^ (2 : ℕ)) / (x * y * (x + y) ^ (2 : ℕ)) := by
   have hx0 : x ≠ 0 := ne_of_gt hx
   have hy0 : y ≠ 0 := ne_of_gt hy
   have hxy : x + y ≠ 0 := ne_of_gt (by linarith)
@@ -330,10 +330,10 @@ theorem det_modelLossSymbol_neg {a x y : ℝ} (ha : 0 < a) (hx : a < x) (hy : a 
   have hy0 : 0 < y := lt_trans ha hy
   rw [det_modelLossSymbol hx0 hy0]
   have hd : x - y ≠ 0 := sub_ne_zero.mpr hne
-  have hnum : 0 < a * (x + y - a) * (x - y) ^ 2 := by
+  have hnum : 0 < a * (x + y - a) * (x - y) ^ (2 : ℕ) := by
     have h1 : 0 < x + y - a := by linarith
     positivity
-  have hden : 0 < x * y * (x + y) ^ 2 := by positivity
+  have hden : 0 < x * y * (x + y) ^ (2 : ℕ) := by positivity
   exact div_neg_of_neg_of_pos (by linarith) hden
 
 /-- **The generic positive-real shortcut fails.**  The Carathéodory kernel of `w ↦ 1 / (w - a)` is
@@ -394,9 +394,9 @@ theorem not_isPSDKernel_modelLoss {a : ℝ} (ha : 0 < a) :
         (((1 - 2 * a / (3 * a + 2 * a)) / ((3 * a - a) * (2 * a - a)) : ℝ) : ℂ)
       + ((-5 : ℝ) : ℂ) * ((-5 : ℝ) : ℂ) *
         (((1 - 2 * a / (3 * a + 3 * a)) / ((3 * a - a) * (3 * a - a)) : ℝ) : ℂ))
-      = ((-(1 / (3 * a ^ 2)) : ℝ) : ℂ) by push_cast; field_simp; ring] at hnn
+      = ((-(1 / (3 * a ^ (2 : ℕ))) : ℝ) : ℂ) by push_cast; field_simp; ring] at hnn
   rw [Complex.zero_le_real] at hnn
-  have hpos : 0 < 1 / (3 * a ^ 2) := by positivity
+  have hpos : 0 < 1 / (3 * a ^ (2 : ℕ)) := by positivity
   linarith
 
 /-! ### Countable rational test family -/

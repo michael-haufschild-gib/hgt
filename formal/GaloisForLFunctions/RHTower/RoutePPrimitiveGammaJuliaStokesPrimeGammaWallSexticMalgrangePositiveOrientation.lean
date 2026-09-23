@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspCassiniCalibratedReciprocalMomentNoG
 
 The all-order cold irregular-RH law identifies the sixth Malgrange correction with
 
-`-60 * (normalizedPrimeArchMoment 5 - normalizedPrimeArchMoment 0 ^ 6 / 32)`.
+`-60 * (normalizedPrimeArchMoment 5 - normalizedPrimeArchMoment 0 ^ (6 : ℕ) / 32)`.
 
 The unconditional Schwarz-pair height gap puts every centered reciprocal-square Xi atom in the
 disk of radius `231 / 9769`.  Four powers of this radius contract the absolute sixth moment to the
@@ -30,11 +30,11 @@ theorem norm_xiZeroCopyReciprocalSquare_lt_twoHundredThirtyOne_over_nineThousand
     ‖xiZeroCopyReciprocalSquare q‖ < (231 / 9769 : ℝ) := by
   have hheight :=
     xiZeroCopy_nineThousandSevenHundredSixtyNine_div_twoHundredThirtyOne_lt_im_sq q
-  have hspec : (9769 / 231 : ℝ) < ‖xiSpectralPoint q‖ ^ 2 := by
+  have hspec : (9769 / 231 : ℝ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     rw [norm_xiSpectralPoint, Complex.sq_norm, Complex.normSq_apply]
     norm_num
     nlinarith [sq_nonneg ((q.1 : ℂ).re - 1 / 2)]
-  have hspecpos : 0 < ‖xiSpectralPoint q‖ ^ 2 :=
+  have hspecpos : 0 < ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr (xiSpectralPoint_ne_zero q))
   rw [xiZeroCopyReciprocalSquare, norm_pow, norm_inv, inv_pow]
   have hinv :=
@@ -45,26 +45,26 @@ theorem norm_xiZeroCopyReciprocalSquare_lt_twoHundredThirtyOne_over_nineThousand
 /-- Four radius powers contract the absolute sixth centered moment to the absolute second moment. -/
 theorem xiShiftAbsoluteMass_five_le_radius_pow_four_mul_one :
     xiShiftAbsoluteMass 5 ≤
-      (231 / 9769 : ℝ) ^ 4 * xiShiftAbsoluteMass 1 := by
+      (231 / 9769 : ℝ) ^ (4 : ℕ) * xiShiftAbsoluteMass 1 := by
   rw [xiShiftAbsoluteMass, xiShiftAbsoluteMass, ← tsum_mul_left]
   apply Summable.tsum_le_tsum
   · intro q
     have hnorm :=
       (norm_xiZeroCopyReciprocalSquare_lt_twoHundredThirtyOne_over_nineThousandSevenHundredSixtyNine
         q).le
-    have hpow : ‖xiZeroCopyReciprocalSquare q‖ ^ 4 ≤ (231 / 9769 : ℝ) ^ 4 :=
+    have hpow : ‖xiZeroCopyReciprocalSquare q‖ ^ (4 : ℕ) ≤ (231 / 9769 : ℝ) ^ (4 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hnorm 4
-    change ‖xiZeroCopyReciprocalSquare q‖ ^ 6 ≤
-      (231 / 9769 : ℝ) ^ 4 * ‖xiZeroCopyReciprocalSquare q‖ ^ 2
+    change ‖xiZeroCopyReciprocalSquare q‖ ^ (6 : ℕ) ≤
+      (231 / 9769 : ℝ) ^ (4 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ)
     calc
-      ‖xiZeroCopyReciprocalSquare q‖ ^ 6 =
-          ‖xiZeroCopyReciprocalSquare q‖ ^ 4 *
-            ‖xiZeroCopyReciprocalSquare q‖ ^ 2 := by ring
-      _ ≤ (231 / 9769 : ℝ) ^ 4 *
-            ‖xiZeroCopyReciprocalSquare q‖ ^ 2 :=
+      ‖xiZeroCopyReciprocalSquare q‖ ^ (6 : ℕ) =
+          ‖xiZeroCopyReciprocalSquare q‖ ^ (4 : ℕ) *
+            ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ) := by ring
+      _ ≤ (231 / 9769 : ℝ) ^ (4 : ℕ) *
+            ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hpow (sq_nonneg _)
   · exact summable_xiShiftAbsoluteMass 5
-  · exact (summable_xiShiftAbsoluteMass 1).mul_left ((231 / 9769 : ℝ) ^ 4)
+  · exact (summable_xiShiftAbsoluteMass 1).mul_left ((231 / 9769 : ℝ) ^ (4 : ℕ))
 
 /-- Triangle inequality compares the actual sixth holomorphic trace with its absolute mass. -/
 theorem normalizedPrimeArchMoment_five_le_xiShiftAbsoluteMass_five :
@@ -85,7 +85,7 @@ theorem normalizedPrimeArchMoment_five_le_xiShiftAbsoluteMass_five :
 
 /-- The sixth cold residual lies strictly below its forced first-jet scale. -/
 theorem normalizedPrimeArchMoment_five_sub_zero_pow_six_div_thirtyTwo_neg :
-    normalizedPrimeArchMoment 5 - normalizedPrimeArchMoment 0 ^ 6 / 32 < 0 := by
+    normalizedPrimeArchMoment 5 - normalizedPrimeArchMoment 0 ^ (6 : ℕ) / 32 < 0 := by
   have hm5abs := normalizedPrimeArchMoment_five_le_xiShiftAbsoluteMass_five
   have hdecay := xiShiftAbsoluteMass_five_le_radius_pow_four_mul_one
   have hsector :=
@@ -95,26 +95,26 @@ theorem normalizedPrimeArchMoment_five_sub_zero_pow_six_div_thirtyTwo_neg :
   have habs1 : xiShiftAbsoluteMass 1 <
       (42 / 41 : ℝ) * (17 / 200000 : ℝ) := by
     nlinarith
-  have hradiusPos : 0 < (231 / 9769 : ℝ) ^ 4 := by positivity
+  have hradiusPos : 0 < (231 / 9769 : ℝ) ^ (4 : ℕ) := by positivity
   have hmass5 : xiShiftAbsoluteMass 5 <
-      (231 / 9769 : ℝ) ^ 4 * ((42 / 41 : ℝ) * (17 / 200000 : ℝ)) :=
+      (231 / 9769 : ℝ) ^ (4 : ℕ) * ((42 / 41 : ℝ) * (17 / 200000 : ℝ)) :=
     hdecay.trans_lt (mul_lt_mul_of_pos_left habs1 hradiusPos)
   have hrat :
-      (231 / 9769 : ℝ) ^ 4 * ((42 / 41 : ℝ) * (17 / 200000 : ℝ)) <
-        (1 / 25 : ℝ) ^ 6 / 32 := by
+      (231 / 9769 : ℝ) ^ (4 : ℕ) * ((42 / 41 : ℝ) * (17 / 200000 : ℝ)) <
+        (1 / 25 : ℝ) ^ (6 : ℕ) / 32 := by
     norm_num
   have hm0 := one_div_twentyFive_lt_normalizedPrimeArchMoment_zero
-  have hm0pow : (1 / 25 : ℝ) ^ 6 < normalizedPrimeArchMoment 0 ^ 6 := by
+  have hm0pow : (1 / 25 : ℝ) ^ (6 : ℕ) < normalizedPrimeArchMoment 0 ^ (6 : ℕ) := by
     exact pow_lt_pow_left₀ hm0 (by norm_num) (by norm_num)
-  have htarget : (1 / 25 : ℝ) ^ 6 / 32 <
-      normalizedPrimeArchMoment 0 ^ 6 / 32 :=
+  have htarget : (1 / 25 : ℝ) ^ (6 : ℕ) / 32 <
+      normalizedPrimeArchMoment 0 ^ (6 : ℕ) / 32 :=
     div_lt_div_of_pos_right hm0pow (by norm_num)
   linarith
 
 /-- Exact positive scalar orientation of the canonical cold sixth Malgrange target. -/
 theorem routePPrimitiveGammaJuliaStokesPrimeGammaWallColdSixthMalgrangeTarget_pos :
     0 < -60 * (normalizedPrimeArchMoment 5 -
-      normalizedPrimeArchMoment 0 ^ 6 / 32) := by
+      normalizedPrimeArchMoment 0 ^ (6 : ℕ) / 32) := by
   nlinarith [normalizedPrimeArchMoment_five_sub_zero_pow_six_div_thirtyTwo_neg]
 
 /-- Schwarz-pair radius contraction for every absolute centered-moment tail. -/

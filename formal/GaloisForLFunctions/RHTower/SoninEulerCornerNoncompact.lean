@@ -44,7 +44,7 @@ theorem Orthonormal.weakly_tendsto_zero
     ∀ ℓ : H →L[𝕜] 𝕜, Tendsto (fun n => ℓ (g n)) atTop (𝓝 0) := by
   intro ℓ
   let y : H := (InnerProductSpace.toDual 𝕜 H).symm ℓ
-  have hsquare : Tendsto (fun n => ‖inner 𝕜 (g n) y‖ ^ 2) atTop (𝓝 0) :=
+  have hsquare : Tendsto (fun n => ‖inner 𝕜 (g n) y‖ ^ (2 : ℕ)) atTop (𝓝 0) :=
     (hg.inner_products_summable y).tendsto_atTop_zero
   have hnorm : Tendsto (fun n => ‖inner 𝕜 (g n) y‖) atTop (𝓝 0) := by
     have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsquare

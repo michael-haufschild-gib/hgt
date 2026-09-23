@@ -106,7 +106,7 @@ theorem xiThermalCubicReciprocalMass_pos :
 
 /-- Pointwise quadratic transverse control of one thermal orientation atom.  A global Xi
 half-plane width `alpha` gives
-`Im(lambda_q)^2 <= 4*alpha^2*|xiSpectralPoint(q)^(-1)|^6`. -/
+`Im(lambda_q)^(2 : ℕ) <= 4*alpha^(2 : ℕ)*|xiSpectralPoint(q)^(-1)|^(6 : ℕ)`. -/
 theorem xiThermalOrientationTerm_le_cubicReciprocalMass_of_halfPlaneBound
     {alpha : ℝ} (halpha : 0 ≤ alpha) (hzeros : XiZeroHalfPlaneBound alpha)
     (q : XiZeroCopy) :
@@ -165,7 +165,7 @@ theorem xiThermalOrientationTerm_le_cubicReciprocalMass_of_halfPlaneBound
           (1 / Complex.normSq (xiSpectralPoint q) ^ 3) := by ring
 
 /-- **Quadratic thermal saturation budget.**  A transverse Xi half-plane bound of width `alpha`
-controls the complete thermal orientation energy by `4*alpha^2` times the unconditional cubic
+controls the complete thermal orientation energy by `4*alpha^(2 : ℕ)` times the unconditional cubic
 reciprocal mass. -/
 theorem xiThermalOrientationEnergy_le_cubicReciprocalMass_of_halfPlaneBound
     {alpha : ℝ} (halpha : 0 ≤ alpha) (hzeros : XiZeroHalfPlaneBound alpha) :
@@ -318,7 +318,7 @@ theorem riemannHypothesis_iff_eventually_xiThermalTruncation_one_le_source_add_e
     exact le_of_tendsto tendsto_xiThermalTruncation_one (hupper ε hε)
 
 /-- A linear square-sample abscissa bound at width `alpha` quantitatively forces the thermal
-second moment to lie within `4*alpha^2` cubic reciprocal masses of its source value. -/
+second moment to lie within `4*alpha^(2 : ℕ)` cubic reciprocal masses of its source value. -/
 theorem xiThermalSourceGap_le_of_squarePrimeWindowPositiveExcess_abscissa
     {alpha : ℝ} (halpha : 0 ≤ alpha)
     (habscissa :

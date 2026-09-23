@@ -44,10 +44,10 @@ theorem no_orthonormal_family_with_unit_response {u : ℕ → E} (hu : Orthonorm
   no_bessel_family_with_unit_response u 1 (hasBesselBound_of_orthonormal hu)
 
 /-- Quantitative form: an orthonormal family can have unit response against one vector on at most
-`‖y‖ ^ 2` many modes. -/
+`‖y‖ ^ (2 : ℕ)` many modes. -/
 theorem card_le_of_orthonormal_unit_response {u : ℕ → E} (hu : Orthonormal ℂ u)
     (s : Finset ℕ) (y : E) (hy : ∀ i ∈ s, inner ℂ (u i) y = 1) :
-    (s.card : ℝ) ≤ ‖y‖ ^ 2 := by
+    (s.card : ℝ) ≤ ‖y‖ ^ (2 : ℕ) := by
   have h := card_le_of_bessel_unit_response u 1 (hasBesselBound_of_orthonormal hu) s y hy
   simpa using h
 

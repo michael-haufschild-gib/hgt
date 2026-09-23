@@ -18,26 +18,26 @@ private theorem evenCompactHankelGapDegree (a b c d e f g : Polynomial ℝ)
     (hg : g.natDegree ≤ 8) :
     (hankelFourDet a b c d e f g).natDegree ≤ 20 := by
   have htwo : (2 : Polynomial ℝ).natDegree ≤ 0 := by simp
-  have hhead : (a*c*e-a*d^2-b^2*e+2*b*c*d-c^3).natDegree ≤ 12 :=
+  have hhead : (a*c*e-a*d^(2 : ℕ)-b^(2 : ℕ)*e+2*b*c*d-c^(3 : ℕ)).natDegree ≤ 12 :=
     ds (da (ds (ds (dm (dm ha hc) he) (dm ha (dp 2 hd)))
       (dm (dp 2 hb) he)) (Polynomial.natDegree_mul_le_of_le (m := 7) (n := 5) (Polynomial.natDegree_mul_le_of_le (m := 3) (n := 4) (Polynomial.natDegree_mul_le_of_le (m := 0) (n := 3) htwo hb) hc) hd)) (dp 3 hc)
-  have h1 : ((c*e-d^2)*d^2).natDegree ≤ 20 :=
+  have h1 : ((c*e-d^(2 : ℕ))*d^(2 : ℕ)).natDegree ≤ 20 :=
     dm (ds (dm hc he) (dp 2 hd)) (dp 2 hd)
   have h2 : (2*(c*d-b*e)*d*e).natDegree ≤ 20 :=
     dm (dm (dm htwo (ds (dm hc hd) (dm hb he))) hd) he
-  have h3 : (2*(b*d-c^2)*d*f).natDegree ≤ 20 :=
+  have h3 : (2*(b*d-c^(2 : ℕ))*d*f).natDegree ≤ 20 :=
     dm (dm (dm htwo (ds (dm hb hd) (dp 2 hc))) hd) hf
-  have h4 : ((a*e-c^2)*e^2).natDegree ≤ 20 :=
+  have h4 : ((a*e-c^(2 : ℕ))*e^(2 : ℕ)).natDegree ≤ 20 :=
     dm (ds (dm ha he) (dp 2 hc)) (dp 2 he)
   have h5 : (2*(b*c-a*d)*e*f).natDegree ≤ 20 :=
     dm (dm (dm htwo (ds (dm hb hc) (dm ha hd))) he) hf
-  have h6 : ((a*c-b^2)*f^2).natDegree ≤ 20 :=
+  have h6 : ((a*c-b^(2 : ℕ))*f^(2 : ℕ)).natDegree ≤ 20 :=
     dm (ds (dm ha hc) (dp 2 hb)) (dp 2 hf)
   exact ds (dm hhead hg) (da (da (da (da (da h1 h2) h3) h4) h5) h6)
 
 /-- Polynomial determinant formed from the exact lifted source entries. -/
 def evenCompactGapDetPolynomial (u w : ℝ) : Polynomial ℝ :=
-  hankelFourDet ((evenCompactGapSourceZeroPolynomial u)^2)
+  hankelFourDet ((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ))
     (-evenCompactGapReflectedTwoPolynomial u w)
     (evenCompactGapReflectedFourPolynomial u w)
     (-evenCompactGapReflectedSixPolynomial u w)
@@ -46,7 +46,7 @@ def evenCompactGapDetPolynomial (u w : ℝ) : Polynomial ℝ :=
     (evenCompactGapReflectedTwelvePolynomial u w+
       Polynomial.C (1000000000000 : ℝ)*evenCompactGapSourceZeroPolynomial u*
         (Polynomial.C (3 : ℝ)*evenCompactGapSourceZeroPolynomial u-Polynomial.C (6/19 : ℝ))) *
-      Polynomial.C (((100 : ℝ)^12)⁻¹)
+      Polynomial.C (((100 : ℝ)^(12 : ℕ))⁻¹)
 
 /-- Polynomial evaluation is exactly the complete corrected raw determinant. -/
 theorem evenCompactGapDetPolynomial_eval (u a w : ℝ) :

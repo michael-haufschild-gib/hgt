@@ -421,7 +421,7 @@ theorem apertureNorm_nonneg (t : ⨂[ℂ] i, EuclideanSpace ℂ (X i)) : 0 ≤ a
 
 omit [(i : ι) → DecidableEq (X i)] in
 theorem apertureNorm_eq (t : ⨂[ℂ] i, EuclideanSpace ℂ (X i)) :
-    apertureNorm t = Real.sqrt (∑ ξ : (∀ i, X i), ‖apertureCoord t ξ‖ ^ 2) := by
+    apertureNorm t = Real.sqrt (∑ ξ : (∀ i, X i), ‖apertureCoord t ξ‖ ^ (2 : ℕ)) := by
   rw [apertureNorm, EuclideanSpace.norm_eq]
   exact congrArg Real.sqrt (Finset.sum_congr rfl fun ξ _ => by rw [apertureModel_apply])
 
@@ -430,16 +430,16 @@ omit [(i : ι) → DecidableEq (X i)] in
 the local norms. -/
 theorem apertureNorm_tprod (v : ∀ i, EuclideanSpace ℂ (X i)) :
     apertureNorm (⨂ₜ[ℂ] i, v i) = ∏ i, ‖v i‖ := by
-  have hlocal : ∀ i, ∑ x : X i, ‖v i x‖ ^ 2 = ‖v i‖ ^ 2 := by
+  have hlocal : ∀ i, ∑ x : X i, ‖v i x‖ ^ (2 : ℕ) = ‖v i‖ ^ (2 : ℕ) := by
     intro i
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt]
     exact Finset.sum_nonneg fun x _ => sq_nonneg _
   have hcoord : ∀ ξ : (∀ i, X i),
-      ‖apertureCoord (⨂ₜ[ℂ] i, v i) ξ‖ ^ 2 = ∏ i, ‖v i (ξ i)‖ ^ 2 := by
+      ‖apertureCoord (⨂ₜ[ℂ] i, v i) ξ‖ ^ (2 : ℕ) = ∏ i, ‖v i (ξ i)‖ ^ (2 : ℕ) := by
     intro ξ
     rw [apertureCoord_tprod, norm_prod, ← Finset.prod_pow]
   rw [apertureNorm_eq, Finset.sum_congr rfl fun ξ _ => hcoord ξ]
-  have hswap : ∑ ξ : (∀ i, X i), ∏ i, ‖v i (ξ i)‖ ^ 2 = ∏ i, ∑ x : X i, ‖v i x‖ ^ 2 := by
+  have hswap : ∑ ξ : (∀ i, X i), ∏ i, ‖v i (ξ i)‖ ^ (2 : ℕ) = ∏ i, ∑ x : X i, ‖v i x‖ ^ (2 : ℕ) := by
     rw [Finset.prod_univ_sum]
     exact (Finset.sum_congr (by rw [Fintype.piFinset_univ]) fun _ _ => rfl).symm
   rw [hswap, Finset.prod_congr rfl fun i _ => hlocal i, Finset.prod_pow,

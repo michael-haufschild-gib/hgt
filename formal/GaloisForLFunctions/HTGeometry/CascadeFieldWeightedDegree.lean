@@ -33,7 +33,7 @@ theorem cascadeDeg_algebraMap (w : ℕ → ℕ) (p : MvPolynomial ℕ ℂ) :
   rw [fx, cascadeDeg_algebraMap, wdeg_X]
 
 /-- **The coordinate derivation of the rational model extends the partial derivative.** -/
-theorem fpderiv_algebraMap (k : ℕ) (p : MvPolynomial ℕ ℂ) :
+theorem fpderiv_algebraMap_cascadeFieldWeightedDegree (k : ℕ) (p : MvPolynomial ℕ ℂ) :
     fpderiv k (algebraMap (MvPolynomial ℕ ℂ) CascadeField p)
       = algebraMap (MvPolynomial ℕ ℂ) CascadeField (pderiv k p) := by
   classical
@@ -88,7 +88,7 @@ theorem cascadeDeg_fpderiv_add_le (w : ℕ → ℕ) (k : ℕ) (x : CascadeField)
   have hquot : fpderiv k x * algebraMap (MvPolynomial ℕ ℂ) CascadeField (b * b)
       = algebraMap (MvPolynomial ℕ ℂ) CascadeField N := by
     have hlei := (fpderiv k).leibniz x (algebraMap (MvPolynomial ℕ ℂ) CascadeField b)
-    rw [hxrep, fpderiv_algebraMap, fpderiv_algebraMap] at hlei
+    rw [hxrep, fpderiv_algebraMap_cascadeFieldWeightedDegree, fpderiv_algebraMap_cascadeFieldWeightedDegree] at hlei
     simp only [smul_eq_mul] at hlei
     have hstep : algebraMap (MvPolynomial ℕ ℂ) CascadeField b * fpderiv k x
         = algebraMap (MvPolynomial ℕ ℂ) CascadeField (pderiv k a)

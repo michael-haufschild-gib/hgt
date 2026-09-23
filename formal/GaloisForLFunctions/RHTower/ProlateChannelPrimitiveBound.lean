@@ -24,13 +24,13 @@ variable {a lamDil lamR mu C : ℝ} {Φ : ℝ → ℝ}
 theorem re_fourier_prolateMeanZeroSource (ha : 0 < a) (hlamDil : 0 < lamDil)
     (hΦ : Continuous Φ) (heven : Function.Even Φ)
     (hC : ∀ x : ℝ, |Φ x| ≤ C) (hC0 : 0 ≤ C)
-    (hmu : ∀ x : ℝ, realFourierBandTransform (2 * Real.pi * a ^ 2) Φ x = mu * Φ x) (w : ℝ) :
+    (hmu : ∀ x : ℝ, realFourierBandTransform (2 * Real.pi * a ^ (2 : ℕ)) Φ x = mu * Φ x) (w : ℝ) :
     (𝓕 (fun y => ((prolateMeanZeroSource a lamDil Φ y : ℝ) : ℂ)) w).re
       = a * mu * (Φ (w / a) - Φ (lamDil * (w / a))) := by
   have hax : a * (w / a) = w := by field_simp
   have h := fourier_prolateMeanZeroSource ha hlamDil hΦ heven hC hC0 (w / a)
   rw [hax] at h
-  have hT : ∀ x : ℝ, fourierBandTransform (2 * Real.pi * a ^ 2) (fun t => ((Φ t : ℝ) : ℂ)) x
+  have hT : ∀ x : ℝ, fourierBandTransform (2 * Real.pi * a ^ (2 : ℕ)) (fun t => ((Φ t : ℝ) : ℂ)) x
       = ((mu * Φ x : ℝ) : ℂ) := by
     intro x
     rw [fourierBandTransform_ofReal_even hΦ heven x, hmu x]
@@ -51,11 +51,11 @@ theorem integral_comp_scale (hbeta : 0 < lamR) (g : ℝ → ℝ) (X : ℝ) :
 theorem channelPrimitive_prolateMeanZeroSource (ha : 0 < a) (hlamDil : 0 < lamDil)
     (hlamR : 0 < lamR) (hΦ : Continuous Φ) (heven : Function.Even Φ)
     (hC : ∀ x : ℝ, |Φ x| ≤ C) (hC0 : 0 ≤ C)
-    (hmu : ∀ x : ℝ, realFourierBandTransform (2 * Real.pi * a ^ 2) Φ x = mu * Φ x)
+    (hmu : ∀ x : ℝ, realFourierBandTransform (2 * Real.pi * a ^ (2 : ℕ)) Φ x = mu * Φ x)
     (n : ℕ) (t : ℝ) :
     channelPrimitive (prolateMeanZeroSource a lamDil Φ) lamR n t
-      = a ^ 2 * mu * (∫ u in (lamR / a * 1)..(lamR / a * Real.exp t), Φ (((n : ℝ) + 1) * u))
-        - a ^ 2 * mu / lamDil *
+      = a ^ (2 : ℕ) * mu * (∫ u in (lamR / a * 1)..(lamR / a * Real.exp t), Φ (((n : ℝ) + 1) * u))
+        - a ^ (2 : ℕ) * mu / lamDil *
           (∫ u in (lamDil * (lamR / a) * 1)..(lamDil * (lamR / a) * Real.exp t),
             Φ (((n : ℝ) + 1) * u)) := by
   have hf : Integrable (prolateMeanZeroSource a lamDil Φ) :=
@@ -107,16 +107,16 @@ theorem tsum_abs_channelPrimitive_prolateMeanZeroSource
     (ha : 0 < a) (hlamDil : 1 ≤ lamDil) (hlamR : 0 < lamR)
     (hΦ : Continuous Φ) (heven : Function.Even Φ)
     (hC : ∀ x : ℝ, |Φ x| ≤ C) (hC0 : 0 ≤ C)
-    (hmu : ∀ x : ℝ, realFourierBandTransform (2 * Real.pi * a ^ 2) Φ x = mu * Φ x)
+    (hmu : ∀ x : ℝ, realFourierBandTransform (2 * Real.pi * a ^ (2 : ℕ)) Φ x = mu * Φ x)
     (hΦR : ∀ u : ℝ, Φ u = Φ 1 * R u)
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hcc : 1 ≤ cc)
     (hR : ∀ u : ℝ, HasDerivAt R (DR u) u) (hDR : ∀ u : ℝ, HasDerivAt DR (DDR u) u)
-    (hode : ∀ u : ℝ, (u ^ 2 - 1) * DDR u + 2 * u * DR u
-      - (s * cc ^ 2 - cc ^ 2 * u ^ 2) * R u = 0)
+    (hode : ∀ u : ℝ, (u ^ (2 : ℕ) - 1) * DDR u + 2 * u * DR u
+      - (s * cc ^ (2 : ℕ) - cc ^ (2 : ℕ) * u ^ (2 : ℕ)) * R u = 0)
     (hbeta : 2 ≤ lamR / a) {t : ℝ} (ht : 0 ≤ t) :
     Summable (fun n : ℕ => |channelPrimitive (prolateMeanZeroSource a lamDil Φ) lamR n t|) ∧
       ∑' n : ℕ, |channelPrimitive (prolateMeanZeroSource a lamDil Φ) lamR n t|
-        ≤ 2 * (a ^ 2 * |mu| * |Φ 1| *
+        ≤ 2 * (a ^ (2 : ℕ) * |mu| * |Φ 1| *
             (2 * (4500 * GaloisForLFunctions.RHTower.exactEnergyBudget s cc R DR 2 /
               (Real.sqrt cc * cc * (lamR / a))))) := by
   have hlamDil0 : (0 : ℝ) < lamDil := by linarith
@@ -135,7 +135,7 @@ theorem tsum_abs_channelPrimitive_prolateMeanZeroSource
   have hM : (0 : ℝ) ≤ M := Real.sqrt_nonneg _
   have hcc0 : (0 : ℝ) < cc := by linarith
   have hsc : (0 : ℝ) < Real.sqrt cc := Real.sqrt_pos.mpr hcc0
-  set A : ℝ := a ^ 2 * |mu| * |Φ 1| with hA
+  set A : ℝ := a ^ (2 : ℕ) * |mu| * |Φ 1| with hA
   have hA0 : (0 : ℝ) ≤ A := by rw [hA]; positivity
   set Bnd : ℝ := 2 * (4500 * M / (Real.sqrt cc * cc * β)) with hBnd
   have hBnd0 : (0 : ℝ) ≤ Bnd := by rw [hBnd]; positivity
@@ -152,20 +152,20 @@ theorem tsum_abs_channelPrimitive_prolateMeanZeroSource
       rw [← intervalIntegral.integral_const_mul]
       exact intervalIntegral.integral_congr fun u _ => hΦR _
     rw [hrw, hrw]
-    have h1 : |a ^ 2 * mu * (Φ 1 * ∫ u in (β * 1)..(β * Real.exp t), R (((n : ℝ) + 1) * u))
-        - a ^ 2 * mu / lamDil *
+    have h1 : |a ^ (2 : ℕ) * mu * (Φ 1 * ∫ u in (β * 1)..(β * Real.exp t), R (((n : ℝ) + 1) * u))
+        - a ^ (2 : ℕ) * mu / lamDil *
           (Φ 1 * ∫ u in (lamDil * β * 1)..(lamDil * β * Real.exp t), R (((n : ℝ) + 1) * u))|
-        ≤ |a ^ 2 * mu * (Φ 1 * ∫ u in (β * 1)..(β * Real.exp t), R (((n : ℝ) + 1) * u))|
-          + |a ^ 2 * mu / lamDil *
+        ≤ |a ^ (2 : ℕ) * mu * (Φ 1 * ∫ u in (β * 1)..(β * Real.exp t), R (((n : ℝ) + 1) * u))|
+          + |a ^ (2 : ℕ) * mu / lamDil *
             (Φ 1 * ∫ u in (lamDil * β * 1)..(lamDil * β * Real.exp t),
               R (((n : ℝ) + 1) * u))| := abs_sub _ _
     refine le_trans h1 ?_
     rw [abs_mul, abs_mul, abs_mul, abs_mul, abs_mul, abs_div]
-    have habs : |a ^ 2| = a ^ 2 := abs_of_nonneg (sq_nonneg a)
+    have habs : |a ^ (2 : ℕ)| = a ^ (2 : ℕ) := abs_of_nonneg (sq_nonneg a)
     have habsl : |lamDil| = lamDil := abs_of_pos hlamDil0
-    have h2abs : |a ^ 2 * mu| = a ^ 2 * |mu| := by rw [abs_mul, habs]
+    have h2abs : |a ^ (2 : ℕ) * mu| = a ^ (2 : ℕ) * |mu| := by rw [abs_mul, habs]
     rw [habs, habsl, h2abs, hA]
-    have hinv : a ^ 2 * |mu| / lamDil ≤ a ^ 2 * |mu| := by
+    have hinv : a ^ (2 : ℕ) * |mu| / lamDil ≤ a ^ (2 : ℕ) * |mu| := by
       rw [div_le_iff₀ hlamDil0]
       nlinarith [mul_nonneg (mul_nonneg (sq_nonneg a) (abs_nonneg mu))
         (by linarith : (0 : ℝ) ≤ lamDil - 1)]

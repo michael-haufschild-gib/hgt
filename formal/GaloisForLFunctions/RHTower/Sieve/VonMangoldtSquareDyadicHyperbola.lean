@@ -12,7 +12,7 @@ open scoped ArithmeticFunction BigOperators
 namespace RHTower.Sieve
 
 private def vonMangoldtSquareHarmonicWeight (n : ℕ) : ℝ :=
-  (Λ n) ^ 2 / (n : ℝ)
+  (Λ n) ^ (2 : ℕ) / (n : ℝ)
 
 private theorem vonMangoldtSquareHarmonicWeight_nonneg (n : ℕ) :
     0 ≤ vonMangoldtSquareHarmonicWeight n := by
@@ -84,8 +84,8 @@ private theorem vonMangoldtSquareHyperbolaMass_eq_dyadic_blocks (M : ℕ) :
       ∑ d ∈ Finset.Ioc 1 (2 ^ M), f d := by
     rw [vonMangoldtSquareHyperbolaMass]
     have hterm : ∀ d ∈ Finset.Icc 1 (2 ^ M),
-        (Λ d) ^ 2 / (d : ℝ) *
-            ∑ m ∈ Finset.Icc 1 (2 ^ M / d), (Λ m) ^ 2 / (m : ℝ) =
+        (Λ d) ^ (2 : ℕ) / (d : ℝ) *
+            ∑ m ∈ Finset.Icc 1 (2 ^ M / d), (Λ m) ^ (2 : ℕ) / (m : ℝ) =
           f d := by
       intro d hd
       have hdpos : 0 < d := (Finset.mem_Icc.mp hd).1

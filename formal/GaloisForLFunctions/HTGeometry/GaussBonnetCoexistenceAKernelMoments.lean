@@ -26,8 +26,8 @@ theorem egbCoexistenceAKernelMomentCoefficient_pos (n : ℕ) : 0 < egbCoexistenc
   positivity
 
 theorem egbCoexistenceAKernelMoment_polynomial_integral (n : ℕ) :
-    (∫ u in (0 : ℝ)..1, u ^ (2 * n) * (1 + u ^ 2)) = egbCoexistenceAKernelMomentCoefficient n := by
-  have he : (fun u : ℝ => u ^ (2 * n) * (1 + u ^ 2)) = (fun u => u ^ (2 * n) + u ^ (2 * n + 2)) := by
+    (∫ u in (0 : ℝ)..1, u ^ (2 * n) * (1 + u ^ (2 : ℕ))) = egbCoexistenceAKernelMomentCoefficient n := by
+  have he : (fun u : ℝ => u ^ (2 * n) * (1 + u ^ (2 : ℕ))) = (fun u => u ^ (2 * n) + u ^ (2 * n + 2)) := by
     funext u
     rw [pow_add]
     ring
@@ -48,37 +48,37 @@ theorem egbCoexistenceAKernelMomentIntegrand_intervalIntegrable (τ : ℝ) (n : 
 
 private theorem weighted_integrand_bounds (τ : ℝ) (n : ℕ) :
     ∀ u ∈ Icc (0 : ℝ) 1,
-      u ^ (2 * n) * (1 + u ^ 2) ≤ egbCoexistenceAKernelMomentIntegrand τ n u ∧
+      u ^ (2 * n) * (1 + u ^ (2 : ℕ)) ≤ egbCoexistenceAKernelMomentIntegrand τ n u ∧
       egbCoexistenceAKernelMomentIntegrand τ n u ≤
-        (u ^ (2 * n) * (1 + u ^ 2)) / (1 - egbCoexistenceASymmetricRatio τ ^ 2) := by
+        (u ^ (2 * n) * (1 + u ^ (2 : ℕ))) / (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) := by
   intro u hu
   have hd := egbCoexistenceASymmetricRatio_bounds τ
-  have hc : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ 2 := by nlinarith [hd.1, hd.2]
-  have hu₂ : u ^ 2 ≤ 1 := by nlinarith [hu.1, hu.2]
-  have hm : egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 ≤ egbCoexistenceASymmetricRatio τ ^ 2 := by
+  have hc : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by nlinarith [hd.1, hd.2]
+  have hu₂ : u ^ (2 : ℕ) ≤ 1 := by nlinarith [hu.1, hu.2]
+  have hm : egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) ≤ egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sq_nonneg (egbCoexistenceASymmetricRatio τ)) (sub_nonneg.mpr hu₂)]
-  have hden : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 := by linarith
-  have hp : 0 ≤ u ^ (2 * n) * (1 + u ^ 2) := mul_nonneg (pow_nonneg hu.1 _) (by positivity)
+  have hden : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) := by linarith
+  have hp : 0 ≤ u ^ (2 * n) * (1 + u ^ (2 : ℕ)) := mul_nonneg (pow_nonneg hu.1 _) (by positivity)
   have he : egbCoexistenceAKernelMomentIntegrand τ n u =
-      (u ^ (2 * n) * (1 + u ^ 2)) / (1 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2) := by
+      (u ^ (2 * n) * (1 + u ^ (2 : ℕ))) / (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ)) := by
     unfold egbCoexistenceAKernelMomentIntegrand egbCoexistenceAKernelIntegrand
     ring
   rw [he]
   constructor
   · apply (le_div_iff₀ hden).2
-    have hq : 0 ≤ egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 := by positivity
+    have hq : 0 ≤ egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) := by positivity
     nlinarith [mul_nonneg hp hq]
   · apply (div_le_div_iff₀ hden hc).2
-    nlinarith [mul_nonneg hp (show 0 ≤ egbCoexistenceASymmetricRatio τ ^ 2 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 by linarith)]
+    nlinarith [mul_nonneg hp (show 0 ≤ egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) by linarith)]
 
 theorem egbCoexistenceAKernelMoment_bounds (τ : ℝ) (n : ℕ) :
     egbCoexistenceAKernelMomentCoefficient n ≤ egbCoexistenceAKernelMoment τ n ∧
       egbCoexistenceAKernelMoment τ n ≤ egbCoexistenceAKernelMomentCoefficient n /
-        (1 - egbCoexistenceASymmetricRatio τ ^ 2) := by
-  have hp : IntervalIntegrable (fun u : ℝ => u ^ (2 * n) * (1 + u ^ 2)) MeasureTheory.volume 0 1 :=
+        (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) := by
+  have hp : IntervalIntegrable (fun u : ℝ => u ^ (2 * n) * (1 + u ^ (2 : ℕ))) MeasureTheory.volume 0 1 :=
     ((continuous_id.pow (2 * n)).mul (continuous_const.add (continuous_id.pow 2))).intervalIntegrable 0 1
-  have hd : IntervalIntegrable (fun u : ℝ => (u ^ (2 * n) * (1 + u ^ 2)) /
-      (1 - egbCoexistenceASymmetricRatio τ ^ 2)) MeasureTheory.volume 0 1 :=
+  have hd : IntervalIntegrable (fun u : ℝ => (u ^ (2 * n) * (1 + u ^ (2 : ℕ))) /
+      (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) MeasureTheory.volume 0 1 :=
     (((continuous_id.pow (2 * n)).mul (continuous_const.add (continuous_id.pow 2))).div_const _).intervalIntegrable 0 1
   constructor
   · have h := intervalIntegral.integral_mono_on (by norm_num : (0 : ℝ) ≤ 1) hp
@@ -98,8 +98,8 @@ theorem egbCoexistenceAKernelMoment_zero (τ : ℝ) :
 /-- Exact resolvent recurrence; the next positive moment is the full remainder. -/
 theorem egbCoexistenceAKernelMoment_recurrence (τ : ℝ) (n : ℕ) :
     egbCoexistenceAKernelMoment τ n - egbCoexistenceAKernelMomentCoefficient n =
-      egbCoexistenceASymmetricRatio τ ^ 2 * egbCoexistenceAKernelMoment τ (n + 1) := by
-  have hp : IntervalIntegrable (fun u : ℝ => u ^ (2 * n) * (1 + u ^ 2)) MeasureTheory.volume 0 1 :=
+      egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * egbCoexistenceAKernelMoment τ (n + 1) := by
+  have hp : IntervalIntegrable (fun u : ℝ => u ^ (2 * n) * (1 + u ^ (2 : ℕ))) MeasureTheory.volume 0 1 :=
     ((continuous_id.pow (2 * n)).mul (continuous_const.add (continuous_id.pow 2))).intervalIntegrable 0 1
   rw [← egbCoexistenceAKernelMoment_polynomial_integral]
   unfold egbCoexistenceAKernelMoment
@@ -109,15 +109,15 @@ theorem egbCoexistenceAKernelMoment_recurrence (τ : ℝ) (n : ℕ) :
   intro u hu
   have huI : u ∈ Icc (0 : ℝ) 1 := by simpa only [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using hu
   have hd := egbCoexistenceASymmetricRatio_bounds τ
-  have hu₂ : u ^ 2 ≤ 1 := by nlinarith [huI.1, huI.2]
-  have hd₂ : egbCoexistenceASymmetricRatio τ ^ 2 < 1 := by nlinarith [hd.1, hd.2]
-  have hm : egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 ≤ egbCoexistenceASymmetricRatio τ ^ 2 := by
+  have hu₂ : u ^ (2 : ℕ) ≤ 1 := by nlinarith [huI.1, huI.2]
+  have hd₂ : egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) < 1 := by nlinarith [hd.1, hd.2]
+  have hm : egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) ≤ egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sq_nonneg (egbCoexistenceASymmetricRatio τ)) (sub_nonneg.mpr hu₂)]
-  have hn : 1 - egbCoexistenceASymmetricRatio τ ^ 2 * u ^ 2 ≠ 0 := by linarith
+  have hn : 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * u ^ (2 : ℕ) ≠ 0 := by linarith
   unfold egbCoexistenceAKernelMomentIntegrand egbCoexistenceAKernelIntegrand
   dsimp only
   rw [show 2 * (n + 1) = 2 * n + 2 by omega, pow_add]
-  have hn' : 1 - u ^ 2 * egbCoexistenceASymmetricRatio τ ^ 2 ≠ 0 := by
+  have hn' : 1 - u ^ (2 : ℕ) * egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) ≠ 0 := by
     simpa only [mul_comm] using hn
   field_simp [hn, hn']
   ring
@@ -127,7 +127,7 @@ theorem egbCoexistenceAKernelMoment_strict_lower_bound (τ : ℝ) (n : ℕ) :
   have h := egbCoexistenceAKernelMoment_recurrence τ n
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hm := egbCoexistenceAKernelMoment_pos τ (n + 1)
-  have hp : 0 < egbCoexistenceASymmetricRatio τ ^ 2 * egbCoexistenceAKernelMoment τ (n + 1) := by positivity
+  have hp : 0 < egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) * egbCoexistenceAKernelMoment τ (n + 1) := by positivity
   linarith
 
 theorem egbCoexistenceALogKernel_strict_lower_bound (τ : ℝ) : 3 < egbCoexistenceALogKernel τ := by

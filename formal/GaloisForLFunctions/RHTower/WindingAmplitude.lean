@@ -23,7 +23,7 @@ theorem im_div_two (z : ℂ) : (z / 2).im = z.im / 2 := by
 /-- The shifted vertical summand in closed form: the imaginary mirror of `re_inv_shift`. -/
 theorem im_inv_shift (σ t : ℝ) (n : ℕ) :
     (((σ : ℂ) + (t : ℂ) * Complex.I + n)⁻¹).im
-      = -(t / ((σ + n) ^ 2 + t ^ 2)) := by
+      = -(t / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) := by
   have hz : (σ : ℂ) + (t : ℂ) * Complex.I + n
       = ((σ + n : ℝ) : ℂ) + ((t : ℝ) : ℂ) * Complex.I := by
     push_cast
@@ -81,15 +81,15 @@ theorem im_digamma_vertical_bound {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t) :
     simp at him
     linarith
   have hS_eq : ∀ N : ℕ, (Complex.digamma z).im - (Complex.digamma (z + (N : ℂ))).im =
-      ∑ n ∈ Finset.range N, t / ((σ + n) ^ 2 + t ^ 2) := by
+      ∑ n ∈ Finset.range N, t / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
     intro N
     rw [digamma_apply_add_nat z hz N, Complex.add_im, Complex.im_sum]
     rw [show ∑ n ∈ Finset.range N, ((z + (n : ℂ))⁻¹).im =
-      ∑ n ∈ Finset.range N, -(t / ((σ + n) ^ 2 + t ^ 2)) from
+      ∑ n ∈ Finset.range N, -(t / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) from
       Finset.sum_congr rfl fun n _ => by rw [hz_def]; exact im_inv_shift σ t n]
     rw [Finset.sum_neg_distrib]
     ring
-  have htend : Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, t / ((σ + n) ^ 2 + t ^ 2))
+  have htend : Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, t / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)))
       atTop (nhds ((Complex.digamma z).im)) := by
     have h1 : Tendsto (fun N : ℕ =>
         (Complex.digamma z).im - (Complex.digamma (z + (N : ℂ))).im)
@@ -97,24 +97,24 @@ theorem im_digamma_vertical_bound {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t) :
       tendsto_const_nhds.sub (im_digamma_vertical_anchor_tendsto σ t)
     rw [sub_zero] at h1
     exact h1.congr hS_eq
-  have hS_nonneg : ∀ N : ℕ, 0 ≤ ∑ n ∈ Finset.range N, t / ((σ + n) ^ 2 + t ^ 2) := by
+  have hS_nonneg : ∀ N : ℕ, 0 ≤ ∑ n ∈ Finset.range N, t / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
     intro N
     refine Finset.sum_nonneg fun n _ => ?_
-    have hd : 0 < (σ + n) ^ 2 + t ^ 2 := by positivity
+    have hd : 0 < (σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ) := by positivity
     positivity
-  have hS_le : ∀ N : ℕ, (∑ n ∈ Finset.range N, t / ((σ + n) ^ 2 + t ^ 2)) ≤
+  have hS_le : ∀ N : ℕ, (∑ n ∈ Finset.range N, t / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) ≤
       1 / t + Real.pi / 2 := by
     intro N
-    have h1 : (∑ n ∈ Finset.range N, t / ((σ + n) ^ 2 + t ^ 2)) =
-        t * ∑ n ∈ Finset.range N, 1 / ((σ + n) ^ 2 + t ^ 2) := by
+    have h1 : (∑ n ∈ Finset.range N, t / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) =
+        t * ∑ n ∈ Finset.range N, 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
       rw [Finset.mul_sum]
       exact Finset.sum_congr rfl fun n _ => by ring
     rw [h1]
     have h2 := sum_inv_sq_add_le hσ ht N
-    have h3 : t * (∑ n ∈ Finset.range N, 1 / ((σ + n) ^ 2 + t ^ 2)) ≤
-        t * (1 / t ^ 2 + Real.pi / (2 * t)) :=
+    have h3 : t * (∑ n ∈ Finset.range N, 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ))) ≤
+        t * (1 / t ^ (2 : ℕ) + Real.pi / (2 * t)) :=
       mul_le_mul_of_nonneg_left h2 ht.le
-    have h4 : t * (1 / t ^ 2 + Real.pi / (2 * t)) = 1 / t + Real.pi / 2 := by
+    have h4 : t * (1 / t ^ (2 : ℕ) + Real.pi / (2 * t)) = 1 / t + Real.pi / 2 := by
       field_simp
     linarith
   exact ⟨ge_of_tendsto' htend hS_nonneg, le_of_tendsto' htend hS_le⟩
@@ -128,20 +128,20 @@ theorem archWinding_im_abs_le {u : ℝ} (hu : 0 < u) :
     unfold linePt
     push_cast
     ring
-  have h2 : linePt u * (linePt u - 1) = ((-(1 / 4 + u ^ 2) : ℝ) : ℂ) := by
+  have h2 : linePt u * (linePt u - 1) = ((-(1 / 4 + u ^ (2 : ℕ)) : ℝ) : ℂ) := by
     unfold linePt
     push_cast
-    linear_combination ((u : ℂ)) ^ 2 * Complex.I_sq
-  have h3 : ((2 * u : ℝ) : ℂ) * Complex.I / ((-(1 / 4 + u ^ 2) : ℝ) : ℂ) =
-      ((2 * u / (-(1 / 4 + u ^ 2)) : ℝ) : ℂ) * Complex.I := by
+    linear_combination ((u : ℂ)) ^ (2 : ℕ) * Complex.I_sq
+  have h3 : ((2 * u : ℝ) : ℂ) * Complex.I / ((-(1 / 4 + u ^ (2 : ℕ)) : ℝ) : ℂ) =
+      ((2 * u / (-(1 / 4 + u ^ (2 : ℕ))) : ℝ) : ℂ) * Complex.I := by
     rw [Complex.ofReal_div, div_mul_eq_mul_div]
   have hpolyim : ((2 * linePt u - 1) / (linePt u * (linePt u - 1))).im =
-      -(2 * u / (1 / 4 + u ^ 2)) := by
+      -(2 * u / (1 / 4 + u ^ (2 : ℕ))) := by
     rw [h1, h2, h3, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
       Complex.I_re, Complex.I_im]
     rw [div_neg]
     ring
-  have him_eq : (archWinding u).im = -(2 * u / (1 / 4 + u ^ 2)) +
+  have him_eq : (archWinding u).im = -(2 * u / (1 / 4 + u ^ (2 : ℕ))) +
       (Complex.digamma ((linePt u) / 2)).im / 2 := by
     rw [archWinding_eq u, Complex.add_im, hpolyim, Complex.sub_im, im_div_two,
       im_div_two, Complex.ofReal_im]
@@ -152,16 +152,16 @@ theorem archWinding_im_abs_le {u : ℝ} (hu : 0 < u) :
     ring
   have hψ := im_digamma_vertical_bound (σ := 1 / 4) (t := u / 2) (by norm_num) (by positivity)
   rw [← harg] at hψ
-  have hrat_le : 2 * u / (1 / 4 + u ^ 2) ≤ 2 / u := by
+  have hrat_le : 2 * u / (1 / 4 + u ^ (2 : ℕ)) ≤ 2 / u := by
     rw [div_le_div_iff₀ (by positivity) hu]
     nlinarith
-  have hrat_nonneg : 0 ≤ 2 * u / (1 / 4 + u ^ 2) := by positivity
+  have hrat_nonneg : 0 ≤ 2 * u / (1 / 4 + u ^ (2 : ℕ)) := by positivity
   have hhalf : 1 / (u / 2) = 2 / u := one_div_div u 2
   rw [him_eq]
-  calc |(-(2 * u / (1 / 4 + u ^ 2)) + (Complex.digamma ((linePt u) / 2)).im / 2)|
-      ≤ |(-(2 * u / (1 / 4 + u ^ 2)))| + |(Complex.digamma ((linePt u) / 2)).im / 2| :=
+  calc |(-(2 * u / (1 / 4 + u ^ (2 : ℕ))) + (Complex.digamma ((linePt u) / 2)).im / 2)|
+      ≤ |(-(2 * u / (1 / 4 + u ^ (2 : ℕ))))| + |(Complex.digamma ((linePt u) / 2)).im / 2| :=
         abs_add_le _ _
-    _ = 2 * u / (1 / 4 + u ^ 2) + (Complex.digamma ((linePt u) / 2)).im / 2 := by
+    _ = 2 * u / (1 / 4 + u ^ (2 : ℕ)) + (Complex.digamma ((linePt u) / 2)).im / 2 := by
         rw [abs_neg, abs_of_nonneg hrat_nonneg, abs_div,
           abs_of_nonneg hψ.1, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 2)]
     _ ≤ 2 / u + (1 / (u / 2) + Real.pi / 2) / 2 := by

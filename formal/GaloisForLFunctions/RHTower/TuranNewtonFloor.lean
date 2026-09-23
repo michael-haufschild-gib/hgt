@@ -68,21 +68,21 @@ theorem newtonCoeff_prodLinear {N : ℕ} (x : Fin N → ℝ) {j : ℕ} (hj : j �
 the sequence `e_j / C(N,j)` is log-concave. -/
 theorem newton_esymm {N : ℕ} (x : Fin N → ℝ) {n : ℕ} (hn : 1 ≤ n) (hnN : n + 1 ≤ N) :
     (esymmFin x (n - 1) / (N.choose (n - 1) : ℝ)) * (esymmFin x (n + 1) / (N.choose (n + 1) : ℝ))
-      ≤ (esymmFin x n / (N.choose n : ℝ)) ^ 2 := by
+      ≤ (esymmFin x n / (N.choose n : ℝ)) ^ (2 : ℕ) := by
   have h := SignAlternation.newton_inequality N (prodLinear x) (hyperbolic_prodLinear x)
     (natDegree_prodLinear x) n hn hnN
   rwa [newtonCoeff_prodLinear x (by omega), newtonCoeff_prodLinear x (by omega),
     newtonCoeff_prodLinear x (by omega)] at h
 
 theorem choose_turan_identity {N n : ℕ} (hn : 1 ≤ n) (hnN : n + 1 ≤ N) :
-    (N.choose n) ^ 2 * n * (N - n) = (N.choose (n - 1)) * (N.choose (n + 1)) * (n + 1) * (N - n + 1) := by
+    (N.choose n) ^ (2 : ℕ) * n * (N - n) = (N.choose (n - 1)) * (N.choose (n + 1)) * (n + 1) * (N - n + 1) := by
   have h1 : N.choose (n + 1) * (n + 1) = N.choose n * (N - n) := Nat.choose_succ_right_eq N n
   have h2 : N.choose (n - 1 + 1) * (n - 1 + 1) = N.choose (n - 1) * (N - (n - 1)) :=
     Nat.choose_succ_right_eq N (n - 1)
   have hn1 : n - 1 + 1 = n := by omega
   have hn2 : N - (n - 1) = N - n + 1 := by omega
   rw [hn1, hn2] at h2
-  calc (N.choose n) ^ 2 * n * (N - n)
+  calc (N.choose n) ^ (2 : ℕ) * n * (N - n)
       = (N.choose n * n) * (N.choose n * (N - n)) := by ring
     _ = (N.choose (n - 1) * (N - n + 1)) * (N.choose (n + 1) * (n + 1)) := by rw [h2, h1]
     _ = (N.choose (n - 1)) * (N.choose (n + 1)) * (n + 1) * (N - n + 1) := by ring
@@ -90,27 +90,27 @@ theorem choose_turan_identity {N n : ℕ} (hn : 1 ≤ n) (hnN : n + 1 ≤ N) :
 /-- **The universal Newton floor, finite form.**  `(n+1)·e_{n-1}e_{n+1} ≤ n·e_n²` for every finite
 family of reals — the cleared form of `g_n ≥ (n+1)/n`. -/
 theorem newton_floor_finite {N : ℕ} (x : Fin N → ℝ) {n : ℕ} (hn : 1 ≤ n) (hnN : n + 1 ≤ N) :
-    ((n : ℝ) + 1) * (esymmFin x (n - 1) * esymmFin x (n + 1)) ≤ (n : ℝ) * (esymmFin x n) ^ 2 := by
+    ((n : ℝ) + 1) * (esymmFin x (n - 1) * esymmFin x (n + 1)) ≤ (n : ℝ) * (esymmFin x n) ^ (2 : ℕ) := by
   have hc0 : (0 : ℝ) < (N.choose (n - 1) : ℝ) := by exact_mod_cast Nat.choose_pos (by omega)
   have hc1 : (0 : ℝ) < (N.choose n : ℝ) := by exact_mod_cast Nat.choose_pos (by omega)
   have hc2 : (0 : ℝ) < (N.choose (n + 1) : ℝ) := by exact_mod_cast Nat.choose_pos (by omega)
   have h := newton_esymm x hn hnN
   rw [div_mul_div_comm, div_pow, div_le_div_iff₀ (by positivity) (by positivity)] at h
-  -- h : e_{n-1} e_{n+1} * C(N,n)^2 ≤ e_n^2 * (C(N,n-1) * C(N,n+1))
-  have hid : ((N.choose n : ℝ)) ^ 2 * (n : ℝ) * ((N - n : ℕ) : ℝ)
+  -- h : e_{n-1} e_{n+1} * C(N,n)^(2 : ℕ) ≤ e_n^(2 : ℕ) * (C(N,n-1) * C(N,n+1))
+  have hid : ((N.choose n : ℝ)) ^ (2 : ℕ) * (n : ℝ) * ((N - n : ℕ) : ℝ)
       = (N.choose (n - 1) : ℝ) * (N.choose (n + 1) : ℝ) * ((n : ℝ) + 1) * (((N - n : ℕ) : ℝ) + 1) := by
     have := choose_turan_identity hn hnN
-    have hcast : (((N.choose n) ^ 2 * n * (N - n) : ℕ) : ℝ)
+    have hcast : (((N.choose n) ^ (2 : ℕ) * n * (N - n) : ℕ) : ℝ)
         = (((N.choose (n - 1)) * (N.choose (n + 1)) * (n + 1) * (N - n + 1) : ℕ) : ℝ) := by
       exact_mod_cast congrArg (fun m : ℕ => (m : ℝ)) this
     push_cast at hcast
     linarith [hcast]
-  have hsq : (0 : ℝ) ≤ (esymmFin x n) ^ 2 := sq_nonneg _
+  have hsq : (0 : ℝ) ≤ (esymmFin x n) ^ (2 : ℕ) := sq_nonneg _
   have hNn : (0 : ℝ) ≤ ((N - n : ℕ) : ℝ) := Nat.cast_nonneg _
   have hν0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg _
   set E := esymmFin x (n - 1) * esymmFin x (n + 1) with hE
-  set F := (esymmFin x n) ^ 2 with hF
-  set A := ((N.choose n : ℝ)) ^ 2 with hA'
+  set F := (esymmFin x n) ^ (2 : ℕ) with hF
+  set A := ((N.choose n : ℝ)) ^ (2 : ℕ) with hA'
   set B := (N.choose (n - 1) : ℝ) * (N.choose (n + 1) : ℝ) with hB'
   set ν := (n : ℝ) with hν
   set m := ((N - n : ℕ) : ℝ) with hm
@@ -150,7 +150,7 @@ ratio `g_n = e_n² / (e_{n-1} e_{n+1})` is at least `(n+1)/n`. -/
 theorem turan_ratio_newton_floor {N : ℕ} {x : Fin N → ℝ} (hx : ∀ i, 0 < x i) {n : ℕ}
     (hn : 1 ≤ n) (hnN : n + 1 ≤ N) :
     ((n : ℝ) + 1) / (n : ℝ)
-      ≤ (esymmFin x n) ^ 2 / (esymmFin x (n - 1) * esymmFin x (n + 1)) := by
+      ≤ (esymmFin x n) ^ (2 : ℕ) / (esymmFin x (n - 1) * esymmFin x (n + 1)) := by
   have h := newton_floor_finite x hn hnN
   have hp1 : 0 < esymmFin x (n - 1) := esymmFin_pos hx (by omega)
   have hp2 : 0 < esymmFin x (n + 1) := esymmFin_pos hx (by omega)
@@ -164,15 +164,15 @@ truncations of an infinite atom sequence converge, the limits still satisfy the 
 theorem newton_floor_limit (y : ℕ → ℝ) (a : ℕ → ℝ)
     (ha : ∀ j, Filter.Tendsto (fun N => esymmFin (fun i : Fin N => y i) j) Filter.atTop
       (nhds (a j))) {n : ℕ} (hn : 1 ≤ n) :
-    ((n : ℝ) + 1) * (a (n - 1) * a (n + 1)) ≤ (n : ℝ) * (a n) ^ 2 := by
+    ((n : ℝ) + 1) * (a (n - 1) * a (n + 1)) ≤ (n : ℝ) * (a n) ^ (2 : ℕ) := by
   have h1 : Filter.Tendsto
       (fun N => ((n : ℝ) + 1) * (esymmFin (fun i : Fin N => y i) (n - 1)
         * esymmFin (fun i : Fin N => y i) (n + 1)))
       Filter.atTop (nhds (((n : ℝ) + 1) * (a (n - 1) * a (n + 1)))) :=
     ((ha (n - 1)).mul (ha (n + 1))).const_mul _
   have h2 : Filter.Tendsto
-      (fun N => (n : ℝ) * (esymmFin (fun i : Fin N => y i) n) ^ 2)
-      Filter.atTop (nhds ((n : ℝ) * (a n) ^ 2)) := ((ha n).pow 2).const_mul _
+      (fun N => (n : ℝ) * (esymmFin (fun i : Fin N => y i) n) ^ (2 : ℕ))
+      Filter.atTop (nhds ((n : ℝ) * (a n) ^ (2 : ℕ))) := ((ha n).pow 2).const_mul _
   refine le_of_tendsto_of_tendsto h1 h2 ?_
   filter_upwards [Filter.eventually_ge_atTop (n + 1)] with N hN
   exact newton_floor_finite _ hn hN

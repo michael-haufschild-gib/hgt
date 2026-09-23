@@ -26,18 +26,18 @@ noncomputable section
 /-! ## Euler's hyperbolic sine product on the real line -/
 
 theorem tendsto_euler_sinh_prod_real (x : ℝ) :
-    Tendsto (fun N : ℕ => Real.pi * x * ∏ k ∈ Finset.range N, (1 + x ^ 2 / ((k : ℝ) + 1) ^ 2))
+    Tendsto (fun N : ℕ => Real.pi * x * ∏ k ∈ Finset.range N, (1 + x ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ)))
       atTop (𝓝 (Real.sinh (Real.pi * x))) := by
   have h := tendsto_euler_sinh_prod ((x : ℝ) : ℂ)
   have hre := (Complex.continuous_re.tendsto _).comp h
   have hfun : ∀ N : ℕ,
       (((Real.pi : ℂ) * ((x : ℝ) : ℂ) *
-        ∏ k ∈ Finset.range N, ((1 : ℂ) + ((x : ℝ) : ℂ) ^ 2 / ((k : ℂ) + 1) ^ 2)).re) =
-      Real.pi * x * ∏ k ∈ Finset.range N, (1 + x ^ 2 / ((k : ℝ) + 1) ^ 2) := by
+        ∏ k ∈ Finset.range N, ((1 : ℂ) + ((x : ℝ) : ℂ) ^ (2 : ℕ) / ((k : ℂ) + 1) ^ (2 : ℕ))).re) =
+      Real.pi * x * ∏ k ∈ Finset.range N, (1 + x ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
     intro N
     have hcast : ((Real.pi : ℂ) * ((x : ℝ) : ℂ) *
-        ∏ k ∈ Finset.range N, ((1 : ℂ) + ((x : ℝ) : ℂ) ^ 2 / ((k : ℂ) + 1) ^ 2)) =
-        (((Real.pi * x * ∏ k ∈ Finset.range N, (1 + x ^ 2 / ((k : ℝ) + 1) ^ 2) : ℝ)) : ℂ) := by
+        ∏ k ∈ Finset.range N, ((1 : ℂ) + ((x : ℝ) : ℂ) ^ (2 : ℕ) / ((k : ℂ) + 1) ^ (2 : ℕ))) =
+        (((Real.pi * x * ∏ k ∈ Finset.range N, (1 + x ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ)) : ℝ)) : ℂ) := by
       push_cast
       ring
     rw [hcast, Complex.ofReal_re]
@@ -55,11 +55,11 @@ theorem tendsto_euler_sinh_prod_real (x : ℝ) :
 theorem tendsto_punctured_sinh_prod (n : ℕ) :
     Tendsto
       (fun M : ℕ => ∏ k ∈ (Finset.range (M + 1)).erase n,
-        (1 + (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2))
+        (1 + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)))
       atTop (𝓝 (Real.sinh (Real.pi * ((n : ℝ) + 1)) / (2 * (Real.pi * ((n : ℝ) + 1))))) := by
   have hpipos : 0 < Real.pi * ((n : ℝ) + 1) := by positivity
   have hfull : Tendsto
-      (fun M : ℕ => ∏ k ∈ Finset.range (M + 1), (1 + (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2))
+      (fun M : ℕ => ∏ k ∈ Finset.range (M + 1), (1 + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)))
       atTop (𝓝 (Real.sinh (Real.pi * ((n : ℝ) + 1)) / (Real.pi * ((n : ℝ) + 1)))) := by
     have h := tendsto_euler_sinh_prod_real ((n : ℝ) + 1)
     have hshift := h.comp (tendsto_add_atTop_nat 1)
@@ -69,13 +69,13 @@ theorem tendsto_punctured_sinh_prod (n : ℕ) :
     field_simp
   have herase : ∀ M : ℕ, n ≤ M →
       (∏ k ∈ (Finset.range (M + 1)).erase n,
-        (1 + (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2)) * 2 =
-      ∏ k ∈ Finset.range (M + 1), (1 + (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2) := by
+        (1 + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ))) * 2 =
+      ∏ k ∈ Finset.range (M + 1), (1 + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
     intro M hM
     have hmem : n ∈ Finset.range (M + 1) := by
       rw [Finset.mem_range]; omega
-    have hval : (1 + (((n : ℝ) + 1) ^ 2) / ((n : ℝ) + 1) ^ 2) = 2 := by
-      have hne : ((n : ℝ) + 1) ^ 2 ≠ 0 := by positivity
+    have hval : (1 + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((n : ℝ) + 1) ^ (2 : ℕ)) = 2 := by
+      have hne : ((n : ℝ) + 1) ^ (2 : ℕ) ≠ 0 := by positivity
       field_simp
       norm_num
     rw [← hval]
@@ -96,8 +96,8 @@ theorem tendsto_punctured_sinh_prod (n : ℕ) :
 theorem tendsto_blaschke_square_rate (n : ℕ) :
     Tendsto
       (fun M : ℕ => ∏ k ∈ (Finset.range (M + 1)).erase n,
-        ((1 - (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2) /
-          (1 + (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2)))
+        ((1 - (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)) /
+          (1 + (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ))))
       atTop
       (𝓝 ((-1) ^ n * (Real.pi * ((n : ℝ) + 1)) /
         Real.sinh (Real.pi * ((n : ℝ) + 1)))) := by
@@ -108,7 +108,7 @@ theorem tendsto_blaschke_square_rate (n : ℕ) :
     rwa [Real.sinh_zero] at h0
   have hnum : Tendsto
       (fun M : ℕ => ∏ k ∈ (Finset.range (M + 1)).erase n,
-        (1 - (((n : ℝ) + 1) ^ 2) / ((k : ℝ) + 1) ^ 2))
+        (1 - (((n : ℝ) + 1) ^ (2 : ℕ)) / ((k : ℝ) + 1) ^ (2 : ℕ)))
       atTop (𝓝 ((-1) ^ n / 2)) := by
     have hlim := (tendsto_puncturedRatio (n + 1)).comp (tendsto_add_atTop_nat 1)
     rw [Function.comp_def] at hlim

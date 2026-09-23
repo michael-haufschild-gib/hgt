@@ -63,22 +63,22 @@ theorem prod_card_mul_sq_le_hermPluckerNormSq_of_coloredChoices {J : ℕ}
     {c : ℝ} (hc : 0 ≤ c)
     (hminor : ∀ q : ∀ j, ↥(S j),
       c ≤ ‖(Matrix.of fun i j => v i (q j).1).det‖) :
-    ((∏ j, (S j).card : ℕ) : ℝ) * c ^ 2 ≤ hermPluckerNormSq v := by
+    ((∏ j, (S j).card : ℕ) : ℝ) * c ^ (2 : ℕ) ≤ hermPluckerNormSq v := by
   let f : (∀ j, ↥(S j)) → Set.powersetCard κ J := coloredChoiceMinorIndex S hsep
   have hf : Function.Injective f := coloredChoiceMinorIndex_injective S hsep
   let T : Finset (Set.powersetCard κ J) := Finset.univ.map ⟨f, hf⟩
   calc
-    ((∏ j, (S j).card : ℕ) : ℝ) * c ^ 2 =
-        ∑ q : ∀ j, ↥(S j), c ^ 2 := by
+    ((∏ j, (S j).card : ℕ) : ℝ) * c ^ (2 : ℕ) =
+        ∑ q : ∀ j, ↥(S j), c ^ (2 : ℕ) := by
           rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
           simp only [Fintype.card_pi, Fintype.card_coe]
-    _ ≤ ∑ q : ∀ j, ↥(S j), ‖hermFeatureMinor v (f q)‖ ^ 2 := by
+    _ ≤ ∑ q : ∀ j, ↥(S j), ‖hermFeatureMinor v (f q)‖ ^ (2 : ℕ) := by
           apply Finset.sum_le_sum
           intro q hq
           rw [show f q = coloredChoiceMinorIndex S hsep q from rfl,
             hermFeatureMinor_coloredChoiceMinorIndex]
           exact pow_le_pow_left₀ hc (hminor q) 2
-    _ = ∑ s ∈ T, ‖hermFeatureMinor v s‖ ^ 2 := by
+    _ = ∑ s ∈ T, ‖hermFeatureMinor v s‖ ^ (2 : ℕ) := by
           unfold T
           rw [Finset.sum_map]
           rfl

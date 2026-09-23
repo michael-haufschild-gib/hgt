@@ -46,12 +46,12 @@ theorem norm_sub_le_of_lowPassT_everywhere (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ
     (hAran : ∀ (r : ℝ) (v : Lp ℂ 2 (volume : Measure E)),
       kgLowPassOp R ((W₁ r - W₂ r) v) = (W₁ r - W₂ r) v)
     {η T x : ℝ} (hη0 : 0 ≤ η) (hx0 : 0 < x) (hxT : x ≤ T)
-    (hxK : x ^ 2 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T)) ≤ 1 / 8)
+    (hxK : x ^ (2 : ℕ) * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) ≤ 1 / 8)
     (hobs : ∀ (s : ℝ) (g k : Lp ℂ 2 (volume : Measure E)) (t : ℝ), |t| ≤ T →
       ‖kgFieldMildT (fun r : ℝ => W₁ (r + s)) g k t
         - kgFieldMildT (fun r : ℝ => W₂ (r + s)) g k t‖ ≤ η * (‖g‖ + ‖k‖))
     (s : ℝ) :
-    ‖W₁ s - W₂ s‖ ≤ 8 * (η * (1 + b * T)) / x ^ 2 + 8 * (L * Real.exp (b * T)) * x := by
+    ‖W₁ s - W₂ s‖ ≤ 8 * (η * (1 + b * T)) / x ^ (2 : ℕ) + 8 * (L * Real.exp (b * T)) * x := by
   have hV₁b : ∀ r : ℝ, ‖(fun ρ : ℝ => W₁ (ρ + s)) r‖ ≤ b := fun r => hW₁b (r + s)
   have hV₁s : ∀ y : Lp ℂ 2 (volume : Measure E),
       Continuous fun r : ℝ => (fun ρ : ℝ => W₁ (ρ + s)) r y := fun y =>
@@ -93,8 +93,8 @@ theorem norm_sub_le_optimal_everywhere (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ, �
     (hAran : ∀ (r : ℝ) (v : Lp ℂ 2 (volume : Measure E)),
       kgLowPassOp R ((W₁ r - W₂ r) v) = (W₁ r - W₂ r) v)
     {η T x : ℝ} (hη0 : 0 ≤ η) (hx0 : 0 < x) (hxT : x ≤ T)
-    (hxK : x ^ 2 * ((1 + R ^ 2) / 2 + b * Real.exp (b * T)) ≤ 1 / 8)
-    (hbal : 8 * (L * Real.exp (b * T)) * x ^ 3 = 2 * (8 * (η * (1 + b * T))))
+    (hxK : x ^ (2 : ℕ) * ((1 + R ^ (2 : ℕ)) / 2 + b * Real.exp (b * T)) ≤ 1 / 8)
+    (hbal : 8 * (L * Real.exp (b * T)) * x ^ (3 : ℕ) = 2 * (8 * (η * (1 + b * T))))
     (hobs : ∀ (s : ℝ) (g k : Lp ℂ 2 (volume : Measure E)) (t : ℝ), |t| ≤ T →
       ‖kgFieldMildT (fun r : ℝ => W₁ (r + s)) g k t
         - kgFieldMildT (fun r : ℝ => W₂ (r + s)) g k t‖ ≤ η * (‖g‖ + ‖k‖))

@@ -31,7 +31,7 @@ def evenCompactIntegerDet (r t v : ℝ) : ℝ :=
 /-- Exact grouped integer normalization, without expanding any moment numerator. -/
 theorem evenCompactUnitDet_eq_integer_ratio (r t v : ℝ) :
     evenCompactUnitDet r t v = evenCompactIntegerDet r t v /
-      (19*501530650214400000000000000000000 : ℝ)^4 := by
+      (19*501530650214400000000000000000000 : ℝ)^(4 : ℕ) := by
   change hankelFourDet (evenCompactUnitMomentZero r t v) (evenCompactUnitMomentOne r t v)
     (evenCompactUnitMomentTwo r t v) (evenCompactUnitMomentThree r t v)
     (evenCompactUnitMomentFour r t v) (evenCompactUnitMomentFive r t v)

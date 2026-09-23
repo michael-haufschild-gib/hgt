@@ -27,7 +27,7 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 
 /-- Elementary symmetric evaluation does not see the coefficient field. -/
-theorem eval₂_esymm_rat_eq_complex {I : Type*} [Fintype I] (energy : I → ℂ) (n : ℕ) :
+theorem eval₂_esymm_rat_eq {I : Type*} [Fintype I] (energy : I → ℂ) (n : ℕ) :
     MvPolynomial.eval₂ (Rat.castHom ℂ) energy (MvPolynomial.esymm I ℚ n)
       = MvPolynomial.eval₂ (RingHom.id ℂ) energy (MvPolynomial.esymm I ℂ n) := by
   rw [show MvPolynomial.eval₂ (Rat.castHom ℂ) energy (MvPolynomial.esymm I ℚ n)
@@ -64,7 +64,7 @@ theorem eval_quadraticRateObstructionPullback {θ I : Type*} [Fintype I] [Decida
     intro i
     rw [eval_matrixCharacteristicElementaryPolynomial,
       matrixCharacteristicElementaryCoefficient_eq_rootPacket _ energy hinj hroot i,
-      eval₂_esymm_rat_eq_complex]
+      eval₂_esymm_rat_eq]
   rw [hstep, funext hcoeff, eval_fieldQuadraticRateCoefficientPolynomial_esymm]
   rw [show MvPolynomial.eval₂ (RingHom.id ℂ) energy (fieldQuadraticRateOrbitPolynomial c κ)
       = MvPolynomial.eval energy (fieldQuadraticRateOrbitPolynomial c κ) from rfl,

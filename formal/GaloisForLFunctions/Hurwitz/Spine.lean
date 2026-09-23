@@ -123,7 +123,7 @@ theorem shift_eigenspace_separation {U : Set ℂ} {Φ Ψ Θ : ℂ → ℂ} {lq l
   have e1 : Φ z + Ψ z + Θ z = 0 := h z hz
   have e2 : lq * Φ z + ll * Ψ z + Θ z = 0 := by
     have := h _ hz1; rw [hΦ z hz, hΨ z hz, hΘ z hz] at this; linear_combination this
-  have e3 : lq ^ 2 * Φ z + ll ^ 2 * Ψ z + Θ z = 0 := by
+  have e3 : lq ^ (2 : ℕ) * Φ z + ll ^ (2 : ℕ) * Ψ z + Θ z = 0 := by
     have h3 := h _ hz2
     rw [hΦ _ hz1, hΨ _ hz1, hΘ _ hz1, hΦ z hz, hΨ z hz, hΘ z hz] at h3
     linear_combination h3

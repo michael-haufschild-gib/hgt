@@ -48,7 +48,7 @@ def d4BMGaugeFixedActualOrthogonalHelicityRadiation
 /-- Squared norm of the actual opposite-helicity radiation channel. -/
 def d4BMGaugeFixedActualOrthogonalHelicityFlux
     (q : XiZeroCopy) (mixing : ℂ) : ℝ :=
-  ‖d4BMGaugeFixedActualOrthogonalHelicityRadiation q mixing‖ ^ 2
+  ‖d4BMGaugeFixedActualOrthogonalHelicityRadiation q mixing‖ ^ (2 : ℕ)
 
 theorem d4BMGaugeFixedActualOrthogonalHelicityRadiation_eq_zero_iff
     (q : XiZeroCopy) (mixing : ℂ) :

@@ -263,7 +263,7 @@ theorem xi_central_circleAverage_slope_exp_eq_one :
     xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd (1 / 2 : ℂ) 1
   refine ⟨R₀, hR₀, ?_⟩
   intro R r₁ r₂ hr₁ hr₁₂ hr₂R hRle
-  have hdiv : ((2 ^ 1 : ℕ) : ℕ∞) ∣ analyticOrderAt xi (1 / 2 : ℂ) := by
+  have hdiv : ((2 ^ (1 : ℕ) : ℕ) : ℕ∞) ∣ analyticOrderAt xi (1 / 2 : ℂ) := by
     simpa only [pow_one] using xi_central_ladder_two
   simpa only [pow_one, Nat.cast_ofNat] using (hiff hr₁ hr₁₂ hr₂R hRle).mpr hdiv
 
@@ -297,8 +297,8 @@ open Complex Metric
 criterion for the same ladder rung. -/
 theorem germ_extends_iff_circleAverage_slope_exp_eq_one (k : ℕ) :
     (∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-        ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+        ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧
           Set.EqOn g g₁ farHalf) ↔
       ∀ ρ ∈ rightHalf, xi ρ = 0 →
         ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
@@ -318,7 +318,7 @@ open Complex Metric
 criterion for the same ladder rung. -/
 theorem root_slitPlane_iff_circleAverage_slope_exp_eq_one (k : ℕ) :
     (∃ g, AnalyticOnNhd ℂ g slitPlane ∧
-        ∀ w ∈ slitPlane, g w ^ 2 ^ k = xiDescent w) ↔
+        ∀ w ∈ slitPlane, g w ^ (2 : ℕ) ^ k = xiDescent w) ↔
       ∀ ρ ∈ rightHalf, xi ρ = 0 →
         ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
           exp (2 * (Real.pi : ℂ) * I *
@@ -459,8 +459,8 @@ theorem exists_germ_extension_obstruction_with_clean_modulus_witness_of_sphere_d
     (hxi : ∀ z ∈ Metric.closedBall s₀ r, xi z = g z + h z) :
     ∃ k,
       (¬ (∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-        ∃ G, AnalyticOnNhd ℂ G rightHalf ∧ (∀ s ∈ rightHalf, G s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+        ∃ G, AnalyticOnNhd ℂ G rightHalf ∧ (∀ s ∈ rightHalf, G s ^ (2 : ℕ) ^ k = xi s) ∧
           Set.EqOn G g₁ farHalf)) ∧
       ∃ ρ ∈ rightHalf, xi ρ = 0 ∧
         ∃ R r₁ r₂ : ℝ, 0 < R ∧ 0 < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
@@ -474,8 +474,8 @@ theorem exists_germ_extension_obstruction_with_clean_modulus_witness_of_sphere_d
     exists_ladder_order_obstruction_of_sphere_domination_center_margin hr hmargin hg hh
       hcenter hg0 hdom hxi
   have hnotGerm : ¬ (∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-        ∃ G, AnalyticOnNhd ℂ G rightHalf ∧ (∀ s ∈ rightHalf, G s ^ 2 ^ k = xi s) ∧
+        (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+        ∃ G, AnalyticOnNhd ℂ G rightHalf ∧ (∀ s ∈ rightHalf, G s ^ (2 : ℕ) ^ k = xi s) ∧
           Set.EqOn G g₁ farHalf) := by
     intro hgerm
     have hlad : RHLadder k := (rhLadder_iff_germ_extends k).mpr hgerm
@@ -769,8 +769,8 @@ all-level continuation of every far-half dyadic ξ root germ is equivalent to th
 coherent dyadic Kummer tower for `xiDescent` on the slit plane. -/
 theorem all_farHalf_germs_extend_all_levels_iff_xiDescent_coherentTower_slitPlane :
     (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+      (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧
         Set.EqOn g g₁ farHalf) ↔
       Nonempty (CoherentTower xiDescent slitPlane) := by
   exact (rh_iff_all_farHalf_germs_extend_all_levels).symm.trans
@@ -781,8 +781,8 @@ surface.  Independent far-half continuations at all dyadic levels are equivalent
 to one coherent `xiDescent` tower whose every level is nonzero on the slit plane. -/
 theorem all_farHalf_germs_extend_all_levels_iff_exists_xiDescent_coherentTower_levels_nonzero_slitPlane :
     (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+      (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧
         Set.EqOn g g₁ farHalf) ↔
       ∃ T : CoherentTower xiDescent slitPlane,
         ∀ k : ℕ, ∀ w ∈ slitPlane, T.level k w ≠ 0 := by
@@ -794,8 +794,8 @@ surface.  This connects the arithmetic dyadic-root continuation language directl
 to the finite reflection-window obstruction language. -/
 theorem all_farHalf_germs_extend_all_levels_iff_all_finite_window_relations_all_levels :
     (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+      (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧
         Set.EqOn g g₁ farHalf) ↔
       ∀ k : ℕ, ∀ (t : Finset ℂ) (m : ℂ → ℕ),
         (∀ z ∈ t, xi z = 0) →
@@ -811,8 +811,8 @@ This connects arithmetic dyadic-root continuation directly to the two-circle
 zero-free modulus certificates around right-half ξ zeros. -/
 theorem all_farHalf_germs_extend_all_levels_iff_all_clean_circleAverage_slope_exp_eq_one :
     (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+      (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧
         Set.EqOn g g₁ farHalf) ↔
       ∀ k : ℕ, ∀ ρ ∈ rightHalf, xi ρ = 0 →
         ∃ R₀ > 0, ∀ {r R : ℝ}, 0 < r → r < R → R ≤ R₀ →
@@ -925,8 +925,8 @@ all-level continuation of far-half dyadic ξ-root germs is equivalent to all-lev
 two-circle boundary-modulus constraints on descended `xiDescent` zeros. -/
 theorem all_farHalf_germs_extend_all_levels_iff_xiDescent_all_circleAverage_slope_exp_eq_one :
     (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
-      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
-      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+      (∀ s ∈ farHalf, g₁ s ^ (2 : ℕ) ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s) ∧
         Set.EqOn g g₁ farHalf) ↔
       ∀ k : ℕ, ∀ w ∈ slitPlane, xiDescent w = 0 →
         ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →

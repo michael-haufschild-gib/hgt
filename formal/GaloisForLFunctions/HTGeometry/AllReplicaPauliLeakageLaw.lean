@@ -34,7 +34,7 @@ theorem finiteAllReplicaFullPauli_leak_ge_dim_sub
     (hUherm : PUᴴ = PU) (hUidem : PU * PU = PU) (hVidem : PV * PV = PV)
     (hUQ : hermitianMatrixFamilyCommonKernelProjection
       (finiteReplicaFullPauliCommutatorMatrix R n) * PU = 0) :
-    2 * ((2 : ℝ) ^ n) ^ 2 * ((PU.trace).re - (PV.trace).re)
+    2 * ((2 : ℝ) ^ n) ^ (2 : ℕ) * ((PU.trace).re - (PV.trace).re)
       ≤ ∑ q : NonidentityPauliLabel n,
           hsSqRe ((1 - PV) * finiteReplicaFullPauliCommutatorMatrix R n q * PU) := by
   refine hermitianCentralFamily_leak_ge_gap_mul_dim_sub _
@@ -61,7 +61,7 @@ theorem finiteAllReplicaFullPauli_incidenceNormalized_leakage_ge
     (hc : ∀ q, ∑ w, ‖c q w‖ = 1)
     (hsynth : ∀ q, finiteReplicaFullPauliCommutatorMatrix R n q = ∑ w, c q w • W q w)
     {N : ℝ} (hN : 0 < N) :
-    2 * ((2 : ℝ) ^ n) ^ 2 * ((PU.trace).re - (PV.trace).re) / N
+    2 * ((2 : ℝ) ^ n) ^ (2 : ℕ) * ((PU.trace).re - (PV.trace).re) / N
       ≤ (∑ q : NonidentityPauliLabel n, ∑ w, ‖c q w‖ * hsSqRe ((1 - PV) * W q w * PU)) / N := by
   refine incidenceNormalized_leakage_ge PU PV c W hc hN ?_
   refine le_trans (finiteAllReplicaFullPauli_leak_ge_dim_sub R n hUherm hUidem hVidem hUQ)
@@ -82,14 +82,14 @@ theorem finiteAllReplicaFullPauli_leakage_budget
       ((R → Fin (2 ^ n)) × (R → Fin (2 ^ n))) ℂ)
     (hc : ∀ q, ∑ w, ‖c q w‖ = 1)
     (hsynth : ∀ q, finiteReplicaFullPauliCommutatorMatrix R n q = ∑ w, c q w • W q w) :
-    2 * ((2 : ℝ) ^ n) ^ 2 * ((PU.trace).re - (PV.trace).re) / (((2 : ℝ) ^ n) ^ 2 - 1)
+    2 * ((2 : ℝ) ^ n) ^ (2 : ℕ) * ((PU.trace).re - (PV.trace).re) / (((2 : ℝ) ^ n) ^ (2 : ℕ) - 1)
       ≤ (∑ q : NonidentityPauliLabel n, ∑ w, ‖c q w‖ * hsSqRe ((1 - PV) * W q w * PU))
-          / (((2 : ℝ) ^ n) ^ 2 - 1) := by
+          / (((2 : ℝ) ^ n) ^ (2 : ℕ) - 1) := by
   have hD : (2 : ℝ) ≤ (2 : ℝ) ^ n := by
-    calc (2 : ℝ) = (2 : ℝ) ^ 1 := by norm_num
+    calc (2 : ℝ) = (2 : ℝ) ^ (1 : ℕ) := by norm_num
       _ ≤ (2 : ℝ) ^ n := by
           exact pow_le_pow_right₀ (by norm_num) hn
-  have hN : (0 : ℝ) < ((2 : ℝ) ^ n) ^ 2 - 1 := by nlinarith
+  have hN : (0 : ℝ) < ((2 : ℝ) ^ n) ^ (2 : ℕ) - 1 := by nlinarith
   exact finiteAllReplicaFullPauli_incidenceNormalized_leakage_ge R n hUherm hUidem hVidem hUQ
     c W hc hsynth hN
 

@@ -7,11 +7,11 @@ A symmetric tridiagonal Jacobi matrix `J` with off-diagonal curve `a` and diagon
 the skew tridiagonal connection `A` with `A_{k,k+1} = (k+1/2)a_{k+1}`, satisfy the nonisospectral
 Lax equation
 
-`J' = [J, A] - J^2`
+`J' = [J, A] - J^(2 : ℕ)`
 
 precisely when the two coefficient curves obey the scalar system
 
-`b_n' = 2(n-1)a_n^2 - 2(n+1)a_{n+1}^2 - b_n^2`,
+`b_n' = 2(n-1)a_n^(2 : ℕ) - 2(n+1)a_{n+1}^(2 : ℕ) - b_n^(2 : ℕ)`,
 `a_{n+1}' = a_{n+1}((n - 1/2)b_n - (n + 3/2)b_{n+1})`.
 
 Both matrices are banded, so each entry of the Lax right side is a three-term sum, and the whole
@@ -145,7 +145,7 @@ theorem laxSum_succ (a b : ℕ → ℝ) (i k N : ℕ) (hN : i + 3 ≤ N) :
 /-- The two coefficient curves of a nonisospectral tridiagonal Riccati flow. -/
 def JacobiTodaDeriv (a b a' b' : ℕ → ℝ) : Prop :=
   a 0 = 0 ∧
-    (∀ n : ℕ, b' n = 2 * ((n : ℝ) - 1) * a n ^ 2 - 2 * ((n : ℝ) + 1) * a (n + 1) ^ 2 - b n ^ 2) ∧
+    (∀ n : ℕ, b' n = 2 * ((n : ℝ) - 1) * a n ^ (2 : ℕ) - 2 * ((n : ℝ) + 1) * a (n + 1) ^ (2 : ℕ) - b n ^ (2 : ℕ)) ∧
     (∀ n : ℕ,
       a' (n + 1) = a (n + 1) * (((n : ℝ) - 1 / 2) * b n - ((n : ℝ) + 3 / 2) * b (n + 1)))
 
@@ -295,7 +295,7 @@ theorem jacobiCompression_deriv_eq_riccati (a b a' b' : ℕ → ℝ) (h : Jacobi
       = jacobiCompression a b (m + 1) * connectionCompression a (m + 1)
         - connectionCompression a (m + 1) * jacobiCompression a b (m + 1)
         - jacobiCompression a b (m + 1) * jacobiCompression a b (m + 1)
-        - (2 * ((m : ℝ) + 1) * a (m + 1) ^ 2) •
+        - (2 * ((m : ℝ) + 1) * a (m + 1) ^ (2 : ℕ)) •
             Matrix.vecMulVec (fun i : Fin (m + 1) => if (i : ℕ) = m then (1 : ℝ) else 0)
               (fun i : Fin (m + 1) => if (i : ℕ) = m then (1 : ℝ) else 0) := by
   rw [← jacobiCompression_riccati_matrix a b m]

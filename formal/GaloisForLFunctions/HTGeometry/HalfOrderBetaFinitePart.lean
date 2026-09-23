@@ -36,10 +36,10 @@ theorem sqrt_eq_core (z : ℝ) (hz : z ∈ Icc (0:ℝ) 1) :
 
 /-- An exact rational second remainder, including both endpoints. -/
 theorem core_sub_zero (z : ℝ) (hz : z ∈ Icc (0:ℝ) 1) :
-    core z-core 0=((-z/(2*(1+Real.sqrt (1-z))^2):ℝ):ℂ) := by
+    core z-core 0=((-z/(2*(1+Real.sqrt (1-z))^(2 : ℕ)):ℝ):ℂ) := by
   have hs := Real.sq_sqrt (sub_nonneg.mpr hz.2)
   have hd : 1+Real.sqrt (1-z) ≠ 0 := by positivity
-  have he : -1/(1+Real.sqrt (1-z))-(-1/2) = -z/(2*(1+Real.sqrt (1-z))^2) := by
+  have he : -1/(1+Real.sqrt (1-z))-(-1/2) = -z/(2*(1+Real.sqrt (1-z))^(2 : ℕ)) := by
     field_simp [hd]
     nlinarith
   rw [core_zero]
@@ -50,7 +50,7 @@ theorem core_sub_zero (z : ℝ) (hz : z ∈ Icc (0:ℝ) 1) :
 theorem core_remainder_bound (z : ℝ) (hz : z ∈ Icc (0:ℝ) 1) :
     ‖core z-core 0‖ ≤ (1/2)*z := by
   rw [core_sub_zero z hz,Complex.norm_real,Real.norm_eq_abs,
-    abs_div,abs_neg,abs_of_nonneg hz.1,abs_of_pos (by positivity : 0 < 2*(1+Real.sqrt (1-z))^2)]
+    abs_div,abs_neg,abs_of_nonneg hz.1,abs_of_pos (by positivity : 0 < 2*(1+Real.sqrt (1-z))^(2 : ℕ))]
   calc
     _ ≤ z/2 := div_le_div_of_nonneg_left hz.1 (by norm_num)
       (by nlinarith [Real.sqrt_nonneg (1-z),sq_nonneg (Real.sqrt (1-z))])

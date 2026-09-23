@@ -45,13 +45,13 @@ transform in event chamber `n`. -/
 def suzukiCheckpointTriangularChamberConstant (n : ℕ) : ℝ :=
   ∑ j ∈ Finset.Ico 2 n,
     suzukiCheckpointSignedCurvatureCell j *
-      (32 / Real.log ((j + 1 : ℕ) : ℝ) ^ 3)
+      (32 / Real.log ((j + 1 : ℕ) : ℝ) ^ (3 : ℕ))
 
 /-- Reciprocal-upper-wall coefficient of the same fixed signed source. -/
 def suzukiCheckpointTriangularChamberInverseMoment (n : ℕ) : ℝ :=
   ∑ j ∈ Finset.Ico 2 n,
     suzukiCheckpointSignedCurvatureCell j *
-      (32 / Real.log ((j + 1 : ℕ) : ℝ) ^ 2)
+      (32 / Real.log ((j + 1 : ℕ) : ℝ) ^ (2 : ℕ))
 
 /-- The source algebra inside a fixed event chamber.  This lemma has no
 arithmetic hypothesis: all cancellation remains in its literal finite sum. -/

@@ -43,8 +43,8 @@ namespace RHTower
 
 /-- **The amplification criterion.**  For a zero at `β + iγ` the multiplier `|1 - 1/ρ|` exceeds one
 exactly when `β < 1/2`. -/
-theorem amplification_iff {β γ : ℝ} (hden : 0 < β ^ 2 + γ ^ 2) :
-    ((β - 1) ^ 2 + γ ^ 2) / (β ^ 2 + γ ^ 2) > 1 ↔ β < 1 / 2 := by
+theorem amplification_iff {β γ : ℝ} (hden : 0 < β ^ (2 : ℕ) + γ ^ (2 : ℕ)) :
+    ((β - 1) ^ (2 : ℕ) + γ ^ (2 : ℕ)) / (β ^ (2 : ℕ) + γ ^ (2 : ℕ)) > 1 ↔ β < 1 / 2 := by
   rw [gt_iff_lt, lt_div_iff₀ hden, one_mul]
   constructor <;> intro h <;> nlinarith
 

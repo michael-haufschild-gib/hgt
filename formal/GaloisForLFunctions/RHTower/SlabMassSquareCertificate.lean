@@ -60,13 +60,13 @@ noncomputable section
 squares is at most the square of the total mass: every cross term of `M²` is nonnegative. -/
 theorem sum_sq_le_sq_sum {ι : Type*} (s : Finset ι) (m : ι → ℝ)
     (hm : ∀ i ∈ s, 0 ≤ m i) :
-    ∑ i ∈ s, m i ^ 2 ≤ (∑ i ∈ s, m i) ^ 2 := by
-  have hstep : ∀ i ∈ s, m i ^ 2 ≤ m i * ∑ j ∈ s, m j := by
+    ∑ i ∈ s, m i ^ (2 : ℕ) ≤ (∑ i ∈ s, m i) ^ (2 : ℕ) := by
+  have hstep : ∀ i ∈ s, m i ^ (2 : ℕ) ≤ m i * ∑ j ∈ s, m j := by
     intro i hi
     rw [sq]
     exact mul_le_mul_of_nonneg_left (Finset.single_le_sum hm hi) (hm i hi)
-  calc ∑ i ∈ s, m i ^ 2 ≤ ∑ i ∈ s, m i * ∑ j ∈ s, m j := Finset.sum_le_sum hstep
-    _ = (∑ i ∈ s, m i) ^ 2 := by rw [← Finset.sum_mul, sq]
+  calc ∑ i ∈ s, m i ^ (2 : ℕ) ≤ ∑ i ∈ s, m i * ∑ j ∈ s, m j := Finset.sum_le_sum hstep
+    _ = (∑ i ∈ s, m i) ^ (2 : ℕ) := by rw [← Finset.sum_mul, sq]
 
 /-- **Strictness under splitting.**  As soon as two distinct members carry nonzero mass the
 mass-square inequality is strict: the `i`-th square loses against `m_i · M` because
@@ -74,7 +74,7 @@ mass-square inequality is strict: the `i`-th square loses against `m_i · M` bec
 theorem sum_sq_lt_sq_sum_of_two {ι : Type*} {s : Finset ι} {m : ι → ℝ}
     (hm : ∀ i ∈ s, 0 ≤ m i) {i j : ι} (hi : i ∈ s) (hj : j ∈ s) (hij : i ≠ j)
     (hmi : m i ≠ 0) (hmj : m j ≠ 0) :
-    ∑ k ∈ s, m k ^ 2 < (∑ k ∈ s, m k) ^ 2 := by
+    ∑ k ∈ s, m k ^ (2 : ℕ) < (∑ k ∈ s, m k) ^ (2 : ℕ) := by
   classical
   have hmi' : 0 < m i := lt_of_le_of_ne (hm i hi) (Ne.symm hmi)
   have hmj' : 0 < m j := lt_of_le_of_ne (hm j hj) (Ne.symm hmj)
@@ -89,23 +89,23 @@ theorem sum_sq_lt_sq_sum_of_two {ι : Type*} {s : Finset ι} {m : ι → ℝ}
     have h := Finset.sum_le_sum_of_subset_of_nonneg hsub fun k hk _ => hm k hk
     rwa [Finset.sum_pair hij] at h
   have hlt : m i < ∑ k ∈ s, m k := by linarith
-  have hstep : ∀ k ∈ s, m k ^ 2 ≤ m k * ∑ l ∈ s, m l := by
+  have hstep : ∀ k ∈ s, m k ^ (2 : ℕ) ≤ m k * ∑ l ∈ s, m l := by
     intro k hk
     rw [sq]
     exact mul_le_mul_of_nonneg_left (Finset.single_le_sum hm hk) (hm k hk)
-  have hstrict : m i ^ 2 < m i * ∑ l ∈ s, m l := by
+  have hstrict : m i ^ (2 : ℕ) < m i * ∑ l ∈ s, m l := by
     rw [sq]
     exact mul_lt_mul_of_pos_left hlt hmi'
-  calc ∑ k ∈ s, m k ^ 2 < ∑ k ∈ s, m k * ∑ l ∈ s, m l :=
+  calc ∑ k ∈ s, m k ^ (2 : ℕ) < ∑ k ∈ s, m k * ∑ l ∈ s, m l :=
       Finset.sum_lt_sum hstep ⟨i, hi, hstrict⟩
-    _ = (∑ k ∈ s, m k) ^ 2 := by rw [← Finset.sum_mul, sq]
+    _ = (∑ k ∈ s, m k) ^ (2 : ℕ) := by rw [← Finset.sum_mul, sq]
 
 /-- **The exact equality case.**  `Q = M²` holds iff the family has at most one nonzero
 member.  This is the algebraic heart of the maximization certificate: equality is
 concentration. -/
 theorem sum_sq_eq_sq_sum_iff {ι : Type*} {s : Finset ι} {m : ι → ℝ}
     (hm : ∀ i ∈ s, 0 ≤ m i) :
-    ∑ i ∈ s, m i ^ 2 = (∑ i ∈ s, m i) ^ 2 ↔
+    ∑ i ∈ s, m i ^ (2 : ℕ) = (∑ i ∈ s, m i) ^ (2 : ℕ) ↔
       ∀ i ∈ s, ∀ j ∈ s, m i ≠ 0 → m j ≠ 0 → i = j := by
   classical
   constructor
@@ -114,7 +114,7 @@ theorem sum_sq_eq_sq_sum_iff {ι : Type*} {s : Finset ι} {m : ι → ℝ}
     exact absurd heq (ne_of_lt (sum_sq_lt_sq_sum_of_two hm hi hj hij hmi hmj))
   · intro hone
     by_cases hall : ∀ i ∈ s, m i = 0
-    · have h1 : ∑ i ∈ s, m i ^ 2 = 0 :=
+    · have h1 : ∑ i ∈ s, m i ^ (2 : ℕ) = 0 :=
         Finset.sum_eq_zero fun i hi => by rw [hall i hi]; ring
       have h2 : ∑ i ∈ s, m i = 0 := Finset.sum_eq_zero hall
       rw [h1, h2]
@@ -127,7 +127,7 @@ theorem sum_sq_eq_sq_sum_iff {ι : Type*} {s : Finset ι} {m : ι → ℝ}
         exact hne (hone j hj i₀ hi₀ hmj hmi₀)
       have hM : ∑ k ∈ s, m k = m i₀ :=
         Finset.sum_eq_single i₀ hz fun h => absurd hi₀ h
-      have hQ : ∑ k ∈ s, m k ^ 2 = m i₀ ^ 2 :=
+      have hQ : ∑ k ∈ s, m k ^ (2 : ℕ) = m i₀ ^ (2 : ℕ) :=
         Finset.sum_eq_single i₀ (fun j hj hne => by rw [hz j hj hne]; ring)
           fun h => absurd hi₀ h
       rw [hM, hQ]
@@ -141,18 +141,18 @@ def heightFiberMass (γ c : ℝ) : ℝ :=
 /-- The mass-square sum `Q(γ)` of the height fiber — the `h⁻¹`-Laurent coefficient of the
 vertical-edge energy `∮ |tr|² ds` up to the factor `2π`. -/
 def heightFiberMassSquare (γ c : ℝ) : ℝ :=
-  ∑ w ∈ heightFiber γ c, xiPacketMass w ^ 2
+  ∑ w ∈ heightFiber γ c, xiPacketMass w ^ (2 : ℕ)
 
 /-- **`Q ≤ M²` on the height fiber, unconditionally.**  The certificate's one-sided bound:
 the mass-square sum never exceeds the squared total mass. -/
 theorem heightFiberMassSquare_le_sq (γ c : ℝ) :
-    heightFiberMassSquare γ c ≤ heightFiberMass γ c ^ 2 :=
+    heightFiberMassSquare γ c ≤ heightFiberMass γ c ^ (2 : ℕ) :=
   sum_sq_le_sq_sum _ _ fun w _ => RHTower.SlabConjugatedGermTheorem.xiPacketMass_nonneg w
 
 /-- **`Q = M²` iff the fiber is a single point.**  Every fiber point carries positive mass,
 so the algebraic equality case collapses to fiber subsingletonness. -/
 theorem heightFiberMassSquare_eq_sq_iff_subsingleton {γ c : ℝ} (hc : 0 ≤ c) :
-    heightFiberMassSquare γ c = heightFiberMass γ c ^ 2 ↔
+    heightFiberMassSquare γ c = heightFiberMass γ c ^ (2 : ℕ) ↔
       ∀ w ∈ heightFiber γ c, ∀ w' ∈ heightFiber γ c, w = w' := by
   unfold heightFiberMassSquare heightFiberMass
   rw [sum_sq_eq_sq_sum_iff fun w _ => RHTower.SlabConjugatedGermTheorem.xiPacketMass_nonneg w]
@@ -168,7 +168,7 @@ theorem heightFiberMassSquare_eq_sq_iff_subsingleton {γ c : ℝ} (hc : 0 ≤ c)
 critical line: a single OFF-line point is impossible, since its Schwarz mirror is a second
 fiber point (the module-7 line dichotomy). -/
 theorem heightFiberMassSquare_eq_sq_iff_im_eq_zero {γ c : ℝ} (hc : 0 ≤ c) :
-    heightFiberMassSquare γ c = heightFiberMass γ c ^ 2 ↔
+    heightFiberMassSquare γ c = heightFiberMass γ c ^ (2 : ℕ) ↔
       ∀ w ∈ heightFiber γ c, w.im = 0 := by
   rw [heightFiberMassSquare_eq_sq_iff_subsingleton hc,
     ← heightFiber_im_eq_zero_iff_subsingleton hc]
@@ -177,7 +177,7 @@ theorem heightFiberMassSquare_eq_sq_iff_im_eq_zero {γ c : ℝ} (hc : 0 ≤ c) :
 certificate: the mass-square identity and the displacement-germ vanishing read the same
 line. -/
 theorem heightFiberMassSquare_eq_sq_iff_fiberVariance_eq_zero {γ c : ℝ} (hc : 0 ≤ c) :
-    heightFiberMassSquare γ c = heightFiberMass γ c ^ 2 ↔ fiberVariance γ c = 0 := by
+    heightFiberMassSquare γ c = heightFiberMass γ c ^ (2 : ℕ) ↔ fiberVariance γ c = 0 := by
   rw [heightFiberMassSquare_eq_sq_iff_im_eq_zero hc, ← fiberVariance_eq_zero_iff hc]
 
 /-! ## §3 The fiber mirror symmetry with multiplicity -/
@@ -267,7 +267,7 @@ energy saturates its unconditional ceiling `M²` exactly when the fiber mass ref
 split off the line.  Hypothesis-free on both sides. -/
 theorem riemannHypothesis_iff_forall_heightFiber_massSquare :
     RiemannHypothesis ↔
-      ∀ γ : ℝ, heightFiberMassSquare γ (1 / 2) = heightFiberMass γ (1 / 2) ^ 2 := by
+      ∀ γ : ℝ, heightFiberMassSquare γ (1 / 2) = heightFiberMass γ (1 / 2) ^ (2 : ℕ) := by
   rw [riemannHypothesis_iff_forall_heightFiber_im_eq_zero]
   exact forall_congr' fun γ =>
     (heightFiberMassSquare_eq_sq_iff_im_eq_zero (by norm_num)).symm
@@ -276,7 +276,7 @@ theorem riemannHypothesis_iff_forall_heightFiber_massSquare :
 to the reverse inequality `M² ≤ Q` at every height: a pure lower-bound certificate. -/
 theorem riemannHypothesis_iff_forall_sq_le_heightFiberMassSquare :
     RiemannHypothesis ↔
-      ∀ γ : ℝ, heightFiberMass γ (1 / 2) ^ 2 ≤ heightFiberMassSquare γ (1 / 2) := by
+      ∀ γ : ℝ, heightFiberMass γ (1 / 2) ^ (2 : ℕ) ≤ heightFiberMassSquare γ (1 / 2) := by
   rw [riemannHypothesis_iff_forall_heightFiber_massSquare]
   refine forall_congr' fun γ => ⟨fun h => le_of_eq h.symm, fun h => ?_⟩
   exact le_antisymm (heightFiberMassSquare_le_sq _ _) h

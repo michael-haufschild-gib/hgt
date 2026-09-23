@@ -22,9 +22,9 @@ private theorem circle_coefficients (d theta : ℝ) (hd : 0 ≤ d) :
   have hD := denominator_pos d theta
   have hs := Real.sinh_nonneg_iff.mpr hd
   have hS : |Real.sin theta| ≤ denominator d theta := by
-    have hid : (denominator d theta)^2-(radialNumerator d theta)^2=(Real.sin theta)^2 := by
+    have hid : (denominator d theta)^(2 : ℕ)-(radialNumerator d theta)^(2 : ℕ)=(Real.sin theta)^(2 : ℕ) := by
       calc
-        _ = (Real.cosh d^2-Real.sinh d^2)*(1-Real.cos theta^2) := by
+        _ = (Real.cosh d^(2 : ℕ)-Real.sinh d^(2 : ℕ))*(1-Real.cos theta^(2 : ℕ)) := by
           unfold denominator radialNumerator; ring
         _ = _ := by rw [Real.cosh_sq_sub_sinh_sq]; nlinarith [Real.sin_sq_add_cos_sq theta]
     nlinarith [sq_nonneg (radialNumerator d theta),sq_abs (Real.sin theta)]

@@ -42,8 +42,8 @@ omit [Fintype ι] in
 /-- **Organwise Pythagoras.**  The residual of any shared gauge splits into the inherited local
 residual and the generated residual against the locally optimal history. -/
 theorem norm_sub_apply_sq (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) (i : ι) (u : K) :
-    ‖x i - A i u‖ ^ 2
-      = ‖x i - localOptimalHistory A x i‖ ^ 2 + ‖localOptimalHistory A x i - A i u‖ ^ 2 := by
+    ‖x i - A i u‖ ^ (2 : ℕ)
+      = ‖x i - localOptimalHistory A x i‖ ^ (2 : ℕ) + ‖localOptimalHistory A x i - A i u‖ ^ (2 : ℕ) := by
   have hmem : localOptimalHistory A x i - A i u ∈ LinearMap.range (A i) :=
     Submodule.sub_mem _ (localOptimalHistory_mem A x i) (LinearMap.mem_range_self _ _)
   have hperp : ⟪x i - localOptimalHistory A x i, localOptimalHistory A x i - A i u⟫_ℝ = 0 := by
@@ -59,30 +59,30 @@ theorem norm_sub_apply_sq (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) (i : �
 
 /-- The organwise splitting, summed. -/
 theorem sum_norm_sub_apply_sq (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) (u : K) :
-    ∑ i, ‖x i - A i u‖ ^ 2
-      = (∑ i, ‖x i - localOptimalHistory A x i‖ ^ 2)
-        + ∑ i, ‖localOptimalHistory A x i - A i u‖ ^ 2 := by
+    ∑ i, ‖x i - A i u‖ ^ (2 : ℕ)
+      = (∑ i, ‖x i - localOptimalHistory A x i‖ ^ (2 : ℕ))
+        + ∑ i, ‖localOptimalHistory A x i - A i u‖ ^ (2 : ℕ) := by
   rw [← Finset.sum_add_distrib]
   exact Finset.sum_congr rfl (fun i _ => norm_sub_apply_sq A x i u)
 
 /-- `(QFG.1)`, shared: the cost of fitting every organ with one common gauge. -/
 def sharedEnergy (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) : ℝ :=
-  ⨅ u : K, ∑ i, ‖x i - A i u‖ ^ 2
+  ⨅ u : K, ∑ i, ‖x i - A i u‖ ^ (2 : ℕ)
 
 /-- `(QFG.1)`, separate: the cost of fitting every organ with its own gauge. -/
 def separateEnergy (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) : ℝ :=
-  ∑ i, ‖x i - localOptimalHistory A x i‖ ^ 2
+  ∑ i, ‖x i - localOptimalHistory A x i‖ ^ (2 : ℕ)
 
 /-- The generated fit: the shared cost of the locally optimal histories. -/
 def generatedEnergy (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) : ℝ :=
-  ⨅ u : K, ∑ i, ‖localOptimalHistory A x i - A i u‖ ^ 2
+  ⨅ u : K, ∑ i, ‖localOptimalHistory A x i - A i u‖ ^ (2 : ℕ)
 
 /-- `(QFG.2)`, the quotient--fusion genesis. -/
 def quotientFusionGenesis (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) : ℝ :=
   sharedEnergy A x - separateEnergy A x
 
 theorem bddBelow_generatedRange (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
-    BddBelow (Set.range fun u : K => ∑ i, ‖localOptimalHistory A x i - A i u‖ ^ 2) := by
+    BddBelow (Set.range fun u : K => ∑ i, ‖localOptimalHistory A x i - A i u‖ ^ (2 : ℕ)) := by
   refine ⟨0, ?_⟩
   rintro r ⟨u, rfl⟩
   positivity
@@ -95,8 +95,8 @@ theorem generatedEnergy_nonneg (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
 histories. -/
 theorem quotientFusionGenesis_eq (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
     quotientFusionGenesis A x = generatedEnergy A x := by
-  have hfun : (fun u : K => ∑ i, ‖x i - A i u‖ ^ 2)
-      = fun u : K => (∑ i, ‖localOptimalHistory A x i - A i u‖ ^ 2) + separateEnergy A x := by
+  have hfun : (fun u : K => ∑ i, ‖x i - A i u‖ ^ (2 : ℕ))
+      = fun u : K => (∑ i, ‖localOptimalHistory A x i - A i u‖ ^ (2 : ℕ)) + separateEnergy A x := by
     funext u
     rw [sum_norm_sub_apply_sq A x u, separateEnergy]
     ring
@@ -142,15 +142,15 @@ theorem jointLocalOptimalHistory_ofLp (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i,
 
 omit [FiniteDimensional ℝ K] in
 theorem norm_joint_sub_sq (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) (u : K) :
-    ‖jointLocalOptimalHistory A x - jointGaugeMap A u‖ ^ 2
-      = ∑ i, ‖localOptimalHistory A x i - A i u‖ ^ 2 := by
+    ‖jointLocalOptimalHistory A x - jointGaugeMap A u‖ ^ (2 : ℕ)
+      = ∑ i, ‖localOptimalHistory A x i - A i u‖ ^ (2 : ℕ) := by
   rw [PiLp.norm_sq_eq_of_L2]
   exact Finset.sum_congr rfl (fun i _ => by rfl)
 
 /-- **Attainment.**  In finite dimensions the shared fit of the locally optimal histories is
 realized by an actual gauge. -/
 theorem exists_generatedEnergy_eq (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i) :
-    ∃ u : K, (∑ i, ‖localOptimalHistory A x i - A i u‖ ^ 2) = generatedEnergy A x := by
+    ∃ u : K, (∑ i, ‖localOptimalHistory A x i - A i u‖ ^ (2 : ℕ)) = generatedEnergy A x := by
   classical
   set S : Submodule ℝ (PiLp 2 H) := LinearMap.range (jointGaugeMap A) with hS
   obtain ⟨u, hu⟩ : ∃ u : K, jointGaugeMap A u = S.starProjection (jointLocalOptimalHistory A x) :=
@@ -165,8 +165,8 @@ theorem exists_generatedEnergy_eq (A : ∀ i, K →ₗ[ℝ] H i) (x : ∀ i, H i
     rintro r ⟨w, rfl⟩
     positivity
   rw [← hu] at hle
-  have hsq : ‖jointLocalOptimalHistory A x - jointGaugeMap A u‖ ^ 2
-      ≤ ‖jointLocalOptimalHistory A x - jointGaugeMap A v‖ ^ 2 :=
+  have hsq : ‖jointLocalOptimalHistory A x - jointGaugeMap A u‖ ^ (2 : ℕ)
+      ≤ ‖jointLocalOptimalHistory A x - jointGaugeMap A v‖ ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hle 2
   rwa [norm_joint_sub_sq, norm_joint_sub_sq] at hsq
 
@@ -181,7 +181,7 @@ theorem quotientFusionGenesis_eq_zero_iff (A : ∀ i, K →ₗ[ℝ] H i) (x : �
     rw [hzero] at hu
     refine ⟨u, fun i => ?_⟩
     have hterm : ∀ j ∈ (Finset.univ : Finset ι),
-        (0 : ℝ) ≤ ‖localOptimalHistory A x j - A j u‖ ^ 2 := fun j _ => by positivity
+        (0 : ℝ) ≤ ‖localOptimalHistory A x j - A j u‖ ^ (2 : ℕ) := fun j _ => by positivity
     have hj := (Finset.sum_eq_zero_iff_of_nonneg hterm).mp hu i (Finset.mem_univ i)
     have hz : localOptimalHistory A x i - A i u = 0 := by
       have hn := pow_eq_zero_iff (n := 2) (by omega) |>.mp hj
@@ -226,7 +226,7 @@ theorem exists_positive_generatedEnergy_with_zero_separateEnergy :
       trivial
     have hval : ∀ u : ℝ,
         (∑ i : Fin 2, ‖localOptimalHistory (fun _ : Fin 2 => (LinearMap.id : ℝ →ₗ[ℝ] ℝ))
-          ![1, -1] i - (LinearMap.id : ℝ →ₗ[ℝ] ℝ) u‖ ^ 2) = 2 + 2 * u ^ 2 := by
+          ![1, -1] i - (LinearMap.id : ℝ →ₗ[ℝ] ℝ) u‖ ^ (2 : ℕ)) = 2 + 2 * u ^ (2 : ℕ) := by
       intro u
       rw [Fin.sum_univ_two, hloc 0, hloc 1]
       simp only [Matrix.cons_val_zero, Matrix.cons_val_one,
@@ -248,13 +248,13 @@ Schur complement zero — the sum has positive Schur complement exactly when the
 not all equal. -/
 theorem schurComplement_sum_eq {ι : Type*} [Fintype ι] [Nonempty ι] (a b c : ι → ℝ)
     (hc : ∀ i, 0 < c i) :
-    (∑ i, a i) - (∑ i, b i) ^ 2 / (∑ i, c i)
-      = (∑ i, (a i - b i ^ 2 / c i))
-        + ∑ i, c i * (b i / c i - (∑ i, b i) / (∑ i, c i)) ^ 2 := by
+    (∑ i, a i) - (∑ i, b i) ^ (2 : ℕ) / (∑ i, c i)
+      = (∑ i, (a i - b i ^ (2 : ℕ) / c i))
+        + ∑ i, c i * (b i / c i - (∑ i, b i) / (∑ i, c i)) ^ (2 : ℕ) := by
   have hC : (0 : ℝ) < ∑ i, c i := Finset.sum_pos (fun i _ => hc i) Finset.univ_nonempty
-  have hterm : ∀ i : ι, c i * (b i / c i - (∑ j, b j) / (∑ j, c j)) ^ 2
-      = b i ^ 2 / c i - 2 * ((∑ j, b j) / (∑ j, c j)) * b i
-        + c i * ((∑ j, b j) / (∑ j, c j)) ^ 2 := by
+  have hterm : ∀ i : ι, c i * (b i / c i - (∑ j, b j) / (∑ j, c j)) ^ (2 : ℕ)
+      = b i ^ (2 : ℕ) / c i - 2 * ((∑ j, b j) / (∑ j, c j)) * b i
+        + c i * ((∑ j, b j) / (∑ j, c j)) ^ (2 : ℕ) := by
     intro i
     have hci := (hc i).ne'
     field_simp

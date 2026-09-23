@@ -53,7 +53,7 @@ theorem
         (infiniteFisherOneCornerJoinedReporter
           (squarefreeMobiusCriticalClockCutoff sigma u)
           D
-          (infiniteMobiusSignedWeightLp sigma hsigma))‖ ^ 2 ≤
+          (infiniteMobiusSignedWeightLp sigma hsigma))‖ ^ (2 : ℕ) ≤
       (1 / 2 : ℝ) *
         squarefreeMobiusCriticalFisherLowerBoundaryEnergy sigma u := by
   rw [← hsNormSq_squarefreeMobiusCriticalFisherLowerBoundary hsigma]

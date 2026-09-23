@@ -26,7 +26,7 @@ variable {I : Type*} [Fintype I] [DecidableEq I]
 
 /-- Variance of one spectral level under a probability weighting. -/
 def singleLevelSpectralVariance (weight energy : I → ℝ) : ℝ :=
-  ∑ i, weight i * (energy i - ∑ j, weight j * energy j) ^ 2
+  ∑ i, weight i * (energy i - ∑ j, weight j * energy j) ^ (2 : ℕ)
 
 /-! ## Transferring the finite-law quantities to replica multiplicity vectors -/
 
@@ -42,7 +42,7 @@ theorem sum_replicaAmplitude_variance_subtype {weight : I → ℝ} (hw : ∑ i, 
     (energy : I → ℝ) (r : ℕ) :
     ∑ p : ReplicaMultiplicityIndex I r,
         fidelityReplicaMultiplicityAmplitude weight p.1 *
-          (replicaMultiplicityEnergy energy p.1 - (r : ℝ) * ∑ i, weight i * energy i) ^ 2
+          (replicaMultiplicityEnergy energy p.1 - (r : ℝ) * ∑ i, weight i * energy i) ^ (2 : ℕ)
       = r * singleLevelSpectralVariance weight energy := by
   classical
   have hmom := replicaAmplitudeMoment_energy_variance hw energy r
@@ -51,7 +51,7 @@ theorem sum_replicaAmplitude_variance_subtype {weight : I → ℝ} (hw : ∑ i, 
   refine Eq.trans ?_ hmom
   exact Finset.sum_coe_sort ((Finset.univ : Finset I).piAntidiag r)
     (fun p => fidelityReplicaMultiplicityAmplitude weight p *
-      (replicaMultiplicityEnergy energy p - (r : ℝ) * ∑ i, weight i * energy i) ^ 2)
+      (replicaMultiplicityEnergy energy p - (r : ℝ) * ∑ i, weight i * energy i) ^ (2 : ℕ))
 
 theorem finiteLawCollisionMass_replicaAmplitude (weight energy : I → ℝ) (r : ℕ) :
     finiteLawCollisionMass
@@ -167,8 +167,8 @@ theorem fidelityReplicaPermutationFloor_microcanonical_le [Nonempty I] (r : ℕ)
     exact_mod_cast hc
   have hterm : ∀ p ∈ (Finset.univ : Finset I).piAntidiag r,
       fidelityReplicaMultiplicityWeight (microcanonicalWeight I) p p
-        = (Nat.multinomial (Finset.univ : Finset I) p : ℝ) ^ 2 *
-          (((Fintype.card I : ℝ) ^ r)⁻¹) ^ 2 := by
+        = (Nat.multinomial (Finset.univ : Finset I) p : ℝ) ^ (2 : ℕ) *
+          (((Fintype.card I : ℝ) ^ r)⁻¹) ^ (2 : ℕ) := by
     intro p hp
     have hsum : ∑ i, p i = r := by
       have := (Finset.mem_piAntidiag.mp hp).1
@@ -180,10 +180,10 @@ theorem fidelityReplicaPermutationFloor_microcanonical_le [Nonempty I] (r : ℕ)
       fidelityReplicaMultiplicityAmplitude, hprod]
     ring
   have hbound : ∀ p ∈ (Finset.univ : Finset I).piAntidiag r,
-      (Nat.multinomial (Finset.univ : Finset I) p : ℝ) ^ 2 *
-          (((Fintype.card I : ℝ) ^ r)⁻¹) ^ 2
+      (Nat.multinomial (Finset.univ : Finset I) p : ℝ) ^ (2 : ℕ) *
+          (((Fintype.card I : ℝ) ^ r)⁻¹) ^ (2 : ℕ)
         ≤ (r.factorial : ℝ) * (Nat.multinomial (Finset.univ : Finset I) p : ℝ) *
-            (((Fintype.card I : ℝ) ^ r)⁻¹) ^ 2 := by
+            (((Fintype.card I : ℝ) ^ r)⁻¹) ^ (2 : ℕ) := by
     intro p hp
     have hsum : ∑ i, p i = r := by
       have := (Finset.mem_piAntidiag.mp hp).1
@@ -191,8 +191,8 @@ theorem fidelityReplicaPermutationFloor_microcanonical_le [Nonempty I] (r : ℕ)
     have hle : (Nat.multinomial Finset.univ p : ℝ) ≤ (r.factorial : ℝ) := by
       exact_mod_cast multinomial_le_factorial hsum
     have hnn : (0 : ℝ) ≤ (Nat.multinomial Finset.univ p : ℝ) := Nat.cast_nonneg _
-    have hsq : (0 : ℝ) ≤ (((Fintype.card I : ℝ) ^ r)⁻¹) ^ 2 := sq_nonneg _
-    have hsq2 : (Nat.multinomial (Finset.univ : Finset I) p : ℝ) ^ 2
+    have hsq : (0 : ℝ) ≤ (((Fintype.card I : ℝ) ^ r)⁻¹) ^ (2 : ℕ) := sq_nonneg _
+    have hsq2 : (Nat.multinomial (Finset.univ : Finset I) p : ℝ) ^ (2 : ℕ)
         ≤ (r.factorial : ℝ) * (Nat.multinomial (Finset.univ : Finset I) p : ℝ) := by
       rw [sq]
       exact mul_le_mul_of_nonneg_right hle hnn
@@ -204,14 +204,14 @@ theorem fidelityReplicaPermutationFloor_microcanonical_le [Nonempty I] (r : ℕ)
     exact_mod_cast congrArg (fun n : ℕ => (n : ℝ)) h
   calc fidelityReplicaPermutationFloor (microcanonicalWeight I) r
       = ∑ p ∈ (Finset.univ : Finset I).piAntidiag r,
-          (Nat.multinomial (Finset.univ : Finset I) p : ℝ) ^ 2 *
-            (((Fintype.card I : ℝ) ^ r)⁻¹) ^ 2 := by
+          (Nat.multinomial (Finset.univ : Finset I) p : ℝ) ^ (2 : ℕ) *
+            (((Fintype.card I : ℝ) ^ r)⁻¹) ^ (2 : ℕ) := by
         unfold fidelityReplicaPermutationFloor
         exact Finset.sum_congr rfl hterm
     _ ≤ ∑ p ∈ (Finset.univ : Finset I).piAntidiag r,
           (r.factorial : ℝ) * (Nat.multinomial (Finset.univ : Finset I) p : ℝ) *
-            (((Fintype.card I : ℝ) ^ r)⁻¹) ^ 2 := Finset.sum_le_sum hbound
-    _ = (r.factorial : ℝ) * (((Fintype.card I : ℝ) ^ r)⁻¹) ^ 2 *
+            (((Fintype.card I : ℝ) ^ r)⁻¹) ^ (2 : ℕ) := Finset.sum_le_sum hbound
+    _ = (r.factorial : ℝ) * (((Fintype.card I : ℝ) ^ r)⁻¹) ^ (2 : ℕ) *
           ∑ p ∈ (Finset.univ : Finset I).piAntidiag r,
             (Nat.multinomial (Finset.univ : Finset I) p : ℝ) := by
         rw [Finset.mul_sum]

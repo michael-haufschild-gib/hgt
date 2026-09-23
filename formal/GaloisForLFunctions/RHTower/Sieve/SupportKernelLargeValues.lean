@@ -83,10 +83,10 @@ theorem inner_supportPhase_coeff (S : Finset ℕ) (a : ℕ → ℂ) (w : ℝ) :
 
 /-- The energy of the coefficient vector. -/
 theorem norm_supportCoeff_sq (S : Finset ℕ) (a : ℕ → ℂ) :
-    ‖supportCoeff S a‖ ^ 2 = ∑ p ∈ S, ‖a p‖ ^ 2 := by
+    ‖supportCoeff S a‖ ^ (2 : ℕ) = ∑ p ∈ S, ‖a p‖ ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
   simp only [supportCoeff, WithLp.ofLp_toLp, Finset.univ_eq_attach]
-  rw [← Finset.sum_attach S (fun p => ‖a p‖ ^ 2)]
+  rw [← Finset.sum_attach S (fun p => ‖a p‖ ^ (2 : ℕ))]
 
 /-- **The Gram row.**  The diagonal contributes the cardinality of the support and every other
 entry contributes at most the kernel bound. -/
@@ -129,7 +129,7 @@ decaying kernel controls. -/
 theorem sum_normSq_logPoly_le_of_rowBound (a : ℕ → ℂ) {S : Finset ℕ} {T : Finset ℝ} {Δ : ℝ}
     (hΔ : 0 ≤ Δ)
     (hrow : ∀ u ∈ T, ∑ v ∈ T, ‖∑ p ∈ S, unitLogPhase (u - v) p‖ ≤ Δ) :
-    ∑ w ∈ T, ‖logPoly a S w‖ ^ 2 ≤ Δ * ∑ p ∈ S, ‖a p‖ ^ 2 := by
+    ∑ w ∈ T, ‖logPoly a S w‖ ^ (2 : ℕ) ≤ Δ * ∑ p ∈ S, ‖a p‖ ^ (2 : ℕ) := by
   have hrow' : ∀ u ∈ T, ∑ v ∈ T, ‖⟪supportPhase S u, supportPhase S v⟫_ℂ‖ ≤ Δ := by
     intro u hu
     refine le_trans (le_of_eq ?_) (hrow u hu)
@@ -147,8 +147,8 @@ difference of `T`. -/
 theorem sum_normSq_logPoly_le_of_kernelBound (a : ℕ → ℂ) {S : Finset ℕ} {T : Finset ℝ} {E : ℝ}
     (hE0 : 0 ≤ E)
     (hE : ∀ u ∈ T, ∀ v ∈ T, u ≠ v → ‖∑ p ∈ S, unitLogPhase (u - v) p‖ ≤ E) :
-    ∑ w ∈ T, ‖logPoly a S w‖ ^ 2
-      ≤ ((S.card : ℝ) + E * (T.card : ℝ)) * ∑ p ∈ S, ‖a p‖ ^ 2 :=
+    ∑ w ∈ T, ‖logPoly a S w‖ ^ (2 : ℕ)
+      ≤ ((S.card : ℝ) + E * (T.card : ℝ)) * ∑ p ∈ S, ‖a p‖ ^ (2 : ℕ) :=
   sum_normSq_logPoly_le_of_rowBound a (by positivity)
     (fun w hw => le_trans (le_of_eq (Finset.sum_congr rfl fun v _ =>
         congrArg norm (inner_supportPhase S w v).symm)) (row_supportPhase_le hE0 hE hw))

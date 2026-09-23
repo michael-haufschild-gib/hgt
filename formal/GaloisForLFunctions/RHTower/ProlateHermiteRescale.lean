@@ -43,7 +43,7 @@ theorem prolateHermiteRescale_eigen_defect
     (heig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x) (xi : ℝ) :
     hermiteSLAction (prolateHermiteRescale c Phi) xi
         - chi / c * prolateHermiteRescale c Phi xi =
-      (xi ^ 2 * deriv (deriv (prolateHermiteRescale c Phi)) xi
+      (xi ^ (2 : ℕ) * deriv (deriv (prolateHermiteRescale c Phi)) xi
           + 2 * xi * deriv (prolateHermiteRescale c Phi) xi) / c := by
   apply prolate_eigen_hermite_defect hc
   rw [prolateHermiteRescale_sqrtScale hc Phi]
@@ -55,7 +55,7 @@ theorem prolateHermiteRescale_radial_defect
     (heig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x) (xi : ℝ) :
     hermiteSLAction (prolateHermiteRescale c Phi) xi
         + (c * radialSeparationRatio c chi) * prolateHermiteRescale c Phi xi =
-      (xi ^ 2 * deriv (deriv (prolateHermiteRescale c Phi)) xi
+      (xi ^ (2 : ℕ) * deriv (deriv (prolateHermiteRescale c Phi)) xi
           + 2 * xi * deriv (prolateHermiteRescale c Phi) xi) / c := by
   have h := prolateHermiteRescale_eigen_defect hc heig xi
   have hc0 : c ≠ 0 := hc.ne'
@@ -71,21 +71,21 @@ theorem exists_even_prolateHermiteRescale_of_signedMode
       ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi ∧
         Phi ≠ 0 ∧ Function.Even Phi ∧
         (∀ x : ℝ,
-          bandTransform (2 * Real.pi * a ^ 2) Phi x =
-            evenProlateSignedValue a n ^ 2 * Phi x) ∧
+          bandTransform (2 * Real.pi * a ^ (2 : ℕ)) Phi x =
+            evenProlateSignedValue a n ^ (2 : ℕ) * Phi x) ∧
         (∀ x : ℝ,
-          prolateSLAction (2 * Real.pi * a ^ 2) Phi x = chi * Phi x) ∧
-        s = radialSeparationRatio (2 * Real.pi * a ^ 2) chi ∧
+          prolateSLAction (2 * Real.pi * a ^ (2 : ℕ)) Phi x = chi * Phi x) ∧
+        s = radialSeparationRatio (2 * Real.pi * a ^ (2 : ℕ)) chi ∧
         0 ≤ s ∧
-        u = prolateHermiteRescale (2 * Real.pi * a ^ 2) Phi ∧
+        u = prolateHermiteRescale (2 * Real.pi * a ^ (2 : ℕ)) Phi ∧
         ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) u ∧ Function.Even u ∧
         (∀ xi : ℝ,
-          hermiteSLAction u xi + (2 * Real.pi * a ^ 2) * s * u xi =
-            (xi ^ 2 * deriv (deriv u) xi + 2 * xi * deriv u xi)
-              / (2 * Real.pi * a ^ 2)) := by
+          hermiteSLAction u xi + (2 * Real.pi * a ^ (2 : ℕ)) * s * u xi =
+            (xi ^ (2 : ℕ) * deriv (deriv u) xi + 2 * xi * deriv u xi)
+              / (2 * Real.pi * a ^ (2 : ℕ))) := by
   obtain ⟨Phi, chi, s, hsm, hne, heven, hband, heig, hs, hs0, _hend, _hradial⟩ :=
     exists_global_even_radialProlate_of_signedMode ha n hvalue
-  let c : ℝ := 2 * Real.pi * a ^ 2
+  let c : ℝ := 2 * Real.pi * a ^ (2 : ℕ)
   have hc : 0 < c := by
     dsimp [c]
     positivity

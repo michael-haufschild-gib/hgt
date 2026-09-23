@@ -37,7 +37,7 @@ theorem not_exists_uniform_coreTwo_insert_dilationMean_bound :
     dsimp [r]
     have : 0 ≤ B / c := div_nonneg hB hc.le
     linarith
-  let X : ℝ := max 2 (max T (r ^ 2))
+  let X : ℝ := max 2 (max T (r ^ (2 : ℕ)))
   have hX : 0 < X := by
     dsimp [X]
     exact lt_of_lt_of_le (by norm_num) (le_max_left _ _)
@@ -52,11 +52,11 @@ theorem not_exists_uniform_coreTwo_insert_dilationMean_bound :
       (show (2 : ℝ) ≤ X by dsimp [X]; exact le_max_left _ _) hpX
     exact_mod_cast this.ne.symm
   have hpT : T ≤ (p : ℝ) :=
-    (le_max_left T (r ^ 2)).trans
-      ((le_max_right 2 (max T (r ^ 2))).trans hpX.le)
-  have hprsq : r ^ 2 < (p : ℝ) :=
+    (le_max_left T (r ^ (2 : ℕ))).trans
+      ((le_max_right 2 (max T (r ^ (2 : ℕ)))).trans hpX.le)
+  have hprsq : r ^ (2 : ℕ) < (p : ℝ) :=
     lt_of_le_of_lt
-      ((le_max_right T (r ^ 2)).trans (le_max_right 2 (max T (r ^ 2)))) hpX
+      ((le_max_right T (r ^ (2 : ℕ))).trans (le_max_right 2 (max T (r ^ (2 : ℕ))))) hpX
   have hroot : r < Real.sqrt (p : ℝ) := by
     have h := Real.sqrt_lt_sqrt (sq_nonneg r) hprsq
     simpa [Real.sqrt_sq hr.le] using h

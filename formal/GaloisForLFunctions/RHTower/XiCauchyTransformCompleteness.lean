@@ -172,17 +172,17 @@ theorem deriv_eq_zero_of_re_eq_zero_on_ball {f : ℂ → ℂ} {z₀ : ℂ} {r : 
 
 /-! ## Vertical decay -/
 
-theorem four_lt_norm_xiSpectralPoint (q : XiZeroCopy) : 4 < ‖xiSpectralPoint q‖ := by
+theorem four_lt_norm_xiSpectralPoint_xiCauchyTransformCompleteness (q : XiZeroCopy) : 4 < ‖xiSpectralPoint q‖ := by
   have hgap := xiZeroCopy_fortyOne_div_two_lt_im_sq q
   have hnorm : ‖xiSpectralPoint q‖ = ‖(q.1 : ℂ) - 1 / 2‖ := norm_xiSpectralPoint q
-  have hsq : ‖(q.1 : ℂ) - 1 / 2‖ ^ 2 =
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 + ((q.1 : ℂ).im) ^ 2 := by
+  have hsq : ‖(q.1 : ℂ) - 1 / 2‖ ^ (2 : ℕ) =
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + ((q.1 : ℂ).im) ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im]
     norm_num
     ring
   have hpos : 0 ≤ ‖xiSpectralPoint q‖ := norm_nonneg _
-  have hbig : 16 < ‖xiSpectralPoint q‖ ^ 2 := by
+  have hbig : 16 < ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     rw [hnorm, hsq]
     nlinarith [sq_nonneg ((q.1 : ℂ).re - 1 / 2)]
   nlinarith
@@ -190,7 +190,7 @@ theorem four_lt_norm_xiSpectralPoint (q : XiZeroCopy) : 4 < ‖xiSpectralPoint q
 theorem half_norm_le_norm_sub_vertical (q : XiZeroCopy) (t : ℝ) :
     ‖xiSpectralPoint q‖ / 2 ≤ ‖xiSpectralPoint q - Complex.I * (t : ℂ)‖ := by
   have him := abs_im_xiSpectralPoint_lt_half q
-  have hbig := four_lt_norm_xiSpectralPoint q
+  have hbig := four_lt_norm_xiSpectralPoint_xiCauchyTransformCompleteness q
   have hre : |(xiSpectralPoint q - Complex.I * (t : ℂ)).re| ≤
       ‖xiSpectralPoint q - Complex.I * (t : ℂ)‖ := Complex.abs_re_le_norm _
   have hval : (xiSpectralPoint q - Complex.I * (t : ℂ)).re = (xiSpectralPoint q).re := by
@@ -243,7 +243,7 @@ theorem tendsto_xiCauchyTransform_vertical (u : lp (fun _ : XiZeroCopy => ℂ) 2
     filter_upwards with t q
     have hlow := half_norm_le_norm_sub_vertical q t
     have hαpos : 0 < ‖xiSpectralPoint q‖ := by
-      have := four_lt_norm_xiSpectralPoint q; linarith
+      have := four_lt_norm_xiSpectralPoint_xiCauchyTransformCompleteness q; linarith
     have hpos : 0 < ‖xiSpectralPoint q - Complex.I * (t : ℂ)‖ := by linarith
     rw [norm_mul, RCLike.norm_conj, norm_inv]
     have hinvle : ‖xiSpectralPoint q - Complex.I * (t : ℂ)‖⁻¹ ≤

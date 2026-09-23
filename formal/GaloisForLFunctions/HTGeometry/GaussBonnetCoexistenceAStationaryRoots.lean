@@ -19,7 +19,7 @@ def egbCoexistenceAStationaryLinear (τ θ : ℝ) : ℝ :=
   egbCoexistenceAPressureWeight τ θ * (thermalRatio τ + 1) - egbCoexistenceATemperatureWeight τ θ
 
 def egbCoexistenceAStationaryDiscriminant (τ θ : ℝ) : ℝ :=
-  egbCoexistenceAStationaryLinear τ θ ^ 2 +
+  egbCoexistenceAStationaryLinear τ θ ^ (2 : ℕ) +
     4 * egbCoexistenceAPressureWeight τ θ * egbCoexistenceAChargeWeight τ θ / thermalRatio τ
 
 def egbCoexistenceAMiddleRadius (τ θ : ℝ) : ℝ :=
@@ -44,7 +44,7 @@ theorem egbCoexistenceAMiddleRadius_pos (τ θ : ℝ) : 0 < egbCoexistenceAMiddl
   have hD := egbCoexistenceAStationaryDiscriminant_pos τ θ
   have hsq := sq_sqrt (le_of_lt hD)
   have hroot := sqrt_nonneg (egbCoexistenceAStationaryDiscriminant τ θ)
-  have hgap : 0 < egbCoexistenceAStationaryDiscriminant τ θ - egbCoexistenceAStationaryLinear τ θ ^ 2 := by
+  have hgap : 0 < egbCoexistenceAStationaryDiscriminant τ θ - egbCoexistenceAStationaryLinear τ θ ^ (2 : ℕ) := by
     unfold egbCoexistenceAStationaryDiscriminant
     have h : 0 < 4 * egbCoexistenceAPressureWeight τ θ * egbCoexistenceAChargeWeight τ θ / thermalRatio τ := by positivity
     linarith
@@ -56,18 +56,18 @@ theorem egbCoexistenceAMiddleRadius_pos (τ θ : ℝ) : 0 < egbCoexistenceAMiddl
   exact div_pos hn (by positivity)
 
 theorem egbCoexistenceAMiddleRadius_quadratic (τ θ : ℝ) :
-    egbCoexistenceAPressureWeight τ θ * egbCoexistenceAMiddleRadius τ θ ^ 2 +
+    egbCoexistenceAPressureWeight τ θ * egbCoexistenceAMiddleRadius τ θ ^ (2 : ℕ) +
       egbCoexistenceAStationaryLinear τ θ * egbCoexistenceAMiddleRadius τ θ -
         egbCoexistenceAChargeWeight τ θ / thermalRatio τ = 0 := by
   have hp := egbCoexistenceAPressureWeight_pos τ θ
   have hz := thermalRatio_pos τ
-  have hs : sqrt (egbCoexistenceAStationaryDiscriminant τ θ) ^ 2 =
-      egbCoexistenceAStationaryLinear τ θ ^ 2 +
+  have hs : sqrt (egbCoexistenceAStationaryDiscriminant τ θ) ^ (2 : ℕ) =
+      egbCoexistenceAStationaryLinear τ θ ^ (2 : ℕ) +
         4 * egbCoexistenceAPressureWeight τ θ * egbCoexistenceAChargeWeight τ θ / thermalRatio τ :=
     sq_sqrt (le_of_lt (egbCoexistenceAStationaryDiscriminant_pos τ θ))
-  have he : egbCoexistenceAPressureWeight τ θ * egbCoexistenceAMiddleRadius τ θ ^ 2 +
+  have he : egbCoexistenceAPressureWeight τ θ * egbCoexistenceAMiddleRadius τ θ ^ (2 : ℕ) +
       egbCoexistenceAStationaryLinear τ θ * egbCoexistenceAMiddleRadius τ θ - egbCoexistenceAChargeWeight τ θ / thermalRatio τ =
-    (sqrt (egbCoexistenceAStationaryDiscriminant τ θ) ^ 2 - egbCoexistenceAStationaryLinear τ θ ^ 2 -
+    (sqrt (egbCoexistenceAStationaryDiscriminant τ θ) ^ (2 : ℕ) - egbCoexistenceAStationaryLinear τ θ ^ (2 : ℕ) -
       4 * egbCoexistenceAPressureWeight τ θ * egbCoexistenceAChargeWeight τ θ / thermalRatio τ) /
         (4 * egbCoexistenceAPressureWeight τ θ) := by
     unfold egbCoexistenceAMiddleRadius
@@ -93,7 +93,7 @@ theorem egbCoexistenceARadialPolynomial_full_factorization (τ θ v : ℝ) :
   have hz := thermalRatio_pos τ
   have hw := egbCoexistenceAMiddleRadius_pos τ θ
   have hq := egbCoexistenceAMiddleRadius_quadratic τ θ
-  have hq' : (egbCoexistenceAPressureWeight τ θ * egbCoexistenceAMiddleRadius τ θ ^ 2 +
+  have hq' : (egbCoexistenceAPressureWeight τ θ * egbCoexistenceAMiddleRadius τ θ ^ (2 : ℕ) +
       egbCoexistenceAStationaryLinear τ θ * egbCoexistenceAMiddleRadius τ θ) * thermalRatio τ = egbCoexistenceAChargeWeight τ θ :=
     (eq_div_iff hz.ne').1 (by linarith [hq])
   have hlin : egbCoexistenceAStationaryLinear τ θ =
@@ -103,7 +103,7 @@ theorem egbCoexistenceARadialPolynomial_full_factorization (τ θ v : ℝ) :
     nlinarith [hq']
   rw [egbCoexistenceARadialPolynomial_factorization]
   change (v - thermalRatio τ) * (v - 1) *
-    (egbCoexistenceAPressureWeight τ θ * v ^ 2 + egbCoexistenceAStationaryLinear τ θ * v -
+    (egbCoexistenceAPressureWeight τ θ * v ^ (2 : ℕ) + egbCoexistenceAStationaryLinear τ θ * v -
       egbCoexistenceAChargeWeight τ θ / thermalRatio τ) = _
   rw [hlin]
   unfold egbCoexistenceANegativeRootSize

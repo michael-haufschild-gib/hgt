@@ -24,11 +24,11 @@ theorem IsPositive.apply_eq_zero_of_inner_eq_zero
     T y = 0 := by
   have hcross : ⟪y, T (T y)⟫_ℂ = ⟪T y, T y⟫_ℂ := by
     exact (hT.inner_left_eq_inner_right y (T y)).symm
-  let a : ℝ := ‖T y‖ ^ 2
+  let a : ℝ := ‖T y‖ ^ (2 : ℕ)
   let c : ℝ := re ⟪T y, T (T y)⟫_ℂ
   have ha : 0 ≤ a := sq_nonneg _
   have hc : 0 ≤ c := hT.re_inner_nonneg_right (T y)
-  have hpoly (t : ℝ) : 0 ≤ 2 * t * a + t ^ 2 * c := by
+  have hpoly (t : ℝ) : 0 ≤ 2 * t * a + t ^ (2 : ℕ) * c := by
     have hp := hT.re_inner_nonneg_right (y + (t : ℂ) • T y)
     simp only [map_add, map_smul, inner_add_left, inner_add_right,
       inner_smul_left, inner_smul_right, hy, hcross, zero_add,

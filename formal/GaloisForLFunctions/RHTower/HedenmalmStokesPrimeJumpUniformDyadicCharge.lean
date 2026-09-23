@@ -202,10 +202,10 @@ theorem twentyOneHundred_lt_sq_gammaSewnMobiusApertureStokesPrimeDyadicShell_of_
       |thetaPhysicalEndpointPrimeHardyGreenRegularAnomaly d| ≤ M)
     (hcLower : 1 / 2 ≤ c) (hcUpper : c ≤ 1) :
     (21 / 100 : ℝ) <
-      gammaSewnMobiusApertureStokesPrimeDyadicShell a (c * a) ^ 2 := by
+      gammaSewnMobiusApertureStokesPrimeDyadicShell a (c * a) ^ (2 : ℕ) := by
   let shell := gammaSewnMobiusApertureStokesPrimeDyadicShell a (c * a)
   have square_of_half_error (herror : |shell - 1 / 2| ≤ a * M / 2) :
-      (21 / 100 : ℝ) < shell ^ 2 := by
+      (21 / 100 : ℝ) < shell ^ (2 : ℕ) := by
     have hshell : (23 / 50 : ℝ) < shell := by
       have hlower := (abs_le.mp herror).1
       nlinarith
@@ -245,7 +245,7 @@ def finiteGammaSewnMobiusApertureStokesPrimeDyadicFrameEnergy
     {ι κ : Type*} (S : Finset ι) (J : Finset κ)
     (depth mass : ι → ℝ) (scale : κ → ℝ) : ℝ :=
   ∑ i ∈ S, mass i * ∑ j ∈ J,
-    gammaSewnMobiusApertureStokesPrimeDyadicShell (scale j) (depth i) ^ 2
+    gammaSewnMobiusApertureStokesPrimeDyadicShell (scale j) (depth i) ^ (2 : ℕ)
 
 /-- Every atom covered by one member of the fixed source grid contributes at least `21/100` of
 its mass to total frame energy.  The selected scale is used only in the proof of the lower bound;
@@ -272,27 +272,27 @@ theorem twentyOneHundred_mul_mass_le_finitePrimeStokesDyadicFrameEnergy
   obtain ⟨j, hj, c, hdepth, hcLower, hcUpper⟩ := hcover i hi
   have hcharge : (21 / 100 : ℝ) <
       gammaSewnMobiusApertureStokesPrimeDyadicShell
-        (scale j) (depth i) ^ 2 := by
+        (scale j) (depth i) ^ (2 : ℕ) := by
     rw [hdepth]
     exact twentyOneHundred_lt_sq_gammaSewnMobiusApertureStokesPrimeDyadicShell_of_small
       hM (hscalePos j hj) (hscaleSmall j hj) (hscaleError j hj)
       hbound hcLower hcUpper
   have hterm :
-      gammaSewnMobiusApertureStokesPrimeDyadicShell (scale j) (depth i) ^ 2 ≤
+      gammaSewnMobiusApertureStokesPrimeDyadicShell (scale j) (depth i) ^ (2 : ℕ) ≤
         ∑ k ∈ J,
           gammaSewnMobiusApertureStokesPrimeDyadicShell
-            (scale k) (depth i) ^ 2 := by
+            (scale k) (depth i) ^ (2 : ℕ) := by
     exact Finset.single_le_sum
       (fun k _ => sq_nonneg
         (gammaSewnMobiusApertureStokesPrimeDyadicShell (scale k) (depth i))) hj
   calc
     (21 / 100 : ℝ) * mass i = mass i * (21 / 100 : ℝ) := by ring
     _ ≤ mass i *
-        gammaSewnMobiusApertureStokesPrimeDyadicShell (scale j) (depth i) ^ 2 :=
+        gammaSewnMobiusApertureStokesPrimeDyadicShell (scale j) (depth i) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hcharge.le (hmass i hi)
     _ ≤ mass i * ∑ k ∈ J,
         gammaSewnMobiusApertureStokesPrimeDyadicShell
-          (scale k) (depth i) ^ 2 :=
+          (scale k) (depth i) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hterm (hmass i hi)
 
 /-! ## Zero-independent all-scale prefix receiver -/

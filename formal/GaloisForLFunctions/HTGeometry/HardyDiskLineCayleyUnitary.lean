@@ -117,7 +117,7 @@ theorem inner_cayleyDiskHardyFeature_eq_line
     linarith [z.2, w.2]
   have hsqrt : Real.sqrt Real.pi ≠ 0 :=
     Real.sqrt_ne_zero'.mpr Real.pi_pos
-  have hscaleSq : ((((2 * Real.sqrt Real.pi : ℝ) : ℂ)) ^ 2) =
+  have hscaleSq : ((((2 * Real.sqrt Real.pi : ℝ) : ℂ)) ^ (2 : ℕ)) =
       4 * (Real.pi : ℂ) := by
     norm_cast
     rw [mul_pow, Real.sq_sqrt Real.pi_pos.le]

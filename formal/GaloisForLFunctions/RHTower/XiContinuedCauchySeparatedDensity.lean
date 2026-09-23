@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.XiHurwitzOrientationCauchyClosure
 /-!
 # Self-separated density in the continued Xi Cauchy source core
 
-Every continued-source Cauchy generator is an `ell^2` limit of continued-source generators whose
+Every continued-source Cauchy generator is an `ell^(2 : ℕ)` limit of continued-source generators whose
 pole is not fixed by conjugation.  Thus the real-pole collision in the divided-difference source
 formula is removable at the level of Hilbert closure: move a real pole vertically inside the
 centered strip, use local Xi-zero isolation to retain regularity, and invoke norm continuity of the

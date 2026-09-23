@@ -93,14 +93,14 @@ def mscThresholdTrackedSourceLp
 square one at every safe stage. -/
 theorem norm_sq_mscThresholdTrackedSourceLp
     (rho : ℂ) {sigma : ℝ} (hsigma : 1 < sigma) :
-    ‖mscThresholdTrackedSourceLp rho sigma hsigma‖ ^ 2 = 1 := by
+    ‖mscThresholdTrackedSourceLp rho sigma hsigma‖ ^ (2 : ℕ) = 1 := by
   rw [mscThresholdTrackedSourceLp, HilbertSchmidt.lp_norm_sq_eq]
   change (∑' n : ℕ,
       ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma
-        (mscThresholdTrackedCoordinate rho sigma) n‖ ^ 2) = 1
+        (mscThresholdTrackedCoordinate rho sigma) n‖ ^ (2 : ℕ)) = 1
   rw [show (fun n : ℕ =>
         ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma
-          (mscThresholdTrackedCoordinate rho sigma) n‖ ^ 2) =
+          (mscThresholdTrackedCoordinate rho sigma) n‖ ^ (2 : ℕ)) =
       fun n => squarefreeMobiusBoundaryLayerTerm sigma
         (2 * (mscThresholdTrackedCoordinate rho sigma).re) n by
       funext n
@@ -208,7 +208,7 @@ structure MSCThresholdTrackedMovingRiggingCertificate : Prop where
         infiniteMobiusCriticalComplexDampedSignedWeight sigma
           (mscPhysicalZeroCoordinate rho sigma) n
   sourceNormOne : ∀ (rho : ℂ) {sigma : ℝ} (hsigma : 1 < sigma),
-    ‖mscThresholdTrackedSourceLp rho sigma hsigma‖ ^ 2 = 1
+    ‖mscThresholdTrackedSourceLp rho sigma hsigma‖ ^ (2 : ℕ) = 1
   affineTarget : ∀ (rho : ℂ) (r : ℝ) {sigma : ℝ}, sigma ≠ 1 →
     (sigma : ℂ) + mscPowerRiggedPhysicalZeroCoordinate rho r sigma *
         ((sigma - 1 : ℝ) : ℂ) = rho + (r : ℂ)

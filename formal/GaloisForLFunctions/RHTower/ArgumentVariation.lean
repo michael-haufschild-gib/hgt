@@ -64,10 +64,10 @@ theorem borel_caratheodory {g : ℂ → ℂ} {c z : ℂ} {R A : ℝ}
     rw [hφ_def]
     simp only
     rw [norm_div, div_le_one hd0]
-    have h1 : ‖f w‖ ^ 2 = (f w).re ^ 2 + (f w).im ^ 2 := by
+    have h1 : ‖f w‖ ^ (2 : ℕ) = (f w).re ^ (2 : ℕ) + (f w).im ^ (2 : ℕ) := by
       rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
       ring
-    have h2 : ‖2 * (A' : ℂ) - f w‖ ^ 2 = (2 * A' - (f w).re) ^ 2 + (f w).im ^ 2 := by
+    have h2 : ‖2 * (A' : ℂ) - f w‖ ^ (2 : ℕ) = (2 * A' - (f w).re) ^ (2 : ℕ) + (f w).im ^ (2 : ℕ) := by
       rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
       simp only [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im,
         Complex.ofReal_re, Complex.ofReal_im]
@@ -399,15 +399,15 @@ namespace RHTower
 
 /-- The winding phase advances at least at the winding floor of the left endpoint. -/
 theorem windingPhase_ge_of_floor {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
-    (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) ≤
+    (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) ≤
       windingPhase a b := by
   have hlow : ∀ u ∈ Set.Icc a b,
-      (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2 ≤ windingRate u := by
+      (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2 ≤ windingRate u := by
     intro u hu
     have hu0 : 0 < u := lt_of_lt_of_le ha hu.1
     exact le_trans (winding_floor_expr_mono ha hu.1) (windingRate_ge hu0)
-  calc (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
-      = ∫ _ in a..b, (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2 := by
+  calc (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
+      = ∫ _ in a..b, (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2 := by
         rw [intervalIntegral.integral_const, smul_eq_mul]
     _ ≤ ∫ u in a..b, windingRate u :=
         intervalIntegral.integral_mono_on hab intervalIntegrable_const
@@ -421,7 +421,7 @@ stretches — and with them the admissible anchor radii of the window certificat
 like `1/log T`. -/
 theorem sign_constant_segment_length_le (N : ℕ)
     {τc a b R M : ℝ} (hR0 : 0 < R) (ha : 0 < a)
-    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
     (hball : ∀ z ∈ ball (linePt τc) R, z.re < 1)
     (hzf : ∀ z ∈ ball (linePt τc) R, gN N z ≠ 0)
     (hM : ∀ z ∈ ball (linePt τc) R, ‖gN N z‖ ≤ M)
@@ -432,13 +432,13 @@ theorem sign_constant_segment_length_le (N : ℕ)
     b - a ≤
       (2 * |a - τc| / (R - |a - τc|) + 2 * |b - τc| / (R - |b - τc|)) *
           (Real.log M - Real.log ‖gN N (linePt τc)‖) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) := by
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) := by
   have h1 := windingPhase_ge_of_floor ha hab
   have h2 := abs_windingPhase_le_of_sign_constant_zero_free N hR0 hball hzf hM hlt
     hab hseg hsgn
   have h3 : windingPhase a b ≤ |windingPhase a b| := le_abs_self _
   rw [le_div_iff₀ hflr]
-  calc (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+  calc (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
       ≤ windingPhase a b := h1
     _ ≤ |windingPhase a b| := h3
     _ ≤ _ := h2
@@ -665,7 +665,7 @@ sign-constant stretch — and with it the anchored-window radius — shrinks lik
 even in the presence of the single carrier zero the Jensen face permits. -/
 theorem sign_constant_segment_length_le_one_zero (N : ℕ)
     {τc a b R Md : ℝ} {ρ' : ℂ} (hR0 : 0 < R) (ha : 0 < a)
-    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
     (hd_an : AnalyticOnNhd ℂ (dslope (gN N) ρ') (ball (linePt τc) R))
     (hd_ne : ∀ z ∈ ball (linePt τc) R, dslope (gN N) ρ' z ≠ 0)
     (hfact : ∀ z ∈ ball (linePt τc) R, gN N z = (z - ρ') * dslope (gN N) ρ' z)
@@ -677,12 +677,12 @@ theorem sign_constant_segment_length_le_one_zero (N : ℕ)
     b - a ≤
       (Real.pi + (2 * |a - τc| / (R - |a - τc|) + 2 * |b - τc| / (R - |b - τc|)) *
           (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
-        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) := by
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) := by
   have h1 := windingPhase_ge_of_floor ha hab
   have h2 := abs_windingPhase_le_of_sign_constant_one_zero N hR0 hd_an hd_ne hfact
     hMd hltd hab hseg hsgn
   rw [le_div_iff₀ hflr]
-  calc (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+  calc (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2)
       ≤ windingPhase a b := h1
     _ ≤ |windingPhase a b| := le_abs_self _
     _ ≤ _ := h2

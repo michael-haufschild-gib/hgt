@@ -15,7 +15,7 @@ theorem vonMangoldtSelfConv_nonneg (n : ℕ) : 0 ≤ (Λ * Λ) n := by
 
 theorem vonMangoldtSelfConv_le_log_sq_of_isPrimePow
     {n : ℕ} (hn : IsPrimePow n) :
-    (Λ * Λ) n ≤ Real.log n ^ 2 := by
+    (Λ * Λ) n ≤ Real.log n ^ (2 : ℕ) := by
   obtain ⟨p, a, hp, ha, hpa⟩ := (isPrimePow_nat_iff n).mp hn
   rw [← hpa, GaloisForLFunctions.HTGeometry.vonMangoldt_mul_self_prime_pow hp ha,
     Nat.cast_pow, Real.log_pow]
@@ -67,13 +67,13 @@ theorem vonMangoldtSelfConvCrossHarmonicSum_le
     · have hpp : IsPrimePow n := vonMangoldt_ne_zero_iff.mp hΛ
       have hconv := vonMangoldtSelfConv_le_log_sq_of_isPrimePow hpp
       have hΛ0 : 0 ≤ Λ n := vonMangoldt_nonneg
-      have hfirst : Λ n * (Λ * Λ) n ≤ Λ n * Real.log n ^ 2 :=
+      have hfirst : Λ n * (Λ * Λ) n ≤ Λ n * Real.log n ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hconv hΛ0
-      have hsecond : Λ n * Real.log n ^ 2 ≤
+      have hsecond : Λ n * Real.log n ^ (2 : ℕ) ≤
           Real.log N * (Λ n * Real.log n) := by
         have hprodnonneg : 0 ≤ Λ n * Real.log n := mul_nonneg hΛ0 hlogn0
         calc
-          Λ n * Real.log n ^ 2 =
+          Λ n * Real.log n ^ (2 : ℕ) =
               Real.log n * (Λ n * Real.log n) := by ring
           _ ≤ Real.log N * (Λ n * Real.log n) :=
             mul_le_mul_of_nonneg_right hlognN hprodnonneg

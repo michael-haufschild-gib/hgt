@@ -16,10 +16,10 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 private def approximateKernelRemainder (f g : ℝ → ℝ) (n : ℕ) (x : ℝ) : ℝ :=
-  g x / (1+(n:ℝ)*f x ^ 2)
+  g x / (1+(n:ℝ)*f x ^ (2 : ℕ))
 
 private theorem approximateKernel_den_pos (f : ℝ → ℝ) (n : ℕ) (x : ℝ) :
-    0 < 1+(n:ℝ)*f x ^ 2 := by positivity
+    0 < 1+(n:ℝ)*f x ^ (2 : ℕ) := by positivity
 
 private theorem approximateKernelRemainder_continuousOn {K : Set ℝ} {f g : ℝ → ℝ}
     (hf : ContinuousOn f K) (hg : ContinuousOn g K) (n : ℕ) :
@@ -28,7 +28,7 @@ private theorem approximateKernelRemainder_continuousOn {K : Set ℝ} {f g : ℝ
     (fun x _ => ne_of_gt (approximateKernel_den_pos f n x))
 
 private theorem approximateKernelRemainder_norm (f g : ℝ → ℝ) (n : ℕ) (x : ℝ) :
-    ‖approximateKernelRemainder f g n x‖ = |g x|/(1+(n:ℝ)*f x ^ 2) := by
+    ‖approximateKernelRemainder f g n x‖ = |g x|/(1+(n:ℝ)*f x ^ (2 : ℕ)) := by
   rw [approximateKernelRemainder,Real.norm_eq_abs,abs_div,
     abs_of_pos (approximateKernel_den_pos f n x)]
 
@@ -49,8 +49,8 @@ private theorem approximateKernelRemainder_uniform {K : Set ℝ} {f g : ℝ → 
     simp_rw [approximateKernelRemainder_norm]
     by_cases hfx : f x=0
     · simp [hz x hx hfx]
-    · have hs : 0 < f x ^ 2 := sq_pos_of_ne_zero hfx
-      have hn : Tendsto (fun n : ℕ => (n:ℝ)*f x ^ 2) atTop atTop :=
+    · have hs : 0 < f x ^ (2 : ℕ) := sq_pos_of_ne_zero hfx
+      have hn : Tendsto (fun n : ℕ => (n:ℝ)*f x ^ (2 : ℕ)) atTop atTop :=
         Tendsto.atTop_mul_const hs tendsto_natCast_atTop_atTop
       exact Tendsto.div_atTop tendsto_const_nhds
         (tendsto_atTop_add_const_left atTop (1:ℝ) hn)
@@ -80,7 +80,7 @@ theorem cfc_exists_approximate_factor_of_zero_set_subset
       filter_upwards [hu] with n hn x hx
       simpa only [dist_zero_left,norm_norm] using (hn x hx).le
   obtain ⟨n,hn⟩ := (hn.eventually (gt_mem_nhds hε)).exists
-  let k : ℝ → ℝ := fun x => (n:ℝ)*g x*f x/(1+(n:ℝ)*f x ^ 2)
+  let k : ℝ → ℝ := fun x => (n:ℝ)*g x*f x/(1+(n:ℝ)*f x ^ (2 : ℕ))
   have hk : ContinuousOn k (spectrum ℝ B) :=
     ((continuousOn_const.mul hg).mul hf).div
       (continuousOn_const.add (continuousOn_const.mul (hf.pow 2)))

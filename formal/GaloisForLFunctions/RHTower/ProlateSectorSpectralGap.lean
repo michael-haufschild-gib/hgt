@@ -37,7 +37,7 @@ the weak compressed equation against the eigenvector itself is legitimate, since
 itself a constrained vector of the sector. -/
 theorem IsSectorConstrainedEigen.rayleigh_eq {a : ℝ} {σ : ℕ → ℕ} {μ : ℝ} {g : evenSubspace}
     (hg : IsSectorConstrainedEigen a σ μ g) :
-    (inner ℂ (evenProlateLeakage a g) g : ℂ).re = μ * ‖g‖ ^ 2 := by
+    (inner ℂ (evenProlateLeakage a g) g : ℂ).re = μ * ‖g‖ ^ (2 : ℕ) := by
   obtain ⟨z, hz⟩ := hg.expansion
   have h := hg.weak_eigen z g hz hg.constraint
   rw [inner_even_sub_left, inner_even_smul_left, Complex.conj_ofReal,
@@ -49,7 +49,7 @@ theorem IsSectorConstrainedGround.le_of_eigen {a : ℝ} {σ : ℕ → ℕ} {μ�
     (hground : IsSectorConstrainedGround a σ μ₀) (hg : IsSectorConstrainedEigen a σ μ g) :
     μ₀ ≤ μ := by
   obtain ⟨z, hz⟩ := hg.expansion
-  have hgpos : 0 < ‖g‖ ^ 2 := by
+  have hgpos : 0 < ‖g‖ ^ (2 : ℕ) := by
     have hgn : 0 < ‖g‖ := norm_pos_iff.mpr hg.ne_zero
     positivity
   have hle := hground.1 z g hz hg.constraint
@@ -76,7 +76,7 @@ theorem eventually_sectorConstrainedEigen_dichotomy_positive :
   by_cases hlt : evenProlateSignedLeakage a 2 ≤ μ
   · exact Or.inr hlt
   refine Or.inl ?_
-  have hsumL : Summable fun j : ℕ => sectorCoord a positiveSectorIndex j ^ 2 :=
+  have hsumL : Summable fun j : ℕ => sectorCoord a positiveSectorIndex j ^ (2 : ℕ) :=
     summable_sectorCoord_sq a positiveSectorIndex_injective
   obtain ⟨hrmem, hrzero, -⟩ :=
     infiniteSecularRoot_spec (d := sectorLeakage a positiveSectorIndex)
@@ -107,7 +107,7 @@ theorem eventually_sectorConstrainedEigen_dichotomy_negative :
   by_cases hlt : evenProlateSignedLeakage a 3 ≤ μ
   · exact Or.inr hlt
   refine Or.inl ?_
-  have hsumL : Summable fun j : ℕ => sectorCoord a negativeSectorIndex j ^ 2 :=
+  have hsumL : Summable fun j : ℕ => sectorCoord a negativeSectorIndex j ^ (2 : ℕ) :=
     summable_sectorCoord_sq a negativeSectorIndex_injective
   obtain ⟨hrmem, hrzero, -⟩ :=
     infiniteSecularRoot_spec (d := sectorLeakage a negativeSectorIndex)

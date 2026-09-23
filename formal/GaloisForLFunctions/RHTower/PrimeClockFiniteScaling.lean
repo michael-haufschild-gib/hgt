@@ -10,7 +10,7 @@ hyperbolic form
 `E_N(ε) = ∑_{p ≤ N} 4 sinh²(ε log p) / p`.
 
 This module formalizes the algebraic core and proves from Mertens' first theorem that the quadratic
-susceptibility is asymptotic to `(1/2) (log N)^2`.  The remaining step for the full nonlinear
+susceptibility is asymptotic to `(1/2) (log N)^(2 : ℕ)`.  The remaining step for the full nonlinear
 crossover profile is the weak convergence of the corresponding weighted prime measures.
 -/
 
@@ -390,7 +390,7 @@ namespace RHTower
 open Filter Topology
 
 /-- The prime-clock susceptibility has the universal quadratic asymptotic
-`chi_N ~ (1/2) (log N)^2`. -/
+`chi_N ~ (1/2) (log N)^(2 : ℕ)`. -/
 theorem tendsto_primeClockSusceptibility_div_log_sq :
     Tendsto (fun N : ℕ => primeClockSusceptibility N / Real.log N ^ 2)
       atTop (𝓝 (1 / 2 : ℝ)) := by

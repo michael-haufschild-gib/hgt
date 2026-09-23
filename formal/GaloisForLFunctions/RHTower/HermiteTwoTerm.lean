@@ -24,12 +24,12 @@ theorem hermite_one_eq : (Polynomial.hermite 1 : Polynomial ℤ) = X := by
   rw [hermite_succ, hermite_zero]; simp
 
 /-- `He₂ = X² − 1` — the two-term form `X² − C(2,2)`. -/
-theorem hermite_two_eq : (Polynomial.hermite 2 : Polynomial ℤ) = X ^ 2 - 1 := by
+theorem hermite_two_eq : (Polynomial.hermite 2 : Polynomial ℤ) = X ^ (2 : ℕ) - 1 := by
   rw [hermite_succ, hermite_one_eq, derivative_X]
   ring
 
 /-- `He₃ = X³ − 3X` — the two-term form `X³ − C(3,2)·X`. -/
-theorem hermite_three_eq : (Polynomial.hermite 3 : Polynomial ℤ) = X ^ 3 - 3 * X := by
+theorem hermite_three_eq : (Polynomial.hermite 3 : Polynomial ℤ) = X ^ (3 : ℕ) - 3 * X := by
   rw [hermite_succ, hermite_two_eq]
   simp only [derivative_sub, derivative_pow, derivative_X, derivative_one, map_ofNat,
     Nat.cast_ofNat, mul_one]
@@ -37,7 +37,7 @@ theorem hermite_three_eq : (Polynomial.hermite 3 : Polynomial ℤ) = X ^ 3 - 3 *
 
 /-- `He₄ = X⁴ − 6X² + 3` — THREE terms: the trailing `+3` is beyond the two-term (E5)
 expansion, so `m = 4` clusters are the first that need the full heat-resummed Lemma R. -/
-theorem hermite_four_eq : (Polynomial.hermite 4 : Polynomial ℤ) = X ^ 4 - 6 * X ^ 2 + 3 := by
+theorem hermite_four_eq : (Polynomial.hermite 4 : Polynomial ℤ) = X ^ (4 : ℕ) - 6 * X ^ (2 : ℕ) + 3 := by
   rw [hermite_succ, hermite_three_eq]
   simp only [derivative_sub, derivative_mul, derivative_pow, derivative_X, derivative_ofNat,
     map_ofNat, Nat.cast_ofNat, mul_one, zero_mul, zero_add]
@@ -48,9 +48,9 @@ two-term `Xᵐ − C(m,2)·Xᵐ⁻²`, so doc 25's (E5) two-term expansion close
 unconditionally; `He₄ ≠ X⁴ − 6X²` (`= X⁴ − C(4,2)X²`) shows the two-term form first fails at
 `m = 4`, which is exactly where Lemma R (all cumulant orders) becomes necessary. -/
 theorem hermite_two_term_boundary :
-    (Polynomial.hermite 2 : Polynomial ℤ) = X ^ 2 - 1 ∧
-    (Polynomial.hermite 3 : Polynomial ℤ) = X ^ 3 - 3 * X ∧
-    (Polynomial.hermite 4 : Polynomial ℤ) ≠ X ^ 4 - 6 * X ^ 2 := by
+    (Polynomial.hermite 2 : Polynomial ℤ) = X ^ (2 : ℕ) - 1 ∧
+    (Polynomial.hermite 3 : Polynomial ℤ) = X ^ (3 : ℕ) - 3 * X ∧
+    (Polynomial.hermite 4 : Polynomial ℤ) ≠ X ^ (4 : ℕ) - 6 * X ^ (2 : ℕ) := by
   refine ⟨hermite_two_eq, hermite_three_eq, ?_⟩
   rw [hermite_four_eq]
   intro h
@@ -59,13 +59,13 @@ theorem hermite_two_term_boundary :
 
 /-- Real evaluation `He₂(u) = u² − 1`. -/
 theorem aeval_hermite_two (u : ℝ) :
-    (Polynomial.aeval u (Polynomial.hermite 2) : ℝ) = u ^ 2 - 1 := by
+    (Polynomial.aeval u (Polynomial.hermite 2) : ℝ) = u ^ (2 : ℕ) - 1 := by
   rw [hermite_two_eq]
   simp only [map_sub, map_pow, Polynomial.aeval_X, map_one]
 
 /-- Real evaluation `He₃(u) = u³ − 3u`. -/
 theorem aeval_hermite_three (u : ℝ) :
-    (Polynomial.aeval u (Polynomial.hermite 3) : ℝ) = u ^ 3 - 3 * u := by
+    (Polynomial.aeval u (Polynomial.hermite 3) : ℝ) = u ^ (3 : ℕ) - 3 * u := by
   rw [hermite_three_eq]
   simp only [map_sub, map_mul, map_pow, Polynomial.aeval_X, map_ofNat]
 
@@ -74,13 +74,13 @@ theorem aeval_hermite_three (u : ℝ) :
 Hermite configuration, unconditionally for `m ∈ {2,3}` (the two-term expansion IS `Heₘ`); the
 doc 25 §3.1 conclusion for `m ≤ 3` at the algebraic level. -/
 theorem cluster_hermite_scaling_two (am σ u : ℝ) :
-    am * σ ^ 2 * (u ^ 2 - (Nat.choose 2 2 : ℝ) * u ^ 0)
-      = am * σ ^ 2 * (Polynomial.aeval u (Polynomial.hermite 2) : ℝ) := by
+    am * σ ^ (2 : ℕ) * (u ^ (2 : ℕ) - (Nat.choose 2 2 : ℝ) * u ^ (0 : ℕ))
+      = am * σ ^ (2 : ℕ) * (Polynomial.aeval u (Polynomial.hermite 2) : ℝ) := by
   rw [aeval_hermite_two]; norm_num
 
 theorem cluster_hermite_scaling_three (am σ u : ℝ) :
-    am * σ ^ 3 * (u ^ 3 - (Nat.choose 3 2 : ℝ) * u ^ 1)
-      = am * σ ^ 3 * (Polynomial.aeval u (Polynomial.hermite 3) : ℝ) := by
+    am * σ ^ (3 : ℕ) * (u ^ (3 : ℕ) - (Nat.choose 3 2 : ℝ) * u ^ (1 : ℕ))
+      = am * σ ^ (3 : ℕ) * (Polynomial.aeval u (Polynomial.hermite 3) : ℝ) := by
   rw [aeval_hermite_three]; norm_num
 
 end RHTower

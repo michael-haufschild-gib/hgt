@@ -71,7 +71,7 @@ theorem poissonKernel_nonneg {c w z : ℂ} {R : ℝ} (hz : z ∈ sphere c R) (hw
 /-- The Poisson kernel is continuous on the sphere, away from the interior point. -/
 theorem continuousOn_poissonKernel {c w : ℂ} {R : ℝ} (hw : w ∈ ball c R) :
     ContinuousOn (poissonKernel c w) (sphere c R) := by
-  have hne : ∀ z ∈ sphere c R, ‖(z - c) - (w - c)‖ ^ 2 ≠ 0 := by
+  have hne : ∀ z ∈ sphere c R, ‖(z - c) - (w - c)‖ ^ (2 : ℕ) ≠ 0 := by
     intro z hz
     have hzc : ‖z - c‖ = R := by simpa [mem_sphere_iff_norm] using hz
     have hwc : ‖w - c‖ < R := mem_ball_iff_norm.mp hw
@@ -85,12 +85,12 @@ theorem continuousOn_poissonKernel {c w : ℂ} {R : ℝ} (hw : w ∈ ball c R) :
     have hsub : (z - c) - (w - c) = z - w := by ring
     rw [hsub]
     exact pow_ne_zero _ (norm_ne_zero_iff.mpr hzw)
-  have hnum : ContinuousOn (fun z : ℂ => ‖z - c‖ ^ 2 - ‖w - c‖ ^ 2) (sphere c R) := by
+  have hnum : ContinuousOn (fun z : ℂ => ‖z - c‖ ^ (2 : ℕ) - ‖w - c‖ ^ (2 : ℕ)) (sphere c R) := by
     fun_prop
-  have hden : ContinuousOn (fun z : ℂ => ‖(z - c) - (w - c)‖ ^ 2) (sphere c R) := by
+  have hden : ContinuousOn (fun z : ℂ => ‖(z - c) - (w - c)‖ ^ (2 : ℕ)) (sphere c R) := by
     fun_prop
   have heq : poissonKernel c w
-      = fun z => (‖z - c‖ ^ 2 - ‖w - c‖ ^ 2) / ‖(z - c) - (w - c)‖ ^ 2 := by
+      = fun z => (‖z - c‖ ^ (2 : ℕ) - ‖w - c‖ ^ (2 : ℕ)) / ‖(z - c) - (w - c)‖ ^ (2 : ℕ) := by
     funext z
     exact poissonKernel_def c w z
   rw [heq]

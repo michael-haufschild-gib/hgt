@@ -178,7 +178,7 @@ theorem radialResidual_mean_decomposition (v : ℂ) (z : ℍ) :
         normSq (bracket (centeredField N f q) (centeredField N f r) v (z:ℂ))+
       (Fintype.card (Deck N):ℝ)*∑ q : Deck N,
         normSq (bracket (meanField N f) (centeredField N f q) v (z:ℂ))+
-      ((Fintype.card (Deck N):ℝ)*meanPhaseCurrent N f v (z:ℂ)+centeredPhaseCurrent N f v (z:ℂ))^2 := by
+      ((Fintype.card (Deck N):ℝ)*meanPhaseCurrent N f v (z:ℂ)+centeredPhaseCurrent N f v (z:ℂ))^(2 : ℕ) := by
   rw [density_mul_radialResidual,pairEnergy_mean_decomposition,phaseCurrent_mean_decomposition]
 
 /-- The mixed source currents supply an exact nonnegative lower part of the
@@ -195,10 +195,10 @@ theorem mixed_brackets_le_pairEnergy (v : ℂ) (z : ℍ) :
 
 private theorem eigenfunction_planar_equation {F : ℍ → ℂ} (hF : IsMaassEigenfunction lam F) (z : ℍ) :
     dir 1 (dir 1 (F ∘ ofComplex)) (z:ℂ)+dir Complex.I (dir Complex.I (F ∘ ofComplex)) (z:ℂ)=
-      ((-(lam/z.im^2):ℝ):ℂ)*F z := by
+      ((-(lam/z.im^(2 : ℕ)):ℝ):ℂ)*F z := by
   have hz : (z.im:ℂ)≠0 := Complex.ofReal_ne_zero.mpr z.im_pos.ne'
   have he := hF.2 z
-  change -(z.im:ℂ)^2*(dir 1 (dir 1 (F ∘ ofComplex)) (z:ℂ)+
+  change -(z.im:ℂ)^(2 : ℕ)*(dir 1 (dir 1 (F ∘ ofComplex)) (z:ℂ)+
     dir Complex.I (dir Complex.I (F ∘ ofComplex)) (z:ℂ))=(lam:ℂ)*F z at he
   apply mul_left_cancel₀ (pow_ne_zero 2 hz)
   push_cast
@@ -214,9 +214,9 @@ theorem mixed_current_conservation (q : Deck N) (z : ℍ) :
   have hm := eigenfunction_planar_equation (sourceMean_eigenfunction N f) z
   have hq := eigenfunction_planar_equation (centeredComponent_eigenfunction N f q) z
   change dir 1 (dir 1 (meanField N f)) (z:ℂ)+dir Complex.I (dir Complex.I (meanField N f)) (z:ℂ)=
-    ((-(lam/z.im^2):ℝ):ℂ)*sourceMean N f z at hm
+    ((-(lam/z.im^(2 : ℕ)):ℝ):ℂ)*sourceMean N f z at hm
   change dir 1 (dir 1 (centeredField N f q)) (z:ℂ)+dir Complex.I (dir Complex.I (centeredField N f q)) (z:ℂ)=
-    ((-(lam/z.im^2):ℝ):ℂ)*centeredComponent N f q z at hq
+    ((-(lam/z.im^(2 : ℕ)):ℝ):ℂ)*centeredComponent N f q z at hq
   rw [hm,hq]
   simp only [meanField,centeredField,Function.comp_apply,ofComplex_apply]
   ring
@@ -244,20 +244,20 @@ def meanSplitCurrentEnergy (v z : ℂ) : ℝ :=
     normSq (bracket (centeredField N f q) (centeredField N f r) v z)+
   (Fintype.card (Deck N):ℝ)*∑ q : Deck N,
     normSq (bracket (meanField N f) (centeredField N f q) v z)+
-  ((Fintype.card (Deck N):ℝ)*meanPhaseCurrent N f v z+centeredPhaseCurrent N f v z)^2
+  ((Fintype.card (Deck N):ℝ)*meanPhaseCurrent N f v z+centeredPhaseCurrent N f v z)^(2 : ℕ)
 
 theorem meanSplitCurrentEnergy_eq (v : ℂ) (z : ℍ) :
-    meanSplitCurrentEnergy N f v (z:ℂ)=pairEnergy N f v (z:ℂ)+phaseCurrent N f v (z:ℂ)^2 := by
+    meanSplitCurrentEnergy N f v (z:ℂ)=pairEnergy N f v (z:ℂ)+phaseCurrent N f v (z:ℂ)^(2 : ℕ) := by
   rw [pairEnergy_mean_decomposition,phaseCurrent_mean_decomposition]
   rfl
 
 /-- Full original curvature retains the exact averaged-source currents in both
 directions and the entire regulator-gradient term. -/
 theorem curvature_mean_decomposition (e : Ioi (0:ℝ)) (z : ℍ) :
-    SelbergMaassTraceRegularized.radius N f e (z:ℂ)^3*
+    SelbergMaassTraceRegularized.radius N f e (z:ℂ)^(3 : ℕ)*
       SelbergMaassWeakCurvature.curvatureWeight N f e (z:ℂ)=
         meanSplitCurrentEnergy N f 1 (z:ℂ)+meanSplitCurrentEnergy N f Complex.I (z:ℂ)+
-          (e:ℝ)^2*gradientDensity N f (z:ℂ) := by
+          (e:ℝ)^(2 : ℕ)*gradientDensity N f (z:ℂ) := by
   rw [SelbergMaassCurrentCurvature.radius_cube_mul_curvatureWeight,
     SelbergMaassCurrentCurvature.currentEnergy,meanSplitCurrentEnergy_eq,meanSplitCurrentEnergy_eq]
   ring
@@ -268,13 +268,13 @@ theorem mixed_brackets_le_curvature (e : Ioi (0:ℝ)) (z : ℍ) :
     (Fintype.card (Deck N):ℝ)*
       ((∑ q : Deck N, normSq (bracket (meanField N f) (centeredField N f q) 1 (z:ℂ)))+
         ∑ q : Deck N, normSq (bracket (meanField N f) (centeredField N f q) Complex.I (z:ℂ))) ≤
-      SelbergMaassTraceRegularized.radius N f e (z:ℂ)^3*
+      SelbergMaassTraceRegularized.radius N f e (z:ℂ)^(3 : ℕ)*
         SelbergMaassWeakCurvature.curvatureWeight N f e (z:ℂ) := by
   have h1 := mixed_brackets_le_pairEnergy N f 1 z
   have hI := mixed_brackets_le_pairEnergy N f Complex.I z
   rw [SelbergMaassCurrentCurvature.radius_cube_mul_curvatureWeight,
     SelbergMaassCurrentCurvature.currentEnergy]
-  have he : 0 ≤ (e:ℝ)^2*gradientDensity N f (z:ℂ) :=
+  have he : 0 ≤ (e:ℝ)^(2 : ℕ)*gradientDensity N f (z:ℂ) :=
     mul_nonneg (sq_nonneg _) (gradientDensity_nonneg N f _)
   nlinarith [sq_nonneg (phaseCurrent N f 1 (z:ℂ)),sq_nonneg (phaseCurrent N f Complex.I (z:ℂ))]
 

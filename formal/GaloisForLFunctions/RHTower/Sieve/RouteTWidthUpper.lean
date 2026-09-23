@@ -11,7 +11,7 @@ explicit reciprocal polylogarithm, which is what makes the contour saving `x^{-w
 of the logarithm.  The Perron truncation term of the same envelope moves in the opposite direction:
 it carries `x^{+2w/3}`, so it needs the width from *above*.
 
-The width is built from `routeTStripWidth V = 1/(D(V+1)^9)` at `V = routeTBandShell t =
+The width is built from `routeTStripWidth V = 1/(D(V+1)^(9 : ℕ))` at `V = routeTBandShell t =
 ⌊¹⁰√(clog₂⌈t⌉)⌋ + 2`, so an upper bound for it is a *lower* bound for `V`, and that is exactly
 `Nat.lt_pow_nthRoot_add_one` together with `Nat.le_pow_clog`.  The result is the matching
 

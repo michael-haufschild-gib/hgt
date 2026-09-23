@@ -123,8 +123,8 @@ theorem barbanVehov_inner_eq_zero {X N e : ℕ} (he : 0 < e) (hXN : X ≤ N) (hX
 /-- **The totient-weighted Selberg diagonal is logarithmic.** -/
 theorem barbanVehov_totient_diagonal_le {X N : ℕ} (hXN : X ≤ N) :
     ∑ e ∈ Finset.Icc 1 N, (Nat.totient e : ℝ) *
-        (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ 2
-      ≤ 4 * coprimeLogMoebiusConst ^ 2 * (1 + Real.log X) := by
+        (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ (2 : ℕ)
+      ≤ 4 * coprimeLogMoebiusConst ^ (2 : ℕ) * (1 + Real.log X) := by
   classical
   have hsub : Finset.Icc 1 X ⊆ Finset.Icc 1 N := by
     intro e he
@@ -132,7 +132,7 @@ theorem barbanVehov_totient_diagonal_le {X N : ℕ} (hXN : X ≤ N) :
     exact Finset.mem_Icc.mpr ⟨h1, le_trans h2 hXN⟩
   have hvanish : ∀ e ∈ Finset.Icc 1 N, e ∉ Finset.Icc 1 X →
       (Nat.totient e : ℝ) *
-        (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ 2
+        (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ (2 : ℕ)
         = 0 := by
     intro e he hnot
     obtain ⟨he1, -⟩ := Finset.mem_Icc.mp he
@@ -143,8 +143,8 @@ theorem barbanVehov_totient_diagonal_le {X N : ℕ} (hXN : X ≤ N) :
     ring
   rw [← Finset.sum_subset hsub hvanish]
   have hterm : ∀ e ∈ Finset.Icc 1 X, (Nat.totient e : ℝ) *
-      (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ 2
-      ≤ coprimeLogMoebiusConst ^ 2 * (1 / (Nat.totient e : ℝ)) := by
+      (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m), barbanVehovWeight X m / (m : ℝ)) ^ (2 : ℕ)
+      ≤ coprimeLogMoebiusConst ^ (2 : ℕ) * (1 / (Nat.totient e : ℝ)) := by
     intro e he
     obtain ⟨he1, -⟩ := Finset.mem_Icc.mp he
     have hepos : 0 < e := by omega
@@ -153,8 +153,8 @@ theorem barbanVehov_totient_diagonal_le {X N : ℕ} (hXN : X ≤ N) :
       exact_mod_cast this
     have habs := abs_barbanVehov_inner_le (X := X) (N := N) hepos hXN
     have hsq : (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m),
-        barbanVehovWeight X m / (m : ℝ)) ^ 2
-        ≤ (coprimeLogMoebiusConst / (Nat.totient e : ℝ)) ^ 2 := by
+        barbanVehovWeight X m / (m : ℝ)) ^ (2 : ℕ)
+        ≤ (coprimeLogMoebiusConst / (Nat.totient e : ℝ)) ^ (2 : ℕ) := by
       have hnn : (0 : ℝ) ≤ coprimeLogMoebiusConst / (Nat.totient e : ℝ) :=
         div_nonneg coprimeLogMoebiusConst_nonneg hφ.le
       nlinarith [abs_nonneg (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m),
@@ -162,19 +162,19 @@ theorem barbanVehov_totient_diagonal_le {X N : ℕ} (hXN : X ≤ N) :
         sq_abs (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m),
           barbanVehovWeight X m / (m : ℝ)), habs, hnn]
     calc (Nat.totient e : ℝ) * (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m),
-            barbanVehovWeight X m / (m : ℝ)) ^ 2
-        ≤ (Nat.totient e : ℝ) * (coprimeLogMoebiusConst / (Nat.totient e : ℝ)) ^ 2 :=
+            barbanVehovWeight X m / (m : ℝ)) ^ (2 : ℕ)
+        ≤ (Nat.totient e : ℝ) * (coprimeLogMoebiusConst / (Nat.totient e : ℝ)) ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_left hsq hφ.le
-      _ = coprimeLogMoebiusConst ^ 2 * (1 / (Nat.totient e : ℝ)) := by
+      _ = coprimeLogMoebiusConst ^ (2 : ℕ) * (1 / (Nat.totient e : ℝ)) := by
           field_simp
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.mul_sum]
   have hrec : ∑ e ∈ Finset.Icc 1 X, 1 / (Nat.totient e : ℝ) ≤ 4 * (1 + Real.log X) :=
     sum_inv_totient_le X
-  have hAnn : (0 : ℝ) ≤ coprimeLogMoebiusConst ^ 2 := by positivity
-  calc coprimeLogMoebiusConst ^ 2 * ∑ e ∈ Finset.Icc 1 X, 1 / (Nat.totient e : ℝ)
-      ≤ coprimeLogMoebiusConst ^ 2 * (4 * (1 + Real.log X)) :=
+  have hAnn : (0 : ℝ) ≤ coprimeLogMoebiusConst ^ (2 : ℕ) := by positivity
+  calc coprimeLogMoebiusConst ^ (2 : ℕ) * ∑ e ∈ Finset.Icc 1 X, 1 / (Nat.totient e : ℝ)
+      ≤ coprimeLogMoebiusConst ^ (2 : ℕ) * (4 * (1 + Real.log X)) :=
         mul_le_mul_of_nonneg_left hrec hAnn
-    _ = 4 * coprimeLogMoebiusConst ^ 2 * (1 + Real.log X) := by ring
+    _ = 4 * coprimeLogMoebiusConst ^ (2 : ℕ) * (1 + Real.log X) := by ring
 
 end RHTower.Sieve

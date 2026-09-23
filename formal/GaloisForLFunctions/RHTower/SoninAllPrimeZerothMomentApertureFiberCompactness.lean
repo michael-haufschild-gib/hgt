@@ -45,7 +45,7 @@ theorem soninNormalizedZerothApertureFiber_exists_compactWindow :
     positivity
   have hratio : 0 < T / (2 * R) := by positivity
   have hδ : 0 < δ := Real.sqrt_pos.2 hratio
-  have hδsq : δ ^ 2 = T / (2 * R) := by
+  have hδsq : δ ^ (2 : ℕ) = T / (2 * R) := by
     dsimp only [δ]
     exact Real.sq_sqrt hratio.le
   let f : ℝ → ℝ := fun a => (soninAllPrimeEnergyMoment a 0).re
@@ -63,20 +63,20 @@ theorem soninNormalizedZerothApertureFiber_exists_compactWindow :
     have hre := congrArg Complex.re ha.2
     simpa only [f, T, Complex.ofReal_re] using hre
   have harea := re_soninAllPrimeEnergyMoment_zero_le_area a haPos
-  have hbound : T ≤ R * a ^ 2 := by
+  have hbound : T ≤ R * a ^ (2 : ℕ) := by
     rw [← hfa]
     dsimp only [f]
     calc
       (soninAllPrimeEnergyMoment a 0).re ≤
-          (128 * a ^ 2) * soninAllPrimeColumnWeightSqMass := harea
-      _ = R * a ^ 2 := by
+          (128 * a ^ (2 : ℕ)) * soninAllPrimeColumnWeightSqMass := harea
+      _ = R * a ^ (2 : ℕ) := by
         dsimp only [R, M]
         ring
   have hδa : δ ≤ a := by
     by_contra hnot
     have haδ : a < δ := lt_of_not_ge hnot
-    have hsquares : a ^ 2 < δ ^ 2 := by nlinarith
-    have hhalf : R * a ^ 2 < T / 2 := by
+    have hsquares : a ^ (2 : ℕ) < δ ^ (2 : ℕ) := by nlinarith
+    have hhalf : R * a ^ (2 : ℕ) < T / 2 := by
       rw [hδsq] at hsquares
       rw [lt_div_iff₀ (by positivity : 0 < (2 : ℝ))]
       rw [div_eq_mul_inv] at hsquares

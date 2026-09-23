@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- Effective clock potential as a function of its independent algebraic channels: conjugation
 weight, calibrated squared mass, conformal scale, and the two geometric defect channels. -/
 def conformalPotentialData (weight massSq scale defectLaplace defectGradient : ℝ) : ℝ :=
-  massSq * scale - weight * defectLaplace - weight ^ 2 * defectGradient
+  massSq * scale - weight * defectLaplace - weight ^ (2 : ℕ) * defectGradient
 
 /-- The chart potential is the algebraic potential evaluated on its geometric channels. -/
 theorem SmoothMetricChart.conformalPotential_eq_data {d : ℕ} (M : SmoothMetricChart d)
@@ -88,7 +88,7 @@ theorem conformalPotentialData_difference_of_weights (weight₁ weight₂ massSq
     conformalPotentialData weight₁ massSq₁ scale defectLaplace defectGradient -
         conformalPotentialData weight₂ massSq₂ scale defectLaplace defectGradient =
       (massSq₁ - massSq₂) * scale - (weight₁ - weight₂) * defectLaplace -
-        (weight₁ ^ 2 - weight₂ ^ 2) * defectGradient := by
+        (weight₁ ^ (2 : ℕ) - weight₂ ^ (2 : ℕ)) * defectGradient := by
   simp only [conformalPotentialData]
   ring
 

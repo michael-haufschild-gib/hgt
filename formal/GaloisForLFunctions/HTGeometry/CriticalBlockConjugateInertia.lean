@@ -21,7 +21,7 @@ set_option maxHeartbeats 4000000
 variable (K : Type*) [Field K] [CharZero K] [IsAlgClosed K] {m n : ℕ}
 variable [Fact (0 < m)] [Fact (0 < n)] [Fact (1 < m)] [Fact (1 < n)]
 
-noncomputable local instance : DecidableEq (criticalGeometricSheet K m n) :=
+noncomputable local instance criticalBlockConjugateInertiaInst1 : DecidableEq (criticalGeometricSheet K m n) :=
   Classical.decEq _
 
 /-- If `h` preserves the inverse translate of `B`, then its conjugate by `g` preserves `B`. -/

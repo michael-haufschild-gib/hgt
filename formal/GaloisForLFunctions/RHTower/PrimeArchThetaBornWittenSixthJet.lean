@@ -18,14 +18,14 @@ noncomputable section
 /-- Fifth logarithmic derivative of the theta Born--Witten density in the readout coordinate. -/
 def thetaCuspBornWittenLogFifthDerivative (n : ℕ) (x : ℝ) : ℝ :=
   let q := thetaCuspBornWittenWeight n x
-  (2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 -
-    1944 / q ^ 4 - 1944 / q ^ 5)
+  (2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) -
+    1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ))
 
 /-- Sixth logarithmic derivative of the theta Born--Witten density in the readout coordinate. -/
 def thetaCuspBornWittenLogSixthDerivative (n : ℕ) (x : ℝ) : ℝ :=
   let q := thetaCuspBornWittenWeight n x
-  (2 * q + 3) * (32 + 48 / q ^ 2 + 2160 / q ^ 3 +
-    16200 / q ^ 4 + 38880 / q ^ 5 + 29160 / q ^ 6)
+  (2 * q + 3) * (32 + 48 / q ^ (2 : ℕ) + 2160 / q ^ (3 : ℕ) +
+    16200 / q ^ (4 : ℕ) + 38880 / q ^ (5 : ℕ) + 29160 / q ^ (6 : ℕ))
 
 /-- Differentiating the fourth readout profile produces the literal fifth log-density jet. -/
 theorem hasDerivAt_thetaCuspBornWittenLogFourthDerivative
@@ -56,8 +56,8 @@ theorem hasDerivAt_thetaCuspBornWittenLogFourthDerivative
   have hrq5 := hr.div hq5 (pow_ne_zero 5 hqpos.ne')
   simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one] at hrq2 hrq3 hrq4 hrq5
   have hprofile : HasDerivAt
-      (fun y : ℝ => 8 * r y + 12 * r y / q y ^ 2 + 108 * r y / q y ^ 3 +
-        162 * r y / q y ^ 4)
+      (fun y : ℝ => 8 * r y + 12 * r y / q y ^ (2 : ℕ) + 108 * r y / q y ^ (3 : ℕ) +
+        162 * r y / q y ^ (4 : ℕ))
       (thetaCuspBornWittenLogFifthDerivative n x) x := by
     simpa only [Pi.add_apply, Pi.div_apply, Pi.pow_apply, mul_div_assoc] using!
       ((((hr.const_mul 8).add (hrq2.const_mul 12)).add
@@ -103,8 +103,8 @@ theorem hasDerivAt_thetaCuspBornWittenLogFifthDerivative
   have hrq6 := hr.div hq6 (pow_ne_zero 6 hqpos.ne')
   simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one] at hrq2 hrq3 hrq4 hrq5 hrq6
   have hprofile : HasDerivAt
-      (fun y : ℝ => 16 * r y - 24 * r y / q y ^ 2 - 504 * r y / q y ^ 3 -
-        1944 * r y / q y ^ 4 - 1944 * r y / q y ^ 5)
+      (fun y : ℝ => 16 * r y - 24 * r y / q y ^ (2 : ℕ) - 504 * r y / q y ^ (3 : ℕ) -
+        1944 * r y / q y ^ (4 : ℕ) - 1944 * r y / q y ^ (5 : ℕ))
       (thetaCuspBornWittenLogSixthDerivative n x) x := by
     simpa only [Pi.add_apply, Pi.sub_apply, Pi.div_apply, Pi.pow_apply, mul_div_assoc] using!
       (((((hr.const_mul 16).sub (hrq2.const_mul 24)).sub
@@ -126,13 +126,13 @@ theorem thetaCuspBornWittenLogFifthDerivative_eq_scaleProfile
     thetaCuspBornWittenLogFifthDerivative n x =
       32 * thetaCuspMorseScale n x -
         48 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 2 -
+          (thetaCuspMorseScale n x - 3 / 2) ^ (2 : ℕ) -
         1008 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 3 -
+          (thetaCuspMorseScale n x - 3 / 2) ^ (3 : ℕ) -
         3888 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 4 -
+          (thetaCuspMorseScale n x - 3 / 2) ^ (4 : ℕ) -
         3888 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 5 := by
+          (thetaCuspMorseScale n x - 3 / 2) ^ (5 : ℕ) := by
   have hweight := thetaCuspBornWittenWeight_pos hn hx
   rw [thetaCuspBornWittenWeight_eq] at hweight
   unfold thetaCuspBornWittenLogFifthDerivative
@@ -146,15 +146,15 @@ theorem thetaCuspBornWittenLogSixthDerivative_eq_scaleProfile
     thetaCuspBornWittenLogSixthDerivative n x =
       64 * thetaCuspMorseScale n x +
         96 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 2 +
+          (thetaCuspMorseScale n x - 3 / 2) ^ (2 : ℕ) +
         4320 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 3 +
+          (thetaCuspMorseScale n x - 3 / 2) ^ (3 : ℕ) +
         32400 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 4 +
+          (thetaCuspMorseScale n x - 3 / 2) ^ (4 : ℕ) +
         77760 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 5 +
+          (thetaCuspMorseScale n x - 3 / 2) ^ (5 : ℕ) +
         58320 * thetaCuspMorseScale n x /
-          (thetaCuspMorseScale n x - 3 / 2) ^ 6 := by
+          (thetaCuspMorseScale n x - 3 / 2) ^ (6 : ℕ) := by
   have hweight := thetaCuspBornWittenWeight_pos hn hx
   rw [thetaCuspBornWittenWeight_eq] at hweight
   unfold thetaCuspBornWittenLogSixthDerivative
@@ -184,29 +184,29 @@ theorem thetaCuspBornWittenLogSixthDerivative_pos
 theorem thetaCuspBornWittenLogFourthDerivative_le_sixFifths_curvature_sq
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspBornWittenLogFourthDerivative n x ≤
-      (6 / 5 : ℝ) * thetaCuspBornWittenLogCurvature n x ^ 2 := by
+      (6 / 5 : ℝ) * thetaCuspBornWittenLogCurvature n x ^ (2 : ℕ) := by
   let q := thetaCuspBornWittenWeight n x
   have hq : 0 < q := thetaCuspBornWittenWeight_pos hn hx
   have hy : 0 ≤ q - 3 / 2 := by
     dsimp only [q]
     linarith [three_halves_lt_thetaCuspBornWittenWeight hn hx]
   have hpoly : 0 ≤
-      96 * (q - 3 / 2) ^ 6 + 1072 * (q - 3 / 2) ^ 5 +
-        5184 * (q - 3 / 2) ^ 4 + 14208 * (q - 3 / 2) ^ 3 +
-          22446 * (q - 3 / 2) ^ 2 + 16065 * (q - 3 / 2) + 405 := by
+      96 * (q - 3 / 2) ^ (6 : ℕ) + 1072 * (q - 3 / 2) ^ (5 : ℕ) +
+        5184 * (q - 3 / 2) ^ (4 : ℕ) + 14208 * (q - 3 / 2) ^ (3 : ℕ) +
+          22446 * (q - 3 / 2) ^ (2 : ℕ) + 16065 * (q - 3 / 2) + 405 := by
     positivity
   rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile hn hx]
   apply sub_nonneg.mp
   change 0 ≤
-    (6 / 5 : ℝ) * (4 * q + 6 + 6 / q + 9 / q ^ 2) ^ 2 -
-      (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4)
+    (6 / 5 : ℝ) * (4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ)) ^ (2 : ℕ) -
+      (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ))
   rw [show
-      (6 / 5 : ℝ) * (4 * q + 6 + 6 / q + 9 / q ^ 2) ^ 2 -
-        (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4) =
-      (96 * (q - 3 / 2) ^ 6 + 1072 * (q - 3 / 2) ^ 5 +
-        5184 * (q - 3 / 2) ^ 4 + 14208 * (q - 3 / 2) ^ 3 +
-          22446 * (q - 3 / 2) ^ 2 + 16065 * (q - 3 / 2) + 405) /
-        (5 * q ^ 4) by
+      (6 / 5 : ℝ) * (4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ)) ^ (2 : ℕ) -
+        (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)) =
+      (96 * (q - 3 / 2) ^ (6 : ℕ) + 1072 * (q - 3 / 2) ^ (5 : ℕ) +
+        5184 * (q - 3 / 2) ^ (4 : ℕ) + 14208 * (q - 3 / 2) ^ (3 : ℕ) +
+          22446 * (q - 3 / 2) ^ (2 : ℕ) + 16065 * (q - 3 / 2) + 405) /
+        (5 * q ^ (4 : ℕ)) by
       field_simp [hq.ne']
       ring]
   exact div_nonneg hpoly (by positivity)
@@ -214,10 +214,10 @@ theorem thetaCuspBornWittenLogFourthDerivative_le_sixFifths_curvature_sq
 /-- The exact sixth reflected-Hankel source polynomial for one theta Born--Witten atom. -/
 def thetaCuspBornWittenReflectionSixthCurvature (n : ℕ) (x : ℝ) : ℝ :=
   thetaCuspBornWittenLogCurvature n x * thetaCuspBornWittenLogSixthDerivative n x -
-    thetaCuspBornWittenLogFourthDerivative n x ^ 2 -
-      18 * thetaCuspBornWittenLogCurvature n x ^ 2 *
+    thetaCuspBornWittenLogFourthDerivative n x ^ (2 : ℕ) -
+      18 * thetaCuspBornWittenLogCurvature n x ^ (2 : ℕ) *
         thetaCuspBornWittenLogFourthDerivative n x +
-        24 * thetaCuspBornWittenLogCurvature n x ^ 4
+        24 * thetaCuspBornWittenLogCurvature n x ^ (4 : ℕ)
 
 /-- Every positive theta atom has strictly positive second--sixth reflected Hankel curvature. -/
 theorem thetaCuspBornWittenReflectionSixthCurvature_pos
@@ -235,21 +235,21 @@ theorem thetaCuspBornWittenReflectionSixthCurvature_pos
   have hC : 0 < C := by
     dsimp only [C]
     exact thetaCuspBornWittenLogSixthDerivative_pos hn hx
-  have hBbound : B ≤ (6 / 5 : ℝ) * A ^ 2 := by
+  have hBbound : B ≤ (6 / 5 : ℝ) * A ^ (2 : ℕ) := by
     dsimp only [A, B]
     exact thetaCuspBornWittenLogFourthDerivative_le_sixFifths_curvature_sq hn hx
-  have hBsq : B ^ 2 ≤ (36 / 25 : ℝ) * A ^ 4 := by
-    have hbound_sq : B ^ 2 ≤ ((6 / 5 : ℝ) * A ^ 2) ^ 2 := by
+  have hBsq : B ^ (2 : ℕ) ≤ (36 / 25 : ℝ) * A ^ (4 : ℕ) := by
+    have hbound_sq : B ^ (2 : ℕ) ≤ ((6 / 5 : ℝ) * A ^ (2 : ℕ)) ^ (2 : ℕ) := by
       exact (sq_le_sq₀ hB.le (by positivity)).2 hBbound
     nlinarith
-  have hBA2 : 18 * A ^ 2 * B ≤ (108 / 5 : ℝ) * A ^ 4 := by
-    have hnonneg : 0 ≤ 18 * A ^ 2 := by positivity
+  have hBA2 : 18 * A ^ (2 : ℕ) * B ≤ (108 / 5 : ℝ) * A ^ (4 : ℕ) := by
+    have hnonneg : 0 ≤ 18 * A ^ (2 : ℕ) := by positivity
     have hmul := mul_le_mul_of_nonneg_left hBbound hnonneg
     nlinarith
   have hAC : 0 < A * C := mul_pos hA hC
-  have hA4 : 0 < A ^ 4 := pow_pos hA 4
+  have hA4 : 0 < A ^ (4 : ℕ) := pow_pos hA 4
   dsimp only [thetaCuspBornWittenReflectionSixthCurvature]
-  change 0 < A * C - B ^ 2 - 18 * A ^ 2 * B + 24 * A ^ 4
+  change 0 < A * C - B ^ (2 : ℕ) - 18 * A ^ (2 : ℕ) * B + 24 * A ^ (4 : ℕ)
   nlinarith
 
 end

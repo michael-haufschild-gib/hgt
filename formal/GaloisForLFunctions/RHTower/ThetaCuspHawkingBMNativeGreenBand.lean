@@ -152,7 +152,7 @@ theorem physicalOddSource_bounded (q : XiZeroCopy) (branch : Bool) (a : ℂ) :
 theorem actualRadialResponse_pointwise_growth (q : XiZeroCopy) (branch : Bool) (a : ℂ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : Fin 3) (t x : ℝ),
       ‖radialResponse (-(principalExponent q i)) (physicalRate q branch) a t x‖ ≤
-        C*(max t 0)^2*Real.exp (principalKernelGrowth q*max t 0) := by
+        C*(max t 0)^(2 : ℕ)*Real.exp (principalKernelGrowth q*max t 0) := by
   obtain ⟨C,hC,hsource⟩ := physicalOddSource_bounded q branch a
   obtain ⟨hB,hB2,hkernel⟩ := actualPrincipalKernel_common_growth q
   refine ⟨C,hC,fun i t x => ?_⟩
@@ -196,23 +196,23 @@ theorem actualRadialResponse_pointwise_growth (q : XiZeroCopy) (branch : Bool) (
       rw [norm_mul]
       exact (mul_le_mul hn (inner_bound r hr') (norm_nonneg _) (by norm_num)).trans (by simp)
     simpa only [sub_zero,abs_one,mul_one] using intervalIntegral.norm_integral_le_of_norm_le_const hb
-  change ‖(T:ℂ)^2/2* _‖ ≤ C*T^2*E
+  change ‖(T:ℂ)^(2 : ℕ)/2* _‖ ≤ C*T^(2 : ℕ)*E
   rw [norm_mul,norm_div,norm_pow,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hT,Complex.norm_ofNat]
   calc
-    _ ≤ T^2/2*(2*(E*C)) := mul_le_mul_of_nonneg_left outer_bound (by positivity)
-    _ = C*T^2*E := by ring
+    _ ≤ T^(2 : ℕ)/2*(2*(E*C)) := mul_le_mul_of_nonneg_left outer_bound (by positivity)
+    _ = C*T^(2 : ℕ)*E := by ring
 
 private theorem responseVector_support_bound (nu s a : ℂ) (t D : ℝ) (hD : 0 ≤ D)
     (hb : ∀ x, ‖radialResponse nu s a t x‖ ≤ D) :
     ‖radialResponseVector nu s a t‖ ≤ D*(max t 0+1) := by
   let T := max t 0
   have hT : 0 ≤ T := le_max_right _ _
-  have hn : ‖radialResponseVector nu s a t‖^2 = ∫ x, ‖radialResponse nu s a t x‖^2 := by
+  have hn : ‖radialResponseVector nu s a t‖^(2 : ℕ) = ∫ x, ‖radialResponse nu s a t x‖^(2 : ℕ) := by
     rw [_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     apply integral_congr_ae
-    exact (radialResponse_memLp nu s a t).coeFn_toLp.mono (fun _ h => congrArg (fun z => ‖z‖^2) h)
-  have hs : (∫ x in Icc (-T) T, ‖radialResponse nu s a t x‖^2) =
-      ∫ x, ‖radialResponse nu s a t x‖^2 := by
+    exact (radialResponse_memLp nu s a t).coeFn_toLp.mono (fun _ h => congrArg (fun z => ‖z‖^(2 : ℕ)) h)
+  have hs : (∫ x in Icc (-T) T, ‖radialResponse nu s a t x‖^(2 : ℕ)) =
+      ∫ x, ‖radialResponse nu s a t x‖^(2 : ℕ) := by
     apply setIntegral_eq_integral_of_forall_compl_eq_zero
     intro x hx
     have hx' : max t 0 < |x| := by
@@ -220,7 +220,7 @@ private theorem responseVector_support_bound (nu s a : ℂ) (t D : ℝ) (hD : 0 
       exact hx (abs_le.mp (le_of_not_gt h))
     rw [radialResponse_zero_outside nu s a t x hx',norm_zero,zero_pow (by decide : 2 ≠ 0)]
   have hi := norm_integral_le_of_norm_le_const (μ := volume.restrict (Icc (-T) T))
-    (C := D^2) (Filter.Eventually.of_forall (fun x => show ‖‖radialResponse nu s a t x‖^2‖ ≤ D^2 by
+    (C := D^(2 : ℕ)) (Filter.Eventually.of_forall (fun x => show ‖‖radialResponse nu s a t x‖^(2 : ℕ)‖ ≤ D^(2 : ℕ) by
       rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
       exact pow_le_pow_left₀ (norm_nonneg _) (hb x) 2))
   have hm : (volume.restrict (Icc (-T) T)).real Set.univ = 2*T := by
@@ -228,10 +228,10 @@ private theorem responseVector_support_bound (nu s a : ℂ) (t D : ℝ) (hD : 0 
     rw [ENNReal.toReal_ofReal (by linarith : 0 ≤ T- -T)]
     ring
   rw [hm,hs] at hi
-  have hn2 : ‖radialResponseVector nu s a t‖^2 ≤ D^2*(2*T) := by
+  have hn2 : ‖radialResponseVector nu s a t‖^(2 : ℕ) ≤ D^(2 : ℕ)*(2*T) := by
     rw [hn]
     exact (le_abs_self _).trans hi
-  have hpoly : D^2*(2*T) ≤ (D*(T+1))^2 := by
+  have hpoly : D^(2 : ℕ)*(2*T) ≤ (D*(T+1))^(2 : ℕ) := by
     nlinarith [mul_nonneg (sq_nonneg D) (sq_nonneg T)]
   have hright : 0 ≤ D*(T+1) := mul_nonneg hD (by linarith)
   change ‖radialResponseVector nu s a t‖ ≤ D*(T+1)
@@ -241,7 +241,7 @@ private theorem responseVector_support_bound (nu s a : ℂ) (t D : ℝ) (hD : 0 
 theorem actualRadialResponseVector_growth (q : XiZeroCopy) (branch : Bool) (a : ℂ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : Fin 3) (t : ℝ),
       ‖radialResponseVector (-(principalExponent q i)) (physicalRate q branch) a t‖ ≤
-        C*(max t 0+1)^3*Real.exp (principalKernelGrowth q*max t 0) := by
+        C*(max t 0+1)^(3 : ℕ)*Real.exp (principalKernelGrowth q*max t 0) := by
   obtain ⟨C,hC,h⟩ := actualRadialResponse_pointwise_growth q branch a
   refine ⟨C,hC,fun i t => ?_⟩
   let T := max t 0
@@ -249,13 +249,13 @@ theorem actualRadialResponseVector_growth (q : XiZeroCopy) (branch : Bool) (a : 
   have hT : 0 ≤ T := le_max_right _ _
   have hE : 0 ≤ E := (Real.exp_pos _).le
   have hb := responseVector_support_bound (-(principalExponent q i)) (physicalRate q branch) a t
-    (C*T^2*E) (by positivity) (h i t)
-  have ht : T^2*(T+1) ≤ (T+1)^3 := by nlinarith [sq_nonneg T]
+    (C*T^(2 : ℕ)*E) (by positivity) (h i t)
+  have ht : T^(2 : ℕ)*(T+1) ≤ (T+1)^(3 : ℕ) := by nlinarith [sq_nonneg T]
   calc
-    _ ≤ (C*T^2*E)*(T+1) := hb
-    _ = (C*E)*(T^2*(T+1)) := by ring
-    _ ≤ (C*E)*(T+1)^3 := mul_le_mul_of_nonneg_left ht (mul_nonneg hC hE)
-    _ = C*(T+1)^3*E := by ring
+    _ ≤ (C*T^(2 : ℕ)*E)*(T+1) := hb
+    _ = (C*E)*(T^(2 : ℕ)*(T+1)) := by ring
+    _ ≤ (C*E)*(T+1)^(3 : ℕ) := mul_le_mul_of_nonneg_left ht (mul_nonneg hC hE)
+    _ = C*(T+1)^(3 : ℕ)*E := by ring
 
 end
 end RHTower.D4BMNativeResponse
@@ -279,16 +279,16 @@ theorem principalTimeResponse_bound_of_kernel (q : XiZeroCopy) (branch : Bool) (
   obtain ⟨C,hC,h⟩ := actualRadialResponseVector_growth q branch a
   let d := r-principalKernelGrowth q
   have hd : 0 < d := sub_pos.mpr hr
-  let K := (6/d^3)*Real.exp d
+  let K := (6/d^(3 : ℕ))*Real.exp d
   have hK : 0 ≤ K := by positivity
-  have hpoly (t : ℝ) (ht : 0 ≤ t) : (t+1)^3 ≤ K*Real.exp (d*t) := by
+  have hpoly (t : ℝ) (ht : 0 ≤ t) : (t+1)^(3 : ℕ) ≤ K*Real.exp (d*t) := by
     have he := Real.pow_div_factorial_le_exp (d*(t+1)) (mul_nonneg hd.le (show 0 ≤ t+1 by linarith)) 3
     norm_num only [Nat.factorial, Nat.cast_ofNat] at he
     rw [mul_pow,show d*(t+1) = d+d*t by ring,Real.exp_add] at he
-    have h6 : d^3*(t+1)^3 ≤ 6*(Real.exp d*Real.exp (d*t)) := by linarith
-    have ht' : (t+1)^3 ≤ (6*(Real.exp d*Real.exp (d*t)))/d^3 :=
+    have h6 : d^(3 : ℕ)*(t+1)^(3 : ℕ) ≤ 6*(Real.exp d*Real.exp (d*t)) := by linarith
+    have ht' : (t+1)^(3 : ℕ) ≤ (6*(Real.exp d*Real.exp (d*t)))/d^(3 : ℕ) :=
       (le_div_iff₀ (pow_pos hd 3)).mpr (by nlinarith [h6])
-    change (t+1)^3 ≤ (6/d^3)*Real.exp d*Real.exp (d*t)
+    change (t+1)^(3 : ℕ) ≤ (6/d^(3 : ℕ))*Real.exp d*Real.exp (d*t)
     convert ht' using 1 <;> ring
   refine ⟨‖principalAmplitude q i‖*C*K,by positivity,fun t ht => ?_⟩
   rw [← nativePrincipalResponse_eq_principalTimeResponse]
@@ -297,7 +297,7 @@ theorem principalTimeResponse_bound_of_kernel (q : XiZeroCopy) (branch : Bool) (
   have hb := h i t
   rw [max_eq_left ht] at hb
   calc
-    _ ≤ ‖principalAmplitude q i‖*(C*(t+1)^3*Real.exp (principalKernelGrowth q*t)) :=
+    _ ≤ ‖principalAmplitude q i‖*(C*(t+1)^(3 : ℕ)*Real.exp (principalKernelGrowth q*t)) :=
       mul_le_mul_of_nonneg_left hb (norm_nonneg _)
     _ ≤ ‖principalAmplitude q i‖*(C*(K*Real.exp (d*t))*Real.exp (principalKernelGrowth q*t)) := by
       gcongr
@@ -375,7 +375,7 @@ theorem principalTimeAcceleration_laplace_probe (q : XiZeroCopy) (branch : Bool)
     (ψ : 𝓢(ℝ,ℂ)) (w : ℂ) (hw : principalKernelGrowth q < w.re) :
     (∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ))*
       l2SchwartzProbe ψ (deriv (deriv (principalTimeResponse q branch a i)) t)) =
-        w^2*l2SchwartzProbe ψ (principalTimeLaplace q branch a i w) := by
+        w^(2 : ℕ)*l2SchwartzProbe ψ (principalTimeLaplace q branch a i w) := by
   let U := principalTimeResponse q branch a i
   let F := principalTimeForcing q branch a i
   let P := l2SchwartzProbe ψ
@@ -416,7 +416,7 @@ theorem principalTimeAcceleration_laplace_probe (q : XiZeroCopy) (branch : Bool)
 /-- Every spatial Schwartz probe sees the original frequency equation of the actual transform. -/
 theorem principalTimeLaplace_probe_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (ψ : 𝓢(ℝ,ℂ)) (w : ℂ) (hw : principalKernelGrowth q < w.re) :
-    w^2*l2SchwartzProbe ψ (principalTimeLaplace q branch a i w)-
+    w^(2 : ℕ)*l2SchwartzProbe ψ (principalTimeLaplace q branch a i w)-
       l2SchwartzProbe (Δ ψ) (principalTimeLaplace q branch a i w) =
         l2SchwartzProbe ψ (∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • principalTimeForcing q branch a i t)+
           l2SchwartzProbe ψ (principalRadialPotentialOp q i (principalTimeLaplace q branch a i w)) := by
@@ -446,18 +446,18 @@ theorem principalTimeLaplace_probe_equation (q : XiZeroCopy) (branch : Bool) (a 
         rw [he,mul_add]
       _ = _ := by rw [integral_add hiQ hiP,hQ,hP]; rfl
   rw [principalTimeAcceleration_laplace_probe q branch a i ψ w hw] at h
-  change w^2*P (principalTimeLaplace q branch a i w) =
+  change w^(2 : ℕ)*P (principalTimeLaplace q branch a i w) =
     l2SchwartzProbe (Δ ψ) (principalTimeLaplace q branch a i w)+
       P (principalRadialPotentialOp q i (principalTimeLaplace q branch a i w))+
         P (∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • F t) at h
-  change w^2*P (principalTimeLaplace q branch a i w)-
+  change w^(2 : ℕ)*P (principalTimeLaplace q branch a i w)-
     l2SchwartzProbe (Δ ψ) (principalTimeLaplace q branch a i w) = _
   linear_combination h
 
 /-- The actual Bochner transform solves the original radial frequency equation as a distribution. -/
 theorem principalTimeLaplace_distribution_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalKernelGrowth q < w.re) :
-    w^2 • ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ))-
+    w^(2 : ℕ) • ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ))-
       Δ ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ)) =
         (((∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • principalTimeForcing q branch a i t) : FourierRealL2) : 𝓢'(ℝ,ℂ))+
           ((principalRadialPotentialOp q i (principalTimeLaplace q branch a i w) : FourierRealL2) : 𝓢'(ℝ,ℂ)) := by
@@ -468,7 +468,7 @@ theorem principalTimeLaplace_distribution_equation (q : XiZeroCopy) (branch : Bo
 /-- The forcing in the transformed equation is the literal source with its original onset transform. -/
 theorem principalTimeLaplace_original_source_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalKernelGrowth q < w.re) (hw' : -2 < w.re) :
-    w^2 • ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ))-
+    w^(2 : ℕ) • ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ))-
       Δ ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ)) =
         ((principalAmplitude q i • negativeOddExtension (radialSourceLaplaceVector q branch a w hw') : FourierRealL2) : 𝓢'(ℝ,ℂ))+
           ((principalRadialPotentialOp q i (principalTimeLaplace q branch a i w) : FourierRealL2) : 𝓢'(ℝ,ℂ)) := by
@@ -492,7 +492,7 @@ theorem principalTimeLaplace_reflection (q : XiZeroCopy) (branch : Bool) (a : �
 theorem principalTimeLaplace_laplacian (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalKernelGrowth q < w.re) :
     Δ ((principalTimeLaplace q branch a i w : FourierRealL2) : 𝓢'(ℝ,ℂ)) =
-      ((w^2 • principalTimeLaplace q branch a i w-
+      ((w^(2 : ℕ) • principalTimeLaplace q branch a i w-
         (∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • principalTimeForcing q branch a i t)-
           principalRadialPotentialOp q i (principalTimeLaplace q branch a i w) : FourierRealL2) : 𝓢'(ℝ,ℂ)) := by
   let D := Lp.toTemperedDistributionCLM ℂ (volume : Measure ℝ) 2
@@ -500,10 +500,10 @@ theorem principalTimeLaplace_laplacian (q : XiZeroCopy) (branch : Bool) (a : ℂ
   let F := ∫ t in Ioi (0:ℝ), Complex.exp (-w*(t:ℂ)) • principalTimeForcing q branch a i t
   let V := principalRadialPotentialOp q i U
   have h := principalTimeLaplace_distribution_equation q branch a i w hw
-  change w^2 • D U-Δ (D U) = D F+D V at h
-  change Δ (D U) = D (w^2 • U-F-V)
+  change w^(2 : ℕ) • D U-Δ (D U) = D F+D V at h
+  change Δ (D U) = D (w^(2 : ℕ) • U-F-V)
   rw [map_sub,map_sub,map_smul]
-  have he := congrArg (fun z : 𝓢'(ℝ,ℂ) => w^2 • D U-z) h
+  have he := congrArg (fun z : 𝓢'(ℝ,ℂ) => w^(2 : ℕ) • D U-z) h
   convert he using 1 <;> abel
 
 /-- Sobolev regularity belongs to the transformed response itself, before any trace is evaluated. -/
@@ -575,7 +575,7 @@ private theorem negativePairing_eq (f g : ℝ → ℂ) (hs : tsupport f ⊆ Iio 
 theorem principalLaplaceProfile_weak_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalKernelGrowth q < w.re)
     (ψ : 𝓢(ℝ,ℂ)) (hψ : tsupport (ψ : ℝ → ℂ) ⊆ Iio (0:ℝ)) :
-    w^2*(∫ x in Iio (0:ℝ), ψ x • principalLaplaceProfile q branch a i w hw x)-
+    w^(2 : ℕ)*(∫ x in Iio (0:ℝ), ψ x • principalLaplaceProfile q branch a i w hw x)-
       (∫ x in Iio (0:ℝ), deriv (deriv (ψ : ℝ → ℂ)) x • principalLaplaceProfile q branch a i w hw x) =
       (∫ x in Iio (0:ℝ), ψ x • (principalAmplitude q i*reducedCoefficient (physicalRate q branch) w a
         (onsetTransform (2*physicalRate q branch) w) x))+
@@ -612,7 +612,7 @@ theorem principalLaplaceProfile_weak_equation (q : XiZeroCopy) (branch : Bool) (
 /-- The second spatial derivative demanded by the literal original radial equation. -/
 def principalLaplaceSecond (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalKernelGrowth q < w.re) (x : ℝ) : ℂ :=
-  w^2*principalLaplaceProfile q branch a i w hw x-
+  w^(2 : ℕ)*principalLaplaceProfile q branch a i w hw x-
     principalExponent q i*(principalExponent q i-1)*(horizonCoordinate x:ℂ)*principalLaplaceProfile q branch a i w hw x-
       principalAmplitude q i*reducedCoefficient (physicalRate q branch) w a
         (onsetTransform (2*physicalRate q branch) w) x
@@ -662,13 +662,13 @@ private theorem principal_local_weak (q : XiZeroCopy) (branch : Bool) (a : ℂ) 
   have hiV := schwartz_pair_integrable ψ hk V hVc
   have hiS := schwartz_pair_integrable ψ hk S hSc
   have he (x : ℝ) : ψ x*principalLaplaceSecond q branch a i w hw x =
-      w^2*(ψ x*f x)-ψ x*V x-ψ x*S x := by dsimp [principalLaplaceSecond,f,V,S]; ring
+      w^(2 : ℕ)*(ψ x*f x)-ψ x*V x-ψ x*S x := by dsimp [principalLaplaceSecond,f,V,S]; ring
   simp only [he]
-  have hiFV : Integrable (fun x => w^2*(ψ x*f x)-ψ x*V x) := by
-    convert (hiF.const_mul (w^2)).sub hiV using 1; rfl
-  rw [integral_sub hiFV hiS,integral_sub (hiF.const_mul (w^2)) hiV,integral_const_mul]
+  have hiFV : Integrable (fun x => w^(2 : ℕ)*(ψ x*f x)-ψ x*V x) := by
+    convert (hiF.const_mul (w^(2 : ℕ))).sub hiV using 1; rfl
+  rw [integral_sub hiFV hiS,integral_sub (hiF.const_mul (w^(2 : ℕ))) hiV,integral_const_mul]
   change (∫ x : ℝ, deriv (deriv (ψ : ℝ → ℂ)) x*f x) = _
-  change w^2*(∫ x : ℝ, ψ x*f x)-(∫ x : ℝ, deriv (deriv (ψ : ℝ → ℂ)) x*f x) =
+  change w^(2 : ℕ)*(∫ x : ℝ, ψ x*f x)-(∫ x : ℝ, deriv (deriv (ψ : ℝ → ℂ)) x*f x) =
     (∫ x : ℝ, ψ x*S x)+(∫ x : ℝ, ψ x*V x) at h
   linear_combination -h
 
@@ -688,7 +688,7 @@ theorem principalLaplaceProfile_hasDerivAt (q : XiZeroCopy) (branch : Bool) (a :
 /-- The causal Laplace profile satisfies the same literal classical equation as the endpoint Green difference. -/
 theorem principalLaplaceProfile_equation (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3)
     (w : ℂ) (hw : principalKernelGrowth q < w.re) (x : ℝ) (hx : x < 0) :
-    w^2*principalLaplaceProfile q branch a i w hw x-
+    w^(2 : ℕ)*principalLaplaceProfile q branch a i w hw x-
       deriv (deriv (principalLaplaceProfile q branch a i w hw)) x-
         (horizonCoordinate x:ℂ)*principalExponent q i*(principalExponent q i-1)*principalLaplaceProfile q branch a i w hw x =
       reducedCoefficient (physicalRate q branch) w a (onsetTransform (2*physicalRate q branch) w) x*principalAmplitude q i := by
@@ -752,7 +752,7 @@ theorem principalGreenDefectFirst_bounded_tail (q : XiZeroCopy) (branch : Bool) 
     (w : ℂ) (hw : principalKernelGrowth q < w.re) (hc : PrincipalChamber q w) :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ x : ℝ, x < -1 → ‖principalGreenDefectFirst q branch a i w hw x‖ ≤ D := by
   obtain ⟨C,hC,hb⟩ := principalGreenDefect_bounded q branch a i w hw hc
-  let M := ‖w‖^2+‖principalExponent q i‖*‖principalExponent q i-1‖
+  let M := ‖w‖^(2 : ℕ)+‖principalExponent q i‖*‖principalExponent q i-1‖
   have hM : 0 ≤ M := add_nonneg (sq_nonneg _) (mul_nonneg (norm_nonneg _) (norm_nonneg _))
   refine ⟨4*C+M*C,add_nonneg (mul_nonneg (by norm_num) hC) (mul_nonneg hM hC),fun x hx => ?_⟩
   have ht (t : ℝ) (ht : t ∈ Icc x (x+1)) : t < 0 := by linarith [ht.2]

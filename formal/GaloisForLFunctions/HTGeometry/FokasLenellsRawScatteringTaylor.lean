@@ -25,9 +25,9 @@ def rawScatteringCubicRemainder (q : SchwartzMap ℝ ℂ) (k : ℝ) : Matrix (Fi
     (k : ℂ) • (rawFirstCoefficientMatrix q*(rawCubicEndpointMatrix q k true).adjugate-
       rawCubicEndpointMatrix q k false*rawFirstCoefficientMatrix q+
       rawQuadraticEndpointMatrix q false*(rawQuadraticEndpointMatrix q true).adjugate)+
-    (k : ℂ)^2 • (rawQuadraticEndpointMatrix q false*(rawCubicEndpointMatrix q k true).adjugate+
+    (k : ℂ)^(2 : ℕ) • (rawQuadraticEndpointMatrix q false*(rawCubicEndpointMatrix q k true).adjugate+
       rawCubicEndpointMatrix q k false*(rawQuadraticEndpointMatrix q true).adjugate)+
-    (k : ℂ)^3 • (rawCubicEndpointMatrix q k false*(rawCubicEndpointMatrix q k true).adjugate)
+    (k : ℂ)^(3 : ℕ) • (rawCubicEndpointMatrix q k false*(rawCubicEndpointMatrix q k true).adjugate)
 
 /-- The genuine cubic coefficient, expressed entirely in actual convergent endpoint integrals. -/
 def rawScatteringCubicCoefficient (q : SchwartzMap ℝ ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
@@ -42,8 +42,8 @@ theorem rawScatteringCubicRemainder_zero (q : SchwartzMap ℝ ℂ) :
 
 /-- The original scattering matrix has a rigorously justified cubic expansion for every Schwartz profile. -/
 theorem rawScatteringMatrix_cubic_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) :
-    rawScatteringMatrix q k = 1+(k : ℂ)^2 • rawScatteringQuadraticCoefficient q+
-      (k : ℂ)^3 • rawScatteringCubicRemainder q k := by
+    rawScatteringMatrix q k = 1+(k : ℂ)^(2 : ℕ) • rawScatteringQuadraticCoefficient q+
+      (k : ℂ)^(3 : ℕ) • rawScatteringCubicRemainder q k := by
   rw [rawScatteringMatrix,rawAsymptoticMatrix_cubic_factor,rawAsymptoticMatrix_inverse_cubic_factor]
   unfold rawScatteringQuadraticCoefficient rawScatteringCubicRemainder
   simp only [sub_eq_add_neg,add_mul,mul_add,Matrix.smul_mul,Matrix.mul_smul,
@@ -65,22 +65,22 @@ theorem rawScatteringCubicRemainder_tendsto_zero (q : SchwartzMap ℝ ℂ) :
 
 /-- Removing the first two true coefficients leaves exactly the convergent cubic remainder. -/
 theorem rawScatteringMatrix_sub_quadratic (q : SchwartzMap ℝ ℂ) (k : ℝ) :
-    rawScatteringMatrix q k-1-(k : ℂ)^2 • rawScatteringQuadraticCoefficient q =
-      (k : ℂ)^3 • rawScatteringCubicRemainder q k := by
+    rawScatteringMatrix q k-1-(k : ℂ)^(2 : ℕ) • rawScatteringQuadraticCoefficient q =
+      (k : ℂ)^(3 : ℕ) • rawScatteringCubicRemainder q k := by
   rw [rawScatteringMatrix_cubic_factor]
   abel
 
 /-- The punctured cubic quotient converges to the coefficient of the actual scattering matrix. -/
 theorem rawScatteringMatrix_cubic_quotient_tendsto (q : SchwartzMap ℝ ℂ) :
-    Tendsto (fun k : ℝ => ((k : ℂ)^3)⁻¹ •
-      (rawScatteringMatrix q k-1-(k : ℂ)^2 • rawScatteringQuadraticCoefficient q))
+    Tendsto (fun k : ℝ => ((k : ℂ)^(3 : ℕ))⁻¹ •
+      (rawScatteringMatrix q k-1-(k : ℂ)^(2 : ℕ) • rawScatteringQuadraticCoefficient q))
       (𝓝[≠] 0) (𝓝 (rawScatteringCubicCoefficient q)) := by
   have hh : Tendsto (rawScatteringCubicRemainder q) (𝓝[≠] (0 : ℝ)) (𝓝 (rawScatteringCubicCoefficient q)) :=
     (rawScatteringCubicRemainder_tendsto_zero q).mono_left nhdsWithin_le_nhds
   apply hh.congr'
   filter_upwards [self_mem_nhdsWithin] with k hk
   have hk0 : k ≠ 0 := hk
-  have hkc : (k : ℂ)^3 ≠ 0 := pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hk0)
+  have hkc : (k : ℂ)^(3 : ℕ) ≠ 0 := pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hk0)
   rw [rawScatteringMatrix_sub_quadratic,smul_smul,inv_mul_cancel₀ hkc,one_smul]
 
 end

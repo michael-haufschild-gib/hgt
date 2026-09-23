@@ -15,20 +15,20 @@ noncomputable section
 /-- A division-free completion of squares for a symmetric rank-three Hankel form. -/
 theorem threeByThreeQuadratic_pos_of_minors
     {p0 p2 p4 p6 p8 x y z : ℝ}
-    (hp0 : 0 < p0) (hhead : 0 < p0*p4-p2^2)
+    (hp0 : 0 < p0) (hhead : 0 < p0*p4-p2^(2 : ℕ))
     (hdet : 0 < _root_.HilbertMetric.signedEvenHankelThreeDet p0 p2 p4 p6 p8)
     (hz : z ≠ 0) :
-    0 < p0*x^2 + 2*p2*x*y + p4*(y^2+2*x*z) + 2*p6*y*z + p8*z^2 := by
-  let d := p0*p4-p2^2
+    0 < p0*x^(2 : ℕ) + 2*p2*x*y + p4*(y^(2 : ℕ)+2*x*z) + 2*p6*y*z + p8*z^(2 : ℕ) := by
+  let d := p0*p4-p2^(2 : ℕ)
   have hd : 0 < d := hhead
   have hid : (p0*d) *
-      (p0*x^2 + 2*p2*x*y + p4*(y^2+2*x*z) + 2*p6*y*z + p8*z^2) =
-      d*(p0*x+p2*y+p4*z)^2 + (d*y+(p0*p6-p2*p4)*z)^2 +
-        p0*_root_.HilbertMetric.signedEvenHankelThreeDet p0 p2 p4 p6 p8*z^2 := by
+      (p0*x^(2 : ℕ) + 2*p2*x*y + p4*(y^(2 : ℕ)+2*x*z) + 2*p6*y*z + p8*z^(2 : ℕ)) =
+      d*(p0*x+p2*y+p4*z)^(2 : ℕ) + (d*y+(p0*p6-p2*p4)*z)^(2 : ℕ) +
+        p0*_root_.HilbertMetric.signedEvenHankelThreeDet p0 p2 p4 p6 p8*z^(2 : ℕ) := by
     dsimp only [d, _root_.HilbertMetric.signedEvenHankelThreeDet]
     ring
   have hproduct : 0 < (p0*d) *
-      (p0*x^2 + 2*p2*x*y + p4*(y^2+2*x*z) + 2*p6*y*z + p8*z^2) := by
+      (p0*x^(2 : ℕ) + 2*p2*x*y + p4*(y^(2 : ℕ)+2*x*z) + 2*p6*y*z + p8*z^(2 : ℕ)) := by
     rw [hid]
     exact add_pos_of_nonneg_of_pos
       (add_nonneg (mul_nonneg hd.le (sq_nonneg _)) (sq_nonneg _))
@@ -42,7 +42,7 @@ theorem integral_threeByThree_det_pos
     (hp0Int : Integrable p0 μ) (hp2Int : Integrable p2 μ)
     (hp4Int : Integrable p4 μ) (hp6Int : Integrable p6 μ) (hp8Int : Integrable p8 μ)
     (hmass : 0 < ∫ x, p0 x ∂μ)
-    (hpoint : ∀ᵐ x ∂μ, 0 < p0 x ∧ 0 < p0 x*p4 x-p2 x^2 ∧
+    (hpoint : ∀ᵐ x ∂μ, 0 < p0 x ∧ 0 < p0 x*p4 x-p2 x^(2 : ℕ) ∧
       0 < _root_.HilbertMetric.signedEvenHankelThreeDet (p0 x) (p2 x) (p4 x) (p6 x) (p8 x)) :
     0 < _root_.HilbertMetric.signedEvenHankelThreeDet
       (∫ x, p0 x ∂μ) (∫ x, p2 x ∂μ) (∫ x, p4 x ∂μ)
@@ -52,17 +52,17 @@ theorem integral_threeByThree_det_pos
   let C := ∫ x, p4 x ∂μ
   let D := ∫ x, p6 x ∂μ
   let E := ∫ x, p8 x ∂μ
-  let X := B*D-C^2
+  let X := B*D-C^(2 : ℕ)
   let Y := B*C-A*D
-  let Z := A*C-B^2
+  let Z := A*C-B^(2 : ℕ)
   have hZ : 0 < Z := GaloisForLFunctions.HilbertMetric.integral_twoByTwo_det_pos p0 p2 p4 hp0Int hp2Int hp4Int hmass
     (hpoint.mono fun _ hx => ⟨hx.1,hx.2.1⟩)
-  let Q : α → ℝ := fun r => X^2*p0 r + (2*X*Y)*p2 r +
-    (Y^2+2*X*Z)*p4 r + (2*Y*Z)*p6 r + Z^2*p8 r
+  let Q : α → ℝ := fun r => X^(2 : ℕ)*p0 r + (2*X*Y)*p2 r +
+    (Y^(2 : ℕ)+2*X*Z)*p4 r + (2*Y*Z)*p6 r + Z^(2 : ℕ)*p8 r
   have hQint : Integrable Q μ :=
-    ((((hp0Int.const_mul (X^2)).add (hp2Int.const_mul (2*X*Y))).add
-      (hp4Int.const_mul (Y^2+2*X*Z))).add (hp6Int.const_mul (2*Y*Z))).add
-      (hp8Int.const_mul (Z^2))
+    ((((hp0Int.const_mul (X^(2 : ℕ))).add (hp2Int.const_mul (2*X*Y))).add
+      (hp4Int.const_mul (Y^(2 : ℕ)+2*X*Z))).add (hp6Int.const_mul (2*Y*Z))).add
+      (hp8Int.const_mul (Z^(2 : ℕ)))
   have hQpos : ∀ᵐ r ∂μ, 0 < Q r := by
     filter_upwards [hpoint] with r hr
     have h := threeByThreeQuadratic_pos_of_minors

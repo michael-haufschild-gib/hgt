@@ -14,7 +14,7 @@ The diagonal identity is enough.  If
 
 then the Hilbert bound and Young's inequality give
 
-`S(x) <= norm (Phi x) * norm (Psi x) <= norm (Phi x)^2 + norm (Psi x)^2`.
+`S(x) <= norm (Phi x) * norm (Psi x) <= norm (Phi x)^(2 : ℕ) + norm (Psi x)^(2 : ℕ)`.
 
 The corpus hard-edge theorem says that `S` is not integrable because `x^-2 <= S(x)` on
 `(0,1/2)`.  Consequently the two square energies cannot both be finite.  In particular, every

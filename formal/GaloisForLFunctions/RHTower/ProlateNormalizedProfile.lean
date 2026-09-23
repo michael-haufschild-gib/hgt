@@ -80,7 +80,7 @@ theorem continuous_normalizedProlateProfile {c : ℝ} {Phi : ℝ → ℝ}
 /-- **Normal form.**  On a window where the bandwidth dominates, the normalized rescaled profile
 solves the rescaled prolate equation with separation parameter `μ = c·s`. -/
 theorem normalizedProlate_ode {c chi K : ℝ} {Phi : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (heig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x) :
     ∀ xi ∈ Icc (0 : ℝ) K,
       normalizedProlateDeriv2 c Phi xi
@@ -91,7 +91,7 @@ theorem normalizedProlate_ode {c chi K : ℝ} {Phi : ℝ → ℝ}
   have hxiK : |xi| ≤ K := by
     rw [abs_of_nonneg hxi.1]
     exact hxi.2
-  have hpos : 0 < c - xi ^ 2 := lt_of_lt_of_le (by linarith) (half_le_sub_sq hK hcK hxiK)
+  have hpos : 0 < c - xi ^ (2 : ℕ) := lt_of_lt_of_le (by linarith) (half_le_sub_sq hK hcK hxiK)
   have hbase := deriv2_eq_of_hermiteDefect (c := c) (mu := c * radialSeparationRatio c chi)
     (u := prolateHermiteRescale c Phi) (xi := xi) hc.ne' hpos.ne'
     (prolateHermiteRescale_radial_defect hc heig xi)
@@ -101,7 +101,7 @@ theorem normalizedProlate_ode {c chi K : ℝ} {Phi : ℝ → ℝ}
 /-- **Window hypotheses discharged.**  The normalized rescaled profile of an even prolate mode is a
 solution of the rescaled equation on the window with the Gaussian's initial phase vector. -/
 theorem normalizedProlate_window_package {c lam chi K : ℝ} {Phi : ℝ → ℝ}
-    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hK : 0 < K) (hcK : 2 * K ^ (2 : ℕ) ≤ c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (hne : Phi ≠ 0) (heven : Function.Even Phi) (hlam : lam ≠ 0)
     (hband : ∀ x : ℝ, bandTransform c Phi x = lam * Phi x)

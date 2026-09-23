@@ -336,7 +336,7 @@ theorem image_val_blockSmallOf (Φ : E ≃ₗᵢ[ℝ] BlockSpace U V) (x : ℝ) 
     rw [← hwv]
     exact hw
 
-theorem smul_preimage_linearIsometryEquiv (Φ : E ≃ₗᵢ[ℝ] BlockSpace U V)
+theorem smul_preimage_linearIsometryEquiv_sphereBlockTail (Φ : E ≃ₗᵢ[ℝ] BlockSpace U V)
     (S : Set (BlockSpace U V)) :
     Ioo (0 : ℝ) 1 • (Φ ⁻¹' S) = Φ ⁻¹' (Ioo (0 : ℝ) 1 • S) := by
   ext v
@@ -368,7 +368,7 @@ theorem toSphere_blockSmallOf (Φ : E ≃ₗᵢ[ℝ] BlockSpace U V) (x : ℝ) :
   have hrank : Module.finrank ℝ E = Module.finrank ℝ (BlockSpace U V) :=
     Φ.toLinearEquiv.finrank_eq
   rw [Measure.toSphere_apply' _ hmeas, Measure.toSphere_apply' _ (measurableSet_blockSmall U V x),
-    hrank, image_val_blockSmallOf, smul_preimage_linearIsometryEquiv,
+    hrank, image_val_blockSmallOf, smul_preimage_linearIsometryEquiv_sphereBlockTail,
     volume_preimage_linearIsometryEquiv]
 
 theorem volume_ball_eq_of_linearIsometryEquiv (Φ : E ≃ₗᵢ[ℝ] BlockSpace U V) :

@@ -9,21 +9,21 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSpectrumUpperInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalBoundedSpectrumUpperInst2 : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance fokasLenellsCausalBoundedSpectrumUpperInst3 : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance fokasLenellsCausalBoundedSpectrumUpperInst4 : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance fokasLenellsCausalBoundedSpectrumUpperInst5 : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSpectrumUpperInst6 : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSpectrumUpperInst7 : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
-local instance : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSpectrumUpperInst8 : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedAlgebra
-local instance : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
+local instance fokasLenellsCausalBoundedSpectrumUpperInst9 : NormOneClass (causalBoundedChain →L[ℂ] causalBoundedChain) := ⟨by
   have he := congrArg (fun A : causalBoundedChain →L[ℂ] causalBoundedChain => ‖A‖)
     causalBoundedChainExponential_zero
   exact he.symm.trans (norm_causalBoundedChainExponential_real (0 : ℝ≥0))⟩

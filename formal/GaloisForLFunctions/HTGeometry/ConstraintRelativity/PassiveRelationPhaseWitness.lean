@@ -81,7 +81,7 @@ theorem phase_project₀ (z₀ z₁ : ℂ) :
     simp
 
 theorem phase_norm_sq (z₀ z₁ : ℂ) :
-    ‖phaseVec z₀ z₁‖ ^ 2 = ‖z₀‖ ^ 2 + ‖z₁‖ ^ 2 := by
+    ‖phaseVec z₀ z₁‖ ^ (2 : ℕ) = ‖z₀‖ ^ (2 : ℕ) + ‖z₁‖ ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _),
     Fin.sum_univ_two]
   rfl
@@ -195,47 +195,47 @@ theorem phase_leakC_minus :
   fin_cases i <;> simp [phaseVec]
 
 theorem phase_leakA_energy (u₂ : PhaseQubit) :
-    ‖(phaseTriangle u₂).leakA phaseInput‖ ^ 2 = 1 / 2 := by
+    ‖(phaseTriangle u₂).leakA phaseInput‖ ^ (2 : ℕ) = 1 / 2 := by
   rw [phase_leakA, phase_norm_sq]
   norm_num [Complex.sq_norm, Complex.normSq_apply]
 
 theorem phase_leakB_plus_energy :
-    ‖(phaseTriangle phaseU₂Plus).leakB phaseInput‖ ^ 2 = 1 / 4 := by
+    ‖(phaseTriangle phaseU₂Plus).leakB phaseInput‖ ^ (2 : ℕ) = 1 / 4 := by
   rw [phase_leakB_plus, phase_norm_sq]
-  have hp : ‖(1 + Complex.I : ℂ)‖ ^ 2 = 2 := by
+  have hp : ‖(1 + Complex.I : ℂ)‖ ^ (2 : ℕ) = 2 := by
     rw [Complex.sq_norm]
     norm_num [Complex.normSq_apply]
-  have hm : ‖(1 - Complex.I : ℂ)‖ ^ 2 = 2 := by
+  have hm : ‖(1 - Complex.I : ℂ)‖ ^ (2 : ℕ) = 2 := by
     rw [Complex.sq_norm]
     norm_num [Complex.normSq_apply]
   rw [norm_div, norm_div, div_pow, div_pow, hp, hm]
   norm_num
 
 theorem phase_leakB_minus_energy :
-    ‖(phaseTriangle phaseU₂Minus).leakB phaseInput‖ ^ 2 = 1 / 4 := by
+    ‖(phaseTriangle phaseU₂Minus).leakB phaseInput‖ ^ (2 : ℕ) = 1 / 4 := by
   rw [phase_leakB_minus, phase_norm_sq]
-  have hp : ‖(1 + Complex.I : ℂ)‖ ^ 2 = 2 := by
+  have hp : ‖(1 + Complex.I : ℂ)‖ ^ (2 : ℕ) = 2 := by
     rw [Complex.sq_norm]
     norm_num [Complex.normSq_apply]
-  have hm : ‖(1 - Complex.I : ℂ)‖ ^ 2 = 2 := by
+  have hm : ‖(1 - Complex.I : ℂ)‖ ^ (2 : ℕ) = 2 := by
     rw [Complex.sq_norm]
     norm_num [Complex.normSq_apply]
   rw [norm_div, norm_div, div_pow, div_pow, hp, hm]
   norm_num
 
 theorem phase_leakC_plus_energy :
-    ‖(phaseTriangle phaseU₂Plus).leakC phaseInput‖ ^ 2 = 1 / 8 := by
+    ‖(phaseTriangle phaseU₂Plus).leakC phaseInput‖ ^ (2 : ℕ) = 1 / 8 := by
   rw [phase_leakC_plus, phase_norm_sq]
-  have hp : ‖(1 + Complex.I : ℂ)‖ ^ 2 = 2 := by
+  have hp : ‖(1 + Complex.I : ℂ)‖ ^ (2 : ℕ) = 2 := by
     rw [Complex.sq_norm]
     norm_num [Complex.normSq_apply]
   rw [norm_zero, zero_pow (by norm_num), zero_add, norm_div, div_pow, hp]
   norm_num
 
 theorem phase_leakC_minus_energy :
-    ‖(phaseTriangle phaseU₂Minus).leakC phaseInput‖ ^ 2 = 1 / 8 := by
+    ‖(phaseTriangle phaseU₂Minus).leakC phaseInput‖ ^ (2 : ℕ) = 1 / 8 := by
   rw [phase_leakC_minus, phase_norm_sq]
-  have hm : ‖(1 - Complex.I : ℂ)‖ ^ 2 = 2 := by
+  have hm : ‖(1 - Complex.I : ℂ)‖ ^ (2 : ℕ) = 2 := by
     rw [Complex.sq_norm]
     norm_num [Complex.normSq_apply]
   rw [norm_zero, zero_pow (by norm_num), zero_add, norm_div, div_pow, hm]
@@ -244,12 +244,12 @@ theorem phase_leakC_minus_energy :
 theorem positiveLeakage_not_determine_phase :
     let Tplus := phaseTriangle phaseU₂Plus
     let Tminus := phaseTriangle phaseU₂Minus
-    ‖Tplus.leakA phaseInput‖ ^ 2 = 1 / 2 ∧
-    ‖Tminus.leakA phaseInput‖ ^ 2 = 1 / 2 ∧
-    ‖Tplus.leakB phaseInput‖ ^ 2 = 1 / 4 ∧
-    ‖Tminus.leakB phaseInput‖ ^ 2 = 1 / 4 ∧
-    ‖Tplus.leakC phaseInput‖ ^ 2 = 1 / 8 ∧
-    ‖Tminus.leakC phaseInput‖ ^ 2 = 1 / 8 ∧
+    ‖Tplus.leakA phaseInput‖ ^ (2 : ℕ) = 1 / 2 ∧
+    ‖Tminus.leakA phaseInput‖ ^ (2 : ℕ) = 1 / 2 ∧
+    ‖Tplus.leakB phaseInput‖ ^ (2 : ℕ) = 1 / 4 ∧
+    ‖Tminus.leakB phaseInput‖ ^ (2 : ℕ) = 1 / 4 ∧
+    ‖Tplus.leakC phaseInput‖ ^ (2 : ℕ) = 1 / 8 ∧
+    ‖Tminus.leakC phaseInput‖ ^ (2 : ℕ) = 1 / 8 ∧
     Tplus.work phaseInput = 7 / 8 ∧
     Tminus.work phaseInput = 7 / 8 ∧
     Tplus.selectedHolonomy phaseInput = phaseVec ((1 - Complex.I) / 4) 0 ∧

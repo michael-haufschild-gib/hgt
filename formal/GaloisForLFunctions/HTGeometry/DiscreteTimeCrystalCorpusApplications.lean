@@ -27,7 +27,7 @@ theorem identityDoubledParityClock_iterate_oddObservable
       ((-1 : 𝕜) ^ n) •
         HTGeometry.doubledOddObservable (1 : E →L[𝕜] E)
           (HTGeometry.doubledParitySource (1 : E →L[𝕜] E) ψ) := by
-  have hJsq : (1 : E →L[𝕜] E) ^ 2 = 1 := by simp
+  have hJsq : (1 : E →L[𝕜] E) ^ (2 : ℕ) = 1 := by simp
   have hcomm : (1 : E →L[𝕜] E) * 1 = 1 * 1 := rfl
   induction n with
   | zero => simp

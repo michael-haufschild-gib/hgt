@@ -27,14 +27,14 @@ def sourceHorizontalHyperbolicBlock (a : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
   !![0, a; a, 0]
 
 /-- Frobenius-square cost of the real hyperbolic block with eigenvalues `+|a|,-|a|`. -/
-def sourceHorizontalHyperbolicFrobSq (a : ℝ) : ℝ := 2 * a ^ 2
+def sourceHorizontalHyperbolicFrobSq (a : ℝ) : ℝ := 2 * a ^ (2 : ℕ)
 
 @[simp] theorem sourceHorizontalHyperbolicBlock_trace (a : ℝ) :
     Matrix.trace (sourceHorizontalHyperbolicBlock a) = 0 := by
   simp [sourceHorizontalHyperbolicBlock, Matrix.trace]
 
 theorem sourceHorizontalHyperbolicBlock_entrySq_sum (a : ℝ) :
-    (∑ i, ∑ j, (sourceHorizontalHyperbolicBlock a i j) ^ 2) =
+    (∑ i, ∑ j, (sourceHorizontalHyperbolicBlock a i j) ^ (2 : ℕ)) =
       sourceHorizontalHyperbolicFrobSq a := by
   simp [sourceHorizontalHyperbolicBlock, sourceHorizontalHyperbolicFrobSq]
   ring
@@ -54,17 +54,17 @@ wall: sublinear second moment can amplify only blocks whose eigenvalues collapse
 theorem sourceHorizontalHyperbolicFrobSq_sum_ge
     {ι : Type*} [DecidableEq ι] (K : Finset ι) (a : ι → ℝ)
     {δ : ℝ} (hδ : 0 ≤ δ) (hvisible : ∀ i ∈ K, δ ≤ |a i|) :
-    2 * δ ^ 2 * (K.card : ℝ) ≤
+    2 * δ ^ (2 : ℕ) * (K.card : ℝ) ≤
       ∑ i ∈ K, sourceHorizontalHyperbolicFrobSq (a i) := by
   calc
-    2 * δ ^ 2 * (K.card : ℝ) =
-        ∑ i ∈ K, 2 * δ ^ 2 := by
+    2 * δ ^ (2 : ℕ) * (K.card : ℝ) =
+        ∑ i ∈ K, 2 * δ ^ (2 : ℕ) := by
           rw [Finset.sum_const, nsmul_eq_mul]
           ring
     _ ≤ ∑ i ∈ K, sourceHorizontalHyperbolicFrobSq (a i) := by
       apply Finset.sum_le_sum
       intro i hi
-      have hsquare : δ ^ 2 ≤ |a i| ^ 2 :=
+      have hsquare : δ ^ (2 : ℕ) ≤ |a i| ^ (2 : ℕ) :=
         (sq_le_sq₀ hδ (abs_nonneg (a i))).2 (hvisible i hi)
       rw [sq_abs] at hsquare
       unfold sourceHorizontalHyperbolicFrobSq
@@ -84,7 +84,7 @@ theorem exists_sourceZeroHorizontalMomentNeutralPacket
       (∑ p ∈ K,
           sourceHorizontalHyperbolicFrobSq
             (sourceZeroHorizontalPrimeCarrier q p)) ≤
-        2 * ε ^ 2 * (m : ℝ) := by
+        2 * ε ^ (2 : ℕ) * (m : ℝ) := by
   have ht : |primeDepthBVWoldXiCenteredRate q.1| < 1 :=
     xiCenteredPrimeIdealRate_abs_lt_one q.1
   have hlim : Tendsto (sourceZeroHorizontalPrimeCarrier q)
@@ -115,17 +115,17 @@ theorem exists_sourceZeroHorizontalMomentNeutralPacket
       (∑ p ∈ K,
           sourceHorizontalHyperbolicFrobSq
             (sourceZeroHorizontalPrimeCarrier q p)) ≤
-          ∑ p ∈ K, 2 * ε ^ 2 := by
+          ∑ p ∈ K, 2 * ε ^ (2 : ℕ) := by
             apply Finset.sum_le_sum
             intro p hp
             have hsmall : |sourceZeroHorizontalPrimeCarrier q p| < ε := hKS hp
             have hsquare :
-                |sourceZeroHorizontalPrimeCarrier q p| ^ 2 ≤ ε ^ 2 :=
+                |sourceZeroHorizontalPrimeCarrier q p| ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) :=
               (sq_le_sq₀ (abs_nonneg _) hε.le).2 hsmall.le
             rw [sq_abs] at hsquare
             unfold sourceHorizontalHyperbolicFrobSq
             linarith
-      _ = 2 * ε ^ 2 * (m : ℝ) := by
+      _ = 2 * ε ^ (2 : ℕ) * (m : ℝ) := by
         rw [Finset.sum_const, nsmul_eq_mul, hKcard]
         ring
 

@@ -185,7 +185,7 @@ theorem inverseSqrtPushforward_carried_Ici_invSqrt
 
 theorem compactMarkovReservoirProfile_imp_lowerSupportedLaplaceProfile
     {h : ℝ → ℝ} (hh : HasCompactMarkovReservoirProfile h) :
-    HasLowerSupportedLaplaceProfile (fun t => 2 * h (t ^ 2)) := by
+    HasLowerSupportedLaplaceProfile (fun t => 2 * h (t ^ (2 : ℕ))) := by
   obtain ⟨R, hR, nu, hnuFinite, hsupp, hDensity⟩ := hh
   letI : IsFiniteMeasure nu := hnuFinite
   let tau := inverseSqrtPushforward nu
@@ -197,7 +197,7 @@ theorem compactMarkovReservoirProfile_imp_lowerSupportedLaplaceProfile
   refine ⟨(Real.sqrt R)⁻¹, ha, tau, inferInstance, htauSupport, fun t ht => ?_⟩
   dsimp [tau]
   rw [finiteRealLaplace, ← factorialMomentDensity_laplace_inverseSqrtPushforward nu ht,
-    hDensity (t ^ 2) (sq_pos_of_pos ht)]
+    hDensity (t ^ (2 : ℕ)) (sq_pos_of_pos ht)]
 
 theorem inverseSqrtPushforward_map_inverseSquareReconstruction
     {tau : Measure ℝ} {a : ℝ} (ha : 0 < a) (htau : tau (Ici a)ᶜ = 0) :
@@ -223,7 +223,7 @@ theorem inverseSqrtPushforward_map_inverseSquareReconstruction
 
 theorem map_inverseSquareReconstruction_carried_Icc
     {tau : Measure ℝ} {a : ℝ} (ha : 0 < a) (htau : tau (Ici a)ᶜ = 0) :
-    Measure.map inverseSquareReconstruction tau (Icc 0 (a⁻¹ ^ 2))ᶜ = 0 := by
+    Measure.map inverseSquareReconstruction tau (Icc 0 (a⁻¹ ^ (2 : ℕ)))ᶜ = 0 := by
   rw [Measure.map_apply measurable_inverseSquareReconstruction measurableSet_Icc.compl]
   apply measure_mono_null _ htau
   intro r hr
@@ -234,7 +234,7 @@ theorem map_inverseSquareReconstruction_carried_Icc
       intro hra
       have hrpos : 0 < r := lt_of_lt_of_le ha hra
       have hinv : r⁻¹ ≤ a⁻¹ := inv_anti₀ ha hra
-      have hsquare : r⁻¹ ^ 2 ≤ a⁻¹ ^ 2 :=
+      have hsquare : r⁻¹ ^ (2 : ℕ) ≤ a⁻¹ ^ (2 : ℕ) :=
         pow_le_pow_left₀ (inv_nonneg.mpr hrpos.le) hinv 2
       exact (not_lt_of_ge hsquare) hlarge
     exact fun hra => hnle hra
@@ -246,10 +246,10 @@ theorem lowerSupportedLaplaceProfile_imp_compactMarkovReservoirProfile
   letI : IsFiniteMeasure tau := htauFinite
   let nu := Measure.map inverseSquareReconstruction tau
   letI : IsFiniteMeasure nu := Measure.isFiniteMeasure_map _ _
-  have hR : 0 < a⁻¹ ^ 2 := sq_pos_of_pos (inv_pos.mpr ha)
-  have hnuSupport : nu (Icc 0 (a⁻¹ ^ 2))ᶜ = 0 :=
+  have hR : 0 < a⁻¹ ^ (2 : ℕ) := sq_pos_of_pos (inv_pos.mpr ha)
+  have hnuSupport : nu (Icc 0 (a⁻¹ ^ (2 : ℕ)))ᶜ = 0 :=
     map_inverseSquareReconstruction_carried_Icc ha htauSupport
-  refine ⟨a⁻¹ ^ 2, hR, nu, inferInstance, hnuSupport, fun x hx => ?_⟩
+  refine ⟨a⁻¹ ^ (2 : ℕ), hR, nu, inferInstance, hnuSupport, fun x hx => ?_⟩
   have hsqrt : 0 < Real.sqrt x := Real.sqrt_pos.2 hx
   have hpush : inverseSqrtPushforward nu = tau := by
     dsimp [nu]
@@ -264,7 +264,7 @@ theorem lowerSupportedLaplaceProfile_imp_compactMarkovReservoirProfile
 /-- Conditions 1 and 2 in the card, with `H(t)=2h(t²)`, are equivalent. -/
 theorem compactMarkovReservoirProfile_iff_lowerSupportedLaplaceProfile (h : ℝ → ℝ) :
     HasCompactMarkovReservoirProfile h ↔
-      HasLowerSupportedLaplaceProfile (fun t => 2 * h (t ^ 2)) := by
+      HasLowerSupportedLaplaceProfile (fun t => 2 * h (t ^ (2 : ℕ))) := by
   constructor
   · exact compactMarkovReservoirProfile_imp_lowerSupportedLaplaceProfile
   · intro hLaplace
@@ -272,14 +272,14 @@ theorem compactMarkovReservoirProfile_iff_lowerSupportedLaplaceProfile (h : ℝ 
     obtain ⟨R, hR, nu, hnuFinite, hsupp, hDensity⟩ := hcompact
     refine ⟨R, hR, nu, hnuFinite, hsupp, fun x hx => ?_⟩
     have hd := hDensity x hx
-    change 2 * h (Real.sqrt x ^ 2) / 2 = factorialMomentDensity nu x at hd
+    change 2 * h (Real.sqrt x ^ (2 : ℕ)) / 2 = factorialMomentDensity nu x at hd
     rw [Real.sq_sqrt hx.le] at hd
     linarith
 
 /-- Full three-way reservoir-density classification from the research card. -/
 theorem compactMarkovReservoirProfile_iff_shiftedCompletelyMonotoneProfile (h : ℝ → ℝ) :
     HasCompactMarkovReservoirProfile h ↔
-      HasShiftedCompletelyMonotoneProfile (fun t => 2 * h (t ^ 2)) := by
+      HasShiftedCompletelyMonotoneProfile (fun t => 2 * h (t ^ (2 : ℕ))) := by
   rw [compactMarkovReservoirProfile_iff_lowerSupportedLaplaceProfile,
     lowerSupportedLaplaceProfile_iff_shiftedCompletelyMonotoneProfile]
 

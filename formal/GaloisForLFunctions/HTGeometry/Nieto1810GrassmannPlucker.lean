@@ -319,8 +319,8 @@ theorem spinorOuterSquare_null_package (H : Fin 2 → ℂ) :
         HTGeometry.lorentzHermitianMatrix
           (HTGeometry.higgsSpinorTime H) (HTGeometry.higgsSpinorX H)
           (HTGeometry.higgsSpinorY H) (HTGeometry.higgsSpinorZ H) ∧
-      HTGeometry.higgsSpinorTime H ^ 2 - HTGeometry.higgsSpinorX H ^ 2
-        - HTGeometry.higgsSpinorY H ^ 2 - HTGeometry.higgsSpinorZ H ^ 2 = 0 :=
+      HTGeometry.higgsSpinorTime H ^ (2 : ℕ) - HTGeometry.higgsSpinorX H ^ (2 : ℕ)
+        - HTGeometry.higgsSpinorY H ^ (2 : ℕ) - HTGeometry.higgsSpinorZ H ^ (2 : ℕ) = 0 :=
   ⟨HTGeometry.higgsSpinorEventMatrix_isHermitian H,
     HTGeometry.higgsSpinorEventMatrix_posSemidef H,
     HTGeometry.higgsSpinorEventMatrix_det H,
@@ -372,7 +372,7 @@ theorem det_fin_two_eq_zero_iff_outerProduct {K : Type*} [Field K]
 
 /-- Null Lorentz coordinates are exactly those whose Hermitian matrix factors through spinors. -/
 theorem lorentz_null_iff_spinorFactorization (t x y z : ℝ) :
-    t ^ 2 - x ^ 2 - y ^ 2 - z ^ 2 = 0 ↔
+    t ^ (2 : ℕ) - x ^ (2 : ℕ) - y ^ (2 : ℕ) - z ^ (2 : ℕ) = 0 ↔
       ∃ u v : Fin 2 → ℂ,
         HTGeometry.lorentzHermitianMatrix t x y z = Matrix.vecMulVec u v := by
   constructor

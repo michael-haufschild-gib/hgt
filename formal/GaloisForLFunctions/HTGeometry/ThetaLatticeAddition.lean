@@ -45,7 +45,7 @@ def thetaLatticeParityEquiv : (ℤ × ℤ) ⊕ (ℤ × ℤ) ≃ ℤ × ℤ where
 
 /-- A Gaussian theta atom at an arbitrary complex frequency. -/
 def thetaLatticeAtom (q z τ : ℂ) : ℂ :=
-  Complex.exp (2 * Real.pi * I * q * z + Real.pi * I * q ^ 2 * τ)
+  Complex.exp (2 * Real.pi * I * q * z + Real.pi * I * q ^ (2 : ℕ) * τ)
 
 /-- The half-integer-frequency sector, with its Gaussian coefficients unchanged. -/
 def thetaLatticeHalf (z τ : ℂ) : ℂ :=
@@ -165,7 +165,7 @@ theorem thetaLattice_addition (z w : ℂ) (τ : UpperHalfPlane) :
 
 /-- Duplication retains both parity sectors of the actual theta function. -/
 theorem thetaLattice_duplication (z : ℂ) (τ : UpperHalfPlane) :
-    jacobiTheta₂ z τ ^ 2 =
+    jacobiTheta₂ z τ ^ (2 : ℕ) =
       jacobiTheta₂ (2 * z) (2 * (τ : ℂ)) * jacobiTheta₂ 0 (2 * (τ : ℂ)) +
         thetaLatticeHalf (2 * z) (2 * (τ : ℂ)) *
           thetaLatticeHalf 0 (2 * (τ : ℂ)) := by

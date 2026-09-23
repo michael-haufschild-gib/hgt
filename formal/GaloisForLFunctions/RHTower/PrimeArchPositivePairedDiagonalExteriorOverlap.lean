@@ -367,7 +367,7 @@ private theorem abs_im_pow_le_two_mul
       ring
 
 private def linearWeightedTail (N : ℕ) (x : ℝ) : ℝ :=
-  x ^ (N - 1) * (N * (1 - x)⁻¹ + x / (1 - x) ^ 2)
+  x ^ (N - 1) * (N * (1 - x)⁻¹ + x / (1 - x) ^ (2 : ℕ))
 
 /-- Exact linear-weight tail, avoiding the fixed-ratio loss in the coarse geometric majorant. -/
 private theorem hasSum_nat_add_mul_pow_exact
@@ -379,7 +379,7 @@ private theorem hasSum_nat_add_mul_pow_exact
   have hgeom : HasSum (fun k : ℕ => x ^ k) (1 - x)⁻¹ :=
     hasSum_geometric_of_norm_lt_one hnorm
   have hlinear : HasSum (fun k : ℕ => (k : ℝ) * x ^ k)
-      (x / (1 - x) ^ 2) :=
+      (x / (1 - x) ^ (2 : ℕ)) :=
     hasSum_coe_mul_geometric_of_norm_lt_one hnorm
   have hsum := (hgeom.mul_left (N : ℝ)).add hlinear
   have hscaled := hsum.mul_left (x ^ (N - 1))
@@ -420,7 +420,7 @@ private theorem abs_primeArchMomentTerm_one_add_im_le
       ((74 / 73 : ℝ) * 2 * |z.im| * (z.re + |z.im|) *
         normalizedPrimeArchMoment 1) *
         (((1 + j : ℕ) : ℝ) *
-          (((z.re + |z.im|) ^ 2 / 150) ^ j)) := by
+          (((z.re + |z.im|) ^ (2 : ℕ) / 150) ^ j)) := by
   have hm := abs_normalizedPrimeArchMoment_one_add_le_sourceRadius j
   have hp := abs_im_pow_le_two_mul z hre (1 + j) (by omega)
   rw [Complex.mul_im]
@@ -438,14 +438,14 @@ private theorem abs_primeArchMomentTerm_one_add_im_le
     _ = ((74 / 73 : ℝ) * 2 * |z.im| * (z.re + |z.im|) *
           normalizedPrimeArchMoment 1) *
           (((1 + j : ℕ) : ℝ) *
-            (((z.re + |z.im|) ^ 2 / 150) ^ j)) := by
+            (((z.re + |z.im|) ^ (2 : ℕ) / 150) ^ j)) := by
       rw [show 2 * (1 + j) - 1 = 1 + 2 * j by omega,
         pow_add, pow_one, pow_mul]
       have hxpow :
-          (((z.re + |z.im|) ^ 2 / 150) ^ j) =
-            (1 / 150 : ℝ) ^ j * ((z.re + |z.im|) ^ 2) ^ j := by
-        rw [show (z.re + |z.im|) ^ 2 / 150 =
-          (1 / 150 : ℝ) * (z.re + |z.im|) ^ 2 by ring, mul_pow]
+          (((z.re + |z.im|) ^ (2 : ℕ) / 150) ^ j) =
+            (1 / 150 : ℝ) ^ j * ((z.re + |z.im|) ^ (2 : ℕ)) ^ j := by
+        rw [show (z.re + |z.im|) ^ (2 : ℕ) / 150 =
+          (1 / 150 : ℝ) * (z.re + |z.im|) ^ (2 : ℕ) by ring, mul_pow]
       rw [hxpow]
       push_cast
       ring
@@ -454,7 +454,7 @@ private theorem norm_sq_lt_oneHundredFifty_of_exteriorOverlap
     (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
     (hzreUpper : z.re ≤ 207 / 20)
     (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
-    ‖z ^ 2‖ < 150 := by
+    ‖z ^ (2 : ℕ)‖ < 150 := by
   have hre : 0 ≤ z.re := by linarith
   have hnormz : ‖z‖ < 217 / 20 :=
     (Complex.norm_le_abs_re_add_abs_im z).trans_lt (by
@@ -467,7 +467,7 @@ private theorem norm_sq_lt_oneHundredFifty_of_extendedExteriorOverlap
     (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
     (hzreUpper : z.re ≤ 261 / 25)
     (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
-    ‖z ^ 2‖ < 150 := by
+    ‖z ^ (2 : ℕ)‖ < 150 := by
   have hre : 0 ≤ z.re := by linarith
   have hnormz : ‖z‖ < 547 / 50 :=
     (Complex.norm_le_abs_re_add_abs_im z).trans_lt (by
@@ -480,7 +480,7 @@ private theorem norm_sq_lt_oneHundredFifty_of_orderTwentyThreeExteriorOverlap
     (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
     (hzreUpper : z.re ≤ 1047 / 100)
     (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
-    ‖z ^ 2‖ < 150 := by
+    ‖z ^ (2 : ℕ)‖ < 150 := by
   have hre : 0 ≤ z.re := by linarith
   have hnormz : ‖z‖ < 1097 / 100 :=
     (Complex.norm_le_abs_re_add_abs_im z).trans_lt (by
@@ -497,16 +497,16 @@ private theorem im_primeArchCircleMomentResolvent_sq_pos_of_linearWeightedTail
     (hmoment : ∀ n : ℕ, n < N → 0 ≤ normalizedPrimeArchMoment n)
     (hpower : ∀ n : ℕ, n < N → 0 ≤ (z ^ (2 * n)).im)
     {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
-    (hratio : (z.re + |z.im|) ^ 2 / 150 ≤ r)
+    (hratio : (z.re + |z.im|) ^ (2 : ℕ) / 150 ≤ r)
     (hscalar :
       (74 / 73 : ℝ) * (z.re + |z.im|) *
           linearWeightedTail N r < z.re) :
-    0 < (primeArchCircleMomentResolvent (z ^ 2)).im := by
+    0 < (primeArchCircleMomentResolvent (z ^ (2 : ℕ))).im := by
   have hre : 0 ≤ z.re := by linarith
   have hm1 : 0 < normalizedPrimeArchMoment 1 :=
     normalizedPrimeArchMoment_one_pos
   let a : ℝ := z.re + |z.im|
-  let x : ℝ := a ^ 2 / 150
+  let x : ℝ := a ^ (2 : ℕ) / 150
   let B : ℝ :=
     (74 / 73) * 2 * |z.im| * a * normalizedPrimeArchMoment 1
   have ha0 : 0 ≤ a := by
@@ -523,10 +523,10 @@ private theorem im_primeArchCircleMomentResolvent_sq_pos_of_linearWeightedTail
     dsimp only [a]
     have h := Complex.norm_le_abs_re_add_abs_im z
     rwa [abs_of_nonneg hre] at h
-  have haSq : a ^ 2 < 150 := by
+  have haSq : a ^ (2 : ℕ) < 150 := by
     dsimp only [x] at hx1
     nlinarith
-  have hw : ‖z ^ 2‖ < 150 := by
+  have hw : ‖z ^ (2 : ℕ)‖ < 150 := by
     rw [norm_pow]
     nlinarith [sq_nonneg (a - ‖z‖), norm_nonneg z]
   let f : ℕ → ℂ := fun n =>
@@ -534,7 +534,7 @@ private theorem im_primeArchCircleMomentResolvent_sq_pos_of_linearWeightedTail
   have hsum : Summable f := by
     have h :=
       summable_primeArchCircleMomentSeries_of_norm_lt_oneHundredFifty
-        (w := z ^ 2) hw
+        (w := z ^ (2 : ℕ)) hw
     simpa only [f, ← pow_mul] using h
   have hprefixTerm : ∀ n ∈ Finset.range N, 0 ≤ (f n).im := by
     intro n hn
@@ -616,7 +616,7 @@ private theorem im_primeArchCircleMomentResolvent_sq_pos_of_linearWeightedTail
   have hsplit := hsum.sum_add_tsum_nat_add N
   rw [primeArchCircleMomentResolvent]
   rw [show (fun n : ℕ =>
-      (normalizedPrimeArchMoment n : ℂ) * (z ^ 2) ^ n) = f by
+      (normalizedPrimeArchMoment n : ℂ) * (z ^ (2 : ℕ)) ^ n) = f by
     funext n
     dsimp only [f]
     rw [← pow_mul]]
@@ -629,12 +629,12 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
     (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
     (hzreUpper : z.re ≤ 207 / 20)
     (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
-    0 < (primeArchCircleMomentResolvent (z ^ 2)).im := by
+    0 < (primeArchCircleMomentResolvent (z ^ (2 : ℕ))).im := by
   have haUpper : z.re + |z.im| < (217 / 20 : ℝ) := by
     rw [abs_of_pos hzim]
     linarith
   have ha0 : (0 : ℝ) ≤ z.re + |z.im| := by positivity
-  have hratio : (z.re + |z.im|) ^ 2 / 150 ≤ (157 / 200 : ℝ) := by
+  have hratio : (z.re + |z.im|) ^ (2 : ℕ) / 150 ≤ (157 / 200 : ℝ) := by
     nlinarith [sq_nonneg ((z.re + |z.im|) - 217 / 20)]
   have htailCoefficient :
       0 < (74 / 73 : ℝ) * linearWeightedTail 23 (157 / 200) := by
@@ -667,7 +667,7 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_extendedExteriorOverlap
     (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
     (hzreUpper : z.re ≤ 261 / 25)
     (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
-    0 < (primeArchCircleMomentResolvent (z ^ 2)).im := by
+    0 < (primeArchCircleMomentResolvent (z ^ (2 : ℕ))).im := by
   by_cases hold : z.re ≤ 207 / 20
   · exact im_primeArchCircleMomentResolvent_sq_pos_of_exteriorOverlap
       z hzre hold hzim hzimUpper
@@ -677,7 +677,7 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_extendedExteriorOverlap
     have haUpper : z.re + |z.im| < (547 / 50 : ℝ) := by
       rw [abs_of_pos hzim]
       linarith
-    have hratio : (z.re + |z.im|) ^ 2 / 150 ≤ (399 / 500 : ℝ) := by
+    have hratio : (z.re + |z.im|) ^ (2 : ℕ) / 150 ≤ (399 / 500 : ℝ) := by
       nlinarith [sq_nonneg ((z.re + |z.im|) - 547 / 50)]
     have htailCoefficient :
         0 < (74 / 73 : ℝ) * linearWeightedTail 23 (399 / 500) := by
@@ -710,7 +710,7 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_orderTwentyThreeExteriorOver
     (z : ℂ) (hzre : (701 / 100 : ℝ) < z.re)
     (hzreUpper : z.re ≤ 1047 / 100)
     (hzim : 0 < z.im) (hzimUpper : z.im < 1 / 2) :
-    0 < (primeArchCircleMomentResolvent (z ^ 2)).im := by
+    0 < (primeArchCircleMomentResolvent (z ^ (2 : ℕ))).im := by
   by_cases hold : z.re ≤ 261 / 25
   · exact im_primeArchCircleMomentResolvent_sq_pos_of_extendedExteriorOverlap
       z hzre hold hzim hzimUpper
@@ -721,7 +721,7 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_orderTwentyThreeExteriorOver
     have haUpper : z.re + |z.im| < (1097 / 100 : ℝ) := by
       rw [abs_of_pos hzim]
       linarith
-    have hratio : (z.re + |z.im|) ^ 2 / 150 ≤ (803 / 1000 : ℝ) := by
+    have hratio : (z.re + |z.im|) ^ (2 : ℕ) / 150 ≤ (803 / 1000 : ℝ) := by
       nlinarith [sq_nonneg ((z.re + |z.im|) - 1097 / 100)]
     have htailCoefficient :
         0 < (74 / 73 : ℝ) * linearWeightedTail 24 (803 / 1000) := by
@@ -749,7 +749,7 @@ theorem im_primeArchCircleMomentResolvent_sq_pos_of_orderTwentyThreeExteriorOver
 
 /-- The circle atomic resolvent at `z²` is exactly the reciprocal-square resolvent sum at `z`. -/
 theorem primeArchCircleAtomicResolvent_sq_eq_reciprocalSquare_tsum (z : ℂ) :
-    primeArchCircleAtomicResolvent (z ^ 2) =
+    primeArchCircleAtomicResolvent (z ^ (2 : ℕ)) =
       ∑' q : XiZeroCopy, xiReciprocalSquareResolventTerm z q := by
   rw [primeArchCircleAtomicResolvent]
   apply tsum_congr

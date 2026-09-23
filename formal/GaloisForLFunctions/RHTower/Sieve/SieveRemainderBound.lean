@@ -37,7 +37,7 @@ theorem three_pow_card_le {P₁ h e : ℕ} (hP₁ : 2 ≤ P₁) (he : e ∣ rang
 theorem sieve_remainder_le {P₁ h : ℕ} (hP₁ : 2 ≤ P₁) {z : ℝ} (hz : 1 ≤ z) :
     ∑ e ∈ (rangePrimorial P₁ h).divisors,
         (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)
-      ≤ 2 * z ^ 3 := by
+      ≤ 2 * z ^ (3 : ℕ) := by
   classical
   set T : Finset ℕ := (rangePrimorial P₁ h).divisors.filter (fun e => ((e : ℕ) : ℝ) ≤ z) with hT
   have hz0 : (0 : ℝ) < z := by linarith
@@ -47,7 +47,7 @@ theorem sieve_remainder_le {P₁ h : ℕ} (hP₁ : 2 ≤ P₁) {z : ℝ} (hz : 1
     rw [hT, Finset.sum_filter]
   rw [hsum]
   -- every term is at most `2z²`
-  have hterm : ∀ e ∈ T, (2 : ℝ) * 6 ^ e.primeFactors.card ≤ 2 * z ^ 2 := by
+  have hterm : ∀ e ∈ T, (2 : ℝ) * 6 ^ e.primeFactors.card ≤ 2 * z ^ (2 : ℕ) := by
     intro e he
     rw [hT, Finset.mem_filter, Nat.mem_divisors] at he
     obtain ⟨⟨hdvd, hne⟩, hle⟩ := he
@@ -58,13 +58,13 @@ theorem sieve_remainder_le {P₁ h : ℕ} (hP₁ : 2 ≤ P₁) {z : ℝ} (hz : 1
     have h3R : (3 : ℝ) ^ e.primeFactors.card ≤ (e : ℝ) := by exact_mod_cast h3
     have h6 : (6 : ℝ) ^ e.primeFactors.card ≤ (9 : ℝ) ^ e.primeFactors.card :=
       pow_le_pow_left₀ (by norm_num) (by norm_num) _
-    have h9 : (9 : ℝ) ^ e.primeFactors.card = ((3 : ℝ) ^ e.primeFactors.card) ^ 2 := by
+    have h9 : (9 : ℝ) ^ e.primeFactors.card = ((3 : ℝ) ^ e.primeFactors.card) ^ (2 : ℕ) := by
       rw [← pow_mul, show e.primeFactors.card * 2 = 2 * e.primeFactors.card by ring, pow_mul]
       norm_num
     have h30 : (0 : ℝ) ≤ (3 : ℝ) ^ e.primeFactors.card := by positivity
-    have hsq : ((3 : ℝ) ^ e.primeFactors.card) ^ 2 ≤ (e : ℝ) ^ 2 :=
+    have hsq : ((3 : ℝ) ^ e.primeFactors.card) ^ (2 : ℕ) ≤ (e : ℝ) ^ (2 : ℕ) :=
       pow_le_pow_left₀ h30 h3R 2
-    have hez : (e : ℝ) ^ 2 ≤ z ^ 2 := pow_le_pow_left₀ (Nat.cast_nonneg _) hle 2
+    have hez : (e : ℝ) ^ (2 : ℕ) ≤ z ^ (2 : ℕ) := pow_le_pow_left₀ (Nat.cast_nonneg _) hle 2
     linarith [h6, h9, hsq, hez]
   -- there are at most `z` terms
   have hcard : ((T.card : ℕ) : ℝ) ≤ z := by
@@ -86,9 +86,9 @@ theorem sieve_remainder_le {P₁ h : ℕ} (hP₁ : 2 ≤ P₁) {z : ℝ} (hz : 1
     rw [h3] at h2
     exact h2.trans (Nat.floor_le hz0.le)
   calc ∑ e ∈ T, (2 : ℝ) * 6 ^ e.primeFactors.card
-      ≤ ∑ _e ∈ T, 2 * z ^ 2 := Finset.sum_le_sum hterm
-    _ = ((T.card : ℕ) : ℝ) * (2 * z ^ 2) := by rw [Finset.sum_const, nsmul_eq_mul]
-    _ ≤ z * (2 * z ^ 2) := mul_le_mul_of_nonneg_right hcard (by positivity)
-    _ = 2 * z ^ 3 := by ring
+      ≤ ∑ _e ∈ T, 2 * z ^ (2 : ℕ) := Finset.sum_le_sum hterm
+    _ = ((T.card : ℕ) : ℝ) * (2 * z ^ (2 : ℕ)) := by rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ z * (2 * z ^ (2 : ℕ)) := mul_le_mul_of_nonneg_right hcard (by positivity)
+    _ = 2 * z ^ (3 : ℕ) := by ring
 
 end RHTower.Sieve

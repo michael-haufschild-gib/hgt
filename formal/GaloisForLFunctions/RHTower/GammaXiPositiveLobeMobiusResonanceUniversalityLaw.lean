@@ -29,7 +29,7 @@ theorem gammaXiPositiveLobe_mobiusCriticalPrimeBlock_weightedLower
       gammaXiResponseGapSpectralDensity t *
           (1 + 1 / Real.sqrt y) ^ (mobiusCriticalPrimeWindow y).card ≤
         gammaXiResponseGapSpectralDensity t *
-          ‖mobiusCriticalPrimeBlock y t‖ ^ 2 := by
+          ‖mobiusCriticalPrimeBlock y t‖ ^ (2 : ℕ) := by
   have hy1 : 1 < y := by linarith
   have hlogy : 0 < Real.log y := Real.log_pos hy1
   have ht : 0 < t :=

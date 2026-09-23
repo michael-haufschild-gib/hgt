@@ -31,7 +31,7 @@ theorem exists_canonicalInsideCore_singleton_root_data
       canonicalInsideInfluenceDiskRoots A z = {alpha} ∧
       alpha ∈ realPolynomialUpperRootMultiset A ∧
       0 < alpha.im ∧ z ≠ alpha ∧
-      (z.re - alpha.re) ^ 2 + z.im ^ 2 < alpha.im ^ 2 ∧
+      (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) < alpha.im ^ (2 : ℕ) ∧
       (onePairLogDerivativeContribution eta alpha z).im ≤ -1 := by
   obtain ⟨alpha, hcore⟩ := Multiset.card_eq_one.mp hsingle
   have halphaCore : alpha ∈ canonicalInsideInfluenceDiskRoots A z := by
@@ -46,7 +46,7 @@ theorem exists_canonicalInsideCore_singleton_root_data
       (realPolynomial_roots_eq_real_add_conjugatePairs A)
       alpha halphaUpper
   have hinside :
-      (z.re - alpha.re) ^ 2 + z.im ^ 2 < alpha.im ^ 2 := by
+      (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) < alpha.im ^ (2 : ℕ) := by
     change alpha ∈ insideInfluenceDiskRoots z
       (realPolynomialUpperRootMultiset A) at halphaCore
     exact (Multiset.mem_filter.mp halphaCore).2
@@ -97,7 +97,7 @@ theorem
     Real.sqrt
         (LinearMap.det
           (finiteHardyCrossAngleComplementGramOperator A eta).toLinearMap).re <
-      eta / Real.sqrt (eta ^ 2 + alpha.im ^ 2) := by
+      eta / Real.sqrt (eta ^ (2 : ℕ) + alpha.im ^ (2 : ℕ)) := by
   have halphaCore : alpha ∈ canonicalInsideInfluenceDiskRoots A z := by
     rw [hcore]
     simp
@@ -126,7 +126,7 @@ theorem
         Real.sqrt
             (LinearMap.det
               (finiteHardyCrossAngleComplementGramOperator A eta).toLinearMap).re <
-          eta / Real.sqrt (eta ^ 2 + a0 ^ 2) := by
+          eta / Real.sqrt (eta ^ (2 : ℕ) + a0 ^ (2 : ℕ)) := by
   rcases
       canonicalInsideCore_card_eq_one_or_exists_finiteHardy_sqrt_det_strict_bound
         hA heta hz hroot with hsingle | hstrict

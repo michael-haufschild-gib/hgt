@@ -14,7 +14,7 @@ noncomputable section
 
 /-- The gauge preserves the actual transmission entries on the positive spectral ray. -/
 theorem regularTransmission_exp_eq_raw (q : SchwartzMap ℝ ℂ) (κ : ℝ) (i : Fin 2) :
-    regularScatteringMatrix q ((Real.exp κ)^2) i i = rawScatteringMatrix q (Real.exp κ) i i := by
+    regularScatteringMatrix q ((Real.exp κ)^(2 : ℕ)) i i = rawScatteringMatrix q (Real.exp κ) i i := by
   rw [regularScatteringMatrix, uniformizedScatteringMatrix_amplitudes, rawScatteringMatrix_exp_eq]
   fin_cases i <;> rfl
 
@@ -43,7 +43,7 @@ theorem regularTransmission_diagonal_right_quotient_tendsto (q : SchwartzMap ℝ
   apply hh.congr'
   filter_upwards [self_mem_nhdsWithin] with z hz
   rw [regular_transmission_sqrt q z hz i, rawScatteringMatrix_cubic_factor]
-  have hsquare : (Real.sqrt z : ℂ)^2 = (z : ℂ) := by exact_mod_cast Real.sq_sqrt hz.le
+  have hsquare : (Real.sqrt z : ℂ)^(2 : ℕ) = (z : ℂ) := by exact_mod_cast Real.sq_sqrt hz.le
   have hroot : (Real.sqrt z : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt (Real.sqrt_pos.mpr hz))
   simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply_eq]
   rw [← hsquare]

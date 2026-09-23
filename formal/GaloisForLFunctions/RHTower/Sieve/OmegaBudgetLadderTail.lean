@@ -20,18 +20,18 @@ theorem integral_kernel_normSq_omegaWeighted_ladder_le {P : Finset ℕ} {B₀ : 
     {δ G T₀ αL βL β₀ : ℝ} (hδ : 0 < δ) (hG : 1 ≤ G) (hGT₀ : G ≤ T₀)
     (hαL : 0 ≤ αL) (hβL : 0 ≤ βL)
     (hhead : (∫ w in Set.Icc (-G) G,
-        ‖omegaWeightedMoebiusPoly P (Finset.Icc 1 B₀) w‖ ^ 2) ≤ β₀)
+        ‖omegaWeightedMoebiusPoly P (Finset.Icc 1 B₀) w‖ ^ (2 : ℕ)) ≤ β₀)
     (hmid : ∀ T : ℝ, G ≤ T → T ≤ T₀ →
-      (∫ w in Set.Icc (-T) T, ‖omegaWeightedMoebiusPoly P (Finset.Icc 1 B₀) w‖ ^ 2)
+      (∫ w in Set.Icc (-T) T, ‖omegaWeightedMoebiusPoly P (Finset.Icc 1 B₀) w‖ ^ (2 : ℕ))
         ≤ αL * T + βL) :
-    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ 2
-        * ‖omegaWeightedMoebiusPoly P (Finset.Icc 1 B₀) w‖ ^ 2)
-      ≤ 2 * δ ^ 2 * β₀
-        + (4 * (αL + 5 * Real.pi / 2 * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff P n‖ ^ 2)
+    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ (2 : ℕ)
+        * ‖omegaWeightedMoebiusPoly P (Finset.Icc 1 B₀) w‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ) * β₀
+        + (4 * (αL + 5 * Real.pi / 2 * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff P n‖ ^ (2 : ℕ))
               + 5 * Real.exp 1 / 2 * (B₀ : ℝ)
-                * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff P n‖ ^ 2) / T₀)
-            / (Real.pi ^ 2 * G)
-          + 4 * βL / (3 * Real.pi ^ 2 * G ^ 2)) := by
+                * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff P n‖ ^ (2 : ℕ)) / T₀)
+            / (Real.pi ^ (2 : ℕ) * G)
+          + 4 * βL / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ))) := by
   classical
   set S : Finset ℕ := Finset.Icc 1 B₀ with hS
   have hs0 : (0 : ℕ) ∉ S := by
@@ -43,12 +43,12 @@ theorem integral_kernel_normSq_omegaWeighted_ladder_le {P : Finset ℕ} {B₀ : 
     exact hn.2
   have hconv : ∀ w : ℝ, logPoly (omegaCoeff P) S w = omegaWeightedMoebiusPoly P S w :=
     fun w => logPoly_omegaCoeff_eq P S w
-  have hhead' : (∫ w in Set.Icc (-G) G, ‖logPoly (omegaCoeff P) S w‖ ^ 2) ≤ β₀ := by
+  have hhead' : (∫ w in Set.Icc (-G) G, ‖logPoly (omegaCoeff P) S w‖ ^ (2 : ℕ)) ≤ β₀ := by
     refine le_trans (le_of_eq ?_) hhead
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [hconv]
   have hmid' : ∀ T : ℝ, G ≤ T → T ≤ T₀ →
-      (∫ w in Set.Icc (-T) T, ‖logPoly (omegaCoeff P) S w‖ ^ 2) ≤ αL * T + βL := by
+      (∫ w in Set.Icc (-T) T, ‖logPoly (omegaCoeff P) S w‖ ^ (2 : ℕ)) ≤ αL * T + βL := by
     intro T h1 h2
     refine le_trans (le_of_eq ?_) (hmid T h1 h2)
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
@@ -66,23 +66,23 @@ theorem omegaBudget_le_of_ladder {x h : ℝ} {z₀ z B₀ : ℕ} {G T₀ αL βL
     (hδ : 0 < fibreWidth x h) (hB₀ : B₀ = ⌊Real.sqrt x + h⌋₊)
     (hG : 1 ≤ G) (hGT₀ : G ≤ T₀) (hαL : 0 ≤ αL) (hβL : 0 ≤ βL)
     (hhead : (∫ w in Set.Icc (-G) G,
-        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ 2) ≤ β₀)
+        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ (2 : ℕ)) ≤ β₀)
     (hmid : ∀ T : ℝ, G ≤ T → T ≤ T₀ →
       (∫ w in Set.Icc (-T) T,
-        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ 2) ≤ αL * T + βL) :
+        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ (2 : ℕ)) ≤ αL * T + βL) :
     omegaBudget x h z₀ z
       ≤ 16 * Real.sqrt x
-          * (2 * (fibreWidth x h) ^ 2 * β₀
+          * (2 * (fibreWidth x h) ^ (2 : ℕ) * β₀
             + (4 * (αL + 5 * Real.pi / 2
-                    * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2)
+                    * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ))
                   + 5 * Real.exp 1 / 2 * (B₀ : ℝ)
-                    * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2) / T₀)
-                / (Real.pi ^ 2 * G)
-              + 4 * βL / (3 * Real.pi ^ 2 * G ^ 2)))
-        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ 2 * (Real.sqrt x + 1)
+                    * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ)) / T₀)
+                / (Real.pi ^ (2 : ℕ) * G)
+              + 4 * βL / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ))))
+        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ (2 : ℕ) * (Real.sqrt x + 1)
         + 2 * (h + 1) * (2 * h + 1)
             * (4 * (Real.sqrt x / 2 + h + 1) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-              + 8 * ((Nat.primesLE z).card : ℝ) ^ 2) := by
+              + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ)) := by
   classical
   have hidx : fibreIndex x h = Finset.Icc 1 B₀ := by
     rw [hB₀]
@@ -107,21 +107,21 @@ theorem ladderDefectSum_nonneg {L B₀ : ℕ} {Q η : ℝ} (hQ1 : 1 < Q) (hη : 
       have : (1 : ℕ) ≤ ⌊(B₀ : ℝ) * (1 + η)⌋₊ := hpos
       exact_mod_cast this
   have hsum : (0 : ℝ) ≤ ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
-      * ((1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5 + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2) := by
+      * ((1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5 + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by
     refine Finset.sum_nonneg fun j _ => ?_
     have hbase : (0 : ℝ) < Q * (1 + η) ^ j := by positivity
     have h1 : (0 : ℝ) ≤ Q * (1 + η) ^ j * η + 1 := by positivity
     have h2 : (0 : ℝ) ≤ (1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-        + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2 := by positivity
+        + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ) := by positivity
     exact mul_nonneg h1 h2
   rw [ladderDefectSum]
   exact mul_nonneg (div_nonneg hlog hlogQ.le) hsum
 
 theorem ladderAffineSlope_nonneg {L B₀ : ℕ} {Q η ρ : ℝ} (hQ1 : 1 < Q) (hη : 0 ≤ η) :
     0 ≤ ladderAffineSlope L B₀ Q η ρ := by
-  have h1 : (0 : ℝ) ≤ 4 * (5 * Real.pi / 2) * ρ ^ 2
+  have h1 : (0 : ℝ) ≤ 4 * (5 * Real.pi / 2) * ρ ^ (2 : ℕ)
       * (∑ j ∈ Finset.range L, (Q * (1 + η) ^ j)
-          * Real.sqrt ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1)) ^ 2 := by positivity
+          * Real.sqrt ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1)) ^ (2 : ℕ) := by positivity
   have h2 : (0 : ℝ) ≤ 2 * (5 * Real.pi / 2) * ladderDefectSum L B₀ Q η :=
     mul_nonneg (by positivity) (ladderDefectSum_nonneg hQ1 hη)
   rw [ladderAffineSlope]
@@ -129,12 +129,12 @@ theorem ladderAffineSlope_nonneg {L B₀ : ℕ} {Q η ρ : ℝ} (hQ1 : 1 < Q) (h
 
 theorem ladderAffineConst_nonneg {z₀ z L B₀ : ℕ} {Q η ρ s w₀ : ℝ} (hQ1 : 1 < Q) (hη : 0 ≤ η) :
     0 ≤ ladderAffineConst z₀ z L B₀ Q η ρ s w₀ := by
-  have h1 : (0 : ℝ) ≤ 4 * (5 * Real.exp 1 / 2) * ρ ^ 2
+  have h1 : (0 : ℝ) ≤ 4 * (5 * Real.exp 1 / 2) * ρ ^ (2 : ℕ)
       * (∑ j ∈ Finset.range L, (Q * (1 + η) ^ j)
           * Real.sqrt (((B₀ : ℝ) / (Q * (1 + η) ^ j))
-              * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))) ^ 2 := by positivity
+              * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))) ^ (2 : ℕ) := by positivity
   have h2 : (0 : ℝ) ≤ 2 * (∑ j ∈ Finset.range L,
-      discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ 2 := by positivity
+      discMajorant (primesRange z₀ z) B₀ Q η s w₀ j) ^ (2 : ℕ) := by positivity
   have h3 : (0 : ℝ) ≤ 2 * (5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ))
       * ladderDefectSum L B₀ Q η :=
     mul_nonneg (by positivity) (ladderDefectSum_nonneg hQ1 hη)
@@ -154,22 +154,22 @@ theorem omegaBudget_le_ladder_final {x h : ℝ} {z₀ z L B₀ : ℕ} {Q η w₀
         ≤ s * ((B₀ : ℝ) / (Q * (1 + η) ^ j))) :
     omegaBudget x h z₀ z
       ≤ 16 * Real.sqrt x
-          * (2 * (fibreWidth x h) ^ 2
+          * (2 * (fibreWidth x h) ^ (2 : ℕ)
               * (ladderAffineSlope L B₀ Q η ρ * G + ladderAffineConst z₀ z L B₀ Q η ρ s w₀)
             + (4 * (ladderAffineSlope L B₀ Q η ρ + 5 * Real.pi / 2
-                    * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2)
+                    * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ))
                   + 5 * Real.exp 1 / 2 * (B₀ : ℝ)
-                    * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2) / T₀)
-                / (Real.pi ^ 2 * G)
-              + 4 * ladderAffineConst z₀ z L B₀ Q η ρ s w₀ / (3 * Real.pi ^ 2 * G ^ 2)))
-        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ 2 * (Real.sqrt x + 1)
+                    * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ)) / T₀)
+                / (Real.pi ^ (2 : ℕ) * G)
+              + 4 * ladderAffineConst z₀ z L B₀ Q η ρ s w₀ / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ))))
+        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ (2 : ℕ) * (Real.sqrt x + 1)
         + 2 * (h + 1) * (2 * h + 1)
             * (4 * (Real.sqrt x / 2 + h + 1) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-              + 8 * ((Nat.primesLE z).card : ℝ) ^ 2) := by
+              + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ)) := by
   classical
   have hmid : ∀ T : ℝ, G ≤ T → T ≤ T₀ →
       (∫ w in Set.Icc (-T) T,
-        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ 2)
+        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (Finset.Icc 1 B₀) w‖ ^ (2 : ℕ))
         ≤ ladderAffineSlope L B₀ Q η ρ * T + ladderAffineConst z₀ z L B₀ Q η ρ s w₀ := by
     intro T hGT hTT₀
     have hT1 : (1 : ℝ) ≤ T := le_trans hG hGT

@@ -51,10 +51,10 @@ theorem scatteringDensity_integrable (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
     (reflectedDerivative q).integrable.norm).const_mul (Real.exp κ)
 
 def interactionRate (q : SchwartzMap ℝ ℂ) (κ x : ℝ) (v : SpectralVector) : SpectralVector :=
-  rotatingFrame ((Real.exp κ)^2) x
+  rotatingFrame ((Real.exp κ)^(2 : ℕ)) x
     (pairOperator 0 (I*(Real.exp κ:ℂ)*reflectedDerivative q x)
       (I*(Real.exp κ:ℂ)*deriv q x) 0
-      (rotatingFrame (-((Real.exp κ)^2)) x v))
+      (rotatingFrame (-((Real.exp κ)^(2 : ℕ))) x v))
 
 theorem interactionRate_bound (q : SchwartzMap ℝ ℂ) (κ x : ℝ) (v : SpectralVector) :
     ‖interactionRate q κ x v‖ ≤ scatteringDensity q κ x*‖v‖ := by
@@ -71,36 +71,36 @@ theorem interactionRate_continuous (q : SchwartzMap ℝ ℂ) (κ : ℝ) :
     Continuous (fun p : ℝ × SpectralVector => interactionRate q κ p.1 p.2) := by
   unfold interactionRate rotatingFrame pairOperator
   change Continuous fun p : ℝ × SpectralVector =>
-    (FDNLS.staggerPhase ((Real.exp κ)^2) p.1 *
-      (0*(FDNLS.staggerPhase (-((Real.exp κ)^2)) p.1*p.2.1) +
+    (FDNLS.staggerPhase ((Real.exp κ)^(2 : ℕ)) p.1 *
+      (0*(FDNLS.staggerPhase (-((Real.exp κ)^(2 : ℕ))) p.1*p.2.1) +
         (I*(Real.exp κ:ℂ)*reflectedDerivative q p.1)*
-          (FDNLS.staggerPhase (-(-((Real.exp κ)^2))) p.1*p.2.2)),
-     FDNLS.staggerPhase (-((Real.exp κ)^2)) p.1 *
+          (FDNLS.staggerPhase (-(-((Real.exp κ)^(2 : ℕ)))) p.1*p.2.2)),
+     FDNLS.staggerPhase (-((Real.exp κ)^(2 : ℕ))) p.1 *
       ((I*(Real.exp κ:ℂ)*SchwartzMap.derivCLM ℂ ℂ q p.1)*
-        (FDNLS.staggerPhase (-((Real.exp κ)^2)) p.1*p.2.1) +
-        0*(FDNLS.staggerPhase (-(-((Real.exp κ)^2))) p.1*p.2.2)))
+        (FDNLS.staggerPhase (-((Real.exp κ)^(2 : ℕ))) p.1*p.2.1) +
+        0*(FDNLS.staggerPhase (-(-((Real.exp κ)^(2 : ℕ)))) p.1*p.2.2)))
   unfold FDNLS.staggerPhase
   fun_prop
 
 /-- The constructed spatial eigenfunction viewed in its oscillating frame. -/
 def interactionSolution (q : SchwartzMap ℝ ℂ) (κ : ℝ) (v : SpectralVector) (x : ℝ) :
-    SpectralVector := rotatingFrame ((Real.exp κ)^2) x (spatialEigenfunction q (κ:ℂ) v x)
+    SpectralVector := rotatingFrame ((Real.exp κ)^(2 : ℕ)) x (spatialEigenfunction q (κ:ℂ) v x)
 
 /-- The diagonal terms cancel exactly in the rotating frame. -/
 theorem interactionSolution_hasDerivAt (q : SchwartzMap ℝ ℂ) (κ : ℝ)
     (v : SpectralVector) (x : ℝ) :
     HasDerivAt (interactionSolution q κ v)
       (interactionRate q κ x (interactionSolution q κ v x)) x := by
-  have h1 := (FDNLS.hasDerivAt_staggerPhase ((Real.exp κ)^2) x).mul
+  have h1 := (FDNLS.hasDerivAt_staggerPhase ((Real.exp κ)^(2 : ℕ)) x).mul
     (spatialEigenfunction_first_hasDerivAt q (κ:ℂ) v x)
-  have h2 := (FDNLS.hasDerivAt_staggerPhase (-((Real.exp κ)^2)) x).mul
+  have h2 := (FDNLS.hasDerivAt_staggerPhase (-((Real.exp κ)^(2 : ℕ))) x).mul
     (spatialEigenfunction_second_hasDerivAt q (κ:ℂ) v x)
   refine (h1.prodMk h2).congr_deriv ?_
-  change _ = rotatingFrame ((Real.exp κ)^2) x
+  change _ = rotatingFrame ((Real.exp κ)^(2 : ℕ)) x
     (pairOperator 0 (I*(Real.exp κ:ℂ)*reflectedDerivative q x)
       (I*(Real.exp κ:ℂ)*deriv q x) 0
-      (rotatingFrame (-((Real.exp κ)^2)) x
-        (rotatingFrame ((Real.exp κ)^2) x (spatialEigenfunction q (κ:ℂ) v x))))
+      (rotatingFrame (-((Real.exp κ)^(2 : ℕ))) x
+        (rotatingFrame ((Real.exp κ)^(2 : ℕ)) x (spatialEigenfunction q (κ:ℂ) v x))))
   rw [rotatingFrame_neg_inverse]
   apply Prod.ext <;>
     simp [rotatingFrame, pairOperator, reflectedDerivative_apply, ← Complex.ofReal_exp] <;> ring

@@ -2919,7 +2919,7 @@ lemma integrable_norm_fourier_scaled_of_CS2
     have hnorm : 0 ≤ ‖𝓕 (ψ : ℝ → ℂ) 0‖ := norm_nonneg _
     have hC' : ‖𝓕 (ψ : ℝ → ℂ) 0‖ ≤ C := by simpa using h0
     exact hnorm.trans hC'
-  have hmaj_int : Integrable (fun u : ℝ => (C : ℝ) / (1 + (u / (2 * Real.pi))^2)) := by
+  have hmaj_int : Integrable (fun u : ℝ => (C : ℝ) / (1 + (u / (2 * Real.pi))^(2 : ℕ))) := by
     have hbase : Integrable (fun u : ℝ => (1 + u ^ 2)⁻¹) := integrable_inv_one_add_sq
     have hscale :
         Integrable (fun u : ℝ => (1 + (u / (2 * Real.pi)) ^ 2)⁻¹) :=
@@ -2929,38 +2929,38 @@ lemma integrable_norm_fourier_scaled_of_CS2
   have hle :
       (fun u : ℝ => ‖𝓕 (ψ : ℝ → ℂ) (u / (2 * Real.pi))‖)
         ≤ᵐ[volume]
-      (fun u : ℝ => (C : ℝ) / (1 + (u / (2 * Real.pi))^2)) := by
+      (fun u : ℝ => (C : ℝ) / (1 + (u / (2 * Real.pi))^(2 : ℕ))) := by
     refine Filter.Eventually.of_forall ?_
     intro u
     simpa using (hdecay (u / (2 * Real.pi)))
   have hle_norm :
       (fun u : ℝ => ‖‖𝓕 (ψ : ℝ → ℂ) (u / (2 * Real.pi))‖‖)
         ≤ᵐ[volume]
-      (fun u : ℝ => ‖(C : ℝ) / (1 + (u / (2 * Real.pi))^2)‖) := by
+      (fun u : ℝ => ‖(C : ℝ) / (1 + (u / (2 * Real.pi))^(2 : ℕ))‖) := by
     refine hle.mono ?_
     intro u hu
     have hden_pos : 0 < 1 + (u / (2 * Real.pi)) ^ 2 := by nlinarith
-    have hnonneg : 0 ≤ (C : ℝ) / (1 + (u / (2 * Real.pi))^2) :=
+    have hnonneg : 0 ≤ (C : ℝ) / (1 + (u / (2 * Real.pi))^(2 : ℕ)) :=
       div_nonneg hC_nonneg hden_pos.le
     have hleft_nonneg : 0 ≤ ‖𝓕 (ψ : ℝ → ℂ) (u / (2 * Real.pi))‖ := norm_nonneg _
     have hbound : ‖‖𝓕 (ψ : ℝ → ℂ) (u / (2 * Real.pi))‖‖ ≤
-        (C : ℝ) / (1 + (u / (2 * Real.pi))^2) := by
+        (C : ℝ) / (1 + (u / (2 * Real.pi))^(2 : ℕ)) := by
       simpa [Real.norm_eq_abs, abs_of_nonneg hleft_nonneg] using hu
     have hC_abs : |C| = C := abs_of_nonneg hC_nonneg
-    have hden_abs : |1 + (u / (2 * Real.pi))^2| = 1 + (u / (2 * Real.pi))^2 := by
-      have : 0 ≤ 1 + (u / (2 * Real.pi))^2 := by nlinarith
+    have hden_abs : |1 + (u / (2 * Real.pi))^(2 : ℕ)| = 1 + (u / (2 * Real.pi))^(2 : ℕ) := by
+      have : 0 ≤ 1 + (u / (2 * Real.pi))^(2 : ℕ) := by nlinarith
       simpa using abs_of_nonneg this
     have hnorm :
-        ‖(C : ℝ) / (1 + (u / (2 * Real.pi))^2)‖ =
-          (C : ℝ) / (1 + (u / (2 * Real.pi))^2) := by
+        ‖(C : ℝ) / (1 + (u / (2 * Real.pi))^(2 : ℕ))‖ =
+          (C : ℝ) / (1 + (u / (2 * Real.pi))^(2 : ℕ)) := by
       have hrec :
-          ‖(C : ℝ) / (1 + (u / (2 * Real.pi))^2)‖ =
-            |C| / |1 + (u / (2 * Real.pi))^2| := by
+          ‖(C : ℝ) / (1 + (u / (2 * Real.pi))^(2 : ℕ))‖ =
+            |C| / |1 + (u / (2 * Real.pi))^(2 : ℕ)| := by
         simp [Real.norm_eq_abs]
       simp [hC_abs, hden_abs, hrec]
     simpa [hnorm] using hbound
   have hmaj_int_norm :
-      Integrable (fun u : ℝ => ‖(C : ℝ) / (1 + (u / (2 * Real.pi))^2)‖) :=
+      Integrable (fun u : ℝ => ‖(C : ℝ) / (1 + (u / (2 * Real.pi))^(2 : ℕ))‖) :=
     hmaj_int.norm
   have hmeas :
       AEStronglyMeasurable (fun u : ℝ => ‖𝓕 (ψ : ℝ → ℂ) (u / (2 * Real.pi))‖) := by

@@ -72,20 +72,20 @@ theorem not_exists_bound_gaussianGreenResidue :
   have hTpos : (0 : ℝ) < T := lt_of_lt_of_le zero_lt_one hT1
   have hres := hgrow ρ hstrip.1 hstrip.2 (le_of_lt (lt_of_le_of_lt hT0le hρT))
   -- the exponent is large
-  have hsq : T ^ 2 ≤ ρ.im ^ 2 := by
+  have hsq : T ^ (2 : ℕ) ≤ ρ.im ^ (2 : ℕ) := by
     have h := sq_abs ρ.im
     nlinarith [abs_nonneg ρ.im, hρT, hTpos]
-  have hu : |B| / C < ρ.im ^ 2 / (32 * Real.pi) := by
-    have hTT : T ≤ T ^ 2 := by nlinarith
+  have hu : |B| / C < ρ.im ^ (2 : ℕ) / (32 * Real.pi) := by
+    have hTT : T ≤ T ^ (2 : ℕ) := by nlinarith
     rw [lt_div_iff₀ (by positivity)]
     nlinarith [hsq, hTT, hTbig, hpi]
-  have hexp : ρ.im ^ 2 / (32 * Real.pi) < Real.exp (ρ.im ^ 2 / (32 * Real.pi)) :=
+  have hexp : ρ.im ^ (2 : ℕ) / (32 * Real.pi) < Real.exp (ρ.im ^ (2 : ℕ) / (32 * Real.pi)) :=
     lt_of_lt_of_le (lt_add_one _) (Real.add_one_le_exp _)
-  have hfinal : B < C * Real.exp (ρ.im ^ 2 / (32 * Real.pi)) := by
-    have h1 : |B| < C * (ρ.im ^ 2 / (32 * Real.pi)) := by
+  have hfinal : B < C * Real.exp (ρ.im ^ (2 : ℕ) / (32 * Real.pi)) := by
+    have h1 : |B| < C * (ρ.im ^ (2 : ℕ) / (32 * Real.pi)) := by
       have h := (div_lt_iff₀ hCpos).1 hu
       linarith [h]
-    have h2 : C * (ρ.im ^ 2 / (32 * Real.pi)) ≤ C * Real.exp (ρ.im ^ 2 / (32 * Real.pi)) :=
+    have h2 : C * (ρ.im ^ (2 : ℕ) / (32 * Real.pi)) ≤ C * Real.exp (ρ.im ^ (2 : ℕ) / (32 * Real.pi)) :=
       mul_le_mul_of_nonneg_left (le_of_lt hexp) (le_of_lt hCpos)
     exact lt_of_le_of_lt (le_abs_self B) (lt_of_lt_of_le h1 h2)
   exact absurd (le_trans hres (hB ρ hρ)) (not_le.2 hfinal)

@@ -32,21 +32,21 @@ If `z i = Σⱼ G i j · d j`, then `Σᵢ ‖z i‖² ≤ (Σᵢⱼ ‖G i j‖
 theorem sum_normSq_le_of_eq_sum_mul
     {ι κ : Type*} [Fintype ι] [Fintype κ] {z : ι → 𝕜} {G : ι → κ → 𝕜} {d : κ → 𝕜}
     (hz : ∀ i, z i = ∑ j, G i j * d j) :
-    (∑ i, ‖z i‖ ^ 2) ≤ (∑ i, ∑ j, ‖G i j‖ ^ 2) * ∑ j, ‖d j‖ ^ 2 := by
-  have hrow : ∀ i, ‖z i‖ ^ 2 ≤ (∑ j, ‖G i j‖ ^ 2) * ∑ j, ‖d j‖ ^ 2 := by
+    (∑ i, ‖z i‖ ^ (2 : ℕ)) ≤ (∑ i, ∑ j, ‖G i j‖ ^ (2 : ℕ)) * ∑ j, ‖d j‖ ^ (2 : ℕ) := by
+  have hrow : ∀ i, ‖z i‖ ^ (2 : ℕ) ≤ (∑ j, ‖G i j‖ ^ (2 : ℕ)) * ∑ j, ‖d j‖ ^ (2 : ℕ) := by
     intro i
     have hnorm : ‖z i‖ ≤ ∑ j, ‖G i j‖ * ‖d j‖ := by
       rw [hz i]
       refine le_trans (norm_sum_le _ _) (le_of_eq ?_)
       exact Finset.sum_congr rfl fun j _ => norm_mul _ _
-    have hCS : (∑ j, ‖G i j‖ * ‖d j‖) ^ 2
-        ≤ (∑ j, ‖G i j‖ ^ 2) * ∑ j, ‖d j‖ ^ 2 :=
+    have hCS : (∑ j, ‖G i j‖ * ‖d j‖) ^ (2 : ℕ)
+        ≤ (∑ j, ‖G i j‖ ^ (2 : ℕ)) * ∑ j, ‖d j‖ ^ (2 : ℕ) :=
       Finset.sum_mul_sq_le_sq_mul_sq _ _ _
     refine le_trans ?_ hCS
     exact pow_le_pow_left₀ (norm_nonneg _) hnorm 2
-  calc (∑ i, ‖z i‖ ^ 2) ≤ ∑ i, (∑ j, ‖G i j‖ ^ 2) * ∑ j, ‖d j‖ ^ 2 :=
+  calc (∑ i, ‖z i‖ ^ (2 : ℕ)) ≤ ∑ i, (∑ j, ‖G i j‖ ^ (2 : ℕ)) * ∑ j, ‖d j‖ ^ (2 : ℕ) :=
         Finset.sum_le_sum fun i _ => hrow i
-    _ = (∑ i, ∑ j, ‖G i j‖ ^ 2) * ∑ j, ‖d j‖ ^ 2 := by rw [← Finset.sum_mul]
+    _ = (∑ i, ∑ j, ‖G i j‖ ^ (2 : ℕ)) * ∑ j, ‖d j‖ ^ (2 : ℕ) := by rw [← Finset.sum_mul]
 
 /-- **The power of a sum against the sum of powers.**
 
@@ -81,15 +81,15 @@ theorem pow_sum_normSq_le_of_jacobi_relation
     {ι κ : Type*} [Fintype ι] [Nonempty ι] [Fintype κ]
     {ζ : ι → 𝕜} {G : ι → κ → 𝕜} {d : κ → 𝕜} {M : ℝ} {ν : ℕ}
     (hrel : ∀ i, ζ i ^ ν = ∑ j, G i j * d j)
-    (hM : (∑ i, ∑ j, ‖G i j‖ ^ 2) ≤ M) :
-    (∑ i, ‖ζ i‖ ^ 2) ^ ν ≤ (Fintype.card ι : ℝ) ^ ν * (M * ∑ j, ‖d j‖ ^ 2) := by
+    (hM : (∑ i, ∑ j, ‖G i j‖ ^ (2 : ℕ)) ≤ M) :
+    (∑ i, ‖ζ i‖ ^ (2 : ℕ)) ^ ν ≤ (Fintype.card ι : ℝ) ^ ν * (M * ∑ j, ‖d j‖ ^ (2 : ℕ)) := by
   have hstep := sum_normSq_le_of_eq_sum_mul (z := fun i => ζ i ^ ν) (G := G) (d := d) hrel
-  have hnorm : ∀ i, ‖ζ i ^ ν‖ ^ 2 = (‖ζ i‖ ^ 2) ^ ν := by
+  have hnorm : ∀ i, ‖ζ i ^ ν‖ ^ (2 : ℕ) = (‖ζ i‖ ^ (2 : ℕ)) ^ ν := by
     intro i
     rw [norm_pow]
     ring
   simp only [hnorm] at hstep
-  have hpm := pow_sum_le_card_pow_mul_sum_pow (a := fun i => ‖ζ i‖ ^ 2)
+  have hpm := pow_sum_le_card_pow_mul_sum_pow (a := fun i => ‖ζ i‖ ^ (2 : ℕ))
     (fun i => by positivity) ν
   refine hpm.trans ?_
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)

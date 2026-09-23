@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.QuantumNullSpaceTransport
 
 Equation (7) of arXiv:2609.07645 uses a sixth-order spectral cutoff.
 With positive cutoff scale `delta = exp a`, the regular inverse is
-`x^5/(x^6+delta^6)`. The identities below hold even at zero eigenvalue.
+`x^(5 : ℕ)/(x^(6 : ℕ)+delta^(6 : ℕ))`. The identities below hold even at zero eigenvalue.
 On the corpus's rotating rank-one information projector, filtering changes
 only the active eigenvalue and leaves the rotating null direction intact.
 -/
@@ -15,12 +15,12 @@ noncomputable section
 namespace HTGeometry
 
 /-- Regularized inverse of a real eigenvalue, with strictly positive cutoff scale. -/
-def quantumSoftInverse (a x : ℝ) : ℝ := x ^ 5 / (x ^ 6 + Real.exp a ^ 6)
+def quantumSoftInverse (a x : ℝ) : ℝ := x ^ (5 : ℕ) / (x ^ (6 : ℕ) + Real.exp a ^ (6 : ℕ))
 
 /-- The fraction of the unregularized response suppressed by the cutoff. -/
-def quantumSoftLoss (a x : ℝ) : ℝ := Real.exp a ^ 6 / (x ^ 6 + Real.exp a ^ 6)
+def quantumSoftLoss (a x : ℝ) : ℝ := Real.exp a ^ (6 : ℕ) / (x ^ (6 : ℕ) + Real.exp a ^ (6 : ℕ))
 
-private theorem soft_den_positive (a x : ℝ) : 0 < x ^ 6 + Real.exp a ^ 6 := by positivity
+private theorem soft_den_positive (a x : ℝ) : 0 < x ^ (6 : ℕ) + Real.exp a ^ (6 : ℕ) := by positivity
 
 /-- Exact retained-plus-lost response decomposition, including the null eigenvalue. -/
 theorem quantumSoft_response_partition (a x : ℝ) :
@@ -30,7 +30,7 @@ theorem quantumSoft_response_partition (a x : ℝ) :
 
 /-- The regularized response retains the sign of the original nonzero eigenvalue. -/
 theorem quantumSoftInverse_mul_nonnegative (a x : ℝ) : 0 ≤ x * quantumSoftInverse a x := by
-  have h : x * quantumSoftInverse a x = x ^ 6 / (x ^ 6 + Real.exp a ^ 6) := by
+  have h : x * quantumSoftInverse a x = x ^ (6 : ℕ) / (x ^ (6 : ℕ) + Real.exp a ^ (6 : ℕ)) := by
     unfold quantumSoftInverse
     ring
   rw [h]
@@ -54,9 +54,9 @@ theorem quantumSoftInverse_odd (a x : ℝ) : quantumSoftInverse a (-x) = -quantu
 /-- Explicit differentiability at every eigenvalue, including the exact kernel. -/
 theorem hasDerivAt_quantumSoftInverse (a x : ℝ) :
     HasDerivAt (quantumSoftInverse a)
-      (x ^ 4 * (5 * Real.exp a ^ 6 - x ^ 6) / (x ^ 6 + Real.exp a ^ 6) ^ 2) x := by
+      (x ^ (4 : ℕ) * (5 * Real.exp a ^ (6 : ℕ) - x ^ (6 : ℕ)) / (x ^ (6 : ℕ) + Real.exp a ^ (6 : ℕ)) ^ (2 : ℕ)) x := by
   have h := ((hasDerivAt_id x).pow 5).div
-    (((hasDerivAt_id x).pow 6).add (hasDerivAt_const x (Real.exp a ^ 6)))
+    (((hasDerivAt_id x).pow 6).add (hasDerivAt_const x (Real.exp a ^ (6 : ℕ))))
     (soft_den_positive a x).ne'
   exact h.congr_deriv (by dsimp; ring)
 
@@ -90,7 +90,7 @@ theorem rotatingSoft_response (a t : ℝ) :
 /-- The old null direction's filtered quadratic response still follows the rotation angle. -/
 theorem rotatingSoft_null_energy (a s t : ℝ) :
     (∑ i, ∑ j, rotatingNullDirection s i * rotatingSoftInverse a t i j * rotatingNullDirection s j) =
-      quantumSoftInverse a 1 * Real.sin (t - s) ^ 2 := by
+      quantumSoftInverse a 1 * Real.sin (t - s) ^ (2 : ℕ) := by
   have h := rotatingInformation_quadratic t (rotatingNullDirection s)
   rw [rotatingObservation_null_transport] at h
   rw [← h]

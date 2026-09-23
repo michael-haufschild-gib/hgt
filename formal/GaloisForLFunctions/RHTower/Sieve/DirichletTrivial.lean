@@ -45,9 +45,9 @@ theorem norm_inner_dirRow_le (N : ℕ) (t u : ℝ) :
 
 /-- **The pointwise trivial bound for a Dirichlet polynomial.** -/
 theorem dirichlet_pointwise (N : ℕ) (t : ℝ) (a : EuclideanSpace ℂ (Fin N)) :
-    ‖⟪dirRow N t, a⟫_ℂ‖ ^ 2 ≤ (N : ℝ) * ‖a‖ ^ 2 := by
+    ‖⟪dirRow N t, a⟫_ℂ‖ ^ (2 : ℕ) ≤ (N : ℝ) * ‖a‖ ^ (2 : ℕ) := by
   have hcs := norm_inner_le_norm (𝕜 := ℂ) (dirRow N t) a
-  have h1 : ‖⟪dirRow N t, a⟫_ℂ‖ ^ 2 ≤ (‖dirRow N t‖ * ‖a‖) ^ 2 :=
+  have h1 : ‖⟪dirRow N t, a⟫_ℂ‖ ^ (2 : ℕ) ≤ (‖dirRow N t‖ * ‖a‖) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hcs 2
   rw [mul_pow, norm_dirRow_sq] at h1
   exact h1
@@ -55,7 +55,7 @@ theorem dirichlet_pointwise (N : ℕ) (t : ℝ) (a : EuclideanSpace ℂ (Fin N))
 /-- **The trivial mean value theorem for Dirichlet polynomials.** -/
 theorem dirichlet_bessel_trivial {ι : Type*} (N : ℕ) (s : Finset ι) (τ : ι → ℝ)
     (a : EuclideanSpace ℂ (Fin N)) :
-    ∑ r ∈ s, ‖⟪dirRow N (τ r), a⟫_ℂ‖ ^ 2 ≤ ((s.card : ℝ) * (N : ℝ)) * ‖a‖ ^ 2 := by
+    ∑ r ∈ s, ‖⟪dirRow N (τ r), a⟫_ℂ‖ ^ (2 : ℕ) ≤ ((s.card : ℝ) * (N : ℝ)) * ‖a‖ ^ (2 : ℕ) := by
   refine dirichlet_bessel N s τ (by positivity) (fun r _ => ?_) a
   calc ∑ t ∈ s, ‖⟪dirRow N (τ r), dirRow N (τ t)⟫_ℂ‖
       ≤ ∑ _t ∈ s, (N : ℝ) :=

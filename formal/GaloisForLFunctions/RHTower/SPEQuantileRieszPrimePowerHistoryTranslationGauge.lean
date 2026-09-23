@@ -42,18 +42,18 @@ theorem ccmActualHeadParabolicCentroidVariance_add_constant
           rw [Finset.sum_add_distrib, Finset.mul_sum]
   have hsecond :
       (∑ n ∈ Finset.range (K + 1),
-        criticalMellinAtomWeight (n + 2) * (c (n + 2) + a) ^ 2) =
+        criticalMellinAtomWeight (n + 2) * (c (n + 2) + a) ^ (2 : ℕ)) =
       (∑ n ∈ Finset.range (K + 1),
-        criticalMellinAtomWeight (n + 2) * c (n + 2) ^ 2) +
+        criticalMellinAtomWeight (n + 2) * c (n + 2) ^ (2 : ℕ)) +
         2 * a * (∑ n ∈ Finset.range (K + 1),
           criticalMellinAtomWeight (n + 2) * c (n + 2)) +
-        a ^ 2 * ccmActualHeadParabolicMass K := by
+        a ^ (2 : ℕ) * ccmActualHeadParabolicMass K := by
     unfold ccmActualHeadParabolicMass
     calc
       _ = (∑ n ∈ Finset.range (K + 1),
-          (criticalMellinAtomWeight (n + 2) * c (n + 2) ^ 2 +
+          (criticalMellinAtomWeight (n + 2) * c (n + 2) ^ (2 : ℕ) +
             (2 * a) * (criticalMellinAtomWeight (n + 2) * c (n + 2)) +
-            a ^ 2 * criticalMellinAtomWeight (n + 2))) := by
+            a ^ (2 : ℕ) * criticalMellinAtomWeight (n + 2))) := by
           apply Finset.sum_congr rfl
           intro n hn
           ring

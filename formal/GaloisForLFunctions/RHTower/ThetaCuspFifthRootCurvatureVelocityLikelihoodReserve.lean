@@ -20,15 +20,15 @@ noncomputable section
 /-- Universal action three-jet core of the literal C5 numerator velocity. -/
 def thetaCuspReflectedActionFifthRootVelocityCore
     (r t q₁ q₂ q₃ : ℝ) : ℝ :=
-  r * (39 * q₁ + t * (q₂ - q₁ ^ 2) +
-      5 * t ^ 2 * (q₃ - 3 * q₁ * q₂ + q₁ ^ 3)) -
-    17 * t * q₁ ^ 2 - 3 * t ^ 2 * q₁ * (q₂ - q₁ ^ 2)
+  r * (39 * q₁ + t * (q₂ - q₁ ^ (2 : ℕ)) +
+      5 * t ^ (2 : ℕ) * (q₃ - 3 * q₁ * q₂ + q₁ ^ (3 : ℕ))) -
+    17 * t * q₁ ^ (2 : ℕ) - 3 * t ^ (2 : ℕ) * q₁ * (q₂ - q₁ ^ (2 : ℕ))
 
 /-- Exact positive-factor normalization of literal source velocity. -/
 theorem thetaCuspReflectedSourceFifthRootCurvatureVelocity_eq_product_sq_mul_actionCore
     (u t : ℝ) :
     thetaCuspReflectedSourceFifthRootCurvatureVelocity u t =
-      thetaCuspReflectedSourceProduct u t ^ 2 *
+      thetaCuspReflectedSourceProduct u t ^ (2 : ℕ) *
         thetaCuspReflectedActionFifthRootVelocityCore
           (Real.exp (thetaCuspReflectedLogAction u t) - 1) t
           (thetaCuspReflectedLogJetOne u t)
@@ -114,7 +114,7 @@ def thetaCuspCenterFifthRootVelocityLowerJetCore (t : ℝ) : ℝ :=
 /-- Universal six-curvature reserve carried by third likelihood jet. -/
 def thetaCuspCenterFifthRootVelocityMasterReservedCore (t : ℝ) : ℝ :=
   thetaCuspCenterFifthRootVelocityLowerJetCore t +
-    60 * (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) * t ^ 2 *
+    60 * (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) * t ^ (2 : ℕ) *
       thetaCuspLikelihoodSourceLogPartitionJetTwo t
 
 /-- Exact third-likelihood-channel decomposition of modular-center velocity core. -/
@@ -126,7 +126,7 @@ theorem thetaCuspReflectedActionFifthRootVelocityCore_zero_eq_lowerJet_sub_third
         (thetaCuspReflectedLogJetTwo 0 t)
         (thetaCuspReflectedLogJetThree 0 t) =
       thetaCuspCenterFifthRootVelocityLowerJetCore t -
-        10 * (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) * t ^ 2 *
+        10 * (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) * t ^ (2 : ℕ) *
           thetaCuspLikelihoodSourceLogPartitionJetThree t := by
   rw [thetaCuspReflectedLogJetThree_zero_eq_likelihood ht]
   unfold thetaCuspCenterFifthRootVelocityLowerJetCore
@@ -147,7 +147,7 @@ theorem thetaCuspCenterFifthRootVelocityMasterReservedCore_lt_actionCore
     rw [sub_pos, ← Real.exp_zero]
     exact Real.exp_lt_exp.mpr (thetaCuspReflectedLogAction_pos ht)
   have hgap := six_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree ht.le
-  have hfactor : 0 < 10 * (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) * t ^ 2 := by
+  have hfactor : 0 < 10 * (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) * t ^ (2 : ℕ) := by
     positivity
   have hscaled := mul_lt_mul_of_pos_left hgap hfactor
   rw [thetaCuspReflectedActionFifthRootVelocityCore_zero_eq_lowerJet_sub_thirdLikelihood ht]

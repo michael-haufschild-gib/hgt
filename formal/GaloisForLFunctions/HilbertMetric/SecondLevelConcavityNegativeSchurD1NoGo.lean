@@ -12,8 +12,8 @@ facts to force `D1 > 0`.
 
 This module closes that landing as false.  For
 
-`F(x) = exp (-x^2 - x^4/8)` and `s(t) = exp (-t - t^2/8)`, the first Laguerre expression is
-`exp (-2t - t^2/4)/4`, hence its logarithmic second derivative is globally `-1/2`.  The signed even
+`F(x) = exp (-x^(2 : ℕ) - x^(4 : ℕ)/8)` and `s(t) = exp (-t - t^(2 : ℕ)/8)`, the first Laguerre expression is
+`exp (-2t - t^(2 : ℕ)/4)/4`, hence its logarithmic second derivative is globally `-1/2`.  The signed even
 log jets are `(A,B,C,D) = (2,3,0,0)`.  Both Schur diagonals are strict and the coupling lies on the
 negative sheet, but the exact native polynomial is `D1 = -6252`.
 
@@ -29,45 +29,45 @@ noncomputable section
 
 /-- Positive even kernel giving the combined second-level/Schur counterexample. -/
 def tiltedQuarticGaussianKernel (x : ℝ) : ℝ :=
-  Real.exp (-x ^ 2 - x ^ 4 / 8)
+  Real.exp (-x ^ (2 : ℕ) - x ^ (4 : ℕ) / 8)
 
 /-- Square-radial profile of `tiltedQuarticGaussianKernel`. -/
 def tiltedQuadraticGaussianRadialProfile (x : ℝ) : ℝ :=
-  Real.exp (-x - x ^ 2 / 8)
+  Real.exp (-x - x ^ (2 : ℕ) / 8)
 
 theorem hasDerivAt_tiltedQuadraticGaussianRadialProfile (x : ℝ) :
     HasDerivAt tiltedQuadraticGaussianRadialProfile
-      ((-1 - x / 4) * Real.exp (-x - x ^ 2 / 8)) x := by
-  have hinner : HasDerivAt (fun y : ℝ => -y - y ^ 2 / 8) (-1 - x / 4) x := by
+      ((-1 - x / 4) * Real.exp (-x - x ^ (2 : ℕ) / 8)) x := by
+  have hinner : HasDerivAt (fun y : ℝ => -y - y ^ (2 : ℕ) / 8) (-1 - x / 4) x := by
     have h := (hasDerivAt_id x).neg.sub
       (((hasDerivAt_id x).pow 2).const_mul (1 / 8 : ℝ))
-    rw [show (fun y : ℝ => -y - y ^ 2 / 8) =
-        -id - fun y => (1 / 8 : ℝ) * (id ^ 2) y by
+    rw [show (fun y : ℝ => -y - y ^ (2 : ℕ) / 8) =
+        -id - fun y => (1 / 8 : ℝ) * (id ^ (2 : ℕ)) y by
       funext y
       simp only [Pi.sub_apply, Pi.neg_apply, Pi.pow_apply, id_eq]
       ring]
     refine h.congr_deriv ?_
     norm_num
     ring
-  have h := (Real.hasDerivAt_exp (-x - x ^ 2 / 8)).comp x hinner
+  have h := (Real.hasDerivAt_exp (-x - x ^ (2 : ℕ) / 8)).comp x hinner
   have hfun : tiltedQuadraticGaussianRadialProfile =
-      Real.exp ∘ fun y : ℝ => -y - y ^ 2 / 8 := by
+      Real.exp ∘ fun y : ℝ => -y - y ^ (2 : ℕ) / 8 := by
     rfl
   rw [hfun]
   exact h.congr_deriv (by ring)
 
 theorem iteratedDeriv_one_tiltedQuadraticGaussianRadialProfile (x : ℝ) :
     iteratedDeriv 1 tiltedQuadraticGaussianRadialProfile x =
-      (-1 - x / 4) * Real.exp (-x - x ^ 2 / 8) := by
+      (-1 - x / 4) * Real.exp (-x - x ^ (2 : ℕ) / 8) := by
   rw [iteratedDeriv_one,
     (hasDerivAt_tiltedQuadraticGaussianRadialProfile x).deriv]
 
 theorem iteratedDeriv_two_tiltedQuadraticGaussianRadialProfile (x : ℝ) :
     iteratedDeriv 2 tiltedQuadraticGaussianRadialProfile x =
-      ((-1 - x / 4) ^ 2 - 1 / 4) * Real.exp (-x - x ^ 2 / 8) := by
+      ((-1 - x / 4) ^ (2 : ℕ) - 1 / 4) * Real.exp (-x - x ^ (2 : ℕ) / 8) := by
   rw [iteratedDeriv_succ, iteratedDeriv_one]
   have hfun : deriv tiltedQuadraticGaussianRadialProfile =
-      fun y : ℝ => (-1 - y / 4) * Real.exp (-y - y ^ 2 / 8) := by
+      fun y : ℝ => (-1 - y / 4) * Real.exp (-y - y ^ (2 : ℕ) / 8) := by
     funext y
     exact (hasDerivAt_tiltedQuadraticGaussianRadialProfile y).deriv
   rw [hfun]
@@ -90,20 +90,20 @@ theorem iteratedDeriv_two_tiltedQuadraticGaussianRadialProfile (x : ℝ) :
 
 theorem firstLaguerreExpression_tiltedQuadraticGaussianRadialProfile (x : ℝ) :
     firstLaguerreExpression tiltedQuadraticGaussianRadialProfile x =
-      (1 / 4 : ℝ) * Real.exp (-2 * x - x ^ 2 / 4) := by
+      (1 / 4 : ℝ) * Real.exp (-2 * x - x ^ (2 : ℕ) / 4) := by
   unfold firstLaguerreExpression
   rw [iteratedDeriv_one_tiltedQuadraticGaussianRadialProfile,
     iteratedDeriv_two_tiltedQuadraticGaussianRadialProfile]
-  have hexp : Real.exp (-2 * x - x ^ 2 / 4) =
-      Real.exp (-x - x ^ 2 / 8) ^ 2 := by
+  have hexp : Real.exp (-2 * x - x ^ (2 : ℕ) / 4) =
+      Real.exp (-x - x ^ (2 : ℕ) / 8) ^ (2 : ℕ) := by
     calc
-      Real.exp (-2 * x - x ^ 2 / 4) =
-          Real.exp ((-x - x ^ 2 / 8) + (-x - x ^ 2 / 8)) := by
+      Real.exp (-2 * x - x ^ (2 : ℕ) / 4) =
+          Real.exp ((-x - x ^ (2 : ℕ) / 8) + (-x - x ^ (2 : ℕ) / 8)) := by
             congr 1
             ring
-      _ = Real.exp (-x - x ^ 2 / 8) * Real.exp (-x - x ^ 2 / 8) :=
+      _ = Real.exp (-x - x ^ (2 : ℕ) / 8) * Real.exp (-x - x ^ (2 : ℕ) / 8) :=
         Real.exp_add _ _
-      _ = Real.exp (-x - x ^ 2 / 8) ^ 2 := by ring
+      _ = Real.exp (-x - x ^ (2 : ℕ) / 8) ^ (2 : ℕ) := by ring
   rw [hexp]
   unfold tiltedQuadraticGaussianRadialProfile
   ring
@@ -115,33 +115,33 @@ theorem tiltedQuadraticGaussianRadialProfile_secondLevelLogCurvature (x : ℝ) :
       -(1 / 2 : ℝ) := by
   have hlog (y : ℝ) :
       Real.log (firstLaguerreExpression tiltedQuadraticGaussianRadialProfile y) =
-        Real.log (1 / 4 : ℝ) - 2 * y - y ^ 2 / 4 := by
+        Real.log (1 / 4 : ℝ) - 2 * y - y ^ (2 : ℕ) / 4 := by
     rw [firstLaguerreExpression_tiltedQuadraticGaussianRadialProfile,
       Real.log_mul (by norm_num) (Real.exp_ne_zero _), Real.log_exp]
     ring
   have hfun :
       (fun y => Real.log
         (firstLaguerreExpression tiltedQuadraticGaussianRadialProfile y)) =
-      fun y => Real.log (1 / 4 : ℝ) - 2 * y - y ^ 2 / 4 := by
+      fun y => Real.log (1 / 4 : ℝ) - 2 * y - y ^ (2 : ℕ) / 4 := by
     funext y
     exact hlog y
   rw [hfun, iteratedDeriv_succ, iteratedDeriv_one]
   have hfirstAt (y : ℝ) :
-      HasDerivAt (fun z : ℝ => Real.log (1 / 4 : ℝ) - 2 * z - z ^ 2 / 4)
+      HasDerivAt (fun z : ℝ => Real.log (1 / 4 : ℝ) - 2 * z - z ^ (2 : ℕ) / 4)
         (-2 - y / 2) y := by
     have h := (((hasDerivAt_const y (Real.log (1 / 4 : ℝ))).sub
       ((hasDerivAt_id y).const_mul 2)).sub
         (((hasDerivAt_id y).pow 2).const_mul (1 / 4 : ℝ)))
-    rw [show (fun z : ℝ => Real.log (1 / 4 : ℝ) - 2 * z - z ^ 2 / 4) =
+    rw [show (fun z : ℝ => Real.log (1 / 4 : ℝ) - 2 * z - z ^ (2 : ℕ) / 4) =
         ((fun _ : ℝ => Real.log (1 / 4 : ℝ)) - fun z => 2 * id z) -
-          fun z => (1 / 4 : ℝ) * (id ^ 2) z by
+          fun z => (1 / 4 : ℝ) * (id ^ (2 : ℕ)) z by
       funext z
       simp only [Pi.sub_apply, Pi.pow_apply, id_eq]
       ring]
     refine h.congr_deriv ?_
     norm_num
     ring
-  have hfirst : deriv (fun y : ℝ => Real.log (1 / 4 : ℝ) - 2 * y - y ^ 2 / 4) =
+  have hfirst : deriv (fun y : ℝ => Real.log (1 / 4 : ℝ) - 2 * y - y ^ (2 : ℕ) / 4) =
       fun y => -2 - y / 2 := by
     funext y
     exact (hfirstAt y).deriv
@@ -182,7 +182,7 @@ theorem tiltedQuadraticGaussianRadialProfile_eq_kernel_sqrt
       tiltedQuarticGaussianKernel (Real.sqrt x) := by
   unfold tiltedQuadraticGaussianRadialProfile tiltedQuarticGaussianKernel
   congr 1
-  rw [show Real.sqrt x ^ 4 = (Real.sqrt x ^ 2) ^ 2 by ring,
+  rw [show Real.sqrt x ^ (4 : ℕ) = (Real.sqrt x ^ (2 : ℕ)) ^ (2 : ℕ) by ring,
     Real.sq_sqrt hx]
 
 theorem firstLaguerreExpression_tiltedQuadraticGaussianRadialProfile_pos (x : ℝ) :
@@ -191,7 +191,7 @@ theorem firstLaguerreExpression_tiltedQuadraticGaussianRadialProfile_pos (x : �
   positivity
 
 def tiltedQuarticGaussianLogPolynomial : Polynomial ℝ :=
-  -Polynomial.X ^ 2 - Polynomial.C (1 / 8 : ℝ) * Polynomial.X ^ 4
+  -Polynomial.X ^ (2 : ℕ) - Polynomial.C (1 / 8 : ℝ) * Polynomial.X ^ (4 : ℕ)
 
 theorem log_tiltedQuarticGaussianKernel (x : ℝ) :
     Real.log (tiltedQuarticGaussianKernel x) =
@@ -250,9 +250,9 @@ theorem tiltedQuarticGaussianKernel_logJet_eight :
 
 /-- Exact Schur data and native reflected rank-three failure of the witness. -/
 theorem tiltedQuarticGaussian_exactSchurCertificate :
-    4 * (2 : ℝ) ^ 2 - 3 = 13 ∧
-      1216 * (2 : ℝ) ^ 4 - 32 * 2 ^ 2 * 3 + 68 * 3 ^ 2 - 0 = 19684 ∧
-      (0 : ℝ) - 64 * 2 ^ 3 = -512 ∧
+    4 * (2 : ℝ) ^ (2 : ℕ) - 3 = 13 ∧
+      1216 * (2 : ℝ) ^ (4 : ℕ) - 32 * 2 ^ (2 : ℕ) * 3 + 68 * 3 ^ (2 : ℕ) - 0 = 19684 ∧
+      (0 : ℝ) - 64 * 2 ^ (3 : ℕ) = -512 ∧
       RHTower.thetaCuspReflectedEighthPolynomial 2 3 0 0 = -6252 := by
   norm_num [RHTower.thetaCuspReflectedEighthPolynomial]
 
@@ -273,9 +273,9 @@ theorem exists_secondLevelStrict_kernel_with_strictSchur_negativeSheet_D1Failure
       let C := -iteratedDeriv 6 (fun y => Real.log (F y)) 0
       let D := -iteratedDeriv 8 (fun y => Real.log (F y)) 0
       0 < A ∧
-        0 < 4 * A ^ 2 - B ∧
-        0 < 1216 * A ^ 4 - 32 * A ^ 2 * B + 68 * B ^ 2 - D ∧
-        C - 64 * A ^ 3 < 0 ∧
+        0 < 4 * A ^ (2 : ℕ) - B ∧
+        0 < 1216 * A ^ (4 : ℕ) - 32 * A ^ (2 : ℕ) * B + 68 * B ^ (2 : ℕ) - D ∧
+        C - 64 * A ^ (3 : ℕ) < 0 ∧
         RHTower.thetaCuspReflectedEighthPolynomial A B C D < 0 := by
   refine ⟨tiltedQuarticGaussianKernel, tiltedQuadraticGaussianRadialProfile,
     tiltedQuarticGaussianKernel_pos, tiltedQuarticGaussianKernel_even,

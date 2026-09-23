@@ -60,12 +60,12 @@ theorem exists_xiZeroCount_window_ge_log :
   have hπ3 := Real.pi_gt_three
   set h : ℝ := 2 * Real.pi * (4 * C + 1) with hh
   have hpos : 0 < h := by positivity
-  have h144 : (144 : ℝ) ≤ (4 * Real.pi) ^ 2 := by nlinarith
-  refine ⟨h, hpos, max (max (T₀ + h) (2 * h)) ((4 * Real.pi) ^ 2), ?_, fun T hT => ?_⟩
-  · exact (by linarith : (4 : ℝ) ≤ (4 * Real.pi) ^ 2).trans (le_max_right _ _)
+  have h144 : (144 : ℝ) ≤ (4 * Real.pi) ^ (2 : ℕ) := by nlinarith
+  refine ⟨h, hpos, max (max (T₀ + h) (2 * h)) ((4 * Real.pi) ^ (2 : ℕ)), ?_, fun T hT => ?_⟩
+  · exact (by linarith : (4 : ℝ) ≤ (4 * Real.pi) ^ (2 : ℕ)).trans (le_max_right _ _)
   have hT1 : T₀ + h ≤ T := ((le_max_left _ _).trans (le_max_left _ _)).trans hT
   have hT2 : 2 * h ≤ T := ((le_max_right _ _).trans (le_max_left _ _)).trans hT
-  have hT3 : (4 * Real.pi) ^ 2 ≤ T := (le_max_right _ _).trans hT
+  have hT3 : (4 * Real.pi) ^ (2 : ℕ) ≤ T := (le_max_right _ _).trans hT
   have hT0 : 0 < T := by linarith
   have ha0 : 0 < T - h := by linarith
   have hab : T - h ≤ T + h := by linarith
@@ -125,7 +125,7 @@ theorem exists_re_logDeriv_xi_lineOne_loglog_lower' :
   classical
   obtain ⟨c, TL, hc, _hTL, hzf⟩ := Sieve.exists_littlewood_zero_free_region_abs
   obtain ⟨h, hh, T₁, _hT₁, hwin⟩ := exists_xiZeroCount_window_ge_log
-  refine ⟨c / (4 * (1 + h ^ 2)), by positivity, max (max T₁ TL) (max 16 h), ?_, ?_⟩
+  refine ⟨c / (4 * (1 + h ^ (2 : ℕ))), by positivity, max (max T₁ TL) (max 16 h), ?_, ?_⟩
   · exact (le_max_left _ _).trans (le_max_right _ _)
   intro t ht
   have ht16 : (16 : ℝ) ≤ t := ((le_max_left _ _).trans (le_max_right _ _)).trans ht
@@ -145,7 +145,7 @@ theorem exists_re_logDeriv_xi_lineOne_loglog_lower' :
   set s : ℂ := 1 + 2 * t * I with hsdef
   have hs1 : s.re = 1 := by simp [hsdef]
   have hsne : xi s ≠ 0 := xi_ne_zero_of_one_le_re (by rw [hs1])
-  set m : ℝ := c * Real.log (Real.log t) / (2 * Real.log t) / (1 + h ^ 2) with hmdef
+  set m : ℝ := c * Real.log (Real.log t) / (2 * Real.log t) / (1 + h ^ (2 : ℕ)) with hmdef
   have hm0 : 0 ≤ m := by positivity
   have hlo : 0 ≤ 2 * t - h := by linarith
   -- every zero of the window `(2t − h, 2t + h]` contributes at least `m`
@@ -178,13 +178,13 @@ theorem exists_re_logDeriv_xi_lineOne_loglog_lower' :
               (mul_nonneg hc.le (Real.log_nonneg (by linarith))) hlogγpos hden
     have h1β : c * Real.log (Real.log t) / (2 * Real.log t) ≤ 1 - (ρ : ℂ).re :=
       hwidth.trans hzf'
-    have hnormSq : normSq (s - (ρ : ℂ)) ≤ 1 + h ^ 2 := by
+    have hnormSq : normSq (s - (ρ : ℂ)) ≤ 1 + h ^ (2 : ℕ) := by
       rw [Complex.normSq_apply]
       have hre : (s - (ρ : ℂ)).re = 1 - (ρ : ℂ).re := by simp [hsdef]
       have him : (s - (ρ : ℂ)).im = 2 * t - (ρ : ℂ).im := by simp [hsdef]
       rw [hre, him]
       have h1 : (1 - (ρ : ℂ).re) * (1 - (ρ : ℂ).re) ≤ 1 := by nlinarith
-      have h2 : (2 * t - (ρ : ℂ).im) * (2 * t - (ρ : ℂ).im) ≤ h ^ 2 := by nlinarith
+      have h2 : (2 * t - (ρ : ℂ).im) * (2 * t - (ρ : ℂ).im) ≤ h ^ (2 : ℕ) := by nlinarith
       linarith
     have hnormSq_pos : 0 < normSq (s - (ρ : ℂ)) := by
       apply Complex.normSq_pos.mpr
@@ -192,8 +192,8 @@ theorem exists_re_logDeriv_xi_lineOne_loglog_lower' :
       have := congrArg Complex.re h
       simp only [Complex.sub_re, Complex.zero_re, hs1] at this
       linarith
-    calc m = c * Real.log (Real.log t) / (2 * Real.log t) / (1 + h ^ 2) := rfl
-      _ ≤ (1 - (ρ : ℂ).re) / (1 + h ^ 2) := div_le_div_of_nonneg_right h1β (by positivity)
+    calc m = c * Real.log (Real.log t) / (2 * Real.log t) / (1 + h ^ (2 : ℕ)) := rfl
+      _ ≤ (1 - (ρ : ℂ).re) / (1 + h ^ (2 : ℕ)) := div_le_div_of_nonneg_right h1β (by positivity)
       _ ≤ (1 - (ρ : ℂ).re) / normSq (s - (ρ : ℂ)) :=
           div_le_div_of_nonneg_left (by linarith) hnormSq_pos hnormSq
       _ ≤ xiPairedSupportTerm s ρ := xiPairedSupportTerm_ge hs1 ρ
@@ -220,10 +220,10 @@ theorem exists_re_logDeriv_xi_lineOne_loglog_lower' :
     mul_le_mul_of_nonneg_right hcount hm0
   have h2re : Real.log t * m ≤ 2 * (logDeriv xi s).re := by linarith
   have hlogt_pos : 0 < Real.log t := by linarith
-  have hval : Real.log t * m = c * Real.log (Real.log t) / (2 * (1 + h ^ 2)) := by
+  have hval : Real.log t * m = c * Real.log (Real.log t) / (2 * (1 + h ^ (2 : ℕ))) := by
     rw [hmdef]; field_simp; try ring
-  have hfinal : c / (4 * (1 + h ^ 2)) * Real.log (Real.log t) =
-      c * Real.log (Real.log t) / (2 * (1 + h ^ 2)) / 2 := by
+  have hfinal : c / (4 * (1 + h ^ (2 : ℕ))) * Real.log (Real.log t) =
+      c * Real.log (Real.log t) / (2 * (1 + h ^ (2 : ℕ))) / 2 := by
     field_simp; ring
   rw [hfinal]
   linarith

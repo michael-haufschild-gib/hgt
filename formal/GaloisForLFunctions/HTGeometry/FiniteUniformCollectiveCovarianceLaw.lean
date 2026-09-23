@@ -54,7 +54,7 @@ theorem sum_finiteUniformDirectionalWeight_le_one
     (Finset.univ : Finset I) (fun _ => (1 : ℝ)) (fun i => ‖target i‖)
   simp only [one_mul, one_pow, Finset.sum_const, Finset.card_univ,
     nsmul_eq_mul, mul_one] at hcs
-  have hrootNorm : Real.sqrt (∑ i : I, ‖target i‖ ^ 2) ≤ 1 := by
+  have hrootNorm : Real.sqrt (∑ i : I, ‖target i‖ ^ (2 : ℕ)) ≤ 1 := by
     rw [← EuclideanSpace.norm_sq_eq target,
       Real.sqrt_sq (norm_nonneg target)]
     exact htarget
@@ -63,7 +63,7 @@ theorem sum_finiteUniformDirectionalWeight_le_one
     calc
       ∑ i : I, ‖target i‖ ≤
           Real.sqrt (Fintype.card I : ℝ) *
-            Real.sqrt (∑ i : I, ‖target i‖ ^ 2) := hcs
+            Real.sqrt (∑ i : I, ‖target i‖ ^ (2 : ℕ)) := hcs
       _ ≤ Real.sqrt (Fintype.card I : ℝ) * 1 :=
         mul_le_mul_of_nonneg_left hrootNorm hsqrtPos.le
       _ = Real.sqrt (Fintype.card I : ℝ) := mul_one _
@@ -80,16 +80,16 @@ theorem sum_finiteUniformDirectionalWeight_le_one
 theorem sum_sq_finiteUniformDirectionalWeight_le_inv
     {I : Type*} [Fintype I] [Nonempty I]
     {target : EuclideanSpace ℂ I} (htarget : ‖target‖ ≤ 1) :
-    ∑ i, finiteUniformDirectionalWeight target i ^ 2 ≤
+    ∑ i, finiteUniformDirectionalWeight target i ^ (2 : ℕ) ≤
       (Fintype.card I : ℝ)⁻¹ := by
   have hcardR : 0 < (Fintype.card I : ℝ) := by positivity
   calc
-    ∑ i, finiteUniformDirectionalWeight target i ^ 2 =
-        (Real.sqrt (Fintype.card I : ℝ))⁻¹ ^ 2 *
-          ∑ i, ‖target i‖ ^ 2 := by
+    ∑ i, finiteUniformDirectionalWeight target i ^ (2 : ℕ) =
+        (Real.sqrt (Fintype.card I : ℝ))⁻¹ ^ (2 : ℕ) *
+          ∑ i, ‖target i‖ ^ (2 : ℕ) := by
       unfold finiteUniformDirectionalWeight
       simp_rw [mul_pow, ← Finset.mul_sum]
-    _ ≤ (Real.sqrt (Fintype.card I : ℝ))⁻¹ ^ 2 * 1 := by
+    _ ≤ (Real.sqrt (Fintype.card I : ℝ))⁻¹ ^ (2 : ℕ) * 1 := by
       apply mul_le_mul_of_nonneg_left _ (sq_nonneg _)
       rw [← EuclideanSpace.norm_sq_eq target]
       nlinarith [norm_nonneg target]
@@ -113,7 +113,7 @@ theorem norm_twistedGaussian_collectiveUniformDirection_le
       (r.factorial : ℝ) *
           (1 + replicaActionCrowdingDegree energy r δ) *
           (Fintype.card I : ℝ)⁻¹ ^ r +
-        Real.exp (-((T * δ) ^ 2) / 2) := by
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
   have hbase := norm_twistedGaussian_collectiveReplicaMean_one_le henergy
     (finiteUniformDirectionalWeight_nonneg target)
     (sum_finiteUniformDirectionalWeight_le_one htarget)
@@ -124,12 +124,12 @@ theorem norm_twistedGaussian_collectiveUniformDirection_le
   calc
     _ ≤ (r.factorial : ℝ) *
           (1 + replicaActionCrowdingDegree energy r δ) *
-          ∑ α, finiteUniformDirectionalWeight target α ^ 2 +
-        Real.exp (-((T * δ) ^ 2) / 2) := hbase
+          ∑ α, finiteUniformDirectionalWeight target α ^ (2 : ℕ) +
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := hbase
     _ ≤ (r.factorial : ℝ) *
           (1 + replicaActionCrowdingDegree energy r δ) *
           (Fintype.card (Fin r → I) : ℝ)⁻¹ +
-        Real.exp (-((T * δ) ^ 2) / 2) := by gcongr
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by gcongr
     _ = _ := by
       rw [Fintype.card_fun, Fintype.card_fin]
       push_cast

@@ -53,7 +53,7 @@ theorem coe_suzukiZeroMeanPrimitive_toDerivativeZeroMean {a : ℝ}
 `Dψ` has squared `L²` norm `π ⟨ψ,ψ⟩_W` for every smooth compactly supported test. -/
 theorem riemannHypothesis_iff_normSq_suzukiPHat_deriv :
     RiemannHypothesis ↔ ∀ (a : ℝ), 0 < a → ∀ ψ : SuzukiSmoothCompactTest a,
-      (∫ x : ℝ, ‖suzukiPHat (fun t => (ψ.toDerivativeZeroMean : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ 2)
+      (∫ x : ℝ, ‖suzukiPHat (fun t => (ψ.toDerivativeZeroMean : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ (2 : ℕ))
         = Real.pi * (suzukiWeilDistribution (suzukiHermitianConvolution ψ ψ)).re := by
   constructor
   · intro hRH a ha ψ
@@ -69,7 +69,7 @@ theorem riemannHypothesis_iff_normSq_suzukiPHat_deriv :
       exact suzukiScrewSmoothForm_congr φ φ _ _ hcoe.symm hcoe.symm
     have h1 := h (a + 1) (by linarith) ψ
     have h2 : (0 : ℝ) ≤ ∫ x : ℝ,
-        ‖suzukiPHat (fun t => (ψ.toDerivativeZeroMean : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ 2 :=
+        ‖suzukiPHat (fun t => (ψ.toDerivativeZeroMean : ℝ → ℂ) t) ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) :=
       MeasureTheory.integral_nonneg fun x => sq_nonneg _
     rw [h1] at h2
     rw [hform]

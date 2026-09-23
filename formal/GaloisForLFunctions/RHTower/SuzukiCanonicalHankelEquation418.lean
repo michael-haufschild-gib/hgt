@@ -262,7 +262,7 @@ theorem hasDerivAt_suzukiHankelCompletedBExterior
 theorem hasDerivAt_suzukiHankelCompletedARight_of_lt_one
     {omega a : ℝ} (homega : 1 < omega) (ha0 : 0 < a) (ha : a < 1) (z : ℂ) :
     HasDerivAt (fun b : ℝ => suzukiHankelCompletedARight omega homega b z)
-      (z * (suzukiHankelM omega homega a : ℂ) ^ 2 *
+      (z * (suzukiHankelM omega homega a : ℂ) ^ (2 : ℕ) *
         suzukiHankelCompletedBRight omega homega a z / (a : ℂ)) a := by
   have hext := hasDerivAt_suzukiHankelCompletedAExterior (omega := omega) ha0 z
   have heq : (fun b : ℝ => suzukiHankelCompletedARight omega homega b z) =ᶠ[𝓝 a]
@@ -279,7 +279,7 @@ theorem hasDerivAt_suzukiHankelCompletedARight_of_lt_one
 theorem hasDerivAt_suzukiHankelCompletedBRight_of_lt_one
     {omega a : ℝ} (homega : 1 < omega) (ha0 : 0 < a) (ha : a < 1) (z : ℂ) :
     HasDerivAt (fun b : ℝ => suzukiHankelCompletedBRight omega homega b z)
-      (-z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ 2 *
+      (-z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ (2 : ℕ) *
         suzukiHankelCompletedARight omega homega a z / (a : ℂ)) a := by
   have hext := hasDerivAt_suzukiHankelCompletedBExterior (omega := omega) ha0 z
   have heq : (fun b : ℝ => suzukiHankelCompletedBRight omega homega b z) =ᶠ[𝓝 a]
@@ -296,7 +296,7 @@ theorem hasDerivAt_suzukiHankelCompletedBRight_of_lt_one
 theorem hasDerivAt_suzukiHankelCompletedAClearedModeRight
     {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
     HasDerivAt (suzukiHankelCompletedAClearedModeRight omega homega z)
-      (z * (suzukiHankelM omega homega a : ℂ) ^ 2 *
+      (z * (suzukiHankelM omega homega a : ℂ) ^ (2 : ℕ) *
         suzukiHankelCompletedBClearedModeRight omega homega z a / (a : ℂ)) a := by
   have hmR := hasDerivAt_suzukiHankelM (a := a) homega
   have hmC := hmR.ofReal_comp
@@ -321,7 +321,7 @@ theorem hasDerivAt_suzukiHankelCompletedAClearedModeRight
 theorem hasDerivAt_suzukiHankelCompletedBClearedModeRight
     {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
     HasDerivAt (suzukiHankelCompletedBClearedModeRight omega homega z)
-      (-z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ 2 *
+      (-z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ (2 : ℕ) *
         suzukiHankelCompletedAClearedModeRight omega homega z a / (a : ℂ)) a := by
   have hmR := hasDerivAt_suzukiHankelM (a := a) homega
   have hmC := hmR.ofReal_comp
@@ -350,7 +350,7 @@ spectral regular-locus hypothesis is present. -/
 theorem hasDerivAt_suzukiHankelCompletedARight_equation418
     {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
     HasDerivAt (fun b : ℝ => suzukiHankelCompletedARight omega homega b z)
-      (z * (suzukiHankelM omega homega a : ℂ) ^ 2 *
+      (z * (suzukiHankelM omega homega a : ℂ) ^ (2 : ℕ) *
         suzukiHankelCompletedBRight omega homega a z / (a : ℂ)) a := by
   have hmode := hasDerivAt_suzukiHankelCompletedAClearedModeRight homega ha z
   have heq : (fun b : ℝ => suzukiHankelCompletedARight omega homega b z) =ᶠ[𝓝 a]
@@ -365,7 +365,7 @@ theorem hasDerivAt_suzukiHankelCompletedARight_equation418
 theorem hasDerivAt_suzukiHankelCompletedBRight_equation418
     {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
     HasDerivAt (fun b : ℝ => suzukiHankelCompletedBRight omega homega b z)
-      (-z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ 2 *
+      (-z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ (2 : ℕ) *
         suzukiHankelCompletedARight omega homega a z / (a : ℂ)) a := by
   have hmode := hasDerivAt_suzukiHankelCompletedBClearedModeRight homega ha z
   have heq : (fun b : ℝ => suzukiHankelCompletedBRight omega homega b z) =ᶠ[𝓝 a]
@@ -444,19 +444,19 @@ theorem hasDerivAt_suzukiHankelCompletedARight_one
   have hz : Tendsto (fun _ : ℝ => z) (𝓝[Ioi (1 : ℝ)] 1) (𝓝 z) :=
     tendsto_const_nhds
   have hraw : Tendsto
-      ((fun b : ℝ => z * (suzukiHankelM omega homega b : ℂ) ^ 2 * fB b) /
+      ((fun b : ℝ => z * (suzukiHankelM omega homega b : ℂ) ^ (2 : ℕ) * fB b) /
         fun b : ℝ => (b : ℂ))
       (𝓝[Ioi (1 : ℝ)] 1) (𝓝 (z * suzukiCanonicalB omega z)) := by
     simpa only [one_pow, mul_one, div_one] using
       (((hz.mul (hmC.pow 2)).mul hB).div haC (by norm_num : (1 : ℂ) ≠ 0))
   have hformula : Tendsto
-      (fun b : ℝ => z * (suzukiHankelM omega homega b : ℂ) ^ 2 * fB b / (b : ℂ))
+      (fun b : ℝ => z * (suzukiHankelM omega homega b : ℂ) ^ (2 : ℕ) * fB b / (b : ℂ))
       (𝓝[Ioi (1 : ℝ)] 1) (𝓝 (z * suzukiCanonicalB omega z)) := by
     refine hraw.congr' (Filter.Eventually.of_forall ?_)
     intro b
     rfl
   have hderivEq :
-      (fun b : ℝ => z * (suzukiHankelM omega homega b : ℂ) ^ 2 * fB b / (b : ℂ))
+      (fun b : ℝ => z * (suzukiHankelM omega homega b : ℂ) ^ (2 : ℕ) * fB b / (b : ℂ))
         =ᶠ[𝓝[Ioi (1 : ℝ)] 1] (fun b => deriv fA b) := by
     filter_upwards [self_mem_nhdsWithin] with b hb
     exact (hasDerivAt_suzukiHankelCompletedARight_equation418 homega hb z).deriv.symm
@@ -517,19 +517,19 @@ theorem hasDerivAt_suzukiHankelCompletedBRight_one
   have hz : Tendsto (fun _ : ℝ => (-z : ℂ)) (𝓝[Ioi (1 : ℝ)] 1) (𝓝 (-z)) :=
     tendsto_const_nhds
   have hraw : Tendsto
-      ((fun b : ℝ => -z * (suzukiHankelM omega homega b : ℂ)⁻¹ ^ 2 * fA b) /
+      ((fun b : ℝ => -z * (suzukiHankelM omega homega b : ℂ)⁻¹ ^ (2 : ℕ) * fA b) /
         fun b : ℝ => (b : ℂ))
       (𝓝[Ioi (1 : ℝ)] 1) (𝓝 (-z * suzukiCanonicalA omega z)) := by
     simpa only [one_pow, mul_one, div_one] using
       (((hz.mul (hmInv.pow 2)).mul hA).div haC (by norm_num : (1 : ℂ) ≠ 0))
   have hformula : Tendsto
-      (fun b : ℝ => -z * (suzukiHankelM omega homega b : ℂ)⁻¹ ^ 2 * fA b / (b : ℂ))
+      (fun b : ℝ => -z * (suzukiHankelM omega homega b : ℂ)⁻¹ ^ (2 : ℕ) * fA b / (b : ℂ))
       (𝓝[Ioi (1 : ℝ)] 1) (𝓝 (-z * suzukiCanonicalA omega z)) := by
     refine hraw.congr' (Filter.Eventually.of_forall ?_)
     intro b
     rfl
   have hderivEq :
-      (fun b : ℝ => -z * (suzukiHankelM omega homega b : ℂ)⁻¹ ^ 2 * fA b / (b : ℂ))
+      (fun b : ℝ => -z * (suzukiHankelM omega homega b : ℂ)⁻¹ ^ (2 : ℕ) * fA b / (b : ℂ))
         =ᶠ[𝓝[Ioi (1 : ℝ)] 1] (fun b => deriv fB b) := by
     filter_upwards [self_mem_nhdsWithin] with b hb
     exact (hasDerivAt_suzukiHankelCompletedBRight_equation418 homega hb z).deriv.symm
@@ -548,7 +548,7 @@ theorem hasDerivAt_suzukiHankelCompletedBRight_one
 theorem hasDerivAt_suzukiHankelCompletedARight_all_positive
     {omega a : ℝ} (homega : 1 < omega) (ha0 : 0 < a) (z : ℂ) :
     HasDerivAt (fun b : ℝ => suzukiHankelCompletedARight omega homega b z)
-      (z * (suzukiHankelM omega homega a : ℂ) ^ 2 *
+      (z * (suzukiHankelM omega homega a : ℂ) ^ (2 : ℕ) *
         suzukiHankelCompletedBRight omega homega a z / (a : ℂ)) a := by
   rcases lt_trichotomy a 1 with ha | rfl | ha
   · exact hasDerivAt_suzukiHankelCompletedARight_of_lt_one homega ha0 ha z
@@ -563,7 +563,7 @@ theorem hasDerivAt_suzukiHankelCompletedARight_all_positive
 theorem hasDerivAt_suzukiHankelCompletedBRight_all_positive
     {omega a : ℝ} (homega : 1 < omega) (ha0 : 0 < a) (z : ℂ) :
     HasDerivAt (fun b : ℝ => suzukiHankelCompletedBRight omega homega b z)
-      (-z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ 2 *
+      (-z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ (2 : ℕ) *
         suzukiHankelCompletedARight omega homega a z / (a : ℂ)) a := by
   rcases lt_trichotomy a 1 with ha | rfl | ha
   · exact hasDerivAt_suzukiHankelCompletedBRight_of_lt_one homega ha0 ha z
@@ -579,7 +579,7 @@ theorem suzuki2012_equation_four_one_eight_first_of_one_lt
     {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
     -(a : ℂ) * deriv (fun b : ℝ =>
       suzukiHankelCompletedARight omega homega b z) a =
-      -z * (suzukiHankelM omega homega a : ℂ) ^ 2 *
+      -z * (suzukiHankelM omega homega a : ℂ) ^ (2 : ℕ) *
         suzukiHankelCompletedB omega a homega ha z := by
   rw [(hasDerivAt_suzukiHankelCompletedARight_equation418 homega ha z).deriv,
     congrFun (suzukiHankelCompletedBRight_of_one_lt homega ha) z]
@@ -592,7 +592,7 @@ theorem suzuki2012_equation_four_one_eight_second_of_one_lt
     {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
     -(a : ℂ) * deriv (fun b : ℝ =>
       suzukiHankelCompletedBRight omega homega b z) a =
-      z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ 2 *
+      z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ (2 : ℕ) *
         suzukiHankelCompletedA omega a homega ha z := by
   rw [(hasDerivAt_suzukiHankelCompletedBRight_equation418 homega ha z).deriv,
     congrFun (suzukiHankelCompletedARight_of_one_lt homega ha) z]
@@ -606,7 +606,7 @@ theorem suzuki2012_equation_four_one_eight_first
     {omega a : ℝ} (homega : 1 < omega) (ha : 0 < a) (z : ℂ) :
     -(a : ℂ) * deriv (fun b : ℝ =>
       suzukiHankelCompletedARight omega homega b z) a =
-      -z * (suzukiHankelM omega homega a : ℂ) ^ 2 *
+      -z * (suzukiHankelM omega homega a : ℂ) ^ (2 : ℕ) *
         suzukiHankelCompletedBRight omega homega a z := by
   rw [(hasDerivAt_suzukiHankelCompletedARight_all_positive homega ha z).deriv]
   have haC : (a : ℂ) ≠ 0 := by exact_mod_cast ha.ne'
@@ -618,7 +618,7 @@ theorem suzuki2012_equation_four_one_eight_second
     {omega a : ℝ} (homega : 1 < omega) (ha : 0 < a) (z : ℂ) :
     -(a : ℂ) * deriv (fun b : ℝ =>
       suzukiHankelCompletedBRight omega homega b z) a =
-      z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ 2 *
+      z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ (2 : ℕ) *
         suzukiHankelCompletedARight omega homega a z := by
   rw [(hasDerivAt_suzukiHankelCompletedBRight_all_positive homega ha z).deriv]
   have haC : (a : ℂ) ≠ 0 := by exact_mod_cast ha.ne'
@@ -631,11 +631,11 @@ theorem suzuki2012_equation_four_one_eight :
     ∀ (omega : ℝ) (homega : 1 < omega) (a : ℝ), 0 < a → ∀ (z : ℂ),
       (-(a : ℂ) * deriv (fun b : ℝ =>
           suzukiHankelCompletedARight omega homega b z) a =
-        -z * (suzukiHankelM omega homega a : ℂ) ^ 2 *
+        -z * (suzukiHankelM omega homega a : ℂ) ^ (2 : ℕ) *
           suzukiHankelCompletedBRight omega homega a z) ∧
       (-(a : ℂ) * deriv (fun b : ℝ =>
           suzukiHankelCompletedBRight omega homega b z) a =
-        z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ 2 *
+        z * (suzukiHankelM omega homega a : ℂ)⁻¹ ^ (2 : ℕ) *
           suzukiHankelCompletedARight omega homega a z) := by
   intro omega homega a ha z
   exact ⟨suzuki2012_equation_four_one_eight_first homega ha z,

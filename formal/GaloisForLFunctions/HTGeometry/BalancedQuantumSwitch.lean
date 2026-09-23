@@ -92,8 +92,8 @@ theorem norm_commutator_apply_eq_two_mul_norm_balancedQuantumSwitchOdd
 /-- Squared commutator response is four times odd-branch intensity. -/
 theorem norm_commutator_apply_sq_eq_four_mul_norm_balancedQuantumSwitchOdd_sq
     (A B : E →L[K] E) (psi : E) :
-    ‖((A * B - B * A) : E →L[K] E) psi‖ ^ 2 =
-      4 * ‖balancedQuantumSwitchOdd A B psi‖ ^ 2 := by
+    ‖((A * B - B * A) : E →L[K] E) psi‖ ^ (2 : ℕ) =
+      4 * ‖balancedQuantumSwitchOdd A B psi‖ ^ (2 : ℕ) := by
   rw [norm_commutator_apply_eq_two_mul_norm_balancedQuantumSwitchOdd]
   ring
 

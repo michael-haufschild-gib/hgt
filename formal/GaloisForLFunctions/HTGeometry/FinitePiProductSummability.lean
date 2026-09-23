@@ -74,7 +74,7 @@ theorem summable_fintype_pi_product_of_nonneg
 
 /-- Polynomially weighted Gaussians are summable over the natural numbers. -/
 theorem summable_pow_mul_exp_neg_nat_sq (A : ℕ) {sigma : ℝ} (hsigma : 0 < sigma) :
-    Summable (fun n : ℕ => (n : ℝ) ^ A * Real.exp (-sigma * (n : ℝ) ^ 2)) := by
+    Summable (fun n : ℕ => (n : ℝ) ^ A * Real.exp (-sigma * (n : ℝ) ^ (2 : ℕ))) := by
   have hgeom : Summable (fun n : ℕ =>
       (n : ℝ) ^ A * Real.exp (-((n : ℝ) * sigma))) := by
     have hr : ‖Real.exp (-sigma)‖ < 1 := by
@@ -85,7 +85,7 @@ theorem summable_pow_mul_exp_neg_nat_sq (A : ℕ) {sigma : ℝ} (hsigma : 0 < si
     congr 2
     ring
   refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_) hgeom
-  have hnn : (n : ℝ) ≤ (n : ℝ) ^ 2 := by
+  have hnn : (n : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by
     cases n with
     | zero => norm_num
     | succ n =>
@@ -97,7 +97,7 @@ theorem summable_pow_mul_exp_neg_nat_sq (A : ℕ) {sigma : ℝ} (hsigma : 0 < si
 /-- Adding one to the polynomial weight preserves discrete Gaussian summability. -/
 theorem summable_one_add_pow_mul_exp_neg_nat_sq
     (A : ℕ) {sigma : ℝ} (hsigma : 0 < sigma) :
-    Summable (fun n : ℕ => (1 + (n : ℝ)) ^ A * Real.exp (-sigma * (n : ℝ) ^ 2)) := by
+    Summable (fun n : ℕ => (1 + (n : ℝ)) ^ A * Real.exp (-sigma * (n : ℝ) ^ (2 : ℕ))) := by
   rw [← summable_nat_add_iff 1]
   have hbase := (summable_nat_add_iff 1).mpr
     ((summable_pow_mul_exp_neg_nat_sq A hsigma).mul_left ((2 : ℝ) ^ A))
@@ -108,19 +108,19 @@ theorem summable_one_add_pow_mul_exp_neg_nat_sq
   have hpow := pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ 1 + (n + 1 : ℕ)) hn A
   calc
     (1 + ((n + 1 : ℕ) : ℝ)) ^ A *
-          Real.exp (-sigma * ((n + 1 : ℕ) : ℝ) ^ 2)
+          Real.exp (-sigma * ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))
         ≤ (2 * ((n + 1 : ℕ) : ℝ)) ^ A *
-          Real.exp (-sigma * ((n + 1 : ℕ) : ℝ) ^ 2) :=
+          Real.exp (-sigma * ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_right hpow (Real.exp_pos _).le
     _ = (2 : ℝ) ^ A *
           (((n + 1 : ℕ) : ℝ) ^ A *
-            Real.exp (-sigma * ((n + 1 : ℕ) : ℝ) ^ 2)) := by ring
+            Real.exp (-sigma * ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))) := by ring
 
 /-- Polynomially weighted Gaussians are summable over the integers. -/
 theorem summable_one_add_natAbs_pow_mul_exp_neg_int_sq
     (A : ℕ) {sigma : ℝ} (hsigma : 0 < sigma) :
     Summable (fun z : ℤ =>
-      (1 + (z.natAbs : ℝ)) ^ A * Real.exp (-sigma * (z : ℝ) ^ 2)) := by
+      (1 + (z.natAbs : ℝ)) ^ A * Real.exp (-sigma * (z : ℝ) ^ (2 : ℕ))) := by
   rw [summable_int_iff_summable_nat_and_neg]
   constructor <;> simpa using summable_one_add_pow_mul_exp_neg_nat_sq A hsigma
 
@@ -132,9 +132,9 @@ theorem summable_fintype_pi_polynomialGaussian
     (hsigma : ∀ i, 0 < sigma i) :
     Summable (fun z : ι → ℤ =>
       ∏ i, (1 + ((z i).natAbs : ℝ)) ^ A i *
-        Real.exp (-sigma i * (z i : ℝ) ^ 2)) := by
+        Real.exp (-sigma i * (z i : ℝ) ^ (2 : ℕ))) := by
   let w : ι → ℤ → ℝ := fun i z =>
-    (1 + (z.natAbs : ℝ)) ^ A i * Real.exp (-sigma i * (z : ℝ) ^ 2)
+    (1 + (z.natAbs : ℝ)) ^ A i * Real.exp (-sigma i * (z : ℝ) ^ (2 : ℕ))
   change Summable (fun z : ι → ℤ => ∏ i, w i (z i))
   exact summable_fintype_pi_product_of_nonneg_over ι w
     (fun i => summable_one_add_natAbs_pow_mul_exp_neg_int_sq (A i) (hsigma i))
@@ -181,11 +181,11 @@ theorem tendsto_polynomialGaussian_tsum_outside_box_zero
     Filter.Tendsto (fun R =>
       ∑' z : {z : ι → ℤ // z ∉ integerLatticeBox ι R},
         ∏ i, (1 + ((z.1 i).natAbs : ℝ)) ^ A i *
-          Real.exp (-sigma i * (z.1 i : ℝ) ^ 2))
+          Real.exp (-sigma i * (z.1 i : ℝ) ^ (2 : ℕ)))
       Filter.atTop (nhds 0) := by
   exact (tendsto_tsum_compl_atTop_zero (fun z : ι → ℤ =>
     ∏ i, (1 + ((z i).natAbs : ℝ)) ^ A i *
-      Real.exp (-sigma i * (z i : ℝ) ^ 2))).comp
+      Real.exp (-sigma i * (z i : ℝ) ^ (2 : ℕ)))).comp
         (integerLatticeBox_tendsto_atTop ι)
 
 end GaloisForLFunctions

@@ -38,7 +38,7 @@ theorem ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge_pos (k : ℕ) :
 /-- The source-selected carrier gauge remains square-summable on canonical prime labels. -/
 theorem summable_sq_ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge :
     Summable (fun k : ℕ =>
-      ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge k ^ 2) := by
+      ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge k ^ (2 : ℕ)) := by
   have hinj : Function.Injective (fun k : ℕ => (nthPrimeSubtype k : ℕ)) :=
     nthPrimeSubtype_strictMono.injective
   have h :=
@@ -51,13 +51,13 @@ theorem summable_sq_ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge :
 
 private theorem not_summable_sq_and_inv_sq
     (g : ℕ → ℝ) (hg : ∀ k, g k ≠ 0) :
-    ¬ (Summable (fun k => g k ^ 2) ∧
-      Summable (fun k => (g k)⁻¹ ^ 2)) := by
+    ¬ (Summable (fun k => g k ^ (2 : ℕ)) ∧
+      Summable (fun k => (g k)⁻¹ ^ (2 : ℕ))) := by
   rintro ⟨hgSq, hgInvSq⟩
   have hprod : Tendsto
-      (fun k => g k ^ 2 * (g k)⁻¹ ^ 2) atTop (nhds 0) := by
+      (fun k => g k ^ (2 : ℕ) * (g k)⁻¹ ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa using hgSq.tendsto_atTop_zero.mul hgInvSq.tendsto_atTop_zero
-  have hone : (fun k => g k ^ 2 * (g k)⁻¹ ^ 2) =
+  have hone : (fun k => g k ^ (2 : ℕ) * (g k)⁻¹ ^ (2 : ℕ)) =
       (fun _ => (1 : ℝ)) := by
     funext k
     field_simp [hg k]
@@ -70,7 +70,7 @@ private theorem not_summable_sq_and_inv_sq
 the canonical ordinary-prime subsequence. -/
 theorem not_summable_inv_sq_ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge :
     ¬ Summable (fun k : ℕ =>
-      (ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge k)⁻¹ ^ 2) := by
+      (ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge k)⁻¹ ^ (2 : ℕ)) := by
   intro hdual
   exact not_summable_sq_and_inv_sq
     ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge
@@ -80,7 +80,7 @@ theorem not_summable_inv_sq_ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge :
 /-- Cofinal norm cost of the exact inverse-gauge readout. -/
 def ccmActualHeadMatchedPhaseNthPrimeProjectiveDualCost (N : ℕ) : ℝ :=
   ∑ k ∈ Finset.range N,
-    (ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge k)⁻¹ ^ 2
+    (ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge k)⁻¹ ^ (2 : ℕ)
 
 /-- Exact linearization of all atomwise projective ratios has divergent cofinal graph norm. -/
 theorem tendsto_ccmActualHeadMatchedPhaseNthPrimeProjectiveDualCost_atTop :
@@ -101,7 +101,7 @@ Thus the summable positive carrier cannot be converted into a cofinal linear FU 
 paying an unbounded singular graph norm. -/
 theorem not_exists_squareSummable_linearizes_ccmActualHeadMatchedPhaseNthPrimeProjectiveReadout :
     ¬ ∃ v : ℕ → ℝ,
-      Summable (fun k => v k ^ 2) ∧
+      Summable (fun k => v k ^ (2 : ℕ)) ∧
         LinearizesCCMActualHeadMatchedPhaseNthPrimeProjectiveReadout v := by
   rintro ⟨v, hv, hlinear⟩
   apply not_summable_inv_sq_ccmActualHeadMatchedPhaseNthPrimeProjectiveGauge

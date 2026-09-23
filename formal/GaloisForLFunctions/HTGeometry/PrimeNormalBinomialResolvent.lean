@@ -118,7 +118,7 @@ theorem ringChoose_succ (r : ℝ) (n : ℕ) :
 
 /-- **The half-integer binomial coefficient is the central binomial coefficient.**  This is the
 coefficient identity behind the card's `(13)`. -/
-theorem ringChoose_neg_half (n : ℕ) :
+theorem ringChoose_neg_half_primeNormalBinomialResolvent (n : ℕ) :
     Ring.choose (-(1 : ℝ) / 2) n = (-1) ^ n * (Nat.centralBinom n : ℝ) / 4 ^ n := by
   induction n with
   | zero => simp [Nat.centralBinom_zero]
@@ -151,7 +151,7 @@ theorem hasSum_centralBinom_rpow {z : ℝ} (hz : |z| < 1) :
     rw [binomialSeries_apply]
     have hp : ((List.ofFn (fun _ : Fin n => (-z))).prod) = (-z) ^ n := by simp
     have hneg : ((-z : ℝ)) ^ n = (-1) ^ n * z ^ n := by rw [← neg_one_mul, mul_pow]
-    rw [hp, smul_eq_mul, ringChoose_neg_half, hneg]
+    rw [hp, smul_eq_mul, ringChoose_neg_half_primeNormalBinomialResolvent, hneg]
     have hone : ((-1 : ℝ)) ^ n * ((-1 : ℝ)) ^ n = 1 := by
       rw [← pow_add, ← two_mul, pow_mul]; norm_num
     calc (-1 : ℝ) ^ n * (Nat.centralBinom n : ℝ) / 4 ^ n * ((-1) ^ n * z ^ n)

@@ -106,7 +106,7 @@ theorem replicaMoment_trace (r : ℕ) (w : C → ℝ) (target : C → α → ℂ
 theorem hsNormSq_replicaMoment (r : ℕ) (w : C → ℝ) (target : C → α → ℂ) :
     hsNormSq (replicaMoment r w target)
       = ∑ c, ∑ c', w c * w c' *
-          ‖finiteComplexInner (target c) (target c') ^ r‖ ^ 2 := by
+          ‖finiteComplexInner (target c) (target c') ^ r‖ ^ (2 : ℕ) := by
   classical
   have hI : ∀ c c' : C, (∑ x : Fin r → α,
       (starRingEnd ℂ) (finitePureTensorPower r (target c) x) *
@@ -125,7 +125,7 @@ theorem hsNormSq_replicaMoment (r : ℕ) (w : C → ℝ) (target : C → α → 
     rw [map_mul, Complex.conj_conj]
   have hkey : ((hsNormSq (replicaMoment r w target) : ℝ) : ℂ)
       = ∑ c, ∑ c', ((w c * w c' *
-          ‖finiteComplexInner (target c) (target c') ^ r‖ ^ 2 : ℝ) : ℂ) := by
+          ‖finiteComplexInner (target c) (target c') ^ r‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [hsNormSq_eq_sum_star]
     have hexpand : ∀ x y : Fin r → α,
         star (replicaMoment r w target x y) * replicaMoment r w target x y
@@ -180,17 +180,17 @@ theorem inv_card_le_hsNormSq_replicaMoment (r : ℕ) (w : C → ℝ) (target : C
     (hunit : ∀ c, finiteComplexInner (target c) (target c) = 1) :
     1 / (Fintype.card C : ℝ) ≤ hsNormSq (replicaMoment r w target) := by
   rw [hsNormSq_replicaMoment]
-  have hdiag : ∀ c : C, w c ^ 2 =
-      w c * w c * ‖finiteComplexInner (target c) (target c) ^ r‖ ^ 2 := by
+  have hdiag : ∀ c : C, w c ^ (2 : ℕ) =
+      w c * w c * ‖finiteComplexInner (target c) (target c) ^ r‖ ^ (2 : ℕ) := by
     intro c
     rw [hunit c, one_pow, norm_one, one_pow, mul_one]
     ring
-  have hstep : (∑ c, w c ^ 2) ≤ ∑ c, ∑ c', w c * w c' *
-      ‖finiteComplexInner (target c) (target c') ^ r‖ ^ 2 := by
+  have hstep : (∑ c, w c ^ (2 : ℕ)) ≤ ∑ c, ∑ c', w c * w c' *
+      ‖finiteComplexInner (target c) (target c') ^ r‖ ^ (2 : ℕ) := by
     refine Finset.sum_le_sum fun c _ => ?_
     rw [hdiag c]
     refine Finset.single_le_sum
-      (f := fun c' => w c * w c' * ‖finiteComplexInner (target c) (target c') ^ r‖ ^ 2)
+      (f := fun c' => w c * w c' * ‖finiteComplexInner (target c) (target c') ^ r‖ ^ (2 : ℕ))
       (fun c' _ => mul_nonneg (mul_nonneg (hw c) (hw c')) (sq_nonneg _)) (Finset.mem_univ c)
   exact le_trans (inv_card_le_sum_sq w hsum) hstep
 

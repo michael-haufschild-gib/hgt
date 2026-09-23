@@ -200,7 +200,7 @@ with `e₁ = p₁` (`esymm 1 = sum`). -/
 @[aesop safe]
 theorem secularMoment_girard_two (f : Fin n → ℂ) :
     2 * (univ.val.map f).esymm 2
-      = ((univ.val.map f).sum) ^ 2 - (univ.val.map (fun i => f i ^ 2)).sum := by
+      = ((univ.val.map f).sum) ^ (2 : ℕ) - (univ.val.map (fun i => f i ^ (2 : ℕ))).sum := by
   have he1 : ∀ s : Multiset ℂ, s.esymm 1 = s.sum :=
     fun s => by simp [Multiset.esymm, Multiset.powersetCard_one]
   have h := multiset_newton f 2 (by norm_num)
@@ -219,9 +219,9 @@ and `e₂` identities. Demonstrates the Newton engine scales to all orders. -/
 @[aesop safe]
 theorem secularMoment_girard_three (f : Fin n → ℂ) :
     6 * (univ.val.map f).esymm 3
-      = 2 * (univ.val.map (fun i => f i ^ 3)).sum
-        - 3 * (univ.val.map f).sum * (univ.val.map (fun i => f i ^ 2)).sum
-        + (univ.val.map f).sum ^ 3 := by
+      = 2 * (univ.val.map (fun i => f i ^ (3 : ℕ))).sum
+        - 3 * (univ.val.map f).sum * (univ.val.map (fun i => f i ^ (2 : ℕ))).sum
+        + (univ.val.map f).sum ^ (3 : ℕ) := by
   have he1 : ∀ s : Multiset ℂ, s.esymm 1 = s.sum :=
     fun s => by simp [Multiset.esymm, Multiset.powersetCard_one]
   have hg2 := secularMoment_girard_two f

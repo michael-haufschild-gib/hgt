@@ -17,7 +17,7 @@ namespace RHTower
 noncomputable section
 
 /-- Timelike mass action after rapidity reduction. -/
-def xiMassTimelikeAction (u h : ℝ) : ℝ := Real.sqrt (u ^ 2 - h ^ 2)
+def xiMassTimelikeAction (u h : ℝ) : ℝ := Real.sqrt (u ^ (2 : ℕ) - h ^ (2 : ℕ))
 
 /-- The Vaughan near-diagonal phase in the natural logarithmic coordinate. -/
 def nearDiagonalLogPhase (T r h : ℝ) : ℝ := nearDiagonalPhase T r (Real.exp h)

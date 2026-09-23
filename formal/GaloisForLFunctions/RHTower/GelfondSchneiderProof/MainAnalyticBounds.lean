@@ -428,7 +428,7 @@ lemma bound_n_le_r :
     · apply Real.rpow_nonneg
       exact le_trans zero_le_one (h7.one_le_c₄)
 
-lemma q_le_2sqrtmr : q^2 ≤ 2*h7.m*h7.r q hq0 h2mq := by
+lemma q_le_2sqrtmr : q^(2 : ℕ) ≤ 2*h7.m*h7.r q hq0 h2mq := by
   trans
   · apply h7.q_sq_le_two_mn q h2mq
   refine Nat.mul_le_mul (le_refl _) (n_le_r h7 q hq0 h2mq)
@@ -498,7 +498,7 @@ theorem q_sq2_neq_1 (m q : ℕ) (_ : 0 < q)
 
 theorem eq6b.extracted_1_1 :
   q * q ≤ (2 * h7.m : ℝ) ^ (h7.r q hq0 h2mq: ℝ) * (h7.r q hq0 h2mq: ℝ) := by
-    calc _ = (q^2: ℝ) := ?_
+    calc _ = (q^(2 : ℕ): ℝ) := ?_
          _ ≤ (2 * ↑h7.m: ℝ) * (h7.n q: ℝ) := ?_
          _ ≤ (2 * ↑h7.m: ℝ) ^ (h7.n q: ℝ) := ?_
          _ ≤ ((2*h7.m: ℝ)^(h7.r q hq0 h2mq: ℝ)) := ?_
@@ -526,7 +526,7 @@ theorem eq6b.extracted_1_1 :
 
 theorem eq6b.extracted_1_2 :
   q * q ≤ (2 * h7.m : ℝ) ^ (h7.r q hq0 h2mq: ℝ) := by
-    calc _ = (q^2: ℝ) := ?_
+    calc _ = (q^(2 : ℕ): ℝ) := ?_
          _ ≤ (2 * ↑h7.m: ℝ) * (h7.n q: ℝ) := ?_
          _ ≤ (2 * ↑h7.m: ℝ) ^ (h7.n q: ℝ) := ?_
          _ ≤ ((2*h7.m: ℝ)^(h7.r q hq0 h2mq: ℝ)) := ?_

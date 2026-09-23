@@ -161,7 +161,7 @@ theorem directionFieldRadical_sq_block (h2 : (2 : A) ≠ 0) (hδ : ∀ z, detuni
         - 4 * (dirBase h2 hδ (cubeSide d i false z) * dirBase h2 hδ (cubeSide d i true z)
             - dirVar h2 hδ * dirVar h2 hδ) := by
   have hpoly : (Polynomial.C (detuning d i z * detuning d i z)
-        + Polynomial.C (4 : A) * Polynomial.X ^ 2)
+        + Polynomial.C (4 : A) * Polynomial.X ^ (2 : ℕ))
       = (Polynomial.C (cubeSide d i false z) + Polynomial.C (cubeSide d i true z))
           * (Polynomial.C (cubeSide d i false z) + Polynomial.C (cubeSide d i true z))
         - 4 * (Polynomial.C (cubeSide d i false z) * Polynomial.C (cubeSide d i true z)

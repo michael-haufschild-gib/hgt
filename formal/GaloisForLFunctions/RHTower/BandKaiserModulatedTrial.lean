@@ -55,9 +55,9 @@ theorem fourier_bandTrunc_kaiserCosTrial (c w ξ : ℝ) :
 /-- The modulated spectral density is bounded by the arithmetic mean of the two shifted base
 densities. -/
 theorem norm_sq_fourier_bandTrunc_kaiserCosTrial_le (c w ξ : ℝ) :
-    ‖𝓕 (bandTrunc (kaiserCosTrial c w)) ξ‖ ^ 2 ≤
-      (‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ 2 +
-        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ + w)‖ ^ 2) / 2 := by
+    ‖𝓕 (bandTrunc (kaiserCosTrial c w)) ξ‖ ^ (2 : ℕ) ≤
+      (‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ (2 : ℕ) +
+        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ + w)‖ ^ (2 : ℕ)) / 2 := by
   let z := 𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)
   let u := 𝓕 (bandTrunc (kaiserTrial c)) (ξ + w)
   rw [fourier_bandTrunc_kaiserCosTrial]
@@ -70,8 +70,8 @@ theorem norm_sq_fourier_bandTrunc_kaiserCosTrial_le (c w ξ : ℝ) :
     exact div_le_div_of_nonneg_right (norm_add_le z u) (by norm_num)
   have hsq := pow_le_pow_left₀ (norm_nonneg ((z + u) / (2 : ℂ))) hnorm 2
   calc
-    ‖(z + u) / (2 : ℂ)‖ ^ 2 ≤ ((‖z‖ + ‖u‖) / 2) ^ 2 := hsq
-    _ ≤ (‖z‖ ^ 2 + ‖u‖ ^ 2) / 2 := by
+    ‖(z + u) / (2 : ℂ)‖ ^ (2 : ℕ) ≤ ((‖z‖ + ‖u‖) / 2) ^ (2 : ℕ) := hsq
+    _ ≤ (‖z‖ ^ (2 : ℕ) + ‖u‖ ^ (2 : ℕ)) / 2 := by
       nlinarith [sq_nonneg (‖z‖ - ‖u‖)]
 
 /-! ## Uniform control on the thin inner edge strip -/
@@ -88,7 +88,7 @@ theorem kaiserEdgeTransformBound_nonneg : 0 ≤ kaiserEdgeTransformBound := by
 /-- The exact odd-factorial transform series is uniformly bounded on the inner edge strip
 `0 ≤ c²-omega² ≤ 2`. -/
 theorem abs_integral_kaiserTrial_cos_le_edgeBound {c omega : ℝ}
-    (hinner : 0 ≤ c ^ 2 - omega ^ 2) (hedge : c ^ 2 - omega ^ 2 ≤ 2) :
+    (hinner : 0 ≤ c ^ (2 : ℕ) - omega ^ (2 : ℕ)) (hedge : c ^ (2 : ℕ) - omega ^ (2 : ℕ) ≤ 2) :
     |∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (omega * x)| ≤
       kaiserEdgeTransformBound := by
   rw [integral_kaiserTrial_cos, abs_of_nonneg]
@@ -97,9 +97,9 @@ theorem abs_integral_kaiserTrial_cos_le_edgeBound {c omega : ℝ}
 
 /-- Corresponding uniform spectral-density bound on the thin inner edge strip. -/
 theorem norm_sq_fourier_bandTrunc_kaiser_le_edgeBound {c ξ : ℝ}
-    (hinner : 0 ≤ c ^ 2 - (2 * Real.pi * ξ) ^ 2)
-    (hedge : c ^ 2 - (2 * Real.pi * ξ) ^ 2 ≤ 2) :
-    ‖𝓕 (bandTrunc (kaiserTrial c)) ξ‖ ^ 2 ≤ kaiserEdgeTransformBound ^ 2 := by
+    (hinner : 0 ≤ c ^ (2 : ℕ) - (2 * Real.pi * ξ) ^ (2 : ℕ))
+    (hedge : c ^ (2 : ℕ) - (2 * Real.pi * ξ) ^ (2 : ℕ) ≤ 2) :
+    ‖𝓕 (bandTrunc (kaiserTrial c)) ξ‖ ^ (2 : ℕ) ≤ kaiserEdgeTransformBound ^ (2 : ℕ) := by
   rw [norm_sq_fourier_bandTrunc_of_even (continuous_kaiserTrial c) (kaiserTrial_even c) ξ]
   rw [← sq_abs]
   exact pow_le_pow_left₀ (abs_nonneg _) (abs_integral_kaiserTrial_cos_le_edgeBound hinner hedge) 2

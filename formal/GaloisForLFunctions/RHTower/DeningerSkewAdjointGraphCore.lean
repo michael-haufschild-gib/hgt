@@ -45,9 +45,9 @@ theorem deningerSkew_re_inner_self (hA : DeningerSkewSymmetric A) (x : D) :
 
 /-- The real part of the shifted numerical value. -/
 theorem deningerSkew_re_inner_sub (hA : DeningerSkewSymmetric A) (z : ℂ) (x : D) :
-    (inner ℂ (A x - z • (x : E)) (x : E) : ℂ).re = -z.re * ‖(x : E)‖ ^ 2 := by
+    (inner ℂ (A x - z • (x : E)) (x : E) : ℂ).re = -z.re * ‖(x : E)‖ ^ (2 : ℕ) := by
   rw [inner_sub_left, inner_smul_left]
-  have hself : (inner ℂ (x : E) (x : E) : ℂ) = ((‖(x : E)‖ ^ 2 : ℝ) : ℂ) := by
+  have hself : (inner ℂ (x : E) (x : E) : ℂ) = ((‖(x : E)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [inner_self_eq_norm_sq_to_K]
     norm_cast
   rw [hself]
@@ -69,8 +69,8 @@ theorem deningerSkew_lower_bound (hA : DeningerSkewSymmetric A) (z : ℂ) (x : D
       simpa [RCLike.re_to_complex] using
         RCLike.abs_re_le_norm (K := ℂ) (inner ℂ (A x - z • (x : E)) ((x : E)))
     rw [deningerSkew_re_inner_sub hA z x] at hcs
-    have habs : |(-z.re * ‖(x : E)‖ ^ 2)| = |z.re| * ‖(x : E)‖ ^ 2 := by
-      rw [abs_mul, abs_neg, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖(x : E)‖ ^ 2)]
+    have habs : |(-z.re * ‖(x : E)‖ ^ (2 : ℕ))| = |z.re| * ‖(x : E)‖ ^ (2 : ℕ) := by
+      rw [abs_mul, abs_neg, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖(x : E)‖ ^ (2 : ℕ))]
     rw [habs] at hcs
     nlinarith [hcs, hx]
 

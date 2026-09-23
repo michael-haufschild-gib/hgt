@@ -79,7 +79,7 @@ theorem xiWeilCliffordPairing_coordinateReflectionPair_eq_normSq
     (q : XiZeroCopy) (a : ℂ) :
     let v := xiWeilCoordinateAtom q a +
       xiWeilCoordinateAtom (xiZeroCopyLineConjEquiv q) a
-    xiWeilCliffordPairing v v = ((‖v‖ ^ 2 : ℝ) : ℂ) := by
+    xiWeilCliffordPairing v v = ((‖v‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   dsimp only
   have hfix : xiWeilLineConjLinearIsometry
       (xiWeilCoordinateAtom q a +

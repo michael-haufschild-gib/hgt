@@ -15,7 +15,7 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAGibbsBarrierScale (w φ τ l : ℝ) : ℝ :=
-  egbFixedChargeAGibbsBarrier w φ τ l / egbCoexistenceASymmetricRatio τ ^ 4
+  egbFixedChargeAGibbsBarrier w φ τ l / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ)
 
 def egbFixedChargeAGibbsNormalizationState (w φ τ l : ℝ) : ℝ × ℝ :=
   (1 / egbFixedChargeAGibbsBarrierScale w φ τ l,
@@ -24,8 +24,8 @@ def egbFixedChargeAGibbsNormalizationState (w φ τ l : ℝ) : ℝ × ℝ :=
 
 def egbFixedChargeAGibbsNormalizationReference (w φ τ l ψ : ℝ) : ℝ :=
   (egbFixedChargeAGibbsNormalizationState w φ τ l).1 *
-    (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4) -
-  (egbFixedChargeAGibbsNormalizationState w φ τ l).2 * cos ψ ^ 4
+    (egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ)) -
+  (egbFixedChargeAGibbsNormalizationState w φ τ l).2 * cos ψ ^ (4 : ℕ)
 
 theorem egbFixedChargeAGibbsBarrierScale_pos (w φ τ l : ℝ) :
     0 < egbFixedChargeAGibbsBarrierScale w φ τ l := by
@@ -46,10 +46,10 @@ theorem egbFixedChargeAGibbsNormalizationState_critical_limit (w φ l : ℝ) :
 
 theorem egbFixedChargeAGibbsNormalizationReference_uniform_limit (w φ l : ℝ) :
     TendstoUniformly (fun τ ψ => egbFixedChargeAGibbsNormalizationReference w φ τ l ψ)
-      (fun ψ => 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4) atBot := by
+      (fun ψ => 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ)) atBot := by
   let model : (ℝ × ℝ) → Icc (-1 : ℝ) 1 → ℝ := fun s t =>
-    s.1 * (egbFixedChargeAGibbsOddCoefficient w φ * (t : ℝ) * (1 - (t : ℝ) ^ 2) ^ 2) -
-      s.2 * (1 - (t : ℝ) ^ 2) ^ 2
+    s.1 * (egbFixedChargeAGibbsOddCoefficient w φ * (t : ℝ) * (1 - (t : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ)) -
+      s.2 * (1 - (t : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ)
   have hc : Continuous ↿model := by dsimp [model]; fun_prop
   have hu := Continuous.tendstoUniformly model hc ((1 / egbFixedChargeAGibbsBarrierCoefficient w φ), (0 : ℝ))
   apply Metric.tendstoUniformly_iff.mpr
@@ -58,12 +58,12 @@ theorem egbFixedChargeAGibbsNormalizationReference_uniform_limit (w φ l : ℝ) 
   filter_upwards [(egbFixedChargeAGibbsNormalizationState_critical_limit w φ l).eventually he] with τ hτ
   intro ψ
   let t : Icc (-1 : ℝ) 1 := ⟨sin ψ, neg_one_le_sin ψ, sin_le_one ψ⟩
-  have hs : (1 - sin ψ ^ 2) ^ 2 = cos ψ ^ 4 := by
-    have h : 1 - sin ψ ^ 2 = cos ψ ^ 2 := by linarith [sin_sq_add_cos_sq ψ]
+  have hs : (1 - sin ψ ^ (2 : ℕ)) ^ (2 : ℕ) = cos ψ ^ (4 : ℕ) := by
+    have h : 1 - sin ψ ^ (2 : ℕ) = cos ψ ^ (2 : ℕ) := by linarith [sin_sq_add_cos_sq ψ]
     rw [h]
     ring
   have hcrit : model ((1 / egbFixedChargeAGibbsBarrierCoefficient w φ), (0 : ℝ)) t =
-      4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4 := by
+      4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ) := by
     dsimp [model, t]
     rw [hs, ← egbFixedChargeAGibbsOddCoefficient_barrier_ratio w φ]
     ring
@@ -75,11 +75,11 @@ theorem egbFixedChargeAGibbsNormalizationReference_uniform_limit (w φ l : ℝ) 
   rwa [hcrit, hactual] at h
 
 theorem egbFixedChargeAInteriorGibbsGap_normalization_error (w φ τ l₁ l₂ ψ : ℝ) :
-    (egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ 4) /
+    (egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ (4 : ℕ)) /
         egbCoexistenceASymmetricRatio τ - egbFixedChargeAGibbsNormalizationReference w φ τ l₂ ψ =
-    (((egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbCoexistenceASymmetricRatio τ ^ 4 -
-       egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ) -
-       egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4) / egbFixedChargeAGibbsBarrierScale w φ τ l₂ := by
+    (((egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) -
+       egbFixedChargeAGibbsBarrierCoefficient w φ * cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ) -
+       egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ)) / egbFixedChargeAGibbsBarrierScale w φ τ l₂ := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hb := egbFixedChargeAGibbsBarrier_pos w φ τ l₂
   unfold egbFixedChargeAGibbsNormalizationReference egbFixedChargeAGibbsNormalizationState egbFixedChargeAGibbsBarrierScale
@@ -88,8 +88,8 @@ theorem egbFixedChargeAInteriorGibbsGap_normalization_error (w φ τ l₁ l₂ �
 
 theorem egbFixedChargeAInteriorGibbsGap_uniform_normalized_first_limit (w φ l₁ l₂ : ℝ) :
     TendstoUniformly (fun τ ψ => (egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ -
-      cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ)
-      (fun ψ => 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4) atBot := by
+      cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ)
+      (fun ψ => 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ)) atBot := by
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
   have hB := egbFixedChargeAGibbsBarrierCoefficient_pos w φ
@@ -104,7 +104,7 @@ theorem egbFixedChargeAInteriorGibbsGap_uniform_normalized_first_limit (w φ l�
   have hpos := egbFixedChargeAGibbsBarrierScale_pos w φ τ l₂
   change egbFixedChargeAGibbsBarrierCoefficient w φ / 2 < egbFixedChargeAGibbsBarrierScale w φ τ l₂ at hq
   have herror : dist (egbFixedChargeAGibbsNormalizationReference w φ τ l₂ ψ)
-      ((egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ 4) /
+      ((egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ (4 : ℕ)) /
         egbCoexistenceASymmetricRatio τ) ≤ ε / 4 := by
     rw [dist_comm, Real.dist_eq, egbFixedChargeAInteriorGibbsGap_normalization_error, abs_div, abs_of_pos hpos]
     apply (div_le_iff₀ hpos).mpr
@@ -112,10 +112,10 @@ theorem egbFixedChargeAInteriorGibbsGap_uniform_normalized_first_limit (w φ l�
     rw [Real.dist_eq, abs_sub_comm] at heψ
     nlinarith
   calc
-    _ ≤ dist (4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4)
+    _ ≤ dist (4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ))
           (egbFixedChargeAGibbsNormalizationReference w φ τ l₂ ψ) +
         dist (egbFixedChargeAGibbsNormalizationReference w φ τ l₂ ψ)
-          ((egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ 4) /
+          ((egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ - cos ψ ^ (4 : ℕ)) /
             egbCoexistenceASymmetricRatio τ) := dist_triangle _ _ _
     _ < ε := by linarith [hr ψ]
 

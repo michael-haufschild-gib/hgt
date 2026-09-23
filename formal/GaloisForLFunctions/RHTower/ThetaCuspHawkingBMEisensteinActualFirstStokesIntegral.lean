@@ -55,18 +55,18 @@ theorem continuousOn_d4BMPoincareSeedVerticalSecondJetSlice
     exact h
   have hyC : (y : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hy0.ne'
   have hQpos : 0 <
-      ((p.pair.1 : ℝ) * y) ^ 2 +
-        ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 := by
+      ((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+        ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) := by
     change 0 < d4BMPoincareQuadratic ⟨z.x, y, hy0⟩ p.pair
     exact d4BMPoincareQuadratic_pos ⟨z.x, y, hy0⟩ p.pair p.pair_ne_zero
   have hQC :
-      (((((p.pair.1 : ℝ) * y) ^ 2 +
-        ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 : ℝ) : ℂ)) ≠ 0 := by
+      (((((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+        ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) : ℝ) : ℂ)) ≠ 0 := by
     exact_mod_cast hQpos.ne'
   unfold d4BMPoincareSeedVerticalSecondJetSlice
   let qC : ℝ → ℂ := fun q =>
-    (((p.pair.1 : ℝ) * q) ^ 2 +
-      ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 : ℝ)
+    (((p.pair.1 : ℝ) * q) ^ (2 : ℕ) +
+      ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) : ℝ)
   have hqC : ContinuousAt qC y := by
     dsimp only [qC]
     fun_prop
@@ -75,16 +75,16 @@ theorem continuousOn_d4BMPoincareSeedVerticalSecondJetSlice
   have hyfun : ContinuousAt (fun q : ℝ => (q : ℂ)) y :=
     Complex.continuous_ofReal.continuousAt
   have hfirst : ContinuousAt
-      (fun q : ℝ => s * (s - 1) / (q : ℂ) ^ 2) y :=
+      (fun q : ℝ => s * (s - 1) / (q : ℂ) ^ (2 : ℕ)) y :=
     continuousAt_const.div (hyfun.pow 2) (pow_ne_zero 2 hyC)
   have hsecond : ContinuousAt
       (fun q : ℝ =>
-        2 * s * (1 + 2 * s) * (p.pair.1 : ℂ) ^ 2 / qC q) y :=
+        2 * s * (1 + 2 * s) * (p.pair.1 : ℂ) ^ (2 : ℕ) / qC q) y :=
     continuousAt_const.div hqC hqCne
   have hthird : ContinuousAt
       (fun q : ℝ =>
-        4 * s * (s + 1) * (p.pair.1 : ℂ) ^ 4 * (q : ℂ) ^ 2 /
-          qC q ^ 2) y :=
+        4 * s * (s + 1) * (p.pair.1 : ℂ) ^ (4 : ℕ) * (q : ℂ) ^ (2 : ℕ) /
+          qC q ^ (2 : ℕ)) y :=
     (continuousAt_const.mul (hyfun.pow 2)).div (hqC.pow 2)
       (pow_ne_zero 2 hqCne)
   exact (((hfirst.sub hsecond).add hthird).mul hseed).continuousWithinAt
@@ -197,11 +197,11 @@ def d4BMActualFirstStokesVerticalDivergenceSlice
     (z : D4BMUpperHalfPlaneCoordinate)
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) (y : ℝ) : ℂ :=
   2 * d4BMCompletedPoincareVerticalSlice z Q y *
-      d4BMCompletedPoincareVerticalFirstJetSlice z P y ^ 2 +
+      d4BMCompletedPoincareVerticalFirstJetSlice z P y ^ (2 : ℕ) +
     2 * d4BMCompletedPoincareVerticalSlice z P y *
       d4BMCompletedPoincareVerticalSlice z Q y *
       d4BMCompletedPoincareVerticalSecondJetSlice z P y -
-    d4BMCompletedPoincareVerticalSlice z P y ^ 2 *
+    d4BMCompletedPoincareVerticalSlice z P y ^ (2 : ℕ) *
       d4BMCompletedPoincareVerticalSecondJetSlice z Q y
 
 theorem hasDerivAt_d4BMActualFirstStokesVerticalCurrentSlice_at_positive
@@ -319,7 +319,7 @@ theorem intervalIntegral_d4BMActualFirstStokesHorizontalDivergence_eq_sub
 /-- Height of the circular boundary of the standard modular domain above horizontal coordinate
 `x`.  Outside the geometric interval this total function is used only as an integration
 parameter. -/
-def d4BMModularArcHeight (x : ℝ) : ℝ := Real.sqrt (1 - x ^ 2)
+def d4BMModularArcHeight (x : ℝ) : ℝ := Real.sqrt (1 - x ^ (2 : ℕ))
 
 /-- Lowest height of the standard modular domain in the strip `|x| ≤ 1/2`. -/
 def d4BMModularArcFloor : ℝ := d4BMModularArcHeight (1 / 2)
@@ -371,14 +371,14 @@ theorem d4BMModularArcFloor_pos : 0 < d4BMModularArcFloor := by
 
 theorem d4BMModularArcFloor_gt_half : (1 / 2 : ℝ) < d4BMModularArcFloor := by
   unfold d4BMModularArcFloor d4BMModularArcHeight
-  have hsq : Real.sqrt (1 - (1 / 2 : ℝ) ^ 2) ^ 2 =
-      1 - (1 / 2 : ℝ) ^ 2 := Real.sq_sqrt (by norm_num)
-  have hsqrt := Real.sqrt_nonneg (1 - (1 / 2 : ℝ) ^ 2)
+  have hsq : Real.sqrt (1 - (1 / 2 : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) =
+      1 - (1 / 2 : ℝ) ^ (2 : ℕ) := Real.sq_sqrt (by norm_num)
+  have hsqrt := Real.sqrt_nonneg (1 - (1 / 2 : ℝ) ^ (2 : ℕ))
   nlinarith
 
 theorem d4BMModularArcHeight_sq
     {x : ℝ} (hx : x ∈ Set.Icc (-(1 / 2)) (1 / 2)) :
-    d4BMModularArcHeight x ^ 2 = 1 - x ^ 2 := by
+    d4BMModularArcHeight x ^ (2 : ℕ) = 1 - x ^ (2 : ℕ) := by
   exact Real.sq_sqrt (le_of_lt (Real.sqrt_pos.1 (d4BMModularArcHeight_pos_of_mem hx)))
 
 theorem d4BMStokesCoordinate_eq_of_half_le
@@ -390,16 +390,16 @@ theorem d4BMStokesCoordinate_eq_of_half_le
 
 theorem d4BMStokesCoordinate_arc_unitCircle
     {x : ℝ} (hx : x ∈ Set.Icc (-(1 / 2)) (1 / 2)) :
-    (d4BMStokesCoordinate x (d4BMModularArcHeight x)).x ^ 2 +
-        (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y ^ 2 = 1 := by
+    (d4BMStokesCoordinate x (d4BMModularArcHeight x)).x ^ (2 : ℕ) +
+        (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y ^ (2 : ℕ) = 1 := by
   have harc : (1 / 2 : ℝ) ≤ d4BMModularArcHeight x := by
     have hxlo : -(1 / 2 : ℝ) ≤ x := hx.1
     have hxhi : x ≤ (1 / 2 : ℝ) := hx.2
     have hsq := d4BMModularArcHeight_sq hx
     have hsqrt : 0 ≤ d4BMModularArcHeight x := by
-      exact Real.sqrt_nonneg (1 - x ^ 2)
+      exact Real.sqrt_nonneg (1 - x ^ (2 : ℕ))
     nlinarith [sq_nonneg (x + 1 / 2), sq_nonneg (1 / 2 - x)]
-  change x ^ 2 + max (d4BMModularArcHeight x) (1 / 2) ^ 2 = 1
+  change x ^ (2 : ℕ) + max (d4BMModularArcHeight x) (1 / 2) ^ (2 : ℕ) = 1
   rw [max_eq_left harc, d4BMModularArcHeight_sq hx]
   ring
 
@@ -412,14 +412,14 @@ theorem d4BMStokesCoordinate_arc_invert
   apply d4BMUpperHalfPlaneCoordinate_eq_of_xy
   · change
       -(d4BMStokesCoordinate x (d4BMModularArcHeight x)).x /
-          ((d4BMStokesCoordinate x (d4BMModularArcHeight x)).x ^ 2 +
-            (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y ^ 2) = -x
+          ((d4BMStokesCoordinate x (d4BMModularArcHeight x)).x ^ (2 : ℕ) +
+            (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y ^ (2 : ℕ)) = -x
     rw [hcircle]
     simp [d4BMStokesCoordinate]
   · change
       (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y /
-          ((d4BMStokesCoordinate x (d4BMModularArcHeight x)).x ^ 2 +
-            (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y ^ 2) =
+          ((d4BMStokesCoordinate x (d4BMModularArcHeight x)).x ^ (2 : ℕ) +
+            (d4BMStokesCoordinate x (d4BMModularArcHeight x)).y ^ (2 : ℕ)) =
         (d4BMStokesCoordinate (-x) (d4BMModularArcHeight x)).y
     rw [hcircle]
     simp [d4BMStokesCoordinate]
@@ -545,7 +545,7 @@ theorem d4BM_actualFirstStokesVerticalBulk_eq_boundary
           (d4BMModularArcHeight x) (d4BMModularArcHeight_half_le hxI)]
 
 /-- Horizontal radius of the circular boundary at height `y`. -/
-def d4BMModularSideRadius (y : ℝ) : ℝ := Real.sqrt (1 - y ^ 2)
+def d4BMModularSideRadius (y : ℝ) : ℝ := Real.sqrt (1 - y ^ (2 : ℕ))
 
 theorem d4BMStokesCoordinate_right_eq_translate_left (y : ℝ) :
     d4BMStokesCoordinate (1 / 2) y =
@@ -592,7 +592,7 @@ theorem intervalIntegral_d4BMActualFirstStokesHorizontalDivergenceAt_eq_sub
       rw [hcoord, hcoord]
 
 /-- Horizontal divergence over the two side slivers below height one.  The central interval is
-excluded because the standard modular domain satisfies `x^2 + y^2 ≥ 1`. -/
+excluded because the standard modular domain satisfies `x^(2 : ℕ) + y^(2 : ℕ) ≥ 1`. -/
 def d4BMActualFirstStokesHorizontalLowerBulk
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
   ∫ y in d4BMModularArcFloor..1,
@@ -698,10 +698,10 @@ theorem hasDerivAt_d4BMModularArcHeight
     {x : ℝ} (hx : x ∈ Set.Ioo (0 : ℝ) (1 / 2)) :
     HasDerivAt d4BMModularArcHeight
       (-x / d4BMModularArcHeight x) x := by
-  have hpos : 0 < 1 - x ^ 2 := by nlinarith [hx.1, hx.2, sq_nonneg (x + 1 / 2)]
-  have hinner : HasDerivAt (fun q : ℝ => 1 - q ^ 2) (-2 * x) x := by
+  have hpos : 0 < 1 - x ^ (2 : ℕ) := by nlinarith [hx.1, hx.2, sq_nonneg (x + 1 / 2)]
+  have hinner : HasDerivAt (fun q : ℝ => 1 - q ^ (2 : ℕ)) (-2 * x) x := by
     have h := (hasDerivAt_const x (1 : ℝ)).sub ((hasDerivAt_id x).pow 2)
-    have hfun : ((fun _ : ℝ => 1) - id ^ 2) = (fun q : ℝ => 1 - q ^ 2) := by
+    have hfun : ((fun _ : ℝ => 1) - id ^ (2 : ℕ)) = (fun q : ℝ => 1 - q ^ (2 : ℕ)) := by
       funext q
       rfl
     rw [hfun] at h
@@ -952,7 +952,7 @@ theorem d4BM_actualFirstStokesDefectDensity_div_heightSq_eq_divergenceAt
     (P Q : D4BMEisensteinAbsoluteConvergenceParameter)
     (x y : ℝ) (hy : (1 / 2 : ℝ) ≤ y) :
     (2 * d4BMActualFirstStokesDefectDensity (d4BMStokesCoordinate x y) P Q) /
-        (y : ℂ) ^ 2 =
+        (y : ℂ) ^ (2 : ℕ) =
       d4BMActualFirstStokesHorizontalDivergenceAt P Q x y +
         d4BMActualFirstStokesVerticalDivergenceAt P Q x y := by
   have h := d4BM_actualFirstStokesDefectDensity_eq_divergence

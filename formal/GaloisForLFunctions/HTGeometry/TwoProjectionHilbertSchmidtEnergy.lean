@@ -14,7 +14,7 @@ then `C = RP - D`.  For orthogonal projections the two summands are Hilbert--Sch
 the range of `RP` lies in the `R` sector, whereas the range of `D` lies in the complementary
 sector after removal of the joint zero mode.  Consequently
 
-`||C||_HS^2 = ||RP||_HS^2 + ||D||_HS^2`.
+`||C||_HS^(2 : ℕ) = ||RP||_HS^(2 : ℕ) + ||D||_HS^(2 : ℕ)`.
 
 This is the trace-energy form of the two-projection supersymmetry used for pairs of Fermi
 projections.  It is a static value relation and needs no spectral decomposition.
@@ -530,8 +530,8 @@ theorem opTrace_twoProjectionInteriorCompression_sq_sub_exteriorCompression_sq_e
     (hRP : IsHilbertSchmidt (R * P))
     (hE : IsHilbertSchmidt (twoProjectionExteriorCompression P R Z))
     (n : ℕ) :
-    opTrace (twoProjectionInteriorCompression P R ^ 2) -
-        opTrace (twoProjectionExteriorCompression P R Z ^ 2) =
+    opTrace (twoProjectionInteriorCompression P R ^ (2 : ℕ)) -
+        opTrace (twoProjectionExteriorCompression P R Z ^ (2 : ℕ)) =
       opTrace (twoProjectionInteriorCompression P R ^ (n + 2)) -
         opTrace (twoProjectionExteriorCompression P R Z ^ (n + 2)) := by
   let A := twoProjectionInteriorCompression P R
@@ -540,7 +540,7 @@ theorem opTrace_twoProjectionInteriorCompression_sq_sub_exteriorCompression_sq_e
     change IsHilbertSchmidt ((P ∘L R) ∘L P)
     rw [ContinuousLinearMap.comp_assoc]
     exact hRP.comp_left P
-  change opTrace (A ^ 2) - opTrace (E ^ 2) =
+  change opTrace (A ^ (2 : ℕ)) - opTrace (E ^ (2 : ℕ)) =
     opTrace (A ^ (n + 2)) - opTrace (E ^ (n + 2))
   induction n with
   | zero => simp
@@ -558,7 +558,7 @@ theorem opTrace_twoProjectionInteriorCompression_sq_sub_exteriorCompression_sq_e
         rw [hAlinear, hElinear] at hPowerDifference
         linear_combination hPowerDifference
       calc
-        opTrace (A ^ 2) - opTrace (E ^ 2) =
+        opTrace (A ^ (2 : ℕ)) - opTrace (E ^ (2 : ℕ)) =
             opTrace (A ^ (n + 2)) - opTrace (E ^ (n + 2)) := ih
         _ = opTrace (A ^ (n + 3)) - opTrace (E ^ (n + 3)) := hstep
         _ = opTrace (A ^ (Nat.succ n + 2)) -

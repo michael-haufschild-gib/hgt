@@ -863,7 +863,7 @@ theorem not_tendsto_mobiusLaplaceCriticalProfile_zero_of_critical_zeta_zero
   exact (mul_ne_zero (Complex.Gamma_ne_zero_of_re_pos hrhoPos)
     (sub_ne_zero.mpr hrhoOne)) hvanish
 
-/-- **Unconditional critical-energy obstruction.**  `N * H_N^2` cannot tend to zero. -/
+/-- **Unconditional critical-energy obstruction.**  `N * H_N^(2 : ℕ)` cannot tend to zero. -/
 theorem not_tendsto_nat_mul_deningerHarmonicPartial_sq_zero :
     ¬ Tendsto (fun N : ℕ => (N : ℝ) * deningerHarmonicPartial N ^ 2)
       atTop (𝓝 0) := by

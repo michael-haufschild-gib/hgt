@@ -138,7 +138,7 @@ private theorem routeEConditionalBreadthCenteredVariance_succ
 /-- **Exact denominator-free conditional variance.**  If `B` has conditional binomial weights
 `choose(k,b) S^b R^(k-b)`, then
 
-`sum ((S+R)B-kS)^2 w(B) = k S R (S+R)^k`.
+`sum ((S+R)B-kS)^(2 : ℕ) w(B) = k S R (S+R)^k`.
 
 The identity remains valid at every degenerate endpoint and therefore needs no division or
 positivity premise. -/

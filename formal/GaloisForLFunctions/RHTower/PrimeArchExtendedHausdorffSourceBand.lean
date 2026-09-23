@@ -28,7 +28,7 @@ theorem twelvePointOne_mul_abs_im_xiZeroCopyReciprocalSquare_le_re
   let z := xiZeroCopyReciprocalSquare q
   have hre : 0 ≤ z.re := by
     simpa only [z, xiThermalNode] using (xiThermalNode_pos q).le
-  have hsq : z.im ^ 2 ≤ (1 / 147 : ℝ) * z.re ^ 2 := by
+  have hsq : z.im ^ (2 : ℕ) ≤ (1 / 147 : ℝ) * z.re ^ (2 : ℕ) := by
     simpa only [z, xiThermalNode] using
       xiThermalOrientationTerm_le_one_over_oneHundredFortySeven_node_sq q
   apply (sq_le_sq₀ (mul_nonneg (by norm_num) (abs_nonneg _)) hre).mp

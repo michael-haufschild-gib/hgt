@@ -47,7 +47,7 @@ theorem analyticOnNhd_meromorphicCauchyPairKernel_left
       (meromorphicCauchyPairPoleFreeDomain eps w) := by
   intro z hz
   rw [meromorphicCauchyPairPoleFreeDomain, Set.mem_setOf_eq] at hz
-  have hden : (z - w) ^ 2 - (eps : ℂ) ^ 2 ≠ 0 := by
+  have hden : (z - w) ^ (2 : ℕ) - (eps : ℂ) ^ (2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero hz.2 hz.1
   unfold meromorphicCauchyPairKernel

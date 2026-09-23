@@ -10,7 +10,7 @@ import GaloisForLFunctions.HTGeometry.PositiveJumpFormationChirality
 The cold prime/Gamma wall and its canonical Gamma-six correction agree with the completed Xi seam
 through quadratic order. Their cubic logarithmic mismatch is
 
-`normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4`.
+`normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4`.
 
 This module determines its orientation without fitting a clock or selecting Xi zeros. Strict
 log-concavity of the completed theta source makes its score strictly increasing. Integration by
@@ -30,7 +30,7 @@ private def thetaCuspScore : ℝ → ℝ :=
 
 private theorem hasDerivAt_thetaCuspScore (x : ℝ) :
     HasDerivAt thetaCuspScore
-      (-(thetaCuspLogConcavityNumerator x / thetaCuspFullSource x ^ 2)) x := by
+      (-(thetaCuspLogConcavityNumerator x / thetaCuspFullSource x ^ (2 : ℕ))) x := by
   have h₁ := hasDerivAt_thetaCuspFullDerivative 1 x
   rw [← iteratedDeriv_thetaCuspFullSource 1,
     ← iteratedDeriv_thetaCuspFullSource 2] at h₁
@@ -275,7 +275,7 @@ private theorem thetaCuspPositiveProdMeasure_ne_zero :
 private theorem thetaCuspHalfMoment_factorial_strictLogConcave
     (n : ℕ) (hn : 0 < n) :
     (n : ℝ) * thetaCuspHalfMoment (n - 1) * thetaCuspHalfMoment (n + 1) <
-      ((n + 1 : ℕ) : ℝ) * thetaCuspHalfMoment n ^ 2 := by
+      ((n + 1 : ℕ) : ℝ) * thetaCuspHalfMoment n ^ (2 : ℕ) := by
   let μ : Measure ℝ := volume.restrict (Ioi 0)
   let F : ℝ → ℝ := fun x => x ^ (n + 1) * thetaCuspFullSource x
   let H : ℝ → ℝ := fun x => x ^ n * thetaCuspFullSource x
@@ -395,7 +395,7 @@ private theorem thetaCuspFactorialMomentRatio_succ_lt
 /-- Strict factorial-normalized contraction at the fourth theta moment. -/
 theorem thetaCuspRawEvenMoment_two_mul_zero_lt_six_mul_one_sq :
     thetaCuspRawEvenMoment 2 * thetaCuspRawEvenMoment 0 <
-      6 * thetaCuspRawEvenMoment 1 ^ 2 := by
+      6 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) := by
   have h43 := thetaCuspFactorialMomentRatio_succ_lt 3 (by omega)
   have h32 := thetaCuspFactorialMomentRatio_succ_lt 2 (by omega)
   have h21 := thetaCuspFactorialMomentRatio_succ_lt 1 (by omega)
@@ -485,7 +485,7 @@ theorem thetaCuspRawEvenMoment_five_mul_zero_lt_fortyFive_mul_one_mul_four :
   nlinarith
 
 theorem normalizedPrimeArchMoment_two_sub_zero_cube_div_four_neg :
-    normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4 < 0 := by
+    normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4 < 0 := by
   have hraw := thetaCuspRawEvenMoment_three_mul_zero_lt_fifteen_mul_one_mul_two
   have hzero := thetaCuspRawEvenMoment_zero_pos
   rw [normalizedPrimeArchMoment_two_eq_thetaCuspNormalizedEvenMoment,

@@ -241,13 +241,13 @@ theorem casimir_eigenvalue_gap {gen : α → α → Matrix I I ℂ} {wt : I → 
     rw [← hi]
     exact hws.zerosum i
   -- the Casimir energy of the maximal weight vector
-  have hsmul : ∀ (c : ℂ) (X : I → ℂ), cnormSq (c • X) = ‖c‖ ^ 2 * cnormSq X := by
+  have hsmul : ∀ (c : ℂ) (X : I → ℂ), cnormSq (c • X) = ‖c‖ ^ (2 : ℕ) * cnormSq X := by
     intro c X
     rw [cnormSq, cnormSq, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Pi.smul_apply, smul_eq_mul, norm_mul, mul_pow]
   set F : α → α → ℝ := fun a b => cnormSq (gen a b *ᵥ Z) with hF
-  have hFdiag : ∀ a : α, F a a = ((nu a : ℤ) : ℝ) ^ 2 * cnormSq Z := by
+  have hFdiag : ∀ a : α, F a a = ((nu a : ℤ) : ℝ) ^ (2 : ℕ) * cnormSq Z := by
     intro a
     rw [hF]
     simp only
@@ -309,7 +309,7 @@ theorem casimir_eigenvalue_gap {gen : α → α → Matrix I I ℂ} {wt : I → 
     rw [hreal]
     -- evaluate the double sum
     have hdouble : (∑ a, ∑ b, F a b)
-        = (∑ a, ((nu a : ℤ) : ℝ) ^ 2 * cnormSq Z)
+        = (∑ a, ((nu a : ℤ) : ℝ) ^ (2 : ℕ) * cnormSq Z)
           + ∑ a, ∑ b, (if b < a then ((nu b - nu a : ℤ) : ℝ) * cnormSq Z else 0) := by
       rw [Finset.sum_congr rfl fun a _ => hsplitb a, Finset.sum_add_distrib]
       congr 1
@@ -343,7 +343,7 @@ theorem casimir_eigenvalue_gap {gen : α → α → Matrix I I ℂ} {wt : I → 
   by_cases hzero : ∀ a : α, nu a = 0
   · left
     rw [hlamval, weightCasimir]
-    have h1 : (∑ a, (nu a) ^ 2) = 0 := Finset.sum_eq_zero fun a _ => by rw [hzero a]; ring
+    have h1 : (∑ a, (nu a) ^ (2 : ℕ)) = 0 := Finset.sum_eq_zero fun a _ => by rw [hzero a]; ring
     have h2 : (∑ p ∈ Finset.univ.filter (fun p : α × α => p.1 < p.2), (nu p.1 - nu p.2)) = 0 :=
       Finset.sum_eq_zero fun p _ => by rw [hzero p.1, hzero p.2]; ring
     rw [h1, h2]

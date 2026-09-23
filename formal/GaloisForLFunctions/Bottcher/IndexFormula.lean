@@ -165,7 +165,7 @@ theorem fixedPointPoly_natDegree (c : ℂ) {p : ℕ} (hp : 1 ≤ p) :
   rw [fixedPointPoly]
   have hdX : (X : Polynomial ℂ).natDegree < (quadraticPolyIterate c p).natDegree := by
     rw [natDegree_X, quadraticPolyIterate_natDegree]
-    calc 1 < 2 ^ 1 := by norm_num
+    calc 1 < 2 ^ (1 : ℕ) := by norm_num
       _ ≤ 2 ^ p := Nat.pow_le_pow_right (by norm_num) hp
   rw [natDegree_sub_eq_left_of_natDegree_lt hdX, quadraticPolyIterate_natDegree]
 
@@ -197,7 +197,7 @@ theorem sum_index_fixedPoints_eq_zero (c : ℂ) {p : ℕ} (hp : 1 ≤ p)
       ((∏ k ∈ Finset.range p, 2 * (quadratic c)^[k] z) - 1)⁻¹ = 0 := by
   have hd : 2 ≤ (fixedPointPoly c p).natDegree := by
     rw [fixedPointPoly_natDegree c hp]
-    calc 2 = 2 ^ 1 := by norm_num
+    calc 2 = 2 ^ (1 : ℕ) := by norm_num
       _ ≤ 2 ^ p := Nat.pow_le_pow_right (by norm_num) hp
   have hkey := sum_inv_deriv_eq_zero hsep hd
   rw [← hkey]
@@ -211,7 +211,7 @@ theorem two_pow_complex_ne_one {p : ℕ} (hp : 1 ≤ p) : (2 : ℂ) ^ p ≠ 1 :=
   have hn : ‖(2 : ℂ) ^ p‖ = 1 := by rw [h, norm_one]
   rw [norm_pow, Complex.norm_two] at hn
   have hge : (2 : ℝ) ^ p ≥ 2 := by
-    calc (2 : ℝ) ^ p ≥ 2 ^ 1 := pow_le_pow_right₀ (by norm_num) hp
+    calc (2 : ℝ) ^ p ≥ 2 ^ (1 : ℕ) := pow_le_pow_right₀ (by norm_num) hp
       _ = 2 := pow_one 2
   linarith
 
@@ -295,7 +295,7 @@ theorem card_bulk_le (c : ℂ) {p : ℕ} (hp : 1 ≤ p) (hsep : (fixedPointPoly 
   rw [hd] at hnorm
   have hpos : (0 : ℝ) < (2 : ℝ) ^ p - 1 := by
     have h2 : (2 : ℝ) ^ p ≥ 2 := by
-      calc (2 : ℝ) ^ p ≥ 2 ^ 1 := pow_le_pow_right₀ (by norm_num) hp
+      calc (2 : ℝ) ^ p ≥ 2 ^ (1 : ℕ) := pow_le_pow_right₀ (by norm_num) hp
         _ = 2 := pow_one 2
     linarith
   have key : (G : ℝ) * ((2 : ℝ) ^ p - 1)⁻¹ ≤ T := by rw [hnorm]; exact norm_sum_le _ _

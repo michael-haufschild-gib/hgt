@@ -30,10 +30,10 @@ theorem fdo_mem_fdUpperChartGridCore_or_tail {M K : ℕ} (hM : 0 < M)
     simp [h, hM0]
   have hinv0 : 0 ≤ h := inv_nonneg.mpr (Nat.cast_nonneg M)
   have hycore : c < z.im := by
-    have hthree : 3 < 4 * z.im ^ 2 :=
+    have hthree : 3 < 4 * z.im ^ (2 : ℕ) :=
       ModularGroup.three_lt_four_mul_im_sq_of_mem_fdo hz
     have hsqrt0 : 0 ≤ Real.sqrt 3 := Real.sqrt_nonneg _
-    have hsquare : (Real.sqrt 3) ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+    have hsquare : (Real.sqrt 3) ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
     by_contra hnot
     have hle : z.im ≤ c := le_of_not_gt hnot
     have hnonneg : 0 ≤ Real.sqrt 3 - 2 * z.im := by

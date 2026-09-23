@@ -13,7 +13,7 @@ that translation:
 The literal residual is exactly the Hadamard product of the shifted-positive residual with `M`.
 But for every two distinct positive real nodes `x,y`, the determinant of `M` is
 
-`-(2(x+y)+1)(x-y)^2 / ((2x+1)(2y+1)(x+y+1)^2) < 0`.
+`-(2(x+y)+1)(x-y)^(2 : ℕ) / ((2x+1)(2y+1)(x+y+1)^(2 : ℕ)) < 0`.
 
 Hence no Schur-positive denominator transport can turn scalar/shifted functional-equation
 absorption into the literal W-H190 reflection-Loewner current.  This wall is independent of Xi
@@ -58,8 +58,8 @@ theorem xiWardCubicBoundaryTranslationMultiplier_det_two
     {x y : ℝ} (hx : 0 < x) (hy : 0 < y) :
     (xiWardCubicBoundaryTranslationMultiplier
       ![(x : ℂ), (y : ℂ)]).det =
-      ((-((2 * (x + y) + 1) * (x - y) ^ 2) /
-        ((2 * x + 1) * (2 * y + 1) * (x + y + 1) ^ 2) : ℝ) : ℂ) := by
+      ((-((2 * (x + y) + 1) * (x - y) ^ (2 : ℕ)) /
+        ((2 * x + 1) * (2 * y + 1) * (x + y + 1) ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [Matrix.det_fin_two]
   norm_num [xiWardCubicBoundaryTranslationMultiplier]
   field_simp [show (2 * (x : ℂ) + 1) ≠ 0 by positivity,
@@ -79,15 +79,15 @@ theorem xiWardCubicBoundaryTranslationMultiplier_not_posSemidef
   have hdet := hpsd.det_nonneg
   rw [xiWardCubicBoundaryTranslationMultiplier_det_two hx hy] at hdet
   have hreal := (RCLike.nonneg_iff.mp hdet).1
-  change 0 ≤ -((2 * (x + y) + 1) * (x - y) ^ 2) /
-    ((2 * x + 1) * (2 * y + 1) * (x + y + 1) ^ 2) at hreal
-  have hsquare : 0 < (x - y) ^ 2 :=
+  change 0 ≤ -((2 * (x + y) + 1) * (x - y) ^ (2 : ℕ)) /
+    ((2 * x + 1) * (2 * y + 1) * (x + y + 1) ^ (2 : ℕ)) at hreal
+  have hsquare : 0 < (x - y) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (sub_ne_zero.mpr hxy)
-  have hnum : 0 < (2 * (x + y) + 1) * (x - y) ^ 2 := by positivity
-  have hden : 0 < (2 * x + 1) * (2 * y + 1) * (x + y + 1) ^ 2 := by
+  have hnum : 0 < (2 * (x + y) + 1) * (x - y) ^ (2 : ℕ) := by positivity
+  have hden : 0 < (2 * x + 1) * (2 * y + 1) * (x + y + 1) ^ (2 : ℕ) := by
     positivity
-  have hneg : -((2 * (x + y) + 1) * (x - y) ^ 2) /
-      ((2 * x + 1) * (2 * y + 1) * (x + y + 1) ^ 2) < 0 := by
+  have hneg : -((2 * (x + y) + 1) * (x - y) ^ (2 : ℕ)) /
+      ((2 * x + 1) * (2 * y + 1) * (x + y + 1) ^ (2 : ℕ)) < 0 := by
     exact div_neg_of_neg_of_pos (neg_neg_of_pos hnum) hden
   linarith
 

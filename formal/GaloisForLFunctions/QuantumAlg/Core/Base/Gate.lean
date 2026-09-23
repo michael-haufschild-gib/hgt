@@ -206,10 +206,10 @@ theorem norm_applyVec_of_mem_unitaryGroup {U : HilbertOperator R}
     ‖applyVec U psi‖ = ‖psi‖ := by
   have h := inner_applyVec_applyVec_of_mem_unitaryGroup hU psi psi
   rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at h
-  have h2 : ‖applyVec U psi‖ ^ 2 = ‖psi‖ ^ 2 := by exact_mod_cast h
-  calc ‖applyVec U psi‖ = Real.sqrt (‖applyVec U psi‖ ^ 2) :=
+  have h2 : ‖applyVec U psi‖ ^ (2 : ℕ) = ‖psi‖ ^ (2 : ℕ) := by exact_mod_cast h
+  calc ‖applyVec U psi‖ = Real.sqrt (‖applyVec U psi‖ ^ (2 : ℕ)) :=
         (Real.sqrt_sq (norm_nonneg _)).symm
-    _ = Real.sqrt (‖psi‖ ^ 2) := by rw [h2]
+    _ = Real.sqrt (‖psi‖ ^ (2 : ℕ)) := by rw [h2]
     _ = ‖psi‖ := Real.sqrt_sq (norm_nonneg _)
 
 end

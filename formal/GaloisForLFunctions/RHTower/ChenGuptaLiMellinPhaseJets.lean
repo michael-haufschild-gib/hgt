@@ -28,17 +28,17 @@ theorem hasDerivAt_cglPhaseJet (n : ℕ) (t : ℝ) (x : CGLMellinPhaseInput) :
   unfold cglPhaseJet
   rw [show cglPhaseJetCoeff t (n + 1) =
       cglPhaseJetCoeff t n * ((t : ℂ) * Complex.I - n) by rfl]
-  have hinv : HasDerivAt (fun y : ℝ => (y⁻¹ : ℂ)) (-(x.value⁻¹ : ℂ) ^ 2) x.value := by
+  have hinv : HasDerivAt (fun y : ℝ => (y⁻¹ : ℂ)) (-(x.value⁻¹ : ℂ) ^ (2 : ℕ)) x.value := by
     apply HasDerivAt.of_isLittleO
     have hraw := (((hasDerivAt_id x.value).inv x.nonzero).ofReal_comp).isLittleO
-    have hvalue : (-(x.value⁻¹ : ℂ) ^ 2) = ((-1 / x.value ^ 2 : ℝ) : ℂ) := by
+    have hvalue : (-(x.value⁻¹ : ℂ) ^ (2 : ℕ)) = ((-1 / x.value ^ (2 : ℕ) : ℝ) : ℂ) := by
       push_cast
       ring
     convert hraw using 1
     ext y
     simp only [Pi.inv_apply, id_eq, Complex.ofReal_inv, hvalue]
   have hp : HasDerivAt (fun y : ℝ => (y⁻¹ : ℂ) ^ n)
-      ((n : ℂ) * (x.value⁻¹ : ℂ) ^ (n - 1) * (-(x.value⁻¹ : ℂ) ^ 2)) x.value := by
+      ((n : ℂ) * (x.value⁻¹ : ℂ) ^ (n - 1) * (-(x.value⁻¹ : ℂ) ^ (2 : ℕ))) x.value := by
     apply HasDerivAt.of_isLittleO
     have hpow := (hinv.pow n).isLittleO
     convert hpow using 1

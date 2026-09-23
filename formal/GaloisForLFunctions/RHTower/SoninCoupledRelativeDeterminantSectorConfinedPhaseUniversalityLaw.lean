@@ -53,9 +53,9 @@ theorem not_tendsto_div_pow_of_le_two_add_two
 ceiling as the endpoint prime--Gamma energy. -/
 structure SoninCoupledRelativeDeterminantSectorConfinedPhaseUniversalCertificate
     (a : SoninCoupledNondegenerateAperture) : Prop where
-  exactCeiling : xiSectorConfinedBernsteinAmplitudeBase ^ 2 = 251001 / 250000
+  exactCeiling : xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) = 251001 / 250000
   decayAboveCeiling :
-    ∀ r : ℝ, xiSectorConfinedBernsteinAmplitudeBase ^ 2 < r →
+    ∀ r : ℝ, xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) < r →
       Tendsto (fun n : ℕ =>
         bernsteinCoefficientPurity
             (soninCoupledRelativeNormalizedSpectralLogDerivativeMoment a) n /
@@ -63,7 +63,7 @@ structure SoninCoupledRelativeDeterminantSectorConfinedPhaseUniversalCertificate
   falseRHSurvivingPhase :
     ¬ RiemannHypothesis →
       ∃ r : ℝ,
-        1 < r ∧ r < xiSectorConfinedBernsteinAmplitudeBase ^ 2 ∧
+        1 < r ∧ r < xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) ∧
           ¬ Tendsto (fun n : ℕ =>
             bernsteinCoefficientPurity
                 (soninCoupledRelativeNormalizedSpectralLogDerivativeMoment a) n /
@@ -80,7 +80,7 @@ theorem soninCoupledRelativeDeterminant_sectorConfinedPhaseUniversalCertificate
     decayAboveCeiling := ?_
     falseRHSurvivingPhase := ?_ }
   · intro r hr
-    have hone : 1 < xiSectorConfinedBernsteinAmplitudeBase ^ 2 := by
+    have hone : 1 < xiSectorConfinedBernsteinAmplitudeBase ^ (2 : ℕ) := by
       have hbase := one_lt_xiSectorConfinedBernsteinAmplitudeBase
       nlinarith
     apply tendsto_div_pow_of_le_two_add_two

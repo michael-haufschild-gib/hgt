@@ -37,21 +37,21 @@ theorem integral_Ioi_radialProlate_sq_ge_half {c s : ℝ} {R DR DDR : ℝ → �
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
-    besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (2 : ℝ), R x ^ 2 := by
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) :
+    besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (2 : ℝ), R x ^ (2 : ℕ) := by
   have hcpos : (0 : ℝ) < c := by linarith
   have hF : 0 < besselEnergyFloor := besselEnergyFloor_pos
   have hT : 0 ≤ radialProlateDensityTransferConstant := radialProlateDensityTransferConstant_nonneg
   have hmain := integral_Ioi_radialProlate_sq_ge hs0 hs1 hc hR1 hR hDR hode
   have hstep : besselEnergyFloor / 864 / c
-      ≤ besselEnergyFloor / 432 / c - 2 * radialProlateDensityTransferConstant / c ^ 2 := by
+      ≤ besselEnergyFloor / 432 / c - 2 * radialProlateDensityTransferConstant / c ^ (2 : ℕ) := by
     rw [div_le_iff₀ hF] at hc0
-    have hsq : (0 : ℝ) < c ^ 2 := by positivity
+    have hsq : (0 : ℝ) < c ^ (2 : ℕ) := by positivity
     rw [div_div, div_div, ← sub_nonneg]
-    have hval : besselEnergyFloor / (432 * c) - 2 * radialProlateDensityTransferConstant / c ^ 2
+    have hval : besselEnergyFloor / (432 * c) - 2 * radialProlateDensityTransferConstant / c ^ (2 : ℕ)
         - besselEnergyFloor / (864 * c)
-        = (besselEnergyFloor * c - 1728 * radialProlateDensityTransferConstant) / (864 * c ^ 2) := by
+        = (besselEnergyFloor * c - 1728 * radialProlateDensityTransferConstant) / (864 * c ^ (2 : ℕ)) := by
       field_simp
       ring
     rw [hval]
@@ -68,68 +68,68 @@ theorem prolate_leakage_ge_exp_sharp_action {c s y₀ α : ℝ} {Φ DΦ R DR DDR
     (hc0 : 1728 * radialProlateDensityTransferConstant / besselEnergyFloor ≤ c)
     (hscale : 1 ≤ c * Real.sqrt s)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1) (heven : Function.Even Φ)
-    (hsy0 : s < y₀ ^ 2) (hy00 : 0 < y₀) (hy0α : y₀ ≤ α) (hα1 : α < 1)
-    (houter : ∀ y ∈ Icc α 1, c ^ 2 * (1 - 2 * y ^ 2) ≤ -(s * c ^ 2))
+    (hsy0 : s < y₀ ^ (2 : ℕ)) (hy00 : 0 < y₀) (hy0α : y₀ ≤ α) (hα1 : α < 1)
+    (houter : ∀ y ∈ Icc α 1, c ^ (2 : ℕ) * (1 - 2 * y ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)))
     (hposΦ : ∀ y ∈ Icc (Real.sqrt s) 1, 0 < Φ y)
     (hDΦ : ∀ y, HasDerivAt Φ (DΦ y) y)
-    (hfluxd : ∀ y ∈ Icc y₀ α, HasDerivAt (fun t => (1 - t ^ 2) * DΦ t)
-      (-(c ^ 2 * (s - y ^ 2) * Φ y)) y)
+    (hfluxd : ∀ y ∈ Icc y₀ α, HasDerivAt (fun t => (1 - t ^ (2 : ℕ)) * DΦ t)
+      (-(c ^ (2 : ℕ) * (s - y ^ (2 : ℕ)) * Φ y)) y)
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
-    (hIntR : IntegrableOn (fun x => R x ^ 2) (Ioi (1 : ℝ)))
-    (hvalue : 1 / 2 ≤ value ^ 2) (hleak : 0 ≤ leakage)
-    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ 2)
-      = (∫ y in (-1 : ℝ)..1, Φ y ^ 2) * leakage / value ^ 2) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
+    (hIntR : IntegrableOn (fun x => R x ^ (2 : ℕ)) (Ioi (1 : ℝ)))
+    (hvalue : 1 / 2 ≤ value ^ (2 : ℕ)) (hleak : 0 ≤ leakage)
+    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ))
+      = (∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ)) * leakage / value ^ (2 : ℕ)) :
     besselEnergyFloor / 864 / c
         / (2 * (4 * Real.exp 1 * (c / Real.sqrt s)
-          * ((1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-                / (c ^ 2 * (α ^ 2 - s)))
+          * ((1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+                / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s)))
             * Real.exp (2 * c * bandEndpointPhase s y₀
-                + ((Real.log (α ^ 2 - s) - Real.log (y₀ ^ 2 - s))
-                  + (Real.log (1 - y₀ ^ 2) - Real.log (1 - α ^ 2)))
+                + ((Real.log (α ^ (2 : ℕ) - s) - Real.log (y₀ ^ (2 : ℕ) - s))
+                  + (Real.log (1 - y₀ ^ (2 : ℕ)) - Real.log (1 - α ^ (2 : ℕ))))
                 + 2 * (c * Real.sqrt (1 - s)
-                    * (Real.sqrt (1 - s) - Real.sqrt (1 - y₀ ^ 2)))))))
+                    * (Real.sqrt (1 - s) - Real.sqrt (1 - y₀ ^ (2 : ℕ))))))))
       ≤ leakage := by
   have hcpos : (0 : ℝ) < c := by linarith
   have hs0' : 0 < s := by nlinarith
   have hsqrt : (0 : ℝ) < Real.sqrt s := Real.sqrt_pos.2 hs0'
   have hα0 : 0 < α := lt_of_lt_of_le hy00 hy0α
-  have hsα : s < α ^ 2 := by nlinarith [hy0α, hy00]
+  have hsα : s < α ^ (2 : ℕ) := by nlinarith [hy0α, hy00]
   -- the exterior mass, transported from the ray past `2` to the whole ray
-  have houtside : besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (1 : ℝ), R x ^ 2 := by
+  have houtside : besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ) := by
     have h2 := integral_Ioi_radialProlate_sq_ge_half hs0 hs1 hc hc0 hR1 hR hDR hode
     have hsub : (Ioi (2 : ℝ)) ≤ᵐ[volume] (Ioi (1 : ℝ)) :=
       Filter.Eventually.of_forall fun x hx => lt_trans one_lt_two hx
-    have hnn : (0 : ℝ → ℝ) ≤ᵐ[volume.restrict (Ioi (1 : ℝ))] fun x => R x ^ 2 :=
+    have hnn : (0 : ℝ → ℝ) ≤ᵐ[volume.restrict (Ioi (1 : ℝ))] fun x => R x ^ (2 : ℕ) :=
       Filter.Eventually.of_forall fun x => sq_nonneg _
     exact le_trans h2 (setIntegral_mono_set hIntR hnn hsub)
   -- the aperture mass
   have hinside := integral_sq_le_exp_sharp_action hcpos hs0 (by linarith) hcs hscale hsm heig hΦ1
     heven hsy0 hy00 hy0α hα1 houter hposΦ hDΦ hfluxd
   -- positivity of the aperture bound
-  have hCpos : (0 : ℝ) < 1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-      / (c ^ 2 * (α ^ 2 - s)) := by
-    have h1 : (0 : ℝ) < α ^ 2 - s := by linarith
-    have h2 : (0 : ℝ) < 1 - α ^ 2 := by nlinarith
+  have hCpos : (0 : ℝ) < 1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+      / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s)) := by
+    have h1 : (0 : ℝ) < α ^ (2 : ℕ) - s := by linarith
+    have h2 : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith
     positivity
   have hUin : (0 : ℝ) < 4 * Real.exp 1 * (c / Real.sqrt s)
-      * ((1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-            / (c ^ 2 * (α ^ 2 - s)))
+      * ((1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+            / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s)))
         * Real.exp (2 * c * bandEndpointPhase s y₀
-            + ((Real.log (α ^ 2 - s) - Real.log (y₀ ^ 2 - s))
-              + (Real.log (1 - y₀ ^ 2) - Real.log (1 - α ^ 2)))
+            + ((Real.log (α ^ (2 : ℕ) - s) - Real.log (y₀ ^ (2 : ℕ) - s))
+              + (Real.log (1 - y₀ ^ (2 : ℕ)) - Real.log (1 - α ^ (2 : ℕ))))
             + 2 * (c * Real.sqrt (1 - s)
-                * (Real.sqrt (1 - s) - Real.sqrt (1 - y₀ ^ 2))))) := by
+                * (Real.sqrt (1 - s) - Real.sqrt (1 - y₀ ^ (2 : ℕ)))))) := by
     have hexp : (0 : ℝ) < Real.exp (2 * c * bandEndpointPhase s y₀
-        + ((Real.log (α ^ 2 - s) - Real.log (y₀ ^ 2 - s))
-          + (Real.log (1 - y₀ ^ 2) - Real.log (1 - α ^ 2)))
+        + ((Real.log (α ^ (2 : ℕ) - s) - Real.log (y₀ ^ (2 : ℕ) - s))
+          + (Real.log (1 - y₀ ^ (2 : ℕ)) - Real.log (1 - α ^ (2 : ℕ))))
         + 2 * (c * Real.sqrt (1 - s)
-            * (Real.sqrt (1 - s) - Real.sqrt (1 - y₀ ^ 2)))) := Real.exp_pos _
+            * (Real.sqrt (1 - s) - Real.sqrt (1 - y₀ ^ (2 : ℕ))))) := Real.exp_pos _
     have he1 : (0 : ℝ) < Real.exp 1 := Real.exp_pos _
     positivity
   have hLnn : (0 : ℝ) ≤ besselEnergyFloor / 864 / c := by
@@ -145,50 +145,50 @@ theorem prolate_leakage_ge_exp_sharp_amplitude {c s y₀ α : ℝ} {Φ DΦ R DR 
     (hc : 8 ≤ c) (hs0 : 0 < s) (hs1 : s ≤ 1 / 2) (hcs : 4 ≤ c * s)
     (hc0 : 1728 * radialProlateDensityTransferConstant / besselEnergyFloor ≤ c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1) (heven : Function.Even Φ)
-    (hsy0 : s < y₀ ^ 2) (hy00 : 0 < y₀) (hy04 : y₀ ^ 2 ≤ 4 * s) (hy0h : y₀ ^ 2 ≤ 1 / 2)
-    (hratio : (y₀ ^ 2 - s) * (1 - y₀ ^ 2) ≤ 3 * s)
+    (hsy0 : s < y₀ ^ (2 : ℕ)) (hy00 : 0 < y₀) (hy04 : y₀ ^ (2 : ℕ) ≤ 4 * s) (hy0h : y₀ ^ (2 : ℕ) ≤ 1 / 2)
+    (hratio : (y₀ ^ (2 : ℕ) - s) * (1 - y₀ ^ (2 : ℕ)) ≤ 3 * s)
     (hy0α : y₀ ≤ α) (hα1 : α < 1)
-    (houter : ∀ t ∈ Icc α 1, c ^ 2 * (1 - 2 * t ^ 2) ≤ -(s * c ^ 2))
+    (houter : ∀ t ∈ Icc α 1, c ^ (2 : ℕ) * (1 - 2 * t ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)))
     (hposΦ : ∀ t ∈ Icc y₀ 1, 0 < Φ t)
     (hΦd : ∀ t, HasDerivAt Φ (DΦ t) t)
-    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ 2) * DΦ u)
-      (-(c ^ 2 * (s - t ^ 2) * Φ t)) t)
+    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦ u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * Φ t)) t)
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
-    (hIntR : IntegrableOn (fun x => R x ^ 2) (Ioi (1 : ℝ)))
-    (hvalue : 1 / 2 ≤ value ^ 2) (hleak : 0 ≤ leakage)
-    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ 2)
-      = (∫ y in (-1 : ℝ)..1, Φ y ^ 2) * leakage / value ^ 2) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
+    (hIntR : IntegrableOn (fun x => R x ^ (2 : ℕ)) (Ioi (1 : ℝ)))
+    (hvalue : 1 / 2 ≤ value ^ (2 : ℕ)) (hleak : 0 ≤ leakage)
+    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ))
+      = (∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ)) * leakage / value ^ (2 : ℕ)) :
     besselEnergyFloor / 864 / c
-        / (2 * (2 * (3 * (1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-                  / (c ^ 2 * (α ^ 2 - s))) + 1)
+        / (2 * (2 * (3 * (1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+                  / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s))) + 1)
           * Real.exp (2 * c * bandEndpointPhase s y₀ + prolateScaleLog s y₀ α
               + 5 * (c * Real.sqrt s) * y₀)))
       ≤ leakage := by
   have hcpos : (0 : ℝ) < c := by linarith
   have hα0 : 0 < α := lt_of_lt_of_le hy00 hy0α
-  have hsα : s < α ^ 2 := by nlinarith [hy0α, hy00]
-  have houtside : besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (1 : ℝ), R x ^ 2 := by
+  have hsα : s < α ^ (2 : ℕ) := by nlinarith [hy0α, hy00]
+  have houtside : besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ) := by
     have h2 := integral_Ioi_radialProlate_sq_ge_half hs0.le hs1 hc hc0 hR1 hR hDR hode
     have hsub : (Ioi (2 : ℝ)) ≤ᵐ[volume] (Ioi (1 : ℝ)) :=
       Filter.Eventually.of_forall fun x hx => lt_trans one_lt_two hx
-    have hnn : (0 : ℝ → ℝ) ≤ᵐ[volume.restrict (Ioi (1 : ℝ))] fun x => R x ^ 2 :=
+    have hnn : (0 : ℝ → ℝ) ≤ᵐ[volume.restrict (Ioi (1 : ℝ))] fun x => R x ^ (2 : ℕ) :=
       Filter.Eventually.of_forall fun x => sq_nonneg _
     exact le_trans h2 (setIntegral_mono_set hIntR hnn hsub)
   have hinside := integral_sq_le_exp_sharp_action_amplitude hcpos hs0 (by linarith) hcs hsm heig
     hΦ1 heven hsy0 hy00 hy04 hy0h hratio hy0α hα1 houter hposΦ hΦd hfluxd
-  have hCpos : (0 : ℝ) < 1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-      / (c ^ 2 * (α ^ 2 - s)) := by
-    have h1 : (0 : ℝ) < α ^ 2 - s := by linarith
-    have h2 : (0 : ℝ) < 1 - α ^ 2 := by nlinarith
+  have hCpos : (0 : ℝ) < 1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+      / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s)) := by
+    have h1 : (0 : ℝ) < α ^ (2 : ℕ) - s := by linarith
+    have h2 : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith
     positivity
-  have hUin : (0 : ℝ) < 2 * (3 * (1 + (1 - α ^ 2)
-        * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2 / (c ^ 2 * (α ^ 2 - s))) + 1)
+  have hUin : (0 : ℝ) < 2 * (3 * (1 + (1 - α ^ (2 : ℕ))
+        * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ) / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s))) + 1)
       * Real.exp (2 * c * bandEndpointPhase s y₀ + prolateScaleLog s y₀ α
           + 5 * (c * Real.sqrt s) * y₀) := by
     have hexp : (0 : ℝ) < Real.exp (2 * c * bandEndpointPhase s y₀ + prolateScaleLog s y₀ α
@@ -210,41 +210,41 @@ theorem prolate_leakage_ge_explicit {c s α : ℝ} {Φ DΦ R DR DDR : ℝ → �
     (hc : 8 ≤ c) (hs0 : 0 < s) (hs8 : s ≤ 1 / 8) (hcs : 4 ≤ c * s)
     (hc0 : 1728 * radialProlateDensityTransferConstant / besselEnergyFloor ≤ c)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1) (heven : Function.Even Φ)
     (h2sα : 2 * Real.sqrt s ≤ α) (hα1 : α < 1)
-    (houter : ∀ t ∈ Icc α 1, c ^ 2 * (1 - 2 * t ^ 2) ≤ -(s * c ^ 2))
+    (houter : ∀ t ∈ Icc α 1, c ^ (2 : ℕ) * (1 - 2 * t ^ (2 : ℕ)) ≤ -(s * c ^ (2 : ℕ)))
     (hposΦ : ∀ t ∈ Icc (2 * Real.sqrt s) 1, 0 < Φ t)
     (hΦd : ∀ t, HasDerivAt Φ (DΦ t) t)
-    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ 2) * DΦ u)
-      (-(c ^ 2 * (s - t ^ 2) * Φ t)) t)
+    (hfluxd : ∀ t ∈ Icc (0 : ℝ) α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦ u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * Φ t)) t)
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
-    (hIntR : IntegrableOn (fun x => R x ^ 2) (Ioi (1 : ℝ)))
-    (hvalue : 1 / 2 ≤ value ^ 2) (hleak : 0 ≤ leakage)
-    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ 2)
-      = (∫ y in (-1 : ℝ)..1, Φ y ^ 2) * leakage / value ^ 2) :
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
+    (hIntR : IntegrableOn (fun x => R x ^ (2 : ℕ)) (Ioi (1 : ℝ)))
+    (hvalue : 1 / 2 ≤ value ^ (2 : ℕ)) (hleak : 0 ≤ leakage)
+    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ))
+      = (∫ y in (-1 : ℝ)..1, Φ y ^ (2 : ℕ)) * leakage / value ^ (2 : ℕ)) :
     besselEnergyFloor / 864 / c
-        / (2 * (2 * (3 * (1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-                  / (c ^ 2 * (α ^ 2 - s))) + 1)
+        / (2 * (2 * (3 * (1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+                  / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s))) + 1)
           * Real.exp (2 * c * (1 + s / 4 * Real.log s)
-              + ((Real.log (α ^ 2 - s) - Real.log (3 * s))
-                + (Real.log (1 - 4 * s) - Real.log (1 - α ^ 2)))
+              + ((Real.log (α ^ (2 : ℕ) - s) - Real.log (3 * s))
+                + (Real.log (1 - 4 * s) - Real.log (1 - α ^ (2 : ℕ))))
               + 10 * (c * s))))
       ≤ leakage := by
   have hcpos : (0 : ℝ) < c := by linarith
   have hsqrt : (0 : ℝ) < Real.sqrt s := Real.sqrt_pos.2 hs0
-  have hsq : (2 * Real.sqrt s) ^ 2 = 4 * s := by
+  have hsq : (2 * Real.sqrt s) ^ (2 : ℕ) = 4 * s := by
     rw [mul_pow, Real.sq_sqrt hs0.le]
     ring
   have hy00 : (0 : ℝ) < 2 * Real.sqrt s := by linarith
-  have hsy0 : s < (2 * Real.sqrt s) ^ 2 := by rw [hsq]; linarith
-  have hy04 : (2 * Real.sqrt s) ^ 2 ≤ 4 * s := by rw [hsq]
-  have hy0h : (2 * Real.sqrt s) ^ 2 ≤ 1 / 2 := by rw [hsq]; linarith
-  have hratio : ((2 * Real.sqrt s) ^ 2 - s) * (1 - (2 * Real.sqrt s) ^ 2) ≤ 3 * s := by
+  have hsy0 : s < (2 * Real.sqrt s) ^ (2 : ℕ) := by rw [hsq]; linarith
+  have hy04 : (2 * Real.sqrt s) ^ (2 : ℕ) ≤ 4 * s := by rw [hsq]
+  have hy0h : (2 * Real.sqrt s) ^ (2 : ℕ) ≤ 1 / 2 := by rw [hsq]; linarith
+  have hratio : ((2 * Real.sqrt s) ^ (2 : ℕ) - s) * (1 - (2 * Real.sqrt s) ^ (2 : ℕ)) ≤ 3 * s := by
     rw [hsq]
     nlinarith [hs0]
   have hmain := prolate_leakage_ge_exp_sharp_amplitude (y₀ := 2 * Real.sqrt s) hc hs0
@@ -258,8 +258,8 @@ theorem prolate_leakage_ge_explicit {c s α : ℝ} {Φ DΦ R DR DDR : ℝ → �
     have h2 := (prolateAngleAction_sub_bounds hs0 (by linarith)).1
     linarith
   have hscalelog : prolateScaleLog s (2 * Real.sqrt s) α
-      = (Real.log (α ^ 2 - s) - Real.log (3 * s))
-        + (Real.log (1 - 4 * s) - Real.log (1 - α ^ 2)) := by
+      = (Real.log (α ^ (2 : ℕ) - s) - Real.log (3 * s))
+        + (Real.log (1 - 4 * s) - Real.log (1 - α ^ (2 : ℕ))) := by
     rw [prolateScaleLog, hsq]
     have h1 : (4 : ℝ) * s - s = 3 * s := by ring
     rw [h1]
@@ -271,8 +271,8 @@ theorem prolate_leakage_ge_explicit {c s α : ℝ} {Φ DΦ R DR DDR : ℝ → �
   have hexpo : 2 * c * bandEndpointPhase s (2 * Real.sqrt s)
         + prolateScaleLog s (2 * Real.sqrt s) α + 5 * (c * Real.sqrt s) * (2 * Real.sqrt s)
       ≤ 2 * c * (1 + s / 4 * Real.log s)
-        + ((Real.log (α ^ 2 - s) - Real.log (3 * s))
-          + (Real.log (1 - 4 * s) - Real.log (1 - α ^ 2)))
+        + ((Real.log (α ^ (2 : ℕ) - s) - Real.log (3 * s))
+          + (Real.log (1 - 4 * s) - Real.log (1 - α ^ (2 : ℕ))))
         + 10 * (c * s) := by
     rw [hscalelog, hallowed]
     have hstep : 2 * c * bandEndpointPhase s (2 * Real.sqrt s)
@@ -280,16 +280,16 @@ theorem prolate_leakage_ge_explicit {c s α : ℝ} {Φ DΦ R DR DDR : ℝ → �
       mul_le_mul_of_nonneg_left hphase (by linarith)
     linarith
   refine le_trans ?_ hmain
-  set C : ℝ := 1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-      / (c ^ 2 * (α ^ 2 - s)) with hCdef
+  set C : ℝ := 1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+      / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s)) with hCdef
   have hα0 : (0 : ℝ) < α := lt_of_lt_of_le hy00 h2sα
-  have hsα : s < α ^ 2 := by
-    have h1 : (2 * Real.sqrt s) ^ 2 ≤ α ^ 2 := by nlinarith [h2sα, hy00]
+  have hsα : s < α ^ (2 : ℕ) := by
+    have h1 : (2 * Real.sqrt s) ^ (2 : ℕ) ≤ α ^ (2 : ℕ) := by nlinarith [h2sα, hy00]
     rw [hsq] at h1
     linarith
   have hCpos : (0 : ℝ) < C := by
-    have h1 : (0 : ℝ) < α ^ 2 - s := by linarith
-    have h2 : (0 : ℝ) < 1 - α ^ 2 := by nlinarith
+    have h1 : (0 : ℝ) < α ^ (2 : ℕ) - s := by linarith
+    have h2 : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith
     rw [hCdef]
     positivity
   have hnum : (0 : ℝ) ≤ besselEnergyFloor / 864 / c := by

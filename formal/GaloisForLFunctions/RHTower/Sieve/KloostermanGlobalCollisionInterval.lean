@@ -36,7 +36,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_elementary
       ((Q.card * (Q.card - 1) : ℕ) : ℝ) *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           Complex.normSq (w q) * Complex.normSq (w r) *
-            (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+            (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
               ((kloostermanIntervalResidueMultiplicity q N : ℝ) *
                 ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
               ((kloostermanIntervalResidueMultiplicity r N : ℝ) *
@@ -46,7 +46,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_elementary
       ((Q.card * (Q.card - 1) : ℕ) : ℝ) *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           Complex.normSq (w q) * Complex.normSq (w r) *
-            (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+            (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
               (∑ z : ZMod (q + 1),
                 Complex.normSq
                   (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) *
@@ -58,7 +58,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_elementary
     _ ≤ ((Q.card * (Q.card - 1) : ℕ) : ℝ) *
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           Complex.normSq (w q) * Complex.normSq (w r) *
-            (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+            (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
               ((kloostermanIntervalResidueMultiplicity q N : ℝ) *
                 ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
               ((kloostermanIntervalResidueMultiplicity r N : ℝ) *
@@ -87,7 +87,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_elementary
               (Finset.sum_nonneg fun n hn => Complex.normSq_nonneg _))
         calc
           Complex.normSq (w q) * Complex.normSq (w r) *
-              (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+              (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
                 (∑ z : ZMod (q + 1),
                   Complex.normSq
                     (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) *
@@ -95,7 +95,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_elementary
                   Complex.normSq
                     (kloostermanSourceResidue (r + 1) (Finset.Icc 1 N) b z)) =
             (Complex.normSq (w q) * Complex.normSq (w r) *
-              (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ))) *
+              (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ))) *
                 ((∑ z : ZMod (q + 1),
                     Complex.normSq
                       (kloostermanSourceResidue (q + 1) (Finset.Icc 1 N) b z)) *
@@ -103,7 +103,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_elementary
                     Complex.normSq
                       (kloostermanSourceResidue (r + 1) (Finset.Icc 1 N) b z)) := by ring
           _ ≤ (Complex.normSq (w q) * Complex.normSq (w r) *
-              (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ))) *
+              (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ))) *
                 (((kloostermanIntervalResidueMultiplicity q N : ℝ) *
                     ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
                   ((kloostermanIntervalResidueMultiplicity r N : ℝ) *
@@ -113,7 +113,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_elementary
                 (mul_nonneg (Complex.normSq_nonneg _) (Complex.normSq_nonneg _))
                 (mul_nonneg (sq_nonneg _) (Nat.cast_nonneg _)))
           _ = Complex.normSq (w q) * Complex.normSq (w r) *
-              (((q + 1 : ℕ) : ℝ) ^ 2 * ((r + 1 : ℕ) : ℝ) *
+              (((q + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((r + 1 : ℕ) : ℝ) *
                 ((kloostermanIntervalResidueMultiplicity q N : ℝ) *
                   ∑ n ∈ Finset.Icc 1 N, Complex.normSq (b n)) *
                 ((kloostermanIntervalResidueMultiplicity r N : ℝ) *

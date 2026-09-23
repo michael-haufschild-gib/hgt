@@ -20,7 +20,7 @@ noncomputable section
 /-- The soft Fisher critical profile is strictly positive at every positive damping aperture. -/
 theorem mobiusCriticalFisherTangentDampedLimit_pos
     {u : ℝ} (hu : 0 < u) :
-    0 < 2 * u / (1 + u) ^ 2 := by
+    0 < 2 * u / (1 + u) ^ (2 : ℕ) := by
   positivity
 
 /-- **Critical Fisher reporter-escape law.**  No fixed continuous linear functional of the
@@ -41,10 +41,10 @@ theorem no_fixedReporter_tracks_infiniteMobiusCriticalFisherTangentDampedCoeffic
     tendsto_infiniteMobiusCriticalFisherTangentDampedCoefficient hu.le
   have hlimit := hweak.sub hmoving
   have heq := tendsto_nhds_unique hlimit htrack
-  have hne : ((2 * u / (1 + u) ^ 2 : ℝ) : ℂ) ≠ 0 := by
+  have hne : ((2 * u / (1 + u) ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 := by
     exact Complex.ofReal_ne_zero.mpr
       (mobiusCriticalFisherTangentDampedLimit_pos hu).ne'
-  have heq' : -((2 * u / (1 + u) ^ 2 : ℝ) : ℂ) = 0 := by
+  have heq' : -((2 * u / (1 + u) ^ (2 : ℕ) : ℝ) : ℂ) = 0 := by
     simpa using heq
   apply hne
   exact neg_eq_zero.mp heq'

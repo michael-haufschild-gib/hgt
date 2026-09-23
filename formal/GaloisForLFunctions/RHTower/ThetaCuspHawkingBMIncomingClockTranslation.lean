@@ -59,9 +59,9 @@ private theorem profile_shift_integral (f : ℝ → ℂ) (A : ℂ) (hc : Continu
 
 /-- All three original temporal profiles, before their common physical exponential. -/
 def horizonProfile (A B C : ℂ) (u : ℝ) : ℂ :=
-  A*(Real.smoothTransition u:ℂ)^2+
+  A*(Real.smoothTransition u:ℂ)^(2 : ℕ)+
     B*(Real.smoothTransition u:ℂ)*((deriv Real.smoothTransition u:ℝ):ℂ)+
-    C*((deriv Real.smoothTransition u:ℝ):ℂ)^2
+    C*((deriv Real.smoothTransition u:ℝ):ℂ)^(2 : ℕ)
 
 private theorem horizonProfile_continuous (A B C : ℂ) : Continuous (horizonProfile A B C) := by
   have hd := continuous_deriv_smoothTransition
@@ -238,13 +238,13 @@ theorem angularResponseGreen_divergence (q : XiZeroCopy) (z : UpperHalfPlane) :
     simp only [coordDeriv,hh.fderiv]
     simp only [sub_apply,add_apply,smul_apply,Pi.add_apply,smul_eq_mul]
     ring
-  have hs : (w 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 H) w+
+  have hs : (w 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 H) w+
       coordDeriv 1 (coordDeriv 1 H) w)=A*(H w+Q w) := by
     have h := fullAngularField_equation q true w z.im_pos
     rw [scalarLaplacian_eq _ w z.im_pos] at h
     dsimp only [H,Q,A,fullSquarePotential]
     linear_combination h
-  have ht : (w 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 K) w+
+  have ht : (w 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 K) w+
       coordDeriv 1 (coordDeriv 1 K) w)=B*(K w+Q w) := by
     have h := fullAngularField_equation q false w z.im_pos
     rw [scalarLaplacian_eq _ w z.im_pos] at h
@@ -262,7 +262,7 @@ theorem angularResponseGreen_divergence (q : XiZeroCopy) (z : UpperHalfPlane) :
       ∑ k : Fin 2, (coexact H k w*(B*coexact K k w+B*coexact Q k w)-
         coexact K k w*(A*coexact H k w+A*coexact Q k w))
   simp only [Fin.sum_univ_two,coexact,Matrix.cons_val_zero,Matrix.cons_val_one]
-  have hy : (w 1:ℂ)^2 ≠ 0 := pow_ne_zero 2
+  have hy : (w 1:ℂ)^(2 : ℕ) ≠ 0 := pow_ne_zero 2
     (Complex.ofReal_ne_zero.mpr (ne_of_gt z.im_pos))
   apply mul_left_cancel₀ hy
   linear_combination B*(K w+Q w)*hs-A*(H w+Q w)*ht
@@ -286,8 +286,8 @@ literal half-square Laplacian, retaining its complete gradient-energy forcing. -
 theorem angularSourceWorkCurrent_divergence (q : XiZeroCopy) (a b c : ℂ)
     (z : UpperHalfPlane) :
     let w := coordinates z
-    (w 1:ℂ)^2*(∑ j : Fin 2, coordDeriv j (angularSourceWorkCurrent q a b c j) w) =
-      (w 1:ℂ)^2*(∑ j : Fin 2,
+    (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2, coordDeriv j (angularSourceWorkCurrent q a b c j) w) =
+      (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,
         (a*fullAngularCovector q true j w+b*fullAngularCovector q false j w+
           c*fullSquareCovector q j w)*fullSquareCovector q j w)+
       (a*fullAngularField q true w+b*fullAngularField q false w+c*fullSquarePotential q w)*
@@ -317,12 +317,12 @@ theorem angularSourceWorkCurrent_divergence (q : XiZeroCopy) (a b c : ℂ)
     ring
   have he := fullSquarePotential_laplacian q true w z.im_pos
   rw [scalarLaplacian_eq _ w z.im_pos] at he
-  change (w 1:ℂ)^2*(∑ j : Fin 2, coordDeriv j (angularSourceWorkCurrent q a b c j) w) = _
+  change (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2, coordDeriv j (angularSourceWorkCurrent q a b c j) w) = _
   simp only [hd,← fullSquarePotential_coexact q (coordinates z) z.im_pos]
-  change (w 1:ℂ)^2*(∑ j : Fin 2,
+  change (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,
       ((a*coordDeriv j H w+b*coordDeriv j K w+c*coordDeriv j Q w)*coordDeriv j Q w+
         (a*H w+b*K w+c*Q w)*coordDeriv j (coordDeriv j Q) w)) =
-    (w 1:ℂ)^2*(∑ j : Fin 2,
+    (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,
       (a*coexact H j w+b*coexact K j w+c*coexact Q j w)*coexact Q j w)+
     (a*H w+b*K w+c*Q w)*
       (2*(physicalRate q true+1)*(physicalRate q true+2)*Q w+fullGradientEnergy q w)
@@ -355,9 +355,9 @@ theorem incoming_radial_mass_angular_exchange (q : XiZeroCopy) (a b : ℂ)
       (U k*(roughLaplacian (fullAngularCovector q false) k w+V k)-
         V k*(roughLaplacian (fullAngularCovector q true) k w+U k))
     clockCoefficients q a b w 1 0 =
-      4*(a^2*b^2/64)*(-(s*t/3)*E+
-        (-2*s*dt*((t+1)^2-s*t)+(s*t/3)*(2*t+1)*(2*t+2))*(∑ k, U k*Q k)+
-        (2*t*ds*((s+1)^2-s*t)-(s*t/3)*(2*s+1)*(2*s+2))*(∑ k, V k*Q k)+
+      4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*(-(s*t/3)*E+
+        (-2*s*dt*((t+1)^(2 : ℕ)-s*t)+(s*t/3)*(2*t+1)*(2*t+2))*(∑ k, U k*Q k)+
+        (2*t*ds*((s+1)^(2 : ℕ)-s*t)-(s*t/3)*(2*s+1)*(2*s+2))*(∑ k, V k*Q k)+
         2*ds*dt*(s-t)*(1-s*t)*(∑ k, Q k*Q k)) := by
   dsimp only
   simp_rw [fullAngularCovector_rough_equation q false (coordinates z) z.im_pos,
@@ -369,7 +369,7 @@ theorem incoming_radial_mass_angular_exchange (q : XiZeroCopy) (a b : ℂ)
   let U := fun k => fullAngularCovector q true k (coordinates z)
   let V := fun k => fullAngularCovector q false k (coordinates z)
   let Q := fun k => fullSquareCovector q k (coordinates z)
-  change 4*(a^2*b^2/64)*
+  change 4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*
     (t*(2*s+1)*(∑ k : Fin 2,
       (1*V k+(-t*(t-1)/4)*Q k)*(-s*U k+s*(s-1)*(s+2)/4*Q k))-
      s*(2*t+1)*(∑ k : Fin 2,
@@ -400,13 +400,13 @@ theorem incoming_radial_mass_source_balance (q : XiZeroCopy) (a b : ℂ)
     let t := physicalRate q false
     let ds := s*(s-1)/4
     let dt := t*(t-1)/4
-    let rs := -2*s*dt*((t+1)^2-s*t)+(s*t/3)*(2*t+1)*(2*t+2)
-    let rt := 2*t*ds*((s+1)^2-s*t)-(s*t/3)*(2*s+1)*(2*s+2)
+    let rs := -2*s*dt*((t+1)^(2 : ℕ)-s*t)+(s*t/3)*(2*t+1)*(2*t+2)
+    let rt := 2*t*ds*((s+1)^(2 : ℕ)-s*t)-(s*t/3)*(2*s+1)*(2*s+2)
     let rQ := 2*ds*dt*(s-t)*(1-s*t)
-    (w 1:ℂ)^2*clockCoefficients q a b w 1 0 =
-      4*(a^2*b^2/64)*(
-        -(s*t/3)*(w 1:ℂ)^2*(∑ j : Fin 2, coordDeriv j (angularResponseGreen q j) w)+
-        (w 1:ℂ)^2*(∑ j : Fin 2,
+    (w 1:ℂ)^(2 : ℕ)*clockCoefficients q a b w 1 0 =
+      4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*(
+        -(s*t/3)*(w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2, coordDeriv j (angularResponseGreen q j) w)+
+        (w 1:ℂ)^(2 : ℕ)*(∑ j : Fin 2,
           coordDeriv j (angularSourceWorkCurrent q rs rt rQ j) w)-
         (rs*fullAngularField q true w+rt*fullAngularField q false w+rQ*fullSquarePotential q w)*
           (2*(s+1)*(s+2)*fullSquarePotential q w+fullGradientEnergy q w)) := by
@@ -415,8 +415,8 @@ theorem incoming_radial_mass_source_balance (q : XiZeroCopy) (a b : ℂ)
   let t := physicalRate q false
   let ds := s*(s-1)/4
   let dt := t*(t-1)/4
-  let rs := -2*s*dt*((t+1)^2-s*t)+(s*t/3)*(2*t+1)*(2*t+2)
-  let rt := 2*t*ds*((s+1)^2-s*t)-(s*t/3)*(2*s+1)*(2*s+2)
+  let rs := -2*s*dt*((t+1)^(2 : ℕ)-s*t)+(s*t/3)*(2*t+1)*(2*t+2)
+  let rt := 2*t*ds*((s+1)^(2 : ℕ)-s*t)-(s*t/3)*(2*s+1)*(2*s+2)
   let rQ := 2*ds*dt*(s-t)*(1-s*t)
   have he := incoming_radial_mass_angular_exchange q a b z
   have hw := angularSourceWorkCurrent_divergence q rs rt rQ z
@@ -424,7 +424,7 @@ theorem incoming_radial_mass_source_balance (q : XiZeroCopy) (a b : ℂ)
   dsimp only [s,t,ds,dt,rs,rt,rQ] at hw
   dsimp only at he
   simp only [Fin.sum_univ_two] at he hw ⊢
-  linear_combination (coordinates z 1:ℂ)^2*he-4*(a^2*b^2/64)*hw
+  linear_combination (coordinates z 1:ℂ)^(2 : ℕ)*he-4*(a^(2 : ℕ)*b^(2 : ℕ)/64)*hw
 
 end
 end RHTower.D4BMIncomingClockTranslation
@@ -445,7 +445,7 @@ theorem fullSourceOnsetPulse_radial_factor (q : XiZeroCopy) (branch : Bool) (a :
     fullSourceOnsetPulse q branch a τ x z =
       2*parameter q branch*sourceAmplitude s 0 a 1 x*(1-u)*
         (-((2*s+1)*u+1)*fullAngularField q branch z+
-          s*(s-1)/4*u^2*((2*s+3)*u+3)*fullSquarePotential q z)*
+          s*(s-1)/4*u^(2 : ℕ)*((2*s+3)*u+3)*fullSquarePotential q z)*
         ((deriv Real.smoothTransition (τ+x):ℝ):ℂ)*
         Complex.exp (2*s*((τ+x:ℝ):ℂ)) := by
   dsimp only

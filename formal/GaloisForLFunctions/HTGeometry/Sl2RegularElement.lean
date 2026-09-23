@@ -45,7 +45,7 @@ theorem detPolar_smul_left (u : U) (X Y : Matrix (Fin 2) (Fin 2) U) :
   ring
 
 theorem det_smul_two (u : U) (X : Matrix (Fin 2) (Fin 2) U) :
-    (u • X).det = u ^ 2 * X.det := by
+    (u • X).det = u ^ (2 : ℕ) * X.det := by
   simp only [Matrix.det_fin_two, Matrix.smul_apply, smul_eq_mul]
   ring
 

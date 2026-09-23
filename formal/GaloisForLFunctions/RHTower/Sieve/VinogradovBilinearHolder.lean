@@ -149,7 +149,7 @@ Fejér kernel sums. -/
 theorem norm_vinogradovBilinearSum_pow_le_coordinateProduct
     {X Y b k : ℕ} (hb : b ≠ 0) (hX : X ≠ 0) (hY : Y ≠ 0)
     (α : Fin k → ℝ) :
-    ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (4 * b ^ 2) ≤
+    ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (4 * b ^ (2 : ℕ)) ≤
       (((X : ℝ) ^ (2 * b - 1)) ^ (2 * b) *
         (Fintype.card ((Fin b → Fin Y) × (Fin b → Fin Y)) : ℝ) ^ (2 * b - 1)) *
         ((Fintype.card (VinogradovDiagonalSolution Y b k) : ℝ) *
@@ -179,7 +179,7 @@ theorem norm_vinogradovBilinearSum_pow_le_coordinateProduct
     simp only [Complex.normSq_eq_norm_sq]
     rw [← pow_mul]
   calc
-    ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (4 * b ^ 2) =
+    ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (4 * b ^ (2 : ℕ)) =
         (‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (2 * b)) ^
           (2 * b) := by rw [← pow_mul]; congr 1; ring
     _ ≤ (((X : ℝ) ^ (2 * b - 1)) *
@@ -225,8 +225,8 @@ theorem norm_vinogradovBilinearSum_pow_le_rationalProduct
     (α : Fin k → ℝ) (a q : Fin k → ℕ)
     (hq : ∀ j, 0 < q j) (hcop : ∀ j, Nat.Coprime (a j) (q j))
     (happrox : ∀ j,
-      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ 2) :
-    ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (4 * b ^ 2) ≤
+      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ (2 : ℕ)) :
+    ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (4 * b ^ (2 : ℕ)) ≤
       (((X : ℝ) ^ (2 * b - 1)) ^ (2 * b) *
         (Fintype.card ((Fin b → Fin Y) × (Fin b → Fin Y)) : ℝ) ^ (2 * b - 1)) *
         ((Fintype.card (VinogradovDiagonalSolution Y b k) : ℝ) *
@@ -286,8 +286,8 @@ theorem norm_vinogradovBilinearSum_pow_le_mixedProduct
     (hq : ∀ j, U j → 0 < q j)
     (hcop : ∀ j, U j → Nat.Coprime (a j) (q j))
     (happrox : ∀ j, U j →
-      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ 2) :
-    ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (4 * b ^ 2) ≤
+      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ (2 : ℕ)) :
+    ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (4 * b ^ (2 : ℕ)) ≤
       (((X : ℝ) ^ (2 * b - 1)) ^ (2 * b) *
         (Fintype.card ((Fin b → Fin Y) × (Fin b → Fin Y)) : ℝ) ^ (2 * b - 1)) *
         ((Fintype.card (VinogradovDiagonalSolution Y b k) : ℝ) *

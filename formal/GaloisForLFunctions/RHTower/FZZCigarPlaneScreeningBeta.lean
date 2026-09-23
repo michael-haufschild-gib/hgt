@@ -69,8 +69,8 @@ private theorem beta_ray_integrable {w c : ℝ} (hw : 0 < w) (hc : w < c) :
     (Real.Gamma_pos_of_pos (sub_pos.mpr hc))) (Real.Gamma_pos_of_pos (hw.trans hc)))
 
 private theorem gaussian_square {t u : ℝ} (ht : 0 < t) (hu : 0 < u) (z : ℂ) :
-    -t*‖z‖^2-u*‖z-1‖^2 =
-      -(t*u/(t+u)) + (-(t+u)*‖z-((u/(t+u) : ℝ) : ℂ)‖^2) := by
+    -t*‖z‖^(2 : ℕ)-u*‖z-1‖^(2 : ℕ) =
+      -(t*u/(t+u)) + (-(t+u)*‖z-((u/(t+u) : ℝ) : ℂ)‖^(2 : ℕ)) := by
   simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re,
     Complex.sub_im, Complex.one_re, Complex.one_im, Complex.ofReal_re, Complex.ofReal_im,
     sub_zero]
@@ -78,17 +78,17 @@ private theorem gaussian_square {t u : ℝ} (ht : 0 < t) (hu : 0 < u) (z : ℂ) 
   ring
 
 private theorem plane_gaussian {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
-    (∫ z : ℂ, Real.exp (-t*‖z‖^2-u*‖z-1‖^2)) =
+    (∫ z : ℂ, Real.exp (-t*‖z‖^(2 : ℕ)-u*‖z-1‖^(2 : ℕ))) =
       Real.pi/(t+u)*Real.exp (-(t*u/(t+u))) := by
   simp_rw [gaussian_square ht hu, Real.exp_add]
-  rw [integral_const_mul, integral_sub_right_eq_self (f := fun z : ℂ => Real.exp (-(t+u)*‖z‖^2))]
+  rw [integral_const_mul, integral_sub_right_eq_self (f := fun z : ℂ => Real.exp (-(t+u)*‖z‖^(2 : ℕ)))]
   rw [GaussianFourier.integral_rexp_neg_mul_sq_norm (add_pos ht hu)]
   simp only [Complex.finrank_real_complex]
   norm_num
   ring
 
 private theorem plane_gaussian_integrable {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
-    Integrable (fun z : ℂ => Real.exp (-t*‖z‖^2-u*‖z-1‖^2)) := by
+    Integrable (fun z : ℂ => Real.exp (-t*‖z‖^(2 : ℕ)-u*‖z-1‖^(2 : ℕ))) := by
   apply Integrable.of_integral_ne_zero
   rw [plane_gaussian ht hu]
   exact ne_of_gt (mul_pos (div_pos Real.pi_pos (add_pos ht hu)) (Real.exp_pos _))
@@ -245,7 +245,7 @@ private theorem pair_positive : ∀ᵐ q ∂pairMeasure, 0 < q.1 ∧ 0 < q.2 := 
   exact ⟨ht, hu⟩
 
 private def laplacePair (a b : ℝ) (q : ℝ × ℝ) (z : ℂ) : ℝ :=
-  q.1^(a-1)*q.2^(b-1)*Real.exp (-q.1*‖z‖^2-q.2*‖z-1‖^2)
+  q.1^(a-1)*q.2^(b-1)*Real.exp (-q.1*‖z‖^(2 : ℕ)-q.2*‖z-1‖^(2 : ℕ))
 
 private theorem laplacePair_plane {a b t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
     (∫ z : ℂ, laplacePair a b (t,u) z) = Real.pi*gaussianPair a b t u := by
@@ -276,19 +276,19 @@ private theorem laplacePair_parameter {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
     (∫ q, laplacePair a b q z ∂pairMeasure) =
       (Real.Gamma a*Real.Gamma b)*(‖z‖^(-2*a)*‖z-1‖^(-2*b)) := by
   have he : (fun q => laplacePair a b q z) = fun q : ℝ × ℝ =>
-      (q.1^(a-1)*Real.exp (-(‖z‖^2*q.1))) *
-        (q.2^(b-1)*Real.exp (-(‖z-1‖^2*q.2))) := by
+      (q.1^(a-1)*Real.exp (-(‖z‖^(2 : ℕ)*q.1))) *
+        (q.2^(b-1)*Real.exp (-(‖z-1‖^(2 : ℕ)*q.2))) := by
     funext q
     unfold laplacePair
-    rw [show -q.1*‖z‖^2-q.2*‖z-1‖^2 = -(‖z‖^2*q.1) + -(‖z-1‖^2*q.2) by ring,
+    rw [show -q.1*‖z‖^(2 : ℕ)-q.2*‖z-1‖^(2 : ℕ) = -(‖z‖^(2 : ℕ)*q.1) + -(‖z-1‖^(2 : ℕ)*q.2) by ring,
       Real.exp_add]
     ring
   rw [he, pairMeasure, integral_prod_mul
-    (fun t : ℝ => t^(a-1)*Real.exp (-(‖z‖^2*t)))
-    (fun u : ℝ => u^(b-1)*Real.exp (-(‖z-1‖^2*u))),
+    (fun t : ℝ => t^(a-1)*Real.exp (-(‖z‖^(2 : ℕ)*t)))
+    (fun u : ℝ => u^(b-1)*Real.exp (-(‖z-1‖^(2 : ℕ)*u))),
     rate_gamma (sq_pos_of_pos (norm_pos_iff.mpr hz)) ha,
     rate_gamma (sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr hz1))) hb]
-  have hp (w : ℂ) (d : ℝ) : (‖w‖^2)^(-d) = ‖w‖^(-2*d) := by
+  have hp (w : ℂ) (d : ℝ) : (‖w‖^(2 : ℕ))^(-d) = ‖w‖^(-2*d) := by
     rw [← Real.rpow_natCast ‖w‖ 2, ← Real.rpow_mul (norm_nonneg w)]
     congr 1
     ring

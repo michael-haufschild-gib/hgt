@@ -21,7 +21,7 @@ namespace RHTower.Sieve
 open Finset
 
 /-- The weight appearing in the frequency window. -/
-noncomputable def logSqWeight (N : ℕ) : ℝ := Real.log N ^ 2 / 2 - 39 * Real.log N - 25
+noncomputable def logSqWeight (N : ℕ) : ℝ := Real.log N ^ (2 : ℕ) / 2 - 39 * Real.log N - 25
 
 /-- **The frequency window, in squared form.** -/
 theorem sq_sub_mul_logSqWeight_le {f : ℕ → ℂ} {N : ℕ} (hN : 1 ≤ N)
@@ -29,13 +29,13 @@ theorem sq_sub_mul_logSqWeight_le {f : ℕ → ℂ} {N : ℕ} (hN : 1 ≤ N)
     (ht : Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE N)) ≤ δ)
     (hu : Real.sqrt (mulDistSqPair f (charFn u) (Nat.primesLE N)) ≤ δ)
     (hsmall : ∀ p ∈ Nat.primesLE N, |(t - u) * Real.log (p : ℝ)| ≤ Real.pi) :
-    (t - u) ^ 2 * logSqWeight N ≤ 2 * Real.pi ^ 2 * δ ^ 2 := by
+    (t - u) ^ (2 : ℕ) * logSqWeight N ≤ 2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) := by
   have hP : ∀ p ∈ Nat.primesLE N, 0 < p := fun p hp => (Nat.prime_of_mem_primesLE hp).pos
   have hbase := sq_mul_sum_sq_log_le_of_close hf hP ht hu hsmall
-  have hW : logSqWeight N ≤ ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ 2 / (p : ℝ) :=
+  have hW : logSqWeight N ≤ ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) :=
     sum_prime_log_sq_div_ge N hN
-  have hstep : (t - u) ^ 2 * logSqWeight N
-      ≤ (t - u) ^ 2 * ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ 2 / (p : ℝ) :=
+  have hstep : (t - u) ^ (2 : ℕ) * logSqWeight N
+      ≤ (t - u) ^ (2 : ℕ) * ∑ p ∈ Nat.primesLE N, Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) :=
     mul_le_mul_of_nonneg_left hW (sq_nonneg _)
   linarith
 
@@ -45,7 +45,7 @@ theorem sq_sub_le_div {f : ℕ → ℂ} {N : ℕ} (hN : 1 ≤ N)
     (ht : Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE N)) ≤ δ)
     (hu : Real.sqrt (mulDistSqPair f (charFn u) (Nat.primesLE N)) ≤ δ)
     (hsmall : ∀ p ∈ Nat.primesLE N, |(t - u) * Real.log (p : ℝ)| ≤ Real.pi) :
-    (t - u) ^ 2 ≤ 2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight N := by
+    (t - u) ^ (2 : ℕ) ≤ 2 * Real.pi ^ (2 : ℕ) * δ ^ (2 : ℕ) / logSqWeight N := by
   rw [le_div_iff₀ hW]
   exact sq_sub_mul_logSqWeight_le hN hf ht hu hsmall
 

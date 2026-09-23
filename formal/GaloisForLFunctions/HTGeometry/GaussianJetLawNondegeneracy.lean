@@ -29,7 +29,7 @@ theorem gafCoeff_eq_mul_weight (x : ℕ → ℂ) (n : ℕ) :
     gafCoeff x n = x n * gaussianWeight n := by
   rw [gafCoeff, gaussianWeight, div_eq_mul_inv]
 
-theorem partialSum_ofScalars (a : ℕ → ℂ) (M : ℕ) (z : ℂ) :
+theorem partialSum_ofScalars_gaussianJetLawNondegeneracy (a : ℕ → ℂ) (M : ℕ) (z : ℂ) :
     (FormalMultilinearSeries.ofScalars ℂ a).partialSum M z = ∑ i ∈ Finset.range M, a i * z ^ i := by
   rw [FormalMultilinearSeries.partialSum]
   exact Finset.sum_congr rfl fun i _ => by
@@ -43,7 +43,7 @@ theorem continuous_partialSumSource_gafCoeff (M : ℕ) :
         = fun q : (ℕ → ℂ) × (Fin 1 → ℂ) =>
           ∑ i ∈ Finset.range M, gafCoeff q.1 i * (q.2 0) ^ i := by
       funext q
-      exact partialSum_ofScalars (gafCoeff q.1) M (q.2 0)
+      exact partialSum_ofScalars_gaussianJetLawNondegeneracy (gafCoeff q.1) M (q.2 0)
     rw [h]
     refine continuous_finsetSum _ fun i _ => ?_
     refine Continuous.mul ?_ (((continuous_apply 0).comp continuous_snd).pow i)
@@ -125,7 +125,7 @@ theorem measurable_packet_gaussianTailSource (shift : H → ℂ)
           = fun q : (ℕ → ℂ) × (Fin 1 → ℂ) =>
             ∑ i ∈ Finset.range M, gaussianTailCoeff N q.1 i * (q.2 0) ^ i := by
         funext q
-        exact partialSum_ofScalars (gaussianTailCoeff N q.1) M (q.2 0)
+        exact partialSum_ofScalars_gaussianJetLawNondegeneracy (gaussianTailCoeff N q.1) M (q.2 0)
       rw [h]
       refine continuous_finsetSum _ fun i _ => ?_
       refine Continuous.mul ?_ (((continuous_apply 0).comp continuous_snd).pow i)

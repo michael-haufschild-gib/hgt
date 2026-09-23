@@ -6,8 +6,8 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinRamanujanDirichle
 Paper argument. Ramanujan inversion gives
 `c_(p^(k+1))(n) = p^(k+1) 1_(p^(k+1)|n) - p^k 1_(p^k|n)`.
 Multiplication by `mu(n)` kills either indicator when its exponent is at least two.
-Thus all primitive sums at conductors `p^3,p^4,...` vanish. The two surviving
-coefficients, at `p` and `p^2`, sum to `-mu(n)`. Finite summation preserves these
+Thus all primitive sums at conductors `p^(3 : ℕ),p^(4 : ℕ),...` vanish. The two surviving
+coefficients, at `p` and `p^(2 : ℕ)`, sum to `-mu(n)`. Finite summation preserves these
 identities with arbitrary complex weights and without squaring the coefficients.
 
 This is a classical Fourier bridge and an exact limit on an attempted averaged

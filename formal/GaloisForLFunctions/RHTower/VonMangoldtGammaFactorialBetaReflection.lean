@@ -8,7 +8,7 @@ The raw von Mangoldt--Gamma moment matrices are ordinary positive Grams, whereas
 factorial trace normalization is not positivity preserving.  This file identifies the missing
 geometry exactly.  The reciprocal factorial is the Beta pairing
 
-`1 / (i + j + 1)! = 1 / (i! j!) * integral_0^1 t^i (1-t)^j dt`.
+`1 / (i + j + 1)! = 1 / (i! j!) * integral_0^(1 : ℕ) t^i (1-t)^j dt`.
 
 Consequently every finite factorially normalized source entry is the average of a left Borel
 feature at `t` paired with its reflected right feature at `1-t`.  This is a reflection form, not

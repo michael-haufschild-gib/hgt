@@ -14,11 +14,11 @@ noncomputable section
 
 /-- Analytic square of the one-sided Kapustin Toeplitz symbol near the real line. -/
 def kapustinOneSidedToeplitzAnalyticSquare (z : ℂ) : ℂ :=
-  kapustinToeplitzAnalyticSymbol z * ((z + I) / (z - I)) ^ 4
+  kapustinToeplitzAnalyticSymbol z * ((z + I) / (z - I)) ^ (4 : ℕ)
 
 theorem kapustinOneSidedToeplitzAnalyticSquare_ofReal (x : ℝ) :
     kapustinOneSidedToeplitzAnalyticSquare (x : ℂ) =
-      kapustinOneSidedToeplitzSymbol x ^ 2 := by
+      kapustinOneSidedToeplitzSymbol x ^ (2 : ℕ) := by
   rw [kapustinOneSidedToeplitzAnalyticSquare,
     kapustinToeplitzAnalyticSymbol_ofReal]
   have hcayley : ((x : ℂ) + I) / ((x : ℂ) - I) =
@@ -85,7 +85,7 @@ theorem
     ∃ h : ℂ → ℂ, Measurable h ∧ AnalyticAt ℂ h (x₀ : ℂ) ∧
       h (x₀ : ℂ) = kapustinOneSidedToeplitzSymbol x₀ ∧
       (fun x : ℝ => h (x : ℂ)) =ᶠ[nhds x₀] kapustinOneSidedToeplitzSymbol ∧
-      ∀ z : ℂ, h z ^ 2 = kapustinOneSidedToeplitzAnalyticSquare z := by
+      ∀ z : ℂ, h z ^ (2 : ℕ) = kapustinOneSidedToeplitzAnalyticSquare z := by
   have hU₀ : kapustinOneSidedToeplitzSymbol x₀ ≠ 0 :=
     norm_ne_zero_iff.mp (by rw [norm_kapustinOneSidedToeplitzSymbol]; norm_num)
   obtain ⟨h, hhMeas, hhAnalytic, hh₀, hhsq⟩ :=
@@ -95,7 +95,7 @@ theorem
       (kapustinOneSidedToeplitzAnalyticSquare_ofReal x₀).symm hU₀
   refine ⟨h, hhMeas, hhAnalytic, hh₀, ?_, hhsq⟩
   have hsqReal : ∀ᶠ x : ℝ in nhds x₀,
-      h (x : ℂ) ^ 2 = kapustinOneSidedToeplitzSymbol x ^ 2 := by
+      h (x : ℂ) ^ (2 : ℕ) = kapustinOneSidedToeplitzSymbol x ^ (2 : ℕ) := by
     exact Filter.Eventually.of_forall fun x => by
       simpa only [kapustinOneSidedToeplitzAnalyticSquare_ofReal] using hhsq (x : ℂ)
   have hhContinuous : ContinuousAt (fun x : ℝ => h (x : ℂ)) x₀ :=
@@ -118,7 +118,7 @@ theorem
   calc
     (h (x : ℂ) - kapustinOneSidedToeplitzSymbol x) *
         (h (x : ℂ) + kapustinOneSidedToeplitzSymbol x) =
-      h (x : ℂ) ^ 2 - kapustinOneSidedToeplitzSymbol x ^ 2 := by ring
+      h (x : ℂ) ^ (2 : ℕ) - kapustinOneSidedToeplitzSymbol x ^ (2 : ℕ) := by ring
     _ = 0 := by rw [hsq, sub_self]
 
 /-- The one-sided Kapustin symbol is the real trace of a measurable analytic square-root germ at
@@ -129,7 +129,7 @@ theorem exists_measurable_analyticAt_eventuallyEq_kapustinOneSidedToeplitzSymbol
       h (x₀ : ℂ) = kapustinOneSidedToeplitzSymbol x₀ ∧
       (fun x : ℝ => h (x : ℂ)) =ᶠ[nhds x₀] kapustinOneSidedToeplitzSymbol ∧
       ∀ᶠ z in nhds (x₀ : ℂ),
-        h z ^ 2 = kapustinOneSidedToeplitzAnalyticSquare z := by
+        h z ^ (2 : ℕ) = kapustinOneSidedToeplitzAnalyticSquare z := by
   obtain ⟨h, hhMeas, hhAnalytic, hh₀, hhTrace, hhsq⟩ :=
     exists_measurable_analyticAt_eventuallyEq_kapustinOneSidedToeplitzSymbol_with_global_square x₀
   exact ⟨h, hhMeas, hhAnalytic, hh₀, hhTrace, Filter.Eventually.of_forall hhsq⟩

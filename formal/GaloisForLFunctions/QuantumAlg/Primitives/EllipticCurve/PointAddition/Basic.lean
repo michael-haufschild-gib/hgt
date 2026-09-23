@@ -362,7 +362,7 @@ def doubleSlope (E : PrimeFieldShortWeierstrass p) [Fact p.Prime]
   E.toWeierstrassCurve.toAffine.slope P.x P.x P.y P.y
 
 /-- The short-Weierstrass tangent slope
-`λ = (3*x^2 + a)/(2*y)` for a nonexceptional doubling input. -/
+`λ = (3*x^(2 : ℕ) + a)/(2*y)` for a nonexceptional doubling input. -/
 def doubleLambda (E : PrimeFieldShortWeierstrass p) [Fact p.Prime]
     (P : AffinePoint E) : ZMod p :=
   ((3 : ZMod p) * P.x ^ 2 + E.a) / ((2 : ZMod p) * P.y)
@@ -420,7 +420,7 @@ theorem doubleX_eq_mathlib (E : PrimeFieldShortWeierstrass p)
         (E.toWeierstrassCurve.toAffine.slope P.x P.x P.y P.y) := by
   rfl
 
-/-- The doubled `x` coordinate expands to `λ^2 - 2*x`. -/
+/-- The doubled `x` coordinate expands to `λ^(2 : ℕ) - 2*x`. -/
 theorem doubleX_eq_short_formula (E : PrimeFieldShortWeierstrass p)
     [Fact p.Prime] (P : AffinePoint E) (h2y : (2 : ZMod p) * P.y ≠ 0) :
     doubleX E P = doubleLambda E P ^ 2 - (2 : ZMod p) * P.x := by
@@ -437,7 +437,7 @@ theorem doubleY_eq_mathlib (E : PrimeFieldShortWeierstrass p)
   rfl
 
 /-- The doubled `y` coordinate expands to `λ*(x - x₃) - y`, where
-`x₃ = λ^2 - 2*x`. -/
+`x₃ = λ^(2 : ℕ) - 2*x`. -/
 theorem doubleY_eq_short_formula (E : PrimeFieldShortWeierstrass p)
     [Fact p.Prime] (P : AffinePoint E) (h2y : (2 : ZMod p) * P.y ≠ 0) :
     doubleY E P =

@@ -46,7 +46,7 @@ theorem jetMonomialValue_add {A : Type*} [CommRing A] (L : ι → A) (α β : ι
 
 @[simp] theorem jetMonomialValue_single {A : Type*} [CommRing A] (L : ι → A) (i : ι) :
     jetMonomialValue L (Finsupp.single i 1) = L i := by
-  have h : (Finsupp.single i 1).prod (fun (i : ι) (k : ℕ) => L i ^ k) = L i ^ 1 :=
+  have h : (Finsupp.single i 1).prod (fun (i : ι) (k : ℕ) => L i ^ k) = L i ^ (1 : ℕ) :=
     Finsupp.prod_single_index (pow_zero (L i))
   rw [jetMonomialValue, h, pow_one]
 

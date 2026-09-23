@@ -157,25 +157,25 @@ def routeKBoundaryGrowthConstant : ℝ :=
 
 theorem norm_seamFluxCochain_boundary_le {t : ℝ} (ht : 9 ≤ |t|) :
     ‖seamFluxCochain ((1 : ℂ) + (t : ℂ) * I)‖ ≤
-      routeKBoundaryGrowthConstant * (1 + |t|) ^ 9 := by
+      routeKBoundaryGrowthConstant * (1 + |t|) ^ (9 : ℕ) := by
   have habspos : 0 < |t| := by linarith
   have hlogpos : 0 < Real.log |t| := Real.log_pos (by linarith)
-  have hstrip : 0 ≤ zetaLowerA / Real.log |t| ^ 9 :=
+  have hstrip : 0 ≤ zetaLowerA / Real.log |t| ^ (9 : ℕ) :=
     div_nonneg zetaLowerA_pos.le (pow_nonneg hlogpos.le 9)
   have hzeta := norm_deriv_div_riemannZeta_le
     (σ := (1 : ℝ)) (t := t) ht (by linarith) (by linarith)
   have harch := norm_logDeriv_archFactor_boundary_le ht
   have hsplit := logDeriv_xi_boundary_split
     (t := t) (by exact abs_pos.mp habspos)
-  have hpow1 : 1 ≤ (1 + |t|) ^ 9 := by
+  have hpow1 : 1 ≤ (1 + |t|) ^ (9 : ℕ) := by
     exact one_le_pow₀ (by linarith : 1 ≤ 1 + |t|)
-  have habspow : |t| ≤ (1 + |t|) ^ 9 := by
+  have habspow : |t| ≤ (1 + |t|) ^ (9 : ℕ) := by
     calc
       |t| ≤ 1 + |t| := by linarith
-      _ ≤ (1 + |t|) ^ 9 := le_self_pow₀ (by linarith) (by norm_num)
+      _ ≤ (1 + |t|) ^ (9 : ℕ) := le_self_pow₀ (by linarith) (by norm_num)
   have hlogbase : Real.log |t| ≤ 1 + |t| :=
     (Real.log_le_sub_one_of_pos habspos).trans (by linarith)
-  have hlogpow : Real.log |t| ≤ (1 + |t|) ^ 9 :=
+  have hlogpow : Real.log |t| ≤ (1 + |t|) ^ (9 : ℕ) :=
     hlogbase.trans (le_self_pow₀ (by linarith) (by norm_num))
   have harchC : 0 ≤ routeKArchBoundaryConstant := by
     rw [routeKArchBoundaryConstant,
@@ -185,11 +185,11 @@ theorem norm_seamFluxCochain_boundary_le {t : ℝ} (ht : 9 ≤ |t|) :
     div_nonneg (by norm_num) zetaLowerA_pos.le
   have harch' :
       Real.log |t| / 2 + routeKArchBoundaryConstant ≤
-        (1 / 2 + routeKArchBoundaryConstant) * (1 + |t|) ^ 9 := by
+        (1 / 2 + routeKArchBoundaryConstant) * (1 + |t|) ^ (9 : ℕ) := by
     nlinarith
   have hzeta' :
-      2240 / zetaLowerA * Real.log |t| ^ 9 ≤
-        (2240 / zetaLowerA) * (1 + |t|) ^ 9 := by
+      2240 / zetaLowerA * Real.log |t| ^ (9 : ℕ) ≤
+        (2240 / zetaLowerA) * (1 + |t|) ^ (9 : ℕ) := by
     apply mul_le_mul_of_nonneg_left _ hzetaC
     exact pow_le_pow_left₀ hlogpos.le hlogbase 9
   rw [seamFluxCochain, norm_neg, hsplit]
@@ -201,17 +201,17 @@ theorem norm_seamFluxCochain_boundary_le {t : ℝ} (ht : 9 ≤ |t|) :
         ‖deriv riemannZeta ((1 : ℂ) + (t : ℂ) * I) /
           riemannZeta ((1 : ℂ) + (t : ℂ) * I)‖ := norm_add_le _ _
     _ ≤ (Real.log |t| / 2 + routeKArchBoundaryConstant) +
-        2240 / zetaLowerA * Real.log |t| ^ 9 := add_le_add harch hzeta
-    _ ≤ (1 / 2 + routeKArchBoundaryConstant) * (1 + |t|) ^ 9 +
-        (2240 / zetaLowerA) * (1 + |t|) ^ 9 := add_le_add harch' hzeta'
-    _ = routeKBoundaryGrowthConstant * (1 + |t|) ^ 9 := by
+        2240 / zetaLowerA * Real.log |t| ^ (9 : ℕ) := add_le_add harch hzeta
+    _ ≤ (1 / 2 + routeKArchBoundaryConstant) * (1 + |t|) ^ (9 : ℕ) +
+        (2240 / zetaLowerA) * (1 + |t|) ^ (9 : ℕ) := add_le_add harch' hzeta'
+    _ = routeKBoundaryGrowthConstant * (1 + |t|) ^ (9 : ℕ) := by
       rw [routeKBoundaryGrowthConstant]
       ring
 
 theorem exists_norm_seamFluxCochain_boundary_global_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
       ‖seamFluxCochain ((1 : ℂ) + (t : ℂ) * I)‖ ≤
-        C * (1 + |t|) ^ 9 := by
+        C * (1 + |t|) ^ (9 : ℕ) := by
   have han : ∀ t : ℝ,
       AnalyticAt ℂ seamFluxCochain ((1 : ℂ) + (t : ℂ) * I) := by
     intro t
@@ -239,13 +239,13 @@ theorem exists_norm_seamFluxCochain_boundary_global_le :
   have hC0 : 0 ≤ C := le_max_right _ _
   refine ⟨C, hC0, ?_⟩
   intro t
-  have hpow : 1 ≤ (1 + |t|) ^ 9 :=
+  have hpow : 1 ≤ (1 + |t|) ^ (9 : ℕ) :=
     one_le_pow₀ (by linarith [abs_nonneg t] : 1 ≤ 1 + |t|)
   by_cases ht : 9 ≤ |t|
   · have hhigh := norm_seamFluxCochain_boundary_le ht
     have hconst : routeKBoundaryGrowthConstant ≤ C :=
       le_trans (le_max_right _ _) (le_max_left _ _)
-    have hgrowth0 : 0 ≤ (1 + |t|) ^ 9 := le_trans zero_le_one hpow
+    have hgrowth0 : 0 ≤ (1 + |t|) ^ (9 : ℕ) := le_trans zero_le_one hpow
     exact hhigh.trans (mul_le_mul_of_nonneg_right hconst hgrowth0)
   · have htmem : t ∈ Set.Icc (-9 : ℝ) 9 := by
       rw [Set.mem_Icc, ← abs_le]
@@ -256,7 +256,7 @@ theorem exists_norm_seamFluxCochain_boundary_global_le :
     calc
       ‖seamFluxCochain ((1 : ℂ) + (t : ℂ) * I)‖ ≤ C₀ := hlow
       _ ≤ C := hC₀C
-      _ ≤ C * (1 + |t|) ^ 9 := by nlinarith
+      _ ≤ C * (1 + |t|) ^ (9 : ℕ) := by nlinarith
 
 end
 

@@ -23,7 +23,7 @@ noncomputable section
 /-- The mean square is at most the squared sup norm. -/
 theorem bohrMean_mul_conj_re_le_norm_sq {f : ℝ →ᵇ ℂ}
     (hap : IsBohrAlmostPeriodic (fun x => f x)) :
-    (bohrMean (fun t => f t * conj (f t))).re ≤ ‖f‖ ^ 2 := by
+    (bohrMean (fun t => f t * conj (f t))).re ≤ ‖f‖ ^ (2 : ℕ) := by
   have hcont : Continuous (fun x => f x) := f.continuous
   have hc : Continuous fun t : ℝ => (f : ℝ → ℂ) t * conj ((f : ℝ → ℂ) t) :=
     hcont.mul (Complex.continuous_conj.comp hcont)
@@ -46,7 +46,7 @@ theorem bohrMean_trigPoly_mul_conj_self_re_le {f : ℝ →ᵇ ℂ}
   rw [hval, Complex.re_sum]
   have hterm : ∀ lam ∈ S, (bohrCoefficient (fun x => f x) lam *
       conj (bohrCoefficient (fun x => f x) lam)).re
-      = ‖bohrCoefficient (fun x => f x) lam‖ ^ 2 := by
+      = ‖bohrCoefficient (fun x => f x) lam‖ ^ (2 : ℕ) := by
     intro lam _
     rw [Complex.mul_conj']
     norm_cast

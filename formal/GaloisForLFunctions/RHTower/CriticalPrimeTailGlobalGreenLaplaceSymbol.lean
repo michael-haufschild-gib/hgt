@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.CanonicalEulerLog
 
 The source-fixed zero-rate Green potential has an exact safe-half-plane Laplace transform:
 
-`Laplace(G)(z) = -canonicalEulerLogZeta(1/2+z) / z^2`,  `Re z > 1/2`.
+`Laplace(G)(z) = -canonicalEulerLogZeta(1/2+z) / z^(2 : ℕ)`,  `Re z > 1/2`.
 
 Thus the potential constructed before any divisor is selected is literally the second causal
 primitive of the canonical Euler logarithm.  Exponentiating removes every logarithm-branch choice

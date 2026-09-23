@@ -13,7 +13,7 @@ For every exact quartet-admissible radius `R`, an off-critical Xi divisor point 
 strictly larger than `R + 1 / 2` in absolute value.  The normalized horizontal Cauchy poles used
 to isolate its multiplicity fiber can therefore be chosen with displacement at most `1 / 4`, so
 that every approximating pole still satisfies `R < |re z|`.  A critical-line fiber has zero
-Hurwitz orientation coefficient and needs no approximation.  Regrouping the canonical `ell^2`
+Hurwitz orientation coefficient and needs no approximation.  Regrouping the canonical `ell^(2 : ℕ)`
 expansion over multiplicity fibers consequently places the complete orientation vector in the
 Hilbert closure generated only by exterior continued-source Cauchy vectors.
 

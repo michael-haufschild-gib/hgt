@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.SieveRemainderBound
 # The shifted-pair budget of the marker family
 
 The sifting bound is the `144`-th root of the marker base and the level its fourth root, so the
-level condition `h^18 ≤ √z` of `Sieve/PrimePairAverageSharp` holds with room to spare, the saving
+level condition `h^(18 : ℕ) ≤ √z` of `Sieve/PrimePairAverageSharp` holds with room to spare, the saving
 `exp(mertensS h − mertensS 3)` is a fixed fraction of `log M₀`, and the remainder — at most twice
 the cube of the level by `Sieve/SieveRemainderBound` — is `M₀^{3/4}`.
 -/

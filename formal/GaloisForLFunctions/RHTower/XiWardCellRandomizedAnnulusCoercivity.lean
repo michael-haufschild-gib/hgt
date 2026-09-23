@@ -34,19 +34,19 @@ noncomputable local instance wardCellFintypeForallBool
 /-- Difference of two Cauchy cross kernels when their common total width is
 advanced by `D`. -/
 def wardAnnulusCrossKernel (A D delta : ℝ) : ℝ :=
-  A / (A ^ 2 + delta ^ 2) -
-    (A + D) / ((A + D) ^ 2 + delta ^ 2)
+  A / (A ^ (2 : ℕ) + delta ^ (2 : ℕ)) -
+    (A + D) / ((A + D) ^ (2 : ℕ) + delta ^ (2 : ℕ))
 
 /-- Exact numerator of the Ward annulus cross kernel.  Its sign changes only
 at `delta² = A(A+D)`. -/
 theorem wardAnnulusCrossKernel_eq
     {A D delta : ℝ} (hA : 0 < A) (hD : 0 < D) :
     wardAnnulusCrossKernel A D delta =
-      D * (A * (A + D) - delta ^ 2) /
-        ((A ^ 2 + delta ^ 2) * ((A + D) ^ 2 + delta ^ 2)) := by
+      D * (A * (A + D) - delta ^ (2 : ℕ)) /
+        ((A ^ (2 : ℕ) + delta ^ (2 : ℕ)) * ((A + D) ^ (2 : ℕ) + delta ^ (2 : ℕ))) := by
   have hAD : 0 < A + D := by positivity
-  have h₁ : 0 < A ^ 2 + delta ^ 2 := by positivity
-  have h₂ : 0 < (A + D) ^ 2 + delta ^ 2 := by positivity
+  have h₁ : 0 < A ^ (2 : ℕ) + delta ^ (2 : ℕ) := by positivity
+  have h₂ : 0 < (A + D) ^ (2 : ℕ) + delta ^ (2 : ℕ) := by positivity
   unfold wardAnnulusCrossKernel
   field_simp [h₁.ne', h₂.ne']
   ring
@@ -54,26 +54,26 @@ theorem wardAnnulusCrossKernel_eq
 /-- Near-channel reserve at the source-safe ten-unit annulus. -/
 theorem one_fourth_le_wardAnnulusCrossKernel_twenty
     {A delta : ℝ} (hAlo : 1 ≤ A) (hAhi : A ≤ 3)
-    (hdelta : delta ^ 2 ≤ 1) :
+    (hdelta : delta ^ (2 : ℕ) ≤ 1) :
     1 / 4 ≤ wardAnnulusCrossKernel A 20 delta := by
   have hA : 0 < A := lt_of_lt_of_le (by norm_num) hAlo
   have hA20 : 0 < A + 20 := by positivity
-  have hden : 0 < A ^ 2 + delta ^ 2 := by positivity
-  have hdenMax : A ^ 2 + delta ^ 2 ≤ A ^ 2 + 1 := by linarith
-  have hfirst : A / (A ^ 2 + 1) ≤ A / (A ^ 2 + delta ^ 2) :=
+  have hden : 0 < A ^ (2 : ℕ) + delta ^ (2 : ℕ) := by positivity
+  have hdenMax : A ^ (2 : ℕ) + delta ^ (2 : ℕ) ≤ A ^ (2 : ℕ) + 1 := by linarith
+  have hfirst : A / (A ^ (2 : ℕ) + 1) ≤ A / (A ^ (2 : ℕ) + delta ^ (2 : ℕ)) :=
     div_le_div_of_nonneg_left hA.le hden hdenMax
   have hsecond :
-      (A + 20) / ((A + 20) ^ 2 + delta ^ 2) ≤ 1 / (A + 20) := by
-    have hsq : 0 < (A + 20) ^ 2 := sq_pos_of_pos hA20
-    have hfull : 0 < (A + 20) ^ 2 + delta ^ 2 := by positivity
+      (A + 20) / ((A + 20) ^ (2 : ℕ) + delta ^ (2 : ℕ)) ≤ 1 / (A + 20) := by
+    have hsq : 0 < (A + 20) ^ (2 : ℕ) := sq_pos_of_pos hA20
+    have hfull : 0 < (A + 20) ^ (2 : ℕ) + delta ^ (2 : ℕ) := by positivity
     rw [div_le_div_iff₀ hfull hA20]
     nlinarith [sq_nonneg delta]
-  have hpoly : 0 ≤ (3 - A) * (A ^ 2 + 23 * A - 10) := by
+  have hpoly : 0 ≤ (3 - A) * (A ^ (2 : ℕ) + 23 * A - 10) := by
     apply mul_nonneg
     · linarith
     · nlinarith
-  have hbase : 1 / 4 ≤ A / (A ^ 2 + 1) - 1 / (A + 20) := by
-    have hAden : 0 < A ^ 2 + 1 := by positivity
+  have hbase : 1 / 4 ≤ A / (A ^ (2 : ℕ) + 1) - 1 / (A + 20) := by
+    have hAden : 0 < A ^ (2 : ℕ) + 1 := by positivity
     rw [le_sub_iff_add_le]
     field_simp [hAden.ne', hA20.ne']
     nlinarith
@@ -86,10 +86,10 @@ theorem neg_one_twentyOne_le_wardAnnulusCrossKernel_twenty
     -(1 / 21 : ℝ) ≤ wardAnnulusCrossKernel A 20 delta := by
   have hApos : 0 < A := lt_of_lt_of_le (by norm_num) hA
   have hA20 : 0 < A + 20 := by positivity
-  have hfull : 0 < (A + 20) ^ 2 + delta ^ 2 := by positivity
-  have htermNonneg : 0 ≤ A / (A ^ 2 + delta ^ 2) := by positivity
+  have hfull : 0 < (A + 20) ^ (2 : ℕ) + delta ^ (2 : ℕ) := by positivity
+  have htermNonneg : 0 ≤ A / (A ^ (2 : ℕ) + delta ^ (2 : ℕ)) := by positivity
   have hfar :
-      (A + 20) / ((A + 20) ^ 2 + delta ^ 2) ≤ 1 / (A + 20) := by
+      (A + 20) / ((A + 20) ^ (2 : ℕ) + delta ^ (2 : ℕ)) ≤ 1 / (A + 20) := by
     rw [div_le_div_iff₀ hfull hA20]
     nlinarith [sq_nonneg delta]
   have hinv : 1 / (A + 20) ≤ 1 / 21 := by
@@ -105,14 +105,14 @@ theorem neg_three_hundredths_le_wardAnnulusCrossKernel_twenty
     -(3 / 100 : ℝ) ≤ wardAnnulusCrossKernel A 20 delta := by
   have hA : 0 < A := lt_of_lt_of_le (by norm_num) hAlo
   have hA20 : 0 < A + 20 := by positivity
-  have hden₁ : 0 < A ^ 2 + delta ^ 2 := by positivity
-  have hden₂ : 0 < (A + 20) ^ 2 + delta ^ 2 := by positivity
+  have hden₁ : 0 < A ^ (2 : ℕ) + delta ^ (2 : ℕ) := by positivity
+  have hden₂ : 0 < (A + 20) ^ (2 : ℕ) + delta ^ (2 : ℕ) := by positivity
   have hs : 21 ≤ A * (A + 20) := by nlinarith
-  have hsq := sq_nonneg (3 * (delta ^ 2 + A * (A + 20)) - 400)
+  have hsq := sq_nonneg (3 * (delta ^ (2 : ℕ) + A * (A + 20)) - 400)
   have hpositive :
-      0 ≤ 3 * ((A ^ 2 + delta ^ 2) *
-          ((A + 20) ^ 2 + delta ^ 2)) +
-        2000 * (A * (A + 20) - delta ^ 2) := by
+      0 ≤ 3 * ((A ^ (2 : ℕ) + delta ^ (2 : ℕ)) *
+          ((A + 20) ^ (2 : ℕ) + delta ^ (2 : ℕ))) +
+        2000 * (A * (A + 20) - delta ^ (2 : ℕ)) := by
     nlinarith
   rw [wardAnnulusCrossKernel_eq hA (by norm_num)]
   rw [le_div_iff₀ (mul_pos hden₁ hden₂)]
@@ -123,25 +123,25 @@ theorem neg_three_hundredths_le_wardAnnulusCrossKernel_twenty
 near reserve to `21/50`. -/
 theorem twentyOne_fiftieth_le_wardAnnulusCrossKernel_twenty
     {A delta : ℝ} (hAlo : 1 ≤ A) (hAhi : A ≤ 101 / 50)
-    (hdelta : delta ^ 2 ≤ 1 / 4) :
+    (hdelta : delta ^ (2 : ℕ) ≤ 1 / 4) :
     21 / 50 ≤ wardAnnulusCrossKernel A 20 delta := by
   have hA : 0 < A := lt_of_lt_of_le (by norm_num) hAlo
   have hA20 : 0 < A + 20 := by positivity
-  have hden : 0 < A ^ 2 + delta ^ 2 := by positivity
-  have hdenMax : A ^ 2 + delta ^ 2 ≤ A ^ 2 + 1 / 4 := by linarith
-  have hfirst : A / (A ^ 2 + 1 / 4) ≤ A / (A ^ 2 + delta ^ 2) :=
+  have hden : 0 < A ^ (2 : ℕ) + delta ^ (2 : ℕ) := by positivity
+  have hdenMax : A ^ (2 : ℕ) + delta ^ (2 : ℕ) ≤ A ^ (2 : ℕ) + 1 / 4 := by linarith
+  have hfirst : A / (A ^ (2 : ℕ) + 1 / 4) ≤ A / (A ^ (2 : ℕ) + delta ^ (2 : ℕ)) :=
     div_le_div_of_nonneg_left hA.le hden hdenMax
   have hsecond :
-      (A + 20) / ((A + 20) ^ 2 + delta ^ 2) ≤ 1 / (A + 20) := by
-    have hfull : 0 < (A + 20) ^ 2 + delta ^ 2 := by positivity
+      (A + 20) / ((A + 20) ^ (2 : ℕ) + delta ^ (2 : ℕ)) ≤ 1 / (A + 20) := by
+    have hfull : 0 < (A + 20) ^ (2 : ℕ) + delta ^ (2 : ℕ) := by positivity
     rw [div_le_div_iff₀ hfull hA20]
     nlinarith [sq_nonneg delta]
-  have hbase : 21 / 50 ≤ A / (A ^ 2 + 1 / 4) - 1 / (A + 20) := by
+  have hbase : 21 / 50 ≤ A / (A ^ (2 : ℕ) + 1 / 4) - 1 / (A + 20) := by
     by_cases hsmall : A ≤ 6 / 5
-    · have hA2 : A ^ 2 ≤ (6 / 5 : ℝ) ^ 2 := by nlinarith
-      have hdenUpper : A ^ 2 + 1 / 4 ≤ 169 / 100 := by nlinarith
-      have hdenPos : 0 < A ^ 2 + 1 / 4 := by positivity
-      have hfirstCoarse : 100 / 169 ≤ A / (A ^ 2 + 1 / 4) := by
+    · have hA2 : A ^ (2 : ℕ) ≤ (6 / 5 : ℝ) ^ (2 : ℕ) := by nlinarith
+      have hdenUpper : A ^ (2 : ℕ) + 1 / 4 ≤ 169 / 100 := by nlinarith
+      have hdenPos : 0 < A ^ (2 : ℕ) + 1 / 4 := by positivity
+      have hfirstCoarse : 100 / 169 ≤ A / (A ^ (2 : ℕ) + 1 / 4) := by
         rw [div_le_div_iff₀ (by norm_num : (0 : ℝ) < 169) hdenPos]
         nlinarith
       have hsecondCoarse : 1 / (A + 20) ≤ 1 / 21 := by
@@ -150,15 +150,15 @@ theorem twentyOne_fiftieth_le_wardAnnulusCrossKernel_twenty
       linarith
     · have hAlarge : 6 / 5 < A := lt_of_not_ge hsmall
       let P : ℝ → ℝ := fun x =>
-        -168 * x ^ 3 - 3360 * x ^ 2 + 7958 * x - 940
+        -168 * x ^ (3 : ℕ) - 3360 * x ^ (2 : ℕ) + 7958 * x - 940
       have hfactor :
           P A = P (101 / 50) + (101 / 50 - A) *
-            (168 * (A ^ 2 + A * (101 / 50) + (101 / 50) ^ 2) +
+            (168 * (A ^ (2 : ℕ) + A * (101 / 50) + (101 / 50) ^ (2 : ℕ)) +
               3360 * (A + 101 / 50) - 7958) := by
         dsimp [P]
         ring
       have hbracket :
-          0 ≤ 168 * (A ^ 2 + A * (101 / 50) + (101 / 50) ^ 2) +
+          0 ≤ 168 * (A ^ (2 : ℕ) + A * (101 / 50) + (101 / 50) ^ (2 : ℕ)) +
             3360 * (A + 101 / 50) - 7958 := by
         have hAnonneg : 0 ≤ A := hA.le
         nlinarith [sq_nonneg A]
@@ -167,7 +167,7 @@ theorem twentyOne_fiftieth_le_wardAnnulusCrossKernel_twenty
       have hP : 0 ≤ P A := by
         rw [hfactor]
         positivity
-      have hdenPos : 0 < A ^ 2 + 1 / 4 := by positivity
+      have hdenPos : 0 < A ^ (2 : ℕ) + 1 / 4 := by positivity
       rw [le_sub_iff_add_le]
       rw [div_add_div] <;> try positivity
       rw [div_le_div_iff₀ (mul_pos (by norm_num : (0 : ℝ) < 50) hA20) hdenPos]
@@ -190,7 +190,7 @@ theorem seventeen_eightyFour_le_wardReflectedPairAnnulusCross
     {x y beta gamma : ℝ}
     (hxlo : 51 / 100 ≤ x) (hxhi : x ≤ 101 / 100)
     (hylo : 51 / 100 ≤ y) (hyhi : y ≤ 101 / 100)
-    (hcell : (beta - gamma) ^ 2 ≤ 1) :
+    (hcell : (beta - gamma) ^ (2 : ℕ) ≤ 1) :
     17 / 84 ≤ wardReflectedPairAnnulusCross x y beta gamma := by
   have hAlo : 1 ≤ x + y := by linarith
   have hAhi : x + y ≤ 3 := by linarith
@@ -208,7 +208,7 @@ theorem three_eighths_le_wardReflectedPairAnnulusCross
     {x y beta gamma : ℝ}
     (hxlo : 51 / 100 ≤ x) (hxhi : x ≤ 101 / 100)
     (hylo : 51 / 100 ≤ y) (hyhi : y ≤ 101 / 100)
-    (hcell : (beta - gamma) ^ 2 ≤ 1 / 4) :
+    (hcell : (beta - gamma) ^ (2 : ℕ) ≤ 1 / 4) :
     3 / 8 ≤ wardReflectedPairAnnulusCross x y beta gamma := by
   have hAlo : 1 ≤ x + y := by linarith
   have hAhi : x + y ≤ 101 / 50 := by linarith
@@ -227,9 +227,9 @@ theorem finite_cell_wardReflectedPairAnnulusCross_lower
     (x beta weight : ι → ℝ)
     (hxlo : ∀ i ∈ S, 51 / 100 ≤ x i)
     (hxhi : ∀ i ∈ S, x i ≤ 101 / 100)
-    (hcell : ∀ i ∈ S, ∀ j ∈ S, (beta i - beta j) ^ 2 ≤ 1)
+    (hcell : ∀ i ∈ S, ∀ j ∈ S, (beta i - beta j) ^ (2 : ℕ) ≤ 1)
     (hweight : ∀ i ∈ S, 0 ≤ weight i) :
-    (17 / 84 : ℝ) * (∑ i ∈ S, weight i) ^ 2 ≤
+    (17 / 84 : ℝ) * (∑ i ∈ S, weight i) ^ (2 : ℕ) ≤
       ∑ i ∈ S, ∑ j ∈ S,
         weight i * weight j *
           wardReflectedPairAnnulusCross (x i) (x j) (beta i) (beta j) := by
@@ -248,7 +248,7 @@ theorem finite_cell_wardReflectedPairAnnulusCross_lower
       mul_nonneg (hweight i hi) (hweight j hj)
     nlinarith
   calc
-    (17 / 84 : ℝ) * (∑ i ∈ S, weight i) ^ 2 =
+    (17 / 84 : ℝ) * (∑ i ∈ S, weight i) ^ (2 : ℕ) =
         ∑ i ∈ S, ∑ j ∈ S, (17 / 84 : ℝ) * (weight j * weight i) := by
       simp only [pow_two, Finset.mul_sum, Finset.sum_mul]
     _ ≤ _ := hsum
@@ -257,7 +257,7 @@ theorem finite_cell_wardReflectedPairAnnulusCross_lower
 
 /-- One shifted Lorentzian half in the real Ward channel. -/
 def wardLorentzianHalf (x beta t : ℝ) : ℝ :=
-  x / (x ^ 2 + (t + beta) ^ 2)
+  x / (x ^ (2 : ℕ) + (t + beta) ^ (2 : ℕ))
 
 /-- The two reflected Lorentzian halves carried by one Schwarz pair. -/
 def wardReflectedLorentzianProfile (x beta t : ℝ) : ℝ :=
@@ -291,7 +291,7 @@ theorem integral_wardLorentzianHalf_mul
     (∫ t : ℝ,
       wardLorentzianHalf x beta t * wardLorentzianHalf y gamma t) =
       Real.pi * (x + y) /
-        ((x + y) ^ 2 + (beta - gamma) ^ 2) := by
+        ((x + y) ^ (2 : ℕ) + (beta - gamma) ^ (2 : ℕ)) := by
   simpa only [wardLorentzianHalf] using
     integral_mul_lorentzianHalves_general hx hy beta gamma
 
@@ -302,8 +302,8 @@ theorem integral_wardReflectedLorentzianProfile_mul
       wardReflectedLorentzianProfile x beta t *
         wardReflectedLorentzianProfile y gamma t) =
       8 * Real.pi *
-        ((x + y) / ((x + y) ^ 2 + (beta - gamma) ^ 2) +
-          (x + y) / ((x + y) ^ 2 + (beta + gamma) ^ 2)) := by
+        ((x + y) / ((x + y) ^ (2 : ℕ) + (beta - gamma) ^ (2 : ℕ)) +
+          (x + y) / ((x + y) ^ (2 : ℕ) + (beta + gamma) ^ (2 : ℕ))) := by
   have hpp := integrable_wardLorentzianHalf_mul hx hy beta gamma
   have hpm := integrable_wardLorentzianHalf_mul hx hy beta (-gamma)
   have hmp := integrable_wardLorentzianHalf_mul hx hy (-beta) gamma
@@ -441,7 +441,7 @@ cell have a uniformly positive source-safe annulus cross energy. -/
 theorem thirtyFour_pi_twentyOne_le_xiWardPairRealCrossEnergy_annulus
     (q r : XiRightUpperZeroCopy)
     (hcell : ((xiRightCenteredZero q.1).im -
-      (xiRightCenteredZero r.1).im) ^ 2 ≤ 1) :
+      (xiRightCenteredZero r.1).im) ^ (2 : ℕ) ≤ 1) :
     34 * Real.pi / 21 ≤
       xiWardPairRealCrossEnergyAtLine (51 / 100) q r -
         xiWardPairRealCrossEnergyAtLine (1051 / 100) q r := by
@@ -467,7 +467,7 @@ This is the same constant as the source-only HCF `3π` gate. -/
 theorem three_pi_le_xiWardPairRealCrossEnergy_annulus
     (q r : XiRightUpperZeroCopy)
     (hcell : ((xiRightCenteredZero q.1).im -
-      (xiRightCenteredZero r.1).im) ^ 2 ≤ 1 / 4) :
+      (xiRightCenteredZero r.1).im) ^ (2 : ℕ) ≤ 1 / 4) :
     3 * Real.pi ≤
       xiWardPairRealCrossEnergyAtLine (51 / 100) q r -
         xiWardPairRealCrossEnergyAtLine (1051 / 100) q r := by
@@ -507,7 +507,7 @@ theorem wardHalfCellTent_nonneg (delta : ℝ) :
 the `3π` annulus bound. -/
 theorem sq_le_one_fourth_of_wardHalfCellTent_pos
     {delta : ℝ} (hpos : 0 < wardHalfCellTent delta) :
-    delta ^ 2 ≤ 1 / 4 := by
+    delta ^ (2 : ℕ) ≤ 1 / 4 := by
   have hmax : 0 < max (1 / 2 - |delta|) 0 := by
     unfold wardHalfCellTent at hpos
     nlinarith
@@ -725,7 +725,7 @@ theorem exists_xiWardCellSignedAnnulusEnergy_card_lower
     (cell : XiRightUpperZeroCopy → κ)
     (hcell : ∀ q ∈ S, ∀ r ∈ S, cell q = cell r →
       ((xiRightCenteredZero q.1).im -
-        (xiRightCenteredZero r.1).im) ^ 2 ≤ 1) :
+        (xiRightCenteredZero r.1).im) ^ (2 : ℕ) ≤ 1) :
     ∃ epsilon : κ → Bool,
       (S.card : ℝ) * (34 * Real.pi / 21) ≤
         xiWardCellSignedAnnulusEnergy S cell epsilon := by
@@ -757,7 +757,7 @@ theorem exists_xiWardCellSignedAnnulusEnergy_threePi_card_lower
     (cell : XiRightUpperZeroCopy → κ)
     (hcell : ∀ q ∈ S, ∀ r ∈ S, cell q = cell r →
       ((xiRightCenteredZero q.1).im -
-        (xiRightCenteredZero r.1).im) ^ 2 ≤ 1 / 4) :
+        (xiRightCenteredZero r.1).im) ^ (2 : ℕ) ≤ 1 / 4) :
     ∃ epsilon : κ → Bool,
       (S.card : ℝ) * (3 * Real.pi) ≤
         xiWardCellSignedAnnulusEnergy S cell epsilon := by

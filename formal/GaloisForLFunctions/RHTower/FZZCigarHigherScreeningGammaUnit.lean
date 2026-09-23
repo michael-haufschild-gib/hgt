@@ -183,7 +183,7 @@ theorem fzzScreeningHigherGammaUnit_axis_jets :
 /-- Rational factor left by the exact Gamma shifts at the cubic collision. -/
 def fzzScreeningHigherGammaRational (a b : ℝ) : ℝ :=
   let v := (a+b)/2
-  64*Real.pi*v*((v-1)*(v-2)*(v-3)*(v-4))^2 /
+  64*Real.pi*v*((v-1)*(v-2)*(v-3)*(v-4))^(2 : ℕ) /
     ((1-a/2)*(2-a/2)*(1-b/2)*(2-b/2))
 
 private theorem real_reciprocal_gamma_shift (s : ℝ) :
@@ -238,7 +238,7 @@ private theorem cubic_gamma_rational_factorization (a b : ℝ)
     show 2+(-6+a)/2+(-6+b)/2=-4+v by dsimp [v]; ring]
   rw [hg,hga,hgb,h0,h1,h2,h3,h4]
   unfold fzzScreeningHigherGammaRational fzzScreeningHigherGammaUnit
-  change _ = (64*Real.pi*v*((v-1)*(v-2)*(v-3)*(v-4))^2 /
+  change _ = (64*Real.pi*v*((v-1)*(v-2)*(v-3)*(v-4))^(2 : ℕ) /
     ((1-a/2)*(2-a/2)*(1-b/2)*(2-b/2))) *
     (Real.Gamma (1-v)*Real.Gamma (1+a/2)*Real.Gamma (1+b/2)/
       (Real.Gamma (1+v)*Real.Gamma (1-a/2)*Real.Gamma (1-b/2)))
@@ -276,15 +276,15 @@ theorem fzzScreeningHigherClearedSource_cubic_factorization :
 
 
 private def P (t : ℝ) := (t-1)*(t-2)*(t-3)*(t-4)
-private def P1 (t : ℝ) := 4*t^3-30*t^2+70*t-50
-private def P2 (t : ℝ) := 12*t^2-60*t+70
-private def F (t : ℝ) := t*(P t)^2
-private def F1 (t : ℝ) := (P t)^2+2*t*P t*P1 t
-private def F2 (t : ℝ) := 4*P t*P1 t+2*t*((P1 t)^2+P t*P2 t)
+private def P1 (t : ℝ) := 4*t^(3 : ℕ)-30*t^(2 : ℕ)+70*t-50
+private def P2 (t : ℝ) := 12*t^(2 : ℕ)-60*t+70
+private def F (t : ℝ) := t*(P t)^(2 : ℕ)
+private def F1 (t : ℝ) := (P t)^(2 : ℕ)+2*t*P t*P1 t
+private def F2 (t : ℝ) := 4*P t*P1 t+2*t*((P1 t)^(2 : ℕ)+P t*P2 t)
 private def D (t : ℝ) := (1-t/2)*(2-t/2)
 private def D1 (t : ℝ) := -3/2+t/2
 private def G (t : ℝ) := 1/D t
-private def G1 (t : ℝ) := -D1 t/(D t)^2
+private def G1 (t : ℝ) := -D1 t/(D t)^(2 : ℕ)
 
 private theorem hP (t : ℝ) : HasDerivAt P (P1 t) t := by
   have h := ((((hasDerivAt_id t).sub_const 1).mul ((hasDerivAt_id t).sub_const 2)).mul

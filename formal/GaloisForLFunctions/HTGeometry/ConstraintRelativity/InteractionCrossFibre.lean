@@ -38,14 +38,14 @@ theorem exp_I_smul_involution (H : A) (hH : H * H = 1) (t : ℝ) :
 theorem involution_conjugation_identity (H O : A) (hH : H * H = 1)
     (hanti : H * O = -(O * H)) (c d : ℂ) :
     (c • (1 : A) + d • H) * O * (c • (1 : A) - d • H) =
-      (c ^ 2 + d ^ 2) • O + (2 * c * d) • (H * O) := by
+      (c ^ (2 : ℕ) + d ^ (2 : ℕ)) • O + (2 * c * d) • (H * O) := by
   have hOH : O * H = -(H * O) := by rw [hanti, neg_neg]
   have hHOH : H * (O * H) = -O := by
     rw [hOH, mul_neg, ← mul_assoc, hH, one_mul]
   calc (c • (1 : A) + d • H) * O * (c • (1 : A) - d • H)
       = (c • O + d • (H * O)) * (c • (1 : A) - d • H) := by
         rw [add_mul, smul_mul_assoc, smul_mul_assoc, one_mul]
-    _ = (c ^ 2 + d ^ 2) • O + (2 * c * d) • (H * O) := by
+    _ = (c ^ (2 : ℕ) + d ^ (2 : ℕ)) • O + (2 * c * d) • (H * O) := by
         simp only [mul_sub, add_mul, smul_mul_assoc, mul_smul_comm, mul_one, smul_smul,
           mul_assoc]
         rw [hHOH, hOH]
@@ -69,7 +69,7 @@ theorem conjugation_of_involution_anticommute (H O : A) (hH : H * H = 1)
   · congr 1
     push_cast
     rw [Complex.cos_two_mul']
-    linear_combination (Complex.sin (t : ℂ) ^ 2) * Complex.I_sq
+    linear_combination (Complex.sin (t : ℂ) ^ (2 : ℕ)) * Complex.I_sq
   · congr 1
     push_cast
     rw [Complex.sin_two_mul]

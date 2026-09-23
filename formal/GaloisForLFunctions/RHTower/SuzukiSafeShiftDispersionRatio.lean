@@ -5,12 +5,12 @@ import GaloisForLFunctions.RHTower.SuzukiSafeShiftResponseChargeCancellation
 
 Every positive shifted reciprocal-square Xi atom lies in the quadratic sector
 
-`Im(lambda)^2 <= Re(lambda)^2 / 84`.
+`Im(lambda)^(2 : ℕ) <= Re(lambda)^(2 : ℕ) / 84`.
 
 For its response mass `e`, response slope `x`, and transverse charge density `chi`, the sharp
 endpoint algebra of that sector gives
 
-`6889 chi <= 85 e x^2`.
+`6889 chi <= 85 e x^(2 : ℕ)`.
 
 After summation, the first shifted Hankel minor is therefore nonnegative as soon as the normalized
 response dispersion carries the explicit coefficient-of-variation floor `85 / 6889`.  No zero
@@ -30,8 +30,8 @@ noncomputable section
 reciprocal-square Xi atom. -/
 theorem xiShiftedReciprocalSquare_im_sq_le_one_div_eightyFour_re_sq
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    (xiShiftedReciprocalSquare y q).im ^ 2 <=
-      (1 / 84 : ℝ) * (xiShiftedReciprocalSquare y q).re ^ 2 := by
+    (xiShiftedReciprocalSquare y q).im ^ (2 : ℕ) <=
+      (1 / 84 : ℝ) * (xiShiftedReciprocalSquare y q).re ^ (2 : ℕ) := by
   let d : ℂ := (y : ℂ) + xiSquaredNode q
   have hd : d ≠ 0 := ofReal_add_xiSquaredNode_ne_zero hy.le q
   have hnorm : 0 < Complex.normSq d := Complex.normSq_pos.mpr hd
@@ -41,35 +41,35 @@ theorem xiShiftedReciprocalSquare_im_sq_le_one_div_eightyFour_re_sq
   have hdim : d.im = (xiSquaredNode q).im := by
     simp [d]
   rw [xiShiftedReciprocalSquare_eq_inv hy.le]
-  change (d⁻¹).im ^ 2 <= (1 / 84 : ℝ) * (d⁻¹).re ^ 2
+  change (d⁻¹).im ^ (2 : ℕ) <= (1 / 84 : ℝ) * (d⁻¹).re ^ (2 : ℕ)
   rw [Complex.inv_im, Complex.inv_re]
   rw [div_pow, div_pow]
-  have hbase : d.im ^ 2 <= (1 / 84 : ℝ) * d.re ^ 2 := by
+  have hbase : d.im ^ (2 : ℕ) <= (1 / 84 : ℝ) * d.re ^ (2 : ℕ) := by
     rw [hdre, hdim]
     nlinarith
   calc
-    (-d.im) ^ 2 / Complex.normSq d ^ 2 =
-        d.im ^ 2 / Complex.normSq d ^ 2 := by ring
-    _ <= ((1 / 84 : ℝ) * d.re ^ 2) / Complex.normSq d ^ 2 :=
+    (-d.im) ^ (2 : ℕ) / Complex.normSq d ^ (2 : ℕ) =
+        d.im ^ (2 : ℕ) / Complex.normSq d ^ (2 : ℕ) := by ring
+    _ <= ((1 / 84 : ℝ) * d.re ^ (2 : ℕ)) / Complex.normSq d ^ (2 : ℕ) :=
       (div_le_div_iff_of_pos_right (sq_pos_of_pos hnorm)).2 hbase
-    _ = (1 / 84 : ℝ) * (d.re ^ 2 / Complex.normSq d ^ 2) := by ring
+    _ = (1 / 84 : ℝ) * (d.re ^ (2 : ℕ) / Complex.normSq d ^ (2 : ℕ)) := by ring
 
 /-! ## Sharp atomwise response/charge comparison -/
 
 /-- Sharp endpoint polynomial behind the constant `85 / 6889`.
 
-Writing `X = Re(lambda)^2` and `U = Im(lambda)^2`, the difference factors as
+Writing `X = Re(lambda)^(2 : ℕ)` and `U = Im(lambda)^(2 : ℕ)`, the difference factors as
 
-`85 (X-U)^2 - 6889 U (X+U) = (X-84U)(85X+81U)`.
+`85 (X-U)^(2 : ℕ) - 6889 U (X+U) = (X-84U)(85X+81U)`.
 -/
 theorem transverseChargeDensity_ratio_polynomial
-    {a b : ℝ} (hsector : b ^ 2 <= (1 / 84 : ℝ) * a ^ 2) :
-    6889 * (b ^ 2 * (a ^ 2 + b ^ 2)) <=
-      85 * (a ^ 2 - b ^ 2) ^ 2 := by
-  have hcone : 0 <= a ^ 2 - 84 * b ^ 2 := by
+    {a b : ℝ} (hsector : b ^ (2 : ℕ) <= (1 / 84 : ℝ) * a ^ (2 : ℕ)) :
+    6889 * (b ^ (2 : ℕ) * (a ^ (2 : ℕ) + b ^ (2 : ℕ))) <=
+      85 * (a ^ (2 : ℕ) - b ^ (2 : ℕ)) ^ (2 : ℕ) := by
+  have hcone : 0 <= a ^ (2 : ℕ) - 84 * b ^ (2 : ℕ) := by
     norm_num at hsector ⊢
     nlinarith
-  have hfactor : 0 <= 85 * a ^ 2 + 81 * b ^ 2 := by positivity
+  have hfactor : 0 <= 85 * a ^ (2 : ℕ) + 81 * b ^ (2 : ℕ) := by positivity
   have hproduct := mul_nonneg hcone hfactor
   nlinarith
 
@@ -78,25 +78,25 @@ transverse charge. -/
 theorem sixThousandEightHundredEightyNine_mul_xiShiftedTransverseChargeDensity_le
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
     6889 * xiShiftedTransverseChargeDensity y q <=
-      85 * (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2) := by
+      85 * (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ)) := by
   let z := xiShiftedReciprocalSquare y q
   have ha : 0 < z.re := xiShiftedResponseMass_pos hy q
-  have hsector : z.im ^ 2 <= (1 / 84 : ℝ) * z.re ^ 2 := by
+  have hsector : z.im ^ (2 : ℕ) <= (1 / 84 : ℝ) * z.re ^ (2 : ℕ) := by
     simpa only [z] using
       xiShiftedReciprocalSquare_im_sq_le_one_div_eightyFour_re_sq hy q
   have hpoly := transverseChargeDensity_ratio_polynomial hsector
   unfold xiShiftedTransverseChargeDensity xiShiftedResponseMass xiShiftedResponseSlope
-  change 6889 * (z.im ^ 2 * Complex.normSq z / z.re) <=
-    85 * (z.re * ((z ^ 2).re / z.re) ^ 2)
-  rw [Complex.normSq_apply, show (z ^ 2).re = z.re ^ 2 - z.im ^ 2 by
+  change 6889 * (z.im ^ (2 : ℕ) * Complex.normSq z / z.re) <=
+    85 * (z.re * ((z ^ (2 : ℕ)).re / z.re) ^ (2 : ℕ))
+  rw [Complex.normSq_apply, show (z ^ (2 : ℕ)).re = z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ) by
     rw [pow_two, Complex.mul_re]
     ring]
   calc
-    6889 * (z.im ^ 2 * (z.re * z.re + z.im * z.im) / z.re) =
-        (6889 * (z.im ^ 2 * (z.re ^ 2 + z.im ^ 2))) / z.re := by ring
-    _ <= (85 * (z.re ^ 2 - z.im ^ 2) ^ 2) / z.re :=
+    6889 * (z.im ^ (2 : ℕ) * (z.re * z.re + z.im * z.im) / z.re) =
+        (6889 * (z.im ^ (2 : ℕ) * (z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ)))) / z.re := by ring
+    _ <= (85 * (z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ)) ^ (2 : ℕ)) / z.re :=
       (div_le_div_iff_of_pos_right ha).2 hpoly
-    _ = 85 * (z.re * ((z.re ^ 2 - z.im ^ 2) / z.re) ^ 2) := by
+    _ = 85 * (z.re * ((z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ)) / z.re) ^ (2 : ℕ)) := by
       field_simp [ha.ne']
 
 /-! ## Complete coefficient-of-variation gate -/
@@ -105,7 +105,7 @@ theorem sixThousandEightHundredEightyNine_mul_xiShiftedTransverseChargeDensity_l
 def xiShiftedResponseSecondEnergy (y : ℝ) : ℝ :=
   (xiShiftedReciprocalMoment y 0).re *
     ∑' q : XiZeroCopy,
-      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2
+      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ)
 
 theorem xiShiftedResponseSecondEnergy_nonneg {y : ℝ} (hy : 0 < y) :
     0 <= xiShiftedResponseSecondEnergy y := by
@@ -123,7 +123,7 @@ theorem sixThousandEightHundredEightyNine_mul_xiShiftedTransverseCharge_le
   have hsum :
       6889 * (∑' q : XiZeroCopy, xiShiftedTransverseChargeDensity y q) <=
         85 * (∑' q : XiZeroCopy,
-          xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2) := by
+          xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ)) := by
     rw [← tsum_mul_left, ← tsum_mul_left]
     exact
       ((summable_xiShiftedTransverseChargeDensity hy).mul_left 6889).tsum_le_tsum
@@ -147,7 +147,7 @@ theorem xiShiftedHankelMinor_nonneg_of_dispersion_floor
     0 <=
       (xiShiftedReciprocalMoment y 0).re *
           (xiShiftedReciprocalMoment y 2).re -
-        (xiShiftedReciprocalMoment y 1).re ^ 2 := by
+        (xiShiftedReciprocalMoment y 1).re ^ (2 : ℕ) := by
   have hcharge :=
     sixThousandEightHundredEightyNine_mul_xiShiftedTransverseCharge_le hy
   have hdom : xiShiftedTransverseCharge y <=
@@ -164,7 +164,7 @@ theorem primeArchSafeShiftHankelMinor_nonneg_of_dispersion_floor
     0 <=
       (primeArchShiftedReciprocalMoment 1 0).re *
           (primeArchShiftedReciprocalMoment 1 2).re -
-        (primeArchShiftedReciprocalMoment 1 1).re ^ 2 := by
+        (primeArchShiftedReciprocalMoment 1 1).re ^ (2 : ℕ) := by
   rw [← xiShiftedReciprocalMoment_eq_primeArchShiftedReciprocalMoment
       (y := 1) (by norm_num) (by norm_num) 0,
     ← xiShiftedReciprocalMoment_eq_primeArchShiftedReciprocalMoment

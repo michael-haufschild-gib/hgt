@@ -166,9 +166,9 @@ private theorem height_bounds (d theta : ℝ) (hd : 0 ≤ d) :
       |heightRadial d theta| ≤ height d theta := by
   have hD := denominator_pos d theta
   have hN : |radialNumerator d theta| ≤ denominator d theta := by
-    have hid : (denominator d theta)^2-(radialNumerator d theta)^2=(Real.sin theta)^2 := by
+    have hid : (denominator d theta)^(2 : ℕ)-(radialNumerator d theta)^(2 : ℕ)=(Real.sin theta)^(2 : ℕ) := by
       calc
-        _ = (Real.cosh d^2-Real.sinh d^2)*(1-Real.cos theta^2) := by unfold denominator radialNumerator; ring
+        _ = (Real.cosh d^(2 : ℕ)-Real.sinh d^(2 : ℕ))*(1-Real.cos theta^(2 : ℕ)) := by unfold denominator radialNumerator; ring
         _ = _ := by rw [Real.cosh_sq_sub_sinh_sq]; nlinarith [Real.sin_sq_add_cos_sq theta]
     nlinarith [sq_nonneg (Real.sin theta),sq_abs (radialNumerator d theta)]
   have hlo : Real.exp (-d) ≤ denominator d theta := by
@@ -181,7 +181,7 @@ private theorem height_bounds (d theta : ℝ) (hd : 0 ≤ d) :
       _ = _ := by rw [Real.exp_neg]; field_simp
   · rw [heightRadial,abs_div,abs_neg,abs_of_pos (sq_pos_of_pos hD)]
     calc
-      _ ≤ denominator d theta/(denominator d theta)^2 := div_le_div_of_nonneg_right hN (sq_nonneg _)
+      _ ≤ denominator d theta/(denominator d theta)^(2 : ℕ) := div_le_div_of_nonneg_right hN (sq_nonneg _)
       _ = _ := by unfold height; field_simp
 
 private theorem Y_bounds (z : Site) (r : ℝ) (hr : r ∈ window) :
@@ -275,9 +275,9 @@ private theorem jacobian_E : E (fun z r => (z.p*(1-sourceLower z.image z.p r z.a
   simpa only [one_mul,zero_mul,add_zero,← Complex.ofReal_sub,Complex.norm_real,Real.norm_eq_abs] using h.2.2
 
 private def coefficient (s amp : ℂ) (gradient : Bool) (z : ℝ) : ℂ :=
-  (-8*(compactUnit z:ℂ)/(1+(z:ℂ))^2*power (2*s) (2/(1+z))*amp^2)*
-    (if gradient then -(s*(s-1)*(compactUnit z:ℂ)^2/4)
-      else (5*s^2+15*s+4)/4+s*(s-1)*(compactUnit z:ℂ)^2/4*(s+2)^2)
+  (-8*(compactUnit z:ℂ)/(1+(z:ℂ))^(2 : ℕ)*power (2*s) (2/(1+z))*amp^(2 : ℕ))*
+    (if gradient then -(s*(s-1)*(compactUnit z:ℂ)^(2 : ℕ)/4)
+      else (5*s^(2 : ℕ)+15*s+4)/4+s*(s-1)*(compactUnit z:ℂ)^(2 : ℕ)/4*(s+2)^(2 : ℕ))
 
 private theorem coefficient_smooth (s amp : ℂ) (gradient : Bool) :
     ContDiffOn ℝ ∞ (coefficient s amp gradient) (Ioi (-1:ℝ)) := by
@@ -300,14 +300,14 @@ private theorem coefficient_smooth (s amp : ℂ) (gradient : Bool) :
     rw [power,Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (hpos z hz).ne'),← Complex.ofReal_log (hpos z hz).le]
     congr 1
     ring
-  have hQ : ContDiffOn ℝ ∞ (fun z : ℝ => -8*(compactUnit z:ℂ)/(1+(z:ℂ))^2) (Ioi (-1:ℝ)) := by
-    have hR : ContDiffOn ℝ ∞ (fun z : ℝ => -8*compactUnit z/(1+z)^2) (Ioi (-1:ℝ)) :=
+  have hQ : ContDiffOn ℝ ∞ (fun z : ℝ => -8*(compactUnit z:ℂ)/(1+(z:ℂ))^(2 : ℕ)) (Ioi (-1:ℝ)) := by
+    have hR : ContDiffOn ℝ ∞ (fun z : ℝ => -8*compactUnit z/(1+z)^(2 : ℕ)) (Ioi (-1:ℝ)) :=
       (contDiffOn_const.mul hUR).div ((contDiffOn_const.add contDiffOn_id).pow 2)
         (fun z hz => pow_ne_zero 2 (hn z hz))
     have h := Complex.ofRealCLM.contDiff.comp_contDiffOn hR
     simpa only [Function.comp_def,Complex.ofRealCLM_apply,Complex.ofReal_div,Complex.ofReal_mul,Complex.ofReal_neg,
       Complex.ofReal_ofNat,Complex.ofReal_pow,Complex.ofReal_add,Complex.ofReal_one] using h
-  have hpre : ContDiffOn ℝ ∞ (fun z : ℝ => -8*(compactUnit z:ℂ)/(1+(z:ℂ))^2*power (2*s) (2/(1+z))*amp^2) (Ioi (-1:ℝ)) :=
+  have hpre : ContDiffOn ℝ ∞ (fun z : ℝ => -8*(compactUnit z:ℂ)/(1+(z:ℂ))^(2 : ℕ)*power (2*s) (2/(1+z))*amp^(2 : ℕ)) (Ioi (-1:ℝ)) :=
     (hQ.mul hP).mul contDiffOn_const
   cases gradient
   · exact hpre.mul (contDiffOn_const.add (((contDiffOn_const.mul (hU.pow 2)).div_const 4).mul contDiffOn_const))
@@ -362,7 +362,7 @@ with the fixed source-square Jacobian, onset and gradient height weight retained
 def forcingRemainder (u s amp : ℂ) (image : Bool) (p rho alpha beta theta x k : ℝ) : ℂ :=
   (p*(1-sourceLower image p rho alpha):ℝ)*compactForcing s amp (p*alpha) (sourceZ image p rho alpha beta)
     (sample (squareRemainder u) image p rho alpha beta theta x k/2)
-    ((logCircle (unitRadius image p rho alpha beta) theta x k 1:ℂ)^2*
+    ((logCircle (unitRadius image p rho alpha beta) theta x k 1:ℂ)^(2 : ℕ)*
       (sample (gradientProductRemainder u 0 0) image p rho alpha beta theta x k+
        sample (gradientProductRemainder u 1 1) image p rho alpha beta theta x k)/2)/4
 
@@ -403,8 +403,8 @@ theorem original_forcing_horizon_estimate (u s amp : ℂ) (N : ℕ) :
 def principalForcing (u s amp : ℂ) (image : Bool) (p rho alpha beta theta x k : ℝ) : ℂ :=
   let v := logCircle (unitRadius image p rho alpha beta) theta x k
   (p*(1-sourceLower image p rho alpha):ℝ)*compactForcing s amp (p*alpha) (sourceZ image p rho alpha beta)
-    (principal u v^2/2)
-    ((v 1:ℂ)^2*((coordDeriv 0 (principal u) v)^2+(coordDeriv 1 (principal u) v)^2)/2)/4
+    (principal u v^(2 : ℕ)/2)
+    ((v 1:ℂ)^(2 : ℕ)*((coordDeriv 0 (principal u) v)^(2 : ℕ)+(coordDeriv 1 (principal u) v)^(2 : ℕ))/2)/4
 
 /-- Exact subtraction from the existing original causal-source integrand. -/
 theorem forcingRemainder_eq_original (q : XiZeroCopy) (branch image : Bool) (amp : ℂ)
@@ -556,7 +556,7 @@ private theorem forcing_cube_continuous (u s amp : ℂ) (image : Bool) (p rho x 
       ((coefficient s amp false (sourceZ image p rho t.1 t.2.1)*
           (sample (squareRemainder u) image p rho t.1 t.2.1 (2*Real.pi*t.2.2) x k/2)+
         coefficient s amp true (sourceZ image p rho t.1 t.2.1)*
-          ((c t 1:ℂ)^2*(sample (gradientProductRemainder u 0 0) image p rho t.1 t.2.1 (2*Real.pi*t.2.2) x k+
+          ((c t 1:ℂ)^(2 : ℕ)*(sample (gradientProductRemainder u 0 0) image p rho t.1 t.2.1 (2*Real.pi*t.2.2) x k+
             sample (gradientProductRemainder u 1 1) image p rho t.1 t.2.1 (2*Real.pi*t.2.2) x k)/2))*
         timeOnset (2*s) (p*t.1))/4) v
   have hJac : ContinuousAt (fun t : ℝ × ℝ × ℝ => ((p*(1-sourceLower image p rho t.1):ℝ):ℂ)) v :=
@@ -681,9 +681,9 @@ private theorem offset_bounds (d theta : ℝ) (hd : 0 ≤ d) :
     |offset d theta| ≤ Real.exp d ∧ |offsetRadial d theta| ≤ Real.exp d := by
   have hD := denominator_pos d theta
   have hS : |Real.sin theta| ≤ denominator d theta := by
-    have hid : (denominator d theta)^2-(radialNumerator d theta)^2=(Real.sin theta)^2 := by
+    have hid : (denominator d theta)^(2 : ℕ)-(radialNumerator d theta)^(2 : ℕ)=(Real.sin theta)^(2 : ℕ) := by
       calc
-        _ = (Real.cosh d^2-Real.sinh d^2)*(1-Real.cos theta^2) := by unfold denominator radialNumerator; ring
+        _ = (Real.cosh d^(2 : ℕ)-Real.sinh d^(2 : ℕ))*(1-Real.cos theta^(2 : ℕ)) := by unfold denominator radialNumerator; ring
         _ = _ := by rw [Real.cosh_sq_sub_sinh_sq]; nlinarith [Real.sin_sq_add_cos_sq theta]
     nlinarith [sq_nonneg (radialNumerator d theta),sq_abs (Real.sin theta)]
   have hs := Real.sinh_nonneg_iff.mpr hd
@@ -695,7 +695,7 @@ private theorem offset_bounds (d theta : ℝ) (hd : 0 ≤ d) :
       _ ≤ Real.exp d := by rw [← Real.cosh_add_sinh]; linarith [Real.cosh_pos d]
   · rw [offsetRadial,abs_div,abs_of_pos (sq_pos_of_pos hD)]
     calc
-      _ ≤ denominator d theta/(denominator d theta)^2 := div_le_div_of_nonneg_right hS (sq_nonneg _)
+      _ ≤ denominator d theta/(denominator d theta)^(2 : ℕ) := div_le_div_of_nonneg_right hS (sq_nonneg _)
       _ = height d theta := by unfold height; field_simp
       _ ≤ _ := (height_bounds d theta hd).2.1
 
@@ -830,7 +830,7 @@ private theorem weighted_operator_rapid (f : (Fin 2 → ℝ) → ℂ)
   · apply (hw a b [0,0]).congr
     intro z r
     exact (D4BMOriginalBaseCircleJets.weighted_horizontal_second a b f hf _ z.theta z.x z.k).symm
-  · have h := ((((((hw a b []).scale (((a:ℂ)+(b:ℂ))^2)).add
+  · have h := ((((((hw a b []).scale (((a:ℂ)+(b:ℂ))^(2 : ℕ))).add
         (((hw (a+1) b [0]).add (hw a (b+1) [1])).scale (2*((a:ℂ)+(b:ℂ))+1))).add
         (hw (a+2) b [0,0])).add (hw (a+1) (b+1) [1,0])).add
         (hw (a+1) (b+1) [0,1])).add (hw a (b+2) [1,1])

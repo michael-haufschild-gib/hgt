@@ -2,15 +2,15 @@ import GaloisForLFunctions.RHTower.BurnolCoPoissonIntertwiningLine
 import GaloisForLFunctions.RHTower.SoninEvenCarrier
 
 /-!
-# The co-Poisson intertwining as an identity of `L^2` vectors
+# The co-Poisson intertwining as an identity of `L^(2 : ℕ)` vectors
 
-A vector of `L^2` is determined by its pairings against Schwartz functions, and the `L^2` Fourier
+A vector of `L^(2 : ℕ)` is determined by its pairings against Schwartz functions, and the `L^(2 : ℕ)` Fourier
 transform sends the class of a Schwartz function to the class of its Fourier transform.  So a
 pairing identity of the shape
 
 `integral phi * conj u = integral (F phi) * conj v`
 
-for every Schwartz `phi` says exactly that `v` is the `L^2` Fourier transform of `u`.  Applied to the
+for every Schwartz `phi` says exactly that `v` is the `L^(2 : ℕ)` Fourier transform of `u`.  Applied to the
 co-Poisson pairing identity this turns Burnol's intertwining into the statement that the cosine
 transform of a co-Poisson vector is the co-Poisson vector of the reciprocal seed.
 -/
@@ -22,7 +22,7 @@ noncomputable section
 
 namespace RHTower
 
-/-- The inner product of an `L^2` vector against the class of a Schwartz function. -/
+/-- The inner product of an `L^(2 : ℕ)` vector against the class of a Schwartz function. -/
 theorem inner_toLp_eq_integral (u : SoninL2) (f : SchwartzMap ℝ ℂ) :
     ⟪u, f.toLp 2 volume⟫_ℂ =
       ∫ t : ℝ, (f : ℝ → ℂ) t * (starRingEnd ℂ) ((u : ℝ → ℂ) t) := by
@@ -67,7 +67,7 @@ theorem fourierUnitary_eq_of_schwartz_pairing {u v : SoninL2}
   have : d = 0 := inner_self_eq_zero.mp (hzero d)
   rwa [hd, sub_eq_zero] at this
 
-/-- **Burnol's co-Poisson intertwining as an identity of `L^2` vectors.**  The `L^2` Fourier
+/-- **Burnol's co-Poisson intertwining as an identity of `L^(2 : ℕ)` vectors.**  The `L^(2 : ℕ)` Fourier
 transform of the co-Poisson vector of a window seed is the co-Poisson vector of the reciprocal
 seed. -/
 theorem fourierUnitary_coPoissonVector {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}

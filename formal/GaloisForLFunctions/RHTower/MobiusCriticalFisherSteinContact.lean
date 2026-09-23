@@ -9,7 +9,7 @@ limit and the exact contact identity it satisfies.
 
 The limiting half-density score is `1 - y`.  It has mean zero and unit squared norm against
 `exp (-y) dy`; the completed score `2 (1 - y)` therefore carries exactly four units of energy.
-Its Laplace transform is `u / (1 + u)^2`.  The reciprocal signed Möbius response `1 + u` turns
+Its Laplace transform is `u / (1 + u)^(2 : ℕ)`.  The reciprocal signed Möbius response `1 + u` turns
 this score into `u / (1 + u)`; adding the positive escaped-mass transform `1 / (1 + u)` leaves the
 constant contact transform `1`.  Equivalently, on the half-line,
 

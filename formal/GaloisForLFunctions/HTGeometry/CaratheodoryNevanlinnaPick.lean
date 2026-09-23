@@ -88,11 +88,11 @@ theorem add_one_ne_zero_of_re_nonneg {z : ℂ} (hz : 0 ≤ z.re) : z + 1 ≠ 0 :
 theorem norm_cayleyRight_lt_one {z : ℂ} (hz : 0 < z.re) : ‖cayleyRight z‖ < 1 := by
   have hne : z + 1 ≠ 0 := add_one_ne_zero_of_re_nonneg hz.le
   rw [cayleyRight, norm_div, div_lt_one (by positivity)]
-  have h1 : ‖z - 1‖ ^ 2 = Complex.normSq z - 2 * z.re + 1 := by
+  have h1 : ‖z - 1‖ ^ (2 : ℕ) = Complex.normSq z - 2 * z.re + 1 := by
     rw [← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
     ring
-  have h2 : ‖z + 1‖ ^ 2 = Complex.normSq z + 2 * z.re + 1 := by
+  have h2 : ‖z + 1‖ ^ (2 : ℕ) = Complex.normSq z + 2 * z.re + 1 := by
     rw [← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply, Complex.add_re, Complex.add_im]
     ring
@@ -101,11 +101,11 @@ theorem norm_cayleyRight_lt_one {z : ℂ} (hz : 0 < z.re) : ‖cayleyRight z‖ 
 theorem norm_cayleyRight_le_one {z : ℂ} (hz : 0 ≤ z.re) : ‖cayleyRight z‖ ≤ 1 := by
   have hne : z + 1 ≠ 0 := add_one_ne_zero_of_re_nonneg hz
   rw [cayleyRight, norm_div, div_le_one (by positivity)]
-  have h1 : ‖z - 1‖ ^ 2 = Complex.normSq z - 2 * z.re + 1 := by
+  have h1 : ‖z - 1‖ ^ (2 : ℕ) = Complex.normSq z - 2 * z.re + 1 := by
     rw [← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
     ring
-  have h2 : ‖z + 1‖ ^ 2 = Complex.normSq z + 2 * z.re + 1 := by
+  have h2 : ‖z + 1‖ ^ (2 : ℕ) = Complex.normSq z + 2 * z.re + 1 := by
     rw [← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply, Complex.add_re, Complex.add_im]
     ring

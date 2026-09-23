@@ -32,13 +32,13 @@ theorem thetaCuspFirstAtomMomentTriple_le_halfDensityBudget :
   have h0 : IntegrableOn (fun x : ℝ => thetaCuspSourceTerm x 1) (Ioi 0) := by
     simpa using integrableOn_pow_mul_thetaCuspSourceTerm 0 1
   have h1 : IntegrableOn (fun x : ℝ =>
-      x ^ 2 * thetaCuspSourceTerm x 1) (Ioi 0) := by
+      x ^ (2 : ℕ) * thetaCuspSourceTerm x 1) (Ioi 0) := by
     simpa using integrableOn_pow_mul_thetaCuspSourceTerm 1 1
   have h2 : IntegrableOn (fun x : ℝ =>
-      x ^ 4 * thetaCuspSourceTerm x 1) (Ioi 0) := by
+      x ^ (4 : ℕ) * thetaCuspSourceTerm x 1) (Ioi 0) := by
     simpa using integrableOn_pow_mul_thetaCuspSourceTerm 2 1
   have hpoly : IntegrableOn (fun x : ℝ =>
-      (1 + x ^ 2 / 8 + x ^ 4 / 384) * thetaCuspSourceTerm x 1) (Ioi 0) := by
+      (1 + x ^ (2 : ℕ) / 8 + x ^ (4 : ℕ) / 384) * thetaCuspSourceTerm x 1) (Ioi 0) := by
     have h := (h0.add (h1.const_mul (1 / 8 : ℝ))).add
       (h2.const_mul (1 / 384 : ℝ))
     apply h.congr
@@ -48,7 +48,7 @@ theorem thetaCuspFirstAtomMomentTriple_le_halfDensityBudget :
   have hcosh := integrableOn_cosh_half_mul_thetaCuspSourceTerm
     (n := 1) (by norm_num)
   have hmono : (∫ x : ℝ in Ioi 0,
-      (1 + x ^ 2 / 8 + x ^ 4 / 384) * thetaCuspSourceTerm x 1) ≤
+      (1 + x ^ (2 : ℕ) / 8 + x ^ (4 : ℕ) / 384) * thetaCuspSourceTerm x 1) ≤
       ∫ x : ℝ in Ioi 0,
         Real.cosh (x / 2) * thetaCuspSourceTerm x 1 := by
     apply integral_mono_ae hpoly hcosh
@@ -58,25 +58,25 @@ theorem thetaCuspFirstAtomMomentTriple_le_halfDensityBudget :
       (thetaCuspSourceTerm_nonneg_of_pos hx 1)
   have hpoly_eq :
       (∫ x : ℝ in Ioi 0,
-          (1 + x ^ 2 / 8 + x ^ 4 / 384) * thetaCuspSourceTerm x 1) =
+          (1 + x ^ (2 : ℕ) / 8 + x ^ (4 : ℕ) / 384) * thetaCuspSourceTerm x 1) =
         (∫ x : ℝ in Ioi 0, thetaCuspSourceTerm x 1) +
           (1 / 8 : ℝ) * (∫ x : ℝ in Ioi 0,
-            x ^ 2 * thetaCuspSourceTerm x 1) +
+            x ^ (2 : ℕ) * thetaCuspSourceTerm x 1) +
           (1 / 384 : ℝ) * (∫ x : ℝ in Ioi 0,
-            x ^ 4 * thetaCuspSourceTerm x 1) := by
+            x ^ (4 : ℕ) * thetaCuspSourceTerm x 1) := by
     calc
       _ = ∫ x : ℝ in Ioi 0,
           ((thetaCuspSourceTerm x 1 +
-              (1 / 8 : ℝ) * (x ^ 2 * thetaCuspSourceTerm x 1)) +
-            (1 / 384 : ℝ) * (x ^ 4 * thetaCuspSourceTerm x 1)) := by
+              (1 / 8 : ℝ) * (x ^ (2 : ℕ) * thetaCuspSourceTerm x 1)) +
+            (1 / 384 : ℝ) * (x ^ (4 : ℕ) * thetaCuspSourceTerm x 1)) := by
               apply integral_congr_ae
               filter_upwards [] with x
               ring
       _ = (∫ x : ℝ in Ioi 0,
             thetaCuspSourceTerm x 1 +
-              (1 / 8 : ℝ) * (x ^ 2 * thetaCuspSourceTerm x 1)) +
+              (1 / 8 : ℝ) * (x ^ (2 : ℕ) * thetaCuspSourceTerm x 1)) +
           ∫ x : ℝ in Ioi 0,
-            (1 / 384 : ℝ) * (x ^ 4 * thetaCuspSourceTerm x 1) := by
+            (1 / 384 : ℝ) * (x ^ (4 : ℕ) * thetaCuspSourceTerm x 1) := by
               apply integral_add
               · exact h0.add (h1.const_mul (1 / 8 : ℝ))
               · exact h2.const_mul (1 / 384 : ℝ)
@@ -109,49 +109,49 @@ concentration condition.  It contains only the first atom's zeroth and second ra
 the exact half-density endpoint value; the unknown fourth moment has been eliminated. -/
 theorem thetaCuspRelaxedFourthMomentConcentration_of_firstAtomHalfDensityRemainder
     (hrem :
-      6144 * (3005 / 2997 : ℝ) ^ 2 * thetaCuspAtomRawEvenMoment 0 1 *
+      6144 * (3005 / 2997 : ℝ) ^ (2 : ℕ) * thetaCuspAtomRawEvenMoment 0 1 *
           ((4 * Real.pi - 1) * Real.exp (-Real.pi) -
             thetaCuspAtomRawEvenMoment 0 1 -
               thetaCuspAtomRawEvenMoment 1 1 / 8) ≤
-        45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2) :
+        45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ)) :
     ThetaCuspRelaxedFourthMomentConcentration := by
   have hM2 := thetaCuspFirstAtomRawEvenMoment_two_le_halfDensityRemainder
   have hfactor : 0 ≤
-      16 * (3005 / 2997 : ℝ) ^ 2 * thetaCuspAtomRawEvenMoment 0 1 := by
+      16 * (3005 / 2997 : ℝ) ^ (2 : ℕ) * thetaCuspAtomRawEvenMoment 0 1 := by
     exact mul_nonneg (by positivity) (thetaCuspAtomRawEvenMoment_nonneg 0 1)
   have hscaled := mul_le_mul_of_nonneg_left hM2 hfactor
   apply thetaCuspRelaxedFourthMomentConcentration_of_first_atom
   calc
     16 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 0 1) *
           ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) =
-        (16 * (3005 / 2997 : ℝ) ^ 2 *
+        (16 * (3005 / 2997 : ℝ) ^ (2 : ℕ) *
           thetaCuspAtomRawEvenMoment 0 1) *
             thetaCuspAtomRawEvenMoment 2 1 := by ring
-    _ ≤ (16 * (3005 / 2997 : ℝ) ^ 2 *
+    _ ≤ (16 * (3005 / 2997 : ℝ) ^ (2 : ℕ) *
           thetaCuspAtomRawEvenMoment 0 1) *
         (384 * ((4 * Real.pi - 1) * Real.exp (-Real.pi) -
           thetaCuspAtomRawEvenMoment 0 1 -
             thetaCuspAtomRawEvenMoment 1 1 / 8)) := hscaled
-    _ = 6144 * (3005 / 2997 : ℝ) ^ 2 *
+    _ = 6144 * (3005 / 2997 : ℝ) ^ (2 : ℕ) *
           thetaCuspAtomRawEvenMoment 0 1 *
           ((4 * Real.pi - 1) * Real.exp (-Real.pi) -
             thetaCuspAtomRawEvenMoment 0 1 -
               thetaCuspAtomRawEvenMoment 1 1 / 8) := by ring
-    _ ≤ 45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2 := hrem
+    _ ≤ 45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ) := hrem
 
 /-- Direct prime-source consumer: the old relaxed fourth-moment hypothesis is replaced by the
 exact half-density remainder condition. -/
 theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_firstAtomHalfDensityRemainder
     (hupper :
-      14 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ^ 2 ≤
+      14 * ((3005 / 2997 : ℝ) * thetaCuspAtomRawEvenMoment 2 1) ^ (2 : ℕ) ≤
         9 * thetaCuspAtomRawEvenMoment 1 1 *
           thetaCuspAtomRawEvenMoment 3 1)
     (hrem :
-      6144 * (3005 / 2997 : ℝ) ^ 2 * thetaCuspAtomRawEvenMoment 0 1 *
+      6144 * (3005 / 2997 : ℝ) ^ (2 : ℕ) * thetaCuspAtomRawEvenMoment 0 1 *
           ((4 * Real.pi - 1) * Real.exp (-Real.pi) -
             thetaCuspAtomRawEvenMoment 0 1 -
               thetaCuspAtomRawEvenMoment 1 1 / 8) ≤
-        45 * thetaCuspAtomRawEvenMoment 1 1 ^ 2) :
+        45 * thetaCuspAtomRawEvenMoment 1 1 ^ (2 : ℕ)) :
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re :=
   forall_primeArchSourceTraceHankel_linear_nonneg_of_ratioSplit
     (thetaCuspUpperAdjacentRatioSeparation_of_first_atom hupper)

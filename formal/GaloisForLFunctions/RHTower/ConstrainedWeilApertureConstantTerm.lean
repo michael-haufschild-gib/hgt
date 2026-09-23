@@ -28,7 +28,7 @@ def shiftedPairPoly (Θ γ : ℝ) (q : XiZeroCopy) : ExpPoly :=
 
 theorem normalizedRayTermPoly_eq (Θ γ : ℝ) (q : XiZeroCopy) :
     normalizedRayTermPoly Θ γ q
-      = ExpPoly.smul (-(1 / 4 : ℂ) / xiSpectralPoint q ^ 2)
+      = ExpPoly.smul (-(1 / 4 : ℂ) / xiSpectralPoint q ^ (2 : ℕ))
           (ExpPoly.mul (shiftedPairPoly Θ γ q) (shiftedPairPoly Θ γ q)) := rfl
 
 theorem decaying_shiftedPairPoly {Θ : ℝ} (γ : ℝ) {q : XiZeroCopy}
@@ -126,7 +126,7 @@ theorem constTerm_mul_pair (x y : ℂ × ℂ) :
 theorem constTerm_normalizedRayTermPoly_eq_smul {Θ : ℝ} (γ : ℝ) {q : XiZeroCopy}
     (hq : |(xiSpectralPoint q).im| ≤ Θ) :
     ExpPoly.constTerm (normalizedRayTermPoly Θ γ q)
-      = -(1 / 4 : ℂ) / xiSpectralPoint q ^ 2
+      = -(1 / 4 : ℂ) / xiSpectralPoint q ^ (2 : ℕ)
         * ExpPoly.constTerm (ExpPoly.mul
             ((shiftedPairPoly Θ γ q).filter fun p => decide (p.2.re = 0))
             ((shiftedPairPoly Θ γ q).filter fun p => decide (p.2.re = 0))) := by
@@ -156,9 +156,9 @@ zero frequencies among `ν₁, ν₂` (which is `0` or `1`). -/
 theorem constTerm_normalizedRayTermPoly_of_neg {Θ : ℝ} (hΘ : 0 < Θ) (γ : ℝ) {q : XiZeroCopy}
     (hq : (xiSpectralPoint q).im = -Θ) (hre : (xiSpectralPoint q).re ≠ 0) :
     ExpPoly.constTerm (normalizedRayTermPoly Θ γ q)
-      = -(1 / 4 : ℂ) / xiSpectralPoint q ^ 2
-        * ((if (xiSpectralPoint q).re - γ = 0 then plateauKappa (Θ : ℂ) ^ 2 else 0)
-          + (if (xiSpectralPoint q).re + γ = 0 then plateauKappa (Θ : ℂ) ^ 2 else 0)) := by
+      = -(1 / 4 : ℂ) / xiSpectralPoint q ^ (2 : ℕ)
+        * ((if (xiSpectralPoint q).re - γ = 0 then plateauKappa (Θ : ℂ) ^ (2 : ℕ) else 0)
+          + (if (xiSpectralPoint q).re + γ = 0 then plateauKappa (Θ : ℂ) ^ (2 : ℕ) else 0)) := by
   have hle : |(xiSpectralPoint q).im| ≤ Θ := by rw [hq, abs_neg, abs_of_pos hΘ]
   rw [constTerm_normalizedRayTermPoly_eq_smul γ hle, shiftedPairPoly_filter_of_neg hΘ γ hq,
     constTerm_mul_pair]
@@ -215,9 +215,9 @@ theorem constTerm_normalizedRayTermPoly_of_neg {Θ : ℝ} (hΘ : 0 < Θ) (γ : �
 theorem constTerm_normalizedRayTermPoly_of_pos {Θ : ℝ} (hΘ : 0 < Θ) (γ : ℝ) {q : XiZeroCopy}
     (hq : (xiSpectralPoint q).im = Θ) (hre : (xiSpectralPoint q).re ≠ 0) :
     ExpPoly.constTerm (normalizedRayTermPoly Θ γ q)
-      = -(1 / 4 : ℂ) / xiSpectralPoint q ^ 2
-        * ((if (xiSpectralPoint q).re - γ = 0 then plateauKappa (Θ : ℂ) ^ 2 else 0)
-          + (if (xiSpectralPoint q).re + γ = 0 then plateauKappa (Θ : ℂ) ^ 2 else 0)) := by
+      = -(1 / 4 : ℂ) / xiSpectralPoint q ^ (2 : ℕ)
+        * ((if (xiSpectralPoint q).re - γ = 0 then plateauKappa (Θ : ℂ) ^ (2 : ℕ) else 0)
+          + (if (xiSpectralPoint q).re + γ = 0 then plateauKappa (Θ : ℂ) ^ (2 : ℕ) else 0)) := by
   have hle : |(xiSpectralPoint q).im| ≤ Θ := by rw [hq, abs_of_pos hΘ]
   rw [constTerm_normalizedRayTermPoly_eq_smul γ hle, shiftedPairPoly_filter_of_pos hΘ γ hq,
     constTerm_mul_pair]
@@ -277,9 +277,9 @@ theorem constTerm_normalizedRayTermPoly {Θ : ℝ} (hΘ : 0 < Θ) (γ : ℝ) {q 
     (hq : |(xiSpectralPoint q).im| ≤ Θ) (hre : (xiSpectralPoint q).re ≠ 0) :
     ExpPoly.constTerm (normalizedRayTermPoly Θ γ q)
       = if |(xiSpectralPoint q).im| = Θ then
-          -(1 / 4 : ℂ) / xiSpectralPoint q ^ 2
-            * ((if (xiSpectralPoint q).re - γ = 0 then plateauKappa (Θ : ℂ) ^ 2 else 0)
-              + (if (xiSpectralPoint q).re + γ = 0 then plateauKappa (Θ : ℂ) ^ 2 else 0))
+          -(1 / 4 : ℂ) / xiSpectralPoint q ^ (2 : ℕ)
+            * ((if (xiSpectralPoint q).re - γ = 0 then plateauKappa (Θ : ℂ) ^ (2 : ℕ) else 0)
+              + (if (xiSpectralPoint q).re + γ = 0 then plateauKappa (Θ : ℂ) ^ (2 : ℕ) else 0))
         else 0 := by
   by_cases htop : |(xiSpectralPoint q).im| = Θ
   · rw [if_pos htop]

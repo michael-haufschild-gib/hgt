@@ -41,7 +41,7 @@ theorem rawSecondIntegrand_zero_apply (q : SchwartzMap ℝ ℂ) (v : SpectralVec
     ring
 
 def rawSecondPrimitive (q : SchwartzMap ℝ ℂ) (v : SpectralVector) (x : ℝ) : SpectralVector :=
-  ((-rawMixedPrimitive q x+q 0*q (-x)-(q 0)^2)*v.1,
+  ((-rawMixedPrimitive q x+q 0*q (-x)-(q 0)^(2 : ℕ))*v.1,
    (rawMixedPrimitive q x-q x*q (-x)+q 0*q x)*v.2)
 
 theorem rawSecondPrimitive_hasDerivAt (q : SchwartzMap ℝ ℂ) (v : SpectralVector) (x : ℝ) :
@@ -49,7 +49,7 @@ theorem rawSecondPrimitive_hasDerivAt (q : SchwartzMap ℝ ℂ) (v : SpectralVec
   have hq := q.hasDerivAt x
   have hg := rawReflectedProfile_hasDerivAt q x
   have hJ := rawMixedPrimitive_hasDerivAt q x
-  have h1 := (((hJ.neg.add (hg.const_mul (q 0))).sub (hasDerivAt_const x ((q 0)^2))).mul_const v.1)
+  have h1 := (((hJ.neg.add (hg.const_mul (q 0))).sub (hasDerivAt_const x ((q 0)^(2 : ℕ)))).mul_const v.1)
   have h2 := ((hJ.sub (hq.mul hg)).add (hq.const_mul (q 0))).mul_const v.2
   convert! h1.prodMk h2 using 1
   rw [rawSecondIntegrand_zero_apply]

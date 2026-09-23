@@ -137,10 +137,10 @@ the exact cyclic return. -/
 theorem exists_cyclicFrequencies_continuous_returnExcised_avoid
     (p : ℕ) (hp8 : 8 ≤ p) (weight : Y → I → ℂ) {energy : ℝ}
     (henergy : 0 < energy)
-    (hweight : ∀ y, (↑(∑ i, ‖weight y i‖₊ ^ 2) : ℝ) ≤ energy)
+    (hweight : ∀ y, (↑(∑ i, ‖weight y i‖₊ ^ (2 : ℕ)) : ℝ) ≤ energy)
     (hl1 : ∀ y, ∑ i, ‖weight y i‖ ≤ 1)
     (hbudget : ((256 * (p - 8) + 1 : ℕ) : ℝ) * Fintype.card Y *
-        (4 * Real.exp (-((3 / 4 : ℝ) - 1 / 8) ^ 2 / (16 * energy))) < 1) :
+        (4 * Real.exp (-((3 / 4 : ℝ) - 1 / 8) ^ (2 : ℕ) / (16 * energy))) < 1) :
     ∃ q : I → Fin p, ∀ t ∈ Set.Icc (4 : ℝ) ((p : ℝ) - 4), ∀ y,
       ‖∑ i, weight y i * cyclicPhaseValue p t (q i)‖ < 4 / 5 := by
   classical
@@ -166,7 +166,7 @@ theorem exists_cyclicFrequencies_continuous_returnExcised_avoid
       _ = 1 / 8 := by norm_num
   have hbudget' :
       ((Fintype.card (cyclicReturnExcisedMesh p) : ℝ) * Fintype.card Y) *
-        (4 * Real.exp (-((3 / 4 : ℝ) - 1 / 8) ^ 2 / (16 * energy))) < 1 := by
+        (4 * Real.exp (-((3 / 4 : ℝ) - 1 / 8) ^ (2 : ℕ) / (16 * energy))) < 1 := by
     simpa [cyclicReturnExcisedMesh] using hbudget
   obtain ⟨q, hq⟩ := exists_cyclicFrequencies_avoid_finite_time_target_union_of_energy_le
     p hp (cyclicReturnExcisedMeshTime p) weight

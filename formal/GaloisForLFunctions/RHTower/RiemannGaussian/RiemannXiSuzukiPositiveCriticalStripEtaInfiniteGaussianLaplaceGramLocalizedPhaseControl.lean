@@ -72,7 +72,7 @@ theorem integral_exp_neg_sigma_sum_pairedEtaLogMeasure_prod
   ring
 
 /-- Pointwise phase error: the Gaussian converts the quadratic cosine loss
-into a uniform factor `2 * gamma^2 * tau` times the undamped product tilt. -/
+into a uniform factor `2 * gamma^(2 : ℕ) * tau` times the undamped product tilt. -/
 theorem abs_pairedEtaLocalizedGaussianLaplaceKernel_sub_le
     (sigma gamma : ℝ) {tau : ℝ} (htau : 0 < tau)
     (p : ℝ × ℝ) :

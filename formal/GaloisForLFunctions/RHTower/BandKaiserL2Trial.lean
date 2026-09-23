@@ -95,16 +95,16 @@ theorem evenIndicatorCutoff_one_kaiserGridEven {m : ℕ}
 
 /-- The carrier norm is exactly the physical energy computed on the normalized aperture. -/
 theorem norm_sq_kaiserGridEven {m : ℕ} (c : ℝ) (b : Fin m → ℝ) :
-    ‖kaiserGridEven c b‖ ^ 2 =
-      ∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ 2 := by
-  change ‖kaiserGridL2 c b‖ ^ 2 = _
+    ‖kaiserGridEven c b‖ ^ (2 : ℕ) =
+      ∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ (2 : ℕ) := by
+  change ‖kaiserGridL2 c b‖ ^ (2 : ℕ) = _
   rw [GaloisForLFunctions.RHTower.lp_norm_sq_eq_integral]
   calc
-    (∫ x : ℝ, ‖(kaiserGridL2 c b : ℝ → ℂ) x‖ ^ 2) =
-        ∫ x : ℝ, ‖bandTrunc (kaiserGridCombination c b) x‖ ^ 2 := by
+    (∫ x : ℝ, ‖(kaiserGridL2 c b : ℝ → ℂ) x‖ ^ (2 : ℕ)) =
+        ∫ x : ℝ, ‖bandTrunc (kaiserGridCombination c b) x‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards [kaiserGridL2_coeFn c b] with x hx
-      exact congrArg (fun z : ℂ => ‖z‖ ^ 2) hx
+      exact congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) hx
     _ = _ := integral_norm_sq_bandTrunc (kaiserGridCombination c b)
 
 /-- The `L²` Fourier representative of a normalized Kaiser combination is its classical Fourier
@@ -143,11 +143,11 @@ theorem fourierUnitary_kaiserGridL2_coeFn {m : ℕ} (c : ℝ) (b : Fin m → ℝ
 /-- Exact retained Fourier energy after applying a symmetric frequency cutoff. -/
 theorem norm_sq_evenIndicatorCutoff_fourier_kaiserGridEven {m : ℕ}
     (c r : ℝ) (b : Fin m → ℝ) :
-    ‖evenIndicatorCutoff r (evenFourierTransform (kaiserGridEven c b))‖ ^ 2 =
+    ‖evenIndicatorCutoff r (evenFourierTransform (kaiserGridEven c b))‖ ^ (2 : ℕ) =
       ∫ ξ in Icc (-r) r,
-        ‖FourierTransform.fourier (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ 2 := by
+        ‖FourierTransform.fourier (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ (2 : ℕ) := by
   change ‖indicatorCutoff (centralInterval r) (measurableSet_centralInterval r)
-      (fourierUnitary (kaiserGridL2 c b))‖ ^ 2 = _
+      (fourierUnitary (kaiserGridL2 c b))‖ ^ (2 : ℕ) = _
   rw [GaloisForLFunctions.RHTower.lp_norm_sq_eq_integral]
   have hae :
       ((indicatorCutoff (centralInterval r) (measurableSet_centralInterval r)
@@ -167,16 +167,16 @@ theorem norm_sq_evenIndicatorCutoff_fourier_kaiserGridEven {m : ℕ}
   calc
     (∫ ξ : ℝ, ‖((indicatorCutoff (centralInterval r)
         (measurableSet_centralInterval r) (fourierUnitary (kaiserGridL2 c b)) : SoninL2) :
-          ℝ → ℂ) ξ‖ ^ 2) =
+          ℝ → ℂ) ξ‖ ^ (2 : ℕ)) =
         ∫ ξ : ℝ, ‖(Icc (-r) r).indicator
           (fun η => FourierTransform.fourier
-            (bandTrunc (kaiserGridCombination c b)) η) ξ‖ ^ 2 := by
+            (bandTrunc (kaiserGridCombination c b)) η) ξ‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards [hae] with ξ hξ
-      exact congrArg (fun z : ℂ => ‖z‖ ^ 2) hξ
+      exact congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) hξ
     _ = ∫ ξ : ℝ, (Icc (-r) r).indicator
           (fun η => ‖FourierTransform.fourier
-            (bandTrunc (kaiserGridCombination c b)) η‖ ^ 2) ξ := by
+            (bandTrunc (kaiserGridCombination c b)) η‖ ^ (2 : ℕ)) ξ := by
       apply integral_congr_ae
       filter_upwards with ξ
       by_cases hξ : ξ ∈ Icc (-r) r <;> simp [hξ]
@@ -185,25 +185,25 @@ theorem norm_sq_evenIndicatorCutoff_fourier_kaiserGridEven {m : ℕ}
 /-- Exact normalized leakage identity: lost carrier energy is the classical spectral tail. -/
 theorem norm_sq_sub_norm_sq_fourierCutoff_kaiserGridEven {m : ℕ}
     {c r : ℝ} (hr : 0 ≤ r) (b : Fin m → ℝ) :
-    ‖kaiserGridEven c b‖ ^ 2 -
-        ‖evenIndicatorCutoff r (evenFourierTransform (kaiserGridEven c b))‖ ^ 2 =
+    ‖kaiserGridEven c b‖ ^ (2 : ℕ) -
+        ‖evenIndicatorCutoff r (evenFourierTransform (kaiserGridEven c b))‖ ^ (2 : ℕ) =
       ∫ ξ in (Icc (-r) r)ᶜ,
         ‖FourierTransform.fourier
-          (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ 2 := by
+          (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ (2 : ℕ) := by
   let ρ : ℝ → ℝ := fun ξ =>
     ‖FourierTransform.fourier
-      (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ 2
+      (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ (2 : ℕ)
   have hρ : Integrable ρ :=
     integrable_norm_sq_fourier_bandTrunc (continuous_kaiserGridCombination c b)
   have hsplit := MeasureTheory.integral_add_compl (measurableSet_Icc (a := -r) (b := r)) hρ
   rw [norm_sq_kaiserGridEven,
     norm_sq_evenIndicatorCutoff_fourier_kaiserGridEven]
   have htotal : (∫ ξ : ℝ, ρ ξ) =
-      ∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ 2 := by
+      ∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ (2 : ℕ) := by
     exact (integral_norm_sq_fourier_bandTrunc
       (continuous_kaiserGridCombination c b)).trans
         (integral_norm_sq_bandTrunc (kaiserGridCombination c b))
-  change (∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ 2) -
+  change (∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ (2 : ℕ)) -
       (∫ ξ in Icc (-r) r, ρ ξ) = ∫ ξ in (Icc (-r) r)ᶜ, ρ ξ
   rw [← htotal, ← hsplit]
   ring
@@ -218,7 +218,7 @@ theorem evenTimeBandFourier_evenDilation_inv_kaiserGridEven {m : ℕ}
     evenTimeBandFourier a
         (evenDilationUnitary a⁻¹ (inv_pos.mpr ha) (kaiserGridEven c b)) =
       evenDilationUnitary a ha
-        (evenIndicatorCutoff (a ^ 2) (evenFourierTransform (kaiserGridEven c b))) := by
+        (evenIndicatorCutoff (a ^ (2 : ℕ)) (evenFourierTransform (kaiserGridEven c b))) := by
   apply Subtype.ext
   rw [evenTimeBandFourier_eq_mul]
   change
@@ -227,8 +227,8 @@ theorem evenTimeBandFourier_evenDilation_inv_kaiserGridEven {m : ℕ}
           (indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
             (dilation a⁻¹ (inv_pos.mpr ha) (kaiserGridL2 c b)))) =
       dilation a ha
-        (indicatorCutoff (centralInterval (a ^ 2))
-          (measurableSet_centralInterval (a ^ 2))
+        (indicatorCutoff (centralInterval (a ^ (2 : ℕ)))
+          (measurableSet_centralInterval (a ^ (2 : ℕ)))
           (fourierUnitary (kaiserGridL2 c b)))
   rw [indicatorCutoff_dilation a a⁻¹ (inv_pos.mpr ha)]
   have hmul : a⁻¹ * a = 1 := inv_mul_cancel₀ ha.ne'
@@ -248,53 +248,53 @@ theorem evenTimeBandFourier_evenDilation_inv_kaiserGridEven {m : ℕ}
 def kaiserPhysicalGridEven {m : ℕ} (a : ℝ) (ha : 0 < a)
     (b : Fin m → ℝ) : evenSubspace :=
   evenDilationUnitary a⁻¹ (inv_pos.mpr ha)
-    (kaiserGridEven (2 * Real.pi * a ^ 2) b)
+    (kaiserGridEven (2 * Real.pi * a ^ (2 : ℕ)) b)
 
 theorem norm_sq_kaiserPhysicalGridEven {m : ℕ} {a : ℝ} (ha : 0 < a)
     (b : Fin m → ℝ) :
-    ‖kaiserPhysicalGridEven a ha b‖ ^ 2 =
+    ‖kaiserPhysicalGridEven a ha b‖ ^ (2 : ℕ) =
       ∫ x in (-1 : ℝ)..1,
-        kaiserGridCombination (2 * Real.pi * a ^ 2) b x ^ 2 := by
+        kaiserGridCombination (2 * Real.pi * a ^ (2 : ℕ)) b x ^ (2 : ℕ) := by
   rw [kaiserPhysicalGridEven, (evenDilationUnitary a⁻¹ (inv_pos.mpr ha)).norm_map,
     norm_sq_kaiserGridEven]
 
 theorem kaiserBandRadius_two_pi_mul_sq (a : ℝ) :
-    kaiserBandRadius (2 * Real.pi * a ^ 2) = a ^ 2 := by
+    kaiserBandRadius (2 * Real.pi * a ^ (2 : ℕ)) = a ^ (2 : ℕ) := by
   rw [kaiserBandRadius]
   field_simp [Real.pi_ne_zero]
 
 /-- Exact physical leakage identity for a real conditioned packet combination. -/
 theorem norm_sq_sub_norm_sq_timeBand_kaiserPhysicalGridEven {m : ℕ}
     {a : ℝ} (ha : 0 < a) (b : Fin m → ℝ) :
-    ‖kaiserPhysicalGridEven a ha b‖ ^ 2 -
-        ‖evenTimeBandFourier a (kaiserPhysicalGridEven a ha b)‖ ^ 2 =
+    ‖kaiserPhysicalGridEven a ha b‖ ^ (2 : ℕ) -
+        ‖evenTimeBandFourier a (kaiserPhysicalGridEven a ha b)‖ ^ (2 : ℕ) =
       ∫ ξ in
-          (Icc (-(kaiserBandRadius (2 * Real.pi * a ^ 2)))
-            (kaiserBandRadius (2 * Real.pi * a ^ 2)))ᶜ,
+          (Icc (-(kaiserBandRadius (2 * Real.pi * a ^ (2 : ℕ))))
+            (kaiserBandRadius (2 * Real.pi * a ^ (2 : ℕ))))ᶜ,
         ‖FourierTransform.fourier
-          (bandTrunc (kaiserGridCombination (2 * Real.pi * a ^ 2) b)) ξ‖ ^ 2 := by
-  let c : ℝ := 2 * Real.pi * a ^ 2
+          (bandTrunc (kaiserGridCombination (2 * Real.pi * a ^ (2 : ℕ)) b)) ξ‖ ^ (2 : ℕ) := by
+  let c : ℝ := 2 * Real.pi * a ^ (2 : ℕ)
   have htransport := evenTimeBandFourier_evenDilation_inv_kaiserGridEven ha c b
   have hnormInput :
       ‖kaiserPhysicalGridEven a ha b‖ = ‖kaiserGridEven c b‖ := by
     exact (evenDilationUnitary a⁻¹ (inv_pos.mpr ha)).norm_map (kaiserGridEven c b)
   have hnormOutput :
       ‖evenTimeBandFourier a (kaiserPhysicalGridEven a ha b)‖ =
-        ‖evenIndicatorCutoff (a ^ 2) (evenFourierTransform (kaiserGridEven c b))‖ := by
-    rw [kaiserPhysicalGridEven, show 2 * Real.pi * a ^ 2 = c from rfl, htransport,
+        ‖evenIndicatorCutoff (a ^ (2 : ℕ)) (evenFourierTransform (kaiserGridEven c b))‖ := by
+    rw [kaiserPhysicalGridEven, show 2 * Real.pi * a ^ (2 : ℕ) = c from rfl, htransport,
       (evenDilationUnitary a ha).norm_map]
   rw [hnormInput, hnormOutput]
   have htail := norm_sq_sub_norm_sq_fourierCutoff_kaiserGridEven
-    (c := c) (r := a ^ 2) (sq_nonneg a) b
+    (c := c) (r := a ^ (2 : ℕ)) (sq_nonneg a) b
   rw [htail]
-  change (∫ ξ in (Icc (-(a ^ 2)) (a ^ 2))ᶜ,
-      ‖FourierTransform.fourier (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ 2) = _
+  change (∫ ξ in (Icc (-(a ^ (2 : ℕ))) (a ^ (2 : ℕ)))ᶜ,
+      ‖FourierTransform.fourier (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ (2 : ℕ)) = _
   rw [kaiserBandRadius_two_pi_mul_sq]
 
 /-- The normalized Kaiser bandwidth tends to infinity with the physical aperture. -/
 theorem tendsto_two_pi_mul_sq_atTop :
-    Tendsto (fun a : ℝ => 2 * Real.pi * a ^ 2) atTop atTop := by
-  have hsq : Tendsto (fun a : ℝ => a ^ 2) atTop atTop :=
+    Tendsto (fun a : ℝ => 2 * Real.pi * a ^ (2 : ℕ)) atTop atTop := by
+  have hsq : Tendsto (fun a : ℝ => a ^ (2 : ℕ)) atTop atTop :=
     Filter.tendsto_pow_atTop (by norm_num)
   exact hsq.const_mul_atTop (by positivity : 0 < 2 * Real.pi)
 
@@ -303,10 +303,10 @@ time-band defect estimate, uniformly in its coefficients. -/
 theorem eventually_exp_mul_timeBand_defect_kaiserPhysicalGridEven_le {m : ℕ}
     (hm : 0 < m) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ a : ℝ in atTop, ∀ (ha : 0 < a) (b : Fin m → ℝ),
-      Real.exp ((2 - ε) * (2 * Real.pi * a ^ 2)) *
-          (‖kaiserPhysicalGridEven a ha b‖ ^ 2 -
-            ‖evenTimeBandFourier a (kaiserPhysicalGridEven a ha b)‖ ^ 2) ≤
-        ‖kaiserPhysicalGridEven a ha b‖ ^ 2 := by
+      Real.exp ((2 - ε) * (2 * Real.pi * a ^ (2 : ℕ))) *
+          (‖kaiserPhysicalGridEven a ha b‖ ^ (2 : ℕ) -
+            ‖evenTimeBandFourier a (kaiserPhysicalGridEven a ha b)‖ ^ (2 : ℕ)) ≤
+        ‖kaiserPhysicalGridEven a ha b‖ ^ (2 : ℕ) := by
   have hpacket := tendsto_two_pi_mul_sq_atTop.eventually
     (eventually_exp_mul_kaiserGridSpectralTail_le_energy hm hε)
   filter_upwards [hpacket] with a haPacket

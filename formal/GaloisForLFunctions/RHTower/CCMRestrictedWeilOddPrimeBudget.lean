@@ -156,9 +156,9 @@ private theorem finite_odd_matrix (a : SuzukiPositiveAperture) :
 /-- Gamma and pole part of the odd Weil energy, with the negative odd pole square retained. -/
 def ccmOddPoleGammaPolarBalance (a : SuzukiPositiveAperture) : ℝ :=
   2*((-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*Real.sinh a.1-2*a.1)-
-    Real.exp a.1+(2*a.1+1)*Real.exp (-a.1)+2*a.1^2+
+    Real.exp a.1+(2*a.1+1)*Real.exp (-a.1)+2*a.1^(2 : ℕ)+
     ccmGammaPoleSelfBoundaryMass a-ccmGammaPoleCrossBoundaryMass a-
-    (2*Real.sinh a.1-2*a.1)^2)
+    (2*Real.sinh a.1-2*a.1)^(2 : ℕ))
 
 /-- Exact full-source decomposition: odd energy is Gamma–pole balance plus recent-prime
 gain minus old-prime loss. Both prime budgets have unconditional nonnegative proofs. -/

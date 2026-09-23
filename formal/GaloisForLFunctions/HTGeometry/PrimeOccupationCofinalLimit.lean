@@ -68,7 +68,7 @@ theorem norm_primeSquareNome_lt_one (p : Nat.Primes) : ‖primeSquareNome p‖ <
 
 /-- **The level-two occupation mass is finite.** -/
 theorem summable_norm_occupationRecip_sq :
-    Summable fun ν : Nat.Primes →₀ ℕ => ‖occupationRecip ν‖ ^ 2 := by
+    Summable fun ν : Nat.Primes →₀ ℕ => ‖occupationRecip ν‖ ^ (2 : ℕ) := by
   have hprimes : Summable fun p : Nat.Primes => ‖primeSquareNome p‖ ^ (0 + 1) := by
     refine HTGeometry.summable_primeReciprocal_sq.congr fun p => ?_
     rw [primeSquareNome, norm_pow, norm_inv, Complex.norm_natCast]
@@ -86,7 +86,7 @@ theorem summable_norm_occupationRecip_pow {k : ℕ} (hk : 2 ≤ k) :
   exact pow_le_pow_of_le_one (norm_nonneg _) (norm_occupationRecip_le_one ν) hk
 
 /-- The level-two occupation mass, the uniform bound for every higher power sum. -/
-def occupationLevelTwoMass : ℝ := ∑' ν : Nat.Primes →₀ ℕ, ‖occupationRecip ν‖ ^ 2
+def occupationLevelTwoMass : ℝ := ∑' ν : Nat.Primes →₀ ℕ, ‖occupationRecip ν‖ ^ (2 : ℕ)
 
 theorem occupationLevelTwoMass_nonneg : 0 ≤ occupationLevelTwoMass :=
   tsum_nonneg fun _ => by positivity
@@ -110,12 +110,12 @@ theorem norm_smoothPowerSum_le (S : Finset Nat.Primes) {k : ℕ} (hk : 2 ≤ k) 
   have hsub : Summable fun ν : occupationSupported S =>
       ‖occupationRecip (ν : Nat.Primes →₀ ℕ) ^ k‖ :=
     (summable_norm_occupationRecip_pow hk).subtype _
-  have hsq : Summable fun ν : Nat.Primes →₀ ℕ => ‖occupationRecip ν‖ ^ 2 :=
+  have hsq : Summable fun ν : Nat.Primes →₀ ℕ => ‖occupationRecip ν‖ ^ (2 : ℕ) :=
     summable_norm_occupationRecip_sq
   calc ‖smoothPowerSum S k‖
       ≤ ∑' ν : occupationSupported S, ‖occupationRecip (ν : Nat.Primes →₀ ℕ) ^ k‖ :=
         norm_tsum_le_tsum_norm hsub
-    _ ≤ ∑' ν : occupationSupported S, ‖occupationRecip (ν : Nat.Primes →₀ ℕ)‖ ^ 2 := by
+    _ ≤ ∑' ν : occupationSupported S, ‖occupationRecip (ν : Nat.Primes →₀ ℕ)‖ ^ (2 : ℕ) := by
         refine Summable.tsum_le_tsum (fun ν => ?_) hsub (hsq.subtype _)
         rw [norm_pow]
         exact pow_le_pow_of_le_one (norm_nonneg _) (norm_occupationRecip_le_one _) hk
@@ -131,13 +131,13 @@ theorem norm_smoothPowerSum_le (S : Finset Nat.Primes) {k : ℕ} (hk : 2 ≤ k) 
 factors. -/
 def smoothLogIntensity (S : Finset Nat.Primes) (t : ℂ) : ℂ :=
   ∑' ν : occupationSupported S,
-    Complex.log (1 - t * occupationRecip (ν : Nat.Primes →₀ ℕ) ^ 2)
+    Complex.log (1 - t * occupationRecip (ν : Nat.Primes →₀ ℕ) ^ (2 : ℕ))
 
 /-- **The logarithmic intensity converges cofinally.** -/
 theorem tendsto_smoothLogIntensity {t : ℂ} (ht : ‖t‖ < 1) :
     Tendsto (fun S : Finset Nat.Primes => smoothLogIntensity S t) atTop
-      (𝓝 (∑' ν : Nat.Primes →₀ ℕ, Complex.log (1 - t * occupationRecip ν ^ 2))) := by
-  refine HTGeometry.tendsto_tsum_log_of_cofinal (a := fun ν => occupationRecip ν ^ 2) ?_ ?_ ht
+      (𝓝 (∑' ν : Nat.Primes →₀ ℕ, Complex.log (1 - t * occupationRecip ν ^ (2 : ℕ)))) := by
+  refine HTGeometry.tendsto_tsum_log_of_cofinal (a := fun ν => occupationRecip ν ^ (2 : ℕ)) ?_ ?_ ht
     cofinal_occupationSupported
   · exact summable_norm_occupationRecip_pow (le_refl 2)
   · intro ν
@@ -166,11 +166,11 @@ theorem tendsto_smoothOddJetSeries {t : ℂ} (ht : ‖t‖ < 1) :
   have hA0 : 0 ≤ A := occupationLevelTwoMass_nonneg
   set bound : ℕ → ℝ := fun j => 2 * A * ‖t‖ ^ (2 * (j + 1) + 1) with hbound
   have hboundsummable : Summable bound := by
-    have hgeo : Summable fun j : ℕ => (2 * A * ‖t‖ ^ 3) * (‖t‖ ^ 2) ^ j :=
-      (summable_geometric_of_lt_one (by positivity) (by nlinarith [htn, ht] : ‖t‖ ^ 2 < 1)).mul_left _
+    have hgeo : Summable fun j : ℕ => (2 * A * ‖t‖ ^ (3 : ℕ)) * (‖t‖ ^ (2 : ℕ)) ^ j :=
+      (summable_geometric_of_lt_one (by positivity) (by nlinarith [htn, ht] : ‖t‖ ^ (2 : ℕ) < 1)).mul_left _
     refine hgeo.congr fun j => ?_
-    show 2 * A * ‖t‖ ^ 3 * (‖t‖ ^ 2) ^ j = 2 * A * ‖t‖ ^ (2 * (j + 1) + 1)
-    have hsplit : ‖t‖ ^ (2 * (j + 1) + 1) = ‖t‖ ^ 3 * (‖t‖ ^ 2) ^ j := by
+    show 2 * A * ‖t‖ ^ (3 : ℕ) * (‖t‖ ^ (2 : ℕ)) ^ j = 2 * A * ‖t‖ ^ (2 * (j + 1) + 1)
+    have hsplit : ‖t‖ ^ (2 * (j + 1) + 1) = ‖t‖ ^ (3 : ℕ) * (‖t‖ ^ (2 : ℕ)) ^ j := by
       rw [← pow_mul, ← pow_add]
       congr 1
       omega

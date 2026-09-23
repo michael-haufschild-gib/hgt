@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.ArithmeticSchurFirstTraceNonclosability
 P-G72 and P-G73 show that diagonal scalar compression has the wrong critical mass.  This module
 identifies the deeper topology obstruction.  At critical aperture the exact inverse Stokes tilt
 grows like `sqrt(p) log p`.  Rescaled two-prime Schur-null witnesses, pairing `p` with a prime
-strictly beyond `p^2`, therefore vanish after the coherent Hardy kernel map while their Stokes
+strictly beyond `p^(2 : ℕ)`, therefore vanish after the coherent Hardy kernel map while their Stokes
 clock images converge to the nonzero first Hardy basis vector.
 
 Hence the critical Stokes clock is not sequentially closable through the Gamma--Schur Hardy
@@ -31,7 +31,7 @@ theorem criticalStokesNode_pos (p : Nat.Primes) : 0 < criticalStokesNode p :=
   xiMobiusContinuousApertureDiskNode_pos _ _
 
 theorem criticalStokesNode_sq (p : Nat.Primes) :
-    criticalStokesNode p ^ 2 = ((p : ℝ))⁻¹ := by
+    criticalStokesNode p ^ (2 : ℕ) = ((p : ℝ))⁻¹ := by
   simpa [criticalStokesNode, xiTransversePrimeApertureDiskNode_one_eq_inv] using
     xiMobiusContinuousApertureDiskNode_half_sq p
 
@@ -39,7 +39,7 @@ theorem criticalStokesNode_lt_five_sevenths (p : Nat.Primes) :
     criticalStokesNode p < 5 / 7 := by
   let r := criticalStokesNode p
   have hr0 : 0 < r := criticalStokesNode_pos p
-  have hr2 : r ^ 2 = ((p : ℝ))⁻¹ := criticalStokesNode_sq p
+  have hr2 : r ^ (2 : ℕ) = ((p : ℝ))⁻¹ := criticalStokesNode_sq p
   have hinv : ((p : ℝ))⁻¹ ≤ 1 / 2 := by
     have hp : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast p.2.two_le
     have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.pos
@@ -55,7 +55,7 @@ theorem gammaSewnMobiusApertureStokesCriticalInverseTilt_eq
     (p : Nat.Primes) :
     gammaSewnMobiusApertureStokesInverseTilt (1 / 2) p =
       Real.log (p : ℝ) / criticalStokesNode p *
-        ((1 + criticalStokesNode p ^ 2) /
+        ((1 + criticalStokesNode p ^ (2 : ℕ)) /
           (gammaSewnMobiusValuationContractionMultiplier (1 / 2) p *
             (1 - criticalStokesNode p))) := by
   let r := criticalStokesNode p
@@ -64,12 +64,12 @@ theorem gammaSewnMobiusApertureStokesCriticalInverseTilt_eq
   have hc := (gammaSewnMobiusValuationContractionMultiplier_pos (1 / 2) p).ne'
   have hr1 := sub_ne_zero.mpr (xiMobiusContinuousApertureDiskNode_lt_one
     (a := (1 / 2 : ℝ)) (by norm_num) p).ne'
-  have hq : xiTransversePrimeApertureDiskNode 1 p = r ^ 2 := by
+  have hq : xiTransversePrimeApertureDiskNode 1 p = r ^ (2 : ℕ) := by
     rw [xiTransversePrimeApertureDiskNode_one_eq_inv, criticalStokesNode_sq]
   rw [gammaSewnMobiusApertureStokesInverseTilt, hq]
   change Real.log (p : ℝ) * r /
-      (c * (r ^ 2 / (1 + r ^ 2)) * (1 - r)) =
-    Real.log (p : ℝ) / r * ((1 + r ^ 2) / (c * (1 - r)))
+      (c * (r ^ (2 : ℕ) / (1 + r ^ (2 : ℕ))) * (1 - r)) =
+    Real.log (p : ℝ) / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r)))
   have hr1' : 1 - r ≠ 0 := by
     exact sub_ne_zero.mpr (ne_of_gt ((criticalStokesNode_lt_five_sevenths p).trans
       (by norm_num : (5 / 7 : ℝ) < 1)))
@@ -89,8 +89,8 @@ theorem criticalStokesInverseTilt_lower (p : Nat.Primes) :
     Real.log_pos (by exact_mod_cast p.2.one_lt)
   rw [gammaSewnMobiusApertureStokesCriticalInverseTilt_eq]
   change Real.log (p : ℝ) / r <
-    Real.log (p : ℝ) / r * ((1 + r ^ 2) / (c * (1 - r)))
-  have hbase : 1 < (1 + r ^ 2) / (c * (1 - r)) := by
+    Real.log (p : ℝ) / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r)))
+  have hbase : 1 < (1 + r ^ (2 : ℕ)) / (c * (1 - r)) := by
     rw [lt_div_iff₀ (mul_pos hc0 (sub_pos.mpr hr1))]
     nlinarith [mul_pos (sub_pos.mpr hc1) (sub_pos.mpr hr1)]
   exact (lt_mul_iff_one_lt_right (div_pos hL hr0)).2 hbase
@@ -105,14 +105,14 @@ theorem criticalStokesInverseTilt_upper (p : Nat.Primes) :
   have hr1 : r < 1 := hr57.trans (by norm_num)
   have hc : 1 / 2 < c := one_half_lt_gammaSewnMobiusValuationContractionMultiplier _ _
   have hden : 0 < c * (1 - r) := by positivity
-  have hfactor : (1 + r ^ 2) / (c * (1 - r)) ≤ 14 := by
+  have hfactor : (1 + r ^ (2 : ℕ)) / (c * (1 - r)) ≤ 14 := by
     rw [div_le_iff₀ hden]
     nlinarith [sq_nonneg r,
       mul_pos (sub_pos.mpr hc) (sub_pos.mpr (show r < 5 / 7 from hr57))]
   have hL : 0 ≤ Real.log (p : ℝ) / r := by positivity
   rw [gammaSewnMobiusApertureStokesCriticalInverseTilt_eq]
   calc
-    Real.log (p : ℝ) / r * ((1 + r ^ 2) / (c * (1 - r))) ≤
+    Real.log (p : ℝ) / r * ((1 + r ^ (2 : ℕ)) / (c * (1 - r))) ≤
         Real.log (p : ℝ) / r * 14 := mul_le_mul_of_nonneg_left hfactor hL
     _ = 14 * Real.log (p : ℝ) / r := by ring
 
@@ -159,7 +159,7 @@ theorem norm_primeHardyKernelMap_criticalFarWitness_le (p : Nat.Primes) :
   have hW0 : 0 < W := gammaSewnMobiusApertureStokesInverseTilt_pos (by norm_num) p
   have hPR : P ≤ R := by
     dsimp [P, R]
-    have hp2 : p.1 ≤ p.1 ^ 2 := by nlinarith [p.2.two_le]
+    have hp2 : p.1 ≤ p.1 ^ (2 : ℕ) := by nlinarith [p.2.two_le]
     exact_mod_cast hp2.trans (farPrime_sq_lt p).le
   rw [primeHardyKernelMap_criticalStokesWitness, norm_smul, Real.norm_eq_abs,
     abs_of_pos (div_pos hP0 hW0)]
@@ -201,23 +201,23 @@ theorem criticalFarStokesSusceptibilityRatio_le (p : Nat.Primes) :
   have hrr0 : 0 < rr := criticalStokesNode_pos (farPrime p)
   have hWp0 : 0 < Wp := gammaSewnMobiusApertureStokesInverseTilt_pos (by norm_num) p
   have hWr0 : 0 < Wr := gammaSewnMobiusApertureStokesInverseTilt_pos (by norm_num) (farPrime p)
-  have hrp2 : rp ^ 2 = P⁻¹ := by simpa [rp, P] using criticalStokesNode_sq p
-  have hrr2 : rr ^ 2 = R⁻¹ := by simpa [rr, R] using criticalStokesNode_sq (farPrime p)
+  have hrp2 : rp ^ (2 : ℕ) = P⁻¹ := by simpa [rp, P] using criticalStokesNode_sq p
+  have hrr2 : rr ^ (2 : ℕ) = R⁻¹ := by simpa [rr, R] using criticalStokesNode_sq (farPrime p)
   have hPrr : P * rr < 1 := by
     have hsqNat := farPrime_sq_lt p
-    have hsq : P ^ 2 < R := by
+    have hsq : P ^ (2 : ℕ) < R := by
       dsimp [P, R]
       exact_mod_cast hsqNat
-    have hprod : P ^ 2 * rr ^ 2 < R * rr ^ 2 :=
+    have hprod : P ^ (2 : ℕ) * rr ^ (2 : ℕ) < R * rr ^ (2 : ℕ) :=
       mul_lt_mul_of_pos_right hsq (sq_pos_of_pos hrr0)
-    have hRrr2 : R * rr ^ 2 = 1 := by
+    have hRrr2 : R * rr ^ (2 : ℕ) = 1 := by
       rw [hrr2]
       exact mul_inv_cancel₀ hR0.ne'
     rw [hRrr2] at hprod
     nlinarith [sq_nonneg (P * rr - 1)]
   have hPRr : P / rr < R := by
     rw [div_lt_iff₀ hrr0]
-    have hRrr2 : R * rr ^ 2 = 1 := by
+    have hRrr2 : R * rr ^ (2 : ℕ) = 1 := by
       rw [hrr2]
       exact mul_inv_cancel₀ hR0.ne'
     nlinarith [sq_pos_of_pos hrr0]

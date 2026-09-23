@@ -59,7 +59,7 @@ theorem isRoot_oneDeepEquation {n : ℕ} (hn : 0 < n) {U : K[X]} (hU : U.coeff 0
     (p : criticalFibre K 1 n U (C d * X ^ n)) :
     (oneDeepEquation U d n).IsRoot (p.1.1.coeff 0) := by
   obtain ⟨⟨A, B⟩, hA, hB, hdvd⟩ := p
-  have hUdvd : (X : K[X]) ^ 1 ∣ U := by
+  have hUdvd : (X : K[X]) ^ (1 : ℕ) ∣ U := by
     rw [pow_one, Polynomial.X_dvd_iff]
     exact hU
   have hVdvd : (X : K[X]) ^ n ∣ C d * X ^ n := ⟨C d, by ring⟩
@@ -254,7 +254,7 @@ noncomputable def fibreOfRoot {n : ℕ} {U : K[X]} (hU : U.coeff 0 = 0) {d : K}
       exact hd hcoeff.symm
     · rw [Polynomial.leadingCoeff, Polynomial.natDegree, hGdeg, Polynomial.leadingCoeff_C_mul_X_pow]
       exact hcoeff
-  · have hUdvd : (X : K[X]) ^ 1 ∣ U := by
+  · have hUdvd : (X : K[X]) ^ (1 : ℕ) ∣ U := by
       rw [pow_one, Polynomial.X_dvd_iff]
       exact hU
     have hVdvd : (X : K[X]) ^ n ∣ C d * X ^ n := ⟨C d, by ring⟩

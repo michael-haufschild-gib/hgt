@@ -102,7 +102,7 @@ theorem nearestNeighborPath_sameDraw_growth_lateTraceHeapPlateau_firstReturn
       (traceHeapCapacity α budget Delta : ℝ) *
           (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
             Real.exp (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1)) <
         ((epsw - epsn) /
             projectiveChoiSpeed (nearestNeighborPathChoiEnergy L p)) /
@@ -191,7 +191,7 @@ theorem exists_nearestNeighborPath_sameDraw_growth_positiveTraceHeapFirstReturnG
       (traceHeapCapacity α budget Delta : ℝ) *
           (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
             Real.exp (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
               ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1)) < 1) :
     ∃ p : Fin (nearestNeighborPathLocalParameterCount L) → ℝ,
       p ∈ nearestNeighborPathGaussianGrowthMaximalEvent L T εGrow ∧
@@ -200,7 +200,7 @@ theorem exists_nearestNeighborPath_sameDraw_growth_positiveTraceHeapFirstReturnG
             (((traceHeapCapacity α budget Delta : ℝ) *
               (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
                 Real.exp (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-                Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+                Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
                   ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1)))⁻¹ - 1) / 2 ≤ W ∧
         (∀ t : ℝ,
           2048 * Real.pi * εGrow ≤ t →
@@ -216,7 +216,7 @@ theorem exists_nearestNeighborPath_sameDraw_growth_positiveTraceHeapFirstReturnG
   let b : ℝ := (traceHeapCapacity α budget Delta : ℝ) *
       (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) *
         Real.exp (((nearestNeighborPathProjectiveDimension L + 1 : ℕ) : ℝ) / 2) *
-        Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) ^
+        Real.sqrt (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) ^
           ((nearestNeighborPathProjectiveDimension L + 1 : ℕ) - 1))
   let m : ℝ := (epsw - epsn) /
     projectiveChoiSpeed (nearestNeighborPathChoiEnergy L p)
@@ -237,7 +237,7 @@ theorem exists_nearestNeighborPath_sameDraw_growth_positiveTraceHeapFirstReturnG
     dsimp only [b]
     have hepsw : 0 < epsw := lt_trans hepsn hgap
     have hrad : 0 < Real.sqrt
-        (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ 2) / 2) :=
+        (Real.pi * (2 * (Real.sqrt 2 * epsw) ^ (2 : ℕ)) / 2) :=
       Real.sqrt_pos.2 (by positivity)
     exact mul_pos hcapacity (mul_pos (mul_pos (by positivity) (Real.exp_pos _))
       (pow_pos hrad _))

@@ -30,7 +30,7 @@ def AveragedCorrelationSmall (f : ℕ → ℝ) (hh : ℝ → ℝ) : Prop :=
 
 theorem four_le_sqrt {x : ℝ} (hx : 16 ≤ x) : (4 : ℝ) ≤ Real.sqrt x := by
   have h16 : Real.sqrt 16 = 4 := by
-    rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 4)]
+    rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 4)]
   rw [← h16]
   exact Real.sqrt_le_sqrt hx
 
@@ -52,7 +52,7 @@ theorem offDiagonalVanishes_of_correlations {f : ℕ → ℝ} (hf : ∀ n, |f n|
     rw [div_le_iff₀ hε] at hh64
     linarith
   have hs4 : (4 : ℝ) ≤ Real.sqrt x := four_le_sqrt hx16
-  have hden : (0 : ℝ) < h ^ 2 * Real.sqrt x := by nlinarith [hh1, hs4]
+  have hden : (0 : ℝ) < h ^ (2 : ℕ) * Real.sqrt x := by nlinarith [hh1, hs4]
   have hbase := abs_offDiagonal_le hf hx16 hh1 hcapx hB0 hB
   have hsumB0 : (0 : ℝ) ≤ ∑ k ∈ Finset.Icc 1 ⌊h⌋₊, B k := Finset.sum_nonneg fun k _ => hB0 k
   have h9 : (0 : ℝ) ≤ 9 * h + 3 := by linarith
@@ -60,10 +60,10 @@ theorem offDiagonalVanishes_of_correlations {f : ℕ → ℝ} (hf : ∀ n, |f n|
       ≤ (9 * h + 3) * ((ε / 48) * (h * Real.sqrt x)) :=
     mul_le_mul_of_nonneg_left hBsum h9
   have step2 : (9 * h + 3) * ((ε / 48) * (h * Real.sqrt x))
-      ≤ (ε / 4) * (h ^ 2 * Real.sqrt x) := by
+      ≤ (ε / 4) * (h ^ (2 : ℕ) * Real.sqrt x) := by
     nlinarith [hh1, hs4, hε.le, mul_nonneg (mul_nonneg hε.le (by linarith : (0:ℝ) ≤ h - 1))
       (mul_nonneg (by linarith : (0:ℝ) ≤ h) (by linarith : (0:ℝ) ≤ Real.sqrt x))]
-  have step3 : 2 * h * (3 * Real.sqrt x + 1) ≤ (ε / 8) * (h ^ 2 * Real.sqrt x) := by
+  have step3 : 2 * h * (3 * Real.sqrt x + 1) ≤ (ε / 8) * (h ^ (2 : ℕ) * Real.sqrt x) := by
     have hhs : (0 : ℝ) ≤ h * Real.sqrt x := by nlinarith [hh1, hs4]
     nlinarith [hεh, hhs, hh1, hs4]
   rw [Real.norm_eq_abs, abs_div, abs_of_pos hden, div_lt_iff₀ hden, abs_mul]

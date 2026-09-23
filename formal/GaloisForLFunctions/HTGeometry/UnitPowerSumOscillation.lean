@@ -8,8 +8,8 @@ of the power sums `A n = sum_i v_i ^ (n+1)` cannot stay above `-(C k^n)` with `0
 
 The proof is a finite second-moment argument.  Cesàro sums of `z^(n+1)` are bounded by
 `2/‖z-1‖` for unit `z ≠ 1`, so the partial sums of `Re (A n)` stay bounded, while the identity
-`(Re A)^2 = (‖A‖^2 + Re (A^2))/2` and the expansion of `‖A n‖^2` over pairs — whose diagonal
-contributes `+N` per index — force `sum_(n<N) (Re A_n)^2` to grow linearly in `N`.  A decaying
+`(Re A)^(2 : ℕ) = (‖A‖^(2 : ℕ) + Re (A^(2 : ℕ)))/2` and the expansion of `‖A n‖^(2 : ℕ)` over pairs — whose diagonal
+contributes `+N` per index — force `sum_(n<N) (Re A_n)^(2 : ℕ)` to grow linearly in `N`.  A decaying
 lower floor makes `|Re A_n|` summably close to `Re A_n`, so the square sum is also bounded — a
 contradiction.  Everything is effective: the implied threshold is explicit in the data.
 -/
@@ -124,9 +124,9 @@ theorem unitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι}
     rw [show Complex.normSq (v i) = 1 by
       rw [← Complex.sq_norm, hnorm i hi, one_pow]]
     norm_num
-  have hsum2 : ∀ N : ℕ, K * N - C₄ ≤ ∑ n ∈ Finset.range N, ‖A n‖ ^ 2 := by
+  have hsum2 : ∀ N : ℕ, K * N - C₄ ≤ ∑ n ∈ Finset.range N, ‖A n‖ ^ (2 : ℕ) := by
     intro N
-    have hAsq : ∀ n, (‖A n‖ : ℝ) ^ 2 = (A n * (starRingEnd ℂ) (A n)).re := by
+    have hAsq : ∀ n, (‖A n‖ : ℝ) ^ (2 : ℕ) = (A n * (starRingEnd ℂ) (A n)).re := by
       intro n
       rw [Complex.mul_conj, Complex.ofReal_re, Complex.sq_norm]
     have hexp : ∑ n ∈ Finset.range N, A n * (starRingEnd ℂ) (A n) =
@@ -149,10 +149,10 @@ theorem unitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι}
         _ = ∑ i ∈ s, ∑ j ∈ s,
               ∑ n ∈ Finset.range N, (v i * (starRingEnd ℂ) (v j)) ^ (n + 1) :=
             Finset.sum_congr rfl fun i _ => Finset.sum_comm
-    have hre : ∑ n ∈ Finset.range N, ‖A n‖ ^ 2 =
+    have hre : ∑ n ∈ Finset.range N, ‖A n‖ ^ (2 : ℕ) =
         ∑ i ∈ s, ∑ j ∈ s,
           (∑ n ∈ Finset.range N, (v i * (starRingEnd ℂ) (v j)) ^ (n + 1)).re := by
-      calc ∑ n ∈ Finset.range N, ‖A n‖ ^ 2
+      calc ∑ n ∈ Finset.range N, ‖A n‖ ^ (2 : ℕ)
           = ∑ n ∈ Finset.range N, (A n * (starRingEnd ℂ) (A n)).re :=
             Finset.sum_congr rfl fun n _ => hAsq n
         _ = (∑ n ∈ Finset.range N, A n * (starRingEnd ℂ) (A n)).re :=
@@ -205,26 +205,26 @@ theorem unitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι}
             (∑ n ∈ Finset.range N, (v i * (starRingEnd ℂ) (v j)) ^ (n + 1)).re :=
           Finset.sum_le_sum hper
   -- (3) bounded square sums
-  have hsum3 : ∀ N : ℕ, -C₅ ≤ ∑ n ∈ Finset.range N, ((A n) ^ 2).re := by
+  have hsum3 : ∀ N : ℕ, -C₅ ≤ ∑ n ∈ Finset.range N, ((A n) ^ (2 : ℕ)).re := by
     intro N
-    have hexp : ∑ n ∈ Finset.range N, (A n) ^ 2 =
+    have hexp : ∑ n ∈ Finset.range N, (A n) ^ (2 : ℕ) =
         ∑ i ∈ s, ∑ j ∈ s, ∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1) := by
-      have h1 : ∀ n, (A n) ^ 2 = ∑ i ∈ s, ∑ j ∈ s, (v i * v j) ^ (n + 1) := by
+      have h1 : ∀ n, (A n) ^ (2 : ℕ) = ∑ i ∈ s, ∑ j ∈ s, (v i * v j) ^ (n + 1) := by
         intro n
         rw [hA, pow_two, Finset.sum_mul_sum]
         refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
         rw [mul_pow]
-      calc ∑ n ∈ Finset.range N, (A n) ^ 2
+      calc ∑ n ∈ Finset.range N, (A n) ^ (2 : ℕ)
           = ∑ n ∈ Finset.range N, ∑ i ∈ s, ∑ j ∈ s, (v i * v j) ^ (n + 1) :=
             Finset.sum_congr rfl fun n _ => h1 n
         _ = ∑ i ∈ s, ∑ n ∈ Finset.range N, ∑ j ∈ s, (v i * v j) ^ (n + 1) :=
             Finset.sum_comm
         _ = ∑ i ∈ s, ∑ j ∈ s, ∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1) :=
             Finset.sum_congr rfl fun i _ => Finset.sum_comm
-    have hre : ∑ n ∈ Finset.range N, ((A n) ^ 2).re =
+    have hre : ∑ n ∈ Finset.range N, ((A n) ^ (2 : ℕ)).re =
         ∑ i ∈ s, ∑ j ∈ s, (∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1)).re := by
-      calc ∑ n ∈ Finset.range N, ((A n) ^ 2).re
-          = (∑ n ∈ Finset.range N, (A n) ^ 2).re := (Complex.re_sum _ _).symm
+      calc ∑ n ∈ Finset.range N, ((A n) ^ (2 : ℕ)).re
+          = (∑ n ∈ Finset.range N, (A n) ^ (2 : ℕ)).re := (Complex.re_sum _ _).symm
         _ = ∑ i ∈ s, ∑ j ∈ s, (∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1)).re := by
             rw [hexp, Complex.re_sum]
             exact Finset.sum_congr rfl fun i _ => Complex.re_sum _ _
@@ -243,13 +243,13 @@ theorem unitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι}
       _ ≤ ∑ i ∈ s, ∑ j ∈ s, (∑ n ∈ Finset.range N, (v i * v j) ^ (n + 1)).re :=
           Finset.sum_le_sum fun i hi => Finset.sum_le_sum fun j hj => hstep i hi j hj
   -- (4) pointwise identity
-  have hid : ∀ n, ((A n).re) ^ 2 = (‖A n‖ ^ 2 + ((A n) ^ 2).re) / 2 := by
+  have hid : ∀ n, ((A n).re) ^ (2 : ℕ) = (‖A n‖ ^ (2 : ℕ) + ((A n) ^ (2 : ℕ)).re) / 2 := by
     intro n
     rw [Complex.sq_norm, Complex.normSq_apply, pow_two (A n), Complex.mul_re]
     ring
   -- (5) upper bound for the square sums
   have h1κ : (0 : ℝ) < 1 - κ := by linarith
-  have hup : ∀ N : ℕ, ∑ n ∈ Finset.range N, ((A n).re) ^ 2 ≤
+  have hup : ∀ N : ℕ, ∑ n ∈ Finset.range N, ((A n).re) ^ (2 : ℕ) ≤
       K * (C₁ + 2 * C / (1 - κ)) := by
     intro N
     have habs : ∀ n, |(A n).re| ≤ (A n).re + 2 * C * κ ^ n := by
@@ -267,7 +267,7 @@ theorem unitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι}
         neg_div_neg_eq]
       rw [div_le_div_iff₀ h1κ h1κ]
       nlinarith [pow_nonneg hκ0 N]
-    calc ∑ n ∈ Finset.range N, ((A n).re) ^ 2
+    calc ∑ n ∈ Finset.range N, ((A n).re) ^ (2 : ℕ)
         ≤ ∑ n ∈ Finset.range N, K * |(A n).re| := by
           refine Finset.sum_le_sum fun n _ => ?_
           have h1 : |(A n).re| ≤ K := le_trans (Complex.abs_re_le_norm _) (hAbound n)
@@ -290,13 +290,13 @@ theorem unitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι}
                 linarith
   -- (6) lower bound for the square sums and the contradiction
   have hlowN : ∀ N : ℕ, (K * N - (C₄ + C₅)) / 2 ≤
-      ∑ n ∈ Finset.range N, ((A n).re) ^ 2 := by
+      ∑ n ∈ Finset.range N, ((A n).re) ^ (2 : ℕ) := by
     intro N
     have h2 := hsum2 N
     have h3 := hsum3 N
-    have hEq : (2 : ℝ) * ∑ n ∈ Finset.range N, ((A n).re) ^ 2 =
-        (∑ n ∈ Finset.range N, ‖A n‖ ^ 2) +
-          ∑ n ∈ Finset.range N, ((A n) ^ 2).re := by
+    have hEq : (2 : ℝ) * ∑ n ∈ Finset.range N, ((A n).re) ^ (2 : ℕ) =
+        (∑ n ∈ Finset.range N, ‖A n‖ ^ (2 : ℕ)) +
+          ∑ n ∈ Finset.range N, ((A n) ^ (2 : ℕ)).re := by
       rw [Finset.mul_sum, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun n _ => ?_
       rw [hid n]

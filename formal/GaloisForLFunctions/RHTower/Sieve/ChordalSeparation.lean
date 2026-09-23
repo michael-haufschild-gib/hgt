@@ -23,17 +23,17 @@ open Real
 /-- The chord subtended by an arc. -/
 theorem norm_exp_I_sub_one (θ : ℝ) :
     ‖Complex.exp (θ * Complex.I) - 1‖ = 2 * |Real.sin (θ / 2)| := by
-  have hsq : ‖Complex.exp (θ * Complex.I) - 1‖ ^ 2 = (2 * |Real.sin (θ / 2)|) ^ 2 := by
+  have hsq : ‖Complex.exp (θ * Complex.I) - 1‖ ^ (2 : ℕ) = (2 * |Real.sin (θ / 2)|) ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply, Complex.exp_mul_I]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.one_re,
       Complex.one_im, Complex.cos_ofReal_re, Complex.sin_ofReal_re, Complex.mul_I_re,
       Complex.mul_I_im, Complex.cos_ofReal_im, Complex.sin_ofReal_im]
-    have hhalf : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ 2 := by
+    have hhalf : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ (2 : ℕ) := by
       have h := Real.cos_two_mul' (θ / 2)
       rw [show 2 * (θ / 2) = θ by ring] at h
       have hpy := Real.sin_sq_add_cos_sq (θ / 2)
       nlinarith [h, hpy]
-    have hsin : Real.sin θ ^ 2 = 1 - Real.cos θ ^ 2 := by
+    have hsin : Real.sin θ ^ (2 : ℕ) = 1 - Real.cos θ ^ (2 : ℕ) := by
       nlinarith [Real.sin_sq_add_cos_sq θ]
     rw [mul_pow, sq_abs]
     nlinarith [hhalf, hsin]

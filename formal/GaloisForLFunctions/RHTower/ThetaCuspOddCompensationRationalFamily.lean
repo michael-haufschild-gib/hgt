@@ -17,7 +17,7 @@ noncomputable section
 /-- Complete affine dependence of the seam determinant on the correction coefficient. -/
 theorem thetaCuspNativeOddCompensatedDet_zero_factor (C : ℝ) :
     thetaCuspNativeOddCompensatedDet C 0 =
-      thetaCuspNativeOddHeadDet 0 * thetaCuspFullSource 0^2 *
+      thetaCuspNativeOddHeadDet 0 * thetaCuspFullSource 0^(2 : ℕ) *
         (3*C-thetaCuspNativeOddCompensationCoefficient) := by
   have hd := (thetaCuspNativeOddHeadDet_pos 0).ne'
   have hp := (thetaCuspFullSource_pos_all 0).ne'
@@ -71,7 +71,7 @@ private theorem continuous_compensatedDet (C : ℝ) :
   change Continuous thetaCuspFullSource at hp
   have hG : Continuous thetaCuspCenterCompensationSource := by
     have heq : thetaCuspCenterCompensationSource =
-        fun x => thetaCuspFullSource x^2 * thetaCuspCenterCompensationSign x :=
+        fun x => thetaCuspFullSource x^(2 : ℕ) * thetaCuspCenterCompensationSign x :=
       funext thetaCuspCenterCompensationSource_eq_sign
     rw [heq]
     exact (hp.pow 2).mul continuous_thetaCuspCenterCompensationSign

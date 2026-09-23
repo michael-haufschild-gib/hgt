@@ -215,7 +215,7 @@ theorem original_metric_independent_contacts (q : XiZeroCopy) (br : Bool) (amp w
 /-- The full original angular-restored metric period on the physical static
 radial window, in the unchanged tortoise coordinate and measure. -/
 def originalMetricTriangle (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (a A B T : ℝ) : ℂ :=
-  (∫ L in A..B,((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^2-1)*
+  (∫ L in A..B,((D4BMJointWave.tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*
     D4BMOriginalMetricTimePeriod.restoredMetricTime q br true amp w a
       (max a (T-L/2)) (D4BMJointWave.tortoiseRadius (-L/2)))/2
 

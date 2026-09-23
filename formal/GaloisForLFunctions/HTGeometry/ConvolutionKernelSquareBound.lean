@@ -27,15 +27,15 @@ variable {g : ℝ → ℝ}
 
 /-- The inner convolution integral is an integral of `g²` over a shifted interval. -/
 theorem integral_sq_sub_eq (a t : ℝ) :
-    ∫ s in (0 : ℝ)..a, (g (t - s)) ^ 2 = ∫ u in (t - a)..t, (g u) ^ 2 := by
+    ∫ s in (0 : ℝ)..a, (g (t - s)) ^ (2 : ℕ) = ∫ u in (t - a)..t, (g u) ^ (2 : ℕ) := by
   have h := intervalIntegral.integral_comp_sub_left (a := (0 : ℝ)) (b := a)
-    (fun x => (g x) ^ 2) t
+    (fun x => (g x) ^ (2 : ℕ)) t
   simpa using h
 
 /-- For `t` in `[0, a]` the shifted interval sits inside `[-a, a]`, and the integrand is a square,
 so the inner integral is bounded by the full square integral. -/
 theorem integral_sq_sub_le (hg : Continuous g) {a t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) a) :
-    ∫ s in (0 : ℝ)..a, (g (t - s)) ^ 2 ≤ ∫ u in (-a)..a, (g u) ^ 2 := by
+    ∫ s in (0 : ℝ)..a, (g (t - s)) ^ (2 : ℕ) ≤ ∫ u in (-a)..a, (g u) ^ (2 : ℕ) := by
   obtain ⟨ht0, hta⟩ := ht
   rw [integral_sq_sub_eq a t]
   refine intervalIntegral.integral_mono_interval (by linarith) (by linarith) hta ?_ ?_
@@ -45,15 +45,15 @@ theorem integral_sq_sub_le (hg : Continuous g) {a t : ℝ} (ht : t ∈ Set.Icc (
 /-- The primitive of `g²`, used to identify the inner integral as a continuous function of the
 outer variable. -/
 theorem continuous_primitive_sq (hg : Continuous g) :
-    Continuous fun x : ℝ => ∫ u in (0 : ℝ)..x, (g u) ^ 2 :=
+    Continuous fun x : ℝ => ∫ u in (0 : ℝ)..x, (g u) ^ (2 : ℕ) :=
   intervalIntegral.continuous_primitive (fun _ _ => (hg.pow 2).intervalIntegrable _ _) 0
 
 /-- The inner convolution integral depends continuously on the outer variable. -/
 theorem continuous_integral_sq_sub (hg : Continuous g) (a : ℝ) :
-    Continuous fun t : ℝ => ∫ s in (0 : ℝ)..a, (g (t - s)) ^ 2 := by
+    Continuous fun t : ℝ => ∫ s in (0 : ℝ)..a, (g (t - s)) ^ (2 : ℕ) := by
   have hprim := continuous_primitive_sq hg
-  have hEq : (fun t : ℝ => ∫ s in (0 : ℝ)..a, (g (t - s)) ^ 2)
-      = fun t : ℝ => (∫ u in (0 : ℝ)..t, (g u) ^ 2) - ∫ u in (0 : ℝ)..(t - a), (g u) ^ 2 := by
+  have hEq : (fun t : ℝ => ∫ s in (0 : ℝ)..a, (g (t - s)) ^ (2 : ℕ))
+      = fun t : ℝ => (∫ u in (0 : ℝ)..t, (g u) ^ (2 : ℕ)) - ∫ u in (0 : ℝ)..(t - a), (g u) ^ (2 : ℕ) := by
     funext t
     rw [integral_sq_sub_eq a t]
     have hadd := intervalIntegral.integral_add_adjacent_intervals
@@ -67,17 +67,17 @@ theorem continuous_integral_sq_sub (hg : Continuous g) (a : ℝ) :
 /-- **Square bound for a convolution kernel on a finite interval.**  The square integral of
 `(t, s) ↦ g (t - s)` over `[0,a]²` is at most `a` times the square integral of `g` over `[-a,a]`. -/
 theorem integral_integral_sq_sub_le (hg : Continuous g) {a : ℝ} (ha : 0 ≤ a) :
-    (∫ t in (0 : ℝ)..a, ∫ s in (0 : ℝ)..a, (g (t - s)) ^ 2)
-      ≤ a * ∫ u in (-a)..a, (g u) ^ 2 := by
-  have hmono : ∫ t in (0 : ℝ)..a, (∫ s in (0 : ℝ)..a, (g (t - s)) ^ 2)
-      ≤ ∫ _t in (0 : ℝ)..a, ∫ u in (-a)..a, (g u) ^ 2 := by
+    (∫ t in (0 : ℝ)..a, ∫ s in (0 : ℝ)..a, (g (t - s)) ^ (2 : ℕ))
+      ≤ a * ∫ u in (-a)..a, (g u) ^ (2 : ℕ) := by
+  have hmono : ∫ t in (0 : ℝ)..a, (∫ s in (0 : ℝ)..a, (g (t - s)) ^ (2 : ℕ))
+      ≤ ∫ _t in (0 : ℝ)..a, ∫ u in (-a)..a, (g u) ^ (2 : ℕ) := by
     refine intervalIntegral.integral_mono_on ha ?_ intervalIntegrable_const ?_
     · exact (continuous_integral_sq_sub hg a).intervalIntegrable _ _
     · intro t ht
       exact integral_sq_sub_le hg ht
-  calc ∫ t in (0 : ℝ)..a, (∫ s in (0 : ℝ)..a, (g (t - s)) ^ 2)
-      ≤ ∫ _t in (0 : ℝ)..a, ∫ u in (-a)..a, (g u) ^ 2 := hmono
-    _ = a * ∫ u in (-a)..a, (g u) ^ 2 := by
+  calc ∫ t in (0 : ℝ)..a, (∫ s in (0 : ℝ)..a, (g (t - s)) ^ (2 : ℕ))
+      ≤ ∫ _t in (0 : ℝ)..a, ∫ u in (-a)..a, (g u) ^ (2 : ℕ) := hmono
+    _ = a * ∫ u in (-a)..a, (g u) ^ (2 : ℕ) := by
         rw [intervalIntegral.integral_const]
         simp
 

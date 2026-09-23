@@ -18,13 +18,13 @@ namespace RHTower
 def mobiusDivisorTransverseGoodEnergy (M : ℕ) (P : Finset ℕ) (q : ℕ) : ℝ :=
   ∑ R ∈ mobiusDivisorTransverseLabels M q,
     (max (mobiusDivisorOrientedFibre M P R -
-      mobiusDivisorOrientedFibre M P (insert q R)) 0)^2
+      mobiusDivisorOrientedFibre M P (insert q R)) 0)^(2 : ℕ)
 
 /-- Negative part of the complete nonempty transverse difference field. -/
 def mobiusDivisorTransverseDefectEnergy (M : ℕ) (P : Finset ℕ) (q : ℕ) : ℝ :=
   ∑ R ∈ mobiusDivisorTransverseLabels M q,
     (max (mobiusDivisorOrientedFibre M P (insert q R) -
-      mobiusDivisorOrientedFibre M P R) 0)^2
+      mobiusDivisorOrientedFibre M P R) 0)^(2 : ℕ)
 
 private lemma transverse_mem {M q : ℕ} (hq : q ∈ mobiusDivisorSelectionPrimes M)
     {R : Finset ℕ} (hR : R ∈ mobiusDivisorTransverseLabels M q) :
@@ -53,7 +53,7 @@ private lemma sum_labels_head_pair (M q : ℕ) (hq : q ∈ mobiusDivisorSelectio
   ring
 
 private lemma split_difference_sq (x y : ℝ) :
-    (max (x-y) 0)^2+(max (y-x) 0)^2+2*x*y=x^2+y^2 := by
+    (max (x-y) 0)^(2 : ℕ)+(max (y-x) 0)^(2 : ℕ)+2*x*y=x^(2 : ℕ)+y^(2 : ℕ) := by
   rcases le_total x y with h | h
   · rw [max_eq_right (sub_nonpos.mpr h), max_eq_left (sub_nonneg.mpr h)]
     ring
@@ -71,10 +71,10 @@ theorem mobiusDivisorMixedTransverse_decomposition (M : ℕ) (P : Finset ℕ) (q
     let T := mobiusDivisorTransverseGoodEnergy M P q
     let U := mobiusDivisorTransverseDefectEnergy M P q
     let C := mobiusDivisorTransverseOverlap M P q
-    mobiusDivisorParityGoodEnergy M P = a^2+T+U+2*C ∧
-    mobiusDivisorParityDefectEnergy M P = h^2 ∧
+    mobiusDivisorParityGoodEnergy M P = a^(2 : ℕ)+T+U+2*C ∧
+    mobiusDivisorParityDefectEnergy M P = h^(2 : ℕ) ∧
     mobiusDivisorParityGoodEnergy M (insert q P) = T ∧
-    mobiusDivisorParityDefectEnergy M (insert q P) = (h-a)^2+U := by
+    mobiusDivisorParityDefectEnergy M (insert q P) = (h-a)^(2 : ℕ)+U := by
   dsimp only
   have ha := hpos {q} (mem_powerset.mpr (singleton_subset_iff.mpr hq)) (singleton_ne_empty q)
   have hzero (R : Finset ℕ) : mobiusDivisorOrientedFibre M (insert q P) (insert q R) = 0 := by
@@ -95,12 +95,12 @@ theorem mobiusDivisorMixedTransverse_decomposition (M : ℕ) (P : Finset ℕ) (q
       mobiusDivisorTransverseOverlap
     rw [mul_sum]
     calc
-      _ = (mobiusDivisorOrientedFibre M P {q})^2 +
+      _ = (mobiusDivisorOrientedFibre M P {q})^(2 : ℕ) +
           ∑ R ∈ mobiusDivisorTransverseLabels M q,
             ((max (mobiusDivisorOrientedFibre M P R-
-              mobiusDivisorOrientedFibre M P (insert q R)) 0)^2+
+              mobiusDivisorOrientedFibre M P (insert q R)) 0)^(2 : ℕ)+
              (max (mobiusDivisorOrientedFibre M P (insert q R)-
-              mobiusDivisorOrientedFibre M P R) 0)^2+
+              mobiusDivisorOrientedFibre M P R) 0)^(2 : ℕ)+
              2*(mobiusDivisorOrientedFibre M P R*mobiusDivisorOrientedFibre M P (insert q R))) := by
         congr 1
         apply sum_congr rfl
@@ -114,8 +114,8 @@ theorem mobiusDivisorMixedTransverse_decomposition (M : ℕ) (P : Finset ℕ) (q
     rw [sum_labels_head_pair M q hq, max_eq_left (neg_nonneg.mpr hh),
       max_eq_right (neg_nonpos.mpr ha)]
     have hz : (∑ R ∈ mobiusDivisorTransverseLabels M q,
-        ((max (-mobiusDivisorOrientedFibre M P R) 0)^2 +
-         (max (-mobiusDivisorOrientedFibre M P (insert q R)) 0)^2)) = 0 := by
+        ((max (-mobiusDivisorOrientedFibre M P R) 0)^(2 : ℕ) +
+         (max (-mobiusDivisorOrientedFibre M P (insert q R)) 0)^(2 : ℕ))) = 0 := by
       apply sum_eq_zero
       intro R hR
       obtain ⟨hne, _, hRU, hqRU⟩ := transverse_mem hq hR
@@ -171,7 +171,7 @@ theorem mobiusDivisorMixedTransverse_compensation_iff (M : ℕ) (P : Finset ℕ)
   have hs := Real.sq_sqrt (mobiusDivisorParityGoodEnergy_nonneg M P)
   have ht := Real.sq_sqrt hT
   have hu := Real.sq_sqrt (show 0 ≤
-      (mobiusDivisorOrientedFibre M P ∅-mobiusDivisorOrientedFibre M P {q})^2+
+      (mobiusDivisorOrientedFibre M P ∅-mobiusDivisorOrientedFibre M P {q})^(2 : ℕ)+
         mobiusDivisorTransverseDefectEnergy M P q by positivity)
   unfold mobiusDivisorParityRadius
   rw [hd,hgn,hdn,Real.sqrt_sq_eq_abs,abs_of_nonpos hh]
@@ -180,10 +180,10 @@ theorem mobiusDivisorMixedTransverse_compensation_iff (M : ℕ) (P : Finset ℕ)
     linarith only [hst,hh]
   have hmove :
       Real.sqrt (mobiusDivisorTransverseGoodEnergy M P q)+
-        Real.sqrt ((mobiusDivisorOrientedFibre M P ∅-mobiusDivisorOrientedFibre M P {q})^2+
+        Real.sqrt ((mobiusDivisorOrientedFibre M P ∅-mobiusDivisorOrientedFibre M P {q})^(2 : ℕ)+
           mobiusDivisorTransverseDefectEnergy M P q) ≤
             Real.sqrt (mobiusDivisorParityGoodEnergy M P)+ -mobiusDivisorOrientedFibre M P ∅ ↔
-      Real.sqrt ((mobiusDivisorOrientedFibre M P ∅-mobiusDivisorOrientedFibre M P {q})^2+
+      Real.sqrt ((mobiusDivisorOrientedFibre M P ∅-mobiusDivisorOrientedFibre M P {q})^(2 : ℕ)+
           mobiusDivisorTransverseDefectEnergy M P q) ≤
         Real.sqrt (mobiusDivisorParityGoodEnergy M P)-
           Real.sqrt (mobiusDivisorTransverseGoodEnergy M P q)-mobiusDivisorOrientedFibre M P ∅ := by
@@ -192,12 +192,12 @@ theorem mobiusDivisorMixedTransverse_compensation_iff (M : ℕ) (P : Finset ℕ)
   constructor <;> intro h <;> nlinarith only [h,hg,hs,ht,hu]
 
 private lemma exists_head_shift_iff (a U v : ℝ) (ha : 0≤a) (hU : 0≤U) (hv : 0≤v) :
-    (∃ b : ℝ, 0≤b ∧ Real.sqrt ((a+b)^2+U)≤b+v) ↔
+    (∃ b : ℝ, 0≤b ∧ Real.sqrt ((a+b)^(2 : ℕ)+U)≤b+v) ↔
       a<v ∨ (U=0 ∧ a≤v) := by
   constructor
   · rintro ⟨b,hb,h⟩
-    have hs := Real.sq_sqrt (show 0≤(a+b)^2+U by positivity)
-    have hr := Real.sqrt_nonneg ((a+b)^2+U)
+    have hs := Real.sq_sqrt (show 0≤(a+b)^(2 : ℕ)+U by positivity)
+    have hr := Real.sqrt_nonneg ((a+b)^(2 : ℕ)+U)
     have hav : a≤v := by
       by_contra hn
       have hlt : v<a := lt_of_not_ge hn
@@ -209,14 +209,14 @@ private lemma exists_head_shift_iff (a U v : ℝ) (ha : 0≤a) (hU : 0≤U) (hv 
       rw [← he] at h
       nlinarith only [h,hs,hr,hb,ha,hU]
   · rintro (hlt | ⟨rfl,hav⟩)
-    · let b := (a^2+U)/(2*(v-a))
+    · let b := (a^(2 : ℕ)+U)/(2*(v-a))
       have hb : 0≤b := div_nonneg (by positivity) (by linarith)
-      have he : 2*b*(v-a)=a^2+U := by
+      have he : 2*b*(v-a)=a^(2 : ℕ)+U := by
         dsimp [b]
         field_simp [(sub_pos.mpr hlt).ne']
       refine ⟨b,hb,?_⟩
-      have hs := Real.sq_sqrt (show 0≤(a+b)^2+U by positivity)
-      have hr := Real.sqrt_nonneg ((a+b)^2+U)
+      have hs := Real.sq_sqrt (show 0≤(a+b)^(2 : ℕ)+U by positivity)
+      have hr := Real.sqrt_nonneg ((a+b)^(2 : ℕ)+U)
       nlinarith only [hs,hr,hb,hv,he,sq_nonneg v]
     · refine ⟨0,le_rfl,?_⟩
       simpa only [add_zero,zero_add,Real.sqrt_sq ha] using hav
@@ -227,20 +227,20 @@ cannot be paid by any finite nonpositive head. This does not assert that an
 arithmetic prime schedule can choose the head independently of the field. -/
 theorem mixedTransverseHeadRepair_iff (a T U C : ℝ)
     (ha : 0≤a) (hT : 0≤T) (hU : 0≤U) (hC : 0≤C) :
-    (∃ b : ℝ, 0≤b ∧ Real.sqrt T+Real.sqrt ((a+b)^2+U)≤
-      b+Real.sqrt (a^2+T+U+2*C)) ↔
+    (∃ b : ℝ, 0≤b ∧ Real.sqrt T+Real.sqrt ((a+b)^(2 : ℕ)+U)≤
+      b+Real.sqrt (a^(2 : ℕ)+T+U+2*C)) ↔
       2*a*Real.sqrt T<U+2*C ∨ (U=0 ∧ a*Real.sqrt T≤C) := by
-  let s := Real.sqrt (a^2+T+U+2*C)
+  let s := Real.sqrt (a^(2 : ℕ)+T+U+2*C)
   let t := Real.sqrt T
-  have hs : s^2=a^2+T+U+2*C := Real.sq_sqrt (by positivity)
-  have ht : t^2=T := Real.sq_sqrt hT
+  have hs : s^(2 : ℕ)=a^(2 : ℕ)+T+U+2*C := Real.sq_sqrt (by positivity)
+  have ht : t^(2 : ℕ)=T := Real.sq_sqrt hT
   have hs0 : 0 ≤ s := Real.sqrt_nonneg _
   have ht0 : 0 ≤ t := Real.sqrt_nonneg _
   have hts : t ≤ s := Real.sqrt_le_sqrt (by nlinarith only [hU,hC,sq_nonneg a])
-  have he : (∃ b : ℝ, 0≤b ∧ Real.sqrt T+Real.sqrt ((a+b)^2+U)≤
-      b+Real.sqrt (a^2+T+U+2*C)) ↔
-      (∃ b : ℝ, 0≤b ∧ Real.sqrt ((a+b)^2+U)≤b+(s-t)) := by
-    change (∃ b : ℝ, 0≤b ∧ t+Real.sqrt ((a+b)^2+U)≤b+s) ↔ _
+  have he : (∃ b : ℝ, 0≤b ∧ Real.sqrt T+Real.sqrt ((a+b)^(2 : ℕ)+U)≤
+      b+Real.sqrt (a^(2 : ℕ)+T+U+2*C)) ↔
+      (∃ b : ℝ, 0≤b ∧ Real.sqrt ((a+b)^(2 : ℕ)+U)≤b+(s-t)) := by
+    change (∃ b : ℝ, 0≤b ∧ t+Real.sqrt ((a+b)^(2 : ℕ)+U)≤b+s) ↔ _
     constructor <;> rintro ⟨b,hb,h⟩ <;> refine ⟨b,hb,?_⟩ <;> linarith only [h]
   rw [he,exists_head_shift_iff a U (s-t) ha hU (sub_nonneg.mpr hts)]
   have hstrict : a < s-t ↔ 2*a*t<U+2*C := by

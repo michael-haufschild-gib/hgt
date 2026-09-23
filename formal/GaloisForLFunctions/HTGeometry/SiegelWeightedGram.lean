@@ -9,7 +9,7 @@ open Matrix
 square, weighted by the product of the corresponding weights. -/
 theorem factorial_mul_det_weightedGram {k N : ℕ} (d : Fin N → ℝ) (C : Matrix (Fin N) (Fin k) ℝ) :
     (Nat.factorial k : ℝ) * (Cᵀ * Matrix.diagonal d * C).det
-      = ∑ f : Fin k → Fin N, (∏ b, d (f b)) * ((C.submatrix f id).det) ^ 2 := by
+      = ∑ f : Fin k → Fin N, (∏ b, d (f b)) * ((C.submatrix f id).det) ^ (2 : ℕ) := by
   classical
   rw [GaloisForLFunctions.factorial_mul_det_mul (Cᵀ * Matrix.diagonal d) C]
   refine Finset.sum_congr rfl fun f _ => ?_
@@ -49,11 +49,11 @@ theorem prod_d_le_det_weightedGram {k n : ℕ} (hk : k ≤ n) {d : Fin n → ℝ
   set C : Matrix (Fin n) (Fin k) ℝ := Z.map (fun z : ℤ => (z : ℝ)) with hC
   set T : ℝ := (Cᵀ * Matrix.diagonal d * C).det with hT
   have hCB := factorial_mul_det_weightedGram d C
-  have hnn : ∀ f : Fin k → Fin n, 0 ≤ (∏ b, d (f b)) * ((C.submatrix f id).det) ^ 2 :=
+  have hnn : ∀ f : Fin k → Fin n, 0 ≤ (∏ b, d (f b)) * ((C.submatrix f id).det) ^ (2 : ℕ) :=
     fun f => mul_nonneg (Finset.prod_nonneg fun b _ => (hd _).le) (sq_nonneg _)
   have hfac : (0 : ℝ) < (Nat.factorial k : ℝ) := by
     exact_mod_cast Nat.factorial_pos k
-  have hsumpos : 0 < ∑ f : Fin k → Fin n, (∏ b, d (f b)) * ((C.submatrix f id).det) ^ 2 := by
+  have hsumpos : 0 < ∑ f : Fin k → Fin n, (∏ b, d (f b)) * ((C.submatrix f id).det) ^ (2 : ℕ) := by
     rw [← hCB]
     exact mul_pos hfac hpos
   obtain ⟨f₀, -, hf₀⟩ := Finset.exists_ne_zero_of_sum_ne_zero (ne_of_gt hsumpos)
@@ -71,13 +71,13 @@ theorem prod_d_le_det_weightedGram {k n : ℕ} (hk : k ≤ n) {d : Fin n → ℝ
     have hmap : C.submatrix f₀ id = (Z.submatrix f₀ id).map (fun z : ℤ => (z : ℝ)) := rfl
     rw [hmap]
     exact (RingHom.map_det (Int.castRingHom ℝ) (Z.submatrix f₀ id)).symm
-  have hge1 : (1 : ℝ) ≤ ((C.submatrix f₀ id).det) ^ 2 :=
+  have hge1 : (1 : ℝ) ≤ ((C.submatrix f₀ id).det) ^ (2 : ℕ) :=
     one_le_sq_of_int_ne_zero hcast hdet0
   have hprodpos : (0 : ℝ) < ∏ b, d (f₀ b) := Finset.prod_pos fun b _ => hd _
-  have hterm : (∏ b, d (f₀ b)) ≤ (∏ b, d (f₀ b)) * ((C.submatrix f₀ id).det) ^ 2 := by
+  have hterm : (∏ b, d (f₀ b)) ≤ (∏ b, d (f₀ b)) * ((C.submatrix f₀ id).det) ^ (2 : ℕ) := by
     nlinarith [hprodpos, hge1]
-  have hsingle : (∏ b, d (f₀ b)) * ((C.submatrix f₀ id).det) ^ 2
-      ≤ ∑ f : Fin k → Fin n, (∏ b, d (f b)) * ((C.submatrix f id).det) ^ 2 :=
+  have hsingle : (∏ b, d (f₀ b)) * ((C.submatrix f₀ id).det) ^ (2 : ℕ)
+      ≤ ∑ f : Fin k → Fin n, (∏ b, d (f b)) * ((C.submatrix f id).det) ^ (2 : ℕ) :=
     Finset.single_le_sum (fun f _ => hnn f) (Finset.mem_univ f₀)
   have hfin : (∏ b, d (f₀ b)) ≤ (Nat.factorial k : ℝ) * T := by
     rw [hCB]

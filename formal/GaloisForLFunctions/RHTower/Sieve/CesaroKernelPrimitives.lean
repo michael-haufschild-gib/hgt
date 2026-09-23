@@ -36,14 +36,14 @@ theorem line_ne_zero {σ : ℝ} (hσ : 0 < σ) (t : ℝ) : ((σ : ℂ) + (t : �
 /-- `t ↦ i/(σ+it)` is a primitive of `t ↦ 1/(σ+it)²`. -/
 theorem hasDerivAt_inv_line {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     HasDerivAt (fun u : ℝ => I / ((σ : ℂ) + (u : ℝ) * I))
-      (1 / ((σ : ℂ) + (t : ℝ) * I) ^ 2) t := by
+      (1 / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ)) t := by
   have hne : ((σ : ℂ) + (t : ℝ) * I) ≠ 0 := line_ne_zero hσ t
   have hd : HasDerivAt (fun u : ℝ => ((σ : ℂ) + (u : ℝ) * I)) I t := by
     simpa using ((Complex.ofRealCLM.hasDerivAt (x := t)).mul_const I).const_add (σ : ℂ)
   have h := (hasDerivAt_const t I).div hd hne
-  have hsq : ((σ : ℂ) + (t : ℝ) * I) ^ 2 ≠ 0 := pow_ne_zero 2 hne
-  have hval : (0 * ((σ : ℂ) + (t : ℝ) * I) - I * I) / ((σ : ℂ) + (t : ℝ) * I) ^ 2
-      = 1 / ((σ : ℂ) + (t : ℝ) * I) ^ 2 := by
+  have hsq : ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hne
+  have hval : (0 * ((σ : ℂ) + (t : ℝ) * I) - I * I) / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ)
+      = 1 / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ) := by
     rw [Complex.I_mul_I]
     ring
   rw [← hval]
@@ -51,26 +51,26 @@ theorem hasDerivAt_inv_line {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
 
 /-- The reciprocal square is continuous on the line. -/
 theorem continuous_inv_sq_line {σ : ℝ} (hσ : 0 < σ) :
-    Continuous fun t : ℝ => 1 / ((σ : ℂ) + (t : ℝ) * I) ^ 2 := by
+    Continuous fun t : ℝ => 1 / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ) := by
   refine continuous_const.div ?_ fun t => pow_ne_zero 2 (line_ne_zero hσ t)
   exact (continuous_const.add (Complex.continuous_ofReal.mul continuous_const)).pow 2
 
 /-- **The truncated line integral of the pure second-order pole.**  A difference of endpoint values. -/
 theorem integral_inv_sq_line_eq {σ : ℝ} (hσ : 0 < σ) (T : ℝ) :
-    (∫ t in (-T)..T, 1 / ((σ : ℂ) + (t : ℝ) * I) ^ 2)
+    (∫ t in (-T)..T, 1 / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ))
       = I / ((σ : ℂ) + (T : ℝ) * I) - I / ((σ : ℂ) + ((-T : ℝ) : ℝ) * I) :=
   intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hasDerivAt_inv_line hσ t)
     ((continuous_inv_sq_line hσ).intervalIntegrable _ _)
 
 /-- **The pure second-order pole contributes `O(1/T)`.** -/
 theorem norm_integral_inv_sq_line_le {σ T : ℝ} (hσ : 0 < σ) (hT : 0 < T) :
-    ‖∫ t in (-T)..T, 1 / ((σ : ℂ) + (t : ℝ) * I) ^ 2‖ ≤ 2 / T := by
-  have hbound : ∀ u : ℝ, u ^ 2 = T ^ 2 → ‖I / ((σ : ℂ) + (u : ℝ) * I)‖ ≤ 1 / T := by
+    ‖∫ t in (-T)..T, 1 / ((σ : ℂ) + (t : ℝ) * I) ^ (2 : ℕ)‖ ≤ 2 / T := by
+  have hbound : ∀ u : ℝ, u ^ (2 : ℕ) = T ^ (2 : ℕ) → ‖I / ((σ : ℂ) + (u : ℝ) * I)‖ ≤ 1 / T := by
     intro u hu
     rw [norm_div, Complex.norm_I, Complex.norm_add_mul_I]
-    have hge : T ≤ Real.sqrt (σ ^ 2 + u ^ 2) := by
-      rw [show σ ^ 2 + u ^ 2 = σ ^ 2 + T ^ 2 by rw [hu]]
-      have h1 : T = Real.sqrt (T ^ 2) := by
+    have hge : T ≤ Real.sqrt (σ ^ (2 : ℕ) + u ^ (2 : ℕ)) := by
+      rw [show σ ^ (2 : ℕ) + u ^ (2 : ℕ) = σ ^ (2 : ℕ) + T ^ (2 : ℕ) by rw [hu]]
+      have h1 : T = Real.sqrt (T ^ (2 : ℕ)) := by
         rw [Real.sqrt_sq hT.le]
       rw [h1]
       exact Real.sqrt_le_sqrt (by nlinarith)

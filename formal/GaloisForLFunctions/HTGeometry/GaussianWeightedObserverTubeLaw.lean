@@ -13,9 +13,9 @@ def gaussianHalfActivationTube
     [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
     (A : E →ₗ[ℝ] F) : Set E :=
-  {v | ‖A v‖ ^ 2 ≤
+  {v | ‖A v‖ ^ (2 : ℕ) ≤
     (gaussianIntervalActivationMass / 2) *
-      ∑ i : Fin n, A.singularValues i ^ 2}
+      ∑ i : Fin n, A.singularValues i ^ (2 : ℕ)}
 
 theorem measurableSet_gaussianHalfActivationTube
     {n : ℕ} {E F : Type*}
@@ -108,9 +108,9 @@ theorem stdGaussian_measure_weightedHalfActivationTubeMass_ge_le
     (stdGaussian E).real {v |
         κ ≤ gaussianWeightedHalfActivationTubeMass (n := n) A w v} ≤
       (∑ c, w c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
-          ((∑ i : Fin n, (A c).singularValues i ^ 2) ^ 2 /
-            ∑ i : Fin n, (A c).singularValues i ^ 4))) / κ := by
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
+          ((∑ i : Fin n, (A c).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ) /
+            ∑ i : Fin n, (A c).singularValues i ^ (4 : ℕ)))) / κ := by
   have hmeas := measurable_gaussianWeightedHalfActivationTubeMass (n := n) A w
   have hnonneg : 0 ≤ᵐ[stdGaussian E]
       gaussianWeightedHalfActivationTubeMass (n := n) A w :=
@@ -146,22 +146,22 @@ theorem stdGaussian_measure_weightedHalfActivationTubeMass_ge_le_stableFloor
     (w : C → ℝ) (hw : w ∈ stdSimplex ℝ C)
     (stableFloor : ℝ)
     (hstable : ∀ c, stableFloor ≤
-      (∑ i : Fin n, (A c).singularValues i ^ 2) ^ 2 /
-        ∑ i : Fin n, (A c).singularValues i ^ 4)
+      (∑ i : Fin n, (A c).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ) /
+        ∑ i : Fin n, (A c).singularValues i ^ (4 : ℕ))
     {κ : ℝ} (hκ : 0 < κ) :
     (stdGaussian E).real {v |
         κ ≤ gaussianWeightedHalfActivationTubeMass (n := n) A w v} ≤
-      Real.exp (-(gaussianIntervalActivationMass ^ 2 / 2) * stableFloor) / κ := by
+      Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * stableFloor) / κ := by
   refine (stdGaussian_measure_weightedHalfActivationTubeMass_ge_le
     A hn w hw hκ).trans ?_
   apply div_le_div_of_nonneg_right _ hκ.le
   calc
     (∑ c, w c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) *
-          ((∑ i : Fin n, (A c).singularValues i ^ 2) ^ 2 /
-            ∑ i : Fin n, (A c).singularValues i ^ 4))) ≤
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
+          ((∑ i : Fin n, (A c).singularValues i ^ (2 : ℕ)) ^ (2 : ℕ) /
+            ∑ i : Fin n, (A c).singularValues i ^ (4 : ℕ)))) ≤
       ∑ c, w c * Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) * stableFloor) := by
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * stableFloor) := by
       apply Finset.sum_le_sum
       intro c _
       apply mul_le_mul_of_nonneg_left _ (hw.1 c)
@@ -169,7 +169,7 @@ theorem stdGaussian_measure_weightedHalfActivationTubeMass_ge_le_stableFloor
       exact mul_le_mul_of_nonpos_left (hstable c)
         (neg_nonpos.mpr (by positivity))
     _ = Real.exp
-        (-(gaussianIntervalActivationMass ^ 2 / 2) * stableFloor) := by
+        (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) * stableFloor) := by
       rw [← Finset.sum_mul, hw.2, one_mul]
 
 end

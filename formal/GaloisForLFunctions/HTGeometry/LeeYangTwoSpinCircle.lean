@@ -53,7 +53,7 @@ theorem leeYangTwoSpin_split (b : ℝ) (z w : ℂ) :
 /-- The diagonal of the two-spin polynomial is the palindromic quadratic
 `z² + 2 b z + 1`. -/
 theorem leeYangTwoSpin_diagonal (b : ℝ) (z : ℂ) :
-    leeYangTwoSpin b z z = z ^ 2 + 2 * (b : ℂ) * z + 1 := by
+    leeYangTwoSpin b z z = z ^ (2 : ℕ) + 2 * (b : ℂ) * z + 1 := by
   unfold leeYangTwoSpin
   ring
 
@@ -62,14 +62,14 @@ theorem leeYangTwoSpin_diagonal (b : ℝ) (z : ℂ) :
 `1 − b²`. -/
 theorem normSq_contraction (b : ℝ) (z : ℂ) :
     normSq (1 + (b : ℂ) * z) - normSq ((b : ℂ) + z)
-      = (1 - b ^ 2) * (1 - normSq z) := by
+      = (1 - b ^ (2 : ℕ)) * (1 - normSq z) := by
   simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im, Complex.mul_re,
     Complex.mul_im, Complex.one_re, Complex.one_im, Complex.ofReal_re,
     Complex.ofReal_im]
   ring
 
 /-- A nonnegative real with square one is one. -/
-private theorem eq_one_of_sq_eq_one_of_nonneg {x : ℝ} (h : x ^ 2 = 1) (hx : 0 ≤ x) :
+private theorem eq_one_of_sq_eq_one_of_nonneg {x : ℝ} (h : x ^ (2 : ℕ) = 1) (hx : 0 ≤ x) :
     x = 1 := by
   have h3 : (x - 1) * (x + 1) = 0 := by linear_combination h
   rcases mul_eq_zero.mp h3 with h4 | h4
@@ -80,12 +80,12 @@ private theorem eq_one_of_sq_eq_one_of_nonneg {x : ℝ} (h : x ^ 2 = 1) (hx : 0 
 the two-spin polynomial cannot have both fugacities in the open unit disc. -/
 theorem leeYang_confinement {b : ℝ} (hb : |b| ≤ 1) {z w : ℂ}
     (h0 : leeYangTwoSpin b z w = 0) (hz : ‖z‖ < 1) : 1 ≤ ‖w‖ := by
-  have hb2 : b ^ 2 ≤ 1 := (sq_le_one_iff_abs_le_one b).mpr hb
+  have hb2 : b ^ (2 : ℕ) ≤ 1 := (sq_le_one_iff_abs_le_one b).mpr hb
   have hzsq : normSq z < 1 := by
     rw [Complex.normSq_eq_norm_sq]
     nlinarith [norm_nonneg z]
   have hkey : normSq ((b : ℂ) + z) ≤ normSq (1 + (b : ℂ) * z) := by
-    have hmul : 0 ≤ (1 - b ^ 2) * (1 - normSq z) :=
+    have hmul : 0 ≤ (1 - b ^ (2 : ℕ)) * (1 - normSq z) :=
       mul_nonneg (by linarith) (by linarith)
     linarith [normSq_contraction b z]
   by_cases hbz : (b : ℂ) + z = 0
@@ -95,8 +95,8 @@ theorem leeYang_confinement {b : ℝ} (hb : |b| ≤ 1) {z w : ℂ}
       rw [leeYangTwoSpin_split, hbz, mul_zero, add_zero] at h0
       exact h0
     rw [hzeq] at h1
-    have hb1 : (1 - b ^ 2 : ℝ) = 0 := by
-      have hc : ((1 - b ^ 2 : ℝ) : ℂ) = 0 := by
+    have hb1 : (1 - b ^ (2 : ℕ) : ℝ) = 0 := by
+      have hc : ((1 - b ^ (2 : ℕ) : ℝ) : ℂ) = 0 := by
         push_cast
         linear_combination h1
       exact_mod_cast hc
@@ -111,12 +111,12 @@ theorem leeYang_confinement {b : ℝ} (hb : |b| ≤ 1) {z w : ℂ}
       rw [hwz, norm_neg]
     have hpos : 0 < ‖(b : ℂ) + z‖ := norm_pos_iff.mpr hbz
     have hle : ‖(b : ℂ) + z‖ ≤ ‖1 + (b : ℂ) * z‖ := by
-      have hsq : ‖(b : ℂ) + z‖ ^ 2 ≤ ‖1 + (b : ℂ) * z‖ ^ 2 := by
+      have hsq : ‖(b : ℂ) + z‖ ^ (2 : ℕ) ≤ ‖1 + (b : ℂ) * z‖ ^ (2 : ℕ) := by
         rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
         exact hkey
-      calc ‖(b : ℂ) + z‖ = Real.sqrt (‖(b : ℂ) + z‖ ^ 2) :=
+      calc ‖(b : ℂ) + z‖ = Real.sqrt (‖(b : ℂ) + z‖ ^ (2 : ℕ)) :=
             (Real.sqrt_sq (norm_nonneg _)).symm
-        _ ≤ Real.sqrt (‖1 + (b : ℂ) * z‖ ^ 2) := Real.sqrt_le_sqrt hsq
+        _ ≤ Real.sqrt (‖1 + (b : ℂ) * z‖ ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsq
         _ = ‖1 + (b : ℂ) * z‖ := Real.sqrt_sq (norm_nonneg _)
     by_contra hcon
     rw [not_le] at hcon
@@ -127,12 +127,12 @@ theorem leeYang_confinement {b : ℝ} (hb : |b| ≤ 1) {z w : ℂ}
 /-- Strictly inside the forced region the confinement is strict. -/
 theorem leeYang_confinement_strict {b : ℝ} (hb : |b| < 1) {z w : ℂ}
     (h0 : leeYangTwoSpin b z w = 0) (hz : ‖z‖ < 1) : 1 < ‖w‖ := by
-  have hb2 : b ^ 2 < 1 := by nlinarith [sq_abs b, abs_nonneg b]
+  have hb2 : b ^ (2 : ℕ) < 1 := by nlinarith [sq_abs b, abs_nonneg b]
   have hzsq : normSq z < 1 := by
     rw [Complex.normSq_eq_norm_sq]
     nlinarith [norm_nonneg z]
   have hkey : normSq ((b : ℂ) + z) < normSq (1 + (b : ℂ) * z) := by
-    have hmul : 0 < (1 - b ^ 2) * (1 - normSq z) :=
+    have hmul : 0 < (1 - b ^ (2 : ℕ)) * (1 - normSq z) :=
       mul_pos (by linarith) (by linarith)
     linarith [normSq_contraction b z]
   by_cases hbz : (b : ℂ) + z = 0
@@ -150,12 +150,12 @@ theorem leeYang_confinement_strict {b : ℝ} (hb : |b| < 1) {z w : ℂ}
       rw [hwz, norm_neg]
     have hpos : 0 < ‖(b : ℂ) + z‖ := norm_pos_iff.mpr hbz
     have hlt : ‖(b : ℂ) + z‖ < ‖1 + (b : ℂ) * z‖ := by
-      have hsq : ‖(b : ℂ) + z‖ ^ 2 < ‖1 + (b : ℂ) * z‖ ^ 2 := by
+      have hsq : ‖(b : ℂ) + z‖ ^ (2 : ℕ) < ‖1 + (b : ℂ) * z‖ ^ (2 : ℕ) := by
         rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
         exact hkey
-      calc ‖(b : ℂ) + z‖ = Real.sqrt (‖(b : ℂ) + z‖ ^ 2) :=
+      calc ‖(b : ℂ) + z‖ = Real.sqrt (‖(b : ℂ) + z‖ ^ (2 : ℕ)) :=
             (Real.sqrt_sq (norm_nonneg _)).symm
-        _ < Real.sqrt (‖1 + (b : ℂ) * z‖ ^ 2) := Real.sqrt_lt_sqrt (sq_nonneg _) hsq
+        _ < Real.sqrt (‖1 + (b : ℂ) * z‖ ^ (2 : ℕ)) := Real.sqrt_lt_sqrt (sq_nonneg _) hsq
         _ = ‖1 + (b : ℂ) * z‖ := Real.sqrt_sq (norm_nonneg _)
     by_contra hcon
     rw [not_lt] at hcon
@@ -168,9 +168,9 @@ diagonal polynomial `z² + 2 b z + 1` lies on the unit circle.  The proof pairs 
 zero with its conjugate: either the zero is real and pinned at `−b` with `b² = 1`, or
 the conjugate is the reciprocal partner and `z z̄ = 1` by Vieta. -/
 theorem diagonal_zeros_on_circle {b : ℝ} (hb : |b| ≤ 1) {z : ℂ}
-    (h0 : z ^ 2 + 2 * (b : ℂ) * z + 1 = 0) : ‖z‖ = 1 := by
-  have hb2 : b ^ 2 ≤ 1 := (sq_le_one_iff_abs_le_one b).mpr hb
-  have hw0 : ((starRingEnd ℂ) z) ^ 2 + 2 * (b : ℂ) * ((starRingEnd ℂ) z) + 1 = 0 := by
+    (h0 : z ^ (2 : ℕ) + 2 * (b : ℂ) * z + 1 = 0) : ‖z‖ = 1 := by
+  have hb2 : b ^ (2 : ℕ) ≤ 1 := (sq_le_one_iff_abs_le_one b).mpr hb
+  have hw0 : ((starRingEnd ℂ) z) ^ (2 : ℕ) + 2 * (b : ℂ) * ((starRingEnd ℂ) z) + 1 = 0 := by
     have h := congrArg (starRingEnd ℂ) h0
     simpa [map_add, map_mul, map_pow, map_one, map_zero, map_ofNat,
       Complex.conj_ofReal] using h
@@ -180,17 +180,17 @@ theorem diagonal_zeros_on_circle {b : ℝ} (hb : |b| ≤ 1) {z : ℂ}
   · -- the zero is real: it is pinned at `−b` and the coupling is marginal
     have hconj : (starRingEnd ℂ) z = z := by linear_combination -hcase
     have hzre : ((z.re : ℝ) : ℂ) = z := Complex.conj_eq_iff_re.mp hconj
-    have hreal : z.re ^ 2 + 2 * b * z.re + 1 = 0 := by
-      have hc : ((z.re ^ 2 + 2 * b * z.re + 1 : ℝ) : ℂ) = 0 := by
+    have hreal : z.re ^ (2 : ℕ) + 2 * b * z.re + 1 = 0 := by
+      have hc : ((z.re ^ (2 : ℕ) + 2 * b * z.re + 1 : ℝ) : ℂ) = 0 := by
         push_cast
         rw [hzre]
         linear_combination h0
       exact_mod_cast hc
-    have h1 : (z.re + b) ^ 2 = b ^ 2 - 1 := by linear_combination hreal
-    have h2 : (z.re + b) ^ 2 = 0 :=
+    have h1 : (z.re + b) ^ (2 : ℕ) = b ^ (2 : ℕ) - 1 := by linear_combination hreal
+    have h2 : (z.re + b) ^ (2 : ℕ) = 0 :=
       le_antisymm (by linarith) (sq_nonneg _)
     have hr0 : z.re + b = 0 := (pow_eq_zero_iff (by norm_num : (2 : ℕ) ≠ 0)).mp h2
-    have hb1 : b ^ 2 = 1 := by linear_combination h2 - h1
+    have hb1 : b ^ (2 : ℕ) = 1 := by linear_combination h2 - h1
     have hr : z.re = -b := by linear_combination hr0
     calc ‖z‖ = ‖((z.re : ℝ) : ℂ)‖ := by rw [hzre]
       _ = |z.re| := by rw [Complex.norm_real, Real.norm_eq_abs]
@@ -202,7 +202,7 @@ theorem diagonal_zeros_on_circle {b : ℝ} (hb : |b| ≤ 1) {z : ℂ}
       linear_combination z * hzw - h0
     rw [Complex.mul_conj] at hprod
     have hn : normSq z = 1 := by exact_mod_cast hprod
-    have h2 : ‖z‖ ^ 2 = 1 := by
+    have h2 : ‖z‖ ^ (2 : ℕ) = 1 := by
       rw [← Complex.normSq_eq_norm_sq]
       exact hn
     exact eq_one_of_sq_eq_one_of_nonneg h2 (norm_nonneg z)
@@ -241,7 +241,7 @@ theorem leeYangTwoSpin_marginal_zero_iff (z w : ℂ) :
 collide at the pinned point `z = −1` — the degeneration of the mechanism is a
 collision of zeros at the boundary of the forced region. -/
 theorem leeYangTwoSpin_marginal_diagonal_sq (z : ℂ) :
-    leeYangTwoSpin 1 z z = (1 + z) ^ 2 := by
+    leeYangTwoSpin 1 z z = (1 + z) ^ (2 : ℕ) := by
   unfold leeYangTwoSpin
   push_cast
   ring
@@ -257,24 +257,24 @@ theorem leeYangTwoSpin_neg_coupling (b : ℝ) (z w : ℂ) :
 inside: the diagonal acquires a zero strictly inside the unit disc. -/
 theorem exists_zero_in_polydisk {b : ℝ} (hb : 1 < b) :
     ∃ z : ℂ, ‖z‖ < 1 ∧ z ≠ 0 ∧ leeYangTwoSpin b z z = 0 := by
-  have h0 : (0 : ℝ) ≤ b ^ 2 - 1 := by nlinarith
+  have h0 : (0 : ℝ) ≤ b ^ (2 : ℕ) - 1 := by nlinarith
   have hs := Real.sq_sqrt h0
-  set r : ℝ := -b + Real.sqrt (b ^ 2 - 1) with hr
+  set r : ℝ := -b + Real.sqrt (b ^ (2 : ℕ) - 1) with hr
   have hrneg : r < 0 := by
-    have hlt : Real.sqrt (b ^ 2 - 1) < b := by
+    have hlt : Real.sqrt (b ^ (2 : ℕ) - 1) < b := by
       rw [Real.sqrt_lt' (by linarith)]
       linarith
     rw [hr]
     linarith
   have hrabs : |r| < 1 := by
     rw [abs_of_neg hrneg]
-    have h1 : b - 1 < Real.sqrt (b ^ 2 - 1) := by
-      rw [show (b - 1 < Real.sqrt (b ^ 2 - 1)) ↔ ((b - 1) ^ 2 < b ^ 2 - 1) from
+    have h1 : b - 1 < Real.sqrt (b ^ (2 : ℕ) - 1) := by
+      rw [show (b - 1 < Real.sqrt (b ^ (2 : ℕ) - 1)) ↔ ((b - 1) ^ (2 : ℕ) < b ^ (2 : ℕ) - 1) from
         Real.lt_sqrt (by linarith)]
       nlinarith
     rw [hr]
     linarith
-  have hzero : r ^ 2 + 2 * b * r + 1 = 0 := by
+  have hzero : r ^ (2 : ℕ) + 2 * b * r + 1 = 0 := by
     rw [hr]
     linear_combination hs
   refine ⟨(r : ℂ), ?_, ?_, ?_⟩
@@ -282,7 +282,7 @@ theorem exists_zero_in_polydisk {b : ℝ} (hb : 1 < b) :
     exact hrabs
   · exact Complex.ofReal_ne_zero.mpr hrneg.ne
   · rw [leeYangTwoSpin_diagonal]
-    have hc : ((r ^ 2 + 2 * b * r + 1 : ℝ) : ℂ) = 0 := by
+    have hc : ((r ^ (2 : ℕ) + 2 * b * r + 1 : ℝ) : ℂ) = 0 := by
       rw [hzero]
       norm_num
     push_cast at hc

@@ -140,7 +140,7 @@ noncomputable def bourgainFirstSpacingCount
       fun p : (Fin 6 → Fin H) × (Fin 6 → Fin H) =>
         BourgainNearPair X p.1 p.2).card
 
-/-- The near-pair count is bounded by the total number `H^12` of ordered
+/-- The near-pair count is bounded by the total number `H^(12 : ℕ)` of ordered
 pairs.  This is the unconditional trivial spacing bound and a useful
 normalization check for sharper estimates. -/
 theorem bourgainFirstSpacingCount_le

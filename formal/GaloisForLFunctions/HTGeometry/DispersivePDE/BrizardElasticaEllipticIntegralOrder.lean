@@ -14,40 +14,40 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 
 theorem classical_completeEIntegrand_le_one (m : ClassicalModulus) (θ : ℝ) :
     completeEIntegrand m θ ≤ 1 := by
-  have hrad : 0 < 1 - (m : ℝ) * Real.sin θ ^ 2 :=
+  have hrad : 0 < 1 - (m : ℝ) * Real.sin θ ^ (2 : ℕ) :=
     subcriticalRadicand_pos (classicalAsSubcritical m) θ
-  have hprod : 0 ≤ (m : ℝ) * Real.sin θ ^ 2 :=
+  have hprod : 0 ≤ (m : ℝ) * Real.sin θ ^ (2 : ℕ) :=
     mul_nonneg m.property.1.le (sq_nonneg _)
   rw [completeEIntegrand, Real.sqrt_le_iff]
   exact ⟨zero_le_one, by nlinarith⟩
 
 theorem classical_one_le_completeKIntegrand (m : ClassicalModulus) (θ : ℝ) :
     1 ≤ completeKIntegrand m θ := by
-  have hrad : 0 < 1 - (m : ℝ) * Real.sin θ ^ 2 :=
+  have hrad : 0 < 1 - (m : ℝ) * Real.sin θ ^ (2 : ℕ) :=
     subcriticalRadicand_pos (classicalAsSubcritical m) θ
-  have hs : 0 < Real.sqrt (1 - (m : ℝ) * Real.sin θ ^ 2) :=
+  have hs : 0 < Real.sqrt (1 - (m : ℝ) * Real.sin θ ^ (2 : ℕ)) :=
     Real.sqrt_pos.mpr hrad
   rw [completeKIntegrand, one_le_inv₀ hs, Real.sqrt_le_iff]
   exact ⟨zero_le_one, by
-    have hprod : 0 ≤ (m : ℝ) * Real.sin θ ^ 2 :=
+    have hprod : 0 ≤ (m : ℝ) * Real.sin θ ^ (2 : ℕ) :=
       mul_nonneg m.property.1.le (sq_nonneg _)
     nlinarith⟩
 
 theorem negative_completeKIntegrand_le_one (m : NegativeModulus) (θ : ℝ) :
     completeKIntegrand m θ ≤ 1 := by
-  have hrad : 0 < 1 - (m : ℝ) * Real.sin θ ^ 2 :=
+  have hrad : 0 < 1 - (m : ℝ) * Real.sin θ ^ (2 : ℕ) :=
     subcriticalRadicand_pos (negativeAsSubcritical m) θ
-  have hs : 0 < Real.sqrt (1 - (m : ℝ) * Real.sin θ ^ 2) :=
+  have hs : 0 < Real.sqrt (1 - (m : ℝ) * Real.sin θ ^ (2 : ℕ)) :=
     Real.sqrt_pos.mpr hrad
   rw [completeKIntegrand, inv_le_one₀ hs, Real.one_le_sqrt]
-  have hprod : (m : ℝ) * Real.sin θ ^ 2 ≤ 0 :=
+  have hprod : (m : ℝ) * Real.sin θ ^ (2 : ℕ) ≤ 0 :=
     mul_nonpos_of_nonpos_of_nonneg m.property.le (sq_nonneg _)
   linarith
 
 theorem negative_one_le_completeEIntegrand (m : NegativeModulus) (θ : ℝ) :
     1 ≤ completeEIntegrand m θ := by
   rw [completeEIntegrand, Real.one_le_sqrt]
-  have hprod : (m : ℝ) * Real.sin θ ^ 2 ≤ 0 :=
+  have hprod : (m : ℝ) * Real.sin θ ^ (2 : ℕ) ≤ 0 :=
     mul_nonpos_of_nonpos_of_nonneg m.property.le (sq_nonneg _)
   linarith
 

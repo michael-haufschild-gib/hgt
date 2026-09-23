@@ -23,7 +23,7 @@ noncomputable section
 /-- The nonnegative defect in the actual one-third drift barrier. -/
 def barrierDefect (x : ℝ) : ℝ := u x/3-J x
 /-- A nonnegative full-source profile bounded by the literal source square. -/
-def barrierMass (x : ℝ) : ℝ := sourceAmplitude x^2*barrierDefect x
+def barrierMass (x : ℝ) : ℝ := sourceAmplitude x^(2 : ℕ)*barrierDefect x
 /-- Center flux built from the actual barrier profile. -/
 def barrierFlux (a x : ℝ) : ℝ := x*Real.sinh (2*a*x)*barrierMass x
 
@@ -56,7 +56,7 @@ private theorem dAmplitude {x : ℝ} (hx : 0 ≤ x) :
 
 theorem dBarrierMass {x : ℝ} (hx : 0 ≤ x) :
     HasDerivAt barrierMass
-      (sourceAmplitude x^2*(t x*(k x+1/3)*(4/3-k x)+
+      (sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3)*(4/3-k x)+
         u x*(5/3-2*k x)*barrierDefect x)) x := by
   convert ((dAmplitude hx).pow 2).mul (dBarrier hx) using 1
   all_goals first | rfl | (simp only [Pi.pow_apply]; ring)
@@ -145,7 +145,7 @@ theorem barrierFlux_deriv_upper {a x : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1/2)
     (show Real.sinh (2*a*x)+2*a*x*Real.cosh (2*a*x) ≤ (2+x)*Real.sinh (2*a*x) by
       nlinarith only [hh, hm]) hb
   have hd := mul_le_mul_of_nonneg_left (barrierMass_deriv_upper hx) (mul_nonneg hx0 hs)
-  have hq : 2+2*x-8*x^2 ≤ -(2/9 : ℝ) := by
+  have hq : 2+2*x-8*x^(2 : ℕ) ≤ -(2/9 : ℝ) := by
     have h := mul_nonneg (show 0 ≤ x-2/3 by linarith only [hx])
       (show 0 ≤ 8*x+10/3 by linarith only [hx])
     nlinarith only [h]
@@ -163,11 +163,11 @@ theorem barrierFlux_deriv_neg {a x : ℝ} (ha0 : 0 < a) (ha : a ≤ 1/2)
     (mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos (by norm_num) hs) hb)
 
 theorem barrierMass_le_source_sq {x : ℝ} (hx : 0 ≤ x) :
-    barrierMass x ≤ thetaCuspFullSource x^2 := by
+    barrierMass x ≤ thetaCuspFullSource x^(2 : ℕ) := by
   have hB : barrierDefect x ≤ 1 := by
     dsimp [barrierDefect]
     linarith only [thetaCuspModularMassDrift_lt_three hx, J_nonneg hx]
-  have hv : 1 ≤ (k x-1/6)^2 := by
+  have hv : 1 ≤ (k x-1/6)^(2 : ℕ) := by
     have hk := k_gt_fiveFourths hx
     nlinarith only [sq_nonneg (k x-1/6-1), hk]
   have hm := mul_le_mul_of_nonneg_left hB (sq_nonneg (sourceAmplitude x))
@@ -188,7 +188,7 @@ theorem barrierFlux_tendsto_zero {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2) :
   let F := thetaCuspTiltedSchwartzReal a ha1
   let S := SchwartzMap.smulLeftCLM ℝ (fun x : ℝ => x)
     (SchwartzMap.pairing (ContinuousLinearMap.mul ℝ ℝ) F F)
-  have hS (x : ℝ) : S x = x*Real.exp (2*a*x)*thetaCuspFullSource x^2 := by
+  have hS (x : ℝ) : S x = x*Real.exp (2*a*x)*thetaCuspFullSource x^(2 : ℕ) := by
     rw [SchwartzMap.smulLeftCLM_apply_apply (by fun_prop)]
     change x*((Real.exp (a*x)*thetaCuspFullSource x)*(Real.exp (a*x)*thetaCuspFullSource x)) = _
     have he : Real.exp (a*x)*Real.exp (a*x) = Real.exp (2*a*x) := by
@@ -196,7 +196,7 @@ theorem barrierFlux_tendsto_zero {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2) :
       congr 1
       ring
     calc
-      _ = x*(Real.exp (a*x)*Real.exp (a*x))*thetaCuspFullSource x^2 := by ring
+      _ = x*(Real.exp (a*x)*Real.exp (a*x))*thetaCuspFullSource x^(2 : ℕ) := by ring
       _ = _ := by rw [he]
   have ht : Tendsto (S : ℝ → ℝ) atTop (𝓝 0) :=
     S.tendsto_cocompact.mono_left atTop_le_cocompact
@@ -222,7 +222,7 @@ private theorem continuousOn_barrierMass_deriv : ContinuousOn (deriv barrierMass
   have hu : ContinuousOn u (Ici 0) := fun x hx => (du hx).continuousAt.continuousWithinAt
   have hB : ContinuousOn barrierDefect (Ici 0) := fun x hx =>
     (dBarrier hx).continuousAt.continuousWithinAt
-  have hc : ContinuousOn (fun x => sourceAmplitude x^2*(t x*(k x+1/3)*(4/3-k x)+
+  have hc : ContinuousOn (fun x => sourceAmplitude x^(2 : ℕ)*(t x*(k x+1/3)*(4/3-k x)+
         u x*(5/3-2*k x)*barrierDefect x)) (Ici 0) := by fun_prop
   exact hc.congr (fun x hx => (dBarrierMass hx).deriv)
 

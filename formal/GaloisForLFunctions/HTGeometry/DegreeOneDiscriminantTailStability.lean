@@ -22,18 +22,18 @@ noncomputable section
 
 /-- The degree-one shifted Hankel determinant of three successive moments. -/
 def degreeOneShiftedDet (m1 m2 m3 : ℝ) : ℝ :=
-  m1 * m3 - m2 ^ 2
+  m1 * m3 - m2 ^ (2 : ℕ)
 
 /-- The absolute-error budget for a degree-one shifted determinant. -/
 def degreeOneTailError (L1 L2 L3 eta1 eta2 eta3 : ℝ) : ℝ :=
-  L1 * eta3 + L3 * eta1 + 2 * L2 * eta2 + eta1 * eta3 + eta2 ^ 2
+  L1 * eta3 + L3 * eta1 + 2 * L2 * eta2 + eta1 * eta3 + eta2 ^ (2 : ℕ)
 
 /-- Exact expansion of the degree-one determinant under a three-moment tail. -/
 theorem degreeOneShiftedDet_tail_expansion
     (L1 L2 L3 E1 E2 E3 : ℝ) :
     degreeOneShiftedDet (L1 + E1) (L2 + E2) (L3 + E3) -
       degreeOneShiftedDet L1 L2 L3 =
-      L1 * E3 + L3 * E1 - 2 * L2 * E2 + E1 * E3 - E2 ^ 2 := by
+      L1 * E3 + L3 * E1 - 2 * L2 * E2 + E1 * E3 - E2 ^ (2 : ℕ) := by
   simp only [degreeOneShiftedDet]
   ring
 
@@ -48,23 +48,23 @@ theorem abs_degreeOneShiftedDet_tail_expansion_le
       degreeOneTailError L1 L2 L3 eta1 eta2 eta3 := by
   rw [degreeOneShiftedDet_tail_expansion]
   have hsum :
-      |L1 * E3 + L3 * E1 - 2 * L2 * E2 + E1 * E3 - E2 ^ 2| ≤
-        |L1 * E3| + |L3 * E1| + |2 * L2 * E2| + |E1 * E3| + |E2 ^ 2| := by
+      |L1 * E3 + L3 * E1 - 2 * L2 * E2 + E1 * E3 - E2 ^ (2 : ℕ)| ≤
+        |L1 * E3| + |L3 * E1| + |2 * L2 * E2| + |E1 * E3| + |E2 ^ (2 : ℕ)| := by
     calc
-      |L1 * E3 + L3 * E1 - 2 * L2 * E2 + E1 * E3 - E2 ^ 2| =
-          |((L1 * E3 + L3 * E1) - 2 * L2 * E2 + E1 * E3) - E2 ^ 2| := by ring
-      _ ≤ |(L1 * E3 + L3 * E1) - 2 * L2 * E2 + E1 * E3| + |E2 ^ 2| :=
+      |L1 * E3 + L3 * E1 - 2 * L2 * E2 + E1 * E3 - E2 ^ (2 : ℕ)| =
+          |((L1 * E3 + L3 * E1) - 2 * L2 * E2 + E1 * E3) - E2 ^ (2 : ℕ)| := by ring
+      _ ≤ |(L1 * E3 + L3 * E1) - 2 * L2 * E2 + E1 * E3| + |E2 ^ (2 : ℕ)| :=
         abs_sub _ _
-      _ ≤ (|(L1 * E3 + L3 * E1) - 2 * L2 * E2| + |E1 * E3|) + |E2 ^ 2| := by
+      _ ≤ (|(L1 * E3 + L3 * E1) - 2 * L2 * E2| + |E1 * E3|) + |E2 ^ (2 : ℕ)| := by
         gcongr
         exact abs_add_le _ _
-      _ ≤ ((|L1 * E3 + L3 * E1| + |2 * L2 * E2|) + |E1 * E3|) + |E2 ^ 2| := by
+      _ ≤ ((|L1 * E3 + L3 * E1| + |2 * L2 * E2|) + |E1 * E3|) + |E2 ^ (2 : ℕ)| := by
         gcongr
         exact abs_sub _ _
-      _ ≤ (((|L1 * E3| + |L3 * E1|) + |2 * L2 * E2|) + |E1 * E3|) + |E2 ^ 2| := by
+      _ ≤ (((|L1 * E3| + |L3 * E1|) + |2 * L2 * E2|) + |E1 * E3|) + |E2 ^ (2 : ℕ)| := by
         gcongr
         exact abs_add_le _ _
-      _ = |L1 * E3| + |L3 * E1| + |2 * L2 * E2| + |E1 * E3| + |E2 ^ 2| := by ring
+      _ = |L1 * E3| + |L3 * E1| + |2 * L2 * E2| + |E1 * E3| + |E2 ^ (2 : ℕ)| := by ring
   have h1 : |L1 * E3| ≤ L1 * eta3 := by
     rw [abs_mul, abs_of_nonneg hL1]
     exact mul_le_mul_of_nonneg_left hE3 hL1
@@ -77,7 +77,7 @@ theorem abs_degreeOneShiftedDet_tail_expansion_le
   have h4 : |E1 * E3| ≤ eta1 * eta3 := by
     rw [abs_mul]
     exact mul_le_mul hE1 hE3 (abs_nonneg E3) heta1
-  have h5 : |E2 ^ 2| ≤ eta2 ^ 2 := by
+  have h5 : |E2 ^ (2 : ℕ)| ≤ eta2 ^ (2 : ℕ) := by
     rw [abs_pow]
     simpa [pow_two] using mul_self_le_mul_self (abs_nonneg E2) hE2
   simp only [degreeOneTailError]
@@ -109,13 +109,13 @@ def degreeOnePairMoment (mu u v : ℝ) (k : ℕ) : ℝ :=
 
 /-- Cross term between the real atom `x` and `u + iv`. -/
 def degreeOneDiscriminantCross (u v x : ℝ) : ℝ :=
-  (((u : ℂ) + v * Complex.I) * (((u : ℂ) + v * Complex.I) - x) ^ 2).re
+  (((u : ℂ) + v * Complex.I) * (((u : ℂ) + v * Complex.I) - x) ^ (2 : ℕ)).re
 
 /-- The isolated degree-one determinant of a weighted conjugate pair. -/
 theorem degreeOnePairMoment_det (mu u v : ℝ) :
     degreeOneShiftedDet (degreeOnePairMoment mu u v 1)
       (degreeOnePairMoment mu u v 2) (degreeOnePairMoment mu u v 3) =
-      -4 * mu ^ 2 * (u ^ 2 + v ^ 2) * v ^ 2 := by
+      -4 * mu ^ (2 : ℕ) * (u ^ (2 : ℕ) + v ^ (2 : ℕ)) * v ^ (2 : ℕ) := by
   simp [degreeOneShiftedDet, degreeOnePairMoment, pow_succ, Complex.mul_re]
   ring
 
@@ -133,9 +133,9 @@ theorem degreeOneBulkPair_cross_sum
       simp only [degreeOneBulkMoment, Finset.sum_insert hx] at ih ⊢
       have hlocal :
           2 * mu * M x * x * degreeOneDiscriminantCross u v x =
-            M x * x ^ 1 * degreeOnePairMoment mu u v 3 +
-              M x * x ^ 3 * degreeOnePairMoment mu u v 1 -
-                2 * M x * x ^ 2 * degreeOnePairMoment mu u v 2 := by
+            M x * x ^ (1 : ℕ) * degreeOnePairMoment mu u v 3 +
+              M x * x ^ (3 : ℕ) * degreeOnePairMoment mu u v 1 -
+                2 * M x * x ^ (2 : ℕ) * degreeOnePairMoment mu u v 2 := by
         simp [degreeOnePairMoment, degreeOneDiscriminantCross, pow_succ, Complex.mul_re]
         ring
       calc
@@ -144,17 +144,17 @@ theorem degreeOneBulkPair_cross_sum
             (2 * mu * M x * x * degreeOneDiscriminantCross u v x) +
               (2 * mu * ∑ x ∈ B, M x * x * degreeOneDiscriminantCross u v x) := by ring
         _ =
-            (M x * x ^ 1 * degreeOnePairMoment mu u v 3 +
-              M x * x ^ 3 * degreeOnePairMoment mu u v 1 -
-                2 * M x * x ^ 2 * degreeOnePairMoment mu u v 2) +
-              ((∑ x ∈ B, M x * x ^ 1) * degreeOnePairMoment mu u v 3 +
-                (∑ x ∈ B, M x * x ^ 3) * degreeOnePairMoment mu u v 1 -
-                  (2 * ∑ x ∈ B, M x * x ^ 2) * degreeOnePairMoment mu u v 2) := by
+            (M x * x ^ (1 : ℕ) * degreeOnePairMoment mu u v 3 +
+              M x * x ^ (3 : ℕ) * degreeOnePairMoment mu u v 1 -
+                2 * M x * x ^ (2 : ℕ) * degreeOnePairMoment mu u v 2) +
+              ((∑ x ∈ B, M x * x ^ (1 : ℕ)) * degreeOnePairMoment mu u v 3 +
+                (∑ x ∈ B, M x * x ^ (3 : ℕ)) * degreeOnePairMoment mu u v 1 -
+                  (2 * ∑ x ∈ B, M x * x ^ (2 : ℕ)) * degreeOnePairMoment mu u v 2) := by
             rw [hlocal, ih]
         _ =
-            (M x * x ^ 1 + ∑ x ∈ B, M x * x ^ 1) * degreeOnePairMoment mu u v 3 +
-              (M x * x ^ 3 + ∑ x ∈ B, M x * x ^ 3) * degreeOnePairMoment mu u v 1 -
-                2 * (M x * x ^ 2 + ∑ x ∈ B, M x * x ^ 2) * degreeOnePairMoment mu u v 2 := by
+            (M x * x ^ (1 : ℕ) + ∑ x ∈ B, M x * x ^ (1 : ℕ)) * degreeOnePairMoment mu u v 3 +
+              (M x * x ^ (3 : ℕ) + ∑ x ∈ B, M x * x ^ (3 : ℕ)) * degreeOnePairMoment mu u v 1 -
+                2 * (M x * x ^ (2 : ℕ) + ∑ x ∈ B, M x * x ^ (2 : ℕ)) * degreeOnePairMoment mu u v 2 := by
             ring
 
 /-- Exact degree-one determinant change after adjoining one conjugate pair. -/
@@ -168,7 +168,7 @@ theorem degreeOneBulkPair_update
         (degreeOneBulkMoment B M 1) (degreeOneBulkMoment B M 2)
         (degreeOneBulkMoment B M 3) =
       2 * mu * ∑ x ∈ B, M x * x * degreeOneDiscriminantCross u v x -
-        4 * mu ^ 2 * (u ^ 2 + v ^ 2) * v ^ 2 := by
+        4 * mu ^ (2 : ℕ) * (u ^ (2 : ℕ) + v ^ (2 : ℕ)) * v ^ (2 : ℕ) := by
   rw [degreeOneShiftedDet_tail_expansion,
     ← degreeOneBulkPair_cross_sum]
   have hpair := degreeOnePairMoment_det mu u v
@@ -176,14 +176,14 @@ theorem degreeOneBulkPair_update
   calc
     2 * mu * ∑ x ∈ B, M x * x * degreeOneDiscriminantCross u v x +
           degreeOnePairMoment mu u v 1 * degreeOnePairMoment mu u v 3 -
-        degreeOnePairMoment mu u v 2 ^ 2 =
+        degreeOnePairMoment mu u v 2 ^ (2 : ℕ) =
         2 * mu * ∑ x ∈ B, M x * x * degreeOneDiscriminantCross u v x +
           (degreeOnePairMoment mu u v 1 * degreeOnePairMoment mu u v 3 -
-            degreeOnePairMoment mu u v 2 ^ 2) := by ring
+            degreeOnePairMoment mu u v 2 ^ (2 : ℕ)) := by ring
     _ = 2 * mu * ∑ x ∈ B, M x * x * degreeOneDiscriminantCross u v x +
-        (-4 * mu ^ 2 * (u ^ 2 + v ^ 2) * v ^ 2) := by rw [hpair]
+        (-4 * mu ^ (2 : ℕ) * (u ^ (2 : ℕ) + v ^ (2 : ℕ)) * v ^ (2 : ℕ)) := by rw [hpair]
     _ = 2 * mu * ∑ x ∈ B, M x * x * degreeOneDiscriminantCross u v x -
-        4 * mu ^ 2 * (u ^ 2 + v ^ 2) * v ^ 2 := by ring
+        4 * mu ^ (2 : ℕ) * (u ^ (2 : ℕ) + v ^ (2 : ℕ)) * v ^ (2 : ℕ) := by ring
 
 /-- Moment of a conjugate pair written directly from its complex representative. -/
 def degreeOneConjugatePairMoment (mu : ℝ) (y : ℂ) (k : ℕ) : ℝ :=
@@ -191,7 +191,7 @@ def degreeOneConjugatePairMoment (mu : ℝ) (y : ℂ) (k : ℕ) : ℝ :=
 
 /-- Cross term between a real bulk atom and a complex conjugate-pair representative. -/
 def degreeOneConjugatePairCross (y : ℂ) (x : ℝ) : ℝ :=
-  (y * (y - x) ^ 2).re
+  (y * (y - x) ^ (2 : ℕ)).re
 
 /-- Coordinate agreement for a conjugate-pair moment. -/
 theorem degreeOneConjugatePairMoment_coord (mu u v : ℝ) (k : ℕ) :
@@ -205,7 +205,7 @@ theorem degreeOneConjugatePairCross_coord (u v x : ℝ) :
 
 /-- Squared modulus in real-imaginary coordinates. -/
 theorem normSq_ofReal_add_mul_I (u v : ℝ) :
-    Complex.normSq ((u : ℂ) + v * Complex.I) = u ^ 2 + v ^ 2 := by
+    Complex.normSq ((u : ℂ) + v * Complex.I) = u ^ (2 : ℕ) + v ^ (2 : ℕ) := by
   simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
   ring
 
@@ -230,7 +230,7 @@ theorem degreeOneConjugatePair_det (mu : ℝ) (y : ℂ) :
     degreeOneShiftedDet (degreeOneConjugatePairMoment mu y 1)
       (degreeOneConjugatePairMoment mu y 2)
       (degreeOneConjugatePairMoment mu y 3) =
-      -4 * mu ^ 2 * Complex.normSq y * y.im ^ 2 := by
+      -4 * mu ^ (2 : ℕ) * Complex.normSq y * y.im ^ (2 : ℕ) := by
   rcases y with ⟨u, v⟩
   have hcoord : ({ re := u, im := v } : ℂ) = (u : ℂ) + v * Complex.I := by
     apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
@@ -250,7 +250,7 @@ theorem degreeOneBulkConjugatePair_update
         (degreeOneBulkMoment B M 1) (degreeOneBulkMoment B M 2)
         (degreeOneBulkMoment B M 3) =
       2 * mu * ∑ x ∈ B, M x * x * degreeOneConjugatePairCross y x -
-        4 * mu ^ 2 * Complex.normSq y * y.im ^ 2 := by
+        4 * mu ^ (2 : ℕ) * Complex.normSq y * y.im ^ (2 : ℕ) := by
   rcases y with ⟨u, v⟩
   have hcoord : ({ re := u, im := v } : ℂ) = (u : ℂ) + v * Complex.I := by
     apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
@@ -276,12 +276,12 @@ theorem degreeOneConjugatePair_det_neg {mu : ℝ} {y : ℂ}
   rw [hcoord, degreeOneConjugatePairMoment_coord,
     degreeOneConjugatePairMoment_coord, degreeOneConjugatePairMoment_coord,
     degreeOnePairMoment_det]
-  have hmu2 : 0 < mu ^ 2 := sq_pos_of_ne_zero hmu
-  have hv2 : 0 < v ^ 2 := sq_pos_of_ne_zero hy
-  have hnorm : 0 < u ^ 2 + v ^ 2 :=
+  have hmu2 : 0 < mu ^ (2 : ℕ) := sq_pos_of_ne_zero hmu
+  have hv2 : 0 < v ^ (2 : ℕ) := sq_pos_of_ne_zero hy
+  have hnorm : 0 < u ^ (2 : ℕ) + v ^ (2 : ℕ) :=
     add_pos_of_nonneg_of_pos (sq_nonneg u) hv2
-  rw [show -4 * mu ^ 2 * (u ^ 2 + v ^ 2) * v ^ 2 =
-    -(4 * mu ^ 2 * (u ^ 2 + v ^ 2) * v ^ 2) by ring]
+  rw [show -4 * mu ^ (2 : ℕ) * (u ^ (2 : ℕ) + v ^ (2 : ℕ)) * v ^ (2 : ℕ) =
+    -(4 * mu ^ (2 : ℕ) * (u ^ (2 : ℕ) + v ^ (2 : ℕ)) * v ^ (2 : ℕ)) by ring]
   exact neg_lt_zero.mpr (mul_pos (mul_pos (mul_pos (by norm_num) hmu2) hnorm) hv2)
 
 /-- Nonnegative real atoms and weights give nonnegative bulk moments. -/

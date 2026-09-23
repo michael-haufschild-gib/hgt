@@ -310,7 +310,7 @@ theorem neg_logDeriv_movingCanonicalComplementProduct_eq_of_im_ne_zero
       (ne_of_gt (movingCanonicalZero_pos θ n.1))
   have hsum : Summable
       (fun n : {n // n ∉ S} =>
-        1 / ‖a n‖ ^ 2) :=
+        1 / ‖a n‖ ^ (2 : ℕ)) :=
     RHTower.canonicalProductE1IndexedComplement_inv_sq_summable
       (fun n => (movingCanonicalZero θ n : ℂ))
       (fun n => n ∈ S)
@@ -673,14 +673,14 @@ theorem movingEvenCanonicalSurgeryProduct_eq_paperQuotient
         θ aIdx bIdx t z =
       movingEvenCanonicalProduct θ z *
         ∏ i,
-          (((z ^ 2 - (t i) ^ 2) *
-              (z ^ 2 - (star (t i)) ^ 2)) /
-            ((z ^ 2 -
+          (((z ^ (2 : ℕ) - (t i) ^ (2 : ℕ)) *
+              (z ^ (2 : ℕ) - (star (t i)) ^ (2 : ℕ))) /
+            ((z ^ (2 : ℕ) -
                 (movingCanonicalZero
-                  θ (aIdx i) : ℂ) ^ 2) *
-              (z ^ 2 -
+                  θ (aIdx i) : ℂ) ^ (2 : ℕ)) *
+              (z ^ (2 : ℕ) -
                 (movingCanonicalZero
-                  θ (bIdx i) : ℂ) ^ 2))) := by
+                  θ (bIdx i) : ℂ) ^ (2 : ℕ)))) := by
   have hnza' : ∀ i,
       -z ≠
         (movingCanonicalZero θ (aIdx i) : ℂ) := by
@@ -715,12 +715,12 @@ theorem movingEvenCanonicalSurgeryProduct_eq_paperQuotient
         (-z -
           (movingCanonicalZero θ (bIdx i) : ℂ))))
   let Q : Fin k → ℂ := fun i =>
-    (((z ^ 2 - (t i) ^ 2) *
-        (z ^ 2 - (star (t i)) ^ 2)) /
-      ((z ^ 2 -
-          (movingCanonicalZero θ (aIdx i) : ℂ) ^ 2) *
-        (z ^ 2 -
-          (movingCanonicalZero θ (bIdx i) : ℂ) ^ 2)))
+    (((z ^ (2 : ℕ) - (t i) ^ (2 : ℕ)) *
+        (z ^ (2 : ℕ) - (star (t i)) ^ (2 : ℕ))) /
+      ((z ^ (2 : ℕ) -
+          (movingCanonicalZero θ (aIdx i) : ℂ) ^ (2 : ℕ)) *
+        (z ^ (2 : ℕ) -
+          (movingCanonicalZero θ (bIdx i) : ℂ) ^ (2 : ℕ))))
   have hpair : ∀ i, Rpos i * Rneg i = Q i := by
     intro i
     let a : ℂ :=
@@ -743,10 +743,10 @@ theorem movingEvenCanonicalSurgeryProduct_eq_paperQuotient
       intro h
       apply hnzb i
       linear_combination h
-    have hsqA : z ^ 2 - a ^ 2 ≠ 0 := by
+    have hsqA : z ^ (2 : ℕ) - a ^ (2 : ℕ) ≠ 0 := by
       rw [sq_sub_sq]
       exact mul_ne_zero hzaPlus hpa
-    have hsqB : z ^ 2 - b ^ 2 ≠ 0 := by
+    have hsqB : z ^ (2 : ℕ) - b ^ (2 : ℕ) ≠ 0 := by
       rw [sq_sub_sq]
       exact mul_ne_zero hzbPlus hpb
     dsimp only [Rpos, Rneg, Q, a, b]

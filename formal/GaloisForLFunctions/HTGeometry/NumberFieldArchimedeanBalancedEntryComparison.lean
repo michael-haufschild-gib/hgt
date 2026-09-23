@@ -36,14 +36,14 @@ theorem exists_numberFieldArchimedean_transitionEntryBound
       ∀ (k i : Fin n) (w : InfinitePlace K),
         c * (numberFieldArchimedeanJacobiWeight J k w *
               (w (((g : Matrix (Fin n) (Fin n) (RingOfIntegers K)) i k :
-                RingOfIntegers K) : K)) ^ 2) ≤
+                RingOfIntegers K) : K)) ^ (2 : ℕ)) ≤
           L * numberFieldArchimedeanJacobiWeight J' i w := by
   obtain ⟨c, hc, hreal, hcomplex⟩ :=
     exists_real_complex_siegel_quasiDiagonal n t u ht
-  let L : ℝ := 1 + (n : ℝ) * u ^ 2 * t ^ n
+  let L : ℝ := 1 + (n : ℝ) * u ^ (2 : ℕ) * t ^ n
   have hL : 0 < L := by
     have ht0 : 0 ≤ t ^ n := pow_nonneg (le_trans zero_le_one ht) n
-    have : 0 ≤ (n : ℝ) * u ^ 2 * t ^ n := by positivity
+    have : 0 ≤ (n : ℝ) * u ^ (2 : ℕ) * t ^ n := by positivity
     dsimp [L]
     linarith
   refine ⟨c, L, hc, hL, ?_⟩
@@ -61,7 +61,7 @@ theorem exists_numberFieldArchimedean_transitionEntryBound
     have hb := siegel_entry_bound_of_siegel ht hc (hJ'.1 wr) hform
       (hreal (J.realJacobiData wr) (hJ.1 wr)) k i
     have hweak :
-        c * ((J.realJacobiData wr).d k * (γ k i) ^ 2) ≤
+        c * ((J.realJacobiData wr).d k * (γ k i) ^ (2 : ℕ)) ≤
           L * (J'.realJacobiData wr).d i := by
       refine hb.trans (mul_le_mul_of_nonneg_right ?_ (J'.realPos wr i).le)
       dsimp [L]
@@ -105,7 +105,7 @@ theorem exists_numberFieldArchimedean_transitionEntryBound
     have hb := complex_siegel_entry_bound ht hc (hJ'.2 wc) hform
       (hcomplex (J.complexJacobiData wc) (hJ.2 wc)) k i
     have hweak :
-        c * ((J.complexJacobiData wc).d k * ‖γ k i‖ ^ 2) ≤
+        c * ((J.complexJacobiData wc).d k * ‖γ k i‖ ^ (2 : ℕ)) ≤
           L * (J'.complexJacobiData wc).d i := by
       refine hb.trans (mul_le_mul_of_nonneg_right ?_
         ((J'.complexJacobiData wc).pos i).le)

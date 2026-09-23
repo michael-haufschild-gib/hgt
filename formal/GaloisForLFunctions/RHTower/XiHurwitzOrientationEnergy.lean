@@ -26,8 +26,8 @@ open HurwitzJointLadder HurwitzOrbit
 
 /-- The squared, radius-normalized imaginary part of the Xi-zero Hurwitz character. -/
 def xiHurwitzOrientationDefect (ρ : XiDivisorSupport) : ℝ :=
-  (xiHurwitzMonodromyCharacter ρ).im ^ 2 /
-    ‖xiHurwitzMonodromyCharacter ρ‖ ^ 2
+  (xiHurwitzMonodromyCharacter ρ).im ^ (2 : ℕ) /
+    ‖xiHurwitzMonodromyCharacter ρ‖ ^ (2 : ℕ)
 
 theorem xiHurwitzMonodromyCharacter_ne_zero (ρ : XiDivisorSupport) :
     xiHurwitzMonodromyCharacter ρ ≠ 0 := by
@@ -36,7 +36,7 @@ theorem xiHurwitzMonodromyCharacter_ne_zero (ρ : XiDivisorSupport) :
 /-- The orientation defect is literally the squared sine of the horizontal zero angle. -/
 theorem xiHurwitzOrientationDefect_eq_sin_sq (ρ : XiDivisorSupport) :
     xiHurwitzOrientationDefect ρ =
-      Real.sin (2 * Real.pi * (ρ : ℂ).re) ^ 2 := by
+      Real.sin (2 * Real.pi * (ρ : ℂ).re) ^ (2 : ℕ) := by
   have hre : (-(2 * (Real.pi : ℂ) * I * (ρ : ℂ))).re =
       2 * Real.pi * (ρ : ℂ).im := by
     simp
@@ -115,7 +115,7 @@ theorem xiHurwitzOrientationDefect_pos_iff_re_ne_half
 distance from the functional-equation fixed point. -/
 def xiHurwitzOrientationWeight (ρ : XiDivisorSupport) : ℝ :=
   ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) /
-    ‖(ρ : ℂ) - 1 / 2‖ ^ 2
+    ‖(ρ : ℂ) - 1 / 2‖ ^ (2 : ℕ)
 
 theorem xiHurwitzOrientationWeight_pos (ρ : XiDivisorSupport) :
     0 < xiHurwitzOrientationWeight ρ := by
@@ -163,7 +163,7 @@ theorem xiHurwitzOrientationEnergy_eq_tsum_sin_sq :
     xiHurwitzOrientationEnergy =
       ∑' ρ : XiDivisorSupport,
         xiHurwitzOrientationWeight ρ *
-          Real.sin (2 * Real.pi * (ρ : ℂ).re) ^ 2 := by
+          Real.sin (2 * Real.pi * (ρ : ℂ).re) ^ (2 : ℕ) := by
   rw [xiHurwitzOrientationEnergy]
   apply tsum_congr
   intro ρ
@@ -279,7 +279,7 @@ theorem xiHurwitzOrientationEnergy_pos_iff_exists_offCriticalZero :
 /-- Any single zero contributes an explicit lower bound to the global orientation energy. -/
 theorem xiHurwitzOrientationWitness_le_energy (ρ : XiDivisorSupport) :
     xiHurwitzOrientationWeight ρ *
-        Real.sin (2 * Real.pi * (ρ : ℂ).re) ^ 2 ≤
+        Real.sin (2 * Real.pi * (ρ : ℂ).re) ^ (2 : ℕ) ≤
       xiHurwitzOrientationEnergy := by
   rw [← xiHurwitzOrientationDefect_eq_sin_sq,
     ← xiHurwitzOrientationEnergyTerm]

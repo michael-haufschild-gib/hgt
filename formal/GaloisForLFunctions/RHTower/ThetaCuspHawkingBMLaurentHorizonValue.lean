@@ -30,14 +30,14 @@ def laurentHorizonVV (s : ℂ) : ℂ :=
   vvLaurentMasterA s ((s + 1) * (s + 2)) + vvLaurentMasterB s ((s + 1) * (s + 2))
 
 theorem laurentHorizonSS_eq (s : ℂ) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (hs1 : s + 1 ≠ 0) :
-    laurentHorizonSS s = (s ^ 4 + 2 * s ^ 3 + 5 * s ^ 2 - 24 * s - 8) / 8 := by
+    laurentHorizonSS s = (s ^ (4 : ℕ) + 2 * s ^ (3 : ℕ) + 5 * s ^ (2 : ℕ) - 24 * s - 8) / 8 := by
   unfold laurentHorizonSS
   rw [ssLaurentA_lam s hs hs3 hs1, ssLaurentB_lam s hs hs3]
   field_simp
   ring
 
 theorem laurentHorizonVV_eq (s : ℂ) (hs : s ≠ 0) (hs3 : s + 3 ≠ 0) (hs1 : s + 1 ≠ 0) :
-    laurentHorizonVV s = -(s * (12 * s ^ 4 + 87 * s ^ 3 + 230 * s ^ 2 + 229 * s + 18)) / (6 * (s + 3)) := by
+    laurentHorizonVV s = -(s * (12 * s ^ (4 : ℕ) + 87 * s ^ (3 : ℕ) + 230 * s ^ (2 : ℕ) + 229 * s + 18)) / (6 * (s + 3)) := by
   unfold laurentHorizonVV
   rw [vvLaurentA_lam s hs hs3 hs1, vvLaurentB_lam s hs hs3]
   field_simp
@@ -62,7 +62,7 @@ theorem physicalRate_add_one_ne_zero (q : XiZeroCopy) (branch : Bool) : physical
 /-- Scalar–scalar radiation amplitude on the `+` branch `s = ρ − 2`. -/
 theorem laurentHorizonSS_physical_plus (q : XiZeroCopy) :
     laurentHorizonSS (physicalRate q true) =
-      ((q.1 : ℂ) ^ 4 - 6 * (q.1 : ℂ) ^ 3 + 17 * (q.1 : ℂ) ^ 2 - 52 * (q.1 : ℂ) + 60) / 8 := by
+      ((q.1 : ℂ) ^ (4 : ℕ) - 6 * (q.1 : ℂ) ^ (3 : ℕ) + 17 * (q.1 : ℂ) ^ (2 : ℕ) - 52 * (q.1 : ℂ) + 60) / 8 := by
   rw [laurentHorizonSS_eq _ (physicalRate_ne_zero q true) (physicalRate_add_three_ne_zero q true)
     (physicalRate_add_one_ne_zero q true)]
   simp only [physicalRate, if_true]
@@ -71,7 +71,7 @@ theorem laurentHorizonSS_physical_plus (q : XiZeroCopy) :
 /-- Scalar–scalar radiation amplitude on the `−` branch `s = −ρ − 1`, the reflection `ρ ↦ 1 − ρ` of the `+` branch. -/
 theorem laurentHorizonSS_physical_minus (q : XiZeroCopy) :
     laurentHorizonSS (physicalRate q false) =
-      ((q.1 : ℂ) ^ 4 + 2 * (q.1 : ℂ) ^ 3 + 5 * (q.1 : ℂ) ^ 2 + 32 * (q.1 : ℂ) + 20) / 8 := by
+      ((q.1 : ℂ) ^ (4 : ℕ) + 2 * (q.1 : ℂ) ^ (3 : ℕ) + 5 * (q.1 : ℂ) ^ (2 : ℕ) + 32 * (q.1 : ℂ) + 20) / 8 := by
   rw [laurentHorizonSS_eq _ (physicalRate_ne_zero q false) (physicalRate_add_three_ne_zero q false)
     (physicalRate_add_one_ne_zero q false)]
   simp only [physicalRate, Bool.false_eq_true, if_false]
@@ -80,7 +80,7 @@ theorem laurentHorizonSS_physical_minus (q : XiZeroCopy) :
 /-- Vector–vector radiation amplitude on the `+` branch. -/
 theorem laurentHorizonVV_physical_plus (q : XiZeroCopy) :
     laurentHorizonVV (physicalRate q true) =
-      -(((q.1 : ℂ) - 2) * (12 * (q.1 : ℂ) ^ 4 - 9 * (q.1 : ℂ) ^ 3 - 4 * (q.1 : ℂ) ^ 2 - 31 * (q.1 : ℂ) - 24)) /
+      -(((q.1 : ℂ) - 2) * (12 * (q.1 : ℂ) ^ (4 : ℕ) - 9 * (q.1 : ℂ) ^ (3 : ℕ) - 4 * (q.1 : ℂ) ^ (2 : ℕ) - 31 * (q.1 : ℂ) - 24)) /
         (6 * ((q.1 : ℂ) + 1)) := by
   rw [laurentHorizonVV_eq _ (physicalRate_ne_zero q true) (physicalRate_add_three_ne_zero q true)
     (physicalRate_add_one_ne_zero q true)]
@@ -93,7 +93,7 @@ theorem laurentHorizonVV_physical_plus (q : XiZeroCopy) :
 /-- Vector–vector radiation amplitude on the `−` branch. -/
 theorem laurentHorizonVV_physical_minus (q : XiZeroCopy) :
     laurentHorizonVV (physicalRate q false) =
-      (((q.1 : ℂ) + 1) * (-12 * (q.1 : ℂ) ^ 4 + 39 * (q.1 : ℂ) ^ 3 - 41 * (q.1 : ℂ) ^ 2 - 18 * (q.1 : ℂ) + 56)) /
+      (((q.1 : ℂ) + 1) * (-12 * (q.1 : ℂ) ^ (4 : ℕ) + 39 * (q.1 : ℂ) ^ (3 : ℕ) - 41 * (q.1 : ℂ) ^ (2 : ℕ) - 18 * (q.1 : ℂ) + 56)) /
         (6 * ((q.1 : ℂ) - 2)) := by
   rw [laurentHorizonVV_eq _ (physicalRate_ne_zero q false) (physicalRate_add_three_ne_zero q false)
     (physicalRate_add_one_ne_zero q false)]

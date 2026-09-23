@@ -76,8 +76,8 @@ theorem largeSieve_separated_bilinear {ι : Type*} [DecidableEq ι] (N : ℕ) (s
     (lam : ι → ℝ) {δ : ℝ} (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 2)
     (hsep : ∀ a ∈ s, ∀ b ∈ s, a ≠ b → δ ≤ toIntDist (lam b - lam a))
     (c : ι → ℂ) :
-    ‖∑ r ∈ s, c r • expRow N (circleFreq (lam r))‖ ^ 2
-      ≤ ((N : ℝ) + (1 / δ) * (1 + Real.log (1 / (2 * δ) + 1))) * ∑ r ∈ s, ‖c r‖ ^ 2 := by
+    ‖∑ r ∈ s, c r • expRow N (circleFreq (lam r))‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (1 / δ) * (1 + Real.log (1 / (2 * δ) + 1))) * ∑ r ∈ s, ‖c r‖ ^ (2 : ℕ) := by
   have hx : (0 : ℝ) < 1 / (2 * δ) := by positivity
   set M : ℕ := ⌈1 / (2 * δ)⌉₊ with hMdef
   have hM : 1 / (2 * δ) ≤ (M : ℝ) := Nat.le_ceil _
@@ -102,8 +102,8 @@ theorem largeSieve_separated_bilinear {ι : Type*} [DecidableEq ι] (N : ℕ) (s
 
 /-- The bilinear form in coordinates: a mean square over `n < N`. -/
 theorem norm_sq_sum_smul_expRow {ι : Type*} (N : ℕ) (s : Finset ι) (ξ : ι → ℂ) (c : ι → ℂ) :
-    ‖∑ r ∈ s, c r • expRow N (ξ r)‖ ^ 2
-      = ∑ n : Fin N, ‖∑ r ∈ s, c r * (ξ r) ^ (n : ℕ)‖ ^ 2 := by
+    ‖∑ r ∈ s, c r • expRow N (ξ r)‖ ^ (2 : ℕ)
+      = ∑ n : Fin N, ‖∑ r ∈ s, c r * (ξ r) ^ (n : ℕ)‖ ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
   refine Finset.sum_congr rfl fun n _ => ?_
   congr 1
@@ -114,7 +114,7 @@ theorem norm_sq_sum_smul_expRow {ι : Type*} (N : ℕ) (s : Finset ι) (ξ : ι 
 /-- Farey fractions of order `Q` are `Q^{-2}`-separated on the circle. -/
 theorem fareySet_sep {Q : ℕ} :
     ∀ p ∈ fareySet Q, ∀ r ∈ fareySet Q, p ≠ r →
-      1 / (Q : ℝ) ^ 2 ≤ toIntDist ((r.1 : ℝ) / (r.2 : ℝ) - (p.1 : ℝ) / (p.2 : ℝ)) := by
+      1 / (Q : ℝ) ^ (2 : ℕ) ≤ toIntDist ((r.1 : ℝ) / (r.2 : ℝ) - (p.1 : ℝ) / (p.2 : ℝ)) := by
   intro p hp r hr hpr
   obtain ⟨⟨hp1, _⟩, ⟨hp2, hpQ⟩, hple, hpc⟩ := mem_fareySet.mp hp
   obtain ⟨⟨hr1, _⟩, ⟨hr2, hrQ⟩, hrle, hrc⟩ := mem_fareySet.mp hr
@@ -126,26 +126,26 @@ theorem fareySet_sep {Q : ℕ} :
   have hr2R : (0 : ℝ) < (r.2 : ℝ) := by exact_mod_cast hr2
   have hpb : (p.2 : ℝ) ≤ (Q : ℝ) := by exact_mod_cast hpQ
   have hrb : (r.2 : ℝ) ≤ (Q : ℝ) := by exact_mod_cast hrQ
-  have hprod : (r.2 : ℝ) * (p.2 : ℝ) ≤ (Q : ℝ) ^ 2 := by nlinarith
-  have hmono : 1 / (Q : ℝ) ^ 2 ≤ 1 / ((r.2 : ℝ) * (p.2 : ℝ)) := by gcongr
+  have hprod : (r.2 : ℝ) * (p.2 : ℝ) ≤ (Q : ℝ) ^ (2 : ℕ) := by nlinarith
+  have hmono : 1 / (Q : ℝ) ^ (2 : ℕ) ≤ 1 / ((r.2 : ℝ) * (p.2 : ℝ)) := by gcongr
   refine le_trans hmono (le_trans hfarey (le_of_eq ?_))
   congr 1
 
 /-- **Dual large sieve on the Farey set of order `Q`.**  A mean square over `n < N`. -/
 theorem largeSieve_dual_fareySet (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (b : ℕ × ℕ → ℂ) :
-    ∑ n : Fin N, ‖∑ p ∈ fareySet Q, b p * (circleFreq ((p.1 : ℝ) / (p.2 : ℝ))) ^ (n : ℕ)‖ ^ 2
-      ≤ ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1)))
-          * ∑ p ∈ fareySet Q, ‖b p‖ ^ 2 := by
+    ∑ n : Fin N, ‖∑ p ∈ fareySet Q, b p * (circleFreq ((p.1 : ℝ) / (p.2 : ℝ))) ^ (n : ℕ)‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1)))
+          * ∑ p ∈ fareySet Q, ‖b p‖ ^ (2 : ℕ) := by
   have hQR : (2 : ℝ) ≤ (Q : ℝ) := by exact_mod_cast hQ
-  have hδ0 : (0 : ℝ) < 1 / (Q : ℝ) ^ 2 := by positivity
-  have hδ : 1 / (Q : ℝ) ^ 2 ≤ 1 / 2 := by
+  have hδ0 : (0 : ℝ) < 1 / (Q : ℝ) ^ (2 : ℕ) := by positivity
+  have hδ : 1 / (Q : ℝ) ^ (2 : ℕ) ≤ 1 / 2 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [hQR]
-  have hbase := largeSieve_separated_bilinear (δ := 1 / (Q : ℝ) ^ 2) N (fareySet Q)
+  have hbase := largeSieve_separated_bilinear (δ := 1 / (Q : ℝ) ^ (2 : ℕ)) N (fareySet Q)
     (fun p => (p.1 : ℝ) / (p.2 : ℝ)) hδ0 hδ fareySet_sep b
   rw [norm_sq_sum_smul_expRow] at hbase
-  have e1 : (1 : ℝ) / (1 / (Q : ℝ) ^ 2) = (Q : ℝ) ^ 2 := by field_simp
-  have e2 : (1 : ℝ) / (2 * (1 / (Q : ℝ) ^ 2)) = (Q : ℝ) ^ 2 / 2 := by
+  have e1 : (1 : ℝ) / (1 / (Q : ℝ) ^ (2 : ℕ)) = (Q : ℝ) ^ (2 : ℕ) := by field_simp
+  have e2 : (1 : ℝ) / (2 * (1 / (Q : ℝ) ^ (2 : ℕ))) = (Q : ℝ) ^ (2 : ℕ) / 2 := by
     rw [mul_one_div, one_div_div]
   rw [e1, e2] at hbase
   exact hbase

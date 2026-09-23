@@ -53,7 +53,7 @@ theorem bdGram_self_upper {m : ℕ} (hm : 1 ≤ m) :
 /-- **The single-generator gain is at least `(log m)/m`.** -/
 theorem single_gain_ge {m : ℕ} (hm : 2 ≤ m) :
     Real.log (m : ℝ) / (m : ℝ)
-      ≤ (Real.log (m : ℝ) / (m : ℝ)) ^ 2 / bdGram (1 / (m : ℝ)) (1 / (m : ℝ)) := by
+      ≤ (Real.log (m : ℝ) / (m : ℝ)) ^ (2 : ℕ) / bdGram (1 / (m : ℝ)) (1 / (m : ℝ)) := by
   have hm1 : 1 ≤ m := by omega
   have hm0 : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm1
   have hm1R : (1 : ℝ) < (m : ℝ) := by exact_mod_cast hm
@@ -69,7 +69,7 @@ theorem single_gain_ge {m : ℕ} (hm : 2 ≤ m) :
   calc Real.log (m : ℝ) / (m : ℝ) * bdGram (1 / (m : ℝ)) (1 / (m : ℝ))
       ≤ Real.log (m : ℝ) / (m : ℝ) * (Real.log (m : ℝ) / (m : ℝ)) :=
         mul_le_mul_of_nonneg_left hupper hL.le
-    _ = (Real.log (m : ℝ) / (m : ℝ)) ^ 2 := by ring
+    _ = (Real.log (m : ℝ) / (m : ℝ)) ^ (2 : ℕ) := by ring
 
 end RHTower
 

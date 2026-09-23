@@ -155,7 +155,7 @@ theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_cubicRowBudget
     (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ) :
     ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
       (cglLemma45FibreRows P) 0‖ ≤
-      (R : ℝ) ^ 3 * cglLemma45FibreZeroModeRowBound P w N n := by
+      (R : ℝ) ^ (3 : ℕ) * cglLemma45FibreZeroModeRowBound P w N n := by
   calc
     ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
         (cglLemma45FibreRows P) 0‖ ≤
@@ -165,7 +165,7 @@ theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_cubicRowBudget
     _ = (cglLemma45FibreOffDiagonalTripleCard R : ℝ) *
           cglLemma45FibreZeroModeRowBound P w N n := by
       rw [cglLemma45FibreZeroModeFiniteBudget_index_card]
-    _ ≤ (R : ℝ) ^ 3 * cglLemma45FibreZeroModeRowBound P w N n := by
+    _ ≤ (R : ℝ) ^ (3 : ℕ) * cglLemma45FibreZeroModeRowBound P w N n := by
       apply mul_le_mul_of_nonneg_right
       · exact_mod_cast cglLemma45FibreOffDiagonalTriple_card_le R
       · exact cglLemma45FibreZeroModeRowBound_nonneg P w N n

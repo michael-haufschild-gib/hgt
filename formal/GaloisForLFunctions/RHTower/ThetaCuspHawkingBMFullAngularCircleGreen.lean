@@ -22,7 +22,7 @@ private theorem field_smooth (q : XiZeroCopy) (branch : Bool) (p : Point)
     (hp : 0 < p 1) (n : ℕ) : ContDiffAt ℝ n (fullAngularField q branch) p :=
   (contDiffAt_infty.mp (fullAngularField_smooth q branch p hp)) n
 
-private def angularSource (q : XiZeroCopy) (branch : Bool) (d theta x k : ℝ) : ℂ :=
+def angularSource (q : XiZeroCopy) (branch : Bool) (d theta x k : ℝ) : ℂ :=
   fullAngularField q branch (logCircle d theta x k)
 
 /-- The actual circular average of the constructed full angular response. -/
@@ -49,10 +49,10 @@ private theorem first_coordinates (q : XiZeroCopy) (branch : Bool) (p v : Point)
 
 private theorem second_coordinates (q : XiZeroCopy) (branch : Bool) (p v a : Point) (hp : 0 < p 1) :
     fieldSecond q branch p v a =
-      (v 0:ℂ)^2*coordDeriv 0 (coordDeriv 0 (fullAngularField q branch)) p+
+      (v 0:ℂ)^(2 : ℕ)*coordDeriv 0 (coordDeriv 0 (fullAngularField q branch)) p+
       (v 0:ℂ)*(v 1:ℂ)*(coordDeriv 0 (coordDeriv 1 (fullAngularField q branch)) p+
         coordDeriv 1 (coordDeriv 0 (fullAngularField q branch)) p)+
-      (v 1:ℂ)^2*coordDeriv 1 (coordDeriv 1 (fullAngularField q branch)) p+
+      (v 1:ℂ)^(2 : ℕ)*coordDeriv 1 (coordDeriv 1 (fullAngularField q branch)) p+
       (a 0:ℂ)*coordDeriv 0 (fullAngularField q branch) p+
       (a 1:ℂ)*coordDeriv 1 (fullAngularField q branch) p := by
   have hf := field_smooth q branch p hp 2
@@ -145,23 +145,23 @@ private theorem angular_second (q : XiZeroCopy) (branch : Bool) (d theta x k : �
     (logCircle_angular d theta x k).2 (logCircle_pos d theta x k)
 
 private theorem polar_source (q : XiZeroCopy) (branch : Bool) (d theta x k : ℝ) :
-    (Real.sinh d:ℂ)^2*radialSecond q branch d theta x k+
+    (Real.sinh d:ℂ)^(2 : ℕ)*radialSecond q branch d theta x k+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*radialFirst q branch d theta x k+
       angularSecond q branch d theta x k=
-      (Real.sinh d:ℂ)^2*scalarLaplacian (fullAngularField q branch) (logCircle d theta x k) := by
+      (Real.sinh d:ℂ)^(2 : ℕ)*scalarLaplacian (fullAngularField q branch) (logCircle d theta x k) := by
   have hp := logCircle_pos d theta x k
   obtain ⟨hxx,hxy,hyy⟩ := polar_principal d theta
   obtain ⟨hx,hy⟩ := polar_connection d theta
-  have hxxC : (Real.sinh d:ℂ)^2*(offsetRadial d theta:ℂ)^2+(offsetAngular d theta:ℂ)^2=
-      (Real.sinh d:ℂ)^2*(height d theta:ℂ)^2 := by exact_mod_cast hxx
-  have hxyC : (Real.sinh d:ℂ)^2*(offsetRadial d theta:ℂ)*(heightRadial d theta:ℂ)+
+  have hxxC : (Real.sinh d:ℂ)^(2 : ℕ)*(offsetRadial d theta:ℂ)^(2 : ℕ)+(offsetAngular d theta:ℂ)^(2 : ℕ)=
+      (Real.sinh d:ℂ)^(2 : ℕ)*(height d theta:ℂ)^(2 : ℕ) := by exact_mod_cast hxx
+  have hxyC : (Real.sinh d:ℂ)^(2 : ℕ)*(offsetRadial d theta:ℂ)*(heightRadial d theta:ℂ)+
       (offsetAngular d theta:ℂ)*(heightAngular d theta:ℂ)=0 := by exact_mod_cast hxy
-  have hyyC : (Real.sinh d:ℂ)^2*(heightRadial d theta:ℂ)^2+(heightAngular d theta:ℂ)^2=
-      (Real.sinh d:ℂ)^2*(height d theta:ℂ)^2 := by exact_mod_cast hyy
-  have hxC : (Real.sinh d:ℂ)^2*(offsetRadialSecond d theta:ℂ)+
+  have hyyC : (Real.sinh d:ℂ)^(2 : ℕ)*(heightRadial d theta:ℂ)^(2 : ℕ)+(heightAngular d theta:ℂ)^(2 : ℕ)=
+      (Real.sinh d:ℂ)^(2 : ℕ)*(height d theta:ℂ)^(2 : ℕ) := by exact_mod_cast hyy
+  have hxC : (Real.sinh d:ℂ)^(2 : ℕ)*(offsetRadialSecond d theta:ℂ)+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*(offsetRadial d theta:ℂ)+(offsetAngularSecond d theta:ℂ)=0 := by
     exact_mod_cast hx
-  have hyC : (Real.sinh d:ℂ)^2*(heightRadialSecond d theta:ℂ)+
+  have hyC : (Real.sinh d:ℂ)^(2 : ℕ)*(heightRadialSecond d theta:ℂ)+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*(heightRadial d theta:ℂ)+(heightAngularSecond d theta:ℂ)=0 := by
     exact_mod_cast hy
   dsimp [radialSecond,radialFirst,angularSecond]
@@ -174,19 +174,19 @@ private theorem polar_source (q : XiZeroCopy) (branch : Bool) (d theta x k : ℝ
     simp [logCircle,circle]
   rw [he]
   linear_combination
-    (Real.exp k:ℂ)^2*coordDeriv 0 (coordDeriv 0 (fullAngularField q branch)) (logCircle d theta x k)*hxxC+
-    (Real.exp k:ℂ)^2*(coordDeriv 0 (coordDeriv 1 (fullAngularField q branch)) (logCircle d theta x k)+
+    (Real.exp k:ℂ)^(2 : ℕ)*coordDeriv 0 (coordDeriv 0 (fullAngularField q branch)) (logCircle d theta x k)*hxxC+
+    (Real.exp k:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 (fullAngularField q branch)) (logCircle d theta x k)+
       coordDeriv 1 (coordDeriv 0 (fullAngularField q branch)) (logCircle d theta x k))*hxyC+
-    (Real.exp k:ℂ)^2*coordDeriv 1 (coordDeriv 1 (fullAngularField q branch)) (logCircle d theta x k)*hyyC+
+    (Real.exp k:ℂ)^(2 : ℕ)*coordDeriv 1 (coordDeriv 1 (fullAngularField q branch)) (logCircle d theta x k)*hyyC+
     (Real.exp k:ℂ)*coordDeriv 0 (fullAngularField q branch) (logCircle d theta x k)*hxC+
     (Real.exp k:ℂ)*coordDeriv 1 (fullAngularField q branch) (logCircle d theta x k)*hyC
 
 /-- The full angular response satisfies the polar Darboux identity with its complete angular Laplacian. -/
 private theorem source_darboux_integrand (q : XiZeroCopy) (branch : Bool) (d theta x k : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => angularSource q branch r theta x k)) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => angularSource q branch r theta x k)) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => angularSource q branch r theta x k) d+
       deriv (deriv (fun t => angularSource q branch d t x k)) theta=
-      (Real.sinh d:ℂ)^2*scalarLaplacian (fullAngularField q branch) (logCircle d theta x k) := by
+      (Real.sinh d:ℂ)^(2 : ℕ)*scalarLaplacian (fullAngularField q branch) (logCircle d theta x k) := by
   have hr : deriv (fun r => angularSource q branch r theta x k)=fun r => radialFirst q branch r theta x k :=
     funext (fun r => (radial_first q branch r theta x k).deriv)
   have ha : deriv (fun t => angularSource q branch d t x k)=fun t => angularFirst q branch d t x k :=
@@ -341,9 +341,9 @@ private theorem average_periodic_derivative {f : ℝ → ℂ} (hf : ContDiff ℝ
 
 /-- The original circle average has the full radial Darboux action on the original theta angularSource. -/
 private theorem mean_radial_action (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => angularMean q branch r x k)) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => angularMean q branch r x k)) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => angularMean q branch r x k) d=
-      (Real.sinh d:ℂ)^2*D4BMNativeCircle.average (fun theta =>
+      (Real.sinh d:ℂ)^(2 : ℕ)*D4BMNativeCircle.average (fun theta =>
         scalarLaplacian (fullAngularField q branch) (logCircle d theta x k)) := by
   have hf := radial_family q branch x k
   have hr := first_slice_continuous hf d
@@ -353,9 +353,9 @@ private theorem mean_radial_action (q : XiZeroCopy) (branch : Bool) (d x k : ℝ
   have hz : D4BMNativeCircle.average (deriv (deriv (fun theta => angularSource q branch d theta x k)))=0 :=
     average_periodic_derivative (smooth_derivative ht) (periodic_derivative ht (source_periodic q branch d x k))
   have h := congrArg D4BMNativeCircle.average (funext (fun theta => source_darboux_integrand q branch d theta x k))
-  erw [average_add ((hrr.const_mul ((Real.sinh d:ℂ)^2)).add
+  erw [average_add ((hrr.const_mul ((Real.sinh d:ℂ)^(2 : ℕ))).add
       (hr.const_mul ((Real.sinh d:ℂ)*(Real.cosh d:ℂ)))) htt,
-    average_add (hrr.const_mul ((Real.sinh d:ℂ)^2))
+    average_add (hrr.const_mul ((Real.sinh d:ℂ)^(2 : ℕ)))
       (hr.const_mul ((Real.sinh d:ℂ)*(Real.cosh d:ℂ))),average_const_mul,average_const_mul,
     average_const_mul,hz,add_zero] at h
   rw [← average_second hf d,← average_derivative hf d] at h
@@ -496,9 +496,9 @@ theorem angularMean_radial_oddJets_zero (q : XiZeroCopy) (branch : Bool) (x k : 
 
 /-- The forced circular equation retains the literal half-square source on both physical branches. -/
 theorem angularMean_forced (q : XiZeroCopy) (branch : Bool) (d x k : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => angularMean q branch r x k)) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => angularMean q branch r x k)) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => angularMean q branch r x k) d=
-      (Real.sinh d:ℂ)^2*parameter q branch*
+      (Real.sinh d:ℂ)^(2 : ℕ)*parameter q branch*
         (angularMean q branch d x k+D4BMNativeCircle.mean q d x k) := by
   have h := mean_radial_action q branch d x k
   have hq : Continuous (fun theta => D4BMNativeCircle.source q d theta x k) := by
@@ -533,7 +533,7 @@ private def radialLegendreFirst (q : XiZeroCopy) (branch : Bool) (d : ℝ) : ℂ
   (Real.sinh d:ℂ)*legendreKernelFirst (2*physicalRate q branch+1) (Real.cosh d)
 private def radialLegendreSecond (q : XiZeroCopy) (branch : Bool) (d : ℝ) : ℂ :=
   (Real.cosh d:ℂ)*legendreKernelFirst (2*physicalRate q branch+1) (Real.cosh d)+
-    (Real.sinh d:ℂ)^2*legendreKernelSecond (2*physicalRate q branch+1) (Real.cosh d)
+    (Real.sinh d:ℂ)^(2 : ℕ)*legendreKernelSecond (2*physicalRate q branch+1) (Real.cosh d)
 
 private theorem radialLegendre_derivatives (q : XiZeroCopy) (branch : Bool) (d : ℝ) :
     HasDerivAt (radialLegendre q branch) (radialLegendreFirst q branch d) d ∧
@@ -555,7 +555,7 @@ private theorem radialLegendre_equation (q : XiZeroCopy) (branch : Bool) (d : �
       (Real.cosh d:ℂ)*radialLegendreFirst q branch d=
       parameter q branch*(Real.sinh d:ℂ)*radialLegendre q branch d := by
   have he := legendreKernel_equation (2*physicalRate q branch+1) (Real.cosh_pos d)
-  have hc : (Real.cosh d:ℂ)^2-(Real.sinh d:ℂ)^2=1 := by
+  have hc : (Real.cosh d:ℂ)^(2 : ℕ)-(Real.sinh d:ℂ)^(2 : ℕ)=1 := by
     exact_mod_cast Real.cosh_sq_sub_sinh_sq d
   rw [parameter_physicalRate]
   dsimp [radialLegendre,radialLegendreFirst,radialLegendreSecond,D4BMQuadraticMixedSource.resolventParameter]

@@ -47,19 +47,19 @@ theorem rapidExponentialFockLocalRadius_le_one_eighth
 
 theorem rapidExponentialFockPotential_mul_localRadius_sq
     {a x : ℝ} (ha : 0 < a) :
-    rapidExponentialFockPotential a x * rapidExponentialFockLocalRadius a x ^ 2 =
-      (8 * (a + 1))⁻¹ ^ 2 := by
+    rapidExponentialFockPotential a x * rapidExponentialFockLocalRadius a x ^ (2 : ℕ) =
+      (8 * (a + 1))⁻¹ ^ (2 : ℕ) := by
   have hden : 8 * (a + 1) ≠ 0 := by positivity
   unfold rapidExponentialFockPotential rapidExponentialFockLocalRadius
   rw [mul_pow, ← Real.exp_nat_mul]
   calc
     Real.exp (2 * a * x) *
-        ((8 * (a + 1))⁻¹ ^ 2 * Real.exp ((2 : ℕ) * (-a * x))) =
-        (8 * (a + 1))⁻¹ ^ 2 *
+        ((8 * (a + 1))⁻¹ ^ (2 : ℕ) * Real.exp ((2 : ℕ) * (-a * x))) =
+        (8 * (a + 1))⁻¹ ^ (2 : ℕ) *
           (Real.exp (2 * a * x) * Real.exp ((2 : ℕ) * (-a * x))) := by ring
-    _ = (8 * (a + 1))⁻¹ ^ 2 *
+    _ = (8 * (a + 1))⁻¹ ^ (2 : ℕ) *
           Real.exp (2 * a * x + (2 : ℕ) * (-a * x)) := by rw [Real.exp_add]
-    _ = (8 * (a + 1))⁻¹ ^ 2 := by
+    _ = (8 * (a + 1))⁻¹ ^ (2 : ℕ) := by
       ring_nf
       simp
 
@@ -93,26 +93,26 @@ private theorem expDivTwo_le_exp_abs (v : ℝ) :
     simpa [abs_of_nonneg hv0] using hmono
 
 private theorem exp_le_tangent_add_sq (v : ℝ) :
-    Real.exp v ≤ 1 + v + v ^ 2 * Real.exp |v| := by
+    Real.exp v ≤ 1 + v + v ^ (2 : ℕ) * Real.exp |v| := by
   by_cases hv : v = 0
   · subst v
     norm_num
   · have hid := GaloisForLFunctions.HTGeometry.expDivTwo_eq_of_ne hv
     have hdiv := expDivTwo_le_exp_abs v
     calc
-      Real.exp v = 1 + v + v ^ 2 *
+      Real.exp v = 1 + v + v ^ (2 : ℕ) *
           GaloisForLFunctions.HTGeometry.expDivTwo v := by
         rw [hid]
         field_simp [pow_ne_zero 2 hv]
         ring
-      _ ≤ 1 + v + v ^ 2 * Real.exp |v| := by gcongr
+      _ ≤ 1 + v + v ^ (2 : ℕ) * Real.exp |v| := by gcongr
 
 /-- Radial displacement differs from real displacement only quadratically on the positive tail. -/
 theorem norm_real_add_le_real_add_re_add_two_mul_normSq
     {x : ℝ} (hx : 1 / 2 ≤ x) (w : ℂ) (hw : ‖w‖ ≤ 1 / 8) :
-    ‖(x : ℂ) + w‖ ≤ x + w.re + 2 * ‖w‖ ^ 2 := by
+    ‖(x : ℂ) + w‖ ≤ x + w.re + 2 * ‖w‖ ^ (2 : ℕ) := by
   let A : ℝ := x + w.re
-  let q : ℝ := 2 * ‖w‖ ^ 2
+  let q : ℝ := 2 * ‖w‖ ^ (2 : ℕ)
   have hre : -‖w‖ ≤ w.re := by
     have h := Complex.abs_re_le_norm w
     rw [abs_le] at h
@@ -121,15 +121,15 @@ theorem norm_real_add_le_real_add_re_add_two_mul_normSq
     dsimp [A]
     linarith
   have hq : 0 ≤ q := by dsimp [q]; positivity
-  have him : w.im ^ 2 ≤ ‖w‖ ^ 2 := by
+  have him : w.im ^ (2 : ℕ) ≤ ‖w‖ ^ (2 : ℕ) := by
     have h := Complex.abs_im_le_norm w
     have hsq := (sq_le_sq₀ (abs_nonneg w.im) (norm_nonneg w)).2 h
     simpa [sq_abs] using hsq
-  have hnormSq : ‖(x : ℂ) + w‖ ^ 2 = A ^ 2 + w.im ^ 2 := by
+  have hnormSq : ‖(x : ℂ) + w‖ ^ (2 : ℕ) = A ^ (2 : ℕ) + w.im ^ (2 : ℕ) := by
     rw [Complex.sq_norm]
     simp [Complex.normSq, A]
     ring
-  have hsquare : ‖(x : ℂ) + w‖ ^ 2 ≤ (A + q) ^ 2 := by
+  have hsquare : ‖(x : ℂ) + w‖ ^ (2 : ℕ) ≤ (A + q) ^ (2 : ℕ) := by
     rw [hnormSq]
     dsimp [q]
     nlinarith [sq_nonneg ‖w‖]
@@ -148,7 +148,7 @@ theorem rapidExponentialFockPotential_bregman_upper_local
   let v : ℝ := 2 * a * (r - x)
   have hx0 : 0 ≤ x := by linarith
   have hδ : δ ≤ 1 / 8 := rapidExponentialFockLocalRadius_le_one_eighth ha hx0
-  have hrUpper : r ≤ x + w.re + 2 * ‖w‖ ^ 2 :=
+  have hrUpper : r ≤ x + w.re + 2 * ‖w‖ ^ (2 : ℕ) :=
     norm_real_add_le_real_add_re_add_two_mul_normSq hx w (hw.trans hδ)
   have hrAbs : |r - x| ≤ ‖w‖ := by
     dsimp [r]
@@ -195,90 +195,90 @@ theorem rapidExponentialFockPotential_bregman_upper_local
     congr 1
     dsimp [v]
     ring
-  have hvUpper : v ≤ 2 * a * w.re + 4 * a * ‖w‖ ^ 2 := by
+  have hvUpper : v ≤ 2 * a * w.re + 4 * a * ‖w‖ ^ (2 : ℕ) := by
     dsimp [v]
     nlinarith
   have hlocalSq :
-      rapidExponentialFockPotential a x * ‖w‖ ^ 2 ≤
-        (8 * (a + 1))⁻¹ ^ 2 := by
-    have hsq : ‖w‖ ^ 2 ≤ δ ^ 2 :=
+      rapidExponentialFockPotential a x * ‖w‖ ^ (2 : ℕ) ≤
+        (8 * (a + 1))⁻¹ ^ (2 : ℕ) := by
+    have hsq : ‖w‖ ^ (2 : ℕ) ≤ δ ^ (2 : ℕ) :=
       (sq_le_sq₀ (norm_nonneg _) (rapidExponentialFockLocalRadius_pos ha).le).2 hw
     calc
-      rapidExponentialFockPotential a x * ‖w‖ ^ 2 ≤
-          rapidExponentialFockPotential a x * δ ^ 2 := by
+      rapidExponentialFockPotential a x * ‖w‖ ^ (2 : ℕ) ≤
+          rapidExponentialFockPotential a x * δ ^ (2 : ℕ) := by
             exact mul_le_mul_of_nonneg_left hsq
               (by unfold rapidExponentialFockPotential; positivity)
-      _ = (8 * (a + 1))⁻¹ ^ 2 := by
+      _ = (8 * (a + 1))⁻¹ ^ (2 : ℕ) := by
         simpa [δ] using rapidExponentialFockPotential_mul_localRadius_sq ha
-  have hvSq : v ^ 2 ≤ 4 * a ^ 2 * ‖w‖ ^ 2 := by
+  have hvSq : v ^ (2 : ℕ) ≤ 4 * a ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) := by
     have hvAbs' : |v| ≤ 2 * a * ‖w‖ := by
       calc
         |v| = 2 * a * |r - x| := by simp [v, abs_mul, abs_of_pos ha]
         _ ≤ 2 * a * ‖w‖ := by gcongr
     have hright : 0 ≤ 2 * a * ‖w‖ := by positivity
     have hsq := (sq_le_sq₀ (abs_nonneg v) hright).2 hvAbs'
-    have hsq' : v ^ 2 ≤ (2 * a * ‖w‖) ^ 2 := by
+    have hsq' : v ^ (2 : ℕ) ≤ (2 * a * ‖w‖) ^ (2 : ℕ) := by
       simpa [sq_abs] using hsq
     nlinarith
   rw [hpotentialIdentity]
   calc
     rapidExponentialFockPotential a x * Real.exp v ≤
         rapidExponentialFockPotential a x *
-          (1 + v + v ^ 2 * Real.exp |v|) := by
+          (1 + v + v ^ (2 : ℕ) * Real.exp |v|) := by
             exact mul_le_mul_of_nonneg_left hexp
               (by unfold rapidExponentialFockPotential; positivity)
     _ ≤ rapidExponentialFockPotential a x +
           rapidExponentialFockRadialSlope a x * w.re +
           rapidExponentialFockPotential a x *
-            ((4 * a + 12 * a ^ 2) * ‖w‖ ^ 2) := by
+            ((4 * a + 12 * a ^ (2 : ℕ)) * ‖w‖ ^ (2 : ℕ)) := by
       have hphi : 0 ≤ rapidExponentialFockPotential a x := by
         unfold rapidExponentialFockPotential
         positivity
-      have hvExp : v ^ 2 * Real.exp |v| ≤
-          12 * a ^ 2 * ‖w‖ ^ 2 := by
+      have hvExp : v ^ (2 : ℕ) * Real.exp |v| ≤
+          12 * a ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) := by
         calc
-          v ^ 2 * Real.exp |v| ≤
-              (4 * a ^ 2 * ‖w‖ ^ 2) * Real.exp |v| := by
+          v ^ (2 : ℕ) * Real.exp |v| ≤
+              (4 * a ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ)) * Real.exp |v| := by
                 gcongr
-          _ ≤ (4 * a ^ 2 * ‖w‖ ^ 2) * 3 := by gcongr
-          _ = 12 * a ^ 2 * ‖w‖ ^ 2 := by ring
+          _ ≤ (4 * a ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ)) * 3 := by gcongr
+          _ = 12 * a ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) := by ring
       have hlinear := mul_le_mul_of_nonneg_left hvUpper hphi
       have hquadratic := mul_le_mul_of_nonneg_left hvExp hphi
       calc
         rapidExponentialFockPotential a x *
-            (1 + v + v ^ 2 * Real.exp |v|) =
+            (1 + v + v ^ (2 : ℕ) * Real.exp |v|) =
             rapidExponentialFockPotential a x +
               rapidExponentialFockPotential a x * v +
               rapidExponentialFockPotential a x *
-                (v ^ 2 * Real.exp |v|) := by ring
+                (v ^ (2 : ℕ) * Real.exp |v|) := by ring
         _ ≤ rapidExponentialFockPotential a x +
               rapidExponentialFockPotential a x *
-                (2 * a * w.re + 4 * a * ‖w‖ ^ 2) +
+                (2 * a * w.re + 4 * a * ‖w‖ ^ (2 : ℕ)) +
               rapidExponentialFockPotential a x *
-                (12 * a ^ 2 * ‖w‖ ^ 2) := by gcongr
+                (12 * a ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ)) := by gcongr
         _ = rapidExponentialFockPotential a x +
               rapidExponentialFockRadialSlope a x * w.re +
               rapidExponentialFockPotential a x *
-                ((4 * a + 12 * a ^ 2) * ‖w‖ ^ 2) := by
+                ((4 * a + 12 * a ^ (2 : ℕ)) * ‖w‖ ^ (2 : ℕ)) := by
           unfold rapidExponentialFockPotential rapidExponentialFockRadialSlope
           ring
     _ ≤ rapidExponentialFockPotential a x +
           rapidExponentialFockRadialSlope a x * w.re + 1 := by
       have hcoef :
-          (4 * a + 12 * a ^ 2) * (8 * (a + 1))⁻¹ ^ 2 ≤ 1 := by
+          (4 * a + 12 * a ^ (2 : ℕ)) * (8 * (a + 1))⁻¹ ^ (2 : ℕ) ≤ 1 := by
         have hden : 0 < 8 * (a + 1) := by positivity
         rw [inv_pow]
         apply (div_le_iff₀ (sq_pos_of_pos hden)).2
         nlinarith [sq_nonneg (a + 1)]
       have hrem :
           rapidExponentialFockPotential a x *
-              ((4 * a + 12 * a ^ 2) * ‖w‖ ^ 2) ≤ 1 := by
+              ((4 * a + 12 * a ^ (2 : ℕ)) * ‖w‖ ^ (2 : ℕ)) ≤ 1 := by
         calc
           rapidExponentialFockPotential a x *
-              ((4 * a + 12 * a ^ 2) * ‖w‖ ^ 2) =
-              (4 * a + 12 * a ^ 2) *
-                (rapidExponentialFockPotential a x * ‖w‖ ^ 2) := by ring
-          _ ≤ (4 * a + 12 * a ^ 2) * (8 * (a + 1))⁻¹ ^ 2 := by
+              ((4 * a + 12 * a ^ (2 : ℕ)) * ‖w‖ ^ (2 : ℕ)) =
+              (4 * a + 12 * a ^ (2 : ℕ)) *
+                (rapidExponentialFockPotential a x * ‖w‖ ^ (2 : ℕ)) := by ring
+          _ ≤ (4 * a + 12 * a ^ (2 : ℕ)) * (8 * (a + 1))⁻¹ ^ (2 : ℕ) := by
             gcongr
           _ ≤ 1 := hcoef
       linarith
@@ -296,8 +296,8 @@ theorem differentiable_rapidExponentialFockTangentGauge
 
 theorem normSq_rapidExponentialFockTangentGauge
     (a x : ℝ) (F : ℂ → ℂ) (z : ℂ) :
-    ‖rapidExponentialFockTangentGauge a x F z‖ ^ 2 =
-      ‖F z‖ ^ 2 *
+    ‖rapidExponentialFockTangentGauge a x F z‖ ^ (2 : ℕ) =
+      ‖F z‖ ^ (2 : ℕ) *
         Real.exp (-2 * rapidExponentialFockRadialSlope a x * (z.re - x)) := by
   unfold rapidExponentialFockTangentGauge
   rw [norm_mul, Complex.norm_exp, mul_pow]
@@ -311,9 +311,9 @@ theorem normSq_rapidExponentialFockTangentGauge
 theorem normSq_rapidExponentialFockTangentGauge_le_weighted
     {a x : ℝ} (ha : 0 < a) (hx : 1 / 2 ≤ x) (F : ℂ → ℂ) (z : ℂ)
     (hz : z ∈ Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x)) :
-    ‖rapidExponentialFockTangentGauge a x F z‖ ^ 2 ≤
+    ‖rapidExponentialFockTangentGauge a x F z‖ ^ (2 : ℕ) ≤
       Real.exp (2 * rapidExponentialFockPotential a x + 2) *
-        (‖F z‖ ^ 2 * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖)) := by
+        (‖F z‖ ^ (2 : ℕ) * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖)) := by
   let w : ℂ := z - x
   have hw : ‖w‖ ≤ rapidExponentialFockLocalRadius a x := by
     exact le_of_lt (by simpa [w, Metric.mem_ball, dist_eq_norm] using hz)
@@ -329,14 +329,14 @@ theorem normSq_rapidExponentialFockTangentGauge_le_weighted
     linarith
   rw [normSq_rapidExponentialFockTangentGauge]
   calc
-    ‖F z‖ ^ 2 *
+    ‖F z‖ ^ (2 : ℕ) *
           Real.exp (-2 * rapidExponentialFockRadialSlope a x * (z.re - x)) ≤
-        ‖F z‖ ^ 2 * Real.exp
+        ‖F z‖ ^ (2 : ℕ) * Real.exp
           (2 * rapidExponentialFockPotential a x + 2 -
             2 * rapidExponentialFockPotential a ‖z‖) := by
       exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp) (sq_nonneg _)
     _ = Real.exp (2 * rapidExponentialFockPotential a x + 2) *
-        (‖F z‖ ^ 2 * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖)) := by
+        (‖F z‖ ^ (2 : ℕ) * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖)) := by
       rw [show 2 * rapidExponentialFockPotential a x + 2 -
           2 * rapidExponentialFockPotential a ‖z‖ =
         (2 * rapidExponentialFockPotential a x + 2) +
@@ -347,10 +347,10 @@ theorem normSq_rapidExponentialFockTangentGauge_le_weighted
 theorem rapidExponentialFock_local_weighted_mean
     {a x : ℝ} (ha : 0 < a) (hx : 1 / 2 ≤ x)
     (F : ℂ → ℂ) (hF : Differentiable ℂ F) :
-    Real.pi * rapidExponentialFockLocalRadius a x ^ 2 * ‖F (x : ℂ)‖ ^ 2 ≤
+    Real.pi * rapidExponentialFockLocalRadius a x ^ (2 : ℕ) * ‖F (x : ℂ)‖ ^ (2 : ℕ) ≤
       Real.exp (2 * rapidExponentialFockPotential a x + 2) *
         ∫ z in Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x),
-          ‖F z‖ ^ 2 * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖) := by
+          ‖F z‖ ^ (2 : ℕ) * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖) := by
   let G : ℂ → ℂ := rapidExponentialFockTangentGauge a x F
   have hG := differentiable_rapidExponentialFockTangentGauge a x F hF
   have hmean := GaloisForLFunctions.HTGeometry.normSq_value_mul_area_le_integral_ball
@@ -361,8 +361,8 @@ theorem rapidExponentialFock_local_weighted_mean
   rw [hGx] at hmean
   let W : ℂ → ℝ := fun z =>
     Real.exp (2 * rapidExponentialFockPotential a x + 2) *
-      (‖F z‖ ^ 2 * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖))
-  have hGint : IntegrableOn (fun z => ‖G z‖ ^ 2)
+      (‖F z‖ ^ (2 : ℕ) * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖))
+  have hGint : IntegrableOn (fun z => ‖G z‖ ^ (2 : ℕ))
       (Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x)) := by
     apply ((hG.continuous.norm.pow 2).continuousOn.integrableOn_compact
       (isCompact_closedBall (x : ℂ) (rapidExponentialFockLocalRadius a x))).mono_set
@@ -379,9 +379,9 @@ theorem rapidExponentialFock_local_weighted_mean
       (isCompact_closedBall (x : ℂ) (rapidExponentialFockLocalRadius a x))).mono_set
     exact Metric.ball_subset_closedBall
   have hint :
-      (∫ z in Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x), ‖G z‖ ^ 2) ≤
+      (∫ z in Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x), ‖G z‖ ^ (2 : ℕ)) ≤
         ∫ z in Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x), W z := by
-    change Integrable (fun z => ‖G z‖ ^ 2)
+    change Integrable (fun z => ‖G z‖ ^ (2 : ℕ))
       (volume.restrict (Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x))) at hGint
     change Integrable W
       (volume.restrict (Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x))) at hWint
@@ -389,13 +389,13 @@ theorem rapidExponentialFock_local_weighted_mean
     filter_upwards [ae_restrict_mem measurableSet_ball] with z hz
     exact normSq_rapidExponentialFockTangentGauge_le_weighted ha hx F z hz
   calc
-    Real.pi * rapidExponentialFockLocalRadius a x ^ 2 * ‖F (x : ℂ)‖ ^ 2 ≤
+    Real.pi * rapidExponentialFockLocalRadius a x ^ (2 : ℕ) * ‖F (x : ℂ)‖ ^ (2 : ℕ) ≤
         ∫ z in Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x),
-          ‖G z‖ ^ 2 := hmean
+          ‖G z‖ ^ (2 : ℕ) := hmean
     _ ≤ ∫ z in Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x), W z := hint
     _ = Real.exp (2 * rapidExponentialFockPotential a x + 2) *
         ∫ z in Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x),
-          ‖F z‖ ^ 2 * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖) := by
+          ‖F z‖ ^ (2 : ℕ) * Real.exp (-2 * rapidExponentialFockPotential a ‖z‖) := by
       rw [MeasureTheory.integral_const_mul]
 
 end

@@ -12,9 +12,9 @@ For the explicit nested-radical field used by Shinoda--Suzuki--Takada, put
 `u = (1 + sqrt 5) / 2`, `v = (1 + sqrt 41) / 2`, and let `z` be the top
 radical.  The identities
 
-* `u^2 = u + 1`,
-* `v^2 = v + 10`,
-* `z^2 = 2 (u + 2) (35 + 12 v)`, and
+* `u^(2 : ℕ) = u + 1`,
+* `v^(2 : ℕ) = v + 10`,
+* `z^(2 : ℕ) = 2 (u + 2) (35 + 12 v)`, and
 * `(u + 2)(35 + 12v)(3-u)(47-12v) = 1025`
 
 show that the second factor in the radical is a two-adic unit.  If a prime

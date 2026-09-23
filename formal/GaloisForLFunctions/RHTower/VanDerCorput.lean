@@ -102,7 +102,7 @@ theorem firstDerivTest {φ : ℝ → ℝ} {A : ℝ → ℂ} {a b lam : ℝ}
     exact continuous_const.mul (continuous_ofReal.comp hφ.continuous)
   set g : ℝ → ℂ := fun t => A t / (Complex.I * ↑(deriv φ t)) with hgdef
   set g' : ℝ → ℂ := fun t => (deriv A t * (Complex.I * ↑(deriv φ t)) -
-    A t * (Complex.I * ↑(deriv (deriv φ) t))) / (Complex.I * ↑(deriv φ t))^2
+    A t * (Complex.I * ↑(deriv (deriv φ) t))) / (Complex.I * ↑(deriv φ t))^(2 : ℕ)
   have hIφ'd : ∀ t ∈ Set.Icc a b, HasDerivAt (fun t => Complex.I * ↑(deriv φ t))
       (Complex.I * ↑(deriv (deriv φ) t)) t := fun t ht =>
     ((hφ2d t).ofReal_comp).const_mul Complex.I
@@ -183,16 +183,16 @@ theorem firstDerivTest {φ : ℝ → ℝ} {A : ℝ → ℂ} {a b lam : ℝ}
       _ ≤ ‖A a‖ + ∫ x in a..t, ‖deriv A x‖ := by linarith [h3]
       _ ≤ ‖A a‖ + ∫ x in a..b, ‖deriv A x‖ := by linarith [h4]
   -- ∫ φ''/φ'² = 1/φ'(a) − 1/φ'(b) ≤ 2/λ
-  have hint_phi2 : (∫ t in a..b, (deriv (deriv φ) t) / (deriv φ t)^2) ≤ 2 / lam := by
+  have hint_phi2 : (∫ t in a..b, (deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) ≤ 2 / lam := by
     have h1 := intervalIntegral.integral_eq_sub_of_hasDerivAt
-      (f := fun t => (deriv φ t)⁻¹) (f' := fun t => -(deriv (deriv φ) t) / (deriv φ t)^2)
+      (f := fun t => (deriv φ t)⁻¹) (f' := fun t => -(deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ))
       (fun x hx => (hφ2d x).inv (hφ'ne x (show x ∈ Set.Icc a b from by rwa [uIcc_of_le hab] at hx)))
       ((intervalIntegrable_of_continuousOn_Icc_real hab (((hφ2.continuousOn).neg).div
         (hφ1.continuousOn.pow 2) (fun t ht => pow_ne_zero 2 (hφ'ne t ht)))))
-    have hcongr : (fun t => -(deriv (deriv φ) t) / (deriv φ t)^2) =
-        fun t => -((deriv (deriv φ) t) / (deriv φ t)^2) := funext fun t => by ring
+    have hcongr : (fun t => -(deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) =
+        fun t => -((deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) := funext fun t => by ring
     rw [hcongr, intervalIntegral.integral_neg] at h1
-    have h2 : (∫ t in a..b, (deriv (deriv φ) t) / (deriv φ t)^2) =
+    have h2 : (∫ t in a..b, (deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) =
         (deriv φ a)⁻¹ - (deriv φ b)⁻¹ := by linarith [h1]
     rw [h2]
     have h3 : |(deriv φ a)⁻¹| ≤ 1 / lam := by
@@ -209,9 +209,9 @@ theorem firstDerivTest {φ : ℝ → ℝ} {A : ℝ → ℂ} {a b lam : ℝ}
       _ = 2 / lam := by ring
   -- ∫ ‖g'‖
   have hg'_norm : ∀ t ∈ Set.Icc a b, ‖g' t‖ ≤ ‖deriv A t‖ / lam +
-      (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^2) := by
+      (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) := by
     intro t ht
-    have hden : ‖(Complex.I * ↑(deriv φ t))^2‖ = (deriv φ t)^2 := by
+    have hden : ‖(Complex.I * ↑(deriv φ t))^(2 : ℕ)‖ = (deriv φ t)^(2 : ℕ) := by
       rw [norm_pow, norm_mul, norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs, sq_abs]
     have hnum : ‖deriv A t * (Complex.I * ↑(deriv φ t)) -
         A t * (Complex.I * ↑(deriv (deriv φ) t))‖ ≤
@@ -224,36 +224,36 @@ theorem firstDerivTest {φ : ℝ → ℝ} {A : ℝ → ℂ} {a b lam : ℝ}
             simp only [norm_mul, norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
         _ = ‖deriv A t‖ * |deriv φ t| + ‖A t‖ * (deriv (deriv φ) t) := by
             simp only [abs_of_nonneg (hnn t ht)]
-    have hb1 : ‖deriv A t‖ * |deriv φ t| / (deriv φ t)^2 = ‖deriv A t‖ / |deriv φ t| := by
+    have hb1 : ‖deriv A t‖ * |deriv φ t| / (deriv φ t)^(2 : ℕ) = ‖deriv A t‖ / |deriv φ t| := by
       rw [← sq_abs]
       field_simp [abs_ne_zero.mpr (hφ'ne t ht)]
     have hb2 : ‖deriv A t‖ / |deriv φ t| ≤ ‖deriv A t‖ / lam :=
       div_le_div_of_nonneg_left (norm_nonneg _) hlam (hbound t ht)
-    have hb3 : ‖A t‖ * (deriv (deriv φ) t) / (deriv φ t)^2 ≤
-        (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^2) := by
-      have hφ2nn : 0 ≤ (deriv (deriv φ) t) / (deriv φ t)^2 :=
+    have hb3 : ‖A t‖ * (deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ) ≤
+        (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) := by
+      have hφ2nn : 0 ≤ (deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ) :=
         div_nonneg (hnn t ht) (sq_nonneg _)
-      have hshape : ‖A t‖ * (deriv (deriv φ) t) / (deriv φ t)^2 =
-          ‖A t‖ * ((deriv (deriv φ) t) / (deriv φ t)^2) := by ring
+      have hshape : ‖A t‖ * (deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ) =
+          ‖A t‖ * ((deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) := by ring
       rw [hshape]
       exact mul_le_mul_of_nonneg_right (hM t ht) hφ2nn
     calc ‖g' t‖ = ‖deriv A t * (Complex.I * ↑(deriv φ t)) -
-          A t * (Complex.I * ↑(deriv (deriv φ) t))‖ / ‖(Complex.I * ↑(deriv φ t))^2‖ := by
+          A t * (Complex.I * ↑(deriv (deriv φ) t))‖ / ‖(Complex.I * ↑(deriv φ t))^(2 : ℕ)‖ := by
           rw [norm_div]
-      _ ≤ (‖deriv A t‖ * |deriv φ t| + ‖A t‖ * (deriv (deriv φ) t)) / (deriv φ t)^2 := by
+      _ ≤ (‖deriv A t‖ * |deriv φ t| + ‖A t‖ * (deriv (deriv φ) t)) / (deriv φ t)^(2 : ℕ) := by
           rw [hden]
           exact div_le_div_of_nonneg_right hnum (sq_nonneg _)
-      _ = ‖deriv A t‖ * |deriv φ t| / (deriv φ t)^2 +
-          ‖A t‖ * (deriv (deriv φ) t) / (deriv φ t)^2 := by
+      _ = ‖deriv A t‖ * |deriv φ t| / (deriv φ t)^(2 : ℕ) +
+          ‖A t‖ * (deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ) := by
           rw [add_div]
       _ ≤ ‖deriv A t‖ / lam +
-          (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^2) := by
+          (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) := by
           linarith [hb1 ▸ hb2, hb3]
   have hInt_g' : (∫ t in a..b, ‖g' t‖) ≤
       (∫ t in a..b, ‖deriv A t‖) / lam +
       (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * (2 / lam) := by
     have hii1 : IntervalIntegrable (fun t => ‖deriv A t‖ / lam +
-        (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^2))
+        (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)))
         volume a b := by
       apply intervalIntegrable_of_continuousOn_Icc_real hab
       apply ContinuousOn.add
@@ -264,14 +264,14 @@ theorem firstDerivTest {φ : ℝ → ℝ} {A : ℝ → ℂ} {a b lam : ℝ}
       intervalIntegrable_of_continuousOn_Icc_real hab (hg'c.norm)
     have hmono := intervalIntegral.integral_mono_on hab hii0 hii1 hg'_norm
     have heq : (∫ t in a..b, (‖deriv A t‖ / lam +
-        (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^2))) =
+        (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * ((deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)))) =
         (∫ t in a..b, ‖deriv A t‖) / lam +
         (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) *
-          (∫ t in a..b, (deriv (deriv φ) t) / (deriv φ t)^2) := by
+          (∫ t in a..b, (deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) := by
       have hii1a : IntervalIntegrable (fun t => ‖deriv A t‖ / lam) volume a b :=
         intervalIntegrable_of_continuousOn_Icc_real hab ((hA1.norm.continuousOn).div_const lam)
       have hii1b : IntervalIntegrable (fun t => (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) *
-          ((deriv (deriv φ) t) / (deriv φ t)^2)) volume a b :=
+          ((deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ))) volume a b :=
         intervalIntegrable_of_continuousOn_Icc_real hab
           (((hφ2.continuousOn).div (hφ1.continuousOn.pow 2) (fun t ht =>
             pow_ne_zero 2 (hφ'ne t ht))).const_mul (‖A a‖ + ∫ x in a..b, ‖deriv A x‖))
@@ -280,7 +280,7 @@ theorem firstDerivTest {φ : ℝ → ℝ} {A : ℝ → ℂ} {a b lam : ℝ}
       exact heq1
     rw [heq] at hmono
     have h5 : (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) *
-          (∫ t in a..b, (deriv (deriv φ) t) / (deriv φ t)^2) ≤
+          (∫ t in a..b, (deriv (deriv φ) t) / (deriv φ t)^(2 : ℕ)) ≤
         (‖A a‖ + ∫ x in a..b, ‖deriv A x‖) * (2 / lam) := by
       apply mul_le_mul_of_nonneg_left hint_phi2
       have h6 : 0 ≤ ∫ x in a..b, ‖deriv A x‖ :=
@@ -617,7 +617,7 @@ theorem norm_integral_cexp_ofReal_mul_I_le_mono
   set V : ℝ → ℂ := fun t => Complex.exp ((g t : ℂ) * I) with hVdef
   set V' : ℝ → ℂ := fun t => Complex.exp ((g t : ℂ) * I) * ((g' t : ℂ) * I) with hV'def
   set U : ℝ → ℂ := fun t => ((g' t : ℂ) * I)⁻¹ with hUdef
-  set U' : ℝ → ℂ := fun t => -(((g'' t : ℂ) * I) / ((g' t : ℂ) * I) ^ 2) with hU'def
+  set U' : ℝ → ℂ := fun t => -(((g'' t : ℂ) * I) / ((g' t : ℂ) * I) ^ (2 : ℕ)) with hU'def
   have hVderiv : ∀ x ∈ Set.uIcc a b, HasDerivAt V (V' x) x := fun x hx =>
     (((hg x hx).ofReal_comp).mul_const I).cexp
   have hUderiv : ∀ x ∈ Set.uIcc a b, HasDerivAt U (U' x) x := by
@@ -627,13 +627,13 @@ theorem norm_integral_cexp_ofReal_mul_I_le_mono
     have h2 := (hasDerivAt_inv (hg'ne x hx)).comp x hw
     rw [hU'def, hUdef]
     change HasDerivAt (fun t : ℝ => ((g' t : ℂ) * I)⁻¹)
-      (-(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ 2)) x
+      (-(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ (2 : ℕ))) x
     have hfun :
         (fun t : ℝ => ((g' t : ℂ) * I)⁻¹) =
           (fun y : ℂ => y⁻¹) ∘ fun t : ℝ => (g' t : ℂ) * I := rfl
     have hcoeff :
-        -(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ 2) =
-          -(((g' x : ℂ) * I) ^ 2)⁻¹ * ((g'' x : ℂ) * I) := by
+        -(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ (2 : ℕ)) =
+          -(((g' x : ℂ) * I) ^ (2 : ℕ))⁻¹ * ((g'' x : ℂ) * I) := by
       rw [div_eq_mul_inv]
       ring
     rw [hfun, hcoeff]
@@ -642,7 +642,7 @@ theorem norm_integral_cexp_ofReal_mul_I_le_mono
   have hUnorm : ∀ x ∈ Set.uIcc a b, ‖U x‖ = (g' x)⁻¹ := by
     intro x hx; rw [hUdef, norm_inv, norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
       Real.norm_eq_abs, abs_of_pos (hg'pos x hx)]
-  have hU'norm : ∀ x ∈ Set.uIcc a b, ‖U' x‖ = g'' x / (g' x) ^ 2 := by
+  have hU'norm : ∀ x ∈ Set.uIcc a b, ‖U' x‖ = g'' x / (g' x) ^ (2 : ℕ) := by
     intro x hx; rw [hU'def, norm_neg, norm_div, norm_mul, Complex.norm_I, mul_one,
       Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hmono x hx)]
     rw [norm_pow, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
@@ -686,25 +686,25 @@ theorem norm_integral_cexp_ofReal_mul_I_le_mono
             hUnorm b Set.right_mem_uIcc, hUnorm a Set.left_mem_uIcc]
       _ = (g' a)⁻¹ + (g' b)⁻¹ := by ring
   have hFTCderiv : ∀ x ∈ Set.uIcc a b,
-      HasDerivAt (fun t => -(g' t)⁻¹) (g'' x / (g' x) ^ 2) x := by
+      HasDerivAt (fun t => -(g' t)⁻¹) (g'' x / (g' x) ^ (2 : ℕ)) x := by
     intro x hx
     have hi := ((hg' x hx).inv (hg'pos x hx).ne').neg
     have hfun : (fun t : ℝ => -(g' t)⁻¹) = -g'⁻¹ := by
       funext t
       rfl
-    have hcoeff : g'' x / (g' x) ^ 2 = -(-g'' x / (g' x) ^ 2) := by ring
+    have hcoeff : g'' x / (g' x) ^ (2 : ℕ) = -(-g'' x / (g' x) ^ (2 : ℕ)) := by ring
     rw [hfun, hcoeff]
     exact hi
-  have hFTCint : IntervalIntegrable (fun t => g'' t / (g' t) ^ 2) volume a b := by
+  have hFTCint : IntervalIntegrable (fun t => g'' t / (g' t) ^ (2 : ℕ)) volume a b := by
     apply ContinuousOn.intervalIntegrable
     exact ContinuousOn.div hg''c (hg'c.pow 2) (fun x hx => pow_ne_zero _ (hg'pos x hx).ne')
   have hintUV : ‖∫ x in a..b, U' x * V x‖ ≤ (g' a)⁻¹ - (g' b)⁻¹ := by
     calc ‖∫ x in a..b, U' x * V x‖
         ≤ ∫ x in a..b, ‖U' x * V x‖ := intervalIntegral.norm_integral_le_integral_norm hab
-      _ = ∫ x in a..b, g'' x / (g' x) ^ 2 := by
+      _ = ∫ x in a..b, g'' x / (g' x) ^ (2 : ℕ) := by
           apply intervalIntegral.integral_congr
           intro x hx
-          show ‖U' x * V x‖ = g'' x / (g' x) ^ 2
+          show ‖U' x * V x‖ = g'' x / (g' x) ^ (2 : ℕ)
           rw [norm_mul, hVnorm, mul_one, hU'norm x hx]
       _ = (g' a)⁻¹ - (g' b)⁻¹ := by
           have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hFTCderiv hFTCint

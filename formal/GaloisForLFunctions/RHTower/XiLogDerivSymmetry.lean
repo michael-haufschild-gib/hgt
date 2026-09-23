@@ -27,11 +27,11 @@ namespace RHTower
 The two derivative symmetries `deriv_xi_conj` and `deriv_xi_one_sub` they rest on are
 `RHTower.XiEdgeLogDerivativeBlindness`. -/
 
-theorem logDeriv_xi_conj (s : ℂ) :
+theorem logDeriv_xi_conj_xiLogDerivSymmetry (s : ℂ) :
     logDeriv xi ((starRingEnd ℂ) s) = (starRingEnd ℂ) (logDeriv xi s) := by
   rw [logDeriv_apply, logDeriv_apply, deriv_xi_conj, xi_conj, ← map_div₀]
 
-theorem logDeriv_xi_one_sub (s : ℂ) : logDeriv xi (1 - s) = -logDeriv xi s := by
+theorem logDeriv_xi_one_sub_xiLogDerivSymmetry (s : ℂ) : logDeriv xi (1 - s) = -logDeriv xi s := by
   rw [logDeriv_apply, logDeriv_apply, deriv_xi_one_sub, xi_one_sub, neg_div]
 
 /-! ## The four folding identities -/
@@ -40,14 +40,14 @@ theorem re_logDeriv_xi_conj_line (a y : ℝ) :
     (logDeriv xi ((a : ℂ) - (y : ℂ) * I)).re = (logDeriv xi ((a : ℂ) + (y : ℂ) * I)).re := by
   have hconj : ((a : ℂ) - (y : ℂ) * I) = (starRingEnd ℂ) ((a : ℂ) + (y : ℂ) * I) := by
     simp [Complex.ext_iff]
-  rw [hconj, logDeriv_xi_conj]
+  rw [hconj, logDeriv_xi_conj_xiLogDerivSymmetry]
   simp
 
 theorem im_logDeriv_xi_conj_line (a y : ℝ) :
     (logDeriv xi ((a : ℂ) - (y : ℂ) * I)).im = -(logDeriv xi ((a : ℂ) + (y : ℂ) * I)).im := by
   have hconj : ((a : ℂ) - (y : ℂ) * I) = (starRingEnd ℂ) ((a : ℂ) + (y : ℂ) * I) := by
     simp [Complex.ext_iff]
-  rw [hconj, logDeriv_xi_conj]
+  rw [hconj, logDeriv_xi_conj_xiLogDerivSymmetry]
   simp
 
 theorem re_logDeriv_xi_reflect_line (a y : ℝ) :
@@ -56,7 +56,7 @@ theorem re_logDeriv_xi_reflect_line (a y : ℝ) :
   have hrw : (((1 - a : ℝ) : ℂ) + (y : ℂ) * I)
       = 1 - (starRingEnd ℂ) ((a : ℂ) + (y : ℂ) * I) := by
     simp [Complex.ext_iff]
-  rw [hrw, logDeriv_xi_one_sub, logDeriv_xi_conj]
+  rw [hrw, logDeriv_xi_one_sub_xiLogDerivSymmetry, logDeriv_xi_conj_xiLogDerivSymmetry]
   simp
 
 theorem im_logDeriv_xi_reflect_segment (x T : ℝ) :
@@ -65,7 +65,7 @@ theorem im_logDeriv_xi_reflect_segment (x T : ℝ) :
   have hrw : (((1 - x : ℝ) : ℂ) + (T : ℂ) * I)
       = 1 - (starRingEnd ℂ) ((x : ℂ) + (T : ℂ) * I) := by
     simp [Complex.ext_iff]
-  rw [hrw, logDeriv_xi_one_sub, logDeriv_xi_conj]
+  rw [hrw, logDeriv_xi_one_sub_xiLogDerivSymmetry, logDeriv_xi_conj_xiLogDerivSymmetry]
   simp
 
 end RHTower

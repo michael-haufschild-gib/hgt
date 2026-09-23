@@ -50,7 +50,7 @@ theorem intervalIntegrable_analytic_vertical {f : ℂ → ℂ} {U : Set ℂ}
 
 /-- The Perron kernel `x^s/s²` is analytic on the right half-plane. -/
 theorem analyticOnNhd_perron_kernel {x : ℝ} (hx : 0 < x) :
-    AnalyticOnNhd ℂ (fun s : ℂ => (x : ℂ) ^ s / s ^ 2)
+    AnalyticOnNhd ℂ (fun s : ℂ => (x : ℂ) ^ s / s ^ (2 : ℕ))
       {s : ℂ | 0 < s.re} := by
   have hx0 : (x : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (ne_of_gt hx)
   intro z hz
@@ -78,7 +78,7 @@ theorem rectIntegral_perron_eq {x : ℝ} (hx : 0 < x) {z₁ z₂ : ℂ}
     (hzf : ∀ s : ℂ, s.re ∈ Set.uIcc z₁.re z₂.re →
       s.im ∈ Set.uIcc z₁.im z₂.im → s ≠ 1 → riemannZeta s ≠ 0) :
     rectIntegral (fun s : ℂ =>
-        - deriv riemannZeta s / riemannZeta s * ((x : ℂ) ^ s / s ^ 2))
+        - deriv riemannZeta s / riemannZeta s * ((x : ℂ) ^ s / s ^ (2 : ℕ)))
       z₁ z₂ = 2 * Real.pi * I * x := by
   have hrle : z₁.re ≤ z₂.re := by linarith
   have himle : z₁.im ≤ z₂.im := by linarith
@@ -129,7 +129,7 @@ theorem rectIntegral_perron_eq {x : ℝ} (hx : 0 < x) {z₁ z₂ : ℂ}
           (Complex.mem_reProdIm.1 hs).2 hs1)
   -- analyticity of the two summands
   have hP : AnalyticOnNhd ℂ
-      (fun s : ℂ => (x : ℂ) ^ s / s ^ 2 * (s - 1)⁻¹)
+      (fun s : ℂ => (x : ℂ) ^ s / s ^ (2 : ℕ) * (s - 1)⁻¹)
       ({s : ℂ | 0 < s.re} \ {1}) := by
     intro z hz
     exact (analyticOnNhd_perron_kernel hx z hz.1).mul
@@ -137,7 +137,7 @@ theorem rectIntegral_perron_eq {x : ℝ} (hx : 0 < x) {z₁ z₂ : ℂ}
         (sub_ne_zero.2 hz.2))
   have hG : AnalyticOnNhd ℂ
       (fun s : ℂ => - (deriv zetaPoleUnit s / zetaPoleUnit s)
-        * ((x : ℂ) ^ s / s ^ 2))
+        * ((x : ℂ) ^ s / s ^ (2 : ℕ)))
       ({s : ℂ | 0 < s.re} ∩ {s : ℂ | zetaPoleUnit s ≠ 0}) := by
     intro z hz
     exact (((differentiable_zetaPoleUnit.analyticAt z).deriv.div
@@ -180,24 +180,24 @@ theorem rectIntegral_perron_eq {x : ℝ} (hx : 0 < x) {z₁ z₂ : ℂ}
       ⊆ {s : ℂ | 0 < s.re} \ {1} := fun s hs => ⟨hsub0 hs.1, hs.2⟩
   -- the pointwise split on the punctured rectangle
   have hpt : ∀ s ∈ (uIcc z₁.re z₂.re ×ℂ uIcc z₁.im z₂.im) \ {1},
-      - deriv riemannZeta s / riemannZeta s * ((x : ℂ) ^ s / s ^ 2)
-        = (x : ℂ) ^ s / s ^ 2 * (s - 1)⁻¹
+      - deriv riemannZeta s / riemannZeta s * ((x : ℂ) ^ s / s ^ (2 : ℕ))
+        = (x : ℂ) ^ s / s ^ (2 : ℕ) * (s - 1)⁻¹
           + - (deriv zetaPoleUnit s / zetaPoleUnit s)
-            * ((x : ℂ) ^ s / s ^ 2) := by
+            * ((x : ℂ) ^ s / s ^ (2 : ℕ)) := by
     intro s hs
     have hs1 : s ≠ 1 := hs.2
     have hζ := hzf s (Complex.mem_reProdIm.1 hs.1).1
       (Complex.mem_reProdIm.1 hs.1).2 hs1
-    calc - deriv riemannZeta s / riemannZeta s * ((x : ℂ) ^ s / s ^ 2)
+    calc - deriv riemannZeta s / riemannZeta s * ((x : ℂ) ^ s / s ^ (2 : ℕ))
         = - (deriv riemannZeta s / riemannZeta s)
-            * ((x : ℂ) ^ s / s ^ 2) := by
+            * ((x : ℂ) ^ s / s ^ (2 : ℕ)) := by
           rw [neg_div]
       _ = (1 / (s - 1) - deriv zetaPoleUnit s / zetaPoleUnit s)
-            * ((x : ℂ) ^ s / s ^ 2) := by
+            * ((x : ℂ) ^ s / s ^ (2 : ℕ)) := by
           rw [neg_zeta_logDeriv_eq hs1 hζ]
-      _ = (x : ℂ) ^ s / s ^ 2 * (s - 1)⁻¹
+      _ = (x : ℂ) ^ s / s ^ (2 : ℕ) * (s - 1)⁻¹
             + - (deriv zetaPoleUnit s / zetaPoleUnit s)
-              * ((x : ℂ) ^ s / s ^ 2) := by
+              * ((x : ℂ) ^ s / s ^ (2 : ℕ)) := by
           ring
   -- split the boundary integral
   rw [rectIntegral_congr hpt hSb hSt hSr hSl]
@@ -222,7 +222,7 @@ theorem rectIntegral_perron_eq {x : ℝ} (hx : 0 < x) {z₁ z₂ : ℂ}
   rw [rectIntegral_eq_zero_of_analyticOnNhd hsubG hG, add_zero]
   -- the pole part winds once around `1`
   have hpole := rectIntegral_cauchyFormula_analyticOnNhd
-    (g := fun s : ℂ => (x : ℂ) ^ s / s ^ 2)
+    (g := fun s : ℂ => (x : ℂ) ^ s / s ^ (2 : ℕ))
     (U := {s : ℂ | 0 < s.re}) (p := 1) hsub0
     (analyticOnNhd_perron_kernel hx)
     (by rw [Complex.one_re]; exact h2)

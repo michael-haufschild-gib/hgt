@@ -23,7 +23,7 @@ namespace RHTower
 by any proved upper bound. -/
 def summableLocalizedSurvivalRecurrenceBudget
     (p : ℕ → ℝ) (M Q : ℕ) (tailBound : ℝ) : ℝ :=
-  (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+  (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
       ∑ k ∈ Finset.range (M - 1), p (k + 1) +
     4 * tailBound
 

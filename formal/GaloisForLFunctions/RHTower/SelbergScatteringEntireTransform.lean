@@ -43,14 +43,14 @@ theorem differentiable_casimirTransform : Differentiable ℂ casimirTransform :=
 
 /-- Exact descent identity on the quadratic cover centered at the quarter. -/
 theorem casimirTransform_sq (w : ℂ) :
-    casimirTransform (1 / 4 + w ^ 2) = Complex.cosh (8 * Real.pi * w) := by
+    casimirTransform (1 / 4 + w ^ (2 : ℕ)) = Complex.cosh (8 * Real.pi * w) := by
   simp only [casimirTransform, add_sub_cancel_left]
   exact evenEntireSquareFactor_sq entire_cosh_scaled even_cosh_scaled w
 
 /-- The original scattering Casimir maps to a periodic hyperbolic cosine. -/
 theorem casimirTransform_criticalCasimir (z : ℂ) :
     casimirTransform (criticalCasimir z) = Complex.cosh (4 * Real.pi * z) := by
-  have hk : criticalCasimir z = 1 / 4 + ((z + I / 2) / 2) ^ 2 := by
+  have hk : criticalCasimir z = 1 / 4 + ((z + I / 2) / 2) ^ (2 : ℕ) := by
     dsimp [criticalCasimir]
     ring_nf
     simp only [I_sq]
@@ -63,7 +63,7 @@ theorem casimirTransform_criticalCasimir (z : ℂ) :
 /-- Above the quarter, the native transform is a real hyperbolic cosine. -/
 theorem casimirTransform_of_ge_quarter (lam : ℝ) (hlam : 1 / 4 ≤ lam) :
     casimirTransform lam = (Real.cosh (8 * Real.pi * Real.sqrt (lam - 1 / 4)) : ℂ) := by
-  have hs : (Real.sqrt (lam - 1 / 4) : ℂ) ^ 2 = (lam : ℂ) - 1 / 4 := by
+  have hs : (Real.sqrt (lam - 1 / 4) : ℂ) ^ (2 : ℕ) = (lam : ℂ) - 1 / 4 := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (sub_nonneg.mpr hlam)]
     push_cast
     rfl
@@ -76,7 +76,7 @@ theorem casimirTransform_of_ge_quarter (lam : ℝ) (hlam : 1 / 4 ≤ lam) :
 /-- Below the quarter, the native transform is a real cosine. -/
 theorem casimirTransform_of_le_quarter (lam : ℝ) (hlam : lam ≤ 1 / 4) :
     casimirTransform lam = (Real.cos (8 * Real.pi * Real.sqrt (1 / 4 - lam)) : ℂ) := by
-  have hs : (Real.sqrt (1 / 4 - lam) : ℂ) ^ 2 = 1 / 4 - (lam : ℂ) := by
+  have hs : (Real.sqrt (1 / 4 - lam) : ℂ) ^ (2 : ℕ) = 1 / 4 - (lam : ℂ) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (sub_nonneg.mpr hlam)]
     push_cast
     rfl

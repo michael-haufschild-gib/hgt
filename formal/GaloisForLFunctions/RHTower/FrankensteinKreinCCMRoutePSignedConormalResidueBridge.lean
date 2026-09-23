@@ -180,7 +180,7 @@ theorem frankensteinKreinCCMRoutePSignedConormalColumn_both_orientations
       (xiZeroLineConjEquiv rho) r⟩
 
 /-- Exact balanced-wall obstruction: pairing the two retained reflection orientations cancels all
-radial exponential damping and leaves the polynomial density `r^2`. -/
+radial exponential damping and leaves the polynomial density `r^(2 : ℕ)`. -/
 theorem star_routePXiBaseConormalResidueFeature_mul_lineConj_eq_sq
     (rho : XiDivisorSupport) (r : ℝ) :
     star (routePXiBaseConormalResidueFeature (rho : ℂ) r) *

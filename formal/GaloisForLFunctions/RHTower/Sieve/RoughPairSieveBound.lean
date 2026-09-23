@@ -25,7 +25,7 @@ theorem selbergBoundingSum_ge_mertens (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁
     (hk : Real.exp 1
         * (∑ p ∈ rangePrimes P₁ h, pairClassCount d p / ((p : ℝ) - pairClassCount d p))
         + Real.log 2 ≤ (k : ℝ)) :
-    (1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2
+    (1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
         * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ)))
       ≤ SelbergSieve.selbergBoundingSum (roughPairSieve Y hP₁ h d hz) := by
   classical
@@ -44,12 +44,12 @@ theorem selbergBoundingSum_ge_mertens (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁
   -- the Mertens product from below
   have hmert := prod_rangePrimes_ge P₁ h hP₁h
   have hexp0 : (0 : ℝ) < Real.exp (mertensS h - mertensS P₁) := Real.exp_pos _
-  have hsq : Real.exp (mertensS h - mertensS P₁) ^ 2
-      ≤ (∏ p ∈ rangePrimes P₁ h, ((p : ℝ) / ((p : ℝ) - 1))) ^ 2 :=
+  have hsq : Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
+      ≤ (∏ p ∈ rangePrimes P₁ h, ((p : ℝ) / ((p : ℝ) - 1))) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hexp0.le hmert 2
   -- the two-dimensional Euler factor
   have heuler := prod_pairFactor_ge d hp3
-  have hstep : Real.exp (mertensS h - mertensS P₁) ^ 2
+  have hstep : Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
         * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))
       ≤ ∏ p ∈ rangePrimes P₁ h,
           (pairClassCount d p / ((p : ℝ) - pairClassCount d p) + 1) := by

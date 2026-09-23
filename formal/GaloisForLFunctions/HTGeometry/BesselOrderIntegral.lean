@@ -35,20 +35,20 @@ def modifiedBesselKOrder (s : ℝ) (ν : ℂ) : ℂ :=
   ∫ t : ℝ in Ioi 0, besselOrderKernel s ν t
 
 private theorem sq_div_four_le_cosh {t : ℝ} (ht : 0 ≤ t) :
-    t ^ 2 / 4 ≤ Real.cosh t := by
+    t ^ (2 : ℕ) / 4 ≤ Real.cosh t := by
   have h := Real.pow_div_factorial_le_exp t ht 2
   norm_num [Nat.factorial] at h
   rw [Real.cosh_eq]
   nlinarith [Real.exp_pos (-t)]
 
 private theorem young_linear_le_quadratic (s R t : ℝ) (hs : 0 < s) :
-    R * t ≤ s * t ^ 2 / 8 + 2 * R ^ 2 / s := by
+    R * t ≤ s * t ^ (2 : ℕ) / 8 + 2 * R ^ (2 : ℕ) / s := by
   rw [← mul_le_mul_iff_left₀ hs, add_mul]
   field_simp [hs.ne']
   nlinarith [sq_nonneg (s * t - 4 * R)]
 
 theorem bessel_exponent_bound (s R : ℝ) {t : ℝ} (hs : 0 < s) (ht : 0 ≤ t) :
-    -s * Real.cosh t + R * t ≤ 2 * R ^ 2 / s - s / 8 * t ^ 2 := by
+    -s * Real.cosh t + R * t ≤ 2 * R ^ (2 : ℕ) / s - s / 8 * t ^ (2 : ℕ) := by
   have hc := sq_div_four_le_cosh ht
   have hy := young_linear_le_quadratic s R t hs
   nlinarith
@@ -83,7 +83,7 @@ theorem norm_complex_sinh_le_exp_norm (z : ℂ) :
 theorem norm_besselOrderKernel_le
     {s R t : ℝ} {ν : ℂ} (hs : 0 < s) (ht : 0 ≤ t) (hν : ‖ν‖ ≤ R) :
     ‖besselOrderKernel s ν t‖ ≤
-      Real.exp (2 * R ^ 2 / s) * Real.exp (-(s / 8) * t ^ 2) := by
+      Real.exp (2 * R ^ (2 : ℕ) / s) * Real.exp (-(s / 8) * t ^ (2 : ℕ)) := by
   have hνt : ‖ν * (t : ℂ)‖ ≤ R * t := by
     simpa [norm_mul, abs_of_nonneg ht] using mul_le_mul_of_nonneg_right hν ht
   have hexp :
@@ -99,22 +99,22 @@ theorem norm_besselOrderKernel_le
       mul_le_mul_of_nonneg_left (norm_complex_cosh_le_exp_norm _) (Real.exp_nonneg _)
     _ = Real.exp (-s * Real.cosh t + ‖ν * (t : ℂ)‖) := by
       rw [Real.exp_add]
-    _ ≤ Real.exp (2 * R ^ 2 / s - s / 8 * t ^ 2) := by
+    _ ≤ Real.exp (2 * R ^ (2 : ℕ) / s - s / 8 * t ^ (2 : ℕ)) := by
       gcongr
       calc
         -s * Real.cosh t + ‖ν * (t : ℂ)‖ ≤
             -s * Real.cosh t + R * t := by linarith
-        _ ≤ 2 * R ^ 2 / s - s / 8 * t ^ 2 :=
+        _ ≤ 2 * R ^ (2 : ℕ) / s - s / 8 * t ^ (2 : ℕ) :=
           bessel_exponent_bound s R hs ht
-    _ = Real.exp (2 * R ^ 2 / s) * Real.exp (-(s / 8) * t ^ 2) := by
+    _ = Real.exp (2 * R ^ (2 : ℕ) / s) * Real.exp (-(s / 8) * t ^ (2 : ℕ)) := by
       rw [sub_eq_add_neg, neg_mul, Real.exp_add]
 
 /-- Gaussian-times-linear majorant for the order derivative. -/
 theorem norm_besselOrderKernelDeriv_le
     {s R t : ℝ} {ν : ℂ} (hs : 0 < s) (ht : 0 ≤ t) (hν : ‖ν‖ ≤ R) :
     ‖besselOrderKernelDeriv s ν t‖ ≤
-      Real.exp (2 * R ^ 2 / s) *
-        (|t| * Real.exp (-(s / 8) * t ^ 2)) := by
+      Real.exp (2 * R ^ (2 : ℕ) / s) *
+        (|t| * Real.exp (-(s / 8) * t ^ (2 : ℕ))) := by
   have hνt : ‖ν * (t : ℂ)‖ ≤ R * t := by
     simpa [norm_mul, abs_of_nonneg ht] using mul_le_mul_of_nonneg_right hν ht
   have hexp :
@@ -135,26 +135,26 @@ theorem norm_besselOrderKernelDeriv_le
     _ = |t| * Real.exp (-s * Real.cosh t + ‖ν * (t : ℂ)‖) := by
       rw [Real.exp_add]
       ring
-    _ ≤ |t| * Real.exp (2 * R ^ 2 / s - s / 8 * t ^ 2) := by
+    _ ≤ |t| * Real.exp (2 * R ^ (2 : ℕ) / s - s / 8 * t ^ (2 : ℕ)) := by
       gcongr
       calc
         -s * Real.cosh t + ‖ν * (t : ℂ)‖ ≤
             -s * Real.cosh t + R * t := by linarith
-        _ ≤ 2 * R ^ 2 / s - s / 8 * t ^ 2 :=
+        _ ≤ 2 * R ^ (2 : ℕ) / s - s / 8 * t ^ (2 : ℕ) :=
           bessel_exponent_bound s R hs ht
-    _ = Real.exp (2 * R ^ 2 / s) *
-          (|t| * Real.exp (-(s / 8) * t ^ 2)) := by
+    _ = Real.exp (2 * R ^ (2 : ℕ) / s) *
+          (|t| * Real.exp (-(s / 8) * t ^ (2 : ℕ))) := by
       rw [sub_eq_add_neg, neg_mul, Real.exp_add]
       ring
 
 theorem integrableOn_besselOrderKernel {s : ℝ} (hs : 0 < s) (ν : ℂ) :
     IntegrableOn (besselOrderKernel s ν) (Ioi 0) := by
   let B : ℝ → ℝ := fun t =>
-    Real.exp (2 * ‖ν‖ ^ 2 / s) * Real.exp (-(s / 8) * t ^ 2)
+    Real.exp (2 * ‖ν‖ ^ (2 : ℕ) / s) * Real.exp (-(s / 8) * t ^ (2 : ℕ))
   have hB : Integrable B := by
     simpa [B] using
       (integrable_exp_neg_mul_sq (div_pos hs (by norm_num : (0 : ℝ) < 8))).const_mul
-        (Real.exp (2 * ‖ν‖ ^ 2 / s))
+        (Real.exp (2 * ‖ν‖ ^ (2 : ℕ) / s))
   apply hB.integrableOn.mono'
   · unfold besselOrderKernel
     fun_prop
@@ -164,11 +164,11 @@ theorem integrableOn_besselOrderKernel {s : ℝ} (hs : 0 < s) (ν : ℂ) :
 private theorem integrableOn_besselOrderKernelDeriv_bound
     {s R : ℝ} (hs : 0 < s) :
     IntegrableOn (fun t : ℝ =>
-      Real.exp (2 * R ^ 2 / s) *
-        (|t| * Real.exp (-(s / 8) * t ^ 2))) (Ioi 0) := by
+      Real.exp (2 * R ^ (2 : ℕ) / s) *
+        (|t| * Real.exp (-(s / 8) * t ^ (2 : ℕ)))) (Ioi 0) := by
   have h := (integrable_mul_exp_neg_mul_sq
     (div_pos hs (by norm_num : (0 : ℝ) < 8))).norm.const_mul
-      (Real.exp (2 * R ^ 2 / s))
+      (Real.exp (2 * R ^ (2 : ℕ) / s))
   apply h.integrableOn.congr_fun (fun t _ => ?_) measurableSet_Ioi
   simp [Real.norm_eq_abs, abs_of_nonneg (Real.exp_nonneg _)]
 
@@ -178,8 +178,8 @@ theorem hasDerivAt_modifiedBesselKOrder {s : ℝ} (hs : 0 < s) (ν : ℂ) :
   let R : ℝ := ‖ν‖ + 1
   let S : Set ℂ := Metric.closedBall ν 1
   let bound : ℝ → ℝ := fun t =>
-    Real.exp (2 * R ^ 2 / s) *
-      (|t| * Real.exp (-(s / 8) * t ^ 2))
+    Real.exp (2 * R ^ (2 : ℕ) / s) *
+      (|t| * Real.exp (-(s / 8) * t ^ (2 : ℕ)))
   have hS : S ∈ 𝓝 ν :=
     Metric.closedBall_mem_nhds ν (by norm_num : (0 : ℝ) < 1)
   have hmeas : ∀ᶠ z in 𝓝 ν,

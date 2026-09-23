@@ -32,7 +32,7 @@ theorem mondalComplexPair_sub_conj (re im : ℝ) :
 
 noncomputable def mondalComplexTimeReversedHirotaSymbol
     (δ ρ : ℝ) (omega k l : ℂ) : ℂ :=
-  omega * k + (δ : ℂ) * k ^ 4 + (ρ : ℂ) * l ^ 2
+  omega * k + (δ : ℂ) * k ^ (4 : ℕ) + (ρ : ℂ) * l ^ (2 : ℕ)
 
 theorem mondalComplexTimeReversedHirotaSymbol_conj
     (δ ρ : ℝ) (omega k l : ℂ) :
@@ -47,7 +47,7 @@ theorem mondalComplexTimeReversedHirotaSymbol_pureImaginary
         ((2 * omegaIm : ℝ) * Complex.I)
         ((2 * kIm : ℝ) * Complex.I)
         ((2 * lIm : ℝ) * Complex.I) =
-      ((-4 * omegaIm * kIm + 16 * δ * kIm ^ 4 - 4 * ρ * lIm ^ 2 : ℝ) : ℂ) := by
+      ((-4 * omegaIm * kIm + 16 * δ * kIm ^ (4 : ℕ) - 4 * ρ * lIm ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold mondalComplexTimeReversedHirotaSymbol
   push_cast
   ring_nf
@@ -58,7 +58,7 @@ theorem mondalComplexTimeReversedHirotaSymbol_real
     (δ ρ omegaRe kRe lRe : ℝ) :
     mondalComplexTimeReversedHirotaSymbol δ ρ
         (2 * omegaRe : ℝ) (2 * kRe : ℝ) (2 * lRe : ℝ) =
-      ((4 * omegaRe * kRe + 16 * δ * kRe ^ 4 + 4 * ρ * lRe ^ 2 : ℝ) : ℂ) := by
+      ((4 * omegaRe * kRe + 16 * δ * kRe ^ (4 : ℕ) + 4 * ρ * lRe ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold mondalComplexTimeReversedHirotaSymbol
   push_cast
   ring
@@ -66,10 +66,10 @@ theorem mondalComplexTimeReversedHirotaSymbol_real
 /-! ## Right-moving breather coefficient (31) -/
 
 def mondalPrintedRightBreatherNumerator (β γ n omegaIm q : ℝ) : ℝ :=
-  4 * n * omegaIm + 16 * β * n ^ 4 + 4 * γ * q ^ 2
+  4 * n * omegaIm + 16 * β * n ^ (4 : ℕ) + 4 * γ * q ^ (2 : ℕ)
 
 def mondalPrintedRightBreatherDenominator (β γ m omegaRe p : ℝ) : ℝ :=
-  4 * m * omegaRe - 16 * β * m ^ 4 + 4 * γ * p ^ 2
+  4 * m * omegaRe - 16 * β * m ^ (4 : ℕ) + 4 * γ * p ^ (2 : ℕ)
 
 theorem mondalPrintedRightBreatherNumerator_eq_symbol
     (β γ n omegaIm q : ℝ) :
@@ -98,10 +98,10 @@ theorem mondalPrintedRightBreatherDenominator_eq_symbol
 /-! ## Left-moving breather coefficient (43) -/
 
 def mondalPrintedLeftBreatherNumerator (β γ n omegaIm q : ℝ) : ℝ :=
-  4 * n * omegaIm - 16 * β * n ^ 4 - 4 * γ * q ^ 2
+  4 * n * omegaIm - 16 * β * n ^ (4 : ℕ) - 4 * γ * q ^ (2 : ℕ)
 
 def mondalPrintedLeftBreatherDenominator (β γ m omegaRe p : ℝ) : ℝ :=
-  4 * m * omegaRe + 16 * β * m ^ 4 - 4 * γ * p ^ 2
+  4 * m * omegaRe + 16 * β * m ^ (4 : ℕ) - 4 * γ * p ^ (2 : ℕ)
 
 theorem mondalPrintedLeftBreatherNumerator_eq_symbol
     (β γ n omegaIm q : ℝ) :
@@ -137,20 +137,20 @@ def mondalBreatherTransverseIm (m n slopeRe slopeIm : ℝ) : ℝ :=
 
 def mondalPrintedRightBreatherOmegaRe
     (β γ m n slopeRe slopeIm : ℝ) : ℝ :=
-  β * (m ^ 3 - 3 * m * n ^ 2)
-    - γ * (m * (slopeRe ^ 2 - slopeIm ^ 2) - 2 * n * slopeRe * slopeIm)
+  β * (m ^ (3 : ℕ) - 3 * m * n ^ (2 : ℕ))
+    - γ * (m * (slopeRe ^ (2 : ℕ) - slopeIm ^ (2 : ℕ)) - 2 * n * slopeRe * slopeIm)
 
 def mondalPrintedRightBreatherOmegaIm
     (β γ m n slopeRe slopeIm : ℝ) : ℝ :=
-  β * (3 * m ^ 2 * n - n ^ 3)
-    - γ * (2 * m * slopeRe * slopeIm + n * (slopeRe ^ 2 - slopeIm ^ 2))
+  β * (3 * m ^ (2 : ℕ) * n - n ^ (3 : ℕ))
+    - γ * (2 * m * slopeRe * slopeIm + n * (slopeRe ^ (2 : ℕ) - slopeIm ^ (2 : ℕ)))
 
 theorem mondalPrintedRightBreatherNumerator_onShell_factor
     (β γ m n slopeRe slopeIm : ℝ) :
     mondalPrintedRightBreatherNumerator β γ n
         (mondalPrintedRightBreatherOmegaIm β γ m n slopeRe slopeIm)
         (mondalBreatherTransverseIm m n slopeRe slopeIm) =
-      4 * (m ^ 2 + n ^ 2) * (3 * β * n ^ 2 + γ * slopeIm ^ 2) := by
+      4 * (m ^ (2 : ℕ) + n ^ (2 : ℕ)) * (3 * β * n ^ (2 : ℕ) + γ * slopeIm ^ (2 : ℕ)) := by
   unfold mondalPrintedRightBreatherNumerator mondalPrintedRightBreatherOmegaIm
     mondalBreatherTransverseIm
   ring
@@ -160,7 +160,7 @@ theorem mondalPrintedRightBreatherDenominator_onShell_factor
     mondalPrintedRightBreatherDenominator β γ m
         (mondalPrintedRightBreatherOmegaRe β γ m n slopeRe slopeIm)
         (mondalBreatherTransverseRe m n slopeRe slopeIm) =
-      4 * (m ^ 2 + n ^ 2) * (γ * slopeIm ^ 2 - 3 * β * m ^ 2) := by
+      4 * (m ^ (2 : ℕ) + n ^ (2 : ℕ)) * (γ * slopeIm ^ (2 : ℕ) - 3 * β * m ^ (2 : ℕ)) := by
   unfold mondalPrintedRightBreatherDenominator mondalPrintedRightBreatherOmegaRe
     mondalBreatherTransverseRe
   ring
@@ -178,7 +178,7 @@ theorem mondalPrintedLeftBreatherNumerator_onShell_factor
     mondalPrintedLeftBreatherNumerator β γ n
         (mondalPrintedLeftBreatherOmegaIm β γ m n slopeRe slopeIm)
         (mondalBreatherTransverseIm m n slopeRe slopeIm) =
-      -4 * (m ^ 2 + n ^ 2) * (3 * β * n ^ 2 + γ * slopeIm ^ 2) := by
+      -4 * (m ^ (2 : ℕ) + n ^ (2 : ℕ)) * (3 * β * n ^ (2 : ℕ) + γ * slopeIm ^ (2 : ℕ)) := by
   unfold mondalPrintedLeftBreatherNumerator mondalPrintedLeftBreatherOmegaIm
     mondalPrintedRightBreatherOmegaIm mondalBreatherTransverseIm
   ring
@@ -188,18 +188,18 @@ theorem mondalPrintedLeftBreatherDenominator_onShell_factor
     mondalPrintedLeftBreatherDenominator β γ m
         (mondalPrintedLeftBreatherOmegaRe β γ m n slopeRe slopeIm)
         (mondalBreatherTransverseRe m n slopeRe slopeIm) =
-      -4 * (m ^ 2 + n ^ 2) * (γ * slopeIm ^ 2 - 3 * β * m ^ 2) := by
+      -4 * (m ^ (2 : ℕ) + n ^ (2 : ℕ)) * (γ * slopeIm ^ (2 : ℕ) - 3 * β * m ^ (2 : ℕ)) := by
   unfold mondalPrintedLeftBreatherDenominator mondalPrintedLeftBreatherOmegaRe
     mondalPrintedRightBreatherOmegaRe mondalBreatherTransverseRe
   ring
 
 noncomputable def mondalPhysicalBreatherNumerator
     (betaLog gammaLog n slopeIm : ℝ) : ℝ :=
-  Real.exp gammaLog * slopeIm ^ 2 - 3 * Real.exp betaLog * n ^ 2
+  Real.exp gammaLog * slopeIm ^ (2 : ℕ) - 3 * Real.exp betaLog * n ^ (2 : ℕ)
 
 noncomputable def mondalPhysicalBreatherDenominator
     (betaLog gammaLog mLog slopeIm : ℝ) : ℝ :=
-  Real.exp gammaLog * slopeIm ^ 2 + 3 * Real.exp betaLog * Real.exp mLog ^ 2
+  Real.exp gammaLog * slopeIm ^ (2 : ℕ) + 3 * Real.exp betaLog * Real.exp mLog ^ (2 : ℕ)
 
 noncomputable def mondalPhysicalBreatherInteraction
     (betaLog gammaLog mLog n slopeIm : ℝ) : ℝ :=
@@ -210,7 +210,7 @@ theorem mondalPhysicalBreatherDenominator_pos
     (betaLog gammaLog mLog slopeIm : ℝ) :
     0 < mondalPhysicalBreatherDenominator betaLog gammaLog mLog slopeIm := by
   unfold mondalPhysicalBreatherDenominator
-  have hterm : 0 < 3 * Real.exp betaLog * Real.exp mLog ^ 2 := by positivity
+  have hterm : 0 < 3 * Real.exp betaLog * Real.exp mLog ^ (2 : ℕ) := by positivity
   nlinarith [mul_nonneg (le_of_lt (Real.exp_pos gammaLog)) (sq_nonneg slopeIm)]
 
 theorem mondalPhysicalBreatherInteraction_lt_one
@@ -223,8 +223,8 @@ theorem mondalPhysicalBreatherInteraction_lt_one
   unfold mondalPhysicalBreatherNumerator mondalPhysicalBreatherDenominator
   have hbeta : 0 < Real.exp betaLog := Real.exp_pos betaLog
   have hm : 0 < Real.exp mLog := Real.exp_pos mLog
-  have hsum : 0 < Real.exp mLog ^ 2 + n ^ 2 := by positivity
-  have hgap : 0 < 3 * Real.exp betaLog * (Real.exp mLog ^ 2 + n ^ 2) := by positivity
+  have hsum : 0 < Real.exp mLog ^ (2 : ℕ) + n ^ (2 : ℕ) := by positivity
+  have hgap : 0 < 3 * Real.exp betaLog * (Real.exp mLog ^ (2 : ℕ) + n ^ (2 : ℕ)) := by positivity
   nlinarith
 
 theorem mondalPrintedRightBreatherInteraction_eq_physical
@@ -241,9 +241,9 @@ theorem mondalPrintedRightBreatherInteraction_eq_physical
       mondalPhysicalBreatherInteraction betaLog gammaLog mLog n slopeIm := by
   rw [mondalPrintedRightBreatherNumerator_onShell_factor,
     mondalPrintedRightBreatherDenominator_onShell_factor]
-  have hnorm : Real.exp mLog ^ 2 + n ^ 2 ≠ 0 := by
+  have hnorm : Real.exp mLog ^ (2 : ℕ) + n ^ (2 : ℕ) ≠ 0 := by
     positivity
-  have hcommon : 4 * (Real.exp mLog ^ 2 + n ^ 2) ≠ 0 :=
+  have hcommon : 4 * (Real.exp mLog ^ (2 : ℕ) + n ^ (2 : ℕ)) ≠ 0 :=
     mul_ne_zero (by norm_num) hnorm
   rw [mul_div_mul_left _ _ hcommon]
   unfold mondalPhysicalBreatherInteraction mondalPhysicalBreatherNumerator
@@ -264,9 +264,9 @@ theorem mondalPrintedLeftBreatherInteraction_eq_physical
       mondalPhysicalBreatherInteraction betaLog gammaLog mLog n slopeIm := by
   rw [mondalPrintedLeftBreatherNumerator_onShell_factor,
     mondalPrintedLeftBreatherDenominator_onShell_factor]
-  have hnorm : Real.exp mLog ^ 2 + n ^ 2 ≠ 0 := by
+  have hnorm : Real.exp mLog ^ (2 : ℕ) + n ^ (2 : ℕ) ≠ 0 := by
     positivity
-  have hcommon : -4 * (Real.exp mLog ^ 2 + n ^ 2) ≠ 0 :=
+  have hcommon : -4 * (Real.exp mLog ^ (2 : ℕ) + n ^ (2 : ℕ)) ≠ 0 :=
     mul_ne_zero (by norm_num) hnorm
   rw [mul_div_mul_left _ _ hcommon]
   unfold mondalPhysicalBreatherInteraction mondalPhysicalBreatherNumerator
@@ -291,15 +291,15 @@ theorem mondalPhysicalBreatherTau_negative
   exact sub_neg.mpr hinteraction
 
 noncomputable def mondalBreatherRadialTau (interaction radialExp : ℝ) : ℝ :=
-  1 - 2 * radialExp + interaction * radialExp ^ 2
+  1 - 2 * radialExp + interaction * radialExp ^ (2 : ℕ)
 
 theorem mondalBreatherRadialTau_small_pos (interaction : ℝ) :
     0 < mondalBreatherRadialTau interaction (1 / (3 + |interaction|)) := by
   have hden : 0 < 3 + |interaction| := by positivity
   have hden_ne : 3 + |interaction| ≠ 0 := ne_of_gt hden
   rw [show mondalBreatherRadialTau interaction (1 / (3 + |interaction|)) =
-      (3 + 4 * |interaction| + |interaction| ^ 2 + interaction) /
-        (3 + |interaction|) ^ 2 by
+      (3 + 4 * |interaction| + |interaction| ^ (2 : ℕ) + interaction) /
+        (3 + |interaction|) ^ (2 : ℕ) by
     unfold mondalBreatherRadialTau
     field_simp [hden_ne]
     ring]
@@ -342,7 +342,7 @@ theorem mondalPhysicalBreatherTau_has_zero
   obtain ⟨radialExp, hradialExp, hzero⟩ :=
     intermediate_value_Icc' hradialSmallLe hcont hzeroMem
   have hradialExpPos : 0 < radialExp := lt_of_lt_of_le hradialSmallPos hradialExp.1
-  have hexpTwo : Real.exp (2 * Real.log radialExp) = radialExp ^ 2 := by
+  have hexpTwo : Real.exp (2 * Real.log radialExp) = radialExp ^ (2 : ℕ) := by
     rw [show (2 : ℝ) * Real.log radialExp =
       Real.log radialExp + Real.log radialExp by ring, Real.exp_add,
       Real.exp_log hradialExpPos]
@@ -373,13 +373,13 @@ theorem mondalPositiveBreatherTau_pos (a : ℝ) (z : ℂ) :
   have hexp : 0 < Real.exp z.re := Real.exp_pos z.re
   have hcos : 0 ≤ 1 + Real.cos z.im := by
     linarith [Real.neg_one_le_cos z.im]
-  have hsquare : 0 ≤ (1 - Real.exp z.re) ^ 2 := sq_nonneg _
+  have hsquare : 0 ≤ (1 - Real.exp z.re) ^ (2 : ℕ) := sq_nonneg _
   have hmiddle : 0 ≤ 2 * Real.exp z.re * (1 + Real.cos z.im) := by positivity
-  have hlast : 0 < Real.exp a * Real.exp z.re ^ 2 := by positivity
+  have hlast : 0 < Real.exp a * Real.exp z.re ^ (2 : ℕ) := by positivity
   rw [show mondalRealBreatherTau (mondalPositiveBreatherInteraction a) z =
-      (1 - Real.exp z.re) ^ 2
+      (1 - Real.exp z.re) ^ (2 : ℕ)
         + 2 * Real.exp z.re * (1 + Real.cos z.im)
-        + Real.exp a * Real.exp z.re ^ 2 by
+        + Real.exp a * Real.exp z.re ^ (2 : ℕ) by
     unfold mondalRealBreatherTau mondalPositiveBreatherInteraction
     rw [show (2 : ℝ) * z.re = z.re + z.re by ring, Real.exp_add]
     ring]

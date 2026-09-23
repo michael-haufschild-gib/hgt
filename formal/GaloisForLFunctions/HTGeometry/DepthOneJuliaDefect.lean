@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.ClockDescentAnomaly
 
 For a positive source contraction with scalar coordinate `q`, the depth-one displacement `1 - q`
 is not an arbitrary positive coefficient.  It factors through the canonical Julia/Stinespring
-defect `sqrt (1 - q^2)`, followed by a scalar contraction.  This supplies the local Markov cell
+defect `sqrt (1 - q^(2 : ℕ))`, followed by a scalar contraction.  This supplies the local Markov cell
 required by a conormal-corona integration of source descent anomalies.
 -/
 
@@ -31,19 +31,19 @@ theorem clockDescentAnomaly_eq_clockDisplacement_add_sourceDisplacement
 /-- Exact factorization of a positive depth-one shift displacement through its Julia defect. -/
 theorem depthOneShiftDefect_julia_factor
     {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q ≤ 1) :
-    Real.sqrt (1 - q ^ 2) * Real.sqrt ((1 - q) / (1 + q)) = 1 - q := by
+    Real.sqrt (1 - q ^ (2 : ℕ)) * Real.sqrt ((1 - q) / (1 + q)) = 1 - q := by
   have hminus : 0 ≤ 1 - q := by linarith
   have hplus : 0 < 1 + q := by linarith
-  have hsq : 0 ≤ 1 - q ^ 2 := by nlinarith
+  have hsq : 0 ≤ 1 - q ^ (2 : ℕ) := by nlinarith
   have hratio : 0 ≤ (1 - q) / (1 + q) := div_nonneg hminus hplus.le
   have hsquare :
-      (Real.sqrt (1 - q ^ 2) * Real.sqrt ((1 - q) / (1 + q))) ^ 2 =
-        (1 - q) ^ 2 := by
+      (Real.sqrt (1 - q ^ (2 : ℕ)) * Real.sqrt ((1 - q) / (1 + q))) ^ (2 : ℕ) =
+        (1 - q) ^ (2 : ℕ) := by
     rw [mul_pow, Real.sq_sqrt hsq, Real.sq_sqrt hratio]
     field_simp
     ring
   have hleft :
-      0 ≤ Real.sqrt (1 - q ^ 2) * Real.sqrt ((1 - q) / (1 + q)) :=
+      0 ≤ Real.sqrt (1 - q ^ (2 : ℕ)) * Real.sqrt ((1 - q) / (1 + q)) :=
     mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
   nlinarith
 
@@ -62,7 +62,7 @@ theorem depthOneShiftDefect_residual_contractive
 /-- Exponential source shifts with nonnegative frequency have the exact Julia factorization. -/
 theorem depthOneExponentialShift_julia_factor
     {lambda : ℝ} (hlambda : 0 ≤ lambda) :
-    Real.sqrt (1 - Real.exp (-lambda) ^ 2) *
+    Real.sqrt (1 - Real.exp (-lambda) ^ (2 : ℕ)) *
         Real.sqrt ((1 - Real.exp (-lambda)) / (1 + Real.exp (-lambda))) =
       1 - Real.exp (-lambda) :=
   depthOneShiftDefect_julia_factor (Real.exp_pos _).le

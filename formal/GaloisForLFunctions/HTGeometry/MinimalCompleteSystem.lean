@@ -143,14 +143,14 @@ theorem IsMinimalSystem.exists_isDualSystem [CompleteSpace E] {u : ι → E}
     have hproj : ⟪w, S.starProjection (u i)⟫_𝕜 = 0 :=
       (Submodule.mem_orthogonal' _ _).1 hwmem _ (S.starProjection_apply_mem _)
     have hsplit : u i = w + S.starProjection (u i) := by rw [hw, sub_add_cancel]
-    have hwu : ⟪w, u i⟫_𝕜 = (‖w‖ : 𝕜) ^ 2 := by
+    have hwu : ⟪w, u i⟫_𝕜 = (‖w‖ : 𝕜) ^ (2 : ℕ) := by
       rw [hsplit, inner_add_right, hproj, add_zero, inner_self_eq_norm_sq_to_K]
-    have hnorm : ((‖w‖ : 𝕜)) ^ 2 ≠ 0 := by
+    have hnorm : ((‖w‖ : 𝕜)) ^ (2 : ℕ) ≠ 0 := by
       refine pow_ne_zero 2 ?_
       simpa using hwne
-    have hconj : (starRingEnd 𝕜) (((‖w‖ : 𝕜) ^ 2)⁻¹) = ((‖w‖ : 𝕜) ^ 2)⁻¹ := by
+    have hconj : (starRingEnd 𝕜) (((‖w‖ : 𝕜) ^ (2 : ℕ))⁻¹) = ((‖w‖ : 𝕜) ^ (2 : ℕ))⁻¹ := by
       rw [map_inv₀, map_pow, RCLike.conj_ofReal]
-    refine ⟨((‖w‖ : 𝕜) ^ 2)⁻¹ • w, ?_, ?_⟩
+    refine ⟨((‖w‖ : 𝕜) ^ (2 : ℕ))⁻¹ • w, ?_, ?_⟩
     · intro j hj
       rw [inner_smul_left, hconj]
       have hz : ⟪w, u j⟫_𝕜 = 0 :=

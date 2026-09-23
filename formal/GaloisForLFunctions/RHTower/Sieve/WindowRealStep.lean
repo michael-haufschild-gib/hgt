@@ -49,7 +49,7 @@ theorem windowReal_natCast (f : ℕ → ℝ) (ℓ z : ℕ) :
 /-- The squared window sum at a real start, on a cell, is the term of `dyadicMeanSquare`. -/
 theorem windowReal_sq_eq (f : ℕ → ℝ) {ℓ : ℕ} (hℓ : 1 ≤ ℓ) {z : ℕ} {v : ℝ}
     (h1 : (z : ℝ) ≤ v) (h2 : v < (z : ℝ) + 1) :
-    (windowReal f ℓ v) ^ 2 = fixedWindowSq f ℓ z := by
+    (windowReal f ℓ v) ^ (2 : ℕ) = fixedWindowSq f ℓ z := by
   rw [windowReal_eq f ℓ h1 h2, fixedWindowSq_eq f hℓ z]
 
 end RHTower.Sieve

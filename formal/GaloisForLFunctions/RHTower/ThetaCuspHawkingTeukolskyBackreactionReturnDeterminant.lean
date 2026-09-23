@@ -14,20 +14,20 @@ arXiv:hep-th/0609028, derive the Kodama--Ishibashi scalar and vector potentials 
 massless (`M=0`) problem hypergeometrically.  In `d=4` both gravitational parities have `beta=0`.
 For a Hodge-paired scalar/coexact-vector harmonic on the curvature `-1` horizon,
 
-`k_V^2 = k_S^2 + 1`, hence `Q_V = k_V^2-1 = k_S^2 = Q_S`.
+`k_V^(2 : ℕ) = k_S^(2 : ℕ) + 1`, hence `Q_V = k_V^(2 : ℕ)-1 = k_S^(2 : ℕ) = Q_S`.
 
 Their forbidden-boundary coefficient is therefore exactly the preceding Gamma-product Jost
 function. Xi-divisor descendants under resonance continuation are simple gravitational Jost zeros
 and inverse-Green poles, not Jost poles. They are not asserted to be `L2` horizon modes.
 
 Specializing their full potentials (Eqs. (10)--(13)) to `d=4`, writing
-`x=omega_4 M/r`, `u=r^2/l^2`, and `Q=Q_S=Q_V`, gives the scalar numerator and vector bracket
+`x=omega_4 M/r`, `u=r^(2 : ℕ)/l^(2 : ℕ)`, and `Q=Q_S=Q_V`, gives the scalar numerator and vector bracket
 formalized below.  Their first mass-coordinate split at `x=0` is
 
 `d/dx (B_S-B_V)|_0 = 12/(Q+2)`.
 
-On the physical theta/hyperbolic continuum `Q=1/4+xi^2`, this is strictly positive.  Multiplying
-by normalized absorbed horizon flux `|A_H|^2` therefore excludes a negative radial cubic kernel
+On the physical theta/hyperbolic continuum `Q=1/4+xi^(2 : ℕ)`, this is strictly positive.  Multiplying
+by normalized absorbed horizon flux `|A_H|^(2 : ℕ)` therefore excludes a negative radial cubic kernel
 without KMS, CCR, Krein, or generic passivity.
 
 ## Helicity phase and its no-go
@@ -83,7 +83,7 @@ namespace RHTower
 noncomputable section
 
 /-- Birmingham--Mokhtari's `d=4` scalar-potential numerator after setting
-`mu=Q+2`, `x=omega_4 M/r`, and `u=r^2/l^2`. -/
+`mu=Q+2`, `x=omega_4 M/r`, and `u=r^(2 : ℕ)/l^(2 : ℕ)`. -/
 def d4ScalarU (Q x u : ℝ) : ℝ :=
   288 * u * x ^ 2 + 144 * x ^ 3 + 144 * (Q + 2) * x ^ 2 +
     48 * (Q + 2) ^ 2 * x + 16 * (Q + 2) ^ 2 * Q
@@ -226,7 +226,7 @@ theorem d4ThetaNormalizedAbsorptionCubicRadialKernel_pos_iff
     exact Or.inl ⟨(sq_pos_iff).mpr hamp, d4ThetaBackreactionSplit_pos xi⟩
 
 /-- For a Hodge-paired coexact vector harmonic on a curvature `-1` surface,
-the rough vector-Laplacian eigenvalue is `k_V^2 = k_S^2 + 1`. -/
+the rough vector-Laplacian eigenvalue is `k_V^(2 : ℕ) = k_S^(2 : ℕ) + 1`. -/
 def d4HyperbolicHodgePairedVectorEigenvalue (scalarQ : ℂ) : ℂ := scalarQ + 1
 
 lemma d4HyperbolicHodgePairedEffectiveQ_eq (scalarQ : ℂ) :

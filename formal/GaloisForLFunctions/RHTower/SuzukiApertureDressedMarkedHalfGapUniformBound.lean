@@ -8,7 +8,7 @@ cofinal Ward residual: its total mass could still grow with observer aperture or
 The all-prime wall majorant is in fact independent of both variables.  This module exposes the
 resulting exact total-mass identity and the uniform ceiling
 
-`total halfgap debt ≤ C(h) * (r - m*s)^2`,
+`total halfgap debt ≤ C(h) * (r - m*s)^(2 : ℕ)`,
 
 where `C(h)` is one fixed convergent prime-log square sum.  Consequently the marked halfgap
 channel cannot make the rectangular Ward residual escape to negative infinity at fixed source
@@ -36,7 +36,7 @@ theorem tsum_suzukiCriticalApertureDressedMarkedRootedCompletion_eq
       (∑' pe : Nat.Primes × ℕ,
         Complex.normSq
           (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2)) *
-        (r - m * s) ^ 2 := by
+        (r - m * s) ^ (2 : ℕ) := by
   have hs :=
     summable_normSq_suzukiCriticalApertureBoundaryAtom_allPrime hh ha t
   rw [show (∑' pe : Nat.Primes × ℕ,
@@ -45,12 +45,12 @@ theorem tsum_suzukiCriticalApertureDressedMarkedRootedCompletion_eq
       ∑' pe : Nat.Primes × ℕ,
         Complex.normSq
           (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2) *
-          (r - m * s) ^ 2 by
+          (r - m * s) ^ (2 : ℕ) by
       apply tsum_congr
       intro pe
       exact suzukiCriticalApertureDressedMarkedRootedCompletion_eq
         h a t m d r s pe]
-  exact hs.tsum_mul_right ((r - m * s) ^ 2)
+  exact hs.tsum_mul_right ((r - m * s) ^ (2 : ℕ))
 
 /-- Uniform cofinal ceiling.  Right side is independent of observer aperture `a`, spectral
 height `t`, and halfgap coordinate `d`. -/
@@ -59,10 +59,10 @@ theorem tsum_suzukiCriticalApertureDressedMarkedRootedCompletion_le
     (∑' pe : Nat.Primes × ℕ,
       suzukiCriticalApertureDressedMarkedRootedCompletion
         h a t m d r s pe) ≤
-      (2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+      (2 * ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) *
         (∑' p : Nat.Primes,
-          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹)) *
-        (r - m * s) ^ 2 := by
+          Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹)) *
+        (r - m * s) ^ (2 : ℕ) := by
   rw [tsum_suzukiCriticalApertureDressedMarkedRootedCompletion_eq
     hh ha t m d r s]
   exact mul_le_mul_of_nonneg_right

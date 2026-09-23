@@ -48,13 +48,13 @@ private def mixedThirdSum3 (f f₁ f₂ f₃ f₄ f₅ f₆ : ℝ → ℝ) (y x 
     3 * f₁ y * f₅ (x + y) + f y * f₆ (x + y)
 
 private def diagonalFourthSum (f f₁ f₂ f₃ f₄ : ℝ → ℝ) (z : ℝ) : ℝ :=
-  3 * f₂ z ^ 2 + 4 * f₁ z * f₃ z + f z * f₄ z
+  3 * f₂ z ^ (2 : ℕ) + 4 * f₁ z * f₃ z + f z * f₄ z
 
 private def diagonalFifthSum (f f₁ f₂ f₃ f₄ f₅ : ℝ → ℝ) (z : ℝ) : ℝ :=
   10 * f₂ z * f₃ z + 5 * f₁ z * f₄ z + f z * f₅ z
 
 private def diagonalSixthSum (f f₁ f₂ f₃ f₄ f₅ f₆ : ℝ → ℝ) (z : ℝ) : ℝ :=
-  10 * f₃ z ^ 2 + 15 * f₂ z * f₄ z + 6 * f₁ z * f₅ z + f z * f₆ z
+  10 * f₃ z ^ (2 : ℕ) + 15 * f₂ z * f₄ z + 6 * f₁ z * f₅ z + f z * f₆ z
 
 /-- The mixed fourth jet `∂y²∂x² D(y,x)` of the three-point determinant path. -/
 def threePointCorrelationDeterminantPathMixedFourthJet
@@ -350,7 +350,7 @@ theorem hasDerivAt_threePointCorrelationDeterminantPathSecondJet_y
   have hC := ((hf y).mul hc2).mul_const (f x)
   have hR := ((hc1.mul hc1).add (hc0.mul hc2)).const_mul (2 * f 0)
   have hmain := ((((hA.add hB).add hC).const_mul 2).sub hR).add_const
-    (-2 * f 0 * (f₁ x ^ 2 + f x * f₂ x))
+    (-2 * f 0 * (f₁ x ^ (2 : ℕ) + f x * f₂ x))
   convert! hmain using 1 <;>
     (try funext z) <;> (try dsimp) <;> ring
 
@@ -383,7 +383,7 @@ theorem threePointCorrelationDeterminantPathMixedFourthJetXX_zero
     (h₁ : f₁ 0 = 0) (h₃ : f₃ 0 = 0) :
     threePointCorrelationDeterminantPathMixedFourthJetXX
         f f₁ f₂ f₃ f₄ f₅ f₆ 0 0 =
-      -12 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ 2) := by
+      -12 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ (2 : ℕ)) := by
   simp [threePointCorrelationDeterminantPathMixedFourthJetXX, mixedSecondSum0,
     mixedSecondSum1, mixedSecondSum2, mixedSecondSum3, mixedSecondSum4,
     diagonalSixthSum, h₁, h₃]
@@ -395,7 +395,7 @@ theorem threePointCorrelationDeterminantPathMixedFourthJetYX_zero
     (h₁ : f₁ 0 = 0) (h₃ : f₃ 0 = 0) :
     threePointCorrelationDeterminantPathMixedFourthJetYX
         f f₁ f₂ f₃ f₄ f₅ f₆ 0 0 =
-      -18 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ 2) := by
+      -18 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ (2 : ℕ)) := by
   simp [threePointCorrelationDeterminantPathMixedFourthJetYX, mixedThirdSum0,
     mixedThirdSum1, mixedThirdSum2, mixedThirdSum3, diagonalSixthSum, h₁, h₃]
   ring
@@ -412,7 +412,7 @@ theorem exists_threePointCorrelationDeterminantPath_pos_uniform_square
     (hf₅ : ∀ z, HasDerivAt f₅ (f₆ z) z)
     (hf₆ : Continuous f₆)
     (h₁ : f₁ 0 = 0) (h₃ : f₃ 0 = 0)
-    (h₂ : f₂ 0 < 0) (h₄ : 0 < f 0 * f₄ 0 - f₂ 0 ^ 2) :
+    (h₂ : f₂ 0 < 0) (h₄ : 0 < f 0 * f₄ 0 - f₂ 0 ^ (2 : ℕ)) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ x y : ℝ, 0 < x → x < δ → 0 < y → y < δ →
       0 < threePointCorrelationDeterminantPath f y x := by
   let C := threePointCorrelationDeterminantPathMixedFourthJet f f₁ f₂ f₃ f₄
@@ -458,9 +458,9 @@ theorem exists_threePointCorrelationDeterminantPath_pos_uniform_square
     simp [Cx, threePointCorrelationDeterminantPathMixedFourthJetX, mixedSecondSum0,
       mixedSecondSum1, mixedSecondSum2, mixedSecondSum3, diagonalFifthSum, h₁, h₃]
     ring
-  have hCxxzero : Cxx 0 0 = -12 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ 2) := by
+  have hCxxzero : Cxx 0 0 = -12 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ (2 : ℕ)) := by
     exact threePointCorrelationDeterminantPathMixedFourthJetXX_zero h₁ h₃
-  have hCyxzero : Cyx 0 0 = -18 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ 2) := by
+  have hCyxzero : Cyx 0 0 = -18 * f₂ 0 * (f 0 * f₄ 0 - f₂ 0 ^ (2 : ℕ)) := by
     exact threePointCorrelationDeterminantPathMixedFourthJetYX_zero h₁ h₃
   have hCxxpos : 0 < Cxx 0 0 := by
     rw [hCxxzero]

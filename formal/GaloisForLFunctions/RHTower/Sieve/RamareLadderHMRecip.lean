@@ -21,14 +21,14 @@ noncomputable section
 def ladderHMBoundRecip (M : ℕ) (Q η W volE : ℝ) (j : ℕ) : ℝ :=
   (2 * Real.pi)⁻¹
     * (hmMassRecip ⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ (2 * Real.pi * W) (2 * Real.pi * volE)
-        * ((1 : ℝ) ^ 2 * ((geomCofactorBlock M Q η j).card : ℝ)))
+        * ((1 : ℝ) ^ (2 : ℕ) * ((geomCofactorBlock M Q η j).card : ℝ)))
 
 /-- **The cofactor mean square over a frequency set, with reciprocal kernel decay.** -/
 theorem setIntegral_normSq_cofactorBlock_le_HM_recip (P : Finset ℕ) (M : ℕ) {Q η W : ℝ}
     (hQ : 0 < Q) (hη : 0 ≤ η) (hW : 1 ≤ W) {j : ℕ}
     (hNj : 1 ≤ ⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
+    (∫ w in E, ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
       ≤ ladderHMBoundRecip M Q η W (volume.real E) j := by
   have hsub := geomCofactorBlock_subset_Icc M hQ hη j
   have hbase := setIntegral_normSq_logPoly_le_HM_window_recip (ramareCofactorCoeff P) hNj hsub
@@ -45,10 +45,10 @@ theorem setIntegral_normSq_ramareBilinear_le_ladder_HM_recip {P : Finset ℕ} (M
     (hNj : ∀ j ∈ Finset.range L, 1 ≤ ⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊)
     (hbound : ∀ j ∈ Finset.range L, ∀ w ∈ E,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ V j) :
-    (∫ w in E, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in E, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       ≤ 2 * (L : ℝ) * ∑ j ∈ Finset.range L,
-          V j ^ 2 * ladderHMBoundRecip M Q η W (volume.real E) j
-        + 2 * ∫ w in E, ‖ramareLadderError P M Q η L w‖ ^ 2 := by
+          V j ^ (2 : ℕ) * ladderHMBoundRecip M Q η W (volume.real E) j
+        + 2 * ∫ w in E, ‖ramareLadderError P M Q η L w‖ ^ (2 : ℕ) := by
   refine setIntegral_normSq_ramareBilinear_le_ladder_supMeanSquare (P := P) M hQ hη hL hP
     hEm hEs V (fun j => ladderHMBoundRecip M Q η W (volume.real E) j) hbound ?_
   intro j hj

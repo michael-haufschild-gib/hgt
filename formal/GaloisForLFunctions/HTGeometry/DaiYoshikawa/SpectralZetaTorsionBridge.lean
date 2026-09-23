@@ -11,7 +11,7 @@ small eigenvalues of the Laplacian* (arXiv:2509.06151v2), as a pair of convergen
 function.  Evaluating the two Mellin pieces at `s = 0` turns the second into the first:
 
 ```text
-ζ'(0) = ∫_0^1 (Θ(t) − a₀/t − a₁) dt/t + ∫_1^∞ (Θ(t) − h) dt/t − a₀ + (a₁ − h) γ .
+ζ'(0) = ∫_0^(1 : ℕ) (Θ(t) − a₀/t − a₁) dt/t + ∫_1^∞ (Θ(t) − h) dt/t − a₀ + (a₁ − h) γ .
 ```
 
 So the zeta-regularized log-determinant *is* the pair of integrals of (3.3), up to the explicit

@@ -57,27 +57,27 @@ theorem norm_clockStripStep_le {ρ ρ' Mv Mw : ℝ} (hρ : ρ < ρ') (hMv0 : 0 �
     {V w : ℂ → ℂ} (hw : DifferentiableOn ℂ w (imStrip ρ'))
     (hMw : ∀ z ∈ imStrip ρ', ‖w z‖ ≤ Mw) (hMv : ∀ z ∈ imStrip ρ', ‖V z‖ ≤ Mv)
     {z : ℂ} (hz : |z.im| ≤ ρ) :
-    ‖clockStripStep V w z‖ ≤ (4 / (ρ' - ρ) ^ 2 + Mv / 4) * Mw := by
+    ‖clockStripStep V w z‖ ≤ (4 / (ρ' - ρ) ^ (2 : ℕ) + Mv / 4) * Mw := by
   have hgap : (0 : ℝ) < ρ' - ρ := by linarith
   have hzmem : z ∈ imStrip ρ' := lt_of_le_of_lt hz hρ
-  have hsecond : ‖deriv (deriv w) z‖ ≤ 16 * Mw / (ρ' - ρ) ^ 2 :=
+  have hsecond : ‖deriv (deriv w) z‖ ≤ 16 * Mw / (ρ' - ρ) ^ (2 : ℕ) :=
     norm_deriv_deriv_le_on_imStrip hρ hw hMw hz
   have hpot : ‖V z * w z‖ ≤ Mv * Mw := by
     rw [norm_mul]
     exact mul_le_mul (hMv z hzmem) (hMw z hzmem) (norm_nonneg _) hMv0
-  have htri : ‖deriv (deriv w) z + V z * w z‖ ≤ 16 * Mw / (ρ' - ρ) ^ 2 + Mv * Mw :=
+  have htri : ‖deriv (deriv w) z + V z * w z‖ ≤ 16 * Mw / (ρ' - ρ) ^ (2 : ℕ) + Mv * Mw :=
     le_trans (norm_add_le _ _) (add_le_add hsecond hpot)
   have hdiv : ‖clockStripStep V w z‖
       = ‖deriv (deriv w) z + V z * w z‖ / 4 := by
     rw [clockStripStep, norm_div]
     norm_num
   rw [hdiv]
-  have hfinal : (16 * Mw / (ρ' - ρ) ^ 2 + Mv * Mw) / 4
-      = (4 / (ρ' - ρ) ^ 2 + Mv / 4) * Mw := by
+  have hfinal : (16 * Mw / (ρ' - ρ) ^ (2 : ℕ) + Mv * Mw) / 4
+      = (4 / (ρ' - ρ) ^ (2 : ℕ) + Mv / 4) * Mw := by
     field_simp
     ring
   calc ‖deriv (deriv w) z + V z * w z‖ / 4
-      ≤ (16 * Mw / (ρ' - ρ) ^ 2 + Mv * Mw) / 4 := by linarith
-    _ = (4 / (ρ' - ρ) ^ 2 + Mv / 4) * Mw := hfinal
+      ≤ (16 * Mw / (ρ' - ρ) ^ (2 : ℕ) + Mv * Mw) / 4 := by linarith
+    _ = (4 / (ρ' - ρ) ^ (2 : ℕ) + Mv / 4) * Mw := hfinal
 
 end GaloisForLFunctions.HTGeometry

@@ -11,7 +11,7 @@ frequency. Integrating the actual differential equation yields
 `(alpha + w) T_q(w) = -XiC(w)` throughout the plane.
 
 The reflected response therefore satisfies
-`(alpha^2 - w^2) profileTransform q w = XiC w`.
+`(alpha^(2 : ℕ) - w^(2 : ℕ)) profileTransform q w = XiC w`.
 Its literal integral equals the entire divided-difference expression, including the
 removed points. Horizontal-line Fourier continuity supplies those values. These are
 the actual response transforms needed in the native scalar contour pairing.
@@ -110,7 +110,7 @@ private theorem profileTransform_eq_modes (q : XiZeroCopy) (w : ℂ) :
 
 /-- The exact second-order response identity, without a frequency-strip premise. -/
 theorem profile_transform_equation (q : XiZeroCopy) (w : ℂ) :
-    ((xiSpectralPoint q)^2-w^2)*profileTransform q w = XiC w := by
+    ((xiSpectralPoint q)^(2 : ℕ)-w^(2 : ℕ))*profileTransform q w = XiC w := by
   have h1 := mode_transform_equation q w
   have h2 := mode_transform_equation (xiZeroCopyReflectEquiv q) w
   rw [xiSpectralPoint_reflect] at h2
@@ -134,7 +134,7 @@ theorem entireProfileTransform_analytic (q : XiZeroCopy) :
 
 /-- The divided-difference expression satisfies the actual response equation. -/
 theorem entireProfileTransform_equation (q : XiZeroCopy) (w : ℂ) :
-    ((xiSpectralPoint q)^2-w^2)*entireProfileTransform q w = XiC w := by
+    ((xiSpectralPoint q)^(2 : ℕ)-w^(2 : ℕ))*entireProfileTransform q w = XiC w := by
   have h1 := sub_smul_dslope XiC (-(xiSpectralPoint q)) w
   have h2 := sub_smul_dslope XiC (xiSpectralPoint q) w
   rw [XiC_even,XiC_xiSpectralPoint_eq_zero,sub_zero,smul_eq_mul] at h1
@@ -145,7 +145,7 @@ theorem entireProfileTransform_equation (q : XiZeroCopy) (w : ℂ) :
 
 /-- Away from the two removed points, the response equation identifies the literal transform. -/
 theorem profileTransform_eq_entire_of_ne (q : XiZeroCopy) {w : ℂ}
-    (hw : (xiSpectralPoint q)^2-w^2 ≠ 0) :
+    (hw : (xiSpectralPoint q)^(2 : ℕ)-w^(2 : ℕ) ≠ 0) :
     profileTransform q w = entireProfileTransform q w := by
   exact mul_left_cancel₀ hw ((profile_transform_equation q w).trans
     (entireProfileTransform_equation q w).symm)
@@ -220,7 +220,7 @@ theorem profileTransform_eq_entire (q : XiZeroCopy) (w : ℂ) :
       have hr := congrArg Complex.re h
       simp at hr
       exact ht2 (by linarith)
-    have hf : (xiSpectralPoint q)^2-((t:ℂ)+(w.im:ℂ)*I)^2 =
+    have hf : (xiSpectralPoint q)^(2 : ℕ)-((t:ℂ)+(w.im:ℂ)*I)^(2 : ℕ) =
         (xiSpectralPoint q-((t:ℂ)+(w.im:ℂ)*I))*(xiSpectralPoint q+((t:ℂ)+(w.im:ℂ)*I)) := by ring
     rw [hf]
     exact mul_ne_zero h1 h2

@@ -36,11 +36,11 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_concrete_sharp {N H : ℝ} (hN 
   obtain ⟨δ₂, hδ₂, M₀, hM₀, hbdbox⟩ := exists_bound_invZeta_low_box 2 (by norm_num)
   have hlog : Tendsto (fun n : ℕ => Real.log n) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hpow : Tendsto (fun n : ℕ => (Real.log n) ^ 9) atTop atTop :=
+  have hpow : Tendsto (fun n : ℕ => (Real.log n) ^ (9 : ℕ)) atTop atTop :=
     (tendsto_pow_atTop (by norm_num)).comp hlog
   have h1 : ∀ᶠ n : ℕ in atTop, (3 : ℝ) ≤ Real.log n := hlog.eventually_ge_atTop 3
   have h2 : ∀ᶠ n : ℕ in atTop,
-      zeroFreeConst / (16 * min δ₁ δ₂) ≤ (Real.log n) ^ 9 := hpow.eventually_ge_atTop _
+      zeroFreeConst / (16 * min δ₁ δ₂) ≤ (Real.log n) ^ (9 : ℕ) := hpow.eventually_ge_atTop _
   obtain ⟨K₁, hK₁⟩ := eventually_atTop.1 (h1.and h2)
   refine ⟨C, C', M₀, max K₁ 5, hC, hC', hM₀, fun K hKle => ?_⟩
   obtain ⟨hlogK, hfitpow⟩ := hK₁ K (le_trans (le_max_left _ _) hKle)
@@ -50,22 +50,22 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_concrete_sharp {N H : ℝ} (hN 
   have hA0 := zeroFreeConst_pos
   have hA1 := zeroFreeConst_le_one
   have hL0 : (0 : ℝ) < Real.log K := by linarith
-  have hL9 : (27 : ℝ) ≤ (Real.log K) ^ 9 := by
-    calc (27 : ℝ) = 3 ^ 3 := by norm_num
-      _ ≤ (Real.log K) ^ 3 := by gcongr
-      _ ≤ (Real.log K) ^ 9 := pow_le_pow_right₀ (by linarith) (by norm_num)
-  have hL9pos : (0 : ℝ) < (Real.log K) ^ 9 := by linarith
+  have hL9 : (27 : ℝ) ≤ (Real.log K) ^ (9 : ℕ) := by
+    calc (27 : ℝ) = 3 ^ (3 : ℕ) := by norm_num
+      _ ≤ (Real.log K) ^ (3 : ℕ) := by gcongr
+      _ ≤ (Real.log K) ^ (9 : ℕ) := pow_le_pow_right₀ (by linarith) (by norm_num)
+  have hL9pos : (0 : ℝ) < (Real.log K) ^ (9 : ℕ) := by linarith
   have hδ0 : (0 : ℝ) < min δ₁ δ₂ := lt_min hδ₁ hδ₂
-  have hfit : zeroFreeConst / (16 * (Real.log K) ^ 9) ≤ min δ₁ δ₂ := by
+  have hfit : zeroFreeConst / (16 * (Real.log K) ^ (9 : ℕ)) ≤ min δ₁ δ₂ := by
     rw [div_le_iff₀ (by positivity)]
     rw [div_le_iff₀ (by positivity)] at hfitpow
     linarith
-  have h16 : (0 : ℝ) < zeroFreeConst / (16 * (Real.log K) ^ 9) := by positivity
-  have h2pos : (0 : ℝ) < zeroFreeConst / (2 * (Real.log K) ^ 9) := by positivity
-  have h2small : zeroFreeConst / (2 * (Real.log K) ^ 9) ≤ 1 / 54 := by
+  have h16 : (0 : ℝ) < zeroFreeConst / (16 * (Real.log K) ^ (9 : ℕ)) := by positivity
+  have h2pos : (0 : ℝ) < zeroFreeConst / (2 * (Real.log K) ^ (9 : ℕ)) := by positivity
+  have h2small : zeroFreeConst / (2 * (Real.log K) ^ (9 : ℕ)) ≤ 1 / 54 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [hL9, hA1, hA0]
-  have h16small : zeroFreeConst / (16 * (Real.log K) ^ 9) ≤ 1 / 54 := by
+  have h16small : zeroFreeConst / (16 * (Real.log K) ^ (9 : ℕ)) ≤ 1 / 54 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [hL9, hA1, hA0]
   have hd1 : 1 < rightAbscissa K := by rw [rightAbscissa]; linarith

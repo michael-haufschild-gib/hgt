@@ -5,10 +5,10 @@ import GaloisForLFunctions.HTGeometry.KleinGordonSynthesis
 # Klein--Gordon law of the Xi mass connection kernel
 
 The vertical mass time `u` and prime-log frequency `h` are not independent parameters.  The real
-mass shell `r(x)=sqrt(x^2+a^2)` gives `r^2-x^2=a^2`, so the mass Fourier profile satisfies the
+mass shell `r(x)=sqrt(x^(2 : ℕ)+a^(2 : ℕ))` gives `r^(2 : ℕ)-x^(2 : ℕ)=a^(2 : ℕ)`, so the mass Fourier profile satisfies the
 massive Klein--Gordon equation
 
-`partial_u^2 F - partial_h^2 F + a^2 F = 0`.
+`partial_u^(2 : ℕ) F - partial_h^(2 : ℕ) F + a^(2 : ℕ) F = 0`.
 
 All derivatives below are actual Bochner-integral derivatives.  This identifies the higher
 two-direction connection law behind the timelike/glancing Route T obstruction; it is not an
@@ -23,7 +23,7 @@ noncomputable section
 
 /-- Positive radial mass-shell frequency. -/
 def xiMassRadialFrequency (a x : ℝ) : ℝ :=
-  Real.sqrt (x ^ 2 + a ^ 2)
+  Real.sqrt (x ^ (2 : ℕ) + a ^ (2 : ℕ))
 
 @[fun_prop]
 theorem continuous_xiMassRadialFrequency (a : ℝ) :
@@ -48,13 +48,13 @@ theorem xiMassRadialFrequency_pos {a : ℝ} (ha : 0 < a) (x : ℝ) :
   nlinarith [sq_pos_of_pos ha]
 
 theorem xiMassRadialFrequency_sq {a : ℝ} (x : ℝ) :
-    xiMassRadialFrequency a x ^ 2 = x ^ 2 + a ^ 2 := by
+    xiMassRadialFrequency a x ^ (2 : ℕ) = x ^ (2 : ℕ) + a ^ (2 : ℕ) := by
   rw [xiMassRadialFrequency, Real.sq_sqrt]
   positivity
 
 theorem abs_le_xiMassRadialFrequency {a : ℝ} (x : ℝ) :
     |x| ≤ xiMassRadialFrequency a x := by
-  have hsq : x ^ 2 ≤ x ^ 2 + a ^ 2 := by nlinarith [sq_nonneg a]
+  have hsq : x ^ (2 : ℕ) ≤ x ^ (2 : ℕ) + a ^ (2 : ℕ) := by nlinarith [sq_nonneg a]
   rw [xiMassRadialFrequency]
   have h := Real.sqrt_le_sqrt hsq
   simpa [Real.sqrt_sq_eq_abs] using h
@@ -64,9 +64,9 @@ theorem xiMassRadialFrequency_le_abs_add
     xiMassRadialFrequency a x ≤ |x| + a := by
   have hleft : 0 ≤ xiMassRadialFrequency a x := Real.sqrt_nonneg _
   have hright : 0 ≤ |x| + a := add_nonneg (abs_nonneg _) ha
-  have hsquare : xiMassRadialFrequency a x ^ 2 ≤ (|x| + a) ^ 2 := by
+  have hsquare : xiMassRadialFrequency a x ^ (2 : ℕ) ≤ (|x| + a) ^ (2 : ℕ) := by
     rw [xiMassRadialFrequency, Real.sq_sqrt (by positivity)]
-    have hxSq : |x| ^ 2 = x ^ 2 := sq_abs x
+    have hxSq : |x| ^ (2 : ℕ) = x ^ (2 : ℕ) := sq_abs x
     nlinarith [mul_nonneg (abs_nonneg x) ha]
   nlinarith [sq_nonneg (xiMassRadialFrequency a x + (|x| + a))]
 
@@ -78,7 +78,7 @@ theorem integrable_xiMassRadialMoment
         Real.exp (-(σ * xiMassRadialFrequency a x))) := by
   let C : ℝ := xiMassShiftedMomentConstant σ a k
   have hmajor : Integrable (fun x : ℝ => C * Real.exp (-(σ / 2 * |x|))) :=
-    (integrable_exp_neg_mul_abs (by positivity : 0 < σ / 2)).const_mul C
+    (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (by positivity : 0 < σ / 2)).const_mul C
   apply hmajor.mono'
   · exact (((continuous_xiMassRadialFrequency a).pow k).mul
       (Real.continuous_exp.comp
@@ -117,7 +117,7 @@ theorem xiMassAnalyticTest_ofReal_eq_radial_time
       Complex.exp (-(σ * xiMassRadialFrequency a x : ℝ)) *
         Complex.exp (-(I * (u : ℂ) * (xiMassRadialFrequency a x : ℂ))) := by
   rw [xiMassAnalyticTest, xiMassAnalyticSqrt_ofReal_eq ha]
-  have hr : Real.sqrt (x ^ 2 + a ^ 2) = xiMassRadialFrequency a x := rfl
+  have hr : Real.sqrt (x ^ (2 : ℕ) + a ^ (2 : ℕ)) = xiMassRadialFrequency a x := rfl
   rw [hr]
   rw [show (-((σ : ℂ) + (u : ℂ) * I)) *
       (xiMassRadialFrequency a x : ℂ) =
@@ -251,13 +251,13 @@ theorem xiMassTemporal_sub_spatial_second_eq_mass
     {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) (u h : ℝ) :
     xiMassTemporalCrossMoment a σ u 2 h -
         xiMassSpectralCrossMoment a σ u 2 h =
-      -(a : ℂ) ^ 2 * xiMassSpectralCrossMoment a σ u 0 h := by
+      -(a : ℂ) ^ (2 : ℕ) * xiMassSpectralCrossMoment a σ u 0 h := by
   have htime := integrable_xiMassTemporalCrossMoment_integrand ha hσ u 2 h
   have hspace : Integrable (fun x : ℝ =>
-      xiMassAnalyticTest a ((σ : ℂ) + u * I) x * (-(I * (x : ℂ))) ^ 2 *
+      xiMassAnalyticTest a ((σ : ℂ) + u * I) x * (-(I * (x : ℂ))) ^ (2 : ℕ) *
         Complex.exp (-(I * (h : ℂ) * x))) := by
-    apply ((integrable_exp_neg_mul_abs (show 0 < σ / 2 by positivity)).const_mul
-      ((2 / σ) ^ 2 * (Nat.factorial 2 : ℝ))).mono'
+    apply ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (show 0 < σ / 2 by positivity)).const_mul
+      ((2 / σ) ^ (2 : ℕ) * (Nat.factorial 2 : ℝ))).mono'
     · exact (((continuous_xiMassAnalyticTest_real ha
           ((σ : ℂ) + u * I)).mul (by fun_prop)).mul (by fun_prop)).aestronglyMeasurable
     · filter_upwards with x
@@ -267,7 +267,7 @@ theorem xiMassTemporal_sub_spatial_second_eq_mass
         norm_xiMassSpectralCrossMomentAmplitude_le ha hσ u 2 x
   have htime' : Integrable (fun x : ℝ =>
       xiMassAnalyticTest a ((σ : ℂ) + u * I) x *
-        (-(I * (xiMassRadialFrequency a x : ℂ))) ^ 2 *
+        (-(I * (xiMassRadialFrequency a x : ℂ))) ^ (2 : ℕ) *
           Complex.exp (-(I * (h : ℂ) * x))) := by
     apply htime.congr
     filter_upwards with x
@@ -279,36 +279,36 @@ theorem xiMassTemporal_sub_spatial_second_eq_mass
   calc
     (∫ x : ℝ,
         xiMassAnalyticTest a ((σ : ℂ) + u * I) x *
-              (-(I * (xiMassRadialFrequency a x : ℂ))) ^ 2 *
+              (-(I * (xiMassRadialFrequency a x : ℂ))) ^ (2 : ℕ) *
               Complex.exp (-(I * (h : ℂ) * x)) -
             xiMassAnalyticTest a ((σ : ℂ) + u * I) x *
-              (-(I * (x : ℂ))) ^ 2 *
+              (-(I * (x : ℂ))) ^ (2 : ℕ) *
               Complex.exp (-(I * (h : ℂ) * x))) =
-        ∫ x : ℝ, (-(a : ℂ) ^ 2) *
+        ∫ x : ℝ, (-(a : ℂ) ^ (2 : ℕ)) *
           (xiMassAnalyticTest a ((σ : ℂ) + u * I) x *
             Complex.exp (-(I * (h : ℂ) * x))) := by
       apply integral_congr_ae
       filter_upwards with x
       have hrSq := xiMassRadialFrequency_sq (a := a) x
-      have hrSqC : (xiMassRadialFrequency a x : ℂ) ^ 2 =
-          (x : ℂ) ^ 2 + (a : ℂ) ^ 2 := by
+      have hrSqC : (xiMassRadialFrequency a x : ℂ) ^ (2 : ℕ) =
+          (x : ℂ) ^ (2 : ℕ) + (a : ℂ) ^ (2 : ℕ) := by
         exact_mod_cast hrSq
-      rw [show (-(I * (xiMassRadialFrequency a x : ℂ))) ^ 2 =
-          -((xiMassRadialFrequency a x : ℂ) ^ 2) by
+      rw [show (-(I * (xiMassRadialFrequency a x : ℂ))) ^ (2 : ℕ) =
+          -((xiMassRadialFrequency a x : ℂ) ^ (2 : ℕ)) by
             rw [neg_sq, mul_pow, Complex.I_sq]
             ring,
-        show (-(I * (x : ℂ))) ^ 2 = -((x : ℂ) ^ 2) by
+        show (-(I * (x : ℂ))) ^ (2 : ℕ) = -((x : ℂ) ^ (2 : ℕ)) by
             rw [neg_sq, mul_pow, Complex.I_sq]
             ring,
         hrSqC]
       ring
-    _ = -(a : ℂ) ^ 2 *
+    _ = -(a : ℂ) ^ (2 : ℕ) *
         ∫ x : ℝ, xiMassAnalyticTest a ((σ : ℂ) + u * I) x *
           Complex.exp (-(I * (h : ℂ) * x)) := by
       rw [integral_const_mul]
-    _ = -(a : ℂ) ^ 2 *
+    _ = -(a : ℂ) ^ (2 : ℕ) *
         ∫ x : ℝ, xiMassAnalyticTest a ((σ : ℂ) + u * I) x *
-          (-(I * (x : ℂ))) ^ 0 * Complex.exp (-(I * (h : ℂ) * x)) := by simp
+          (-(I * (x : ℂ))) ^ (0 : ℕ) * Complex.exp (-(I * (h : ℂ) * x)) := by simp
 
 /-- **Xi mass Klein--Gordon equation.** Vertical mass time and prime-log position form one massive
 Lorentz plane. -/
@@ -317,7 +317,7 @@ theorem xiMassProfile_kleinGordon
     deriv (deriv (fun v : ℝ =>
       xiMassSpectralCrossMoment a σ v 0 h)) u -
         deriv (deriv (xiMassSpectralCrossMoment a σ u 0)) h +
-      (a : ℂ) ^ 2 * xiMassSpectralCrossMoment a σ u 0 h = 0 := by
+      (a : ℂ) ^ (2 : ℕ) * xiMassSpectralCrossMoment a σ u 0 h = 0 := by
   have htime0 (v : ℝ) :
       deriv (fun q : ℝ => xiMassSpectralCrossMoment a σ q 0 h) v =
         xiMassTemporalCrossMoment a σ v 1 h := by

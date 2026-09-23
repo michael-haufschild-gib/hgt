@@ -27,7 +27,7 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **The synthesis is differentiable in time, at every time.** -/
 theorem hasDerivAt_hillSynthesis_all (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀) (hχ : AEStronglyMeasurable χ μ)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀) (hχ : AEStronglyMeasurable χ μ)
     (hχ1 : ∀ ξ, ‖χ ξ‖ ≤ 1)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) μ)
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) μ) (t : ℝ) :
@@ -112,7 +112,7 @@ theorem hasDerivAt_hillSynthesis_all (hm : 0 < m) (hc : Continuous c)
 /-- **The field is differentiable in time at every time.** -/
 theorem hasDerivAt_hillEvolutionField_time_all (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) (volume : Measure E))
     (x : E) (t : ℝ) :
@@ -126,7 +126,7 @@ theorem hasDerivAt_hillEvolutionField_time_all (hm : 0 < m) (hc : Continuous c)
 /-- **The real field is differentiable in time at every time.** -/
 theorem hasDerivAt_hillRealField_time_all (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hG : Continuous G₀)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hG : Continuous G₀)
     (hint : Integrable (fun ξ : E => ‖G₀ ξ‖) (volume : Measure E))
     (hweight : Integrable (fun ξ : E => (m + c 0 * ‖ξ‖) * ‖G₀ ξ‖) (volume : Measure E))
     (x : E) (t : ℝ) :

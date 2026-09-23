@@ -17,7 +17,7 @@ namespace DecoratedDiagram
 
 /-- Weighted irregularity forced by the diagonal Stokes formula. -/
 def localWeight {n : ℕ} (d : DecoratedDiagram n) (i : Fin n) : ℕ :=
-  d.B i i + d.ramification i ^ 2 - 1
+  d.B i i + d.ramification i ^ (2 : ℕ) - 1
 
 /-- Total on the nonnegative side of the affine pair equation. -/
 def pairTotal {n : ℕ} (d : DecoratedDiagram n) (i j : Fin n) : ℕ :=

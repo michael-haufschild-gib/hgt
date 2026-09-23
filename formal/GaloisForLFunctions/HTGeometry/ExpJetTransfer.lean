@@ -130,7 +130,7 @@ theorem sum_transfer_step (a E : ℂ) (D : ℕ → ℂ) (c : ℕ → ℕ → ℂ
       = ∑ i ∈ range (k + 1), a * ((i : ℂ) + 1) * c k (i + 1) * E ^ (i + 1) * D (i + 1) := by
     rw [sum_range_succ' (fun j => a * (j : ℂ) * c k j * E ^ j * D j) k,
       sum_range_succ (fun i => a * ((i : ℂ) + 1) * c k (i + 1) * E ^ (i + 1) * D (i + 1)) k, htri]
-    have hz : a * ((0 : ℕ) : ℂ) * c k 0 * E ^ 0 * D 0 = 0 := by push_cast; ring
+    have hz : a * ((0 : ℕ) : ℂ) * c k 0 * E ^ (0 : ℕ) * D 0 = 0 := by push_cast; ring
     rw [hz, add_zero]
     have hlast : a * ((k : ℂ) + 1) * (0 : ℂ) * E ^ (k + 1) * D (k + 1) = 0 := by ring
     rw [hlast, add_zero]

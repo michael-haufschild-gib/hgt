@@ -248,9 +248,9 @@ theorem psi_theta_term_le (i : ℕ) (hi : 1 ≤ i) :
   have key : (2 * Real.sqrt i * Real.log i) * (i:ℝ)^(3/2:ℝ)
       ≤ (2 * Real.log i) * ((i:ℝ) * (i+1)) := by
     rw [hsqrt]
-    have e1 : (i:ℝ)^(1/2:ℝ) * (i:ℝ)^(3/2:ℝ) = (i:ℝ)^2 := by
+    have e1 : (i:ℝ)^(1/2:ℝ) * (i:ℝ)^(3/2:ℝ) = (i:ℝ)^(2 : ℕ) := by
       rw [← Real.rpow_add hi0]; norm_num
-    have hii : (i:ℝ)^2 ≤ (i:ℝ) * (i+1) := by nlinarith [hi0]
+    have hii : (i:ℝ)^(2 : ℕ) ≤ (i:ℝ) * (i+1) := by nlinarith [hi0]
     nlinarith [hlogpos, hii, e1, Real.rpow_nonneg hi0.le (3/2:ℝ)]
   nlinarith [key, h0, h1, Real.rpow_nonneg hi0.le (3/2:ℝ), hlogpos]
 

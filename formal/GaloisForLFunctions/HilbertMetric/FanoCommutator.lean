@@ -6,7 +6,7 @@ import Mathlib.LinearAlgebra.Matrix.Trace
 
 This module isolates the finite matrix identity behind the one-dimensional coherent Fano
 curvature law.  For a real square matrix `A`, the gap between the squared column energy and the
-energy of `A ^ 2` is exactly half the Hilbert--Schmidt energy of the self-commutator
+energy of `A ^ (2 : ℕ)` is exactly half the Hilbert--Schmidt energy of the self-commutator
 `A * Aᵀ - Aᵀ * A`.
 
 The identity is unconditional finite-dimensional parent algebra.  Its later Hilbert-metric
@@ -24,7 +24,7 @@ variable {n : Type*} [Fintype n]
 
 /-- The squared Hilbert--Schmidt (Frobenius) energy of a finite real matrix. -/
 def matrixHilbertSchmidtEnergy (A : Matrix n n ℝ) : ℝ :=
-  ∑ i, ∑ j, (A i j) ^ 2
+  ∑ i, ∑ j, (A i j) ^ (2 : ℕ)
 
 /-- The finite self-commutator measuring failure of real normality. -/
 def matrixSelfCommutator (A : Matrix n n ℝ) : Matrix n n ℝ :=
@@ -41,10 +41,10 @@ theorem matrixHilbertSchmidtEnergy_eq_zero_iff (A : Matrix n n ℝ) :
   constructor
   · intro h
     ext i j
-    have hi : (∑ j, A i j ^ 2) = 0 :=
+    have hi : (∑ j, A i j ^ (2 : ℕ)) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg fun i _ =>
         Finset.sum_nonneg fun j _ => sq_nonneg (A i j)).mp h i (Finset.mem_univ i)
-    have hij : A i j ^ 2 = 0 :=
+    have hij : A i j ^ (2 : ℕ) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg fun j _ => sq_nonneg (A i j)).mp
         hi j (Finset.mem_univ j)
     simpa using (sq_eq_zero_iff.mp hij)
@@ -60,7 +60,7 @@ theorem matrixHilbertSchmidtEnergy_eq_trace_transpose_mul (A : Matrix n n ℝ) :
   intro i _
   apply Finset.sum_congr rfl
   intro j _
-  change A j i ^ 2 = A j i * A j i
+  change A j i ^ (2 : ℕ) = A j i * A j i
   ring
 
 /-- Row and column energies have equal squared traces for one matrix. -/
@@ -119,7 +119,7 @@ theorem selfCommutator_energy_eq_two_mul_defect (A : Matrix n n ℝ) :
     trace_columnEnergy_mul_rowEnergy_eq_squareEnergy A]
   ring
 
-/-- The energy of `A ^ 2` never exceeds the squared column energy.  Equality holds precisely
+/-- The energy of `A ^ (2 : ℕ)` never exceeds the squared column energy.  Equality holds precisely
 when the self-commutator has zero Hilbert--Schmidt energy. -/
 theorem squareEnergy_le_trace_columnEnergy_sq (A : Matrix n n ℝ) :
     matrixHilbertSchmidtEnergy (A * A) ≤

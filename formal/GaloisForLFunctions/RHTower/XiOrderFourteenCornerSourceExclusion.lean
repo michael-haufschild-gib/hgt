@@ -10,7 +10,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 The order-fifteen squared-Xi sector can fail only in the compact corner
 
-`1/5 < (Re rho - 1/2)^2 < 1/4`, `85 < (Im rho)^2 < 100`.
+`1/5 < (Re rho - 1/2)^(2 : ℕ) < 1/4`, `85 < (Im rho)^(2 : ℕ) < 100`.
 
 This module excludes that corner without a zero table.  A rational lower bound for the dominant
 theta atom forces the normalized fourth theta moment above `269/50000`. The endpoint resolvent and
@@ -33,7 +33,7 @@ noncomputable section
 certified lower bound for `log (4*pi)` to `2.531`. -/
 lemma twoThousandFiveHundredThirtyOne_over_thousand_lt_log_four_mul_pi :
     (2531 / 1000 : ℝ) < Real.log (4 * Real.pi) := by
-  let v : ℝ := 5 ^ 26 / (2 ^ 6 * 3 ^ 32)
+  let v : ℝ := 5 ^ (26 : ℕ) / (2 ^ (6 : ℕ) * 3 ^ (32 : ℕ))
   let c : ℝ := 1 + 1 / 10000
   have hvpos : 0 < v := by
     dsimp [v]
@@ -66,13 +66,13 @@ lemma twoThousandFiveHundredThirtyOne_over_thousand_lt_log_four_mul_pi :
 
 set_option maxRecDepth 1000000 in
 /-- A certified upper bound for Euler's constant from the decreasing Euler--Mascheroni sequence
-at the factorable index `6250 = 2 * 5^5`. -/
+at the factorable index `6250 = 2 * 5^(5 : ℕ)`. -/
 lemma eulerMascheroniConstant_lt_fiveThousandSevenHundredSeventyThree_over_tenThousand :
     Real.eulerMascheroniConstant < 5773 / 10000 := by
   refine (Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' 6250).trans ?_
   rw [Real.eulerMascheroniSeq']
   norm_num only [if_false, Nat.reduceEqDiff, Nat.cast_ofNat]
-  rw [show (6250 : ℝ) = 2 * 5 ^ 5 by norm_num,
+  rw [show (6250 : ℝ) = 2 * 5 ^ (5 : ℕ) by norm_num,
     Real.log_mul (by norm_num) (by positivity), Real.log_pow]
   have htwo := Real.log_two_gt_d9
   have hfive := Real.log_five_gt_d9
@@ -139,10 +139,10 @@ theorem normalizedPrimeArchMoment_zero_sub_thermalEndpointResolvent_le_quarter_s
     let x : ℝ := xiThermalNode q
     have hx : 0 < x := by simpa only [x] using xiThermalNode_pos q
     have hd : 0 < 1 + x / 4 := by linarith
-    have hx3 : 0 ≤ x ^ 2 * x := mul_nonneg (sq_nonneg x) hx.le
-    change x - x / (1 + x / 4) ≤ x ^ 2 / 4
+    have hx3 : 0 ≤ x ^ (2 : ℕ) * x := mul_nonneg (sq_nonneg x) hx.le
+    change x - x / (1 + x / 4) ≤ x ^ (2 : ℕ) / 4
     rw [show x - x / (1 + x / 4) =
-        x ^ 2 / (4 * (1 + x / 4)) by
+        x ^ (2 : ℕ) / (4 * (1 + x / 4)) by
       field_simp [hd.ne']
       ring]
     rw [div_le_iff₀ (mul_pos (by norm_num) hd)]
@@ -184,13 +184,13 @@ theorem normalizedPrimeArchMoment_zero_lt_twentyNine_over_sixHundredTwentyFive :
   have hmu2 :=
     twoHundredSixtyNine_div_fiftyThousand_lt_thetaCuspNormalizedEvenMoment_two
   have hsource : normalizedPrimeArchMoment 1 <
-      M ^ 2 / 2 - (269 / 50000 : ℝ) / 6 := by
+      M ^ (2 : ℕ) / 2 - (269 / 50000 : ℝ) / 6 := by
     rw [normalizedPrimeArchMoment_one_eq_thetaCuspNormalizedEvenMoment,
       ← normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
     dsimp only [M]
     nlinarith
   have hthermal : xiThermalSecondMoment <
-      (84 / 83 : ℝ) * (M ^ 2 / 2 - (269 / 50000 : ℝ) / 6) :=
+      (84 / 83 : ℝ) * (M ^ (2 : ℕ) / 2 - (269 / 50000 : ℝ) / 6) :=
     xiThermalSecondMoment_le_eightyFour_over_eightyThree_source.trans_lt
       (mul_lt_mul_of_pos_left hsource (by norm_num))
   have hgap :=
@@ -199,7 +199,7 @@ theorem normalizedPrimeArchMoment_zero_lt_twentyNine_over_sixHundredTwentyFive :
   have hC := xiEndpointCompletedCurvature_lt_fourHundredSixtyThree_over_tenThousand
   have hmaster :
       M < 463 / 10000 +
-        ((84 / 83 : ℝ) * (M ^ 2 / 2 - (269 / 50000 : ℝ) / 6)) / 4 := by
+        ((84 / 83 : ℝ) * (M ^ (2 : ℕ) / 2 - (269 / 50000 : ℝ) / 6)) / 4 := by
     dsimp only [M] at hgap ⊢
     nlinarith
   by_contra hnot
@@ -207,17 +207,17 @@ theorem normalizedPrimeArchMoment_zero_lt_twentyNine_over_sixHundredTwentyFive :
   have hfactor : 0 < 1 - (21 / 166 : ℝ) * (M + 29 / 625) := by
     nlinarith
   have hmonotone :
-      (29 / 625 : ℝ) - (21 / 166 : ℝ) * (29 / 625) ^ 2 ≤
-        M - (21 / 166 : ℝ) * M ^ 2 := by
+      (29 / 625 : ℝ) - (21 / 166 : ℝ) * (29 / 625) ^ (2 : ℕ) ≤
+        M - (21 / 166 : ℝ) * M ^ (2 : ℕ) := by
     have hprod := mul_nonneg (sub_nonneg.mpr hMlower) hfactor.le
     nlinarith
   have hupper :
-      M - (21 / 166 : ℝ) * M ^ 2 <
+      M - (21 / 166 : ℝ) * M ^ (2 : ℕ) <
       463 / 10000 - (21 / 498 : ℝ) * (269 / 50000) := by
     nlinarith [hmaster]
   have hrat :
       463 / 10000 - (21 / 498 : ℝ) * (269 / 50000) <
-        (29 / 625 : ℝ) - (21 / 166 : ℝ) * (29 / 625) ^ 2 := by
+        (29 / 625 : ℝ) - (21 / 166 : ℝ) * (29 / 625) ^ (2 : ℕ) := by
     norm_num
   linarith
 
@@ -228,7 +228,7 @@ theorem normalizedPrimeArchMoment_one_lt_nine_over_fiftyThousand :
   have hM0 : 0 < M := by
     simpa only [M] using normalizedPrimeArchMoment_zero_pos
   have hM := normalizedPrimeArchMoment_zero_lt_twentyNine_over_sixHundredTwentyFive
-  have hMsq : M ^ 2 < (29 / 625 : ℝ) ^ 2 := by
+  have hMsq : M ^ (2 : ℕ) < (29 / 625 : ℝ) ^ (2 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr (by simpa only [M] using hM))
       (add_pos (by norm_num : (0 : ℝ) < 29 / 625) hM0)
     nlinarith
@@ -237,10 +237,10 @@ theorem normalizedPrimeArchMoment_one_lt_nine_over_fiftyThousand :
   rw [normalizedPrimeArchMoment_one_eq_thetaCuspNormalizedEvenMoment,
     ← normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
   have hrat :
-      (29 / 625 : ℝ) ^ 2 / 2 - (269 / 50000 : ℝ) / 6 < 9 / 50000 := by
+      (29 / 625 : ℝ) ^ (2 : ℕ) / 2 - (269 / 50000 : ℝ) / 6 < 9 / 50000 := by
     norm_num
   simpa only [M] using (by nlinarith :
-    M ^ 2 / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 9 / 50000)
+    M ^ (2 : ℕ) / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 9 / 50000)
 
 /-- Compatibility form of the earlier fourth reciprocal-trace upper bound. -/
 theorem normalizedPrimeArchMoment_one_lt_one_over_fiveThousand :
@@ -259,15 +259,15 @@ theorem normalizedPrimeArchMoment_one_lt_nine_over_twentyFiveThousand :
 
 /-- Every individual fourth reciprocal trace atom is nonnegative unconditionally. -/
 theorem xiFourthReciprocalTraceAtom_nonneg (q : XiZeroCopy) :
-    0 ≤ (xiZeroCopyReciprocalSquare q ^ 2).re := by
+    0 ≤ (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
   have h := xiThermalOrientationTerm_le_one_over_eightyFour_node_sq q
   rw [pow_two, Complex.mul_re]
   simp only [xiThermalNode] at h
   nlinarith
 
 lemma xiFourthReciprocalTraceAtom_lineConj (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare (xiZeroCopyLineConjEquiv q) ^ 2).re =
-      (xiZeroCopyReciprocalSquare q ^ 2).re := by
+    (xiZeroCopyReciprocalSquare (xiZeroCopyLineConjEquiv q) ^ (2 : ℕ)).re =
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
   have hz :
       xiZeroCopyReciprocalSquare (xiZeroCopyLineConjEquiv q) =
         (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q) := by
@@ -276,8 +276,8 @@ lemma xiFourthReciprocalTraceAtom_lineConj (q : XiZeroCopy) :
   rw [hz, ← map_pow, Complex.conj_re]
 
 lemma xiFourthReciprocalTraceAtom_conj (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare (xiZeroCopyConjEquiv q) ^ 2).re =
-      (xiZeroCopyReciprocalSquare q ^ 2).re := by
+    (xiZeroCopyReciprocalSquare (xiZeroCopyConjEquiv q) ^ (2 : ℕ)).re =
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
   have hz :
       xiZeroCopyReciprocalSquare (xiZeroCopyConjEquiv q) =
         (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q) := by
@@ -289,12 +289,12 @@ lemma xiFourthReciprocalTraceAtom_conj (q : XiZeroCopy) :
 /-- The real fourth reciprocal trace over the exact multiplicity copies is the first nontrivial
 normalized prime--archimedean source moment. -/
 theorem tsum_xiFourthReciprocalTraceAtom_eq_source :
-    (∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ 2).re) =
+    (∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re) =
       normalizedPrimeArchMoment 1 := by
   have hsum := summable_xiZeroCopyReciprocalSquare_pow 1
   calc
-    (∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ 2).re) =
-        (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q ^ 2).re := by
+    (∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re) =
+        (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
       rw [Complex.re_tsum hsum]
     _ = (xiCentralReciprocalMoment 1).re := by
       rw [tsum_xiZeroCopyReciprocalSquare_pow 1]
@@ -307,13 +307,13 @@ theorem tsum_xiFourthReciprocalTraceAtom_eq_source :
 source threshold. -/
 theorem thirtyNine_over_fourHundredThousand_lt_xiFourthReciprocalTraceAtom_of_edgeCorner
     (q : XiZeroCopy)
-    (huLower : (1 / 5 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 100) :
-    (39 / 400000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
+    (huLower : (1 / 5 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 100) :
+    (39 / 400000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
+  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+  let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
   let w : ℝ := u + v
   let W : ℝ := 401 / 4
   have hu0 : 0 < u := by
@@ -326,21 +326,21 @@ theorem thirtyNine_over_fourHundredThousand_lt_xiFourthReciprocalTraceAtom_of_ed
   have hwLower : 85 < w := by dsimp only [w]; linarith
   have hwUpper : w < W := by dsimp only [w, W]; linarith
   have hW0 : 0 < W := by dsimp only [W]; norm_num
-  have hsqUpper : w ^ 2 < W ^ 2 := by
+  have hsqUpper : w ^ (2 : ℕ) < W ^ (2 : ℕ) := by
     exact (sq_lt_sq₀ hw0.le hW0.le).2 hwUpper
-  have hsecond : 0 < 39 * (W ^ 2 + w ^ 2) - 400000 := by
-    have hsqLower : (85 : ℝ) ^ 2 < w ^ 2 :=
+  have hsecond : 0 < 39 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 400000 := by
+    have hsqLower : (85 : ℝ) ^ (2 : ℕ) < w ^ (2 : ℕ) :=
       (sq_lt_sq₀ (by norm_num) hw0.le).2 hwLower
     dsimp only [W] at hsqLower ⊢
     nlinarith
   have hshape :
-      400000 * w ^ 2 - 39 * w ^ 4 >
-        400000 * W ^ 2 - 39 * W ^ 4 := by
+      400000 * w ^ (2 : ℕ) - 39 * w ^ (4 : ℕ) >
+        400000 * W ^ (2 : ℕ) - 39 * W ^ (4 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr hsqUpper) hsecond
     have hid :
-        (400000 * w ^ 2 - 39 * w ^ 4) -
-            (400000 * W ^ 2 - 39 * W ^ 4) =
-          (W ^ 2 - w ^ 2) * (39 * (W ^ 2 + w ^ 2) - 400000) := by
+        (400000 * w ^ (2 : ℕ) - 39 * w ^ (4 : ℕ)) -
+            (400000 * W ^ (2 : ℕ) - 39 * W ^ (4 : ℕ)) =
+          (W ^ (2 : ℕ) - w ^ (2 : ℕ)) * (39 * (W ^ (2 : ℕ) + w ^ (2 : ℕ)) - 400000) := by
       ring
     nlinarith
   have huv : u * v < 25 := by
@@ -351,18 +351,18 @@ theorem thirtyNine_over_fourHundredThousand_lt_xiFourthReciprocalTraceAtom_of_ed
         mul_lt_mul_of_pos_left (by simpa only [v] using hvUpper) (by norm_num)
       _ = 25 := by norm_num
   have hendpoint :
-      0 < (400000 * W ^ 2 - 39 * W ^ 4) - 80000000 := by
+      0 < (400000 * W ^ (2 : ℕ) - 39 * W ^ (4 : ℕ)) - 80000000 := by
     norm_num [W]
   have hG :
-      0 < 400000 * (v ^ 2 - 6 * u * v + u ^ 2) - 39 * w ^ 4 := by
-    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
+      0 < 400000 * (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) - 39 * w ^ (4 : ℕ) := by
+    have hN : v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ) = w ^ (2 : ℕ) - 8 * u * v := by
       dsimp only [w]
       ring
     rw [hN]
     nlinarith
   have hformula :
-      (xiZeroCopyReciprocalSquare q ^ 2).re =
-        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
+      (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
+        (v ^ (2 : ℕ) - 6 * u * v + u ^ (2 : ℕ)) / w ^ (4 : ℕ) := by
     simp only [u, v, w]
     exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]
@@ -372,15 +372,15 @@ theorem thirtyNine_over_fourHundredThousand_lt_xiFourthReciprocalTraceAtom_of_ed
 /-- Four distinct FE--Schwarz copies of a corner zero would overspend the complete fourth trace. -/
 theorem thirtyNine_over_oneHundredThousand_lt_source_of_edgeCorner
     (q : XiZeroCopy)
-    (huLower : (1 / 5 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2)
-    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
-    (hvLower : 85 < (q.1 : ℂ).im ^ 2)
-    (hvUpper : (q.1 : ℂ).im ^ 2 < 100) :
+    (huLower : (1 / 5 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ))
+    (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4)
+    (hvLower : 85 < (q.1 : ℂ).im ^ (2 : ℕ))
+    (hvUpper : (q.1 : ℂ).im ^ (2 : ℕ) < 100) :
     (39 / 100000 : ℝ) < normalizedPrimeArchMoment 1 := by
   have hoff : (q.1 : ℂ).re ≠ 1 / 2 :=
     re_ne_half_of_pos_centered_sq (by linarith)
   have hsum : Summable
-      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 2).re) :=
+      (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ (2 : ℕ)).re) :=
     (summable_xiZeroCopyReciprocalSquare_pow 1).mapL Complex.reCLM
   have hle := four_mul_le_tsum_of_quartet_invariant
     xiFourthReciprocalTraceAtom_nonneg hsum
@@ -394,10 +394,10 @@ theorem thirtyNine_over_oneHundredThousand_lt_source_of_edgeCorner
 /-- **Unconditional compact-corner exclusion.** -/
 theorem not_exists_xiZeroCopy_mem_orderFourteen_edgeCorner :
     ¬ ∃ q : XiZeroCopy,
-      (1 / 5 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
-      ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
-      85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 100 := by
+      (1 / 5 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) ∧
+      ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ (2 : ℕ) ∧
+      (q.1 : ℂ).im ^ (2 : ℕ) < 100 := by
   rintro ⟨q, huLower, huUpper, hvLower, hvUpper⟩
   have hlower := thirtyNine_over_oneHundredThousand_lt_source_of_edgeCorner
     q huLower huUpper hvLower hvUpper
@@ -407,9 +407,9 @@ theorem not_exists_xiZeroCopy_mem_orderFourteen_edgeCorner :
 /-- The first formerly unprotected squared-seam order is in fact strictly positive everywhere. -/
 theorem xiOrderFifteenReciprocalPower_re_pos
     (q : XiZeroCopy) {y : ℝ} (hy : 1 / 4 < y) :
-    let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+    let A : ℝ := (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + y
     let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 15).re :=
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ (15 : ℕ)).re :=
   xiZeroCopy_reciprocalPower_re_pos_of_window_empty q hy
     (fun _ _ hA h => orderFifteenReciprocalPower_re_pos_of_sectorRatio hA h)
     (fun hoff hnonpos => xiOrderFifteenReciprocalPower_nonpos_mem_edgeCorner q hoff hy hnonpos)

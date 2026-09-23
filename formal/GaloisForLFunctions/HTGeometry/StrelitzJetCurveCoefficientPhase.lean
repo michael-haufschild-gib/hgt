@@ -34,7 +34,7 @@ theorem tendsto_phaseNormalize_one_of_tendsto_one
   refine squeeze_zero' (Filter.Eventually.of_forall fun x => dist_nonneg) ?_ hright
   filter_upwards with x
   rw [Complex.dist_eq]
-  exact norm_phaseNormalize_sub_le (by norm_num : ‖(1 : ℂ)‖ = 1)
+  exact norm_phaseNormalize_sub_le_finiteSpectralPhaseActionLaw (by norm_num : ‖(1 : ℂ)‖ = 1)
 
 /-- Multiplication by a positive real scalar does not change radial phase. -/
 theorem phaseNormalize_div_natCast

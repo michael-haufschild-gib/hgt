@@ -181,7 +181,7 @@ theorem burnolCompletedRadialSourceWork_eq_cartan_log_lower_gain_sq_mul_norm_sq
               (((xiSoninRightOrientedCopy q).1 : ℂ))).1‖
             ‖(burnolSoninMellinOrientationPair r
               (((xiSoninRightOrientedCopy q).1 : ℂ))).2‖)) /
-        Real.log r) ^ 2 * ‖completedXiFirstDividedL2 q.1‖ ^ 2 := by
+        Real.log r) ^ (2 : ℕ) * ‖completedXiFirstDividedL2 q.1‖ ^ (2 : ℕ) := by
   rw [burnolSoninMellinOrientationPair_lower_gain_xi q hoff hr,
     Real.log_exp,
     burnolCompletedRadialSourceWork_eq_soninLyapunovRate_sq_mul_norm_sq]

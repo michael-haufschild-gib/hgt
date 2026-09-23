@@ -100,7 +100,7 @@ theorem xiDivisorResolvent_isHilbertSchmidt :
   xiDivisorDiagonal_isHilbertSchmidt _ _ _ summable_norm_inv_xiSpectralPoint_sq
 
 theorem summable_norm_truncWeight_sq (s : Finset XiZeroCopy) :
-    Summable fun q => ‖xiDivisorTruncWeight s q‖ ^ 2 := by
+    Summable fun q => ‖xiDivisorTruncWeight s q‖ ^ (2 : ℕ) := by
   apply Summable.of_nonneg_of_le (fun q => by positivity) (fun q => ?_)
     summable_norm_inv_xiSpectralPoint_sq
   rw [xiDivisorTruncWeight]
@@ -108,17 +108,17 @@ theorem summable_norm_truncWeight_sq (s : Finset XiZeroCopy) :
   · rw [if_pos h]
     exact le_of_eq rfl
   · rw [if_neg h, norm_zero]
-    rw [show ((0 : ℝ) ^ 2 : ℝ) = 0 by norm_num]
+    rw [show ((0 : ℝ) ^ (2 : ℕ) : ℝ) = 0 by norm_num]
     positivity
 
 theorem summable_norm_tailWeight_sq (s : Finset XiZeroCopy) :
-    Summable fun q => ‖xiDivisorTailWeight s q‖ ^ 2 := by
+    Summable fun q => ‖xiDivisorTailWeight s q‖ ^ (2 : ℕ) := by
   apply Summable.of_nonneg_of_le (fun q => by positivity) (fun q => ?_)
     summable_norm_inv_xiSpectralPoint_sq
   rw [xiDivisorTailWeight]
   by_cases h : q ∈ s
   · rw [if_pos h, norm_zero]
-    rw [show ((0 : ℝ) ^ 2 : ℝ) = 0 by norm_num]
+    rw [show ((0 : ℝ) ^ (2 : ℕ) : ℝ) = 0 by norm_num]
     positivity
   · rw [if_neg h]
     exact le_of_eq rfl
@@ -153,13 +153,13 @@ theorem xiDivisorResolventSquare_sub_stage (s : Finset XiZeroCopy) :
 /-- The Hilbert–Schmidt norm squared of the tail diagonal is the tail sum. -/
 theorem hsNormSq_xiDivisorResolventTail (s : Finset XiZeroCopy) :
     ContinuousLinearMap.hsNormSq (xiDivisorResolventTail s) =
-      ∑' q : {x : XiZeroCopy // x ∉ s}, ‖xiDivisorInvWeight (q : XiZeroCopy)‖ ^ 2 := by
+      ∑' q : {x : XiZeroCopy // x ∉ s}, ‖xiDivisorInvWeight (q : XiZeroCopy)‖ ^ (2 : ℕ) := by
   rw [ContinuousLinearMap.hsNormSq_eq
     (xiDivisorResolventTail_isHilbertSchmidt s) xiDivisorHilbertBasis]
   have hind : (fun i : XiZeroCopy =>
-      ‖(xiDivisorResolventTail s) (xiDivisorHilbertBasis i)‖ ^ 2) =
+      ‖(xiDivisorResolventTail s) (xiDivisorHilbertBasis i)‖ ^ (2 : ℕ)) =
       Set.indicator {x : XiZeroCopy | x ∉ s}
-        (fun q => ‖xiDivisorInvWeight q‖ ^ 2) := by
+        (fun q => ‖xiDivisorInvWeight q‖ ^ (2 : ℕ)) := by
     funext q
     simp only [xiDivisorResolventTail]
     rw [norm_xiDivisorDiagonal_basis, Set.indicator_apply]
@@ -175,7 +175,7 @@ theorem traceNorm_resolventSquare_sub_stage_le (s : Finset XiZeroCopy) :
     traceNorm XiDivisorL2
         (xiDivisorResolvent.comp xiDivisorResolvent -
           (xiDivisorResolventStage s).comp (xiDivisorResolventStage s)) ≤
-      ∑' q : {x : XiZeroCopy // x ∉ s}, ‖xiDivisorInvWeight (q : XiZeroCopy)‖ ^ 2 := by
+      ∑' q : {x : XiZeroCopy // x ∉ s}, ‖xiDivisorInvWeight (q : XiZeroCopy)‖ ^ (2 : ℕ) := by
   rw [xiDivisorResolventSquare_sub_stage]
   have h1 : traceNorm XiDivisorL2
       ((xiDivisorResolventTail s).comp (xiDivisorResolventTail s)) ≤
@@ -217,7 +217,7 @@ theorem tendsto_traceNorm_resolventSquare_stage :
   apply squeeze_zero (fun s => traceNorm_nonneg _)
     (fun s => traceNorm_resolventSquare_sub_stage_le s)
   exact tendsto_tsum_compl_atTop_zero
-    (fun q : XiZeroCopy => ‖xiDivisorInvWeight q‖ ^ 2)
+    (fun q : XiZeroCopy => ‖xiDivisorInvWeight q‖ ^ (2 : ℕ))
 
 /-- **The divisor-side witness of the trace tower**: the finite-packet stages of the
 resolvent-square diagonal converge in trace norm, the limit is Schatten-1, and the stage

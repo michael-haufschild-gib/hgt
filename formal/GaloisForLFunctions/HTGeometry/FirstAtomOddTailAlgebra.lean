@@ -17,13 +17,13 @@ namespace HTGeometry
 noncomputable section
 
 /-- Common first-atom Gaussian-scale denominator. -/
-def firstAtomOddTailDenominator (u : ℝ) : ℝ := (4-6*u)^2
+def firstAtomOddTailDenominator (u : ℝ) : ℝ := (4-6*u)^(2 : ℕ)
 
 /-- Numerator of signed first-atom Gaussian moment 1. -/
 def firstAtomOddTailNumerator1 (u : ℝ) : ℝ :=
   (128 : ℝ) +
-    (-384 : ℝ)*u^1 +
-    (480 : ℝ)*u^2
+    (-384 : ℝ)*u^(1 : ℕ) +
+    (480 : ℝ)*u^(2 : ℕ)
 
 /-- Signed first-atom Gaussian moment 1, in inverse scale. -/
 def firstAtomOddTailProfile1 (u : ℝ) : ℝ :=
@@ -32,9 +32,9 @@ def firstAtomOddTailProfile1 (u : ℝ) : ℝ :=
 /-- Numerator of signed first-atom Gaussian moment 2. -/
 def firstAtomOddTailNumerator2 (u : ℝ) : ℝ :=
   (3072 : ℝ) +
-    (-9728 : ℝ)*u^1 +
-    (17664 : ℝ)*u^2 +
-    (-1920 : ℝ)*u^3
+    (-9728 : ℝ)*u^(1 : ℕ) +
+    (17664 : ℝ)*u^(2 : ℕ) +
+    (-1920 : ℝ)*u^(3 : ℕ)
 
 /-- Signed first-atom Gaussian moment 2, in inverse scale. -/
 def firstAtomOddTailProfile2 (u : ℝ) : ℝ :=
@@ -43,10 +43,10 @@ def firstAtomOddTailProfile2 (u : ℝ) : ℝ :=
 /-- Numerator of signed first-atom Gaussian moment 3. -/
 def firstAtomOddTailNumerator3 (u : ℝ) : ℝ :=
   (122880 : ℝ) +
-    (-430080 : ℝ)*u^1 +
-    (1015808 : ℝ)*u^2 +
-    (-328704 : ℝ)*u^3 +
-    (7680 : ℝ)*u^4
+    (-430080 : ℝ)*u^(1 : ℕ) +
+    (1015808 : ℝ)*u^(2 : ℕ) +
+    (-328704 : ℝ)*u^(3 : ℕ) +
+    (7680 : ℝ)*u^(4 : ℕ)
 
 /-- Signed first-atom Gaussian moment 3, in inverse scale. -/
 def firstAtomOddTailProfile3 (u : ℝ) : ℝ :=
@@ -55,11 +55,11 @@ def firstAtomOddTailProfile3 (u : ℝ) : ℝ :=
 /-- Numerator of signed first-atom Gaussian moment 4. -/
 def firstAtomOddTailNumerator4 (u : ℝ) : ℝ :=
   (6881280 : ℝ) +
-    (-27525120 : ℝ)*u^1 +
-    (78446592 : ℝ)*u^2 +
-    (-49553408 : ℝ)*u^3 +
-    (5443584 : ℝ)*u^4 +
-    (-30720 : ℝ)*u^5
+    (-27525120 : ℝ)*u^(1 : ℕ) +
+    (78446592 : ℝ)*u^(2 : ℕ) +
+    (-49553408 : ℝ)*u^(3 : ℕ) +
+    (5443584 : ℝ)*u^(4 : ℕ) +
+    (-30720 : ℝ)*u^(5 : ℕ)
 
 /-- Signed first-atom Gaussian moment 4, in inverse scale. -/
 def firstAtomOddTailProfile4 (u : ℝ) : ℝ :=
@@ -68,12 +68,12 @@ def firstAtomOddTailProfile4 (u : ℝ) : ℝ :=
 /-- Numerator of signed first-atom Gaussian moment 5. -/
 def firstAtomOddTailNumerator5 (u : ℝ) : ℝ :=
   (495452160 : ℝ) +
-    (-2312110080 : ℝ)*u^1 +
-    (7596933120 : ℝ)*u^2 +
-    (-7696220160 : ℝ)*u^3 +
-    (2001010688 : ℝ)*u^4 +
-    (-87834624 : ℝ)*u^5 +
-    (122880 : ℝ)*u^6
+    (-2312110080 : ℝ)*u^(1 : ℕ) +
+    (7596933120 : ℝ)*u^(2 : ℕ) +
+    (-7696220160 : ℝ)*u^(3 : ℕ) +
+    (2001010688 : ℝ)*u^(4 : ℕ) +
+    (-87834624 : ℝ)*u^(5 : ℕ) +
+    (122880 : ℝ)*u^(6 : ℕ)
 
 /-- Signed first-atom Gaussian moment 5, in inverse scale. -/
 def firstAtomOddTailProfile5 (u : ℝ) : ℝ :=
@@ -86,24 +86,24 @@ def firstAtomOddTailDet (u : ℝ) : ℝ :=
   let c := firstAtomOddTailProfile3 u
   let d := firstAtomOddTailProfile4 u
   let e := firstAtomOddTailProfile5 u
-  a*c*e-a*d^2-b^2*e+2*b*c*d-c^3
+  a*c*e-a*d^(2 : ℕ)-b^(2 : ℕ)*e+2*b*c*d-c^(3 : ℕ)
 
 /-- Exact numerator after cancellation of the three highest formal degrees. -/
 def firstAtomOddTailDetNumerator (u : ℝ) : ℝ :=
   (395824185999360 : ℝ) +
-    (-4848846278492160 : ℝ)*u^1 +
-    (31393805752074240 : ℝ)*u^2 +
-    (-128024385159168000 : ℝ)*u^3 +
-    (348949943722967040 : ℝ)*u^4 +
-    (-645131575649894400 : ℝ)*u^5 +
-    (783383995927756800 : ℝ)*u^6 +
-    (-587172709977292800 : ℝ)*u^7 +
-    (246568703754240000 : ℝ)*u^8 +
-    (-49313740750848000 : ℝ)*u^9
+    (-4848846278492160 : ℝ)*u^(1 : ℕ) +
+    (31393805752074240 : ℝ)*u^(2 : ℕ) +
+    (-128024385159168000 : ℝ)*u^(3 : ℕ) +
+    (348949943722967040 : ℝ)*u^(4 : ℕ) +
+    (-645131575649894400 : ℝ)*u^(5 : ℕ) +
+    (783383995927756800 : ℝ)*u^(6 : ℕ) +
+    (-587172709977292800 : ℝ)*u^(7 : ℕ) +
+    (246568703754240000 : ℝ)*u^(8 : ℕ) +
+    (-49313740750848000 : ℝ)*u^(9 : ℕ)
 
 /-- The complete first-atom odd determinant retains the common denominator cubed. -/
 theorem firstAtomOddTailDet_eq_ratio (u : ℝ) (hD : firstAtomOddTailDenominator u ≠ 0) :
-    firstAtomOddTailDet u = firstAtomOddTailDetNumerator u / firstAtomOddTailDenominator u^3 := by
+    firstAtomOddTailDet u = firstAtomOddTailDetNumerator u / firstAtomOddTailDenominator u^(3 : ℕ) := by
   unfold firstAtomOddTailDet
   dsimp only
   unfold firstAtomOddTailProfile1 firstAtomOddTailProfile2 firstAtomOddTailProfile3 firstAtomOddTailProfile4 firstAtomOddTailProfile5
@@ -126,14 +126,14 @@ theorem firstAtomOddTailDet_lower {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1/30) :
     linarith
   rw [firstAtomOddTailDet_eq_ratio u hD.ne']
   apply (le_div_iff₀ (pow_pos hD 3)).mpr
-  have hn2 : 0 ≤ u^2 := pow_nonneg hu0 2
-  have hn3 : 0 ≤ u^3 := pow_nonneg hu0 3
-  have hn4 : 0 ≤ u^4 := pow_nonneg hu0 4
-  have hn5 : 0 ≤ u^5 := pow_nonneg hu0 5
-  have hn6 : 0 ≤ u^6 := pow_nonneg hu0 6
-  have hn7 : 0 ≤ u^7 := pow_nonneg hu0 7
-  have hn8 : 0 ≤ u^8 := pow_nonneg hu0 8
-  have hn9 : 0 ≤ u^9 := pow_nonneg hu0 9
+  have hn2 : 0 ≤ u^(2 : ℕ) := pow_nonneg hu0 2
+  have hn3 : 0 ≤ u^(3 : ℕ) := pow_nonneg hu0 3
+  have hn4 : 0 ≤ u^(4 : ℕ) := pow_nonneg hu0 4
+  have hn5 : 0 ≤ u^(5 : ℕ) := pow_nonneg hu0 5
+  have hn6 : 0 ≤ u^(6 : ℕ) := pow_nonneg hu0 6
+  have hn7 : 0 ≤ u^(7 : ℕ) := pow_nonneg hu0 7
+  have hn8 : 0 ≤ u^(8 : ℕ) := pow_nonneg hu0 8
+  have hn9 : 0 ≤ u^(9 : ℕ) := pow_nonneg hu0 9
   have hu3 := pow_le_pow_left₀ hu0 hu1 3
   have hu5 := pow_le_pow_left₀ hu0 hu1 5
   have hu7 := pow_le_pow_left₀ hu0 hu1 7
@@ -149,15 +149,15 @@ theorem firstAtomOddTailNumerators_bounds {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤
     (0 ≤ firstAtomOddTailNumerator3 u ∧ firstAtomOddTailNumerator3 u ≤ 900000000) ∧
     (0 ≤ firstAtomOddTailNumerator4 u ∧ firstAtomOddTailNumerator4 u ≤ 900000000) ∧
     (0 ≤ firstAtomOddTailNumerator5 u ∧ firstAtomOddTailNumerator5 u ≤ 900000000) := by
-  have hn2 : 0 ≤ u^2 := pow_nonneg hu0 2
+  have hn2 : 0 ≤ u^(2 : ℕ) := pow_nonneg hu0 2
   have hu2 := pow_le_pow_left₀ hu0 hu1 2
-  have hn3 : 0 ≤ u^3 := pow_nonneg hu0 3
+  have hn3 : 0 ≤ u^(3 : ℕ) := pow_nonneg hu0 3
   have hu3 := pow_le_pow_left₀ hu0 hu1 3
-  have hn4 : 0 ≤ u^4 := pow_nonneg hu0 4
+  have hn4 : 0 ≤ u^(4 : ℕ) := pow_nonneg hu0 4
   have hu4 := pow_le_pow_left₀ hu0 hu1 4
-  have hn5 : 0 ≤ u^5 := pow_nonneg hu0 5
+  have hn5 : 0 ≤ u^(5 : ℕ) := pow_nonneg hu0 5
   have hu5 := pow_le_pow_left₀ hu0 hu1 5
-  have hn6 : 0 ≤ u^6 := pow_nonneg hu0 6
+  have hn6 : 0 ≤ u^(6 : ℕ) := pow_nonneg hu0 6
   have hu6 := pow_le_pow_left₀ hu0 hu1 6
   norm_num at hu2 hu3 hu4 hu5 hu6
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
@@ -192,7 +192,7 @@ theorem firstAtomOddTailProfiles_bounds {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1
     nlinarith
   · unfold firstAtomOddTailProfile3
     apply (div_le_iff₀ hD).mpr
-    have hn3 : 0 ≤ u^3 := pow_nonneg hu0 3
+    have hn3 : 0 ≤ u^(3 : ℕ) := pow_nonneg hu0 3
     have hu2 := pow_le_pow_left₀ hu0 hu1 2
     have hu4 := pow_le_pow_left₀ hu0 hu1 4
     norm_num at hu2 hu4

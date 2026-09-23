@@ -262,7 +262,7 @@ theorem finrank_range_gram (T : D →L[𝕜] W) :
 /-- Every singular value squared is an eigenvalue of the Gram operator. -/
 theorem gram_hasEigenvalue_sq_singularValues (T : D →L[𝕜] W) {n : ℕ}
     (hn : n < finrank 𝕜 D) :
-    Module.End.HasEigenvalue (gram T).toLinearMap (T.toLinearMap.singularValues n ^ 2) := by
+    Module.End.HasEigenvalue (gram T).toLinearMap (T.toLinearMap.singularValues n ^ (2 : ℕ)) := by
   simpa only [gram, ContinuousLinearMap.toLinearMap_comp,
     ContinuousLinearMap.adjoint_toLinearMap] using
       T.toLinearMap.hasEigenvalue_adjoint_comp_self_sq_singularValues hn

@@ -187,7 +187,7 @@ theorem resolventDifference_sliceFormula_apply_of_scalar
       (scalarEmbed a - q) * scalarEmbed a - q * (scalarEmbed a - q) =
         quadratic (scalarEmbed a) q := by
     rw [show quadratic (scalarEmbed a) q =
-        q * q - scalarEmbed (2 * a) * q + scalarEmbed (a ^ 2) by
+        q * q - scalarEmbed (2 * a) * q + scalarEmbed (a ^ (2 : ℕ)) by
           unfold quadratic
           simp [normSq_scalarEmbed], sub_mul, mul_sub,
       mul_scalarEmbed (scalarEmbed a) a, mul_scalarEmbed q a,
@@ -197,7 +197,7 @@ theorem resolventDifference_sliceFormula_apply_of_scalar
       rw [← add_smul]
       congr 1
       ring
-    have hsquare : scalarEmbed (a * a) = scalarEmbed (a ^ 2) := by
+    have hsquare : scalarEmbed (a * a) = scalarEmbed (a ^ (2 : ℕ)) := by
       congr 1
       ring
     rw [htwice, hsquare]

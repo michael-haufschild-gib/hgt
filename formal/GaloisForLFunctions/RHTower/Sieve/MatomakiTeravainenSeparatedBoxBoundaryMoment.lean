@@ -84,11 +84,11 @@ theorem sum_normSq_mtRootedAlignedSeparatedPairBoxFamily_productBoundary_le_coll
       (mtSeparatedPairBoxIndexSet (u := Douter - outerStart)
         endpoint E data maxDepth j eMax kMax)
       (mtSeparatedPairBoxAF endpoint P data z0 Dtrunc delta)
-      (mtSeparatedPairBoxScale endpoint delta recStart) Y n‖ ^ 2 ≤
+      (mtSeparatedPairBoxScale endpoint delta recStart) Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   classical
   dsimp only
   let data := MTFiniteIterationSourceData.ofMinimalGeometricRootedSchedule
@@ -148,11 +148,11 @@ theorem sum_normSq_mtRootedAlignedSeparatedTripleBoxFamily_productBoundary_le_co
       (mtSeparatedTripleBoxIndexSet (u := Douter - outerStart)
         endpoint E data maxDepth j eMax kMax)
       (mtSeparatedTripleBoxAF endpoint P data z0 Dtrunc delta)
-      (mtSeparatedTripleBoxScale endpoint delta recStart) Y n‖ ^ 2 ≤
+      (mtSeparatedTripleBoxScale endpoint delta recStart) Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   classical
   dsimp only
   let data := MTFiniteIterationSourceData.ofMinimalGeometricRootedSchedule

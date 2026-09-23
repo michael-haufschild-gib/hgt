@@ -25,7 +25,7 @@ def phaseCoherenceTargetBudget (d : ℕ) (η : ℝ) : ℝ :=
 /-- The defect supplied by the quantitative simultaneous-recurrence theorem
 at resolution `Q + 1`. -/
 def recurrencePhaseDefect (Q : ℕ) : ℝ :=
-  (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 / 2
+  (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) / 2
 
 theorem phaseCoherenceTargetBudget_pos
     {d : ℕ} (hd : 0 < d) {η : ℝ} (hη : 0 < η) :
@@ -158,7 +158,7 @@ theorem universalPhaseCoherenceTime_log_sandwich
 /-- The universal resolution constant converting the recurrence defect to a
 one-circle chord scale. -/
 def phaseCoherenceResolutionConstant : ℝ :=
-  Real.sqrt (Real.pi ^ 3)
+  Real.sqrt (Real.pi ^ (3 : ℕ))
 
 theorem phaseCoherenceResolutionConstant_pos :
     0 < phaseCoherenceResolutionConstant := by
@@ -171,7 +171,7 @@ theorem sqrt_recurrencePhaseDefect_scale (Q : ℕ) :
   have hQ : 0 < (Q + 1 : ℝ) := by positivity
   have hinside :
       Real.pi * recurrencePhaseDefect Q / 2 =
-        Real.pi ^ 3 / (Q + 1 : ℝ) ^ 2 := by
+        Real.pi ^ (3 : ℕ) / (Q + 1 : ℝ) ^ (2 : ℕ) := by
     rw [recurrencePhaseDefect]
     field_simp
   rw [hinside, Real.sqrt_div (by positivity), Real.sqrt_sq_eq_abs,

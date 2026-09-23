@@ -81,8 +81,8 @@ phases appears. -/
 theorem norm_sub_sq_eq_of_inner_real_nonneg (g xi : E) (hg : ‖g‖ = 1) (hxi : ‖xi‖ = 1)
     (hreal : inner ℂ g xi = ((RCLike.re (inner ℂ g xi) : ℝ) : ℂ))
     (hnn : 0 ≤ RCLike.re (inner ℂ g xi)) :
-    ‖g - xi‖ ^ 2 = 2 - 2 * ‖(inner ℂ g xi : ℂ)‖ := by
-  have h1 : ‖g - (1 : ℂ) • xi‖ ^ 2 = 2 - 2 * RCLike.re ((1 : ℂ) * inner ℂ g xi) :=
+    ‖g - xi‖ ^ (2 : ℕ) = 2 - 2 * ‖(inner ℂ g xi : ℂ)‖ := by
+  have h1 : ‖g - (1 : ℂ) • xi‖ ^ (2 : ℕ) = 2 - 2 * RCLike.re ((1 : ℂ) * inner ℂ g xi) :=
     norm_sub_smul_sq_eq g xi hg hxi (by norm_num)
   have hnorm : ‖(inner ℂ g xi : ℂ)‖ = RCLike.re (inner ℂ g xi) := by
     conv_lhs => rw [hreal]
@@ -96,15 +96,15 @@ theorem norm_sub_sq_le_of_inner_real_nonneg (g xi : E) (hg : ‖g‖ = 1) (hxi :
     (hreal : inner ℂ g xi = ((RCLike.re (inner ℂ g xi) : ℝ) : ℂ))
     (hnn : 0 ≤ RCLike.re (inner ℂ g xi))
     {Gap delta : ℝ} (hGap : 0 < Gap)
-    (hexcess : Gap * (1 - ‖(inner ℂ g xi : ℂ)‖ ^ 2) ≤ delta) :
-    ‖g - xi‖ ^ 2 ≤ 2 * delta / Gap := by
+    (hexcess : Gap * (1 - ‖(inner ℂ g xi : ℂ)‖ ^ (2 : ℕ)) ≤ delta) :
+    ‖g - xi‖ ^ (2 : ℕ) ≤ 2 * delta / Gap := by
   rw [norm_sub_sq_eq_of_inner_real_nonneg g xi hg hxi hreal hnn]
   have ht0 : 0 ≤ ‖(inner ℂ g xi : ℂ)‖ := norm_nonneg _
   have ht1 : ‖(inner ℂ g xi : ℂ)‖ ≤ 1 := by
     have := norm_inner_le_norm (𝕜 := ℂ) g xi
     rw [hg, hxi, one_mul] at this
     exact this
-  have hstep : Gap * (1 - ‖(inner ℂ g xi : ℂ)‖) ≤ Gap * (1 - ‖(inner ℂ g xi : ℂ)‖ ^ 2) :=
+  have hstep : Gap * (1 - ‖(inner ℂ g xi : ℂ)‖) ≤ Gap * (1 - ‖(inner ℂ g xi : ℂ)‖ ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_left (by nlinarith) hGap.le
   rw [le_div_iff₀ hGap]
   nlinarith [hstep, hexcess]

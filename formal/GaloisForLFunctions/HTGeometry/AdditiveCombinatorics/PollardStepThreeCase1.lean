@@ -33,21 +33,21 @@ for `X = 2n+3m−5` and `Y = 2n+2m−m²−3`, whose two summands are respective
 theorem case31_final {n m P S : ℝ} (hm : 3 ≤ m) (hnm : m ≤ n)
     (hP : 0 ≤ P) (hS : 0 ≤ S)
     (h2P : 2 * P ≤ 2 * n + 3 * m - 5)
-    (h2S : 2 * S ≤ 2 * n + 2 * m - m ^ 2 - 3)
-    (hkey : n ^ 2 * m ≤ P * (n + S * (m - 1))) : False := by
+    (h2S : 2 * S ≤ 2 * n + 2 * m - m ^ (2 : ℕ) - 3)
+    (hkey : n ^ (2 : ℕ) * m ≤ P * (n + S * (m - 1))) : False := by
   have hX : (0 : ℝ) ≤ 2 * n + 3 * m - 5 := le_trans (by linarith) h2P
-  have hY : (0 : ℝ) ≤ 2 * n + 2 * m - m ^ 2 - 3 := le_trans (by linarith) h2S
+  have hY : (0 : ℝ) ≤ 2 * n + 2 * m - m ^ (2 : ℕ) - 3 := le_trans (by linarith) h2S
   have hm1 : (0 : ℝ) ≤ m - 1 := by linarith
-  have hPS : 4 * (P * S) ≤ (2 * n + 3 * m - 5) * (2 * n + 2 * m - m ^ 2 - 3) := by nlinarith
-  have hFp : 4 * (n ^ 2 * m)
+  have hPS : 4 * (P * S) ≤ (2 * n + 3 * m - 5) * (2 * n + 2 * m - m ^ (2 : ℕ) - 3) := by nlinarith
+  have hFp : 4 * (n ^ (2 : ℕ) * m)
       ≤ 2 * n * (2 * n + 3 * m - 5)
-        + (m - 1) * ((2 * n + 3 * m - 5) * (2 * n + 2 * m - m ^ 2 - 3)) := by
+        + (m - 1) * ((2 * n + 3 * m - 5) * (2 * n + 2 * m - m ^ (2 : ℕ) - 3)) := by
     nlinarith [hkey, hPS, hm1, h2P]
   have hstep : (0 : ℝ)
-      ≤ -2 * ((m - 3) * (m ^ 2 - 3 * m + 1) * (n - m))
-        + (-5 * m ^ 4 + 26 * m ^ 3 - 50 * m ^ 2 + 40 * m - 15) := by linarith [hFp]
-  have hquad : (0 : ℝ) ≤ m ^ 2 - 3 * m + 1 := by nlinarith
-  have hprod : (0 : ℝ) ≤ (m - 3) * (m ^ 2 - 3 * m + 1) * (n - m) :=
+      ≤ -2 * ((m - 3) * (m ^ (2 : ℕ) - 3 * m + 1) * (n - m))
+        + (-5 * m ^ (4 : ℕ) + 26 * m ^ (3 : ℕ) - 50 * m ^ (2 : ℕ) + 40 * m - 15) := by linarith [hFp]
+  have hquad : (0 : ℝ) ≤ m ^ (2 : ℕ) - 3 * m + 1 := by nlinarith
+  have hprod : (0 : ℝ) ≤ (m - 3) * (m ^ (2 : ℕ) - 3 * m + 1) * (n - m) :=
     mul_nonneg (mul_nonneg (by linarith) hquad) (by linarith)
   have hq := case31_poly hm
   linarith [hstep, hprod, hq]
@@ -117,7 +117,7 @@ theorem case31_false {A B : Finset G} {x₀ : G}
     push_cast at this
     linarith
   have hS2 : 2 * ((dysonFull A B).card : ℝ)
-      ≤ 2 * (A.card : ℝ) + 2 * (B.card : ℝ) - (B.card : ℝ) ^ 2 - 3 := by
+      ≤ 2 * (A.card : ℝ) + 2 * (B.card : ℝ) - (B.card : ℝ) ^ (2 : ℕ) - 3 := by
     have : ((2 * (dysonFull A B).card + B.card * B.card + 3 : ℕ) : ℝ)
         ≤ ((2 * A.card + 2 * B.card : ℕ) : ℝ) := by exact_mod_cast h2S
     push_cast at this

@@ -77,7 +77,7 @@ def witnessDiagonal (c : ℚ) : (Fin n → Bool) → ℚ :=
   twoLocalDiagonal c 0 witnessCoupling
 
 theorem witnessDiagonal_eq (c : ℚ) (x : Fin n → Bool) :
-    witnessDiagonal c x = c + ((occZ x : ℤ) : ℚ) ^ 2 := by
+    witnessDiagonal c x = c + ((occZ x : ℤ) : ℚ) ^ (2 : ℕ) := by
   classical
   rw [witnessDiagonal, twoLocalDiagonal]
   have hzero : ∑ i : Fin n, (0 : Fin n → ℚ) i * (if x i then (1 : ℚ) else 0) = 0 := by
@@ -98,8 +98,8 @@ theorem witnessDiagonal_eq (c : ℚ) (x : Fin n → Bool) :
 theorem witnessDiagonal_injective (c : ℚ) : Function.Injective (witnessDiagonal (n := n) c) := by
   intro x y hxy
   rw [witnessDiagonal_eq, witnessDiagonal_eq] at hxy
-  have hsq : ((occZ x : ℤ) : ℚ) ^ 2 = ((occZ y : ℤ) : ℚ) ^ 2 := by linarith
-  have hz : (occZ x) ^ 2 = (occZ y) ^ 2 := by exact_mod_cast hsq
+  have hsq : ((occZ x : ℤ) : ℚ) ^ (2 : ℕ) = ((occZ y : ℤ) : ℚ) ^ (2 : ℕ) := by linarith
+  have hz : (occZ x) ^ (2 : ℕ) = (occZ y) ^ (2 : ℕ) := by exact_mod_cast hsq
   refine occZ_injective ?_
   have hx := occZ_nonneg x
   have hy := occZ_nonneg y
@@ -149,7 +149,7 @@ theorem edgePoint_injective (i : Fin (m + 1)) (b : Bool) :
 /-- **The detuning of a hypercube edge of the witness.** -/
 theorem detuning_witnessDiagonal (c : ℚ) (i : Fin (m + 1)) (z : Fin m → Bool) :
     detuning (witnessDiagonal c) i z
-      = 2 * 3 ^ (i : ℕ) * ((occZ (edgePoint i z false) : ℤ) : ℚ) + (3 ^ (i : ℕ)) ^ 2 := by
+      = 2 * 3 ^ (i : ℕ) * ((occZ (edgePoint i z false) : ℤ) : ℚ) + (3 ^ (i : ℕ)) ^ (2 : ℕ) := by
   have hocc : occZ (edgePoint i z true) = occZ (edgePoint i z false) + 3 ^ (i : ℕ) :=
     occZ_update _ _ i (edgePoint_self i z true) (edgePoint_self i z false)
       (fun j hj => edgePoint_congr i z true false hj)
@@ -184,7 +184,7 @@ theorem detuning_witnessDiagonal_ne_neg (c : ℚ) (i : Fin (m + 1)) (z z' : Fin 
 
 /-- The constant making the witness traceless. -/
 def witnessConstant (m : ℕ) : ℚ :=
-  -(∑ x : Fin (m + 1) → Bool, ((occZ x : ℤ) : ℚ) ^ 2) / 2 ^ (m + 1)
+  -(∑ x : Fin (m + 1) → Bool, ((occZ x : ℤ) : ℚ) ^ (2 : ℕ)) / 2 ^ (m + 1)
 
 theorem sum_witnessDiagonal (m : ℕ) :
     ∑ x : Fin (m + 1) → Bool, witnessDiagonal (witnessConstant m) x = 0 := by

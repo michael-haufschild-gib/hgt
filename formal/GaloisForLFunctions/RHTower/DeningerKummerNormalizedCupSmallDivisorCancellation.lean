@@ -73,7 +73,7 @@ def deningerNormalizedKummerCupPacket
 
 /-- Squared coefficient mass of a normalized Kummer packet. -/
 def deningerNormalizedKummerPacketMass (a : ι → ℂ) : ℝ :=
-  ∑ i, ‖a i‖ ^ 2
+  ∑ i, ‖a i‖ ^ (2 : ℕ)
 
 /-- The normalized Kummer cup is uniformly bounded; no frequency divisor remains. -/
 theorem deningerNormalizedKummerCupPacket_norm_le
@@ -90,14 +90,14 @@ theorem deningerNormalizedKummerCupPacket_norm_le
       apply Finset.sum_congr rfl
       intro i _
       rw [norm_mul, norm_mul, norm_mul, Complex.norm_I, hsign, one_mul, mul_one]
-    _ ≤ Real.sqrt (∑ i, ‖a i‖ ^ 2) * Real.sqrt (∑ i, ‖b (opp i)‖ ^ 2) :=
+    _ ≤ Real.sqrt (∑ i, ‖a i‖ ^ (2 : ℕ)) * Real.sqrt (∑ i, ‖b (opp i)‖ ^ (2 : ℕ)) :=
       Real.sum_mul_le_sqrt_mul_sqrt Finset.univ (fun i => ‖a i‖) (fun i => ‖b (opp i)‖)
     _ = Real.sqrt (deningerNormalizedKummerPacketMass a) *
         Real.sqrt (deningerNormalizedKummerPacketMass b) := by
       rw [deningerNormalizedKummerPacketMass, deningerNormalizedKummerPacketMass]
       congr 2
-      exact Fintype.sum_equiv opp (fun i => ‖b (opp i)‖ ^ 2)
-        (fun j => ‖b j‖ ^ 2) (fun i => rfl)
+      exact Fintype.sum_equiv opp (fun i => ‖b (opp i)‖ ^ (2 : ℕ))
+        (fun j => ‖b j‖ ^ (2 : ℕ)) (fun i => rfl)
 
 end Packet
 

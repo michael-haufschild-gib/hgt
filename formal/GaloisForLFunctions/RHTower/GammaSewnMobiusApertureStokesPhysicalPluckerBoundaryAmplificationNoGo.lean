@@ -86,7 +86,7 @@ theorem gammaSewnCriticalPhysicalPlucker_canonicalBoundarySplit_cannot_rebalance
     {v : GammaSewnCriticalPhysicalPluckerHilbert} (hv0 : v ≠ 0) :
     let w := routePPrimitiveBaseCauchyCubicWeight pe
     let c : ℝ := 8
-    w / 64 * c ^ 2 = w ∧
+    w / 64 * c ^ (2 : ℕ) = w ∧
       boundaryTransfer eps v ≠ (c : ℂ) • v ∧
       (eps • boundaryInverse eps) v ≠ (c : ℂ) • v := by
   dsimp

@@ -59,13 +59,13 @@ theorem tendsto_mFreeDilationSum_atTop {g : ℝ → ℂ} {x : ℝ}
 
 theorem norm_meyerPoissonTest_le (y : ℝ) :
     ‖((meyerPoissonTest y : ℝ) : ℂ)‖
-      ≤ (y ^ 4 + 3 / (2 * Real.pi) * y ^ 2) * Real.exp (-Real.pi * y ^ 2) := by
+      ≤ (y ^ (4 : ℕ) + 3 / (2 * Real.pi) * y ^ (2 : ℕ)) * Real.exp (-Real.pi * y ^ (2 : ℕ)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rw [Complex.norm_real, Real.norm_eq_abs, meyerPoissonTest, abs_mul,
     abs_of_pos (Real.exp_pos _)]
   refine mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le
   rw [abs_mul, abs_of_nonneg (sq_nonneg y)]
-  have habs : |y ^ 2 - 3 / (2 * Real.pi)| ≤ y ^ 2 + 3 / (2 * Real.pi) := by
+  have habs : |y ^ (2 : ℕ) - 3 / (2 * Real.pi)| ≤ y ^ (2 : ℕ) + 3 / (2 * Real.pi) := by
     rw [abs_le]
     constructor <;> nlinarith [sq_nonneg y, div_nonneg (by norm_num : (0:ℝ) ≤ 3) (by positivity : (0:ℝ) ≤ 2 * Real.pi)]
   nlinarith [sq_nonneg y, habs]
@@ -78,9 +78,9 @@ theorem summable_norm_meyerPoissonTest_dilate {x : ℝ} (hx : 0 < x) :
   have hr1 : ‖r‖ < 1 := by
     rw [Real.norm_eq_abs, abs_of_pos hr0, hr, Real.exp_lt_one_iff]
     nlinarith
-  set C : ℝ := x ^ 4 + 3 / (2 * Real.pi) * x ^ 2 with hC
+  set C : ℝ := x ^ (4 : ℕ) + 3 / (2 * Real.pi) * x ^ (2 : ℕ) with hC
   have hCpos : 0 ≤ C := by positivity
-  have hgeo : Summable fun n : ℕ => C * ((n : ℝ) ^ 4 * r ^ n) :=
+  have hgeo : Summable fun n : ℕ => C * ((n : ℝ) ^ (4 : ℕ) * r ^ n) :=
     (summable_pow_mul_geometric_of_norm_lt_one 4 hr1).mul_left C
   refine Summable.of_norm_bounded_eventually_nat hgeo ?_
   obtain ⟨N, hN⟩ := exists_nat_ge (1 / x)
@@ -93,9 +93,9 @@ theorem summable_norm_meyerPoissonTest_dilate {x : ℝ} (hx : 0 < x) :
     rw [div_le_iff₀ hx] at this
     linarith
   have hy0 : (0 : ℝ) < (n : ℝ) * x := lt_of_lt_of_le one_pos hy1
-  have hexp : Real.exp (-Real.pi * ((n : ℝ) * x) ^ 2) ≤ r ^ n := by
-    have hsq : (n : ℝ) * x ≤ ((n : ℝ) * x) ^ 2 := by nlinarith
-    have h1 : Real.exp (-Real.pi * ((n : ℝ) * x) ^ 2) ≤ Real.exp (-Real.pi * ((n : ℝ) * x)) := by
+  have hexp : Real.exp (-Real.pi * ((n : ℝ) * x) ^ (2 : ℕ)) ≤ r ^ n := by
+    have hsq : (n : ℝ) * x ≤ ((n : ℝ) * x) ^ (2 : ℕ) := by nlinarith
+    have h1 : Real.exp (-Real.pi * ((n : ℝ) * x) ^ (2 : ℕ)) ≤ Real.exp (-Real.pi * ((n : ℝ) * x)) := by
       refine Real.exp_le_exp.mpr ?_
       nlinarith
     have h2 : Real.exp (-Real.pi * ((n : ℝ) * x)) = r ^ n := by
@@ -104,27 +104,27 @@ theorem summable_norm_meyerPoissonTest_dilate {x : ℝ} (hx : 0 < x) :
       ring
     rw [← h2]
     exact h1
-  have hpoly : ((n : ℝ) * x) ^ 4 + 3 / (2 * Real.pi) * ((n : ℝ) * x) ^ 2
-      ≤ C * (n : ℝ) ^ 4 := by
+  have hpoly : ((n : ℝ) * x) ^ (4 : ℕ) + 3 / (2 * Real.pi) * ((n : ℝ) * x) ^ (2 : ℕ)
+      ≤ C * (n : ℝ) ^ (4 : ℕ) := by
     have hc : (0 : ℝ) ≤ 3 / (2 * Real.pi) := by positivity
-    have hx2 : (0 : ℝ) ≤ x ^ 2 := sq_nonneg x
-    have h2 : ((n : ℝ)) ^ 2 ≤ ((n : ℝ)) ^ 4 := pow_le_pow_right₀ hn1' (by norm_num)
-    have key : 3 / (2 * Real.pi) * ((n : ℝ) ^ 2 * x ^ 2)
-        ≤ 3 / (2 * Real.pi) * ((n : ℝ) ^ 4 * x ^ 2) :=
+    have hx2 : (0 : ℝ) ≤ x ^ (2 : ℕ) := sq_nonneg x
+    have h2 : ((n : ℝ)) ^ (2 : ℕ) ≤ ((n : ℝ)) ^ (4 : ℕ) := pow_le_pow_right₀ hn1' (by norm_num)
+    have key : 3 / (2 * Real.pi) * ((n : ℝ) ^ (2 : ℕ) * x ^ (2 : ℕ))
+        ≤ 3 / (2 * Real.pi) * ((n : ℝ) ^ (4 : ℕ) * x ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right h2 hx2) hc
     rw [hC]
-    calc ((n : ℝ) * x) ^ 4 + 3 / (2 * Real.pi) * ((n : ℝ) * x) ^ 2
-        = x ^ 4 * (n : ℝ) ^ 4 + 3 / (2 * Real.pi) * ((n : ℝ) ^ 2 * x ^ 2) := by ring
-      _ ≤ x ^ 4 * (n : ℝ) ^ 4 + 3 / (2 * Real.pi) * ((n : ℝ) ^ 4 * x ^ 2) := by linarith
-      _ = (x ^ 4 + 3 / (2 * Real.pi) * x ^ 2) * (n : ℝ) ^ 4 := by ring
+    calc ((n : ℝ) * x) ^ (4 : ℕ) + 3 / (2 * Real.pi) * ((n : ℝ) * x) ^ (2 : ℕ)
+        = x ^ (4 : ℕ) * (n : ℝ) ^ (4 : ℕ) + 3 / (2 * Real.pi) * ((n : ℝ) ^ (2 : ℕ) * x ^ (2 : ℕ)) := by ring
+      _ ≤ x ^ (4 : ℕ) * (n : ℝ) ^ (4 : ℕ) + 3 / (2 * Real.pi) * ((n : ℝ) ^ (4 : ℕ) * x ^ (2 : ℕ)) := by linarith
+      _ = (x ^ (4 : ℕ) + 3 / (2 * Real.pi) * x ^ (2 : ℕ)) * (n : ℝ) ^ (4 : ℕ) := by ring
   have hbase := norm_meyerPoissonTest_le ((n : ℝ) * x)
   rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
   calc ‖((meyerPoissonTest ((n : ℝ) * x) : ℝ) : ℂ)‖
-      ≤ (((n : ℝ) * x) ^ 4 + 3 / (2 * Real.pi) * ((n : ℝ) * x) ^ 2) *
-          Real.exp (-Real.pi * ((n : ℝ) * x) ^ 2) := hbase
-    _ ≤ (C * (n : ℝ) ^ 4) * r ^ n :=
+      ≤ (((n : ℝ) * x) ^ (4 : ℕ) + 3 / (2 * Real.pi) * ((n : ℝ) * x) ^ (2 : ℕ)) *
+          Real.exp (-Real.pi * ((n : ℝ) * x) ^ (2 : ℕ)) := hbase
+    _ ≤ (C * (n : ℝ) ^ (4 : ℕ)) * r ^ n :=
         mul_le_mul hpoly hexp (Real.exp_pos _).le (by positivity)
-    _ = C * ((n : ℝ) ^ 4 * r ^ n) := by ring
+    _ = C * ((n : ℝ) ^ (4 : ℕ) * r ^ n) := by ring
 
 /-- The bounded-exponent dilations of the explicit source test converge pointwise on the ray to
 the complete dilation sum. -/

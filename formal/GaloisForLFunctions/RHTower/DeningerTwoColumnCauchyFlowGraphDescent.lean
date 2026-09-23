@@ -333,8 +333,8 @@ def chainMap : DeningerArithmeticThreeTermChainMap A.flow.complex B.flow.complex
     F.naturalSignature10 F.naturalSignature01
 
 /-- The five component flow squares upgrade the assembled chain map to a flow-equivariant one:
-`R^q Θ_A^q = Θ_B^q R^q` in all three degrees, with `Θ^1 = θ_{10} ⊕ θ_{01}` and
-`Θ^2 = θ_{11} ⊕ θ_S`. -/
+`R^q Θ_A^q = Θ_B^q R^q` in all three degrees, with `Θ^(1 : ℕ) = θ_{10} ⊕ θ_{01}` and
+`Θ^(2 : ℕ) = θ_{11} ⊕ θ_S`. -/
 def flowChainMap : DeningerArithmeticThreeTermFlowChainMap A.flow B.flow :=
   DeningerArithmeticThreeTermFlowChainMap.ofChainMap F.chainMap F.flow00
     (deningerTwoColumnComponentMap_intertwines F.restrict10 F.restrict01

@@ -62,7 +62,7 @@ theorem qnmComplexHyperboloidalWave_wave_residual (z : ℂ) (P V : Polynomial �
         deriv (deriv (qnmComplexHyperboloidalWave z P t)) x +
         V.eval (Real.tanh x : ℂ) * qnmComplexHyperboloidalWave z P t x =
       qnmComplexHyperboloidalWave z
-        ((C (z ^ 2) + V) * P - qnmHyperboloidalDx z (qnmHyperboloidalDx z P)) t x := by
+        ((C (z ^ (2 : ℕ)) + V) * P - qnmHyperboloidalDx z (qnmHyperboloidalDx z P)) t x := by
   rw [qnmComplexHyperboloidalWave_time_deriv]
   rw [deriv_const_mul_field, qnmComplexHyperboloidalWave_time_deriv]
   rw [qnmComplexHyperboloidalWave_space_deriv, qnmComplexHyperboloidalWave_space_deriv]

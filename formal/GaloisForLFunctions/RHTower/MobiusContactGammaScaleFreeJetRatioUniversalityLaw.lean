@@ -40,15 +40,15 @@ theorem mobiusContactGamma_scaleFreeJetRatioUniversality :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetProjectiveDefect n x /
           GaloisForLFunctions.gammaFactorialFirstJetDefect n x)
-        atTop (𝓝 (-1 / x ^ 2)) ∧
+        atTop (𝓝 (-1 / x ^ (2 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialThirdJetProjectiveDefect n x /
-          GaloisForLFunctions.gammaFactorialFirstJetDefect n x ^ 2)
-        atTop (𝓝 (-3 / (2 * x ^ 2))) ∧
+          GaloisForLFunctions.gammaFactorialFirstJetDefect n x ^ (2 : ℕ))
+        atTop (𝓝 (-3 / (2 * x ^ (2 : ℕ)))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
           GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x)
-        atTop (𝓝 (x ^ 6)) := by
+        atTop (𝓝 (x ^ (6 : ℕ))) := by
   intro x hx
   have hfirst :
       Tendsto (fun n : ℕ =>
@@ -60,43 +60,43 @@ theorem mobiusContactGamma_scaleFreeJetRatioUniversality :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetDefect n x /
           GaloisForLFunctions.gammaHarmonicMicroscopeScale n)
-        atTop (𝓝 (6 / x ^ 2)) :=
+        atTop (𝓝 (6 / x ^ (2 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialSecondJetDefect_div_harmonicScale hx
   have hprojectiveSecond :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetProjectiveDefect n x /
           GaloisForLFunctions.gammaHarmonicMicroscopeScale n)
-        atTop (𝓝 (2 / x ^ 3)) :=
+        atTop (𝓝 (2 / x ^ (3 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialSecondJetProjectiveDefect_div_harmonicScale hx
   have hprojectiveThird :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialThirdJetProjectiveDefect n x /
-          GaloisForLFunctions.gammaHarmonicMicroscopeScale n ^ 2)
-        atTop (𝓝 (-6 / x ^ 4)) :=
+          GaloisForLFunctions.gammaHarmonicMicroscopeScale n ^ (2 : ℕ))
+        atTop (𝓝 (-6 / x ^ (4 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialThirdJetProjectiveDefect_div_harmonicScale_sq hx
   have hlog :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
-          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2)
-        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ 2 / x ^ 4)) :=
+          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ))
+        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (4 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialLogCurvatureDiscriminant_div_factorialScale_sq hx
   have henvelope :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x /
-          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2)
-        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ 2 / x ^ 10)) :=
+          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ))
+        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (10 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialExponentialEnvelopeDefect_div_factorialScale_sq hx
   have hfirst_ne : (-2 / x : ℂ) ≠ 0 :=
     div_ne_zero (by norm_num) hx
   have hpi : (Real.pi : ℂ) ≠ 0 := by
     exact_mod_cast Real.pi_ne_zero
-  have henvelope_ne : (-4 * (Real.pi : ℂ) ^ 2 / x ^ 10) ≠ 0 :=
+  have henvelope_ne : (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (10 : ℕ)) ≠ 0 :=
     div_ne_zero
       (mul_ne_zero (by norm_num) (pow_ne_zero 2 hpi))
       (pow_ne_zero 10 hx)
   refine ⟨?_, ?_, ?_, ?_⟩
   · have hnormalized := hsecond.div hfirst hfirst_ne
-    have hvalue : (6 / x ^ 2 : ℂ) / (-2 / x) = -3 / x := by
+    have hvalue : (6 / x ^ (2 : ℕ) : ℂ) / (-2 / x) = -3 / x := by
       field_simp [hx]
       ring
     rw [hvalue] at hnormalized
@@ -115,7 +115,7 @@ theorem mobiusContactGamma_scaleFreeJetRatioUniversality :
           [GaloisForLFunctions.gammaHarmonicMicroscopeScale_ne_zero hn, hden]
     exact hnormalized.congr' heq
   · have hnormalized := hprojectiveSecond.div hfirst hfirst_ne
-    have hvalue : (2 / x ^ 3 : ℂ) / (-2 / x) = -1 / x ^ 2 := by
+    have hvalue : (2 / x ^ (3 : ℕ) : ℂ) / (-2 / x) = -1 / x ^ (2 : ℕ) := by
       field_simp [hx]
     rw [hvalue] at hnormalized
     have heq : ∀ᶠ n : ℕ in atTop,
@@ -134,18 +134,18 @@ theorem mobiusContactGamma_scaleFreeJetRatioUniversality :
     exact hnormalized.congr' heq
   · have hnormalized := hprojectiveThird.div (hfirst.pow 2)
         (pow_ne_zero 2 hfirst_ne)
-    have hvalue : (-6 / x ^ 4 : ℂ) / (-2 / x) ^ 2 =
-        -3 / (2 * x ^ 2) := by
+    have hvalue : (-6 / x ^ (4 : ℕ) : ℂ) / (-2 / x) ^ (2 : ℕ) =
+        -3 / (2 * x ^ (2 : ℕ)) := by
       field_simp [hx]
       ring
     rw [hvalue] at hnormalized
     have heq : ∀ᶠ n : ℕ in atTop,
         (GaloisForLFunctions.gammaFactorialThirdJetProjectiveDefect n x /
-            GaloisForLFunctions.gammaHarmonicMicroscopeScale n ^ 2) /
+            GaloisForLFunctions.gammaHarmonicMicroscopeScale n ^ (2 : ℕ)) /
           (GaloisForLFunctions.gammaFactorialFirstJetDefect n x /
-            GaloisForLFunctions.gammaHarmonicMicroscopeScale n) ^ 2 =
+            GaloisForLFunctions.gammaHarmonicMicroscopeScale n) ^ (2 : ℕ) =
           GaloisForLFunctions.gammaFactorialThirdJetProjectiveDefect n x /
-            GaloisForLFunctions.gammaFactorialFirstJetDefect n x ^ 2 := by
+            GaloisForLFunctions.gammaFactorialFirstJetDefect n x ^ (2 : ℕ) := by
       filter_upwards [eventually_ge_atTop 1] with n hn
       by_cases hden :
           GaloisForLFunctions.gammaFactorialFirstJetDefect n x = 0
@@ -155,15 +155,15 @@ theorem mobiusContactGamma_scaleFreeJetRatioUniversality :
     exact hnormalized.congr' heq
   · have hnormalized := hlog.div henvelope henvelope_ne
     have hvalue :
-        (-4 * (Real.pi : ℂ) ^ 2 / x ^ 4) /
-            (-4 * (Real.pi : ℂ) ^ 2 / x ^ 10) = x ^ 6 := by
+        (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (4 : ℕ)) /
+            (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (10 : ℕ)) = x ^ (6 : ℕ) := by
       field_simp [hx, hpi]
     rw [hvalue] at hnormalized
     have heq : ∀ᶠ n : ℕ in atTop,
         (GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
-            GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2) /
+            GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ)) /
           (GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x /
-            GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2) =
+            GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ)) =
           GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
             GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x := by
       filter_upwards [] with n

@@ -117,7 +117,7 @@ theorem summable_xiHeatCassiniWoldResidualBorelLowerRaySourceAtom
   (summable_norm_xiHeatCassiniWoldResidualBorelLowerRaySourceAtom x hs).of_norm
 
 private theorem summable_secondFactorialBorelKernelTerm (z : ℂ) :
-    Summable (fun k : ℕ => z ^ k / ((k.factorial : ℂ) ^ 2)) := by
+    Summable (fun k : ℕ => z ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))) := by
   apply Summable.of_norm
   have hmajor := (NormedSpace.expSeries_div_hasSum_exp (𝔸 := ℝ) ‖z‖).summable
   apply Summable.of_nonneg_of_le (fun k => norm_nonneg _) (fun k => ?_) hmajor
@@ -127,7 +127,7 @@ private theorem summable_secondFactorialBorelKernelTerm (z : ℂ) :
   have hk : (1 : ℝ) ≤ (k.factorial : ℝ) := by exact_mod_cast hkNat
   have hkpos : 0 < (k.factorial : ℝ) := by positivity
   calc
-    ‖z‖ ^ k / (k.factorial : ℝ) ^ 2 ≤
+    ‖z‖ ^ k / (k.factorial : ℝ) ^ (2 : ℕ) ≤
         ‖z‖ ^ k / (k.factorial : ℝ) := by
       exact div_le_div_of_nonneg_left (pow_nonneg (norm_nonneg z) k) hkpos
         (by nlinarith [sq_nonneg ((k.factorial : ℝ) - 1)])
@@ -146,9 +146,9 @@ theorem tsum_xiHeatCassiniWoldResidualBorelAtom_fixedSource_lowerRay
   let h : ℝ := xiMassNthPrimeLogHeight N
   let H : ℝ := xiMassNthPrimeLogHeight (N + 1)
   let f : ℕ → ℂ := fun k => A *
-    (-((h * s : ℝ) : ℂ)) ^ k / ((k.factorial : ℂ) ^ 2)
+    (-((h * s : ℝ) : ℂ)) ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))
   let g : ℕ → ℂ := fun k => B *
-    (-((H * s : ℝ) : ℂ)) ^ k / ((k.factorial : ℂ) ^ 2)
+    (-((H * s : ℝ) : ℂ)) ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))
   have hf : Summable f := by
     dsimp only [f]
     exact ((summable_secondFactorialBorelKernelTerm

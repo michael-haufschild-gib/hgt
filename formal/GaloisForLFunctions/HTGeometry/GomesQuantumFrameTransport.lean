@@ -152,7 +152,7 @@ theorem gomesRotY_pauli_transport (theta : ℝ) (r : Fin 3 → ℝ) :
     QuantumAlg.rotYOp theta * gomesPauliCarrier r * (QuantumAlg.rotYOp theta)ᴴ =
       gomesPauliCarrier (gomesYFrameMatrix theta *ᵥ r) := by
   have hs := Real.sin_sq_add_cos_sq (theta/2)
-  have hc : Real.cos theta = 2*Real.cos (theta/2)^2-1 := by
+  have hc : Real.cos theta = 2*Real.cos (theta/2)^(2 : ℕ)-1 := by
     simpa only [mul_div_cancel₀ _ (two_ne_zero : (2 : ℝ) ≠ 0)]
       using Real.cos_two_mul (theta/2)
   have hh : Real.sin theta = 2*Real.sin (theta/2)*Real.cos (theta/2) := by

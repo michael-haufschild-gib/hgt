@@ -9,8 +9,8 @@ open scoped Polynomial
 noncomputable section
 set_option autoImplicit false
 
-def realSourceCoefficientA (u : ℝ) : ℝ := 5*(u+1)^2+(5/2)*(u+1)-3/2
-def realSourceCoefficientB (u : ℝ) : ℝ := (15/2)*(u+1)^4+(81/4)*(u+1)^3+15*(u+1)^2+(9/4)*(u+1)
+def realSourceCoefficientA (u : ℝ) : ℝ := 5*(u+1)^(2 : ℕ)+(5/2)*(u+1)-3/2
+def realSourceCoefficientB (u : ℝ) : ℝ := (15/2)*(u+1)^(4 : ℕ)+(81/4)*(u+1)^(3 : ℕ)+15*(u+1)^(2 : ℕ)+(9/4)*(u+1)
 
 theorem realSourceCoefficient_bounds (u : ℝ) (hu : u ∈ Icc (-(3/2):ℝ) (-1)) :
     realSourceCoefficientA u ≤ -(3/2) ∧ realSourceCoefficientB u ≤ 9/16 := by
@@ -53,26 +53,26 @@ theorem nonstationarySourceNumerator_real_normalized (u : ℝ) (hu : -2 < u) (hu
       ((realSourceCoefficientA u*realSourceSecondMoment u+
         realSourceCoefficientB u*realSourceFourthMoment u):ℝ) := by
   have huC : (u:ℂ)+1 ≠ 0 := by exact_mod_cast hu1
-  have h2 := nonstationaryMoment_recurrence ((1-Polynomial.X)^2) 0 (u:ℂ) hu huC
-  have h4 := nonstationaryMoment_recurrence ((1-Polynomial.X)^4) 0 (u:ℂ) hu huC
+  have h2 := nonstationaryMoment_recurrence ((1-Polynomial.X)^(2 : ℕ)) 0 (u:ℂ) hu huC
+  have h4 := nonstationaryMoment_recurrence ((1-Polynomial.X)^(4 : ℕ)) 0 (u:ℂ) hu huC
   have hz (n : ℕ) (hn : 0 < n) : nonstationaryWeight ((1-Polynomial.X)^n) 0 1=0 := by
     norm_num [nonstationaryWeight,zero_pow hn.ne']
   rw [hz 2 (by omega),zero_div] at h2
   rw [hz 4 (by omega),zero_div] at h4
-  change ((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^2) 0 (u:ℂ)+
+  change ((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^(2 : ℕ)) 0 (u:ℂ)+
     nonstationaryMoment (nonstationaryPolynomial 2 1) 2 (u:ℂ)=0 at h2
-  change ((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^4) 0 (u:ℂ)+
+  change ((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^(4 : ℕ)) 0 (u:ℂ)+
     nonstationaryMoment (nonstationaryPolynomial 4 1) 2 (u:ℂ)=0 at h4
-  have he2 : ((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^2) 0 (u:ℂ)=(realSourceSecondMoment u:ℂ) := by
+  have he2 : ((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^(2 : ℕ)) 0 (u:ℂ)=(realSourceSecondMoment u:ℂ) := by
     linear_combination h2-realSourceSecondMoment_eq u
-  have he4 : ((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^4) 0 (u:ℂ)=(realSourceFourthMoment u:ℂ) := by
+  have he4 : ((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^(4 : ℕ)) 0 (u:ℂ)=(realSourceFourthMoment u:ℂ) := by
     linear_combination h4-realSourceFourthMoment_eq u
   rw [nonstationarySourceNumerator_moment _ hu huC]
   calc
-    _ = (5*((u:ℂ)+1)^2+(5/2:ℂ)*((u:ℂ)+1)-3/2)*
-        (((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^2) 0 (u:ℂ))+
-        ((15/2:ℂ)*((u:ℂ)+1)^4+(81/4:ℂ)*((u:ℂ)+1)^3+15*((u:ℂ)+1)^2+(9/4:ℂ)*((u:ℂ)+1))*
-        (((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^4) 0 (u:ℂ)) := by ring
+    _ = (5*((u:ℂ)+1)^(2 : ℕ)+(5/2:ℂ)*((u:ℂ)+1)-3/2)*
+        (((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^(2 : ℕ)) 0 (u:ℂ))+
+        ((15/2:ℂ)*((u:ℂ)+1)^(4 : ℕ)+(81/4:ℂ)*((u:ℂ)+1)^(3 : ℕ)+15*((u:ℂ)+1)^(2 : ℕ)+(9/4:ℂ)*((u:ℂ)+1))*
+        (((u:ℂ)+1)*nonstationaryMoment ((1-Polynomial.X)^(4 : ℕ)) 0 (u:ℂ)) := by ring
     _ = _ := by
       rw [he2,he4]
       simp only [realSourceCoefficientA,realSourceCoefficientB,Complex.ofReal_add,Complex.ofReal_sub,

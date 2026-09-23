@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.HermiteEvenCarrier
 The squared aperture error of the step-four Hermite vectors is exactly a two-sided
 polynomial--Gaussian tail.  Reflection reduces it to twice the one-sided tail, so the sharp
 polynomial asymptotics give the exact leading constants.  This recovers the full Gaussian exponent
-`exp (-2*pi*a^2)` without the exponent loss incurred by a crude polynomial envelope.
+`exp (-2*pi*a^(2 : ℕ))` without the exponent loss incurred by a crude polynomial envelope.
 -/
 
 open MeasureTheory Set Filter Topology
@@ -43,9 +43,9 @@ theorem integral_compl_Icc_eq_two_mul_integral_Ioi_of_even
 
 /-- Pointwise squared norm of a self-dual Hermite function in polynomial--Gaussian form. -/
 theorem norm_sq_hermiteSchwartz_eq_polyGaussian (n : ℕ) (x : ℝ) :
-    ‖GaloisForLFunctions.hermiteSchwartz n x‖ ^ 2 =
-      (GaloisForLFunctions.hermitePoly n).eval x ^ 2 *
-        Real.exp (-(2 * Real.pi * x ^ 2)) := by
+    ‖GaloisForLFunctions.hermiteSchwartz n x‖ ^ (2 : ℕ) =
+      (GaloisForLFunctions.hermitePoly n).eval x ^ (2 : ℕ) *
+        Real.exp (-(2 * Real.pi * x ^ (2 : ℕ))) := by
   rw [GaloisForLFunctions.hermiteSchwartz_apply, Complex.norm_real, Real.norm_eq_abs,
     sq_abs, GaloisForLFunctions.gaussReal]
   rw [mul_pow]
@@ -56,26 +56,26 @@ theorem norm_sq_hermiteSchwartz_eq_polyGaussian (n : ℕ) (x : ℝ) :
 
 /-- Squared Hermite functions of even index are even and integrable. -/
 theorem integrable_even_norm_sq_hermiteSchwartz (k : ℕ) :
-    Integrable (fun x : ℝ => ‖GaloisForLFunctions.hermiteSchwartz (2 * k) x‖ ^ 2) := by
+    Integrable (fun x : ℝ => ‖GaloisForLFunctions.hermiteSchwartz (2 * k) x‖ ^ (2 : ℕ)) := by
   have h := integrable_norm_sq (hermiteL2 (2 * k))
-  exact h.congr ((hermiteL2_coeFn (2 * k)).fun_comp fun z : ℂ => ‖z‖ ^ 2)
+  exact h.congr ((hermiteL2_coeFn (2 * k)).fun_comp fun z : ℂ => ‖z‖ ^ (2 : ℕ))
 
 theorem even_norm_sq_hermiteSchwartz (k : ℕ) (x : ℝ) :
-    ‖GaloisForLFunctions.hermiteSchwartz (2 * k) (-x)‖ ^ 2 =
-      ‖GaloisForLFunctions.hermiteSchwartz (2 * k) x‖ ^ 2 := by
+    ‖GaloisForLFunctions.hermiteSchwartz (2 * k) (-x)‖ ^ (2 : ℕ) =
+      ‖GaloisForLFunctions.hermiteSchwartz (2 * k) x‖ ^ (2 : ℕ) := by
   rw [GaloisForLFunctions.hermiteSchwartz_even]
 
 /-- Exact two-sided tail representation of an unnormalized step-four Hermite truncation error. -/
 theorem norm_sq_hermiteEven_sub_cut_eq_two_tail (j : ℕ) {a : ℝ} (ha : 0 ≤ a) :
-    ‖hermiteEven j - evenIndicatorCutoff a (hermiteEven j)‖ ^ 2 =
+    ‖hermiteEven j - evenIndicatorCutoff a (hermiteEven j)‖ ^ (2 : ℕ) =
       2 * ∫ x in Ioi a,
-        (GaloisForLFunctions.hermitePoly (4 * j)).eval x ^ 2 *
-          Real.exp (-(2 * Real.pi * x ^ 2)) := by
+        (GaloisForLFunctions.hermitePoly (4 * j)).eval x ^ (2 : ℕ) *
+          Real.exp (-(2 * Real.pi * x ^ (2 : ℕ))) := by
   rw [norm_sq_sub_cut_eq a (hermiteEven j)]
   have hae :
-      (∫ x in (centralInterval a)ᶜ, ‖((hermiteEven j : SoninL2) : ℝ → ℂ) x‖ ^ 2) =
+      (∫ x in (centralInterval a)ᶜ, ‖((hermiteEven j : SoninL2) : ℝ → ℂ) x‖ ^ (2 : ℕ)) =
         ∫ x in (centralInterval a)ᶜ,
-          ‖GaloisForLFunctions.hermiteSchwartz (4 * j) x‖ ^ 2 := by
+          ‖GaloisForLFunctions.hermiteSchwartz (4 * j) x‖ ^ (2 : ℕ) := by
     refine integral_congr_ae ?_
     filter_upwards [ae_restrict_of_ae (hermiteL2_coeFn (4 * j))] with x hx
     rw [coe_hermiteEven, hx]
@@ -85,9 +85,9 @@ theorem norm_sq_hermiteEven_sub_cut_eq_two_tail (j : ℕ) {a : ℝ} (ha : 0 ≤ 
     (even_norm_sq_hermiteSchwartz (2 * j)) ha
   have htwo' :
       (∫ x in (Icc (-a) a)ᶜ,
-        ‖GaloisForLFunctions.hermiteSchwartz (4 * j) x‖ ^ 2) =
+        ‖GaloisForLFunctions.hermiteSchwartz (4 * j) x‖ ^ (2 : ℕ)) =
           2 * ∫ x in Ioi a,
-            ‖GaloisForLFunctions.hermiteSchwartz (4 * j) x‖ ^ 2 := by
+            ‖GaloisForLFunctions.hermiteSchwartz (4 * j) x‖ ^ (2 : ℕ) := by
     simpa only [show 2 * (2 * j) = 4 * j by ring] using htwo
   rw [show centralInterval a = Icc (-a) a from rfl, htwo']
   congr 1
@@ -100,15 +100,15 @@ theorem tendsto_norm_sq_hermiteEven_sub_cut_div_leading
     (j : ℕ) (hj : 0 < j) :
     Tendsto
       (fun a : ℝ =>
-        ‖hermiteEven j - evenIndicatorCutoff a (hermiteEven j)‖ ^ 2 /
-          (a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ 2))))
+        ‖hermiteEven j - evenIndicatorCutoff a (hermiteEven j)‖ ^ (2 : ℕ) /
+          (a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))))
       atTop (nhds (2 ^ (8 * j) / (2 * Real.pi))) := by
   have h := tendsto_hermitePolySqTail_div_leading (4 * j) (by omega)
   have h2 := h.const_mul 2
   have h3 : Tendsto
       (fun a : ℝ =>
-        ‖hermiteEven j - evenIndicatorCutoff a (hermiteEven j)‖ ^ 2 /
-          (a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ 2))))
+        ‖hermiteEven j - evenIndicatorCutoff a (hermiteEven j)‖ ^ (2 : ℕ) /
+          (a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))))
       atTop (nhds (2 * (2 ^ (2 * (4 * j)) / (4 * Real.pi)))) := by
     apply h2.congr'
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with a ha
@@ -121,15 +121,15 @@ theorem tendsto_norm_sq_hermiteEven_sub_cut_div_leading
 theorem tendsto_norm_sq_hermiteEven_zero_sub_cut_div_leading :
     Tendsto
       (fun a : ℝ =>
-        ‖hermiteEven 0 - evenIndicatorCutoff a (hermiteEven 0)‖ ^ 2 /
-          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ 2))))
+        ‖hermiteEven 0 - evenIndicatorCutoff a (hermiteEven 0)‖ ^ (2 : ℕ) /
+          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))))
       atTop (nhds (1 / (2 * Real.pi))) := by
   have h := tendsto_gaussianTail_div_leading (b := 2 * Real.pi) (by positivity)
   have h2 := h.const_mul 2
   have h3 : Tendsto
       (fun a : ℝ =>
-        ‖hermiteEven 0 - evenIndicatorCutoff a (hermiteEven 0)‖ ^ 2 /
-          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ 2))))
+        ‖hermiteEven 0 - evenIndicatorCutoff a (hermiteEven 0)‖ ^ (2 : ℕ) /
+          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))))
       atTop (nhds (2 * (1 / (2 * (2 * Real.pi))))) := by
     apply h2.congr'
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with a ha
@@ -144,18 +144,18 @@ theorem tendsto_norm_sq_hermiteEvenUnit_sub_cut_div_leading
     (j : ℕ) (hj : 0 < j) :
     Tendsto
       (fun a : ℝ =>
-        ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ ^ 2 /
-          (a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ 2))))
-      atTop (nhds (2 ^ (8 * j) / (2 * Real.pi * ‖hermiteEven j‖ ^ 2))) := by
+        ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ ^ (2 : ℕ) /
+          (a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))))
+      atTop (nhds (2 ^ (8 * j) / (2 * Real.pi * ‖hermiteEven j‖ ^ (2 : ℕ)))) := by
   have h := (tendsto_norm_sq_hermiteEven_sub_cut_div_leading j hj).div_const
-    (‖hermiteEven j‖ ^ 2)
-  have hne : ‖hermiteEven j‖ ^ 2 ≠ 0 := pow_ne_zero _
+    (‖hermiteEven j‖ ^ (2 : ℕ))
+  have hne : ‖hermiteEven j‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero _
     (norm_ne_zero_iff.mpr (hermiteEven_ne_zero j))
   have h' : Tendsto
       (fun a : ℝ =>
-        ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ ^ 2 /
-          (a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ 2))))
-      atTop (nhds ((2 ^ (8 * j) / (2 * Real.pi)) / ‖hermiteEven j‖ ^ 2)) := by
+        ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ ^ (2 : ℕ) /
+          (a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))))
+      atTop (nhds ((2 ^ (8 * j) / (2 * Real.pi)) / ‖hermiteEven j‖ ^ (2 : ℕ))) := by
     apply h.congr'
     filter_upwards with a
     rw [norm_sq_hermiteEvenUnit_sub_cut]
@@ -167,18 +167,18 @@ theorem tendsto_norm_sq_hermiteEvenUnit_sub_cut_div_leading
 theorem tendsto_norm_sq_hermiteEvenUnit_zero_sub_cut_div_leading :
     Tendsto
       (fun a : ℝ =>
-        ‖hermiteEvenUnit 0 - evenIndicatorCutoff a (hermiteEvenUnit 0)‖ ^ 2 /
-          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ 2))))
-      atTop (nhds (1 / (2 * Real.pi * ‖hermiteEven 0‖ ^ 2))) := by
+        ‖hermiteEvenUnit 0 - evenIndicatorCutoff a (hermiteEvenUnit 0)‖ ^ (2 : ℕ) /
+          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))))
+      atTop (nhds (1 / (2 * Real.pi * ‖hermiteEven 0‖ ^ (2 : ℕ)))) := by
   have h := tendsto_norm_sq_hermiteEven_zero_sub_cut_div_leading.div_const
-    (‖hermiteEven 0‖ ^ 2)
-  have hne : ‖hermiteEven 0‖ ^ 2 ≠ 0 := pow_ne_zero _
+    (‖hermiteEven 0‖ ^ (2 : ℕ))
+  have hne : ‖hermiteEven 0‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero _
     (norm_ne_zero_iff.mpr (hermiteEven_ne_zero 0))
   have h' : Tendsto
       (fun a : ℝ =>
-        ‖hermiteEvenUnit 0 - evenIndicatorCutoff a (hermiteEvenUnit 0)‖ ^ 2 /
-          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ 2))))
-      atTop (nhds ((1 / (2 * Real.pi)) / ‖hermiteEven 0‖ ^ 2)) := by
+        ‖hermiteEvenUnit 0 - evenIndicatorCutoff a (hermiteEvenUnit 0)‖ ^ (2 : ℕ) /
+          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))))
+      atTop (nhds ((1 / (2 * Real.pi)) / ‖hermiteEven 0‖ ^ (2 : ℕ))) := by
     apply h.congr'
     filter_upwards with a
     rw [norm_sq_hermiteEvenUnit_sub_cut]
@@ -192,13 +192,13 @@ theorem tendsto_norm_sq_hermiteEvenUnit_zero_sub_cut_div_leading :
 vector has degree zero and therefore carries the reciprocal-power scale; every positive index has
 degree `8*j` after squaring. -/
 def hermiteStepFourTailScale (j : ℕ) (a : ℝ) : ℝ :=
-  if j = 0 then a⁻¹ * Real.exp (-(2 * Real.pi * a ^ 2))
-  else a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ 2))
+  if j = 0 then a⁻¹ * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))
+  else a ^ (8 * j - 1) * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))
 
 /-- Exact leading constant belonging to `hermiteStepFourTailScale`. -/
 def hermiteStepFourTailConstant (j : ℕ) : ℝ :=
-  if j = 0 then 1 / (2 * Real.pi * ‖hermiteEven 0‖ ^ 2)
-  else 2 ^ (8 * j) / (2 * Real.pi * ‖hermiteEven j‖ ^ 2)
+  if j = 0 then 1 / (2 * Real.pi * ‖hermiteEven 0‖ ^ (2 : ℕ))
+  else 2 ^ (8 * j) / (2 * Real.pi * ‖hermiteEven j‖ ^ (2 : ℕ))
 
 theorem hermiteStepFourTailScale_pos (j : ℕ) {a : ℝ} (ha : 0 < a) :
     0 < hermiteStepFourTailScale j a := by
@@ -209,10 +209,10 @@ theorem hermiteStepFourTailConstant_pos (j : ℕ) :
     0 < hermiteStepFourTailConstant j := by
   rw [hermiteStepFourTailConstant]
   split
-  · have hnorm : 0 < ‖hermiteEven 0‖ ^ 2 :=
+  · have hnorm : 0 < ‖hermiteEven 0‖ ^ (2 : ℕ) :=
       sq_pos_of_pos (norm_pos_iff.mpr (hermiteEven_ne_zero 0))
     positivity
-  · have hnorm : 0 < ‖hermiteEven j‖ ^ 2 :=
+  · have hnorm : 0 < ‖hermiteEven j‖ ^ (2 : ℕ) :=
       sq_pos_of_pos (norm_pos_iff.mpr (hermiteEven_ne_zero j))
     positivity
 
@@ -236,7 +236,7 @@ theorem hermiteStepFourTailScale_mono {j n : ℕ} {a : ℝ} (ha : 1 ≤ a) (hjn 
 theorem tendsto_norm_sq_hermiteEvenUnit_sub_cut_div_tailScale (j : ℕ) :
     Tendsto
       (fun a : ℝ =>
-        ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ ^ 2 /
+        ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ ^ (2 : ℕ) /
           hermiteStepFourTailScale j a)
       atTop (nhds (hermiteStepFourTailConstant j)) := by
   by_cases hj : j = 0
@@ -251,7 +251,7 @@ theorem tendsto_norm_sq_hermiteEvenUnit_sub_cut_div_tailScale (j : ℕ) :
 constant. -/
 theorem eventually_norm_sq_hermiteEvenUnit_sub_cut_le_tailScale (j : ℕ) :
     ∀ᶠ a : ℝ in atTop,
-      ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ ^ 2 ≤
+      ‖hermiteEvenUnit j - evenIndicatorCutoff a (hermiteEvenUnit j)‖ ^ (2 : ℕ) ≤
         (hermiteStepFourTailConstant j + 1) * hermiteStepFourTailScale j a := by
   have hratio :=
     (tendsto_order.1 (tendsto_norm_sq_hermiteEvenUnit_sub_cut_div_tailScale j)).2
@@ -269,7 +269,7 @@ theorem eventually_hermiteTrialDefect_le_tailScale (n : ℕ) :
           5 * (hermiteStepFourTailConstant (k : ℕ) + 1)) *
             hermiteStepFourTailScale n a := by
   have hall : ∀ᶠ a : ℝ in atTop, ∀ k : Fin (n + 1),
-      ‖hermiteEvenUnit (k : ℕ) - evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ 2 ≤
+      ‖hermiteEvenUnit (k : ℕ) - evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ (2 : ℕ) ≤
         (hermiteStepFourTailConstant (k : ℕ) + 1) *
           hermiteStepFourTailScale (k : ℕ) a := by
     simpa only [Finset.mem_univ, forall_const] using
@@ -280,7 +280,7 @@ theorem eventually_hermiteTrialDefect_le_tailScale (n : ℕ) :
   calc
     ∑ k : Fin (n + 1),
         5 * ‖hermiteEvenUnit (k : ℕ) -
-          evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ 2
+          evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ (2 : ℕ)
       ≤ ∑ k : Fin (n + 1),
           5 * ((hermiteStepFourTailConstant (k : ℕ) + 1) *
             hermiteStepFourTailScale n a) := by
@@ -292,7 +292,7 @@ theorem eventually_hermiteTrialDefect_le_tailScale (n : ℕ) :
               positivity
             calc
               5 * ‖hermiteEvenUnit (k : ℕ) -
-                    evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ 2
+                    evenIndicatorCutoff a (hermiteEvenUnit (k : ℕ))‖ ^ (2 : ℕ)
                 ≤ 5 * ((hermiteStepFourTailConstant (k : ℕ) + 1) *
                     hermiteStepFourTailScale (k : ℕ) a) := by
                       gcongr

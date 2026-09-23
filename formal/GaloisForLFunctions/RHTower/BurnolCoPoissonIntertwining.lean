@@ -202,9 +202,9 @@ theorem summable_norm_schwartzDilate' (w : SchwartzMap ℝ ℂ) {u : ℝ} (hu : 
   norm_num
 
 theorem tsum_norm_schwartzDilate_le' {w : SchwartzMap ℝ ℂ} {C : ℝ}
-    (hC : ∀ v : ℝ, 0 < v → ∑' n : ℕ, ‖w (v * ((n : ℝ) + 1))‖ ≤ C / v ^ 2)
+    (hC : ∀ v : ℝ, 0 < v → ∑' n : ℕ, ‖w (v * ((n : ℝ) + 1))‖ ≤ C / v ^ (2 : ℕ))
     {u : ℝ} (hu : 0 < u) :
-    ∑' k : ℕ, ‖w (((k + 1 : ℕ) : ℝ) * u)‖ ≤ C / u ^ 2 := by
+    ∑' k : ℕ, ‖w (((k + 1 : ℕ) : ℝ) * u)‖ ≤ C / u ^ (2 : ℕ) := by
   refine le_trans (le_of_eq ?_) (hC u hu)
   refine tsum_congr fun k => ?_
   rw [mul_comm]
@@ -236,7 +236,7 @@ theorem integrableOn_seed_mul_tsum_schwartzDilate {b : ℝ} (hb : 0 < b) {g : �
     IntegrableOn (fun u : ℝ => g u * ∑' k : ℕ, w (((k + 1 : ℕ) : ℝ) * u)) (Ioi 0) := by
   obtain ⟨C, hC0, hC⟩ := HTGeometry.exists_tsum_norm_schwartzDilate_le w
   refine integrableOn_seed_mul_of_bdd_on_window hg hsupp
-    (aestronglyMeasurable_tsum_schwartzDilate w) (M := C / b ^ 2) ?_
+    (aestronglyMeasurable_tsum_schwartzDilate w) (M := C / b ^ (2 : ℕ)) ?_
   intro u hu
   have hupos : (0 : ℝ) < u := lt_of_lt_of_le hb hu.1
   refine le_trans (norm_tsum_le_tsum_norm (summable_norm_schwartzDilate' w hupos)) ?_
@@ -260,8 +260,8 @@ theorem integrableOn_seed_mul_tsum_schwartzContract {b : ℝ} (hb : 0 < b)
     refine (HTGeometry.summable_norm_schwartzDilate w (inv_pos.mpr hupos)).congr fun m => ?_
     rw [div_eq_mul_inv, mul_comm]
     norm_num
-  have htail : ∑' m : ℕ, ‖w (((m + 1 : ℕ) : ℝ) / u)‖ ≤ C * u ^ 2 := by
-    have hle : ∑' m : ℕ, ‖w (u⁻¹ * ((m : ℝ) + 1))‖ ≤ C / (u⁻¹) ^ 2 :=
+  have htail : ∑' m : ℕ, ‖w (((m + 1 : ℕ) : ℝ) / u)‖ ≤ C * u ^ (2 : ℕ) := by
+    have hle : ∑' m : ℕ, ‖w (u⁻¹ * ((m : ℝ) + 1))‖ ≤ C / (u⁻¹) ^ (2 : ℕ) :=
       hC u⁻¹ (inv_pos.mpr hupos)
     have hcongr : (∑' m : ℕ, ‖w (((m + 1 : ℕ) : ℝ) / u)‖) =
         ∑' m : ℕ, ‖w (u⁻¹ * ((m : ℝ) + 1))‖ := by
@@ -273,11 +273,11 @@ theorem integrableOn_seed_mul_tsum_schwartzContract {b : ℝ} (hb : 0 < b)
     rw [inv_pow, div_eq_mul_inv, inv_inv]
   rw [norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hupos]
   have hnorm := norm_tsum_le_tsum_norm hsummable
-  have hchain : ‖∑' m : ℕ, w (((m + 1 : ℕ) : ℝ) / u)‖ ≤ C * u ^ 2 := le_trans hnorm htail
-  have hfinal : u⁻¹ * ‖∑' m : ℕ, w (((m + 1 : ℕ) : ℝ) / u)‖ ≤ u⁻¹ * (C * u ^ 2) :=
+  have hchain : ‖∑' m : ℕ, w (((m + 1 : ℕ) : ℝ) / u)‖ ≤ C * u ^ (2 : ℕ) := le_trans hnorm htail
+  have hfinal : u⁻¹ * ‖∑' m : ℕ, w (((m + 1 : ℕ) : ℝ) / u)‖ ≤ u⁻¹ * (C * u ^ (2 : ℕ)) :=
     mul_le_mul_of_nonneg_left hchain (by positivity)
   refine hfinal.trans ?_
-  have huC : u⁻¹ * (C * u ^ 2) = C * u := by
+  have huC : u⁻¹ * (C * u ^ (2 : ℕ)) = C * u := by
     field_simp
   rw [huC, div_eq_mul_inv]
   exact mul_le_mul_of_nonneg_left hu.2 hC0

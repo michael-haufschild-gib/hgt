@@ -41,8 +41,8 @@ theorem stringPotentialSpectrum_mean_bounds {n : ℕ}
 theorem stringPotentialSpectrum_variance_decomposition {n : ℕ}
     (β ell tau : ℝ) (x : Fin (n + 1) → ℝ) :
     finiteGibbsEnergyVariance β (stringPotentialSpectrum ell tau x) =
-      coherentRadius tau ^ 2 / 4 -
-        (finiteGibbsEnergyMean β (stringPotentialSpectrum ell tau x) - coherentRadius tau / 2) ^ 2 -
+      coherentRadius tau ^ (2 : ℕ) / 4 -
+        (finiteGibbsEnergyMean β (stringPotentialSpectrum ell tau x) - coherentRadius tau / 2) ^ (2 : ℕ) -
         ∑ i, finiteGibbsStateWeight β (stringPotentialSpectrum ell tau x) i *
           stringPotentialSpectrum ell tau x i * (coherentRadius tau - stringPotentialSpectrum ell tau x i) := by
   simp_rw [mul_sub, Finset.sum_sub_distrib, ← Finset.sum_mul]
@@ -52,7 +52,7 @@ theorem stringPotentialSpectrum_variance_decomposition {n : ℕ}
 
 theorem stringPotentialSpectrum_variance_bound {n : ℕ}
     (β ell tau : ℝ) (x : Fin (n + 1) → ℝ) :
-    finiteGibbsEnergyVariance β (stringPotentialSpectrum ell tau x) < coherentRadius tau ^ 2 / 4 := by
+    finiteGibbsEnergyVariance β (stringPotentialSpectrum ell tau x) < coherentRadius tau ^ (2 : ℕ) / 4 := by
   rw [stringPotentialSpectrum_variance_decomposition]
   have hs : 0 < ∑ i, finiteGibbsStateWeight β (stringPotentialSpectrum ell tau x) i *
       stringPotentialSpectrum ell tau x i * (coherentRadius tau - stringPotentialSpectrum ell tau x i) := by
@@ -73,12 +73,12 @@ theorem stringPotentialSpectrum_variance_temperature_bound {n : ℕ}
 /-- The variance term of the cavity identity with an explicit positive energy cost. -/
 def stringCavityVarianceBudget {n : ℕ}
     (e k β ell tau : ℝ) (x : Fin (n + 1) → ℝ) : ℝ :=
-  e ^ 2 * finiteGibbsEnergyVariance β (stringPotentialSpectrum ell tau x) - Real.exp k
+  e ^ (2 : ℕ) * finiteGibbsEnergyVariance β (stringPotentialSpectrum ell tau x) - Real.exp k
 
 /-- The neutral variance budget excludes every positive real squared growth rate. -/
 theorem stringCavity_neutral_no_growth {n : ℕ}
     (k β ell tau : ℝ) (x : Fin (n + 1) → ℝ) :
-    ¬ ∃ g : ℝ, 0 < g ∧ g ^ 2 = stringCavityVarianceBudget 0 k β ell tau x := by
+    ¬ ∃ g : ℝ, 0 < g ∧ g ^ (2 : ℕ) = stringCavityVarianceBudget 0 k β ell tau x := by
   rintro ⟨g, _, hg⟩
   simp only [stringCavityVarianceBudget, zero_pow (by omega : 2 ≠ 0), zero_mul, zero_sub] at hg
   nlinarith [sq_nonneg g, Real.exp_pos k]
@@ -86,9 +86,9 @@ theorem stringCavity_neutral_no_growth {n : ℕ}
 /-- A realized barrier above the sharp electrostatic budget excludes growth at any charge. -/
 theorem stringCavity_above_threshold_no_growth {n : ℕ}
     (e k β ell tau : ℝ) (x : Fin (n + 1) → ℝ) :
-    ¬ ∃ g : ℝ, g ^ 2 =
-      e ^ 2 * finiteGibbsEnergyVariance β (stringPotentialSpectrum ell tau x) -
-        (e ^ 2 * coherentRadius tau ^ 2 / 4 + Real.exp k) := by
+    ¬ ∃ g : ℝ, g ^ (2 : ℕ) =
+      e ^ (2 : ℕ) * finiteGibbsEnergyVariance β (stringPotentialSpectrum ell tau x) -
+        (e ^ (2 : ℕ) * coherentRadius tau ^ (2 : ℕ) / 4 + Real.exp k) := by
   rintro ⟨g, hg⟩
   have hv := mul_le_mul_of_nonneg_left
     (stringPotentialSpectrum_variance_bound β ell tau x).le (sq_nonneg e)

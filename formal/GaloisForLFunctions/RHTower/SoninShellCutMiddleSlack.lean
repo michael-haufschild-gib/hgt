@@ -25,8 +25,8 @@ open scoped Topology
 /-- The half-width moves inside the root. -/
 theorem mul_sqrt_div_eq_sqrt_mul_div (δ t I : ℝ) (hδ : 0 < δ) (hI : 0 < I) :
     δ * Real.sqrt (t / (δ * I)) = Real.sqrt (δ * t / I) := by
-  have hδ2 : δ = Real.sqrt (δ ^ 2) := (Real.sqrt_sq hδ.le).symm
-  rw [hδ2, ← Real.sqrt_mul (by positivity : (0 : ℝ) ≤ δ ^ 2), Real.sqrt_sq hδ.le]
+  have hδ2 : δ = Real.sqrt (δ ^ (2 : ℕ)) := (Real.sqrt_sq hδ.le).symm
+  rw [hδ2, ← Real.sqrt_mul (by positivity : (0 : ℝ) ≤ δ ^ (2 : ℕ)), Real.sqrt_sq hδ.le]
   congr 1
   field_simp
 

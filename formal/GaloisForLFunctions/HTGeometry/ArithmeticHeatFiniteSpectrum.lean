@@ -93,7 +93,7 @@ theorem radius_eq_top_of_gaussian {a : ℕ → ℂ} {M : ℝ} (hM : 0 ≤ M)
 /-- The principal logarithm chart inverting `z ↦ exp(2πiz)`. -/
 private def logChart : ℂ → ℂ := fun w => Complex.log w / (2 * (Real.pi : ℂ) * Complex.I)
 
-theorem twoPiI_ne_zero : (2 * (Real.pi : ℂ) * Complex.I) ≠ 0 := by
+theorem twoPiI_ne_zero_arithmeticHeatFiniteSpectrum : (2 * (Real.pi : ℂ) * Complex.I) ≠ 0 := by
   have hπ : (Real.pi : ℂ) ≠ 0 := by simp [Real.pi_ne_zero]
   simp [hπ, Complex.I_ne_zero]
 
@@ -133,7 +133,7 @@ theorem exp_twoPiI_logChart {w : ℂ} (hw : w ∈ Metric.ball (1 : ℂ) (1 / 2))
     have := mem_slitPlane_of_mem_ball hw
     rw [h] at this
     simp [Complex.mem_slitPlane_iff] at this
-  rw [logChart, mul_div_cancel₀ _ twoPiI_ne_zero, Complex.exp_log hne]
+  rw [logChart, mul_div_cancel₀ _ twoPiI_ne_zero_arithmeticHeatFiniteSpectrum, Complex.exp_log hne]
 
 /-- **The logarithm chart is differentially algebraic**: `2πi w g'(w) = 1`. -/
 theorem differentiallyAlgebraicOn_logChart :
@@ -198,7 +198,7 @@ theorem substitutionFaithful_logChart :
         have := abs_lt.mp hre
         nlinarith [Real.pi_pos, this.2]
     have hchart : logChart (E v) = v := by
-      rw [logChart, hlog, mul_comm, mul_div_assoc, div_self twoPiI_ne_zero, mul_one]
+      rw [logChart, hlog, mul_comm, mul_div_assoc, div_self twoPiI_ne_zero_arithmeticHeatFiniteSpectrum, mul_one]
     have hfv := hvan (E v) hv
     rwa [hchart] at hfv
   have hEqOn := hf.eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_univ

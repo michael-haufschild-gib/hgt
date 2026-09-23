@@ -95,7 +95,7 @@ theorem eval₂_spectralRelationLinearPolynomial_real
     (k i : ℝ) * energy i
   rw [map_intCast]
 
-theorem eval₂_spectralRelationLinearPolynomial_complex
+theorem eval₂_spectralRelationLinearPolynomial
     {I : Type*} [Fintype I] (k : I → ℤ) (energy : I → ℂ) :
     MvPolynomial.eval₂ (Rat.castHom ℂ) energy
         (spectralRelationLinearPolynomial k) =
@@ -153,7 +153,7 @@ theorem eval₂_spectralRelationOrbitPolynomial_real
     eval₂_spectralRelationLinearPolynomial_real,
     Function.comp_apply]
 
-theorem eval₂_spectralRelationOrbitPolynomial_complex
+theorem eval₂_spectralRelationOrbitPolynomial
     {I : Type*} [Fintype I] (k : I → ℤ) (energy : I → ℂ) :
     MvPolynomial.eval₂ (Rat.castHom ℂ) energy
         (spectralRelationOrbitPolynomial k) =
@@ -161,7 +161,7 @@ theorem eval₂_spectralRelationOrbitPolynomial_complex
   simp only [spectralRelationOrbitPolynomial,
     spectralRelationOrbitValueComplex,
     MvPolynomial.eval₂_prod, MvPolynomial.eval₂_rename,
-    eval₂_spectralRelationLinearPolynomial_complex,
+    eval₂_spectralRelationLinearPolynomial,
     Function.comp_apply]
 
 def spectralRelationCoefficientPolynomial

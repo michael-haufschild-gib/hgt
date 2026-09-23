@@ -119,7 +119,7 @@ theorem finiteDerivativeReporterConditionalInformation_postcomp_le
     (report : (ℂ → ℂ) →ₗ[ℂ] Y) (decode : Y →L[ℂ] Z) :
     finiteDerivativeReporterConditionalInformation N f
         (decode.toLinearMap.comp report) ≤
-      ‖decode‖ ^ 2 * finiteDerivativeReporterConditionalInformation N f report := by
+      ‖decode‖ ^ (2 : ℕ) * finiteDerivativeReporterConditionalInformation N f report := by
   let wY : ℕ → Y := fun k => report (iteratedDeriv k f)
   let wZ : ℕ → Z := fun k => decode (wY k)
   let correction : Y := wY N - gramSchmidt ℂ wY N
@@ -157,8 +157,8 @@ theorem finiteDerivativeReporterConditionalInformation_postcomp_le
   have hop := decode.le_opNorm (gramSchmidt ℂ wY N)
   unfold finiteDerivativeReporterConditionalInformation
     finiteDerivativeReporterInnovation
-  change ‖gramSchmidt ℂ wZ N‖ ^ 2 ≤
-    ‖decode‖ ^ 2 * ‖gramSchmidt ℂ wY N‖ ^ 2
+  change ‖gramSchmidt ℂ wZ N‖ ^ (2 : ℕ) ≤
+    ‖decode‖ ^ (2 : ℕ) * ‖gramSchmidt ℂ wY N‖ ^ (2 : ℕ)
   nlinarith [norm_nonneg (gramSchmidt ℂ wZ N),
     norm_nonneg (decode (gramSchmidt ℂ wY N)),
     norm_nonneg decode, norm_nonneg (gramSchmidt ℂ wY N)]
@@ -178,11 +178,11 @@ theorem finiteDerivativeReporterConditionalInformation_postcomp_le_of_norm_le_on
     N f report decode
   have hinfo := finiteDerivativeReporterConditionalInformation_nonneg N f report
   have hnorm : 0 ≤ ‖decode‖ := norm_nonneg _
-  have hnormsq : ‖decode‖ ^ 2 ≤ 1 := by nlinarith
+  have hnormsq : ‖decode‖ ^ (2 : ℕ) ≤ 1 := by nlinarith
   calc
     finiteDerivativeReporterConditionalInformation N f
         (decode.toLinearMap.comp report) ≤
-        ‖decode‖ ^ 2 * finiteDerivativeReporterConditionalInformation N f report := hbound
+        ‖decode‖ ^ (2 : ℕ) * finiteDerivativeReporterConditionalInformation N f report := hbound
     _ ≤ 1 * finiteDerivativeReporterConditionalInformation N f report :=
       mul_le_mul_of_nonneg_right hnormsq hinfo
     _ = finiteDerivativeReporterConditionalInformation N f report := one_mul _

@@ -18,12 +18,12 @@ namespace RHTower.Sieve
 open Finset
 
 /-- The fibre of `cubeIdx` over an index. -/
-noncomputable def cubeFibre (N : ℕ) (j : Fin (N ^ 3)) : Finset (Fin N × Fin N × Fin N) :=
+noncomputable def cubeFibre (N : ℕ) (j : Fin (N ^ (3 : ℕ))) : Finset (Fin N × Fin N × Fin N) :=
   (Finset.univ : Finset (Fin N × Fin N × Fin N)).filter (fun p => cubeIdx p = j)
 
 /-- The first two coordinates determine a point of a fibre. -/
-theorem cubeFibre_card_le_sq (N : ℕ) (j : Fin (N ^ 3)) :
-    (cubeFibre N j).card ≤ N ^ 2 := by
+theorem cubeFibre_card_le_sq (N : ℕ) (j : Fin (N ^ (3 : ℕ))) :
+    (cubeFibre N j).card ≤ N ^ (2 : ℕ) := by
   classical
   have hinj : Set.InjOn (fun p : Fin N × Fin N × Fin N => (p.1, p.2.1)) (cubeFibre N j) := by
     intro p hp q hq hpq
@@ -51,46 +51,46 @@ theorem cubeFibre_card_le_sq (N : ℕ) (j : Fin (N ^ 3)) :
 
 /-- **The `ℓ²` norm of the threefold convolution.** -/
 theorem sum_normSq_convCube_le (N : ℕ) (a : Fin N → ℂ) {D : ℝ}
-    (hD : ∀ j : Fin (N ^ 3), ((cubeFibre N j).card : ℝ) ≤ D) :
-    ∑ j : Fin (N ^ 3), ‖convCube N a j‖ ^ 2
-      ≤ D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3 := by
+    (hD : ∀ j : Fin (N ^ (3 : ℕ)), ((cubeFibre N j).card : ℝ) ≤ D) :
+    ∑ j : Fin (N ^ (3 : ℕ)), ‖convCube N a j‖ ^ (2 : ℕ)
+      ≤ D * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ) := by
   classical
   set g : Fin N × Fin N × Fin N → ℝ := fun p => ‖a p.1 * a p.2.1 * a p.2.2‖ with hg
-  have hfibre : ∀ j : Fin (N ^ 3),
-      ‖convCube N a j‖ ^ 2 ≤ D * ∑ p ∈ cubeFibre N j, g p ^ 2 := by
+  have hfibre : ∀ j : Fin (N ^ (3 : ℕ)),
+      ‖convCube N a j‖ ^ (2 : ℕ) ≤ D * ∑ p ∈ cubeFibre N j, g p ^ (2 : ℕ) := by
     intro j
     have hnorm : ‖convCube N a j‖ ≤ ∑ p ∈ cubeFibre N j, g p := by
       rw [convCube]
       exact norm_sum_le _ _
     have hnn : (0 : ℝ) ≤ ∑ p ∈ cubeFibre N j, g p :=
       Finset.sum_nonneg fun p _ => norm_nonneg _
-    have hsq : ‖convCube N a j‖ ^ 2 ≤ (∑ p ∈ cubeFibre N j, g p) ^ 2 :=
+    have hsq : ‖convCube N a j‖ ^ (2 : ℕ) ≤ (∑ p ∈ cubeFibre N j, g p) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hnorm 2
-    have hcs : (∑ p ∈ cubeFibre N j, g p) ^ 2
-        ≤ ((cubeFibre N j).card : ℝ) * ∑ p ∈ cubeFibre N j, g p ^ 2 :=
+    have hcs : (∑ p ∈ cubeFibre N j, g p) ^ (2 : ℕ)
+        ≤ ((cubeFibre N j).card : ℝ) * ∑ p ∈ cubeFibre N j, g p ^ (2 : ℕ) :=
       sq_sum_le_card_mul_sum_sq
-    have hsum0 : (0 : ℝ) ≤ ∑ p ∈ cubeFibre N j, g p ^ 2 :=
+    have hsum0 : (0 : ℝ) ≤ ∑ p ∈ cubeFibre N j, g p ^ (2 : ℕ) :=
       Finset.sum_nonneg fun p _ => sq_nonneg _
-    have hmul : ((cubeFibre N j).card : ℝ) * ∑ p ∈ cubeFibre N j, g p ^ 2
-        ≤ D * ∑ p ∈ cubeFibre N j, g p ^ 2 :=
+    have hmul : ((cubeFibre N j).card : ℝ) * ∑ p ∈ cubeFibre N j, g p ^ (2 : ℕ)
+        ≤ D * ∑ p ∈ cubeFibre N j, g p ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right (hD j) hsum0
     linarith
-  have hsum : ∑ j : Fin (N ^ 3), ‖convCube N a j‖ ^ 2
-      ≤ ∑ j : Fin (N ^ 3), D * ∑ p ∈ cubeFibre N j, g p ^ 2 :=
+  have hsum : ∑ j : Fin (N ^ (3 : ℕ)), ‖convCube N a j‖ ^ (2 : ℕ)
+      ≤ ∑ j : Fin (N ^ (3 : ℕ)), D * ∑ p ∈ cubeFibre N j, g p ^ (2 : ℕ) :=
     Finset.sum_le_sum fun j _ => hfibre j
   have hfib := Finset.sum_fiberwise_of_maps_to
     (s := (Finset.univ : Finset (Fin N × Fin N × Fin N)))
-    (t := (Finset.univ : Finset (Fin (N ^ 3)))) (g := fun p => cubeIdx p)
-    (f := fun p : Fin N × Fin N × Fin N => g p ^ 2)
+    (t := (Finset.univ : Finset (Fin (N ^ (3 : ℕ))))) (g := fun p => cubeIdx p)
+    (f := fun p : Fin N × Fin N × Fin N => g p ^ (2 : ℕ))
     (fun p _ => Finset.mem_univ _)
-  have hcollect : ∑ j : Fin (N ^ 3), D * ∑ p ∈ cubeFibre N j, g p ^ 2
-      = D * ∑ p : Fin N × Fin N × Fin N, g p ^ 2 := by
+  have hcollect : ∑ j : Fin (N ^ (3 : ℕ)), D * ∑ p ∈ cubeFibre N j, g p ^ (2 : ℕ)
+      = D * ∑ p : Fin N × Fin N × Fin N, g p ^ (2 : ℕ) := by
     simp only [cubeFibre]
     rw [← Finset.mul_sum, ← hfib]
-  have hprod : ∑ p : Fin N × Fin N × Fin N, g p ^ 2
-      = (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3 := by
+  have hprod : ∑ p : Fin N × Fin N × Fin N, g p ^ (2 : ℕ)
+      = (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ (3 : ℕ) := by
     have hpt : ∀ p : Fin N × Fin N × Fin N,
-        g p ^ 2 = ‖a p.1‖ ^ 2 * (‖a p.2.1‖ ^ 2 * ‖a p.2.2‖ ^ 2) := by
+        g p ^ (2 : ℕ) = ‖a p.1‖ ^ (2 : ℕ) * (‖a p.2.1‖ ^ (2 : ℕ) * ‖a p.2.2‖ ^ (2 : ℕ)) := by
       intro p
       rw [hg]
       simp only [norm_mul]

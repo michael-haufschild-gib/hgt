@@ -42,7 +42,7 @@ theorem NondegenerateMomentCramerRaoModel.extendedSLDCRB_eq_normalizedVariance
     QuantumAlg.extendedScalarSLDCramerRao
         (pureStateQuantumFisherValue (model.moments 0)
           (momentFunctional model.moments model.observable)
-          (momentFunctional model.moments (model.observable ^ 2))) =
+          (momentFunctional model.moments (model.observable ^ (2 : ℕ)))) =
       QuantumAlg.extendedScalarSLDCramerRao
         (4 * momentNormalizedVariance model.moments model.observable) := by
   rw [pureStateQuantumFisherValue_moment_eq_four_mul_normalizedVariance
@@ -56,7 +56,7 @@ theorem booleanParityClock_extendedSLDCRB_eq_directional
         (pureStateQuantumFisherValue 1
           (bernoulliExp q (linearStat fun p => Real.pi - t * lam p))
           (bernoulliExp q
-            (fun S => (linearStat (fun p => Real.pi - t * lam p) S) ^ 2))) =
+            (fun S => (linearStat (fun p => Real.pi - t * lam p) S) ^ (2 : ℕ)))) =
       QuantumAlg.extendedScalarSLDCramerRao
         (fusionDirectionalQFI (bernoulliVar q) lam t) := by
   rw [pureStateQuantumFisherValue_booleanParityClock_eq_directional]
@@ -69,7 +69,7 @@ theorem booleanParityClock_tangent_extendedSLDCRB_eq
         (pureStateQuantumFisherValue 1
           (bernoulliExp q (linearStat fun p => Real.pi * a - b * lam p))
           (bernoulliExp q
-            (fun S => (linearStat (fun p => Real.pi * a - b * lam p) S) ^ 2))) =
+            (fun S => (linearStat (fun p => Real.pi * a - b * lam p) S) ^ (2 : ℕ)))) =
       QuantumAlg.extendedScalarSLDCramerRao
         (fusionTangentQFI (bernoulliVar q) lam a b) := by
   rw [pureStateQuantumFisherValue_parityClock_tangent]
@@ -81,7 +81,7 @@ structure FiniteInvolutiveSwitchMetrologyModel (K E : Type*) [RCLike K]
   observable : E →L[K] E
   probe : E
   clock_isometry : clock.adjoint * clock = 1
-  clock_involution : clock ^ 2 = 1
+  clock_involution : clock ^ (2 : ℕ) = 1
   probe_normalized : ‖probe‖ = 1
   probe_fixed : clock probe = probe
 
@@ -90,13 +90,13 @@ theorem FiniteInvolutiveSwitchMetrologyModel.qfi_eq_four_mul_oddSwitchIntensity
     {K E : Type*} [RCLike K]
     [NormedAddCommGroup E] [InnerProductSpace K E] [CompleteSpace E]
     (model : FiniteInvolutiveSwitchMetrologyModel K E) :
-    pureStateQuantumFisherValue (‖model.probe‖ ^ 2)
+    pureStateQuantumFisherValue (‖model.probe‖ ^ (2 : ℕ))
         (‖inner K model.probe
           ((1 - finiteCyclicGaugeAverage model.clock 2)
             (model.observable model.probe))‖)
         (‖(1 - finiteCyclicGaugeAverage model.clock 2)
-            (model.observable model.probe)‖ ^ 2) =
-      4 * ‖balancedQuantumSwitchOdd model.observable model.clock model.probe‖ ^ 2 := by
+            (model.observable model.probe)‖ ^ (2 : ℕ)) =
+      4 * ‖balancedQuantumSwitchOdd model.observable model.clock model.probe‖ ^ (2 : ℕ) := by
   rw [finiteInvolutiveClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq
     model.clock model.observable model.clock_isometry model.clock_involution
     model.probe_normalized model.probe_fixed]
@@ -109,14 +109,14 @@ theorem FiniteInvolutiveSwitchMetrologyModel.extendedSLDCRB_eq_oddSwitchIntensit
     [NormedAddCommGroup E] [InnerProductSpace K E] [CompleteSpace E]
     (model : FiniteInvolutiveSwitchMetrologyModel K E) :
     QuantumAlg.extendedScalarSLDCramerRao
-        (pureStateQuantumFisherValue (‖model.probe‖ ^ 2)
+        (pureStateQuantumFisherValue (‖model.probe‖ ^ (2 : ℕ))
           (‖inner K model.probe
             ((1 - finiteCyclicGaugeAverage model.clock 2)
               (model.observable model.probe))‖)
           (‖(1 - finiteCyclicGaugeAverage model.clock 2)
-              (model.observable model.probe)‖ ^ 2)) =
+              (model.observable model.probe)‖ ^ (2 : ℕ))) =
       QuantumAlg.extendedScalarSLDCramerRao
-        (4 * ‖balancedQuantumSwitchOdd model.observable model.clock model.probe‖ ^ 2) := by
+        (4 * ‖balancedQuantumSwitchOdd model.observable model.clock model.probe‖ ^ (2 : ℕ)) := by
   rw [model.qfi_eq_four_mul_oddSwitchIntensity]
 
 /-- Infinite erased-clock estimation error is exactly a dark odd switch port. -/
@@ -125,12 +125,12 @@ theorem FiniteInvolutiveSwitchMetrologyModel.extendedSLDCRB_eq_top_iff_oddSwitch
     [NormedAddCommGroup E] [InnerProductSpace K E] [CompleteSpace E]
     (model : FiniteInvolutiveSwitchMetrologyModel K E) :
     QuantumAlg.extendedScalarSLDCramerRao
-        (pureStateQuantumFisherValue (‖model.probe‖ ^ 2)
+        (pureStateQuantumFisherValue (‖model.probe‖ ^ (2 : ℕ))
           (‖inner K model.probe
             ((1 - finiteCyclicGaugeAverage model.clock 2)
               (model.observable model.probe))‖)
           (‖(1 - finiteCyclicGaugeAverage model.clock 2)
-              (model.observable model.probe)‖ ^ 2)) = ⊤ ↔
+              (model.observable model.probe)‖ ^ (2 : ℕ))) = ⊤ ↔
       balancedQuantumSwitchOdd model.observable model.clock model.probe = 0 := by
   rw [model.qfi_eq_four_mul_oddSwitchIntensity,
     QuantumAlg.extendedScalarSLDCramerRao_eq_top_iff]
@@ -173,12 +173,12 @@ structure SoninBalancedSwitchMetrologyModel where
 /-- Sonin logarithmic-clock QFI is exactly four times balanced odd ICO intensity. -/
 theorem SoninBalancedSwitchMetrologyModel.qfi_eq_four_mul_oddSwitchIntensity
     (model : SoninBalancedSwitchMetrologyModel) :
-    HTGeometry.pureStateQuantumFisherValue (‖model.probe‖ ^ 2)
+    HTGeometry.pureStateQuantumFisherValue (‖model.probe‖ ^ (2 : ℕ))
         (‖inner ℂ model.probe
           ((1 - soninLogFourierInvariantAverage) (model.observable model.probe))‖)
-        (‖(1 - soninLogFourierInvariantAverage) (model.observable model.probe)‖ ^ 2) =
+        (‖(1 - soninLogFourierInvariantAverage) (model.observable model.probe)‖ ^ (2 : ℕ)) =
       4 * ‖HTGeometry.balancedQuantumSwitchOdd model.observable
-        soninLogFourierScattering model.probe‖ ^ 2 := by
+        soninLogFourierScattering model.probe‖ ^ (2 : ℕ) := by
   rw [soninLogClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq
     model.observable model.probe_normalized model.probe_physical]
   exact HTGeometry.norm_commutator_apply_sq_eq_four_mul_norm_balancedQuantumSwitchOdd_sq
@@ -188,23 +188,23 @@ theorem SoninBalancedSwitchMetrologyModel.qfi_eq_four_mul_oddSwitchIntensity
 theorem SoninBalancedSwitchMetrologyModel.extendedSLDCRB_eq_oddSwitchIntensity
     (model : SoninBalancedSwitchMetrologyModel) :
     QuantumAlg.extendedScalarSLDCramerRao
-        (HTGeometry.pureStateQuantumFisherValue (‖model.probe‖ ^ 2)
+        (HTGeometry.pureStateQuantumFisherValue (‖model.probe‖ ^ (2 : ℕ))
           (‖inner ℂ model.probe
             ((1 - soninLogFourierInvariantAverage) (model.observable model.probe))‖)
-          (‖(1 - soninLogFourierInvariantAverage) (model.observable model.probe)‖ ^ 2)) =
+          (‖(1 - soninLogFourierInvariantAverage) (model.observable model.probe)‖ ^ (2 : ℕ))) =
       QuantumAlg.extendedScalarSLDCramerRao
         (4 * ‖HTGeometry.balancedQuantumSwitchOdd model.observable
-          soninLogFourierScattering model.probe‖ ^ 2) := by
+          soninLogFourierScattering model.probe‖ ^ (2 : ℕ)) := by
   rw [model.qfi_eq_four_mul_oddSwitchIntensity]
 
 /-- For the Sonin clock, infinite SLD error is exactly darkness of the odd ICO branch. -/
 theorem SoninBalancedSwitchMetrologyModel.extendedSLDCRB_eq_top_iff_oddSwitchDark
     (model : SoninBalancedSwitchMetrologyModel) :
     QuantumAlg.extendedScalarSLDCramerRao
-        (HTGeometry.pureStateQuantumFisherValue (‖model.probe‖ ^ 2)
+        (HTGeometry.pureStateQuantumFisherValue (‖model.probe‖ ^ (2 : ℕ))
           (‖inner ℂ model.probe
             ((1 - soninLogFourierInvariantAverage) (model.observable model.probe))‖)
-          (‖(1 - soninLogFourierInvariantAverage) (model.observable model.probe)‖ ^ 2)) = ⊤ ↔
+          (‖(1 - soninLogFourierInvariantAverage) (model.observable model.probe)‖ ^ (2 : ℕ))) = ⊤ ↔
       HTGeometry.balancedQuantumSwitchOdd model.observable
         soninLogFourierScattering model.probe = 0 := by
   rw [model.qfi_eq_four_mul_oddSwitchIntensity,
@@ -284,7 +284,7 @@ theorem fermiMellin_extendedSLDCRB_eq_variance
     QuantumAlg.extendedScalarSLDCramerRao
         (HTGeometry.pureStateQuantumFisherValue (fermiLogMoment sigma 0)
           (HTGeometry.momentFunctional (fermiLogMoment sigma) Polynomial.X)
-          (HTGeometry.momentFunctional (fermiLogMoment sigma) (Polynomial.X ^ 2))) =
+          (HTGeometry.momentFunctional (fermiLogMoment sigma) (Polynomial.X ^ (2 : ℕ)))) =
       QuantumAlg.extendedScalarSLDCramerRao (4 * fermiLogVariance sigma) := by
   rw [pureStateQuantumFisher_fermiMellin sigma.property]
 
@@ -294,11 +294,11 @@ theorem fermiMellin_extendedSLDCRB_ne_top
     QuantumAlg.extendedScalarSLDCramerRao
         (HTGeometry.pureStateQuantumFisherValue (fermiLogMoment sigma 0)
           (HTGeometry.momentFunctional (fermiLogMoment sigma) Polynomial.X)
-          (HTGeometry.momentFunctional (fermiLogMoment sigma) (Polynomial.X ^ 2))) ≠ ⊤ := by
+          (HTGeometry.momentFunctional (fermiLogMoment sigma) (Polynomial.X ^ (2 : ℕ)))) ≠ ⊤ := by
   intro htop
   have hpos : 0 < HTGeometry.pureStateQuantumFisherValue (fermiLogMoment sigma 0)
       (HTGeometry.momentFunctional (fermiLogMoment sigma) Polynomial.X)
-      (HTGeometry.momentFunctional (fermiLogMoment sigma) (Polynomial.X ^ 2)) := by
+      (HTGeometry.momentFunctional (fermiLogMoment sigma) (Polynomial.X ^ (2 : ℕ))) := by
     rw [pureStateQuantumFisher_fermiMellin sigma.property]
     exact mul_pos (by norm_num) (fermiLogVariance_pos sigma.property)
   exact (not_le_of_gt hpos)

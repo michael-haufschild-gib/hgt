@@ -44,15 +44,15 @@ designated range multiplies the fibre mean square; the cost is the rounding term
 the Turán--Kubilius variance. -/
 theorem sum_sq_fibreSum_moebius_le_omegaSpectral {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 ≤ h)
     (hhx : h ≤ Real.sqrt x) {z₀ z : ℕ} (hz : z₀ ≤ z) :
-    (mertensS z - mertensS z₀) ^ 2
-        * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2
+    (mertensS z - mertensS z₀) ^ (2 : ℕ)
+        * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ)
       ≤ 16 * Real.sqrt x
-            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-                * ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (fibreIndex x h) w‖ ^ 2)
-        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ 2 * (Real.sqrt x + 1)
+            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+                * ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (fibreIndex x h) w‖ ^ (2 : ℕ))
+        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ (2 : ℕ) * (Real.sqrt x + 1)
         + 2 * (h + 1) * (2 * h + 1)
             * (4 * (Real.sqrt x / 2 + h + 1) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-              + 8 * ((Nat.primesLE z).card : ℝ) ^ 2) := by
+              + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ)) := by
   classical
   set P : Finset ℕ := primesRange z₀ z with hP
   set B : ℝ := ((P.card : ℝ) + 1) with hB
@@ -78,19 +78,19 @@ theorem sum_sq_fibreSum_moebius_le_omegaSpectral {x h : ℝ} (hx : 4 ≤ x) (hh0
   have hbridge := sum_fibreSum_sq_le_integral_scaled (f := F) hB0 hFbd hx hh0 hhx
   -- Plancherel
   have hplanch : (∫ u : ℝ, ‖logWindowSum (fun n => ((F n : ℝ) : ℂ))
-        (fibreIndex x h) (fibreWidth x h) u‖ ^ 2)
-      = ∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-          * ‖omegaWeightedMoebiusPoly P (fibreIndex x h) w‖ ^ 2 := by
+        (fibreIndex x h) (fibreWidth x h) u‖ ^ (2 : ℕ))
+      = ∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+          * ‖omegaWeightedMoebiusPoly P (fibreIndex x h) w‖ ^ (2 : ℕ) := by
     rw [integral_normSq_logWindowSum_eq _ _ (fibreWidth_nonneg hx hh0)]
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
     simp only [hF, logPoly_omegaWeighted_eq]
   rw [hplanch] at hbridge
   have hsx : (0 : ℝ) ≤ Real.sqrt x := Real.sqrt_nonneg x
-  have hstep : 2 * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, F b) ^ 2
+  have hstep : 2 * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, F b) ^ (2 : ℕ)
       ≤ 16 * Real.sqrt x
-            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-                * ‖omegaWeightedMoebiusPoly P (fibreIndex x h) w‖ ^ 2)
-        + 204 * B ^ 2 * (Real.sqrt x + 1) := by
+            * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+                * ‖omegaWeightedMoebiusPoly P (fibreIndex x h) w‖ ^ (2 : ℕ))
+        + 204 * B ^ (2 : ℕ) * (Real.sqrt x + 1) := by
     linarith [hbridge]
   linarith [hTK, hstep]
 
@@ -99,12 +99,12 @@ theorem sum_sq_fibreSum_moebius_le_omegaSpectral {x h : ℝ} (hx : 4 ≤ x) (hh0
 /-- The whole explicit cost of the weighted arrangement at one scale. -/
 def omegaBudget (x h : ℝ) (z₀ z : ℕ) : ℝ :=
   16 * Real.sqrt x
-      * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ 2
-          * ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (fibreIndex x h) w‖ ^ 2)
-    + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ 2 * (Real.sqrt x + 1)
+      * (∫ w : ℝ, ‖logWindowKernel (fibreWidth x h) w‖ ^ (2 : ℕ)
+          * ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (fibreIndex x h) w‖ ^ (2 : ℕ))
+    + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ (2 : ℕ) * (Real.sqrt x + 1)
     + 2 * (h + 1) * (2 * h + 1)
         * (4 * (Real.sqrt x / 2 + h + 1) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-          + 8 * ((Nat.primesLE z).card : ℝ) ^ 2)
+          + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ))
 
 /-- **The Route E gate on the weighted polynomial.**  If the explicit budget of the weighted
 arrangement is `o` of the harmonic mass squared times the trivial size, the Möbius fibre mean square
@@ -115,29 +115,29 @@ theorem averagedMeanSquare_moebius_of_omegaBudget {hh : ℝ → ℝ} {zlo zhi : 
     (hz : ∀ᶠ x in atTop, zlo x ≤ zhi x)
     (hW : ∀ᶠ x in atTop, 0 < mertensS (zhi x) - mertensS (zlo x))
     (hlim : Tendsto (fun x => omegaBudget x (hh x) (zlo x) (zhi x)
-        / ((mertensS (zhi x) - mertensS (zlo x)) ^ 2 * hh x ^ 2 * Real.sqrt x)) atTop (𝓝 0)) :
+        / ((mertensS (zhi x) - mertensS (zlo x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x)) atTop (𝓝 0)) :
     AveragedMeanSquare (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) hh := by
   rw [AveragedMeanSquare]
   refine squeeze_zero_norm' ?_ hlim
   filter_upwards [hhx, hh0, hz, hW, Filter.eventually_ge_atTop (4 : ℝ)] with x hx1 hx2 hx3 hx4 hx5
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 (by linarith)
-  have hden : (0 : ℝ) < (mertensS (zhi x) - mertensS (zlo x)) ^ 2 * hh x ^ 2 * Real.sqrt x := by
-    have : (0 : ℝ) < (mertensS (zhi x) - mertensS (zlo x)) ^ 2 := by positivity
+  have hden : (0 : ℝ) < (mertensS (zhi x) - mertensS (zlo x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x := by
+    have : (0 : ℝ) < (mertensS (zhi x) - mertensS (zlo x)) ^ (2 : ℕ) := by positivity
     positivity
   have hnum0 : (0 : ℝ)
       ≤ ∑ a ∈ outerBlock x (hh x),
-          (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2 :=
+          (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun a _ => sq_nonneg _
   have hkey := sum_sq_fibreSum_moebius_le_omegaSpectral hx5 hx2.le hx1 hx3
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   rw [div_le_div_iff₀ (by positivity) hden]
   have hval : (∑ a ∈ outerBlock x (hh x),
-        (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2)
-      * ((mertensS (zhi x) - mertensS (zlo x)) ^ 2 * hh x ^ 2 * Real.sqrt x)
-      = ((mertensS (zhi x) - mertensS (zlo x)) ^ 2
+        (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ))
+      * ((mertensS (zhi x) - mertensS (zlo x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x)
+      = ((mertensS (zhi x) - mertensS (zlo x)) ^ (2 : ℕ)
           * ∑ a ∈ outerBlock x (hh x),
-            (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ 2)
-        * (hh x ^ 2 * Real.sqrt x) := by ring
+            (∑ b ∈ innerFibre x (hh x) a, ((ArithmeticFunction.moebius b : ℤ) : ℝ)) ^ (2 : ℕ))
+        * (hh x ^ (2 : ℕ) * Real.sqrt x) := by ring
   rw [hval]
   refine mul_le_mul_of_nonneg_right ?_ (by positivity)
   rw [omegaBudget]
@@ -150,7 +150,7 @@ theorem averagedShortInterval_moebius_of_omegaBudget {hh : ℝ → ℝ} {zlo zhi
     (hz : ∀ᶠ x in atTop, zlo x ≤ zhi x)
     (hW : ∀ᶠ x in atTop, 0 < mertensS (zhi x) - mertensS (zlo x))
     (hlim : Tendsto (fun x => omegaBudget x (hh x) (zlo x) (zhi x)
-        / ((mertensS (zhi x) - mertensS (zlo x)) ^ 2 * hh x ^ 2 * Real.sqrt x)) atTop (𝓝 0)) :
+        / ((mertensS (zhi x) - mertensS (zlo x)) ^ (2 : ℕ) * hh x ^ (2 : ℕ) * Real.sqrt x)) atTop (𝓝 0)) :
     AveragedShortInterval (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) hh :=
   averagedShortInterval_of_meanSquare hgrow
     (averagedMeanSquare_moebius_of_omegaBudget hhx

@@ -58,14 +58,14 @@ theorem integral_derivative_reflected_product (q : SchwartzMap ℝ ℂ) :
   linear_combination hz
 
 theorem integrable_square_reflected_derivative (q : SchwartzMap ℝ ℂ) :
-    Integrable (fun x : ℝ => q x^2*reflectedDerivative q x) := by
+    Integrable (fun x : ℝ => q x^(2 : ℕ)*reflectedDerivative q x) := by
   have hh : Integrable (fun x : ℝ => mulS (mulS q q) (reflectedDerivative q) x) :=
     (mulS (mulS q q) (reflectedDerivative q)).integrable
   simpa only [mulS_apply,pow_two] using hh
 
 /-- The local reflected cubic is twice the compatibility coupling, with the exact sign. -/
 theorem integral_square_reflected_derivative (q : SchwartzMap ℝ ℂ) :
-    (∫ x : ℝ, q x^2*reflectedDerivative q x) = -2*∫ x : ℝ, q x*q (-x)*deriv q x := by
+    (∫ x : ℝ, q x^(2 : ℕ)*reflectedDerivative q x) = -2*∫ x : ℝ, q x*q (-x)*deriv q x := by
   have hi1 : Integrable (fun x : ℝ => (2 : ℂ)*(q x*q (-x)*deriv q x)) :=
     (compatibilityCubic_integrable q).const_mul 2
   have hi2 := integrable_square_reflected_derivative q
@@ -74,11 +74,11 @@ theorem integral_square_reflected_derivative (q : SchwartzMap ℝ ℂ) :
       (mulS (mulS q q) (RHTower.negSchwartz' q)).integrable
     simpa only [mulS_apply,RHTower.negSchwartz'_apply] using hh
   have hd : ∀ x : ℝ, HasDerivAt (fun y => q y*q y*q (-y))
-      ((2 : ℂ)*(q x*q (-x)*deriv q x)+q x^2*reflectedDerivative q x) x := by
+      ((2 : ℂ)*(q x*q (-x)*deriv q x)+q x^(2 : ℕ)*reflectedDerivative q x) x := by
     intro x
     have hq := q.hasDerivAt x
     convert! (hq.mul hq).mul (rawReflectedProfile_hasDerivAt q x) using 1
-    change (2 : ℂ)*(q x*q (-x)*deriv q x)+q x^2*reflectedDerivative q x =
+    change (2 : ℂ)*(q x*q (-x)*deriv q x)+q x^(2 : ℕ)*reflectedDerivative q x =
       (deriv q x*q x+q x*deriv q x)*q (-x)+(q x*q x)*reflectedDerivative q x
     ring
   have hz := integral_eq_zero_of_hasDerivAt_of_integrable hd (hi1.add hi2) hi

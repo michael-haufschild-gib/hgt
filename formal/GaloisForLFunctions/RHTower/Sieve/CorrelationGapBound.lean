@@ -17,14 +17,14 @@ noncomputable section
 /-- The two-term block bound, as a function of the curvature scale. -/
 def blockPairBound (Y : ℝ) (P Q : ℕ) : ℝ :=
   2500 * Real.sqrt (Y / (36 * Real.pi * P))
-    + 22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt (((Q : ℝ)) ^ 3)
+    + 22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt (((Q : ℝ)) ^ (3 : ℕ))
 
 /-- **Monotonicity of the block bound in the curvature scale.** -/
 theorem blockPairBound_mono {Y Y₁ Y₂ : ℝ} (P Q : ℕ) (hY₁ : 0 < Y₁) (hle₁ : Y₁ ≤ Y)
     (hle₂ : Y ≤ Y₂) :
     blockPairBound Y P Q
       ≤ 2500 * Real.sqrt (Y₂ / (36 * Real.pi * P))
-        + 22 * Real.sqrt (36 * Real.pi / Y₁) * Real.sqrt (((Q : ℝ)) ^ 3) := by
+        + 22 * Real.sqrt (36 * Real.pi / Y₁) * Real.sqrt (((Q : ℝ)) ^ (3 : ℕ)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hY : 0 < Y := lt_of_lt_of_le hY₁ hle₁
   have hfirst : Real.sqrt (Y / (36 * Real.pi * P)) ≤ Real.sqrt (Y₂ / (36 * Real.pi * P)) := by
@@ -36,15 +36,15 @@ theorem blockPairBound_mono {Y Y₁ Y₂ : ℝ} (P Q : ℕ) (hY₁ : 0 < Y₁) (
   have hsecond : Real.sqrt (36 * Real.pi / Y) ≤ Real.sqrt (36 * Real.pi / Y₁) := by
     refine Real.sqrt_le_sqrt ?_
     exact div_le_div_of_nonneg_left (by positivity) hY₁ hle₁
-  have hQ : (0 : ℝ) ≤ Real.sqrt (((Q : ℝ)) ^ 3) := Real.sqrt_nonneg _
+  have hQ : (0 : ℝ) ≤ Real.sqrt (((Q : ℝ)) ^ (3 : ℕ)) := Real.sqrt_nonneg _
   rw [blockPairBound]
   nlinarith [hfirst, hsecond, hQ, mul_le_mul_of_nonneg_right hsecond hQ]
 
 /-- The gap-only correlation bound. -/
 def gapCorrBound (T r : ℝ) (M₀ M₁ P Q : ℕ) (h : ℕ) : ℝ :=
-  2500 * Real.sqrt (T * (r * h / (M₀ : ℝ) ^ 2) / (36 * Real.pi * P))
-    + 22 * Real.sqrt (36 * Real.pi / (T * (r * h / (M₁ : ℝ) ^ 2)))
-        * Real.sqrt (((Q : ℝ)) ^ 3)
+  2500 * Real.sqrt (T * (r * h / (M₀ : ℝ) ^ (2 : ℕ)) / (36 * Real.pi * P))
+    + 22 * Real.sqrt (36 * Real.pi / (T * (r * h / (M₁ : ℝ) ^ (2 : ℕ))))
+        * Real.sqrt (((Q : ℝ)) ^ (3 : ℕ))
 
 theorem gapCorrBound_nonneg (T r : ℝ) (M₀ M₁ P Q h : ℕ) :
     0 ≤ gapCorrBound T r M₀ M₁ P Q h := by
@@ -90,12 +90,12 @@ theorem norm_masked_correlation_gap_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
   have hlow := le_abs_inv_diff hr.le hm₁ hm₂ hhi₁ hhi₂
   have hhigh := abs_inv_diff_le hr.le hm₁ hm₂ hM₀ hlo₁ hlo₂
   rw [← cast_natDist] at hlow hhigh
-  have hY₁ : (0 : ℝ) < T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₁ : ℝ) ^ 2) := by positivity
-  have hle₁ : T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₁ : ℝ) ^ 2) ≤ T * |r / m₁ - r / m₂| := by
+  have hY₁ : (0 : ℝ) < T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₁ : ℝ) ^ (2 : ℕ)) := by positivity
+  have hle₁ : T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₁ : ℝ) ^ (2 : ℕ)) ≤ T * |r / m₁ - r / m₂| := by
     refine mul_le_mul_of_nonneg_left ?_ hT.le
     refine le_trans (le_of_eq ?_) hlow
     rw [sq]
-  have hle₂ : T * |r / m₁ - r / m₂| ≤ T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₀ : ℝ) ^ 2) := by
+  have hle₂ : T * |r / m₁ - r / m₂| ≤ T * (r * ((Nat.dist m₁ m₂ : ℕ) : ℝ) / (M₀ : ℝ) ^ (2 : ℕ)) := by
     refine mul_le_mul_of_nonneg_left ?_ hT.le
     refine le_trans hhigh (le_of_eq ?_)
     rw [sq]

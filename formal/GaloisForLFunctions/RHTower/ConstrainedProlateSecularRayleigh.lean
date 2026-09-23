@@ -26,7 +26,7 @@ variable {d ℓ : ℕ → ℝ}
 
 /-- **The Rayleigh identity at the secular ground root.** -/
 theorem tsum_mul_secularVector_sq_eq (h01 : d 0 < d 1) (h12 : d 1 < d 2)
-    (hd2 : ∀ j, d 2 ≤ d (j + 2)) (hsum : Summable fun j => ℓ j ^ 2)
+    (hd2 : ∀ j, d 2 ≤ d (j + 2)) (hsum : Summable fun j => ℓ j ^ (2 : ℕ))
     (hℓ0 : ℓ 0 ≠ 0) (hℓ1 : ℓ 1 ≠ 0) :
     (∑' j : ℕ, d j * secularVector d ℓ (infiniteSecularRoot d ℓ) j
         * secularVector d ℓ (infiniteSecularRoot d ℓ) j)

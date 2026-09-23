@@ -19,13 +19,13 @@ open PrimitivePromotedCofinalDepth
 /-- One source-normal Gamma depth deattenuation has squared gain exactly `p`. -/
 theorem criticalDepthDeattenuation_sq_one
     (p : Nat.Primes) (sourceDepth : ℕ) :
-    criticalDepthDeattenuation (p, sourceDepth) 1 ^ 2 = (p : ℝ) := by
+    criticalDepthDeattenuation (p, sourceDepth) 1 ^ (2 : ℕ) = (p : ℝ) := by
   simpa using criticalDepthDeattenuation_sq (p, sourceDepth) 1
 
 /-- Affine lowering written entirely in source-normal Gamma coordinates. -/
 def primeDepthBVWoldSourceNormalDepthLowering
     (sourceDepth : ℕ) (f : Nat.Primes → ℝ) (p : Nat.Primes) : ℝ :=
-  criticalDepthDeattenuation (p, sourceDepth) 1 ^ 2 *
+  criticalDepthDeattenuation (p, sourceDepth) 1 ^ (2 : ℕ) *
       (f p - woldRemainder p) +
     woldRemainder p
 

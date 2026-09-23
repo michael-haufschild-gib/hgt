@@ -17,7 +17,7 @@ open Finset Filter Topology HTGeometry
 namespace RHTower
 private def squareProfile (s N : ℕ) : ℝ :=
   (∑ m ∈ Icc 1 N, Real.log m) - (2*(N:ℝ)+1)*((harmonic s:ℚ):ℝ)+
-    (s:ℝ)^2+s+2*Real.eulerMascheroniConstant*N
+    (s:ℝ)^(2 : ℕ)+s+2*Real.eulerMascheroniConstant*N
 private lemma profile_step (s N : ℕ) :
     squareProfile s (N+1)-squareProfile s N =
       Real.log (N+1:ℕ)-2*((harmonic s:ℚ):ℝ)+2*Real.eulerMascheroniConstant := by
@@ -47,20 +47,20 @@ private lemma convex_nat_max (f : ℕ → ℝ)
 private lemma gamma_lower : (0.5768:ℝ)  ≤  Real.eulerMascheroniConstant := by
   have h := (harmonic_mascheroni_half_bounds (n := 16) (by norm_num)).2
   have hlog : Real.log (16:ℝ)=4*Real.log 2 := by
-    rw [show (16:ℝ)=2^4 by norm_num,Real.log_pow]; norm_num
+    rw [show (16:ℝ)=2^(4 : ℕ) by norm_num,Real.log_pow]; norm_num
   norm_num [harmonic,Finset.sum_range_succ,hlog] at h
   linarith [Real.log_two_lt_d9]
 private lemma smooth_square_bound {s : ℕ} (hs : 1 ≤ s) :
-    divisorHyperbolaSmoothRemainder (s^2)  ≤  (3/5:ℝ) := by
+    divisorHyperbolaSmoothRemainder (s^(2 : ℕ))  ≤  (3/5:ℝ) := by
   have hsR : (1:ℝ) ≤ s := by exact_mod_cast hs
   have hs0 : (0:ℝ) < s := by positivity
-  have hF := sum_log_Icc_le_half_log_stirling (N:=s^2) (by nlinarith only [hs])
+  have hF := sum_log_Icc_le_half_log_stirling (N:=s^(2 : ℕ)) (by nlinarith only [hs])
   have hH := harmonic_mascheroni_ge_half_sub_twelfth hs
-  have hHmul := mul_le_mul_of_nonneg_left hH (show (0:ℝ) ≤ 2*(s:ℝ)^2+1 by positivity)
-  have hrat : (2*(s:ℝ)^2+1)*(1/(2*(s:ℝ))-1/(12*(s:ℝ)^2)) =
-      (s:ℝ)-1/6+1/(2*(s:ℝ))-1/(12*(s:ℝ)^2) := by field_simp; ring
+  have hHmul := mul_le_mul_of_nonneg_left hH (show (0:ℝ) ≤ 2*(s:ℝ)^(2 : ℕ)+1 by positivity)
+  have hrat : (2*(s:ℝ)^(2 : ℕ)+1)*(1/(2*(s:ℝ))-1/(12*(s:ℝ)^(2 : ℕ))) =
+      (s:ℝ)-1/6+1/(2*(s:ℝ))-1/(12*(s:ℝ)^(2 : ℕ)) := by field_simp; ring
   rw [hrat] at hHmul
-  have hsmall : 1/(12*(s:ℝ)^2) ≤ 1/(2*(s:ℝ)) := by
+  have hsmall : 1/(12*(s:ℝ)^(2 : ℕ)) ≤ 1/(2*(s:ℝ)) := by
     apply one_div_le_one_div_of_le (by positivity)
     nlinarith only [hsR]
   norm_num only [Nat.cast_pow,Real.log_pow,Nat.cast_ofNat] at hF
@@ -69,17 +69,17 @@ private lemma smooth_square_bound {s : ℕ} (hs : 1 ≤ s) :
   push_cast
   nlinarith only [hF,hHmul,hsmall,gamma_lower]
 private lemma profile_last_le_square (s : ℕ) :
-    squareProfile s ((s+1)^2-1)  ≤  divisorHyperbolaSmoothRemainder ((s+1)^2) := by
+    squareProfile s ((s+1)^(2 : ℕ)-1)  ≤  divisorHyperbolaSmoothRemainder ((s+1)^(2 : ℕ)) := by
   let t := s+1
   have ht : 1 ≤ t := by dsimp [t]; omega
   have ht0 : (0:ℝ)<t := by positivity
   have hH := (harmonic_mascheroni_half_bounds ht).2
-  have hstep := profile_step s (t^2-1)
-  rw [Nat.sub_add_cancel (by nlinarith only [ht] : 1 ≤ t^2)] at hstep
+  have hstep := profile_step s (t^(2 : ℕ)-1)
+  rw [Nat.sub_add_cancel (by nlinarith only [ht] : 1 ≤ t^(2 : ℕ))] at hstep
   have hharm : ((harmonic t:ℚ):ℝ)=((harmonic s:ℚ):ℝ)+(t:ℝ)⁻¹ := by
     dsimp [t]
     rw [harmonic_succ,Rat.cast_add,Rat.cast_inv,Rat.cast_natCast]
-  have he : squareProfile s (t^2) = divisorHyperbolaSmoothRemainder (t^2)+(t:ℝ)⁻¹ := by
+  have he : squareProfile s (t^(2 : ℕ)) = divisorHyperbolaSmoothRemainder (t^(2 : ℕ))+(t:ℝ)⁻¹ := by
     unfold squareProfile divisorHyperbolaSmoothRemainder
     rw [Nat.sqrt_eq',hharm]
     have hi : (t:ℝ)*(t:ℝ)⁻¹=1 := mul_inv_cancel₀ (ne_of_gt ht0)
@@ -89,7 +89,7 @@ private lemma profile_last_le_square (s : ℕ) :
   rw [he] at hstep
   norm_num only [Nat.cast_pow,Real.log_pow,Nat.cast_ofNat] at hstep
   have hhalf : 2*(1/(2*(t:ℝ)))=(t:ℝ)⁻¹ := by field_simp
-  change squareProfile s (t^2-1) ≤ _
+  change squareProfile s (t^(2 : ℕ)-1) ≤ _
   rw [hharm] at hH
   linarith
 
@@ -100,10 +100,10 @@ theorem divisorHyperbolaSmoothRemainder_le_three_fifths (N : ℕ) :
   · subst N; norm_num [divisorHyperbolaSmoothRemainder]
   let s := Nat.sqrt N
   have hs : 1 ≤ s := Nat.le_sqrt.mpr (by simpa using Nat.one_le_iff_ne_zero.mpr hN)
-  have hlo : s^2 ≤ N := Nat.sqrt_le' N
-  have hhi : N ≤ (s+1)^2-1 := by
+  have hlo : s^(2 : ℕ) ≤ N := Nat.sqrt_le' N
+  have hhi : N ≤ (s+1)^(2 : ℕ)-1 := by
     have h := Nat.lt_succ_sqrt' N
-    change N < (s+1)^2 at h
+    change N < (s+1)^(2 : ℕ) at h
     omega
   have hm : Monotone (fun k => squareProfile s (k+1)-squareProfile s k) := by
     intro k l hkl
@@ -113,7 +113,7 @@ theorem divisorHyperbolaSmoothRemainder_le_three_fifths (N : ℕ) :
       (show ((k+1:ℕ):ℝ) ≤ (l+1:ℕ) by exact_mod_cast Nat.add_le_add_right hkl 1)
     linarith
   have hmax := convex_nat_max (squareProfile s) hm hlo hhi
-  have hleft : squareProfile s (s^2) ≤ (3/5:ℝ) := by
+  have hleft : squareProfile s (s^(2 : ℕ)) ≤ (3/5:ℝ) := by
     simpa [squareProfile,divisorHyperbolaSmoothRemainder,Nat.sqrt_eq'] using smooth_square_bound hs
   have hright := (profile_last_le_square s).trans (smooth_square_bound (s:=s+1) (by omega))
   exact hmax.trans (max_le hleft hright)

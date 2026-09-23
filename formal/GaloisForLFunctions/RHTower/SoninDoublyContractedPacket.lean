@@ -20,7 +20,7 @@ open scoped Topology
 
 /-- The square clock grows. -/
 theorem tendsto_sq_mul_atTop {r : ℕ → ℝ} (hr : Tendsto r atTop atTop) {t : ℝ} (ht : 0 < t) :
-    Tendsto (fun n : ℕ => r n ^ 2 * t) atTop atTop := by
+    Tendsto (fun n : ℕ => r n ^ (2 : ℕ) * t) atTop atTop := by
   refine tendsto_atTop_mono' _ ?_ hr
   filter_upwards [hr.eventually_ge_atTop (1 / t), hr.eventually_ge_atTop 0] with n h1 h2
   have hrt : 1 ≤ r n * t := by
@@ -32,7 +32,7 @@ theorem tendsto_sq_mul_atTop {r : ℕ → ℝ} (hr : Tendsto r atTop atTop) {t :
 grows. -/
 theorem tendsto_sq_gap_atTop {r : ℕ → ℝ} (hr : Tendsto r atTop atTop) {q t : ℝ}
     (hq : 0 < q) (ht : 0 < t) :
-    Tendsto (fun n : ℕ => r n ^ 2 * t - |r n * q|) atTop atTop := by
+    Tendsto (fun n : ℕ => r n ^ (2 : ℕ) * t - |r n * q|) atTop atTop := by
   refine tendsto_atTop_mono' _ ?_ hr
   filter_upwards [hr.eventually_ge_atTop ((q + 1) / t), hr.eventually_ge_atTop 0] with n h1 h2
   have hrt : q + 1 ≤ r n * t := by
@@ -44,14 +44,14 @@ theorem tendsto_sq_gap_atTop {r : ℕ → ℝ} (hr : Tendsto r atTop atTop) {q t
 /-- **`(19d)`.**  The outer aperture layer annihilates the doubly contracted wavepacket. -/
 theorem tendsto_norm_evenSoninApertureLayer_doublyContracted
     (b c : ℝ) (hb : 0 < b) (hbc : b < c) (q : ℝ) (hq : 0 < q)
-    (r : ℕ → ℝ) (hsq : ∀ n, 0 < r n ^ 2) (hr : Tendsto r atTop atTop) :
+    (r : ℕ → ℝ) (hsq : ∀ n, 0 < r n ^ (2 : ℕ)) (hr : Tendsto r atTop atTop) :
     Tendsto (fun n : ℕ =>
         ‖evenSoninApertureLayer b c
-          (soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n))‖)
+          (soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n))‖)
       atTop (𝓝 0) := by
   have hc : 0 < c := hb.trans hbc
   set z : ℕ → evenSubspace := fun n =>
-    soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n) with hz
+    soninDilatedPacket b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n) with hz
   have hA : Tendsto (fun n : ℕ => 2 * Real.pi * (r n * q)) atTop atTop := by
     have h1 : Tendsto (fun n : ℕ => r n * q) atTop atTop :=
       Filter.Tendsto.atTop_mul_const hq hr
@@ -62,10 +62,10 @@ theorem tendsto_norm_evenSoninApertureLayer_doublyContracted
     filter_upwards [(tendsto_sq_mul_atTop hr hb).eventually_ge_atTop c] with n hn
     have h1 : evenIndicatorCutoff c (z n) = 0 :=
       evenIndicatorCutoff_evenDilationCLM_inv_soninPacketEven_eq_zero b c hb hbc
-        (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n) c hn
+        (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n) c hn
     have h2 : evenIndicatorCutoff b (z n) = 0 :=
       evenIndicatorCutoff_evenDilationCLM_inv_soninPacketEven_eq_zero b c hb hbc
-        (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n) b (by linarith)
+        (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n) b (by linarith)
     rw [sub_apply, h1, h2, sub_zero]
   have hphys : Tendsto (fun n : ℕ =>
       ‖(evenIndicatorCutoff c - evenIndicatorCutoff b) (z n)‖) atTop (𝓝 0) := by
@@ -78,9 +78,9 @@ theorem tendsto_norm_evenSoninApertureLayer_doublyContracted
     intro t ht
     have hgapT := tendsto_sq_gap_atTop hr hq ht
     have hbase := tendsto_norm_sub_evenFourierCutoff_soninPacketEven_gap b c hb hbc
-      (fun n : ℕ => r n ^ 2 * t) (fun n : ℕ => r n * q) hgapT hA
+      (fun n : ℕ => r n ^ (2 : ℕ) * t) (fun n : ℕ => r n * q) hgapT hA
     refine hbase.congr fun n => ?_
-    exact (norm_sub_evenFourierCutoff_evenDilationCLM_inv t (r n ^ 2) (hsq n)
+    exact (norm_sub_evenFourierCutoff_evenDilationCLM_inv t (r n ^ (2 : ℕ)) (hsq n)
       (soninPacketEven b c hb hbc (2 * Real.pi * (r n * q)))).symm
   have hfour : Tendsto (fun n : ℕ =>
       ‖(evenFourierCutoff c - evenFourierCutoff b) (z n)‖) atTop (𝓝 0) := by
@@ -105,19 +105,19 @@ theorem tendsto_norm_evenSoninApertureLayer_doublyContracted
     (IsSoninPrincipalRelativeIdeal.isCompactOperator
       (IsSoninPrincipalRelativeIdeal.projectionCorrection b hb)) z
     (2 * ‖soninBumpL2 b c hb hbc‖)
-    (fun n => norm_soninDilatedPacket_le b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n))
-    (fun n : ℕ => r n ^ 2 * b) (tendsto_sq_mul_atTop hr hb)
+    (fun n => norm_soninDilatedPacket_le b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n))
+    (fun n : ℕ => r n ^ (2 : ℕ) * b) (tendsto_sq_mul_atTop hr hb)
     (fun n => evenIndicatorCutoff_soninDilatedPacket_eq_zero b c hb hbc
-      (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n))
+      (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n))
   have hcorrC := tendsto_norm_compactOperator_apply_of_evenIndicatorCutoff_apply_eq_zero
     (evenSoninProjectionCorrection c)
     (IsSoninPrincipalRelativeIdeal.isCompactOperator
       (IsSoninPrincipalRelativeIdeal.projectionCorrection c hc)) z
     (2 * ‖soninBumpL2 b c hb hbc‖)
-    (fun n => norm_soninDilatedPacket_le b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n))
-    (fun n : ℕ => r n ^ 2 * b) (tendsto_sq_mul_atTop hr hb)
+    (fun n => norm_soninDilatedPacket_le b c hb hbc (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n))
+    (fun n : ℕ => r n ^ (2 : ℕ) * b) (tendsto_sq_mul_atTop hr hb)
     (fun n => evenIndicatorCutoff_soninDilatedPacket_eq_zero b c hb hbc
-      (2 * Real.pi * (r n * q)) (r n ^ 2) (hsq n))
+      (2 * Real.pi * (r n * q)) (r n ^ (2 : ℕ)) (hsq n))
   have hcorr : Tendsto (fun n : ℕ =>
       ‖(evenSoninProjectionCorrection b - evenSoninProjectionCorrection c) (z n)‖)
       atTop (𝓝 0) := by

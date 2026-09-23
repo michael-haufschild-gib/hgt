@@ -24,7 +24,7 @@ theorem summable_digammaSeriesTerm {s : ℂ} (hs : 0 < s.re) :
   have hc0 : 0 < c := lt_min hs one_pos
   have hc1 : c ≤ 1 := min_le_right _ _
   have hcs : c ≤ s.re := min_le_left _ _
-  have hbound : ∀ k : ℕ, ‖1 / ((k : ℂ) + 1) - 1 / (s + k)‖ ≤ (‖s - 1‖ / c) * (1 / ((k : ℝ) + 1) ^ 2) := by
+  have hbound : ∀ k : ℕ, ‖1 / ((k : ℂ) + 1) - 1 / (s + k)‖ ≤ (‖s - 1‖ / c) * (1 / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
     intro k
     have hk1 : ((k : ℂ) + 1) ≠ 0 := by exact_mod_cast (Nat.succ_ne_zero k)
     have hsk_re : c * ((k : ℝ) + 1) ≤ (s + k).re := by
@@ -41,12 +41,12 @@ theorem summable_digammaSeriesTerm {s : ℂ} (hs : 0 < s.re) :
     rw [hk1n]
     have hpos : 0 < ((k : ℝ) + 1) := by positivity
     rw [div_le_iff₀ (by positivity)]
-    calc ‖s - 1‖ = (‖s - 1‖ / c) * (1 / ((k : ℝ) + 1) ^ 2) * (((k : ℝ) + 1) * (c * ((k : ℝ) + 1))) := by
+    calc ‖s - 1‖ = (‖s - 1‖ / c) * (1 / ((k : ℝ) + 1) ^ (2 : ℕ)) * (((k : ℝ) + 1) * (c * ((k : ℝ) + 1))) := by
           field_simp
-      _ ≤ (‖s - 1‖ / c) * (1 / ((k : ℝ) + 1) ^ 2) * (((k : ℝ) + 1) * ‖s + k‖) := by
+      _ ≤ (‖s - 1‖ / c) * (1 / ((k : ℝ) + 1) ^ (2 : ℕ)) * (((k : ℝ) + 1) * ‖s + k‖) := by
           gcongr
-  refine Summable.of_norm_bounded (g := fun k : ℕ => (‖s - 1‖ / c) * (1 / ((k : ℝ) + 1) ^ 2)) ?_ hbound
-  have h2 : Summable (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ 2) := by
+  refine Summable.of_norm_bounded (g := fun k : ℕ => (‖s - 1‖ / c) * (1 / ((k : ℝ) + 1) ^ (2 : ℕ))) ?_ hbound
+  have h2 : Summable (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
     have := (Real.summable_one_div_nat_pow (p := 2)).mpr one_lt_two
     exact_mod_cast (summable_nat_add_iff 1).mpr this
   exact h2.mul_left _

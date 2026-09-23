@@ -167,7 +167,7 @@ theorem summable_schwarzschildParikhWilczekLiteralBoundedMatrixEndpointEnergy
   have hprod : Summable fun p : ℕ × ℕ => q ^ p.1 * q ^ p.2 :=
     summable_mul_of_summable_norm hgeo.norm hgeo.norm
   have hmajor : Summable fun p : ℕ × ℕ => B * q ^ (p.1 + p.2 + 2) := by
-    refine (hprod.mul_left (B * q ^ 2)).congr fun p => ?_
+    refine (hprod.mul_left (B * q ^ (2 : ℕ))).congr fun p => ?_
     rw [pow_add, pow_add]
     ring
   refine Summable.of_norm_bounded hmajor ?_
@@ -209,7 +209,7 @@ theorem schwarzschildParikhWilczekBoundedMatrixEndpointEnergy_eq_scaled
     {K : ℕ → ℕ → ℝ} {B : ℝ} (hB : 0 ≤ B)
     (hK : ∀ i j, |K i j| ≤ B) (j : ℕ) :
     schwarzschildParikhWilczekBoundedMatrixEndpointEnergy K j =
-      schwarzschildParikhWilczekEndpointTomographyNode j ^ 2 *
+      schwarzschildParikhWilczekEndpointTomographyNode j ^ (2 : ℕ) *
         ∑' n : ℕ, pwMatrixEndpointScaledCoefficient K n *
           pwMatrixEndpointRescaledNode j ^ n := by
   let q := schwarzschildParikhWilczekEndpointTomographyNode j

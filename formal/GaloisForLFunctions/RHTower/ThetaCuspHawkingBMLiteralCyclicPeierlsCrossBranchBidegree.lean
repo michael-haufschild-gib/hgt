@@ -126,7 +126,7 @@ Its amplitude `a² b² / 64` is the literal full-incoming-horizon normalization,
 so it is fixed before any Peierls incidence is attempted. -/
 def crossBranchMetric (q : XiZeroCopy) (a b : ℂ) (x : Fin 4 → ℝ) :
     Matrix (Fin 4) (Fin 4) ℂ :=
-  streamMetricField (crossBranchClock q) (a ^ 2 * b ^ 2 / 64) false
+  streamMetricField (crossBranchClock q) (a ^ (2 : ℕ) * b ^ (2 : ℕ) / 64) false
     (crossBranchCovector q) x
 
 /-- The reconstructed complementary metric has actual second coordinate
@@ -148,7 +148,7 @@ theorem crossBranchMetric_einstein (q : XiZeroCopy) (a b : ℂ)
         (D4BMBackground.jet (p.val 1) (p.val 3))
         (ofMetricField (crossBranchMetric q a b) p.val) (-3) i j =
       streamMetricTensor (crossBranchClock q) (p.val 1)
-        (envelope (crossBranchClock q) (a ^ 2 * b ^ 2 / 64) p.val) false
+        (envelope (crossBranchClock q) (a ^ (2 : ℕ) * b ^ (2 : ℕ) / 64) p.val) false
         (crossBranchCovector q) (angularPoint p.val) i j := by
   unfold crossBranchMetric
   apply streamMetricField_einstein
@@ -160,7 +160,7 @@ theorem crossBranchMetric_einstein (q : XiZeroCopy) (a b : ℂ)
 one-branch rate. -/
 theorem crossBranchMetric_clock (q : XiZeroCopy) (a b : ℂ) (x : Fin 4 → ℝ) :
     crossBranchMetric q a b x =
-      streamMetricField (-6 : ℂ) (a ^ 2 * b ^ 2 / 64) false
+      streamMetricField (-6 : ℂ) (a ^ (2 : ℕ) * b ^ (2 : ℕ) / 64) false
         (crossBranchCovector q) x := by
   rw [crossBranchMetric, crossBranchClock_eq_neg_six]
 

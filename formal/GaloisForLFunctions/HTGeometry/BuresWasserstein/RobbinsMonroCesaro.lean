@@ -28,7 +28,7 @@ open GaloisForLFunctions.HTGeometry.Etemadi
 theorem tendsto_zero_of_robbins_cesaro {d ε : ℕ → ℝ} {α C : ℝ}
     (hα : 0 < α) (hα1 : α < 1) (hd : ∀ n, 0 ≤ d n)
     (hrec : ∀ n : ℕ, d (n + 1) ≤ (1 - α / ((n : ℝ) + 1)) * d n
-      + (1 / ((n : ℝ) + 1)) * ε n + C * (1 / ((n : ℝ) + 1)) ^ 2)
+      + (1 / ((n : ℝ) + 1)) * ε n + C * (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))
     (hces : Tendsto (fun n : ℕ => (∑ i ∈ Finset.range n, ε i) / (n : ℝ)) atTop (𝓝 0)) :
     Tendsto d atTop (𝓝 0) := by
   -- the driving sequence of the comparison recursion
@@ -50,7 +50,7 @@ theorem tendsto_zero_of_robbins_cesaro {d ε : ℕ → ℝ} {α C : ℝ}
     linarith
   -- the driving term is exactly the perturbation
   have hdrive : ∀ n : ℕ, (α / ((n : ℝ) + 1)) * bb n
-      = (1 / ((n : ℝ) + 1)) * ε n + C * (1 / ((n : ℝ) + 1)) ^ 2 := by
+      = (1 / ((n : ℝ) + 1)) * ε n + C * (1 / ((n : ℝ) + 1)) ^ (2 : ℕ) := by
     intro n
     have h1 : (0 : ℝ) < (n : ℝ) + 1 := by positivity
     rw [hbbdef]

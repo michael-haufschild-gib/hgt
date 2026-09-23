@@ -29,20 +29,20 @@ private theorem matrixOfRect_isHS
     {κ ι : Type*} [DecidableEq ι]
     {T : lp (fun _ : ι => ℂ) 2 →L[ℂ] lp (fun _ : κ => ℂ) 2}
     (hT : ContinuousLinearMap.IsHilbertSchmidt T) :
-    Summable (fun p : κ × ι => ‖matrixOfRect T p‖ ^ 2) := by
+    Summable (fun p : κ × ι => ‖matrixOfRect T p‖ ^ (2 : ℕ)) := by
   have hcols : ∀ j, Summable
-      (fun i => ‖T (lp.single 2 j (1 : ℂ)) i‖ ^ 2) := fun j =>
+      (fun i => ‖T (lp.single 2 j (1 : ℂ)) i‖ ^ (2 : ℕ)) := fun j =>
     HilbertSchmidt.summable_coe_sq (T (lp.single 2 j (1 : ℂ)))
   have henergy : Summable
-      (fun j => ∑' i, ‖T (lp.single 2 j (1 : ℂ)) i‖ ^ 2) := by
+      (fun j => ∑' i, ‖T (lp.single 2 j (1 : ℂ)) i‖ ^ (2 : ℕ)) := by
     refine (hT.summable (HilbertSchmidt.lpBasis ι)).congr fun j => ?_
     rw [HilbertSchmidt.lpBasis_apply, HilbertSchmidt.lp_norm_sq_eq]
   have hswap : Summable
-      (fun q : ι × κ => ‖T (lp.single 2 q.1 (1 : ℂ)) q.2‖ ^ 2) := by
+      (fun q : ι × κ => ‖T (lp.single 2 q.1 (1 : ℂ)) q.2‖ ^ (2 : ℕ)) := by
     rw [summable_prod_of_nonneg (fun _ => by positivity)]
     exact ⟨fun j => hcols j, henergy⟩
   have h : Summable
-      (fun p : κ × ι => ‖T (lp.single 2 p.2 (1 : ℂ)) p.1‖ ^ 2) := by
+      (fun p : κ × ι => ‖T (lp.single 2 p.2 (1 : ℂ)) p.1‖ ^ (2 : ℕ)) := by
     simpa only [Function.comp_apply] using!
       hswap.comp_injective (Equiv.prodComm κ ι).injective
   exact h.congr fun _ => rfl
@@ -64,7 +64,7 @@ private theorem inner_hsRectVector_eq_hsInner
   have hprod : Summable (fun p : κ × ι =>
       (starRingEnd ℂ) (matrixOfRect S p) * matrixOfRect T p) := by
     apply Summable.of_norm_bounded
-      (g := fun p => (‖matrixOfRect S p‖ ^ 2 + ‖matrixOfRect T p‖ ^ 2) / 2)
+      (g := fun p => (‖matrixOfRect S p‖ ^ (2 : ℕ) + ‖matrixOfRect T p‖ ^ (2 : ℕ)) / 2)
     · exact ((matrixOfRect_isHS hS).add (matrixOfRect_isHS hT)).div_const 2
     · intro p
       rw [norm_mul, Complex.norm_conj]
@@ -114,7 +114,7 @@ theorem hsNormSqRect_soninAllPrimeColumnKernel_eq_residualKernel
   apply tsum_congr
   intro row
   have hrow : Summable (fun col : SoninAllPrimeIndex =>
-      ‖soninAllPrimeResidualKernel a (row, col)‖ ^ 2) :=
+      ‖soninAllPrimeResidualKernel a (row, col)‖ ^ (2 : ℕ)) :=
     hold.comp_injective (fun _ _ h => (Prod.mk.inj h).2)
   rw [hrow.tsum_prod]
   rw [tsum_eq_single row.1]
@@ -771,24 +771,24 @@ private theorem hsNormSq_soninAllPrimeBlockOutputEnergyOperator_eq_diagonal
     rw [← hround, HilbertSchmidt.hsNormSq_toOperator]
   rw [show soninAllPrimeBlockOutputEnergyOperator a ha = S from rfl, hnorm,
     soninAllPrimeDiagonalSecondMoment]
-  change (∑' z : SoninAllPrimeIndex × SoninAllPrimeIndex, ‖M z‖ ^ 2) = _
+  change (∑' z : SoninAllPrimeIndex × SoninAllPrimeIndex, ‖M z‖ ^ (2 : ℕ)) = _
   rw [← soninAllPrimeBlockSecondMomentEquiv.tsum_eq
-    (fun z : SoninAllPrimeIndex × SoninAllPrimeIndex => ‖M z‖ ^ 2)]
+    (fun z : SoninAllPrimeIndex × SoninAllPrimeIndex => ‖M z‖ ^ (2 : ℕ))]
   have hflat : Summable (fun z :
       ((Nat.Primes × ℕ) × (Nat.Primes × ℕ)) ×
         (SoninHilbertIndex × SoninHilbertIndex) =>
-      ‖M (soninAllPrimeBlockSecondMomentEquiv z)‖ ^ 2) :=
+      ‖M (soninAllPrimeBlockSecondMomentEquiv z)‖ ^ (2 : ℕ)) :=
     (soninAllPrimeBlockSecondMomentEquiv.summable_iff).mpr hM
   rw [hflat.tsum_prod]
   have hab : Summable (fun ab : (Nat.Primes × ℕ) × (Nat.Primes × ℕ) =>
       ∑' ji : SoninHilbertIndex × SoninHilbertIndex,
-        ‖M (soninAllPrimeBlockSecondMomentEquiv (ab, ji))‖ ^ 2) := by
+        ‖M (soninAllPrimeBlockSecondMomentEquiv (ab, ji))‖ ^ (2 : ℕ)) := by
     exact (summable_prod_of_nonneg (fun _ => sq_nonneg _)).mp hflat |>.2
   rw [hab.tsum_prod]
   apply tsum_congr
   intro α
   rw [show (fun β => ∑' ji : SoninHilbertIndex × SoninHilbertIndex,
-        ‖M (soninAllPrimeBlockSecondMomentEquiv ((α, β), ji))‖ ^ 2) =
+        ‖M (soninAllPrimeBlockSecondMomentEquiv ((α, β), ji))‖ ^ (2 : ℕ)) =
       fun β => if β = α then
         ContinuousLinearMap.hsNormSq (soninPrimePowerCrossOverlap a α α)
       else 0 by
@@ -800,7 +800,7 @@ private theorem hsNormSq_soninAllPrimeBlockOutputEnergyOperator_eq_diagonal
         (soninPrimePowerCrossOverlap_isHilbertSchmidt a ha α α)
         (ContinuousLinearMap.hsBasis ℂ SoninL2)]
       have hji : Summable (fun ji : SoninHilbertIndex × SoninHilbertIndex =>
-          ‖M (soninAllPrimeBlockSecondMomentEquiv ((α, α), ji))‖ ^ 2) := by
+          ‖M (soninAllPrimeBlockSecondMomentEquiv ((α, α), ji))‖ ^ (2 : ℕ)) := by
         exact hflat.comp_injective (fun ji ji' h => (Prod.ext_iff.mp h).2)
       rw [hji.tsum_prod]
       apply tsum_congr
@@ -820,7 +820,7 @@ private theorem hsNormSq_soninAllPrimeBlockOutputEnergyOperator_eq_diagonal
     · rw [if_neg hβ]
       have hne : α ≠ β := Ne.symm hβ
       have hzero : (fun ji : SoninHilbertIndex × SoninHilbertIndex =>
-          ‖M (soninAllPrimeBlockSecondMomentEquiv ((α, β), ji))‖ ^ 2) = 0 := by
+          ‖M (soninAllPrimeBlockSecondMomentEquiv ((α, β), ji))‖ ^ (2 : ℕ)) = 0 := by
         funext ji
         rw [show M (soninAllPrimeBlockSecondMomentEquiv ((α, β), ji)) = 0 by
           dsimp [M, S]
@@ -991,7 +991,7 @@ theorem soninAllPrimeCoupledMasterEffectPurity_eq_traceMomentRatio
     (a : SoninPositiveAperture) :
     soninAllPrimeCoupledMasterEffectPurity a =
       (soninAllPrimeCoupledTraceMoment a 1).re /
-        (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 := by
+        (soninAllPrimeCoupledTraceMoment a 0).re ^ (2 : ℕ) := by
   rw [soninAllPrimeCoupledMasterEffectPurity,
     HTGeometry.quantumMasterEffectPurity,
     soninAllPrimeCoupledTraceMoment_odd_eq_hsNormSq_energyPower a 0,
@@ -1004,7 +1004,7 @@ unnormalized quantum-state purity bound `Tr(T²) ≤ Tr(T)²` for `T = C_a† C_
 theorem re_soninAllPrimeCoupledTraceMoment_one_le_sq_zero
     (a : SoninPositiveAperture) :
     (soninAllPrimeCoupledTraceMoment a 1).re ≤
-      (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 := by
+      (soninAllPrimeCoupledTraceMoment a 0).re ^ (2 : ℕ) := by
   let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
   have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
     HilbertSchmidt.isHilbertSchmidt_toOperatorRect
@@ -1020,7 +1020,7 @@ assuming source nondegeneracy.  The zero channel contributes ratio zero by field
 theorem soninAllPrimeCoupledTraceMoment_purityRatio_mem_Icc
     (a : SoninPositiveAperture) :
     (soninAllPrimeCoupledTraceMoment a 1).re /
-        (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 ∈ Set.Icc (0 : ℝ) 1 := by
+        (soninAllPrimeCoupledTraceMoment a 0).re ^ (2 : ℕ) ∈ Set.Icc (0 : ℝ) 1 := by
   rw [← soninAllPrimeCoupledMasterEffectPurity_eq_traceMomentRatio]
   exact HTGeometry.quantumMasterEffectPurity_mem_Icc _
     (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
@@ -1082,11 +1082,11 @@ theorem norm_soninAllPrimeCoupledCoordinateEnergy_le_traceMoment_zero_re
     HilbertSchmidt.isHilbertSchmidt_toOperatorRect
       (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
   have hop := ContinuousLinearMap.opNorm_le_hsNorm hC
-  have hopSq : ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNormSq C := by
-    have hsquare : ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := by
+  have hopSq : ‖C‖ ^ (2 : ℕ) ≤ ContinuousLinearMap.hsNormSq C := by
+    have hsquare : ‖C‖ ^ (2 : ℕ) ≤ ContinuousLinearMap.hsNorm C ^ (2 : ℕ) := by
       nlinarith [norm_nonneg C, ContinuousLinearMap.hsNorm_nonneg C]
     calc
-      ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := hsquare
+      ‖C‖ ^ (2 : ℕ) ≤ ContinuousLinearMap.hsNorm C ^ (2 : ℕ) := hsquare
       _ = ContinuousLinearMap.hsNormSq C := by
         rw [ContinuousLinearMap.hsNorm,
           Real.sq_sqrt (ContinuousLinearMap.hsNormSq_nonneg C)]
@@ -1103,7 +1103,7 @@ theorem norm_soninAllPrimeCoupledCoordinateEnergy_le_traceMoment_zero_re
       rfl
     _ ≤ ‖ContinuousLinearMap.adjoint C‖ * ‖C‖ :=
       (ContinuousLinearMap.adjoint C).opNorm_comp_le C
-    _ = ‖C‖ ^ 2 := by
+    _ = ‖C‖ ^ (2 : ℕ) := by
       rw [hadjointNorm]
       ring
     _ ≤ ContinuousLinearMap.hsNormSq C := hopSq
@@ -1125,7 +1125,7 @@ theorem norm_soninAllPrimeCoupledCoordinateEnergy_le_effectRadius
         ‖ContinuousLinearMap.adjoint C ∘L C‖ := by rfl
     _ ≤ ‖ContinuousLinearMap.adjoint C‖ * ‖C‖ :=
       (ContinuousLinearMap.adjoint C).opNorm_comp_le C
-    _ = ‖C‖ ^ 2 := by rw [hadjointNorm]; ring
+    _ = ‖C‖ ^ (2 : ℕ) := by rw [hadjointNorm]; ring
     _ ≤ soninAllPrimeColumnEffectRadius :=
       norm_soninAllPrimeColumnCoordinateOperator_sq_le_effectRadius a.1 a.2
 
@@ -1218,14 +1218,14 @@ theorem re_soninAllPrimeCoupledTraceMoment_succ_le_mass_mul
     HilbertSchmidt.isHilbertSchmidt_toOperatorRect
       (soninAllPrimeColumnKernel_isHSRect a.1 a.2)
   have hop := ContinuousLinearMap.opNorm_le_hsNorm hC
-  have hCnormSq : ‖C‖ ^ 2 ≤
+  have hCnormSq : ‖C‖ ^ (2 : ℕ) ≤
       (soninAllPrimeCoupledTraceMoment a 0).re := by
     rw [soninAllPrimeCoupledTraceMoment_zero_eq_column_hsNormSq,
       Complex.ofReal_re]
-    have hsquare : ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := by
+    have hsquare : ‖C‖ ^ (2 : ℕ) ≤ ContinuousLinearMap.hsNorm C ^ (2 : ℕ) := by
       nlinarith [norm_nonneg C, ContinuousLinearMap.hsNorm_nonneg C]
     calc
-      ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := hsquare
+      ‖C‖ ^ (2 : ℕ) ≤ ContinuousLinearMap.hsNorm C ^ (2 : ℕ) := hsquare
       _ = ContinuousLinearMap.hsNormSq C := by
         rw [ContinuousLinearMap.hsNorm,
           Real.sq_sqrt (ContinuousLinearMap.hsNormSq_nonneg C)]
@@ -1256,9 +1256,9 @@ theorem re_soninAllPrimeCoupledTraceMoment_succ_le_mass_mul
     rw [← hfactor]
     calc
       ContinuousLinearMap.hsNormSq (ContinuousLinearMap.adjoint C ∘L V) ≤
-          ‖ContinuousLinearMap.adjoint C‖ ^ 2 *
+          ‖ContinuousLinearMap.adjoint C‖ ^ (2 : ℕ) *
             ContinuousLinearMap.hsNormSq V := hcomp
-      _ = ‖C‖ ^ 2 * ContinuousLinearMap.hsNormSq V := by
+      _ = ‖C‖ ^ (2 : ℕ) * ContinuousLinearMap.hsNormSq V := by
         rw [hadjointNorm]
       _ ≤ (soninAllPrimeCoupledTraceMoment a 0).re *
             ContinuousLinearMap.hsNormSq V :=
@@ -1386,7 +1386,7 @@ theorem soninAllPrimeCoupledRenyiReplicaMoment_secondDifference_nonneg
 usable before source nondegeneracy has been discharged. -/
 theorem re_soninAllPrimeCoupledTraceMoment_secondDifference_nonneg
     (a : SoninPositiveAperture) (k : ℕ) :
-    0 ≤ (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 *
+    0 ≤ (soninAllPrimeCoupledTraceMoment a 0).re ^ (2 : ℕ) *
         (soninAllPrimeCoupledTraceMoment a k).re -
       2 * (soninAllPrimeCoupledTraceMoment a 0).re *
         (soninAllPrimeCoupledTraceMoment a (k + 1)).re +
@@ -1410,7 +1410,7 @@ Hankel inequality.  In contrast with the Hausdorff difference above, no zeroth-m
 so this constraint survives arbitrary projective rescaling of the source column. -/
 theorem re_soninAllPrimeCoupledTraceMoment_logConvex
     (a : SoninPositiveAperture) (k : ℕ) :
-    (soninAllPrimeCoupledTraceMoment a (k + 1)).re ^ 2 ≤
+    (soninAllPrimeCoupledTraceMoment a (k + 1)).re ^ (2 : ℕ) ≤
       (soninAllPrimeCoupledTraceMoment a k).re *
         (soninAllPrimeCoupledTraceMoment a (k + 2)).re := by
   let C := soninAllPrimeColumnCoordinateOperator a.1 a.2
@@ -1426,7 +1426,7 @@ theorem re_soninAllPrimeCoupledTraceMoment_logConvex
 /-- The density-normalized coupled replica values inherit the same log-convexity constraint. -/
 theorem soninAllPrimeCoupledRenyiReplicaMoment_logConvex
     (a : SoninPositiveAperture) (k : ℕ) :
-    soninAllPrimeCoupledRenyiReplicaMoment a (k + 1) ^ 2 ≤
+    soninAllPrimeCoupledRenyiReplicaMoment a (k + 1) ^ (2 : ℕ) ≤
       soninAllPrimeCoupledRenyiReplicaMoment a k *
         soninAllPrimeCoupledRenyiReplicaMoment a (k + 2) := by
   rw [soninAllPrimeCoupledRenyiReplicaMoment_eq_quantumMasterEffectReplicaMoment,
@@ -1443,19 +1443,19 @@ theorem re_soninAllPrimeCoupledTraceMoment_div_zero_logConvex
     (a : SoninPositiveAperture)
     (hzero : 0 < (soninAllPrimeCoupledTraceMoment a 0).re) (k : ℕ) :
     ((soninAllPrimeCoupledTraceMoment a (k + 1)).re /
-        (soninAllPrimeCoupledTraceMoment a 0).re) ^ 2 ≤
+        (soninAllPrimeCoupledTraceMoment a 0).re) ^ (2 : ℕ) ≤
       ((soninAllPrimeCoupledTraceMoment a k).re /
         (soninAllPrimeCoupledTraceMoment a 0).re) *
       ((soninAllPrimeCoupledTraceMoment a (k + 2)).re /
         (soninAllPrimeCoupledTraceMoment a 0).re) := by
   have hlog := re_soninAllPrimeCoupledTraceMoment_logConvex a k
-  have hsq : 0 < (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 :=
+  have hsq : 0 < (soninAllPrimeCoupledTraceMoment a 0).re ^ (2 : ℕ) :=
     sq_pos_of_pos hzero
   have hleft :
       ((soninAllPrimeCoupledTraceMoment a (k + 1)).re /
-          (soninAllPrimeCoupledTraceMoment a 0).re) ^ 2 =
-        (soninAllPrimeCoupledTraceMoment a (k + 1)).re ^ 2 /
-          (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 := by ring
+          (soninAllPrimeCoupledTraceMoment a 0).re) ^ (2 : ℕ) =
+        (soninAllPrimeCoupledTraceMoment a (k + 1)).re ^ (2 : ℕ) /
+          (soninAllPrimeCoupledTraceMoment a 0).re ^ (2 : ℕ) := by ring
   have hright :
       ((soninAllPrimeCoupledTraceMoment a k).re /
           (soninAllPrimeCoupledTraceMoment a 0).re) *
@@ -1463,7 +1463,7 @@ theorem re_soninAllPrimeCoupledTraceMoment_div_zero_logConvex
           (soninAllPrimeCoupledTraceMoment a 0).re) =
         ((soninAllPrimeCoupledTraceMoment a k).re *
           (soninAllPrimeCoupledTraceMoment a (k + 2)).re) /
-            (soninAllPrimeCoupledTraceMoment a 0).re ^ 2 := by ring
+            (soninAllPrimeCoupledTraceMoment a 0).re ^ (2 : ℕ) := by ring
   rw [hleft, hright, div_le_div_iff₀ hsq]
   · exact mul_le_mul_of_nonneg_right hlog hsq.le
   · exact hsq
@@ -1716,7 +1716,7 @@ polynomial source vector. -/
 theorem soninAllPrimeCoupledPolynomialGramValue_eq_norm_sq
     (a : SoninPositiveAperture) (p : Polynomial ℝ) :
     soninAllPrimeCoupledPolynomialGramValue a p =
-      ‖soninAllPrimeCoupledPolynomialPowerVector a p‖ ^ 2 := by
+      ‖soninAllPrimeCoupledPolynomialPowerVector a p‖ ^ (2 : ℕ) := by
   let N := p.natDegree + 1
   let c : Fin N → ℝ := Polynomial.toFn N p
   change
@@ -1724,7 +1724,7 @@ theorem soninAllPrimeCoupledPolynomialGramValue_eq_norm_sq
       ((c i * c j : ℝ) : ℂ) *
         soninAllPrimeCoupledGramBlock N a i j).re =
       ‖∑ i : Fin N, ((c i : ℝ) : ℂ) •
-        soninAllPrimeCoupledPowerVector a (i : ℕ)‖ ^ 2
+        soninAllPrimeCoupledPowerVector a (i : ℕ)‖ ^ (2 : ℕ)
   rw [← inner_self_eq_norm_sq (𝕜 := ℂ)]
   apply congrArg Complex.re
   rw [sum_inner]
@@ -1768,7 +1768,7 @@ theorem soninAllPrimeCoupledNormalizedPolynomialGramValue_eq_norm_sq
     (a : SoninCoupledNondegenerateAperture) (p : Polynomial ℝ) :
     soninAllPrimeCoupledNormalizedPolynomialGramValue a p =
       soninAllPrimeCoupledCanonicalScale a *
-        ‖soninAllPrimeCoupledPolynomialPowerVector a.1 p‖ ^ 2 := by
+        ‖soninAllPrimeCoupledPolynomialPowerVector a.1 p‖ ^ (2 : ℕ) := by
   rw [soninAllPrimeCoupledNormalizedPolynomialGramValue,
     soninAllPrimeCoupledPolynomialGramValue_eq_norm_sq]
 
@@ -1956,7 +1956,7 @@ def SoninCoupledPrimeArchPerTestRayleighUpperBound : Prop :=
     ∃ a : SoninCoupledNondegenerateAperture,
       normalizedPrimeArchMoment 0 *
           ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-            (p.map (Int.castRingHom ℝ))‖ ^ 2 ≤
+            (p.map (Int.castRingHom ℝ))‖ ^ (2 : ℕ) ≤
         ((primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re + ε) *
           (soninAllPrimeCoupledTraceMoment a.1 0).re
 
@@ -1977,10 +1977,10 @@ theorem soninCoupledPrimeArchPerTestRayleighUpperBound_iff_variationalUpperBound
         normalizedPrimeArchMoment 0 /
               (soninAllPrimeCoupledTraceMoment a.1 0).re *
             ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-              (p.map (Int.castRingHom ℝ))‖ ^ 2 =
+              (p.map (Int.castRingHom ℝ))‖ ^ (2 : ℕ) =
           (normalizedPrimeArchMoment 0 *
             ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-              (p.map (Int.castRingHom ℝ))‖ ^ 2) /
+              (p.map (Int.castRingHom ℝ))‖ ^ (2 : ℕ)) /
               (soninAllPrimeCoupledTraceMoment a.1 0).re := by
       field_simp [hden.ne']
     rw [heq]
@@ -1996,10 +1996,10 @@ theorem soninCoupledPrimeArchPerTestRayleighUpperBound_iff_variationalUpperBound
         normalizedPrimeArchMoment 0 /
               (soninAllPrimeCoupledTraceMoment a.1 0).re *
             ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-              (p.map (Int.castRingHom ℝ))‖ ^ 2 =
+              (p.map (Int.castRingHom ℝ))‖ ^ (2 : ℕ) =
           (normalizedPrimeArchMoment 0 *
             ‖soninAllPrimeCoupledPolynomialPowerVector a.1
-              (p.map (Int.castRingHom ℝ))‖ ^ 2) /
+              (p.map (Int.castRingHom ℝ))‖ ^ (2 : ℕ)) /
               (soninAllPrimeCoupledTraceMoment a.1 0).re := by
       field_simp [hden.ne']
     rw [heq] at ha

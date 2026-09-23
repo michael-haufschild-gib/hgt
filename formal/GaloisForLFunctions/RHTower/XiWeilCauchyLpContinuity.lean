@@ -4,7 +4,7 @@ import Mathlib.Analysis.Normed.Group.Tannery
 /-!
 # Norm continuity of the Xi-divisor Cauchy evaluation map
 
-The regular Cauchy vector depends continuously in `ell^2` on its pole.  The proof is uniform over
+The regular Cauchy vector depends continuously in `ell^(2 : ℕ)` on its pole.  The proof is uniform over
 the complete multiplicity-exact Xi divisor: local zero isolation gives one denominator gap, and
 the fixed Cauchy square-summability supplies a Tannery majorant.
 
@@ -33,9 +33,9 @@ theorem tendsto_xiWeilCauchyLp
     simpa [Metric.mem_closedBall, dist_eq_norm] using hn
   let term : ℕ → XiZeroCopy → ℝ := fun n q ↦
     ‖xiWeilCauchyTest (z n : ℂ) (xiSpectralPoint q) -
-      xiWeilCauchyTest (z₀ : ℂ) (xiSpectralPoint q)‖ ^ 2
+      xiWeilCauchyTest (z₀ : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ)
   let bound : XiZeroCopy → ℝ := fun q ↦
-    9 * ‖xiWeilCauchyTest (z₀ : ℂ) (xiSpectralPoint q)‖ ^ 2
+    9 * ‖xiWeilCauchyTest (z₀ : ℂ) (xiSpectralPoint q)‖ ^ (2 : ℕ)
   have hboundsum : Summable bound :=
     (XiWeilSquareSummable_cauchy (z₀ : ℂ)).mul_left 9
   have hterm_tend : ∀ q, Tendsto (fun n ↦ term n q) atTop (nhds 0) := by
@@ -102,12 +102,12 @@ theorem tendsto_xiWeilCauchyLp
     have hsq := pow_le_pow_left₀ (norm_nonneg _) hdiff 2
     rw [h₀inv]
     calc
-      _ ≤ (3 / ‖xiSpectralPoint q - (z₀ : ℂ)‖) ^ 2 := hsq
-      _ = 9 * (1 / ‖xiSpectralPoint q - (z₀ : ℂ)‖) ^ 2 := by ring
+      _ ≤ (3 / ‖xiSpectralPoint q - (z₀ : ℂ)‖) ^ (2 : ℕ) := hsq
+      _ = 9 * (1 / ‖xiSpectralPoint q - (z₀ : ℂ)‖) ^ (2 : ℕ) := by ring
   have htsum : Tendsto (fun n ↦ ∑' q, term n q) atTop (nhds 0) := by
     simpa using tendsto_tsum_of_dominated_convergence hboundsum hterm_tend hbound
   rw [tendsto_iff_norm_sub_tendsto_zero]
-  have hnormsq : ∀ n, ‖xiWeilCauchyLp (z n) - xiWeilCauchyLp z₀‖ ^ 2 =
+  have hnormsq : ∀ n, ‖xiWeilCauchyLp (z n) - xiWeilCauchyLp z₀‖ ^ (2 : ℕ) =
       ∑' q, term n q := by
     intro n
     rw [HilbertSchmidt.lp_norm_sq_eq]
@@ -115,7 +115,7 @@ theorem tendsto_xiWeilCauchyLp
     intro q
     rfl
   have hsqzero : Tendsto
-      (fun n ↦ ‖xiWeilCauchyLp (z n) - xiWeilCauchyLp z₀‖ ^ 2)
+      (fun n ↦ ‖xiWeilCauchyLp (z n) - xiWeilCauchyLp z₀‖ ^ (2 : ℕ))
       atTop (nhds 0) := htsum.congr' (Eventually.of_forall fun n ↦ (hnormsq n).symm)
   have hsqrt := hsqzero.sqrt
   simpa [Real.sqrt_sq_eq_abs, abs_of_nonneg (norm_nonneg _)] using hsqrt

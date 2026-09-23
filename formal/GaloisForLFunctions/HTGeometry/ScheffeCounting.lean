@@ -5,9 +5,9 @@ import Mathlib.Analysis.Normed.Group.InfiniteSum
 /-!
 # Scheffé's lemma for counting measure
 
-Pointwise convergence of probability vectors upgrades to `l^1` convergence.  Only the total masses
+Pointwise convergence of probability vectors upgrades to `l^(1 : ℕ)` convergence.  Only the total masses
 being equal makes this work: the positive and negative deficits then have the same sum, so the
-`l^1` distance is twice the positive deficit, and that is dominated by the limit vector and tends
+`l^(1 : ℕ)` distance is twice the positive deficit, and that is dominated by the limit vector and tends
 to zero termwise.
 
 This is the step that turns coordinatewise convergence of the surviving masses into control of the
@@ -153,8 +153,8 @@ theorem tendsto_tsum_posPart_of_tendsto {ι : Type*} {p : ℕ → ι → ℝ} {p
   rw [abs_of_nonneg hnn]
   linarith [hsplit, htail, hF]
 
-/-- **Scheffé for counting measure.**  Pointwise convergence of probability vectors implies `l^1`
-convergence: the `l^1` distance is twice the positive deficit, because equal totals force the two
+/-- **Scheffé for counting measure.**  Pointwise convergence of probability vectors implies `l^(1 : ℕ)`
+convergence: the `l^(1 : ℕ)` distance is twice the positive deficit, because equal totals force the two
 deficits to agree. -/
 theorem tendsto_tsum_abs_sub_of_tendsto {ι : Type*} {p : ℕ → ι → ℝ} {plim : ι → ℝ} {S : ℝ}
     (hp0 : ∀ n k, 0 ≤ p n k) (hpsum : ∀ n, HasSum (p n) S) (hplimsum : HasSum plim S)
@@ -211,7 +211,7 @@ theorem summable_abs_sub {ι : Type*} {f g : ι → ℝ} (hf0 : ∀ k, 0 ≤ f k
 
 /-- **A finite head captures all but arbitrarily small mass, uniformly in `n`.**  This is the
 tightness clause of the Corollary: one finite label set works for the whole family eventually,
-because the limit's tail is small and the `l^1` distance to the limit is eventually small. -/
+because the limit's tail is small and the `l^(1 : ℕ)` distance to the limit is eventually small. -/
 theorem exists_finset_eventually_tsum_compl_lt {ι : Type*} {p : ℕ → ι → ℝ} {plim : ι → ℝ} {S : ℝ}
     (hp0 : ∀ n k, 0 ≤ p n k) (hpsum : ∀ n, HasSum (p n) S) (hplimsum : HasSum plim S)
     (hconv : ∀ k, Tendsto (fun n => p n k) atTop (nhds (plim k))) {ε : ℝ} (hε : 0 < ε) :

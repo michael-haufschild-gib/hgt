@@ -5,12 +5,12 @@ import GaloisForLFunctions.RHTower.ThetaCuspReflectedHawkingFlux
 
 The reflected theta trajectory has conformal flux
 
-`F_C = 2 C (q' ^ 2 - q'')`.
+`F_C = 2 C (q' ^ (2 : ℕ) - q'')`.
 
 For a real sampling amplitude `g`, the Fewster--Hollands moving-mirror completion is the exact
 identity
 
-`g ^ 2 F_C + 2 C (g') ^ 2 + (2 C g ^ 2 q')' = 2 C (g q' + g') ^ 2`.
+`g ^ (2 : ℕ) F_C + 2 C (g') ^ (2 : ℕ) + (2 C g ^ (2 : ℕ) q')' = 2 C (g q' + g') ^ (2 : ℕ)`.
 
 Thus a nonnegative-central-charge CFT gives a nonnegative renormalized density, and integration
 over an interval on which `g` vanishes at both endpoints gives the sharp sampled QEI.  This file
@@ -103,25 +103,25 @@ theorem thetaCuspReflectedHawkingFlux_zero_le_of_nonneg
 /-- Bulk sampled Hawking flux plus the universal sampling-gradient counterterm. -/
 def thetaCuspHawkingQEIBulkDensity
     (C u : ℝ) (g g' : ℝ → ℝ) (t : ℝ) : ℝ :=
-  g t ^ 2 * thetaCuspReflectedHawkingFlux C u t + 2 * C * g' t ^ 2
+  g t ^ (2 : ℕ) * thetaCuspReflectedHawkingFlux C u t + 2 * C * g' t ^ (2 : ℕ)
 
 /-- Boundary current whose derivative separates raw Hawking flux from its QEI square. -/
 def thetaCuspHawkingQEIBoundaryCurrent
     (C u : ℝ) (g : ℝ → ℝ) : ℝ → ℝ :=
-  (2 * C) • ((g ^ 2) * thetaCuspReflectedLogJetOne u)
+  (2 * C) • ((g ^ (2 : ℕ)) * thetaCuspReflectedLogJetOne u)
 
 /-- Named derivative of the QEI boundary current. -/
 def thetaCuspHawkingQEIBoundaryCurrentDerivative
     (C u : ℝ) (g g' : ℝ → ℝ) (t : ℝ) : ℝ :=
   2 * C *
     (2 * g t * g' t * thetaCuspReflectedLogJetOne u t +
-      g t ^ 2 * thetaCuspReflectedLogJetTwo u t)
+      g t ^ (2 : ℕ) * thetaCuspReflectedLogJetTwo u t)
 
 /-- Positive square appearing in the sharp conformal QEI. -/
 def thetaCuspHawkingQEISquareDensity
     (C u : ℝ) (g g' : ℝ → ℝ) (t : ℝ) : ℝ :=
   2 * C *
-    (g t * thetaCuspReflectedLogJetOne u t + g' t) ^ 2
+    (g t * thetaCuspReflectedLogJetOne u t + g' t) ^ (2 : ℕ)
 
 /-- The named boundary derivative is the actual derivative of the boundary current. -/
 theorem hasDerivAt_thetaCuspHawkingQEIBoundaryCurrent
@@ -248,7 +248,7 @@ theorem thetaCuspHawkingQEISquareDensity_cftNormalization
     (c u : ℝ) (g g' : ℝ → ℝ) (t : ℝ) :
     thetaCuspHawkingQEISquareDensity (c / (24 * Real.pi)) u g g' t =
       c / (12 * Real.pi) *
-        (g t * thetaCuspReflectedLogJetOne u t + g' t) ^ 2 := by
+        (g t * thetaCuspReflectedLogJetOne u t + g' t) ^ (2 : ℕ) := by
   unfold thetaCuspHawkingQEISquareDensity
   ring
 

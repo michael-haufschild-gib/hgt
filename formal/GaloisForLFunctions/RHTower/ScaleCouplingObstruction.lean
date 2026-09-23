@@ -71,7 +71,7 @@ theorem xpCount_eq_riemannCount {A E : ℝ} (hE : 0 < E)
   ring
 
 /-- The required box area: quadratic in the spectral parameter. -/
-def requiredArea (E : ℝ) : ℝ := E ^ 2 / (2 * π * Real.exp 2)
+def requiredArea (E : ℝ) : ℝ := E ^ (2 : ℕ) / (2 * π * Real.exp 2)
 
 /-- The matching condition in solved form. -/
 theorem requiredArea_div {E : ℝ} (hE : 0 < E) :
@@ -111,7 +111,7 @@ theorem requiredArea_strictMono {E₁ E₂ : ℝ} (h1 : 0 < E₁) (h12 : E₁ < 
   unfold requiredArea
   have hden : (0 : ℝ) < 2 * π * Real.exp 2 := by positivity
   rw [div_lt_div_iff₀ hden hden]
-  have hsq : E₁ ^ 2 < E₂ ^ 2 := by nlinarith [h1, h12]
+  have hsq : E₁ ^ (2 : ℕ) < E₂ ^ (2 : ℕ) := by nlinarith [h1, h12]
   nlinarith [hsq, hden]
 
 end RHTower

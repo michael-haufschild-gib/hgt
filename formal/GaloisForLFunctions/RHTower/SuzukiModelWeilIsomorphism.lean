@@ -52,8 +52,8 @@ def suzukiModelWeilEquiv :
 
 theorem norm_sq_suzukiModelWeilEquiv
     (F : ↥(suzukiModelSpace : Submodule ℂ (Lp ℂ 2 (volume : Measure ℝ)))) :
-    ‖(F : Lp ℂ 2 (volume : Measure ℝ))‖ ^ 2
-      = Real.pi * ‖suzukiModelWeilEquiv F‖ ^ 2 := by
+    ‖(F : Lp ℂ 2 (volume : Measure ℝ))‖ ^ (2 : ℕ)
+      = Real.pi * ‖suzukiModelWeilEquiv F‖ ^ (2 : ℕ) := by
   have hpi := Real.pi_pos
   have hs : (0 : ℝ) < Real.sqrt Real.pi := Real.sqrt_pos.mpr hpi
   have hval : ‖suzukiModelWeilEquiv F‖
@@ -64,7 +64,7 @@ theorem norm_sq_suzukiModelWeilEquiv
       (suzukiFGammaHilbertBasis hRH.out).repr.norm_map]
     rfl
   rw [hval, mul_pow]
-  have hsq : (Real.sqrt Real.pi) ^ 2 = Real.pi := Real.sq_sqrt (le_of_lt hpi)
+  have hsq : (Real.sqrt Real.pi) ^ (2 : ℕ) = Real.pi := Real.sq_sqrt (le_of_lt hpi)
   field_simp
   rw [hsq]
 

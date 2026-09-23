@@ -24,11 +24,11 @@ ratio at every aperture `0 < t < 1`, while the raw reciprocal pushforward of the
 cannot give a global linear Markov representation. -/
 theorem thetaCuspCassiniLikelihoodRatio_reciprocalMarkovNoGo_universality :
     (∀ t : ℝ, 0 < t → t < 1 →
-      thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2) =
+      thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ)) =
           ((thetaCuspCassiniLikelihoodFlux t /
             (t * thetaCuspCassiniLikelihoodPartition t) : ℝ) : ℂ) ∧
-        0 < (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2)).re ∧
-        (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2)).im = 0) ∧
+        0 < (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ))).re ∧
+        (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ))).im = 0) ∧
       ¬ ThetaCuspCassiniReciprocalLikelihoodBoundaryIdentity := by
   refine ⟨?_, not_thetaCuspCassiniReciprocalLikelihoodBoundaryIdentity⟩
   intro t ht0 ht1
@@ -43,11 +43,11 @@ exact positive-real Cassini response, fails the raw reciprocal Markov identity, 
 modular cold-curvature coefficient strictly inside its order-two fluctuation cone. -/
 theorem thetaCuspCassiniLikelihoodCarrier_fullPhaseAtlas_universality :
     ((∀ t : ℝ, 0 < t → t < 1 →
-      thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2) =
+      thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ)) =
           ((thetaCuspCassiniLikelihoodFlux t /
             (t * thetaCuspCassiniLikelihoodPartition t) : ℝ) : ℂ) ∧
-        0 < (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2)).re ∧
-        (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ 2)).im = 0) ∧
+        0 < (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ))).re ∧
+        (thetaCuspCassiniInwardCoordinateResponse (1 - t ^ (2 : ℕ))).im = 0) ∧
       ¬ ThetaCuspCassiniReciprocalLikelihoodBoundaryIdentity) ∧
     (∀ x : ℝ, 0 < x →
       0 < thetaCuspCassiniLikelihoodBaseDensity x ∧
@@ -58,10 +58,10 @@ theorem thetaCuspCassiniLikelihoodCarrier_fullPhaseAtlas_universality :
     ∀ j : ℕ,
       0 < thetaCuspModularColdCurvatureFactor j ∧
       0 < thetaCuspModularColdSignedSlopeCoefficient j ∧
-      thetaCuspModularColdSignedSlopeCoefficient j ^ 2 *
+      thetaCuspModularColdSignedSlopeCoefficient j ^ (2 : ℕ) *
             (1 + thetaCuspHigherLikelihoodSpectralMoment
-              (thetaCuspLikelihoodCoordinate 0) 0) ^ 2 <
-        (2 * Real.pi) ^ 2 * thetaCuspModularColdCurvatureFactor j ^ 2 *
+              (thetaCuspLikelihoodCoordinate 0) 0) ^ (2 : ℕ) <
+        (2 * Real.pi) ^ (2 : ℕ) * thetaCuspModularColdCurvatureFactor j ^ (2 : ℕ) *
           thetaCuspHigherLikelihoodSpectralMoment
             (thetaCuspLikelihoodCoordinate 0) 0 *
           thetaCuspHigherLikelihoodSpectralMoment

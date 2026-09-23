@@ -29,11 +29,11 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteS
 /-- The overlap with an involutive clock transform is the invariant-sector weight minus the
 anti-invariant-sector weight.  In particular, the overlap is real without a separate hypothesis. -/
 theorem inner_finiteInvolutiveClockTransform_eq_sectorNormSq_sub
-    (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ 2 = 1)
+    (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ (2 : ℕ) = 1)
     (ψ : E) :
     inner ℂ ψ (U ψ) =
-      (‖finiteCyclicGaugeAverage U 2 ψ‖ ^ 2 -
-        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ 2 : ℝ) := by
+      (‖finiteCyclicGaugeAverage U 2 ψ‖ ^ (2 : ℕ) -
+        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ (2 : ℕ) : ℝ) := by
   let P : E →L[ℂ] E := finiteCyclicGaugeAverage U 2
   let a : E := P ψ
   let b : E := (1 - P) ψ
@@ -64,7 +64,7 @@ theorem inner_finiteInvolutiveClockTransform_eq_sectorNormSq_sub
     rw [hPapply]
     norm_num
     module
-  change inner ℂ ψ (U ψ) = (‖a‖ ^ 2 - ‖b‖ ^ 2 : ℝ)
+  change inner ℂ ψ (U ψ) = (‖a‖ ^ (2 : ℕ) - ‖b‖ ^ (2 : ℕ) : ℝ)
   rw [hUψ, hψ, inner_add_left, inner_sub_right, inner_sub_right,
     hab, hba, inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K]
   simp [a, b, P]
@@ -74,16 +74,16 @@ theorem inner_finiteInvolutiveClockTransform_eq_sectorNormSq_sub
 invariant and anti-invariant clock-sector weights.  Homogeneity removes any normalization
 hypothesis. -/
 theorem finiteInvolutiveClock_projectiveAsymmetry_eq_four_mul_sectorWeights
-    (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ 2 = 1)
+    (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ (2 : ℕ) = 1)
     (ψ : E) :
     projectiveGramTangentEnergy (𝕜 := ℂ) ψ (U ψ) =
-      4 * ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ 2 *
-        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ 2 := by
+      4 * ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ (2 : ℕ) *
+        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ (2 : ℕ) := by
   have hinner := inner_finiteInvolutiveClockTransform_eq_sectorNormSq_sub
     U hadjoint_mul hsq ψ
   have hsum := norm_finiteInvolutiveGaugeAverage_sq_add_complement_sq
     U hadjoint_mul hsq ψ
-  have hUnormSq : ‖U ψ‖ ^ 2 = ‖ψ‖ ^ 2 := by
+  have hUnormSq : ‖U ψ‖ ^ (2 : ℕ) = ‖ψ‖ ^ (2 : ℕ) := by
     simpa using (norm_pow_apply_sq_eq_of_adjoint_mul_self U 1 hadjoint_mul ψ)
   unfold projectiveGramTangentEnergy
   rw [hinner, Complex.norm_real, Real.norm_eq_abs, sq_abs, hUnormSq]
@@ -92,15 +92,15 @@ theorem finiteInvolutiveClock_projectiveAsymmetry_eq_four_mul_sectorWeights
 /-- **Homogeneous fidelity-sector identity.**  Before unit normalization, the fourth-power mass
 minus squared clock overlap is exactly the same invariant/anti-invariant sector product. -/
 theorem finiteInvolutiveClock_homogeneousFidelityDeficit_eq_four_mul_sectorWeights
-    (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ 2 = 1)
+    (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ (2 : ℕ) = 1)
     (ψ : E) :
-    ‖ψ‖ ^ 4 - ‖inner ℂ ψ (U ψ)‖ ^ 2 =
-      4 * ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ 2 *
-        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ 2 := by
+    ‖ψ‖ ^ (4 : ℕ) - ‖inner ℂ ψ (U ψ)‖ ^ (2 : ℕ) =
+      4 * ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ (2 : ℕ) *
+        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ (2 : ℕ) := by
   rw [← finiteInvolutiveClock_projectiveAsymmetry_eq_four_mul_sectorWeights
     U hadjoint_mul hsq ψ]
   unfold projectiveGramTangentEnergy
-  have hUnormSq : ‖U ψ‖ ^ 2 = ‖ψ‖ ^ 2 := by
+  have hUnormSq : ‖U ψ‖ ^ (2 : ℕ) = ‖ψ‖ ^ (2 : ℕ) := by
     simpa using (norm_pow_apply_sq_eq_of_adjoint_mul_self U 1 hadjoint_mul ψ)
   rw [hUnormSq]
   ring
@@ -109,11 +109,11 @@ theorem finiteInvolutiveClock_homogeneousFidelityDeficit_eq_four_mul_sectorWeigh
 clock equals four times the product of its two sector weights.  This is the exact apparatus
 asymmetry value required by fidelity-based discrete-symmetry WAY bounds. -/
 theorem finiteInvolutiveClock_pureStateFidelityDeficit_eq_four_mul_sectorWeights
-    (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ 2 = 1)
+    (U : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1) (hsq : U ^ (2 : ℕ) = 1)
     {ψ : E} (hψnorm : ‖ψ‖ = 1) :
-    1 - ‖inner ℂ ψ (U ψ)‖ ^ 2 =
-      4 * ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ 2 *
-        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ 2 := by
+    1 - ‖inner ℂ ψ (U ψ)‖ ^ (2 : ℕ) =
+      4 * ‖finiteCyclicGaugeAverage U 2 ψ‖ ^ (2 : ℕ) *
+        ‖(1 - finiteCyclicGaugeAverage U 2) ψ‖ ^ (2 : ℕ) := by
   rw [← finiteInvolutiveClock_homogeneousFidelityDeficit_eq_four_mul_sectorWeights
     U hadjoint_mul hsq ψ, hψnorm]
   norm_num

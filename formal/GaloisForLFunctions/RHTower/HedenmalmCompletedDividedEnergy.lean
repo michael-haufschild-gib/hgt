@@ -53,7 +53,7 @@ theorem integrable_scaledThetaSourceModeU {alpha : ℂ} (hstrip : |alpha.im| < 1
 
 theorem integrable_norm_sq_scaledThetaSourceModeU {alpha : ℂ} (hstrip : |alpha.im| < 1)
     (hzero : XiC alpha = 0) :
-    Integrable (fun x : ℝ => ‖scaledThetaSourceModeU alpha x‖ ^ 2)
+    Integrable (fun x : ℝ => ‖scaledThetaSourceModeU alpha x‖ ^ (2 : ℕ))
       (volume : Measure ℝ) := by
   have hscale : (2 * Real.pi : ℝ) ≠ 0 := by positivity
   have hzero' : xiC thetaSource alpha = 0 := by rw [xiC_thetaSource hstrip, hzero]
@@ -61,7 +61,7 @@ theorem integrable_norm_sq_scaledThetaSourceModeU {alpha : ℂ} (hstrip : |alpha
   have hnorm : ‖(2 * Real.pi : ℂ)‖ = 2 * Real.pi := by
     rw [norm_mul]
     norm_num [Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.pi_pos]
-  refine (hbase.const_mul ((2 * Real.pi) ^ 2)).congr ?_
+  refine (hbase.const_mul ((2 * Real.pi) ^ (2 : ℕ))).congr ?_
   filter_upwards with x
   rw [scaledThetaSourceModeU, norm_mul, hnorm, mul_pow]
   ring
@@ -120,9 +120,9 @@ divided by the square of the source mass. -/
 theorem thetaRootEnergy_eq_integral_norm_sq_sourceModeU_div_mass_sq
     {alpha : ℂ} (hstrip : |alpha.im| < 1) :
     thetaRootEnergy alpha =
-      (∫ x : ℝ, ‖sourceModeU thetaSource alpha x‖ ^ 2) / thetaSource.mass ^ 2 := by
+      (∫ x : ℝ, ‖sourceModeU thetaSource alpha x‖ ^ (2 : ℕ)) / thetaSource.mass ^ (2 : ℕ) := by
   let g : ℝ → ℝ := fun x =>
-    ‖sourceModeU thetaSource alpha x‖ ^ 2 /
+    ‖sourceModeU thetaSource alpha x‖ ^ (2 : ℕ) /
       (thetaSource.mass * thetaSource.k x)
   have hgmeas : AEStronglyMeasurable g (volume : Measure ℝ) := by
     refine (((continuous_sourceModeU hstrip).norm.pow 2).div
@@ -144,11 +144,11 @@ theorem thetaRootEnergy_eq_integral_norm_sq_sourceModeU_div_mass_sq
     rw [thetaSource_k]
     field_simp
   have hright : (∫ x : ℝ, thetaSource.normalized x • g x) =
-      (∫ x : ℝ, ‖sourceModeU thetaSource alpha x‖ ^ 2) / thetaSource.mass ^ 2 := by
+      (∫ x : ℝ, ‖sourceModeU thetaSource alpha x‖ ^ (2 : ℕ)) / thetaSource.mass ^ (2 : ℕ) := by
     calc
       (∫ x : ℝ, thetaSource.normalized x • g x) =
-          ∫ x : ℝ, (thetaSource.mass ^ 2)⁻¹ *
-            ‖sourceModeU thetaSource alpha x‖ ^ 2 := by
+          ∫ x : ℝ, (thetaSource.mass ^ (2 : ℕ))⁻¹ *
+            ‖sourceModeU thetaSource alpha x‖ ^ (2 : ℕ) := by
         refine integral_congr_ae ?_
         filter_upwards with x
         dsimp [g]
@@ -158,20 +158,20 @@ theorem thetaRootEnergy_eq_integral_norm_sq_sourceModeU_div_mass_sq
         have hk' : thetaCuspFullSource x ≠ 0 := by simpa only [thetaSource_k] using hk
         rw [thetaSource_k]
         field_simp [hk']
-      _ = (thetaSource.mass ^ 2)⁻¹ *
-          ∫ x : ℝ, ‖sourceModeU thetaSource alpha x‖ ^ 2 := by
+      _ = (thetaSource.mass ^ (2 : ℕ))⁻¹ *
+          ∫ x : ℝ, ‖sourceModeU thetaSource alpha x‖ ^ (2 : ℕ) := by
         rw [MeasureTheory.integral_const_mul]
-      _ = (∫ x : ℝ, ‖sourceModeU thetaSource alpha x‖ ^ 2) /
-          thetaSource.mass ^ 2 := by
+      _ = (∫ x : ℝ, ‖sourceModeU thetaSource alpha x‖ ^ (2 : ℕ)) /
+          thetaSource.mass ^ (2 : ℕ) := by
         rw [div_eq_mul_inv]
         ring
   rw [← hleft, htransport, hright]
 
 /-- Dilation energy of the physical `2π` normalization. -/
 theorem integral_norm_sq_scaledThetaSourceModeU_eq (alpha : ℂ) :
-    (∫ x : ℝ, ‖scaledThetaSourceModeU alpha x‖ ^ 2) =
-      2 * Real.pi * ∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ 2 := by
-  let F : ℝ → ℝ := fun y => ‖sourceModeU thetaSource alpha y‖ ^ 2
+    (∫ x : ℝ, ‖scaledThetaSourceModeU alpha x‖ ^ (2 : ℕ)) =
+      2 * Real.pi * ∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ (2 : ℕ) := by
+  let F : ℝ → ℝ := fun y => ‖sourceModeU thetaSource alpha y‖ ^ (2 : ℕ)
   have hscale := MeasureTheory.Measure.integral_comp_mul_left F (2 * Real.pi)
   have hinvabs : |((2 * Real.pi)⁻¹)| = (2 * Real.pi)⁻¹ := by
     rw [abs_of_pos]
@@ -180,16 +180,16 @@ theorem integral_norm_sq_scaledThetaSourceModeU_eq (alpha : ℂ) :
     rw [norm_mul]
     norm_num [Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.pi_pos]
   calc
-    (∫ x : ℝ, ‖scaledThetaSourceModeU alpha x‖ ^ 2) =
-        ∫ x : ℝ, (2 * Real.pi) ^ 2 * F ((2 * Real.pi) * x) := by
+    (∫ x : ℝ, ‖scaledThetaSourceModeU alpha x‖ ^ (2 : ℕ)) =
+        ∫ x : ℝ, (2 * Real.pi) ^ (2 : ℕ) * F ((2 * Real.pi) * x) := by
       refine integral_congr_ae ?_
       filter_upwards with x
       rw [scaledThetaSourceModeU, norm_mul, hnorm, mul_pow]
-    _ = (2 * Real.pi) ^ 2 * ∫ x : ℝ, F ((2 * Real.pi) * x) := by
+    _ = (2 * Real.pi) ^ (2 : ℕ) * ∫ x : ℝ, F ((2 * Real.pi) * x) := by
       rw [MeasureTheory.integral_const_mul]
-    _ = (2 * Real.pi) ^ 2 *
+    _ = (2 * Real.pi) ^ (2 : ℕ) *
         (|((2 * Real.pi)⁻¹)| • ∫ y : ℝ, F y) := by rw [hscale]
-    _ = 2 * Real.pi * ∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ 2 := by
+    _ = 2 * Real.pi * ∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ (2 : ℕ) := by
       rw [hinvabs, smul_eq_mul]
       dsimp [F]
       field_simp [Real.pi_ne_zero]
@@ -198,8 +198,8 @@ theorem integral_norm_sq_scaledThetaSourceModeU_eq (alpha : ℂ) :
 theta-source root mode are the same divisor vector in spectral and quantile coordinates. -/
 theorem integral_norm_sq_completedXiFirstDividedFunction_eq_thetaRootEnergy
     (rho : XiDivisorSupport) :
-    (∫ xi : ℝ, ‖completedXiFirstDividedFunction rho xi‖ ^ 2) =
-      2 * Real.pi * thetaSource.mass ^ 2 *
+    (∫ xi : ℝ, ‖completedXiFirstDividedFunction rho xi‖ ^ (2 : ℕ)) =
+      2 * Real.pi * thetaSource.mass ^ (2 : ℕ) *
         thetaRootEnergy (-xiSpectralPointSupport rho) := by
   let a : ℂ := xiSpectralPointSupport rho
   let alpha : ℂ := -a
@@ -234,8 +234,8 @@ theorem integral_norm_sq_completedXiFirstDividedFunction_eq_thetaRootEnergy
     ring_nf
     rw [Complex.I_sq, neg_one_mul]
   have hleft :
-      (∫ xi : ℝ, ‖completedXiFirstDividedFunction rho xi‖ ^ 2) =
-        ∫ xi : ℝ, ‖(𝓕 (scaledThetaSourceModeU alpha)) xi‖ ^ 2 := by
+      (∫ xi : ℝ, ‖completedXiFirstDividedFunction rho xi‖ ^ (2 : ℕ)) =
+        ∫ xi : ℝ, ‖(𝓕 (scaledThetaSourceModeU alpha)) xi‖ ^ (2 : ℕ) := by
     refine integral_congr_ae ?_
     filter_upwards [hfourierAE] with xi hxi
     rw [hxi, norm_neg]
@@ -245,39 +245,39 @@ theorem integral_norm_sq_completedXiFirstDividedFunction_eq_thetaRootEnergy
   have hquantile := thetaRootEnergy_eq_integral_norm_sq_sourceModeU_div_mass_sq hstrip
   have hmass : thetaSource.mass ≠ 0 := thetaSource.mass_ne_zero
   have htime :
-      (∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ 2) =
-        thetaSource.mass ^ 2 * thetaRootEnergy alpha := by
+      (∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ (2 : ℕ)) =
+        thetaSource.mass ^ (2 : ℕ) * thetaRootEnergy alpha := by
     calc
-      (∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ 2) =
-          thetaSource.mass ^ 2 *
-            ((∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ 2) /
-              thetaSource.mass ^ 2) := by field_simp
-      _ = thetaSource.mass ^ 2 * thetaRootEnergy alpha := by rw [← hquantile]
+      (∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ (2 : ℕ)) =
+          thetaSource.mass ^ (2 : ℕ) *
+            ((∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ (2 : ℕ)) /
+              thetaSource.mass ^ (2 : ℕ)) := by field_simp
+      _ = thetaSource.mass ^ (2 : ℕ) * thetaRootEnergy alpha := by rw [← hquantile]
   calc
-    (∫ xi : ℝ, ‖completedXiFirstDividedFunction rho xi‖ ^ 2) =
-        ∫ xi : ℝ, ‖(𝓕 (scaledThetaSourceModeU alpha)) xi‖ ^ 2 := hleft
-    _ = ∫ x : ℝ, ‖scaledThetaSourceModeU alpha x‖ ^ 2 := hplancherel
-    _ = 2 * Real.pi * ∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ 2 :=
+    (∫ xi : ℝ, ‖completedXiFirstDividedFunction rho xi‖ ^ (2 : ℕ)) =
+        ∫ xi : ℝ, ‖(𝓕 (scaledThetaSourceModeU alpha)) xi‖ ^ (2 : ℕ) := hleft
+    _ = ∫ x : ℝ, ‖scaledThetaSourceModeU alpha x‖ ^ (2 : ℕ) := hplancherel
+    _ = 2 * Real.pi * ∫ y : ℝ, ‖sourceModeU thetaSource alpha y‖ ^ (2 : ℕ) :=
       integral_norm_sq_scaledThetaSourceModeU_eq alpha
-    _ = 2 * Real.pi * thetaSource.mass ^ 2 * thetaRootEnergy alpha := by
+    _ = 2 * Real.pi * thetaSource.mass ^ (2 : ℕ) * thetaRootEnergy alpha := by
       rw [htime]
       ring
-    _ = 2 * Real.pi * thetaSource.mass ^ 2 *
+    _ = 2 * Real.pi * thetaSource.mass ^ (2 : ℕ) *
         thetaRootEnergy (-xiSpectralPointSupport rho) := by rfl
 
 /-- Hilbert-space form of the completed divided-energy identity. -/
 theorem norm_sq_completedXiFirstDividedL2_eq_thetaRootEnergy (rho : XiDivisorSupport) :
-    ‖completedXiFirstDividedL2 rho‖ ^ 2 =
-      2 * Real.pi * thetaSource.mass ^ 2 *
+    ‖completedXiFirstDividedL2 rho‖ ^ (2 : ℕ) =
+      2 * Real.pi * thetaSource.mass ^ (2 : ℕ) *
         thetaRootEnergy (-xiSpectralPointSupport rho) := by
   rw [GaloisForLFunctions.RHTower.lp_norm_sq_eq_integral]
   calc
-    (∫ x : ℝ, ‖(completedXiFirstDividedL2 rho : ℝ → ℂ) x‖ ^ 2) =
-        ∫ x : ℝ, ‖completedXiFirstDividedFunction rho x‖ ^ 2 := by
+    (∫ x : ℝ, ‖(completedXiFirstDividedL2 rho : ℝ → ℂ) x‖ ^ (2 : ℕ)) =
+        ∫ x : ℝ, ‖completedXiFirstDividedFunction rho x‖ ^ (2 : ℕ) := by
       refine integral_congr_ae ?_
       filter_upwards [completedXiFirstDividedL2_ae rho] with x hx
       rw [hx]
-    _ = 2 * Real.pi * thetaSource.mass ^ 2 *
+    _ = 2 * Real.pi * thetaSource.mass ^ (2 : ℕ) *
         thetaRootEnergy (-xiSpectralPointSupport rho) :=
       integral_norm_sq_completedXiFirstDividedFunction_eq_thetaRootEnergy rho
 

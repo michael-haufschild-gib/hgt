@@ -179,7 +179,7 @@ theorem finiteObserverUnionWeight_pureStateObserverMatrix
     {d : ℕ} (psi : Fin d → ℂ) (i j : Fin d) :
     finiteObserverUnionWeight (fun _ : Fin 1 => 1)
         (fun _ => pureStateObserverMatrix psi) i j =
-      ‖psi i‖ ^ 2 * ‖psi j‖ ^ 2 := by
+      ‖psi i‖ ^ (2 : ℕ) * ‖psi j‖ ^ (2 : ℕ) := by
   rw [finiteObserverUnionWeight]
   simp [pureStateObserverMatrix, mul_pow]
 
@@ -230,16 +230,16 @@ theorem pureStateObserver_coherenceGraph_eq_localizedSupport
 /-- Exact pure-projector identity: Hilbert--Schmidt displacement is twice survival-fidelity loss. -/
 theorem pureStateObserver_distanceSq_eq_two_mul_fidelityDeficit
     {d : ℕ} (psi : Fin d → ℂ)
-    (hpsi : ∑ i, ‖psi i‖ ^ 2 = 1)
+    (hpsi : ∑ i, ‖psi i‖ ^ (2 : ℕ) = 1)
     (z : Fin d → ℂ) (hunit : ∀ i, ‖z i‖ = 1) :
     finiteQuantumObserverDistanceSq (fun _ : Fin 1 => 1) z
         (fun _ => pureStateObserverMatrix psi) =
       2 * (1 - ‖projectiveWeightedPhaseAmplitude
-        (fun i => ‖psi i‖ ^ 2) z‖ ^ 2) := by
+        (fun i => ‖psi i‖ ^ (2 : ℕ)) z‖ ^ (2 : ℕ)) := by
   have hpair :
       finiteQuantumObserverDistanceSq (fun _ : Fin 1 => 1) z
           (fun _ => pureStateObserverMatrix psi) =
-        projectiveWeightedPairwiseEnergy (fun i => ‖psi i‖ ^ 2) z := by
+        projectiveWeightedPairwiseEnergy (fun i => ‖psi i‖ ^ (2 : ℕ)) z := by
     rw [finiteQuantumObserverDistanceSq_eq_phaseEnergy]
     unfold finiteQuantumObserverPhaseEnergy projectiveWeightedPairwiseEnergy
     simp_rw [finiteObserverUnionWeight_pureStateObserverMatrix psi]
@@ -257,7 +257,7 @@ theorem pureStateObserver_distanceSq_eq_two_mul_fidelityDeficit
       rw [hj]
     rw [hrewrite, norm_mul, norm_star, hunit j, mul_one]
   rw [hpair, projectiveWeightedPairwiseEnergy_eq_two_mul_fidelityDeficit
-    (fun i => ‖psi i‖ ^ 2) z hpsi hunit]
+    (fun i => ‖psi i‖ ^ (2 : ℕ)) z hpsi hunit]
 
 /-- Pure-state specialization: exact exponent is half of support size minus two, including all
 ambient isolated energy sectors. -/
@@ -313,7 +313,7 @@ def finiteQuantumObserverNuclearSqReturnTime
     {d : ℕ} (B : Matrix (Fin d) (Fin d) ℂ)
     (energy : Fin d → ℝ) (t₀ delta : ℝ) : ℝ :=
   scalarSignalReturnTime
-    (fun t => finiteQuantumObserverNuclearSignal B energy t ^ 2) t₀ delta
+    (fun t => finiteQuantumObserverNuclearSignal B energy t ^ (2 : ℕ)) t₀ delta
 
 theorem finiteMatrixHilbertSchmidtSq_observerDisplacement
     {d : ℕ} (B : Matrix (Fin d) (Fin d) ℂ)
@@ -329,7 +329,7 @@ theorem finiteMatrixHilbertSchmidtSq_observerDisplacement
   apply Finset.sum_congr rfl
   intro j _hj
   rw [show finiteObserverUnionWeight (fun _ : Fin 1 => 1) (fun _ => B) i j =
-      ‖B i j‖ ^ 2 by simp [finiteObserverUnionWeight]]
+      ‖B i j‖ ^ (2 : ℕ) by simp [finiteObserverUnionWeight]]
   simp only [finiteQuantumObserverDisplacementMatrix, norm_mul, mul_pow]
   ring
 
@@ -338,8 +338,8 @@ theorem observerDisplacement_hilbertSchmidtSq_le_nuclearSq_le
     (energy : Fin d → ℝ) (t : ℝ) :
     let reference := finiteQuantumObserverPhaseEnergy (fun _ : Fin 1 => 1)
       (finiteObserverHamiltonianVertexPhase t energy) (fun _ => B)
-    reference ≤ finiteQuantumObserverNuclearSignal B energy t ^ 2 ∧
-      finiteQuantumObserverNuclearSignal B energy t ^ 2 ≤ d * reference := by
+    reference ≤ finiteQuantumObserverNuclearSignal B energy t ^ (2 : ℕ) ∧
+      finiteQuantumObserverNuclearSignal B energy t ^ (2 : ℕ) ≤ d * reference := by
   dsimp only
   let K := finiteQuantumObserverDisplacementMatrix B energy t
   have hHS : finiteMatrixHilbertSchmidtSq K =
@@ -353,7 +353,7 @@ theorem observerDisplacement_hilbertSchmidtSq_le_nuclearSq_le
   · rw [← hHS]
     exact finiteMatrixHilbertSchmidtSq_le_nuclearNorm_sq K
   · calc
-      finiteQuantumObserverNuclearSignal B energy t ^ 2 ≤
+      finiteQuantumObserverNuclearSignal B energy t ^ (2 : ℕ) ≤
           (K.rank : ℝ) * finiteMatrixHilbertSchmidtSq K :=
         finiteMatrixNuclearNorm_sq_le_rank_mul_hilbertSchmidtSq K
       _ ≤ (d : ℝ) * finiteMatrixHilbertSchmidtSq K := by
@@ -379,7 +379,7 @@ theorem eventually_singleMatrixObserverReturnSet_nonempty
     (fun _ i j => B i j)
   let mass := finiteObserverSelectedDirectedWeightMass G
     (fun _ : Fin 1 => 1) (fun _ i j => B i j)
-  let C := 4 * (2 * Real.pi) ^ 2 * mass
+  let C := 4 * (2 * Real.pi) ^ (2 : ℕ) * mass
   have hmass : 0 ≤ mass := by
     exact finiteObserverSelectedDirectedWeightMass_nonneg G
       (fun _ : Fin 1 => 1) (fun _ i j => B i j) (fun _ => by norm_num)
@@ -394,21 +394,21 @@ theorem eventually_singleMatrixObserverReturnSet_nonempty
     dsimp [x]
     rw [div_le_iff₀ (show 0 < (Q : ℝ) + 1 by positivity)]
     norm_num
-  have hxSq : x ^ 2 ≤ x := by nlinarith
+  have hxSq : x ^ (2 : ℕ) ≤ x := by nlinarith
   have hCdelta : (C + 1) * x < delta := by
     calc
       (C + 1) * x < (C + 1) * (delta / (C + 1)) :=
         mul_lt_mul_of_pos_left hxsmall hCp
       _ = delta := by field_simp [hCp.ne']
-  have hboundCore : C * x ^ 2 < delta := by
+  have hboundCore : C * x ^ (2 : ℕ) < delta := by
     calc
-      C * x ^ 2 ≤ C * x := mul_le_mul_of_nonneg_left hxSq hC
+      C * x ^ (2 : ℕ) ≤ C * x := mul_le_mul_of_nonneg_left hxSq hC
       _ < (C + 1) * x := by nlinarith
       _ < delta := hCdelta
   have hbound :
-      4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 * mass < delta := by
+      4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) * mass < delta := by
     calc
-      4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 * mass = C * x ^ 2 := by
+      4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) * mass = C * x ^ (2 : ℕ) := by
         dsimp [C, x]
         ring
       _ < delta := hboundCore
@@ -416,7 +416,7 @@ theorem eventually_singleMatrixObserverReturnSet_nonempty
     exists_finiteQuantumObserver_postExit_fullCoherence_rateDistortion
       (fun _ : Fin 1 => 1) (fun _ i j => B i j) (fun _ => by norm_num)
       energy Q (t₀ + 1) t₀ 0 (by linarith) ht₀.le (by linarith) (by
-        rw [show (0 : ℝ) ^ 2 = 0 by norm_num]
+        rw [show (0 : ℝ) ^ (2 : ℕ) = 0 by norm_num]
         change 0 ≤ finiteQuantumObserverDistanceSq (fun _ : Fin 1 => 1)
           (finiteObserverHamiltonianVertexPhase t₀ energy)
           (fun _ i j => B i j)
@@ -430,7 +430,7 @@ theorem eventually_singleMatrixObserverReturnSet_nonempty
   change finiteQuantumObserverPhaseEnergy (fun _ : Fin 1 => 1)
       (finiteObserverHamiltonianVertexPhase ((n : ℝ) * (t₀ + 1)) energy)
       (fun _ i j => B i j) ≤
-    4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 * mass at hdist
+    4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) * mass at hdist
   exact lt_of_le_of_lt hdist hbound
 
 /-- Squared nuclear displacement has the same first-return exponent as squared
@@ -452,7 +452,7 @@ theorem HasUniversalFiniteObserverFirstReturnLaw.singleMatrixNuclearSq
     finiteQuantumObserverPhaseEnergy (fun _ : Fin 1 => 1)
       (finiteObserverHamiltonianVertexPhase t energy) (fun _ => B)
   let signal : ℝ → ℝ := fun t =>
-    finiteQuantumObserverNuclearSignal B energy t ^ 2
+    finiteQuantumObserverNuclearSignal B energy t ^ (2 : ℕ)
   have hcompare : ∀ t, (1 : ℝ) * reference t ≤ signal t ∧
       signal t ≤ (d : ℝ) * reference t := by
     intro t
@@ -471,7 +471,7 @@ theorem finiteQuantumObserverNuclearReturnTime_eq_sq
     {d : ℕ} (B : Matrix (Fin d) (Fin d) ℂ)
     (energy : Fin d → ℝ) (t₀ : ℝ) {epsilon : ℝ} (hepsilon : 0 < epsilon) :
     finiteQuantumObserverNuclearReturnTime B energy t₀ epsilon =
-      finiteQuantumObserverNuclearSqReturnTime B energy t₀ (epsilon ^ 2) := by
+      finiteQuantumObserverNuclearSqReturnTime B energy t₀ (epsilon ^ (2 : ℕ)) := by
   unfold finiteQuantumObserverNuclearReturnTime
     finiteQuantumObserverNuclearSqReturnTime scalarSignalReturnTime
   apply congrArg sInf
@@ -486,12 +486,12 @@ theorem finiteQuantumObserverNuclearReturnTime_eq_sq
     exact ⟨ht, (sq_lt_sq₀ hnonneg hepsilon.le).mp he⟩
 
 theorem tendsto_sq_nhdsGT_zero :
-    Tendsto (fun epsilon : ℝ => epsilon ^ 2)
+    Tendsto (fun epsilon : ℝ => epsilon ^ (2 : ℕ))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) := by
   refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-  · have hbase : Tendsto (fun epsilon : ℝ => epsilon ^ 2)
-        (nhds (0 : ℝ)) (nhds ((0 : ℝ) ^ 2)) := tendsto_id.pow 2
+  · have hbase : Tendsto (fun epsilon : ℝ => epsilon ^ (2 : ℕ))
+        (nhds (0 : ℝ)) (nhds ((0 : ℝ) ^ (2 : ℕ))) := tendsto_id.pow 2
     simpa using hbase.mono_left nhdsWithin_le_nhds
   · filter_upwards [self_mem_nhdsWithin] with epsilon hepsilon
     exact sq_pos_of_pos (by simpa only [Set.mem_Ioi] using hepsilon)
@@ -504,13 +504,13 @@ theorem tendsto_log_returnTime_square
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds alpha)) :
     Tendsto
       (fun epsilon : ℝ =>
-        Real.log (returnTime (epsilon ^ 2)) / Real.log (1 / epsilon))
+        Real.log (returnTime (epsilon ^ (2 : ℕ))) / Real.log (1 / epsilon))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (2 * alpha)) := by
   have hcomp := h.comp tendsto_sq_nhdsGT_zero
   have hscaled : Tendsto
       (fun epsilon : ℝ => (2 : ℝ) *
-        (Real.log (returnTime (epsilon ^ 2)) /
-          Real.log (1 / (epsilon ^ 2))))
+        (Real.log (returnTime (epsilon ^ (2 : ℕ))) /
+          Real.log (1 / (epsilon ^ (2 : ℕ)))))
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (2 * alpha)) :=
     tendsto_const_nhds.mul hcomp
   refine hscaled.congr' ?_
@@ -520,7 +520,7 @@ theorem tendsto_log_returnTime_square
     refine Real.log_pos ?_
     rw [lt_div_iff₀ hepsilon]
     linarith [hepsilonOne.2]
-  have hlogsq : Real.log (1 / (epsilon ^ 2)) =
+  have hlogsq : Real.log (1 / (epsilon ^ (2 : ℕ))) =
       2 * Real.log (1 / epsilon) := by
     rw [one_div, Real.log_inv, Real.log_pow, one_div, Real.log_inv]
     ring

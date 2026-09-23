@@ -171,7 +171,7 @@ theorem weak_unitary_stabilizer_north (U : Matrix.unitaryGroup (Fin 2) ℂ) :
     simp [Matrix.mul_apply, Fin.sum_univ_two, h00, h10] at h01
     simp [Matrix.mul_apply, Fin.sum_univ_two, h01] at h11
     have hn : ‖U 1 1‖ = 1 := by
-      have hs : ‖U 1 1‖ ^ 2 = 1 := by
+      have hs : ‖U 1 1‖ ^ (2 : ℕ) = 1 := by
         rw [← Complex.normSq_eq_norm_sq]
         apply Complex.ofReal_injective
         simpa only [Complex.normSq_eq_conj_mul_self, Complex.ofReal_one] using h11

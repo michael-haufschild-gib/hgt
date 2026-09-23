@@ -42,7 +42,7 @@ theorem norm_fourier_le_of_iteratedDeriv (K : ℕ) {f : ℝ → ℂ} (hf : ContD
     have := abs_pos.mpr hξ
     positivity
   rw [le_div_iff₀ hpos, ← hnorm, mul_comm, ← norm_smul, ← hK]
-  exact norm_fourier_le_integral_norm _ _
+  exact norm_fourier_le_integral_norm_smoothBlockWindow _ _
 
 /-- **Height-oscillation decay from `K` integrable derivatives**, in the `exp(-iξt)`
 normalisation. -/

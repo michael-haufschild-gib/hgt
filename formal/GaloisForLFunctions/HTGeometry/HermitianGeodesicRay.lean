@@ -78,7 +78,7 @@ theorem repr_metricRay (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v : E) (t 
   repr_of_diagonal (hT.eigenvectorBasis hn) (fun j => metricRay_eigenvectorBasis hT hn j t) v i
 
 theorem norm_sq_repr (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v : E) :
-    ‖v‖ = Real.sqrt (∑ i, ‖(hT.eigenvectorBasis hn).repr v i‖ ^ 2) := by
+    ‖v‖ = Real.sqrt (∑ i, ‖(hT.eigenvectorBasis hn).repr v i‖ ^ (2 : ℕ)) := by
   rw [← (hT.eigenvectorBasis hn).repr.norm_map v, EuclideanSpace.norm_eq]
 
 /-- **On the flag member at threshold `c` the ray expands at least at rate `c`.** -/
@@ -95,7 +95,7 @@ theorem norm_metricRay_ge (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {c : ℝ
     · intro hmem
       exact absurd (show c < hT.eigenvalues hn i from hmem) (not_lt.2 hi)
   have hbound : ∀ i : Fin n,
-      (Real.exp (c * t)) ^ 2 * ‖b.repr v i‖ ^ 2 ≤ ‖b.repr (metricRay T t v) i‖ ^ 2 := by
+      (Real.exp (c * t)) ^ (2 : ℕ) * ‖b.repr v i‖ ^ (2 : ℕ) ≤ ‖b.repr (metricRay T t v) i‖ ^ (2 : ℕ) := by
     intro i
     rw [repr_metricRay hT hn v t i, norm_mul]
     by_cases hi : hT.eigenvalues hn i ≤ c
@@ -131,7 +131,7 @@ theorem norm_metricRay_le (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {c : ℝ
       eigenspace_le_eigenSum hi (hT.hasEigenvector_eigenvectorBasis hn i).1
     exact inner_eq_zero_comm ((Submodule.mem_orthogonal' _ _).1 hv (b i) hmem)
   have hbound : ∀ i : Fin n,
-      ‖b.repr (metricRay T t v) i‖ ^ 2 ≤ (Real.exp (c * t)) ^ 2 * ‖b.repr v i‖ ^ 2 := by
+      ‖b.repr (metricRay T t v) i‖ ^ (2 : ℕ) ≤ (Real.exp (c * t)) ^ (2 : ℕ) * ‖b.repr v i‖ ^ (2 : ℕ) := by
     intro i
     rw [repr_metricRay hT hn v t i, norm_mul]
     by_cases hi : c < hT.eigenvalues hn i

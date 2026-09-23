@@ -67,7 +67,7 @@ theorem div_eq_of_sturmWronskian_eq_zero {p u v u' v' : ℝ → ℝ} {a b : ℝ}
     have := (mul_eq_zero.mp hfac).resolve_left hp
     linarith [this]
   have hd : HasDerivAt (fun s : ℝ => v s / u s)
-      ((v' x * u x - v x * u' x) / (u x) ^ 2) x := (hv x hx).div (hu x hx) (hune x hx)
+      ((v' x * u x - v x * u' x) / (u x) ^ (2 : ℕ)) x := (hv x hx).div (hu x hx) (hune x hx)
   rw [hnum, zero_div] at hd
   exact hd.hasDerivWithinAt
 
@@ -89,7 +89,7 @@ theorem eq_const_mul_of_sturmWronskian_eq_zero {p u v u' v' : ℝ → ℝ} {a b 
     _ = v a / u a * u y := by rw [h]
 
 /-- **A vanishing weight at an endpoint forces the Wronskian to vanish identically.**  This is the
-singular boundary condition of the prolate problem: the weight `1 - t^2` vanishes at the ends of the
+singular boundary condition of the prolate problem: the weight `1 - t^(2 : ℕ)` vanishes at the ends of the
 band, so no boundary condition needs to be imposed by hand. -/
 theorem sturmWronskian_eq_zero_of_weight_eq_zero {p q u v u' v' pu' pv' : ℝ → ℝ} {a b : ℝ}
     (hpa : p a = 0)

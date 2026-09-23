@@ -328,7 +328,7 @@ theorem tendsto_signedTwoAtomScalarPhaseLock
 
 theorem cos_sq_one_of_sin_eq_zero
     {x : ℝ} (hsin : Real.sin x = 0) :
-    Real.cos x ^ 2 = 1 := by
+    Real.cos x ^ (2 : ℕ) = 1 := by
   nlinarith [Real.sin_sq_add_cos_sq x]
 
 /-- Exact change of a half-turn value coefficient under centered reflection `y ↦ -y`. -/
@@ -357,8 +357,8 @@ theorem signedTwoAtomValueCoefficient_ne_zero
   have hpc :
       Real.exp (-(t * y)) * Real.cos (t * u) = 1 :=
     (sub_eq_zero.mp hg).symm
-  have hp_sq : Real.exp (-(t * y)) ^ 2 = 1 := by
-    have hsquare := congrArg (fun x : ℝ => x ^ 2) hpc
+  have hp_sq : Real.exp (-(t * y)) ^ (2 : ℕ) = 1 := by
+    have hsquare := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hpc
     nlinarith
   have hp : Real.exp (-(t * y)) = 1 := by
     nlinarith [Real.exp_pos (-(t * y))]
@@ -457,8 +457,8 @@ theorem signedTwoAtomReflectionProjectiveFingerprint_rigid
   have hcos₁ := cos_sq_one_of_sin_eq_zero hsin₁
   have hcos₂ := cos_sq_one_of_sin_eq_zero hsin₂
   have hexpSq :
-      Real.exp (t₁ * y) ^ 2 = Real.exp (t₂ * y) ^ 2 := by
-    have hsquare := congrArg (fun x : ℝ => x ^ 2) hcosExp
+      Real.exp (t₁ * y) ^ (2 : ℕ) = Real.exp (t₂ * y) ^ (2 : ℕ) := by
+    have hsquare := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hcosExp
     nlinarith
   have hexp :
       Real.exp (t₁ * y) = Real.exp (t₂ * y) := by

@@ -22,15 +22,15 @@ noncomputable section
 
 /-- First Schur pivot of the rank-three reflected log-jet polynomial. -/
 def thetaCuspReflectedEighthSchurHead (A B : ℝ) : ℝ :=
-  4 * A ^ 2 - B
+  4 * A ^ (2 : ℕ) - B
 
 /-- Off-diagonal Schur coupling of the rank-three reflected log-jet polynomial. -/
 def thetaCuspReflectedEighthSchurCoupling (A C : ℝ) : ℝ :=
-  C - 64 * A ^ 3
+  C - 64 * A ^ (3 : ℕ)
 
 /-- Last diagonal Schur reserve of the rank-three reflected log-jet polynomial. -/
 def thetaCuspReflectedEighthSchurTail (A B D : ℝ) : ℝ :=
-  1216 * A ^ 4 - 32 * A ^ 2 * B + 68 * B ^ 2 - D
+  1216 * A ^ (4 : ℕ) - 32 * A ^ (2 : ℕ) * B + 68 * B ^ (2 : ℕ) - D
 
 /-- Exact Schur normal form of native rank-three reflected curvature. -/
 theorem thetaCuspReflectedEighthPolynomial_eq_schur
@@ -38,7 +38,7 @@ theorem thetaCuspReflectedEighthPolynomial_eq_schur
     thetaCuspReflectedEighthPolynomial A B C D =
       thetaCuspReflectedEighthSchurHead A B *
           thetaCuspReflectedEighthSchurTail A B D -
-        thetaCuspReflectedEighthSchurCoupling A C ^ 2 := by
+        thetaCuspReflectedEighthSchurCoupling A C ^ (2 : ℕ) := by
   unfold thetaCuspReflectedEighthPolynomial thetaCuspReflectedEighthSchurHead
     thetaCuspReflectedEighthSchurTail thetaCuspReflectedEighthSchurCoupling
   ring
@@ -48,12 +48,12 @@ compact-interval threshold: it holds from the physical support edge to infinity.
 private theorem thetaCuspFirstAtomEighthProfile_lt_schurBudget
     {q : ℝ} (hq : (41 / 25 : ℝ) ≤ q) :
     thetaCuspFirstAtomEighthProfile q <
-      200 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 4 := by
+      200 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (4 : ℕ) := by
   have hqpos : 0 < q := by linarith
   let y := q - 41 / 25
   have hy : 0 ≤ y := by dsimp only [y]; linarith
-  have hmul : 0 < q ^ 8 *
-      (200 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ 4 -
+  have hmul : 0 < q ^ (8 : ℕ) *
+      (200 * (thetaCuspFirstAtomCurvatureProfile q - 13 / 10) ^ (4 : ℕ) -
         thetaCuspFirstAtomEighthProfile q) := by
     dsimp [thetaCuspFirstAtomCurvatureProfile, thetaCuspFirstAtomEighthProfile]
     field_simp [hqpos.ne']
@@ -67,13 +67,13 @@ complete curvature. -/
 private theorem thetaCuspBornWittenLogEighthDerivative_lt_schurBudget
     {x : ℝ} (hx : 0 ≤ x) :
     thetaCuspBornWittenLogEighthDerivative 1 x <
-      200 * (thetaCuspBornWittenLogCurvature 1 x - 13 / 10) ^ 4 := by
+      200 * (thetaCuspBornWittenLogCurvature 1 x - 13 / 10) ^ (4 : ℕ) := by
   let q := thetaCuspBornWittenWeight 1 x
   have hq : (41 / 25 : ℝ) ≤ q := by
     have hpi := Real.pi_gt_d2
     norm_num at hpi
     have he : 1 ≤ Real.exp x := Real.one_le_exp hx
-    have he2 : 1 ≤ Real.exp x ^ 2 := by nlinarith [Real.exp_pos x]
+    have he2 : 1 ≤ Real.exp x ^ (2 : ℕ) := by nlinarith [Real.exp_pos x]
     have hscale : Real.pi ≤ thetaCuspMorseScale 1 x := by
       rw [thetaCuspMorseScale]
       norm_num
@@ -137,19 +137,19 @@ theorem thetaCuspFullReflectionEighthSchurTail_pos
   have hWpos : 0 < W := by dsimp only [W]; linarith
   have hWA : W ≤ A := by dsimp only [W, A]; linarith
   have hApos : 0 < A := hWpos.trans_le hWA
-  have hpow : W ^ 4 ≤ A ^ 4 := pow_le_pow_left₀ hWpos.le hWA 4
-  have hD0 : D0 < 200 * W ^ 4 := by
+  have hpow : W ^ (4 : ℕ) ≤ A ^ (4 : ℕ) := pow_le_pow_left₀ hWpos.le hWA 4
+  have hD0 : D0 < 200 * W ^ (4 : ℕ) := by
     simpa only [D0, W, A0] using
       thetaCuspBornWittenLogEighthDerivative_lt_schurBudget hx
-  have hD : D < 200 * A ^ 4 := by
+  have hD : D < 200 * A ^ (4 : ℕ) := by
     dsimp only [D]
     nlinarith
-  have hsq : 0 ≤ (17 * B - 4 * A ^ 2) ^ 2 := sq_nonneg _
+  have hsq : 0 ≤ (17 * B - 4 * A ^ (2 : ℕ)) ^ (2 : ℕ) := sq_nonneg _
   have hid : 289 * thetaCuspReflectedEighthSchurTail A B D =
-      350336 * A ^ 4 + 68 * (17 * B - 4 * A ^ 2) ^ 2 - 289 * D := by
+      350336 * A ^ (4 : ℕ) + 68 * (17 * B - 4 * A ^ (2 : ℕ)) ^ (2 : ℕ) - 289 * D := by
     unfold thetaCuspReflectedEighthSchurTail
     ring
-  have hA4 : 0 < A ^ 4 := pow_pos hApos 4
+  have hA4 : 0 < A ^ (4 : ℕ) := pow_pos hApos 4
   have htail : 0 < thetaCuspReflectedEighthSchurTail A B D := by
     nlinarith
   simpa only [thetaCuspReflectedEighthSchurTail, A, B, D, A0, D0, e2, e8,
@@ -162,7 +162,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_pos_iff_schurCoupling
     0 < thetaCuspFullReflectionEighthHankelCurvature x ↔
       thetaCuspReflectedEighthSchurCoupling
           (thetaCuspFullReflectedLogCurvature x)
-          (thetaCuspFullReflectedLogSixthJet x) ^ 2 <
+          (thetaCuspFullReflectedLogSixthJet x) ^ (2 : ℕ) <
         thetaCuspReflectedEighthSchurHead
             (thetaCuspFullReflectedLogCurvature x)
             (thetaCuspFullReflectedLogFourthJet x) *

@@ -61,7 +61,7 @@ theorem egbCoexistenceAKernelTaylor_remainder_bounds (τ : ℝ) (n : ℕ) :
       egbCoexistenceALogKernel τ - egbCoexistenceAKernelTaylor τ n ∧
     egbCoexistenceALogKernel τ - egbCoexistenceAKernelTaylor τ n ≤
       egbCoexistenceAKernelTaylorCoefficient n * egbCoexistenceASymmetricRatio τ ^ (2 * (n + 1)) /
-        (1 - egbCoexistenceASymmetricRatio τ ^ 2) := by
+        (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) := by
   rw [egbCoexistenceAKernelTaylor_exact_remainder, ← egbCoexistenceAKernelTaylorCoefficient_formula]
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hp : 0 ≤ 3 * egbCoexistenceASymmetricRatio τ ^ (2 * (n + 1)) := by positivity
@@ -71,7 +71,7 @@ theorem egbCoexistenceAKernelTaylor_remainder_bounds (τ : ℝ) (n : ℕ) :
   · nlinarith only [hlo]
   · calc
       _ ≤ 3 * egbCoexistenceASymmetricRatio τ ^ (2 * (n + 1)) *
-          (egbCoexistenceAKernelMomentCoefficient (n + 1) / (1 - egbCoexistenceASymmetricRatio τ ^ 2)) := hhi
+          (egbCoexistenceAKernelMomentCoefficient (n + 1) / (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))) := hhi
       _ = _ := by ring
 
 theorem egbCoexistenceAKernelTaylor_normalized_remainder (τ : ℝ) (n : ℕ) :

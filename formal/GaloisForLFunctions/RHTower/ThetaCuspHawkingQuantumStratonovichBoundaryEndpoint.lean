@@ -367,7 +367,7 @@ detailed balance, and mixing at every nonzero coupling permit quadratic onset an
 Canonical Cayley selection therefore does not prove the source coefficient is first-order bright. -/
 theorem quantumStratonovich_lossless_KMS_every_nonzero_mix_not_force_unitCouplingWinding :
     (∀ lambda x h,
-      QuantumStratonovichTwoPortBoundary (((lambda ^ 2 : ℝ) : ℂ)) x h
+      QuantumStratonovichTwoPortBoundary (((lambda ^ (2 : ℕ) : ℝ) : ℂ)) x h
         (delayedHawkingCayleyExteriorOutput 2 lambda x h)
         (delayedHawkingCayleyHorizonOutput 2 lambda x h)) ∧
     (∀ lambda x h,
@@ -377,7 +377,7 @@ theorem quantumStratonovich_lossless_KMS_every_nonzero_mix_not_force_unitCouplin
             delayedHawkingCayleyHorizonOutput 2 lambda x h =
         conj x * x + conj h * h) ∧
     (∀ lambda : ℝ, lambda ≠ 0 →
-      delayedHawkingCayleyRetention 2 lambda ^ 2 < 1) ∧
+      delayedHawkingCayleyRetention 2 lambda ^ (2 : ℕ) < 1) ∧
     (∀ lambda kappa omega,
       delayedHawkingKMSCayleyUpProbability 2 lambda kappa omega =
         thetaCuspHawkingKMSBoltzmannRatio kappa omega *
@@ -385,7 +385,7 @@ theorem quantumStratonovich_lossless_KMS_every_nonzero_mix_not_force_unitCouplin
     (∀ r : ℝ, 0 < r →
       windingNumber
           (fun theta : ℝ =>
-            (((r : ℂ) * Complex.exp (Complex.I * (theta : ℂ))) ^ 2))
+            (((r : ℂ) * Complex.exp (Complex.I * (theta : ℂ))) ^ (2 : ℕ)))
           0 (2 * Real.pi) = 2) := by
   rcases lossless_KMS_every_nonzero_mix_not_force_unitCouplingWinding with
     ⟨hlossless, hmix, hKMS, hwinding⟩

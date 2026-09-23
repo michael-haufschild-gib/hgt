@@ -6,7 +6,7 @@ namespace RHTower.D4BMJointSource
 open D4BMLaplaceRadial
 noncomputable section
 
-def horizonCoordinate (t : ℝ) : ℝ := 1-radialUnit t^2
+def horizonCoordinate (t : ℝ) : ℝ := 1-radialUnit t^(2 : ℕ)
 
 theorem horizonCoordinate_interior (t : ℝ) (ht : t < 0) : horizonCoordinate t ∈ Ioo 0 1 := by
   have hu := radialUnit_bounds t ht
@@ -15,7 +15,7 @@ theorem horizonCoordinate_interior (t : ℝ) (ht : t < 0) : horizonCoordinate t 
 
 /-- The compact horizon coordinate carries the exact original tortoise exponential. -/
 theorem horizonCoordinate_factor (t : ℝ) :
-    horizonCoordinate t = (Real.exp t*(1+radialUnit t))^2 := by
+    horizonCoordinate t = (Real.exp t*(1+radialUnit t))^(2 : ℕ) := by
   have hc : Real.cosh t ≠ 0 := ne_of_gt (Real.cosh_pos t)
   have he : Real.exp t*(Real.cosh t-Real.sinh t) = 1 := by
     rw [Real.cosh_sub_sinh,← Real.exp_add]

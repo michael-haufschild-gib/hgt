@@ -116,7 +116,7 @@ theorem evalPairHom_det_hankelCurveMatrix (P₀ U : K[X]) (a₀ a₁ : K) :
 
 /-- **Every fibre point other than the base one lies on the base point's Hankel curve.** -/
 theorem evalPairHom_det_hankelCurveMatrix_eq_zero {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ n ∣ V) (hn : 0 < n)
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ n ∣ V) (hn : 0 < n)
     (hU0 : U.coeff 0 = 0) (hV0 : V.coeff 0 = 0)
     (p q : criticalFibre K 2 n U V) (hpq : p ≠ q) :
     evalPairHom (q.1.1.coeff 0) (q.1.1.coeff 1)
@@ -166,7 +166,7 @@ theorem natDegree_resultant_hankel_le {F G : (K[X])[X]} (hF : TotalDegLE F n)
 packet.**  Two fibre points confine all the others to the intersection of two plane curves of degree
 `n`; the two eliminants then bound each coordinate. -/
 theorem nat_card_criticalFibre_depth_two_le (hn : 0 < n) {U V : K[X]}
-    (hU : (X : K[X]) ^ 2 ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (hU : (X : K[X]) ^ (2 : ℕ) ∣ U) (hV : (X : K[X]) ^ n ∣ V)
     (hU0 : U.coeff 0 = 0) (hV0 : V.coeff 0 = 0)
     (hgen : ∀ p q : criticalFibre K 2 n U V, p ≠ q →
       Polynomial.resultant (hankelCurve (p.1.1 + U) U n) (hankelCurve (q.1.1 + U) U n) n n ≠ 0 ∧

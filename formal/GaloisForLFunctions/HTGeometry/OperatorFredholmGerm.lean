@@ -57,8 +57,8 @@ Hilbert--Schmidt norm, as an exact complex equality. -/
 theorem opTrace_sq_eq_ofReal_hsNormSq
     {T : H →L[ℂ] H} (hT : IsHilbertSchmidt T)
     (hTadj : ContinuousLinearMap.adjoint T = T) :
-    opTrace (T ^ 2) = (hsNormSq T : ℂ) := by
-  have hsq : T ^ 2 = ContinuousLinearMap.adjoint T ∘L T := by
+    opTrace (T ^ (2 : ℕ)) = (hsNormSq T : ℂ) := by
+  have hsq : T ^ (2 : ℕ) = ContinuousLinearMap.adjoint T ∘L T := by
     rw [pow_two, ContinuousLinearMap.mul_def, hTadj]
   rw [hsq, opTrace_adjoint_comp_self, hsInner_self_eq_ofReal_hsNormSq hT]
 

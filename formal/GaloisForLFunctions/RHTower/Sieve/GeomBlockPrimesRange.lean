@@ -47,10 +47,10 @@ theorem mem_geomBlock_primesRange {z₀ z : ℕ} {Q η : ℝ} (hη : 0 ≤ η) (
     have hloR : Q * (1 + η) ^ j < (p : ℝ) := (hfloorlt j p).1 hlo
     have hhiR : (p : ℝ) ≤ Q * (1 + η) ^ (j + 1) := (hfloorle (j + 1) p).1 hhi
     refine ⟨⟨hp, ?_, ?_⟩, hloR, hhiR⟩
-    · have h0 : Q * (1 + η) ^ 0 ≤ Q * (1 + η) ^ j := hmono 0 j (Nat.zero_le j)
+    · have h0 : Q * (1 + η) ^ (0 : ℕ) ≤ Q * (1 + η) ^ j := hmono 0 j (Nat.zero_le j)
       have hz0 : ((z₀ : ℕ) : ℝ) < (p : ℝ) := by
         rw [← hQ]
-        have : Q * (1 + η) ^ 0 = Q := by rw [pow_zero, mul_one]
+        have : Q * (1 + η) ^ (0 : ℕ) = Q := by rw [pow_zero, mul_one]
         linarith [h0, hloR, this]
       exact_mod_cast hz0
     · rw [hz]

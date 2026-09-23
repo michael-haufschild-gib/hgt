@@ -107,7 +107,7 @@ def ZetaMollifiedMeanSquareGate (R c : ℝ) : Prop :=
     (∀ x ∈ Set.Icc σ₀ (15 / 2 : ℝ),
       edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) ∧
     (∫ t in T₁..T₂, ‖riemannZeta ((σ₀ : ℂ) + (t : ℂ) * I) *
-        edPoly b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ (c + ε) * (T₂ - T₁)
+        edPoly b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ (c + ε) * (T₂ - T₁)
 
 set_option maxHeartbeats 1000000 in
 /-- **The single-input explicit `(L)` constant.** From the two mollified mean-square gates on the

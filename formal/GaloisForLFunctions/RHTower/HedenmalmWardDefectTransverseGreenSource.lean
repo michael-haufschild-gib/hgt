@@ -29,8 +29,8 @@ Ward mass squared. -/
 theorem thetaXiWardEuclideanEnergy_eq_transverse_sq_mul_mass_sq
     (q : XiZeroCopy) :
     thetaXiWardEuclideanEnergy q =
-      2 * (xiSpectralPoint q).im ^ 2 *
-        thetaXiWardRealificationMass q ^ 2 := by
+      2 * (xiSpectralPoint q).im ^ (2 : ℕ) *
+        thetaXiWardRealificationMass q ^ (2 : ℕ) := by
   rw [thetaXiWardEuclideanEnergy_eq_two_mul_anomaly_normSq,
     thetaXiWardRealificationAnomaly_eq]
   simp only [Complex.normSq_apply, Complex.mul_re, Complex.mul_im,
@@ -40,7 +40,7 @@ theorem thetaXiWardEuclideanEnergy_eq_transverse_sq_mul_mass_sq
 /-- Source-defined transverse Green weight: inverse Ward defect normalized by genuine Ward mass.
 No spectral coordinate occurs in the definition. -/
 def thetaXiWardTransverseGreenWeight (q : XiZeroCopy) : ℝ :=
-  2 * thetaXiWardRealificationMass q ^ 2 /
+  2 * thetaXiWardRealificationMass q ^ (2 : ℕ) /
     thetaXiWardEuclideanEnergy q
 
 /-- **Exact source Green identity.**  The Ward-defect inverse is the forced inverse-square
@@ -48,7 +48,7 @@ transverse weight, including the totalized zero on the critical-line kernel. -/
 theorem thetaXiWardTransverseGreenWeight_eq
     (q : XiZeroCopy) :
     thetaXiWardTransverseGreenWeight q =
-      ((xiSpectralPoint q).im)⁻¹ ^ 2 := by
+      ((xiSpectralPoint q).im)⁻¹ ^ (2 : ℕ) := by
   rw [thetaXiWardTransverseGreenWeight,
     thetaXiWardEuclideanEnergy_eq_transverse_sq_mul_mass_sq]
   by_cases him : (xiSpectralPoint q).im = 0
@@ -82,7 +82,7 @@ line the totalized Green weight is zero while genuine Ward mass remains positive
 theorem thetaXiWardTransverseGreenWeight_mul_euclideanEnergy
     (q : XiZeroCopy) (him : (xiSpectralPoint q).im ≠ 0) :
     thetaXiWardTransverseGreenWeight q * thetaXiWardEuclideanEnergy q =
-      2 * thetaXiWardRealificationMass q ^ 2 := by
+      2 * thetaXiWardRealificationMass q ^ (2 : ℕ) := by
   rw [thetaXiWardTransverseGreenWeight_eq,
     thetaXiWardEuclideanEnergy_eq_transverse_sq_mul_mass_sq]
   field_simp

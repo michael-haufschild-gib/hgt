@@ -280,7 +280,7 @@ theorem xiShiftedPolynomialCompletedArithmeticSource_eq_momentFunctional
 bilinear formation. -/
 theorem xiShiftedAdaptiveBilinearCoefficientSourceMass_sq_eq_arithmetic
     {w : ℝ} (hw : 1 / 2 < w) {N : ℕ} (a b : Fin N → ℝ) :
-    xiShiftedAdaptiveBilinearCoefficientSourceMass (w ^ 2) a b =
+    xiShiftedAdaptiveBilinearCoefficientSourceMass (w ^ (2 : ℕ)) a b =
       xiShiftedAdaptiveBilinearCompletedArithmeticSource w
         (finitePolynomialVelocity a) (finitePolynomialVelocity b) := by
   rw [xiShiftedAdaptiveBilinearCoefficientSourceMass_eq_momentFunctional
@@ -446,7 +446,7 @@ theorem deriv_xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass_nonpos_iff
 rational--Gamma/von Mangoldt source. -/
 theorem xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass_sq_eq_arithmetic
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
-    xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ 2) n =
+    xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ (2 : ℕ)) n =
       xiShiftedAdaptiveMixedCompletedArithmeticSource w
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) := by
@@ -460,10 +460,10 @@ theorem xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass_sq_eq_arithmetic
 formation of inverse-Hankel velocity against current `P^sharp`. -/
 theorem xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceConnectionMass_sq_eq_arithmetic
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
-    xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceConnectionMass (w ^ 2) n =
+    xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceConnectionMass (w ^ (2 : ℕ)) n =
       2 * xiShiftedAdaptiveBilinearCompletedArithmeticSource w
         (finitePolynomialVelocity
-          (xiShiftedCanonicalAdmissionVelocity (w ^ 2) n))
+          (xiShiftedCanonicalAdmissionVelocity (w ^ (2 : ℕ)) n))
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) := by
   rw [xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceConnectionMass,
@@ -475,7 +475,7 @@ theorem xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceConnectionMass_sq_eq_
 formation, not an abstract moment reporter. -/
 theorem xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceAccelerationMass_sq_eq_arithmetic
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
-    xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceAccelerationMass (w ^ 2) n =
+    xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceAccelerationMass (w ^ (2 : ℕ)) n =
       xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceAcceleration w n := by
   rw [xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceAccelerationMass,
     xiShiftedAdaptiveBilinearCoefficientSourceAccelerationMass_eq_momentFunctional
@@ -492,7 +492,7 @@ theorem xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceFlow_sq
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ)
     (hdet : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) n).det ≠ 0) :
-    xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ 2) n =
+    xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ (2 : ℕ)) n =
         xiShiftedAdaptiveMixedCompletedArithmeticSource w
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) n) ∧
@@ -501,9 +501,9 @@ theorem xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceFlow_sq
         (-xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceAcceleration w n +
           2 * xiShiftedAdaptiveBilinearCompletedArithmeticSource w
             (finitePolynomialVelocity
-              (xiShiftedCanonicalAdmissionVelocity (w ^ 2) n))
+              (xiShiftedCanonicalAdmissionVelocity (w ^ (2 : ℕ)) n))
             (HTGeometry.monicMomentAdmissionPolynomial
-              (xiShiftedRealMomentSequence w) n)) (w ^ 2) := by
+              (xiShiftedRealMomentSequence w) n)) (w ^ (2 : ℕ)) := by
   constructor
   · exact xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass_sq_eq_arithmetic hw n
   · have h := hasDerivAt_xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass
@@ -520,10 +520,10 @@ theorem deriv_xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass_sq_nonpos_
     (hdet : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) n).det ≠ 0) :
     deriv (fun y => xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass y n)
-        (w ^ 2) ≤ 0 ↔
+        (w ^ (2 : ℕ)) ≤ 0 ↔
       2 * xiShiftedAdaptiveBilinearCompletedArithmeticSource w
           (finitePolynomialVelocity
-            (xiShiftedCanonicalAdmissionVelocity (w ^ 2) n))
+            (xiShiftedCanonicalAdmissionVelocity (w ^ (2 : ℕ)) n))
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) n) ≤
         xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceAcceleration w n := by
@@ -540,7 +540,7 @@ possible failure location explicit rather than hiding it in a frozen chart. -/
 theorem xiShiftedCanonicalAdmissionAdaptiveArithmeticSource_singular_or_flow
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
     (HTGeometry.momentHankelMatrix (xiShiftedRealMomentSequence w) n).det = 0 ∨
-      (xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ 2) n =
+      (xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceMass (w ^ (2 : ℕ)) n =
           xiShiftedAdaptiveMixedCompletedArithmeticSource w
             (HTGeometry.monicMomentAdmissionPolynomial
               (xiShiftedRealMomentSequence w) n) ∧
@@ -549,9 +549,9 @@ theorem xiShiftedCanonicalAdmissionAdaptiveArithmeticSource_singular_or_flow
           (-xiShiftedCanonicalAdmissionAdaptiveArithmeticSourceAcceleration w n +
             2 * xiShiftedAdaptiveBilinearCompletedArithmeticSource w
               (finitePolynomialVelocity
-                (xiShiftedCanonicalAdmissionVelocity (w ^ 2) n))
+                (xiShiftedCanonicalAdmissionVelocity (w ^ (2 : ℕ)) n))
               (HTGeometry.monicMomentAdmissionPolynomial
-                (xiShiftedRealMomentSequence w) n)) (w ^ 2)) := by
+                (xiShiftedRealMomentSequence w) n)) (w ^ (2 : ℕ))) := by
   by_cases hdet : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) n).det = 0
   · exact Or.inl hdet

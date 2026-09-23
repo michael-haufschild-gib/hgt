@@ -65,7 +65,7 @@ theorem traceClassRoot_isHilbertSchmidt {T : H →L[ℂ] H}
   refine habs.congr fun i => ?_
   have hsym := isSelfAdjoint_iff_isSymmetric.mp (isSelfAdjoint_traceClassRoot T)
   let e := hsBasis ℂ H i
-  change inner ℂ e (absOp T e) = ((‖traceClassRoot T e‖ ^ 2 : ℝ) : ℂ)
+  change inner ℂ e (absOp T e) = ((‖traceClassRoot T e‖ ^ (2 : ℕ) : ℝ) : ℂ)
   calc
     inner ℂ e (absOp T e) =
         inner ℂ e ((traceClassRoot T ∘L traceClassRoot T) e) := by
@@ -73,7 +73,7 @@ theorem traceClassRoot_isHilbertSchmidt {T : H →L[ℂ] H}
     _ = inner ℂ (traceClassRoot T e) (traceClassRoot T e) := by
       rw [comp_apply]
       exact (hsym e (traceClassRoot T e)).symm
-    _ = ((‖traceClassRoot T e‖ ^ 2 : ℝ) : ℂ) := by
+    _ = ((‖traceClassRoot T e‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [inner_self_eq_norm_sq_to_K]
       push_cast
       rfl

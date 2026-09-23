@@ -109,7 +109,7 @@ theorem exists_iteratedDeriv_digamma_expansion (j N : ℕ) :
             - Q.eval (1 / ((σ : ℂ) + (t : ℂ) * Complex.I))‖ ≤ C / t ^ (N + 1) := by
   set c : ℂ := (-1) ^ (j + 1) * (((j + 1).factorial : ℕ) : ℂ) with hc_def
   have hseed : ∀ᶠ w in nhds (0 : ℂ),
-      (fun w : ℂ => c * w ^ (j + 2)) w = w ^ 2 * (fun w : ℂ => c * w ^ j) w := by
+      (fun w : ℂ => c * w ^ (j + 2)) w = w ^ (2 : ℕ) * (fun w : ℂ => c * w ^ j) w := by
     filter_upwards with w
     ring
   obtain ⟨Q, g, hQ0, hg, hfac⟩ :=

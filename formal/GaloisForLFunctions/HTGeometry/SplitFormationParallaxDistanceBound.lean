@@ -54,18 +54,18 @@ theorem parallaxEnergy_ge_dist_sq
     (hlow : ∀ y ∈ (neutralOverlap (F i) (F j))ᗮ,
       α * ‖y‖ ≤ ‖hiddenResidual (F i) (F j) y‖)
     (x : X) :
-    A * α ^ 2 * (⨅ n : neutralOverlap (F i) (F j), ‖x - (n : X)‖) ^ 2
+    A * α ^ (2 : ℕ) * (⨅ n : neutralOverlap (F i) (F j), ‖x - (n : X)‖) ^ (2 : ℕ)
       ≤ parallaxEnergy F i j x := by
   have hdist_nonneg : 0 ≤ ⨅ n : neutralOverlap (F i) (F j), ‖x - (n : X)‖ := by
     refine le_ciInf fun n => norm_nonneg _
   have hstep := norm_hiddenResidual_ge_dist (F i) (F j) hα hlow x
-  have hsq : (α * ⨅ n : neutralOverlap (F i) (F j), ‖x - (n : X)‖) ^ 2
-      ≤ ‖hiddenResidual (F i) (F j) x‖ ^ 2 :=
+  have hsq : (α * ⨅ n : neutralOverlap (F i) (F j), ‖x - (n : X)‖) ^ (2 : ℕ)
+      ≤ ‖hiddenResidual (F i) (F j) x‖ ^ (2 : ℕ) :=
     pow_le_pow_left₀ (by positivity) hstep 2
   have hframe' := (parallaxEnergy_fusionFrame_bounds F i j x hframe).1
-  calc A * α ^ 2 * (⨅ n : neutralOverlap (F i) (F j), ‖x - (n : X)‖) ^ 2
-      = A * (α * ⨅ n : neutralOverlap (F i) (F j), ‖x - (n : X)‖) ^ 2 := by ring
-    _ ≤ A * ‖hiddenResidual (F i) (F j) x‖ ^ 2 :=
+  calc A * α ^ (2 : ℕ) * (⨅ n : neutralOverlap (F i) (F j), ‖x - (n : X)‖) ^ (2 : ℕ)
+      = A * (α * ⨅ n : neutralOverlap (F i) (F j), ‖x - (n : X)‖) ^ (2 : ℕ) := by ring
+    _ ≤ A * ‖hiddenResidual (F i) (F j) x‖ ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hsq hA
     _ ≤ parallaxEnergy F i j x := hframe'
 

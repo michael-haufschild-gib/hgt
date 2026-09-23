@@ -24,7 +24,7 @@ noncomputable section
 
 /-- Entire cubic phase normalization centered at the critical line. -/
 def fzzHJReciprocalCubicExternalGammaNormalization (c : ℝ) (s : ℂ) : ℂ :=
-  Complex.exp (-(c : ℂ) * (s - (1 / 2 : ℂ)) ^ 3)
+  Complex.exp (-(c : ℂ) * (s - (1 / 2 : ℂ)) ^ (3 : ℕ))
 
 /-- Exact normalization class preserved by the no-go witness. -/
 def FZZHJAdmissibleExternalGammaNormalization (H : ℂ → ℂ) : Prop :=
@@ -44,7 +44,7 @@ theorem fzzHJReciprocalCubicExternalGammaNormalization_schwarz
     star (fzzHJReciprocalCubicExternalGammaNormalization c s) =
       fzzHJReciprocalCubicExternalGammaNormalization c (star s) := by
   change (starRingEnd ℂ)
-      (Complex.exp (-(c : ℂ) * (s - (1 / 2 : ℂ)) ^ 3)) = _
+      (Complex.exp (-(c : ℂ) * (s - (1 / 2 : ℂ)) ^ (3 : ℕ))) = _
   rw [← Complex.exp_conj]
   apply congrArg Complex.exp
   have hc : star (c : ℂ) = (c : ℂ) := Complex.conj_ofReal c
@@ -70,14 +70,14 @@ theorem fzzHJReciprocalCubicExternalGammaNormalization_criticalLine
     (c P : ℝ) :
     fzzHJReciprocalCubicExternalGammaNormalization c
         ((1 / 2 : ℂ) + (P : ℂ) * I) =
-      Complex.exp (I * ((c * P ^ 3 : ℝ) : ℂ)) := by
+      Complex.exp (I * ((c * P ^ (3 : ℕ) : ℝ) : ℂ)) := by
   unfold fzzHJReciprocalCubicExternalGammaNormalization
   apply congrArg Complex.exp
   push_cast
   ring_nf
-  have hI : I ^ 3 = -(I : ℂ) := by
+  have hI : I ^ (3 : ℕ) = -(I : ℂ) := by
     calc
-      I ^ 3 = I ^ 2 * I := by ring
+      I ^ (3 : ℕ) = I ^ (2 : ℕ) * I := by ring
       _ = -I := by rw [Complex.I_sq]; ring
   rw [hI]
   ring
@@ -88,7 +88,7 @@ theorem norm_fzzHJReciprocalCubicExternalGammaNormalization_criticalLine
         ((1 / 2 : ℂ) + (P : ℂ) * I)‖ = 1 := by
   rw [fzzHJReciprocalCubicExternalGammaNormalization_criticalLine,
     Complex.norm_exp]
-  have hre : (I * ((c * P ^ 3 : ℝ) : ℂ)).re = 0 := by
+  have hre : (I * ((c * P ^ (3 : ℕ) : ℝ) : ℂ)).re = 0 := by
     rw [mul_re]
     simp only [I_re, I_im, ofReal_re, ofReal_im]
     ring
@@ -163,7 +163,7 @@ def fzzHJReciprocalCubicGaugedExternalGammaAmplitude
 /-- Unwrapped balanced external-Gamma phase in the cubic normalization frame. -/
 def fzzHJReciprocalCubicGaugedExternalGammaMomentumPhase
     (c P : ℝ) : ℝ :=
-  fzzHJBalancedExternalGammaPhaseLift (Real.sqrt 2 * P) + c * P ^ 3
+  fzzHJBalancedExternalGammaPhaseLift (Real.sqrt 2 * P) + c * P ^ (3 : ℕ)
 
 /-- The gauged complex amplitude is exactly the exponential of the gauged phase lift. -/
 theorem fzzHJReciprocalCubicGaugedExternalGammaAmplitude_eq_exp_phase
@@ -182,14 +182,14 @@ theorem fzzHJReciprocalCubicGaugedExternalGammaAmplitude_eq_exp_phase
 /-- Local momentum delay in the cubic normalization frame. -/
 def fzzHJReciprocalCubicGaugedExternalGammaWardDelay
     (c P : ℝ) : ℝ :=
-  fzzHJBalancedExternalGammaWardDelay P + 3 * c * P ^ 2
+  fzzHJBalancedExternalGammaWardDelay P + 3 * c * P ^ (2 : ℕ)
 
 theorem hasDerivAt_fzzHJReciprocalCubicGaugedExternalGammaMomentumPhase
     (c P : ℝ) :
     HasDerivAt
       (fzzHJReciprocalCubicGaugedExternalGammaMomentumPhase c)
       (fzzHJReciprocalCubicGaugedExternalGammaWardDelay c P) P := by
-  have hcubic : HasDerivAt (fun Q : ℝ => c * Q ^ 3) (3 * c * P ^ 2) P := by
+  have hcubic : HasDerivAt (fun Q : ℝ => c * Q ^ (3 : ℕ)) (3 * c * P ^ (2 : ℕ)) P := by
     simpa only [Pi.pow_apply, id_eq, Nat.cast_ofNat, Nat.reduceSub, pow_two,
       one_mul, mul_comm, mul_left_comm, mul_assoc] using
       ((hasDerivAt_id P).pow 3).const_mul c
@@ -198,7 +198,7 @@ theorem hasDerivAt_fzzHJReciprocalCubicGaugedExternalGammaMomentumPhase
 /-- Unique cubic coefficient which makes a prescribed nonzero momentum vacuum-delay saturated. -/
 def fzzHJReciprocalCubicWardDelaySaturatingGauge (P : ℝ) : ℝ :=
   (fzzHJBalancedExternalGammaWardDelay 0 -
-    fzzHJBalancedExternalGammaWardDelay P) / (3 * P ^ 2)
+    fzzHJBalancedExternalGammaWardDelay P) / (3 * P ^ (2 : ℕ))
 
 theorem fzzHJReciprocalCubicGaugedExternalGammaWardDelay_fit_saturates
     {P : ℝ} (hP : P ≠ 0) :
@@ -208,7 +208,7 @@ theorem fzzHJReciprocalCubicGaugedExternalGammaWardDelay_fit_saturates
         (fzzHJReciprocalCubicWardDelaySaturatingGauge P) 0 := by
   unfold fzzHJReciprocalCubicGaugedExternalGammaWardDelay
     fzzHJReciprocalCubicWardDelaySaturatingGauge
-  have hsq : P ^ 2 ≠ 0 := pow_ne_zero 2 hP
+  have hsq : P ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hP
   field_simp [hsq]
   ring
 

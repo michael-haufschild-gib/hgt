@@ -17,12 +17,12 @@ namespace RHTower
 row triples, hence has cardinality at most `R³`. -/
 theorem cglProposition51_fibreEqualCharacterOffDiagonalTriple_card_le_cube
     {q R : ℕ} (P : CGLFibreSeparatedPacket q R) :
-    Fintype.card (CGLLemma45FibreEqualCharacterOffDiagonalTriple P) ≤ R ^ 3 := by
+    Fintype.card (CGLLemma45FibreEqualCharacterOffDiagonalTriple P) ≤ R ^ (3 : ℕ) := by
   calc
     Fintype.card (CGLLemma45FibreEqualCharacterOffDiagonalTriple P) ≤
         Fintype.card (Fin R × Fin R × Fin R) :=
       Fintype.card_le_of_injective Subtype.val Subtype.val_injective
-    _ = R ^ 3 := by simp [pow_three]
+    _ = R ^ (3 : ℕ) := by simp [pow_three]
 
 /-- A full punctured axial CGL coefficient sum is bounded by the cubic row
 count times one source-height-controlled row-tail budget. -/
@@ -33,18 +33,18 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_heightRowBudget
     ∑' m : CGLProposition51PuncturedFrequency,
       ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
         (cglLemma45FibreRows P) (cglProposition51AxialFrequencyVector m.val)‖ ≤
-      (R : ℝ) ^ 3 * ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+      (R : ℝ) ^ (3 : ℕ) * ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
         cglProposition51FibreAxialAnalyticBudget P w N n *
-          (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-            (1 + 2 * S.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+          (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+            (1 + 2 * S.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
               cglProposition51PuncturedInverseSquareMass) := by
   let U := CGLLemma45FibreEqualCharacterOffDiagonalTriple P
-  let B : ℝ := ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+  let B : ℝ := ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
     cglProposition51FibreAxialAnalyticBudget P w N n *
-      (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-        (1 + 2 * S.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+      (((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+        (1 + 2 * S.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
           cglProposition51PuncturedInverseSquareMass)
-  have hQ : 0 ≤ ((cglLemma45FibreModulus q).value : ℝ) ^ 3 := by positivity
+  have hQ : 0 ≤ ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) := by positivity
   have hbudget : 0 ≤ cglProposition51FibreAxialAnalyticBudget P w N n := by
     unfold cglProposition51FibreAxialAnalyticBudget
     apply mul_nonneg
@@ -55,14 +55,14 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_heightRowBudget
     · exact mul_nonneg (cglAffineFourierScale_pos N (cglLemma45FibreModulus q)).le
         (cglLogFourierAmplitudeAllOrderBudget_nonneg w.toCGLSmoothBump 0)
   have htail : 0 ≤ ((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 /
-      (2 * Real.pi) ^ 2) * (1 + 2 * S.time) ^ 2 /
+      (2 * Real.pi) ^ (2 : ℕ)) * (1 + 2 * S.time) ^ (2 : ℕ) /
         cglAffineFourierScale N (cglLemma45FibreModulus q)) *
           cglProposition51PuncturedInverseSquareMass := by
     have hC : 0 ≤ cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 /
-        (2 * Real.pi) ^ 2 :=
+        (2 * Real.pi) ^ (2 : ℕ) :=
       div_nonneg (cglSmoothBumpHtAllOrderBudget_nonneg w.toCGLSmoothBump 2) (sq_nonneg _)
     have htime : 0 ≤ 1 + 2 * S.time := by linarith [S.time_one]
-    have hpowtime : 0 ≤ (1 + 2 * S.time) ^ 2 := pow_nonneg htime _
+    have hpowtime : 0 ≤ (1 + 2 * S.time) ^ (2 : ℕ) := pow_nonneg htime _
     have hinvscale : 0 ≤ (cglAffineFourierScale N (cglLemma45FibreModulus q))⁻¹ :=
       inv_nonneg.mpr (cglAffineFourierScale_pos N (cglLemma45FibreModulus q)).le
     have hmass : 0 ≤ cglProposition51PuncturedInverseSquareMass := by
@@ -74,20 +74,20 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_heightRowBudget
     dsimp [B]
     exact mul_nonneg (mul_nonneg hQ hbudget) htail
   have hterm (u : U) :
-      ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+      ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
           cglProposition51FibreAxialAnalyticBudget P w N n *
             cglProposition51AxialFrequencyTailMass w N (cglLemma45FibreModulus q)
               (P.ordinate u.1.2.2 - P.ordinate u.1.1) ≤ B := by
     dsimp [B]
     gcongr
     exact cglProposition51_axialFrequencyTailMass_le_timeBudget S w u
-  have hcard : (Fintype.card U : ℝ) ≤ (R : ℝ) ^ 3 := by
+  have hcard : (Fintype.card U : ℝ) ≤ (R : ℝ) ^ (3 : ℕ) := by
     exact_mod_cast cglProposition51_fibreEqualCharacterOffDiagonalTriple_card_le_cube P
   calc
     ∑' m : CGLProposition51PuncturedFrequency,
         ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
           (cglLemma45FibreRows P) (cglProposition51AxialFrequencyVector m.val)‖ ≤
-      ∑ u : U, ((cglLemma45FibreModulus q).value : ℝ) ^ 3 *
+      ∑ u : U, ((cglLemma45FibreModulus q).value : ℝ) ^ (3 : ℕ) *
           cglProposition51FibreAxialAnalyticBudget P w N n *
             cglProposition51AxialFrequencyTailMass w N (cglLemma45FibreModulus q)
               (P.ordinate u.1.2.2 - P.ordinate u.1.1) :=
@@ -97,7 +97,7 @@ theorem cglProposition51_axialFrequencyTerm_norm_tsum_le_heightRowBudget
       intro u hu
       exact hterm u
     _ = (Fintype.card U : ℝ) * B := by simp
-    _ ≤ (R : ℝ) ^ 3 * B := by
+    _ ≤ (R : ℝ) ^ (3 : ℕ) * B := by
       exact mul_le_mul_of_nonneg_right hcard hB
     _ = _ := by ring
 

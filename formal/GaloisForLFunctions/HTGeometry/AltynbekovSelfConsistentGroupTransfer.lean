@@ -173,14 +173,14 @@ theorem relativeGroupNoise_self_quadratic (p : FiniteProbabilityLaw G) (i : G) :
 /-- The nonlinear error is bounded quadratically, stronger than uniform Lipschitz control. -/
 theorem relativeGroupNoise_self_quadratic_distance (p : FiniteProbabilityLaw G) :
     refreshDistance (p.mix (relativeGroupNoise p)) (uniformNoiseLaw (ι := G)) ≤
-      refreshDistance p (uniformNoiseLaw (ι := G)) ^ 2 := by
+      refreshDistance p (uniformNoiseLaw (ι := G)) ^ (2 : ℕ) := by
   unfold refreshDistance
   simp_rw [relativeGroupNoise_self_quadratic]
   calc
     _ ≤ ∑ i, ∑ j, |(p.prob (i*j⁻¹)-(uniformNoiseLaw (ι := G)).prob (i*j⁻¹)) *
         (p.prob j-(uniformNoiseLaw (ι := G)).prob j)| :=
       Finset.sum_le_sum fun i _ => Finset.abs_sum_le_sum_abs _ _
-    _ = (∑ i, |p.prob i-(uniformNoiseLaw (ι := G)).prob i|)^2 := by
+    _ = (∑ i, |p.prob i-(uniformNoiseLaw (ι := G)).prob i|)^(2 : ℕ) := by
       simp_rw [abs_mul]
       rw [Finset.sum_comm]
       simp_rw [← Finset.sum_mul]
@@ -194,7 +194,7 @@ theorem relativeGroupNoise_self_quadratic_distance (p : FiniteProbabilityLaw G) 
 /-- Uniform refresh retains the full quadratic convergence improvement. -/
 theorem selfConsistentRefresh_quadratic (p : FiniteProbabilityLaw G) :
     refreshDistance (selfConsistentRefresh p) (uniformNoiseLaw (ι := G)) ≤
-      (1/4 : ℝ) * refreshDistance p (uniformNoiseLaw (ι := G)) ^ 2 := by
+      (1/4 : ℝ) * refreshDistance p (uniformNoiseLaw (ι := G)) ^ (2 : ℕ) := by
   have h := selfConsistentRefresh_distance p (uniformNoiseLaw (ι := G))
   have hq := relativeGroupNoise_self_quadratic_distance p
   unfold refreshDistance at h hq ⊢
@@ -218,7 +218,7 @@ theorem selfConsistentRefreshOrbit_quadratic_bound (p : FiniteProbabilityLaw G) 
         (div_nonneg (hd p) (by positivity)) _)
     have hsq := (sq_le_sq₀ (hd _) hb).mpr ih
     have he :
-        (1/4 : ℝ) * (4 * (refreshDistance p (uniformNoiseLaw (ι := G))/4)^(2^n))^2 =
+        (1/4 : ℝ) * (4 * (refreshDistance p (uniformNoiseLaw (ι := G))/4)^(2^n))^(2 : ℕ) =
           4 * (refreshDistance p (uniformNoiseLaw (ι := G))/4)^(2^(n+1)) := by
       rw [show 2^(n+1) = 2^n*2 by rw [pow_succ], pow_mul]
       ring

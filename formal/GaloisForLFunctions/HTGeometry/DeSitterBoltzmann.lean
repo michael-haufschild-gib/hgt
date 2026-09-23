@@ -31,7 +31,7 @@ def boltzmannCoord (k : Type*) [Field k] : BoltzmannField k := RatFunc.X
 
 /-- The prescribed derivative `H²/a` of the Boltzmann coordinate. -/
 def boltzmannRate (a : k) : BoltzmannField k :=
-  (boltzmannCoord k) ^ 2 * algebraMap (MahlerAmbient k) (BoltzmannField k)
+  (boltzmannCoord k) ^ (2 : ℕ) * algebraMap (MahlerAmbient k) (BoltzmannField k)
     (algebraMap k (MahlerAmbient k) a⁻¹)
 
 /-- The Euler differential structure of the extended field. -/
@@ -156,12 +156,12 @@ theorem hypertranscendentalOver_deSitterTrace_w [CharZero k] {p : ℕ} (hp : 1 <
 @[reducible] def boltzmannDeriv [CharZero k] (a : k) : Differential (BoltzmannField k) := by
   letI := boltzmannEuler (k := k) a
   exact ⟨(algebraMap (MahlerAmbient k) (BoltzmannField k) (algebraMap k (MahlerAmbient k) a)
-      / (boltzmannCoord k) ^ 2) • (boltzmannEuler (k := k) a).deriv⟩
+      / (boltzmannCoord k) ^ (2 : ℕ)) • (boltzmannEuler (k := k) a).deriv⟩
 
 theorem boltzmannDeriv_apply [CharZero k] (a : k) (y : BoltzmannField k) :
     (boltzmannDeriv a).deriv y
       = (algebraMap (MahlerAmbient k) (BoltzmannField k) (algebraMap k (MahlerAmbient k) a)
-        / (boltzmannCoord k) ^ 2) * (boltzmannEuler (k := k) a).deriv y := rfl
+        / (boltzmannCoord k) ^ (2 : ℕ)) * (boltzmannEuler (k := k) a).deriv y := rfl
 
 /-- The `H`-side algebra structure of the extended field. -/
 @[reducible] def hBoltzmannAlgebra [CharZero k] : Algebra (RatFunc k) (BoltzmannField k) :=
@@ -371,13 +371,13 @@ theorem hypertranscendentalOver_deSitterTrace_H [CharZero k] {p : ℕ} (hp : 1 <
         = algebraMap (twoCoordField (k := k)) (BoltzmannField k) (diffFBoltz.deriv y) :=
     fun _ => rfl
   have hscaleElt : (algebraMap (MahlerAmbient k) (BoltzmannField k)
-      (algebraMap k (MahlerAmbient k) a) / (boltzmannCoord k) ^ 2)
+      (algebraMap k (MahlerAmbient k) a) / (boltzmannCoord k) ^ (2 : ℕ))
       ∈ twoCoordField (k := k) := by
     refine IntermediateField.div_mem _ (const_mem_twoCoordField a) ?_
     rw [sq]
     exact IntermediateField.mul_mem _ boltzmannCoord_mem_twoCoordField
       boltzmannCoord_mem_twoCoordField
-  have hinvElt : ((boltzmannCoord k) ^ 2
+  have hinvElt : ((boltzmannCoord k) ^ (2 : ℕ)
       / algebraMap (MahlerAmbient k) (BoltzmannField k) (algebraMap k (MahlerAmbient k) a))
       ∈ twoCoordField (k := k) := by
     refine IntermediateField.div_mem _ ?_ (const_mem_twoCoordField a)
@@ -399,11 +399,11 @@ theorem hypertranscendentalOver_deSitterTrace_H [CharZero k] {p : ℕ} (hp : 1 <
           * (boltzmannDeriv (k := k) a).deriv y := by
     intro y
     rw [boltzmannDeriv_apply]
-    show _ = ((boltzmannCoord k) ^ 2
+    show _ = ((boltzmannCoord k) ^ (2 : ℕ)
         / algebraMap (MahlerAmbient k) (BoltzmannField k) (algebraMap k (MahlerAmbient k) a))
       * ((algebraMap (MahlerAmbient k) (BoltzmannField k) (algebraMap k (MahlerAmbient k) a)
-        / (boltzmannCoord k) ^ 2) * (boltzmannEuler (k := k) a).deriv y)
-    have hH : (boltzmannCoord k) ^ 2 ≠ 0 := pow_ne_zero _ boltzmannCoord_ne_zero
+        / (boltzmannCoord k) ^ (2 : ℕ)) * (boltzmannEuler (k := k) a).deriv y)
+    have hH : (boltzmannCoord k) ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ boltzmannCoord_ne_zero
     field_simp
     rw [mul_div_assoc, div_self boltzmannCoord_ne_zero, mul_one]
   have hDAFEuler : @DifferentialAlgebraicOver (twoCoordField (k := k)) (BoltzmannField k) _ _ _

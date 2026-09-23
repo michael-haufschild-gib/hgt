@@ -43,7 +43,7 @@ theorem deningerOriginalGreen_inverse_norm_le {L : ℝ} (hL : 0 < L)
 /-- One quantitative lower margin works at all actual Xi zeros, including their reflections. -/
 theorem exists_deningerXi_real_part_margin :
     ∃ E : ℝ, 2 ≤ E ∧ ∀ rho : XiDivisorSupport,
-      1 / Real.log (E+|(rho : ℂ).im|)^2 < (rho : ℂ).re := by
+      1 / Real.log (E+|(rho : ℂ).im|)^(2 : ℕ) < (rho : ℂ).re := by
   obtain ⟨L0,hL0,hfree⟩ := Sieve.exists_zeta_uniform_strip_zero_free
   refine ⟨Real.exp L0, by linarith [Real.add_one_le_exp L0], ?_⟩
   intro rho
@@ -71,10 +71,10 @@ theorem exists_deningerXi_real_part_margin :
 theorem exists_deningerOriginalPrimeGreen_inverse_norm_bound :
     ∃ C : ℝ, 0 < C ∧ ∀ (p : Nat.Primes) (rho : XiDivisorSupport),
       ‖(1-Complex.exp (-(rho : ℂ)*(Real.log (p : ℕ) : ℂ)))⁻¹‖ ≤
-        C*(1+|(rho : ℂ).im|)^2 := by
+        C*(1+|(rho : ℂ).im|)^(2 : ℕ) := by
   obtain ⟨E,hE,hmargin⟩ := exists_deningerXi_real_part_margin
   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  refine ⟨1+E^2/Real.log 2, by positivity, ?_⟩
+  refine ⟨1+E^(2 : ℕ)/Real.log 2, by positivity, ?_⟩
   intro p rho
   let t : ℝ := |(rho : ℂ).im|
   let K : ℝ := E+t
@@ -85,26 +85,26 @@ theorem exists_deningerOriginalPrimeGreen_inverse_norm_bound :
     Real.log_le_log (by norm_num) (by exact_mod_cast p.property.two_le)
   have hp0 : 0 < Real.log (p : ℕ) := hlog2.trans_le hp
   have hs := (xi_divisor_support_re_mem_open_unit rho).1
-  have hm : 1/Real.log K^2 ≤ (rho : ℂ).re := (hmargin rho).le
-  have hprod : (1/Real.log K^2)*Real.log 2 ≤ (rho : ℂ).re*Real.log (p : ℕ) :=
+  have hm : 1/Real.log K^(2 : ℕ) ≤ (rho : ℂ).re := (hmargin rho).le
+  have hprod : (1/Real.log K^(2 : ℕ))*Real.log 2 ≤ (rho : ℂ).re*Real.log (p : ℕ) :=
     mul_le_mul hm hp hlog2.le hs.le
   have hb : ‖(1-Complex.exp (-(rho : ℂ)*(Real.log (p : ℕ) : ℂ)))⁻¹‖ ≤
-      1+Real.log K^2/Real.log 2 := by
+      1+Real.log K^(2 : ℕ)/Real.log 2 := by
     calc
       _ ≤ 1+1/((rho : ℂ).re*Real.log (p : ℕ)) := deningerOriginalGreen_inverse_norm_le hp0 hs
-      _ ≤ 1+1/((1/Real.log K^2)*Real.log 2) :=
+      _ ≤ 1+1/((1/Real.log K^(2 : ℕ))*Real.log 2) :=
         add_le_add le_rfl (one_div_le_one_div_of_le (by positivity) hprod)
       _ = _ := by field_simp
   have hKl : K ≤ E*(1+t) := by dsimp [K]; nlinarith
-  have hlogsq : Real.log K^2 ≤ E^2*(1+t)^2 := by
+  have hlogsq : Real.log K^(2 : ℕ) ≤ E^(2 : ℕ)*(1+t)^(2 : ℕ) := by
     calc
-      _ ≤ K^2 := pow_le_pow_left₀ hlogK.le (by linarith [Real.log_le_sub_one_of_pos hK]) 2
-      _ ≤ (E*(1+t))^2 := pow_le_pow_left₀ hK.le hKl 2
+      _ ≤ K^(2 : ℕ) := pow_le_pow_left₀ hlogK.le (by linarith [Real.log_le_sub_one_of_pos hK]) 2
+      _ ≤ (E*(1+t))^(2 : ℕ) := pow_le_pow_left₀ hK.le hKl 2
       _ = _ := by ring
   calc
-    _ ≤ 1+Real.log K^2/Real.log 2 := hb
-    _ ≤ 1+(E^2*(1+t)^2)/Real.log 2 := add_le_add le_rfl (div_le_div_of_nonneg_right hlogsq hlog2.le)
-    _ ≤ (1+t)^2+(E^2*(1+t)^2)/Real.log 2 := add_le_add (by nlinarith : (1 : ℝ) ≤ (1+t)^2) le_rfl
+    _ ≤ 1+Real.log K^(2 : ℕ)/Real.log 2 := hb
+    _ ≤ 1+(E^(2 : ℕ)*(1+t)^(2 : ℕ))/Real.log 2 := add_le_add le_rfl (div_le_div_of_nonneg_right hlogsq hlog2.le)
+    _ ≤ (1+t)^(2 : ℕ)+(E^(2 : ℕ)*(1+t)^(2 : ℕ))/Real.log 2 := add_le_add (by nlinarith : (1 : ℝ) ≤ (1+t)^(2 : ℕ)) le_rfl
     _ = _ := by dsimp [t]; ring
 
 end RHTower

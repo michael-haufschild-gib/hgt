@@ -47,7 +47,7 @@ theorem routeRDiagonalTailRoosClass_smul
     c • Submodule.Quotient.mk (routeRDiagonalMismatchLinear a)
   simp
 
-/-- Raw quotient map from bounded tails modulo `ell^1` to fixed-tail Roos homology. -/
+/-- Raw quotient map from bounded tails modulo `ell^(1 : ℕ)` to fixed-tail Roos homology. -/
 private def routeRSummableHadamardToTailRoosFun
     (x : RouteRSummableHadamardCorona) :
     DerivedLimitOne (fun _ : ℕ => routeRSummableSequenceIdeal)

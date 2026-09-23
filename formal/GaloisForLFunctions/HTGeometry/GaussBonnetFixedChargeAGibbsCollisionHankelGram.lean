@@ -46,9 +46,9 @@ theorem egbFixedChargeAGibbsCollisionHankelMatrix_gram (n o d : ℕ) (β : ℝ)
   rw [he, pow_add (4 / 9 : ℝ) (o + 1), pow_add (1 / 36 : ℝ) (o + 1),
     pow_add (4 / 9 : ℝ) (i : ℕ), pow_add (1 / 36 : ℝ) (i : ℕ)]
   calc
-    _ = Real.sqrt ((4 / 9 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E) ^ 2 *
+    _ = Real.sqrt ((4 / 9 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E) ^ (2 : ℕ) *
           (4 / 9 : ℝ) ^ (i : ℕ) * (4 / 9 : ℝ) ^ (j : ℕ) +
-        Real.sqrt ((1 / 36 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ 2 *
+        Real.sqrt ((1 / 36 : ℝ) ^ (o + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ (2 : ℕ) *
           (1 / 36 : ℝ) ^ (i : ℕ) * (1 / 36 : ℝ) ^ (j : ℕ) := by rw [hsA, hsB]; ring
     _ = _ := by ring
 

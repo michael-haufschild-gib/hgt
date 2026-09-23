@@ -56,7 +56,7 @@ theorem dampedCorrBound_mass_bounds {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
     have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hP p hp
     have hp0 : (0 : ℝ) < p := by linarith
     have hx : 0 < (p : ℝ)^(-c) := Real.rpow_pos_of_pos hp0 _
-    have hsq : ((p : ℝ)^(-c))^2 ≤ 1/2 := by
+    have hsq : ((p : ℝ)^(-c))^(2 : ℕ) ≤ 1/2 := by
       rw [← Real.rpow_two, ← Real.rpow_mul hp0.le]
       calc (p : ℝ)^(-c*2) ≤ (p : ℝ)^(-(1 : ℝ)) :=
           Real.rpow_le_rpow_of_exponent_le (by linarith) (by linarith)

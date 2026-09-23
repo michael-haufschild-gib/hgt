@@ -106,30 +106,30 @@ theorem jacobiTheta_I_mul_ofReal {t : ℝ} (ht : 0 < t) :
     rw [Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_im, Complex.ofReal_re]
     simpa using ht
   have hsum := hasSum_nat_jacobiTheta him
-  have hsumR : HasSum (fun n : ℕ => 2 * Real.exp (-π * ((n : ℝ) + 1) ^ 2 * t))
+  have hsumR : HasSum (fun n : ℕ => 2 * Real.exp (-π * ((n : ℝ) + 1) ^ (2 : ℕ) * t))
       (evenKernel 0 t - 1) := by
     have hs := hasSum_nat_cosKernel₀ (0 : ℝ) ht
     have heq := congrFun evenKernel_eq_cosKernel_of_zero t
     rw [heq]
     simpa using hs
-  have hterm : ∀ n : ℕ, cexp (↑π * I * ((n : ℂ) + 1) ^ 2 * (I * (t : ℂ)))
-      = ((Real.exp (-π * ((n : ℝ) + 1) ^ 2 * t) : ℝ) : ℂ) := by
+  have hterm : ∀ n : ℕ, cexp (↑π * I * ((n : ℂ) + 1) ^ (2 : ℕ) * (I * (t : ℂ)))
+      = ((Real.exp (-π * ((n : ℝ) + 1) ^ (2 : ℕ) * t) : ℝ) : ℂ) := by
     intro n
-    have hexp : (↑π * I * ((n : ℂ) + 1) ^ 2 * (I * (t : ℂ)))
-        = ((-π * ((n : ℝ) + 1) ^ 2 * t : ℝ) : ℂ) := by
-      have h1 : (↑π * I * ((n : ℂ) + 1) ^ 2 * (I * (t : ℂ)))
-          = I ^ 2 * ((π : ℂ) * ((n : ℂ) + 1) ^ 2 * (t : ℂ)) := by ring
+    have hexp : (↑π * I * ((n : ℂ) + 1) ^ (2 : ℕ) * (I * (t : ℂ)))
+        = ((-π * ((n : ℝ) + 1) ^ (2 : ℕ) * t : ℝ) : ℂ) := by
+      have h1 : (↑π * I * ((n : ℂ) + 1) ^ (2 : ℕ) * (I * (t : ℂ)))
+          = I ^ (2 : ℕ) * ((π : ℂ) * ((n : ℂ) + 1) ^ (2 : ℕ) * (t : ℂ)) := by ring
       rw [h1, Complex.I_sq]
       push_cast
       ring
     rw [hexp, ← Complex.ofReal_exp]
-  have hC : HasSum (fun n : ℕ => ((2 * Real.exp (-π * ((n : ℝ) + 1) ^ 2 * t) : ℝ) : ℂ))
+  have hC : HasSum (fun n : ℕ => ((2 * Real.exp (-π * ((n : ℝ) + 1) ^ (2 : ℕ) * t) : ℝ) : ℂ))
       (((evenKernel 0 t - 1 : ℝ) : ℂ)) := by
     exact (Complex.ofRealCLM.hasSum hsumR)
-  have hC2 : HasSum (fun n : ℕ => cexp (↑π * I * ((n : ℂ) + 1) ^ 2 * (I * (t : ℂ))))
+  have hC2 : HasSum (fun n : ℕ => cexp (↑π * I * ((n : ℂ) + 1) ^ (2 : ℕ) * (I * (t : ℂ))))
       ((jacobiTheta (I * (t : ℂ)) - 1) / 2) := hsum
-  have hcongr : (fun n : ℕ => ((2 * Real.exp (-π * ((n : ℝ) + 1) ^ 2 * t) : ℝ) : ℂ))
-      = fun n : ℕ => 2 * cexp (↑π * I * ((n : ℂ) + 1) ^ 2 * (I * (t : ℂ))) := by
+  have hcongr : (fun n : ℕ => ((2 * Real.exp (-π * ((n : ℝ) + 1) ^ (2 : ℕ) * t) : ℝ) : ℂ))
+      = fun n : ℕ => 2 * cexp (↑π * I * ((n : ℂ) + 1) ^ (2 : ℕ) * (I * (t : ℂ))) := by
     funext n
     rw [hterm n]
     push_cast
@@ -179,14 +179,14 @@ theorem cos_pos_of_lt_pi_div_two {c : ℝ} (hc0 : 0 ≤ c) (hc : c < π / 2) : 0
   refine Real.cos_pos_of_mem_Ioo ⟨?_, hc⟩
   linarith [Real.pi_pos]
 
-private theorem exp_sq_le {a : ℝ} (ha : 0 ≤ a) : a ^ 2 / 4 ≤ Real.exp a := by
+private theorem exp_sq_le {a : ℝ} (ha : 0 ≤ a) : a ^ (2 : ℕ) / 4 ≤ Real.exp a := by
   have h1 : 1 + a / 2 ≤ Real.exp (a / 2) := by
     have := Real.add_one_le_exp (a / 2)
     linarith
   have h2 : (0 : ℝ) ≤ 1 + a / 2 := by linarith
-  have hsq : (1 + a / 2) ^ 2 ≤ Real.exp (a / 2) ^ 2 := by
+  have hsq : (1 + a / 2) ^ (2 : ℕ) ≤ Real.exp (a / 2) ^ (2 : ℕ) := by
     exact pow_le_pow_left₀ h2 h1 2
-  have hexp : Real.exp (a / 2) ^ 2 = Real.exp a := by
+  have hexp : Real.exp (a / 2) ^ (2 : ℕ) = Real.exp a := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
@@ -274,15 +274,15 @@ theorem norm_hardySource_le {c : ℝ} (hc0 : 0 ≤ c) (hc : c < π / 2) {u : ℂ
         rw [norm_mul, hnorm1, hnorm2]
       linarith [hnum]
     -- the double-exponential factor is bounded
-    have hquad : Real.exp v.re * Real.cos c ≥ v.re ^ 2 / 4 * Real.cos c := by
+    have hquad : Real.exp v.re * Real.cos c ≥ v.re ^ (2 : ℕ) / 4 * Real.cos c := by
       nlinarith [exp_sq_le hvre, hcos]
     have hexpbound : Real.exp (v.re / 4) * Real.exp (-π * (Real.exp v.re * Real.cos c))
         ≤ Real.exp (1 / (4 * π * Real.cos c)) * Real.exp (-(v.re / 4)) := by
       rw [← Real.exp_add, ← Real.exp_add, Real.exp_le_exp]
       have hkey : v.re / 2 - π * (Real.exp v.re * Real.cos c) ≤ 1 / (4 * π * Real.cos c) := by
-        have hstep : π * (Real.exp v.re * Real.cos c) ≥ π * (v.re ^ 2 / 4 * Real.cos c) := by
+        have hstep : π * (Real.exp v.re * Real.cos c) ≥ π * (v.re ^ (2 : ℕ) / 4 * Real.cos c) := by
           nlinarith [Real.pi_pos, hquad]
-        have hfinal : v.re / 2 - π * (v.re ^ 2 / 4 * Real.cos c) ≤ 1 / (4 * π * Real.cos c) := by
+        have hfinal : v.re / 2 - π * (v.re ^ (2 : ℕ) / 4 * Real.cos c) ≤ 1 / (4 * π * Real.cos c) := by
           have hprod : 0 < 4 * π * Real.cos c := by positivity
           rw [le_div_iff₀ hprod]
           nlinarith [sq_nonneg (1 - π * Real.cos c * v.re), Real.pi_pos, hcos]

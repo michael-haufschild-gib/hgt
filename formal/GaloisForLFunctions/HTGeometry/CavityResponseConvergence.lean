@@ -16,14 +16,14 @@ open Filter Topology
 namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 /-- Normalized detuning coordinate of the Chebyshev cavity hierarchy. -/
-def cavityChebyshevCoordinate (D E : ℝ) : ℝ := -D / Real.sqrt (D ^ 2 + E ^ 2)
+def cavityChebyshevCoordinate (D E : ℝ) : ℝ := -D / Real.sqrt (D ^ (2 : ℕ) + E ^ (2 : ℕ))
 /-- The detuning coordinate lies in the Chebyshev oscillatory interval, including the totalized origin. -/
 theorem abs_cavityChebyshevCoordinate_le_one (D E : ℝ) :
     |cavityChebyshevCoordinate D E| ≤ 1 := by
-  have hle : |D| ≤ Real.sqrt (D ^ 2 + E ^ 2) := by
-    calc |D| = Real.sqrt (D ^ 2) := (Real.sqrt_sq_eq_abs D).symm
+  have hle : |D| ≤ Real.sqrt (D ^ (2 : ℕ) + E ^ (2 : ℕ)) := by
+    calc |D| = Real.sqrt (D ^ (2 : ℕ)) := (Real.sqrt_sq_eq_abs D).symm
          _ ≤ _ := Real.sqrt_le_sqrt (le_add_of_nonneg_right (sq_nonneg E))
-  by_cases hz : Real.sqrt (D ^ 2 + E ^ 2) = 0
+  by_cases hz : Real.sqrt (D ^ (2 : ℕ) + E ^ (2 : ℕ)) = 0
   · simp [cavityChebyshevCoordinate, hz]
   · rw [cavityChebyshevCoordinate, abs_div, abs_neg, abs_of_nonneg (Real.sqrt_nonneg _)]
     exact (div_le_one (lt_of_le_of_ne (Real.sqrt_nonneg _) (Ne.symm hz))).mpr hle
@@ -35,17 +35,17 @@ theorem abs_cavityDiskCoordinate_lt_one (s : ℝ) : |cavityDiskCoordinate s| < 1
   exact (div_lt_one (by positivity : 0 < 1 + |s|)).mpr (by linarith)
 /-- The physical Lorentzian denominator is the same sum of squares used by the Chebyshev coordinate. -/
 theorem cavityLorentzian_denominator_identity (a c p : ℝ) :
-    ((1 + p / (a ^ 2 + 1)) ^ 2 + (c - p * a / (a ^ 2 + 1)) ^ 2) * (a ^ 2 + 1) =
-      (1 - a * c + p) ^ 2 + (a + c) ^ 2 := by
-  have hn : a ^ 2 + 1 ≠ 0 := by positivity
+    ((1 + p / (a ^ (2 : ℕ) + 1)) ^ (2 : ℕ) + (c - p * a / (a ^ (2 : ℕ) + 1)) ^ (2 : ℕ)) * (a ^ (2 : ℕ) + 1) =
+      (1 - a * c + p) ^ (2 : ℕ) + (a + c) ^ (2 : ℕ) := by
+  have hn : a ^ (2 : ℕ) + 1 ≠ 0 := by positivity
   field_simp
   ring
 /-- Nonnegative population-coupling product gives a nonvanishing physical response denominator. -/
 theorem cavityLorentzian_denominator_pos (a c r : ℝ) :
-    0 < (1 - a * c + r ^ 2) ^ 2 + (a + c) ^ 2 := by
-  have hidentity := cavityLorentzian_denominator_identity a c (r ^ 2)
-  have hp : 0 ≤ r ^ 2 / (a ^ 2 + 1) := by positivity
-  have hfirst : 0 < (1 + r ^ 2 / (a ^ 2 + 1)) ^ 2 := by positivity
+    0 < (1 - a * c + r ^ (2 : ℕ)) ^ (2 : ℕ) + (a + c) ^ (2 : ℕ) := by
+  have hidentity := cavityLorentzian_denominator_identity a c (r ^ (2 : ℕ))
+  have hp : 0 ≤ r ^ (2 : ℕ) / (a ^ (2 : ℕ) + 1) := by positivity
+  have hfirst : 0 < (1 + r ^ (2 : ℕ) / (a ^ (2 : ℕ) + 1)) ^ (2 : ℕ) := by positivity
   rw [← hidentity]
   positivity
 /-- Uniform linear coefficient bound underlying the paper's all-order coupling estimate. -/
@@ -94,7 +94,7 @@ theorem hasSum_quadraticCavityResponse (D E s : ℝ) :
     HasSum (fun n => quadraticResponseCoeff (-(2 * cavityChebyshevCoordinate D E)) 1 n *
       cavityDiskCoordinate s ^ n)
       (1 - 2 * cavityChebyshevCoordinate D E * cavityDiskCoordinate s +
-        cavityDiskCoordinate s ^ 2)⁻¹ := by
+        cavityDiskCoordinate s ^ (2 : ℕ))⁻¹ := by
   let x := cavityChebyshevCoordinate D E
   let r := cavityDiskCoordinate s
   let f := fun n => quadraticResponseCoeff (-(2 * x)) 1 n * r ^ n
@@ -102,23 +102,23 @@ theorem hasSum_quadraticCavityResponse (D E s : ℝ) :
   have hz := hs.tendsto_atTop_zero
   have hz1 := hz.comp (Filter.tendsto_add_atTop_nat 1)
   have hp := hs.hasSum.tendsto_sum_nat.comp (Filter.tendsto_add_atTop_nat 1)
-  have hlimit : Tendsto (fun n => (1 - 2 * x * r + r ^ 2) *
+  have hlimit : Tendsto (fun n => (1 - 2 * x * r + r ^ (2 : ℕ)) *
       (∑ k ∈ Finset.range (n + 1), f k)) atTop (𝓝 1) := by
     have hc : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (𝓝 1) := tendsto_const_nhds
-    have h := (hc.sub hz1).add (hz.mul_const (r ^ 2))
+    have h := (hc.sub hz1).add (hz.mul_const (r ^ (2 : ℕ)))
     simp only [sub_zero, zero_mul, add_zero] at h
     convert h using 1
     funext n
     have hid := quadraticResponseCoeff_finite_remainder (-(2 * x)) 1 r n
     dsimp [f]
     convert hid using 1 <;> ring
-  have hid : (1 - 2 * x * r + r ^ 2) * (∑' n, f n) = 1 :=
+  have hid : (1 - 2 * x * r + r ^ (2 : ℕ)) * (∑' n, f n) = 1 :=
     tendsto_nhds_unique (hp.const_mul _) hlimit
-  have hd : 1 - 2 * x * r + r ^ 2 ≠ 0 := by
+  have hd : 1 - 2 * x * r + r ^ (2 : ℕ) ≠ 0 := by
     intro h
     rw [h, zero_mul] at hid
     exact zero_ne_one hid
-  have heq : (∑' n, f n) = (1 - 2 * x * r + r ^ 2)⁻¹ := by
+  have heq : (∑' n, f n) = (1 - 2 * x * r + r ^ (2 : ℕ))⁻¹ := by
     apply (mul_left_cancel₀ hd)
     rw [hid, mul_inv_cancel₀ hd]
   exact heq ▸ hs.hasSum

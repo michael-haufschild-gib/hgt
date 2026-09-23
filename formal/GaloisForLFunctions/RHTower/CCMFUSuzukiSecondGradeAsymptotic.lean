@@ -156,7 +156,7 @@ theorem sum_Icc_mul_apply_add_sqrt_prefix_sq
   ring
 
 /-- The natural square-root aperture is cofinal. -/
-theorem tendsto_natSqrt_atTop :
+theorem tendsto_natSqrt_atTop_cCMFUSuzukiSecondGradeAsymptotic :
     Filter.Tendsto Nat.sqrt Filter.atTop Filter.atTop := by
   rw [Filter.tendsto_atTop_atTop]
   intro K
@@ -170,7 +170,7 @@ theorem tendsto_natSqrt_sq_div_self :
       Filter.atTop (nhds 1) := by
   have hsReal : Filter.Tendsto (fun N : ℕ => ((Nat.sqrt N : ℕ) : ℝ))
       Filter.atTop Filter.atTop :=
-    tendsto_natCast_atTop_atTop.comp tendsto_natSqrt_atTop
+    tendsto_natCast_atTop_atTop.comp tendsto_natSqrt_atTop_cCMFUSuzukiSecondGradeAsymptotic
   have hden : Filter.Tendsto (fun N : ℕ => ((Nat.sqrt N : ℕ) : ℝ) + 1)
       Filter.atTop Filter.atTop :=
     Filter.tendsto_atTop_add_const_right Filter.atTop 1 hsReal
@@ -233,7 +233,7 @@ theorem tendsto_chebyshevPsi_natSqrt_sq_div_self :
   have hpsi : Filter.Tendsto (fun N : ℕ =>
       chebyshevPsi (Nat.sqrt N) / ((Nat.sqrt N : ℕ) : ℝ))
       Filter.atTop (nhds 1) := by
-    have h := tendsto_psi_natCast_div.comp tendsto_natSqrt_atTop
+    have h := tendsto_psi_natCast_div.comp tendsto_natSqrt_atTop_cCMFUSuzukiSecondGradeAsymptotic
     change Filter.Tendsto (fun N : ℕ =>
       Chebyshev.psi ((Nat.sqrt N : ℕ) : ℝ) /
         ((Nat.sqrt N : ℕ) : ℝ)) Filter.atTop (nhds 1) at h
@@ -458,7 +458,7 @@ theorem tendsto_chebyshevPsi_natSqrt_div_self_zero :
   have hpsi : Filter.Tendsto (fun N : ℕ =>
       chebyshevPsi (Nat.sqrt N) / ((Nat.sqrt N : ℕ) : ℝ))
       Filter.atTop (nhds 1) := by
-    have h := tendsto_psi_natCast_div.comp tendsto_natSqrt_atTop
+    have h := tendsto_psi_natCast_div.comp tendsto_natSqrt_atTop_cCMFUSuzukiSecondGradeAsymptotic
     change Filter.Tendsto (fun N : ℕ =>
       Chebyshev.psi ((Nat.sqrt N : ℕ) : ℝ) /
         ((Nat.sqrt N : ℕ) : ℝ)) Filter.atTop (nhds 1) at h
@@ -484,7 +484,7 @@ theorem tendsto_vonMangoldtSelfConvolutionHyperbolaHalf_div_sub_harmonic :
   obtain ⟨X, hbound⟩ := Filter.eventually_atTop.1 hboundEventually
   have hsReal : Filter.Tendsto (fun N : ℕ => ((Nat.sqrt N : ℕ) : ℝ))
       Filter.atTop Filter.atTop :=
-    tendsto_natCast_atTop_atTop.comp tendsto_natSqrt_atTop
+    tendsto_natCast_atTop_atTop.comp tendsto_natSqrt_atTop_cCMFUSuzukiSecondGradeAsymptotic
   have hupper : Filter.Tendsto (fun N : ℕ =>
       C * (Real.log (Nat.sqrt N : ℕ) + 7) *
           Real.exp (-c * Real.sqrt (Real.log (Nat.sqrt N : ℕ))) +
@@ -509,7 +509,7 @@ theorem tendsto_vonMangoldtHarmonicSqrtPrefix_sub_log :
     Filter.Tendsto (fun N : ℕ =>
       vonMangoldtHarmonicSqrtPrefix N - Real.log (Nat.sqrt N : ℕ))
       Filter.atTop (nhds (-Real.eulerMascheroniConstant)) := by
-  have h := tendsto_sum_vonMangoldt_div_sub_log.comp tendsto_natSqrt_atTop
+  have h := tendsto_sum_vonMangoldt_div_sub_log.comp tendsto_natSqrt_atTop_cCMFUSuzukiSecondGradeAsymptotic
   change Filter.Tendsto (fun N : ℕ =>
     (∑ n ∈ Finset.Icc 1 (Nat.sqrt N),
       vonMangoldt n / (n : ℝ)) - Real.log ((Nat.sqrt N : ℕ) : ℝ))

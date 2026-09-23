@@ -12,7 +12,7 @@ that saving from cardinality-only `L²/L⁴` rearrangement.
 This module kills that repair.  For the consecutive-cell packet `range n`, pair-sum fibres are
 triangular and give the exact identity
 
-`3 * maynardRStar(range n) = 2 * n^3 + n`.
+`3 * maynardRStar(range n) = 2 * n^(3 : ℕ) + n`.
 
 Thus normalized energy tends to `2/3`, and no uniform quadratic cardinality bound exists.
 Consecutive cells are legitimate generic Fourier packets, so no argument using only packet
@@ -97,7 +97,7 @@ private theorem card_pairSumFiber_range (n k : ℕ) :
 /-- Exact triangular pair-sum decomposition for consecutive natural cells. -/
 theorem maynardNatRStar_range_eq_sum_squares (n : ℕ) :
     maynardNatRStar (Finset.range n) n =
-      ∑ k ∈ Finset.range n, ((k + 1) ^ 2 + k ^ 2) := by
+      ∑ k ∈ Finset.range n, ((k + 1) ^ (2 : ℕ) + k ^ (2 : ℕ)) := by
   rw [maynardNatRStar, show 2 * n = n + n by omega,
     Finset.sum_range_add, Finset.sum_add_distrib]
   congr 1
@@ -109,8 +109,8 @@ theorem maynardNatRStar_range_eq_sum_squares (n : ℕ) :
   · calc
       (∑ k ∈ Finset.range n,
           (((Finset.range n).product (Finset.range n)).filter
-            (fun p => p.1 + p.2 = n + k)).card ^ 2) =
-          ∑ k ∈ Finset.range n, (n - 1 - k) ^ 2 := by
+            (fun p => p.1 + p.2 = n + k)).card ^ (2 : ℕ)) =
+          ∑ k ∈ Finset.range n, (n - 1 - k) ^ (2 : ℕ) := by
             apply Finset.sum_congr rfl
             intro k hk
             simp only [Finset.mem_range] at hk
@@ -119,30 +119,30 @@ theorem maynardNatRStar_range_eq_sum_squares (n : ℕ) :
             have h2 : n + k < 2 * n := by omega
             simp [h1, h2]
             omega
-      _ = ∑ k ∈ Finset.range n, k ^ 2 :=
-        Finset.sum_range_reflect (fun k => k ^ 2) n
+      _ = ∑ k ∈ Finset.range n, k ^ (2 : ℕ) :=
+        Finset.sum_range_reflect (fun k => k ^ (2 : ℕ)) n
 
 /-- Consecutive natural cells have the exact cubic fourth-moment count. -/
 theorem three_mul_maynardNatRStar_range (n : ℕ) :
-    3 * maynardNatRStar (Finset.range n) n = 2 * n ^ 3 + n := by
+    3 * maynardNatRStar (Finset.range n) n = 2 * n ^ (3 : ℕ) + n := by
   rw [maynardNatRStar_range_eq_sum_squares]
   induction n with
   | zero => simp
   | succ n ih =>
       rw [Finset.sum_range_succ]
       calc
-        3 * ((∑ k ∈ Finset.range n, ((k + 1) ^ 2 + k ^ 2)) +
-            ((n + 1) ^ 2 + n ^ 2)) =
-            3 * (∑ k ∈ Finset.range n, ((k + 1) ^ 2 + k ^ 2)) +
-              3 * ((n + 1) ^ 2 + n ^ 2) := by ring
-        _ = (2 * n ^ 3 + n) + 3 * ((n + 1) ^ 2 + n ^ 2) := by rw [ih]
-        _ = 2 * (n + 1) ^ 3 + (n + 1) := by ring
+        3 * ((∑ k ∈ Finset.range n, ((k + 1) ^ (2 : ℕ) + k ^ (2 : ℕ))) +
+            ((n + 1) ^ (2 : ℕ) + n ^ (2 : ℕ))) =
+            3 * (∑ k ∈ Finset.range n, ((k + 1) ^ (2 : ℕ) + k ^ (2 : ℕ))) +
+              3 * ((n + 1) ^ (2 : ℕ) + n ^ (2 : ℕ)) := by ring
+        _ = (2 * n ^ (3 : ℕ) + n) + 3 * ((n + 1) ^ (2 : ℕ) + n ^ (2 : ℕ)) := by rw [ih]
+        _ = 2 * (n + 1) ^ (3 : ℕ) + (n + 1) := by ring
 
 /-- Integer-cell form of the exact interval-packet energy law. -/
 theorem three_mul_maynardRStar_intervalCells (n : ℕ) :
     3 * maynardRStar
         ((Finset.range n).map maynardNatToIntEmbedding) =
-      2 * n ^ 3 + n := by
+      2 * n ^ (3 : ℕ) + n := by
   rw [← maynardNatRStar_eq_maynardRStar_map (S := Finset.range n)
     (N := n) (by simp)]
   exact three_mul_maynardNatRStar_range n
@@ -150,13 +150,13 @@ theorem three_mul_maynardRStar_intervalCells (n : ℕ) :
 private theorem maynardRStar_intervalCells_div_cube_eq {n : ℕ} (hn : 0 < n) :
     (maynardRStar
         ((Finset.range n).map maynardNatToIntEmbedding) : ℝ) /
-        (n : ℝ) ^ 3 =
-      2 / 3 + 1 / (3 * (n : ℝ) ^ 2) := by
+        (n : ℝ) ^ (3 : ℕ) =
+      2 / 3 + 1 / (3 * (n : ℝ) ^ (2 : ℕ)) := by
   have hformula := three_mul_maynardRStar_intervalCells n
   have hformulaR :
       3 * (maynardRStar
           ((Finset.range n).map maynardNatToIntEmbedding) : ℝ) =
-        2 * (n : ℝ) ^ 3 + n := by
+        2 * (n : ℝ) ^ (3 : ℕ) + n := by
     exact_mod_cast hformula
   have hnR : (n : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hn)
   field_simp
@@ -168,13 +168,13 @@ theorem tendsto_maynardRStar_intervalCells_div_cube :
       (fun n : ℕ =>
         (maynardRStar
             ((Finset.range n).map maynardNatToIntEmbedding) : ℝ) /
-          (n : ℝ) ^ 3)
+          (n : ℝ) ^ (3 : ℕ))
       Filter.atTop (nhds (2 / 3 : ℝ)) := by
   have hinv : Filter.Tendsto (fun n : ℕ => (n : ℝ)⁻¹)
       Filter.atTop (nhds 0) :=
     tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop
   have hmodel : Filter.Tendsto
-      (fun n : ℕ => 2 / 3 + (1 / 3) * ((n : ℝ)⁻¹) ^ 2)
+      (fun n : ℕ => 2 / 3 + (1 / 3) * ((n : ℝ)⁻¹) ^ (2 : ℕ))
       Filter.atTop (nhds (2 / 3 : ℝ)) := by
     simpa using
       tendsto_const_nhds.add ((hinv.pow 2).const_mul (1 / 3 : ℝ))
@@ -185,26 +185,26 @@ theorem tendsto_maynardRStar_intervalCells_div_cube :
 
 /-- Every proposed quadratic cardinality ceiling is violated by an interval packet. -/
 theorem exists_intervalCells_maynardRStar_gt_quadratic (C : ℕ) :
-    ∃ n : ℕ, C * n ^ 2 <
+    ∃ n : ℕ, C * n ^ (2 : ℕ) <
       maynardRStar ((Finset.range n).map maynardNatToIntEmbedding) := by
   refine ⟨3 * C + 1, ?_⟩
   have hformula := three_mul_maynardRStar_intervalCells (3 * C + 1)
   have hn : 3 * C < 3 * C + 1 := by omega
-  have hn2 : 0 < (3 * C + 1) ^ 2 := by positivity
+  have hn2 : 0 < (3 * C + 1) ^ (2 : ℕ) := by positivity
   have hmul := Nat.mul_lt_mul_of_pos_right hn hn2
-  have hcub : (3 * C) * (3 * C + 1) ^ 2 < (3 * C + 1) ^ 3 := by
+  have hcub : (3 * C) * (3 * C + 1) ^ (2 : ℕ) < (3 * C + 1) ^ (3 : ℕ) := by
     calc
-      (3 * C) * (3 * C + 1) ^ 2 <
-          (3 * C + 1) * (3 * C + 1) ^ 2 := hmul
-      _ = (3 * C + 1) ^ 3 := by ring
-  have htarget : 3 * (C * (3 * C + 1) ^ 2) <
-      2 * (3 * C + 1) ^ 3 + (3 * C + 1) := by
+      (3 * C) * (3 * C + 1) ^ (2 : ℕ) <
+          (3 * C + 1) * (3 * C + 1) ^ (2 : ℕ) := hmul
+      _ = (3 * C + 1) ^ (3 : ℕ) := by ring
+  have htarget : 3 * (C * (3 * C + 1) ^ (2 : ℕ)) <
+      2 * (3 * C + 1) ^ (3 : ℕ) + (3 * C + 1) := by
     calc
-      3 * (C * (3 * C + 1) ^ 2) =
-          (3 * C) * (3 * C + 1) ^ 2 := by ring
-      _ < (3 * C + 1) ^ 3 := hcub
-      _ ≤ 2 * (3 * C + 1) ^ 3 + (3 * C + 1) := by omega
-  have hscaled : 3 * (C * (3 * C + 1) ^ 2) <
+      3 * (C * (3 * C + 1) ^ (2 : ℕ)) =
+          (3 * C) * (3 * C + 1) ^ (2 : ℕ) := by ring
+      _ < (3 * C + 1) ^ (3 : ℕ) := hcub
+      _ ≤ 2 * (3 * C + 1) ^ (3 : ℕ) + (3 * C + 1) := by omega
+  have hscaled : 3 * (C * (3 * C + 1) ^ (2 : ℕ)) <
       3 * maynardRStar
         ((Finset.range (3 * C + 1)).map maynardNatToIntEmbedding) := by
     rw [hformula]
@@ -216,7 +216,7 @@ theorem exists_intervalCells_maynardRStar_gt_quadratic (C : ℕ) :
 consecutive-cell packets.  This is the formal T2 generic-`L²/L⁴` route kill. -/
 theorem not_exists_uniform_quadratic_bound_maynardRStar_intervalCells :
     ¬ ∃ C : ℕ, ∀ n : ℕ,
-      maynardRStar ((Finset.range n).map maynardNatToIntEmbedding) ≤ C * n ^ 2 := by
+      maynardRStar ((Finset.range n).map maynardNatToIntEmbedding) ≤ C * n ^ (2 : ℕ) := by
   rintro ⟨C, hC⟩
   obtain ⟨n, hn⟩ := exists_intervalCells_maynardRStar_gt_quadratic C
   exact (not_lt_of_ge (hC n)) hn

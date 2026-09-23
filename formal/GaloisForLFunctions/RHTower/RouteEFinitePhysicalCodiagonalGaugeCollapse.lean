@@ -43,7 +43,7 @@ theorem hsNormSq_cutoffLowerBoundary_pointedFisherConnection_le_half
     (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (hpsi : ‖psi‖ = 1) :
     hsNormSq (cutoffLowerBoundary e (pointedFisherConnection psi chi)) ≤
-      (1 / 2 : ℝ) * ‖chi‖ ^ 2 := by
+      (1 / 2 : ℝ) * ‖chi‖ ^ (2 : ℕ) := by
   by_cases hchi : chi = 0
   · subst chi
     have hzero : hsNormSq (0 : H →L[ℂ] H) = 0 :=
@@ -103,8 +103,8 @@ theorem norm_sq_hsInner_cutoffLowerBoundary_joinedReporter_le_quarter
     (hpsi : ‖psi‖ = 1) (hD : ‖D‖ ≤ 1) :
     ‖hsInner
         (cutoffLowerBoundary e (pointedFisherConnection psi chi))
-        (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ 2 ≤
-      (1 / 4 : ℝ) * ‖chi‖ ^ 2 := by
+        (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ (2 : ℕ) ≤
+      (1 / 4 : ℝ) * ‖chi‖ ^ (2 : ℕ) := by
   have hsource : IsHilbertSchmidt
       (cutoffLowerBoundary e (pointedFisherConnection psi chi)) := by
     exact ((pointedFisherConnection_isHilbertSchmidt psi chi).comp_right e)
@@ -117,12 +117,12 @@ theorem norm_sq_hsInner_cutoffLowerBoundary_joinedReporter_le_quarter
   calc
     ‖hsInner
         (cutoffLowerBoundary e (pointedFisherConnection psi chi))
-        (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ 2 ≤
+        (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ (2 : ℕ) ≤
         (1 / 2 : ℝ) * hsNormSq
           (cutoffLowerBoundary e (pointedFisherConnection psi chi)) := hpair
-    _ ≤ (1 / 2 : ℝ) * ((1 / 2 : ℝ) * ‖chi‖ ^ 2) := by
+    _ ≤ (1 / 2 : ℝ) * ((1 / 2 : ℝ) * ‖chi‖ ^ (2 : ℕ)) := by
       exact mul_le_mul_of_nonneg_left hlower (by norm_num)
-    _ = (1 / 4 : ℝ) * ‖chi‖ ^ 2 := by ring
+    _ = (1 / 4 : ℝ) * ‖chi‖ ^ (2 : ℕ) := by ring
 
 end GaloisForLFunctions.HTGeometry
 
@@ -141,7 +141,7 @@ def routeEFiniteCodiagonalScore (w : Ω → ℝ) (A d : Ω → ℂ) : ℂ :=
 
 /-- Atomic diagonal collision omitted by the off-diagonal codiagonal. -/
 def routeEFiniteCodiagonalCollision (w : Ω → ℝ) (A d : Ω → ℂ) : ℂ :=
-  ∑ s, ((w s ^ 2 : ℝ) : ℂ) * A s * d s
+  ∑ s, ((w s ^ (2 : ℕ) : ℝ) : ℂ) * A s * d s
 
 /-- Literal ordered-pair codiagonal with equal-state pairs removed. -/
 def routeEFiniteOffDiagonalCodiagonal (w : Ω → ℝ) (A d : Ω → ℂ) : ℂ :=
@@ -150,7 +150,7 @@ def routeEFiniteOffDiagonalCodiagonal (w : Ω → ℝ) (A d : Ω → ℂ) : ℂ 
 
 /-- Weighted centered-state energy controlling atomic collision. -/
 def routeEFiniteCodiagonalEnergy (w : Ω → ℝ) (A : Ω → ℂ) : ℝ :=
-  ∑ s, w s * ‖A s‖ ^ 2
+  ∑ s, w s * ‖A s‖ ^ (2 : ℕ)
 
 /-- **Exact finite complex codiagonal recovery.**  A centered score equals literal off-diagonal
 codiagonal plus twice its atomic collision. -/
@@ -225,10 +225,10 @@ private theorem weighted_norm_sum_le_sqrt_routeEFiniteCodiagonalEnergy
     apply Finset.sum_congr rfl
     intro s _hs
     rw [← mul_assoc, Real.mul_self_sqrt (hw_nonneg s)]
-  have hfirst : (∑ s, Real.sqrt (w s) ^ 2) = 1 := by
+  have hfirst : (∑ s, Real.sqrt (w s) ^ (2 : ℕ)) = 1 := by
     simpa only [Real.sq_sqrt (hw_nonneg _)] using hw
   have hsecond :
-      (∑ s, (Real.sqrt (w s) * ‖A s‖) ^ 2) =
+      (∑ s, (Real.sqrt (w s) * ‖A s‖) ^ (2 : ℕ)) =
         routeEFiniteCodiagonalEnergy w A := by
     unfold routeEFiniteCodiagonalEnergy
     apply Finset.sum_congr rfl
@@ -266,7 +266,7 @@ theorem norm_routeEFiniteCodiagonalScore_sub_offDiagonal_le
         wMax * Real.sqrt (routeEFiniteCodiagonalEnergy w A) := by
     calc
       ‖routeEFiniteCodiagonalCollision w A d‖ ≤
-          ∑ s, ‖(((w s ^ 2 : ℝ) : ℂ) * A s * d s)‖ := by
+          ∑ s, ‖(((w s ^ (2 : ℕ) : ℝ) : ℂ) * A s * d s)‖ := by
             unfold routeEFiniteCodiagonalCollision
             exact norm_sum_le _ _
       _ ≤ ∑ s, wMax * (w s * ‖A s‖) := by
@@ -275,14 +275,14 @@ theorem norm_routeEFiniteCodiagonalScore_sub_offDiagonal_le
         rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
           abs_of_nonneg (sq_nonneg (w s))]
         calc
-          w s ^ 2 * ‖A s‖ * ‖d s‖ ≤ w s ^ 2 * ‖A s‖ * 1 :=
+          w s ^ (2 : ℕ) * ‖A s‖ * ‖d s‖ ≤ w s ^ (2 : ℕ) * ‖A s‖ * 1 :=
             mul_le_mul_of_nonneg_left (hd s)
               (mul_nonneg (sq_nonneg _) (norm_nonneg _))
           _ ≤ wMax * (w s * ‖A s‖) := by
             have hbase : 0 ≤ w s * ‖A s‖ :=
               mul_nonneg (hw_nonneg s) (norm_nonneg _)
             calc
-              w s ^ 2 * ‖A s‖ * 1 = (w s * ‖A s‖) * w s := by ring
+              w s ^ (2 : ℕ) * ‖A s‖ * 1 = (w s * ‖A s‖) * w s := by ring
               _ ≤ (w s * ‖A s‖) * wMax :=
                 mul_le_mul_of_nonneg_left (hw_le s) hbase
               _ = wMax * (w s * ‖A s‖) := by ring
@@ -390,7 +390,7 @@ def routeEFiniteSquarefreeFisherConnection (S : Finset Nat.Primes) (sigma : ℝ)
 theorem routeEFiniteSquarefreeFisherConnection_energy
     (S : Finset Nat.Primes) (sigma : ℝ) :
     hsNormSq (routeEFiniteSquarefreeFisherConnection S sigma) =
-      4 * (sigma - 1) ^ 2 * finiteSquarefreeCurvature S sigma := by
+      4 * (sigma - 1) ^ (2 : ℕ) * finiteSquarefreeCurvature S sigma := by
   rw [routeEFiniteSquarefreeFisherConnection,
     hsNormSq_pointedFisherConnection_of_unit_of_orthogonal
       (finiteSquarefreeSource S sigma) (finiteSquarefreeTangent S sigma)
@@ -423,8 +423,8 @@ theorem norm_sq_hsInner_routeEFiniteSquarefreeFisherLowerBoundary_joinedReporter
     ‖hsInner
         (cutoffLowerBoundary e (routeEFiniteSquarefreeFisherConnection S sigma))
         (infiniteFisherOneCornerJoinedReporter e D
-          (finiteSquarefreeSource S sigma))‖ ^ 2 ≤
-      (sigma - 1) ^ 2 * finiteSquarefreeCurvature S sigma := by
+          (finiteSquarefreeSource S sigma))‖ ^ (2 : ℕ) ≤
+      (sigma - 1) ^ (2 : ℕ) * finiteSquarefreeCurvature S sigma := by
   have hpair := norm_sq_hsInner_cutoffLowerBoundary_joinedReporter_le_quarter e D
     (finiteSquarefreeSource S sigma) (finiteSquarefreeTangent S sigma)
     he heAdj (norm_finiteSquarefreeSource S sigma)
@@ -452,8 +452,8 @@ theorem norm_hsInner_routeEFiniteSquarefreeFisherLowerBoundary_joinedReporter_le
   have hrhs : 0 ≤ |sigma - 1| * Real.sqrt (finiteSquarefreeCurvature S sigma) :=
     mul_nonneg (abs_nonneg _) (Real.sqrt_nonneg _)
   have hrhsSq :
-      (|sigma - 1| * Real.sqrt (finiteSquarefreeCurvature S sigma)) ^ 2 =
-        (sigma - 1) ^ 2 * finiteSquarefreeCurvature S sigma := by
+      (|sigma - 1| * Real.sqrt (finiteSquarefreeCurvature S sigma)) ^ (2 : ℕ) =
+        (sigma - 1) ^ (2 : ℕ) * finiteSquarefreeCurvature S sigma := by
     rw [mul_pow, sq_abs, hsqrt]
   nlinarith [norm_nonneg
     (hsInner
@@ -488,13 +488,13 @@ theorem finiteSquarefreeTangent_eq_gauge_smul_neutral
 
 theorem norm_routeEFiniteSquarefreeGaugeNeutralTangent_sq
     (S : Finset Nat.Primes) (sigma : ℝ) :
-    ‖routeEFiniteSquarefreeGaugeNeutralTangent S sigma‖ ^ 2 =
+    ‖routeEFiniteSquarefreeGaugeNeutralTangent S sigma‖ ^ (2 : ℕ) =
       4 * finiteSquarefreeCurvature S sigma := by
   rw [routeEFiniteSquarefreeGaugeNeutralTangent, EuclideanSpace.norm_sq_eq]
   change (∑ x : SquarefreeBitConfig S,
     ‖(((-2 *
       (finiteSquarefreeHamiltonian S x - finiteSquarefreeCurrent S sigma) : ℝ) : ℂ) *
-      finiteSquarefreeSourceCoefficient S sigma x)‖ ^ 2) = _
+      finiteSquarefreeSourceCoefficient S sigma x)‖ ^ (2 : ℕ)) = _
   rw [← finiteSquarefreeCurvature_eq_variance, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro x _hx
@@ -528,7 +528,7 @@ theorem inner_source_routeEFiniteSquarefreeGaugeNeutralTangent_eq_zero
           (finiteSquarefreeBornWeight S sigma x : ℂ) := by
       rw [← starRingEnd_apply]
       calc
-        _ = ((‖finiteSquarefreeSourceCoefficient S sigma x‖ : ℂ) ^ 2) :=
+        _ = ((‖finiteSquarefreeSourceCoefficient S sigma x‖ : ℂ) ^ (2 : ℕ)) :=
           RCLike.mul_conj (finiteSquarefreeSourceCoefficient S sigma x)
         _ = _ := by
           rw [← Complex.ofReal_pow,
@@ -610,7 +610,7 @@ noncomputable def centeredLikelihoodRatio
 
 /-- Target-weighted non-scalar likelihood-ratio energy. -/
 noncomputable def centeredEnergy (d : RouteEFiniteColumnData ι) : ℝ :=
-  ∑ i, d.targetMass i * d.centeredLikelihoodRatio i ^ 2
+  ∑ i, d.targetMass i * d.centeredLikelihoodRatio i ^ (2 : ℕ)
 
 private theorem target_mul_likelihoodRatio
     (d : RouteEFiniteColumnData ι) (i : ι) :
@@ -659,7 +659,7 @@ theorem centeredLikelihoodRatio_mean_zero
 theorem chiSquare_eq_centeredEnergy_add_massDefect
     (d : RouteEFiniteColumnData ι) :
     d.chiSquare = d.centeredEnergy +
-      (d.pushedTotal - d.targetTotal) ^ 2 / d.targetTotal := by
+      (d.pushedTotal - d.targetTotal) ^ (2 : ℕ) / d.targetTotal := by
   cases isEmpty_or_nonempty ι with
   | inl hι =>
       letI := hι
@@ -669,33 +669,33 @@ theorem chiSquare_eq_centeredEnergy_add_massDefect
       letI := hι
       have hN : d.targetTotal ≠ 0 := ne_of_gt d.targetTotal_pos
       have hpoint (i : ι) :
-          (d.pushedMass i - d.targetMass i) ^ 2 / d.targetMass i =
-            d.targetMass i * (d.likelihoodRatio i - 1) ^ 2 := by
+          (d.pushedMass i - d.targetMass i) ^ (2 : ℕ) / d.targetMass i =
+            d.targetMass i * (d.likelihoodRatio i - 1) ^ (2 : ℕ) := by
         rw [likelihoodRatio]
         field_simp [ne_of_gt (d.targetMass_pos i)]
       have hcross := d.centeredLikelihoodRatio_mean_zero
       unfold RouteEFiniteColumnData.chiSquare centeredEnergy
       simp_rw [hpoint]
       calc
-        (∑ i, d.targetMass i * (d.likelihoodRatio i - 1) ^ 2) =
+        (∑ i, d.targetMass i * (d.likelihoodRatio i - 1) ^ (2 : ℕ)) =
             ∑ i, d.targetMass i *
               (d.centeredLikelihoodRatio i +
-                (d.pushedTotal / d.targetTotal - 1)) ^ 2 := by
+                (d.pushedTotal / d.targetTotal - 1)) ^ (2 : ℕ) := by
                   apply Finset.sum_congr rfl
                   intro i _hi
                   rw [centeredLikelihoodRatio]
                   ring
-        _ = (∑ i, d.targetMass i * d.centeredLikelihoodRatio i ^ 2) +
+        _ = (∑ i, d.targetMass i * d.centeredLikelihoodRatio i ^ (2 : ℕ)) +
             2 * (d.pushedTotal / d.targetTotal - 1) *
               (∑ i, d.targetMass i * d.centeredLikelihoodRatio i) +
-            (d.pushedTotal / d.targetTotal - 1) ^ 2 *
+            (d.pushedTotal / d.targetTotal - 1) ^ (2 : ℕ) *
               (∑ i, d.targetMass i) := by
                 calc
                   _ = ∑ i,
-                      (d.targetMass i * d.centeredLikelihoodRatio i ^ 2 +
+                      (d.targetMass i * d.centeredLikelihoodRatio i ^ (2 : ℕ) +
                         2 * (d.pushedTotal / d.targetTotal - 1) *
                           (d.targetMass i * d.centeredLikelihoodRatio i) +
-                        (d.pushedTotal / d.targetTotal - 1) ^ 2 *
+                        (d.pushedTotal / d.targetTotal - 1) ^ (2 : ℕ) *
                           d.targetMass i) := by
                             apply Finset.sum_congr rfl
                             intro i _hi
@@ -703,10 +703,10 @@ theorem chiSquare_eq_centeredEnergy_add_massDefect
                   _ = _ := by
                     rw [Finset.sum_add_distrib, Finset.sum_add_distrib]
                     rw [Finset.mul_sum, Finset.mul_sum]
-        _ = (∑ i, d.targetMass i * d.centeredLikelihoodRatio i ^ 2) +
-            (d.pushedTotal - d.targetTotal) ^ 2 / d.targetTotal := by
+        _ = (∑ i, d.targetMass i * d.centeredLikelihoodRatio i ^ (2 : ℕ)) +
+            (d.pushedTotal - d.targetTotal) ^ (2 : ℕ) / d.targetTotal := by
               rw [hcross]
-              change _ + 2 * _ * 0 + _ ^ 2 * d.targetTotal = _
+              change _ + 2 * _ * 0 + _ ^ (2 : ℕ) * d.targetTotal = _
               field_simp [hN]
               ring
 

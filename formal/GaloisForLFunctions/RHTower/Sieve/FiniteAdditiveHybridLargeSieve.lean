@@ -59,9 +59,9 @@ theorem additiveHybridLogPoly_eq_sum_residues
 /-- Pointwise hybrid additive Parseval identity. -/
 theorem sum_normSq_additiveHybridLogPoly
     (q N : ℕ) (a : ℕ → ℂ) (w : ℝ) :
-    ∑ d : ZMod (q + 1), ‖additiveHybridLogPoly q N a d w‖ ^ 2 =
+    ∑ d : ZMod (q + 1), ‖additiveHybridLogPoly q N a d w‖ ^ (2 : ℕ) =
       ((q + 1 : ℕ) : ℝ) *
-        ∑ r : ZMod (q + 1), ‖logPoly a (additiveResidueInterval q N r) w‖ ^ 2 := by
+        ∑ r : ZMod (q + 1), ‖logPoly a (additiveResidueInterval q N r) w‖ ^ (2 : ℕ) := by
   letI : NeZero (q + 1) := ⟨by omega⟩
   simp_rw [additiveHybridLogPoly_eq_sum_residues]
   simpa only [Complex.normSq_eq_norm_sq] using
@@ -74,36 +74,36 @@ theorem sum_integral_normSq_additiveHybridLogPoly_le
     (q N : ℕ) (a : ℕ → ℂ) {δ W : ℝ}
     (hδ : 0 < δ) (hWδ : 2 * Real.pi * δ * W ≤ 1) :
     ∑ d : ZMod (q + 1),
-        (∫ w in Set.Icc (-W) W, ‖additiveHybridLogPoly q N a d w‖ ^ 2)
+        (∫ w in Set.Icc (-W) W, ‖additiveHybridLogPoly q N a d w‖ ^ (2 : ℕ))
       ≤ ((q + 1 : ℕ) : ℝ) * (5 / (4 * δ)) *
         ∑ n ∈ Finset.Icc 1 N,
           ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) / ((q + 1 : ℕ) : ℝ) + 2) *
-            ‖a n‖ ^ 2 := by
+            ‖a n‖ ^ (2 : ℕ) := by
   classical
   let I : Set ℝ := Set.Icc (-W) W
   have hdint : ∀ d : ZMod (q + 1),
-      Integrable (fun w => ‖additiveHybridLogPoly q N a d w‖ ^ 2)
+      Integrable (fun w => ‖additiveHybridLogPoly q N a d w‖ ^ (2 : ℕ))
         (volume.restrict I) := by
     intro d
     exact (continuous_additiveHybridLogPoly q N a d).norm.pow 2 |>.integrableOn_Icc
   have hrint : ∀ r : ZMod (q + 1),
-      Integrable (fun w => ‖logPoly a (additiveResidueInterval q N r) w‖ ^ 2)
+      Integrable (fun w => ‖logPoly a (additiveResidueInterval q N r) w‖ ^ (2 : ℕ))
         (volume.restrict I) := by
     intro r
     exact (continuous_logPoly a (additiveResidueInterval q N r)).norm.pow 2
       |>.integrableOn_Icc
   rw [← MeasureTheory.integral_finsetSum Finset.univ (fun d _ => hdint d)]
   change (∫ w in I, ∑ d : ZMod (q + 1),
-      ‖additiveHybridLogPoly q N a d w‖ ^ 2) ≤ _
+      ‖additiveHybridLogPoly q N a d w‖ ^ (2 : ℕ)) ≤ _
   rw [MeasureTheory.setIntegral_congr_fun measurableSet_Icc
     (fun w _ => sum_normSq_additiveHybridLogPoly q N a w)]
   rw [MeasureTheory.integral_const_mul]
   rw [MeasureTheory.integral_finsetSum Finset.univ (fun r _ => hrint r)]
   have hrbound : ∀ r : ZMod (q + 1),
-      (∫ w in I, ‖logPoly a (additiveResidueInterval q N r) w‖ ^ 2) ≤
+      (∫ w in I, ‖logPoly a (additiveResidueInterval q N r) w‖ ^ (2 : ℕ)) ≤
         (5 / (4 * δ)) * ∑ n ∈ additiveResidueInterval q N r,
           ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) / ((q + 1 : ℕ) : ℝ) + 2) *
-            ‖a n‖ ^ 2 := by
+            ‖a n‖ ^ (2 : ℕ) := by
     intro r
     have hs0 : (0 : ℕ) ∉ additiveResidueInterval q N r := by
       simp [additiveResidueInterval]
@@ -119,7 +119,7 @@ theorem sum_integral_normSq_additiveHybridLogPoly_le
   have hfac0 : (0 : ℝ) ≤ ((q + 1 : ℕ) : ℝ) := by positivity
   refine le_trans (mul_le_mul_of_nonneg_left hsum hfac0) ?_
   let g : ℕ → ℝ := fun n =>
-    ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) / ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ 2
+    ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) / ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ (2 : ℕ)
   have hfib : ∑ r : ZMod (q + 1), ∑ n ∈ additiveResidueInterval q N r, g n =
       ∑ n ∈ Finset.Icc 1 N, g n := by
     simpa only [additiveResidueInterval] using
@@ -131,18 +131,18 @@ theorem sum_integral_normSq_additiveHybridLogPoly_le
         ∑ r : ZMod (q + 1), (5 / (4 * δ)) *
           ∑ n ∈ additiveResidueInterval q N r,
             ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) /
-                ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ 2 =
+                ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ (2 : ℕ) =
       ((q + 1 : ℕ) : ℝ) * (5 / (4 * δ)) *
         ∑ r : ZMod (q + 1),
           ∑ n ∈ additiveResidueInterval q N r,
             ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) /
-                ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ 2 := by
+                ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ (2 : ℕ) := by
         rw [← Finset.mul_sum]
         ring
     _ = ((q + 1 : ℕ) : ℝ) * (5 / (4 * δ)) *
         ∑ n ∈ Finset.Icc 1 N,
           ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) /
-              ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ 2 := by rw [hfib]
+              ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ (2 : ℕ) := by rw [hfib]
     _ ≤ _ := le_rfl
 
 /-- Affine hybrid additive mean square on the natural height scale. -/
@@ -150,23 +150,23 @@ theorem sum_integral_normSq_additiveHybridLogPoly_le_affine
     (q N : ℕ) (a : ℕ → ℂ) {T : ℝ} (hT : 1 ≤ T) :
     ∑ d : ZMod (q + 1),
         (∫ w in Set.Icc (-(T / (2 * Real.pi))) (T / (2 * Real.pi)),
-          ‖additiveHybridLogPoly q N a d w‖ ^ 2)
+          ‖additiveHybridLogPoly q N a d w‖ ^ (2 : ℕ))
       ≤ (5 * Real.exp 1 / 2) *
-          ∑ n ∈ Finset.Icc 1 N, (n : ℝ) * ‖a n‖ ^ 2
+          ∑ n ∈ Finset.Icc 1 N, (n : ℝ) * ‖a n‖ ^ (2 : ℕ)
         + (5 / 2) * ((q + 1 : ℕ) : ℝ) * T *
-          ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 := by
+          ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ (2 : ℕ) := by
   have hT0 : (0 : ℝ) < T := by linarith
   have hδ : (0 : ℝ) < 1 / T := by positivity
   have hWδ : 2 * Real.pi * (1 / T) * (T / (2 * Real.pi)) ≤ 1 := by
     rw [show 2 * Real.pi * (1 / T) * (T / (2 * Real.pi)) = 1 by field_simp]
   refine le_trans (sum_integral_normSq_additiveHybridLogPoly_le q N a hδ hWδ) ?_
-  set E0 : ℝ := ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 with hE0def
-  set E1 : ℝ := ∑ n ∈ Finset.Icc 1 N, (n : ℝ) * ‖a n‖ ^ 2 with hE1def
+  set E0 : ℝ := ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ (2 : ℕ) with hE0def
+  set E1 : ℝ := ∑ n ∈ Finset.Icc 1 N, (n : ℝ) * ‖a n‖ ^ (2 : ℕ) with hE1def
   have hE0 : 0 ≤ E0 := by rw [hE0def]; positivity
   have hE1 : 0 ≤ E1 := by rw [hE1def]; positivity
   have hsplit : ∑ n ∈ Finset.Icc 1 N,
       ((n : ℝ) * (Real.exp (1 / T) - Real.exp (-(1 / T))) /
-          ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ 2
+          ((q + 1 : ℕ) : ℝ) + 2) * ‖a n‖ ^ (2 : ℕ)
       = (Real.exp (1 / T) - Real.exp (-(1 / T))) /
           ((q + 1 : ℕ) : ℝ) * E1 + 2 * E0 := by
     rw [hE0def, hE1def, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
@@ -202,13 +202,13 @@ theorem sum_integral_normSq_additiveHybridLogPoly_le_length
     (q N : ℕ) (a : ℕ → ℂ) {T : ℝ} (hT : 1 ≤ T) :
     ∑ d : ZMod (q + 1),
         (∫ w in Set.Icc (-(T / (2 * Real.pi))) (T / (2 * Real.pi)),
-          ‖additiveHybridLogPoly q N a d w‖ ^ 2)
+          ‖additiveHybridLogPoly q N a d w‖ ^ (2 : ℕ))
       ≤ ((5 * Real.exp 1 / 2) * (N : ℝ) +
           (5 / 2) * ((q + 1 : ℕ) : ℝ) * T) *
-        ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 := by
+        ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ (2 : ℕ) := by
   refine le_trans (sum_integral_normSq_additiveHybridLogPoly_le_affine q N a hT) ?_
-  have hweighted : ∑ n ∈ Finset.Icc 1 N, (n : ℝ) * ‖a n‖ ^ 2
-      ≤ (N : ℝ) * ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 := by
+  have hweighted : ∑ n ∈ Finset.Icc 1 N, (n : ℝ) * ‖a n‖ ^ (2 : ℕ)
+      ≤ (N : ℝ) * ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     exact Finset.sum_le_sum fun n hn =>
       mul_le_mul_of_nonneg_right (by exact_mod_cast (Finset.mem_Icc.1 hn).2) (by positivity)
@@ -216,9 +216,9 @@ theorem sum_integral_normSq_additiveHybridLogPoly_le_length
     (by positivity : (0 : ℝ) ≤ 5 * Real.exp 1 / 2)
   calc
     _ ≤ (5 * Real.exp 1 / 2) *
-          ((N : ℝ) * ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2)
+          ((N : ℝ) * ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ (2 : ℕ))
         + (5 / 2) * ((q + 1 : ℕ) : ℝ) * T *
-          ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 := add_le_add hscaled (le_refl _)
+          ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ (2 : ℕ) := add_le_add hscaled (le_refl _)
     _ = _ := by ring
 
 end RHTower.Sieve

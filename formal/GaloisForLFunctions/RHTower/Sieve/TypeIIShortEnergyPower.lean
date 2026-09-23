@@ -12,7 +12,7 @@ namespace RHTower.Sieve
 
 noncomputable section
 
-def typeIIPolylogEnvelope (B : ℕ) : ℝ := 1 + (1 + Real.log B) ^ 3
+def typeIIPolylogEnvelope (B : ℕ) : ℝ := 1 + (1 + Real.log B) ^ (3 : ℕ)
 
 theorem typeIIPolylogEnvelope_nonneg (B : ℕ) : 0 ≤ typeIIPolylogEnvelope B := by
   rw [typeIIPolylogEnvelope]
@@ -31,7 +31,7 @@ theorem typeIIShortEnergyEnvelope_le {N B : ℕ} (hB : 1 ≤ B) (hNB : N ≤ B) 
     have hinv : invSum N ≤ 1 + Real.log B :=
       (invSum_le_one_add_log hN).trans (by linarith)
     have hinv0 := invSum_nonneg N
-    have hpow : invSum N ^ 3 ≤ (1 + Real.log B) ^ 3 := by gcongr
+    have hpow : invSum N ^ (3 : ℕ) ≤ (1 + Real.log B) ^ (3 : ℕ) := by gcongr
     rw [typeIIShortEnergyEnvelope, typeIIPolylogEnvelope]
     nlinarith [mul_le_mul hNcast hpow (by positivity) (by positivity)]
 
@@ -65,7 +65,7 @@ theorem typeIIShortEnergyEnvelope_effHigh_le_div {B P : ℕ} (hB : 1 ≤ B) (hP 
     have hinv : invSum N ≤ 1 + Real.log B :=
       (invSum_le_one_add_log hN).trans (by linarith)
     have hinv0 := invSum_nonneg N
-    have hpow : invSum N ^ 3 ≤ (1 + Real.log B) ^ 3 := by gcongr
+    have hpow : invSum N ^ (3 : ℕ) ≤ (1 + Real.log B) ^ (3 : ℕ) := by gcongr
     rw [typeIIShortEnergyEnvelope, typeIIPolylogEnvelope]
     nlinarith [mul_le_mul hNdiv hpow (by positivity) (by positivity)]
 

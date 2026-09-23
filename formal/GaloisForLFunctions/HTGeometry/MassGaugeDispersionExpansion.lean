@@ -31,12 +31,12 @@ noncomputable def outgoingBase (lambda xi : ℝ) : ℂ := ((-xi : ℝ) : ℂ) + 
   simp [outgoingBase]
 
 theorem normSq_outgoingBase (lambda xi : ℝ) :
-    ‖outgoingBase lambda xi‖ ^ 2 = xi ^ 2 + lambda ^ 2 := by
+    ‖outgoingBase lambda xi‖ ^ (2 : ℕ) = xi ^ (2 : ℕ) + lambda ^ (2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, outgoingBase_re, outgoingBase_im]
   ring
 
 theorem massGaugeRadicand_eq_outgoingBase (a lambda xi : ℝ) :
-    massGaugeRadicand a lambda xi = outgoingBase lambda xi ^ 2 + ((a : ℝ) : ℂ) ^ 2 := by
+    massGaugeRadicand a lambda xi = outgoingBase lambda xi ^ (2 : ℕ) + ((a : ℝ) : ℂ) ^ (2 : ℕ) := by
   rw [massGaugeRadicand, outgoingBase]
   push_cast
   ring
@@ -45,8 +45,8 @@ theorem massGaugeRadicand_eq_outgoingBase (a lambda xi : ℝ) :
 theorem norm_massGaugeDispersion_sub_le {a lambda xi : ℝ} (hxi : xi < 0) :
     ‖massGaugeDispersion a lambda xi
         - (outgoingBase lambda xi
-          + ((a : ℝ) : ℂ) ^ 2 / (2 * outgoingBase lambda xi))‖
-      ≤ a ^ 4 / (4 * (-xi) * (xi ^ 2 + lambda ^ 2)) := by
+          + ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * outgoingBase lambda xi))‖
+      ≤ a ^ (4 : ℕ) / (4 * (-xi) * (xi ^ (2 : ℕ) + lambda ^ (2 : ℕ))) := by
   have hre : 0 < (outgoingBase lambda xi).re := by
     rw [outgoingBase_re]
     linarith
@@ -77,8 +77,8 @@ dispersion is the increment of the plane wave up to `O(r^{-2})`. -/
 theorem norm_massGaugeDispersion_increment_le {a lambda r eta : ℝ} (hr : 0 < r)
     (hetar : |eta| < r) :
     ‖massGaugeDispersion a lambda (eta - r) - massGaugeDispersion a lambda (-r) + (eta : ℂ)‖
-      ≤ a ^ 2 * |eta| / (2 * (r - |eta|) * r)
-        + a ^ 4 / (4 * (r - |eta|) ^ 3) + a ^ 4 / (4 * r ^ 3) := by
+      ≤ a ^ (2 : ℕ) * |eta| / (2 * (r - |eta|) * r)
+        + a ^ (4 : ℕ) / (4 * (r - |eta|) ^ (3 : ℕ)) + a ^ (4 : ℕ) / (4 * r ^ (3 : ℕ)) := by
   have heta : eta ≤ |eta| := le_abs_self eta
   have hetaneg : -|eta| ≤ eta := neg_abs_le eta
   have habs0 : 0 ≤ |eta| := abs_nonneg eta
@@ -118,51 +118,51 @@ theorem norm_massGaugeDispersion_increment_le {a lambda r eta : ℝ} (hr : 0 < r
     ring
   have hsplit : massGaugeDispersion a lambda (eta - r) - massGaugeDispersion a lambda (-r)
       + (eta : ℂ)
-      = (massGaugeDispersion a lambda (eta - r) - (z1 + ((a : ℝ) : ℂ) ^ 2 / (2 * z1)))
-        - (massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ 2 / (2 * z0)))
-        + (((a : ℝ) : ℂ) ^ 2 / (2 * z1) - ((a : ℝ) : ℂ) ^ 2 / (2 * z0)) := by
+      = (massGaugeDispersion a lambda (eta - r) - (z1 + ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z1)))
+        - (massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0)))
+        + (((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z1) - ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0)) := by
     have : z1 - z0 + (eta : ℂ) = 0 := by
       rw [hdiff]
       ring
     linear_combination this
-  have hmid : ‖((a : ℝ) : ℂ) ^ 2 / (2 * z1) - ((a : ℝ) : ℂ) ^ 2 / (2 * z0)‖
-      ≤ a ^ 2 * |eta| / (2 * (r - |eta|) * r) := by
-    have hval : ((a : ℝ) : ℂ) ^ 2 / (2 * z1) - ((a : ℝ) : ℂ) ^ 2 / (2 * z0)
-        = ((a : ℝ) : ℂ) ^ 2 * (eta : ℂ) / (2 * z1 * z0) := by
+  have hmid : ‖((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z1) - ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0)‖
+      ≤ a ^ (2 : ℕ) * |eta| / (2 * (r - |eta|) * r) := by
+    have hval : ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z1) - ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0)
+        = ((a : ℝ) : ℂ) ^ (2 : ℕ) * (eta : ℂ) / (2 * z1 * z0) := by
       field_simp
-      linear_combination (-(((a : ℝ) : ℂ) ^ 2)) * hdiff
+      linear_combination (-(((a : ℝ) : ℂ) ^ (2 : ℕ))) * hdiff
     rw [hval, norm_div]
-    have hnum : ‖((a : ℝ) : ℂ) ^ 2 * (eta : ℂ)‖ = a ^ 2 * |eta| := by
+    have hnum : ‖((a : ℝ) : ℂ) ^ (2 : ℕ) * (eta : ℂ)‖ = a ^ (2 : ℕ) * |eta| := by
       rw [norm_mul, norm_pow, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
         Real.norm_eq_abs, ← abs_pow,
-        abs_of_nonneg (by positivity : (0 : ℝ) ≤ a ^ 2)]
+        abs_of_nonneg (by positivity : (0 : ℝ) ≤ a ^ (2 : ℕ))]
     have hden : ‖(2 : ℂ) * z1 * z0‖ = 2 * (‖z1‖ * ‖z0‖) := by
       rw [norm_mul, norm_mul, show ‖(2 : ℂ)‖ = (2 : ℝ) by norm_num]
       ring
     rw [hnum, hden]
     have hprod : (r - |eta|) * r ≤ ‖z1‖ * ‖z0‖ :=
       mul_le_mul hz1n hz0n (by linarith) (norm_nonneg _)
-    have hX : (0 : ℝ) ≤ a ^ 2 * |eta| := by positivity
+    have hX : (0 : ℝ) ≤ a ^ (2 : ℕ) * |eta| := by positivity
     have hcpos : (0 : ℝ) < 2 * (r - |eta|) * r := by positivity
     refine div_le_div_of_nonneg_left hX hcpos ?_
     nlinarith [hprod]
-  have hE1 : ‖massGaugeDispersion a lambda (eta - r) - (z1 + ((a : ℝ) : ℂ) ^ 2 / (2 * z1))‖
-      ≤ a ^ 4 / (4 * (r - |eta|) ^ 3) := by
+  have hE1 : ‖massGaugeDispersion a lambda (eta - r) - (z1 + ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z1))‖
+      ≤ a ^ (4 : ℕ) / (4 * (r - |eta|) ^ (3 : ℕ)) := by
     refine le_trans h1 ?_
     refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
-    have hcube : (r - |eta|) ^ 3 ≤ (r - eta) ^ 3 :=
+    have hcube : (r - |eta|) ^ (3 : ℕ) ≤ (r - eta) ^ (3 : ℕ) :=
       pow_le_pow_left₀ (le_of_lt hz1pos) (by linarith) 3
     nlinarith [hcube, mul_nonneg (by linarith : (0 : ℝ) ≤ r - eta) (sq_nonneg lambda)]
-  have hE0 : ‖massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ 2 / (2 * z0))‖
-      ≤ a ^ 4 / (4 * r ^ 3) := by
+  have hE0 : ‖massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0))‖
+      ≤ a ^ (4 : ℕ) / (4 * r ^ (3 : ℕ)) := by
     refine le_trans h0 ?_
     refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
     nlinarith [sq_nonneg lambda, hr, mul_pos hr hr]
   rw [hsplit]
   refine le_trans (norm_add_le _ _) ?_
-  have hfirst : ‖massGaugeDispersion a lambda (eta - r) - (z1 + ((a : ℝ) : ℂ) ^ 2 / (2 * z1))
-      - (massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ 2 / (2 * z0)))‖
-      ≤ a ^ 4 / (4 * (r - |eta|) ^ 3) + a ^ 4 / (4 * r ^ 3) :=
+  have hfirst : ‖massGaugeDispersion a lambda (eta - r) - (z1 + ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z1))
+      - (massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0)))‖
+      ≤ a ^ (4 : ℕ) / (4 * (r - |eta|) ^ (3 : ℕ)) + a ^ (4 : ℕ) / (4 * r ^ (3 : ℕ)) :=
     le_trans (norm_sub_le _ _) (add_le_add hE1 hE0)
   linarith [hfirst, hmid]
 
@@ -170,36 +170,36 @@ theorem norm_massGaugeDispersion_increment_le {a lambda r eta : ℝ} (hr : 0 < r
 /-- **(24.51)** At the band centre the real part of the dispersion is `r + O(1/r)`, so a fixed
 real-time damping costs only `e^{-σ r}` up to a bounded factor. -/
 theorem massGaugeDispersion_re_le {a lambda r : ℝ} (hr : 0 < r) :
-    (massGaugeDispersion a lambda (-r)).re ≤ r + a ^ 2 / (2 * r) + a ^ 4 / (4 * r ^ 3) := by
+    (massGaugeDispersion a lambda (-r)).re ≤ r + a ^ (2 : ℕ) / (2 * r) + a ^ (4 : ℕ) / (4 * r ^ (3 : ℕ)) := by
   have hlt : (-r : ℝ) < 0 := by linarith
   have hbound := norm_massGaugeDispersion_sub_le (a := a) (lambda := lambda) hlt
   set z0 : ℂ := outgoingBase lambda (-r) with hz0
   have hz0re : z0.re = r := by
     rw [hz0, outgoingBase_re]
     ring
-  have hz0sq : ‖z0‖ ^ 2 = r ^ 2 + lambda ^ 2 := by
+  have hz0sq : ‖z0‖ ^ (2 : ℕ) = r ^ (2 : ℕ) + lambda ^ (2 : ℕ) := by
     rw [hz0, normSq_outgoingBase]
     ring
   have hz0pos : (0 : ℝ) < ‖z0‖ := by
     have := Complex.re_le_norm z0
     rw [hz0re] at this
     linarith
-  have hdivre : (((a : ℝ) : ℂ) ^ 2 / (2 * z0)).re = a ^ 2 * r / (2 * (r ^ 2 + lambda ^ 2)) := by
-    have hns : Complex.normSq z0 = ‖z0‖ ^ 2 := Complex.normSq_eq_norm_sq z0
+  have hdivre : (((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0)).re = a ^ (2 : ℕ) * r / (2 * (r ^ (2 : ℕ) + lambda ^ (2 : ℕ))) := by
+    have hns : Complex.normSq z0 = ‖z0‖ ^ (2 : ℕ) := Complex.normSq_eq_norm_sq z0
     rw [Complex.div_re]
     simp [Complex.normSq_mul, hns, hz0sq, hz0re, pow_two]
     field_simp
   have hsplit : (massGaugeDispersion a lambda (-r)).re
-      = (massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ 2 / (2 * z0))).re
-        + z0.re + (((a : ℝ) : ℂ) ^ 2 / (2 * z0)).re := by
+      = (massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0))).re
+        + z0.re + (((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0)).re := by
     simp only [Complex.sub_re, Complex.add_re]
     ring
   have hre_le : (massGaugeDispersion a lambda (-r)
-      - (z0 + ((a : ℝ) : ℂ) ^ 2 / (2 * z0))).re ≤ a ^ 4 / (4 * r ^ 3) := by
+      - (z0 + ((a : ℝ) : ℂ) ^ (2 : ℕ) / (2 * z0))).re ≤ a ^ (4 : ℕ) / (4 * r ^ (3 : ℕ)) := by
     refine le_trans (Complex.re_le_norm _) (le_trans hbound ?_)
     refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
     nlinarith [sq_nonneg lambda, hr, mul_pos hr hr]
-  have hdiv_le : a ^ 2 * r / (2 * (r ^ 2 + lambda ^ 2)) ≤ a ^ 2 / (2 * r) := by
+  have hdiv_le : a ^ (2 : ℕ) * r / (2 * (r ^ (2 : ℕ) + lambda ^ (2 : ℕ))) ≤ a ^ (2 : ℕ) / (2 * r) := by
     rw [div_le_div_iff₀ (by nlinarith [sq_nonneg lambda, mul_pos hr hr]) (by positivity)]
     nlinarith [sq_nonneg lambda, sq_nonneg a, hr]
   rw [hsplit, hz0re, hdivre]

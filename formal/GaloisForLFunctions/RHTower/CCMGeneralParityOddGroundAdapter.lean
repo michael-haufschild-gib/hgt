@@ -473,7 +473,7 @@ theorem ccmCenteredDividedDifferenceOddGroundLimit_compactFourier_zero_im_eq_zer
         ∃ z : ℂ, v = z • (ccmOddParityFrame (N n) *ᵥ c n))
     (f : ℝ → ℂ) (hf : Continuous f)
     (hmean : Filter.Tendsto (fun n : ℕ => ∫ x in (0 : ℝ)..(2 * Real.pi),
-        ‖ccmTrigPoly (N n) (ccmOddGroundCoeff (N n) (c n)) x - f x‖ ^ 2)
+        ‖ccmTrigPoly (N n) (ccmOddGroundCoeff (N n) (c n)) x - f x‖ ^ (2 : ℕ))
       Filter.atTop (nhds 0))
     {w z : ℂ} (hw : compactFourier f 0 (2 * Real.pi) w ≠ 0)
     (hz : compactFourier f 0 (2 * Real.pi) z = 0) :

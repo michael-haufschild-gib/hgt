@@ -20,11 +20,11 @@ namespace RHTower
 noncomputable section
 
 /-- The first quadratic polynomial in the explicit Q8 radical tower. -/
-def deningerQ8RootNumberNegOneFirstQuadraticPolynomial : ℚ[X] := X ^ 2 - C 5
+def deningerQ8RootNumberNegOneFirstQuadraticPolynomial : ℚ[X] := X ^ (2 : ℕ) - C 5
 
 /-- `5` is not a square in `ℚ`; the proof reduces a hypothetical rational
 square to the primality obstruction in `ℕ`. -/
-theorem deningerQ8RootNumberNegOne_five_not_square (q : ℚ) : q ^ 2 ≠ 5 := by
+theorem deningerQ8RootNumberNegOne_five_not_square (q : ℚ) : q ^ (2 : ℕ) ≠ 5 := by
   intro h
   apply Nat.prime_five.not_isSquare
   apply Rat.isSquare_natCast_iff.mp
@@ -51,16 +51,16 @@ def deningerQ8RootNumberNegOneFirstQuadraticRoot :
 
 /-- The canonical adjoined root squares to the literal first radicand. -/
 theorem deningerQ8RootNumberNegOneFirstQuadraticRoot_sq :
-    deningerQ8RootNumberNegOneFirstQuadraticRoot ^ 2 = 5 := by
+    deningerQ8RootNumberNegOneFirstQuadraticRoot ^ (2 : ℕ) = 5 := by
   have h := AdjoinRoot.eval₂_root deningerQ8RootNumberNegOneFirstQuadraticPolynomial
   rw [deningerQ8RootNumberNegOneFirstQuadraticPolynomial, eval₂_sub, eval₂_pow,
     eval₂_X, eval₂_C] at h
-  change (AdjoinRoot.root (X ^ 2 - C (5 : ℚ))) ^ 2 =
-    (5 : AdjoinRoot (X ^ 2 - C (5 : ℚ)))
+  change (AdjoinRoot.root (X ^ (2 : ℕ) - C (5 : ℚ))) ^ (2 : ℕ) =
+    (5 : AdjoinRoot (X ^ (2 : ℕ) - C (5 : ℚ)))
   calc
-    (AdjoinRoot.root (X ^ 2 - C (5 : ℚ))) ^ 2 =
-        AdjoinRoot.of (X ^ 2 - C (5 : ℚ)) (5 : ℚ) := sub_eq_zero.mp h
-    _ = 5 := (map_natCast (AdjoinRoot.of (X ^ 2 - C (5 : ℚ))) 5).symm
+    (AdjoinRoot.root (X ^ (2 : ℕ) - C (5 : ℚ))) ^ (2 : ℕ) =
+        AdjoinRoot.of (X ^ (2 : ℕ) - C (5 : ℚ)) (5 : ℚ) := sub_eq_zero.mp h
+    _ = 5 := (map_natCast (AdjoinRoot.of (X ^ (2 : ℕ) - C (5 : ℚ))) 5).symm
 
 /-- Exact degree of the first field in the radical tower. -/
 theorem deningerQ8RootNumberNegOneFirstQuadraticField_finrank :
@@ -107,7 +107,7 @@ theorem deningerQ8RootNumberNegOneFirstQuadraticRoot_not_rational (q : ℚ) :
     deningerQ8RootNumberNegOneFirstQuadraticRoot ≠ q := by
   intro h
   have hsq := congrArg
-    (fun u : deningerQ8RootNumberNegOneFirstQuadraticField => u ^ 2) h
+    (fun u : deningerQ8RootNumberNegOneFirstQuadraticField => u ^ (2 : ℕ)) h
   rw [deningerQ8RootNumberNegOneFirstQuadraticRoot_sq] at hsq
   apply deningerQ8RootNumberNegOne_five_not_square q
   apply (algebraMap ℚ deningerQ8RootNumberNegOneFirstQuadraticField).injective

@@ -39,25 +39,25 @@ theorem l2_opNorm_le_hsNorm (A : Matrix d d ℂ) : ‖A‖ ≤ hsNorm A := by
       simp [PiLp.inner_apply, Matrix.mulVec, dotProduct, mul_comm]
     rw [← hinner]
     exact norm_inner_le_norm _ _
-  have hsq : ‖Matrix.toEuclideanCLM (𝕜 := ℂ) A x‖ ^ 2 ≤
-      (hsNorm A * ‖x‖) ^ 2 := by
+  have hsq : ‖Matrix.toEuclideanCLM (𝕜 := ℂ) A x‖ ^ (2 : ℕ) ≤
+      (hsNorm A * ‖x‖) ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity), mul_pow,
       hsNorm_sq, Finset.sum_mul]
     refine Finset.sum_le_sum fun i _ => ?_
     have hi := hcoord i
     have hrow :
-        ‖(EuclideanSpace.equiv d ℂ).symm (fun j => star (A i j))‖ ^ 2 =
-          ∑ j, ‖A i j‖ ^ 2 := by
+        ‖(EuclideanSpace.equiv d ℂ).symm (fun j => star (A i j))‖ ^ (2 : ℕ) =
+          ∑ j, ‖A i j‖ ^ (2 : ℕ) := by
       rw [norm_sq_euclideanOfFun]
       exact Finset.sum_congr rfl fun j _ => by rw [norm_star]
     calc
-      ‖((Matrix.toEuclideanCLM (𝕜 := ℂ) A x).ofLp i)‖ ^ 2 ≤
+      ‖((Matrix.toEuclideanCLM (𝕜 := ℂ) A x).ofLp i)‖ ^ (2 : ℕ) ≤
           (‖(EuclideanSpace.equiv d ℂ).symm
-            (fun j => star (A i j))‖ * ‖x‖) ^ 2 :=
+            (fun j => star (A i j))‖ * ‖x‖) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) hi 2
       _ = ‖(EuclideanSpace.equiv d ℂ).symm
-            (fun j => star (A i j))‖ ^ 2 * ‖x‖ ^ 2 := by ring
-      _ = (∑ j, ‖A i j‖ ^ 2) * ‖x‖ ^ 2 := by rw [hrow]
+            (fun j => star (A i j))‖ ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) := by ring
+      _ = (∑ j, ‖A i j‖ ^ (2 : ℕ)) * ‖x‖ ^ (2 : ℕ) := by rw [hrow]
   have hsqrt := Real.sqrt_le_sqrt hsq
   simpa [Real.sqrt_sq (norm_nonneg _),
     Real.sqrt_sq (mul_nonneg (hsNorm_nonneg A) (norm_nonneg x))] using hsqrt
@@ -84,25 +84,25 @@ theorem norm_twoQubitMatrixRealCoordinates
     (A : Matrix (Bool × Bool) (Bool × Bool) ℂ) :
     ‖twoQubitMatrixRealCoordinates A‖ = hsNorm A := by
   refine (sq_eq_sq₀ (norm_nonneg _) (hsNorm_nonneg A)).mp ?_
-  change ‖twoQubitMatrixRealCoordinates A‖ ^ 2 = ‖matVec A‖ ^ 2
+  change ‖twoQubitMatrixRealCoordinates A‖ ^ (2 : ℕ) = ‖matVec A‖ ^ (2 : ℕ)
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity),
     EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
   calc
     ∑ p : TwoQubitRealCoordinateIndex,
-        ‖(twoQubitMatrixRealCoordinates A).ofLp p‖ ^ 2 =
+        ‖(twoQubitMatrixRealCoordinates A).ofLp p‖ ^ (2 : ℕ) =
         ∑ ij : (Bool × Bool) × (Bool × Bool),
-          ((A ij.1 ij.2).re ^ 2 + (A ij.1 ij.2).im ^ 2) := by
+          ((A ij.1 ij.2).re ^ (2 : ℕ) + (A ij.1 ij.2).im ^ (2 : ℕ)) := by
       rw [Fintype.sum_prod_type]
       refine Finset.sum_congr rfl fun ij _ => ?_
       rw [Fintype.sum_bool]
       simp [Real.norm_eq_abs, sq_abs, add_comm]
-    _ = ∑ ij : (Bool × Bool) × (Bool × Bool), ‖A ij.1 ij.2‖ ^ 2 := by
+    _ = ∑ ij : (Bool × Bool) × (Bool × Bool), ‖A ij.1 ij.2‖ ^ (2 : ℕ) := by
       refine Finset.sum_congr rfl fun ij _ => ?_
       rw [Complex.sq_norm, Complex.normSq_apply]
       ring
     _ = ∑ p : (Bool × Bool) × (Bool × Bool),
         ‖((EuclideanSpace.equiv ((Bool × Bool) × (Bool × Bool)) ℂ).symm
-          (fun p => A p.1 p.2)).ofLp p‖ ^ 2 := by rfl
+          (fun p => A p.1 p.2)).ofLp p‖ ^ (2 : ℕ) := by rfl
 
 /-- The entry encoding turns matrix differences into Euclidean differences. -/
 theorem twoQubitMatrixRealCoordinates_sub
@@ -159,7 +159,7 @@ theorem twoQubit_operatorDist_le_finCoordinateDist
 theorem hsNorm_specialUnitary_boolTwoQubit
     (U : Matrix.specialUnitaryGroup (Bool × Bool) ℂ) :
     hsNorm (U : Matrix (Bool × Bool) (Bool × Bool) ℂ) = 2 := by
-  have hsq : hsNorm (U : Matrix (Bool × Bool) (Bool × Bool) ℂ) ^ 2 = 4 := by
+  have hsq : hsNorm (U : Matrix (Bool × Bool) (Bool × Bool) ℂ) ^ (2 : ℕ) = 4 := by
     rw [hsNorm_sq]
     have hrow (i : Bool × Bool) :
         ‖(EuclideanSpace.equiv (Bool × Bool) ℂ).symm
@@ -173,10 +173,10 @@ theorem hsNorm_specialUnitary_boolTwoQubit
           Complex.mul_conj, Matrix.one_apply_eq] using h
       have hnormsq :
           ‖(EuclideanSpace.equiv (Bool × Bool) ℂ).symm
-              (fun j => (U : Matrix (Bool × Bool) (Bool × Bool) ℂ) i j)‖ ^ 2 = 1 := by
+              (fun j => (U : Matrix (Bool × Bool) (Bool × Bool) ℂ) i j)‖ ^ (2 : ℕ) = 1 := by
         rw [norm_sq_euclideanOfFun]
         calc
-          ∑ j, ‖(U : Matrix (Bool × Bool) (Bool × Bool) ℂ) i j‖ ^ 2 =
+          ∑ j, ‖(U : Matrix (Bool × Bool) (Bool × Bool) ℂ) i j‖ ^ (2 : ℕ) =
               ∑ j, Complex.normSq
                 ((U : Matrix (Bool × Bool) (Bool × Bool) ℂ) i j) := by
             exact Finset.sum_congr rfl fun j _ => Complex.sq_norm _
@@ -194,7 +194,7 @@ theorem exists_specialUnitary_boolTwoQubit_operatorNet_card_le
       (∀ U : Matrix.specialUnitaryGroup (Bool × Bool) ℂ, ∃ V ∈ net,
         dist (U : Matrix (Bool × Bool) (Bool × Bool) ℂ)
           (V : Matrix (Bool × Bool) (Bool × Bool) ℂ) ≤ ε) ∧
-      (net.card : ℝ) ≤ (1 + 4 / ε) ^ 32 := by
+      (net.card : ℝ) ≤ (1 + 4 / ε) ^ (32 : ℕ) := by
   classical
   let K : Set (EuclideanSpace ℝ
       (Fin (Fintype.card TwoQubitRealCoordinateIndex))) :=
@@ -244,7 +244,7 @@ theorem exists_specialUnitary_boolTwoQubit_operatorNet_card_le
             (ε / 2) ^ Fintype.card TwoQubitRealCoordinateIndex := by
         rw [le_div_iff₀ hpow]
         exact hTcard
-      _ = (1 + 4 / ε) ^ 32 := by
+      _ = (1 + 4 / ε) ^ (32 : ℕ) := by
         norm_num only [Fintype.card_prod, Fintype.card_bool]
         rw [← div_pow]
         congr 1
@@ -478,7 +478,7 @@ theorem TwoQubitArchitecture.exists_contraction_operatorNet_card_le
       exact_mod_cast hcardNat
     calc
       (net.card : ℝ) ≤ (localNet.card : ℝ) ^ R := hcardReal
-      _ ≤ ((1 + 4 / (ε / (R : ℝ))) ^ 32) ^ R :=
+      _ ≤ ((1 + 4 / (ε / (R : ℝ))) ^ (32 : ℕ)) ^ R :=
         pow_le_pow_left₀ (Nat.cast_nonneg _) hlocalCard R
       _ = (1 + 4 * (R : ℝ) / ε) ^ (32 * R) := by
         rw [← pow_mul]
@@ -567,7 +567,7 @@ theorem exists_exactContinuousTwoQubitCircuit_operatorNet_card_le
           (1 + 4 * (R : ℝ) / ε) ^ (32 * R) := by
       calc
         (localNet.card : ℝ) ^ R ≤
-            ((1 + 4 / (ε / (R : ℝ))) ^ 32) ^ R :=
+            ((1 + 4 / (ε / (R : ℝ))) ^ (32 : ℕ)) ^ R :=
           pow_le_pow_left₀ (Nat.cast_nonneg _) hlocalCard R
         _ = (1 + 4 * (R : ℝ) / ε) ^ (32 * R) := by
           rw [← pow_mul]

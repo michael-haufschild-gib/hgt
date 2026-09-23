@@ -22,7 +22,7 @@ namespace RHTower
 /-- The square of the Meyer half-density weight is the weight-one density in logarithmic
 coordinates. -/
 theorem deningerMeyerHalfDensityWeight_sq (t : ℝ) :
-    deningerMeyerHalfDensityWeight t ^ 2 = Real.exp t := by
+    deningerMeyerHalfDensityWeight t ^ (2 : ℕ) = Real.exp t := by
   unfold deningerMeyerHalfDensityWeight
   rw [← Real.exp_nat_mul]
   congr 1
@@ -30,10 +30,10 @@ theorem deningerMeyerHalfDensityWeight_sq (t : ℝ) :
 
 /-- **`L²` isometry of the centered flow for the weight-one density.** -/
 theorem integral_exp_mul_normSq_centeredFlow (g : ℝ → ℂ) (c : ℝ) :
-    ∫ t, Real.exp t * ‖Real.exp (-c / 2) * g (t - c)‖ ^ 2
-      = ∫ t, Real.exp t * ‖g t‖ ^ 2 := by
-  have h : ∀ t, Real.exp t * ‖Real.exp (-c / 2) * g (t - c)‖ ^ 2
-      = (fun s => Real.exp s * ‖g s‖ ^ 2) (t - c) := by
+    ∫ t, Real.exp t * ‖Real.exp (-c / 2) * g (t - c)‖ ^ (2 : ℕ)
+      = ∫ t, Real.exp t * ‖g t‖ ^ (2 : ℕ) := by
+  have h : ∀ t, Real.exp t * ‖Real.exp (-c / 2) * g (t - c)‖ ^ (2 : ℕ)
+      = (fun s => Real.exp s * ‖g s‖ ^ (2 : ℕ)) (t - c) := by
     intro t
     simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
       mul_pow, ← Real.exp_nat_mul, Real.exp_sub]
@@ -42,7 +42,7 @@ theorem integral_exp_mul_normSq_centeredFlow (g : ℝ → ℂ) (c : ℝ) :
     rw [h2, div_eq_mul_inv]
     ring
   simp_rw [h]
-  exact integral_sub_right_eq_self (fun s => Real.exp s * ‖g s‖ ^ 2) c
+  exact integral_sub_right_eq_self (fun s => Real.exp s * ‖g s‖ ^ (2 : ℕ)) c
 
 /-- **Uniqueness of the flow-isometric weight.**  A continuous weight for which the centered
 flow preserves every interval mass is a constant multiple of `exp t`. -/

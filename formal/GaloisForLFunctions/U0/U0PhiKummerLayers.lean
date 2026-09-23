@@ -27,7 +27,7 @@ namespace U0PhiKummerLayers
 
 /-- The `2^k`-th root layer of the window branch. -/
 noncomputable def phiBRoot (k : ℕ) (b z : ℂ) : ℂ :=
-  Complex.exp (((2 : ℂ) ^ (k + 1))⁻¹ * (Complex.log b + Complex.log (1 + z ^ 2 / b)
+  Complex.exp (((2 : ℂ) ^ (k + 1))⁻¹ * (Complex.log b + Complex.log (1 + z ^ (2 : ℕ) / b)
     + ∑' j, bottcherLogTerm b (quadratic b z) j))
 
 theorem phiBRoot_ne_zero (k : ℕ) (b z : ℂ) : phiBRoot k b z ≠ 0 := Complex.exp_ne_zero _
@@ -55,13 +55,13 @@ theorem phiBRoot_analytic {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (k : ℕ) :
   intro z hz
   apply DifferentiableAt.differentiableWithinAt
   have hqd : DifferentiableAt ℂ (quadratic b) z := by
-    have : (quadratic b) = fun v => v ^ 2 + b := by
+    have : (quadratic b) = fun v => v ^ (2 : ℕ) + b := by
       funext v; exact quadratic_apply b v
     rw [this]
     exact ((differentiable_pow 2).add_const b).differentiableAt
-  have hratio : DifferentiableAt ℂ (fun v => Complex.log (1 + v ^ 2 / b)) z := by
-    have hin : DifferentiableAt ℂ (fun v : ℂ => 1 + v ^ 2 / b) z := by
-      have : DifferentiableAt ℂ (fun v : ℂ => v ^ 2 / b) z :=
+  have hratio : DifferentiableAt ℂ (fun v => Complex.log (1 + v ^ (2 : ℕ) / b)) z := by
+    have hin : DifferentiableAt ℂ (fun v : ℂ => 1 + v ^ (2 : ℕ) / b) z := by
+      have : DifferentiableAt ℂ (fun v : ℂ => v ^ (2 : ℕ) / b) z :=
         (differentiableAt_pow 2).div_const b
       exact (differentiableAt_const (1 : ℂ)).add this
     exact hin.clog (ratio_mem_slitPlane hb hz)
@@ -70,7 +70,7 @@ theorem phiBRoot_analytic {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (k : ℕ) :
       (tail_differentiableOn_B (norm_gt_two hb)).differentiableAt
         ((isOpen_farB b).mem_nhds (quadB_mem_farB hb hz))
     exact hT.comp z hqd
-  have hsum : DifferentiableAt ℂ (fun v => Complex.log b + Complex.log (1 + v ^ 2 / b)
+  have hsum : DifferentiableAt ℂ (fun v => Complex.log b + Complex.log (1 + v ^ (2 : ℕ) / b)
       + ∑' j, bottcherLogTerm b (quadratic b v) j) z :=
     ((differentiableAt_const _).add hratio).add htail
   exact (hsum.const_mul _).cexp

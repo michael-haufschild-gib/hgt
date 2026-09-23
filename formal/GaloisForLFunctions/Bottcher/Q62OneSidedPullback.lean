@@ -73,7 +73,7 @@ theorem locOneSided_of_quadratic_preimage {c z : ℂ} (hz0 : z ≠ 0)
   -- `q` is a local biholomorphism at `z`
   have hqAn : AnalyticAt ℂ (quadratic c) z := (analyticAt_id.pow 2).add analyticAt_const
   have hqd : HasDerivAt (quadratic c) (2 * z) z := by
-    have hpow : HasDerivAt (fun w : ℂ => w ^ 2) (2 * z) z := by simpa using hasDerivAt_pow 2 z
+    have hpow : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ)) (2 * z) z := by simpa using hasDerivAt_pow 2 z
     exact hpow.add_const c
   have hd0 : deriv (quadratic c) z ≠ 0 := by rw [hqd.deriv]; exact mul_ne_zero two_ne_zero hz0
   obtain ⟨γ, hγAn, hγleft, hγright⟩ := exists_localInverse_of_continuation hqAn hd0

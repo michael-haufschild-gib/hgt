@@ -36,36 +36,36 @@ theorem xiMobiusContinuousApertureCubicMass_pos :
 theorem xiMobiusContinuousApertureCubicKernel_eq_mass_mul
     {x y : ℝ} (hx : 0 < x) (hy : 0 < y) :
     xiMobiusContinuousApertureCubicKernel x y =
-      xiMobiusContinuousApertureCubicMass * (x ^ 2 * y ^ 2 / (x + y)) := by
+      xiMobiusContinuousApertureCubicMass * (x ^ (2 : ℕ) * y ^ (2 : ℕ) / (x + y)) := by
   have hxy : x + y ≠ 0 := (add_pos hx hy).ne'
   rw [xiMobiusContinuousApertureCubicKernel,
     xiMobiusContinuousApertureCubicMass]
   calc
     (∑' p : Nat.Primes, xiMobiusPrimeContinuousApertureCubicCoefficient x y p) =
         ∑' p : Nat.Primes,
-          (x ^ 2 * y ^ 2 / (16 * (x + y))) *
+          (x ^ (2 : ℕ) * y ^ (2 : ℕ) / (16 * (x + y))) *
             xiMobiusPrimeContinuousApertureCubicSlopeTerm p := by
       apply tsum_congr
       intro p
       exact xiMobiusPrimeContinuousApertureCubicCoefficient_eq_slope hx hy p
-    _ = (x ^ 2 * y ^ 2 / (16 * (x + y))) *
+    _ = (x ^ (2 : ℕ) * y ^ (2 : ℕ) / (16 * (x + y))) *
         ∑' p : Nat.Primes, xiMobiusPrimeContinuousApertureCubicSlopeTerm p := by
       rw [tsum_mul_left]
     _ = ((∑' p : Nat.Primes, xiMobiusPrimeContinuousApertureCubicSlopeTerm p) / 16) *
-        (x ^ 2 * y ^ 2 / (x + y)) := by
+        (x ^ (2 : ℕ) * y ^ (2 : ℕ) / (x + y)) := by
       field_simp [hxy]
 
 /-- Abstract normalized cubic aperture kernel. -/
 def cubicApertureSourceKernel (kappa x y : ℝ) : ℝ :=
-  kappa * (x ^ 2 * y ^ 2 / (x + y))
+  kappa * (x ^ (2 : ℕ) * y ^ (2 : ℕ) / (x + y))
 
 /-- Exact three-node determinant of the cubic aperture kernel. -/
 theorem symmetricThreePointDet_cubicApertureSourceKernel
     {kappa x y z : ℝ} (hx : 0 < x) (hy : 0 < y) (hz : 0 < z) :
     symmetricThreePointDet (cubicApertureSourceKernel kappa) x y z =
-      kappa ^ 3 * x ^ 3 * y ^ 3 * z ^ 3 *
-          (x - y) ^ 2 * (x - z) ^ 2 * (y - z) ^ 2 /
-        (8 * (x + y) ^ 2 * (x + z) ^ 2 * (y + z) ^ 2) := by
+      kappa ^ (3 : ℕ) * x ^ (3 : ℕ) * y ^ (3 : ℕ) * z ^ (3 : ℕ) *
+          (x - y) ^ (2 : ℕ) * (x - z) ^ (2 : ℕ) * (y - z) ^ (2 : ℕ) /
+        (8 * (x + y) ^ (2 : ℕ) * (x + z) ^ (2 : ℕ) * (y + z) ^ (2 : ℕ)) := by
   have hxx : x + x ≠ 0 := (add_pos hx hx).ne'
   have hyy : y + y ≠ 0 := (add_pos hy hy).ne'
   have hzz : z + z ≠ 0 := (add_pos hz hz).ne'
@@ -88,12 +88,12 @@ theorem symmetricThreePointDet_cubicApertureSourceKernel_pos
 /-- Collision-regular squared exterior gain from cubic aperture source to Poisson refinement. -/
 def xiApertureCubicResponseExteriorGainSq
     (kappa a b x y z : ℝ) : ℝ :=
-  16 * (b ^ 2 - a ^ 2) ^ 3 *
-      (x + y) ^ 2 * (x + z) ^ 2 * (y + z) ^ 2 /
-    (kappa ^ 3 * x ^ 3 * y ^ 3 * z ^ 3 *
-      ((b ^ 2 + (x - y) ^ 2) * (a ^ 2 + (x - y) ^ 2)) *
-      ((b ^ 2 + (x - z) ^ 2) * (a ^ 2 + (x - z) ^ 2)) *
-      ((b ^ 2 + (y - z) ^ 2) * (a ^ 2 + (y - z) ^ 2)))
+  16 * (b ^ (2 : ℕ) - a ^ (2 : ℕ)) ^ (3 : ℕ) *
+      (x + y) ^ (2 : ℕ) * (x + z) ^ (2 : ℕ) * (y + z) ^ (2 : ℕ) /
+    (kappa ^ (3 : ℕ) * x ^ (3 : ℕ) * y ^ (3 : ℕ) * z ^ (3 : ℕ) *
+      ((b ^ (2 : ℕ) + (x - y) ^ (2 : ℕ)) * (a ^ (2 : ℕ) + (x - y) ^ (2 : ℕ))) *
+      ((b ^ (2 : ℕ) + (x - z) ^ (2 : ℕ)) * (a ^ (2 : ℕ) + (x - z) ^ (2 : ℕ))) *
+      ((b ^ (2 : ℕ) + (y - z) ^ (2 : ℕ)) * (a ^ (2 : ℕ) + (y - z) ^ (2 : ℕ))))
 
 theorem xiApertureCubicResponseExteriorGainSq_pos
     {kappa a b x y z : ℝ} (hkappa : 0 < kappa)
@@ -101,7 +101,7 @@ theorem xiApertureCubicResponseExteriorGainSq_pos
     (hx : 0 < x) (hy : 0 < y) (hz : 0 < z) :
     0 < xiApertureCubicResponseExteriorGainSq kappa a b x y z := by
   have hb : 0 < b := ha.trans hab
-  have hba : 0 < b ^ 2 - a ^ 2 := by nlinarith
+  have hba : 0 < b ^ (2 : ℕ) - a ^ (2 : ℕ) := by nlinarith
   unfold xiApertureCubicResponseExteriorGainSq
   positivity
 
@@ -123,12 +123,12 @@ theorem neg_symmetricThreePointDet_poissonScaleRefinementKernel_eq_exteriorGainS
   have hxySum : x + y ≠ 0 := (add_pos hx hy).ne'
   have hxzSum : x + z ≠ 0 := (add_pos hx hz).ne'
   have hyzSum : y + z ≠ 0 := (add_pos hy hz).ne'
-  have haxy : a ^ 2 + (x - y) ^ 2 ≠ 0 := by positivity
-  have hbxy : b ^ 2 + (x - y) ^ 2 ≠ 0 := by positivity
-  have haxz : a ^ 2 + (x - z) ^ 2 ≠ 0 := by positivity
-  have hbxz : b ^ 2 + (x - z) ^ 2 ≠ 0 := by positivity
-  have hayz : a ^ 2 + (y - z) ^ 2 ≠ 0 := by positivity
-  have hbyz : b ^ 2 + (y - z) ^ 2 ≠ 0 := by positivity
+  have haxy : a ^ (2 : ℕ) + (x - y) ^ (2 : ℕ) ≠ 0 := by positivity
+  have hbxy : b ^ (2 : ℕ) + (x - y) ^ (2 : ℕ) ≠ 0 := by positivity
+  have haxz : a ^ (2 : ℕ) + (x - z) ^ (2 : ℕ) ≠ 0 := by positivity
+  have hbxz : b ^ (2 : ℕ) + (x - z) ^ (2 : ℕ) ≠ 0 := by positivity
+  have hayz : a ^ (2 : ℕ) + (y - z) ^ (2 : ℕ) ≠ 0 := by positivity
+  have hbyz : b ^ (2 : ℕ) + (y - z) ^ (2 : ℕ) ≠ 0 := by positivity
   rw [symmetricThreePointDet_poissonScaleRefinementKernel_eq_neg,
     neg_neg,
     symmetricThreePointDet_poissonScaleIncrementKernel ha hb,

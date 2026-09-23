@@ -20,7 +20,7 @@ theorem integrable_sq_of_bounded_window_limits {ι : Type*} {L : Filter ι} [L.N
     (hconv : ∀ K : ℝ, 0 < K → Tendsto (fun i => ∫ x in (-K)..K, f i x * f i x) L
       (𝓝 (∫ x in (-K)..K, v x * v x)))
     (hb : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, (∫ x in (-K)..K, f i x * f i x) ≤ N) :
-    Integrable fun x => v x ^ 2 := by
+    Integrable fun x => v x ^ (2 : ℕ) := by
   have hNnn : 0 ≤ N := by
     obtain ⟨i, hi⟩ := (hb 1 one_pos).exists
     refine le_trans ?_ hi
@@ -37,7 +37,7 @@ theorem integrable_sq_of_bounded_window_limits {ι : Type*} {L : Filter ι} [L.N
     · simp
   · have hKpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
     have hle : -((n : ℕ) : ℝ) ≤ ((n : ℕ) : ℝ) := by linarith
-    have hIcc : (∫ x in Icc (-((n : ℕ) : ℝ)) ((n : ℕ) : ℝ), v x ^ 2)
+    have hIcc : (∫ x in Icc (-((n : ℕ) : ℝ)) ((n : ℕ) : ℝ), v x ^ (2 : ℕ))
         = ∫ x in (-((n : ℕ) : ℝ))..((n : ℕ) : ℝ), v x * v x := by
       rw [intervalIntegral.integral_of_le hle, MeasureTheory.integral_Icc_eq_integral_Ioc]
       exact MeasureTheory.setIntegral_congr_fun measurableSet_Ioc fun x _ => by ring

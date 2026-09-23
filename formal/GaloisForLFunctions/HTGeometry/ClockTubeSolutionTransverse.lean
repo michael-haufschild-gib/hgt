@@ -25,7 +25,7 @@ theorem sliceHolo_tubeSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {ξ η : ℝ} (hξT : |ξ| ≤ T) (hηT : |η| ≤ T) :
     SliceHolo (tubeSolution V ξ η) ρ := by
   have hG : (0 : ℝ) < ρ₀ - ρ := by linarith
@@ -34,9 +34,9 @@ theorem sliceHolo_tubeSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
   have hσρ₀ : σ < ρ₀ := by rw [hσdef]; linarith
   have hσ0 : (0 : ℝ) ≤ σ := le_trans hρ0 hρσ.le
   have hrem : ρ₀ - σ = (ρ₀ - ρ) / 2 := by rw [hσdef]; ring
-  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hGhalf : (0 : ℝ) < (ρ₀ - ρ) / 2 := by linarith
-  have hMs := summable_ovsyannikov_bound (K := 4 * k + Mv * ρ₀ ^ 2 / 4) (G := (ρ₀ - ρ) / 2)
+  have hMs := summable_ovsyannikov_bound (K := 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) (G := (ρ₀ - ρ) / 2)
     (T := T) hK0 hGhalf hT hsmall
   intro z hz i
   have hzσ : z ∈ tube k σ := tube_mono hρσ.le hz
@@ -47,8 +47,8 @@ theorem sliceHolo_tubeSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     obtain ⟨holo, _⟩ := tubeIterate_regular hρ₀ hV m
     exact sliceHolo_mono (holo ξ η) hσρ₀.le z hzσ i
   have hbound : ∀ (m : ℕ), ∀ w ∈ imStrip σ, ‖tubeIterate V m ξ η (Function.update z i w)‖
-      ≤ (4 * k + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-        / ((m.factorial : ℝ) ^ 2 * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
+      ≤ (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
     intro m w hw
     have hmem : Function.update z i w ∈ tube k σ := update_mem_tube hzσ i hw
     have hbase := tubeIterate_norm_le hρ₀ hV hMv0 hMv m σ hσ0 hσρ₀ ξ η hξT hηT
@@ -69,17 +69,17 @@ theorem continuousOn_tubeSolution_clamped {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1) :
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1) :
     ContinuousOn
       (fun r : (ℝ × ℝ) × (Fin k → ℂ) =>
         tubeSolution V (boxClamp T r.1.1) (boxClamp T r.1.2) r.2)
       (univ ×ˢ tube k ρ) := by
-  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hG : (0 : ℝ) < ρ₀ - ρ := by linarith
   have hsmall' := ovsyannikov_smallness_of_half_const hK0 hG hsmall
   have hopen : IsOpen ((univ : Set ((ℝ : Type) × ℝ)) ×ˢ tube k ρ) :=
     isOpen_univ.prod (isOpen_tube k ρ)
-  have hMs := summable_ovsyannikov_bound (K := 4 * k + Mv * ρ₀ ^ 2 / 4) (G := ρ₀ - ρ)
+  have hMs := summable_ovsyannikov_bound (K := 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) (G := ρ₀ - ρ)
     (T := T) hK0 hG hT hsmall'
   have hterm : ∀ m : ℕ, ContinuousOn
       (fun r : (ℝ × ℝ) × (Fin k → ℂ) =>
@@ -107,8 +107,8 @@ theorem continuousOn_tubeSolution_clamped {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ
       hmap).continuousWithinAt
   have hbnd : ∀ (m : ℕ) (r : (ℝ × ℝ) × (Fin k → ℂ)), r ∈ univ ×ˢ tube k ρ →
       ‖tubeIterate V m (boxClamp T r.1.1) (boxClamp T r.1.2) r.2‖
-        ≤ (4 * k + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-          / ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m)) := by
+        ≤ (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+          / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * m)) := by
     intro m r hr
     have hbase := tubeIterate_norm_le hρ₀ hV hMv0 hMv m ρ hρ0 hρ
       (boxClamp T r.1.1) (boxClamp T r.1.2) (abs_boxClamp_le hT r.1.1) (abs_boxClamp_le hT r.1.2)
@@ -125,7 +125,7 @@ theorem continuousAt_tubeSolution {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {p : (ℝ × ℝ) × (Fin k → ℂ)} (hp1 : |p.1.1| < T) (hp2 : |p.1.2| < T) (hp3 : p.2 ∈ tube k ρ) :
     ContinuousAt (fun r : (ℝ × ℝ) × (Fin k → ℂ) => tubeSolution V r.1.1 r.1.2 r.2) p := by
   have hopen : IsOpen ((univ : Set ((ℝ : Type) × ℝ)) ×ˢ tube k ρ) :=
@@ -149,7 +149,7 @@ theorem eventually_tubeSolution_ne_zero {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ�
     {V : ℝ → ℝ → (Fin k → ℂ) → ℂ} (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 < T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     {z₀ : Fin k → ℂ} (hz₀ : z₀ ∈ tube k ρ) :
     ∀ᶠ r : (ℝ × ℝ) × (Fin k → ℂ) in nhds (((0, 0) : ℝ × ℝ), z₀),
       tubeSolution V r.1.1 r.1.2 r.2 ≠ 0 := by

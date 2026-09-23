@@ -239,7 +239,7 @@ theorem causalComplexLaplace_zetaPoleHalfDampedSource {s : ℂ} (hs : 0 ≤ s.re
 
 theorem causalComplexLaplace_zetaPoleHalfDampedSource_sq {s : ℂ} (hs : 0 ≤ s.re) :
     causalComplexLaplace s zetaPoleHalfDampedSource ^ 2 =
-      riemannZeta (s+3) * ((s+2)/(s+3)^2) := by
+      riemannZeta (s+3) * ((s+2)/(s+3)^(2 : ℕ)) := by
   rw [causalComplexLaplace_zetaPoleHalfDampedSource hs, mul_pow,
     dampedPoleHalfCausal_laplace_sq hs]
   have hr : 1 < (s+3).re := by simpa using (show 1 < s.re + 3 by linarith)

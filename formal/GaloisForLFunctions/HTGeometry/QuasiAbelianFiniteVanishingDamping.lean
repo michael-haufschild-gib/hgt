@@ -31,7 +31,7 @@ universe u
 theorem polynomialGaussianLatticeWeight_zero_exponent (ι : Type) [Fintype ι] (s : ℝ)
     (z : ι → ℤ) :
     polynomialGaussianLatticeWeight ι (fun _ => 0) (fun _ => s) z
-      = Real.exp (-s * ∑ i, ((z i : ℝ)) ^ 2) := by
+      = Real.exp (-s * ∑ i, ((z i : ℝ)) ^ (2 : ℕ)) := by
   rw [polynomialGaussianLatticeWeight, Finset.mul_sum, Real.exp_sum]
   refine Finset.prod_congr rfl fun i _ => ?_
   rw [pow_zero, one_mul]
@@ -49,9 +49,9 @@ theorem abeDampingMajorant_of_finite_vanishing {d c : ℕ} {Γ : AddSubgroup (Fi
     (hbound : ∀ B : ℝ, 0 ≤ B → ∀ (z : Fin c → ℤ) (i j : FiniteJetPacketIndex d I m),
       ‖multiIndexJetEvalCLM (w i.1) i.2.1
           (poincareTermEntire upper (seed B j) (complementEmbedding comp comp_mem z))‖
-        ≤ C0 * B ^ r * Real.exp (-sigma0 * ∑ k, ((z k : ℝ)) ^ 2))
+        ≤ C0 * B ^ r * Real.exp (-sigma0 * ∑ k, ((z k : ℝ)) ^ (2 : ℕ)))
     (hvanish : ∀ B : ℝ, 0 ≤ B → ∀ (z : Fin c → ℤ) (i j : FiniteJetPacketIndex d I m), z ≠ 0 →
-      (∑ k, ((z k : ℝ)) ^ 2) ≤ Z B →
+      (∑ k, ((z k : ℝ)) ^ (2 : ℕ)) ≤ Z B →
       multiIndexJetEvalCLM (w i.1) i.2.1
           (poincareTermEntire upper (seed B j) (complementEmbedding comp comp_mem z)) = 0)
     (hZ : ∀ B : ℝ, 0 ≤ B → delta * B ≤ (sigma0 - sigma1) * Z B) :
@@ -64,7 +64,7 @@ theorem abeDampingMajorant_of_finite_vanishing {d c : ℕ} {Γ : AddSubgroup (Fi
               polynomialGaussianLatticeWeight (Fin c) A sigma z := by
   refine ⟨fun _ => 0, fun _ => sigma1, r, delta, C0, fun _ => hsigma1, hdelta, hC0, ?_⟩
   intro B hB z i j hz
-  set s : ℝ := ∑ k, ((z k : ℝ)) ^ 2 with hs
+  set s : ℝ := ∑ k, ((z k : ℝ)) ^ (2 : ℕ) with hs
   rw [polynomialGaussianLatticeWeight_zero_exponent]
   by_cases hin : s ≤ Z B
   · rw [hvanish B hB z i j hz hin, norm_zero]
@@ -114,9 +114,9 @@ def AbeDampingPacketData.ofFiniteVanishing {d c : ℕ} {ΓH Γ : AddSubgroup (Fi
     (hbound : ∀ B : ℝ, 0 ≤ B → ∀ (z : Fin c → ℤ) (i j : FiniteJetPacketIndex d I m),
       ‖multiIndexJetEvalCLM (w i.1) i.2.1
           (poincareTermEntire upper (seed B j) (complementEmbedding comp comp_mem z))‖
-        ≤ C0 * B ^ r * Real.exp (-sigma0 * ∑ k, ((z k : ℝ)) ^ 2))
+        ≤ C0 * B ^ r * Real.exp (-sigma0 * ∑ k, ((z k : ℝ)) ^ (2 : ℕ)))
     (hvanish : ∀ B : ℝ, 0 ≤ B → ∀ (z : Fin c → ℤ) (i j : FiniteJetPacketIndex d I m), z ≠ 0 →
-      (∑ k, ((z k : ℝ)) ^ 2) ≤ Z B →
+      (∑ k, ((z k : ℝ)) ^ (2 : ℕ)) ≤ Z B →
       multiIndexJetEvalCLM (w i.1) i.2.1
           (poincareTermEntire upper (seed B j) (complementEmbedding comp comp_mem z)) = 0)
     (hZ : ∀ B : ℝ, 0 ≤ B → delta * B ≤ (sigma0 - sigma1) * Z B) :

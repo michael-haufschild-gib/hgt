@@ -72,7 +72,7 @@ private theorem lapSquare_continuous (q : XiZeroCopy) : Continuous (lapSquare q)
   have hj (i : Fin 2) : ContinuousAt (coordDeriv i (coordDeriv i (fullSquarePotential q))) (Z z) :=
     (coordDeriv_contDiffAt (m := ∞)
       (by simpa using coordDeriv_contDiffAt (m := ∞) (by simpa using hs) i) i).continuousAt
-  have he : lapSquare q = fun w => (Z w 1:ℂ)^2*
+  have he : lapSquare q = fun w => (Z w 1:ℂ)^(2 : ℕ)*
       (coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (Z w)+
         coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (Z w)) :=
     funext (fun w => scalarLaplacian_eq _ _ (Real.exp_pos w.im))
@@ -245,7 +245,7 @@ private def liftField (q : XiZeroCopy) (branch : Bool) (a : ℂ) (r : Target) : 
 
 private def liftWave (q : XiZeroCopy) (branch : Bool) (a : ℂ) (r : Target) : ℂ :=
   eventWave (radial (physicalRate q branch) a) r.1*square q r.2-
-    radial (physicalRate q branch) a r.1*lapSquare q r.2/(Real.cosh r.1.2:ℂ)^2
+    radial (physicalRate q branch) a r.1*lapSquare q r.2/(Real.cosh r.1.2:ℂ)^(2 : ℕ)
 
 private theorem liftField_continuous (q : XiZeroCopy) (branch : Bool) (a : ℂ) :
     Continuous (liftField q branch a) :=
@@ -259,9 +259,9 @@ private theorem liftWave_continuous (q : XiZeroCopy) (branch : Bool) (a : ℂ) :
       ((lapSquare_continuous q).comp continuous_snd)).div (by fun_prop)
         (fun r => pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.cosh_pos _).ne')))
 
-private theorem radial_metric (x : ℝ) : 1-(radialUnit x:ℂ)^2=1/(Real.cosh x:ℂ)^2 := by
+private theorem radial_metric (x : ℝ) : 1-(radialUnit x:ℂ)^(2 : ℕ)=1/(Real.cosh x:ℂ)^(2 : ℕ) := by
   have hn : (Real.cosh x:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.cosh_pos x).ne'
-  have he : (Real.cosh x:ℂ)^2-(Real.sinh x:ℂ)^2=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq x
+  have he : (Real.cosh x:ℂ)^(2 : ℕ)-(Real.sinh x:ℂ)^(2 : ℕ)=1 := by exact_mod_cast Real.cosh_sq_sub_sinh_sq x
   dsimp only [radialUnit]
   simp only [Complex.ofReal_div,Complex.ofReal_neg]
   field_simp [hn]
@@ -298,9 +298,9 @@ theorem original_lift_weak_wave (q : XiZeroCopy) (branch : Bool) (a : ℂ)
   let G := radial (physicalRate q branch) a
   have hG : ContDiff ℝ ∞ G := radial_smooth _ _
   let W := fun r : Target => (Real.exp (-r.2.im):ℂ)*eventWave (fun p => F (p,r.2)) r.1
-  let A := fun r : Target => angularTestAction (fun z => F (r.1,z)) r.2/(Real.cosh r.1.2:ℂ)^2
+  let A := fun r : Target => angularTestAction (fun z => F (r.1,z)) r.2/(Real.cosh r.1.2:ℂ)^(2 : ℕ)
   let D := fun r : Target => (Real.exp (-r.2.im):ℂ)*eventWave G r.1*square q r.2*F r
-  let B := fun r : Target => (Real.exp (-r.2.im):ℂ)*G r.1*lapSquare q r.2/(Real.cosh r.1.2:ℂ)^2*F r
+  let B := fun r : Target => (Real.exp (-r.2.im):ℂ)*G r.1*lapSquare q r.2/(Real.cosh r.1.2:ℂ)^(2 : ℕ)*F r
   have hweight : Continuous (fun r : Target => (Real.exp (-r.2.im):ℂ)) := by fun_prop
   obtain ⟨hTW,hcTW⟩ := temporal_test_regular F hF hc
   have hW : Continuous W := hweight.mul hTW.continuous
@@ -346,10 +346,10 @@ theorem original_lift_weak_wave (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     let phi : ℂ → ℂ := fun z => F (p,z)
     have hp : ContDiff ℝ ∞ phi := hF.comp (contDiff_const.prodMk contDiff_id)
     have he1 (z : ℂ) : liftField q branch a (p,z)*A (p,z)=
-        (G p/(Real.cosh p.2:ℂ)^2)*(angularTestAction phi z*square q z) := by
+        (G p/(Real.cosh p.2:ℂ)^(2 : ℕ))*(angularTestAction phi z*square q z) := by
       dsimp only [liftField,A,G,phi]
       ring
-    have he2 (z : ℂ) : B (p,z)=(G p/(Real.cosh p.2:ℂ)^2)*
+    have he2 (z : ℂ) : B (p,z)=(G p/(Real.cosh p.2:ℂ)^(2 : ℕ))*
         ((Real.exp (-z.im):ℂ)*phi z*lapSquare q z) := by
       dsimp only [B,phi]
       ring

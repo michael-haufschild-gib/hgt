@@ -21,49 +21,10 @@ namespace HTGeometry
 
 noncomputable section
 
-/-! ## A square root with positive real part off the negative axis -/
-
-theorem norm_add_re_pos_of_im_ne_zero {w : ℂ} (hw : w.im ≠ 0) : 0 < ‖w‖ + w.re := by
-  have hsq : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
-    rw [Complex.sq_norm, Complex.normSq_apply]
-    ring
-  have hnn : 0 ≤ ‖w‖ := norm_nonneg w
-  have him : 0 < w.im ^ 2 := by positivity
-  nlinarith [hsq, hnn, him, sq_nonneg (‖w‖ + w.re), sq_nonneg (‖w‖ - w.re)]
-
-theorem csqrtRe_pos_of_im_ne_zero {w : ℂ} (hw : w.im ≠ 0) : 0 < csqrtRe w := by
-  rw [csqrtRe]
-  exact Real.sqrt_pos.mpr (by linarith [norm_add_re_pos_of_im_ne_zero hw])
-
-theorem csqrt_re_pos_of_im_ne_zero {w : ℂ} (hw : w.im ≠ 0) : 0 < (csqrt w).re := by
-  rw [csqrt_re]
-  exact csqrtRe_pos_of_im_ne_zero hw
-
-theorem csqrt_sq_of_im_ne_zero {w : ℂ} (hw : w.im ≠ 0) : csqrt w ^ 2 = w := by
-  have hp : 0 < csqrtRe w := csqrtRe_pos_of_im_ne_zero hw
-  have hrad : 0 < ‖w‖ + w.re := norm_add_re_pos_of_im_ne_zero hw
-  have hpsq : csqrtRe w ^ 2 = (‖w‖ + w.re) / 2 := by
-    rw [csqrtRe, Real.sq_sqrt (by linarith)]
-  have hnormsq : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
-    rw [Complex.sq_norm, Complex.normSq_apply]
-    ring
-  have hqsq : csqrtIm w ^ 2 = (‖w‖ - w.re) / 2 := by
-    rw [csqrtIm, div_pow, mul_pow, hpsq]
-    rw [div_eq_iff (by nlinarith [hrad] : ((2:ℝ) ^ 2 * ((‖w‖ + w.re) / 2)) ≠ 0)]
-    nlinarith [hnormsq, hrad]
-  have hprod : 2 * (csqrtRe w * csqrtIm w) = w.im := by
-    rw [csqrtIm]
-    field_simp
-  apply Complex.ext
-  · rw [pow_two, Complex.mul_re, csqrt_re, csqrt_im]
-    nlinarith [hpsq, hqsq]
-  · rw [pow_two, Complex.mul_im, csqrt_re, csqrt_im]
-    nlinarith [hprod]
-
 /-! ## The carrier and its deep-time profile -/
 
 /-- The principal root of the mass shell. -/
-def massBesselRoot (t : ℂ) (x : ℝ) : ℂ := csqrt (t ^ 2 + (x : ℂ) ^ 2)
+def massBesselRoot (t : ℂ) (x : ℝ) : ℂ := csqrt (t ^ (2 : ℕ) + (x : ℂ) ^ (2 : ℕ))
 
 /-- The massive radiation carrier of one logarithmic frequency. -/
 def massBesselCarrier (a : ℝ) (t : ℂ) (x : ℝ) : ℂ :=
@@ -109,10 +70,10 @@ theorem two_mul_besselLeading_eq {a : ℝ} (ha : 0 < a) {z : ℂ} (hz : 0 < z.re
   have har : (0 : ℝ) < Real.sqrt a := Real.sqrt_pos.2 ha
   have hs2 : ((Real.sqrt 2 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hs2r
   have hasne : ((Real.sqrt a : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt har
-  have hs2sq : ((Real.sqrt 2 : ℝ) : ℂ) ^ 2 = 2 := by
+  have hs2sq : ((Real.sqrt 2 : ℝ) : ℂ) ^ (2 : ℕ) = 2 := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt (by norm_num)]
     norm_num
-  have hasq : ((Real.sqrt a : ℝ) : ℂ) ^ 2 = (a : ℂ) := by
+  have hasq : ((Real.sqrt a : ℝ) : ℂ) ^ (2 : ℕ) = (a : ℂ) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt ha.le]
   have hconst : ((Real.sqrt (2 * Real.pi * a) : ℝ) : ℂ)
       = ((Real.sqrt 2 : ℝ) : ℂ) * ((Real.sqrt a : ℝ) : ℂ) * ((Real.sqrt Real.pi : ℝ) : ℂ) := by
@@ -136,7 +97,7 @@ theorem massBesselCarrier_eq {a : ℝ} (ha : 0 < a) {t : ℂ} (ht : 0 < t.re) (x
     simp at hz
   have hcsz : csqrt z ≠ 0 := csqrt_ne_zero hz
   have hcst : csqrt t ≠ 0 := csqrt_ne_zero ht
-  have hcstsq : csqrt t ^ 2 = t := csqrt_sq ht
+  have hcstsq : csqrt t ^ (2 : ℕ) = t := csqrt_sq ht
   have htne : t ≠ 0 := by
     intro h
     rw [h] at ht
@@ -159,17 +120,17 @@ theorem massBesselCarrier_eq {a : ℝ} (ha : 0 < a) {t : ℂ} (ht : 0 < t.re) (x
 
 /-! ## Geometry of the mass-shell root -/
 
-theorem massShell_im (t : ℂ) (x : ℝ) : (t ^ 2 + (x : ℂ) ^ 2).im = 2 * t.re * t.im := by
+theorem massShell_im (t : ℂ) (x : ℝ) : (t ^ (2 : ℕ) + (x : ℂ) ^ (2 : ℕ)).im = 2 * t.re * t.im := by
   simp [pow_two, Complex.add_im, Complex.mul_im]
   ring
 
 theorem massShell_im_ne_zero {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x : ℝ) :
-    (t ^ 2 + (x : ℂ) ^ 2).im ≠ 0 := by
+    (t ^ (2 : ℕ) + (x : ℂ) ^ (2 : ℕ)).im ≠ 0 := by
   rw [massShell_im]
   positivity
 
 theorem massBesselRoot_sq {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x : ℝ) :
-    massBesselRoot t x ^ 2 = t ^ 2 + (x : ℂ) ^ 2 :=
+    massBesselRoot t x ^ (2 : ℕ) = t ^ (2 : ℕ) + (x : ℂ) ^ (2 : ℕ) :=
   csqrt_sq_of_im_ne_zero (massShell_im_ne_zero htre htim x)
 
 theorem massBesselRoot_re_pos {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x : ℝ) :
@@ -179,9 +140,9 @@ theorem massBesselRoot_re_pos {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x :
 theorem massBesselRoot_im_pos {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x : ℝ) :
     0 < (massBesselRoot t x).im := by
   rw [massBesselRoot, csqrt_im, csqrtIm]
-  have hp : 0 < csqrtRe (t ^ 2 + (x : ℂ) ^ 2) :=
+  have hp : 0 < csqrtRe (t ^ (2 : ℕ) + (x : ℂ) ^ (2 : ℕ)) :=
     csqrtRe_pos_of_im_ne_zero (massShell_im_ne_zero htre htim x)
-  have hnum : 0 < (t ^ 2 + (x : ℂ) ^ 2).im := by
+  have hnum : 0 < (t ^ (2 : ℕ) + (x : ℂ) ^ (2 : ℕ)).im := by
     rw [massShell_im]
     positivity
   positivity
@@ -189,10 +150,10 @@ theorem massBesselRoot_im_pos {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x :
 /-- The root differs from the spectral parameter by at most the square of the frequency over the
 spectral height. -/
 theorem norm_massBesselRoot_sub_le {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x : ℝ) :
-    ‖massBesselRoot t x - t‖ ≤ x ^ 2 / t.im := by
+    ‖massBesselRoot t x - t‖ ≤ x ^ (2 : ℕ) / t.im := by
   set z : ℂ := massBesselRoot t x with hzdef
   have hzim : 0 < z.im := massBesselRoot_im_pos htre htim x
-  have hzsq : z ^ 2 = t ^ 2 + (x : ℂ) ^ 2 := massBesselRoot_sq htre htim x
+  have hzsq : z ^ (2 : ℕ) = t ^ (2 : ℕ) + (x : ℂ) ^ (2 : ℕ) := massBesselRoot_sq htre htim x
   have hsum : 0 < (z + t).im := by
     rw [Complex.add_im]
     linarith
@@ -205,21 +166,21 @@ theorem norm_massBesselRoot_sub_le {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im)
     rw [Complex.add_im] at hsum ⊢
     rw [abs_of_pos hsum]
     linarith
-  have hprod : (z - t) * (z + t) = (x : ℂ) ^ 2 := by
-    have : (z - t) * (z + t) = z ^ 2 - t ^ 2 := by ring
+  have hprod : (z - t) * (z + t) = (x : ℂ) ^ (2 : ℕ) := by
+    have : (z - t) * (z + t) = z ^ (2 : ℕ) - t ^ (2 : ℕ) := by ring
     rw [this, hzsq]
     ring
-  have hnormprod : ‖z - t‖ * ‖z + t‖ = x ^ 2 := by
+  have hnormprod : ‖z - t‖ * ‖z + t‖ = x ^ (2 : ℕ) := by
     rw [← norm_mul, hprod, ← Complex.ofReal_pow, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (by positivity)]
   have hsumpos : (0 : ℝ) < ‖z + t‖ := lt_of_lt_of_le htim hnormsum
   rw [le_div_iff₀ htim]
   calc ‖z - t‖ * t.im ≤ ‖z - t‖ * ‖z + t‖ :=
         mul_le_mul_of_nonneg_left hnormsum (norm_nonneg _)
-    _ = x ^ 2 := hnormprod
+    _ = x ^ (2 : ℕ) := hnormprod
 
 theorem massBesselRoot_re_ge {t : ℂ} (htre : 0 < t.re) (htim : 0 < t.im) (x : ℝ) :
-    t.re - x ^ 2 / t.im ≤ (massBesselRoot t x).re := by
+    t.re - x ^ (2 : ℕ) / t.im ≤ (massBesselRoot t x).re := by
   set z : ℂ := massBesselRoot t x with hzdef
   have h := norm_massBesselRoot_sub_le htre htim x
   have hre : |(z - t).re| ≤ ‖z - t‖ := Complex.abs_re_le_norm _
@@ -323,9 +284,9 @@ theorem norm_csqrt_sub_le {t z : ℂ} (ht : 0 < t.re) (hz : 0 < z.re) :
     rw [Complex.add_re]
     linarith
   have hprod : (csqrt t - csqrt z) * (csqrt t + csqrt z) = t - z := by
-    have h1 : csqrt t ^ 2 = t := csqrt_sq ht
-    have h2 : csqrt z ^ 2 = z := csqrt_sq hz
-    have : (csqrt t - csqrt z) * (csqrt t + csqrt z) = csqrt t ^ 2 - csqrt z ^ 2 := by ring
+    have h1 : csqrt t ^ (2 : ℕ) = t := csqrt_sq ht
+    have h2 : csqrt z ^ (2 : ℕ) = z := csqrt_sq hz
+    have : (csqrt t - csqrt z) * (csqrt t + csqrt z) = csqrt t ^ (2 : ℕ) - csqrt z ^ (2 : ℕ) := by ring
     rw [this, h1, h2]
   have hnorm : ‖csqrt t - csqrt z‖ * ‖csqrt t + csqrt z‖ = ‖t - z‖ := by
     rw [← norm_mul, hprod]

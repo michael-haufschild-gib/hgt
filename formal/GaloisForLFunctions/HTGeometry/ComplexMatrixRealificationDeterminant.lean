@@ -112,7 +112,7 @@ theorem doubledRealConjugation_conjTranspose :
 
 /-- The squared determinant of doubled-real conjugation is one. -/
 theorem det_doubledRealConjugation_sq :
-    (doubledRealConjugation (n := n)).det ^ 2 = 1 := by
+    (doubledRealConjugation (n := n)).det ^ (2 : ℕ) = 1 := by
   have hdet : (doubledRealConjugation (n := n)).det =
       (-1 : ℝ) ^ Fintype.card n := by
     change (matrixOrthogonalSum (1 : Matrix n n ℝ) (-1)).det = _
@@ -126,14 +126,14 @@ theorem det_doubledRealConjugation_sq :
 theorem det_complexMatrixRowRealification (A : Matrix n n ℂ) :
     (complexMatrixRowRealification A).det = Complex.normSq A.det := by
   let C := doubledRealConjugation (n := n)
-  have hC : C.det ^ 2 = 1 := by
+  have hC : C.det ^ (2 : ℕ) = 1 := by
     exact det_doubledRealConjugation_sq (n := n)
   rw [complexMatrixRowRealification, doubledRealConjugation_conjTranspose]
   rw [Matrix.det_mul, Matrix.det_mul, det_complexMatrixRealification]
   change C.det * Complex.normSq A.det * C.det = Complex.normSq A.det
   calc
     C.det * Complex.normSq A.det * C.det =
-        Complex.normSq A.det * C.det ^ 2 := by ring
+        Complex.normSq A.det * C.det ^ (2 : ℕ) := by ring
     _ = Complex.normSq A.det := by rw [hC]; ring
 
 end

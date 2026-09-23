@@ -10,7 +10,7 @@ are given by one formula at even indices and another at odd ones.  Both are the
 square of a shifted zeta value divided by a factorial, and the functional
 equation turns each into a geometric factor times a bounded-growth remainder.
 
-The factorial ratio `(m!)^2/(2m)!` is the reciprocal of the central binomial
+The factorial ratio `(m!)^(2 : ℕ)/(2m)!` is the reciprocal of the central binomial
 coefficient, which is `4^{-m}` up to a polynomial factor.  Combining the two
 geometric rates gives `1/(2π) · 1/2 = 1/(4π)` in both parities, so the growth
 functional of the squared shift lattice is exactly `1/(4π)` — the cusp constant

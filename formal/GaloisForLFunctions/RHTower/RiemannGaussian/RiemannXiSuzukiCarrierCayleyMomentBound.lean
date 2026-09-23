@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiCarrierCayleyM
 # Cauchy-reference bounds for the xi-energy Cayley moments
 
 The finite xi-energy carrier measure is pointwise dominated by the Cauchy
-reference measure `dx / (1 + x^2)`.  In the shifted arctangent coordinate,
+reference measure `dx / (1 + x^(2 : ℕ))`.  In the shifted arctangent coordinate,
 the bilateral Cayley characters are the ordinary Fourier characters on the
 additive circle of length `pi`.  This file packages that reference measure
 and proves the resulting exact orthogonality and finite-synthesis bounds.
@@ -20,9 +20,9 @@ namespace RiemannGaussian
 
 noncomputable section
 
-local instance : Fact (0 < Real.pi) := ⟨Real.pi_pos⟩
+local instance riemannXiSuzukiCarrierCayleyMomentBoundInst1 : Fact (0 < Real.pi) := ⟨Real.pi_pos⟩
 
-/-- The unnormalized Cauchy measure `dx / (1 + x^2)` on the real line. -/
+/-- The unnormalized Cauchy measure `dx / (1 + x^(2 : ℕ))` on the real line. -/
 def suzukiXiCarrierCayleyReferenceMeasure : Measure ℝ :=
   volume.withDensity fun x : ℝ ↦ ENNReal.ofReal ((1 + x ^ 2)⁻¹)
 

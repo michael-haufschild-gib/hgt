@@ -39,7 +39,7 @@ the constant map at a unit vector orthogonal to its range. -/
 noncomputable def deningerSlideHomotopy (S : H →ₗᵢ[ℝ] H) {e : H} (he : ‖e‖ = 1)
     (hperp : ∀ y : H, ⟪S y, e⟫_ℝ = 0) :
     ContinuousMap.Homotopy (deningerSphereIsometryMap S) (deningerSphereConstMap he) where
-  toFun p := ⟨Real.sqrt (1 - ((p.1 : ℝ)) ^ 2) • S ((p.2 : H)) + ((p.1 : ℝ)) • e, by
+  toFun p := ⟨Real.sqrt (1 - ((p.1 : ℝ)) ^ (2 : ℕ)) • S ((p.2 : H)) + ((p.1 : ℝ)) • e, by
     rw [mem_sphere_zero_iff_norm]
     exact deningerSphereSlide_norm S he hperp (mem_sphere_zero_iff_norm.mp p.2.2)
       p.1.2.1 p.1.2.2⟩
@@ -53,12 +53,12 @@ noncomputable def deningerSlideHomotopy (S : H →ₗᵢ[ℝ] H) {e : H} (he : �
     · exact (continuous_subtype_val.comp continuous_fst).smul continuous_const
   map_zero_left x := by
     refine Subtype.ext ?_
-    show Real.sqrt (1 - (0 : ℝ) ^ 2) • S ((x : H)) + (0 : ℝ) • e = S (x : H)
+    show Real.sqrt (1 - (0 : ℝ) ^ (2 : ℕ)) • S ((x : H)) + (0 : ℝ) • e = S (x : H)
     rw [zero_smul, add_zero]
     norm_num
   map_one_left x := by
     refine Subtype.ext ?_
-    show Real.sqrt (1 - (1 : ℝ) ^ 2) • S ((x : H)) + (1 : ℝ) • e = e
+    show Real.sqrt (1 - (1 : ℝ) ^ (2 : ℕ)) • S ((x : H)) + (1 : ℝ) • e = e
     rw [one_smul]
     norm_num
 

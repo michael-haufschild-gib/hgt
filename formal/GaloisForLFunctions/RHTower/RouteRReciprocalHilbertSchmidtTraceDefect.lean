@@ -44,16 +44,16 @@ theorem xiCentralReciprocalMoment_zero_eq_neg_XiC_secondDeriv_div :
   rfl
 
 private lemma norm_inv_sq_sub_re_inv_sq (a : ℂ) :
-    ‖a⁻¹‖ ^ 2 - (a⁻¹ ^ 2).re = 2 * a.im ^ 2 / ‖a‖ ^ 4 := by
-  have hbase (z : ℂ) : ‖z‖ ^ 2 - (z ^ 2).re = 2 * z.im ^ 2 := by
+    ‖a⁻¹‖ ^ (2 : ℕ) - (a⁻¹ ^ (2 : ℕ)).re = 2 * a.im ^ (2 : ℕ) / ‖a‖ ^ (4 : ℕ) := by
+  have hbase (z : ℂ) : ‖z‖ ^ (2 : ℕ) - (z ^ (2 : ℕ)).re = 2 * z.im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [pow_two, Complex.mul_re]
     ring
   rw [hbase, Complex.inv_im, div_pow]
-  have hnorm : ‖a‖ ^ 4 = Complex.normSq a ^ 2 := by
+  have hnorm : ‖a‖ ^ (4 : ℕ) = Complex.normSq a ^ (2 : ℕ) := by
     calc
-      ‖a‖ ^ 4 = (‖a‖ ^ 2) ^ 2 := by ring
-      _ = Complex.normSq a ^ 2 := by rw [Complex.sq_norm]
+      ‖a‖ ^ (4 : ℕ) = (‖a‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+      _ = Complex.normSq a ^ (2 : ℕ) := by rw [Complex.sq_norm]
   rw [hnorm]
   ring
 
@@ -149,8 +149,8 @@ theorem opTrace_sq_xiReciprocalOperator :
 theorem xiReciprocalHermitianMass_sub_moment_eq_heightEnergy :
     xiReciprocalHermitianMass - (xiCentralReciprocalMoment 0).re =
       ∑' q : XiZeroCopy,
-        2 * (xiSpectralPoint q).im ^ 2 / ‖xiSpectralPoint q‖ ^ 4 := by
-  have hH : Summable (fun q : XiZeroCopy => ‖xiReciprocalCoordinate q‖ ^ 2) := by
+        2 * (xiSpectralPoint q).im ^ (2 : ℕ) / ‖xiSpectralPoint q‖ ^ (4 : ℕ) := by
+  have hH : Summable (fun q : XiZeroCopy => ‖xiReciprocalCoordinate q‖ ^ (2 : ℕ)) := by
     simpa [xiReciprocalCoordinate] using summable_norm_xiSpectralPoint_inv_sq
   have hC : Summable (fun q : XiZeroCopy => xiZeroCopyReciprocalSquare q) :=
     summable_xiZeroCopyReciprocalSquare
@@ -158,17 +158,17 @@ theorem xiReciprocalHermitianMass_sub_moment_eq_heightEnergy :
     hC.mapL Complex.reCLM
   calc
     xiReciprocalHermitianMass - (xiCentralReciprocalMoment 0).re =
-        (∑' q : XiZeroCopy, ‖xiReciprocalCoordinate q‖ ^ 2) -
+        (∑' q : XiZeroCopy, ‖xiReciprocalCoordinate q‖ ^ (2 : ℕ)) -
           ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q).re := by
       rw [xiReciprocalHermitianMass, ← Complex.re_tsum hC,
         show (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q) =
             xiCentralReciprocalMoment 0 by
           simpa using tsum_xiZeroCopyReciprocalSquare_pow 0]
     _ = ∑' q : XiZeroCopy,
-        (‖xiReciprocalCoordinate q‖ ^ 2 - (xiZeroCopyReciprocalSquare q).re) := by
+        (‖xiReciprocalCoordinate q‖ ^ (2 : ℕ) - (xiZeroCopyReciprocalSquare q).re) := by
       rw [hH.tsum_sub hCre]
     _ = ∑' q : XiZeroCopy,
-        2 * (xiSpectralPoint q).im ^ 2 / ‖xiSpectralPoint q‖ ^ 4 := by
+        2 * (xiSpectralPoint q).im ^ (2 : ℕ) / ‖xiSpectralPoint q‖ ^ (4 : ℕ) := by
       apply tsum_congr
       intro q
       simpa [xiReciprocalCoordinate, xiZeroCopyReciprocalSquare] using

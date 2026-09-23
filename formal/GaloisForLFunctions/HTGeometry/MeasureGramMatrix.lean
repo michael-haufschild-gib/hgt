@@ -45,7 +45,7 @@ product of the two atom kernel integrals. -/
 theorem norm_measureGram_sq_le {d : ℕ} (ν : Measure ℝ) (a : Fin d → ℝ) (y : ℝ) (l m : Fin d)
     (hfi : Integrable (fun t : ℝ => atomKernel (a l) y t) ν)
     (hgi : Integrable (fun t : ℝ => atomKernel (a m) y t) ν) :
-    ‖measureGram ν a y l m‖ ^ 2 ≤
+    ‖measureGram ν a y l m‖ ^ (2 : ℕ) ≤
       (∫ t, atomKernel (a l) y t ∂ν) * (∫ t, atomKernel (a m) y t ∂ν) :=
   norm_scaledPairing_sq_le_atomKernel_mul hfi hgi
 

@@ -58,10 +58,10 @@ mass on the whole line. -/
 theorem integrable_sq_global_band_eigen
     {c ν : ℝ} (hc : 0 < c) (hν : ν ≠ 0) {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
     (heig : ∀ x : ℝ, bandTransform c Φ x = ν * Φ x) :
-    Integrable (fun x : ℝ => Φ x ^ 2) (volume : Measure ℝ) := by
+    Integrable (fun x : ℝ => Φ x ^ (2 : ℕ)) (volume : Measure ℝ) := by
   have htransform := integrable_sq_bandTransform hc hΦ
   have hscaled : Integrable
-      (fun x : ℝ => (ν ^ 2)⁻¹ * (bandTransform c Φ x) ^ 2)
+      (fun x : ℝ => (ν ^ (2 : ℕ))⁻¹ * (bandTransform c Φ x) ^ (2 : ℕ))
       (volume : Measure ℝ) := htransform.const_mul _
   refine hscaled.congr ?_
   filter_upwards with x
@@ -73,7 +73,7 @@ by the band eigenvalue. -/
 theorem integral_sq_global_band_eigen
     {c ν : ℝ} (hc : 0 < c) (hν : ν ≠ 0) {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
     (heig : ∀ x : ℝ, bandTransform c Φ x = ν * Φ x) :
-    (∫ x : ℝ, Φ x ^ 2) = ‖bandClass Φ hΦ‖ ^ 2 / ν := by
+    (∫ x : ℝ, Φ x ^ (2 : ℕ)) = ‖bandClass Φ hΦ‖ ^ (2 : ℕ) / ν := by
   have hclass := bandOperatorL2_bandClass_eq_smul_of_global_band_eigen hΦ heig
   have hmass := integral_sq_eigenExtension hc hν hclass
   have hext := _root_.RHTower.eigenExtension_bandClass_eq_self_of_bandEigen hν hΦ heig
@@ -84,8 +84,8 @@ times the leakage ratio `(1 - ν) / ν`. -/
 theorem integral_outside_sq_global_band_eigen
     {c ν : ℝ} (hc : 0 < c) (hν : ν ≠ 0) {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
     (heig : ∀ x : ℝ, bandTransform c Φ x = ν * Φ x) :
-    (∫ x in (Icc (-1 : ℝ) 1)ᶜ, Φ x ^ 2) =
-      ‖bandClass Φ hΦ‖ ^ 2 * (1 - ν) / ν := by
+    (∫ x in (Icc (-1 : ℝ) 1)ᶜ, Φ x ^ (2 : ℕ)) =
+      ‖bandClass Φ hΦ‖ ^ (2 : ℕ) * (1 - ν) / ν := by
   have hclass := bandOperatorL2_bandClass_eq_smul_of_global_band_eigen hΦ heig
   have hmass := integral_outside_sq_eigenExtension hc hν hclass
   have hext := _root_.RHTower.eigenExtension_bandClass_eq_self_of_bandEigen hν hΦ heig
@@ -95,8 +95,8 @@ theorem integral_outside_sq_global_band_eigen
 theorem integral_outside_sq_global_band_eigen_eq_integral_mul_ratio
     {c ν : ℝ} (hc : 0 < c) (hν : ν ≠ 0) {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
     (heig : ∀ x : ℝ, bandTransform c Φ x = ν * Φ x) :
-    (∫ x in (Icc (-1 : ℝ) 1)ᶜ, Φ x ^ 2) =
-      (∫ x in (-1 : ℝ)..1, Φ x ^ 2) * (1 - ν) / ν := by
+    (∫ x in (Icc (-1 : ℝ) 1)ᶜ, Φ x ^ (2 : ℕ)) =
+      (∫ x in (-1 : ℝ)..1, Φ x ^ (2 : ℕ)) * (1 - ν) / ν := by
   rw [integral_outside_sq_global_band_eigen hc hν hΦ heig,
     norm_sq_bandClass]
 

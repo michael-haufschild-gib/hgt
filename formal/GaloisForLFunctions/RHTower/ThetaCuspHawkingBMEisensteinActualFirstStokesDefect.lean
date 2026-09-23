@@ -6,16 +6,16 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinFullCuspSectorAss
 
 Corpus conjecture C-A.9t3a is the first literal Stokes step after the actual/canonical Maass weld.
 For repeated actual completed Poincare leg `F` and projecting leg `G`, the first balanced moment
-uses `F^2 G`, while its gradient moment uses `G ((partial_x F)^2 + (partial_y F)^2)`.
+uses `F^(2 : ℕ) G`, while its gradient moment uses `G ((partial_x F)^(2 : ℕ) + (partial_y F)^(2 : ℕ))`.
 
 This module constructs the genuine product Green current
 
-`J = 2 F G grad F - F^2 grad G`
+`J = 2 F G grad F - F^(2 : ℕ) grad G`
 
 from actual Poincare jets.  Its divergence has no mixed cross term.  The exact eigen equations
 then prove
 
-`2 (gradientDensity - (mu/2-lambda) scalarDensity) = y^2 div J`.
+`2 (gradientDensity - (mu/2-lambda) scalarDensity) = y^(2 : ℕ) div J`.
 
 Thus the abstract first Stokes defect in the balanced spin-two coefficient is literally an actual
 boundary divergence, with no premise or proxy moment.  The RH chain is

@@ -138,19 +138,19 @@ totally ramified value. -/
 theorem not_quadratic_matching_of_drift {W g : ℂ → ℂ} (hW : Differentiable ℂ W)
     (hg : Differentiable ℂ g) {T C : ℂ} (hT : T ≠ 0) (hC : C ≠ 0)
     (hdrift : ∀ z, W (z + T) = W z + C) (a : ℂ) :
-    ¬ (∀ z, W z = a + g z ^ 2) := by
+    ¬ (∀ z, W z = a + g z ^ (2 : ℕ)) := by
   intro hsq
   refine not_totallyRamified_of_drift hW hT hC hdrift a ?_
   intro z hz
   have hgz : g z = 0 := by
     have h := hsq z
     rw [hz] at h
-    have : g z ^ 2 = 0 := by linear_combination -h
+    have : g z ^ (2 : ℕ) = 0 := by linear_combination -h
     exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp this
-  have hWfun : W = fun w => a + g w ^ 2 := funext hsq
-  have hderiv : HasDerivAt (fun w => a + g w ^ 2) (2 * g z * deriv g z) z := by
+  have hWfun : W = fun w => a + g w ^ (2 : ℕ) := funext hsq
+  have hderiv : HasDerivAt (fun w => a + g w ^ (2 : ℕ)) (2 * g z * deriv g z) z := by
     have hgd : HasDerivAt g (deriv g z) z := (hg z).hasDerivAt
-    have hsq' : HasDerivAt (fun w => g w ^ 2) (2 * g z ^ (2 - 1) * deriv g z) z := hgd.pow 2
+    have hsq' : HasDerivAt (fun w => g w ^ (2 : ℕ)) (2 * g z ^ (2 - 1) * deriv g z) z := hgd.pow 2
     simpa using hsq'.const_add a
   rw [hWfun, hderiv.deriv, hgz]
   ring

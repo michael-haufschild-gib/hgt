@@ -37,9 +37,9 @@ theorem abs_psWeight {R μ : ℕ} (hR : 1 ≤ R) (hμ : 1 ≤ μ) (hμR : μ ≤
     |psWeight R μ| = (-1 : ℝ) ^ (μ - 1) * psWeight R μ := by
   have hs := sin_psWeight_denom_ne_zero hR hμ hμR
   have hRpos : (0 : ℝ) < (R : ℝ) := by exact_mod_cast hR
-  have hsq : 0 < Real.sin ((2 * (μ : ℝ) - 1) * Real.pi / (4 * R)) ^ 2 :=
+  have hsq : 0 < Real.sin ((2 * (μ : ℝ) - 1) * Real.pi / (4 * R)) ^ (2 : ℕ) :=
     pow_pos (abs_pos.mpr hs) 2 |>.trans_le (le_of_eq (by rw [sq_abs]))
-  have hden : 0 < 4 * (R : ℝ) * Real.sin ((2 * (μ : ℝ) - 1) * Real.pi / (4 * R)) ^ 2 := by
+  have hden : 0 < 4 * (R : ℝ) * Real.sin ((2 * (μ : ℝ) - 1) * Real.pi / (4 * R)) ^ (2 : ℕ) := by
     positivity
   have hsign : ((-1 : ℝ) ^ (μ - 1)) * ((-1 : ℝ) ^ (μ - 1)) = 1 := by
     rw [← pow_add]

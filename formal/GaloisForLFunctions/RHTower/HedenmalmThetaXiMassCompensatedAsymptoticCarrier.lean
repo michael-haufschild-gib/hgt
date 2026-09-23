@@ -8,7 +8,7 @@ Radial Riemann--Lebesgue extinction removes every integrable centered mass-shell
 higher prime powers also vanish by a common summable envelope.  What survives in the exact
 theta-Green / adjacent-prime compensation law is therefore a finite two-mode carrier:
 
-* the crossed archimedean zero at frequency `sqrt(a^2-1/4)`, coefficient `2*pi`;
+* the crossed archimedean zero at frequency `sqrt(a^(2 : ℕ)-1/4)`, coefficient `2*pi`;
 * the prime-square pole at frequency `a`, coefficient `-pi/2`.
 
 This classifies the complete future vertical asymptotic modulo a term tending to zero.  No RH

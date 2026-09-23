@@ -113,8 +113,8 @@ theorem null_direction_eigen_iff_critical (x₀ : ℚ) :
       rw [h] at h1
       norm_num at h1
     have hsq : x₀ = c * (c * x₀) := by rw [h1] at h2; exact h2
-    have hc : c ^ 2 = 1 := by
-      have : x₀ * (c ^ 2 - 1) = 0 := by nlinarith [hsq]
+    have hc : c ^ (2 : ℕ) = 1 := by
+      have : x₀ * (c ^ (2 : ℕ) - 1) = 0 := by nlinarith [hsq]
       rcases mul_eq_zero.mp this with h | h
       · exact absurd h hx
       · linarith
@@ -170,7 +170,7 @@ without irrational arithmetic. -/
 
 /-- The rational comparison certifying `277/1792 > (√5 - 1)/8`, namely `501/224 > √5`. -/
 theorem covering_floor_above_semigroup_limit :
-    (501 : ℤ) ^ 2 - 5 * 224 ^ 2 = 121 ∧ (277 : ℚ) / 1792 = (501 / 224 - 1) / 8 := by
+    (501 : ℤ) ^ (2 : ℕ) - 5 * 224 ^ (2 : ℕ) = 121 ∧ (277 : ℚ) / 1792 = (501 / 224 - 1) / 8 := by
   constructor
   · norm_num
   · norm_num
@@ -182,8 +182,8 @@ theorem semigroup_limit_lt_covering_floor :
   have h5 : Real.sqrt 5 < 501 / 224 := by
     have hnn : (0:ℝ) ≤ 501 / 224 := by norm_num
     have := Real.sqrt_lt_sqrt (by norm_num : (0:ℝ) ≤ 5)
-      (by norm_num : (5:ℝ) < (501 / 224) ^ 2)
-    calc Real.sqrt 5 < Real.sqrt ((501 / 224) ^ 2) := this
+      (by norm_num : (5:ℝ) < (501 / 224) ^ (2 : ℕ))
+    calc Real.sqrt 5 < Real.sqrt ((501 / 224) ^ (2 : ℕ)) := this
       _ = 501 / 224 := by rw [Real.sqrt_sq hnn]
   linarith
 

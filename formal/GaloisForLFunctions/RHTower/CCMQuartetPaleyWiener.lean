@@ -24,7 +24,7 @@ two coordinates, and the metric cost of the anti-causal residue mode.
   horizontal displacement `a` is carried by `cosh(a t)` and `sinh(a t)`, not by the ordinate phase.
 * `quartetResidueMode`, `integral_norm_sq_quartetResidueMode`,
   `four_mul_lt_integral_norm_sq_quartetResidueMode` — equations `(15)`–`(16)`: squared norm
-  `2 m^2 / a`, strictly more than four trace units per multiplicity unit when `0 < a < 1/2`.
+  `2 m^(2 : ℕ) / a`, strictly more than four trace units per multiplicity unit when `0 < a < 1/2`.
 -/
 
 noncomputable section
@@ -279,7 +279,7 @@ theorem norm_quartetResidueMode (lam : ℂ) (m : ℕ) (t : ℝ) :
   rw [norm_mul]
   simp
 
-/-- **Equation (15).**  The squared norm of the residue mode is `2 m^2 / a`. -/
+/-- **Equation (15).**  The squared norm of the residue mode is `2 m^(2 : ℕ) / a`. -/
 theorem integral_norm_sq_quartetResidueMode {lam : ℂ} (ha : 0 < lam.re) (m : ℕ) :
     (∫ t in Ioi (0 : ℝ), ‖quartetResidueMode lam m t‖ ^ 2) = 2 * (m : ℝ) ^ 2 / lam.re := by
   have h2a : 0 < 2 * lam.re := by linarith

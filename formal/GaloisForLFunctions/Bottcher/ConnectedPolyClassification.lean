@@ -10,13 +10,13 @@ namespace Bottcher
 algebraic heart of the connected-case natural-boundary theorem: the only Böttcher parameters admitting
 an entire solution are `c=0` (Q≡1, `ψ(w)=w`) and `c=-2` (Q=X+1, `ψ(w)=w+1/w`). -/
 theorem c_mem_of_poly_functional_eq {Q : ℂ[X]} {c : ℂ}
-    (hfe : Q.comp (X ^ 2) = Q ^ 2 + C c * X)
+    (hfe : Q.comp (X ^ (2 : ℕ)) = Q ^ (2 : ℕ) + C c * X)
     (h0 : Q.coeff 0 = 1) :
     c = 0 ∨ c = -2 := by
   have hQ0 : Q ≠ 0 := by
     intro h; rw [h] at h0; simp at h0
   have coeffND : ∀ p : ℂ[X], p.coeff p.natDegree = p.leadingCoeff := fun _ => rfl
-  have hcomp : ∀ n, (Q.comp (X ^ 2)).coeff n = if 2 ∣ n then Q.coeff (n / 2) else 0 := by
+  have hcomp : ∀ n, (Q.comp (X ^ (2 : ℕ))).coeff n = if 2 ∣ n then Q.coeff (n / 2) else 0 := by
     intro n; rw [← expand_eq_comp_X_pow]; exact coeff_expand (by norm_num) Q n
   have hCcX : ∀ n, (C c * X).coeff n = if n = 1 then c else 0 := by
     intro n; rw [coeff_C_mul, coeff_X]
@@ -24,7 +24,7 @@ theorem c_mem_of_poly_functional_eq {Q : ℂ[X]} {c : ℂ}
     · subst h; simp
     · rw [if_neg h, if_neg (by omega : ¬ (1 = n))]; ring
   have hmain : ∀ n, (if 2 ∣ n then Q.coeff (n / 2) else 0)
-      = (Q ^ 2).coeff n + (if n = 1 then c else 0) := by
+      = (Q ^ (2 : ℕ)).coeff n + (if n = 1 then c else 0) := by
     intro n
     have hc := congrArg (fun p => Polynomial.coeff p n) hfe
     simp only [coeff_add] at hc
@@ -35,15 +35,15 @@ theorem c_mem_of_poly_functional_eq {Q : ℂ[X]} {c : ℂ}
   · have hQC : Q = C (Q.coeff 0) := eq_C_of_natDegree_eq_zero (by rw [← hd]; exact hd0)
     have hm1 := hmain 1
     rw [if_neg (by decide : ¬ (2 : ℕ) ∣ 1), if_pos rfl] at hm1
-    have hQ2c : (Q ^ 2).coeff 1 = 0 := by
-      rw [hQC, show (C (Q.coeff 0)) ^ 2 = C ((Q.coeff 0) ^ 2) from by rw [map_pow], coeff_C]
+    have hQ2c : (Q ^ (2 : ℕ)).coeff 1 = 0 := by
+      rw [hQC, show (C (Q.coeff 0)) ^ (2 : ℕ) = C ((Q.coeff 0) ^ (2 : ℕ)) from by rw [map_pow], coeff_C]
       norm_num
     rw [hQ2c, zero_add] at hm1
     left; exact hm1.symm
   -- d ≥ 1.  leading coefficient is 1.
   have hlc : Q.leadingCoeff = Q.coeff d := rfl
-  have hsq2d : (Q ^ 2).coeff (2 * d) = (Q.coeff d) ^ 2 := by
-    rw [show (2 * d) = (Q ^ 2).natDegree from by rw [natDegree_pow, ← hd],
+  have hsq2d : (Q ^ (2 : ℕ)).coeff (2 * d) = (Q.coeff d) ^ (2 : ℕ) := by
+    rw [show (2 * d) = (Q ^ (2 : ℕ)).natDegree from by rw [natDegree_pow, ← hd],
         coeffND, leadingCoeff_pow, ← hlc]
   have hb1 : Q.coeff d = 1 := by
     have hm := hmain (2 * d)
@@ -56,7 +56,7 @@ theorem c_mem_of_poly_functional_eq {Q : ℂ[X]} {c : ℂ}
     · linear_combination h
   -- square-coefficient isolation: only the (i,d),(d,i) pair survives
   have hsq : ∀ i : ℕ, i < d → (∀ a, i < a → a < d → Q.coeff a = 0) →
-      (Q ^ 2).coeff (d + i) = 2 * Q.coeff i := by
+      (Q ^ (2 : ℕ)).coeff (d + i) = 2 * Q.coeff i := by
     intro i hid hvan
     rw [pow_two, coeff_mul]
     have hTsub : ({(i, d), (d, i)} : Finset (ℕ × ℕ)) ⊆ Finset.antidiagonal (d + i) := by

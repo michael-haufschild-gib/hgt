@@ -35,7 +35,7 @@ theorem hillChartField_apply (m : ℝ) (c : ℝ → ℝ) (G₀ : EuclideanSpace 
 nonvanishing real synthesis there. -/
 theorem eventually_hillChartField_ne_zero (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
     (hG : Continuous G₀)
     (hint : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => ‖G₀ ξ‖) (volume))
     {y₀ : Fin (d + 1) → ℝ} (hy₀ : y₀ 0 = 0)

@@ -254,7 +254,7 @@ theorem integrable_fourier_suzukiTiltedHankelConvolution
   have hc0 : 0 ≤ c := by linarith
   have hscale : 2 * Real.pi ≠ 0 := mul_ne_zero (by norm_num) Real.pi_ne_zero
   have hmajorant : Integrable (fun xi : ℝ =>
-      C * (1 + (2 * Real.pi * xi) ^ 2)⁻¹) := by
+      C * (1 + (2 * Real.pi * xi) ^ (2 : ℕ))⁻¹) := by
     exact (integrable_inv_one_add_sq.comp_mul_left' hscale).const_mul C
   have hconv := integrable_suzukiTiltedHankelConvolution homega hc g
   have hcontinuous : Continuous (FourierTransform.fourier
@@ -279,8 +279,8 @@ theorem integrable_fourier_suzukiTiltedHankelConvolution
           (((-2 * Real.pi * xi : ℝ) : ℂ) + (c : ℂ) * Complex.I)‖ *
         ‖deningerMeyerStrongLogMellin g
           ((c : ℂ) + ((2 * Real.pi * xi : ℝ) : ℂ) * Complex.I)‖ ≤
-      1 * (C * (1 + (2 * Real.pi * xi) ^ 2)⁻¹) := by gcongr
-    _ = C * (1 + (2 * Real.pi * xi) ^ 2)⁻¹ := one_mul _
+      1 * (C * (1 + (2 * Real.pi * xi) ^ (2 : ℕ))⁻¹) := by gcongr
+    _ = C * (1 + (2 * Real.pi * xi) ^ (2 : ℕ))⁻¹ := one_mul _
 
 /-- Literal logarithmic form of Suzuki's kernel operator. -/
 def suzukiLiteralLogHankel

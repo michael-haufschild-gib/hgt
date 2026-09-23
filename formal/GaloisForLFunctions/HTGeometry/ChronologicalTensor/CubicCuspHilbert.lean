@@ -49,7 +49,7 @@ theorem cubicGradedDefect_finrank (k : ℕ) :
 /-! ### Hilbert series -/
 
 theorem cuspPowerSeries_coeff_X_sq (n : ℕ) :
-    (PowerSeries.coeff n) ((PowerSeries.X : PowerSeries ℝ)^2) = if n = 2 then 1 else 0 := by
+    (PowerSeries.coeff n) ((PowerSeries.X : PowerSeries ℝ)^(2 : ℕ)) = if n = 2 then 1 else 0 := by
   rw [pow_two]
   rcases n with _ | m
   · rw [PowerSeries.coeff_zero_X_mul]
@@ -100,8 +100,8 @@ theorem cuspHilbertQ_finrank (k : ℕ) :
 
 /-- `Hilb_A(z) = (1 − z + z²)/(1 − z)²`. -/
 theorem cuspHilbertA_series :
-    ((1 : PowerSeries ℝ) - PowerSeries.X)^2 * PowerSeries.mk cuspHilbertA
-      = 1 - PowerSeries.X + PowerSeries.X^2 := by
+    ((1 : PowerSeries ℝ) - PowerSeries.X)^(2 : ℕ) * PowerSeries.mk cuspHilbertA
+      = 1 - PowerSeries.X + PowerSeries.X^(2 : ℕ) := by
   rw [pow_two, mul_assoc, cuspPowerSeries_one_sub_X_mul, cuspPowerSeries_one_sub_X_mul]
   refine PowerSeries.ext fun n => ?_
   rw [PowerSeries.coeff_mk, map_add, map_sub, PowerSeries.coeff_one, PowerSeries.coeff_X,
@@ -120,7 +120,7 @@ theorem cuspHilbertA_series :
 
 /-- `Hilb_B(z) = 1/(1 − z)²`. -/
 theorem cuspHilbertB_series :
-    ((1 : PowerSeries ℝ) - PowerSeries.X)^2 * PowerSeries.mk cuspHilbertB = 1 := by
+    ((1 : PowerSeries ℝ) - PowerSeries.X)^(2 : ℕ) * PowerSeries.mk cuspHilbertB = 1 := by
   rw [pow_two, mul_assoc, cuspPowerSeries_one_sub_X_mul, cuspPowerSeries_one_sub_X_mul]
   refine PowerSeries.ext fun n => ?_
   rw [PowerSeries.coeff_mk, PowerSeries.coeff_one]

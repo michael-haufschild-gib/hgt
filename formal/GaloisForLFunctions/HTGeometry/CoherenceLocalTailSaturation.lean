@@ -106,24 +106,24 @@ theorem basedSparsePrefixOrientation_tailIndependent
 /-- Squared weighted distance between two Boolean orientations. -/
 def weightedOrientationDistanceSq {P : Type*}
     (r : P → ℝ) (a b : P → Bool) : ℝ :=
-  ∑' p, if a p = b p then 0 else 4 * r p ^ 2
+  ∑' p, if a p = b p then 0 else 4 * r p ^ (2 : ℕ)
 
 /-- Total coherence budget carried by the sparse embedding range. -/
 def sparseCoherenceBudget {P : Type*}
     (r : P → ℝ) (e : PrefixFunctionCoordinate ↪ P) : ℝ :=
-  ∑' p, (Set.range e).indicator (fun p => 4 * r p ^ 2) p
+  ∑' p, (Set.range e).indicator (fun p => 4 * r p ^ (2 : ℕ)) p
 
 /-- A mismatch supported in a set of total budget below `B` has weighted
 squared distance below `B`. -/
 theorem weightedOrientationDistanceSq_lt_of_mismatch_subset
     {P : Type*} (r : P → ℝ) (a b : P → Bool) (S : Set P) (B : ℝ)
-    (hsum : Summable fun p => S.indicator (fun p => 4 * r p ^ 2) p)
+    (hsum : Summable fun p => S.indicator (fun p => 4 * r p ^ (2 : ℕ)) p)
     (hsupport : ∀ p, a p ≠ b p → p ∈ S)
-    (hbudget : (∑' p, S.indicator (fun p => 4 * r p ^ 2) p) < B) :
+    (hbudget : (∑' p, S.indicator (fun p => 4 * r p ^ (2 : ℕ)) p) < B) :
     weightedOrientationDistanceSq r a b < B := by
   classical
-  let f : P → ℝ := fun p => if a p = b p then 0 else 4 * r p ^ 2
-  let g : P → ℝ := fun p => S.indicator (fun p => 4 * r p ^ 2) p
+  let f : P → ℝ := fun p => if a p = b p then 0 else 4 * r p ^ (2 : ℕ)
+  let g : P → ℝ := fun p => S.indicator (fun p => 4 * r p ^ (2 : ℕ)) p
   have hfnonneg : ∀ p, 0 ≤ f p := by
     intro p
     simp only [f]
@@ -175,7 +175,7 @@ the chosen base. -/
 theorem basedSparsePrefixOrientation_distance_base_lt
     {P : Type*} (base : P → Bool) (e : PrefixFunctionCoordinate ↪ P)
     (r : P → ℝ) (x : ℕ → Bool) (B : ℝ)
-    (hsum : Summable fun p => (Set.range e).indicator (fun p => 4 * r p ^ 2) p)
+    (hsum : Summable fun p => (Set.range e).indicator (fun p => 4 * r p ^ (2 : ℕ)) p)
     (hbudget : sparseCoherenceBudget r e < B) :
     weightedOrientationDistanceSq r (basedSparsePrefixOrientation base e x) base < B := by
   apply weightedOrientationDistanceSq_lt_of_mismatch_subset r _ _ (Set.range e) B
@@ -187,7 +187,7 @@ sparse coherence budget. -/
 theorem basedSparsePrefixOrientation_pair_distance_lt
     {P : Type*} (base : P → Bool) (e : PrefixFunctionCoordinate ↪ P)
     (r : P → ℝ) (x y : ℕ → Bool) (B : ℝ)
-    (hsum : Summable fun p => (Set.range e).indicator (fun p => 4 * r p ^ 2) p)
+    (hsum : Summable fun p => (Set.range e).indicator (fun p => 4 * r p ^ (2 : ℕ)) p)
     (hbudget : sparseCoherenceBudget r e < B) :
     weightedOrientationDistanceSq r (basedSparsePrefixOrientation base e x)
       (basedSparsePrefixOrientation base e y) < B := by
@@ -214,7 +214,7 @@ theorem basedSparsePrefix_signedPrimeShiftPalette_differentialIndependent
 /-- Summability of the squared weighted Boolean mismatch distance. -/
 def WeightedOrientationDistanceSummable {P : Type*}
     (r : P → ℝ) (a b : P → Bool) : Prop :=
-  Summable fun p => if a p = b p then 0 else 4 * r p ^ 2
+  Summable fun p => if a p = b p then 0 else 4 * r p ^ (2 : ℕ)
 
 /-- **Positive-floor branch of the coherence dichotomy.**  If every coordinate
 weight is bounded below in absolute value by one positive constant, weighted
@@ -224,22 +224,22 @@ theorem weightedOrientationDistanceSummable_iff_mismatch_finite_of_floor
     {P : Type*} (r : P → ℝ) (a b : P → Bool) (c : ℝ)
     (hc : 0 < c) (hfloor : ∀ p, c ≤ |r p|) :
     WeightedOrientationDistanceSummable r a b ↔ {p | a p ≠ b p}.Finite := by
-  let f : P → ℝ := fun p => if a p = b p then 0 else 4 * r p ^ 2
+  let f : P → ℝ := fun p => if a p = b p then 0 else 4 * r p ^ (2 : ℕ)
   constructor
   · intro hsum
-    have heps : 0 < 4 * c ^ 2 := by positivity
-    have hev : ∀ᶠ p in Filter.cofinite, f p ∈ Metric.ball 0 (4 * c ^ 2) :=
+    have heps : 0 < 4 * c ^ (2 : ℕ) := by positivity
+    have hev : ∀ᶠ p in Filter.cofinite, f p ∈ Metric.ball 0 (4 * c ^ (2 : ℕ)) :=
       hsum.tendsto_cofinite_zero.eventually (Metric.ball_mem_nhds 0 heps)
-    have hbad : {p | ¬f p ∈ Metric.ball 0 (4 * c ^ 2)}.Finite :=
+    have hbad : {p | ¬f p ∈ Metric.ball 0 (4 * c ^ (2 : ℕ))}.Finite :=
       Filter.eventually_cofinite.mp hev
     apply hbad.subset
     intro p hp
     simp only [Set.mem_setOf_eq] at hp ⊢
-    have hsq : c ^ 2 ≤ r p ^ 2 := by
+    have hsq : c ^ (2 : ℕ) ≤ r p ^ (2 : ℕ) := by
       have := (sq_le_sq₀ hc.le (abs_nonneg (r p))).2 (hfloor p)
       simpa [sq_abs] using this
     simp only [f, if_neg hp, Metric.mem_ball, dist_zero_right, Real.norm_eq_abs]
-    have hnonneg : 0 ≤ 4 * r p ^ 2 := by positivity
+    have hnonneg : 0 ≤ 4 * r p ^ (2 : ℕ) := by positivity
     rw [abs_of_nonneg hnonneg]
     nlinarith
   · intro hfinite

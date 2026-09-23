@@ -9,7 +9,7 @@ second.  A contour-compatible scalar weight would therefore be holomorphic in in
 variables `(s,v)` with `v = star t`.  On the reflection graph `s = 1-v`, however, the desired
 cubic landing is the real, nonconstant density
 
-`r^2 (exp (-r Re v) - exp (-2 r Re v))^2`.
+`r^(2 : ℕ) (exp (-r Re v) - exp (-2 r Re v))^(2 : ℕ)`.
 
 No jointly entire `(s,v)` weight can have that restriction.  Its pullback to the graph would be
 an entire real-valued function, hence constant, while its values at horizontal depths zero and one
@@ -28,7 +28,7 @@ noncomputable section
 
 /-- Cubic radial self-density at horizontal depth `a`. -/
 def xiWardCubicRadialSelfDensity (r a : ℝ) : ℝ :=
-  r ^ 2 * (Real.exp (-(a * r)) - Real.exp (-((2 * a) * r))) ^ 2
+  r ^ (2 : ℕ) * (Real.exp (-(a * r)) - Real.exp (-((2 * a) * r))) ^ (2 : ℕ)
 
 theorem xiWardCubicRadialSelfDensity_zero (r : ℝ) :
     xiWardCubicRadialSelfDensity r 0 = 0 := by

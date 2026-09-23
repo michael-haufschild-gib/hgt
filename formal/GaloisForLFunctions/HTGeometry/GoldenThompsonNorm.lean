@@ -8,12 +8,12 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Order
 For self-adjoint elements of a C⋆-algebra,
 
 ```text
-‖exp (x/2) * exp (y/2)‖ ^ 2 ≤ ‖exp x * exp y‖,
+‖exp (x/2) * exp (y/2)‖ ^ (2 : ℕ) ≤ ‖exp x * exp y‖,
 ```
 
 which is Cordes' inequality at exponent one half, written for exponentials.  Its only analytic
 input is operator monotonicity of the square root: the norm bound on `exp y exp (2x) exp y` is
-transported by conjugation to `exp (2x) ≤ (c exp (-y)) ^ 2`, the square root turns that into
+transported by conjugation to `exp (2x) ≤ (c exp (-y)) ^ (2 : ℕ)`, the square root turns that into
 `exp x ≤ c exp (-y)`, and a second conjugation returns the claim.
 -/
 
@@ -61,7 +61,7 @@ theorem nonneg_exp {x : A} (hx : IsSelfAdjoint x) : 0 ≤ NormedSpace.exp x := b
 
 omit [PartialOrder A] [StarOrderedRing A] in
 theorem sq_exp_half_smul (x : A) :
-    NormedSpace.exp (((2 : ℝ)⁻¹) • x) ^ 2 = NormedSpace.exp x := by
+    NormedSpace.exp (((2 : ℝ)⁻¹) • x) ^ (2 : ℕ) = NormedSpace.exp x := by
   rw [sq, exp_half_smul_mul_self]
 
 /-- **The square root of an exponential is the exponential of the half.** -/
@@ -77,7 +77,7 @@ variable [NormOneClass A]
 /-- **Cordes' inequality at exponent one half**, in exponential form.  The only analytic input is
 operator monotonicity of the square root. -/
 theorem norm_exp_half_mul_exp_half_sq_le {x y : A} (hx : IsSelfAdjoint x) (hy : IsSelfAdjoint y) :
-    ‖NormedSpace.exp (((2 : ℝ)⁻¹) • x) * NormedSpace.exp (((2 : ℝ)⁻¹) • y)‖ ^ 2
+    ‖NormedSpace.exp (((2 : ℝ)⁻¹) • x) * NormedSpace.exp (((2 : ℝ)⁻¹) • y)‖ ^ (2 : ℕ)
       ≤ ‖NormedSpace.exp x * NormedSpace.exp y‖ := by
   set c : ℝ := ‖NormedSpace.exp x * NormedSpace.exp y‖ with hc
   have hc0 : 0 ≤ c := norm_nonneg _
@@ -100,7 +100,7 @@ theorem norm_exp_half_mul_exp_half_sq_le {x y : A} (hx : IsSelfAdjoint x) (hy : 
     have h := IsSelfAdjoint.le_algebraMap_norm_self (IsSelfAdjoint.of_nonneg hmidnonneg)
     rwa [hmidnorm, Algebra.algebraMap_eq_smul_one] at h
   -- step two: conjugate by `exp (-y)`
-  have hstep2 : NormedSpace.exp ((2 : ℝ) • x) ≤ (c • NormedSpace.exp (-y)) ^ 2 := by
+  have hstep2 : NormedSpace.exp ((2 : ℝ) • x) ≤ (c • NormedSpace.exp (-y)) ^ (2 : ℕ) := by
     have hconj := hnegy.exp.conjugate_le_conjugate hstep1
     have hleft : NormedSpace.exp (-y)
         * (NormedSpace.exp y * NormedSpace.exp ((2 : ℝ) • x) * NormedSpace.exp y)
@@ -112,7 +112,7 @@ theorem norm_exp_half_mul_exp_half_sq_le {x y : A} (hx : IsSelfAdjoint x) (hy : 
             * (NormedSpace.exp y * NormedSpace.exp (-y)) := by noncomm_ring
       rw [h1, exp_neg_mul_exp, exp_mul_exp_neg, one_mul, mul_one]
     have hright : NormedSpace.exp (-y) * ((c * c) • (1 : A)) * NormedSpace.exp (-y)
-        = (c • NormedSpace.exp (-y)) ^ 2 := by
+        = (c • NormedSpace.exp (-y)) ^ (2 : ℕ) := by
       rw [sq, smul_mul_smul_comm, mul_smul_comm, smul_mul_assoc, mul_one]
     rwa [hleft, hright] at hconj
   -- step three: take square roots
@@ -178,7 +178,7 @@ theorem norm_exp_dyadic_le {x y : A} (hx : IsSelfAdjoint x) (hy : IsSelfAdjoint 
     calc ‖NormedSpace.exp (((2 : ℝ)⁻¹) • ((((2 : ℝ) ^ m))⁻¹ • x))
             * NormedSpace.exp (((2 : ℝ)⁻¹) • ((((2 : ℝ) ^ m))⁻¹ • y))‖ ^ (2 ^ (m + 1))
         = (‖NormedSpace.exp (((2 : ℝ)⁻¹) • ((((2 : ℝ) ^ m))⁻¹ • x))
-            * NormedSpace.exp (((2 : ℝ)⁻¹) • ((((2 : ℝ) ^ m))⁻¹ • y))‖ ^ 2) ^ (2 ^ m) := by
+            * NormedSpace.exp (((2 : ℝ)⁻¹) • ((((2 : ℝ) ^ m))⁻¹ • y))‖ ^ (2 : ℕ)) ^ (2 ^ m) := by
           rw [← pow_mul, pow_succ, mul_comm (2 ^ m) 2]
       _ ≤ ‖NormedSpace.exp ((((2 : ℝ) ^ m))⁻¹ • x)
             * NormedSpace.exp ((((2 : ℝ) ^ m))⁻¹ • y)‖ ^ (2 ^ m) :=

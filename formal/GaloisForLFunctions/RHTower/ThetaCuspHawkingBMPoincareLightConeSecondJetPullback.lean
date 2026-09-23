@@ -3,8 +3,8 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPlebanskiCoordinateJacobiVe
 /-!
 # Full Poincare light-cone Hessian pullback to the BM rapidity chart
 
-The coordinate Plebanski operator needs `partial_u^2`, `partial_u partial_w`, and
-`partial_w^2`, not merely the first light-cone derivatives.  A variable-coefficient inverse
+The coordinate Plebanski operator needs `partial_u^(2 : ℕ)`, `partial_u partial_w`, and
+`partial_w^(2 : ℕ)`, not merely the first light-cone derivatives.  A variable-coefficient inverse
 Jacobian has a forced first-jet connection term:
 
 `V(W f) = V^i W^j f_ij + V^i (partial_i W^j) f_j`.
@@ -18,7 +18,7 @@ This module implements that formula on complete symmetric BM two-jets in
 They give total polynomial expressions in the two inverse-scale variables, so no chart-edge
 premise is introduced.  The resulting `u,w,uu,uw,ww` jet feeds the literal coordinate-space
 Plebanski Eq. (63) operator.  A physical radial-coordinate witness proves that deleting the
-connection term changes `partial_Z^2` even on a sigma-affine BM jet.
+connection term changes `partial_Z^(2 : ℕ)` even on a sigma-affine BM jet.
 
 `[NEW CONSEQUENCE] [PAPER-PROVED] [LEAN-PROVED] [HC94] [FULL LIGHT-CONE HESSIAN]`
 -/
@@ -158,23 +158,23 @@ def d4PoincareTimeVectorFieldFirstJetOnBMFormalInv
       { value := timeScaleInv * c
         tau := timeScaleInv * s
         horizonX := 0
-        sigma := -a * timeScaleInv ^ 2 * c
-        xi := -S * b ^ 2 * timeScaleInv ^ 2 * c }
+        sigma := -a * timeScaleInv ^ (2 : ℕ) * c
+        xi := -S * b ^ (2 : ℕ) * timeScaleInv ^ (2 : ℕ) * c }
     horizonX := { value := 0, tau := 0, horizonX := 0, sigma := 0, xi := 0 }
     sigma :=
-      { value := -timeScaleInv * S * a ^ 2 * s
-        tau := -timeScaleInv * S * a ^ 2 * c
+      { value := -timeScaleInv * S * a ^ (2 : ℕ) * s
+        tau := -timeScaleInv * S * a ^ (2 : ℕ) * c
         horizonX := 0
-        sigma := (a * timeScaleInv ^ 2 * S - timeScaleInv) * a ^ 2 * s
+        sigma := (a * timeScaleInv ^ (2 : ℕ) * S - timeScaleInv) * a ^ (2 : ℕ) * s
         xi :=
-          (S ^ 2 * b ^ 2 * timeScaleInv ^ 2 * a ^ 2 -
-            2 * timeScaleInv * S * a * b ^ 2) * s }
+          (S ^ (2 : ℕ) * b ^ (2 : ℕ) * timeScaleInv ^ (2 : ℕ) * a ^ (2 : ℕ) -
+            2 * timeScaleInv * S * a * b ^ (2 : ℕ)) * s }
     xi :=
       { value := -timeScaleInv * a * s
         tau := -timeScaleInv * a * c
         horizonX := 0
-        sigma := a ^ 2 * timeScaleInv ^ 2 * s
-        xi := (S * b ^ 2 * timeScaleInv ^ 2 * a - timeScaleInv * b ^ 2) * s } }
+        sigma := a ^ (2 : ℕ) * timeScaleInv ^ (2 : ℕ) * s
+        xi := (S * b ^ (2 : ℕ) * timeScaleInv ^ (2 : ℕ) * a - timeScaleInv * b ^ (2 : ℕ)) * s } }
 
 /-- Formal first jet of the Poincare `partial_Y` vector field in BM coordinates. -/
 def d4PoincareHorizonYVectorFieldFirstJetOnBMFormalInv
@@ -188,23 +188,23 @@ def d4PoincareHorizonYVectorFieldFirstJetOnBMFormalInv
       { value := -timeScaleInv * s
         tau := -timeScaleInv * c
         horizonX := 0
-        sigma := a * timeScaleInv ^ 2 * s
-        xi := S * b ^ 2 * timeScaleInv ^ 2 * s }
+        sigma := a * timeScaleInv ^ (2 : ℕ) * s
+        xi := S * b ^ (2 : ℕ) * timeScaleInv ^ (2 : ℕ) * s }
     horizonX := { value := 0, tau := 0, horizonX := 0, sigma := 0, xi := 0 }
     sigma :=
-      { value := timeScaleInv * S * a ^ 2 * c
-        tau := timeScaleInv * S * a ^ 2 * s
+      { value := timeScaleInv * S * a ^ (2 : ℕ) * c
+        tau := timeScaleInv * S * a ^ (2 : ℕ) * s
         horizonX := 0
-        sigma := (-a * timeScaleInv ^ 2 * S + timeScaleInv) * a ^ 2 * c
+        sigma := (-a * timeScaleInv ^ (2 : ℕ) * S + timeScaleInv) * a ^ (2 : ℕ) * c
         xi :=
-          (-S ^ 2 * b ^ 2 * timeScaleInv ^ 2 * a ^ 2 +
-            2 * timeScaleInv * S * a * b ^ 2) * c }
+          (-S ^ (2 : ℕ) * b ^ (2 : ℕ) * timeScaleInv ^ (2 : ℕ) * a ^ (2 : ℕ) +
+            2 * timeScaleInv * S * a * b ^ (2 : ℕ)) * c }
     xi :=
       { value := timeScaleInv * a * c
         tau := timeScaleInv * a * s
         horizonX := 0
-        sigma := -a ^ 2 * timeScaleInv ^ 2 * c
-        xi := (-S * b ^ 2 * timeScaleInv ^ 2 * a + timeScaleInv * b ^ 2) * c } }
+        sigma := -a ^ (2 : ℕ) * timeScaleInv ^ (2 : ℕ) * c
+        xi := (-S * b ^ (2 : ℕ) * timeScaleInv ^ (2 : ℕ) * a + timeScaleInv * b ^ (2 : ℕ)) * c } }
 
 /-- Formal first jet of the Poincare `partial_Z` vector field in BM coordinates. -/
 def d4PoincareRadialVectorFieldFirstJetOnBMFormalInv
@@ -215,19 +215,19 @@ def d4PoincareRadialVectorFieldFirstJetOnBMFormalInv
   { tau := { value := 0, tau := 0, horizonX := 0, sigma := 0, xi := 0 }
     horizonX := { value := 0, tau := 0, horizonX := 0, sigma := 0, xi := 0 }
     sigma :=
-      { value := radialScaleInv * S * b ^ 2
+      { value := radialScaleInv * S * b ^ (2 : ℕ)
         tau := 0
         horizonX := 0
-        sigma := (-b * radialScaleInv ^ 2 * S + radialScaleInv) * b ^ 2
+        sigma := (-b * radialScaleInv ^ (2 : ℕ) * S + radialScaleInv) * b ^ (2 : ℕ)
         xi :=
-          S ^ 2 * a * b ^ 3 * radialScaleInv ^ 2 -
-            2 * radialScaleInv * S * a * b ^ 2 }
+          S ^ (2 : ℕ) * a * b ^ (3 : ℕ) * radialScaleInv ^ (2 : ℕ) -
+            2 * radialScaleInv * S * a * b ^ (2 : ℕ) }
     xi :=
       { value := -radialScaleInv * a
         tau := 0
         horizonX := 0
-        sigma := b * radialScaleInv ^ 2 * a
-        xi := -S * a ^ 2 * b * radialScaleInv ^ 2 - radialScaleInv * b ^ 2 } }
+        sigma := b * radialScaleInv ^ (2 : ℕ) * a
+        xi := -S * a ^ (2 : ℕ) * b * radialScaleInv ^ (2 : ℕ) - radialScaleInv * b ^ (2 : ℕ) } }
 
 /-- Constant Poincare `partial_X` vector field. -/
 def d4PoincareHorizonXVectorFieldFirstJetOnBM : D4BMVectorFieldFirstJet :=
@@ -338,14 +338,14 @@ def d4BMSigmaAffineFullSecondJet (sigma : ℝ) : D4BMFullSecondJet :=
     sigmaXi := 0
     xiXi := 0 }
 
-/-- On the physical inverse radial scale at `sigma=1`, the full `partial_Z^2` connection acting
-on the sigma-affine witness is exactly `tanh(xi)^2`; its Hessian-principal part is zero. -/
+/-- On the physical inverse radial scale at `sigma=1`, the full `partial_Z^(2 : ℕ)` connection acting
+on the sigma-affine witness is exactly `tanh(xi)^(2 : ℕ)`; its Hessian-principal part is zero. -/
 theorem d4PoincareRadialSecondDerivative_sigmaAffine_connection
     (xi : ℝ) :
     let Z := d4PoincareRadialVectorFieldFirstJetOnBMFormalInv
       ((d4BMRindlerRapiditySech xi : ℂ)⁻¹) xi 1
     d4BMOrderedSecondDirectionalDerivative Z Z (d4BMSigmaAffineFullSecondJet 1) =
-        (Real.tanh xi : ℂ) ^ 2 ∧
+        (Real.tanh xi : ℂ) ^ (2 : ℕ) ∧
       d4BMPrincipalSecondDirectionalDerivative Z Z (d4BMSigmaAffineFullSecondJet 1) = 0 := by
   have hbR : d4BMRindlerRapiditySech xi ≠ 0 := by
     exact inv_ne_zero (ne_of_gt (Real.cosh_pos xi))

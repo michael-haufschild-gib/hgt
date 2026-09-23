@@ -9,10 +9,10 @@ Two ingredients of the screw-line theorem that need no hypothesis at all.
 paper this is checked from eqs. (1.5)-(1.6) by a Lerch limit, which the zero-series form makes
 unnecessary.
 
-Square-summability of the screw coefficients `(e^{-i gamma t} - 1)/gamma` is the `L^2` convergence
+Square-summability of the screw coefficients `(e^{-i gamma t} - 1)/gamma` is the `L^(2 : ℕ)` convergence
 step of the proof.  It is unconditional because every Xi zero lies in the critical strip, so
 `|e^{-i gamma t} - 1| <= e^{|t|/2} + 1` uniformly in `gamma` (`norm_suzukiPtZeroExp_le`), and
-`sum m_gamma/|gamma|^2` converges.
+`sum m_gamma/|gamma|^(2 : ℕ)` converges.
 -/
 
 open Complex Filter Topology MeasureTheory Set
@@ -35,9 +35,9 @@ def suzukiScrewCoeff (t : ℝ) (q : XiZeroCopy) : ℂ :=
 the proof of Suzuki Theorem 4.2, and it is unconditional: every Xi zero lies in the critical strip,
 so `|e^{-iγt} - 1| ≤ e^{|t|/2} + 1` uniformly in `γ`. -/
 theorem summable_norm_sq_suzukiScrewCoeff (t : ℝ) :
-    Summable (fun q : XiZeroCopy => ‖suzukiScrewCoeff t q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖suzukiScrewCoeff t q‖ ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun q => by positivity) (fun q => ?_)
-    (xiSpectralPoint_inv_sq_summable.mul_left ((Real.exp (|t| / 2) + 1) ^ 2))
+    (xiSpectralPoint_inv_sq_summable.mul_left ((Real.exp (|t| / 2) + 1) ^ (2 : ℕ)))
   have hnum : ‖Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1‖
       ≤ Real.exp (|t| / 2) + 1 := by
     calc ‖Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1‖
@@ -50,12 +50,12 @@ theorem summable_norm_sq_suzukiScrewCoeff (t : ℝ) :
   have hnn : (0 : ℝ) ≤ Real.exp (|t| / 2) + 1 := by positivity
   rw [suzukiScrewCoeff, norm_div, div_pow]
   rw [div_le_iff₀ (by positivity)]
-  have hsq : ‖Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1‖ ^ 2
-      ≤ (Real.exp (|t| / 2) + 1) ^ 2 := by
+  have hsq : ‖Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1‖ ^ (2 : ℕ)
+      ≤ (Real.exp (|t| / 2) + 1) ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1), hnum, hnn]
-  calc ‖Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1‖ ^ 2
-      ≤ (Real.exp (|t| / 2) + 1) ^ 2 := hsq
-    _ = (Real.exp (|t| / 2) + 1) ^ 2 * (1 / ‖xiSpectralPoint q‖ ^ 2) * ‖xiSpectralPoint q‖ ^ 2 := by
+  calc ‖Complex.exp (-(I * xiSpectralPoint q * (t : ℂ))) - 1‖ ^ (2 : ℕ)
+      ≤ (Real.exp (|t| / 2) + 1) ^ (2 : ℕ) := hsq
+    _ = (Real.exp (|t| / 2) + 1) ^ (2 : ℕ) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
         field_simp
 
 end

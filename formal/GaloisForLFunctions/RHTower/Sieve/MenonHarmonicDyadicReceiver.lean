@@ -48,7 +48,7 @@ theorem fixedWindowSq_localizedHarmonic_eq (A z l : ℕ) (hl : 1 ≤ l) (hAz : A
     fixedWindowSq (localizedHarmonicMoebiusR A) l z =
       fixedWindowSq harmonicMoebiusR l z := by
   rw [fixedWindowSq_eq_sq_sum _ hl, fixedWindowSq_eq_sq_sum _ hl]
-  apply congrArg (fun x : ℝ => x ^ 2)
+  apply congrArg (fun x : ℝ => x ^ (2 : ℕ))
   apply Finset.sum_congr rfl
   intro n hn
   rw [localizedHarmonicMoebiusR, if_pos
@@ -115,14 +115,14 @@ theorem dyadicMeanSquare_harmonic_le_menonFinalRange_largeValues
     (hM : B + 1 + l < menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ) + 1)
     (hcover : (A : ℝ) + ((B + 1 - A : ℕ) : ℝ) ≤ (A : ℝ) * (1 + ε) ^ K')
     (hI : (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ 2) ≤ I)
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ (2 : ℕ)) ≤ I)
     (h₂ : ∀ w : ℝ,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ 2 ≤ M₂) :
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ (2 : ℕ) ≤ M₂) :
     dyadicMeanSquare harmonicMoebiusR l A B ≤
       ((A : ℝ) * (1 + ε) ^ K') *
         ((K' : ℝ) * blockCostG (l : ℝ) ε
-          (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ 2 * I +
-            M₂ * (2 / (Real.pi ^ 2 * W)))) := by
+          (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I +
+            M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)))) := by
   rw [← dyadicMeanSquare_localizedHarmonic_eq A B l hl]
   refine dyadicMeanSquare_le_largeValues (localizedHarmonicMoebiusR A)
     (abs_localizedHarmonicMoebiusR_le_one A) hl hA hAB hε hW hM₂ hI0 hM hcover ?_ ?_

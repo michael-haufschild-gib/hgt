@@ -160,7 +160,7 @@ theorem sum_rpow_neg_quarter_le (L : ℕ) :
   linarith
 
 /-- The pole residue on the displaced line is Gaussian-small in the height. -/
-theorem norm_smoothAFEZetaShiftedPoleResidue_displaced_le {d x τ : ℝ} (hd0 : 0 ≤ d)
+theorem norm_smoothAFEZetaShiftedPoleResidue_displaced_le_highBlockFreezing {d x τ : ℝ} (hd0 : 0 ≤ d)
     (hd4 : d ≤ 1 / 4) (hx : 0 < x) (hτ : 1 ≤ τ) :
     ‖smoothAFEZetaShiftedPoleResidue (displacedLinePt d τ) x‖ ≤
       x ^ (1 / 2 + d) * Real.exp 1 * Real.exp (-(τ ^ 2)) / τ := by

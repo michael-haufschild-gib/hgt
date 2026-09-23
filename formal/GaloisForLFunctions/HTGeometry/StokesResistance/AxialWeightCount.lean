@@ -46,7 +46,7 @@ theorem axialWeightDimensionCount_eq_jetDimension (n : ℕ) :
 /-- Raw continuous-axis invariant response count from zero and opposite-weight pairings. -/
 def continuousAxialRawParameterCount (n : ℕ) : ℕ :=
   Nat.choose (axialZeroWeightMultiplicity n + 1) 2 +
-    (∑ j ∈ Finset.range (n + 1), axialMiddleMultiplicity j ^ 2) + 1
+    (∑ j ∈ Finset.range (n + 1), axialMiddleMultiplicity j ^ (2 : ℕ)) + 1
 
 /-- Advancing zero-weight multiplicity by three adds three Pascal layers to `choose(-,2)`. -/
 theorem choose_add_three_two (m : ℕ) :
@@ -61,7 +61,7 @@ theorem choose_add_three_two (m : ℕ) :
 
 /-- Moreau Appendix A: `d_raw(C∞)=3k³-9k²+3k+7`, shifted to `k=n+3`. -/
 theorem continuousAxialRawParameterCount_eq (n : ℕ) :
-    continuousAxialRawParameterCount n = 3 * n ^ 3 + 18 * n ^ 2 + 30 * n + 16 := by
+    continuousAxialRawParameterCount n = 3 * n ^ (3 : ℕ) + 18 * n ^ (2 : ℕ) + 30 * n + 16 := by
   induction n with
   | zero => norm_num [continuousAxialRawParameterCount, axialZeroWeightMultiplicity,
       axialMiddleMultiplicity, Finset.sum_range_succ, Nat.choose]
@@ -70,8 +70,8 @@ theorem continuousAxialRawParameterCount_eq (n : ℕ) :
       rw [continuousAxialRawParameterCount] at ih
       simp only [axialZeroWeightMultiplicity, axialMiddleMultiplicity] at ih
       change Nat.choose ((3 * n + 3) + 4) 2 +
-          ((∑ j ∈ Finset.range (n + 1), (3 * (j + 1)) ^ 2) +
-            (3 * (n + 1 + 1)) ^ 2) + 1 = _
+          ((∑ j ∈ Finset.range (n + 1), (3 * (j + 1)) ^ (2 : ℕ)) +
+            (3 * (n + 1 + 1)) ^ (2 : ℕ)) + 1 = _
       rw [choose_add_three_two (3 * n + 3)]
       ring_nf at ih ⊢
       omega

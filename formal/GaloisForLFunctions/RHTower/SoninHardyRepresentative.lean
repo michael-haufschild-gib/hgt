@@ -11,7 +11,7 @@ The witness `H` produced by `IsMellinHeadHardy` is only pinned down on the open 
 canonical choice: substituting `M(v) = N/(s(1-s))` into `((w-1/2)/(w+1/2))·a^w·M(v)(w+1/2)`
 collapses everything to
 
-  `soninHardyRep a c d v w = -a^w · N(w+1/2)/(w+1/2)^2`,
+  `soninHardyRep a c d v w = -a^w · N(w+1/2)/(w+1/2)^(2 : ℕ)`,
 
 visibly analytic on `w ≠ -1/2`.  It agrees with any Hardy witness on `Re w > 0`, hence is itself a
 Hardy function, and it is analytic at `ρ - 1/2` for every `ρ` of the open critical strip — including
@@ -33,14 +33,14 @@ open GaloisForLFunctions.HTGeometry
 noncomputable section
 
 theorem hardyRep_algebra (A N x y : ℂ) (hx : x ≠ 0) (hy : y ≠ 0) :
-    -(A * N / x ^ 2) = (y / x) * (A * (N / (x * -y))) := by
+    -(A * N / x ^ (2 : ℕ)) = (y / x) * (A * (N / (x * -y))) := by
   field_simp
 
 variable {a : ℝ} {v : SoninL2} {c d : ℂ}
 
 /-- The canonical Hardy representative. -/
 def soninHardyRep (a : ℝ) (c d : ℂ) (v : SoninL2) : ℂ → ℂ := fun w =>
-  -(((a : ℝ) : ℂ) ^ w * extendedMellinNumerator a c d v (w + 1 / 2) / (w + 1 / 2) ^ 2)
+  -(((a : ℝ) : ℂ) ^ w * extendedMellinNumerator a c d v (w + 1 / 2) / (w + 1 / 2) ^ (2 : ℕ))
 
 theorem analyticAt_soninHardyRep (ha : 0 < a) (hev : v ∈ evenSubspace)
     (hc : ∀ᵐ u ∂(volume : Measure ℝ), u ∈ centralInterval a →
@@ -55,9 +55,9 @@ theorem analyticAt_soninHardyRep (ha : 0 < a) (hev : v ∈ evenSubspace)
       (f := fun z : ℂ => z + 1 / 2) h1 h2
   have hcpow : AnalyticAt ℂ (fun z : ℂ => ((a : ℝ) : ℂ) ^ z) w :=
     (differentiable_const_cpow_ofReal ha (fun z : ℂ => z) differentiable_id).analyticAt w
-  have hden : AnalyticAt ℂ (fun z : ℂ => (z + 1 / 2) ^ 2) w :=
+  have hden : AnalyticAt ℂ (fun z : ℂ => (z + 1 / 2) ^ (2 : ℕ)) w :=
     (analyticAt_id.add analyticAt_const).pow 2
-  have hne : ((w : ℂ) + 1 / 2) ^ 2 ≠ 0 := pow_ne_zero _ hw
+  have hne : ((w : ℂ) + 1 / 2) ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ hw
   exact ((hcpow.mul hnum).div hden hne).neg
 
 /-- On `w ≠ ±1/2` the canonical representative is the renormalised transform. -/

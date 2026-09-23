@@ -416,11 +416,11 @@ theorem momentHankel_posDef_of_le
 theorem sourceCoordinateAdmission_coeff_prev_prev
     {w : ℝ} (hw : w ≠ 0) {n : ℕ} (hn : 2 ≤ n) :
     (sourceCoordinateAdmission w n).coeff (n - 2) =
-      (w ^ 2)⁻¹ ^ 2 * (dimensionlessAdmission w n).coeff (n - 2) := by
+      (w ^ (2 : ℕ))⁻¹ ^ (2 : ℕ) * (dimensionlessAdmission w n).coeff (n - 2) := by
   simp only [sourceCoordinateAdmission, Polynomial.coeff_smul,
     Polynomial.comp_C_mul_X_coeff]
   have hsub : 2 * n = 2 * (n - 2) + 4 := by omega
-  have hpow : (w ^ 2) ^ (n - 2) = w ^ (2 * (n - 2)) := by
+  have hpow : (w ^ (2 : ℕ)) ^ (n - 2) = w ^ (2 * (n - 2)) := by
     rw [← pow_mul]
   rw [hpow, hsub, pow_add]
   have hz : w ^ (2 * (n - 2)) ≠ 0 := pow_ne_zero _ hw
@@ -432,10 +432,10 @@ theorem normalizedFirstCoeff_eq_square_mul_actualFirstCoeff
     (hN : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef)
     (hA : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef) :
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef) :
     HTGeometry.monicOrthoFirstCoeff (xiShiftedFarRightNormalizedMoment w) n =
-      w ^ 2 * HTGeometry.monicOrthoFirstCoeff
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n := by
+      w ^ (2 : ℕ) * HTGeometry.monicOrthoFirstCoeff
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n := by
   cases n with
   | zero => simp [HTGeometry.monicOrthoFirstCoeff]
   | succ n =>
@@ -446,7 +446,7 @@ theorem normalizedFirstCoeff_eq_square_mul_actualFirstCoeff
         ne_of_gt (momentHankel_posDef_of_le
           (m := n + 1) (N := n + 3) (by omega) hN).det_pos
       have hAdet : (HTGeometry.momentHankelMatrix
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 1)).det ≠ 0 :=
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 1)).det ≠ 0 :=
         ne_of_gt (momentHankel_posDef_of_le
           (m := n + 1) (N := n + 3) (by omega) hA).det_pos
       have hsource := sourceCoordinateAdmission_eq_actualAdmission
@@ -454,13 +454,13 @@ theorem normalizedFirstCoeff_eq_square_mul_actualFirstCoeff
       have hNeq := dimensionlessAdmission_eq_monicOrtho hN
       have hAeq := xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho hA
       have hcoeff : (sourceCoordinateAdmission w (n + 1)).coeff n =
-          (w ^ 2)⁻¹ * (dimensionlessAdmission w (n + 1)).coeff n := by
+          (w ^ (2 : ℕ))⁻¹ * (dimensionlessAdmission w (n + 1)).coeff n := by
         simpa using sourceCoordinateAdmission_coeff_prev
           (n := n + 1) hw0 hn
       change (HTGeometry.monicOrtho
           (xiShiftedFarRightNormalizedMoment w) (n + 1)).coeff n =
-        w ^ 2 * (HTGeometry.monicOrtho
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 1)).coeff n
+        w ^ (2 : ℕ) * (HTGeometry.monicOrtho
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 1)).coeff n
       rw [← hNeq, ← hAeq, ← hsource, hcoeff]
       field_simp [hw0]
 
@@ -469,10 +469,10 @@ theorem normalizedSecondCoeff_eq_fourth_mul_actualSecondCoeff
     (hN : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef)
     (hA : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef) :
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef) :
     HTGeometry.monicOrthoSecondCoeff (xiShiftedFarRightNormalizedMoment w) n =
-      w ^ 4 * HTGeometry.monicOrthoSecondCoeff
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n := by
+      w ^ (4 : ℕ) * HTGeometry.monicOrthoSecondCoeff
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n := by
   rcases n with _ | _ | n
   · simp [HTGeometry.monicOrthoSecondCoeff]
   · simp [HTGeometry.monicOrthoSecondCoeff]
@@ -483,7 +483,7 @@ theorem normalizedSecondCoeff_eq_fourth_mul_actualSecondCoeff
       ne_of_gt (momentHankel_posDef_of_le
         (m := n + 2) (N := n + 4) (by omega) hN).det_pos
     have hAdet : (HTGeometry.momentHankelMatrix
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).det ≠ 0 :=
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).det ≠ 0 :=
       ne_of_gt (momentHankel_posDef_of_le
         (m := n + 2) (N := n + 4) (by omega) hA).det_pos
     have hsource := sourceCoordinateAdmission_eq_actualAdmission
@@ -491,13 +491,13 @@ theorem normalizedSecondCoeff_eq_fourth_mul_actualSecondCoeff
     have hNeq := dimensionlessAdmission_eq_monicOrtho hN
     have hAeq := xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho hA
     have hcoeff : (sourceCoordinateAdmission w (n + 2)).coeff n =
-        (w ^ 2)⁻¹ ^ 2 * (dimensionlessAdmission w (n + 2)).coeff n := by
+        (w ^ (2 : ℕ))⁻¹ ^ (2 : ℕ) * (dimensionlessAdmission w (n + 2)).coeff n := by
       simpa using sourceCoordinateAdmission_coeff_prev_prev
         (n := n + 2) hw0 hn
     change (HTGeometry.monicOrtho
         (xiShiftedFarRightNormalizedMoment w) (n + 2)).coeff n =
-      w ^ 4 * (HTGeometry.monicOrtho
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).coeff n
+      w ^ (4 : ℕ) * (HTGeometry.monicOrtho
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).coeff n
     rw [← hNeq, ← hAeq, ← hsource, hcoeff]
     field_simp [hw0]
 
@@ -507,15 +507,15 @@ theorem normalizedAlpha_eq_square_mul_actualAlpha
     (hN : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 3)).PosDef)
     (hA : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 3)).PosDef) :
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 3)).PosDef) :
     HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) n =
-      w ^ 2 * HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n := by
+      w ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n := by
   have hNsmall : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef :=
     momentHankel_posDef_of_le (by omega) hN
   have hAsmall : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef :=
     momentHankel_posDef_of_le (by omega) hA
   have hfirstN := normalizedFirstCoeff_eq_square_mul_actualFirstCoeff
     hw n hNsmall hAsmall
@@ -534,15 +534,15 @@ theorem normalizedBeta_eq_fourth_mul_actualBeta
     (hN : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 3)).PosDef)
     (hA : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 3)).PosDef) :
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 3)).PosDef) :
     HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) n =
-      w ^ 4 * HTGeometry.monicOrthoBeta
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n := by
+      w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n := by
   have hNsmall : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef :=
     momentHankel_posDef_of_le (by omega) hN
   have hAsmall : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef :=
     momentHankel_posDef_of_le (by omega) hA
   have hsecondN := normalizedSecondCoeff_eq_fourth_mul_actualSecondCoeff
     hw n hNsmall hAsmall
@@ -556,7 +556,7 @@ theorem normalizedBeta_eq_fourth_mul_actualBeta
   rw [HTGeometry.monicOrthoSecondCoeff_succ_below hNbelow (by omega)] at hsecondN1
   rw [HTGeometry.monicOrthoSecondCoeff_succ_below hAbelow (by omega)] at hsecondN1
   rw [hsecondN, halpha, hfirst] at hsecondN1
-  nlinarith [sq_nonneg (w ^ 2)]
+  nlinarith [sq_nonneg (w ^ (2 : ℕ))]
 
 /-- Dimensionless cumulative Jacobi trace selected by the adaptive source. -/
 def dimensionlessCumulativeJacobiFlux (w : ℝ) (n : ℕ) : ℝ :=
@@ -567,23 +567,23 @@ def dimensionlessCumulativeJacobiFlux (w : ℝ) (n : ℕ) : ℝ :=
 /-- Dimensionless terminal curvature of the adaptive mixed amplitude/completed aggregate. -/
 def dimensionlessTerminalJacobiRiccatiDefect (w : ℝ) (n : ℕ) : ℝ :=
   let s := xiShiftedFarRightNormalizedMoment w
-  2 * (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ 2 +
+  2 * (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
     HTGeometry.monicOrthoAlpha s n * dimensionlessCumulativeJacobiFlux w n -
     (2 * ((n : ℝ) - 1) * HTGeometry.monicOrthoBeta s n -
       2 * ((n : ℝ) + 1) * HTGeometry.monicOrthoBeta s (n + 1) -
-      HTGeometry.monicOrthoAlpha s n ^ 2)
+      HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ))
 
 theorem normalizedAlpha_sum_eq_square_mul_actualAlpha_sum
     {w : ℝ} (hw : 1 < w) (n : ℕ)
     (hN : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 4)).PosDef)
     (hA : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 4)).PosDef) :
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 4)).PosDef) :
     (∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j) =
-      w ^ 2 * (∑ j ∈ Finset.range n,
+      w ^ (2 : ℕ) * (∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoAlpha
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j) := by
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j) := by
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro j hj
@@ -592,7 +592,7 @@ theorem normalizedAlpha_sum_eq_square_mul_actualAlpha_sum
       (xiShiftedFarRightNormalizedMoment w) (j + 3)).PosDef :=
     momentHankel_posDef_of_le (by omega) hN
   have hAj : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (j + 3)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (j + 3)).PosDef :=
     momentHankel_posDef_of_le (by omega) hA
   exact normalizedAlpha_eq_square_mul_actualAlpha hw j hNj hAj
 
@@ -602,27 +602,27 @@ theorem dimensionlessTerminalJacobiRiccatiDefect_eq_fourth_mul_actual
     (hN : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 4)).PosDef)
     (hA : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 4)).PosDef) :
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 4)).PosDef) :
     dimensionlessTerminalJacobiRiccatiDefect w n =
-      w ^ 4 * xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ 2) n := by
+      w ^ (4 : ℕ) * xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ (2 : ℕ)) n := by
   have hNn : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 3)).PosDef :=
     momentHankel_posDef_of_le (by omega) hN
   have hAn : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 3)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 3)).PosDef :=
     momentHankel_posDef_of_le (by omega) hA
   have hNn1 : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 1 + 3)).PosDef := by
     simpa [Nat.add_assoc] using hN
   have hAn1 : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 1 + 3)).PosDef := by
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 1 + 3)).PosDef := by
     simpa [Nat.add_assoc] using hA
   have halpha := normalizedAlpha_eq_square_mul_actualAlpha hw n hNn hAn
   have hbeta := normalizedBeta_eq_fourth_mul_actualBeta hw n hNn hAn
   have hbeta1 := normalizedBeta_eq_fourth_mul_actualBeta hw (n + 1) hNn1 hAn1
   have hsum := normalizedAlpha_sum_eq_square_mul_actualAlpha_sum hw n hN hA
   have hAtrace : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef :=
     momentHankel_posDef_of_le (by omega) hA
   rw [dimensionlessTerminalJacobiRiccatiDefect,
     dimensionlessCumulativeJacobiFlux,
@@ -685,8 +685,8 @@ weight-four renormalization. -/
 theorem tendsto_fourth_mul_xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect_squareParam
     {n : ℕ} (hn : 0 < n) :
     Tendsto
-      (fun w : ℝ => w ^ 4 *
-        xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ 2) n)
+      (fun w : ℝ => w ^ (4 : ℕ) *
+        xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ (2 : ℕ)) n)
       atTop (nhds (((4 * n + 3 : ℕ) : ℝ) / 4)) := by
   apply (tendsto_dimensionlessTerminalJacobiRiccatiDefect hn).congr'
   filter_upwards [xiShiftedFarRightNormalizedHankelMatrix_posDef_eventually (n + 4),
@@ -696,10 +696,10 @@ theorem tendsto_fourth_mul_xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefec
       (xiShiftedFarRightNormalizedMoment w) (n + 4)).PosDef := by
     simpa [xiShiftedFarRightNormalizedHankelMatrix] using hN
   have hA' : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 4)).PosDef := by
-    have heq : xiShiftedMomentHankelMatrix (w ^ 2) (n + 4) =
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 4)).PosDef := by
+    have heq : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 4) =
         HTGeometry.momentHankelMatrix
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 4) := by
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 4) := by
       rfl
     rwa [← heq]
   exact (dimensionlessTerminalJacobiRiccatiDefect_eq_fourth_mul_actual
@@ -710,7 +710,7 @@ theorem tendsto_degreeNormalized_xiShiftedCanonicalAdmissionTerminalCurvature
     {n : ℕ} (hn : 0 < n) :
     Tendsto
       (fun w : ℝ =>
-        (w ^ 4 * xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ 2) n) /
+        (w ^ (4 : ℕ) * xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ (2 : ℕ)) n) /
           ((4 * n + 3 : ℕ) : ℝ))
       atTop (nhds (1 / 4 : ℝ)) := by
   have h :=
@@ -724,7 +724,7 @@ theorem tendsto_degreeNormalized_xiShiftedCanonicalAdmissionTerminalCurvature
 theorem xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect_squareParam_eventually_pos
     {n : ℕ} (hn : 0 < n) :
     ∀ᶠ w : ℝ in atTop,
-      0 < xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ 2) n := by
+      0 < xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ (2 : ℕ)) n := by
   have hlim :=
     tendsto_fourth_mul_xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect_squareParam hn
   have hconst : 0 < (((4 * n + 3 : ℕ) : ℝ) / 4) := by positivity
@@ -739,29 +739,29 @@ fixed positive degree. -/
 theorem deriv_xiShiftedCanonicalAdmissionOddCurrent_squareParam_eventually_neg
     {n : ℕ} (hn : 0 < n) :
     ∀ᶠ w : ℝ in atTop,
-      deriv (fun y => xiShiftedCanonicalAdmissionOddCurrent y n) (w ^ 2) < 0 := by
+      deriv (fun y => xiShiftedCanonicalAdmissionOddCurrent y n) (w ^ (2 : ℕ)) < 0 := by
   filter_upwards [
     xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect_squareParam_eventually_pos hn,
     xiShiftedMomentHankelMatrix_squareParam_posDef_eventually (n + 2),
     eventually_gt_atTop (1 : ℝ)] with w hdef hH hw
   have hH' : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2)).PosDef := by
-    have heq : xiShiftedMomentHankelMatrix (w ^ 2) (n + 2) =
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2)).PosDef := by
+    have heq : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 2) =
         HTGeometry.momentHankelMatrix
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (n + 2) := by
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (n + 2) := by
       rfl
     rwa [← heq]
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH'
   have hnorm : 0 < HTGeometry.monicOrthoNormSq
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n :=
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n :=
     HTGeometry.monicOrthoNorm_pos_below hbelow (by omega)
   have hderiv :=
     hasDerivAt_xiShiftedCanonicalAdmissionOddCurrent_eq_neg_norm_mul_terminalRiccatiDefect
       (sq_pos_of_pos (lt_trans zero_lt_one hw)) hn hH'
   have hderiv' : HasDerivAt (fun y => xiShiftedCanonicalAdmissionOddCurrent y n)
       (-HTGeometry.monicOrthoNormSq
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n *
-        xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ 2) n) (w ^ 2) := by
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n *
+        xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect (w ^ (2 : ℕ)) n) (w ^ (2 : ℕ)) := by
     simpa [xiShiftedCanonicalAdmissionOddCurrent] using hderiv
   rw [hderiv'.deriv]
   nlinarith [mul_pos hnorm hdef]
@@ -770,7 +770,7 @@ theorem deriv_xiShiftedCanonicalAdmissionOddCurrent_squareParam_eventually_neg
 theorem tendsto_square_mul_xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect
     {n : ℕ} (hn : 0 < n) :
     Tendsto
-      (fun y : ℝ => y ^ 2 * xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect y n)
+      (fun y : ℝ => y ^ (2 : ℕ) * xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect y n)
       atTop (nhds (((4 * n + 3 : ℕ) : ℝ) / 4)) := by
   have h :=
     (tendsto_fourth_mul_xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefect_squareParam
@@ -778,7 +778,7 @@ theorem tendsto_square_mul_xiShiftedCanonicalAdmissionTerminalJacobiRiccatiDefec
   apply h.congr'
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with y hy
   simp only [Function.comp_apply]
-  rw [show Real.sqrt y ^ 4 = (Real.sqrt y ^ 2) ^ 2 by ring,
+  rw [show Real.sqrt y ^ (4 : ℕ) = (Real.sqrt y ^ (2 : ℕ)) ^ (2 : ℕ) by ring,
     Real.sq_sqrt hy]
 
 /-- Actual terminal curvature is positive on a complete far-right mass chamber. -/

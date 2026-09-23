@@ -8,7 +8,7 @@ The truncation writes its head as `∑_{k ∈ Icc 1 N} ((k : ℝ) : ℂ) ^ (-(1 
 test bounds `∑_{n ∈ Ico 1 M} (n : ℂ) ^ (-1 - it)`.  The two agree once `M = N + 1`: the ranges are
 the same finite set and the summands are equal after clearing the cast and rearranging the exponent.
 
-The truncation point of the chain is `M = 2 ^ (topExponent t + 1)`, which exceeds `(t/8π)^3`, so the
+The truncation point of the chain is `M = 2 ^ (topExponent t + 1)`, which exceeds `(t/8π)^(3 : ℕ)`, so the
 tail terms of the truncation are negligible against the head.
 -/
 
@@ -26,7 +26,7 @@ theorem sum_Icc_cpow_eq_sum_Ico (t : ℝ) (M : ℕ) :
   have hexp : (-(1 + Complex.I * (t : ℂ))) = -1 - Complex.I * (t : ℂ) := by ring
   rw [hbase, hexp]
 
-/-- The truncation point of the chain exceeds `(t / 8π)^3`. -/
+/-- The truncation point of the chain exceeds `(t / 8π)^(3 : ℕ)`. -/
 theorem cube_le_two_pow_topExponent {t : ℝ} (ht : 8 * Real.pi ≤ t) :
     (t / (8 * Real.pi)) ^ (3 : ℕ) ≤ ((2 ^ (topExponent t + 1) : ℕ) : ℝ) := by
   have hπ := Real.pi_pos

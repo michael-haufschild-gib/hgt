@@ -81,7 +81,7 @@ theorem resolvent_apply_ground_split (A : H →ₗ[ℝ] H) {τ : ℝ} (hτ : τ 
 regularized response is the ground term `‖p‖²/τ` plus the reduced term. -/
 theorem inner_resolvent_ground_split {τ : ℝ} (hτ : τ ≠ 0) {v p q r : H}
     (hv : v = p + q) (hpq : ⟪p, q⟫ = 0) (hpr : ⟪p, r⟫ = 0) :
-    ⟪v, τ⁻¹ • p + r⟫ = ‖p‖ ^ 2 / τ + ⟪q, r⟫ := by
+    ⟪v, τ⁻¹ • p + r⟫ = ‖p‖ ^ (2 : ℕ) / τ + ⟪q, r⟫ := by
   have hqp : ⟪q, p⟫ = 0 := by rw [real_inner_comm]; exact hpq
   rw [hv, inner_add_left, inner_add_right, inner_add_right, real_inner_smul_right,
     real_inner_smul_right, real_inner_self_eq_norm_sq, hpr, hqp, add_zero, mul_zero, zero_add]
@@ -100,15 +100,15 @@ theorem norm_ge_inner_div_norm {p ξ : H} (hξ : ξ ≠ 0) : |⟪p, ξ⟫| / ‖
 quadratic profile of its velocity. -/
 theorem tendsto_normSq_sqrt_path {G : ℝ → H} {G' : H} {κ₀ s : ℝ}
     (hG : HasDerivAt G G' κ₀) (h0 : G κ₀ = 0) :
-    Tendsto (fun τ : ℝ => ‖G (κ₀ + s * Real.sqrt τ)‖ ^ 2 / τ) (𝓝[>] 0)
-      (𝓝 (s ^ 2 * ‖G'‖ ^ 2)) := by
+    Tendsto (fun τ : ℝ => ‖G (κ₀ + s * Real.sqrt τ)‖ ^ (2 : ℕ) / τ) (𝓝[>] 0)
+      (𝓝 (s ^ (2 : ℕ) * ‖G'‖ ^ (2 : ℕ))) := by
   rcases eq_or_ne s 0 with hs | hs
   · subst hs
-    have hfun : ∀ τ : ℝ, ‖G (κ₀ + 0 * Real.sqrt τ)‖ ^ 2 / τ = 0 := by
+    have hfun : ∀ τ : ℝ, ‖G (κ₀ + 0 * Real.sqrt τ)‖ ^ (2 : ℕ) / τ = 0 := by
       intro τ
       simp [h0]
     simp only [hfun]
-    have hz : (0 : ℝ) ^ 2 * ‖G'‖ ^ 2 = 0 := by ring
+    have hz : (0 : ℝ) ^ (2 : ℕ) * ‖G'‖ ^ (2 : ℕ) = 0 := by ring
     rw [hz]
     exact tendsto_const_nhds
   · have hslope : Tendsto (slope G κ₀) (𝓝[≠] κ₀) (𝓝 G') :=
@@ -126,17 +126,17 @@ theorem tendsto_normSq_sqrt_path {G : ℝ → H} {G' : H} {κ₀ s : ℝ}
         have hsq : 0 < Real.sqrt τ := Real.sqrt_pos.2 hτ
         have : s * Real.sqrt τ ≠ 0 := mul_ne_zero hs (ne_of_gt hsq)
         simpa using this
-    have hcomp : Tendsto (fun τ : ℝ => ‖slope G κ₀ (κ₀ + s * Real.sqrt τ)‖ ^ 2 * s ^ 2)
-        (𝓝[>] 0) (𝓝 (s ^ 2 * ‖G'‖ ^ 2)) := by
-      have h := (((hslope.comp hpath).norm).pow 2).mul_const (s ^ 2)
-      have hval : ‖G'‖ ^ 2 * s ^ 2 = s ^ 2 * ‖G'‖ ^ 2 := by ring
+    have hcomp : Tendsto (fun τ : ℝ => ‖slope G κ₀ (κ₀ + s * Real.sqrt τ)‖ ^ (2 : ℕ) * s ^ (2 : ℕ))
+        (𝓝[>] 0) (𝓝 (s ^ (2 : ℕ) * ‖G'‖ ^ (2 : ℕ))) := by
+      have h := (((hslope.comp hpath).norm).pow 2).mul_const (s ^ (2 : ℕ))
+      have hval : ‖G'‖ ^ (2 : ℕ) * s ^ (2 : ℕ) = s ^ (2 : ℕ) * ‖G'‖ ^ (2 : ℕ) := by ring
       rw [hval] at h
       exact h
     have hval : ∀ τ : ℝ, 0 < τ →
-        ‖slope G κ₀ (κ₀ + s * Real.sqrt τ)‖ ^ 2 * s ^ 2
-          = ‖G (κ₀ + s * Real.sqrt τ)‖ ^ 2 / τ := by
+        ‖slope G κ₀ (κ₀ + s * Real.sqrt τ)‖ ^ (2 : ℕ) * s ^ (2 : ℕ)
+          = ‖G (κ₀ + s * Real.sqrt τ)‖ ^ (2 : ℕ) / τ := by
       intro τ hτ
-      have hsq : Real.sqrt τ ^ 2 = τ := Real.sq_sqrt hτ.le
+      have hsq : Real.sqrt τ ^ (2 : ℕ) = τ := Real.sq_sqrt hτ.le
       have hne : s * Real.sqrt τ ≠ 0 :=
         mul_ne_zero hs (ne_of_gt (Real.sqrt_pos.2 hτ))
       have hslopeval : slope G κ₀ (κ₀ + s * Real.sqrt τ)
@@ -144,8 +144,8 @@ theorem tendsto_normSq_sqrt_path {G : ℝ → H} {G' : H} {κ₀ s : ℝ}
         rw [slope_def_module, h0, sub_zero, add_sub_cancel_left]
       rw [hslopeval, norm_smul, norm_inv, Real.norm_eq_abs]
       rw [mul_pow, inv_pow, ← abs_pow, mul_pow, hsq]
-      have hs2 : (0 : ℝ) < s ^ 2 := by positivity
-      have habs : |s ^ 2 * τ| = s ^ 2 * τ := abs_of_pos (by positivity)
+      have hs2 : (0 : ℝ) < s ^ (2 : ℕ) := by positivity
+      have habs : |s ^ (2 : ℕ) * τ| = s ^ (2 : ℕ) * τ := abs_of_pos (by positivity)
       rw [habs]
       field_simp
     refine hcomp.congr' ?_
@@ -156,13 +156,13 @@ theorem tendsto_normSq_sqrt_path {G : ℝ → H} {G' : H} {κ₀ s : ℝ}
 finite reduced response produce the exact square-root profile `ρ/(1 + ρ c s²)`. -/
 theorem tendsto_capacity_spike {c ρ s : ℝ} (hρ : 0 < ρ) (hc : 0 ≤ c)
     {N E C : ℝ → ℝ} (hC : ∀ τ, 0 < τ → C τ = (N τ / τ + E τ)⁻¹)
-    (hN : Tendsto (fun τ => N τ / τ) (𝓝[>] 0) (𝓝 (c * s ^ 2)))
+    (hN : Tendsto (fun τ => N τ / τ) (𝓝[>] 0) (𝓝 (c * s ^ (2 : ℕ))))
     (hE : Tendsto E (𝓝[>] 0) (𝓝 ρ⁻¹)) :
-    Tendsto C (𝓝[>] 0) (𝓝 (ρ / (1 + ρ * c * s ^ 2))) := by
-  have hden : (0 : ℝ) < c * s ^ 2 + ρ⁻¹ := by positivity
-  have hlim : Tendsto (fun τ => (N τ / τ + E τ)⁻¹) (𝓝[>] 0) (𝓝 (c * s ^ 2 + ρ⁻¹)⁻¹) :=
+    Tendsto C (𝓝[>] 0) (𝓝 (ρ / (1 + ρ * c * s ^ (2 : ℕ)))) := by
+  have hden : (0 : ℝ) < c * s ^ (2 : ℕ) + ρ⁻¹ := by positivity
+  have hlim : Tendsto (fun τ => (N τ / τ + E τ)⁻¹) (𝓝[>] 0) (𝓝 (c * s ^ (2 : ℕ) + ρ⁻¹)⁻¹) :=
     (hN.add hE).inv₀ (ne_of_gt hden)
-  have hval : (c * s ^ 2 + ρ⁻¹)⁻¹ = ρ / (1 + ρ * c * s ^ 2) := by
+  have hval : (c * s ^ (2 : ℕ) + ρ⁻¹)⁻¹ = ρ / (1 + ρ * c * s ^ (2 : ℕ)) := by
     field_simp
     ring
   rw [← hval]
@@ -218,13 +218,13 @@ moving source vanishes at `κ₀` with velocity `G'`, and the reduced response c
 regularized capacity along the square-root path has the Lorentzian profile. -/
 theorem tendsto_capacity_spike_of_vanishing_ground {G : ℝ → H} {G' : H} {κ₀ s ρ : ℝ}
     (hG : HasDerivAt G G' κ₀) (h0 : G κ₀ = 0) (hρ : 0 < ρ) {E C : ℝ → ℝ}
-    (hC : ∀ τ, 0 < τ → C τ = (‖G (κ₀ + s * Real.sqrt τ)‖ ^ 2 / τ + E τ)⁻¹)
+    (hC : ∀ τ, 0 < τ → C τ = (‖G (κ₀ + s * Real.sqrt τ)‖ ^ (2 : ℕ) / τ + E τ)⁻¹)
     (hE : Tendsto E (𝓝[>] 0) (𝓝 ρ⁻¹)) :
-    Tendsto C (𝓝[>] 0) (𝓝 (ρ / (1 + ρ * ‖G'‖ ^ 2 * s ^ 2))) := by
-  refine tendsto_capacity_spike (c := ‖G'‖ ^ 2) (N := fun τ => ‖G (κ₀ + s * Real.sqrt τ)‖ ^ 2)
+    Tendsto C (𝓝[>] 0) (𝓝 (ρ / (1 + ρ * ‖G'‖ ^ (2 : ℕ) * s ^ (2 : ℕ)))) := by
+  refine tendsto_capacity_spike (c := ‖G'‖ ^ (2 : ℕ)) (N := fun τ => ‖G (κ₀ + s * Real.sqrt τ)‖ ^ (2 : ℕ))
     hρ (by positivity) hC ?_ hE
   have h := tendsto_normSq_sqrt_path (G := G) (G' := G') (κ₀ := κ₀) (s := s) hG h0
-  have hval : s ^ 2 * ‖G'‖ ^ 2 = ‖G'‖ ^ 2 * s ^ 2 := by ring
+  have hval : s ^ (2 : ℕ) * ‖G'‖ ^ (2 : ℕ) = ‖G'‖ ^ (2 : ℕ) * s ^ (2 : ℕ) := by ring
   rw [hval] at h
   exact h
 

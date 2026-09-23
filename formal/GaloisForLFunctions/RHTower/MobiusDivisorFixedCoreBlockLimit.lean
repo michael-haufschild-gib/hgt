@@ -27,14 +27,14 @@ def mobiusDivisorHeadBlockIntercept (P : Finset ℕ) (n : ℕ) : ℝ :=
 
 /-- Primitive of the square-root-affine square on one quotient block. -/
 def mobiusDivisorHeadBlockPrimitive (P : Finset ℕ) (n : ℕ) (c : ℝ) : ℝ :=
-  (mobiusDivisorHeadBlockSlope P n)^2*c+
+  (mobiusDivisorHeadBlockSlope P n)^(2 : ℕ)*c+
     (4/3:ℝ)*mobiusDivisorHeadBlockSlope P n*mobiusDivisorHeadBlockIntercept P n*c*Real.sqrt c+
-      (mobiusDivisorHeadBlockIntercept P n)^2*c^2/2
+      (mobiusDivisorHeadBlockIntercept P n)^(2 : ℕ)*c^(2 : ℕ)/2
 
 /-- Full actual arithmetic energy in the quotient cell M/r=n. -/
 def mobiusDivisorFixedCoreBlockEnergy (P : Finset ℕ) (M n : ℕ) : ℝ :=
   ∑ r ∈ (fixedCoreSquarefreeIndices P M).filter (fun r => M/r=n),
-    (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2
+    (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ)
 
 /-- Exact affine form of every clipped sample within its actual quotient cell. -/
 theorem mobiusDivisorInterpolatedHead_eq_block_affine
@@ -71,9 +71,9 @@ theorem mobiusDivisorInterpolatedHead_eq_block_affine
 
 private lemma block_term (P : Finset ℕ) {M r n : ℕ}
     (hM : 0 < M) (hr : 0 < r) (hn : M/r=n) :
-    (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2 =
+    (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) =
       (M : ℝ)*(mobiusDivisorHeadBlockSlope P n+
-        mobiusDivisorHeadBlockIntercept P n*Real.sqrt ((r : ℝ)/M))^2 := by
+        mobiusDivisorHeadBlockIntercept P n*Real.sqrt ((r : ℝ)/M))^(2 : ℕ) := by
   have he := mobiusDivisorInterpolatedHead_eq_block_affine P hr hn
   have hs : Real.sqrt (M : ℝ) ≠ 0 := Real.sqrt_ne_zero'.mpr (by exact_mod_cast hM)
   have he' : Real.sqrt r*mobiusDivisorInterpolatedFibre M r P ∅ =
@@ -81,7 +81,7 @@ private lemma block_term (P : Finset ℕ) {M r n : ℕ}
         mobiusDivisorHeadBlockIntercept P n*Real.sqrt ((r : ℝ)/M)) := by
     rw [he, Real.sqrt_div (Nat.cast_nonneg r)]
     field_simp
-  have h := congrArg (fun x : ℝ => x^2) he'
+  have h := congrArg (fun x : ℝ => x^(2 : ℕ)) he'
   simpa only [mul_pow, Real.sq_sqrt (Nat.cast_nonneg r),
     Real.sq_sqrt (Nat.cast_nonneg M)] using h
 
@@ -120,13 +120,13 @@ private lemma block_indices (P : Finset ℕ) (M : ℕ) {n : ℕ} (hn : 0 < n) :
 square-root-affine prefix sums. -/
 theorem mobiusDivisorFixedCoreBlockEnergy_div_sq (P : Finset ℕ) {M n : ℕ}
     (hM : 0 < M) (hn : 0 < n) :
-    mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^2 =
+    mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^(2 : ℕ) =
       (∑ r ∈ fixedCoreSquarefreeIndices P (M/n),
         (mobiusDivisorHeadBlockSlope P n+
-          mobiusDivisorHeadBlockIntercept P n*Real.sqrt ((r : ℝ)/M))^2)/(M : ℝ) -
+          mobiusDivisorHeadBlockIntercept P n*Real.sqrt ((r : ℝ)/M))^(2 : ℕ))/(M : ℝ) -
       (∑ r ∈ fixedCoreSquarefreeIndices P (M/(n+1)),
         (mobiusDivisorHeadBlockSlope P n+
-          mobiusDivisorHeadBlockIntercept P n*Real.sqrt ((r : ℝ)/M))^2)/(M : ℝ) := by
+          mobiusDivisorHeadBlockIntercept P n*Real.sqrt ((r : ℝ)/M))^(2 : ℕ))/(M : ℝ) := by
   have hsub : fixedCoreSquarefreeIndices P (M/(n+1)) ⊆ fixedCoreSquarefreeIndices P (M/n) := by
     intro r hr
     obtain ⟨hr, hs⟩ := mem_filter.mp hr
@@ -135,10 +135,10 @@ theorem mobiusDivisorFixedCoreBlockEnergy_div_sq (P : Finset ℕ) {M n : ℕ}
     exact ⟨mem_Icc.mpr ⟨hr'.1, hr'.2.trans (Nat.div_le_div_left (by omega : n≤n+1) hn)⟩, hs⟩
   unfold mobiusDivisorFixedCoreBlockEnergy
   have he : (∑ r ∈ (fixedCoreSquarefreeIndices P M).filter (fun r => M/r=n),
-      (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^2) =
+      (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ)) =
       (M : ℝ)*∑ r ∈ (fixedCoreSquarefreeIndices P M).filter (fun r => M/r=n),
         (mobiusDivisorHeadBlockSlope P n+
-          mobiusDivisorHeadBlockIntercept P n*Real.sqrt ((r : ℝ)/M))^2 := by
+          mobiusDivisorHeadBlockIntercept P n*Real.sqrt ((r : ℝ)/M))^(2 : ℕ) := by
     rw [mul_sum]
     apply sum_congr rfl
     intro r hr
@@ -151,7 +151,7 @@ theorem mobiusDivisorFixedCoreBlockEnergy_div_sq (P : Finset ℕ) {M n : ℕ}
 /-- Every fixed actual quotient block has an explicit quadratic-scale limit. -/
 theorem tendsto_mobiusDivisorFixedCoreBlockEnergy_div_sq
     (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) {n : ℕ} (hn : 0 < n) :
-    Tendsto (fun M : ℕ => mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^2) atTop
+    Tendsto (fun M : ℕ => mobiusDivisorFixedCoreBlockEnergy P M n/(M : ℝ)^(2 : ℕ)) atTop
       (𝓝 ((Sieve.squarefreeDensity * ∏ p ∈ P, (p : ℝ)/(p+1))*
         (mobiusDivisorHeadBlockPrimitive P n (1/(n : ℝ))-
           mobiusDivisorHeadBlockPrimitive P n (1/((n : ℝ)+1))))) := by

@@ -34,10 +34,10 @@ theorem blockAverage_fixed (p : H →* G) (v : EuclideanSpace ℂ G) (h : H) :
   reynolds_fixed (blockUnitary p) (blockUnitary_mul p) v h
 
 theorem blockAverage_norm_decomposition (p : H →* G) (v : EuclideanSpace ℂ G) :
-    ‖blockAverage p v‖^2+‖v-blockAverage p v‖^2=‖v‖^2 := by
+    ‖blockAverage p v‖^(2 : ℕ)+‖v-blockAverage p v‖^(2 : ℕ)=‖v‖^(2 : ℕ) := by
   have h := inner_reynolds_self (blockUnitary p) (blockUnitary_mul p) v
   change inner ℂ (blockAverage p v) (blockAverage p v)=inner ℂ (blockAverage p v) v at h
-  have hr : ‖blockAverage p v‖^2=(inner ℂ (blockAverage p v) v).re := by
+  have hr : ‖blockAverage p v‖^(2 : ℕ)=(inner ℂ (blockAverage p v) v).re := by
     rw [← h]
     exact (inner_self_eq_norm_sq (𝕜:=ℂ) _).symm
   have hn := norm_sub_sq (𝕜:=ℂ) (blockAverage p v) v
@@ -47,12 +47,12 @@ theorem blockAverage_norm_decomposition (p : H →* G) (v : EuclideanSpace ℂ G
 
 /-- Exact normalized block displacement energy equals its orthogonal variance. -/
 theorem blockAverage_energy (p : H →* G) (v : EuclideanSpace ℂ G) :
-    (2*(Fintype.card H:ℝ))⁻¹*(∑ h : H, ‖finiteRegularUnitary (p h) v-v‖^2)=
-      ‖v-blockAverage p v‖^2 := by
+    (2*(Fintype.card H:ℝ))⁻¹*(∑ h : H, ‖finiteRegularUnitary (p h) v-v‖^(2 : ℕ))=
+      ‖v-blockAverage p v‖^(2 : ℕ) := by
   have he := reynolds_energy (blockUnitary p) (blockUnitary_mul p) v
   have hn := blockAverage_norm_decomposition p v
-  change (2*(Fintype.card H:ℝ))⁻¹*(∑ h : H, ‖finiteRegularUnitary (p h) v-v‖^2)=
-    ‖v‖^2-‖blockAverage p v‖^2 at he
+  change (2*(Fintype.card H:ℝ))⁻¹*(∑ h : H, ‖finiteRegularUnitary (p h) v-v‖^(2 : ℕ))=
+    ‖v‖^(2 : ℕ)-‖blockAverage p v‖^(2 : ℕ) at he
   linarith
 
 /-- Every motion inside one block costs at most twice the distance to its average. -/
@@ -85,10 +85,10 @@ theorem four_block_displacement_le (p : H →* G) (q : K →* G)
 theorem variance_le_two_blocks (p : H →* G) (q : K →* G)
     (hfac : ∀ g : G, ∃ a : H, ∃ b : K, ∃ c : H, ∃ d : K, g=p a*q b*p c*q d)
     (v : EuclideanSpace ℂ G) :
-    ‖v-finiteRegularAverage v‖^2 ≤
-      16*(‖v-blockAverage p v‖^2+‖v-blockAverage q v‖^2) := by
-  have hb (g : G) : ‖finiteRegularUnitary g v-v‖^2 ≤
-      32*(‖v-blockAverage p v‖^2+‖v-blockAverage q v‖^2) := by
+    ‖v-finiteRegularAverage v‖^(2 : ℕ) ≤
+      16*(‖v-blockAverage p v‖^(2 : ℕ)+‖v-blockAverage q v‖^(2 : ℕ)) := by
+  have hb (g : G) : ‖finiteRegularUnitary g v-v‖^(2 : ℕ) ≤
+      32*(‖v-blockAverage p v‖^(2 : ℕ)+‖v-blockAverage q v‖^(2 : ℕ)) := by
     obtain ⟨a,b,c,d,rfl⟩ := hfac g
     have h := four_block_displacement_le p q v a c b d
     have ha := norm_nonneg (v-blockAverage p v)
@@ -100,8 +100,8 @@ theorem variance_le_two_blocks (p : H →* G) (q : K →* G)
   have hcard : 0 < (Fintype.card G:ℝ) := by exact_mod_cast Fintype.card_pos
   have he := finiteRegularAverage_energy v
   have hn := finiteRegularAverage_norm_decomposition v
-  have he' : (∑ g : G, ‖finiteRegularUnitary g v-v‖^2)=
-      2*(Fintype.card G:ℝ)*‖v-finiteRegularAverage v‖^2 := by
+  have he' : (∑ g : G, ‖finiteRegularUnitary g v-v‖^(2 : ℕ))=
+      2*(Fintype.card G:ℝ)*‖v-finiteRegularAverage v‖^(2 : ℕ) := by
     rw [inv_mul_eq_iff_eq_mul₀ (by positivity)] at he
     nlinarith
   rw [he'] at hs

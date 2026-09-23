@@ -33,7 +33,7 @@ private theorem l2_integral_eq_of_le {α : Type*} [TopologicalSpace α]
     constructor
     · filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
       exact (L2.integrable_inner g (u t)).congr (hslice t ⟨ht.1.le,ht.2⟩).symm
-    · have hbound : Integrable (fun t => ‖g‖^2+‖u t‖^2) μ :=
+    · have hbound : Integrable (fun t => ‖g‖^(2 : ℕ)+‖u t‖^(2 : ℕ)) μ :=
         ((continuous_const.add (hu.norm.pow 2)).intervalIntegrable (μ := volume) a b).1
       apply hbound.mono' hk.norm.integral_prod_right'
       filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
@@ -44,13 +44,13 @@ private theorem l2_integral_eq_of_le {α : Type*} [TopologicalSpace α]
       have hg := (Lp.memLp g).norm.integrable_sq
       have hu' := (Lp.memLp (u t)).norm.integrable_sq
       calc
-        (∫ x, ‖inner ℂ (g x) (u t x)‖ ∂ν) ≤ ∫ x, ‖g x‖^2+‖u t x‖^2 ∂ν := by
+        (∫ x, ‖inner ℂ (g x) (u t x)‖ ∂ν) ≤ ∫ x, ‖g x‖^(2 : ℕ)+‖u t x‖^(2 : ℕ) ∂ν := by
           apply integral_mono (L2.integrable_inner g (u t)).norm (hg.add hu')
           intro x
           dsimp only [Pi.add_apply]
           have hn := norm_inner_le_norm (g x) (u t x) (𝕜 := ℂ)
           nlinarith [sq_nonneg (‖g x‖-‖u t x‖)]
-        _ = ‖g‖^2+‖u t‖^2 := by
+        _ = ‖g‖^(2 : ℕ)+‖u t‖^(2 : ℕ) := by
           rw [integral_add hg hu',← _root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq,
             ← _root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
   have hleft : (∫ t in a..b, inner ℂ g (u t)) = ∫ t, ∫ x, k (t,x) ∂ν ∂μ := by
@@ -143,7 +143,7 @@ private theorem literalForcing_continuous (q : XiZeroCopy) (s a : ℂ) :
       nativeResidualStaticForcing q s a p.1 p.2.1 p.2.2.re (Real.log p.2.2.im)) =
       fun p => squareResidual q (coordinates p.2.2)*oddSource s a p.1 p.2.1+
         (∑ i : Fin 3, principalNullResponse q s a i (p.1+p.2.1) (p.1-p.2.1)*
-          cutoffCommutator (principalExponent q i) (coordinates p.2.2))/(Real.cosh p.2.1:ℂ)^2 := by
+          cutoffCommutator (principalExponent q i) (coordinates p.2.2))/(Real.cosh p.2.1:ℂ)^(2 : ℕ) := by
     funext p
     simp only [nativeResidualStaticForcing,Real.exp_log p.2.2.im_pos,coordinates]
   rw [he]
@@ -156,7 +156,7 @@ private theorem cutoffTime_literal_ae (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (principalCutoffTimeVector q branch a i t : ℝ × UpperHalfPlane → ℂ) =ᵐ[
       radialMeasure.prod D4BMModularCore.measure] fun z =>
         principalNullResponse q (physicalRate q branch) a i (t+z.1) (t-z.1)*
-          cutoffCommutator (principalExponent q i) (coordinates z.2)/(Real.cosh z.1:ℂ)^2 := by
+          cutoffCommutator (principalExponent q i) (coordinates z.2)/(Real.cosh z.1:ℂ)^(2 : ℕ) := by
   have hr := (principalNullResponse_physical_ae q branch a i t).filter_mono
     (ae_mono (show radialMeasure ≤ volume from Measure.restrict_le_self))
   have he := l2SeparatedProduct_ae (principalCutoffRadialOp (principalTimeResponse q branch a i t))
@@ -174,7 +174,7 @@ private theorem cutoffTime_literal_ae (q : XiZeroCopy) (branch : Bool) (a : ℂ)
   simp only [Function.comp_apply] at h1 h2 h3
   change cutoffCommutatorVector (principalExponent q i) z.2 = _ at h3
   rw [h1,h2,h3]
-  have hh : horizonCoordinate z.1 = 1/(Real.cosh z.1)^2 := by
+  have hh : horizonCoordinate z.1 = 1/(Real.cosh z.1)^(2 : ℕ) := by
     unfold horizonCoordinate radialUnit
     field_simp
     nlinarith [Real.cosh_sq_sub_sinh_sq z.1]

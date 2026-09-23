@@ -66,7 +66,7 @@ theorem reciprocal_separation {X A p q : ℕ} (hA : 1 ≤ A) (hp : 0 < p)
 theorem sq_card_markers_start_mem_le {X : ℕ} {M S : Finset ℕ} {K : ℕ} {Pi : ℝ}
     (hsep : ∀ p ∈ M, ∀ q ∈ M, p < q → X / q = X / p → q ≤ p + K)
     (hpair : ∑ d ∈ Finset.Icc 1 K, (((M.filter (fun p => p + d ∈ M)).card : ℕ) : ℝ) ≤ Pi) :
-    (((M.filter (fun p => X / p ∈ S)).card : ℕ) : ℝ) ^ 2
+    (((M.filter (fun p => X / p ∈ S)).card : ℕ) : ℝ) ^ (2 : ℕ)
       ≤ (S.card : ℝ) * ((M.card : ℝ) + 2 * Pi) := by
   classical
   set f : ℕ → ℕ := fun p => X / p with hf

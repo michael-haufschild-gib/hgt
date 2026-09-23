@@ -31,11 +31,11 @@ theorem exists_gappedReference_near_eigenvector
     (hbase : H₀.reApplyInnerSelf phi = lambda)
     (hupper : ∀ x : E,
       H₀.reApplyInnerSelf x ≤
-        lambda * ‖x‖ ^ 2 - gap * (‖x‖ ^ 2 - ‖inner ℂ phi x‖ ^ 2))
+        lambda * ‖x‖ ^ (2 : ℕ) - gap * (‖x‖ ^ (2 : ℕ) - ‖inner ℂ phi x‖ ^ (2 : ℕ)))
     (hpert : ‖H - H₀‖ ≤ delta) :
     ∃ psi : E, ∃ mu : ℝ,
       ‖psi‖ = 1 ∧ H psi = (mu : ℂ) • psi ∧
-        1 - ‖inner ℂ phi psi‖ ^ 2 ≤ 2 * delta / gap := by
+        1 - ‖inner ℂ phi psi‖ ^ (2 : ℕ) ≤ 2 * delta / gap := by
   letI := FiniteDimensional.proper_rclike ℂ E
   have hsphere : (Metric.sphere (0 : E) 1).Nonempty :=
     NormedSpace.sphere_nonempty.mpr (by norm_num)
@@ -93,8 +93,8 @@ theorem rayFixed_isometry_uniform_projective_norm_sq_le
     {phi psi : E} (hphi : ‖phi‖ = 1) (hpsi : ‖psi‖ = 1)
     (U : E →L[ℂ] E) (hUnorm : ∀ x, ‖U x‖ = ‖x‖)
     {z : ℂ} (hz : ‖z‖ = 1) (hUpsi : U psi = z • psi) :
-    ‖U phi - z • phi‖ ^ 2 ≤
-      8 * (1 - ‖inner ℂ psi phi‖ ^ 2) := by
+    ‖U phi - z • phi‖ ^ (2 : ℕ) ≤
+      8 * (1 - ‖inner ℂ psi phi‖ ^ (2 : ℕ)) := by
   obtain ⟨c, _hc, hcnear⟩ :=
     exists_unitScalar_norm_sub_sq_le_two_projectiveDefect
       (𝕜 := ℂ) hpsi hphi
@@ -113,7 +113,7 @@ theorem rayFixed_isometry_uniform_projective_norm_sq_le
       _ = 2 * ‖phi - c • psi‖ := by
         rw [norm_sub_rev]
         ring
-  have hsq : ‖U phi - z • phi‖ ^ 2 ≤ 4 * ‖phi - c • psi‖ ^ 2 := by
+  have hsq : ‖U phi - z • phi‖ ^ (2 : ℕ) ≤ 4 * ‖phi - c • psi‖ ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (U phi - z • phi), norm_nonneg (phi - c • psi)]
   nlinarith
 
@@ -128,14 +128,14 @@ theorem gappedReference_uniform_rayFixed_orbit
     (hbase : H₀.reApplyInnerSelf phi = lambda)
     (hupper : ∀ x : E,
       H₀.reApplyInnerSelf x ≤
-        lambda * ‖x‖ ^ 2 - gap * (‖x‖ ^ 2 - ‖inner ℂ phi x‖ ^ 2))
+        lambda * ‖x‖ ^ (2 : ℕ) - gap * (‖x‖ ^ (2 : ℕ) - ‖inner ℂ phi x‖ ^ (2 : ℕ)))
     (hpert : ‖H - H₀‖ ≤ delta)
     (U : E →L[ℂ] E) (hUnorm : ∀ x, ‖U x‖ = ‖x‖)
     (hevolution : ∀ (psi : E) (mu : ℝ),
       H psi = (mu : ℂ) • psi →
         ∃ z : ℂ, ‖z‖ = 1 ∧ U psi = z • psi) :
     ∃ z : ℂ, ‖z‖ = 1 ∧
-      ‖U phi - z • phi‖ ^ 2 ≤ 16 * delta / gap := by
+      ‖U phi - z • phi‖ ^ (2 : ℕ) ≤ 16 * delta / gap := by
   obtain ⟨psi, mu, hpsi, heig, hdefect⟩ :=
     exists_gappedReference_near_eigenvector H₀ H hH hphi hgap hbase hupper hpert
   obtain ⟨z, hz, hUpsi⟩ := hevolution psi mu heig
@@ -147,8 +147,8 @@ theorem gappedReference_uniform_rayFixed_orbit
     exact norm_conj _
   rw [hinner] at horbit
   calc
-    ‖U phi - z • phi‖ ^ 2
-        ≤ 8 * (1 - ‖inner ℂ phi psi‖ ^ 2) := horbit
+    ‖U phi - z • phi‖ ^ (2 : ℕ)
+        ≤ 8 * (1 - ‖inner ℂ phi psi‖ ^ (2 : ℕ)) := horbit
     _ ≤ 8 * (2 * delta / gap) := by gcongr
     _ = 16 * delta / gap := by ring
 

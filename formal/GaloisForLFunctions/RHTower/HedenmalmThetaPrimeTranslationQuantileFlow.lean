@@ -14,7 +14,7 @@ flat but not stationary.
 
 More sharply, the covariant source inverse is
 
-`U B_n U^-1 g = i q(t) (integral_0^t g - Phi_n(t) integral_0^1 g)`.
+`U B_n U^-1 g = i q(t) (integral_0^t g - Phi_n(t) integral_0^(1 : ℕ) g)`.
 
 Thus the rank-one anomaly connection does not remove the universal pinned-Volterra boundary
 current.  It replaces the pinning coordinate `t` by the strict parabolic translate `Phi_n(t)`.
@@ -118,7 +118,7 @@ theorem quantileTransform_integerAnomaly_eq_primeBoundaryDisplacement
     exact_mod_cast (thetaSource.pos_k _).ne'
   have hmass : (thetaSource.mass : ℂ) ≠ 0 := by
     exact_mod_cast thetaSource.mass_ne_zero
-  have hsqrtSq : (Real.sqrt thetaSource.mass : ℂ) ^ 2 =
+  have hsqrtSq : (Real.sqrt thetaSource.mass : ℂ) ^ (2 : ℕ) =
       (thetaSource.mass : ℂ) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt thetaSource.mass_pos.le]
   rw [quantileTransform, integerAnomaly_eq, thetaIntegerQuantileFlow,
@@ -156,7 +156,7 @@ theorem quantileTransform_thetaIntegerCovariantSourceInverse_eq_primePinned
     quantileTransform_integerAnomaly_eq_primeBoundaryDisplacement ht,
     sourceFunctional_eq_sqrt_mass_mul_pinnedMean]
   rw [pinnedVolterraFun]
-  have hsqrtSq : (Real.sqrt thetaSource.mass : ℂ) ^ 2 =
+  have hsqrtSq : (Real.sqrt thetaSource.mass : ℂ) ^ (2 : ℕ) =
       (thetaSource.mass : ℂ) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt thetaSource.mass_pos.le]
   have hconnection :

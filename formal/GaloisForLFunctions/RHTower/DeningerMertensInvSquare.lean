@@ -9,7 +9,7 @@ This is the discrete form of the only analytic input of the Möbius calculus of 
 power comparison proves it: `exp(-c(log N)^{1/3})` dominates every `N^{-ε}`.
 
 Cauchy condensation is what works.  The condensed series is `∑_k exp(-c k^{1/3})`, and that one is
-elementary: a single term of the exponential series gives `exp(c x^{1/3}) ≥ (c x^{1/3})^7/7!`, and
+elementary: a single term of the exponential series gives `exp(c x^{1/3}) ≥ (c x^{1/3})^(7 : ℕ)/7!`, and
 `x^{7/3} ≥ x²` for `x ≥ 1`.
 
 * `deningerCubeRootExp_summable` : `∑_k exp(-c k^{1/3}) < ∞`.

@@ -384,7 +384,7 @@ def degreeFiveNormalizedSecondEntry {d : ℕ}
     degreeFiveSecondRemainder lam nodes c q r e /
       e ^ ((q.1 : ℕ) + (r.1 : ℕ))
 
-/-- **Normalised-entry convergence.**  A remainder that is `o(e^10)` at the origin survives division
+/-- **Normalised-entry convergence.**  A remainder that is `o(e^(10 : ℕ))` at the origin survives division
 by `e^(q+r)` -- the degree sum never exceeds ten -- so the normalised entry converges to its constant
 term.  Nothing about the jet enters: the statement quantifies over an arbitrary constant and an
 arbitrary remainder, which is why the value, first and second jets all instantiate it. -/

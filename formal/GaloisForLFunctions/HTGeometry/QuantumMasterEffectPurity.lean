@@ -32,24 +32,24 @@ variable [NormedAddCommGroup F] [InnerProductSpace ℂ F] [CompleteSpace F]
 The zero channel is assigned purity zero by the ambient field's zero-division convention. -/
 def quantumMasterEffectPurity (C : E →L[ℂ] F) : ℝ :=
   ContinuousLinearMap.hsNormSq (ContinuousLinearMap.adjoint C ∘L C) /
-    ContinuousLinearMap.hsNormSq C ^ 2
+    ContinuousLinearMap.hsNormSq C ^ (2 : ℕ)
 
 /-- The Hilbert--Schmidt square of `C† C` is at most the fourth power of the Hilbert--Schmidt norm
 of `C`.  Equivalently, `Tr((C† C)²) ≤ Tr(C† C)²`. -/
 theorem hsNormSq_adjoint_comp_self_le_sq
     (C : E →L[ℂ] F) (hC : ContinuousLinearMap.IsHilbertSchmidt C) :
     ContinuousLinearMap.hsNormSq (ContinuousLinearMap.adjoint C ∘L C) ≤
-      ContinuousLinearMap.hsNormSq C ^ 2 := by
+      ContinuousLinearMap.hsNormSq C ^ (2 : ℕ) := by
   let b := ContinuousLinearMap.hsBasis ℂ E
   have hmaster : ContinuousLinearMap.IsHilbertSchmidt
       (ContinuousLinearMap.adjoint C ∘L C) :=
     hC.comp_left (ContinuousLinearMap.adjoint C)
-  have hopSq : ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNormSq C := by
+  have hopSq : ‖C‖ ^ (2 : ℕ) ≤ ContinuousLinearMap.hsNormSq C := by
     have hop := ContinuousLinearMap.opNorm_le_hsNorm hC
-    have hsquare : ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := by
+    have hsquare : ‖C‖ ^ (2 : ℕ) ≤ ContinuousLinearMap.hsNorm C ^ (2 : ℕ) := by
       nlinarith [norm_nonneg C, ContinuousLinearMap.hsNorm_nonneg C]
     calc
-      ‖C‖ ^ 2 ≤ ContinuousLinearMap.hsNorm C ^ 2 := hsquare
+      ‖C‖ ^ (2 : ℕ) ≤ ContinuousLinearMap.hsNorm C ^ (2 : ℕ) := hsquare
       _ = ContinuousLinearMap.hsNormSq C := by
         rw [ContinuousLinearMap.hsNorm,
           Real.sq_sqrt (ContinuousLinearMap.hsNormSq_nonneg C)]
@@ -58,30 +58,30 @@ theorem hsNormSq_adjoint_comp_self_le_sq
       (E →L[ℂ] F) ≃ₗᵢ⋆[ℂ] (F →L[ℂ] E)).norm_map C
   calc
     ContinuousLinearMap.hsNormSq (ContinuousLinearMap.adjoint C ∘L C) =
-        ∑' i, ‖(ContinuousLinearMap.adjoint C ∘L C) (b i)‖ ^ 2 :=
+        ∑' i, ‖(ContinuousLinearMap.adjoint C ∘L C) (b i)‖ ^ (2 : ℕ) :=
       ContinuousLinearMap.hsNormSq_eq hmaster b
-    _ ≤ ∑' i, ‖ContinuousLinearMap.adjoint C‖ ^ 2 * ‖C (b i)‖ ^ 2 :=
+    _ ≤ ∑' i, ‖ContinuousLinearMap.adjoint C‖ ^ (2 : ℕ) * ‖C (b i)‖ ^ (2 : ℕ) :=
       (hmaster.summable b).tsum_le_tsum (fun i => by
         calc
-          ‖(ContinuousLinearMap.adjoint C ∘L C) (b i)‖ ^ 2 =
-              ‖ContinuousLinearMap.adjoint C (C (b i))‖ ^ 2 := by
+          ‖(ContinuousLinearMap.adjoint C ∘L C) (b i)‖ ^ (2 : ℕ) =
+              ‖ContinuousLinearMap.adjoint C (C (b i))‖ ^ (2 : ℕ) := by
             rw [ContinuousLinearMap.comp_apply]
-          _ ≤ (‖ContinuousLinearMap.adjoint C‖ * ‖C (b i)‖) ^ 2 := by
+          _ ≤ (‖ContinuousLinearMap.adjoint C‖ * ‖C (b i)‖) ^ (2 : ℕ) := by
             gcongr
             exact (ContinuousLinearMap.adjoint C).le_opNorm _
-          _ = ‖ContinuousLinearMap.adjoint C‖ ^ 2 * ‖C (b i)‖ ^ 2 := by
+          _ = ‖ContinuousLinearMap.adjoint C‖ ^ (2 : ℕ) * ‖C (b i)‖ ^ (2 : ℕ) := by
             ring)
-        ((hC.summable b).mul_left (‖ContinuousLinearMap.adjoint C‖ ^ 2))
-    _ = ‖ContinuousLinearMap.adjoint C‖ ^ 2 *
+        ((hC.summable b).mul_left (‖ContinuousLinearMap.adjoint C‖ ^ (2 : ℕ)))
+    _ = ‖ContinuousLinearMap.adjoint C‖ ^ (2 : ℕ) *
         ContinuousLinearMap.hsNormSq C := by
       rw [tsum_mul_left, ← ContinuousLinearMap.hsNormSq_eq hC b]
-    _ = ‖C‖ ^ 2 * ContinuousLinearMap.hsNormSq C := by
+    _ = ‖C‖ ^ (2 : ℕ) * ContinuousLinearMap.hsNormSq C := by
       rw [hadjointNorm]
     _ ≤ ContinuousLinearMap.hsNormSq C *
         ContinuousLinearMap.hsNormSq C :=
       mul_le_mul_of_nonneg_right hopSq
         (ContinuousLinearMap.hsNormSq_nonneg C)
-    _ = ContinuousLinearMap.hsNormSq C ^ 2 := by
+    _ = ContinuousLinearMap.hsNormSq C ^ (2 : ℕ) := by
       ring
 
 /-- Quantum master-effect purity is nonnegative, with no summability premise. -/
@@ -126,7 +126,7 @@ theorem quantumMasterEffectPurity_eq_traceRatio
       RCLike.re (ContinuousLinearMap.opTrace
           (quantumMasterConstraint C ∘L quantumMasterConstraint C)) /
         RCLike.re (ContinuousLinearMap.opTrace
-          (quantumMasterConstraint C)) ^ 2 := by
+          (quantumMasterConstraint C)) ^ (2 : ℕ) := by
   let T := quantumMasterConstraint C
   have hT : ContinuousLinearMap.IsHilbertSchmidt T := by
     exact hC.comp_left (ContinuousLinearMap.adjoint C)
@@ -149,10 +149,10 @@ theorem quantumMasterEffectPurity_eq_traceRatio
   calc
     quantumMasterEffectPurity C =
         ContinuousLinearMap.hsNormSq T /
-          ContinuousLinearMap.hsNormSq C ^ 2 := by
+          ContinuousLinearMap.hsNormSq C ^ (2 : ℕ) := by
       rfl
     _ = RCLike.re (ContinuousLinearMap.opTrace (T ∘L T)) /
-          RCLike.re (ContinuousLinearMap.opTrace T) ^ 2 := by
+          RCLike.re (ContinuousLinearMap.opTrace T) ^ (2 : ℕ) := by
       rw [hnum, hden]
 
 /-- Trace form of the quantum-state purity inequality for every Hilbert--Schmidt master
@@ -162,7 +162,7 @@ theorem re_opTrace_sq_quantumMasterConstraint_le_sq_trace
     RCLike.re (ContinuousLinearMap.opTrace
         (quantumMasterConstraint C ∘L quantumMasterConstraint C)) ≤
       RCLike.re (ContinuousLinearMap.opTrace
-        (quantumMasterConstraint C)) ^ 2 := by
+        (quantumMasterConstraint C)) ^ (2 : ℕ) := by
   let T := quantumMasterConstraint C
   have hT : ContinuousLinearMap.IsHilbertSchmidt T := by
     exact hC.comp_left (ContinuousLinearMap.adjoint C)
@@ -180,10 +180,10 @@ theorem re_opTrace_sq_quantumMasterConstraint_le_sq_trace
           rw [hself]
         _ = ContinuousLinearMap.hsNormSq T :=
           ContinuousLinearMap.re_opTrace_adjoint_comp_self hT
-    _ ≤ ContinuousLinearMap.hsNormSq C ^ 2 := by
+    _ ≤ ContinuousLinearMap.hsNormSq C ^ (2 : ℕ) := by
       simpa only [T, quantumMasterConstraint] using
         hsNormSq_adjoint_comp_self_le_sq C hC
-    _ = RCLike.re (ContinuousLinearMap.opTrace T) ^ 2 := by
+    _ = RCLike.re (ContinuousLinearMap.opTrace T) ^ (2 : ℕ) := by
       rw [re_opTrace_quantumMasterConstraint_eq_hsNormSq hC]
 
 /-- The master-constraint trace ratio is a physical purity in `[0,1]`. -/
@@ -192,7 +192,7 @@ theorem quantumMasterConstraint_tracePurity_mem_Icc
     RCLike.re (ContinuousLinearMap.opTrace
           (quantumMasterConstraint C ∘L quantumMasterConstraint C)) /
         RCLike.re (ContinuousLinearMap.opTrace
-          (quantumMasterConstraint C)) ^ 2 ∈ Set.Icc (0 : ℝ) 1 := by
+          (quantumMasterConstraint C)) ^ (2 : ℕ) ∈ Set.Icc (0 : ℝ) 1 := by
   rw [← quantumMasterEffectPurity_eq_traceRatio C hC]
   exact quantumMasterEffectPurity_mem_Icc C hC
 

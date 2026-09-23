@@ -29,12 +29,12 @@ noncomputable section
 complex dagger to equal multiplicative inversion. -/
 theorem reciprocalPhaseQuadraturePort_eq_normSq_daggerDefect
     {z : ℂ} (hz : z ≠ 0) :
-    (z + z⁻¹).im ^ 2 + (I * (z - z⁻¹)).im ^ 2 =
+    (z + z⁻¹).im ^ (2 : ℕ) + (I * (z - z⁻¹)).im ^ (2 : ℕ) =
       Complex.normSq (star z - z⁻¹) := by
   rw [reciprocalPhaseQuadraturePort_eq_normSq hz]
   have hN : Complex.normSq z ≠ 0 := (Complex.normSq_pos.mpr hz).ne'
   change
-    (Complex.normSq z - 1) ^ 2 / Complex.normSq z =
+    (Complex.normSq z - 1) ^ (2 : ℕ) / Complex.normSq z =
       (star z - z⁻¹).re * (star z - z⁻¹).re +
         (star z - z⁻¹).im * (star z - z⁻¹).im
   simp only [Complex.star_def, Complex.sub_re, Complex.sub_im,

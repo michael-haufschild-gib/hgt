@@ -30,11 +30,11 @@ theorem primeWindow_eq_primeFactorsIn_primesIco (n a b : ℕ) :
 
 /-- Exact second-moment upper bound in terms of the reciprocal mass of the prime window. -/
 theorem sum_sq_card_primeWindow_le (a b Y : ℕ) :
-    ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ 2 ≤
+    ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ (2 : ℕ) ≤
       (Y : ℝ) * (∑ p ∈ primesIco a b, 1 / (p : ℝ)) +
-        (Y : ℝ) * (∑ p ∈ primesIco a b, 1 / (p : ℝ)) ^ 2 := by
-  rw [show (∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ 2) =
-      ∑ n ∈ Finset.Icc 1 Y, ((primeFactorsIn (primesIco a b) n).card : ℝ) ^ 2 by
+        (Y : ℝ) * (∑ p ∈ primesIco a b, 1 / (p : ℝ)) ^ (2 : ℕ) := by
+  rw [show (∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ (2 : ℕ)) =
+      ∑ n ∈ Finset.Icc 1 Y, ((primeFactorsIn (primesIco a b) n).card : ℝ) ^ (2 : ℕ) by
     apply Finset.sum_congr rfl
     intro n _
     rw [primeWindow_eq_primeFactorsIn_primesIco]]
@@ -54,16 +54,16 @@ theorem sum_sq_card_primeWindow_le (a b Y : ℕ) :
 theorem sum_sq_card_primeWindow_le_of_mass
     {a b Y : ℕ} {η : ℝ} (hη : 0 ≤ η)
     (hmass : ∑ p ∈ primesIco a b, 1 / (p : ℝ) ≤ η) :
-    ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ 2 ≤
-      (Y : ℝ) * (η + η ^ 2) := by
+    ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ (2 : ℕ) ≤
+      (Y : ℝ) * (η + η ^ (2 : ℕ)) := by
   have hmass_nonneg : 0 ≤ ∑ p ∈ primesIco a b, 1 / (p : ℝ) := by
     exact Finset.sum_nonneg fun p _ => by positivity
   calc
-    ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ 2 ≤
+    ∑ n ∈ Finset.Icc 1 Y, ((primeWindow n a b).card : ℝ) ^ (2 : ℕ) ≤
         (Y : ℝ) * (∑ p ∈ primesIco a b, 1 / (p : ℝ)) +
-          (Y : ℝ) * (∑ p ∈ primesIco a b, 1 / (p : ℝ)) ^ 2 :=
+          (Y : ℝ) * (∑ p ∈ primesIco a b, 1 / (p : ℝ)) ^ (2 : ℕ) :=
       sum_sq_card_primeWindow_le a b Y
-    _ ≤ (Y : ℝ) * (η + η ^ 2) := by
+    _ ≤ (Y : ℝ) * (η + η ^ (2 : ℕ)) := by
       have hsq := (sq_le_sq₀ hmass_nonneg hη).2 hmass
       nlinarith [Nat.cast_nonneg (α := ℝ) Y]
 

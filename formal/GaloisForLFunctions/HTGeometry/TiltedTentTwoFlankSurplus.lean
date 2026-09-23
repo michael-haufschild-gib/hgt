@@ -20,10 +20,10 @@ def tiltedTentFullProfile (beta L x : ℝ) : ℝ :=
   Real.exp (beta * x) * (1 - |x| / L)
 
 private def tiltedTentLeftPrimitive (beta L x : ℝ) : ℝ :=
-  Real.exp (beta * x) * ((1 + x / L) / beta - 1 / (L * beta ^ 2))
+  Real.exp (beta * x) * ((1 + x / L) / beta - 1 / (L * beta ^ (2 : ℕ)))
 
 private def tiltedTentRightPrimitive (beta L x : ℝ) : ℝ :=
-  Real.exp (beta * x) * ((1 - x / L) / beta + 1 / (L * beta ^ 2))
+  Real.exp (beta * x) * ((1 - x / L) / beta + 1 / (L * beta ^ (2 : ℕ)))
 
 private lemma hasDerivAt_tiltedTentLeftPrimitive
     {beta L x : ℝ} (hbeta : beta ≠ 0) (hL : L ≠ 0) :
@@ -31,7 +31,7 @@ private lemma hasDerivAt_tiltedTentLeftPrimitive
       (Real.exp (beta * x) * (1 + x / L)) x := by
   convert! ((((hasDerivAt_id x).const_mul beta).exp).mul
     ((((hasDerivAt_const x 1).add ((hasDerivAt_id x).div_const L)).div_const beta).sub
-      (hasDerivAt_const x (1 / (L * beta ^ 2))))) using 1
+      (hasDerivAt_const x (1 / (L * beta ^ (2 : ℕ)))))) using 1
   all_goals (dsimp; field_simp [hbeta, hL]; ring_nf)
 
 private lemma hasDerivAt_tiltedTentRightPrimitive
@@ -40,13 +40,13 @@ private lemma hasDerivAt_tiltedTentRightPrimitive
       (Real.exp (beta * x) * (1 - x / L)) x := by
   convert! ((((hasDerivAt_id x).const_mul beta).exp).mul
     ((((hasDerivAt_const x 1).sub ((hasDerivAt_id x).div_const L)).div_const beta).add
-      (hasDerivAt_const x (1 / (L * beta ^ 2))))) using 1
+      (hasDerivAt_const x (1 / (L * beta ^ (2 : ℕ)))))) using 1
   all_goals (dsimp; field_simp [hbeta, hL]; ring_nf)
 
 private theorem integral_tiltedTentLeftProfile
     {beta L : ℝ} (hbeta : beta ≠ 0) (hL : L ≠ 0) :
     (∫ x : ℝ in -L..0, Real.exp (beta * x) * (1 + x / L)) =
-      (beta * L - 1 + Real.exp (-beta * L)) / (L * beta ^ 2) := by
+      (beta * L - 1 + Real.exp (-beta * L)) / (L * beta ^ (2 : ℕ)) := by
   have hint : IntervalIntegrable
       (fun x : ℝ => Real.exp (beta * x) * (1 + x / L)) volume (-L) 0 :=
     (by fun_prop : Continuous
@@ -61,7 +61,7 @@ private theorem integral_tiltedTentLeftProfile
 private theorem integral_tiltedTentRightProfile
     {beta L : ℝ} (hbeta : beta ≠ 0) (hL : L ≠ 0) :
     (∫ x : ℝ in 0..L, Real.exp (beta * x) * (1 - x / L)) =
-      (Real.exp (beta * L) - beta * L - 1) / (L * beta ^ 2) := by
+      (Real.exp (beta * L) - beta * L - 1) / (L * beta ^ (2 : ℕ)) := by
   have hint : IntervalIntegrable
       (fun x : ℝ => Real.exp (beta * x) * (1 - x / L)) volume 0 L :=
     (by fun_prop : Continuous
@@ -76,7 +76,7 @@ private theorem integral_tiltedTentRightProfile
 theorem integral_tiltedTentFullProfile
     {beta L : ℝ} (hbeta : beta ≠ 0) (hL : 0 < L) :
     (∫ x : ℝ in -L..L, tiltedTentFullProfile beta L x) =
-      2 * (Real.cosh (beta * L) - 1) / (L * beta ^ 2) := by
+      2 * (Real.cosh (beta * L) - 1) / (L * beta ^ (2 : ℕ)) := by
   have hleft : IntervalIntegrable (tiltedTentFullProfile beta L) volume (-L) 0 := by
     change IntervalIntegrable
       (fun x : ℝ => Real.exp (beta * x) * (1 - |x| / L)) volume (-L) 0
@@ -118,7 +118,7 @@ def tiltedTentTwoFlankSurplus (beta L : ℝ) : ℝ :=
 theorem tiltedTentTwoFlankSurplus_eq
     {beta L : ℝ} (hbeta : beta ≠ 0) (hL : 0 < L) :
     tiltedTentTwoFlankSurplus beta L =
-      4 * L - 4 * (Real.cosh (beta * L) - 1) / (L * beta ^ 2) := by
+      4 * L - 4 * (Real.cosh (beta * L) - 1) / (L * beta ^ (2 : ℕ)) := by
   have hconst : IntervalIntegrable (fun _ : ℝ => (1 : ℝ)) volume (-L) L :=
     intervalIntegrable_const
   have hprofile : IntervalIntegrable (tiltedTentFullProfile beta L) volume (-L) L := by

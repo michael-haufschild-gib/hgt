@@ -167,8 +167,8 @@ def GridCancellationMeanSquareSurplus (f : ℝ → ℝ) : Prop :=
     (∑ j ∈ Finset.range N,
       |∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), f t|) ≤ Bsum ∧
     (∑ j ∈ Finset.range N,
-      (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2) ≤ Q ∧
-    c * (a + (N : ℝ) * H) * Q < (L - Bsum) ^ 2
+      (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ (2 : ℕ)) ≤ Q ∧
+    c * (a + (N : ℝ) * H) * Q < (L - Bsum) ^ (2 : ℕ)
 
 /-- **Reduction of `(22)` to mean-square grid cancellation.** -/
 theorem superlinearSamples_xiRealDivisor_of_meanSquare_grid_cancellation
@@ -182,8 +182,8 @@ theorem superlinearSamples_xiRealDivisor_of_meanSquare_grid_cancellation
   have hQ0 : (0 : ℝ) ≤ Q :=
     le_trans (Finset.sum_nonneg fun j _ => sq_nonneg _) hQ
   have hcardQ : (0 : ℝ) ≤ (Zs.card : ℝ) * Q := by positivity
-  have hsq : (L - Bsum) ^ 2 ≤ (Zs.card : ℝ) * Q := by
-    have h1 : (L - Bsum) ^ 2 ≤ (Real.sqrt ((Zs.card : ℝ) * Q)) ^ 2 := by
+  have hsq : (L - Bsum) ^ (2 : ℕ) ≤ (Zs.card : ℝ) * Q := by
+    have h1 : (L - Bsum) ^ (2 : ℕ) ≤ (Real.sqrt ((Zs.card : ℝ) * Q)) ^ (2 : ℕ) := by
       have := Real.sqrt_nonneg ((Zs.card : ℝ) * Q)
       nlinarith [hZcard, hLB]
     rwa [Real.sq_sqrt hcardQ] at h1

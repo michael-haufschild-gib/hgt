@@ -27,12 +27,12 @@ open scoped RealInnerProductSpace
 
 /-- Derivative of a real quadratic. -/
 theorem hasDerivAt_quadratic (c₀ c₁ c₂ t : ℝ) :
-    HasDerivAt (fun s : ℝ => c₀ + c₁ * s + c₂ * s ^ 2) (c₁ + 2 * c₂ * t) t := by
+    HasDerivAt (fun s : ℝ => c₀ + c₁ * s + c₂ * s ^ (2 : ℕ)) (c₁ + 2 * c₂ * t) t := by
   have h1 : HasDerivAt (fun s : ℝ => c₀ + c₁ * s) c₁ t := by
     simpa using ((hasDerivAt_id t).const_mul c₁).const_add c₀
-  have h2 : HasDerivAt (fun s : ℝ => c₂ * s ^ 2) (c₂ * (2 * t)) t := by
+  have h2 : HasDerivAt (fun s : ℝ => c₂ * s ^ (2 : ℕ)) (c₂ * (2 * t)) t := by
     simpa using (hasDerivAt_pow 2 t).const_mul c₂
-  have h3 : HasDerivAt (fun s : ℝ => c₀ + c₁ * s + c₂ * s ^ 2) (c₁ + c₂ * (2 * t)) t := h1.add h2
+  have h3 : HasDerivAt (fun s : ℝ => c₀ + c₁ * s + c₂ * s ^ (2 : ℕ)) (c₁ + c₂ * (2 * t)) t := h1.add h2
   rw [show c₁ + 2 * c₂ * t = c₁ + c₂ * (2 * t) by ring]
   exact h3
 
@@ -85,21 +85,21 @@ theorem inner_gradient_le {f : E → ℝ} {g : E → E} (hg : ∀ z, HasGradient
 paraboloid with curvature `L`. -/
 theorem descent_lemma {f : E → ℝ} {g : E → E} (hg : ∀ z, HasGradientAt f (g z) z) {L : ℝ}
     (hlip : ∀ a b : E, ‖g a - g b‖ ≤ L * ‖a - b‖) (x y : E) :
-    f y ≤ f x + ⟪g x, y - x⟫ + L / 2 * ‖y - x‖ ^ 2 := by
+    f y ≤ f x + ⟪g x, y - x⟫ + L / 2 * ‖y - x‖ ^ (2 : ℕ) := by
   have hderiv : ∀ t : ℝ, HasDerivAt
       (fun s : ℝ => f (x + s • (y - x))
-        - (f x + ⟪g x, y - x⟫ * s + L / 2 * ‖y - x‖ ^ 2 * s ^ 2))
+        - (f x + ⟪g x, y - x⟫ * s + L / 2 * ‖y - x‖ ^ (2 : ℕ) * s ^ (2 : ℕ)))
       (⟪g (x + t • (y - x)), y - x⟫
-        - (⟪g x, y - x⟫ + 2 * (L / 2 * ‖y - x‖ ^ 2) * t)) t := fun t =>
+        - (⟪g x, y - x⟫ + 2 * (L / 2 * ‖y - x‖ ^ (2 : ℕ)) * t)) t := fun t =>
     (hasDerivAt_along hg x (y - x) t).sub
-      (hasDerivAt_quadratic (f x) (⟪g x, y - x⟫) (L / 2 * ‖y - x‖ ^ 2) t)
+      (hasDerivAt_quadratic (f x) (⟪g x, y - x⟫) (L / 2 * ‖y - x‖ ^ (2 : ℕ)) t)
   have hdiffble : Differentiable ℝ
       (fun s : ℝ => f (x + s • (y - x))
-        - (f x + ⟪g x, y - x⟫ * s + L / 2 * ‖y - x‖ ^ 2 * s ^ 2)) :=
+        - (f x + ⟪g x, y - x⟫ * s + L / 2 * ‖y - x‖ ^ (2 : ℕ) * s ^ (2 : ℕ))) :=
     fun t => (hderiv t).differentiableAt
   have hnonpos : ∀ t : ℝ, 0 ≤ t →
       deriv (fun s : ℝ => f (x + s • (y - x))
-        - (f x + ⟪g x, y - x⟫ * s + L / 2 * ‖y - x‖ ^ 2 * s ^ 2)) t ≤ 0 := by
+        - (f x + ⟪g x, y - x⟫ * s + L / 2 * ‖y - x‖ ^ (2 : ℕ) * s ^ (2 : ℕ))) t ≤ 0 := by
     intro t ht
     rw [(hderiv t).deriv]
     have hinner : ⟪g (x + t • (y - x)), y - x⟫ - ⟪g x, y - x⟫
@@ -114,7 +114,7 @@ theorem descent_lemma {f : E → ℝ} {g : E → E} (hg : ∀ z, HasGradientAt f
     nlinarith [hinner, hcs, hL, norm_nonneg (y - x)]
   have hanti : AntitoneOn
       (fun s : ℝ => f (x + s • (y - x))
-        - (f x + ⟪g x, y - x⟫ * s + L / 2 * ‖y - x‖ ^ 2 * s ^ 2)) (Set.Icc 0 1) := by
+        - (f x + ⟪g x, y - x⟫ * s + L / 2 * ‖y - x‖ ^ (2 : ℕ) * s ^ (2 : ℕ))) (Set.Icc 0 1) := by
     refine antitoneOn_of_deriv_nonpos (convex_Icc 0 1) hdiffble.continuous.continuousOn
       hdiffble.differentiableOn ?_
     intro t ht
@@ -133,9 +133,9 @@ theorem descent_lemma {f : E → ℝ} {g : E → E} (hg : ∀ z, HasGradientAt f
 theorem baillon_haddad {f : E → ℝ} {g : E → E} (hg : ∀ z, HasGradientAt f (g z) z)
     (hf : ConvexOn ℝ Set.univ f) {L : ℝ} (hL : 0 < L)
     (hlip : ∀ a b : E, ‖g a - g b‖ ≤ L * ‖a - b‖) (x y : E) :
-    ‖g x - g y‖ ^ 2 ≤ L * ⟪g x - g y, x - y⟫ := by
+    ‖g x - g y‖ ^ (2 : ℕ) ≤ L * ⟪g x - g y, x - y⟫ := by
   have key : ∀ w u : E,
-      f w ≤ f u - ⟪g w, u - w⟫ - 1 / (2 * L) * ‖g u - g w‖ ^ 2 := by
+      f w ≤ f u - ⟪g w, u - w⟫ - 1 / (2 * L) * ‖g u - g w‖ ^ (2 : ℕ) := by
     intro w u
     have hgq : ∀ z : E, HasGradientAt (fun z : E => f z - ⟪g w, z⟫) (g z - g w) z := by
       intro z
@@ -165,16 +165,16 @@ theorem baillon_haddad {f : E → ℝ} {g : E → E} (hg : ∀ z, HasGradientAt 
     have hdesc := descent_lemma hgq hqlip u (u - (1 / L) • (g u - g w))
     rw [show u - (1 / L) • (g u - g w) - u = -((1 / L) • (g u - g w)) by abel] at hdesc
     have hinner : ⟪g u - g w, -((1 / L) • (g u - g w))⟫
-        = -(1 / L) * ‖g u - g w‖ ^ 2 := by
+        = -(1 / L) * ‖g u - g w‖ ^ (2 : ℕ) := by
       rw [inner_neg_right, real_inner_smul_right, real_inner_self_eq_norm_sq]
       ring
-    have hnorm : ‖-((1 / L) • (g u - g w))‖ ^ 2 = (1 / L) ^ 2 * ‖g u - g w‖ ^ 2 := by
+    have hnorm : ‖-((1 / L) • (g u - g w))‖ ^ (2 : ℕ) = (1 / L) ^ (2 : ℕ) * ‖g u - g w‖ ^ (2 : ℕ) := by
       rw [norm_neg, norm_smul, Real.norm_eq_abs, abs_of_nonneg (by positivity), mul_pow]
     rw [hinner, hnorm] at hdesc
     have hchain := (hmin (u - (1 / L) • (g u - g w))).trans hdesc
-    have harith : f u - ⟪g w, u⟫ + -(1 / L) * ‖g u - g w‖ ^ 2
-        + L / 2 * ((1 / L) ^ 2 * ‖g u - g w‖ ^ 2)
-        = f u - ⟪g w, u⟫ - 1 / (2 * L) * ‖g u - g w‖ ^ 2 := by
+    have harith : f u - ⟪g w, u⟫ + -(1 / L) * ‖g u - g w‖ ^ (2 : ℕ)
+        + L / 2 * ((1 / L) ^ (2 : ℕ) * ‖g u - g w‖ ^ (2 : ℕ))
+        = f u - ⟪g w, u⟫ - 1 / (2 * L) * ‖g u - g w‖ ^ (2 : ℕ) := by
       field_simp
       ring
     rw [harith] at hchain
@@ -186,12 +186,12 @@ theorem baillon_haddad {f : E → ℝ} {g : E → E} (hg : ∀ z, HasGradientAt 
   rw [show ⟪g x, y - x⟫ = -⟪g x, x - y⟫ by
     rw [show y - x = -(x - y) by abel, inner_neg_right]] at h1
   have hB : ⟪g x - g y, x - y⟫ = ⟪g x, x - y⟫ - ⟪g y, x - y⟫ := by rw [inner_sub_left]
-  have hsum : 1 / L * ‖g x - g y‖ ^ 2 ≤ ⟪g x - g y, x - y⟫ := by
+  have hsum : 1 / L * ‖g x - g y‖ ^ (2 : ℕ) ≤ ⟪g x - g y, x - y⟫ := by
     rw [hB]
     have hq : 1 / (2 * L) + 1 / (2 * L) = 1 / L := by field_simp; ring
     nlinarith [h1, h2, hq]
   have hmul := mul_le_mul_of_nonneg_left hsum hL.le
-  rw [show L * (1 / L * ‖g x - g y‖ ^ 2) = ‖g x - g y‖ ^ 2 by field_simp] at hmul
+  rw [show L * (1 / L * ‖g x - g y‖ ^ (2 : ℕ)) = ‖g x - g y‖ ^ (2 : ℕ) by field_simp] at hmul
   exact hmul
 
 /-- **The Euclidean input of Corollary 4.6.**  For convex `L`-smooth `f`, the gradient step
@@ -203,22 +203,22 @@ theorem gradientStep_nonexpansive {f : E → ℝ} {g : E → E} (hg : ∀ z, Has
   have hbh := baillon_haddad hg hf hL hlip x y
   have hdecomp : x - τ • g x - (y - τ • g y) = (x - y) - τ • (g x - g y) := by
     rw [smul_sub]; abel
-  have hexp : ‖(x - y) - τ • (g x - g y)‖ ^ 2
-      = ‖x - y‖ ^ 2 - 2 * τ * ⟪x - y, g x - g y⟫ + τ ^ 2 * ‖g x - g y‖ ^ 2 := by
+  have hexp : ‖(x - y) - τ • (g x - g y)‖ ^ (2 : ℕ)
+      = ‖x - y‖ ^ (2 : ℕ) - 2 * τ * ⟪x - y, g x - g y⟫ + τ ^ (2 : ℕ) * ‖g x - g y‖ ^ (2 : ℕ) := by
     rw [norm_sub_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs, mul_pow, sq_abs]
     ring
   have hsymm : ⟪x - y, g x - g y⟫ = ⟪g x - g y, x - y⟫ := real_inner_comm _ _
   have hτL : τ * L ≤ 2 := by rw [le_div_iff₀ hL] at hτ; linarith
-  have hsq : ‖x - τ • g x - (y - τ • g y)‖ ^ 2 ≤ ‖x - y‖ ^ 2 := by
+  have hsq : ‖x - τ • g x - (y - τ • g y)‖ ^ (2 : ℕ) ≤ ‖x - y‖ ^ (2 : ℕ) := by
     rw [hdecomp, hexp, hsymm]
-    have hnn : (0:ℝ) ≤ ‖g x - g y‖ ^ 2 := sq_nonneg _
-    have e1 : 0 ≤ τ * (L * ⟪g x - g y, x - y⟫ - ‖g x - g y‖ ^ 2) :=
+    have hnn : (0:ℝ) ≤ ‖g x - g y‖ ^ (2 : ℕ) := sq_nonneg _
+    have e1 : 0 ≤ τ * (L * ⟪g x - g y, x - y⟫ - ‖g x - g y‖ ^ (2 : ℕ)) :=
       mul_nonneg hτ₀ (by linarith)
-    have e2 : 0 ≤ τ * ((2 - τ * L) * ‖g x - g y‖ ^ 2) :=
+    have e2 : 0 ≤ τ * ((2 - τ * L) * ‖g x - g y‖ ^ (2 : ℕ)) :=
       mul_nonneg hτ₀ (mul_nonneg (by linarith) hnn)
-    have hkey : 0 ≤ L * (2 * τ * ⟪g x - g y, x - y⟫ - τ ^ 2 * ‖g x - g y‖ ^ 2) := by
+    have hkey : 0 ≤ L * (2 * τ * ⟪g x - g y, x - y⟫ - τ ^ (2 : ℕ) * ‖g x - g y‖ ^ (2 : ℕ)) := by
       nlinarith [e1, e2]
-    have h3 : 0 ≤ 2 * τ * ⟪g x - g y, x - y⟫ - τ ^ 2 * ‖g x - g y‖ ^ 2 := by
+    have h3 : 0 ≤ 2 * τ * ⟪g x - g y, x - y⟫ - τ ^ (2 : ℕ) * ‖g x - g y‖ ^ (2 : ℕ) := by
       by_contra hcon
       push Not at hcon
       nlinarith [hkey, hL, hcon]

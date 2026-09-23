@@ -31,24 +31,24 @@ theorem exp_neg_eighteenFifths_lt_oneTwentyFifth :
 /-- Above `A=18/5`, stable-edge power-exponential mass gains factor `12/125`. -/
 theorem thetaSixthScalePowExp_le_twelveOneHundredTwentyFifths_pi_of_18Over5_le
     {A d : ℝ} (hA : (18 / 5 : ℝ) ≤ A) (hd : 8 ≤ d) :
-    A ^ 6 * Real.exp (-A * d) ≤
-      (12 / 125 : ℝ) * Real.pi ^ 6 * Real.exp (-Real.pi * d) := by
+    A ^ (6 : ℕ) * Real.exp (-A * d) ≤
+      (12 / 125 : ℝ) * Real.pi ^ (6 : ℕ) * Real.exp (-Real.pi * d) := by
   have hd0 : 0 < d := by linarith
   have hmono := thetaSixthScalePowExp_le_of_scale_ge
     (a := (18 / 5 : ℝ)) (A := A) (d := d) (by
       apply (div_le_iff₀ hd0).2
       nlinarith) hA hd0
-  have hpi6lo : (3.1415 : ℝ) ^ 6 < Real.pi ^ 6 :=
+  have hpi6lo : (3.1415 : ℝ) ^ (6 : ℕ) < Real.pi ^ (6 : ℕ) :=
     pow_lt_pow_left₀ Real.pi_gt_d4 (by norm_num) (by norm_num)
-  have hscale6 : (18 / 5 : ℝ) ^ 6 < (12 / 5 : ℝ) * Real.pi ^ 6 := by
-    nlinarith [show (18 / 5 : ℝ) ^ 6 <
-      (12 / 5 : ℝ) * (3.1415 : ℝ) ^ 6 by norm_num]
+  have hscale6 : (18 / 5 : ℝ) ^ (6 : ℕ) < (12 / 5 : ℝ) * Real.pi ^ (6 : ℕ) := by
+    nlinarith [show (18 / 5 : ℝ) ^ (6 : ℕ) <
+      (12 / 5 : ℝ) * (3.1415 : ℝ) ^ (6 : ℕ) by norm_num]
   have hdiff : (18 / 5 : ℝ) < (18 / 5 - Real.pi) * d := by
     nlinarith [Real.pi_lt_d4]
   have hextra : Real.exp (-((18 / 5 - Real.pi) * d)) < (1 / 25 : ℝ) :=
     (Real.exp_lt_exp.mpr (by linarith)).trans exp_neg_eighteenFifths_lt_oneTwentyFifth
-  have hbase : (18 / 5 : ℝ) ^ 6 * Real.exp (-(18 / 5 : ℝ) * d) <
-      (12 / 125 : ℝ) * Real.pi ^ 6 * Real.exp (-Real.pi * d) := by
+  have hbase : (18 / 5 : ℝ) ^ (6 : ℕ) * Real.exp (-(18 / 5 : ℝ) * d) <
+      (12 / 125 : ℝ) * Real.pi ^ (6 : ℕ) * Real.exp (-Real.pi * d) := by
     rw [show -(18 / 5 : ℝ) * d =
         -Real.pi * d + -((18 / 5 - Real.pi) * d) by ring,
       Real.exp_add]
@@ -60,7 +60,7 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_twelveOneHundredTwentyFifths_of
     {n : ℕ} (hn : 3 ≤ n) {A B : ℝ} (hA : (18 / 5 : ℝ) ≤ A)
     (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodAtomSixthScoreMass n A B ≤
-      (36 / 125 : ℝ) * Real.pi ^ 6 * thetaCuspReflectionJetTailWeight 6 (n - 2) := by
+      (36 / 125 : ℝ) * Real.pi ^ (6 : ℕ) * thetaCuspReflectionJetTailWeight 6 (n - 2) := by
   let d := thetaCuspLikelihoodGap n
   have hnR : (3 : ℝ) ≤ n := by exact_mod_cast hn
   have hd : 8 ≤ d := by
@@ -86,7 +86,7 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_twelveOneHundredTwentyFifths_of
   have hrayPoly := thetaLikelihoodSixthScoreRayTransformPolynomial_le_two_pow hr0 hr hy
   have hrayPoly' :
       thetaLikelihoodSixthScoreRayTransformPolynomial (A / B) (A * d - 9) ≤
-        2 * (A * d) ^ 6 := by
+        2 * (A * d) ^ (6 : ℕ) := by
     convert hrayPoly using 1
     ring
   have hexp :
@@ -98,16 +98,16 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_twelveOneHundredTwentyFifths_of
   have hpoint :
       thetaCuspLikelihoodAtomWeight n *
           (thetaLikelihoodSixthScore (A * d) * Real.exp (-(B * d))) ≤
-        (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := by
+        (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
     unfold thetaCuspLikelihoodAtomWeight
     calc
-      _ ≤ Real.exp (-(3 / 2 : ℝ) * d) * (n : ℝ) ^ 4 *
-          ((A * d) ^ 6 * Real.exp (-(B * d))) := by gcongr
+      _ ≤ Real.exp (-(3 / 2 : ℝ) * d) * (n : ℝ) ^ (4 : ℕ) *
+          ((A * d) ^ (6 : ℕ) * Real.exp (-(B * d))) := by gcongr
       _ = _ := by
         rw [mul_pow]
-        rw [show Real.exp (-(3 / 2 : ℝ) * d) * (n : ℝ) ^ 4 *
-            (A ^ 6 * d ^ 6 * Real.exp (-(B * d))) =
-          (n : ℝ) ^ 4 * A ^ 6 * d ^ 6 *
+        rw [show Real.exp (-(3 / 2 : ℝ) * d) * (n : ℝ) ^ (4 : ℕ) *
+            (A ^ (6 : ℕ) * d ^ (6 : ℕ) * Real.exp (-(B * d))) =
+          (n : ℝ) ^ (4 : ℕ) * A ^ (6 : ℕ) * d ^ (6 : ℕ) *
             (Real.exp (-(3 / 2 : ℝ) * d) * Real.exp (-(B * d))) by ring,
           hexp]
         ring
@@ -115,25 +115,25 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_twelveOneHundredTwentyFifths_of
       thetaCuspLikelihoodRayWeight n *
           (Real.exp (-(B * d)) / B *
             thetaLikelihoodSixthScoreRayTransformPolynomial (A / B) (A * d - 9)) ≤
-        2 * (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := by
-    have hnd : (n : ℝ) ^ 2 * d ≤ (n : ℝ) ^ 4 := by
+        2 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
+    have hnd : (n : ℝ) ^ (2 : ℕ) * d ≤ (n : ℝ) ^ (4 : ℕ) := by
       dsimp [d, thetaCuspLikelihoodGap]
       nlinarith [sq_nonneg (n : ℝ)]
     unfold thetaCuspLikelihoodRayWeight
     calc
-      _ ≤ Real.exp (-(3 / 2 : ℝ) * d) * (3 / 2 : ℝ) * (n : ℝ) ^ 2 * d *
-          (Real.exp (-(B * d)) / B * (2 * (A * d) ^ 6)) := by gcongr
-      _ = (3 / B) * ((n : ℝ) ^ 2 * d) * d ^ 6 *
-          (A ^ 6 * Real.exp (-A * d)) := by
+      _ ≤ Real.exp (-(3 / 2 : ℝ) * d) * (3 / 2 : ℝ) * (n : ℝ) ^ (2 : ℕ) * d *
+          (Real.exp (-(B * d)) / B * (2 * (A * d) ^ (6 : ℕ))) := by gcongr
+      _ = (3 / B) * ((n : ℝ) ^ (2 : ℕ) * d) * d ^ (6 : ℕ) *
+          (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
         rw [mul_pow]
         rw [show Real.exp (-(3 / 2 : ℝ) * d) * (3 / 2 : ℝ) *
-            (n : ℝ) ^ 2 * d *
-              (Real.exp (-(B * d)) / B * (2 * (A ^ 6 * d ^ 6))) =
-          (3 / B) * ((n : ℝ) ^ 2 * d) * d ^ 6 * A ^ 6 *
+            (n : ℝ) ^ (2 : ℕ) * d *
+              (Real.exp (-(B * d)) / B * (2 * (A ^ (6 : ℕ) * d ^ (6 : ℕ)))) =
+          (3 / B) * ((n : ℝ) ^ (2 : ℕ) * d) * d ^ (6 : ℕ) * A ^ (6 : ℕ) *
             (Real.exp (-(3 / 2 : ℝ) * d) * Real.exp (-(B * d))) by ring,
           hexp]
         ring
-      _ ≤ 2 * (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := by
+      _ ≤ 2 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
         have hthree : 3 / B < 2 := by
           apply (div_lt_iff₀ hB).2
           linarith
@@ -150,13 +150,13 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_twelveOneHundredTwentyFifths_of
         thetaCuspLikelihoodRayWeight n *
           (Real.exp (-(B * d)) / B *
             thetaLikelihoodSixthScoreRayTransformPolynomial (A / B) (A * d - 9)) ≤
-        3 * (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := by
+        3 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
     nlinarith
   calc
-    _ ≤ 3 * (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := hsum
-    _ ≤ 3 * (n : ℝ) ^ 4 * d ^ 6 *
-        ((12 / 125 : ℝ) * Real.pi ^ 6 * Real.exp (-Real.pi * d)) := by gcongr
-    _ = (36 / 125 : ℝ) * Real.pi ^ 6 *
+    _ ≤ 3 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := hsum
+    _ ≤ 3 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) *
+        ((12 / 125 : ℝ) * Real.pi ^ (6 : ℕ) * Real.exp (-Real.pi * d)) := by gcongr
+    _ = (36 / 125 : ℝ) * Real.pi ^ (6 : ℕ) *
         thetaCuspReflectionJetTailWeight 6 (n - 2) := by
       unfold thetaCuspReflectionJetTailWeight
       have hnsub : n - 2 + 2 = n := by omega
@@ -172,34 +172,34 @@ theorem tsum_thetaCuspLikelihoodStableAtomSixthScoreMass_lt_one_of_18Over5_le
     (Real.pi_lt_d4.trans (by norm_num : (3.1416 : ℝ) < 18 / 5)).le.trans hA
   have hs := summable_thetaCuspLikelihoodStableAtomSixthScoreMass hApi hBA
   have hw : Summable (fun k : ℕ =>
-      ((36 / 125 : ℝ) * Real.pi ^ 6) * thetaCuspReflectionJetTailWeight 6 (k + 1)) :=
+      ((36 / 125 : ℝ) * Real.pi ^ (6 : ℕ)) * thetaCuspReflectionJetTailWeight 6 (k + 1)) :=
     ((summable_nat_add_iff 1).2 (summable_thetaCuspReflectionJetTailWeight 6)).mul_left _
   have hsum :
       (∑' k : ℕ, thetaCuspLikelihoodAtomSixthScoreMass (k + 3) A B) ≤
-        (8 / 8325 : ℝ) * Real.pi ^ 6 := by
+        (8 / 8325 : ℝ) * Real.pi ^ (6 : ℕ) := by
     calc
       (∑' k : ℕ, thetaCuspLikelihoodAtomSixthScoreMass (k + 3) A B) ≤
-          ∑' k : ℕ, ((36 / 125 : ℝ) * Real.pi ^ 6) *
+          ∑' k : ℕ, ((36 / 125 : ℝ) * Real.pi ^ (6 : ℕ)) *
             thetaCuspReflectionJetTailWeight 6 (k + 1) := by
         apply Summable.tsum_le_tsum _ hs hw
         intro k
         simpa only [show k + 3 - 2 = k + 1 by omega] using
           thetaCuspLikelihoodAtomSixthScoreMass_le_twelveOneHundredTwentyFifths_of_18Over5_le
             (n := k + 3) (by omega) hA hBA
-      _ = ((36 / 125 : ℝ) * Real.pi ^ 6) *
+      _ = ((36 / 125 : ℝ) * Real.pi ^ (6 : ℕ)) *
           (∑' k : ℕ, thetaCuspReflectionJetTailWeight 6 (k + 1)) := by
         rw [tsum_mul_left]
-      _ ≤ ((36 / 125 : ℝ) * Real.pi ^ 6) * (10 / 2997 : ℝ) := by
+      _ ≤ ((36 / 125 : ℝ) * Real.pi ^ (6 : ℕ)) * (10 / 2997 : ℝ) := by
         gcongr
         exact tsum_thetaCuspReflectionJetTailWeight_six_tail_le
-      _ = (8 / 8325 : ℝ) * Real.pi ^ 6 := by ring
-  have hpi2 : Real.pi ^ 2 < (987 / 100 : ℝ) := by
+      _ = (8 / 8325 : ℝ) * Real.pi ^ (6 : ℕ) := by ring
+  have hpi2 : Real.pi ^ (2 : ℕ) < (987 / 100 : ℝ) := by
     nlinarith [Real.pi_pos, Real.pi_lt_d4]
   have hpow := pow_lt_pow_left₀ hpi2 (sq_nonneg Real.pi) (by norm_num : (3 : ℕ) ≠ 0)
-  have hpi6 : Real.pi ^ 6 < (962 : ℝ) := by
+  have hpi6 : Real.pi ^ (6 : ℕ) < (962 : ℝ) := by
     calc
-      Real.pi ^ 6 = (Real.pi ^ 2) ^ 3 := by ring
-      _ < (987 / 100 : ℝ) ^ 3 := hpow
+      Real.pi ^ (6 : ℕ) = (Real.pi ^ (2 : ℕ)) ^ (3 : ℕ) := by ring
+      _ < (987 / 100 : ℝ) ^ (3 : ℕ) := hpow
       _ < 962 := by norm_num
   nlinarith
 
@@ -213,7 +213,7 @@ def thetaCuspLikelihoodSixthScale18Over5DominantPolynomial (d : ℝ) : ℝ :=
 /-- Sharp rational upper enclosure for `exp (-54/5)`. -/
 theorem exp_neg_fiftyFourFifths_lt_oneOverFortyNineThousand :
     Real.exp (-(54 / 5 : ℝ)) < (1 / 49000 : ℝ) := by
-  have hpow : Real.exp (-1) ^ 10 < (0.3678794412 : ℝ) ^ 10 :=
+  have hpow : Real.exp (-1) ^ (10 : ℕ) < (0.3678794412 : ℝ) ^ (10 : ℕ) :=
     pow_lt_pow_left₀ Real.exp_neg_one_lt_d9 (Real.exp_pos (-1)).le (by norm_num)
   have hfrac : Real.exp (-(4 / 5 : ℝ)) < (899 / 2000 : ℝ) := by
     have he := Real.sum_le_exp_of_nonneg (by norm_num : (0 : ℝ) ≤ 4 / 5) 8
@@ -229,23 +229,23 @@ theorem exp_neg_fiftyFourFifths_lt_oneOverFortyNineThousand :
     nlinarith [Real.exp_pos (-(4 / 5 : ℝ))]
   rw [show (-(54 / 5 : ℝ)) = -10 + -(4 / 5 : ℝ) by norm_num,
     Real.exp_add,
-    show Real.exp (-10) = Real.exp (-1) ^ 10 by
+    show Real.exp (-10) = Real.exp (-1) ^ (10 : ℕ) by
       rw [show (-10 : ℝ) = (10 : ℕ) * (-1 : ℝ) by norm_num,
         Real.exp_nat_mul]]
   nlinarith [Real.exp_pos (-1), Real.exp_pos (-(4 / 5 : ℝ)),
-    show (0.3678794412 : ℝ) ^ 10 * (899 / 2000 : ℝ) < 1 / 49000 by norm_num]
+    show (0.3678794412 : ℝ) ^ (10 : ℕ) * (899 / 2000 : ℝ) < 1 / 49000 by norm_num]
 
 /-- Cleared degree-fifteen certificate for the dominant affine budget. -/
 theorem thetaCuspLikelihoodSixthScale18Over5DominantPolynomial_lt
     {d : ℝ} (hd : 0 ≤ d) (hdhi : d ≤ 43 / 1920) :
-    (1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2) *
+    (1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2) *
         thetaCuspLikelihoodSixthScale18Over5DominantPolynomial d <
       2959 / 10 - 480 * d := by
   have hB : 0 < 21 / 10 + d := by linarith
-  have hmul : (21 / 10 + d) ^ 7 *
-      ((1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2) *
+  have hmul : (21 / 10 + d) ^ (7 : ℕ) *
+      ((1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2) *
         thetaCuspLikelihoodSixthScale18Over5DominantPolynomial d) <
-      (21 / 10 + d) ^ 7 * (2959 / 10 - 480 * d) := by
+      (21 / 10 + d) ^ (7 : ℕ) * (2959 / 10 - 480 * d) := by
     dsimp [thetaCuspLikelihoodSixthScale18Over5DominantPolynomial,
       thetaLikelihoodSixthScoreRayTransformPolynomial,
       thetaLikelihoodSixthScoreShift, thetaLikelihoodSixthScoreShiftDerivOne,
@@ -258,20 +258,20 @@ theorem thetaCuspLikelihoodSixthScale18Over5DominantPolynomial_lt
     ring_nf
     rw [← sub_pos]
     ring_nf
-    have hd2 : d ^ 2 ≤ (43 / 1920 : ℝ) ^ 2 := pow_le_pow_left₀ hd hdhi 2
-    have hd3 : d ^ 3 ≤ (43 / 1920 : ℝ) ^ 3 := pow_le_pow_left₀ hd hdhi 3
-    have hd4 : d ^ 4 ≤ (43 / 1920 : ℝ) ^ 4 := pow_le_pow_left₀ hd hdhi 4
-    have hd5 : d ^ 5 ≤ (43 / 1920 : ℝ) ^ 5 := pow_le_pow_left₀ hd hdhi 5
-    have hd6 : d ^ 6 ≤ (43 / 1920 : ℝ) ^ 6 := pow_le_pow_left₀ hd hdhi 6
-    have hd7 : d ^ 7 ≤ (43 / 1920 : ℝ) ^ 7 := pow_le_pow_left₀ hd hdhi 7
-    have hd8 : d ^ 8 ≤ (43 / 1920 : ℝ) ^ 8 := pow_le_pow_left₀ hd hdhi 8
-    have hd9 : d ^ 9 ≤ (43 / 1920 : ℝ) ^ 9 := pow_le_pow_left₀ hd hdhi 9
-    have hd10 : d ^ 10 ≤ (43 / 1920 : ℝ) ^ 10 := pow_le_pow_left₀ hd hdhi 10
-    have hd11 : d ^ 11 ≤ (43 / 1920 : ℝ) ^ 11 := pow_le_pow_left₀ hd hdhi 11
-    have hd12 : d ^ 12 ≤ (43 / 1920 : ℝ) ^ 12 := pow_le_pow_left₀ hd hdhi 12
-    have hd13 : d ^ 13 ≤ (43 / 1920 : ℝ) ^ 13 := pow_le_pow_left₀ hd hdhi 13
-    have hd14 : d ^ 14 ≤ (43 / 1920 : ℝ) ^ 14 := pow_le_pow_left₀ hd hdhi 14
-    have hd15 : d ^ 15 ≤ (43 / 1920 : ℝ) ^ 15 := pow_le_pow_left₀ hd hdhi 15
+    have hd2 : d ^ (2 : ℕ) ≤ (43 / 1920 : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ hd hdhi 2
+    have hd3 : d ^ (3 : ℕ) ≤ (43 / 1920 : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ hd hdhi 3
+    have hd4 : d ^ (4 : ℕ) ≤ (43 / 1920 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ hd hdhi 4
+    have hd5 : d ^ (5 : ℕ) ≤ (43 / 1920 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hd hdhi 5
+    have hd6 : d ^ (6 : ℕ) ≤ (43 / 1920 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hd hdhi 6
+    have hd7 : d ^ (7 : ℕ) ≤ (43 / 1920 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hd hdhi 7
+    have hd8 : d ^ (8 : ℕ) ≤ (43 / 1920 : ℝ) ^ (8 : ℕ) := pow_le_pow_left₀ hd hdhi 8
+    have hd9 : d ^ (9 : ℕ) ≤ (43 / 1920 : ℝ) ^ (9 : ℕ) := pow_le_pow_left₀ hd hdhi 9
+    have hd10 : d ^ (10 : ℕ) ≤ (43 / 1920 : ℝ) ^ (10 : ℕ) := pow_le_pow_left₀ hd hdhi 10
+    have hd11 : d ^ (11 : ℕ) ≤ (43 / 1920 : ℝ) ^ (11 : ℕ) := pow_le_pow_left₀ hd hdhi 11
+    have hd12 : d ^ (12 : ℕ) ≤ (43 / 1920 : ℝ) ^ (12 : ℕ) := pow_le_pow_left₀ hd hdhi 12
+    have hd13 : d ^ (13 : ℕ) ≤ (43 / 1920 : ℝ) ^ (13 : ℕ) := pow_le_pow_left₀ hd hdhi 13
+    have hd14 : d ^ (14 : ℕ) ≤ (43 / 1920 : ℝ) ^ (14 : ℕ) := pow_le_pow_left₀ hd hdhi 14
+    have hd15 : d ^ (15 : ℕ) ≤ (43 / 1920 : ℝ) ^ (15 : ℕ) := pow_le_pow_left₀ hd hdhi 15
     norm_num at hd2 hd3 hd4 hd5 hd6 hd7 hd8 hd9 hd10 hd11 hd12 hd13 hd14 hd15 ⊢
     nlinarith
   nlinarith [pow_pos hB 7]
@@ -311,10 +311,10 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_lt_scale18Over5_affine
               (A / B) (9 / 5 + 3 * d)) by ring]
     rw [hextract, hAeq, hBeq]
     rfl
-  have hexpd : Real.exp (-(3 * d)) ≤ 1 - 3 * d + (3 * d) ^ 2 / 2 :=
+  have hexpd : Real.exp (-(3 * d)) ≤ 1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2 :=
     exp_neg_le_quadratic (by positivity)
   have hExp : Real.exp (-3 * A) <
-      (1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2) := by
+      (1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2) := by
     calc
       Real.exp (-3 * A) = Real.exp (-(54 / 5 : ℝ)) * Real.exp (-(3 * d)) := by
         rw [← Real.exp_add, hAeq]
@@ -323,7 +323,7 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_lt_scale18Over5_affine
       _ < (1 / 49000 : ℝ) * Real.exp (-(3 * d)) := by
         gcongr
         exact exp_neg_fiftyFourFifths_lt_oneOverFortyNineThousand
-      _ ≤ (1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2) := by gcongr
+      _ ≤ (1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2) := by gcongr
   have hpolypos : 0 < thetaCuspLikelihoodSixthScale18Over5DominantPolynomial d := by
     have hBd : 0 < 21 / 10 + d := by linarith
     dsimp [thetaCuspLikelihoodSixthScale18Over5DominantPolynomial,
@@ -339,7 +339,7 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_lt_scale18Over5_affine
     positivity
   rw [hmassEq]
   calc
-    _ < ((1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2)) *
+    _ < ((1 / 49000 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2)) *
         thetaCuspLikelihoodSixthScale18Over5DominantPolynomial d := by gcongr
     _ < 2959 / 10 - 480 * d := by
       simpa only [mul_assoc] using
@@ -428,7 +428,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_scale18Over5_affine_weigh
     dsimp only [thetaCuspSingleAtomReflectionScale]
     rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
     norm_num
-    rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+    rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have h := thetaCuspLikelihoodSourceLogPartitionJetSix_lt_scale18Over5_affine

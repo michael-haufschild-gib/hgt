@@ -22,7 +22,7 @@ open Finset ArithmeticFunction
 
 /-- At a squarefree argument only `d = 1` has `d² ∣ n`. -/
 theorem filter_sq_dvd_eq_singleton {n : ℕ} (hn : 0 < n) (hsf : Squarefree n) :
-    (Finset.Icc 1 n).filter (fun d => d ^ 2 ∣ n) = {1} := by
+    (Finset.Icc 1 n).filter (fun d => d ^ (2 : ℕ) ∣ n) = {1} := by
   classical
   ext d
   simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_singleton]
@@ -35,13 +35,13 @@ theorem filter_sq_dvd_eq_singleton {n : ℕ} (hn : 0 < n) (hsf : Squarefree n) :
 
 /-- **The divisor sum is `1` at a squarefree argument.** -/
 theorem sum_moebius_sq_dvd_of_squarefree {n : ℕ} (hn : 0 < n) (hsf : Squarefree n) :
-    ∑ d ∈ (Finset.Icc 1 n).filter (fun d => d ^ 2 ∣ n), ((moebius d : ℤ) : ℝ) = 1 := by
+    ∑ d ∈ (Finset.Icc 1 n).filter (fun d => d ^ (2 : ℕ) ∣ n), ((moebius d : ℤ) : ℝ) = 1 := by
   rw [filter_sq_dvd_eq_singleton hn hsf, Finset.sum_singleton]
   simp
 
 /-- **`μ²` is the squarefree indicator.** -/
 theorem moebius_sq_eq_indicator (n : ℕ) :
-    ((moebius n : ℤ) : ℝ) ^ 2 = if Squarefree n then 1 else 0 := by
+    ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) = if Squarefree n then 1 else 0 := by
   classical
   by_cases hsf : Squarefree n
   · rw [if_pos hsf]
@@ -56,7 +56,7 @@ theorem moebius_sq_eq_indicator (n : ℕ) :
 
 /-- The squarefree count of a window is the sum of `μ²`. -/
 theorem sum_moebius_sq_eq_card (t L : ℕ) :
-    ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+    ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
       = (((Finset.Ioc t (t + L)).filter (fun n => Squarefree n)).card : ℝ) := by
   classical
   rw [Finset.sum_congr rfl fun n _ => moebius_sq_eq_indicator n, ← Finset.sum_filter,

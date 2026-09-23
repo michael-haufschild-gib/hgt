@@ -14,7 +14,7 @@ noncomputable section
 
 /-- The scaled two-mass Fisher shape for the fixed pair of collision rates. -/
 def egbFixedChargeAGibbsCollisionFisherShape (x y : ℝ) : ℝ :=
-  (25 / 36 : ℝ) * x * y / (x + y) ^ 2
+  (25 / 36 : ℝ) * x * y / (x + y) ^ (2 : ℕ)
 
 /-- The actual collision Fisher value is the two-mass shape of its positive source atoms. -/
 theorem egbFixedChargeAGibbsCollisionFisherValue_two_mass (n m : ℕ) (β : ℝ)
@@ -29,11 +29,11 @@ theorem egbFixedChargeAGibbsCollisionFisherValue_two_mass (n m : ℕ) (β : ℝ)
   change 4 * ((25 / 144 : ℝ) * (1 / 81 : ℝ) ^ (m + 1) *
       egbFixedChargeAGibbsSlowModeEnergy n β E * egbFixedChargeAGibbsFastModeEnergy n β E) /
       ((4 / 9 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E +
-        (1 / 36 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ 2 =
+        (1 / 36 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ (2 : ℕ) =
     (25 / 36 : ℝ) * ((4 / 9 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E) *
       ((1 / 36 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) /
       ((4 / 9 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsSlowModeEnergy n β E +
-        (1 / 36 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ 2
+        (1 / 36 : ℝ) ^ (m + 1) * egbFixedChargeAGibbsFastModeEnergy n β E) ^ (2 : ℕ)
   rw [show (1 / 81 : ℝ) = (4 / 9 : ℝ) * (1 / 36 : ℝ) by norm_num, mul_pow]
   ring
 
@@ -45,7 +45,7 @@ private theorem shape_step_signs (x y : ℝ) (hx : 0 < x) (hy : 0 < y) :
     (egbFixedChargeAGibbsCollisionFisherShape ((4 / 9 : ℝ) * x) ((1 / 36 : ℝ) * y) =
       egbFixedChargeAGibbsCollisionFisherShape x y ↔ y = 4 * x) := by
   let c : ℝ := (125 / 15552 : ℝ) * x * y * (y + 4 * x) /
-    ((x + y) ^ 2 * ((4 / 9 : ℝ) * x + (1 / 36 : ℝ) * y) ^ 2)
+    ((x + y) ^ (2 : ℕ) * ((4 / 9 : ℝ) * x + (1 / 36 : ℝ) * y) ^ (2 : ℕ))
   have hc : 0 < c := by dsimp [c]; positivity
   have hsum : x + y ≠ 0 := (show 0 < x + y by positivity).ne'
   have hsum' : (4 / 9 : ℝ) * x + (1 / 36 : ℝ) * y ≠ 0 :=

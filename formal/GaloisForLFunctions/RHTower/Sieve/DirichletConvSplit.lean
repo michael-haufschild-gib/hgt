@@ -25,12 +25,12 @@ open MeasureTheory Finset
 theorem integral_Icc_normSq_dirConv_split (N₁ N₂ : ℕ) (p : Fin N₁ → ℂ) (q : Fin N₂ → ℂ)
     {T V Bf Bg : ℝ} (hBf : ∀ t : ℝ, ‖dirPoly N₁ p t‖ ≤ Bf)
     (hBg : ∀ t : ℝ, ‖dirPoly N₂ q t‖ ≤ Bg) :
-    (∫ t in Set.Icc (-T) T, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ 2)
-      ≤ V ^ 2 * (∫ t in Set.Icc (-T) T, ‖dirPoly N₁ p t‖ ^ 2)
-        + Bf ^ 2 * Bg ^ 2
+    (∫ t in Set.Icc (-T) T, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ (2 : ℕ))
+      ≤ V ^ (2 : ℕ) * (∫ t in Set.Icc (-T) T, ‖dirPoly N₁ p t‖ ^ (2 : ℕ))
+        + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
             * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N₂ q t‖} := by
-  have hfac : ∀ t : ℝ, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ 2
-      = ‖dirPoly N₁ p t‖ ^ 2 * ‖dirPoly N₂ q t‖ ^ 2 := by
+  have hfac : ∀ t : ℝ, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ (2 : ℕ)
+      = ‖dirPoly N₁ p t‖ ^ (2 : ℕ) * ‖dirPoly N₂ q t‖ ^ (2 : ℕ) := by
     intro t
     rw [← dirPoly_mul_eq_dirPoly N₁ N₂ p q t, norm_mul, mul_pow]
   simp only [hfac]
@@ -41,30 +41,30 @@ the mean value theorem; the short one pays the sixth moment of its exceptional s
 theorem integral_Icc_normSq_dirConv_le (N₁ N₂ : ℕ) (p : Fin N₁ → ℂ) (q : Fin N₂ → ℂ)
     {T V Bf Bg D : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V)
     (hBf : ∀ t : ℝ, ‖dirPoly N₁ p t‖ ≤ Bf) (hBg : ∀ t : ℝ, ‖dirPoly N₂ q t‖ ≤ Bg)
-    (hD : ∀ j : Fin (N₂ ^ 3), ((cubeFibre N₂ j).card : ℝ) ≤ D) :
-    V ^ 6 * (∫ t in Set.Icc (-T) T, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ 2)
-      ≤ V ^ 8 * (2 * ((T + 4 * (N₁ : ℝ) * (1 + Real.log N₁)) * ∑ j : Fin N₁, ‖p j‖ ^ 2))
-        + Bf ^ 2 * Bg ^ 2
-            * (2 * ((T + 4 * ((N₂ ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N₂ ^ 3 : ℕ) : ℝ)))
-                * (D * (∑ k : Fin N₂, ‖q k‖ ^ 2) ^ 3))) := by
+    (hD : ∀ j : Fin (N₂ ^ (3 : ℕ)), ((cubeFibre N₂ j).card : ℝ) ≤ D) :
+    V ^ (6 : ℕ) * (∫ t in Set.Icc (-T) T, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ (2 : ℕ))
+      ≤ V ^ (8 : ℕ) * (2 * ((T + 4 * (N₁ : ℝ) * (1 + Real.log N₁)) * ∑ j : Fin N₁, ‖p j‖ ^ (2 : ℕ)))
+        + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
+            * (2 * ((T + 4 * ((N₂ ^ (3 : ℕ) : ℕ) : ℝ) * (1 + Real.log ((N₂ ^ (3 : ℕ) : ℕ) : ℝ)))
+                * (D * (∑ k : Fin N₂, ‖q k‖ ^ (2 : ℕ)) ^ (3 : ℕ)))) := by
   have hsplit := integral_Icc_normSq_dirConv_split N₁ N₂ p q (V := V) (T := T) hBf hBg
-  have hV6 : (0 : ℝ) ≤ V ^ 6 := by positivity
-  have hV8 : (0 : ℝ) ≤ V ^ 8 := by positivity
-  have hK : (0 : ℝ) ≤ Bf ^ 2 * Bg ^ 2 := by positivity
+  have hV6 : (0 : ℝ) ≤ V ^ (6 : ℕ) := by positivity
+  have hV8 : (0 : ℝ) ≤ V ^ (8 : ℕ) := by positivity
+  have hK : (0 : ℝ) ≤ Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ) := by positivity
   have hlong := integral_Icc_normSq_dirPoly_symm_le N₁ p hT
   have hshort := volume_largeValues_sixth_symm_le N₂ q hT hV hD
-  have hmul' : V ^ 6 * (∫ t in Set.Icc (-T) T, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ 2)
-      ≤ V ^ 8 * (∫ t in Set.Icc (-T) T, ‖dirPoly N₁ p t‖ ^ 2)
-        + Bf ^ 2 * Bg ^ 2
-            * (V ^ 6 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N₂ q t‖}) := by
-    calc V ^ 6 * (∫ t in Set.Icc (-T) T, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ 2)
-        ≤ V ^ 6 * (V ^ 2 * (∫ t in Set.Icc (-T) T, ‖dirPoly N₁ p t‖ ^ 2)
-            + Bf ^ 2 * Bg ^ 2
+  have hmul' : V ^ (6 : ℕ) * (∫ t in Set.Icc (-T) T, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ (2 : ℕ))
+      ≤ V ^ (8 : ℕ) * (∫ t in Set.Icc (-T) T, ‖dirPoly N₁ p t‖ ^ (2 : ℕ))
+        + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
+            * (V ^ (6 : ℕ) * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N₂ q t‖}) := by
+    calc V ^ (6 : ℕ) * (∫ t in Set.Icc (-T) T, ‖dirPoly (N₁ * N₂) (dirConv N₁ N₂ p q) t‖ ^ (2 : ℕ))
+        ≤ V ^ (6 : ℕ) * (V ^ (2 : ℕ) * (∫ t in Set.Icc (-T) T, ‖dirPoly N₁ p t‖ ^ (2 : ℕ))
+            + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
                 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N₂ q t‖}) :=
           mul_le_mul_of_nonneg_left hsplit hV6
-      _ = V ^ 8 * (∫ t in Set.Icc (-T) T, ‖dirPoly N₁ p t‖ ^ 2)
-            + Bf ^ 2 * Bg ^ 2
-                * (V ^ 6 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N₂ q t‖}) := by
+      _ = V ^ (8 : ℕ) * (∫ t in Set.Icc (-T) T, ‖dirPoly N₁ p t‖ ^ (2 : ℕ))
+            + Bf ^ (2 : ℕ) * Bg ^ (2 : ℕ)
+                * (V ^ (6 : ℕ) * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N₂ q t‖}) := by
           ring
   have hlong' := mul_le_mul_of_nonneg_left hlong hV8
   have hshort' := mul_le_mul_of_nonneg_left hshort hK

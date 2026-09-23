@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.ZetaLineIndexBridge
 
 Feeding the derivative-test bound through the truncation gives a bound on `ζ(1 + it)` itself.  The
 two tail terms of the truncation are `1/t` and `‖1 + it‖ / M`, and the truncation point `M` exceeds
-`(t/8π)^3 - 1`, so both are explicit and tend to zero while the head is `o (log t)`.
+`(t/8π)^(3 : ℕ) - 1`, so both are explicit and tend to zero while the head is `o (log t)`.
 -/
 
 namespace RHTower.Sieve
@@ -28,7 +28,7 @@ theorem lineTruncation_add_one (t : ℝ) : lineTruncation t + 1 = 2 ^ (topExpone
   have h2 : 1 ≤ 2 ^ (topExponent t + 1) := Nat.one_le_two_pow
   omega
 
-/-- The truncation point exceeds `(t/8π)^3 - 1`. -/
+/-- The truncation point exceeds `(t/8π)^(3 : ℕ) - 1`. -/
 theorem cube_sub_one_le_lineTruncation {t : ℝ} (ht : 8 * Real.pi ≤ t) :
     (t / (8 * Real.pi)) ^ (3 : ℕ) - 1 ≤ ((lineTruncation t : ℕ) : ℝ) := by
   have h2 := lineTruncation_add_one t

@@ -33,7 +33,7 @@ noncomputable section
 
 /-- The scattering density of one zero `ρ = β + iγ` at the spectral point `r`. -/
 def zeroKernel (β γ r : ℝ) : ℝ :=
-  (1 / (2 * π)) * ((1 - β) / ((1 - β) ^ 2 + (2 * r - γ) ^ 2) + β / (β ^ 2 + (2 * r - γ) ^ 2))
+  (1 / (2 * π)) * ((1 - β) / ((1 - β) ^ (2 : ℕ) + (2 * r - γ) ^ (2 : ℕ)) + β / (β ^ (2 : ℕ) + (2 * r - γ) ^ (2 : ℕ)))
 
 theorem zeroKernel_nonneg {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) (γ r : ℝ) : 0 ≤ zeroKernel β γ r := by
   unfold zeroKernel
@@ -45,12 +45,12 @@ theorem zeroKernel_le_peak {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) (γ r : �
     zeroKernel β γ r ≤ (1 / (2 * π)) * (1 / (1 - β) + 1 / β) := by
   unfold zeroKernel
   have h1 : 0 < 1 - β := sub_pos.mpr hβ1
-  have hA : (1 - β) / ((1 - β) ^ 2 + (2 * r - γ) ^ 2) ≤ 1 / (1 - β) := by
-    calc (1 - β) / ((1 - β) ^ 2 + (2 * r - γ) ^ 2) ≤ (1 - β) / (1 - β) ^ 2 :=
+  have hA : (1 - β) / ((1 - β) ^ (2 : ℕ) + (2 * r - γ) ^ (2 : ℕ)) ≤ 1 / (1 - β) := by
+    calc (1 - β) / ((1 - β) ^ (2 : ℕ) + (2 * r - γ) ^ (2 : ℕ)) ≤ (1 - β) / (1 - β) ^ (2 : ℕ) :=
           div_le_div_of_nonneg_left h1.le (pow_pos h1 2) (le_add_of_nonneg_right (sq_nonneg _))
       _ = 1 / (1 - β) := by field_simp
-  have hB : β / (β ^ 2 + (2 * r - γ) ^ 2) ≤ 1 / β := by
-    calc β / (β ^ 2 + (2 * r - γ) ^ 2) ≤ β / β ^ 2 :=
+  have hB : β / (β ^ (2 : ℕ) + (2 * r - γ) ^ (2 : ℕ)) ≤ 1 / β := by
+    calc β / (β ^ (2 : ℕ) + (2 * r - γ) ^ (2 : ℕ)) ≤ β / β ^ (2 : ℕ) :=
           div_le_div_of_nonneg_left hβ0.le (pow_pos hβ0 2) (le_add_of_nonneg_right (sq_nonneg _))
       _ = 1 / β := by field_simp
   have hpi : (0 : ℝ) ≤ 1 / (2 * π) := by positivity
@@ -58,17 +58,17 @@ theorem zeroKernel_le_peak {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) (γ r : �
 
 /-- The kernel floor `K_ρ ≥ (1/2π)/(1 + (2r−γ)²)`, uniform in `β ∈ [0,1]`. -/
 theorem zeroKernel_ge {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) (γ r : ℝ) :
-    (1 / (2 * π)) / (1 + (2 * r - γ) ^ 2) ≤ zeroKernel β γ r := by
+    (1 / (2 * π)) / (1 + (2 * r - γ) ^ (2 : ℕ)) ≤ zeroKernel β γ r := by
   unfold zeroKernel
   have h1 : 0 < 1 - β := sub_pos.mpr hβ1
-  have hA : (1 - β) / (1 + (2 * r - γ) ^ 2) ≤ (1 - β) / ((1 - β) ^ 2 + (2 * r - γ) ^ 2) :=
+  have hA : (1 - β) / (1 + (2 * r - γ) ^ (2 : ℕ)) ≤ (1 - β) / ((1 - β) ^ (2 : ℕ) + (2 * r - γ) ^ (2 : ℕ)) :=
     div_le_div_of_nonneg_left h1.le (add_pos_of_pos_of_nonneg (pow_pos h1 2) (sq_nonneg _))
       (by nlinarith)
-  have hB : β / (1 + (2 * r - γ) ^ 2) ≤ β / (β ^ 2 + (2 * r - γ) ^ 2) :=
+  have hB : β / (1 + (2 * r - γ) ^ (2 : ℕ)) ≤ β / (β ^ (2 : ℕ) + (2 * r - γ) ^ (2 : ℕ)) :=
     div_le_div_of_nonneg_left hβ0.le (add_pos_of_pos_of_nonneg (pow_pos hβ0 2) (sq_nonneg _))
       (by nlinarith)
-  have hsum : (1 / (2 * π)) / (1 + (2 * r - γ) ^ 2)
-      = (1 / (2 * π)) * ((1 - β) / (1 + (2 * r - γ) ^ 2) + β / (1 + (2 * r - γ) ^ 2)) := by
+  have hsum : (1 / (2 * π)) / (1 + (2 * r - γ) ^ (2 : ℕ))
+      = (1 / (2 * π)) * ((1 - β) / (1 + (2 * r - γ) ^ (2 : ℕ)) + β / (1 + (2 * r - γ) ^ (2 : ℕ))) := by
     rw [← add_div, sub_add_cancel, div_eq_mul_one_div]
   rw [hsum]
   have hpi : (0 : ℝ) ≤ 1 / (2 * π) := by positivity
@@ -121,7 +121,7 @@ theorem ledgerWeight_ge_of_support {h : ℝ → ℝ} (hh : Integrable h) (hpos :
   · rw [hr]
     simp
   · have hle := hsupp r hr
-    have hsq : (2 * r - γ) ^ 2 ≤ 25 / 4 := by
+    have hsq : (2 * r - γ) ^ (2 : ℕ) ≤ 25 / 4 := by
       have h1 : |2 * r - γ| ≤ 5 / 2 := by
         calc |2 * r - γ| = |2 * (r - r₀) + (2 * r₀ - γ)| := by ring_nf
           _ ≤ |2 * (r - r₀)| + |2 * r₀ - γ| := abs_add_le _ _

@@ -68,20 +68,20 @@ theorem re_ofReal_add_ofReal_mul_I (a b : ℝ) :
 
 /-- `u₊² = (x0² − d²) + 2x0·d·i`. -/
 theorem packetPoint_sq (x0 d : ℝ) :
-    packetPoint x0 d ^ 2
-      = ((x0 ^ 2 - d ^ 2 : ℝ) : ℂ) + ((2 * x0 * d : ℝ) : ℂ) * Complex.I := by
+    packetPoint x0 d ^ (2 : ℕ)
+      = ((x0 ^ (2 : ℕ) - d ^ (2 : ℕ) : ℝ) : ℂ) + ((2 * x0 * d : ℝ) : ℂ) * Complex.I := by
   unfold packetPoint
   push_cast
-  linear_combination (d : ℂ) ^ 2 * Complex.I_sq
+  linear_combination (d : ℂ) ^ (2 : ℕ) * Complex.I_sq
 
 /-- `u₊³ = (x0³ − 3x0·d²) + (3x0²·d − d³)·i`. -/
 theorem packetPoint_cube (x0 d : ℝ) :
-    packetPoint x0 d ^ 3
-      = ((x0 ^ 3 - 3 * x0 * d ^ 2 : ℝ) : ℂ)
-        + ((3 * x0 ^ 2 * d - d ^ 3 : ℝ) : ℂ) * Complex.I := by
+    packetPoint x0 d ^ (3 : ℕ)
+      = ((x0 ^ (3 : ℕ) - 3 * x0 * d ^ (2 : ℕ) : ℝ) : ℂ)
+        + ((3 * x0 ^ (2 : ℕ) * d - d ^ (3 : ℕ) : ℝ) : ℂ) * Complex.I := by
   unfold packetPoint
   push_cast
-  linear_combination (3 * (x0 : ℂ) * (d : ℂ) ^ 2 + (d : ℂ) ^ 3 * Complex.I) * Complex.I_sq
+  linear_combination (3 * (x0 : ℂ) * (d : ℂ) ^ (2 : ℕ) + (d : ℂ) ^ (3 : ℕ) * Complex.I) * Complex.I_sq
 
 /-- `h₀₀ = 2m·x0`. -/
 theorem packetMoment_zero_zero (m x0 d : ℝ) : packetMoment m x0 d 0 0 = 2 * m * x0 := by
@@ -90,19 +90,19 @@ theorem packetMoment_zero_zero (m x0 d : ℝ) : packetMoment m x0 d 0 0 = 2 * m 
 
 /-- `h₀₁ = 2m·(x0² − d²)`. -/
 theorem packetMoment_zero_one (m x0 d : ℝ) :
-    packetMoment m x0 d 0 1 = 2 * m * (x0 ^ 2 - d ^ 2) := by
+    packetMoment m x0 d 0 1 = 2 * m * (x0 ^ (2 : ℕ) - d ^ (2 : ℕ)) := by
   unfold packetMoment
   rw [show (0 : ℕ) + 1 + 1 = 2 from rfl, packetPoint_sq, re_ofReal_add_ofReal_mul_I]
 
 /-- `h₁₀ = 2m·(x0² − d²)`. -/
 theorem packetMoment_one_zero (m x0 d : ℝ) :
-    packetMoment m x0 d 1 0 = 2 * m * (x0 ^ 2 - d ^ 2) := by
+    packetMoment m x0 d 1 0 = 2 * m * (x0 ^ (2 : ℕ) - d ^ (2 : ℕ)) := by
   unfold packetMoment
   rw [show (1 : ℕ) + 0 + 1 = 2 from rfl, packetPoint_sq, re_ofReal_add_ofReal_mul_I]
 
 /-- `h₁₁ = 2m·(x0³ − 3x0·d²)`. -/
 theorem packetMoment_one_one (m x0 d : ℝ) :
-    packetMoment m x0 d 1 1 = 2 * m * (x0 ^ 3 - 3 * x0 * d ^ 2) := by
+    packetMoment m x0 d 1 1 = 2 * m * (x0 ^ (3 : ℕ) - 3 * x0 * d ^ (2 : ℕ)) := by
   unfold packetMoment
   rw [show (1 : ℕ) + 1 + 1 = 3 from rfl, packetPoint_cube, re_ofReal_add_ofReal_mul_I]
 
@@ -115,8 +115,8 @@ def packetHankel (m x0 d : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
 /-- Normal form of the packet Hankel matrix. -/
 theorem packetHankel_eq (m x0 d : ℝ) :
     packetHankel m x0 d
-      = !![2 * m * x0, 2 * m * (x0 ^ 2 - d ^ 2);
-           2 * m * (x0 ^ 2 - d ^ 2), 2 * m * (x0 ^ 3 - 3 * x0 * d ^ 2)] := by
+      = !![2 * m * x0, 2 * m * (x0 ^ (2 : ℕ) - d ^ (2 : ℕ));
+           2 * m * (x0 ^ (2 : ℕ) - d ^ (2 : ℕ)), 2 * m * (x0 ^ (3 : ℕ) - 3 * x0 * d ^ (2 : ℕ))] := by
   ext i j
   fin_cases i <;> fin_cases j
   all_goals
@@ -131,7 +131,7 @@ def collisionShadow (m x0 : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
 /-- Normal form of the collision shadow. -/
 theorem collisionShadow_eq (m x0 : ℝ) :
     collisionShadow m x0
-      = !![2 * m * x0, 2 * m * x0 ^ 2; 2 * m * x0 ^ 2, 2 * m * x0 ^ 3] := by
+      = !![2 * m * x0, 2 * m * x0 ^ (2 : ℕ); 2 * m * x0 ^ (2 : ℕ), 2 * m * x0 ^ (3 : ℕ)] := by
   ext i j
   fin_cases i <;> fin_cases j
   all_goals simp [collisionShadow]
@@ -145,7 +145,7 @@ def hankelDefect (m x0 d : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
 enters the 2×2 moment matrix only through `d²`, in a fixed matrix shape independent of the
 sign of `d`. -/
 theorem hankelDefect_eq (m x0 d : ℝ) :
-    hankelDefect m x0 d = (-(2 * m * d ^ 2)) • !![0, 1; 1, 3 * x0] := by
+    hankelDefect m x0 d = (-(2 * m * d ^ (2 : ℕ))) • !![0, 1; 1, 3 * x0] := by
   rw [hankelDefect, packetHankel_eq, collisionShadow_eq]
   ext i j
   fin_cases i <;> fin_cases j
@@ -172,7 +172,7 @@ theorem collisionShadow_mulVec_kernelVector (m x0 : ℝ) :
 /-- **Kernel-direction value**: `pᵀ H₂ p = −2m·x0·d²` for `p = (−x0, 1)`. Along the shadow
 kernel the whole quadratic form of `H₂` is carried by the defect. -/
 theorem kernelVector_quadForm (m x0 d : ℝ) :
-    ![-x0, 1] ⬝ᵥ (packetHankel m x0 d).mulVec ![-x0, 1] = -(2 * m * x0 * d ^ 2) := by
+    ![-x0, 1] ⬝ᵥ (packetHankel m x0 d).mulVec ![-x0, 1] = -(2 * m * x0 * d ^ (2 : ℕ)) := by
   rw [packetHankel_eq]
   simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two]
   ring
@@ -181,17 +181,17 @@ theorem kernelVector_quadForm (m x0 d : ℝ) :
 
 /-- **Determinant, explicit form**: `det H₂ = −4m²·d²·(x0² + d²)`. -/
 theorem packetHankel_det (m x0 d : ℝ) :
-    (packetHankel m x0 d).det = -(4 * m ^ 2 * d ^ 2 * (x0 ^ 2 + d ^ 2)) := by
+    (packetHankel m x0 d).det = -(4 * m ^ (2 : ℕ) * d ^ (2 : ℕ) * (x0 ^ (2 : ℕ) + d ^ (2 : ℕ))) := by
   rw [packetHankel_eq, Matrix.det_fin_two_of]
   ring
 
 /-- The pair window `W̃ = (X − x0)² + d²`: the monic real quadratic vanishing at the packet
 points `u₊, u₋`. -/
-def pairWindow (x0 d : ℝ) : Polynomial ℝ := (X - C x0) ^ 2 + C (d ^ 2)
+def pairWindow (x0 d : ℝ) : Polynomial ℝ := (X - C x0) ^ (2 : ℕ) + C (d ^ (2 : ℕ))
 
 /-- Monic quadratic coefficients: `W̃ = X² + (−2x0)·X + (x0² + d²)`. -/
 theorem pairWindow_eq (x0 d : ℝ) :
-    pairWindow x0 d = X ^ 2 + C (-(2 * x0)) * X + C (x0 ^ 2 + d ^ 2) := by
+    pairWindow x0 d = X ^ (2 : ℕ) + C (-(2 * x0)) * X + C (x0 ^ (2 : ℕ) + d ^ (2 : ℕ)) := by
   unfold pairWindow
   simp only [map_add, map_pow, map_neg, map_mul, map_ofNat]
   ring
@@ -201,16 +201,16 @@ theorem pairWindow_aeval_packetPoint (x0 d : ℝ) :
     Polynomial.aeval (packetPoint x0 d) (pairWindow x0 d) = 0 := by
   simp only [pairWindow, packetPoint, map_add, map_sub, map_pow, Polynomial.aeval_X,
     Polynomial.aeval_C, Complex.coe_algebraMap]
-  linear_combination ((d : ℂ) ^ 2) * Complex.I_sq
+  linear_combination ((d : ℂ) ^ (2 : ℕ)) * Complex.I_sq
 
 /-- Window value at the origin: `W̃(0) = x0² + d²`. -/
 theorem pairWindow_eval_zero (x0 d : ℝ) :
-    (pairWindow x0 d).eval 0 = x0 ^ 2 + d ^ 2 := by
+    (pairWindow x0 d).eval 0 = x0 ^ (2 : ℕ) + d ^ (2 : ℕ) := by
   simp [pairWindow, eval_pow]
 
 /-- Discriminant of the pair window in its monic coefficients: `disc(W̃) = −4d²`. -/
 theorem discrim_pairWindow (x0 d : ℝ) :
-    discrim 1 (-(2 * x0)) (x0 ^ 2 + d ^ 2) = -(4 * d ^ 2) := by
+    discrim 1 (-(2 * x0)) (x0 ^ (2 : ℕ) + d ^ (2 : ℕ)) = -(4 * d ^ (2 : ℕ)) := by
   rw [discrim]
   ring
 
@@ -219,7 +219,7 @@ packet Hankel matrix is the pair mass squared times the window value at the orig
 window discriminant. -/
 theorem packetHankel_det_eq_mass_mul_window_mul_discrim (m x0 d : ℝ) :
     (packetHankel m x0 d).det
-      = m ^ 2 * (pairWindow x0 d).eval 0 * discrim 1 (-(2 * x0)) (x0 ^ 2 + d ^ 2) := by
+      = m ^ (2 : ℕ) * (pairWindow x0 d).eval 0 * discrim 1 (-(2 * x0)) (x0 ^ (2 : ℕ) + d ^ (2 : ℕ)) := by
   rw [packetHankel_det, pairWindow_eval_zero, discrim_pairWindow]
   ring
 
@@ -231,10 +231,10 @@ indefinite. -/
 theorem packetHankel_det_neg (m x0 d : ℝ) (hm : m ≠ 0) (hd : d ≠ 0) :
     (packetHankel m x0 d).det < 0 := by
   rw [packetHankel_det]
-  have hm2 : 0 < m ^ 2 := lt_of_le_of_ne (sq_nonneg m) (Ne.symm (pow_ne_zero 2 hm))
-  have hd2 : 0 < d ^ 2 := lt_of_le_of_ne (sq_nonneg d) (Ne.symm (pow_ne_zero 2 hd))
-  have hx : 0 < x0 ^ 2 + d ^ 2 := add_pos_of_nonneg_of_pos (sq_nonneg x0) hd2
-  have h4 : 0 < 4 * m ^ 2 * d ^ 2 * (x0 ^ 2 + d ^ 2) :=
+  have hm2 : 0 < m ^ (2 : ℕ) := lt_of_le_of_ne (sq_nonneg m) (Ne.symm (pow_ne_zero 2 hm))
+  have hd2 : 0 < d ^ (2 : ℕ) := lt_of_le_of_ne (sq_nonneg d) (Ne.symm (pow_ne_zero 2 hd))
+  have hx : 0 < x0 ^ (2 : ℕ) + d ^ (2 : ℕ) := add_pos_of_nonneg_of_pos (sq_nonneg x0) hd2
+  have h4 : 0 < 4 * m ^ (2 : ℕ) * d ^ (2 : ℕ) * (x0 ^ (2 : ℕ) + d ^ (2 : ℕ)) :=
     mul_pos (mul_pos (mul_pos (by norm_num : (0 : ℝ) < 4) hm2) hd2) hx
   linarith
 
@@ -258,9 +258,9 @@ theorem collisionShadow_posSemidef (m x0 : ℝ) (hm : 0 ≤ m) (hx : 0 ≤ x0) :
     all_goals simp [Matrix.conjTranspose_apply]
   · have hsv : star v = v := by funext i; simp
     rw [hsv, collisionShadow_eq]
-    have hq : v ⬝ᵥ (!![2 * m * x0, 2 * m * x0 ^ 2;
-        2 * m * x0 ^ 2, 2 * m * x0 ^ 3]).mulVec v
-        = 2 * (m * x0) * (v 0 + x0 * v 1) ^ 2 := by
+    have hq : v ⬝ᵥ (!![2 * m * x0, 2 * m * x0 ^ (2 : ℕ);
+        2 * m * x0 ^ (2 : ℕ), 2 * m * x0 ^ (3 : ℕ)]).mulVec v
+        = 2 * (m * x0) * (v 0 + x0 * v 1) ^ (2 : ℕ) := by
       simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two]
       ring
     rw [hq]

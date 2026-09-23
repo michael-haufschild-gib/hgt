@@ -399,7 +399,7 @@ theorem exactBlockEncoding_complexEvenOddDoubleAverageProjectedBlockGate {a n : 
   exact (hAvg.block_entry i j).trans (congrFun (congrFun htarget i) j)
 
 @[simp]
-theorem ancillaBlock_tensor {N : Nat} (a b : Fin (2 ^ 1))
+theorem ancillaBlock_tensor {N : Nat} (a b : Fin (2 ^ (1 : ℕ)))
     (G : Gate (Qubits 1)) (K : Gate (Qubits N)) :
     ancillaBlock a b (Gate.tensor G K) =
       G a b • (K : HilbertOperator (Qubits N)) := by
@@ -407,7 +407,7 @@ theorem ancillaBlock_tensor {N : Nat} (a b : Fin (2 ^ 1))
   simp [ancillaBlock, Gate.tensor_apply, smul_eq_mul]
 
 @[simp]
-theorem ancillaBlock_liftSignalGate {N : Nat} (a b : Fin (2 ^ 1))
+theorem ancillaBlock_liftSignalGate {N : Nat} (a b : Fin (2 ^ (1 : ℕ)))
     (U : Gate (Qubits N)) :
     ancillaBlock a b (liftSignalGate U) =
       (if a = b then (U : HilbertOperator (Qubits N)) else 0) := by
@@ -535,7 +535,7 @@ theorem projectorPhaseGate_zero {N : Nat} (P : OrthogonalProjector N) :
   rw [hsum, HilbertOperator.one_tensor_one]
 
 @[simp]
-theorem ancillaBlock_projectorPhaseGate {N : Nat} (a b : Fin (2 ^ 1))
+theorem ancillaBlock_projectorPhaseGate {N : Nat} (a b : Fin (2 ^ (1 : ℕ)))
     (phi : ℝ) (P : OrthogonalProjector N) :
     ancillaBlock a b (projectorPhaseGate phi P) =
       ((rotZStd (-phi) : Gate (Qubits 1)) a b) • P.op +
@@ -674,7 +674,7 @@ noncomputable def projectedUnitaryBlockLeftPerpCandidate {N : Nat}
       ((projectedUnitaryBlock_gram_isHermitian left right U).eigenvalues i : ℂ) ≠ 0) :
     StateVector (Qubits N) :=
   let pair := projectedUnitaryBlockNonzeroSingularPair left right U i hlambda
-  ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ)⁻¹ •
+  ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ)⁻¹ •
     HilbertOperator.applyVec (OrthogonalProjector.complement left) (U.applyVec pair.rightVec)
 
 /-- Right-complement vector candidate for the `0 < σ < 1` source sector in
@@ -687,7 +687,7 @@ noncomputable def projectedUnitaryBlockRightPerpCandidate {N : Nat}
       ((projectedUnitaryBlock_gram_isHermitian left right U).eigenvalues i : ℂ) ≠ 0) :
     StateVector (Qubits N) :=
   let pair := projectedUnitaryBlockNonzeroSingularPair left right U i hlambda
-  ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ)⁻¹ •
+  ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ)⁻¹ •
     HilbertOperator.applyVec (OrthogonalProjector.complement right)
       (U.conjTranspose.applyVec pair.leftVec)
 
@@ -735,7 +735,7 @@ theorem projectedUnitaryBlock_U_rightVec_decomposition {N : Nat}
       ((Real.sqrt
           (1 -
             (projectedUnitaryBlockNonzeroSingularPair
-              left right U i hlambda).sigma ^ 2) :
+              left right U i hlambda).sigma ^ (2 : ℕ)) :
           ℝ) : ℂ) •
         projectedUnitaryBlockLeftPerpCandidate left right U i hlambda := by
   let pair := projectedUnitaryBlockNonzeroSingularPair left right U i hlambda
@@ -750,15 +750,15 @@ theorem projectedUnitaryBlock_U_rightVec_decomposition {N : Nat}
       pair.right_support] at hA
     simpa [Gate.applyVec] using hA
   have hgamma_ne :
-      ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ) ≠ 0 := by
-    have hpos : 0 < 1 - pair.sigma ^ 2 := by
+      ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ) ≠ 0 := by
+    have hpos : 0 < 1 - pair.sigma ^ (2 : ℕ) := by
       nlinarith [pair.sigma_pos, hsigma_lt_one]
     exact_mod_cast (Real.sqrt_pos.2 hpos).ne'
   have hcomp :
       HilbertOperator.applyVec (OrthogonalProjector.complement left) (U.applyVec pair.rightVec) =
-        ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ) •
+        ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ) •
           projectedUnitaryBlockLeftPerpCandidate left right U i hlambda := by
-    let gamma : ℂ := ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ)
+    let gamma : ℂ := ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ)
     have hgamma_ne' : gamma ≠ 0 := hgamma_ne
     unfold projectedUnitaryBlockLeftPerpCandidate
     dsimp [pair]
@@ -784,7 +784,7 @@ theorem projectedUnitaryBlock_U_rightVec_decomposition {N : Nat}
             (U.applyVec pair.rightVec) := by
       rw [HilbertOperator.add_applyVec]
     _ = (pair.sigma : ℂ) • pair.leftVec +
-          ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ) •
+          ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ) •
             projectedUnitaryBlockLeftPerpCandidate left right U i hlambda := by
       rw [hproj, hcomp]
 
@@ -805,7 +805,7 @@ theorem projectedUnitaryBlock_Udag_leftVec_decomposition {N : Nat}
       ((Real.sqrt
           (1 -
             (projectedUnitaryBlockNonzeroSingularPair
-              left right U i hlambda).sigma ^ 2) :
+              left right U i hlambda).sigma ^ (2 : ℕ)) :
           ℝ) : ℂ) •
         projectedUnitaryBlockRightPerpCandidate left right U i hlambda := by
   let pair := projectedUnitaryBlockNonzeroSingularPair left right U i hlambda
@@ -822,16 +822,16 @@ theorem projectedUnitaryBlock_Udag_leftVec_decomposition {N : Nat}
       HilbertOperator.mul_applyVec, pair.left_support] at hA
     simpa [Gate.applyVec] using hA
   have hgamma_ne :
-      ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ) ≠ 0 := by
-    have hpos : 0 < 1 - pair.sigma ^ 2 := by
+      ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ) ≠ 0 := by
+    have hpos : 0 < 1 - pair.sigma ^ (2 : ℕ) := by
       nlinarith [pair.sigma_pos, hsigma_lt_one]
     exact_mod_cast (Real.sqrt_pos.2 hpos).ne'
   have hcomp :
       HilbertOperator.applyVec (OrthogonalProjector.complement right)
           (U.conjTranspose.applyVec pair.leftVec) =
-        ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ) •
+        ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ) •
           projectedUnitaryBlockRightPerpCandidate left right U i hlambda := by
-    let gamma : ℂ := ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ)
+    let gamma : ℂ := ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ)
     have hgamma_ne' : gamma ≠ 0 := hgamma_ne
     unfold projectedUnitaryBlockRightPerpCandidate
     dsimp [pair]
@@ -858,7 +858,7 @@ theorem projectedUnitaryBlock_Udag_leftVec_decomposition {N : Nat}
             (U.conjTranspose.applyVec pair.leftVec) := by
       rw [HilbertOperator.add_applyVec]
     _ = (pair.sigma : ℂ) • pair.rightVec +
-          ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ) •
+          ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ) •
             projectedUnitaryBlockRightPerpCandidate left right U i hlambda := by
       rw [hproj, hcomp]
 
@@ -876,23 +876,23 @@ theorem projectedUnitaryBlock_U_rightPerp_decomposition {N : Nat}
       ((Real.sqrt
           (1 -
             (projectedUnitaryBlockNonzeroSingularPair
-              left right U i hlambda).sigma ^ 2) :
+              left right U i hlambda).sigma ^ (2 : ℕ)) :
           ℝ) : ℂ) •
           (projectedUnitaryBlockNonzeroSingularPair left right U i hlambda).leftVec +
         (-(projectedUnitaryBlockNonzeroSingularPair left right U i hlambda).sigma : ℂ) •
           projectedUnitaryBlockLeftPerpCandidate left right U i hlambda := by
   let pair := projectedUnitaryBlockNonzeroSingularPair left right U i hlambda
-  let gamma : ℂ := ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ)
-  have hgamma_pos : 0 < 1 - pair.sigma ^ 2 := by
+  let gamma : ℂ := ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ)
+  have hgamma_pos : 0 < 1 - pair.sigma ^ (2 : ℕ) := by
     nlinarith [pair.sigma_pos, hsigma_lt_one]
   have hgamma_ne : gamma ≠ 0 := by
     dsimp [gamma]
     exact_mod_cast (Real.sqrt_pos.2 hgamma_pos).ne'
-  have hgamma_sq : gamma * gamma = 1 - (pair.sigma : ℂ) ^ 2 := by
+  have hgamma_sq : gamma * gamma = 1 - (pair.sigma : ℂ) ^ (2 : ℕ) := by
     dsimp [gamma]
     have hsqrt_sq :
-        Real.sqrt (1 - pair.sigma ^ 2) * Real.sqrt (1 - pair.sigma ^ 2) =
-          1 - pair.sigma ^ 2 := by
+        Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) * Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) =
+          1 - pair.sigma ^ (2 : ℕ) := by
       rw [← pow_two, Real.sq_sqrt (le_of_lt hgamma_pos)]
     rw [← Complex.ofReal_mul, hsqrt_sq]
     norm_num [pow_two]
@@ -920,7 +920,7 @@ theorem projectedUnitaryBlock_U_rightPerp_decomposition {N : Nat}
   have hUright :=
     projectedUnitaryBlock_U_rightVec_decomposition left right U i hlambda hsigma_lt_one
   have hUinv := gate_applyVec_conjTranspose_applyVec U pair.leftVec
-  have hscale_left : gamma⁻¹ * (1 - (pair.sigma : ℂ) ^ 2) = gamma := by
+  have hscale_left : gamma⁻¹ * (1 - (pair.sigma : ℂ) ^ (2 : ℕ)) = gamma := by
     rw [← hgamma_sq]
     rw [← mul_assoc, inv_mul_cancel₀ hgamma_ne, one_mul]
   have hscale_perp : gamma⁻¹ * ((pair.sigma : ℂ) * gamma) = (pair.sigma : ℂ) := by
@@ -983,23 +983,23 @@ theorem projectedUnitaryBlock_Udag_leftPerp_decomposition {N : Nat}
       ((Real.sqrt
           (1 -
             (projectedUnitaryBlockNonzeroSingularPair
-              left right U i hlambda).sigma ^ 2) :
+              left right U i hlambda).sigma ^ (2 : ℕ)) :
           ℝ) : ℂ) •
           (projectedUnitaryBlockNonzeroSingularPair left right U i hlambda).rightVec +
         (-(projectedUnitaryBlockNonzeroSingularPair left right U i hlambda).sigma : ℂ) •
           projectedUnitaryBlockRightPerpCandidate left right U i hlambda := by
   let pair := projectedUnitaryBlockNonzeroSingularPair left right U i hlambda
-  let gamma : ℂ := ((Real.sqrt (1 - pair.sigma ^ 2) : ℝ) : ℂ)
-  have hgamma_pos : 0 < 1 - pair.sigma ^ 2 := by
+  let gamma : ℂ := ((Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) : ℝ) : ℂ)
+  have hgamma_pos : 0 < 1 - pair.sigma ^ (2 : ℕ) := by
     nlinarith [pair.sigma_pos, hsigma_lt_one]
   have hgamma_ne : gamma ≠ 0 := by
     dsimp [gamma]
     exact_mod_cast (Real.sqrt_pos.2 hgamma_pos).ne'
-  have hgamma_sq : gamma * gamma = 1 - (pair.sigma : ℂ) ^ 2 := by
+  have hgamma_sq : gamma * gamma = 1 - (pair.sigma : ℂ) ^ (2 : ℕ) := by
     dsimp [gamma]
     have hsqrt_sq :
-        Real.sqrt (1 - pair.sigma ^ 2) * Real.sqrt (1 - pair.sigma ^ 2) =
-          1 - pair.sigma ^ 2 := by
+        Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) * Real.sqrt (1 - pair.sigma ^ (2 : ℕ)) =
+          1 - pair.sigma ^ (2 : ℕ) := by
       rw [← pow_two, Real.sq_sqrt (le_of_lt hgamma_pos)]
     rw [← Complex.ofReal_mul, hsqrt_sq]
     norm_num [pow_two]
@@ -1025,7 +1025,7 @@ theorem projectedUnitaryBlock_Udag_leftPerp_decomposition {N : Nat}
   have hUdagLeft :=
     projectedUnitaryBlock_Udag_leftVec_decomposition left right U i hlambda hsigma_lt_one
   have hUinv := gate_conjTranspose_applyVec_applyVec U pair.rightVec
-  have hscale_left : gamma⁻¹ * (1 - (pair.sigma : ℂ) ^ 2) = gamma := by
+  have hscale_left : gamma⁻¹ * (1 - (pair.sigma : ℂ) ^ (2 : ℕ)) = gamma := by
     rw [← hgamma_sq]
     rw [← mul_assoc, inv_mul_cancel₀ hgamma_ne, one_mul]
   have hscale_perp : gamma⁻¹ * ((pair.sigma : ℂ) * gamma) = (pair.sigma : ℂ) := by
@@ -1105,16 +1105,16 @@ structure SourceTwoDimensionalSingularBlock {N : Nat} (U : Gate (Qubits N))
     HilbertOperator.applyVec (OrthogonalProjector.complement left) leftPerp = leftPerp
   U_right :
     U.applyVec rightVec =
-      (sigma : ℂ) • leftVec + ((Real.sqrt (1 - sigma ^ 2) : ℝ) : ℂ) • leftPerp
+      (sigma : ℂ) • leftVec + ((Real.sqrt (1 - sigma ^ (2 : ℕ)) : ℝ) : ℂ) • leftPerp
   U_rightPerp :
     U.applyVec rightPerp =
-      ((Real.sqrt (1 - sigma ^ 2) : ℝ) : ℂ) • leftVec + (-(sigma : ℂ)) • leftPerp
+      ((Real.sqrt (1 - sigma ^ (2 : ℕ)) : ℝ) : ℂ) • leftVec + (-(sigma : ℂ)) • leftPerp
   Udag_left :
     U.conjTranspose.applyVec leftVec =
-      (sigma : ℂ) • rightVec + ((Real.sqrt (1 - sigma ^ 2) : ℝ) : ℂ) • rightPerp
+      (sigma : ℂ) • rightVec + ((Real.sqrt (1 - sigma ^ (2 : ℕ)) : ℝ) : ℂ) • rightPerp
   Udag_leftPerp :
     U.conjTranspose.applyVec leftPerp =
-      ((Real.sqrt (1 - sigma ^ 2) : ℝ) : ℂ) • rightVec + (-(sigma : ℂ)) • rightPerp
+      ((Real.sqrt (1 - sigma ^ (2 : ℕ)) : ℝ) : ℂ) • rightVec + (-(sigma : ℂ)) • rightPerp
 
 namespace SourceTwoDimensionalSingularBlock
 
@@ -1153,7 +1153,7 @@ theorem projectedUnitaryBlock_conjTranspose_applyVec_leftVec {N : Nat}
   simp
 
 /-- On a nontrivial source two-dimensional singular block, the Gram operator has
-eigenvalue `σ^2` on the right singular vector [GSLW19, BlockHam.tex:655-735,
+eigenvalue `σ^(2 : ℕ)` on the right singular vector [GSLW19, BlockHam.tex:655-735,
 747-764]. -/
 theorem gram_applyVec_rightVec {N : Nat} {U : Gate (Qubits N)}
     {left right : OrthogonalProjector N}
@@ -1162,7 +1162,7 @@ theorem gram_applyVec_rightVec {N : Nat} {U : Gate (Qubits N)}
         ((projectedUnitaryBlock left right U).conjTranspose *
           projectedUnitaryBlock left right U)
         block.rightVec =
-      ((block.sigma : Complex) ^ 2) • block.rightVec := by
+      ((block.sigma : Complex) ^ (2 : ℕ)) • block.rightVec := by
   rw [HilbertOperator.mul_applyVec, block.projectedUnitaryBlock_applyVec_rightVec,
     HilbertOperator.applyVec_smul, block.projectedUnitaryBlock_conjTranspose_applyVec_leftVec,
     smul_smul]
@@ -1181,7 +1181,7 @@ theorem evenSingularValuePolynomial_applyVec_rightVec {N L : Nat}
     polynomialOperator_applyVec_of_eigenvector (evenSquareQuotient P)
       ((projectedUnitaryBlock left right U).conjTranspose *
         projectedUnitaryBlock left right U)
-      ((block.sigma : Complex) ^ 2) block.rightVec
+      ((block.sigma : Complex) ^ (2 : ℕ)) block.rightVec
       block.gram_applyVec_rightVec,
     evenSquareQuotient_eval_sq_of_hasParity hL hP,
     HilbertOperator.applyVec_smul, block.right_support]
@@ -1199,7 +1199,7 @@ theorem oddSingularValuePolynomial_applyVec_rightVec {N L : Nat}
     polynomialOperator_applyVec_of_eigenvector (oddSquareQuotient P)
       ((projectedUnitaryBlock left right U).conjTranspose *
         projectedUnitaryBlock left right U)
-      ((block.sigma : Complex) ^ 2) block.rightVec
+      ((block.sigma : Complex) ^ (2 : ℕ)) block.rightVec
       block.gram_applyVec_rightVec,
     HilbertOperator.applyVec_smul, block.projectedUnitaryBlock_applyVec_rightVec, smul_smul]
   have hodd := oddSquareQuotient_eval_sq_of_hasParity hL hP (block.sigma : Complex)
@@ -1269,7 +1269,7 @@ theorem odd_signal_on_rightVec {N : Nat} {U : Gate (Qubits N)}
     (hremaining : remaining % 2 ≠ 0) :
     (sourcePhaseSignal U remaining).applyVec block.rightVec =
       (block.sigma : ℂ) • block.leftVec +
-        ((Real.sqrt (1 - block.sigma ^ 2) : ℝ) : ℂ) • block.leftPerp := by
+        ((Real.sqrt (1 - block.sigma ^ (2 : ℕ)) : ℝ) : ℂ) • block.leftPerp := by
   rw [sourcePhaseSignal, if_neg hremaining]
   exact block.U_right
 
@@ -1278,7 +1278,7 @@ theorem odd_signal_on_rightPerp {N : Nat} {U : Gate (Qubits N)}
     (block : SourceTwoDimensionalSingularBlock U left right) {remaining : ℕ}
     (hremaining : remaining % 2 ≠ 0) :
     (sourcePhaseSignal U remaining).applyVec block.rightPerp =
-      ((Real.sqrt (1 - block.sigma ^ 2) : ℝ) : ℂ) • block.leftVec +
+      ((Real.sqrt (1 - block.sigma ^ (2 : ℕ)) : ℝ) : ℂ) • block.leftVec +
         (-(block.sigma : ℂ)) • block.leftPerp := by
   rw [sourcePhaseSignal, if_neg hremaining]
   simpa [neg_smul] using block.U_rightPerp
@@ -1289,7 +1289,7 @@ theorem even_signal_on_leftVec {N : Nat} {U : Gate (Qubits N)}
     (hremaining : remaining % 2 = 0) :
     (sourcePhaseSignal U remaining).applyVec block.leftVec =
       (block.sigma : ℂ) • block.rightVec +
-        ((Real.sqrt (1 - block.sigma ^ 2) : ℝ) : ℂ) • block.rightPerp := by
+        ((Real.sqrt (1 - block.sigma ^ (2 : ℕ)) : ℝ) : ℂ) • block.rightPerp := by
   rw [sourcePhaseSignal, if_pos hremaining]
   exact block.Udag_left
 
@@ -1298,7 +1298,7 @@ theorem even_signal_on_leftPerp {N : Nat} {U : Gate (Qubits N)}
     (block : SourceTwoDimensionalSingularBlock U left right) {remaining : ℕ}
     (hremaining : remaining % 2 = 0) :
     (sourcePhaseSignal U remaining).applyVec block.leftPerp =
-      ((Real.sqrt (1 - block.sigma ^ 2) : ℝ) : ℂ) • block.rightVec +
+      ((Real.sqrt (1 - block.sigma ^ (2 : ℕ)) : ℝ) : ℂ) • block.rightVec +
         (-(block.sigma : ℂ)) • block.rightPerp := by
   rw [sourcePhaseSignal, if_pos hremaining]
   simpa [neg_smul] using block.Udag_leftPerp
@@ -1896,8 +1896,8 @@ theorem qspW_one_zero_zero_eq_phaseProduct (φ₀ : ℝ) (φs : List ℝ) :
 transformation.  It is the local two-dimensional block induced by `U` and
 `U†` on a nontrivial singular sector [GSLW19, BlockHam.tex:520-528,768-849]. -/
 noncomputable def singularSignalR (x : ℝ) : HilbertOperator (Qubits 1) :=
-  !![(x : ℂ), (Real.sqrt (1 - x ^ 2) : ℂ);
-     (Real.sqrt (1 - x ^ 2) : ℂ), (-(x : ℂ))]
+  !![(x : ℂ), (Real.sqrt (1 - x ^ (2 : ℕ)) : ℂ);
+     (Real.sqrt (1 - x ^ (2 : ℕ)) : ℂ), (-(x : ℂ))]
 
 -- CSLib weak-linter exception: this source-aligned 2x2 matrix expansion is
 -- kept in its existing proof shape; `simp only` rewrites were brittle here.
@@ -1934,11 +1934,11 @@ theorem signalW_eq_I_smul_rotZ_mul_singularSignalR_mul_rotZ (x : ℝ) :
   · simp [signalW, singularSignalR, rotZ, rotZOp, Matrix.mul_apply]
     have hprod :
         Complex.exp (-(↑Real.pi / 4 * Complex.I)) *
-            ↑√(1 - x ^ 2) * Complex.exp (↑Real.pi / 4 * Complex.I) =
-          ↑√(1 - x ^ 2) := by
+            ↑√(1 - x ^ (2 : ℕ)) * Complex.exp (↑Real.pi / 4 * Complex.I) =
+          ↑√(1 - x ^ (2 : ℕ)) := by
       rw [show Complex.exp (-(↑Real.pi / 4 * Complex.I)) *
-            ↑√(1 - x ^ 2) * Complex.exp (↑Real.pi / 4 * Complex.I) =
-          ↑√(1 - x ^ 2) * (Complex.exp (-(↑Real.pi / 4 * Complex.I)) *
+            ↑√(1 - x ^ (2 : ℕ)) * Complex.exp (↑Real.pi / 4 * Complex.I) =
+          ↑√(1 - x ^ (2 : ℕ)) * (Complex.exp (-(↑Real.pi / 4 * Complex.I)) *
             Complex.exp (↑Real.pi / 4 * Complex.I)) by ring]
       rw [← Complex.exp_add]
       simp
@@ -1946,11 +1946,11 @@ theorem signalW_eq_I_smul_rotZ_mul_singularSignalR_mul_rotZ (x : ℝ) :
   · simp [signalW, singularSignalR, rotZ, rotZOp, Matrix.mul_apply]
     have hprod :
         Complex.exp (↑Real.pi / 4 * Complex.I) *
-            ↑√(1 - x ^ 2) * Complex.exp (-(↑Real.pi / 4 * Complex.I)) =
-          ↑√(1 - x ^ 2) := by
+            ↑√(1 - x ^ (2 : ℕ)) * Complex.exp (-(↑Real.pi / 4 * Complex.I)) =
+          ↑√(1 - x ^ (2 : ℕ)) := by
       rw [show Complex.exp (↑Real.pi / 4 * Complex.I) *
-            ↑√(1 - x ^ 2) * Complex.exp (-(↑Real.pi / 4 * Complex.I)) =
-          ↑√(1 - x ^ 2) * (Complex.exp (↑Real.pi / 4 * Complex.I) *
+            ↑√(1 - x ^ (2 : ℕ)) * Complex.exp (-(↑Real.pi / 4 * Complex.I)) =
+          ↑√(1 - x ^ (2 : ℕ)) * (Complex.exp (↑Real.pi / 4 * Complex.I) *
             Complex.exp (-(↑Real.pi / 4 * Complex.I))) by ring]
       rw [← Complex.exp_add]
       simp
@@ -6053,7 +6053,7 @@ noncomputable def ofRealBoundedPhaseCertificate {N d : Nat} {PRe : Polynomial �
           certificate.certificate).circuit.matrix) :=
   ofPhaseCertificate U left right certificate.certificate
 
-/-- A source root-class factorization of `1 - P_re^2` determines the same
+/-- A source root-class factorization of `1 - P_re^(2 : ℕ)` determines the same
 projected-QSVT circuit package as the corresponding real-bounded phase
 certificate.  The correctness block and all resource counters still come from
 the constructed `Circuit`; this declaration only composes the source-aligned
@@ -6076,7 +6076,7 @@ noncomputable def ofSourceRootClassFactorization {N d : Nat} {PRe : Polynomial �
       hP roots)
 
 /-- Boundary-case projected-QSVT realization when the source square target
-`1 - P_re^2` is constant.  This composes the interval-square base case with the
+`1 - P_re^(2 : ℕ)` is constant.  This composes the interval-square base case with the
 same-circuit projected-QSVT word constructor [GSLW19, BlockHam.tex:436-480,
 544-557,851-887]. -/
 noncomputable def ofSquareTargetNatDegreeZero {N d : Nat} {PRe : Polynomial ℝ}

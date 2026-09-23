@@ -42,7 +42,7 @@ theorem linear_laurent_top {s : ℂ} {K : ℕ} {c : ℕ → ℂ → ℂ}
         Complex.cpow_natCast]
     rw [ht, mul_zero] at key
     exact key.symm
-  -- take t → 0⁺ : only the k = K term (power t^0) survives, → c_K 0
+  -- take t → 0⁺ : only the k = K term (power t^(0 : ℕ)) survives, → c_K 0
   have h1 : Tendsto (fun t : ℝ => ((t : ℂ))) (nhdsWithin 0 (Set.Ioi 0)) (𝓝 0) := by
     have := (Complex.continuous_ofReal.tendsto (0 : ℝ)).mono_left
       (nhdsWithin_le_nhds (a := (0 : ℝ)) (s := Set.Ioi 0))

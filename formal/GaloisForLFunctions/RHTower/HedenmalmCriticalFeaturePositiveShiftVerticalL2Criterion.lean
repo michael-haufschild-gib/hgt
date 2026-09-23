@@ -66,7 +66,7 @@ literal positive-shift pole--Gamma values, rather than a selected zero divisor. 
 def CriticalFeaturePositiveShiftVerticalSquareRegularity : Prop :=
   ∀ x a b : ℝ, 0 < a → a ≤ b → b < 1 / 2 →
     IntervalIntegrable
-      (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x ^ 2)
+      (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x ^ (2 : ℕ))
       volume a b
 
 /-- **Exact source criterion.**  Finite squared continued pole--Gamma source energy on every
@@ -133,9 +133,9 @@ theorem criticalFeaturePositiveShiftVerticalSquareRegularity_iff_riemannHypothes
             simp
             exact lt_of_lt_of_le ha heta.1))
     have hsq : ContinuousOn
-        (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x ^ 2) (uIcc a b) := by
-      have hfun : (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x ^ 2) =
-          (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x) ^ 2 := by
+        (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x ^ (2 : ℕ)) (uIcc a b) := by
+      have hfun : (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x ^ (2 : ℕ)) =
+          (fun eta => criticalFeaturePositiveShiftPoleGammaDensity eta x) ^ (2 : ℕ) := by
         funext eta
         rfl
       rw [hfun]

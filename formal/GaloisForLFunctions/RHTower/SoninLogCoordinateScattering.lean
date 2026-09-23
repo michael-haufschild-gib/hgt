@@ -72,7 +72,7 @@ theorem soninLogFourierScattering_adjoint_mul_self :
 
 /-- Operator form of the existing involution relation. -/
 theorem soninLogFourierScattering_sq_eq_one :
-    soninLogFourierScattering ^ 2 = 1 := by
+    soninLogFourierScattering ^ (2 : ℕ) = 1 := by
   apply ContinuousLinearMap.ext
   intro g
   change soninLogFourierScattering (soninLogFourierScattering g) = g
@@ -225,9 +225,9 @@ theorem re_inner_soninLogFourierObservableTwirlKadisonDefect_eq_transitionNormSq
     Complex.re
         (inner ℂ psi (soninLogFourierObservableTwirlKadisonDefect X psi)) =
       ‖HTGeometry.twoOutcomeLowerTransition
-          soninLogFourierInvariantAverage X psi‖ ^ 2 +
+          soninLogFourierInvariantAverage X psi‖ ^ (2 : ℕ) +
       ‖HTGeometry.twoOutcomeUpperTransition
-          soninLogFourierInvariantAverage X psi‖ ^ 2 := by
+          soninLogFourierInvariantAverage X psi‖ ^ (2 : ℕ) := by
   simpa only [soninLogFourierObservableTwirlKadisonDefect,
     soninLogFourierInvariantAverage] using!
       HTGeometry.re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_transitionNormSq_add
@@ -245,7 +245,7 @@ theorem re_inner_soninLogFourierObservableTwirlKadisonDefect_eq_quarter_commutat
         (inner ℂ psi (soninLogFourierObservableTwirlKadisonDefect X psi)) =
       (4 : ℝ)⁻¹ *
         ‖((X * soninLogFourierScattering - soninLogFourierScattering * X) :
-          SoninL2 →L[ℂ] SoninL2) psi‖ ^ 2 := by
+          SoninL2 →L[ℂ] SoninL2) psi‖ ^ (2 : ℕ) := by
   rw [GaloisForLFunctions.PhysicalState] at hpsi
   have hfixed : soninLogFourierScattering psi = psi := by
     apply sub_eq_zero.mp
@@ -277,8 +277,8 @@ theorem re_inner_soninLogFourierObservableTwirlKadisonDefect_eq_zero_iff_commuta
 /-- **Invariant/anti-invariant scattering energy partition.**  Every logarithmic Sonin state
 splits exactly into its group-averaged physical part and its orthogonal complement. -/
 theorem norm_soninLogFourierInvariantAverage_sq_add_complement_sq (g : SoninL2) :
-    ‖soninLogFourierInvariantAverage g‖ ^ 2 +
-        ‖(1 - soninLogFourierInvariantAverage) g‖ ^ 2 = ‖g‖ ^ 2 := by
+    ‖soninLogFourierInvariantAverage g‖ ^ (2 : ℕ) +
+        ‖(1 - soninLogFourierInvariantAverage) g‖ ^ (2 : ℕ) = ‖g‖ ^ (2 : ℕ) := by
   exact HTGeometry.norm_finiteInvolutiveGaugeAverage_sq_add_complement_sq
     soninLogFourierScattering soninLogFourierScattering_adjoint_mul_self
     soninLogFourierScattering_sq_eq_one g

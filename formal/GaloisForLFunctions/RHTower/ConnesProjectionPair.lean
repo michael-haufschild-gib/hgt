@@ -46,8 +46,8 @@ theorem connes_symmetry_sq (hP : P * P = P) : (2 * P - 1) * (2 * P - 1) = 1 := b
 
 /-- The square of the difference of two idempotents. -/
 theorem connes_projDiff_sq (hP : P * P = P) (hQ : Q * Q = Q) :
-    (P - Q) ^ 2 = P + Q - P * Q - Q * P := by
-  have h : (P - Q) ^ 2 = P * P - P * Q - Q * P + Q * Q := by noncomm_ring
+    (P - Q) ^ (2 : ℕ) = P + Q - P * Q - Q * P := by
+  have h : (P - Q) ^ (2 : ℕ) = P * P - P * Q - Q * P + Q * Q := by noncomm_ring
   rw [h, hP, hQ]; noncomm_ring
 
 /-- **The key positivity identity.**  For two idempotents,
@@ -55,14 +55,14 @@ theorem connes_projDiff_sq (hP : P * P = P) (hQ : Q * Q = Q) :
 Both summands are of the form `a* b a` with `b` a projection, so in a C*-algebra the right-hand
 side is positive; this is what bounds the angle operator `Θ` of §VIII (30) by `π/2`. -/
 theorem connes_one_sub_projDiff_sq (hP : P * P = P) (hQ : Q * Q = Q) :
-    1 - (P - Q) ^ 2 = (1 - P) * (1 - Q) * (1 - P) + P * Q * P := by
+    1 - (P - Q) ^ (2 : ℕ) = (1 - P) * (1 - Q) * (1 - P) + P * Q * P := by
   have hR : (1 - P) * (1 - Q) * (1 - P)
       = 1 - 2 * P + P * P - Q + Q * P + P * Q - P * Q * P := by noncomm_ring
   rw [connes_projDiff_sq hP hQ, hR, hP]; noncomm_ring
 
 /-- **§VIII (30), commutation.**  `(P₁ - P₂)²` commutes with `P₁`. -/
 theorem connes_projDiff_sq_commute_left (hP : P * P = P) (hQ : Q * Q = Q) :
-    P * (P - Q) ^ 2 = (P - Q) ^ 2 * P := by
+    P * (P - Q) ^ (2 : ℕ) = (P - Q) ^ (2 : ℕ) * P := by
   rw [connes_projDiff_sq hP hQ]
   have h1 : P * (P + Q - P * Q - Q * P)
       = (P * P) + P * Q - (P * P) * Q - P * (Q * P) := by noncomm_ring
@@ -73,8 +73,8 @@ theorem connes_projDiff_sq_commute_left (hP : P * P = P) (hQ : Q * Q = Q) :
 
 /-- **§VIII (30), commutation.**  `(P₁ - P₂)²` commutes with `P₂`. -/
 theorem connes_projDiff_sq_commute_right (hP : P * P = P) (hQ : Q * Q = Q) :
-    Q * (P - Q) ^ 2 = (P - Q) ^ 2 * Q := by
-  have h : (Q - P) ^ 2 = (P - Q) ^ 2 := by noncomm_ring
+    Q * (P - Q) ^ (2 : ℕ) = (P - Q) ^ (2 : ℕ) * Q := by
+  have h : (Q - P) ^ (2 : ℕ) = (P - Q) ^ (2 : ℕ) := by noncomm_ring
   rw [← h]
   exact connes_projDiff_sq_commute_left hQ hP
 
@@ -93,7 +93,7 @@ theorem connes_proj_nonneg (hP : P * P = P) (hPs : IsSelfAdjoint P) : 0 ≤ P :=
 
 /-- **§VIII (30), the angle bound.**  `(P₁ - P₂)² ≤ 1` for two orthogonal projections. -/
 theorem connes_projDiff_sq_le_one (hP : P * P = P) (hPs : IsSelfAdjoint P)
-    (hQ : Q * Q = Q) (hQs : IsSelfAdjoint Q) : (P - Q) ^ 2 ≤ 1 := by
+    (hQ : Q * Q = Q) (hQs : IsSelfAdjoint Q) : (P - Q) ^ (2 : ℕ) ≤ 1 := by
   have hQ1 : (1 - Q) * (1 - Q) = 1 - Q := by
     have : (1 - Q) * (1 - Q) = 1 - Q - Q + Q * Q := by noncomm_ring
     rw [this, hQ]; noncomm_ring
@@ -103,7 +103,7 @@ theorem connes_projDiff_sq_le_one (hP : P * P = P) (hPs : IsSelfAdjoint P)
   have hQnn : (0:A) ≤ Q := connes_proj_nonneg hQ hQs
   have h1 : (0:A) ≤ (1 - P) * (1 - Q) * (1 - P) := hP1s.conjugate_nonneg hQ1nn
   have h2 : (0:A) ≤ P * Q * P := hPs.conjugate_nonneg hQnn
-  have hkey : (0:A) ≤ 1 - (P - Q) ^ 2 := by
+  have hkey : (0:A) ≤ 1 - (P - Q) ^ (2 : ℕ) := by
     rw [connes_one_sub_projDiff_sq hP hQ]
     exact add_nonneg h1 h2
   exact sub_nonneg.mp hkey
@@ -113,14 +113,14 @@ theorem connes_projDiff_sq_le_one (hP : P * P = P) (hPs : IsSelfAdjoint P)
 theorem connes_norm_projDiff_le_one [Nontrivial A] (hP : P * P = P) (hPs : IsSelfAdjoint P)
     (hQ : Q * Q = Q) (hQs : IsSelfAdjoint Q) : ‖P - Q‖ ≤ 1 := by
   have hPQs : IsSelfAdjoint (P - Q) := hPs.sub hQs
-  have hsq : (P - Q) ^ 2 = star (P - Q) * (P - Q) := by
+  have hsq : (P - Q) ^ (2 : ℕ) = star (P - Q) * (P - Q) := by
     rw [hPQs.star_eq, sq]
-  have hnn : (0:A) ≤ (P - Q) ^ 2 := by rw [hsq]; exact star_mul_self_nonneg _
+  have hnn : (0:A) ≤ (P - Q) ^ (2 : ℕ) := by rw [hsq]; exact star_mul_self_nonneg _
   have hle := connes_projDiff_sq_le_one hP hPs hQ hQs
-  have hnorm : ‖(P - Q) ^ 2‖ ≤ ‖(1 : A)‖ :=
+  have hnorm : ‖(P - Q) ^ (2 : ℕ)‖ ≤ ‖(1 : A)‖ :=
     CStarAlgebra.norm_le_norm_of_nonneg_of_le hnn hle
   rw [norm_one] at hnorm
-  have hid : ‖(P - Q) ^ 2‖ = ‖P - Q‖ * ‖P - Q‖ := by
+  have hid : ‖(P - Q) ^ (2 : ℕ)‖ = ‖P - Q‖ * ‖P - Q‖ := by
     rw [sq]
     nth_rewrite 2 [← hPQs.star_eq]
     exact CStarRing.norm_self_mul_star
@@ -132,14 +132,14 @@ theorem connes_norm_projDiff_le_one [Nontrivial A] (hP : P * P = P) (hPs : IsSel
 function, which covers `|P₁ - P₂| = ((P₁-P₂)²)^{1/2}` and `Θ = arcsin ∘ (·)^{1/2}`. -/
 theorem connes_commute_cfc_projDiff_sq_left (hP : P * P = P) (hPs : IsSelfAdjoint P)
     (hQ : Q * Q = Q) (hQs : IsSelfAdjoint Q) (f : ℝ → ℝ) :
-    Commute (cfc f ((P - Q) ^ 2)) P := by
-  have hsa : IsSelfAdjoint ((P - Q) ^ 2) := (hPs.sub hQs).pow 2
+    Commute (cfc f ((P - Q) ^ (2 : ℕ))) P := by
+  have hsa : IsSelfAdjoint ((P - Q) ^ (2 : ℕ)) := (hPs.sub hQs).pow 2
   exact hsa.commute_cfc (Commute.symm (connes_projDiff_sq_commute_left hP hQ)) f
 
 theorem connes_commute_cfc_projDiff_sq_right (hP : P * P = P) (hPs : IsSelfAdjoint P)
     (hQ : Q * Q = Q) (hQs : IsSelfAdjoint Q) (f : ℝ → ℝ) :
-    Commute (cfc f ((P - Q) ^ 2)) Q := by
-  have hsa : IsSelfAdjoint ((P - Q) ^ 2) := (hPs.sub hQs).pow 2
+    Commute (cfc f ((P - Q) ^ (2 : ℕ))) Q := by
+  have hsa : IsSelfAdjoint ((P - Q) ^ (2 : ℕ)) := (hPs.sub hQs).pow 2
   exact hsa.commute_cfc (Commute.symm (connes_projDiff_sq_commute_right hP hQ)) f
 
 end CStar

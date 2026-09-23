@@ -27,8 +27,8 @@ noncomputable section
 squared norm. -/
 theorem norm_sq_finitePureTensorPowerEuclidean_eq_pow
     {α : Type*} [Fintype α] (r : ℕ) (ψ : α → ℂ) :
-    ‖finitePureTensorPowerEuclidean r ψ‖ ^ 2 =
-      (‖WithLp.toLp 2 ψ‖ ^ 2) ^ r := by
+    ‖finitePureTensorPowerEuclidean r ψ‖ ^ (2 : ℕ) =
+      (‖WithLp.toLp 2 ψ‖ ^ (2 : ℕ)) ^ r := by
   have hreplica := inner_finitePureTensorPowerEuclidean r ψ ψ
   rw [inner_self_eq_norm_sq_to_K] at hreplica
   have hone := inner_toLp_eq_finiteComplexInner ψ ψ
@@ -40,8 +40,8 @@ theorem norm_sq_finitePureTensorPowerEuclidean_eq_pow
 lifting. -/
 theorem norm_sq_finitePureTensorPowerEuclidean_le_radius_pow
     {α : Type*} [Fintype α] (r : ℕ) (ψ : α → ℂ) {radius : ℝ}
-    (hψ : ‖WithLp.toLp 2 ψ‖ ^ 2 ≤ radius) :
-    ‖finitePureTensorPowerEuclidean r ψ‖ ^ 2 ≤ radius ^ r := by
+    (hψ : ‖WithLp.toLp 2 ψ‖ ^ (2 : ℕ) ≤ radius) :
+    ‖finitePureTensorPowerEuclidean r ψ‖ ^ (2 : ℕ) ≤ radius ^ r := by
   rw [norm_sq_finitePureTensorPowerEuclidean_eq_pow]
   exact pow_le_pow_left₀ (sq_nonneg _) hψ r
 
@@ -53,7 +53,7 @@ theorem finitePureStateFidelity_pow_le_replicaTargetProjectionMass_mul_norm_sq
     (ψ : α → ℂ) (c : C) :
     finitePureStateFidelity ψ (target c) ^ r ≤
       replicaTargetProjectionMass r target ψ *
-        ‖finitePureTensorPowerEuclidean r (target c)‖ ^ 2 := by
+        ‖finitePureTensorPowerEuclidean r (target c)‖ ^ (2 : ℕ) := by
   let S := replicaTargetSpan r target
   let u := finitePureTensorPowerEuclidean r ψ
   let v := finitePureTensorPowerEuclidean r (target c)
@@ -71,7 +71,7 @@ theorem finitePureStateFidelity_pow_le_replicaTargetProjectionMass_mul_norm_sq
     exact hcs
   have hfid :
       finitePureStateFidelity ψ (target c) ^ r =
-        ‖inner ℂ u v‖ ^ 2 := by
+        ‖inner ℂ u v‖ ^ (2 : ℕ) := by
     rw [← finitePureStateFidelity_tensorPower r ψ (target c)]
     rw [finitePureStateFidelity, show inner ℂ u v =
       finiteComplexInner (finitePureTensorPower r ψ)
@@ -79,10 +79,10 @@ theorem finitePureStateFidelity_pow_le_replicaTargetProjectionMass_mul_norm_sq
           exact inner_toLp_eq_finiteComplexInner _ _]
   rw [hfid, replicaTargetProjectionMass]
   calc
-    ‖inner ℂ u v‖ ^ 2 ≤
-        (‖S.orthogonalProjectionOnto u‖ * ‖vS‖) ^ 2 :=
+    ‖inner ℂ u v‖ ^ (2 : ℕ) ≤
+        (‖S.orthogonalProjectionOnto u‖ * ‖vS‖) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) hinner 2
-    _ = ‖S.orthogonalProjectionOnto u‖ ^ 2 * ‖v‖ ^ 2 := by
+    _ = ‖S.orthogonalProjectionOnto u‖ ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ) := by
       simp [vS, mul_pow]
 
 /-- One complete reporter for finitely many residual-radius shells.  Within a
@@ -152,7 +152,7 @@ theorem completePureStateReturnShellCapture_subset_projectionMass
     (state : X → α → ℂ)
     (radius : B → ℝ) (hradius : ∀ b, 0 ≤ radius b)
     (htarget : ∀ b c,
-      ‖WithLp.toLp 2 (target b c)‖ ^ 2 ≤ radius b)
+      ‖WithLp.toLp 2 (target b c)‖ ^ (2 : ℕ) ≤ radius b)
     (threshold : ℝ) (hthreshold : 0 ≤ threshold) :
     {x | ∃ b, ∃ c,
       threshold ≤ finitePureStateFidelity (state x) (target b c)} ⊆
@@ -161,7 +161,7 @@ theorem completePureStateReturnShellCapture_subset_projectionMass
   intro x hx
   rcases hx with ⟨b, c, hc⟩
   have hnorm :
-      ‖finitePureTensorPowerEuclidean r (target b c)‖ ^ 2 ≤
+      ‖finitePureTensorPowerEuclidean r (target b c)‖ ^ (2 : ℕ) ≤
         radius b ^ r :=
     norm_sq_finitePureTensorPowerEuclidean_le_radius_pow
       r (target b c) (htarget b c)
@@ -173,7 +173,7 @@ theorem completePureStateReturnShellCapture_subset_projectionMass
         finitePureStateFidelity (state x) (target b c) ^ r :=
       pow_le_pow_left₀ hthreshold hc r
     _ ≤ replicaTargetProjectionMass r (target b) (state x) *
-          ‖finitePureTensorPowerEuclidean r (target b c)‖ ^ 2 :=
+          ‖finitePureTensorPowerEuclidean r (target b c)‖ ^ (2 : ℕ) :=
       finitePureStateFidelity_pow_le_replicaTargetProjectionMass_mul_norm_sq
         r (target b) (state x) c
     _ ≤ radius b ^ r *
@@ -201,7 +201,7 @@ theorem measure_completePureStateReturnShellCapture_le_projectionMoment
     (state : X → α → ℂ)
     (radius : B → ℝ) (hradius : ∀ b, 0 ≤ radius b)
     (htarget : ∀ b c,
-      ‖WithLp.toLp 2 (target b c)‖ ^ 2 ≤ radius b)
+      ‖WithLp.toLp 2 (target b c)‖ ^ (2 : ℕ) ≤ radius b)
     (threshold : ℝ) (hthreshold : 0 < threshold)
     (hint : Integrable
       (fun x => replicaReturnShellProjectionMass

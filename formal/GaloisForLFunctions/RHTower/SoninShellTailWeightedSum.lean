@@ -54,9 +54,9 @@ bounded by a single geometric term in the cut index, with no dependence on the t
 theorem sum_Ico_logShellRadius_weight_le {a r : ℝ} (ha : 0 < a) (hr : 1 < r) {p : ℕ} (hp : p ≠ 0)
     (K n : ℕ) (u : evenSubspace) {C : ℝ} (hC : 0 ≤ C) (hone : 1 ≤ logShellRadius a r K)
     (hdecay : ∀ k, K ≤ k → ‖evenIndicatorLayer (logShellRadius a r k)
-        (logShellRadius a r (k + 1)) u‖ ^ 2 ≤ C / logShellRadius a r k ^ (p + 1)) :
-    ∑ k ∈ Finset.Ico K n, |Real.log (logShellRadius a r k)| ^ 2 *
-        ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 ≤
+        (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤ C / logShellRadius a r k ^ (p + 1)) :
+    ∑ k ∈ Finset.Ico K n, |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
+        ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤
       4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹) := by
   classical
   have hrp : (1 : ℝ) < r ^ p := one_lt_pow₀ hr hp
@@ -66,19 +66,19 @@ theorem sum_Ico_logShellRadius_weight_le {a r : ℝ} (ha : 0 < a) (hr : 1 < r) {
   have hap : (0 : ℝ) < a ^ p := pow_pos ha p
   have hconst : (0 : ℝ) ≤ 4 * C / a ^ p := by positivity
   have hterm : ∀ k ∈ Finset.Ico K n,
-      |Real.log (logShellRadius a r k)| ^ 2 *
-          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 ≤
+      |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
+          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤
         4 * C / a ^ p * (r ^ p)⁻¹ ^ k := by
     intro k hk
     have hKk : K ≤ k := (Finset.mem_Ico.mp hk).1
     have hρpos : (0 : ℝ) < logShellRadius a r k := logShellRadius_pos ha hr k
     have hρ1 : (1 : ℝ) ≤ logShellRadius a r k :=
       le_trans hone (logShellRadius_mono ha hr hKk)
-    have hlogsq : |Real.log (logShellRadius a r k)| ^ 2 ≤ 4 * logShellRadius a r k :=
+    have hlogsq : |Real.log (logShellRadius a r k)| ^ (2 : ℕ) ≤ 4 * logShellRadius a r k :=
       sq_abs_log_le_four_mul hρ1
     have hmass := hdecay k hKk
-    have hmul : |Real.log (logShellRadius a r k)| ^ 2 *
-        ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2 ≤
+    have hmul : |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
+        ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ) ≤
         4 * logShellRadius a r k * (C / logShellRadius a r k ^ (p + 1)) :=
       mul_le_mul hlogsq hmass (sq_nonneg _) (by positivity)
     refine le_trans hmul (le_of_eq ?_)
@@ -89,8 +89,8 @@ theorem sum_Ico_logShellRadius_weight_le {a r : ℝ} (ha : 0 < a) (hr : 1 < r) {
       field_simp
     rw [hstep, logShellRadius_pow a r p k, inv_pow]
     field_simp
-  calc ∑ k ∈ Finset.Ico K n, |Real.log (logShellRadius a r k)| ^ 2 *
-          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ 2
+  calc ∑ k ∈ Finset.Ico K n, |Real.log (logShellRadius a r k)| ^ (2 : ℕ) *
+          ‖evenIndicatorLayer (logShellRadius a r k) (logShellRadius a r (k + 1)) u‖ ^ (2 : ℕ)
       ≤ ∑ k ∈ Finset.Ico K n, 4 * C / a ^ p * (r ^ p)⁻¹ ^ k := Finset.sum_le_sum hterm
     _ = 4 * C / a ^ p * ∑ k ∈ Finset.Ico K n, (r ^ p)⁻¹ ^ k := by rw [← Finset.mul_sum]
     _ ≤ 4 * C / a ^ p * ((r ^ p)⁻¹ ^ K * (1 - (r ^ p)⁻¹)⁻¹) :=

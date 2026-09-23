@@ -84,13 +84,13 @@ theorem count_antitone {M : ℝ → ℕ} (hmono : ∀ ⦃x y : ℝ⦄, x ≤ y �
 below the field threshold collides within backward time `δ²/8`, after which the two zeros form a
 conjugate pair. -/
 theorem collision_time_bound {delta tau : ℝ} (_hd : 0 < delta)
-    (hcol : 0 ≤ delta ^ 2 - 8 * tau) : tau ≤ delta ^ 2 / 8 := by linarith
+    (hcol : 0 ≤ delta ^ (2 : ℕ) - 8 * tau) : tau ≤ delta ^ (2 : ℕ) / 8 := by linarith
 
 /-- **Infinitely many collisions from vanishing gaps.**  If for every `δ > 0` there are infinitely
 many gaps below `δ`, then for every `t < 0` infinitely many pairs have collided by time `t`. -/
 theorem infinitely_many_collisions {gap : ℕ → ℝ} (hpos : ∀ n, 0 < gap n)
     (hsmall : ∀ δ : ℝ, 0 < δ → ∃ N : ℕ, ∀ n ≥ N, gap n < δ) {t : ℝ} (ht : t < 0) :
-    ∃ N : ℕ, ∀ n ≥ N, -t ≤ gap n ^ 2 / 8 → False := by
+    ∃ N : ℕ, ∀ n ≥ N, -t ≤ gap n ^ (2 : ℕ) / 8 → False := by
   obtain ⟨N, hN⟩ := hsmall (Real.sqrt (-8 * t)) (by
     have : 0 < -8 * t := by linarith
     exact Real.sqrt_pos.mpr this)
@@ -98,9 +98,9 @@ theorem infinitely_many_collisions {gap : ℕ → ℝ} (hpos : ∀ n, 0 < gap n)
   intro n hn hcon
   have hg := hN n hn
   have hgp := hpos n
-  have hsq : gap n ^ 2 < -8 * t := by
+  have hsq : gap n ^ (2 : ℕ) < -8 * t := by
     have h8 : (0 : ℝ) < -8 * t := by linarith
-    calc gap n ^ 2 < Real.sqrt (-8 * t) ^ 2 := by nlinarith [hgp, hg, Real.sqrt_nonneg (-8 * t)]
+    calc gap n ^ (2 : ℕ) < Real.sqrt (-8 * t) ^ (2 : ℕ) := by nlinarith [hgp, hg, Real.sqrt_nonneg (-8 * t)]
       _ = -8 * t := Real.sq_sqrt (le_of_lt h8)
   linarith
 

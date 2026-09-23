@@ -33,7 +33,7 @@ def xiGaussianSourceContourMomentPacket
 
 /-- Order-two Turán determinant of a three-moment complex packet. -/
 def xiGaussianMomentPacketTuran (M : Fin 3 → ℂ) : ℝ :=
-  (M 0).re * (M 2).re - (M 1).re ^ 2
+  (M 0).re * (M 2).re - (M 1).re ^ (2 : ℕ)
 
 theorem continuous_xiGaussianMomentPacketTuran :
     Continuous xiGaussianMomentPacketTuran := by
@@ -58,7 +58,7 @@ theorem exists_admissible_gaussianSource_contour_approximates_heatMomentPacket
           (xiGaussianHeatMomentPacket t i) < epsilon := by
   classical
   let f : Fin 3 → XiZeroCopy → ℂ := fun i q =>
-    (xiSpectralPoint q ^ 2) ^ (i : ℕ) * xiGaussianHeatTerm t q
+    (xiSpectralPoint q ^ (2 : ℕ)) ^ (i : ℕ) * xiGaussianHeatTerm t q
   have hsum (i : Fin 3) : Summable (f i) := by
     simpa only [f] using summable_xiGaussianHeatMonomialTerm ht (i : ℕ)
   have hevent (i : Fin 3) : ∀ᶠ s : Finset XiZeroCopy in atTop,
@@ -137,12 +137,12 @@ times admit one arithmetic contour with strictly negative Turán determinant.
 theorem exists_eventually_negative_primeGammaContourTuran_of_bottom_conjugate_pair
     {q₀ : XiZeroCopy}
     (hmin : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q₀ ^ 2).re ≤ (xiSpectralPoint q ^ 2).re)
-    (him : (xiSpectralPoint q₀ ^ 2).im ≠ 0)
+      (xiSpectralPoint q₀ ^ (2 : ℕ)).re ≤ (xiSpectralPoint q ^ (2 : ℕ)).re)
+    (him : (xiSpectralPoint q₀ ^ (2 : ℕ)).im ≠ 0)
     (hbottom : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q ^ 2).re = (xiSpectralPoint q₀ ^ 2).re →
-      xiSpectralPoint q ^ 2 = xiSpectralPoint q₀ ^ 2 ∨
-        xiSpectralPoint q ^ 2 = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ 2)) :
+      (xiSpectralPoint q ^ (2 : ℕ)).re = (xiSpectralPoint q₀ ^ (2 : ℕ)).re →
+      xiSpectralPoint q ^ (2 : ℕ) = xiSpectralPoint q₀ ^ (2 : ℕ) ∨
+        xiSpectralPoint q ^ (2 : ℕ) = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ (2 : ℕ))) :
     ∃ T : ℝ, ∀ t : ℝ, T < t →
       ∃ z₁ z₂ : ℂ,
         z₁.re < z₂.re ∧ z₁.im < z₂.im ∧
@@ -184,12 +184,12 @@ theorem xi_primeGammaContourTuran_bottomShellUniversality :
               (xiGaussianSourceContourMomentPacket t z₁ z₂)) ∧
     ∀ q₀ : XiZeroCopy,
       (∀ q : XiZeroCopy,
-        (xiSpectralPoint q₀ ^ 2).re ≤ (xiSpectralPoint q ^ 2).re) →
-      (xiSpectralPoint q₀ ^ 2).im ≠ 0 →
+        (xiSpectralPoint q₀ ^ (2 : ℕ)).re ≤ (xiSpectralPoint q ^ (2 : ℕ)).re) →
+      (xiSpectralPoint q₀ ^ (2 : ℕ)).im ≠ 0 →
       (∀ q : XiZeroCopy,
-        (xiSpectralPoint q ^ 2).re = (xiSpectralPoint q₀ ^ 2).re →
-        xiSpectralPoint q ^ 2 = xiSpectralPoint q₀ ^ 2 ∨
-          xiSpectralPoint q ^ 2 = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ 2)) →
+        (xiSpectralPoint q ^ (2 : ℕ)).re = (xiSpectralPoint q₀ ^ (2 : ℕ)).re →
+        xiSpectralPoint q ^ (2 : ℕ) = xiSpectralPoint q₀ ^ (2 : ℕ) ∨
+          xiSpectralPoint q ^ (2 : ℕ) = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ (2 : ℕ))) →
       ∃ T : ℝ, ∀ t : ℝ, T < t →
         ∃ z₁ z₂ : ℂ,
           z₁.re < z₂.re ∧ z₁.im < z₂.im ∧

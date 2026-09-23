@@ -18,18 +18,18 @@ noncomputable section
 namespace TCDMonotoneSchrodingerNoGo
 
 def phasePolynomial : Polynomial ℝ :=
-  -Polynomial.X ^ 2 - Polynomial.C (1/6) * Polynomial.X ^ 4
+  -Polynomial.X ^ (2 : ℕ) - Polynomial.C (1/6) * Polynomial.X ^ (4 : ℕ)
 def phase (x : ℝ) : ℝ := phasePolynomial.eval x
 def profile (x : ℝ) : ℝ := Real.exp (phase x)
 def slope (x : ℝ) : ℝ := phasePolynomial.derivative.eval x
 def potentialPolynomial : Polynomial ℝ :=
-  -Polynomial.C 2 + Polynomial.C 2 * Polynomial.X ^ 2 +
-    Polynomial.C (8/3) * Polynomial.X ^ 4 +
-    Polynomial.C (4/9) * Polynomial.X ^ 6
+  -Polynomial.C 2 + Polynomial.C 2 * Polynomial.X ^ (2 : ℕ) +
+    Polynomial.C (8/3) * Polynomial.X ^ (4 : ℕ) +
+    Polynomial.C (4/9) * Polynomial.X ^ (6 : ℕ)
 def potential (x : ℝ) : ℝ := potentialPolynomial.eval x
 
 theorem potential_eq (x : ℝ) :
-    potential x = -2 + 2*x^2 + (8/3)*x^4 + (4/9)*x^6 := by
+    potential x = -2 + 2*x^(2 : ℕ) + (8/3)*x^(4 : ℕ) + (4/9)*x^(6 : ℕ) := by
   simp [potential, potentialPolynomial]
 
 theorem hasDerivAt_phase (x : ℝ) : HasDerivAt phase (slope x) x := by
@@ -78,11 +78,11 @@ theorem profile_jet_shift (n : ℕ) :
   rw [heq]
   exact iteratedDeriv_fun_mul
     (by
-      rw [show potential = fun x => -2 + 2*x^2 + (8/3)*x^4 + (4/9)*x^6
+      rw [show potential = fun x => -2 + 2*x^(2 : ℕ) + (8/3)*x^(4 : ℕ) + (4/9)*x^(6 : ℕ)
         from funext potential_eq]
       fun_prop)
     (by
-      have hphase : phase = fun x => -x^2-x^4/6 := by
+      have hphase : phase = fun x => -x^(2 : ℕ)-x^(4 : ℕ)/6 := by
         funext x
         simp [phase, phasePolynomial]
         ring
@@ -180,7 +180,7 @@ theorem profile_jet_eight : iteratedDeriv 8 profile 0 = -1120 := by
     potential_jet_six, profile_jet_zero, profile_jet_one, profile_jet_two,
     profile_jet_three, profile_jet_four, profile_jet_five, profile_jet_six]
 
-def entireSource (z : ℂ) : ℂ := Complex.exp (-z^2-z^4/6)
+def entireSource (z : ℂ) : ℂ := Complex.exp (-z^(2 : ℕ)-z^(4 : ℕ)/6)
 
 theorem analyticAt_entireSource (z : ℂ) : AnalyticAt ℂ entireSource z := by
   unfold entireSource
@@ -203,7 +203,7 @@ theorem hasDerivAt_potential (x : ℝ) :
   exact potentialPolynomial.hasDerivAt x
 
 theorem potential_deriv_eq (x : ℝ) :
-    deriv potential x = 4*x + (32/3)*x^3 + (8/3)*x^5 := by
+    deriv potential x = 4*x + (32/3)*x^(3 : ℕ) + (8/3)*x^(5 : ℕ) := by
   rw [(hasDerivAt_potential x).deriv]
   norm_num [potentialPolynomial]
   ring
@@ -219,7 +219,7 @@ theorem strictMonoOn_potential : StrictMonoOn potential (Ici 0) := by
 
 def centralReflectedRankThreeD1 : ℝ :=
   HilbertMetric.signedEvenHankelThreeDet
-    ((iteratedDeriv 0 profile 0)^2)
+    ((iteratedDeriv 0 profile 0)^(2 : ℕ))
     (HilbertMetric.reflectedProductSecondJet
       (iteratedDeriv 0 profile 0) (iteratedDeriv 1 profile 0)
       (iteratedDeriv 2 profile 0))

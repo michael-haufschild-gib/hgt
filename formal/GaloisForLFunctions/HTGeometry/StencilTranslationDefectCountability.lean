@@ -76,7 +76,7 @@ theorem stencilSlopeJetVector_zero {F : ℂ → ℂ} {W : Set ℂ} (hW : IsOpen 
       have hfac : ((k.factorial : ℂ)) ≠ 0 := Nat.cast_ne_zero.mpr k.factorial_ne_zero
       simp only [stencilSlopeJetVector, Fin.cons_succ, entireJetVector]
       rw [stencilNormalizedProfile_center hW hF c lam ha (j : ℕ) k,
-        iteratedDeriv_iteratedDeriv (j : ℕ) k F]
+        iteratedDeriv_iteratedDeriv_stencilJetExpansion (j : ℕ) k F]
       field_simp
 
 /-- Total value-jet degree scaling of the normalized stencil away from shift zero. -/

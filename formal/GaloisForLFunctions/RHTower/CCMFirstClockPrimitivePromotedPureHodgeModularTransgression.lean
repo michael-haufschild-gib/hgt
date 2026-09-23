@@ -257,14 +257,14 @@ theorem pureHodgeCellPoincareTrace_oddTransgression_eq_zero_iff
 
 def pureHodgeCellBalancedCapacity
     (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) : ℝ :=
-  Real.exp (-a * pureHodgeCellModularRate ij) ^ 2 +
-    Real.exp (a * pureHodgeCellModularRate ij) ^ 2
+  Real.exp (-a * pureHodgeCellModularRate ij) ^ (2 : ℕ) +
+    Real.exp (a * pureHodgeCellModularRate ij) ^ (2 : ℕ)
 
 theorem pureHodgeCellBalancedCapacity_sub_two
     (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
     pureHodgeCellBalancedCapacity a ij - 2 =
       (Real.exp (a * pureHodgeCellModularRate ij) -
-        Real.exp (-a * pureHodgeCellModularRate ij)) ^ 2 := by
+        Real.exp (-a * pureHodgeCellModularRate ij)) ^ (2 : ℕ) := by
   have hmul :
       Real.exp (a * pureHodgeCellModularRate ij) *
           Real.exp (-a * pureHodgeCellModularRate ij) = 1 := by
@@ -281,8 +281,8 @@ the square of the unsquared secondary Poincare/Gamma trace. -/
 theorem pureHodgeCellPoincareTrace_sq_eq_capacityDefect
     (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
     4 * xiGammaEulerPrimitiveReflectionOddExterior
-          a ij.1.1 ij.1.2 ^ 2 =
-      pureHodgeCellPoincareWeight ij ^ 2 *
+          a ij.1.1 ij.1.2 ^ (2 : ℕ) =
+      pureHodgeCellPoincareWeight ij ^ (2 : ℕ) *
         (pureHodgeCellBalancedCapacity a ij - 2) := by
   rw [reflectionOddExterior_eq_pureHodgePoincareFactor,
     pureHodgeCellBalancedCapacity_sub_two]
@@ -301,10 +301,10 @@ def pureHodgeBalancedGraphCapacity
     (a : ℝ) (p q : Nat.Primes) (n : ℕ) : ℝ :=
   Real.exp
       (-a * (xiGammaEulerPrimitiveModularRate (p, n) +
-        xiGammaEulerPrimitiveModularRate (q, n))) ^ 2 +
+        xiGammaEulerPrimitiveModularRate (q, n))) ^ (2 : ℕ) +
     Real.exp
       (a * (xiGammaEulerPrimitiveModularRate (p, n) +
-        xiGammaEulerPrimitiveModularRate (q, n))) ^ 2
+        xiGammaEulerPrimitiveModularRate (q, n))) ^ (2 : ℕ)
 
 theorem pureHodgeBalancedGraphCapacity_eq_sewing_add_reflection
     (a : ℝ) (p q : Nat.Primes) (n : ℕ) :

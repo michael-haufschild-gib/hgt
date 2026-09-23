@@ -22,7 +22,7 @@ open GaloisForLFunctions
 
 /-! ## A coordinate-free element is killed by that coordinate -/
 
-theorem pderiv_eq_zero_of_degreeOf_eq_zero {σ : Type*} {i : σ} {P : MvPolynomial σ ℂ}
+theorem pderiv_eq_zero_of_degreeOf_eq_zero_affineFactorFamily {σ : Type*} {i : σ} {P : MvPolynomial σ ℂ}
     (h : MvPolynomial.degreeOf i P = 0) : MvPolynomial.pderiv i P = 0 := by
   by_contra hne
   have := degreeOf_pderiv_lt hne
@@ -36,7 +36,7 @@ theorem TopFree.fpderiv_eq_zero {m : ℕ} {f : CascadeField} (h : TopFree m f) :
   have hd : fpderiv m (algebraMap (MvPolynomial ℕ ℂ) CascadeField D * f)
       = fpderiv m (algebraMap (MvPolynomial ℕ ℂ) CascadeField N) := by rw [hval]
   rw [Derivation.leibniz, fpderiv_algebraMap, fpderiv_algebraMap,
-    pderiv_eq_zero_of_degreeOf_eq_zero hD0, pderiv_eq_zero_of_degreeOf_eq_zero hN0,
+    pderiv_eq_zero_of_degreeOf_eq_zero_affineFactorFamily hD0, pderiv_eq_zero_of_degreeOf_eq_zero_affineFactorFamily hN0,
     map_zero] at hd
   simp only [smul_eq_mul, mul_zero, add_zero] at hd
   exact (mul_eq_zero.mp hd).resolve_left hDne
@@ -60,11 +60,11 @@ theorem topDegLE_inv_affine {m : ℕ} {A B : CascadeField} (hA0 : A ≠ 0)
   set P : MvPolynomial ℕ ℂ := NA * DB * MvPolynomial.X m + NB * DA with hP
   have hpd : MvPolynomial.pderiv m P = NA * DB := by
     rw [hP, map_add, Derivation.leibniz, MvPolynomial.pderiv_X_self,
-      pderiv_eq_zero_of_degreeOf_eq_zero
+      pderiv_eq_zero_of_degreeOf_eq_zero_affineFactorFamily
         (show MvPolynomial.degreeOf m (NA * DB) = 0 by
           have := MvPolynomial.degreeOf_mul_le m NA DB
           omega),
-      pderiv_eq_zero_of_degreeOf_eq_zero
+      pderiv_eq_zero_of_degreeOf_eq_zero_affineFactorFamily
         (show MvPolynomial.degreeOf m (NB * DA) = 0 by
           have := MvPolynomial.degreeOf_mul_le m NB DA
           omega)]

@@ -19,14 +19,14 @@ namespace RHTower
 
 /-- The telescoping majorant of the truncated inverse-square tail. -/
 theorem sum_inv_sq_Icc_le {N : ℕ} (hN : 2 ≤ N) :
-    ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / (k : ℝ) ^ 2 ≤ 3 / 4 - 1 / (N : ℝ) := by
+    ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) ≤ 3 / 4 - 1 / (N : ℝ) := by
   induction N, hN using Nat.le_induction with
   | base => norm_num
   | succ N hN ih =>
     have hNpos : (0 : ℝ) < (N : ℝ) := by
       have h : (0 : ℕ) < N := by omega
       exact_mod_cast h
-    have hstep : (1 : ℝ) / ((N : ℝ) + 1) ^ 2 ≤ 1 / (N : ℝ) - 1 / ((N : ℝ) + 1) := by
+    have hstep : (1 : ℝ) / ((N : ℝ) + 1) ^ (2 : ℕ) ≤ 1 / (N : ℝ) - 1 / ((N : ℝ) + 1) := by
       have h1 : (1 : ℝ) / (N : ℝ) - 1 / ((N : ℝ) + 1) = 1 / ((N : ℝ) * ((N : ℝ) + 1)) := by
         field_simp
         ring
@@ -51,7 +51,7 @@ theorem card_filter_dvd (N m : ℕ) :
 theorem nonSquarefree_subset_biUnion (N : ℕ) :
     ((Finset.Icc 1 N).filter fun d => ¬ Squarefree d)
       ⊆ (Finset.Icc 2 N).biUnion
-        (fun k => (Finset.Icc 1 N).filter (fun d => k ^ 2 ∣ d)) := by
+        (fun k => (Finset.Icc 1 N).filter (fun d => k ^ (2 : ℕ) ∣ d)) := by
   intro d hd
   rw [Finset.mem_filter, Finset.mem_Icc] at hd
   obtain ⟨⟨hd1, hdN⟩, hns⟩ := hd
@@ -86,35 +86,35 @@ theorem card_nonSquarefree_le (N : ℕ) :
       exact_mod_cast h
     have hcard := Finset.card_le_card (nonSquarefree_subset_biUnion N)
     have hbi : ((Finset.Icc 2 N).biUnion
-        (fun k => (Finset.Icc 1 N).filter (fun d => k ^ 2 ∣ d))).card
-        ≤ ∑ k ∈ Finset.Icc 2 N, N / k ^ 2 := by
+        (fun k => (Finset.Icc 1 N).filter (fun d => k ^ (2 : ℕ) ∣ d))).card
+        ≤ ∑ k ∈ Finset.Icc 2 N, N / k ^ (2 : ℕ) := by
       refine le_trans Finset.card_biUnion_le ?_
-      exact le_of_eq (Finset.sum_congr rfl fun k _ => card_filter_dvd N (k ^ 2))
+      exact le_of_eq (Finset.sum_congr rfl fun k _ => card_filter_dvd N (k ^ (2 : ℕ)))
     have hnat : (((Finset.Icc 1 N).filter fun d => ¬ Squarefree d).card : ℕ)
-        ≤ ∑ k ∈ Finset.Icc 2 N, N / k ^ 2 := le_trans hcard hbi
+        ≤ ∑ k ∈ Finset.Icc 2 N, N / k ^ (2 : ℕ) := le_trans hcard hbi
     have hreal : ((((Finset.Icc 1 N).filter fun d => ¬ Squarefree d).card : ℕ) : ℝ)
-        ≤ ((∑ k ∈ Finset.Icc 2 N, N / k ^ 2 : ℕ) : ℝ) := by exact_mod_cast hnat
+        ≤ ((∑ k ∈ Finset.Icc 2 N, N / k ^ (2 : ℕ) : ℕ) : ℝ) := by exact_mod_cast hnat
     have hterm : ∀ k ∈ Finset.Icc 2 N,
-        (((N / k ^ 2 : ℕ)) : ℝ) ≤ (N : ℝ) * (1 / (k : ℝ) ^ 2) := by
+        (((N / k ^ (2 : ℕ) : ℕ)) : ℝ) ≤ (N : ℝ) * (1 / (k : ℝ) ^ (2 : ℕ)) := by
       intro k hk
       rw [Finset.mem_Icc] at hk
       have hkpos : (0 : ℝ) < (k : ℝ) := by
         have h : (0 : ℕ) < k := by omega
         exact_mod_cast h
-      have hle : (((N / k ^ 2 : ℕ)) : ℝ) ≤ (N : ℝ) / ((k ^ 2 : ℕ) : ℝ) := Nat.cast_div_le
-      have hcast : ((k ^ 2 : ℕ) : ℝ) = (k : ℝ) ^ 2 := by push_cast; ring
+      have hle : (((N / k ^ (2 : ℕ) : ℕ)) : ℝ) ≤ (N : ℝ) / ((k ^ (2 : ℕ) : ℕ) : ℝ) := Nat.cast_div_le
+      have hcast : ((k ^ (2 : ℕ) : ℕ) : ℝ) = (k : ℝ) ^ (2 : ℕ) := by push_cast; ring
       rw [hcast] at hle
-      calc (((N / k ^ 2 : ℕ)) : ℝ) ≤ (N : ℝ) / (k : ℝ) ^ 2 := hle
-        _ = (N : ℝ) * (1 / (k : ℝ) ^ 2) := by ring
-    have hsumcast : ((∑ k ∈ Finset.Icc 2 N, N / k ^ 2 : ℕ) : ℝ)
-        = ∑ k ∈ Finset.Icc 2 N, (((N / k ^ 2 : ℕ)) : ℝ) := by push_cast; ring
-    have hbound : ∑ k ∈ Finset.Icc 2 N, (((N / k ^ 2 : ℕ)) : ℝ)
-        ≤ ∑ k ∈ Finset.Icc 2 N, (N : ℝ) * (1 / (k : ℝ) ^ 2) := Finset.sum_le_sum hterm
-    have hfactor : ∑ k ∈ Finset.Icc 2 N, (N : ℝ) * (1 / (k : ℝ) ^ 2)
-        = (N : ℝ) * ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / (k : ℝ) ^ 2 := by
+      calc (((N / k ^ (2 : ℕ) : ℕ)) : ℝ) ≤ (N : ℝ) / (k : ℝ) ^ (2 : ℕ) := hle
+        _ = (N : ℝ) * (1 / (k : ℝ) ^ (2 : ℕ)) := by ring
+    have hsumcast : ((∑ k ∈ Finset.Icc 2 N, N / k ^ (2 : ℕ) : ℕ) : ℝ)
+        = ∑ k ∈ Finset.Icc 2 N, (((N / k ^ (2 : ℕ) : ℕ)) : ℝ) := by push_cast; ring
+    have hbound : ∑ k ∈ Finset.Icc 2 N, (((N / k ^ (2 : ℕ) : ℕ)) : ℝ)
+        ≤ ∑ k ∈ Finset.Icc 2 N, (N : ℝ) * (1 / (k : ℝ) ^ (2 : ℕ)) := Finset.sum_le_sum hterm
+    have hfactor : ∑ k ∈ Finset.Icc 2 N, (N : ℝ) * (1 / (k : ℝ) ^ (2 : ℕ))
+        = (N : ℝ) * ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
     have htail := sum_inv_sq_Icc_le hge
-    have hlast : (N : ℝ) * ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / (k : ℝ) ^ 2
+    have hlast : (N : ℝ) * ∑ k ∈ Finset.Icc 2 N, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ)
         ≤ (N : ℝ) * (3 / 4 - 1 / (N : ℝ)) := by
       exact mul_le_mul_of_nonneg_left htail hNpos.le
     have hfin : (N : ℝ) * (3 / 4 - 1 / (N : ℝ)) ≤ 3 / 4 * (N : ℝ) := by

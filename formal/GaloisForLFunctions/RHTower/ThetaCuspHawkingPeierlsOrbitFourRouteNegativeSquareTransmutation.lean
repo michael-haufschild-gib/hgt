@@ -22,7 +22,7 @@ noncomputable section
 reflected Peierls current. -/
 def d4BMXiHBOpticalPowerToPeierlsOrbitSusceptibility
     (n : ℕ) (q : XiZeroCopy) : ℝ :=
-  2 * (8 * (n : ℝ) + 5) * (q.1 : ℂ).im ^ 2 /
+  2 * (8 * (n : ℝ) + 5) * (q.1 : ℂ).im ^ (2 : ℕ) /
     hbXiPeierlsFESchwarzCanonicalWardEnergyMultiplier n q
 
 theorem d4BMXiHBOpticalPowerToPeierlsOrbitSusceptibility_pos
@@ -53,9 +53,9 @@ theorem d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_hbOptical
 /-- Positive coefficient converting squared FZZ information force to the reflected Peierls orbit. -/
 def d4BMXiFZZInformationForceSquareToPeierlsOrbitSusceptibility
     (n : ℕ) (q : XiZeroCopy) : ℝ :=
-  2 * (8 * (n : ℝ) + 5) * (q.1 : ℂ).im ^ 2 /
+  2 * (8 * (n : ℝ) + 5) * (q.1 : ℂ).im ^ (2 : ℕ) /
     fzzCigarParityDeningerInformationWardMultiplier
-      (deningerDivisorThetaEigen q).re ^ 2
+      (deningerDivisorThetaEigen q).re ^ (2 : ℕ)
 
 theorem d4BMXiFZZInformationForceSquareToPeierlsOrbitSusceptibility_pos
     (n : ℕ) (q : XiZeroCopy) :
@@ -72,7 +72,7 @@ theorem d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_fzzForce_
     d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut n q =
       -((d4BMXiFZZInformationForceSquareToPeierlsOrbitSusceptibility n q *
         fzzCigarParityReflectedFermiInformationForce
-          (deningerDivisorThetaEigen q).re ^ 2 : ℝ) : ℂ) := by
+          (deningerDivisorThetaEigen q).re ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_density,
     d4BMXiMixedHorizonAngularCausalOpticalDensity_eq_tilt,
     fzzCigarParityReflectedFermiInformationForce_eq_centered_mul_wardMultiplier]
@@ -89,8 +89,8 @@ theorem d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_fzzForce_
 /-- Positive coefficient converting squared every-grade PW-B imbalance to the Peierls orbit. -/
 def d4BMXiPWImbalanceSquareToPeierlsOrbitSusceptibility
     (n k : ℕ) (q : XiZeroCopy) : ℝ :=
-  2 * (8 * (n : ℝ) + 5) * (q.1 : ℂ).im ^ 2 /
-    schwarzschildParikhWilczekDeningerWardMultiplier k ^ 2
+  2 * (8 * (n : ℝ) + 5) * (q.1 : ℂ).im ^ (2 : ℕ) /
+    schwarzschildParikhWilczekDeningerWardMultiplier k ^ (2 : ℕ)
 
 theorem d4BMXiPWImbalanceSquareToPeierlsOrbitSusceptibility_pos
     (n k : ℕ) (q : XiZeroCopy) :
@@ -106,7 +106,7 @@ theorem d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_pwImbalan
     d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut n q =
       -((d4BMXiPWImbalanceSquareToPeierlsOrbitSusceptibility n k q *
         schwarzschildParikhWilczekBorelPartnerRealImbalance
-          (deningerDivisorThetaEigen q) k ^ 2 : ℝ) : ℂ) := by
+          (deningerDivisorThetaEigen q) k ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_density,
     d4BMXiMixedHorizonAngularCausalOpticalDensity_eq_tilt,
     schwarzschildParikhWilczekBorelPartnerRealImbalance_eq_neg_wardMultiplier_mul_charge,
@@ -121,8 +121,8 @@ theorem d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_pwImbalan
 /-- Positive coefficient converting squared actual RBH imbalance to the reflected Peierls orbit. -/
 def d4BMXiRBHImbalanceSquareToPeierlsOrbitSusceptibility
     (n : ℕ) (rho : XiDivisorSupport) : ℝ :=
-  8 * (8 * (n : ℝ) + 5) * (rho : ℂ).im ^ 2 /
-    reflectedBiHeatMultiplicityInformationWardMultiplier rho ^ 2
+  8 * (8 * (n : ℝ) + 5) * (rho : ℂ).im ^ (2 : ℕ) /
+    reflectedBiHeatMultiplicityInformationWardMultiplier rho ^ (2 : ℕ)
 
 theorem d4BMXiRBHImbalanceSquareToPeierlsOrbitSusceptibility_pos
     (n : ℕ) (rho : XiDivisorSupport) :
@@ -138,7 +138,7 @@ theorem d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_neg_rbhImbala
     d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut n
         (reflectedBiHeatFirstDivisorCopy rho) =
       -((d4BMXiRBHImbalanceSquareToPeierlsOrbitSusceptibility n rho *
-        reflectedBiHeatMultiplicityLeadingJetNormImbalance rho ^ 2 : ℝ) : ℂ) := by
+        reflectedBiHeatMultiplicityLeadingJetNormImbalance rho ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedOrbitCut_eq_density,
     d4BMXiMixedHorizonAngularCausalOpticalDensity_eq_tilt,
     reflectedBiHeatMultiplicityLeadingJetNormImbalance_eq_centered_mul_wardMultiplier]

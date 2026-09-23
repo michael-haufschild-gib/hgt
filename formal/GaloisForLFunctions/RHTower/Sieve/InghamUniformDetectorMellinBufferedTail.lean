@@ -248,7 +248,7 @@ def inghamRouteTBufferedXiMellinHighTail (X : ℕ) : ℂ :=
       (q.1.1 : ℂ)
 
 /-- At derivative order `2001`, the buffered high Xi tail is bounded by inverse-square divisor
-mass times `frequency^2002 / height^2000`. -/
+mass times `frequency^(2002 : ℕ) / height^(2000 : ℕ)`. -/
 theorem exists_norm_inghamRouteTBufferedXiMellinHighTail_le :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ {X : ℕ}, 3 ≤ X →
       ‖inghamRouteTBufferedXiMellinHighTail X‖ ≤

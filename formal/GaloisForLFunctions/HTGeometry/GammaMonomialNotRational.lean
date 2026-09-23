@@ -28,7 +28,7 @@ theorem analyticAt_shift_zpow (lam : ℂ) (n : ℤ) {s : ℂ} (h : s + lam ≠ 0
   · simp only [zpow_negSucc]
     exact (hbase.pow (m + 1)).inv (pow_ne_zero _ h)
 
-theorem analyticAt_polyEval (P : Polynomial ℂ) (s : ℂ) :
+theorem analyticAt_polyEval_gammaMonomialNotRational (P : Polynomial ℂ) (s : ℂ) :
     AnalyticAt ℂ (fun w : ℂ => Polynomial.eval w P) s :=
   (Polynomial.differentiable_aeval P).differentiableOn.analyticAt Filter.univ_mem
 
@@ -71,13 +71,13 @@ theorem not_rational_gammaMonomial {r : ℕ} (lam : Fin r → ℂ)
     have hb : AnalyticAt ℂ (fun w : ℂ => w + 1) z := analyticAt_id.add analyticAt_const
     have hnum : AnalyticAt ℂ (fun w : ℂ => Polynomial.eval (w + 1) P) z := by
       have hc := AnalyticAt.comp (g := fun w : ℂ => Polynomial.eval w P)
-        (f := fun w : ℂ => w + 1) (x := z) (analyticAt_polyEval P (z + 1)) hb
+        (f := fun w : ℂ => w + 1) (x := z) (analyticAt_polyEval_gammaMonomialNotRational P (z + 1)) hb
       have hrw : ((fun w : ℂ => Polynomial.eval w P) ∘ fun w : ℂ => w + 1)
           = fun w : ℂ => Polynomial.eval (w + 1) P := by funext w; rfl
       rwa [hrw] at hc
     have hden : AnalyticAt ℂ (fun w : ℂ => Polynomial.eval (w + 1) Q) z := by
       have hc := AnalyticAt.comp (g := fun w : ℂ => Polynomial.eval w Q)
-        (f := fun w : ℂ => w + 1) (x := z) (analyticAt_polyEval Q (z + 1)) hb
+        (f := fun w : ℂ => w + 1) (x := z) (analyticAt_polyEval_gammaMonomialNotRational Q (z + 1)) hb
       have hrw : ((fun w : ℂ => Polynomial.eval w Q) ∘ fun w : ℂ => w + 1)
           = fun w : ℂ => Polynomial.eval (w + 1) Q := by funext w; rfl
       rwa [hrw] at hc
@@ -93,7 +93,7 @@ theorem not_rational_gammaMonomial {r : ℕ} (lam : Fin r → ℂ)
         funext w
         simp [Finset.prod_apply]
       rwa [hfun] at hprod0
-    exact hprod.mul ((analyticAt_polyEval P z).div (analyticAt_polyEval Q z) hz1)
+    exact hprod.mul ((analyticAt_polyEval_gammaMonomialNotRational P z).div (analyticAt_polyEval_gammaMonomialNotRational Q z) hz1)
   have hagree : ∀ z ∈ U ∩ Sᶜ, f z = g z := by
     intro z hz
     obtain ⟨hzU, hzS⟩ := hz

@@ -13,7 +13,7 @@ Let `J` be a linear source quotient.  If `J` kills the common Xi source, the exa
 recurrence makes the retained first divided source an eigenvector of coordinate multiplication.
 Its numerical value therefore has imaginary part
 
-`Im(alpha_rho) * ‖J Q_rho‖ ^ 2`.
+`Im(alpha_rho) * ‖J Q_rho‖ ^ (2 : ℕ)`.
 
 One-sided nonnegativity at both members of each functional-equation reflection pair forces
 `Im(alpha_rho) = 0`.  Thus source annihilation, fiberwise faithfulness, and this static numerical
@@ -61,7 +61,7 @@ theorem xiFirstDividedSourceNumericalValue_im_eq
     (rho : XiDivisorSupport) :
     (xiFirstDividedSourceNumericalValue J rho).im =
       (xiSpectralPointSupport rho).im *
-        ‖J (xiThetaDividedChain (xiSpectralPointSupport rho) 1)‖ ^ 2 := by
+        ‖J (xiThetaDividedChain (xiSpectralPointSupport rho) 1)‖ ^ (2 : ℕ) := by
   rw [xiFirstDividedSourceNumericalValue,
     xiFirstDividedSource_coordinate_eq_smul J hsource rho,
     inner_smul_right, inner_self_eq_norm_sq_to_K]
@@ -83,10 +83,10 @@ theorem xiSpectralPointSupport_im_eq_zero_of_firstDividedSourceUpperSector
   rw [xiFirstDividedSourceNumericalValue_im_eq J hsource rho] at hrho
   rw [xiFirstDividedSourceNumericalValue_im_eq J hsource rr,
     xiSpectralPointSupport_reflect rho, neg_im] at href
-  have hnrho : 0 < ‖J (xiThetaDividedChain (xiSpectralPointSupport rho) 1)‖ ^ 2 :=
+  have hnrho : 0 < ‖J (xiThetaDividedChain (xiSpectralPointSupport rho) 1)‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr (hfaithful rho))
   have hnref :
-      0 < ‖J (xiThetaDividedChain (-xiSpectralPointSupport rho) 1)‖ ^ 2 := by
+      0 < ‖J (xiThetaDividedChain (-xiSpectralPointSupport rho) 1)‖ ^ (2 : ℕ) := by
     simpa only [rr, xiSpectralPointSupport_reflect] using
       sq_pos_of_pos (norm_pos_iff.mpr (hfaithful rr))
   nlinarith

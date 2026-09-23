@@ -18,8 +18,8 @@ noncomputable section
 
 /-- Conservative global curvature retained after tangent gauging. -/
 def rapidExponentialFockTangentCurvature (a x : ℝ) : ℝ :=
-  a ^ 2 * Real.exp (2 * a * x) /
-    (4 * (1 + max 1 (2 * a * x)) ^ 2)
+  a ^ (2 : ℕ) * Real.exp (2 * a * x) /
+    (4 * (1 + max 1 (2 * a * x)) ^ (2 : ℕ))
 
 theorem rapidExponentialFockTangentCurvature_pos
     {a x : ℝ} (ha : 0 < a) (_hx : 0 ≤ x) :
@@ -65,16 +65,16 @@ private theorem expDivTwo_one_half_le_of_nonneg
 
 private theorem exp_remainder_lower_of_nonneg
     {t : ℝ} (ht : 0 ≤ t) :
-    t ^ 2 / 2 ≤ Real.exp t - 1 - t := by
+    t ^ (2 : ℕ) / 2 ≤ Real.exp t - 1 - t := by
   by_cases ht0 : t = 0
   · subst t
     norm_num
   · have hid := GaloisForLFunctions.HTGeometry.expDivTwo_eq_of_ne ht0
     have hdiv := expDivTwo_one_half_le_of_nonneg ht
-    have hsq : 0 ≤ t ^ 2 := sq_nonneg t
+    have hsq : 0 ≤ t ^ (2 : ℕ) := sq_nonneg t
     calc
-      t ^ 2 / 2 = t ^ 2 * (1 / 2) := by ring
-      _ ≤ t ^ 2 * GaloisForLFunctions.HTGeometry.expDivTwo t :=
+      t ^ (2 : ℕ) / 2 = t ^ (2 : ℕ) * (1 / 2) := by ring
+      _ ≤ t ^ (2 : ℕ) * GaloisForLFunctions.HTGeometry.expDivTwo t :=
         mul_le_mul_of_nonneg_left hdiv hsq
       _ = Real.exp t - 1 - t := by
         rw [hid]
@@ -82,11 +82,11 @@ private theorem exp_remainder_lower_of_nonneg
 
 private theorem exp_neg_remainder_lower
     {b u : ℝ} (hb : 1 ≤ b) (hu0 : 0 ≤ u) (hub : u ≤ b) :
-    u ^ 2 / (16 * (1 + b) ^ 2) ≤ Real.exp (-u) - 1 + u := by
-  have hden : 0 < 16 * (1 + b) ^ 2 := by positivity
-  have hcoef : u ^ 2 / (16 * (1 + b) ^ 2) ≤ 1 / 16 := by
+    u ^ (2 : ℕ) / (16 * (1 + b) ^ (2 : ℕ)) ≤ Real.exp (-u) - 1 + u := by
+  have hden : 0 < 16 * (1 + b) ^ (2 : ℕ) := by positivity
+  have hcoef : u ^ (2 : ℕ) / (16 * (1 + b) ^ (2 : ℕ)) ≤ 1 / 16 := by
     apply (div_le_iff₀ hden).2
-    have hsq : u ^ 2 ≤ (1 + b) ^ 2 := by
+    have hsq : u ^ (2 : ℕ) ≤ (1 + b) ^ (2 : ℕ) := by
       have hu : u ≤ 1 + b := hub.trans (by linarith)
       exact (sq_le_sq₀ hu0 (by linarith : 0 ≤ 1 + b)).2 hu
     nlinarith
@@ -102,16 +102,16 @@ private theorem exp_neg_remainder_lower
         nlinarith [one_fourth_lt_exp_neg_one]
       have hid := GaloisForLFunctions.HTGeometry.expDivTwo_eq_of_ne
         (neg_ne_zero.mpr huZero)
-      have hcoefSmall : 1 / (16 * (1 + b) ^ 2) ≤ 1 / 8 := by
-        have : 4 ≤ (1 + b) ^ 2 := by nlinarith
+      have hcoefSmall : 1 / (16 * (1 + b) ^ (2 : ℕ)) ≤ 1 / 8 := by
+        have : 4 ≤ (1 + b) ^ (2 : ℕ) := by nlinarith
         apply (div_le_iff₀ hden).2
         nlinarith
       calc
-        u ^ 2 / (16 * (1 + b) ^ 2) =
-            u ^ 2 * (1 / (16 * (1 + b) ^ 2)) := by ring
-        _ ≤ u ^ 2 * (1 / 8) :=
+        u ^ (2 : ℕ) / (16 * (1 + b) ^ (2 : ℕ)) =
+            u ^ (2 : ℕ) * (1 / (16 * (1 + b) ^ (2 : ℕ))) := by ring
+        _ ≤ u ^ (2 : ℕ) * (1 / 8) :=
           mul_le_mul_of_nonneg_left hcoefSmall (sq_nonneg u)
-        _ ≤ u ^ 2 * GaloisForLFunctions.HTGeometry.expDivTwo (-u) := by
+        _ ≤ u ^ (2 : ℕ) * GaloisForLFunctions.HTGeometry.expDivTwo (-u) := by
           gcongr
         _ = Real.exp (-u) - 1 + u := by
           rw [hid]
@@ -133,7 +133,7 @@ private theorem exp_neg_remainder_lower
 
 private theorem rapidExponentialFock_radial_bregman_lower
     {a x r : ℝ} (ha : 0 < a) (hr : 0 ≤ r) :
-    rapidExponentialFockTangentCurvature a x * (r - x) ^ 2 ≤
+    rapidExponentialFockTangentCurvature a x * (r - x) ^ (2 : ℕ) ≤
       rapidExponentialFockPotential a r - rapidExponentialFockPotential a x -
         rapidExponentialFockRadialSlope a x * (r - x) := by
   let b : ℝ := max 1 (2 * a * x)
@@ -160,19 +160,19 @@ private theorem rapidExponentialFock_radial_bregman_lower
   · have ht0 : 0 ≤ t := by dsimp [t]; nlinarith
     have hrem := exp_remainder_lower_of_nonneg ht0
     have hcurv : rapidExponentialFockTangentCurvature a x ≤
-        2 * a ^ 2 * rapidExponentialFockPotential a x := by
+        2 * a ^ (2 : ℕ) * rapidExponentialFockPotential a x := by
       unfold rapidExponentialFockTangentCurvature rapidExponentialFockPotential
-      have hdenOne : 1 ≤ 4 * (1 + max 1 (2 * a * x)) ^ 2 := by
+      have hdenOne : 1 ≤ 4 * (1 + max 1 (2 * a * x)) ^ (2 : ℕ) := by
         nlinarith [sq_nonneg (1 + max 1 (2 * a * x)),
           le_max_left 1 (2 * a * x)]
-      have hnum : 0 ≤ a ^ 2 * Real.exp (2 * a * x) := by positivity
+      have hnum : 0 ≤ a ^ (2 : ℕ) * Real.exp (2 * a * x) := by positivity
       calc
-        a ^ 2 * Real.exp (2 * a * x) /
-              (4 * (1 + max 1 (2 * a * x)) ^ 2) ≤
-            a ^ 2 * Real.exp (2 * a * x) := div_le_self hnum hdenOne
-        _ ≤ 2 * a ^ 2 * Real.exp (2 * a * x) := by nlinarith
+        a ^ (2 : ℕ) * Real.exp (2 * a * x) /
+              (4 * (1 + max 1 (2 * a * x)) ^ (2 : ℕ)) ≤
+            a ^ (2 : ℕ) * Real.exp (2 * a * x) := div_le_self hnum hdenOne
+        _ ≤ 2 * a ^ (2 : ℕ) * Real.exp (2 * a * x) := by nlinarith
     have hrem' :
-        2 * a ^ 2 * rapidExponentialFockPotential a x * (r - x) ^ 2 ≤
+        2 * a ^ (2 : ℕ) * rapidExponentialFockPotential a x * (r - x) ^ (2 : ℕ) ≤
           rapidExponentialFockPotential a x * (Real.exp t - 1 - t) := by
       have := mul_le_mul_of_nonneg_left hrem hphi.le
       dsimp [t] at this
@@ -191,9 +191,9 @@ private theorem rapidExponentialFock_radial_bregman_lower
     dsimp [b] at hscaled
     rw [htNeg]
     have hcurvIdentity :
-        rapidExponentialFockTangentCurvature a x * (r - x) ^ 2 =
+        rapidExponentialFockTangentCurvature a x * (r - x) ^ (2 : ℕ) =
           rapidExponentialFockPotential a x *
-            (u ^ 2 / (16 * (1 + max 1 (2 * a * x)) ^ 2)) := by
+            (u ^ (2 : ℕ) / (16 * (1 + max 1 (2 * a * x)) ^ (2 : ℕ))) := by
       unfold rapidExponentialFockTangentCurvature rapidExponentialFockPotential
       dsimp [u]
       have hden : 1 + max 1 (2 * a * x) ≠ 0 := by
@@ -208,7 +208,7 @@ theorem rapidExponentialFockPotential_bregman_lower
     {a x : ℝ} (ha : 0 < a) (hx : 0 ≤ x) (z : ℂ) :
     rapidExponentialFockPotential a x +
         rapidExponentialFockRadialSlope a x * (z.re - x) +
-        rapidExponentialFockTangentCurvature a x * ‖z - (x : ℂ)‖ ^ 2 ≤
+        rapidExponentialFockTangentCurvature a x * ‖z - (x : ℂ)‖ ^ (2 : ℕ) ≤
       rapidExponentialFockPotential a ‖z‖ := by
   let r : ℝ := ‖z‖
   let c : ℝ := rapidExponentialFockTangentCurvature a x
@@ -217,12 +217,12 @@ theorem rapidExponentialFockPotential_bregman_lower
   have hre : z.re ≤ r := by
     dsimp [r]
     exact (le_abs_self z.re).trans (Complex.abs_re_le_norm z)
-  have hgeom : ‖z - (x : ℂ)‖ ^ 2 =
-      (r - x) ^ 2 + 2 * x * (r - z.re) := by
+  have hgeom : ‖z - (x : ℂ)‖ ^ (2 : ℕ) =
+      (r - x) ^ (2 : ℕ) + 2 * x * (r - z.re) := by
     rw [Complex.sq_norm]
     simp only [Complex.normSq_apply, Complex.sub_re, Complex.ofReal_re,
       Complex.sub_im, Complex.ofReal_im, sub_zero]
-    have hzsq : r ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+    have hzsq : r ^ (2 : ℕ) = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
       dsimp [r]
       rw [Complex.sq_norm]
       simp [Complex.normSq]
@@ -231,17 +231,17 @@ theorem rapidExponentialFockPotential_bregman_lower
   have hc : 0 ≤ c := (rapidExponentialFockTangentCurvature_pos ha hx).le
   have hslope : c * (2 * x) ≤ rapidExponentialFockRadialSlope a x := by
     unfold c rapidExponentialFockTangentCurvature rapidExponentialFockRadialSlope
-    have hden : 0 < 4 * (1 + max 1 (2 * a * x)) ^ 2 := by positivity
+    have hden : 0 < 4 * (1 + max 1 (2 * a * x)) ^ (2 : ℕ) := by positivity
     have hmax : 2 * a * x ≤ max 1 (2 * a * x) := le_max_right _ _
-    have hratio : a * x / (4 * (1 + max 1 (2 * a * x)) ^ 2) ≤ 1 := by
+    have hratio : a * x / (4 * (1 + max 1 (2 * a * x)) ^ (2 : ℕ)) ≤ 1 := by
       apply (div_le_one hden).2
       nlinarith [sq_nonneg (1 + max 1 (2 * a * x))]
     have hscale : 0 ≤ 2 * a * Real.exp (2 * a * x) := by positivity
     calc
-      (a ^ 2 * Real.exp (2 * a * x) /
-            (4 * (1 + max 1 (2 * a * x)) ^ 2)) * (2 * x) =
+      (a ^ (2 : ℕ) * Real.exp (2 * a * x) /
+            (4 * (1 + max 1 (2 * a * x)) ^ (2 : ℕ))) * (2 * x) =
           (2 * a * Real.exp (2 * a * x)) *
-            (a * x / (4 * (1 + max 1 (2 * a * x)) ^ 2)) := by ring
+            (a * x / (4 * (1 + max 1 (2 * a * x)) ^ (2 : ℕ))) := by ring
       _ ≤ (2 * a * Real.exp (2 * a * x)) * 1 :=
         mul_le_mul_of_nonneg_left hratio hscale
       _ = 2 * a * Real.exp (2 * a * x) := by ring
@@ -259,13 +259,13 @@ theorem rapidExponentialFockTangentDensity_le_gaussian
     rapidExponentialFockTangentDensity a x z ≤
       Real.exp (-2 * rapidExponentialFockPotential a x) *
         Real.exp (-(2 * rapidExponentialFockTangentCurvature a x *
-          ‖z - (x : ℂ)‖ ^ 2)) := by
+          ‖z - (x : ℂ)‖ ^ (2 : ℕ))) := by
   have h := rapidExponentialFockPotential_bregman_lower ha hx z
   have hexp :
       2 * rapidExponentialFockRadialSlope a x * (z.re - x) -
           2 * rapidExponentialFockPotential a ‖z‖ ≤
         -2 * rapidExponentialFockPotential a x -
-          2 * rapidExponentialFockTangentCurvature a x * ‖z - (x : ℂ)‖ ^ 2 := by
+          2 * rapidExponentialFockTangentCurvature a x * ‖z - (x : ℂ)‖ ^ (2 : ℕ) := by
     linarith
   rw [rapidExponentialFockTangentDensity, ← Real.exp_add]
   exact Real.exp_le_exp.mpr (by simpa [sub_eq_add_neg] using hexp)
@@ -277,7 +277,7 @@ theorem integrable_rapidExponentialFockTangentDensity
   have hc : 0 < c := mul_pos (by norm_num) (rapidExponentialFockTangentCurvature_pos ha hx)
   let g : ℂ → ℝ := fun z =>
     Real.exp (-2 * rapidExponentialFockPotential a x) *
-      Real.exp (-c * ‖z - (x : ℂ)‖ ^ 2)
+      Real.exp (-c * ‖z - (x : ℂ)‖ ^ (2 : ℕ))
   have hg : Integrable g := by
     simpa [g] using (integrable_complex_gaussian_sub_real c x hc).const_mul
       (Real.exp (-2 * rapidExponentialFockPotential a x))
@@ -301,7 +301,7 @@ theorem integral_rapidExponentialFockTangentDensity_le
   have hc : 0 < c := mul_pos (by norm_num) (rapidExponentialFockTangentCurvature_pos ha hx)
   let g : ℂ → ℝ := fun z =>
     Real.exp (-2 * rapidExponentialFockPotential a x) *
-      Real.exp (-c * ‖z - (x : ℂ)‖ ^ 2)
+      Real.exp (-c * ‖z - (x : ℂ)‖ ^ (2 : ℕ))
   have hg : Integrable g := by
     simpa [g] using (integrable_complex_gaussian_sub_real c x hc).const_mul
       (Real.exp (-2 * rapidExponentialFockPotential a x))

@@ -37,11 +37,11 @@ theorem sum_pow_le_max_pow_mul_sum {ι : Type*} (s : Finset ι) (a : ι → ℝ)
 /-- **Self-adjoint packets: only the first two moments survive.** -/
 theorem abs_sum_pow_le_max_pow_mul_sum_sq {ι : Type*} (s : Finset ι) (a : ι → ℝ)
     {m : ℝ} (hm : ∀ i ∈ s, |a i| ≤ m) {k : ℕ} (hk : 2 ≤ k) :
-    |∑ i ∈ s, a i ^ k| ≤ m ^ (k - 2) * ∑ i ∈ s, a i ^ 2 := by
+    |∑ i ∈ s, a i ^ k| ≤ m ^ (k - 2) * ∑ i ∈ s, a i ^ (2 : ℕ) := by
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun i hi => ?_
-  have hsplit : |a i ^ k| = |a i| ^ (k - 2) * a i ^ 2 := by
+  have hsplit : |a i ^ k| = |a i| ^ (k - 2) * a i ^ (2 : ℕ) := by
     rw [abs_pow]
     have hk2 : k - 2 + 2 = k := by omega
     conv_lhs => rw [← hk2]

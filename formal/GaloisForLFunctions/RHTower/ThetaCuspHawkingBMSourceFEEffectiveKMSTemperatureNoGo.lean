@@ -49,7 +49,7 @@ theorem thetaCuspHawkingKMSBoltzmannRatio_effectiveKappa
 /-- Exact squared recurrence ratio in terms of source orbit gain. -/
 theorem norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq
     (q : XiZeroCopy) :
-    ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ 2 =
+    ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ (2 : ℕ) =
       hbXiPeierlsUnitSourceFEOrbitPartnerNumber q /
         (2 * hbXiPeierlsUnitSourceFEOrbitExpandingGain q) := by
   rw [hbXiPeierlsUnitSourceFEFockVacuumPairRatio,
@@ -63,13 +63,13 @@ theorem norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq
 
 theorem norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_nonneg
     (q : XiZeroCopy) :
-    0 ≤ ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ 2 :=
+    0 ≤ ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ (2 : ℕ) :=
   sq_nonneg _
 
 /-- Source normalization puts every effective thermal ratio strictly below one half. -/
 theorem norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_lt_half
     (q : XiZeroCopy) :
-    ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ 2 < 1 / 2 := by
+    ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ (2 : ℕ) < 1 / 2 := by
   rw [norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq]
   have hgain : 0 < hbXiPeierlsUnitSourceFEOrbitExpandingGain q :=
     lt_of_lt_of_le zero_lt_one
@@ -81,13 +81,13 @@ theorem norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_lt_half
 
 theorem norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_lt_one
     (q : XiZeroCopy) :
-    ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ 2 < 1 := by
+    ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ (2 : ℕ) < 1 := by
   linarith [norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_lt_half q]
 
 /-- Effective thermal ratio is strictly positive exactly off the critical wall. -/
 theorem norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_pos_iff
     (q : XiZeroCopy) :
-    0 < ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ 2 ↔
+    0 < ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ (2 : ℕ) ↔
       (q.1 : ℂ).re ≠ 1 / 2 := by
   constructor
   · intro hpos hline
@@ -107,7 +107,7 @@ theorem norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_pos_iff
 /-- Effective surface gravity of an off-wall source local product state. -/
 def hbXiPeierlsUnitSourceFEEffectiveKMSKappa (q : XiZeroCopy) : ℝ :=
   hawkingEffectiveKappa
-    (‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ 2)
+    (‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ (2 : ℕ))
 
 theorem hbXiPeierlsUnitSourceFEEffectiveKMSKappa_pos
     (q : XiZeroCopy) (hq : (q.1 : ℂ).re ≠ 1 / 2) :
@@ -121,7 +121,7 @@ theorem thetaCuspHawkingKMSBoltzmannRatio_sourceFE_effectiveKappa
     (q : XiZeroCopy) (hq : (q.1 : ℂ).re ≠ 1 / 2) :
     thetaCuspHawkingKMSBoltzmannRatio
         (hbXiPeierlsUnitSourceFEEffectiveKMSKappa q) 1 =
-      ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ 2 := by
+      ‖hbXiPeierlsUnitSourceFEFockVacuumPairRatio q‖ ^ (2 : ℕ) := by
   exact thetaCuspHawkingKMSBoltzmannRatio_effectiveKappa
     ((norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_pos_iff q).2 hq)
     (norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_lt_one q)
@@ -130,14 +130,14 @@ theorem thetaCuspHawkingKMSBoltzmannRatio_sourceFE_effectiveKappa
 pair ratio is the KMS detailed-balance ratio. -/
 theorem finitePairFockLocalPopulation_eq_hawkingDaviesGibbsPopulation
     (r : ℂ) (kappa omega : ℝ)
-    (hthermal : thetaCuspHawkingKMSBoltzmannRatio kappa omega = ‖r‖ ^ 2) :
+    (hthermal : thetaCuspHawkingKMSBoltzmannRatio kappa omega = ‖r‖ ^ (2 : ℕ)) :
     (1 - finitePairFockOccupationDensity r, finitePairFockOccupationDensity r) =
       thetaCuspHawkingDaviesGibbsPopulation kappa omega := by
   rw [finitePairFockOccupationDensity_eq_div]
   apply Prod.ext
   · simp only [thetaCuspHawkingDaviesGibbsPopulation]
     rw [hthermal]
-    have hden : (1 + ‖r‖ ^ 2 : ℝ) ≠ 0 := by positivity
+    have hden : (1 + ‖r‖ ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
     field_simp
     ring
   · simp [thetaCuspHawkingDaviesGibbsPopulation, hthermal]

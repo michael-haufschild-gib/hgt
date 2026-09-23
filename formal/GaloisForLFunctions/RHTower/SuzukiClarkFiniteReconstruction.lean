@@ -24,7 +24,7 @@ namespace GaloisForLFunctions.RHTower
 open Finset GaloisForLFunctions.HTGeometry
 
 /-- The Donoghue kernel at a real spectral parameter, as a real-valued function. -/
-noncomputable def donoghueRealKernel (s t : ℝ) : ℝ := t + (t ^ 2 + 1) / (s - t)
+noncomputable def donoghueRealKernel (s t : ℝ) : ℝ := t + (t ^ (2 : ℕ) + 1) / (s - t)
 
 /-- At a real spectral parameter off the atom, the kernel is the real one. -/
 theorem suzukiDonoghueKernel_ofReal {s t : ℝ} (h : s ≠ t) :
@@ -172,7 +172,7 @@ theorem donoghueRealKernel_neg (s t : ℝ) :
     donoghueRealKernel (-s) (-t) = -donoghueRealKernel s t := by
   rw [donoghueRealKernel, donoghueRealKernel]
   have h1 : (-s) - (-t) = -(s - t) := by ring
-  have h2 : (-t) ^ 2 + 1 = t ^ 2 + 1 := by ring
+  have h2 : (-t) ^ (2 : ℕ) + 1 = t ^ (2 : ℕ) + 1 := by ring
   rw [h1, h2, div_neg]
   ring
 

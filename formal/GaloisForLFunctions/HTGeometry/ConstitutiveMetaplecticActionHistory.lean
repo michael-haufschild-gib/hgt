@@ -18,7 +18,7 @@ section MetaplecticAction
 
 /-- The rotating quadratic action, equation (1). -/
 noncomputable def rotatingAction (θ : ℝ) (z : ℂ) : ℂ :=
-  (1 / 2 : ℂ) * Complex.exp ((θ : ℂ) * Complex.I) * z ^ 2
+  (1 / 2 : ℂ) * Complex.exp ((θ : ℂ) * Complex.I) * z ^ (2 : ℕ)
 
 /-- The oriented steepest-descent line, equation (2). -/
 noncomputable def descentLine (θ : ℝ) (y : ℝ) : ℂ :=
@@ -34,7 +34,7 @@ theorem rotatingHessian_ne_zero (θ : ℝ) : rotatingHessian θ ≠ 0 :=
 
 theorem rotatingAction_hasDerivAt (θ : ℝ) (z : ℂ) :
     HasDerivAt (rotatingAction θ) (rotatingHessian θ * z) z := by
-  have h : HasDerivAt (fun z : ℂ => z ^ 2) (2 * z) z := by
+  have h : HasDerivAt (fun z : ℂ => z ^ (2 : ℕ)) (2 * z) z := by
     simpa using (hasDerivAt_pow 2 z)
   have h2 := h.const_mul ((1 / 2 : ℂ) * Complex.exp ((θ : ℂ) * Complex.I))
   have hcoe : (1 / 2 : ℂ) * Complex.exp ((θ : ℂ) * Complex.I) * (2 * z)
@@ -91,7 +91,7 @@ theorem rotatingHessian_norm (θ : ℝ) : ‖rotatingHessian θ‖ = 1 := by
 
 /-- **Clause 3.**  Along the oriented line the action is the real Gaussian exponent `y²/2`. -/
 theorem rotatingAction_descentLine (θ : ℝ) (y : ℝ) :
-    rotatingAction θ (descentLine θ y) = ((y ^ 2 / 2 : ℝ) : ℂ) := by
+    rotatingAction θ (descentLine θ y) = ((y ^ (2 : ℕ) / 2 : ℝ) : ℂ) := by
   rw [rotatingAction, descentLine, mul_pow, ← Complex.exp_nat_mul]
   have hexp : Complex.exp ((θ : ℂ) * Complex.I) * Complex.exp ((2 : ℕ) * ((-(θ / 2) : ℂ) * Complex.I))
       = 1 := by
@@ -101,11 +101,11 @@ theorem rotatingAction_descentLine (θ : ℝ) (y : ℝ) :
       ring
     rw [this, Complex.exp_zero]
   calc (1 / 2 : ℂ) * Complex.exp ((θ : ℂ) * Complex.I)
-        * (Complex.exp ((2 : ℕ) * ((-(θ / 2) : ℂ) * Complex.I)) * (y : ℂ) ^ 2)
+        * (Complex.exp ((2 : ℕ) * ((-(θ / 2) : ℂ) * Complex.I)) * (y : ℂ) ^ (2 : ℕ))
       = (1 / 2 : ℂ)
         * (Complex.exp ((θ : ℂ) * Complex.I)
-            * Complex.exp ((2 : ℕ) * ((-(θ / 2) : ℂ) * Complex.I))) * (y : ℂ) ^ 2 := by ring
-    _ = ((y ^ 2 / 2 : ℝ) : ℂ) := by rw [hexp]; push_cast; ring
+            * Complex.exp ((2 : ℕ) * ((-(θ / 2) : ℂ) * Complex.I))) * (y : ℂ) ^ (2 : ℕ) := by ring
+    _ = ((y ^ (2 : ℕ) / 2 : ℝ) : ℂ) := by rw [hexp]; push_cast; ring
 
 /-- The oriented parametrization has constant derivative `e^{-iθ/2}`; the amplitude below really is
 the pullback line integral along it. -/
@@ -124,9 +124,9 @@ noncomputable def thimbleAmplitude (θ : ℝ) : ℂ :=
   ∫ y : ℝ, Complex.exp (-(rotatingAction θ (descentLine θ y)))
     * Complex.exp ((-(θ / 2) : ℂ) * Complex.I)
 
-theorem gaussian_integral_half : ∫ y : ℝ, Real.exp (-(y ^ 2 / 2)) = Real.sqrt (2 * Real.pi) := by
-  have hfun : (fun y : ℝ => Real.exp (-(y ^ 2 / 2)))
-      = fun y : ℝ => Real.exp (-(1 / 2 : ℝ) * y ^ 2) := by
+theorem gaussian_integral_half : ∫ y : ℝ, Real.exp (-(y ^ (2 : ℕ) / 2)) = Real.sqrt (2 * Real.pi) := by
+  have hfun : (fun y : ℝ => Real.exp (-(y ^ (2 : ℕ) / 2)))
+      = fun y : ℝ => Real.exp (-(1 / 2 : ℝ) * y ^ (2 : ℕ)) := by
     funext y; ring_nf
   rw [hfun, integral_gaussian]
   congr 1
@@ -139,7 +139,7 @@ theorem thimbleAmplitude_eq (θ : ℝ) :
   rw [thimbleAmplitude]
   have hfun : (fun y : ℝ => Complex.exp (-(rotatingAction θ (descentLine θ y)))
         * Complex.exp ((-(θ / 2) : ℂ) * Complex.I))
-      = fun y : ℝ => ((Real.exp (-(y ^ 2 / 2)) : ℝ) : ℂ)
+      = fun y : ℝ => ((Real.exp (-(y ^ (2 : ℕ) / 2)) : ℝ) : ℂ)
         * Complex.exp ((-(θ / 2) : ℂ) * Complex.I) := by
     funext y
     rw [rotatingAction_descentLine, ← Complex.ofReal_neg, ← Complex.ofReal_exp]

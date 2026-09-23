@@ -8,18 +8,18 @@ import GaloisForLFunctions.HTGeometry.ExpRayL2
 
 The two-variable entire kernel
 
-`1 - exp (n (z - w)^2)`
+`1 - exp (n (z - w)^(2 : ℕ))`
 
 vanishes before scalarization on every diagonal multiplicity pair.  On an equal-ordinate fibre,
 `z - w` is purely imaginary, so the kernel is the positive Gaussian saturation
-`1 - exp (-n d^2)`.  Distinct transverse locations therefore receive unit charge as
+`1 - exp (-n d^(2 : ℕ))`.  Distinct transverse locations therefore receive unit charge as
 `n -> infinity`, while diagonal copies continue to receive zero charge.
 
 For a reflection-complete fibre, let `m0` be critical-line multiplicity and let `m i` be the
 multiplicity at each positive transverse location (the reflected negative location has the same
 multiplicity).  The saturated ordered-pair covariance is
 
-`M^2 - m0^2 - 2 * sum_i (m i)^2`,
+`M^(2 : ℕ) - m0^(2 : ℕ) - 2 * sum_i (m i)^(2 : ℕ)`,
 
 where `M = m0 + 2 * sum_i m i`.  Dividing by `M` makes the charge linear rather than quadratic.
 The main inequality proves that this normalized covariance still dominates the complete
@@ -39,11 +39,11 @@ noncomputable section
 
 /-- Entire two-variable kernel whose equal-ordinate restriction is Gaussian saturation. -/
 def entireGaussianPairKernel (n : ℕ) (z w : ℂ) : ℂ :=
-  1 - Complex.exp ((n : ℂ) * (z - w) ^ 2)
+  1 - Complex.exp ((n : ℂ) * (z - w) ^ (2 : ℕ))
 
 /-- Positive equal-ordinate restriction of the entire Gaussian pair kernel. -/
 def gaussianPairSaturation (n : ℕ) (d : ℝ) : ℝ :=
-  1 - Real.exp (-((n : ℝ) * d ^ 2))
+  1 - Real.exp (-((n : ℝ) * d ^ (2 : ℕ)))
 
 theorem entireGaussianPairKernel_equalOrdinate
     (n : ℕ) (x y v : ℝ) :
@@ -53,8 +53,8 @@ theorem entireGaussianPairKernel_equalOrdinate
       (gaussianPairSaturation n (y - v) : ℂ) := by
   rw [entireGaussianPairKernel, gaussianPairSaturation]
   have hsq :
-      (((x : ℂ) + I * (y : ℂ)) - ((x : ℂ) + I * (v : ℂ))) ^ 2 =
-        ((-((y - v) ^ 2) : ℝ) : ℂ) := by
+      (((x : ℂ) + I * (y : ℂ)) - ((x : ℂ) + I * (v : ℂ))) ^ (2 : ℕ) =
+        ((-((y - v) ^ (2 : ℕ)) : ℝ) : ℂ) := by
     apply Complex.ext <;>
       simp [Complex.mul_re, Complex.mul_im, pow_two]
   rw [hsq]
@@ -67,9 +67,9 @@ produces `1 - exp (n d²)`.  This is the exact horizontal-edge amplification hid
 equal-ordinate restriction. -/
 theorem entireGaussianPairKernel_realAxis (n : ℕ) (x y : ℝ) :
     entireGaussianPairKernel n (x : ℂ) (y : ℂ) =
-      ((1 - Real.exp ((n : ℝ) * (x - y) ^ 2) : ℝ) : ℂ) := by
+      ((1 - Real.exp ((n : ℝ) * (x - y) ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [entireGaussianPairKernel]
-  have hsq : (((x : ℂ) - (y : ℂ)) ^ 2) = (((x - y) ^ 2 : ℝ) : ℂ) := by
+  have hsq : (((x : ℂ) - (y : ℂ)) ^ (2 : ℕ)) = (((x - y) ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     rfl
   rw [hsq]
@@ -84,15 +84,15 @@ theorem entireGaussianPairKernel_realAxis_eventually_re_lt
     {x y B : ℝ} (hxy : x ≠ y) :
     ∀ᶠ n : ℕ in atTop,
       (entireGaussianPairKernel n (x : ℂ) (y : ℂ)).re < -B := by
-  have hd2 : 0 < (x - y) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hxy)
-  have hlin0 : Tendsto (fun n : ℕ => (x - y) ^ 2 * (n : ℝ)) atTop atTop :=
+  have hd2 : 0 < (x - y) ^ (2 : ℕ) := sq_pos_of_ne_zero (sub_ne_zero.mpr hxy)
+  have hlin0 : Tendsto (fun n : ℕ => (x - y) ^ (2 : ℕ) * (n : ℝ)) atTop atTop :=
     tendsto_natCast_atTop_atTop.const_mul_atTop hd2
-  have hlin : Tendsto (fun n : ℕ => (n : ℝ) * (x - y) ^ 2) atTop atTop := by
+  have hlin : Tendsto (fun n : ℕ => (n : ℝ) * (x - y) ^ (2 : ℕ)) atTop atTop := by
     convert hlin0 using 1
     funext n
     ring
   have hexp : Tendsto
-      (fun n : ℕ => Real.exp ((n : ℝ) * (x - y) ^ 2)) atTop atTop :=
+      (fun n : ℕ => Real.exp ((n : ℝ) * (x - y) ^ (2 : ℕ))) atTop atTop :=
     Real.tendsto_exp_atTop.comp hlin
   filter_upwards [hexp.eventually_gt_atTop (B + 1)] with n hn
   rw [entireGaussianPairKernel_realAxis]
@@ -106,7 +106,7 @@ theorem gaussianPairSaturation_zero (n : ℕ) :
 theorem gaussianPairSaturation_nonneg (n : ℕ) (d : ℝ) :
     0 ≤ gaussianPairSaturation n d := by
   rw [gaussianPairSaturation]
-  have hexp : Real.exp (-((n : ℝ) * d ^ 2)) ≤ 1 := by
+  have hexp : Real.exp (-((n : ℝ) * d ^ (2 : ℕ))) ≤ 1 := by
     rw [← Real.exp_zero]
     apply Real.exp_le_exp.mpr
     exact neg_nonpos.mpr (mul_nonneg (Nat.cast_nonneg n) (sq_nonneg d))
@@ -120,12 +120,12 @@ theorem gaussianPairSaturation_le_one (n : ℕ) (d : ℝ) :
 /-- Every nonzero transverse separation saturates to unit pair charge. -/
 theorem tendsto_gaussianPairSaturation {d : ℝ} (hd : d ≠ 0) :
     Tendsto (fun n : ℕ => gaussianPairSaturation n d) atTop (nhds 1) := by
-  have hd2 : 0 < d ^ 2 := sq_pos_of_ne_zero hd
+  have hd2 : 0 < d ^ (2 : ℕ) := sq_pos_of_ne_zero hd
   have hdecay :=
     (GaloisForLFunctions.HTGeometry.tendsto_exp_neg_mul_atTop_nhds_zero hd2).comp
       tendsto_natCast_atTop_atTop
   have hdecay' :
-      Tendsto (fun n : ℕ => Real.exp (-((n : ℝ) * d ^ 2))) atTop (nhds 0) := by
+      Tendsto (fun n : ℕ => Real.exp (-((n : ℝ) * d ^ (2 : ℕ)))) atTop (nhds 0) := by
     convert hdecay using 1
     funext n
     congr 1
@@ -259,15 +259,15 @@ def reflectionFibreTotalMass {ι : Type*}
 same transverse location, including every diagonal multiplicity pair. -/
 def saturatedGaussianReflectionFibreCovariance {ι : Type*}
     (s : Finset ι) (m0 : ℕ) (m : ι → ℕ) : ℝ :=
-  reflectionFibreTotalMass s m0 m ^ 2 - (m0 : ℝ) ^ 2 -
-    2 * ∑ i ∈ s, (m i : ℝ) ^ 2
+  reflectionFibreTotalMass s m0 m ^ (2 : ℕ) - (m0 : ℝ) ^ (2 : ℕ) -
+    2 * ∑ i ∈ s, (m i : ℝ) ^ (2 : ℕ)
 
 theorem saturatedGaussianReflectionFibreCovariance_eq {ι : Type*}
     (s : Finset ι) (m0 : ℕ) (m : ι → ℕ) :
     saturatedGaussianReflectionFibreCovariance s m0 m =
       4 * (m0 : ℝ) * reflectionFibreStrictRightMass s m +
-        4 * reflectionFibreStrictRightMass s m ^ 2 -
-          2 * ∑ i ∈ s, (m i : ℝ) ^ 2 := by
+        4 * reflectionFibreStrictRightMass s m ^ (2 : ℕ) -
+          2 * ∑ i ∈ s, (m i : ℝ) ^ (2 : ℕ) := by
   rw [saturatedGaussianReflectionFibreCovariance,
     reflectionFibreTotalMass]
   ring
@@ -279,8 +279,8 @@ theorem totalMass_mul_strictRightMass_le_saturatedGaussianCovariance
     reflectionFibreTotalMass s m0 m * reflectionFibreStrictRightMass s m ≤
       saturatedGaussianReflectionFibreCovariance s m0 m := by
   have hsq :
-      (∑ i ∈ s, (m i : ℝ) ^ 2) ≤
-        reflectionFibreStrictRightMass s m ^ 2 := by
+      (∑ i ∈ s, (m i : ℝ) ^ (2 : ℕ)) ≤
+        reflectionFibreStrictRightMass s m ^ (2 : ℕ) := by
     simpa only [reflectionFibreStrictRightMass] using
       SlabMassSquareCertificate.sum_sq_le_sq_sum s (fun i => (m i : ℝ))
         (fun i hi => Nat.cast_nonneg (m i))
@@ -312,8 +312,8 @@ theorem normalizedSaturatedGaussianCovariance_le_totalMass
       reflectionFibreTotalMass s m0 m := by
   rw [div_le_iff₀ hM]
   rw [saturatedGaussianReflectionFibreCovariance]
-  have hm0sq : 0 ≤ (m0 : ℝ) ^ 2 := sq_nonneg _
-  have hsum : 0 ≤ ∑ i ∈ s, (m i : ℝ) ^ 2 := by positivity
+  have hm0sq : 0 ≤ (m0 : ℝ) ^ (2 : ℕ) := sq_nonneg _
+  have hsum : 0 ≤ ∑ i ∈ s, (m i : ℝ) ^ (2 : ℕ) := by positivity
   nlinarith
 
 /-! ## Fixed-pole meromorphic survivor
@@ -326,11 +326,11 @@ therefore source data rather than selected Xi-divisor locations.
 
 /-- Rational pair kernel with fixed source poles at `z - w = ±eps`. -/
 def meromorphicCauchyPairKernel (eps : ℝ) (z w : ℂ) : ℂ :=
-  (z - w) ^ 2 / ((z - w) ^ 2 - (eps : ℂ) ^ 2)
+  (z - w) ^ (2 : ℕ) / ((z - w) ^ (2 : ℕ) - (eps : ℂ) ^ (2 : ℕ))
 
 /-- Positive equal-ordinate restriction of `meromorphicCauchyPairKernel`. -/
 def cauchyPairSaturation (eps d : ℝ) : ℝ :=
-  d ^ 2 / (d ^ 2 + eps ^ 2)
+  d ^ (2 : ℕ) / (d ^ (2 : ℕ) + eps ^ (2 : ℕ))
 
 /-- Complementary fixed-pole kernel used as a shrinking diagonal projector. -/
 def meromorphicCauchyDiagonalKernel (eps : ℝ) (z w : ℂ) : ℂ :=
@@ -353,21 +353,21 @@ theorem meromorphicCauchyPairKernel_equalOrdinate
       (cauchyPairSaturation eps (y - v) : ℂ) := by
   rw [meromorphicCauchyPairKernel, cauchyPairSaturation]
   have hsq :
-      (((x : ℂ) + I * (y : ℂ)) - ((x : ℂ) + I * (v : ℂ))) ^ 2 =
-        ((-((y - v) ^ 2) : ℝ) : ℂ) := by
+      (((x : ℂ) + I * (y : ℂ)) - ((x : ℂ) + I * (v : ℂ))) ^ (2 : ℕ) =
+        ((-((y - v) ^ (2 : ℕ)) : ℝ) : ℂ) := by
     apply Complex.ext <;>
       simp [Complex.mul_re, Complex.mul_im, pow_two]
   rw [hsq]
   have hreal :
-      (-((y - v) ^ 2)) / (-((y - v) ^ 2) - eps ^ 2) =
-        (y - v) ^ 2 / ((y - v) ^ 2 + eps ^ 2) := by
-    by_cases hden : (y - v) ^ 2 + eps ^ 2 = 0
-    · have hnum : (y - v) ^ 2 = 0 := by
+      (-((y - v) ^ (2 : ℕ))) / (-((y - v) ^ (2 : ℕ)) - eps ^ (2 : ℕ)) =
+        (y - v) ^ (2 : ℕ) / ((y - v) ^ (2 : ℕ) + eps ^ (2 : ℕ)) := by
+    by_cases hden : (y - v) ^ (2 : ℕ) + eps ^ (2 : ℕ) = 0
+    · have hnum : (y - v) ^ (2 : ℕ) = 0 := by
         nlinarith [sq_nonneg (y - v), sq_nonneg eps]
-      have heps2 : eps ^ 2 = 0 := by
+      have heps2 : eps ^ (2 : ℕ) = 0 := by
         nlinarith [sq_nonneg (y - v), sq_nonneg eps]
       simp [hnum, heps2]
-    · have hdenNeg : -((y - v) ^ 2) - eps ^ 2 ≠ 0 := by
+    · have hdenNeg : -((y - v) ^ (2 : ℕ)) - eps ^ (2 : ℕ) ≠ 0 := by
         intro hz
         apply hden
         linarith
@@ -383,10 +383,10 @@ theorem cauchyPairSaturation_nonneg (eps d : ℝ) :
 theorem cauchyPairSaturation_le_one (eps d : ℝ) :
     cauchyPairSaturation eps d ≤ 1 := by
   rw [cauchyPairSaturation]
-  by_cases hden : d ^ 2 + eps ^ 2 = 0
+  by_cases hden : d ^ (2 : ℕ) + eps ^ (2 : ℕ) = 0
   · rw [hden]
     simp
-  · have hpos : 0 < d ^ 2 + eps ^ 2 :=
+  · have hpos : 0 < d ^ (2 : ℕ) + eps ^ (2 : ℕ) :=
       lt_of_le_of_ne (by positivity) (Ne.symm hden)
     rw [div_le_one hpos]
     exact le_add_of_nonneg_right (sq_nonneg eps)
@@ -399,15 +399,15 @@ theorem tendsto_cauchyPairSaturation {d : ℝ} (hd : d ≠ 0) :
   have heps : Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (nhds 0) := by
     simpa using (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
   have hden : Tendsto
-      (fun n : ℕ => d ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2)
-      atTop (nhds (d ^ 2)) := by
+      (fun n : ℕ => d ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))
+      atTop (nhds (d ^ (2 : ℕ))) := by
     convert tendsto_const_nhds.add (heps.pow 2) using 1 <;> norm_num
-  have hnum : Tendsto (fun _ : ℕ => d ^ 2) atTop (nhds (d ^ 2)) :=
+  have hnum : Tendsto (fun _ : ℕ => d ^ (2 : ℕ)) atTop (nhds (d ^ (2 : ℕ))) :=
     tendsto_const_nhds
   have hdiv := hnum.div hden (pow_ne_zero 2 hd)
   change Tendsto
-      (fun n : ℕ => d ^ 2 / (d ^ 2 + (1 / ((n : ℝ) + 1)) ^ 2))
-      atTop (nhds (d ^ 2 / d ^ 2)) at hdiv
+      (fun n : ℕ => d ^ (2 : ℕ) / (d ^ (2 : ℕ) + (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)))
+      atTop (nhds (d ^ (2 : ℕ) / d ^ (2 : ℕ))) at hdiv
   simpa [cauchyPairSaturation, hd] using hdiv
 
 /-- Shrinking the fixed poles recovers unit charge at every pair of distinct complex points, not
@@ -425,17 +425,17 @@ theorem tendsto_meromorphicCauchyPairKernel
     Complex.continuous_ofReal.continuousAt.tendsto.comp hepsR
   have hd : z - w ≠ 0 := sub_ne_zero.mpr hzw
   have hden : Tendsto
-      (fun n : ℕ => (z - w) ^ 2 -
-        (((1 / ((n : ℝ) + 1) : ℝ) : ℂ)) ^ 2)
-      atTop (nhds ((z - w) ^ 2)) := by
+      (fun n : ℕ => (z - w) ^ (2 : ℕ) -
+        (((1 / ((n : ℝ) + 1) : ℝ) : ℂ)) ^ (2 : ℕ))
+      atTop (nhds ((z - w) ^ (2 : ℕ))) := by
     convert tendsto_const_nhds.sub (heps.pow 2) using 1 <;> norm_num
-  have hnum : Tendsto (fun _ : ℕ => (z - w) ^ 2)
-      atTop (nhds ((z - w) ^ 2)) := tendsto_const_nhds
+  have hnum : Tendsto (fun _ : ℕ => (z - w) ^ (2 : ℕ))
+      atTop (nhds ((z - w) ^ (2 : ℕ))) := tendsto_const_nhds
   have hdiv := hnum.div hden (pow_ne_zero 2 hd)
   change Tendsto
-      (fun n : ℕ => (z - w) ^ 2 /
-        ((z - w) ^ 2 - (((1 / ((n : ℝ) + 1) : ℝ) : ℂ)) ^ 2))
-      atTop (nhds ((z - w) ^ 2 / (z - w) ^ 2)) at hdiv
+      (fun n : ℕ => (z - w) ^ (2 : ℕ) /
+        ((z - w) ^ (2 : ℕ) - (((1 / ((n : ℝ) + 1) : ℝ) : ℂ)) ^ (2 : ℕ)))
+      atTop (nhds ((z - w) ^ (2 : ℕ) / (z - w) ^ (2 : ℕ))) at hdiv
   simpa [meromorphicCauchyPairKernel, hd] using hdiv
 
 theorem tendsto_meromorphicCauchyDiagonalKernel_of_ne
@@ -490,10 +490,10 @@ theorem finiteOrderedOffDiagonalMass_eq_totalSquare_sub_diagonal
     (s : Finset ι) (m : ι → ℂ) :
     (∑ p ∈ s.product s,
         if p.1 = p.2 then 0 else m p.1 * m p.2) =
-      (∑ i ∈ s, m i) ^ 2 - ∑ i ∈ s, m i ^ 2 := by
+      (∑ i ∈ s, m i) ^ (2 : ℕ) - ∑ i ∈ s, m i ^ (2 : ℕ) := by
   have hrow (i : ι) (hi : i ∈ s) :
       (∑ j ∈ s, if i = j then 0 else m i * m j) =
-        (∑ j ∈ s, m i * m j) - m i ^ 2 := by
+        (∑ j ∈ s, m i * m j) - m i ^ (2 : ℕ) := by
     calc
       (∑ j ∈ s, if i = j then 0 else m i * m j) =
           ∑ j ∈ s, (m i * m j - if i = j then m i * m j else 0) := by
@@ -505,7 +505,7 @@ theorem finiteOrderedOffDiagonalMass_eq_totalSquare_sub_diagonal
       _ = (∑ j ∈ s, m i * m j) -
           ∑ j ∈ s, if i = j then m i * m j else 0 := by
             rw [Finset.sum_sub_distrib]
-      _ = (∑ j ∈ s, m i * m j) - m i ^ 2 := by
+      _ = (∑ j ∈ s, m i * m j) - m i ^ (2 : ℕ) := by
             rw [Finset.sum_ite_eq, if_pos hi]
             ring
   calc
@@ -513,13 +513,13 @@ theorem finiteOrderedOffDiagonalMass_eq_totalSquare_sub_diagonal
         if p.1 = p.2 then 0 else m p.1 * m p.2) =
         ∑ i ∈ s, ∑ j ∈ s, if i = j then 0 else m i * m j :=
           Finset.sum_product s s _
-    _ = ∑ i ∈ s, ((∑ j ∈ s, m i * m j) - m i ^ 2) := by
+    _ = ∑ i ∈ s, ((∑ j ∈ s, m i * m j) - m i ^ (2 : ℕ)) := by
           apply Finset.sum_congr rfl
           exact hrow
     _ = (∑ i ∈ s, ∑ j ∈ s, m i * m j) -
-        ∑ i ∈ s, m i ^ 2 := by
+        ∑ i ∈ s, m i ^ (2 : ℕ) := by
           rw [Finset.sum_sub_distrib]
-    _ = (∑ i ∈ s, m i) ^ 2 - ∑ i ∈ s, m i ^ 2 := by
+    _ = (∑ i ∈ s, m i) ^ (2 : ℕ) - ∑ i ∈ s, m i ^ (2 : ℕ) := by
           rw [← Finset.sum_mul_sum]
           ring
 
@@ -528,7 +528,7 @@ theorem tendsto_finiteMeromorphicCauchyPairCovariance_totalSquare_sub_diagonal
     (s : Finset ι) (z : ι → ℂ) (m : ι → ℂ)
     (hz : Set.InjOn z s) :
     Tendsto (finiteMeromorphicCauchyPairCovariance s z m) atTop
-      (nhds ((∑ i ∈ s, m i) ^ 2 - ∑ i ∈ s, m i ^ 2)) := by
+      (nhds ((∑ i ∈ s, m i) ^ (2 : ℕ) - ∑ i ∈ s, m i ^ (2 : ℕ))) := by
   rw [← finiteOrderedOffDiagonalMass_eq_totalSquare_sub_diagonal]
   exact tendsto_finiteMeromorphicCauchyPairCovariance s z m hz
 
@@ -542,7 +542,7 @@ theorem meromorphicCauchyPairKernel_eq_resolventDifference
       1 + (eps / 2 : ℂ) *
         ((z - w - (eps : ℂ))⁻¹ - (z - w + (eps : ℂ))⁻¹) := by
   rw [meromorphicCauchyPairKernel]
-  have hden : (z - w) ^ 2 - (eps : ℂ) ^ 2 ≠ 0 := by
+  have hden : (z - w) ^ (2 : ℕ) - (eps : ℂ) ^ (2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero hplus hminus
   field_simp [hminus, hplus, hden]
@@ -550,7 +550,7 @@ theorem meromorphicCauchyPairKernel_eq_resolventDifference
 
 theorem meromorphicCauchyPairKernel_realAxis (eps x y : ℝ) :
     meromorphicCauchyPairKernel eps (x : ℂ) (y : ℂ) =
-      (((x - y) ^ 2 / ((x - y) ^ 2 - eps ^ 2) : ℝ) : ℂ) := by
+      (((x - y) ^ (2 : ℕ) / ((x - y) ^ (2 : ℕ) - eps ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [meromorphicCauchyPairKernel]
   push_cast
   rfl
@@ -567,25 +567,25 @@ theorem tendsto_meromorphicCauchyPairKernel_realAxis
     simpa using (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
   have hd : x - y ≠ 0 := sub_ne_zero.mpr hxy
   have hden : Tendsto
-      (fun n : ℕ => (x - y) ^ 2 - (1 / ((n : ℝ) + 1)) ^ 2)
-      atTop (nhds ((x - y) ^ 2)) := by
+      (fun n : ℕ => (x - y) ^ (2 : ℕ) - (1 / ((n : ℝ) + 1)) ^ (2 : ℕ))
+      atTop (nhds ((x - y) ^ (2 : ℕ))) := by
     convert tendsto_const_nhds.sub (heps.pow 2) using 1 <;> norm_num
   have hreal : Tendsto
-      (fun n : ℕ => (x - y) ^ 2 /
-        ((x - y) ^ 2 - (1 / ((n : ℝ) + 1)) ^ 2))
+      (fun n : ℕ => (x - y) ^ (2 : ℕ) /
+        ((x - y) ^ (2 : ℕ) - (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)))
       atTop (nhds 1) := by
-    have hnum : Tendsto (fun _ : ℕ => (x - y) ^ 2)
-        atTop (nhds ((x - y) ^ 2)) := tendsto_const_nhds
+    have hnum : Tendsto (fun _ : ℕ => (x - y) ^ (2 : ℕ))
+        atTop (nhds ((x - y) ^ (2 : ℕ))) := tendsto_const_nhds
     have hdiv := hnum.div hden (pow_ne_zero 2 hd)
     change Tendsto
-        (fun n : ℕ => (x - y) ^ 2 /
-          ((x - y) ^ 2 - (1 / ((n : ℝ) + 1)) ^ 2))
-        atTop (nhds ((x - y) ^ 2 / (x - y) ^ 2)) at hdiv
+        (fun n : ℕ => (x - y) ^ (2 : ℕ) /
+          ((x - y) ^ (2 : ℕ) - (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)))
+        atTop (nhds ((x - y) ^ (2 : ℕ) / (x - y) ^ (2 : ℕ))) at hdiv
     simpa [hd] using hdiv
   have hcomplex := Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
   change Tendsto
-      (fun n : ℕ => (((x - y) ^ 2 /
-        ((x - y) ^ 2 - (1 / ((n : ℝ) + 1)) ^ 2) : ℝ) : ℂ))
+      (fun n : ℕ => (((x - y) ^ (2 : ℕ) /
+        ((x - y) ^ (2 : ℕ) - (1 / ((n : ℝ) + 1)) ^ (2 : ℕ)) : ℝ) : ℂ))
       atTop (nhds (1 : ℂ)) at hcomplex
   simpa only [meromorphicCauchyPairKernel_realAxis, ofReal_one] using hcomplex
 

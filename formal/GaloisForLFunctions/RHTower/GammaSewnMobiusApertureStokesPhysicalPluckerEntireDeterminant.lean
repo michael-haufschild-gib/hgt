@@ -130,14 +130,14 @@ theorem gammaSewnCriticalPhysicalPluckerEntireDet2_zero_pos {z : ℂ}
   have hnonneg :=
     gammaSewnCriticalPhysicalPluckerSpectralOperator_isPositive.inner_nonneg_right w
   rw [hw, inner_smul_right, inner_self_eq_norm_sq_to_K] at hnonneg
-  have hnormpos : 0 < ‖w‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hw0)
-  have hprodne : (((‖w‖ ^ 2 : ℝ) : ℂ) * z⁻¹) ≠ 0 := by
+  have hnormpos : 0 < ‖w‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hw0)
+  have hprodne : (((‖w‖ ^ (2 : ℕ) : ℝ) : ℂ) * z⁻¹) ≠ 0 := by
     exact mul_ne_zero (Complex.ofReal_ne_zero.mpr hnormpos.ne') (inv_ne_zero hz0)
-  have hprodpos : 0 < (((‖w‖ ^ 2 : ℝ) : ℂ) * z⁻¹) := by
+  have hprodpos : 0 < (((‖w‖ ^ (2 : ℕ) : ℝ) : ℂ) * z⁻¹) := by
     apply lt_of_le_of_ne
     · simpa [mul_comm] using hnonneg
     · exact hprodne.symm
-  rcases (RCLike.ofReal_mul_pos_iff (K := ℂ) (‖w‖ ^ 2) z⁻¹).mp hprodpos with
+  rcases (RCLike.ofReal_mul_pos_iff (K := ℂ) (‖w‖ ^ (2 : ℕ)) z⁻¹).mp hprodpos with
       hneg | hpos
   · exact (not_lt_of_ge hnormpos.le hneg.1).elim
   · exact RCLike.inv_pos.mp hpos.2
@@ -199,12 +199,12 @@ theorem gammaSewnCriticalPhysicalPluckerFiniteDet2_zero_pos
   rw [← gammaSewnCriticalPhysicalPluckerKernel_toOperator] at hinner_nonneg hinner_ne
   rw [← inner_liftBlockLp_physicalPlucker_toOperator_truncKernel_eq s v,
     hwtrunc, inner_smul_right, inner_self_eq_norm_sq_to_K] at hinner_nonneg hinner_ne
-  have hnormpos : 0 < ‖w‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hw0)
-  have hprodpos : 0 < (((‖w‖ ^ 2 : ℝ) : ℂ) * z⁻¹) := by
+  have hnormpos : 0 < ‖w‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hw0)
+  have hprodpos : 0 < (((‖w‖ ^ (2 : ℕ) : ℝ) : ℂ) * z⁻¹) := by
     apply lt_of_le_of_ne
     · simpa [mul_comm] using hinner_nonneg
     · simpa [mul_comm] using hinner_ne.symm
-  rcases (RCLike.ofReal_mul_pos_iff (K := ℂ) (‖w‖ ^ 2) z⁻¹).mp hprodpos with
+  rcases (RCLike.ofReal_mul_pos_iff (K := ℂ) (‖w‖ ^ (2 : ℕ)) z⁻¹).mp hprodpos with
       hneg | hpos
   · exact (not_lt_of_ge hnormpos.le hneg.1).elim
   · exact RCLike.inv_pos.mp hpos.2

@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- **`(8)`: the inverse-square tail telescopes.** -/
 theorem sum_inv_sq_Ioc_le (K : ℕ) (hK : 1 ≤ K) :
-    ∀ L : ℕ, K ≤ L → ∑ j ∈ Finset.Ioc K L, (1 : ℝ) / (j : ℝ) ^ 2
+    ∀ L : ℕ, K ≤ L → ∑ j ∈ Finset.Ioc K L, (1 : ℝ) / (j : ℝ) ^ (2 : ℕ)
       ≤ 1 / (K : ℝ) - 1 / (L : ℝ) := by
   intro L
   induction L with
@@ -38,7 +38,7 @@ theorem sum_inv_sq_Ioc_le (K : ℕ) (hK : 1 ≤ K) :
         have : 1 ≤ L := le_trans hK hKle
         exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one this
       have hL1pos : (0 : ℝ) < (L : ℝ) + 1 := by linarith
-      have hstep : (1 : ℝ) / ((L : ℝ) + 1) ^ 2 ≤ 1 / (L : ℝ) - 1 / ((L : ℝ) + 1) := by
+      have hstep : (1 : ℝ) / ((L : ℝ) + 1) ^ (2 : ℕ) ≤ 1 / (L : ℝ) - 1 / ((L : ℝ) + 1) := by
         have h : (1 : ℝ) / (L : ℝ) - 1 / ((L : ℝ) + 1) = 1 / ((L : ℝ) * ((L : ℝ) + 1)) := by
           field_simp
           ring
@@ -109,8 +109,8 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 vector by at most `\|t\| c` under `e^{-itR} - I`. -/
 theorem ramp_bound (r : n → ℝ) (t : ℝ) {c : ℝ} (hc : ∀ j, |r j| ≤ c) (v : n → ℂ) :
     ∑ l, ‖((Matrix.diagonal (fun j => Complex.exp (-((t * r j : ℝ) : ℂ) * Complex.I) - 1))
-        *ᵥ v) l‖ ^ 2
-      ≤ (|t| * c) ^ 2 * ∑ l, ‖v l‖ ^ 2 := by
+        *ᵥ v) l‖ ^ (2 : ℕ)
+      ≤ (|t| * c) ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ) := by
   refine diagonal_mulVec_norm_le _ (fun l => ?_) v
   refine le_trans (norm_expI_sub_one_le (t * r l)) ?_
   rw [abs_mul]
@@ -126,7 +126,7 @@ end Ramp
 two contributions to `t‖R‖` are at most `ε/2` and `ε/(2L)`. -/
 theorem ramp_total_lt {t ε L K R : ℝ} (hε : 0 < ε) (hL : 1 < L) (ht : 0 ≤ t) (hK : 0 < K)
     (hKlb : 2 * t / ε ≤ K) (htL : t ≤ ε * L / 2)
-    (hR : R ≤ 1 / K + (L - 1) / L ^ 3) :
+    (hR : R ≤ 1 / K + (L - 1) / L ^ (3 : ℕ)) :
     t * R < ε := by
   have hLpos : (0 : ℝ) < L := lt_trans one_pos hL
   have hfirst : t * (1 / K) ≤ ε / 2 := by
@@ -138,11 +138,11 @@ theorem ramp_total_lt {t ε L K R : ℝ} (hε : 0 < ε) (hL : 1 < L) (ht : 0 ≤
       have hKlb' : 2 * t / ε ≤ K := hKlb
       rw [div_le_iff₀ hε] at hKlb'
       nlinarith [hKlb', hpos, hε]
-  have hsecond : t * ((L - 1) / L ^ 3) ≤ ε / (2 * L) := by
-    have hle : (L - 1) / L ^ 3 ≤ 1 / L ^ 2 := by
+  have hsecond : t * ((L - 1) / L ^ (3 : ℕ)) ≤ ε / (2 * L) := by
+    have hle : (L - 1) / L ^ (3 : ℕ) ≤ 1 / L ^ (2 : ℕ) := by
       rw [div_le_div_iff₀ (by positivity) (by positivity)]
       nlinarith [hLpos]
-    have hstep : t * ((L - 1) / L ^ 3) ≤ t * (1 / L ^ 2) :=
+    have hstep : t * ((L - 1) / L ^ (3 : ℕ)) ≤ t * (1 / L ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hle ht
     refine le_trans hstep ?_
     rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
@@ -150,9 +150,9 @@ theorem ramp_total_lt {t ε L K R : ℝ} (hε : 0 < ε) (hL : 1 < L) (ht : 0 ≤
   have hhalf : ε / (2 * L) < ε / 2 := by
     rw [div_lt_div_iff₀ (by positivity) (by norm_num)]
     nlinarith [hε, hL]
-  have hmul : t * R ≤ t * (1 / K + (L - 1) / L ^ 3) := mul_le_mul_of_nonneg_left hR ht
-  have hexpand : t * (1 / K + (L - 1) / L ^ 3)
-      = t * (1 / K) + t * ((L - 1) / L ^ 3) := by ring
+  have hmul : t * R ≤ t * (1 / K + (L - 1) / L ^ (3 : ℕ)) := mul_le_mul_of_nonneg_left hR ht
+  have hexpand : t * (1 / K + (L - 1) / L ^ (3 : ℕ))
+      = t * (1 / K) + t * ((L - 1) / L ^ (3 : ℕ)) := by ring
   rw [hexpand] at hmul
   linarith [hmul, hfirst, hsecond, hhalf]
 

@@ -28,9 +28,9 @@ theorem thetaCuspEvenFourGaussianMatrix_posDef : thetaCuspEvenFourGaussianMatrix
     fin_cases i <;> fin_cases j <;> simp [thetaCuspEvenFourGaussianMatrix]
   · intro v hv
     have heq : star v ⬝ᵥ thetaCuspEvenFourGaussianMatrix.mulVec v =
-        (v 0+8*v 1+192*v 2+7680*v 3)^2 +
-        128*(v 1+48*v 2+2880*v 3)^2 +
-        98304*(v 2+120*v 3)^2 + 188743680*(v 3)^2 := by
+        (v 0+8*v 1+192*v 2+7680*v 3)^(2 : ℕ) +
+        128*(v 1+48*v 2+2880*v 3)^(2 : ℕ) +
+        98304*(v 2+120*v 3)^(2 : ℕ) + 188743680*(v 3)^(2 : ℕ) := by
       simp [thetaCuspEvenFourGaussianMatrix, dotProduct, Matrix.mulVec, Fin.sum_univ_succ]
       ring
     rw [heq]
@@ -55,7 +55,7 @@ def thetaCuspNativeEvenFourCompensated (C x : ℝ) : Matrix (Fin 4) (Fin 4) ℝ 
 private def scaledMatrix (C x : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
   fun i j => thetaCuspNativeScaledEvenJet (i.val+j.val) x +
     if i.val = 3 ∧ j.val = 3 then C*(thetaCuspCenterCompensationSource x /
-      (thetaCuspSourceTerm x 1^2*thetaCuspSingleAtomReflectionScale 1 x^6)) else 0
+      (thetaCuspSourceTerm x 1^(2 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(6 : ℕ))) else 0
 
 private theorem scaledMatrix_tendsto (C : ℝ) (i j : Fin 4) :
     Tendsto (fun x => scaledMatrix C x i j) atTop (𝓝 (thetaCuspEvenFourGaussianMatrix i j)) := by

@@ -5,19 +5,19 @@ import Mathlib.Analysis.InnerProductSpace.Basic
 # Hilbert-range no-go for the adaptive prime-normal codiagonal
 
 The adaptive prime-normal codiagonal is bounded below on its infinite
-`ell^1` prime source.  This file proves that its stability cannot survive
+`ell^(1 : ℕ)` prime source.  This file proves that its stability cannot survive
 any bounded postcomparison into a complex inner-product space.
 
 The quantitative mechanism is finite and unconditional.  Given finitely
 many Hilbert vectors, signs can be chosen recursively using the
 parallelogram law so that the signed sum has squared norm at most the sum of
 the individual squared norms.  Therefore every bounded map
-`T : ell^1(I) -> H` admits signed packets of `ell^1` norm `n` whose image
+`T : ell^(1 : ℕ)(I) -> H` admits signed packets of `ell^(1 : ℕ)` norm `n` whose image
 has norm at most `sqrt n * ||T||`.  For infinite `I`, no positive lower
 modulus is possible.
 
 Applied to the adaptive codiagonal, this rules out a bounded-below linear
-identification of its closed `ell^1` source range with the Hilbertian
+identification of its closed `ell^(1 : ℕ)` source range with the Hilbertian
 completed Xi/Green carrier.  Exact descent must change Banach geometry
 before Hilbert polarization; a literal stable-range equality between these
 two marginal completions cannot be the missing RH theorem.
@@ -108,7 +108,7 @@ theorem exists_signs_norm_sq_sum_le
           dsimp only [B] at hminus
           linarith
 
-/-- Every finite coordinate set contains a signed `ell^1` packet whose
+/-- Every finite coordinate set contains a signed `ell^(1 : ℕ)` packet whose
 Hilbert image has only square-root growth. -/
 theorem exists_lpOne_signed_packet_hilbert_bound
     {H ι : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
@@ -155,7 +155,7 @@ theorem exists_lpOne_signed_packet_hilbert_bound
           pow_le_pow_left₀ (norm_nonneg _) hTi 2
       _ = s.card * ‖T‖ ^ 2 := by simp
 
-/-- Infinite `ell^1` has no positive-lower-modulus linear map into a
+/-- Infinite `ell^(1 : ℕ)` has no positive-lower-modulus linear map into a
 complex inner-product space. -/
 theorem lpOne_to_innerProduct_not_boundedBelow
     {H ι : Type*} [Infinite ι]

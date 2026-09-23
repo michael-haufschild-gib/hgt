@@ -11,18 +11,18 @@ set_option backward.isDefEq.respectTransparency false
 private theorem transport_denominator_bound {z C : ℝ} {H : ℂ}
     (hz : z ∈ Icc (0:ℝ) (1/2)) (hC : 0 ≤ C)
     (he : ‖H-1‖ ≤ C*z) (hl : 1/2 ≤ ‖H‖) (hu : ‖H‖ ≤ 3/2) :
-    let D : ℂ := 2*(Real.sqrt (1-z):ℂ)*H^2
+    let D : ℂ := 2*(Real.sqrt (1-z):ℂ)*H^(2 : ℕ)
     ‖D⁻¹‖ ≤ 4 ∧ ‖D⁻¹-(1/2:ℂ)‖ ≤ (10*C+4)*z := by
   have hz0 := hz.1
   have hz1 := hz.2
   let r := Real.sqrt (1-z)
   have hr0 : 0 ≤ r := Real.sqrt_nonneg _
-  have hr2 : r^2=1-z := Real.sq_sqrt (by linarith)
+  have hr2 : r^(2 : ℕ)=1-z := Real.sq_sqrt (by linarith)
   have hrl : 1/2 ≤ r := by nlinarith
   have hru : r ≤ 1 := by nlinarith
   have hrz : |r-1| ≤ z := by rw [abs_of_nonpos (by linarith)]; nlinarith
-  let D : ℂ := 2*(r:ℂ)*H^2
-  have hDn : ‖D‖=2*r*‖H‖^2 := by
+  let D : ℂ := 2*(r:ℂ)*H^(2 : ℕ)
+  have hDn : ‖D‖=2*r*‖H‖^(2 : ℕ) := by
     simp only [D,norm_mul,norm_pow,Complex.norm_real,Real.norm_of_nonneg hr0]
     norm_num
   have hDl : 1/4 ≤ ‖D‖ := by
@@ -36,17 +36,17 @@ private theorem transport_denominator_bound {z C : ℝ} {H : ℂ}
     have ht := norm_add_le H (1:ℂ)
     rw [norm_one] at ht
     linarith
-  have hH2 : ‖H^2-1‖ ≤ (5/2)*C*z := by
-    rw [show H^2-1=(H-1)*(H+1) by ring,norm_mul]
+  have hH2 : ‖H^(2 : ℕ)-1‖ ≤ (5/2)*C*z := by
+    rw [show H^(2 : ℕ)-1=(H-1)*(H+1) by ring,norm_mul]
     calc
       _ ≤ (C*z)*(5/2) := mul_le_mul he hHp (norm_nonneg _) (by positivity)
       _ = _ := by ring
   have hD2 : ‖D-2‖ ≤ (5*C+2)*z := by
-    have hh : D-2=2*(r:ℂ)*(H^2-1)+2*((r:ℂ)-1) := by dsimp [D]; ring
+    have hh : D-2=2*(r:ℂ)*(H^(2 : ℕ)-1)+2*((r:ℂ)-1) := by dsimp [D]; ring
     rw [hh]
     calc
-      _ ≤ ‖2*(r:ℂ)*(H^2-1)‖+‖2*((r:ℂ)-1)‖ := norm_add_le _ _
-      _ = 2*r*‖H^2-1‖+2*|r-1| := by
+      _ ≤ ‖2*(r:ℂ)*(H^(2 : ℕ)-1)‖+‖2*((r:ℂ)-1)‖ := norm_add_le _ _
+      _ = 2*r*‖H^(2 : ℕ)-1‖+2*|r-1| := by
         simp only [norm_mul,Complex.norm_real,Real.norm_of_nonneg hr0]
         rw [← Complex.ofReal_one,← Complex.ofReal_sub,Complex.norm_real,Real.norm_eq_abs]
         norm_num
@@ -112,7 +112,7 @@ theorem incomingSourceTransport_uniform_first_bound (s chi a J K w : ℂ)
     (fun t ht => hF u huF t ⟨ht.1.le,ht.2.trans (hz.2.trans hbhalf)⟩)
   obtain ⟨hDi,hDe⟩ := transport_denominator_bound ⟨hz.1.le,hz.2.trans hbhalf⟩ hCG hGe hGl hGu
   let M := normalizedFirstEndpointMellin (horizonMellinCore s chi a J K) u z
-  let D : ℂ := 2*(Real.sqrt (1-z):ℂ)*(gaussFactor u chi false (z:ℂ))^2
+  let D : ℂ := 2*(Real.sqrt (1-z):ℂ)*(gaussFactor u chi false (z:ℂ))^(2 : ℕ)
   have hv : sourceRemainder s u a J K 1 0*A u/(2*(u+1))=U u*A u/2 := by
     simp only [U,horizonMellinCore,Complex.ofReal_zero,gaussFactor_zero,one_mul,div_mul_eq_div_div]
     ring
@@ -142,7 +142,7 @@ theorem incomingSourceTransport_continuousAt (s chi a J K w : ℂ)
   have hH := (horizon_derivatives_continued (w := w) (chi := chi) hz).1.continuousAt
   have hs : (Real.sqrt (1-z):ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr
     (ne_of_gt (Real.sqrt_pos.mpr (sub_pos.mpr hz.2)))
-  have hd : ContinuousAt (fun t : ℝ => 2*(t:ℂ)*(Real.sqrt (1-t):ℂ)*(horizon w chi t)^2) z := by
+  have hd : ContinuousAt (fun t : ℝ => 2*(t:ℂ)*(Real.sqrt (1-t):ℂ)*(horizon w chi t)^(2 : ℕ)) z := by
     exact ((continuousAt_const.mul Complex.continuous_ofReal.continuousAt).mul
       (by fun_prop)).mul (hH.pow 2)
   exact (hm.mul_const _).div hd (mul_ne_zero

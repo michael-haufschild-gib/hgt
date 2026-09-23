@@ -30,11 +30,11 @@ structure IsHalfPlaneHardy (F : ℂ → ℂ) (M : ℝ) : Prop where
   /-- Square-integrability on every vertical line inside the half-plane. -/
   memLp : ∀ σ : ℝ, 0 < σ → MemLp (fun ξ : ℝ => F (rayLine σ ξ)) 2 volume
   /-- A uniform bound for the mass on the lines. -/
-  bound : ∀ σ : ℝ, 0 < σ → (∫ ξ : ℝ, ‖F (rayLine σ ξ)‖ ^ 2) ≤ M
+  bound : ∀ σ : ℝ, 0 < σ → (∫ ξ : ℝ, ‖F (rayLine σ ξ)‖ ^ (2 : ℕ)) ≤ M
 
 theorem integrableOn_exp_mul_norm_sq {φ : ℝ → ℂ}
     (hφ : MemLp φ 2 (volume.restrict (Ioi (0 : ℝ)))) {σ : ℝ} (hσ : 0 < σ) :
-    IntegrableOn (fun x : ℝ => Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ 2) (Ioi (0 : ℝ)) := by
+    IntegrableOn (fun x : ℝ => Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ (2 : ℕ)) (Ioi (0 : ℝ)) := by
   refine (integrableOn_norm_sq_of_memLp hφ).mono' ?_ ?_
   · exact (Real.continuous_exp.comp (by fun_prop)).aestronglyMeasurable.mul
       ((hφ.aestronglyMeasurable.norm).pow 2)
@@ -51,7 +51,7 @@ theorem integrableOn_exp_mul_norm_sq {φ : ℝ → ℂ}
 Hardy space of the right half-plane, with the mass of the datum as bound. -/
 theorem isHalfPlaneHardy_laplaceRay {φ : ℝ → ℂ}
     (hφ : MemLp φ 2 (volume.restrict (Ioi (0 : ℝ)))) :
-    IsHalfPlaneHardy (laplaceRay φ) (∫ x in Ioi (0 : ℝ), ‖φ x‖ ^ 2) where
+    IsHalfPlaneHardy (laplaceRay φ) (∫ x in Ioi (0 : ℝ), ‖φ x‖ ^ (2 : ℕ)) where
   holo := differentiableOn_laplaceRay hφ
   memLp := fun σ hσ => memLp_two_laplaceRay_line hφ hσ
   bound := fun σ hσ => by
@@ -68,14 +68,14 @@ theorem isHalfPlaneHardy_laplaceRay {φ : ℝ → ℂ}
 boundary of the half-plane. -/
 theorem tendsto_integral_norm_sq_laplaceRay_line {φ : ℝ → ℂ}
     (hφ : MemLp φ 2 (volume.restrict (Ioi (0 : ℝ)))) :
-    Tendsto (fun σ : ℝ => ∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ 2) (𝓝[>] (0 : ℝ))
-      (𝓝 (∫ x in Ioi (0 : ℝ), ‖φ x‖ ^ 2)) := by
-  have hev : (fun σ : ℝ => ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ 2)
-      =ᶠ[𝓝[>] (0 : ℝ)] fun σ : ℝ => ∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ 2 := by
+    Tendsto (fun σ : ℝ => ∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ (2 : ℕ)) (𝓝[>] (0 : ℝ))
+      (𝓝 (∫ x in Ioi (0 : ℝ), ‖φ x‖ ^ (2 : ℕ))) := by
+  have hev : (fun σ : ℝ => ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * σ * x)) * ‖φ x‖ ^ (2 : ℕ))
+      =ᶠ[𝓝[>] (0 : ℝ)] fun σ : ℝ => ∫ ξ : ℝ, ‖laplaceRay φ (rayLine σ ξ)‖ ^ (2 : ℕ) := by
     filter_upwards [self_mem_nhdsWithin] with σ hσ
     exact (integral_norm_sq_laplaceRay_line hφ hσ).symm
   refine Tendsto.congr' hev ?_
-  refine tendsto_integral_filter_of_dominated_convergence (fun x : ℝ => ‖φ x‖ ^ 2) ?_ ?_ ?_ ?_
+  refine tendsto_integral_filter_of_dominated_convergence (fun x : ℝ => ‖φ x‖ ^ (2 : ℕ)) ?_ ?_ ?_ ?_
   · filter_upwards [self_mem_nhdsWithin] with σ hσ
     exact (Real.continuous_exp.comp (by fun_prop)).aestronglyMeasurable.mul
       ((hφ.aestronglyMeasurable.norm).pow 2)
@@ -96,7 +96,7 @@ theorem tendsto_integral_norm_sq_laplaceRay_line {φ : ℝ → ℂ}
       (hcontf.tendsto 0).mono_left nhdsWithin_le_nhds
     have h0 : Real.exp (-(2 * (0 : ℝ) * x)) = 1 := by norm_num
     rw [h0] at hcont
-    simpa using hcont.mul_const (‖φ x‖ ^ 2)
+    simpa using hcont.mul_const (‖φ x‖ ^ (2 : ℕ))
 
 end
 

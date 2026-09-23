@@ -71,8 +71,8 @@ theorem reflectedCompletedLambda_one_sub (P : ReflectedBiHeatRegulator) :
     reflectedCompletedLambda (1 - P.z) = reflectedCompletedLambda P.z := by
   have h1z : 0 < (1 - P.z).re := by simp; linarith [P.z_re_lt_one]
   rw [reflectedCompletedLambda, reflectedCompletedLambda,
-    ← completedRiemannZeta_eq_Gammaℝ_mul h1z,
-    ← completedRiemannZeta_eq_Gammaℝ_mul P.z_re_pos,
+    ← completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE h1z,
+    ← completedRiemannZeta_eq_Gammaℝ_mul_levinsonDetectorFE P.z_re_pos,
     completedRiemannZeta_one_sub]
 
 /-- Equations `(9)`--`(10)`: both small-aperture channels carry the same completed coefficient. -/

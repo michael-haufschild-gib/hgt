@@ -51,10 +51,10 @@ theorem riemannHypothesis_of_suzukiRectangularHilbertWardDefect_eventually_bddBe
     (hdefect : ∃ B : ℝ, ∃ N0 : ℕ, ∀ n : ℕ, N0 ≤ n →
       L ≤ Real.log n / 2 →
       B ≤ suzukiRectangularWardDefect L
-        (fun k => ‖sourceVector k‖ ^ 2) n) :
+        (fun k => ‖sourceVector k‖ ^ (2 : ℕ)) n) :
     RiemannHypothesis := by
   exact riemannHypothesis_of_suzukiRectangularWardDefect_eventually_bddBelow
-    hL (fun k => ‖sourceVector k‖ ^ 2) (fun _ => sq_nonneg _) hdefect
+    hL (fun k => ‖sourceVector k‖ ^ (2 : ℕ)) (fun _ => sq_nonneg _) hdefect
 
 /-- **Hostile-audit converse.**  Under false RH, subtracting any nonnegative source energy makes
 the Ward defect cofinally unbounded below.  A positive source square can never conceal the
@@ -82,9 +82,9 @@ theorem not_riemannHypothesis_implies_suzukiRectangularHilbertWardDefect_cofinal
     ∀ B : ℝ, ∀ N0 : ℕ, ∃ n : ℕ,
       N0 ≤ n ∧ L ≤ Real.log n / 2 ∧
       suzukiRectangularWardDefect L
-        (fun k => ‖sourceVector k‖ ^ 2) n < B := by
+        (fun k => ‖sourceVector k‖ ^ (2 : ℕ)) n < B := by
   exact not_riemannHypothesis_implies_suzukiRectangularWardDefect_cofinally_unbounded_below
-    hL hRH (fun k => ‖sourceVector k‖ ^ 2) (fun _ => sq_nonneg _)
+    hL hRH (fun k => ‖sourceVector k‖ ^ (2 : ℕ)) (fun _ => sq_nonneg _)
 
 /-! ## A sufficient decomposition criterion
 
@@ -112,7 +112,7 @@ theorem riemannHypothesis_of_suzukiRectangularWardDefect_bulk_endpoint
 theorem riemannHypothesis_of_suzukiRectangularHilbertWardDefect_bulk_endpoint
     {H : Type*} [SeminormedAddCommGroup H]
     {L : ℝ} (hL : 0 < L) (sourceVector : ℕ → H) (bulk endpoint : ℕ → ℝ)
-    (hsplit : ∀ n, suzukiRectangularWardDefect L (fun k => ‖sourceVector k‖ ^ 2) n
+    (hsplit : ∀ n, suzukiRectangularWardDefect L (fun k => ‖sourceVector k‖ ^ (2 : ℕ)) n
       = bulk n + endpoint n)
     (hbulk : ∀ n, 0 ≤ bulk n) (B : ℝ) (N0 : ℕ)
     (hend : ∀ n : ℕ, N0 ≤ n → L ≤ Real.log n / 2 → B ≤ endpoint n) :

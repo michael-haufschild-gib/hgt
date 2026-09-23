@@ -165,10 +165,10 @@ theorem thetaCompletedValuationReflectionCurrent_canonical_eq_productFibres
 /-- Archimedean reflection reads the even boundary channel of the infinite value synthesis. -/
 theorem thetaCompletedValuationValue_canonical_boundary_reflection
     (t : ℝ) :
-    (t ^ 2 + 1 / 4) *
+    (t ^ (2 : ℕ) + 1 / 4) *
         (thetaCompletedValuationValue
           (thetaCanonicalCompletedValuation (t : ℂ) (by simp))).re =
-      1 / 4 + 2 * t ^ 2 * (XiC (t : ℂ)).re := by
+      1 / 4 + 2 * t ^ (2 : ℕ) * (XiC (t : ℂ)).re := by
   rw [thetaCompletedValuationValue_canonical (by simp)]
   exact thetaCuspTailSecondDensityPhaseValue_re_ofReal_crossed t
 
@@ -220,7 +220,7 @@ theorem thetaCuspTailSecondDensityAtomPhaseDerivative_zero (n : ℕ) :
   rw [show (fun x : ℝ =>
       (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) * ((x : ℂ) * I)) =
       fun x : ℝ => I *
-        ((thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) * (x : ℂ) ^ 1) by
+        ((thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) * (x : ℂ) ^ (1 : ℕ)) by
     funext x
     simp only [pow_one]
     ring]

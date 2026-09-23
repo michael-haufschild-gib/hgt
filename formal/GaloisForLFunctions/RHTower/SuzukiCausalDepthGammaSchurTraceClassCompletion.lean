@@ -34,9 +34,9 @@ def suzukiCausalDepthGammaFeature (k : ℕ) (t : ℝ) : ℝ :=
 
 theorem summable_sq_suzukiCausalDepthGammaFeature
     {t : ℝ} (ht : 0 < t) :
-    Summable (fun k : ℕ => suzukiCausalDepthGammaFeature k t ^ 2) := by
+    Summable (fun k : ℕ => suzukiCausalDepthGammaFeature k t ^ (2 : ℕ)) := by
   have htail : Summable (fun k : ℕ =>
-      gammaConductorJacobiFeature (k + 3) t ^ 2) := by
+      gammaConductorJacobiFeature (k + 3) t ^ (2 : ℕ)) := by
     simpa using
       (summable_gammaConductorJacobiTail_sum_sq
         (n := 1) (fun _ : Fin 1 => t) (fun _ : Fin 1 => 1) (fun _ => ht))
@@ -47,7 +47,7 @@ theorem summable_sq_suzukiCausalDepthGammaFeature
 /-- The squared feature-row energy is exactly the projected Gamma residual diagonal. -/
 theorem tsum_sq_suzukiCausalDepthGammaFeature
     {t : ℝ} (ht : 0 < t) :
-    (∑' k : ℕ, suzukiCausalDepthGammaFeature k t ^ 2) =
+    (∑' k : ℕ, suzukiCausalDepthGammaFeature k t ^ (2 : ℕ)) =
       gammaConductorModeSchurResidual t t := by
   have hs := summable_sq_suzukiCausalDepthGammaFeature ht
   have hsplit := hs.sum_add_tsum_nat_add 1
@@ -63,8 +63,8 @@ theorem summable_mul_suzukiCausalDepthGammaFeature
         suzukiCausalDepthGammaFeature k u) := by
   apply Summable.of_norm_bounded
       (g := fun k : ℕ =>
-        (suzukiCausalDepthGammaFeature k t ^ 2 +
-          suzukiCausalDepthGammaFeature k u ^ 2) / 2)
+        (suzukiCausalDepthGammaFeature k t ^ (2 : ℕ) +
+          suzukiCausalDepthGammaFeature k u ^ (2 : ℕ)) / 2)
   · exact ((summable_sq_suzukiCausalDepthGammaFeature ht).add
       (summable_sq_suzukiCausalDepthGammaFeature hu)).div_const 2
   · intro k
@@ -97,7 +97,7 @@ theorem gammaConductorModeSchurResidual_self_le_one (t : ℝ) :
       semilocalArchimedeanSecondMomentCovarianceKernel t *
         semilocalArchimedeanSecondMomentCovarianceKernel t / (3 / 2 : ℝ) := by
     exact div_nonneg (mul_self_nonneg _) (by norm_num)
-  have hphi : 0 ≤ semilocalArchimedeanCharacteristic t ^ 2 := sq_nonneg _
+  have hphi : 0 ≤ semilocalArchimedeanCharacteristic t ^ (2 : ℕ) := sq_nonneg _
   have hzero : semilocalArchimedeanCharacteristic (t - t) = 1 := by
     simp [semilocalArchimedeanCharacteristic]
   rw [hzero]
@@ -112,17 +112,17 @@ def suzukiCausalDepthGammaWeightedFeature
 theorem summable_sq_suzukiCausalDepthGammaWeight_allPrime
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) :
     Summable (fun pe : Nat.Primes × ℕ =>
-      suzukiCausalDepthGammaWeight h a pe ^ 2) := by
+      suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ)) := by
   simpa only [normSq_suzukiCriticalApertureBoundaryAtom_eq_causalDepthGammaWeight_sq]
     using summable_normSq_suzukiCriticalApertureBoundaryAtom_allPrime hh ha 0
 
 theorem summable_sq_suzukiCausalDepthGammaWeightedFeature_row
     (h a : ℝ) (pe : Nat.Primes × ℕ) :
     Summable (fun k : ℕ =>
-      suzukiCausalDepthGammaWeightedFeature h a pe k ^ 2) := by
+      suzukiCausalDepthGammaWeightedFeature h a pe k ^ (2 : ℕ)) := by
   have hs := summable_sq_suzukiCausalDepthGammaFeature
     (suzukiCausalDepthGammaFrequency_pos pe)
-  refine (hs.mul_left (suzukiCausalDepthGammaWeight h a pe ^ 2)).congr ?_
+  refine (hs.mul_left (suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ))).congr ?_
   intro k
   simp only [suzukiCausalDepthGammaWeightedFeature]
   ring
@@ -130,17 +130,17 @@ theorem summable_sq_suzukiCausalDepthGammaWeightedFeature_row
 theorem tsum_sq_suzukiCausalDepthGammaWeightedFeature_row
     (h a : ℝ) (pe : Nat.Primes × ℕ) :
     (∑' k : ℕ,
-      suzukiCausalDepthGammaWeightedFeature h a pe k ^ 2) =
-      suzukiCausalDepthGammaWeight h a pe ^ 2 *
+      suzukiCausalDepthGammaWeightedFeature h a pe k ^ (2 : ℕ)) =
+      suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ) *
         gammaConductorModeSchurResidual
           (suzukiCausalDepthGammaFrequency pe)
           (suzukiCausalDepthGammaFrequency pe) := by
   rw [show (∑' k : ℕ,
-      suzukiCausalDepthGammaWeightedFeature h a pe k ^ 2) =
-      suzukiCausalDepthGammaWeight h a pe ^ 2 *
+      suzukiCausalDepthGammaWeightedFeature h a pe k ^ (2 : ℕ)) =
+      suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ) *
         ∑' k : ℕ,
           suzukiCausalDepthGammaFeature k
-            (suzukiCausalDepthGammaFrequency pe) ^ 2 by
+            (suzukiCausalDepthGammaFrequency pe) ^ (2 : ℕ) by
     rw [← tsum_mul_left]
     apply tsum_congr
     intro k
@@ -183,14 +183,14 @@ theorem tsum_mul_suzukiCausalDepthGammaWeightedFeature
 theorem summable_sq_suzukiCausalDepthGammaWeightedFeature_allPrime
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) :
     Summable (fun z : (Nat.Primes × ℕ) × ℕ =>
-      suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 ^ 2) := by
+      suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 ^ (2 : ℕ)) := by
   rw [summable_prod_of_nonneg (fun _ => sq_nonneg _)]
   constructor
   · exact fun pe =>
       summable_sq_suzukiCausalDepthGammaWeightedFeature_row h a pe
   · have hweights := summable_sq_suzukiCausalDepthGammaWeight_allPrime hh ha
     have houter : Summable (fun pe : Nat.Primes × ℕ =>
-        suzukiCausalDepthGammaWeight h a pe ^ 2 *
+        suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ) *
           gammaConductorModeSchurResidual
             (suzukiCausalDepthGammaFrequency pe)
             (suzukiCausalDepthGammaFrequency pe)) := by
@@ -247,13 +247,13 @@ theorem suzukiCausalDepthGammaFeatureKernel_isHS
     HilbertSchmidt.IsHS (suzukiCausalDepthGammaFeatureKernel h a) := by
   let energy :
       SuzukiCausalDepthGammaTraceIndex × SuzukiCausalDepthGammaTraceIndex → ℝ :=
-    fun z => ‖suzukiCausalDepthGammaFeatureKernel h a z‖ ^ 2
+    fun z => ‖suzukiCausalDepthGammaFeatureKernel h a z‖ ^ (2 : ℕ)
   have hcomp : Summable (fun z : (Nat.Primes × ℕ) × ℕ =>
       energy (suzukiCausalDepthGammaCrossEquiv z)) := by
     refine (summable_sq_suzukiCausalDepthGammaWeightedFeature_allPrime hh ha).congr
       (fun z => ?_)
-    change suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 ^ 2 =
-      ‖(suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 : ℂ)‖ ^ 2
+    change suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 ^ (2 : ℕ) =
+      ‖(suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 : ℂ)‖ ^ (2 : ℕ)
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   have hsub : Summable
       (energy ∘ Subtype.val : suzukiCausalDepthGammaCrossSupport → ℝ) :=
@@ -263,7 +263,7 @@ theorem suzukiCausalDepthGammaFeatureKernel_isHS
     summable_subtype_iff_indicator.mp hsub
   exact hindicator.congr fun z => by
     show suzukiCausalDepthGammaCrossSupport.indicator energy z =
-      ‖suzukiCausalDepthGammaFeatureKernel h a z‖ ^ 2
+      ‖suzukiCausalDepthGammaFeatureKernel h a z‖ ^ (2 : ℕ)
     by_cases hz : z ∈ suzukiCausalDepthGammaCrossSupport
     · rw [Set.indicator_of_mem hz]
     · rw [Set.indicator_of_notMem hz]
@@ -278,10 +278,10 @@ theorem hsNormSq_suzukiCausalDepthGammaFeatureKernel_eq
     (h a : ℝ) :
     HilbertSchmidt.hsNormSq (suzukiCausalDepthGammaFeatureKernel h a) =
       ∑' z : (Nat.Primes × ℕ) × ℕ,
-        suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 ^ 2 := by
+        suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 ^ (2 : ℕ) := by
   let energy :
       SuzukiCausalDepthGammaTraceIndex × SuzukiCausalDepthGammaTraceIndex → ℝ :=
-    fun z => ‖suzukiCausalDepthGammaFeatureKernel h a z‖ ^ 2
+    fun z => ‖suzukiCausalDepthGammaFeatureKernel h a z‖ ^ (2 : ℕ)
   rw [HilbertSchmidt.hsNormSq]
   change (∑' z, energy z) = _
   calc
@@ -304,17 +304,17 @@ theorem hsNormSq_suzukiCausalDepthGammaFeatureKernel_eq
       (suzukiCausalDepthGammaCrossEquiv.tsum_eq
         (fun z : suzukiCausalDepthGammaCrossSupport => energy z)).symm
     _ = ∑' z : (Nat.Primes × ℕ) × ℕ,
-        suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 ^ 2 := by
+        suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 ^ (2 : ℕ) := by
       apply tsum_congr
       intro z
-      change ‖(suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 : ℂ)‖ ^ 2 = _
+      change ‖(suzukiCausalDepthGammaWeightedFeature h a z.1 z.2 : ℂ)‖ ^ (2 : ℕ) = _
       rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
 theorem hsNormSq_suzukiCausalDepthGammaFeatureKernel_eq_weightedResidual
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) :
     HilbertSchmidt.hsNormSq (suzukiCausalDepthGammaFeatureKernel h a) =
       ∑' pe : Nat.Primes × ℕ,
-        suzukiCausalDepthGammaWeight h a pe ^ 2 *
+        suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ) *
           gammaConductorModeSchurResidual
             (suzukiCausalDepthGammaFrequency pe)
             (suzukiCausalDepthGammaFrequency pe) := by
@@ -328,11 +328,11 @@ theorem hsNormSq_suzukiCausalDepthGammaFeatureKernel_le_weightMass
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) :
     HilbertSchmidt.hsNormSq (suzukiCausalDepthGammaFeatureKernel h a) ≤
       ∑' pe : Nat.Primes × ℕ,
-        suzukiCausalDepthGammaWeight h a pe ^ 2 := by
+        suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ) := by
   rw [hsNormSq_suzukiCausalDepthGammaFeatureKernel_eq_weightedResidual hh ha]
   have hweights := summable_sq_suzukiCausalDepthGammaWeight_allPrime hh ha
   have hres : Summable (fun pe : Nat.Primes × ℕ =>
-      suzukiCausalDepthGammaWeight h a pe ^ 2 *
+      suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ) *
         gammaConductorModeSchurResidual
           (suzukiCausalDepthGammaFrequency pe)
           (suzukiCausalDepthGammaFrequency pe)) := by
@@ -355,13 +355,13 @@ theorem hsNormSq_suzukiCausalDepthGammaFeatureKernel_le_weightMass
 theorem hsNormSq_suzukiCausalDepthGammaFeatureKernel_le_uniformCeiling
     {h a : ℝ} (hh : 0 < h) (ha : 0 < a) :
     HilbertSchmidt.hsNormSq (suzukiCausalDepthGammaFeatureKernel h a) ≤
-      2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+      2 * ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) *
         (∑' p : Nat.Primes,
-          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹) := by
+          Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹) := by
   calc
     HilbertSchmidt.hsNormSq (suzukiCausalDepthGammaFeatureKernel h a) ≤
         ∑' pe : Nat.Primes × ℕ,
-          suzukiCausalDepthGammaWeight h a pe ^ 2 :=
+          suzukiCausalDepthGammaWeight h a pe ^ (2 : ℕ) :=
       hsNormSq_suzukiCausalDepthGammaFeatureKernel_le_weightMass hh ha
     _ = ∑' pe : Nat.Primes × ℕ,
         Complex.normSq
@@ -370,9 +370,9 @@ theorem hsNormSq_suzukiCausalDepthGammaFeatureKernel_le_uniformCeiling
       intro pe
       exact (normSq_suzukiCriticalApertureBoundaryAtom_eq_causalDepthGammaWeight_sq
         h a 0 pe).symm
-    _ ≤ 2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+    _ ≤ 2 * ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) *
         (∑' p : Nat.Primes,
-          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹) :=
+          Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹) :=
       tsum_normSq_suzukiCriticalApertureBoundaryAtom_allPrime_le hh ha 0
 
 /-- Positive Gram kernel of the complete feature matrix. -/
@@ -499,9 +499,9 @@ theorem suzukiCausalDepthGammaEnergyOperator_re_opTrace_le_uniformCeiling
     (h a : ℝ) (hh : 0 < h) (ha : 0 < a) :
     Complex.re (ContinuousLinearMap.opTrace
       (suzukiCausalDepthGammaEnergyOperator h a hh ha)) ≤
-      2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+      2 * ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) *
         (∑' p : Nat.Primes,
-          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹) := by
+          Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹) := by
   calc
     Complex.re (ContinuousLinearMap.opTrace
         (suzukiCausalDepthGammaEnergyOperator h a hh ha)) =
@@ -513,9 +513,9 @@ theorem suzukiCausalDepthGammaEnergyOperator_re_opTrace_le_uniformCeiling
         (suzukiCausalDepthGammaFeatureKernel h a) :=
       HilbertSchmidt.hsNormSq_toOperator
         (suzukiCausalDepthGammaFeatureKernel_isHS hh ha)
-    _ ≤ 2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+    _ ≤ 2 * ((h * Real.sqrt h)⁻¹) ^ (2 : ℕ) *
         (∑' p : Nat.Primes,
-          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹) :=
+          Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹) :=
       hsNormSq_suzukiCausalDepthGammaFeatureKernel_le_uniformCeiling hh ha
 
 /-! ### Premise-free canonical source scale -/
@@ -554,7 +554,7 @@ theorem suzukiCanonicalCausalDepthGammaEnergyOperator_re_opTrace_le :
     Complex.re (ContinuousLinearMap.opTrace
       suzukiCanonicalCausalDepthGammaEnergyOperator) ≤
       2 * (∑' p : Nat.Primes,
-        Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹) := by
+        Real.log (p : ℝ) * ((p : ℝ) ^ (2 : ℕ))⁻¹) := by
   simpa [suzukiCanonicalCausalDepthGammaEnergyOperator] using
     (suzukiCausalDepthGammaEnergyOperator_re_opTrace_le_uniformCeiling
       1 1 zero_lt_one zero_lt_one)

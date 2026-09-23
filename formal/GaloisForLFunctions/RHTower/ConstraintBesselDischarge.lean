@@ -7,8 +7,8 @@ The CCM constrained-prolate transfer carries two hypotheses on the constraint co
 `ℓ : ℝ → ℕ → ℝ`:
 
 ```text
-hsum    : Summable fun j => ℓ lam j ^ 2
-hbessel : (∑' j, ℓ lam j ^ 2) ≤ 2 * lam
+hsum    : Summable fun j => ℓ lam j ^ (2 : ℕ)
+hbessel : (∑' j, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam
 ```
 
 If the coordinates are the expansion of one vector against an orthonormal family — which is what
@@ -30,10 +30,10 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 of a fixed vector against an orthonormal family, summability and the bound follow from the vector's
 norm alone. -/
 theorem constraint_bessel_of_orthonormal {e : ℕ → E} (he : Orthonormal ℝ e) {v : E} {lam : ℝ}
-    (hnorm : ‖v‖ ^ 2 ≤ 2 * lam) :
-    (Summable fun j => (inner ℝ (e j) v : ℝ) ^ 2) ∧
-      (∑' j, (inner ℝ (e j) v : ℝ) ^ 2) ≤ 2 * lam := by
-  have hsq : ∀ j : ℕ, ‖(inner ℝ (e j) v : ℝ)‖ ^ 2 = (inner ℝ (e j) v : ℝ) ^ 2 := by
+    (hnorm : ‖v‖ ^ (2 : ℕ) ≤ 2 * lam) :
+    (Summable fun j => (inner ℝ (e j) v : ℝ) ^ (2 : ℕ)) ∧
+      (∑' j, (inner ℝ (e j) v : ℝ) ^ (2 : ℕ)) ≤ 2 * lam := by
+  have hsq : ∀ j : ℕ, ‖(inner ℝ (e j) v : ℝ)‖ ^ (2 : ℕ) = (inner ℝ (e j) v : ℝ) ^ (2 : ℕ) := by
     intro j
     rw [Real.norm_eq_abs, sq_abs]
   constructor
@@ -55,9 +55,9 @@ theorem paleyWiener_kernel_norm_le {lam : ℝ} (hlam : 0 ≤ lam) :
 /-- **The discharge, in the form the transfer consumes.**  With the constraint vector taken to be
 the band-limited evaluation kernel, whose squared norm is `lam/π`, both hypotheses hold. -/
 theorem constraint_bessel_of_paleyWiener {e : ℕ → E} (he : Orthonormal ℝ e) {v : E} {lam : ℝ}
-    (hlam : 0 ≤ lam) (hker : ‖v‖ ^ 2 = lam / Real.pi) :
-    (Summable fun j => (inner ℝ (e j) v : ℝ) ^ 2) ∧
-      (∑' j, (inner ℝ (e j) v : ℝ) ^ 2) ≤ 2 * lam :=
+    (hlam : 0 ≤ lam) (hker : ‖v‖ ^ (2 : ℕ) = lam / Real.pi) :
+    (Summable fun j => (inner ℝ (e j) v : ℝ) ^ (2 : ℕ)) ∧
+      (∑' j, (inner ℝ (e j) v : ℝ) ^ (2 : ℕ)) ≤ 2 * lam :=
   constraint_bessel_of_orthonormal he (by rw [hker]; exact paleyWiener_kernel_norm_le hlam)
 
 end RHTower

@@ -9,7 +9,7 @@ noncomputable section
 
 /-- The derived full period, retaining both original principal corrections and their completion factors. -/
 def nativePeriodContinuation (q : XiZeroCopy) (s : ℂ) : ℂ :=
-  (reflectedCompletedLambda (s+2*center q)*reflectedCompletedLambda s^2*
+  (reflectedCompletedLambda (s+2*center q)*reflectedCompletedLambda s^(2 : ℕ)*
     reflectedCompletedLambda (s-2*center q))/2+
   reflectedCompletedLambda (2*s)*nativePrincipalMomentContinuation q (s-1)+
   reflectedCompletedLambda (2*s-1)*nativePrincipalMomentContinuation q (-s)

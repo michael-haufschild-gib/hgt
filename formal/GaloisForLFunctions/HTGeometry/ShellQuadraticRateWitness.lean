@@ -57,12 +57,12 @@ theorem exists_energy_witness_of_span_witness {P : Fin N → Matrix (Fin D) (Fin
     {energy₀ : Fin D → ℂ} (hinj₀ : Function.Injective energy₀)
     (hroot₀ : ∀ i, matrixCharpolyRelation (H₀, energy₀ i) = 0)
     (hfail : ∀ (κ : ℝ) (σ : Equiv.Perm (Fin D)),
-      (∑ j, ((k (σ.symm j) : ℝ) : ℂ) * energy₀ j) ^ 2
-        - ((κ : ℝ) : ℂ) * ∑ j, energy₀ j ^ 2 ≠ 0)
+      (∑ j, ((k (σ.symm j) : ℝ) : ℂ) * energy₀ j) ^ (2 : ℕ)
+        - ((κ : ℝ) : ℂ) * ∑ j, energy₀ j ^ (2 : ℕ) ≠ 0)
     (κ : ℝ) :
     ∃ θ₀ : Fin N → ℝ, ∀ π : Equiv.Perm (Fin D),
-      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ 2
-        ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues i) ^ 2 := by
+      (∑ j, k j * (isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues (π j)) ^ (2 : ℕ)
+        ≠ κ * ∑ i, ((isHermitian_spectralEnsembleMatrix hP θ₀).eigenvalues i) ^ (2 : ℕ) := by
   classical
   obtain ⟨q, hq, hgood⟩ := exists_mem_real_shell_quadraticRate_ne_zero_of_mem_span P
     (fun j => ((k j : ℝ) : ℂ)) ((κ : ℝ) : ℂ) hspan hinj₀ hroot₀ (hfail κ)
@@ -90,8 +90,8 @@ theorem exists_energy_witness_of_span_witness {P : Fin N → Matrix (Fin D) (Fin
       = (((∑ i, k i * hHerm.eigenvalues (π i) : ℝ)) : ℂ) := by
     rw [Complex.ofReal_sum]
     exact Finset.sum_congr rfl fun i _ => by push_cast; ring
-  have hR : (∑ j, ((hHerm.eigenvalues j : ℝ) : ℂ) ^ 2)
-      = (((∑ j, (hHerm.eigenvalues j) ^ 2 : ℝ)) : ℂ) := by
+  have hR : (∑ j, ((hHerm.eigenvalues j : ℝ) : ℂ) ^ (2 : ℕ))
+      = (((∑ j, (hHerm.eigenvalues j) ^ (2 : ℕ) : ℝ)) : ℂ) := by
     rw [Complex.ofReal_sum]
     exact Finset.sum_congr rfl fun j _ => by push_cast; ring
   rw [hL, hR, ← Complex.ofReal_pow, ← Complex.ofReal_mul, ← Complex.ofReal_sub, hπ]
@@ -110,8 +110,8 @@ theorem tendsto_integral_exp_sortedSpectralAction_zero_of_span_witness
     {energy₀ : Fin D → ℂ} (hinj₀ : Function.Injective energy₀)
     (hroot₀ : ∀ i, matrixCharpolyRelation (H₀, energy₀ i) = 0)
     (hfail : ∀ (κ : ℝ) (σ : Equiv.Perm (Fin D)),
-      (∑ j, ((k (σ.symm j) : ℝ) : ℂ) * energy₀ j) ^ 2
-        - ((κ : ℝ) : ℂ) * ∑ j, energy₀ j ^ 2 ≠ 0)
+      (∑ j, ((k (σ.symm j) : ℝ) : ℂ) * energy₀ j) ^ (2 : ℕ)
+        - ((κ : ℝ) : ℂ) * ∑ j, energy₀ j ^ (2 : ℕ) ≠ 0)
     (g : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 → ℂ) (hg : Measurable g)
     {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖g x‖ ≤ C) :
     Filter.Tendsto (fun t : ℝ => ∫ x, g x *

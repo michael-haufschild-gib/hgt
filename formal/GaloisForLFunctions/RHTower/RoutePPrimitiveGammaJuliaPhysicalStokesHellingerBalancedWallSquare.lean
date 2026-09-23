@@ -37,7 +37,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel_balanced_sq :
     routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 *
         routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 =
       (64 : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
-  have hdefect : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ 2 =
+  have hdefect : (routeEPCubicFourthDepthJuliaDefect : ℂ) ^ (2 : ℕ) =
       ((63 / 64 : ℝ) : ℂ) := by
     exact_mod_cast routeEPCubicFourthDepthJuliaDefect_sq
   ext i j
@@ -129,7 +129,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerFintypePencil_det_eq_pro
 theorem routePPrimitiveGammaJuliaSignedBivariateFactor_balanced
     (lam : ℝ) (u : ℂ) :
     routePPrimitiveGammaJuliaSignedBivariateFactor lam (64 * u) (1 * u) =
-      1 - 64 * (lam : ℂ) ^ 2 * u ^ 2 := by
+      1 - 64 * (lam : ℂ) ^ (2 : ℕ) * u ^ (2 : ℕ) := by
   simp [routePPrimitiveGammaJuliaSignedBivariateFactor]
   ring
 
@@ -138,7 +138,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerFintypePencil_balanced_d
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (H : Matrix ι ι ℂ) (hH : H.IsHermitian) (u : ℂ) :
     (routePPrimitiveGammaJuliaPhysicalStokesHellingerFintypePencil H 1 u).det =
-      ∏ i, (1 - 64 * ((hH.eigenvalues i : ℝ) : ℂ) ^ 2 * u ^ 2) := by
+      ∏ i, (1 - 64 * ((hH.eigenvalues i : ℝ) : ℂ) ^ (2 : ℕ) * u ^ (2 : ℕ)) := by
   rw [routePPrimitiveGammaJuliaPhysicalStokesHellingerFintypePencil_det_eq_prod
     H hH (r := 1) (by norm_num)]
   apply Finset.prod_congr rfl
@@ -167,14 +167,14 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerFintypePencil_balanced_e
 def routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (H : Matrix ι ι ℂ) (u : ℂ) : Matrix ι ι ℂ :=
-  1 - (64 * u ^ 2) • (H * H)
+  1 - (64 * u ^ (2 : ℕ)) • (H * H)
 
 /-- Squared-child determinant has the same squared-eigenvalue product. -/
 theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil_det_eq_prod
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (H : Matrix ι ι ℂ) (hH : H.IsHermitian) (u : ℂ) :
     (routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil H u).det =
-      ∏ i, (1 - 64 * ((hH.eigenvalues i : ℝ) : ℂ) ^ 2 * u ^ 2) := by
+      ∏ i, (1 - 64 * ((hH.eigenvalues i : ℝ) : ℂ) ^ (2 : ℕ) * u ^ (2 : ℕ)) := by
   let U : Matrix ι ι ℂ := hH.eigenvectorUnitary
   let D : Matrix ι ι ℂ :=
     Matrix.diagonal (fun i => ((hH.eigenvalues i : ℝ) : ℂ))
@@ -200,15 +200,15 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil_det_e
   have hconj :
       Uᴴ * routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil H u * U =
         Matrix.diagonal
-          (fun i => 1 - 64 * ((hH.eigenvalues i : ℝ) : ℂ) ^ 2 * u ^ 2) := by
+          (fun i => 1 - 64 * ((hH.eigenvalues i : ℝ) : ℂ) ^ (2 : ℕ) * u ^ (2 : ℕ)) := by
     calc
       Uᴴ * routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil H u * U =
-          1 - (64 * u ^ 2) • (Uᴴ * (H * H) * U) := by
+          1 - (64 * u ^ (2 : ℕ)) • (Uᴴ * (H * H) * U) := by
             simp [routePPrimitiveGammaJuliaPhysicalStokesHellingerSquaredChildPencil,
               Matrix.mul_sub, Matrix.sub_mul, hstarU, mul_assoc]
-      _ = 1 - (64 * u ^ 2) • (D * D) := by rw [hHsq]
+      _ = 1 - (64 * u ^ (2 : ℕ)) • (D * D) := by rw [hHsq]
       _ = Matrix.diagonal
-          (fun i => 1 - 64 * ((hH.eigenvalues i : ℝ) : ℂ) ^ 2 * u ^ 2) := by
+          (fun i => 1 - 64 * ((hH.eigenvalues i : ℝ) : ℂ) ^ (2 : ℕ) * u ^ (2 : ℕ)) := by
             ext i j
             by_cases hij : i = j
             · subst j

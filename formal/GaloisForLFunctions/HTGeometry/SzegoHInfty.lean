@@ -44,7 +44,7 @@ theorem normSq_szegoOuter_le {w : ℝ → ℝ} {C : ℝ} (hC : 0 < C)
     (hper : Function.Periodic (fun θ => Real.log (w θ)) (2 * π))
     (hlogφ : ∀ φ, IntervalIntegrable (fun t => Real.log (w (φ + t))) volume (-π) π)
     (hwpos : ∀ θ, 0 < w θ) (hwC : ∀ θ, w θ ≤ C) {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (φ : ℝ) :
-    ‖szegoOuter w (circleMap 0 r φ)‖ ^ 2 ≤ C := by
+    ‖szegoOuter w (circleMap 0 r φ)‖ ^ (2 : ℕ) ≤ C := by
   rw [normSq_szegoOuter_eq_poissonConv hlog hper hr0 hr1 φ,
     show C = Real.exp (Real.log C) from (Real.exp_log hC).symm]
   apply Real.exp_le_exp.mpr

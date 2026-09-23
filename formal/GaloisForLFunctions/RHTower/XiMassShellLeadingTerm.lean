@@ -22,16 +22,16 @@ noncomputable section
 theorem sqrt_two_pi_mul_eq {a : ℝ} (ha : 0 < a) :
     (Real.sqrt 2)⁻¹ * (2 * a) * Real.sqrt (Real.pi / a) = Real.sqrt (2 * Real.pi * a) := by
   have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
-  have h2sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have h2sq : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hpa : (0 : ℝ) < Real.pi / a := by positivity
-  have hpasq : Real.sqrt (Real.pi / a) ^ 2 = Real.pi / a := Real.sq_sqrt hpa.le
+  have hpasq : Real.sqrt (Real.pi / a) ^ (2 : ℕ) = Real.pi / a := Real.sq_sqrt hpa.le
   have hnn : (0 : ℝ) ≤ (Real.sqrt 2)⁻¹ * (2 * a) * Real.sqrt (Real.pi / a) := by positivity
   have htarget : (0 : ℝ) ≤ 2 * Real.pi * a := by positivity
   have hval : a * (Real.pi / a) = Real.pi := by field_simp
-  have hexp : ((Real.sqrt 2)⁻¹ * (2 * a) * Real.sqrt (Real.pi / a)) ^ 2
-      = (Real.sqrt 2 ^ 2)⁻¹ * (2 * a) ^ 2 * Real.sqrt (Real.pi / a) ^ 2 := by
+  have hexp : ((Real.sqrt 2)⁻¹ * (2 * a) * Real.sqrt (Real.pi / a)) ^ (2 : ℕ)
+      = (Real.sqrt 2 ^ (2 : ℕ))⁻¹ * (2 * a) ^ (2 : ℕ) * Real.sqrt (Real.pi / a) ^ (2 : ℕ) := by
     field_simp
-  have hsq : ((Real.sqrt 2)⁻¹ * (2 * a) * Real.sqrt (Real.pi / a)) ^ 2 = 2 * Real.pi * a := by
+  have hsq : ((Real.sqrt 2)⁻¹ * (2 * a) * Real.sqrt (Real.pi / a)) ^ (2 : ℕ) = 2 * Real.pi * a := by
     rw [hexp, h2sq, hpasq]
     field_simp
   rw [← hsq, Real.sqrt_sq hnn]

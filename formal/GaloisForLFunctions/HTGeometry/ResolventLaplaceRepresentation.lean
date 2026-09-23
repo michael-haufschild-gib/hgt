@@ -41,7 +41,7 @@ theorem resolventOrbit_zero (B : X →L[ℂ] X) (L : ℝ) (u : X) :
   simp
 
 theorem norm_resolventOrbit_le {B : X →L[ℂ] X} {μ : ℝ}
-    (hB : ∀ u : X, μ * ‖u‖ ^ 2 ≤ (inner ℂ (B u) u).re) (L : ℝ) (u : X) {s : ℝ} (hs : 0 ≤ s) :
+    (hB : ∀ u : X, μ * ‖u‖ ^ (2 : ℕ) ≤ (inner ℂ (B u) u).re) (L : ℝ) (u : X) {s : ℝ} (hs : 0 ≤ s) :
     ‖resolventOrbit B L u s‖ ≤ Real.exp (-((μ + L) * s)) * ‖u‖ := by
   have hbase := norm_accretiveSemigroup_apply_le hB u hs
   rw [resolventOrbit, norm_smul, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
@@ -80,7 +80,7 @@ theorem continuous_resolventOrbit (B : X →L[ℂ] X) (L : ℝ) (u : X) :
 
 /-- **The orbit is integrable on the ray.** -/
 theorem integrableOn_resolventOrbit {B : X →L[ℂ] X} {μ L : ℝ}
-    (hB : ∀ u : X, μ * ‖u‖ ^ 2 ≤ (inner ℂ (B u) u).re) (hgap : 0 < μ + L) (u : X) :
+    (hB : ∀ u : X, μ * ‖u‖ ^ (2 : ℕ) ≤ (inner ℂ (B u) u).re) (hgap : 0 < μ + L) (u : X) :
     IntegrableOn (resolventOrbit B L u) (Ioi (0 : ℝ)) volume := by
   have hmaj : IntegrableOn (fun s : ℝ => Real.exp (-(μ + L) * s) * ‖u‖)
       (Ioi (0 : ℝ)) volume :=
@@ -96,7 +96,7 @@ theorem integrableOn_resolventOrbit {B : X →L[ℂ] X} {μ L : ℝ}
 
 /-- **The orbit vanishes at infinity.** -/
 theorem tendsto_resolventOrbit {B : X →L[ℂ] X} {μ L : ℝ}
-    (hB : ∀ u : X, μ * ‖u‖ ^ 2 ≤ (inner ℂ (B u) u).re) (hgap : 0 < μ + L) (u : X) :
+    (hB : ∀ u : X, μ * ‖u‖ ^ (2 : ℕ) ≤ (inner ℂ (B u) u).re) (hgap : 0 < μ + L) (u : X) :
     Filter.Tendsto (resolventOrbit B L u) Filter.atTop (nhds 0) := by
   have hzero : Filter.Tendsto (fun s : ℝ => Real.exp (-((μ + L) * s)) * ‖u‖)
       Filter.atTop (nhds 0) := by
@@ -111,7 +111,7 @@ theorem tendsto_resolventOrbit {B : X →L[ℂ] X} {μ L : ℝ}
 
 /-- **The shifted resolvent is the Laplace transform of the semigroup.** -/
 theorem resolvent_integral_apply {B : X →L[ℂ] X} {μ L : ℝ}
-    (hB : ∀ u : X, μ * ‖u‖ ^ 2 ≤ (inner ℂ (B u) u).re) (hgap : 0 < μ + L) (u : X) :
+    (hB : ∀ u : X, μ * ‖u‖ ^ (2 : ℕ) ≤ (inner ℂ (B u) u).re) (hgap : 0 < μ + L) (u : X) :
     (B + (L : ℂ) • ContinuousLinearMap.id ℂ X)
         (∫ s in Ioi (0 : ℝ), resolventOrbit B L u s) = u := by
   set A : X →L[ℂ] X := B + (L : ℂ) • ContinuousLinearMap.id ℂ X with hA

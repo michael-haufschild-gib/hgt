@@ -46,10 +46,10 @@ polynomial-Gaussian bound indexed by the complement. -/
 theorem prod_mul_exp_le_polynomialGaussianLatticeWeight {c d : ℕ}
     (vec : (Fin c → ℤ) → Fin d → ℝ) (deg : Fin d → ℕ)
     {kappa lin eps : ℝ} (hlin : 0 ≤ lin) (heps : 0 ≤ eps)
-    (hdiscrete : ∀ z : Fin c → ℤ, kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ 2 ≤ ∑ i, (vec z i) ^ 2)
+    (hdiscrete : ∀ z : Fin c → ℤ, kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ (2 : ℕ) ≤ ∑ i, (vec z i) ^ (2 : ℕ))
     (hbounded : ∀ (z : Fin c → ℤ) (i : Fin d), |vec z i| ≤ lin * ∑ j, |((z j : ℤ) : ℝ)|)
     (z : Fin c → ℤ) :
-    (∏ i, (1 + |vec z i|) ^ (deg i)) * Real.exp (-(eps * ∑ i, (vec z i) ^ 2))
+    (∏ i, (1 + |vec z i|) ^ (deg i)) * Real.exp (-(eps * ∑ i, (vec z i) ^ (2 : ℕ)))
       ≤ (1 + lin) ^ (∑ i, deg i)
         * polynomialGaussianLatticeWeight (Fin c) (fun _ => ∑ i, deg i)
             (fun _ => eps * kappa) z := by
@@ -78,14 +78,14 @@ theorem prod_mul_exp_le_polynomialGaussianLatticeWeight {c d : ℕ}
             (fun i _ => pow_le_pow_left₀ (by positivity) (hstep i) _)
       _ = ((1 + lin) * Q) ^ (∑ i, deg i) := by rw [← Finset.prod_pow_eq_pow_sum]
   -- the Gaussian factor
-  have hgauss : Real.exp (-(eps * ∑ i, (vec z i) ^ 2))
-      ≤ Real.exp (-(eps * kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ 2)) := by
+  have hgauss : Real.exp (-(eps * ∑ i, (vec z i) ^ (2 : ℕ)))
+      ≤ Real.exp (-(eps * kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ (2 : ℕ))) := by
     refine Real.exp_le_exp.mpr ?_
     have := hdiscrete z
     nlinarith [heps]
   have hweight : polynomialGaussianLatticeWeight (Fin c) (fun _ => ∑ i, deg i)
       (fun _ => eps * kappa) z
-      = Q ^ (∑ i, deg i) * Real.exp (-(eps * kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ 2)) := by
+      = Q ^ (∑ i, deg i) * Real.exp (-(eps * kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ (2 : ℕ))) := by
     rw [polynomialGaussianLatticeWeight_eq, hQ]
     congr 1
     · rw [← Finset.prod_pow]
@@ -97,12 +97,12 @@ theorem prod_mul_exp_le_polynomialGaussianLatticeWeight {c d : ℕ}
   rw [hweight]
   have hpolynn : (0 : ℝ) ≤ ∏ i, (1 + |vec z i|) ^ (deg i) :=
     Finset.prod_nonneg fun i _ => by positivity
-  calc (∏ i, (1 + |vec z i|) ^ (deg i)) * Real.exp (-(eps * ∑ i, (vec z i) ^ 2))
+  calc (∏ i, (1 + |vec z i|) ^ (deg i)) * Real.exp (-(eps * ∑ i, (vec z i) ^ (2 : ℕ)))
       ≤ ((1 + lin) * Q) ^ (∑ i, deg i)
-        * Real.exp (-(eps * kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ 2)) :=
+        * Real.exp (-(eps * kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ (2 : ℕ))) :=
         mul_le_mul hpoly hgauss (Real.exp_pos _).le (by positivity)
     _ = (1 + lin) ^ (∑ i, deg i)
-        * (Q ^ (∑ i, deg i) * Real.exp (-(eps * kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ 2))) := by
+        * (Q ^ (∑ i, deg i) * Real.exp (-(eps * kappa * ∑ j, (((z j : ℤ) : ℝ)) ^ (2 : ℕ)))) := by
         rw [mul_pow]; ring
 
 end

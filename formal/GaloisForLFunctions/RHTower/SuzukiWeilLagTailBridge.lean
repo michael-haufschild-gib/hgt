@@ -25,7 +25,7 @@ noncomputable section
 
 /-- The Chebyshev-error tail read by the integer Weil lag. -/
 def weilLagChebyshevTail (n : ℕ) : ℝ :=
-  ∫ t in Set.Ioi (n : ℝ), chebyshevError t / t ^ 2
+  ∫ t in Set.Ioi (n : ℝ), chebyshevError t / t ^ (2 : ℕ)
 
 /-- The endpoint Chebyshev error cancels exactly in the integer Weil lag, leaving its tail. -/
 theorem sqrt_mul_integerLag_eq_neg_mul_weilLagChebyshevTail_add_arch
@@ -106,46 +106,46 @@ theorem psiRemainder_eq_weilLagChebyshevTail_difference (k : ℕ) (hk : 1 ≤ k)
           (mertensSum k - Real.log (k : ℝ) + Real.eulerMascheroniConstant) =
         vonMangoldt (k + 1) / ((k + 1 : ℕ) : ℝ) - 1 / ((k + 1 : ℕ) : ℝ) -
           (Chebyshev.psi (k : ℝ) - (k : ℝ)) / ((k : ℝ) * ((k + 1 : ℕ) : ℝ)) +
-          (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ 2) -
-            (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ 2) := by
+          (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ (2 : ℕ)) -
+            (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ (2 : ℕ)) := by
     rw [hK, hK1, hsource]
     field_simp [hk0, hk1]
     push_cast
     ring
   have htailEq :
       (Chebyshev.psi (k : ℝ) - (k : ℝ)) / ((k : ℝ) * ((k + 1 : ℕ) : ℝ)) =
-        (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ 2) -
-          (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ 2) +
+        (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ (2 : ℕ)) -
+          (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ (2 : ℕ)) +
             Real.log ((k + 1 : ℕ) : ℝ) - Real.log (k : ℝ) - 1 / ((k + 1 : ℕ) : ℝ) := by
     have hEq :
         vonMangoldt (k + 1) / ((k + 1 : ℕ) : ℝ) -
             Real.log ((k + 1 : ℕ) : ℝ) + Real.log (k : ℝ) =
           vonMangoldt (k + 1) / ((k + 1 : ℕ) : ℝ) - 1 / ((k + 1 : ℕ) : ℝ) -
             (Chebyshev.psi (k : ℝ) - (k : ℝ)) / ((k : ℝ) * ((k + 1 : ℕ) : ℝ)) +
-              (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ 2) -
-                (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ 2) :=
+              (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ (2 : ℕ)) -
+                (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ (2 : ℕ)) :=
       hmertens.symm.trans htail
     have hsum :
         (Chebyshev.psi (k : ℝ) - (k : ℝ)) / ((k : ℝ) * ((k + 1 : ℕ) : ℝ)) +
             (vonMangoldt (k + 1) / ((k + 1 : ℕ) : ℝ) -
               Real.log ((k + 1 : ℕ) : ℝ) + Real.log (k : ℝ)) =
           vonMangoldt (k + 1) / ((k + 1 : ℕ) : ℝ) - 1 / ((k + 1 : ℕ) : ℝ) +
-            (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ 2) -
-              (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ 2) := by
+            (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ (2 : ℕ)) -
+              (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ (2 : ℕ)) := by
       rw [hEq]
       ring
     have hsolve :
         (Chebyshev.psi (k : ℝ) - (k : ℝ)) / ((k : ℝ) * ((k + 1 : ℕ) : ℝ)) =
           (vonMangoldt (k + 1) / ((k + 1 : ℕ) : ℝ) - 1 / ((k + 1 : ℕ) : ℝ) +
-            (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ 2) -
-              (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ 2)) -
+            (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ (2 : ℕ)) -
+              (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ (2 : ℕ))) -
             (vonMangoldt (k + 1) / ((k + 1 : ℕ) : ℝ) -
               Real.log ((k + 1 : ℕ) : ℝ) + Real.log (k : ℝ)) :=
       (eq_sub_iff_add_eq).mpr hsum
     calc
       _ = (vonMangoldt (k + 1) / ((k + 1 : ℕ) : ℝ) - 1 / ((k + 1 : ℕ) : ℝ) +
-            (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ 2) -
-              (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ 2)) -
+            (∫ t in Set.Ioi (k : ℝ), chebyshevError t / t ^ (2 : ℕ)) -
+              (∫ t in Set.Ioi ((k + 1 : ℕ) : ℝ), chebyshevError t / t ^ (2 : ℕ))) -
           (vonMangoldt (k + 1) / ((k + 1 : ℕ) : ℝ) -
             Real.log ((k + 1 : ℕ) : ℝ) + Real.log (k : ℝ)) := hsolve
       _ = _ := by ring

@@ -99,7 +99,7 @@ theorem gammaIterateScaledFirstJetTail_eq_composition
 /-- The first-jet factorial boundary.  Only the first derivative coordinate collapses, to `a²`;
 all later derivative coordinates are multiplied by the same nonzero factor `a²`. -/
 def gammaFirstJetBoundaryTail (k : ℕ) (a : ℂ) : Fin (k + 1) × Fin 2 → ℂ :=
-  gammaFirstJetCompositionTail k a (a ^ 2)
+  gammaFirstJetCompositionTail k a (a ^ (2 : ℕ))
 
 /-- Coordinatewise convergence of the complete scaled first jet to its Riccati boundary. -/
 theorem tendsto_gammaIterateScaledFirstJetTail_factorialBlowUp
@@ -119,7 +119,7 @@ theorem tendsto_gammaIterateScaledFirstJetTail_factorialBlowUp
   have hB' : Tendsto (fun n => reciprocalGammaFactorialScale n *
       iteratedDeriv 1 Complex.Gamma
         (-(n : ℂ) + reciprocalGammaFactorialScale n * x))
-      atTop (𝓝 (((-x)⁻¹) ^ 2)) := by
+      atTop (𝓝 (((-x)⁻¹) ^ (2 : ℕ))) := by
     simpa [iteratedDeriv_factorialBlowUpZoom, outerReciprocalLimit] using hB
   have hreg : (-x)⁻¹ ∈ gammaIterateRegularSet k := hx.2
   have hcomp : Tendsto (fun n : ℕ => gammaFirstJetCompositionTail k

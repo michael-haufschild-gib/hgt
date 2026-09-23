@@ -103,7 +103,7 @@ theorem ccmFUCritical_twoLog_add_one_le_natCast_of_nine_le
     exact_mod_cast (lt_of_lt_of_le (by omega : 0 < 9) hp)
   have hp9 : (9 : ℝ) ≤ p := by exact_mod_cast hp
   have hsqrt0 : 0 ≤ Real.sqrt (p : ℝ) := Real.sqrt_nonneg _
-  have hsqrtSq : Real.sqrt (p : ℝ) ^ 2 = (p : ℝ) := Real.sq_sqrt hp0.le
+  have hsqrtSq : Real.sqrt (p : ℝ) ^ (2 : ℕ) = (p : ℝ) := Real.sq_sqrt hp0.le
   have hsqrt3 : (3 : ℝ) ≤ Real.sqrt (p : ℝ) := by nlinarith
   have hsqrtPos : 0 < Real.sqrt (p : ℝ) := Real.sqrt_pos.mpr hp0
   have hlogSqrt : Real.log (Real.sqrt (p : ℝ)) ≤ Real.sqrt (p : ℝ) - 1 :=

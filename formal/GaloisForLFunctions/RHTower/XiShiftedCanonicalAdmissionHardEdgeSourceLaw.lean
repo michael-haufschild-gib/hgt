@@ -24,7 +24,7 @@ noncomputable section
 def xiShiftedCanonicalAdmissionHardEdgeSource (w : ℝ) (n : ℕ) : Polynomial ℝ :=
   let A := HTGeometry.monicMomentAdmissionPolynomial
     (xiShiftedRealMomentSequence w) n
-  xiShiftedHardEdgeAdaptiveBilinearSource (w ^ 2) n n A A
+  xiShiftedHardEdgeAdaptiveBilinearSource (w ^ (2 : ℕ)) n n A A
 
 /-- The literal completed mixed `P^sharp` arithmetic source is exactly the moment landing of the
 canonical hard-edge producer. -/
@@ -34,7 +34,7 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_canonicalAdmission_eq_ha
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) =
       HTGeometry.momentFunctional (xiShiftedRealMomentSequence w)
-        (xiShiftedHardEdgeReciprocalUnclearing (w ^ 2) (2 * n + 2)
+        (xiShiftedHardEdgeReciprocalUnclearing (w ^ (2 : ℕ)) (2 * n + 2)
           (xiShiftedCanonicalAdmissionHardEdgeSource w n)) := by
   have hA :
       (HTGeometry.monicMomentAdmissionPolynomial
@@ -52,8 +52,8 @@ theorem xiShiftedCanonicalAdmissionHardEdgeSource_completeHausdorffDiagonal_eq_j
       (n + 2)).PosDef) :
     let T := xiShiftedCanonicalAdmissionHardEdgeSource w n
     T.support.sum (fun j =>
-      T.coeff j * ((w ^ 2) ^ j *
-        scaledHausdorffMomentDifference (1 / (w ^ 2))
+      T.coeff j * ((w ^ (2 : ℕ)) ^ j *
+        scaledHausdorffMomentDifference (1 / (w ^ (2 : ℕ)))
           (xiShiftedRealMomentSequence w) (2 * n + 2 - j) j)) =
       2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
         HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n := by
@@ -76,8 +76,8 @@ theorem xiShiftedCanonicalAdmissionHardEdgeSource_completeHausdorffDiagonal_pos
       (n + 2)).PosDef) :
     let T := xiShiftedCanonicalAdmissionHardEdgeSource w n
     0 < T.support.sum (fun j =>
-      T.coeff j * ((w ^ 2) ^ j *
-        scaledHausdorffMomentDifference (1 / (w ^ 2))
+      T.coeff j * ((w ^ (2 : ℕ)) ^ j *
+        scaledHausdorffMomentDifference (1 / (w ^ (2 : ℕ)))
           (xiShiftedRealMomentSequence w) (2 * n + 2 - j) j)) := by
   dsimp only
   rw [xiShiftedCanonicalAdmissionHardEdgeSource_completeHausdorffDiagonal_eq_jacobiEnergy
@@ -95,8 +95,8 @@ theorem not_hankelPosDef_of_canonicalAdmissionHardEdgeSource_completeHausdorffDi
     (hsource :
       let T := xiShiftedCanonicalAdmissionHardEdgeSource w n
       T.support.sum (fun j =>
-        T.coeff j * ((w ^ 2) ^ j *
-          scaledHausdorffMomentDifference (1 / (w ^ 2))
+        T.coeff j * ((w ^ (2 : ℕ)) ^ j *
+          scaledHausdorffMomentDifference (1 / (w ^ (2 : ℕ)))
             (xiShiftedRealMomentSequence w) (2 * n + 2 - j) j)) ≤ 0) :
     ¬(HTGeometry.momentHankelMatrix (xiShiftedRealMomentSequence w)
       (n + 2)).PosDef := by

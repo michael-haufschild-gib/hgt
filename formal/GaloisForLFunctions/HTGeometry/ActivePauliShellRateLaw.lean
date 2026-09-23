@@ -29,7 +29,7 @@ def fullPauliBasisCoefficient {n : ℕ} (P : Fin n → Option (Fin 3)) :
   fun Q => if Q = P then 1 else 0
 
 theorem sum_sq_fullPauliBasisCoefficient {n : ℕ} (P : Fin n → Option (Fin 3)) :
-    (∑ Q, (fullPauliBasisCoefficient P Q) ^ 2) = 1 := by
+    (∑ Q, (fullPauliBasisCoefficient P Q) ^ (2 : ℕ)) = 1 := by
   classical
   simp [fullPauliBasisCoefficient]
 
@@ -53,7 +53,7 @@ theorem frobSq_finitePauliMatrix_exact {n : ℕ} (P : Fin n → Option (Fin 3)) 
   have h := frobSq_pauliCombination (σ := Fin n)
     (fun Q => if Q = P then (1 : ℂ) else 0)
   have hsum : (∑ Q : Fin n → Option (Fin 3),
-      ‖if Q = P then (1 : ℂ) else 0‖ ^ 2) = 1 := by
+      ‖if Q = P then (1 : ℂ) else 0‖ ^ (2 : ℕ)) = 1 := by
     rw [Finset.sum_eq_single P]
     · simp
     · intro Q _ hQP
@@ -83,16 +83,16 @@ def activePauliHamiltonian {n q : ℕ} (J : PauliTracelessLabel n q → ℂ) :
 /-- Exact Parseval law on the active `q`-local Pauli dictionary. -/
 theorem frobSq_activePauliHamiltonian {n q : ℕ} (J : PauliTracelessLabel n q → ℂ) :
     frobSq (activePauliHamiltonian J) =
-      2 ^ n * ∑ P : PauliTracelessLabel n q, ‖J P‖ ^ 2 := by
+      2 ^ n * ∑ P : PauliTracelessLabel n q, ‖J P‖ ^ (2 : ℕ) := by
   classical
   have hcast : ((frobSq (activePauliHamiltonian J) : ℝ) : ℂ) =
-      ((2 ^ n * ∑ P : PauliTracelessLabel n q, ‖J P‖ ^ 2 : ℝ) : ℂ) := by
+      ((2 ^ n * ∑ P : PauliTracelessLabel n q, ‖J P‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [activePauliHamiltonian, ofReal_frobSq_eq_trace, star_sum, Finset.sum_mul,
       Matrix.trace_sum]
     have hterm : ∀ P : PauliTracelessLabel n q,
         Matrix.trace (star (J P • finitePauliMatrix P.1) *
             ∑ Q : PauliTracelessLabel n q, J Q • finitePauliMatrix Q.1) =
-          ((‖J P‖ ^ 2 : ℝ) : ℂ) * (2 : ℂ) ^ n := by
+          ((‖J P‖ ^ (2 : ℕ) : ℝ) : ℂ) * (2 : ℂ) ^ n := by
       intro P
       rw [Finset.mul_sum, Matrix.trace_sum]
       rw [Finset.sum_eq_single P]
@@ -117,7 +117,7 @@ theorem frobSq_activePauliHamiltonian {n q : ℕ} (J : PauliTracelessLabel n q �
 /-- A unit active coefficient vector has exactly the prescribed Hamiltonian rate. -/
 theorem frobSq_activePauliHamiltonian_of_unit {n q : ℕ}
     (J : PauliTracelessLabel n q → ℂ)
-    (hJ : ∑ P : PauliTracelessLabel n q, ‖J P‖ ^ 2 = 1) :
+    (hJ : ∑ P : PauliTracelessLabel n q, ‖J P‖ ^ (2 : ℕ) = 1) :
     frobSq (activePauliHamiltonian J) = 2 ^ n := by
   rw [frobSq_activePauliHamiltonian, hJ, mul_one]
 
@@ -134,7 +134,7 @@ theorem frobSq_activePauliShellHamiltonian {n q : ℕ}
   apply frobSq_activePauliHamiltonian_of_unit
   have hnorm : ‖(θ : EuclideanSpace ℝ (PauliTracelessLabel n q))‖ = 1 := by
     simpa [dist_eq_norm] using θ.property
-  have hsq := congrArg (fun x : ℝ => x ^ 2) hnorm
+  have hsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hnorm
   rw [EuclideanSpace.norm_sq_eq] at hsq
   simpa [activePauliShellHamiltonian, shellCoefficientMap, Real.norm_eq_abs, sq_abs] using hsq
 

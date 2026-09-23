@@ -139,7 +139,7 @@ theta--Abel restoration, and integration over one compact physical aperture. -/
 def xiPhysicalThetaAbelLandauCoefficient
     {eta L : ℝ} (f : SmoothBoundaryProfile eta L) (A c : ℝ)
     (q : XiRightZeroCopy) : ℂ :=
-  smoothProfileLaplaceAmplitude f (xiRightCenteredZero q) ^ 2 *
+  smoothProfileLaplaceAmplitude f (xiRightCenteredZero q) ^ (2 : ℕ) *
     xiPhysicalLogWindowModeMultiplier c (xiRightThetaAbelExponent q) *
     ((xiRightThetaAbelExponent q + 1) / xiRightThetaAbelExponent q) *
     rectangularWindowAmplitude A (xiRightThetaAbelExponent q)
@@ -198,7 +198,7 @@ def xiPhysicalThetaAbelCoefficientSystem
     XiRightCoefficientSystem where
   coefficient := xiPhysicalThetaAbelLandauCoefficient f A c
   normBound := 4 * (1 + Real.exp (A / 2)) *
-    (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ 2
+    (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ (2 : ℕ)
   normBound_nonneg := by positivity
   norm_le q := by
     have hsmooth := norm_smoothProfileLaplaceAmplitude_sq_xiRight_le
@@ -209,17 +209,17 @@ def xiPhysicalThetaAbelCoefficientSystem
     have hapertureBound := norm_rectangularWindowAmplitude_xiRightThetaAbel_le hA q
     rw [xiPhysicalThetaAbelLandauCoefficient, norm_mul, norm_mul, norm_mul]
     calc
-      ‖smoothProfileLaplaceAmplitude f (xiRightCenteredZero q) ^ 2‖ *
+      ‖smoothProfileLaplaceAmplitude f (xiRightCenteredZero q) ^ (2 : ℕ)‖ *
             ‖xiPhysicalLogWindowModeMultiplier c (xiRightThetaAbelExponent q)‖ *
           ‖(xiRightThetaAbelExponent q + 1) / xiRightThetaAbelExponent q‖ *
           ‖rectangularWindowAmplitude A (xiRightThetaAbelExponent q)‖
-          ≤ ((Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ 2 /
-              ‖xiSpectralPoint q.1‖ ^ 2) * 2 * 2 *
+          ≤ ((Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ (2 : ℕ) /
+              ‖xiSpectralPoint q.1‖ ^ (2 : ℕ)) * 2 * 2 *
               (1 + Real.exp (A / 2)) := by
             gcongr
       _ = (4 * (1 + Real.exp (A / 2)) *
-            (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ 2) /
-              ‖xiSpectralPoint q.1‖ ^ 2 := by ring
+            (Real.exp (L / 2) * smoothProfileDerivativeMass f) ^ (2 : ℕ)) /
+              ‖xiSpectralPoint q.1‖ ^ (2 : ℕ) := by ring
   conjugate q := xiPhysicalThetaAbelLandauCoefficient_conj f A c q
   support_eq {q r} h :=
     xiPhysicalThetaAbelLandauCoefficient_eq_of_support_eq f A c h

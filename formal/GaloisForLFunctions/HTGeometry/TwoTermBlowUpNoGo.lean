@@ -34,7 +34,7 @@ def TwoTermBlowUpData {n : ℕ} (S : Set ℂ) (F : Fin n → ℂ → ℂ) (Z : S
 /-! ## The two families -/
 
 /-- The square of the pole model: a jet of rate two with leading value one. -/
-noncomputable def poleSquare (w : ℂ) : ℂ := periodicPoleModel w ^ 2
+noncomputable def poleSquare (w : ℂ) : ℂ := periodicPoleModel w ^ (2 : ℕ)
 
 /-- The colliding pair: the same jet twice. -/
 noncomputable def collidingPairEqual : Fin 2 → ℂ → ℂ := ![poleSquare, poleSquare]
@@ -61,7 +61,7 @@ theorem expandedMonomialFamily_boxExponent (F : Fin 2 → ℂ → ℂ) (p : Fin 
 /-! ## Both families carry the same data -/
 
 theorem poleSquare_mul_sq (w : ℂ) (hw : w ∈ upperHalfPlane) :
-    poleSquare w * (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * w) - 1) ^ 2 = 1 := by
+    poleSquare w * (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * w) - 1) ^ (2 : ℕ) = 1 := by
   rw [poleSquare, periodicPoleModel, ← mul_pow,
     inv_mul_cancel₀ (exp_two_pi_I_mul_sub_one_ne_zero hw), one_pow]
 
@@ -106,14 +106,14 @@ theorem twoTermBlowUpData_collidingPairShifted :
   rintro ζ ⟨m, rfl⟩
   obtain ⟨u, humem, hlim, hexp, hne⟩ := exists_vertical_approach m
   set T : ℕ → ℂ := fun j => Complex.exp (2 * (Real.pi : ℂ) * Complex.I * u j) - 1 with hT
-  have hbase : ∀ j, poleSquare (u j) * T j ^ 2 = 1 := fun j => poleSquare_mul_sq (u j) (humem j)
+  have hbase : ∀ j, poleSquare (u j) * T j ^ (2 : ℕ) = 1 := fun j => poleSquare_mul_sq (u j) (humem j)
   refine ⟨u, T, humem, hne, hlim, hexp, ?_, ?_⟩
   · intro k
     fin_cases k
     · refine Tendsto.congr (fun j => (hbase j).symm) ?_
       simp
     · have hval : ∀ j, collidingPairShifted 1 (u j) * T j ^ (![2, 2] (1 : Fin 2))
-          = 1 + T j ^ 2 := by
+          = 1 + T j ^ (2 : ℕ) := by
         intro j
         have hF : collidingPairShifted 1 (u j) = poleSquare (u j) + 1 := rfl
         have hd : (![2, 2] : Fin 2 → ℕ) 1 = 2 := rfl
@@ -139,7 +139,7 @@ theorem twoTermBlowUpData_collidingPairShifted :
         have hd : (![2, 2] : Fin 2 → ℕ) 1 = 2 := rfl
         have hc : (![(1 : ℂ), 1] : Fin 2 → ℂ) 1 = 1 := rfl
         rw [hF, hd, hc, add_mul, hbase j, one_mul]
-        have hsq : (1 : ℂ) + T j ^ 2 - 1 = T j * T j := by ring
+        have hsq : (1 : ℂ) + T j ^ (2 : ℕ) - 1 = T j * T j := by ring
         rw [hsq, mul_div_assoc, div_self (hne j), mul_one]
       refine Tendsto.congr (fun j => (hz j).symm) ?_
       simpa using hexp
@@ -152,14 +152,14 @@ theorem poleSquare_not_const (κ : ℂ) : ¬ ∀ w ∈ upperHalfPlane, poleSquar
   intro h
   obtain ⟨u, humem, hlim, hexp, hne⟩ := exists_vertical_approach 0
   set T : ℕ → ℂ := fun j => Complex.exp (2 * (Real.pi : ℂ) * Complex.I * u j) - 1 with hT
-  have hone : ∀ j, κ * T j ^ 2 = 1 := by
+  have hone : ∀ j, κ * T j ^ (2 : ℕ) = 1 := by
     intro j
     rw [← h (u j) (humem j)]
     exact poleSquare_mul_sq (u j) (humem j)
-  have hzero : Filter.Tendsto (fun j => κ * T j ^ 2) Filter.atTop (𝓝 0) := by
+  have hzero : Filter.Tendsto (fun j => κ * T j ^ (2 : ℕ)) Filter.atTop (𝓝 0) := by
     have := (hexp.pow 2).const_mul κ
     simpa using this
-  have hone' : Filter.Tendsto (fun j => κ * T j ^ 2) Filter.atTop (𝓝 1) := by
+  have hone' : Filter.Tendsto (fun j => κ * T j ^ (2 : ℕ)) Filter.atTop (𝓝 1) := by
     simp only [hone]
     exact tendsto_const_nhds
   exact one_ne_zero (tendsto_nhds_unique hone' hzero)

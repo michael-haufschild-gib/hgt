@@ -17,7 +17,7 @@ literal cap/contact boundary transport -> HB B2`.
 namespace RHTower.D4BMLiteralCyclicPeierlsContactBilinear
 
 open GaloisForLFunctions.HTGeometry
-open D4BMHorizon D4BMFundamentalScalarMetric D4BMModularCore
+open D4BMHorizon D4BMFundamentalScalarMetric D4BMModularCore D4BMMetricReconstruction
 open D4BMLiteralPeierlsStream D4BMMixedQuadraticClosure
 
 noncomputable section
@@ -44,8 +44,11 @@ theorem forcedMetricBilinear_eq_product (q : XiZeroCopy) (branch : Bool) (a d : 
     forcedMetricBilinear q branch a d x = (a*d) • forcedMetricField q branch 1 x := by
   unfold forcedMetricBilinear
   simp only [LinearMap.sub_apply,LinearMap.smul_apply,streamMetricBilinear,
-    LinearMap.mk₂_apply]
-  rw [streamMetricField_amplitude,streamMetricField_amplitude]
+    LinearMap.mk₂_apply,Pi.sub_apply,Pi.smul_apply]
+  rw [streamMetricField_amplitude (2 * physicalRate q branch) (a * d) false
+      (fullAngularCovector q branch) x,
+    streamMetricField_amplitude (2 * physicalRate q branch) (a * d) true
+      (fullSquareCovector q) x]
   ext i j
   simp [forcedMetricField,smul_eq_mul]
   ring
@@ -94,7 +97,6 @@ theorem completedMetricBilinear_diag (q : XiZeroCopy) (branch : Bool) (a : ℂ)
   rw [forcedMetricBilinear_diag,contactFieldBilinear_diag]
   ext i j
   simp [mixedField,forcedMetricField]
-  ring
 
 /-- The completed literal two-leg correction is not a new ansatz: it is
 exactly the independent-amplitude polarization of the established physical
@@ -115,7 +117,7 @@ transport remain separate B2 obligations. -/
 theorem completedMetricBilinear_secondVariation (q : XiZeroCopy) (branch : Bool)
     (a d : ℂ) (p : D4BMBackground.ExteriorPoint) (i j : Fin 4) :
     D4BMWeightedCorrectionDiscrepancy.linear p i j
-      (toSpace (ofMetricField (completedMetricBilinear q branch a d) p.val)) +
+      (ComplexCoordinateMetricTwoJet.toSpace (ofMetricField (completedMetricBilinear q branch a d) p.val)) +
       ComplexCoordinateMetricTwoJet.secondVariation
         (D4BMActualMetricSource.backgroundSpace p) i j
         (a • D4BMWeightedCorrectionDiscrepancy.mode p q branch 1 0)

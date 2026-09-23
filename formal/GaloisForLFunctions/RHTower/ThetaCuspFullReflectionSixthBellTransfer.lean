@@ -26,34 +26,34 @@ def thetaCuspLogExponentialJetOne (x : ℝ) : ℝ :=
 
 def thetaCuspLogExponentialJetTwo (x : ℝ) : ℝ :=
   thetaCuspLogExponentialJetZero x *
-    (iteratedDeriv 1 thetaCuspLogSource x ^ 2 +
+    (iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) +
       iteratedDeriv 2 thetaCuspLogSource x)
 
 def thetaCuspLogExponentialJetThree (x : ℝ) : ℝ :=
   thetaCuspLogExponentialJetZero x *
-    (iteratedDeriv 1 thetaCuspLogSource x ^ 3 +
+    (iteratedDeriv 1 thetaCuspLogSource x ^ (3 : ℕ) +
       3 * iteratedDeriv 1 thetaCuspLogSource x *
         iteratedDeriv 2 thetaCuspLogSource x +
       iteratedDeriv 3 thetaCuspLogSource x)
 
 def thetaCuspLogExponentialJetFour (x : ℝ) : ℝ :=
   thetaCuspLogExponentialJetZero x *
-    (iteratedDeriv 1 thetaCuspLogSource x ^ 4 +
-      6 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
+    (iteratedDeriv 1 thetaCuspLogSource x ^ (4 : ℕ) +
+      6 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 2 thetaCuspLogSource x +
-      3 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 +
+      3 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) +
       4 * iteratedDeriv 1 thetaCuspLogSource x *
         iteratedDeriv 3 thetaCuspLogSource x +
       iteratedDeriv 4 thetaCuspLogSource x)
 
 def thetaCuspLogExponentialJetFive (x : ℝ) : ℝ :=
   thetaCuspLogExponentialJetZero x *
-    (iteratedDeriv 1 thetaCuspLogSource x ^ 5 +
-      10 * iteratedDeriv 1 thetaCuspLogSource x ^ 3 *
+    (iteratedDeriv 1 thetaCuspLogSource x ^ (5 : ℕ) +
+      10 * iteratedDeriv 1 thetaCuspLogSource x ^ (3 : ℕ) *
         iteratedDeriv 2 thetaCuspLogSource x +
       15 * iteratedDeriv 1 thetaCuspLogSource x *
-        iteratedDeriv 2 thetaCuspLogSource x ^ 2 +
-      10 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
+        iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) +
+      10 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 3 thetaCuspLogSource x +
       10 * iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 3 thetaCuspLogSource x +
@@ -63,19 +63,19 @@ def thetaCuspLogExponentialJetFive (x : ℝ) : ℝ :=
 
 def thetaCuspLogExponentialJetSix (x : ℝ) : ℝ :=
   thetaCuspLogExponentialJetZero x *
-    (iteratedDeriv 1 thetaCuspLogSource x ^ 6 +
-      15 * iteratedDeriv 1 thetaCuspLogSource x ^ 4 *
+    (iteratedDeriv 1 thetaCuspLogSource x ^ (6 : ℕ) +
+      15 * iteratedDeriv 1 thetaCuspLogSource x ^ (4 : ℕ) *
         iteratedDeriv 2 thetaCuspLogSource x +
-      45 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
-        iteratedDeriv 2 thetaCuspLogSource x ^ 2 +
-      15 * iteratedDeriv 2 thetaCuspLogSource x ^ 3 +
-      20 * iteratedDeriv 1 thetaCuspLogSource x ^ 3 *
+      45 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
+        iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) +
+      15 * iteratedDeriv 2 thetaCuspLogSource x ^ (3 : ℕ) +
+      20 * iteratedDeriv 1 thetaCuspLogSource x ^ (3 : ℕ) *
         iteratedDeriv 3 thetaCuspLogSource x +
       60 * iteratedDeriv 1 thetaCuspLogSource x *
         iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 3 thetaCuspLogSource x +
-      10 * iteratedDeriv 3 thetaCuspLogSource x ^ 2 +
-      15 * iteratedDeriv 1 thetaCuspLogSource x ^ 2 *
+      10 * iteratedDeriv 3 thetaCuspLogSource x ^ (2 : ℕ) +
+      15 * iteratedDeriv 1 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 4 thetaCuspLogSource x +
       15 * iteratedDeriv 2 thetaCuspLogSource x *
         iteratedDeriv 4 thetaCuspLogSource x +
@@ -225,13 +225,13 @@ theorem iteratedDeriv_six_thetaCuspFullSource_eq_logExponentialJet (x : ℝ) :
 /-- Raw reflected curvature is the positive source fourth power times its log-jet polynomial. -/
 theorem thetaCuspFullSourceReflectionSecondSixthCurvature_eq_logJets (x : ℝ) :
     thetaCuspFullSourceReflectionSecondSixthCurvature x =
-      4 * thetaCuspFullSource x ^ 4 *
+      4 * thetaCuspFullSource x ^ (4 : ℕ) *
         (iteratedDeriv 2 thetaCuspLogSource x *
             iteratedDeriv 6 thetaCuspLogSource x -
-          iteratedDeriv 4 thetaCuspLogSource x ^ 2 +
-          18 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 *
+          iteratedDeriv 4 thetaCuspLogSource x ^ (2 : ℕ) +
+          18 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) *
             iteratedDeriv 4 thetaCuspLogSource x +
-          24 * iteratedDeriv 2 thetaCuspLogSource x ^ 4) := by
+          24 * iteratedDeriv 2 thetaCuspLogSource x ^ (4 : ℕ)) := by
   have hsource : thetaCuspFullSource x = thetaCuspLogExponentialJetZero x := by
     rw [thetaCuspFullSource_eq_logExponentialJetZero]
   rw [thetaCuspFullSourceReflectionSecondSixthCurvature]

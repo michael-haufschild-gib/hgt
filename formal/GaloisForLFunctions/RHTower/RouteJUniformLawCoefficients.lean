@@ -27,33 +27,33 @@ noncomputable def denB1 (u : ℝ) : ℝ := (u + 2) * (u + 4) * (3 * u + 4)
 noncomputable def denB2 (u : ℝ) : ℝ := 8 * (2 * u + 1) * (3 * u + 2) * (5 * u + 4) * (7 * u + 4)
 
 noncomputable def numAR1 (s u : ℝ) : ℝ :=
-  -s * (5 * u + 8) * (21 * s ^ 2 * u ^ 2 + 80 * s ^ 2 * u + 64 * s ^ 2 - 11 * u ^ 2 - 40 * u - 32)
+  -s * (5 * u + 8) * (21 * s ^ (2 : ℕ) * u ^ (2 : ℕ) + 80 * s ^ (2 : ℕ) * u + 64 * s ^ (2 : ℕ) - 11 * u ^ (2 : ℕ) - 40 * u - 32)
 noncomputable def numAR2 (s u : ℝ) : ℝ :=
   -s * (u + 1) * (13 * u + 8) *
-    (165 * s ^ 2 * u ^ 2 + 208 * s ^ 2 * u + 64 * s ^ 2 - 83 * u ^ 2 - 104 * u - 32)
+    (165 * s ^ (2 : ℕ) * u ^ (2 : ℕ) + 208 * s ^ (2 : ℕ) * u + 64 * s ^ (2 : ℕ) - 83 * u ^ (2 : ℕ) - 104 * u - 32)
 noncomputable def polA0 (s u : ℝ) : ℝ := 4 * s * (u + 1) * (9 * u + 8)
 noncomputable def numBR1 (s u : ℝ) : ℝ :=
-  (5 * u + 8) * (6 * s ^ 2 * u ^ 2 + 22 * s ^ 2 * u + 16 * s ^ 2 - u ^ 2 - 2 * u)
+  (5 * u + 8) * (6 * s ^ (2 : ℕ) * u ^ (2 : ℕ) + 22 * s ^ (2 : ℕ) * u + 16 * s ^ (2 : ℕ) - u ^ (2 : ℕ) - 2 * u)
 noncomputable def numBR2 (s u : ℝ) : ℝ :=
-  (13 * u + 8) * (1485 * s ^ 4 * u ^ 3 + 3192 * s ^ 4 * u ^ 2 + 2240 * s ^ 4 * u + 512 * s ^ 4 -
-    1122 * s ^ 2 * u ^ 3 - 2400 * s ^ 2 * u ^ 2 - 1680 * s ^ 2 * u - 384 * s ^ 2 - 35 * u ^ 3 -
-    48 * u ^ 2 - 16 * u)
-noncomputable def polB0 (s u : ℝ) : ℝ := -(9 * u + 8) * (11 * s ^ 2 * u + 8 * s ^ 2 - 3 * u) / 2
+  (13 * u + 8) * (1485 * s ^ (4 : ℕ) * u ^ (3 : ℕ) + 3192 * s ^ (4 : ℕ) * u ^ (2 : ℕ) + 2240 * s ^ (4 : ℕ) * u + 512 * s ^ (4 : ℕ) -
+    1122 * s ^ (2 : ℕ) * u ^ (3 : ℕ) - 2400 * s ^ (2 : ℕ) * u ^ (2 : ℕ) - 1680 * s ^ (2 : ℕ) * u - 384 * s ^ (2 : ℕ) - 35 * u ^ (3 : ℕ) -
+    48 * u ^ (2 : ℕ) - 16 * u)
+noncomputable def polB0 (s u : ℝ) : ℝ := -(9 * u + 8) * (11 * s ^ (2 : ℕ) * u + 8 * s ^ (2 : ℕ) - 3 * u) / 2
 
 noncomputable def ynumAR1 (y u : ℝ) : ℝ :=
-  -y * (5 * u + 8) * (21 * u ^ 4 * y ^ 2 + 80 * u ^ 3 * y ^ 2 + 64 * u ^ 2 * y ^ 2 - 11 * u ^ 2 -
+  -y * (5 * u + 8) * (21 * u ^ (4 : ℕ) * y ^ (2 : ℕ) + 80 * u ^ (3 : ℕ) * y ^ (2 : ℕ) + 64 * u ^ (2 : ℕ) * y ^ (2 : ℕ) - 11 * u ^ (2 : ℕ) -
     40 * u - 32)
 noncomputable def ynumAR2 (y u : ℝ) : ℝ :=
   -y * (u + 1) * (13 * u + 8) *
-    (165 * u ^ 4 * y ^ 2 + 208 * u ^ 3 * y ^ 2 + 64 * u ^ 2 * y ^ 2 - 83 * u ^ 2 - 104 * u - 32)
+    (165 * u ^ (4 : ℕ) * y ^ (2 : ℕ) + 208 * u ^ (3 : ℕ) * y ^ (2 : ℕ) + 64 * u ^ (2 : ℕ) * y ^ (2 : ℕ) - 83 * u ^ (2 : ℕ) - 104 * u - 32)
 noncomputable def ypolA0 (y u : ℝ) : ℝ := 4 * y * (u + 1) * (9 * u + 8)
 noncomputable def ynumBR1 (y u : ℝ) : ℝ :=
-  (5 * u + 8) * (6 * u ^ 3 * y ^ 2 + 22 * u ^ 2 * y ^ 2 + 16 * u * y ^ 2 - u - 2)
+  (5 * u + 8) * (6 * u ^ (3 : ℕ) * y ^ (2 : ℕ) + 22 * u ^ (2 : ℕ) * y ^ (2 : ℕ) + 16 * u * y ^ (2 : ℕ) - u - 2)
 noncomputable def ynumBR2 (y u : ℝ) : ℝ :=
-  (13 * u + 8) * (1485 * u ^ 6 * y ^ 4 + 3192 * u ^ 5 * y ^ 4 + 2240 * u ^ 4 * y ^ 4 -
-    1122 * u ^ 4 * y ^ 2 + 512 * u ^ 3 * y ^ 4 - 2400 * u ^ 3 * y ^ 2 - 1680 * u ^ 2 * y ^ 2 -
-    35 * u ^ 2 - 384 * u * y ^ 2 - 48 * u - 16)
-noncomputable def ypolB0 (y u : ℝ) : ℝ := -(9 * u + 8) * (11 * u ^ 2 * y ^ 2 + 8 * u * y ^ 2 - 3) * (1 / 2)
+  (13 * u + 8) * (1485 * u ^ (6 : ℕ) * y ^ (4 : ℕ) + 3192 * u ^ (5 : ℕ) * y ^ (4 : ℕ) + 2240 * u ^ (4 : ℕ) * y ^ (4 : ℕ) -
+    1122 * u ^ (4 : ℕ) * y ^ (2 : ℕ) + 512 * u ^ (3 : ℕ) * y ^ (4 : ℕ) - 2400 * u ^ (3 : ℕ) * y ^ (2 : ℕ) - 1680 * u ^ (2 : ℕ) * y ^ (2 : ℕ) -
+    35 * u ^ (2 : ℕ) - 384 * u * y ^ (2 : ℕ) - 48 * u - 16)
+noncomputable def ypolB0 (y u : ℝ) : ℝ := -(9 * u + 8) * (11 * u ^ (2 : ℕ) * y ^ (2 : ℕ) + 8 * u * y ^ (2 : ℕ) - 3) * (1 / 2)
 
 /-! ## Identities -/
 
@@ -80,7 +80,7 @@ theorem coefAR2_eq_u : coefAR2 k s = numAR2 s (1 / k) / denA2 (1 / k) := by
   field_simp
   ring
 
-theorem coefA0_eq_u : coefA0 k s / (k : ℝ) ^ 2 = polA0 s (1 / k) := by
+theorem coefA0_eq_u : coefA0 k s / (k : ℝ) ^ (2 : ℕ) = polA0 s (1 / k) := by
   have hk0 : (k : ℝ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
   unfold coefA0 polA0
   field_simp
@@ -105,7 +105,7 @@ theorem coefBR2_eq_u : coefBR2 k s = numBR2 s (1 / k) / denB2 (1 / k) := by
   field_simp
   ring
 
-theorem coefB0_eq_u : coefB0 k s / (k : ℝ) ^ 2 = polB0 s (1 / k) := by
+theorem coefB0_eq_u : coefB0 k s / (k : ℝ) ^ (2 : ℕ) = polB0 s (1 / k) := by
   have hk0 : (k : ℝ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
   unfold coefB0 polB0
   field_simp
@@ -182,27 +182,27 @@ theorem tendsto_num_div_den₂ {ι : Type*} {l : Filter ι} {num : ℝ → ℝ �
 /-! ## Fixed-`σ` limits -/
 
 theorem tendsto_coefAR1 (s : ℝ) :
-    Tendsto (fun k : ℕ => coefAR1 k s) atTop (𝓝 (-4 * s * (2 * s ^ 2 - 1))) := by
+    Tendsto (fun k : ℕ => coefAR1 k s) atTop (𝓝 (-4 * s * (2 * s ^ (2 : ℕ) - 1))) := by
   have h := tendsto_num_div_den (num := numAR1 s) (den := denA1)
     (by unfold numAR1; fun_prop) (by unfold denA1; fun_prop) (by unfold denA1; norm_num)
-  have hv : numAR1 s 0 / denA1 0 = -4 * s * (2 * s ^ 2 - 1) := by unfold numAR1 denA1; ring
+  have hv : numAR1 s 0 / denA1 0 = -4 * s * (2 * s ^ (2 : ℕ) - 1) := by unfold numAR1 denA1; ring
   rw [hv] at h
   refine h.congr' ?_
   filter_upwards [eventually_ge_atTop 1] with k hk
   exact (coefAR1_eq_u hk s).symm
 
 theorem tendsto_coefAR2 (s : ℝ) :
-    Tendsto (fun k : ℕ => coefAR2 k s) atTop (𝓝 (-4 * s * (2 * s ^ 2 - 1))) := by
+    Tendsto (fun k : ℕ => coefAR2 k s) atTop (𝓝 (-4 * s * (2 * s ^ (2 : ℕ) - 1))) := by
   have h := tendsto_num_div_den (num := numAR2 s) (den := denA2)
     (by unfold numAR2; fun_prop) (by unfold denA2; fun_prop) (by unfold denA2; norm_num)
-  have hv : numAR2 s 0 / denA2 0 = -4 * s * (2 * s ^ 2 - 1) := by unfold numAR2 denA2; ring
+  have hv : numAR2 s 0 / denA2 0 = -4 * s * (2 * s ^ (2 : ℕ) - 1) := by unfold numAR2 denA2; ring
   rw [hv] at h
   refine h.congr' ?_
   filter_upwards [eventually_ge_atTop 1] with k hk
   exact (coefAR2_eq_u hk s).symm
 
 theorem tendsto_coefA0_div_sq (s : ℝ) :
-    Tendsto (fun k : ℕ => coefA0 k s / (k : ℝ) ^ 2) atTop (𝓝 (32 * s)) := by
+    Tendsto (fun k : ℕ => coefA0 k s / (k : ℝ) ^ (2 : ℕ)) atTop (𝓝 (32 * s)) := by
   have h : Tendsto (fun k : ℕ => polA0 s (1 / (k : ℝ))) atTop (𝓝 (polA0 s 0)) :=
     ((by unfold polA0; fun_prop : Continuous (polA0 s)).tendsto 0).comp
       tendsto_one_div_atTop_nhds_zero_nat
@@ -213,57 +213,57 @@ theorem tendsto_coefA0_div_sq (s : ℝ) :
   exact (coefA0_eq_u hk s).symm
 
 theorem tendsto_coefBR1 (s : ℝ) :
-    Tendsto (fun k : ℕ => coefBR1 k s) atTop (𝓝 (4 * s ^ 2)) := by
+    Tendsto (fun k : ℕ => coefBR1 k s) atTop (𝓝 (4 * s ^ (2 : ℕ))) := by
   have h := tendsto_num_div_den (num := numBR1 s) (den := denB1)
     (by unfold numBR1; fun_prop) (by unfold denB1; fun_prop) (by unfold denB1; norm_num)
-  have hv : numBR1 s 0 / denB1 0 = 4 * s ^ 2 := by unfold numBR1 denB1; ring
+  have hv : numBR1 s 0 / denB1 0 = 4 * s ^ (2 : ℕ) := by unfold numBR1 denB1; ring
   rw [hv] at h
   refine h.congr' ?_
   filter_upwards [eventually_ge_atTop 1] with k hk
   exact (coefBR1_eq_u hk s).symm
 
 theorem tendsto_coefBR2 (s : ℝ) :
-    Tendsto (fun k : ℕ => coefBR2 k s) atTop (𝓝 (4 * s ^ 2 * (4 * s ^ 2 - 3))) := by
+    Tendsto (fun k : ℕ => coefBR2 k s) atTop (𝓝 (4 * s ^ (2 : ℕ) * (4 * s ^ (2 : ℕ) - 3))) := by
   have h := tendsto_num_div_den (num := numBR2 s) (den := denB2)
     (by unfold numBR2; fun_prop) (by unfold denB2; fun_prop) (by unfold denB2; norm_num)
-  have hv : numBR2 s 0 / denB2 0 = 4 * s ^ 2 * (4 * s ^ 2 - 3) := by unfold numBR2 denB2; ring
+  have hv : numBR2 s 0 / denB2 0 = 4 * s ^ (2 : ℕ) * (4 * s ^ (2 : ℕ) - 3) := by unfold numBR2 denB2; ring
   rw [hv] at h
   refine h.congr' ?_
   filter_upwards [eventually_ge_atTop 1] with k hk
   exact (coefBR2_eq_u hk s).symm
 
 theorem tendsto_coefB0_div_sq (s : ℝ) :
-    Tendsto (fun k : ℕ => coefB0 k s / (k : ℝ) ^ 2) atTop (𝓝 (-32 * s ^ 2)) := by
+    Tendsto (fun k : ℕ => coefB0 k s / (k : ℝ) ^ (2 : ℕ)) atTop (𝓝 (-32 * s ^ (2 : ℕ))) := by
   have h : Tendsto (fun k : ℕ => polB0 s (1 / (k : ℝ))) atTop (𝓝 (polB0 s 0)) :=
     ((by unfold polB0; fun_prop : Continuous (polB0 s)).tendsto 0).comp
       tendsto_one_div_atTop_nhds_zero_nat
-  have hv : polB0 s 0 = -32 * s ^ 2 := by unfold polB0; ring
+  have hv : polB0 s 0 = -32 * s ^ (2 : ℕ) := by unfold polB0; ring
   rw [hv] at h
   refine h.congr' ?_
   filter_upwards [eventually_ge_atTop 1] with k hk
   exact (coefB0_eq_u hk s).symm
 
-theorem radProd1_div_sq_eq (k : ℕ) : radProd1 k / (k : ℝ) ^ 2 = beatQuot k 0 1 := by
+theorem radProd1_div_sq_eq (k : ℕ) : radProd1 k / (k : ℝ) ^ (2 : ℕ) = beatQuot k 0 1 := by
   unfold radProd1 beatQuot
   rfl
 
-theorem radProd2_div_sq_eq (k : ℕ) : radProd2 k / (k : ℝ) ^ 2 = beatQuot k 2 3 := rfl
+theorem radProd2_div_sq_eq (k : ℕ) : radProd2 k / (k : ℝ) ^ (2 : ℕ) = beatQuot k 2 3 := rfl
 
-theorem tendsto_radProd1_div_sq : Tendsto (fun k : ℕ => radProd1 k / (k : ℝ) ^ 2) atTop (𝓝 4) := by
+theorem tendsto_radProd1_div_sq : Tendsto (fun k : ℕ => radProd1 k / (k : ℝ) ^ (2 : ℕ)) atTop (𝓝 4) := by
   simp_rw [radProd1_div_sq_eq]
   exact tendsto_beatQuot 0 1
 
-theorem tendsto_radProd2_div_sq : Tendsto (fun k : ℕ => radProd2 k / (k : ℝ) ^ 2) atTop (𝓝 4) := by
+theorem tendsto_radProd2_div_sq : Tendsto (fun k : ℕ => radProd2 k / (k : ℝ) ^ (2 : ℕ)) atTop (𝓝 4) := by
   simp_rw [radProd2_div_sq_eq]
   exact tendsto_beatQuot 2 3
 
 /-- `a(k, σ)/k² → 64 σ (1 − σ²)`. -/
 theorem tendsto_twoIndexA_div_sq (s : ℝ) :
-    Tendsto (fun k : ℕ => twoIndexA k s / (k : ℝ) ^ 2) atTop (𝓝 (64 * s * (1 - s ^ 2))) := by
+    Tendsto (fun k : ℕ => twoIndexA k s / (k : ℝ) ^ (2 : ℕ)) atTop (𝓝 (64 * s * (1 - s ^ (2 : ℕ)))) := by
   have h := ((tendsto_radProd1_div_sq.mul (tendsto_coefAR1 s)).add
     (tendsto_radProd2_div_sq.mul (tendsto_coefAR2 s))).add (tendsto_coefA0_div_sq s)
-  have hv : (4 * (-4 * s * (2 * s ^ 2 - 1)) + 4 * (-4 * s * (2 * s ^ 2 - 1)) + 32 * s) =
-      64 * s * (1 - s ^ 2) := by ring
+  have hv : (4 * (-4 * s * (2 * s ^ (2 : ℕ) - 1)) + 4 * (-4 * s * (2 * s ^ (2 : ℕ) - 1)) + 32 * s) =
+      64 * s * (1 - s ^ (2 : ℕ)) := by ring
   rw [hv] at h
   refine h.congr' (Eventually.of_forall fun k => ?_)
   unfold twoIndexA
@@ -271,11 +271,11 @@ theorem tendsto_twoIndexA_div_sq (s : ℝ) :
 
 /-- `b(k, σ)/k² → −64 σ² (1 − σ²)`. -/
 theorem tendsto_twoIndexB_div_sq (s : ℝ) :
-    Tendsto (fun k : ℕ => twoIndexB k s / (k : ℝ) ^ 2) atTop (𝓝 (-64 * s ^ 2 * (1 - s ^ 2))) := by
+    Tendsto (fun k : ℕ => twoIndexB k s / (k : ℝ) ^ (2 : ℕ)) atTop (𝓝 (-64 * s ^ (2 : ℕ) * (1 - s ^ (2 : ℕ)))) := by
   have h := ((tendsto_radProd1_div_sq.mul (tendsto_coefBR1 s)).add
     (tendsto_radProd2_div_sq.mul (tendsto_coefBR2 s))).add (tendsto_coefB0_div_sq s)
-  have hv : (4 * (4 * s ^ 2) + 4 * (4 * s ^ 2 * (4 * s ^ 2 - 3)) + -32 * s ^ 2) =
-      -64 * s ^ 2 * (1 - s ^ 2) := by ring
+  have hv : (4 * (4 * s ^ (2 : ℕ)) + 4 * (4 * s ^ (2 : ℕ) * (4 * s ^ (2 : ℕ) - 3)) + -32 * s ^ (2 : ℕ)) =
+      -64 * s ^ (2 : ℕ) * (1 - s ^ (2 : ℕ)) := by ring
   rw [hv] at h
   refine h.congr' (Eventually.of_forall fun k => ?_)
   unfold twoIndexB
@@ -296,11 +296,11 @@ theorem eventually_k_ge (m : ℕ) : ∀ᶠ j in atTop, m ≤ D.k j :=
   D.tendsto_k_nat.eventually (eventually_ge_atTop m)
 
 theorem tendsto_radProd1_div_sq :
-    Tendsto (fun j => radProd1 (D.k j) / (D.k j : ℝ) ^ 2) atTop (𝓝 4) :=
+    Tendsto (fun j => radProd1 (D.k j) / (D.k j : ℝ) ^ (2 : ℕ)) atTop (𝓝 4) :=
   RouteJUniform.tendsto_radProd1_div_sq.comp D.tendsto_k_nat
 
 theorem tendsto_radProd2_div_sq :
-    Tendsto (fun j => radProd2 (D.k j) / (D.k j : ℝ) ^ 2) atTop (𝓝 4) :=
+    Tendsto (fun j => radProd2 (D.k j) / (D.k j : ℝ) ^ (2 : ℕ)) atTop (𝓝 4) :=
   RouteJUniform.tendsto_radProd2_div_sq.comp D.tendsto_k_nat
 
 theorem tendsto_k_mul_coefAR1 :

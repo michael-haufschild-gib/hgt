@@ -30,7 +30,7 @@ variable {n : ℕ}
 
 /-- The squared norm of the projection of `v` orthogonally to the first `i` Jacobi directions. -/
 noncomputable def JacobiData.projNorm (J : JacobiData n) (i : Fin n) (v : Fin n → ℝ) : ℝ :=
-  ∑ m ∈ Finset.univ.filter (fun m : Fin n => i ≤ m), J.d m * ((J.U *ᵥ v) m) ^ 2
+  ∑ m ∈ Finset.univ.filter (fun m : Fin n => i ≤ m), J.d m * ((J.U *ᵥ v) m) ^ (2 : ℕ)
 
 /-- The projected norm is nonnegative. -/
 theorem JacobiData.projNorm_nonneg (J : JacobiData n) (i : Fin n) (v : Fin n → ℝ) :
@@ -65,15 +65,15 @@ theorem JacobiData.projNorm_self (J : JacobiData n) (i : Fin n) :
 
 /-- **The projected norm at the next basis vector is `dᵢ Uᵢⱼ² + dⱼ`.** -/
 theorem JacobiData.projNorm_succ (J : JacobiData n) {i j : Fin n} (hij : (j : ℕ) = (i : ℕ) + 1) :
-    J.projNorm i (Pi.single j (1 : ℝ)) = J.d i * (J.U i j) ^ 2 + J.d j := by
+    J.projNorm i (Pi.single j (1 : ℝ)) = J.d i * (J.U i j) ^ (2 : ℕ) + J.d j := by
   classical
   have hij' : i < j := Fin.lt_def.2 (by omega)
   rw [JacobiData.projNorm]
   have hsplit : (∑ m ∈ Finset.univ.filter (fun m : Fin n => i ≤ m),
-        J.d m * ((J.U *ᵥ (Pi.single j (1 : ℝ))) m) ^ 2)
-      = J.d i * ((J.U *ᵥ (Pi.single j (1 : ℝ))) i) ^ 2
+        J.d m * ((J.U *ᵥ (Pi.single j (1 : ℝ))) m) ^ (2 : ℕ))
+      = J.d i * ((J.U *ᵥ (Pi.single j (1 : ℝ))) i) ^ (2 : ℕ)
         + ∑ m ∈ Finset.univ.filter (fun m : Fin n => i ≤ m ∧ m ≠ i),
-            J.d m * ((J.U *ᵥ (Pi.single j (1 : ℝ))) m) ^ 2 := by
+            J.d m * ((J.U *ᵥ (Pi.single j (1 : ℝ))) m) ^ (2 : ℕ) := by
     rw [← Finset.sum_filter_add_sum_filter_not
       (Finset.univ.filter (fun m : Fin n => i ≤ m)) (fun m : Fin n => m = i)]
     congr 1

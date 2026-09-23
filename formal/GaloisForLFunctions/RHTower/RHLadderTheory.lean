@@ -33,7 +33,7 @@ theorem rhLadder_iff_toNat_dvd (k : ℕ) :
     rw [hcoe]
     exact Nat.cast_dvd_cast h
 
-/-- **Rung 0 is trivial.** Every order is divisible by `2^0 = 1`. -/
+/-- **Rung 0 is trivial.** Every order is divisible by `2^(0 : ℕ) = 1`. -/
 theorem rhLadder_zero : RHLadder 0 := by
   intro ρ _ _
   simp only [pow_zero, Nat.cast_one, one_dvd]
@@ -103,18 +103,18 @@ theorem forall_rhLadder_iff_no_rightHalf_zero :
 /-- **Root nesting** (analytic face of monotone nesting). A `2^{k+1}`-th analytic root of ξ on the
 half-plane yields a `2^k`-th root by squaring. -/
 theorem exists_root_of_exists_root_succ {k : ℕ}
-    (h : ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ 2 ^ (k + 1) = xi s) :
-    ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s := by
+    (h : ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ (k + 1) = xi s) :
+    ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ (2 : ℕ) ^ k = xi s := by
   obtain ⟨g, hg, hgpow⟩ := h
-  refine ⟨fun s => g s ^ 2, hg.pow 2, fun s hs => ?_⟩
-  calc (g s ^ 2) ^ 2 ^ k = g s ^ (2 * 2 ^ k) := by rw [← pow_mul]
-    _ = g s ^ 2 ^ (k + 1) := by rw [← pow_succ']
+  refine ⟨fun s => g s ^ (2 : ℕ), hg.pow 2, fun s hs => ?_⟩
+  calc (g s ^ (2 : ℕ)) ^ (2 : ℕ) ^ k = g s ^ (2 * 2 ^ k) := by rw [← pow_mul]
+    _ = g s ^ (2 : ℕ) ^ (k + 1) := by rw [← pow_succ']
     _ = xi s := hgpow s hs
 
 /-- **Rung 1 as a square root.** `RHLadder 1` holds iff ξ admits an analytic square root on the
 half-plane `Re s > ½` — the base case of the Kummer tower. -/
 theorem rhLadder_one_iff_sqrt_rightHalf :
-    RHLadder 1 ↔ ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ 2 = xi s := by
+    RHLadder 1 ↔ ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ (2 : ℕ) = xi s := by
   rw [rhLadder_iff_root]
   simp only [pow_one]
 

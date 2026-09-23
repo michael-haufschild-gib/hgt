@@ -81,10 +81,10 @@ theorem deningerL2Norm_triangle (x y : deningerKummerSpace F) :
       deningerSpaceL2Inner_add_right, deningerSpaceL2Inner_comm y x]
     ring
   have hbound : deningerSpaceL2Inner (x + y) (x + y)
-      ≤ (deningerL2Norm x + deningerL2Norm y) ^ 2 := by
+      ≤ (deningerL2Norm x + deningerL2Norm y) ^ (2 : ℕ) := by
     rw [hexp, add_sq, deningerL2Norm, deningerL2Norm, Real.sq_sqrt hxx, Real.sq_sqrt hyy]
     nlinarith [hcs]
-  calc deningerL2Norm (x + y) ≤ Real.sqrt ((deningerL2Norm x + deningerL2Norm y) ^ 2) :=
+  calc deningerL2Norm (x + y) ≤ Real.sqrt ((deningerL2Norm x + deningerL2Norm y) ^ (2 : ℕ)) :=
         Real.sqrt_le_sqrt hbound
     _ = deningerL2Norm x + deningerL2Norm y :=
         Real.sqrt_sq (add_nonneg (deningerL2Norm_nonneg x) (deningerL2Norm_nonneg y))

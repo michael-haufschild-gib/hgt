@@ -54,15 +54,15 @@ theorem offDiagonalVanishes_of_uniformCorrelations {f : ℕ → ℝ} (hf : ∀ n
     rw [div_le_iff₀ hε] at hh64
     linarith
   have hs8 : (8 : ℝ) ≤ Real.sqrt x := eight_le_sqrt hx64
-  have hden : (0 : ℝ) < h ^ 2 * Real.sqrt x := by nlinarith [hh1, hs8]
+  have hden : (0 : ℝ) < h ^ (2 : ℕ) * Real.sqrt x := by nlinarith [hh1, hs8]
   have hbase := abs_offDiagonal_uniform_le hf hx64 hh1 hcapx hPx
   have hP0 : (0 : ℝ) ≤ ε / 792 * (h * Real.sqrt x) := by positivity
   have step2 : (85 * h + 14) * (ε / 792 * (h * Real.sqrt x))
-      ≤ (ε / 8) * (h ^ 2 * Real.sqrt x) := by
+      ≤ (ε / 8) * (h ^ (2 : ℕ) * Real.sqrt x) := by
     nlinarith [hh1, hs8, hε.le,
       mul_nonneg (mul_nonneg hε.le (by linarith : (0:ℝ) ≤ h - 1))
         (mul_nonneg (by linarith : (0:ℝ) ≤ h) (by linarith : (0:ℝ) ≤ Real.sqrt x))]
-  have step3 : 2 * h * (3 * Real.sqrt x + 1) ≤ (ε / 8) * (h ^ 2 * Real.sqrt x) := by
+  have step3 : 2 * h * (3 * Real.sqrt x + 1) ≤ (ε / 8) * (h ^ (2 : ℕ) * Real.sqrt x) := by
     have hhs : (0 : ℝ) ≤ h * Real.sqrt x := by nlinarith [hh1, hs8]
     nlinarith [hεh, hhs, hh1, hs8]
   rw [Real.norm_eq_abs, abs_div, abs_of_pos hden, div_lt_iff₀ hden, abs_mul]

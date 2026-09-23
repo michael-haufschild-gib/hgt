@@ -79,7 +79,7 @@ theorem modeRate_pos (n : ℕ) : 0 < modeRate n := by
   linarith
 
 /-- **The Poisson kernel of a mode.**  The transform of `2e^{-s|u|}` is `4s/(s² + r²)`. -/
-def poissonMode (s r : ℝ) : ℝ := 4 * s / (s ^ 2 + r ^ 2)
+def poissonMode (s r : ℝ) : ℝ := 4 * s / (s ^ (2 : ℕ) + r ^ (2 : ℕ))
 
 /-- Each Poisson kernel is positive. -/
 theorem poissonMode_pos {s r : ℝ} (hs : 0 < s) : 0 < poissonMode s r := by
@@ -96,7 +96,7 @@ theorem poissonMode_le_max {s r : ℝ} (hs : 0 < s) : poissonMode s r ≤ 4 / s 
 /-- The value at the origin. -/
 theorem poissonMode_zero {s : ℝ} (hs : 0 < s) : poissonMode s 0 = 4 / s := by
   unfold poissonMode
-  rw [show (0:ℝ) ^ 2 = 0 by ring, add_zero]
+  rw [show (0:ℝ) ^ (2 : ℕ) = 0 by ring, add_zero]
   field_simp
 
 /-- **The mode maxima are not summable**, term by term: `4/s_n ≥ 1/(n+2)`, and the harmonic tail

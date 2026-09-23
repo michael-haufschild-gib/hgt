@@ -36,32 +36,32 @@ theorem sourceRemainder_bound (s w a J K T : ℂ) :
   exact ⟨max C 0,le_max_right _ _,fun z hz => (hC _ (mem_image_of_mem _ hz)).trans (le_max_left _ _)⟩
 
 private theorem tortoise_log {r : ℝ} (hr : 1 < r) :
-    D4BMIngoingCoordinates.tortoise r = Real.log (1-r⁻¹^2)/2-Real.log (1+r⁻¹) := by
+    D4BMIngoingCoordinates.tortoise r = Real.log (1-r⁻¹^(2 : ℕ))/2-Real.log (1+r⁻¹) := by
   have h0 : r ≠ 0 := by linarith
   have hm : r-1 ≠ 0 := by linarith
   have hp : r+1 ≠ 0 := by linarith
-  rw [show 1-r⁻¹^2=(r-1)*(r+1)/r^2 by field_simp; ring,
+  rw [show 1-r⁻¹^(2 : ℕ)=(r-1)*(r+1)/r^(2 : ℕ) by field_simp; ring,
     Real.log_div (mul_ne_zero hm hp) (pow_ne_zero 2 h0),Real.log_mul hm hp,Real.log_pow,
     show 1+r⁻¹=(r+1)/r by field_simp,Real.log_div hp h0]
   dsimp [D4BMIngoingCoordinates.tortoise]
   ring
 
-private theorem radial_sqrt {r : ℝ} (hr : 1 < r) : Real.sqrt (1-(1-r⁻¹^2))=r⁻¹ := by
+private theorem radial_sqrt {r : ℝ} (hr : 1 < r) : Real.sqrt (1-(1-r⁻¹^(2 : ℕ)))=r⁻¹ := by
   rw [sub_sub_cancel,Real.sqrt_sq (le_of_lt (inv_pos.mpr (by linarith)))]
 
 /-- Exact retained current profile: the transform frequency w is independent
 of the fixed physical source rate 2s; both original angular covectors survive. -/
 theorem sourceProfile_original (s w a J K T : ℂ) {r : ℝ} (hr : 1 < r) :
-    sourceProfile s w a J K T (1-r⁻¹^2) =
+    sourceProfile s w a J K T (1-r⁻¹^(2 : ℕ)) =
       Complex.exp (w*(D4BMIngoingCoordinates.tortoise r:ℂ))*
         D4BMQuadraticMixedSource.current s r
           (D4BMIngoingCoordinates.compactEnvelope s a 0 (r:ℂ)⁻¹) J K*T := by
   have hr0 : (r:ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt (show 0<r by linarith))
   have hi : 0 < r⁻¹ := inv_pos.mpr (by linarith)
   have hi1 : r⁻¹ < 1 := (inv_lt_one₀ (by linarith)).mpr hr
-  have hz : 0 < 1-r⁻¹^2 := by nlinarith
+  have hz : 0 < 1-r⁻¹^(2 : ℕ) := by nlinarith
   have hu : 0 < 1+r⁻¹ := by positivity
-  have hz0 : ((1-r⁻¹^2:ℝ):ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hz)
+  have hz0 : ((1-r⁻¹^(2 : ℕ):ℝ):ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hz)
   have hu0 : ((1+r⁻¹:ℝ):ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hu)
   unfold sourceProfile sourceRemainder power
   rw [radial_sqrt hr,Complex.cpow_def_of_ne_zero hz0,Complex.cpow_def_of_ne_zero hu0,
@@ -70,11 +70,11 @@ theorem sourceProfile_original (s w a J K T : ℂ) {r : ℝ} (hr : 1 < r) :
   rw [show 1+(r:ℂ)⁻¹=((1+r⁻¹:ℝ):ℂ) by push_cast; rfl,← Complex.ofReal_log hu.le]
   push_cast
   simp only [zero_add]
-  have he : Complex.exp ((Real.log (1-r⁻¹^2):ℂ)*(w/2))*
+  have he : Complex.exp ((Real.log (1-r⁻¹^(2 : ℕ)):ℂ)*(w/2))*
       Complex.exp ((Real.log (1+r⁻¹):ℂ)*(2*s-w)) =
-      Complex.exp (w*((Real.log (1-r⁻¹^2):ℂ)/2-(Real.log (1+r⁻¹):ℂ)))*
-        (Complex.exp (s*(Real.log (1+r⁻¹):ℂ)))^2 := by
-    have hex : (Complex.exp (s*(Real.log (1+r⁻¹):ℂ)))^2 =
+      Complex.exp (w*((Real.log (1-r⁻¹^(2 : ℕ)):ℂ)/2-(Real.log (1+r⁻¹):ℂ)))*
+        (Complex.exp (s*(Real.log (1+r⁻¹):ℂ)))^(2 : ℕ) := by
+    have hex : (Complex.exp (s*(Real.log (1+r⁻¹):ℂ)))^(2 : ℕ) =
         Complex.exp (s*(Real.log (1+r⁻¹):ℂ)+s*(Real.log (1+r⁻¹):ℂ)) := by
       rw [pow_two,← Complex.exp_add]
     rw [hex,← Complex.exp_add,← Complex.exp_add]
@@ -82,7 +82,7 @@ theorem sourceProfile_original (s w a J K T : ℂ) {r : ℝ} (hr : 1 < r) :
     ring
   have he' := he
   field_simp [hr0] at he' ⊢
-  linear_combination (a^2*((5*s^2+15*s+4)*J*(r:ℂ)^2+s*(s-1)*((s+2)^2*J-K))*T)*he'
+  linear_combination (a^(2 : ℕ)*((5*s^(2 : ℕ)+15*s+4)*J*(r:ℂ)^(2 : ℕ)+s*(s-1)*((s+2)^(2 : ℕ)*J-K))*T)*he'
 
 end
 end RHTower.D4BMLaplaceRadial

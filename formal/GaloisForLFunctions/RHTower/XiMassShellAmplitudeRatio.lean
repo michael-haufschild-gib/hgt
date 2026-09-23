@@ -17,7 +17,7 @@ noncomputable section
 
 /-- The explicit window constant for the shell radius. -/
 def shellRadiusBound (sigma kappa L : ℝ) : ℝ :=
-  (sigma ^ 2 + L ^ 2 + (kappa * L + sigma) ^ 2 / shellQ kappa ^ 2) / (2 * shellQ kappa)
+  (sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + (kappa * L + sigma) ^ (2 : ℕ) / shellQ kappa ^ (2 : ℕ)) / (2 * shellQ kappa)
     + (kappa * L + sigma) / shellQ kappa
 
 theorem shellRadiusBound_nonneg {sigma kappa L : ℝ} (hkappa : 1 < kappa) (hsigma : 0 ≤ sigma)
@@ -25,9 +25,9 @@ theorem shellRadiusBound_nonneg {sigma kappa L : ℝ} (hkappa : 1 < kappa) (hsig
   have hq : 0 < shellQ kappa := shellQ_pos hkappa
   have hkappa0 : (0 : ℝ) < kappa := lt_trans zero_lt_one hkappa
   rw [shellRadiusBound]
-  have h1 : (0 : ℝ) ≤ (sigma ^ 2 + L ^ 2 + (kappa * L + sigma) ^ 2 / shellQ kappa ^ 2)
+  have h1 : (0 : ℝ) ≤ (sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + (kappa * L + sigma) ^ (2 : ℕ) / shellQ kappa ^ (2 : ℕ))
       / (2 * shellQ kappa) := by
-    have hnum : (0 : ℝ) ≤ sigma ^ 2 + L ^ 2 + (kappa * L + sigma) ^ 2 / shellQ kappa ^ 2 := by
+    have hnum : (0 : ℝ) ≤ sigma ^ (2 : ℕ) + L ^ (2 : ℕ) + (kappa * L + sigma) ^ (2 : ℕ) / shellQ kappa ^ (2 : ℕ) := by
       have := div_nonneg (sq_nonneg (kappa * L + sigma)) (sq_nonneg (shellQ kappa))
       nlinarith [sq_nonneg sigma, sq_nonneg L]
     exact div_nonneg hnum (by linarith)

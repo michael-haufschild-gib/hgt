@@ -37,10 +37,10 @@ theorem symmetrizedMatrix_fdt (β : ℝ) (E : α → ℝ) (A : Matrix α α ℂ)
 /-- Every finitely weighted band of the constructed equilibrium residual vanishes. -/
 theorem symmetrizedMatrix_fdt_band_defect (β : ℝ) (E : α → ℝ)
     (A : Matrix α α ℂ) (w : α → α → ℝ) :
-    (∑ a, ∑ b, w a b ^ 2 *
+    (∑ a, ∑ b, w a b ^ (2 : ℕ) *
       (finiteKMSCommutatorTransitionIntensity β E (A + Aᴴ) a b -
         Real.tanh (β * (E a - E b) / 2) *
-          finiteKMSSymmetricTransitionIntensity β E (A + Aᴴ) a b) ^ 2) = 0 := by
+          finiteKMSSymmetricTransitionIntensity β E (A + Aᴴ) a b) ^ (2 : ℕ)) = 0 := by
   simp [symmetrizedMatrix_fdt]
 
 /-- At infinite temperature every Hermitian transition has zero response. -/

@@ -125,7 +125,7 @@ theorem memoryless_residual_of_pointwiseMul
 theorem not_memoryless_delay :
     ¬ Memoryless (fun f : ℝ → ℝ => fun t => f (t - 1)) := by
   intro hmem
-  have h := hmem (fun _ => 0) (fun s => 1 - s ^ 2) 1 (by norm_num)
+  have h := hmem (fun _ => 0) (fun s => 1 - s ^ (2 : ℕ)) 1 (by norm_num)
   norm_num at h
 
 /-- **Locality of the residual is created by the cancellation, not inherited.** Two response
@@ -137,7 +137,7 @@ theorem exists_memoryful_responses_with_memoryless_residual :
         Memoryless (fun f : ℝ → ℝ => fun t => Q₁ f t - Q₂ f t) := by
   refine ⟨fun f => fun t => f (t - 1) + f t, fun f => fun t => f (t - 1), ?_, ?_, ?_⟩
   · intro hmem
-    have h := hmem (fun _ => 0) (fun s => 1 - s ^ 2) 1 (by norm_num)
+    have h := hmem (fun _ => 0) (fun s => 1 - s ^ (2 : ℕ)) 1 (by norm_num)
     norm_num at h
   · exact not_memoryless_delay
   · refine memoryless_residual_of_pointwiseMul (fun _ => 1) ?_

@@ -24,7 +24,7 @@ character. -/
 theorem projectiveHorizon_reciprocalTransition
     {K : Type*} [Field K] [Differential K]
     (x : K) (hdx : x′ ≠ 0) :
-    (x⁻¹)′ / x′ = -x⁻¹ ^ 2 := by
+    (x⁻¹)′ / x′ = -x⁻¹ ^ (2 : ℕ) := by
   rw [deriv_inv_eq_neg_inv_sq_mul_deriv]
   field_simp [hdx]
 
@@ -46,7 +46,7 @@ projective-horizon transition unconditional. -/
 theorem hypertranscendentalOver_projectiveHorizon_reciprocalTransition
     {F K : Type*} [Field F] [Field K] [Algebra F K] [Differential K]
     (x : K) (hx : HypertranscendentalOver F x) :
-    (x⁻¹)′ / x′ = -x⁻¹ ^ 2 := by
+    (x⁻¹)′ / x′ = -x⁻¹ ^ (2 : ℕ) := by
   apply projectiveHorizon_reciprocalTransition x
   simpa only [differentialJet_succ] using!
     hypertranscendentalOver_differentialJet_ne_zero hx 1

@@ -20,7 +20,7 @@ def thetaCuspTwoAtomOddDetNormalized (x : ℝ) : ℝ :=
 /-- Normalized leading odd minor of the same literal retained source. -/
 def thetaCuspTwoAtomOddHeadNormalized (x : ℝ) : ℝ :=
   thetaCuspTwoAtomScaledEvenJet 1 x*thetaCuspTwoAtomScaledEvenJet 3 x-
-    thetaCuspTwoAtomScaledEvenJet 2 x^2
+    thetaCuspTwoAtomScaledEvenJet 2 x^(2 : ℕ)
 
 /-- Exact polynomial incidence of the retained determinant. -/
 theorem thetaCuspTwoAtomOddDetNormalized_eq {x : ℝ} (hx : 0 < x) :

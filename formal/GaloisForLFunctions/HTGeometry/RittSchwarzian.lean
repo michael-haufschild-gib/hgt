@@ -40,23 +40,23 @@ theorem dK_neg (Fr : RittFrame K L) (x : K) : Fr.dK (-x) = -Fr.dK x := by
 
 /-- The Schwarzian combination of the first three jets. -/
 noncomputable def schwarzianJet (Fr : RittFrame K L) (τ : L) : L :=
-  Fr.d^[3] τ / Fr.d τ - (3 / 2 : L) * (Fr.d^[2] τ / Fr.d τ) ^ 2
+  Fr.d^[3] τ / Fr.d τ - (3 / 2 : L) * (Fr.d^[2] τ / Fr.d τ) ^ (2 : ℕ)
 
 /-- The second jet shifts with defect `λ₂·dτ`. -/
 theorem sigma_jet_two (Fr : RittFrame K L) {τ : L} {q : K} (hqconst : Fr.dK q = 0)
     (hshift : Fr.σ τ = algebraMap K L q * τ) :
-    Fr.σ (Fr.d^[2] τ) = algebraMap K L (q / Fr.ρ ^ 2) * Fr.d^[2] τ
-      + algebraMap K L (-(q * Fr.dK Fr.ρ / Fr.ρ ^ 3)) * Fr.d τ := by
+    Fr.σ (Fr.d^[2] τ) = algebraMap K L (q / Fr.ρ ^ (2 : ℕ)) * Fr.d^[2] τ
+      + algebraMap K L (-(q * Fr.dK Fr.ρ / Fr.ρ ^ (3 : ℕ))) * Fr.d τ := by
   have hρ0 : Fr.ρ ≠ 0 := Fr.ρ_ne
   have h := RittFrame.jetDefect_succ (Fr := Fr) (τ := τ) (q := q) 1
   rw [RittFrame.jetDefect_one hqconst hshift, Fr.d_zero, mul_zero, add_zero,
     RittFrame.dK_level_multiplier hqconst 1] at h
   have hcoef : -(((1 : ℕ) : K) * q * Fr.dK Fr.ρ / Fr.ρ ^ (1 + 1)) / Fr.ρ
-      = -(q * Fr.dK Fr.ρ / Fr.ρ ^ 3) := by
+      = -(q * Fr.dK Fr.ρ / Fr.ρ ^ (3 : ℕ)) := by
     push_cast
     field_simp
   have h2 : Fr.jetDefect τ q 2
-      = algebraMap K L (-(q * Fr.dK Fr.ρ / Fr.ρ ^ 3)) * Fr.d^[1] τ := by
+      = algebraMap K L (-(q * Fr.dK Fr.ρ / Fr.ρ ^ (3 : ℕ))) * Fr.d^[1] τ := by
     rw [← hcoef]
     exact h
   rw [RittFrame.jetDefect, sub_eq_iff_eq_add'] at h2
@@ -65,12 +65,12 @@ theorem sigma_jet_two (Fr : RittFrame K L) {τ : L} {q : K} (hqconst : Fr.dK q =
 /-- The third jet shifts with defect `λ₃·d²τ + μ·dτ`. -/
 theorem sigma_jet_three (Fr : RittFrame K L) {τ : L} {q : K} (hqconst : Fr.dK q = 0)
     (hshift : Fr.σ τ = algebraMap K L q * τ) :
-    Fr.σ (Fr.d^[3] τ) = algebraMap K L (q / Fr.ρ ^ 3) * Fr.d^[3] τ
-      + algebraMap K L (-(3 * q * Fr.dK Fr.ρ / Fr.ρ ^ 4)) * Fr.d^[2] τ
-      + algebraMap K L (-(q * Fr.dK (Fr.dK Fr.ρ) / Fr.ρ ^ 4)
-          + 3 * q * (Fr.dK Fr.ρ) ^ 2 / Fr.ρ ^ 5) * Fr.d τ := by
+    Fr.σ (Fr.d^[3] τ) = algebraMap K L (q / Fr.ρ ^ (3 : ℕ)) * Fr.d^[3] τ
+      + algebraMap K L (-(3 * q * Fr.dK Fr.ρ / Fr.ρ ^ (4 : ℕ))) * Fr.d^[2] τ
+      + algebraMap K L (-(q * Fr.dK (Fr.dK Fr.ρ) / Fr.ρ ^ (4 : ℕ))
+          + 3 * q * (Fr.dK Fr.ρ) ^ (2 : ℕ) / Fr.ρ ^ (5 : ℕ)) * Fr.d τ := by
   have hρ0 : Fr.ρ ≠ 0 := Fr.ρ_ne
-  set lam2 : K := -(q * Fr.dK Fr.ρ / Fr.ρ ^ 3) with hlam2
+  set lam2 : K := -(q * Fr.dK Fr.ρ / Fr.ρ ^ (3 : ℕ)) with hlam2
   have hdef2 : Fr.jetDefect τ q 2 = algebraMap K L lam2 * Fr.d τ := by
     have h := sigma_jet_two Fr hqconst hshift
     rw [RittFrame.jetDefect]
@@ -82,12 +82,12 @@ theorem sigma_jet_three (Fr : RittFrame K L) {τ : L} {q : K} (hqconst : Fr.dK q
   rw [hd1] at h
   -- collect the two coefficients
   have hdlam2 : Fr.dK lam2
-      = -(q * Fr.dK (Fr.dK Fr.ρ) / Fr.ρ ^ 3) + 3 * q * (Fr.dK Fr.ρ) ^ 2 / Fr.ρ ^ 4 := by
+      = -(q * Fr.dK (Fr.dK Fr.ρ) / Fr.ρ ^ (3 : ℕ)) + 3 * q * (Fr.dK Fr.ρ) ^ (2 : ℕ) / Fr.ρ ^ (4 : ℕ) := by
     rw [hlam2, dK_neg]
     have hnum : Fr.dK (q * Fr.dK Fr.ρ) = q * Fr.dK (Fr.dK Fr.ρ) := by
       rw [Fr.dK_mul, hqconst, zero_mul, zero_add]
     rw [Fr.dK_div (pow_ne_zero 3 hρ0), hnum]
-    have hpow : Fr.dK (Fr.ρ ^ 3) = 3 * Fr.ρ ^ 2 * Fr.dK Fr.ρ := by
+    have hpow : Fr.dK (Fr.ρ ^ (3 : ℕ)) = 3 * Fr.ρ ^ (2 : ℕ) * Fr.dK Fr.ρ := by
       have := Fr.dK_pow_succ Fr.ρ 2
       push_cast at this
       rw [this]
@@ -96,13 +96,13 @@ theorem sigma_jet_three (Fr : RittFrame K L) {τ : L} {q : K} (hqconst : Fr.dK q
     field_simp
     ring
   have hc2 : -(((2 : ℕ) : K) * q * Fr.dK Fr.ρ / Fr.ρ ^ (2 + 1)) / Fr.ρ + lam2 * (Fr.ρ)⁻¹
-      = -(3 * q * Fr.dK Fr.ρ / Fr.ρ ^ 4) := by
+      = -(3 * q * Fr.dK Fr.ρ / Fr.ρ ^ (4 : ℕ)) := by
     rw [hlam2]
     push_cast
     field_simp
     ring
   have hc1 : (Fr.ρ)⁻¹ * Fr.dK lam2
-      = -(q * Fr.dK (Fr.dK Fr.ρ) / Fr.ρ ^ 4) + 3 * q * (Fr.dK Fr.ρ) ^ 2 / Fr.ρ ^ 5 := by
+      = -(q * Fr.dK (Fr.dK Fr.ρ) / Fr.ρ ^ (4 : ℕ)) + 3 * q * (Fr.dK Fr.ρ) ^ (2 : ℕ) / Fr.ρ ^ (5 : ℕ) := by
     rw [hdlam2]
     field_simp
   rw [RittFrame.jetDefect, sub_eq_iff_eq_add'] at h
@@ -116,9 +116,9 @@ theorem sigma_jet_three (Fr : RittFrame K L) {τ : L} {q : K} (hqconst : Fr.dK q
 theorem sigma_schwarzianJet (Fr : RittFrame K L) {τ : L} {q : K} (hqconst : Fr.dK q = 0)
     (hshift : Fr.σ τ = algebraMap K L q * τ) (hq : q ≠ 0) (hdτ : Fr.d τ ≠ 0) :
     Fr.σ (schwarzianJet Fr τ)
-      = algebraMap K L ((Fr.ρ ^ 2)⁻¹) * schwarzianJet Fr τ
-        + algebraMap K L (-(Fr.dK (Fr.dK Fr.ρ) / Fr.ρ ^ 3)
-            + (3 / 2) * (Fr.dK Fr.ρ) ^ 2 / Fr.ρ ^ 4) := by
+      = algebraMap K L ((Fr.ρ ^ (2 : ℕ))⁻¹) * schwarzianJet Fr τ
+        + algebraMap K L (-(Fr.dK (Fr.dK Fr.ρ) / Fr.ρ ^ (3 : ℕ))
+            + (3 / 2) * (Fr.dK Fr.ρ) ^ (2 : ℕ) / Fr.ρ ^ (4 : ℕ)) := by
   have hρ0 : Fr.ρ ≠ 0 := Fr.ρ_ne
   have hQ : algebraMap K L q ≠ 0 := (map_ne_zero_iff _ (algebraMap K L).injective).mpr hq
   have hR : algebraMap K L Fr.ρ ≠ 0 := (map_ne_zero_iff _ (algebraMap K L).injective).mpr hρ0

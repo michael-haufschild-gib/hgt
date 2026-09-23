@@ -65,14 +65,14 @@ theorem anchor_window_margin_scale {N : ℕ} {T τ₀ rz rJ RJ m_J M_J ε : ℝ}
     (hrz0 : 0 < rz) (hrzrJ : rz < rJ) (hrJR : rJ < RJ) (hRJ12 : RJ < 1 / 2)
     (hTrz : 0 < T - rz) (hτ₀T : T ≤ τ₀)
     (hwindT : 0 < (Real.log ((T - rz) / (2 * Real.pi)) -
-      (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2)
+      (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2)
     (hmJ0 : 0 < m_J) (hMJ : 1 ≤ M_J)
     (hanc : m_J ≤ ‖gN N (linePt τ₀)‖)
     (hbnd : ∀ z ∈ sphere (linePt τ₀) RJ, ‖gN N z‖ ≤ M_J)
     (hjensen : Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2)
     (hε0 : 0 < ε) (hεrz : ε < rz) :
     (rz - ε) * ((Real.log ((T - rz) / (2 * Real.pi)) -
-        (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2) ≤
+        (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2) ≤
       Real.pi + 4 * rz / (rJ - rz) *
         (Real.log (M_J / (RJ - rJ) + 1) - Real.log m_J) := by
   have hrJ0 : 0 < rJ := lt_trans hrz0 hrzrJ
@@ -139,10 +139,10 @@ theorem anchor_window_margin_scale {N : ℕ} {T τ₀ rz rJ RJ m_J M_J ε : ℝ}
   have ha0 : 0 < a := by linarith
   have haT : T - rz ≤ a := by linarith
   have hflra : (Real.log ((T - rz) / (2 * Real.pi)) -
-      (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2 ≤
-      (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2 :=
+      (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2 ≤
+      (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2 :=
     winding_floor_expr_mono hTrz haT
-  have hflra0 : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2 :=
+  have hflra0 : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2 :=
     lt_of_lt_of_le hwindT hflra
   -- the off-zero subinterval sits inside the inner Jensen disc
   have hseg : ∀ τ ∈ Set.Icc a b, linePt τ ∈ ball (linePt τ₀) rJ := by
@@ -206,12 +206,12 @@ theorem anchor_window_margin_scale {N : ℕ} {T τ₀ rz rJ RJ m_J M_J ε : ℝ}
             (Real.log (M_J / (RJ - rJ) + 1) - Real.log m_J) :=
             mul_le_mul_of_nonneg_left hLzf hprefMax0
     calc (rz - ε) * ((Real.log ((T - rz) / (2 * Real.pi)) -
-          (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2)
+          (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2)
         ≤ (b - a) * ((Real.log ((T - rz) / (2 * Real.pi)) -
-            (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2) :=
+            (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2) :=
           mul_le_mul_of_nonneg_right hrzlen hwindT.le
       _ ≤ (b - a) * ((Real.log (a / (2 * Real.pi)) -
-            (4 / a ^ 2 + Real.pi / a)) / 2) :=
+            (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) :=
           mul_le_mul_of_nonneg_left hflra (by linarith)
       _ ≤ (2 * |a - τ₀| / (rJ - |a - τ₀|) + 2 * |b - τ₀| / (rJ - |b - τ₀|)) *
             (Real.log (M_J + 1) - Real.log ‖gN N (linePt τ₀)‖) := hlaw
@@ -291,12 +291,12 @@ theorem anchor_window_margin_scale {N : ℕ} {T τ₀ rz rJ RJ m_J M_J ε : ℝ}
             (Real.log (M_J / (RJ - rJ) + 1) - Real.log m_J) :=
             mul_le_mul_of_nonneg_left hLoz hprefMax0
     calc (rz - ε) * ((Real.log ((T - rz) / (2 * Real.pi)) -
-          (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2)
+          (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2)
         ≤ (b - a) * ((Real.log ((T - rz) / (2 * Real.pi)) -
-            (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2) :=
+            (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2) :=
           mul_le_mul_of_nonneg_right hrzlen hwindT.le
       _ ≤ (b - a) * ((Real.log (a / (2 * Real.pi)) -
-            (4 / a ^ 2 + Real.pi / a)) / 2) :=
+            (4 / a ^ (2 : ℕ) + Real.pi / a)) / 2) :=
           mul_le_mul_of_nonneg_left hflra (by linarith)
       _ ≤ Real.pi + (2 * |a - τ₀| / (rJ - |a - τ₀|) + 2 * |b - τ₀| / (rJ - |b - τ₀|)) *
             (Real.log (M_J / (RJ - rJ) + 1) -
@@ -322,14 +322,14 @@ theorem residual_faces_force_radius_scale {N : ℕ}
     (hrz0 : 0 < rz) (hrzrJ : rz < rJ) (hrJR : rJ < RJ) (hRJ12 : RJ < 1 / 2)
     (hTrz : 0 < T - rz)
     (hwindT : 0 < (Real.log ((T - rz) / (2 * Real.pi)) -
-      (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2)
+      (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2)
     (hmJ0 : 0 < m_J) (hMJ : 1 ≤ M_J)
     (hanchor : ∃ τ ∈ Set.Icc T (T + U), m_J ≤ ‖gN N (linePt τ)‖)
     (hbound : ∀ τ ∈ Set.Icc T (T + U),
       ∀ z ∈ sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J)
     (hjensen : Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2) :
     rz * ((Real.log ((T - rz) / (2 * Real.pi)) -
-        (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2) ≤
+        (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2) ≤
       Real.pi + 4 * rz / (rJ - rz) *
         (Real.log (M_J / (RJ - rJ) + 1) - Real.log m_J) := by
   obtain ⟨τ₀, hτ₀, hanc⟩ := hanchor
@@ -337,7 +337,7 @@ theorem residual_faces_force_radius_scale {N : ℕ}
     intro z hz
     exact hbound τ₀ hτ₀ z (by simpa [linePt] using hz)
   set flr : ℝ := (Real.log ((T - rz) / (2 * Real.pi)) -
-    (4 / (T - rz) ^ 2 + Real.pi / (T - rz))) / 2 with hflr_def
+    (4 / (T - rz) ^ (2 : ℕ) + Real.pi / (T - rz))) / 2 with hflr_def
   set BCB : ℝ := 4 * rz / (rJ - rz) *
     (Real.log (M_J / (RJ - rJ) + 1) - Real.log m_J) with hBCB_def
   by_contra hcon

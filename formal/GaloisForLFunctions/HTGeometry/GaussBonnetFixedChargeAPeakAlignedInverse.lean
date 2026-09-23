@@ -66,10 +66,10 @@ theorem egbFixedChargeAPeakInverseCoordinate_aligned (τ φ ψ : ℝ) :
   field_simp [hd.ne', hd'] <;> ring
 
 theorem egbFixedChargeAPeakAlignedProfile_inverse (τ φ ψ : ℝ) :
-    egbFixedChargeAPeakAlignedProfile τ φ (egbFixedChargeAPeakInverseAngle τ φ ψ) = cos ψ ^ 4 := by
+    egbFixedChargeAPeakAlignedProfile τ φ (egbFixedChargeAPeakInverseAngle τ φ ψ) = cos ψ ^ (4 : ℕ) := by
   unfold egbFixedChargeAPeakAlignedProfile
   rw [egbFixedChargeAPeakAlignedCoordinate_inverse]
-  have hs : 1 - sin ψ ^ 2 = cos ψ ^ 2 := by linarith [sin_sq_add_cos_sq ψ]
+  have hs : 1 - sin ψ ^ (2 : ℕ) = cos ψ ^ (2 : ℕ) := by linarith [sin_sq_add_cos_sq ψ]
   rw [hs]
   ring
 

@@ -85,7 +85,7 @@ theorem cglClassIB_unclamped_gt_fiveSixths (σ : CGLSigmaWindow)
       rw [hrewrite, lt_div_iff₀ (cglSigma_denomV_pos σ)]
       have hs : 0 < 10 * σ.value - 6 := by
         nlinarith [σ.lower]
-      have hquad : 0 < 500 * σ.value ^ 2 - 600 * σ.value + 180 := by
+      have hquad : 0 < 500 * σ.value ^ (2 : ℕ) - 600 * σ.value + 180 := by
         nlinarith [sq_pos_of_pos hs]
       by_contra h
       have hle : 15 * 5 * (1 - σ.value) ≤
@@ -122,14 +122,14 @@ theorem cglClassIV_unclamped_middle_le (σ : CGLSigmaWindow) :
   have hV : 0 < 3 + 5 * σ.value := cglSigma_denomV_pos σ
   have hDV : 0 < (18 - 20 * σ.value) * (3 + 5 * σ.value) := mul_pos hD hV
   have hD' : 18 - σ.value * 20 ≠ 0 := by nlinarith [hD]
-  have hDV' : 54 + σ.value * 30 - σ.value ^ 2 * 100 ≠ 0 := by
+  have hDV' : 54 + σ.value * 30 - σ.value ^ (2 : ℕ) * 100 ≠ 0 := by
     intro hzero
     apply hDV.ne'
     calc
       (18 - 20 * σ.value) * (3 + 5 * σ.value) =
-          54 + σ.value * 30 - σ.value ^ 2 * 100 := by ring
+          54 + σ.value * 30 - σ.value ^ (2 : ℕ) * 100 := by ring
       _ = 0 := hzero
-  have hquad : 0 < 250 * σ.value ^ 2 - 375 * σ.value + 141 := by
+  have hquad : 0 < 250 * σ.value ^ (2 : ℕ) - 375 * σ.value + 141 := by
     nlinarith [sq_nonneg (σ.value - (3 : ℝ) / 4)]
   have hnumerator :
       (18 - 20 * σ.value) * (3 + 5 * σ.value) +
@@ -139,7 +139,7 @@ theorem cglClassIV_unclamped_middle_le (σ : CGLSigmaWindow) :
         15 * (1 - σ.value) * (18 - 20 * σ.value) -
           ((18 - 20 * σ.value) * (3 + 5 * σ.value) +
             15 * 5 * (1 - σ.value) * (1 - 2 * σ.value)) =
-          250 * σ.value ^ 2 - 375 * σ.value + 141 := by ring
+          250 * σ.value ^ (2 : ℕ) - 375 * σ.value + 141 := by ring
     apply sub_nonneg.mp
     rw [hid]
     exact hquad.le

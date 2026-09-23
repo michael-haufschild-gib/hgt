@@ -17,7 +17,7 @@ def diskToUpper (w : ℂ) : ℂ := Complex.I * (1 + w) / (1 - w)
 
 /-- Complex derivative of the inverse Cayley map. -/
 theorem hasDerivAt_diskToUpper {w : ℂ} (hw : w ≠ 1) :
-    HasDerivAt diskToUpper (2 * Complex.I / (1 - w) ^ 2) w := by
+    HasDerivAt diskToUpper (2 * Complex.I / (1 - w) ^ (2 : ℕ)) w := by
   have hv : (1 : ℂ) - w ≠ 0 := sub_ne_zero.mpr (Ne.symm hw)
   have hu : HasDerivAt (fun z : ℂ => Complex.I * (1 + z)) Complex.I w := by
     simpa using ((hasDerivAt_id w).const_add (1 : ℂ)).const_mul Complex.I
@@ -25,8 +25,8 @@ theorem hasDerivAt_diskToUpper {w : ℂ} (hw : w ≠ 1) :
     simpa using (hasDerivAt_id w).const_sub (1 : ℂ)
   have hdiv := hu.div hd hv
   rw [show diskToUpper = (fun z : ℂ => Complex.I * (1 + z)) / (fun z : ℂ => (1 : ℂ) - z) by rfl,
-    show (2 : ℂ) * Complex.I / (1 - w) ^ 2 =
-      (Complex.I * (1 - w) - Complex.I * (1 + w) * (-1)) / (1 - w) ^ 2 by ring]
+    show (2 : ℂ) * Complex.I / (1 - w) ^ (2 : ℕ) =
+      (Complex.I * (1 - w) - Complex.I * (1 + w) * (-1)) / (1 - w) ^ (2 : ℕ) by ring]
   exact hdiv
 
 /-- Exact height of the inverse Cayley image. -/
@@ -57,8 +57,8 @@ theorem diskToUpper_im_pos (w : ℂ) (hw : w ∈ ball 0 1) :
 
 /-- Absolute real Jacobian of inverse Cayley. -/
 theorem abs_det_diskToUpper_realFDeriv (w : ℂ) :
-    |((2 * Complex.I / (1 - w) ^ 2) • (1 : ℂ →L[ℝ] ℂ)).det| =
-      4 / Complex.normSq (1 - w) ^ 2 := by
+    |((2 * Complex.I / (1 - w) ^ (2 : ℕ)) • (1 : ℂ →L[ℝ] ℂ)).det| =
+      4 / Complex.normSq (1 - w) ^ (2 : ℕ) := by
   rw [← Complex.restrictScalars_toSpanSingleton]
   simp [ContinuousLinearMap.det, LinearMap.det_restrictScalars,
     Algebra.norm_complex_eq, Complex.normSq_eq_norm_sq, norm_pow]
@@ -67,9 +67,9 @@ theorem abs_det_diskToUpper_realFDeriv (w : ℂ) :
 
 /-- Inverse Cayley pulls `dx dy / y²` back to `4 dx dy / (1-|w|²)²`. -/
 theorem diskToUpper_hyperbolic_density (w : ℂ) (hw : w ∈ ball 0 1) :
-    |((2 * Complex.I / (1 - w) ^ 2) • (1 : ℂ →L[ℝ] ℂ)).det| *
-        ((diskToUpper w).im)⁻¹ ^ 2 =
-      4 / (1 - Complex.normSq w) ^ 2 := by
+    |((2 * Complex.I / (1 - w) ^ (2 : ℕ)) • (1 : ℂ →L[ℝ] ℂ)).det| *
+        ((diskToUpper w).im)⁻¹ ^ (2 : ℕ) =
+      4 / (1 - Complex.normSq w) ^ (2 : ℕ) := by
   have hnorm : ‖w‖ < 1 := by simpa [Metric.mem_ball, dist_zero_right] using hw
   have hsq : Complex.normSq w < 1 := by
     rw [Complex.normSq_eq_norm_sq]
@@ -181,7 +181,7 @@ theorem integral_diskToUpper_image {E : Type*} [NormedAddCommGroup E] [NormedSpa
     (f : ℂ → E) :
     (∫ z in {z : ℂ | 0 < z.im}, f z) =
       ∫ w in ball 0 1,
-        |((2 * Complex.I / (1 - w) ^ 2) • (1 : ℂ →L[ℝ] ℂ)).det| • f (diskToUpper w) := by
+        |((2 * Complex.I / (1 - w) ^ (2 : ℕ)) • (1 : ℂ →L[ℝ] ℂ)).det| • f (diskToUpper w) := by
   rw [← diskToUpper_image_ball]
   apply integral_image_eq_integral_abs_det_fderiv_smul volume measurableSet_ball _
     diskToUpper_injOn_ball f
@@ -197,10 +197,10 @@ theorem integral_diskToUpper_image {E : Type*} [NormedAddCommGroup E] [NormedSpa
 /-- The literal hyperbolic-area change of variables from the disk to the upper half-plane. -/
 theorem integral_diskToUpper_hyperbolic {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f : ℂ → E) :
-    (∫ z in {z : ℂ | 0 < z.im}, (z.im)⁻¹ ^ 2 • f z) =
+    (∫ z in {z : ℂ | 0 < z.im}, (z.im)⁻¹ ^ (2 : ℕ) • f z) =
       ∫ w in ball 0 1,
-        (4 / (1 - Complex.normSq w) ^ 2) • f (diskToUpper w) := by
-  rw [integral_diskToUpper_image (fun z : ℂ => (z.im)⁻¹ ^ 2 • f z)]
+        (4 / (1 - Complex.normSq w) ^ (2 : ℕ)) • f (diskToUpper w) := by
+  rw [integral_diskToUpper_image (fun z : ℂ => (z.im)⁻¹ ^ (2 : ℕ) • f z)]
   apply integral_congr_ae
   filter_upwards [ae_restrict_mem measurableSet_ball] with w hw
   rw [smul_smul, diskToUpper_hyperbolic_density w hw]

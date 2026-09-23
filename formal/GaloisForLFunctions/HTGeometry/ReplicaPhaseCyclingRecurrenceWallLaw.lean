@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-theorem fourier_one_pow
+theorem fourier_one_pow_replicaPhaseCyclingRecurrenceWallLaw
     (z : UnitAddCircle) (n : ℕ) :
     fourier 1 z ^ n = fourier (n : ℤ) z := by
   induction n with
@@ -51,7 +51,7 @@ theorem replicaPhaseProduct_eq_mFourier
   simp only [ContinuousMap.coe_mk]
   apply Finset.prod_congr rfl
   intro i hi
-  rw [fourier_one_pow, fourier_neg_one_pow, ← fourier_add]
+  rw [fourier_one_pow_replicaPhaseCyclingRecurrenceWallLaw, fourier_neg_one_pow, ← fourier_add]
   congr 2
 
 /-- Survival-fidelity replica measured after independently cycling all spectral phases. -/

@@ -53,8 +53,8 @@ namespace DecoratedStokesCore
 theorem energy_eq_diagram {n : ℕ} (g : DecoratedStokesCore n) {i j : Fin n} (hij : i ≠ j) :
     g.energy i j =
       2 * (g.B i j : ℝ) / ((g.ramification i : ℝ) * (g.ramification j : ℝ)) -
-        ((g.B i i : ℝ) - 1) / (g.ramification i : ℝ) ^ 2 -
-        ((g.B j j : ℝ) - 1) / (g.ramification j : ℝ) ^ 2 := by
+        ((g.B i i : ℝ) - 1) / (g.ramification i : ℝ) ^ (2 : ℕ) -
+        ((g.B j j : ℝ) - 1) / (g.ramification j : ℝ) ^ (2 : ℕ) := by
   have hri : ((g.ramification i : ℕ) : ℝ) ≠ 0 :=
     Nat.cast_ne_zero.mpr (g.ramification_pos i).ne'
   have hrj : ((g.ramification j : ℕ) : ℝ) ≠ 0 :=

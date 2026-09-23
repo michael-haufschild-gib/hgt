@@ -50,7 +50,7 @@ theorem norm_sum_powerset_le_exp {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1)
     (hP : ∀ p ∈ P, 0 < p) :
     ‖∑ T ∈ P.powerset, ∏ p ∈ T, ((1 / (p : ℝ) : ℝ) : ℂ)
         * (f p * Complex.exp (((-(t * Real.log (p : ℝ)) : ℝ) : ℂ) * Complex.I))‖
-      ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ)) + (∑ p ∈ P, 1 / (p : ℝ) ^ 2) - mulDistSq f t P) := by
+      ≤ Real.exp ((∑ p ∈ P, 1 / (p : ℝ)) + (∑ p ∈ P, 1 / (p : ℝ) ^ (2 : ℕ)) - mulDistSq f t P) := by
   classical
   rw [← prod_one_add_eq_sum_powerset, norm_prod]
   exact prod_euler_factor_le hf t hP

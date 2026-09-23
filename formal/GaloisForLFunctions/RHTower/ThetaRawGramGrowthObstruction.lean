@@ -78,24 +78,24 @@ theorem thetaCuspRawEvenMoment_no_geometric_upper_bound (C R : ℝ) (hR : 0 ≤ 
   have hc : 0 < c := by
     dsimp [c]
     exact mul_pos (by norm_num) (thetaCuspFullSource_pos_all _)
-  have hAsq : 0 < A ^ 2 := pow_pos hA _
-  have hRA : R < A ^ 2 := by
+  have hAsq : 0 < A ^ (2 : ℕ) := pow_pos hA _
+  have hRA : R < A ^ (2 : ℕ) := by
     dsimp [A]
     nlinarith [sq_nonneg R]
-  have hq0 : 0 ≤ R / A ^ 2 := div_nonneg hR hAsq.le
-  have hq1 : R / A ^ 2 < 1 := (div_lt_one hAsq).2 hRA
-  have hlim : Tendsto (fun n : ℕ => C * (R / A ^ 2) ^ n) atTop (𝓝 0) := by
+  have hq0 : 0 ≤ R / A ^ (2 : ℕ) := div_nonneg hR hAsq.le
+  have hq1 : R / A ^ (2 : ℕ) < 1 := (div_lt_one hAsq).2 hRA
+  have hlim : Tendsto (fun n : ℕ => C * (R / A ^ (2 : ℕ)) ^ n) atTop (𝓝 0) := by
     simpa using (tendsto_pow_atTop_nhds_zero_of_lt_one hq0 hq1).const_mul C
-  have hlow (n : ℕ) : c ≤ C * (R / A ^ 2) ^ n := by
+  have hlow (n : ℕ) : c ≤ C * (R / A ^ (2 : ℕ)) ^ n := by
     have hn := (thetaCuspRawEvenMoment_lower_window hA.le n).trans (h n)
-    have hp : 0 < (A ^ 2) ^ n := pow_pos hAsq n
-    have hn' : c * (A ^ 2) ^ n ≤ C * R ^ n := by
+    have hp : 0 < (A ^ (2 : ℕ)) ^ n := pow_pos hAsq n
+    have hn' : c * (A ^ (2 : ℕ)) ^ n ≤ C * R ^ n := by
       simpa only [c, pow_mul] using hn
     calc
-      c = (c * (A ^ 2) ^ n) / (A ^ 2) ^ n := by field_simp
-      _ ≤ (C * R ^ n) / (A ^ 2) ^ n :=
+      c = (c * (A ^ (2 : ℕ)) ^ n) / (A ^ (2 : ℕ)) ^ n := by field_simp
+      _ ≤ (C * R ^ n) / (A ^ (2 : ℕ)) ^ n :=
         (div_le_div_iff_of_pos_right hp).2 hn'
-      _ = C * (R / A ^ 2) ^ n := by rw [div_pow]; ring
+      _ = C * (R / A ^ (2 : ℕ)) ^ n := by rw [div_pow]; ring
   obtain ⟨n, hn⟩ := (hlim.eventually_lt_const hc).exists
   exact (not_lt_of_ge (hlow n)) hn
 

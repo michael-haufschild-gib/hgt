@@ -17,10 +17,10 @@ def radiusLift (f : ℝ → ℂ) (r : ℝ) : ℂ :=
   (r:ℂ)*f (D4BMIngoingCoordinates.tortoise r)
 def radiusLiftFirst (f df : ℝ → ℂ) (r : ℝ) : ℂ :=
   f (D4BMIngoingCoordinates.tortoise r)+
-    (r:ℂ)*df (D4BMIngoingCoordinates.tortoise r)/((r:ℂ)^2-1)
+    (r:ℂ)*df (D4BMIngoingCoordinates.tortoise r)/((r:ℂ)^(2 : ℕ)-1)
 def radiusLiftSecond (df ddf : ℝ → ℂ) (r : ℝ) : ℂ :=
   ((r:ℂ)*ddf (D4BMIngoingCoordinates.tortoise r)-
-    2*df (D4BMIngoingCoordinates.tortoise r))/((r:ℂ)^2-1)^2
+    2*df (D4BMIngoingCoordinates.tortoise r))/((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)
 
 /-- The stream's radius factor is differentiated, together with the original tortoise map. -/
 theorem radiusLift_derivatives (f df ddf : ℝ → ℂ) (r : ℝ) (hr : 1 < r)
@@ -34,8 +34,8 @@ theorem radiusLift_derivatives (f df ddf : ℝ → ℂ) (r : ℝ) (hr : 1 < r)
   have hF := hf.scomp r ht
   have hD := hd.scomp r ht
   have hR := (hasDerivAt_id r).ofReal_comp
-  have hn : (r:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show r^2-1 ≠ 0 by nlinarith)
+  have hn : (r:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show r^(2 : ℕ)-1 ≠ 0 by nlinarith)
   constructor
   · apply (hR.mul hF).congr_deriv
     dsimp [radiusLiftFirst]
@@ -52,20 +52,20 @@ def staticStreamJet (w c cr crr : ℂ) (J : ScalarTwoJet (Fin 2) ℂ) :
     ScalarTwoJet (Fin 4) ℂ where
   value := c*J.value
   first := ![w*c*J.value,cr*J.value,c*J.first 0,c*J.first 1]
-  second := ![![w^2*c*J.value,w*cr*J.value,w*c*J.first 0,w*c*J.first 1],
+  second := ![![w^(2 : ℕ)*c*J.value,w*cr*J.value,w*c*J.first 0,w*c*J.first 1],
     ![w*cr*J.value,crr*J.value,cr*J.first 0,cr*J.first 1],
     ![w*c*J.first 0,cr*J.first 0,c*J.second 0 0,c*J.second 0 1],
     ![w*c*J.first 1,cr*J.first 1,c*J.second 1 0,c*J.second 1 1]]
 
 def radialStreamJet (r w f df ddf : ℂ) (J : ScalarTwoJet (Fin 2) ℂ) :
     ScalarTwoJet (Fin 4) ℂ :=
-  staticStreamJet w (r*f) (f+r*df/(r^2-1)) ((r*ddf-2*df)/(r^2-1)^2) J
+  staticStreamJet w (r*f) (f+r*df/(r^(2 : ℕ)-1)) ((r*ddf-2*df)/(r^(2 : ℕ)-1)^(2 : ℕ)) J
 
 def modeAngularSquare (J : Fin 2 → ScalarTwoJet (Fin 2) ℂ) : ℂ :=
-  ∑ j : Fin 2, (J j).value^2
+  ∑ j : Fin 2, (J j).value^(2 : ℕ)
 
 private def orbit (r w c cr crr : ℂ) : ℂ :=
-  r^2*(r^2-1)*crr+2*r*cr-r^2/(r^2-1)*w^2*c
+  r^(2 : ℕ)*(r^(2 : ℕ)-1)*crr+2*r*cr-r^(2 : ℕ)/(r^(2 : ℕ)-1)*w^(2 : ℕ)*c
 
 private theorem stream_orbit (r y w c cr crr : ℂ)
     (J : Fin 2 → ScalarTwoJet (Fin 2) ℂ) (i : Fin 2) :
@@ -73,8 +73,8 @@ private theorem stream_orbit (r y w c cr crr : ℂ)
       streamMasterValue r y (fun j => staticStreamJet w c cr crr (J j)) i =
     -orbit r w c cr crr*(J i).value := by
   change streamAngularAction y _ i-
-    (r^2*(r^2-1)*(crr*(J i).value)+2*r*(cr*(J i).value)-
-      r^2/(r^2-1)*(w^2*c*(J i).value)+streamAngularAction y _ i) = _
+    (r^(2 : ℕ)*(r^(2 : ℕ)-1)*(crr*(J i).value)+2*r*(cr*(J i).value)-
+      r^(2 : ℕ)/(r^(2 : ℕ)-1)*(w^(2 : ℕ)*c*(J i).value)+streamAngularAction y _ i) = _
   unfold orbit
   ring
 
@@ -83,13 +83,13 @@ private theorem static_action (p : D4BMBackground.ExteriorPoint)
     let r : ℂ := p.val 1
     let P := fun j => staticStreamJet w c cr crr (J j)
     let Q := fun j => staticStreamJet (-w) d dr drr (J j)
-    (fun j => r^2/(p.val 3:ℂ)^2*actionSymplectic
+    (fun j => r^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ)*actionSymplectic
       (D4BMBackground.jet r (p.val 3)) (streamMetricJet r P) (streamMetricJet r Q) j) =
-    ![(w/(r^2*(r^2-1))*(c*orbit r w d dr drr+d*orbit r w c cr crr))*modeAngularSquare J,
-      ((r^2-1)/r^2*(dr*orbit r w c cr crr-cr*orbit r w d dr drr))*modeAngularSquare J,0,0] := by
+    ![(w/(r^(2 : ℕ)*(r^(2 : ℕ)-1))*(c*orbit r w d dr drr+d*orbit r w c cr crr))*modeAngularSquare J,
+      ((r^(2 : ℕ)-1)/r^(2 : ℕ)*(dr*orbit r w c cr crr-cr*orbit r w d dr drr))*modeAngularSquare J,0,0] := by
   have hr : (p.val 1:ℂ) ≠ 0 := by exact_mod_cast (show p.val 1 ≠ 0 by linarith [p.property.1])
-  have hR : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hR : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   dsimp only
   ext j
   rw [stream_complete_action_current]
@@ -98,38 +98,38 @@ private theorem static_action (p : D4BMBackground.ExteriorPoint)
   let Q := fun j => staticStreamJet (-w) d dr drr (J j)
   have hO : orbit r (-w) d dr drr=orbit r w d dr drr := by simp [orbit]
   fin_cases j
-  · change -1/((r^2-1)*r^2)*(∑ i : Fin 2,
+  · change -1/((r^(2 : ℕ)-1)*r^(2 : ℕ))*(∑ i : Fin 2,
       (w*c*(J i).value*(streamAngularAction (p.val 3) Q i-streamMasterValue r (p.val 3) Q i)-
        (-w)*d*(J i).value*(streamAngularAction (p.val 3) P i-streamMasterValue r (p.val 3) P i))) =
-      (w/(r^2*(r^2-1))*(c*orbit r w d dr drr+d*orbit r w c cr crr))*modeAngularSquare J
+      (w/(r^(2 : ℕ)*(r^(2 : ℕ)-1))*(c*orbit r w d dr drr+d*orbit r w c cr crr))*modeAngularSquare J
     dsimp only [P,Q]
     simp only [stream_orbit,hO,modeAngularSquare,Fin.sum_univ_succ]
     field_simp [hr,hR]
     ring
-  · change (r^2-1)/r^2*(∑ i : Fin 2,
+  · change (r^(2 : ℕ)-1)/r^(2 : ℕ)*(∑ i : Fin 2,
       (cr*(J i).value*(streamAngularAction (p.val 3) Q i-streamMasterValue r (p.val 3) Q i)-
        dr*(J i).value*(streamAngularAction (p.val 3) P i-streamMasterValue r (p.val 3) P i))) =
-      ((r^2-1)/r^2*(dr*orbit r w c cr crr-cr*orbit r w d dr drr))*modeAngularSquare J
+      ((r^(2 : ℕ)-1)/r^(2 : ℕ)*(dr*orbit r w c cr crr-cr*orbit r w d dr drr))*modeAngularSquare J
     dsimp only [P,Q]
     simp only [stream_orbit,hO,modeAngularSquare,Fin.sum_univ_succ]
     ring
-  · change (p.val 3:ℂ)^2/(p.val 1:ℂ)^2*
-      (-((p.val 1:ℂ)^2-1)*(cr*(J 1).value*(dr*(J 1).first 0-dr*(J 0).first 1)-
+  · change (p.val 3:ℂ)^(2 : ℕ)/(p.val 1:ℂ)^(2 : ℕ)*
+      (-((p.val 1:ℂ)^(2 : ℕ)-1)*(cr*(J 1).value*(dr*(J 1).first 0-dr*(J 0).first 1)-
         dr*(J 1).value*(cr*(J 1).first 0-cr*(J 0).first 1))+
        (w*c*(J 1).value*((-w)*d*(J 1).first 0-(-w)*d*(J 0).first 1)-
-        (-w)*d*(J 1).value*(w*c*(J 1).first 0-w*c*(J 0).first 1))/((p.val 1:ℂ)^2-1))=0
+        (-w)*d*(J 1).value*(w*c*(J 1).first 0-w*c*(J 0).first 1))/((p.val 1:ℂ)^(2 : ℕ)-1))=0
     ring
-  · change (p.val 3:ℂ)^2/(p.val 1:ℂ)^2*
-      (((p.val 1:ℂ)^2-1)*(cr*(J 0).value*(dr*(J 1).first 0-dr*(J 0).first 1)-
+  · change (p.val 3:ℂ)^(2 : ℕ)/(p.val 1:ℂ)^(2 : ℕ)*
+      (((p.val 1:ℂ)^(2 : ℕ)-1)*(cr*(J 0).value*(dr*(J 1).first 0-dr*(J 0).first 1)-
         dr*(J 0).value*(cr*(J 1).first 0-cr*(J 0).first 1))-
        (w*c*(J 0).value*((-w)*d*(J 1).first 0-(-w)*d*(J 0).first 1)-
-        (-w)*d*(J 0).value*(w*c*(J 1).first 0-w*c*(J 0).first 1))/((p.val 1:ℂ)^2-1))=0
+        (-w)*d*(J 0).value*(w*c*(J 1).first 0-w*c*(J 0).first 1))/((p.val 1:ℂ)^(2 : ℕ)-1))=0
     ring
 
-private theorem orbit_radial (r w lam f df F : ℂ) (hr : r ≠ 0) (hR : r^2-1 ≠ 0) :
-    orbit r w (r*f) (f+r*df/(r^2-1))
-      ((r*((w^2-lam*(r^2-1)/r^2)*f-F)-2*df)/(r^2-1)^2) =
-      r*(2-lam)*f-r^3/(r^2-1)*F := by
+private theorem orbit_radial (r w lam f df F : ℂ) (hr : r ≠ 0) (hR : r^(2 : ℕ)-1 ≠ 0) :
+    orbit r w (r*f) (f+r*df/(r^(2 : ℕ)-1))
+      ((r*((w^(2 : ℕ)-lam*(r^(2 : ℕ)-1)/r^(2 : ℕ))*f-F)-2*df)/(r^(2 : ℕ)-1)^(2 : ℕ)) =
+      r*(2-lam)*f-r^(3 : ℕ)/(r^(2 : ℕ)-1)*F := by
   unfold orbit
   field_simp [hr,hR]
   ring
@@ -139,18 +139,18 @@ The source contact remains in both time and radial components. -/
 theorem radial_mode_action (p : D4BMBackground.ExteriorPoint)
     (w lam f df g dg F : ℂ) (J : Fin 2 → ScalarTwoJet (Fin 2) ℂ) :
     let r : ℂ := p.val 1
-    let P := fun j => radialStreamJet r w f df ((w^2-lam*(r^2-1)/r^2)*f-F) (J j)
-    let Q := fun j => radialStreamJet r (-w) g dg ((w^2-lam*(r^2-1)/r^2)*g) (J j)
-    (fun j => r^2/(p.val 3:ℂ)^2*actionSymplectic
+    let P := fun j => radialStreamJet r w f df ((w^(2 : ℕ)-lam*(r^(2 : ℕ)-1)/r^(2 : ℕ))*f-F) (J j)
+    let Q := fun j => radialStreamJet r (-w) g dg ((w^(2 : ℕ)-lam*(r^(2 : ℕ)-1)/r^(2 : ℕ))*g) (J j)
+    (fun j => r^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ)*actionSymplectic
       (D4BMBackground.jet r (p.val 3)) (streamMetricJet r P) (streamMetricJet r Q) j) =
-    ![(-2*w*(lam-2)*f*g/(r^2-1)-w*r^2*g*F/(r^2-1)^2)*modeAngularSquare J,
-      (-(lam-2)*(dg*f-g*df)-(r*g+r^2*dg/(r^2-1))*F)*modeAngularSquare J,0,0] := by
+    ![(-2*w*(lam-2)*f*g/(r^(2 : ℕ)-1)-w*r^(2 : ℕ)*g*F/(r^(2 : ℕ)-1)^(2 : ℕ))*modeAngularSquare J,
+      (-(lam-2)*(dg*f-g*df)-(r*g+r^(2 : ℕ)*dg/(r^(2 : ℕ)-1))*F)*modeAngularSquare J,0,0] := by
   have hr : (p.val 1:ℂ) ≠ 0 := by exact_mod_cast (show p.val 1 ≠ 0 by linarith [p.property.1])
-  have hR : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (p.val 1)^2-1 ≠ 0 by nlinarith [p.property.1])
+  have hR : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (p.val 1)^(2 : ℕ)-1 ≠ 0 by nlinarith [p.property.1])
   dsimp only [radialStreamJet]
   rw [static_action,orbit_radial _ _ _ _ _ _ hr hR,
-    ← sub_zero ((w^2-lam*((p.val 1:ℂ)^2-1)/(p.val 1:ℂ)^2)*g),
+    ← sub_zero ((w^(2 : ℕ)-lam*((p.val 1:ℂ)^(2 : ℕ)-1)/(p.val 1:ℂ)^(2 : ℕ))*g),
     orbit_radial _ _ _ _ _ _ hr hR]
   apply congrArg₂ (fun a b : ℂ => (![a,b,0,0] : Fin 4 → ℂ))
   all_goals field_simp [hr,hR]
@@ -276,17 +276,17 @@ theorem radialStreamJet_actual (w : ℂ) (f : ℝ → ℂ) (S : (Fin 2 → ℝ) 
 
 /-- Full angular stream operator on the original angular two-jet. -/
 def angularJetOperator (y : ℂ) (J : Fin 2 → ScalarTwoJet (Fin 2) ℂ) (i : Fin 2) : ℂ :=
-  y^2*((J i).second 0 0+(J i).second 1 1)+
+  y^(2 : ℕ)*((J i).second 0 0+(J i).second 1 1)+
     2*y*(if i=0 then (J 0).first 1-(J 1).first 0 else (J 1).first 1+(J 0).first 0)
 
 /-- The reconstructed master retains exactly the angular defect and complete radial forcing. -/
-theorem radial_stream_master (r y w lam f df F : ℂ) (hr : r ≠ 0) (hR : r^2-1 ≠ 0)
+theorem radial_stream_master (r y w lam f df F : ℂ) (hr : r ≠ 0) (hR : r^(2 : ℕ)-1 ≠ 0)
     (J : Fin 2 → ScalarTwoJet (Fin 2) ℂ) (i : Fin 2) :
     streamMasterValue r y
-      (fun j => radialStreamJet r w f df ((w^2-lam*(r^2-1)/r^2)*f-F) (J j)) i =
-      r*f*(angularJetOperator y J i-lam*(J i).value)-r^3/(r^2-1)*F*(J i).value := by
-  let dd := (w^2-lam*(r^2-1)/r^2)*f-F
-  have h := stream_orbit r y w (r*f) (f+r*df/(r^2-1)) ((r*dd-2*df)/(r^2-1)^2) J i
+      (fun j => radialStreamJet r w f df ((w^(2 : ℕ)-lam*(r^(2 : ℕ)-1)/r^(2 : ℕ))*f-F) (J j)) i =
+      r*f*(angularJetOperator y J i-lam*(J i).value)-r^(3 : ℕ)/(r^(2 : ℕ)-1)*F*(J i).value := by
+  let dd := (w^(2 : ℕ)-lam*(r^(2 : ℕ)-1)/r^(2 : ℕ))*f-F
+  have h := stream_orbit r y w (r*f) (f+r*df/(r^(2 : ℕ)-1)) ((r*dd-2*df)/(r^(2 : ℕ)-1)^(2 : ℕ)) J i
   dsimp only [dd] at h
   rw [orbit_radial r w lam f df F hr hR] at h
   have ha : streamAngularAction y (fun j => radialStreamJet r w f df dd (J j)) i =

@@ -20,7 +20,7 @@ namespace RHTower
 noncomputable section
 
 /-- `d/dy (y:ℂ)^{−w} = −w y^{−w−1}` for real `y > 0`. -/
-theorem hasDerivAt_ofReal_cpow_neg {w : ℂ} {x : ℝ} (hx : 0 < x) :
+theorem hasDerivAt_ofReal_cpow_neg_highBlockCutoffMonotone {w : ℂ} {x : ℝ} (hx : 0 < x) :
     HasDerivAt (fun y : ℝ => (y : ℂ) ^ (-w)) (-w * (x : ℂ) ^ (-w - 1)) x := by
   have hlog := Real.hasDerivAt_log hx.ne'
   have h1 : HasDerivAt (fun y : ℝ => ((Real.log y : ℝ) : ℂ)) ((x⁻¹ : ℝ) : ℂ) x :=
@@ -49,7 +49,7 @@ theorem hasDerivAt_smoothAFEMellinIntegrand_line_one {x : ℝ} (hx : 0 < x) (t :
     HasDerivAt (fun y : ℝ => smoothAFEMellinIntegrand y (((1 : ℝ) : ℂ) + (t : ℂ) * I))
       (cutoffDerivIntegrand x t) x := by
   unfold smoothAFEMellinIntegrand cutoffDerivIntegrand
-  exact (hasDerivAt_ofReal_cpow_neg hx).mul_const _
+  exact (hasDerivAt_ofReal_cpow_neg_highBlockCutoffMonotone hx).mul_const _
 
 theorem norm_cutoffDerivIntegrand_le {x : ℝ} (hx : 0 < x) (t : ℝ) :
     ‖cutoffDerivIntegrand x t‖ ≤ (Real.exp 1 * x ^ (-2 : ℝ)) * ((1 + |t|) * Real.exp (-(t ^ 2))) := by

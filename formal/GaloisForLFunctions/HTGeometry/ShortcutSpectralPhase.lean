@@ -48,7 +48,7 @@ theorem circDist_sub_zero (a b : ℝ) : circDist (a - b) 0 = circDist a b := by
 
 /-- The squared chord between two unit phases. -/
 theorem normSq_expI_sub (φ ψ : ℝ) :
-    ‖Complex.exp ((φ : ℂ) * Complex.I) - Complex.exp ((ψ : ℂ) * Complex.I)‖ ^ 2
+    ‖Complex.exp ((φ : ℂ) * Complex.I) - Complex.exp ((ψ : ℂ) * Complex.I)‖ ^ (2 : ℕ)
       = 2 - 2 * Real.cos (φ - ψ) := by
   have hφ : Complex.exp ((φ : ℂ) * Complex.I)
       = ((Real.cos φ : ℝ) : ℂ) + ((Real.sin φ : ℝ) : ℂ) * Complex.I := by
@@ -80,23 +80,23 @@ theorem circDist_le_two_arcsin {φ ψ c : ℝ} (hc0 : 0 ≤ c)
   have hd0 : 0 ≤ d := circDist_nonneg φ ψ
   have hdpi : d ≤ Real.pi := circDist_le_pi φ ψ
   have hchord : 2 - 2 * Real.cos d
-      ≤ c ^ 2 := by
+      ≤ c ^ (2 : ℕ) := by
     have hsq := normSq_expI_sub φ ψ
     rw [cos_sub_eq_cos_circDist] at hsq
     have hnn : (0 : ℝ) ≤ ‖Complex.exp ((φ : ℂ) * Complex.I)
         - Complex.exp ((ψ : ℂ) * Complex.I)‖ := norm_nonneg _
     nlinarith [hsq, h, hnn, hc0]
-  have hdouble : ∀ x : ℝ, Real.cos (2 * x) = 1 - 2 * Real.sin x ^ 2 := by
+  have hdouble : ∀ x : ℝ, Real.cos (2 * x) = 1 - 2 * Real.sin x ^ (2 : ℕ) := by
     intro x
     rw [Real.cos_two_mul]
     nlinarith [Real.sin_sq_add_cos_sq x]
-  have hhalf : Real.cos d = 1 - 2 * Real.sin (d / 2) ^ 2 := by
+  have hhalf : Real.cos d = 1 - 2 * Real.sin (d / 2) ^ (2 : ℕ) := by
     have hx := hdouble (d / 2)
     rwa [show 2 * (d / 2) = d from by ring] at hx
   have hsin0 : 0 ≤ Real.sin (d / 2) := by
     refine Real.sin_nonneg_of_nonneg_of_le_pi (by linarith) ?_
     linarith [Real.pi_pos]
-  have hsq : 4 * Real.sin (d / 2) ^ 2 ≤ c ^ 2 := by nlinarith [hchord, hhalf]
+  have hsq : 4 * Real.sin (d / 2) ^ (2 : ℕ) ≤ c ^ (2 : ℕ) := by nlinarith [hchord, hhalf]
   have hsinle : Real.sin (d / 2) ≤ c / 2 := by
     nlinarith [hsq, hsin0, hc0, sq_nonneg (Real.sin (d / 2) + c / 2)]
   have hrange1 : -(Real.pi / 2) ≤ d / 2 := by linarith [Real.pi_pos]
@@ -195,12 +195,12 @@ theorem extracted_ratio_ge_half {t Δ α : ℝ} (hΔ : 0 < Δ)
 
 /-- A quadratic carrier is Lipschitz with constant `2|c|R` on a spectrum inside `[-R, R]`. -/
 theorem quadratic_carrier_lip {c R : ℝ} {x y : ℝ} (hx : |x| ≤ R) (hy : |y| ≤ R) :
-    |c * x ^ 2 - c * y ^ 2| ≤ 2 * |c| * R * |x - y| := by
-  have hfac : c * x ^ 2 - c * y ^ 2 = c * (x - y) * (x + y) := by ring
+    |c * x ^ (2 : ℕ) - c * y ^ (2 : ℕ)| ≤ 2 * |c| * R * |x - y| := by
+  have hfac : c * x ^ (2 : ℕ) - c * y ^ (2 : ℕ) = c * (x - y) * (x + y) := by ring
   have hsum : |x + y| ≤ 2 * R := by
     calc |x + y| ≤ |x| + |y| := abs_add_le x y
       _ ≤ 2 * R := by linarith
-  calc |c * x ^ 2 - c * y ^ 2| = |c| * |x - y| * |x + y| := by
+  calc |c * x ^ (2 : ℕ) - c * y ^ (2 : ℕ)| = |c| * |x - y| * |x + y| := by
         rw [hfac, abs_mul, abs_mul]
     _ ≤ |c| * |x - y| * (2 * R) := by
         refine mul_le_mul_of_nonneg_left hsum (by positivity)
@@ -218,17 +218,17 @@ norm of a difference diagonal in the spectral decomposition, in the form the Loe
 estimates consume. -/
 theorem diagonal_mulVec_norm_le {d : Type*} [Fintype d] [DecidableEq d] (ζ : d → ℂ) {c : ℝ}
     (hc : ∀ l, ‖ζ l‖ ≤ c) (v : d → ℂ) :
-    ∑ l, ‖(Matrix.diagonal ζ *ᵥ v) l‖ ^ 2 ≤ c ^ 2 * ∑ l, ‖v l‖ ^ 2 := by
-  have hstep : ∀ l, ‖(Matrix.diagonal ζ *ᵥ v) l‖ ^ 2 ≤ c ^ 2 * ‖v l‖ ^ 2 := by
+    ∑ l, ‖(Matrix.diagonal ζ *ᵥ v) l‖ ^ (2 : ℕ) ≤ c ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ) := by
+  have hstep : ∀ l, ‖(Matrix.diagonal ζ *ᵥ v) l‖ ^ (2 : ℕ) ≤ c ^ (2 : ℕ) * ‖v l‖ ^ (2 : ℕ) := by
     intro l
     rw [Matrix.mulVec_diagonal, norm_mul, mul_pow]
     have hcl := hc l
     have hnn : (0 : ℝ) ≤ ‖ζ l‖ := norm_nonneg _
-    have hsq : ‖ζ l‖ ^ 2 ≤ c ^ 2 := by nlinarith [hcl, hnn]
+    have hsq : ‖ζ l‖ ^ (2 : ℕ) ≤ c ^ (2 : ℕ) := by nlinarith [hcl, hnn]
     exact mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
-  calc ∑ l, ‖(Matrix.diagonal ζ *ᵥ v) l‖ ^ 2 ≤ ∑ l, c ^ 2 * ‖v l‖ ^ 2 :=
+  calc ∑ l, ‖(Matrix.diagonal ζ *ᵥ v) l‖ ^ (2 : ℕ) ≤ ∑ l, c ^ (2 : ℕ) * ‖v l‖ ^ (2 : ℕ) :=
         Finset.sum_le_sum fun l _ => hstep l
-    _ = c ^ 2 * ∑ l, ‖v l‖ ^ 2 := (Finset.mul_sum _ _ _).symm
+    _ = c ^ (2 : ℕ) * ∑ l, ‖v l‖ ^ (2 : ℕ) := (Finset.mul_sum _ _ _).symm
 
 end OperatorLayer
 

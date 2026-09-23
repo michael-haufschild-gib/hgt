@@ -27,11 +27,11 @@ theorem ovsyannikov_induction {ρ₀ K : ℝ} (hK : 0 ≤ K) (N : ℕ → ℝ �
     (hstep : ∀ (m : ℕ) (ρ σ x y c : ℝ), 0 ≤ c → 0 ≤ x → 0 ≤ y → ρ < σ → σ ≤ ρ₀ →
       (∀ s t : ℝ, 0 ≤ s → s ≤ x → 0 ≤ t → t ≤ y → N m σ s t ≤ c * s ^ m * t ^ m) →
       N (m + 1) ρ x y
-        ≤ K / (σ - ρ) ^ 2 * c * (x ^ (m + 1) * y ^ (m + 1) / ((m : ℝ) + 1) ^ 2))
+        ≤ K / (σ - ρ) ^ (2 : ℕ) * c * (x ^ (m + 1) * y ^ (m + 1) / ((m : ℝ) + 1) ^ (2 : ℕ)))
     (m : ℕ) :
     ∀ ρ x y : ℝ, ρ < ρ₀ → 0 ≤ x → 0 ≤ y →
       N m ρ x y ≤ K ^ m * (m : ℝ) ^ (2 * m) * (x ^ m * y ^ m)
-        / ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m)) := by
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * m)) := by
   induction m with
   | zero =>
     intro ρ x y _ _ _
@@ -53,7 +53,7 @@ theorem ovsyannikov_induction {ρ₀ K : ℝ} (hK : 0 ≤ K) (N : ℕ → ℝ �
       field_simp
       ring
     set c : ℝ := K ^ m * (m : ℝ) ^ (2 * m)
-      / ((m.factorial : ℝ) ^ 2 * (ρ₀ - σ) ^ (2 * m)) with hcdef
+      / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - σ) ^ (2 * m)) with hcdef
     have hfacpos : (0 : ℝ) < (m.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos m
     have hc0 : 0 ≤ c := by
       rw [hcdef]
@@ -78,21 +78,21 @@ theorem ovsyannikov_induction {ρ₀ K : ℝ} (hK : 0 ≤ K) (N : ℕ → ℝ �
         have hbase := ih σ s t hσlt hs ht
         calc N m σ s t
             ≤ K ^ m * (m : ℝ) ^ (2 * m) * (s ^ m * t ^ m)
-              / ((m.factorial : ℝ) ^ 2 * (ρ₀ - σ) ^ (2 * m)) := hbase
+              / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - σ) ^ (2 * m)) := hbase
           _ = c * s ^ m * t ^ m := by
               rw [hcdef]
-              have hden : ((m.factorial : ℝ) ^ 2 * (ρ₀ - σ) ^ (2 * m)) ≠ 0 := by
+              have hden : ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - σ) ^ (2 * m)) ≠ 0 := by
                 have : (0 : ℝ) < ρ₀ - σ := by
                   rw [hrem]
                   positivity
                 positivity
               field_simp
     have hstepped := hstep m ρ σ x y c hc0 hx hy hρσ hσρ₀ hIH
-    have hloss : K / (σ - ρ) ^ 2 = K * ((m : ℝ) + 1) ^ 2 / (ρ₀ - ρ) ^ 2 := by
+    have hloss : K / (σ - ρ) ^ (2 : ℕ) = K * ((m : ℝ) + 1) ^ (2 : ℕ) / (ρ₀ - ρ) ^ (2 : ℕ) := by
       rw [hgap]
       field_simp
     have hcval : c = K ^ m * ((m : ℝ) + 1) ^ (2 * m)
-        / ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m)) := by
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * m)) := by
       rcases Nat.eq_zero_or_pos m with hm | hm
       · subst hm
         rw [hcdef]
@@ -103,14 +103,14 @@ theorem ovsyannikov_induction {ρ₀ K : ℝ} (hK : 0 ≤ K) (N : ℕ → ℝ �
         have hratio := sq_pow_ratio_intermediate hG m
         rw [div_eq_div_iff (ne_of_gt hd1) (ne_of_gt hd2)] at hratio
         rw [hcdef, hrem, div_eq_div_iff (by positivity) (by positivity)]
-        calc K ^ m * (m : ℝ) ^ (2 * m) * ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m))
-            = K ^ m * (m.factorial : ℝ) ^ 2 * ((m : ℝ) ^ (2 * m) * (ρ₀ - ρ) ^ (2 * m)) := by
+        calc K ^ m * (m : ℝ) ^ (2 * m) * ((m.factorial : ℝ) ^ (2 : ℕ) * (ρ₀ - ρ) ^ (2 * m))
+            = K ^ m * (m.factorial : ℝ) ^ (2 : ℕ) * ((m : ℝ) ^ (2 * m) * (ρ₀ - ρ) ^ (2 * m)) := by
               ring
-          _ = K ^ m * (m.factorial : ℝ) ^ 2
+          _ = K ^ m * (m.factorial : ℝ) ^ (2 : ℕ)
               * (((m : ℝ) + 1) ^ (2 * m)
                 * ((ρ₀ - ρ) * (m : ℝ) / ((m : ℝ) + 1)) ^ (2 * m)) := by rw [hratio]
           _ = K ^ m * ((m : ℝ) + 1) ^ (2 * m)
-              * ((m.factorial : ℝ) ^ 2
+              * ((m.factorial : ℝ) ^ (2 : ℕ)
                 * ((ρ₀ - ρ) * (m : ℝ) / ((m : ℝ) + 1)) ^ (2 * m)) := by ring
     rw [hloss, hcval] at hstepped
     have hident := ovsyannikov_step_identity (K := K) (G := ρ₀ - ρ) (x := x) (y := y) hG m

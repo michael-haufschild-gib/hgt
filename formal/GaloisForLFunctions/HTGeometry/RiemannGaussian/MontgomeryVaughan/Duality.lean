@@ -33,7 +33,7 @@ namespace MontgomeryVaughan
 constant: every solution of the normalized eigen-relation with a unit vector has `|μ| ≤ C`. -/
 def EigenBound (C : ℝ) : Prop :=
   ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (freq δ : ι → ℝ), Adm freq δ →
-    ∀ (u : ι → ℂ), ∑ n, ‖u n‖ ^ 2 = 1 → ∀ (μ : ℝ),
+    ∀ (u : ι → ℂ), ∑ n, ‖u n‖ ^ (2 : ℕ) = 1 → ∀ (μ : ℝ),
       (∀ m, ∑ n ∈ Finset.univ.erase m,
         ((Real.sqrt (δ m) * Real.sqrt (δ n) / (freq m - freq n) : ℝ) : ℂ) * u n
           = (μ : ℂ) * Complex.I * u m) → |μ| ≤ C
@@ -64,7 +64,7 @@ lemma Mmat_isHermitian (freq δ : ι → ℝ) : (Mmat freq δ).IsHermitian := by
 
 omit [DecidableEq ι] in
 /-- `star v ⬝ᵥ v = Σ ‖v_i‖²` (as a complex number). -/
-lemma star_dotProduct_self (v : ι → ℂ) : star v ⬝ᵥ v = ((∑ i, ‖v i‖ ^ 2 : ℝ) : ℂ) := by
+lemma star_dotProduct_self (v : ι → ℂ) : star v ⬝ᵥ v = ((∑ i, ‖v i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   simp only [dotProduct, Pi.star_apply, Complex.star_def, Complex.conj_mul']
   push_cast
   rfl
@@ -74,7 +74,7 @@ lemma star_dotProduct_self (v : ι → ℂ) : star v ⬝ᵥ v = ((∑ i, ‖v i�
 lemma star_dotProduct_mulVec_eq {A : Matrix ι ι ℂ} (hA : A.IsHermitian) (x : ι → ℂ) :
     star x ⬝ᵥ (A *ᵥ x)
       = ((∑ i, hA.eigenvalues i *
-          ‖(star (hA.eigenvectorUnitary : Matrix ι ι ℂ) *ᵥ x) i‖ ^ 2 : ℝ) : ℂ) := by
+          ‖(star (hA.eigenvectorUnitary : Matrix ι ι ℂ) *ᵥ x) i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   set U : Matrix ι ι ℂ := ↑hA.eigenvectorUnitary
   set c := star U *ᵥ x with hc_def
   have hsc : star x ᵥ* U = star c := by
@@ -91,7 +91,7 @@ lemma star_dotProduct_mulVec_eq {A : Matrix ι ι ℂ} (hA : A.IsHermitian) (x :
 
 /-- `Σ ‖(U* x)_i‖² = Σ ‖x_i‖²` for the eigenvector unitary `U`. -/
 lemma sum_norm_sq_unitary {A : Matrix ι ι ℂ} (hA : A.IsHermitian) (x : ι → ℂ) :
-    ∑ i, ‖(star (hA.eigenvectorUnitary : Matrix ι ι ℂ) *ᵥ x) i‖ ^ 2 = ∑ i, ‖x i‖ ^ 2 := by
+    ∑ i, ‖(star (hA.eigenvectorUnitary : Matrix ι ι ℂ) *ᵥ x) i‖ ^ (2 : ℕ) = ∑ i, ‖x i‖ ^ (2 : ℕ) := by
   set U : Matrix ι ι ℂ := ↑hA.eigenvectorUnitary
   set c := star U *ᵥ x with hc_def
   have hsc : star x ᵥ* U = star c := by
@@ -109,7 +109,7 @@ lemma abs_eigenvalue_le {C : ℝ} (hb : EigenBound C) {freq δ : ι → ℝ} (h 
   set ν : ℝ := hM.eigenvalues j
   set v : ι → ℂ := ⇑(hM.eigenvectorBasis j) with hvdef
   have hv : Mmat freq δ *ᵥ v = ν • v := hM.mulVec_eigenvectorBasis j
-  have hunit : ∑ n, ‖v n‖ ^ 2 = 1 := by
+  have hunit : ∑ n, ‖v n‖ ^ (2 : ℕ) = 1 := by
     have h1 : ‖hM.eigenvectorBasis j‖ = 1 := hM.eigenvectorBasis.orthonormal.1 j
     rw [← EuclideanSpace.norm_sq_eq, h1, one_pow]
   -- the eigen-relation in `eigen_bound`'s shape, with μ := −ν
@@ -145,7 +145,7 @@ lemma abs_eigenvalue_le {C : ℝ} (hb : EigenBound C) {freq δ : ι → ℝ} (h 
 
 /-- The Hermitian form of `M` is bounded by `C ‖y‖²`. -/
 lemma norm_form_le {C : ℝ} (hb : EigenBound C) {freq δ : ι → ℝ} (h : Adm freq δ) (y : ι → ℂ) :
-    ‖star y ⬝ᵥ (Mmat freq δ *ᵥ y)‖ ≤ C * ∑ i, ‖y i‖ ^ 2 := by
+    ‖star y ⬝ᵥ (Mmat freq δ *ᵥ y)‖ ≤ C * ∑ i, ‖y i‖ ^ (2 : ℕ) := by
   set hM := Mmat_isHermitian freq δ
   rw [star_dotProduct_mulVec_eq hM, Complex.norm_real, Real.norm_eq_abs, ← sum_norm_sq_unitary hM y,
     Finset.mul_sum]
@@ -165,7 +165,7 @@ theorem mvDiag_of_eigenBound {C : ℝ} (hb : EigenBound C) : MVDiag C := by
   have hxy : ∀ r, x r = (Real.sqrt (δ r) : ℂ) * y r := fun r => by
     simp only [hydef]; field_simp [hsq r]
   -- Σ ‖y_r‖² = Σ ‖x_r‖²/δ_r
-  have hnorm : ∑ r, ‖y r‖ ^ 2 = ∑ r, ‖x r‖ ^ 2 / δ r := by
+  have hnorm : ∑ r, ‖y r‖ ^ (2 : ℕ) = ∑ r, ‖x r‖ ^ (2 : ℕ) / δ r := by
     refine Finset.sum_congr rfl fun r _ => ?_
     simp only [hydef, norm_div, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (Real.sqrt_nonneg _), div_pow, Real.sq_sqrt (hpos r).le]

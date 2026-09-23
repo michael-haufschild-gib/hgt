@@ -17,28 +17,28 @@ def pauliNonScalarCoefficient
 theorem sum_norm_pauliNonScalarCoefficient_sq
     {σ : Type*} [Fintype σ] [DecidableEq σ]
     (J : (σ → Option (Fin 3)) → ℂ) :
-    (∑ P, ‖pauliNonScalarCoefficient J P‖ ^ 2) =
-      ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ 2 := by
+    (∑ P, ‖pauliNonScalarCoefficient J P‖ ^ (2 : ℕ)) =
+      ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ (2 : ℕ) := by
   let nz : Finset (σ → Option (Fin 3)) :=
     Finset.univ.filter fun P => P ≠ pauliCharacterZero
   have hsub :
-      (∑ P ∈ nz, ‖J P‖ ^ 2) =
-        ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ 2 := by
-    exact Finset.sum_subtype nz (by simp [nz]) (fun P => ‖J P‖ ^ 2)
+      (∑ P ∈ nz, ‖J P‖ ^ (2 : ℕ)) =
+        ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ (2 : ℕ) := by
+    exact Finset.sum_subtype nz (by simp [nz]) (fun P => ‖J P‖ ^ (2 : ℕ))
   calc
-    (∑ P, ‖pauliNonScalarCoefficient J P‖ ^ 2) =
-        ∑ P ∈ nz, ‖pauliNonScalarCoefficient J P‖ ^ 2 := by
+    (∑ P, ‖pauliNonScalarCoefficient J P‖ ^ (2 : ℕ)) =
+        ∑ P ∈ nz, ‖pauliNonScalarCoefficient J P‖ ^ (2 : ℕ) := by
       symm
       apply Finset.sum_subset (by simp [nz])
       intro P _ hP
       simp only [nz, Finset.mem_filter, Finset.mem_univ, true_and, not_not] at hP
       simp [pauliNonScalarCoefficient, hP]
-    _ = ∑ P ∈ nz, ‖J P‖ ^ 2 := by
+    _ = ∑ P ∈ nz, ‖J P‖ ^ (2 : ℕ) := by
       apply Finset.sum_congr rfl
       intro P hP
       simp only [nz, Finset.mem_filter, Finset.mem_univ, true_and] at hP
       simp [pauliNonScalarCoefficient, hP]
-    _ = ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ 2 := hsub
+    _ = ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ (2 : ℕ) := hsub
 
 theorem pauliCombination_sub_scalar_eq_nonScalar
     {σ : Type*} [Fintype σ] [DecidableEq σ]
@@ -70,7 +70,7 @@ theorem frobSq_pauliCombination_sub_scalar
         ((∑ P, J P • finitePauliMatrix P) -
           J pauliCharacterZero • finitePauliMatrix pauliCharacterZero) =
       2 ^ Fintype.card σ *
-        ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ 2 := by
+        ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ (2 : ℕ) := by
   rw [pauliCombination_sub_scalar_eq_nonScalar,
     frobSq_pauliCombination, sum_norm_pauliNonScalarCoefficient_sq]
 
@@ -143,17 +143,17 @@ theorem pauliCombination_sub_scalarShift_eq
 theorem sum_norm_pauliScalarShiftCoefficient_sq
     {σ : Type*} [Fintype σ] [DecidableEq σ]
     (J : (σ → Option (Fin 3)) → ℂ) (c : ℂ) :
-    (∑ P, ‖pauliScalarShiftCoefficient J c P‖ ^ 2) =
-      ‖J pauliCharacterZero - c‖ ^ 2 +
-        ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ 2 := by
+    (∑ P, ‖pauliScalarShiftCoefficient J c P‖ ^ (2 : ℕ)) =
+      ‖J pauliCharacterZero - c‖ ^ (2 : ℕ) +
+        ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ (2 : ℕ) := by
   let nz : Finset (σ → Option (Fin 3)) :=
     Finset.univ.erase pauliCharacterZero
   have hsub :
-      (∑ P ∈ nz, ‖J P‖ ^ 2) =
-        ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ 2 := by
-    exact Finset.sum_subtype nz (by simp [nz]) (fun P => ‖J P‖ ^ 2)
+      (∑ P ∈ nz, ‖J P‖ ^ (2 : ℕ)) =
+        ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ (2 : ℕ) := by
+    exact Finset.sum_subtype nz (by simp [nz]) (fun P => ‖J P‖ ^ (2 : ℕ))
   rw [← hsub, ← Finset.add_sum_erase Finset.univ
-    (fun P => ‖pauliScalarShiftCoefficient J c P‖ ^ 2)
+    (fun P => ‖pauliScalarShiftCoefficient J c P‖ ^ (2 : ℕ))
     (Finset.mem_univ pauliCharacterZero)]
   simp only [pauliScalarShiftCoefficient, if_pos]
   congr 1
@@ -169,8 +169,8 @@ theorem frobSq_pauliCombination_sub_scalarShift
         ((∑ P, J P • finitePauliMatrix P) -
           c • finitePauliMatrix pauliCharacterZero) =
       2 ^ Fintype.card σ *
-        (‖J pauliCharacterZero - c‖ ^ 2 +
-          ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ 2) := by
+        (‖J pauliCharacterZero - c‖ ^ (2 : ℕ) +
+          ∑ P : NonzeroPauliCharacter σ, ‖J P.1‖ ^ (2 : ℕ)) := by
   rw [pauliCombination_sub_scalarShift_eq,
     frobSq_pauliCombination, sum_norm_pauliScalarShiftCoefficient_sq]
 
@@ -181,8 +181,8 @@ theorem frobSq_sub_scalar_smul_one
     frobSq (A - c • (1 : Matrix (FiniteQubitConfiguration σ)
       (FiniteQubitConfiguration σ) ℂ)) =
       2 ^ Fintype.card σ *
-        (‖pauliCoeff A pauliCharacterZero - c‖ ^ 2 +
-          ∑ P : NonzeroPauliCharacter σ, ‖pauliCoeff A P.1‖ ^ 2) := by
+        (‖pauliCoeff A pauliCharacterZero - c‖ ^ (2 : ℕ) +
+          ∑ P : NonzeroPauliCharacter σ, ‖pauliCoeff A P.1‖ ^ (2 : ℕ)) := by
   have h := frobSq_pauliCombination_sub_scalarShift (pauliCoeff A) c
   rw [sum_pauliCoeff_smul A, finitePauliMatrix_pauliCharacterZero] at h
   exact h
@@ -192,7 +192,7 @@ theorem frobSq_sub_pauliScalarPart
     (A : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) :
     frobSq (A - pauliScalarPart A) =
       2 ^ Fintype.card σ *
-        ∑ P : NonzeroPauliCharacter σ, ‖pauliCoeff A P.1‖ ^ 2 := by
+        ∑ P : NonzeroPauliCharacter σ, ‖pauliCoeff A P.1‖ ^ (2 : ℕ) := by
   have h := frobSq_pauliCombination_sub_scalar (pauliCoeff A)
   rw [sum_pauliCoeff_smul A] at h
   exact h

@@ -25,10 +25,10 @@ theorem continuous_cumulativeForcing {q : ℝ → ℝ} (hq : Continuous q) :
 /-- Exact chain-rule closure behind the last equality in Lemma 10.4:
 `2 ∫₀ᵗ q(s) F(s) ds = F(t)²` for `F(t) = ∫₀ᵗ q(s) ds`. -/
 theorem two_mul_integral_mul_cumulativeForcing (q : ℝ → ℝ) (hq : Continuous q) (t : ℝ) :
-    2 * ∫ s in (0 : ℝ)..t, q s * cumulativeForcing q s = cumulativeForcing q t ^ 2 := by
+    2 * ∫ s in (0 : ℝ)..t, q s * cumulativeForcing q s = cumulativeForcing q t ^ (2 : ℕ) := by
   have hFcont : Continuous (cumulativeForcing q) := continuous_cumulativeForcing hq
   have hderiv : ∀ s ∈ uIcc (0 : ℝ) t,
-      HasDerivAt (fun x ↦ cumulativeForcing q x ^ 2)
+      HasDerivAt (fun x ↦ cumulativeForcing q x ^ (2 : ℕ))
         (2 * (q s * cumulativeForcing q s)) s := by
     intro s _
     exact ((hasDerivAt_cumulativeForcing hq s).pow 2).congr_deriv (by ring)
@@ -46,9 +46,9 @@ theorem energy_add_dissipation_le_cumulativeForcing_sq
     (hq : Continuous q) (hN : Continuous N)
     (hq_nonneg : ∀ s ∈ Icc (0 : ℝ) t, 0 ≤ q s)
     (hN_le : ∀ s ∈ Icc (0 : ℝ) t, N s ≤ cumulativeForcing q s)
-    (henergy : N t ^ 2 + 2 * ∫ s in (0 : ℝ)..t, D s =
+    (henergy : N t ^ (2 : ℕ) + 2 * ∫ s in (0 : ℝ)..t, D s =
       2 * ∫ s in (0 : ℝ)..t, q s * N s) :
-    N t ^ 2 + 2 * ∫ s in (0 : ℝ)..t, D s ≤ cumulativeForcing q t ^ 2 := by
+    N t ^ (2 : ℕ) + 2 * ∫ s in (0 : ℝ)..t, D s ≤ cumulativeForcing q t ^ (2 : ℕ) := by
   have hFcont : Continuous (cumulativeForcing q) := continuous_cumulativeForcing hq
   have hmono : (∫ s in (0 : ℝ)..t, q s * N s) ≤
       ∫ s in (0 : ℝ)..t, q s * cumulativeForcing q s := by
@@ -57,10 +57,10 @@ theorem energy_add_dissipation_le_cumulativeForcing_sq
       ((hq.mul hFcont).intervalIntegrable 0 t)
       (fun s hs ↦ mul_le_mul_of_nonneg_left (hN_le s hs) (hq_nonneg s hs))
   calc
-    N t ^ 2 + 2 * ∫ s in (0 : ℝ)..t, D s =
+    N t ^ (2 : ℕ) + 2 * ∫ s in (0 : ℝ)..t, D s =
         2 * ∫ s in (0 : ℝ)..t, q s * N s := henergy
     _ ≤ 2 * ∫ s in (0 : ℝ)..t, q s * cumulativeForcing q s := by linarith
-    _ = cumulativeForcing q t ^ 2 := two_mul_integral_mul_cumulativeForcing q hq t
+    _ = cumulativeForcing q t ^ (2 : ℕ) := two_mul_integral_mul_cumulativeForcing q hq t
 
 end
 

@@ -19,13 +19,13 @@ noncomputable section
 
 /-- **Splitting the fibre mean square by a discarded set.** -/
 theorem sum_sq_fibreSum_split {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (T : Finset ℕ) (x h : ℝ) :
-    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
-      ≤ 2 * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a \ T, f b) ^ 2
-        + 2 * ∑ a ∈ outerBlock x h, (((innerFibre x h a ∩ T).card : ℕ) : ℝ) ^ 2 := by
+    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
+      ≤ 2 * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a \ T, f b) ^ (2 : ℕ)
+        + 2 * ∑ a ∈ outerBlock x h, (((innerFibre x h a ∩ T).card : ℕ) : ℝ) ^ (2 : ℕ) := by
   classical
-  have hterm : ∀ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
-      ≤ 2 * (∑ b ∈ innerFibre x h a \ T, f b) ^ 2
-        + 2 * (((innerFibre x h a ∩ T).card : ℕ) : ℝ) ^ 2 := by
+  have hterm : ∀ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
+      ≤ 2 * (∑ b ∈ innerFibre x h a \ T, f b) ^ (2 : ℕ)
+        + 2 * (((innerFibre x h a ∩ T).card : ℕ) : ℝ) ^ (2 : ℕ) := by
     intro a _
     have hsplit : ∑ b ∈ innerFibre x h a, f b
         = (∑ b ∈ innerFibre x h a \ T, f b) + ∑ b ∈ innerFibre x h a ∩ T, f b := by
@@ -35,8 +35,8 @@ theorem sum_sq_fibreSum_split {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (T : F
       refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
       refine (Finset.sum_le_sum fun b _ => hf b).trans (le_of_eq ?_)
       rw [Finset.sum_const, nsmul_eq_mul, mul_one]
-    have hsq : (∑ b ∈ innerFibre x h a ∩ T, f b) ^ 2
-        ≤ (((innerFibre x h a ∩ T).card : ℕ) : ℝ) ^ 2 := by
+    have hsq : (∑ b ∈ innerFibre x h a ∩ T, f b) ^ (2 : ℕ)
+        ≤ (((innerFibre x h a ∩ T).card : ℕ) : ℝ) ^ (2 : ℕ) := by
       have h0 : (0 : ℝ) ≤ |∑ b ∈ innerFibre x h a ∩ T, f b| := abs_nonneg _
       nlinarith [hbound, h0, sq_abs (∑ b ∈ innerFibre x h a ∩ T, f b)]
     rw [hsplit]

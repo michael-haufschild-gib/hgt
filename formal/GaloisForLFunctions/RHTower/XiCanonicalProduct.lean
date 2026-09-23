@@ -38,10 +38,10 @@ theorem xiDivisorSupport_univ_countable : (Set.univ : Set XiDivisorSupport).Coun
   intro ρ
   exact ⟨(ρ : ℂ), rfl⟩
 
-instance : Countable XiDivisorSupport :=
+instance xiCanonicalProductInst1 : Countable XiDivisorSupport :=
   Set.countable_univ_iff.mp xiDivisorSupport_univ_countable
 
-instance : Countable XiZeroCopy := inferInstance
+instance xiCanonicalProductInst2 : Countable XiZeroCopy := inferInstance
 
 /-- The zero of `XiC` corresponding to a Xi-divisor point: if
 `rho = 1/2 + z I`, then `z = (rho - 1/2)(-I)`. -/
@@ -61,7 +61,7 @@ theorem norm_xiSpectralPoint (q : XiZeroCopy) :
 /-- The reciprocal-square convergence condition for the genus-one product, now over the
 actual multiplicity copies rather than a multiplicity-weighted support sum. -/
 theorem xiSpectralPoint_inv_sq_summable :
-    Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   rw [summable_sigma_of_nonneg (fun _ => by positivity)]
   constructor
   · intro ρ

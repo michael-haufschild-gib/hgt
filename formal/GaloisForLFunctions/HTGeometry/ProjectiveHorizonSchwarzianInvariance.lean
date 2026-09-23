@@ -57,7 +57,7 @@ theorem squareJet_one :
 
 omit [CharZero C] in
 theorem squareJet_two :
-    squareJet C 2 = 2 * freeCoordinate C ℕ 1 ^ 2 +
+    squareJet C 2 = 2 * freeCoordinate C ℕ 1 ^ (2 : ℕ) +
       2 * freeCoordinate C ℕ 0 * freeCoordinate C ℕ 2 := by
   rw [squareJet_succ, squareJet_one]
   simp only [Derivation.leibniz, freeJetShift_freeCoordinate, freeJetShift_two, smul_eq_mul]
@@ -90,7 +90,7 @@ theorem freeJetFZero_freeJetSchwarzian : freeJetFZero C (freeJetSchwarzian C) = 
     Derivation.leibniz_pow, Derivation.leibniz_div, freeJetFZero_freeCoordinate',
     freeJetFZero_freeCoordinate', freeJetFZero_freeCoordinate', squareJet_one, squareJet_two,
     squareJet_three]
-  have hcancel : freeCoordinate C ℕ 1 ^ 3 * (freeCoordinate C ℕ 1)⁻¹ ^ 2 =
+  have hcancel : freeCoordinate C ℕ 1 ^ (3 : ℕ) * (freeCoordinate C ℕ 1)⁻¹ ^ (2 : ℕ) =
       freeCoordinate C ℕ 1 := by
     field_simp
   simp only [smul_eq_mul, mul_zero, add_zero]

@@ -12,7 +12,7 @@ If `T - c I` has rank at most `k` and `T` reverses a quadratic form on an exact 
 `T - c I` is injective on every positive- or negative-definite source subspace.  Indeed, a vector in
 its kernel satisfies `T x = c x`; anti-isometry then gives
 
-`c^2 Q(x) = -Q(x)`,
+`c^(2 : ℕ) Q(x) = -Q(x)`,
 
 which is impossible when `Q(x)` is strictly positive or negative.  Both source inertia indices are
 therefore at most `k`.  An off-wall source-horizontal packet of size `k+2` has one index equal to

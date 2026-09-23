@@ -39,7 +39,7 @@ theorem le_affine_gronwall_of_volterra_bound
     intro x
     exact intervalIntegral.integral_hasDerivAt_right (hu.intervalIntegrable 0 x)
       (hu.stronglyMeasurableAtFilter _ _) hu.continuousAt
-  set Z : ℝ → ℝ := fun x => a / b ^ 2 * (Real.exp (b * x) - 1) - a / b * x with hZdef
+  set Z : ℝ → ℝ := fun x => a / b ^ (2 : ℕ) * (Real.exp (b * x) - 1) - a / b * x with hZdef
   have hlin : ∀ x : ℝ, HasDerivAt (fun y : ℝ => b * y) b x := by
     intro x
     simpa using (hasDerivAt_id x).const_mul b
@@ -47,13 +47,13 @@ theorem le_affine_gronwall_of_volterra_bound
     fun x => (hlin x).exp
   have hZd : ∀ x : ℝ, HasDerivAt Z (a / b * Real.exp (b * x) - a / b) x := by
     intro x
-    have h1 : HasDerivAt (fun y : ℝ => a / b ^ 2 * (Real.exp (b * y) - 1))
-        (a / b ^ 2 * (Real.exp (b * x) * b)) x :=
+    have h1 : HasDerivAt (fun y : ℝ => a / b ^ (2 : ℕ) * (Real.exp (b * y) - 1))
+        (a / b ^ (2 : ℕ) * (Real.exp (b * x) * b)) x :=
       ((hexp x).sub_const 1).const_mul _
     have h2 : HasDerivAt (fun y : ℝ => a / b * y) (a / b) x := by
       simpa using (hasDerivAt_id x).const_mul (a / b)
     have h3 := h1.sub h2
-    have heq : a / b ^ 2 * (Real.exp (b * x) * b) - a / b
+    have heq : a / b ^ (2 : ℕ) * (Real.exp (b * x) * b) - a / b
         = a / b * Real.exp (b * x) - a / b := by
       field_simp
     rwa [heq] at h3

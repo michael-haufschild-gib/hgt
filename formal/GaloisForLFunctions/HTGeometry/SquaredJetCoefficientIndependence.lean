@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.TailCoefficientIndependence
 /-!
 # The coefficients of the square of a normalised jet are independent coordinates
 
-Write a jet with constant term one as `1 + z_1 t + z_2 t^2 + …`.  The coefficient of `t^k` in its
+Write a jet with constant term one as `1 + z_1 t + z_2 t^(2 : ℕ) + …`.  The coefficient of `t^k` in its
 square is `2 z_k` plus a polynomial in the earlier coefficients, so the change of coordinates from
 the jet coefficients to the coefficients of the square is triangular with diagonal two.
 

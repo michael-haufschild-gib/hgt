@@ -65,7 +65,7 @@ theorem core_dilation_green_identity {Y : ℝ} (hY : 1 ≤ Y) :
 def arcStressEnergy (x : ℝ) : ℝ :=
   (normSq (dir (point x (arcHeight x)) (observedField N f L) (point x (arcHeight x)))-
     normSq (dir (Complex.I*point x (arcHeight x)) (observedField N f L) (point x (arcHeight x)))+
-    (lam/(arcHeight x)^2)*normSq (observedField N f L (point x (arcHeight x))))/arcHeight x
+    (lam/(arcHeight x)^(2 : ℕ))*normSq (observedField N f L (point x (arcHeight x))))/arcHeight x
 
 /-- The complete physical boundary energy is exactly the inward dilation-stress flux. -/
 theorem arcStressEnergy_eq_neg_flux {x : ℝ} (hx : x ∈ Icc (-(1/2 : ℝ)) (1/2)) :
@@ -140,7 +140,7 @@ def angularArc (x : ℝ) : ℝ :=
   normSq (dir (Complex.I*point x (arcHeight x)) (observedField N f L) (point x (arcHeight x)))/arcHeight x
 
 /-- Original source mass with the inverse-cube height weight forced by dilation stress. -/
-def massArc (x : ℝ) : ℝ := normSq (observedField N f L (point x (arcHeight x)))/(arcHeight x)^3
+def massArc (x : ℝ) : ℝ := normSq (observedField N f L (point x (arcHeight x)))/(arcHeight x)^(3 : ℕ)
 
 private theorem radialArc_continuousOn :
     ContinuousOn (radialArc N f L) (Icc (-(1/2 : ℝ)) (1/2)) := by

@@ -124,7 +124,7 @@ theorem hasDerivAt_natPulse (f : finiteSupportSeq) :
     rw [natPulse_zero, sub_zero]
   have hbound : ∀ t : ℝ, |t| * (N : ℝ) ≤ 1 →
       ‖natPulse t (f : BoundedSeq) - (f : BoundedSeq) - t • (Complex.I • natWeight f)‖ ≤
-        ((N : ℝ) ^ 2 * ‖(f : BoundedSeq)‖) * ‖t ^ 2‖ := by
+        ((N : ℝ) ^ (2 : ℕ) * ‖(f : BoundedSeq)‖) * ‖t ^ (2 : ℕ)‖ := by
     intro t ht
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg t)]
     refine (BoundedContinuousFunction.norm_le (by positivity)).2 fun k => ?_
@@ -153,20 +153,20 @@ theorem hasDerivAt_natPulse (f : finiteSupportSeq) :
         BoundedContinuousFunction.norm_coe_le_norm _ k
       calc ‖Complex.exp (Complex.I * ((t * k : ℝ) : ℂ)) - 1 - Complex.I * ((t * k : ℝ) : ℂ)‖ *
             ‖(f : BoundedSeq) k‖
-          ≤ (|t| * (k : ℝ)) ^ 2 * ‖(f : BoundedSeq)‖ := by
+          ≤ (|t| * (k : ℝ)) ^ (2 : ℕ) * ‖(f : BoundedSeq)‖ := by
             exact mul_le_mul hexp hfk (norm_nonneg _) (by positivity)
-        _ ≤ ((N : ℝ) ^ 2 * t ^ 2) * ‖(f : BoundedSeq)‖ := by
+        _ ≤ ((N : ℝ) ^ (2 : ℕ) * t ^ (2 : ℕ)) * ‖(f : BoundedSeq)‖ := by
             refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
             have hk0 : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg _
-            have hsq : (|t| * (k : ℝ)) ^ 2 = t ^ 2 * (k : ℝ) ^ 2 := by
+            have hsq : (|t| * (k : ℝ)) ^ (2 : ℕ) = t ^ (2 : ℕ) * (k : ℝ) ^ (2 : ℕ) := by
               rw [mul_pow, sq_abs]
-            have hk2 : (k : ℝ) ^ 2 ≤ (N : ℝ) ^ 2 := by nlinarith [hkN, hk0]
+            have hk2 : (k : ℝ) ^ (2 : ℕ) ≤ (N : ℝ) ^ (2 : ℕ) := by nlinarith [hkN, hk0]
             rw [hsq]
             nlinarith [mul_nonneg (sq_nonneg t) (sub_nonneg.mpr hk2)]
-        _ = ((N : ℝ) ^ 2 * ‖(f : BoundedSeq)‖) * t ^ 2 := by ring
+        _ = ((N : ℝ) ^ (2 : ℕ) * ‖(f : BoundedSeq)‖) * t ^ (2 : ℕ) := by ring
   have hball : ∀ᶠ t : ℝ in nhds 0,
       ‖natPulse t (f : BoundedSeq) - (f : BoundedSeq) - t • (Complex.I • natWeight f)‖ ≤
-        ((N : ℝ) ^ 2 * ‖(f : BoundedSeq)‖) * ‖t ^ 2‖ := by
+        ((N : ℝ) ^ (2 : ℕ) * ‖(f : BoundedSeq)‖) * ‖t ^ (2 : ℕ)‖ := by
     have hmem : Metric.ball (0 : ℝ) (1 / ((N : ℝ) + 1)) ∈ nhds (0 : ℝ) :=
       Metric.ball_mem_nhds _ (by positivity)
     filter_upwards [hmem] with t ht

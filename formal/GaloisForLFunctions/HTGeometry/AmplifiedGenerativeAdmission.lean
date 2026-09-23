@@ -74,7 +74,7 @@ theorem rankOneAdmissionPencil_posSemidef_iff {z : ι → ℂ} (hz : hermInner z
     have hval : boundedReplicaThresholdProjectorQuadForm (rankOneAdmissionPencil z r c) z = ((c - r : ℝ) : ℂ) := by
       rw [rankOneAdmissionPencil, quadForm_sub_for_admission,
         quadForm_real_smul_for_admission, quadForm_real_smul_for_admission,
-        quadForm_one, hz, quadForm_rankOne, hz]
+        quadForm_one_boundedReplicaThresholdProjector, hz, quadForm_rankOne, hz]
       norm_num
     rw [hval] at hq
     exact sub_nonneg.mp (RCLike.ofReal_nonneg.mp hq)

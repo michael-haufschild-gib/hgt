@@ -187,9 +187,9 @@ theorem ccmOuterShiftPair_opNorm_sq_bound (a : SuzukiPositiveAperture)
     {h k : ℝ} (hh : a.1 < h) (horder : h < k)
     (N : ℕ) (hN : 0 < N) (hwidth : 2*a.1-h < (N : ℝ)*(k-h))
     (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
-    (N : ℝ)^2 * ‖(u : ℂ) • ccmApertureCompression a (ccmSymmetricLogTranslation h) +
-      (v : ℂ) • ccmApertureCompression a (ccmSymmetricLogTranslation k)‖^2 ≤
-        (N : ℝ)^2*(u+v)^2-u*v :=
+    (N : ℝ)^(2 : ℕ) * ‖(u : ℂ) • ccmApertureCompression a (ccmSymmetricLogTranslation h) +
+      (v : ℂ) • ccmApertureCompression a (ccmSymmetricLogTranslation k)‖^(2 : ℕ) ≤
+        (N : ℝ)^(2 : ℕ)*(u+v)^(2 : ℕ)-u*v :=
   HTGeometry.selfAdjoint_pair_opNorm_sq_bound_of_nilpotent_product _ _
     (ccmApertureCompression_isSelfAdjoint a (ccmSymmetricLogTranslation_isSelfAdjoint h)).isSymmetric
     (norm_ccmApertureSymmetricTranslation_le_one a hh)
@@ -236,10 +236,10 @@ theorem ccmPrimeSourcePair_opNorm_sq_bound (a : SuzukiPositiveAperture)
     (n m : ℕ) (hn : a.1 < Real.log n) (hnm : Real.log n < Real.log m)
     (N : ℕ) (hN : 0 < N)
     (hwidth : 2*a.1-Real.log n < (N : ℝ)*(Real.log m-Real.log n)) :
-    (N : ℝ)^2 * ‖(ArithmeticFunction.vonMangoldt n : ℂ) • ccmPrimeTransportOperator a n +
-      (ArithmeticFunction.vonMangoldt m : ℂ) • ccmPrimeTransportOperator a m‖^2 ≤
-      (N : ℝ)^2 * (ArithmeticFunction.vonMangoldt n/Real.sqrt n +
-        ArithmeticFunction.vonMangoldt m/Real.sqrt m)^2 -
+    (N : ℝ)^(2 : ℕ) * ‖(ArithmeticFunction.vonMangoldt n : ℂ) • ccmPrimeTransportOperator a n +
+      (ArithmeticFunction.vonMangoldt m : ℂ) • ccmPrimeTransportOperator a m‖^(2 : ℕ) ≤
+      (N : ℝ)^(2 : ℕ) * (ArithmeticFunction.vonMangoldt n/Real.sqrt n +
+        ArithmeticFunction.vonMangoldt m/Real.sqrt m)^(2 : ℕ) -
       (ArithmeticFunction.vonMangoldt n/Real.sqrt n)*
         (ArithmeticFunction.vonMangoldt m/Real.sqrt m) := by
   rw [ccmWeightedPrimeTransport_eq, ccmWeightedPrimeTransport_eq]
@@ -359,11 +359,11 @@ theorem exists_two_outer_primes_of_log_five_le (a : SuzukiPositiveAperture)
   have hp2bR : (p : ℝ) ≤ 2*(b : ℝ) := by exact_mod_cast hp2b
   have hpqR : (p : ℝ) < q := by exact_mod_cast hpq
   have hq2pR : (q : ℝ) ≤ 2*(p : ℝ) := by exact_mod_cast hq2p
-  have hqX : (q : ℝ) < X^2 := by nlinarith [sq_nonneg (X-5)]
+  have hqX : (q : ℝ) < X^(2 : ℕ) := by nlinarith [sq_nonneg (X-5)]
   have hXp : X < (p : ℝ) := lt_of_le_of_lt hbX hbpR
   have hppos : (0 : ℝ) < p := by exact_mod_cast hp.pos
   have hqpos : (0 : ℝ) < q := by exact_mod_cast hq.pos
-  have hXsq : X^2 = Real.exp (2*a.1) := by
+  have hXsq : X^(2 : ℕ) = Real.exp (2*a.1) := by
     dsimp [X]
     rw [show 2*a.1=a.1+a.1 by ring, Real.exp_add]
     ring
@@ -434,7 +434,7 @@ theorem exists_polarConstrained_common_outerShift_norm (a : SuzukiPositiveApertu
     (ccmSymmetricLogTranslation_isSelfAdjoint h)).isSymmetric
   have heq : inner ℂ (S f) (S f) = inner ℂ f (S (S f)) := hsa f (S f)
   rw [hsq] at heq
-  have hnormsq : ‖S f‖^2 = ‖f‖^2 := by
+  have hnormsq : ‖S f‖^(2 : ℕ) = ‖f‖^(2 : ℕ) := by
     calc
       _ = (inner ℂ (S f) (S f)).re := norm_sq_eq_re_inner (𝕜 := ℂ) _
       _ = (inner ℂ f f).re := congrArg Complex.re heq

@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.WeightedEulerStripFourierAnalytic
 
 The theta-cusp seed is a polynomial times a Gaussian, so it complexifies to an entire function, and
 the logarithmic source terms complexify to entire functions of the logarithmic variable.  The
-Gaussian factor has modulus `exp (-pi n^2 exp (2 re z) cos (2 im z))`, which still decays as long as
+Gaussian factor has modulus `exp (-pi n^(2 : ℕ) exp (2 re z) cos (2 im z))`, which still decays as long as
 `cos (2 im z) > 0`, that is on the open strip `|im z| < pi/4`.  This module proves the exact modulus
 identity and the uniform Gaussian domination of the terms on every closed substrip with bounded real
 part --- the majorant a locally uniform convergence argument needs.
@@ -26,8 +26,8 @@ namespace RHTower
 
 /-- The theta-cusp seed as an entire function. -/
 def thetaCuspComplexSeed (w : ℂ) : ℂ :=
-  2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2) *
-    Complex.exp (-(Real.pi : ℂ) * w ^ 2)
+  2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ)) *
+    Complex.exp (-(Real.pi : ℂ) * w ^ (2 : ℕ))
 
 theorem thetaCuspComplexSeed_ofReal (t : ℝ) :
     thetaCuspComplexSeed ((t : ℝ) : ℂ) = ((thetaCuspSeed t : ℝ) : ℂ) := by
@@ -63,12 +63,12 @@ theorem differentiable_thetaCuspComplexTerm (n : ℕ) :
 
 /-- The modulus of the complexified Gaussian factor. -/
 theorem norm_exp_neg_pi_sq (z : ℂ) (n : ℕ) :
-    ‖Complex.exp (-(Real.pi : ℂ) * ((n : ℂ) * Complex.exp z) ^ 2)‖ =
-      Real.exp (-Real.pi * (n : ℝ) ^ 2 * (Real.exp (2 * z.re) * Real.cos (2 * z.im))) := by
+    ‖Complex.exp (-(Real.pi : ℂ) * ((n : ℂ) * Complex.exp z) ^ (2 : ℕ))‖ =
+      Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ) * (Real.exp (2 * z.re) * Real.cos (2 * z.im))) := by
   rw [Complex.norm_exp]
   congr 1
-  have hsq : (-(Real.pi : ℂ) * ((n : ℂ) * Complex.exp z) ^ 2) =
-      ((-Real.pi * (n : ℝ) ^ 2 : ℝ) : ℂ) * Complex.exp (2 * z) := by
+  have hsq : (-(Real.pi : ℂ) * ((n : ℂ) * Complex.exp z) ^ (2 : ℕ)) =
+      ((-Real.pi * (n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) * Complex.exp (2 * z) := by
     rw [mul_pow, ← Complex.exp_nat_mul]
     push_cast
     ring
@@ -95,21 +95,21 @@ theorem norm_thetaCuspComplexTerm_le {δ R : ℝ} (hδ4 : 2 * δ ≤ Real.pi / 2
     {z : ℂ} (him : |z.im| ≤ δ) (hre : |z.re| ≤ R) (n : ℕ) :
     ‖thetaCuspComplexTerm z n‖ ≤
       Real.exp (R / 2) * (2 * Real.pi) * (2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) *
-        (((n : ℝ) ^ 4 + (n : ℝ) ^ 2) *
-          Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ 2)) := by
+        (((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ)) *
+          Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ (2 : ℕ))) := by
   obtain ⟨hre1, hre2⟩ := abs_le.mp hre
   set w : ℂ := (n : ℂ) * Complex.exp z with hw
   have hnw : ‖w‖ = (n : ℝ) * Real.exp z.re := by
     rw [hw, norm_mul, Complex.norm_natCast, Complex.norm_exp]
   have hcos : Real.cos (2 * δ) ≤ Real.cos (2 * z.im) := cos_le_cos_of_abs_le hδ4 him
   -- the exponential factor
-  have hgauss : ‖Complex.exp (-(Real.pi : ℂ) * w ^ 2)‖ ≤
-      Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ 2) := by
+  have hgauss : ‖Complex.exp (-(Real.pi : ℂ) * w ^ (2 : ℕ))‖ ≤
+      Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ (2 : ℕ)) := by
     rw [hw, norm_exp_neg_pi_sq]
     refine Real.exp_le_exp.mpr ?_
     have hexpre : Real.exp (-(2 * R)) ≤ Real.exp (2 * z.re) :=
       Real.exp_le_exp.mpr (by linarith)
-    have hn2 : (0 : ℝ) ≤ (n : ℝ) ^ 2 := by positivity
+    have hn2 : (0 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by positivity
     have hδnn : (0 : ℝ) ≤ δ := le_trans (abs_nonneg z.im) him
     have hcospos : (0 : ℝ) ≤ Real.cos (2 * δ) :=
       Real.cos_nonneg_of_mem_Icc ⟨by linarith [Real.pi_pos], hδ4⟩
@@ -121,61 +121,61 @@ theorem norm_thetaCuspComplexTerm_le {δ R : ℝ} (hδ4 : 2 * δ ≤ Real.pi / 2
         _ ≤ Real.cos (2 * z.im) * Real.exp (2 * z.re) :=
             mul_le_mul_of_nonneg_right hcos (Real.exp_pos _).le
         _ = Real.exp (2 * z.re) * Real.cos (2 * z.im) := by ring
-    have hscaled : Real.pi * (n : ℝ) ^ 2 * (Real.cos (2 * δ) * Real.exp (-(2 * R))) ≤
-        Real.pi * (n : ℝ) ^ 2 * (Real.exp (2 * z.re) * Real.cos (2 * z.im)) :=
+    have hscaled : Real.pi * (n : ℝ) ^ (2 : ℕ) * (Real.cos (2 * δ) * Real.exp (-(2 * R))) ≤
+        Real.pi * (n : ℝ) ^ (2 : ℕ) * (Real.exp (2 * z.re) * Real.cos (2 * z.im)) :=
       mul_le_mul_of_nonneg_left hprod (by positivity)
     nlinarith [hscaled]
   -- the polynomial factor
-  have hpoly : ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2)‖ ≤
+  have hpoly : ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ))‖ ≤
       (2 * Real.pi) * (2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) *
-        ((n : ℝ) ^ 4 + (n : ℝ) ^ 2) := by
-    have h4 : ‖w‖ ^ 4 ≤ Real.exp (4 * R) * (n : ℝ) ^ 4 := by
+        ((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ)) := by
+    have h4 : ‖w‖ ^ (4 : ℕ) ≤ Real.exp (4 * R) * (n : ℝ) ^ (4 : ℕ) := by
       rw [hnw, mul_pow]
-      have : Real.exp z.re ^ 4 ≤ Real.exp (4 * R) := by
+      have : Real.exp z.re ^ (4 : ℕ) ≤ Real.exp (4 * R) := by
         rw [← Real.exp_nat_mul]
         exact Real.exp_le_exp.mpr (by push_cast; linarith)
       nlinarith [pow_nonneg (Nat.cast_nonneg (α := ℝ) n) 4, Real.exp_pos z.re,
         pow_nonneg (Real.exp_pos z.re).le 4]
-    have h2 : ‖w‖ ^ 2 ≤ Real.exp (2 * R) * (n : ℝ) ^ 2 := by
+    have h2 : ‖w‖ ^ (2 : ℕ) ≤ Real.exp (2 * R) * (n : ℝ) ^ (2 : ℕ) := by
       rw [hnw, mul_pow]
-      have : Real.exp z.re ^ 2 ≤ Real.exp (2 * R) := by
+      have : Real.exp z.re ^ (2 : ℕ) ≤ Real.exp (2 * R) := by
         rw [← Real.exp_nat_mul]
         exact Real.exp_le_exp.mpr (by push_cast; linarith)
       nlinarith [pow_nonneg (Nat.cast_nonneg (α := ℝ) n) 2, pow_nonneg (Real.exp_pos z.re).le 2]
-    have hsplit : ‖2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2‖ ≤
-        2 * Real.pi * ‖w‖ ^ 4 + 3 * ‖w‖ ^ 2 := by
+    have hsplit : ‖2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ)‖ ≤
+        2 * Real.pi * ‖w‖ ^ (4 : ℕ) + 3 * ‖w‖ ^ (2 : ℕ) := by
       refine le_trans (norm_sub_le _ _) ?_
-      have e1 : ‖2 * (Real.pi : ℂ) * w ^ 4‖ = 2 * Real.pi * ‖w‖ ^ 4 := by
+      have e1 : ‖2 * (Real.pi : ℂ) * w ^ (4 : ℕ)‖ = 2 * Real.pi * ‖w‖ ^ (4 : ℕ) := by
         rw [norm_mul, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs,
           abs_of_pos Real.pi_pos]
         norm_num
-      have e2 : ‖(3 : ℂ) * w ^ 2‖ = 3 * ‖w‖ ^ 2 := by
+      have e2 : ‖(3 : ℂ) * w ^ (2 : ℕ)‖ = 3 * ‖w‖ ^ (2 : ℕ) := by
         rw [norm_mul, norm_pow]
         norm_num
       rw [e1, e2]
-    have hfront : ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2)‖ =
-        2 * Real.pi * ‖2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2‖ := by
+    have hfront : ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ))‖ =
+        2 * Real.pi * ‖2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ)‖ := by
       rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.pi_pos]
       norm_num
     rw [hfront]
-    have hstep : 2 * Real.pi * ‖w‖ ^ 4 + 3 * ‖w‖ ^ 2 ≤
-        (2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) * ((n : ℝ) ^ 4 + (n : ℝ) ^ 2) := by
-      have hA : 2 * Real.pi * ‖w‖ ^ 4 ≤ 2 * Real.pi * (Real.exp (4 * R) * (n : ℝ) ^ 4) :=
+    have hstep : 2 * Real.pi * ‖w‖ ^ (4 : ℕ) + 3 * ‖w‖ ^ (2 : ℕ) ≤
+        (2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) * ((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ)) := by
+      have hA : 2 * Real.pi * ‖w‖ ^ (4 : ℕ) ≤ 2 * Real.pi * (Real.exp (4 * R) * (n : ℝ) ^ (4 : ℕ)) :=
         mul_le_mul_of_nonneg_left h4 (by positivity)
-      have hB : 3 * ‖w‖ ^ 2 ≤ 3 * (Real.exp (2 * R) * (n : ℝ) ^ 2) :=
+      have hB : 3 * ‖w‖ ^ (2 : ℕ) ≤ 3 * (Real.exp (2 * R) * (n : ℝ) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left h2 (by norm_num)
-      have hextra : (0 : ℝ) ≤ 2 * Real.pi * Real.exp (4 * R) * (n : ℝ) ^ 2 +
-          3 * Real.exp (2 * R) * (n : ℝ) ^ 4 := by positivity
+      have hextra : (0 : ℝ) ≤ 2 * Real.pi * Real.exp (4 * R) * (n : ℝ) ^ (2 : ℕ) +
+          3 * Real.exp (2 * R) * (n : ℝ) ^ (4 : ℕ) := by positivity
       nlinarith [hA, hB, hextra]
-    calc 2 * Real.pi * ‖2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2‖
-        ≤ 2 * Real.pi * (2 * Real.pi * ‖w‖ ^ 4 + 3 * ‖w‖ ^ 2) :=
+    calc 2 * Real.pi * ‖2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ)‖
+        ≤ 2 * Real.pi * (2 * Real.pi * ‖w‖ ^ (4 : ℕ) + 3 * ‖w‖ ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hsplit (by positivity)
       _ ≤ 2 * Real.pi *
           ((2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) *
-            ((n : ℝ) ^ 4 + (n : ℝ) ^ 2)) :=
+            ((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ))) :=
           mul_le_mul_of_nonneg_left hstep (by positivity)
       _ = 2 * Real.pi * (2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) *
-            ((n : ℝ) ^ 4 + (n : ℝ) ^ 2) := by ring
+            ((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ)) := by ring
   -- assemble
   have hfrontexp : ‖Complex.exp (z / 2)‖ ≤ Real.exp (R / 2) := by
     rw [Complex.norm_exp]
@@ -185,27 +185,27 @@ theorem norm_thetaCuspComplexTerm_le {δ R : ℝ} (hδ4 : 2 * δ ≤ Real.pi / 2
     linarith
   rw [thetaCuspComplexTerm, thetaCuspComplexSeed, ← hw, norm_mul, norm_mul, ← mul_assoc]
   have hA : (0 : ℝ) ≤ ‖Complex.exp (z / 2)‖ := norm_nonneg _
-  have hB : (0 : ℝ) ≤ ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2)‖ :=
+  have hB : (0 : ℝ) ≤ ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ))‖ :=
     norm_nonneg _
-  have hC : (0 : ℝ) ≤ ‖Complex.exp (-(Real.pi : ℂ) * w ^ 2)‖ := norm_nonneg _
+  have hC : (0 : ℝ) ≤ ‖Complex.exp (-(Real.pi : ℂ) * w ^ (2 : ℕ))‖ := norm_nonneg _
   have hPnn : (0 : ℝ) ≤ (2 * Real.pi) *
       (2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) *
-      ((n : ℝ) ^ 4 + (n : ℝ) ^ 2) := by positivity
+      ((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ)) := by positivity
   have hEnn : (0 : ℝ) ≤
-      Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ 2) :=
+      Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ (2 : ℕ)) :=
     (Real.exp_pos _).le
-  calc ‖Complex.exp (z / 2)‖ * ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2)‖ *
-        ‖Complex.exp (-(Real.pi : ℂ) * w ^ 2)‖
+  calc ‖Complex.exp (z / 2)‖ * ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ))‖ *
+        ‖Complex.exp (-(Real.pi : ℂ) * w ^ (2 : ℕ))‖
       ≤ Real.exp (R / 2) *
         ((2 * Real.pi) * (2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) *
-          ((n : ℝ) ^ 4 + (n : ℝ) ^ 2)) *
-        Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ 2) := by
+          ((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ))) *
+        Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ (2 : ℕ)) := by
         exact mul_le_mul (mul_le_mul hfrontexp hpoly hB (Real.exp_pos _).le) hgauss hC
           (by positivity)
     _ = Real.exp (R / 2) * (2 * Real.pi) *
         (2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) *
-        (((n : ℝ) ^ 4 + (n : ℝ) ^ 2) *
-          Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ 2)) := by
+        (((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ)) *
+          Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ (2 : ℕ))) := by
         ring
 
 
@@ -223,7 +223,7 @@ theorem isOpen_thetaCuspStrip : IsOpen thetaCuspStrip := by
 
 /-- Summability of the Gaussian majorant. -/
 theorem summable_thetaCuspMajorant {c : ℝ} (hc : 0 < c) :
-    Summable (fun n : ℕ => ((n : ℝ) ^ 4 + (n : ℝ) ^ 2) * Real.exp (-c * (n : ℝ) ^ 2)) := by
+    Summable (fun n : ℕ => ((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ)) * Real.exp (-c * (n : ℝ) ^ (2 : ℕ))) := by
   have h4 := summable_pow_mul_exp_neg_nat_sq 4 hc
   have h2 := summable_pow_mul_exp_neg_nat_sq 2 hc
   refine (h4.add h2).congr fun n => ?_
@@ -251,8 +251,8 @@ theorem summable_thetaCuspComplexTerm {z : ℂ} (hz : z ∈ thetaCuspStrip) :
   refine Summable.of_norm_bounded
     (g := fun n : ℕ => Real.exp (R / 2) * (2 * Real.pi) *
       (2 * Real.pi * Real.exp (4 * R) + 3 * Real.exp (2 * R)) *
-      (((n : ℝ) ^ 4 + (n : ℝ) ^ 2) *
-        Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ 2)))
+      (((n : ℝ) ^ (4 : ℕ) + (n : ℝ) ^ (2 : ℕ)) *
+        Real.exp (-(Real.pi * Real.cos (2 * δ) * Real.exp (-(2 * R))) * (n : ℝ) ^ (2 : ℕ))))
     ((summable_thetaCuspMajorant hcpos).mul_left _) (fun n => ?_)
   exact norm_thetaCuspComplexTerm_le hδ4 (le_of_eq rfl) (le_of_eq rfl) n
 
@@ -367,9 +367,9 @@ theorem norm_thetaCuspComplexTerm_le_pointwise {δ : ℝ} (hδ4 : 2 * δ ≤ Rea
     {z : ℂ} (him : |z.im| ≤ δ) (n : ℕ) :
     ‖thetaCuspComplexTerm z n‖ ≤
       Real.exp (z.re / 2) * (2 * Real.pi) *
-        (2 * Real.pi * (n : ℝ) ^ 4 * Real.exp (4 * z.re) +
-          3 * (n : ℝ) ^ 2 * Real.exp (2 * z.re)) *
-        Real.exp (-(Real.pi * Real.cos (2 * δ)) * (n : ℝ) ^ 2 * Real.exp (2 * z.re)) := by
+        (2 * Real.pi * (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * z.re) +
+          3 * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re)) *
+        Real.exp (-(Real.pi * Real.cos (2 * δ)) * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re)) := by
   set w : ℂ := (n : ℂ) * Complex.exp z with hw
   have hnw : ‖w‖ = (n : ℝ) * Real.exp z.re := by
     rw [hw, norm_mul, Complex.norm_natCast, Complex.norm_exp]
@@ -377,47 +377,47 @@ theorem norm_thetaCuspComplexTerm_le_pointwise {δ : ℝ} (hδ4 : 2 * δ ≤ Rea
   have hδnn : (0 : ℝ) ≤ δ := le_trans (abs_nonneg z.im) him
   have hcospos : (0 : ℝ) ≤ Real.cos (2 * δ) :=
     Real.cos_nonneg_of_mem_Icc ⟨by linarith [Real.pi_pos], hδ4⟩
-  have hgauss : ‖Complex.exp (-(Real.pi : ℂ) * w ^ 2)‖ ≤
-      Real.exp (-(Real.pi * Real.cos (2 * δ)) * (n : ℝ) ^ 2 * Real.exp (2 * z.re)) := by
+  have hgauss : ‖Complex.exp (-(Real.pi : ℂ) * w ^ (2 : ℕ))‖ ≤
+      Real.exp (-(Real.pi * Real.cos (2 * δ)) * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re)) := by
     rw [hw, norm_exp_neg_pi_sq]
     refine Real.exp_le_exp.mpr ?_
-    have hscaled : Real.pi * (n : ℝ) ^ 2 * Real.exp (2 * z.re) * Real.cos (2 * δ) ≤
-        Real.pi * (n : ℝ) ^ 2 * Real.exp (2 * z.re) * Real.cos (2 * z.im) :=
+    have hscaled : Real.pi * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re) * Real.cos (2 * δ) ≤
+        Real.pi * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re) * Real.cos (2 * z.im) :=
       mul_le_mul_of_nonneg_left hcos (by positivity)
     nlinarith [hscaled]
-  have hpoly : ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2)‖ ≤
-      (2 * Real.pi) * (2 * Real.pi * (n : ℝ) ^ 4 * Real.exp (4 * z.re) +
-        3 * (n : ℝ) ^ 2 * Real.exp (2 * z.re)) := by
-    have h4 : ‖w‖ ^ 4 = (n : ℝ) ^ 4 * Real.exp (4 * z.re) := by
+  have hpoly : ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ))‖ ≤
+      (2 * Real.pi) * (2 * Real.pi * (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * z.re) +
+        3 * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re)) := by
+    have h4 : ‖w‖ ^ (4 : ℕ) = (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * z.re) := by
       rw [hnw, mul_pow, ← Real.exp_nat_mul]
       push_cast
       ring_nf
-    have h2 : ‖w‖ ^ 2 = (n : ℝ) ^ 2 * Real.exp (2 * z.re) := by
+    have h2 : ‖w‖ ^ (2 : ℕ) = (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re) := by
       rw [hnw, mul_pow, ← Real.exp_nat_mul]
       push_cast
       ring_nf
-    have hsplit : ‖2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2‖ ≤
-        2 * Real.pi * ‖w‖ ^ 4 + 3 * ‖w‖ ^ 2 := by
+    have hsplit : ‖2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ)‖ ≤
+        2 * Real.pi * ‖w‖ ^ (4 : ℕ) + 3 * ‖w‖ ^ (2 : ℕ) := by
       refine le_trans (norm_sub_le _ _) ?_
-      have e1 : ‖2 * (Real.pi : ℂ) * w ^ 4‖ = 2 * Real.pi * ‖w‖ ^ 4 := by
+      have e1 : ‖2 * (Real.pi : ℂ) * w ^ (4 : ℕ)‖ = 2 * Real.pi * ‖w‖ ^ (4 : ℕ) := by
         rw [norm_mul, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs,
           abs_of_pos Real.pi_pos]
         norm_num
-      have e2 : ‖(3 : ℂ) * w ^ 2‖ = 3 * ‖w‖ ^ 2 := by
+      have e2 : ‖(3 : ℂ) * w ^ (2 : ℕ)‖ = 3 * ‖w‖ ^ (2 : ℕ) := by
         rw [norm_mul, norm_pow]
         norm_num
       rw [e1, e2]
-    have hfront : ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2)‖ =
-        2 * Real.pi * ‖2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2‖ := by
+    have hfront : ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ))‖ =
+        2 * Real.pi * ‖2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ)‖ := by
       rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.pi_pos]
       norm_num
     rw [hfront, h4, h2] at *
-    calc 2 * Real.pi * ‖2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2‖
-        ≤ 2 * Real.pi * (2 * Real.pi * ((n : ℝ) ^ 4 * Real.exp (4 * z.re)) +
-            3 * ((n : ℝ) ^ 2 * Real.exp (2 * z.re))) :=
+    calc 2 * Real.pi * ‖2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ)‖
+        ≤ 2 * Real.pi * (2 * Real.pi * ((n : ℝ) ^ (4 : ℕ) * Real.exp (4 * z.re)) +
+            3 * ((n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re))) :=
           mul_le_mul_of_nonneg_left hsplit (by positivity)
-      _ = 2 * Real.pi * (2 * Real.pi * (n : ℝ) ^ 4 * Real.exp (4 * z.re) +
-            3 * (n : ℝ) ^ 2 * Real.exp (2 * z.re)) := by ring
+      _ = 2 * Real.pi * (2 * Real.pi * (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * z.re) +
+            3 * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re)) := by ring
   have hfrontexp : ‖Complex.exp (z / 2)‖ = Real.exp (z.re / 2) := by
     rw [Complex.norm_exp]
     congr 1
@@ -427,19 +427,19 @@ theorem norm_thetaCuspComplexTerm_le_pointwise {δ : ℝ} (hδ4 : 2 * δ ≤ Rea
   rw [thetaCuspComplexTerm, thetaCuspComplexSeed, ← hw, norm_mul, norm_mul, ← mul_assoc,
     hfrontexp]
   have hstep : Real.exp (z.re / 2) *
-      ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2)‖ ≤
+      ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ))‖ ≤
       Real.exp (z.re / 2) * (2 * Real.pi) *
-        (2 * Real.pi * (n : ℝ) ^ 4 * Real.exp (4 * z.re) +
-          3 * (n : ℝ) ^ 2 * Real.exp (2 * z.re)) := by
+        (2 * Real.pi * (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * z.re) +
+          3 * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re)) := by
     calc Real.exp (z.re / 2) *
-        ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ 4 - 3 * w ^ 2)‖
+        ‖2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * w ^ (4 : ℕ) - 3 * w ^ (2 : ℕ))‖
         ≤ Real.exp (z.re / 2) * ((2 * Real.pi) *
-            (2 * Real.pi * (n : ℝ) ^ 4 * Real.exp (4 * z.re) +
-              3 * (n : ℝ) ^ 2 * Real.exp (2 * z.re))) :=
+            (2 * Real.pi * (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * z.re) +
+              3 * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re))) :=
           mul_le_mul_of_nonneg_left hpoly (Real.exp_pos _).le
       _ = Real.exp (z.re / 2) * (2 * Real.pi) *
-            (2 * Real.pi * (n : ℝ) ^ 4 * Real.exp (4 * z.re) +
-              3 * (n : ℝ) ^ 2 * Real.exp (2 * z.re)) := by ring
+            (2 * Real.pi * (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * z.re) +
+              3 * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * z.re)) := by ring
   exact mul_le_mul hstep hgauss (norm_nonneg _) (by positivity)
 
 
@@ -448,7 +448,7 @@ theorem norm_thetaCuspComplexTerm_le_pointwise {δ : ℝ} (hδ4 : 2 * δ ≤ Rea
 
 /-- Gaussian sums of the power weights at a fixed positive rate. -/
 def thetaGaussianPowerSum (c : ℝ) (k : ℕ) : ℝ :=
-  ∑' n : ℕ, (n : ℝ) ^ k * Real.exp (-c * (n : ℝ) ^ 2)
+  ∑' n : ℕ, (n : ℝ) ^ k * Real.exp (-c * (n : ℝ) ^ (2 : ℕ))
 
 theorem thetaGaussianPowerSum_nonneg (c : ℝ) (k : ℕ) : 0 ≤ thetaGaussianPowerSum c k :=
   tsum_nonneg fun n => by positivity
@@ -469,7 +469,7 @@ theorem exists_norm_thetaCuspStripSource_le_of_nonneg {δ : ℝ} (hδ0 : 0 ≤ �
   set S2 : ℝ := thetaGaussianPowerSum (c / 2) 2 with hS2
   have hS4nn : 0 ≤ S4 := thetaGaussianPowerSum_nonneg _ 4
   have hS2nn : 0 ≤ S2 := thetaGaussianPowerSum_nonneg _ 2
-  refine ⟨2 * Real.pi * (2 * Real.pi * S4 + 3 * S2) * (6 * (2 / c) ^ 3), by positivity, ?_⟩
+  refine ⟨2 * Real.pi * (2 * Real.pi * S4 + 3 * S2) * (6 * (2 / c) ^ (3 : ℕ)), by positivity, ?_⟩
   intro z him hre
   set x : ℝ := z.re with hx
   have hex : (1 : ℝ) ≤ Real.exp (2 * x) := Real.one_le_exp (by linarith)
@@ -478,8 +478,8 @@ theorem exists_norm_thetaCuspStripSource_le_of_nonneg {δ : ℝ} (hδ0 : 0 ≤ �
   set K2 : ℝ := Real.exp (x / 2) * (2 * Real.pi) * (3 * Real.exp (2 * x)) *
     Real.exp (-(c / 2) * Real.exp (2 * x)) with hK2
   set maj : ℕ → ℝ := fun n =>
-    K1 * ((n : ℝ) ^ 4 * Real.exp (-(c / 2) * (n : ℝ) ^ 2)) +
-    K2 * ((n : ℝ) ^ 2 * Real.exp (-(c / 2) * (n : ℝ) ^ 2)) with hmaj
+    K1 * ((n : ℝ) ^ (4 : ℕ) * Real.exp (-(c / 2) * (n : ℝ) ^ (2 : ℕ))) +
+    K2 * ((n : ℝ) ^ (2 : ℕ) * Real.exp (-(c / 2) * (n : ℝ) ^ (2 : ℕ))) with hmaj
   have hsum4 := summable_pow_mul_exp_neg_nat_sq 4 hchalf
   have hsum2 := summable_pow_mul_exp_neg_nat_sq 2 hchalf
   have hsummaj : Summable maj := (hsum4.mul_left K1).add (hsum2.mul_left K2)
@@ -492,32 +492,32 @@ theorem exists_norm_thetaCuspStripSource_le_of_nonneg {δ : ℝ} (hδ0 : 0 ≤ �
       positivity
     · refine le_trans (norm_thetaCuspComplexTerm_le_pointwise hδle him n) ?_
       have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
-      have hsplit : Real.exp (-(Real.pi * Real.cos (2 * δ)) * (n : ℝ) ^ 2 * Real.exp (2 * x)) ≤
-          Real.exp (-(c / 2) * Real.exp (2 * x)) * Real.exp (-(c / 2) * (n : ℝ) ^ 2) := by
+      have hsplit : Real.exp (-(Real.pi * Real.cos (2 * δ)) * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * x)) ≤
+          Real.exp (-(c / 2) * Real.exp (2 * x)) * Real.exp (-(c / 2) * (n : ℝ) ^ (2 : ℕ)) := by
         rw [← Real.exp_add]
         refine Real.exp_le_exp.mpr ?_
-        have hn2 : (1 : ℝ) ≤ (n : ℝ) ^ 2 := by nlinarith
+        have hn2 : (1 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by nlinarith
         have hbase : (0 : ℝ) ≤
-            (n : ℝ) ^ 2 * Real.exp (2 * x) - Real.exp (2 * x) / 2 - (n : ℝ) ^ 2 / 2 := by
+            (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * x) - Real.exp (2 * x) / 2 - (n : ℝ) ^ (2 : ℕ) / 2 := by
           nlinarith [mul_nonneg (sub_nonneg.mpr hex)
-            (by linarith : (0 : ℝ) ≤ (n : ℝ) ^ 2 - 1 / 2), hn2]
-        have hkey : c / 2 * Real.exp (2 * x) + c / 2 * (n : ℝ) ^ 2 ≤
-            c * (n : ℝ) ^ 2 * Real.exp (2 * x) := by
+            (by linarith : (0 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) - 1 / 2), hn2]
+        have hkey : c / 2 * Real.exp (2 * x) + c / 2 * (n : ℝ) ^ (2 : ℕ) ≤
+            c * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * x) := by
           nlinarith [mul_nonneg hcpos.le hbase]
         rw [← hc]
         linarith [hkey]
       have hposfac : (0 : ℝ) ≤ Real.exp (x / 2) * (2 * Real.pi) *
-          (2 * Real.pi * (n : ℝ) ^ 4 * Real.exp (4 * x) +
-            3 * (n : ℝ) ^ 2 * Real.exp (2 * x)) := by positivity
+          (2 * Real.pi * (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * x) +
+            3 * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * x)) := by positivity
       calc Real.exp (x / 2) * (2 * Real.pi) *
-            (2 * Real.pi * (n : ℝ) ^ 4 * Real.exp (4 * x) +
-              3 * (n : ℝ) ^ 2 * Real.exp (2 * x)) *
-            Real.exp (-(Real.pi * Real.cos (2 * δ)) * (n : ℝ) ^ 2 * Real.exp (2 * x))
+            (2 * Real.pi * (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * x) +
+              3 * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * x)) *
+            Real.exp (-(Real.pi * Real.cos (2 * δ)) * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * x))
           ≤ Real.exp (x / 2) * (2 * Real.pi) *
-              (2 * Real.pi * (n : ℝ) ^ 4 * Real.exp (4 * x) +
-                3 * (n : ℝ) ^ 2 * Real.exp (2 * x)) *
+              (2 * Real.pi * (n : ℝ) ^ (4 : ℕ) * Real.exp (4 * x) +
+                3 * (n : ℝ) ^ (2 : ℕ) * Real.exp (2 * x)) *
               (Real.exp (-(c / 2) * Real.exp (2 * x)) *
-                Real.exp (-(c / 2) * (n : ℝ) ^ 2)) :=
+                Real.exp (-(c / 2) * (n : ℝ) ^ (2 : ℕ))) :=
             mul_le_mul_of_nonneg_left hsplit hposfac
         _ = maj n := by rw [hmaj, hK1, hK2]; ring
   have hnormsummable : Summable (fun n : ℕ => ‖thetaCuspComplexTerm z n‖) :=
@@ -530,12 +530,12 @@ theorem exists_norm_thetaCuspStripSource_le_of_nonneg {δ : ℝ} (hδ0 : 0 ≤ �
     rw [(hsum4.mul_left K1).tsum_add (hsum2.mul_left K2), hsum4.tsum_mul_left,
       hsum2.tsum_mul_left, hS4, hS2, thetaGaussianPowerSum, thetaGaussianPowerSum]
   -- the double-exponential factor beats every power
-  have hexpbound : Real.exp (-(c / 2) * Real.exp (2 * x)) ≤ 6 * (2 / c) ^ 3 * Real.exp (-(6 * x)) := by
+  have hexpbound : Real.exp (-(c / 2) * Real.exp (2 * x)) ≤ 6 * (2 / c) ^ (3 : ℕ) * Real.exp (-(6 * x)) := by
     have hs : (0 : ℝ) < c / 2 * Real.exp (2 * x) := by positivity
     have hpow := Real.pow_div_factorial_le_exp (c / 2 * Real.exp (2 * x)) hs.le 3
     have hfac : ((Nat.factorial 3 : ℕ) : ℝ) = 6 := by norm_num
     rw [hfac] at hpow
-    have hcube : (c / 2 * Real.exp (2 * x)) ^ 3 = (c / 2) ^ 3 * Real.exp (6 * x) := by
+    have hcube : (c / 2 * Real.exp (2 * x)) ^ (3 : ℕ) = (c / 2) ^ (3 : ℕ) * Real.exp (6 * x) := by
       rw [mul_pow, ← Real.exp_nat_mul]
       push_cast
       ring_nf
@@ -550,12 +550,12 @@ theorem exists_norm_thetaCuspStripSource_le_of_nonneg {δ : ℝ} (hδ0 : 0 ≤ �
       ring
     rw [hkey]
     rw [inv_le_iff_one_le_mul₀ (Real.exp_pos _)]
-    have hposc : (0 : ℝ) < (c / 2) ^ 3 * Real.exp (6 * x) := by positivity
-    have h1 : (c / 2) ^ 3 * Real.exp (6 * x) / 6 ≤ Real.exp (c / 2 * Real.exp (2 * x)) := hpow
-    have hrw : 6 * (2 / c) ^ 3 * Real.exp (-(6 * x)) * Real.exp (c / 2 * Real.exp (2 * x)) =
-        (6 * (2 / c) ^ 3 * Real.exp (-(6 * x))) * Real.exp (c / 2 * Real.exp (2 * x)) := by ring
+    have hposc : (0 : ℝ) < (c / 2) ^ (3 : ℕ) * Real.exp (6 * x) := by positivity
+    have h1 : (c / 2) ^ (3 : ℕ) * Real.exp (6 * x) / 6 ≤ Real.exp (c / 2 * Real.exp (2 * x)) := hpow
+    have hrw : 6 * (2 / c) ^ (3 : ℕ) * Real.exp (-(6 * x)) * Real.exp (c / 2 * Real.exp (2 * x)) =
+        (6 * (2 / c) ^ (3 : ℕ) * Real.exp (-(6 * x))) * Real.exp (c / 2 * Real.exp (2 * x)) := by ring
     rw [hrw]
-    have hfrac : (6 : ℝ) * (2 / c) ^ 3 * Real.exp (-(6 * x)) * ((c / 2) ^ 3 * Real.exp (6 * x) / 6)
+    have hfrac : (6 : ℝ) * (2 / c) ^ (3 : ℕ) * Real.exp (-(6 * x)) * ((c / 2) ^ (3 : ℕ) * Real.exp (6 * x) / 6)
         = 1 := by
       field_simp
       rw [← Real.exp_add]
@@ -576,11 +576,11 @@ theorem exists_norm_thetaCuspStripSource_le_of_nonneg {δ : ℝ} (hδ0 : 0 ≤ �
       3 * S2 * Real.exp (x / 2 + 2 * x) := by positivity
   calc (2 * Real.pi) * Real.exp (-(c / 2) * Real.exp (2 * x)) *
         (2 * Real.pi * S4 * Real.exp (x / 2 + 4 * x) + 3 * S2 * Real.exp (x / 2 + 2 * x))
-      ≤ (2 * Real.pi) * (6 * (2 / c) ^ 3 * Real.exp (-(6 * x))) *
+      ≤ (2 * Real.pi) * (6 * (2 / c) ^ (3 : ℕ) * Real.exp (-(6 * x))) *
         (2 * Real.pi * S4 * Real.exp (x / 2 + 4 * x) + 3 * S2 * Real.exp (x / 2 + 2 * x)) := by
         have := mul_le_mul_of_nonneg_left hexpbound (by positivity : (0:ℝ) ≤ 2 * Real.pi)
         exact mul_le_mul_of_nonneg_right this hfacnn
-    _ = 2 * Real.pi * (6 * (2 / c) ^ 3) *
+    _ = 2 * Real.pi * (6 * (2 / c) ^ (3 : ℕ)) *
         (2 * Real.pi * S4 * Real.exp (-(3 * x / 2)) + 3 * S2 * Real.exp (-(7 * x / 2))) := by
         have h1 : Real.exp (-(6 * x)) * Real.exp (x / 2 + 4 * x) = Real.exp (-(3 * x / 2)) := by
           rw [← Real.exp_add]
@@ -590,14 +590,14 @@ theorem exists_norm_thetaCuspStripSource_le_of_nonneg {δ : ℝ} (hδ0 : 0 ≤ �
           rw [← Real.exp_add]
           congr 1
           ring
-        linear_combination (2 * Real.pi * (6 * (2 / c) ^ 3) * (2 * Real.pi * S4)) * h1 +
-          (2 * Real.pi * (6 * (2 / c) ^ 3) * (3 * S2)) * h2
-    _ ≤ 2 * Real.pi * (2 * Real.pi * S4 + 3 * S2) * (6 * (2 / c) ^ 3) * Real.exp (-x) := by
+        linear_combination (2 * Real.pi * (6 * (2 / c) ^ (3 : ℕ)) * (2 * Real.pi * S4)) * h1 +
+          (2 * Real.pi * (6 * (2 / c) ^ (3 : ℕ)) * (3 * S2)) * h2
+    _ ≤ 2 * Real.pi * (2 * Real.pi * S4 + 3 * S2) * (6 * (2 / c) ^ (3 : ℕ)) * Real.exp (-x) := by
         have e1 : Real.exp (-(3 * x / 2)) ≤ Real.exp (-x) :=
           Real.exp_le_exp.mpr (by linarith)
         have e2 : Real.exp (-(7 * x / 2)) ≤ Real.exp (-x) :=
           Real.exp_le_exp.mpr (by linarith)
-        have hA : (0 : ℝ) ≤ 2 * Real.pi * (6 * (2 / c) ^ 3) := by positivity
+        have hA : (0 : ℝ) ≤ 2 * Real.pi * (6 * (2 / c) ^ (3 : ℕ)) := by positivity
         have p1 : (0 : ℝ) ≤ 2 * Real.pi * S4 * (Real.exp (-x) - Real.exp (-(3 * x / 2))) :=
           mul_nonneg (mul_nonneg (by positivity) hS4nn) (by linarith)
         have p2 : (0 : ℝ) ≤ 3 * S2 * (Real.exp (-x) - Real.exp (-(7 * x / 2))) :=
@@ -956,7 +956,7 @@ theorem memLp_two_exp_neg_mul_abs {b : ℝ} (hb : 0 < b) :
   have hmeas : AEStronglyMeasurable (fun x : ℝ => Real.exp (-(b * |x|))) volume := by
     fun_prop
   refine (memLp_two_iff_integrable_sq_norm hmeas).mpr ?_
-  have hsq : (fun x : ℝ => ‖Real.exp (-(b * |x|))‖ ^ 2) =
+  have hsq : (fun x : ℝ => ‖Real.exp (-(b * |x|))‖ ^ (2 : ℕ)) =
       fun x : ℝ => Real.exp (-((2 * b) * |x|)) := by
     funext x
     rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), ← Real.exp_nat_mul]
@@ -964,7 +964,7 @@ theorem memLp_two_exp_neg_mul_abs {b : ℝ} (hb : 0 < b) :
     push_cast
     ring
   rw [hsq]
-  simpa [neg_mul] using integrable_exp_neg_mul_abs (c := 2 * b) (by linarith)
+  simpa [neg_mul] using integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (c := 2 * b) (by linarith)
 
 /-- **The exponentially weighted moment integrand of a square-integrable function against the
 centered xi function is integrable**, for every weight strictly below the decay rate. -/

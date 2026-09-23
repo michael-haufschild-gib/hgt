@@ -146,7 +146,7 @@ theorem abs_hypTerm_le {n : ℕ} {d c σ B : ℝ} (hd : 0 ≤ d) (hc : 0 < c) (h
         ≤ (n : ℝ) ^ l * ((n : ℝ) + d + l) ^ l * σ ^ (2 * l) :=
           mul_le_mul_of_nonneg_right (mul_le_mul h1 h2 hrise (by positivity)) (by positivity)
       _ = ((n : ℝ) * σ) ^ l * (((n : ℝ) + d + l) * σ) ^ l := by
-          rw [mul_pow, mul_pow, pow_mul, show σ ^ 2 = σ * σ by ring, mul_pow]; ring
+          rw [mul_pow, mul_pow, pow_mul, show σ ^ (2 : ℕ) = σ * σ by ring, mul_pow]; ring
       _ ≤ B ^ l * (2 * B + d) ^ l := by
           have h3 : ((n : ℝ) + d + l) * σ ≤ 2 * B + d := by
             calc ((n : ℝ) + d + l) * σ = (n : ℝ) * σ + d * σ + (l : ℝ) * σ := by ring
@@ -285,7 +285,7 @@ theorem tsum_limitTerm_half (w : ℝ) : ∑' l, limitTerm (1 / 2) w l = Real.cos
   congr 1
   funext l
   unfold limitTerm
-  rw [rising_half_mul_factorial, mul_pow, pow_mul, pow_mul, show (2 : ℝ) ^ 2 = 4 by norm_num]
+  rw [rising_half_mul_factorial, mul_pow, pow_mul, pow_mul, show (2 : ℝ) ^ (2 : ℕ) = 4 by norm_num]
   have h4 : (4 : ℝ) ^ l ≠ 0 := by positivity
   have hf : ((2 * l).factorial : ℝ) ≠ 0 := by exact_mod_cast (2 * l).factorial_ne_zero
   field_simp
@@ -301,7 +301,7 @@ theorem tsum_limitTerm_three_half {w : ℝ} (hw : w ≠ 0) :
   funext l
   unfold limitTerm
   rw [rising_three_half_mul_factorial, pow_succ, mul_pow, pow_mul, pow_mul,
-    show (2 : ℝ) ^ 2 = 4 by norm_num]
+    show (2 : ℝ) ^ (2 : ℕ) = 4 by norm_num]
   have h4 : (4 : ℝ) ^ l ≠ 0 := by positivity
   have hf : ((2 * l + 1).factorial : ℝ) ≠ 0 := by exact_mod_cast (2 * l + 1).factorial_ne_zero
   field_simp
@@ -313,7 +313,7 @@ noncomputable def hypSumSq (n : ℕ) (d c x : ℝ) : ℝ :=
   ∑ l ∈ range (n + 1),
     (-1) ^ l * fallingNat n l * rising ((n : ℝ) + d) l / (rising c l * l.factorial) * x ^ l
 
-theorem hypSum_eq_hypSumSq (n : ℕ) (d c σ : ℝ) : hypSum n d c σ = hypSumSq n d c (σ ^ 2) := by
+theorem hypSum_eq_hypSumSq (n : ℕ) (d c σ : ℝ) : hypSum n d c σ = hypSumSq n d c (σ ^ (2 : ℕ)) := by
   unfold hypSum hypSumSq hypTerm
   apply sum_congr rfl
   intro l _

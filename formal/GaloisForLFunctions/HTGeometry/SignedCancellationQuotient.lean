@@ -159,7 +159,7 @@ theorem finiteSignedCharge_eq_sum_fiberMass
 theorem finiteSignedQuotientState_positive_iff
     {P K : Type*} [Fintype P] [Fintype K] [DecidableEq K]
     (mu : P → ℝ) (kappa : P → K) :
-    (∀ f : K → ℝ, 0 ≤ finiteSignedQuotientState mu kappa (fun k => f k ^ 2)) ↔
+    (∀ f : K → ℝ, 0 ≤ finiteSignedQuotientState mu kappa (fun k => f k ^ (2 : ℕ))) ↔
       ∀ k, 0 ≤ finiteSignedFiberMass mu kappa k / finiteSignedCharge mu := by
   classical
   constructor

@@ -24,7 +24,7 @@ namespace GaloisForLFunctions.RHTower.SelbergMaassCuspTransport
 noncomputable section
 
 private def chartLaplacian (f : ℍ → ℂ) (z : ℍ) : ℂ :=
-  (z.im : ℂ) ^ 2 * laplacian (f ∘ ofComplex) (z : ℂ)
+  (z.im : ℂ) ^ (2 : ℕ) * laplacian (f ∘ ofComplex) (z : ℂ)
 
 private theorem chart_contDiffAt {f : ℍ → ℂ} (hf : IsRealSmoothUpperHalfPlane f) (z : ℍ) :
     ContDiffAt ℝ 2 (f ∘ ofComplex) (z : ℂ) :=
@@ -46,7 +46,7 @@ private theorem chart_laplacian_pullback (A : SL2Z) (f : ℍ → ℂ)
     funext w
     simp only [G, Function.comp_apply, ofComplex_apply]
   rw [hfun] at hc
-  have hd : deriv G (z : ℂ) = 1 / (denom A z) ^ 2 := by
+  have hd : deriv G (z : ℂ) = 1 / (denom A z) ^ (2 : ℕ) := by
     have hdetone : (A : GL (Fin 2) ℝ).val.det = 1 :=
       (Matrix.SpecialLinearGroup.map (Int.castRingHom ℝ) A).det_coe
     simpa only [G, hdetone, Complex.ofReal_one, sl_moeb] using
@@ -73,7 +73,7 @@ private theorem chart_laplacian_pullback_gl (A : GL (Fin 2) ℝ) (hA : 0 < A.val
     funext w
     simp only [G, Function.comp_apply, ofComplex_apply]
   rw [hfun] at hc
-  have hd : deriv G (z : ℂ) = A.val.det / (denom A z) ^ 2 := by
+  have hd : deriv G (z : ℂ) = A.val.det / (denom A z) ^ (2 : ℕ) := by
     simpa only [G] using UpperHalfPlane.deriv_smul (g := A) hA z
   simp only [G, ofComplex_apply] at hc
   unfold chartLaplacian
@@ -274,7 +274,7 @@ theorem cusp_flux_boundary_identity (N : ℕ) (A : SL2Z)
     (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ)) (T : ℝ) :
     -flux N (translate (N + 1) A f) (Real.exp T) + ((lam : ℝ) - 1 / 4) *
-        (∫ y in Ioi (Real.exp T), mass N (translate (N + 1) A f) y / y ^ 2) =
+        (∫ y in Ioi (Real.exp T), mass N (translate (N + 1) A f) y / y ^ (2 : ℕ)) =
       boundaryForm (Real.log (N + 1 : ℕ)) T (formTrace N (translate (N + 1) A f) T) +
         ∑' n : ℤ, modeSquareTail N (translate (N + 1) A f) T n :=
   maass_flux_boundary_identity N lam (translate (N + 1) A f) T

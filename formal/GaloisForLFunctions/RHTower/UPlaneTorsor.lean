@@ -45,7 +45,7 @@ open Complex Filter Set
 charge of `xiDescent` at the descended point `(ρ − 1/2)²` equals the `s`-plane charge of `ξ` at
 `ρ`: the multiplicity is preserved, so the two `μ_{2^k}` values coincide. -/
 theorem xiDescent_carrierCharge_center_sq {ρ : ℂ} (hρ : ρ ∈ rightHalf) (k : ℕ) :
-    carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ 2) = carrierCharge xi k ρ := by
+    carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)) = carrierCharge xi k ρ := by
   unfold carrierCharge
   rw [analyticOrderAt_xiDescent_center_sq hρ]
 

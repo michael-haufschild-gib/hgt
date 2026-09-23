@@ -74,12 +74,12 @@ theorem exists_linear_amplitude_bound_at_node (z : ℍ) (hz : density N f z=0) :
         (slice_horizontal ((hF q).of_le (by norm_num)) z.im_pos t).hasDerivWithinAt)
       (fun t ht => hb q t ⟨ht.1,ht.2.le⟩) x hx
     simpa only [hf0,sub_zero] using h
-  let K : ℝ := (Fintype.card (Deck N):ℝ)*C^2
+  let K : ℝ := (Fintype.card (Deck N):ℝ)*C^(2 : ℕ)
   refine ⟨1+Real.sqrt K,by linarith [Real.sqrt_nonneg K],?_⟩
   intro x hx
   have ht : 0 ≤ x-z.re := sub_nonneg.mpr hx.1
-  have hD : density N f (ofComplex (point x z.im)) ≤ K*(x-z.re)^2 := by
-    have he (q : Deck N) : normSq (field N f q (point x z.im)) ≤ C^2*(x-z.re)^2 := by
+  have hD : density N f (ofComplex (point x z.im)) ≤ K*(x-z.re)^(2 : ℕ) := by
+    have he (q : Deck N) : normSq (field N f q (point x z.im)) ≤ C^(2 : ℕ)*(x-z.re)^(2 : ℕ) := by
       rw [← Complex.sq_norm]
       nlinarith [hq q x hx,norm_nonneg (field N f q (point x z.im))]
     have h := Finset.sum_le_sum (s:=Finset.univ) (fun q _ => he q)
@@ -128,10 +128,10 @@ theorem exists_periodResistance_log_lower (z : ℍ) (hz : density N f z=0) :
     have ht : 0 ≤ x-z.re := sub_nonneg.mpr hx.1
     have hb := hbound x hx
     have hs := Real.sq_sqrt (density_nonneg N f (ofComplex (point x z.im)))
-    change (sliceAmplitude N f z.im x)^2=_ at hs
+    change (sliceAmplitude N f z.im x)^(2 : ℕ)=_ at hs
     have ha : 0 ≤ sliceAmplitude N f z.im x := Real.sqrt_nonneg _
     have hu : 0 ≤ L*(x-z.re) := mul_nonneg hLp.le ht
-    have hA2 : (sliceAmplitude N f z.im x)^2 ≤ (L*(x-z.re))^2 := by
+    have hA2 : (sliceAmplitude N f z.im x)^(2 : ℕ) ≤ (L*(x-z.re))^(2 : ℕ) := by
       nlinarith only [mul_nonneg (sub_nonneg.mpr hb) (add_nonneg hu ha)]
     apply Real.sqrt_le_iff.mpr
     refine ⟨add_nonneg hu hepos.le,?_⟩
@@ -190,7 +190,7 @@ theorem radius_sub_amplitude_bounds (e : Ioi (0:ℝ)) (y x : ℝ) :
       radius N f e (point x y)-sliceAmplitude N f y x ≤ (e:ℝ) := by
   have he : 0 < (e:ℝ) := e.2
   have ha : 0 ≤ sliceAmplitude N f y x := Real.sqrt_nonneg _
-  have hs : (sliceAmplitude N f y x)^2 = density N f (ofComplex (point x y)) :=
+  have hs : (sliceAmplitude N f y x)^(2 : ℕ) = density N f (ofComplex (point x y)) :=
     Real.sq_sqrt (density_nonneg N f _)
   have hr := radius_sq N f e (point x y)
   have hl : sliceAmplitude N f y x ≤ radius N f e (point x y) :=
@@ -202,13 +202,13 @@ theorem radius_sub_amplitude_bounds (e : Ioi (0:ℝ)) (y x : ℝ) :
 theorem reciprocal_error_bounds (e : Ioi (0:ℝ)) (y x d : ℝ) (hd : 0 < d)
     (hf : d ≤ sliceAmplitude N f y x) :
     0 ≤ 1/sliceAmplitude N f y x - 1/radius N f e (point x y) ∧
-      1/sliceAmplitude N f y x - 1/radius N f e (point x y) ≤ (e:ℝ)/d^2 := by
+      1/sliceAmplitude N f y x - 1/radius N f e (point x y) ≤ (e:ℝ)/d^(2 : ℕ) := by
   have ha : 0 < sliceAmplitude N f y x := hd.trans_le hf
   have hr := radius_pos N f e (point x y)
   obtain ⟨hlo,hhi⟩ := radius_sub_amplitude_bounds N f e y x
   have hab : sliceAmplitude N f y x ≤ radius N f e (point x y) := sub_nonneg.mp hlo
   have hdr := hf.trans hab
-  have hp : d^2 ≤ sliceAmplitude N f y x * radius N f e (point x y) := by
+  have hp : d^(2 : ℕ) ≤ sliceAmplitude N f y x * radius N f e (point x y) := by
     simpa only [pow_two] using mul_le_mul hf hdr hd.le ha.le
   have heq : 1/sliceAmplitude N f y x - 1/radius N f e (point x y) =
       (radius N f e (point x y)-sliceAmplitude N f y x)/
@@ -232,7 +232,7 @@ theorem reciprocal_amplitude_intervalIntegrable {y : ℝ} (hy : 0 < y)
 theorem periodResistance_error_bounds {y : ℝ} (hy : 0 < y) (d : ℝ) (hd : 0 < d)
     (hf : ∀ x ∈ Icc (0:ℝ) 1, d ≤ sliceAmplitude N f y x) (e : Ioi (0:ℝ)) :
     0 ≤ unregularizedPeriodResistance N f y - periodResistance N f e y ∧
-      unregularizedPeriodResistance N f y - periodResistance N f e y ≤ (e:ℝ)/d^2 := by
+      unregularizedPeriodResistance N f y - periodResistance N f e y ≤ (e:ℝ)/d^(2 : ℕ) := by
   have hp (x : ℝ) (hx : x ∈ Icc (0:ℝ) 1) :
       0 < density N f (ofComplex (point x y)) := Real.sqrt_pos.mp (hd.trans_le (hf x hx))
   have hi := reciprocal_amplitude_intervalIntegrable N f hy hp
@@ -257,8 +257,8 @@ theorem periodResistance_tendsto_of_zero_free {y : ℝ} (hy : 0 < y)
     Tendsto (fun e : Ioi (0:ℝ) => periodResistance N f e y) regulatorAtZero
       (𝓝 (unregularizedPeriodResistance N f y)) := by
   obtain ⟨d,hd,hf⟩ := exists_period_amplitude_floor N f hy hp
-  have hl : Tendsto (fun e : Ioi (0:ℝ) => (e:ℝ)/d^2) regulatorAtZero (𝓝 0) := by
-    simpa using regulator_coe_limit.div_const (d^2)
+  have hl : Tendsto (fun e : Ioi (0:ℝ) => (e:ℝ)/d^(2 : ℕ)) regulatorAtZero (𝓝 0) := by
+    simpa using regulator_coe_limit.div_const (d^(2 : ℕ))
   have he := tendsto_const_nhds.squeeze' hl
     (Eventually.of_forall (fun e => (periodResistance_error_bounds N f hy d hd hf e).1))
     (Eventually.of_forall (fun e => (periodResistance_error_bounds N f hy d hd hf e).2))

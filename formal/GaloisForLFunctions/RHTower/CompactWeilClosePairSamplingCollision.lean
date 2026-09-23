@@ -27,17 +27,17 @@ variable {F : Type*} [NormedAddCommGroup F]
 
 /-- Sum of the two point-evaluation energies at separation `h`. -/
 def compactWeilClosePairSamplingEnergy (f : ℝ → F) (x h : ℝ) : ℝ :=
-  ‖f x‖ ^ 2 + ‖f (x + h)‖ ^ 2
+  ‖f x‖ ^ (2 : ℕ) + ‖f (x + h)‖ ^ (2 : ℕ)
 
 /-- Energy of the antisymmetric channel of a point-evaluation pair. -/
 def compactWeilClosePairDifferenceEnergy (f : ℝ → F) (x h : ℝ) : ℝ :=
-  ‖f (x + h) - f x‖ ^ 2
+  ‖f (x + h) - f x‖ ^ (2 : ℕ)
 
 /-- Two point evaluations split exactly into average and difference channels. -/
 theorem compactWeilClosePair_samplingEnergy_split [InnerProductSpace ℝ F]
     (f : ℝ → F) (x h : ℝ) :
     compactWeilClosePairSamplingEnergy f x h =
-      (1 / 2 : ℝ) * ‖f x + f (x + h)‖ ^ 2 +
+      (1 / 2 : ℝ) * ‖f x + f (x + h)‖ ^ (2 : ℕ) +
         (1 / 2 : ℝ) * compactWeilClosePairDifferenceEnergy f x h := by
   have hp := parallelogram_law_with_norm ℝ (f x) (f (x + h))
   have hnorm : ‖f x - f (x + h)‖ = ‖f (x + h) - f x‖ := by
@@ -48,7 +48,7 @@ theorem compactWeilClosePair_samplingEnergy_split [InnerProductSpace ℝ F]
 
 /-- At exact collision, two scalar point reporters become one reporter with doubled weight. -/
 @[simp] theorem compactWeilClosePair_samplingEnergy_collision (f : ℝ → F) (x : ℝ) :
-    compactWeilClosePairSamplingEnergy f x 0 = 2 * ‖f x‖ ^ 2 := by
+    compactWeilClosePairSamplingEnergy f x 0 = 2 * ‖f x‖ ^ (2 : ℕ) := by
   unfold compactWeilClosePairSamplingEnergy
   simp only [add_zero]
   ring
@@ -62,8 +62,8 @@ theorem compactWeilClosePair_samplingEnergy_split [InnerProductSpace ℝ F]
 squared, including at zero under Lean's totalized inverse convention. -/
 theorem compactWeilClosePair_normalizedDifference_eq
     [NormedSpace ℝ F] (f : ℝ → F) (x h : ℝ) :
-    ‖h⁻¹ • (f (x + h) - f x)‖ ^ 2 =
-      compactWeilClosePairDifferenceEnergy f x h / h ^ 2 := by
+    ‖h⁻¹ • (f (x + h) - f x)‖ ^ (2 : ℕ) =
+      compactWeilClosePairDifferenceEnergy f x h / h ^ (2 : ℕ) := by
   unfold compactWeilClosePairDifferenceEnergy
   rw [norm_smul, Real.norm_eq_abs, abs_inv, mul_pow, inv_pow, sq_abs,
     div_eq_mul_inv]
@@ -73,8 +73,8 @@ theorem compactWeilClosePair_normalizedDifference_eq
 converges exactly to derivative energy. -/
 theorem tendsto_compactWeilClosePair_differenceEnergy_div_sq
     [NormedSpace ℝ F] {f : ℝ → F} {x : ℝ} {d : F} (hf : HasDerivAt f d x) :
-    Tendsto (fun h : ℝ => compactWeilClosePairDifferenceEnergy f x h / h ^ 2)
-      (𝓝[≠] (0 : ℝ)) (𝓝 (‖d‖ ^ 2)) := by
+    Tendsto (fun h : ℝ => compactWeilClosePairDifferenceEnergy f x h / h ^ (2 : ℕ))
+      (𝓝[≠] (0 : ℝ)) (𝓝 (‖d‖ ^ (2 : ℕ))) := by
   have hslope := hf.tendsto_slope_zero.norm.pow 2
   exact hslope.congr' (Filter.Eventually.of_forall fun h =>
     compactWeilClosePair_normalizedDifference_eq f x h)

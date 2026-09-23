@@ -22,18 +22,18 @@ noncomputable section
 
 /-- One constant controls the actual Möbius source on the whole positive ray. -/
 theorem pwGammaMobiusPreimage_uniform_inv_sq :
-    ∃ B : ℝ, 0 < B ∧ ∀ x : ℝ, 0 < x → ‖pwGammaMobiusPreimage x‖ ≤ B / x ^ 2 := by
+    ∃ B : ℝ, 0 < B ∧ ∀ x : ℝ, 0 < x → ‖pwGammaMobiusPreimage x‖ ≤ B / x ^ (2 : ℕ) := by
   let C : ℝ := Real.exp ((5 / 2) * Real.log (5 / 2) - 5 / 2)
-  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ 2 :=
+  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
-  have hpos : 0 < ∑' n : ℕ, 1 / (n : ℝ) ^ 2 :=
+  have hpos : 0 < ∑' n : ℕ, 1 / (n : ℝ) ^ (2 : ℕ) :=
     hsq.tsum_pos (fun n => by positivity) 1 (by simp)
-  refine ⟨C * (∑' n : ℕ, 1 / (n : ℝ) ^ 2), mul_pos (Real.exp_pos _) hpos, ?_⟩
+  refine ⟨C * (∑' n : ℕ, 1 / (n : ℝ) ^ (2 : ℕ)), mul_pos (Real.exp_pos _) hpos, ?_⟩
   intro x hx
-  have hmajorant := hsq.mul_left (C / x ^ 2)
+  have hmajorant := hsq.mul_left (C / x ^ (2 : ℕ))
   rw [pwGammaMobiusPreimage]
   calc
-    _ ≤ ∑' n : ℕ, (C / x ^ 2) * (1 / (n : ℝ) ^ 2) := by
+    _ ≤ ∑' n : ℕ, (C / x ^ (2 : ℕ)) * (1 / (n : ℝ) ^ (2 : ℕ)) := by
       refine tsum_of_norm_bounded hmajorant.hasSum fun n => ?_
       rcases Nat.eq_zero_or_pos n with rfl | hn
       · simp
@@ -45,12 +45,12 @@ theorem pwGammaMobiusPreimage_uniform_inv_sq :
         calc
           _ ≤ 1 * ‖pwGammaRaySource ((n : ℝ) * x)‖ :=
             mul_le_mul_of_nonneg_right hmu (norm_nonneg _)
-          _ ≤ C / ((n : ℝ) * x) ^ 2 := by
+          _ ≤ C / ((n : ℝ) * x) ^ (2 : ℕ) := by
             simpa using pwGammaRaySource_norm_le_inv_sq (mul_pos hnr hx)
-          _ = (C / x ^ 2) * (1 / (n : ℝ) ^ 2) := by
+          _ = (C / x ^ (2 : ℕ)) * (1 / (n : ℝ) ^ (2 : ℕ)) := by
             rw [mul_pow]
             field_simp
-    _ = (C * ∑' n : ℕ, 1 / (n : ℝ) ^ 2) / x ^ 2 := by
+    _ = (C * ∑' n : ℕ, 1 / (n : ℝ) ^ (2 : ℕ)) / x ^ (2 : ℕ) := by
       rw [tsum_mul_left]
       ring
 
@@ -64,17 +64,17 @@ def pwGammaSourceEulerCurrent (x : ℝ) : ℂ :=
 theorem pwGammaSourceEulerCurrent_summable {x : ℝ} (hx : 0 < x) :
     Summable fun n : ℕ => (vonMangoldt n : ℂ) * pwGammaRaySource ((n : ℝ) * x) := by
   let C : ℝ := Real.exp ((5 / 2) * Real.log (5 / 2) - 5 / 2)
-  have hmajorant := deningerVonMangoldt_summable_div_sq.mul_left (C / x ^ 2)
+  have hmajorant := deningerVonMangoldt_summable_div_sq.mul_left (C / x ^ (2 : ℕ))
   refine Summable.of_norm_bounded hmajorant fun n => ?_
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp
   · have hnr : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
     rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg vonMangoldt_nonneg]
     calc
-      _ ≤ vonMangoldt n * (C / ((n : ℝ) * x) ^ 2) :=
+      _ ≤ vonMangoldt n * (C / ((n : ℝ) * x) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left (pwGammaRaySource_norm_le_inv_sq (mul_pos hnr hx))
           vonMangoldt_nonneg
-      _ = (C / x ^ 2) * (vonMangoldt n / (n : ℝ) ^ 2) := by
+      _ = (C / x ^ (2 : ℕ)) * (vonMangoldt n / (n : ℝ) ^ (2 : ℕ)) := by
         rw [mul_pow]
         field_simp
 
@@ -100,18 +100,18 @@ private def pwGammaEulerDilationPair (x : ℝ) (q : ℕ × ℕ) : ℂ :=
 private theorem pwGammaEulerDilationPair_summable {x : ℝ} (hx : 0 < x) :
     Summable (pwGammaEulerDilationPair x) := by
   obtain ⟨B, hB, hbound⟩ := pwGammaMobiusPreimage_uniform_inv_sq
-  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ 2 :=
+  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
-  have hshift : Summable fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 2 := by
-    have hs : Summable fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ) ^ 2 :=
+  have hshift : Summable fun n : ℕ => 1 / ((n : ℝ) + 1) ^ (2 : ℕ) := by
+    have hs : Summable fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) :=
       hsq.comp_injective (fun _ _ h => Nat.add_right_cancel h)
     simpa only [Nat.cast_add, Nat.cast_one] using hs
   have hmajorant : Summable fun q : ℕ × ℕ =>
-      (B / x ^ 2) * ((1 / ((q.1 : ℝ) + 1) ^ 2) *
-        (vonMangoldt q.2 / (q.2 : ℝ) ^ 2)) := by
+      (B / x ^ (2 : ℕ)) * ((1 / ((q.1 : ℝ) + 1) ^ (2 : ℕ)) *
+        (vonMangoldt q.2 / (q.2 : ℝ) ^ (2 : ℕ))) := by
     refine Summable.mul_left _ ?_
-    exact Summable.mul_of_nonneg (f := fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 2)
-      (g := fun n : ℕ => vonMangoldt n / (n : ℝ) ^ 2)
+    exact Summable.mul_of_nonneg (f := fun n : ℕ => 1 / ((n : ℝ) + 1) ^ (2 : ℕ))
+      (g := fun n : ℕ => vonMangoldt n / (n : ℝ) ^ (2 : ℕ))
       hshift deningerVonMangoldt_summable_div_sq (fun n => by positivity)
       (fun n => div_nonneg vonMangoldt_nonneg (by positivity))
   refine Summable.of_norm_bounded hmajorant fun q => ?_
@@ -122,10 +122,10 @@ private theorem pwGammaEulerDilationPair_summable {x : ℝ} (hx : 0 < x) :
     rw [pwGammaEulerDilationPair, norm_mul, Complex.norm_real,
       Real.norm_of_nonneg vonMangoldt_nonneg]
     calc
-      _ ≤ vonMangoldt q.2 * (B / ((q.2 : ℝ) * (((q.1 : ℝ) + 1) * x)) ^ 2) :=
+      _ ≤ vonMangoldt q.2 * (B / ((q.2 : ℝ) * (((q.1 : ℝ) + 1) * x)) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left (hbound _ harg) vonMangoldt_nonneg
-      _ = (B / x ^ 2) * ((1 / ((q.1 : ℝ) + 1) ^ 2) *
-          (vonMangoldt q.2 / (q.2 : ℝ) ^ 2)) := by
+      _ = (B / x ^ (2 : ℕ)) * ((1 / ((q.1 : ℝ) + 1) ^ (2 : ℕ)) *
+          (vonMangoldt q.2 / (q.2 : ℝ) ^ (2 : ℕ))) := by
         rw [mul_pow, mul_pow]
         field_simp
 

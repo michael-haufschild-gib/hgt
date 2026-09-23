@@ -21,8 +21,8 @@ square of the ordinary second-jet defect. -/
 def gammaFactorialLogSecondHarmonicClosureRatio
     (n : ℕ) (x : ℂ) : ℂ :=
   GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x *
-      (harmonic n : ℂ) ^ 2 /
-    GaloisForLFunctions.gammaFactorialSecondJetDefect n x ^ 2
+      (harmonic n : ℂ) ^ (2 : ℕ) /
+    GaloisForLFunctions.gammaFactorialSecondJetDefect n x ^ (2 : ℕ)
 
 /-- Sixth-power transition closing the log/envelope and first/second jet ratios. -/
 def gammaFactorialLogEnvelopeSixthJetClosureRatio
@@ -30,39 +30,39 @@ def gammaFactorialLogEnvelopeSixthJetClosureRatio
   (GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
       GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x) *
     (GaloisForLFunctions.gammaFactorialSecondJetDefect n x /
-      GaloisForLFunctions.gammaFactorialFirstJetDefect n x) ^ 6
+      GaloisForLFunctions.gammaFactorialFirstJetDefect n x) ^ (6 : ℕ)
 
 theorem tendsto_gammaFactorialLogSecondHarmonicClosureRatio
     {x : ℂ} (hx : x ≠ 0) :
     Tendsto (fun n => gammaFactorialLogSecondHarmonicClosureRatio n x)
-      atTop (𝓝 (-((Real.pi : ℂ) ^ 2) / 9)) := by
+      atTop (𝓝 (-((Real.pi : ℂ) ^ (2 : ℕ)) / 9)) := by
   have hlog :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
-          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2)
-        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ 2 / x ^ 4)) :=
+          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ))
+        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (4 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialLogCurvatureDiscriminant_div_factorialScale_sq hx
   have hsecond :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetDefect n x /
           GaloisForLFunctions.gammaHarmonicMicroscopeScale n)
-        atTop (𝓝 (6 / x ^ 2)) :=
+        atTop (𝓝 (6 / x ^ (2 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialSecondJetDefect_div_harmonicScale hx
-  have hsecond_ne : (6 / x ^ 2 : ℂ) ≠ 0 :=
+  have hsecond_ne : (6 / x ^ (2 : ℕ) : ℂ) ≠ 0 :=
     div_ne_zero (by norm_num) (pow_ne_zero 2 hx)
   have hnormalized :=
     hlog.div (hsecond.pow 2) (pow_ne_zero 2 hsecond_ne)
   have hvalue :
-      (-4 * (Real.pi : ℂ) ^ 2 / x ^ 4) / (6 / x ^ 2) ^ 2 =
-        -((Real.pi : ℂ) ^ 2) / 9 := by
+      (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (4 : ℕ)) / (6 / x ^ (2 : ℕ)) ^ (2 : ℕ) =
+        -((Real.pi : ℂ) ^ (2 : ℕ)) / 9 := by
     field_simp [hx]
     ring
   rw [hvalue] at hnormalized
   have heq : ∀ᶠ n : ℕ in atTop,
       (GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
-          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2) /
+          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ)) /
         (GaloisForLFunctions.gammaFactorialSecondJetDefect n x /
-          GaloisForLFunctions.gammaHarmonicMicroscopeScale n) ^ 2 =
+          GaloisForLFunctions.gammaHarmonicMicroscopeScale n) ^ (2 : ℕ) =
         gammaFactorialLogSecondHarmonicClosureRatio n x := by
     filter_upwards [eventually_ge_atTop 1] with n hn
     by_cases hsecondZero :
@@ -94,30 +94,30 @@ theorem tendsto_gammaFactorialLogEnvelopeSixthJetClosureRatio
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetDefect n x /
           GaloisForLFunctions.gammaHarmonicMicroscopeScale n)
-        atTop (𝓝 (6 / x ^ 2)) :=
+        atTop (𝓝 (6 / x ^ (2 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialSecondJetDefect_div_harmonicScale hx
   have hlog :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
-          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2)
-        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ 2 / x ^ 4)) :=
+          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ))
+        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (4 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialLogCurvatureDiscriminant_div_factorialScale_sq hx
   have henvelope :
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x /
-          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2)
-        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ 2 / x ^ 10)) :=
+          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ))
+        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (10 : ℕ))) :=
     GaloisForLFunctions.tendsto_gammaFactorialExponentialEnvelopeDefect_div_factorialScale_sq hx
   have hfirst_ne : (-2 / x : ℂ) ≠ 0 :=
     div_ne_zero (by norm_num) hx
   have hpi : (Real.pi : ℂ) ≠ 0 := by
     exact_mod_cast Real.pi_ne_zero
-  have henvelope_ne : (-4 * (Real.pi : ℂ) ^ 2 / x ^ 10) ≠ 0 :=
+  have henvelope_ne : (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (10 : ℕ)) ≠ 0 :=
     div_ne_zero
       (mul_ne_zero (by norm_num) (pow_ne_zero 2 hpi))
       (pow_ne_zero 10 hx)
   have hsecondFirstNormalized := hsecond.div hfirst hfirst_ne
-  have hsecondFirstValue : (6 / x ^ 2 : ℂ) / (-2 / x) = -3 / x := by
+  have hsecondFirstValue : (6 / x ^ (2 : ℕ) : ℂ) / (-2 / x) = -3 / x := by
     field_simp [hx]
     ring
   rw [hsecondFirstValue] at hsecondFirstNormalized
@@ -137,15 +137,15 @@ theorem tendsto_gammaFactorialLogEnvelopeSixthJetClosureRatio
   have hsecondFirst := hsecondFirstNormalized.congr' hsecondFirstEq
   have hlogEnvelopeNormalized := hlog.div henvelope henvelope_ne
   have hlogEnvelopeValue :
-      (-4 * (Real.pi : ℂ) ^ 2 / x ^ 4) /
-          (-4 * (Real.pi : ℂ) ^ 2 / x ^ 10) = x ^ 6 := by
+      (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (4 : ℕ)) /
+          (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (10 : ℕ)) = x ^ (6 : ℕ) := by
     field_simp [hx, hpi]
   rw [hlogEnvelopeValue] at hlogEnvelopeNormalized
   have hlogEnvelopeEq : ∀ᶠ n : ℕ in atTop,
       (GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
-          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2) /
+          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ)) /
         (GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x /
-          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ 2) =
+          GaloisForLFunctions.reciprocalGammaFactorialScale n ^ (2 : ℕ)) =
         GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
           GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x := by
     filter_upwards [] with n
@@ -160,7 +160,7 @@ theorem tendsto_gammaFactorialLogEnvelopeSixthJetClosureRatio
       field_simp [hscale, hden]
   have hlogEnvelope := hlogEnvelopeNormalized.congr' hlogEnvelopeEq
   have hclosure := hlogEnvelope.mul (hsecondFirst.pow 6)
-  have hvalue : (x ^ 6 : ℂ) * (-3 / x) ^ 6 = 729 := by
+  have hvalue : (x ^ (6 : ℕ) : ℂ) * (-3 / x) ^ (6 : ℕ) = 729 := by
     field_simp [hx]
     ring
   rw [hvalue] at hclosure
@@ -204,7 +204,7 @@ theorem gammaFactorial_completeToricJetClosureUniversality :
       Tendsto (fun n => gammaFactorialProjectiveThirdSecondClosureRatio n x)
         atTop (𝓝 (-1 / 6)) ∧
       Tendsto (fun n => gammaFactorialLogSecondHarmonicClosureRatio n x)
-        atTop (𝓝 (-((Real.pi : ℂ) ^ 2) / 9)) ∧
+        atTop (𝓝 (-((Real.pi : ℂ) ^ (2 : ℕ)) / 9)) ∧
       Tendsto (fun n => gammaFactorialLogEnvelopeSixthJetClosureRatio n x)
         atTop (𝓝 729)) ∧
     ∀ aF aS aP aT aL aE aH : ℤ,

@@ -24,55 +24,55 @@ namespace GaloisForLFunctions.RHTower
 open MeasureTheory Set intervalIntegral
 
 /-- The elementary envelope inequality: `min(4, 4/t²) <= 8/(1+t²)`. -/
-theorem min_four_le_cauchy (t : ℝ) : min 4 (4 / t ^ 2) ≤ 8 / (1 + t ^ 2) := by
-  have hpos : (0 : ℝ) < 1 + t ^ 2 := by positivity
-  rcases le_or_gt (t ^ 2) 1 with ht | ht
+theorem min_four_le_cauchy (t : ℝ) : min 4 (4 / t ^ (2 : ℕ)) ≤ 8 / (1 + t ^ (2 : ℕ)) := by
+  have hpos : (0 : ℝ) < 1 + t ^ (2 : ℕ) := by positivity
+  rcases le_or_gt (t ^ (2 : ℕ)) 1 with ht | ht
   · refine le_trans (min_le_left _ _) ?_
     rw [le_div_iff₀ hpos]
     linarith
   · refine le_trans (min_le_right _ _) ?_
-    have ht0 : (0 : ℝ) < t ^ 2 := by linarith
+    have ht0 : (0 : ℝ) < t ^ (2 : ℕ) := by linarith
     rw [div_le_div_iff₀ ht0 hpos]
     linarith
 
 /-- **The tail envelope of the trial transform.** -/
-theorem sq_integral_kaiserTrial_cos_le {c ω : ℝ} (hc : 0 ≤ c) (h : c ^ 2 < ω ^ 2) :
-    (∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)) ^ 2
-      ≤ 8 / (1 + (|ω| - c) ^ 2) := by
+theorem sq_integral_kaiserTrial_cos_le {c ω : ℝ} (hc : 0 ≤ c) (h : c ^ (2 : ℕ) < ω ^ (2 : ℕ)) :
+    (∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)) ^ (2 : ℕ)
+      ≤ 8 / (1 + (|ω| - c) ^ (2 : ℕ)) := by
   have habs := abs_integral_kaiserTrial_cos_le h
-  have hpos : 0 < ω ^ 2 - c ^ 2 := by linarith
-  have hupos : 0 < Real.sqrt (ω ^ 2 - c ^ 2) := Real.sqrt_pos.mpr hpos
-  have hsq : Real.sqrt (ω ^ 2 - c ^ 2) ^ 2 = ω ^ 2 - c ^ 2 := Real.sq_sqrt hpos.le
+  have hpos : 0 < ω ^ (2 : ℕ) - c ^ (2 : ℕ) := by linarith
+  have hupos : 0 < Real.sqrt (ω ^ (2 : ℕ) - c ^ (2 : ℕ)) := Real.sqrt_pos.mpr hpos
+  have hsq : Real.sqrt (ω ^ (2 : ℕ) - c ^ (2 : ℕ)) ^ (2 : ℕ) = ω ^ (2 : ℕ) - c ^ (2 : ℕ) := Real.sq_sqrt hpos.le
   -- the square of the transform is at most `min 4 (4/(omega² - c²))`
-  have hsq_le : (∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)) ^ 2
-      ≤ min 4 (4 / (ω ^ 2 - c ^ 2)) := by
-    have h1 : (∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)) ^ 2
-        = |∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)| ^ 2 := (sq_abs _).symm
+  have hsq_le : (∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)) ^ (2 : ℕ)
+      ≤ min 4 (4 / (ω ^ (2 : ℕ) - c ^ (2 : ℕ))) := by
+    have h1 : (∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)) ^ (2 : ℕ)
+        = |∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)| ^ (2 : ℕ) := (sq_abs _).symm
     rw [h1]
     refine le_min ?_ ?_
     · have h2 := habs.trans (min_le_left _ _)
       nlinarith [abs_nonneg (∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x))]
     · have h2 := habs.trans (min_le_right _ _)
-      have h3 : |∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)| ^ 2
-          ≤ (2 / Real.sqrt (ω ^ 2 - c ^ 2)) ^ 2 := by
+      have h3 : |∫ x in (-1 : ℝ)..1, kaiserTrial c x * Real.cos (ω * x)| ^ (2 : ℕ)
+          ≤ (2 / Real.sqrt (ω ^ (2 : ℕ) - c ^ (2 : ℕ))) ^ (2 : ℕ) := by
         refine pow_le_pow_left₀ (abs_nonneg _) h2 2
       refine h3.trans ?_
       rw [div_pow, hsq]
       norm_num
   -- and `omega² - c² >= (|omega| - c)²`
-  have hge : (|ω| - c) ^ 2 ≤ ω ^ 2 - c ^ 2 := by
-    have habsω : |ω| ^ 2 = ω ^ 2 := sq_abs ω
+  have hge : (|ω| - c) ^ (2 : ℕ) ≤ ω ^ (2 : ℕ) - c ^ (2 : ℕ) := by
+    have habsω : |ω| ^ (2 : ℕ) = ω ^ (2 : ℕ) := sq_abs ω
     have hle : c ≤ |ω| := by
       nlinarith [abs_nonneg ω, sq_abs ω]
     nlinarith [hle, hc, habsω]
   refine hsq_le.trans (le_trans ?_ (min_four_le_cauchy (|ω| - c)))
-  rcases le_or_gt ((|ω| - c) ^ 2) 0 with hz | hz
+  rcases le_or_gt ((|ω| - c) ^ (2 : ℕ)) 0 with hz | hz
   · -- the degenerate case cannot occur beyond the band edge
-    have hzz : (|ω| - c) ^ 2 = 0 := le_antisymm hz (sq_nonneg _)
+    have hzz : (|ω| - c) ^ (2 : ℕ) = 0 := le_antisymm hz (sq_nonneg _)
     have hzero : |ω| - c = 0 := by
       exact pow_eq_zero_iff (two_ne_zero) |>.mp hzz
     have habsc : |ω| = c := by linarith
-    have hcontra : ω ^ 2 = c ^ 2 := by
+    have hcontra : ω ^ (2 : ℕ) = c ^ (2 : ℕ) := by
       rw [← sq_abs ω, habsc]
     linarith
   · refine min_le_min le_rfl ?_
@@ -80,12 +80,12 @@ theorem sq_integral_kaiserTrial_cos_le {c ω : ℝ} (hc : 0 ≤ c) (h : c ^ 2 < 
 
 /-- The tail integral of the Cauchy envelope is `4 pi`, independent of the aperture. -/
 theorem integral_Ioi_cauchy_envelope (c : ℝ) :
-    (∫ ω in Ioi c, 8 / (1 + (ω - c) ^ 2)) = 4 * Real.pi := by
+    (∫ ω in Ioi c, 8 / (1 + (ω - c) ^ (2 : ℕ))) = 4 * Real.pi := by
   have hderiv : ∀ ω ∈ Ioi c,
-      HasDerivAt (fun t : ℝ => 8 * Real.arctan (t - c)) (8 / (1 + (ω - c) ^ 2)) ω := by
+      HasDerivAt (fun t : ℝ => 8 * Real.arctan (t - c)) (8 / (1 + (ω - c) ^ (2 : ℕ))) ω := by
     intro ω _
     have hshift : HasDerivAt (fun t : ℝ => t - c) 1 ω := (hasDerivAt_id ω).sub_const c
-    have harctan : HasDerivAt Real.arctan (1 / (1 + (ω - c) ^ 2)) (ω - c) := by
+    have harctan : HasDerivAt Real.arctan (1 / (1 + (ω - c) ^ (2 : ℕ))) (ω - c) := by
       have h := Real.hasDerivAt_arctan (ω - c)
       refine h.congr_deriv ?_
       rw [one_div]
@@ -96,7 +96,7 @@ theorem integral_Ioi_cauchy_envelope (c : ℝ) :
   have hcont : ContinuousWithinAt (fun t : ℝ => 8 * Real.arctan (t - c)) (Ici c) c :=
     ((Real.continuous_arctan.comp (continuous_id.sub continuous_const)).continuousAt.const_mul
       (8 : ℝ)).continuousWithinAt
-  have hnonneg : ∀ ω ∈ Ioi c, 0 ≤ 8 / (1 + (ω - c) ^ 2) := by
+  have hnonneg : ∀ ω ∈ Ioi c, 0 ≤ 8 / (1 + (ω - c) ^ (2 : ℕ)) := by
     intro ω _
     positivity
   have hlim : Filter.Tendsto (fun t : ℝ => 8 * Real.arctan (t - c)) Filter.atTop

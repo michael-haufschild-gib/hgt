@@ -56,8 +56,8 @@ theorem norm_cglShiftedTailDyadicScaledCoefficient_le_one
     (j : Fin N) :
     ‖(cglShiftedTailDyadicScaledCoefficients X N s x) j‖ ≤ 1 := by
   have hvector := norm_cglShiftedTailDyadicScaledCoefficients_le_one X N s x
-  have hsq : ‖(cglShiftedTailDyadicScaledCoefficients X N s x) j‖ ^ 2 ≤
-      ‖cglShiftedTailDyadicScaledCoefficients X N s x‖ ^ 2 := by
+  have hsq : ‖(cglShiftedTailDyadicScaledCoefficients X N s x) j‖ ^ (2 : ℕ) ≤
+      ‖cglShiftedTailDyadicScaledCoefficients X N s x‖ ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
     exact Finset.single_le_sum (fun i hi => sq_nonneg
       ‖(cglShiftedTailDyadicScaledCoefficients X N s x) i‖) (Finset.mem_univ _)

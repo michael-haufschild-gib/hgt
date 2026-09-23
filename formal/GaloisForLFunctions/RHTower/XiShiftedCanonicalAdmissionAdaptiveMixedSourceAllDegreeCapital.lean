@@ -28,9 +28,9 @@ namespace XiShiftedCanonicalAdmission
 noncomputable section
 
 private theorem alphaReserveIdentity (a : ℕ → ℝ) (N : ℕ) :
-    4 * (∑ j ∈ Finset.range N, a j ^ 2) + 2 * a N ^ 2 -
-        ∑ j ∈ Finset.range N, (a j + a (j + 1)) ^ 2 =
-      (∑ j ∈ Finset.range N, (a j - a (j + 1)) ^ 2) + 2 * a 0 ^ 2 := by
+    4 * (∑ j ∈ Finset.range N, a j ^ (2 : ℕ)) + 2 * a N ^ (2 : ℕ) -
+        ∑ j ∈ Finset.range N, (a j + a (j + 1)) ^ (2 : ℕ) =
+      (∑ j ∈ Finset.range N, (a j - a (j + 1)) ^ (2 : ℕ)) + 2 * a 0 ^ (2 : ℕ) := by
   induction N with
   | zero => simp
   | succ N ih =>
@@ -44,7 +44,7 @@ noncomputable def xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy
     (HTGeometry.monicOrthoAlpha
         (fun k => (xiShiftedReciprocalMoment y k).re) j +
       HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ 2
+        (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ (2 : ℕ)
 
 /-- Positive remainder after twice the top source action pays every lower-degree connector. -/
 noncomputable def xiShiftedCanonicalAdmissionAllDegreeSourceReserve
@@ -53,9 +53,9 @@ noncomputable def xiShiftedCanonicalAdmissionAllDegreeSourceReserve
       (HTGeometry.monicOrthoAlpha
           (fun k => (xiShiftedReciprocalMoment y k).re) j -
         HTGeometry.monicOrthoAlpha
-          (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ 2) +
+          (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ (2 : ℕ)) +
     2 * HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment y k).re) 0 ^ 2 +
+        (fun k => (xiShiftedReciprocalMoment y k).re) 0 ^ (2 : ℕ) +
     8 * (∑ j ∈ Finset.range N,
       HTGeometry.monicOrthoBeta
         (fun k => (xiShiftedReciprocalMoment y k).re) j) +
@@ -73,10 +73,10 @@ theorem two_mul_adaptiveMixedCompletedSourceAction_sub_allDegreeConnectorEnergy_
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (N + 2)).PosDef) :
     2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w N -
-        xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ 2) N =
-      xiShiftedCanonicalAdmissionAllDegreeSourceReserve (w ^ 2) N := by
+        xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ (2 : ℕ)) N =
+      xiShiftedCanonicalAdmissionAllDegreeSourceReserve (w ^ (2 : ℕ)) N := by
   let a : ℕ → ℝ := fun j => HTGeometry.monicOrthoAlpha
-    (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j
+    (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j
   have halpha := alphaReserveIdentity a N
   rw [xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction_eq_cumulativeJacobiDissipation
     hw hN hH, xiShiftedCanonicalAdmissionCumulativeJacobiDissipation]
@@ -91,8 +91,8 @@ theorem two_mul_adaptiveMixedCompletedSourceAction_eq_allDegreeConnectorEnergy_a
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (N + 2)).PosDef) :
     2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w N =
-      xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ 2) N +
-        xiShiftedCanonicalAdmissionAllDegreeSourceReserve (w ^ 2) N := by
+      xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ (2 : ℕ)) N +
+        xiShiftedCanonicalAdmissionAllDegreeSourceReserve (w ^ (2 : ℕ)) N := by
   have h :=
     two_mul_adaptiveMixedCompletedSourceAction_sub_allDegreeConnectorEnergy_eq_reserve
       hw hN hH
@@ -103,7 +103,7 @@ theorem allDegreeConnectorEnergy_lt_two_mul_adaptiveMixedCompletedSourceAction
     {w : ℝ} (hw : 1 / 2 < w) {N : ℕ} (hN : 0 < N)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (N + 2)).PosDef) :
-    xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ 2) N <
+    xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy (w ^ (2 : ℕ)) N <
       2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w N := by
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
   have hbetaN : 0 < HTGeometry.monicOrthoBeta
@@ -113,24 +113,24 @@ theorem allDegreeConnectorEnergy_lt_two_mul_adaptiveMixedCompletedSourceAction
       (xiShiftedRealMomentSequence w) (N + 1) :=
     HTGeometry.monicOrthoBeta_pos_below hbelow (by omega) (by omega)
   have hseq : xiShiftedRealMomentSequence w =
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) := by
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) := by
     rfl
   rw [hseq] at hbetaN hbetaN1
   have hreserve : 0 <
-      xiShiftedCanonicalAdmissionAllDegreeSourceReserve (w ^ 2) N := by
+      xiShiftedCanonicalAdmissionAllDegreeSourceReserve (w ^ (2 : ℕ)) N := by
     dsimp only [xiShiftedCanonicalAdmissionAllDegreeSourceReserve]
     have hsquares : 0 ≤ ∑ j ∈ Finset.range N,
         (HTGeometry.monicOrthoAlpha
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j -
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j -
           HTGeometry.monicOrthoAlpha
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (j + 1)) ^ 2 :=
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (j + 1)) ^ (2 : ℕ) :=
       Finset.sum_nonneg fun _ _ => sq_nonneg _
     have hbase : 0 ≤ 2 * HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) 0 ^ 2 :=
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) 0 ^ (2 : ℕ) :=
       mul_nonneg (by norm_num) (sq_nonneg _)
     have hbetasum : 0 ≤ 8 * (∑ j ∈ Finset.range N,
         HTGeometry.monicOrthoBeta
-          (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j) := by
+          (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j) := by
       refine mul_nonneg (by norm_num) (Finset.sum_nonneg fun j hj => ?_)
       by_cases hj0 : j = 0
       · subst j
@@ -141,9 +141,9 @@ theorem allDegreeConnectorEnergy_lt_two_mul_adaptiveMixedCompletedSourceAction
             omega)).le
     have hterminal : 0 < 4 * (N + 1 : ℝ) *
         (HTGeometry.monicOrthoBeta
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) N +
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) N +
           HTGeometry.monicOrthoBeta
-            (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) (N + 1)) := by
+            (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) (N + 1)) := by
       positivity
     linarith
   rw [←
@@ -157,7 +157,7 @@ noncomputable def xiShiftedCanonicalAdmissionInternalDegreeFluxDirichletDensity
     (y : ℝ) (N : ℕ) : ℝ :=
   ∑ j ∈ Finset.Ico 1 N,
     (xiShiftedCanonicalAdmissionCumulativeJacobiFlux y (j + 1) -
-      xiShiftedCanonicalAdmissionCumulativeJacobiFlux y j) ^ 2
+      xiShiftedCanonicalAdmissionCumulativeJacobiFlux y j) ^ (2 : ℕ)
 
 /-- One top-degree adaptive mixed source action pays every internal degree connector at the same
 mass. -/
@@ -168,14 +168,14 @@ theorem internalDegreeFluxDirichletDensity_lt_two_mul_adaptiveMixedCompletedSour
     xiShiftedCanonicalAdmissionInternalDegreeFluxDirichletDensity y N <
       2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction
         (Real.sqrt y) N := by
-  have hsq : (Real.sqrt y) ^ 2 = y :=
+  have hsq : (Real.sqrt y) ^ (2 : ℕ) = y :=
     Real.sq_sqrt (le_trans (by norm_num) hy.le)
   have hsqrt : 1 / 2 < Real.sqrt y := by
     nlinarith [Real.sqrt_nonneg y]
   have hHsqrt : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (Real.sqrt y)) (N + 2)).PosDef := by
     change (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ 2) k).re)
+      (fun k => (xiShiftedReciprocalMoment ((Real.sqrt y) ^ (2 : ℕ)) k).re)
         (N + 2)).PosDef
     rwa [hsq]
   have hstrict :=
@@ -187,7 +187,7 @@ theorem internalDegreeFluxDirichletDensity_lt_two_mul_adaptiveMixedCompletedSour
         (HTGeometry.monicOrthoAlpha
             (fun k => (xiShiftedReciprocalMoment y k).re) j +
           HTGeometry.monicOrthoAlpha
-            (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ 2 := by
+            (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro j hj
     have hjIco := Finset.mem_Ico.mp hj
@@ -211,7 +211,7 @@ theorem internalDegreeFluxDirichletDensity_lt_two_mul_adaptiveMixedCompletedSour
         (HTGeometry.monicOrthoAlpha
             (fun k => (xiShiftedReciprocalMoment y k).re) j +
           HTGeometry.monicOrthoAlpha
-            (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ 2) ≤
+            (fun k => (xiShiftedReciprocalMoment y k).re) (j + 1)) ^ (2 : ℕ)) ≤
       xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy y N := by
     dsimp only [xiShiftedCanonicalAdmissionAllDegreeConnectorEnergy]
     exact Finset.sum_le_sum_of_subset_of_nonneg hsubset
@@ -301,7 +301,7 @@ theorem cumulativeJacobiFlux_sub_degreeOne_sq_lt_two_mul_degreeLength_mul_source
     (hH : (HTGeometry.momentHankelMatrix
       (fun k => (xiShiftedReciprocalMoment y k).re) (N + 2)).PosDef) :
     (xiShiftedCanonicalAdmissionCumulativeJacobiFlux y N -
-        xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ 2 <
+        xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ (2 : ℕ) <
       2 * (N - 1 : ℕ) *
         xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction
           (Real.sqrt y) N := by
@@ -335,16 +335,16 @@ theorem integrableOn_Ioi_cumulativeJacobiFlux_sub_degreeOne_sq_and_integral_le
     IntegrableOn
         (fun y =>
           (xiShiftedCanonicalAdmissionCumulativeJacobiFlux y N -
-            xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ 2)
+            xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ (2 : ℕ))
         (Ioi a) ∧
       (∫ y in Ioi a,
           (xiShiftedCanonicalAdmissionCumulativeJacobiFlux y N -
-            xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ 2) ≤
+            xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ (2 : ℕ)) ≤
         2 * (N - 1 : ℕ) *
           xiShiftedCanonicalAdmissionCumulativeJacobiFlux a N := by
   let A : ℝ → ℝ := fun y =>
     (xiShiftedCanonicalAdmissionCumulativeJacobiFlux y N -
-      xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ 2
+      xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ (2 : ℕ)
   let D : ℝ → ℝ := fun y =>
     xiShiftedCanonicalAdmissionInternalDegreeFluxDirichletDensity y N
   have hD :=
@@ -401,7 +401,7 @@ theorem integrableOn_Ioi_cumulativeJacobiFlux_sub_degreeOne_sq_and_integral_le
   calc
     (∫ y in Ioi a,
         (xiShiftedCanonicalAdmissionCumulativeJacobiFlux y N -
-          xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ 2) ≤
+          xiShiftedCanonicalAdmissionCumulativeJacobiFlux y 1) ^ (2 : ℕ)) ≤
         (N - 1 : ℕ) *
           (∫ y in Ioi a,
             xiShiftedCanonicalAdmissionInternalDegreeFluxDirichletDensity y N) := hintegral

@@ -76,16 +76,16 @@ theorem TriangleRelabelInvariantReporter.comp {F : Matrix (Fin 3) (Fin 3) ℂ �
 /-- The entrywise square sum: an invariant reporter with a non-constant orientation
 restriction. -/
 def triangleSquareSumReport (c : Matrix (Fin 3) (Fin 3) ℂ) : ℂ :=
-  ∑ i, ∑ j, (c i j) ^ 2
+  ∑ i, ∑ j, (c i j) ^ (2 : ℕ)
 
 theorem triangleRelabelInvariantReporter_squareSum :
     TriangleRelabelInvariantReporter triangleSquareSumReport :=
-  triangleRelabelInvariantReporter_sumEntries (fun z => z ^ 2)
+  triangleRelabelInvariantReporter_sumEntries (fun z => z ^ (2 : ℕ))
 
 theorem differentiable_triangleResidualReport_squareSum :
     Differentiable ℂ (triangleResidualReport triangleSquareSumReport) := by
   have hfun : triangleResidualReport triangleSquareSumReport =
-      fun a : ℂ => ∑ i, ∑ j, (a * triangleOrientationCycle ℂ i j) ^ 2 := by
+      fun a : ℂ => ∑ i, ∑ j, (a * triangleOrientationCycle ℂ i j) ^ (2 : ℕ) := by
     funext a
     simp [triangleResidualReport, triangleSquareSumReport, triangleOrientationResidual]
   rw [hfun]

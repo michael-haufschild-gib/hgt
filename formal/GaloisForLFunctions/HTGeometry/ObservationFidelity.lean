@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.HalfLineSteinRobertson
 Let `ρ` be a nonnegative observable density and let `φ` be a real observation coordinate.
 The two static channels obtained by multiplying `ρ` by `exp φ` and `exp (-φ)` obey
 
-`(integral ρ)^2 ≤ (integral exp(φ) ρ) (integral exp(-φ) ρ)`.
+`(integral ρ)^(2 : ℕ) ≤ (integral exp(φ) ρ) (integral exp(-φ) ρ)`.
 
 The proof factors `ρ` into the geometric mean of the two channel amplitudes and applies
 integral Cauchy--Schwarz.  This is the classical Hellinger/Bhattacharyya core of fidelity
@@ -29,7 +29,7 @@ theorem sq_integral_le_exponential_tilt_product
     (hρnonneg : ∀ᵐ x ∂μ, 0 ≤ ρ x)
     (hplus : Integrable (fun x => Real.exp (φ x) * ρ x) μ)
     (hminus : Integrable (fun x => Real.exp (-φ x) * ρ x) μ) :
-    (∫ x, ρ x ∂μ) ^ 2 ≤
+    (∫ x, ρ x ∂μ) ^ (2 : ℕ) ≤
       (∫ x, Real.exp (φ x) * ρ x ∂μ) *
         ∫ x, Real.exp (-φ x) * ρ x ∂μ := by
   let f : α → ℝ := fun x => Real.exp (φ x / 2) * Real.sqrt (ρ x)
@@ -40,14 +40,14 @@ theorem sq_integral_le_exponential_tilt_product
     exact ((hφ.aemeasurable.div_const 2).exp.aestronglyMeasurable.mul hsqrt)
   have hgmeas : AEStronglyMeasurable g μ := by
     exact ((hφ.aemeasurable.neg.div_const 2).exp.aestronglyMeasurable.mul hsqrt)
-  have hf : Integrable (fun x => f x ^ 2) μ := by
+  have hf : Integrable (fun x => f x ^ (2 : ℕ)) μ := by
     apply hplus.congr
     filter_upwards [hρnonneg] with x hx
     dsimp only [f]
     rw [mul_pow, Real.sq_sqrt hx, pow_two, ← Real.exp_add]
     congr 1
     ring
-  have hg : Integrable (fun x => g x ^ 2) μ := by
+  have hg : Integrable (fun x => g x ^ (2 : ℕ)) μ := by
     apply hminus.congr
     filter_upwards [hρnonneg] with x hx
     dsimp only [g]
@@ -63,11 +63,11 @@ theorem sq_integral_le_exponential_tilt_product
     rw [show Real.exp (φ x / 2) * Real.sqrt (ρ x) *
           (Real.exp (-φ x / 2) * Real.sqrt (ρ x)) =
         (Real.exp (φ x / 2) * Real.exp (-φ x / 2)) *
-          Real.sqrt (ρ x) ^ 2 by ring,
+          Real.sqrt (ρ x) ^ (2 : ℕ) by ring,
       Real.sq_sqrt hx, ← Real.exp_add]
     rw [show φ x / 2 + -φ x / 2 = 0 by ring]
     simp
-  have hfsq : (∫ x, f x ^ 2 ∂μ) =
+  have hfsq : (∫ x, f x ^ (2 : ℕ) ∂μ) =
       ∫ x, Real.exp (φ x) * ρ x ∂μ := by
     apply integral_congr_ae
     filter_upwards [hρnonneg] with x hx
@@ -75,7 +75,7 @@ theorem sq_integral_le_exponential_tilt_product
     rw [mul_pow, Real.sq_sqrt hx, pow_two, ← Real.exp_add]
     congr 1
     ring
-  have hgsq : (∫ x, g x ^ 2 ∂μ) =
+  have hgsq : (∫ x, g x ^ (2 : ℕ) ∂μ) =
       ∫ x, Real.exp (-φ x) * ρ x ∂μ := by
     apply integral_congr_ae
     filter_upwards [hρnonneg] with x hx

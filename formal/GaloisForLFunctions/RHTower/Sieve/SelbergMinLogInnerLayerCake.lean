@@ -150,7 +150,7 @@ theorem selbergMoebiusPair_minLogOneTwo_eq_layerCake
       let A := Real.log ((N : ℝ) / ((q * u : ℕ) : ℝ))
       let B := Real.log ((N : ℝ) / ((r * v : ℕ) : ℝ))
       selbergMoebiusReciprocalPair u v *
-        (A * B ^ 2 * min A B ^ (k + 1))) =
+        (A * B ^ (2 : ℕ) * min A B ^ (k + 1))) =
       ∫ t in (0 : ℝ)..Real.log ((N : ℝ) / (q : ℝ)),
         ((k : ℝ) + 1) * t ^ k *
           moebiusShiftedLogKernelReal t
@@ -177,7 +177,7 @@ theorem selbergMoebiusPair_minLogTwoTwo_eq_layerCake
       let A := Real.log ((N : ℝ) / ((q * u : ℕ) : ℝ))
       let B := Real.log ((N : ℝ) / ((r * v : ℕ) : ℝ))
       selbergMoebiusReciprocalPair u v *
-        (A ^ 2 * B ^ 2 * min A B ^ (k + 1))) =
+        (A ^ (2 : ℕ) * B ^ (2 : ℕ) * min A B ^ (k + 1))) =
       ∫ t in (0 : ℝ)..Real.log ((N : ℝ) / (q : ℝ)),
         ((k : ℝ) + 1) * t ^ k *
           moebiusShiftedLogSqKernelReal t

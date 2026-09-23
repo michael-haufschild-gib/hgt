@@ -23,11 +23,11 @@ private theorem deriv_digamma_real_diff_re_neg
   have hyre : 0 < ((y : ℂ)).re := by rw [Complex.ofReal_re]; exact hy
   have hxre : 0 < ((x : ℂ)).re := by rw [Complex.ofReal_re]; exact hx
   have hSre : ∀ (w : ℝ) (N : ℕ),
-      (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ 2)⁻¹).re =
-        ∑ n ∈ Finset.range N, ((w + n) ^ 2)⁻¹ := by
+      (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹).re =
+        ∑ n ∈ Finset.range N, ((w + n) ^ (2 : ℕ))⁻¹ := by
     intro w N
-    rw [show (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ 2)⁻¹) =
-        ((∑ n ∈ Finset.range N, ((w + n) ^ 2)⁻¹ : ℝ) : ℂ) from ?_, Complex.ofReal_re]
+    rw [show (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹) =
+        ((∑ n ∈ Finset.range N, ((w + n) ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) from ?_, Complex.ofReal_re]
     rw [Complex.ofReal_sum]
     apply Finset.sum_congr rfl
     intro n _
@@ -36,21 +36,21 @@ private theorem deriv_digamma_real_diff_re_neg
   have hlim := (_root_.RHTower.deriv_digamma_eq_tsum_limit hyre).sub
     (_root_.RHTower.deriv_digamma_eq_tsum_limit hxre)
   have hlimre : Tendsto (fun N : ℕ =>
-      ((∑ n ∈ Finset.range N, (((y : ℂ) + (n : ℂ)) ^ 2)⁻¹) -
-        (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ 2)⁻¹)).re)
+      ((∑ n ∈ Finset.range N, (((y : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹) -
+        (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹)).re)
       atTop (nhds ((deriv Complex.digamma (y : ℂ) -
         deriv Complex.digamma (x : ℂ)).re)) :=
     Complex.continuous_re.continuousAt.tendsto.comp hlim
   have hbound : ∀ N : ℕ,
-      ((∑ n ∈ Finset.range N, (((y : ℂ) + (n : ℂ)) ^ 2)⁻¹) -
-        (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ 2)⁻¹)).re ≤ 0 := by
+      ((∑ n ∈ Finset.range N, (((y : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹) -
+        (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹)).re ≤ 0 := by
     intro N
     rw [Complex.sub_re, hSre, hSre, ← Finset.sum_sub_distrib]
     apply Finset.sum_nonpos
     intro n _
     have hxn : (0 : ℝ) < x + n := by positivity
-    have hle : (x + n) ^ 2 ≤ (y + n) ^ 2 := by nlinarith
-    have hi : ((y + n) ^ 2)⁻¹ ≤ ((x + n) ^ 2)⁻¹ :=
+    have hle : (x + n) ^ (2 : ℕ) ≤ (y + n) ^ (2 : ℕ) := by nlinarith
+    have hi : ((y + n) ^ (2 : ℕ))⁻¹ ≤ ((x + n) ^ (2 : ℕ))⁻¹ :=
       inv_anti₀ (by positivity) hle
     linarith
   have hle : (deriv Complex.digamma (y : ℂ) -
@@ -62,10 +62,10 @@ private theorem deriv_digamma_real_diff_re_neg
     have hlimw := Complex.continuous_im.continuousAt.tendsto.comp
       (_root_.RHTower.deriv_digamma_eq_tsum_limit hwre)
     have hterms : ∀ N : ℕ,
-        (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ 2)⁻¹).im = 0 := by
+        (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹).im = 0 := by
       intro N
-      rw [show (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ 2)⁻¹) =
-          ((∑ n ∈ Finset.range N, ((w + n) ^ 2)⁻¹ : ℝ) : ℂ) from ?_,
+      rw [show (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹) =
+          ((∑ n ∈ Finset.range N, ((w + n) ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) from ?_,
         Complex.ofReal_im]
       rw [Complex.ofReal_sum]
       apply Finset.sum_congr rfl

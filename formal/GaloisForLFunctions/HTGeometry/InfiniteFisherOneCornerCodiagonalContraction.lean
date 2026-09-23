@@ -36,7 +36,7 @@ def infiniteFisherOneCornerJoinedReporter
 private theorem projection_norm_sq_add_complement
     (e : H →L[ℂ] H) (he : IsIdempotentElem e)
     (heAdj : adjoint e = e) (x : H) :
-    ‖e x‖ ^ 2 + ‖(1 - e) x‖ ^ 2 = ‖x‖ ^ 2 := by
+    ‖e x‖ ^ (2 : ℕ) + ‖(1 - e) x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
   have hstar : IsStarProjection e := by
     rw [isStarProjection_iff]
     exact ⟨he, ContinuousLinearMap.isSelfAdjoint_iff'.2 heAdj⟩
@@ -72,20 +72,20 @@ theorem hsNormSq_infiniteFisherOneCornerJoinedReporter_le_half
   let B : H := e psi
   let C : H := (1 - e) psi
   let E : H := e (D psi)
-  have hsplit : ‖B‖ ^ 2 + ‖C‖ ^ 2 = 1 := by
+  have hsplit : ‖B‖ ^ (2 : ℕ) + ‖C‖ ^ (2 : ℕ) = 1 := by
     simpa only [B, C, hpsi, one_pow] using
       projection_norm_sq_add_complement e he heAdj psi
   have hsplitD :
-      ‖A‖ ^ 2 + ‖E‖ ^ 2 ≤ 1 := by
+      ‖A‖ ^ (2 : ℕ) + ‖E‖ ^ (2 : ℕ) ≤ 1 := by
     have hprojection :
-        ‖E‖ ^ 2 + ‖A‖ ^ 2 = ‖D psi‖ ^ 2 := by
+        ‖E‖ ^ (2 : ℕ) + ‖A‖ ^ (2 : ℕ) = ‖D psi‖ ^ (2 : ℕ) := by
       simpa only [A, E] using
         projection_norm_sq_add_complement e he heAdj (D psi)
     have hDpsi : ‖D psi‖ ≤ 1 := by
       calc
         ‖D psi‖ ≤ ‖psi‖ := norm_apply_le_of_norm_le_one hD psi
         _ = 1 := hpsi
-    have hDpsiSq : ‖D psi‖ ^ 2 ≤ 1 := by
+    have hDpsiSq : ‖D psi‖ ^ (2 : ℕ) ≤ 1 := by
       nlinarith [norm_nonneg (D psi)]
     linarith
   have hcross :
@@ -102,18 +102,18 @@ theorem hsNormSq_infiniteFisherOneCornerJoinedReporter_le_half
           (norm_inner_le_norm E B)
           (norm_nonneg _) (mul_nonneg (norm_nonneg A) (norm_nonneg C))
   have hbound :
-      ‖A‖ ^ 2 * ‖B‖ ^ 2 + ‖C‖ ^ 2 * ‖E‖ ^ 2 +
+      ‖A‖ ^ (2 : ℕ) * ‖B‖ ^ (2 : ℕ) + ‖C‖ ^ (2 : ℕ) * ‖E‖ ^ (2 : ℕ) +
           2 * Complex.re (inner ℂ A C * inner ℂ E B) ≤
-        (‖A‖ * ‖B‖ + ‖C‖ * ‖E‖) ^ 2 := by
+        (‖A‖ * ‖B‖ + ‖C‖ * ‖E‖) ^ (2 : ℕ) := by
     nlinarith
   have htwoDimensionalCauchy :
-      (‖A‖ * ‖B‖ + ‖C‖ * ‖E‖) ^ 2 ≤
-        (‖A‖ ^ 2 + ‖E‖ ^ 2) *
-          (‖B‖ ^ 2 + ‖C‖ ^ 2) := by
+      (‖A‖ * ‖B‖ + ‖C‖ * ‖E‖) ^ (2 : ℕ) ≤
+        (‖A‖ ^ (2 : ℕ) + ‖E‖ ^ (2 : ℕ)) *
+          (‖B‖ ^ (2 : ℕ) + ‖C‖ ^ (2 : ℕ)) := by
     nlinarith [sq_nonneg (‖A‖ * ‖C‖ - ‖E‖ * ‖B‖)]
   have hproduct :
-      (‖A‖ ^ 2 + ‖E‖ ^ 2) *
-          (‖B‖ ^ 2 + ‖C‖ ^ 2) ≤ 1 := by
+      (‖A‖ ^ (2 : ℕ) + ‖E‖ ^ (2 : ℕ)) *
+          (‖B‖ ^ (2 : ℕ) + ‖C‖ ^ (2 : ℕ)) ≤ 1 := by
     rw [hsplit]
     simpa using hsplitD
   rw [infiniteFisherOneCornerJoinedReporter,
@@ -125,7 +125,7 @@ theorem hsNormSq_infiniteFisherOneCornerJoinedReporter_le_half
     hsNormSq_rankOne_add_rankOne]
   change
     (1 / 2 : ℝ) *
-        (‖A‖ ^ 2 * ‖B‖ ^ 2 + ‖C‖ ^ 2 * ‖E‖ ^ 2 +
+        (‖A‖ ^ (2 : ℕ) * ‖B‖ ^ (2 : ℕ) + ‖C‖ ^ (2 : ℕ) * ‖E‖ ^ (2 : ℕ) +
           2 * Complex.re (inner ℂ A C * inner ℂ E B)) ≤ 1 / 2
   nlinarith
 
@@ -138,7 +138,7 @@ theorem norm_sq_hsInner_infiniteFisherOneCornerJoinedReporter_le_half
     (he : IsIdempotentElem e) (heAdj : adjoint e = e)
     (hpsi : ‖psi‖ = 1) (hD : ‖D‖ ≤ 1) :
     ‖hsInner source
-        (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ 2 ≤
+        (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ (2 : ℕ) ≤
       (1 / 2 : ℝ) * hsNormSq source := by
   have hreporter :
       IsHilbertSchmidt
@@ -149,17 +149,17 @@ theorem norm_sq_hsInner_infiniteFisherOneCornerJoinedReporter_le_half
   have hreporterBound :=
     hsNormSq_infiniteFisherOneCornerJoinedReporter_le_half
       e D psi he heAdj hpsi hD
-  have hsourceSq : hsNorm source ^ 2 = hsNormSq source := by
+  have hsourceSq : hsNorm source ^ (2 : ℕ) = hsNormSq source := by
     rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg source)]
   have hreporterSq :
-      hsNorm (infiniteFisherOneCornerJoinedReporter e D psi) ^ 2 =
+      hsNorm (infiniteFisherOneCornerJoinedReporter e D psi) ^ (2 : ℕ) =
         hsNormSq (infiniteFisherOneCornerJoinedReporter e D psi) := by
     rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg _)]
   have hcsSq :
       ‖hsInner source
-          (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ 2 ≤
-        hsNorm source ^ 2 *
-          hsNorm (infiniteFisherOneCornerJoinedReporter e D psi) ^ 2 := by
+          (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ (2 : ℕ) ≤
+        hsNorm source ^ (2 : ℕ) *
+          hsNorm (infiniteFisherOneCornerJoinedReporter e D psi) ^ (2 : ℕ) := by
     nlinarith [norm_nonneg
       (hsInner source
         (infiniteFisherOneCornerJoinedReporter e D psi)),
@@ -169,7 +169,7 @@ theorem norm_sq_hsInner_infiniteFisherOneCornerJoinedReporter_le_half
   rw [hsourceSq, hreporterSq] at hcsSq
   calc
     ‖hsInner source
-        (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ 2 ≤
+        (infiniteFisherOneCornerJoinedReporter e D psi)‖ ^ (2 : ℕ) ≤
         hsNormSq source *
           hsNormSq (infiniteFisherOneCornerJoinedReporter e D psi) :=
       hcsSq

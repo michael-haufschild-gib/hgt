@@ -54,12 +54,12 @@ theorem exists_xiSquaredEulerAperture_atom_charge_without_hilbert
       xiSquaredEulerApertureShearedEvaluation
     change lam.re *
       ((evalRealPolynomial p lam).re -
-        lam.im / lam.re * (evalRealPolynomial p lam).im) ^ 2 = 0
+        lam.im / lam.re * (evalRealPolynomial p lam).im) ^ (2 : ℕ) = 0
     rw [heval]
     simp [w]
   · unfold xiSquaredEulerApertureTransverseTerm
     change 0 < Complex.normSq lam / lam.re *
-      (evalRealPolynomial p lam).im ^ 2
+      (evalRealPolynomial p lam).im ^ (2 : ℕ)
     rw [heval]
     have hnorm : 0 < Complex.normSq lam := by
       exact Complex.normSq_pos.mpr (fun hzero => him (by rw [hzero]; rfl))

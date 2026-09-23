@@ -15,7 +15,7 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalIntegratedSemigroupInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 private theorem clipped_add (s : ℝ≥0) {x : ℝ} (hx : 0 ≤ x) :
     (x+(s:ℝ)).toNNReal = x.toNNReal+s := by

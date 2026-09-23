@@ -47,23 +47,23 @@ theorem ccmActualHeadWallChordJetCurrent_l2Reflection
   let g : SoninL2 := fourierUnitary f
   have hreflect := l2Reflection_ae g
   calc
-    (∫ xi : ℝ, m xi * ‖(l2Reflection g : ℝ → ℂ) xi‖ ^ 2) =
-        ∫ xi : ℝ, m xi * ‖(g : ℝ → ℂ) (-xi)‖ ^ 2 := by
+    (∫ xi : ℝ, m xi * ‖(l2Reflection g : ℝ → ℂ) xi‖ ^ (2 : ℕ)) =
+        ∫ xi : ℝ, m xi * ‖(g : ℝ → ℂ) (-xi)‖ ^ (2 : ℕ) := by
       apply integral_congr_ae
       filter_upwards [hreflect] with xi hxi
       rw [hxi]
-    _ = ∫ xi : ℝ, -(m (-xi) * ‖(g : ℝ → ℂ) (-xi)‖ ^ 2) := by
+    _ = ∫ xi : ℝ, -(m (-xi) * ‖(g : ℝ → ℂ) (-xi)‖ ^ (2 : ℕ)) := by
       apply integral_congr_ae
       filter_upwards with xi
       dsimp only [m]
       rw [deriv_normSq_ccmActualHeadMellinWallChord_primePower_neg]
       ring
-    _ = -(∫ xi : ℝ, m (-xi) * ‖(g : ℝ → ℂ) (-xi)‖ ^ 2) := by
+    _ = -(∫ xi : ℝ, m (-xi) * ‖(g : ℝ → ℂ) (-xi)‖ ^ (2 : ℕ)) := by
       rw [integral_neg]
-    _ = -(∫ xi : ℝ, m xi * ‖(g : ℝ → ℂ) xi‖ ^ 2) := by
+    _ = -(∫ xi : ℝ, m xi * ‖(g : ℝ → ℂ) xi‖ ^ (2 : ℕ)) := by
       congr 1
       simpa only using MeasureTheory.integral_neg_eq_self
-        (fun xi : ℝ => m xi * ‖(g : ℝ → ℂ) xi‖ ^ 2) volume
+        (fun xi : ℝ => m xi * ‖(g : ℝ → ℂ) xi‖ ^ (2 : ℕ)) volume
 
 /-- The jet current is quadratic, hence invariant under global sign. -/
 @[simp] theorem ccmActualHeadWallChordJetCurrent_neg

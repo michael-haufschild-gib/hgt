@@ -43,7 +43,7 @@ theorem exists_entire_same_circleBoundaryNorm_distinct_zeroOrder :
       AnalyticOnNhd ℂ g Set.univ ∧
       (∀ z : ℂ, ‖z‖ = 1 → ‖f z‖ = ‖g z‖) ∧
       analyticOrderAt f 0 ≠ analyticOrderAt g 0 := by
-  refine ⟨fun z : ℂ => z ^ 1, fun z : ℂ => z ^ 2, ?_, ?_, ?_, ?_⟩
+  refine ⟨fun z : ℂ => z ^ (1 : ℕ), fun z : ℂ => z ^ (2 : ℕ), ?_, ?_, ?_, ?_⟩
   · rw [Complex.analyticOnNhd_univ_iff_differentiable]
     fun_prop
   · rw [Complex.analyticOnNhd_univ_iff_differentiable]

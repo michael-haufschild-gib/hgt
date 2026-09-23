@@ -25,11 +25,11 @@ open Finset Filter Topology
 /-- Twice the square root is below the argument from `4` on. -/
 theorem two_mul_sqrt_le {x : ℝ} (hx : 4 ≤ x) : 2 * Real.sqrt x ≤ x := by
   have hx0 : (0 : ℝ) ≤ x := by linarith
-  have hsq : Real.sqrt x ^ 2 = x := Real.sq_sqrt hx0
+  have hsq : Real.sqrt x ^ (2 : ℕ) = x := Real.sq_sqrt hx0
   have h2 : (2 : ℝ) ≤ Real.sqrt x := by
     have hle : Real.sqrt 4 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
     rwa [show Real.sqrt 4 = 2 by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at hle
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at hle
   nlinarith [Real.sqrt_nonneg x]
 
 /-- **The block is a dyadic integer interval.** -/
@@ -40,7 +40,7 @@ theorem outerBlock_eq {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) :
   have h2 : (2 : ℝ) ≤ Real.sqrt x := by
     have hle : Real.sqrt 4 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
     rwa [show Real.sqrt 4 = 2 by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at hle
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at hle
   have hmass : (0 : ℝ) ≤ h * Real.sqrt x := by positivity
   have hsx := two_mul_sqrt_le hx
   ext a
@@ -65,7 +65,7 @@ theorem card_outerBlock_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) :
   have h2 : (2 : ℝ) ≤ Real.sqrt x := by
     have hle : Real.sqrt 4 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
     rwa [show Real.sqrt 4 = 2 by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at hle
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at hle
   have hce : ((⌈Real.sqrt x⌉₊ : ℝ)) ≤ Real.sqrt x + 1 :=
     (Nat.ceil_lt_add_one (by linarith)).le
   have hcelow : Real.sqrt x ≤ ((⌈Real.sqrt x⌉₊ : ℝ)) := Nat.le_ceil _

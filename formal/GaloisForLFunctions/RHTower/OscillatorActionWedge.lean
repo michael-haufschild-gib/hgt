@@ -25,15 +25,15 @@ noncomputable section
 /-- **(24.186)** The ratio of the two momentum moments of the even Hermite eigenstate is bounded
 below by `1/3`, uniformly in the level and the frequency. -/
 theorem hermiteMomentumRatio_ge {T d : ℝ} (hT : 0 < T) (hd : 0 ≤ d) :
-    (1 : ℝ) / 3 ≤ (T * (2 * d + 1 / 2)) ^ 2 / (3 * T ^ 2 / 4 * (8 * d ^ 2 + 4 * d + 1)) := by
-  have hden : 0 < 3 * T ^ 2 / 4 * (8 * d ^ 2 + 4 * d + 1) := by positivity
+    (1 : ℝ) / 3 ≤ (T * (2 * d + 1 / 2)) ^ (2 : ℕ) / (3 * T ^ (2 : ℕ) / 4 * (8 * d ^ (2 : ℕ) + 4 * d + 1)) := by
+  have hden : 0 < 3 * T ^ (2 : ℕ) / 4 * (8 * d ^ (2 : ℕ) + 4 * d + 1) := by positivity
   rw [le_div_iff₀ hden]
   nlinarith [sq_nonneg T, sq_nonneg d, hT, hd, mul_nonneg hd hd]
 
 /-- The Paley--Zygmund mass at level one half, in the form used here. -/
-theorem paleyZygmund_half_mass {A B : ℝ} (hA : 0 < A) (hB : 0 < B) (hratio : 1 / 3 ≤ A ^ 2 / B) :
-    (1 : ℝ) / 12 ≤ A ^ 2 / (4 * B) := by
-  have h : A ^ 2 / (4 * B) = A ^ 2 / B / 4 := by
+theorem paleyZygmund_half_mass {A B : ℝ} (hA : 0 < A) (hB : 0 < B) (hratio : 1 / 3 ≤ A ^ (2 : ℕ) / B) :
+    (1 : ℝ) / 12 ≤ A ^ (2 : ℕ) / (4 * B) := by
+  have h : A ^ (2 : ℕ) / (4 * B) = A ^ (2 : ℕ) / B / 4 := by
     field_simp
   rw [h]
   linarith
@@ -96,7 +96,7 @@ theorem sqrt_mass_le {m : ℝ} (hle : m ≤ 1 / 48) :
   have hval : Real.sqrt ((1 / 12 : ℝ) / 4) = Real.sqrt (1 / 12) / 2 := by
     rw [Real.sqrt_div' _ (by norm_num : (0:ℝ) ≤ 4)]
     rw [show Real.sqrt (4 : ℝ) = 2 by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]]
   rwa [hval] at hstep
 
 end

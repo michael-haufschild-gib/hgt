@@ -30,7 +30,7 @@ def primeGammaCauchyHorizonGrade
 /-- Every source Cauchy grade is square-summable on the multiplicity-exact Xi divisor. -/
 theorem summable_norm_sq_primeGammaCauchyHorizonGrade
     (z : DeningerPrimeGammaLowerPoint) :
-    Summable (fun q : XiZeroCopy => ‖primeGammaCauchyHorizonGrade z q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖primeGammaCauchyHorizonGrade z q‖ ^ (2 : ℕ)) := by
   have h := deningerPrimeGammaLowerCauchyTest_squareSummable
     (Finsupp.single z 1)
   exact h
@@ -79,7 +79,7 @@ theorem summable_norm_sq_primeGammaCauchyResiduePacket
     (z : DeningerPrimeGammaLowerPoint) :
     Summable (fun q : XiZeroCopy =>
       ‖primeGammaCauchyResidueWeight z q *
-        xiGaussianGammaResiduePacket q‖ ^ 2) := by
+        xiGaussianGammaResiduePacket q‖ ^ (2 : ℕ)) := by
   exact (summable_weighted_packet_iff_horizonGrade
     (primeGammaCauchyHorizonGrade z)).2
       (summable_norm_sq_primeGammaCauchyHorizonGrade z)

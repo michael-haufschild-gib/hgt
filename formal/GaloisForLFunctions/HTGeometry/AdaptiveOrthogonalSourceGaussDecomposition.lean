@@ -109,10 +109,10 @@ theorem adaptiveOrthoJacobiEnergy_sub_succ_mul_nextBeta_pos_below
       (n + 1 : ℝ) * monicOrthoBeta s (n + 1) := by
   have hsquares :
       0 ≤ ∑ j ∈ Finset.range n,
-        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ 2 :=
+        (monicOrthoAlpha s j + monicOrthoAlpha s n / 2) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hdiag :
-      0 ≤ (3 * (n : ℝ) / 4 + 1) * monicOrthoAlpha s n ^ 2 := by
+      0 ≤ (3 * (n : ℝ) / 4 + 1) * monicOrthoAlpha s n ^ (2 : ℕ) := by
     positivity
   have hinterior :
       0 ≤ 2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) := by

@@ -46,7 +46,7 @@ theorem seamIncidence_analyticAt {Λ₁ Λ₂ : ℂ → ℂ} {τ₀ : ℝ}
 /-- The incidence carrier's holomorphic derivative along the line, in terms of the two
 carrier derivatives. -/
 private noncomputable def iotaDeriv (Λ₁ Λ₂ : ℂ → ℂ) (d₁ d₂ : ℂ) (z₀ : ℂ) : ℂ :=
-  (-d₂ * Λ₁ z₀ - -Λ₂ z₀ * d₁) / Λ₁ z₀ ^ 2
+  (-d₂ * Λ₁ z₀ - -Λ₂ z₀ * d₁) / Λ₁ z₀ ^ (2 : ℕ)
 
 private theorem hasDerivAt_incidence {Λ₁ Λ₂ : ℂ → ℂ} {d₁ d₂ : ℂ} {z₀ : ℂ}
     (hd₁ : HasDerivAt Λ₁ d₁ z₀) (hd₂ : HasDerivAt Λ₂ d₂ z₀) (h0 : Λ₁ z₀ ≠ 0) :

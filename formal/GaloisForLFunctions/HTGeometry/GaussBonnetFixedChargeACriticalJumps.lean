@@ -31,10 +31,10 @@ theorem egbFixedChargeAEntropyJump_critical_limit (w φ : ℝ) :
     Tendsto (egbFixedChargeAEntropyJump w φ) atBot (𝓝 0) := by
   change Tendsto (fun τ => egbFixedChargeAEntropyJump w φ τ) atBot (𝓝 0)
   simp only [egbFixedChargeAEntropyJump_formula]
-  have h : Tendsto (fun τ => Real.pi * egbFixedChargeALargeRadius w φ τ ^ 2 *
-      (1 - thermalRatio τ ^ 2 - 4 * egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ))) atBot
-      (𝓝 (Real.pi * egbFixedChargeACriticalRadius w φ ^ 2 *
-        (1 - (1 : ℝ) ^ 2 - 4 * egbFixedChargeACriticalCouplingWeight φ * 0))) :=
+  have h : Tendsto (fun τ => Real.pi * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ) *
+      (1 - thermalRatio τ ^ (2 : ℕ) - 4 * egbFixedChargeACouplingWeight τ φ * log (thermalRatio τ))) atBot
+      (𝓝 (Real.pi * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) *
+        (1 - (1 : ℝ) ^ (2 : ℕ) - 4 * egbFixedChargeACriticalCouplingWeight φ * 0))) :=
     (tendsto_const_nhds.mul ((egbFixedChargeALargeRadius_critical_limit w φ).pow 2)).mul
       ((tendsto_const_nhds.sub (thermalRatio_tendsto_atBot_one.pow 2)).sub
         ((tendsto_const_nhds.mul (egbFixedChargeACouplingWeight_critical_limit φ)).mul
@@ -46,8 +46,8 @@ theorem egbFixedChargeAVolumeJump_critical_limit (w φ : ℝ) :
     Tendsto (egbFixedChargeAVolumeJump w φ) atBot (𝓝 0) := by
   change Tendsto (fun τ => egbFixedChargeAVolumeJump w φ τ) atBot (𝓝 0)
   simp only [egbFixedChargeAVolumeJump_formula]
-  have h : Tendsto (fun τ => 4 * Real.pi * egbFixedChargeALargeRadius w φ τ ^ 3 * (1 - thermalRatio τ ^ 3) / 3)
-      atBot (𝓝 (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ 3 * (1 - (1 : ℝ) ^ 3) / 3)) :=
+  have h : Tendsto (fun τ => 4 * Real.pi * egbFixedChargeALargeRadius w φ τ ^ (3 : ℕ) * (1 - thermalRatio τ ^ (3 : ℕ)) / 3)
+      atBot (𝓝 (4 * Real.pi * egbFixedChargeACriticalRadius w φ ^ (3 : ℕ) * (1 - (1 : ℝ) ^ (3 : ℕ)) / 3)) :=
     ((tendsto_const_nhds.mul ((egbFixedChargeALargeRadius_critical_limit w φ).pow 3)).mul
       (tendsto_const_nhds.sub (thermalRatio_tendsto_atBot_one.pow 3))).div tendsto_const_nhds (by norm_num)
   norm_num at h
@@ -71,13 +71,13 @@ theorem egbFixedChargeAClapeyronSlope_secant_formula (w φ τ : ℝ) :
     egbFixedChargeAClapeyronSlope w φ τ =
       (3 / (4 * egbFixedChargeALargeRadius w φ τ)) *
         ((1 + thermalRatio τ) + 4 * egbFixedChargeACouplingWeight τ φ *
-          (log (thermalRatio τ) / (thermalRatio τ - 1))) / (1 + thermalRatio τ + thermalRatio τ ^ 2) := by
+          (log (thermalRatio τ) / (thermalRatio τ - 1))) / (1 + thermalRatio τ + thermalRatio τ ^ (2 : ℕ)) := by
   have hR := egbFixedChargeALargeRadius_pos w φ τ
   have hz := thermalRatio_pos τ
   have hzu := thermalRatio_lt_one τ
   have hn : thermalRatio τ - 1 ≠ 0 := by linarith
-  have hp : 0 < 1 + thermalRatio τ + thermalRatio τ ^ 2 := by positivity
-  have hcube : 1 - thermalRatio τ ^ 3 ≠ 0 := by
+  have hp : 0 < 1 + thermalRatio τ + thermalRatio τ ^ (2 : ℕ) := by positivity
+  have hcube : 1 - thermalRatio τ ^ (3 : ℕ) ≠ 0 := by
     have h := mul_pos (sub_pos.mpr hzu) hp
     nlinarith
   unfold egbFixedChargeAClapeyronSlope
@@ -94,16 +94,16 @@ theorem egbFixedChargeAClapeyronSlope_critical_limit (w φ : ℝ) :
   have hz := thermalRatio_tendsto_atBot_one
   have h : Tendsto (fun τ => (3 / (4 * egbFixedChargeALargeRadius w φ τ)) *
       ((1 + thermalRatio τ) + 4 * egbFixedChargeACouplingWeight τ φ *
-        (log (thermalRatio τ) / (thermalRatio τ - 1))) / (1 + thermalRatio τ + thermalRatio τ ^ 2)) atBot
+        (log (thermalRatio τ) / (thermalRatio τ - 1))) / (1 + thermalRatio τ + thermalRatio τ ^ (2 : ℕ))) atBot
       (𝓝 ((3 / (4 * egbFixedChargeACriticalRadius w φ)) *
-        ((1 + (1 : ℝ)) + 4 * egbFixedChargeACriticalCouplingWeight φ * 1) / (1 + 1 + 1 ^ 2))) :=
+        ((1 + (1 : ℝ)) + 4 * egbFixedChargeACriticalCouplingWeight φ * 1) / (1 + 1 + 1 ^ (2 : ℕ)))) :=
     ((tendsto_const_nhds.div (tendsto_const_nhds.mul (egbFixedChargeALargeRadius_critical_limit w φ)) (by positivity)).mul
       ((tendsto_const_nhds.add hz).add
         ((tendsto_const_nhds.mul (egbFixedChargeACouplingWeight_critical_limit φ)).mul
           egbFixedChargeA_log_secant_critical_limit))).div
             ((tendsto_const_nhds.add hz).add (hz.pow 2)) (by norm_num)
   have he : (3 / (4 * egbFixedChargeACriticalRadius w φ)) *
-      ((1 + (1 : ℝ)) + 4 * egbFixedChargeACriticalCouplingWeight φ * 1) / (1 + 1 + 1 ^ 2) =
+      ((1 + (1 : ℝ)) + 4 * egbFixedChargeACriticalCouplingWeight φ * 1) / (1 + 1 + 1 ^ (2 : ℕ)) =
     (1 + 2 * egbFixedChargeACriticalCouplingWeight φ) / (2 * egbFixedChargeACriticalRadius w φ) := by
     field_simp <;> ring
   rwa [he] at h

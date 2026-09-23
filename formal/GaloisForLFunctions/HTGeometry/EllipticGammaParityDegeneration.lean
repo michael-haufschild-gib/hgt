@@ -41,7 +41,7 @@ theorem norm_mul_sub_le_of_near {F B w : ℂ} {a b : ℝ} (hF : ‖F - 1‖ ≤ 
 /-- A quotient of a factor near one by a factor near `w` is near `w⁻¹`. -/
 theorem norm_div_sub_inv_le_of_near {F B w : ℂ} (hw : w ≠ 0) {a b : ℝ} (hF : ‖F - 1‖ ≤ a)
     (hB : ‖B - w‖ ≤ b) (ha : 0 ≤ a) (hb : 0 ≤ b) (hbw : b ≤ ‖w‖ / 2) :
-    ‖F / B - w⁻¹‖ ≤ (‖w‖ * a + b) * (2 / ‖w‖ ^ 2) := by
+    ‖F / B - w⁻¹‖ ≤ (‖w‖ * a + b) * (2 / ‖w‖ ^ (2 : ℕ)) := by
   have hwpos : 0 < ‖w‖ := norm_pos_iff.mpr hw
   have hBlow : ‖w‖ / 2 ≤ ‖B‖ := by
     have hrev : ‖w‖ - ‖B‖ ≤ ‖w - B‖ := norm_sub_norm_le w B
@@ -64,7 +64,7 @@ theorem norm_div_sub_inv_le_of_near {F B w : ℂ} (hw : w ≠ 0) {a b : ℝ} (hF
       rw [mul_comm]
       exact mul_le_mul_of_nonneg_left hF (norm_nonneg _)
     linarith
-  have hden : ‖w‖ ^ 2 / 2 ≤ ‖B‖ * ‖w‖ := by
+  have hden : ‖w‖ ^ (2 : ℕ) / 2 ≤ ‖B‖ * ‖w‖ := by
     have := mul_le_mul_of_nonneg_right hBlow (le_of_lt hwpos)
     nlinarith
   have hdenpos : (0 : ℝ) < ‖B‖ * ‖w‖ := by
@@ -73,10 +73,10 @@ theorem norm_div_sub_inv_le_of_near {F B w : ℂ} (hw : w ≠ 0) {a b : ℝ} (hF
   rw [div_le_iff₀ hdenpos]
   have hnn : (0 : ℝ) ≤ ‖w‖ * a + b := by positivity
   calc ‖F * w - B‖ ≤ ‖w‖ * a + b := hnum
-    _ = (‖w‖ * a + b) * (2 / ‖w‖ ^ 2) * (‖w‖ ^ 2 / 2) := by
+    _ = (‖w‖ * a + b) * (2 / ‖w‖ ^ (2 : ℕ)) * (‖w‖ ^ (2 : ℕ) / 2) := by
         field_simp
-    _ ≤ (‖w‖ * a + b) * (2 / ‖w‖ ^ 2) * (‖B‖ * ‖w‖) := by
-        have hfac : (0 : ℝ) ≤ (‖w‖ * a + b) * (2 / ‖w‖ ^ 2) := by positivity
+    _ ≤ (‖w‖ * a + b) * (2 / ‖w‖ ^ (2 : ℕ)) * (‖B‖ * ‖w‖) := by
+        have hfac : (0 : ℝ) ≤ (‖w‖ * a + b) * (2 / ‖w‖ ^ (2 : ℕ)) := by positivity
         exact mul_le_mul_of_nonneg_left hden hfac
 
 /-- The parity-correct zero-nome boundary. -/
@@ -96,7 +96,7 @@ theorem norm_product_sub_zeroNomeBoundary_le {τ : ι → ℂ} {z : ℂ} {a b : 
     ‖multipleEllipticGammaProduct τ z - zeroNomeBoundary ι z‖
       ≤ max ((1 + a) * b + ‖1 - multipleEllipticGammaCoordinate z‖ * a)
         ((‖1 - multipleEllipticGammaCoordinate z‖ * a + b)
-          * (2 / ‖1 - multipleEllipticGammaCoordinate z‖ ^ 2)) := by
+          * (2 / ‖1 - multipleEllipticGammaCoordinate z‖ ^ (2 : ℕ))) := by
   rw [multipleEllipticGammaProduct, zeroNomeBoundary]
   by_cases hpar : Even (Fintype.card ι)
   · rw [if_pos hpar, if_pos hpar]

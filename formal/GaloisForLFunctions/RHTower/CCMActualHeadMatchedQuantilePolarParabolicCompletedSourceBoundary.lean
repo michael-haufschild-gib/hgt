@@ -92,7 +92,7 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal_form (K : ℕ) 
       2 * (ccmActualHeadQuantilePolarCoordinate (K + 3) -
           ccmActualHeadPolarMassCoordinate T) *
           ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal K T 2 -
-        (ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal K T 1) ^ 2 := by
+        (ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal K T 1) ^ (2 : ℕ) := by
   unfold ccmParabolicForm
   rw [ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal_zero]
 
@@ -170,7 +170,7 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal_form_at_quantil
     (K : ℕ) :
     ccmParabolicForm (ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal K
         (ccmOutgoingPrimeQuantileBoundary (K + 3))) =
-      -(ccmActualHeadMatchedQuantileParabolicCodiagonal K 1) ^ 2 := by
+      -(ccmActualHeadMatchedQuantileParabolicCodiagonal K 1) ^ (2 : ℕ) := by
   rw [ccmActualHeadMatchedCompletedQuantileParabolicCodiagonal_at_quantileBoundary,
     ccmActualHeadMatchedQuantileParabolicCodiagonal_form]
 

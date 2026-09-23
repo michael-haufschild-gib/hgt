@@ -19,7 +19,7 @@ def rawFifthIntegrand (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) (
 
 def rawFifthDensity (q : SchwartzMap ℝ ℂ) (k x : ℝ) : ℝ :=
   rawFourthMass q k*rawInteractionDensity q x+
-    (rawInteractionMass q^2+|k| * rawCubicMass q)*rawCubicDensity q x+rawQuinticDensity q x
+    (rawInteractionMass q^(2 : ℕ)+|k| * rawCubicMass q)*rawCubicDensity q x+rawQuinticDensity q x
 
 theorem rawFifthDensity_nonneg (q : SchwartzMap ℝ ℂ) (k x : ℝ) : 0 ≤ rawFifthDensity q k x := by
   have hM := rawInteractionMass_nonneg q

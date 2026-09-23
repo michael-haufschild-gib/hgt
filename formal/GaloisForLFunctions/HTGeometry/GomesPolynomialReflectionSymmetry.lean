@@ -37,7 +37,7 @@ theorem gomesPolynomialReflectionEnd_derivative (c : K) :
 omit [CharZero K] in
 /-- Every affine reflection is an involution on all polynomials. -/
 theorem gomesPolynomialReflectionEnd_sq (c : K) :
-    gomesPolynomialReflectionEnd K c ^ 2 = 1 := by
+    gomesPolynomialReflectionEnd K c ^ (2 : ℕ) = 1 := by
   apply LinearMap.ext
   intro P
   rw [pow_two, Module.End.mul_apply]

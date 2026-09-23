@@ -38,16 +38,16 @@ theorem cutoff_pos (N : ℕ) : 0 < cutoff N := one_div_pos.mpr (rate_pos N)
 theorem mass_second_lower (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
     {y : ℝ} (hy : cutoff N ≤ y) :
-    rate N ^ 2 * mass N f y ≤ deriv (deriv (mass N f)) y := by
+    rate N ^ (2 : ℕ) * mass N f y ≤ deriv (deriv (mass N f)) y := by
   have hypos := (cutoff_pos N).trans_le hy
   have hky : 1 ≤ y * rate N := (div_le_iff₀ (rate_pos N)).mp hy
-  have hsq : 1 ≤ rate N ^ 2 * y ^ 2 := by nlinarith [sq_nonneg (y * rate N - 1)]
-  have hpot : (lam : ℝ) / y ^ 2 ≤ rate N ^ 2 / 4 := by
+  have hsq : 1 ≤ rate N ^ (2 : ℕ) * y ^ (2 : ℕ) := by nlinarith [sq_nonneg (y * rate N - 1)]
+  have hpot : (lam : ℝ) / y ^ (2 : ℕ) ≤ rate N ^ (2 : ℕ) / 4 := by
     rw [div_le_iff₀ (sq_pos_of_pos hypos)]
     nlinarith [lam.2.2]
   have hm := mass_nonneg N f hypos
   have hG := gradientEnergy_ge_first_frequency N lam f hypos
-  change rate N ^ 2 * mass N f y ≤ gradientEnergy N f y at hG
+  change rate N ^ (2 : ℕ) * mass N f y ≤ gradientEnergy N f y at hG
   have hh := mul_le_mul_of_nonneg_right hpot hm
   rw [(mass_second_hasDerivAt N f hypos).deriv]
   nlinarith [mul_nonneg (sq_nonneg (rate N)) hm]
@@ -87,13 +87,13 @@ private theorem decaying_ode_barrier {u v a2 : ℝ → ℝ} {A k : ℝ} (hk : 0 
     (hu : ∀ y ∈ Ici A, HasDerivAt u (v y) y)
     (hv : ∀ y ∈ Ici A, HasDerivAt v (a2 y) y)
     (hu0 : ∀ y ∈ Ici A, 0 ≤ u y)
-    (ha2 : ∀ y ∈ Ici A, k ^ 2 * u y ≤ a2 y)
+    (ha2 : ∀ y ∈ Ici A, k ^ (2 : ℕ) * u y ≤ a2 y)
     (hdec : Tendsto u atTop (𝓝 0)) : ∀ y ∈ Ici A, v y + k * u y ≤ 0 := by
   have hv0 := decaying_convex_deriv_nonpos hu hv
     (fun y hy => (mul_nonneg (sq_nonneg k) (hu0 y hy)).trans (ha2 y hy)) hdec
   let B := fun y => Real.exp (-k * y) * (v y + k * u y)
   have hdB (y : ℝ) (hy : y ∈ Ici A) :
-      HasDerivAt B (Real.exp (-k * y) * (a2 y - k ^ 2 * u y)) y := by
+      HasDerivAt B (Real.exp (-k * y) * (a2 y - k ^ (2 : ℕ) * u y)) y := by
     convert (((hasDerivAt_id y).const_mul (-k)).exp).mul
       ((hv y hy).add ((hu y hy).const_mul k)) using 1 <;> try rfl
     simp only [id_eq, Pi.add_apply]
@@ -124,7 +124,7 @@ private theorem decaying_ode_exponential {u v a2 : ℝ → ℝ} {A k : ℝ} (hk 
     (hu : ∀ y ∈ Ici A, HasDerivAt u (v y) y)
     (hv : ∀ y ∈ Ici A, HasDerivAt v (a2 y) y)
     (hu0 : ∀ y ∈ Ici A, 0 ≤ u y)
-    (ha2 : ∀ y ∈ Ici A, k ^ 2 * u y ≤ a2 y)
+    (ha2 : ∀ y ∈ Ici A, k ^ (2 : ℕ) * u y ≤ a2 y)
     (hdec : Tendsto u atTop (𝓝 0)) :
     ∀ y ∈ Ici A, u y ≤ u A * Real.exp (-k * (y - A)) := by
   have hb := decaying_ode_barrier hk hu hv hu0 ha2 hdec
@@ -254,7 +254,7 @@ theorem flux_nonpos (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
 theorem flux_deriv_lower (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (lam : ℝ))
     {y : ℝ} (hy : cutoff N ≤ y) :
-    rate N ^ 2 / 2 * mass N f y ≤ deriv (flux N f) y := by
+    rate N ^ (2 : ℕ) / 2 * mass N f y ≤ deriv (flux N f) y := by
   have hp := (cutoff_pos N).trans_le hy
   have h := mass_second_lower N lam f hy
   rw [(mass_second_hasDerivAt N f hp).deriv, (flux_hasDerivAt N f hp).deriv] at *
@@ -270,7 +270,7 @@ theorem flux_deriv_integrable (N : ℕ) (lam : Ioo (0 : ℝ) (1 / 4))
   · intro y hy
     exact (flux_hasDerivAt N f ((cutoff_pos N).trans_le hy)).differentiableAt.hasDerivAt
   · intro y hy
-    exact (mul_nonneg (by positivity : 0 ≤ rate N ^ 2 / 2)
+    exact (mul_nonneg (by positivity : 0 ≤ rate N ^ (2 : ℕ) / 2)
       (mass_nonneg N f ((cutoff_pos N).trans hy))).trans (flux_deriv_lower N lam f hy.le)
 
 /-- Infinite-height flux balance with its terminal value proved to vanish. -/

@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspModularEnergyBounds
 namespace RHTower
 noncomputable section
 
-private abbrev X := thetaCuspSelfDualModularScale^2
+private abbrev X := thetaCuspSelfDualModularScale^(2 : ℕ)
 private abbrev M := thetaCuspSelfDualThetaMass
 private abbrev d := HTGeometry.modularThetaEvenSeamHeadPolynomial X
 private abbrev e := HTGeometry.modularThetaEvenSeamFourPolynomial X
@@ -17,7 +17,7 @@ private theorem mass_pos : 0 < M := by
   dsimp [M]
   linarith
 
-private theorem source_zero_sq : thetaCuspFullSource 0^2 = M^2*q := by
+private theorem source_zero_sq : thetaCuspFullSource 0^(2 : ℕ) = M^(2 : ℕ)*q := by
   simpa [thetaCuspNativeReflectionJet, M, q, X, pow_two] using
     thetaCuspNativeEvenMoment_zero_eq_polynomial (0 : Fin 7)
 
@@ -33,21 +33,21 @@ private theorem source_poly_pos : 0 < q := by
 
 /-- The literal Schur coordinate divided by source mass is an exact rational modular function. -/
 theorem thetaCuspNativeEvenFourSchur_zero_div_source_sq :
-    thetaCuspNativeEvenFourSchur 0 / thetaCuspFullSource 0^2 =
-      HTGeometry.modularThetaEvenSeamFourPolynomial (thetaCuspSelfDualModularScale^2) /
-        (HTGeometry.modularThetaEvenSeamHeadPolynomial (thetaCuspSelfDualModularScale^2) *
-          HTGeometry.modularThetaEvenSeamMomentPolynomial 0 (thetaCuspSelfDualModularScale^2)) := by
+    thetaCuspNativeEvenFourSchur 0 / thetaCuspFullSource 0^(2 : ℕ) =
+      HTGeometry.modularThetaEvenSeamFourPolynomial (thetaCuspSelfDualModularScale^(2 : ℕ)) /
+        (HTGeometry.modularThetaEvenSeamHeadPolynomial (thetaCuspSelfDualModularScale^(2 : ℕ)) *
+          HTGeometry.modularThetaEvenSeamMomentPolynomial 0 (thetaCuspSelfDualModularScale^(2 : ℕ))) := by
   have hd := thetaCuspNativeEvenFourDet_eq_head_mul_schur (x := 0) le_rfl
   rw [thetaCuspNativeEvenFourDet_zero_eq_polynomial,
     thetaCuspNativeEvenHead_zero_det_eq_polynomial] at hd
-  have hc : M^6*(M^2*e) = M^6*(d*thetaCuspNativeEvenFourSchur 0) := by
+  have hc : M^(6 : ℕ)*(M^(2 : ℕ)*e) = M^(6 : ℕ)*(d*thetaCuspNativeEvenFourSchur 0) := by
     convert hd using 1 <;> ring
   have hc' := mul_left_cancel₀ (pow_ne_zero 6 mass_pos.ne') hc
-  have hs : thetaCuspNativeEvenFourSchur 0 = M^2*e/d := by
+  have hs : thetaCuspNativeEvenFourSchur 0 = M^(2 : ℕ)*e/d := by
     apply (eq_div_iff head_poly_pos.ne').mpr
     nlinarith only [hc']
   rw [hs, source_zero_sq]
-  change M^2*e/d/(M^2*q) = e/(d*q)
+  change M^(2 : ℕ)*e/d/(M^(2 : ℕ)*q) = e/(d*q)
   field_simp [mass_pos.ne', head_poly_pos.ne', source_poly_pos.ne']
 
 /-- The uncorrected even rank-four seam determinant is strictly negative for the actual source. -/
@@ -70,9 +70,9 @@ theorem thetaCuspNativeEvenFourSchur_zero_neg : thetaCuspNativeEvenFourSchur 0 <
 /-- The source mass cancels completely from the canonical even compensation coefficient. -/
 theorem thetaCuspNativeEvenCompensationCoefficient_eq_modularRatio :
     thetaCuspNativeEvenCompensationCoefficient = 1 -
-      HTGeometry.modularThetaEvenSeamFourPolynomial (thetaCuspSelfDualModularScale^2) /
-        (HTGeometry.modularThetaEvenSeamHeadPolynomial (thetaCuspSelfDualModularScale^2) *
-          HTGeometry.modularThetaEvenSeamMomentPolynomial 0 (thetaCuspSelfDualModularScale^2)) := by
+      HTGeometry.modularThetaEvenSeamFourPolynomial (thetaCuspSelfDualModularScale^(2 : ℕ)) /
+        (HTGeometry.modularThetaEvenSeamHeadPolynomial (thetaCuspSelfDualModularScale^(2 : ℕ)) *
+          HTGeometry.modularThetaEvenSeamMomentPolynomial 0 (thetaCuspSelfDualModularScale^(2 : ℕ))) := by
   rw [← thetaCuspNativeEvenFourSchur_zero_div_source_sq]
   unfold thetaCuspNativeEvenCompensationCoefficient
   rw [abs_of_neg thetaCuspNativeEvenFourSchur_zero_neg]
@@ -111,8 +111,8 @@ theorem thetaCuspNativeEvenFourCompensated_zero_posDef_of_coefficient_lower
   have hp := sq_pos_of_pos (thetaCuspFullSource_pos_all 0)
   have hupper := mul_lt_mul_of_pos_right thetaCuspNativeEvenCompensationCoefficient_bounds.2 hp
   have hCmul := mul_le_mul_of_nonneg_right hC hp.le
-  have hid : thetaCuspNativeEvenCompensationCoefficient*thetaCuspFullSource 0^2 =
-      -thetaCuspNativeEvenFourSchur 0 + thetaCuspFullSource 0^2 := by
+  have hid : thetaCuspNativeEvenCompensationCoefficient*thetaCuspFullSource 0^(2 : ℕ) =
+      -thetaCuspNativeEvenFourSchur 0 + thetaCuspFullSource 0^(2 : ℕ) := by
     unfold thetaCuspNativeEvenCompensationCoefficient
     rw [abs_of_neg thetaCuspNativeEvenFourSchur_zero_neg]
     field_simp [(thetaCuspFullSource_pos_all 0).ne']

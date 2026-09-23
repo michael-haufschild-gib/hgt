@@ -28,7 +28,7 @@ theorem pureStateTraceDistance_propagator_le_of_gap
     (Φ : EuclideanSpace ℂ ι) (hΦ : ‖Φ‖ = 1) (lam Δ δ : ℝ) (hΔ : 0 < Δ)
     (hΦeig : H₀ Φ = (lam : ℂ) • Φ)
     (hgap : ∀ x : EuclideanSpace ℂ ι, H₀.reApplyInnerSelf x
-      ≤ lam * ‖x‖ ^ 2 - Δ * (‖x‖ ^ 2 - ‖(inner ℂ Φ x : ℂ)‖ ^ 2))
+      ≤ lam * ‖x‖ ^ (2 : ℕ) - Δ * (‖x‖ ^ (2 : ℕ) - ‖(inner ℂ Φ x : ℂ)‖ ^ (2 : ℕ)))
     (hVnorm : ‖V‖ ≤ δ) (t : ℝ) :
     pureStateTraceDistance (selfAdjointPropagator (hH₀.add hV) t Φ) Φ
       ≤ 2 * Real.sqrt (2 * δ / Δ) := by

@@ -26,7 +26,7 @@ theorem mobiusDivisorInclusiveGcdGram_eq_totient_sq (M : ℕ) :
     mobiusDivisorInclusiveGcdGram M =
       ∑ g ∈ Icc 1 M, (Nat.totient g : ℝ) *
         (∑ d ∈ (Icc 1 M).filter (fun d => g ∣ d),
-          mobiusDivisorDilationChannel M d) ^ 2 := by
+          mobiusDivisorDilationChannel M d) ^ (2 : ℕ) := by
   unfold mobiusDivisorInclusiveGcdGram
   exact RHTower.Sieve.sum_gcd_mul_weight_eq_sum_totient_mul_sq
     (mobiusDivisorDilationChannel M)
@@ -70,8 +70,8 @@ private theorem late_prime_totient_component {N p : ℕ}
     (hp : p ∈ GaloisForLFunctions.HTGeometry.primesInIoc (2 * N) (4 * N)) :
     (Nat.totient p : ℝ) *
         (∑ d ∈ (Icc 1 (4 * N)).filter (fun d => p ∣ d),
-          mobiusDivisorDilationChannel (4 * N) d) ^ 2 =
-      ((p - 1 : ℕ) : ℝ) * (divisorUnsignedDilationChannel (4 * N) p) ^ 2 := by
+          mobiusDivisorDilationChannel (4 * N) d) ^ (2 : ℕ) =
+      ((p - 1 : ℕ) : ℝ) * (divisorUnsignedDilationChannel (4 * N) p) ^ (2 : ℕ) := by
   obtain ⟨hpp, hpL, hpR⟩ := GaloisForLFunctions.HTGeometry.mem_primesInIoc hp
   rw [late_prime_divisor_filter hpp hpR (by omega), sum_singleton,
     Nat.totient_prime hpp, mobiusDivisorDilationChannel_eq_moebius_unsigned,
@@ -82,20 +82,20 @@ private theorem late_prime_totient_component {N p : ℕ}
 /-- The full positive gcd Gram contains every late prime's literal totient diagonal. -/
 private theorem sum_late_prime_totient_diagonal_le_inclusiveGcdGram (N : ℕ) :
     (∑ p ∈ GaloisForLFunctions.HTGeometry.primesInIoc (2 * N) (4 * N),
-      ((p - 1 : ℕ) : ℝ) * (divisorUnsignedDilationChannel (4 * N) p) ^ 2) ≤
+      ((p - 1 : ℕ) : ℝ) * (divisorUnsignedDilationChannel (4 * N) p) ^ (2 : ℕ)) ≤
       mobiusDivisorInclusiveGcdGram (4 * N) := by
   rw [mobiusDivisorInclusiveGcdGram_eq_totient_sq]
   calc
     _ = ∑ p ∈ GaloisForLFunctions.HTGeometry.primesInIoc (2 * N) (4 * N),
       (Nat.totient p : ℝ) *
         (∑ d ∈ (Icc 1 (4 * N)).filter (fun d => p ∣ d),
-          mobiusDivisorDilationChannel (4 * N) d) ^ 2 := by
+          mobiusDivisorDilationChannel (4 * N) d) ^ (2 : ℕ) := by
         apply sum_congr rfl
         intro p hp
         exact (late_prime_totient_component hp).symm
     _ ≤ ∑ g ∈ Icc 1 (4 * N), (Nat.totient g : ℝ) *
         (∑ d ∈ (Icc 1 (4 * N)).filter (fun d => g ∣ d),
-          mobiusDivisorDilationChannel (4 * N) d) ^ 2 := by
+          mobiusDivisorDilationChannel (4 * N) d) ^ (2 : ℕ) := by
         apply sum_le_sum_of_subset_of_nonneg
         · intro p hp
           obtain ⟨hpp, _, hpR⟩ := GaloisForLFunctions.HTGeometry.mem_primesInIoc hp
@@ -105,10 +105,10 @@ private theorem sum_late_prime_totient_diagonal_le_inclusiveGcdGram (N : ℕ) :
 
 /-- Cauchy's inequality transfers known late-prime mass to its square mass. -/
 private theorem late_prime_mass_sq_le_five_mul_square_mass (N : ℕ) (hN : 1 ≤ N) :
-    (mobiusDivisorLatePrimeMass (4 * N)) ^ 2 ≤
+    (mobiusDivisorLatePrimeMass (4 * N)) ^ (2 : ℕ) ≤
       (5 * N : ℝ) *
         ∑ p ∈ GaloisForLFunctions.HTGeometry.primesInIoc (2 * N) (4 * N),
-          (divisorUnsignedDilationChannel (4 * N) p) ^ 2 := by
+          (divisorUnsignedDilationChannel (4 * N) p) ^ (2 : ℕ) := by
   let L := GaloisForLFunctions.HTGeometry.primesInIoc (2 * N) (4 * N)
   have hcard : (L.card : ℝ) ≤ (5 * N : ℝ) := by
     have hsub : L ⊆ range (4 * N + 1) := by
@@ -122,10 +122,10 @@ private theorem late_prime_mass_sq_le_five_mul_square_mass (N : ℕ) (hN : 1 ≤
     exact_mod_cast hcardNat
   have hcs := sq_sum_le_card_mul_sum_sq (s := L)
     (f := fun p => divisorUnsignedDilationChannel (4 * N) p)
-  have hsum0 : 0 ≤ ∑ p ∈ L, (divisorUnsignedDilationChannel (4 * N) p) ^ 2 :=
+  have hsum0 : 0 ≤ ∑ p ∈ L, (divisorUnsignedDilationChannel (4 * N) p) ^ (2 : ℕ) :=
     sum_nonneg fun _ _ => sq_nonneg _
-  have hbound : (∑ p ∈ L, divisorUnsignedDilationChannel (4 * N) p) ^ 2 ≤
-      (5 * N : ℝ) * ∑ p ∈ L, (divisorUnsignedDilationChannel (4 * N) p) ^ 2 :=
+  have hbound : (∑ p ∈ L, divisorUnsignedDilationChannel (4 * N) p) ^ (2 : ℕ) ≤
+      (5 * N : ℝ) * ∑ p ∈ L, (divisorUnsignedDilationChannel (4 * N) p) ^ (2 : ℕ) :=
     by exact hcs.trans (mul_le_mul_of_nonneg_right hcard hsum0)
   unfold mobiusDivisorLatePrimeMass
   have hhalf : (4 * N) / 2 = 2 * N := by omega
@@ -134,14 +134,14 @@ private theorem late_prime_mass_sq_le_five_mul_square_mass (N : ℕ) (hN : 1 ≤
 
 /-- A fixed positive fraction of squared late-prime mass is forced into every inclusive gcd Gram. -/
 theorem two_fifths_late_prime_mass_sq_le_inclusiveGcdGram (N : ℕ) (hN : 1 ≤ N) :
-    (2 / 5 : ℝ) * (mobiusDivisorLatePrimeMass (4 * N)) ^ 2 ≤
+    (2 / 5 : ℝ) * (mobiusDivisorLatePrimeMass (4 * N)) ^ (2 : ℕ) ≤
       mobiusDivisorInclusiveGcdGram (4 * N) := by
   let L := GaloisForLFunctions.HTGeometry.primesInIoc (2 * N) (4 * N)
   let U := fun p => divisorUnsignedDilationChannel (4 * N) p
   have hsq := late_prime_mass_sq_le_five_mul_square_mass N hN
   have hweight :
-      (∑ p ∈ L, ((2 * N : ℕ) : ℝ) * (U p) ^ 2) ≤
-        ∑ p ∈ L, ((p - 1 : ℕ) : ℝ) * (U p) ^ 2 := by
+      (∑ p ∈ L, ((2 * N : ℕ) : ℝ) * (U p) ^ (2 : ℕ)) ≤
+        ∑ p ∈ L, ((p - 1 : ℕ) : ℝ) * (U p) ^ (2 : ℕ) := by
     apply sum_le_sum
     intro p hp
     obtain ⟨_, hpL, _⟩ := GaloisForLFunctions.HTGeometry.mem_primesInIoc hp
@@ -149,21 +149,21 @@ theorem two_fifths_late_prime_mass_sq_le_inclusiveGcdGram (N : ℕ) (hN : 1 ≤ 
       exact_mod_cast (show 2 * N ≤ p - 1 by omega)
     exact mul_le_mul_of_nonneg_right hcoef (sq_nonneg _)
   have hscaled :
-      (2 / 5 : ℝ) * (mobiusDivisorLatePrimeMass (4 * N)) ^ 2 ≤
-        ∑ p ∈ L, ((2 * N : ℕ) : ℝ) * (U p) ^ 2 := by
+      (2 / 5 : ℝ) * (mobiusDivisorLatePrimeMass (4 * N)) ^ (2 : ℕ) ≤
+        ∑ p ∈ L, ((2 * N : ℕ) : ℝ) * (U p) ^ (2 : ℕ) := by
     calc
-      _ ≤ (2 / 5 : ℝ) * ((5 * N : ℝ) * ∑ p ∈ L, (U p) ^ 2) :=
+      _ ≤ (2 / 5 : ℝ) * ((5 * N : ℝ) * ∑ p ∈ L, (U p) ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hsq (by norm_num)
-      _ = ∑ p ∈ L, ((2 * N : ℕ) : ℝ) * (U p) ^ 2 := by
+      _ = ∑ p ∈ L, ((2 * N : ℕ) : ℝ) * (U p) ^ (2 : ℕ) := by
         have htwo : ((2 * N : ℕ) : ℝ) = 2 * (N : ℝ) := by norm_num
         calc
-          (2 / 5 : ℝ) * ((5 * N : ℝ) * ∑ p ∈ L, (U p) ^ 2) =
-              (2 * (N : ℝ)) * ∑ p ∈ L, (U p) ^ 2 := by
+          (2 / 5 : ℝ) * ((5 * N : ℝ) * ∑ p ∈ L, (U p) ^ (2 : ℕ)) =
+              (2 * (N : ℝ)) * ∑ p ∈ L, (U p) ^ (2 : ℕ) := by
                 ring
           _ = _ := by rw [← htwo, mul_sum]
   calc
-    _ ≤ ∑ p ∈ L, ((2 * N : ℕ) : ℝ) * (U p) ^ 2 := hscaled
-    _ ≤ ∑ p ∈ L, ((p - 1 : ℕ) : ℝ) * (U p) ^ 2 := hweight
+    _ ≤ ∑ p ∈ L, ((2 * N : ℕ) : ℝ) * (U p) ^ (2 : ℕ) := hscaled
+    _ ≤ ∑ p ∈ L, ((p - 1 : ℕ) : ℝ) * (U p) ^ (2 : ℕ) := hweight
     _ ≤ mobiusDivisorInclusiveGcdGram (4 * N) :=
       sum_late_prime_totient_diagonal_le_inclusiveGcdGram N
 

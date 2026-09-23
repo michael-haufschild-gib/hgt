@@ -21,7 +21,7 @@ def parameter : D4BMEisensteinAbsoluteConvergenceParameter := ⟨2, by norm_num�
 
 /-- The positive real summand of the literal primitive-pair series at s=2. -/
 def seed (z : D4BMUpperHalfPlaneCoordinate) (p : D4BMPrimitiveIntegerPair) : ℝ :=
-  (z.y / d4BMPoincareQuadratic z p.pair) ^ 2
+  (z.y / d4BMPoincareQuadratic z p.pair) ^ (2 : ℕ)
 
 /-- Every complex summand is the inclusion of its positive real value. -/
 theorem seed_complex (z : D4BMUpperHalfPlaneCoordinate) (p : D4BMPrimitiveIntegerPair) :
@@ -45,7 +45,7 @@ theorem E_eq (z : D4BMUpperHalfPlaneCoordinate) : E z = (1 / 2 : ℝ) * ∑' p, 
   norm_num
 
 /-- The two primitive identity rows give the full y² lower bound. -/
-theorem height_sq_le (z : D4BMUpperHalfPlaneCoordinate) : z.y ^ 2 ≤ E z := by
+theorem height_sq_le (z : D4BMUpperHalfPlaneCoordinate) : z.y ^ (2 : ℕ) ≤ E z := by
   classical
   let p := (d4BMPrimitiveFirstRowPairOfBool true).1
   let m := (d4BMPrimitiveFirstRowPairOfBool false).1
@@ -54,8 +54,8 @@ theorem height_sq_le (z : D4BMUpperHalfPlaneCoordinate) : z.y ^ 2 ≤ E z := by
     have he := congrArg (fun q : D4BMPrimitiveIntegerPair => q.pair.2) h
     norm_num [p, m, d4BMPrimitiveFirstRowPairOfBool] at he
   have h := (seed_summable z).sum_le_tsum {p, m} (fun q _ => sq_nonneg _)
-  have hp : seed z p = z.y ^ 2 := by simp [seed, p, d4BMPrimitiveFirstRowPairOfBool, d4BMPoincareQuadratic]
-  have hm : seed z m = z.y ^ 2 := by simp [seed, m, d4BMPrimitiveFirstRowPairOfBool, d4BMPoincareQuadratic]
+  have hp : seed z p = z.y ^ (2 : ℕ) := by simp [seed, p, d4BMPrimitiveFirstRowPairOfBool, d4BMPoincareQuadratic]
+  have hm : seed z m = z.y ^ (2 : ℕ) := by simp [seed, m, d4BMPrimitiveFirstRowPairOfBool, d4BMPoincareQuadratic]
   rw [Finset.sum_pair hne] at h
   change seed z p + seed z m ≤ ∑' q, seed z q at h
   rw [hp, hm] at h
@@ -105,7 +105,7 @@ theorem vertical_second_derivative (z : D4BMUpperHalfPlaneCoordinate) :
 
 /-- The positive-sign hyperbolic Laplacian is twice the original positive function. -/
 theorem eigen_equation (z : D4BMUpperHalfPlaneCoordinate) :
-    z.y ^ 2 * (Exx z + Eyy z) = 2 * E z := by
+    z.y ^ (2 : ℕ) * (Exx z + Eyy z) = 2 * E z := by
   have h := congrArg Complex.re (d4BM_rawEisensteinPoincareSeries_hyperbolicLaplacian_eq_eigenvalue z parameter)
   norm_num [parameter, pow_two, Complex.mul_re, Complex.mul_im, Exx, Eyy, E] at h ⊢
   exact h

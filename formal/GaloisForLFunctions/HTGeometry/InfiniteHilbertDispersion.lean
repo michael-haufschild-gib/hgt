@@ -20,13 +20,13 @@ variable {ι E : Type*} [SeminormedAddCommGroup E] [InnerProductSpace ℝ E]
 theorem tsum_pairwise_hilbert_dispersion
     (w : ι → ℝ) (v : ι → E)
     (hw : Summable w)
-    (hM : Summable fun i => w i * ‖v i‖ ^ 2)
+    (hM : Summable fun i => w i * ‖v i‖ ^ (2 : ℕ))
     (hV : Summable fun i => w i • v i)
     (hD : Summable fun p : ι × ι =>
-      w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ 2) :
-    (∑' p : ι × ι, w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ 2) =
-      2 * ((∑' i, w i) * (∑' i, w i * ‖v i‖ ^ 2) -
-        ‖∑' i, w i • v i‖ ^ 2) := by
+      w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ (2 : ℕ)) :
+    (∑' p : ι × ι, w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ (2 : ℕ)) =
+      2 * ((∑' i, w i) * (∑' i, w i * ‖v i‖ ^ (2 : ℕ)) -
+        ‖∑' i, w i • v i‖ ^ (2 : ℕ)) := by
   classical
   let square : Finset ι → Finset (ι × ι) := fun s => s.product s
   have hsquare : Tendsto square atTop atTop := by
@@ -38,33 +38,33 @@ theorem tsum_pairwise_hilbert_dispersion
       simp [square]
   have hDlim : Tendsto
       (fun s : Finset ι => ∑ p ∈ square s,
-        w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ 2)
+        w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ (2 : ℕ))
       atTop
       (𝓝 (∑' p : ι × ι,
-        w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ 2)) := by
+        w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ (2 : ℕ))) := by
     exact hD.hasSum.comp hsquare
   have hwlim : Tendsto (fun s : Finset ι => ∑ i ∈ s, w i)
       atTop (𝓝 (∑' i, w i)) := hw.hasSum
-  have hMlim : Tendsto (fun s : Finset ι => ∑ i ∈ s, w i * ‖v i‖ ^ 2)
-      atTop (𝓝 (∑' i, w i * ‖v i‖ ^ 2)) := hM.hasSum
+  have hMlim : Tendsto (fun s : Finset ι => ∑ i ∈ s, w i * ‖v i‖ ^ (2 : ℕ))
+      atTop (𝓝 (∑' i, w i * ‖v i‖ ^ (2 : ℕ))) := hM.hasSum
   have hVlim : Tendsto (fun s : Finset ι => ∑ i ∈ s, w i • v i)
       atTop (𝓝 (∑' i, w i • v i)) := hV.hasSum
   have hRlim : Tendsto
       (fun s : Finset ι =>
-        2 * ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ 2) -
-          ‖∑ i ∈ s, w i • v i‖ ^ 2))
+        2 * ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ (2 : ℕ)) -
+          ‖∑ i ∈ s, w i • v i‖ ^ (2 : ℕ)))
       atTop
-      (𝓝 (2 * ((∑' i, w i) * (∑' i, w i * ‖v i‖ ^ 2) -
-        ‖∑' i, w i • v i‖ ^ 2))) := by
+      (𝓝 (2 * ((∑' i, w i) * (∑' i, w i * ‖v i‖ ^ (2 : ℕ)) -
+        ‖∑' i, w i • v i‖ ^ (2 : ℕ)))) := by
     exact ((hwlim.mul hMlim).sub (hVlim.norm.pow 2)).const_mul 2
   have heq : (fun s : Finset ι => ∑ p ∈ square s,
-      w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ 2) =
-      fun s => 2 * ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ 2) -
-        ‖∑ i ∈ s, w i • v i‖ ^ 2) := by
+      w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ (2 : ℕ)) =
+      fun s => 2 * ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * ‖v i‖ ^ (2 : ℕ)) -
+        ‖∑ i ∈ s, w i • v i‖ ^ (2 : ℕ)) := by
     funext s
     rw [show (∑ p ∈ square s,
-        w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ 2) =
-      ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ 2 by
+        w p.1 * w p.2 * ‖v p.1 - v p.2‖ ^ (2 : ℕ)) =
+      ∑ i ∈ s, ∑ j ∈ s, w i * w j * ‖v i - v j‖ ^ (2 : ℕ) by
         simp [square, Finset.sum_product]]
     exact finite_pairwise_hilbert_dispersion s w v
   exact tendsto_nhds_unique hDlim (heq ▸ hRlim)

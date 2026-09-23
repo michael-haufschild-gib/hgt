@@ -31,7 +31,7 @@ def maynardRStar (S : Finset ℤ) : ℕ :=
 
 /-- Every ordered pair supplies one diagonal additive quadruple. -/
 theorem card_sq_le_maynardRStar (S : Finset ℤ) :
-    S.card ^ 2 ≤ maynardRStar S := by
+    S.card ^ (2 : ℕ) ≤ maynardRStar S := by
   classical
   let diagonal : ℤ × ℤ → ℤ × (ℤ × (ℤ × ℤ)) := fun p =>
     (p.1, (p.2, (p.1, p.2)))
@@ -48,7 +48,7 @@ theorem card_sq_le_maynardRStar (S : Finset ℤ) :
 
 /-- The fourth entry of an additive quadruple is uniquely determined by the first three. -/
 theorem maynardRStar_le_card_cube (S : Finset ℤ) :
-    maynardRStar S ≤ S.card ^ 3 := by
+    maynardRStar S ≤ S.card ^ (3 : ℕ) := by
   classical
   let forgetLast : ℤ × (ℤ × (ℤ × ℤ)) → ℤ × (ℤ × ℤ) := fun p =>
     (p.1, (p.2.1, p.2.2.1))
@@ -81,7 +81,7 @@ theorem maynardRStar_le_card_cube (S : Finset ℤ) :
 
 /-- Exact universal range for the fourth-moment cell count. -/
 theorem maynardRStar_sandwich (S : Finset ℤ) :
-    S.card ^ 2 ≤ maynardRStar S ∧ maynardRStar S ≤ S.card ^ 3 :=
+    S.card ^ (2 : ℕ) ≤ maynardRStar S ∧ maynardRStar S ≤ S.card ^ (3 : ℕ) :=
   ⟨card_sq_le_maynardRStar S, maynardRStar_le_card_cube S⟩
 
 end RHTower.Sieve

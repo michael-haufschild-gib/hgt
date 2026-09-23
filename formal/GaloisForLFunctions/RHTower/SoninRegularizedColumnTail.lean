@@ -48,7 +48,7 @@ theorem hsNormSq_soninAllPrimeColumnTail_eq_blockTail
   let T := soninAllPrimeColumnOperator a ha - soninAllPrimeColumnFiniteHead a s
   let F : (Nat.Primes × ℕ) × (SoninHilbertIndex × SoninHilbertIndex) → ℝ :=
     fun z => if z.1 ∈ s then 0 else
-      ‖inner ℂ (b z.2.2) (centralSoninWeightedPrimePowerResidual a z.1 (b z.2.1))‖ ^ 2
+      ‖inner ℂ (b z.2.2) (centralSoninWeightedPrimePowerResidual a z.1 (b z.2.1))‖ ^ (2 : ℕ)
   have hF : Summable F := by
     apply (summable_all_prime_residual_matrix_entries a ha).of_nonneg_of_le
     · intro z
@@ -65,7 +65,7 @@ theorem hsNormSq_soninAllPrimeColumnTail_eq_blockTail
       right_inv := fun _ => rfl }
   have hG : Summable (fun z => F (e z)) := e.summable_iff.mpr hF
   rw [hsNormSq_eq (soninAllPrimeColumnTail_isHilbertSchmidt a ha s) b]
-  change (∑' j, ‖T (b j)‖ ^ 2) = _
+  change (∑' j, ‖T (b j)‖ ^ (2 : ℕ)) = _
   calc
     _ = ∑' j, ∑' z : SoninAllPrimeIndex, F (e (j, z)) := by
       apply tsum_congr
@@ -97,21 +97,21 @@ theorem hsNormSq_soninAllPrimeColumnTail_eq_blockTail
 theorem hsNormSq_soninAllPrimeColumnTail_le_coefficientTail
     (a : ℝ) (ha : 0 < a) (s : Finset (Nat.Primes × ℕ)) :
     hsNormSq (soninAllPrimeColumnOperator a ha - soninAllPrimeColumnFiniteHead a s) ≤
-      (128 * a ^ 2) * ∑' pk : Nat.Primes × ℕ,
-        if pk ∈ s then 0 else ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+      (128 * a ^ (2 : ℕ)) * ∑' pk : Nat.Primes × ℕ,
+        if pk ∈ s then 0 else ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) := by
   classical
   rw [hsNormSq_soninAllPrimeColumnTail_eq_blockTail, ← tsum_mul_left]
   have hs := (summable_centralSoninWeightedPrimePowerResidual_hsNormSq a ha).indicator
     {pk | pk ∉ s}
   have ht := (summable_norm_soninLogPrimePowerCoefficient_sq.indicator
-    {pk | pk ∉ s}).mul_left (128 * a ^ 2)
+    {pk | pk ∉ s}).mul_left (128 * a ^ (2 : ℕ))
   have hs' : Summable (fun pk : Nat.Primes × ℕ => if pk ∈ s then 0 else
       hsNormSq (centralSoninWeightedPrimePowerResidual a pk)) := by
     apply hs.congr
     intro pk
     by_cases h : pk ∈ s <;> simp [Set.indicator, h]
-  have ht' : Summable (fun pk : Nat.Primes × ℕ => (128 * a ^ 2) *
-      (if pk ∈ s then 0 else ‖soninLogPrimePowerCoefficient pk‖ ^ 2)) := by
+  have ht' : Summable (fun pk : Nat.Primes × ℕ => (128 * a ^ (2 : ℕ)) *
+      (if pk ∈ s then 0 else ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ))) := by
     apply ht.congr
     intro pk
     by_cases h : pk ∈ s <;> simp [Set.indicator, h]

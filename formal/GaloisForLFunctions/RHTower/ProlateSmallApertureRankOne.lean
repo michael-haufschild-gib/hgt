@@ -60,7 +60,7 @@ theorem bandOperatorL2_zero : bandOperatorL2 0 = 0 := by
 
 /-- Quantitative operator-norm linearisation at the zero aperture. -/
 theorem norm_bandOperatorL2_sub_linear_zero_le (c : ℝ) :
-    ‖bandOperatorL2 c - c • cosOperatorL2 0‖ ≤ 4 * c ^ 2 / Real.pi := by
+    ‖bandOperatorL2 c - c • cosOperatorL2 0‖ ≤ 4 * c ^ (2 : ℕ) / Real.pi := by
   have h := norm_bandOperator_taylor_le 0 c
   simpa [bandOperatorL2_zero] using h
 
@@ -111,8 +111,8 @@ theorem inner_constantBandClass_eq_integral (f : RealIntervalL2 (-1 : ℝ) 1) :
   ring
 
 /-- The constant class has squared norm equal to the aperture length `2`. -/
-theorem norm_sq_constantBandClass : ‖constantBandClass‖ ^ 2 = 2 := by
-  change ‖bandClass (fun _ : ℝ => 1) continuous_const‖ ^ 2 = 2
+theorem norm_sq_constantBandClass : ‖constantBandClass‖ ^ (2 : ℕ) = 2 := by
+  change ‖bandClass (fun _ : ℝ => 1) continuous_const‖ ^ (2 : ℕ) = 2
   rw [norm_sq_bandClass]
   norm_num
 
@@ -171,7 +171,7 @@ theorem bandEigenvalue_le_remainder_of_constant_orthogonal
     (hf : bandOperatorL2 c f = lam • f)
     (hfnorm : (inner ℝ f f : ℝ) = 1)
     (hfortho : (inner ℝ constantBandClass f : ℝ) = 0) :
-    lam ≤ 4 * c ^ 2 / Real.pi := by
+    lam ≤ 4 * c ^ (2 : ℕ) / Real.pi := by
   have hnorm : ‖f‖ = 1 := by
     rw [real_inner_self_eq_norm_sq] at hfnorm
     nlinarith [norm_nonneg f]
@@ -198,8 +198,8 @@ theorem bandEigenvalue_eq_of_above_rankOne_remainder
     (hg : bandOperatorL2 c g = mu • g)
     (hfnorm : (inner ℝ f f : ℝ) = 1)
     (hgnorm : (inner ℝ g g : ℝ) = 1)
-    (hlam : 4 * c ^ 2 / Real.pi < lam)
-    (hmu : 4 * c ^ 2 / Real.pi < mu) :
+    (hlam : 4 * c ^ (2 : ℕ) / Real.pi < lam)
+    (hmu : 4 * c ^ (2 : ℕ) / Real.pi < mu) :
     lam = mu := by
   by_contra hne
   have hfg : (inner ℝ f g : ℝ) = 0 := by
@@ -233,7 +233,7 @@ theorem bandEigenvalue_eq_of_above_rankOne_remainder
       rw [cosOperatorL2_zero_apply]
       rw [← inner_constantBandClass_eq_integral, hvortho]
       simp
-    have hvnormsq : ‖v‖ ^ 2 = a ^ 2 + b ^ 2 := by
+    have hvnormsq : ‖v‖ ^ (2 : ℕ) = a ^ (2 : ℕ) + b ^ (2 : ℕ) := by
       rw [← real_inner_self_eq_norm_sq]
       dsimp only [v]
       simp only [inner_sub_left, inner_sub_right, inner_smul_left, inner_smul_right,
@@ -244,24 +244,24 @@ theorem bandEigenvalue_eq_of_above_rankOne_remainder
       dsimp only [v]
       rw [map_sub, map_smul, map_smul, hf, hg, smul_smul, smul_smul]
     have hquad : (inner ℝ (bandOperatorL2 c v) v : ℝ) =
-        lam * a ^ 2 + mu * b ^ 2 := by
+        lam * a ^ (2 : ℕ) + mu * b ^ (2 : ℕ) := by
       rw [hBv]
       dsimp only [v]
       simp only [inner_sub_left, inner_sub_right, inner_smul_left, inner_smul_right,
         starRingEnd_apply, star_trivial, hfg, hgf, hfnorm, hgnorm,
         mul_zero, mul_one]
       ring
-    let eps : ℝ := 4 * c ^ 2 / Real.pi
-    have hstrict : eps * ‖v‖ ^ 2 < (inner ℝ (bandOperatorL2 c v) v : ℝ) := by
+    let eps : ℝ := 4 * c ^ (2 : ℕ) / Real.pi
+    have hstrict : eps * ‖v‖ ^ (2 : ℕ) < (inner ℝ (bandOperatorL2 c v) v : ℝ) := by
       rw [hquad, hvnormsq]
       dsimp only [eps]
-      have hb2 : 0 < b ^ 2 := sq_pos_of_ne_zero hb
-      have ha2 : 0 ≤ a ^ 2 := sq_nonneg a
+      have hb2 : 0 < b ^ (2 : ℕ) := sq_pos_of_ne_zero hb
+      have ha2 : 0 ≤ a ^ (2 : ℕ) := sq_nonneg a
       nlinarith
     have hdiff : (bandOperatorL2 c - c • cosOperatorL2 0) v = bandOperatorL2 c v := by
       simp [hcos]
     have hinner : (inner ℝ (bandOperatorL2 c v) v : ℝ) ≤
-        ‖bandOperatorL2 c - c • cosOperatorL2 0‖ * ‖v‖ ^ 2 := by
+        ‖bandOperatorL2 c - c • cosOperatorL2 0‖ * ‖v‖ ^ (2 : ℕ) := by
       rw [← hdiff]
       calc
         (inner ℝ ((bandOperatorL2 c - c • cosOperatorL2 0) v) v : ℝ)
@@ -272,10 +272,10 @@ theorem bandEigenvalue_eq_of_above_rankOne_remainder
         _ ≤ (‖bandOperatorL2 c - c • cosOperatorL2 0‖ * ‖v‖) * ‖v‖ := by
           gcongr
           exact ContinuousLinearMap.le_opNorm _ _
-        _ = ‖bandOperatorL2 c - c • cosOperatorL2 0‖ * ‖v‖ ^ 2 := by ring
+        _ = ‖bandOperatorL2 c - c • cosOperatorL2 0‖ * ‖v‖ ^ (2 : ℕ) := by ring
     have hrem := norm_bandOperatorL2_sub_linear_zero_le c
-    have hnonneg : 0 ≤ ‖v‖ ^ 2 := sq_nonneg _
-    have hle : (inner ℝ (bandOperatorL2 c v) v : ℝ) ≤ eps * ‖v‖ ^ 2 :=
+    have hnonneg : 0 ≤ ‖v‖ ^ (2 : ℕ) := sq_nonneg _
+    have hle : (inner ℝ (bandOperatorL2 c v) v : ℝ) ≤ eps * ‖v‖ ^ (2 : ℕ) :=
       hinner.trans (mul_le_mul_of_nonneg_right hrem hnonneg)
     exact (not_lt_of_ge hle) hstrict
 
@@ -283,10 +283,10 @@ theorem bandEigenvalue_eq_of_above_rankOne_remainder
 remainder threshold. -/
 theorem inner_bandOperatorL2_constant_gt_rankOne_remainder
     {c : ℝ} (hc : 0 < c) (hcsmall : c < 1 / 4) :
-    (4 * c ^ 2 / Real.pi) * ‖constantBandClass‖ ^ 2 <
+    (4 * c ^ (2 : ℕ) / Real.pi) * ‖constantBandClass‖ ^ (2 : ℕ) <
       (inner ℝ (bandOperatorL2 c constantBandClass) constantBandClass : ℝ) := by
   let A := bandOperatorL2 c - c • cosOperatorL2 0
-  let eps := 4 * c ^ 2 / Real.pi
+  let eps := 4 * c ^ (2 : ℕ) / Real.pi
   have hA : ‖A‖ ≤ eps := by
     simpa only [A, eps] using norm_bandOperatorL2_sub_linear_zero_le c
   have hsplit : bandOperatorL2 c constantBandClass =
@@ -294,15 +294,15 @@ theorem inner_bandOperatorL2_constant_gt_rankOne_remainder
     dsimp only [A]
     simp
   have herr : |(inner ℝ (A constantBandClass) constantBandClass : ℝ)| ≤
-      eps * ‖constantBandClass‖ ^ 2 := by
+      eps * ‖constantBandClass‖ ^ (2 : ℕ) := by
     calc
       |(inner ℝ (A constantBandClass) constantBandClass : ℝ)| ≤
           ‖A constantBandClass‖ * ‖constantBandClass‖ := abs_real_inner_le_norm _ _
       _ ≤ (‖A‖ * ‖constantBandClass‖) * ‖constantBandClass‖ := by
         gcongr
         exact ContinuousLinearMap.le_opNorm A constantBandClass
-      _ = ‖A‖ * ‖constantBandClass‖ ^ 2 := by ring
-      _ ≤ eps * ‖constantBandClass‖ ^ 2 := by
+      _ = ‖A‖ * ‖constantBandClass‖ ^ (2 : ℕ) := by ring
+      _ ≤ eps * ‖constantBandClass‖ ^ (2 : ℕ) := by
         gcongr
   have hmain :
       (inner ℝ ((c • cosOperatorL2 0) constantBandClass) constantBandClass : ℝ) =
@@ -319,7 +319,7 @@ theorem inner_bandOperatorL2_constant_gt_rankOne_remainder
   have hpi : 0 < Real.pi := Real.pi_pos
   have hgap : 4 * eps < 4 * c / Real.pi := by
     dsimp only [eps]
-    rw [show 4 * (4 * c ^ 2 / Real.pi) = 16 * c ^ 2 / Real.pi by ring]
+    rw [show 4 * (4 * c ^ (2 : ℕ) / Real.pi) = 16 * c ^ (2 : ℕ) / Real.pi by ring]
     rw [div_lt_div_iff_of_pos_right hpi]
     nlinarith [mul_pos hc (sub_pos.mpr hcsmall)]
   nlinarith
@@ -331,16 +331,16 @@ spectral line. -/
 theorem exists_unique_above_rankOne_remainder
     {c : ℝ} (hc : 0 < c) (hcsmall : c < 1 / 4) :
     ∃ (lam : ℝ) (f : RealIntervalL2 (-1 : ℝ) 1),
-      4 * c ^ 2 / Real.pi < lam ∧
+      4 * c ^ (2 : ℕ) / Real.pi < lam ∧
       (inner ℝ f f : ℝ) = 1 ∧
       bandOperatorL2 c f = lam • f ∧
       ∀ (mu : ℝ) (g : RealIntervalL2 (-1 : ℝ) 1),
-        4 * c ^ 2 / Real.pi < mu →
+        4 * c ^ (2 : ℕ) / Real.pi < mu →
         (inner ℝ g g : ℝ) = 1 →
         bandOperatorL2 c g = mu • g → mu = lam := by
   let u := constantBandClass
-  let eps := 4 * c ^ 2 / Real.pi
-  have htrial : eps * ‖u‖ ^ 2 < (inner ℝ (bandOperatorL2 c u) u : ℝ) := by
+  let eps := 4 * c ^ (2 : ℕ) / Real.pi
+  have htrial : eps * ‖u‖ ^ (2 : ℕ) < (inner ℝ (bandOperatorL2 c u) u : ℝ) := by
     simpa only [u, eps] using
       inner_bandOperatorL2_constant_gt_rankOne_remainder hc hcsmall
   have hex : ∃ (lam : ℝ) (f : RealIntervalL2 (-1 : ℝ) 1),
@@ -373,7 +373,7 @@ theorem exists_unique_above_rankOne_remainder
             ring
           exact hnone mu g hgt hgnorm hgeig
         have hproj : (inner ℝ (bandOperatorL2 c u) w : ℝ) =
-            mu * ‖w‖ ^ 2 := by
+            mu * ‖w‖ ^ (2 : ℕ) := by
           rw [bandOperatorL2_symmetric c u w, hweig, inner_smul_right,
             inner_self_bandComponent c u mu]
         rw [hproj, inner_self_bandComponent c u mu]
@@ -402,12 +402,12 @@ to the constant tangent direction, contradicting the remainder ceiling after nor
 theorem joint_profile_even_of_bandEigenvalue_above_rankOne_remainder
     {c lam chi : ℝ} {Phi : ℝ → ℝ}
     (hPhiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
-    (hPhiNe : Phi ≠ 0) (hlam : 4 * c ^ 2 / Real.pi < lam)
+    (hPhiNe : Phi ≠ 0) (hlam : 4 * c ^ (2 : ℕ) / Real.pi < lam)
     (hPhiBand : ∀ x : ℝ, bandTransform c Phi x = lam * Phi x)
     (hPhiProlate : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x) :
     Function.Even Phi := by
   have hlam0 : lam ≠ 0 := by
-    have hrem0 : 0 ≤ 4 * c ^ 2 / Real.pi := by positivity
+    have hrem0 : 0 ≤ 4 * c ^ (2 : ℕ) / Real.pi := by positivity
     linarith
   rcases joint_prolate_even_or_odd hPhiSmooth hPhiNe hlam0 hPhiBand hPhiProlate with
     heven | hodd
@@ -447,7 +447,7 @@ theorem joint_profile_even_of_bandEigenvalue_above_rankOne_remainder
 theorem exists_unique_even_joint_above_rankOne_remainder
     {c : ℝ} (hc : 0 < c) (hcsmall : c < 1 / 4) :
     ∃ (lam chi : ℝ) (Phi : ℝ → ℝ),
-      4 * c ^ 2 / Real.pi < lam ∧
+      4 * c ^ (2 : ℕ) / Real.pi < lam ∧
       ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi ∧
       Phi ≠ 0 ∧ Function.Even Phi ∧
       (∀ x : ℝ, bandTransform c Phi x = lam * Phi x) ∧
@@ -455,7 +455,7 @@ theorem exists_unique_even_joint_above_rankOne_remainder
   obtain ⟨lam, f, hlam, hfnorm, hf, _hunique⟩ :=
     exists_unique_above_rankOne_remainder hc hcsmall
   have hlam0 : lam ≠ 0 := by
-    have hrem0 : 0 ≤ 4 * c ^ 2 / Real.pi := by positivity
+    have hrem0 : 0 ≤ 4 * c ^ (2 : ℕ) / Real.pi := by positivity
     linarith
   have hfne : f ≠ 0 := by
     intro hzero
@@ -481,7 +481,7 @@ theorem bandEigenvalue_le_linear_rankOne_add_remainder
     {c lam : ℝ} (hc : 0 ≤ c) {f : RealIntervalL2 (-1 : ℝ) 1}
     (hf : bandOperatorL2 c f = lam • f)
     (hfnorm : (inner ℝ f f : ℝ) = 1) :
-    lam ≤ 2 * c / Real.pi + 4 * c ^ 2 / Real.pi := by
+    lam ≤ 2 * c / Real.pi + 4 * c ^ (2 : ℕ) / Real.pi := by
   have hnorm : ‖f‖ = 1 := by
     rw [real_inner_self_eq_norm_sq] at hfnorm
     nlinarith [norm_nonneg f]
@@ -490,19 +490,19 @@ theorem bandEigenvalue_le_linear_rankOne_add_remainder
       (bandOperatorL2 c - c • cosOperatorL2 0) + c • cosOperatorL2 0 := by
     module
   have hBnorm : ‖bandOperatorL2 c‖ ≤
-      4 * c ^ 2 / Real.pi + 2 * c / Real.pi := by
+      4 * c ^ (2 : ℕ) / Real.pi + 2 * c / Real.pi := by
     calc
       ‖bandOperatorL2 c‖ = ‖(bandOperatorL2 c - c • cosOperatorL2 0) +
           c • cosOperatorL2 0‖ := congrArg norm hsplit
       _ ≤ ‖bandOperatorL2 c - c • cosOperatorL2 0‖ +
           ‖c • cosOperatorL2 0‖ := norm_add_le _ _
-      _ ≤ 4 * c ^ 2 / Real.pi + ‖c • cosOperatorL2 0‖ :=
+      _ ≤ 4 * c ^ (2 : ℕ) / Real.pi + ‖c • cosOperatorL2 0‖ :=
         add_le_add hrem (le_refl _)
-      _ = 4 * c ^ 2 / Real.pi + 2 * c / Real.pi := by
+      _ = 4 * c ^ (2 : ℕ) / Real.pi + 2 * c / Real.pi := by
         rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hc,
           norm_cosOperatorL2_zero]
         ring
-  have habs : |lam| ≤ 2 * c / Real.pi + 4 * c ^ 2 / Real.pi := by
+  have habs : |lam| ≤ 2 * c / Real.pi + 4 * c ^ (2 : ℕ) / Real.pi := by
     calc
       |lam| = ‖bandOperatorL2 c f‖ := by
         rw [hf, norm_smul, Real.norm_eq_abs, hnorm, mul_one]
@@ -511,16 +511,16 @@ theorem bandEigenvalue_le_linear_rankOne_add_remainder
           ‖bandOperatorL2 c f‖ ≤ ‖bandOperatorL2 c‖ * ‖f‖ :=
             ContinuousLinearMap.le_opNorm (bandOperatorL2 c) f
           _ = ‖bandOperatorL2 c‖ := by rw [hnorm, mul_one]
-      _ ≤ 4 * c ^ 2 / Real.pi + 2 * c / Real.pi := hBnorm
-      _ = 2 * c / Real.pi + 4 * c ^ 2 / Real.pi := by ring
+      _ ≤ 4 * c ^ (2 : ℕ) / Real.pi + 2 * c / Real.pi := hBnorm
+      _ = 2 * c / Real.pi + 4 * c ^ (2 : ℕ) / Real.pi := by ring
   exact (le_abs_self lam).trans habs
 
 /-- Lower bound for the constant-vector band quadratic form obtained from the rank-one tangent. -/
 theorem inner_bandOperatorL2_constant_lower (c : ℝ) :
-    4 * c / Real.pi - 2 * (4 * c ^ 2 / Real.pi) ≤
+    4 * c / Real.pi - 2 * (4 * c ^ (2 : ℕ) / Real.pi) ≤
       (inner ℝ (bandOperatorL2 c constantBandClass) constantBandClass : ℝ) := by
   let A := bandOperatorL2 c - c • cosOperatorL2 0
-  let eps := 4 * c ^ 2 / Real.pi
+  let eps := 4 * c ^ (2 : ℕ) / Real.pi
   have hA : ‖A‖ ≤ eps := by
     simpa only [A, eps] using norm_bandOperatorL2_sub_linear_zero_le c
   have hsplit : bandOperatorL2 c constantBandClass =
@@ -557,11 +557,11 @@ theorem bandQuadratic_le_remainder_of_orthogonal_isolated
     {c lam : ℝ} (hc : 0 < c) {f : RealIntervalL2 (-1 : ℝ) 1}
     (hf : bandOperatorL2 c f = lam • f)
     (hfnorm : (inner ℝ f f : ℝ) = 1)
-    (hlam : 4 * c ^ 2 / Real.pi < lam)
+    (hlam : 4 * c ^ (2 : ℕ) / Real.pi < lam)
     {z : RealIntervalL2 (-1 : ℝ) 1} (hzorth : (inner ℝ f z : ℝ) = 0) :
     (inner ℝ (bandOperatorL2 c z) z : ℝ) ≤
-      (4 * c ^ 2 / Real.pi) * ‖z‖ ^ 2 := by
-  let eps := 4 * c ^ 2 / Real.pi
+      (4 * c ^ (2 : ℕ) / Real.pi) * ‖z‖ ^ (2 : ℕ) := by
+  let eps := 4 * c ^ (2 : ℕ) / Real.pi
   have hlam0 : lam ≠ 0 := by
     have heps0 : 0 ≤ eps := by dsimp only [eps]; positivity
     linarith
@@ -608,7 +608,7 @@ theorem bandQuadratic_le_remainder_of_orthogonal_isolated
         rw [show bandComponent c z lam = w from rfl, hzw] at hself
         have hwnorm0 : ‖w‖ = 0 := by nlinarith [norm_nonneg w]
         exact hw (norm_eq_zero.mp hwnorm0)
-      have hproj : (inner ℝ (bandOperatorL2 c z) w : ℝ) = mu * ‖w‖ ^ 2 := by
+      have hproj : (inner ℝ (bandOperatorL2 c z) w : ℝ) = mu * ‖w‖ ^ (2 : ℕ) := by
         rw [bandOperatorL2_symmetric c z w, hweig, inner_smul_right,
           inner_self_bandComponent c z mu]
       rw [hproj, inner_self_bandComponent c z mu]
@@ -635,12 +635,12 @@ theorem leadingBandComponent_constant_mass_gt_one
     {f : RealIntervalL2 (-1 : ℝ) 1}
     (hf : bandOperatorL2 c f = lam • f)
     (hfnorm : (inner ℝ f f : ℝ) = 1)
-    (hlam : 4 * c ^ 2 / Real.pi < lam) :
-    1 < ‖bandComponent c constantBandClass lam‖ ^ 2 := by
+    (hlam : 4 * c ^ (2 : ℕ) / Real.pi < lam) :
+    1 < ‖bandComponent c constantBandClass lam‖ ^ (2 : ℕ) := by
   let u := constantBandClass
   let w := bandComponent c u lam
   let z := u - w
-  let eps := 4 * c ^ 2 / Real.pi
+  let eps := 4 * c ^ (2 : ℕ) / Real.pi
   have hwmem := bandComponent_mem c u lam
   have hwEig : bandOperatorL2 c w = lam • w := mem_bandEigenspace_iff.mp hwmem
   have hproj : (inner ℝ u f : ℝ) = (inner ℝ w f : ℝ) :=
@@ -654,7 +654,7 @@ theorem leadingBandComponent_constant_mass_gt_one
     dsimp only [z]
     rw [inner_sub_right, hproj', sub_self]
   have hwz : (inner ℝ w z : ℝ) = 0 := by
-    have hprojw : (inner ℝ w u : ℝ) = ‖w‖ ^ 2 := by
+    have hprojw : (inner ℝ w u : ℝ) = ‖w‖ ^ (2 : ℕ) := by
       rw [real_inner_comm]
       exact inner_self_bandComponent c u lam
     dsimp only [z]
@@ -662,16 +662,16 @@ theorem leadingBandComponent_constant_mass_gt_one
   have hzw : (inner ℝ z w : ℝ) = 0 := by
     rw [real_inner_comm]
     exact hwz
-  have hznorm : ‖z‖ ^ 2 = 2 - ‖w‖ ^ 2 := by
+  have hznorm : ‖z‖ ^ (2 : ℕ) = 2 - ‖w‖ ^ (2 : ℕ) := by
     have hu : u = w + z := by simp [z]
-    have hnormadd : ‖u‖ ^ 2 = ‖w‖ ^ 2 + ‖z‖ ^ 2 := by
+    have hnormadd : ‖u‖ ^ (2 : ℕ) = ‖w‖ ^ (2 : ℕ) + ‖z‖ ^ (2 : ℕ) := by
       rw [hu, ← real_inner_self_eq_norm_sq]
       simp only [inner_add_left, inner_add_right, hwz, hzw,
         real_inner_self_eq_norm_sq, add_zero, zero_add]
-    rw [show ‖u‖ ^ 2 = 2 by exact norm_sq_constantBandClass] at hnormadd
+    rw [show ‖u‖ ^ (2 : ℕ) = 2 by exact norm_sq_constantBandClass] at hnormadd
     linarith
   have hquadSplit : (inner ℝ (bandOperatorL2 c u) u : ℝ) =
-      lam * ‖w‖ ^ 2 + (inner ℝ (bandOperatorL2 c z) z : ℝ) := by
+      lam * ‖w‖ ^ (2 : ℕ) + (inner ℝ (bandOperatorL2 c z) z : ℝ) := by
     have hu : u = w + z := by simp [z]
     have hcross1 : (inner ℝ (lam • w) z : ℝ) = 0 := by
       rw [inner_smul_left, hwz]
@@ -687,19 +687,19 @@ theorem leadingBandComponent_constant_mass_gt_one
   have hlamUpper := bandEigenvalue_le_linear_rankOne_add_remainder hc.le hf hfnorm
   have hlower := inner_bandOperatorL2_constant_lower c
   have hupper : (inner ℝ (bandOperatorL2 c u) u : ℝ) ≤
-      (2 * c / Real.pi) * ‖w‖ ^ 2 + 2 * eps := by
+      (2 * c / Real.pi) * ‖w‖ ^ (2 : ℕ) + 2 * eps := by
     rw [hquadSplit]
     calc
-      lam * ‖w‖ ^ 2 + (inner ℝ (bandOperatorL2 c z) z : ℝ) ≤
-          (2 * c / Real.pi + eps) * ‖w‖ ^ 2 + eps * ‖z‖ ^ 2 := by
+      lam * ‖w‖ ^ (2 : ℕ) + (inner ℝ (bandOperatorL2 c z) z : ℝ) ≤
+          (2 * c / Real.pi + eps) * ‖w‖ ^ (2 : ℕ) + eps * ‖z‖ ^ (2 : ℕ) := by
         exact add_le_add
           (mul_le_mul_of_nonneg_right (by simpa only [eps] using hlamUpper) (sq_nonneg _))
           (by simpa only [eps] using hzquad)
-      _ = (2 * c / Real.pi) * ‖w‖ ^ 2 + 2 * eps := by
+      _ = (2 * c / Real.pi) * ‖w‖ ^ (2 : ℕ) + 2 * eps := by
         rw [hznorm]
         ring
   have hraw : 4 * c / Real.pi - 4 * eps ≤
-      (2 * c / Real.pi) * ‖w‖ ^ 2 := by
+      (2 * c / Real.pi) * ‖w‖ ^ (2 : ℕ) := by
     have hlower' : 4 * c / Real.pi - 2 * eps ≤
         (inner ℝ (bandOperatorL2 c u) u : ℝ) := by
       simpa only [u, eps] using hlower
@@ -716,10 +716,10 @@ theorem bandQuadratic_le_isolated_eigenvalue
     {c lam : ℝ} {f : RealIntervalL2 (-1 : ℝ) 1}
     (hf : bandOperatorL2 c f = lam • f)
     (hfnorm : (inner ℝ f f : ℝ) = 1)
-    (hlam : 4 * c ^ 2 / Real.pi < lam)
+    (hlam : 4 * c ^ (2 : ℕ) / Real.pi < lam)
     (z : RealIntervalL2 (-1 : ℝ) 1) :
-    (inner ℝ (bandOperatorL2 c z) z : ℝ) ≤ lam * ‖z‖ ^ 2 := by
-  let eps := 4 * c ^ 2 / Real.pi
+    (inner ℝ (bandOperatorL2 c z) z : ℝ) ≤ lam * ‖z‖ ^ (2 : ℕ) := by
+  let eps := 4 * c ^ (2 : ℕ) / Real.pi
   have hstep : ∀ mu : ℝ,
       (inner ℝ (bandOperatorL2 c z) (bandComponent c z mu) : ℝ) ≤
         lam * (inner ℝ z (bandComponent c z mu) : ℝ) := by
@@ -747,7 +747,7 @@ theorem bandQuadratic_le_isolated_eigenvalue
             ring
           exact le_of_eq (bandEigenvalue_eq_of_above_rankOne_remainder
             hgeig hf hgnorm hfnorm hmueps hlam)
-      have hproj : (inner ℝ (bandOperatorL2 c z) w : ℝ) = mu * ‖w‖ ^ 2 := by
+      have hproj : (inner ℝ (bandOperatorL2 c z) w : ℝ) = mu * ‖w‖ ^ (2 : ℕ) := by
         rw [bandOperatorL2_symmetric c z w, hweig, inner_smul_right,
           inner_self_bandComponent c z mu]
       rw [hproj, inner_self_bandComponent c z mu]
@@ -770,13 +770,13 @@ theorem isolated_bandEigenvalue_eq_norm
     {c lam : ℝ} (hc : 0 < c) {f : RealIntervalL2 (-1 : ℝ) 1}
     (hf : bandOperatorL2 c f = lam • f)
     (hfnorm : (inner ℝ f f : ℝ) = 1)
-    (hlam : 4 * c ^ 2 / Real.pi < lam) :
+    (hlam : 4 * c ^ (2 : ℕ) / Real.pi < lam) :
     lam = ‖bandOperatorL2 c‖ := by
   have hnorm : ‖f‖ = 1 := by
     rw [real_inner_self_eq_norm_sq] at hfnorm
     nlinarith [norm_nonneg f]
   have hlam0 : 0 < lam := by
-    have hrem0 : 0 ≤ 4 * c ^ 2 / Real.pi := by positivity
+    have hrem0 : 0 ≤ 4 * c ^ (2 : ℕ) / Real.pi := by positivity
     linarith
   have hleNorm : lam ≤ ‖bandOperatorL2 c‖ := by
     have happ := ContinuousLinearMap.le_opNorm (bandOperatorL2 c) f
@@ -792,7 +792,7 @@ theorem isolated_bandEigenvalue_eq_norm
     refine ciSup_le fun z => ?_
     rcases eq_or_ne z 0 with rfl | hz
     · simp [hlam0.le]
-    · have hsq : 0 < ‖z‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hz)
+    · have hsq : 0 < ‖z‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hz)
       have hquad := bandQuadratic_le_isolated_eigenvalue hf hfnorm hlam z
       have hquad0 := inner_bandOperatorL2_nonneg hc z
       rw [ContinuousLinearMap.rayleighQuotient,
@@ -805,7 +805,7 @@ theorem isolated_bandEigenvalue_eq_norm
 
 /-- Exact prolate action on the constant trial profile. -/
 theorem prolateSLAction_const_one (c x : ℝ) :
-    prolateSLAction c (fun _ : ℝ => 1) x = -(c ^ 2 * x ^ 2) := by
+    prolateSLAction c (fun _ : ℝ => 1) x = -(c ^ (2 : ℕ) * x ^ (2 : ℕ)) := by
   simp [prolateSLAction]
 
 /-- The constant profile has exact prolate energy `-2c²/3` on `[-1,1]`. -/
@@ -814,7 +814,7 @@ theorem inner_constantProlateAction_constant (c : ℝ) :
       (bandClass (prolateSLAction c (fun _ : ℝ => (1 : ℝ)))
         (contDiff_prolateSLAction (contDiff_const :
           ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : ℝ => (1 : ℝ)))).continuous)
-      constantBandClass : ℝ) = -(2 * c ^ 2 / 3) := by
+      constantBandClass : ℝ) = -(2 * c ^ (2 : ℕ) / 3) := by
   rw [show constantBandClass = bandClass (fun _ : ℝ => 1) continuous_const from rfl,
     inner_bandClass_eq]
   simp_rw [prolateSLAction_const_one]
@@ -893,7 +893,7 @@ theorem inner_constantProlateAction_bandComponent_eq_of_prolate
         (contDiff_prolateSLAction (contDiff_const :
           ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : ℝ => (1 : ℝ)))).continuous)
       (bandComponent c constantBandClass mu) : ℝ) =
-      eta * ‖bandComponent c constantBandClass mu‖ ^ 2 := by
+      eta * ‖bandComponent c constantBandClass mu‖ ^ (2 : ℕ) := by
   let g : ℝ → ℝ := fun _ => 1
   have hgsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g := contDiff_const
   have hgc : Continuous g := hgsm.continuous
@@ -935,7 +935,7 @@ theorem inner_constantProlateAction_bandComponent_eq_of_prolate
     simpa only [bf, u, v, g, constantBandClass] using hP
   have hclassP : bandClass (prolateSLAction c Phi) hLPhic = eta • u := by
     exact congrArg Subtype.val hP'
-  change (inner ℝ Lv u : ℝ) = eta * ‖u‖ ^ 2
+  change (inner ℝ Lv u : ℝ) = eta * ‖u‖ ^ (2 : ℕ)
   rw [hmove, hproj, hclassP, inner_smul_right, real_inner_self_eq_norm_sq]
 
 /-- **Small-aperture first-rung anchor.** For `0 < c < 1/8`, the actual top concentration
@@ -944,26 +944,26 @@ the constant profile's total energy `-2c²/3`. -/
 theorem exists_smallAperture_leading_joint_separation_anchor
     {c : ℝ} (hc : 0 < c) (hcsmall : c < 1 / 8) :
     ∃ (lam eta : ℝ) (Phi : ℝ → ℝ),
-      4 * c ^ 2 / Real.pi < lam ∧
+      4 * c ^ (2 : ℕ) / Real.pi < lam ∧
       lam = ‖bandOperatorL2 c‖ ∧
       ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi ∧
       Phi ≠ 0 ∧ Function.Even Phi ∧
       (∀ x : ℝ, bandTransform c Phi x = lam * Phi x) ∧
       (∀ x : ℝ, prolateSLAction c Phi x = eta * Phi x) ∧
-      -(2 * c ^ 2 / 3) < eta := by
+      -(2 * c ^ (2 : ℕ) / 3) < eta := by
   have hcquarter : c < 1 / 4 := lt_trans hcsmall (by norm_num)
   obtain ⟨lam, f, hlam, hfnorm, hf, _⟩ :=
     exists_unique_above_rankOne_remainder hc hcquarter
   have hlamNorm : lam = ‖bandOperatorL2 c‖ :=
     isolated_bandEigenvalue_eq_norm hc hf hfnorm hlam
   have hlam0 : lam ≠ 0 := by
-    have hrem0 : 0 ≤ 4 * c ^ 2 / Real.pi := by positivity
+    have hrem0 : 0 ≤ 4 * c ^ (2 : ℕ) / Real.pi := by positivity
     linarith
   let v := constantBandClass
   let w := bandComponent c v lam
   have hwmem := bandComponent_mem c v lam
   have hwEig : bandOperatorL2 c w = lam • w := mem_bandEigenspace_iff.mp hwmem
-  have hmass : 1 < ‖w‖ ^ 2 := by
+  have hmass : 1 < ‖w‖ ^ (2 : ℕ) := by
     simpa only [w, v] using
       leadingBandComponent_constant_mass_gt_one hc hcsmall hf hfnorm hlam
   have hwne : w ≠ 0 := by
@@ -1020,11 +1020,11 @@ theorem exists_smallAperture_leading_joint_separation_anchor
   have hsum : HasSum (fun mu : ℝ =>
       (inner ℝ Lv (bandComponent c v mu) : ℝ)) (inner ℝ Lv v : ℝ) :=
     ContinuousLinearMap.hasSum (innerSL ℝ Lv) (hasSum_bandComponent c v)
-  have htop : HasSum (fun mu : ℝ => if mu = lam then eta * ‖w‖ ^ 2 else 0)
-      (eta * ‖w‖ ^ 2) := hasSum_ite_eq lam _
+  have htop : HasSum (fun mu : ℝ => if mu = lam then eta * ‖w‖ ^ (2 : ℕ) else 0)
+      (eta * ‖w‖ ^ (2 : ℕ)) := hasSum_ite_eq lam _
   have hstep : ∀ mu : ℝ,
       (inner ℝ Lv (bandComponent c v mu) : ℝ) ≤
-        if mu = lam then eta * ‖w‖ ^ 2 else 0 := by
+        if mu = lam then eta * ‖w‖ ^ (2 : ℕ) else 0 := by
     intro mu
     by_cases hm : mu = lam
     · subst mu
@@ -1039,12 +1039,12 @@ theorem exists_smallAperture_leading_joint_separation_anchor
         simp
       · simpa only [Lv, v, g, hLgc, hgsm] using
           inner_constantProlateAction_bandComponent_nonpos hc hmu0
-  have htotalUpper : (inner ℝ Lv v : ℝ) ≤ eta * ‖w‖ ^ 2 :=
+  have htotalUpper : (inner ℝ Lv v : ℝ) ≤ eta * ‖w‖ ^ (2 : ℕ) :=
     hasSum_le hstep hsum htop
-  have htotal : (inner ℝ Lv v : ℝ) = -(2 * c ^ 2 / 3) := by
+  have htotal : (inner ℝ Lv v : ℝ) = -(2 * c ^ (2 : ℕ) / 3) := by
     simpa only [Lv, v, g, hLgc, hgsm] using inner_constantProlateAction_constant c
-  have hc2 : 0 < c ^ 2 := sq_pos_of_pos hc
-  have hetaLower : -(2 * c ^ 2 / 3) < eta := by
+  have hc2 : 0 < c ^ (2 : ℕ) := sq_pos_of_pos hc
+  have hetaLower : -(2 * c ^ (2 : ℕ) / 3) < eta := by
     rw [htotal] at htotalUpper
     nlinarith
   exact ⟨lam, eta, Phi, hlam, hlamNorm, hPhiSmooth, hPhiNe, hPhiEven,

@@ -27,33 +27,33 @@ theorem sub_conj_upperNode_eq_conj (a b y : ℝ) :
 which is bounded below by the atom separation. -/
 theorem sub_mul_sub_conj_upperNode_other (a b y : ℝ) :
     ((b : ℂ) - upperNode a y) * ((b : ℂ) - (starRingEnd ℂ) (upperNode a y))
-      = ((((b - a) ^ 2 + y ^ 2 : ℝ)) : ℂ) := by
+      = ((((b - a) ^ (2 : ℕ) + y ^ (2 : ℕ) : ℝ)) : ℂ) := by
   rw [sub_conj_upperNode_eq_conj, Complex.mul_conj]
   norm_cast
   rw [← normSq_sub_upperNode a y b]
 
 /-- The cross denominator is bounded below by the squared atom separation. -/
 theorem norm_sub_mul_sub_conj_other_ge {a b : ℝ} (y : ℝ) (hab : b ≠ a) :
-    (b - a) ^ 2 ≤ ‖((b : ℂ) - upperNode a y) *
+    (b - a) ^ (2 : ℕ) ≤ ‖((b : ℂ) - upperNode a y) *
       ((b : ℂ) - (starRingEnd ℂ) (upperNode a y))‖ := by
   rw [sub_mul_sub_conj_upperNode_other, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_nonneg (by positivity : (0 : ℝ) ≤ (b - a) ^ 2 + y ^ 2)]
+    abs_of_nonneg (by positivity : (0 : ℝ) ≤ (b - a) ^ (2 : ℕ) + y ^ (2 : ℕ))]
   nlinarith [sq_nonneg y]
 
 /-- **The cross term from a different atom is `O(y²)`.**  Scaled by the height squared, the
 contribution of an atom at `b` seen from the node above `a` is bounded by the height squared over the
 squared separation. -/
 theorem norm_scaled_atomic_cross_le {a b : ℝ} (y : ℝ) (hab : b ≠ a) (c : ℂ) :
-    ‖(y : ℂ) ^ 2 * (c / (((b : ℂ) - upperNode a y) *
+    ‖(y : ℂ) ^ (2 : ℕ) * (c / (((b : ℂ) - upperNode a y) *
         ((b : ℂ) - (starRingEnd ℂ) (upperNode a y))))‖
-      ≤ y ^ 2 * ‖c‖ / (b - a) ^ 2 := by
-  have hsep : (0 : ℝ) < (b - a) ^ 2 := by
+      ≤ y ^ (2 : ℕ) * ‖c‖ / (b - a) ^ (2 : ℕ) := by
+  have hsep : (0 : ℝ) < (b - a) ^ (2 : ℕ) := by
     have : b - a ≠ 0 := sub_ne_zero.2 hab
     positivity
   rw [sub_mul_sub_conj_upperNode_other, norm_mul, norm_div, Complex.norm_real,
-    Real.norm_eq_abs, abs_of_nonneg (by positivity : (0 : ℝ) ≤ (b - a) ^ 2 + y ^ 2)]
+    Real.norm_eq_abs, abs_of_nonneg (by positivity : (0 : ℝ) ≤ (b - a) ^ (2 : ℕ) + y ^ (2 : ℕ))]
   rw [norm_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
-  have hle : ‖c‖ / ((b - a) ^ 2 + y ^ 2) ≤ ‖c‖ / (b - a) ^ 2 := by
+  have hle : ‖c‖ / ((b - a) ^ (2 : ℕ) + y ^ (2 : ℕ)) ≤ ‖c‖ / (b - a) ^ (2 : ℕ) := by
     apply div_le_div_of_nonneg_left (norm_nonneg c) hsep
     nlinarith [sq_nonneg y]
   rw [mul_div_assoc]

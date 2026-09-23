@@ -7,7 +7,7 @@ The vanishing argument along a line through the origin only constrains direction
 theta function is not identically zero.  Running it along an **affine** line removes that
 restriction: on `z0 + C v` the Hermitian exponent is
 
-`Re H (z0, z0) + 2 Re H (z0, t v) + |t|^2 Re H (v,v)`,
+`Re H (z0, z0) + 2 Re H (z0, t v) + |t|^(2 : ℕ) Re H (v,v)`,
 
 whose cross term is linear in `|t|` and is absorbed into the Gaussian by completing the square.  A
 theta function that is nonzero at a single point therefore forces `Re H (v,v) >= 0` for **every**
@@ -23,7 +23,7 @@ variable {W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W]
 /-- **Gaussian decay along an affine complex line kills the function on that line.** -/
 theorem eq_zero_of_gaussian_decay_along_affine_line {f : W → ℂ} (hf : Differentiable ℂ f)
     (z₀ v : W) {C a : ℝ} (ha : 0 < a)
-    (hbound : ∀ t : ℂ, ‖f (z₀ + t • v)‖ ≤ C * Real.exp (-a * ‖t‖ ^ 2)) (t : ℂ) :
+    (hbound : ∀ t : ℂ, ‖f (z₀ + t • v)‖ ≤ C * Real.exp (-a * ‖t‖ ^ (2 : ℕ))) (t : ℂ) :
     f (z₀ + t • v) = 0 := by
   have hg : Differentiable ℂ fun t : ℂ => f (z₀ + t • v) :=
     hf.comp ((differentiable_id.smul_const v).const_add z₀)
@@ -32,7 +32,7 @@ theorem eq_zero_of_gaussian_decay_along_affine_line {f : W → ℂ} (hf : Differ
 /-- The Hermitian exponent along an affine line. -/
 theorem hermitianForm_affine_re {H : W → W → ℂ} (hH : IsHermitianForm H) (z₀ v : W) (s : ℂ) :
     (H (z₀ + s • v) (z₀ + s • v)).re
-      = (H z₀ z₀).re + 2 * (H z₀ (s • v)).re + ‖s‖ ^ 2 * (H v v).re := by
+      = (H z₀ z₀).re + 2 * (H z₀ (s • v)).re + ‖s‖ ^ (2 : ℕ) * (H v v).re := by
   rw [hH.add_left, hH.add_right, hH.add_right, Complex.add_re, Complex.add_re, Complex.add_re,
     hermitianForm_smul_self hH, hH.re_symm (s • v) z₀]
   ring
@@ -64,11 +64,11 @@ theorem eq_zero_along_affine_line_of_neg {H : W → W → ℂ} (hH : IsHermitian
     have hpi : 0 < Real.pi := Real.pi_pos
     nlinarith
   refine eq_zero_of_gaussian_decay_along_affine_line hdiff z₀ v ha
-    (C := M * Real.exp (Real.pi / 2 * ((H z₀ z₀).re + 2 * B ^ 2 / (-c)))) (fun s => ?_) t
+    (C := M * Real.exp (Real.pi / 2 * ((H z₀ z₀).re + 2 * B ^ (2 : ℕ) / (-c)))) (fun s => ?_) t
   have hb := hbdd (z₀ + s • v)
   rw [thetaNorm, hermitianForm_affine_re hH] at hb
   have hexp : (0 : ℝ) < Real.exp (-(Real.pi / 2)
-      * ((H z₀ z₀).re + 2 * (H z₀ (s • v)).re + ‖s‖ ^ 2 * c)) := Real.exp_pos _
+      * ((H z₀ z₀).re + 2 * (H z₀ (s • v)).re + ‖s‖ ^ (2 : ℕ) * c)) := Real.exp_pos _
   rw [← le_div_iff₀ hexp, div_eq_mul_inv, ← Real.exp_neg] at hb
   refine hb.trans ?_
   rw [mul_assoc, ← Real.exp_add]
@@ -76,9 +76,9 @@ theorem eq_zero_along_affine_line_of_neg {H : W → W → ℂ} (hH : IsHermitian
   rw [Real.exp_le_exp]
   have hcross : (H z₀ (s • v)).re ≤ ‖s‖ * B :=
     le_trans (le_abs_self _) (abs_hermitianForm_cross_le hH z₀ v s)
-  have hamgm : 2 * (‖s‖ * B) ≤ (-c / 2) * ‖s‖ ^ 2 + 2 * B ^ 2 / (-c) := by
+  have hamgm : 2 * (‖s‖ * B) ≤ (-c / 2) * ‖s‖ ^ (2 : ℕ) + 2 * B ^ (2 : ℕ) / (-c) := by
     have hcne : c ≠ 0 := ne_of_lt hv
-    have hD : (2 * B ^ 2 / (-c)) * (-c) = 2 * B ^ 2 := by field_simp
+    have hD : (2 * B ^ (2 : ℕ) / (-c)) * (-c) = 2 * B ^ (2 : ℕ) := by field_simp
     nlinarith [sq_nonneg ((-c) * ‖s‖ - 2 * B), hcneg, norm_nonneg s, hBnn, hD]
   have hpi : 0 < Real.pi := Real.pi_pos
   nlinarith [hcross, hamgm, sq_nonneg ‖s‖, hpi]

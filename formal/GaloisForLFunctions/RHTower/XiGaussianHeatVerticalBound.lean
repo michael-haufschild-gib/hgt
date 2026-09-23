@@ -5,9 +5,9 @@ import GaloisForLFunctions.RHTower.XiGaussianHeatTuranDefect
 
 Continuing the heat time into `Re tau > 0` turns the Gaussian trace into an exponential sum
 
-`nu(tau) = sum_q exp (-tau * (xiSpectralPoint q)^2)`
+`nu(tau) = sum_q exp (-tau * (xiSpectralPoint q)^(2 : ℕ))`
 
-whose terms have modulus `exp (-(Re tau * Re w - Im tau * Im w))`, `w = (xiSpectralPoint q)^2`.
+whose terms have modulus `exp (-(Re tau * Re w - Im tau * Im w))`, `w = (xiSpectralPoint q)^(2 : ℕ)`.
 Under RH every `w` is a positive real, so `Im w = 0`, the modulus of each term collapses to its
 value at the real time `Re tau`, and the whole trace obeys
 
@@ -28,19 +28,19 @@ noncomputable section
 
 /-- The Gaussian heat multiplier at complex time. -/
 def xiGaussianHeatTermC (τ : ℂ) (q : XiZeroCopy) : ℂ :=
-  Complex.exp (-τ * xiSpectralPoint q ^ 2)
+  Complex.exp (-τ * xiSpectralPoint q ^ (2 : ℕ))
 
 theorem norm_xiGaussianHeatTerm (t : ℝ) (q : XiZeroCopy) :
     ‖xiGaussianHeatTerm t q‖ =
-      Real.exp (-(t * (xiSpectralPoint q ^ 2).re)) := by
+      Real.exp (-(t * (xiSpectralPoint q ^ (2 : ℕ)).re)) := by
   rw [xiGaussianHeatTerm, Complex.norm_exp]
   congr 1
   simp [Complex.mul_re]
 
 theorem norm_xiGaussianHeatTermC (τ : ℂ) (q : XiZeroCopy) :
     ‖xiGaussianHeatTermC τ q‖ =
-      Real.exp (-(τ.re * (xiSpectralPoint q ^ 2).re -
-        τ.im * (xiSpectralPoint q ^ 2).im)) := by
+      Real.exp (-(τ.re * (xiSpectralPoint q ^ (2 : ℕ)).re -
+        τ.im * (xiSpectralPoint q ^ (2 : ℕ)).im)) := by
   rw [xiGaussianHeatTermC, Complex.norm_exp]
   congr 1
   simp [Complex.mul_re]
@@ -49,7 +49,7 @@ theorem norm_xiGaussianHeatTermC (τ : ℂ) (q : XiZeroCopy) :
 theorem norm_xiGaussianHeatTermC_of_rh (hRH : RiemannHypothesis) (τ : ℂ)
     (q : XiZeroCopy) :
     ‖xiGaussianHeatTermC τ q‖ = ‖xiGaussianHeatTerm τ.re q‖ := by
-  have him : (xiSpectralPoint q ^ 2).im = 0 := by
+  have him : (xiSpectralPoint q ^ (2 : ℕ)).im = 0 := by
     rw [xiSpectralSq_eq_ofReal_re_of_rh hRH q, Complex.ofReal_im]
   rw [norm_xiGaussianHeatTermC, norm_xiGaussianHeatTerm, him]
   congr 1
@@ -80,7 +80,7 @@ theorem norm_xiGaussianHeatTraceC_le_of_rh (hRH : RiemannHypothesis) {τ : ℂ}
     refine tsum_congr fun q => ?_
     rw [norm_xiGaussianHeatTermC_of_rh hRH τ q]
     have hreal : xiGaussianHeatTerm τ.re q =
-        ((Real.exp (-(τ.re * (xiSpectralPoint q ^ 2).re)) : ℝ) : ℂ) := by
+        ((Real.exp (-(τ.re * (xiSpectralPoint q ^ (2 : ℕ)).re)) : ℝ) : ℂ) := by
       have h := xiGaussianHeatMonomialTerm_eq_ofReal_of_rh hRH 0 τ.re q
       simpa using h
     rw [hreal, Complex.ofReal_re, Complex.norm_real, Real.norm_eq_abs,
@@ -103,10 +103,10 @@ contributes a factor of arbitrarily large modulus somewhere on each vertical lin
 termwise germ of the converse of `norm_xiGaussianHeatTraceC_le_of_rh`: what separates it from the
 full converse is not the growth of any single term but possible cancellation between terms. -/
 theorem exists_norm_xiGaussianHeatTermC_gt (σ : ℝ) {q : XiZeroCopy}
-    (hq : (xiSpectralPoint q ^ 2).im ≠ 0) (M : ℝ) :
+    (hq : (xiSpectralPoint q ^ (2 : ℕ)).im ≠ 0) (M : ℝ) :
     ∃ y : ℝ, M < ‖xiGaussianHeatTermC (σ + y * I) q‖ := by
-  set wre := (xiSpectralPoint q ^ 2).re with hwre
-  set wim := (xiSpectralPoint q ^ 2).im with hwim
+  set wre := (xiSpectralPoint q ^ (2 : ℕ)).re with hwre
+  set wim := (xiSpectralPoint q ^ (2 : ℕ)).im with hwim
   refine ⟨(M + σ * wre) / wim, ?_⟩
   have hre : (σ + ((M + σ * wre) / wim : ℝ) * I).re = σ := by simp
   have him : (σ + ((M + σ * wre) / wim : ℝ) * I).im = (M + σ * wre) / wim := by simp

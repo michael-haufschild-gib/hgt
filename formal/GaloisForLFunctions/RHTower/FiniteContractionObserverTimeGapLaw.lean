@@ -93,7 +93,7 @@ theorem finiteContraction_transientStrippedFidelity_eq_gapRecord
     Complex.normSq
       (inner ℂ x ((T ^ n) x) -
         finiteContractionTransientReturnAmplitude T x n) =
-      finiteContractionPersistentMass T x ^ 2 *
+      finiteContractionPersistentMass T x ^ (2 : ℕ) *
         projectiveReturnRecord
           (finiteContractionPeripheralObserverSpectrum T x) (n : ℝ) := by
   rw [finiteContraction_returnAmplitude_eq_peripheralCharFun_add_transient

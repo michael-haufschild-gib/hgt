@@ -106,7 +106,7 @@ theorem d4BMXiEventHorizonThirdMassParityJetDefect_mul_horizonGain_pos_of_tilt
           d4BMXiAIMEHorizonGainDefect n q *
         d4BMXiAIMEHorizonGainDefect n q =
       d4BMXiEventHorizonThirdMassToAIMEHorizonGainSusceptibility n q *
-        d4BMXiAIMEHorizonGainDefect n q ^ 2 := by ring
+        d4BMXiAIMEHorizonGainDefect n q ^ (2 : ℕ) := by ring
     _ > 0 := mul_pos hs (sq_pos_of_ne_zero hg)
 
 /-- Exact three-channel optical balance: normalized temporal horizon gain plus the uniquely

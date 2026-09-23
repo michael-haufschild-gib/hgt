@@ -67,8 +67,8 @@ private theorem withLp_ext {x y : WithLp 2 (E × E)}
   exact Prod.ext hfst hsnd
 
 /-- An involutive parity gives an involutive doubled swap clock. -/
-theorem doubledParityClock_sq (J : E →L[𝕜] E) (hJ : J ^ 2 = 1) :
-    doubledParityClock J ^ 2 = 1 := by
+theorem doubledParityClock_sq (J : E →L[𝕜] E) (hJ : J ^ (2 : ℕ) = 1) :
+    doubledParityClock J ^ (2 : ℕ) = 1 := by
   ext x
   apply withLp_ext
   · change J (J x.fst) = x.fst
@@ -110,7 +110,7 @@ theorem doubledOddObservable_isSelfAdjoint (A : E →L[𝕜] E)
 
 /-- The doubled clock obtained from a self-adjoint involution is unitary. -/
 theorem doubledParityClock_adjoint_mul (J : E →L[𝕜] E)
-    [CompleteSpace E] (hJself : IsSelfAdjoint J) (hJsq : J ^ 2 = 1) :
+    [CompleteSpace E] (hJself : IsSelfAdjoint J) (hJsq : J ^ (2 : ℕ) = 1) :
     (doubledParityClock J).adjoint * doubledParityClock J = 1 := by
   rw [← ContinuousLinearMap.star_eq_adjoint,
     (doubledParityClock_isSelfAdjoint J hJself).star_eq,
@@ -128,7 +128,7 @@ def doubledParityPair (J : E →L[𝕜] E) (ψ : E) : WithLp 2 (E × E) :=
 
 /-- The parity-paired vector is fixed by the doubled clock. -/
 theorem doubledParityClock_fixed_pair (J : E →L[𝕜] E)
-    (hJsq : J ^ 2 = 1) (ψ : E) :
+    (hJsq : J ^ (2 : ℕ) = 1) (ψ : E) :
     doubledParityClock J (doubledParityPair J ψ) = doubledParityPair J ψ := by
   apply withLp_ext
   · change J (J ψ) = ψ
@@ -139,7 +139,7 @@ theorem doubledParityClock_fixed_pair (J : E →L[𝕜] E)
 /-- If `J` and `A` commute, the doubled observable applied to the paired vector lies in the
 clock-odd sector. -/
 theorem doubledParityClock_odd_pair (J A : E →L[𝕜] E)
-    (hJsq : J ^ 2 = 1) (hcomm : J * A = A * J) (ψ : E) :
+    (hJsq : J ^ (2 : ℕ) = 1) (hcomm : J * A = A * J) (ψ : E) :
     doubledParityClock J (doubledOddObservable A (doubledParityPair J ψ)) =
       -doubledOddObservable A (doubledParityPair J ψ) := by
   apply withLp_ext
@@ -158,7 +158,7 @@ theorem doubledParityClock_odd_pair (J A : E →L[𝕜] E)
 
 /-- The clock commutator is twice the odd observable on the paired state. -/
 theorem doubledParityClock_commutator_pair (J A : E →L[𝕜] E)
-    (hJsq : J ^ 2 = 1) (hcomm : J * A = A * J) (ψ : E) :
+    (hJsq : J ^ (2 : ℕ) = 1) (hcomm : J * A = A * J) (ψ : E) :
     ((doubledOddObservable A * doubledParityClock J -
       doubledParityClock J * doubledOddObservable A) :
         WithLp 2 (E × E) →L[𝕜] WithLp 2 (E × E))
@@ -176,7 +176,7 @@ def doubledParitySource (J : E →L[𝕜] E) (ψ : E) : WithLp 2 (E × E) :=
 /-- Squared norm of the normalized doubled source. -/
 theorem norm_doubledParitySource_sq (J : E →L[𝕜] E) (ψ : E)
     (hJnorm : ‖J ψ‖ = ‖ψ‖) :
-    ‖doubledParitySource J ψ‖ ^ 2 = ‖ψ‖ ^ 2 := by
+    ‖doubledParitySource J ψ‖ ^ (2 : ℕ) = ‖ψ‖ ^ (2 : ℕ) := by
   rw [doubledParitySource, norm_smul, mul_pow,
     WithLp.prod_norm_sq_eq_of_L2]
   simp only [doubledParityPair_fst, doubledParityPair_snd, hJnorm]
@@ -197,14 +197,14 @@ theorem norm_doubledParitySource (J : E →L[𝕜] E) (ψ : E)
 
 /-- The normalized doubled source is fixed by its clock. -/
 theorem doubledParityClock_fixed_source (J : E →L[𝕜] E)
-    (hJsq : J ^ 2 = 1) (ψ : E) :
+    (hJsq : J ^ (2 : ℕ) = 1) (ψ : E) :
     doubledParityClock J (doubledParitySource J ψ) =
       doubledParitySource J ψ := by
   rw [doubledParitySource, map_smul, doubledParityClock_fixed_pair J hJsq]
 
 /-- The odd observable applied to the normalized source lies in the clock-odd sector. -/
 theorem doubledParityClock_odd_source (J A : E →L[𝕜] E)
-    (hJsq : J ^ 2 = 1) (hcomm : J * A = A * J) (ψ : E) :
+    (hJsq : J ^ (2 : ℕ) = 1) (hcomm : J * A = A * J) (ψ : E) :
     doubledParityClock J
         (doubledOddObservable A (doubledParitySource J ψ)) =
       -doubledOddObservable A (doubledParitySource J ψ) := by
@@ -213,7 +213,7 @@ theorem doubledParityClock_odd_source (J A : E →L[𝕜] E)
 
 /-- The doubled clock commutator is twice the odd observable on the normalized source. -/
 theorem doubledParityClock_commutator_source (J A : E →L[𝕜] E)
-    (hJsq : J ^ 2 = 1) (hcomm : J * A = A * J) (ψ : E) :
+    (hJsq : J ^ (2 : ℕ) = 1) (hcomm : J * A = A * J) (ψ : E) :
     ((doubledOddObservable A * doubledParityClock J -
       doubledParityClock J * doubledOddObservable A) :
         WithLp 2 (E × E) →L[𝕜] WithLp 2 (E × E))
@@ -250,8 +250,8 @@ theorem doubledOddObservable_commutator_snd (J A : E →L[𝕜] E)
 observable energy. -/
 theorem norm_doubledOddObservable_source_sq (J A : E →L[𝕜] E)
     (hJnorm : ∀ x, ‖J x‖ = ‖x‖) (hcomm : J * A = A * J) (ψ : E) :
-    ‖doubledOddObservable A (doubledParitySource J ψ)‖ ^ 2 =
-      ‖A ψ‖ ^ 2 := by
+    ‖doubledOddObservable A (doubledParitySource J ψ)‖ ^ (2 : ℕ) =
+      ‖A ψ‖ ^ (2 : ℕ) := by
   have hAJ : A (J ψ) = J (A ψ) := by
     have h := congrArg (fun T : E →L[𝕜] E => T ψ) hcomm.symm
     simpa only [mul_apply_eq_comp] using h
@@ -269,16 +269,16 @@ theorem norm_doubledOddObservable_source_sq (J A : E →L[𝕜] E)
 no self-adjointness of the observable is required. -/
 theorem doubledParityClock_erasedQFI_eq_four_mul_oddNormSq
     [CompleteSpace E] (J A : E →L[𝕜] E)
-    (hJself : IsSelfAdjoint J) (hJsq : J ^ 2 = 1)
+    (hJself : IsSelfAdjoint J) (hJsq : J ^ (2 : ℕ) = 1)
     (hJnorm : ∀ x, ‖J x‖ = ‖x‖)
     (hcomm : J * A = A * J) {ψ : E} (hψnorm : ‖ψ‖ = 1) :
-    pureStateQuantumFisherValue (‖doubledParitySource J ψ‖ ^ 2)
+    pureStateQuantumFisherValue (‖doubledParitySource J ψ‖ ^ (2 : ℕ))
         (‖inner 𝕜 (doubledParitySource J ψ)
           ((1 - finiteCyclicGaugeAverage (doubledParityClock J) 2)
             (doubledOddObservable A (doubledParitySource J ψ)))‖)
         (‖(1 - finiteCyclicGaugeAverage (doubledParityClock J) 2)
-          (doubledOddObservable A (doubledParitySource J ψ))‖ ^ 2) =
-      4 * ‖doubledOddObservable A (doubledParitySource J ψ)‖ ^ 2 := by
+          (doubledOddObservable A (doubledParitySource J ψ))‖ ^ (2 : ℕ)) =
+      4 * ‖doubledOddObservable A (doubledParitySource J ψ)‖ ^ (2 : ℕ) := by
   rw [finiteInvolutiveClock_erasedPureStateQuantumFisherValue_eq_commutatorNormSq
     (doubledParityClock J) (doubledOddObservable A)
     (doubledParityClock_adjoint_mul J hJself hJsq)

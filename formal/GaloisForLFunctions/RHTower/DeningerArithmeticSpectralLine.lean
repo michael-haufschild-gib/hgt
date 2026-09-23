@@ -414,8 +414,8 @@ theorem norm_xiRelativeResolventTerm_deningerXiRightCenteredLine_le
     ‖xiRelativeResolventTerm
         (deningerXiRightCenteredLine ξ) q‖ ≤
       (‖deningerXiRightCenteredLine ξ‖ +
-          2 * ‖deningerXiRightCenteredLine ξ‖ ^ 2) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          2 * ‖deningerXiRightCenteredLine ξ‖ ^ (2 : ℕ)) *
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   let x : ℝ := ‖deningerXiRightCenteredLine ξ‖
   let A : ℝ := ‖xiSpectralPoint q‖
   let d : ℝ :=
@@ -447,19 +447,19 @@ theorem norm_xiRelativeResolventTerm_deningerXiRightCenteredLine_le
             ‖deningerXiRightCenteredLine ξ‖ :=
         norm_add_le _ _
   have hcore :
-      x * A ≤ (x + 2 * x ^ 2) * d := by
+      x * A ≤ (x + 2 * x ^ (2 : ℕ)) * d := by
     have hxtri :
         x * A ≤ x * (d + x) :=
       mul_le_mul_of_nonneg_left htri hx
     have hxd :
-        x ^ 2 ≤ 2 * x ^ 2 * d := by
+        x ^ (2 : ℕ) ≤ 2 * x ^ (2 : ℕ) * d := by
       nlinarith [sq_nonneg x]
     nlinarith
   rw [
     xiRelativeResolventTerm_deningerXiRightCenteredLine_eq,
     norm_div, norm_neg, norm_mul]
   change x / (A * d) ≤
-    (x + 2 * x ^ 2) * (1 / A ^ 2)
+    (x + 2 * x ^ (2 : ℕ)) * (1 / A ^ (2 : ℕ))
   rw [one_div, ← div_eq_mul_inv]
   rw [div_le_div_iff₀ (mul_pos hA hd) (pow_pos hA 2)]
   have hmul :=
@@ -470,7 +470,7 @@ def deningerXiRightRelativeMajorant
     (φ : DeningerTimeTestFunction) (ξ : ℝ) : ℝ :=
   ‖deningerXiRightEulerLineSchwartz φ ξ‖ *
     (‖deningerXiRightCenteredLine ξ‖ +
-      2 * ‖deningerXiRightCenteredLine ξ‖ ^ 2)
+      2 * ‖deningerXiRightCenteredLine ξ‖ ^ (2 : ℕ))
 
 theorem integrable_deningerXiRightRelativeMajorant
     (φ : DeningerTimeTestFunction) :
@@ -487,7 +487,7 @@ theorem integrable_deningerXiRightRelativeMajorant
     fun_prop
   let G₁ : SchwartzMap ℝ ℂ :=
     SchwartzMap.smulLeftCLM ℂ z F
-  let z₂ : ℝ → ℂ := fun ξ => z ξ ^ 2
+  let z₂ : ℝ → ℂ := fun ξ => z ξ ^ (2 : ℕ)
   have hz₂ : z₂.HasTemperateGrowth := by
     dsimp only [z₂]
     fun_prop
@@ -508,12 +508,12 @@ theorem integrable_deningerXiRightRelativeMajorant
     exact h
   have hG₂ :
       Integrable
-        (fun ξ : ℝ => ‖z ξ ^ 2 * F ξ‖) := by
+        (fun ξ : ℝ => ‖z ξ ^ (2 : ℕ) * F ξ‖) := by
     have h : Integrable (fun ξ : ℝ => ‖G₂ ξ‖) :=
       G₂.integrable.norm
     rw [show
         (fun ξ : ℝ => ‖G₂ ξ‖) =
-          fun ξ : ℝ => ‖z ξ ^ 2 * F ξ‖ by
+          fun ξ : ℝ => ‖z ξ ^ (2 : ℕ) * F ξ‖ by
       funext ξ
       dsimp only [G₂]
       rw [SchwartzMap.smulLeftCLM_apply_apply hz₂]
@@ -525,7 +525,7 @@ theorem integrable_deningerXiRightRelativeMajorant
       deningerXiRightRelativeMajorant φ =
         fun ξ : ℝ =>
           ‖z ξ * F ξ‖ +
-            2 * ‖z ξ ^ 2 * F ξ‖ by
+            2 * ‖z ξ ^ (2 : ℕ) * F ξ‖ by
     funext ξ
     rw [deningerXiRightRelativeMajorant,
       norm_mul, norm_mul, norm_pow]
@@ -752,7 +752,7 @@ theorem norm_deningerXiRightSpectralRawIntegrand_le
     (q : XiZeroCopy) (ξ : ℝ) :
     ‖deningerXiRightSpectralRawIntegrand φ q ξ‖ ≤
       deningerXiRightRelativeMajorant φ ξ *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   rw [deningerXiRightSpectralRawIntegrand,
     norm_mul, norm_mul, norm_neg, Complex.norm_I,
     one_mul, deningerXiRightRelativeMajorant]
@@ -768,13 +768,13 @@ theorem norm_deningerXiRightSpectralRawIntegrand_le
           (deningerXiRightCenteredLine ξ) q‖ ≤
       ‖deningerXiRightEulerLineSchwartz φ ξ‖ *
         ((‖deningerXiRightCenteredLine ξ‖ +
-            2 * ‖deningerXiRightCenteredLine ξ‖ ^ 2) *
-          (1 / ‖xiSpectralPoint q‖ ^ 2)) := h
+            2 * ‖deningerXiRightCenteredLine ξ‖ ^ (2 : ℕ)) *
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) := h
     _ =
       ‖deningerXiRightEulerLineSchwartz φ ξ‖ *
           (‖deningerXiRightCenteredLine ξ‖ +
-            2 * ‖deningerXiRightCenteredLine ξ‖ ^ 2) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+            2 * ‖deningerXiRightCenteredLine ξ‖ ^ (2 : ℕ)) *
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 theorem integral_norm_deningerXiRightSpectralRawIntegrand_le
     (φ : DeningerTimeTestFunction)
@@ -783,7 +783,7 @@ theorem integral_norm_deningerXiRightSpectralRawIntegrand_le
         ‖deningerXiRightSpectralRawIntegrand φ q ξ‖) ≤
       (∫ ξ : ℝ,
         deningerXiRightRelativeMajorant φ ξ) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   have hraw :=
     integrable_deningerXiRightSpectralRawIntegrand
       φ q
@@ -794,7 +794,7 @@ theorem integral_norm_deningerXiRightSpectralRawIntegrand_le
         ‖deningerXiRightSpectralRawIntegrand φ q ξ‖) ≤
       ∫ ξ : ℝ,
         deningerXiRightRelativeMajorant φ ξ *
-          (1 / ‖xiSpectralPoint q‖ ^ 2) :=
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
       integral_mono hraw.norm
         (hmajor.mul_const _) fun ξ =>
           norm_deningerXiRightSpectralRawIntegrand_le
@@ -802,7 +802,7 @@ theorem integral_norm_deningerXiRightSpectralRawIntegrand_le
     _ =
       (∫ ξ : ℝ,
         deningerXiRightRelativeMajorant φ ξ) *
-          (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+          (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
       rw [integral_mul_const]
 
 theorem summable_integral_norm_deningerXiRightSpectralRawIntegrand
@@ -818,7 +818,7 @@ theorem summable_integral_norm_deningerXiRightSpectralRawIntegrand
   have hbase :
       Summable
         (fun q : XiZeroCopy =>
-          J * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
+          J * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
     xiSpectralPoint_inv_sq_summable.mul_left J
   exact hbase.of_nonneg_of_le
     (fun q => integral_nonneg fun _ => norm_nonneg _)

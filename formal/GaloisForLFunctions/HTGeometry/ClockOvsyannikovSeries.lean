@@ -51,12 +51,12 @@ theorem pow_self_div_factorial_le_exp (n : ℕ) :
 /-- **The squared ratio is geometric.** This is the exact shape produced by a step that loses two
 derivatives and gains a double integration. -/
 theorem sq_pow_self_div_factorial_le (m : ℕ) :
-    ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ 2 ≤ (Real.exp 2) ^ m := by
+    ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ (2 : ℕ) ≤ (Real.exp 2) ^ m := by
   have hbase := pow_self_div_factorial_le_exp m
   have hnn : (0 : ℝ) ≤ (m : ℝ) ^ m / (m.factorial : ℝ) := by positivity
-  have h2 : ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ 2 ≤ (Real.exp m) ^ 2 := by
+  have h2 : ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ (2 : ℕ) ≤ (Real.exp m) ^ (2 : ℕ) := by
     nlinarith [hbase, hnn, Real.exp_pos (m : ℝ)]
-  have e1 : (Real.exp (m : ℝ)) ^ 2 = Real.exp ((m : ℝ) * 2) := by
+  have e1 : (Real.exp (m : ℝ)) ^ (2 : ℕ) = Real.exp ((m : ℝ) * 2) := by
     rw [sq, ← Real.exp_add]
     congr 1
     ring
@@ -68,13 +68,13 @@ theorem sq_pow_self_div_factorial_le (m : ℕ) :
 
 /-- **The Ovsyannikov term bound.** -/
 theorem ovsyannikov_term_le {A : ℝ} (hA : 0 ≤ A) (m : ℕ) :
-    A ^ m * ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ 2 ≤ (A * Real.exp 2) ^ m := by
+    A ^ m * ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ (2 : ℕ) ≤ (A * Real.exp 2) ^ m := by
   rw [mul_pow]
   exact mul_le_mul_of_nonneg_left (sq_pow_self_div_factorial_le m) (pow_nonneg hA m)
 
 /-- **The iteration converges once the rectangle is small compared with the radius.** -/
 theorem summable_ovsyannikov {A : ℝ} (hA : 0 ≤ A) (hlt : A * Real.exp 2 < 1) :
-    Summable fun m : ℕ => A ^ m * ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ 2 := by
+    Summable fun m : ℕ => A ^ m * ((m : ℝ) ^ m / (m.factorial : ℝ)) ^ (2 : ℕ) := by
   have hgeo : Summable fun m : ℕ => (A * Real.exp 2) ^ m :=
     summable_geometric_of_lt_one (by positivity) hlt
   exact hgeo.of_nonneg_of_le (fun m => by positivity) (fun m => ovsyannikov_term_le hA m)

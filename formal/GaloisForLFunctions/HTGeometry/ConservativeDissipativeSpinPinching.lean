@@ -78,7 +78,7 @@ theorem spinDensityField_pinched (a : ℝ) (ρ : Matrix (Fin 2) (Fin 2) ℂ) :
 /-- Measuring the original spin field retains its nonzero torque-driven population transfer. -/
 theorem spinZPinch_field (a : ℝ) (m : EuclideanSpace ℝ (Fin 3)) :
     spinZPinch (spinDensityField a (spinMatrix m)) =
-      ((-a ^ 2 * spinTorqueEnergy m / 2 : ℝ) : ℂ) • QuantumAlg.pauliZ := by
+      ((-a ^ (2 : ℕ) * spinTorqueEnergy m / 2 : ℝ) : ℂ) • QuantumAlg.pauliZ := by
   rw [← spinMatrixTangent_field, spinZPinch_spinMatrixTangent,
     spinSphereField_components, spinTorqueEnergy_components]
   rfl
@@ -97,13 +97,13 @@ theorem qubitDensity_zero_coupling (b : ℝ) :
 /-- Dephasing the exact spin trajectory produces the full Gibbs density, not only its Z mean. -/
 theorem spinZPinch_densityFlow_gibbs (a x phase t : ℝ) :
     spinZPinch (spinDensityFlow a (spinLogSeed x phase) t) =
-      qubitDensity 0 (x - a ^ 2 * t) := by
+      qubitDensity 0 (x - a ^ (2 : ℕ) * t) := by
   rw [spinDensityFlow_eq_spinMatrix, spinZPinch_spinMatrix, spinSphereFlow_log_latitude,
     qubitDensity_zero_coupling]
 
 /-- Exact reduced population field on the measured density: a closed Riccati latitude law. -/
 def spinDiagonalField (a : ℝ) (ρ : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  ((-a ^ 2 * (1 - (Matrix.trace (ρ * QuantumAlg.pauliZ)).re ^ 2) / 2 : ℝ) : ℂ) •
+  ((-a ^ (2 : ℕ) * (1 - (Matrix.trace (ρ * QuantumAlg.pauliZ)).re ^ (2 : ℕ)) / 2 : ℝ) : ℂ) •
     QuantumAlg.pauliZ
 
 /-- Purity supplies the missing closure term in the measured spin dynamics. -/
@@ -114,7 +114,7 @@ theorem spinZPinch_pure_field (a : ℝ) (z : ℂ) :
   rw [he, spinZPinch_field, spinDiagonalField, spinZPinch_expectation_Z, spinMatrix_expectation_Z]
   have hn := spinTorqueEnergy_add_latitude_sq (_root_.Bottcher.stereo z)
   rw [_root_.Bottcher.norm_stereo_eq_one] at hn
-  have ht : spinTorqueEnergy (_root_.Bottcher.stereo z) = 1 - _root_.Bottcher.stereo z 2 ^ 2 := by
+  have ht : spinTorqueEnergy (_root_.Bottcher.stereo z) = 1 - _root_.Bottcher.stereo z 2 ^ (2 : ℕ) := by
     linarith
   rw [ht]
 
@@ -132,15 +132,15 @@ theorem hasDerivAt_spinZPinchedDensity (a : ℝ) (z : ℂ) (t : ℝ) :
 
 /-- The Gibbs population ODE is exactly the reduced spin equation along a linearly drifting bias. -/
 theorem hasDerivAt_qubitGibbs_spinPopulation (a x t : ℝ) :
-    HasDerivAt (fun v => qubitDensity 0 (x - a ^ 2 * v))
-      (spinDiagonalField a (qubitDensity 0 (x - a ^ 2 * t))) t := by
+    HasDerivAt (fun v => qubitDensity 0 (x - a ^ (2 : ℕ) * v))
+      (spinDiagonalField a (qubitDensity 0 (x - a ^ (2 : ℕ) * t))) t := by
   simpa only [spinZPinch_densityFlow_gibbs] using
     hasDerivAt_spinZPinchedDensity a (spinLogSeed x 0) t
 
 /-- Exact torque in chart coordinates identifies precisely when the measurement loses dynamics. -/
 theorem spinTorqueEnergy_stereo (z : ℂ) :
-    spinTorqueEnergy (_root_.Bottcher.stereo z) = 4 * ‖z‖ ^ 2 / (1 + ‖z‖ ^ 2) ^ 2 := by
-  have hd : 1 + ‖z‖ ^ 2 ≠ 0 := by positivity
+    spinTorqueEnergy (_root_.Bottcher.stereo z) = 4 * ‖z‖ ^ (2 : ℕ) / (1 + ‖z‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
+  have hd : 1 + ‖z‖ ^ (2 : ℕ) ≠ 0 := by positivity
   rw [spinTorqueEnergy_components]
   simp [_root_.Bottcher.stereo]
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]

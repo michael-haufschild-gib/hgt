@@ -5,16 +5,16 @@ import GaloisForLFunctions.HTGeometry.AbstractSpectralMass
 /-!
 # The mass-shifted Xi carrier is quantitatively faithful
 
-`XiMassShiftedFamily` builds the mass-shifted carrier `sqrt (alpha ^ 2 + a ^ 2)` of the Xi divisor
+`XiMassShiftedFamily` builds the mass-shifted carrier `sqrt (alpha ^ (2 : ℕ) + a ^ (2 : ℕ))` of the Xi divisor
 directly, and shows that a bounded vertical line for its trace forces RH.  That construction is an
 instance of the abstract mass deformation: the mass-shifted Xi family and the mass deformation of
 the abstract Poisson family have the same points, and the abstract construction uses only the
 admissibility interface — in particular not the Xi-specific height bound `Re alpha > 3`.
 
-The deformation conserves the charge `Im (alpha ^ 2)`, so no displacement information is destroyed.
+The deformation conserves the charge `Im (alpha ^ (2 : ℕ))`, so no displacement information is destroyed.
 Quantitatively, because the least Poisson height of the Xi divisor exceeds `3`,
 
-`9 * (1/2 - Re rho) ^ 2 ≤ (9 + a ^ 2) * (mass-shifted displacement) ^ 2`.
+`9 * (1/2 - Re rho) ^ (2 : ℕ) ≤ (9 + a ^ (2 : ℕ)) * (mass-shifted displacement) ^ (2 : ℕ)`.
 
 For `a = 1/2` the loss factor is `sqrt (37/36) < 1.014`.  A displacement or defect bound for the
 prime-accessible mass-shifted carrier therefore returns an explicit zero-free region for zeta, not
@@ -44,17 +44,17 @@ theorem xiMassFamily_traceC_eq {a : ℝ} (ha : 1 / 2 ≤ a) (τ : ℂ) :
 theorem xiMassFamily_traceReal_eq {a : ℝ} (ha : 1 / 2 ≤ a) (σ : ℝ) :
     (xiMassFamily ha).traceReal σ = (xiPoissonAbstract.mass ha).traceReal σ := rfl
 
-/-- **The deformation conserves the displacement charge of every Xi zero.**  `Im (alpha ^ 2)` is the
+/-- **The deformation conserves the displacement charge of every Xi zero.**  `Im (alpha ^ (2 : ℕ))` is the
 same for the Poisson carrier and for every mass-shifted carrier. -/
 theorem charge_xiMassFamily_eq {a : ℝ} (ha : 1 / 2 ≤ a) (q : XiZeroCopy) :
-    (((xiMassFamily ha).pt q) ^ 2).im = ((xiPoissonPoint q) ^ 2).im := by
+    (((xiMassFamily ha).pt q) ^ (2 : ℕ)).im = ((xiPoissonPoint q) ^ (2 : ℕ)).im := by
   rw [xiMassFamily_pt_eq_mass_pt ha q]
   exact xiPoissonAbstract.charge_mass ha q
 
 /-- **Pointwise faithfulness for the Xi divisor.**  The distance of a zero from the critical line is
-recovered from the mass-shifted displacement with the explicit loss `(9 + a ^ 2)/9`. -/
+recovered from the mass-shifted displacement with the explicit loss `(9 + a ^ (2 : ℕ))/9`. -/
 theorem nine_mul_sq_im_xiSpectralPoint_le {a : ℝ} (ha : 1 / 2 ≤ a) (q : XiZeroCopy) :
-    9 * (xiSpectralPoint q).im ^ 2 ≤ (9 + a ^ 2) * ((xiMassFamily ha).pt q).im ^ 2 := by
+    9 * (xiSpectralPoint q).im ^ (2 : ℕ) ≤ (9 + a ^ (2 : ℕ)) * ((xiMassFamily ha).pt q).im ^ (2 : ℕ) := by
   have habs := xiPoissonAbstract.sq_im_le_of_mass ha q
   rw [xiPoissonAbstract_base] at habs
   have hpt : xiPoissonAbstract.pt q = xiPoissonPoint q := rfl
@@ -63,34 +63,34 @@ theorem nine_mul_sq_im_xiSpectralPoint_le {a : ℝ} (ha : 1 / 2 ≤ a) (q : XiZe
   have hsq := sq_im_xiPoissonPoint_eq q
   rw [hsq] at habs
   have hb := three_lt_xiPoissonBottomHeight
-  have hj : (0 : ℝ) ≤ ((xiMassFamily ha).pt q).im ^ 2 := sq_nonneg _
-  have hB : (9 : ℝ) ≤ xiPoissonBottomHeight ^ 2 := by nlinarith
-  have hBpos : (0 : ℝ) < xiPoissonBottomHeight ^ 2 := by nlinarith
-  have key : xiPoissonBottomHeight ^ 2 * (9 * (xiSpectralPoint q).im ^ 2)
-      ≤ xiPoissonBottomHeight ^ 2 * ((9 + a ^ 2) * ((xiMassFamily ha).pt q).im ^ 2) := by
+  have hj : (0 : ℝ) ≤ ((xiMassFamily ha).pt q).im ^ (2 : ℕ) := sq_nonneg _
+  have hB : (9 : ℝ) ≤ xiPoissonBottomHeight ^ (2 : ℕ) := by nlinarith
+  have hBpos : (0 : ℝ) < xiPoissonBottomHeight ^ (2 : ℕ) := by nlinarith
+  have key : xiPoissonBottomHeight ^ (2 : ℕ) * (9 * (xiSpectralPoint q).im ^ (2 : ℕ))
+      ≤ xiPoissonBottomHeight ^ (2 : ℕ) * ((9 + a ^ (2 : ℕ)) * ((xiMassFamily ha).pt q).im ^ (2 : ℕ)) := by
     nlinarith [mul_le_mul_of_nonneg_left habs (by norm_num : (0:ℝ) ≤ 9),
       mul_nonneg (mul_nonneg (sq_nonneg a) hj) (sub_nonneg.mpr hB)]
   exact le_of_mul_le_mul_left key hBpos
 
 /-- **A displacement bound for the mass-shifted carrier is a zero-free region for zeta.** -/
 theorem sq_im_xiSpectralPoint_le_of_mass_im_le {a M : ℝ} (ha : 1 / 2 ≤ a)
-    (h : ∀ q : XiZeroCopy, ((xiMassFamily ha).pt q).im ^ 2 ≤ M) (q : XiZeroCopy) :
-    9 * (xiSpectralPoint q).im ^ 2 ≤ (9 + a ^ 2) * M := by
+    (h : ∀ q : XiZeroCopy, ((xiMassFamily ha).pt q).im ^ (2 : ℕ) ≤ M) (q : XiZeroCopy) :
+    9 * (xiSpectralPoint q).im ^ (2 : ℕ) ≤ (9 + a ^ (2 : ℕ)) * M := by
   have h1 := nine_mul_sq_im_xiSpectralPoint_le ha q
   have h2 := h q
   nlinarith [sq_nonneg a]
 
 /-- **The defect of the prime-accessible carrier is an explicit zero-free region for zeta.**  A
 bound `M` for the mass-shifted defect at one admissible real time bounds the distance of every zero
-from the critical line, with only the two explicit losses `(9 + a ^ 2)/9` from the deformation and
+from the critical line, with only the two explicit losses `(9 + a ^ (2 : ℕ))/9` from the deformation and
 `exp (sigma a)` from the raised heights. -/
 theorem sq_im_xiSpectralPoint_le_of_xiMass_defect_le {a σ M : ℝ} (ha : 1 / 2 ≤ a) (hσ : 0 < σ)
     (hσ' : σ ≤ 2 * Real.pi)
     (h : (xiMassFamily ha).traceReal σ - ((xiMassFamily ha).traceC (σ : ℂ)).re ≤ M)
     (q : XiZeroCopy) :
-    9 * (xiSpectralPoint q).im ^ 2 ≤
-      (9 + a ^ 2) *
-        (Real.pi ^ 2 / (2 * σ ^ 2) * M * Real.exp (σ * a) *
+    9 * (xiSpectralPoint q).im ^ (2 : ℕ) ≤
+      (9 + a ^ (2 : ℕ)) *
+        (Real.pi ^ (2 : ℕ) / (2 * σ ^ (2 : ℕ)) * M * Real.exp (σ * a) *
           Real.exp (σ * (xiPoissonPoint q).re)) := by
   have hdef : (xiPoissonAbstract.mass ha).defect σ ≤ M := by
     rw [HTGeometry.AbstractSpectralFamily.defect, ← xiMassFamily_traceReal_eq ha σ,
@@ -105,14 +105,14 @@ theorem sq_im_xiSpectralPoint_le_of_xiMass_defect_le {a σ M : ℝ} (ha : 1 / 2 
   have hMnn : 0 ≤ M := by
     have hd := (xiPoissonAbstract.mass ha).defect_nonneg hσ
     linarith
-  have hrest : (0 : ℝ) ≤ Real.pi ^ 2 / (2 * σ ^ 2) * M * Real.exp (σ * a) *
+  have hrest : (0 : ℝ) ≤ Real.pi ^ (2 : ℕ) / (2 * σ ^ (2 : ℕ)) * M * Real.exp (σ * a) *
       Real.exp (σ * (xiPoissonPoint q).re) := by positivity
-  have hB : (9 : ℝ) ≤ xiPoissonBottomHeight ^ 2 := by nlinarith
-  have hBpos : (0 : ℝ) < xiPoissonBottomHeight ^ 2 := by nlinarith
-  have key : xiPoissonBottomHeight ^ 2 * (9 * (xiSpectralPoint q).im ^ 2)
-      ≤ xiPoissonBottomHeight ^ 2 *
-        ((9 + a ^ 2) *
-          (Real.pi ^ 2 / (2 * σ ^ 2) * M * Real.exp (σ * a) *
+  have hB : (9 : ℝ) ≤ xiPoissonBottomHeight ^ (2 : ℕ) := by nlinarith
+  have hBpos : (0 : ℝ) < xiPoissonBottomHeight ^ (2 : ℕ) := by nlinarith
+  have key : xiPoissonBottomHeight ^ (2 : ℕ) * (9 * (xiSpectralPoint q).im ^ (2 : ℕ))
+      ≤ xiPoissonBottomHeight ^ (2 : ℕ) *
+        ((9 + a ^ (2 : ℕ)) *
+          (Real.pi ^ (2 : ℕ) / (2 * σ ^ (2 : ℕ)) * M * Real.exp (σ * a) *
             Real.exp (σ * (xiPoissonPoint q).re))) := by
     nlinarith [mul_le_mul_of_nonneg_left habs (by norm_num : (0:ℝ) ≤ 9),
       mul_nonneg (mul_nonneg (sq_nonneg a) hrest) (sub_nonneg.mpr hB)]
@@ -147,7 +147,7 @@ noncomputable section
 displacement charge `2 * height * (1/2 - Re rho)` of the zeros vanishes unconditionally.  Every
 functional of the divisor that is linear in the distance to the critical line is therefore blind. -/
 theorem tsum_xiPoissonWeight_mul_charge_eq_zero {σ : ℝ} (hσ : 0 < σ) :
-    ∑' q : XiZeroCopy, xiPoissonWeight σ q * ((xiPoissonPoint q) ^ 2).im = 0 :=
+    ∑' q : XiZeroCopy, xiPoissonWeight σ q * ((xiPoissonPoint q) ^ (2 : ℕ)).im = 0 :=
   xiPoissonAbstract.tsum_weight_mul_charge_eq_zero hσ
 
 /-- The Poisson trace of the Xi divisor is real on the positive real axis. -/
@@ -159,7 +159,7 @@ theorem im_xiPoissonTraceC_ofReal_eq_zero {σ : ℝ} (hσ : 0 < σ) :
 conserves the vanishing of their weighted total. -/
 theorem tsum_xiMass_weight_mul_charge_eq_zero {a σ : ℝ} (ha : 1 / 2 ≤ a) (hσ : 0 < σ) :
     ∑' q : XiZeroCopy,
-        (xiPoissonAbstract.mass ha).weight σ q * ((xiPoissonPoint q) ^ 2).im = 0 := by
+        (xiPoissonAbstract.mass ha).weight σ q * ((xiPoissonPoint q) ^ (2 : ℕ)).im = 0 := by
   have h := (xiPoissonAbstract.mass ha).tsum_weight_mul_charge_eq_zero hσ
   refine Eq.trans (tsum_congr fun q => ?_) h
   rw [HTGeometry.AbstractSpectralFamily.charge, xiPoissonAbstract.mass_pt_sq ha q,
@@ -181,24 +181,24 @@ theorem xiMassEnergy_le_xiPoissonEnergy {a σ : ℝ} (ha : 1 / 2 ≤ a) (hσ : 0
 
 /-- **Global faithfulness for the Xi divisor.**  The Poisson displacement energy of the zeros is
 recovered from the prime-accessible mass-shifted energy up to the two explicit factors
-`(9 + a ^ 2)/9` and `exp (sigma a)`.  Together with `xiMassEnergy_le_xiPoissonEnergy` the two
+`(9 + a ^ (2 : ℕ))/9` and `exp (sigma a)`.  Together with `xiMassEnergy_le_xiPoissonEnergy` the two
 invariants are comparable, so the mass-shifted criterion is not merely sufficient for RH: it carries
 the same quantitative information as the Poisson one. -/
 theorem nine_mul_exp_mul_xiPoissonEnergy_le {a σ : ℝ} (ha : 1 / 2 ≤ a) (hσ : 0 < σ) :
     9 * (Real.exp (-(σ * a)) * xiPoissonAbstract.energy σ)
-      ≤ (9 + a ^ 2) * (xiPoissonAbstract.mass ha).energy σ := by
+      ≤ (9 + a ^ (2 : ℕ)) * (xiPoissonAbstract.mass ha).energy σ := by
   have habs := xiPoissonAbstract.energy_le_mass_energy ha hσ
   rw [xiPoissonAbstract_base] at habs
   have hb := three_lt_xiPoissonBottomHeight
-  have hB : (9 : ℝ) ≤ xiPoissonBottomHeight ^ 2 := by nlinarith
-  have hBpos : (0 : ℝ) < xiPoissonBottomHeight ^ 2 := by nlinarith
+  have hB : (9 : ℝ) ≤ xiPoissonBottomHeight ^ (2 : ℕ) := by nlinarith
+  have hBpos : (0 : ℝ) < xiPoissonBottomHeight ^ (2 : ℕ) := by nlinarith
   have hEm : (0 : ℝ) ≤ (xiPoissonAbstract.mass ha).energy σ :=
     (xiPoissonAbstract.mass ha).energy_nonneg σ
   have hE : (0 : ℝ) ≤ Real.exp (-(σ * a)) * xiPoissonAbstract.energy σ := by
     have := xiPoissonAbstract.energy_nonneg σ
     positivity
-  have key : xiPoissonBottomHeight ^ 2 * (9 * (Real.exp (-(σ * a)) * xiPoissonAbstract.energy σ))
-      ≤ xiPoissonBottomHeight ^ 2 * ((9 + a ^ 2) * (xiPoissonAbstract.mass ha).energy σ) := by
+  have key : xiPoissonBottomHeight ^ (2 : ℕ) * (9 * (Real.exp (-(σ * a)) * xiPoissonAbstract.energy σ))
+      ≤ xiPoissonBottomHeight ^ (2 : ℕ) * ((9 + a ^ (2 : ℕ)) * (xiPoissonAbstract.mass ha).energy σ) := by
     nlinarith [mul_le_mul_of_nonneg_left habs (by norm_num : (0:ℝ) ≤ 9),
       mul_nonneg (mul_nonneg (sq_nonneg a) hEm) (sub_nonneg.mpr hB)]
   exact le_of_mul_le_mul_left key hBpos

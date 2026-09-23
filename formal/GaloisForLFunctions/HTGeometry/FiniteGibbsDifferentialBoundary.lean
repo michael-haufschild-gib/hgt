@@ -250,12 +250,12 @@ No positivity is needed for the algebraic identity. -/
 theorem normalizedWeight_pairwiseSqGap_eq_two_mul_variance
     {α : Type*} [Fintype α] (weight value : α → ℝ)
     (hweight : ∑ a, weight a = 1) :
-    (∑ a, ∑ b, weight a * weight b * (value a - value b) ^ 2) =
-      2 * ((∑ a, weight a * value a ^ 2) -
-        (∑ a, weight a * value a) ^ 2) := by
+    (∑ a, ∑ b, weight a * weight b * (value a - value b) ^ (2 : ℕ)) =
+      2 * ((∑ a, weight a * value a ^ (2 : ℕ)) -
+        (∑ a, weight a * value a) ^ (2 : ℕ)) := by
   have hfirst :
-      (∑ a, ∑ b, weight a * weight b * value a ^ 2) =
-        (∑ a, weight a * value a ^ 2) * (∑ b, weight b) := by
+      (∑ a, ∑ b, weight a * weight b * value a ^ (2 : ℕ)) =
+        (∑ a, weight a * value a ^ (2 : ℕ)) * (∑ b, weight b) := by
     rw [Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro a _
@@ -274,24 +274,24 @@ theorem normalizedWeight_pairwiseSqGap_eq_two_mul_variance
     intro b _
     ring
   have hlast :
-      (∑ a, ∑ b, weight a * weight b * value b ^ 2) =
-        (∑ a, weight a) * (∑ b, weight b * value b ^ 2) := by
+      (∑ a, ∑ b, weight a * weight b * value b ^ (2 : ℕ)) =
+        (∑ a, weight a) * (∑ b, weight b * value b ^ (2 : ℕ)) := by
     calc
-      (∑ a, ∑ b, weight a * weight b * value b ^ 2) =
-          ∑ b, ∑ a, weight b * weight a * value b ^ 2 := by
+      (∑ a, ∑ b, weight a * weight b * value b ^ (2 : ℕ)) =
+          ∑ b, ∑ a, weight b * weight a * value b ^ (2 : ℕ) := by
         rw [Finset.sum_comm]
         apply Finset.sum_congr rfl
         intro b _
         apply Finset.sum_congr rfl
         intro a _
         ring
-      _ = (∑ b, weight b * value b ^ 2) * (∑ a, weight a) := hfirst
-      _ = (∑ a, weight a) * (∑ b, weight b * value b ^ 2) := by ring
+      _ = (∑ b, weight b * value b ^ (2 : ℕ)) * (∑ a, weight a) := hfirst
+      _ = (∑ a, weight a) * (∑ b, weight b * value b ^ (2 : ℕ)) := by ring
   calc
-    (∑ a, ∑ b, weight a * weight b * (value a - value b) ^ 2) =
-        (∑ a, ∑ b, weight a * weight b * value a ^ 2) -
+    (∑ a, ∑ b, weight a * weight b * (value a - value b) ^ (2 : ℕ)) =
+        (∑ a, ∑ b, weight a * weight b * value a ^ (2 : ℕ)) -
           2 * (∑ a, ∑ b, weight a * weight b * value a * value b) +
-        (∑ a, ∑ b, weight a * weight b * value b ^ 2) := by
+        (∑ a, ∑ b, weight a * weight b * value b ^ (2 : ℕ)) := by
       rw [Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
       apply Finset.sum_congr rfl
       intro a _
@@ -299,12 +299,12 @@ theorem normalizedWeight_pairwiseSqGap_eq_two_mul_variance
       apply Finset.sum_congr rfl
       intro b _
       ring
-    _ = (∑ a, weight a * value a ^ 2) * (∑ b, weight b) -
+    _ = (∑ a, weight a * value a ^ (2 : ℕ)) * (∑ b, weight b) -
           2 * ((∑ a, weight a * value a) * (∑ b, weight b * value b)) +
-        (∑ a, weight a) * (∑ b, weight b * value b ^ 2) := by
+        (∑ a, weight a) * (∑ b, weight b * value b ^ (2 : ℕ)) := by
       rw [hfirst, hcross, hlast]
-    _ = 2 * ((∑ a, weight a * value a ^ 2) -
-        (∑ a, weight a * value a) ^ 2) := by
+    _ = 2 * ((∑ a, weight a * value a ^ (2 : ℕ)) -
+        (∑ a, weight a * value a) ^ (2 : ℕ)) := by
       rw [hweight]
       ring
 
@@ -321,8 +321,8 @@ def finiteGibbsEnergyMean {α : Type*} [Fintype α]
 /-- Static Fisher information for inverse temperature, written as Gibbs energy variance. -/
 def finiteGibbsEnergyVariance {α : Type*} [Fintype α]
     (β : ℝ) (energy : α → ℝ) : ℝ :=
-  ∑ a, finiteGibbsStateWeight β energy a * energy a ^ 2 -
-    finiteGibbsEnergyMean β energy ^ 2
+  ∑ a, finiteGibbsStateWeight β energy a * energy a ^ (2 : ℕ) -
+    finiteGibbsEnergyMean β energy ^ (2 : ℕ)
 
 /-- Product Gibbs intensity on ordered energy-level pairs. -/
 def finiteGibbsProductGapIntensity {α : Type*} [Fintype α]

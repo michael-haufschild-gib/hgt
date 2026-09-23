@@ -53,7 +53,7 @@ theorem abs_thetaCuspCoolingJet_le_explicitScale
     have hm := thetaCuspHigherLikelihoodSpectralMoment_le_explicitScale m hmq
     have hn := thetaCuspC5FarTail_moment_nonneg (thetaCuspLikelihoodCoordinate x) m
     change |q^m * thetaCuspHigherLikelihoodSpectralMoment (thetaCuspLikelihoodCoordinate x) m| ≤
-      (8*q)^0*(3*q)^m*regimeOneLikelihoodScale x
+      (8*q)^(0 : ℕ)*(3*q)^m*regimeOneLikelihoodScale x
     rw [pow_zero, one_mul, abs_mul, abs_of_nonneg (pow_nonneg hq0 m), abs_of_nonneg hn]
     calc
       q^m * thetaCuspHigherLikelihoodSpectralMoment (thetaCuspLikelihoodCoordinate x) m ≤

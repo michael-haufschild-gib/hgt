@@ -113,7 +113,7 @@ def cofiniteWeightedGramEnergy
     {J P : Type*} [Fintype J] [DecidableEq P]
     (c : J → P → ℂ) (weight : P → ℝ) (F : Finset P) (q : J → ℂ) : ℝ :=
   ∑' p, if p ∈ F then 0
-    else weight p * ‖∑ j, q j * c j p‖ ^ 2
+    else weight p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)
 
 /-- **Support-stratified metric radical law.**  For a nonnegative summable Gram metric, zero
 energy means precisely that the coefficient combination vanishes at every undeleted coordinate
@@ -124,12 +124,12 @@ theorem cofiniteWeightedGramEnergy_eq_zero_iff_on_positiveSupport
     (c : J → P → ℂ) (weight : P → ℝ) (F : Finset P) (q : J → ℂ)
     (hweight : ∀ p, 0 ≤ weight p)
     (hsummable : Summable fun p => if p ∈ F then 0
-      else weight p * ‖∑ j, q j * c j p‖ ^ 2) :
+      else weight p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)) :
     cofiniteWeightedGramEnergy c weight F q = 0 ↔
       ∀ p, p ∉ F → 0 < weight p → ∑ j, q j * c j p = 0 := by
   classical
   let g : P → ℝ := fun p => if p ∈ F then 0
-    else weight p * ‖∑ j, q j * c j p‖ ^ 2
+    else weight p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)
   change (∑' p, g p) = 0 ↔ _
   constructor
   · intro hzero p hpF hpweight
@@ -142,7 +142,7 @@ theorem cofiniteWeightedGramEnergy_eq_zero_iff_on_positiveSupport
     have hle : g p ≤ ∑' r, g r := hsummable.le_tsum p fun r _ => hnonneg r
     have hgp : g p = 0 := le_antisymm (by simpa only [hzero] using hle) (hnonneg p)
     simp only [g, hpF, ↓reduceIte] at hgp
-    have hnormsq : ‖∑ j, q j * c j p‖ ^ 2 = 0 :=
+    have hnormsq : ‖∑ j, q j * c j p‖ ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hgp).resolve_left (ne_of_gt hpweight)
     exact norm_eq_zero.mp (sq_eq_zero_iff.mp hnormsq)
   · intro hvanish
@@ -166,7 +166,7 @@ theorem cofiniteWeightedGramEnergy_eq_zero_iff
     (c : J → P → ℂ) (weight : P → ℝ) (F : Finset P) (q : J → ℂ)
     (hweight : ∀ p, 0 < weight p)
     (hsummable : Summable fun p => if p ∈ F then 0
-      else weight p * ‖∑ j, q j * c j p‖ ^ 2) :
+      else weight p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)) :
     cofiniteWeightedGramEnergy c weight F q = 0 ↔
       ∀ p, p ∉ F → ∑ j, q j * c j p = 0 := by
   simpa only [show (∀ p, p ∉ F → 0 < weight p →
@@ -187,9 +187,9 @@ theorem cofiniteWeightedGramEnergy_zero_iff_same_positiveSupport
     (hweight₁ : ∀ p, 0 ≤ weight₁ p) (hweight₂ : ∀ p, 0 ≤ weight₂ p)
     (hsupport : ∀ p, 0 < weight₁ p ↔ 0 < weight₂ p)
     (hsummable₁ : Summable fun p => if p ∈ F then 0
-      else weight₁ p * ‖∑ j, q j * c j p‖ ^ 2)
+      else weight₁ p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ))
     (hsummable₂ : Summable fun p => if p ∈ F then 0
-      else weight₂ p * ‖∑ j, q j * c j p‖ ^ 2) :
+      else weight₂ p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)) :
     cofiniteWeightedGramEnergy c weight₁ F q = 0 ↔
       cofiniteWeightedGramEnergy c weight₂ F q = 0 := by
   rw [cofiniteWeightedGramEnergy_eq_zero_iff_on_positiveSupport
@@ -207,9 +207,9 @@ theorem cofiniteWeightedGramEnergy_zero_iff_change_weight
     (c : J → P → ℂ) (weight₁ weight₂ : P → ℝ) (F : Finset P) (q : J → ℂ)
     (hweight₁ : ∀ p, 0 < weight₁ p) (hweight₂ : ∀ p, 0 < weight₂ p)
     (hsummable₁ : Summable fun p => if p ∈ F then 0
-      else weight₁ p * ‖∑ j, q j * c j p‖ ^ 2)
+      else weight₁ p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ))
     (hsummable₂ : Summable fun p => if p ∈ F then 0
-      else weight₂ p * ‖∑ j, q j * c j p‖ ^ 2) :
+      else weight₂ p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)) :
     cofiniteWeightedGramEnergy c weight₁ F q = 0 ↔
       cofiniteWeightedGramEnergy c weight₂ F q = 0 := by
   rw [cofiniteWeightedGramEnergy_eq_zero_iff c weight₁ F q hweight₁ hsummable₁,
@@ -231,7 +231,7 @@ theorem tailCoefficientIndependent_iff_cofiniteWeightedGramStrict
     (hweight : ∀ p, 0 < weight p)
     (hsummable : ∀ F : Finset P, ∀ q : J → ℂ,
       Summable fun p => if p ∈ F then 0
-        else weight p * ‖∑ j, q j * c j p‖ ^ 2) :
+        else weight p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)) :
     TailCoefficientIndependent c ↔ CofiniteWeightedGramStrict c weight := by
   classical
   constructor
@@ -256,7 +256,7 @@ theorem tailCoefficientIndependent_iff_cofiniteWeightedGramStrict
     have hzero : cofiniteWeightedGramEnergy c weight F q = 0 := by
       unfold cofiniteWeightedGramEnergy
       have hfun : (fun p => if p ∈ F then 0
-          else weight p * ‖∑ j, q j * c j p‖ ^ 2) = (fun _ => 0) := by
+          else weight p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)) = (fun _ => 0) := by
         funext p
         by_cases hpF : p ∈ F
         · simp [hpF]
@@ -283,11 +283,11 @@ theorem tailCoefficientIndependent_iff_cofiniteWeightedGramStrict_of_phase
   intro F q
   let Q : ℝ := ∑ j, ‖q j‖
   let g : P → ℝ := fun p => if p ∈ F then 0
-    else weight p * ‖∑ j, q j * c j p‖ ^ 2
-  have hdom : Summable fun p => weight p * Q ^ 2 :=
-    hwsum.mul_right (Q ^ 2)
+    else weight p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)
+  have hdom : Summable fun p => weight p * Q ^ (2 : ℕ) :=
+    hwsum.mul_right (Q ^ (2 : ℕ))
   change Summable g
-  refine Summable.of_nonneg_of_le (f := fun p => weight p * Q ^ 2) (g := g) ?_ ?_ hdom
+  refine Summable.of_nonneg_of_le (f := fun p => weight p * Q ^ (2 : ℕ)) (g := g) ?_ ?_ hdom
   · intro p
     by_cases hpF : p ∈ F
     · simp [g, hpF]

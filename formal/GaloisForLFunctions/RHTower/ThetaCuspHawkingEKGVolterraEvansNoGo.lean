@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.TriangularKernelDeterminant
 
 The genuine BCR Einstein--Klein--Gordon coefficient has ordered kernel
 
-`1_{s<u} k_a(s) (k_a'(u))^2`.
+`1_{s<u} k_a(s) (k_a'(u))^(2 : ℕ)`.
 
 Sampling retarded time on ordered shells gives a strictly upper-triangular kernel.  This file
 proves two facts simultaneously:

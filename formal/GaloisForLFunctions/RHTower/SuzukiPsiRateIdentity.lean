@@ -28,7 +28,7 @@ theorem xiSpectralInvSqSum_nonneg' : 0 ≤ xiSpectralInvSqSum :=
 /-- Screw summand bound with a general excess bound `|Im z_q| ≤ Θ`. -/
 theorem norm_xiScrewDivisorTerm_le_of_im_le {Θ : ℝ}
     (hΘ : ∀ q : XiZeroCopy, |(xiSpectralPoint q).im| ≤ Θ) (t : ℝ) (q : XiZeroCopy) :
-    ‖xiScrewDivisorTerm t q‖ ≤ (Real.exp (Θ * |t|) + 1) / ‖xiSpectralPoint q‖ ^ 2 := by
+    ‖xiScrewDivisorTerm t q‖ ≤ (Real.exp (Θ * |t|) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   set w : ℂ := I * xiSpectralPoint q with hw
   have hwre : |w.re| ≤ Θ := by
     have : w.re = -(xiSpectralPoint q).im := by
@@ -45,11 +45,11 @@ theorem norm_xiScrewDivisorTerm_le_of_im_le {Θ : ℝ}
     (norm_cosh_le_exp_abs_re _).trans (Real.exp_le_exp.mpr htre)
   rw [xiScrewDivisorTerm, norm_div, norm_pow, norm_mul, norm_I, one_mul]
   calc
-    ‖Complex.cosh ((t : ℂ) * w) - 1‖ / ‖xiSpectralPoint q‖ ^ 2 ≤
-        (‖Complex.cosh ((t : ℂ) * w)‖ + 1) / ‖xiSpectralPoint q‖ ^ 2 := by
+    ‖Complex.cosh ((t : ℂ) * w) - 1‖ / ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤
+        (‖Complex.cosh ((t : ℂ) * w)‖ + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       gcongr
       simpa using norm_sub_le (Complex.cosh ((t : ℂ) * w)) 1
-    _ ≤ (Real.exp (Θ * |t|) + 1) / ‖xiSpectralPoint q‖ ^ 2 := by
+    _ ≤ (Real.exp (Θ * |t|) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       gcongr
 
 /-- **Upper half of the rate law.**  `Ψ(t) ≥ −(e^{Θt} + 1) Σ'_q ‖z_q‖⁻²` on the source half-line
@@ -63,16 +63,16 @@ theorem suzukiPsi_ge_of_im_le {Θ : ℝ} (hΘ : ∀ q : XiZeroCopy, |(xiSpectral
   have hre : Summable fun q => (xiScrewDivisorTerm t q).re :=
     (hsum.hasSum.mapL Complex.reCLM).summable
   have hg : Summable fun q : XiZeroCopy =>
-      (Real.exp (Θ * t) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2) :=
+      (Real.exp (Θ * t) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable.mul_left _
-  have hle : ∀ q, -((Real.exp (Θ * t) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2)) ≤
+  have hle : ∀ q, -((Real.exp (Θ * t) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) ≤
       (xiScrewDivisorTerm t q).re := by
     intro q
     have h1 := (abs_le.mp (Complex.abs_re_le_norm (xiScrewDivisorTerm t q))).1
     have h2 := norm_xiScrewDivisorTerm_le_of_im_le hΘ t q
     rw [abs_of_nonneg ht] at h2
-    have : (Real.exp (Θ * t) + 1) / ‖xiSpectralPoint q‖ ^ 2 =
-        (Real.exp (Θ * t) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+    have : (Real.exp (Θ * t) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) =
+        (Real.exp (Θ * t) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
     linarith
   have := Summable.tsum_le_tsum hle hg.neg hre
   rw [tsum_neg, Summable.tsum_mul_left _ xiSpectralPoint_inv_sq_summable] at this

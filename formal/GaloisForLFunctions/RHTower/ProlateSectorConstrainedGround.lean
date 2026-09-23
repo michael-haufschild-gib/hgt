@@ -42,16 +42,16 @@ def IsSectorConstrainedGround (a : ℝ) (σ : ℕ → ℕ) (μ : ℝ) : Prop :=
   (∀ (x : ℕ → ℂ) (f : evenSubspace),
       HasSum (fun j : ℕ => x j • sectorMode a σ j) f →
       inner ℂ (evenCentralIndicator a) f = 0 →
-      μ * ‖f‖ ^ 2 ≤ (inner ℂ (evenProlateLeakage a f) f : ℂ).re) ∧
+      μ * ‖f‖ ^ (2 : ℕ) ≤ (inner ℂ (evenProlateLeakage a f) f : ℂ).re) ∧
     ∃ f : evenSubspace,
       (∃ x : ℕ → ℂ, HasSum (fun j : ℕ => x j • sectorMode a σ j) f) ∧
         f ≠ 0 ∧
         inner ℂ (evenCentralIndicator a) f = 0 ∧
-        (inner ℂ (evenProlateLeakage a f) f : ℂ).re = μ * ‖f‖ ^ 2 ∧
+        (inner ℂ (evenProlateLeakage a f) f : ℂ).re = μ * ‖f‖ ^ (2 : ℕ) ∧
         ∀ (y : ℕ → ℂ) (g : evenSubspace),
           HasSum (fun j : ℕ => y j • sectorMode a σ j) g →
           inner ℂ (evenCentralIndicator a) g = 0 →
-          (inner ℂ (evenProlateLeakage a g) g : ℂ).re = μ * ‖g‖ ^ 2 →
+          (inner ℂ (evenProlateLeakage a g) g : ℂ).re = μ * ‖g‖ ^ (2 : ℕ) →
           ∃ c : ℂ, g = c • f
 
 /-- **The secular ground root is the simple constrained leakage ground value of the sector.** -/

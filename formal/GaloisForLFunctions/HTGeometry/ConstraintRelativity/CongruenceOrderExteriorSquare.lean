@@ -134,7 +134,7 @@ noncomputable def congruenceEval : MvPolynomial (Fin m) R →ₐ[R] (Fin (m + 1)
 /-- The defining relations: each generator is idempotent up to `a`, and distinct generators
 annihilate one another. -/
 noncomputable def congruenceRelations : Set (MvPolynomial (Fin m) R) :=
-  {f | (∃ i : Fin m, f = X i ^ 2 - C a * X i) ∨ ∃ i j : Fin m, i ≠ j ∧ f = X i * X j}
+  {f | (∃ i : Fin m, f = X i ^ (2 : ℕ) - C a * X i) ∨ ∃ i j : Fin m, i ≠ j ∧ f = X i * X j}
 
 /-- The relation ideal of the congruence order. -/
 noncomputable def congruenceIdeal : Ideal (MvPolynomial (Fin m) R) := Ideal.span (congruenceRelations a m)
@@ -165,7 +165,7 @@ theorem congruenceIdeal_le_ker : congruenceIdeal a m ≤ RingHom.ker (congruence
   rw [congruenceIdeal, Ideal.span_le]
   rintro f (⟨i, rfl⟩ | ⟨i, j, hij, rfl⟩)
   · rw [SetLike.mem_coe, RingHom.mem_ker]
-    show congruenceEval a m (X i ^ 2 - C a * X i) = 0
+    show congruenceEval a m (X i ^ (2 : ℕ) - C a * X i) = 0
     rw [map_sub, map_pow, map_mul, congruenceEval, aeval_X, aeval_C, pow_two,
       congruenceGen_mul_self, Algebra.smul_def]
     simp
@@ -207,10 +207,10 @@ theorem exists_linForm (f : MvPolynomial (Fin m) R) :
       intro j
       by_cases hji : j = i
       · subst hji
-        have hrel : (X j ^ 2 - C a * X j) ∈ congruenceIdeal a m :=
+        have hrel : (X j ^ (2 : ℕ) - C a * X j) ∈ congruenceIdeal a m :=
           Ideal.subset_span (Or.inl ⟨j, rfl⟩)
         have heq : C (c j) * X j * X j - (if j = j then C (c j) * (C a * X j) else 0)
-            = C (c j) * (X j ^ 2 - C a * X j) := by
+            = C (c j) * (X j ^ (2 : ℕ) - C a * X j) := by
           rw [if_pos rfl]; ring
         rw [heq]
         exact Ideal.mul_mem_left _ _ hrel
@@ -359,7 +359,7 @@ theorem algebraMap_congruenceQuotient (r : R) :
 theorem congruenceX_sq (i : Fin m) :
     congruenceX a m i * congruenceX a m i
       = algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a * congruenceX a m i := by
-  have hrel : (X i ^ 2 - C a * X i : MvPolynomial (Fin m) R) ∈ congruenceIdeal a m :=
+  have hrel : (X i ^ (2 : ℕ) - C a * X i : MvPolynomial (Fin m) R) ∈ congruenceIdeal a m :=
     Ideal.subset_span (Or.inl ⟨i, rfl⟩)
   have := Ideal.Quotient.eq_zero_iff_mem.2 hrel
   rw [map_sub, sub_eq_zero, map_pow, map_mul] at this
@@ -667,7 +667,7 @@ abbrev pairIndex (m : ℕ) : Type := {p : Fin m × Fin m // p.1 < p.2}
 
 /-- The diagonal-plus-antisymmetric model of the cotangent module. -/
 abbrev cotangentModel (a : R) (m : ℕ) : Type _ :=
-  (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) × (pairIndex m → R ⧸ Ideal.span ({a} : Set R))
+  (Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) × (pairIndex m → R ⧸ Ideal.span ({a} : Set R))
 
 /-- The diagonal coordinate `cᵢ + (a/2)·dᵢᵢ` of a coordinate vector. -/
 noncomputable def coordDiag [Invertible (2 : R)] (a : R) (i : Fin m) :
@@ -694,7 +694,7 @@ theorem coordPair_apply (p : pairIndex m) (w : Fin m → R × (Fin m → R)) :
 /-- The splitting of coordinate vectors into the diagonal and antisymmetric sectors. -/
 noncomputable def coordSplit [Invertible (2 : R)] (a : R) (m : ℕ) :
     (Fin m → R × (Fin m → R)) →ₗ[R] cotangentModel a m :=
-  (LinearMap.pi fun i => (Ideal.span ({a ^ 2} : Set R)).mkQ.comp (coordDiag a i)).prod
+  (LinearMap.pi fun i => (Ideal.span ({a ^ (2 : ℕ)} : Set R)).mkQ.comp (coordDiag a i)).prod
     (LinearMap.pi fun p : pairIndex m => (Ideal.span ({a} : Set R)).mkQ.comp (coordPair p))
 
 theorem coordSplit_fst [Invertible (2 : R)] (w : Fin m → R × (Fin m → R)) (i : Fin m) :
@@ -1230,10 +1230,10 @@ theorem kaehlerSplitRaw_aSingle (ha : a ≠ 0) (i k : Fin m) :
   · subst h
     rw [kaehlerSplitRaw_single_self ha i]
     have hz : (Submodule.Quotient.mk (a * (⅟(2 : R) * a))
-        : R ⧸ Ideal.span ({a ^ 2} : Set R)) = 0 :=
+        : R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) = 0 :=
       (Submodule.Quotient.mk_eq_zero _).2 (Ideal.mem_span_singleton.2 ⟨⅟(2 : R), by ring⟩)
     refine Prod.ext ?_ (by simp)
-    show a • (Pi.single (ι := Fin m) (M := fun _ => R ⧸ Ideal.span ({a ^ 2} : Set R))
+    show a • (Pi.single (ι := Fin m) (M := fun _ => R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R))
       i (Submodule.Quotient.mk (⅟(2 : R) * a))) = 0
     rw [← Pi.single_smul, ← Submodule.Quotient.mk_smul, smul_eq_mul, hz, Pi.single_zero]
   · rw [kaehlerSplitRaw_single_gt ha h]
@@ -1330,8 +1330,8 @@ theorem cotPair_swap {i j : Fin m} (hij : i ≠ j) :
   rw [crossRelation, Submodule.Quotient.mk_add] at h0
   exact add_eq_zero_iff_eq_neg.1 h0
 
-theorem sq_smul_cotBasis (i : Fin m) : (a ^ 2) • cotBasis a m i = 0 := by
-  calc (a ^ 2) • cotBasis a m i = a • (a • cotBasis a m i) := by rw [pow_two, mul_smul]
+theorem sq_smul_cotBasis (i : Fin m) : (a ^ (2 : ℕ)) • cotBasis a m i = 0 := by
+  calc (a ^ (2 : ℕ)) • cotBasis a m i = a • (a • cotBasis a m i) := by rw [pow_two, mul_smul]
     _ = a • (cotPair a m i i + cotPair a m i i) := by rw [cotPair_self_add]
     _ = a • cotPair a m i i + a • cotPair a m i i := by rw [smul_add]
     _ = 0 := by rw [smul_a_cotPair, add_zero]
@@ -1348,9 +1348,9 @@ theorem cotPair_self [Invertible (2 : R)] (i : Fin m) :
 
 /-- The diagonal sector maps into the cotangent module by `r ↦ r·eᵢ`. -/
 noncomputable def diagLift (i : Fin m) :
-    (R ⧸ Ideal.span ({a ^ 2} : Set R)) →ₗ[R]
+    (R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) →ₗ[R]
       ((Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m) :=
-  Submodule.liftQ (Ideal.span ({a ^ 2} : Set R))
+  Submodule.liftQ (Ideal.span ({a ^ (2 : ℕ)} : Set R))
     (LinearMap.toSpanSingleton R _ (cotBasis a m i))
     (by
       refine Submodule.span_le.2 ?_
@@ -1389,13 +1389,13 @@ noncomputable def modelInv :
     + ∑ p : pairIndex m, (pairLift (a := a) p).comp
       ((LinearMap.proj p).comp (LinearMap.snd R _ _))
 
-theorem modelInv_mk (u : Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R))
+theorem modelInv_mk (u : Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R))
     (w : pairIndex m → R ⧸ Ideal.span ({a} : Set R)) :
     modelInv (a := a) (m := m) (u, w)
       = (∑ i, diagLift i (u i)) + ∑ p, pairLift p (w p) := by
   simp [modelInv]
 
-theorem modelInv_diag (i : Fin m) (t : R ⧸ Ideal.span ({a ^ 2} : Set R)) :
+theorem modelInv_diag (i : Fin m) (t : R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) :
     modelInv (a := a) (m := m) (Pi.single i t, 0) = diagLift i t := by
   classical
   rw [modelInv_mk, Finset.sum_eq_single i (fun j _ hj => by rw [Pi.single_eq_of_ne hj, map_zero])
@@ -1411,9 +1411,9 @@ theorem modelInv_pair (p : pairIndex m) (t : R ⧸ Ideal.span ({a} : Set R)) :
 
 theorem modelInv_pair_neg (p : pairIndex m) (t : R ⧸ Ideal.span ({a} : Set R)) :
     modelInv (a := a) (m := m) (0, -Pi.single p t) = -pairLift p t := by
-  have h : (((0 : Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)),
+  have h : (((0 : Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)),
         -Pi.single p t) : cotangentModel a m)
-      = -(((0 : Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)),
+      = -(((0 : Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)),
         Pi.single p t) : cotangentModel a m) := by
     rw [Prod.neg_mk, neg_zero]
   rw [h, map_neg, modelInv_pair]
@@ -1477,14 +1477,14 @@ theorem span_cotGens (ha : a ≠ 0) : Submodule.span R (cotGens a m) = ⊤ := by
 variable [Invertible (2 : R)]
 
 theorem kaehlerSplit_diagLift (ha : a ≠ 0) (i : Fin m)
-    (t : R ⧸ Ideal.span ({a ^ 2} : Set R)) :
+    (t : R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) :
     kaehlerSplit ha (diagLift i t) = (Pi.single i t, 0) := by
   classical
-  obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a ^ 2} : Set R)) t
+  obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a ^ (2 : ℕ)} : Set R)) t
   rw [diagLift_mk, cotBasis, ← Submodule.Quotient.mk_smul, kaehlerSplit_mk, map_smul,
     kaehlerSplitRaw_single_one]
   refine Prod.ext ?_ (by simp)
-  show r • (Pi.single (ι := Fin m) (M := fun _ => R ⧸ Ideal.span ({a ^ 2} : Set R)) i
+  show r • (Pi.single (ι := Fin m) (M := fun _ => R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) i
     (Submodule.Quotient.mk 1)) = Pi.single i (Submodule.Quotient.mk r)
   rw [← Pi.single_smul, ← Submodule.Quotient.mk_smul, smul_eq_mul, mul_one]
 

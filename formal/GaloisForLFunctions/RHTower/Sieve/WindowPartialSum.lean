@@ -60,7 +60,7 @@ theorem window_split (f : ℕ → ℝ) {y : ℕ} (hy : 1 ≤ y) (m k : ℕ) :
 theorem maxWindowSq_eq_partial (f : ℕ → ℝ) (H : ℕ) {y : ℕ} (hy : 1 ≤ y) :
     maxWindowSq f H y
       = (Finset.range (H + 1)).sup' Finset.nonempty_range_add_one
-          (fun m => (partialSum f (y + m) - partialSum f (y - 1)) ^ 2) := by
+          (fun m => (partialSum f (y + m) - partialSum f (y - 1)) ^ (2 : ℕ)) := by
   rw [maxWindowSq]
   refine Finset.sup'_congr _ rfl ?_
   intro m _

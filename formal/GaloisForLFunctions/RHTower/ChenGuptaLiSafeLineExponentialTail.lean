@@ -8,7 +8,7 @@ there; the finite mollifier is closed by its cutoff; and the primitive
 Dirichlet L-function has cubic strip growth.  Polynomial absorption then
 leaves rate `exp (-pi |t| / 4)`, whose two rays integrate exactly.
 
-The resulting `log^2 T` tail tends to zero at the literal source cutoff,
+The resulting `log^(2 : ℕ) T` tail tends to zero at the literal source cutoff,
 uniformly in the smoothing scale `Y`.  A pole-avoiding functional-equation
 edge and Phragmén--Lindelöf propagation additionally replace the old
 character-dependent strip constant by an explicit universal coefficient
@@ -443,7 +443,7 @@ theorem exists_uniform_cglPrimitiveClassI_leftLine_exteriorIntegral_exponential_
   exact cglPrimitiveClassI_leftLine_exteriorIntegral_exponential_bound_of_pointwise
     X n χ τ H z A hbound Y B hB
 
-/-- The exact source majorant at `B = log^2 T` tends to zero. -/
+/-- The exact source majorant at `B = log^(2 : ℕ) T` tends to zero. -/
 theorem tendsto_cglSafeLine_logSquareMajorant_zero (A : ℝ) :
     Tendsto (fun T : ℝ =>
       (8 * A / Real.pi) * Real.exp (-(Real.pi * Real.log T ^ 2 / 4)))
@@ -464,7 +464,7 @@ theorem tendsto_cglSafeLine_logSquareMajorant_zero (A : ℝ) :
   exact Eventually.of_forall fun T => by
     ring
 
-/-- At CGL's literal `log^2 T` cutoff, the actual two-sided left-line tail
+/-- At CGL's literal `log^(2 : ℕ) T` cutoff, the actual two-sided left-line tail
 tends to zero for every fixed primitive row, uniformly in `Y`. -/
 theorem tendsto_cglPrimitiveClassI_leftLine_logSquareExteriorIntegral
     (X n Y : ℕ) (χ : PrimitiveNonprincipalDirichletCharacter n) (τ : ℝ) (H : NNReal)

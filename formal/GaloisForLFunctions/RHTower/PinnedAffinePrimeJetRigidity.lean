@@ -7,7 +7,7 @@ import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
 Constant sources collapse in the one-slot quotient to a single scalar sum.  The first possible
 label-sensitive refinement is the first germ jet.  At a point `rho`, the truncated prime germ is
 
-`J_p(rho;X) = p^(-rho) * (1 - log(p) X) mod X^2`.
+`J_p(rho;X) = p^(-rho) * (1 - log(p) X) mod X^(2 : ℕ)`.
 
 This file proves that for two distinct positive bases, `J_p` and `J_q` are linearly independent in
 the order-two pinned-affine defect quotient at every complex point.  The descended Fitting boundary

@@ -409,9 +409,9 @@ theorem inBspan_zero : inBspan 0 := ⟨⟨0, by norm_num⟩, by unfold bOffset; 
 theorem inBspan_xor {x y : Nat} (hx : inBspan x) (hy : inBspan y) : inBspan (x ^^^ y) := by
   obtain ⟨c, hc⟩ := hx
   obtain ⟨c', hc'⟩ := hy
-  have e : (2 : Nat) ^ 6 = 64 := by norm_num
-  have hc6 : c.val < 2 ^ 6 := by rw [e]; exact c.isLt
-  have hc'6 : c'.val < 2 ^ 6 := by rw [e]; exact c'.isLt
+  have e : (2 : Nat) ^ (6 : ℕ) = 64 := by norm_num
+  have hc6 : c.val < 2 ^ (6 : ℕ) := by rw [e]; exact c.isLt
+  have hc'6 : c'.val < 2 ^ (6 : ℕ) := by rw [e]; exact c'.isLt
   have hlt : c.val ^^^ c'.val < 64 := by
     have h := Nat.xor_lt_two_pow hc6 hc'6; rwa [e] at h
   exact ⟨⟨c.val ^^^ c'.val, hlt⟩, by rw [bOffset_xor, hc, hc']⟩
@@ -690,7 +690,7 @@ theorem exists_supMask4 (a : BaseGroup → ZMod 2) (horig : a (0, 0) = 1)
 
 theorem no_gated_weight1 : ∀ i : Fin 36, gateM (1 <<< i.val) = false := by native_decide
 theorem no_gated_weight2 : ∀ i j : Fin 36, i ≠ j →
-    gateM (1 <<< i.val ^^^ 1 <<< j.val) = false := by native_decide
+    gateM (1 <<< i.val ^^^ (1 : ℕ) <<< j.val) = false := by native_decide
 
 theorem gated_bwt_ge3 (b : BaseGroup → ZMod 2) (hgate : gateM (bitmaskOf b) = true)
     (hge1 : 1 ≤ bwt b) : 3 ≤ bwt b := by
@@ -709,7 +709,7 @@ theorem gated_bwt_ge3 (b : BaseGroup → ZMod 2) (hgate : gateM (bitmaskOf b) = 
       have hnd : (setBits b).Nodup := (List.nodup_finRange 36).filter _
       rw [hxy] at hnd; simp only [List.nodup_cons, List.mem_singleton, List.nodup_nil,
         and_true] at hnd; exact hnd.1
-    have hbm : bitmaskOf b = 1 <<< x.val ^^^ 1 <<< y.val := by
+    have hbm : bitmaskOf b = 1 <<< x.val ^^^ (1 : ℕ) <<< y.val := by
       rw [← supMask_setBits, hxy, supMask_cons, supMask_singleton]
     rw [hbm, no_gated_weight2 x y hne] at hgate
     exact absurd hgate (by simp)

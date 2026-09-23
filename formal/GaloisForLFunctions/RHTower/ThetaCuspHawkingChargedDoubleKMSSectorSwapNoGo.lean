@@ -32,7 +32,7 @@ open GaloisForLFunctions.HTGeometry
 
 theorem norm_geometricOccupationHalfDensity_apply_sq
     {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (k : ℕ) :
-    ‖geometricOccupationHalfDensity a ha0 ha1 k‖ ^ 2 =
+    ‖geometricOccupationHalfDensity a ha0 ha1 k‖ ^ (2 : ℕ) =
       geometricOccupationProbability a k := by
   rw [geometricOccupationHalfDensity_apply, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (Real.sqrt_nonneg _),
@@ -68,7 +68,7 @@ def thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity
 
 theorem norm_sq_thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity
     (r : ThetaCuspHawkingBackreactionResonantMode) (p : Nat.Primes) :
-    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p‖ ^ 2 = 1 := by
+    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p‖ ^ (2 : ℕ) = 1 := by
   rw [thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity,
     norm_sq_lpTensorProductVector,
     norm_sq_geometricOccupationHalfDensity,
@@ -76,7 +76,7 @@ theorem norm_sq_thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity
 
 theorem norm_sq_thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity
     (r : ThetaCuspHawkingBackreactionResonantMode) (p : Nat.Primes) :
-    ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p‖ ^ 2 = 1 := by
+    ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p‖ ^ (2 : ℕ) = 1 := by
   rw [thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity,
     norm_sq_lpTensorProductVector,
     norm_sq_geometricOccupationHalfDensity,
@@ -84,7 +84,7 @@ theorem norm_sq_thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity
 
 theorem norm_sq_thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity_apply
     (r : ThetaCuspHawkingBackreactionResonantMode) (p : Nat.Primes) (k l : ℕ) :
-    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p (k, l)‖ ^ 2 =
+    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p (k, l)‖ ^ (2 : ℕ) =
       thetaCuspHawkingPrimeGeometricKMSMass
           (thetaCuspHawkingPrimeVisibleKMSRatio r p) k *
         thetaCuspHawkingPrimeGeometricKMSMass
@@ -97,7 +97,7 @@ theorem norm_sq_thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity_apply
 
 theorem norm_sq_thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity_apply
     (r : ThetaCuspHawkingBackreactionResonantMode) (p : Nat.Primes) (k l : ℕ) :
-    ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p (k, l)‖ ^ 2 =
+    ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p (k, l)‖ ^ (2 : ℕ) =
       thetaCuspHawkingPrimeGeometricKMSMass
           (thetaCuspHawkingPrimePartnerKMSRatio r p) k *
         thetaCuspHawkingPrimeGeometricKMSMass
@@ -111,8 +111,8 @@ theorem norm_sq_thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity_apply
 /-- Charged double-KMS Schmidt masses always agree after swapping the two charge occupations. -/
 theorem thetaCuspHawkingPrimeChargedDoubleKMS_chargeSwap_isospectral
     (r : ThetaCuspHawkingBackreactionResonantMode) (p : Nat.Primes) (k l : ℕ) :
-    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p (k, l)‖ ^ 2 =
-      ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p (l, k)‖ ^ 2 := by
+    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p (k, l)‖ ^ (2 : ℕ) =
+      ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p (l, k)‖ ^ (2 : ℕ) := by
   rw [norm_sq_thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity_apply,
     norm_sq_thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity_apply]
   ring
@@ -121,8 +121,8 @@ theorem thetaCuspHawkingPrimeChargedDoubleKMS_chargeSwap_isospectral
 def ThetaCuspHawkingPrimeChargedDoubleKMSOccupationAligned
     (r : ThetaCuspHawkingBackreactionResonantMode) (p : Nat.Primes) : Prop :=
   ∀ k l : ℕ,
-    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p (k, l)‖ ^ 2 =
-      ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p (k, l)‖ ^ 2
+    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p (k, l)‖ ^ (2 : ℕ) =
+      ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p (k, l)‖ ^ (2 : ℕ)
 
 theorem thetaCuspHawkingPrimeChargedDoubleKMSOccupationAligned_iff_ratio_eq
     (r : ThetaCuspHawkingBackreactionResonantMode) (p : Nat.Primes) :
@@ -167,8 +167,8 @@ theorem thetaCuspHawkingPrimeChargedDoubleKMSOccupationAligned_iff_horizonCharge
 /-- Charge-swap Schmidt matching is unconditional over all theta resonances and prime channels. -/
 def ThetaCuspHawkingChargedDoubleKMSChargeSwapCompletable : Prop :=
   ∀ (r : ThetaCuspHawkingBackreactionResonantMode) (p : Nat.Primes) (k l : ℕ),
-    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p (k, l)‖ ^ 2 =
-      ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p (l, k)‖ ^ 2
+    ‖thetaCuspHawkingPrimeVisibleChargedDoubleKMSHalfDensity r p (k, l)‖ ^ (2 : ℕ) =
+      ‖thetaCuspHawkingPrimePartnerChargedDoubleKMSHalfDensity r p (l, k)‖ ^ (2 : ℕ)
 
 theorem thetaCuspHawkingChargedDoubleKMSChargeSwapCompletable :
     ThetaCuspHawkingChargedDoubleKMSChargeSwapCompletable := by

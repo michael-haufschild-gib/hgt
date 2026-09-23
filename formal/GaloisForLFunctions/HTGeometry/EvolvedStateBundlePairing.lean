@@ -127,7 +127,7 @@ theorem finitePureStateFidelity_unitaryEvolution_eq {H : Matrix α α ℂ} {e : 
     (Ω v : α → ℂ) (i₀ : α) (s : ℝ) :
     finitePureStateFidelity (unitaryEvolution H s *ᵥ Ω) v
       = ‖bundlePairing (spectralCrossWeight lam H v Ω)
-          (torusSection i₀ (evolvedPhasePoint lam i₀ s))‖ ^ 2 := by
+          (torusSection i₀ (evolvedPhasePoint lam i₀ s))‖ ^ (2 : ℕ) := by
   rw [finitePureStateFidelity, norm_finiteComplexInner_unitaryEvolution_eq heb hinj Ω v i₀ s]
 
 end GaloisForLFunctions.HTGeometry

@@ -52,14 +52,14 @@ theorem abs_le_exp_weight {ρ : ℝ} (hρ : 0 < ρ) (k : ℤ) :
   rwa [hcancel] at hmul
 
 theorem sq_le_exp_weight {ρ : ℝ} (hρ : 0 < ρ) (k : ℤ) :
-    (k : ℝ) ^ 2 ≤ 4 / ρ ^ 2 * Real.exp (ρ * |(k : ℝ)|) := by
+    (k : ℝ) ^ (2 : ℕ) ≤ 4 / ρ ^ (2 : ℕ) * Real.exp (ρ * |(k : ℝ)|) := by
   have h := sq_mul_exp_neg_le (δ := ρ) (t := |(k : ℝ)|) hρ (abs_nonneg _)
   have hpos : (0 : ℝ) < Real.exp (ρ * |(k : ℝ)|) := Real.exp_pos _
-  have habs : |(k : ℝ)| ^ 2 = (k : ℝ) ^ 2 := sq_abs _
+  have habs : |(k : ℝ)| ^ (2 : ℕ) = (k : ℝ) ^ (2 : ℕ) := sq_abs _
   rw [habs] at h
   have hmul := mul_le_mul_of_nonneg_right h hpos.le
-  have hcancel : (k : ℝ) ^ 2 * Real.exp (-(ρ * |(k : ℝ)|)) * Real.exp (ρ * |(k : ℝ)|)
-      = (k : ℝ) ^ 2 := by
+  have hcancel : (k : ℝ) ^ (2 : ℕ) * Real.exp (-(ρ * |(k : ℝ)|)) * Real.exp (ρ * |(k : ℝ)|)
+      = (k : ℝ) ^ (2 : ℕ) := by
     rw [mul_assoc, ← Real.exp_add]
     simp
   rwa [hcancel] at hmul
@@ -84,11 +84,11 @@ theorem summable_absMul {ρ : ℝ} (hρ : 0 < ρ) {g : ℤ → ℝ} (hg : Wiener
     _ = 1 / ρ * (|g k| * Real.exp (ρ * |(k : ℝ)|)) := by ring
 
 theorem summable_absSq {ρ : ℝ} (hρ : 0 < ρ) {g : ℤ → ℝ} (hg : WienerSummable ρ g) :
-    Summable fun k : ℤ => |g k| * (k : ℝ) ^ 2 := by
-  refine (hg.mul_left (4 / ρ ^ 2)).of_nonneg_of_le (fun _ => by positivity) fun k => ?_
-  calc |g k| * (k : ℝ) ^ 2 ≤ |g k| * (4 / ρ ^ 2 * Real.exp (ρ * |(k : ℝ)|)) :=
+    Summable fun k : ℤ => |g k| * (k : ℝ) ^ (2 : ℕ) := by
+  refine (hg.mul_left (4 / ρ ^ (2 : ℕ))).of_nonneg_of_le (fun _ => by positivity) fun k => ?_
+  calc |g k| * (k : ℝ) ^ (2 : ℕ) ≤ |g k| * (4 / ρ ^ (2 : ℕ) * Real.exp (ρ * |(k : ℝ)|)) :=
         mul_le_mul_of_nonneg_left (sq_le_exp_weight hρ k) (abs_nonneg _)
-    _ = 4 / ρ ^ 2 * (|g k| * Real.exp (ρ * |(k : ℝ)|)) := by ring
+    _ = 4 / ρ ^ (2 : ℕ) * (|g k| * Real.exp (ρ * |(k : ℝ)|)) := by ring
 
 /-! ## The synthesised field -/
 
@@ -149,7 +149,7 @@ theorem hasDerivAt_sinSeries {ρ : ℝ} (hρ : 0 < ρ) {g : ℤ → ℝ} (hg : W
   · simp
 
 /-- An integer is dominated by its square. -/
-theorem abs_int_le_sq (k : ℤ) : |(k : ℝ)| ≤ (k : ℝ) ^ 2 := by
+theorem abs_int_le_sq (k : ℤ) : |(k : ℝ)| ≤ (k : ℝ) ^ (2 : ℕ) := by
   rcases eq_or_ne k 0 with hk | hk
   · subst hk
     simp
@@ -168,8 +168,8 @@ theorem deriv_deriv_cosSeries {ρ ρ' : ℝ} (hρ' : 0 < ρ') (hρ : ρ' < ρ) {
     refine (wienerSummable_sqMul hρ hg).of_nonneg_of_le (fun _ => by positivity) fun k => ?_
     have habs : |-(g k * (k : ℝ))| = |g k| * |(k : ℝ)| := by
       rw [abs_neg, abs_mul]
-    have hsq : |sqMul g k| = (k : ℝ) ^ 2 * |g k| := abs_sqMul g k
-    have hkk : |g k| * |(k : ℝ)| ≤ (k : ℝ) ^ 2 * |g k| := by
+    have hsq : |sqMul g k| = (k : ℝ) ^ (2 : ℕ) * |g k| := abs_sqMul g k
+    have hkk : |g k| * |(k : ℝ)| ≤ (k : ℝ) ^ (2 : ℕ) * |g k| := by
       have := mul_le_mul_of_nonneg_left (abs_int_le_sq k) (abs_nonneg (g k))
       linarith [this]
     rw [habs, hsq]

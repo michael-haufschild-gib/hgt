@@ -96,12 +96,12 @@ theorem summableLocallyUniformlyOn_poincareTerm_appellHumbert
     ((continuous_hermitian_self_re hHl).continuousOn)
   set C₀ : ℝ := Real.sqrt (max CD 0) with hC₀def
   have hC₀ : 0 ≤ C₀ := Real.sqrt_nonneg _
-  have hC₀sq : CD ≤ C₀ ^ 2 := by
+  have hC₀sq : CD ≤ C₀ ^ (2 : ℕ) := by
     rw [hC₀def, Real.sq_sqrt (le_max_right CD 0)]
     exact le_max_left CD 0
-  refine ⟨M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2), by positivity,
+  refine ⟨M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ (2 : ℕ)), by positivity,
     fun z x hx => ?_⟩
-  have hzsup : (Hu x x - Hl x x).re ≤ C₀ ^ 2 := by
+  have hzsup : (Hu x x - Hl x x).re ≤ C₀ ^ (2 : ℕ) := by
     refine le_trans (le_trans (le_abs_self _) ?_) hC₀sq
     simpa using hCD x hx
   have hLsup : (Hl x x).re ≤ L := by
@@ -124,16 +124,16 @@ theorem summableLocallyUniformlyOn_poincareTerm_appellHumbert
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hM
     nlinarith [Real.pi_pos, hLsup]
   refine le_trans hbase ?_
-  calc M * Real.exp (Real.pi / 2 * (Hl x x).re) * Real.exp (Real.pi * C₀ ^ 2)
+  calc M * Real.exp (Real.pi / 2 * (Hl x x).re) * Real.exp (Real.pi * C₀ ^ (2 : ℕ))
         * Real.exp (-(Real.pi / 4)
           * (Hu (complementEmbedding comp comp_mem z).1 (complementEmbedding comp comp_mem z).1
             - Hl (complementEmbedding comp comp_mem z).1
                 (complementEmbedding comp comp_mem z).1).re)
-      ≤ M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2)
+      ≤ M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ (2 : ℕ))
         * polynomialGaussianLatticeWeight (Fin c) (fun _ => 0) (fun _ => sigma) z := by
         refine mul_le_mul (mul_le_mul_of_nonneg_right hmono (Real.exp_nonneg _)) hexp
           (Real.exp_nonneg _) (by positivity)
-    _ = M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ 2)
+    _ = M * Real.exp (Real.pi / 2 * L) * Real.exp (Real.pi * C₀ ^ (2 : ℕ))
         * polynomialGaussianLatticeWeight (Fin c) (fun _ => 0) (fun _ => sigma) z := rfl
 
 end

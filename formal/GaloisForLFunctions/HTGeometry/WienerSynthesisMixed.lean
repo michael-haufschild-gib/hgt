@@ -54,7 +54,7 @@ theorem integrable_kgDirDensity {f : E → ℂ} (hmeas : AEStronglyMeasurable f 
   exact norm_kgDirDensity_le v f ξ
 
 theorem integrable_kgFreq_mul_kgDirDensity {f : E → ℂ}
-    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ 2 * ‖f ξ‖) (volume : Measure E)) (v : E)
+    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ (2 : ℕ) * ‖f ξ‖) (volume : Measure E)) (v : E)
     (hmeas : AEStronglyMeasurable f (volume : Measure E)) :
     Integrable (fun ξ : E => kgFreq ξ * ‖kgDirDensity v f ξ‖) (volume : Measure E) := by
   refine Integrable.mono' (h2.const_mul (2 * Real.pi * ‖v‖))
@@ -68,7 +68,7 @@ theorem integrable_kgFreq_mul_kgDirDensity {f : E → ℂ}
     (mul_nonneg (kgFreq_pos ξ).le (norm_nonneg _))]
   calc kgFreq ξ * ‖kgDirDensity v f ξ‖
       ≤ kgFreq ξ * (2 * Real.pi * ‖v‖ * (kgFreq ξ * ‖f ξ‖)) := hstep
-    _ = 2 * Real.pi * ‖v‖ * (kgFreq ξ ^ 2 * ‖f ξ‖) := by ring
+    _ = 2 * Real.pi * ‖v‖ * (kgFreq ξ ^ (2 : ℕ) * ‖f ξ‖) := by ring
 
 /-! ## The first derivative, as a synthesis -/
 
@@ -92,7 +92,7 @@ density. -/
 theorem hasDerivAt_kgSynthesis_dir_dir {f : E → ℂ}
     (hmeas : AEStronglyMeasurable f (volume : Measure E))
     (h1 : Integrable (fun ξ : E => kgFreq ξ * ‖f ξ‖) (volume : Measure E))
-    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ 2 * ‖f ξ‖) (volume : Measure E)) (x v w : E)
+    (h2 : Integrable (fun ξ : E => kgFreq ξ ^ (2 : ℕ) * ‖f ξ‖) (volume : Measure E)) (x v w : E)
     (r : ℝ) :
     HasDerivAt (fun s : ℝ => kgSynthesis (kgDirDensity v f) (x + s • w))
       (kgSynthesis (kgDirDensity w (kgDirDensity v f)) (x + r • w)) r :=

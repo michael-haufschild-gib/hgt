@@ -10,7 +10,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : InnerProductSpace ℝ (hardyL2ᗮ) := InnerProductSpace.rclikeToReal ℂ (hardyL2ᗮ)
+local instance fokasLenellsCausalBoundedEntireIdentificationInst1 : InnerProductSpace ℝ (hardyL2ᗮ) := InnerProductSpace.rclikeToReal ℂ (hardyL2ᗮ)
 
 private def realOrbitDomain (j : ℕ) (u : causalBoundedChain) (r : ℝ) : causalGeneratorDomain :=
   causalGeneratorGraphDomain (causalGeneratorGraphEvolution r.toNNReal
@@ -48,7 +48,7 @@ private theorem boundedOrbitError_hasDerivAt (j : ℕ) (u : causalBoundedChain)
 
 private theorem boundedOrbitError_energy_nonpos (j : ℕ) (u : causalBoundedChain)
     {r : ℝ} (hr : 0 < r) :
-    deriv (fun t : ℝ => ‖boundedOrbitError j u t‖^2) r ≤ 0 := by
+    deriv (fun t : ℝ => ‖boundedOrbitError j u t‖^(2 : ℕ)) r ≤ 0 := by
   have hd := causalGenerator_dissipative
     (causalBoundedEntireDomain j u (r : ℂ) - realOrbitDomain j u r)
   rw [map_sub, causalGenerator_boundedEntireDomain, generator_realOrbitDomain] at hd
@@ -60,9 +60,9 @@ private theorem boundedOrbitError_energy_nonpos (j : ℕ) (u : causalBoundedChai
 theorem causalBoundedEntireOrbit_eq_evolution (j : ℕ) (u : causalBoundedChain) (t : ℝ≥0) :
     causalBoundedEntireOrbit j u ((t : ℝ) : ℂ) =
       causalLowerCauchyEvolution t (causalBoundedChainCoordinate j u) := by
-  have hc : Continuous (fun r : ℝ => ‖boundedOrbitError j u r‖^2) :=
+  have hc : Continuous (fun r : ℝ => ‖boundedOrbitError j u r‖^(2 : ℕ)) :=
     (boundedOrbitError_continuous j u).norm.pow 2
-  have hm : AntitoneOn (fun r : ℝ => ‖boundedOrbitError j u r‖^2) (Ici 0) := by
+  have hm : AntitoneOn (fun r : ℝ => ‖boundedOrbitError j u r‖^(2 : ℕ)) (Ici 0) := by
     apply antitoneOn_of_deriv_nonpos (convex_Ici 0) hc.continuousOn
     · intro r hr
       rw [interior_Ici] at hr
@@ -77,7 +77,7 @@ theorem causalBoundedEntireOrbit_eq_evolution (j : ℕ) (u : causalBoundedChain)
   have hz : boundedOrbitError j u 0 = 0 := by
     simp only [boundedOrbitError, Complex.ofReal_zero, causalBoundedEntireOrbit_zero,
       causalForwardOrbit_zero, sub_self]
-  change ‖boundedOrbitError j u (t : ℝ)‖^2 ≤ ‖boundedOrbitError j u 0‖^2 at h
+  change ‖boundedOrbitError j u (t : ℝ)‖^(2 : ℕ) ≤ ‖boundedOrbitError j u 0‖^(2 : ℕ) at h
   rw [hz, norm_zero, zero_pow (by norm_num : (2 : ℕ) ≠ 0)] at h
   have he : boundedOrbitError j u (t : ℝ) = 0 := by
     apply norm_eq_zero.mp

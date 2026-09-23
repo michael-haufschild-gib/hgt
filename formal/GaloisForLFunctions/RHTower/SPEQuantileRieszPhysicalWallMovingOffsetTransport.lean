@@ -71,8 +71,8 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicSourceRelativeOffsetCurren
     (u v : ℝ) (K : ℕ) :
     ccmActualHeadMatchedCompletedQuantileParabolicSourceRelativeOffsetCurrent v K -
       ccmActualHeadMatchedCompletedQuantileParabolicSourceRelativeOffsetCurrent u K =
-      ((Real.exp (u / 2) * ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ 4 -
-        (Real.exp (v / 2) * ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ 4) / 12 := by
+      ((Real.exp (u / 2) * ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ (4 : ℕ) -
+        (Real.exp (v / 2) * ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ (4 : ℕ)) / 12 := by
   rw [ccmActualHeadMatchedCompletedQuantileParabolicSourceRelativeOffsetCurrent_eq_matchedForm_sub_endpointQuartic,
     ccmActualHeadMatchedCompletedQuantileParabolicSourceRelativeOffsetCurrent_eq_matchedForm_sub_endpointQuartic]
   ring
@@ -82,9 +82,9 @@ exactly the negative canonical endpoint-quartic increment. -/
 theorem speQuantileRieszPhysicalWall_dynamicOffset_transport_eq_endpointQuartic_sub_of_not_isPrimePow
     (K : ℕ) (hK : ¬ IsPrimePow (K + 3)) :
     ((Real.exp (speQuantileRieszPhysicalWallOffset K / 2) *
-          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ 4 -
+          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ (4 : ℕ) -
         (Real.exp (speQuantileRieszPhysicalWallOffset (K + 1) / 2) *
-          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ 4) / 12 =
+          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ (4 : ℕ)) / 12 =
       ccmActualHeadMatchedCompletedQuantileParabolicCanonicalEndpointQuartic K -
         ccmActualHeadMatchedCompletedQuantileParabolicCanonicalEndpointQuartic (K + 1) := by
   calc
@@ -113,9 +113,9 @@ not a small gauge correction to the stationary source-relative update. -/
 theorem speQuantileRieszPhysicalWall_dynamicOffset_transport_le_neg_linear_of_not_isPrimePow
     (K : ℕ) (hK : ¬ IsPrimePow (K + 3)) :
     ((Real.exp (speQuantileRieszPhysicalWallOffset K / 2) *
-          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ 4 -
+          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ (4 : ℕ) -
         (Real.exp (speQuantileRieszPhysicalWallOffset (K + 1) / 2) *
-          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ 4) / 12 ≤
+          ccmActualHeadQuantilePolarCoordinate (K + 4) - 2) ^ (4 : ℕ)) / 12 ≤
       -(2 / 9 : ℝ) * (K + 3) := by
   have hKone : 1 ≤ K := by
     by_contra hnot

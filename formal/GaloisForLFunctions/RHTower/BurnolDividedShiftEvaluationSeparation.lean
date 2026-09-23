@@ -52,7 +52,7 @@ theorem burnolMellinDividedShift_sub_evaluationVector_sourceProjection_lower_bou
     {w : ℂ} {b : ℝ} (hlo : 1 / 2 < w.re) (hhi : w.re < 1) (hb : 0 < b)
     (hz : riemannZeta w = 0) {f : evenSubspace}
     (hfS : f ∈ burnolCoPoissonSourceSpace b) :
-    (w.re - 1 / 2) * ‖burnolMellinDividedShift (rho := w) hlo f‖ ^ 2 ≤
+    (w.re - 1 / 2) * ‖burnolMellinDividedShift (rho := w) hlo f‖ ^ (2 : ℕ) ≤
       ‖f‖ * ‖burnolCoPoissonSourceProjection b
         (burnolMellinDividedShift (rho := w) hlo f -
           (burnolExtendedSoninEvaluationVector w b hlo hhi hb : evenSubspace))‖ := by
@@ -65,7 +65,7 @@ theorem burnolMellinDividedShift_sub_evaluationVector_distance_lower_bound
     {w : ℂ} {b : ℝ} (hlo : 1 / 2 < w.re) (hhi : w.re < 1) (hb : 0 < b)
     (hz : riemannZeta w = 0) {f : evenSubspace}
     (hfS : f ∈ burnolCoPoissonSourceSpace b) :
-    (w.re - 1 / 2) * ‖burnolMellinDividedShift (rho := w) hlo f‖ ^ 2 ≤
+    (w.re - 1 / 2) * ‖burnolMellinDividedShift (rho := w) hlo f‖ ^ (2 : ℕ) ≤
       ‖f‖ * ‖burnolMellinDividedShift (rho := w) hlo f -
         (burnolExtendedSoninEvaluationVector w b hlo hhi hb : evenSubspace)‖ := by
   let x := burnolMellinDividedShift (rho := w) hlo f -

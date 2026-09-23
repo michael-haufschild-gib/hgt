@@ -30,7 +30,7 @@ theorem poissonKernel_continuousOn_sphere {c w : ℂ} {R : ℝ}
     intro h; subst h
     rw [mem_sphere, dist_comm] at hz; rw [mem_ball, dist_comm] at hw
     rw [hz] at hw; exact lt_irrefl R hw
-  have hrw : poissonKernel c w = fun z => (‖z - c‖ ^ 2 - ‖w - c‖ ^ 2) / ‖(z - c) - (w - c)‖ ^ 2 := by
+  have hrw : poissonKernel c w = fun z => (‖z - c‖ ^ (2 : ℕ) - ‖w - c‖ ^ (2 : ℕ)) / ‖(z - c) - (w - c)‖ ^ (2 : ℕ) := by
     funext z; exact poissonKernel_def c w z
   rw [hrw]
   apply ContinuousOn.div (by fun_prop) (by fun_prop)
@@ -72,7 +72,7 @@ theorem poissonKernel_circleAverage_eq_one {c w : ℂ} {R : ℝ} (hw : w ∈ bal
 theorem poissonKernel_le_concentration {c w z ζ : ℂ} {R δ : ℝ} (hR : 0 < R) (hδ : 0 < δ)
     (hz : z ∈ sphere c R) (hζ : ζ ∈ sphere c R) (hw : w ∈ ball c R)
     (hzζ : δ ≤ ‖z - ζ‖) (hwζ : ‖w - ζ‖ < δ / 2) :
-    poissonKernel c w z ≤ 2 * R * ‖w - ζ‖ / (δ / 2) ^ 2 := by
+    poissonKernel c w z ≤ 2 * R * ‖w - ζ‖ / (δ / 2) ^ (2 : ℕ) := by
   have hzc : ‖z - c‖ = R := by rw [mem_sphere, dist_eq_norm] at hz; exact hz
   have hζc : ‖ζ - c‖ = R := by rw [mem_sphere, dist_eq_norm] at hζ; exact hζ
   have hwc : ‖w - c‖ < R := by rw [mem_ball, dist_eq_norm] at hw; exact hw
@@ -84,17 +84,17 @@ theorem poissonKernel_le_concentration {c w z ζ : ℂ} {R δ : ℝ} (hR : 0 < R
     have h2 := norm_sub_norm_le (ζ - c) (w - c)
     rw [show (ζ - c) - (w - c) = ζ - w by ring, hζc, show ζ - w = -(w - ζ) by ring, norm_neg] at h2
     linarith
-  have hnum : ‖z - c‖ ^ 2 - ‖w - c‖ ^ 2 ≤ 2 * R * ‖w - ζ‖ := by
-    rw [hzc, show R ^ 2 - ‖w - c‖ ^ 2 = (R - ‖w - c‖) * (R + ‖w - c‖) by ring]
+  have hnum : ‖z - c‖ ^ (2 : ℕ) - ‖w - c‖ ^ (2 : ℕ) ≤ 2 * R * ‖w - ζ‖ := by
+    rw [hzc, show R ^ (2 : ℕ) - ‖w - c‖ ^ (2 : ℕ) = (R - ‖w - c‖) * (R + ‖w - c‖) by ring]
     calc (R - ‖w - c‖) * (R + ‖w - c‖) ≤ ‖w - ζ‖ * (2 * R) :=
           mul_le_mul hRwc (by linarith) (by linarith [norm_nonneg (w - c)]) (norm_nonneg _)
       _ = 2 * R * ‖w - ζ‖ := by ring
-  have hnum0 : 0 ≤ ‖z - c‖ ^ 2 - ‖w - c‖ ^ 2 := by rw [hzc]; nlinarith [norm_nonneg (w - c)]
+  have hnum0 : 0 ≤ ‖z - c‖ ^ (2 : ℕ) - ‖w - c‖ ^ (2 : ℕ) := by rw [hzc]; nlinarith [norm_nonneg (w - c)]
   rw [poissonKernel_def, show (z - c) - (w - c) = z - w by ring]
-  have hd2 : (δ / 2) ^ 2 ≤ ‖z - w‖ ^ 2 := by gcongr
-  calc (‖z - c‖ ^ 2 - ‖w - c‖ ^ 2) / ‖z - w‖ ^ 2
-      ≤ (‖z - c‖ ^ 2 - ‖w - c‖ ^ 2) / (δ / 2) ^ 2 := by gcongr
-    _ ≤ 2 * R * ‖w - ζ‖ / (δ / 2) ^ 2 := by gcongr
+  have hd2 : (δ / 2) ^ (2 : ℕ) ≤ ‖z - w‖ ^ (2 : ℕ) := by gcongr
+  calc (‖z - c‖ ^ (2 : ℕ) - ‖w - c‖ ^ (2 : ℕ)) / ‖z - w‖ ^ (2 : ℕ)
+      ≤ (‖z - c‖ ^ (2 : ℕ) - ‖w - c‖ ^ (2 : ℕ)) / (δ / 2) ^ (2 : ℕ) := by gcongr
+    _ ≤ 2 * R * ‖w - ζ‖ / (δ / 2) ^ (2 : ℕ) := by gcongr
 
 /-- **Poisson integral attains continuous boundary values (Dirichlet ingredient 3/3).**  For `g`
 continuous on `sphere c R` and a boundary point `ζ`, the Poisson integral tends to `g ζ` as `w → ζ`
@@ -113,7 +113,7 @@ theorem poissonInt_tendsto_boundary {c : ℂ} {R : ℝ} (hR : 0 < R) {g : ℂ �
   rw [Metric.tendsto_nhdsWithin_nhds]
   intro ε hε
   obtain ⟨δ₁, hδ₁, hδ₁g⟩ := (Metric.continuousWithinAt_iff).mp (hg ζ hζ) (ε / 2) (by linarith)
-  set K : ℝ := 16 * R * M / δ₁ ^ 2 with hK
+  set K : ℝ := 16 * R * M / δ₁ ^ (2 : ℕ) with hK
   refine ⟨min (δ₁ / 2) (ε / 2 / (K + 1)), by positivity, ?_⟩
   intro w hwball hwζ
   have hwζ1 : ‖w - ζ‖ < δ₁ / 2 := by
@@ -164,7 +164,7 @@ theorem poissonInt_tendsto_boundary {c : ℂ} {R : ℝ} (hR : 0 < R) {g : ℂ �
           _ ≤ 2 * M := by linarith [hMg z hz, hMg ζ hζ]
       have hCbound : poissonKernel c w z * |g z - g ζ| ≤ C := by
         calc poissonKernel c w z * |g z - g ζ|
-            ≤ (2 * R * ‖w - ζ‖ / (δ₁ / 2) ^ 2) * (2 * M) :=
+            ≤ (2 * R * ‖w - ζ‖ / (δ₁ / 2) ^ (2 : ℕ)) * (2 * M) :=
               mul_le_mul hconc hgd (abs_nonneg _) (by positivity)
           _ = C := by rw [hCdef, hK]; ring
       nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ ε / 2) hpk0]

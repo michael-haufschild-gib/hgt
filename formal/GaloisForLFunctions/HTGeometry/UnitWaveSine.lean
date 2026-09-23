@@ -7,7 +7,7 @@ namespace GaloisForLFunctions.HTGeometry
 open RHTower
 noncomputable section
 
-/-- Restored inverse-frequency sine kernel for the physical operator `(2*pi)^2 - d_x^2`. -/
+/-- Restored inverse-frequency sine kernel for the physical operator `(2*pi)^(2 : ℕ) - d_x^(2 : ℕ)`. -/
 def unitWaveSine (τ : ℝ) : FourierRealL2 →L[ℂ] FourierRealL2 :=
   (((2*Real.pi)⁻¹:ℝ):ℂ) • kgSinFreqOp (2*Real.pi*τ)
 

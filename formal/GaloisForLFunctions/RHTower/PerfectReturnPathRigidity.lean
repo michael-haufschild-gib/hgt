@@ -249,7 +249,7 @@ theorem inner_gramSchmidt_input_ne_zero
       inner ℂ (InnerProductSpace.gramSchmidt ℂ f i)
         (∑ j ∈ Finset.Iio i,
           (inner ℂ (InnerProductSpace.gramSchmidt ℂ f j) (f i) /
-            (‖InnerProductSpace.gramSchmidt ℂ f j‖ : ℂ) ^ 2) •
+            (‖InnerProductSpace.gramSchmidt ℂ f j‖ : ℂ) ^ (2 : ℕ)) •
               InnerProductSpace.gramSchmidt ℂ f j) = 0 := by
     rw [inner_sum]
     apply Finset.sum_eq_zero
@@ -271,7 +271,7 @@ theorem inner_gramSchmidt_input_ne_zero
           (InnerProductSpace.gramSchmidt ℂ f i +
             ∑ j ∈ Finset.Iio i,
               (inner ℂ (InnerProductSpace.gramSchmidt ℂ f j) (f i) /
-                (‖InnerProductSpace.gramSchmidt ℂ f j‖ : ℂ) ^ 2) •
+                (‖InnerProductSpace.gramSchmidt ℂ f j‖ : ℂ) ^ (2 : ℕ)) •
                   InnerProductSpace.gramSchmidt ℂ f j) at hdef
     rw [inner_add_right, hinner, hsum, add_zero] at hdef
     exact hdef.symm

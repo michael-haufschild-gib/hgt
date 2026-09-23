@@ -36,7 +36,7 @@ open Finset MeasureTheory GaloisForLFunctions.HTGeometry
 /-- The mean square of a prime-supported Dirichlet polynomial on one Gallagher cell, with the sharp
 near-diagonal weight. -/
 def primeCellMass (c : ℕ → ℂ) (s : Finset ℕ) : ℝ :=
-  (5 / 4) * ∑ q ∈ s, (700 * ((q : ℝ) / Real.log q) + 1) * ‖c q‖ ^ 2
+  (5 / 4) * ∑ q ∈ s, (700 * ((q : ℝ) / Real.log q) + 1) * ‖c q‖ ^ (2 : ℕ)
 
 theorem primeCellMass_nonneg (c : ℕ → ℂ) {s : Finset ℕ} (hs : ∀ m ∈ s, m.Prime) :
     0 ≤ primeCellMass c s := by
@@ -51,7 +51,7 @@ theorem primeCellMass_nonneg (c : ℕ → ℂ) {s : Finset ℕ} (hs : ∀ m ∈ 
 theorem integral_cell_normSq_logPoly_le (c : ℕ → ℂ) (s : Finset ℕ) (hs : ∀ m ∈ s, m.Prime)
     (a : ℝ) (k : ℕ) :
     (∫ w in (a + (k : ℝ) * (1 / Real.pi))..(a + ((k : ℝ) + 1) * (1 / Real.pi)),
-        ‖logPoly c s w‖ ^ 2)
+        ‖logPoly c s w‖ ^ (2 : ℕ))
       ≤ primeCellMass c s := by
   have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
   set P : ℝ := 1 / Real.pi with hP
@@ -64,8 +64,8 @@ theorem integral_cell_normSq_logPoly_le (c : ℕ → ℂ) (s : Finset ℕ) (hs :
     rw [hP]
     field_simp
     norm_num
-  have hconv : (∫ w in (a + (k : ℝ) * P)..(a + ((k : ℝ) + 1) * P), ‖logPoly c s w‖ ^ 2)
-      = ∫ w in Set.Icc (u - P / 2) (u + P / 2), ‖logPoly c s w‖ ^ 2 := by
+  have hconv : (∫ w in (a + (k : ℝ) * P)..(a + ((k : ℝ) + 1) * P), ‖logPoly c s w‖ ^ (2 : ℕ))
+      = ∫ w in Set.Icc (u - P / 2) (u + P / 2), ‖logPoly c s w‖ ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_of_le hle, MeasureTheory.integral_Icc_eq_integral_Ioc, hlo, hhi]
   rw [hconv]
   exact integral_Icc_normSq_logPoly_shift_le_prime_sharp c s hs u (by linarith) hW
@@ -78,13 +78,13 @@ theorem exists_cell_aggregate_normSq_logPoly_le {c : ℕ → ℂ} {s : Finset �
     ∃ v : ℕ → ℝ,
       (∀ k, k < m →
         v k ∈ Set.Icc (a + (k : ℝ) * (1 / Real.pi)) (a + ((k : ℝ) + 1) * (1 / Real.pi)))
-      ∧ (∫ w in a..(a + (m : ℝ) * (1 / Real.pi)), E w * ‖logPoly c s w‖ ^ 2)
+      ∧ (∫ w in a..(a + (m : ℝ) * (1 / Real.pi)), E w * ‖logPoly c s w‖ ^ (2 : ℕ))
           ≤ (∑ k ∈ Finset.range m, E (v k)) * primeCellMass c s := by
   have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
   have hP0 : (0 : ℝ) < 1 / Real.pi := by positivity
-  have hH : Continuous fun w : ℝ => ‖logPoly c s w‖ ^ 2 :=
+  have hH : Continuous fun w : ℝ => ‖logPoly c s w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly c s).norm).pow 2
-  have hH0 : ∀ t : ℝ, 0 ≤ ‖logPoly c s t‖ ^ 2 := fun t => by positivity
+  have hH0 : ∀ t : ℝ, 0 ≤ ‖logPoly c s t‖ ^ (2 : ℕ) := fun t => by positivity
   obtain ⟨v, hvmem, hvle⟩ :=
     exists_cell_max_mul_integral_le hE hH hH0 a (1 / Real.pi) hP0 m
   refine ⟨v, hvmem, le_trans hvle ?_⟩

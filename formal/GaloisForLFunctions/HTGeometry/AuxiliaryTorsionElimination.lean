@@ -15,18 +15,18 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Normalized quadratic-plus-linear auxiliary torsion Lagrangian. -/
 def auxiliaryTorsionLagrangian (logKappa source auxiliary : ℝ) : ℝ :=
-  -(auxiliary ^ 2) / 2 + Real.exp (logKappa / 2) * auxiliary * source
+  -(auxiliary ^ (2 : ℕ)) / 2 + Real.exp (logKappa / 2) * auxiliary * source
 
 /-- Contact term obtained after eliminating normalized torsion. -/
 def eliminatedContactLagrangian (logKappa source : ℝ) : ℝ :=
-  (Real.exp (logKappa / 2) * source) ^ 2 / 2
+  (Real.exp (logKappa / 2) * source) ^ (2 : ℕ) / 2
 
 /-- Exact completed-square decomposition of the auxiliary interaction. -/
 theorem auxiliaryTorsionLagrangian_completeSquare
     (logKappa source auxiliary : ℝ) :
     auxiliaryTorsionLagrangian logKappa source auxiliary =
       eliminatedContactLagrangian logKappa source -
-        (auxiliary - Real.exp (logKappa / 2) * source) ^ 2 / 2 := by
+        (auxiliary - Real.exp (logKappa / 2) * source) ^ (2 : ℕ) / 2 := by
   unfold auxiliaryTorsionLagrangian eliminatedContactLagrangian
   ring
 
@@ -43,11 +43,11 @@ theorem eliminatedContactLagrangian_nonneg (logKappa source : ℝ) :
   unfold eliminatedContactLagrangian
   positivity
 
-/-- Normalized elimination reproduces `kappa * source^2 / 2`. -/
+/-- Normalized elimination reproduces `kappa * source^(2 : ℕ) / 2`. -/
 theorem eliminatedContactLagrangian_eq (logKappa source : ℝ) :
-    eliminatedContactLagrangian logKappa source = Real.exp logKappa * source ^ 2 / 2 := by
+    eliminatedContactLagrangian logKappa source = Real.exp logKappa * source ^ (2 : ℕ) / 2 := by
   unfold eliminatedContactLagrangian
-  rw [mul_pow, show Real.exp (logKappa / 2) ^ 2 = Real.exp logKappa by
+  rw [mul_pow, show Real.exp (logKappa / 2) ^ (2 : ℕ) = Real.exp logKappa by
     rw [← Real.exp_nat_mul]
     congr 1
     ring]

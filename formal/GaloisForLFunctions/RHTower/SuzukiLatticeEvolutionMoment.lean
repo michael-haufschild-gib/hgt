@@ -136,7 +136,7 @@ theorem eval_posMul_exp_deltaL2 (Q : Finset (P → ℤ)) (c : (P → ℤ) → �
   have hsum := summable_eval_expTerms Q c z (deltaL2 : H) r
   rw [coe_deltaL2] at hsum
   rw [← tsum_mul_left, (hsum.mul_left ((r p : ℤ) : ℂ)).tsum_eq_zero_add]
-  have hzero : (((Nat.factorial 0 : ℕ) : ℂ)⁻¹ * z ^ 0)
+  have hzero : (((Nat.factorial 0 : ℕ) : ℂ)⁻¹ * z ^ (0 : ℕ))
       * ((adjacencyField Q c)^[0] (deltaField (0 : P → ℤ))) r = ((deltaField (0 : P → ℤ)) r) := by
     simp
   have hterm : ∀ n : ℕ, ((r p : ℤ) : ℂ) * ((((Nat.factorial (n + 1) : ℕ) : ℂ)⁻¹ * z ^ (n + 1))

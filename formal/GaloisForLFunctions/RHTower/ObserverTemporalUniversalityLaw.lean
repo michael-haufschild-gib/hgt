@@ -287,7 +287,7 @@ theorem measureObserverDisplacementSq_eq_two_sub_two_mul_charFun_re
     ring
   rw [measureObserverDisplacementSq]
   have hpoint (x : ℝ) :
-      ‖observerSpectralPhase t x - 1‖ ^ 2 =
+      ‖observerSpectralPhase t x - 1‖ ^ (2 : ℕ) =
         2 - 2 * (observerSpectralPhase t x).re := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_sub]
     have hnorm :

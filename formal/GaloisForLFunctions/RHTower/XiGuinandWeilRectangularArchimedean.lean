@@ -6,11 +6,11 @@ import GaloisForLFunctions.HTGeometry.ReflectedDigammaAnomaly
 /-!
 # Archimedean bottom edge for the sharp rectangular Guinand--Weil test
 
-The squared rectangular transform decays like `(1 + xi^2)^-1` on the Euler line.  The
+The squared rectangular transform decays like `(1 + xi^(2 : ℕ))^-1` on the Euler line.  The
 completed archimedean logarithmic derivative grows only logarithmically there; the repository's
 unconditional vertical digamma estimate gives the slightly weaker but convenient power bound
-`O((1 + xi^2)^(1/4))`.  Their product is therefore dominated by the integrable profile
-`(1 + xi^2)^(-3/4)`.
+`O((1 + xi^(2 : ℕ))^(1/4))`.  Their product is therefore dominated by the integrable profile
+`(1 + xi^(2 : ℕ))^(-3/4)`.
 
 This closes the absolute-integrability gate for the Gamma part of the piecewise-linear
 rectangular explicit formula.  The final declarations transport the result into the literal

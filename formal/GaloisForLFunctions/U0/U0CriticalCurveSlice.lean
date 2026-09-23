@@ -33,15 +33,15 @@ set_option maxHeartbeats 1600000
 `o.im²·‖v‖² < v.im²·‖o‖²` (cross-multiplied tangents) gives `arg v < arg o`. -/
 theorem arg_lt_arg_Q2 {v o : ℂ} (hvre : v.re < 0) (hvim : 0 < v.im)
     (hore : o.re < 0) (hoim : 0 < o.im)
-    (hcross : o.im ^ 2 * (v.re ^ 2 + v.im ^ 2) < v.im ^ 2 * (o.re ^ 2 + o.im ^ 2)) :
+    (hcross : o.im ^ (2 : ℕ) * (v.re ^ (2 : ℕ) + v.im ^ (2 : ℕ)) < v.im ^ (2 : ℕ) * (o.re ^ (2 : ℕ) + o.im ^ (2 : ℕ))) :
     v.arg < o.arg := by
   have hv0 : v ≠ 0 := fun h => by rw [h] at hvre; simp at hvre
   have ho0 : o ≠ 0 := fun h => by rw [h] at hore; simp at hore
   have hvn : (0 : ℝ) < ‖v‖ := norm_pos_iff.mpr hv0
   have hon : (0 : ℝ) < ‖o‖ := norm_pos_iff.mpr ho0
-  have hvsq : ‖v‖ ^ 2 = v.re ^ 2 + v.im ^ 2 := by
+  have hvsq : ‖v‖ ^ (2 : ℕ) = v.re ^ (2 : ℕ) + v.im ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; ring
-  have hosq : ‖o‖ ^ 2 = o.re ^ 2 + o.im ^ 2 := by
+  have hosq : ‖o‖ ^ (2 : ℕ) = o.re ^ (2 : ℕ) + o.im ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; ring
   have hcross' : o.im * ‖v‖ < v.im * ‖o‖ := by
     by_contra hcon
@@ -73,7 +73,7 @@ the transition angle of `ρ(arg b)` on the modulus-3 circle lies strictly betwee
 theorem critical_curve_bracket :
     ∃ bv bo : ℂ,
       bv.arg < bo.arg ∧
-      ‖bv‖ ^ 2 = 2252601 / 250000 ∧ ‖bo‖ ^ 2 = 9129905 / 1048576 ∧
+      ‖bv‖ ^ (2 : ℕ) = 2252601 / 250000 ∧ ‖bo‖ ^ (2 : ℕ) = 9129905 / 1048576 ∧
       (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia bv) ∧
       (∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia bo) := by
   refine ⟨(⟨(-273/100), (156/125)⟩ : ℂ), (⟨-(2759/1024), (77/64)⟩ : ℂ),

@@ -43,16 +43,16 @@ theorem exists_entire_approx_sq_mittagLeffler {a m : ℕ → ℂ} {Q : ℕ → �
     {ε : ℝ} (hε : 0 < ε) :
     ∃ G : ℂ → ℂ, Differentiable ℂ G ∧
       ∀ s : ℂ, 1 ≤ s.re →
-        ‖(s ^ 2 + κ * s) * (∑' n : ℕ, (m n / (s - a n) - Q n s)) - G s‖ ≤ ε := by
+        ‖(s ^ (2 : ℕ) + κ * s) * (∑' n : ℕ, (m n / (s - a n) - Q n s)) - G s‖ ≤ ε := by
   set ε' : ℝ := ε / 4 with hε'def
   have hε' : 0 < ε' := by rw [hε'def]; linarith
   set ρ : ℕ → ℝ := fun n => (‖a n‖ - 16) / 8 with hρdef
   -- the termwise approximants
   have hchoice : ∀ n : ℕ, ∃ hn : ℂ → ℂ, Differentiable ℂ hn ∧
       (∀ s : ℂ, 1 ≤ s.re →
-        ‖(m n * ((a n) ^ 2 + κ * a n)) * (s - a n)⁻¹ - hn s‖ ≤ ε' * (1 / 2 : ℝ) ^ n) ∧
+        ‖(m n * ((a n) ^ (2 : ℕ) + κ * a n)) * (s - a n)⁻¹ - hn s‖ ≤ ε' * (1 / 2 : ℝ) ^ n) ∧
       (∀ s : ℂ, ‖s‖ ≤ ρ n →
-        ‖(m n * ((a n) ^ 2 + κ * a n)) * (s - a n)⁻¹ - hn s‖ ≤ ε' * (1 / 2 : ℝ) ^ n) := by
+        ‖(m n * ((a n) ^ (2 : ℕ) + κ * a n)) * (s - a n)⁻¹ - hn s‖ ≤ ε' * (1 / 2 : ℝ) ^ n) := by
     intro n
     have hpos : 0 < ε' * (1 / 2 : ℝ) ^ n := by positivity
     by_cases hρn : 0 ≤ ρ n
@@ -60,18 +60,18 @@ theorem exists_entire_approx_sq_mittagLeffler {a m : ℕ → ℂ} {Q : ℕ → �
         rw [hρdef]
         linarith
       obtain ⟨g, hgd, hgb⟩ :=
-        exists_entire_approx_single_kernel (c := m n * ((a n) ^ 2 + κ * a n))
+        exists_entire_approx_single_kernel (c := m n * ((a n) ^ (2 : ℕ) + κ * a n))
         (hare n) hρn hbig hpos
       exact ⟨g, hgd, fun s hs => hgb s (Or.inl hs), fun s hs => hgb s (Or.inr hs)⟩
     · rw [not_le] at hρn
       obtain ⟨g, hgd, hgb⟩ := exists_entire_approx_single_kernel_halfPlane
-        (c := m n * ((a n) ^ 2 + κ * a n)) (hare n) hpos
+        (c := m n * ((a n) ^ (2 : ℕ) + κ * a n)) (hare n) hpos
       refine ⟨g, hgd, hgb, fun s hs => ?_⟩
       exact absurd hs (by linarith [norm_nonneg s])
   choose hker hkerd hkerE hkerB using hchoice
-  set K : ℕ → ℂ → ℂ := fun n s => (m n * ((a n) ^ 2 + κ * a n)) * (s - a n)⁻¹ with hKdef
+  set K : ℕ → ℂ → ℂ := fun n s => (m n * ((a n) ^ (2 : ℕ) + κ * a n)) * (s - a n)⁻¹ with hKdef
   set Ent : ℕ → ℂ → ℂ :=
-    fun n s => m n * (s + a n + κ) - (s ^ 2 + κ * s) * Q n s with hEdef
+    fun n s => m n * (s + a n + κ) - (s ^ (2 : ℕ) + κ * s) * Q n s with hEdef
   have hEd : ∀ n, Differentiable ℂ (Ent n) := by
     intro n
     rw [hEdef]
@@ -81,7 +81,7 @@ theorem exists_entire_approx_sq_mittagLeffler {a m : ℕ → ℂ} {Q : ℕ → �
         (hQd n))
   have hgd : ∀ n, Differentiable ℂ (fun s => Ent n s + hker n s) := fun n => (hEd n).add (hkerd n)
   have hid : ∀ (n : ℕ) (s : ℂ), s ≠ a n →
-      (s ^ 2 + κ * s) * (m n / (s - a n) - Q n s) = K n s + Ent n s := by
+      (s ^ (2 : ℕ) + κ * s) * (m n / (s - a n) - Q n s) = K n s + Ent n s := by
     intro n s hs
     have hne : s - a n ≠ 0 := sub_ne_zero.mpr hs
     rw [hKdef, hEdef]
@@ -121,10 +121,10 @@ theorem exists_entire_approx_sq_mittagLeffler {a m : ℕ → ℂ} {Q : ℕ → �
   have hsumKE : ∀ z : ℂ, Summable fun n => K n z + Ent n z := by
     intro z
     obtain ⟨N, hN⟩ := hcut z
-    have hz2 : Summable fun n => (z ^ 2 + κ * z) * (m n / (z - a n) - Q n z) := (hML z).mul_left _
+    have hz2 : Summable fun n => (z ^ (2 : ℕ) + κ * z) * (m n / (z - a n) - Q n z) := (hML z).mul_left _
     have htail : Summable fun k : ℕ => K (k + N) z + Ent (k + N) z := by
       have hz2t : Summable fun k : ℕ =>
-          (z ^ 2 + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z) :=
+          (z ^ (2 : ℕ) + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z) :=
         (summable_nat_add_iff N).mpr hz2
       refine hz2t.congr fun k => ?_
       refine hid (k + N) z ?_
@@ -161,8 +161,8 @@ theorem exists_entire_approx_sq_mittagLeffler {a m : ℕ → ℂ} {Q : ℕ → �
     have htail : DifferentiableOn ℂ
         (seriesTail (fun n s => Ent n s + hker n s) N) (ball (0 : ℂ) M) := by
       refine differentiableOn_seriesTail
-        (u := fun n : ℕ => (M ^ 2 + ‖κ‖ * M) * u n + ε' * (1 / 2 : ℝ) ^ n)
-        ((hu.mul_left (M ^ 2 + ‖κ‖ * M)).add
+        (u := fun n : ℕ => (M ^ (2 : ℕ) + ‖κ‖ * M) * u n + ε' * (1 / 2 : ℝ) ^ n)
+        ((hu.mul_left (M ^ (2 : ℕ) + ‖κ‖ * M)).add
           ((summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left ε'))
         (fun k => (hgd (k + N)).differentiableOn) (fun k z hz => ?_)
       have hznorm : ‖z‖ < M := by simpa [mem_ball, dist_zero_right] using hz
@@ -179,17 +179,17 @@ theorem exists_entire_approx_sq_mittagLeffler {a m : ℕ → ℂ} {Q : ℕ → �
         exact lt_trans hznorm (hNball k)
       have hu0 : 0 ≤ u (k + N) := le_trans (norm_nonneg _) hMLb
       have hznn : (0:ℝ) ≤ ‖z‖ := norm_nonneg z
-      have hcoef : ‖z ^ 2 + κ * z‖ ≤ M ^ 2 + ‖κ‖ * M := by
+      have hcoef : ‖z ^ (2 : ℕ) + κ * z‖ ≤ M ^ (2 : ℕ) + ‖κ‖ * M := by
         refine le_trans (norm_add_le _ _) (add_le_add ?_ ?_)
         · rw [norm_pow]
           exact pow_le_pow_left₀ hznn hznorm.le 2
         · rw [norm_mul]
           exact mul_le_mul_of_nonneg_left hznorm.le (norm_nonneg κ)
-      have hsq : ‖(z ^ 2 + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z)‖
-          ≤ (M ^ 2 + ‖κ‖ * M) * u (k + N) := by
+      have hsq : ‖(z ^ (2 : ℕ) + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z)‖
+          ≤ (M ^ (2 : ℕ) + ‖κ‖ * M) * u (k + N) := by
         rw [norm_mul]
         refine mul_le_mul hcoef hMLb (norm_nonneg _) ?_
-        have : (0:ℝ) ≤ M ^ 2 := by positivity
+        have : (0:ℝ) ≤ M ^ (2 : ℕ) := by positivity
         have h2 : (0:ℝ) ≤ ‖κ‖ * M := by
           refine mul_nonneg (norm_nonneg κ) ?_
           linarith [hznn, hznorm]
@@ -197,16 +197,16 @@ theorem exists_entire_approx_sq_mittagLeffler {a m : ℕ → ℂ} {Q : ℕ → �
       have hKb : ‖K (k + N) z - hker (k + N) z‖ ≤ ε' * (1 / 2 : ℝ) ^ (k + N) :=
         hkerB (k + N) z (le_trans hznorm.le (hNrho k))
       have hsplit : Ent (k + N) z + hker (k + N) z
-          = (z ^ 2 + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z)
+          = (z ^ (2 : ℕ) + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z)
             - (K (k + N) z - hker (k + N) z) := by
         rw [hidk]
         ring
       rw [hsplit]
-      calc ‖(z ^ 2 + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z)
+      calc ‖(z ^ (2 : ℕ) + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z)
               - (K (k + N) z - hker (k + N) z)‖
-          ≤ ‖(z ^ 2 + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z)‖
+          ≤ ‖(z ^ (2 : ℕ) + κ * z) * (m (k + N) / (z - a (k + N)) - Q (k + N) z)‖
             + ‖K (k + N) z - hker (k + N) z‖ := norm_sub_le _ _
-        _ ≤ (M ^ 2 + ‖κ‖ * M) * u (k + N) + ε' * (1 / 2 : ℝ) ^ (k + N) := add_le_add hsq hKb
+        _ ≤ (M ^ (2 : ℕ) + ‖κ‖ * M) * u (k + N) + ε' * (1 / 2 : ℝ) ^ (k + N) := add_le_add hsq hKb
     have hhead : DifferentiableOn ℂ
         (fun s => ∑ n ∈ Finset.range N, (Ent n s + hker n s)) (ball (0 : ℂ) M) :=
       (Differentiable.fun_sum fun n _ => hgd n).differentiableOn
@@ -225,9 +225,9 @@ theorem exists_entire_approx_sq_mittagLeffler {a m : ℕ → ℂ} {Q : ℕ → �
       have := hare n
       rw [← hsa] at this
       linarith
-    have hsum1 : Summable fun n => (s ^ 2 + κ * s) * (m n / (s - a n) - Q n s) :=
+    have hsum1 : Summable fun n => (s ^ (2 : ℕ) + κ * s) * (m n / (s - a n) - Q n s) :=
       (hML s).mul_left _
-    have hleft : (s ^ 2 + κ * s) * (∑' n : ℕ, (m n / (s - a n) - Q n s))
+    have hleft : (s ^ (2 : ℕ) + κ * s) * (∑' n : ℕ, (m n / (s - a n) - Q n s))
         = ∑' n : ℕ, (K n s + Ent n s) := by
       rw [← tsum_mul_left]
       exact tsum_congr fun n => hid n s (hne n)

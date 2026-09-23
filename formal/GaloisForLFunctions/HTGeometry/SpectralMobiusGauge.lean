@@ -85,7 +85,7 @@ theorem fullJet_independent_comp_mobius {m : ℕ} {U V : Set ℂ} (hUo : IsOpen 
       rw [show (id w : ℂ) = w from rfl, hfam]
       exact hP w hw
   · -- a genuine Mobius change of variable
-    have hBne : (b * c - a * d) / c ^ 2 ≠ 0 := by
+    have hBne : (b * c - a * d) / c ^ (2 : ℕ) ≠ 0 := by
       refine div_ne_zero ?_ (pow_ne_zero 2 hc)
       intro hcon
       apply hdet
@@ -96,7 +96,7 @@ theorem fullJet_independent_comp_mobius {m : ℕ} {U V : Set ℂ} (hUo : IsOpen 
       have hcv : c * (v + d / c) = c * v + d := by
         rw [mul_add, mul_div_cancel₀ d hc]
       rw [← hcv, hcon, mul_zero]
-    have hform : ∀ v ∈ V, (b * c - a * d) / c ^ 2 * (v + d / c)⁻¹ + a / c
+    have hform : ∀ v ∈ V, (b * c - a * d) / c ^ (2 : ℕ) * (v + d / c)⁻¹ + a / c
         = (a * v + b) / (c * v + d) := by
       intro v hv
       have hvC : v + d / c ≠ 0 := hCne v hv
@@ -108,7 +108,7 @@ theorem fullJet_independent_comp_mobius {m : ℕ} {U V : Set ℂ} (hUo : IsOpen 
       ring
     set A : ℂ := a / c with hA
     set C : ℂ := d / c with hC
-    set B : ℂ := (b * c - a * d) / c ^ 2 with hB
+    set B : ℂ := (b * c - a * d) / c ^ (2 : ℕ) with hB
     -- the intermediate families
     set U₂ : Set ℂ := {t : ℂ | B * t + A ∈ U} with hU₂
     have hU₂o : IsOpen U₂ := by

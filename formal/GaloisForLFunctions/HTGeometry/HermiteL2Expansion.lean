@@ -39,11 +39,11 @@ theorem summable_norm_hermiteCoeff (f : 𝓢(ℝ, ℂ)) :
     Summable fun j : ℕ => ‖hermiteCoeff f j‖ := by
   obtain ⟨C, hC, hbound⟩ := hermiteCoeff_decay_shift 2 f
   have hle : ∀ j : ℕ, ‖hermiteCoeff f j‖
-      ≤ (C * ((4 * π) ^ 2)⁻¹) * (1 / ((((j + 1 : ℕ)) : ℝ) ^ 2)) := by
+      ≤ (C * ((4 * π) ^ (2 : ℕ))⁻¹) * (1 / ((((j + 1 : ℕ)) : ℝ) ^ (2 : ℕ))) := by
     intro j
     have hpos := four_pi_mul_pos j
     have hj := hbound j
-    have hstep : ‖hermiteCoeff f j‖ ≤ C * ((4 * π * ((j : ℝ) + 1)) ^ 2)⁻¹ := by
+    have hstep : ‖hermiteCoeff f j‖ ≤ C * ((4 * π * ((j : ℝ) + 1)) ^ (2 : ℕ))⁻¹ := by
       rw [le_mul_inv_iff₀ (by positivity)]
       linarith [hj]
     refine le_trans hstep (le_of_eq ?_)
@@ -51,9 +51,9 @@ theorem summable_norm_hermiteCoeff (f : 𝓢(ℝ, ℂ)) :
     push_cast
     field_simp
   refine Summable.of_nonneg_of_le (fun j => norm_nonneg _) hle ?_
-  have h1 : Summable fun j : ℕ => 1 / ((j : ℝ) ^ 2) :=
+  have h1 : Summable fun j : ℕ => 1 / ((j : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
-  have h2 : Summable fun j : ℕ => 1 / ((((j + 1 : ℕ)) : ℝ) ^ 2) := (summable_nat_add_iff 1).mpr h1
+  have h2 : Summable fun j : ℕ => 1 / ((((j + 1 : ℕ)) : ℝ) ^ (2 : ℕ)) := (summable_nat_add_iff 1).mpr h1
   exact h2.mul_left _
 
 theorem summable_hermiteExpansion_toLp (f : 𝓢(ℝ, ℂ)) :

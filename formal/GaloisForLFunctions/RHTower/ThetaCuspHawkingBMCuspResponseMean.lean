@@ -42,7 +42,7 @@ theorem responsePlanar_periodic (q : XiZeroCopy) (branch : Bool) {y : ℝ} (hy :
 
 /-- Averaging the original global classical equation gives the actual forced cusp ODE. -/
 theorem responseMean_global_equation (q : XiZeroCopy) (branch : Bool) {y : ℝ} (hy : 0 < y) :
-    (y:ℂ)^2*deriv (deriv (responseMean q branch)) y-
+    (y:ℂ)^(2 : ℕ)*deriv (deriv (responseMean q branch)) y-
       parameter q branch*responseMean q branch y =
         average (globalForcing q branch ∘ ofComplex) y := by
   have hf := responsePlanar_smooth q branch
@@ -55,13 +55,13 @@ theorem responseMean_global_equation (q : XiZeroCopy) (branch : Bool) {y : ℝ} 
       (Ioc (-1/2:ℝ) (1/2)) :=
     (slice_continuous _ hg hy).integrableOn_Icc.mono_set Ioc_subset_Icc_self
   have he : average (planarLaplacian (responsePlanar q branch)) y =
-      (parameter q branch*responseMean q branch y+average (globalForcing q branch ∘ ofComplex) y)/(y:ℂ)^2 := by
+      (parameter q branch*responseMean q branch y+average (globalForcing q branch ∘ ofComplex) y)/(y:ℂ)^(2 : ℕ) := by
     unfold average mean
     calc
       (∫ x in Ioc (-1/2:ℝ) (1/2), planarLaplacian (responsePlanar q branch) (point x y)) =
           ∫ x in Ioc (-1/2:ℝ) (1/2),
             (parameter q branch*responsePlanar q branch (point x y)+
-              (globalForcing q branch ∘ ofComplex) (point x y))/(y:ℂ)^2 := by
+              (globalForcing q branch ∘ ofComplex) (point x y))/(y:ℂ)^(2 : ℕ) := by
         apply setIntegral_congr_fun measurableSet_Ioc
         intro x hx
         simpa only [responsePlanar,Function.comp_apply,point,Complex.add_im,
@@ -99,11 +99,11 @@ theorem globalForcing_average (q : XiZeroCopy) (branch : Bool) {y : ℝ} (hy : 2
 
 /-- The actual original response solves the cusp ODE with every Fourier pair and cutoff term retained. -/
 theorem responseMean_equation (q : XiZeroCopy) (branch : Bool) {y : ℝ} (hy : 2 < y) :
-    (y:ℂ)^2*deriv (deriv (responseMean q branch)) y-
+    (y:ℂ)^(2 : ℕ)*deriv (deriv (responseMean q branch)) y-
       parameter q branch*responseMean q branch y =
-        (parameter q branch/2)*(principal (center q) ![0,y] ^2+
-          8*∑' N, amplitude (center q) y N^2)-
-          ((y:ℂ)^2*deriv (deriv (cutoffHeight q branch)) y-
+        (parameter q branch/2)*(principal (center q) ![0,y] ^(2 : ℕ)+
+          8*∑' N, amplitude (center q) y N^(2 : ℕ))-
+          ((y:ℂ)^(2 : ℕ)*deriv (deriv (cutoffHeight q branch)) y-
             parameter q branch*cutoffHeight q branch y) := by
   rw [responseMean_global_equation q branch (by linarith),globalForcing_average q branch hy]
   exact mean_forcing q branch (by linarith)

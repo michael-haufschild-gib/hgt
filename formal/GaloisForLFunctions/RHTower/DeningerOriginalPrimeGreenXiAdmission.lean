@@ -64,17 +64,17 @@ theorem deningerDampedXiField_gaussian_bound (a : {a : ℝ // 1<a}) (q : XiZeroC
 
 /-- A common square-summable envelope controls every original prime and source prefix. -/
 theorem exists_deningerOriginalPrimeGreenXi_envelope (a : {a : ℝ // 1<a}) :
-    ∃ b : XiZeroCopy → ℝ, Summable (fun q => b q^2) ∧
+    ∃ b : XiZeroCopy → ℝ, Summable (fun q => b q^(2 : ℕ)) ∧
       (∀ p : Nat.Primes, ∀ n q, ‖deningerDampedXiPrefix a n q/(1-(p : ℂ)^(-(q.1 : ℂ)))‖ ≤ b q) ∧
       (∀ p : Nat.Primes, ∀ q, ‖deningerDampedXiField a q/(1-(p : ℂ)^(-(q.1 : ℂ)))‖ ≤ b q) := by
   obtain ⟨C,hC,hbound⟩ := exists_deningerOriginalPrimeGreen_inverse_norm_bound
   let b : XiZeroCopy → ℝ := fun q =>
-    (deningerDampedXiGaussianBound a*C)*((1+|(q.1 : ℂ).im|)^2*‖reflectedGaussianHorizonGrade q‖)
-  have hsum : Summable (fun q => b q^2) := by
+    (deningerDampedXiGaussianBound a*C)*((1+|(q.1 : ℂ).im|)^(2 : ℕ)*‖reflectedGaussianHorizonGrade q‖)
+  have hsum : Summable (fun q => b q^(2 : ℕ)) := by
     have hscaled : Summable (fun q : XiZeroCopy =>
-        (deningerDampedXiGaussianBound a*C)^2 *
-          ((1+|(q.1 : ℂ).im|)^2*‖reflectedGaussianHorizonGrade q‖)^2) :=
-      summable_deningerGaussian_polynomial_envelope_sq.mul_left ((deningerDampedXiGaussianBound a*C)^2)
+        (deningerDampedXiGaussianBound a*C)^(2 : ℕ) *
+          ((1+|(q.1 : ℂ).im|)^(2 : ℕ)*‖reflectedGaussianHorizonGrade q‖)^(2 : ℕ)) :=
+      summable_deningerGaussian_polynomial_envelope_sq.mul_left ((deningerDampedXiGaussianBound a*C)^(2 : ℕ))
     exact hscaled.congr (fun q => (mul_pow _ _ 2).symm)
   have hdom (p : Nat.Primes) (q : XiZeroCopy) (z : ℂ)
       (hz : ‖z‖ ≤ deningerDampedXiGaussianBound a*‖reflectedGaussianHorizonGrade q‖) :
@@ -84,7 +84,7 @@ theorem exists_deningerOriginalPrimeGreenXi_envelope (a : {a : ℝ // 1<a}) :
     rw [div_eq_mul_inv,norm_mul]
     calc
       _ ≤ (deningerDampedXiGaussianBound a*‖reflectedGaussianHorizonGrade q‖)*
-          (C*(1+|(q.1 : ℂ).im|)^2) :=
+          (C*(1+|(q.1 : ℂ).im|)^(2 : ℕ)) :=
         mul_le_mul hz hi (norm_nonneg _) (mul_nonneg (Real.exp_pos _).le (norm_nonneg _))
       _ = _ := by dsimp [b]; ring
   exact ⟨b,hsum,(fun p n q => hdom p q _ (deningerDampedXiPrefix_gaussian_bound a n q)),

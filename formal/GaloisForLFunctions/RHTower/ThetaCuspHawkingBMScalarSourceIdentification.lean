@@ -30,7 +30,7 @@ set_option autoImplicit false
 def affineRead (c : ℂ → ℂ) (F LF : ℂ) : ℂ := c 0*F+(c 1-c 0)*LF
 
 /-- The scalar source's trace-free radial multiplier. -/
-def tensorCoefficient (s r : ℂ) : ℂ := s^2*((s+1)^2-4*r^2)/(8*r^4)
+def tensorCoefficient (s r : ℂ) : ℂ := s^(2 : ℕ)*((s+1)^(2 : ℕ)-4*r^(2 : ℕ))/(8*r^(4 : ℕ))
 
 /-- The original harmonic trace-free coefficient separates into the source and its shift-two inverse. -/
 theorem ssSourceTF_factor (s r μ : ℂ) (hr : r ≠ 0) (hμ : 2-μ ≠ 0) :
@@ -48,118 +48,118 @@ def sourceMatrix (s r y B F LF Fx Fy J0 J1 : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :
   let ty := ssSourceT s r 0*Fy
   let rx := ssSourceR s r 0*Fx
   let ry := ssSourceR s r 0*Fy
-  let L := affineRead (ssSourceL s r) F LF/y^2
+  let L := affineRead (ssSourceL s r) F LF/y^(2 : ℕ)
   let A := tensorCoefficient s r*J0
   let C := tensorCoefficient s r*J1
-  B^2 • !![TT,TR,tx,ty;TR,RR,rx,ry;tx,rx,L+A,C;ty,ry,C,L-A]
+  B^(2 : ℕ) • !![TT,TR,tx,ty;TR,RR,rx,ry;tx,rx,L+A,C;ty,ry,C,L-A]
 
 private def algebraSource (s r y B S Sx Sy Sxx Sxy : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  sourceMatrix s r y B (S^2) (2*(s+1)*(s+2)*S^2+2*y^2*(Sx^2+Sy^2))
+  sourceMatrix s r y B (S^(2 : ℕ)) (2*(s+1)*(s+2)*S^(2 : ℕ)+2*y^(2 : ℕ)*(Sx^(2 : ℕ)+Sy^(2 : ℕ)))
     (2*S*Sx) (2*S*Sy)
-    ((Sx^2-Sy^2)/2+2*S*Sxx-2*S*Sy/y-(s+1)*(s+2)*S^2/y^2)
+    ((Sx^(2 : ℕ)-Sy^(2 : ℕ))/2+2*S*Sxx-2*S*Sy/y-(s+1)*(s+2)*S^(2 : ℕ)/y^(2 : ℕ))
     (Sx*Sy+2*S*Sxy+2*S*Sx/y)
 
 private theorem algebra_source_0_0 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 0/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 0 0 := by
   rw [scalarJet_quadratic_einstein_0_0 hr hy hf]
-  change _ = B^2*(affineRead (ssSourceTT s r) (S^2) (2*(s+1)*(s+2)*S^2+2*y^2*(Sx^2+Sy^2)))
+  change _ = B^(2 : ℕ)*(affineRead (ssSourceTT s r) (S^(2 : ℕ)) (2*(s+1)*(s+2)*S^(2 : ℕ)+2*y^(2 : ℕ)*(Sx^(2 : ℕ)+Sy^(2 : ℕ))))
   unfold affineRead ssSourceTT
   field_simp
   ring
 
 private theorem algebra_source_0_1 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 1/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 0 1 := by
   rw [scalarJet_quadratic_einstein_0_1 hr hy hf]
-  change _ = B^2*(ssSourceTR s r 0*(S^2))
+  change _ = B^(2 : ℕ)*(ssSourceTR s r 0*(S^(2 : ℕ)))
   unfold ssSourceTR
   field_simp
   ring
 
 private theorem algebra_source_0_2 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 2/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 0 2 := by
   rw [scalarJet_quadratic_einstein_0_2 hr hy hf]
-  change _ = B^2*(ssSourceT s r 0*(2*S*Sx))
+  change _ = B^(2 : ℕ)*(ssSourceT s r 0*(2*S*Sx))
   unfold ssSourceT
   field_simp
   ring
 
 private theorem algebra_source_0_3 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 3/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 0 3 := by
   rw [scalarJet_quadratic_einstein_0_3 hr hy hf]
-  change _ = B^2*(ssSourceT s r 0*(2*S*Sy))
+  change _ = B^(2 : ℕ)*(ssSourceT s r 0*(2*S*Sy))
   unfold ssSourceT
   field_simp
   ring
 
 private theorem algebra_source_1_1 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 1/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 1 1 := by
   rw [scalarJet_quadratic_einstein_1_1 hr hy hf]
-  change _ = B^2*(affineRead (ssSourceRR s r) (S^2) (2*(s+1)*(s+2)*S^2+2*y^2*(Sx^2+Sy^2)))
+  change _ = B^(2 : ℕ)*(affineRead (ssSourceRR s r) (S^(2 : ℕ)) (2*(s+1)*(s+2)*S^(2 : ℕ)+2*y^(2 : ℕ)*(Sx^(2 : ℕ)+Sy^(2 : ℕ))))
   unfold affineRead ssSourceRR
   field_simp
   ring
 
 private theorem algebra_source_1_2 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 2/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 1 2 := by
   rw [scalarJet_quadratic_einstein_1_2 hr hy hf]
-  change _ = B^2*(ssSourceR s r 0*(2*S*Sx))
+  change _ = B^(2 : ℕ)*(ssSourceR s r 0*(2*S*Sx))
   unfold ssSourceR
   field_simp
   ring
 
 private theorem algebra_source_1_3 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 3/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 1 3 := by
   rw [scalarJet_quadratic_einstein_1_3 hr hy hf]
-  change _ = B^2*(ssSourceR s r 0*(2*S*Sy))
+  change _ = B^(2 : ℕ)*(ssSourceR s r 0*(2*S*Sy))
   unfold ssSourceR
   field_simp
   ring
 
 private theorem algebra_source_2_2 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 2/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 2 2 := by
   rw [scalarJet_quadratic_einstein_2_2 hr hy hf]
-  change _ = B^2*(affineRead (ssSourceL s r) (S^2) (2*(s+1)*(s+2)*S^2+2*y^2*(Sx^2+Sy^2))/y^2+tensorCoefficient s r*((Sx^2-Sy^2)/2+2*S*Sxx-2*S*Sy/y-(s+1)*(s+2)*S^2/y^2))
+  change _ = B^(2 : ℕ)*(affineRead (ssSourceL s r) (S^(2 : ℕ)) (2*(s+1)*(s+2)*S^(2 : ℕ)+2*y^(2 : ℕ)*(Sx^(2 : ℕ)+Sy^(2 : ℕ)))/y^(2 : ℕ)+tensorCoefficient s r*((Sx^(2 : ℕ)-Sy^(2 : ℕ))/2+2*S*Sxx-2*S*Sy/y-(s+1)*(s+2)*S^(2 : ℕ)/y^(2 : ℕ)))
   unfold affineRead ssSourceL tensorCoefficient
   field_simp
   ring
 
 private theorem algebra_source_2_3 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 3/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 2 3 := by
   rw [scalarJet_quadratic_einstein_2_3 hr hy hf]
-  change _ = B^2*(tensorCoefficient s r*(Sx*Sy+2*S*Sxy+2*S*Sx/y))
+  change _ = B^(2 : ℕ)*(tensorCoefficient s r*(Sx*Sy+2*S*Sxy+2*S*Sx/y))
   unfold tensorCoefficient
   field_simp
   ring
 
 private theorem algebra_source_3_3 (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 3/2 =
       algebraSource s r y B S Sx Sy Sxx Sxy 3 3 := by
   rw [scalarJet_quadratic_einstein_3_3 hr hy hf]
-  change _ = B^2*(affineRead (ssSourceL s r) (S^2) (2*(s+1)*(s+2)*S^2+2*y^2*(Sx^2+Sy^2))/y^2-tensorCoefficient s r*((Sx^2-Sy^2)/2+2*S*Sxx-2*S*Sy/y-(s+1)*(s+2)*S^2/y^2))
+  change _ = B^(2 : ℕ)*(affineRead (ssSourceL s r) (S^(2 : ℕ)) (2*(s+1)*(s+2)*S^(2 : ℕ)+2*y^(2 : ℕ)*(Sx^(2 : ℕ)+Sy^(2 : ℕ)))/y^(2 : ℕ)-tensorCoefficient s r*((Sx^(2 : ℕ)-Sy^(2 : ℕ))/2+2*S*Sxx-2*S*Sy/y-(s+1)*(s+2)*S^(2 : ℕ)/y^(2 : ℕ)))
   unfold affineRead ssSourceL tensorCoefficient
   field_simp
   ring
 
-private theorem quadratic_ricci_symm_0_1 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+private theorem quadratic_ricci_symm_0_1 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 1 =
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -171,7 +171,7 @@ private theorem quadratic_ricci_symm_0_1 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r
   field_simp
   ring
 
-private theorem quadratic_ricci_symm_0_2 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+private theorem quadratic_ricci_symm_0_2 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 2 =
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -182,7 +182,7 @@ private theorem quadratic_ricci_symm_0_2 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r
   field_simp
   ring
 
-private theorem quadratic_ricci_symm_0_3 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+private theorem quadratic_ricci_symm_0_3 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 0 3 =
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 0 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -193,7 +193,7 @@ private theorem quadratic_ricci_symm_0_3 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r
   field_simp
   ring
 
-private theorem quadratic_ricci_symm_1_2 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+private theorem quadratic_ricci_symm_1_2 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 2 =
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 1 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -205,7 +205,7 @@ private theorem quadratic_ricci_symm_1_2 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r
   field_simp
   ring
 
-private theorem quadratic_ricci_symm_1_3 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+private theorem quadratic_ricci_symm_1_3 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 1 3 =
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 1 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -217,7 +217,7 @@ private theorem quadratic_ricci_symm_1_3 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r
   field_simp
   ring
 
-private theorem quadratic_ricci_symm_2_3 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+private theorem quadratic_ricci_symm_2_3 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 2 3 =
     Quadratic.ricci (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) 3 2 := by
   have hd := D4BMBackground.jet_isDiagonalJet r y hr hy hf
@@ -230,7 +230,7 @@ private theorem quadratic_ricci_symm_2_3 {s r y B S Sx Sy Sxx Sxy : ℂ} (hr : r
 
 /-- Symmetry is derived from every original Ricci slot, including the six lower slots. -/
 theorem quadratic_einstein_symm (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) i j =
     Quadratic.einstein (D4BMBackground.jet r y) (scalarJet s r y B S Sx Sy Sxx Sxy) j i := by
   rw [scalarJet_quadratic_einstein_eq s r y B S Sx Sy Sxx Sxy hr hy hf,
@@ -258,7 +258,7 @@ theorem quadratic_einstein_symm (s r y B S Sx Sy Sxx Sxy : ℂ)
   · rfl
 
 private theorem algebra_source (s r y B S Sx Sy Sxx Sxy : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     (fun i j => Quadratic.einstein (D4BMBackground.jet r y)
       (scalarJet s r y B S Sx Sy Sxx Sxy) i j/2) =
       algebraSource s r y B S Sx Sy Sxx Sxy := by
@@ -294,7 +294,7 @@ private theorem algebra_source (s r y B S Sx Sy Sxx Sxy : ℂ)
   · exact algebra_source_3_3 s r y B S Sx Sy Sxx Sxy hr hy hf
 
 /-- The complete literal squared source. -/
-def squareSource (q : XiZeroCopy) (z : Point) : ℂ := source q z^2
+def squareSource (q : XiZeroCopy) (z : Point) : ℂ := source q z^(2 : ℕ)
 
 /-- Both physical branches have the original angular eigenvalue. -/
 theorem eigenvalue_physicalRate (q : XiZeroCopy) (branch : Bool) :
@@ -328,8 +328,8 @@ theorem squareSource_second (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) (i j : F
 /-- The full square is not assumed harmonic: its Laplacian retains gradient energy. -/
 theorem squareSource_laplacian (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0 < z 1) :
     scalarLaplacian (squareSource q) z =
-      2*(physicalRate q branch+1)*(physicalRate q branch+2)*source q z^2+
-      2*(z 1:ℂ)^2*(coordDeriv 0 (source q) z^2+coordDeriv 1 (source q) z^2) := by
+      2*(physicalRate q branch+1)*(physicalRate q branch+2)*source q z^(2 : ℕ)+
+      2*(z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (source q) z^(2 : ℕ)+coordDeriv 1 (source q) z^(2 : ℕ)) := by
   have he := scalar_physical_equation q branch z hz
   change scalarLaplacian (source q) z = (physicalRate q branch+1)*(physicalRate q branch+2)*source q z at he
   rw [scalarLaplacian_eq _ z hz] at he ⊢
@@ -352,7 +352,7 @@ private theorem hessian_01 (F : Field) (z : Point) (hz : 0 < z 1) :
   simp [hessianTensor,covariant_eq _ z hz,covariantFormula,D4BMHorizon.metric,div_eq_mul_inv,mul_comm]
 
 private theorem gradient_00 (F : Field) (z : Point) (hz : 0 < z 1) :
-    gradientTensor F z 0 0 = (coordDeriv 0 F z^2-coordDeriv 1 F z^2)/2 := by
+    gradientTensor F z 0 0 = (coordDeriv 0 F z^(2 : ℕ)-coordDeriv 1 F z^(2 : ℕ))/2 := by
   have hy : (z 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz.ne'
   simp only [gradientTensor,metric_inverse z hz]
   simp [D4BMHorizon.metric,Fin.sum_univ_two]
@@ -366,10 +366,10 @@ private theorem gradient_01 (F : Field) (z : Point) :
 /-- Actual diagonal tensor source; the constructed inverse removes the original gradient tensor. -/
 theorem squareSource_tensor_00 (q : XiZeroCopy) (branch : Bool) (z : Point) (hz : 0 < z 1) :
     hessianTensor (squareSource q) z 0 0+eigenvalue q*hessianTensor (coordinateResponse q) z 0 0 =
-      (coordDeriv 0 (source q) z^2-coordDeriv 1 (source q) z^2)/2+
+      (coordDeriv 0 (source q) z^(2 : ℕ)-coordDeriv 1 (source q) z^(2 : ℕ))/2+
       2*source q z*coordDeriv 0 (coordDeriv 0 (source q)) z-
       2*source q z*coordDeriv 1 (source q) z/(z 1:ℂ)-
-      (physicalRate q branch+1)*(physicalRate q branch+2)*source q z^2/(z 1:ℂ)^2 := by
+      (physicalRate q branch+1)*(physicalRate q branch+2)*source q z^(2 : ℕ)/(z 1:ℂ)^(2 : ℕ) := by
   have hzero := congrArg (fun T => T 0 0) (D4BMAngularTwoCuspDecay.actual_tensor_zero q z hz)
   change gradientTensor (source q) z 0 0+eigenvalue q*hessianTensor (coordinateResponse q) z 0 0 = 0 at hzero
   rw [gradient_00 _ z hz] at hzero
@@ -379,7 +379,7 @@ theorem squareSource_tensor_00 (q : XiZeroCopy) (branch : Bool) (z : Point) (hz 
   rw [scalarLaplacian_eq _ z hz] at he
   have hy : (z 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hz.ne'
   field_simp
-  linear_combination 2*(z 1:ℂ)^2*hzero-2*source q z*he
+  linear_combination 2*(z 1:ℂ)^(2 : ℕ)*hzero-2*source q z*he
 
 /-- Actual off-diagonal tensor source, including its connection contribution. -/
 theorem squareSource_tensor_01 (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) :
@@ -404,7 +404,7 @@ def literalSourceTensor (q : XiZeroCopy) (branch : Bool) (r B : ℂ) (z : Point)
 
 /-- Every original scalar-jet source component equals its constructed angular differential action. -/
 theorem literal_scalarJet_source (q : XiZeroCopy) (branch : Bool) (r B : ℂ)
-    (z : Point) (hz : 0 < z 1) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
+    (z : Point) (hz : 0 < z 1) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     (fun i j => Quadratic.einstein (D4BMBackground.jet r (z 1))
       (scalarJet (physicalRate q branch) r (z 1) B (source q z)
         (coordDeriv 0 (source q) z) (coordDeriv 1 (source q) z)
@@ -470,8 +470,8 @@ theorem physical_scalar_source (q : XiZeroCopy) (branch : Bool) (a : ℂ)
         (D4BMFundamentalScalarMetric.envelope (physicalRate q branch) a p.val)
         (D4BMMetricReconstruction.angularPoint p.val) := by
   have hr : (p.val 1:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt (lt_trans zero_lt_one p.property.1))
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   have hdet : (D4BMBackground.actualJet p).metric.det ≠ 0 := D4BMBackground.exterior_metric_det_ne_zero p
   have hj := field_jet (physicalRate q branch) a (source q) p

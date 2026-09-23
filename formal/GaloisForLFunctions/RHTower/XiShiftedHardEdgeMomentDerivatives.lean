@@ -66,12 +66,12 @@ a finite combination of shift derivatives of the Euler-ray response. -/
 theorem tsum_routeUHardEdgeRationalTestSq_eq_iteratedDeriv {a : ℝ} (ha : 0 < a)
     (p : Polynomial ℝ) :
     (∑' q : XiZeroCopy, routeUHardEdgeRationalTestSq a p (xiSpectralPoint q))
-      = ((a ^ 2 : ℝ) : ℂ)
+      = ((a ^ (2 : ℕ) : ℝ) : ℂ)
         * ∑ k ∈ Finset.Icc 1 (routeUHardEdgeWeilPoly p).natDegree,
             (((routeUHardEdgeWeilPoly p).coeff k : ℝ) : ℂ)
               * ((-1 : ℂ) ^ (k - 1) / ((Nat.factorial (k - 1) : ℕ) : ℂ)
-                  * iteratedDeriv (k - 1) (fun v : ℝ => xiResolventMoment 0 v) (a ^ 2)) := by
-  have hX : (0 : ℝ) < a ^ 2 := by positivity
+                  * iteratedDeriv (k - 1) (fun v : ℝ => xiResolventMoment 0 v) (a ^ (2 : ℕ))) := by
+  have hX : (0 : ℝ) < a ^ (2 : ℕ) := by positivity
   rw [tsum_routeUHardEdgeRationalTestSq_eq_moments a p]
   congr 1
   refine Finset.sum_congr rfl fun k _ => ?_
@@ -85,10 +85,10 @@ theorem tsum_routeUHardEdgeRationalTestSq_eq_iteratedDeriv {a : ℝ} (ha : 0 < a
     norm_num
   have hkey : (-1 : ℂ) ^ (k - 1) / ((Nat.factorial (k - 1) : ℕ) : ℂ)
       * ((-1 : ℂ) ^ (k - 1) * ((Nat.factorial (k - 1) : ℕ) : ℂ)
-          * xiResolventMoment (k - 1) (a ^ 2))
+          * xiResolventMoment (k - 1) (a ^ (2 : ℕ)))
       = ((-1 : ℂ) ^ (k - 1) * (-1 : ℂ) ^ (k - 1))
         * (((Nat.factorial (k - 1) : ℕ) : ℂ) / ((Nat.factorial (k - 1) : ℕ) : ℂ))
-        * xiResolventMoment (k - 1) (a ^ 2) := by
+        * xiResolventMoment (k - 1) (a ^ (2 : ℕ)) := by
     field_simp
   rw [hkey, hsign, div_self hfac, one_mul, one_mul]
 

@@ -98,7 +98,7 @@ theorem recoveryWedgeMeasure_moment (k : ℕ) :
 
 theorem recoveryWedgeActualGap_measure :
     (∀ k : ℕ, Integrable (fun x : ℝ => x^k) recoveryWedgeMeasure) ∧
-      ∀ k : ℕ, (recoveryWedgeActualGap k/recoveryWedgeActualGap 0)^2 =
+      ∀ k : ℕ, (recoveryWedgeActualGap k/recoveryWedgeActualGap 0)^(2 : ℕ) =
         ∫ x, x^k ∂recoveryWedgeMeasure := by
   refine ⟨recoveryWedgeMeasure_monomial_integrable,?_⟩
   intro k

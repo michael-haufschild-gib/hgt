@@ -16,10 +16,10 @@ open CPV
 def egbFixedChargeAMiddleMeanRatio (τ φ : ℝ) : ℝ :=
   (1 + egbCoexistenceASymmetricRatio τ) * egbCoexistenceAMiddleRadius τ (egbFixedChargeAAngle τ φ)
 def egbFixedChargeAMiddleMeanLinear (τ φ : ℝ) : ℝ :=
-  2 * egbFixedChargeAMeanPressureNumerator τ φ - 8 * (1 + egbCoexistenceASymmetricRatio τ ^ 2)
+  2 * egbFixedChargeAMeanPressureNumerator τ φ - 8 * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
 def egbFixedChargeAMiddleMeanConstant (τ φ : ℝ) : ℝ :=
-  -egbFixedChargeAMeanWeight τ φ * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2) /
-    (1 - egbCoexistenceASymmetricRatio τ ^ 2)
+  -egbFixedChargeAMeanWeight τ φ * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) /
+    (1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ))
 
 theorem egbFixedChargeAMiddleMeanRatio_pos (τ φ : ℝ) : 0 < egbFixedChargeAMiddleMeanRatio τ φ := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
@@ -56,7 +56,7 @@ theorem egbFixedChargeAMiddleMeanRatio_critical_limit (φ : ℝ) :
 
 theorem egbFixedChargeAMiddleMeanConstant_neg (τ φ : ℝ) : egbFixedChargeAMiddleMeanConstant τ φ < 0 := by
   have hd := egbCoexistenceASymmetricRatio_bounds τ
-  have hx : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ 2 := by nlinarith [hd.1, hd.2]
+  have hx : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by nlinarith [hd.1, hd.2]
   have hS := egbFixedChargeAMeanWeight_pos τ φ
   have hD := egbFixedChargeAMeanDenominator_pos τ φ
   unfold egbFixedChargeAMiddleMeanConstant
@@ -64,10 +64,10 @@ theorem egbFixedChargeAMiddleMeanConstant_neg (τ φ : ℝ) : egbFixedChargeAMid
 
 theorem egbFixedChargeAMiddleMeanConstant_formula (τ φ : ℝ) :
     egbFixedChargeAMiddleMeanConstant τ φ =
-      -(1 - egbCoexistenceASymmetricRatio τ ^ 4) + 2 * egbFixedChargeAMeanCoupling τ φ *
-        (6 - egbCoexistenceALogKernel τ + (egbCoexistenceALogKernel τ + 2) * egbCoexistenceASymmetricRatio τ ^ 2) := by
+      -(1 - egbCoexistenceASymmetricRatio τ ^ (4 : ℕ)) + 2 * egbFixedChargeAMeanCoupling τ φ *
+        (6 - egbCoexistenceALogKernel τ + (egbCoexistenceALogKernel τ + 2) * egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) := by
   have hd := egbCoexistenceASymmetricRatio_bounds τ
-  have hx : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ 2 := by nlinarith [hd.1, hd.2]
+  have hx : 0 < 1 - egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by nlinarith [hd.1, hd.2]
   unfold egbFixedChargeAMiddleMeanConstant
   apply (div_eq_iff hx.ne').2
   have h := egbFixedChargeAMeanWeight_quadratic τ φ
@@ -77,9 +77,9 @@ theorem egbFixedChargeAMiddleMeanConstant_formula (τ φ : ℝ) :
 
 theorem egbFixedChargeAMiddleMeanResidual_formula (τ φ : ℝ) :
     (egbFixedChargeAMeanPressureNumerator τ φ + egbFixedChargeAMiddleMeanLinear τ φ + egbFixedChargeAMiddleMeanConstant τ φ) /
-      egbCoexistenceASymmetricRatio τ ^ 2 =
-    1 + egbCoexistenceASymmetricRatio τ ^ 2 + egbFixedChargeAMeanCoupling τ φ *
-      (-8 * ((egbCoexistenceALogKernel τ - 3) / egbCoexistenceASymmetricRatio τ ^ 2) + 2 * (egbCoexistenceALogKernel τ + 2)) := by
+      egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) =
+    1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) + egbFixedChargeAMeanCoupling τ φ *
+      (-8 * ((egbCoexistenceALogKernel τ - 3) / egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) + 2 * (egbCoexistenceALogKernel τ + 2)) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   rw [egbFixedChargeAMiddleMeanConstant_formula]
   unfold egbFixedChargeAMiddleMeanLinear egbFixedChargeAMeanPressureNumerator

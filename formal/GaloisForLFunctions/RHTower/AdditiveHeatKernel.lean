@@ -3,7 +3,7 @@ import Mathlib.NumberTheory.ModularForms.JacobiTheta.TwoVariable
 /-!
 # The circle multiplier of the additive heat kernel
 
-The additive heat kernel `H_x(m,n) = exp(-π x (m-n)^2)` on the integer lattice is a convolution
+The additive heat kernel `H_x(m,n) = exp(-π x (m-n)^(2 : ℕ))` on the integer lattice is a convolution
 operator whose circle Fourier multiplier is
 
 `W_x(θ) = ∑_{k ∈ ℤ} exp(-π x k²) exp(i k θ)`.
@@ -22,7 +22,7 @@ namespace RHTower
 
 /-- The circle Fourier multiplier of the additive heat kernel. -/
 noncomputable def heatMultiplier (x θ : ℝ) : ℂ :=
-  ∑' k : ℤ, Complex.exp (-(Real.pi : ℂ) * x * (k : ℂ) ^ 2 + I * (k : ℂ) * θ)
+  ∑' k : ℤ, Complex.exp (-(Real.pi : ℂ) * x * (k : ℂ) ^ (2 : ℕ) + I * (k : ℂ) * θ)
 
 /-- The heat multiplier is the Jacobi theta function on the imaginary axis. -/
 theorem heatMultiplier_eq_jacobiTheta₂ (x θ : ℝ) :
@@ -34,13 +34,13 @@ theorem heatMultiplier_eq_jacobiTheta₂ (x θ : ℝ) :
   congr 1
   push_cast
   field_simp
-  linear_combination (-((n : ℂ) ^ 2) * (Real.pi : ℂ) * (x : ℂ)) * Complex.I_sq
+  linear_combination (-((n : ℂ) ^ (2 : ℕ)) * (Real.pi : ℂ) * (x : ℂ)) * Complex.I_sq
 
 /-- **Poisson summation for the heat multiplier.** -/
 theorem heatMultiplier_poisson {x : ℝ} (hx : 0 < x) (θ : ℝ) :
     heatMultiplier x θ
       = 1 / ((x : ℂ)) ^ (1 / 2 : ℂ)
-        * ∑' n : ℤ, Complex.exp (-((((θ - 2 * Real.pi * n : ℝ)) : ℂ) ^ 2 / (4 * Real.pi * x))) := by
+        * ∑' n : ℤ, Complex.exp (-((((θ - 2 * Real.pi * n : ℝ)) : ℂ) ^ (2 : ℕ) / (4 * Real.pi * x))) := by
   have hpi : ((Real.pi : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
   have hxne : ((x : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hx.ne'
   set z : ℂ := (((θ / (2 * Real.pi) : ℝ)) : ℂ) with hz
@@ -56,12 +56,12 @@ theorem heatMultiplier_poisson {x : ℝ} (hx : 0 < x) (θ : ℝ) :
   have hfe := jacobiTheta₂_functional_equation z τ
   rw [hbase] at hfe
   rw [heatMultiplier_eq_jacobiTheta₂, ← hz, ← hτ, hfe]
-  have harg : (-(Real.pi : ℂ) * I * z ^ 2 / τ) = -((z : ℂ) ^ 2 * (Real.pi : ℂ) / (x : ℂ)) := by
+  have harg : (-(Real.pi : ℂ) * I * z ^ (2 : ℕ) / τ) = -((z : ℂ) ^ (2 : ℕ) * (Real.pi : ℂ) / (x : ℂ)) := by
     rw [hτ]
     field_simp
   have hinner : jacobiTheta₂ (z / τ) (-1 / τ)
       = ∑' n : ℤ, Complex.exp (2 * (Real.pi : ℂ) * n * z / (x : ℂ)
-          - (Real.pi : ℂ) * (n : ℂ) ^ 2 / (x : ℂ)) := by
+          - (Real.pi : ℂ) * (n : ℂ) ^ (2 : ℕ) / (x : ℂ)) := by
     rw [jacobiTheta₂]
     refine tsum_congr fun n => ?_
     rw [jacobiTheta₂_term, hτ]

@@ -118,7 +118,7 @@ private theorem lift_bound (q : XiZeroCopy) (br : Bool) (amp : ℂ) :
       ‖nullLift (physicalRate q br) amp p r‖ ≤ C := by
   let s := physicalRate q br
   obtain ⟨C,hC,hc⟩ := sourceAmplitude_profile_norm_le_exp s 0 amp 1
-    (fun u : ℝ => (-s*(s-1)/4)*(u:ℂ)^3) (by fun_prop)
+    (fun u : ℝ => (-s*(s-1)/4)*(u:ℂ)^(3 : ℕ)) (by fun_prop)
   have hs : (2*s).re ≤ -(0:ℝ) := by
     have h := currentRate_re_lt q br
     change (2*s).re < -2 at h
@@ -127,7 +127,7 @@ private theorem lift_bound (q : XiZeroCopy) (br : Bool) (amp : ℂ) :
   refine ⟨C*D,mul_nonneg hC hD,?_⟩
   intro p r hpr
   have hL := hc ((p-r)/2) (by linarith)
-  have he : sourceAmplitude s 0 amp 1 ((p-r)/2)*((-s*(s-1)/4)*(radialUnit ((p-r)/2):ℂ)^3)=
+  have he : sourceAmplitude s 0 amp 1 ((p-r)/2)*((-s*(s-1)/4)*(radialUnit ((p-r)/2):ℂ)^(3 : ℕ))=
       radialLift s 0 amp 1 ((p-r)/2) := by unfold radialLift; ring
   rw [he] at hL
   simp only [Complex.zero_re,zero_mul,Real.exp_zero,mul_one] at hL

@@ -9,7 +9,7 @@ diagonal — one triangular Leibniz block per component — so the point map is 
 its diagonal is the product of the multipliers.
 
 The translated family `m_u (z + h i)` is the instance that the card's translation-family claim
-needs, with `a i = 1 + (X + h i) ^ 2`.
+needs, with `a i = 1 + (X + h i) ^ (2 : ℕ)`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry

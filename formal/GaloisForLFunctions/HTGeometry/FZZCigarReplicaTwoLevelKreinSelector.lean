@@ -12,9 +12,9 @@ finite replacement: level-four reality and level-three nonpositivity already for
 Thus full passive chambers at these two levels are equivalent to imaginary-axis frequency and are
 cardinality-minimal among level families.
 
-The mechanism is scale doubling.  Reality of `sinh(ω/2)^2` implies
+The mechanism is scale doubling.  Reality of `sinh(ω/2)^(2 : ℕ)` implies
 `sinh(ω.re) * sin(ω.im)=0`.  Off axis this forces `sin(ω.im)=0`, after which
-`sinh(ω)^2` is strictly positive real, contradicting level-three passivity.
+`sinh(ω)^(2 : ℕ)` is strictly positive real, contradicting level-three passivity.
 
 ## RH-chain scope
 
@@ -70,7 +70,7 @@ private lemma complex_sinh_im_local (z : ℂ) :
   ring
 
 private lemma complex_sinh_sq_im_local (z : ℂ) :
-    ((Complex.sinh z) ^ 2).im =
+    ((Complex.sinh z) ^ (2 : ℕ)).im =
       Real.sinh (2 * z.re) * Real.sin (2 * z.im) / 2 := by
   rw [pow_two, Complex.mul_im, complex_sinh_re_local, complex_sinh_im_local,
     Real.sinh_two_mul, Real.sin_two_mul]
@@ -79,9 +79,9 @@ private lemma complex_sinh_sq_im_local (z : ℂ) :
 /-- Passive square chamber at one finite FZZ replica level. -/
 def FZZReplicaLevelKreinSign (a : ℝ) (ω : ℂ) : Prop :=
   ((Complex.sinh
-    (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ 2).im = 0 ∧
+    (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).im = 0 ∧
   ((Complex.sinh
-    (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ 2).re ≤ 0
+    (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).re ≤ 0
 
 /-- Cigar level `k=3` has replica response scale `2`. -/
 theorem replicaLinearizedDressingScale_one_third :
@@ -96,9 +96,9 @@ theorem replicaLinearizedDressingScale_one_fourth :
 /-- Minimal asymmetric selector: level four supplies reality and level three supplies the sign. -/
 def FZZReplicaLevelFourRealityLevelThreeNonpositive (ω : ℂ) : Prop :=
   ((Complex.sinh
-    (((replicaLinearizedDressingScale (1 / 4 : ℝ) : ℝ) : ℂ) * ω / 2)) ^ 2).im = 0 ∧
+    (((replicaLinearizedDressingScale (1 / 4 : ℝ) : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).im = 0 ∧
   ((Complex.sinh
-    (((replicaLinearizedDressingScale (1 / 3 : ℝ) : ℝ) : ℂ) * ω / 2)) ^ 2).re ≤ 0
+    (((replicaLinearizedDressingScale (1 / 3 : ℝ) : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).re ≤ 0
 
 /-- Joint passive chamber at the two integer cigar levels `k=3,4`. -/
 def FZZReplicaLevelsThreeFourKreinSign (ω : ℂ) : Prop :=
@@ -119,7 +119,7 @@ theorem fzzReplicaLevelFourRealityLevelThreeNonpositive_iff_re_eq_zero (ω : ℂ
     have harg_one : ((((1 : ℝ) : ℂ) * ω) / 2) = ω / 2 := by
       norm_num
     have hhalf_im :
-        ((Complex.sinh ((((1 : ℝ) : ℂ) * ω) / 2)) ^ 2).im =
+        ((Complex.sinh ((((1 : ℝ) : ℂ) * ω) / 2)) ^ (2 : ℕ)).im =
           Real.sinh ω.re * Real.sin ω.im / 2 := by
       rw [harg_one, complex_sinh_sq_im_local]
       norm_num [Complex.div_re, Complex.div_im]
@@ -135,12 +135,12 @@ theorem fzzReplicaLevelFourRealityLevelThreeNonpositive_iff_re_eq_zero (ω : ℂ
         Real.sinh ω.re * Real.cos ω.im := complex_sinh_re_local ω
     have hsim : (Complex.sinh ω).im = 0 := by
       rw [complex_sinh_im_local, hsin, mul_zero]
-    have hsqre : ((Complex.sinh ω) ^ 2).re = Real.sinh ω.re ^ 2 := by
+    have hsqre : ((Complex.sinh ω) ^ (2 : ℕ)).re = Real.sinh ω.re ^ (2 : ℕ) := by
       rw [pow_two, Complex.mul_re, hsre, hsim]
       have htrig := Real.sin_sq_add_cos_sq ω.im
       rw [hsin] at htrig
       nlinarith
-    have hpos : 0 < ((Complex.sinh ω) ^ 2).re := by
+    have hpos : 0 < ((Complex.sinh ω) ^ (2 : ℕ)).re := by
       rw [hsqre]
       positivity
     exact (not_lt_of_ge hthreeNonpositive hpos).elim

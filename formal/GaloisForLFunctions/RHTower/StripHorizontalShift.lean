@@ -241,7 +241,7 @@ theorem integral_horizontal_shift_of_upper_inv_one_add_sq_decay
     {F : ℂ → ℂ} {c C : ℝ} (hc : 0 ≤ c)
     (hF : ∀ z : ℂ, 0 ≤ z.im → z.im ≤ c → DifferentiableAt ℂ F z)
     (hbound : ∀ z : ℂ, 0 ≤ z.im → z.im ≤ c →
-      ‖F z‖ ≤ C * (1 + z.re ^ 2)⁻¹) :
+      ‖F z‖ ≤ C * (1 + z.re ^ (2 : ℕ))⁻¹) :
     (∫ x : ℝ, F ((x : ℂ) + (c : ℂ) * Complex.I)) =
       ∫ x : ℝ, F (x : ℂ) := by
   set G : ℂ → ℂ := fun w => F (-Complex.I * w) with hG
@@ -273,7 +273,7 @@ theorem integral_horizontal_shift_of_upper_inv_one_add_sq_decay
     rw [hre]
     linarith
   have hnormG : ∀ u s : ℝ, -c ≤ u → u ≤ 0 →
-      ‖G ((u : ℂ) + (s : ℂ) * Complex.I)‖ ≤ C * (1 + s ^ 2)⁻¹ := by
+      ‖G ((u : ℂ) + (s : ℂ) * Complex.I)‖ ≤ C * (1 + s ^ (2 : ℕ))⁻¹ := by
     intro u s huc hu0
     rw [hrot u s]
     have hre : ((s : ℂ) + ((-u : ℝ) : ℂ) * Complex.I).re = s := by simp
@@ -310,8 +310,8 @@ theorem integral_horizontal_shift_of_upper_inv_one_add_sq_decay
         (by fun_prop)
       simpa [hG, Function.comp_def] using this
     exact hcont.aestronglyMeasurable
-  have hdecay : Tendsto (fun T : ℝ => C * (1 + T ^ 2)⁻¹) atTop (𝓝 0) := by
-    have hden : Tendsto (fun T : ℝ => (1 + T ^ 2)⁻¹) atTop (𝓝 0) := by
+  have hdecay : Tendsto (fun T : ℝ => C * (1 + T ^ (2 : ℕ))⁻¹) atTop (𝓝 0) := by
+    have hden : Tendsto (fun T : ℝ => (1 + T ^ (2 : ℕ))⁻¹) atTop (𝓝 0) := by
       apply tendsto_inv_atTop_zero.comp
       refine Filter.tendsto_atTop.2 ?_
       intro b
@@ -320,13 +320,13 @@ theorem integral_horizontal_shift_of_upper_inv_one_add_sq_decay
       have hb : b ≤ x := le_trans (le_max_right 1 b) hx
       nlinarith
     simpa using hden.const_mul C
-  have hedge : ∀ sgn : ℝ → ℝ, (∀ T : ℝ, (sgn T) ^ 2 = T ^ 2) →
+  have hedge : ∀ sgn : ℝ → ℝ, (∀ T : ℝ, (sgn T) ^ (2 : ℕ) = T ^ (2 : ℕ)) →
       Tendsto (fun T : ℝ =>
         ∫ u in (-c)..(0 : ℝ),
           G ((u : ℂ) + ((sgn T : ℝ) : ℂ) * Complex.I)) atTop (𝓝 0) := by
     intro sgn hsgn
     refine tendsto_intervalIntegral_of_tendsto_bound
-      (M := fun T => C * (1 + T ^ 2)⁻¹) ?_ hdecay
+      (M := fun T => C * (1 + T ^ (2 : ℕ))⁻¹) ?_ hdecay
     filter_upwards with T
     intro u hu
     have hu' : -c ≤ u ∧ u ≤ 0 := by

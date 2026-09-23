@@ -40,26 +40,26 @@ def d4BMMaassLowerZeroOnFullSecondJet (sigmaScale : ℂ) (J : D4BMFullSecondJet)
 /-- Two raising steps `R_2 R_0`, including the weight and connection terms. -/
 def d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet
     (sigmaScale : ℂ) (J : D4BMFullSecondJet) : ℂ :=
-  sigmaScale ^ 2 *
+  sigmaScale ^ (2 : ℕ) *
       (J.sigmaSigma - J.horizonXHorizonX + 2 * Complex.I * J.horizonXSigma) +
     2 * sigmaScale * (J.first.sigma + Complex.I * J.first.horizonX)
 
 /-- Two lowering steps `L_(-2) L_0`, including the weight and connection terms. -/
 def d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet
     (sigmaScale : ℂ) (J : D4BMFullSecondJet) : ℂ :=
-  sigmaScale ^ 2 *
+  sigmaScale ^ (2 : ℕ) *
       (J.sigmaSigma - J.horizonXHorizonX - 2 * Complex.I * J.horizonXSigma) +
     2 * sigmaScale * (J.first.sigma - Complex.I * J.first.horizonX)
 
 /-- Connection-corrected geometric spin `+2` Hessian component. -/
 def d4BMCovariantHorizonSpinPlus (sigmaScale : ℂ) (J : D4BMFullSecondJet) : ℂ :=
-  sigmaScale ^ 2 *
+  sigmaScale ^ (2 : ℕ) *
       (J.horizonXHorizonX - J.sigmaSigma + 2 * Complex.I * J.horizonXSigma) -
     2 * sigmaScale * (J.first.sigma - Complex.I * J.first.horizonX)
 
 /-- Connection-corrected geometric spin `-2` Hessian component. -/
 def d4BMCovariantHorizonSpinMinus (sigmaScale : ℂ) (J : D4BMFullSecondJet) : ℂ :=
-  sigmaScale ^ 2 *
+  sigmaScale ^ (2 : ℕ) *
       (J.horizonXHorizonX - J.sigmaSigma - 2 * Complex.I * J.horizonXSigma) -
     2 * sigmaScale * (J.first.sigma + Complex.I * J.first.horizonX)
 
@@ -112,7 +112,7 @@ theorem ads4PlebanskiJacobiDoubleBracket_pureSpinTwo_eq_maassBalanced
         0 (xi : ℝ) 1
         (d4BMPureSpinTwoHorizonHessianSecondJet spinPlus spinMinus)
         (d4BMPureSpinTwoHorizonHessianSecondJet spinPlus spinMinus) =
-      -(d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ 2 / 64 *
+      -(d4BMRindlerRapiditySech (xi : ℝ) : ℂ) ^ (2 : ℕ) / 64 *
         d4BMMaassRaiseTwoRaiseZeroOnFullSecondJet 1
           (d4BMPureSpinTwoHorizonHessianSecondJet spinPlus spinMinus) *
         d4BMMaassLowerNegTwoLowerZeroOnFullSecondJet 1

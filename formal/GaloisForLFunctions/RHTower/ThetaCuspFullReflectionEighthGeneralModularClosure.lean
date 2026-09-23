@@ -51,7 +51,7 @@ theorem thetaCuspReflectedEighthNormalizedModularValue_im_eq_zero (x : ℝ) :
   rw [← Complex.ofReal_pow] at hfac
   simp only [Complex.mul_im, Complex.ofReal_re,
     Complex.ofReal_im, zero_mul, add_zero] at hfac
-  have hm : 0 < Bottcher.completedThetaProfile x ^ 6 :=
+  have hm : 0 < Bottcher.completedThetaProfile x ^ (6 : ℕ) :=
     pow_pos (thetaCuspCompletedThetaProfile_pos x) 6
   have hzero := thetaCuspReflectedEighthGeneralModularValue_im_eq_zero x
   rw [hzero] at hfac
@@ -85,17 +85,17 @@ theorem thetaCuspReflectedEighthSourcePositiveModularValue_im_eq_zero (x : ℝ) 
 theorem thetaCuspFullSourceReflectionEighthHankelCurvature_eq_mass_pow_six_mul_normalized_re
     (x : ℝ) :
     thetaCuspFullSourceReflectionEighthHankelCurvature x =
-      Bottcher.completedThetaProfile x ^ 6 *
+      Bottcher.completedThetaProfile x ^ (6 : ℕ) *
         (thetaCuspReflectedEighthNormalizedModularValue x).re := by
   have hfac := congrArg Complex.re
     (thetaCuspReflectedEighthGeneralModularValue_eq_H_pow_six_mul_normalized x)
   rw [thetaCuspModularODEState_H_eq_completedThetaProfile] at hfac
   rw [thetaCuspReflectedEighthGeneralModularValue_re_eq] at hfac
-  have hpRe : (((Bottcher.completedThetaProfile x : ℂ) ^ 6).re) =
-      Bottcher.completedThetaProfile x ^ 6 := by norm_cast
-  have hpIm : (((Bottcher.completedThetaProfile x : ℂ) ^ 6).im) = 0 := by
-    change ((Bottcher.completedThetaProfile x : ℂ) ^ 6).im =
-      (((Bottcher.completedThetaProfile x ^ 6 : ℝ) : ℂ)).im
+  have hpRe : (((Bottcher.completedThetaProfile x : ℂ) ^ (6 : ℕ)).re) =
+      Bottcher.completedThetaProfile x ^ (6 : ℕ) := by norm_cast
+  have hpIm : (((Bottcher.completedThetaProfile x : ℂ) ^ (6 : ℕ)).im) = 0 := by
+    change ((Bottcher.completedThetaProfile x : ℂ) ^ (6 : ℕ)).im =
+      (((Bottcher.completedThetaProfile x ^ (6 : ℕ) : ℝ) : ℂ)).im
     exact congrArg Complex.im
       (Complex.ofReal_pow (Bottcher.completedThetaProfile x) 6).symm
   rw [Complex.mul_re, hpRe, hpIm, zero_mul, sub_zero] at hfac
@@ -160,7 +160,7 @@ theorem thetaCuspModularLyapunovState_mem_strictPhysicalChamber
       0 < (thetaCuspModularLyapunovState HTGeometry.ModularThetaLyapunovState.A x).re ∧
       0 < (thetaCuspModularLyapunovState HTGeometry.ModularThetaLyapunovState.W x).re ∧
       18 <
-        2 * (thetaCuspModularLyapunovState HTGeometry.ModularThetaLyapunovState.S x).re ^ 2 +
+        2 * (thetaCuspModularLyapunovState HTGeometry.ModularThetaLyapunovState.S x).re ^ (2 : ℕ) +
           3 * (thetaCuspModularLyapunovState HTGeometry.ModularThetaLyapunovState.A x).re ∧
       -(1 / 3 : ℝ) *
           (thetaCuspModularLyapunovState HTGeometry.ModularThetaLyapunovState.S x).re <

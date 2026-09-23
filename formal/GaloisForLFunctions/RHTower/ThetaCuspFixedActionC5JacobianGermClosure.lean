@@ -401,7 +401,7 @@ fixed-action C5 Jacobian centre derivative away from the collapsed displacement 
 theorem thetaCuspC5FixedActionJacobianCenterRegularizedGerm_eq
     {t : ℝ} (ht : 0 < t) :
     thetaCuspC5FixedActionJacobianCenterRegularizedGerm t =
-      (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) ^ 2 *
+      (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) ^ (2 : ℕ) *
         deriv (fun u => thetaCuspReflectedActionC5FixedActionJacobian u t) 0 := by
   rw [(hasDerivAt_thetaCuspReflectedActionC5FixedActionJacobian_center_zero ht).deriv]
   unfold thetaCuspC5FixedActionJacobianCenterRegularizedGerm

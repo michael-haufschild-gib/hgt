@@ -12,7 +12,7 @@ star coupling. Divide by its explicit signed factorial/gap amplification.
 
 The resulting compensated responses satisfy the unconditional identity
 
-`sum_B response(k,B)^2 + (sum_x k(x))^2 = 2^n * sum_x k(x)^2`.
+`sum_B response(k,B)^(2 : ℕ) + (sum_x k(x))^(2 : ℕ) = 2^n * sum_x k(x)^(2 : ℕ)`.
 
 Consequently every centered nonzero real covector has a literal derivative
 of order at most `n+1` with magnitude at least its Euclidean norm. The common
@@ -67,8 +67,8 @@ private theorem inverseWalshCoefficient_realStarWalshPacket
 /-- Real Parseval with no centering or nonzero premise. -/
 theorem sum_sq_realStarWalshPacket
     {I : Type*} [Fintype I] (k : (I → Bool) → ℝ) :
-    (∑ B : Finset I, realStarWalshPacket k B ^ 2) =
-      (2 : ℝ) ^ Fintype.card I * ∑ x, k x ^ 2 := by
+    (∑ B : Finset I, realStarWalshPacket k B ^ (2 : ℕ)) =
+      (2 : ℝ) ^ Fintype.card I * ∑ x, k x ^ (2 : ℕ) := by
   classical
   have h := sum_norm_sq_inverseWalshCoefficient (fun x => (k x : ℂ))
   simp_rw [inverseWalshCoefficient_realStarWalshPacket, Complex.norm_real,
@@ -217,12 +217,12 @@ No nondegeneracy, centering, integrality or source-tail premise is required.
 The only omitted energy is the constant (global-shift) mode. -/
 theorem commonReferenceSpectralJet_parseval (n : ℕ)
     (k : (Fin n → Bool) → ℝ) :
-    (∑ B : Finset (Fin n), commonReferenceSpectralJet k B ^ 2) +
-        (∑ x, k x) ^ 2 = (2 : ℝ) ^ n * ∑ x, k x ^ 2 := by
+    (∑ B : Finset (Fin n), commonReferenceSpectralJet k B ^ (2 : ℕ)) +
+        (∑ x, k x) ^ (2 : ℕ) = (2 : ℝ) ^ n * ∑ x, k x ^ (2 : ℕ) := by
   classical
   have hterm (B : Finset (Fin n)) :
-      realStarWalshPacket k B ^ 2 = commonReferenceSpectralJet k B ^ 2 +
-        if B = ∅ then (∑ x, k x) ^ 2 else 0 := by
+      realStarWalshPacket k B ^ (2 : ℕ) = commonReferenceSpectralJet k B ^ (2 : ℕ) +
+        if B = ∅ then (∑ x, k x) ^ (2 : ℕ) else 0 := by
     rcases B.eq_empty_or_nonempty with rfl | hB
     · simp [realStarWalshPacket]
     · rw [commonReferenceSpectralJet_eq_packet k B hB, if_neg hB.ne_empty, add_zero]
@@ -233,20 +233,20 @@ theorem commonReferenceSpectralJet_parseval (n : ℕ)
 private theorem exists_large_realStarWalshPacket {n : ℕ}
     (k : (Fin n → Bool) → ℝ) (hbalance : ∑ x, k x = 0) (hk : k ≠ 0) :
     ∃ B : Finset (Fin n), B.Nonempty ∧
-      (∑ x, k x ^ 2) ≤ realStarWalshPacket k B ^ 2 := by
+      (∑ x, k x ^ (2 : ℕ)) ≤ realStarWalshPacket k B ^ (2 : ℕ) := by
   classical
-  let E : ℝ := ∑ x, k x ^ 2
+  let E : ℝ := ∑ x, k x ^ (2 : ℕ)
   have hE : 0 < E := by
     obtain ⟨x, hx⟩ := Function.ne_iff.mp hk
     exact Finset.sum_pos' (fun x _ => sq_nonneg (k x))
       ⟨x, Finset.mem_univ x, sq_pos_of_ne_zero hx⟩
   by_contra hn
   push Not at hn
-  have hle (B : Finset (Fin n)) : realStarWalshPacket k B ^ 2 ≤ E := by
+  have hle (B : Finset (Fin n)) : realStarWalshPacket k B ^ (2 : ℕ) ≤ E := by
     rcases B.eq_empty_or_nonempty with rfl | hB
     · simpa [realStarWalshPacket, hbalance] using hE.le
     · exact (hn B hB).le
-  have hlt : (∑ B : Finset (Fin n), realStarWalshPacket k B ^ 2) <
+  have hlt : (∑ B : Finset (Fin n), realStarWalshPacket k B ^ (2 : ℕ)) <
       ∑ _B : Finset (Fin n), E := by
     apply Finset.sum_lt_sum (fun B _ => hle B)
     refine ⟨∅, Finset.mem_univ _, ?_⟩
@@ -265,7 +265,7 @@ theorem balanced_real_character_commonBase_starJet_detection
     (hbalance : ∑ x, k x = 0) (hk : k ≠ 0) :
     ∃ (i : Fin n) (S : Finset {j : Fin n // j ≠ i}),
       S.card + 2 ≤ n + 1 ∧
-        Real.sqrt (∑ x, k x ^ 2) ≤
+        Real.sqrt (∑ x, k x ^ (2 : ℕ)) ≤
           |orderedStarCouplingDeriv S.toList
             (fun c => deriv (deriv (commonReferenceRealStarAction k i c)) 0) 0| := by
   obtain ⟨B, hB, hlarge⟩ := exists_large_realStarWalshPacket k hbalance hk
@@ -280,7 +280,7 @@ theorem balanced_real_character_commonBase_starJet_detection
   rw [orderedStarCouplingDeriv_realAction,
     ← realStarWalshPacket_edge k B i hi]
   change Real.sqrt _ ≤ |commonReferenceStarJetAmplifier i S * realStarWalshPacket k B|
-  have hp : Real.sqrt (∑ x, k x ^ 2) ≤ |realStarWalshPacket k B| := by
+  have hp : Real.sqrt (∑ x, k x ^ (2 : ℕ)) ≤ |realStarWalshPacket k B| := by
     apply Real.sqrt_le_iff.mpr
     exact ⟨abs_nonneg _, by simpa only [sq_abs] using hlarge⟩
   rw [abs_mul]

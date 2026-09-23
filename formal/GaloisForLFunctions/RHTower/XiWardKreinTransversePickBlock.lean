@@ -8,7 +8,7 @@ import GaloisForLFunctions.HTGeometry.TensorPolarizationAmplification
 The inward and outward witnesses of the transverse Ward--Krein mass shell do more than expose
 opposite diagonal signs.  Their mixed Pick entry vanishes exactly.  Hence they canonically
 diagonalize the conjugate-pair Pick block, with eigenvalues
-`-8 / (3 * delta^2)` and `2 / (3 * delta^2)`.
+`-8 / (3 * delta^(2 : ℕ))` and `2 / (3 * delta^(2 : ℕ))`.
 
 Consequences:
 
@@ -127,7 +127,7 @@ theorem conjugatePairPickCross_inward_inward
     (t : ℂ) (ht : t.im ≠ 0) :
     conjugatePairPickCross t (conjugatePairInwardWitness t)
       (conjugatePairInwardWitness t) =
-        (((-8 / (3 * t.im ^ 2) : ℝ)) : ℂ) := by
+        (((-8 / (3 * t.im ^ (2 : ℕ)) : ℝ)) : ℂ) := by
   have hz : (conjugatePairInwardWitness t).im = t.im / 2 := by
     simp [conjugatePairInwardWitness, Complex.sub_im, Complex.mul_im]
     ring
@@ -145,7 +145,7 @@ theorem conjugatePairPickCross_outward_outward
     (t : ℂ) (ht : t.im ≠ 0) :
     conjugatePairPickCross t (conjugatePairOutwardWitness t)
       (conjugatePairOutwardWitness t) =
-        (((2 / (3 * t.im ^ 2) : ℝ)) : ℂ) := by
+        (((2 / (3 * t.im ^ (2 : ℕ)) : ℝ)) : ℂ) := by
   have hz : (conjugatePairOutwardWitness t).im = 2 * t.im := by
     simp [conjugatePairOutwardWitness, Complex.add_im, Complex.mul_im]
     ring
@@ -173,8 +173,8 @@ def conjugatePairTransversePickBlock (t : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
 theorem conjugatePairTransversePickBlock_eq_diagonal
     (t : ℂ) (ht : t.im ≠ 0) :
     conjugatePairTransversePickBlock t = Matrix.diagonal
-      ![(((-8 / (3 * t.im ^ 2) : ℝ)) : ℂ),
-        (((2 / (3 * t.im ^ 2) : ℝ)) : ℂ)] := by
+      ![(((-8 / (3 * t.im ^ (2 : ℕ)) : ℝ)) : ℂ),
+        (((2 / (3 * t.im ^ (2 : ℕ)) : ℝ)) : ℂ)] := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [conjugatePairTransversePickBlock, conjugatePairTransversePickNodes,
@@ -187,7 +187,7 @@ theorem conjugatePairTransversePickBlock_eq_diagonal
 theorem conjugatePairTransversePickBlock_det
     (t : ℂ) (ht : t.im ≠ 0) :
     (conjugatePairTransversePickBlock t).det =
-      (((-16 / (9 * t.im ^ 4) : ℝ)) : ℂ) := by
+      (((-16 / (9 * t.im ^ (4 : ℕ)) : ℝ)) : ℂ) := by
   rw [conjugatePairTransversePickBlock_eq_diagonal t ht, Matrix.det_fin_two]
   simp
   field_simp [ht]
@@ -196,7 +196,7 @@ theorem conjugatePairTransversePickBlock_det
 /-- Fourth-power renormalization produces a displacement-independent determinant quantum. -/
 theorem conjugatePairTransversePickBlock_renormalized_det
     (t : ℂ) (ht : t.im ≠ 0) :
-    t.im ^ 4 * (conjugatePairTransversePickBlock t).det.re = -16 / 9 := by
+    t.im ^ (4 : ℕ) * (conjugatePairTransversePickBlock t).det.re = -16 / 9 := by
   have hdet := congrArg Complex.re (conjugatePairTransversePickBlock_det t ht)
   simp only [Complex.ofReal_re] at hdet
   rw [hdet]
@@ -208,10 +208,10 @@ theorem conjugatePairTransversePickBlock_det_re_neg
   have hdet := congrArg Complex.re (conjugatePairTransversePickBlock_det t ht)
   simp only [Complex.ofReal_re] at hdet
   rw [hdet]
-  have hb4 : 0 < t.im ^ 4 := by
+  have hb4 : 0 < t.im ^ (4 : ℕ) := by
     calc
-      0 < (t.im ^ 2) ^ 2 := sq_pos_of_ne_zero (pow_ne_zero 2 ht)
-      _ = t.im ^ 4 := by ring
+      0 < (t.im ^ (2 : ℕ)) ^ (2 : ℕ) := sq_pos_of_ne_zero (pow_ne_zero 2 ht)
+      _ = t.im ^ (4 : ℕ) := by ring
   exact div_neg_of_neg_of_pos (by norm_num)
     (mul_pos (by norm_num) hb4)
 
@@ -221,24 +221,24 @@ theorem conjugatePairTransversePickBlock_negIndex
     GaloisForLFunctions.HTGeometry.hermNegIndex
       (conjugatePairTransversePickBlock t) = 1 := by
   classical
-  have hb2 : 0 < t.im ^ 2 := sq_pos_of_ne_zero ht
-  have hneg : -8 / (3 * t.im ^ 2) < 0 :=
+  have hb2 : 0 < t.im ^ (2 : ℕ) := sq_pos_of_ne_zero ht
+  have hneg : -8 / (3 * t.im ^ (2 : ℕ)) < 0 :=
     div_neg_of_neg_of_pos (by norm_num) (mul_pos (by norm_num) hb2)
-  have hpos : 0 < 2 / (3 * t.im ^ 2) :=
+  have hpos : 0 < 2 / (3 * t.im ^ (2 : ℕ)) :=
     div_pos (by norm_num) (mul_pos (by norm_num) hb2)
   rw [conjugatePairTransversePickBlock_eq_diagonal t ht]
   have hvec :
-      ![(((-8 / (3 * t.im ^ 2) : ℝ)) : ℂ),
-        (((2 / (3 * t.im ^ 2) : ℝ)) : ℂ)] =
-      fun i => ((![(-8 / (3 * t.im ^ 2) : ℝ),
-        (2 / (3 * t.im ^ 2) : ℝ)] i : ℝ) : ℂ) := by
+      ![(((-8 / (3 * t.im ^ (2 : ℕ)) : ℝ)) : ℂ),
+        (((2 / (3 * t.im ^ (2 : ℕ)) : ℝ)) : ℂ)] =
+      fun i => ((![(-8 / (3 * t.im ^ (2 : ℕ)) : ℝ),
+        (2 / (3 * t.im ^ (2 : ℕ)) : ℝ)] i : ℝ) : ℂ) := by
     funext i
     fin_cases i <;> rfl
   rw [hvec, GaloisForLFunctions.HTGeometry.negIndex_diagonal]
-  have hpneg : ¬ 2 / (3 * t.im ^ 2) < 0 := not_lt_of_ge hpos.le
+  have hpneg : ¬ 2 / (3 * t.im ^ (2 : ℕ)) < 0 := not_lt_of_ge hpos.le
   have hset :
-      ({i | ![(-8 / (3 * t.im ^ 2) : ℝ),
-        (2 / (3 * t.im ^ 2) : ℝ)] i < 0} : Finset (Fin 2)) = {0} := by
+      ({i | ![(-8 / (3 * t.im ^ (2 : ℕ)) : ℝ),
+        (2 / (3 * t.im ^ (2 : ℕ)) : ℝ)] i < 0} : Finset (Fin 2)) = {0} := by
     ext i
     fin_cases i <;> simp [hneg, hpneg]
   rw [hset]
@@ -250,24 +250,24 @@ theorem conjugatePairTransversePickBlock_posIndex
     GaloisForLFunctions.HTGeometry.hermPosIndex
       (conjugatePairTransversePickBlock t) = 1 := by
   classical
-  have hb2 : 0 < t.im ^ 2 := sq_pos_of_ne_zero ht
-  have hneg : -8 / (3 * t.im ^ 2) < 0 :=
+  have hb2 : 0 < t.im ^ (2 : ℕ) := sq_pos_of_ne_zero ht
+  have hneg : -8 / (3 * t.im ^ (2 : ℕ)) < 0 :=
     div_neg_of_neg_of_pos (by norm_num) (mul_pos (by norm_num) hb2)
-  have hpos : 0 < 2 / (3 * t.im ^ 2) :=
+  have hpos : 0 < 2 / (3 * t.im ^ (2 : ℕ)) :=
     div_pos (by norm_num) (mul_pos (by norm_num) hb2)
   rw [conjugatePairTransversePickBlock_eq_diagonal t ht]
   have hvec :
-      ![(((-8 / (3 * t.im ^ 2) : ℝ)) : ℂ),
-        (((2 / (3 * t.im ^ 2) : ℝ)) : ℂ)] =
-      fun i => ((![(-8 / (3 * t.im ^ 2) : ℝ),
-        (2 / (3 * t.im ^ 2) : ℝ)] i : ℝ) : ℂ) := by
+      ![(((-8 / (3 * t.im ^ (2 : ℕ)) : ℝ)) : ℂ),
+        (((2 / (3 * t.im ^ (2 : ℕ)) : ℝ)) : ℂ)] =
+      fun i => ((![(-8 / (3 * t.im ^ (2 : ℕ)) : ℝ),
+        (2 / (3 * t.im ^ (2 : ℕ)) : ℝ)] i : ℝ) : ℂ) := by
     funext i
     fin_cases i <;> rfl
   rw [hvec, GaloisForLFunctions.HTGeometry.posIndex_diagonal]
-  have hnpos : ¬ 0 < -8 / (3 * t.im ^ 2) := not_lt_of_ge hneg.le
+  have hnpos : ¬ 0 < -8 / (3 * t.im ^ (2 : ℕ)) := not_lt_of_ge hneg.le
   have hset :
-      ({i | 0 < ![(-8 / (3 * t.im ^ 2) : ℝ),
-        (2 / (3 * t.im ^ 2) : ℝ)] i} : Finset (Fin 2)) = {1} := by
+      ({i | 0 < ![(-8 / (3 * t.im ^ (2 : ℕ)) : ℝ),
+        (2 / (3 * t.im ^ (2 : ℕ)) : ℝ)] i} : Finset (Fin 2)) = {1} := by
     ext i
     fin_cases i <;> simp [hnpos, hpos]
   rw [hset]
@@ -293,8 +293,8 @@ def xiWardKreinTransversePickBlock
 theorem xiWardKreinTransversePickBlock_eq_diagonal
     (q : XiRightUpperZeroCopy) :
     xiWardKreinTransversePickBlock q = Matrix.diagonal
-      ![(((-8 / (3 * (xiRightCenteredZero q.1).re ^ 2) : ℝ)) : ℂ),
-        (((2 / (3 * (xiRightCenteredZero q.1).re ^ 2) : ℝ)) : ℂ)] := by
+      ![(((-8 / (3 * (xiRightCenteredZero q.1).re ^ (2 : ℕ)) : ℝ)) : ℂ),
+        (((2 / (3 * (xiRightCenteredZero q.1).re ^ (2 : ℕ)) : ℝ)) : ℂ)] := by
   rw [xiWardKreinTransversePickBlock,
     conjugatePairTransversePickBlock_eq_diagonal _
       (xiWardKreinUpperSpectralPole_im_pos q).ne']
@@ -303,7 +303,7 @@ theorem xiWardKreinTransversePickBlock_eq_diagonal
 /-- Every off-line Xi atom carries the exact normalized determinant quantum `-16/9`. -/
 theorem xiWardKreinTransversePickBlock_renormalized_det
     (q : XiRightUpperZeroCopy) :
-    (xiRightCenteredZero q.1).re ^ 4 *
+    (xiRightCenteredZero q.1).re ^ (4 : ℕ) *
         (xiWardKreinTransversePickBlock q).det.re = -16 / 9 := by
   simpa [xiWardKreinTransversePickBlock,
     xiWardKreinUpperSpectralPole_im_eq_transverse q] using

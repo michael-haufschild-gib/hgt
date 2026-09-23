@@ -26,13 +26,13 @@ def modulatedGaussianEpsilon : ℝ := Real.exp (9 / 4) / Real.cosh 8
 theorem real_exp_four_gt_sixteen : (16 : ℝ) < Real.exp 4 := by
   have htwo := Real.add_one_lt_exp (by norm_num : (1 : ℝ) ≠ 0)
   norm_num at htwo
-  have hp : (2 : ℝ) ^ 4 < Real.exp 1 ^ 4 :=
+  have hp : (2 : ℝ) ^ (4 : ℕ) < Real.exp 1 ^ (4 : ℕ) :=
     pow_lt_pow_left₀ htwo (by norm_num) (by norm_num)
-  have heq : Real.exp 4 = Real.exp 1 ^ 4 := by
+  have heq : Real.exp 4 = Real.exp 1 ^ (4 : ℕ) := by
     simpa using Real.exp_nat_mul 1 4
   calc
-    (16 : ℝ) = 2 ^ 4 := by norm_num
-    _ < Real.exp 1 ^ 4 := hp
+    (16 : ℝ) = 2 ^ (4 : ℕ) := by norm_num
+    _ < Real.exp 1 ^ (4 : ℕ) := hp
     _ = Real.exp 4 := heq.symm
 
 theorem modulatedGaussianEpsilon_pos : 0 < modulatedGaussianEpsilon := by
@@ -66,7 +66,7 @@ theorem modulatedGaussianEpsilon_lt_one : modulatedGaussianEpsilon < 1 :=
   modulatedGaussianEpsilon_lt_one_eighth.trans (by norm_num)
 
 def modulatedGaussianKernel (x : ℝ) : ℝ :=
-  Real.exp (-(x ^ 2)) * (1 + modulatedGaussianEpsilon * Real.cos (3 * x))
+  Real.exp (-(x ^ (2 : ℕ))) * (1 + modulatedGaussianEpsilon * Real.cos (3 * x))
 
 theorem modulatedGaussianKernel_factor_pos (x : ℝ) :
     0 < 1 + modulatedGaussianEpsilon * Real.cos (3 * x) := by
@@ -102,23 +102,23 @@ theorem continuous_modulatedGaussianKernel : Continuous modulatedGaussianKernel 
 theorem modulatedGaussianKernel_decay (M : ℝ) :
     ∃ C : ℝ, 0 < C ∧ ∀ x,
       modulatedGaussianKernel x ≤ C * Real.exp (-(M * |x|)) := by
-  refine ⟨2 * Real.exp (M ^ 2 / 4), by positivity, fun x => ?_⟩
+  refine ⟨2 * Real.exp (M ^ (2 : ℕ) / 4), by positivity, fun x => ?_⟩
   have hfactorPos := (modulatedGaussianKernel_factor_pos x).le
   have hfactor := (modulatedGaussianKernel_factor_lt_two x).le
-  have hkernel : modulatedGaussianKernel x ≤ 2 * Real.exp (-(x ^ 2)) := by
+  have hkernel : modulatedGaussianKernel x ≤ 2 * Real.exp (-(x ^ (2 : ℕ))) := by
     unfold modulatedGaussianKernel
-    nlinarith [Real.exp_pos (-(x ^ 2))]
-  have hsquare : 0 ≤ (|x| - M / 2) ^ 2 := sq_nonneg _
-  have hexponent : -(x ^ 2) ≤ M ^ 2 / 4 - M * |x| := by
+    nlinarith [Real.exp_pos (-(x ^ (2 : ℕ)))]
+  have hsquare : 0 ≤ (|x| - M / 2) ^ (2 : ℕ) := sq_nonneg _
+  have hexponent : -(x ^ (2 : ℕ)) ≤ M ^ (2 : ℕ) / 4 - M * |x| := by
     nlinarith [sq_abs x]
-  have hexp : Real.exp (-(x ^ 2)) ≤
-      Real.exp (M ^ 2 / 4) * Real.exp (-(M * |x|)) := by
+  have hexp : Real.exp (-(x ^ (2 : ℕ))) ≤
+      Real.exp (M ^ (2 : ℕ) / 4) * Real.exp (-(M * |x|)) := by
     rw [← Real.exp_add]
     exact Real.exp_le_exp.mpr (by linarith)
   calc
-    modulatedGaussianKernel x ≤ 2 * Real.exp (-(x ^ 2)) := hkernel
-    _ ≤ 2 * (Real.exp (M ^ 2 / 4) * Real.exp (-(M * |x|))) := by gcongr
-    _ = (2 * Real.exp (M ^ 2 / 4)) * Real.exp (-(M * |x|)) := by ring
+    modulatedGaussianKernel x ≤ 2 * Real.exp (-(x ^ (2 : ℕ))) := hkernel
+    _ ≤ 2 * (Real.exp (M ^ (2 : ℕ) / 4) * Real.exp (-(M * |x|))) := by gcongr
+    _ = (2 * Real.exp (M ^ (2 : ℕ) / 4)) * Real.exp (-(M * |x|)) := by ring
 
 def modulatedGaussianSource : ThetaSource where
   k := modulatedGaussianKernel
@@ -128,15 +128,15 @@ def modulatedGaussianSource : ThetaSource where
   decay := modulatedGaussianKernel_decay
 
 def gaussianBilateralClosed (w : ℂ) : ℂ :=
-  ((Real.pi : ℂ) ^ (1 / 2 : ℂ)) * Complex.exp (w ^ 2 / 4)
+  ((Real.pi : ℂ) ^ (1 / 2 : ℂ)) * Complex.exp (w ^ (2 : ℕ) / 4)
 
 theorem integral_cexp_neg_sq_add_linear (w : ℂ) :
-    (∫ x : ℝ, Complex.exp (-((x : ℂ) ^ 2) + w * (x : ℂ))) =
+    (∫ x : ℝ, Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + w * (x : ℂ))) =
       gaussianBilateralClosed w := by
   have h := integral_cexp_quadratic (b := (-1 : ℂ)) (by norm_num) w 0
   rw [show (fun x : ℝ => Complex.exp
-      ((-1 : ℂ) * (x : ℂ) ^ 2 + w * (x : ℂ) + 0)) =
-      fun x : ℝ => Complex.exp (-((x : ℂ) ^ 2) + w * (x : ℂ)) by
+      ((-1 : ℂ) * (x : ℂ) ^ (2 : ℕ) + w * (x : ℂ) + 0)) =
+      fun x : ℝ => Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + w * (x : ℂ)) by
         funext x
         ring] at h
   rw [gaussianBilateralClosed]
@@ -146,7 +146,7 @@ theorem integral_cexp_neg_sq_add_linear (w : ℂ) :
   field_simp
 
 theorem integrable_cexp_neg_sq_add_linear (w : ℂ) :
-    Integrable (fun x : ℝ => Complex.exp (-((x : ℂ) ^ 2) + w * (x : ℂ))) := by
+    Integrable (fun x : ℝ => Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + w * (x : ℂ))) := by
   have h := integrable_cexp_quadratic' (b := (-1 : ℂ)) (by norm_num) w 0
   convert h using 1
   funext x
@@ -162,43 +162,43 @@ theorem ofReal_cos_three_eq_exp_average (x : ℝ) :
 
 theorem modulatedGaussian_integrand_eq (w : ℂ) (x : ℝ) :
     (modulatedGaussianKernel x : ℂ) * Complex.exp (w * (x : ℂ)) =
-      Complex.exp (-((x : ℂ) ^ 2) + w * (x : ℂ)) +
+      Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + w * (x : ℂ)) +
       (modulatedGaussianEpsilon : ℂ) / 2 *
-        (Complex.exp (-((x : ℂ) ^ 2) + (w + 3 * I) * (x : ℂ)) +
-          Complex.exp (-((x : ℂ) ^ 2) + (w - 3 * I) * (x : ℂ))) := by
+        (Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + (w + 3 * I) * (x : ℂ)) +
+          Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + (w - 3 * I) * (x : ℂ))) := by
   rw [modulatedGaussianKernel, Complex.ofReal_mul, Complex.ofReal_exp,
     Complex.ofReal_add, Complex.ofReal_one, Complex.ofReal_mul,
     ofReal_cos_three_eq_exp_average]
   push_cast
   ring_nf
   have hp :
-      Complex.exp (-((x : ℂ) ^ 2)) * Complex.exp ((x : ℂ) * I * 3) *
+      Complex.exp (-((x : ℂ) ^ (2 : ℕ))) * Complex.exp ((x : ℂ) * I * 3) *
           Complex.exp ((x : ℂ) * w) =
-        Complex.exp ((x : ℂ) * I * 3 + (x : ℂ) * w - (x : ℂ) ^ 2) := by
+        Complex.exp ((x : ℂ) * I * 3 + (x : ℂ) * w - (x : ℂ) ^ (2 : ℕ)) := by
     rw [← Complex.exp_add, ← Complex.exp_add]
     congr 1
     ring
   have hm :
-      Complex.exp (-((x : ℂ) ^ 2)) * Complex.exp ((x : ℂ) * w) *
+      Complex.exp (-((x : ℂ) ^ (2 : ℕ))) * Complex.exp ((x : ℂ) * w) *
           Complex.exp (-((x : ℂ) * I * 3)) =
-        Complex.exp (-((x : ℂ) * I * 3) + (x : ℂ) * w - (x : ℂ) ^ 2) := by
+        Complex.exp (-((x : ℂ) * I * 3) + (x : ℂ) * w - (x : ℂ) ^ (2 : ℕ)) := by
     rw [← Complex.exp_add, ← Complex.exp_add]
     congr 1
     ring
   have h0 :
-      Complex.exp (-((x : ℂ) ^ 2)) * Complex.exp ((x : ℂ) * w) =
-        Complex.exp ((x : ℂ) * w - (x : ℂ) ^ 2) := by
+      Complex.exp (-((x : ℂ) ^ (2 : ℕ))) * Complex.exp ((x : ℂ) * w) =
+        Complex.exp ((x : ℂ) * w - (x : ℂ) ^ (2 : ℕ)) := by
     rw [← Complex.exp_add]
     congr 1
     ring
   calc
     _ = (modulatedGaussianEpsilon : ℂ) *
-          (Complex.exp (-((x : ℂ) ^ 2)) * Complex.exp ((x : ℂ) * I * 3) *
+          (Complex.exp (-((x : ℂ) ^ (2 : ℕ))) * Complex.exp ((x : ℂ) * I * 3) *
             Complex.exp ((x : ℂ) * w)) * (1 / 2) +
         (modulatedGaussianEpsilon : ℂ) *
-          (Complex.exp (-((x : ℂ) ^ 2)) * Complex.exp ((x : ℂ) * w) *
+          (Complex.exp (-((x : ℂ) ^ (2 : ℕ))) * Complex.exp ((x : ℂ) * w) *
             Complex.exp (-((x : ℂ) * I * 3))) * (1 / 2) +
-        Complex.exp (-((x : ℂ) ^ 2)) * Complex.exp ((x : ℂ) * w) := by ring
+        Complex.exp (-((x : ℂ) ^ (2 : ℕ))) * Complex.exp ((x : ℂ) * w) := by ring
     _ = _ := by rw [hp, hm, h0]
 
 theorem bilateralLaplace_modulatedGaussianSource_raw (w : ℂ) :
@@ -217,14 +217,14 @@ theorem bilateralLaplace_modulatedGaussianSource_raw (w : ℂ) :
   have hm := integrable_cexp_neg_sq_add_linear (w - 3 * I)
   calc
     (∫ x : ℝ,
-        Complex.exp (-((x : ℂ) ^ 2) + w * (x : ℂ)) +
+        Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + w * (x : ℂ)) +
           (modulatedGaussianEpsilon : ℂ) / 2 *
-            (Complex.exp (-((x : ℂ) ^ 2) + (w + 3 * I) * (x : ℂ)) +
-              Complex.exp (-((x : ℂ) ^ 2) + (w - 3 * I) * (x : ℂ)))) =
-        (∫ x : ℝ, Complex.exp (-((x : ℂ) ^ 2) + w * (x : ℂ))) +
+            (Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + (w + 3 * I) * (x : ℂ)) +
+              Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + (w - 3 * I) * (x : ℂ)))) =
+        (∫ x : ℝ, Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + w * (x : ℂ))) +
           ∫ x : ℝ, (modulatedGaussianEpsilon : ℂ) / 2 *
-            (Complex.exp (-((x : ℂ) ^ 2) + (w + 3 * I) * (x : ℂ)) +
-              Complex.exp (-((x : ℂ) ^ 2) + (w - 3 * I) * (x : ℂ))) :=
+            (Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + (w + 3 * I) * (x : ℂ)) +
+              Complex.exp (-((x : ℂ) ^ (2 : ℕ)) + (w - 3 * I) * (x : ℂ))) :=
       MeasureTheory.integral_add h0 ((hp.add hm).const_mul _)
     _ = _ := by
       rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_add hp hm,
@@ -236,8 +236,8 @@ theorem gaussianBilateralClosed_add_three_I (w : ℂ) :
       gaussianBilateralClosed w * Complex.exp (-(9 / 4 : ℝ)) *
         Complex.exp ((3 / 2 : ℂ) * I * w) := by
   have hexp :
-      Complex.exp ((w + 3 * I) ^ 2 / 4) =
-        Complex.exp (w ^ 2 / 4) * Complex.exp (-(9 / 4 : ℝ)) *
+      Complex.exp ((w + 3 * I) ^ (2 : ℕ) / 4) =
+        Complex.exp (w ^ (2 : ℕ) / 4) * Complex.exp (-(9 / 4 : ℝ)) *
           Complex.exp ((3 / 2 : ℂ) * I * w) := by
     rw [← Complex.exp_add, ← Complex.exp_add]
     apply congrArg Complex.exp
@@ -252,8 +252,8 @@ theorem gaussianBilateralClosed_sub_three_I (w : ℂ) :
       gaussianBilateralClosed w * Complex.exp (-(9 / 4 : ℝ)) *
         Complex.exp (-((3 / 2 : ℂ) * I * w)) := by
   have hexp :
-      Complex.exp ((w - 3 * I) ^ 2 / 4) =
-        Complex.exp (w ^ 2 / 4) * Complex.exp (-(9 / 4 : ℝ)) *
+      Complex.exp ((w - 3 * I) ^ (2 : ℕ) / 4) =
+        Complex.exp (w ^ (2 : ℕ) / 4) * Complex.exp (-(9 / 4 : ℝ)) *
           Complex.exp (-((3 / 2 : ℂ) * I * w)) := by
     rw [← Complex.exp_add, ← Complex.exp_add]
     apply congrArg Complex.exp
@@ -364,7 +364,7 @@ def modulatedGaussianLogFactor (x : ℝ) : ℝ :=
   Real.log (1 + modulatedGaussianEpsilon * Real.cos (3 * x))
 
 def modulatedGaussianLogModel (x : ℝ) : ℝ :=
-  -(x ^ 2) + modulatedGaussianLogFactor x
+  -(x ^ (2 : ℕ)) + modulatedGaussianLogFactor x
 
 theorem modulatedGaussianLogModel_eq_log_kernel (x : ℝ) :
     modulatedGaussianLogModel x = Real.log (modulatedGaussianKernel x) := by
@@ -387,7 +387,7 @@ theorem hasDerivAt_modulatedGaussianLogModel (x : ℝ) :
       (-(2 * x) +
         (-3 * modulatedGaussianEpsilon * Real.sin (3 * x)) /
           (1 + modulatedGaussianEpsilon * Real.cos (3 * x))) x := by
-  have hquad : HasDerivAt (fun y : ℝ => -(y ^ 2)) (-(2 * x)) x := by
+  have hquad : HasDerivAt (fun y : ℝ => -(y ^ (2 : ℕ))) (-(2 * x)) x := by
     have h := (hasDerivAt_pow 2 x).const_sub 0
     norm_num at h
     exact h
@@ -404,7 +404,7 @@ theorem hasDerivAt_modulatedGaussianLogModel_deriv (x : ℝ) :
       (-2 +
         (-9 * modulatedGaussianEpsilon *
           (Real.cos (3 * x) + modulatedGaussianEpsilon)) /
-            (1 + modulatedGaussianEpsilon * Real.cos (3 * x)) ^ 2) x := by
+            (1 + modulatedGaussianEpsilon * Real.cos (3 * x)) ^ (2 : ℕ)) x := by
   let e : ℝ := modulatedGaussianEpsilon
   let s : ℝ := Real.sin (3 * x)
   let c : ℝ := Real.cos (3 * x)
@@ -423,14 +423,14 @@ theorem hasDerivAt_modulatedGaussianLogModel_deriv (x : ℝ) :
   have hden0 : 1 + e * c ≠ 0 := by
     exact (modulatedGaussianKernel_factor_pos x).ne'
   have hquot := hsin.div hden hden0
-  have htrig : s ^ 2 + c ^ 2 = 1 := by
+  have htrig : s ^ (2 : ℕ) + c ^ (2 : ℕ) = 1 := by
     dsimp [s, c]
     nlinarith [Real.sin_sq_add_cos_sq (3 * x)]
   have hval :
       -2 +
           ((-9 * e * c * (1 + e * c) - (-3 * e * s) * (-3 * e * s)) /
-            (1 + e * c) ^ 2) =
-        -2 + (-9 * e * (c + e)) / (1 + e * c) ^ 2 := by
+            (1 + e * c) ^ (2 : ℕ)) =
+        -2 + (-9 * e * (c + e)) / (1 + e * c) ^ (2 : ℕ) := by
     field_simp [hden0]
     ring_nf at htrig ⊢
     nlinarith [htrig]
@@ -444,7 +444,7 @@ theorem iteratedDeriv_two_modulatedGaussianLogModel (x : ℝ) :
       -2 +
         (-9 * modulatedGaussianEpsilon *
           (Real.cos (3 * x) + modulatedGaussianEpsilon)) /
-            (1 + modulatedGaussianEpsilon * Real.cos (3 * x)) ^ 2 := by
+            (1 + modulatedGaussianEpsilon * Real.cos (3 * x)) ^ (2 : ℕ) := by
   have hderiv : deriv modulatedGaussianLogModel =
       fun y : ℝ => -(2 * y) +
         (-3 * modulatedGaussianEpsilon * Real.sin (3 * y)) /
@@ -467,13 +467,13 @@ theorem iteratedDeriv_two_modulatedGaussianLogModel_neg (x : ℝ) :
   have hcoarse : -13 * e * c ≤ 13 * e := by
     nlinarith
   have hnum :
-      -2 * (1 + e * c) ^ 2 - 9 * e * (c + e) < 0 := by
+      -2 * (1 + e * c) ^ (2 : ℕ) - 9 * e * (c + e) < 0 := by
     nlinarith [sq_nonneg c, sq_nonneg e]
   rw [iteratedDeriv_two_modulatedGaussianLogModel]
-  change -2 + (-9 * e * (c + e)) / (1 + e * c) ^ 2 < 0
-  have heq : -2 + (-9 * e * (c + e)) / (1 + e * c) ^ 2 =
-      (-2 * (1 + e * c) ^ 2 - 9 * e * (c + e)) /
-        (1 + e * c) ^ 2 := by
+  change -2 + (-9 * e * (c + e)) / (1 + e * c) ^ (2 : ℕ) < 0
+  have heq : -2 + (-9 * e * (c + e)) / (1 + e * c) ^ (2 : ℕ) =
+      (-2 * (1 + e * c) ^ (2 : ℕ) - 9 * e * (c + e)) /
+        (1 + e * c) ^ (2 : ℕ) := by
     field_simp [(ne_of_gt hf)]
     ring
   rw [heq]

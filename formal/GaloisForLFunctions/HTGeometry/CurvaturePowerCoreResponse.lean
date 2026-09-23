@@ -80,7 +80,7 @@ theorem curvaturePowerCoreSource_eq (n : ℕ) (c : ℝ) :
 /-- Feed the extracted source to the regular integral inverse, rather than posit its coefficient. -/
 theorem curvaturePowerCoreSource_radial_inverse (n : ℕ) (c : ℝ) :
     radialPolynomialCorrection (C (curvaturePowerCoreSource n c)) =
-      C (n * (-12 * c) ^ (n + 2) / 12) * X ^ 2 := by
+      C (n * (-12 * c) ^ (n + 2) / 12) * X ^ (2 : ℕ) := by
   rw [radialPolynomialCorrection_constant, curvaturePowerCoreSource_eq]
   congr 2
   field_simp
@@ -117,7 +117,7 @@ theorem curvaturePowerTrace_residual (n : ℕ) (β R : ℝ) :
 /-- Dependency-closed second-order remainder, valid even where the two curvatures coincide. -/
 theorem curvaturePowerTrace_residual_quadratic (n : ℕ) (β R : ℝ) :
     curvaturePowerTrace n β (curvaturePowerUpdatedScalar n β R) + R =
-      β ^ 2 * (n : ℝ) ^ 2 * R ^ (n + 2) *
+      β ^ (2 : ℕ) * (n : ℝ) ^ (2 : ℕ) * R ^ (n + 2) *
         ∑ i ∈ range (n + 2), (curvaturePowerUpdatedScalar n β R) ^ i * R ^ (n + 2 - 1 - i) := by
   rw [curvaturePowerTrace_residual, ← geom_sum₂_mul]
   unfold curvaturePowerUpdatedScalar
@@ -140,13 +140,13 @@ theorem curvaturePowerTrace_quadratic_exact (β R : ℝ) : curvaturePowerTrace 0
 
 /-- Cubic and quartic models expose opposite near-core correction directions. -/
 theorem curvaturePowerCore_cubic_source (c : ℝ) :
-    curvaturePowerCoreSource 1 c = -54 * c ^ 3 / Real.pi := by
+    curvaturePowerCoreSource 1 c = -54 * c ^ (3 : ℕ) / Real.pi := by
   rw [curvaturePowerCoreSource_eq]
   norm_num
   ring
 
 theorem curvaturePowerCore_quartic_source (c : ℝ) :
-    curvaturePowerCoreSource 2 c = 1296 * c ^ 4 / Real.pi := by
+    curvaturePowerCoreSource 2 c = 1296 * c ^ (4 : ℕ) / Real.pi := by
   rw [curvaturePowerCoreSource_eq]
   norm_num
   ring
@@ -154,7 +154,7 @@ theorem curvaturePowerCore_quartic_source (c : ℝ) :
 theorem curvaturePowerCore_cubic_negative (k : ℝ) : curvaturePowerCoreSource 1 (Real.exp k) < 0 := by
   rw [curvaturePowerCore_cubic_source]
   apply div_neg_of_neg_of_pos _ Real.pi_pos
-  have h : 0 < 54 * Real.exp k ^ 3 := by positivity
+  have h : 0 < 54 * Real.exp k ^ (3 : ℕ) := by positivity
   linarith
 
 theorem curvaturePowerCore_quartic_positive (k : ℝ) : 0 < curvaturePowerCoreSource 2 (Real.exp k) := by

@@ -51,7 +51,7 @@ theorem hasDerivAt_circlePath (z : ℂ) (t : ℝ) :
 
 /-- Moving along the circle, the squared modulus has derivative `-2 Im(conj f · z f')`. -/
 theorem hasDerivAt_normSq_circlePath {f : ℂ → ℂ} (hf : Differentiable ℂ f) (z : ℂ) :
-    HasDerivAt (fun t : ℝ => ‖f (circlePath z t)‖ ^ 2)
+    HasDerivAt (fun t : ℝ => ‖f (circlePath z t)‖ ^ (2 : ℕ))
       (-(2 * ((starRingEnd ℂ) (f z) * (z * deriv f z)).im)) 0 := by
   have hpath : HasDerivAt (circlePath z) (z * Complex.I) 0 := by
     simpa using hasDerivAt_circlePath z 0
@@ -64,21 +64,21 @@ theorem hasDerivAt_normSq_circlePath {f : ℂ → ℂ} (hf : Differentiable ℂ 
     Complex.reCLM.hasFDerivAt.comp_hasDerivAt 0 hcomp
   have him : HasDerivAt (fun t : ℝ => (f (circlePath z t)).im) D.im 0 :=
     Complex.imCLM.hasFDerivAt.comp_hasDerivAt 0 hcomp
-  have h1 : HasDerivAt (fun t : ℝ => (f (circlePath z t)).re ^ 2) (2 * (f z).re * D.re) 0 := by
+  have h1 : HasDerivAt (fun t : ℝ => (f (circlePath z t)).re ^ (2 : ℕ)) (2 * (f z).re * D.re) 0 := by
     have h := hre.fun_pow 2
     rw [circlePath_zero] at h
     norm_num at h
     exact h
-  have h2 : HasDerivAt (fun t : ℝ => (f (circlePath z t)).im ^ 2) (2 * (f z).im * D.im) 0 := by
+  have h2 : HasDerivAt (fun t : ℝ => (f (circlePath z t)).im ^ (2 : ℕ)) (2 * (f z).im * D.im) 0 := by
     have h := him.fun_pow 2
     rw [circlePath_zero] at h
     norm_num at h
     exact h
   have hsum : HasDerivAt
-      (fun t : ℝ => (f (circlePath z t)).re ^ 2 + (f (circlePath z t)).im ^ 2)
+      (fun t : ℝ => (f (circlePath z t)).re ^ (2 : ℕ) + (f (circlePath z t)).im ^ (2 : ℕ))
       (2 * (f z).re * D.re + 2 * (f z).im * D.im) 0 := h1.add h2
-  have hfun : (fun t : ℝ => ‖f (circlePath z t)‖ ^ 2)
-      = fun t : ℝ => (f (circlePath z t)).re ^ 2 + (f (circlePath z t)).im ^ 2 := by
+  have hfun : (fun t : ℝ => ‖f (circlePath z t)‖ ^ (2 : ℕ))
+      = fun t : ℝ => (f (circlePath z t)).re ^ (2 : ℕ) + (f (circlePath z t)).im ^ (2 : ℕ) := by
     funext t
     rw [Complex.norm_def, Real.sq_sqrt (Complex.normSq_nonneg _), Complex.normSq_apply]
     ring
@@ -103,7 +103,7 @@ theorem hasDerivAt_normSq_circlePath {f : ℂ → ℂ} (hf : Differentiable ℂ 
 /-- **Criticality on the circle.**  At a local maximum of the modulus along the circle through `z`,
 the pairing `conj(f(z)) · z f'(z)` is real. -/
 theorem im_conj_mul_eq_zero_of_isLocalMax {f : ℂ → ℂ} (hf : Differentiable ℂ f) (z : ℂ)
-    (hmax : IsLocalMax (fun t : ℝ => ‖f (circlePath z t)‖ ^ 2) 0) :
+    (hmax : IsLocalMax (fun t : ℝ => ‖f (circlePath z t)‖ ^ (2 : ℕ)) 0) :
     ((starRingEnd ℂ) (f z) * (z * deriv f z)).im = 0 := by
   have hzero := hmax.hasDerivAt_eq_zero (hasDerivAt_normSq_circlePath hf z)
   linarith [hzero]
@@ -111,7 +111,7 @@ theorem im_conj_mul_eq_zero_of_isLocalMax {f : ℂ → ℂ} (hf : Differentiable
 /-- **The logarithmic derivative is real at a circle maximum.** -/
 theorem im_mul_deriv_div_eq_zero_of_isLocalMax {f : ℂ → ℂ} (hf : Differentiable ℂ f) {z : ℂ}
     (hfz : f z ≠ 0)
-    (hmax : IsLocalMax (fun t : ℝ => ‖f (circlePath z t)‖ ^ 2) 0) :
+    (hmax : IsLocalMax (fun t : ℝ => ‖f (circlePath z t)‖ ^ (2 : ℕ)) 0) :
     (z * deriv f z / f z).im = 0 :=
   im_div_eq_zero_of_im_conj_mul_eq_zero hfz (im_conj_mul_eq_zero_of_isLocalMax hf z hmax)
 

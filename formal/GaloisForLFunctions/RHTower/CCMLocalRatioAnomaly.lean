@@ -22,14 +22,14 @@ independent of what the multipliers are:
 * `covarianceAnomaly_zero`, `hasDerivAt_covarianceAnomaly` — the constant and linear jets at the seam
   vanish.
 * `tendsto_covarianceAnomaly_div_sq` — the quadratic jet is exactly
-  `((sum c_v)^2 - sum c_v^2)/2`, where `c_v = u_v'(0)`.  Equivalently `C_s''(0) = 2 sum_(v<w) c_v c_w`.
+  `((sum c_v)^(2 : ℕ) - sum c_v^(2 : ℕ))/2`, where `c_v = u_v'(0)`.  Equivalently `C_s''(0) = 2 sum_(v<w) c_v c_w`.
 
 The proofs of the two jet statements go through one algebraic recursion,
 `covarianceAnomaly_insert`, rather than through the powerset expansion; that keeps them free of
 subset-cardinality combinatorics and needs only *first* derivatives, even for the quadratic jet.
 
 `offDiagCharge_eq_sum_offDiag` records the companion identity
-`(sum b)^2 - sum b^2 = sum_(v != w) b_v b_w`, which is what makes the quadratic jet amenable to a
+`(sum b)^(2 : ℕ) - sum b^(2 : ℕ) = sum_(v != w) b_v b_w`, which is what makes the quadratic jet amenable to a
 termwise lower bound.
 -/
 
@@ -203,23 +203,23 @@ theorem tendsto_multiplierDefectSum_div {u : ι → ℝ → ℂ} {c : ι → ℂ
   exact Finset.sum_congr rfl fun v _ => div_eq_mul_inv _ _
 
 /-- **Equation (9).**  The quadratic jet of the anomaly at the seam is
-`((sum c_v)^2 - sum c_v^2)/2`, i.e. `sum_(v<w) c_v c_w`.  Equivalently `C_s''(0) = 2 sum_(v<w) c_v c_w`.
+`((sum c_v)^(2 : ℕ) - sum c_v^(2 : ℕ))/2`, i.e. `sum_(v<w) c_v c_w`.  Equivalently `C_s''(0) = 2 sum_(v<w) c_v c_w`.
 
 Note that only first derivatives of the multipliers are used: the second-order data of each place
 cancels between the product and the sum of increments, which is the exact content of the card's
 "differentiating twice leaves only the two-element subsets". -/
 theorem tendsto_covarianceAnomaly_div_sq {u : ι → ℝ → ℂ} {c : ι → ℂ}
     (hu : ∀ v, u v 0 = 1) (hd : ∀ v, HasDerivAt (u v) (c v) 0) (s : Finset ι) :
-    Tendsto (fun t : ℝ => covarianceAnomaly s u t / (t : ℂ) ^ 2) (𝓝[≠] (0 : ℝ))
-      (𝓝 (((∑ v ∈ s, c v) ^ 2 - ∑ v ∈ s, c v ^ 2) / 2)) := by
+    Tendsto (fun t : ℝ => covarianceAnomaly s u t / (t : ℂ) ^ (2 : ℕ)) (𝓝[≠] (0 : ℝ))
+      (𝓝 (((∑ v ∈ s, c v) ^ (2 : ℕ) - ∑ v ∈ s, c v ^ (2 : ℕ)) / 2)) := by
   classical
   induction s using Finset.induction_on with
   | empty =>
-    have hfun : ∀ t : ℝ, covarianceAnomaly (∅ : Finset ι) u t / (t : ℂ) ^ 2 = 0 := by
+    have hfun : ∀ t : ℝ, covarianceAnomaly (∅ : Finset ι) u t / (t : ℂ) ^ (2 : ℕ) = 0 := by
       intro t
       rw [covarianceAnomaly, multiplierDefectSum]
       simp
-    have h0 : Tendsto (fun t : ℝ => covarianceAnomaly (∅ : Finset ι) u t / (t : ℂ) ^ 2)
+    have h0 : Tendsto (fun t : ℝ => covarianceAnomaly (∅ : Finset ι) u t / (t : ℂ) ^ (2 : ℕ))
         (𝓝[≠] (0 : ℝ)) (𝓝 0) := Tendsto.congr (fun t => (hfun t).symm) tendsto_const_nhds
     simpa using h0
   | insert x s hx ih =>
@@ -231,8 +231,8 @@ theorem tendsto_covarianceAnomaly_div_sq {u : ι → ℝ → ℂ} {c : ι → �
     have hslope := tendsto_multiplier_sub_one_div (hu x) (hd x)
     have hsum := tendsto_multiplierDefectSum_div hu hd s
     have hlim := (hux.mul ih).add (hslope.mul hsum)
-    have hval : 1 * (((∑ v ∈ s, c v) ^ 2 - ∑ v ∈ s, c v ^ 2) / 2) + c x * ∑ v ∈ s, c v
-        = (((∑ v ∈ insert x s, c v) ^ 2 - ∑ v ∈ insert x s, c v ^ 2) / 2) := by
+    have hval : 1 * (((∑ v ∈ s, c v) ^ (2 : ℕ) - ∑ v ∈ s, c v ^ (2 : ℕ)) / 2) + c x * ∑ v ∈ s, c v
+        = (((∑ v ∈ insert x s, c v) ^ (2 : ℕ) - ∑ v ∈ insert x s, c v ^ (2 : ℕ)) / 2) := by
       rw [Finset.sum_insert hx, Finset.sum_insert hx]
       ring
     rw [hval] at hlim
@@ -246,16 +246,16 @@ theorem tendsto_covarianceAnomaly_div_sq {u : ι → ℝ → ℂ} {c : ι → �
 /-! ## The off-diagonal charge -/
 
 /-- The quadratic-jet magnitude, as an off-diagonal sum.  This is the form that admits a termwise
-lower bound; the `(sum b)^2 - sum b^2` form does not, because the diagonal correction has the wrong
+lower bound; the `(sum b)^(2 : ℕ) - sum b^(2 : ℕ)` form does not, because the diagonal correction has the wrong
 sign. -/
 theorem offDiagCharge_eq_sum_offDiag (s : Finset ι) (b : ι → ℝ) :
-    (∑ v ∈ s, b v) ^ 2 - ∑ v ∈ s, b v ^ 2 = ∑ x ∈ s.offDiag, b x.1 * b x.2 := by
-  have h1 : (∑ v ∈ s, b v) ^ 2 = ∑ x ∈ s ×ˢ s, b x.1 * b x.2 := by
+    (∑ v ∈ s, b v) ^ (2 : ℕ) - ∑ v ∈ s, b v ^ (2 : ℕ) = ∑ x ∈ s.offDiag, b x.1 * b x.2 := by
+  have h1 : (∑ v ∈ s, b v) ^ (2 : ℕ) = ∑ x ∈ s ×ˢ s, b x.1 * b x.2 := by
     rw [sq, Finset.sum_mul_sum, Finset.sum_product]
   have h2 : (∑ x ∈ s ×ˢ s, b x.1 * b x.2)
       = (∑ x ∈ s.diag, b x.1 * b x.2) + ∑ x ∈ s.offDiag, b x.1 * b x.2 := by
     rw [← Finset.sum_union (Finset.disjoint_diag_offDiag s), Finset.diag_union_offDiag]
-  have h3 : (∑ x ∈ s.diag, b x.1 * b x.2) = ∑ v ∈ s, b v ^ 2 := by
+  have h3 : (∑ x ∈ s.diag, b x.1 * b x.2) = ∑ v ∈ s, b v ^ (2 : ℕ) := by
     rw [Finset.sum_diag]
     exact Finset.sum_congr rfl fun v _ => by ring
   rw [h1, h2, h3]

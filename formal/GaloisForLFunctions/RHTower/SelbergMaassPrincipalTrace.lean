@@ -82,7 +82,7 @@ theorem principalMaassTrace_eigen_of_data (lam : ℝ)
     (principalTrace_component_eigen N lam f heigen q).1.contDiffAt
       (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
   simp only [Function.comp_def] at hq
-  change -(z.im : ℂ) ^ 2 *
+  change -(z.im : ℂ) ^ (2 : ℕ) *
     (dir 1 (dir 1 (fun w : ℂ => ∑ q : 𝒬, maassTraceQuotientFunc f q (ofComplex w))) (z : ℂ) +
       dir Complex.I (dir Complex.I (fun w : ℂ => ∑ q : 𝒬,
         maassTraceQuotientFunc f q (ofComplex w))) (z : ℂ)) = _
@@ -134,7 +134,7 @@ theorem principalMaassTrace_eigen (lam : ℝ) (f : GLMaassCuspEigenform 𝒢 lam
     (principalTrace_component_eigen N lam f.1 f.2.2.1 q).1.contDiffAt
       (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos)
   simp only [Function.comp_def] at hq
-  change -(z.im : ℂ) ^ 2 *
+  change -(z.im : ℂ) ^ (2 : ℕ) *
     (dir 1 (dir 1 (fun w : ℂ => ∑ q : 𝒬, maassTraceQuotientFunc f.1 q (ofComplex w))) (z : ℂ) +
       dir Complex.I (dir Complex.I (fun w : ℂ => ∑ q : 𝒬,
         maassTraceQuotientFunc f.1 q (ofComplex w))) (z : ℂ)) = _

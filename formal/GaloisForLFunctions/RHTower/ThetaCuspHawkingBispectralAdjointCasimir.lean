@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.XiGaussianHeatTraceCriterion
 /-!
 # Bispectral Birmingham--Mokhtari adjoint Casimir
 
-The doubled `d = 4` angular Casimir has normal form `lambda(z) = 1/4 + z^2`.
+The doubled `d = 4` angular Casimir has normal form `lambda(z) = 1/4 + z^(2 : ℕ)`.
 Keeping right and left spectral parameters independent gives the defect
 
 `lambda(z) - lambda(w) = (z - w) * (z + w)`.
@@ -21,7 +21,7 @@ noncomputable section
 
 /-- Difference of doubled BM angular Casimirs at independent right and left parameters. -/
 def d4BMBispectralAngularCasimirDefect (z w : ℂ) : ℂ :=
-  (1 / 4 + z ^ 2) - (1 / 4 + w ^ 2)
+  (1 / 4 + z ^ (2 : ℕ)) - (1 / 4 + w ^ (2 : ℕ))
 
 theorem d4BMBispectralAngularCasimirDefect_eq (z w : ℂ) :
     d4BMBispectralAngularCasimirDefect z w = (z - w) * (z + w) := by

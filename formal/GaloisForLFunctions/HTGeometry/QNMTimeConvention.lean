@@ -24,7 +24,7 @@ theorem norm_qnmHarmonic (omega : ℂ) (t : ℝ) :
   simp [Complex.mul_re, Complex.mul_im]
 
 theorem normSq_qnmHarmonic (omega : ℂ) (t : ℝ) :
-    ‖qnmHarmonic omega t‖ ^ 2 = Real.exp (2 * omega.im * t) := by
+    ‖qnmHarmonic omega t‖ ^ (2 : ℕ) = Real.exp (2 * omega.im * t) := by
   rw [norm_qnmHarmonic, ← Real.exp_nat_mul]
   congr 1
   ring
@@ -53,12 +53,12 @@ theorem norm_qnmStableHarmonic (a b t : ℝ) :
   rw [norm_qnmHarmonic, qnmStableFrequency_im]
 
 theorem qnmStableHarmonic_contraction (a b t : ℝ) :
-    ‖qnmHarmonic (qnmStableFrequency a b) (t ^ 2)‖ ≤ 1 := by
+    ‖qnmHarmonic (qnmStableFrequency a b) (t ^ (2 : ℕ))‖ ≤ 1 := by
   rw [norm_qnmStableHarmonic, Real.exp_le_one_iff]
   exact mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr (abs_nonneg b)) (sq_nonneg t)
 
 theorem qnm_width_decay_dictionary (energy width hbar t : ℝ) :
-    ‖qnmHarmonic (((energy : ℂ) - Complex.I * width / 2) / hbar) t‖ ^ 2 =
+    ‖qnmHarmonic (((energy : ℂ) - Complex.I * width / 2) / hbar) t‖ ^ (2 : ℕ) =
       Real.exp (-(width / hbar) * t) := by
   rw [normSq_qnmHarmonic]
   congr 1

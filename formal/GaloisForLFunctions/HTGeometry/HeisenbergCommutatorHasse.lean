@@ -21,7 +21,7 @@ variable {K : Type u} {L : Type v} {V : Type w}
 /-- Heisenberg operator observations distinguish exactly the same exterior symbols as the source
 derivation commutator law. -/
 theorem heisenbergLawCommutatorMap_congr_hasse_iff
-    (ρ : V →ₗ[K] Derivation K L L) (z z' : ⋀[K]^2 V) :
+    (ρ : V →ₗ[K] Derivation K L L) (z z' : ⋀[K]^(2 : ℕ) V) :
     heisenbergLawCommutatorMap ρ z = heisenbergLawCommutatorMap ρ z' ↔
       derivationCommutatorMap ρ z = derivationCommutatorMap ρ z' := by
   change derivationEndomorphism (derivationCommutatorMap ρ z) =
@@ -31,7 +31,7 @@ theorem heisenbergLawCommutatorMap_congr_hasse_iff
 /-- A Heisenberg exterior commutator observation vanishes exactly when its source derivation
 symbol vanishes. -/
 theorem heisenbergLawCommutatorMap_eq_zero_hasse_iff
-    (ρ : V →ₗ[K] Derivation K L L) (z : ⋀[K]^2 V) :
+    (ρ : V →ₗ[K] Derivation K L L) (z : ⋀[K]^(2 : ℕ) V) :
     heisenbergLawCommutatorMap ρ z = 0 ↔ derivationCommutatorMap ρ z = 0 := by
   simpa using heisenbergLawCommutatorMap_congr_hasse_iff ρ z 0
 

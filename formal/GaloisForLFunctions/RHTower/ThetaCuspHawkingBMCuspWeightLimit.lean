@@ -85,8 +85,8 @@ theorem jointWaveResponse_cuspWeight_memLp (w : ℂ) (hw : 0 < w.re)
     MemLp (fun p : ℝ × UpperHalfPlane =>
       (cuspWeightLimit p.2.im:ℂ)*jointEmbedding (jointWaveResponse w hw F) p)
       2 (radialMeasure.prod D4BMModularCore.measure) := by
-  let C := w.re*‖w‖/((w.re^2+w.im^2)*(w.re^2-9/4))
-  have hδ : 0 < w.re^2-(9/4:ℝ) := by nlinarith
+  let C := w.re*‖w‖/((w.re^(2 : ℕ)+w.im^(2 : ℕ))*(w.re^(2 : ℕ)-9/4))
+  have hδ : 0 < w.re^(2 : ℕ)-(9/4:ℝ) := by nlinarith
   have hC : 0 ≤ C := by dsimp [C]; positivity
   apply cuspWeightLimit_memLp_of_uniform _ (C*‖hF.toLp _‖)
   intro N hN

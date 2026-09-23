@@ -145,7 +145,7 @@ theorem woldBreadthDeviationRate_le_one {t : ℝ} (ht0 : 0 < t) (ht1 : t ≤ 1) 
   have hlog : Real.log t ≤ 0 := Real.log_nonpos (by linarith) ht1
   nlinarith
 
-/-- **An explicit absorbing exponent.**  `2 ^ r ≥ exp(2c₁ + |c₀|)·(log z)^4` suffices. -/
+/-- **An explicit absorbing exponent.**  `2 ^ r ≥ exp(2c₁ + |c₀|)·(log z)^(4 : ℕ)` suffices. -/
 theorem absorbing_of_pow_ge {z k r : ℕ} (hlogz : (1 : ℝ) ≤ Real.log z) {t : ℝ} (ht0 : 0 < t)
     (ht1 : t ≤ 1) (hk : (k : ℝ) = t * logLog z)
     (hr : Real.exp (2 * mertensSecondUpperConst + |mertensSecondLowerConst|)
@@ -289,7 +289,7 @@ theorem exists_even_pow_between (C : ℝ) (hC : 0 < C) :
     linarith
 
 /-- **The lower tail, fully explicit, with the absorbing exponent supplied.**  The exponent is
-`O(log log z)`: `2 ^ r` is pinned between `exp(2c₁+|c₀|)(log z)^4` and four times that. -/
+`O(log log z)`: `2 ^ r` is pinned between `exp(2c₁+|c₀|)(log z)^(4 : ℕ)` and four times that. -/
 theorem exists_card_omega_le_le_explicit (a b z k : ℕ) (hab : a ≤ b) (hz : 2 ≤ z)
     (hlogz : (1 : ℝ) ≤ Real.log z)
     {t : ℝ} (ht0 : 0 < t) (ht1 : t ≤ 1) (hk : (k : ℝ) = t * logLog z) :

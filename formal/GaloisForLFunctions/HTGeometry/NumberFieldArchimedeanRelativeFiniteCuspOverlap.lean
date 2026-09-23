@@ -25,10 +25,10 @@ def NumberFieldArchimedeanIsRelativelyCoercive
     (scale : numberFieldArchimedeanPositiveForms K n → InfinitePlace K → ℝ)
     (c : ℝ) (A : numberFieldArchimedeanPositiveForms K n) : Prop :=
   (∀ (w : {w : InfinitePlace K // w.IsReal}) (v : Fin n → ℝ),
-      (c * scale A w.1) * ∑ k, (v k) ^ 2 ≤
+      (c * scale A w.1) * ∑ k, (v k) ^ (2 : ℕ) ≤
         v ⬝ᵥ ((A.1.1 w : Matrix (Fin n) (Fin n) ℝ) *ᵥ v)) ∧
     ∀ (w : {w : InfinitePlace K // w.IsComplex}) (v : Fin n → ℂ),
-      (c * scale A w.1) * ∑ k, ‖v k‖ ^ 2 ≤
+      (c * scale A w.1) * ∑ k, ‖v k‖ ^ (2 : ℕ) ≤
         (star v ⬝ᵥ ((A.1.2 w : Matrix (Fin n) (Fin n) ℂ) *ᵥ v)).re
 
 /-- Diagonal boundedness relative to the same placewise scale. -/

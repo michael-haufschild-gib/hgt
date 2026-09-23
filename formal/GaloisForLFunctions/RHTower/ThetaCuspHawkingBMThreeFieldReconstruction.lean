@@ -24,24 +24,24 @@ def targetShift (s : ℂ) : ℂ := (2*s+1)*(2*s+2)
 
 /-- Regular part of the master plus twice the radius times its trace-free source. -/
 def reducedMaster0 (s r : ℂ) : ℂ :=
-  r+s*(3*s+2)/(2*r)+s^2*(s+1)^2/(8*r^3)
+  r+s*(3*s+2)/(2*r)+s^(2 : ℕ)*(s+1)^(2 : ℕ)/(8*r^(3 : ℕ))
 
 /-- Residue of that same reduced master at its other angular shift. -/
-def reducedMasterD (s r : ℂ) : ℂ := 3*s*(s+1)^2*(3*s+4)/(2*r)
+def reducedMasterD (s r : ℂ) : ℂ := 3*s*(s+1)^(2 : ℕ)*(3*s+4)/(2*r)
 
 /-- Actual first twisted radial expression of the regular coefficient. -/
 def reducedMaster01 (s r : ℂ) : ℂ :=
-  1-s*(3*s+2)/(2*r^2)-3*s^2*(s+1)^2/(8*r^4)+2*s/(r*(r^2-1))*reducedMaster0 s r
+  1-s*(3*s+2)/(2*r^(2 : ℕ))-3*s^(2 : ℕ)*(s+1)^(2 : ℕ)/(8*r^(4 : ℕ))+2*s/(r*(r^(2 : ℕ)-1))*reducedMaster0 s r
 
 /-- Actual first twisted radial expression of the residue coefficient. -/
 def reducedMasterD1 (s r : ℂ) : ℂ :=
-  -reducedMasterD s r/r+2*s/(r*(r^2-1))*reducedMasterD s r
+  -reducedMasterD s r/r+2*s/(r*(r^(2 : ℕ)-1))*reducedMasterD s r
 
 private def tensorCoefficient1 (s r : ℂ) : ℂ :=
-  s^2/r^3-s^2*(s+1)^2/(2*r^5)+2*s/(r*(r^2-1))*tensorCoefficient s r
+  s^(2 : ℕ)/r^(3 : ℕ)-s^(2 : ℕ)*(s+1)^(2 : ℕ)/(2*r^(5 : ℕ))+2*s/(r*(r^(2 : ℕ)-1))*tensorCoefficient s r
 
 private theorem sourceTF1_factor (s r μ : ℂ) (hr : r ≠ 0)
-    (hf : r^2-1 ≠ 0) (hμ : 2-μ ≠ 0) :
+    (hf : r^(2 : ℕ)-1 ≠ 0) (hμ : 2-μ ≠ 0) :
     ssSourceTF1 s r μ = tensorCoefficient1 s r*(1+(s+1)*(s+2)/(2-μ)) := by
   unfold ssSourceTF1 tensorCoefficient1 tensorCoefficient
   field_simp
@@ -81,12 +81,12 @@ def metricH0 (s r : ℂ) : ℂ := reducedMaster0 s r/(4*r)
 
 /-- The physical-shift part of the same reconstructed amplitude. -/
 def metricHD (s r : ℂ) : ℂ :=
-  ((r^2-1)/2*reducedMasterD1 s r-targetShift s*reducedMasterD s r/(4*r))/(2-targetShift s)
+  ((r^(2 : ℕ)-1)/2*reducedMasterD1 s r-targetShift s*reducedMasterD s r/(4*r))/(2-targetShift s)
 
 /-- The shift-two part, retaining both original source rows. -/
 def metricH2 (s r : ℂ) : ℂ :=
-  (r^2-1)/2*reducedMaster01 s r-reducedMaster0 s r/(2*r)-
-    r*(r^2-1)/(2*s)*ssSourceTR s r 0-(r^2-1)/s*ssSourceT s r 0-
+  (r^(2 : ℕ)-1)/2*reducedMaster01 s r-reducedMaster0 s r/(2*r)-
+    r*(r^(2 : ℕ)-1)/(2*s)*ssSourceTR s r 0-(r^(2 : ℕ)-1)/s*ssSourceT s r 0-
     reducedMasterD s r/(4*r)+metricHD s r
 
 /-- The original sourced radial reconstruction, before simplification. -/
@@ -97,9 +97,9 @@ def originalH (s μ : ℂ) : ℝ → ℂ :=
 private theorem originalH_formula (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0)
     {r : ℝ} (hr1 : 1 < r) :
     originalH s μ r =
-      (((r:ℂ)^2-1)/2*(twist s (ssLaurentMaster s μ) r+2*srcTF s μ r+2*r*twist s (srcTF s μ) r)-
+      (((r:ℂ)^(2 : ℕ)-1)/2*(twist s (ssLaurentMaster s μ) r+2*srcTF s μ r+2*r*twist s (srcTF s μ) r)-
         μ/(4*r)*(ssLaurentMaster s μ r+2*r*srcTF s μ r)-
-        r*((r:ℂ)^2-1)/(2*s)*srcTR s μ r-((r:ℂ)^2-1)/s*srcT s μ r)/(2-μ) := by
+        r*((r:ℂ)^(2 : ℕ)-1)/(2*s)*srcTR s μ r-((r:ℂ)^(2 : ℕ)-1)/s*srcT s μ r)/(2-μ) := by
   obtain ⟨hr,hf⟩ := exterior_ne r hr1
   unfold originalH
   rw [recHR_eq s μ _ _ _ _ _ _ _ _ hr1 hs hμ]
@@ -116,9 +116,9 @@ theorem originalH_three_fields (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0)
   rw [originalH_formula s μ hs hμ hr1,reducedMaster_twist_eq s μ hs hμ hres hr1,
     reducedMaster_eq s μ hs hμ hres hr1,srcTR_eq s μ hr1 hs hμ,srcT_eq s μ hr1 hs hμ]
   unfold metricH0 metricH2 metricHD
-  change (((r:ℂ)^2-1)/2*(reducedMaster01 s r+reducedMasterD1 s r/(μ-targetShift s))-
+  change (((r:ℂ)^(2 : ℕ)-1)/2*(reducedMaster01 s r+reducedMasterD1 s r/(μ-targetShift s))-
     μ/(4*r)*(reducedMaster0 s r+reducedMasterD s r/(μ-targetShift s))-
-    r*((r:ℂ)^2-1)/(2*s)*ssSourceTR s r 0-((r:ℂ)^2-1)/s*ssSourceT s r 0)/(2-μ) = _
+    r*((r:ℂ)^(2 : ℕ)-1)/(2*s)*ssSourceTR s r 0-((r:ℂ)^(2 : ℕ)-1)/s*ssSourceT s r 0)/(2-μ) = _
   field_simp
   ring
 
@@ -139,7 +139,7 @@ def originalF0 (s μ : ℂ) : ℝ → ℂ :=
 
 private theorem originalF1_formula (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0)
     {r : ℝ} (hr1 : 1 < r) :
-    originalF1 s μ r = s/((r:ℂ)^2-1)*(4*r*originalH s μ r-
+    originalF1 s μ r = s/((r:ℂ)^(2 : ℕ)-1)*(4*r*originalH s μ r-
       (ssLaurentMaster s μ r+2*r*srcTF s μ r)) := by
   obtain ⟨hr,hf⟩ := exterior_ne r hr1
   unfold originalF1 originalH
@@ -150,9 +150,9 @@ private theorem originalF1_formula (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0
 
 private theorem originalF2_formula (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0)
     {r : ℝ} (hr1 : 1 < r) :
-    originalF2 s μ r = -r/(2*s*((r:ℂ)^2-1))*srcTR s μ r+
-      μ/(4*s*r*((r:ℂ)^2-1))*originalF1 s μ r-
-      2/((r:ℂ)^2-1)^2*originalH s μ r+2*r/((r:ℂ)^2-1)*twist s (originalH s μ) r := by
+    originalF2 s μ r = -r/(2*s*((r:ℂ)^(2 : ℕ)-1))*srcTR s μ r+
+      μ/(4*s*r*((r:ℂ)^(2 : ℕ)-1))*originalF1 s μ r-
+      2/((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*originalH s μ r+2*r/((r:ℂ)^(2 : ℕ)-1)*twist s (originalH s μ) r := by
   obtain ⟨hr,hf⟩ := exterior_ne r hr1
   have hM : TwistSmooth s (ssLaurentMaster s μ) 2 :=
     fun r hr k _ => differentiableAt_twistIter s (ssLaurentMaster_contDiffOn s μ) k hr
@@ -167,7 +167,7 @@ private theorem originalF2_formula (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0
 
 private theorem originalF0_formula (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0)
     {r : ℝ} (hr1 : 1 < r) :
-    originalF0 s μ r = ((r:ℂ)^2-1)^2*originalF2 s μ r-2*((r:ℂ)^2-1)*srcTF s μ r := by
+    originalF0 s μ r = ((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*originalF2 s μ r-2*((r:ℂ)^(2 : ℕ)-1)*srcTF s μ r := by
   obtain ⟨hr,hf⟩ := exterior_ne r hr1
   unfold originalF0 originalF2
   rw [recF0R_eq s μ _ _ _ _ _ _ _ _ hr1 hs hμ,recF2R_eq s μ _ _ _ _ _ _ _ _ hr1 hs hμ]
@@ -176,10 +176,10 @@ private theorem originalF0_formula (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0
   ring
 
 /-- Shift-two coefficient of the original temporal-radial amplitude. -/
-def metricF12 (s r : ℂ) : ℂ := 4*s*r/((r:ℂ)^2-1)*metricH2 s r
+def metricF12 (s r : ℂ) : ℂ := 4*s*r/((r:ℂ)^(2 : ℕ)-1)*metricH2 s r
 
 /-- Physical-shift coefficient of the original temporal-radial amplitude. -/
-def metricF1D (s r : ℂ) : ℂ := s/(r^2-1)*(4*r*metricHD s r-reducedMasterD s r)
+def metricF1D (s r : ℂ) : ℂ := s/(r^(2 : ℕ)-1)*(4*r*metricHD s r-reducedMasterD s r)
 
 /-- The temporal-radial metric coefficient has only the two proper resolvents. -/
 theorem originalF1_two_fields (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0)
@@ -199,7 +199,7 @@ theorem metricH_smooth (s : ℂ) :
     ContDiffOn ℝ ∞ (fun r : ℝ => metricH2 s r) (Ioi 1) ∧
     ContDiffOn ℝ ∞ (fun r : ℝ => metricHD s r) (Ioi 1) := by
   have hr (r : ℝ) (h : r ∈ Ioi (1:ℝ)) : (r:ℂ) ≠ 0 := (exterior_ne r h).1
-  have hf (r : ℝ) (h : r ∈ Ioi (1:ℝ)) : (r:ℂ)^2-1 ≠ 0 := (exterior_ne r h).2
+  have hf (r : ℝ) (h : r ∈ Ioi (1:ℝ)) : (r:ℂ)^(2 : ℕ)-1 ≠ 0 := (exterior_ne r h).2
   constructor
   · intro r h
     apply ContDiffAt.contDiffWithinAt
@@ -250,33 +250,33 @@ private theorem originalH_twist_three_fields (s μ : ℂ) (hs : s ≠ 0) (hμ : 
 
 /-- Regular radial metric coefficient. -/
 def metricF20 (s : ℂ) (r : ℝ) : ℂ :=
-  -r/(2*s*((r:ℂ)^2-1))*ssSourceTR s r 0+
-    (metricF1D s r-metricF12 s r)/(4*s*r*((r:ℂ)^2-1))-
-    2/((r:ℂ)^2-1)^2*metricH0 s r+
-    2*r/((r:ℂ)^2-1)*twist s (fun r : ℝ => metricH0 s r) r
+  -r/(2*s*((r:ℂ)^(2 : ℕ)-1))*ssSourceTR s r 0+
+    (metricF1D s r-metricF12 s r)/(4*s*r*((r:ℂ)^(2 : ℕ)-1))-
+    2/((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*metricH0 s r+
+    2*r/((r:ℂ)^(2 : ℕ)-1)*twist s (fun r : ℝ => metricH0 s r) r
 
 /-- Shift-two radial metric coefficient. -/
 def metricF22 (s : ℂ) (r : ℝ) : ℂ :=
-  metricF12 s r/(2*s*r*((r:ℂ)^2-1))-
-    2/((r:ℂ)^2-1)^2*metricH2 s r+
-    2*r/((r:ℂ)^2-1)*twist s (fun r : ℝ => metricH2 s r) r
+  metricF12 s r/(2*s*r*((r:ℂ)^(2 : ℕ)-1))-
+    2/((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*metricH2 s r+
+    2*r/((r:ℂ)^(2 : ℕ)-1)*twist s (fun r : ℝ => metricH2 s r) r
 
 /-- Physical-shift radial metric coefficient. -/
 def metricF2D (s : ℂ) (r : ℝ) : ℂ :=
-  targetShift s*metricF1D s r/(4*s*r*((r:ℂ)^2-1))-
-    2/((r:ℂ)^2-1)^2*metricHD s r+
-    2*r/((r:ℂ)^2-1)*twist s (fun r : ℝ => metricHD s r) r
+  targetShift s*metricF1D s r/(4*s*r*((r:ℂ)^(2 : ℕ)-1))-
+    2/((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*metricHD s r+
+    2*r/((r:ℂ)^(2 : ℕ)-1)*twist s (fun r : ℝ => metricHD s r) r
 
 /-- Regular temporal metric coefficient. -/
 def metricF00 (s : ℂ) (r : ℝ) : ℂ :=
-  ((r:ℂ)^2-1)^2*metricF20 s r-2*((r:ℂ)^2-1)*tensorCoefficient s r
+  ((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*metricF20 s r-2*((r:ℂ)^(2 : ℕ)-1)*tensorCoefficient s r
 
 /-- Shift-two temporal metric coefficient. -/
 def metricF02 (s : ℂ) (r : ℝ) : ℂ :=
-  ((r:ℂ)^2-1)^2*metricF22 s r-2*((r:ℂ)^2-1)*(s+1)*(s+2)*tensorCoefficient s r
+  ((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*metricF22 s r-2*((r:ℂ)^(2 : ℕ)-1)*(s+1)*(s+2)*tensorCoefficient s r
 
 /-- Physical-shift temporal metric coefficient. -/
-def metricF0D (s : ℂ) (r : ℝ) : ℂ := ((r:ℂ)^2-1)^2*metricF2D s r
+def metricF0D (s : ℂ) (r : ℝ) : ℂ := ((r:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*metricF2D s r
 
 /-- Exact three-field decomposition of the original radial metric coefficient. -/
 theorem originalF2_three_fields (s μ : ℂ) (hs : s ≠ 0) (hμ : 2-μ ≠ 0)
@@ -373,16 +373,16 @@ theorem physical_shifts (q : XiZeroCopy) (branch : Bool) :
 /-- Unconditional specialization to every original Xi occurrence, physical branch and real angular momentum. -/
 theorem physical_originalRadialColumn_three_fields (q : XiZeroCopy) (branch : Bool)
     (k : ℝ) {r : ℝ} (hr1 : 1 < r) (j : Fin 4) :
-    originalRadialColumn (D4BMModularCore.physicalRate q branch) (-(k:ℂ)^2) j r =
+    originalRadialColumn (D4BMModularCore.physicalRate q branch) (-(k:ℂ)^(2 : ℕ)) j r =
       radialColumn (D4BMModularCore.physicalRate q branch) 0 j r+
-      radialColumn (D4BMModularCore.physicalRate q branch) 1 j r/(2-(-(k:ℂ)^2))+
+      radialColumn (D4BMModularCore.physicalRate q branch) 1 j r/(2-(-(k:ℂ)^(2 : ℕ)))+
       radialColumn (D4BMModularCore.physicalRate q branch) 2 j r/
-        (-(k:ℂ)^2-targetShift (D4BMModularCore.physicalRate q branch)) := by
+        (-(k:ℂ)^(2 : ℕ)-targetShift (D4BMModularCore.physicalRate q branch)) := by
   obtain ⟨hr,hi⟩ := physicalLaurentRate_bounds q branch
   obtain ⟨hs,_,hshift⟩ := physical_shifts q branch
-  have hμ : (2:ℂ)-(-(k:ℂ)^2) ≠ 0 := by
-    exact_mod_cast (show (2:ℝ)-(-k^2) ≠ 0 by nlinarith [sq_nonneg k])
-  have hres := laurentPole_ne_zero _ hr hi (-k^2)
+  have hμ : (2:ℂ)-(-(k:ℂ)^(2 : ℕ)) ≠ 0 := by
+    exact_mod_cast (show (2:ℝ)-(-k^(2 : ℕ)) ≠ 0 by nlinarith [sq_nonneg k])
+  have hres := laurentPole_ne_zero _ hr hi (-k^(2 : ℕ))
   push_cast at hres
   exact originalRadialColumn_three_fields _ _ hs hμ hres hshift hr1 j
 

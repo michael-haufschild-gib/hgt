@@ -72,22 +72,22 @@ def splitSameAtomCodiagonalOn
     (k : ℕ) (p a d : ι → ℝ) : ℝ :=
   ∑' i, strictLowerOneCornerCodiagonalOn
     (fun _q : Fin k × Fin k =>
-      (p i / k) ^ 2 * (a i + a i) * d i)
+      (p i / k) ^ (2 : ℕ) * (a i + a i) * d i)
 
 /-- The normalized replica fibre recovers exactly the fraction `1 - 1/k`
 of twice the atomic collision. -/
 theorem splitSameAtomCodiagonalOn_eq
     {ι : Type*}
     {k : ℕ} (hk : 0 < k) (p a d : ι → ℝ)
-    (hcollision : Summable (fun i => p i ^ 2 * a i * d i)) :
+    (hcollision : Summable (fun i => p i ^ (2 : ℕ) * a i * d i)) :
     splitSameAtomCodiagonalOn k p a d =
-      2 * (1 - (k : ℝ)⁻¹) * ∑' i, p i ^ 2 * a i * d i := by
+      2 * (1 - (k : ℝ)⁻¹) * ∑' i, p i ^ (2 : ℕ) * a i * d i := by
   have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast hk.ne'
   have hpair (i : ι) :
       strictLowerOneCornerCodiagonalOn
           (fun _q : Fin k × Fin k =>
-            (p i / k) ^ 2 * (a i + a i) * d i) =
-        2 * (1 - (k : ℝ)⁻¹) * (p i ^ 2 * a i * d i) := by
+            (p i / k) ^ (2 : ℕ) * (a i + a i) * d i) =
+        2 * (1 - (k : ℝ)⁻¹) * (p i ^ (2 : ℕ) * a i * d i) := by
     rw [strictLowerOneCornerCodiagonalOn_eq_orderedOffDiagonal]
     · rw [orderedOffDiagonalCodiagonalOn, tsum_fintype]
       have hcard (r : Fin k) :
@@ -97,9 +97,9 @@ theorem splitSameAtomCodiagonalOn_eq
         simp
       have hinner (r : Fin k) :
           (∑ s : Fin k, if r ≠ s then
-              (p i / k) ^ 2 * (a i + a i) * d i else 0) =
+              (p i / k) ^ (2 : ℕ) * (a i + a i) * d i else 0) =
             (k - 1 : ℕ) *
-              ((p i / k) ^ 2 * (a i + a i) * d i) := by
+              ((p i / k) ^ (2 : ℕ) * (a i + a i) * d i) := by
         rw [← Finset.sum_filter, Finset.sum_const]
         have hc :
             (Finset.univ.filter fun s : Fin k => r ≠ s).card = k - 1 := by
@@ -108,10 +108,10 @@ theorem splitSameAtomCodiagonalOn_eq
         simp only [nsmul_eq_mul]
       rw [show (∑ q : Fin k × Fin k,
           if q.1 ≠ q.2 then
-            (p i / k) ^ 2 * (a i + a i) * d i else 0) =
+            (p i / k) ^ (2 : ℕ) * (a i + a i) * d i else 0) =
           ∑ r : Fin k, ∑ s : Fin k,
             if r ≠ s then
-              (p i / k) ^ 2 * (a i + a i) * d i else 0 by
+              (p i / k) ^ (2 : ℕ) * (a i + a i) * d i else 0 by
         rw [Fintype.sum_prod_type]]
       simp_rw [hinner]
       simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
@@ -136,8 +136,8 @@ def physicalSplitSameAtomCodiagonalOn
   ∑' i, ∑ q : Fin k × Fin k,
     if normalizedClockSplitReplicaHeight k eta h (q.2, i) <
         normalizedClockSplitReplicaHeight k eta h (q.1, i) then
-      (p i / k) ^ 2 * (a i + a i) * d i +
-        (p i / k) ^ 2 * (a i + a i) * d i
+      (p i / k) ^ (2 : ℕ) * (a i + a i) * d i +
+        (p i / k) ^ (2 : ℕ) * (a i + a i) * d i
     else 0
 
 /-- The algebraic same-atom replica codiagonal is the codiagonal selected by
@@ -164,7 +164,7 @@ theorem physicalSplitSameAtomCodiagonalOn_eq
 /-- Average normalized clock distance inside one `k`-replica fibre. -/
 def normalizedReplicaClockSpread (k : ℕ) : ℝ :=
   (∑ r : Fin k, ∑ s : Fin k,
-      |(r : ℝ) / k - (s : ℝ) / k|) / (k : ℝ) ^ 2
+      |(r : ℝ) / k - (s : ℝ) / k|) / (k : ℝ) ^ (2 : ℕ)
 
 theorem normalizedReplicaClockSpread_nonneg (k : ℕ) :
     0 ≤ normalizedReplicaClockSpread k := by
@@ -196,7 +196,7 @@ theorem normalizedReplicaClockSpread_le_one
           rw [div_le_one hkR]
           exact_mod_cast r.isLt.le
         linarith
-    _ = (k : ℝ) ^ 2 := by
+    _ = (k : ℝ) ^ (2 : ℕ) := by
       simp [pow_two]
 
 /-- Signed holonomy energy added inside the split replica fibres.  The
@@ -205,35 +205,35 @@ def splitSameAtomHolonomyEnergyOn
     {ι : Type*}
     (k : ℕ) (eta : ℝ) (p a : ι → ℝ) (m : ℝ) : ℝ :=
   ∑' i, ∑ r : Fin k, ∑ s : Fin k,
-    (p i / k) ^ 2 *
+    (p i / k) ^ (2 : ℕ) *
       |eta * ((r : ℝ) / k - (s : ℝ) / k)| *
-      (2 * a i - 2 * m) ^ 2
+      (2 * a i - 2 * m) ^ (2 : ℕ)
 
 /-- Exact factorization of the clock-split same-atom holonomy energy. -/
 theorem splitSameAtomHolonomyEnergyOn_eq
     {ι : Type*}
     {k : ℕ} (hk : 0 < k) (eta : ℝ) (p a : ι → ℝ) (m : ℝ)
-    (henergy : Summable (fun i => p i ^ 2 * (2 * a i - 2 * m) ^ 2)) :
+    (henergy : Summable (fun i => p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ))) :
     splitSameAtomHolonomyEnergyOn k eta p a m =
       |eta| * normalizedReplicaClockSpread k *
-        ∑' i, p i ^ 2 * (2 * a i - 2 * m) ^ 2 := by
+        ∑' i, p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ) := by
   have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast hk.ne'
   let C : ℝ := |eta| * normalizedReplicaClockSpread k
   have hterm (i : ι) :
       (∑ r : Fin k, ∑ s : Fin k,
-        (p i / k) ^ 2 *
+        (p i / k) ^ (2 : ℕ) *
           |eta * ((r : ℝ) / k - (s : ℝ) / k)| *
-          (2 * a i - 2 * m) ^ 2) =
-        C * (p i ^ 2 * (2 * a i - 2 * m) ^ 2) := by
-    let D : ℝ := (p i / k) ^ 2 * |eta| *
-      (2 * a i - 2 * m) ^ 2
+          (2 * a i - 2 * m) ^ (2 : ℕ)) =
+        C * (p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ)) := by
+    let D : ℝ := (p i / k) ^ (2 : ℕ) * |eta| *
+      (2 * a i - 2 * m) ^ (2 : ℕ)
     let S : ℝ := ∑ r : Fin k, ∑ s : Fin k,
       |(r : ℝ) / k - (s : ℝ) / k|
     calc
       (∑ r : Fin k, ∑ s : Fin k,
-          (p i / k) ^ 2 *
+          (p i / k) ^ (2 : ℕ) *
             |eta * ((r : ℝ) / k - (s : ℝ) / k)| *
-            (2 * a i - 2 * m) ^ 2) =
+            (2 * a i - 2 * m) ^ (2 : ℕ)) =
           ∑ r : Fin k, ∑ s : Fin k,
             D * |(r : ℝ) / k - (s : ℝ) / k| := by
         apply Finset.sum_congr rfl
@@ -248,7 +248,7 @@ theorem splitSameAtomHolonomyEnergyOn_eq
         apply Finset.sum_congr rfl
         intro r hr
         rw [Finset.mul_sum]
-      _ = C * (p i ^ 2 * (2 * a i - 2 * m) ^ 2) := by
+      _ = C * (p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ)) := by
         simp only [C, D, S, normalizedReplicaClockSpread]
         field_simp [hkR]
   rw [splitSameAtomHolonomyEnergyOn]
@@ -260,13 +260,13 @@ same-atom collision. -/
 theorem tendsto_physicalSplitSameAtomCodiagonalOn
     {ι : Type*}
     (p a d h : ι → ℝ)
-    (hcollision : Summable (fun i => p i ^ 2 * a i * d i)) :
+    (hcollision : Summable (fun i => p i ^ (2 : ℕ) * a i * d i)) :
     Filter.Tendsto
       (fun n : ℕ =>
         physicalSplitSameAtomCodiagonalOn
           (n + 1) (((n + 1 : ℕ) : ℝ)⁻¹) p a d h)
       Filter.atTop
-      (nhds (2 * ∑' i, p i ^ 2 * a i * d i)) := by
+      (nhds (2 * ∑' i, p i ^ (2 : ℕ) * a i * d i)) := by
   have hinv :
       Filter.Tendsto (fun n : ℕ => (((n + 1 : ℕ) : ℝ)⁻¹))
         Filter.atTop (nhds 0) := by
@@ -287,25 +287,25 @@ theorem tendsto_physicalSplitSameAtomCodiagonalOn
       physicalSplitSameAtomCodiagonalOn
           (n + 1) (((n + 1 : ℕ) : ℝ)⁻¹) p a d h =
         2 * (1 - (((n + 1 : ℕ) : ℝ)⁻¹)) *
-          ∑' i, p i ^ 2 * a i * d i := by
+          ∑' i, p i ^ (2 : ℕ) * a i * d i := by
     rw [physicalSplitSameAtomCodiagonalOn_eq
         (Nat.succ_pos n) (inv_pos.mpr (by positivity))]
     exact splitSameAtomCodiagonalOn_eq
       (Nat.succ_pos n) p a d hcollision
   simp_rw [hvalue]
-  simpa using hfactor.mul_const (∑' i, p i ^ 2 * a i * d i)
+  simpa using hfactor.mul_const (∑' i, p i ^ (2 : ℕ) * a i * d i)
 
 /-- Along the same cofinal path the added clock holonomy energy vanishes. -/
 theorem tendsto_splitSameAtomHolonomyEnergyOn_zero
     {ι : Type*}
     (p a : ι → ℝ) (m : ℝ)
-    (henergy : Summable (fun i => p i ^ 2 * (2 * a i - 2 * m) ^ 2)) :
+    (henergy : Summable (fun i => p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ))) :
     Filter.Tendsto
       (fun n : ℕ =>
         splitSameAtomHolonomyEnergyOn
           (n + 1) (((n + 1 : ℕ) : ℝ)⁻¹) p a m)
       Filter.atTop (nhds 0) := by
-  let E : ℝ := ∑' i, p i ^ 2 * (2 * a i - 2 * m) ^ 2
+  let E : ℝ := ∑' i, p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ)
   have hE : 0 ≤ E := by
     exact tsum_nonneg fun i =>
       mul_nonneg (sq_nonneg _) (sq_nonneg _)
@@ -352,8 +352,8 @@ codiagonal while the added signed-holonomy energy vanishes. -/
 theorem tendsto_clockSplitCollisionRecoveryAndVanishingEnergy
     {ι : Type*}
     (p a d h : ι → ℝ) (m : ℝ)
-    (hcollision : Summable (fun i => p i ^ 2 * a i * d i))
-    (henergy : Summable (fun i => p i ^ 2 * (2 * a i - 2 * m) ^ 2)) :
+    (hcollision : Summable (fun i => p i ^ (2 : ℕ) * a i * d i))
+    (henergy : Summable (fun i => p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ))) :
     Filter.Tendsto
       (fun n : ℕ =>
         (physicalSplitSameAtomCodiagonalOn
@@ -362,7 +362,7 @@ theorem tendsto_clockSplitCollisionRecoveryAndVanishingEnergy
             (n + 1) (((n + 1 : ℕ) : ℝ)⁻¹) p a m))
       Filter.atTop
       (nhds
-        (2 * ∑' i, p i ^ 2 * a i * d i, 0)) :=
+        (2 * ∑' i, p i ^ (2 : ℕ) * a i * d i, 0)) :=
   (tendsto_physicalSplitSameAtomCodiagonalOn
     p a d h hcollision).prodMk_nhds
       (tendsto_splitSameAtomHolonomyEnergyOn_zero p a m henergy)
@@ -381,7 +381,7 @@ after division by `εₙ²` is bounded by `E/(n+1)` and vanishes. -/
 
 /-- Cubic number of clock-split replicas at cofinal depth `n`. -/
 def cubicClockSplitReplicaCount (n : ℕ) : ℕ :=
-  (n + 1) ^ 3
+  (n + 1) ^ (3 : ℕ)
 
 theorem cubicClockSplitReplicaCount_pos (n : ℕ) :
     0 < cubicClockSplitReplicaCount n := by
@@ -402,7 +402,7 @@ theorem cubicClockSplitOffset_pos (n : ℕ) :
     exact_mod_cast cubicClockSplitReplicaCount_pos n)
 
 private theorem cubicClockSplitOffset_eq_normalScale_pow (n : ℕ) :
-    cubicClockSplitOffset n = cubicClockSplitNormalScale n ^ 3 := by
+    cubicClockSplitOffset n = cubicClockSplitNormalScale n ^ (3 : ℕ) := by
   rw [cubicClockSplitOffset, cubicClockSplitNormalScale,
     cubicClockSplitReplicaCount]
   push_cast
@@ -426,15 +426,15 @@ private theorem tendsto_cubicClockSplitNormalScale_zero :
 theorem tendsto_cubicClockSplitSameAtomCodiagonal
     {ι : Type*}
     (p a d h : ι → ℝ)
-    (hcollision : Summable (fun i => p i ^ 2 * a i * d i)) :
+    (hcollision : Summable (fun i => p i ^ (2 : ℕ) * a i * d i)) :
     Filter.Tendsto
       (fun n : ℕ =>
         physicalSplitSameAtomCodiagonalOn
           (cubicClockSplitReplicaCount n)
           (cubicClockSplitOffset n) p a d h)
       Filter.atTop
-      (nhds (2 * ∑' i, p i ^ 2 * a i * d i)) := by
-  let C : ℝ := ∑' i, p i ^ 2 * a i * d i
+      (nhds (2 * ∑' i, p i ^ (2 : ℕ) * a i * d i)) := by
+  let C : ℝ := ∑' i, p i ^ (2 : ℕ) * a i * d i
   have hoffset :
       Filter.Tendsto cubicClockSplitOffset Filter.atTop (nhds 0) := by
     have h := tendsto_cubicClockSplitNormalScale_zero.pow 3
@@ -472,15 +472,15 @@ theorem
     tendsto_cubicClockSplitSameAtomHolonomyEnergy_div_normalScale_sq_zero
     {ι : Type*}
     (p a : ι → ℝ) (m : ℝ)
-    (henergy : Summable (fun i => p i ^ 2 * (2 * a i - 2 * m) ^ 2)) :
+    (henergy : Summable (fun i => p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ))) :
     Filter.Tendsto
       (fun n : ℕ =>
         splitSameAtomHolonomyEnergyOn
             (cubicClockSplitReplicaCount n)
             (cubicClockSplitOffset n) p a m /
-          cubicClockSplitNormalScale n ^ 2)
+          cubicClockSplitNormalScale n ^ (2 : ℕ))
       Filter.atTop (nhds 0) := by
-  let E : ℝ := ∑' i, p i ^ 2 * (2 * a i - 2 * m) ^ 2
+  let E : ℝ := ∑' i, p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ)
   have hE : 0 ≤ E := by
     exact tsum_nonneg fun i =>
       mul_nonneg (sq_nonneg _) (sq_nonneg _)
@@ -516,12 +516,12 @@ theorem
       normalizedReplicaClockSpread_le_one
         (cubicClockSplitReplicaCount_pos n)
     calc
-      (cubicClockSplitNormalScale n ^ 3 *
+      (cubicClockSplitNormalScale n ^ (3 : ℕ) *
             normalizedReplicaClockSpread
               (cubicClockSplitReplicaCount n) * E) /
-          cubicClockSplitNormalScale n ^ 2 ≤
-        (cubicClockSplitNormalScale n ^ 3 * 1 * E) /
-          cubicClockSplitNormalScale n ^ 2 := by
+          cubicClockSplitNormalScale n ^ (2 : ℕ) ≤
+        (cubicClockSplitNormalScale n ^ (3 : ℕ) * 1 * E) /
+          cubicClockSplitNormalScale n ^ (2 : ℕ) := by
             exact div_le_div_of_nonneg_right
               (mul_le_mul_of_nonneg_right
                 (mul_le_mul_of_nonneg_left hspread
@@ -535,8 +535,8 @@ added holonomy vanishes along the same cubic schedule. -/
 theorem tendsto_cubicClockSplitCollisionRecoveryAndGraphSafeEnergy
     {ι : Type*}
     (p a d h : ι → ℝ) (m : ℝ)
-    (hcollision : Summable (fun i => p i ^ 2 * a i * d i))
-    (henergy : Summable (fun i => p i ^ 2 * (2 * a i - 2 * m) ^ 2)) :
+    (hcollision : Summable (fun i => p i ^ (2 : ℕ) * a i * d i))
+    (henergy : Summable (fun i => p i ^ (2 : ℕ) * (2 * a i - 2 * m) ^ (2 : ℕ))) :
     Filter.Tendsto
       (fun n : ℕ =>
         (physicalSplitSameAtomCodiagonalOn
@@ -545,9 +545,9 @@ theorem tendsto_cubicClockSplitCollisionRecoveryAndGraphSafeEnergy
           splitSameAtomHolonomyEnergyOn
               (cubicClockSplitReplicaCount n)
               (cubicClockSplitOffset n) p a m /
-            cubicClockSplitNormalScale n ^ 2))
+            cubicClockSplitNormalScale n ^ (2 : ℕ)))
       Filter.atTop
-      (nhds (2 * ∑' i, p i ^ 2 * a i * d i, 0)) :=
+      (nhds (2 * ∑' i, p i ^ (2 : ℕ) * a i * d i, 0)) :=
   (tendsto_cubicClockSplitSameAtomCodiagonal
     p a d h hcollision).prodMk_nhds
       (tendsto_cubicClockSplitSameAtomHolonomyEnergy_div_normalScale_sq_zero

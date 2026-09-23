@@ -27,13 +27,13 @@ open GaloisForLFunctions.HTGeometry
 
 /-- The Hermite Wronskian in polynomial-times-Gaussian form. -/
 theorem exists_poly_hermiteWronskian (m n : ℕ) :
-    ∃ r : Polynomial ℝ, ∀ x : ℝ, hermiteWronskian m n x = r.eval x * Real.exp (-x ^ 2) := by
+    ∃ r : Polynomial ℝ, ∀ x : ℝ, hermiteWronskian m n x = r.eval x * Real.exp (-x ^ (2 : ℕ)) := by
   obtain ⟨pm, hpm⟩ := exists_poly_hermiteFun m
   obtain ⟨pn, hpn⟩ := exists_poly_hermiteFun n
   obtain ⟨qm, hqm⟩ := deriv_hermiteFun_poly m
   obtain ⟨qn, hqn⟩ := deriv_hermiteFun_poly n
   refine ⟨qm * pn - pm * qn, fun x => ?_⟩
-  have hexp : Real.exp (-(1 / 2 * x ^ 2)) * Real.exp (-(1 / 2 * x ^ 2)) = Real.exp (-x ^ 2) := by
+  have hexp : Real.exp (-(1 / 2 * x ^ (2 : ℕ))) * Real.exp (-(1 / 2 * x ^ (2 : ℕ))) = Real.exp (-x ^ (2 : ℕ)) := by
     rw [← Real.exp_add]
     congr 1
     ring

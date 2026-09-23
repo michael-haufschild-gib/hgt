@@ -286,7 +286,7 @@ theorem relation_zero_of_eqOn_open {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {�
 theorem tendsto_bottcherLog_sub_log (c : ℂ) :
     Tendsto (fun z => bottcherLog c z - Complex.log z) (cobounded ℂ) (𝓝 0) := by
   have hnorm : Tendsto (fun z : ℂ => ‖z‖) (cobounded ℂ) atTop := tendsto_norm_cobounded_atTop
-  have hbd : Tendsto (fun z : ℂ => 2 * ‖c‖ / ‖z‖ ^ 2) (cobounded ℂ) (𝓝 0) :=
+  have hbd : Tendsto (fun z : ℂ => 2 * ‖c‖ / ‖z‖ ^ (2 : ℕ)) (cobounded ℂ) (𝓝 0) :=
     tendsto_const_nhds.div_atTop ((tendsto_pow_atTop two_ne_zero).comp hnorm)
   refine squeeze_zero_norm' ?_ hbd
   filter_upwards [hnorm.eventually_gt_atTop (max 2 ‖c‖)] with z hz

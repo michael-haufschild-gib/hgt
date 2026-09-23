@@ -28,7 +28,7 @@ open Complex
 
 /-- The descent of a right-half-plane point lands in the slit plane. -/
 theorem center_sq_mem_slitPlane {s : ℂ} (hs : s ∈ rightHalf) :
-    (s - 1 / 2) ^ 2 ∈ slitPlane := by
+    (s - 1 / 2) ^ (2 : ℕ) ∈ slitPlane := by
   have hcast : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by norm_num
   refine sq_mem_slitPlane_of_re_pos ?_
   rw [Complex.sub_re, hcast, Complex.ofReal_re]
@@ -49,7 +49,7 @@ has a global analytic `2^k`-th root on the slit plane.  On-line zeros lie ON the
 theorem rhLadder_iff_root_slitPlane (k : ℕ) :
     RHLadder k ↔
       ∃ g, AnalyticOnNhd ℂ g slitPlane ∧
-        ∀ w ∈ slitPlane, g w ^ 2 ^ k = xiDescent w := by
+        ∀ w ∈ slitPlane, g w ^ (2 : ℕ) ^ k = xiDescent w := by
   rw [rhLadder_iff_root]
   constructor
   · rintro ⟨h, hh, hhn⟩
@@ -59,17 +59,17 @@ theorem rhLadder_iff_root_slitPlane (k : ℕ) :
         (hh _ (half_add_uSqrt_mem_rightHalf hw))
         (analyticAt_const.add (uSqrt_analyticAt hw))
     · intro w hw
-      show h ((1 / 2 : ℂ) + uSqrt w) ^ 2 ^ k = xiDescent w
+      show h ((1 / 2 : ℂ) + uSqrt w) ^ (2 : ℕ) ^ k = xiDescent w
       rw [hhn _ (half_add_uSqrt_mem_rightHalf hw),
         ← xiDescent_of_ne_zero (slitPlane_ne_zero hw)]
   · rintro ⟨g, hg, hgn⟩
-    refine ⟨fun s => g ((s - 1 / 2) ^ 2), ?_, ?_⟩
+    refine ⟨fun s => g ((s - 1 / 2) ^ (2 : ℕ)), ?_, ?_⟩
     · intro s hs
-      exact AnalyticAt.comp (f := fun s' : ℂ => (s' - 1 / 2) ^ 2)
+      exact AnalyticAt.comp (f := fun s' : ℂ => (s' - 1 / 2) ^ (2 : ℕ))
         (hg _ (center_sq_mem_slitPlane hs))
         ((analyticAt_id.sub analyticAt_const).pow 2)
     · intro s hs
-      show g ((s - 1 / 2) ^ 2) ^ 2 ^ k = xi s
+      show g ((s - 1 / 2) ^ (2 : ℕ)) ^ (2 : ℕ) ^ k = xi s
       rw [hgn _ (center_sq_mem_slitPlane hs), ← xi_eq_xiDescent]
 
 /-- **The k = 1 rung is a square statement.**  `RHLadder 1` — the target of the
@@ -78,14 +78,14 @@ function on the slit plane. -/
 theorem rhLadder_one_iff_sqrt :
     RHLadder 1 ↔
       ∃ g, AnalyticOnNhd ℂ g slitPlane ∧
-        ∀ w ∈ slitPlane, g w ^ 2 = xiDescent w := by
+        ∀ w ∈ slitPlane, g w ^ (2 : ℕ) = xiDescent w := by
   simpa using rhLadder_iff_root_slitPlane 1
 
 /-- **RH ⟺ the full square tower on the slit plane.** -/
 theorem rh_iff_forall_root_slitPlane :
     RiemannHypothesis ↔
       ∀ k : ℕ, ∃ g, AnalyticOnNhd ℂ g slitPlane ∧
-        ∀ w ∈ slitPlane, g w ^ 2 ^ k = xiDescent w := by
+        ∀ w ∈ slitPlane, g w ^ (2 : ℕ) ^ k = xiDescent w := by
   rw [rh_iff_forall_ladder]
   exact forall_congr' fun k => rhLadder_iff_root_slitPlane k
 
@@ -110,7 +110,7 @@ theorem rh_iff_xiDescent_coherentTower_slitPlane :
   have hz : ((9 : ℂ) / 4) ∈ slitPlane := by
     norm_num [Complex.mem_slitPlane_iff]
   have hne : xiDescent ((9 : ℂ) / 4) ≠ 0 := by
-    rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ 2 from by norm_num,
+    rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ (2 : ℕ) from by norm_num,
       ← xi_eq_xiDescent]
     exact xi_two_ne_zero
   have htower :
@@ -170,7 +170,7 @@ theorem xiDescent_coherentTower_slitPlane_iff_all_order_dvd :
   have hz : ((9 : ℂ) / 4) ∈ slitPlane := by
     norm_num [Complex.mem_slitPlane_iff]
   have hne : xiDescent ((9 : ℂ) / 4) ≠ 0 := by
-    rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ 2 from by norm_num,
+    rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ (2 : ℕ) from by norm_num,
       ← xi_eq_xiDescent]
     exact xi_two_ne_zero
   exact coherentTower_iff_orders_dvd_all_two_powers

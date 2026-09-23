@@ -303,7 +303,7 @@ theorem exists_integral_routeTAdjacentNormalizedKernel_one_tail_le :
     _ = 260 * C * (N / R) := by ring
 
 /-- Arbitrary-cutoff form of adjacent-kernel tail localization.  Comparable widths turn the two
-one-width quadratic tails into one `130 C (N/R)^2/U` bound. -/
+one-width quadratic tails into one `130 C (N/R)^(2 : ℕ)/U` bound. -/
 theorem exists_integral_routeTAdjacentNormalizedKernel_one_general_tail_le :
     ∃ C : ℝ, 1 ≤ C ∧
       ∀ N H R U : ℝ, 0 < N → 0 < H → 0 < R →

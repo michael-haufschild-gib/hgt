@@ -59,7 +59,7 @@ local instance globalXiRatFuncDifferentialAlgebra :
       change (upperEndRatfuncToMero (pR / qR))′ = upperEndRatfuncToMero ((pR / qR)′)
       rw [map_div₀ upperEndRatfuncToMero, Derivation.leibniz_div]
       have hdiv : ((pR / qR)′ : RatFunc ℂ)
-          = qR⁻¹ ^ 2 * (qR * (pR)′ - pR * (qR)′) := by
+          = qR⁻¹ ^ (2 : ℕ) * (qR * (pR)′ - pR * (qR)′) := by
         change ratFuncCoordinateDerivation ℂ (pR / qR) = _
         rw [Derivation.leibniz_div]
         rfl

@@ -27,14 +27,14 @@ theorem exists_primePacket_gammaOddResidual_bounded_and_resolvedWardEnergy_gt
     (B M : ℝ) (hB : 0 < B) (hM : 0 ≤ M) :
     ∃ F : Finset Nat.Primes,
       (∑ p ∈ F, gammaOddJacobiPrimeResidualCost p ≤
-        ∑' n : ℕ, ((n : ℝ) ^ 2)⁻¹) ∧
+        ∑' n : ℕ, ((n : ℝ) ^ (2 : ℕ))⁻¹) ∧
       ∀ (K : Matrix (↑F) (↑F) ℝ),
         (∀ i, K i i = 1) →
         (∀ (x : ↑F → ℝ) (y : ℝ),
           0 ≤ (∑ i, ∑ j, K i j * x i * x j) +
             2 * y * (∑ i : ↑F,
               gammaConductorPrimeNormalizedCross (i : Nat.Primes) * x i) +
-              B * y ^ 2) →
+              B * y ^ (2 : ℕ)) →
         M < resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) := by
   obtain ⟨F, hF⟩ := exists_primePacket_gammaConductor_resolvedWardEnergy_gt B M hB hM
   exact ⟨F, sum_gammaOddJacobiPrimeResidualCost_le_tsum_inv_sq F, hF⟩
@@ -46,14 +46,14 @@ theorem forall_energy_exists_gammaOddResidual_bounded_resolvedWardEnergy_gt
     ∀ M : ℝ, 0 ≤ M →
       ∃ F : Finset Nat.Primes,
         (∑ p ∈ F, gammaOddJacobiPrimeResidualCost p ≤
-          ∑' n : ℕ, ((n : ℝ) ^ 2)⁻¹) ∧
+          ∑' n : ℕ, ((n : ℝ) ^ (2 : ℕ))⁻¹) ∧
         ∀ (K : Matrix (↑F) (↑F) ℝ),
           (∀ i, K i i = 1) →
           (∀ (x : ↑F → ℝ) (y : ℝ),
             0 ≤ (∑ i, ∑ j, K i j * x i * x j) +
               2 * y * (∑ i : ↑F,
                 gammaConductorPrimeNormalizedCross (i : Nat.Primes) * x i) +
-                B * y ^ 2) →
+                B * y ^ (2 : ℕ)) →
           M < resolvedChannelTotalCommutatorEnergy (fun i j => (K i j : ℂ)) := by
   intro M hM
   exact exists_primePacket_gammaOddResidual_bounded_and_resolvedWardEnergy_gt B M hB hM

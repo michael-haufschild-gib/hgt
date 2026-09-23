@@ -52,7 +52,7 @@ theorem suzukiFiniteContactWidth_two :
 nonnegative aligned energy, the completed-Green square bound, and unit-bounded order-`m`
 residual. -/
 def SuzukiFiniteContactAlgebraicPacket (m : ℕ) (C E G : ℝ) : Prop :=
-  0 < C ∧ 0 ≤ E ∧ G ^ 2 ≤ E ∧ E ^ m / C ^ (m - 1) ≤ 1
+  0 < C ∧ 0 ≤ E ∧ G ^ (2 : ℕ) ≤ E ∧ E ^ m / C ^ (m - 1) ≤ 1
 
 private theorem le_pow_two_mul_add_one {x : ℝ} (hx : 0 ≤ x) {m : ℕ} (hm : 1 ≤ m) :
     x ≤ x ^ (2 * m) + 1 := by
@@ -60,7 +60,7 @@ private theorem le_pow_two_mul_add_one {x : ℝ} (hx : 0 ≤ x) {m : ℕ} (hm : 
   · have hnonneg : 0 ≤ x ^ (2 * m) := by positivity
     linarith
   · have h1x : 1 ≤ x := le_of_not_ge hx1
-    have hp : x ^ 1 ≤ x ^ (2 * m) :=
+    have hp : x ^ (1 : ℕ) ≤ x ^ (2 * m) :=
       pow_le_pow_right₀ h1x (by omega)
     have hxpow : x ≤ x ^ (2 * m) := by simpa using hp
     linarith
@@ -181,7 +181,7 @@ theorem suzukiFiniteContact_algebraicEndpointNoGo :
   have hC0 : 0 < C := by dsimp only [C]; positivity
   have hE0 : 0 ≤ E := by dsimp only [E]; positivity
   have hG0 : 0 ≤ G := by dsimp only [G]; positivity
-  have hGsq : G ^ 2 = E := by
+  have hGsq : G ^ (2 : ℕ) = E := by
     dsimp only [G, E]
     rw [← pow_mul]
     congr 1
@@ -197,7 +197,7 @@ theorem suzukiFiniteContact_algebraicEndpointNoGo :
   have hbound := hK C E G hpacket
   have hmone : 1 ≤ m - 1 := by omega
   have hRG : R ≤ G := by
-    have hp : R ^ 1 ≤ R ^ (m - 1) := pow_le_pow_right₀ hR1 hmone
+    have hp : R ^ (1 : ℕ) ≤ R ^ (m - 1) := pow_le_pow_right₀ hR1 hmone
     simpa only [pow_one, G] using hp
   rw [abs_of_nonneg hG0] at hbound
   dsimp only [R] at hRG

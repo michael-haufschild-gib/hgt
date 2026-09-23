@@ -27,7 +27,7 @@ theorem xiShiftedCanonicalAdmissionHardEdgeWorldlineVelocity_pos
       (HTGeometry.monicMomentAdmissionPolynomial
         (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds y]
           fun _ => 0) :
-    0 < -xdot / (x y) ^ 2 - 1 := by
+    0 < -xdot / (x y) ^ (2 : ℕ) - 1 := by
   let M :=
     xiShiftedHardEdgeGaussTerminalMass y
         (fun k => (xiShiftedReciprocalMoment y k).re) n
@@ -41,9 +41,9 @@ theorem xiShiftedCanonicalAdmissionHardEdgeWorldlineVelocity_pos
   have hworld :=
     xiShiftedCanonicalAdmissionHardEdgeWorldline_mul_normalizedTerminalMass
       hy hn hH hx hx0 hroot
-  have hprod : 0 < (-xdot / (x y) ^ 2 - 1) * M := by
-    rw [show (-xdot / (x y) ^ 2 - 1) * M =
-        2 * (n : ℝ) * y * (x y) ^ 2 by simpa only [M] using hworld]
+  have hprod : 0 < (-xdot / (x y) ^ (2 : ℕ) - 1) * M := by
+    rw [show (-xdot / (x y) ^ (2 : ℕ) - 1) * M =
+        2 * (n : ℝ) * y * (x y) ^ (2 : ℕ) by simpa only [M] using hworld]
     positivity
   rcases (mul_pos_iff.mp hprod) with hpositive | hnegative
   · exact hpositive.1
@@ -52,7 +52,7 @@ theorem xiShiftedCanonicalAdmissionHardEdgeWorldlineVelocity_pos
 /-- Exact derivative of moving-apex centered residue along any differentiable root curve. -/
 theorem hasDerivAt_movingApexCenteredRootResidue
     {y : ℝ} {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot y) :
-    HasDerivAt (fun v => (v * x v) ^ 2 - 1)
+    HasDerivAt (fun v => (v * x v) ^ (2 : ℕ) - 1)
       (2 * (y * x y) * (x y + y * xdot)) y := by
   have hproduct := (hasDerivAt_id y).mul hx
   have hsquare := hproduct.pow 2
@@ -78,21 +78,21 @@ theorem movingApexCenteredRootResidue_deriv_neg_of_superApex
     2 * (y * x y) * (x y + y * xdot) < 0 := by
   have hvelocity := xiShiftedCanonicalAdmissionHardEdgeWorldlineVelocity_pos
     hy hn hH hx hxpos.ne' hroot
-  have hxSq : 0 < (x y) ^ 2 := sq_pos_of_ne_zero hxpos.ne'
-  have hratio : 1 < -xdot / (x y) ^ 2 := by linarith
-  have hxdotNeg : xdot < -(x y) ^ 2 := by
-    have hsquare_lt : (x y) ^ 2 < -xdot := by
+  have hxSq : 0 < (x y) ^ (2 : ℕ) := sq_pos_of_ne_zero hxpos.ne'
+  have hratio : 1 < -xdot / (x y) ^ (2 : ℕ) := by linarith
+  have hxdotNeg : xdot < -(x y) ^ (2 : ℕ) := by
+    have hsquare_lt : (x y) ^ (2 : ℕ) < -xdot := by
       have := (lt_div_iff₀ hxSq).mp hratio
       simpa only [one_mul] using this
     linarith
-  have hyxdot : y * xdot < y * (-(x y) ^ 2) :=
+  have hyxdot : y * xdot < y * (-(x y) ^ (2 : ℕ)) :=
     mul_lt_mul_of_pos_left hxdotNeg hy
   have hqdot : x y + y * xdot < 0 := by
-    have hfirst : x y + y * xdot < x y + y * (-(x y) ^ 2) := by
+    have hfirst : x y + y * xdot < x y + y * (-(x y) ^ (2 : ℕ)) := by
       simpa only [add_comm] using add_lt_add_left hyxdot (x y)
-    have hsecond : x y + y * (-(x y) ^ 2) < 0 := by
+    have hsecond : x y + y * (-(x y) ^ (2 : ℕ)) < 0 := by
       calc
-        x y + y * (-(x y) ^ 2) = x y * (1 - y * x y) := by ring
+        x y + y * (-(x y) ^ (2 : ℕ)) = x y * (1 - y * x y) := by ring
         _ < 0 := mul_neg_of_pos_of_neg hxpos (sub_neg.mpr hsuper)
     exact hfirst.trans hsecond
   exact mul_neg_of_pos_of_neg (mul_pos (by norm_num) (mul_pos hy hxpos)) hqdot
@@ -110,7 +110,7 @@ theorem hasDerivAt_movingApexCenteredRootResidue_neg_of_superApex
           fun _ => 0)
     (hsuper : 1 < y * x y) :
     ∃ rdot : ℝ, rdot < 0 ∧
-      HasDerivAt (fun v => (v * x v) ^ 2 - 1) rdot y := by
+      HasDerivAt (fun v => (v * x v) ^ (2 : ℕ) - 1) rdot y := by
   let rdot := 2 * (y * x y) * (x y + y * xdot)
   exact ⟨rdot,
     movingApexCenteredRootResidue_deriv_neg_of_superApex
@@ -131,10 +131,10 @@ theorem xiShiftedCanonicalAdmissionCenteredSourceResidue_eq_and_hasDerivAt_neg_o
           fun _ => 0)
     (hsuper : 1 < y * x y) :
     xiShiftedCanonicalAdmissionCenteredDeResistedCompletedSourceResidue
-        (Real.sqrt y) n (x y) = (y * x y) ^ 2 - 1 ∧
+        (Real.sqrt y) n (x y) = (y * x y) ^ (2 : ℕ) - 1 ∧
       ∃ rdot : ℝ, rdot < 0 ∧
-        HasDerivAt (fun v => (v * x v) ^ 2 - 1) rdot y := by
-  have hsquare : (Real.sqrt y) ^ 2 = y := Real.sq_sqrt hy.le
+        HasDerivAt (fun v => (v * x v) ^ (2 : ℕ) - 1) rdot y := by
+  have hsquare : (Real.sqrt y) ^ (2 : ℕ) = y := Real.sq_sqrt hy.le
   have hs : xiShiftedRealMomentSequence (Real.sqrt y) =
       (fun k => (xiShiftedReciprocalMoment y k).re) := by
     funext k

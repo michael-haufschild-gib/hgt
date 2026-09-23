@@ -34,7 +34,7 @@ theorem exists_polarConstrained_normalized_near_min (a : SuzukiPositiveAperture)
     exact inv_mul_cancel₀ hr0.ne'
   · rw [ccmRestrictedWeilSourceQuadratic_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos hr0, inv_pow]
-    have hpos : 0 < ‖ccmArchimedeanFormToAperture a v‖ ^ 2 := pow_pos hr0 2
+    have hpos : 0 < ‖ccmArchimedeanFormToAperture a v‖ ^ (2 : ℕ) := pow_pos hr0 2
     rw [inv_mul_lt_iff₀ hpos]
     have := hr
     rw [div_lt_iff₀ hpos] at this
@@ -61,7 +61,7 @@ theorem exists_polarConstrained_groundState (a : SuzukiPositiveAperture) :
     simp only [one_pow, mul_one] at hb
     have hn1 : 1 / ((n : ℝ) + 1) ≤ 1 := by
       rw [div_le_one (by positivity)]; linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
-    have hsq : ‖(u n).1‖ ^ 2 ≤ max 0 (μ + 1 + ‖ccmRestrictedWeilBoundedRemainder a‖) :=
+    have hsq : ‖(u n).1‖ ^ (2 : ℕ) ≤ max 0 (μ + 1 + ‖ccmRestrictedWeilBoundedRemainder a‖) :=
       hb.trans (le_max_of_le_right (by linarith [huQ n]))
     have hnonneg : 0 ≤ max 0 (μ + 1 + ‖ccmRestrictedWeilBoundedRemainder a‖) := le_max_left _ _
     have hsqrt : 0 ≤ radius := Real.sqrt_nonneg _

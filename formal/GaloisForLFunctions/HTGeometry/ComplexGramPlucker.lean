@@ -35,7 +35,7 @@ def hermFeatureGram {n : ℕ} (v : Fin n → κ → ℂ) : Matrix (Fin n) (Fin n
 
 /-- The squared Pluecker norm: the sum of the squared moduli of all maximal coordinate minors. -/
 def hermPluckerNormSq {n : ℕ} (v : Fin n → κ → ℂ) : ℝ :=
-  ∑ s : Set.powersetCard κ n, ‖hermFeatureMinor v s‖ ^ 2
+  ∑ s : Set.powersetCard κ n, ‖hermFeatureMinor v s‖ ^ (2 : ℕ)
 
 /-- The Hermitian pairing functional attached to one feature row. -/
 def finiteHermDual (u : κ → ℂ) : Module.Dual ℂ (κ → ℂ) where
@@ -189,8 +189,8 @@ theorem det_hermFeatureGram_ne_zero_iff {n : ℕ} (v : Fin n → κ → ℂ) :
     have hkey : ∑ k, star (∑ j, c j * v j k) * ∑ j, c j * v j k = 0 := by
       rw [← sum_conj_mul_hermFeatureGram_mulVec]
       simp [hc]
-    have hnorm : ∑ k, (‖∑ j, c j * v j k‖ : ℝ) ^ 2 = 0 := by
-      have hcast : (∑ k, ((‖∑ j, c j * v j k‖ : ℝ) ^ 2 : ℂ)) = 0 := by
+    have hnorm : ∑ k, (‖∑ j, c j * v j k‖ : ℝ) ^ (2 : ℕ) = 0 := by
+      have hcast : (∑ k, ((‖∑ j, c j * v j k‖ : ℝ) ^ (2 : ℕ) : ℂ)) = 0 := by
         rw [← hkey]
         refine Finset.sum_congr rfl fun k _ => ?_
         rw [mul_comm, show star (∑ j, c j * v j k) = (starRingEnd ℂ) (∑ j, c j * v j k) from rfl,
@@ -198,11 +198,11 @@ theorem det_hermFeatureGram_ne_zero_iff {n : ℕ} (v : Fin n → κ → ℂ) :
       exact_mod_cast hcast
     have hall : ∀ k, (∑ j, c j * v j k) = 0 := by
       intro k
-      have hterm : (‖∑ j, c j * v j k‖ : ℝ) ^ 2 = 0 := by
+      have hterm : (‖∑ j, c j * v j k‖ : ℝ) ^ (2 : ℕ) = 0 := by
         by_contra hcon
-        have hposk : 0 < (‖∑ j, c j * v j k‖ : ℝ) ^ 2 :=
+        have hposk : 0 < (‖∑ j, c j * v j k‖ : ℝ) ^ (2 : ℕ) :=
           lt_of_le_of_ne (by positivity) (Ne.symm hcon)
-        have hsum : 0 < ∑ k, (‖∑ j, c j * v j k‖ : ℝ) ^ 2 :=
+        have hsum : 0 < ∑ k, (‖∑ j, c j * v j k‖ : ℝ) ^ (2 : ℕ) :=
           Finset.sum_pos' (fun _ _ => by positivity) ⟨k, Finset.mem_univ k, hposk⟩
         exact absurd hnorm hsum.ne'
       have hz : ‖∑ j, c j * v j k‖ = 0 := by
@@ -225,9 +225,9 @@ theorem hermFeatureWedge_eq_zero_iff {n : ℕ} (v : Fin n → κ → ℂ) :
     simp [hz]
   · intro h s
     have hz : hermPluckerNormSq v = 0 := by exact_mod_cast h
-    have hterm : ‖hermFeatureMinor v s‖ ^ 2 = 0 := by
+    have hterm : ‖hermFeatureMinor v s‖ ^ (2 : ℕ) = 0 := by
       by_contra hcon
-      have hpos : 0 < ‖hermFeatureMinor v s‖ ^ 2 :=
+      have hpos : 0 < ‖hermFeatureMinor v s‖ ^ (2 : ℕ) :=
         lt_of_le_of_ne (by positivity) (Ne.symm hcon)
       have hsum : 0 < hermPluckerNormSq v :=
         Finset.sum_pos' (fun _ _ => by positivity) ⟨s, Finset.mem_univ s, hpos⟩

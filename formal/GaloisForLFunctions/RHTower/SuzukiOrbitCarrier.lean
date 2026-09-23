@@ -40,25 +40,25 @@ theorem orbitTranslate_zero (u : Lp ℂ 2 (volume : Measure ℝ)) : orbitTransla
 
 /-- A constant-norm weighted family has exactly the weight's energy. -/
 theorem tsum_sq_weighted_const {ι : Type*} (w : ι → ℝ) (c : ℝ) :
-    (∑' ν : ι, (w ν * c) ^ 2) = (∑' ν : ι, w ν ^ 2) * c ^ 2 := by
-  have hterm : ∀ ν : ι, (w ν * c) ^ 2 = w ν ^ 2 * c ^ 2 := fun ν => by ring
+    (∑' ν : ι, (w ν * c) ^ (2 : ℕ)) = (∑' ν : ι, w ν ^ (2 : ℕ)) * c ^ (2 : ℕ) := by
+  have hterm : ∀ ν : ι, (w ν * c) ^ (2 : ℕ) = w ν ^ (2 : ℕ) * c ^ (2 : ℕ) := fun ν => by ring
   rw [tsum_congr hterm, tsum_mul_right]
 
 /-- **`(3)`, `(10)`: the weighted orbit lift of an `L²` profile has energy `‖w_ρ‖₂² ‖u‖₂²`.** -/
 theorem tsum_sq_orbitLift {P : Type*} [Fintype P] (ρ : ℝ) (ℓ : (P → ℤ) → ℝ)
     (u : Lp ℂ 2 (volume : Measure ℝ)) :
-    (∑' ν : P → ℤ, (orbitWeight ρ ν * ‖orbitTranslate (ℓ ν) u‖) ^ 2)
-      = (∑' ν : P → ℤ, orbitWeight ρ ν ^ 2) * ‖u‖ ^ 2 := by
+    (∑' ν : P → ℤ, (orbitWeight ρ ν * ‖orbitTranslate (ℓ ν) u‖) ^ (2 : ℕ))
+      = (∑' ν : P → ℤ, orbitWeight ρ ν ^ (2 : ℕ)) * ‖u‖ ^ (2 : ℕ) := by
   have hterm : ∀ ν : P → ℤ,
-      (orbitWeight ρ ν * ‖orbitTranslate (ℓ ν) u‖) ^ 2 = (orbitWeight ρ ν * ‖u‖) ^ 2 := by
+      (orbitWeight ρ ν * ‖orbitTranslate (ℓ ν) u‖) ^ (2 : ℕ) = (orbitWeight ρ ν * ‖u‖) ^ (2 : ℕ) := by
     intro ν
     rw [norm_orbitTranslate]
   rw [tsum_congr hterm, tsum_sq_weighted_const]
 
 /-- **`(11)`: the same lift of a bounded profile, in the sup norm. -/
 theorem tsum_sq_orbitLift_const {P : Type*} [Fintype P] (ρ : ℝ) (c : ℝ) :
-    (∑' ν : P → ℤ, (orbitWeight ρ ν * c) ^ 2)
-      = (∑' ν : P → ℤ, orbitWeight ρ ν ^ 2) * c ^ 2 :=
+    (∑' ν : P → ℤ, (orbitWeight ρ ν * c) ^ (2 : ℕ))
+      = (∑' ν : P → ℤ, orbitWeight ρ ν ^ (2 : ℕ)) * c ^ (2 : ℕ) :=
   tsum_sq_weighted_const _ c
 
 /-! ## The weighted valuation shift -/
@@ -79,18 +79,18 @@ theorem abs_orbitShiftRatio_le {P : Type*} [Fintype P] {ρ : ℝ} (hρ0 : 0 < ρ
 
 /-- **`(17)`: the weighted valuation shift is bounded by `ρ^{-|s|₁}` in energy.** -/
 theorem tsum_sq_orbitWeightedShift_le {P : Type*} [Fintype P] {ρ : ℝ} (hρ0 : 0 < ρ) (hρ : ρ ≤ 1)
-    (s : P → ℤ) {Z : (P → ℤ) → ℝ} (hZ : Summable fun ν => Z ν ^ 2) :
-    (∑' ν : P → ℤ, (orbitShiftRatio ρ s ν * Z (ν + s)) ^ 2)
-      ≤ ((ρ ^ orbitLength s)⁻¹) ^ 2 * ∑' ν : P → ℤ, Z ν ^ 2 :=
+    (s : P → ℤ) {Z : (P → ℤ) → ℝ} (hZ : Summable fun ν => Z ν ^ (2 : ℕ)) :
+    (∑' ν : P → ℤ, (orbitShiftRatio ρ s ν * Z (ν + s)) ^ (2 : ℕ))
+      ≤ ((ρ ^ orbitLength s)⁻¹) ^ (2 : ℕ) * ∑' ν : P → ℤ, Z ν ^ (2 : ℕ) :=
   tsum_sq_weightedShift_le (fun ν => abs_orbitShiftRatio_le hρ0 hρ s ν) s hZ
 
 /-- **`(19)`: a finite prime adjacency of weighted shifts is bounded in energy by the sum of its
 edge bounds.** -/
 theorem tsum_sq_orbitWeightedShift_le_of_le {P : Type*} [Fintype P] {ρ : ℝ} (hρ0 : 0 < ρ)
-    (hρ : ρ ≤ 1) (s : P → ℤ) {Z : (P → ℤ) → ℝ} (hZ : Summable fun ν => Z ν ^ 2) {E : ℝ}
-    (hE : (∑' ν : P → ℤ, Z ν ^ 2) ≤ E) :
-    (∑' ν : P → ℤ, (orbitShiftRatio ρ s ν * Z (ν + s)) ^ 2)
-      ≤ ((ρ ^ orbitLength s)⁻¹) ^ 2 * E :=
+    (hρ : ρ ≤ 1) (s : P → ℤ) {Z : (P → ℤ) → ℝ} (hZ : Summable fun ν => Z ν ^ (2 : ℕ)) {E : ℝ}
+    (hE : (∑' ν : P → ℤ, Z ν ^ (2 : ℕ)) ≤ E) :
+    (∑' ν : P → ℤ, (orbitShiftRatio ρ s ν * Z (ν + s)) ^ (2 : ℕ))
+      ≤ ((ρ ^ orbitLength s)⁻¹) ^ (2 : ℕ) * E :=
   tsum_sq_weightedShift_le_of_le (fun ν => abs_orbitShiftRatio_le hρ0 hρ s ν) s hZ hE
 
 /-- Translation is an action: composing displacements adds them. -/
@@ -140,23 +140,23 @@ theorem orbitLift_translate {P : Type*} [Fintype P] {ρ : ℝ} (hρ : 0 < ρ) (�
 the statement that makes self-adjointness dispensable in the terminal ray estimate. -/
 theorem abs_re_inner_le_norm_mul_sq {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (B : H →L[ℂ] H) (z : H) :
-    |(inner ℂ (B z) z).re| ≤ ‖B‖ * ‖z‖ ^ 2 := by
+    |(inner ℂ (B z) z).re| ≤ ‖B‖ * ‖z‖ ^ (2 : ℕ) := by
   have h1 : |(inner ℂ (B z) z).re| ≤ ‖(inner ℂ (B z) z : ℂ)‖ := Complex.abs_re_le_norm _
   have h2 : ‖(inner ℂ (B z) z : ℂ)‖ ≤ ‖B z‖ * ‖z‖ := norm_inner_le_norm _ _
   have h3 : ‖B z‖ ≤ ‖B‖ * ‖z‖ := B.le_opNorm z
   calc |(inner ℂ (B z) z).re| ≤ ‖B z‖ * ‖z‖ := le_trans h1 h2
     _ ≤ (‖B‖ * ‖z‖) * ‖z‖ := mul_le_mul_of_nonneg_right h3 (norm_nonneg _)
-    _ = ‖B‖ * ‖z‖ ^ 2 := by ring
+    _ = ‖B‖ * ‖z‖ ^ (2 : ℕ) := by ring
 
 /-- **`(22)`: the terminal coercive bracket.**  With a lower numerical-range bound for the Gamma
 multiplier and a bounded coupling, the shifted form is coercive once the ray is far enough. -/
 theorem re_inner_terminal_le {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    (B : H →L[ℂ] H) (z : H) {L κ : ℝ} (hκ : -κ * ‖z‖ ^ 2 ≤ (inner ℂ (B z) z).re)
+    (B : H →L[ℂ] H) (z : H) {L κ : ℝ} (hκ : -κ * ‖z‖ ^ (2 : ℕ) ≤ (inner ℂ (B z) z).re)
     (T : H →L[ℂ] H) :
-    (2 * L - κ - ‖T‖) * ‖z‖ ^ 2
-      ≤ 2 * L * ‖z‖ ^ 2 + (inner ℂ (B z) z).re - (inner ℂ (T z) z).re := by
+    (2 * L - κ - ‖T‖) * ‖z‖ ^ (2 : ℕ)
+      ≤ 2 * L * ‖z‖ ^ (2 : ℕ) + (inner ℂ (B z) z).re - (inner ℂ (T z) z).re := by
   have hT := abs_re_inner_le_norm_mul_sq T z
-  have hT' : (inner ℂ (T z) z).re ≤ ‖T‖ * ‖z‖ ^ 2 := le_trans (le_abs_self _) hT
+  have hT' : (inner ℂ (T z) z).re ≤ ‖T‖ * ‖z‖ ^ (2 : ℕ) := le_trans (le_abs_self _) hT
   nlinarith [hκ, hT']
 
 end

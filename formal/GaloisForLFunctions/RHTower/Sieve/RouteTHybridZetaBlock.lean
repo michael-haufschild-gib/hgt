@@ -91,7 +91,7 @@ theorem routeT_lowShell_high_of_le_pow
         * (N : ℝ) ^ (-(1 / 3) : ℝ) := by
       exact (mul_assoc _ _ _).symm
 
-/-- Fixed-order receiver stated only with the natural complementary condition `t ≤ (X+1)^560`. -/
+/-- Fixed-order receiver stated only with the natural complementary condition `t ≤ (X+1)^(560 : ℕ)`. -/
 theorem norm_routeTZetaBlockSum_le_lowShell_of_le_pow
     {X X' : ℕ} {σ t : ℝ}
     (hσ : 0 ≤ σ) (ht : 0 < t) (hXX' : X < X') (hX' : X' ≤ 2 * X)
@@ -106,7 +106,7 @@ theorem norm_routeTZetaBlockSum_le_lowShell_of_le_pow
 
 /-- **Automatic hybrid receiver.**  Every threshold-eligible block is controlled without a height
 gap.  Above the `141`-shell boundary Route T gives reciprocal-quartic decay.  Below that boundary,
-the same root-cell inequality puts the height below `(X+1)^564`, where derivative order `566`
+the same root-cell inequality puts the height below `(X+1)^(564 : ℕ)`, where derivative order `566`
 gives an absolute power saving. -/
 theorem norm_routeTZetaBlockSum_le_automaticHybrid
     {X X' : ℕ} {σ t : ℝ}

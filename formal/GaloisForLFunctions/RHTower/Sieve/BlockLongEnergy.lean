@@ -17,7 +17,7 @@ noncomputable section
 /-- **The long-side energy of a block.** -/
 theorem exists_sum_typeIILong_sq_block_le :
     ∃ C : ℝ, 0 < C ∧ ∀ (U P Q L : ℕ), 1 ≤ L → Q ≤ L + 1 →
-      (∑ d ∈ Finset.Ico P Q, ‖((typeIILong U d : ℝ) : ℂ)‖ ^ 2)
+      (∑ d ∈ Finset.Ico P Q, ‖((typeIILong U d : ℝ) : ℂ)‖ ^ (2 : ℕ))
         ≤ C * (Q : ℝ) * Real.log (L : ℝ) := by
   obtain ⟨C, hC0, hC⟩ := exists_chebyshevPsiReal_le_linear
   refine ⟨C, hC0, ?_⟩
@@ -30,7 +30,7 @@ theorem exists_sum_typeIILong_sq_block_le :
     positivity
   have hQ1 : (1 : ℝ) ≤ (Q : ℝ) := by exact_mod_cast hQ
   have hstep : ∀ d ∈ Finset.Ico P Q,
-      ‖((typeIILong U d : ℝ) : ℂ)‖ ^ 2 ≤ Real.log (L : ℝ) * vonMangoldt d := by
+      ‖((typeIILong U d : ℝ) : ℂ)‖ ^ (2 : ℕ) ≤ Real.log (L : ℝ) * vonMangoldt d := by
     intro d hd
     rw [Finset.mem_Ico] at hd
     have hnorm : ‖((typeIILong U d : ℝ) : ℂ)‖ = |typeIILong U d| := by

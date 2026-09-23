@@ -68,8 +68,8 @@ theorem nontrivial_iff {L0 M : ℝ} (hL0 : 0 < L0) (hM : 1 < M) :
 
 /-- **The threshold in terms of the least prime norm.**  `L₀ > 2 log M` is `N_min > M²`. -/
 theorem threshold_squared {N M : ℝ} (hN : 0 < N) (hM : 0 < M) :
-    2 * Real.log M < Real.log N ↔ M ^ 2 < N := by
-  have h2 : Real.log (M ^ 2) = 2 * Real.log M := by
+    2 * Real.log M < Real.log N ↔ M ^ (2 : ℕ) < N := by
+  have h2 : Real.log (M ^ (2 : ℕ)) = 2 * Real.log M := by
     rw [Real.log_pow]; push_cast; ring
   rw [← h2]
   exact Real.log_lt_log_iff (by positivity) hN
@@ -78,14 +78,14 @@ theorem threshold_squared {N M : ℝ} (hN : 0 < N) (hM : 0 < M) :
 the hypothesis gives `N_min ≪ (log|d_K|)²`.  The two are the same threshold, so the requirement is
 the negation of the prediction. -/
 theorem self_limiting {N D C : ℝ}
-    (hneed : (C * D) ^ 2 < N) (hpred : N ≤ (C * D) ^ 2) : False := by
+    (hneed : (C * D) ^ (2 : ℕ) < N) (hpred : N ≤ (C * D) ^ (2 : ℕ)) : False := by
   linarith
 
 /-- **The cyclotomic case fails directly.**  With `N_min = q` and `log|d_K| ≍ φ·log q`, the
 requirement `q > (φ log q)²` is false whenever `φ log q ≥ √q`. -/
 theorem cyclotomic_fails {q phi lq : ℝ} (hq : 0 < q) (hbig : Real.sqrt q ≤ phi * lq) :
-    q ≤ (phi * lq) ^ 2 := by
-  have hs : Real.sqrt q ^ 2 = q := Real.sq_sqrt (le_of_lt hq)
+    q ≤ (phi * lq) ^ (2 : ℕ) := by
+  have hs : Real.sqrt q ^ (2 : ℕ) = q := Real.sq_sqrt (le_of_lt hq)
   nlinarith [hbig, Real.sqrt_nonneg q, hs]
 
 /-- The cancellation, named: the archimedean weight per unit of prime-free reach is the degree. -/

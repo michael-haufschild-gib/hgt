@@ -218,7 +218,7 @@ theorem conjP_reflect (F : ℂ[X]) (L : ℕ) :
   ext k
   simp [conjP_coeff, Polynomial.coeff_reflect]
 
-/-- The reflected-conjugate product representing `|F(x)|^2` under the Laurent
+/-- The reflected-conjugate product representing `|F(x)|^(2 : ℕ)` under the Laurent
 encoding. -/
 abbrev normPolynomial (L : ℕ) (F : ℂ[X]) : ℂ[X] :=
   F * (conjP F).reflect L
@@ -2050,7 +2050,7 @@ theorem ComplementCertificate.circle_normalization {L : ℕ} {A : ℂ[X]}
     lEval_two_mul_X_pow] at hnorm
   simpa using hnorm
 
-/-- Package a source square-root factorization of `X^L - |A|^2` as a Laurent
+/-- Package a source square-root factorization of `X^L - |A|^(2 : ℕ)` as a Laurent
 complement certificate. -/
 def ComplementCertificate.ofSquareRoot {L : ℕ} {A : ℂ[X]}
     (hroot : SquareRootCertificate L (residualPolynomial L A)) :

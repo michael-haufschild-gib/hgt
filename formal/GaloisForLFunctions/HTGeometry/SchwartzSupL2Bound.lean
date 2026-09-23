@@ -26,9 +26,9 @@ namespace GaloisForLFunctions
 /-! ## The `L²` norm as an integral -/
 
 theorem norm_toLp_sq_eq_integral (f : 𝓢(ℝ, ℂ)) :
-    ‖f.toLp 2 (volume : Measure ℝ)‖ ^ 2 = ∫ t : ℝ, ‖f t‖ ^ 2 := by
+    ‖f.toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) = ∫ t : ℝ, ‖f t‖ ^ (2 : ℕ) := by
   have hinner : (inner ℂ (f.toLp 2 (volume : Measure ℝ)) (f.toLp 2 (volume : Measure ℝ)) : ℂ)
-      = ((∫ t : ℝ, ‖f t‖ ^ 2 : ℝ) : ℂ) := by
+      = ((∫ t : ℝ, ‖f t‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [MeasureTheory.L2.inner_def, ← integral_complex_ofReal]
     refine integral_congr_ae ?_
     filter_upwards [SchwartzMap.coeFn_toLp f 2 (volume : Measure ℝ)] with x hx
@@ -46,7 +46,7 @@ def weightSchwartz : 𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) :=
   ContinuousLinearMap.id ℂ 𝓢(ℝ, ℂ) + mulXCLM.comp mulXCLM
 
 @[simp] theorem weightSchwartz_apply (f : 𝓢(ℝ, ℂ)) (x : ℝ) :
-    weightSchwartz f x = (1 + (x : ℂ) ^ 2) * f x := by
+    weightSchwartz f x = (1 + (x : ℂ) ^ (2 : ℕ)) * f x := by
   simp only [weightSchwartz, add_apply, ContinuousLinearMap.id_apply,
     ContinuousLinearMap.comp_apply, mulXCLM_apply]
   ring

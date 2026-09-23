@@ -8,7 +8,7 @@ not contained in the real axis, all of whose moments are nonnegative and all of 
 Turán minors are nonnegative.  Two real atoms `12/25` and `5/12` of multiplicity `100`
 dominate: their mutual pair mass sits at the scale `(1/5)^(n+1)`, while a non-real conjugate
 pair at `w = 50/149 + (35/149) i` has `|w| < 5/12`, so every pair interaction involving `w`
-also sits at scale at most `(1/5)^(n+1)` and the multiplicity `100^2` of the real-real pairs
+also sits at scale at most `(1/5)^(n+1)` and the multiplicity `100^(2 : ℕ)` of the real-real pairs
 beats the multiplicity `100` of the cross pairs uniformly in `n`.
 
 Consequently the inference "all plain Turán minors nonnegative ⟹ all points real" is false
@@ -39,7 +39,7 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
       (∀ k : ℕ, 0 ≤ (∑ i, (c i : ℂ) * v i ^ (k + 1)).re) ∧
       (∀ n : ℕ,
         0 ≤ ((∑ i, (c i : ℂ) * v i ^ (n + 1)) * (∑ i, (c i : ℂ) * v i ^ (n + 3)) -
-          (∑ i, (c i : ℂ) * v i ^ (n + 2)) ^ 2).re) := by
+          (∑ i, (c i : ℂ) * v i ^ (n + 2)) ^ (2 : ℕ)).re) := by
   classical
   set a : ℂ := ((12/25 : ℝ) : ℂ) with ha
   set b : ℂ := ((5/12 : ℝ) : ℂ) with hb
@@ -70,7 +70,7 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
     rw [Complex.normSq_apply, hwre, hwim]
     norm_num
   have hnormw : ‖w‖ ≤ 5/12 := by
-    have h2 : ‖w‖ ^ 2 ≤ (5/12 : ℝ) ^ 2 := by
+    have h2 : ‖w‖ ^ (2 : ℕ) ≤ (5/12 : ℝ) ^ (2 : ℕ) := by
       rw [Complex.sq_norm, hnormsqw]
       norm_num
     nlinarith [norm_nonneg w]
@@ -88,7 +88,7 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
     rw [hw'conj, Complex.mul_conj, hnormsqw]
   have hwsub : w - w' = ((2 * (35/149) : ℝ) : ℂ) * Complex.I := by
     rw [hw'conj, Complex.sub_conj, hwim]
-  have hwsubsq : (w - w') ^ 2 = ((-(4 * (35/149) ^ 2) : ℝ) : ℂ) := by
+  have hwsubsq : (w - w') ^ (2 : ℕ) = ((-(4 * (35/149) ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [hwsub, mul_pow, Complex.I_sq]
     push_cast
     ring
@@ -110,7 +110,7 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
   have hA2 : Complex.normSq (b - w) = (145/1788) * (145/1788) + (35/149) * (35/149) := by
     rw [Complex.normSq_apply, hbwre, hbwim]
     ring
-  have hnormsq_ge : ∀ z : ℂ, ‖z ^ 2‖ = Complex.normSq z := by
+  have hnormsq_ge : ∀ z : ℂ, ‖z ^ (2 : ℕ)‖ = Complex.normSq z := by
     intro z
     rw [norm_pow, Complex.sq_norm]
   have hnormw' : ‖w'‖ = ‖w‖ := by
@@ -194,7 +194,7 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
             rw [Complex.add_re, Complex.ofReal_re, Complex.ofReal_re]
     rw [hre]
     have hwlea : ‖w‖ ≤ 12/25 := by
-      have h2 : ‖w‖ ^ 2 ≤ (12/25 : ℝ) ^ 2 := by
+      have h2 : ‖w‖ ^ (2 : ℕ) ≤ (12/25 : ℝ) ^ (2 : ℕ) := by
         rw [Complex.sq_norm, hnormsqw]
         norm_num
       nlinarith [norm_nonneg w]
@@ -228,16 +228,16 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
     rw [hM1, hM2, hM3]
     have hexp : 2 * ((100 * a ^ (n + 1) + 100 * b ^ (n + 1) + w ^ (n + 1) + w' ^ (n + 1)) *
         (100 * a ^ (n + 3) + 100 * b ^ (n + 3) + w ^ (n + 3) + w' ^ (n + 3)) -
-        (100 * a ^ (n + 2) + 100 * b ^ (n + 2) + w ^ (n + 2) + w' ^ (n + 2)) ^ 2) =
-        2 * 100 ^ 2 * ((a * b) ^ (n + 1) * (a - b) ^ 2) +
-        (2 * 100 * ((a * w) ^ (n + 1) * (a - w) ^ 2) +
-          2 * 100 * ((a * w') ^ (n + 1) * (a - w') ^ 2)) +
-        (2 * 100 * ((b * w) ^ (n + 1) * (b - w) ^ 2) +
-          2 * 100 * ((b * w') ^ (n + 1) * (b - w') ^ 2)) +
-        2 * ((w * w') ^ (n + 1) * (w - w') ^ 2) := by
+        (100 * a ^ (n + 2) + 100 * b ^ (n + 2) + w ^ (n + 2) + w' ^ (n + 2)) ^ (2 : ℕ)) =
+        2 * 100 ^ (2 : ℕ) * ((a * b) ^ (n + 1) * (a - b) ^ (2 : ℕ)) +
+        (2 * 100 * ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)) +
+          2 * 100 * ((a * w') ^ (n + 1) * (a - w') ^ (2 : ℕ))) +
+        (2 * 100 * ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)) +
+          2 * 100 * ((b * w') ^ (n + 1) * (b - w') ^ (2 : ℕ))) +
+        2 * ((w * w') ^ (n + 1) * (w - w') ^ (2 : ℕ)) := by
       ring
-    have hT0 : (a * b) ^ (n + 1) * (a - b) ^ 2 =
-        (((1/5 : ℝ) ^ (n + 1) * (19/300) ^ 2 : ℝ) : ℂ) := by
+    have hT0 : (a * b) ^ (n + 1) * (a - b) ^ (2 : ℕ) =
+        (((1/5 : ℝ) ^ (n + 1) * (19/300) ^ (2 : ℕ) : ℝ) : ℂ) := by
       have hab : a * b = ((1/5 : ℝ) : ℂ) := by
         rw [ha, hb, ← Complex.ofReal_mul]
         norm_num
@@ -247,50 +247,50 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
       rw [hab, habs]
       push_cast
       ring
-    have hT1conj : (a * w') ^ (n + 1) * (a - w') ^ 2 =
-        (starRingEnd ℂ) ((a * w) ^ (n + 1) * (a - w) ^ 2) := by
+    have hT1conj : (a * w') ^ (n + 1) * (a - w') ^ (2 : ℕ) =
+        (starRingEnd ℂ) ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)) := by
       rw [hw'conj]
       simp only [map_mul, map_pow, map_sub, haconj]
-    have hT2conj : (b * w') ^ (n + 1) * (b - w') ^ 2 =
-        (starRingEnd ℂ) ((b * w) ^ (n + 1) * (b - w) ^ 2) := by
+    have hT2conj : (b * w') ^ (n + 1) * (b - w') ^ (2 : ℕ) =
+        (starRingEnd ℂ) ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)) := by
       rw [hw'conj]
       simp only [map_mul, map_pow, map_sub, hbconj]
-    have hT3 : (w * w') ^ (n + 1) * (w - w') ^ 2 =
-        (((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ 2)) : ℝ) : ℂ) := by
+    have hT3 : (w * w') ^ (n + 1) * (w - w') ^ (2 : ℕ) =
+        (((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ (2 : ℕ))) : ℝ) : ℂ) := by
       rw [hww', hwsubsq]
       push_cast
       ring
     -- real-part identity for the pair decomposition
     have hre2 := congrArg Complex.re hexp
     rw [hT0, hT1conj, hT2conj, hT3] at hre2
-    have hpairre : (2 * 100 ^ 2 * (((1/5 : ℝ) ^ (n + 1) * (19/300) ^ 2 : ℝ) : ℂ) +
-        (2 * 100 * ((a * w) ^ (n + 1) * (a - w) ^ 2) +
-          2 * 100 * (starRingEnd ℂ) ((a * w) ^ (n + 1) * (a - w) ^ 2)) +
-        (2 * 100 * ((b * w) ^ (n + 1) * (b - w) ^ 2) +
-          2 * 100 * (starRingEnd ℂ) ((b * w) ^ (n + 1) * (b - w) ^ 2)) +
-        2 * (((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ 2)) : ℝ) : ℂ)).re =
-        2 * 100 ^ 2 * ((1/5 : ℝ) ^ (n + 1) * (19/300) ^ 2) +
-          200 * (2 * ((a * w) ^ (n + 1) * (a - w) ^ 2).re) +
-          200 * (2 * ((b * w) ^ (n + 1) * (b - w) ^ 2).re) +
-          2 * ((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ 2))) := by
-      have e1 : (2 : ℂ) * 100 * ((a * w) ^ (n + 1) * (a - w) ^ 2) +
-          2 * 100 * (starRingEnd ℂ) ((a * w) ^ (n + 1) * (a - w) ^ 2) =
-          ((200 * (2 * ((a * w) ^ (n + 1) * (a - w) ^ 2).re) : ℝ) : ℂ) := by
+    have hpairre : (2 * 100 ^ (2 : ℕ) * (((1/5 : ℝ) ^ (n + 1) * (19/300) ^ (2 : ℕ) : ℝ) : ℂ) +
+        (2 * 100 * ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)) +
+          2 * 100 * (starRingEnd ℂ) ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ))) +
+        (2 * 100 * ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)) +
+          2 * 100 * (starRingEnd ℂ) ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ))) +
+        2 * (((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ (2 : ℕ))) : ℝ) : ℂ)).re =
+        2 * 100 ^ (2 : ℕ) * ((1/5 : ℝ) ^ (n + 1) * (19/300) ^ (2 : ℕ)) +
+          200 * (2 * ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)).re) +
+          200 * (2 * ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)).re) +
+          2 * ((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ (2 : ℕ)))) := by
+      have e1 : (2 : ℂ) * 100 * ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)) +
+          2 * 100 * (starRingEnd ℂ) ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)) =
+          ((200 * (2 * ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)).re) : ℝ) : ℂ) := by
         rw [← mul_add, Complex.add_conj]
         push_cast
         ring
-      have e2 : (2 : ℂ) * 100 * ((b * w) ^ (n + 1) * (b - w) ^ 2) +
-          2 * 100 * (starRingEnd ℂ) ((b * w) ^ (n + 1) * (b - w) ^ 2) =
-          ((200 * (2 * ((b * w) ^ (n + 1) * (b - w) ^ 2).re) : ℝ) : ℂ) := by
+      have e2 : (2 : ℂ) * 100 * ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)) +
+          2 * 100 * (starRingEnd ℂ) ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)) =
+          ((200 * (2 * ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)).re) : ℝ) : ℂ) := by
         rw [← mul_add, Complex.add_conj]
         push_cast
         ring
-      have e0 : (2 : ℂ) * 100 ^ 2 * (((1/5 : ℝ) ^ (n + 1) * (19/300) ^ 2 : ℝ) : ℂ) =
-          ((2 * 100 ^ 2 * ((1/5 : ℝ) ^ (n + 1) * (19/300) ^ 2) : ℝ) : ℂ) := by
+      have e0 : (2 : ℂ) * 100 ^ (2 : ℕ) * (((1/5 : ℝ) ^ (n + 1) * (19/300) ^ (2 : ℕ) : ℝ) : ℂ) =
+          ((2 * 100 ^ (2 : ℕ) * ((1/5 : ℝ) ^ (n + 1) * (19/300) ^ (2 : ℕ)) : ℝ) : ℂ) := by
         push_cast
         ring
-      have e3 : (2 : ℂ) * (((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ 2)) : ℝ) : ℂ) =
-          ((2 * ((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ 2))) : ℝ) : ℂ) := by
+      have e3 : (2 : ℂ) * (((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ (2 : ℕ))) : ℝ) : ℂ) =
+          ((2 * ((25/149 : ℝ) ^ (n + 1) * (-(4 * (35/149) ^ (2 : ℕ)))) : ℝ) : ℂ) := by
         push_cast
         ring
       rw [e0, e1, e2, e3, ← Complex.ofReal_add, ← Complex.ofReal_add, ← Complex.ofReal_add,
@@ -299,10 +299,10 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
     -- lower bounds for the cross terms
     have hcross1 : -((1/5 : ℝ) ^ (n + 1) *
         ((538/3725) * (538/3725) + (35/149) * (35/149))) ≤
-        ((a * w) ^ (n + 1) * (a - w) ^ 2).re := by
-      have h1 := Complex.abs_re_le_norm ((a * w) ^ (n + 1) * (a - w) ^ 2)
-      have h2 := neg_abs_le ((a * w) ^ (n + 1) * (a - w) ^ 2).re
-      have h3 : ‖(a * w) ^ (n + 1) * (a - w) ^ 2‖ ≤
+        ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)).re := by
+      have h1 := Complex.abs_re_le_norm ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ))
+      have h2 := neg_abs_le ((a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)).re
+      have h3 : ‖(a * w) ^ (n + 1) * (a - w) ^ (2 : ℕ)‖ ≤
           (1/5 : ℝ) ^ (n + 1) * ((538/3725) * (538/3725) + (35/149) * (35/149)) := by
         rw [norm_mul, norm_pow, hnormsq_ge, hA1]
         refine mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) hnormaw _) le_rfl
@@ -310,10 +310,10 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
       linarith
     have hcross2 : -((1/5 : ℝ) ^ (n + 1) *
         ((145/1788) * (145/1788) + (35/149) * (35/149))) ≤
-        ((b * w) ^ (n + 1) * (b - w) ^ 2).re := by
-      have h1 := Complex.abs_re_le_norm ((b * w) ^ (n + 1) * (b - w) ^ 2)
-      have h2 := neg_abs_le ((b * w) ^ (n + 1) * (b - w) ^ 2).re
-      have h3 : ‖(b * w) ^ (n + 1) * (b - w) ^ 2‖ ≤
+        ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)).re := by
+      have h1 := Complex.abs_re_le_norm ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ))
+      have h2 := neg_abs_le ((b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)).re
+      have h3 : ‖(b * w) ^ (n + 1) * (b - w) ^ (2 : ℕ)‖ ≤
           (1/5 : ℝ) ^ (n + 1) * ((145/1788) * (145/1788) + (35/149) * (35/149)) := by
         rw [norm_mul, norm_pow, hnormsq_ge, hA2]
         refine mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) hnormbw _) le_rfl
@@ -323,30 +323,30 @@ theorem exists_nonreal_config_forall_turanMinor_re_nonneg :
       pow_le_pow_left₀ (by norm_num) (by norm_num) _
     -- the master bracket
     have hbracket : (0 : ℝ) ≤ (1/5 : ℝ) ^ (n + 1) *
-        (2 * 100 ^ 2 * (19/300) ^ 2 -
+        (2 * 100 ^ (2 : ℕ) * (19/300) ^ (2 : ℕ) -
           400 * ((538/3725) * (538/3725) + (35/149) * (35/149)) -
           400 * ((145/1788) * (145/1788) + (35/149) * (35/149)) -
-          8 * (35/149) ^ 2) := by
-      have hB : (0 : ℝ) ≤ 2 * 100 ^ 2 * (19/300) ^ 2 -
+          8 * (35/149) ^ (2 : ℕ)) := by
+      have hB : (0 : ℝ) ≤ 2 * 100 ^ (2 : ℕ) * (19/300) ^ (2 : ℕ) -
           400 * ((538/3725) * (538/3725) + (35/149) * (35/149)) -
           400 * ((145/1788) * (145/1788) + (35/149) * (35/149)) -
-          8 * (35/149) ^ 2 := by
+          8 * (35/149) ^ (2 : ℕ) := by
         norm_num
       positivity
     have hfin : (0 : ℝ) ≤ (2 * ((100 * a ^ (n + 1) + 100 * b ^ (n + 1) + w ^ (n + 1) +
         w' ^ (n + 1)) *
         (100 * a ^ (n + 3) + 100 * b ^ (n + 3) + w ^ (n + 3) + w' ^ (n + 3)) -
-        (100 * a ^ (n + 2) + 100 * b ^ (n + 2) + w ^ (n + 2) + w' ^ (n + 2)) ^ 2)).re := by
+        (100 * a ^ (n + 2) + 100 * b ^ (n + 2) + w ^ (n + 2) + w' ^ (n + 2)) ^ (2 : ℕ))).re := by
       rw [hre2]
       have hp5 : (0 : ℝ) ≤ (1/5 : ℝ) ^ (n + 1) := by positivity
       nlinarith [hcross1, hcross2, hpowmono, hbracket]
     have h2re : (2 * ((100 * a ^ (n + 1) + 100 * b ^ (n + 1) + w ^ (n + 1) +
         w' ^ (n + 1)) *
         (100 * a ^ (n + 3) + 100 * b ^ (n + 3) + w ^ (n + 3) + w' ^ (n + 3)) -
-        (100 * a ^ (n + 2) + 100 * b ^ (n + 2) + w ^ (n + 2) + w' ^ (n + 2)) ^ 2)).re =
+        (100 * a ^ (n + 2) + 100 * b ^ (n + 2) + w ^ (n + 2) + w' ^ (n + 2)) ^ (2 : ℕ))).re =
         2 * ((100 * a ^ (n + 1) + 100 * b ^ (n + 1) + w ^ (n + 1) + w' ^ (n + 1)) *
         (100 * a ^ (n + 3) + 100 * b ^ (n + 3) + w ^ (n + 3) + w' ^ (n + 3)) -
-        (100 * a ^ (n + 2) + 100 * b ^ (n + 2) + w ^ (n + 2) + w' ^ (n + 2)) ^ 2).re := by
+        (100 * a ^ (n + 2) + 100 * b ^ (n + 2) + w ^ (n + 2) + w' ^ (n + 2)) ^ (2 : ℕ)).re := by
       simp [Complex.mul_re]
     rw [h2re] at hfin
     linarith

@@ -120,17 +120,17 @@ theorem fzzCigarParitySourceBalancedMellinNormalizedCrossing_eq
   have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast hnpos.ne'
   have hnorm : ‖(a : ℂ)⁻¹ * z‖ = a⁻¹ * n := by
     rw [norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hapos]
-  have hstar : star z * z = ((n ^ 2 : ℝ) : ℂ) := by
+  have hstar : star z * z = ((n ^ (2 : ℕ) : ℝ) : ℂ) := by
     simpa [n] using Complex.conj_mul' z
   have hstarA : star (a : ℂ) = (a : ℂ) := Complex.conj_ofReal a
   have hstarScaled :
       star ((a : ℂ)⁻¹ * z) * ((a : ℂ)⁻¹ * z) =
-        (a : ℂ)⁻¹ ^ 2 * ((n ^ 2 : ℝ) : ℂ) := by
+        (a : ℂ)⁻¹ ^ (2 : ℕ) * ((n ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [star_mul, star_inv₀, hstarA]
     calc
       star z * (a : ℂ)⁻¹ * ((a : ℂ)⁻¹ * z) =
-          (a : ℂ)⁻¹ ^ 2 * (star z * z) := by ring
-      _ = (a : ℂ)⁻¹ ^ 2 * ((n ^ 2 : ℝ) : ℂ) := by rw [hstar]
+          (a : ℂ)⁻¹ ^ (2 : ℕ) * (star z * z) := by ring
+      _ = (a : ℂ)⁻¹ ^ (2 : ℕ) * ((n ^ (2 : ℕ) : ℝ) : ℂ) := by rw [hstar]
   change
     fzzCigarParityDilatedTwoScaleGradeCrossing beta
         (1, (a : ℂ)⁻¹ * z) /
@@ -144,7 +144,7 @@ theorem fzzCigarParitySourceBalancedMellinNormalizedCrossing_eq
   rw [show (fzzKreinRAt beta : ℂ) * star ((a : ℂ)⁻¹ * z) *
       ((a : ℂ)⁻¹ * z) =
       (fzzKreinRAt beta : ℂ) *
-        ((a : ℂ)⁻¹ ^ 2 * ((n ^ 2 : ℝ) : ℂ)) by
+        ((a : ℂ)⁻¹ ^ (2 : ℕ) * ((n ^ (2 : ℕ) : ℝ) : ℂ)) by
           rw [mul_assoc, hstarScaled]]
   push_cast
   field_simp [haC, hnC]

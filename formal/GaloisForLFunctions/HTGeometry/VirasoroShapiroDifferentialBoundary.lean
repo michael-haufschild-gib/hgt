@@ -63,7 +63,7 @@ amplitude into a nonzero DA gauge times the square of the reduced open-string am
 theorem reducedVirasoroShapiroAmplitudeMero_eq_gauge_mul_veneziano_sq (a b : ℂ) :
     reducedVirasoroShapiroAmplitudeMero a b =
       virasoroShapiroReflectionGaugeMero a b *
-        reducedVenezianoAmplitudeMero a b ^ 2 := by
+        reducedVenezianoAmplitudeMero a b ^ (2 : ℕ) := by
   rw [reducedVirasoroShapiroAmplitudeMero,
     virasoroShapiroReflectionGaugeMero,
     reducedVenezianoAmplitudeMero,
@@ -94,12 +94,12 @@ theorem hypertranscendentalOver_reducedVirasoroShapiroAmplitudeMero_of_nonintege
       (reducedVirasoroShapiroAmplitudeMero a b) := by
   rw [reducedVirasoroShapiroAmplitudeMero_eq_gauge_mul_veneziano_sq]
   have hsq : HypertranscendentalOver (RatFunc ℂ)
-      (reducedVenezianoAmplitudeMero a b ^ 2) :=
+      (reducedVenezianoAmplitudeMero a b ^ (2 : ℕ)) :=
     HTGeometry.hypertranscendentalOver_pow_of_pos (N := 2)
     ((hypertranscendentalOver_reducedVenezianoAmplitudeMero_iff_nonintegerShift
       a b).2 hnoninteger) (by norm_num)
   have hproduct : HypertranscendentalOver (RatFunc ℂ)
-      (reducedVenezianoAmplitudeMero a b ^ 2 *
+      (reducedVenezianoAmplitudeMero a b ^ (2 : ℕ) *
         virasoroShapiroReflectionGaugeMero a b) :=
     (HTGeometry.hypertranscendentalOver_mul_differentialAlgebraic_iff
       (differentialAlgebraicOver_virasoroShapiroReflectionGaugeMero a b)

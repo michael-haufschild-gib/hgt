@@ -33,9 +33,9 @@ def symmetricThreePointMixedDetOne
   A x x * B y y * B z z + B x x * A y y * B z z + B x x * B y y * A z z +
   2 * (A x y * B x z * B y z + B x y * A x z * B y z +
     B x y * B x z * A y z) -
-  (A x x * B y z ^ 2 + 2 * B x x * B y z * A y z) -
-  (A y y * B x z ^ 2 + 2 * B y y * B x z * A x z) -
-  (A z z * B x y ^ 2 + 2 * B z z * B x y * A x y)
+  (A x x * B y z ^ (2 : ℕ) + 2 * B x x * B y z * A y z) -
+  (A y y * B x z ^ (2 : ℕ) + 2 * B y y * B x z * A x z) -
+  (A z z * B x y ^ (2 : ℕ) + 2 * B z z * B x y * A x y)
 
 /-- Exact cubic expansion of the three-node determinant under amplification of one kernel. -/
 theorem symmetricThreePointDet_add_smul
@@ -43,8 +43,8 @@ theorem symmetricThreePointDet_add_smul
     symmetricThreePointDet (fun u v => B u v + lambda * A u v) x y z =
       symmetricThreePointDet B x y z +
         lambda * symmetricThreePointMixedDetOne A B x y z +
-        lambda ^ 2 * symmetricThreePointMixedDetOne B A x y z +
-        lambda ^ 3 * symmetricThreePointDet A x y z := by
+        lambda ^ (2 : ℕ) * symmetricThreePointMixedDetOne B A x y z +
+        lambda ^ (3 : ℕ) * symmetricThreePointDet A x y z := by
   unfold symmetricThreePointDet symmetricThreePointMixedDetOne
   ring
 
@@ -68,22 +68,22 @@ theorem symmetricThreePointDet_add_smul_neg_of_maskingBudget_lt
   let m1 := symmetricThreePointMixedDetOne A B x y z
   let m2 := symmetricThreePointMixedDetOne B A x y z
   have hlambda0 : 0 < lambda := lt_of_lt_of_le zero_lt_one hlambda
-  have hlambdaSq : 1 ≤ lambda ^ 2 := by nlinarith
+  have hlambdaSq : 1 ≤ lambda ^ (2 : ℕ) := by nlinarith
   have hdB : dB ≤ |dB| := le_abs_self dB
   have hm1 : lambda * m1 ≤ lambda * |m1| :=
     mul_le_mul_of_nonneg_left (le_abs_self m1) hlambda0.le
-  have hm2 : lambda ^ 2 * m2 ≤ lambda ^ 2 * |m2| :=
+  have hm2 : lambda ^ (2 : ℕ) * m2 ≤ lambda ^ (2 : ℕ) * |m2| :=
     mul_le_mul_of_nonneg_left (le_abs_self m2) (sq_nonneg lambda)
-  have hdBscale : |dB| ≤ lambda ^ 2 * |dB| := by
+  have hdBscale : |dB| ≤ lambda ^ (2 : ℕ) * |dB| := by
     nlinarith [abs_nonneg dB]
-  have hm1scale : lambda * |m1| ≤ lambda ^ 2 * |m1| := by
+  have hm1scale : lambda * |m1| ≤ lambda ^ (2 : ℕ) * |m1| := by
     have hprod : 0 ≤ (lambda - 1) * (lambda * |m1|) :=
       mul_nonneg (sub_nonneg.mpr hlambda)
         (mul_nonneg hlambda0.le (abs_nonneg m1))
     nlinarith
   have hupper :
-      dB + lambda * m1 + lambda ^ 2 * m2 + lambda ^ 3 * dA ≤
-        lambda ^ 2 *
+      dB + lambda * m1 + lambda ^ (2 : ℕ) * m2 + lambda ^ (3 : ℕ) * dA ≤
+        lambda ^ (2 : ℕ) *
           (symmetricThreePointMaskingBudget A B x y z + lambda * dA) := by
     dsimp only [symmetricThreePointMaskingBudget, dA, dB, m1, m2] at *
     nlinarith
@@ -91,7 +91,7 @@ theorem symmetricThreePointDet_add_smul_neg_of_maskingBudget_lt
       symmetricThreePointMaskingBudget A B x y z + lambda * dA < 0 := by
     dsimp only [dA] at hmask ⊢
     nlinarith
-  have hneg : lambda ^ 2 *
+  have hneg : lambda ^ (2 : ℕ) *
       (symmetricThreePointMaskingBudget A B x y z + lambda * dA) < 0 :=
     mul_neg_of_pos_of_neg (sq_pos_of_pos hlambda0) hbracket
   rw [symmetricThreePointDet_add_smul]

@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.FiniteExtremeNodePersistence
 # Finite-block centered-source capital across degree
 
 Finite outer interlacing does more than preserve a super-apex sign. At fixed positive mass, the
-moving-apex centered residue `(y*x)^2 - 1` at one next-degree outer node is strictly larger than
+moving-apex centered residue `(y*x)^(2 : ℕ) - 1` at one next-degree outer node is strictly larger than
 the residue at every current positive Gauss node.
 -/
 
@@ -19,7 +19,7 @@ theorem exists_gaussNode_apexCenteredResidue_above_all_below
     {y : ℝ} (hy : 0 < y)
     (hnodes : ∀ x ∈ gaussNodes s m, 0 < x) :
     ∃ z ∈ gaussNodes s (m + 1), 0 < z ∧
-      ∀ x ∈ gaussNodes s m, (y * x) ^ 2 - 1 < (y * z) ^ 2 - 1 := by
+      ∀ x ∈ gaussNodes s m, (y * x) ^ (2 : ℕ) - 1 < (y * z) ^ (2 : ℕ) - 1 := by
   classical
   obtain ⟨z, hzmem, hzall⟩ := exists_gaussNode_above_all_below h hmN
   have hcard : (gaussNodes s m).card = m + 1 :=

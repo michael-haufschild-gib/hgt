@@ -92,34 +92,34 @@ theorem tendsto_natDegree_mul_radialGaussian_of_exponential_index_bound
     (z : ℂ) {tau : ℝ} (htau : 0 < tau) :
     Tendsto
       (fun n ↦ ((B n).natDegree : ℝ) *
-        (tau⁻¹ * Real.exp (-((r n - ‖z‖) ^ 2 * tau))))
+        (tau⁻¹ * Real.exp (-((r n - ‖z‖) ^ (2 : ℕ) * tau))))
       atTop (nhds 0) := by
   have hGaussian : Tendsto
       (fun T : ℝ ↦ (K + 3) * Real.exp (5 * T) *
-        (tau⁻¹ * Real.exp (-((T - ‖z‖) ^ 2 * tau))))
+        (tau⁻¹ * Real.exp (-((T - ‖z‖) ^ (2 : ℕ) * tau))))
       atTop (nhds 0) := by
     have hbase := tendsto_exp_neg_quadratic_add_linear_atTop
       htau ‖z‖ 5 0
     have hscaled : Tendsto
         (fun T : ℝ ↦ ((K + 3) * tau⁻¹) *
-          Real.exp (-tau * (T - ‖z‖) ^ 2 + 5 * T + 0))
+          Real.exp (-tau * (T - ‖z‖) ^ (2 : ℕ) + 5 * T + 0))
         atTop (nhds 0) := by
       simpa using hbase.const_mul ((K + 3) * tau⁻¹)
     apply hscaled.congr'
     filter_upwards with T
     calc
       ((K + 3) * tau⁻¹) *
-          Real.exp (-tau * (T - ‖z‖) ^ 2 + 5 * T + 0) =
+          Real.exp (-tau * (T - ‖z‖) ^ (2 : ℕ) + 5 * T + 0) =
         ((K + 3) * tau⁻¹) *
-          Real.exp (5 * T - (T - ‖z‖) ^ 2 * tau) := by
+          Real.exp (5 * T - (T - ‖z‖) ^ (2 : ℕ) * tau) := by
         congr 2
         ring
       _ = ((K + 3) * tau⁻¹) *
           (Real.exp (5 * T) *
-            Real.exp (-((T - ‖z‖) ^ 2 * tau))) := by
+            Real.exp (-((T - ‖z‖) ^ (2 : ℕ) * tau))) := by
         rw [sub_eq_add_neg, Real.exp_add]
       _ = (K + 3) * Real.exp (5 * T) *
-          (tau⁻¹ * Real.exp (-((T - ‖z‖) ^ 2 * tau))) := by ring
+          (tau⁻¹ * Real.exp (-((T - ‖z‖) ^ (2 : ℕ) * tau))) := by ring
   have hmajor := hGaussian.comp hr
   apply squeeze_zero'
   · filter_upwards with n

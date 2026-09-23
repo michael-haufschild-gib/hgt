@@ -21,7 +21,7 @@ noncomputable section
 /-- The diagonal square energy of a finite affine-coordinate packet. -/
 def finiteBernsteinCoordinateDiagonalEnergy
     (U : Finset ℂ) (C : ℂ → ℂ) (n : ℕ) : ℝ :=
-  ∑ u ∈ U, ‖C u‖ ^ 2 * bernsteinAffineRowEnergy u n
+  ∑ u ∈ U, ‖C u‖ ^ (2 : ℕ) * bernsteinAffineRowEnergy u n
 
 /-- Equal-amplitude nondegenerate coordinates have the expected half-order diagonal limit.
 Positivity of the common amplitude is automatic for a nonempty packet; the empty packet is zero. -/
@@ -31,22 +31,22 @@ theorem tendsto_sqrtNat_mul_finiteBernsteinCoordinateDiagonalEnergy_div_pow
     (hu0 : ∀ u ∈ U, u ≠ 0) (hu1 : ∀ u ∈ U, u ≠ 1) :
     Tendsto
       (fun n : ℕ => Real.sqrt n *
-        finiteBernsteinCoordinateDiagonalEnergy U C n / (B ^ 2) ^ n)
+        finiteBernsteinCoordinateDiagonalEnergy U C n / (B ^ (2 : ℕ)) ^ n)
       atTop
       (nhds (∑ u ∈ U,
-        ‖C u‖ ^ 2 * bernsteinAffineRowHalfOrderConstant u)) := by
+        ‖C u‖ ^ (2 : ℕ) * bernsteinAffineRowHalfOrderConstant u)) := by
   have hterm (u : ℂ) (hu : u ∈ U) : Tendsto
       (fun n : ℕ => Real.sqrt n *
-        (‖C u‖ ^ 2 * bernsteinAffineRowEnergy u n) / (B ^ 2) ^ n)
+        (‖C u‖ ^ (2 : ℕ) * bernsteinAffineRowEnergy u n) / (B ^ (2 : ℕ)) ^ n)
       atTop
-      (nhds (‖C u‖ ^ 2 * bernsteinAffineRowHalfOrderConstant u)) := by
+      (nhds (‖C u‖ ^ (2 : ℕ) * bernsteinAffineRowHalfOrderConstant u)) := by
     have hrow := tendsto_sqrtNat_mul_bernsteinAffineRowEnergy_div_pow
       (hu0 u hu) (hu1 u hu)
     have hrowB : Tendsto
-        (fun n : ℕ => Real.sqrt n * bernsteinAffineRowEnergy u n / (B ^ 2) ^ n)
+        (fun n : ℕ => Real.sqrt n * bernsteinAffineRowEnergy u n / (B ^ (2 : ℕ)) ^ n)
         atTop (nhds (bernsteinAffineRowHalfOrderConstant u)) := by
       simpa only [hamp u hu, bernsteinAffineRowHalfOrderConstant] using hrow
-    convert hrowB.const_mul (‖C u‖ ^ 2) using 1
+    convert hrowB.const_mul (‖C u‖ ^ (2 : ℕ)) using 1
     funext n
     ring
   have hsum := tendsto_finsetSum U (fun u hu => hterm u hu)
@@ -57,7 +57,7 @@ theorem tendsto_sqrtNat_mul_finiteBernsteinCoordinateDiagonalEnergy_div_pow
 /-- The exact finite algebraic Abel kernel of the diagonal packet. -/
 def finiteBernsteinCoordinateDiagonalSquareRootKernel
     (U : Finset ℂ) (C : ℂ → ℂ) (B t : ℝ) : ℝ :=
-  ∑ u ∈ U, ‖C u‖ ^ 2 *
+  ∑ u ∈ U, ‖C u‖ ^ (2 : ℕ) *
     bernsteinSquareRootKernel B (‖u‖ - ‖1 - u‖) t
 
 /-- Inside the first characteristic radius, the Abel sum of the diagonal packet is exactly its
@@ -67,7 +67,7 @@ theorem hasSum_finiteBernsteinCoordinateDiagonalEnergy_eq_squareRootKernel
     (U : Finset ℂ) (C : ℂ → ℂ) {B t : ℝ}
     (hamp : ∀ u ∈ U, ‖u‖ + ‖1 - u‖ = B)
     (hu0 : ∀ u ∈ U, u ≠ 0) (hu1 : ∀ u ∈ U, u ≠ 1)
-    (ht0 : 0 < t) (htB : t < 1 / B ^ 2) :
+    (ht0 : 0 < t) (htB : t < 1 / B ^ (2 : ℕ)) :
     HasSum
       (fun n : ℕ => finiteBernsteinCoordinateDiagonalEnergy U C n * t ^ n)
       (finiteBernsteinCoordinateDiagonalSquareRootKernel U C B t) := by
@@ -77,22 +77,22 @@ theorem hasSum_finiteBernsteinCoordinateDiagonalEnergy_eq_squareRootKernel
       rw [← hamp u hu]
       exact add_pos_of_pos_of_nonneg
         (norm_pos_iff.mpr (hu0 u hu)) (norm_nonneg _)
-    have hBsq : 0 < B ^ 2 := sq_pos_of_pos hB
-    have hBt : B ^ 2 * t < 1 := by
+    have hBsq : 0 < B ^ (2 : ℕ) := sq_pos_of_pos hB
+    have hBt : B ^ (2 : ℕ) * t < 1 := by
       simpa only [mul_comm] using (lt_div_iff₀ hBsq).mp htB
     have hterm (u : ℂ) (hu : u ∈ U) : HasSum
         (fun n : ℕ =>
-          (‖C u‖ ^ 2 * bernsteinAffineRowEnergy u n) * t ^ n)
-        (‖C u‖ ^ 2 *
+          (‖C u‖ ^ (2 : ℕ) * bernsteinAffineRowEnergy u n) * t ^ n)
+        (‖C u‖ ^ (2 : ℕ) *
           bernsteinSquareRootKernel B (‖u‖ - ‖1 - u‖) t) := by
       let D : ℝ := ‖u‖ - ‖1 - u‖
       have ha : 0 < ‖u‖ := norm_pos_iff.mpr (hu0 u hu)
       have hb : 0 < ‖1 - u‖ := norm_pos_iff.mpr (sub_ne_zero.mpr (hu1 u hu).symm)
-      have hDsq : D ^ 2 < B ^ 2 := by
+      have hDsq : D ^ (2 : ℕ) < B ^ (2 : ℕ) := by
         dsimp only [D]
         rw [← hamp u hu]
         nlinarith
-      have hDt : D ^ 2 * t < 1 :=
+      have hDt : D ^ (2 : ℕ) * t < 1 :=
         (mul_lt_mul_of_pos_right hDsq ht0).trans hBt
       have hkernel := hasSum_centralBinomialDiagonalKernelCoefficient_eq_kernel
         ht0 hBt hDt
@@ -105,11 +105,11 @@ theorem hasSum_finiteBernsteinCoordinateDiagonalEnergy_eq_squareRootKernel
           rw [bernsteinAffineRowEnergy_eq_centralBinomialDiagonalKernelCoefficient,
             hamp u hu]]
         exact hkernel
-      simpa only [mul_assoc] using hrow.mul_left (‖C u‖ ^ 2)
+      simpa only [mul_assoc] using hrow.mul_left (‖C u‖ ^ (2 : ℕ))
     have hsum_aux (V : Finset ℂ) (hVU : V ⊆ U) : HasSum
         (fun n : ℕ => ∑ u ∈ V,
-          (‖C u‖ ^ 2 * bernsteinAffineRowEnergy u n) * t ^ n)
-        (∑ u ∈ V, ‖C u‖ ^ 2 *
+          (‖C u‖ ^ (2 : ℕ) * bernsteinAffineRowEnergy u n) * t ^ n)
+        (∑ u ∈ V, ‖C u‖ ^ (2 : ℕ) *
           bernsteinSquareRootKernel B (‖u‖ - ‖1 - u‖) t) := by
       classical
       induction V using Finset.induction_on with

@@ -128,7 +128,7 @@ theorem exists_uniform_windowMean_staticChoiTarget_fullProjective_le
   rw [show projectiveFrequencyEnergy
       (clockScaledFullProjectiveFrequency g y) = energy by rfl, hreal]
   calc
-    _ ≤ (r.factorial : ℝ) * (∑ i, weight i ^ 2) ^ r +
+    _ ≤ (r.factorial : ℝ) * (∑ i, weight i ^ (2 : ℕ)) ^ r +
         (2 * C / (g * T)) *
           (4 : ℝ) ^ ((r : ℝ) * (1 + eps)) := hm
     _ ≤ (r.factorial : ℝ) * ((n + 2 : ℕ) : ℝ)⁻¹ ^ r +
@@ -287,7 +287,7 @@ theorem exists_uniform_fullProjectiveChoi_initialExclusion_or_budgetObstruction
               ((r.factorial : ℝ) * ((n + 2 : ℕ) : ℝ)⁻¹ ^ r +
                 (2 * C0 / (g * (2 * T))) *
                   (4 : ℝ) ^ ((r : ℝ) * (1 + eps))) /
-                (1 - epsw ^ 2) ^ r ∨
+                (1 - epsw ^ (2 : ℕ)) ^ r ∨
           ¬ ∃ t ∈ Icc
               (epsw / staticChoiSpeed
                   (projectiveFrequencyEnergy
@@ -307,7 +307,7 @@ theorem exists_uniform_fullProjectiveChoi_initialExclusion_or_budgetObstruction
     hepsn hgap hepswOne honset
   let energy : Fin (n + 2) → ℝ :=
     projectiveFrequencyEnergy (clockScaledFullProjectiveFrequency g y)
-  let threshold : ℝ := 1 - epsw ^ 2
+  let threshold : ℝ := 1 - epsw ^ (2 : ℕ)
   let width : ℝ := 2 * (epsw / staticChoiSpeed energy) +
     (epsw - epsn) / staticChoiSpeed energy
   let budget : ℝ :=
@@ -354,7 +354,7 @@ theorem exists_uniform_fullProjectiveChoi_initialExclusion_or_budgetObstruction
         (by rw [staticSpectralChoiVector_norm hd])
         (by rw [htarget c])
       have hdistSq : pureStateTraceDistance
-          (staticSpectralChoiVector (n + 2) t energy) (target c) ^ 2 ≤ epsw ^ 2 :=
+          (staticSpectralChoiVector (n + 2) t energy) (target c) ^ (2 : ℕ) ≤ epsw ^ (2 : ℕ) :=
         (sq_le_sq₀ (pureStateTraceDistance_nonneg _ _) hepsw.le).2 hdist
       nlinarith
     let wide : Set ℝ := {t | t ∈ Ioc (-T) T ∧ ∃ c,

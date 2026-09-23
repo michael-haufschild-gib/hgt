@@ -258,7 +258,7 @@ def amplify (r : ℝ) (P : PolarizationPacket ι V) : PolarizationPacket ι V wh
 @[simp] theorem amplify_form (r : ℝ) : (amplify r P).form = P.form := rfl
 
 theorem localPower_amplify (r : ℝ) :
-    localPower P.form (amplify r P).localVelocity = r ^ 2 * localPower P.form P.localVelocity := by
+    localPower P.form (amplify r P).localVelocity = r ^ (2 : ℕ) * localPower P.form P.localVelocity := by
   rw [localPower, localPower, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   show P.form i (r • P.localVelocity i) (r • P.localVelocity i) = _
@@ -266,7 +266,7 @@ theorem localPower_amplify (r : ℝ) :
   ring
 
 theorem fusedPower_amplify (r : ℝ) :
-    fusedPower P.form (amplify r P).fusedVelocity = r ^ 2 * fusedPower P.form P.fusedVelocity := by
+    fusedPower P.form (amplify r P).fusedVelocity = r ^ (2 : ℕ) * fusedPower P.form P.fusedVelocity := by
   rw [fusedPower, fusedPower]
   show fusedForm P.form (r • P.fusedVelocity) (r • P.fusedVelocity) = _
   simp only [map_smul, smul_apply, smul_eq_mul]
@@ -274,7 +274,7 @@ theorem fusedPower_amplify (r : ℝ) :
 
 theorem syncTension_amplify (r : ℝ) :
     syncTension P.form (amplify r P).localVelocity (amplify r P).fusedVelocity
-      = r ^ 2 * syncTension P.form P.localVelocity P.fusedVelocity := by
+      = r ^ (2 : ℕ) * syncTension P.form P.localVelocity P.fusedVelocity := by
   rw [syncTension, syncTension, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   show P.form i (r • P.localVelocity i - r • P.fusedVelocity)
@@ -286,16 +286,16 @@ theorem syncTension_amplify (r : ℝ) :
 end PolarizationPacket
 
 theorem bounded_geometric_iff {p d : ℝ} (hp : 0 ≤ p) (hd : 1 < d) :
-    (∃ C : ℝ, ∀ n : ℕ, (d ^ n) ^ 2 * p ≤ C) ↔ p = 0 := by
+    (∃ C : ℝ, ∀ n : ℕ, (d ^ n) ^ (2 : ℕ) * p ≤ C) ↔ p = 0 := by
   constructor
   · rintro ⟨C, hC⟩
     by_contra hne
     have hppos : 0 < p := lt_of_le_of_ne hp (Ne.symm hne)
-    have hd2 : (1 : ℝ) < d ^ 2 := by nlinarith
-    have hdiv : Filter.Tendsto (fun n : ℕ => (d ^ 2) ^ n * p) Filter.atTop Filter.atTop :=
+    have hd2 : (1 : ℝ) < d ^ (2 : ℕ) := by nlinarith
+    have hdiv : Filter.Tendsto (fun n : ℕ => (d ^ (2 : ℕ)) ^ n * p) Filter.atTop Filter.atTop :=
       Filter.Tendsto.atTop_mul_const hppos (tendsto_pow_atTop_atTop_of_one_lt hd2)
     obtain ⟨n, hn⟩ := (hdiv.eventually_gt_atTop C).exists
-    have hrw : (d ^ n) ^ 2 * p = (d ^ 2) ^ n * p := by
+    have hrw : (d ^ n) ^ (2 : ℕ) * p = (d ^ (2 : ℕ)) ^ n * p := by
       rw [← pow_mul, ← pow_mul, mul_comm n 2]
     exact absurd (hC n) (not_le.2 (by rwa [hrw]))
   · rintro rfl
@@ -311,7 +311,7 @@ theorem bounded_localPower_iff {hpd : IsPosDef P.form} {d : ℝ} (hd : 1 < d) :
     (∃ C : ℝ, ∀ n : ℕ, localPower P.form (amplify (d ^ n) P).localVelocity ≤ C)
       ↔ ∀ i, P.residual i = 0 := by
   have hrw : ∀ n : ℕ, localPower P.form (amplify (d ^ n) P).localVelocity
-      = (d ^ n) ^ 2 * localPower P.form P.localVelocity := fun n => P.localPower_amplify (d ^ n)
+      = (d ^ n) ^ (2 : ℕ) * localPower P.form P.localVelocity := fun n => P.localPower_amplify (d ^ n)
   constructor
   · rintro ⟨C, hC⟩
     have hzero : localPower P.form P.localVelocity = 0 :=
@@ -333,7 +333,7 @@ theorem bounded_syncTension_iff {hpd : IsPosDef P.form} {d : ℝ} (hd : 1 < d) :
       ↔ ∀ i, P.localVelocity i = P.fusedVelocity := by
   have hrw : ∀ n : ℕ,
       syncTension P.form (amplify (d ^ n) P).localVelocity (amplify (d ^ n) P).fusedVelocity
-        = (d ^ n) ^ 2 * syncTension P.form P.localVelocity P.fusedVelocity :=
+        = (d ^ n) ^ (2 : ℕ) * syncTension P.form P.localVelocity P.fusedVelocity :=
     fun n => P.syncTension_amplify (d ^ n)
   constructor
   · rintro ⟨C, hC⟩
@@ -351,7 +351,7 @@ theorem bounded_fusedPower_iff [Nonempty ι] {hpd : IsPosDef P.form} {d : ℝ} (
     (∃ C : ℝ, ∀ n : ℕ, fusedPower P.form (amplify (d ^ n) P).fusedVelocity ≤ C)
       ↔ ∑ i, P.residual i = 0 := by
   have hrw : ∀ n : ℕ, fusedPower P.form (amplify (d ^ n) P).fusedVelocity
-      = (d ^ n) ^ 2 * fusedPower P.form P.fusedVelocity := fun n => P.fusedPower_amplify (d ^ n)
+      = (d ^ n) ^ (2 : ℕ) * fusedPower P.form P.fusedVelocity := fun n => P.fusedPower_amplify (d ^ n)
   constructor
   · rintro ⟨C, hC⟩
     have hzero : fusedPower P.form P.fusedVelocity = 0 :=

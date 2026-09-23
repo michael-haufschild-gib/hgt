@@ -46,7 +46,7 @@ theorem vonMangoldtDiv_mul_apply (m : ℕ) :
 `|∑_{m ≤ N} (Λ*Λ)(m)/m − ½log²N| ≤ 30·log N + 120`. -/
 theorem abs_sum_vonMangoldt_conv_div_sub_le (N : ℕ) (hN : 1 ≤ N) :
     |(∑ m ∈ Finset.Icc 1 N, (vonMangoldt * vonMangoldt) m / m)
-        - Real.log N ^ 2 / 2| ≤ 30 * Real.log N + 120 := by
+        - Real.log N ^ (2 : ℕ) / 2| ≤ 30 * Real.log N + 120 := by
   have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
   have hlN0 : 0 ≤ Real.log N := Real.log_nonneg (by exact_mod_cast hN)
   have hlog4 : Real.log 4 ≤ 3 := by
@@ -88,7 +88,7 @@ theorem abs_sum_vonMangoldt_conv_div_sub_le (N : ℕ) (hN : 1 ≤ N) :
   have hTb := abs_le.1 hT
   have hmain : |(∑ a ∈ Finset.Icc 1 N, vonMangoldt a / a * Real.log N)
       - (∑ a ∈ Finset.Icc 1 N, vonMangoldt a * Real.log a / a)
-      - Real.log N ^ 2 / 2| ≤ 22 * Real.log N + 50 := by
+      - Real.log N ^ (2 : ℕ) / 2| ≤ 22 * Real.log N + 50 := by
     have h1 : ∑ a ∈ Finset.Icc 1 N, vonMangoldt a / a * Real.log N
         = (∑ a ∈ Finset.Icc 1 N, vonMangoldt a / a) * Real.log N := by
       rw [Finset.sum_mul]

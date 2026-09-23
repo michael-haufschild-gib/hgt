@@ -78,7 +78,7 @@ theorem hermUnit_gt {i j : Fin N} (h : j < i) :
       = rt2inv • (Complex.I • (single i j 1 - single j i 1)) := by
   simp [hermUnit, h.ne', not_lt.mpr h.le]
 
-theorem rt2inv_sq : rt2inv ^ 2 = 1 / 2 := by rw [sq, rt2inv_mul_self]
+theorem rt2inv_sq : rt2inv ^ (2 : ℕ) = 1 / 2 := by rw [sq, rt2inv_mul_self]
 
 theorem star_I_eq : star Complex.I = -Complex.I := by rw [← starRingEnd_apply]; exact Complex.conj_I
 

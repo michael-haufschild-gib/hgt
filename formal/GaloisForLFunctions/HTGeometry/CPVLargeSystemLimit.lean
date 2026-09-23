@@ -40,7 +40,7 @@ theorem radiationAffinity_pos (tau sigma : ℝ) : 0 < radiationAffinity tau sigm
 
 /-- The corpus Hellinger curvature bounds loss of thermal overlap. -/
 theorem radiationAffinity_defect_bound (tau sigma : ℝ) :
-    (Real.sqrt (thermalRatio tau) - Real.sqrt (thermalRatio sigma)) ^ 2 / 2 ≤
+    (Real.sqrt (thermalRatio tau) - Real.sqrt (thermalRatio sigma)) ^ (2 : ℕ) / 2 ≤
       1 - radiationAffinity tau sigma :=
   geometricHellinger_defect_ge (thermalRatio_pos tau).le (thermalRatio_lt_one tau)
     (thermalRatio_pos sigma).le (thermalRatio_lt_one sigma)
@@ -76,7 +76,7 @@ def manyRadiation (N : ℕ) (tau : ℝ) : lp (fun _ : Fin N →₀ ℕ => ℂ) 2
     (fun _ => (thermalRatio_pos tau).le) (fun _ => thermalRatio_lt_one tau)
 
 /-- Every finite tensor size has a normalized state. -/
-theorem manyRadiation_norm_sq (N : ℕ) (tau : ℝ) : ‖manyRadiation N tau‖ ^ 2 = 1 :=
+theorem manyRadiation_norm_sq (N : ℕ) (tau : ℝ) : ‖manyRadiation N tau‖ ^ (2 : ℕ) = 1 :=
   HTGeometry.norm_finiteOccupationNormalizedHalfDensity_sq _ _ _
 
 /-- The actual many-pair overlap is the power of its local affinity. -/

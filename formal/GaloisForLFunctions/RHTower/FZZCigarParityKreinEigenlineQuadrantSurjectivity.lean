@@ -9,11 +9,11 @@ image.
 
 The squared negative real coordinate is the source Fermi ratio
 
-`P(beta) P(4 beta) / P(2 beta)^2`.
+`P(beta) P(4 beta) / P(2 beta)^(2 : ℕ)`.
 
 After writing `a = exp(beta)`, this is the rational function
 
-`(a^2 + 1)^2 / ((a + 1)(a^4 + 1))`.
+`(a^(2 : ℕ) + 1)^(2 : ℕ) / ((a + 1)(a^(4 : ℕ) + 1))`.
 
 It equals one at `a=1`, is bounded by `4/a` for `a>=1`, and is continuous. Exact intermediate
 value therefore realizes every negative real coordinate between zero and one. Unit norm and
@@ -34,14 +34,14 @@ noncomputable section
 
 /-- Algebraic form of the squared radial coordinate after `a = exp(beta)`. -/
 def fzzCigarParityKreinEigenlineAlgebraicRadialSq (a : ℝ) : ℝ :=
-  (a ^ 2 + 1) ^ 2 / ((a + 1) * (a ^ 4 + 1))
+  (a ^ (2 : ℕ) + 1) ^ (2 : ℕ) / ((a + 1) * (a ^ (4 : ℕ) + 1))
 
 /-- The squared negative real coordinate of the balanced source eigenline is the multiplicative
 three-scale Fermi ratio. -/
 theorem fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_neg_re_sq
     {beta : ℝ} (hbeta : 0 < beta) :
-    (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta).re) ^ 2 =
-      fzzKreinPAt beta * fzzKreinRAt beta / fzzKreinQAt beta ^ 2 := by
+    (-(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta).re) ^ (2 : ℕ) =
+      fzzKreinPAt beta * fzzKreinRAt beta / fzzKreinQAt beta ^ (2 : ℕ) := by
   rw [fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_re]
   have hs := fzzCigarParitySourceMetricReflectionScale_sq hbeta
   have hp := (fzzKreinPAt_pos hbeta).ne'
@@ -58,21 +58,21 @@ theorem fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_neg_re_sq
 theorem fzzCigarParityKreinFermiRatio_log_eq_algebraic
     {a : ℝ} (ha : 1 < a) :
     fzzKreinPAt (Real.log a) * fzzKreinRAt (Real.log a) /
-        fzzKreinQAt (Real.log a) ^ 2 =
+        fzzKreinQAt (Real.log a) ^ (2 : ℕ) =
       fzzCigarParityKreinEigenlineAlgebraicRadialSq a := by
   have ha0 : 0 < a := lt_trans zero_lt_one ha
   have hlog : 0 < Real.log a := Real.log_pos ha
-  have he2 : Real.exp (2 * Real.log a) = a ^ 2 := by
+  have he2 : Real.exp (2 * Real.log a) = a ^ (2 : ℕ) := by
     rw [show 2 * Real.log a = Real.log a + Real.log a by ring,
       Real.exp_add, Real.exp_log ha0]
     ring
-  have he4 : Real.exp (4 * Real.log a) = a ^ 4 := by
+  have he4 : Real.exp (4 * Real.log a) = a ^ (4 : ℕ) := by
     rw [show 4 * Real.log a = 2 * Real.log a + 2 * Real.log a by ring,
       Real.exp_add, he2]
     ring
   change fzzCigarParityDelay (Real.log a) *
         fzzCigarParityDelay (4 * Real.log a) /
-        fzzCigarParityDelay (2 * Real.log a) ^ 2 = _
+        fzzCigarParityDelay (2 * Real.log a) ^ (2 : ℕ) = _
   rw [fzzCigarParityDelay_eq_fermi hlog,
     fzzCigarParityDelay_eq_fermi (mul_pos (by norm_num) hlog),
     fzzCigarParityDelay_eq_fermi (mul_pos (by norm_num) hlog),
@@ -87,7 +87,7 @@ theorem continuousOn_fzzCigarParityKreinEigenlineAlgebraicRadialSq
   intro a ha
   apply ContinuousAt.continuousWithinAt
   unfold fzzCigarParityKreinEigenlineAlgebraicRadialSq
-  have hden : (a + 1) * (a ^ 4 + 1) ≠ 0 := by
+  have hden : (a + 1) * (a ^ (4 : ℕ) + 1) ≠ 0 := by
     have ha1 : 1 ≤ a := ha.1
     positivity
   fun_prop
@@ -102,13 +102,13 @@ theorem fzzCigarParityKreinEigenlineAlgebraicRadialSq_le_four_div
     {a : ℝ} (ha : 1 ≤ a) :
     fzzCigarParityKreinEigenlineAlgebraicRadialSq a ≤ 4 / a := by
   have ha0 : 0 < a := lt_of_lt_of_le zero_lt_one ha
-  have ha2 : 1 ≤ a ^ 2 := by nlinarith
-  have ha4 : 0 ≤ a ^ 4 := by positivity
-  have hnum : (a ^ 2 + 1) ^ 2 ≤ 4 * a ^ 4 := by
-    nlinarith [sq_nonneg (a ^ 2 - 1)]
-  have hden : a ^ 5 ≤ (a + 1) * (a ^ 4 + 1) := by
+  have ha2 : 1 ≤ a ^ (2 : ℕ) := by nlinarith
+  have ha4 : 0 ≤ a ^ (4 : ℕ) := by positivity
+  have hnum : (a ^ (2 : ℕ) + 1) ^ (2 : ℕ) ≤ 4 * a ^ (4 : ℕ) := by
+    nlinarith [sq_nonneg (a ^ (2 : ℕ) - 1)]
+  have hden : a ^ (5 : ℕ) ≤ (a + 1) * (a ^ (4 : ℕ) + 1) := by
     have h1 : a ≤ a + 1 := by linarith
-    have h2 : a ^ 4 ≤ a ^ 4 + 1 := by linarith
+    have h2 : a ^ (4 : ℕ) ≤ a ^ (4 : ℕ) + 1 := by linarith
     have hm := mul_le_mul h1 h2 ha4 (by positivity : 0 ≤ a + 1)
     nlinarith
   rw [fzzCigarParityKreinEigenlineAlgebraicRadialSq,
@@ -121,9 +121,9 @@ theorem exists_pos_fzzCigarParityKreinEigenline_neg_re_eq
     {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1) :
     ∃ beta : ℝ, 0 < beta ∧
       -(fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta).re = c := by
-  let A : ℝ := 8 / c ^ 2
-  have hc2 : 0 < c ^ 2 := sq_pos_of_pos hc0
-  have hc_sq_lt_one : c ^ 2 < 1 := by
+  let A : ℝ := 8 / c ^ (2 : ℕ)
+  have hc2 : 0 < c ^ (2 : ℕ) := sq_pos_of_pos hc0
+  have hc_sq_lt_one : c ^ (2 : ℕ) < 1 := by
     nlinarith [mul_pos hc0 (sub_pos.mpr hc1)]
   have hA : 1 < A := by
     dsimp only [A]
@@ -132,14 +132,14 @@ theorem exists_pos_fzzCigarParityKreinEigenline_neg_re_eq
   have hAle : 1 ≤ A := hA.le
   have hgA_le : fzzCigarParityKreinEigenlineAlgebraicRadialSq A ≤ 4 / A :=
     fzzCigarParityKreinEigenlineAlgebraicRadialSq_le_four_div hAle
-  have hfourA : 4 / A = c ^ 2 / 2 := by
+  have hfourA : 4 / A = c ^ (2 : ℕ) / 2 := by
     dsimp only [A]
     field_simp
     ring
-  have hgA : fzzCigarParityKreinEigenlineAlgebraicRadialSq A < c ^ 2 := by
+  have hgA : fzzCigarParityKreinEigenlineAlgebraicRadialSq A < c ^ (2 : ℕ) := by
     rw [hfourA] at hgA_le
     nlinarith
-  have hmem : c ^ 2 ∈ Icc
+  have hmem : c ^ (2 : ℕ) ∈ Icc
       (fzzCigarParityKreinEigenlineAlgebraicRadialSq A)
       (fzzCigarParityKreinEigenlineAlgebraicRadialSq 1) := by
     rw [fzzCigarParityKreinEigenlineAlgebraicRadialSq_one]
@@ -167,7 +167,7 @@ theorem exists_pos_fzzCigarParityKreinEigenline_eq_of_unit_upperLeft
     {z : ℂ} (hnorm : ‖z‖ = 1) (hre : z.re < 0) (him : 0 < z.im) :
     ∃ beta : ℝ, 0 < beta ∧
       fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta = z := by
-  have hnormsq := congrArg (fun x : ℝ => x ^ 2) hnorm
+  have hnormsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hnorm
   rw [Complex.sq_norm, Complex.normSq_apply] at hnormsq
   have hc0 : 0 < -z.re := by linarith
   have hc1 : -z.re < 1 := by
@@ -177,7 +177,7 @@ theorem exists_pos_fzzCigarParityKreinEigenline_eq_of_unit_upperLeft
   refine ⟨beta, hbeta, Complex.ext ?_ ?_⟩
   · linarith
   · have hynorm := norm_fzzCigarParityDilatedKreinEigenlineBalancedCoordinate hbeta
-    have hynormsq := congrArg (fun x : ℝ => x ^ 2) hynorm
+    have hynormsq := congrArg (fun x : ℝ => x ^ (2 : ℕ)) hynorm
     rw [Complex.sq_norm, Complex.normSq_apply] at hynormsq
     have hyim := fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_im_pos hbeta
     nlinarith

@@ -25,8 +25,8 @@ variable {K : Type*} [CommRing K] [IsDomain K] {I : Type*} [Fintype I] [Decidabl
 
 /-- The quadratic-rate relation as a polynomial in the spectrum, over any field. -/
 def fieldQuadraticRateRelationPolynomial (c : I → K) (κ : K) : MvPolynomial I K :=
-  (∑ i, MvPolynomial.C (c i) * MvPolynomial.X i) ^ 2
-    - MvPolynomial.C κ * ∑ i, (MvPolynomial.X i : MvPolynomial I K) ^ 2
+  (∑ i, MvPolynomial.C (c i) * MvPolynomial.X i) ^ (2 : ℕ)
+    - MvPolynomial.C κ * ∑ i, (MvPolynomial.X i : MvPolynomial I K) ^ (2 : ℕ)
 
 /-- The product of the relation over every labeling of the spectrum. -/
 def fieldQuadraticRateOrbitPolynomial (c : I → K) (κ : K) : MvPolynomial I K :=
@@ -34,22 +34,22 @@ def fieldQuadraticRateOrbitPolynomial (c : I → K) (κ : K) : MvPolynomial I K 
 
 /-- Numerical value of the labeling-orbit obstruction on a spectrum. -/
 def fieldQuadraticRateOrbitValue (c : I → K) (κ : K) (energy : I → K) : K :=
-  ∏ σ : Equiv.Perm I, ((∑ i, c i * energy (σ i)) ^ 2 - κ * ∑ i, energy i ^ 2)
+  ∏ σ : Equiv.Perm I, ((∑ i, c i * energy (σ i)) ^ (2 : ℕ) - κ * ∑ i, energy i ^ (2 : ℕ))
 
 /-! ## Evaluation -/
 
 omit [IsDomain K] [DecidableEq I] in
 theorem eval_fieldQuadraticRateRelationPolynomial (c : I → K) (κ : K) (energy : I → K) :
     MvPolynomial.eval energy (fieldQuadraticRateRelationPolynomial c κ)
-      = (∑ i, c i * energy i) ^ 2 - κ * ∑ i, energy i ^ 2 := by
+      = (∑ i, c i * energy i) ^ (2 : ℕ) - κ * ∑ i, energy i ^ (2 : ℕ) := by
   simp [fieldQuadraticRateRelationPolynomial]
 
 omit [IsDomain K] [DecidableEq I] in
 /-- The `σ`-labeled factor is the relation for the relabeled coefficient packet. -/
 theorem fieldQuadraticRateOrbitValue_factor (c : I → K) (κ : K) (energy : I → K)
     (σ : Equiv.Perm I) :
-    ((∑ i, c i * energy (σ i)) ^ 2 - κ * ∑ i, energy i ^ 2)
-      = (∑ j, c (σ.symm j) * energy j) ^ 2 - κ * ∑ j, energy j ^ 2 := by
+    ((∑ i, c i * energy (σ i)) ^ (2 : ℕ) - κ * ∑ i, energy i ^ (2 : ℕ))
+      = (∑ j, c (σ.symm j) * energy j) ^ (2 : ℕ) - κ * ∑ j, energy j ^ (2 : ℕ) := by
   have hsum : (∑ i, c i * energy (σ i)) = ∑ j, c (σ.symm j) * energy j :=
     Fintype.sum_equiv σ _ _ fun i => by simp
   rw [hsum]
@@ -62,15 +62,15 @@ theorem eval_fieldQuadraticRateOrbitPolynomial (c : I → K) (κ : K) (energy : 
   rw [fieldQuadraticRateOrbitPolynomial, fieldQuadraticRateOrbitValue, map_prod]
   refine Finset.prod_congr rfl fun σ _ => ?_
   rw [MvPolynomial.eval_rename, eval_fieldQuadraticRateRelationPolynomial]
-  have h2 : (∑ i, (energy ∘ σ) i ^ 2) = ∑ i, energy i ^ 2 :=
-    Fintype.sum_equiv σ (fun i => (energy ∘ σ) i ^ 2) (fun j => energy j ^ 2) fun i => rfl
+  have h2 : (∑ i, (energy ∘ σ) i ^ (2 : ℕ)) = ∑ i, energy i ^ (2 : ℕ) :=
+    Fintype.sum_equiv σ (fun i => (energy ∘ σ) i ^ (2 : ℕ)) (fun j => energy j ^ (2 : ℕ)) fun i => rfl
   rw [h2]
   rfl
 
 theorem fieldQuadraticRateOrbitValue_eq_zero_iff (c : I → K) (κ : K) (energy : I → K) :
     fieldQuadraticRateOrbitValue c κ energy = 0 ↔
       ∃ σ : Equiv.Perm I,
-        (∑ j, c (σ.symm j) * energy j) ^ 2 - κ * ∑ j, energy j ^ 2 = 0 := by
+        (∑ j, c (σ.symm j) * energy j) ^ (2 : ℕ) - κ * ∑ j, energy j ^ (2 : ℕ) = 0 := by
   classical
   rw [fieldQuadraticRateOrbitValue, Finset.prod_eq_zero_iff]
   constructor
@@ -147,16 +147,16 @@ theorem fieldQuadraticRateRelationPolynomial_eq_zero_iff (hcard : 2 ≤ Fintype.
     fieldQuadraticRateRelationPolynomial c κ = 0 ↔ κ = 0 ∧ c = 0 := by
   constructor
   · intro hzero
-    have hval : ∀ energy : I → K, (∑ i, c i * energy i) ^ 2 = κ * ∑ i, energy i ^ 2 := by
+    have hval : ∀ energy : I → K, (∑ i, c i * energy i) ^ (2 : ℕ) = κ * ∑ i, energy i ^ (2 : ℕ) := by
       intro energy
       have := congrArg (MvPolynomial.eval energy) hzero
       rw [eval_fieldQuadraticRateRelationPolynomial] at this
       simpa [sub_eq_zero] using this
-    have hsingle : ∀ i : I, c i ^ 2 = κ := by
+    have hsingle : ∀ i : I, c i ^ (2 : ℕ) = κ := by
       intro i
       have h := hval (fun x => if x = i then 1 else 0)
       have h1 : (∑ x, c x * (if x = i then (1 : K) else 0)) = c i := by simp
-      have h2 : (∑ x, (if x = i then (1 : K) else 0) ^ 2) = 1 := by simp
+      have h2 : (∑ x, (if x = i then (1 : K) else 0) ^ (2 : ℕ)) = 1 := by simp
       rw [h1, h2, mul_one] at h
       exact h
     have hcross : ∀ i j : I, i ≠ j → c i * c j = 0 := by
@@ -166,10 +166,10 @@ theorem fieldQuadraticRateRelationPolynomial_eq_zero_iff (hcard : 2 ≤ Fintype.
           = c i + c j := by
         simp only [mul_add, Finset.sum_add_distrib]
         simp
-      have h2 : (∑ x, ((if x = i then (1 : K) else 0) + (if x = j then 1 else 0)) ^ 2)
+      have h2 : (∑ x, ((if x = i then (1 : K) else 0) + (if x = j then 1 else 0)) ^ (2 : ℕ))
           = 2 := by
         have hji : ¬ (j = i) := fun hh => hij hh.symm
-        have hval2 : ∀ x : I, ((if x = i then (1 : K) else 0) + (if x = j then 1 else 0)) ^ 2
+        have hval2 : ∀ x : I, ((if x = i then (1 : K) else 0) + (if x = j then 1 else 0)) ^ (2 : ℕ)
             = (if x = i then (1 : K) else 0) + (if x = j then 1 else 0) := by
           intro x
           by_cases hx : x = i
@@ -184,7 +184,7 @@ theorem fieldQuadraticRateRelationPolynomial_eq_zero_iff (hcard : 2 ≤ Fintype.
       have hi := hsingle i
       have hj := hsingle j
       have htwo : (2 : K) * (c i * c j) = 0 := by
-        have hexp : (c i + c j) ^ 2 = c i ^ 2 + 2 * (c i * c j) + c j ^ 2 := by ring
+        have hexp : (c i + c j) ^ (2 : ℕ) = c i ^ (2 : ℕ) + 2 * (c i * c j) + c j ^ (2 : ℕ) := by ring
         rw [hexp, hi, hj] at h
         have : κ + 2 * (c i * c j) + κ = κ * 2 := by rw [h]
         linear_combination this

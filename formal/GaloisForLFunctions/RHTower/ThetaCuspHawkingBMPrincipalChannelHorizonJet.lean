@@ -29,7 +29,7 @@ def principalJetZero (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3) (b :
     principalAmplitude q i *
       ((-physicalRate q branch * (physicalRate q branch - 1) / 4) *
         ((2:ℂ) ^ (2 * physicalRate q branch - u) *
-          (a ^ 2 * continuedOnset (physicalRate q branch) u)))
+          (a ^ (2 : ℕ) * continuedOnset (physicalRate q branch) u)))
 
 /-- Linear jet coefficient of a principal channel. -/
 def principalJetOne (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3) (b : ℝ) (u : ℂ) : ℂ :=
@@ -42,9 +42,9 @@ def principalJetOne (q : XiZeroCopy) (branch : Bool) (a : ℂ) (i : Fin 3) (b : 
     principalAmplitude q i *
       ((-physicalRate q branch * (physicalRate q branch - 1) / 4) *
         ((2:ℂ) ^ (2 * physicalRate q branch - u) *
-            (a ^ 2 * continuedOnset (physicalRate q branch) u) * (-3 / 2) +
+            (a ^ (2 : ℕ) * continuedOnset (physicalRate q branch) u) * (-3 / 2) +
           -(2 * physicalRate q branch - u) * (2:ℂ) ^ (2 * physicalRate q branch - u) / 4 *
-            (a ^ 2 * continuedOnset (physicalRate q branch) u)))
+            (a ^ (2 : ℕ) * continuedOnset (physicalRate q branch) u)))
 
 theorem continuedOnset_analyticAt (s w : ℂ) (hs : w - 2 * s ≠ 0) :
     AnalyticAt ℂ (continuedOnset s) w := by

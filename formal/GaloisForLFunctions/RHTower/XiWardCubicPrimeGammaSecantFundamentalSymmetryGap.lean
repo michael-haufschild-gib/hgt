@@ -113,7 +113,7 @@ theorem riemannHypothesis_iff_fixedPrimeGammaSecant_pairDifEnergy_zero
     (z0 z1 : DeningerPrimeGammaLowerPoint) (hz : z0 ≠ z1) :
     RiemannHypothesis ↔
       (∑' q : XiZeroCopy,
-        ‖xiWeilPairDif (xiWardCubicPrimeGammaLowerSecantTest z0 z1) q‖ ^ 2) = 0 := by
+        ‖xiWeilPairDif (xiWardCubicPrimeGammaLowerSecantTest z0 z1) q‖ ^ (2 : ℕ)) = 0 := by
   let F := xiWardCubicPrimeGammaLowerSecantTest z0 z1
   have hFsq : XiWeilSquareSummable F :=
     xiWardCubicPrimeGammaLowerSecant_squareSummable z0 z1
@@ -145,14 +145,14 @@ theorem riemannHypothesis_iff_fixedPrimeGammaSecant_pairDifEnergy_zero
     have hqIm : (xiSpectralPoint q0).im ≠ 0 := by rwa [hq0]
     have hne : xiWeilPairDif F q0 ≠ 0 :=
       xiWardCubicPrimeGammaLowerSecant_pairDif_ne_zero z0 z1 hz q0 hqIm
-    have hsum : Summable (fun q : XiZeroCopy => ‖xiWeilPairDif F q‖ ^ 2) :=
+    have hsum : Summable (fun q : XiZeroCopy => ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) :=
       xiWeilPairDif_squareSummable hFsq
-    have hle : ‖xiWeilPairDif F q0‖ ^ 2 ≤
-        ∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2 :=
+    have hle : ‖xiWeilPairDif F q0‖ ^ (2 : ℕ) ≤
+        ∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ) :=
       hsum.le_tsum q0 (fun q _ => sq_nonneg _)
-    have hpos : 0 < ‖xiWeilPairDif F q0‖ ^ 2 :=
+    have hpos : 0 < ‖xiWeilPairDif F q0‖ ^ (2 : ℕ) :=
       sq_pos_of_pos (norm_pos_iff.mpr hne)
-    change (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2) = 0 at hzero
+    change (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) = 0 at hzero
     rw [hzero] at hle
     linarith
 
@@ -163,14 +163,14 @@ theorem xiWeilParityFlip_energy_sub_weil_eq_half_pairDifEnergy
     (xiWeilPolarization F (xiWeilParityFlip F)).re -
         (xiWeilPolarization F F).re =
       (1 / 2 : ℝ) *
-        ∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2 := by
+        ∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ) := by
   have hline := xiWeil_squareSummable_lineConj hF
   have hplus := xiWeilPairSum_squareSummable hF
   have hdif := xiWeilPairDif_squareSummable hF
   have hpoint : ∀ q : XiZeroCopy,
-      ‖xiWeilPairSum F q‖ ^ 2 + ‖xiWeilPairDif F q‖ ^ 2 =
-        2 * (‖F (xiSpectralPoint q)‖ ^ 2 +
-          ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ 2) := by
+      ‖xiWeilPairSum F q‖ ^ (2 : ℕ) + ‖xiWeilPairDif F q‖ ^ (2 : ℕ) =
+        2 * (‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) +
+          ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ (2 : ℕ)) := by
     intro q
     rw [xiWeilPairSum, xiWeilPairDif,
       ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq,
@@ -179,27 +179,27 @@ theorem xiWeilParityFlip_energy_sub_weil_eq_half_pairDifEnergy
     ring
   have hlineTsum :
       (∑' q : XiZeroCopy,
-        ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ 2) =
-      ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ 2 := by
+        ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ (2 : ℕ)) =
+      ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     exact xiZeroCopyLineConjEquiv.tsum_eq
-      (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ 2)
+      (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ))
   have htotal :
-      (∑' q : XiZeroCopy, ‖xiWeilPairSum F q‖ ^ 2) +
-          (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2) =
-        4 * ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ 2 := by
+      (∑' q : XiZeroCopy, ‖xiWeilPairSum F q‖ ^ (2 : ℕ)) +
+          (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) =
+        4 * ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
     rw [← hplus.tsum_add hdif]
     calc
       (∑' q : XiZeroCopy,
-          (‖xiWeilPairSum F q‖ ^ 2 + ‖xiWeilPairDif F q‖ ^ 2)) =
+          (‖xiWeilPairSum F q‖ ^ (2 : ℕ) + ‖xiWeilPairDif F q‖ ^ (2 : ℕ))) =
           ∑' q : XiZeroCopy,
-            2 * (‖F (xiSpectralPoint q)‖ ^ 2 +
-              ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ 2) :=
+            2 * (‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) +
+              ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ (2 : ℕ)) :=
         tsum_congr hpoint
-      _ = 2 * ((∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ 2) +
+      _ = 2 * ((∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ)) +
           ∑' q : XiZeroCopy,
-            ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ 2) := by
+            ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ (2 : ℕ)) := by
         rw [tsum_mul_left, hF.tsum_add hline]
-      _ = 4 * ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ 2 := by
+      _ = 4 * ∑' q : XiZeroCopy, ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) := by
         rw [hlineTsum]
         ring
   have hJ := (xiWeilParityFlip_hasSum_sq hF).tsum_eq

@@ -32,7 +32,7 @@ radius `r` is at most twice the even-index Abel series of the real parts of the 
 convolution powers.  This is sharper than the positive-part inequality `(5)` of the parity law. -/
 theorem norm_pow_sq_le_two_mul_tsum_evenIndex_re (a : ℕ → ℂ) {r : ℝ}
     (ha : Summable (fun N : ℕ => ‖a N * (r : ℂ) ^ N‖)) (k : ℕ) :
-    ‖(∑' N : ℕ, a N * (r : ℂ) ^ N) ^ k‖ ^ 2 ≤
+    ‖(∑' N : ℕ, a N * (r : ℂ) ^ N) ^ k‖ ^ (2 : ℕ) ≤
       2 * ∑' q : ℕ, (mixedAdditiveConvolutionPower a k (2 * q)).re * r ^ (2 * q) := by
   have hsum := summable_evenIndex_mixedAdditive a ha k
   have hterm : ∀ q : ℕ, (mixedAdditiveConvolutionPower a k (2 * q) * (r : ℂ) ^ (2 * q)).re
@@ -42,7 +42,7 @@ theorem norm_pow_sq_le_two_mul_tsum_evenIndex_re (a : ℕ → ℂ) {r : ℝ}
   have hTre : (∑' q : ℕ, mixedAdditiveConvolutionPower a k (2 * q) * (r : ℂ) ^ (2 * q)).re
       = ∑' q : ℕ, (mixedAdditiveConvolutionPower a k (2 * q)).re * r ^ (2 * q) := by
     rw [re_tsum hsum]; exact tsum_congr hterm
-  have hofRealSq : ∀ b : ℝ, ((b : ℂ) ^ 2).re = b ^ 2 := by
+  have hofRealSq : ∀ b : ℝ, ((b : ℂ) ^ (2 : ℕ)).re = b ^ (2 : ℕ) := by
     intro b; rw [← Complex.ofReal_pow]; exact Complex.ofReal_re _
   have hpar := add_pos_neg_hermitianAbel_eq_two_mul_tsum_evenIndex a r ha k
   rw [Complex.mul_conj', Complex.mul_conj'] at hpar
@@ -51,7 +51,7 @@ theorem norm_pow_sq_le_two_mul_tsum_evenIndex_re (a : ℕ → ℂ) {r : ℝ}
     show ((2 : ℂ) * ∑' q : ℕ, mixedAdditiveConvolutionPower a k (2 * q) * (r : ℂ) ^ (2 * q)).re
       = 2 * (∑' q : ℕ, mixedAdditiveConvolutionPower a k (2 * q) * (r : ℂ) ^ (2 * q)).re from by
       simp [Complex.mul_re], hTre] at hre
-  have hneg : (0 : ℝ) ≤ ‖(∑' N : ℕ, a N * (-(r : ℂ)) ^ N) ^ k‖ ^ 2 := sq_nonneg _
+  have hneg : (0 : ℝ) ≤ ‖(∑' N : ℕ, a N * (-(r : ℂ)) ^ N) ^ k‖ ^ (2 : ℕ) := sq_nonneg _
   linarith [hre]
 
 end RHTower

@@ -32,7 +32,7 @@ private theorem reflected_shift {rho : ℂ} (hr : rho.re=1/2) (d : ℝ) :
 /-- The full finite horizontal pair is exactly the real part of genuine xi squared. -/
 theorem horizontalPair_eq_xi_sq {p : ℕ} (hp : 0<p) {rho : ℂ} (hr : rho.re=1/2)
     {d : ℝ} (hd : 0<d) (hd' : d<1/2) :
-    horizontalPair p rho d=(RiemannGaussian.riemannXi (rho+(d:ℂ))^2).re := by
+    horizontalPair p rho d=(RiemannGaussian.riemannXi (rho+(d:ℂ))^(2 : ℕ)).re := by
   have hs := shift_domain hr hd hd'
   have h := completedSplit_add_one_sub hp hs.1
   rw [reflected_shift hr d, completedSplit_conj p hs.2] at h
@@ -93,7 +93,7 @@ private theorem leading_phase {rho : ℂ} (hr : rho.re=1/2) {m : ℕ} {g : ℂ�
   exact tendsto_nhds_unique (hp.star.congr' he) (hm.const_mul ((-1:ℂ)^m))
 
 private theorem leading_square_re {m : ℕ} {c : ℂ} (hc : star c=(-1:ℂ)^m*c) :
-    (c^2).re=(-1:ℝ)^m*‖c‖^2 := by
+    (c^(2 : ℕ)).re=(-1:ℝ)^m*‖c‖^(2 : ℕ) := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
   rcases Nat.even_or_odd m with hm | hm
   · have hi := congrArg Complex.im hc
@@ -126,13 +126,13 @@ private theorem contact_of_factor {p : ℕ} (hp : 0<p) {rho : ℂ} (hr : rho.re=
     {m : ℕ} {g : ℂ→ℂ} (hg : ContinuousAt g rho)
     (hf : RiemannGaussian.riemannXi =ᶠ[𝓝 rho] fun z => (z-rho)^m*g z) :
     Tendsto (fun d : ℝ => horizontalPair p rho d/d^(2*m)) (𝓝[>] 0)
-      (𝓝 ((-1:ℝ)^m*‖g rho‖^2)) := by
+      (𝓝 ((-1:ℝ)^m*‖g rho‖^(2 : ℕ))) := by
   have h := (Complex.continuous_re.tendsto _).comp ((quotient_tendsto hg hf).pow 2)
   rw [leading_square_re (leading_phase hr hg hf)] at h
   apply h.congr'
   filter_upwards [Ioo_mem_nhdsGT (by norm_num : (0:ℝ)<1/2)] with d hd
   rw [horizontalPair_eq_xi_sq hp hr hd.1 hd.2]
-  change ((RiemannGaussian.riemannXi (rho+(d:ℂ))/(d:ℂ)^m)^2).re = _
+  change ((RiemannGaussian.riemannXi (rho+(d:ℂ))/(d:ℂ)^m)^(2 : ℕ)).re = _
   rw [div_pow, ← pow_mul, Nat.mul_comm m 2, ← Complex.ofReal_pow, Complex.div_ofReal_re]
 
 /-- Every actual critical zero has a nonzero contact magnitude and its full multiplicity parity. -/
@@ -150,7 +150,7 @@ theorem exists_horizontal_contact
       (z-rho.1)^(analyticZetaZeroMultiplicity rho)*g z := by
     simpa only [analyticZetaZeroMultiplicity, analyticOrderNatAt,
       analyticOrderAt_riemannXi_eq_riemannZeta] using hf
-  refine ⟨‖g rho.1‖^2, sq_pos_of_pos (norm_pos_iff.mpr hg0), ?_⟩
+  refine ⟨‖g rho.1‖^(2 : ℕ), sq_pos_of_pos (norm_pos_iff.mpr hg0), ?_⟩
   intro p hp
   exact contact_of_factor hp hr hg.continuousAt hf'
 

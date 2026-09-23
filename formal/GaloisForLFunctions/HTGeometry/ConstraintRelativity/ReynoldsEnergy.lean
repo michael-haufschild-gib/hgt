@@ -64,18 +64,18 @@ theorem inner_reynolds_self (s : S) :
 /-- **The constitutive curvature energy.**  The averaged displacement energy is the norm defect of
 the Reynolds average. -/
 theorem reynolds_energy (s : S) :
-    (2 * (Fintype.card G : ℝ))⁻¹ * ∑ g : G, ‖U g s - s‖ ^ 2
-      = ‖s‖ ^ 2 - ‖reynolds U s‖ ^ 2 := by
+    (2 * (Fintype.card G : ℝ))⁻¹ * ∑ g : G, ‖U g s - s‖ ^ (2 : ℕ)
+      = ‖s‖ ^ (2 : ℕ) - ‖reynolds U s‖ ^ (2 : ℕ) := by
   have hcardR : (Fintype.card G : ℝ) ≠ 0 := by
     simp [Fintype.card_ne_zero]
   have hcardC : (Fintype.card G : ℂ) ≠ 0 := by
     simp [Fintype.card_ne_zero]
-  have hterm : ∀ g : G, ‖U g s - s‖ ^ 2 = 2 * ‖s‖ ^ 2 - 2 * (⟪U g s, s⟫).re := by
+  have hterm : ∀ g : G, ‖U g s - s‖ ^ (2 : ℕ) = 2 * ‖s‖ ^ (2 : ℕ) - 2 * (⟪U g s, s⟫).re := by
     intro g
     rw [@norm_sub_sq ℂ, (U g).norm_map, RCLike.re_to_complex]
     ring
-  have hsum : ∑ g : G, ‖U g s - s‖ ^ 2
-      = 2 * (Fintype.card G : ℝ) * ‖s‖ ^ 2 - 2 * (⟪reynolds U s, s⟫).re * (Fintype.card G : ℝ) := by
+  have hsum : ∑ g : G, ‖U g s - s‖ ^ (2 : ℕ)
+      = 2 * (Fintype.card G : ℝ) * ‖s‖ ^ (2 : ℕ) - 2 * (⟪reynolds U s, s⟫).re * (Fintype.card G : ℝ) := by
     rw [Finset.sum_congr rfl fun g _ => hterm g]
     rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     have hre : ∑ g : G, (⟪U g s, s⟫).re = (Fintype.card G : ℝ) * (⟪reynolds U s, s⟫).re := by
@@ -100,9 +100,9 @@ theorem reynolds_energy (s : S) :
     rw [hre]
     ring
   rw [hsum]
-  have hnorm : ‖reynolds U s‖ ^ 2 = (⟪reynolds U s, s⟫).re := by
+  have hnorm : ‖reynolds U s‖ ^ (2 : ℕ) = (⟪reynolds U s, s⟫).re := by
     have h := inner_reynolds_self U hU s
-    have hself : (⟪reynolds U s, reynolds U s⟫).re = ‖reynolds U s‖ ^ 2 := by
+    have hself : (⟪reynolds U s, reynolds U s⟫).re = ‖reynolds U s‖ ^ (2 : ℕ) := by
       rw [← RCLike.re_to_complex]
       exact inner_self_eq_norm_sq _
     rw [← hself, h]
@@ -113,14 +113,14 @@ omit hU in
 /-- **Flatness classification.**  The curvature energy vanishes exactly when the vector is fixed by
 the whole action, i.e. exactly when the soldering is an intertwiner. -/
 theorem reynolds_energy_eq_zero_iff (s : S) :
-    (2 * (Fintype.card G : ℝ))⁻¹ * ∑ g : G, ‖U g s - s‖ ^ 2 = 0 ↔ ∀ g : G, U g s = s := by
+    (2 * (Fintype.card G : ℝ))⁻¹ * ∑ g : G, ‖U g s - s‖ ^ (2 : ℕ) = 0 ↔ ∀ g : G, U g s = s := by
   have hcardR : (0 : ℝ) < 2 * (Fintype.card G : ℝ) := by
     have : (0 : ℝ) < (Fintype.card G : ℝ) := by
       exact_mod_cast Fintype.card_pos
     linarith
   constructor
   · intro hz g
-    have hsum : ∑ g : G, ‖U g s - s‖ ^ 2 = 0 := by
+    have hsum : ∑ g : G, ‖U g s - s‖ ^ (2 : ℕ) = 0 := by
       field_simp at hz
       simpa using hz
     have hall := (Finset.sum_eq_zero_iff_of_nonneg
@@ -129,7 +129,7 @@ theorem reynolds_energy_eq_zero_iff (s : S) :
       nlinarith [norm_nonneg (U g s - s)]
     exact sub_eq_zero.1 (norm_eq_zero.1 this)
   · intro hfix
-    have : ∑ g : G, ‖U g s - s‖ ^ 2 = 0 := by
+    have : ∑ g : G, ‖U g s - s‖ ^ (2 : ℕ) = 0 := by
       refine Finset.sum_eq_zero fun g _ => ?_
       rw [hfix g, sub_self, norm_zero]
       ring

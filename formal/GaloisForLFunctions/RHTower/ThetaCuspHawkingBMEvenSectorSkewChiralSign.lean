@@ -36,16 +36,16 @@ noncomputable def skewPlateauMuChiral (s μ : ℂ) : ℂ :=
 noncomputable def skewPlateauMuChiralLine (t l : ℝ) : ℝ :=
   skewPlateauLineForm t l - skewPlateauMuCrossLine t l + skewPlateauMuVVLine t l
 
-noncomputable def skewPlateauMuChiralLineLower (t l : ℝ) : ℝ := (-23263191 / 2048 : ℝ) * t + (-46446921 / 4096 : ℝ) * t * l + (-11719707 / 4096 : ℝ) * t * l ^ 2 + (2002689 / 8192 : ℝ) * t * l ^ 3 + (1504899 / 16384 : ℝ) * t * l ^ 4 + (-7791 / 512 : ℝ) * t * l ^ 5 + (-81 / 64 : ℝ) * t * l ^ 6 + (-18458023 / 256 : ℝ) * t ^ 3 + (-70833639 / 2048 : ℝ) * t ^ 3 * l + (-18409589 / 4096 : ℝ) * t ^ 3 * l ^ 2 + (82657 / 2048 : ℝ) * t ^ 3 * l ^ 3 + (135679 / 1024 : ℝ) * t ^ 3 * l ^ 4 + (-231 / 128 : ℝ) * t ^ 3 * l ^ 5 + (-9 / 8 : ℝ) * t ^ 3 * l ^ 6 + (-4034501 / 32 : ℝ) * t ^ 5 + (-21512269 / 512 : ℝ) * t ^ 5 * l + (715991 / 1024 : ℝ) * t ^ 5 * l ^ 2 + (94637 / 256 : ℝ) * t ^ 5 * l ^ 3 + (26353 / 512 : ℝ) * t ^ 5 * l ^ 4 + (287 / 32 : ℝ) * t ^ 5 * l ^ 5 + (-2482407 / 32 : ℝ) * t ^ 7 + (-2083147 / 64 : ℝ) * t ^ 7 * l + (-33633 / 128 : ℝ) * t ^ 7 * l ^ 2 + (19753 / 64 : ℝ) * t ^ 7 * l ^ 3 + (-1417 / 64 : ℝ) * t ^ 7 * l ^ 4 + (51449 / 8 : ℝ) * t ^ 9 + (-105371 / 8 : ℝ) * t ^ 9 * l + (-45511 / 32 : ℝ) * t ^ 9 * l ^ 2 + (2837 / 32 : ℝ) * t ^ 9 * l ^ 3 + (26942 : ℝ) * t ^ 11 + (-14387 / 8 : ℝ) * t ^ 11 * l + (-6073 / 16 : ℝ) * t ^ 11 * l ^ 2 + (10692 : ℝ) * t ^ 13 + (155 / 2 : ℝ) * t ^ 13 * l + (1352 : ℝ) * t ^ 15
+noncomputable def skewPlateauMuChiralLineLower (t l : ℝ) : ℝ := (-23263191 / 2048 : ℝ) * t + (-46446921 / 4096 : ℝ) * t * l + (-11719707 / 4096 : ℝ) * t * l ^ (2 : ℕ) + (2002689 / 8192 : ℝ) * t * l ^ (3 : ℕ) + (1504899 / 16384 : ℝ) * t * l ^ (4 : ℕ) + (-7791 / 512 : ℝ) * t * l ^ (5 : ℕ) + (-81 / 64 : ℝ) * t * l ^ (6 : ℕ) + (-18458023 / 256 : ℝ) * t ^ (3 : ℕ) + (-70833639 / 2048 : ℝ) * t ^ (3 : ℕ) * l + (-18409589 / 4096 : ℝ) * t ^ (3 : ℕ) * l ^ (2 : ℕ) + (82657 / 2048 : ℝ) * t ^ (3 : ℕ) * l ^ (3 : ℕ) + (135679 / 1024 : ℝ) * t ^ (3 : ℕ) * l ^ (4 : ℕ) + (-231 / 128 : ℝ) * t ^ (3 : ℕ) * l ^ (5 : ℕ) + (-9 / 8 : ℝ) * t ^ (3 : ℕ) * l ^ (6 : ℕ) + (-4034501 / 32 : ℝ) * t ^ (5 : ℕ) + (-21512269 / 512 : ℝ) * t ^ (5 : ℕ) * l + (715991 / 1024 : ℝ) * t ^ (5 : ℕ) * l ^ (2 : ℕ) + (94637 / 256 : ℝ) * t ^ (5 : ℕ) * l ^ (3 : ℕ) + (26353 / 512 : ℝ) * t ^ (5 : ℕ) * l ^ (4 : ℕ) + (287 / 32 : ℝ) * t ^ (5 : ℕ) * l ^ (5 : ℕ) + (-2482407 / 32 : ℝ) * t ^ (7 : ℕ) + (-2083147 / 64 : ℝ) * t ^ (7 : ℕ) * l + (-33633 / 128 : ℝ) * t ^ (7 : ℕ) * l ^ (2 : ℕ) + (19753 / 64 : ℝ) * t ^ (7 : ℕ) * l ^ (3 : ℕ) + (-1417 / 64 : ℝ) * t ^ (7 : ℕ) * l ^ (4 : ℕ) + (51449 / 8 : ℝ) * t ^ (9 : ℕ) + (-105371 / 8 : ℝ) * t ^ (9 : ℕ) * l + (-45511 / 32 : ℝ) * t ^ (9 : ℕ) * l ^ (2 : ℕ) + (2837 / 32 : ℝ) * t ^ (9 : ℕ) * l ^ (3 : ℕ) + (26942 : ℝ) * t ^ (11 : ℕ) + (-14387 / 8 : ℝ) * t ^ (11 : ℕ) * l + (-6073 / 16 : ℝ) * t ^ (11 : ℕ) * l ^ (2 : ℕ) + (10692 : ℝ) * t ^ (13 : ℕ) + (155 / 2 : ℝ) * t ^ (13 : ℕ) * l + (1352 : ℝ) * t ^ (15 : ℕ)
 
 theorem skewPlateauMuChiralLine_leading (t l : ℝ) :
     skewPlateauMuChiralLine t l =
-      (1 / 64) * t ^ 5 * l ^ 2 * (l - 4 * t ^ 2) ^ 2 * (51 * t ^ 4 + 56 * t ^ 2 * l - 16 * l ^ 2) + skewPlateauMuChiralLineLower t l := by
+      (1 / 64) * t ^ (5 : ℕ) * l ^ (2 : ℕ) * (l - 4 * t ^ (2 : ℕ)) ^ (2 : ℕ) * (51 * t ^ (4 : ℕ) + 56 * t ^ (2 : ℕ) * l - 16 * l ^ (2 : ℕ)) + skewPlateauMuChiralLineLower t l := by
   unfold skewPlateauMuChiralLine skewPlateauLineForm skewPlateauMuCrossLine skewPlateauMuVVLine skewPlateauMuChiralLineLower
   ring
 
 /-- The chiral line form is positive on `0 ≤ l ≤ 2t²` for `t ≥ 50`. -/
-theorem skewPlateauMuChiralLine_pos (t l : ℝ) (ht : (50 : ℝ) ≤ t) (hl0 : 0 ≤ l) (h2 : l ≤ 2 * t ^ 2) :
+theorem skewPlateauMuChiralLine_pos (t l : ℝ) (ht : (50 : ℝ) ≤ t) (hl0 : 0 ≤ l) (h2 : l ≤ 2 * t ^ (2 : ℕ)) :
     0 < skewPlateauMuChiralLine t l := by
   have ht0 : (0 : ℝ) ≤ t := by linarith
   have hg3 : (0 : ℝ) ≤ t - 50 := by linarith
@@ -171,13 +171,13 @@ theorem skewPlateauMuChiralLine_pos (t l : ℝ) (ht : (50 : ℝ) ≤ t) (hl0 : 0
 
 /-- The chiral kernel on the line is purely imaginary. -/
 theorem skewPlateauMuChiral_line (t l : ℝ) (hl : 0 ≤ l) :
-    skewPlateauMuChiral ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ)) * ((128 * (2 + l) ^ 2 * ((4 * t ^ 2 - 2 - l) ^ 2 + 36 * t ^ 2) : ℝ) : ℂ) =
+    skewPlateauMuChiral ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ)) * ((128 * (2 + l) ^ (2 : ℕ) * ((4 * t ^ (2 : ℕ) - 2 - l) ^ (2 : ℕ) + 36 * t ^ (2 : ℕ)) : ℝ) : ℂ) =
       Complex.I * (skewPlateauMuChiralLine t l : ℂ) := by
-  have hden : ((128 * (2 + l) ^ 2 * ((4 * t ^ 2 - 2 - l) ^ 2 + 36 * t ^ 2) : ℝ) : ℂ) ≠ 0 := by
+  have hden : ((128 * (2 + l) ^ (2 : ℕ) * ((4 * t ^ (2 : ℕ) - 2 - l) ^ (2 : ℕ) + 36 * t ^ (2 : ℕ)) : ℝ) : ℂ) ≠ 0 := by
     exact_mod_cast (skewPlateauLineDen_pos t l hl).ne'
   have hS := skewPlateauMu_line t l hl
   have hV := skewPlateauMuVV_line t l hl
-  have hX : skewPlateauMuCross ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ)) * ((128 * (2 + l) ^ 2 * ((4 * t ^ 2 - 2 - l) ^ 2 + 36 * t ^ 2) : ℝ) : ℂ) =
+  have hX : skewPlateauMuCross ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ)) * ((128 * (2 + l) ^ (2 : ℕ) * ((4 * t ^ (2 : ℕ) - 2 - l) ^ (2 : ℕ) + 36 * t ^ (2 : ℕ)) : ℝ) : ℂ) =
       Complex.I * (skewPlateauMuCrossLine t l : ℂ) := by
     unfold skewPlateauMuCross
     rw [← skewPlateauMu_line_denominator t l, div_mul_cancel₀ _ (by rw [skewPlateauMu_line_denominator t l]; exact hden)]
@@ -187,7 +187,7 @@ theorem skewPlateauMuChiral_line (t l : ℝ) (hl : 0 ≤ l) :
   linear_combination hS - hX + hV
 
 /-- For `t ≥ 50` the chiral kernel has positive imaginary part at every harmonic `0 ≤ l ≤ 2t²`. -/
-theorem skewPlateauMuChiral_line_im_pos (t l : ℝ) (ht : (50 : ℝ) ≤ t) (hl0 : 0 ≤ l) (h2 : l ≤ 2 * t ^ 2) :
+theorem skewPlateauMuChiral_line_im_pos (t l : ℝ) (ht : (50 : ℝ) ≤ t) (hl0 : 0 ≤ l) (h2 : l ≤ 2 * t ^ (2 : ℕ)) :
     0 < (skewPlateauMuChiral ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) (-(l : ℂ))).im := by
   have h := congrArg Complex.im (skewPlateauMuChiral_line t l hl0)
   simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_add, one_mul] at h

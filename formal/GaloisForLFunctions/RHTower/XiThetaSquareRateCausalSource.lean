@@ -22,9 +22,9 @@ namespace RHTower
 
 def thetaSquareFiniteCausalSource (n : ℕ) : ℕ → ℝ → ℂ
   | 0 => fun y => -(thetaSquareBlaschkeNodeSlope n)⁻¹ *
-      causalFourierExponential ((n : ℝ) ^ 2) y
+      causalFourierExponential ((n : ℝ) ^ (2 : ℕ)) y
   | N + 1 => if N + 1 = n then thetaSquareFiniteCausalSource n N
-      else causalBlaschkeStep (((N + 1 : ℕ) : ℝ) ^ 2)
+      else causalBlaschkeStep (((N + 1 : ℕ) : ℝ) ^ (2 : ℕ))
         (thetaSquareFiniteCausalSource n N)
 
 theorem thetaSquareFiniteCausalSource_integrable {n : ℕ} (hn : 1 ≤ n) :
@@ -56,7 +56,7 @@ theorem thetaSquareFiniteCausalSource_exists_bound {n : ℕ} :
       split_ifs
       · exact ih
       · rcases ih with ⟨C, hC, hbound⟩
-        let a : ℝ := ((N + 1 : ℕ) : ℝ) ^ 2
+        let a : ℝ := ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ)
         let D : ℝ := ∫ t : ℝ, ‖causalFourierExponential a t‖
         have ha : 0 < a := by dsimp [a]; positivity
         have hD : 0 ≤ D := integral_nonneg fun _ => norm_nonneg _
@@ -93,7 +93,7 @@ theorem thetaSquareFiniteCausalSource_eq_zero_of_neg {n : ℕ} :
   | zero =>
       intro y hy
       change -(thetaSquareBlaschkeNodeSlope n)⁻¹ *
-        causalFourierExponential ((n : ℝ) ^ 2) y = 0
+        causalFourierExponential ((n : ℝ) ^ (2 : ℕ)) y = 0
       rw [causalFourierExponential_eq_zero_of_neg _ hy, mul_zero]
   | succ N ih =>
       intro y hy
@@ -105,12 +105,12 @@ theorem thetaSquareFiniteCausalSource_eq_zero_of_neg {n : ℕ} :
 def thetaSquareFiniteSkippedProduct (n N : ℕ) (z : ℂ) : ℂ :=
   ∏ j ∈ Finset.range N,
     if j + 1 = n then 1 else
-      ((((j + 1 : ℕ) : ℂ) ^ 2 - z) /
-        (((j + 1 : ℕ) : ℂ) ^ 2 + z))
+      ((((j + 1 : ℕ) : ℂ) ^ (2 : ℕ) - z) /
+        (((j + 1 : ℕ) : ℂ) ^ (2 : ℕ) + z))
 
 def thetaSquareFiniteReaderProfile (n N : ℕ) (ξ : ℝ) : ℂ :=
   -(thetaSquareBlaschkeNodeSlope n)⁻¹ *
-    (((n : ℂ) ^ 2 + 2 * I * ξ)⁻¹) *
+    (((n : ℂ) ^ (2 : ℕ) + 2 * I * ξ)⁻¹) *
     thetaSquareFiniteSkippedProduct n N (2 * I * ξ)
 
 theorem fourier_thetaSquareFiniteCausalSource {n : ℕ} (hn : 1 ≤ n) :
@@ -123,20 +123,20 @@ theorem fourier_thetaSquareFiniteCausalSource {n : ℕ} (hn : 1 ≤ n) :
       rw [thetaSquareFiniteCausalSource, thetaSquareFiniteReaderProfile]
       simp only [thetaSquareFiniteSkippedProduct, Finset.range_zero, Finset.prod_empty, mul_one]
       rw [show (fun y : ℝ => -(thetaSquareBlaschkeNodeSlope n)⁻¹ *
-          causalFourierExponential ((n : ℝ) ^ 2) y) =
+          causalFourierExponential ((n : ℝ) ^ (2 : ℕ)) y) =
           (-(thetaSquareBlaschkeNodeSlope n)⁻¹) •
-            causalFourierExponential ((n : ℝ) ^ 2) by rfl]
+            causalFourierExponential ((n : ℝ) ^ (2 : ℕ)) by rfl]
       have hsmul := congrFun (VectorFourier.fourierIntegral_const_smul
-        𝐞 volume (innerₗ ℝ) (causalFourierExponential ((n : ℝ) ^ 2))
+        𝐞 volume (innerₗ ℝ) (causalFourierExponential ((n : ℝ) ^ (2 : ℕ)))
           (-(thetaSquareBlaschkeNodeSlope n)⁻¹)) ξ
       change VectorFourier.fourierIntegral 𝐞 volume (innerₗ ℝ)
           ((-(thetaSquareBlaschkeNodeSlope n)⁻¹) •
-            causalFourierExponential ((n : ℝ) ^ 2)) ξ = _
+            causalFourierExponential ((n : ℝ) ^ (2 : ℕ))) ξ = _
       rw [hsmul]
       simp only [Pi.smul_apply, smul_eq_mul]
       rw [show VectorFourier.fourierIntegral 𝐞 volume (innerₗ ℝ)
-          (causalFourierExponential ((n : ℝ) ^ 2)) ξ =
-          ((((n : ℝ) ^ 2 : ℝ) : ℂ) + 2 * I * ξ)⁻¹ by
+          (causalFourierExponential ((n : ℝ) ^ (2 : ℕ))) ξ =
+          ((((n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) + 2 * I * ξ)⁻¹ by
         exact fourier_causalFourierExponential
           (sq_pos_of_pos (by positivity : (0 : ℝ) < n)) ξ]
       push_cast
@@ -249,27 +249,27 @@ theorem tendsto_thetaSquareBlaschkeFinite_mul_I {t : ℝ} (ht : t ≠ 0) :
   convert! hdiv using 1
   ext N
   rw [thetaSquareBlaschkeFinite]
-  have hroot : (Complex.sqrt z) ^ 2 = z := complex_sqrt_sq z
+  have hroot : (Complex.sqrt z) ^ (2 : ℕ) = z := complex_sqrt_sq z
   rw [hroot, Finset.prod_div_distrib]
   have hc : (Real.pi : ℂ) * Complex.sqrt z ≠ 0 :=
     mul_ne_zero (ofReal_ne_zero.mpr Real.pi_ne_zero) hsqrt0
   change
-    (∏ j ∈ Finset.range N, ((1 : ℂ) - z / ((j : ℂ) + 1) ^ 2)) /
-        (∏ j ∈ Finset.range N, ((1 : ℂ) + z / ((j : ℂ) + 1) ^ 2)) =
+    (∏ j ∈ Finset.range N, ((1 : ℂ) - z / ((j : ℂ) + 1) ^ (2 : ℕ))) /
+        (∏ j ∈ Finset.range N, ((1 : ℂ) + z / ((j : ℂ) + 1) ^ (2 : ℕ))) =
       (((Real.pi : ℂ) * Complex.sqrt z) *
-          ∏ j ∈ Finset.range N, ((1 : ℂ) - z / ((j : ℂ) + 1) ^ 2)) /
+          ∏ j ∈ Finset.range N, ((1 : ℂ) - z / ((j : ℂ) + 1) ^ (2 : ℕ))) /
         (((Real.pi : ℂ) * Complex.sqrt z) *
-          ∏ j ∈ Finset.range N, ((1 : ℂ) + z / ((j : ℂ) + 1) ^ 2))
+          ∏ j ∈ Finset.range N, ((1 : ℂ) + z / ((j : ℂ) + 1) ^ (2 : ℕ)))
   exact (mul_div_mul_left _ _ hc).symm
 
 lemma thetaSquareBlaschkeFinite_eq_linearProduct (N : ℕ) (z : ℂ) :
     thetaSquareBlaschkeFinite N z =
       ∏ j ∈ Finset.range N,
-        ((((j + 1 : ℕ) : ℂ) ^ 2 - z) / (((j + 1 : ℕ) : ℂ) ^ 2 + z)) := by
+        ((((j + 1 : ℕ) : ℂ) ^ (2 : ℕ) - z) / (((j + 1 : ℕ) : ℂ) ^ (2 : ℕ) + z)) := by
   unfold thetaSquareBlaschkeFinite
   apply Finset.prod_congr rfl
   intro j hj
-  have hj0 : (((j + 1 : ℕ) : ℂ) ^ 2) ≠ 0 := by
+  have hj0 : (((j + 1 : ℕ) : ℂ) ^ (2 : ℕ)) ≠ 0 := by
     exact pow_ne_zero 2 (Nat.cast_ne_zero.mpr (by omega))
   field_simp
   push_cast
@@ -303,11 +303,11 @@ lemma prod_skip_nat_add_one
 theorem thetaSquareBlaschkeFinite_split_selected
     {n N : ℕ} (hn : 1 ≤ n) (hnN : n ≤ N) (z : ℂ) :
     thetaSquareBlaschkeFinite N z =
-      (((n : ℂ) ^ 2 - z) / ((n : ℂ) ^ 2 + z)) *
+      (((n : ℂ) ^ (2 : ℕ) - z) / ((n : ℂ) ^ (2 : ℕ) + z)) *
         thetaSquareFiniteSkippedProduct n N z := by
   let k : ℕ := n - 1
   let f : ℕ → ℂ := fun j =>
-    ((((j + 1 : ℕ) : ℂ) ^ 2 - z) / (((j + 1 : ℕ) : ℂ) ^ 2 + z))
+    ((((j + 1 : ℕ) : ℂ) ^ (2 : ℕ) - z) / (((j + 1 : ℕ) : ℂ) ^ (2 : ℕ) + z))
   have hk : k ∈ Finset.range N := by
     rw [Finset.mem_range]
     dsimp [k]
@@ -315,7 +315,7 @@ theorem thetaSquareBlaschkeFinite_split_selected
   rw [thetaSquareBlaschkeFinite_eq_linearProduct]
   change (∏ j ∈ Finset.range N, f j) = _
   rw [← Finset.mul_prod_erase (Finset.range N) f hk]
-  have hfk : f k = (((n : ℂ) ^ 2 - z) / ((n : ℂ) ^ 2 + z)) := by
+  have hfk : f k = (((n : ℂ) ^ (2 : ℕ) - z) / ((n : ℂ) ^ (2 : ℕ) + z)) := by
     dsimp [f]
     rw [show k + 1 = n by dsimp [k]; omega]
   rw [hfk]
@@ -346,14 +346,14 @@ theorem thetaSquareFiniteReaderProfile_eq_blaschkeFinite
     push_cast
     ring
   rw [hz]
-  have htheta : thetaSquare n = (n : ℂ) ^ 2 := by simp [thetaSquare]
-  have hminus : z - (n : ℂ) ^ 2 ≠ 0 := by
+  have htheta : thetaSquare n = (n : ℂ) ^ (2 : ℕ) := by simp [thetaSquare]
+  have hminus : z - (n : ℂ) ^ (2 : ℕ) ≠ 0 := by
     intro hz
     have hre := congrArg Complex.re hz
     dsimp [z] at hre
     norm_num [pow_two, Complex.mul_re] at hre
     omega
-  have hplus : (n : ℂ) ^ 2 + z ≠ 0 := by
+  have hplus : (n : ℂ) ^ (2 : ℕ) + z ≠ 0 := by
     intro hz
     have hre := congrArg Complex.re hz
     dsimp [z] at hre
@@ -364,10 +364,10 @@ theorem thetaSquareFiniteReaderProfile_eq_blaschkeFinite
   have hsplit := thetaSquareBlaschkeFinite_split_selected hn hnN z
   calc
     thetaSquareFiniteReaderProfile n N ξ =
-        (-S * ((n : ℂ) ^ 2 + z)⁻¹) * P := by rfl
-    _ = S * ((((n : ℂ) ^ 2 - z) / ((n : ℂ) ^ 2 + z)) * P) /
-        (z - (n : ℂ) ^ 2) := cancel_selected_blaschke_factor hminus hplus
-    _ = S * thetaSquareBlaschkeFinite N z / (z - (n : ℂ) ^ 2) := by
+        (-S * ((n : ℂ) ^ (2 : ℕ) + z)⁻¹) * P := by rfl
+    _ = S * ((((n : ℂ) ^ (2 : ℕ) - z) / ((n : ℂ) ^ (2 : ℕ) + z)) * P) /
+        (z - (n : ℂ) ^ (2 : ℕ)) := cancel_selected_blaschke_factor hminus hplus
+    _ = S * thetaSquareBlaschkeFinite N z / (z - (n : ℂ) ^ (2 : ℕ)) := by
       rw [hsplit]
     _ = (thetaSquareBlaschkeNodeSlope n)⁻¹ *
         thetaSquareBlaschkeFinite N z / (z - thetaSquare n) := by
@@ -427,7 +427,7 @@ lemma norm_linearBlaschkeFactor_mul_I (a t : ℝ) (ha : 0 < a) :
     norm_num [Complex.mul_re] at hre
     exact ha.ne' hre
   have hsq :
-      ‖(a : ℂ) - (t : ℂ) * I‖ ^ 2 = ‖(a : ℂ) + (t : ℂ) * I‖ ^ 2 := by
+      ‖(a : ℂ) - (t : ℂ) * I‖ ^ (2 : ℕ) = ‖(a : ℂ) + (t : ℂ) * I‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm]
     norm_num [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
   have hnorm : ‖(a : ℂ) - (t : ℂ) * I‖ = ‖(a : ℂ) + (t : ℂ) * I‖ :=
@@ -443,18 +443,18 @@ theorem norm_thetaSquareFiniteSkippedProduct_mul_I (n N : ℕ) (t : ℝ) :
   by_cases hjn : j + 1 = n
   · simp [hjn]
   · simp only [hjn, ↓reduceIte]
-    have hcast : ((((j + 1 : ℕ) : ℝ) ^ 2 : ℝ) : ℂ) = ((j + 1 : ℕ) : ℂ) ^ 2 := by
+    have hcast : ((((j + 1 : ℕ) : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) = ((j + 1 : ℕ) : ℂ) ^ (2 : ℕ) := by
       push_cast
       rfl
     have hfac :=
-      norm_linearBlaschkeFactor_mul_I (((j + 1 : ℕ) : ℝ) ^ 2) t (by positivity)
+      norm_linearBlaschkeFactor_mul_I (((j + 1 : ℕ) : ℝ) ^ (2 : ℕ)) t (by positivity)
     rw [hcast] at hfac
     exact hfac
 
 theorem norm_thetaSquareFiniteReaderProfile (n N : ℕ) (ξ : ℝ) :
     ‖thetaSquareFiniteReaderProfile n N ξ‖ =
       ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ /
-        ‖(n : ℂ) ^ 2 + 2 * I * ξ‖ := by
+        ‖(n : ℂ) ^ (2 : ℕ) + 2 * I * ξ‖ := by
   have hz : 2 * I * (ξ : ℂ) = (((2 * ξ : ℝ) : ℂ) * I) := by
     push_cast
     ring
@@ -469,12 +469,12 @@ theorem norm_thetaHeatRateReaderFourierProfile_eq_finite
   have hlim := (tendsto_thetaSquareFiniteReaderProfile hn hξ).norm
   have hconst : Tendsto (fun _ : ℕ =>
       ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ /
-        ‖(n : ℂ) ^ 2 + 2 * I * ξ‖) atTop
+        ‖(n : ℂ) ^ (2 : ℕ) + 2 * I * ξ‖) atTop
       (𝓝 (‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ /
-        ‖(n : ℂ) ^ 2 + 2 * I * ξ‖)) := tendsto_const_nhds
+        ‖(n : ℂ) ^ (2 : ℕ) + 2 * I * ξ‖)) := tendsto_const_nhds
   have heq : (fun N => ‖thetaSquareFiniteReaderProfile n N ξ‖) =
       fun _ : ℕ => ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ /
-        ‖(n : ℂ) ^ 2 + 2 * I * ξ‖ := by
+        ‖(n : ℂ) ^ (2 : ℕ) + 2 * I * ξ‖ := by
     funext M
     exact norm_thetaSquareFiniteReaderProfile n M ξ
   rw [heq] at hlim
@@ -484,12 +484,12 @@ theorem norm_thetaHeatRateReaderFourierProfile_eq_finite
 
 lemma sq_norm_thetaSquareFiniteReaderProfile
     (n N : ℕ) (ξ : ℝ) :
-    ‖thetaSquareFiniteReaderProfile n N ξ‖ ^ 2 =
-      ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
-        ((((n : ℝ) ^ 2) ^ 2 + (2 * ξ) ^ 2)⁻¹) := by
+    ‖thetaSquareFiniteReaderProfile n N ξ‖ ^ (2 : ℕ) =
+      ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ (2 : ℕ) *
+        ((((n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) + (2 * ξ) ^ (2 : ℕ))⁻¹) := by
   rw [norm_thetaSquareFiniteReaderProfile, div_pow]
-  have hden : ‖(n : ℂ) ^ 2 + 2 * I * ξ‖ ^ 2 =
-      ((n : ℝ) ^ 2) ^ 2 + (2 * ξ) ^ 2 := by
+  have hden : ‖(n : ℂ) ^ (2 : ℕ) + 2 * I * ξ‖ ^ (2 : ℕ) =
+      ((n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) + (2 * ξ) ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [pow_two]
     norm_num [Complex.mul_re, Complex.mul_im]
@@ -497,10 +497,10 @@ lemma sq_norm_thetaSquareFiniteReaderProfile
 
 private lemma integrable_inv_square_add_two_mul_sq
     {a : ℝ} (ha : 0 < a) :
-    Integrable (fun ξ : ℝ => (a ^ 2 + (2 * ξ) ^ 2)⁻¹) := by
+    Integrable (fun ξ : ℝ => (a ^ (2 : ℕ) + (2 * ξ) ^ (2 : ℕ))⁻¹) := by
   have hbase := integrable_inv_one_add_sq.comp_div ha.ne'
-  have hscaled := hbase.const_mul (a⁻¹ ^ 2)
-  have hunit : Integrable (fun t : ℝ => (a ^ 2 + t ^ 2)⁻¹) := by
+  have hscaled := hbase.const_mul (a⁻¹ ^ (2 : ℕ))
+  have hunit : Integrable (fun t : ℝ => (a ^ (2 : ℕ) + t ^ (2 : ℕ))⁻¹) := by
     apply hscaled.congr
     filter_upwards [] with t
     field_simp
@@ -510,8 +510,8 @@ private lemma integrable_inv_square_add_two_mul_sq
 private lemma integrable_thetaSquareFiniteReaderDifferenceBound
     {n : ℕ} (hn : 1 ≤ n) :
     Integrable (fun ξ : ℝ =>
-      4 * ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
-        ((((n : ℝ) ^ 2) ^ 2 + (2 * ξ) ^ 2)⁻¹)) := by
+      4 * ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ (2 : ℕ) *
+        ((((n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) + (2 * ξ) ^ (2 : ℕ))⁻¹)) := by
   have hnR : (0 : ℝ) < n := by positivity
   exact (integrable_inv_square_add_two_mul_sq (sq_pos_of_pos hnR)).const_mul _
 
@@ -519,13 +519,13 @@ theorem tendsto_integral_sq_norm_thetaSquareFiniteReaderProfile_sub
     {n : ℕ} (hn : 1 ≤ n) :
     Tendsto (fun N : ℕ => ∫ ξ : ℝ,
       ‖thetaSquareFiniteReaderProfile n N ξ -
-        thetaHeatRateReaderFourierProfile n ξ‖ ^ 2) atTop (𝓝 0) := by
+        thetaHeatRateReaderFourierProfile n ξ‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
   let F : ℕ → ℝ → ℝ := fun N ξ =>
     ‖thetaSquareFiniteReaderProfile n N ξ -
-      thetaHeatRateReaderFourierProfile n ξ‖ ^ 2
+      thetaHeatRateReaderFourierProfile n ξ‖ ^ (2 : ℕ)
   let bound : ℝ → ℝ := fun ξ =>
-    4 * ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ 2 *
-      ((((n : ℝ) ^ 2) ^ 2 + (2 * ξ) ^ 2)⁻¹)
+    4 * ‖(thetaSquareBlaschkeNodeSlope n)⁻¹‖ ^ (2 : ℕ) *
+      ((((n : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) + (2 * ξ) ^ (2 : ℕ))⁻¹)
   have hFmeas : ∀ N, AEStronglyMeasurable (F N) := by
     intro N
     exact ((thetaSquareFiniteReaderProfile_memLp_two hn N).aestronglyMeasurable.sub
@@ -543,10 +543,10 @@ theorem tendsto_integral_sq_norm_thetaSquareFiniteReaderProfile_sub
     rw [Real.norm_eq_abs, abs_of_nonneg] <;> try positivity
     calc
       ‖thetaSquareFiniteReaderProfile n N ξ -
-          thetaHeatRateReaderFourierProfile n ξ‖ ^ 2 ≤
+          thetaHeatRateReaderFourierProfile n ξ‖ ^ (2 : ℕ) ≤
           (‖thetaSquareFiniteReaderProfile n N ξ‖ +
-            ‖thetaHeatRateReaderFourierProfile n ξ‖) ^ 2 := hpow
-      _ = 4 * ‖thetaSquareFiniteReaderProfile n N ξ‖ ^ 2 := by rw [heq]; ring
+            ‖thetaHeatRateReaderFourierProfile n ξ‖) ^ (2 : ℕ) := hpow
+      _ = 4 * ‖thetaSquareFiniteReaderProfile n N ξ‖ ^ (2 : ℕ) := by rw [heq]; ring
       _ = bound ξ := by
         rw [sq_norm_thetaSquareFiniteReaderProfile]
         dsimp [bound]
@@ -566,9 +566,9 @@ theorem tendsto_thetaSquareFiniteReaderProfileL2
       (𝓝 (thetaHeatRateReaderFourierProfileL2 n hn)) := by
   have hsqNorm (N : ℕ) :
       ‖thetaSquareFiniteReaderProfileL2 n N hn -
-        thetaHeatRateReaderFourierProfileL2 n hn‖ ^ 2 =
+        thetaHeatRateReaderFourierProfileL2 n hn‖ ^ (2 : ℕ) =
         ∫ ξ : ℝ, ‖thetaSquareFiniteReaderProfile n N ξ -
-          thetaHeatRateReaderFourierProfile n ξ‖ ^ 2 := by
+          thetaHeatRateReaderFourierProfile n ξ‖ ^ (2 : ℕ) := by
     rw [norm_l2_sq_complex]
     apply integral_congr_ae
     filter_upwards [Lp.coeFn_sub (thetaSquareFiniteReaderProfileL2 n N hn)
@@ -578,7 +578,7 @@ theorem tendsto_thetaSquareFiniteReaderProfileL2
     rw [hsub, Pi.sub_apply, hfin, htarget]
   have hsq : Tendsto (fun N =>
       ‖thetaSquareFiniteReaderProfileL2 n N hn -
-        thetaHeatRateReaderFourierProfileL2 n hn‖ ^ 2) atTop (𝓝 0) := by
+        thetaHeatRateReaderFourierProfileL2 n hn‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     apply (tendsto_integral_sq_norm_thetaSquareFiniteReaderProfile_sub hn).congr'
     filter_upwards [] with N
     exact (hsqNorm N).symm
@@ -588,14 +588,14 @@ theorem tendsto_thetaSquareFiniteReaderProfileL2
         thetaHeatRateReaderFourierProfileL2 n hn‖) atTop (𝓝 0) := by
     have heq : (fun N => Real.sqrt
         (‖thetaSquareFiniteReaderProfileL2 n N hn -
-          thetaHeatRateReaderFourierProfileL2 n hn‖ ^ 2)) =
+          thetaHeatRateReaderFourierProfileL2 n hn‖ ^ (2 : ℕ))) =
         fun N => ‖thetaSquareFiniteReaderProfileL2 n N hn -
           thetaHeatRateReaderFourierProfileL2 n hn‖ := by
       funext N
       rw [Real.sqrt_sq (norm_nonneg _)]
     change Tendsto (fun N => Real.sqrt
       (‖thetaSquareFiniteReaderProfileL2 n N hn -
-        thetaHeatRateReaderFourierProfileL2 n hn‖ ^ 2)) atTop
+        thetaHeatRateReaderFourierProfileL2 n hn‖ ^ (2 : ℕ))) atTop
       (𝓝 (Real.sqrt 0)) at hsqrt
     rw [heq] at hsqrt
     simpa only [Real.sqrt_zero] using hsqrt

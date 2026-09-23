@@ -49,7 +49,7 @@ private lemma reciprocal_three_halves_odd_le {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t 
       have h := Real.rpow_le_rpow_of_nonpos (by linarith [hu'.2] : (0:ℝ)<1-u)
         (by linarith [hu'.1] : 1-u ≤ 1+u) (by norm_num : (-(7:ℝ)/2) ≤ 0)
       exact mul_nonneg (by norm_num) (sub_nonneg.mpr h)
-  have hpow (x : ℝ) (hx : 0<x) : (x^(-(3:ℝ)/2))^2=(x^3)⁻¹ := by
+  have hpow (x : ℝ) (hx : 0<x) : (x^(-(3:ℝ)/2))^(2 : ℕ)=(x^(3 : ℕ))⁻¹ := by
     rw [← Real.rpow_natCast,← Real.rpow_mul hx.le]
     norm_num [Real.rpow_neg,Real.rpow_ofNat]
     first
@@ -102,8 +102,8 @@ private def evenReciprocalRoot (x t : ℝ) : ℝ :=
 private lemma even_reciprocal_root_lipschitz {x i j : ℝ} (hx : 0<x)
     (hi : 0 ≤ i) (hij : i ≤ j) (hj : j ≤ x/3) :
     evenReciprocalRoot x j-evenReciprocalRoot x i ≤
-      (j^2-i^2)*x^(-(5:ℝ)/2)/2 := by
-  let f := fun t : ℝ => evenReciprocalRoot x t-t^2*x^(-(5:ℝ)/2)/2
+      (j^(2 : ℕ)-i^(2 : ℕ))*x^(-(5:ℝ)/2)/2 := by
+  let f := fun t : ℝ => evenReciprocalRoot x t-t^(2 : ℕ)*x^(-(5:ℝ)/2)/2
   have hd (t : ℝ) (ht : t ∈ Set.Icc (0:ℝ) (x/3)) :
       HasDerivAt f (((x-t)^(-(3:ℝ)/2)-(x+t)^(-(3:ℝ)/2))/4-
         t*x^(-(5:ℝ)/2)) t := by
@@ -151,10 +151,10 @@ theorem symmetricSqrtStep_quadratic_lipschitz {c i j : ℝ} (hc : 0<c)
     (hi : 0 ≤ i) (hij : i ≤ j) (hj : j ≤ c/3) :
     ((Real.sqrt (c-j+1)-Real.sqrt (c-j))+(Real.sqrt (c+j+1)-Real.sqrt (c+j)))/2-
       ((Real.sqrt (c-i+1)-Real.sqrt (c-i))+(Real.sqrt (c+i+1)-Real.sqrt (c+i)))/2 ≤
-        (j^2-i^2)*c^(-(5:ℝ)/2)/4 := by
-  let L := (j^2-i^2)*c^(-(5:ℝ)/2)/4
+        (j^(2 : ℕ)-i^(2 : ℕ))*c^(-(5:ℝ)/2)/4 := by
+  let L := (j^(2 : ℕ)-i^(2 : ℕ))*c^(-(5:ℝ)/2)/4
   let f := fun x => evenRoot x j-evenRoot x i-L*x
-  have hsq : 0 ≤ j^2-i^2 := by nlinarith
+  have hsq : 0 ≤ j^(2 : ℕ)-i^(2 : ℕ) := by nlinarith
   have hd (x : ℝ) (hx : c ≤ x) :
       HasDerivAt f ((evenReciprocalRoot x j-evenReciprocalRoot x i)/2-L) x := by
     have hjx : |j|<x := by rw [abs_of_nonneg (hi.trans hij)]; linarith

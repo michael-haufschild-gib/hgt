@@ -29,8 +29,8 @@ theorem clockStripStep_tsum {ρ₂ ρ₁ ρ' : ℝ} (h21 : ρ₂ < ρ₁) (h1ρ 
   -- summability of the second derivatives, by Cauchy's estimate
   have hsum1 : Summable fun m => deriv (deriv (f m)) z := by
     refine Summable.of_norm_bounded
-      (g := fun m => 16 * M m / (ρ' - ρ₂) ^ 2) ?_ fun m => ?_
-    · simpa [mul_div_assoc] using (hMs.mul_left 16).div_const ((ρ' - ρ₂) ^ 2)
+      (g := fun m => 16 * M m / (ρ' - ρ₂) ^ (2 : ℕ)) ?_ fun m => ?_
+    · simpa [mul_div_assoc] using (hMs.mul_left 16).div_const ((ρ' - ρ₂) ^ (2 : ℕ))
     · exact norm_deriv_deriv_le_on_imStrip h2ρ (hf m) (hM m) (le_of_lt (mem_imStrip.mp hz))
   have hsumf : Summable fun m => f m z :=
     Summable.of_norm_bounded hMs fun m => hM m z hz'

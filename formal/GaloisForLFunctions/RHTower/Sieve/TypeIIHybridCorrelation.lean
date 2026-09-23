@@ -18,35 +18,35 @@ noncomputable section
 second-derivative term on a dyadic block. -/
 theorem secondDerivative_reciprocal_term_le_first {Y : ℝ} {P Q : ℕ}
     (hY : 0 < Y) (hP : 1 ≤ P) (hQ2P : Q ≤ 2 * P)
-    (hhigh : 1 / 2 < Y / (2 * Real.pi * (P : ℝ) ^ 2)) :
-    22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt ((Q : ℝ) ^ 3)
+    (hhigh : 1 / 2 < Y / (2 * Real.pi * (P : ℝ) ^ (2 : ℕ))) :
+    22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt ((Q : ℝ) ^ (3 : ℕ))
       ≤ 2500 * Real.sqrt (Y / (36 * Real.pi * P)) := by
   have hpi : 0 < Real.pi := Real.pi_pos
   have hP0 : (0 : ℝ) < (P : ℝ) := by exact_mod_cast hP
-  have hYlower : Real.pi * (P : ℝ) ^ 2 < Y := by
+  have hYlower : Real.pi * (P : ℝ) ^ (2 : ℕ) < Y := by
     rw [lt_div_iff₀ (by positivity)] at hhigh
     nlinarith
-  have hYsq := mul_self_le_mul_self (by positivity : (0 : ℝ) ≤ Real.pi * (P : ℝ) ^ 2) hYlower.le
+  have hYsq := mul_self_le_mul_self (by positivity : (0 : ℝ) ≤ Real.pi * (P : ℝ) ^ (2 : ℕ)) hYlower.le
   have hQcast : (Q : ℝ) ≤ 2 * (P : ℝ) := by exact_mod_cast hQ2P
-  have hQ3 : (Q : ℝ) ^ 3 ≤ (2 * (P : ℝ)) ^ 3 := by gcongr
-  have hrad : 36 * Real.pi / Y * (Q : ℝ) ^ 3
-      ≤ (2500 / 22 : ℝ) ^ 2 * (Y / (36 * Real.pi * P)) := by
+  have hQ3 : (Q : ℝ) ^ (3 : ℕ) ≤ (2 * (P : ℝ)) ^ (3 : ℕ) := by gcongr
+  have hrad : 36 * Real.pi / Y * (Q : ℝ) ^ (3 : ℕ)
+      ≤ (2500 / 22 : ℝ) ^ (2 : ℕ) * (Y / (36 * Real.pi * P)) := by
     calc
-      36 * Real.pi / Y * (Q : ℝ) ^ 3
-          ≤ 36 * Real.pi / Y * (2 * (P : ℝ)) ^ 3 :=
+      36 * Real.pi / Y * (Q : ℝ) ^ (3 : ℕ)
+          ≤ 36 * Real.pi / Y * (2 * (P : ℝ)) ^ (3 : ℕ) :=
             mul_le_mul_of_nonneg_left hQ3 (by positivity)
-      _ ≤ (2500 / 22 : ℝ) ^ 2 * (Y / (36 * Real.pi * P)) := by
+      _ ≤ (2500 / 22 : ℝ) ^ (2 : ℕ) * (Y / (36 * Real.pi * P)) := by
         rw [div_eq_mul_inv, div_eq_mul_inv]
         field_simp
         nlinarith [hYsq]
   have hsqrt := Real.sqrt_le_sqrt hrad
-  have hright : Real.sqrt ((2500 / 22 : ℝ) ^ 2 * (Y / (36 * Real.pi * P)))
+  have hright : Real.sqrt ((2500 / 22 : ℝ) ^ (2 : ℕ) * (Y / (36 * Real.pi * P)))
       = (2500 / 22 : ℝ) * Real.sqrt (Y / (36 * Real.pi * P)) := by
     rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (by norm_num)]
   rw [hright] at hsqrt
   calc
-    22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt ((Q : ℝ) ^ 3)
-        = 22 * Real.sqrt (36 * Real.pi / Y * (Q : ℝ) ^ 3) := by
+    22 * Real.sqrt (36 * Real.pi / Y) * Real.sqrt ((Q : ℝ) ^ (3 : ℕ))
+        = 22 * Real.sqrt (36 * Real.pi / Y * (Q : ℝ) ^ (3 : ℕ)) := by
           rw [Real.sqrt_mul (by positivity : (0 : ℝ) ≤ 36 * Real.pi / Y)]
           ring
     _ ≤ 2500 * Real.sqrt (Y / (36 * Real.pi * P)) := by nlinarith [hsqrt]
@@ -61,7 +61,7 @@ theorem norm_masked_correlation_offdiag_hybrid_le {T r : ℝ} (hT : 0 < T) (hr :
     ‖∑ d ∈ Finset.Ico P Q,
         maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖
       ≤ 5000 * Real.sqrt (T * |r / m₁ - r / m₂| / (36 * Real.pi * P))
-        + 75 * Real.pi * (Q : ℝ) ^ 2 / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
+        + 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
   have hm₁0 : (0 : ℝ) < (m₁ : ℝ) := by exact_mod_cast hm₁
   have hm₂0 : (0 : ℝ) < (m₂ : ℝ) := by exact_mod_cast hm₂
   have hdivne : r / (m₁ : ℝ) ≠ r / (m₂ : ℝ) := by
@@ -71,9 +71,9 @@ theorem norm_masked_correlation_offdiag_hybrid_le {T r : ℝ} (hT : 0 < T) (hr :
     exact hne (Nat.cast_inj.mp hcast)
   have hY : 0 < T * |r / m₁ - r / m₂| :=
     mul_pos hT (abs_pos.mpr (sub_ne_zero.mpr hdivne))
-  have hrec0 : 0 ≤ 75 * Real.pi * (Q : ℝ) ^ 2 /
+  have hrec0 : 0 ≤ 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) /
       (16 * (T * |r / m₁ - r / m₂|)) := by positivity
-  by_cases hsmall : T * |r / m₁ - r / m₂| / (2 * Real.pi * (P : ℝ) ^ 2) ≤ 1 / 2
+  by_cases hsmall : T * |r / m₁ - r / m₂| / (2 * Real.pi * (P : ℝ) ^ (2 : ℕ)) ≤ 1 / 2
   · have hmain := norm_masked_correlation_offdiag_kuzminLandau_le (Q := Q) hT hr hA hB hP
       hm₁ hm₂ hne h4₁ h4₂ hsmall hY
     exact hmain.trans (by
@@ -87,11 +87,11 @@ theorem norm_masked_correlation_offdiag_hybrid_le {T r : ℝ} (hT : 0 < T) (hr :
           maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖
           ≤ 2500 * Real.sqrt (T * |r / m₁ - r / m₂| / (36 * Real.pi * P))
             + 22 * Real.sqrt (36 * Real.pi / (T * |r / m₁ - r / m₂|))
-              * Real.sqrt ((Q : ℝ) ^ 3) := hmain
+              * Real.sqrt ((Q : ℝ) ^ (3 : ℕ)) := hmain
       _ ≤ 5000 * Real.sqrt (T * |r / m₁ - r / m₂| / (36 * Real.pi * P)) := by
         nlinarith [hdom]
       _ ≤ 5000 * Real.sqrt (T * |r / m₁ - r / m₂| / (36 * Real.pi * P))
-          + 75 * Real.pi * (Q : ℝ) ^ 2 / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
+          + 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
         nlinarith
 
 /-- Trivial correlation bound used when curvature exceeds the normalized derivative-test range. -/
@@ -129,7 +129,7 @@ theorem norm_masked_correlation_offdiag_hybrid_unconditional_le {T r : ℝ}
     ‖∑ d ∈ Finset.Ico P Q,
         maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖
       ≤ 5000 * Real.sqrt (T * |r / m₁ - r / m₂| / (36 * Real.pi * P))
-        + 75 * Real.pi * (Q : ℝ) ^ 2 / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
+        + 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) / (16 * (T * |r / m₁ - r / m₂|)) + 1 := by
   by_cases hlam : curvedLambda (T * |r / m₁ - r / m₂|) (P : ℝ) ≤ 1
   · exact norm_masked_correlation_offdiag_hybrid_le hT hr hA hB hP hQ2P
       hm₁ hm₂ hne h4₁ h4₂ hlam
@@ -143,10 +143,10 @@ theorem norm_masked_correlation_offdiag_hybrid_unconditional_le {T r : ℝ}
         exact hne (Nat.cast_inj.mp hcast)
       exact mul_pos hT (abs_pos.mpr (sub_ne_zero.mpr hdivne))
     have hP0 : (0 : ℝ) < P := by exact_mod_cast hP
-    have hlarge : 36 * Real.pi * (P : ℝ) ^ 3 < T * |r / m₁ - r / m₂| := by
+    have hlarge : 36 * Real.pi * (P : ℝ) ^ (3 : ℕ) < T * |r / m₁ - r / m₂| := by
       rw [curvedLambda, not_le] at hlam
       rwa [one_lt_div (by positivity)] at hlam
-    have hrad : (P : ℝ) ^ 2 ≤
+    have hrad : (P : ℝ) ^ (2 : ℕ) ≤
         T * |r / m₁ - r / m₂| / (36 * Real.pi * P) := by
       rw [le_div_iff₀ (by positivity : 0 < 36 * Real.pi * (P : ℝ))]
       nlinarith [hlarge]
@@ -154,7 +154,7 @@ theorem norm_masked_correlation_offdiag_hybrid_unconditional_le {T r : ℝ}
     rw [Real.sqrt_sq hP0.le] at hsqrt
     have htriv := norm_masked_correlation_trivial_le_two_mul
       (T := T) (r := r) (A := A) (B := B) (m₁ := m₁) (m₂ := m₂) hQ2P
-    have hrec : 0 ≤ 75 * Real.pi * (Q : ℝ) ^ 2 /
+    have hrec : 0 ≤ 75 * Real.pi * (Q : ℝ) ^ (2 : ℕ) /
         (16 * (T * |r / m₁ - r / m₂|)) := by positivity
     nlinarith [Real.sqrt_nonneg
       (T * |r / m₁ - r / m₂| / (36 * Real.pi * (P : ℝ)))]

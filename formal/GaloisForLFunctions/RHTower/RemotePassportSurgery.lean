@@ -28,12 +28,12 @@ noncomputable section
 
 def remotePassportPolynomial {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) : Polynomial ℂ :=
-  X ^ 2 * simultaneousFlatPolynomial M α
+  X ^ (2 : ℕ) * simultaneousFlatPolynomial M α
 
 theorem remotePassportPolynomial_eval {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) (w : ℂ) :
     (remotePassportPolynomial M α).eval w =
-      w ^ 2 * simultaneousFlatProduct M α w := by
+      w ^ (2 : ℕ) * simultaneousFlatProduct M α w := by
   rw [remotePassportPolynomial, eval_mul, eval_pow, eval_X,
     simultaneousFlatPolynomial_eval]
 
@@ -102,20 +102,20 @@ def remotePassportInverseValue {ι : Type*} [Fintype ι]
 def remotePassportD {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) (a T : ℝ) : ℝ :=
   (remotePassportInverseValue M α a T).im /
-    ((remotePassportPoint a T) ^ 2).im
+    ((remotePassportPoint a T) ^ (2 : ℕ)).im
 
 def remotePassportC {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) (a T : ℝ) : ℝ :=
   (remotePassportInverseValue M α a T).re -
-    remotePassportD M α a T * ((remotePassportPoint a T) ^ 2).re
+    remotePassportD M α a T * ((remotePassportPoint a T) ^ (2 : ℕ)).re
 
 theorem remotePassportPoint_sq_im (a T : ℝ) :
-    ((remotePassportPoint a T) ^ 2).im = 2 * a * T := by
+    ((remotePassportPoint a T) ^ (2 : ℕ)).im = 2 * a * T := by
   simp [remotePassportPoint, pow_two]
   ring
 
 theorem remotePassportPoint_sq_re (a T : ℝ) :
-    ((remotePassportPoint a T) ^ 2).re = a ^ 2 - T ^ 2 := by
+    ((remotePassportPoint a T) ^ (2 : ℕ)).re = a ^ (2 : ℕ) - T ^ (2 : ℕ) := by
   simp [remotePassportPoint, pow_two]
 
 theorem tendsto_remotePassportInverseValue {ι : Type*} [Fintype ι]
@@ -125,7 +125,7 @@ theorem tendsto_remotePassportInverseValue {ι : Type*} [Fintype ι]
     (remotePassportPolynomial M α) (remotePassportPolynomial_ne_zero M α) a
     (k := 0) (lt_of_lt_of_le (by norm_num) (remotePassportPolynomial_natDegree_ge_two M α))
   have hneg : Tendsto (fun T : ℝ =>
-      -(((a : ℂ) + I * (T : ℂ)) ^ 0 /
+      -(((a : ℂ) + I * (T : ℂ)) ^ (0 : ℕ) /
         (remotePassportPolynomial M α).eval ((a : ℂ) + I * (T : ℂ))))
       atTop (nhds 0) := by simpa using h.neg
   refine hneg.congr' (Eventually.of_forall fun T => ?_)
@@ -146,18 +146,18 @@ theorem tendsto_height_mul_remotePassportInverseValue {ι : Type*} [Fintype ι]
     tendsto_const_nhds
   have hdiff := h1.sub (hconst.mul h0)
   have hdiff0 : Tendsto (fun T : ℝ =>
-      (((a : ℂ) + I * (T : ℂ)) ^ 1 / p.eval ((a : ℂ) + I * (T : ℂ))) -
-        (a : ℂ) * (((a : ℂ) + I * (T : ℂ)) ^ 0 /
+      (((a : ℂ) + I * (T : ℂ)) ^ (1 : ℕ) / p.eval ((a : ℂ) + I * (T : ℂ))) -
+        (a : ℂ) * (((a : ℂ) + I * (T : ℂ)) ^ (0 : ℕ) /
           p.eval ((a : ℂ) + I * (T : ℂ)))) atTop (nhds 0) := by
     simpa using hdiff
   have hI : Tendsto (fun T : ℝ => I *
-      ((((a : ℂ) + I * (T : ℂ)) ^ 1 / p.eval ((a : ℂ) + I * (T : ℂ))) -
-        (a : ℂ) * (((a : ℂ) + I * (T : ℂ)) ^ 0 /
+      ((((a : ℂ) + I * (T : ℂ)) ^ (1 : ℕ) / p.eval ((a : ℂ) + I * (T : ℂ))) -
+        (a : ℂ) * (((a : ℂ) + I * (T : ℂ)) ^ (0 : ℕ) /
           p.eval ((a : ℂ) + I * (T : ℂ))))) atTop (nhds 0) := by
     simpa using (tendsto_const_nhds.mul hdiff0 :
       Tendsto (fun T : ℝ => I *
-        ((((a : ℂ) + I * (T : ℂ)) ^ 1 / p.eval ((a : ℂ) + I * (T : ℂ))) -
-          (a : ℂ) * (((a : ℂ) + I * (T : ℂ)) ^ 0 /
+        ((((a : ℂ) + I * (T : ℂ)) ^ (1 : ℕ) / p.eval ((a : ℂ) + I * (T : ℂ))) -
+          (a : ℂ) * (((a : ℂ) + I * (T : ℂ)) ^ (0 : ℕ) /
             p.eval ((a : ℂ) + I * (T : ℂ))))) atTop (nhds (I * 0)))
   exact hI.congr' (Eventually.of_forall fun T => by
     simp only [pow_one, pow_zero]
@@ -197,7 +197,7 @@ theorem tendsto_remotePassportD {ι : Type*} [Fintype ι]
 theorem tendsto_remotePassportD_mul_point_sq_re {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) {a : ℝ} (ha : a ≠ 0) :
     Tendsto (fun T => remotePassportD M α a T *
-      ((remotePassportPoint a T) ^ 2).re) atTop (nhds 0) := by
+      ((remotePassportPoint a T) ^ (2 : ℕ)).re) atTop (nhds 0) := by
   have hb := tendsto_remotePassportInverseValue M α a
   have hbim : Tendsto (fun T => (remotePassportInverseValue M α a T).im)
       atTop (nhds 0) := by
@@ -249,14 +249,14 @@ theorem tendsto_remotePassportC {ι : Type*} [Fintype ι]
   have hsub := hbre.sub (tendsto_remotePassportD_mul_point_sq_re M α ha)
   have hsub0 : Tendsto (fun T =>
       (remotePassportInverseValue M α a T).re -
-        remotePassportD M α a T * ((remotePassportPoint a T) ^ 2).re)
+        remotePassportD M α a T * ((remotePassportPoint a T) ^ (2 : ℕ)).re)
       atTop (nhds 0) := by simpa using hsub
   exact hsub0.congr' (Eventually.of_forall fun _ => rfl)
 
 theorem remotePassport_coefficients_solve {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) {a T : ℝ} (ha : a ≠ 0) (hT : T ≠ 0) :
     (remotePassportC M α a T : ℂ) +
-        (remotePassportD M α a T : ℂ) * (remotePassportPoint a T) ^ 2 =
+        (remotePassportD M α a T : ℂ) * (remotePassportPoint a T) ^ (2 : ℕ) =
       remotePassportInverseValue M α a T := by
   apply Complex.ext
   · simp [remotePassportC]
@@ -269,7 +269,7 @@ def remotePassportGauge {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) (a T : ℝ) (s : ℂ) : ℂ :=
   1 + (remotePassportPolynomial M α).eval (s - (1 / 2 : ℂ)) *
     ((remotePassportC M α a T : ℂ) +
-      (remotePassportD M α a T : ℂ) * (s - (1 / 2 : ℂ)) ^ 2)
+      (remotePassportD M α a T : ℂ) * (s - (1 / 2 : ℂ)) ^ (2 : ℕ))
 
 theorem remotePassportGauge_target_zero {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) {a T : ℝ} (ha : a ≠ 0) (hT : T ≠ 0)
@@ -384,7 +384,7 @@ def remotePassportCorrectionPolynomial {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) (a T : ℝ) : Polynomial ℂ :=
   remotePassportPolynomial M α *
     (Polynomial.C (remotePassportC M α a T : ℂ) +
-      Polynomial.C (remotePassportD M α a T : ℂ) * X ^ 2)
+      Polynomial.C (remotePassportD M α a T : ℂ) * X ^ (2 : ℕ))
 
 theorem remotePassportCorrectionPolynomial_eval {ι : Type*} [Fintype ι]
     (M : ι → ℕ) (α : ι → ℂ) (a T : ℝ) (w : ℂ) :
@@ -403,9 +403,9 @@ theorem X_sub_C_pow_dvd_remotePassportCorrectionPolynomial
     rw [Polynomial.dvd_iff_isRoot]
     simp [Polynomial.IsRoot, quartetFlatPolynomial]
   obtain ⟨R, hR⟩ := hlinear
-  refine ⟨R ^ M i * Q * X ^ 2 *
+  refine ⟨R ^ M i * Q * X ^ (2 : ℕ) *
       (Polynomial.C (remotePassportC M α a T : ℂ) +
-        Polynomial.C (remotePassportD M α a T : ℂ) * X ^ 2), ?_⟩
+        Polynomial.C (remotePassportD M α a T : ℂ) * X ^ (2 : ℕ)), ?_⟩
   rw [remotePassportCorrectionPolynomial, remotePassportPolynomial, hQ, hR, mul_pow]
   ring
 
@@ -471,14 +471,14 @@ theorem remotePassportGaugePolynomial_natDegree_le {ι : Type*} [Fintype ι]
       (remotePassportPolynomial M α).natDegree + 2 := by
   have hquad :
       (Polynomial.C (remotePassportC M α a T : ℂ) +
-        Polynomial.C (remotePassportD M α a T : ℂ) * X ^ 2).natDegree ≤ 2 := by
+        Polynomial.C (remotePassportD M α a T : ℂ) * X ^ (2 : ℕ)).natDegree ≤ 2 := by
     calc
       _ ≤ max (Polynomial.C (remotePassportC M α a T : ℂ)).natDegree
-          (Polynomial.C (remotePassportD M α a T : ℂ) * X ^ 2).natDegree :=
+          (Polynomial.C (remotePassportD M α a T : ℂ) * X ^ (2 : ℕ)).natDegree :=
         Polynomial.natDegree_add_le _ _
       _ ≤ 2 := by
         have hmul := Polynomial.natDegree_mul_le (R := ℂ)
-          (p := Polynomial.C (remotePassportD M α a T : ℂ)) (q := X ^ 2)
+          (p := Polynomial.C (remotePassportD M α a T : ℂ)) (q := X ^ (2 : ℕ))
         rw [Polynomial.natDegree_C, Polynomial.natDegree_pow,
           Polynomial.natDegree_X] at hmul
         norm_num at hmul
@@ -545,7 +545,7 @@ theorem remotePassportGauge_tendstoLocallyUniformly {ι : Type*} [Fintype ι]
     (remotePassportPolynomial M α).eval (s - (1 / 2 : ℂ))
   let gD : ℂ → ℂ := fun s =>
     (remotePassportPolynomial M α).eval (s - (1 / 2 : ℂ)) *
-      (s - (1 / 2 : ℂ)) ^ 2
+      (s - (1 / 2 : ℂ)) ^ (2 : ℕ)
   have hgC : Continuous gC := by
     dsimp [gC]
     fun_prop

@@ -165,7 +165,7 @@ theorem tendsto_xiHeatCassiniLogMeshLaplaceContinuation_critical_radial
       (𝓝[>] (0 : ℝ))
       (𝓝 (xiHeatCassiniLogMeshLaplaceContinuation s0)) := by
   let K : ℝ := ‖s0‖ + 1
-  let C : ℝ := K ^ 2 * Real.exp K
+  let C : ℝ := K ^ (2 : ℕ) * Real.exp K
   let M : ℕ → ℝ := fun N =>
     C * xiHeatCassiniPrimeGapAbscissaEnergy (1 / 2) N
   have hK : 0 ≤ K := by dsimp only [K]; positivity
@@ -201,7 +201,7 @@ theorem tendsto_xiHeatCassiniLogMeshLaplaceContinuation_critical_radial
         ‖s0 + (t : ℂ)‖ ≤ ‖s0‖ + ‖(t : ℂ)‖ := norm_add_le _ _
         _ = ‖s0‖ + t := by rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ht0']
         _ ≤ ‖s0‖ + 1 := by linarith
-    have hfactor : ‖s‖ ^ 2 * Real.exp ‖s‖ ≤ C := by
+    have hfactor : ‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖ ≤ C := by
       dsimp only [C]
       gcongr
     have habscissa : -s.re ≤ 1 / 2 := by
@@ -217,7 +217,7 @@ theorem tendsto_xiHeatCassiniLogMeshLaplaceContinuation_critical_radial
         (xiMassNthPrimeLogHeight_pos (N + 1)).le
     calc
       ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
-          (‖s‖ ^ 2 * Real.exp ‖s‖) *
+          (‖s‖ ^ (2 : ℕ) * Real.exp ‖s‖) *
             xiHeatCassiniPrimeGapAbscissaEnergy (-s.re) N :=
         norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_abscissaEnergy s N
       _ ≤ C * xiHeatCassiniPrimeGapAbscissaEnergy (1 / 2) N :=

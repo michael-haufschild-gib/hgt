@@ -246,7 +246,7 @@ def compactSphericalPrincipalCasimir (s : ℝ) :
 
 /-- Compact-picture Casimir acts by scalar `s²/4`. -/
 theorem compactSphericalPrincipalCasimir_eq_smul_id (s : ℝ) :
-    compactSphericalPrincipalCasimir s = (((s : ℂ) ^ 2) / 4) • LinearMap.id := by
+    compactSphericalPrincipalCasimir s = (((s : ℂ) ^ (2 : ℕ)) / 4) • LinearMap.id := by
   rw [compactSphericalPrincipalCasimir, sphericalPrincipalCasimir_eq_smul_id,
     map_smul, linearEquiv_conj_id]
 
@@ -258,7 +258,7 @@ def compactSphericalPrincipalLaplacian (s : ℝ) :
 
 /-- Compact-picture shifted Casimir acts by `(1-s²)/4`. -/
 theorem compactSphericalPrincipalLaplacian_eq_smul_id (s : ℝ) :
-    compactSphericalPrincipalLaplacian s = ((1 - (s : ℂ) ^ 2) / 4) • LinearMap.id := by
+    compactSphericalPrincipalLaplacian s = ((1 - (s : ℂ) ^ (2 : ℕ)) / 4) • LinearMap.id := by
   rw [compactSphericalPrincipalLaplacian, sphericalPrincipalLaplacian_eq_smul_id,
     map_smul, linearEquiv_conj_id]
 

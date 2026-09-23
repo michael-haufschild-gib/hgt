@@ -79,8 +79,8 @@ theorem pwGammaReversibleModeMass_pos {n : ℕ} (hn : 0<n) :
   simp
 
 theorem pwGammaNormalizedRayMode_square_integrable {n : ℕ} (hn : 0<n) :
-    IntegrableOn (fun x => pwGammaReversibleDensity x*(pwGammaNormalizedRayMode n x)^2) (Ioi 0) := by
-  have hm : Measurable (fun x => pwGammaReversibleDensity x*(pwGammaNormalizedRayMode n x)^2) := by
+    IntegrableOn (fun x => pwGammaReversibleDensity x*(pwGammaNormalizedRayMode n x)^(2 : ℕ)) (Ioi 0) := by
+  have hm : Measurable (fun x => pwGammaReversibleDensity x*(pwGammaNormalizedRayMode n x)^(2 : ℕ)) := by
     unfold pwGammaReversibleDensity pwGammaNormalizedRayMode
     fun_prop
   apply (pwGammaReversibleDensity_integrable.mul_const (n:ℝ)).mono' hm.aestronglyMeasurable

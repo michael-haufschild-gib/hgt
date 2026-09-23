@@ -90,7 +90,7 @@ theorem deningerBigWittGhost_one_eq_neg_coeff_one
 theorem deningerBigWittGhost_two_eq_coeff_formula
     (w : DeningerBigWittRing A) :
     deningerBigWittGhostComponent 2 (by norm_num) w =
-      PowerSeries.coeff 1 (deningerBigWittRingSeries w) ^ 2 -
+      PowerSeries.coeff 1 (deningerBigWittRingSeries w) ^ (2 : ℕ) -
         2 * PowerSeries.coeff 2 (deningerBigWittRingSeries w) := by
   let x := (deningerBigWittEulerEquiv A).symm
     (Additive.toMul w.additiveVal)
@@ -115,7 +115,7 @@ theorem deningerBigWittGhost_two_eq_coeff_formula
     rw [coeff_mul_deningerBigWittFactor_self]
     simp [deningerBigWittFactor]
   rw [hc1, hc2]
-  have hg : deningerBigWittEulerGhost x 2 = x 0 ^ 2 + 2 * x 1 := by
+  have hg : deningerBigWittEulerGhost x 2 = x 0 ^ (2 : ℕ) + 2 * x 1 := by
     norm_num [deningerBigWittEulerGhost, Finset.sum_range_succ]
   rw [hg]
   ring
@@ -169,12 +169,12 @@ theorem deningerBigWittFrobeniusTwo_natural
 theorem deningerBigWittFrobeniusTwoNormSeries_teichmuller (a : A) :
     deningerBigWittFrobeniusTwoNormSeries
         (deningerBigWittRingTeichmuller a) =
-      deningerBigWittFactor (a ^ 2) 1 := by
+      deningerBigWittFactor (a ^ (2 : ℕ)) 1 := by
   let h : PowerSeries A :=
     deningerBigWittFactor a 1 *
       PowerSeries.rescale (-1 : A) (deningerBigWittFactor a 1)
   have hh : h = PowerSeries.expand 2 (by norm_num)
-      (deningerBigWittFactor (a ^ 2) 1) := by
+      (deningerBigWittFactor (a ^ (2 : ℕ)) 1) := by
     dsimp only [h]
     have hC : PowerSeries.rescale (-1 : A) (PowerSeries.C a) =
         PowerSeries.C a := by
@@ -192,8 +192,8 @@ theorem deningerBigWittFrobeniusTwoNormSeries_teichmuller (a : A) :
       simp only [map_neg, map_one]
       ring
     have hexpand : PowerSeries.expand 2 (by norm_num)
-        (deningerBigWittFactor (a ^ 2) 1) =
-        1 - PowerSeries.C (a ^ 2) * PowerSeries.X ^ 2 := by
+        (deningerBigWittFactor (a ^ (2 : ℕ)) 1) =
+        1 - PowerSeries.C (a ^ (2 : ℕ)) * PowerSeries.X ^ (2 : ℕ) := by
       rw [deningerBigWittFactor, map_sub, map_one, map_mul,
         PowerSeries.expand_C, pow_one, PowerSeries.expand_X]
     rw [hneg, hexpand]
@@ -210,7 +210,7 @@ theorem deningerBigWittFrobeniusTwoNormSeries_teichmuller (a : A) :
 /-- Frobenius two squares Teichmüller representatives over every ring. -/
 @[simp] theorem deningerBigWittFrobeniusTwo_teichmuller (a : A) :
     deningerBigWittFrobeniusTwo (deningerBigWittRingTeichmuller a) =
-      deningerBigWittRingTeichmuller (a ^ 2) := by
+      deningerBigWittRingTeichmuller (a ^ (2 : ℕ)) := by
   apply deningerBigWittRingSeries_injective
   rw [deningerBigWittRingSeries_frobeniusTwo,
     deningerBigWittFrobeniusTwoNormSeries_teichmuller,
@@ -228,7 +228,7 @@ theorem deningerBigWittTeichmullerCrossEffect_ghost_two_scaled_conj
     deningerBigWittGhostComponent 2 (by norm_num)
         (deningerBigWittTeichmullerCrossEffect
           ((u : ℂ) * z) ((v : ℂ) * (starRingEnd ℂ) z)) =
-      ((-2 * u * v * ‖z‖ ^ 2 : ℝ) : ℂ) := by
+      ((-2 * u * v * ‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [deningerBigWittTeichmullerCrossEffect]
   simp only [map_sub, map_add,
     deningerBigWittGhostComponent_teichmuller]
@@ -258,7 +258,7 @@ theorem deningerBigWittPolarizedPrimeSeamPairSource_ghost_two
     deningerBigWittGhostComponent 2 (by norm_num)
         (deningerBigWittPolarizedPrimeSeamPairSource a p q) =
       ((-2 * deningerBigWittPrimePairExtendedPhysicalAtom p q *
-        ‖a p - a q‖ ^ 2 : ℝ) : ℂ) := by
+        ‖a p - a q‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [deningerBigWittPolarizedPrimeSeamPairSource]
   rw [deningerBigWittTeichmullerCrossEffect_ghost_two_scaled_conj]
   congr 2
@@ -325,7 +325,7 @@ theorem deningerBigWittPolarizedPrimeSeamAggregateSource_ghost_two
       simp [deningerBigWittPolarizedPrimeSeamAggregateSource]
     _ = ∑ p ∈ s, ∑ q ∈ s,
           ((-2 * deningerBigWittPrimePairExtendedPhysicalAtom p q *
-            ‖a p - a q‖ ^ 2 : ℝ) : ℂ) := by
+            ‖a p - a q‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       apply Finset.sum_congr rfl
       intro p hp
       apply Finset.sum_congr rfl

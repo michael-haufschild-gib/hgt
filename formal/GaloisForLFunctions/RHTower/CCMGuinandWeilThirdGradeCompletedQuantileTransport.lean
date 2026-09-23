@@ -379,7 +379,7 @@ theorem ccmGuinandWeilPrimePolarTriangularWindow_eq_completedQuantileTransport
 theorem abs_ccmThirdGradeCesaroLowerOutgoingCorrection_le
     {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
     |ccmThirdGradeCesaroLowerOutgoingCorrection b H| ≤
-      (32 / b ^ 3) *
+      (32 / b ^ (3 : ℕ)) *
         |criticalMellinPrimeMass b - (2 * Real.exp (b / 2) - 2)| := by
   have hH : 0 < H := hb.trans_le hbH
   have hfactor0 : 0 ≤ 1 - b / H := by
@@ -392,7 +392,7 @@ theorem abs_ccmThirdGradeCesaroLowerOutgoingCorrection_le
     unfold ccmGuinandWeilThirdGradeCesaroTriangularWeight
       ccmGuinandWeilThirdGradeWeight
     positivity
-  have hrawLe : ccmGuinandWeilThirdGradeCesaroTriangularWeight H b ≤ 32 / b ^ 3 := by
+  have hrawLe : ccmGuinandWeilThirdGradeCesaroTriangularWeight H b ≤ 32 / b ^ (3 : ℕ) := by
     unfold ccmGuinandWeilThirdGradeCesaroTriangularWeight
       ccmGuinandWeilThirdGradeWeight
     exact mul_le_of_le_one_right (by positivity) hfactor1
@@ -409,9 +409,9 @@ theorem uniformlyBounded_primePolarTriangularWindow_iff_completedQuantileTranspo
         (ccmGuinandWeilThirdGradeCesaroTriangularWeight H)| ≤ C) ↔
     (∃ C : ℝ, ∀ H : ℝ, b ≤ H →
       |ccmThirdGradeCesaroCompletedQuantileTransport b H| ≤ C) := by
-  let L : ℝ := (32 / b ^ 3) *
+  let L : ℝ := (32 / b ^ (3 : ℕ)) *
     |criticalMellinPrimeMass b - (2 * Real.exp (b / 2) - 2)|
-  let I : ℝ := 64 / b ^ 3
+  let I : ℝ := 64 / b ^ (3 : ℕ)
   constructor
   · rintro ⟨C, hC⟩
     refine ⟨C + L + I, ?_⟩

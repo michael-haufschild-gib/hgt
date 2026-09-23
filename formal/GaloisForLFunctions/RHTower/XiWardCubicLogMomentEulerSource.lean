@@ -7,10 +7,10 @@ import GaloisForLFunctions.RHTower.VonMangoldtGammaOrientedAnomaly
 # Cubic log-moment separator on the balanced Euler source
 
 The scale-invariant Hellinger diagonal preserves the nonsummable balanced weight `Λ(n) / n`.
-The cubic log-moment diagonal is instead `115 / (864 (log n)^3)`.  On a prime-power coordinate
+The cubic log-moment diagonal is instead `115 / (864 (log n)^(3 : ℕ))`.  On a prime-power coordinate
 `n = p^(e+1)`, multiplication by the literal balanced source coefficient gives
 
-`115 / (864 (e+1)^3 p^(e+1) (log p)^2)`.
+`115 / (864 (e+1)^(3 : ℕ) p^(e+1) (log p)^(2 : ℕ))`.
 
 This family is positive and summable.  Thus cubic weighting simultaneously retains a uniform
 (indeed increasing) charge on every strict-right zeta displacement and removes the global Euler
@@ -25,7 +25,7 @@ noncomputable section
 def xiGammaEulerPrimitiveCubicLogMomentWeight
     (pe : Nat.Primes × ℕ) : ℝ :=
   (115 / 864 : ℝ) * invNatLogSq pe.1 *
-    ((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ 3)⁻¹
+    ((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹
 
 theorem xiGammaEulerPrimitiveCubicLogMomentWeight_nonneg
     (pe : Nat.Primes × ℕ) :
@@ -33,7 +33,7 @@ theorem xiGammaEulerPrimitiveCubicLogMomentWeight_nonneg
   rw [xiGammaEulerPrimitiveCubicLogMomentWeight, invNatLogSq]
   positivity
 
-/-- Explicit product majorant: prime factor `1/(p log^2 p)` and geometric depth factor. -/
+/-- Explicit product majorant: prime factor `1/(p log^(2 : ℕ) p)` and geometric depth factor. -/
 theorem xiGammaEulerPrimitiveCubicLogMomentWeight_le
     (pe : Nat.Primes × ℕ) :
     xiGammaEulerPrimitiveCubicLogMomentWeight pe ≤
@@ -47,11 +47,11 @@ theorem xiGammaEulerPrimitiveCubicLogMomentWeight_le
     pow_le_pow_left₀ (inv_nonneg.mpr hp.le) hpInv pe.2
   have hkOne : (1 : ℝ) ≤ (pe.2 : ℝ) + 1 := by
     exact_mod_cast Nat.le_add_left 1 pe.2
-  have hkCube : (1 : ℝ) ≤ ((pe.2 : ℝ) + 1) ^ 3 := by
+  have hkCube : (1 : ℝ) ≤ ((pe.2 : ℝ) + 1) ^ (3 : ℕ) := by
     exact one_le_pow₀ hkOne
-  have hkInv : (((pe.2 : ℝ) + 1) ^ 3)⁻¹ ≤ (1 : ℝ) := by
+  have hkInv : (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹ ≤ (1 : ℝ) := by
     simpa using
-      (inv_le_inv₀ (by positivity : 0 < ((pe.2 : ℝ) + 1) ^ 3)
+      (inv_le_inv₀ (by positivity : 0 < ((pe.2 : ℝ) + 1) ^ (3 : ℕ))
         (by norm_num : (0 : ℝ) < 1)).2 hkCube
   have hbase : 0 ≤ (115 / 864 : ℝ) * invNatLogSq pe.1 := by
     rw [invNatLogSq]
@@ -59,9 +59,9 @@ theorem xiGammaEulerPrimitiveCubicLogMomentWeight_le
   rw [xiGammaEulerPrimitiveCubicLogMomentWeight]
   calc
     (115 / 864 : ℝ) * invNatLogSq pe.1 *
-          ((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ 3)⁻¹ ≤
+          ((pe.1 : ℝ)⁻¹) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹ ≤
         (115 / 864 : ℝ) * invNatLogSq pe.1 *
-          (1 / 2 : ℝ) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ 3)⁻¹ := by
+          (1 / 2 : ℝ) ^ pe.2 * (((pe.2 : ℝ) + 1) ^ (3 : ℕ))⁻¹ := by
       exact mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hpPow hbase)
         (inv_nonneg.mpr (by positivity))

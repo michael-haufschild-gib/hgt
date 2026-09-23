@@ -9,7 +9,7 @@ series splits into a window of half-width `N` around the central index — where
 
 The result is the estimate a Wiman--Valiron argument needs: the whole remainder is `N` times the
 window sum plus a geometric tail whose ratio improves as the window widens.  Unlike the estimates
-built from the one-radius geometric bound, the tail here is exponentially small in `N^2 / L`, so a
+built from the one-radius geometric bound, the tail here is exponentially small in `N^(2 : ℕ) / L`, so a
 window of half-width comparable to `sqrt(L log ...)` already makes it negligible.
 -/
 

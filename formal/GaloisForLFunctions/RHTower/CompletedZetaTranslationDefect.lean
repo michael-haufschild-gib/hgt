@@ -21,11 +21,11 @@ def trigamma (s : ℂ) : ℂ :=
 
 /-- The archimedean curvature summand in `(Xi'/Xi)'`. -/
 def completedZetaArchimedeanCurvature (s : ℂ) : ℂ :=
-  -1 / s ^ 2 - 1 / (s - 1) ^ 2 + (1 / 4) * trigamma (s / 2)
+  -1 / s ^ (2 : ℕ) - 1 / (s - 1) ^ (2 : ℕ) + (1 / 4) * trigamma (s / 2)
 
 /-- The explicit rational response of the archimedean curvature under `s ↦ s+2`. -/
 def completedZetaArchimedeanShiftRational (s : ℂ) : ℂ :=
-  -1 / (s + 2) ^ 2 - 1 / (s + 1) ^ 2 + 1 / (s - 1) ^ 2
+  -1 / (s + 2) ^ (2 : ℕ) - 1 / (s + 1) ^ (2 : ℕ) + 1 / (s - 1) ^ (2 : ℕ)
 
 /-- The trigamma recurrence makes the two-step archimedean translation difference literally
 rational on the right half-plane. -/
@@ -60,18 +60,18 @@ theorem completedZetaArchimedeanCurvature_add_two_sub
     linarith
   have htriDiff :
       (1 / 4) * trigamma ((s + 2) / 2) - (1 / 4) * trigamma (s / 2) =
-        -1 / s ^ 2 := by
+        -1 / s ^ (2 : ℕ) := by
     rw [hshift, trigamma, trigamma, hrec]
     field_simp [hs0]
     ring
   rw [completedZetaArchimedeanCurvature, completedZetaArchimedeanCurvature,
     completedZetaArchimedeanShiftRational]
   calc
-    (-1 / (s + 2) ^ 2 - 1 / (s + 2 - 1) ^ 2 + (1 / 4) * trigamma ((s + 2) / 2)) -
-          (-1 / s ^ 2 - 1 / (s - 1) ^ 2 + (1 / 4) * trigamma (s / 2)) =
-        (-1 / (s + 2) ^ 2 - 1 / (s + 1) ^ 2 + 1 / s ^ 2 + 1 / (s - 1) ^ 2) +
+    (-1 / (s + 2) ^ (2 : ℕ) - 1 / (s + 2 - 1) ^ (2 : ℕ) + (1 / 4) * trigamma ((s + 2) / 2)) -
+          (-1 / s ^ (2 : ℕ) - 1 / (s - 1) ^ (2 : ℕ) + (1 / 4) * trigamma (s / 2)) =
+        (-1 / (s + 2) ^ (2 : ℕ) - 1 / (s + 1) ^ (2 : ℕ) + 1 / s ^ (2 : ℕ) + 1 / (s - 1) ^ (2 : ℕ)) +
           ((1 / 4) * trigamma ((s + 2) / 2) - (1 / 4) * trigamma (s / 2)) := by ring
-    _ = -1 / (s + 2) ^ 2 - 1 / (s + 1) ^ 2 + 1 / (s - 1) ^ 2 := by
+    _ = -1 / (s + 2) ^ (2 : ℕ) - 1 / (s + 1) ^ (2 : ℕ) + 1 / (s - 1) ^ (2 : ℕ) := by
       rw [htriDiff]
       ring
 
@@ -160,13 +160,13 @@ private theorem ratFunc_eval_mk_of_eval_ne_zero
 
 /-- Common denominator for the rational archimedean two-step response. -/
 def completedZetaArchimedeanShiftDenominator : Polynomial ℂ :=
-  (Polynomial.X + 2) ^ 2 * (Polynomial.X + 1) ^ 2 * (Polynomial.X - 1) ^ 2
+  (Polynomial.X + 2) ^ (2 : ℕ) * (Polynomial.X + 1) ^ (2 : ℕ) * (Polynomial.X - 1) ^ (2 : ℕ)
 
 /-- Common numerator for the rational archimedean two-step response. -/
 def completedZetaArchimedeanShiftNumerator : Polynomial ℂ :=
-  -((Polynomial.X + 1) ^ 2 * (Polynomial.X - 1) ^ 2) -
-    ((Polynomial.X + 2) ^ 2 * (Polynomial.X - 1) ^ 2) +
-    ((Polynomial.X + 2) ^ 2 * (Polynomial.X + 1) ^ 2)
+  -((Polynomial.X + 1) ^ (2 : ℕ) * (Polynomial.X - 1) ^ (2 : ℕ)) -
+    ((Polynomial.X + 2) ^ (2 : ℕ) * (Polynomial.X - 1) ^ (2 : ℕ)) +
+    ((Polynomial.X + 2) ^ (2 : ℕ) * (Polynomial.X + 1) ^ (2 : ℕ))
 
 /-- The rational function represented by the archimedean two-step response. -/
 def completedZetaArchimedeanShiftRatFunc : RatFunc ℂ :=

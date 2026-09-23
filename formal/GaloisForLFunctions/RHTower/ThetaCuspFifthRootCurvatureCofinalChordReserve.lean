@@ -54,7 +54,7 @@ theorem thetaCuspCompletedProductFiberFirstDecayFlux_zero_eq_right
   have hsquare := hsource.pow 2
   have hlocal :
       thetaCuspCompletedProductFiberAmplitude 1 0 =ᶠ[nhds t]
-        (fun s => thetaCuspSourceTerm s 1) ^ 2 := by
+        (fun s => thetaCuspSourceTerm s 1) ^ (2 : ℕ) := by
     filter_upwards [isOpen_Ioi.mem_nhds ht] with s hs
     rw [thetaCuspCompletedProductFiberAmplitude_one_zero, abs_of_pos hs]
     rfl
@@ -163,8 +163,8 @@ def thetaCuspCompletedProductFiberCofinalLikelihoodDriftReserveAtZero
   let L := thetaCuspCompletedProductFiberCofinalLikelihoodFactor t
   let L₁ := thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t
   let D := d * (1 + L) - F * L₁
-  24 * A ^ 2 - 9 * t * A * D + t ^ 2 *
-    (5 * A * j * (1 + L) - 4 * d ^ 2 * (1 + L) ^ 2 +
+  24 * A ^ (2 : ℕ) - 9 * t * A * D + t ^ (2 : ℕ) *
+    (5 * A * j * (1 + L) - 4 * d ^ (2 : ℕ) * (1 + L) ^ (2 : ℕ) +
       d * L₁ * (10 * A + 8 * F * (1 + L)))
 
 /-- Positive likelihood tax density which the nonlocal chord reserve must dominate. -/
@@ -174,7 +174,7 @@ def thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero
   let F := thetaCuspCompletedProductFiberAmplitude 1 0 t
   let L₁ := thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t
   let L₂ := thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetTwo t
-  4 * t ^ 2 * F ^ 2 * L₁ ^ 2 + 5 * t ^ 2 * A * F * L₂
+  4 * t ^ (2 : ℕ) * F ^ (2 : ℕ) * L₁ ^ (2 : ℕ) + 5 * t ^ (2 : ℕ) * A * F * L₂
 
 /-- Same reserve with its sole endpoint drop replaced by accumulated source flux. -/
 def thetaCuspCompletedProductFiberCofinalLikelihoodIntegralDriftReserveAtZero
@@ -186,8 +186,8 @@ def thetaCuspCompletedProductFiberCofinalLikelihoodIntegralDriftReserveAtZero
   let L := thetaCuspCompletedProductFiberCofinalLikelihoodFactor t
   let L₁ := thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t
   let D := d * (1 + L) - F * L₁
-  24 * A ^ 2 - 9 * t * A * D + t ^ 2 *
-    (5 * A * j * (1 + L) - 4 * d ^ 2 * (1 + L) ^ 2 +
+  24 * A ^ (2 : ℕ) - 9 * t * A * D + t ^ (2 : ℕ) *
+    (5 * A * j * (1 + L) - 4 * d ^ (2 : ℕ) * (1 + L) ^ (2 : ℕ) +
       d * L₁ * (10 * A + 8 * F * (1 + L)))
 
 theorem thetaCuspCompletedProductFiberCofinalLikelihoodDriftReserve_eq_integral
@@ -284,15 +284,15 @@ theorem thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero_pos
   have hLone := thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne_neg ht
   have hLtwo := thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetTwo_pos ht
   have hLoneSq :
-      0 < thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ 2 :=
+      0 < thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ (2 : ℕ) :=
     sq_pos_of_neg hLone
   unfold thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero
   have hslope : 0 <
-      4 * t ^ 2 * thetaCuspCompletedProductFiberAmplitude 1 0 t ^ 2 *
-        thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ 2 := by
+      4 * t ^ (2 : ℕ) * thetaCuspCompletedProductFiberAmplitude 1 0 t ^ (2 : ℕ) *
+        thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetOne t ^ (2 : ℕ) := by
     positivity
   have hconv : 0 <
-      5 * t ^ 2 * thetaCuspReflectedSourceFirstDrop 0 t *
+      5 * t ^ (2 : ℕ) * thetaCuspReflectedSourceFirstDrop 0 t *
         thetaCuspCompletedProductFiberAmplitude 1 0 t *
           thetaCuspCompletedProductFiberCofinalLikelihoodFactorJetTwo t := by
     positivity

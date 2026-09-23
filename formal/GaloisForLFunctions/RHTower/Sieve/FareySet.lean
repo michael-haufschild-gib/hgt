@@ -29,9 +29,9 @@ theorem mem_fareySet {Q : ℕ} {p : ℕ × ℕ} :
 
 /-- **The large sieve on the Farey set of order `Q`.** -/
 theorem largeSieve_expSum_fareySet (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (c : Fin N → ℂ) :
-    ∑ p ∈ fareySet Q, ‖expSum N c ((p.1 : ℝ) / (p.2 : ℝ))‖ ^ 2
-      ≤ ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1)))
-          * ∑ n : Fin N, ‖c n‖ ^ 2 := by
+    ∑ p ∈ fareySet Q, ‖expSum N c ((p.1 : ℝ) / (p.2 : ℝ))‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1)))
+          * ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   refine largeSieve_expSum_farey N hQ _ (fun p hp => ?_) c
   obtain ⟨⟨ha1, _⟩, ⟨hq1, hqQ⟩, hle, hcop⟩ := mem_fareySet.mp hp
   exact ⟨hq1, hqQ, ha1, hle, hcop⟩
@@ -52,9 +52,9 @@ theorem fareySet_eq_biUnion (Q : ℕ) :
 /-- **The large sieve in textbook form.** -/
 theorem largeSieve_expSum_double (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (c : Fin N → ℂ) :
     ∑ q ∈ Finset.Icc 1 Q, ∑ a ∈ (Finset.Icc 1 q).filter (fun a => Nat.Coprime a q),
-        ‖expSum N c ((a : ℝ) / (q : ℝ))‖ ^ 2
-      ≤ ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1)))
-          * ∑ n : Fin N, ‖c n‖ ^ 2 := by
+        ‖expSum N c ((a : ℝ) / (q : ℝ))‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1)))
+          * ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   classical
   have hdisj : (↑(Finset.Icc 1 Q) : Set ℕ).PairwiseDisjoint
       (fun q => ((Finset.Icc 1 q).filter (fun a => Nat.Coprime a q)).image
@@ -71,9 +71,9 @@ theorem largeSieve_expSum_double (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (c : Fin N �
   rw [fareySet_eq_biUnion, Finset.sum_biUnion hdisj] at hbase
   have hinner : ∀ q ∈ Finset.Icc 1 Q,
       ∑ p ∈ ((Finset.Icc 1 q).filter (fun a => Nat.Coprime a q)).image (fun a => (a, q)),
-          ‖expSum N c ((p.1 : ℝ) / (p.2 : ℝ))‖ ^ 2
+          ‖expSum N c ((p.1 : ℝ) / (p.2 : ℝ))‖ ^ (2 : ℕ)
         = ∑ a ∈ (Finset.Icc 1 q).filter (fun a => Nat.Coprime a q),
-            ‖expSum N c ((a : ℝ) / (q : ℝ))‖ ^ 2 := by
+            ‖expSum N c ((a : ℝ) / (q : ℝ))‖ ^ (2 : ℕ) := by
     intro q _
     refine Finset.sum_image ?_
     intro a _ a' _ heq

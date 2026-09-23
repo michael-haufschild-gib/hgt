@@ -33,7 +33,7 @@ def principalBracketSpanDecoder
     (symbol : (ι → K) →ₗ[K] Module.End K M)
     (hLI : LinearIndependent K (principalBracketPair symbol)) :
     Submodule.span K (Set.range (principalBracketPair symbol)) →ₗ[K]
-      ⋀[K]^2 (ι → K) :=
+      ⋀[K]^(2 : ℕ) (ι → K) :=
   (Finsupp.linearCombination K fun p : QuantumLawPair ι ↦
     quantumPairWedge (K := K) p).comp hLI.repr
 
@@ -41,7 +41,7 @@ def principalBracketSpanDecoder
 def principalBracketDecoder
     (symbol : (ι → K) →ₗ[K] Module.End K M)
     (hLI : LinearIndependent K (principalBracketPair symbol)) :
-    Module.End K M →ₗ[K] ⋀[K]^2 (ι → K) :=
+    Module.End K M →ₗ[K] ⋀[K]^(2 : ℕ) (ι → K) :=
   Classical.choose (LinearMap.exists_extend (principalBracketSpanDecoder symbol hLI))
 
 omit [CharZero K] in
@@ -73,7 +73,7 @@ theorem principalBracketDecoder_apply
 def decodedPrincipalBracketMap
     (symbol : (ι → K) →ₗ[K] Module.End K M)
     (hLI : LinearIndependent K (principalBracketPair symbol)) :
-    (⋀[K]^2 (ι → K)) →ₗ[K] ⋀[K]^2 (ι → K) :=
+    (⋀[K]^(2 : ℕ) (ι → K)) →ₗ[K] ⋀[K]^(2 : ℕ) (ι → K) :=
   (principalBracketDecoder symbol hLI).comp (endomorphismCommutatorMap symbol)
 
 omit [CharZero K] in

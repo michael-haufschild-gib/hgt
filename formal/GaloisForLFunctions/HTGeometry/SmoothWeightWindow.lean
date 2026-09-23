@@ -81,11 +81,11 @@ theorem norm_weighted_sub_partialSum_le_window {a : ℕ → ℂ} {H : ℝ} (hH :
 
 /-- Cauchy–Schwarz for a finite `ℓ¹` mass against the `ℓ²` mass. -/
 theorem sum_norm_le_sqrt_card_mul_sqrt_sum_normSq (s : Finset ℕ) (a : ℕ → ℂ) :
-    (∑ n ∈ s, ‖a n‖) ≤ Real.sqrt (s.card) * Real.sqrt (∑ n ∈ s, ‖a n‖ ^ 2) := by
-  have hcs : (∑ n ∈ s, ‖a n‖) ^ 2 ≤ (s.card : ℝ) * ∑ n ∈ s, ‖a n‖ ^ 2 :=
+    (∑ n ∈ s, ‖a n‖) ≤ Real.sqrt (s.card) * Real.sqrt (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ)) := by
+  have hcs : (∑ n ∈ s, ‖a n‖) ^ (2 : ℕ) ≤ (s.card : ℝ) * ∑ n ∈ s, ‖a n‖ ^ (2 : ℕ) :=
     sq_sum_le_card_mul_sum_sq
   have hnn : (0 : ℝ) ≤ ∑ n ∈ s, ‖a n‖ := Finset.sum_nonneg fun n _ => norm_nonneg _
-  have hsq : (∑ n ∈ s, ‖a n‖) = Real.sqrt ((∑ n ∈ s, ‖a n‖) ^ 2) := (Real.sqrt_sq hnn).symm
+  have hsq : (∑ n ∈ s, ‖a n‖) = Real.sqrt ((∑ n ∈ s, ‖a n‖) ^ (2 : ℕ)) := (Real.sqrt_sq hnn).symm
   rw [hsq, ← Real.sqrt_mul (Nat.cast_nonneg _)]
   exact Real.sqrt_le_sqrt hcs
 
@@ -97,7 +97,7 @@ theorem norm_weighted_sub_partialSum_le_sqrt {a : ℕ → ℂ} {H : ℝ} (hH : 0
     ‖(∑ n ∈ Finset.range m, a n * ((smoothWeight (K : ℝ) H (n : ℝ) : ℝ) : ℂ))
         - ∑ n ∈ Finset.range (K + 1), a n‖
       ≤ Real.sqrt H
-          * Real.sqrt (∑ n ∈ Finset.Ioc K ⌊(K : ℝ) + H⌋₊, ‖a n‖ ^ 2) := by
+          * Real.sqrt (∑ n ∈ Finset.Ioc K ⌊(K : ℝ) + H⌋₊, ‖a n‖ ^ (2 : ℕ)) := by
   refine le_trans (norm_weighted_sub_partialSum_le_window hH K m hm) ?_
   refine le_trans (sum_norm_le_sqrt_card_mul_sqrt_sum_normSq _ a) ?_
   refine mul_le_mul_of_nonneg_right ?_ (Real.sqrt_nonneg _)

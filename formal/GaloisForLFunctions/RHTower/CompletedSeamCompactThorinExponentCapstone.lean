@@ -90,7 +90,7 @@ theorem norm_compactThorinLogKernel
         Complex.mem_slitPlane_of_norm_lt_one (z := -u) (by simpa using huOne)
     have herr := Complex.norm_log_one_sub_inv_sub_self_le huOne
     have hdenpos : 0 < 2 * (1 - ‖u‖) := by linarith
-    have hfrac : ‖u‖ ^ 2 * (1 - ‖u‖)⁻¹ / 2 ≤ ‖u‖ := by
+    have hfrac : ‖u‖ ^ (2 : ℕ) * (1 - ‖u‖)⁻¹ / 2 ≤ ‖u‖ := by
       rw [inv_eq_one_div, mul_one_div, div_div]
       rw [mul_comm (1 - ‖u‖) 2]
       apply (div_le_iff₀ hdenpos).2
@@ -101,7 +101,7 @@ theorem norm_compactThorinLogKernel
             ‖Complex.log (1 - u)⁻¹ - u‖ + ‖u‖ := by
           simpa only [sub_add_cancel] using
             norm_add_le (Complex.log (1 - u)⁻¹ - u) u
-        _ ≤ (‖u‖ ^ 2 * (1 - ‖u‖)⁻¹ / 2) + ‖u‖ := by gcongr
+        _ ≤ (‖u‖ ^ (2 : ℕ) * (1 - ‖u‖)⁻¹ / 2) + ‖u‖ := by gcongr
         _ ≤ 2 * ‖u‖ := by linarith
     have hlogeq : -Complex.log (1 - u) = Complex.log (1 - u)⁻¹ := by
       rw [Complex.log_inv _ (Complex.slitPlane_arg_ne_pi hslit)]
@@ -233,7 +233,7 @@ theorem completedSeamMomentGerm_eventuallyEq_negTwoCassiniShiftLogDeriv :
       with z hzratio hzsource hzmem
     have hz0 : z ≠ 0 := by simpa using hzmem
     let w : ℂ := Complex.sqrt z
-    have hwsq : w ^ 2 = z := by
+    have hwsq : w ^ (2 : ℕ) = z := by
       exact GaloisForLFunctions.HTGeometry.complex_sqrt_sq z
     have hw0 : w ≠ 0 := by
       intro hw
@@ -242,24 +242,24 @@ theorem completedSeamMomentGerm_eventuallyEq_negTwoCassiniShiftLogDeriv :
     have hXi : XiC w ≠ 0 := by
       rw [← xiSquaredSeamCassiniSource_one_add_sq]
       simpa only [hwsq] using hzsource
-    have hwnorm : ‖w‖ ^ 2 = ‖z‖ := by
+    have hwnorm : ‖w‖ ^ (2 : ℕ) = ‖z‖ := by
       rw [← norm_pow, hwsq]
-    have hwratio : ‖w‖ ^ 2 * M < 1 := by simpa only [hwnorm] using hzratio
+    have hwratio : ‖w‖ ^ (2 : ℕ) * M < 1 := by simpa only [hwnorm] using hzratio
     have hmoment := xiCentralMomentGerm_eq_reciprocalSquareResolvent
       hM hbound hwratio
     have hcassini :=
       neg_two_mul_logDeriv_xiSquaredSeamCassiniSource_one_add_sq hw0 hXi
     calc
-      completedSeamMomentGerm z = completedSeamMomentGerm (w ^ 2) := by rw [hwsq]
+      completedSeamMomentGerm z = completedSeamMomentGerm (w ^ (2 : ℕ)) := by rw [hwsq]
       _ = xiCentralMomentGerm w := completedSeamMomentGerm_sq_eq_xiCentralMomentGerm w
       _ = ∑' q : XiZeroCopy, xiReciprocalSquareResolventTerm w q := hmoment
       _ = ∑' q : XiZeroCopy,
           xiSquaredSeamOneCoordinate q /
-            (1 - (1 + w ^ 2) * xiSquaredSeamOneCoordinate q) := by
+            (1 - (1 + w ^ (2 : ℕ)) * xiSquaredSeamOneCoordinate q) := by
         apply tsum_congr
         intro q
         exact xiReciprocalSquareResolventTerm_eq_cassiniResolventTerm hXi q
-      _ = -2 * logDeriv xiSquaredSeamCassiniSource (1 + w ^ 2) := hcassini.symm
+      _ = -2 * logDeriv xiSquaredSeamCassiniSource (1 + w ^ (2 : ℕ)) := hcassini.symm
       _ = -2 * logDeriv xiSquaredSeamCassiniSource (1 + z) := by rw [hwsq]
   exact (analyticAt_completedSeamMomentGerm.frequently_eq_iff_eventually_eq
     analyticAt_negTwoCassiniShiftLogDeriv).mp hnear.frequently

@@ -30,8 +30,8 @@ theorem finite_symmetric_coupling_budget_eq_marginal
     (hrow : ∀ p ∈ P, ∑ r ∈ P, C p r = m p) :
     (∑ p ∈ P, ∑ r ∈ P, C p r * inner ℝ (φ p) (φ r)) +
         (1 / 2 : ℝ) *
-          ∑ p ∈ P, ∑ r ∈ P, C p r * ‖φ p - φ r‖ ^ 2 =
-      ∑ p ∈ P, m p * ‖φ p‖ ^ 2 := by
+          ∑ p ∈ P, ∑ r ∈ P, C p r * ‖φ p - φ r‖ ^ (2 : ℕ) =
+      ∑ p ∈ P, m p * ‖φ p‖ ^ (2 : ℕ) := by
   rw [finite_symmetric_coupling_inner_eq_marginal_sub_half_dirichlet
     P C m φ hsymm hrow]
   ring
@@ -47,10 +47,10 @@ theorem finite_symmetric_same_marginal_budget_eq
     (hDrow : ∀ p ∈ P, ∑ r ∈ P, D p r = m p) :
     (∑ p ∈ P, ∑ r ∈ P, C p r * inner ℝ (φ p) (φ r)) +
         (1 / 2 : ℝ) *
-          ∑ p ∈ P, ∑ r ∈ P, C p r * ‖φ p - φ r‖ ^ 2 =
+          ∑ p ∈ P, ∑ r ∈ P, C p r * ‖φ p - φ r‖ ^ (2 : ℕ) =
       (∑ p ∈ P, ∑ r ∈ P, D p r * inner ℝ (φ p) (φ r)) +
         (1 / 2 : ℝ) *
-          ∑ p ∈ P, ∑ r ∈ P, D p r * ‖φ p - φ r‖ ^ 2 := by
+          ∑ p ∈ P, ∑ r ∈ P, D p r * ‖φ p - φ r‖ ^ (2 : ℕ) := by
   rw [finite_symmetric_coupling_budget_eq_marginal P C m φ hCsymm hCrow,
     finite_symmetric_coupling_budget_eq_marginal P D m φ hDsymm hDrow]
 
@@ -115,7 +115,7 @@ def thetaPhysicalEndpointCompletedGaugeDirichletEnergy
   ∑ p ∈ P, ∑ r ∈ P,
     thetaPhysicalEndpointCompletedGaugeCoupling P p r *
       (thetaPhysicalEndpointNormalizedHalfDensity p q -
-        thetaPhysicalEndpointNormalizedHalfDensity r q) ^ 2
+        thetaPhysicalEndpointNormalizedHalfDensity r q) ^ (2 : ℕ)
 
 /-- **Marginal-gauge no-go.**  The entire completed response beyond its physical row marginal
 cancels from the Route P Ward budget. -/
@@ -162,11 +162,11 @@ theorem thetaPhysicalEndpointCompletedResponseBudget_eq_diagonalMarginalBudget
   · rw [thetaPhysicalEndpointDiagonalCoupling, if_pos rfl]
     calc
       thetaMobiusPrimeNormalProfilePositiveGauge p q *
-          thetaMobiusPrimeNormalReflectionProfile p q ^ 2 =
-        thetaMobiusPrimeNormalProfileHalfDensityAmplitude p q ^ 2 :=
+          thetaMobiusPrimeNormalReflectionProfile p q ^ (2 : ℕ) =
+        thetaMobiusPrimeNormalProfileHalfDensityAmplitude p q ^ (2 : ℕ) :=
           (thetaMobiusPrimeNormalProfileHalfDensityAmplitude_sq p q).symm
       _ = physicalPrimeEndpointWeight p *
-          thetaPhysicalEndpointNormalizedHalfDensity p q ^ 2 :=
+          thetaPhysicalEndpointNormalizedHalfDensity p q ^ (2 : ℕ) :=
         (physicalPrimeEndpointWeight_mul_normalizedHalfDensity_sq p q).symm
       _ = physicalPrimeEndpointWeight p *
           thetaPhysicalEndpointNormalizedHalfDensity p q *

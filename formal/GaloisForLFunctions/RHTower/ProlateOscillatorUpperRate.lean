@@ -65,7 +65,7 @@ theorem exists_rate_signedModeRadialBandwidth_mul_s_le (n : ℕ) :
     linarith
   have hcut : (signedModeRadialData a n).chi ≤ -(Λ * c) := by
     rw [signedModeRadialData_chi_eq_neg_bandwidth_sq_mul_s ha n]
-    change -(c ^ 2) * (signedModeRadialData a n).s ≤ -(Λ * c)
+    change -(c ^ (2 : ℕ)) * (signedModeRadialData a n).s ≤ -(Λ * c)
     nlinarith
   have hproj : (highProlateSpan c (Λ * c)).HasOrthogonalProjection :=
     highProlateSpan_hasOrthogonalProjection_of_chi_le ha n hcut

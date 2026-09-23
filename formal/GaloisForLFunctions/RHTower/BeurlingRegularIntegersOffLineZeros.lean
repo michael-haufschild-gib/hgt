@@ -255,7 +255,7 @@ theorem integral_cexp_mul_regularDensity {β γ δ : ℝ} (A : ℕ)
 
 /-- The rational zeta function of the constructed system. -/
 def regularZeta (β γ δ : ℝ) (A : ℕ) (s : ℂ) : ℂ :=
-  ((s - (β : ℂ)) ^ 2 + (γ : ℂ) ^ 2) * s ^ (A - 1) /
+  ((s - (β : ℂ)) ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ)) * s ^ (A - 1) /
     ((s - 1) * (s - (δ : ℂ)) ^ A)
 
 theorem cexp_integral_regularDensity {β γ δ : ℝ} {A : ℕ} (hA : 1 ≤ A)
@@ -287,10 +287,10 @@ theorem cexp_integral_regularDensity {β γ δ : ℝ} {A : ℕ} (hA : 1 ≤ A)
   have hApow : (s - (δ : ℂ)) ^ A = (s - (δ : ℂ)) * (s - (δ : ℂ)) ^ (A - 1) := by
     conv_lhs => rw [show A = 1 + (A - 1) from by omega]
     rw [pow_add, pow_one]
-  have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
-  have hfac : (s - (β : ℂ)) ^ 2 + (γ : ℂ) ^ 2 =
+  have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
+  have hfac : (s - (β : ℂ)) ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ) =
       (s - (β : ℂ) - (γ : ℂ) * I) * (s - (β : ℂ) + (γ : ℂ) * I) := by
-    linear_combination ((γ : ℂ) ^ 2) * hI
+    linear_combination ((γ : ℂ) ^ (2 : ℕ)) * hI
   rw [hApow, hfac]
   have hdpow : (s - (δ : ℂ)) ^ (A - 1) ≠ 0 := pow_ne_zero _ nδ
   field_simp
@@ -300,8 +300,8 @@ theorem cexp_integral_regularDensity {β γ δ : ℝ} {A : ℕ} (hA : 1 ≤ A)
 /-- **The zeta function vanishes at `β + iγ`.** -/
 theorem regularZeta_eq_zero (β γ δ : ℝ) (A : ℕ) :
     regularZeta β γ δ A ((β : ℂ) + (γ : ℂ) * I) = 0 := by
-  have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
-  have hnum : (((β : ℂ) + (γ : ℂ) * I) - (β : ℂ)) ^ 2 + (γ : ℂ) ^ 2 = 0 := by
+  have hI : (I : ℂ) ^ (2 : ℕ) = -1 := Complex.I_sq
+  have hnum : (((β : ℂ) + (γ : ℂ) * I) - (β : ℂ)) ^ (2 : ℕ) + (γ : ℂ) ^ (2 : ℕ) = 0 := by
     have h : (((β : ℂ) + (γ : ℂ) * I) - (β : ℂ)) = (γ : ℂ) * I := by ring
     rw [h, mul_pow, hI]
     ring

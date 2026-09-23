@@ -15,10 +15,10 @@ theorem continuous_toLp_two_of_dominated {X A E : Type*} [TopologicalSpace X] [F
     Continuous (fun x => (hf x).toLp (f x)) := by
   apply continuous_iff_continuousAt.mpr
   intro x₀
-  have hi : Integrable (fun a => 4*(b a)^2) μ :=
+  have hi : Integrable (fun a => 4*(b a)^(2 : ℕ)) μ :=
     ((memLp_two_iff_integrable_sq hb.aestronglyMeasurable).mp hb).const_mul 4
-  have hdist : Continuous (fun x => ∫ a, ‖f x a-f x₀ a‖^2 ∂μ) := by
-    apply continuous_of_dominated (bound := fun a => 4*(b a)^2)
+  have hdist : Continuous (fun x => ∫ a, ‖f x a-f x₀ a‖^(2 : ℕ) ∂μ) := by
+    apply continuous_of_dominated (bound := fun a => 4*(b a)^(2 : ℕ))
     · intro x
       exact ((hf x).aestronglyMeasurable.sub (hf x₀).aestronglyMeasurable).norm.pow 2
     · intro x
@@ -30,8 +30,8 @@ theorem continuous_toLp_two_of_dominated {X A E : Type*} [TopologicalSpace X] [F
     · exact hi
     · filter_upwards [hc] with a ha
       exact ((ha.sub continuous_const).norm).pow 2
-  have hnorm (x : X) : ‖(hf x).toLp (f x)-(hf x₀).toLp (f x₀)‖^2 =
-      ∫ a, ‖f x a-f x₀ a‖^2 ∂μ := by
+  have hnorm (x : X) : ‖(hf x).toLp (f x)-(hf x₀).toLp (f x₀)‖^(2 : ℕ) =
+      ∫ a, ‖f x a-f x₀ a‖^(2 : ℕ) ∂μ := by
     rw [← MemLp.toLp_sub,_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     apply integral_congr_ae
     filter_upwards [((hf x).sub (hf x₀)).coeFn_toLp] with a ha
@@ -39,7 +39,7 @@ theorem continuous_toLp_two_of_dominated {X A E : Type*} [TopologicalSpace X] [F
     rfl
   change Tendsto _ (𝓝 x₀) _
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
-  have hsq : Tendsto (fun x => ‖(hf x).toLp (f x)-(hf x₀).toLp (f x₀)‖^2)
+  have hsq : Tendsto (fun x => ‖(hf x).toLp (f x)-(hf x₀).toLp (f x₀)‖^(2 : ℕ))
       (𝓝 x₀) (𝓝 0) := by
     simpa only [hnorm,sub_self,norm_zero,zero_pow (by decide : (2:ℕ) ≠ 0),integral_zero]
       using hdist.tendsto x₀

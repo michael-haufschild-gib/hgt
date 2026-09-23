@@ -92,7 +92,7 @@ theorem gram_posSemidef_of_nonneg (F : Finset ι) (c : ι → ℝ) (u : ι → F
           = ∑ n ∈ F, ∑ j : Fin m, c n * (x i * u n i) * (x j * u n j))]
     exact Finset.sum_comm
   have hsq : ∀ n : ι, ∑ i, ∑ j, c n * (x i * u n i) * (x j * u n j)
-      = c n * (∑ i, x i * u n i) ^ 2 := by
+      = c n * (∑ i, x i * u n i) ^ (2 : ℕ) := by
     intro n
     rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => by
@@ -102,7 +102,7 @@ theorem gram_posSemidef_of_nonneg (F : Finset ι) (c : ι → ℝ) (u : ι → F
       = ∑ i, ∑ j, ∑ n ∈ F, c n * (x i * u n i) * (x j * u n j) := by
         exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => step1 i j
     _ = ∑ n ∈ F, ∑ i, ∑ j, c n * (x i * u n i) * (x j * u n j) := hswap
-    _ = ∑ n ∈ F, c n * (∑ i, x i * u n i) ^ 2 := Finset.sum_congr rfl fun n _ => hsq n
+    _ = ∑ n ∈ F, c n * (∑ i, x i * u n i) ^ (2 : ℕ) := Finset.sum_congr rfl fun n _ => hsq n
     _ ≥ 0 := Finset.sum_nonneg fun n hn => mul_nonneg (hc n hn) (sq_nonneg _)
 
 
@@ -132,15 +132,15 @@ That is where the arithmetic enters, and it is the only place it does. -/
 
 /-- The elementary split behind the decomposition: `(b − a)·b = ½(b − a)² + ½(b² − a²)`. -/
 theorem sub_mul_self_split (a b : ℝ) :
-    (b - a) * b = (b - a) ^ 2 / 2 + (b ^ 2 - a ^ 2) / 2 := by ring
+    (b - a) * b = (b - a) ^ (2 : ℕ) / 2 + (b ^ (2 : ℕ) - a ^ (2 : ℕ)) / 2 := by ring
 
 /-- **The quadratic form of the completed square, as a difference-plus-telescope.**  For successive
 evaluations `a n = P (n+1) − P n`, the form splits into a free nonnegative part and a weighted
 telescoping part; only the second can be negative, and it carries the whole weight dependence. -/
 theorem quadratic_form_split (F : Finset ℕ) (c : ℕ → ℝ) (P : ℕ → ℝ) :
     ∑ n ∈ F, c n * ((P (n + 1) - P n) * P (n + 1))
-      = (∑ n ∈ F, c n * (P (n + 1) - P n) ^ 2) / 2
-        + (∑ n ∈ F, c n * (P (n + 1) ^ 2 - P n ^ 2)) / 2 := by
+      = (∑ n ∈ F, c n * (P (n + 1) - P n) ^ (2 : ℕ)) / 2
+        + (∑ n ∈ F, c n * (P (n + 1) ^ (2 : ℕ) - P n ^ (2 : ℕ))) / 2 := by
   rw [Finset.sum_div, Finset.sum_div, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun n _ => ?_
   rw [sub_mul_self_split (P n) (P (n + 1))]
@@ -149,7 +149,7 @@ theorem quadratic_form_split (F : Finset ℕ) (c : ℕ → ℝ) (P : ℕ → ℝ
 /-- The free half is nonnegative whenever the weights are. -/
 theorem quadratic_form_free_part_nonneg (F : Finset ℕ) (c : ℕ → ℝ) (P : ℕ → ℝ)
     (hc : ∀ n ∈ F, 0 ≤ c n) :
-    0 ≤ ∑ n ∈ F, c n * (P (n + 1) - P n) ^ 2 :=
+    0 ≤ ∑ n ∈ F, c n * (P (n + 1) - P n) ^ (2 : ℕ) :=
   Finset.sum_nonneg fun n hn => mul_nonneg (hc n hn) (sq_nonneg _)
 
 /-- **Sufficient condition.**  If the telescoping part is nonnegative — for instance for a
@@ -157,7 +157,7 @@ nondecreasing `P²` and nonnegative weights — the whole form is nonnegative, h
 domination holds. -/
 theorem quadratic_form_nonneg_of_telescope_nonneg (F : Finset ℕ) (c : ℕ → ℝ) (P : ℕ → ℝ)
     (hc : ∀ n ∈ F, 0 ≤ c n)
-    (htel : 0 ≤ ∑ n ∈ F, c n * (P (n + 1) ^ 2 - P n ^ 2)) :
+    (htel : 0 ≤ ∑ n ∈ F, c n * (P (n + 1) ^ (2 : ℕ) - P n ^ (2 : ℕ))) :
     0 ≤ ∑ n ∈ F, c n * ((P (n + 1) - P n) * P (n + 1)) := by
   rw [quadratic_form_split]
   have hfree := quadratic_form_free_part_nonneg F c P hc
@@ -245,8 +245,8 @@ curvature-cancelling mixed term.  This closes the class, not merely the weld. -/
 /-- **The block-combination criterion.**  A combination `α a² + β ab + γ b²` is nonnegative for all
 pairings exactly when the `2 × 2` discriminant condition holds. -/
 theorem blockCombination_nonneg_iff (α β γ : ℝ) :
-    (∀ a b : ℝ, 0 ≤ α * a ^ 2 + β * a * b + γ * b ^ 2)
-      ↔ (0 ≤ α ∧ 0 ≤ γ ∧ β ^ 2 ≤ 4 * α * γ) := by
+    (∀ a b : ℝ, 0 ≤ α * a ^ (2 : ℕ) + β * a * b + γ * b ^ (2 : ℕ))
+      ↔ (0 ≤ α ∧ 0 ≤ γ ∧ β ^ (2 : ℕ) ≤ 4 * α * γ) := by
   constructor
   · intro h
     refine ⟨by simpa using h 1 0, by simpa using h 0 1, ?_⟩
@@ -259,7 +259,7 @@ theorem blockCombination_nonneg_iff (α β γ : ℝ) :
       have hβ : β = 0 := by
         by_contra hβ0
         have h1 := h (-(γ + 1) / β) 1
-        have hcalc : α * (-(γ + 1) / β) ^ 2 + β * (-(γ + 1) / β) * 1 + γ * 1 ^ 2 = -1 := by
+        have hcalc : α * (-(γ + 1) / β) ^ (2 : ℕ) + β * (-(γ + 1) / β) * 1 + γ * 1 ^ (2 : ℕ) = -1 := by
           rw [← hα0]
           field_simp
           ring
@@ -282,19 +282,19 @@ theorem blockCombination_nonneg_iff (α β γ : ℝ) :
 /-- **Discarding the second diagonal block forbids any mixed block.**  If the combination is
 nonnegative for all pairings and `γ = 0`, then `β = 0`. -/
 theorem mixed_vanishes_of_second_block_discarded {α β : ℝ}
-    (h : ∀ a b : ℝ, 0 ≤ α * a ^ 2 + β * a * b + 0 * b ^ 2) : β = 0 := by
+    (h : ∀ a b : ℝ, 0 ≤ α * a ^ (2 : ℕ) + β * a * b + 0 * b ^ (2 : ℕ)) : β = 0 := by
   obtain ⟨_, _, hdisc⟩ := (blockCombination_nonneg_iff α β 0).mp h
   nlinarith [hdisc, sq_nonneg β]
 
 /-- **The trade-off, stated.**  A positive block combination that keeps a nonzero mixed block must
 retain a positive share of the second diagonal block. -/
 theorem second_block_pos_of_mixed_ne_zero {α β γ : ℝ} (hβ : β ≠ 0)
-    (h : ∀ a b : ℝ, 0 ≤ α * a ^ 2 + β * a * b + γ * b ^ 2) : 0 < γ := by
+    (h : ∀ a b : ℝ, 0 ≤ α * a ^ (2 : ℕ) + β * a * b + γ * b ^ (2 : ℕ)) : 0 < γ := by
   obtain ⟨hα, hγ, hdisc⟩ := (blockCombination_nonneg_iff α β γ).mp h
   rcases eq_or_lt_of_le hγ with hγ0 | hγpos
   · exfalso
     rw [← hγ0] at hdisc
-    have : β ^ 2 ≤ 0 := by nlinarith [hdisc]
+    have : β ^ (2 : ℕ) ≤ 0 := by nlinarith [hdisc]
     exact hβ (pow_eq_zero_iff (n := 2) (by norm_num) |>.mp (le_antisymm this (sq_nonneg β)))
   · exact hγpos
 

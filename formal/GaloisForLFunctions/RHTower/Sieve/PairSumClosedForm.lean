@@ -19,12 +19,12 @@ theorem diag_pair_sum_le' (T r : ℝ) (A B P Q : ℕ) (S : Finset ℕ) (b : ℕ 
     (∑ m ∈ S, |b m| * |b m|
         * ‖∑ d ∈ Finset.Ico P Q,
             maskedNdExp T r A B d m * (starRingEnd ℂ) (maskedNdExp T r A B d m)‖)
-      ≤ ((Q - P : ℕ) : ℝ) * ∑ m ∈ S, |b m| ^ 2 := by
+      ≤ ((Q - P : ℕ) : ℝ) * ∑ m ∈ S, |b m| ^ (2 : ℕ) := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun m _ => ?_
   have hcorr := norm_masked_correlation_diag_le T r A B P Q m
   have hnn : (0 : ℝ) ≤ |b m| * |b m| := by positivity
-  have hid : ((Q - P : ℕ) : ℝ) * |b m| ^ 2 = (|b m| * |b m|) * ((Q - P : ℕ) : ℝ) := by ring
+  have hid : ((Q - P : ℕ) : ℝ) * |b m| ^ (2 : ℕ) = (|b m| * |b m|) * ((Q - P : ℕ) : ℝ) := by ring
   rw [hid]
   exact mul_le_mul_of_nonneg_left hcorr hnn
 
@@ -41,8 +41,8 @@ theorem pairSum_closed_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     (∑ m₁ ∈ Finset.Icc 1 L, ∑ m₂ ∈ Finset.Icc 1 L,
         |b m₁| * |b m₂| * ‖∑ d ∈ Finset.Ico P Q,
           maskedNdExp T r A B d m₁ * (starRingEnd ℂ) (maskedNdExp T r A B d m₂)‖)
-      ≤ ((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
-        + (∑ m ∈ effSet A B P Q L, |b m| ^ 2)
+      ≤ ((Q - P : ℕ) : ℝ) * (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
+        + (∑ m ∈ effSet A B P Q L, |b m| ^ (2 : ℕ))
           * (2 * ∑ h ∈ Finset.Icc 1 H, gapCorrBound T r M₀ M₁ P Q h) := by
   classical
   rw [pair_sum_restrict_eff hA hB hP T r b,

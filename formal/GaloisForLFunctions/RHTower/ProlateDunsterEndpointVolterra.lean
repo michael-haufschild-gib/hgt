@@ -21,7 +21,7 @@ theorem tendsto_integral_lgBesselWronskian_at_endpoint
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hB : 1 < B)
     (hU : ∀ x : ℝ, 1 < x → HasDerivAt U (DU x) x)
     (hDU : ∀ x : ℝ, 1 < x → HasDerivAt DU
-      (-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a x) * U x) x)
+      (-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a x) * U x) x)
     (ha : ContinuousOn a (Ioi 1))
     (hend : Tendsto (fun x : ℝ => lgWeight s x *
         (U x * lgBesselModelDeriv s c x - DU x * lgBesselModel s c x))
@@ -66,7 +66,7 @@ theorem tendsto_integral_lgBessel2Wronskian_at_endpoint
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hB : 1 < B)
     (hU : ∀ x : ℝ, 1 < x → HasDerivAt U (DU x) x)
     (hDU : ∀ x : ℝ, 1 < x → HasDerivAt DU
-      (-(lgFirstOrderCoeff s x) * DU x - (c ^ 2 * xiSpeed s x ^ 2 + a x) * U x) x)
+      (-(lgFirstOrderCoeff s x) * DU x - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a x) * U x) x)
     (ha : ContinuousOn a (Ioi 1))
     (hend : Tendsto (fun x : ℝ => lgWeight s x *
         (U x * lgBesselModel2Deriv s c x - DU x * lgBesselModel2 s c x))
@@ -135,8 +135,8 @@ theorem radialProlate_tendsto_integral_lgBesselWronskian_at_endpoint
     (hR : ∀ x : ℝ, 1 < x → HasDerivAt R (DR x) x)
     (hDR : ∀ x : ℝ, 1 < x → HasDerivAt DR (DDR x) x)
     (hode : ∀ x : ℝ, 1 < x →
-      (x ^ 2 - 1) * DDR x + 2 * x * DR x -
-        (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+      (x ^ (2 : ℕ) - 1) * DDR x + 2 * x * DR x -
+        (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x = 0) :
     Tendsto (fun A : ℝ => ∫ t in A..B,
         lgWeight s t * lgNormalFormDefect s c (radialProlateQ s c) t *
           (comparisonSol (prolateNormalFormSol R) s t * lgBesselModel s c t))
@@ -150,7 +150,7 @@ theorem radialProlate_tendsto_integral_lgBesselWronskian_at_endpoint
   have hpole : ∀ x : ℝ, 1 < x →
       HasDerivAt U (DU x) x ∧ HasDerivAt DU
         (-(lgFirstOrderCoeff s x) * DU x -
-          (c ^ 2 * xiSpeed s x ^ 2 + lgNormalFormDefect s c (radialProlateQ s c) x) * U x) x := by
+          (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + lgNormalFormDefect s c (radialProlateQ s c) x) * U x) x := by
     intro x hx
     have h := radialProlate_comparison_pole_uniform hs0 hs1 hx (hR x hx) (hDR x hx) (hode x hx)
     exact ⟨h.1, h.2.1⟩
@@ -167,8 +167,8 @@ theorem radialProlate_tendsto_integral_lgBessel2Wronskian_at_endpoint
     (hR : ∀ x : ℝ, 1 < x → HasDerivAt R (DR x) x)
     (hDR : ∀ x : ℝ, 1 < x → HasDerivAt DR (DDR x) x)
     (hode : ∀ x : ℝ, 1 < x →
-      (x ^ 2 - 1) * DDR x + 2 * x * DR x -
-        (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+      (x ^ (2 : ℕ) - 1) * DDR x + 2 * x * DR x -
+        (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x = 0) :
     Tendsto (fun A : ℝ => ∫ t in A..B,
         lgWeight s t * lgNormalFormDefect s c (radialProlateQ s c) t *
           (comparisonSol (prolateNormalFormSol R) s t * lgBesselModel2 s c t))
@@ -183,7 +183,7 @@ theorem radialProlate_tendsto_integral_lgBessel2Wronskian_at_endpoint
   have hpole : ∀ x : ℝ, 1 < x →
       HasDerivAt U (DU x) x ∧ HasDerivAt DU
         (-(lgFirstOrderCoeff s x) * DU x -
-          (c ^ 2 * xiSpeed s x ^ 2 + lgNormalFormDefect s c (radialProlateQ s c) x) * U x) x := by
+          (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + lgNormalFormDefect s c (radialProlateQ s c) x) * U x) x := by
     intro x hx
     have h := radialProlate_comparison_pole_uniform hs0 hs1 hx (hR x hx) (hDR x hx) (hode x hx)
     exact ⟨h.1, h.2.1⟩

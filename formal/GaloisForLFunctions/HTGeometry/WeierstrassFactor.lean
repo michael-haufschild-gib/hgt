@@ -54,8 +54,8 @@ by the fundamental theorem of calculus from `(d/dw)[(1-w)·exp w] = -w·exp w`, 
 integrand estimate `‖-z²·t·exp(t z)‖ = ‖z‖²·t·exp(t·Re z) ≤ ‖z‖²·t·exp t` (since `Re z ≤ ‖z‖ ≤ 1`)
 and the value `∫₀¹ t·exp t dt = 1`. -/
 theorem weierstrassE1_sub_one_norm_le {z : ℂ} (hz : ‖z‖ ≤ 1) :
-    ‖weierstrassE1 z - 1‖ ≤ ‖z‖ ^ 2 := by
-  set f' : ℝ → ℂ := fun t => -(z ^ 2) * (t : ℂ) * Complex.exp ((t : ℂ) * z) with hf'def
+    ‖weierstrassE1 z - 1‖ ≤ ‖z‖ ^ (2 : ℕ) := by
+  set f' : ℝ → ℂ := fun t => -(z ^ (2 : ℕ)) * (t : ℂ) * Complex.exp ((t : ℂ) * z) with hf'def
   -- The FTC derivative datum on the segment `[0,1]`: `(d/dt)[(1 - t z)·exp(t z)] = -z²·t·exp(t z)`.
   have hderiv : ∀ t ∈ Set.uIcc (0 : ℝ) 1,
       HasDerivAt (fun s : ℝ => (1 - (s : ℂ) * z) * Complex.exp ((s : ℂ) * z)) (f' t) t := by
@@ -91,10 +91,10 @@ theorem weierstrassE1_sub_one_norm_le {z : ℂ} (hz : ‖z‖ ≤ 1) :
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd (hcont2.intervalIntegrable 0 1)]
     norm_num [Real.exp_zero]
   -- Pointwise majorant of the integrand's norm: `‖f' t‖ ≤ ‖z‖²·t·eᵗ` on `[0,1]`.
-  have hptwise : ∀ t ∈ Set.Icc (0 : ℝ) 1, ‖f' t‖ ≤ ‖z‖ ^ 2 * (t * Real.exp t) := by
+  have hptwise : ∀ t ∈ Set.Icc (0 : ℝ) 1, ‖f' t‖ ≤ ‖z‖ ^ (2 : ℕ) * (t * Real.exp t) := by
     intro t ht
     have htnn : (0 : ℝ) ≤ t := ht.1
-    have hnorm : ‖f' t‖ = ‖z‖ ^ 2 * (t * Real.exp (t * z.re)) := by
+    have hnorm : ‖f' t‖ = ‖z‖ ^ (2 : ℕ) * (t * Real.exp (t * z.re)) := by
       simp only [hf'def]
       rw [norm_mul, norm_mul, norm_neg, norm_pow, Complex.norm_real, Real.norm_eq_abs,
         Complex.norm_exp, Complex.re_ofReal_mul, abs_of_nonneg htnn]
@@ -110,11 +110,11 @@ theorem weierstrassE1_sub_one_norm_le {z : ℂ} (hz : ‖z‖ ≤ 1) :
   calc ‖∫ t in (0 : ℝ)..1, f' t‖
       ≤ ∫ t in (0 : ℝ)..1, ‖f' t‖ :=
         intervalIntegral.norm_integral_le_integral_norm (by norm_num)
-    _ ≤ ∫ t in (0 : ℝ)..1, ‖z‖ ^ 2 * (t * Real.exp t) := by
+    _ ≤ ∫ t in (0 : ℝ)..1, ‖z‖ ^ (2 : ℕ) * (t * Real.exp t) := by
         refine intervalIntegral.integral_mono_on (by norm_num) hint.norm ?_ hptwise
         exact Continuous.intervalIntegrable (by fun_prop) 0 1
-    _ = ‖z‖ ^ 2 * ∫ t in (0 : ℝ)..1, t * Real.exp t :=
+    _ = ‖z‖ ^ (2 : ℕ) * ∫ t in (0 : ℝ)..1, t * Real.exp t :=
         intervalIntegral.integral_const_mul _ _
-    _ = ‖z‖ ^ 2 := by rw [hval]; ring
+    _ = ‖z‖ ^ (2 : ℕ) := by rw [hval]; ring
 
 end RHTower

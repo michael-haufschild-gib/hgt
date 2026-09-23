@@ -88,7 +88,7 @@ theorem admitsMSCPhysicalOverlapDiagonalRigging_of_signGaugeHilbertRealization
   have horth := pairwise_orthogonal_of_signGauge modes hgauge
   have hon : Orthonormal ℂ (mscSignGaugeNormalizedMode modes) := by
     exact RHTower.orthonormal_normalize hne horth
-  refine ⟨fun n => ‖modes n‖ ^ 2,
+  refine ⟨fun n => ‖modes n‖ ^ (2 : ℕ),
     fun n => sq_pos_of_pos (norm_pos_iff.mpr (hne n)), ?_, ?_⟩
   · have hs := hon.inner_products_summable source
     refine hs.congr (fun n => ?_)

@@ -28,17 +28,17 @@ noncomputable section
 
 /-- Laplace symbol of the length-two generalized radial mode `r exp (-z r)`. -/
 def xiWardCubicLaplaceGeneralizedMode (z p : ℂ) : ℂ :=
-  (p + z)⁻¹ ^ 2
+  (p + z)⁻¹ ^ (2 : ℕ)
 
 /-- Canonical second-order boundary-resolvent scalar changing cubic rate `z` to rate `w`. -/
 def xiWardCubicBoundaryResolventTransfer (z w p : ℂ) : ℂ :=
-  ((p + z) / (p + w)) ^ 2
+  ((p + z) / (p + w)) ^ (2 : ℕ)
 
 /-- Feedthrough, first-resolvent, and second-resolvent decomposition of the transmuter. -/
 theorem xiWardCubicBoundaryResolventTransfer_eq_resolventExpansion
     (z w p : ℂ) (h : p + w ≠ 0) :
     xiWardCubicBoundaryResolventTransfer z w p =
-      1 + 2 * (z - w) / (p + w) + (z - w) ^ 2 / (p + w) ^ 2 := by
+      1 + 2 * (z - w) / (p + w) + (z - w) ^ (2 : ℕ) / (p + w) ^ (2 : ℕ) := by
   rw [xiWardCubicBoundaryResolventTransfer]
   field_simp [h]
   ring
@@ -85,7 +85,7 @@ theorem normSq_xiWardCubicBoundaryResolventTransfer_targetResonance
     (z w : ℂ) :
     Complex.normSq
         (xiWardCubicBoundaryResolventTransfer z w (-I * (w.im : ℂ))) =
-      ((z.re ^ 2 + (z.im - w.im) ^ 2) / w.re ^ 2) ^ 2 := by
+      ((z.re ^ (2 : ℕ) + (z.im - w.im) ^ (2 : ℕ)) / w.re ^ (2 : ℕ)) ^ (2 : ℕ) := by
   rw [xiWardCubicBoundaryResolventTransfer,
     xiWardCubic_targetResonance_add_rate,
     xiWardCubic_targetResonance_add_source]
@@ -101,12 +101,12 @@ theorem one_lt_normSq_xiWardCubicBoundaryResolventTransfer_targetResonance
   rw [normSq_xiWardCubicBoundaryResolventTransfer_targetResonance]
   have hz : 0 < z.re := hw.trans hgap
   have hratio :
-      1 < (z.re ^ 2 + (z.im - w.im) ^ 2) / w.re ^ 2 := by
+      1 < (z.re ^ (2 : ℕ) + (z.im - w.im) ^ (2 : ℕ)) / w.re ^ (2 : ℕ) := by
     rw [one_lt_div (sq_pos_of_pos hw)]
     nlinarith [sq_nonneg (z.im - w.im),
       sq_lt_sq₀ hw.le hz.le |>.2 hgap]
   have hsum :
-      0 < (z.re ^ 2 + (z.im - w.im) ^ 2) / w.re ^ 2 + 1 := by
+      0 < (z.re ^ (2 : ℕ) + (z.im - w.im) ^ (2 : ℕ)) / w.re ^ (2 : ℕ) + 1 := by
     linarith
   nlinarith [mul_pos (sub_pos.mpr hratio) hsum]
 

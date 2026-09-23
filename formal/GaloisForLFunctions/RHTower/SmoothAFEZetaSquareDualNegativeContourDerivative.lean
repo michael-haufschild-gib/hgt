@@ -33,8 +33,8 @@ theorem norm_smoothAFEMellinIntegrand_neg_quarter_le
     ‖smoothAFEMellinIntegrand Y
         (((-1 / 4 : ℝ) : ℂ) + (v : ℂ) * I)‖ ≤
       (Y ^ (1 / 4 : ℝ) *
-        (Real.exp ((1 / 4 : ℝ) ^ 2) / (1 / 4 : ℝ))) *
-          Real.exp (-(v ^ 2)) := by
+        (Real.exp ((1 / 4 : ℝ) ^ (2 : ℕ)) / (1 / 4 : ℝ))) *
+          Real.exp (-(v ^ (2 : ℕ))) := by
   have h := norm_smoothAFEMellinIntegrand_vertical_le_of_ne hY
     (show (-1 / 4 : ℝ) ≠ 0 by norm_num) v
   convert h using 1 <;> norm_num
@@ -46,7 +46,7 @@ theorem smoothAFEZetaSquareDualWeightNegQuarterHeightDerivativeIntegrand_integra
   obtain ⟨E, hE, hglobal⟩ :=
     exists_norm_smoothAFEZetaChiShiftRatioSqQuarterHeightDerivative_le_global
   let Q : ℝ := Y ^ (1 / 4 : ℝ) *
-    (Real.exp ((1 / 4 : ℝ) ^ 2) / (1 / 4 : ℝ))
+    (Real.exp ((1 / 4 : ℝ) ^ (2 : ℕ)) / (1 / 4 : ℝ))
   let A : ℝ := E * (1 + |tau|) * Q
   apply Integrable.mono'
     (integrable_one_add_abs_pow_four_mul_exp_neg_sq.const_mul A)
@@ -56,7 +56,7 @@ theorem smoothAFEZetaSquareDualWeightNegQuarterHeightDerivativeIntegrand_integra
       have hd := hglobal tau v
       have hm := norm_smoothAFEMellinIntegrand_neg_quarter_le hY v
       have hq1 : 1 ≤ 1 + |v| := by linarith [abs_nonneg v]
-      have hq34 : (1 + |v|) ^ 3 ≤ (1 + |v|) ^ 4 :=
+      have hq34 : (1 + |v|) ^ (3 : ℕ) ≤ (1 + |v|) ^ (4 : ℕ) :=
         pow_le_pow_right₀ hq1 (by omega)
       unfold smoothAFEZetaSquareDualWeightNegQuarterHeightDerivativeIntegrand
       rw [norm_mul]
@@ -64,12 +64,12 @@ theorem smoothAFEZetaSquareDualWeightNegQuarterHeightDerivativeIntegrand_integra
         ‖smoothAFEZetaChiShiftRatioSqQuarterHeightDerivative tau v‖ *
             ‖smoothAFEMellinIntegrand Y
               (((-1 / 4 : ℝ) : ℂ) + (v : ℂ) * I)‖
-          ≤ (E * (1 + |tau|) * (1 + |v|) ^ 3) *
-              (Q * Real.exp (-(v ^ 2))) := by gcongr
-        _ = A * ((1 + |v|) ^ 3 * Real.exp (-(v ^ 2))) := by
+          ≤ (E * (1 + |tau|) * (1 + |v|) ^ (3 : ℕ)) *
+              (Q * Real.exp (-(v ^ (2 : ℕ)))) := by gcongr
+        _ = A * ((1 + |v|) ^ (3 : ℕ) * Real.exp (-(v ^ (2 : ℕ)))) := by
           dsimp only [A]
           ring
-        _ ≤ A * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2))) := by gcongr
+        _ ≤ A * ((1 + |v|) ^ (4 : ℕ) * Real.exp (-(v ^ (2 : ℕ)))) := by gcongr
 
 /-- Exact differentiation under negative-quarter contour. -/
 theorem hasDerivAt_smoothAFEZetaSquareDualWeightAt_neg_quarter
@@ -84,16 +84,16 @@ theorem hasDerivAt_smoothAFEZetaSquareDualWeightAt_neg_quarter
     exists_norm_smoothAFEZetaChiShiftRatioSqQuarterHeightDerivative_le_global
   let F : ℝ → ℝ → ℂ := fun u v =>
     (smoothAFEZetaChiShiftRatio (linePt u)
-      (-(((-1 / 4 : ℝ) : ℂ) + (v : ℂ) * I))) ^ 2 *
+      (-(((-1 / 4 : ℝ) : ℂ) + (v : ℂ) * I))) ^ (2 : ℕ) *
     smoothAFEMellinIntegrand Y
       (((-1 / 4 : ℝ) : ℂ) + (v : ℂ) * I)
   let F' : ℝ → ℝ → ℂ := fun u v =>
     smoothAFEZetaSquareDualWeightNegQuarterHeightDerivativeIntegrand u Y v
   let Q : ℝ := Y ^ (1 / 4 : ℝ) *
-    (Real.exp ((1 / 4 : ℝ) ^ 2) / (1 / 4 : ℝ))
+    (Real.exp ((1 / 4 : ℝ) ^ (2 : ℕ)) / (1 / 4 : ℝ))
   let B : ℝ := E * (2 + |tau|) * Q
   let bound : ℝ → ℝ := fun v =>
-    B * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2)))
+    B * ((1 + |v|) ^ (4 : ℕ) * Real.exp (-(v ^ (2 : ℕ))))
   have hparam := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (F := F) (F' := F') (s := Metric.ball tau 1) (bound := bound)
     (Metric.ball_mem_nhds tau (by norm_num : (0 : ℝ) < 1))
@@ -115,7 +115,7 @@ theorem hasDerivAt_smoothAFEZetaSquareDualWeightAt_neg_quarter
           _ = |tau| + 1 := by ring
       have hheight : 1 + |u| ≤ 2 + |tau| := by linarith
       have hq1 : 1 ≤ 1 + |v| := by linarith [abs_nonneg v]
-      have hq34 : (1 + |v|) ^ 3 ≤ (1 + |v|) ^ 4 :=
+      have hq34 : (1 + |v|) ^ (3 : ℕ) ≤ (1 + |v|) ^ (4 : ℕ) :=
         pow_le_pow_right₀ hq1 (by omega)
       dsimp only [F',
         smoothAFEZetaSquareDualWeightNegQuarterHeightDerivativeIntegrand]
@@ -124,14 +124,14 @@ theorem hasDerivAt_smoothAFEZetaSquareDualWeightAt_neg_quarter
         ‖smoothAFEZetaChiShiftRatioSqQuarterHeightDerivative u v‖ *
             ‖smoothAFEMellinIntegrand Y
               (((-1 / 4 : ℝ) : ℂ) + (v : ℂ) * I)‖
-          ≤ (E * (1 + |u|) * (1 + |v|) ^ 3) *
-              (Q * Real.exp (-(v ^ 2))) := by gcongr
-        _ ≤ (E * (2 + |tau|) * (1 + |v|) ^ 3) *
-              (Q * Real.exp (-(v ^ 2))) := by gcongr
-        _ = B * ((1 + |v|) ^ 3 * Real.exp (-(v ^ 2))) := by
+          ≤ (E * (1 + |u|) * (1 + |v|) ^ (3 : ℕ)) *
+              (Q * Real.exp (-(v ^ (2 : ℕ)))) := by gcongr
+        _ ≤ (E * (2 + |tau|) * (1 + |v|) ^ (3 : ℕ)) *
+              (Q * Real.exp (-(v ^ (2 : ℕ)))) := by gcongr
+        _ = B * ((1 + |v|) ^ (3 : ℕ) * Real.exp (-(v ^ (2 : ℕ)))) := by
           dsimp only [B]
           ring
-        _ ≤ B * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2))) := by gcongr
+        _ ≤ B * ((1 + |v|) ^ (4 : ℕ) * Real.exp (-(v ^ (2 : ℕ)))) := by gcongr
         _ = bound v := by rfl)
     (integrable_one_add_abs_pow_four_mul_exp_neg_sq.const_mul B)
     (Filter.Eventually.of_forall fun v u hu => by

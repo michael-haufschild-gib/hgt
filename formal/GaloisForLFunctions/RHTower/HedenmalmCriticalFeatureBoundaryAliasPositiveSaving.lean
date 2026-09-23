@@ -24,7 +24,7 @@ theorem exists_mem_Icc_intervalVariance_div_le_of_zeroMean_of_abs_le
     (habs : ∀ theta ∈ Icc (0 : ℝ) 1, |f theta| ≤ M)
     (hmean : (∫ theta in (0 : ℝ)..1, f theta) = 0) :
     ∃ theta ∈ Icc (0 : ℝ) 1,
-      (∫ t in (0 : ℝ)..1, (f t) ^ 2) / M ≤ f theta := by
+      (∫ t in (0 : ℝ)..1, (f t) ^ (2 : ℕ)) / M ≤ f theta := by
   by_cases hMpos : 0 < M
   · obtain ⟨theta, htheta, hthetaBound⟩ :=
       exists_mem_Icc_le_neg_intervalVariance_div_of_zeroMean
@@ -35,15 +35,15 @@ theorem exists_mem_Icc_intervalVariance_div_le_of_zeroMean_of_abs_le
         (by
           rw [intervalIntegral.integral_neg, hmean, neg_zero])
     have hvariance :
-        (∫ t in (0 : ℝ)..1, (-f t) ^ 2) =
-          ∫ t in (0 : ℝ)..1, (f t) ^ 2 := by
+        (∫ t in (0 : ℝ)..1, (-f t) ^ (2 : ℕ)) =
+          ∫ t in (0 : ℝ)..1, (f t) ^ (2 : ℕ) := by
       apply intervalIntegral.integral_congr
       intro t ht
       ring
     rw [hvariance] at hthetaBound
     have hnegDiv :
-        (-(∫ t in (0 : ℝ)..1, (f t) ^ 2)) / M =
-          -((∫ t in (0 : ℝ)..1, (f t) ^ 2) / M) := by ring
+        (-(∫ t in (0 : ℝ)..1, (f t) ^ (2 : ℕ))) / M =
+          -((∫ t in (0 : ℝ)..1, (f t) ^ (2 : ℕ)) / M) := by ring
     rw [hnegDiv] at hthetaBound
     exact ⟨theta, htheta, by linarith⟩
   · have hMzero : M = 0 := le_antisymm (le_of_not_gt hMpos) hM
@@ -52,15 +52,15 @@ theorem exists_mem_Icc_intervalVariance_div_le_of_zeroMean_of_abs_le
       have h := habs theta htheta
       rw [hMzero] at h
       exact abs_eq_zero.mp (le_antisymm h (abs_nonneg _))
-    have hvariance : (∫ t in (0 : ℝ)..1, (f t) ^ 2) = 0 := by
+    have hvariance : (∫ t in (0 : ℝ)..1, (f t) ^ (2 : ℕ)) = 0 := by
       calc
-        (∫ t in (0 : ℝ)..1, (f t) ^ 2) =
+        (∫ t in (0 : ℝ)..1, (f t) ^ (2 : ℕ)) =
             ∫ _t in (0 : ℝ)..1, (0 : ℝ) := by
           apply intervalIntegral.integral_congr
           intro t ht
           have ht' : t ∈ Icc (0 : ℝ) 1 := by
             simpa [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using ht
-          change f t ^ 2 = 0
+          change f t ^ (2 : ℕ) = 0
           rw [hfzero t ht']
           norm_num
         _ = 0 := by simp

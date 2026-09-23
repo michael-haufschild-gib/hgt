@@ -63,7 +63,7 @@ theorem equiv_swap_map {α β : Type*} [DecidableEq α] [DecidableEq β] (e : α
 /-- **The block quadratics split into the hypercube-labelled linear factors.** -/
 theorem prod_cubeQuadRoot (h2 : (2 : L) ≠ 0) (s q ρ : (Fin m → Bool) → L)
     (hρ : ∀ z, ρ z * ρ z = s z * s z - 4 * q z) :
-    (∏ z : Fin m → Bool, (X ^ 2 - C (s z) * X + C (q z)))
+    (∏ z : Fin m → Bool, (X ^ (2 : ℕ) - C (s z) * X + C (q z)))
       = ∏ x : Fin (m + 1) → Bool, (X - C (cubeQuadRoot s ρ x)) := by
   classical
   rw [prod_quadratic_eq_prod_quadRoot h2 s q ρ hρ]

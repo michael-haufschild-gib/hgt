@@ -80,12 +80,12 @@ theorem ratFuncDerivative_ratFuncScale (q : K) (hq : q ≠ 0) (f : RatFunc K) :
   rw [← hAdef] at hDA
   rw [← hBdef] at hDB
   have hpush : ratFuncScale q hq
-        ((ratFuncDerivative K A * B - A * ratFuncDerivative K B) / B ^ 2)
+        ((ratFuncDerivative K A * B - A * ratFuncDerivative K B) / B ^ (2 : ℕ))
       = (ratFuncScale q hq (ratFuncDerivative K A) * ratFuncScale q hq B
           - ratFuncScale q hq A * ratFuncScale q hq (ratFuncDerivative K B))
-        / (ratFuncScale q hq B) ^ 2 := by
+        / (ratFuncScale q hq B) ^ (2 : ℕ) := by
     rw [map_div₀ (ratFuncScale q hq) (ratFuncDerivative K A * B - A * ratFuncDerivative K B)
-      (B ^ 2), map_sub, map_mul, map_mul, map_pow]
+      (B ^ (2 : ℕ)), map_sub, map_mul, map_mul, map_pow]
   rw [hscaledDiv, leibniz_div (ratFuncDerivative K) hD hSB,
     leibniz_div (ratFuncDerivative K) hD hB, hDA, hDB, hpush]
   field_simp

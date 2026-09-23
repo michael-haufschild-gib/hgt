@@ -148,7 +148,7 @@ theorem ratIn_derivation {A : Type*} [CommRing A] [Algebra A K] (D : Derivation 
     derivation_eval_of_coeff D (fun i => hDF _ (hq i)) x
   have hquot : D (p.eval x / q.eval x)
       = ((Polynomial.derivative p).eval x * q.eval x
-          - p.eval x * (Polynomial.derivative q).eval x) * D x / q.eval x ^ 2 := by
+          - p.eval x * (Polynomial.derivative q).eval x) * D x / q.eval x ^ (2 : ℕ) := by
     rw [Derivation.leibniz_div D (p.eval x) (q.eval x), hDp, hDq]
     simp only [smul_eq_mul]
     field_simp

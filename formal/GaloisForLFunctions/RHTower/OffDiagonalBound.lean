@@ -146,33 +146,33 @@ reciprocal-distance sum, with a symmetry swap on the double sum.  This is the lo
 (`K·log K`) off-diagonal companion of the `U·∑eₖ²` diagonal for a long window. -/
 theorem offDiagonal_le {s : Finset ℕ} {K : ℕ} (e : ℕ → ℝ) (hsK : s ⊆ Finset.Icc 1 K) :
     ∑ m ∈ s, ∑ n ∈ s.erase m, 2 * |e m * e n| / |Real.log n - Real.log m|
-      ≤ 4 * (K : ℝ) * (∑ j ∈ Finset.Icc 1 K, 1 / (j : ℝ)) * ∑ k ∈ s, (e k) ^ 2 := by
+      ≤ 4 * (K : ℝ) * (∑ j ∈ Finset.Icc 1 K, 1 / (j : ℝ)) * ∑ k ∈ s, (e k) ^ (2 : ℕ) := by
   classical
   -- termwise: 2|eₘeₙ|/|log| ≤ (eₘ²+eₙ²)·K/|n−m|
   have hterm : ∀ m ∈ s, ∀ n ∈ s.erase m,
       2 * |e m * e n| / |Real.log n - Real.log m|
-        ≤ ((e m) ^ 2 + (e n) ^ 2) * ((K : ℝ) / |(n : ℝ) - m|) := by
+        ≤ ((e m) ^ (2 : ℕ) + (e n) ^ (2 : ℕ)) * ((K : ℝ) / |(n : ℝ) - m|) := by
     intro m hm n hn
     obtain ⟨hnm, hns⟩ := Finset.mem_erase.mp hn
     have hmi := Finset.mem_Icc.mp (hsK hm)
     have hni := Finset.mem_Icc.mp (hsK hns)
     have hinvlog := inv_abs_log_le hmi.1 hni.1 hmi.2 hni.2 (Ne.symm hnm)
-    have hamgm : 2 * |e m * e n| ≤ (e m) ^ 2 + (e n) ^ 2 := by
+    have hamgm : 2 * |e m * e n| ≤ (e m) ^ (2 : ℕ) + (e n) ^ (2 : ℕ) := by
       rw [abs_mul]; nlinarith [sq_nonneg (|e m| - |e n|), abs_nonneg (e m), abs_nonneg (e n),
         sq_abs (e m), sq_abs (e n)]
     have hKdist_nonneg : (0 : ℝ) ≤ (K : ℝ) / |(n : ℝ) - m| := by
       apply div_nonneg (by positivity) (abs_nonneg _)
     calc 2 * |e m * e n| / |Real.log n - Real.log m|
         = 2 * |e m * e n| * (1 / |Real.log n - Real.log m|) := by ring
-      _ ≤ ((e m) ^ 2 + (e n) ^ 2) * ((K : ℝ) / |(n : ℝ) - m|) := by
+      _ ≤ ((e m) ^ (2 : ℕ) + (e n) ^ (2 : ℕ)) * ((K : ℝ) / |(n : ℝ) - m|) := by
           apply mul_le_mul hamgm hinvlog (by positivity) (by positivity)
   refine le_trans (Finset.sum_le_sum fun m hm => Finset.sum_le_sum fun n hn => hterm m hm n hn) ?_
   -- ∑∑ (eₘ²+eₙ²)·K/|n−m| = K·(A + B), A from eₘ², B from eₙ² (symmetry)
-  have hAB : ∑ m ∈ s, ∑ n ∈ s.erase m, ((e m) ^ 2 + (e n) ^ 2) * ((K : ℝ) / |(n : ℝ) - m|)
-      ≤ 4 * (K : ℝ) * (∑ j ∈ Finset.Icc 1 K, 1 / (j : ℝ)) * ∑ k ∈ s, (e k) ^ 2 := by
-    have hexpand : ∀ m ∈ s, ∑ n ∈ s.erase m, ((e m) ^ 2 + (e n) ^ 2) * ((K : ℝ) / |(n : ℝ) - m|)
-        = (K : ℝ) * (e m) ^ 2 * (∑ n ∈ s.erase m, 1 / |(n : ℝ) - m|)
-          + (K : ℝ) * (∑ n ∈ s.erase m, (e n) ^ 2 / |(n : ℝ) - m|) := by
+  have hAB : ∑ m ∈ s, ∑ n ∈ s.erase m, ((e m) ^ (2 : ℕ) + (e n) ^ (2 : ℕ)) * ((K : ℝ) / |(n : ℝ) - m|)
+      ≤ 4 * (K : ℝ) * (∑ j ∈ Finset.Icc 1 K, 1 / (j : ℝ)) * ∑ k ∈ s, (e k) ^ (2 : ℕ) := by
+    have hexpand : ∀ m ∈ s, ∑ n ∈ s.erase m, ((e m) ^ (2 : ℕ) + (e n) ^ (2 : ℕ)) * ((K : ℝ) / |(n : ℝ) - m|)
+        = (K : ℝ) * (e m) ^ (2 : ℕ) * (∑ n ∈ s.erase m, 1 / |(n : ℝ) - m|)
+          + (K : ℝ) * (∑ n ∈ s.erase m, (e n) ^ (2 : ℕ) / |(n : ℝ) - m|) := by
       intro m _
       rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
       apply Finset.sum_congr rfl; intro n _
@@ -182,40 +182,40 @@ theorem offDiagonal_le {s : Finset ℕ} {K : ℕ} (e : ℕ → ℝ) (hsK : s ⊆
     have hHnn : (0 : ℝ) ≤ H := Finset.sum_nonneg (fun j _ => by positivity)
     have hKnn : (0 : ℝ) ≤ (K : ℝ) := Nat.cast_nonneg _
     -- part A: ∑ₘ K·eₘ²·(∑ 1/|n−m|) ≤ 2K·H·∑eₖ²
-    have hA : ∑ m ∈ s, (K : ℝ) * (e m) ^ 2 * (∑ n ∈ s.erase m, 1 / |(n : ℝ) - m|)
-        ≤ 2 * (K : ℝ) * H * ∑ k ∈ s, (e k) ^ 2 := by
-      calc ∑ m ∈ s, (K : ℝ) * (e m) ^ 2 * (∑ n ∈ s.erase m, 1 / |(n : ℝ) - m|)
-          ≤ ∑ m ∈ s, (2 * (K : ℝ) * H) * (e m) ^ 2 := by
+    have hA : ∑ m ∈ s, (K : ℝ) * (e m) ^ (2 : ℕ) * (∑ n ∈ s.erase m, 1 / |(n : ℝ) - m|)
+        ≤ 2 * (K : ℝ) * H * ∑ k ∈ s, (e k) ^ (2 : ℕ) := by
+      calc ∑ m ∈ s, (K : ℝ) * (e m) ^ (2 : ℕ) * (∑ n ∈ s.erase m, 1 / |(n : ℝ) - m|)
+          ≤ ∑ m ∈ s, (2 * (K : ℝ) * H) * (e m) ^ (2 : ℕ) := by
             apply Finset.sum_le_sum; intro m hm
             have hmK : m ≤ K := (Finset.mem_Icc.mp (hsK hm)).2
             have hd := sum_inv_dist_le hsK hmK
             nlinarith [sq_nonneg (e m), hKnn, hd, hHnn,
               mul_nonneg (mul_nonneg hKnn (sq_nonneg (e m))) (by linarith [hd] : (0:ℝ) ≤ 2 * H - ∑ n ∈ s.erase m, 1 / |(n : ℝ) - m|)]
-        _ = 2 * (K : ℝ) * H * ∑ k ∈ s, (e k) ^ 2 := by rw [← Finset.mul_sum]
+        _ = 2 * (K : ℝ) * H * ∑ k ∈ s, (e k) ^ (2 : ℕ) := by rw [← Finset.mul_sum]
     -- part B via swap
-    have hswap : ∑ m ∈ s, (K : ℝ) * (∑ n ∈ s.erase m, (e n) ^ 2 / |(n : ℝ) - m|)
-        = ∑ n ∈ s, (K : ℝ) * (e n) ^ 2 * (∑ m ∈ s.erase n, 1 / |(m : ℝ) - n|) := by
-      have hcomm : ∑ m ∈ s, ∑ n ∈ s.erase m, (K : ℝ) * (e n) ^ 2 / |(n : ℝ) - m|
-          = ∑ n ∈ s, ∑ m ∈ s.erase n, (K : ℝ) * (e n) ^ 2 / |(n : ℝ) - m| :=
+    have hswap : ∑ m ∈ s, (K : ℝ) * (∑ n ∈ s.erase m, (e n) ^ (2 : ℕ) / |(n : ℝ) - m|)
+        = ∑ n ∈ s, (K : ℝ) * (e n) ^ (2 : ℕ) * (∑ m ∈ s.erase n, 1 / |(m : ℝ) - n|) := by
+      have hcomm : ∑ m ∈ s, ∑ n ∈ s.erase m, (K : ℝ) * (e n) ^ (2 : ℕ) / |(n : ℝ) - m|
+          = ∑ n ∈ s, ∑ m ∈ s.erase n, (K : ℝ) * (e n) ^ (2 : ℕ) / |(n : ℝ) - m| :=
         Finset.sum_comm' (fun m n => by simp only [Finset.mem_erase]; tauto)
-      rw [show (∑ m ∈ s, (K : ℝ) * (∑ n ∈ s.erase m, (e n) ^ 2 / |(n : ℝ) - m|))
-            = ∑ m ∈ s, ∑ n ∈ s.erase m, (K : ℝ) * (e n) ^ 2 / |(n : ℝ) - m| by
+      rw [show (∑ m ∈ s, (K : ℝ) * (∑ n ∈ s.erase m, (e n) ^ (2 : ℕ) / |(n : ℝ) - m|))
+            = ∑ m ∈ s, ∑ n ∈ s.erase m, (K : ℝ) * (e n) ^ (2 : ℕ) / |(n : ℝ) - m| by
           apply Finset.sum_congr rfl; intro m _; rw [Finset.mul_sum]
           apply Finset.sum_congr rfl; intro n _; rw [mul_div_assoc], hcomm]
       apply Finset.sum_congr rfl; intro n _
       rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intro m _
       rw [abs_sub_comm, mul_one_div, mul_div_assoc]
     rw [hswap]
-    have hB : ∑ n ∈ s, (K : ℝ) * (e n) ^ 2 * (∑ m ∈ s.erase n, 1 / |(m : ℝ) - n|)
-        ≤ 2 * (K : ℝ) * H * ∑ k ∈ s, (e k) ^ 2 := by
-      calc ∑ n ∈ s, (K : ℝ) * (e n) ^ 2 * (∑ m ∈ s.erase n, 1 / |(m : ℝ) - n|)
-          ≤ ∑ n ∈ s, (2 * (K : ℝ) * H) * (e n) ^ 2 := by
+    have hB : ∑ n ∈ s, (K : ℝ) * (e n) ^ (2 : ℕ) * (∑ m ∈ s.erase n, 1 / |(m : ℝ) - n|)
+        ≤ 2 * (K : ℝ) * H * ∑ k ∈ s, (e k) ^ (2 : ℕ) := by
+      calc ∑ n ∈ s, (K : ℝ) * (e n) ^ (2 : ℕ) * (∑ m ∈ s.erase n, 1 / |(m : ℝ) - n|)
+          ≤ ∑ n ∈ s, (2 * (K : ℝ) * H) * (e n) ^ (2 : ℕ) := by
             apply Finset.sum_le_sum; intro n hn
             have hnK : n ≤ K := (Finset.mem_Icc.mp (hsK hn)).2
             have hd := sum_inv_dist_le hsK hnK
             nlinarith [sq_nonneg (e n), hKnn, hd, hHnn,
               mul_nonneg (mul_nonneg hKnn (sq_nonneg (e n))) (by linarith [hd] : (0:ℝ) ≤ 2 * H - ∑ m ∈ s.erase n, 1 / |(m : ℝ) - n|)]
-        _ = 2 * (K : ℝ) * H * ∑ k ∈ s, (e k) ^ 2 := by rw [← Finset.mul_sum]
+        _ = 2 * (K : ℝ) * H * ∑ k ∈ s, (e k) ^ (2 : ℕ) := by rw [← Finset.mul_sum]
     linarith [hA, hB]
   exact hAB
 

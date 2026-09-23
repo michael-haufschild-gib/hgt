@@ -297,7 +297,7 @@ theorem shift_invariant_rational_constant_gen
     {A B : ℂ[X]} {h : ℂ} (hh : h ≠ 0) (hB : B.Monic) (hcop : IsCoprime A B)
     (hid : A.comp (X + Polynomial.C h) * B = A * B.comp (X + Polynomial.C h)) :
     B = 1 ∧ A.natDegree = 0 := by
-  have hid0 : (A.comp (X + Polynomial.C h) * B - A * B.comp (X + Polynomial.C h)) * X ^ 0
+  have hid0 : (A.comp (X + Polynomial.C h) * B - A * B.comp (X + Polynomial.C h)) * X ^ (0 : ℕ)
       = 0 * (B.comp (X + Polynomial.C h) * B) := by
     rw [sub_eq_zero.mpr hid]
     simp

@@ -23,7 +23,7 @@ def ccmActualHeadMatchedQuantileLorentzEdge (m n : ℕ) : Fin 2 → ℝ :=
 
 /-- The indefinite square on the coupled matched/quantile separation plane. -/
 def ccmActualHeadMatchedQuantileLorentzSquare (v : Fin 2 → ℝ) : ℝ :=
-  v 0 ^ 2 - v 1 ^ 2
+  v 0 ^ (2 : ℕ) - v 1 ^ (2 : ℕ)
 
 /-- **Pairwise coupled-source law.** One literal cross-cell source is exactly its positive pair
 mass times the Lorentz square of matched versus quantile centroid separation.  Thus the signed
@@ -72,8 +72,8 @@ theorem ccmActualHeadQuantilePolarCentroid_succ_sub_nonneg (n : ℕ) :
   have h0 := ccmActualHeadQuantilePolarCoordinate_succ_sub_eq_atomWeight n
   have h1 := ccmActualHeadQuantilePolarCoordinate_succ_sub_eq_atomWeight (n + 1)
   norm_num [Nat.add_assoc] at h0 h1 ⊢
-  nlinarith [criticalMellinAtomWeight_nonneg n,
-    criticalMellinAtomWeight_nonneg (n + 1)]
+  nlinarith [criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n,
+    criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer (n + 1)]
 
 /-- Equal-mass quantile barycentres are monotone in the physical-cell index. -/
 theorem ccmActualHeadQuantilePolarCentroid_le_of_le {m n : ℕ} (hmn : m ≤ n) :
@@ -130,12 +130,12 @@ theorem ccmActualHeadMatchedQuantileParabolicCrossKernelValue_mul_displacement_m
         ring
   have hw : 0 ≤ w := by
     dsimp only [w]
-    exact mul_nonneg (criticalMellinAtomWeight_nonneg _) (criticalMellinAtomWeight_nonneg _)
+    exact mul_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _) (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _)
   have hmetric : 0 ≤ c * (2 * c + d) := by
     calc
-      c * (2 * c + d) = c ^ 2 + c * (c + d) := by ring
+      c * (2 * c + d) = c ^ (2 : ℕ) + c * (c + d) := by ring
       _ ≥ 0 := add_nonneg (sq_nonneg c) hcd
-  have hfactor : 0 ≤ w / 2 * d ^ 2 :=
+  have hfactor : 0 ≤ w / 2 * d ^ (2 : ℕ) :=
     mul_nonneg (div_nonneg hw (by norm_num)) (sq_nonneg d)
   calc
     ccmActualHeadMatchedQuantileParabolicCrossKernelValue (m + 2) (n + 2) *
@@ -143,7 +143,7 @@ theorem ccmActualHeadMatchedQuantileParabolicCrossKernelValue_mul_displacement_m
           ccmActualHeadMatchedQuantilePolarDisplacement (m + 2)) *
         (ccmActualHeadMatchedPolarCentroid (n + 2) -
           ccmActualHeadMatchedPolarCentroid (m + 2)) =
-        -(w / 2 * d ^ 2 * (c * (2 * c + d))) := by
+        -(w / 2 * d ^ (2 : ℕ) * (c * (2 * c + d))) := by
       rw [ccmActualHeadMatchedQuantileParabolicCrossKernelValue_eq_lorentzEdge]
       unfold ccmActualHeadMatchedQuantileLorentzSquare ccmActualHeadMatchedQuantileLorentzEdge
       simp
@@ -171,7 +171,7 @@ theorem ccmActualHeadMatchedQuantileParabolicLorentzGraphDissipation_eq_density 
       ∑ m ∈ Finset.range (K + 1), ∑ n ∈ (Finset.range (K + 1)).erase m,
         (criticalMellinAtomWeight (m + 2) * criticalMellinAtomWeight (n + 2)) / 2 *
           (ccmActualHeadMatchedQuantilePolarDisplacement (n + 2) -
-            ccmActualHeadMatchedQuantilePolarDisplacement (m + 2)) ^ 2 *
+            ccmActualHeadMatchedQuantilePolarDisplacement (m + 2)) ^ (2 : ℕ) *
           (ccmActualHeadMatchedPolarCentroid (n + 2) -
             ccmActualHeadMatchedPolarCentroid (m + 2)) *
           ((ccmActualHeadMatchedPolarCentroid (n + 2) -

@@ -60,20 +60,20 @@ omit [DecidableEq P] in
   funext p; simp [portCoef]
 
 /-- The port orbit inside the source chart. -/
-noncomputable def portOrbit (θ : P → ℝ) (c : P → ℂ) (h : Summable fun p => ‖c p‖ ^ 2) (t : ℝ) :
+noncomputable def portOrbit (θ : P → ℝ) (c : P → ℂ) (h : Summable fun p => ‖c p‖ ^ (2 : ℕ)) (t : ℝ) :
     SourceL2 P :=
   ⟨portCoef θ c t, memℓp_two_iff.2 (by simpa using h)⟩
 
 omit [DecidableEq P] in
-@[simp] theorem portOrbit_apply (θ : P → ℝ) (c : P → ℂ) (h : Summable fun p => ‖c p‖ ^ 2)
+@[simp] theorem portOrbit_apply (θ : P → ℝ) (c : P → ℂ) (h : Summable fun p => ‖c p‖ ^ (2 : ℕ))
     (t : ℝ) (p : P) : (portOrbit θ c h t : P → ℂ) p = portCoef θ c t p := rfl
 
-variable {θ : P → ℝ} {c : P → ℂ} {h : Summable fun p => ‖c p‖ ^ 2}
+variable {θ : P → ℝ} {c : P → ℂ} {h : Summable fun p => ‖c p‖ ^ (2 : ℕ)}
 
 omit [DecidableEq P] in
 theorem norm_portOrbit_sub_sq (t s : ℝ) :
-    ‖portOrbit θ c h t - portOrbit θ c h s‖ ^ 2
-      = ∑' p, ‖c p‖ ^ 2 * ‖portPhase θ t p - portPhase θ s p‖ ^ 2 := by
+    ‖portOrbit θ c h t - portOrbit θ c h s‖ ^ (2 : ℕ)
+      = ∑' p, ‖c p‖ ^ (2 : ℕ) * ‖portPhase θ t p - portPhase θ s p‖ ^ (2 : ℕ) := by
   rw [norm_sq_eq_tsum]
   refine tsum_congr fun p => ?_
   rw [lp.coeFn_sub]
@@ -86,8 +86,8 @@ flow starts. -/
 theorem norm_portOrbit_shift (t s : ℝ) :
     ‖portOrbit θ c h (t + s) - portOrbit θ c h s‖
       = ‖portOrbit θ c h t - portOrbit θ c h 0‖ := by
-  have hsq : ‖portOrbit θ c h (t + s) - portOrbit θ c h s‖ ^ 2
-      = ‖portOrbit θ c h t - portOrbit θ c h 0‖ ^ 2 := by
+  have hsq : ‖portOrbit θ c h (t + s) - portOrbit θ c h s‖ ^ (2 : ℕ)
+      = ‖portOrbit θ c h t - portOrbit θ c h 0‖ ^ (2 : ℕ) := by
     rw [norm_portOrbit_sub_sq, norm_portOrbit_sub_sq]
     refine tsum_congr fun p => ?_
     congr 1
@@ -127,15 +127,15 @@ theorem portTrunc_apply (F : Finset P) (t : ℝ) (q : P) :
   exact Finset.sum_pi_single q (fun p => portCoef θ c t p) F
 
 omit [DecidableEq P] in
-theorem tsum_norm_compl_nonneg (F : Finset P) : 0 ≤ ∑' (p : {x : P // x ∉ F}), ‖c p‖ ^ 2 :=
+theorem tsum_norm_compl_nonneg (F : Finset P) : 0 ≤ ∑' (p : {x : P // x ∉ F}), ‖c p‖ ^ (2 : ℕ) :=
   tsum_nonneg fun p => by positivity
 
 theorem norm_portOrbit_sub_trunc_sq (F : Finset P) (t : ℝ) :
-    ‖portOrbit θ c h t - portTrunc θ c F t‖ ^ 2 = ∑' (p : {x : P // x ∉ F}), ‖c p‖ ^ 2 := by
+    ‖portOrbit θ c h t - portTrunc θ c F t‖ ^ (2 : ℕ) = ∑' (p : {x : P // x ∉ F}), ‖c p‖ ^ (2 : ℕ) := by
   classical
   rw [norm_sq_eq_tsum]
-  have hcoord : ∀ q : P, ‖((portOrbit θ c h t - portTrunc θ c F t : SourceL2 P) : P → ℂ) q‖ ^ 2
-      = Set.indicator {x : P | x ∉ F} (fun p => ‖c p‖ ^ 2) q := by
+  have hcoord : ∀ q : P, ‖((portOrbit θ c h t - portTrunc θ c F t : SourceL2 P) : P → ℂ) q‖ ^ (2 : ℕ)
+      = Set.indicator {x : P | x ∉ F} (fun p => ‖c p‖ ^ (2 : ℕ)) q := by
     intro q
     rw [lp.coeFn_sub]
     simp only [Pi.sub_apply, portOrbit_apply, portTrunc_apply]
@@ -143,7 +143,7 @@ theorem norm_portOrbit_sub_trunc_sq (F : Finset P) (t : ℝ) :
     · rw [if_pos hq, sub_self, Set.indicator_of_notMem (by simpa using hq)]
       simp
     · rw [if_neg hq, sub_zero, Set.indicator_of_mem (by simpa using hq), norm_portCoef]
-  rw [tsum_congr hcoord, ← tsum_subtype {x : P | x ∉ F} fun p => ‖c p‖ ^ 2]
+  rw [tsum_congr hcoord, ← tsum_subtype {x : P | x ∉ F} fun p => ‖c p‖ ^ (2 : ℕ)]
   rfl
 
 /-- **The finite apertures converge to the orbit uniformly in time.** -/
@@ -151,11 +151,11 @@ theorem tendstoUniformly_portTrunc :
     TendstoUniformly (fun F : Finset P => portTrunc θ c F) (portOrbit θ c h) Filter.atTop := by
   rw [Metric.tendstoUniformly_iff]
   intro ε hε
-  have htail := tendsto_tsum_compl_atTop_zero (fun p : P => ‖c p‖ ^ 2)
-  have hev := (tendsto_order.1 htail).2 (ε ^ 2) (by positivity)
+  have htail := tendsto_tsum_compl_atTop_zero (fun p : P => ‖c p‖ ^ (2 : ℕ))
+  have hev := (tendsto_order.1 htail).2 (ε ^ (2 : ℕ)) (by positivity)
   filter_upwards [hev] with F hF t
   rw [dist_eq_norm]
-  have hsq : ‖portOrbit θ c h t - portTrunc θ c F t‖ ^ 2 < ε ^ 2 := by
+  have hsq : ‖portOrbit θ c h t - portTrunc θ c F t‖ ^ (2 : ℕ) < ε ^ (2 : ℕ) := by
     rw [norm_portOrbit_sub_trunc_sq]
     exact hF
   nlinarith [norm_nonneg (portOrbit θ c h t - portTrunc θ c F t), hε.le]
@@ -177,7 +177,7 @@ end PortOrbit
 
 section Recurrence
 
-variable {P : Type*} [DecidableEq P] {θ : P → ℝ} {c : P → ℂ} {h : Summable fun p => ‖c p‖ ^ 2}
+variable {P : Type*} [DecidableEq P] {θ : P → ℝ} {c : P → ℂ} {h : Summable fun p => ‖c p‖ ^ (2 : ℕ)}
 
 /-- **Theorem 3, second clause.**  The port orbit is totally bounded: a finite aperture carries all
 but `ε` of the mass, and the truncated orbit lives in a compact box. -/
@@ -295,15 +295,15 @@ theorem norm_jetCoef (θ : P → ℝ) (c : P → ℂ) (n : ℕ) (p : P) :
 omit [DecidableEq P] in
 /-- The `n`-jet capacity is `∑ θ p ^ (2n) ‖c p‖²`. -/
 theorem norm_jetCoef_sq (θ : P → ℝ) (c : P → ℂ) (n : ℕ) (p : P) :
-    ‖jetCoef θ c n p‖ ^ 2 = θ p ^ (2 * n) * ‖c p‖ ^ 2 := by
+    ‖jetCoef θ c n p‖ ^ (2 : ℕ) = θ p ^ (2 * n) * ‖c p‖ ^ (2 : ℕ) := by
   rw [norm_jetCoef, mul_pow, ← pow_mul, mul_comm n 2, pow_mul, sq_abs, ← pow_mul]
 
 variable {θ : P → ℝ} {c : P → ℂ}
 
 omit [DecidableEq P] in
 /-- The squared chart norm of the orbit is the total capacity, at every time. -/
-theorem norm_portOrbit_sq (h : Summable fun p => ‖c p‖ ^ 2) (t : ℝ) :
-    ‖portOrbit θ c h t‖ ^ 2 = ∑' p, ‖c p‖ ^ 2 := by
+theorem norm_portOrbit_sq (h : Summable fun p => ‖c p‖ ^ (2 : ℕ)) (t : ℝ) :
+    ‖portOrbit θ c h t‖ ^ (2 : ℕ) = ∑' p, ‖c p‖ ^ (2 : ℕ) := by
   rw [norm_sq_eq_tsum]
   exact tsum_congr fun p => by simp
 
@@ -339,8 +339,8 @@ theorem hasDerivAt_portTrunc (F : Finset P) (t : ℝ) :
 
 /-- **Theorem 3, jet clause.**  The orbit differentiates term by term: the derivative is the orbit
 of the once-twisted coefficient family. -/
-theorem hasDerivAt_portOrbit (h : Summable fun p => ‖c p‖ ^ 2)
-    (h1 : Summable fun p => ‖jetCoef θ c 1 p‖ ^ 2) (t : ℝ) :
+theorem hasDerivAt_portOrbit (h : Summable fun p => ‖c p‖ ^ (2 : ℕ))
+    (h1 : Summable fun p => ‖jetCoef θ c 1 p‖ ^ (2 : ℕ)) (t : ℝ) :
     HasDerivAt (portOrbit θ c h) (portOrbit θ (jetCoef θ c 1) h1 t) t := by
   refine hasDerivAt_of_tendstoUniformlyOn (l := Filter.atTop) (s := Set.univ)
     (f := fun F : Finset P => portTrunc θ c F)
@@ -351,17 +351,17 @@ theorem hasDerivAt_portOrbit (h : Summable fun p => ‖c p‖ ^ 2)
   · exact Filter.Eventually.of_forall fun F t _ => hasDerivAt_portTrunc F t
   · exact fun t _ => (tendstoUniformly_portTrunc (θ := θ) (c := c) (h := h)).tendsto_at t
 
-theorem deriv_portOrbit (h : Summable fun p => ‖c p‖ ^ 2)
-    (h1 : Summable fun p => ‖jetCoef θ c 1 p‖ ^ 2) :
+theorem deriv_portOrbit (h : Summable fun p => ‖c p‖ ^ (2 : ℕ))
+    (h1 : Summable fun p => ‖jetCoef θ c 1 p‖ ^ (2 : ℕ)) :
     deriv (portOrbit θ c h) = portOrbit θ (jetCoef θ c 1) h1 :=
   funext fun t => (hasDerivAt_portOrbit h h1 t).deriv
 
 omit [DecidableEq P] in
 /-- **Theorem 3, converse jet clause.**  A differentiable orbit forces a finite first jet capacity:
 the coordinate readouts pin the derivative coefficients, and the derivative is a chart vector. -/
-theorem summable_jetCoef_one_of_differentiableAt (h : Summable fun p => ‖c p‖ ^ 2)
+theorem summable_jetCoef_one_of_differentiableAt (h : Summable fun p => ‖c p‖ ^ (2 : ℕ))
     (hd : DifferentiableAt ℝ (portOrbit θ c h) 0) :
-    Summable (fun p => ‖jetCoef θ c 1 p‖ ^ 2) := by
+    Summable (fun p => ‖jetCoef θ c 1 p‖ ^ (2 : ℕ)) := by
   set v : SourceL2 P := deriv (portOrbit θ c h) 0 with hvdef
   have hv : HasDerivAt (portOrbit θ c h) v 0 := hd.hasDerivAt
   have hcoord : ∀ p, (v : P → ℂ) p = jetCoef θ c 1 p := by
@@ -378,8 +378,8 @@ theorem summable_jetCoef_one_of_differentiableAt (h : Summable fun p => ‖c p�
 /-- **`(CA.9)`, the jet admission hierarchy.**  The orbit is `C^n` exactly when every jet capacity
 up to order `n` is finite. -/
 theorem contDiff_portOrbit_iff (θ : P → ℝ) :
-    ∀ (n : ℕ) (c : P → ℂ) (h : Summable fun p => ‖c p‖ ^ 2),
-      ContDiff ℝ n (portOrbit θ c h) ↔ ∀ k ≤ n, Summable (fun p => ‖jetCoef θ c k p‖ ^ 2) := by
+    ∀ (n : ℕ) (c : P → ℂ) (h : Summable fun p => ‖c p‖ ^ (2 : ℕ)),
+      ContDiff ℝ n (portOrbit θ c h) ↔ ∀ k ≤ n, Summable (fun p => ‖jetCoef θ c k p‖ ^ (2 : ℕ)) := by
   intro n
   induction n with
   | zero =>
@@ -396,7 +396,7 @@ theorem contDiff_portOrbit_iff (θ : P → ℝ) :
       rw [hcast, contDiff_succ_iff_deriv]
       constructor
       · rintro ⟨hdiff, -, hcd⟩
-        have h1 : Summable (fun p => ‖jetCoef θ c 1 p‖ ^ 2) :=
+        have h1 : Summable (fun p => ‖jetCoef θ c 1 p‖ ^ (2 : ℕ)) :=
           summable_jetCoef_one_of_differentiableAt h (hdiff 0)
         rw [deriv_portOrbit h h1] at hcd
         have hprev := (ih (jetCoef θ c 1) h1).1 hcd
@@ -407,7 +407,7 @@ theorem contDiff_portOrbit_iff (θ : P → ℝ) :
             have hm := hprev m (by omega)
             rwa [jetCoef_one_jet] at hm
       · intro hall
-        have h1 : Summable (fun p => ‖jetCoef θ c 1 p‖ ^ 2) := hall 1 (by omega)
+        have h1 : Summable (fun p => ‖jetCoef θ c 1 p‖ ^ (2 : ℕ)) := hall 1 (by omega)
         refine ⟨fun t => (hasDerivAt_portOrbit h h1 t).differentiableAt, ?_, ?_⟩
         · intro hcon
           exact absurd hcon (by simp)
@@ -417,8 +417,8 @@ theorem contDiff_portOrbit_iff (θ : P → ℝ) :
           exact hall (k + 1) (by omega)
 
 omit [DecidableEq P] in
-theorem portOrbit_congr {c c' : P → ℂ} (hcc : c = c') (h : Summable fun p => ‖c p‖ ^ 2)
-    (h' : Summable fun p => ‖c' p‖ ^ 2) : portOrbit θ c h = portOrbit θ c' h' := by
+theorem portOrbit_congr {c c' : P → ℂ} (hcc : c = c') (h : Summable fun p => ‖c p‖ ^ (2 : ℕ))
+    (h' : Summable fun p => ‖c' p‖ ^ (2 : ℕ)) : portOrbit θ c h = portOrbit θ c' h' := by
   subst hcc; rfl
 
 omit [DecidableEq P] in
@@ -430,8 +430,8 @@ theorem jetCoef_jet_one (θ : P → ℝ) (c : P → ℂ) (n : ℕ) :
 
 /-- The `n`-th derivative of the orbit is the orbit of the `n`-twisted coefficient family. -/
 theorem iteratedDeriv_portOrbit (θ : P → ℝ) :
-    ∀ (n : ℕ) (c : P → ℂ) (h : Summable fun p => ‖c p‖ ^ 2)
-      (hn : ∀ k ≤ n, Summable (fun p => ‖jetCoef θ c k p‖ ^ 2)),
+    ∀ (n : ℕ) (c : P → ℂ) (h : Summable fun p => ‖c p‖ ^ (2 : ℕ))
+      (hn : ∀ k ≤ n, Summable (fun p => ‖jetCoef θ c k p‖ ^ (2 : ℕ))),
       iteratedDeriv n (portOrbit θ c h) = portOrbit θ (jetCoef θ c n) (hn n le_rfl) := by
   intro n
   induction n with
@@ -442,7 +442,7 @@ theorem iteratedDeriv_portOrbit (θ : P → ℝ) :
   | succ n ih =>
       intro c h hn
       have hjn : jetCoef θ (jetCoef θ c n) 1 = jetCoef θ c (n + 1) := jetCoef_jet_one θ c n
-      have h1 : Summable (fun p => ‖jetCoef θ (jetCoef θ c n) 1 p‖ ^ 2) := by
+      have h1 : Summable (fun p => ‖jetCoef θ (jetCoef θ c n) 1 p‖ ^ (2 : ℕ)) := by
         rw [hjn]; exact hn (n + 1) le_rfl
       rw [iteratedDeriv_succ, ih c h fun k hk => hn k (by omega), deriv_portOrbit _ h1]
       exact portOrbit_congr hjn _ _

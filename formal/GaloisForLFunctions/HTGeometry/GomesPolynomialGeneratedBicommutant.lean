@@ -23,7 +23,7 @@ theorem gomesEvenFormalPolynomialOperator_commutes_fullSymmetry
 
 /-- The formal scalar variable acts as the actual second derivative. -/
 theorem gomesEvenFormalPolynomialOperator_X :
-    gomesEvenFormalPolynomialOperator K PowerSeries.X = (Polynomial.derivative ^ 2 : Module.End K K[X]) := by
+    gomesEvenFormalPolynomialOperator K PowerSeries.X = (Polynomial.derivative ^ (2 : ℕ) : Module.End K K[X]) := by
   rw [gomesEvenFormalPolynomialOperator_eq_expanded, PowerSeries.expand_X,
     gomesFormalSeriesPolynomialOperator_X_pow]
 
@@ -58,7 +58,7 @@ theorem gomesPolynomialDerivativeReflectionAdjoin_doubleCentralizer (c : K) :
   constructor
   · intro h
     rw [Subalgebra.mem_centralizer_iff] at h
-    have hD : (Polynomial.derivative ^ 2 : Module.End K K[X]) ∈ Subalgebra.centralizer K
+    have hD : (Polynomial.derivative ^ (2 : ℕ) : Module.End K K[X]) ∈ Subalgebra.centralizer K
         (gomesPolynomialDerivativeReflectionAdjoin K c : Set (Module.End K K[X])) := by
       apply (gomesPolynomialDerivativeReflectionAdjoin_centralizer_mem_iff K c _).mpr
       exact ⟨PowerSeries.X, (gomesEvenFormalPolynomialOperator_X K).symm⟩

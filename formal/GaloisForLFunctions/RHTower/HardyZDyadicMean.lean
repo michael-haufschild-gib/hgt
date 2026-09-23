@@ -13,7 +13,7 @@ with constant weights, a reflected edge whose weights carry the whole height dep
 pole residue.  On `[T, 2T]` with smoothing scale `x = T\sqrt T`:
 
 * the reflected edge is `O((1+\tau)/x)` termwise, so its window integral is `O(\sqrt T)`;
-* the residue is `O(\sqrt x\,e^{-\tau^2})`, hence bounded;
+* the residue is `O(\sqrt x\,e^{-\tau^(2 : ℕ)})`, hence bounded;
 * the direct edge splits at `n \approx 5\sqrt T`.  Below that the second-derivative test gives
   `O(\sqrt T)` per term, and the head weight sum is `O(T^{1/4})`; above it the phase velocity is
   bounded away from zero and the first-derivative test gives `O(1)` per term against a total
@@ -198,7 +198,7 @@ theorem exists_abs_integral_hardyDirectSeries_le :
   set M : ℕ := ⌈5 * Real.sqrt T⌉₊ with hMdef
   have hsT : Real.sqrt T ≥ 4 := by
     rw [show (4 : ℝ) = Real.sqrt 16 by
-      rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq]; norm_num]
+      rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq]; norm_num]
     exact Real.sqrt_le_sqrt hT
   have hMge : 5 * Real.sqrt T ≤ (M : ℝ) := Nat.le_ceil _
   have hMlt : (M : ℝ) < 5 * Real.sqrt T + 1 := Nat.ceil_lt_add_one (by positivity)
@@ -345,7 +345,7 @@ theorem exists_abs_tsum_hardyDualTerm_le :
 theorem abs_hardyResidue_le {x τ : ℝ} (hx : 0 < x) (hτ : 1 ≤ |τ|) :
     |(Complex.exp (Complex.I * (gammaHardyTheta τ : ℂ)) *
         smoothAFEZetaShiftedPoleResidue (linePt τ) x).re|
-      ≤ Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(τ ^ 2)) := by
+      ≤ Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(τ ^ (2 : ℕ))) := by
   refine le_trans (Complex.abs_re_le_norm _) ?_
   rw [norm_mul, Complex.norm_exp]
   simp only [Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_re,
@@ -365,7 +365,7 @@ theorem continuous_hardyDirectSeries {x : ℝ} (hx : 1 ≤ x) :
 theorem exists_abs_hardyZ_sub_direct_le :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {x : ℝ}, 0 < x → ∀ {τ : ℝ}, 1 ≤ τ →
       |hardyZ τ - ∑' n : ℕ, hardyDirectTerm x n τ|
-        ≤ 3 * K * (1 + τ) / x + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(τ ^ 2)) := by
+        ≤ 3 * K * (1 + τ) / x + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(τ ^ (2 : ℕ))) := by
   obtain ⟨K, hK, hdual⟩ := exists_abs_tsum_hardyDualTerm_le
   refine ⟨K, hK, fun {x} hx {τ} hτ => ?_⟩
   have habs : |τ| = τ := abs_of_nonneg (by linarith)
@@ -395,7 +395,7 @@ theorem exists_abs_integral_hardyZ_dyadic_le :
   have hs2 : s * s = T := Real.mul_self_sqrt hT0.le
   have hs4 : (4 : ℝ) ≤ s := by
     rw [hs, show (4 : ℝ) = Real.sqrt 16 by
-      rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq]; norm_num]
+      rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq]; norm_num]
     exact Real.sqrt_le_sqrt hT
   have hs0 : (0 : ℝ) < s := by linarith
   set x : ℝ := T * s with hx
@@ -422,7 +422,7 @@ theorem exists_abs_integral_hardyZ_dyadic_le :
   -- the tail integral
   have hconst : ∀ τ ∈ Set.uIoc T (2 * T),
       ‖hardyZ τ - ∑' n : ℕ, hardyDirectTerm x n τ‖
-        ≤ 9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2)) := by
+        ≤ 9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ))) := by
     intro τ hτ
     rw [Set.uIoc_of_le hTle] at hτ
     have hτ1 : (1 : ℝ) ≤ τ := by linarith [hτ.1]
@@ -432,7 +432,7 @@ theorem exists_abs_integral_hardyZ_dyadic_le :
     · have hnum : 3 * K * (1 + τ) ≤ 9 * K * T := by nlinarith [hτ.2, hK]
       rw [div_le_div_iff₀ hx0 hs0]
       nlinarith [hK, hs0.le]
-    · have hexp : Real.exp (-(τ ^ 2)) ≤ Real.exp (-(T ^ 2)) := by
+    · have hexp : Real.exp (-(τ ^ (2 : ℕ))) ≤ Real.exp (-(T ^ (2 : ℕ))) := by
         refine Real.exp_le_exp.mpr ?_
         nlinarith [hτ.1]
       have hcoef : (0 : ℝ) ≤ Real.sqrt x * Real.exp (1 / 4) := by positivity
@@ -441,28 +441,28 @@ theorem exists_abs_integral_hardyZ_dyadic_le :
   rw [Real.norm_eq_abs, show |2 * T - T| = T by rw [show 2 * T - T = T by ring,
     abs_of_nonneg hT0.le]] at htailint
   -- the exponential piece is bounded
-  have hexpbd : Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2)) * T ≤ 2 := by
+  have hexpbd : Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ))) * T ≤ 2 := by
     have h1 : Real.sqrt x ≤ T := by
       rw [hsqx]; nlinarith
     have h2 : Real.exp (1 / 4) ≤ 2 := by
       have hlog : Real.exp (1 / 4) ≤ Real.exp (Real.log 2) :=
         Real.exp_le_exp.mpr (by linarith [Real.log_two_gt_d9])
       rwa [Real.exp_log (by norm_num)] at hlog
-    have h3 : T ^ 2 * Real.exp (-(T ^ 2)) ≤ 1 := by
-      have hle : T ^ 2 ≤ Real.exp (T ^ 2) := by
-        have := Real.add_one_le_exp (T ^ 2)
+    have h3 : T ^ (2 : ℕ) * Real.exp (-(T ^ (2 : ℕ))) ≤ 1 := by
+      have hle : T ^ (2 : ℕ) ≤ Real.exp (T ^ (2 : ℕ)) := by
+        have := Real.add_one_le_exp (T ^ (2 : ℕ))
         linarith
-      have hpos : (0 : ℝ) < Real.exp (T ^ 2) := Real.exp_pos _
+      have hpos : (0 : ℝ) < Real.exp (T ^ (2 : ℕ)) := Real.exp_pos _
       rw [Real.exp_neg, mul_inv_le_iff₀ hpos]
       linarith
-    have hexppos : (0 : ℝ) < Real.exp (-(T ^ 2)) := Real.exp_pos _
+    have hexppos : (0 : ℝ) < Real.exp (-(T ^ (2 : ℕ))) := Real.exp_pos _
     have hstep : Real.sqrt x * Real.exp (1 / 4) ≤ T * 2 := by
       nlinarith [Real.sqrt_nonneg x, Real.exp_pos (1 / 4 : ℝ), hT0.le]
-    calc Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2)) * T
-        ≤ T * 2 * Real.exp (-(T ^ 2)) * T :=
+    calc Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ))) * T
+        ≤ T * 2 * Real.exp (-(T ^ (2 : ℕ))) * T :=
           mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_right hstep hexppos.le) hT0.le
-      _ = 2 * (T ^ 2 * Real.exp (-(T ^ 2))) := by ring
+      _ = 2 * (T ^ (2 : ℕ) * Real.exp (-(T ^ (2 : ℕ)))) := by ring
       _ ≤ 2 * 1 := by nlinarith
       _ = 2 := by ring
   have hdirbd := hdirect hT hx1
@@ -470,14 +470,14 @@ theorem exists_abs_integral_hardyZ_dyadic_le :
   -- combine
   have hsplitbd : |∫ τ in T..(2 * T), hardyZ τ|
       ≤ CD * (s * Real.sqrt s + s * Real.sqrt s)
-        + (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2))) * T := by
+        + (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ)))) * T := by
     rw [hdecomp]
     refine le_trans (abs_add_le _ _) ?_
     exact add_le_add hdirbd htailint
   have hks : 9 * K / s * T = 9 * K * s := by
     field_simp
     nlinarith
-  have hfinal : (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2))) * T
+  have hfinal : (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ)))) * T
       ≤ 9 * K * s + 2 := by
     rw [add_mul, hks]
     linarith [hexpbd]

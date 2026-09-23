@@ -20,12 +20,12 @@ plus the oscillation bound times the measure of the set — never times the heig
 theorem setIntegral_normSq_logPoly_le_HM_window (a : ℕ → ℂ) {D : Finset ℕ} {N : ℕ} (hN : 1 ≤ N)
     (hD : D ⊆ Finset.Icc 1 N) {E : Set ℝ} (hE : MeasurableSet E) {W : ℝ}
     (hEs : E ⊆ Set.Icc (-W) W) {Ω : ℝ} (hΩ : 0 ≤ Ω) (ha : ∀ n, ‖a n‖ ≤ Ω) :
-    (∫ w in E, ‖logPoly a D w‖ ^ 2)
+    (∫ w in E, ‖logPoly a D w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi)⁻¹
         * ((2 * (N : ℝ)
             + (((Nat.log 2 N : ℝ) + 1) * (214 * Real.sqrt (2 * (2 * Real.pi * W)))
                 + 3072 * (N : ℝ))
-              * (2 * Real.pi * volume.real E)) * (Ω ^ 2 * (D.card : ℝ))) := by
+              * (2 * Real.pi * volume.real E)) * (Ω ^ (2 : ℕ) * (D.card : ℝ))) := by
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   have hinv : (0 : ℝ) < (2 * Real.pi)⁻¹ := by positivity
   have hne : (2 * Real.pi) ≠ 0 := ne_of_gt hpi

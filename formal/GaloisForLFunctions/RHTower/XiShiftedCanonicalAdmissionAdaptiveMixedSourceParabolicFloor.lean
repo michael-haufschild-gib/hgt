@@ -9,7 +9,7 @@ hyperbolic reset has exact reciprocal-mass weight four.  Its normalized Jacobi d
 contains four copies of the first lower edge.  Since shifted-Xi normalized `beta_1` has one
 degree-independent far-right floor, one universal threshold forces
 
-`1 / 4 < w^4 * sourceAction(w,n)`
+`1 / 4 < w^(4 : ℕ) * sourceAction(w,n)`
 
 simultaneously in every degree at least two and every sufficiently large positive admission
 block.  This is a source-first noncollapse theorem, not a reporter or orientation map.
@@ -34,14 +34,14 @@ theorem dimensionlessCumulativeJacobiDissipation_eq_fourth_mul_actual
     (hA : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 4)).PosDef) :
     dimensionlessCumulativeJacobiDissipation w n =
-      w ^ 4 * xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ 2) n := by
+      w ^ (4 : ℕ) * xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ (2 : ℕ)) n := by
   have hN0 := xiShiftedFarRightNormalizedHankelMatrix_posDef_of_actual hw (n + 4) hA
   have hN : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 4)).PosDef := by
     simpa only [xiShiftedFarRightNormalizedHankelMatrix] using hN0
   have halpha : ∀ j, j ≤ n →
       HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j =
-        w ^ 2 * HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j := by
+        w ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j := by
     intro j hj
     have hNj : (HTGeometry.momentHankelMatrix
         (xiShiftedFarRightNormalizedMoment w) (j + 3)).PosDef :=
@@ -50,12 +50,12 @@ theorem dimensionlessCumulativeJacobiDissipation_eq_fourth_mul_actual
         (xiShiftedRealMomentSequence w) (j + 3)).PosDef :=
       momentHankel_posDef_of_le (by omega) hA
     change HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j =
-      w ^ 2 * HTGeometry.monicOrthoAlpha
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j
+      w ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j
     exact normalizedAlpha_eq_square_mul_actualAlpha hw j hNj hAj
   have hbeta : ∀ j, j ≤ n + 1 →
       HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) j =
-        w ^ 4 * HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) j := by
+        w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) j := by
     intro j hj
     have hNj : (HTGeometry.momentHankelMatrix
         (xiShiftedFarRightNormalizedMoment w) (j + 3)).PosDef :=
@@ -64,14 +64,14 @@ theorem dimensionlessCumulativeJacobiDissipation_eq_fourth_mul_actual
         (xiShiftedRealMomentSequence w) (j + 3)).PosDef :=
       momentHankel_posDef_of_le (by omega) hA
     change HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) j =
-      w ^ 4 * HTGeometry.monicOrthoBeta
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) j
+      w ^ (4 : ℕ) * HTGeometry.monicOrthoBeta
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) j
     exact normalizedBeta_eq_fourth_mul_actualBeta hw j hNj hAj
   have hsumAlphaSq :
       (∑ j ∈ Finset.range n,
-        HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j ^ 2) =
-      w ^ 4 * ∑ j ∈ Finset.range n,
-        HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j ^ 2 := by
+        HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) j ^ (2 : ℕ)) =
+      w ^ (4 : ℕ) * ∑ j ∈ Finset.range n,
+        HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) j ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro j hj
@@ -80,7 +80,7 @@ theorem dimensionlessCumulativeJacobiDissipation_eq_fourth_mul_actual
   have hsumBeta :
       (∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoBeta (xiShiftedFarRightNormalizedMoment w) j) =
-      w ^ 4 * ∑ j ∈ Finset.range n,
+      w ^ (4 : ℕ) * ∑ j ∈ Finset.range n,
         HTGeometry.monicOrthoBeta (xiShiftedRealMomentSequence w) j := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
@@ -89,7 +89,7 @@ theorem dimensionlessCumulativeJacobiDissipation_eq_fourth_mul_actual
     rw [hbeta j (hjn.trans (Nat.le_succ n))]
   dsimp only [dimensionlessCumulativeJacobiDissipation,
     xiShiftedCanonicalAdmissionCumulativeJacobiDissipation]
-  have hseq : (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) =
+  have hseq : (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) =
       xiShiftedRealMomentSequence w := rfl
   rw [hseq]
   rw [hsumAlphaSq, hsumBeta, halpha n le_rfl,
@@ -125,8 +125,8 @@ theorem four_mul_lowEdge_lt_dimensionlessCumulativeJacobiDissipation
           (Finset.singleton_subset_iff.mpr hone)
           (fun j hj _ => hbetaNonneg j hj)
   have halphaSq : 0 ≤ 2 * (∑ j ∈ Finset.range n,
-      HTGeometry.monicOrthoAlpha s j ^ 2) +
-      HTGeometry.monicOrthoAlpha s n ^ 2 := by positivity
+      HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+      HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) := by positivity
   have hterminal : 0 < 2 * (n + 1 : ℝ) *
       (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1)) := by
     have hnBeta := HTGeometry.monicOrthoBeta_pos_below hbelow (by omega : 0 < n) (by omega)
@@ -138,13 +138,13 @@ theorem four_mul_lowEdge_lt_dimensionlessCumulativeJacobiDissipation
   nlinarith
 
 /-- **Uniform parabolic source floor.** One mass threshold works simultaneously in every degree:
-after the forced `w^4` coordinate renormalization, the literal drift-removed adaptive
+after the forced `w^(4 : ℕ)` coordinate renormalization, the literal drift-removed adaptive
 mixed/completed arithmetic source action is greater than `1/4`. -/
 theorem exists_uniform_adaptiveMixedCompletedSourceAction_parabolicFloor :
     ∃ W : ℝ, 2 ≤ W ∧ ∀ w ≥ W, ∀ n : ℕ, 2 ≤ n →
       (HTGeometry.momentHankelMatrix
         (xiShiftedRealMomentSequence w) (n + 4)).PosDef →
-      (1 / 4 : ℝ) < w ^ 4 *
+      (1 / 4 : ℝ) < w ^ (4 : ℕ) *
         xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w n := by
   have hbeta := tendsto_dimensionless_monicOrthoBeta (n := 1) (by omega)
   rw [monicOrthoBeta_normalizedCentralBinom_one] at hbeta
@@ -199,7 +199,7 @@ theorem two_mul_projectiveGaussRootSpread_lt_dimensionlessCumulativeJacobiDissip
     dimensionlessCumulativeJacobiDissipation
   have hnpos : 0 < (n : ℝ) := by positivity
   have hcenter : 0 ≤
-      (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) ^ 2 / (n : ℝ) := by
+      (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) ^ (2 : ℕ) / (n : ℝ) := by
     positivity
   have hterminal : 0 < 2 * (n + 1 : ℝ) *
       (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1)) := by
@@ -212,14 +212,14 @@ theorem two_mul_projectiveGaussRootSpread_lt_dimensionlessCumulativeJacobiDissip
     (HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) n)]
 
 /-- **Cofinal source divergence.** On every cofinal mass-and-degree schedule with positive
-actual admission blocks, the forced `w^4` renormalization of the literal drift-removed adaptive
+actual admission blocks, the forced `w^(4 : ℕ)` renormalization of the literal drift-removed adaptive
 mixed/completed source action tends to infinity. -/
 theorem tendsto_renormalized_adaptiveMixedCompletedSourceAction_along_cofinal_positive_blocks
     (w : ℕ → ℝ) (n : ℕ → ℕ)
     (hw : Tendsto w atTop atTop) (hn : Tendsto n atTop atTop)
     (hH : ∀ l, (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence (w l)) (n l + 4)).PosDef) :
-    Tendsto (fun l => (w l) ^ 4 *
+    Tendsto (fun l => (w l) ^ (4 : ℕ) *
       xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction (w l) (n l))
       atTop atTop := by
   have hHsmall : ∀ l, (HTGeometry.momentHankelMatrix

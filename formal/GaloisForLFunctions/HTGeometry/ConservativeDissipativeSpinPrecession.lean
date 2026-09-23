@@ -37,19 +37,19 @@ theorem spinSphereFlow_zero_damping_periodic (z : ℂ) :
 
 /-- The undamped spin's latitude energy is constant even on nonstationary orbits. -/
 theorem spinSphereFlow_zero_damping_energy (z : ℂ) (t : ℝ) :
-    spinSphereFlow 0 z t (2 : Fin 3) = (‖z‖ ^ 2 - 1) / (1 + ‖z‖ ^ 2) := by
+    spinSphereFlow 0 z t (2 : Fin 3) = (‖z‖ ^ (2 : ℕ) - 1) / (1 + ‖z‖ ^ (2 : ℕ)) := by
   simp [spinSphereFlow_energy]
 
 /-- Undamped precession has an exact, time-independent Euclidean speed. -/
 theorem spinSphereFlow_zero_damping_speed (z : ℂ) (t : ℝ) :
-    ‖spinSphereField 0 (spinSphereFlow 0 z t)‖ = 2 * ‖z‖ / (1 + ‖z‖ ^ 2) := by
+    ‖spinSphereField 0 (spinSphereFlow 0 z t)‖ = 2 * ‖z‖ / (1 + ‖z‖ ^ (2 : ℕ)) := by
   rw [spinSphereFlow_speed, norm_mul, spinPlaneFlow_norm]
   simp [spinPlaneRate]
 
 /-- The undamped speed integral grows linearly with oriented elapsed time. -/
 theorem spinSphereFlow_zero_damping_integral_speed (z : ℂ) (s t : ℝ) :
     (∫ v in s..t, ‖spinSphereField 0 (spinSphereFlow 0 z v)‖) =
-      (t - s) * (2 * ‖z‖ / (1 + ‖z‖ ^ 2)) := by
+      (t - s) * (2 * ‖z‖ / (1 + ‖z‖ ^ (2 : ℕ))) := by
   simp only [spinSphereFlow_zero_damping_speed, intervalIntegral.integral_const, smul_eq_mul]
 
 /-- Every exponentially constructed nonzero undamped spin travels infinite total arclength. -/
@@ -57,7 +57,7 @@ theorem spinSphereFlow_zero_damping_infinite_arclength (c : ℂ) :
     Tendsto (fun T => ∫ t in (0 : ℝ)..T,
       ‖spinSphereField 0 (spinSphereFlow 0 (Complex.exp c) t)‖) atTop atTop := by
   have hz : 0 < ‖Complex.exp c‖ := norm_pos_iff.mpr (Complex.exp_ne_zero c)
-  have hp : 0 < 2 * ‖Complex.exp c‖ / (1 + ‖Complex.exp c‖ ^ 2) := by positivity
+  have hp : 0 < 2 * ‖Complex.exp c‖ / (1 + ‖Complex.exp c‖ ^ (2 : ℕ)) := by positivity
   have h := Filter.Tendsto.const_mul_atTop hp (Filter.tendsto_id : Tendsto (id : ℝ → ℝ) atTop atTop)
   simpa only [spinSphereFlow_zero_damping_integral_speed, sub_zero, id_eq, mul_comm] using h
 

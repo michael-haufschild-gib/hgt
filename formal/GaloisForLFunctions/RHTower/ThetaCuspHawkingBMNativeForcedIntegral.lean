@@ -91,14 +91,14 @@ private theorem normalized_cone (τ x r z : ℝ) (hr : r ∈ Icc 0 1) (hz : z �
 
 /-- Original retarded integral in fixed rectangle coordinates; the factor includes both Jacobians. -/
 def radialResponse (nu s a : ℂ) (τ x : ℝ) : ℂ :=
-  ((max τ 0:ℝ):ℂ)^2/2*∫ r in (0:ℝ)..1, (1-r:ℂ)*
+  ((max τ 0:ℝ):ℂ)^(2 : ℕ)/2*∫ r in (0:ℝ)..1, (1-r:ℂ)*
     ∫ z in (-1:ℝ)..1,
       riemannKernel nu (max τ 0*(1-r)) x (x+max τ 0*(1-r)*z)*
         oddSource s a (max τ 0*r) (x+max τ 0*(1-r)*z)
 
 private theorem radialResponse_extended (nu s a : ℂ) (τ x : ℝ) :
     radialResponse nu s a τ x =
-      ((max τ 0:ℝ):ℂ)^2/2*∫ r in (0:ℝ)..1, (1-r:ℂ)*
+      ((max τ 0:ℝ):ℂ)^(2 : ℕ)/2*∫ r in (0:ℝ)..1, (1-r:ℂ)*
         ∫ z in (-1:ℝ)..1,
           extendedKernel nu (max τ 0*(1-r)) x (x+max τ 0*(1-r)*z)*
             oddSource s a (max τ 0*r) (x+max τ 0*(1-r)*z) := by
@@ -143,7 +143,7 @@ theorem radialResponse_continuous (nu s a : ℂ) :
     (μ := volume) (f := fun (p : ℝ × ℝ) r => (1-r:ℂ)*∫ z in (-1:ℝ)..1, normalizedIntegrand nu s a p.1 p.2 r z)
     hw 0 1
   simp_rw [radialResponse_extended]
-  exact (show Continuous (fun p : ℝ × ℝ => ((max p.1 0:ℝ):ℂ)^2/2) by fun_prop).mul ho
+  exact (show Continuous (fun p : ℝ × ℝ => ((max p.1 0:ℝ):ℂ)^(2 : ℕ)/2) by fun_prop).mul ho
 
 /-- No native response precedes the original onset. -/
 theorem radialResponse_zero_of_nonpos (nu s a : ℂ) (τ x : ℝ) (hτ : τ ≤ 0) :
@@ -226,7 +226,7 @@ theorem radialResponse_retarded (nu s a : ℂ) (τ x : ℝ) :
     funext r
     rw [hi]
     ring,intervalIntegral.integral_const_mul] at ho
-  change (T:ℂ)^2/2*(∫ r in (0:ℝ)..1, (1-r:ℂ)*J r) = (1/2:ℂ)*∫ σ in (0:ℝ)..T, F σ
+  change (T:ℂ)^(2 : ℕ)/2*(∫ r in (0:ℝ)..1, (1-r:ℂ)*J r) = (1/2:ℂ)*∫ σ in (0:ℝ)..T, F σ
   rw [← ho]
   ring
 

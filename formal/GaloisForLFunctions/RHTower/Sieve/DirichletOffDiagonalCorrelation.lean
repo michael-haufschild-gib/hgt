@@ -76,8 +76,8 @@ noncomputable def dirCorrelation {N : ℕ} (a : Fin N → ℂ) (m n : ℕ) : ℂ
 /-- **The mean square minus its diagonal, in primitive-ratio form.**  The coefficients enter only
 through their correlations along coprime ratios, and each ratio carries a single kernel value. -/
 theorem integral_normSq_dirPoly_sub_diag_ratio (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
-    (∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ))
-        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ 2 : ℝ) : ℂ)
+    (∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ))
+        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ q ∈ primitiveRatioPairs N, dirCorrelation a q.1 q.2 * ratioKernel T q.1 q.2 := by
   classical
   rw [integral_normSq_dirPoly_sub_diag]
@@ -106,8 +106,8 @@ theorem integral_normSq_dirPoly_sub_diag_ratio (N : ℕ) (a : Fin N → ℂ) (T 
 /-- The primitive-ratio form is never weaker: majorising it term by term reproduces the mean value
 theorem, with one term per *coprime* pair. -/
 theorem norm_le_sum_norm_correlation_mul (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
-    ‖(∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ))
-        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ 2 : ℝ) : ℂ)‖
+    ‖(∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ))
+        - (T : ℂ) * ∑ m : Fin N, ((‖a m‖ ^ (2 : ℕ) : ℝ) : ℂ)‖
       ≤ ∑ q ∈ primitiveRatioPairs N,
           ‖dirCorrelation a q.1 q.2‖ * (2 / |Real.log (q.1 : ℝ) - Real.log (q.2 : ℝ)|) := by
   classical

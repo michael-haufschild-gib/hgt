@@ -20,11 +20,11 @@ structure CoherentTower (f : ℂ → ℂ) (U : Set ℂ) where
   level : ℕ → ℂ → ℂ
   level_zero : ∀ s ∈ U, level 0 s = f s
   analytic : ∀ k, AnalyticOnNhd ℂ (level k) U
-  sq : ∀ k, ∀ s ∈ U, level (k + 1) s ^ 2 = level k s
+  sq : ∀ k, ∀ s ∈ U, level (k + 1) s ^ (2 : ℕ) = level k s
 
 /-- Level `k` of a coherent tower is a `2^k`-th root of `f`. -/
 theorem CoherentTower.pow_eq {f : ℂ → ℂ} {U : Set ℂ} (T : CoherentTower f U) (k : ℕ) :
-    ∀ s ∈ U, T.level k s ^ 2 ^ k = f s := by
+    ∀ s ∈ U, T.level k s ^ (2 : ℕ) ^ k = f s := by
   induction k with
   | zero =>
     intro s hs

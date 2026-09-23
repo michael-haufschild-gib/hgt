@@ -19,7 +19,7 @@ namespace RHTower
 theorem exists_prefix_mass_product_ge (x : ℕ → ℝ) (T D : ℝ) (k : ℕ)
     (hT : 0 ≤ T) (_hD : 0 ≤ D) (h0 : x 0=0) (hk : x k=T)
     (hstep : ∀ n<k, x (n+1)-x n ≤ D) :
-    ∃ n≤k, (T^2-D^2)/4 ≤ x n*(T-x n) := by
+    ∃ n≤k, (T^(2 : ℕ)-D^(2 : ℕ))/4 ≤ x n*(T-x n) := by
   by_cases hT0 : T=0
   · refine ⟨0,Nat.zero_le _,?_⟩
     rw [h0,hT0]
@@ -50,7 +50,7 @@ theorem exists_mobiusDivisorCoareaHeadAction_prefix_ge (M k : ℕ)
     (h0 : Disjoint (mobiusDivisorActiveLatePrimes M) (P 0))
     (hk : mobiusDivisorActiveLatePrimes M ⊆ P k)
     (hstep : ∀ n<k, P (n+1)=insert (q n) (P n)) :
-    ∃ n≤k, ((mobiusDivisorLatePrimeMass M)^2-(9/25:ℝ)*M)/4 ≤
+    ∃ n≤k, ((mobiusDivisorLatePrimeMass M)^(2 : ℕ)-(9/25:ℝ)*M)/4 ≤
       mobiusDivisorCoareaHeadAction M (P n) := by
   have hx0 : mobiusDivisorConsumedLateMass M (P 0)=0 := by
     simp [mobiusDivisorConsumedLateMass,Finset.disjoint_iff_inter_eq_empty.mp h0]
@@ -67,7 +67,7 @@ theorem exists_mobiusDivisorCoareaHeadAction_prefix_ge (M k : ℕ)
     (fun n hn => by rw [hstep n hn]; exact mobiusDivisorConsumedLateMass_insert_step_le M (P n) (q n))
   have hsplit := mobiusDivisorCoareaHeadAction_ge_late_mass_split M (P n)
   have hsum := mobiusDivisorConsumed_add_remainingLateMass M (P n)
-  have hs : ((3/5:ℝ)*Real.sqrt M)^2 = (9/25:ℝ)*M := by
+  have hs : ((3/5:ℝ)*Real.sqrt M)^(2 : ℕ) = (9/25:ℝ)*M := by
     rw [mul_pow,Real.sq_sqrt (Nat.cast_nonneg M)]
     ring
   rw [hs] at hb
@@ -81,7 +81,7 @@ theorem eventually_every_mobiusDivisorCoarea_order_exceeds_quadratic (C : ℝ) :
       Disjoint (mobiusDivisorActiveLatePrimes (4*N)) (P 0) →
       mobiusDivisorActiveLatePrimes (4*N) ⊆ P k →
       (∀ n<k, P (n+1)=insert (q n) (P n)) →
-      ∃ n≤k, C*(4*(N:ℝ))^2 < mobiusDivisorCoareaHeadAction (4*N) (P n) := by
+      ∃ n≤k, C*(4*(N:ℝ))^(2 : ℕ) < mobiusDivisorCoareaHeadAction (4*N) (P n) := by
   have hT := tendsto_mobiusDivisorLatePrimeMass_div_atTop.eventually_gt_atTop (2*(|C|+1))
   filter_upwards [hT,eventually_ge_atTop (1:ℕ)] with N hT hN
   intro k P q h0 hk hstep
@@ -90,11 +90,11 @@ theorem eventually_every_mobiusDivisorCoarea_order_exceeds_quadratic (C : ℝ) :
   have hMp : (0:ℝ) < 4*N := by linarith
   have hlarge := (lt_div_iff₀ hMp).mp hT
   have hpos : 0 ≤ 2*(|C|+1)*(4*(N:ℝ)) := by positivity
-  have hsq : (2*(|C|+1)*(4*(N:ℝ)))^2 < (mobiusDivisorLatePrimeMass (4*N))^2 := by
+  have hsq : (2*(|C|+1)*(4*(N:ℝ)))^(2 : ℕ) < (mobiusDivisorLatePrimeMass (4*N))^(2 : ℕ) := by
     nlinarith only [hlarge,hpos]
-  have hc : 4*C+1 ≤ (2*(|C|+1))^2 := by nlinarith [le_abs_self C,sq_nonneg |C|]
+  have hc : 4*C+1 ≤ (2*(|C|+1))^(2 : ℕ) := by nlinarith [le_abs_self C,sq_nonneg |C|]
   have hcM := mul_le_mul_of_nonneg_right hc (sq_nonneg (4*(N:ℝ)))
-  have hlin : (9/25:ℝ)*(4*N) ≤ (4*(N:ℝ))^2 := by nlinarith only [hM]
+  have hlin : (9/25:ℝ)*(4*N) ≤ (4*(N:ℝ))^(2 : ℕ) := by nlinarith only [hM]
   push_cast at hb
   refine ⟨n,hn,?_⟩
   nlinarith only [hb,hsq,hcM,hlin]
@@ -104,7 +104,7 @@ def mobiusDivisorCoareaMassEnvelope (M : ℕ) (P : Finset ℕ) : ℝ :=
   (mobiusDivisorSelectionPrimes M).powerset.sup' ⟨∅,by simp⟩
     (mobiusDivisorFibreAbsoluteMass M P) *
   ∑ R ∈ (mobiusDivisorSelectionPrimes M).powerset,
-    (mobiusDivisorSelectionFibre M P R)^2 / mobiusDivisorFibreAbsoluteMass M P R
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) / mobiusDivisorFibreAbsoluteMass M P R
 
 /-- The largest-cell coarea envelope always dominates the head action. -/
 theorem mobiusDivisorCoareaHeadAction_le_massEnvelope (M : ℕ) (P : Finset ℕ) :
@@ -122,7 +122,7 @@ theorem eventually_every_mobiusDivisorCoarea_massEnvelope_exceeds_quadratic (C :
       Disjoint (mobiusDivisorActiveLatePrimes (4*N)) (P 0) →
       mobiusDivisorActiveLatePrimes (4*N) ⊆ P k →
       (∀ n<k, P (n+1)=insert (q n) (P n)) →
-      ∃ n≤k, C*(4*(N:ℝ))^2 < mobiusDivisorCoareaMassEnvelope (4*N) (P n) := by
+      ∃ n≤k, C*(4*(N:ℝ))^(2 : ℕ) < mobiusDivisorCoareaMassEnvelope (4*N) (P n) := by
   filter_upwards [eventually_every_mobiusDivisorCoarea_order_exceeds_quadratic C] with N hN
   intro k P q h0 hk hstep
   obtain ⟨n,hn,hb⟩ := hN k P q h0 hk hstep

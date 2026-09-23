@@ -26,20 +26,20 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- **A nonnegative real quadratic has nonpositive discriminant.** -/
 theorem sq_le_of_quadratic_nonneg {a b c : ℝ}
-    (h : ∀ t : ℝ, 0 ≤ a + 2 * t * b + t ^ 2 * c) : b ^ 2 ≤ a * c := by
+    (h : ∀ t : ℝ, 0 ≤ a + 2 * t * b + t ^ (2 : ℕ) * c) : b ^ (2 : ℕ) ≤ a * c := by
   have hc : 0 ≤ c := by
     by_contra hneg
     rw [not_le] at hneg
     have hcpos : (0 : ℝ) < -c := by linarith
     have hpos : (0 : ℝ) < (|a| + 1) / (-c) := by positivity
-    obtain ⟨k, hk⟩ : ∃ k : ℝ, k ^ 2 = (|a| + 1) / (-c) :=
+    obtain ⟨k, hk⟩ : ∃ k : ℝ, k ^ (2 : ℕ) = (|a| + 1) / (-c) :=
       ⟨Real.sqrt ((|a| + 1) / (-c)), Real.sq_sqrt hpos.le⟩
-    have hsum : 0 ≤ 2 * a + 2 * (k ^ 2 * c) := by
+    have hsum : 0 ≤ 2 * a + 2 * (k ^ (2 : ℕ) * c) := by
       have h1 := h k
       have h2 := h (-k)
       nlinarith [h1, h2]
     have hcne : c ≠ 0 := ne_of_lt hneg
-    have hkc : k ^ 2 * c = -(|a| + 1) := by
+    have hkc : k ^ (2 : ℕ) * c = -(|a| + 1) := by
       rw [hk]
       field_simp
     rw [hkc] at hsum
@@ -61,12 +61,12 @@ theorem sq_le_of_quadratic_nonneg {a b c : ℝ}
     norm_num
   · have hq := h (-b / c)
     have hne : c ≠ 0 := ne_of_gt hc0
-    have hcalc : a + 2 * (-b / c) * b + (-b / c) ^ 2 * c = a - b ^ 2 / c := by
+    have hcalc : a + 2 * (-b / c) * b + (-b / c) ^ (2 : ℕ) * c = a - b ^ (2 : ℕ) / c := by
       field_simp
       ring
     rw [hcalc] at hq
-    have h2 : b ^ 2 / c ≤ a := by linarith
-    calc b ^ 2 = (b ^ 2 / c) * c := by field_simp
+    have h2 : b ^ (2 : ℕ) / c ≤ a := by linarith
+    calc b ^ (2 : ℕ) = (b ^ (2 : ℕ) / c) * c := by field_simp
       _ ≤ a * c := mul_le_mul_of_nonneg_right h2 hc0.le
 
 /-! ## Cauchy--Schwarz for a nonnegative symmetric form -/
@@ -76,9 +76,9 @@ expansion of the form along a one-parameter combination, which is all the biline
 inequality uses. -/
 theorem symmBilin_sq_le {X : Type*} {S : X → X → ℝ} {comb : ℝ → X → X → X}
     (hexp : ∀ (t : ℝ) (u v : X), S (comb t u v) (comb t u v)
-      = S u u + 2 * t * S u v + t ^ 2 * S v v)
-    (hpsd : ∀ x : X, 0 ≤ S x x) (u v : X) : S u v ^ 2 ≤ S u u * S v v := by
-  have hquad : ∀ t : ℝ, 0 ≤ S u u + 2 * t * S u v + t ^ 2 * S v v := by
+      = S u u + 2 * t * S u v + t ^ (2 : ℕ) * S v v)
+    (hpsd : ∀ x : X, 0 ≤ S x x) (u v : X) : S u v ^ (2 : ℕ) ≤ S u u * S v v := by
+  have hquad : ∀ t : ℝ, 0 ≤ S u u + 2 * t * S u v + t ^ (2 : ℕ) * S v v := by
     intro t
     rw [← hexp t u v]
     exact hpsd _
@@ -99,20 +99,20 @@ theorem symmBilin_sq_le {X : Type*} {S : X → X → ℝ} {comb : ℝ → X → 
     norm_num
   · have hq := hquad (-(S u v) / S v v)
     have hne : S v v ≠ 0 := ne_of_gt hv
-    have hcalc : S u u + 2 * (-(S u v) / S v v) * S u v + (-(S u v) / S v v) ^ 2 * S v v
-        = S u u - S u v ^ 2 / S v v := by
+    have hcalc : S u u + 2 * (-(S u v) / S v v) * S u v + (-(S u v) / S v v) ^ (2 : ℕ) * S v v
+        = S u u - S u v ^ (2 : ℕ) / S v v := by
       field_simp
       ring
     rw [hcalc] at hq
-    have h2 : S u v ^ 2 / S v v ≤ S u u := by linarith
-    calc S u v ^ 2 = (S u v ^ 2 / S v v) * S v v := by field_simp
+    have h2 : S u v ^ (2 : ℕ) / S v v ≤ S u u := by linarith
+    calc S u v ^ (2 : ℕ) = (S u v ^ (2 : ℕ) / S v v) * S v v := by field_simp
       _ ≤ S u u * S v v := by
           exact mul_le_mul_of_nonneg_right h2 hv.le
 
 /-- **The semidefinite Hankel bootstrap.**  A Hankel sequence whose Cauchy–Schwarz inequality holds
 up to index `m` and which vanishes on `1 ≤ j ≤ m` vanishes on all of `1 ≤ j < 2m`. -/
 theorem psdHankel_jet_vanishing {M : ℕ → ℝ} {m : ℕ}
-    (hCS : ∀ p q : ℕ, p ≤ m → q ≤ m → M (p + q) ^ 2 ≤ M (2 * p) * M (2 * q))
+    (hCS : ∀ p q : ℕ, p ≤ m → q ≤ m → M (p + q) ^ (2 : ℕ) ≤ M (2 * p) * M (2 * q))
     (hbase : ∀ j : ℕ, 1 ≤ j → j ≤ m → M j = 0) :
     ∀ j : ℕ, 1 ≤ j → j < 2 * m → M j = 0 := by
   have key : ∀ k : ℕ, k < m → ∀ j : ℕ, 1 ≤ j → j ≤ m + k → M j = 0 := by
@@ -141,7 +141,7 @@ theorem psdHankel_jet_vanishing {M : ℕ → ℝ} {m : ℕ}
 /-- **The divided-jet Gram law.**  Off the terminal corner every entry of the Gram matrix of the
 divided descendants vanishes. -/
 theorem psdHankel_gram_off_terminal {M : ℕ → ℝ} {m : ℕ}
-    (hCS : ∀ p q : ℕ, p ≤ m → q ≤ m → M (p + q) ^ 2 ≤ M (2 * p) * M (2 * q))
+    (hCS : ∀ p q : ℕ, p ≤ m → q ≤ m → M (p + q) ^ (2 : ℕ) ≤ M (2 * p) * M (2 * q))
     (hbase : ∀ j : ℕ, 1 ≤ j → j ≤ m → M j = 0)
     (p q : ℕ) (hp : 1 ≤ p) (hq : 1 ≤ q) (hpm : p ≤ m) (hqm : q ≤ m)
     (hne : ¬(p = m ∧ q = m)) :

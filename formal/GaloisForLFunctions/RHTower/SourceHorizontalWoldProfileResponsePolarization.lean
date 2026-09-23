@@ -93,7 +93,7 @@ theorem sourceHorizontalWoldPrimeClockResponse_even (u : ℝ) :
   rw [heven.neg_pow]
 
 theorem sourceHorizontalWoldPrimeClockResponse_quadratic_lower (u : ℝ) :
-    u ^ 2 / 3 ≤ sourceHorizontalWoldPrimeClockResponse u := by
+    u ^ (2 : ℕ) / 3 ≤ sourceHorizontalWoldPrimeClockResponse u := by
   have hle := (summable_sourceHorizontalWoldPrimeClockResponse u).le_tsum 1
     (fun k _ => sourceHorizontalWoldPrimeClockResponse_term_nonneg u k)
   simpa [sourceHorizontalWoldPrimeClockResponse] using hle
@@ -365,14 +365,14 @@ theorem sourceHorizontalWoldPrimeClockResponse_eq_polarRateWork_deriv
     sourceHorizontalWoldPrimeClockResponse u =
       2 / Real.log 2 *
         (deriv sourceHorizontalWoldPrimeClockPolarRateWork u / u -
-          sourceHorizontalWoldPrimeClockPolarRateWork u / u ^ 2) := by
+          sourceHorizontalWoldPrimeClockPolarRateWork u / u ^ (2 : ℕ)) := by
   have hlog : Real.log 2 ≠ 0 := ne_of_gt (Real.log_pos (by norm_num))
   rw [(hasDerivAt_sourceHorizontalWoldPrimeClockPolarRateWork u).deriv,
     sourceHorizontalWoldPrimeClockCurrent_eq_polarRateWork_div hu]
   field_simp [hu, hlog]
   ring
 
-/-- Exact all-order current series; its first nonzero term is `u^3 / 9`. -/
+/-- Exact all-order current series; its first nonzero term is `u^(3 : ℕ) / 9`. -/
 theorem sourceHorizontalWoldPrimeClockCurrent_eq_tsum (u : ℝ) :
     sourceHorizontalWoldPrimeClockCurrent u =
       ∑' k : ℕ, ((2 * k : ℕ) : ℝ) / (2 * k + 1 : ℕ) *

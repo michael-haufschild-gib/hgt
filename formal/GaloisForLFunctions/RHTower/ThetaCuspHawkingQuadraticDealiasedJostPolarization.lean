@@ -8,7 +8,7 @@ its angular momentum is centered at the wrong reflection point for the Xi
 functional equation.  The affine radial lift
 `L(z) = 2 z - i/2` realizes the doubled Weyl weight inside the same exact
 hypergeometric scattering problem.  It sends angular momentum to `z`,
-angular eigenvalue to `1/4 + z^2`, and the physical optical shadow to
+angular eigenvalue to `1/4 + z^(2 : ℕ)`, and the physical optical shadow to
 `z ↦ -z`.
 
 At each Xi divisor copy the lifted full boundary determinant has a simple
@@ -17,7 +17,7 @@ corresponding scattering pole.  Multiplication of the two functional-equation
 mirror residues cancels every Gamma factor and leaves
 `-(576/pi) P(i z)`, where
 
-`P(x) = (x^2 - 1/4)/(x (9/4 - x^2)^2) cot(pi x)`.
+`P(x) = (x^(2 : ℕ) - 1/4)/(x (9/4 - x^(2 : ℕ))^(2 : ℕ)) cot(pi x)`.
 
 Inside the Xi strip, the imaginary part of `P` is nonzero at every tilted
 point and vanishes exactly on the critical line.  This is an ordered chiral
@@ -50,7 +50,7 @@ lemma d4ThetaCuspHawkingQuadraticDealiased_shadow (z : ℂ) :
   ring
 
 lemma d4ThetaCuspHawkingQuadraticDealiased_q (z : ℂ) :
-    d4ThetaTeukolskyAngularQ (d4ThetaCuspHawkingQuadraticDealiasedLift z) = 1 / 4 + z ^ 2 := by
+    d4ThetaTeukolskyAngularQ (d4ThetaCuspHawkingQuadraticDealiasedLift z) = 1 / 4 + z ^ (2 : ℕ) := by
   unfold d4ThetaTeukolskyAngularQ
     thetaCuspHawkingTopologicalBlackHoleAngularEigenvalue
   rw [d4ThetaCuspHawkingQuadraticDealiased_momentum]
@@ -168,7 +168,7 @@ lemma d4ThetaCuspHawkingQuadraticDealiased_gamma_num_pair (x : ℂ)
     (hcos : Complex.cos ((Real.pi : ℂ) * x) ≠ 0) :
     Complex.Gamma (x - 1 / 2) * Complex.Gamma (-x - 1 / 2) =
       -(Real.pi : ℂ) /
-        ((x ^ 2 - 1 / 4) * Complex.cos ((Real.pi : ℂ) * x)) := by
+        ((x ^ (2 : ℕ) - 1 / 4) * Complex.cos ((Real.pi : ℂ) * x)) := by
   let y : ℂ := x - 1 / 2
   have hreflect := Complex.Gamma_mul_Gamma_one_sub y
   have h₁ : -x - 1 / 2 ≠ 0 := by
@@ -182,7 +182,7 @@ lemma d4ThetaCuspHawkingQuadraticDealiased_gamma_num_pair (x : ℂ)
   have hrec₁ := Complex.Gamma_add_one (-x - 1 / 2) h₁
   have hrec₂ := Complex.Gamma_add_one (-x + 1 / 2) h₂
   have hshift : Complex.Gamma (1 - y) =
-      (x ^ 2 - 1 / 4) * Complex.Gamma (-x - 1 / 2) := by
+      (x ^ (2 : ℕ) - 1 / 4) * Complex.Gamma (-x - 1 / 2) := by
     rw [show 1 - y = (-x + 1 / 2) + 1 by simp [y]; ring, hrec₂]
     rw [show -x + 1 / 2 = (-x - 1 / 2) + 1 by ring, hrec₁]
     ring
@@ -195,20 +195,20 @@ lemma d4ThetaCuspHawkingQuadraticDealiased_gamma_num_pair (x : ℂ)
     rw [Complex.sin_pi_div_two, Complex.cos_pi_div_two]
     ring
   rw [hsin] at hreflect
-  have hquad : x ^ 2 - 1 / 4 ≠ 0 := by
-    rw [show x ^ 2 - 1 / 4 = (x - 1 / 2) * (x + 1 / 2) by ring]
+  have hquad : x ^ (2 : ℕ) - 1 / 4 ≠ 0 := by
+    rw [show x ^ (2 : ℕ) - 1 / 4 = (x - 1 / 2) * (x + 1 / 2) by ring]
     exact mul_ne_zero hxmh hxph
   have hreflect' :
       Complex.Gamma (x - 1 / 2) *
-          ((x ^ 2 - 1 / 4) * Complex.Gamma (-x - 1 / 2)) =
+          ((x ^ (2 : ℕ) - 1 / 4) * Complex.Gamma (-x - 1 / 2)) =
         -(Real.pi : ℂ) / Complex.cos ((Real.pi : ℂ) * x) := by
     simpa [y, div_neg, neg_div] using hreflect
   apply (eq_div_iff (mul_ne_zero hquad hcos)).2
   calc
     (Complex.Gamma (x - 1 / 2) * Complex.Gamma (-x - 1 / 2)) *
-          ((x ^ 2 - 1 / 4) * Complex.cos ((Real.pi : ℂ) * x)) =
+          ((x ^ (2 : ℕ) - 1 / 4) * Complex.cos ((Real.pi : ℂ) * x)) =
         (Complex.Gamma (x - 1 / 2) *
-          ((x ^ 2 - 1 / 4) * Complex.Gamma (-x - 1 / 2))) *
+          ((x ^ (2 : ℕ) - 1 / 4) * Complex.Gamma (-x - 1 / 2))) *
             Complex.cos ((Real.pi : ℂ) * x) := by ring
     _ = (-(Real.pi : ℂ) / Complex.cos ((Real.pi : ℂ) * x)) *
           Complex.cos ((Real.pi : ℂ) * x) := by rw [hreflect']
@@ -229,11 +229,11 @@ lemma d4ThetaCuspHawkingQuadraticDealiased_gamma_ratio_pair (x : ℂ)
     (hcos : Complex.cos ((Real.pi : ℂ) * x) ≠ 0) :
     (Complex.Gamma (x - 1 / 2) * (Complex.Gamma x)⁻¹) *
         (Complex.Gamma (-x - 1 / 2) * (Complex.Gamma (-x))⁻¹) =
-      x * Complex.tan ((Real.pi : ℂ) * x) / (x ^ 2 - 1 / 4) := by
+      x * Complex.tan ((Real.pi : ℂ) * x) / (x ^ (2 : ℕ) - 1 / 4) := by
   have hden := d4ThetaCuspHawkingQuadraticDealiased_gamma_den_pair x hx hsin
   have hnum := d4ThetaCuspHawkingQuadraticDealiased_gamma_num_pair x hxmh hxph hcos
-  have hquad : x ^ 2 - 1 / 4 ≠ 0 := by
-    rw [show x ^ 2 - 1 / 4 = (x - 1 / 2) * (x + 1 / 2) by ring]
+  have hquad : x ^ (2 : ℕ) - 1 / 4 ≠ 0 := by
+    rw [show x ^ (2 : ℕ) - 1 / 4 = (x - 1 / 2) * (x + 1 / 2) by ring]
     exact mul_ne_zero hxmh hxph
   calc
     (Complex.Gamma (x - 1 / 2) * (Complex.Gamma x)⁻¹) *
@@ -242,7 +242,7 @@ lemma d4ThetaCuspHawkingQuadraticDealiased_gamma_ratio_pair (x : ℂ)
           ((Complex.Gamma x)⁻¹ * (Complex.Gamma (-x))⁻¹) := by ring
     _ = (Complex.Gamma (x - 1 / 2) * Complex.Gamma (-x - 1 / 2)) *
           (Complex.Gamma x * Complex.Gamma (-x))⁻¹ := by rw [mul_inv]
-    _ = x * Complex.tan ((Real.pi : ℂ) * x) / (x ^ 2 - 1 / 4) := by
+    _ = x * Complex.tan ((Real.pi : ℂ) * x) / (x ^ (2 : ℕ) - 1 / 4) := by
       rw [hnum, hden, Complex.tan_eq_sin_div_cos]
       field_simp [hx, hsin, hcos, hquad, Real.pi_ne_zero]
 
@@ -255,7 +255,7 @@ theorem d4ThetaCuspHawkingQuadraticDealiasedBoundaryJostDerivativeMinus_mul_neg 
     d4ThetaCuspHawkingQuadraticDealiasedBoundaryJostDerivativeMinus z * d4ThetaCuspHawkingQuadraticDealiasedBoundaryJostDerivativeMinus (-z) =
       (-(Real.pi : ℂ) / 4) *
         ((Complex.I * z) * Complex.tan ((Real.pi : ℂ) * (Complex.I * z)) /
-          ((Complex.I * z) ^ 2 - 1 / 4)) := by
+          ((Complex.I * z) ^ (2 : ℕ) - 1 / 4)) := by
   rw [d4ThetaCuspHawkingQuadraticDealiasedBoundaryJostDerivativeMinus_eq, d4ThetaCuspHawkingQuadraticDealiasedBoundaryJostDerivativeMinus_eq]
   have hneg : Complex.I * (-z) = -(Complex.I * z) := by ring
   rw [hneg]
@@ -273,12 +273,12 @@ theorem d4ThetaCuspHawkingQuadraticDealiasedBoundaryJostDerivativeMinus_mul_neg 
         (Complex.Gamma (1 / 2) * Complex.Gamma (1 / 2)) *
           ((-(Complex.I / 2)) * (-(Complex.I / 2))) := by ring
     _ = ((Complex.I * z) * Complex.tan ((Real.pi : ℂ) * (Complex.I * z)) /
-          ((Complex.I * z) ^ 2 - 1 / 4)) * (Real.pi : ℂ) *
+          ((Complex.I * z) ^ (2 : ℕ) - 1 / 4)) * (Real.pi : ℂ) *
             ((-(Complex.I / 2)) * (-(Complex.I / 2))) := by
       rw [hratio, d4ThetaCuspHawkingQuadraticDealiased_gamma_half_sq]
     _ = (-(Real.pi : ℂ) / 4) *
         ((Complex.I * z) * Complex.tan ((Real.pi : ℂ) * (Complex.I * z)) /
-          ((Complex.I * z) ^ 2 - 1 / 4)) := by
+          ((Complex.I * z) ^ (2 : ℕ) - 1 / 4)) := by
       rw [show (-(Complex.I / 2)) * (-(Complex.I / 2)) = (-1 / 4 : ℂ) by
         ring_nf
         rw [Complex.I_sq]
@@ -397,7 +397,7 @@ lemma d4ThetaCuspHawkingQuadraticDealiased_cot_re_pos {a b : ℝ} (ha0 : 0 < a) 
         (-Real.sin (Real.pi * a) * Real.sinh (Real.pi * b)) *
           (Real.cos (Real.pi * a) * Real.sinh (Real.pi * b)) =
       Real.sin (Real.pi * a) * Real.cos (Real.pi * a) *
-        (Real.cosh (Real.pi * b) ^ 2 - Real.sinh (Real.pi * b) ^ 2) := by ring
+        (Real.cosh (Real.pi * b) ^ (2 : ℕ) - Real.sinh (Real.pi * b) ^ (2 : ℕ)) := by ring
     _ = Real.sin (Real.pi * a) * Real.cos (Real.pi * a) := by rw [hhyp]; ring
     _ > 0 := mul_pos hsinA hcosA
 
@@ -439,31 +439,31 @@ lemma d4ThetaCuspHawkingQuadraticDealiased_cot_im_neg {a b : ℝ} (ha0 : 0 < a) 
         Real.cos (Real.pi * a) * Real.cosh (Real.pi * b) *
           (Real.cos (Real.pi * a) * Real.sinh (Real.pi * b)) =
       -(Real.sinh (Real.pi * b) * Real.cosh (Real.pi * b)) *
-        (Real.sin (Real.pi * a) ^ 2 + Real.cos (Real.pi * a) ^ 2) := by ring
+        (Real.sin (Real.pi * a) ^ (2 : ℕ) + Real.cos (Real.pi * a) ^ (2 : ℕ)) := by ring
     _ = -(Real.sinh (Real.pi * b) * Real.cosh (Real.pi * b)) := by
       rw [htrig]
       ring
     _ < 0 := neg_neg_of_pos (mul_pos hsinhB hcoshB)
 
 def d4ThetaCuspHawkingQuadraticDealiasedRational (x : ℂ) : ℂ :=
-  (x ^ 2 - 1 / 4) / (x * (9 / 4 - x ^ 2) ^ 2)
+  (x ^ (2 : ℕ) - 1 / 4) / (x * (9 / 4 - x ^ (2 : ℕ)) ^ (2 : ℕ))
 
 def d4ThetaCuspHawkingQuadraticDealiasedRationalReNumerator (a b : ℝ) : ℝ :=
-  (-3) * (b ^ 2) ^ 3 - (5 * a ^ 2 + 23 / 4) * (b ^ 2) ^ 2 +
-    (1 / 4 - a ^ 2) * (a ^ 2 + 27 / 4) * b ^ 2 -
-      (1 / 4 - a ^ 2) * (9 / 4 - a ^ 2) ^ 2
+  (-3) * (b ^ (2 : ℕ)) ^ (3 : ℕ) - (5 * a ^ (2 : ℕ) + 23 / 4) * (b ^ (2 : ℕ)) ^ (2 : ℕ) +
+    (1 / 4 - a ^ (2 : ℕ)) * (a ^ (2 : ℕ) + 27 / 4) * b ^ (2 : ℕ) -
+      (1 / 4 - a ^ (2 : ℕ)) * (9 / 4 - a ^ (2 : ℕ)) ^ (2 : ℕ)
 
 def d4ThetaCuspHawkingQuadraticDealiasedRationalImNumerator (a b : ℝ) : ℝ :=
-  (b ^ 2) ^ 3 + (-a ^ 2 + 19 / 4) * (b ^ 2) ^ 2 +
-    (-5 * (a ^ 2) ^ 2 + 13 / 2 * a ^ 2 + 99 / 16) * b ^ 2 +
-      ((-3) * (a ^ 2) ^ 3 + 23 / 4 * (a ^ 2) ^ 2 +
-        27 / 16 * a ^ 2 + 81 / 64)
+  (b ^ (2 : ℕ)) ^ (3 : ℕ) + (-a ^ (2 : ℕ) + 19 / 4) * (b ^ (2 : ℕ)) ^ (2 : ℕ) +
+    (-5 * (a ^ (2 : ℕ)) ^ (2 : ℕ) + 13 / 2 * a ^ (2 : ℕ) + 99 / 16) * b ^ (2 : ℕ) +
+      ((-3) * (a ^ (2 : ℕ)) ^ (3 : ℕ) + 23 / 4 * (a ^ (2 : ℕ)) ^ (2 : ℕ) +
+        27 / 16 * a ^ (2 : ℕ) + 81 / 64)
 
 lemma d4ThetaCuspHawkingQuadraticDealiasedRational_re_eq (a b : ℝ) :
     (d4ThetaCuspHawkingQuadraticDealiasedRational ((a : ℂ) + (b : ℂ) * Complex.I)).re =
       (a * d4ThetaCuspHawkingQuadraticDealiasedRationalReNumerator a b) /
         Complex.normSq (((a : ℂ) + (b : ℂ) * Complex.I) *
-          (9 / 4 - ((a : ℂ) + (b : ℂ) * Complex.I) ^ 2) ^ 2) := by
+          (9 / 4 - ((a : ℂ) + (b : ℂ) * Complex.I) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   rw [d4ThetaCuspHawkingQuadraticDealiasedRational, Complex.div_re]
   rw [← add_div]
   congr 1
@@ -475,7 +475,7 @@ lemma d4ThetaCuspHawkingQuadraticDealiasedRational_im_eq (a b : ℝ) :
     (d4ThetaCuspHawkingQuadraticDealiasedRational ((a : ℂ) + (b : ℂ) * Complex.I)).im =
       (b * d4ThetaCuspHawkingQuadraticDealiasedRationalImNumerator a b) /
         Complex.normSq (((a : ℂ) + (b : ℂ) * Complex.I) *
-          (9 / 4 - ((a : ℂ) + (b : ℂ) * Complex.I) ^ 2) ^ 2) := by
+          (9 / 4 - ((a : ℂ) + (b : ℂ) * Complex.I) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   rw [d4ThetaCuspHawkingQuadraticDealiasedRational, Complex.div_im]
   rw [← sub_div]
   congr 1
@@ -486,104 +486,104 @@ lemma d4ThetaCuspHawkingQuadraticDealiasedRational_im_eq (a b : ℝ) :
 lemma d4ThetaCuspHawkingQuadraticDealiasedRationalReNumerator_neg {a b : ℝ}
     (ha0 : 0 < a) (hah : a < 1 / 2) (hb : 0 < b) :
     d4ThetaCuspHawkingQuadraticDealiasedRationalReNumerator a b < 0 := by
-  let u := a ^ 2
-  let v := b ^ 2
+  let u := a ^ (2 : ℕ)
+  let v := b ^ (2 : ℕ)
   have hu0 : 0 ≤ u := sq_nonneg a
   have huh : u < 1 / 4 := by nlinarith [sq_nonneg (a - 1 / 2)]
   have hv0 : 0 < v := sq_pos_of_pos hb
   let A := 5 * u + 23 / 4
   let B := (1 / 4 - u) * (u + 27 / 4)
-  let C := (1 / 4 - u) * (9 / 4 - u) ^ 2
+  let C := (1 / 4 - u) * (9 / 4 - u) ^ (2 : ℕ)
   have hA : 0 < A := by dsimp [A]; nlinarith
   have hd : 0 < 1 / 4 - u := by linarith
   have hup : 0 < u + 27 / 4 := by nlinarith
   have hupp : u + 27 / 4 < 7 := by linarith
-  have hsqUpper : (u + 27 / 4) ^ 2 < 49 := by
+  have hsqUpper : (u + 27 / 4) ^ (2 : ℕ) < 49 := by
     nlinarith [sq_nonneg ((u + 27 / 4) + 7)]
   have hfirst :
-      (1 / 4 - u) * (u + 27 / 4) ^ 2 < (49 : ℝ) / 4 := by
+      (1 / 4 - u) * (u + 27 / 4) ^ (2 : ℕ) < (49 : ℝ) / 4 := by
     nlinarith [mul_lt_mul_of_pos_right hsqUpper hd]
   have hbase : 2 < 9 / 4 - u := by linarith
-  have hbaseSq : 4 < (9 / 4 - u) ^ 2 := by
+  have hbaseSq : 4 < (9 / 4 - u) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ((9 / 4 - u) + 2)]
   have hAcoarse : 23 / 4 < A := by dsimp [A]; nlinarith
-  have hsecond : 92 < 4 * A * (9 / 4 - u) ^ 2 := by
-    have hsqPos : 0 < (9 / 4 - u) ^ 2 := by positivity
-    have hleft : (23 / 4 : ℝ) * (9 / 4 - u) ^ 2 <
-        A * (9 / 4 - u) ^ 2 := mul_lt_mul_of_pos_right hAcoarse hsqPos
+  have hsecond : 92 < 4 * A * (9 / 4 - u) ^ (2 : ℕ) := by
+    have hsqPos : 0 < (9 / 4 - u) ^ (2 : ℕ) := by positivity
+    have hleft : (23 / 4 : ℝ) * (9 / 4 - u) ^ (2 : ℕ) <
+        A * (9 / 4 - u) ^ (2 : ℕ) := mul_lt_mul_of_pos_right hAcoarse hsqPos
     have hright : (23 / 4 : ℝ) * 4 <
-        (23 / 4 : ℝ) * (9 / 4 - u) ^ 2 :=
+        (23 / 4 : ℝ) * (9 / 4 - u) ^ (2 : ℕ) :=
       mul_lt_mul_of_pos_left hbaseSq (by norm_num)
-    have hmul : (23 / 4 : ℝ) * 4 < A * (9 / 4 - u) ^ 2 :=
+    have hmul : (23 / 4 : ℝ) * 4 < A * (9 / 4 - u) ^ (2 : ℕ) :=
       lt_trans hright hleft
     nlinarith
-  have hdisc : B ^ 2 - 4 * A * C < 0 := by
+  have hdisc : B ^ (2 : ℕ) - 4 * A * C < 0 := by
     dsimp [B, C]
     have hfactor :
-        ((1 / 4 - u) * (u + 27 / 4)) ^ 2 =
-          (1 / 4 - u) ^ 2 * (u + 27 / 4) ^ 2 := by ring
+        ((1 / 4 - u) * (u + 27 / 4)) ^ (2 : ℕ) =
+          (1 / 4 - u) ^ (2 : ℕ) * (u + 27 / 4) ^ (2 : ℕ) := by ring
     rw [hfactor]
     have hbracket :
-        (1 / 4 - u) * (u + 27 / 4) ^ 2 -
-          4 * A * (9 / 4 - u) ^ 2 < 0 := by
+        (1 / 4 - u) * (u + 27 / 4) ^ (2 : ℕ) -
+          4 * A * (9 / 4 - u) ^ (2 : ℕ) < 0 := by
       nlinarith
     calc
-      (1 / 4 - u) ^ 2 * (u + 27 / 4) ^ 2 -
-          4 * A * ((1 / 4 - u) * (9 / 4 - u) ^ 2) =
+      (1 / 4 - u) ^ (2 : ℕ) * (u + 27 / 4) ^ (2 : ℕ) -
+          4 * A * ((1 / 4 - u) * (9 / 4 - u) ^ (2 : ℕ)) =
         (1 / 4 - u) *
-          ((1 / 4 - u) * (u + 27 / 4) ^ 2 -
-            4 * A * (9 / 4 - u) ^ 2) := by ring
+          ((1 / 4 - u) * (u + 27 / 4) ^ (2 : ℕ) -
+            4 * A * (9 / 4 - u) ^ (2 : ℕ)) := by ring
       _ < 0 := mul_neg_of_pos_of_neg hd hbracket
-  have hquadratic : 0 < A * v ^ 2 - B * v + C := by
-    have hsquare : 0 ≤ (2 * A * v - B) ^ 2 := sq_nonneg _
+  have hquadratic : 0 < A * v ^ (2 : ℕ) - B * v + C := by
+    have hsquare : 0 ≤ (2 * A * v - B) ^ (2 : ℕ) := sq_nonneg _
     have hfour : 0 < 4 * A := by positivity
     have hid :
-        4 * A * (A * v ^ 2 - B * v + C) =
-          (2 * A * v - B) ^ 2 + (4 * A * C - B ^ 2) := by ring
+        4 * A * (A * v ^ (2 : ℕ) - B * v + C) =
+          (2 * A * v - B) ^ (2 : ℕ) + (4 * A * C - B ^ (2 : ℕ)) := by ring
     nlinarith
-  have hv3 : 0 < v ^ 3 := pow_pos hv0 3
-  change (-3) * v ^ 3 - A * v ^ 2 + B * v - C < 0
+  have hv3 : 0 < v ^ (3 : ℕ) := pow_pos hv0 3
+  change (-3) * v ^ (3 : ℕ) - A * v ^ (2 : ℕ) + B * v - C < 0
   nlinarith
 
 lemma d4ThetaCuspHawkingQuadraticDealiasedRationalImNumerator_pos {a b : ℝ}
     (ha0 : 0 < a) (hah : a < 1 / 2) (hb : 0 < b) :
     0 < d4ThetaCuspHawkingQuadraticDealiasedRationalImNumerator a b := by
-  let u := a ^ 2
-  let v := b ^ 2
+  let u := a ^ (2 : ℕ)
+  let v := b ^ (2 : ℕ)
   have hu0 : 0 ≤ u := sq_nonneg a
   have huh : u < 1 / 4 := by nlinarith [sq_nonneg (a - 1 / 2)]
   have huOne : u < 1 := by linarith
-  have huSqLe : u ^ 2 ≤ u := by
+  have huSqLe : u ^ (2 : ℕ) ≤ u := by
     nlinarith [mul_nonneg hu0 (sub_nonneg.mpr (le_of_lt huOne))]
-  have huCubeLe : u ^ 3 ≤ u := by
+  have huCubeLe : u ^ (3 : ℕ) ≤ u := by
     calc
-      u ^ 3 = u * u ^ 2 := by ring
+      u ^ (3 : ℕ) = u * u ^ (2 : ℕ) := by ring
       _ ≤ u * u := mul_le_mul_of_nonneg_left huSqLe hu0
-      _ = u ^ 2 := by ring
+      _ = u ^ (2 : ℕ) := by ring
       _ ≤ u := huSqLe
   have hv0 : 0 < v := sq_pos_of_pos hb
   have hcoef0 :
-      0 < (-3) * u ^ 3 + 23 / 4 * u ^ 2 + 27 / 16 * u + 81 / 64 := by
+      0 < (-3) * u ^ (3 : ℕ) + 23 / 4 * u ^ (2 : ℕ) + 27 / 16 * u + 81 / 64 := by
     nlinarith
-  have hcoef1 : 0 < -5 * u ^ 2 + 13 / 2 * u + 99 / 16 := by
+  have hcoef1 : 0 < -5 * u ^ (2 : ℕ) + 13 / 2 * u + 99 / 16 := by
     nlinarith
   have hcoef2 : 0 < -u + 19 / 4 := by linarith
-  change 0 < v ^ 3 + (-u + 19 / 4) * v ^ 2 +
-    (-5 * u ^ 2 + 13 / 2 * u + 99 / 16) * v +
-      ((-3) * u ^ 3 + 23 / 4 * u ^ 2 + 27 / 16 * u + 81 / 64)
+  change 0 < v ^ (3 : ℕ) + (-u + 19 / 4) * v ^ (2 : ℕ) +
+    (-5 * u ^ (2 : ℕ) + 13 / 2 * u + 99 / 16) * v +
+      ((-3) * u ^ (3 : ℕ) + 23 / 4 * u ^ (2 : ℕ) + 27 / 16 * u + 81 / 64)
   positivity
 
 private lemma d4ThetaCuspHawkingQuadraticDealiasedRational_den_ne_zero {a b : ℝ}
     (ha0 : 0 < a) (hb : 0 < b) :
     ((a : ℂ) + (b : ℂ) * Complex.I) *
-        (9 / 4 - ((a : ℂ) + (b : ℂ) * Complex.I) ^ 2) ^ 2 ≠ 0 := by
+        (9 / 4 - ((a : ℂ) + (b : ℂ) * Complex.I) ^ (2 : ℕ)) ^ (2 : ℕ) ≠ 0 := by
   let x : ℂ := (a : ℂ) + (b : ℂ) * Complex.I
   have hx : x ≠ 0 := by
     intro h
     have him := congrArg Complex.im h
     simp [x] at him
     linarith
-  have hq : (9 / 4 : ℂ) - x ^ 2 ≠ 0 := by
+  have hq : (9 / 4 : ℂ) - x ^ (2 : ℕ) ≠ 0 := by
     intro h
     have him := congrArg Complex.im h
     simp [x, pow_two, Complex.mul_im] at him
@@ -616,7 +616,7 @@ def d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue (z : ℂ) : ℂ :=
   d4FundamentalQNMCrossBranchAIMEResidue 1 (d4ThetaCuspHawkingQuadraticDealiasedLift z)
 
 lemma d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue_eq (z : ℂ) :
-    d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue z = (-12 / (9 / 4 + z ^ 2)) / d4ThetaCuspHawkingQuadraticDealiasedBoundaryJostDerivativeMinus z := by
+    d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue z = (-12 / (9 / 4 + z ^ (2 : ℕ))) / d4ThetaCuspHawkingQuadraticDealiasedBoundaryJostDerivativeMinus z := by
   rw [d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue, d4FundamentalQNMCrossBranchAIMEResidue,
     d4FundamentalQNMCrossBranchAIMENumerator,
     d4FundamentalQNMCrossBranchChiralMassJetNumerator_eq, d4ThetaCuspHawkingQuadraticDealiased_q]
@@ -635,14 +635,14 @@ theorem d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue_mul_neg (z : ℂ)
     d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue z * d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue (-z) =
       (-(576 : ℂ) / (Real.pi : ℂ)) *
         d4ThetaCuspHawkingQuadraticDealiasedPolarizationKernel (Complex.I * z) := by
-  have hquad : (Complex.I * z) ^ 2 - 1 / 4 ≠ 0 := by
-    rw [show (Complex.I * z) ^ 2 - 1 / 4 =
+  have hquad : (Complex.I * z) ^ (2 : ℕ) - 1 / 4 ≠ 0 := by
+    rw [show (Complex.I * z) ^ (2 : ℕ) - 1 / 4 =
       (Complex.I * z - 1 / 2) * (Complex.I * z + 1 / 2) by ring]
     exact mul_ne_zero hxmh hxph
   have hDprod := d4ThetaCuspHawkingQuadraticDealiasedBoundaryJostDerivativeMinus_mul_neg z hx hxmh hxph hsin hcos
   rw [d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue_eq, d4ThetaCuspHawkingQuadraticDealiasedAIMEResidue_eq]
-  rw [show (-z) ^ 2 = z ^ 2 by ring]
-  rw [show (9 / 4 : ℂ) + z ^ 2 = 9 / 4 - (Complex.I * z) ^ 2 by
+  rw [show (-z) ^ (2 : ℕ) = z ^ (2 : ℕ) by ring]
+  rw [show (9 / 4 : ℂ) + z ^ (2 : ℕ) = 9 / 4 - (Complex.I * z) ^ (2 : ℕ) by
     rw [mul_pow, Complex.I_sq]
     ring]
   rw [div_mul_div_comm, hDprod]
@@ -666,9 +666,9 @@ theorem d4ThetaCuspHawkingQuadraticDealiasedPolarizationKernel_im_pos {a b : ℝ
 
 lemma d4ThetaCuspHawkingQuadraticDealiasedRational_neg (x : ℂ) : d4ThetaCuspHawkingQuadraticDealiasedRational (-x) = -d4ThetaCuspHawkingQuadraticDealiasedRational x := by
   unfold d4ThetaCuspHawkingQuadraticDealiasedRational
-  rw [show (-x) ^ 2 = x ^ 2 by ring,
-    show (-x) * (9 / 4 - x ^ 2) ^ 2 =
-      -(x * (9 / 4 - x ^ 2) ^ 2) by ring,
+  rw [show (-x) ^ (2 : ℕ) = x ^ (2 : ℕ) by ring,
+    show (-x) * (9 / 4 - x ^ (2 : ℕ)) ^ (2 : ℕ) =
+      -(x * (9 / 4 - x ^ (2 : ℕ)) ^ (2 : ℕ)) by ring,
     div_neg]
 
 lemma d4ThetaCuspHawkingQuadraticDealiased_cot_neg (x : ℂ) : Complex.cot (-x) = -Complex.cot x := by

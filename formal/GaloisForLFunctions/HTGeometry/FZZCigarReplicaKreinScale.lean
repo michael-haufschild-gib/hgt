@@ -117,9 +117,9 @@ physical FZZ cigar level. -/
 def FZZReplicaLevelUniversalKreinSign (ω : ℂ) : Prop :=
   ∀ a : ℝ, 0 < a → a < 1 / 2 →
     ((Complex.sinh
-      (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ 2).im = 0 ∧
+      (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).im = 0 ∧
     ((Complex.sinh
-      (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ 2).re ≤ 0
+      (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).re ≤ 0
 
 /-- **Finite-level FZZ selection.**  Level-universal passive sign is exactly imaginary-axis
 frequency.  The scale completeness comes from fractional-winding backreaction, not temperature
@@ -147,9 +147,9 @@ theorem fixed_fzzReplicaLevel_has_offAxis_krein_blind_point
     ∃ ω : ℂ,
       ω.re ≠ 0 ∧
         ((Complex.sinh
-          (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ 2).im = 0 ∧
+          (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).im = 0 ∧
         ((Complex.sinh
-          (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ 2).re < 0 := by
+          (((replicaLinearizedDressingScale a : ℝ) : ℂ) * ω / 2)) ^ (2 : ℕ)).re < 0 := by
   exact GaloisForLFunctions.fixed_hawking_temperature_has_offAxis_krein_blind_point
     (replicaLinearizedDressingScale a)
     (replicaLinearizedDressingScale_pos ha0 haHalf)

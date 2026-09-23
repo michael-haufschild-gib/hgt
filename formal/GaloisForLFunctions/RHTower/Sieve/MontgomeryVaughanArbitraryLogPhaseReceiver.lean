@@ -4,9 +4,9 @@ import Mathlib.Analysis.SpecialFunctions.Pow.NthRootLemmas
 /-!
 # Arbitrary-centre Route T receiver
 
-The original receiver was centered exactly at `B^200`.  A zeta decomposition needs the same
+The original receiver was centered exactly at `B^(200 : ℕ)`.  A zeta decomposition needs the same
 estimate at arbitrary integer locations.  The widened Taylor centre cone and the floor 200th root
-reduce that problem to one fixed factor `2^200`.
+reduce that problem to one fixed factor `2^(200 : ℕ)`.
 -/
 
 namespace RHTower.Sieve

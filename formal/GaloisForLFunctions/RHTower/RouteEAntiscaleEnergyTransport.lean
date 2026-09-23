@@ -19,7 +19,7 @@ which is the exponential moment `∫_0^∞ e^{-av}(π/a - πv)² dv = π²/a³` 
 variable.  Writing `θ_p = t log p - π` the antiscale phase is exactly `(A - B v_p)/log Y` with
 `A = π/a`, `B = π + π/(a log Y)` and `v_p = log Y - log p`, so the prime window law evaluates the
 quadratic model, and the uniform bound `|2 - 2cos θ - θ²| ≤ 5θ⁴` makes the trigonometric
-remainder `O(Y^a/(log Y)^5)`.
+remainder `O(Y^a/(log Y)^(5 : ℕ))`.
 -/
 
 open Filter Topology Set

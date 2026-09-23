@@ -87,7 +87,7 @@ theorem finiteProductCliffordGate_mul_conjTranspose
 
 /-- **The conjugation phase is a sign.** -/
 theorem productCliffordPhase_sq (g : σ → QubitTwoDesign.BinaryOctahedral)
-    (P : σ → Option (Fin 3)) : (productCliffordPhase g P) ^ 2 = 1 := by
+    (P : σ → Option (Fin 3)) : (productCliffordPhase g P) ^ (2 : ℕ) = 1 := by
   classical
   set C := finiteProductCliffordGate g with hC
   have hCC : Cᴴ * C = 1 := finiteProductCliffordGate_unitary g
@@ -104,7 +104,7 @@ theorem productCliffordPhase_sq (g : σ → QubitTwoDesign.BinaryOctahedral)
   rw [hconj] at hsq
   have hrhs : (productCliffordPhase g P • finitePauliMatrix (productCliffordRelabel g P)) *
       (productCliffordPhase g P • finitePauliMatrix (productCliffordRelabel g P)) =
-      ((productCliffordPhase g P) ^ 2) • (1 : Matrix (FiniteQubitConfiguration σ)
+      ((productCliffordPhase g P) ^ (2 : ℕ)) • (1 : Matrix (FiniteQubitConfiguration σ)
         (FiniteQubitConfiguration σ) ℂ) := by
     rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, finitePauliMatrix_mul_self, sq]
   rw [hrhs] at hsq
@@ -118,7 +118,7 @@ theorem productCliffordPhase_eq_one_or_neg_one (g : σ → QubitTwoDesign.Binary
     productCliffordPhase g P = 1 ∨ productCliffordPhase g P = -1 := by
   have h := productCliffordPhase_sq g P
   have hfac : (productCliffordPhase g P - 1) * (productCliffordPhase g P + 1) = 0 := by
-    have : (productCliffordPhase g P) ^ 2 - 1 = 0 := by rw [h]; ring
+    have : (productCliffordPhase g P) ^ (2 : ℕ) - 1 = 0 := by rw [h]; ring
     linear_combination this
   rcases mul_eq_zero.mp hfac with h1 | h1
   · exact Or.inl (by linear_combination h1)

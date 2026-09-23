@@ -9,10 +9,10 @@ namespace RHTower
 /-- Pointwise coefficient whose Dirichlet-weighted sum is the factorization curvature. -/
 def deletionFactorizationCurvatureCoefficient
     (p q r n : ℕ) : ℤ :=
-  blockDeletionCoefficient p n * blockDeletionCoefficient q n ^ 2 +
-    blockDeletionCoefficient (p * q) n * blockDeletionCoefficient r n ^ 2 -
-    blockDeletionCoefficient q n * blockDeletionCoefficient r n ^ 2 -
-    blockDeletionCoefficient p n * blockDeletionCoefficient (q * r) n ^ 2
+  blockDeletionCoefficient p n * blockDeletionCoefficient q n ^ (2 : ℕ) +
+    blockDeletionCoefficient (p * q) n * blockDeletionCoefficient r n ^ (2 : ℕ) -
+    blockDeletionCoefficient q n * blockDeletionCoefficient r n ^ (2 : ℕ) -
+    blockDeletionCoefficient p n * blockDeletionCoefficient (q * r) n ^ (2 : ℕ)
 
 /-- The curvature coefficient is a linear combination of original deletion channels. -/
 theorem deletionFactorizationCurvatureCoefficient_normal_form
@@ -93,7 +93,7 @@ def deletionBalancedLinearObservation
 def deletionBalancedQuadraticObservation
     (L : ℕ) (f h : ℕ → ℝ) : ℝ :=
   ∑ n ∈ Finset.range L,
-    (f n * (1 + h n) ^ 2 + f n * (1 - h n) ^ 2)
+    (f n * (1 + h n) ^ (2 : ℕ) + f n * (1 - h n) ^ (2 : ℕ))
 
 theorem deletionBalancedLinearObservation_eq
     (L : ℕ) (f h : ℕ → ℝ) :
@@ -108,7 +108,7 @@ theorem deletionBalancedQuadraticObservation_eq
     (L : ℕ) (f h : ℕ → ℝ) :
     deletionBalancedQuadraticObservation L f h =
       2 * (∑ n ∈ Finset.range L, f n) +
-        2 * ∑ n ∈ Finset.range L, f n * h n ^ 2 := by
+        2 * ∑ n ∈ Finset.range L, f n * h n ^ (2 : ℕ) := by
   rw [deletionBalancedQuadraticObservation, Finset.mul_sum,
     Finset.mul_sum, ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
@@ -160,7 +160,7 @@ theorem deletionBalancedQuadraticObservation_curvature_two_three_five_ne_zero :
   have hpert :
       ∑ n ∈ Finset.range 30,
           (deletionFactorizationCurvatureCoefficient 2 3 5 (n + 1) : ℝ) *
-            deletionBalancedSinglePerturbation 2 n ^ 2 = 3 / 2 := by
+            deletionBalancedSinglePerturbation 2 n ^ (2 : ℕ) = 3 / 2 := by
     rw [Finset.sum_eq_single 2]
     · norm_num [deletionBalancedSinglePerturbation,
         deletionFactorizationCurvatureCoefficient, blockDeletionCoefficient]

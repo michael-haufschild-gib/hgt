@@ -29,21 +29,21 @@ variable {C κ : Type*} [Field C]
 /-! ### Jet shifts, jet translations, and prolonged ideals -/
 
 /-- Raising every jet order by `n`. -/
-def jetShift (C : Type*) [Field C] (κ : Type*) (n : ℕ) : JetPoly C κ →ₐ[C] JetPoly C κ :=
+def jetShift_differentialGenericPointHorizon (C : Type*) [Field C] (κ : Type*) (n : ℕ) : JetPoly C κ →ₐ[C] JetPoly C κ :=
   MvPolynomial.aeval fun p : κ × ℕ => (MvPolynomial.X (p.1, p.2 + n) : JetPoly C κ)
 
 @[simp] theorem jetShift_X (n : ℕ) (p : κ × ℕ) :
-    jetShift C κ n (MvPolynomial.X p) = MvPolynomial.X (p.1, p.2 + n) :=
+    jetShift_differentialGenericPointHorizon C κ n (MvPolynomial.X p) = MvPolynomial.X (p.1, p.2 + n) :=
   MvPolynomial.aeval_X _ _
 
 /-- Translation of the degree-zero jets by a constant vector. -/
-def jetTranslate (a : κ → C) : JetPoly C κ →ₐ[C] JetPoly C κ :=
+def jetTranslate_differentialGenericPointHorizon (a : κ → C) : JetPoly C κ →ₐ[C] JetPoly C κ :=
   MvPolynomial.aeval fun p : κ × ℕ =>
     if p.2 = 0 then (MvPolynomial.X p + MvPolynomial.C (a p.1) : JetPoly C κ)
       else MvPolynomial.X p
 
 @[simp] theorem jetTranslate_X (a : κ → C) (p : κ × ℕ) :
-    jetTranslate a (MvPolynomial.X p)
+    jetTranslate_differentialGenericPointHorizon a (MvPolynomial.X p)
       = if p.2 = 0 then MvPolynomial.X p + MvPolynomial.C (a p.1) else MvPolynomial.X p :=
   MvPolynomial.aeval_X _ _
 
@@ -73,25 +73,25 @@ theorem jetDeriv_mul (Q R : JetPoly C κ) :
 
 /-- Jet translation commutes with the jet advance. -/
 theorem jetTranslate_jetDeriv (a : κ → C) (Q : JetPoly C κ) :
-    jetTranslate a (jetDeriv C κ Q) = jetDeriv C κ (jetTranslate a Q) := by
+    jetTranslate_differentialGenericPointHorizon a (jetDeriv C κ Q) = jetDeriv C κ (jetTranslate_differentialGenericPointHorizon a Q) := by
   classical
   induction Q using MvPolynomial.induction_on with
   | C r => simp
   | add P Q hP hQ => simp [hP, hQ]
   | mul_X P p hP =>
-      have hkey : jetDeriv C κ (jetTranslate a (MvPolynomial.X p))
+      have hkey : jetDeriv C κ (jetTranslate_differentialGenericPointHorizon a (MvPolynomial.X p))
           = MvPolynomial.X (p.1, p.2 + 1) := by
         rw [jetTranslate_X]
         by_cases hp : p.2 = 0
         · rw [if_pos hp, map_add, jetDeriv_X, jetDeriv_C_eq_zero, add_zero]
         · rw [if_neg hp, jetDeriv_X]
-      have hkey2 : jetTranslate a (jetDeriv C κ (MvPolynomial.X p))
+      have hkey2 : jetTranslate_differentialGenericPointHorizon a (jetDeriv C κ (MvPolynomial.X p))
           = MvPolynomial.X (p.1, p.2 + 1) := by
         rw [jetDeriv_X, jetTranslate_X, if_neg (by omega : p.2 + 1 ≠ 0)]
       rw [jetDeriv_mul, map_add, map_mul, map_mul, hP, hkey2, map_mul, jetDeriv_mul, hkey]
 
 theorem jetTranslate_iterate_jetDeriv (a : κ → C) (j : ℕ) (Q : JetPoly C κ) :
-    jetTranslate a ((⇑(jetDeriv C κ))^[j] Q) = (⇑(jetDeriv C κ))^[j] (jetTranslate a Q) := by
+    jetTranslate_differentialGenericPointHorizon a ((⇑(jetDeriv C κ))^[j] Q) = (⇑(jetDeriv C κ))^[j] (jetTranslate_differentialGenericPointHorizon a Q) := by
   induction j generalizing Q with
   | zero => rfl
   | succ j ih =>
@@ -99,8 +99,8 @@ theorem jetTranslate_iterate_jetDeriv (a : κ → C) (j : ℕ) (Q : JetPoly C κ
 
 /-- Jet translation of a degree-zero image is the degree-zero image of the translate. -/
 theorem jetTranslate_jetBase (a : κ → C) (P : MvPolynomial κ C) :
-    jetTranslate a (jetBase C κ P) = jetBase C κ (mvPolynomialBaseTranslation a P) := by
-  have h : (jetTranslate a).comp (jetBase C κ)
+    jetTranslate_differentialGenericPointHorizon a (jetBase C κ P) = jetBase C κ (mvPolynomialBaseTranslation a P) := by
+  have h : (jetTranslate_differentialGenericPointHorizon a).comp (jetBase C κ)
       = (jetBase C κ).comp (mvPolynomialBaseTranslation a).toAlgHom := by
     refine MvPolynomial.algHom_ext fun i => ?_
     simp
@@ -110,8 +110,8 @@ theorem jetTranslate_jetBase (a : κ → C) (P : MvPolynomial κ C) :
 theorem jetTranslate_mem_prolongedIdeal {I : Ideal (MvPolynomial κ C)} {a : κ → C}
     (ha : ∀ P ∈ I, mvPolynomialBaseTranslation a P ∈ I)
     {Q : JetPoly C κ} (hQ : Q ∈ prolongedIdeal I) :
-    jetTranslate a Q ∈ prolongedIdeal I := by
-  have hmap : Ideal.map (jetTranslate a).toRingHom (prolongedIdeal I) ≤ prolongedIdeal I := by
+    jetTranslate_differentialGenericPointHorizon a Q ∈ prolongedIdeal I := by
+  have hmap : Ideal.map (jetTranslate_differentialGenericPointHorizon a).toRingHom (prolongedIdeal I) ≤ prolongedIdeal I := by
     rw [prolongedIdeal, Ideal.map_span, Ideal.span_le]
     rintro _ ⟨Q', ⟨P, hP, j, rfl⟩, rfl⟩
     refine Ideal.subset_span ⟨mvPolynomialBaseTranslation a P, ha P hP, j, ?_⟩
@@ -121,8 +121,8 @@ theorem jetTranslate_mem_prolongedIdeal {I : Ideal (MvPolynomial κ C)} {a : κ 
 
 /-- A positive jet shift lands in the part of the jet ring fixed by every jet translation. -/
 theorem jetTranslate_jetShift_succ (a : κ → C) (n : ℕ) (Q : JetPoly C κ) :
-    jetTranslate a (jetShift C κ (n + 1) Q) = jetShift C κ (n + 1) Q := by
-  have h : (jetTranslate a).comp (jetShift C κ (n + 1)) = jetShift C κ (n + 1) := by
+    jetTranslate_differentialGenericPointHorizon a (jetShift_differentialGenericPointHorizon C κ (n + 1) Q) = jetShift_differentialGenericPointHorizon C κ (n + 1) Q := by
+  have h : (jetTranslate_differentialGenericPointHorizon a).comp (jetShift_differentialGenericPointHorizon C κ (n + 1)) = jetShift_differentialGenericPointHorizon C κ (n + 1) := by
     refine MvPolynomial.algHom_ext fun p => ?_
     simp
   exact congrArg (fun f : JetPoly C κ →ₐ[C] JetPoly C κ => f Q) h
@@ -148,9 +148,9 @@ theorem jetFamilyEval_jetBase (z : κ → F) (P : MvPolynomial κ C) :
   exact congrArg (fun f : MvPolynomial κ C →ₐ[C] F => f P) h
 
 theorem jetFamilyEval_jetShift (z : κ → F) (n : ℕ) (Q : JetPoly C κ) :
-    jetFamilyEval (C := C) z (jetShift C κ n Q)
+    jetFamilyEval (C := C) z (jetShift_differentialGenericPointHorizon C κ n Q)
       = MvPolynomial.aeval (fun p : κ × ℕ => differentialJet (p.2 + n) (z p.1)) Q := by
-  have h : (jetFamilyEval (C := C) z).comp (jetShift C κ n)
+  have h : (jetFamilyEval (C := C) z).comp (jetShift_differentialGenericPointHorizon C κ n)
       = (MvPolynomial.aeval fun p : κ × ℕ => differentialJet (p.2 + n) (z p.1)) := by
     refine MvPolynomial.algHom_ext fun p => ?_
     simp
@@ -194,8 +194,8 @@ theorem translationSymmetry_eq_zero_of_mem_differentialAdjoin
   rw [differentialAdjoin, differentialJetSet_range_differentialJet] at hmem
   rw [IntermediateField.mem_adjoin_range_iff] at hmem
   obtain ⟨r, s, hrs⟩ := hmem
-  set A : F := jetFamilyEval (C := C) z (jetShift C κ (n + 1) r) with hA
-  set B : F := jetFamilyEval (C := C) z (jetShift C κ (n + 1) s) with hB
+  set A : F := jetFamilyEval (C := C) z (jetShift_differentialGenericPointHorizon C κ (n + 1) r) with hA
+  set B : F := jetFamilyEval (C := C) z (jetShift_differentialGenericPointHorizon C κ (n + 1) s) with hB
   rw [← jetFamilyEval_jetShift (C := C) z (n + 1) r, ← jetFamilyEval_jetShift (C := C) z (n + 1) s]
     at hrs
   rw [← hA, ← hB] at hrs
@@ -209,18 +209,18 @@ theorem translationSymmetry_eq_zero_of_mem_differentialAdjoin
     simpa [hz] using this
   · have hzB : z i * B = A := by rw [hrs]; field_simp
     set Q : JetPoly C κ :=
-      MvPolynomial.X (i, 0) * jetShift C κ (n + 1) s - jetShift C κ (n + 1) r with hQ
+      MvPolynomial.X (i, 0) * jetShift_differentialGenericPointHorizon C κ (n + 1) s - jetShift_differentialGenericPointHorizon C κ (n + 1) r with hQ
     have hQker : Q ∈ RingHom.ker (jetFamilyEval (C := C) z).toRingHom := by
       rw [RingHom.mem_ker]
       show jetFamilyEval (C := C) z Q = 0
       rw [hQ, map_sub, map_mul, jetFamilyEval_X]
       simpa [← hA, ← hB] using sub_eq_zero.2 hzB
     have hQprol : Q ∈ prolongedIdeal I := by rw [← hgen]; exact hQker
-    have htrans : jetTranslate a Q ∈ prolongedIdeal I :=
+    have htrans : jetTranslate_differentialGenericPointHorizon a Q ∈ prolongedIdeal I :=
       jetTranslate_mem_prolongedIdeal hstab hQprol
-    have htker : jetTranslate a Q ∈ RingHom.ker (jetFamilyEval (C := C) z).toRingHom := by
+    have htker : jetTranslate_differentialGenericPointHorizon a Q ∈ RingHom.ker (jetFamilyEval (C := C) z).toRingHom := by
       rw [hgen]; exact htrans
-    have hval : jetFamilyEval (C := C) z (jetTranslate a Q) = 0 := by
+    have hval : jetFamilyEval (C := C) z (jetTranslate_differentialGenericPointHorizon a Q) = 0 := by
       have := RingHom.mem_ker.1 htker
       exact this
     rw [hQ, map_sub, map_mul, jetTranslate_X, jetTranslate_jetShift_succ,

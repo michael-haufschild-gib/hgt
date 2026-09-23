@@ -34,7 +34,7 @@ theorem xiWardCornerBudget_violation_core_of_le_eight
   have hD : 0 < 2 * lam.re * (2 * lam.re) +
       2 * lam.im * (2 * lam.im) := by
     nlinarith [mul_pos ha ha, mul_self_nonneg lam.im]
-  have hN : 0 < lam.re ^ 2 + lam.im ^ 2 := by
+  have hN : 0 < lam.re ^ (2 : ℕ) + lam.im ^ (2 : ℕ) := by
     nlinarith [pow_pos ha 2, sq_nonneg lam.im]
   have h4re : ∀ z : ℂ, ((4 : ℂ) * z).re = 4 * z.re := fun z => by
     norm_num [Complex.mul_re]

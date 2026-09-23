@@ -143,7 +143,7 @@ theorem fourOdd_quadratic_intervalShiftSum_normSq_le_divisor [DecidableEq I]
     ∑ x : ZMod (fourOddModulus P),
       Complex.normSq (fourOddQuadraticIntervalShiftSum P M b x) ≤
       (∑ e ∈ (fourOddModulus P).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
   have hmodpos : 0 < fourOddModulus P :=
     Nat.pos_of_ne_zero (fourOddModulus_neZero P).out
   have hmod : fourOddModulus P - 1 + 1 = fourOddModulus P :=
@@ -152,7 +152,7 @@ theorem fourOdd_quadratic_intervalShiftSum_normSq_le_divisor [DecidableEq I]
     _ ≤ gcdKernelMoment (fourOddModulus P - 1) M b :=
       fourOdd_quadratic_intervalShiftSum_normSq_le_gcdKernel P M b
     _ ≤ (∑ e ∈ (fourOddModulus P - 1 + 1).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
       exact gcdKernelMoment_le (fourOddModulus P - 1) M b
     _ = _ := by rw [hmod]
 
@@ -162,21 +162,21 @@ theorem fourOdd_quadratic_intervalShiftSum_normSq_le_divisorCount [DecidableEq I
     ∑ x : ZMod (fourOddModulus P),
       Complex.normSq (fourOddQuadraticIntervalShiftSum P M b x) ≤
       ((M : ℝ) * ((fourOddModulus P).divisors.card : ℝ) +
-        (fourOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 := by
+        (fourOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) := by
   have hmodpos : 0 < fourOddModulus P :=
     Nat.pos_of_ne_zero (fourOddModulus_neZero P).out
   have hmod : fourOddModulus P - 1 + 1 = fourOddModulus P :=
     Nat.sub_add_cancel hmodpos
   have hmodR : ((fourOddModulus P - 1 : ℕ) : ℝ) + 1 = (fourOddModulus P : ℝ) := by
     exact_mod_cast hmod
-  have henergy_nonneg : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+  have henergy_nonneg : 0 ≤ ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun k hk => sq_nonneg ‖b k‖
   calc
     _ ≤ (∑ e ∈ (fourOddModulus P).divisors, (Nat.totient e : ℝ) *
-        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2 :=
+        ((M : ℝ) / (e : ℝ) + 1)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ) :=
       fourOdd_quadratic_intervalShiftSum_normSq_le_divisor P M b
     _ ≤ (((M : ℝ) * ((fourOddModulus P).divisors.card : ℝ) +
-        (fourOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ 2) := by
+        (fourOddModulus P : ℝ)) * ∑ k ∈ Finset.Icc 1 M, ‖b k‖ ^ (2 : ℕ)) := by
       exact mul_le_mul_of_nonneg_right
         (by
           simpa only [hmod, hmodR] using

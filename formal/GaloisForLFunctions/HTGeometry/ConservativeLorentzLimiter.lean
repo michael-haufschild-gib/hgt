@@ -98,7 +98,7 @@ theorem conservativeLorentzLimit_momentum_mean (p : FiniteProbabilityLaw ι)
 /-- A quantitative reserve survives at every node, including zero-weight nodes. -/
 theorem conservativeLorentzLimit_margin (p : FiniteProbabilityLaw ι)
     (a : ι → ℝ) (u : ι → E) (m : E) (r : ℝ) (i : ι) :
-    Real.exp r ^ 2 / (Real.exp r + lorentzLimiterBudget p a u) ≤
+    Real.exp r ^ (2 : ℕ) / (Real.exp r + lorentzLimiterBudget p a u) ≤
       lorentzAdmissibilityMargin (conservativeLorentzLimit p a u m r i).1
         (conservativeLorentzLimit p a u m r i).2 := by
   let θ := lorentzLimiterFactor p a u r
@@ -113,7 +113,7 @@ theorem conservativeLorentzLimit_margin (p : FiniteProbabilityLaw ι)
   have hden : Real.exp r + lorentzLimiterBudget p a u ≠ 0 :=
     (add_pos_of_pos_of_nonneg (Real.exp_pos r) (lorentzLimiterBudget_nonneg p a u)).ne'
   have hid : Real.exp r - θ * lorentzLimiterBudget p a u =
-      Real.exp r ^ 2 / (Real.exp r + lorentzLimiterBudget p a u) := by
+      Real.exp r ^ (2 : ℕ) / (Real.exp r + lorentzLimiterBudget p a u) := by
     dsimp [θ, lorentzLimiterFactor]
     field_simp [hden]
     ring
@@ -126,7 +126,7 @@ theorem conservativeLorentzLimit_margin (p : FiniteProbabilityLaw ι)
 theorem conservativeLorentzLimit_mem_strict (p : FiniteProbabilityLaw ι)
     (a : ι → ℝ) (u : ι → E) (m : E) (r : ℝ) (i : ι) :
     conservativeLorentzLimit p a u m r i ∈ strictLorentzAdmissibility := by
-  have hp : 0 < Real.exp r ^ 2 / (Real.exp r + lorentzLimiterBudget p a u) :=
+  have hp : 0 < Real.exp r ^ (2 : ℕ) / (Real.exp r + lorentzLimiterBudget p a u) :=
     div_pos (sq_pos_of_pos (Real.exp_pos r))
       (add_pos_of_pos_of_nonneg (Real.exp_pos r) (lorentzLimiterBudget_nonneg p a u))
   have h := conservativeLorentzLimit_margin p a u m r i

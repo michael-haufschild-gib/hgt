@@ -51,11 +51,11 @@ theorem norm_integral_logarithmicFourierMode_le {a b β t ω : ℝ}
       HasDerivAt (fun x : ℝ => ω*x+t*Real.log x) (ω+t/x) x := by
     convert! ((hasDerivAt_id x).const_mul ω).add ((Real.hasDerivAt_log (hx x hxx).ne').const_mul t) using 1; ring
   have hg' (x : ℝ) (hxx : x ∈ uIcc a b) :
-      HasDerivAt (fun x : ℝ => ω+t/x) (-t/x^2) x := by
+      HasDerivAt (fun x : ℝ => ω+t/x) (-t/x^(2 : ℕ)) x := by
     convert! (((hasDerivAt_id x).inv (hx x hxx).ne').const_mul t).const_add ω using 1
     simp only [id_eq]
     ring
-  have hg'' : ContinuousOn (fun x : ℝ => -t/x^2) (uIcc a b) :=
+  have hg'' : ContinuousOn (fun x : ℝ => -t/x^(2 : ℕ)) (uIcc a b) :=
     continuousOn_const.div (continuousOn_id.pow 2) (fun x hxx => pow_ne_zero _ (hx x hxx).ne')
   have hlb (x : ℝ) (hxx : x ∈ uIcc a b) : 5 ≤ ω+t/x := by
     have hax : a ≤ x := (uIcc_of_le hab ▸ hxx).1
@@ -135,7 +135,7 @@ theorem bernoulliModeWeight_zero : bernoulliModeWeight 0 = 0 := by
 theorem hasSum_bernoulliModeWeight_fourier (x : ℝ) :
     HasSum (fun k : ℤ => (bernoulliModeWeight k : ℂ) * fourier k (x : AddCircle (1:ℝ)))
       ((RHTower.bernoulliPeriodic x + 1/12 : ℝ) : ℂ) := by
-  have h := (RHTower.fourier_hasSum_bernoulli2 x).mul_left (1 / (4 * (Real.pi : ℂ)^2))
+  have h := (RHTower.fourier_hasSum_bernoulli2 x).mul_left (1 / (4 * (Real.pi : ℂ)^(2 : ℕ)))
   convert! h using 1
   · ext k
     dsimp only [bernoulliModeWeight]

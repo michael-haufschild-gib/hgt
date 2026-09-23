@@ -7,15 +7,15 @@ For a reflection-complete packet with common centered ordinate `x`, write its st
 representatives as `x + i y_j` and let `P_j` be the holomorphic envelope square.  The first three
 reflection-paired affine moments are
 
-`2 A`, `2 (x A - S)`, and `2 (x^2 A - U - 2 x S)`,
+`2 A`, `2 (x A - S)`, and `2 (x^(2 : ℕ) A - U - 2 x S)`,
 
 where `A = sum m_j Re P_j`, `S = sum m_j Im P_j y_j`, and
-`U = sum m_j Re P_j y_j^2`.  Their central two-by-two determinant is exactly
+`U = sum m_j Re P_j y_j^(2 : ℕ)`.  Their central two-by-two determinant is exactly
 
-`-4 (A U + S^2)`.
+`-4 (A U + S^(2 : ℕ))`.
 
 Thus envelope phase cannot cancel transverse charge inside one height fibre: it contributes the
-additional nonpositive square `-4 S^2`.  No RH or zero-separation hypothesis is used.
+additional nonpositive square `-4 S^(2 : ℕ)`.  No RH or zero-separation hypothesis is used.
 -/
 
 open scoped BigOperators
@@ -38,7 +38,7 @@ def holomorphicAffineFibrePhaseSkew {ι : Type*}
 /-- Positive transverse second moment when all weights and envelope real parts are nonnegative. -/
 def holomorphicAffineFibreTransverseMoment {ι : Type*}
     (s : Finset ι) (y m : ι → ℝ) (P : ι → ℂ) : ℝ :=
-  ∑ i ∈ s, m i * (P i).re * y i ^ 2
+  ∑ i ∈ s, m i * (P i).re * y i ^ (2 : ℕ)
 
 /-- Reflection-paired zeroth affine moment. -/
 def holomorphicAffineFibreMomentZero {ι : Type*}
@@ -54,7 +54,7 @@ def holomorphicAffineFibreMomentOne {ι : Type*}
 /-- Reflection-paired second affine moment on a common ordinate `x`. -/
 def holomorphicAffineFibreMomentTwo {ι : Type*}
     (s : Finset ι) (x : ℝ) (y m : ι → ℝ) (P : ι → ℂ) : ℝ :=
-  2 * (x ^ 2 * holomorphicAffineFibreMass s m P -
+  2 * (x ^ (2 : ℕ) * holomorphicAffineFibreMass s m P -
     holomorphicAffineFibreTransverseMoment s y m P -
     2 * x * holomorphicAffineFibrePhaseSkew s y m P)
 
@@ -63,7 +63,7 @@ def holomorphicAffineFibreCentralDet {ι : Type*}
     (s : Finset ι) (x : ℝ) (y m : ι → ℝ) (P : ι → ℂ) : ℝ :=
   holomorphicAffineFibreMomentZero s m P *
       holomorphicAffineFibreMomentTwo s x y m P -
-    holomorphicAffineFibreMomentOne s x y m P ^ 2
+    holomorphicAffineFibreMomentOne s x y m P ^ (2 : ℕ)
 
 /-- Atomic real-part identity behind the first reflection-paired affine moment. -/
 theorem re_envelope_mul_verticalPoint (P : ℂ) (x y : ℝ) :
@@ -72,8 +72,8 @@ theorem re_envelope_mul_verticalPoint (P : ℂ) (x y : ℝ) :
 
 /-- Atomic real-part identity behind the second reflection-paired affine moment. -/
 theorem re_envelope_mul_verticalPoint_sq (P : ℂ) (x y : ℝ) :
-    (P * ((x : ℂ) + (y : ℂ) * I) ^ 2).re =
-      P.re * (x ^ 2 - y ^ 2) - 2 * P.im * x * y := by
+    (P * ((x : ℂ) + (y : ℂ) * I) ^ (2 : ℕ)).re =
+      P.re * (x ^ (2 : ℕ) - y ^ (2 : ℕ)) - 2 * P.im * x * y := by
   simp [Complex.mul_re, Complex.mul_im, pow_two]
   ring
 
@@ -84,7 +84,7 @@ theorem holomorphicAffineFibreCentralDet_eq
     holomorphicAffineFibreCentralDet s x y m P =
       -4 * (holomorphicAffineFibreMass s m P *
           holomorphicAffineFibreTransverseMoment s y m P +
-        holomorphicAffineFibrePhaseSkew s y m P ^ 2) := by
+        holomorphicAffineFibrePhaseSkew s y m P ^ (2 : ℕ)) := by
   rw [holomorphicAffineFibreCentralDet, holomorphicAffineFibreMomentZero,
     holomorphicAffineFibreMomentOne, holomorphicAffineFibreMomentTwo]
   ring

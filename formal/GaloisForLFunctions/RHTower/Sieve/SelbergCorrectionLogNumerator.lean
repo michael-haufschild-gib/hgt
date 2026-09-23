@@ -122,7 +122,7 @@ def localMoebiusPairFactor (p : ℕ) (i j : ℕ) : ℝ :=
 
 /-- The differentiated local numerator `(log p / p²)·XY(X + Y − 2XY)`. -/
 def selbergCorrectionLogNumerator (p : ℕ) (i j : ℕ) : ℝ :=
-  (Real.log (p : ℝ) / (p : ℝ) ^ 2) *
+  (Real.log (p : ℝ) / (p : ℝ) ^ (2 : ℕ)) *
     ((if i = 2 then (1 : ℝ) else 0) * (if j = 1 then (1 : ℝ) else 0) +
       (if i = 1 then (1 : ℝ) else 0) * (if j = 2 then (1 : ℝ) else 0) -
       2 * ((if i = 2 then (1 : ℝ) else 0) * (if j = 2 then (1 : ℝ) else 0)))
@@ -134,7 +134,7 @@ theorem additiveBivariateConvolution_selbergCorrectionLogLocal_moebius
         (localMoebiusPairFactor p) i j =
       selbergCorrectionLogNumerator p i j := by
   have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
-  set c : ℝ := Real.log (p : ℝ) * (1 / (p : ℝ) ^ 2) with hc
+  set c : ℝ := Real.log (p : ℝ) * (1 / (p : ℝ) ^ (2 : ℕ)) with hc
   rw [additiveBivariateConvolution]
   have hterm : ∀ a ∈ Finset.range (i + 1),
       (∑ b ∈ Finset.range (j + 1),

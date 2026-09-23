@@ -6,8 +6,8 @@ import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianCompletedGreenD
 /-!
 # Adaptive prime-normal source--divisor horizon intertwiner
 
-The stable adaptive source lives in prime-labelled `ell^1`, whereas the
-completed Xi divisor is Hilbertian `ell^2`; the accompanying no-go theorem
+The stable adaptive source lives in prime-labelled `ell^(1 : ℕ)`, whereas the
+completed Xi divisor is Hilbertian `ell^(2 : ℕ)`; the accompanying no-go theorem
 proves that no bounded comparison between them can retain a positive lower
 modulus on the whole infinite source.  This file constructs the exact
 positive replacement forced by that obstruction.
@@ -17,7 +17,7 @@ honest prime-normal convergence chamber.  Coefficient augmentation of the
 exact arithmetic codiagonal is then literally the complete prime-normal
 residual multiplier.  Every prime column has local modulus at least `3/4`
 and at most `5/4`.  Multiplication by the fixed reflected-Gaussian horizon
-grade makes all columns square-summable, and `ell^1` column synthesis gives
+grade makes all columns square-summable, and `ell^(1 : ℕ)` column synthesis gives
 a bounded global prime--divisor transform with an exact pointwise formula.
 
 Every individual prime label survives this transform, but infinite-source
@@ -30,7 +30,7 @@ divisor Hilbert carrier, with lower modulus `3/4`, upper modulus `5/4`, and
 inverse bound `4/3`.  Thus the correct full-source compatible carrier before
 polarization is non-Hilbertian, while every fixed-label divisor comparison
 is exact; the remaining hard theorem must force the explicit Green class to
-vanish rather than postulate a stable identification of the full `ell^1`
+vanish rather than postulate a stable identification of the full `ell^(1 : ℕ)`
 range with a Hilbert quotient.
 -/
 
@@ -42,13 +42,13 @@ namespace RHTower
 
 noncomputable section
 
-/-- Absolute summability of an `ell^1` coefficient packet. -/
+/-- Absolute summability of an `ell^(1 : ℕ)` coefficient packet. -/
 private theorem adaptiveArithmeticL1_summable_norm
     (x : AdaptiveArithmeticL1) : Summable (fun n : ℕ => ‖x n‖) := by
   simpa using
     (lp.hasSum_norm (by norm_num : 0 < (1 : ENNReal).toReal) x).summable
 
-/-- The coefficient codiagonal on arithmetic `ell^1`. -/
+/-- The coefficient codiagonal on arithmetic `ell^(1 : ℕ)`. -/
 def adaptiveArithmeticL1Augmentation : AdaptiveArithmeticL1 →L[ℂ] ℂ :=
   let L : AdaptiveArithmeticL1 →ₗ[ℂ] ℂ :=
     { toFun := fun x => ∑' n : ℕ, x n
@@ -485,7 +485,7 @@ theorem adaptivePrimeNormalHorizonColumn_ne_zero
     (congrArg (fun x : XiDivisorL2 => x q) hzero)
 
 /-- Global joint prime--divisor transform: exact adaptive residual columns,
-assembled in `ell^1` and admitted into divisor `ell^2` by one fixed source grade. -/
+assembled in `ell^(1 : ℕ)` and admitted into divisor `ell^(2 : ℕ)` by one fixed source grade. -/
 def adaptivePrimeNormalHorizonIntertwiner :
     AdaptivePrimeL1 →L[ℂ] XiDivisorL2 :=
   lpOneColumnSynthesis adaptivePrimeNormalHorizonColumn

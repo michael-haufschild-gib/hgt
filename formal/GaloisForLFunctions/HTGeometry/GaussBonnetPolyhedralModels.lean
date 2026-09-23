@@ -63,25 +63,25 @@ theorem equilateralPoint_dist_01 : dist (equilateralPoint 0) (equilateralPoint 1
   simp [equilateralPoint, Complex.dist_eq]
 
 theorem equilateralPoint_dist_12 : dist (equilateralPoint 1) (equilateralPoint 2) = 1 := by
-  have h3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+  have h3 : Real.sqrt 3 ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   have e1 : equilateralPoint 1 = (1 : ℂ) := rfl
   have e2 : equilateralPoint 2 = (⟨1 / 2, Real.sqrt 3 / 2⟩ : ℂ) := rfl
   rw [e1, e2, Complex.dist_eq, Complex.norm_eq_sqrt_sq_add_sq]
-  rw [show ((1 : ℂ) - ⟨1 / 2, Real.sqrt 3 / 2⟩).re ^ 2
-      + ((1 : ℂ) - ⟨1 / 2, Real.sqrt 3 / 2⟩).im ^ 2
-      = (1 / 2 : ℝ) ^ 2 + (Real.sqrt 3 / 2) ^ 2 from by simp; ring]
-  rw [show ((1 : ℝ) / 2) ^ 2 + (Real.sqrt 3 / 2) ^ 2 = 1 / 4 + Real.sqrt 3 ^ 2 / 4 from by ring, h3]
+  rw [show ((1 : ℂ) - ⟨1 / 2, Real.sqrt 3 / 2⟩).re ^ (2 : ℕ)
+      + ((1 : ℂ) - ⟨1 / 2, Real.sqrt 3 / 2⟩).im ^ (2 : ℕ)
+      = (1 / 2 : ℝ) ^ (2 : ℕ) + (Real.sqrt 3 / 2) ^ (2 : ℕ) from by simp; ring]
+  rw [show ((1 : ℝ) / 2) ^ (2 : ℕ) + (Real.sqrt 3 / 2) ^ (2 : ℕ) = 1 / 4 + Real.sqrt 3 ^ (2 : ℕ) / 4 from by ring, h3]
   norm_num
 
 theorem equilateralPoint_dist_20 : dist (equilateralPoint 2) (equilateralPoint 0) = 1 := by
-  have h3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+  have h3 : Real.sqrt 3 ^ (2 : ℕ) = 3 := Real.sq_sqrt (by norm_num)
   have e0 : equilateralPoint 0 = (0 : ℂ) := rfl
   have e2 : equilateralPoint 2 = (⟨1 / 2, Real.sqrt 3 / 2⟩ : ℂ) := rfl
   rw [e0, e2, Complex.dist_eq, Complex.norm_eq_sqrt_sq_add_sq]
-  rw [show ((⟨1 / 2, Real.sqrt 3 / 2⟩ : ℂ) - 0).re ^ 2
-      + ((⟨1 / 2, Real.sqrt 3 / 2⟩ : ℂ) - 0).im ^ 2
-      = (1 / 2 : ℝ) ^ 2 + (Real.sqrt 3 / 2) ^ 2 from by simp]
-  rw [show ((1 : ℝ) / 2) ^ 2 + (Real.sqrt 3 / 2) ^ 2 = 1 / 4 + Real.sqrt 3 ^ 2 / 4 from by ring, h3]
+  rw [show ((⟨1 / 2, Real.sqrt 3 / 2⟩ : ℂ) - 0).re ^ (2 : ℕ)
+      + ((⟨1 / 2, Real.sqrt 3 / 2⟩ : ℂ) - 0).im ^ (2 : ℕ)
+      = (1 / 2 : ℝ) ^ (2 : ℕ) + (Real.sqrt 3 / 2) ^ (2 : ℕ) from by simp]
+  rw [show ((1 : ℝ) / 2) ^ (2 : ℕ) + (Real.sqrt 3 / 2) ^ (2 : ℕ) = 1 / 4 + Real.sqrt 3 ^ (2 : ℕ) / 4 from by ring, h3]
   norm_num
 
 /-- The regular tetrahedron as a closed triangulated surface: four faces, each an isometric copy of

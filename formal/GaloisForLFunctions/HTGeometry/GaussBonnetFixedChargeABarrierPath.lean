@@ -96,7 +96,7 @@ theorem egbFixedChargeABarrierPathScale_mapsTo (τ φ : ℝ) :
 
 theorem egbFixedChargeAMeanDenominator_gt_four (τ φ : ℝ) : 4 < egbFixedChargeAMeanDenominator τ φ := by
   have hd := egbCoexistenceASymmetricRatio_bounds τ
-  have hx : egbCoexistenceASymmetricRatio τ ^ 2 < 1 := by nlinarith [hd.1, hd.2]
+  have hx : egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) < 1 := by nlinarith [hd.1, hd.2]
   have hprod : 0 ≤ 4 * egbFixedChargeAMeanCoupling τ φ * egbCoexistenceALogKernel τ :=
     mul_nonneg (mul_nonneg (by norm_num) (egbFixedChargeAMeanCoupling_nonneg τ φ)) (egbCoexistenceALogKernel_pos τ).le
   unfold egbFixedChargeAMeanDenominator

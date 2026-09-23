@@ -178,7 +178,7 @@ theorem windInt_eq_on_preconnected (ℓ : C1Loop) {S : Set ℂ} (hS : IsPreconne
     have hδle : ∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), δ ≤ dist z₀ (ℓ.γ θ) :=
       fun θ hθ => hmin hθ
     have hM1 : (0:ℝ) < M + 1 := by linarith
-    set ε : ℝ := min (δ / 2) (δ ^ 2 / (4 * (M + 1))) with hεdef
+    set ε : ℝ := min (δ / 2) (δ ^ (2 : ℕ) / (4 * (M + 1))) with hεdef
     have hεpos : 0 < ε := lt_min (by positivity) (by positivity)
     refine ⟨ε, hεpos, ?_⟩
     intro z hzA hdist
@@ -233,7 +233,7 @@ theorem windInt_eq_on_preconnected (ℓ : C1Loop) {S : Set ℂ} (hS : IsPreconne
         ≤ ((ε * (M + 1)) / ((δ / 2) * δ)) * |2 * Real.pi - 0| := by
       rw [hdiffint]
       exact intervalIntegral.norm_integral_le_of_norm_le_const hbound
-    have hεbound : ε ≤ δ ^ 2 / (4 * (M + 1)) := min_le_right _ _
+    have hεbound : ε ≤ δ ^ (2 : ℕ) / (4 * (M + 1)) := min_le_right _ _
     have hfinal : ‖windInt ℓ z - windInt ℓ z₀‖ < 2 * Real.pi := by
       have habs : |2 * Real.pi - 0| = 2 * Real.pi := by
         rw [sub_zero]; exact abs_of_pos (by positivity)
@@ -241,8 +241,8 @@ theorem windInt_eq_on_preconnected (ℓ : C1Loop) {S : Set ℂ} (hS : IsPreconne
       have hstep : (ε * (M + 1)) / ((δ / 2) * δ) ≤ 1 / 2 := by
         rw [div_le_div_iff₀ (by positivity) (by norm_num : (0:ℝ) < 2)]
         have := mul_le_mul_of_nonneg_right hεbound (le_of_lt hM1)
-        calc ε * (M + 1) * 2 ≤ (δ ^ 2 / (4 * (M + 1))) * (M + 1) * 2 := by nlinarith
-          _ = δ ^ 2 / 2 := by field_simp; ring
+        calc ε * (M + 1) * 2 ≤ (δ ^ (2 : ℕ) / (4 * (M + 1))) * (M + 1) * 2 := by nlinarith
+          _ = δ ^ (2 : ℕ) / 2 := by field_simp; ring
           _ = 1 * ((δ / 2) * δ) := by ring
       have := le_trans hnorm (by nlinarith [Real.pi_pos] :
         ((ε * (M + 1)) / ((δ / 2) * δ)) * (2 * Real.pi) ≤ (1/2) * (2 * Real.pi))
@@ -294,7 +294,7 @@ noncomputable def C1Loop.quadImage (ℓ : C1Loop) (c : ℂ) : C1Loop where
   deriv := by
     intro θ hθ
     have h1 : HasDerivAt (quadratic c) (2 * ℓ.γ θ) (ℓ.γ θ) := by
-      have h0 : HasDerivAt (fun x : ℂ => x ^ 2 + c) (2 * ℓ.γ θ) (ℓ.γ θ) := by
+      have h0 : HasDerivAt (fun x : ℂ => x ^ (2 : ℕ) + c) (2 * ℓ.γ θ) (ℓ.γ θ) := by
         simpa using (hasDerivAt_pow 2 (ℓ.γ θ)).add_const c
       exact h0
     exact h1.comp θ (ℓ.deriv θ hθ)

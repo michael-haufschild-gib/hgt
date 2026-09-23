@@ -76,8 +76,8 @@ theorem gomesDilatonEnergyShift_profiles_iff (H K : ℝ[X]) (k : ℝ) :
     gomesDilatonEnergyShift H K k ↔
       ((∃ c : ℝ, H = K + C c) ∧ k = 0) ∨
         (∃ a b c d : ℝ, H = C (2 * a) * X + C b ∧
-          K = C (2 * c) * X + C d ∧ a ^ 2 = c ^ 2 + k) ∨
-            ∃ a b c : ℝ, H = C (k / 2) * X ^ 2 + C a * X + C b ∧ K = -H + C c := by
+          K = C (2 * c) * X + C d ∧ a ^ (2 : ℕ) = c ^ (2 : ℕ) + k) ∨
+            ∃ a b c : ℝ, H = C (k / 2) * X ^ (2 : ℕ) + C a * X + C b ∧ K = -H + C c := by
   rw [gomesDilatonEnergyShift_potential_iff, gomesDilatonPotential_shifted_profiles_iff]
 
 /-- Reversing the comparison reverses precisely the scalar energy offset. -/

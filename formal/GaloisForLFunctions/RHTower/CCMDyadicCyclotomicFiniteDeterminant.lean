@@ -101,7 +101,7 @@ def ccmLambertCanonicalRadical (ell i j : ℕ) : ℂ :=
   (Real.sqrt (ccmLambertRadicand ell i j) : ℂ)
 
 theorem ccmLambertCanonicalRadical_sq (ell i j : ℕ) :
-    (ccmLambertCanonicalRadical ell i j) ^ 2 = (ccmLambertRadicand ell i j : ℂ) := by
+    (ccmLambertCanonicalRadical ell i j) ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ) := by
   have hrad : 0 ≤ (ccmLambertRadicand ell i j : ℝ) := by
     exact_mod_cast mul_nonneg (ccmFiniteSemilocalSigma_nonneg ell i)
       (ccmFiniteSemilocalSigma_nonneg ell j)
@@ -118,7 +118,7 @@ def ccmLambertFiniteMatrix (N : ℕ) (rad : ℕ → ℕ → ℕ → ℂ) :
 
 theorem ccmLambertFiniteMatrix_coeff_literal_dyadicCyclotomic (N : ℕ)
     (rad : ℕ → ℕ → ℕ → ℂ)
-    (hrad : ∀ i j ell, (rad i j ell) ^ 2 = (ccmLambertRadicand ell i j : ℂ))
+    (hrad : ∀ i j ell, (rad i j ell) ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ))
     (i j : Fin N) (n : ℕ) :
     CCMDyadicCyclotomicInteger ((ccmLambertFiniteMatrix N rad i j).coeff n) := by
   unfold ccmLambertFiniteMatrix
@@ -131,7 +131,7 @@ theorem ccmLambertFiniteMatrix_coeff_literal_dyadicCyclotomic (N : ℕ)
 coefficientwise `ℤ^cyc[1/2]` containment. -/
 theorem ccmLambertFiniteMatrix_det_coeff_literal_dyadicCyclotomic (N : ℕ)
     (rad : ℕ → ℕ → ℕ → ℂ)
-    (hrad : ∀ i j ell, (rad i j ell) ^ 2 = (ccmLambertRadicand ell i j : ℂ)) (n : ℕ) :
+    (hrad : ∀ i j ell, (rad i j ell) ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ)) (n : ℕ) :
     CCMDyadicCyclotomicInteger ((ccmLambertFiniteMatrix N rad).det.coeff n) := by
   apply ccmDyadicCyclotomic_det_coeff
   intro i j k
@@ -212,7 +212,7 @@ finite CCM determinant coefficient which is represented in `ℚ(√2)` belongs
 to `ℤ[√2][1/2]`. -/
 theorem ccmSqrtTwoDyadicInteger_of_complex_eq_ccmLambertFiniteMatrix_det_coeff
     {N : ℕ} (rad : ℕ → ℕ → ℕ → ℂ)
-    (hrad : ∀ i j ell, (rad i j ell) ^ 2 = (ccmLambertRadicand ell i j : ℂ))
+    (hrad : ∀ i j ell, (rad i j ell) ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ))
     {x : SqrtTwoRat} {n : ℕ}
     (hx : ccmSqrtTwoRatComplexEmbedding x =
       (ccmLambertFiniteMatrix N rad).det.coeff n) :

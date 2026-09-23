@@ -28,9 +28,9 @@ theorem exists_norm_maskedBlockSum_sq_le_swap_explicit :
     ∃ C : ℝ, 0 < C ∧ ∀ {T r : ℝ} {A B L U V P Q : ℕ},
       0 < T → 0 < r → 1 ≤ A → 1 ≤ B → 1 ≤ L → 1 ≤ P → 2 ≤ Q →
       Q ≤ 2 * P → Q ≤ L + 1 → B - 1 ≤ L → P ≤ B → 8 * r ≤ (A : ℝ) →
-      4 * T * r * P ^ 2 ≤ 9 * Real.pi * A ^ 3 →
+      4 * T * r * P ^ (2 : ℕ) ≤ 9 * Real.pi * A ^ (3 : ℕ) →
       ‖maskedBlockSum T r A B L P Q (fun d => typeIILong U d)
-          (fun m => typeIIShort V m)‖ ^ 2
+          (fun m => typeIIShort V m)‖ ^ (2 : ℕ)
         ≤ typeIIShortEnergyEnvelope (effHigh B P)
           * ((((effHigh B P + 1 - effLow A Q : ℕ) : ℝ) * (C * (Q : ℝ) * Real.log L))
             + (C * (Q : ℝ) * Real.log L) * (2 * typeIISwapGapEnvelope T r A B P)) := by
@@ -54,7 +54,7 @@ theorem exists_norm_maskedBlockSum_sq_le_swap_explicit :
   have hgap := (sum_gapCorrBound_le' hT hr hP hM₁).trans
     (gapSumBound_le_swap hT hr hA hP hQ hQ2P hPB)
   have hshort' : (∑ m ∈ Finset.Ico (effLow A Q) (effHigh B P + 1),
-      |typeIIShort V m| ^ 2) ≤ typeIIShortEnergyEnvelope (effHigh B P) := by
+      |typeIIShort V m| ^ (2 : ℕ)) ≤ typeIIShortEnergyEnvelope (effHigh B P) := by
     simpa only [typeIIShortEnergyEnvelope] using hshort
   have hgap' : (∑ h ∈ Finset.Icc 1 (Q - 1 - P),
       gapCorrBound T r P (Q - 1) (effLow A Q) (effHigh B P + 1) h)
@@ -66,15 +66,15 @@ theorem exists_norm_maskedBlockSum_sq_le_swap_explicit :
       (effLow A Q) (effHigh B P + 1) h
   have hE0 := typeIIShortEnergyEnvelope_nonneg (effHigh B P)
   have hG0 := typeIISwapGapEnvelope_nonneg T r A B P
-  have hlong0 : 0 ≤ (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ 2) :=
+  have hlong0 : 0 ≤ (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ (2 : ℕ)) :=
     Finset.sum_nonneg fun d _ => sq_nonneg _
   have hlongEnv0 : 0 ≤ C * (Q : ℝ) * Real.log L := by
     have : (0 : ℝ) ≤ Real.log L := Real.log_nonneg (by exact_mod_cast hL)
     positivity
   have hbracket :
       ((((effHigh B P + 1 - effLow A Q : ℕ) : ℝ)
-          * (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ 2))
-        + (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ 2)
+          * (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ (2 : ℕ)))
+        + (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ (2 : ℕ))
           * (2 * ∑ h ∈ Finset.Icc 1 (Q - 1 - P),
             gapCorrBound T r P (Q - 1) (effLow A Q) (effHigh B P + 1) h))
         ≤ ((((effHigh B P + 1 - effLow A Q : ℕ) : ℝ) * (C * (Q : ℝ) * Real.log L))
@@ -82,8 +82,8 @@ theorem exists_norm_maskedBlockSum_sq_le_swap_explicit :
     gcongr
   have hraw0 : 0 ≤
       ((((effHigh B P + 1 - effLow A Q : ℕ) : ℝ)
-          * (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ 2))
-        + (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ 2)
+          * (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ (2 : ℕ)))
+        + (∑ d ∈ Finset.Ico P Q, |typeIILong U d| ^ (2 : ℕ))
           * (2 * ∑ h ∈ Finset.Icc 1 (Q - 1 - P),
             gapCorrBound T r P (Q - 1) (effLow A Q) (effHigh B P + 1) h)) := by
     positivity

@@ -49,7 +49,7 @@ theorem integrable_coshPow_mul_exp_neg_cosh {z : ℂ} (hz : 0 < z.re) {k : ℕ} 
   · filter_upwards with t
     rw [norm_coshPow_mul_exp]
     have h1 : (1 : ℝ) ≤ Real.cosh t := Real.one_le_cosh t
-    have hk2 : Real.cosh t ^ k ≤ Real.cosh t ^ 2 := pow_le_pow_right₀ h1 hk
+    have hk2 : Real.cosh t ^ k ≤ Real.cosh t ^ (2 : ℕ) := pow_le_pow_right₀ h1 hk
     exact mul_le_mul_of_nonneg_right hk2 (Real.exp_pos _).le
 
 /-- The Schläfli boundary term vanishes at infinity. -/
@@ -61,19 +61,19 @@ theorem tendsto_sinh_mul_exp_neg_cosh {z : ℂ} (hz : 0 < z.re) :
   refine squeeze_zero_norm' ?_ (Real.tendsto_exp_atBot.comp tendsto_neg_atTop_atBot)
   filter_upwards [eventually_ge_atTop (4 / X), eventually_ge_atTop (0 : ℝ)] with t ht ht0
   have hcoshle : Real.cosh t ≤ Real.exp t := cosh_le_exp ht0
-  have hcoshlow : 1 + t ^ 2 / 2 ≤ Real.cosh t := one_add_sq_div_two_le_cosh ht0
+  have hcoshlow : 1 + t ^ (2 : ℕ) / 2 ≤ Real.cosh t := one_add_sq_div_two_le_cosh ht0
   have hsinh : ‖Complex.sinh (t : ℂ)‖ ≤ Real.cosh t := by
     rw [← Complex.ofReal_sinh, Complex.norm_real, Real.norm_eq_abs]
-    have hsq : Real.sinh t ^ 2 ≤ Real.cosh t ^ 2 := by
+    have hsq : Real.sinh t ^ (2 : ℕ) ≤ Real.cosh t ^ (2 : ℕ) := by
       nlinarith [Real.cosh_sq_sub_sinh_sq t]
-    have h1 : Real.sqrt (Real.sinh t ^ 2) ≤ Real.sqrt (Real.cosh t ^ 2) := Real.sqrt_le_sqrt hsq
+    have h1 : Real.sqrt (Real.sinh t ^ (2 : ℕ)) ≤ Real.sqrt (Real.cosh t ^ (2 : ℕ)) := Real.sqrt_le_sqrt hsq
     rwa [Real.sqrt_sq_eq_abs, Real.sqrt_sq (Real.cosh_pos t).le] at h1
   have hexp : ‖Complex.exp (-z * Complex.cosh (t : ℂ))‖ = Real.exp (-(X * Real.cosh t)) := by
     rw [Complex.norm_exp, re_neg_mul_cosh]
   have hXt : 4 / X ≤ t := ht
   have hquad : Real.cosh t * Real.exp (-(X * Real.cosh t)) ≤ Real.exp (-t) := by
     have hstep : Real.cosh t * Real.exp (-(X * Real.cosh t))
-        ≤ Real.exp t * Real.exp (-(X * (1 + t ^ 2 / 2))) := by
+        ≤ Real.exp t * Real.exp (-(X * (1 + t ^ (2 : ℕ) / 2))) := by
       refine mul_le_mul hcoshle (Real.exp_le_exp.2 (by nlinarith)) (Real.exp_pos _).le
         (Real.exp_pos _).le
     refine hstep.trans ?_
@@ -92,7 +92,7 @@ theorem tendsto_sinh_mul_exp_neg_cosh {z : ℂ} (hz : 0 < z.re) :
 /-- The Schläfli boundary function and its derivative. -/
 theorem hasDerivAt_sinh_mul_exp_neg_cosh (z : ℂ) (t : ℝ) :
     HasDerivAt (fun t : ℝ => Complex.sinh (t : ℂ) * Complex.exp (-z * Complex.cosh (t : ℂ)))
-      ((Complex.cosh (t : ℂ) - z * Complex.sinh (t : ℂ) ^ 2)
+      ((Complex.cosh (t : ℂ) - z * Complex.sinh (t : ℂ) ^ (2 : ℕ))
         * Complex.exp (-z * Complex.cosh (t : ℂ))) t := by
   have hcosh : HasDerivAt (fun t : ℝ => Complex.cosh (t : ℂ)) (Complex.sinh (t : ℂ)) t :=
     (Complex.hasDerivAt_cosh _).comp_ofReal
@@ -101,7 +101,7 @@ theorem hasDerivAt_sinh_mul_exp_neg_cosh (z : ℂ) (t : ℝ) :
   have hexp : HasDerivAt (fun t : ℝ => Complex.exp (-z * Complex.cosh (t : ℂ)))
       (Complex.exp (-z * Complex.cosh (t : ℂ)) * (-z * Complex.sinh (t : ℂ))) t :=
     (hcosh.const_mul (-z)).cexp
-  have hval : (Complex.cosh (t : ℂ) - z * Complex.sinh (t : ℂ) ^ 2)
+  have hval : (Complex.cosh (t : ℂ) - z * Complex.sinh (t : ℂ) ^ (2 : ℕ))
         * Complex.exp (-z * Complex.cosh (t : ℂ))
       = Complex.cosh (t : ℂ) * Complex.exp (-z * Complex.cosh (t : ℂ))
         + Complex.sinh (t : ℂ)
@@ -120,16 +120,16 @@ theorem besselK1CDeriv_eq_neg {z : ℂ} (hz : 0 < z.re) :
     simp at hz
   set F : ℝ → ℂ := fun t => Complex.sinh (t : ℂ) * Complex.exp (-z * Complex.cosh (t : ℂ)) with hF
   set G : ℝ → ℂ := fun t =>
-      Complex.cosh (t : ℂ) ^ 1 * Complex.exp (-z * Complex.cosh (t : ℂ))
-        - (z * (Complex.cosh (t : ℂ) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ)))
-          - z * (Complex.cosh (t : ℂ) ^ 0 * Complex.exp (-z * Complex.cosh (t : ℂ)))) with hG
+      Complex.cosh (t : ℂ) ^ (1 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))
+        - (z * (Complex.cosh (t : ℂ) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))
+          - z * (Complex.cosh (t : ℂ) ^ (0 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))) with hG
   have hderiv : ∀ t : ℝ, HasDerivAt F (G t) t := by
     intro t
     have h := hasDerivAt_sinh_mul_exp_neg_cosh z t
-    have hsq : Complex.sinh (t : ℂ) ^ 2 = Complex.cosh (t : ℂ) ^ 2 - 1 := by
+    have hsq : Complex.sinh (t : ℂ) ^ (2 : ℕ) = Complex.cosh (t : ℂ) ^ (2 : ℕ) - 1 := by
       have hid := Complex.cosh_sq_sub_sinh_sq (t : ℂ)
       linear_combination -hid
-    have heq : (Complex.cosh (t : ℂ) - z * Complex.sinh (t : ℂ) ^ 2)
+    have heq : (Complex.cosh (t : ℂ) - z * Complex.sinh (t : ℂ) ^ (2 : ℕ))
         * Complex.exp (-z * Complex.cosh (t : ℂ)) = G t := by
       rw [hG]
       simp only [hsq, pow_one, pow_zero, one_mul]
@@ -152,48 +152,48 @@ theorem besselK1CDeriv_eq_neg {z : ℂ} (hz : 0 < z.re) :
   have hint2 := (integrable_coshPow_mul_exp_neg_cosh hz (k := 2) (by norm_num)).integrableOn
     (s := Ioi (0 : ℝ))
   have hAint : IntegrableOn (fun t : ℝ =>
-      z * (Complex.cosh (t : ℂ) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ)))) (Ioi 0) :=
+      z * (Complex.cosh (t : ℂ) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))) (Ioi 0) :=
     hint2.const_mul z
   have hBint : IntegrableOn (fun t : ℝ =>
-      z * (Complex.cosh (t : ℂ) ^ 0 * Complex.exp (-z * Complex.cosh (t : ℂ)))) (Ioi 0) :=
+      z * (Complex.cosh (t : ℂ) ^ (0 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))) (Ioi 0) :=
     hint0.const_mul z
   have e2 : (∫ t in Ioi (0 : ℝ),
-        (z * (Complex.cosh (t : ℂ) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ)))
-          - z * (Complex.cosh (t : ℂ) ^ 0 * Complex.exp (-z * Complex.cosh (t : ℂ)))))
+        (z * (Complex.cosh (t : ℂ) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))
+          - z * (Complex.cosh (t : ℂ) ^ (0 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))))
       = (∫ t in Ioi (0 : ℝ),
-            z * (Complex.cosh (t : ℂ) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ))))
+            z * (Complex.cosh (t : ℂ) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))))
         - ∫ t in Ioi (0 : ℝ),
-            z * (Complex.cosh (t : ℂ) ^ 0 * Complex.exp (-z * Complex.cosh (t : ℂ))) :=
+            z * (Complex.cosh (t : ℂ) ^ (0 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))) :=
     MeasureTheory.integral_sub hAint hBint
   have e1 : (∫ t in Ioi (0 : ℝ), G t)
       = (∫ t in Ioi (0 : ℝ),
-            Complex.cosh (t : ℂ) ^ 1 * Complex.exp (-z * Complex.cosh (t : ℂ)))
+            Complex.cosh (t : ℂ) ^ (1 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))
         - ∫ t in Ioi (0 : ℝ),
-            (z * (Complex.cosh (t : ℂ) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ)))
-              - z * (Complex.cosh (t : ℂ) ^ 0 * Complex.exp (-z * Complex.cosh (t : ℂ)))) :=
+            (z * (Complex.cosh (t : ℂ) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))
+              - z * (Complex.cosh (t : ℂ) ^ (0 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))) :=
     MeasureTheory.integral_sub hint1 (hAint.sub hBint)
   rw [e1, e2, MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul] at hzero
   have hK1 : (∫ t in Ioi (0 : ℝ),
-      Complex.cosh (t : ℂ) ^ 1 * Complex.exp (-z * Complex.cosh (t : ℂ))) = besselK1C z := by
+      Complex.cosh (t : ℂ) ^ (1 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))) = besselK1C z := by
     rw [besselK1C]
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-    show Complex.cosh (t : ℂ) ^ 1 * Complex.exp (-z * Complex.cosh (t : ℂ))
+    show Complex.cosh (t : ℂ) ^ (1 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))
       = Complex.exp (-z * Complex.cosh (t : ℂ)) * Complex.cosh (t : ℂ)
     rw [pow_one, mul_comm]
   have hK0 : (∫ t in Ioi (0 : ℝ),
-      Complex.cosh (t : ℂ) ^ 0 * Complex.exp (-z * Complex.cosh (t : ℂ))) = besselK0C z := by
+      Complex.cosh (t : ℂ) ^ (0 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))) = besselK0C z := by
     rw [besselK0C]
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-    show Complex.cosh (t : ℂ) ^ 0 * Complex.exp (-z * Complex.cosh (t : ℂ))
+    show Complex.cosh (t : ℂ) ^ (0 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))
       = Complex.exp (-z * Complex.cosh (t : ℂ))
     rw [pow_zero, one_mul]
   have hK2 : (∫ t in Ioi (0 : ℝ),
-      Complex.cosh (t : ℂ) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ)))
+      Complex.cosh (t : ℂ) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))
       = -besselK1CDeriv z := by
     rw [besselK1CDeriv, ← MeasureTheory.integral_neg]
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-    show Complex.cosh (t : ℂ) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ))
-      = -(-(Complex.cosh (t : ℂ)) ^ 2 * Complex.exp (-z * Complex.cosh (t : ℂ)))
+    show Complex.cosh (t : ℂ) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))
+      = -(-(Complex.cosh (t : ℂ)) ^ (2 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ)))
     ring
   rw [hK1, hK0, hK2] at hzero
   field_simp
@@ -204,7 +204,7 @@ theorem integrable_exp_neg_cosh {z : ℂ} (hz : 0 < z.re) :
     Integrable fun t : ℝ => Complex.exp (-z * Complex.cosh (t : ℂ)) := by
   have h := integrable_coshPow_mul_exp_neg_cosh hz (k := 0) (by norm_num)
   refine h.congr (Filter.Eventually.of_forall fun t => ?_)
-  show Complex.cosh (t : ℂ) ^ 0 * Complex.exp (-z * Complex.cosh (t : ℂ))
+  show Complex.cosh (t : ℂ) ^ (0 : ℕ) * Complex.exp (-z * Complex.cosh (t : ℂ))
     = Complex.exp (-z * Complex.cosh (t : ℂ))
   rw [pow_zero, one_mul]
 
@@ -218,7 +218,7 @@ theorem hasDerivAt_besselK0C {w : ℂ} (hw : 0 < w.re) :
   set F : ℂ → ℝ → ℂ := fun v t => Complex.exp (-v * Complex.cosh (t : ℂ)) with hF
   set F' : ℂ → ℝ → ℂ := fun v t =>
     -Complex.cosh (t : ℂ) * Complex.exp (-v * Complex.cosh (t : ℂ)) with hF'
-  set bound : ℝ → ℝ := fun t => Real.cosh t ^ 2 * Real.exp (-(X / 2 * Real.cosh t)) with hbound
+  set bound : ℝ → ℝ := fun t => Real.cosh t ^ (2 : ℕ) * Real.exp (-(X / 2 * Real.cosh t)) with hbound
   have hs : Metric.ball w (X / 2) ∈ nhds w := Metric.ball_mem_nhds w hX2
   have hmeas : ∀ᶠ v : ℂ in nhds w, AEStronglyMeasurable (F v) μ := by
     filter_upwards with v
@@ -249,7 +249,7 @@ theorem hasDerivAt_besselK0C {w : ℂ} (hw : 0 < w.re) :
     have hexp : Real.exp (-(v.re * Real.cosh t)) ≤ Real.exp (-(X / 2 * Real.cosh t)) := by
       refine Real.exp_le_exp.2 ?_
       nlinarith [Real.cosh_pos t]
-    have hcosh : Real.cosh t ≤ Real.cosh t ^ 2 := by
+    have hcosh : Real.cosh t ≤ Real.cosh t ^ (2 : ℕ) := by
       nlinarith [Real.one_le_cosh t]
     exact mul_le_mul hcosh hexp (Real.exp_pos _).le (by positivity)
   have hboundint : Integrable bound μ := by

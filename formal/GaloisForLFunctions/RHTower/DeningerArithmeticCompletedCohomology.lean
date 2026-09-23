@@ -6,9 +6,9 @@ import GaloisForLFunctions.RHTower.DeningerArithmeticOrientedHilbertHodge
 
 This module assembles a completed Xi-divisor comparison target in degrees zero, one, and two:
 
-* `H^0 = C`;
-* `H^1 = ell^2` completion of the source jet associated graded;
-* `H^2 = C(-1)`.
+* `H^(0 : ℕ) = C`;
+* `H^(1 : ℕ) = ell^(2 : ℕ)` completion of the source jet associated graded;
+* `H^(2 : ℕ) = C(-1)`.
 
 The endpoint cup pairing is multiplication followed by the degree-two trace.  The middle cup is
 the completed oriented alternating form.  Both Poincare pairings are nondegenerate, cup followed
@@ -39,7 +39,7 @@ abbrev DeningerArithmeticCompletedH2 := ℂ
 
 /--
 Source-derived Gelfand rigging of completed middle cohomology:
-finite compact-support jets inside `ell^2`, inside compact-open ordinary cohomology.
+finite compact-support jets inside `ell^(2 : ℕ)`, inside compact-open ordinary cohomology.
 -/
 def deningerArithmeticCompletedGelfandTriple :
     DeningerArithmeticGelfandTriple DeningerArithmeticCompletedH1 :=
@@ -89,7 +89,7 @@ theorem deningerArithmeticCompletedEndpointCup_nondegenerate :
   · intro b hb
     simpa using hb 1
 
-/-- Even endpoint Hodge identification between `H^0` and `H^2`. -/
+/-- Even endpoint Hodge identification between `H^(0 : ℕ)` and `H^(2 : ℕ)`. -/
 def deningerArithmeticCompletedEndpointHodge :
     ℂ ≃ₛₗ[starRingEnd ℂ] ℂ :=
   starLinearEquiv ℂ
@@ -123,12 +123,12 @@ theorem deningerArithmeticCompletedEndpointHodge_positive
   rw [deningerArithmeticCompletedEndpointCup_hodge]
   simpa using Complex.normSq_pos.mpr ha
 
-/-- Weight-zero Frobenius on completed `H^0`. -/
+/-- Weight-zero Frobenius on completed `H^(0 : ℕ)`. -/
 def deningerArithmeticCompletedThetaH0 :
     Module.End ℂ DeningerArithmeticCompletedH0 :=
   0
 
-/-- Weight-one Frobenius on completed `H^2 = C(-1)`. -/
+/-- Weight-one Frobenius on completed `H^(2 : ℕ) = C(-1)`. -/
 def deningerArithmeticCompletedThetaH2 :
     Module.End ℂ DeningerArithmeticCompletedH2 :=
   LinearMap.id
@@ -143,7 +143,7 @@ theorem deningerArithmeticCompletedThetaH2_apply (a : ℂ) :
     deningerArithmeticCompletedThetaH2 a = a :=
   rfl
 
-/-- Endpoint Frobenius is a weight-one derivation of the `H^0 x H^2` cup. -/
+/-- Endpoint Frobenius is a weight-one derivation of the `H^(0 : ℕ) x H^(2 : ℕ)` cup. -/
 theorem deningerArithmeticCompletedTheta_endpointCup (a b : ℂ) :
     deningerArithmeticCompletedEndpointCup
           (deningerArithmeticCompletedThetaH0 a) b +

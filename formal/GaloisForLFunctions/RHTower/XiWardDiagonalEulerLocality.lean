@@ -47,7 +47,7 @@ theorem re_xiWardDiagonalPullback_neg {sigma : ℝ} {rho : ℂ}
     simp [Complex.sub_re]
   have hpos : 0 < sigma - 1 := by linarith
   rw [xiWardDiagonalPullback, Complex.div_re, hden, hdenre]
-  have hnormSq : Complex.normSq ((sigma : ℂ) - 1) = (sigma - 1) ^ 2 := by
+  have hnormSq : Complex.normSq ((sigma : ℂ) - 1) = (sigma - 1) ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, hdenre, hden]
     ring
   rw [hnormSq]
@@ -55,26 +55,26 @@ theorem re_xiWardDiagonalPullback_neg {sigma : ℝ} {rho : ℂ}
     simp [Complex.sub_re]
   rw [hnum]
   have hnumneg : rho.re - sigma < 0 := by linarith
-  have h2 : (0 : ℝ) < (sigma - 1) ^ 2 := by positivity
+  have h2 : (0 : ℝ) < (sigma - 1) ^ (2 : ℕ) := by positivity
   rw [Complex.sub_im, Complex.ofReal_im, sub_zero]
-  have : (rho.re - sigma) * (sigma - 1) / (sigma - 1) ^ 2 < 0 := by
+  have : (rho.re - sigma) * (sigma - 1) / (sigma - 1) ^ (2 : ℕ) < 0 := by
     apply div_neg_of_neg_of_pos _ h2
     exact mul_neg_of_neg_of_pos hnumneg hpos
-  calc (rho.re - sigma) * (sigma - 1) / (sigma - 1) ^ 2 +
-        rho.im * 0 / (sigma - 1) ^ 2
-      = (rho.re - sigma) * (sigma - 1) / (sigma - 1) ^ 2 := by ring
+  calc (rho.re - sigma) * (sigma - 1) / (sigma - 1) ^ (2 : ℕ) +
+        rho.im * 0 / (sigma - 1) ^ (2 : ℕ)
+      = (rho.re - sigma) * (sigma - 1) / (sigma - 1) ^ (2 : ℕ) := by ring
     _ < 0 := this
 
 /-- Anti-causal Hardy self-energy of an amplitude-`m` pole at the diagonal
 pullback of `ρ`: the Cauchy self-energy at reflected distance. -/
 def xiWardDiagonalPoleEnergy (sigma : ℝ) (rho : ℂ) (m : ℝ) : ℝ :=
-  m ^ 2 * (sigma - 1) / (2 * (sigma - rho.re))
+  m ^ (2 : ℕ) * (sigma - 1) / (2 * (sigma - rho.re))
 
 theorem xiWardDiagonalPoleEnergy_eq_cauchySelfEnergy
     {sigma : ℝ} {rho : ℂ} (hsigma : 1 < sigma) (hrho : rho.re < 1)
     (m : ℝ) :
     xiWardDiagonalPoleEnergy sigma rho m =
-      m ^ 2 / (2 * |(xiWardDiagonalPullback sigma rho).re|) := by
+      m ^ (2 : ℕ) / (2 * |(xiWardDiagonalPullback sigma rho).re|) := by
   have hre : (xiWardDiagonalPullback sigma rho).re =
       (rho.re - sigma) / (sigma - 1) := by
     have hden : ((sigma : ℂ) - 1).im = 0 := by simp [Complex.sub_im]
@@ -104,12 +104,12 @@ theorem tendsto_xiWardDiagonalPoleEnergy_zero (rho : ℂ)
     (hrho : rho.re < 1) (m : ℝ) :
     Tendsto (fun sigma : ℝ => xiWardDiagonalPoleEnergy sigma rho m)
       (nhdsWithin 1 (Set.Ioi 1)) (nhds 0) := by
-  have hnum : Tendsto (fun sigma : ℝ => m ^ 2 * (sigma - 1))
+  have hnum : Tendsto (fun sigma : ℝ => m ^ (2 : ℕ) * (sigma - 1))
       (nhdsWithin 1 (Set.Ioi 1)) (nhds 0) := by
-    have h1 : Tendsto (fun sigma : ℝ => m ^ 2 * (sigma - 1))
-        (nhds 1) (nhds (m ^ 2 * (1 - 1))) :=
-      (tendsto_id.sub_const 1).const_mul (m ^ 2)
-    rw [show m ^ 2 * ((1 : ℝ) - 1) = 0 by ring] at h1
+    have h1 : Tendsto (fun sigma : ℝ => m ^ (2 : ℕ) * (sigma - 1))
+        (nhds 1) (nhds (m ^ (2 : ℕ) * (1 - 1))) :=
+      (tendsto_id.sub_const 1).const_mul (m ^ (2 : ℕ))
+    rw [show m ^ (2 : ℕ) * ((1 : ℝ) - 1) = 0 by ring] at h1
     exact h1.mono_left nhdsWithin_le_nhds
   have hden : Tendsto (fun sigma : ℝ => 2 * (sigma - rho.re))
       (nhdsWithin 1 (Set.Ioi 1)) (nhds (2 * (1 - rho.re))) := by

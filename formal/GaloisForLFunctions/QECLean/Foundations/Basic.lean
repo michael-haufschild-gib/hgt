@@ -42,9 +42,9 @@ variable {α : Type*} [Fintype α] [DecidableEq α]
 abbrev Vector (α : Type*) [Fintype α] [DecidableEq α] := α → ℂ
 
 noncomputable def norm (v : Vector α) :=
-  Real.sqrt (∑ i, ‖v i‖^2)
+  Real.sqrt (∑ i, ‖v i‖^(2 : ℕ))
 
-@[simp] lemma norm_def {v : Vector α} : norm v = Real.sqrt (∑ i, ‖v i‖^2) := rfl
+@[simp] lemma norm_def {v : Vector α} : norm v = Real.sqrt (∑ i, ‖v i‖^(2 : ℕ)) := rfl
 
 /-- The norm is always non-negative. -/
 lemma norm_nonneg {v : Vector α} : 0 ≤ norm v := by
@@ -54,11 +54,11 @@ lemma norm_nonneg {v : Vector α} : 0 ≤ norm v := by
 /-- The norm of the zero vector is zero. -/
 lemma norm_zero : norm (0 : Vector α) = 0 := by
   rw [norm_def]
-  have h_sum : (∑ i, ‖(0 : Vector α) i‖^2) = 0 := Finset.sum_eq_zero (fun i _ => by simp)
+  have h_sum : (∑ i, ‖(0 : Vector α) i‖^(2 : ℕ)) = 0 := Finset.sum_eq_zero (fun i _ => by simp)
   rw [h_sum, Real.sqrt_zero]
 
 /-- The square of the norm equals the sum of squared magnitudes. -/
-lemma norm_sq_def {v : Vector α} : (norm v)^2 = ∑ i, ‖v i‖^2 := by
+lemma norm_sq_def {v : Vector α} : (norm v)^(2 : ℕ) = ∑ i, ‖v i‖^(2 : ℕ) := by
   simp [norm]
   rw [Real.sq_sqrt]
   apply Finset.sum_nonneg
@@ -67,14 +67,14 @@ lemma norm_sq_def {v : Vector α} : (norm v)^2 = ∑ i, ‖v i‖^2 := by
 
 /-- Two vectors have equal norms if and only if their norm squares are equal. -/
 lemma norm_eq_iff_norm_sq_eq {v w : Vector α} :
-  norm v = norm w ↔ (norm v)^2 = (norm w)^2 := by
+  norm v = norm w ↔ (norm v)^(2 : ℕ) = (norm w)^(2 : ℕ) := by
   constructor
   · intro h; rw [h]
   · intro h
     have hvn : 0 ≤ norm v := norm_nonneg
     have hwn : 0 ≤ norm w := norm_nonneg
     rw [norm_sq_def, norm_sq_def] at h
-    have hsqrt_eq : Real.sqrt (∑ i, ‖v i‖^2) = Real.sqrt (∑ i, ‖w i‖^2) := by
+    have hsqrt_eq : Real.sqrt (∑ i, ‖v i‖^(2 : ℕ)) = Real.sqrt (∑ i, ‖w i‖^(2 : ℕ)) := by
       rw [h]
     rw [← norm_def, ← norm_def] at hsqrt_eq
     exact hsqrt_eq
@@ -82,7 +82,7 @@ lemma norm_eq_iff_norm_sq_eq {v w : Vector α} :
 /-- Scaling a vector by a scalar scales its norm by the magnitude of the scalar. -/
 lemma norm_smul (c : ℂ) (v : Vector α) : norm (c • v) = ‖c‖ * norm v := by
   simp [norm]
-  have h_factor : ∑ x : α, (‖c‖ * ‖v x‖)^2 = ‖c‖^2 * ∑ x : α, ‖v x‖^2 := by
+  have h_factor : ∑ x : α, (‖c‖ * ‖v x‖)^(2 : ℕ) = ‖c‖^(2 : ℕ) * ∑ x : α, ‖v x‖^(2 : ℕ) := by
     simp [mul_pow, Finset.mul_sum]
   rw [h_factor, Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity)]
 
@@ -225,8 +225,8 @@ open scoped BigOperators
 lemma norm_basisVec {α : Type*} [Fintype α] [DecidableEq α] (i0 : α) :
   norm (basisVec i0 : α → ℂ) = 1 := by
   classical
-  have hsum : (∑ x : α, ‖(basisVec i0 : α → ℂ) x‖ ^ 2 : ℝ) = 1 := by
-    have hstep : (∑ x : α, ‖(basisVec i0 : α → ℂ) x‖ ^ 2 : ℝ) =
+  have hsum : (∑ x : α, ‖(basisVec i0 : α → ℂ) x‖ ^ (2 : ℕ) : ℝ) = 1 := by
+    have hstep : (∑ x : α, ‖(basisVec i0 : α → ℂ) x‖ ^ (2 : ℕ) : ℝ) =
                  ∑ x : α, (if x = i0 then (1 : ℝ) else 0) := by
       refine Finset.sum_congr rfl ?_
       intro x _

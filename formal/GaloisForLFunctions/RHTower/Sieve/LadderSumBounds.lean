@@ -31,21 +31,21 @@ theorem sum_S1_le {B₀ : ℕ} {Q η hR : ℝ} (hQ0 : 0 < Q) (hη : 0 < η) {L :
         (pow_le_pow_right₀ hr1 (le_of_lt (Finset.mem_range.1 hj))) hQ0.le
       linarith
     have hid : (Q * (1 + η) ^ j) * Real.sqrt ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1)
-        = Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ 2) := by
-      rw [show (B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ 2
-          = (Q * (1 + η) ^ j) ^ 2 * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1) by field_simp,
+        = Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by
+      rw [show (B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ (2 : ℕ)
+          = (Q * (1 + η) ^ j) ^ (2 : ℕ) * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1) by field_simp,
         Real.sqrt_mul (by positivity), Real.sqrt_sq hbase.le]
     rw [hid]
-    have hsplit : Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ 2)
+    have hsplit : Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ (2 : ℕ))
         ≤ Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j)) + Q * (1 + η) ^ j := by
       have ha : (0 : ℝ) ≤ (B₀ : ℝ) * (Q * (1 + η) ^ j) := by positivity
       have hsa := Real.sq_sqrt ha
       have hsa0 := Real.sqrt_nonneg ((B₀ : ℝ) * (Q * (1 + η) ^ j))
-      have hkey : (B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ 2
-          ≤ (Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j)) + Q * (1 + η) ^ j) ^ 2 := by
+      have hkey : (B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ (2 : ℕ)
+          ≤ (Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j)) + Q * (1 + η) ^ j) ^ (2 : ℕ) := by
         nlinarith [hsa, hsa0, hbase.le]
-      calc Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ 2)
-          ≤ Real.sqrt ((Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j)) + Q * (1 + η) ^ j) ^ 2) :=
+      calc Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j) + (Q * (1 + η) ^ j) ^ (2 : ℕ))
+          ≤ Real.sqrt ((Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j)) + Q * (1 + η) ^ j) ^ (2 : ℕ)) :=
             Real.sqrt_le_sqrt hkey
         _ = Real.sqrt ((B₀ : ℝ) * (Q * (1 + η) ^ j)) + Q * (1 + η) ^ j :=
             Real.sqrt_sq (by positivity)
@@ -74,10 +74,10 @@ theorem sum_S2_le {B₀ : ℕ} {Q η hR : ℝ} (hQ0 : 0 < Q) (hη : 0 < η) {L :
           * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))
         ≤ (B₀ : ℝ) / (Q * (1 + η) ^ j) + 1 := by
       have hle2 : ((B₀ : ℝ) / (Q * (1 + η) ^ j)) * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1)
-          ≤ ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1) ^ 2 := by nlinarith [hN0]
+          ≤ ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1) ^ (2 : ℕ) := by nlinarith [hN0]
       calc Real.sqrt (((B₀ : ℝ) / (Q * (1 + η) ^ j))
               * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))
-          ≤ Real.sqrt (((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1) ^ 2) := Real.sqrt_le_sqrt hle2
+          ≤ Real.sqrt (((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1) ^ (2 : ℕ)) := Real.sqrt_le_sqrt hle2
         _ = (B₀ : ℝ) / (Q * (1 + η) ^ j) + 1 := Real.sqrt_sq (by linarith)
     have hmul := mul_le_mul_of_nonneg_left hsq hbase.le
     refine hmul.trans (le_of_eq ?_)
@@ -90,15 +90,15 @@ theorem sum_S2_le {B₀ : ℕ} {Q η hR : ℝ} (hQ0 : 0 < Q) (hη : 0 < η) {L :
 theorem ladderDefect_inner_le {B₀ : ℕ} {Q η hR : ℝ} (hQ0 : 0 < Q) (hη : 0 < η) (hη1 : η ≤ 1)
     {L : ℕ} (hle : Q * (1 + η) ^ L ≤ hR) :
     (∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
-        * ((1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5 + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2))
-      ≤ (L : ℝ) * ((1 + (B₀ : ℝ)) * η ^ 2 + 5) + 5 * hR
-        + (η * (B₀ : ℝ) + (1 + (B₀ : ℝ)) * η) * (2 / (Q * η)) + (B₀ : ℝ) * (2 / (Q ^ 2 * η)) := by
+        * ((1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5 + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)))
+      ≤ (L : ℝ) * ((1 + (B₀ : ℝ)) * η ^ (2 : ℕ) + 5) + 5 * hR
+        + (η * (B₀ : ℝ) + (1 + (B₀ : ℝ)) * η) * (2 / (Q * η)) + (B₀ : ℝ) * (2 / (Q ^ (2 : ℕ) * η)) := by
   have hterm : ∀ j ∈ Finset.range L,
       (Q * (1 + η) ^ j * η + 1)
-          * ((1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5 + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2)
-        = ((1 + (B₀ : ℝ)) * η ^ 2 + 5) + 5 * η * (Q * (1 + η) ^ j)
+          * ((1 + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5 + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ))
+        = ((1 + (B₀ : ℝ)) * η ^ (2 : ℕ) + 5) + 5 * η * (Q * (1 + η) ^ j)
           + (η * (B₀ : ℝ) + (1 + (B₀ : ℝ)) * η) * (1 / (Q * (1 + η) ^ j))
-          + (B₀ : ℝ) * (1 / (Q * (1 + η) ^ j) ^ 2) := by
+          + (B₀ : ℝ) * (1 / (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by
     intro j _
     have hbase : (0 : ℝ) < Q * (1 + η) ^ j := by positivity
     field_simp
@@ -110,8 +110,8 @@ theorem ladderDefect_inner_le {B₀ : ℕ} {Q η hR : ℝ} (hQ0 : 0 < Q) (hη : 
         (η * (B₀ : ℝ) + (1 + (B₀ : ℝ)) * η) * (1 / (Q * (1 + η) ^ j)))
       = (η * (B₀ : ℝ) + (1 + (B₀ : ℝ)) * η)
         * ∑ j ∈ Finset.range L, (1 / (Q * (1 + η) ^ j)) := by rw [Finset.mul_sum]
-  have e3 : (∑ j ∈ Finset.range L, (B₀ : ℝ) * (1 / (Q * (1 + η) ^ j) ^ 2))
-      = (B₀ : ℝ) * ∑ j ∈ Finset.range L, (1 / (Q * (1 + η) ^ j) ^ 2) := by rw [Finset.mul_sum]
+  have e3 : (∑ j ∈ Finset.range L, (B₀ : ℝ) * (1 / (Q * (1 + η) ^ j) ^ (2 : ℕ)))
+      = (B₀ : ℝ) * ∑ j ∈ Finset.range L, (1 / (Q * (1 + η) ^ j) ^ (2 : ℕ)) := by rw [Finset.mul_sum]
   rw [Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_add_distrib,
     Finset.sum_const, nsmul_eq_mul, Finset.card_range, e1, e2, e3]
   have h1 := sum_ladderEndpoint_le hQ0 hη hle

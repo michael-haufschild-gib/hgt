@@ -30,9 +30,9 @@ theorem historyLayer_predictableDrift_eq_zero_of_not_isPrimePow (l N : ℕ)
 /-- The literal EDQ layer energy is supported exactly on prime-power clock
 steps. No term in a surviving square has been separated or estimated. -/
 theorem predictableDrift_historyLayer_energy_eq_primePower_filter (N : ℕ) :
-    ∑ l ∈ range N, ‖historyLayer l (predictableDrift N)‖ ^ 2 =
+    ∑ l ∈ range N, ‖historyLayer l (predictableDrift N)‖ ^ (2 : ℕ) =
       ∑ l ∈ (range N).filter (fun l => IsPrimePow (l + 1)),
-        ‖historyLayer l (predictableDrift N)‖ ^ 2 := by
+        ‖historyLayer l (predictableDrift N)‖ ^ (2 : ℕ) := by
   rw [Finset.sum_filter]
   apply Finset.sum_congr rfl
   intro l hl
@@ -45,12 +45,12 @@ theorem predictableDrift_historyLayer_energy_eq_primePower_filter (N : ℕ) :
 Every retained summand is the exact complete reverse Möbius tail of that
 prime-power history layer. -/
 theorem predictableDrift_norm_sq_eq_primePower_reverse_tail_layer_energy (N : ℕ) :
-    ‖predictableDrift N‖ ^ 2 =
-      ‖(historySpace 0).starProjection (predictableDrift N)‖ ^ 2 +
+    ‖predictableDrift N‖ ^ (2 : ℕ) =
+      ‖(historySpace 0).starProjection (predictableDrift N)‖ ^ (2 : ℕ) +
         ∑ l ∈ (range N).filter (fun l => IsPrimePow (l + 1)),
           ‖∑ i ∈ range N, if l < i then
             ((ArithmeticFunction.moebius (i + 1) : ℤ) : ℝ) •
-              historyLayer l (residueVec (i + 1)) else 0‖ ^ 2 := by
+              historyLayer l (residueVec (i + 1)) else 0‖ ^ (2 : ℕ) := by
   rw [predictableDrift_norm_sq_eq_historyLayer_sum,
     predictableDrift_historyLayer_energy_eq_primePower_filter]
   congr 1

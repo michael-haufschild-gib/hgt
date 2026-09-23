@@ -10,7 +10,7 @@ the finite-circle integrand without erasing its divisor mass.
 On every zero-free circle in the positive eta half-plane, Lean differentiates
 the squared norm of the literal convergent paired-eta series and proves
 
-`d/dr log |E(rho + r * exp (I * theta))|^2
+`d/dr log |E(rho + r * exp (I * theta))|^(2 : ℕ)
   = 2 * Re (exp (I * theta) * D / E)`.
 
 Consequently the normalized heat-weighted eta flux is exactly a scaled

@@ -109,7 +109,7 @@ theorem degreeOneEulerQuadraticCompatible_iff_cycleDeletionShapeBlind
     DegreeOneEulerQuadraticCompatible c ↔
       (∀ n : ℕ, ¬ IsPrimePow n → c n = 0) ∧
         ∀ p : ℕ, p.Prime →
-          c p * c p = (Real.log p : ℂ) * c (p ^ 2) ∧
+          c p * c p = (Real.log p : ℂ) * c (p ^ (2 : ℕ)) ∧
           ComplexCycleDeletionShapeBlind
             (fun m => c (p ^ (m + 1)) / c (p ^ m)) := by
   constructor
@@ -139,14 +139,14 @@ theorem degreeOneEulerQuadraticCompatible_iff_cycleDeletionShapeBlind
     have hconstant := (complexCycleDeletionShapeBlind_iff_constant_ratio
       (fun k => c (p ^ (k + 1)) / c (p ^ k))).mp (hcycle p hp).2
     have hrec : ∀ k : ℕ, 0 < k →
-        c (p ^ (k + 1)) = (c (p ^ 2) / c p) * c (p ^ k) := by
+        c (p ^ (k + 1)) = (c (p ^ (2 : ℕ)) / c p) * c (p ^ k) := by
       intro k hk
       have hkRatio := hconstant k hk
-      have hkRatio' : c (p ^ (k + 1)) / c (p ^ k) = c (p ^ 2) / c p := by
+      have hkRatio' : c (p ^ (k + 1)) / c (p ^ k) = c (p ^ (2 : ℕ)) / c p := by
         simpa using hkRatio
       exact (div_eq_iff (hnz p k hp hk.ne')).mp hkRatio'
     have hgeom : ∀ k : ℕ, 0 < k →
-        c (p ^ k) = c p * (c (p ^ 2) / c p) ^ (k - 1) := by
+        c (p ^ k) = c p * (c (p ^ (2 : ℕ)) / c p) ^ (k - 1) := by
       intro k hk
       obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk.ne'
       induction j with
@@ -156,7 +156,7 @@ theorem degreeOneEulerQuadraticCompatible_iff_cycleDeletionShapeBlind
           simp only [Nat.succ_sub_one]
           rw [pow_succ]
           ring
-    have hratio : c (p ^ 2) / c p = c p / (Real.log p : ℂ) := by
+    have hratio : c (p ^ (2 : ℕ)) / c p = c p / (Real.log p : ℂ) := by
       apply (div_eq_div_iff (by simpa using hnz p 1 hp one_ne_zero) hlog).2
       simpa [mul_comm] using (hcycle p hp).1.symm
     rw [hgeom m (Nat.pos_of_ne_zero hm), hratio]

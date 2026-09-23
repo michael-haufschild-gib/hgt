@@ -6,7 +6,7 @@ set_option maxRecDepth 10000
 /-!
 # Route T selected-cell counting through 11/5 at a physical cutoff
 
-The low-ordinate analytic estimates naturally use the canonical cutoff `X / 2^120`, whereas
+The low-ordinate analytic estimates naturally use the canonical cutoff `X / 2^(120 : ℕ)`, whereas
 the prime-free packet retains a larger physical cutoff.  Window relevance is contravariantly
 monotone in that cutoff, so the analytic estimates may be transported downward without changing
 the cutoff appearing in the selected cell.  This closes the cutoff mismatch before the parity

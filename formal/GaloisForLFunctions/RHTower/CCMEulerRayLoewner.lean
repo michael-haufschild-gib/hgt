@@ -14,7 +14,7 @@ Cauchy denominator: `i/(i y - conj (i x)) = 1/(x + y)`.  So the ray kernel is ex
 Cauchy--Loewner kernel `L_omega (x, y) = (1 - f_omega x * f_omega y)/(x + y)`.
 
 Scalar positivity of the Euler quotient is not enough: for two unequal values the matrix
-`(1 - r_i r_j)` has determinant `-(r_1 - r_2)^2 < 0`.  Every factor of the explicit Euler formula
+`(1 - r_i r_j)` has determinant `-(r_1 - r_2)^(2 : ℕ) < 0`.  Every factor of the explicit Euler formula
 `(16)` for `f_omega` is nevertheless positive, which is what makes the ray a real, prime-side
 object with no critical-strip evaluation.
 -/

@@ -59,10 +59,10 @@ theorem steinhausFiniteNodeChannelCombination_eq_channel {J : ℕ}
 theorem integral_normSq_steinhausFiniteNodeChannelCombination {J : ℕ}
     (a : Fin J → ℕ → ℂ) (u : Fin J → ℂ) (X p : ℕ) :
     (∫ omega,
-        ‖steinhausFiniteNodeChannelCombination a u X p omega‖ ^ 2
+        ‖steinhausFiniteNodeChannelCombination a u X p omega‖ ^ (2 : ℕ)
           ∂steinhausMeasure) =
       ∑ m ∈ Finset.Icc 1 (X / p),
-        ‖steinhausFiniteNodeCoefficientCombination a u (p * m)‖ ^ 2 := by
+        ‖steinhausFiniteNodeCoefficientCombination a u (p * m)‖ ^ (2 : ℕ) := by
   simpa only [steinhausFiniteNodeChannelCombination_eq_channel] using
     integral_normSq_steinhausLargePrimeChannel
       (steinhausFiniteNodeCoefficientCombination a u) X p
@@ -71,13 +71,13 @@ theorem integral_normSq_steinhausFiniteNodeChannelCombination {J : ℕ}
 def steinhausFiniteNodeArithmeticGramEnergy {J : ℕ}
     (P : Finset ℕ) (a : Fin J → ℕ → ℂ) (u : Fin J → ℂ) (X : ℕ) : ℝ :=
   ∑ p ∈ P, ∑ m ∈ Finset.Icc 1 (X / p),
-    ‖steinhausFiniteNodeCoefficientCombination a u (p * m)‖ ^ 2
+    ‖steinhausFiniteNodeCoefficientCombination a u (p * m)‖ ^ (2 : ℕ)
 
 /-- The mean small-prime Rayleigh energy is the explicit arithmetic Gram energy. -/
 theorem sum_integral_normSq_steinhausFiniteNodeChannelCombination {J : ℕ}
     (P : Finset ℕ) (a : Fin J → ℕ → ℂ) (u : Fin J → ℂ) (X : ℕ) :
     (∑ p ∈ P, ∫ omega,
-        ‖steinhausFiniteNodeChannelCombination a u X p omega‖ ^ 2
+        ‖steinhausFiniteNodeChannelCombination a u X p omega‖ ^ (2 : ℕ)
           ∂steinhausMeasure) =
       steinhausFiniteNodeArithmeticGramEnergy P a u X := by
   unfold steinhausFiniteNodeArithmeticGramEnergy
@@ -147,18 +147,18 @@ theorem steinhausFiniteNodeArithmeticGramEnergy_eq_feature_sum {J : ℕ}
     (P : Finset ℕ) (a : Fin J → ℕ → ℂ) (u : Fin J → ℂ) (X : ℕ) :
     steinhausFiniteNodeArithmeticGramEnergy P a u X =
       ∑ q : steinhausFiniteNodeFeatureIndex P X,
-        ‖∑ j : Fin J, u j * steinhausFiniteNodeFeature P a X j q‖ ^ 2 := by
+        ‖∑ j : Fin J, u j * steinhausFiniteNodeFeature P a X j q‖ ^ (2 : ℕ) := by
   classical
   unfold steinhausFiniteNodeArithmeticGramEnergy
     steinhausFiniteNodeCoefficientCombination steinhausFiniteNodeFeature
   calc
     (∑ p ∈ P, ∑ m ∈ Finset.Icc 1 (X / p),
-        ‖∑ j : Fin J, u j * a j (p * m)‖ ^ 2) =
+        ‖∑ j : Fin J, u j * a j (p * m)‖ ^ (2 : ℕ)) =
         ∑ q ∈ P.sigma (fun p => Finset.Icc 1 (X / p)),
-          ‖∑ j : Fin J, u j * a j (q.1 * q.2)‖ ^ 2 :=
+          ‖∑ j : Fin J, u j * a j (q.1 * q.2)‖ ^ (2 : ℕ) :=
       Finset.sum_sigma' _ _ _
     _ = ∑ q : ↥(P.sigma fun p => Finset.Icc 1 (X / p)),
-          ‖∑ j : Fin J, u j * a j (q.1.1 * q.1.2)‖ ^ 2 := by
+          ‖∑ j : Fin J, u j * a j (q.1.1 * q.1.2)‖ ^ (2 : ℕ) := by
       rw [Finset.sum_subtype _ (fun _ => Iff.rfl)]
 
 /-- Complex Cauchy--Binet identifies the finite-node arithmetic Gram determinant with
@@ -174,7 +174,7 @@ for the real arithmetic Gram determinant. -/
 theorem norm_sq_steinhausFiniteNodeFeatureMinor_le_gram_det_re {J : ℕ}
     (P : Finset ℕ) (a : Fin J → ℕ → ℂ) (X : ℕ)
     (s : Set.powersetCard (steinhausFiniteNodeFeatureIndex P X) J) :
-    ‖hermFeatureMinor (steinhausFiniteNodeFeature P a X) s‖ ^ 2 ≤
+    ‖hermFeatureMinor (steinhausFiniteNodeFeature P a X) s‖ ^ (2 : ℕ) ≤
       (steinhausFiniteNodeArithmeticGram P a X).det.re := by
   rw [det_steinhausFiniteNodeArithmeticGram_eq_pluckerNormSq]
   simp only [Complex.ofReal_re]
@@ -182,7 +182,7 @@ theorem norm_sq_steinhausFiniteNodeFeatureMinor_le_gram_det_re {J : ℕ}
   refine Finset.single_le_sum
     (s := Finset.univ)
     (f := fun q : Set.powersetCard (steinhausFiniteNodeFeatureIndex P X) J =>
-      ‖hermFeatureMinor (steinhausFiniteNodeFeature P a X) q‖ ^ 2)
+      ‖hermFeatureMinor (steinhausFiniteNodeFeature P a X) q‖ ^ (2 : ℕ))
     ?_ (Finset.mem_univ s)
   intro q hq
   exact sq_nonneg _
@@ -202,10 +202,10 @@ theorem integral_normSq_steinhausFiniteNodeLargePrimePacket {J : ℕ}
     (a : Fin J → ℕ → ℂ) (u : Fin J → ℂ)
     (M : ℕ) (omegaSmall : Omega) :
     (∫ omegaLarge,
-        ‖steinhausFiniteNodeLargePrimePacket P a u M omegaSmall omegaLarge‖ ^ 2
+        ‖steinhausFiniteNodeLargePrimePacket P a u M omegaSmall omegaLarge‖ ^ (2 : ℕ)
           ∂steinhausMeasure) =
       ∑ p ∈ P,
-        ‖steinhausFiniteNodeChannelCombination a u M p omegaSmall‖ ^ 2 := by
+        ‖steinhausFiniteNodeChannelCombination a u M p omegaSmall‖ ^ (2 : ℕ) := by
   unfold steinhausFiniteNodeLargePrimePacket
   exact integral_normSq_dpoly_complex
     (fun p => steinhausFiniteNodeChannelCombination a u M p omegaSmall) P hP
@@ -223,7 +223,7 @@ theorem sum_integral_normSq_reflectedPrimalFiniteNodeChannelCombination {J : ℕ
     (∑ p ∈ P, ∫ omega,
         ‖steinhausFiniteNodeChannelCombination
           (smoothAFEZetaRightReflectedPrimalFiniteNodeCoefficient d tau r N)
-          u N p omega‖ ^ 2 ∂steinhausMeasure) =
+          u N p omega‖ ^ (2 : ℕ) ∂steinhausMeasure) =
       steinhausFiniteNodeArithmeticGramEnergy P
         (smoothAFEZetaRightReflectedPrimalFiniteNodeCoefficient d tau r N) u N :=
   sum_integral_normSq_steinhausFiniteNodeChannelCombination P

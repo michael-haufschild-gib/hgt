@@ -28,9 +28,9 @@ theorem derivativeSeed_decomposition (f : SchwartzMap ℝ ℂ) (t : ℝ) :
 
 /-- The weak-derivative energy is an exact quadratic in time. -/
 theorem packet_derivative_energy (f : SchwartzMap ℝ ℂ) (t : ℝ) :
-    ‖packetDerivativeL2 f t‖^2 = ‖(derivativeSeed f 0).toLp 2 volume‖^2 -
+    ‖packetDerivativeL2 f t‖^(2 : ℕ) = ‖(derivativeSeed f 0).toLp 2 volume‖^(2 : ℕ) -
       t*(inner ℂ ((derivativeSeed f 0).toLp 2 volume) (f.toLp 2 volume)).im +
-      t^2/4*‖f.toLp 2 volume‖^2 := by
+      t^(2 : ℕ)/4*‖f.toLp 2 volume‖^(2 : ℕ) := by
   rw [packetDerivativeL2_eq_evolution, norm_evolution, derivativeSeed_decomposition,
     norm_add_sq (𝕜 := ℂ), inner_smul_right]
   change _ + 2*(I*(t:ℂ)/2 * inner ℂ ((derivativeSeed f 0).toLp 2 volume)
@@ -42,8 +42,8 @@ theorem packet_derivative_energy (f : SchwartzMap ℝ ℂ) (t : ℝ) :
   ring
 
 theorem packet_derivative_energy_second_difference (f : SchwartzMap ℝ ℂ) (t h : ℝ) :
-    ‖packetDerivativeL2 f (t+h)‖^2 + ‖packetDerivativeL2 f (t-h)‖^2 -
-      2*‖packetDerivativeL2 f t‖^2 = h^2/2*‖f.toLp 2 volume‖^2 := by
+    ‖packetDerivativeL2 f (t+h)‖^(2 : ℕ) + ‖packetDerivativeL2 f (t-h)‖^(2 : ℕ) -
+      2*‖packetDerivativeL2 f t‖^(2 : ℕ) = h^(2 : ℕ)/2*‖f.toLp 2 volume‖^(2 : ℕ) := by
   rw [packet_derivative_energy, packet_derivative_energy, packet_derivative_energy]
   ring
 

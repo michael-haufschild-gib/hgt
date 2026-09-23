@@ -22,7 +22,7 @@ theorem completedFluxTaylorCoeff_two_center_re_neg :
   have hreaderC :=
     xi_laguerre_margin_eq_neg_sq_mul_completedFluxTaylorCoeff_two
       0 Xi_zero_pos.ne'
-  have hscale : -((Xi 0 : ℂ) ^ 2) = ((-(Xi 0) ^ 2 : ℝ) : ℂ) := by
+  have hscale : -((Xi 0 : ℂ) ^ (2 : ℕ)) = ((-(Xi 0) ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     ring
   rw [hscale] at hreaderC

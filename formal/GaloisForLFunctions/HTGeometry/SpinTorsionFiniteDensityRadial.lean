@@ -20,7 +20,7 @@ def spinTorsionRadialI0Integrand (r p : ℝ) : ℝ := p * Real.sin (p * r) / r
 
 /-- Elementary primitive of the regularized `j₀` radial integrand. -/
 def spinTorsionRadialI0Primitive (r p : ℝ) : ℝ :=
-  (Real.sin (p * r) - p * r * Real.cos (p * r)) / r ^ 3
+  (Real.sin (p * r) - p * r * Real.cos (p * r)) / r ^ (3 : ℕ)
 
 /-- Exact derivative identity behind the first finite-density radial block. -/
 theorem spinTorsionRadialI0Primitive_hasDerivAt (logR p : ℝ) :
@@ -35,10 +35,10 @@ theorem spinTorsionRadialI0Primitive_hasDerivAt (logR p : ℝ) :
       (Real.cos (p * r) * r) p := (Real.hasDerivAt_sin _).comp p hpr
   have hcos : HasDerivAt (fun u : ℝ => Real.cos (u * r))
       (-Real.sin (p * r) * r) p := (Real.hasDerivAt_cos _).comp p hpr
-  have h := (hsin.sub (hpr.mul hcos)).div_const (r ^ 3)
+  have h := (hsin.sub (hpr.mul hcos)).div_const (r ^ (3 : ℕ))
   have hvalue :
       (Real.cos (p * r) * r -
-          (r * Real.cos (p * r) + p * r * (-Real.sin (p * r) * r))) / r ^ 3 =
+          (r * Real.cos (p * r) + p * r * (-Real.sin (p * r) * r))) / r ^ (3 : ℕ) =
         p * Real.sin (p * r) / r := by
     field_simp [hr]
     ring
@@ -63,11 +63,11 @@ theorem spinTorsionRadialI0_integral (logMu logR : ℝ) :
 
 /-- Regularized radial integrand corresponding to `p² j₁(pr)`. -/
 def spinTorsionRadialI1Integrand (r p : ℝ) : ℝ :=
-  Real.sin (p * r) / r ^ 2 - p * Real.cos (p * r) / r
+  Real.sin (p * r) / r ^ (2 : ℕ) - p * Real.cos (p * r) / r
 
 /-- Elementary primitive of the regularized `j₁` radial integrand. -/
 def spinTorsionRadialI1Primitive (r p : ℝ) : ℝ :=
-  (2 - 2 * Real.cos (p * r) - p * r * Real.sin (p * r)) / r ^ 3
+  (2 - 2 * Real.cos (p * r) - p * r * Real.sin (p * r)) / r ^ (3 : ℕ)
 
 /-- Exact derivative identity behind the second finite-density radial block. -/
 theorem spinTorsionRadialI1Primitive_hasDerivAt (logR p : ℝ) :
@@ -83,11 +83,11 @@ theorem spinTorsionRadialI1Primitive_hasDerivAt (logR p : ℝ) :
   have hcos : HasDerivAt (fun u : ℝ => Real.cos (u * r))
       (-Real.sin (p * r) * r) p := (Real.hasDerivAt_cos _).comp p hpr
   have htwo : HasDerivAt (fun _ : ℝ => (2 : ℝ)) 0 p := hasDerivAt_const p 2
-  have h := ((htwo.sub (hcos.const_mul 2)).sub (hpr.mul hsin)).div_const (r ^ 3)
+  have h := ((htwo.sub (hcos.const_mul 2)).sub (hpr.mul hsin)).div_const (r ^ (3 : ℕ))
   have hvalue :
       (0 - 2 * (-Real.sin (p * r) * r) -
-          (r * Real.sin (p * r) + p * r * (Real.cos (p * r) * r))) / r ^ 3 =
-        Real.sin (p * r) / r ^ 2 - p * Real.cos (p * r) / r := by
+          (r * Real.sin (p * r) + p * r * (Real.cos (p * r) * r))) / r ^ (3 : ℕ) =
+        Real.sin (p * r) / r ^ (2 : ℕ) - p * Real.cos (p * r) / r := by
     field_simp [hr]
     ring
   rw [hvalue] at h
@@ -111,11 +111,11 @@ theorem spinTorsionRadialI1_integral (logMu logR : ℝ) :
 
 /-- First normalized finite-density radial block. -/
 def finiteDensityRadialI0 (mu r : ℝ) : ℝ :=
-  (∫ p in (0 : ℝ)..mu, spinTorsionRadialI0Integrand r p) / (2 * Real.pi ^ 2)
+  (∫ p in (0 : ℝ)..mu, spinTorsionRadialI0Integrand r p) / (2 * Real.pi ^ (2 : ℕ))
 
 /-- Second normalized finite-density radial block. -/
 def finiteDensityRadialI1 (mu r : ℝ) : ℝ :=
-  (∫ p in (0 : ℝ)..mu, spinTorsionRadialI1Integrand r p) / (2 * Real.pi ^ 2)
+  (∫ p in (0 : ℝ)..mu, spinTorsionRadialI1Integrand r p) / (2 * Real.pi ^ (2 : ℕ))
 
 /-- Closed form of the first normalized radial block. -/
 theorem finiteDensityRadialI0_eq (logMu logR : ℝ) :
@@ -123,7 +123,7 @@ theorem finiteDensityRadialI0_eq (logMu logR : ℝ) :
       (Real.sin (Real.exp logMu * Real.exp logR) -
           Real.exp logMu * Real.exp logR *
             Real.cos (Real.exp logMu * Real.exp logR)) /
-        (2 * Real.pi ^ 2 * Real.exp logR ^ 3) := by
+        (2 * Real.pi ^ (2 : ℕ) * Real.exp logR ^ (3 : ℕ)) := by
   rw [finiteDensityRadialI0, spinTorsionRadialI0_integral]
   unfold spinTorsionRadialI0Primitive
   field_simp [Real.exp_ne_zero, Real.pi_ne_zero]
@@ -134,15 +134,15 @@ theorem finiteDensityRadialI1_eq (logMu logR : ℝ) :
       (2 - 2 * Real.cos (Real.exp logMu * Real.exp logR) -
           Real.exp logMu * Real.exp logR *
             Real.sin (Real.exp logMu * Real.exp logR)) /
-        (2 * Real.pi ^ 2 * Real.exp logR ^ 3) := by
+        (2 * Real.pi ^ (2 : ℕ) * Real.exp logR ^ (3 : ℕ)) := by
   rw [finiteDensityRadialI1, spinTorsionRadialI1_integral]
   unfold spinTorsionRadialI1Primitive
   field_simp [Real.exp_ne_zero, Real.pi_ne_zero]
 
 /-- Dimensionless correction reconstructed directly from the two radial integrals. -/
 def finiteDensityRadialNormalizedCorrection (mu r : ℝ) : ℝ :=
-  Real.pi ^ 4 * r ^ 6 *
-    (finiteDensityRadialI0 mu r ^ 2 - finiteDensityRadialI1 mu r ^ 2)
+  Real.pi ^ (4 : ℕ) * r ^ (6 : ℕ) *
+    (finiteDensityRadialI0 mu r ^ (2 : ℕ) - finiteDensityRadialI1 mu r ^ (2 : ℕ))
 
 /-- Exact radial-integral derivation of the finite-density correction formula. -/
 theorem finiteDensityRadialNormalizedCorrection_eq (logMu logR : ℝ) :

@@ -25,8 +25,8 @@ private theorem sum_anchoredPair_mul (k : ℕ) (a b : ℝ) (f : ℕ → ℝ) :
 
 private theorem anchoredPair_energy (k : ℕ) (a b r : ℝ) :
     finiteGammaHankelEnergy (anchoredPair k a b) (k+1) r =
-      Real.Gamma r * (a^2 / (2:ℝ)^r +
-        2*a*b / ((k+2:ℕ):ℝ)^r + b^2 / ((k+k+2:ℕ):ℝ)^r) := by
+      Real.Gamma r * (a^(2 : ℕ) / (2:ℝ)^r +
+        2*a*b / ((k+2:ℕ):ℝ)^r + b^(2 : ℕ) / ((k+k+2:ℕ):ℝ)^r) := by
   unfold finiteGammaHankelEnergy
   have hinner (m : ℕ) :
       (∑ n ∈ Finset.range (k+1), anchoredPair k a b m * anchoredPair k a b n /
@@ -71,15 +71,15 @@ theorem gammaHankel_unital_diagonal_contractive_iff {r : ℝ} (hr : 0 < r)
     rw [hmul, anchoredPair_energy, anchoredPair_energy] at hb
     have hb' := (mul_le_mul_iff_right₀ hgamma).mp hb
     have heq : 2*a*(w k-1) / ((k+2:ℕ):ℝ)^r +
-        (w k^2-1) / ((k+k+2:ℕ):ℝ)^r = 1 := by
+        (w k^(2 : ℕ)-1) / ((k+k+2:ℕ):ℝ)^r = 1 := by
       dsimp [a]
       field_simp [hd, he, sub_ne_zero.mpr hne]
       ring
     have hbase : 2*a*(w k-1) / ((k+2:ℕ):ℝ)^r +
-        (w k^2-1) / ((k+k+2:ℕ):ℝ)^r ≤ 0 := by
+        (w k^(2 : ℕ)-1) / ((k+k+2:ℕ):ℝ)^r ≤ 0 := by
       calc
-        _ = (a^2/(2:ℝ)^r + 2*a*w k/((k+2:ℕ):ℝ)^r + w k^2/((k+k+2:ℕ):ℝ)^r) -
-            (a^2/(2:ℝ)^r + 2*a*1/((k+2:ℕ):ℝ)^r + 1^2/((k+k+2:ℕ):ℝ)^r) := by ring
+        _ = (a^(2 : ℕ)/(2:ℝ)^r + 2*a*w k/((k+2:ℕ):ℝ)^r + w k^(2 : ℕ)/((k+k+2:ℕ):ℝ)^r) -
+            (a^(2 : ℕ)/(2:ℝ)^r + 2*a*1/((k+2:ℕ):ℝ)^r + 1^(2 : ℕ)/((k+k+2:ℕ):ℝ)^r) := by ring
         _ ≤ 0 := sub_nonpos.mpr hb'
     linarith
   · intro h a N

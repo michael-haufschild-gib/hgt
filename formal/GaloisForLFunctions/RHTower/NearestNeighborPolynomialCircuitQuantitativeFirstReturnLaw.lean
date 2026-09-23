@@ -28,16 +28,16 @@ namespace RHTower
 /-- `Q = 10000` resolves a projective Choi return inside trace distance
 `1/200`; the crude universal bound `pi ≤ 4` already suffices. -/
 lemma quantitativeRecurrenceResolution_one_div_twoHundred :
-    2 * (2 * Real.pi / (10001 : ℝ)) ^ 2 ≤
-      (1 / 200 : ℝ) ^ 2 := by
+    2 * (2 * Real.pi / (10001 : ℝ)) ^ (2 : ℕ) ≤
+      (1 / 200 : ℝ) ^ (2 : ℕ) := by
   have htwoPi : 0 ≤ 2 * Real.pi := by positivity
   have htwoPiLe : 2 * Real.pi ≤ 8 := by
     linarith [Real.pi_le_four]
   calc
-    2 * (2 * Real.pi / (10001 : ℝ)) ^ 2 ≤
-        2 * (8 / 10001 : ℝ) ^ 2 := by
+    2 * (2 * Real.pi / (10001 : ℝ)) ^ (2 : ℕ) ≤
+        2 * (8 / 10001 : ℝ) ^ (2 : ℕ) := by
       gcongr
-    _ ≤ (1 / 200 : ℝ) ^ 2 := by norm_num
+    _ ≤ (1 / 200 : ℝ) ^ (2 : ℕ) := by norm_num
 
 /-- Arbitrarily late circuit-free blocks whose bracketing first re-entry has
 an explicit dimension-rank deadline. -/

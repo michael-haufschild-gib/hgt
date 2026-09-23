@@ -40,8 +40,8 @@ private theorem rectangle_subset (L : ℝ) (hL : 1 ≤ L) : rectangle L ⊆ cell
 private theorem cusp_mean_integrable (L : ℝ) (hL : 1 ≤ L) (F : ℂ → ℂ)
     (hi : Integrable (fun z : UpperHalfPlane => F z) measure) :
     IntegrableOn (fun y : ℝ => D4BMCuspProjection.mean
-      (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^2) (Ioi L) := by
-  have hden (z : ℂ) (hp : 0 < z.im) : chartDensity z • F z = F z/(z.im:ℂ)^2 := by
+      (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^(2 : ℕ)) (Ioi L) := by
+  have hden (z : ℂ) (hp : 0 < z.im) : chartDensity z • F z = F z/(z.im:ℂ)^(2 : ℕ) := by
     simp only [chartDensity,NNReal.smul_def,NNReal.coe_pow,NNReal.coe_div,NNReal.coe_one,
       coe_nnnorm,Real.norm_eq_abs,abs_of_pos hp,Complex.real_smul,
       Complex.ofReal_pow,Complex.ofReal_div,Complex.ofReal_one]
@@ -52,26 +52,26 @@ private theorem cusp_mean_integrable (L : ℝ) (hL : 1 ≤ L) (F : ℂ → ℂ)
   have hd : IntegrableOn (fun z => chartDensity z • F z) cellChart :=
     (integrable_withDensity_iff_integrable_smul (show Measurable chartDensity by
       unfold chartDensity; fun_prop)).mp hmap
-  have hrect : IntegrableOn (fun z : ℂ => F z/(z.im:ℂ)^2) (rectangle L) := by
+  have hrect : IntegrableOn (fun z : ℂ => F z/(z.im:ℂ)^(2 : ℕ)) (rectangle L) := by
     apply (hd.mono_set (rectangle_subset L hL)).congr_fun
     · intro z hz
       exact hden z (lt_trans (by linarith : 0 < L) hz.2)
     · exact (isClosed_Icc.preimage Complex.continuous_re).measurableSet.inter
         (isOpen_lt continuous_const Complex.continuous_im).measurableSet
-  let G : ℝ × ℝ → ℂ := fun xy => F (Complex.measurableEquivRealProd.symm xy)/(xy.2:ℂ)^2
+  let G : ℝ × ℝ → ℂ := fun xy => F (Complex.measurableEquivRealProd.symm xy)/(xy.2:ℂ)^(2 : ℕ)
   have hG : IntegrableOn G (Icc (-1/2:ℝ) (1/2) ×ˢ Ioi L)
       ((volume : Measure ℝ).prod volume) := by
     rw [← Measure.volume_eq_prod]
     apply (Complex.volume_preserving_equiv_real_prod.integrableOn_comp_preimage
       Complex.measurableEquivRealProd.measurableEmbedding).mp
-    change IntegrableOn (fun z : ℂ => F z/(z.im:ℂ)^2) (rectangle L)
+    change IntegrableOn (fun z : ℂ => F z/(z.im:ℂ)^(2 : ℕ)) (rectangle L)
     exact hrect
   have hf : Integrable G
       ((volume.restrict (Icc (-1/2:ℝ) (1/2))).prod (volume.restrict (Ioi L))) := by
     simpa only [Measure.prod_restrict,IntegrableOn] using hG
   have he : (fun y : ℝ => ∫ x in Icc (-1/2:ℝ) (1/2), G (x,y)) =
       fun y => D4BMCuspProjection.mean
-        (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^2 := by
+        (fun x => F (Complex.measurableEquivRealProd.symm (x,y)))/(y:ℂ)^(2 : ℕ) := by
     funext y
     dsimp only [G]
     simp only [div_eq_mul_inv]
@@ -82,7 +82,7 @@ private theorem cusp_mean_integrable (L : ℝ) (hL : 1 ≤ L) (F : ℂ → ℂ)
 /-- Complete original test remainder with the hyperbolic metric weight. -/
 def testedTailCuspDensity (q : XiZeroCopy) (b : Bool) (y : ℝ) : ℂ :=
   D4BMCuspProjection.mean (fun x =>
-    testedResponseTail q b (physicalAngularParameter q) ![x,y])/(y:ℂ)^2
+    testedResponseTail q b (physicalAngularParameter q) ![x,y])/(y:ℂ)^(2 : ℕ)
 
 /-- Native admission gives absolute integrability of the actual high-cusp remainder. -/
 theorem testedTailCuspDensity_integrable (q : XiZeroCopy) (b : Bool) :
@@ -114,18 +114,18 @@ theorem nativeTestedTailPeriod_eq (q : XiZeroCopy) (b : Bool) (a : Ioi (3:ℝ)) 
   rw [integral_indicator hm] at he
   exact he.trans (setIntegral_congr_fun measurableSet_Ioi (fun y hy => by
     change D4BMCuspProjection.mean (fun x => if (a:ℝ) < y then
-      testedResponseTail q b (physicalAngularParameter q) ![x,y] else 0)/(y:ℂ)^2 = _
-    exact congrArg (fun f : ℝ → ℂ => D4BMCuspProjection.mean f/(y:ℂ)^2)
+      testedResponseTail q b (physicalAngularParameter q) ![x,y] else 0)/(y:ℂ)^(2 : ℕ) = _
+    exact congrArg (fun f : ℝ → ℂ => D4BMCuspProjection.mean f/(y:ℂ)^(2 : ℕ))
       (funext (fun x : ℝ => if_pos (show (a:ℝ) < y from hy)))))
 
 /-- Actual full physical scalar test against the complete quadratic response and source. -/
 def fullTestedCuspDensity (q : XiZeroCopy) (b : Bool) (y : ℝ) : ℂ :=
   D4BMCuspProjection.mean (fun x => scalar (physicalAngularParameter q) ![x,y]*
-    fullSquarePotential q ![x,y]*fullAngularField q b ![x,y])/(y:ℂ)^2
+    fullSquarePotential q ![x,y]*fullAngularField q b ![x,y])/(y:ℂ)^(2 : ℕ)
 
 private theorem power_step (v : ℂ) {y : ℝ} (hy : 0 < y) :
-    (y:ℂ)^v=(y:ℂ)^(v-2)*(y:ℂ)^2 := by
-  have he : (y:ℂ)^(2:ℂ)=(y:ℂ)^2 := by norm_cast
+    (y:ℂ)^v=(y:ℂ)^(v-2)*(y:ℂ)^(2 : ℕ) := by
+  have he : (y:ℂ)^(2:ℂ)=(y:ℂ)^(2 : ℕ) := by norm_cast
   rw [← he,← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hy.ne')]
   congr 1
   ring

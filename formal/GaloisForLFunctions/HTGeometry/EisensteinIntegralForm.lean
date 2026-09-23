@@ -29,7 +29,7 @@ variable {K : Type*} [Field K]
 
 /-- The branch rescaled to have coefficients in the base ring. -/
 noncomputable def scaledRoot (D q : K) (y : PowerSeries K) : PowerSeries K :=
-  PowerSeries.C D * PowerSeries.rescale (q ^ 2) y
+  PowerSeries.C D * PowerSeries.rescale (q ^ (2 : ℕ)) y
 
 theorem coeff_scaledRoot (D q : K) (y : PowerSeries K) (N : ℕ) :
     PowerSeries.coeff N (scaledRoot D q y) = D * (q ^ (2 * N) * PowerSeries.coeff N y) := by
@@ -38,16 +38,16 @@ theorem coeff_scaledRoot (D q : K) (y : PowerSeries K) (N : ℕ) :
 /-- The polynomial rescaled to match. -/
 noncomputable def scaledPoly (D q : K) (f : Polynomial (PowerSeries K)) :
     Polynomial (PowerSeries K) :=
-  (f.map (PowerSeries.rescale (q ^ 2))).scaleRoots (PowerSeries.C D)
+  (f.map (PowerSeries.rescale (q ^ (2 : ℕ)))).scaleRoots (PowerSeries.C D)
 
 /-- **The rescaled branch is a root of the rescaled polynomial.** -/
 theorem eval_scaledPoly (D q : K) {f : Polynomial (PowerSeries K)} {y : PowerSeries K}
     (hroot : f.eval y = 0) : (scaledPoly D q f).eval (scaledRoot D q y) = 0 := by
-  have hp : (f.map (PowerSeries.rescale (q ^ 2))).eval (PowerSeries.rescale (q ^ 2) y) = 0 := by
+  have hp : (f.map (PowerSeries.rescale (q ^ (2 : ℕ)))).eval (PowerSeries.rescale (q ^ (2 : ℕ)) y) = 0 := by
     rw [← eval_map_of_eval, hroot, map_zero]
   have hsr := Polynomial.scaleRoots_eval₂_mul (R := PowerSeries K) (RingHom.id (PowerSeries K))
-    (PowerSeries.rescale (q ^ 2) y) (PowerSeries.C D)
-    (p := f.map (PowerSeries.rescale (q ^ 2)))
+    (PowerSeries.rescale (q ^ (2 : ℕ)) y) (PowerSeries.C D)
+    (p := f.map (PowerSeries.rescale (q ^ (2 : ℕ))))
   simp only [Polynomial.eval₂_id, RingHom.id_apply] at hsr
   rw [scaledPoly, scaledRoot, hsr, hp, mul_zero]
 

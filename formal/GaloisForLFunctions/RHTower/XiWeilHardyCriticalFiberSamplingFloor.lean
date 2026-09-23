@@ -65,7 +65,7 @@ theorem inner_xiWeilFiberIndicatorLp_eq_card_mul
 
 /-- The squared Hilbert norm of a complete fiber indicator is its analytic multiplicity. -/
 theorem norm_sq_xiWeilFiberIndicatorLp_eq_card (ρ : XiDivisorSupport) :
-    ‖xiWeilFiberIndicatorLp (xiSpectralPointSupport ρ)‖ ^ 2 =
+    ‖xiWeilFiberIndicatorLp (xiSpectralPointSupport ρ)‖ ^ (2 : ℕ) =
       (xiZeroCopyFiber ρ).card := by
   rw [← inner_self_eq_norm_sq (𝕜 := ℂ)]
   have hfac : FactorsThroughSpectral
@@ -81,7 +81,7 @@ theorem normSq_inner_xiWeilFiberIndicatorLp_eq_card_sq_mul
     (hw : FactorsThroughSpectral w) :
     Complex.normSq
         (inner ℂ (xiWeilFiberIndicatorLp (xiSpectralPointSupport ρ)) w) =
-      ((xiZeroCopyFiber ρ).card : ℝ) ^ 2 *
+      ((xiZeroCopyFiber ρ).card : ℝ) ^ (2 : ℕ) *
         Complex.normSq (w (xiFirstZeroCopy ρ)) := by
   rw [inner_xiWeilFiberIndicatorLp_eq_card_mul ρ w hw,
     Complex.normSq_mul]
@@ -110,16 +110,16 @@ theorem riemannHypothesis_iff_fixedFiber_samplingFloor
       letI := P.fintypeIndex
       exact factorsThroughSpectral_xiWeilContinuedCauchyPacketLp P.coeff P.pole
     have hcs0 := norm_inner_le_norm (𝕜 := ℂ) v w
-    have hcs : Complex.normSq (inner ℂ v w) ≤ ‖v‖ ^ 2 * ‖w‖ ^ 2 := by
+    have hcs : Complex.normSq (inner ℂ v w) ≤ ‖v‖ ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) := by
       rw [Complex.normSq_eq_norm_sq]
       calc
-        ‖inner ℂ v w‖ ^ 2 ≤ (‖v‖ * ‖w‖) ^ 2 :=
+        ‖inner ℂ v w‖ ^ (2 : ℕ) ≤ (‖v‖ * ‖w‖) ^ (2 : ℕ) :=
           pow_le_pow_left₀ (norm_nonneg _) hcs0 2
-        _ = ‖v‖ ^ 2 * ‖w‖ ^ 2 := by ring
-    have hvnorm : ‖v‖ ^ 2 = ((xiZeroCopyFiber ρ).card : ℝ) := by
+        _ = ‖v‖ ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) := by ring
+    have hvnorm : ‖v‖ ^ (2 : ℕ) = ((xiZeroCopyFiber ρ).card : ℝ) := by
       exact norm_sq_xiWeilFiberIndicatorLp_eq_card ρ
     have hinner : Complex.normSq (inner ℂ v w) =
-        ((xiZeroCopyFiber ρ).card : ℝ) ^ 2 *
+        ((xiZeroCopyFiber ρ).card : ℝ) ^ (2 : ℕ) *
           Complex.normSq (w (xiFirstZeroCopy ρ)) := by
       exact normSq_inner_xiWeilFiberIndicatorLp_eq_card_sq_mul ρ w hwfac
     have hJ : xiWeilLineConjLp w = w := by
@@ -127,10 +127,10 @@ theorem riemannHypothesis_iff_fixedFiber_samplingFloor
       funext q
       rw [xiWeilLineConjLp_apply,
         xiZeroCopyLineConjEquiv_eq_of_riemannHypothesis hRH q]
-    have henergy : P.sourceEnergy = ‖w‖ ^ 2 := by
+    have henergy : P.sourceEnergy = ‖w‖ ^ (2 : ℕ) := by
       rw [P.sourceEnergy_eq_hilbertQuadratic, xiWeilHilbertQuadratic,
         xiWeilLineConjLinearIsometry_apply, hJ]
-      change (inner ℂ w w).re = ‖w‖ ^ 2
+      change (inner ℂ w w).re = ‖w‖ ^ (2 : ℕ)
       exact inner_self_eq_norm_sq (𝕜 := ℂ) w
     rw [hinner, hvnorm, ← henergy] at hcs
     nlinarith

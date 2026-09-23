@@ -19,14 +19,14 @@ noncomputable section
 
 /-- The atomic Gram entry is the sum of the individually scaled atom terms. -/
 theorem atomicGram_eq_sum {d : ℕ} (a c : Fin d → ℝ) (y : ℝ) (l m : Fin d) :
-    atomicGram a c y l m = ∑ j, (y : ℂ) ^ 2 * ((c j : ℂ) /
+    atomicGram a c y l m = ∑ j, (y : ℂ) ^ (2 : ℕ) * ((c j : ℂ) /
       (((a j : ℂ) - upperNode (a l) y) *
         ((a j : ℂ) - (starRingEnd ℂ) (upperNode (a m) y)))) := by
   rw [atomicGram, Finset.mul_sum]
 
 /-- For heights at most one the quadratic rate is dominated by the linear rate. -/
-theorem sq_le_abs_of_abs_le_one {y : ℝ} (hy : |y| ≤ 1) : y ^ 2 ≤ |y| := by
-  have h : y ^ 2 = |y| ^ 2 := (sq_abs y).symm
+theorem sq_le_abs_of_abs_le_one {y : ℝ} (hy : |y| ≤ 1) : y ^ (2 : ℕ) ≤ |y| := by
+  have h : y ^ (2 : ℕ) = |y| ^ (2 : ℕ) := (sq_abs y).symm
   rw [h, sq]
   nlinarith [abs_nonneg y, hy]
 
@@ -34,7 +34,7 @@ theorem sq_le_abs_of_abs_le_one {y : ℝ} (hy : |y| ≤ 1) : y ^ 2 ≤ |y| := by
 linear-in-height quantity, the whole entry is bounded by their sum. -/
 theorem norm_atomicGram_le_of_termwise {d : ℕ} (a c : Fin d → ℝ) (y : ℝ) (l m : Fin d)
     (B : Fin d → ℝ)
-    (hB : ∀ j, ‖(y : ℂ) ^ 2 * ((c j : ℂ) /
+    (hB : ∀ j, ‖(y : ℂ) ^ (2 : ℕ) * ((c j : ℂ) /
       (((a j : ℂ) - upperNode (a l) y) *
         ((a j : ℂ) - (starRingEnd ℂ) (upperNode (a m) y))))‖ ≤ B j) :
     ‖atomicGram a c y l m‖ ≤ ∑ j, B j := by

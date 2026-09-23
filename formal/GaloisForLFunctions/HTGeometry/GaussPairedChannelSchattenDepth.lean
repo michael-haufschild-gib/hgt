@@ -18,8 +18,8 @@ noncomputable section
 
 /-- Exact arithmetic Dixmier residue of one `m`-place Gauss channel at the prime `p`. -/
 def gaussChannelResidue (m : ℕ) (p : Nat.Primes) : ℝ :=
-  2 * ((p : ℝ) - 1) ^ (2 * m) * ((p : ℝ) ^ m - 1) ^ 2 /
-    ((p : ℝ) ^ (2 * m) * (m : ℝ) ^ 2 * Real.log (p : ℝ))
+  2 * ((p : ℝ) - 1) ^ (2 * m) * ((p : ℝ) ^ m - 1) ^ (2 : ℕ) /
+    ((p : ℝ) ^ (2 * m) * (m : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ))
 
 /-- Every genuine Gauss channel has strictly positive arithmetic residue. -/
 theorem gaussChannelResidue_pos {m : ℕ} (hm : 1 ≤ m) (p : Nat.Primes) :

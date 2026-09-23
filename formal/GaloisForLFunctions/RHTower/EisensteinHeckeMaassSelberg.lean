@@ -44,7 +44,7 @@ theorem natCast_mul_ofReal_cpow (p : ℕ) {y : ℝ} (hy : 0 ≤ y) (w : ℂ) :
   have := Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg p) hy w
   simpa using this
 
-theorem ofReal_div_natCast_cpow (p : ℕ) {y : ℝ} (hy : 0 ≤ y) (w : ℂ) :
+theorem ofReal_div_natCast_cpow_eisensteinHeckeMaassSelberg (p : ℕ) {y : ℝ} (hy : 0 ≤ y) (w : ℂ) :
     ((y : ℂ) / (p : ℂ)) ^ w = (y : ℂ) ^ w * ((p : ℂ) ^ w)⁻¹ := by
   have := Complex.mul_cpow_ofReal_nonneg hy (inv_nonneg.mpr (Nat.cast_nonneg p)) w
   push_cast at this
@@ -67,7 +67,7 @@ theorem heckeOp_indicator_cpow {p : ℕ} (hp : 0 < p) (c w : ℂ) (Y x : ℝ) {y
   have hc2 : (Y < y / p) ↔ (Y * p < y) := (lt_div_iff₀ hpR)
   simp only [hc1, hc2]
   push_cast
-  rw [natCast_mul_ofReal_cpow p hy.le w, ofReal_div_natCast_cpow p hy.le w]
+  rw [natCast_mul_ofReal_cpow p hy.le w, ofReal_div_natCast_cpow_eisensteinHeckeMaassSelberg p hy.le w]
   split_ifs <;> ring
 
 /-! ## The remainder -/

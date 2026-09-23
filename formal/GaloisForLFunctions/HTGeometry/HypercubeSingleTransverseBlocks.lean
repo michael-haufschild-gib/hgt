@@ -104,7 +104,7 @@ theorem charpoly_singleTransverseHam [Nontrivial R] [DecidableEq R]
     (d : (Fin (m + 1) → Bool) → R) (u : R) :
     (singleTransverseHam d u).charpoly
       = ∏ z : Fin m → Bool,
-          (X ^ 2 - C (d (Fin.cons false z) + d (Fin.cons true z)) * X
+          (X ^ (2 : ℕ) - C (d (Fin.cons false z) + d (Fin.cons true z)) * X
             + C (d (Fin.cons false z) * d (Fin.cons true z) - u * u)) := by
   classical
   have hre := Matrix.charpoly_reindex (cubeSplit m) (singleTransverseHam d u)

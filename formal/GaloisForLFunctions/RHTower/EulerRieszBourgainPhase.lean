@@ -15,7 +15,7 @@ open GaloisForLFunctions.HTGeometry
 
 /-- The Bourgain phase-space vector realizing the normalized Euler--Riesz dilation profile. -/
 noncomputable def eulerRieszBourgainPhase (amplitude : ℝ) : BourgainPhaseSpace :=
-  ![0, -(3 / 2 : ℝ) * (amplitude ^ 2 + 1), 2 * (amplitude ^ 2 + 1), 0]
+  ![0, -(3 / 2 : ℝ) * (amplitude ^ (2 : ℕ) + 1), 2 * (amplitude ^ (2 : ℕ) + 1), 0]
 
 /-- The Euler--Riesz dilation profile is a square-root-curve phase, up to its invariant mass term. -/
 theorem eulerRieszDilationProfile_eq_bourgainSquareRootCurvePhase
@@ -35,7 +35,7 @@ theorem eulerRieszBourgainPhase_linear_unit (amplitude : ℝ) :
 /-- The Euler--Riesz phase has negative square-root-curve quadratic coordinate at unit scale. -/
 theorem eulerRieszBourgainPhase_quadratic_unit (amplitude : ℝ) :
     bourgainSquareRootQuadraticPhaseCoordinate 1 (eulerRieszBourgainPhase amplitude)
-      = -(3 / 4 : ℝ) * (amplitude ^ 2 + 1) := by
+      = -(3 / 4 : ℝ) * (amplitude ^ (2 : ℕ) + 1) := by
   simp [bourgainSquareRootQuadraticPhaseCoordinate, eulerRieszBourgainPhase]
   ring
 
@@ -43,7 +43,7 @@ theorem eulerRieszBourgainPhase_quadratic_unit (amplitude : ℝ) :
 theorem eulerRieszBourgainPhase_quadratic_unit_neg (amplitude : ℝ) :
     bourgainSquareRootQuadraticPhaseCoordinate 1 (eulerRieszBourgainPhase amplitude) < 0 := by
   rw [eulerRieszBourgainPhase_quadratic_unit]
-  have hpos : 0 < amplitude ^ 2 + 1 := by positivity
+  have hpos : 0 < amplitude ^ (2 : ℕ) + 1 := by positivity
   nlinarith
 
 /-- The Euler--Riesz phase is orthogonal to the unit-scale linear jet of the quadratic cloud. -/
@@ -55,7 +55,7 @@ theorem bourgainDot_eulerRieszBourgainPhase_linearJet_unit (amplitude : ℝ) :
 /-- Pairing the Euler--Riesz phase with the unit-scale quadratic jet gives its curvature. -/
 theorem bourgainDot_eulerRieszBourgainPhase_quadraticJet_unit (amplitude : ℝ) :
     bourgainDot (eulerRieszBourgainPhase amplitude) (bourgainSquareRootQuadraticJet 1)
-      = -(3 / 4 : ℝ) * (amplitude ^ 2 + 1) := by
+      = -(3 / 4 : ℝ) * (amplitude ^ (2 : ℕ) + 1) := by
   simp [bourgainDot, eulerRieszBourgainPhase, bourgainSquareRootQuadraticJet, Fin.sum_univ_four]
   ring
 

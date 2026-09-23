@@ -56,8 +56,8 @@ def d4DarbouxCayleyPhaseMismatch (c d y : ℝ) : ℝ :=
 theorem d4DarbouxCayleyPhaseMismatch_eq
     {c d y : ℝ} (hc : c ≠ 0) (hd : d ≠ 0) :
     d4DarbouxCayleyPhaseMismatch c d y =
-      4 * y ^ 2 * (d - c) ^ 2 /
-        ((c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2)) := by
+      4 * y ^ (2 : ℕ) * (d - c) ^ (2 : ℕ) /
+        ((c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ))) := by
   rw [d4DarbouxCayleyPhaseMismatch,
     d4DarbouxCayleyPhase_sub_eq hc hd,
     Complex.normSq_div]
@@ -67,22 +67,22 @@ theorem d4DarbouxCayleyPhaseMismatch_eq
 
 theorem d4DarbouxCayleyPhaseMismatch_scaled_eq
     {c d y : ℝ} (hc : c ≠ 0) (hd : d ≠ 0) :
-    (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2) *
+    (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ)) *
         d4DarbouxCayleyPhaseMismatch c d y =
-      4 * y ^ 2 * (d - c) ^ 2 := by
+      4 * y ^ (2 : ℕ) * (d - c) ^ (2 : ℕ) := by
   rw [d4DarbouxCayleyPhaseMismatch_eq hc hd]
-  have hcpos : 0 < c ^ 2 + y ^ 2 := by
-    have : 0 < c ^ 2 := sq_pos_of_ne_zero hc
+  have hcpos : 0 < c ^ (2 : ℕ) + y ^ (2 : ℕ) := by
+    have : 0 < c ^ (2 : ℕ) := sq_pos_of_ne_zero hc
     nlinarith [sq_nonneg y]
-  have hdpos : 0 < d ^ 2 + y ^ 2 := by
-    have : 0 < d ^ 2 := sq_pos_of_ne_zero hd
+  have hdpos : 0 < d ^ (2 : ℕ) + y ^ (2 : ℕ) := by
+    have : 0 < d ^ (2 : ℕ) := sq_pos_of_ne_zero hd
     nlinarith [sq_nonneg y]
   field_simp [ne_of_gt hcpos, ne_of_gt hdpos]
 
 theorem normSq_d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient_eq_tilt
     (q : XiZeroCopy) :
     Complex.normSq (d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient q) =
-      (q.1 : ℂ).im ^ 2 * (1 - 2 * (q.1 : ℂ).re) ^ 2 := by
+      (q.1 : ℂ).im ^ (2 : ℕ) * (1 - 2 * (q.1 : ℂ).re) ^ (2 : ℕ) := by
   rw [normSq_d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient,
     d4ThetaTeukolskyQuadraticChiralAngularEigenvalue_eq]
   simp [xiSpectralPoint, pow_two, Complex.mul_im]
@@ -102,17 +102,17 @@ theorem d4BMXiAbsorbedHorizonDarbouxPhaseMismatch_optical_eq
     let b := (q.1 : ℂ).im
     let c := d4BMXiHorizonDarbouxAlgebraicWeight q
     let d := d4BMXiHorizonDarbouxAlgebraicWeight (xiZeroCopyReflectEquiv q)
-    let y := 12 * horizonAmplitude ^ 2 * omega
-    b ^ 2 * (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2) *
+    let y := 12 * horizonAmplitude ^ (2 : ℕ) * omega
+    b ^ (2 : ℕ) * (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ)) *
         d4BMXiAbsorbedHorizonDarbouxPhaseMismatch q horizonAmplitude omega =
-      64 * y ^ 2 * a ^ 2 * (1 - a) ^ 2 *
+      64 * y ^ (2 : ℕ) * a ^ (2 : ℕ) * (1 - a) ^ (2 : ℕ) *
         Complex.normSq (d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient q) := by
   dsimp only
   let a : ℝ := (q.1 : ℂ).re
   let b : ℝ := (q.1 : ℂ).im
   let c : ℝ := d4BMXiHorizonDarbouxAlgebraicWeight q
   let d : ℝ := d4BMXiHorizonDarbouxAlgebraicWeight (xiZeroCopyReflectEquiv q)
-  let y : ℝ := 12 * horizonAmplitude ^ 2 * omega
+  let y : ℝ := 12 * horizonAmplitude ^ (2 : ℕ) * omega
   have hc : c ≠ 0 := ne_of_lt (d4BMXiHorizonDarbouxAlgebraicWeight_neg q)
   have hd : d ≠ 0 := ne_of_lt
     (d4BMXiHorizonDarbouxAlgebraicWeight_neg (xiZeroCopyReflectEquiv q))
@@ -122,10 +122,10 @@ theorem d4BMXiAbsorbedHorizonDarbouxPhaseMismatch_optical_eq
     linarith [d4BMXiHorizonDarbouxAlgebraicWeight_sub_reflect_eq q]
   have hmix := normSq_d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient_eq_tilt q
   change Complex.normSq (d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient q) =
-      b ^ 2 * (1 - 2 * a) ^ 2 at hmix
-  change b ^ 2 * (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2) *
+      b ^ (2 : ℕ) * (1 - 2 * a) ^ (2 : ℕ) at hmix
+  change b ^ (2 : ℕ) * (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ)) *
         d4BMXiAbsorbedHorizonDarbouxPhaseMismatch q horizonAmplitude omega =
-      64 * y ^ 2 * a ^ 2 * (1 - a) ^ 2 *
+      64 * y ^ (2 : ℕ) * a ^ (2 : ℕ) * (1 - a) ^ (2 : ℕ) *
         Complex.normSq (d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient q)
   have hmismatch :
       d4BMXiAbsorbedHorizonDarbouxPhaseMismatch q horizonAmplitude omega =
@@ -146,12 +146,12 @@ def d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy
     (radiation : H →ₗ[ℂ] K) (psi : H) (q : XiZeroCopy)
     (horizonAmplitude omega : ℝ) : ℝ :=
   d4BMXiAbsorbedHorizonDarbouxPhaseMismatch q horizonAmplitude omega *
-    ‖radiation psi‖ ^ 2
+    ‖radiation psi‖ ^ (2 : ℕ)
 
 def d4BMXiTransportedOrthogonalHelicityMixingFlux
     (radiation : H →ₗ[ℂ] K) (psi : H) (q : XiZeroCopy) : ℝ :=
   Complex.normSq (d4ThetaTeukolskyOrthogonalHelicityMixingCoefficient q) *
-    ‖radiation psi‖ ^ 2
+    ‖radiation psi‖ ^ (2 : ℕ)
 
 /-- Radiation transport turns local phase mismatch into exact orthogonal-helicity flux. -/
 theorem d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy_optical_eq
@@ -161,11 +161,11 @@ theorem d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy_optical_eq
     let b := (q.1 : ℂ).im
     let c := d4BMXiHorizonDarbouxAlgebraicWeight q
     let d := d4BMXiHorizonDarbouxAlgebraicWeight (xiZeroCopyReflectEquiv q)
-    let y := 12 * horizonAmplitude ^ 2 * omega
-    b ^ 2 * (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2) *
+    let y := 12 * horizonAmplitude ^ (2 : ℕ) * omega
+    b ^ (2 : ℕ) * (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ)) *
         d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy
           radiation psi q horizonAmplitude omega =
-      64 * y ^ 2 * a ^ 2 * (1 - a) ^ 2 *
+      64 * y ^ (2 : ℕ) * a ^ (2 : ℕ) * (1 - a) ^ (2 : ℕ) *
         d4BMXiTransportedOrthogonalHelicityMixingFlux radiation psi q := by
   dsimp only
   rw [d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy,
@@ -195,7 +195,7 @@ theorem d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy_eq_zero_iff_flu
   let b : ℝ := (q.1 : ℂ).im
   let c : ℝ := d4BMXiHorizonDarbouxAlgebraicWeight q
   let d : ℝ := d4BMXiHorizonDarbouxAlgebraicWeight (xiZeroCopyReflectEquiv q)
-  let y : ℝ := 12 * horizonAmplitude ^ 2 * omega
+  let y : ℝ := 12 * horizonAmplitude ^ (2 : ℕ) * omega
   have ha := xi_divisor_support_re_mem_open_unit q.1
   have hb : b ≠ 0 := by simpa [b] using xi_divisor_support_im_ne_zero q.1
   have hc : c ≠ 0 := ne_of_lt (d4BMXiHorizonDarbouxAlgebraicWeight_neg q)
@@ -204,9 +204,9 @@ theorem d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy_eq_zero_iff_flu
   have hy : y ≠ 0 := by
     dsimp [y]
     exact mul_ne_zero (mul_ne_zero (by norm_num) (pow_ne_zero 2 hamp)) homega
-  have hleft : 0 < b ^ 2 * (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2) := by
+  have hleft : 0 < b ^ (2 : ℕ) * (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
     positivity
-  have hright : 0 < 64 * y ^ 2 * a ^ 2 * (1 - a) ^ 2 := by
+  have hright : 0 < 64 * y ^ (2 : ℕ) * a ^ (2 : ℕ) * (1 - a) ^ (2 : ℕ) := by
     have ha0 : 0 < a := by simpa [a] using ha.1
     have ha1 : a < 1 := by simpa [a] using ha.2
     positivity
@@ -215,22 +215,22 @@ theorem d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy_eq_zero_iff_flu
       radiation psi q horizonAmplitude omega
   dsimp only at hlaw
   change
-    b ^ 2 * (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2) *
+    b ^ (2 : ℕ) * (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ)) *
         d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy
           radiation psi q horizonAmplitude omega =
-      64 * y ^ 2 * a ^ 2 * (1 - a) ^ 2 *
+      64 * y ^ (2 : ℕ) * a ^ (2 : ℕ) * (1 - a) ^ (2 : ℕ) *
         d4BMXiTransportedOrthogonalHelicityMixingFlux radiation psi q at hlaw
   constructor
   · intro hzero
     have hprod :
-        (64 * y ^ 2 * a ^ 2 * (1 - a) ^ 2) *
+        (64 * y ^ (2 : ℕ) * a ^ (2 : ℕ) * (1 - a) ^ (2 : ℕ)) *
           d4BMXiTransportedOrthogonalHelicityMixingFlux radiation psi q = 0 := by
       rw [← hlaw, hzero]
       ring
     exact (mul_eq_zero.mp hprod).resolve_left (ne_of_gt hright)
   · intro hzero
     have hprod :
-        (b ^ 2 * (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2)) *
+        (b ^ (2 : ℕ) * (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ))) *
           d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy
             radiation psi q horizonAmplitude omega = 0 := by
       rw [hlaw, hzero]
@@ -261,15 +261,15 @@ theorem d4BMXiFullEinsteinAbsorbedHorizonPhaseMixingOpticalLaw
     let b := (q.1 : ℂ).im
     let c := d4BMXiHorizonDarbouxAlgebraicWeight q
     let d := d4BMXiHorizonDarbouxAlgebraicWeight (xiZeroCopyReflectEquiv q)
-    let y := 12 * horizonAmplitude ^ 2 * omega
+    let y := 12 * horizonAmplitude ^ (2 : ℕ) * omega
     let source : ℂ × ℂ :=
       (d4ThetaHawkingSelfDualQuadraticCarrierCoefficient (horizonAmplitude : ℂ)
         (xiSpectralPoint q), orthogonalMixing)
-    b ^ 2 * (c ^ 2 + y ^ 2) * (d ^ 2 + y ^ 2) *
+    b ^ (2 : ℕ) * (c ^ (2 : ℕ) + y ^ (2 : ℕ)) * (d ^ (2 : ℕ) + y ^ (2 : ℕ)) *
         d4BMXiAbsorbedHorizonDarbouxPhaseMismatchRadiationEnergy
           (d4BMGaugeFixedSecondHarmonicRadiationMap q) source q
           horizonAmplitude omega =
-      64 * y ^ 2 * a ^ 2 * (1 - a) ^ 2 *
+      64 * y ^ (2 : ℕ) * a ^ (2 : ℕ) * (1 - a) ^ (2 : ℕ) *
         d4BMXiTransportedOrthogonalHelicityMixingFlux
           (d4BMGaugeFixedSecondHarmonicRadiationMap q) source q := by
   dsimp only

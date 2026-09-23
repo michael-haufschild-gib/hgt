@@ -117,7 +117,7 @@ theorem d4BM_whittakerP0FirstJet_eq_lowerZeroShift_div_sub
 def d4BMWhittakerP0SecondJet
     (c : D4BMPositiveReal) (nu : ℂ) (Y : D4BMPositiveReal) : ℂ :=
   d4BMPositiveFrequencyRaiseZeroModeDeriv c nu Y / (Y : ℂ) -
-    d4BMPositiveFrequencyRaiseZeroShift c nu (Y : ℝ) / (Y : ℂ) ^ 2 +
+    d4BMPositiveFrequencyRaiseZeroShift c nu (Y : ℝ) / (Y : ℂ) ^ (2 : ℕ) +
     (c : ℂ) * d4BMWhittakerP0FirstJet c nu (Y : ℝ)
 
 /-- The reconstructed radial second jet is the genuine derivative of the first jet. -/
@@ -147,7 +147,7 @@ theorem d4BM_whittakerP0SecondJet_eq_lowerZero
     (c : D4BMPositiveReal) (nu : ℂ) (Y : D4BMPositiveReal) :
     d4BMWhittakerP0SecondJet c nu Y =
       d4BMPositiveFrequencyLowerZeroModeDeriv c nu Y / (Y : ℂ) -
-        d4BMPositiveFrequencyLowerZeroShift c nu (Y : ℝ) / (Y : ℂ) ^ 2 -
+        d4BMPositiveFrequencyLowerZeroShift c nu (Y : ℝ) / (Y : ℂ) ^ (2 : ℕ) -
         (c : ℂ) * d4BMWhittakerP0FirstJet c nu (Y : ℝ) := by
   have hL := hasDerivAt_d4BMPositiveFrequencyLowerZeroShift c nu Y
   have hYc : HasDerivAt (fun q : ℝ => (q : ℂ)) 1 (Y : ℝ) :=
@@ -165,7 +165,7 @@ theorem d4BM_whittakerP0SecondJet_eq_lowerZero
   have hlower := hright.congr_of_eventuallyEq heq
   have hlower' : HasDerivAt (d4BMWhittakerP0FirstJet c nu)
       (d4BMPositiveFrequencyLowerZeroModeDeriv c nu Y / (Y : ℂ) -
-        d4BMPositiveFrequencyLowerZeroShift c nu (Y : ℝ) / (Y : ℂ) ^ 2 -
+        d4BMPositiveFrequencyLowerZeroShift c nu (Y : ℝ) / (Y : ℂ) ^ (2 : ℕ) -
         (c : ℂ) * d4BMWhittakerP0FirstJet c nu (Y : ℝ)) (Y : ℝ) := by
     refine hlower.congr_deriv ?_
     rw [d4BM_whittakerP0FirstJet_eq_deriv]
@@ -202,7 +202,7 @@ def d4BMSignedWhittakerModeVerticalFirstJet
 /-- Horizontal pure second jet of one signed mode. -/
 def d4BMSignedWhittakerModeHorizontalSecondJet
     (negative : Bool) (N : ℕ) (nu : ℂ) (x Y : ℝ) : ℂ :=
-  d4BMSignedFourierRate negative N ^ 2 *
+  d4BMSignedFourierRate negative N ^ (2 : ℕ) *
     d4BMSignedWhittakerMode negative N nu x Y
 
 /-- Mixed second jet of one signed mode. -/
@@ -273,7 +273,7 @@ theorem hasDerivAt_d4BMSignedWhittakerModeHorizontalFirstJet_horizontal
   change HasDerivAt
     (fun q : ℝ => d4BMSignedFourierRate negative N *
       d4BMSignedWhittakerMode negative N nu q Y)
-    (d4BMSignedFourierRate negative N ^ 2 *
+    (d4BMSignedFourierRate negative N ^ (2 : ℕ) *
       d4BMSignedWhittakerMode negative N nu x Y) x
   apply h.congr_deriv
   unfold d4BMSignedWhittakerModeHorizontalFirstJet

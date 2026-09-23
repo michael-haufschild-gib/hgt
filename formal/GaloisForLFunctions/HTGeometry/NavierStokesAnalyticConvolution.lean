@@ -27,19 +27,19 @@ open scoped BigOperators
 
 /-- Reciprocal-square coefficient weight used in the analytic profile norm. -/
 noncomputable def reciprocalSquareWeight {n : ℕ} (i : Fin n) : ℝ :=
-  1 / (((i : ℕ) : ℝ) + 1) ^ 2
+  1 / (((i : ℕ) : ℝ) + 1) ^ (2 : ℕ)
 
 private theorem square_div_product_le_two {x a b : ℝ}
     (ha : 0 < a) (hb : 0 < b) (hx0 : 0 ≤ x) (hx : x ≤ a + b) :
-    x ^ 2 / (a ^ 2 * b ^ 2) ≤ 2 / a ^ 2 + 2 / b ^ 2 := by
-  have hab : 0 < a ^ 2 * b ^ 2 := mul_pos (sq_pos_of_pos ha) (sq_pos_of_pos hb)
+    x ^ (2 : ℕ) / (a ^ (2 : ℕ) * b ^ (2 : ℕ)) ≤ 2 / a ^ (2 : ℕ) + 2 / b ^ (2 : ℕ) := by
+  have hab : 0 < a ^ (2 : ℕ) * b ^ (2 : ℕ) := mul_pos (sq_pos_of_pos ha) (sq_pos_of_pos hb)
   rw [div_le_iff₀ hab]
   field_simp [ha.ne', hb.ne']
   nlinarith [sq_nonneg (a - b)]
 
 /-- Each convolution summand is controlled by its two endpoint reciprocal-square weights. -/
 theorem reciprocalSquareConvolutionTerm_le (N : ℕ) (i : Fin (N + 1)) :
-    ((N + 1 : ℕ) : ℝ) ^ 2 * reciprocalSquareWeight i * reciprocalSquareWeight i.rev ≤
+    ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) * reciprocalSquareWeight i * reciprocalSquareWeight i.rev ≤
       2 * reciprocalSquareWeight i + 2 * reciprocalSquareWeight i.rev := by
   have hsum : ((N + 1 : ℕ) : ℝ) ≤
       (((i : ℕ) : ℝ) + 1) + (((i.rev : ℕ) : ℝ) + 1) := by
@@ -69,7 +69,7 @@ Reciprocal-square convolution bound.  This proves equation (B.7) with `4` in pla
 -/
 theorem reciprocalSquareConvolution_le_four (N : ℕ) :
     ∑ i : Fin (N + 1),
-        ((N + 1 : ℕ) : ℝ) ^ 2 * reciprocalSquareWeight i * reciprocalSquareWeight i.rev ≤
+        ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) * reciprocalSquareWeight i * reciprocalSquareWeight i.rev ≤
       4 * ∑ i : Fin (N + 1), reciprocalSquareWeight i := by
   calc
     _ ≤ ∑ i : Fin (N + 1),
@@ -83,7 +83,7 @@ theorem reciprocalSquareConvolution_le_four (N : ℕ) :
 /-- The paper's stated constant `8` follows immediately from the sharper finite bound. -/
 theorem reciprocalSquareConvolution_le_eight (N : ℕ) :
     ∑ i : Fin (N + 1),
-        ((N + 1 : ℕ) : ℝ) ^ 2 * reciprocalSquareWeight i * reciprocalSquareWeight i.rev ≤
+        ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) * reciprocalSquareWeight i * reciprocalSquareWeight i.rev ≤
       8 * ∑ i : Fin (N + 1), reciprocalSquareWeight i := by
   refine (reciprocalSquareConvolution_le_four N).trans ?_
   have hsum : 0 ≤ ∑ i : Fin (N + 1), reciprocalSquareWeight i :=
@@ -116,11 +116,11 @@ theorem splitBlockChooseProduct_le (i k α β : ℕ) (hi : i ≤ α) (hk : k ≤
 
 /-- The radial integration weight ratio in equation (B.9) has the paper's uniform bound `80`. -/
 theorem radialIntegrationWeightRatio_le (α β : ℕ) :
-    20 * (((α : ℝ) + 2) ^ 2 / ((α : ℝ) + 1) ^ 2) *
+    20 * (((α : ℝ) + 2) ^ (2 : ℕ) / ((α : ℝ) + 1) ^ (2 : ℕ)) *
         (((α : ℝ) + 1) / ((α : ℝ) + (β : ℝ) + 1)) ≤ 80 := by
   have hα : 0 ≤ (α : ℝ) := Nat.cast_nonneg α
   have hβ : 0 ≤ (β : ℝ) := Nat.cast_nonneg β
-  have hfirst : (((α : ℝ) + 2) ^ 2 / ((α : ℝ) + 1) ^ 2) ≤ 4 := by
+  have hfirst : (((α : ℝ) + 2) ^ (2 : ℕ) / ((α : ℝ) + 1) ^ (2 : ℕ)) ≤ 4 := by
     rw [div_le_iff₀ (sq_pos_of_pos (by positivity : 0 < (α : ℝ) + 1))]
     nlinarith
   have hsecond : ((α : ℝ) + 1) / ((α : ℝ) + (β : ℝ) + 1) ≤ 1 := by
@@ -133,15 +133,15 @@ theorem radialIntegrationWeightRatio_le (α β : ℕ) :
 /-- The mixed parameter/radial weight ratio in equation (B.10) has bound `80(i+1)/ρ`. -/
 theorem mixedIntegrationWeightRatio_le (i k : ℕ) {ρ : ℝ} (hρ : 0 < ρ) :
     (20 / ρ) * ((i : ℝ) + 1) *
-        (((i : ℝ) + 2) ^ 2 / ((i : ℝ) + 1) ^ 2) *
-        (((k : ℝ) + 1) ^ 2 / ((k : ℝ) + 2) ^ 2) ≤
+        (((i : ℝ) + 2) ^ (2 : ℕ) / ((i : ℝ) + 1) ^ (2 : ℕ)) *
+        (((k : ℝ) + 1) ^ (2 : ℕ) / ((k : ℝ) + 2) ^ (2 : ℕ)) ≤
       (80 / ρ) * ((i : ℝ) + 1) := by
   have hi : 0 ≤ (i : ℝ) := Nat.cast_nonneg i
   have hk : 0 ≤ (k : ℝ) := Nat.cast_nonneg k
-  have hfirst : (((i : ℝ) + 2) ^ 2 / ((i : ℝ) + 1) ^ 2) ≤ 4 := by
+  have hfirst : (((i : ℝ) + 2) ^ (2 : ℕ) / ((i : ℝ) + 1) ^ (2 : ℕ)) ≤ 4 := by
     rw [div_le_iff₀ (sq_pos_of_pos (by positivity : 0 < (i : ℝ) + 1))]
     nlinarith
-  have hsecond : (((k : ℝ) + 1) ^ 2 / ((k : ℝ) + 2) ^ 2) ≤ 1 := by
+  have hsecond : (((k : ℝ) + 1) ^ (2 : ℕ) / ((k : ℝ) + 2) ^ (2 : ℕ)) ≤ 1 := by
     rw [div_le_one (sq_pos_of_pos (by positivity : 0 < (k : ℝ) + 2))]
     nlinarith
   have hscale : 0 ≤ 20 / ρ := by positivity

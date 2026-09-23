@@ -93,7 +93,7 @@ theorem ccmCyclicJacobi_double_number_commutator
       ring
 
 /-- Connes--Consani Lemma (47)(iii), left endpoint of
-`[A,[A,N]] = diag(2(|a_(n-1)|^2-|a_n|^2))`. -/
+`[A,[A,N]] = diag(2(|a_(n-1)|^(2 : ℕ)-|a_n|^(2 : ℕ)))`. -/
 theorem ccmCyclicJacobi_double_commutator_zero (a x : ℕ → ℂ) :
     ccmFormalCommutator (ccmCyclicJacobiAction a)
         (fun y => ccmFormalCommutator (ccmCyclicJacobiAction a)
@@ -239,10 +239,10 @@ theorem ccmCyclic_raising_sub_half_jacobi
         ccmCyclicUpperShiftAction]
       ring
 
-/-- Formal prolate action `-A^2 + lambda^2 N` on the Jacobi polynomial core. -/
+/-- Formal prolate action `-A^(2 : ℕ) + lambda^(2 : ℕ) N` on the Jacobi polynomial core. -/
 def ccmFormalProlateAction (a : ℕ → ℂ) (lambda : ℝ) (x : ℕ → ℂ) (n : ℕ) : ℂ :=
   -ccmCyclicJacobiAction a (ccmCyclicJacobiAction a x) n +
-    ((lambda ^ 2 : ℝ) : ℂ) * ccmCyclicNumberAction x n
+    ((lambda ^ (2 : ℕ) : ℝ) : ℂ) * ccmCyclicNumberAction x n
 
 /-- Connes--Consani Proposition (15), even block at its left endpoint. -/
 theorem ccmFormalProlate_even_zero (a : ℕ → ℂ) (lambda : ℝ) (x : ℕ → ℂ) :
@@ -263,7 +263,7 @@ theorem ccmFormalProlate_even_succ
       -(star (a (2 * n)) * star (a (2 * n + 1))) * x n +
       (-(a (2 * n + 2) * star (a (2 * n + 2))) -
           star (a (2 * n + 1)) * a (2 * n + 1) +
-          (((2 * (n + 1) : ℕ) : ℝ) * lambda ^ 2 : ℝ)) * x (n + 1) -
+          (((2 * (n + 1) : ℕ) : ℝ) * lambda ^ (2 : ℕ) : ℝ)) * x (n + 1) -
       a (2 * n + 2) * a (2 * n + 3) * x (n + 2) := by
   have h0 : ccmEvenJacobiLift x (2 * n) = x n :=
     ccmEvenJacobiLift_even x n
@@ -282,7 +282,7 @@ theorem ccmFormalProlate_even_succ
 /-- Connes--Consani Proposition (16), odd block at its left endpoint. -/
 theorem ccmFormalProlate_odd_zero (a : ℕ → ℂ) (lambda : ℝ) (x : ℕ → ℂ) :
     ccmFormalProlateAction a lambda (ccmOddJacobiLift x) 1 =
-      (-(star (a 0) * a 0) - a 1 * star (a 1) + (lambda ^ 2 : ℝ)) * x 0 -
+      (-(star (a 0) * a 0) - a 1 * star (a 1) + (lambda ^ (2 : ℕ) : ℝ)) * x 0 -
         a 1 * a 2 * x 1 := by
   have hone : ccmOddJacobiLift x 1 = x 0 := by
     simpa using ccmOddJacobiLift_odd x 0
@@ -299,7 +299,7 @@ theorem ccmFormalProlate_odd_succ
       -(star (a (2 * n + 1)) * star (a (2 * n + 2))) * x n +
       (-(star (a (2 * n + 2)) * a (2 * n + 2)) -
           a (2 * n + 3) * star (a (2 * n + 3)) +
-          (((2 * (n + 1) + 1 : ℕ) : ℝ) * lambda ^ 2 : ℝ)) * x (n + 1) -
+          (((2 * (n + 1) + 1 : ℕ) : ℝ) * lambda ^ (2 : ℕ) : ℝ)) * x (n + 1) -
       a (2 * n + 3) * a (2 * n + 4) * x (n + 2) := by
   have h0 : ccmOddJacobiLift x (2 * n + 1) = x n :=
     ccmOddJacobiLift_odd x n

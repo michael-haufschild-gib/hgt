@@ -9,7 +9,7 @@ other two: the total mass, which controls the alignment defect, and the second m
 the Cauchy--Schwarz bound on the weighted misalignment.
 
 Both split the same way as the first moment — a window of half-width `N` around the central index,
-where the squared weight is at most `N^2`, and two tails on which the terms decay at rate `N/(4L)`
+where the squared weight is at most `N^(2 : ℕ)`, and two tails on which the terms decay at rate `N/(4L)`
 per unit of deviation.  The tail series are the shifted geometric series of orders `0` and `2`.
 -/
 
@@ -37,16 +37,16 @@ private theorem summable_shifted_geom {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) (N :
 
 /-- The shifted geometric series with a squared weight. -/
 private theorem summable_shifted_sq_weight {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) (N : ℕ) :
-    Summable fun j : ℕ => ((N : ℝ) + 1 + j) ^ 2 * q ^ (N + 1 + j) := by
+    Summable fun j : ℕ => ((N : ℝ) + 1 + j) ^ (2 : ℕ) * q ^ (N + 1 + j) := by
   have h0 : Summable fun j : ℕ => q ^ j := summable_geometric_of_lt_one hq0.le hq1
   have h1 : Summable fun j : ℕ => (j : ℝ) * q ^ j := by
     simpa using summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) 1
       (by rw [Real.norm_eq_abs, abs_of_pos hq0]; exact hq1)
-  have h2 : Summable fun j : ℕ => (j : ℝ) ^ 2 * q ^ j := by
+  have h2 : Summable fun j : ℕ => (j : ℝ) ^ (2 : ℕ) * q ^ j := by
     simpa using summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) 2
       (by rw [Real.norm_eq_abs, abs_of_pos hq0]; exact hq1)
-  have hpoly : Summable fun j : ℕ => ((N : ℝ) + 1 + j) ^ 2 * q ^ j := by
-    refine (((h0.mul_left (((N : ℝ) + 1) ^ 2)).add (h1.mul_left (2 * ((N : ℝ) + 1)))).add
+  have hpoly : Summable fun j : ℕ => ((N : ℝ) + 1 + j) ^ (2 : ℕ) * q ^ j := by
+    refine (((h0.mul_left (((N : ℝ) + 1) ^ (2 : ℕ))).add (h1.mul_left (2 * ((N : ℝ) + 1)))).add
       h2).congr fun j => ?_
     ring
   refine (hpoly.mul_left (q ^ (N + 1))).congr fun j => ?_
@@ -158,7 +158,7 @@ theorem coeffSum_le_gaussian
 
 set_option maxHeartbeats 400000 in
 /-- **The second moment under Gaussian concentration.**  Inside the window the squared deviation is
-at most `N^2`; outside it the geometric decay dominates the quadratic weight. -/
+at most `N^(2 : ℕ)`; outside it the geometric decay dominates the quadratic weight. -/
 theorem tsum_index_sq_le_gaussian
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L v₀ : ℝ} (hH : 0 < H) (hL : 0 < L)
     {N : ℕ} (hN0 : 0 < N) (hNK : (N : ℝ) ≤ 2 * L * H) (hNv : 2 * L * v₀ ≤ (N : ℝ))
@@ -169,11 +169,11 @@ theorem tsum_index_sq_le_gaussian
     {W : ℝ}
     (hW : ∑ n ∈ Finset.Ico (centralIndex a (Real.exp x) - N)
               (centralIndex a (Real.exp x) + N + 1), ‖a n‖ * Real.exp x ^ n ≤ W) :
-    ∑' n : ℕ, ((n : ℝ) - (centralIndex a (Real.exp x) : ℝ)) ^ 2
+    ∑' n : ℕ, ((n : ℝ) - (centralIndex a (Real.exp x) : ℝ)) ^ (2 : ℕ)
         * (‖a n‖ * Real.exp x ^ n)
-      ≤ (N : ℝ) ^ 2 * W
+      ≤ (N : ℝ) ^ (2 : ℕ) * W
         + 2 * maxTerm a (Real.exp x)
-            * ∑' j : ℕ, ((N : ℝ) + 1 + j) ^ 2
+            * ∑' j : ℕ, ((N : ℝ) + 1 + j) ^ (2 : ℕ)
                 * Real.exp (-((N : ℝ) / (4 * L))) ^ (N + 1 + j) := by
   classical
   set r : ℝ := Real.exp x with hr
@@ -188,12 +188,12 @@ theorem tsum_index_sq_le_gaussian
     rw [hq, Real.exp_lt_one_iff]
     have : (0 : ℝ) < (N : ℝ) / (4 * L) := by positivity
     linarith
-  set D : ℕ → ℝ := fun n => ((n : ℝ) - (v : ℝ)) ^ 2 * (‖a n‖ * r ^ n) with hD
+  set D : ℕ → ℝ := fun n => ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n) with hD
   have hDsum : Summable D := summable_index_deviation_sq ha hrpos v
-  set f : ℕ → ℝ := fun j => ((N : ℝ) + 1 + j) ^ 2 * q ^ (N + 1 + j) with hf
+  set f : ℕ → ℝ := fun j => ((N : ℝ) + 1 + j) ^ (2 : ℕ) * q ^ (N + 1 + j) with hf
   have hfsum : Summable f := summable_shifted_sq_weight hq0 hq1 N
   have hfnn : ∀ j, 0 ≤ f j := fun j => by
-    have : (0 : ℝ) ≤ ((N : ℝ) + 1 + j) ^ 2 := sq_nonneg _
+    have : (0 : ℝ) ≤ ((N : ℝ) + 1 + j) ^ (2 : ℕ) := sq_nonneg _
     exact mul_nonneg this (pow_nonneg hq0.le _)
   have hexp : ∀ j : ℕ, Real.exp (-(((N : ℝ) + 1 + j) * (N : ℝ) / (4 * L))) = q ^ (N + 1 + j) := by
     intro j
@@ -211,9 +211,9 @@ theorem tsum_index_sq_le_gaussian
     have hterm := term_le_maxTerm_exp_uniform_above (x := x) ha hn₀ hH hL hNpos hNK hNv hlipA
       (n := n) (k := (n : ℝ) - (v : ℝ)) rfl hkK
     rw [← hk] at hterm
-    calc D n = ((n : ℝ) - (v : ℝ)) ^ 2 * (‖a n‖ * r ^ n) := rfl
-      _ = ((N : ℝ) + 1 + j) ^ 2 * (‖a n‖ * r ^ n) := by rw [hk]
-      _ ≤ ((N : ℝ) + 1 + j) ^ 2
+    calc D n = ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n) := rfl
+      _ = ((N : ℝ) + 1 + j) ^ (2 : ℕ) * (‖a n‖ * r ^ n) := by rw [hk]
+      _ ≤ ((N : ℝ) + 1 + j) ^ (2 : ℕ)
           * (μ * Real.exp (-(((N : ℝ) + 1 + j) * (N : ℝ) / (4 * L)))) :=
           mul_le_mul_of_nonneg_left hterm (sq_nonneg _)
       _ = μ * f j := by rw [hexp j, hf]; ring
@@ -236,17 +236,17 @@ theorem tsum_index_sq_le_gaussian
     have hterm := term_le_maxTerm_exp_uniform_below (x := x) ha hn₀ hH hL hNpos hNK hNv hlipB
       (n := n) (k := (v : ℝ) - (n : ℝ)) rfl hkK
     rw [← hk] at hterm
-    have hsq : ((n : ℝ) - (v : ℝ)) ^ 2 = ((N : ℝ) + 1 + j) ^ 2 := by
+    have hsq : ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) = ((N : ℝ) + 1 + j) ^ (2 : ℕ) := by
       rw [hnv]; ring
-    calc D n = ((n : ℝ) - (v : ℝ)) ^ 2 * (‖a n‖ * r ^ n) := rfl
-      _ = ((N : ℝ) + 1 + j) ^ 2 * (‖a n‖ * r ^ n) := by rw [hsq]
-      _ ≤ ((N : ℝ) + 1 + j) ^ 2
+    calc D n = ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) * (‖a n‖ * r ^ n) := rfl
+      _ = ((N : ℝ) + 1 + j) ^ (2 : ℕ) * (‖a n‖ * r ^ n) := by rw [hsq]
+      _ ≤ ((N : ℝ) + 1 + j) ^ (2 : ℕ)
           * (μ * Real.exp (-(((N : ℝ) + 1 + j) * (N : ℝ) / (4 * L)))) :=
           mul_le_mul_of_nonneg_left hterm (sq_nonneg _)
       _ = μ * f j := by rw [hexp j, hf]; ring
-  have hwin : ∑ n ∈ Finset.Ico (v - N) (v + N + 1), D n ≤ (N : ℝ) ^ 2 * W := by
+  have hwin : ∑ n ∈ Finset.Ico (v - N) (v + N + 1), D n ≤ (N : ℝ) ^ (2 : ℕ) * W := by
     have hpt : ∀ n ∈ Finset.Ico (v - N) (v + N + 1),
-        D n ≤ (N : ℝ) ^ 2 * (‖a n‖ * r ^ n) := by
+        D n ≤ (N : ℝ) ^ (2 : ℕ) * (‖a n‖ * r ^ n) := by
       intro n hn
       obtain ⟨hn1, hn2⟩ := Finset.mem_Ico.mp hn
       have habs : |(n : ℝ) - (v : ℝ)| ≤ (N : ℝ) := by
@@ -264,7 +264,7 @@ theorem tsum_index_sq_le_gaussian
             have : n ≤ v + N := by omega
             exact_mod_cast this
           linarith
-      have hsq : ((n : ℝ) - (v : ℝ)) ^ 2 ≤ (N : ℝ) ^ 2 := by
+      have hsq : ((n : ℝ) - (v : ℝ)) ^ (2 : ℕ) ≤ (N : ℝ) ^ (2 : ℕ) := by
         rw [← sq_abs]
         exact pow_le_pow_left₀ (abs_nonneg _) habs 2
       exact mul_le_mul_of_nonneg_right hsq (term_nonneg a hrpos n)
@@ -294,7 +294,7 @@ theorem tsum_index_sq_le_gaussian
         rw [← hsplit, Finset.range_eq_Ico]
     _ = (∑ n ∈ Finset.Ico 0 (v - N), D n) + (∑ n ∈ Finset.Ico (v - N) (v + N + 1), D n)
         + ∑' j : ℕ, D (j + (v + N + 1)) := by rw [hcons]
-    _ ≤ μ * (∑' j : ℕ, f j) + (N : ℝ) ^ 2 * W + μ * ∑' j : ℕ, f j := by gcongr
-    _ = (N : ℝ) ^ 2 * W + 2 * μ * ∑' j : ℕ, f j := by ring
+    _ ≤ μ * (∑' j : ℕ, f j) + (N : ℝ) ^ (2 : ℕ) * W + μ * ∑' j : ℕ, f j := by gcongr
+    _ = (N : ℝ) ^ (2 : ℕ) * W + 2 * μ * ∑' j : ℕ, f j := by ring
 
 end GaloisForLFunctions.HTGeometry

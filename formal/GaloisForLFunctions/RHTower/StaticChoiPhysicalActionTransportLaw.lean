@@ -23,7 +23,7 @@ noncomputable section
 
 theorem norm_choiVector_sq_eq_normalized_finiteMatrixHilbertSchmidtEnergy
     {d : ℕ} (hd : 0 < d) (A : Matrix (Fin d) (Fin d) ℂ) :
-    ‖choiVector A‖ ^ 2 =
+    ‖choiVector A‖ ^ (2 : ℕ) =
       (d : ℝ)⁻¹ * finiteMatrixHilbertSchmidtEnergy A := by
   rw [EuclideanSpace.norm_sq_eq,
     finiteMatrixHilbertSchmidtEnergy_eq_sum_normSq, Finset.sum_comm]
@@ -39,7 +39,7 @@ theorem norm_choiVector_sq_eq_normalized_finiteMatrixHilbertSchmidtEnergy
     Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (Real.sqrt_nonneg _)]
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd
-  have hsqrt : Real.sqrt (d : ℝ) ^ 2 = d := Real.sq_sqrt hdR.le
+  have hsqrt : Real.sqrt (d : ℝ) ^ (2 : ℕ) = d := Real.sq_sqrt hdR.le
   have hsqrtNe : Real.sqrt (d : ℝ) ≠ 0 := Real.sqrt_ne_zero'.mpr hdR
   field_simp [hsqrtNe]
   nlinarith

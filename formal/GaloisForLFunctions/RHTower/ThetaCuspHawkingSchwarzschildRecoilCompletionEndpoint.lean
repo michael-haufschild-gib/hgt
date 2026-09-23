@@ -5,13 +5,13 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBackreactionCubicCompletionEn
 This endpoint tests a backreaction law coming from black-hole entropy rather than generic KMS,
 CCR, group, inverse, or Krein structure.
 
-For Schwarzschild entropy `S_BH(M) = 4*pi*M^2`, the Parikh--Wilczek microcanonical weight of two
+For Schwarzschild entropy `S_BH(M) = 4*pi*M^(2 : ℕ)`, the Parikh--Wilczek microcanonical weight of two
 emissions with total energy `E+F`, normalized against its two diagonal weights, is exactly
 
-`exp(-4*pi*(E-F)^2)`.
+`exp(-4*pi*(E-F)^(2 : ℕ))`.
 
 Mass cancels. Repeated recoil steps multiply these factors, giving a genuine Gaussian dephasing
-semigroup `exp(-4*pi*depth*(E-F)^2)`. Dressing the source-faithful selectively stimulated theta
+semigroup `exp(-4*pi*depth*(E-F)^(2 : ℕ))`. Dressing the source-faithful selectively stimulated theta
 kernel by this factor preserves every diagonal, increases every two-shell determinant, and kills
 every off-diagonal coherence at large recoil depth. Hence every ordered theta three-shell packet
 enters the strict passive chamber after finitely many integer recoil steps.
@@ -40,7 +40,7 @@ namespace RHTower
 noncomputable section
 
 def schwarzschildBekensteinHawkingEntropy (M : ℝ) : ℝ :=
-  4 * Real.pi * M ^ 2
+  4 * Real.pi * M ^ (2 : ℕ)
 
 def schwarzschildNormalizedTwoEmissionRecoilCoherence
     (M E F : ℝ) : ℝ :=
@@ -52,7 +52,7 @@ def schwarzschildNormalizedTwoEmissionRecoilCoherence
 theorem schwarzschildNormalizedTwoEmissionRecoilCoherence_eq
     (M E F : ℝ) :
     schwarzschildNormalizedTwoEmissionRecoilCoherence M E F =
-      Real.exp (-4 * Real.pi * (E - F) ^ 2) := by
+      Real.exp (-4 * Real.pi * (E - F) ^ (2 : ℕ)) := by
   unfold schwarzschildNormalizedTwoEmissionRecoilCoherence
     schwarzschildBekensteinHawkingEntropy
   congr 1
@@ -60,7 +60,7 @@ theorem schwarzschildNormalizedTwoEmissionRecoilCoherence_eq
 
 def schwarzschildCumulativeRecoilCoherence
     (depth E F : ℝ) : ℝ :=
-  Real.exp (-4 * Real.pi * depth * (E - F) ^ 2)
+  Real.exp (-4 * Real.pi * depth * (E - F) ^ (2 : ℕ))
 
 theorem schwarzschildCumulativeRecoilCoherence_one_eq_normalized
     (M E F : ℝ) :
@@ -89,20 +89,20 @@ theorem schwarzschildCumulativeRecoilCoherence_add
   rw [schwarzschildCumulativeRecoilCoherence,
     schwarzschildCumulativeRecoilCoherence,
     schwarzschildCumulativeRecoilCoherence]
-  rw [show -4 * Real.pi * (s + t) * (E - F) ^ 2 =
-      -4 * Real.pi * s * (E - F) ^ 2 +
-        -4 * Real.pi * t * (E - F) ^ 2 by ring,
+  rw [show -4 * Real.pi * (s + t) * (E - F) ^ (2 : ℕ) =
+      -4 * Real.pi * s * (E - F) ^ (2 : ℕ) +
+        -4 * Real.pi * t * (E - F) ^ (2 : ℕ) by ring,
     Real.exp_add]
 
 theorem tendsto_schwarzschildCumulativeRecoilCoherence_atTop_zero
     {E F : ℝ} (hEF : E ≠ F) :
     Tendsto (fun depth : ℝ =>
       schwarzschildCumulativeRecoilCoherence depth E F) atTop (𝓝 0) := by
-  have hsq : 0 < (E - F) ^ 2 :=
+  have hsq : 0 < (E - F) ^ (2 : ℕ) :=
     sq_pos_of_ne_zero (sub_ne_zero.mpr hEF)
-  have hc : 0 < 4 * Real.pi * (E - F) ^ 2 := by positivity
+  have hc : 0 < 4 * Real.pi * (E - F) ^ (2 : ℕ) := by positivity
   have hscale : Tendsto
-      (fun depth : ℝ => (4 * Real.pi * (E - F) ^ 2) * depth)
+      (fun depth : ℝ => (4 * Real.pi * (E - F) ^ (2 : ℕ)) * depth)
       atTop atTop :=
     Filter.Tendsto.const_mul_atTop hc tendsto_id
   have hlimit := Real.tendsto_exp_neg_atTop_nhds_zero.comp hscale
@@ -131,25 +131,25 @@ theorem schwarzschildCumulativeRecoilCoherence_le_one
     schwarzschildCumulativeRecoilCoherence depth E F ≤ 1 := by
   rw [schwarzschildCumulativeRecoilCoherence, Real.exp_le_one_iff]
   have hpi : 0 ≤ Real.pi := Real.pi_pos.le
-  have hsq : 0 ≤ (E - F) ^ 2 := sq_nonneg _
-  have hmul : 0 ≤ 4 * Real.pi * depth * (E - F) ^ 2 := by positivity
+  have hsq : 0 ≤ (E - F) ^ (2 : ℕ) := sq_nonneg _
+  have hmul : 0 ≤ 4 * Real.pi * depth * (E - F) ^ (2 : ℕ) := by positivity
   linarith
 
 theorem schwarzschildRecoilDressedKernel_twoPointDet_ge
     (K : ℝ → ℝ → ℝ) {depth : ℝ} (hdepth : 0 ≤ depth) (x y : ℝ) :
-    K x x * K y y - K x y ^ 2 ≤
+    K x x * K y y - K x y ^ (2 : ℕ) ≤
       schwarzschildRecoilDressedKernel K depth x x *
           schwarzschildRecoilDressedKernel K depth y y -
-        schwarzschildRecoilDressedKernel K depth x y ^ 2 := by
+        schwarzschildRecoilDressedKernel K depth x y ^ (2 : ℕ) := by
   let c := schwarzschildCumulativeRecoilCoherence depth x y
   have hc0 : 0 ≤ c := Real.exp_nonneg _
   have hc1 : c ≤ 1 :=
     schwarzschildCumulativeRecoilCoherence_le_one hdepth x y
-  have hcSq : c ^ 2 ≤ 1 := by nlinarith [sq_nonneg c]
+  have hcSq : c ^ (2 : ℕ) ≤ 1 := by nlinarith [sq_nonneg c]
   have hmul := mul_le_mul_of_nonneg_right hcSq (sq_nonneg (K x y))
   simp only [schwarzschildRecoilDressedKernel_diag]
-  change K x x * K y y - K x y ^ 2 ≤
-    K x x * K y y - (c * K x y) ^ 2
+  change K x x * K y y - K x y ^ (2 : ℕ) ≤
+    K x x * K y y - (c * K x y) ^ (2 : ℕ)
   nlinarith
 
 theorem tendsto_schwarzschildRecoilDressedKernel_offdiag_atTop_zero
@@ -244,9 +244,9 @@ def ThetaCuspHawkingSchwarzschildRecoilThreeShellStrictlyPassive
     (q : XiZeroCopy) (rapidity depth x y z : ℝ) : Prop :=
   let K := thetaCuspHawkingSchwarzschildRecoilKernel q rapidity depth
   0 < K x x ∧ 0 < K y y ∧ 0 < K z z ∧
-    0 < K x x * K y y - K x y ^ 2 ∧
-    0 < K x x * K z z - K x z ^ 2 ∧
-    0 < K y y * K z z - K y z ^ 2 ∧
+    0 < K x x * K y y - K x y ^ (2 : ℕ) ∧
+    0 < K x x * K z z - K x z ^ (2 : ℕ) ∧
+    0 < K y y * K z z - K y z ^ (2 : ℕ) ∧
     0 < symmetricThreePointDet K x y z
 
 theorem exists_nat_thetaCuspHawkingSchwarzschildRecoil_threeShellStrictlyPassive
@@ -293,13 +293,13 @@ theorem exists_nat_thetaCuspHawkingSchwarzschildRecoil_threeShellStrictlyPassive
       0 < schwarzschildRecoilDressedKernel K n z z ∧
       0 < schwarzschildRecoilDressedKernel K n x x *
           schwarzschildRecoilDressedKernel K n y y -
-        schwarzschildRecoilDressedKernel K n x y ^ 2 ∧
+        schwarzschildRecoilDressedKernel K n x y ^ (2 : ℕ) ∧
       0 < schwarzschildRecoilDressedKernel K n x x *
           schwarzschildRecoilDressedKernel K n z z -
-        schwarzschildRecoilDressedKernel K n x z ^ 2 ∧
+        schwarzschildRecoilDressedKernel K n x z ^ (2 : ℕ) ∧
       0 < schwarzschildRecoilDressedKernel K n y y *
           schwarzschildRecoilDressedKernel K n z z -
-        schwarzschildRecoilDressedKernel K n y z ^ 2 ∧
+        schwarzschildRecoilDressedKernel K n y z ^ (2 : ℕ) ∧
       0 < symmetricThreePointDet
         (schwarzschildRecoilDressedKernel K n) x y z
   exact ⟨by simpa using hxx, by simpa using hyy, by simpa using hzz,

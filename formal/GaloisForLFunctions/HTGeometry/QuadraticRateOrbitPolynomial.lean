@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.QuadraticRateSpectralRigidity
 /-!
 # The labeling orbit of a quadratic-rate spectral relation
 
-A quadratic-rate relation `(∑ c_i E_i)^2 = κ ∑ E_i^2` refers to a chosen labeling of the spectrum.
+A quadratic-rate relation `(∑ c_i E_i)^(2 : ℕ) = κ ∑ E_i^(2 : ℕ)` refers to a chosen labeling of the spectrum.
 Multiplying the defect over every labeling gives a *symmetric* polynomial, hence a polynomial in
 the elementary symmetric functions of the spectrum, hence a polynomial in the characteristic
 coefficients of the underlying matrix.  The orbit obstruction therefore descends to the
@@ -22,8 +22,8 @@ variable {I : Type*} [Fintype I]
 
 /-- The quadratic-rate relation as a polynomial in the spectrum. -/
 def quadraticRateRelationPolynomial (c : I → ℚ) (κ : ℚ) : MvPolynomial I ℚ :=
-  (∑ i, MvPolynomial.C (c i) * MvPolynomial.X i) ^ 2
-    - MvPolynomial.C κ * ∑ i, (MvPolynomial.X i : MvPolynomial I ℚ) ^ 2
+  (∑ i, MvPolynomial.C (c i) * MvPolynomial.X i) ^ (2 : ℕ)
+    - MvPolynomial.C κ * ∑ i, (MvPolynomial.X i : MvPolynomial I ℚ) ^ (2 : ℕ)
 
 /-- The product of the relation over every labeling of the spectrum. -/
 def quadraticRateOrbitPolynomial (c : I → ℚ) (κ : ℚ) : MvPolynomial I ℚ := by
@@ -34,20 +34,20 @@ def quadraticRateOrbitPolynomial (c : I → ℚ) (κ : ℚ) : MvPolynomial I ℚ
 def quadraticRateOrbitValue (c : I → ℚ) (κ : ℚ) (energy : I → ℝ) : ℝ := by
   classical
   exact ∏ σ : Equiv.Perm I,
-    ((∑ i, (c i : ℝ) * energy (σ i)) ^ 2 - (κ : ℝ) * ∑ i, energy i ^ 2)
+    ((∑ i, (c i : ℝ) * energy (σ i)) ^ (2 : ℕ) - (κ : ℝ) * ∑ i, energy i ^ (2 : ℕ))
 
 /-! ## Evaluation -/
 
 theorem eval₂_quadraticRateRelationPolynomial_real (c : I → ℚ) (κ : ℚ) (energy : I → ℝ) :
     MvPolynomial.eval₂ (Rat.castHom ℝ) energy (quadraticRateRelationPolynomial c κ)
-      = (∑ i, (c i : ℝ) * energy i) ^ 2 - (κ : ℝ) * ∑ i, energy i ^ 2 := by
+      = (∑ i, (c i : ℝ) * energy i) ^ (2 : ℕ) - (κ : ℝ) * ∑ i, energy i ^ (2 : ℕ) := by
   simp [quadraticRateRelationPolynomial, MvPolynomial.eval₂_sum]
 
 /-- The `σ`-labeled factor of the orbit obstruction is the quadratic-rate defect of the relabeled
 coefficient packet. -/
 theorem quadraticRateOrbitValue_factor (c : I → ℚ) (κ : ℚ) (energy : I → ℝ)
     (σ : Equiv.Perm I) :
-    ((∑ i, (c i : ℝ) * energy (σ i)) ^ 2 - (κ : ℝ) * ∑ i, energy i ^ 2)
+    ((∑ i, (c i : ℝ) * energy (σ i)) ^ (2 : ℕ) - (κ : ℝ) * ∑ i, energy i ^ (2 : ℕ))
       = quadraticRateDefect (fun j => ((c (σ.symm j) : ℝ))) (κ : ℝ) energy := by
   have hsum : (∑ i, (c i : ℝ) * energy (σ i))
       = ∑ j, ((c (σ.symm j) : ℝ)) * energy j :=
@@ -61,8 +61,8 @@ theorem eval₂_quadraticRateOrbitPolynomial_real (c : I → ℚ) (κ : ℚ) (en
   rw [quadraticRateOrbitPolynomial, quadraticRateOrbitValue, MvPolynomial.eval₂_prod]
   refine Finset.prod_congr rfl fun σ _ => ?_
   rw [MvPolynomial.eval₂_rename, eval₂_quadraticRateRelationPolynomial_real]
-  have h2 : (∑ i, (energy ∘ σ) i ^ 2) = ∑ i, energy i ^ 2 :=
-    Fintype.sum_equiv σ (fun i => (energy ∘ σ) i ^ 2) (fun j => energy j ^ 2) fun i => rfl
+  have h2 : (∑ i, (energy ∘ σ) i ^ (2 : ℕ)) = ∑ i, energy i ^ (2 : ℕ) :=
+    Fintype.sum_equiv σ (fun i => (energy ∘ σ) i ^ (2 : ℕ)) (fun j => energy j ^ (2 : ℕ)) fun i => rfl
   rw [h2]
   rfl
 
@@ -127,7 +127,7 @@ theorem eval₂_quadraticRateCoefficientPolynomial_real_esymm (c : I → ℚ) (�
 
 theorem eval_quadraticRateRelationPolynomial (c : I → ℚ) (κ : ℚ) (energy : I → ℚ) :
     MvPolynomial.eval energy (quadraticRateRelationPolynomial c κ)
-      = (∑ i, c i * energy i) ^ 2 - κ * ∑ i, energy i ^ 2 := by
+      = (∑ i, c i * energy i) ^ (2 : ℕ) - κ * ∑ i, energy i ^ (2 : ℕ) := by
   simp [quadraticRateRelationPolynomial]
 
 variable [DecidableEq I]
@@ -139,16 +139,16 @@ theorem quadraticRateRelationPolynomial_eq_zero_iff (hcard : 2 ≤ Fintype.card 
     quadraticRateRelationPolynomial c κ = 0 ↔ κ = 0 ∧ c = 0 := by
   constructor
   · intro hzero
-    have hval : ∀ energy : I → ℚ, (∑ i, c i * energy i) ^ 2 = κ * ∑ i, energy i ^ 2 := by
+    have hval : ∀ energy : I → ℚ, (∑ i, c i * energy i) ^ (2 : ℕ) = κ * ∑ i, energy i ^ (2 : ℕ) := by
       intro energy
       have := congrArg (MvPolynomial.eval energy) hzero
       rw [eval_quadraticRateRelationPolynomial] at this
       simpa [sub_eq_zero] using this
-    have hsingle : ∀ i : I, c i ^ 2 = κ := by
+    have hsingle : ∀ i : I, c i ^ (2 : ℕ) = κ := by
       intro i
       have h := hval (fun x => if x = i then 1 else 0)
       have h1 : (∑ x, c x * (if x = i then (1:ℚ) else 0)) = c i := by simp
-      have h2 : (∑ x, (if x = i then (1:ℚ) else 0) ^ 2) = 1 := by simp
+      have h2 : (∑ x, (if x = i then (1:ℚ) else 0) ^ (2 : ℕ)) = 1 := by simp
       rw [h1, h2, mul_one] at h
       exact h
     have hcross : ∀ i j : I, i ≠ j → c i * c j = 0 := by
@@ -158,9 +158,9 @@ theorem quadraticRateRelationPolynomial_eq_zero_iff (hcard : 2 ≤ Fintype.card 
           = c i + c j := by
         simp only [mul_add, Finset.sum_add_distrib]
         simp
-      have h2 : (∑ x, ((if x = i then (1:ℚ) else 0) + (if x = j then 1 else 0)) ^ 2) = 2 := by
+      have h2 : (∑ x, ((if x = i then (1:ℚ) else 0) + (if x = j then 1 else 0)) ^ (2 : ℕ)) = 2 := by
         have hji : ¬ (j = i) := fun hh => hij hh.symm
-        have hval2 : ∀ x : I, ((if x = i then (1:ℚ) else 0) + (if x = j then 1 else 0)) ^ 2
+        have hval2 : ∀ x : I, ((if x = i then (1:ℚ) else 0) + (if x = j then 1 else 0)) ^ (2 : ℕ)
             = (if x = i then (1:ℚ) else 0) + (if x = j then 1 else 0) := by
           intro x
           by_cases hx : x = i

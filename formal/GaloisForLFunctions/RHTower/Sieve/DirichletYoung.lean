@@ -3,23 +3,23 @@ import GaloisForLFunctions.RHTower.Sieve.DirichletBilinear
 /-!
 # Finite Young inequality for multiplicative Dirichlet convolution
 
-The product-index convolution sends an `ell^2` coefficient vector convolved with an `ell^1`
-coefficient vector into `ell^2`.  Unlike a fibrewise Cauchy bound, this loses no divisor factor.
+The product-index convolution sends an `ell^(2 : ℕ)` coefficient vector convolved with an `ell^(1 : ℕ)`
+coefficient vector into `ell^(2 : ℕ)`.  Unlike a fibrewise Cauchy bound, this loses no divisor factor.
 -/
 
 namespace RHTower.Sieve
 
 open Finset
 
-/-- Finite complex `ell^2` Minkowski inequality. -/
+/-- Finite complex `ell^(2 : ℕ)` Minkowski inequality. -/
 theorem sqrt_sum_norm_sq_finset_sum_le {ι κ : Type*} [Fintype κ]
     (s : Finset ι) (f : ι → κ → ℂ) :
-    Real.sqrt (∑ k : κ, ‖∑ i ∈ s, f i k‖ ^ 2)
-      ≤ ∑ i ∈ s, Real.sqrt (∑ k : κ, ‖f i k‖ ^ 2) := by
+    Real.sqrt (∑ k : κ, ‖∑ i ∈ s, f i k‖ ^ (2 : ℕ))
+      ≤ ∑ i ∈ s, Real.sqrt (∑ k : κ, ‖f i k‖ ^ (2 : ℕ)) := by
   classical
   have hnorm : ∀ z : κ → ℂ,
       ‖(WithLp.toLp 2 z : EuclideanSpace ℂ κ)‖ =
-        Real.sqrt (∑ k : κ, ‖z k‖ ^ 2) := by
+        Real.sqrt (∑ k : κ, ‖z k‖ ^ (2 : ℕ)) := by
     intro z
     rw [EuclideanSpace.norm_eq]
   have hsum :
@@ -61,11 +61,11 @@ theorem prodIdx_fixed_right_injective {N M : ℕ} (k : Fin M) :
   apply Fin.ext
   omega
 
-/-- A right slice has no more `ell^2` energy than its unfurled coefficient vector. -/
+/-- A right slice has no more `ell^(2 : ℕ)` energy than its unfurled coefficient vector. -/
 theorem sum_norm_sq_dirConvRightSlice_le (N M : ℕ) (a : Fin N → ℂ) (b : Fin M → ℂ)
     (k : Fin M) :
-    ∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ 2
-      ≤ ‖b k‖ ^ 2 * ∑ j : Fin N, ‖a j‖ ^ 2 := by
+    ∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ (2 : ℕ)
+      ≤ ‖b k‖ ^ (2 : ℕ) * ∑ j : Fin N, ‖a j‖ ^ (2 : ℕ) := by
   classical
   have hcard : ∀ r : Fin (N * M),
       ((Finset.univ : Finset (Fin N)).filter (fun j => prodIdx (j, k) = r)).card ≤ 1 := by
@@ -75,9 +75,9 @@ theorem sum_norm_sq_dirConvRightSlice_le (N M : ℕ) (a : Fin N → ℂ) (b : Fi
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hj₁ hj₂
     exact prodIdx_fixed_right_injective k (hj₁.trans hj₂.symm)
   have hterm : ∀ r : Fin (N * M),
-      ‖dirConvRightSlice N M a b k r‖ ^ 2
+      ‖dirConvRightSlice N M a b k r‖ ^ (2 : ℕ)
         ≤ ∑ j ∈ (Finset.univ : Finset (Fin N)).filter (fun j => prodIdx (j, k) = r),
-            ‖a j * b k‖ ^ 2 := by
+            ‖a j * b k‖ ^ (2 : ℕ) := by
     intro r
     rw [dirConvRightSlice, ← Finset.sum_filter]
     have hnorm := norm_sum_le
@@ -88,7 +88,7 @@ theorem sum_norm_sq_dirConvRightSlice_le (N M : ℕ) (a : Fin N → ℂ) (b : Fi
       (s := (Finset.univ : Finset (Fin N)).filter (fun j => prodIdx (j, k) = r))
       (f := fun j => ‖a j * b k‖)
     have hsum0 : 0 ≤ ∑ j ∈ (Finset.univ : Finset (Fin N)).filter
-        (fun j => prodIdx (j, k) = r), ‖a j * b k‖ ^ 2 := by positivity
+        (fun j => prodIdx (j, k) = r), ‖a j * b k‖ ^ (2 : ℕ) := by positivity
     have hcardR :
         ((((Finset.univ : Finset (Fin N)).filter
           (fun j => prodIdx (j, k) = r)).card : ℕ) : ℝ) ≤ 1 := by
@@ -98,38 +98,38 @@ theorem sum_norm_sq_dirConvRightSlice_le (N M : ℕ) (a : Fin N → ℂ) (b : Fi
   have hmaps : ∀ j ∈ (Finset.univ : Finset (Fin N)),
       prodIdx (j, k) ∈ (Finset.univ : Finset (Fin (N * M))) :=
     fun j _ => Finset.mem_univ _
-  have hfibre := Finset.sum_fiberwise_of_maps_to hmaps (fun j : Fin N => ‖a j * b k‖ ^ 2)
+  have hfibre := Finset.sum_fiberwise_of_maps_to hmaps (fun j : Fin N => ‖a j * b k‖ ^ (2 : ℕ))
   rw [hfibre]
   simp_rw [norm_mul]
   rw [Finset.mul_sum]
   exact Finset.sum_le_sum fun j _ => le_of_eq (by ring)
 
-/-- **Finite multiplicative Young inequality, `ell^2` convolved with `ell^1` to `ell^2`.** -/
+/-- **Finite multiplicative Young inequality, `ell^(2 : ℕ)` convolved with `ell^(1 : ℕ)` to `ell^(2 : ℕ)`.** -/
 theorem sum_norm_sq_dirConv_le_l2_l1 (N M : ℕ) (a : Fin N → ℂ) (b : Fin M → ℂ) :
-    ∑ r : Fin (N * M), ‖dirConv N M a b r‖ ^ 2
-      ≤ (∑ j : Fin N, ‖a j‖ ^ 2) * (∑ k : Fin M, ‖b k‖) ^ 2 := by
+    ∑ r : Fin (N * M), ‖dirConv N M a b r‖ ^ (2 : ℕ)
+      ≤ (∑ j : Fin N, ‖a j‖ ^ (2 : ℕ)) * (∑ k : Fin M, ‖b k‖) ^ (2 : ℕ) := by
   classical
-  let A : ℝ := ∑ j : Fin N, ‖a j‖ ^ 2
+  let A : ℝ := ∑ j : Fin N, ‖a j‖ ^ (2 : ℕ)
   let B : ℝ := ∑ k : Fin M, ‖b k‖
-  let E : ℝ := ∑ r : Fin (N * M), ‖dirConv N M a b r‖ ^ 2
+  let E : ℝ := ∑ r : Fin (N * M), ‖dirConv N M a b r‖ ^ (2 : ℕ)
   have hA : 0 ≤ A := by positivity
   have hB : 0 ≤ B := by positivity
   have hE : 0 ≤ E := by positivity
   have hmink :
       Real.sqrt E ≤
         ∑ k : Fin M,
-          Real.sqrt (∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ 2) := by
+          Real.sqrt (∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ (2 : ℕ)) := by
     have h := sqrt_sum_norm_sq_finset_sum_le
       (s := (Finset.univ : Finset (Fin M)))
       (f := fun k r => dirConvRightSlice N M a b k r)
     simpa only [E, dirConv_eq_sum_rightSlice] using h
   have hslice : ∀ k : Fin M,
-      Real.sqrt (∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ 2)
+      Real.sqrt (∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ (2 : ℕ))
         ≤ ‖b k‖ * Real.sqrt A := by
     intro k
     calc
-      Real.sqrt (∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ 2)
-          ≤ Real.sqrt (‖b k‖ ^ 2 * A) :=
+      Real.sqrt (∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ (2 : ℕ))
+          ≤ Real.sqrt (‖b k‖ ^ (2 : ℕ) * A) :=
         Real.sqrt_le_sqrt (sum_norm_sq_dirConvRightSlice_le N M a b k)
       _ = ‖b k‖ * Real.sqrt A := by
         rw [Real.sqrt_mul (sq_nonneg ‖b k‖), Real.sqrt_sq (norm_nonneg _)]
@@ -137,7 +137,7 @@ theorem sum_norm_sq_dirConv_le_l2_l1 (N M : ℕ) (a : Fin N → ℂ) (b : Fin M 
     refine hmink.trans ?_
     calc
       (∑ k : Fin M,
-          Real.sqrt (∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ 2))
+          Real.sqrt (∑ r : Fin (N * M), ‖dirConvRightSlice N M a b k r‖ ^ (2 : ℕ)))
           ≤ ∑ k : Fin M, ‖b k‖ * Real.sqrt A :=
         Finset.sum_le_sum fun k _ => hslice k
       _ = Real.sqrt A * B := by
@@ -145,8 +145,8 @@ theorem sum_norm_sq_dirConv_le_l2_l1 (N M : ℕ) (a : Fin N → ℂ) (b : Fin M 
         rw [← Finset.sum_mul]
         ring
   have hsquare := pow_le_pow_left₀ (Real.sqrt_nonneg E) hsqrt 2
-  have hsqrtE : Real.sqrt E ^ 2 = E := Real.sq_sqrt hE
-  have hsqrtA : Real.sqrt A ^ 2 = A := Real.sq_sqrt hA
+  have hsqrtE : Real.sqrt E ^ (2 : ℕ) = E := Real.sq_sqrt hE
+  have hsqrtA : Real.sqrt A ^ (2 : ℕ) = A := Real.sq_sqrt hA
   dsimp only [E, A, B] at *
   nlinarith
 

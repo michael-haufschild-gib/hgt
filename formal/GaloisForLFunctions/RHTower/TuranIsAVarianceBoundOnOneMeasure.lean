@@ -53,7 +53,7 @@ namespace RHTower
 /-- **The variance from the curvature.**  With width `t²/(2j + 4jt)` in `t` and `log u = 2 log t`,
 the variance of `log u` is `2/(j(1 + 2t))`. -/
 theorem variance_from_curvature {j t : ℝ} (hj : 0 < j) (ht : 0 < t) :
-    (2 / t) ^ 2 * (t ^ 2 / (2 * j + 4 * j * t)) = 2 / (j * (1 + 2 * t)) := by
+    (2 / t) ^ (2 : ℕ) * (t ^ (2 : ℕ) / (2 * j + 4 * j * t)) = 2 / (j * (1 + 2 * t)) := by
   have hden : 2 * j + 4 * j * t ≠ 0 := by positivity
   have htne : t ≠ 0 := ne_of_gt ht
   have hj2 : j * (1 + 2 * t) ≠ 0 := by positivity

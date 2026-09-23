@@ -95,7 +95,7 @@ their coefficients agree after padding by zero on the union support. -/
 theorem dpoly_prime_finset_secondMoment_sub_eq_zero_iff_coeff_eq_on_union
     (s t : Finset ℕ) (hs : ∀ p ∈ s, p.Prime) (ht : ∀ p ∈ t, p.Prime)
     {a b : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
-    (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ 2) = 0 ↔
+    (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ (2 : ℕ)) = 0 ↔
       ∀ p ∈ s ∪ t, (if p ∈ s then a p else 0) = (if p ∈ t then b p else 0) := by
   classical
   let c : ℕ → ℝ := fun p => (if p ∈ s then a p else 0) - (if p ∈ t then b p else 0)
@@ -107,11 +107,11 @@ theorem dpoly_prime_finset_secondMoment_sub_eq_zero_iff_coeff_eq_on_union
   have hdiff : ∀ x, dpoly c (s ∪ t) x = dpoly a s x - dpoly b t x := by
     intro x
     exact dpoly_sub_eq_union s t a b x
-  have hint : (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ 2) =
-      ∫ x in A..B, ‖dpoly c (s ∪ t) x‖ ^ 2 := by
+  have hint : (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ (2 : ℕ)) =
+      ∫ x in A..B, ‖dpoly c (s ∪ t) x‖ ^ (2 : ℕ) := by
     apply intervalIntegral.integral_congr
     intro x _hx
-    exact congrArg (fun z : ℂ => ‖z‖ ^ 2) (hdiff x).symm
+    exact congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) (hdiff x).symm
   rw [hint, dpoly_prime_finset_secondMoment_eq_zero_iff_eq_zero_on_vertical_interval
     (s ∪ t) hprime hAB]
   rw [← dpoly_prime_finset_eq_on_vertical_interval_iff_coeff_eq_on_union s t hs ht hAB]
@@ -128,7 +128,7 @@ when some coefficient differs after padding by zero on the union support. -/
 theorem dpoly_prime_finset_secondMoment_sub_pos_iff_exists_coeff_ne_on_union
     (s t : Finset ℕ) (hs : ∀ p ∈ s, p.Prime) (ht : ∀ p ∈ t, p.Prime)
     {a b : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
-    0 < (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ 2) ↔
+    0 < (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ (2 : ℕ)) ↔
       ∃ p ∈ s ∪ t, (if p ∈ s then a p else 0) ≠ (if p ∈ t then b p else 0) := by
   classical
   let c : ℕ → ℝ := fun p => (if p ∈ s then a p else 0) - (if p ∈ t then b p else 0)
@@ -140,11 +140,11 @@ theorem dpoly_prime_finset_secondMoment_sub_pos_iff_exists_coeff_ne_on_union
   have hdiff : ∀ x, dpoly c (s ∪ t) x = dpoly a s x - dpoly b t x := by
     intro x
     exact dpoly_sub_eq_union s t a b x
-  have hint : (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ 2) =
-      ∫ x in A..B, ‖dpoly c (s ∪ t) x‖ ^ 2 := by
+  have hint : (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ (2 : ℕ)) =
+      ∫ x in A..B, ‖dpoly c (s ∪ t) x‖ ^ (2 : ℕ) := by
     apply intervalIntegral.integral_congr
     intro x _hx
-    exact congrArg (fun z : ℂ => ‖z‖ ^ 2) (hdiff x).symm
+    exact congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ)) (hdiff x).symm
   have hpos := dpoly_prime_finset_secondMoment_pos_iff_exists_coeff_ne_zero_on_vertical_interval
     (s ∪ t) hprime (a := c) hAB
   rw [hint]
@@ -163,7 +163,7 @@ the packets agree pointwise on the whole vertical interval. -/
 theorem dpoly_prime_finset_secondMoment_sub_eq_zero_iff_eq_on_vertical_interval
     (s t : Finset ℕ) (hs : ∀ p ∈ s, p.Prime) (ht : ∀ p ∈ t, p.Prime)
     {a b : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
-    (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ 2) = 0 ↔
+    (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ (2 : ℕ)) = 0 ↔
       ∀ x ∈ Set.Ioo A B, dpoly a s x = dpoly b t x := by
   exact (dpoly_prime_finset_secondMoment_sub_eq_zero_iff_coeff_eq_on_union
     s t hs ht hAB).trans
@@ -174,7 +174,7 @@ when the packets do not agree pointwise on the vertical interval. -/
 theorem dpoly_prime_finset_secondMoment_sub_pos_iff_not_eq_on_vertical_interval
     (s t : Finset ℕ) (hs : ∀ p ∈ s, p.Prime) (ht : ∀ p ∈ t, p.Prime)
     {a b : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
-    0 < (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ 2) ↔
+    0 < (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ (2 : ℕ)) ↔
       ¬ ∀ x ∈ Set.Ioo A B, dpoly a s x = dpoly b t x := by
   classical
   rw [dpoly_prime_finset_secondMoment_sub_pos_iff_exists_coeff_ne_on_union s t hs ht hAB]

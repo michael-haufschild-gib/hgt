@@ -21,15 +21,15 @@ def gradXJet (s y Sx Sxx Sxy Sxxx Sxxy : ℂ) : Jet where
   value := Sx
   first := ![0, 0, Sxx, Sxy]
   second := !![0, 0, 0, 0; 0, 0, 0, 0; 0, 0, Sxxx, Sxxy;
-    0, 0, Sxxy, (s + 1) * (s + 2) * Sx / y ^ 2 - Sxxx]
+    0, 0, Sxxy, (s + 1) * (s + 2) * Sx / y ^ (2 : ℕ) - Sxxx]
 
 /-- Two-jet of `∂_y S` under the eigen-relation. -/
 def gradYJet (s y S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) : Jet where
   value := Sy
-  first := ![0, 0, Sxy, (s + 1) * (s + 2) * S / y ^ 2 - Sxx]
-  second := !![0, 0, 0, 0; 0, 0, 0, 0; 0, 0, Sxxy, (s + 1) * (s + 2) * Sx / y ^ 2 - Sxxx;
-    0, 0, (s + 1) * (s + 2) * Sx / y ^ 2 - Sxxx,
-    (s + 1) * (s + 2) * Sy / y ^ 2 - 2 * (s + 1) * (s + 2) * S / y ^ 3 - Sxxy]
+  first := ![0, 0, Sxy, (s + 1) * (s + 2) * S / y ^ (2 : ℕ) - Sxx]
+  second := !![0, 0, 0, 0; 0, 0, 0, 0; 0, 0, Sxxy, (s + 1) * (s + 2) * Sx / y ^ (2 : ℕ) - Sxxx;
+    0, 0, (s + 1) * (s + 2) * Sx / y ^ (2 : ℕ) - Sxxx,
+    (s + 1) * (s + 2) * Sy / y ^ (2 : ℕ) - 2 * (s + 1) * (s + 2) * S / y ^ (3 : ℕ) - Sxxy]
 
 /-- The gradient-tensor stream metric jet: angular block `2 r² G · (∇S⊗∇S)^{tf}_{ij}`. -/
 def gradientJet (w r y s G G1 G2 S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) : CoordinateMetricTwoJet 4 ℂ :=

@@ -75,15 +75,15 @@ theorem levinsonLinearMollifiedCriticalCoeff_eq_barbanVehov
 /-- Exact square energy of one critical mollified product coefficient. -/
 theorem norm_levinsonLinearMollifiedCriticalCoeff_sq
     {M k : ℕ} (hM : 1 < M) (hk : 0 < k) :
-    ‖levinsonLinearMollifiedCriticalCoeff M k‖ ^ 2 =
-      (barbanVehovCoeff M k) ^ 2 / (k : ℝ) / (Real.log M) ^ 2 := by
+    ‖levinsonLinearMollifiedCriticalCoeff M k‖ ^ (2 : ℕ) =
+      (barbanVehovCoeff M k) ^ (2 : ℕ) / (k : ℝ) / (Real.log M) ^ (2 : ℕ) := by
   rw [levinsonLinearMollifiedCriticalCoeff_eq_barbanVehov hk,
     Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_div]
   have hlog : 0 < Real.log (M : ℝ) := Real.log_pos (by exact_mod_cast hM)
   have hkR : 0 < (k : ℝ) := by exact_mod_cast hk
   rw [abs_of_pos hlog, abs_of_nonneg (by positivity : 0 ≤ (1 : ℝ) / Real.sqrt k)]
-  have hsqrt : (Real.sqrt (k : ℝ)) ^ 2 = k := Real.sq_sqrt hkR.le
-  have hinvsqrt : ((1 : ℝ) / Real.sqrt k) ^ 2 = 1 / (k : ℝ) := by
+  have hsqrt : (Real.sqrt (k : ℝ)) ^ (2 : ℕ) = k := Real.sq_sqrt hkR.le
+  have hinvsqrt : ((1 : ℝ) / Real.sqrt k) ^ (2 : ℕ) = 1 / (k : ℝ) := by
     field_simp
     nlinarith
   rw [mul_pow, div_pow, sq_abs, hinvsqrt]
@@ -92,9 +92,9 @@ theorem norm_levinsonLinearMollifiedCriticalCoeff_sq
 /-- Exact finite coefficient energy in harmonic Barban--Vehov form. -/
 theorem sum_norm_levinsonLinearMollifiedCriticalCoeff_sq
     {M N : ℕ} (hM : 1 < M) :
-    ∑ k ∈ Finset.Icc 1 N, ‖levinsonLinearMollifiedCriticalCoeff M k‖ ^ 2 =
-      (∑ k ∈ Finset.Icc 1 N, (barbanVehovCoeff M k) ^ 2 / (k : ℝ)) /
-        (Real.log M) ^ 2 := by
+    ∑ k ∈ Finset.Icc 1 N, ‖levinsonLinearMollifiedCriticalCoeff M k‖ ^ (2 : ℕ) =
+      (∑ k ∈ Finset.Icc 1 N, (barbanVehovCoeff M k) ^ (2 : ℕ) / (k : ℝ)) /
+        (Real.log M) ^ (2 : ℕ) := by
   rw [Finset.sum_div]
   apply Finset.sum_congr rfl
   intro k hk
@@ -104,11 +104,11 @@ theorem sum_norm_levinsonLinearMollifiedCriticalCoeff_sq
 linear Levinson mollifier. -/
 theorem sum_norm_levinsonLinearMollifiedCriticalCoeff_sq_le
     {M N : ℕ} (hM : 1 < M) (hMN : M ≤ N) :
-    ∑ k ∈ Finset.Icc 1 N, ‖levinsonLinearMollifiedCriticalCoeff M k‖ ^ 2 ≤
+    ∑ k ∈ Finset.Icc 1 N, ‖levinsonLinearMollifiedCriticalCoeff M k‖ ^ (2 : ℕ) ≤
       ((1 + Real.log N) *
-          (4 * coprimeLogMoebiusConst ^ 2 * (1 + Real.log M)) +
-        (1 + 2 * Real.log M) * ((M : ℝ) * Real.log M) ^ 2) /
-          (Real.log M) ^ 2 := by
+          (4 * coprimeLogMoebiusConst ^ (2 : ℕ) * (1 + Real.log M)) +
+        (1 + 2 * Real.log M) * ((M : ℝ) * Real.log M) ^ (2 : ℕ)) /
+          (Real.log M) ^ (2 : ℕ) := by
   rw [sum_norm_levinsonLinearMollifiedCriticalCoeff_sq hM]
   exact div_le_div_of_nonneg_right
     (sum_harmonic_sq_barbanVehovCoeff_le (Nat.le_of_lt hM) hMN) (sq_nonneg _)

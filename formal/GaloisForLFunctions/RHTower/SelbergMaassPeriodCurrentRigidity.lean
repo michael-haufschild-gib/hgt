@@ -36,13 +36,13 @@ variable (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N+1))) lam)
 
 /-- Complete horizontal pair-plus-phase numerator of the original source. -/
-def horizontalNumerator (z : ℂ) : ℝ := pairEnergy N f 1 z+phaseCurrent N f 1 z^2
+def horizontalNumerator (z : ℂ) : ℝ := pairEnergy N f 1 z+phaseCurrent N f 1 z^(2 : ℕ)
 
 theorem horizontalNumerator_nonneg (z : ℂ) : 0 ≤ horizontalNumerator N f z :=
   add_nonneg (pairEnergy_nonneg N f 1 z) (sq_nonneg _)
 
 /-- A fixed regulated pair/phase density, with no regulator-gradient term discarded from the full energy. -/
-def horizontalWeight (e : Ioi (0:ℝ)) (z : ℂ) : ℝ := horizontalNumerator N f z / radius N f e z^3
+def horizontalWeight (e : Ioi (0:ℝ)) (z : ℂ) : ℝ := horizontalNumerator N f z / radius N f e z^(3 : ℕ)
 
 theorem horizontalWeight_nonneg (e : Ioi (0:ℝ)) (z : ℂ) : 0 ≤ horizontalWeight N f e z :=
   div_nonneg (horizontalNumerator_nonneg N f z) (pow_pos (radius_pos N f e z) 3).le
@@ -77,7 +77,7 @@ theorem horizontalWeight_le_current {a b : Ioi (0:ℝ)} (hab : a ≤ b) (z : ℂ
     (pow_pos (radius_pos N f a z) 3) (pow_le_pow_left₀ (radius_pos N f a z).le hr 3)
   apply h.trans
   apply div_le_div_of_nonneg_right _ (pow_pos (radius_pos N f a z) 3).le
-  change horizontalNumerator N f z ≤ horizontalNumerator N f z+(a:ℝ)^2*directionalEnergy N f 1 (ofComplex z)
+  change horizontalNumerator N f z ≤ horizontalNumerator N f z+(a:ℝ)^(2 : ℕ)*directionalEnergy N f 1 (ofComplex z)
   exact le_add_of_nonneg_right (mul_nonneg (sq_nonneg _) (Finset.sum_nonneg (fun _ _ => normSq_nonneg _)))
 
 /-- Every fixed-regulator complete period supplies an actual lower certificate for limiting current energy. -/
@@ -126,7 +126,7 @@ theorem pair_phase_eq_zero_of_limit_zero {y : ℝ} (hy : 0 < y)
     pairEnergy N f 1 (point x y)=0 ∧ phaseCurrent N f 1 (point x y)=0 := by
   have h := horizontalNumerator_eq_zero_of_limit_zero N f hy hE x
   have hn := pairEnergy_nonneg N f 1 (point x y)
-  change pairEnergy N f 1 (point x y)+phaseCurrent N f 1 (point x y)^2=0 at h
+  change pairEnergy N f 1 (point x y)+phaseCurrent N f 1 (point x y)^(2 : ℕ)=0 at h
   constructor
   · nlinarith [sq_nonneg (phaseCurrent N f 1 (point x y))]
   · nlinarith [sq_nonneg (phaseCurrent N f 1 (point x y))]
@@ -175,7 +175,7 @@ theorem horizontalCurrentDensity_nonneg (e : Ioi (0:ℝ)) (z : ℂ) :
 theorem horizontalCurrentDensity_continuous (e : Ioi (0:ℝ)) {y : ℝ} (hy : 0 < y) :
     Continuous (fun x => horizontalCurrentDensity N f e (point x y)) :=
   ((horizontalNumerator_continuous N f hy).add
-    ((directionalEnergy_continuous N f hy).const_mul ((e:ℝ)^2))).div
+    ((directionalEnergy_continuous N f hy).const_mul ((e:ℝ)^(2 : ℕ)))).div
     ((SelbergMaassAugmentedDirection.radius_slice_continuous N f e hy).pow 3)
     (fun x => pow_ne_zero 3 (radius_pos N f e (point x y)).ne')
 
@@ -219,12 +219,12 @@ theorem exists_node_current_floor (z : ℍ) (hz : density N f z=0)
   let k : ℝ := directionalEnergy N f 1 z/2
   have hk : 0 < k := half_pos hG
   have hLp : 0 < L+1 := by linarith
-  refine ⟨k/(L+1)^3,d,div_pos hk (pow_pos hLp 3),hd,?_⟩
+  refine ⟨k/(L+1)^(3 : ℕ),d,div_pos hk (pow_pos hLp 3),hd,?_⟩
   intro e hed
   have hep : 0 < (e:ℝ) := e.2
   have he1 : (e:ℝ) ≤ 1 := hed.trans hd1
   have hlocal (x : ℝ) (hx : x ∈ Icc z.re (z.re+(e:ℝ))) :
-      (k/(L+1)^3)/(e:ℝ) ≤ horizontalCurrentDensity N f e (point x z.im) := by
+      (k/(L+1)^(3 : ℕ))/(e:ℝ) ≤ horizontalCurrentDensity N f e (point x z.im) := by
     have hxu : x ∈ Icc z.re (z.re+1) := ⟨hx.1,by linarith [hx.2]⟩
     have hxd : x ∈ Icc z.re (z.re+d) := ⟨hx.1,by linarith [hx.2]⟩
     have hGx : k ≤ directionalEnergy N f 1 (ofComplex (point x z.im)) := hfloor x hxd
@@ -240,11 +240,11 @@ theorem exists_node_current_floor (z : ℍ) (hz : density N f z=0)
       (pow_pos hRpos 3) hcub
     have hB := div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left hGx (sq_nonneg (e:ℝ))) (pow_pos hRpos 3).le
-    have hC : (e:ℝ)^2*directionalEnergy N f 1 (ofComplex (point x z.im))/radius N f e (point x z.im)^3 ≤
+    have hC : (e:ℝ)^(2 : ℕ)*directionalEnergy N f 1 (ofComplex (point x z.im))/radius N f e (point x z.im)^(3 : ℕ) ≤
         horizontalCurrentDensity N f e (point x z.im) := by
       apply div_le_div_of_nonneg_right _ (pow_pos hRpos 3).le
       exact le_add_of_nonneg_left (horizontalNumerator_nonneg N f _)
-    have heq : (k/(L+1)^3)/(e:ℝ)=(e:ℝ)^2*k/((L+1)*(e:ℝ))^3 := by
+    have heq : (k/(L+1)^(3 : ℕ))/(e:ℝ)=(e:ℝ)^(2 : ℕ)*k/((L+1)*(e:ℝ))^(3 : ℕ) := by
       field_simp
     rw [heq]
     exact hA.trans (hB.trans hC)
@@ -252,7 +252,7 @@ theorem exists_node_current_floor (z : ℍ) (hz : density N f z=0)
     (horizontalCurrentDensity_continuous N f e z.im_pos).intervalIntegrable _ _
   have h := intervalIntegral.integral_mono_on (by linarith : z.re ≤ z.re+(e:ℝ))
     intervalIntegrable_const hi hlocal
-  have hs : k/(L+1)^3 ≤ ∫ x in z.re..z.re+(e:ℝ), horizontalCurrentDensity N f e (point x z.im) := by
+  have hs : k/(L+1)^(3 : ℕ) ≤ ∫ x in z.re..z.re+(e:ℝ), horizontalCurrentDensity N f e (point x z.im) := by
     simpa only [intervalIntegral.integral_const,smul_eq_mul,add_sub_cancel_left,mul_div_cancel₀ _ hep.ne'] using h
   exact hs.trans (interval_current_le_period N f e z.im_pos z.re (z.re+(e:ℝ))
     (by linarith) (by linarith))

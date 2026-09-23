@@ -43,8 +43,8 @@ theorem hillSpeedShift_pos (hcpos : ∀ r, 0 < c r) (t₀ : ℝ) : ∀ r, 0 < hi
 theorem hillSpeedShift_deriv_le (hK : ∀ r, |dc r| ≤ K * c r) (t₀ : ℝ) :
     ∀ r, |dc (r + t₀)| ≤ K * hillSpeedShift c t₀ r := fun r => hK (r + t₀)
 
-theorem hillSpeedShift_sq_le (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (t₀ : ℝ) :
-    ∀ r, hillSpeedShift c t₀ r ^ 2 ≤ C ^ 2 := fun r => hC (r + t₀)
+theorem hillSpeedShift_sq_le (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (t₀ : ℝ) :
+    ∀ r, hillSpeedShift c t₀ r ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := fun r => hC (r + t₀)
 
 theorem hillSpeedShift_low (hclow : ∀ r, cmin ≤ c r) (t₀ : ℝ) :
     ∀ r, cmin ≤ hillSpeedShift c t₀ r := fun r => hclow (r + t₀)
@@ -52,8 +52,8 @@ theorem hillSpeedShift_low (hclow : ∀ r, cmin ≤ c r) (t₀ : ℝ) :
 /-- **The wave operator of a speed is the wave operator of the shifted speed, translated.** -/
 theorem hillWaveOp_comp_add_const (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
-    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume))
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) (hG : Continuous G)
+    (h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume))
     (t₀ : ℝ) (y : Fin (d + 1) → ℝ) :
     hillWaveOp d c
         (fun z : Fin (d + 1) → ℝ =>
@@ -94,17 +94,17 @@ nonvanishing solution of the dressed equation for the constant potential `-m²` 
 neighbourhood of the event, whose partial derivatives are differentiable. -/
 theorem exists_hillProbe_at (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r)
     (y₀ : Fin (d + 1) → ℝ) :
     ∃ (W : Set (Fin (d + 1) → ℝ)) (u : (Fin (d + 1) → ℝ) → ℝ), IsOpen W ∧ y₀ ∈ W ∧
       SmoothMetricChart.DifferentiablePartialsOn u W ∧
-      SolvesPotentialWaveOn (hillWaveOp d c) (fun _ => -(m ^ 2)) u W ∧ (∀ y ∈ W, u y ≠ 0) := by
+      SolvesPotentialWaveOn (hillWaveOp d c) (fun _ => -(m ^ (2 : ℕ))) u W ∧ (∀ y ∈ W, u y ≠ 0) := by
   set t₀ : ℝ := y₀ 0 with ht₀
   set sh : Fin (d + 1) → ℝ := kgTimeShiftVec d t₀ with hsh
   set x₀ : EuclideanSpace ℝ (Fin d) := kgSpatial d y₀ with hx₀
   set G : EuclideanSpace ℝ (Fin d) → ℂ := hillProbeDatum d x₀ with hG'
   have hG : Continuous G := continuous_hillProbeDatum x₀
-  have h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ 2 * ‖G ξ‖) (volume) :=
+  have h2 : Integrable (fun ξ : EuclideanSpace ℝ (Fin d) => kgFreq ξ ^ (2 : ℕ) * ‖G ξ‖) (volume) :=
     integrable_kgFreq_pow_mul_hillProbeDatum x₀ 2
   have h1 := integrable_kgFreq_mul_of_sq hG h2
   have h0 := integrable_of_kgFreq_mul hG h1
@@ -147,7 +147,7 @@ theorem exists_hillProbe_at (hm : 0 < m) (hc : Continuous c)
       hcslow hG h2 (y + sh)
     show hillWaveOp d c
         (fun z : Fin (d + 1) → ℝ => hillChartField m (hillSpeedShift c t₀) G (z + sh)) y +
-      -(m ^ 2) * hillChartField m (hillSpeedShift c t₀) G (y + sh) = 0
+      -(m ^ (2 : ℕ)) * hillChartField m (hillSpeedShift c t₀) G (y + sh) = 0
     rw [hillWaveOp_comp_add_const (C := C) (cmin := cmin) hm hc hcd hcpos hK hC hcmin hclow hG h2
       t₀ y]
     exact hsolve
@@ -156,8 +156,8 @@ theorem exists_hillProbe_at (hm : 0 < m) (hc : Continuous c)
 potential `-m²`. -/
 theorem openProbes_hillWaveOp (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) :
-    OpenProbes (hillWaveOp d c) (fun _ => -(m ^ 2)) := by
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) :
+    OpenProbes (hillWaveOp d c) (fun _ => -(m ^ (2 : ℕ))) := by
   intro y₀
   obtain ⟨W, u, hopen, hmem, _, hsolve, hne⟩ :=
     exists_hillProbe_at (C := C) hm hc hcd hcpos hK hC hcmin hclow y₀
@@ -166,8 +166,8 @@ theorem openProbes_hillWaveOp (hm : 0 < m) (hc : Continuous c)
 /-- **The probes carry their regularity**: the interface the conformal transfer consumes. -/
 theorem regularOpenProbes_hillWaveOp (hm : 0 < m) (hc : Continuous c)
     (hcd : ∀ r, HasDerivAt c (dc r) r) (hcpos : ∀ r, 0 < c r) (hK : ∀ r, |dc r| ≤ K * c r)
-    (hC : ∀ r, c r ^ 2 ≤ C ^ 2) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) :
-    RegularOpenProbes (hillWaveOp d c) (fun _ => -(m ^ 2)) := by
+    (hC : ∀ r, c r ^ (2 : ℕ) ≤ C ^ (2 : ℕ)) (hcmin : 0 < cmin) (hclow : ∀ r, cmin ≤ c r) :
+    RegularOpenProbes (hillWaveOp d c) (fun _ => -(m ^ (2 : ℕ))) := by
   intro y₀
   obtain ⟨W, u, hopen, hmem, hreg, hsolve, hne⟩ :=
     exists_hillProbe_at (C := C) hm hc hcd hcpos hK hC hcmin hclow y₀

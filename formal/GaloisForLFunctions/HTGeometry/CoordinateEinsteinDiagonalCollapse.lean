@@ -111,7 +111,7 @@ theorem first_eq (k : Fin d) : J.first k = Matrix.diagonal (fun i => J.first k i
   · exact h.first_ne k i j hij
 
 theorem inverseDerivative_apply (k u m : Fin d) :
-    J.inverseDerivative k u m = if u = m then -(J.first k u u / (J.metric u u) ^ 2) else 0 := by
+    J.inverseDerivative k u m = if u = m then -(J.first k u u / (J.metric u u) ^ (2 : ℕ)) else 0 := by
   have hL := h.inv_eq
   have hF := h.first_eq k
   rw [inverseDerivative, hL, hF, Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul_diagonal,
@@ -126,8 +126,8 @@ theorem inverseDerivative_apply (k u m : Fin d) :
 /-- Linearized spatial inverse derivative over a diagonal background. -/
 theorem linearization_inverseSpatial_apply (K : CoordinateMetricTwoJet d ℂ) (k u m : Fin d) :
     Linearization.inverseSpatial J K k u m =
-      K.metric u m * J.first k m m / (J.metric u u * J.metric m m ^ 2) +
-        J.first k u u * K.metric u m / (J.metric u u ^ 2 * J.metric m m) -
+      K.metric u m * J.first k m m / (J.metric u u * J.metric m m ^ (2 : ℕ)) +
+        J.first k u u * K.metric u m / (J.metric u u ^ (2 : ℕ) * J.metric m m) -
         K.first k u m / (J.metric u u * J.metric m m) := by
   have hL := h.inv_eq
   have hF := h.first_eq k
@@ -147,7 +147,7 @@ theorem linearization_connectionSpatial_eq (K : CoordinateMetricTwoJet d ℂ) (k
       (1 / 2 : ℂ) * ((Linearization.inverseSpatial J K k u j * J.first i j j +
           Linearization.inverseSpatial J K k u i * J.first j i i -
           (if i = j then ∑ m, Linearization.inverseSpatial J K k u m * J.first m i i else 0) +
-          -(J.first k u u / (J.metric u u) ^ 2) * (K.first i u j + K.first j u i - K.first u i j)) +
+          -(J.first k u u / (J.metric u u) ^ (2 : ℕ)) * (K.first i u j + K.first j u i - K.first u i j)) +
         (Linearization.inverse J K u j * J.second k i j j +
           Linearization.inverse J K u i * J.second k j i i -
           (if i = j then ∑ m, Linearization.inverse J K u m * J.second k m i i else 0) +
@@ -170,7 +170,7 @@ theorem linearization_connectionSpatial_eq (K : CoordinateMetricTwoJet d ℂ) (k
     · subst hij; rfl
     · exact Finset.sum_eq_zero (fun m _ => by rw [h.first_ne m i j hij, mul_zero])
   have hS4 : (∑ m, J.inverseDerivative k u m * (K.first i m j + K.first j m i - K.first m i j)) =
-      -(J.first k u u / (J.metric u u) ^ 2) * (K.first i u j + K.first j u i - K.first u i j) := by
+      -(J.first k u u / (J.metric u u) ^ (2 : ℕ)) * (K.first i u j + K.first j u i - K.first u i j) := by
     rw [Finset.sum_eq_single u]
     · rw [h.inverseDerivative_apply, if_pos rfl]
     · intro m _ hm; rw [h.inverseDerivative_apply, if_neg (Ne.symm hm), zero_mul]

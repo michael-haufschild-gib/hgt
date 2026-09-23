@@ -31,10 +31,10 @@ theorem fieldQuadraticRateOrbitValue_chart {E : A → ℂ} {shift₀ : Bool → 
     (hp : p ∈ C.U) (c : A × Bool → ℂ) (κ : ℂ) :
     fieldQuadraticRateOrbitValue c κ (fun i => C.branch i p)
       = ∏ σ : Equiv.Perm (A × Bool),
-          ((∑ i, c i * C.branch (σ i) p) ^ 2
-            - κ * ((localExtensionMatrix E p.1 M p.2) ^ 2).trace) := by
+          ((∑ i, c i * C.branch (σ i) p) ^ (2 : ℕ)
+            - κ * ((localExtensionMatrix E p.1 M p.2) ^ (2 : ℕ)).trace) := by
   classical
-  have hsum : (∑ i, C.branch i p ^ 2) = ((localExtensionMatrix E p.1 M p.2) ^ 2).trace :=
+  have hsum : (∑ i, C.branch i p ^ (2 : ℕ)) = ((localExtensionMatrix E p.1 M p.2) ^ (2 : ℕ)).trace :=
     sum_pow_rootPacket_eq_trace_pow _ (fun i => C.branch i p) (C.simple p hp) (C.root p hp) 2
   rw [fieldQuadraticRateOrbitValue_branch c κ (fun i p => C.branch i p) p]
   refine Finset.prod_congr rfl fun σ _ => ?_

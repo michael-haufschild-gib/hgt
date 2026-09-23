@@ -30,7 +30,7 @@ theorem projectiveAdmissionPacketEnergy_nonneg (s : ℕ → ℝ) (n : ℕ) :
     0 ≤ projectiveAdmissionPacketEnergy s n := by
   unfold projectiveAdmissionPacketEnergy
   have hsum : 0 ≤ ∑ j ∈ Finset.range n,
-      (HTGeometry.monicOrthoAlpha s j - projectiveAdmissionPacketMean s n) ^ 2 := by
+      (HTGeometry.monicOrthoAlpha s j - projectiveAdmissionPacketMean s n) ^ (2 : ℕ) := by
     exact Finset.sum_nonneg fun _ _ => sq_nonneg _
   positivity
 
@@ -43,7 +43,7 @@ theorem cumulativeJacobiDissipation_sub_packetEnergyIncrement_eq_hyperbolicReser
         (projectiveAdmissionPacketEnergy s (n + 1) -
           projectiveAdmissionPacketEnergy s n) =
       projectiveAdmissionPacketEnergy s n +
-        projectiveAdmissionPacketFlux s (n + 1) ^ 2 /
+        projectiveAdmissionPacketFlux s (n + 1) ^ (2 : ℕ) /
           (2 * ((n + 1 : ℕ) : ℝ) + 1) +
         4 * (∑ j ∈ Finset.range (n + 1), HTGeometry.monicOrthoBeta s j) +
         2 * (n + 2 : ℝ) *
@@ -71,7 +71,7 @@ theorem packetEnergyIncrement_lt_cumulativeJacobiDissipation
     cumulativeJacobiDissipation_sub_packetEnergyIncrement_eq_hyperbolicReserve y n
   have henergy : 0 ≤ projectiveAdmissionPacketEnergy s n :=
     projectiveAdmissionPacketEnergy_nonneg s n
-  have hflux : 0 ≤ projectiveAdmissionPacketFlux s (n + 1) ^ 2 /
+  have hflux : 0 ≤ projectiveAdmissionPacketFlux s (n + 1) ^ (2 : ℕ) /
       (2 * ((n + 1 : ℕ) : ℝ) + 1) := by positivity
   have hsumBeta : 0 ≤
       ∑ j ∈ Finset.range (n + 1), HTGeometry.monicOrthoBeta s j := by
@@ -137,10 +137,10 @@ theorem adaptiveMixedCompletedSourceAction_pays_hyperbolicClockReset
     (hmeanNext : projectiveAdmissionPacketMean
       (xiShiftedRealMomentSequence w) (n + 1) ≠ 0) :
     (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) *
-        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) n ^ 2 *
-        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) (n + 1) ^ 2 *
-        (projectiveAdmissionScalarClock (w ^ 2) (xiShiftedRealMomentSequence w) (n + 1) -
-          projectiveAdmissionScalarClock (w ^ 2) (xiShiftedRealMomentSequence w) n) ^ 2 <
+        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) n ^ (2 : ℕ) *
+        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) (n + 1) ^ (2 : ℕ) *
+        (projectiveAdmissionScalarClock (w ^ (2 : ℕ)) (xiShiftedRealMomentSequence w) (n + 1) -
+          projectiveAdmissionScalarClock (w ^ (2 : ℕ)) (xiShiftedRealMomentSequence w) n) ^ (2 : ℕ) <
       2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w (n + 1) := by
   let s := xiShiftedRealMomentSequence w
   let μ := projectiveAdmissionPacketMean s n
@@ -149,22 +149,22 @@ theorem adaptiveMixedCompletedSourceAction_pays_hyperbolicClockReset
   have hν : ν ≠ 0 := by simpa only [ν, s] using hmeanNext
   have henergy := projectiveAdmissionPacketEnergy_succ_sub_ge s n
   have hsource := packetEnergyIncrement_lt_adaptiveMixedCompletedSourceAction hw hn hH
-  have hclock := projectiveAdmissionScalarClock_succ_sub (w ^ 2) s n hmean hmeanNext
-  change projectiveAdmissionScalarClock (w ^ 2) s (n + 1) -
-      projectiveAdmissionScalarClock (w ^ 2) s n = -((ν - μ) / (μ * ν)) at hclock
+  have hclock := projectiveAdmissionScalarClock_succ_sub (w ^ (2 : ℕ)) s n hmean hmeanNext
+  change projectiveAdmissionScalarClock (w ^ (2 : ℕ)) s (n + 1) -
+      projectiveAdmissionScalarClock (w ^ (2 : ℕ)) s n = -((ν - μ) / (μ * ν)) at hclock
   have hcancel :
-      (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) * μ ^ 2 * ν ^ 2 *
-          (projectiveAdmissionScalarClock (w ^ 2) s (n + 1) -
-            projectiveAdmissionScalarClock (w ^ 2) s n) ^ 2 =
-        (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) * (ν - μ) ^ 2 := by
+      (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) * μ ^ (2 : ℕ) * ν ^ (2 : ℕ) *
+          (projectiveAdmissionScalarClock (w ^ (2 : ℕ)) s (n + 1) -
+            projectiveAdmissionScalarClock (w ^ (2 : ℕ)) s n) ^ (2 : ℕ) =
+        (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) * (ν - μ) ^ (2 : ℕ) := by
     rw [hclock]
     field_simp [hμ, hν]
-  change (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) * μ ^ 2 * ν ^ 2 *
-      (projectiveAdmissionScalarClock (w ^ 2) s (n + 1) -
-        projectiveAdmissionScalarClock (w ^ 2) s n) ^ 2 <
+  change (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) * μ ^ (2 : ℕ) * ν ^ (2 : ℕ) *
+      (projectiveAdmissionScalarClock (w ^ (2 : ℕ)) s (n + 1) -
+        projectiveAdmissionScalarClock (w ^ (2 : ℕ)) s n) ^ (2 : ℕ) <
       2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w (n + 1)
   rw [hcancel]
-  change (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) / 2 * (ν - μ) ^ 2 ≤ _ at henergy
+  change (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) / 2 * (ν - μ) ^ (2 : ℕ) ≤ _ at henergy
   change projectiveAdmissionPacketEnergy s (n + 1) -
       projectiveAdmissionPacketEnergy s n < _ at hsource
   nlinarith
@@ -172,35 +172,35 @@ theorem adaptiveMixedCompletedSourceAction_pays_hyperbolicClockReset
 /-- On a complete terminal chamber, Riccati contraction forces both adjacent packet means
 positive, removing nonvanishing assumptions from the arithmetic hyperbolic reset law. -/
 theorem adaptiveMixedCompletedSourceAction_pays_hyperbolicClockReset_of_terminalChamber
-    {A w : ℝ} (hA : 0 ≤ A) (hw : 1 / 2 < w) (hAw : A < w ^ 2)
+    {A w : ℝ} (hA : 0 ≤ A) (hw : 1 / 2 < w) (hAw : A < w ^ (2 : ℕ))
     {n : ℕ} (hn : 0 < n)
     (hchamber : ∀ v, A < v →
       (HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment v k).re) (n + 3)).PosDef) :
     (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) *
-        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) n ^ 2 *
-        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) (n + 1) ^ 2 *
-        (projectiveAdmissionScalarClock (w ^ 2) (xiShiftedRealMomentSequence w) (n + 1) -
-          projectiveAdmissionScalarClock (w ^ 2) (xiShiftedRealMomentSequence w) n) ^ 2 <
+        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) n ^ (2 : ℕ) *
+        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) (n + 1) ^ (2 : ℕ) *
+        (projectiveAdmissionScalarClock (w ^ (2 : ℕ)) (xiShiftedRealMomentSequence w) (n + 1) -
+          projectiveAdmissionScalarClock (w ^ (2 : ℕ)) (xiShiftedRealMomentSequence w) n) ^ (2 : ℕ) <
       2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w (n + 1) := by
-  have hH := hchamber (w ^ 2) hAw
+  have hH := hchamber (w ^ (2 : ℕ)) hAw
   have hchamberCurrent : ∀ v, A < v →
       (HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment v k).re) (n + 2)).PosDef := by
     intro v hv
     exact xiShiftedMomentHankel_posDef_of_le (by omega) (hchamber v hv)
-  have hHcurrent := hchamberCurrent (w ^ 2) hAw
+  have hHcurrent := hchamberCurrent (w ^ (2 : ℕ)) hAw
   have hmeanPos : 0 < projectiveAdmissionPacketMean
       (xiShiftedRealMomentSequence w) n := by
     rw [show xiShiftedRealMomentSequence w =
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) from rfl,
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) from rfl,
       projectiveAdmissionPacketMean_eq_renormalizedJacobiFlux hn hHcurrent]
     exact xiShiftedCanonicalAdmissionRenormalizedJacobiFlux_pos_of_terminalChamber
       hA hAw hn hchamberCurrent
   have hmeanNextPos : 0 < projectiveAdmissionPacketMean
       (xiShiftedRealMomentSequence w) (n + 1) := by
     rw [show xiShiftedRealMomentSequence w =
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) from rfl,
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) from rfl,
       projectiveAdmissionPacketMean_eq_renormalizedJacobiFlux (by omega) hH]
     exact xiShiftedCanonicalAdmissionRenormalizedJacobiFlux_pos_of_terminalChamber
       hA hAw (by omega) hchamber
@@ -215,14 +215,14 @@ theorem adaptiveMixedCompletedSourceAction_pays_hyperbolicClockReset_above_termi
     {v : ℝ} (hv : xiShiftedHigherBlockTerminalFrontier (n + 1) < v) :
     let w := Real.sqrt v
     (2 * (n : ℝ) + 1) * (2 * (n : ℝ) + 3) *
-        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) n ^ 2 *
-        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) (n + 1) ^ 2 *
+        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) n ^ (2 : ℕ) *
+        projectiveAdmissionPacketMean (xiShiftedRealMomentSequence w) (n + 1) ^ (2 : ℕ) *
         (projectiveAdmissionScalarClock v (xiShiftedRealMomentSequence w) (n + 1) -
-          projectiveAdmissionScalarClock v (xiShiftedRealMomentSequence w) n) ^ 2 <
+          projectiveAdmissionScalarClock v (xiShiftedRealMomentSequence w) n) ^ (2 : ℕ) <
       2 * xiShiftedCanonicalAdmissionAdaptiveMixedCompletedSourceAction w (n + 1) := by
   dsimp only
   have hvpos : 0 < v := lt_trans (lt_trans (by norm_num) hphysical) hv
-  have hsq : (Real.sqrt v) ^ 2 = v := Real.sq_sqrt hvpos.le
+  have hsq : (Real.sqrt v) ^ (2 : ℕ) = v := Real.sq_sqrt hvpos.le
   have hw : 1 / 2 < Real.sqrt v := by nlinarith [Real.sqrt_nonneg v]
   have hA : 0 ≤ xiShiftedHigherBlockTerminalFrontier (n + 1) := by
     linarith

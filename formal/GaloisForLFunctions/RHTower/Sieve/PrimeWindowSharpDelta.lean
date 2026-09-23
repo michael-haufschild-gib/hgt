@@ -73,7 +73,7 @@ theorem logNeighbourCount_le_sharp_delta (s : Finset ℕ) (hs : ∀ m ∈ s, m.P
     rw [← Real.exp_add, show 3 * Real.log L / 4 + Real.log L / 4 = Real.log L by ring, hLexp]
   have h4pos : (0 : ℝ) < Real.exp (Real.log L / 4) := Real.exp_pos _
   have hlogL0 : (0 : ℝ) < Real.log L := by linarith
-  have herr : 6 * Real.exp (Real.log L / 4) * (1 + Real.log L / 4) ^ 3
+  have herr : 6 * Real.exp (Real.log L / 4) * (1 + Real.log L / 4) ^ (3 : ℕ)
       ≤ 610 * (L / Real.log L) := by
     have hrw : (610 : ℝ) * (L / Real.log L) = (610 * L) / Real.log L := by ring
     rw [hrw, le_div_iff₀ hlogL0]
@@ -105,26 +105,26 @@ theorem logNeighbourCount_le_sharp_delta (s : Finset ℕ) (hs : ∀ m ∈ s, m.P
 theorem integral_Icc_normSq_logPoly_le_prime_sharp_delta (a : ℕ → ℂ) (s : Finset ℕ)
     (hs : ∀ m ∈ s, m.Prime) {δ W : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
     (hbig : ∀ q ∈ s, 4 ≤ Real.log ((q : ℝ) * δ)) (hWδ : 2 * Real.pi * δ * W ≤ 1) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
-      ≤ (5 * 700 / 4) * ∑ q ∈ s, ((q : ℝ) / Real.log ((q : ℝ) * δ)) * ‖a q‖ ^ 2
-        + (5 / (4 * δ)) * ∑ q ∈ s, ‖a q‖ ^ 2 := by
+    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ (5 * 700 / 4) * ∑ q ∈ s, ((q : ℝ) / Real.log ((q : ℝ) * δ)) * ‖a q‖ ^ (2 : ℕ)
+        + (5 / (4 * δ)) * ∑ q ∈ s, ‖a q‖ ^ (2 : ℕ) := by
   refine le_trans (integral_Icc_normSq_logPoly_le_count a s hδ0 hWδ) ?_
   have hsplit : ∀ q ∈ s,
-      (logNeighbourCount s δ q : ℝ) * ‖a q‖ ^ 2
-        ≤ (700 * (((q : ℝ) * δ) / Real.log ((q : ℝ) * δ)) + 1) * ‖a q‖ ^ 2 := by
+      (logNeighbourCount s δ q : ℝ) * ‖a q‖ ^ (2 : ℕ)
+        ≤ (700 * (((q : ℝ) * δ) / Real.log ((q : ℝ) * δ)) + 1) * ‖a q‖ ^ (2 : ℕ) := by
     intro q hq
     exact mul_le_mul_of_nonneg_right
       (logNeighbourCount_le_sharp_delta s hs (hs q hq).two_le hδ0 hδ1 (hbig q hq)) (by positivity)
   refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum hsplit) (by positivity)) ?_
-  have hexpand : ∑ q ∈ s, (700 * (((q : ℝ) * δ) / Real.log ((q : ℝ) * δ)) + 1) * ‖a q‖ ^ 2
-      = 700 * δ * (∑ q ∈ s, ((q : ℝ) / Real.log ((q : ℝ) * δ)) * ‖a q‖ ^ 2)
-        + ∑ q ∈ s, ‖a q‖ ^ 2 := by
+  have hexpand : ∑ q ∈ s, (700 * (((q : ℝ) * δ) / Real.log ((q : ℝ) * δ)) + 1) * ‖a q‖ ^ (2 : ℕ)
+      = 700 * δ * (∑ q ∈ s, ((q : ℝ) / Real.log ((q : ℝ) * δ)) * ‖a q‖ ^ (2 : ℕ))
+        + ∑ q ∈ s, ‖a q‖ ^ (2 : ℕ) := by
     rw [Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun q _ => ?_
     field_simp
   rw [hexpand, mul_add]
-  have h1 : (5 / (4 * δ)) * (700 * δ * ∑ q ∈ s, ((q : ℝ) / Real.log ((q : ℝ) * δ)) * ‖a q‖ ^ 2)
-      = (5 * 700 / 4) * ∑ q ∈ s, ((q : ℝ) / Real.log ((q : ℝ) * δ)) * ‖a q‖ ^ 2 := by
+  have h1 : (5 / (4 * δ)) * (700 * δ * ∑ q ∈ s, ((q : ℝ) / Real.log ((q : ℝ) * δ)) * ‖a q‖ ^ (2 : ℕ))
+      = (5 * 700 / 4) * ∑ q ∈ s, ((q : ℝ) / Real.log ((q : ℝ) * δ)) * ‖a q‖ ^ (2 : ℕ) := by
     field_simp
   rw [h1]
 

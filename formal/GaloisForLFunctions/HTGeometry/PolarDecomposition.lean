@@ -91,14 +91,14 @@ theorem polarCoeff_apply_of_notMem (hcpt : IsCompactOperator T) (x : H)
   exact hv ⟨n, hn, h⟩
 
 theorem summable_polarCoeff_sq (hcpt : IsCompactOperator T) (x : H) :
-    Summable (fun v' : ↥(polarSet T hcpt) => ‖polarCoeff T hcpt x v'‖ ^ 2) := by
+    Summable (fun v' : ↥(polarSet T hcpt) => ‖polarCoeff T hcpt x v'‖ ^ (2 : ℕ)) := by
   classical
   set i : {n : ℕ // singVal T n ≠ 0} → ↥(polarSet T hcpt) :=
     fun p => ⟨svdVec T p.1, polarSet_subset T hcpt ⟨p.1, p.2, rfl⟩⟩ with hi_def
   have hi : Function.Injective i := by
     rintro ⟨m, hm⟩ ⟨n, hn⟩ h
     exact Subtype.ext (svdVec_live_injective hcpt hn (congrArg Subtype.val h))
-  have hoff : ∀ v' ∉ Set.range i, ‖polarCoeff T hcpt x v'‖ ^ 2 = 0 := by
+  have hoff : ∀ v' ∉ Set.range i, ‖polarCoeff T hcpt x v'‖ ^ (2 : ℕ) = 0 := by
     intro v' hv
     have hnotMem : (v' : H) ∉ svdVec T '' {n | singVal T n ≠ 0} := by
       rintro ⟨n, hn, h⟩
@@ -106,11 +106,11 @@ theorem summable_polarCoeff_sq (hcpt : IsCompactOperator T) (x : H) :
     rw [polarCoeff_apply_of_notMem hcpt x hnotMem]
     simp
   refine (hi.summable_iff hoff).mp ?_
-  have hcomp : ((fun v' => ‖polarCoeff T hcpt x v'‖ ^ 2) ∘ i)
+  have hcomp : ((fun v' => ‖polarCoeff T hcpt x v'‖ ^ (2 : ℕ)) ∘ i)
       = fun p : {n : ℕ // singVal T n ≠ 0} =>
-          ‖inner ℂ (svVec (energyOp T) p.1) x‖ ^ 2 := by
+          ‖inner ℂ (svVec (energyOp T) p.1) x‖ ^ (2 : ℕ) := by
     funext p
-    show ‖polarCoeff T hcpt x (i p)‖ ^ 2 = _
+    show ‖polarCoeff T hcpt x (i p)‖ ^ (2 : ℕ) = _
     rw [polarCoeff_apply_of_eq hcpt x p.2 rfl]
   rw [hcomp]
   exact (summable_inner_svVec_sq hcpt x).subtype _
@@ -122,13 +122,13 @@ noncomputable def polarLp (hcpt : IsCompactOperator T) (x : H) :
   ⟨polarCoeff T hcpt x, HilbertSchmidt.memℓp_of_sq (summable_polarCoeff_sq hcpt x)⟩
 
 theorem norm_polarLp_sq_le (hcpt : IsCompactOperator T) (x : H) :
-    ‖polarLp T hcpt x‖ ^ 2 ≤ ‖x‖ ^ 2 := by
+    ‖polarLp T hcpt x‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ) := by
   classical
   rw [HilbertSchmidt.lp_norm_sq_eq]
-  show ∑' v' : ↥(polarSet T hcpt), ‖polarCoeff T hcpt x v'‖ ^ 2 ≤ ‖x‖ ^ 2
-  have htrans : ∑' v' : ↥(polarSet T hcpt), ‖polarCoeff T hcpt x v'‖ ^ 2
+  show ∑' v' : ↥(polarSet T hcpt), ‖polarCoeff T hcpt x v'‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ)
+  have htrans : ∑' v' : ↥(polarSet T hcpt), ‖polarCoeff T hcpt x v'‖ ^ (2 : ℕ)
       = ∑' p : {n : ℕ // singVal T n ≠ 0},
-          ‖inner ℂ (svVec (energyOp T) p.1) x‖ ^ 2 := by
+          ‖inner ℂ (svVec (energyOp T) p.1) x‖ ^ (2 : ℕ) := by
     refine tsum_eq_tsum_of_ne_zero_bij
       (fun p => ⟨svdVec T p.1.1, polarSet_subset T hcpt ⟨p.1.1, p.1.2, rfl⟩⟩) ?_ ?_ ?_
     · rintro ⟨⟨m, hm⟩, hm'⟩ ⟨⟨n, hn⟩, hn'⟩ h
@@ -143,19 +143,19 @@ theorem norm_polarLp_sq_le (hcpt : IsCompactOperator T) (x : H) :
       obtain ⟨n, hn, hvn⟩ := hmem
       have hval : polarCoeff T hcpt x v' = inner ℂ (svVec (energyOp T) n) x :=
         polarCoeff_apply_of_eq hcpt x hn hvn.symm
-      have hgn : ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2 ≠ 0 := by
+      have hgn : ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ) ≠ 0 := by
         rw [← hval]
         exact hv'
       exact ⟨⟨⟨n, hn⟩, hgn⟩, Subtype.ext hvn⟩
     · rintro ⟨⟨n, hn⟩, hn'⟩
-      show ‖polarCoeff T hcpt x _‖ ^ 2 = _
+      show ‖polarCoeff T hcpt x _‖ ^ (2 : ℕ) = _
       rw [polarCoeff_apply_of_eq hcpt x hn rfl]
   rw [htrans]
   have hsub : ∑' p : {n : ℕ // singVal T n ≠ 0},
-        ‖inner ℂ (svVec (energyOp T) p.1) x‖ ^ 2
-      = ∑' n : ℕ, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2 := by
+        ‖inner ℂ (svVec (energyOp T) p.1) x‖ ^ (2 : ℕ)
+      = ∑' n : ℕ, ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ) := by
     refine tsum_subtype_eq_of_support_subset
-      (f := fun n => ‖inner ℂ (svVec (energyOp T) n) x‖ ^ 2)
+      (f := fun n => ‖inner ℂ (svVec (energyOp T) n) x‖ ^ (2 : ℕ))
       (s := {n | singVal T n ≠ 0}) ?_
     intro n hn
     by_contra h0

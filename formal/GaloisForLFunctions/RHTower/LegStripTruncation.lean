@@ -36,7 +36,7 @@ theorem aheadHarm_ge_log (i k : ℕ) :
 from `u ≥ 2·log((i+k+1)/(i+1))`, `exp(u) − 1 ≥ (k(k+2i+2))/(i+1)²`. -/
 theorem poleExcess_ahead_le_rational (i k : ℕ) (hi : 1 ≤ i) (hk : 1 ≤ k) :
     poleExcess (1/(i:ℝ) + 2 * ∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1))
-      ≤ (((i:ℝ)+1)^2)/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)) := by
+      ≤ (((i:ℝ)+1)^(2 : ℕ))/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)) := by
   have hipos : (0:ℝ) < (i:ℝ) := by exact_mod_cast hi
   have hi1 : (0:ℝ) < (i:ℝ)+1 := by positivity
   have hkpos : (0:ℝ) < (k:ℝ) := by exact_mod_cast hk
@@ -49,22 +49,22 @@ theorem poleExcess_ahead_le_rational (i k : ℕ) (hi : 1 ≤ i) (hk : 1 ≤ k) :
   have hupos : (0:ℝ) < u := by rw [hu]; positivity
   have hu_ge : 2 * Real.log (((i:ℝ)+k+1)/((i:ℝ)+1)) ≤ u := by
     rw [hu]; linarith [hlog, (show (0:ℝ) ≤ 1/(i:ℝ) by positivity)]
-  have hexp : (((i:ℝ)+k+1)/((i:ℝ)+1))^2 ≤ Real.exp u := by
-    calc (((i:ℝ)+k+1)/((i:ℝ)+1))^2
+  have hexp : (((i:ℝ)+k+1)/((i:ℝ)+1))^(2 : ℕ) ≤ Real.exp u := by
+    calc (((i:ℝ)+k+1)/((i:ℝ)+1))^(2 : ℕ)
         = Real.exp (2 * Real.log (((i:ℝ)+k+1)/((i:ℝ)+1))) := by
           rw [show (2:ℝ) * Real.log (((i:ℝ)+k+1)/((i:ℝ)+1))
               = Real.log (((i:ℝ)+k+1)/((i:ℝ)+1)) + Real.log (((i:ℝ)+k+1)/((i:ℝ)+1)) by ring,
             Real.exp_add, Real.exp_log (by positivity)]; ring
       _ ≤ Real.exp u := Real.exp_le_exp.mpr hu_ge
-  have hsq : (((i:ℝ)+k+1)/((i:ℝ)+1))^2 - 1 = ((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2))/(((i:ℝ)+1)^2) := by
+  have hsq : (((i:ℝ)+k+1)/((i:ℝ)+1))^(2 : ℕ) - 1 = ((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2))/(((i:ℝ)+1)^(2 : ℕ)) := by
     field_simp; ring
-  have hden : ((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2))/(((i:ℝ)+1)^2) ≤ Real.exp u - 1 := by linarith [hexp, hsq]
+  have hden : ((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2))/(((i:ℝ)+1)^(2 : ℕ)) ≤ Real.exp u - 1 := by linarith [hexp, hsq]
   have hepos : (0:ℝ) < Real.exp u - 1 := by linarith [Real.one_lt_exp_iff.mpr hupos]
   have hnpos : (0:ℝ) < (k:ℝ)*((k:ℝ)+2*(i:ℝ)+2) := by positivity
   rw [poleExcess, div_le_div_iff₀ hepos hnpos, one_mul]
-  have hi1sq : (0:ℝ) < ((i:ℝ)+1)^2 := by positivity
+  have hi1sq : (0:ℝ) < ((i:ℝ)+1)^(2 : ℕ) := by positivity
   have hmul := mul_le_mul_of_nonneg_left hden hi1sq.le
-  have hcancel : ((i:ℝ)+1)^2 * (((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2))/(((i:ℝ)+1)^2))
+  have hcancel : ((i:ℝ)+1)^(2 : ℕ) * (((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2))/(((i:ℝ)+1)^(2 : ℕ)))
       = (k:ℝ)*((k:ℝ)+2*(i:ℝ)+2) := by field_simp
   rw [hcancel] at hmul
   linarith [hmul]
@@ -72,21 +72,21 @@ theorem poleExcess_ahead_le_rational (i k : ℕ) (hi : 1 ≤ i) (hk : 1 ≤ k) :
 /-- **The rational envelope tail bound.** `Σ_{M≤k<N} (i+1)²/(k(k+2i+2)) ≤ (i+1)²/(M−1)`: each term is
 below `(i+1)²/k²`, whose tail sums (telescoping, `sum_inv_sq_shift_le`) to `1/(M−1)`. -/
 theorem trunc_rational_tail_le (i M N : ℕ) (hM : 2 ≤ M) :
-    (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^2)/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)))
-      ≤ (((i:ℝ)+1)^2)/((M:ℝ)-1) := by
-  have hi1sq : (0:ℝ) ≤ ((i:ℝ)+1)^2 := by positivity
-  have hstep : (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^2)/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)))
-      ≤ ∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^2)/((k:ℝ)^2) := by
+    (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^(2 : ℕ))/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)))
+      ≤ (((i:ℝ)+1)^(2 : ℕ))/((M:ℝ)-1) := by
+  have hi1sq : (0:ℝ) ≤ ((i:ℝ)+1)^(2 : ℕ) := by positivity
+  have hstep : (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^(2 : ℕ))/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)))
+      ≤ ∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^(2 : ℕ))/((k:ℝ)^(2 : ℕ)) := by
     apply Finset.sum_le_sum
     intro k hk
     rw [Finset.mem_Ico] at hk
     have hkpos : (0:ℝ) < (k:ℝ) := by exact_mod_cast (by omega : 0 < k)
     gcongr
     nlinarith [hkpos]
-  have hfac : (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^2)/((k:ℝ)^2))
-      = ((i:ℝ)+1)^2 * ∑ k ∈ Finset.Ico M N, (1:ℝ)/(k:ℝ)^2 := by
+  have hfac : (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^(2 : ℕ))/((k:ℝ)^(2 : ℕ)))
+      = ((i:ℝ)+1)^(2 : ℕ) * ∑ k ∈ Finset.Ico M N, (1:ℝ)/(k:ℝ)^(2 : ℕ) := by
     rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intro k _; ring
-  have hsq : (∑ k ∈ Finset.Ico M N, (1:ℝ)/(k:ℝ)^2) ≤ 1/((M:ℝ)-1) := by
+  have hsq : (∑ k ∈ Finset.Ico M N, (1:ℝ)/(k:ℝ)^(2 : ℕ)) ≤ 1/((M:ℝ)-1) := by
     rw [Finset.sum_Ico_eq_sum_range]
     have hM1 : 1 ≤ M - 1 := by omega
     have hshift := sum_inv_sq_shift_le hM1 (N - M)
@@ -98,11 +98,11 @@ theorem trunc_rational_tail_le (i M N : ℕ) (hM : 2 ≤ M) :
     intro r _
     have : ((M + r : ℕ):ℝ) = (M:ℝ) - 1 + 1 + (r:ℝ) := by push_cast; ring
     rw [this]
-  calc (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^2)/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)))
-      ≤ ∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^2)/((k:ℝ)^2) := hstep
-    _ = ((i:ℝ)+1)^2 * ∑ k ∈ Finset.Ico M N, (1:ℝ)/(k:ℝ)^2 := hfac
-    _ ≤ ((i:ℝ)+1)^2 * (1/((M:ℝ)-1)) := by gcongr
-    _ = (((i:ℝ)+1)^2)/((M:ℝ)-1) := by ring
+  calc (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^(2 : ℕ))/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)))
+      ≤ ∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^(2 : ℕ))/((k:ℝ)^(2 : ℕ)) := hstep
+    _ = ((i:ℝ)+1)^(2 : ℕ) * ∑ k ∈ Finset.Ico M N, (1:ℝ)/(k:ℝ)^(2 : ℕ) := hfac
+    _ ≤ ((i:ℝ)+1)^(2 : ℕ) * (1/((M:ℝ)-1)) := by gcongr
+    _ = (((i:ℝ)+1)^(2 : ℕ))/((M:ℝ)-1) := by ring
 
 /-- **The truncation bound.** The ahead excess removed by the finite pole count `d` — the sum over the
 far-ahead poles `k ∈ [d−i, N)` — is at most `(i+1)²/(d−i−1)`:
@@ -111,7 +111,7 @@ mass scales as `i/d` — the truncation term of `g(i)/i`. -/
 theorem trunc_ahead_le (i M N : ℕ) (hi : 1 ≤ i) (hM : 2 ≤ M) :
     (∑ k ∈ Finset.Ico M N,
         poleExcess (1/(i:ℝ) + 2 * ∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1)))
-      ≤ (((i:ℝ)+1)^2)/((M:ℝ)-1) := by
+      ≤ (((i:ℝ)+1)^(2 : ℕ))/((M:ℝ)-1) := by
   refine le_trans (Finset.sum_le_sum (fun k hk => ?_)) (trunc_rational_tail_le i M N hM)
   rw [Finset.mem_Ico] at hk
   exact poleExcess_ahead_le_rational i k hi (by omega)
@@ -152,20 +152,20 @@ theorem poleExcess_ahead_ge_rational (i k : ℕ) (hi : 2 ≤ i) (hk : 1 ≤ k) :
   have hu_le : u ≤ 1/(i:ℝ) + 2 * Real.log (((i:ℝ)+k)/(i:ℝ)) := by rw [hu]; linarith [hlog]
   -- e^u ≤ e^{1/i} · ((i+k)/i)² ≤ (i/(i-1)) ((i+k)/i)²
   have hlogpos : (0:ℝ) < ((i:ℝ)+k)/(i:ℝ) := by positivity
-  have hexp_u : Real.exp u ≤ ((i:ℝ)/((i:ℝ)-1)) * (((i:ℝ)+k)/(i:ℝ))^2 := by
+  have hexp_u : Real.exp u ≤ ((i:ℝ)/((i:ℝ)-1)) * (((i:ℝ)+k)/(i:ℝ))^(2 : ℕ) := by
     calc Real.exp u ≤ Real.exp (1/(i:ℝ) + 2 * Real.log (((i:ℝ)+k)/(i:ℝ))) :=
           Real.exp_le_exp.mpr hu_le
-      _ = Real.exp (1/(i:ℝ)) * (((i:ℝ)+k)/(i:ℝ))^2 := by
+      _ = Real.exp (1/(i:ℝ)) * (((i:ℝ)+k)/(i:ℝ))^(2 : ℕ) := by
           rw [Real.exp_add, show (2:ℝ) * Real.log (((i:ℝ)+k)/(i:ℝ))
               = Real.log (((i:ℝ)+k)/(i:ℝ)) + Real.log (((i:ℝ)+k)/(i:ℝ)) by ring,
             Real.exp_add, Real.exp_log hlogpos]; ring
-      _ ≤ ((i:ℝ)/((i:ℝ)-1)) * (((i:ℝ)+k)/(i:ℝ))^2 := by
+      _ ≤ ((i:ℝ)/((i:ℝ)-1)) * (((i:ℝ)+k)/(i:ℝ))^(2 : ℕ) := by
           apply mul_le_mul_of_nonneg_right (exp_inv_le hi) (by positivity)
   -- e^u − 1 ≤ (k(k+2i)+i)/(i(i-1))
   have hbound : Real.exp u - 1 ≤ ((k:ℝ)*((k:ℝ)+2*(i:ℝ)) + (i:ℝ))/((i:ℝ)*((i:ℝ)-1)) := by
     have hine : (i:ℝ) ≠ 0 := ne_of_gt hipos
     have hi1ne : (i:ℝ)-1 ≠ 0 := ne_of_gt hi1
-    have hrw : ((i:ℝ)/((i:ℝ)-1)) * (((i:ℝ)+k)/(i:ℝ))^2 - 1
+    have hrw : ((i:ℝ)/((i:ℝ)-1)) * (((i:ℝ)+k)/(i:ℝ))^(2 : ℕ) - 1
         = ((k:ℝ)*((k:ℝ)+2*(i:ℝ)) + (i:ℝ))/((i:ℝ)*((i:ℝ)-1)) := by
       field_simp; ring
     linarith [hexp_u, hrw]
@@ -200,10 +200,10 @@ theorem sum_shift_telescope (f : ℕ → ℝ) (M N m : ℕ) (hMN : M + m ≤ N) 
 `Σ_{M≤k<N} (i+1)²/(k(k+2i+2)) = ((i+1)/2)·(Σ_{M≤k<M+m} 1/k − Σ_{N≤k<N+m} 1/k)` — the rational tail is
 `((i+1)/2)` times a harmonic block of `2i+2` terms near `M`, which is the `~ i²/d` truncation mass. -/
 theorem trunc_upper_sum_eq (i M N : ℕ) (hi : 1 ≤ i) (hMN : M + (2*i+2) ≤ N) (hM : 1 ≤ M) :
-    (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^2)/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)))
+    (∑ k ∈ Finset.Ico M N, (((i:ℝ)+1)^(2 : ℕ))/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2)))
       = ((i:ℝ)+1)/2 * ((∑ k ∈ Finset.Ico M (M+(2*i+2)), 1/(k:ℝ))
           - ∑ k ∈ Finset.Ico N (N+(2*i+2)), 1/(k:ℝ)) := by
-  have hpf : ∀ k ∈ Finset.Ico M N, (((i:ℝ)+1)^2)/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2))
+  have hpf : ∀ k ∈ Finset.Ico M N, (((i:ℝ)+1)^(2 : ℕ))/((k:ℝ)*((k:ℝ)+2*(i:ℝ)+2))
       = ((i:ℝ)+1)/2 * (1/(k:ℝ) - 1/((k:ℝ)+2*(i:ℝ)+2)) := by
     intro k hk
     rw [Finset.mem_Ico] at hk
@@ -299,7 +299,7 @@ theorem trunc_ahead_two_sided (i M N : ℕ) (hi : 2 ≤ i) (hM : 2 ≤ M) (hMN :
           poleExcess (1/(i:ℝ) + 2 * ∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1)))
     ∧ (∑ k ∈ Finset.Ico M N,
           poleExcess (1/(i:ℝ) + 2 * ∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1)))
-      ≤ (((i:ℝ)+1)^2)/((M:ℝ)-1) := by
+      ≤ (((i:ℝ)+1)^(2 : ℕ))/((M:ℝ)-1) := by
   refine ⟨?_, trunc_ahead_le i M N (by omega) hM⟩
   rw [← trunc_lower_sum_eq i M N (by omega) hMN]
   apply Finset.sum_le_sum

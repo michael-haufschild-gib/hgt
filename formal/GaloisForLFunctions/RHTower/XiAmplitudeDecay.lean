@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.RHTower
 theorem sqrt_sqrt_two_le_two : Real.sqrt (Real.sqrt 2) ≤ 2 := by
   have h1 : Real.sqrt 2 ≤ 2 := by
     nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), Real.sqrt_nonneg 2]
-  have h2 : Real.sqrt (Real.sqrt 2) ^ 2 = Real.sqrt 2 := Real.sq_sqrt (Real.sqrt_nonneg 2)
+  have h2 : Real.sqrt (Real.sqrt 2) ^ (2 : ℕ) = Real.sqrt 2 := Real.sq_sqrt (Real.sqrt_nonneg 2)
   nlinarith [h2, Real.sqrt_nonneg (Real.sqrt 2), h1]
 
 /-- The amplitude decay in the form the exterior primitive consumes. -/
@@ -43,8 +43,8 @@ theorem abs_xiAmplitudeDeriv_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) 
     |xiAmplitudeDeriv s x| ≤ 4 / (x * Real.sqrt x) := by
   have hx1 : (1 : ℝ) < x := by linarith
   have hx0 : (0 : ℝ) < x := by linarith
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
   have hA : 0 < xiAmplitude s x := xiAmplitude_pos hs0 hs1 hx1
   have hAle : xiAmplitude s x ≤ Real.sqrt (Real.sqrt 2) / Real.sqrt x := xiAmplitude_le hs0 hs1 hx1
@@ -54,17 +54,17 @@ theorem abs_xiAmplitudeDeriv_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) 
     exact sqrt_sqrt_two_le_two
   have hdef := abs_phaseLogDefect_le_far hs0 hs1 hx1
   have h1 : |phaseLogDefect s x| / 2 ≤ 2 / (3 * x) := by
-    have hstep : x / (x ^ 2 - 1) / 2 ≤ 2 / (3 * x) := by
+    have hstep : x / (x ^ (2 : ℕ) - 1) / 2 ≤ 2 / (3 * x) := by
       rw [div_div, div_le_div_iff₀ (by positivity) (by positivity)]
       nlinarith [hx, hx0, hd]
     linarith [hdef, hstep]
-  have h2 : |x / (2 * (x ^ 2 - s))| ≤ 4 / (7 * x) := by
-    rw [abs_of_nonneg (by positivity : (0 : ℝ) ≤ x / (2 * (x ^ 2 - s)))]
+  have h2 : |x / (2 * (x ^ (2 : ℕ) - s))| ≤ 4 / (7 * x) := by
+    rw [abs_of_nonneg (by positivity : (0 : ℝ) ≤ x / (2 * (x ^ (2 : ℕ) - s)))]
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [hx, hx0, hs1, hn]
-  have hbr : |phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s))| ≤ 2 / x := by
-    have htri : |phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s))|
-        ≤ |phaseLogDefect s x / 2| + |x / (2 * (x ^ 2 - s))| := abs_sub _ _
+  have hbr : |phaseLogDefect s x / 2 - x / (2 * (x ^ (2 : ℕ) - s))| ≤ 2 / x := by
+    have htri : |phaseLogDefect s x / 2 - x / (2 * (x ^ (2 : ℕ) - s))|
+        ≤ |phaseLogDefect s x / 2| + |x / (2 * (x ^ (2 : ℕ) - s))| := abs_sub _ _
     have habs : |phaseLogDefect s x / 2| = |phaseLogDefect s x| / 2 := by
       rw [abs_div]
       norm_num
@@ -75,7 +75,7 @@ theorem abs_xiAmplitudeDeriv_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) 
     rw [habs] at htri
     linarith [htri, h1, h2, hsum]
   rw [xiAmplitudeDeriv, abs_mul, abs_of_pos hA]
-  have hfin : xiAmplitude s x * |phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s))|
+  have hfin : xiAmplitude s x * |phaseLogDefect s x / 2 - x / (2 * (x ^ (2 : ℕ) - s))|
       ≤ (2 / Real.sqrt x) * (2 / x) :=
     mul_le_mul hA2 hbr (abs_nonneg _) (by positivity)
   refine le_trans hfin (le_of_eq ?_)

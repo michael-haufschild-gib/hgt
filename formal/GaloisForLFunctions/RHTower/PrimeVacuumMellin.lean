@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.PrimeVacuumExponentialIntegral
 
 The interval suspension of the continuous logarithmic density has the same divided-difference
 Mellin transform as the arithmetic co-Poisson current:
-`∫_0^1 V_z(x) x^{w-1} dx = (V(z) - V(w)) / (w - z)`.
+`∫_0^(1 : ℕ) V_z(x) x^{w-1} dx = (V(z) - V(w)) / (w - z)`.
 
 As with the Abel transform, the identity is proved by differentiating in the lower cut rather than
 by Fubini: an explicit antiderivative in the cut is available because the `z`- and `w`-tails of the

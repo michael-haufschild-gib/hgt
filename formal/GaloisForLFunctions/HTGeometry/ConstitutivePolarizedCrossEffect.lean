@@ -306,7 +306,7 @@ private theorem biasedWalshCoefficient_booleanZetaFeature
       exact mul_pos (hq0 i) (sub_pos.mpr (hq1 i))
     have hsqrt : Real.sqrt (biasedBernoulliVariance q i) ≠ 0 :=
       ne_of_gt (Real.sqrt_pos.2 hv)
-    have hsq : Real.sqrt (biasedBernoulliVariance q i) ^ 2 =
+    have hsq : Real.sqrt (biasedBernoulliVariance q i) ^ (2 : ℕ) =
         biasedBernoulliVariance q i := Real.sq_sqrt hv.le
     by_cases hiS : i ∈ S <;> by_cases hiT : i ∈ T
     · simp [sf, sg, hiS, hiT]

@@ -13,7 +13,7 @@ arbitrary function—no quadratic, bilinear, diagonal, continuity, or linearity 
 If one pair of positive constants compares every fibre energy with neutral two-channel energy,
 exact reflection invariance forces
 
-`m * max (a(x)^2) (a(x)⁻¹)^2 ≤ M`.
+`m * max (a(x)^(2 : ℕ)) (a(x)⁻¹)^(2 : ℕ) ≤ M`.
 
 Since the source-forced gain is cofinally unbounded, no such global constants exist.  The result is
 sharp: the already-constructed source-adapted energy is invariant and lies exactly between the
@@ -41,7 +41,7 @@ noncomputable section
 theorem pwNeutralChannelEnergy_singularReflectionBlock_one_zero
     (x : ℝ) :
     pwNeutralChannelEnergy (pwSingularReflectionBlock x (1, 0)) =
-      (pwSingularReflectionGain x)⁻¹ ^ 2 := by
+      (pwSingularReflectionGain x)⁻¹ ^ (2 : ℕ) := by
   simp [pwNeutralChannelEnergy, pwSingularReflectionBlock]
 
 /-- Exact conditioning law forced on any energy invariant under one singular PW block. -/
@@ -51,28 +51,28 @@ theorem pwInvariantEnergy_conditioning_forced
     (hupper : ∀ w, energy w ≤ M * pwNeutralChannelEnergy w)
     (hinvariant : ∀ w,
       energy (pwSingularReflectionBlock x w) = energy w) :
-    m * max (pwSingularReflectionGain x ^ 2)
-        ((pwSingularReflectionGain x)⁻¹ ^ 2) ≤ M := by
-  have hforward : m * pwSingularReflectionGain x ^ 2 ≤ M := by
+    m * max (pwSingularReflectionGain x ^ (2 : ℕ))
+        ((pwSingularReflectionGain x)⁻¹ ^ (2 : ℕ)) ≤ M := by
+  have hforward : m * pwSingularReflectionGain x ^ (2 : ℕ) ≤ M := by
     calc
-      m * pwSingularReflectionGain x ^ 2 =
+      m * pwSingularReflectionGain x ^ (2 : ℕ) =
           m * pwNeutralChannelEnergy (pwSingularReflectionBlock x (0, 1)) := by
             rw [pwNeutralChannelEnergy_singularReflectionBlock_zero_one]
       _ ≤ energy (pwSingularReflectionBlock x (0, 1)) := hlower _
       _ = energy (0, 1) := hinvariant _
       _ ≤ M * pwNeutralChannelEnergy (0, 1) := hupper _
       _ = M := by norm_num [pwNeutralChannelEnergy]
-  have hbackward : m * (pwSingularReflectionGain x)⁻¹ ^ 2 ≤ M := by
+  have hbackward : m * (pwSingularReflectionGain x)⁻¹ ^ (2 : ℕ) ≤ M := by
     calc
-      m * (pwSingularReflectionGain x)⁻¹ ^ 2 =
+      m * (pwSingularReflectionGain x)⁻¹ ^ (2 : ℕ) =
           m * pwNeutralChannelEnergy (pwSingularReflectionBlock x (1, 0)) := by
             rw [pwNeutralChannelEnergy_singularReflectionBlock_one_zero]
       _ ≤ energy (pwSingularReflectionBlock x (1, 0)) := hlower _
       _ = energy (1, 0) := hinvariant _
       _ ≤ M * pwNeutralChannelEnergy (1, 0) := hupper _
       _ = M := by norm_num [pwNeutralChannelEnergy]
-  rcases le_total (pwSingularReflectionGain x ^ 2)
-      ((pwSingularReflectionGain x)⁻¹ ^ 2) with hle | hle
+  rcases le_total (pwSingularReflectionGain x ^ (2 : ℕ))
+      ((pwSingularReflectionGain x)⁻¹ ^ (2 : ℕ)) with hle | hle
   · rw [max_eq_right hle]
     exact hbackward
   · rw [max_eq_left hle]
@@ -102,11 +102,11 @@ theorem no_pwSingularUniformlyConditionedInvariantEnergyBundle :
   rcases hbundle x hx with ⟨hlower, hupper, hinvariant⟩
   have hforced :=
     pwInvariantEnergy_conditioning_forced (energy x) hlower hupper hinvariant
-  have hgain : m * pwSingularReflectionGain x ^ 2 ≤ M :=
+  have hgain : m * pwSingularReflectionGain x ^ (2 : ℕ) ≤ M :=
     le_trans
       (mul_le_mul_of_nonneg_left
-        (le_max_left (pwSingularReflectionGain x ^ 2)
-          ((pwSingularReflectionGain x)⁻¹ ^ 2)) hm.le)
+        (le_max_left (pwSingularReflectionGain x ^ (2 : ℕ))
+          ((pwSingularReflectionGain x)⁻¹ ^ (2 : ℕ))) hm.le)
       hforced
   have hresponse :
       m * pwNeutralChannelEnergy (pwSingularReflectionBlock x (0, 1)) ≤ M := by
@@ -132,8 +132,8 @@ theorem pwSingularReflectionEnergy_minmax_bounds
     (pwSingularReflectionGain x)⁻¹ (pwSingularReflectionGain x)
   have hmaxRight := le_max_right
     (pwSingularReflectionGain x)⁻¹ (pwSingularReflectionGain x)
-  have hu : 0 ≤ u ^ 2 := sq_nonneg u
-  have hv : 0 ≤ v ^ 2 := sq_nonneg v
+  have hu : 0 ≤ u ^ (2 : ℕ) := sq_nonneg u
+  have hv : 0 ≤ v ^ (2 : ℕ) := sq_nonneg v
   simp only [pwNeutralChannelEnergy, pwSingularReflectionEnergy]
   constructor
   · nlinarith [mul_nonneg (sub_nonneg.mpr hminLeft) hu,
@@ -155,8 +155,8 @@ def PWSingularUniformlyConditionedEnergyBundleNoGo : Prop :=
     (∀ w, m * pwNeutralChannelEnergy w ≤ energy w) →
     (∀ w, energy w ≤ M * pwNeutralChannelEnergy w) →
     (∀ w, energy (pwSingularReflectionBlock x w) = energy w) →
-    m * max (pwSingularReflectionGain x ^ 2)
-      ((pwSingularReflectionGain x)⁻¹ ^ 2) ≤ M) ∧
+    m * max (pwSingularReflectionGain x ^ (2 : ℕ))
+      ((pwSingularReflectionGain x)⁻¹ ^ (2 : ℕ)) ≤ M) ∧
   ¬ PWSingularUniformlyConditionedInvariantEnergyBundle ∧
   (∀ x : ℝ, 0 < x →
     0 < min (pwSingularReflectionGain x)⁻¹

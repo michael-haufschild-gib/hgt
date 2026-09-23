@@ -31,7 +31,7 @@ theorem horocyclePoint_im (x y : ℝ) (hy : 0 < y) :
 
 /-- The literal height of the modular-inverted horocycle point. -/
 theorem modularS_horocyclePoint_im (x y : ℝ) (hy : 0 < y) :
-    (ModularGroup.S • horocyclePoint x y hy).im = y / (x ^ 2 + y ^ 2) := by
+    (ModularGroup.S • horocyclePoint x y hy).im = y / (x ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
   rw [UpperHalfPlane.modular_S_smul]
   change (((-((x : ℂ) + (y : ℂ) * Complex.I))⁻¹).im) = _
   rw [inv_im]
@@ -45,16 +45,16 @@ theorem modularS_horocyclePoint_im (x y : ℝ) (hy : 0 < y) :
 height `t < y⁻¹`. -/
 theorem modularS_horocyclePoint_hits {y t : ℝ} (hy : 0 < y) (ht : 0 < t)
     (hty : t < y⁻¹) :
-    (ModularGroup.S • horocyclePoint (Real.sqrt (y / t - y ^ 2)) y hy).im = t := by
+    (ModularGroup.S • horocyclePoint (Real.sqrt (y / t - y ^ (2 : ℕ))) y hy).im = t := by
   have hty' : t * y < 1 := by
     have h : t / 1 < 1 / y := by
       simpa only [div_one, one_div] using hty
     have h' := (div_lt_div_iff₀ (by positivity : (0 : ℝ) < 1) hy).mp h
     simpa using h'
-  have hsq : t * y ^ 2 < y := by
+  have hsq : t * y ^ (2 : ℕ) < y := by
     have h := mul_lt_mul_of_pos_right hty' hy
     nlinarith
-  have hnonneg : 0 ≤ y / t - y ^ 2 := by
+  have hnonneg : 0 ≤ y / t - y ^ (2 : ℕ) := by
     apply sub_nonneg.mpr
     rw [le_div_iff₀ ht]
     nlinarith
@@ -84,8 +84,8 @@ theorem modular_heightProfile_eq {α : Sort*} (g : ℝ → α)
       rw [div_lt_div_iff₀ hden hw]
       nlinarith
     simpa only [one_div] using h
-  let zy : ℍ := horocyclePoint (Real.sqrt (y / t - y ^ 2)) y hy
-  let zw : ℍ := horocyclePoint (Real.sqrt (w / t - w ^ 2)) w hw
+  let zy : ℍ := horocyclePoint (Real.sqrt (y / t - y ^ (2 : ℕ))) y hy
+  let zw : ℍ := horocyclePoint (Real.sqrt (w / t - w ^ (2 : ℕ))) w hw
   have hzy : (ModularGroup.S • zy).im = t := by
     exact modularS_horocyclePoint_hits hy ht hty
   have hzw : (ModularGroup.S • zw).im = t := by

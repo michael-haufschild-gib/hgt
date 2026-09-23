@@ -42,8 +42,8 @@ theorem m_window_contraction_of_ratio {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
         (2 * Real.log m + 2) * |psiRemainder (N / m)|
       ≤ (N : ℝ) * ((a - (a - (δ + ρ * (Real.log (1 / ρ) + 3) + κ)) * ρ
             / (8 * Real.log ((2 * Q : ℕ) : ℝ)))
-          * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+          * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
         + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
         + 8 * ((2 * Real.log N + 8) / x₁)
         + 8 * Real.log c * (2 * Real.log N + 2)) := by
@@ -214,8 +214,8 @@ theorem m_window_contraction_of_ratio {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
   have hM1' := sum_log_harmonic_window_le hY1two hY1N
   have htail : ∑ m ∈ Finset.Ioc (x₁ * (2 * Q) ^ (J + 1)) N,
       (2 * Real.log m + 2) * |psiRemainder (N / m)|
-      ≤ 8 * (N : ℝ) * ((Real.log N ^ 2 + 2 * Real.log N)
-          - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+      ≤ 8 * (N : ℝ) * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+          - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
             + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
         + (2 * Real.log (((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) + 1) + 6)
           / (x₁ * (2 * Q) ^ (J + 1) : ℕ)) := by
@@ -249,12 +249,12 @@ theorem m_window_contraction_of_ratio {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
       ring
     rw [h2, Real.log_mul (by exact_mod_cast hc0.ne') hY1R.ne'] at h1
     exact h1
-  have hGtail : (Real.log N ^ 2 + 2 * Real.log N)
-      - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+  have hGtail : (Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+      - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
         + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
       ≤ Real.log c * (2 * Real.log N + 2) := by
-    have hfact : (Real.log N ^ 2 + 2 * Real.log N)
-        - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+    have hfact : (Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+        - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
           + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
         = (Real.log N - Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
           * (Real.log N + Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ)
@@ -316,9 +316,9 @@ theorem m_window_contraction_of_ratio {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
       linarith
     have h4 : a * (1 / 2) / 4 ≤ a := by linarith
     linarith
-  have hGmono : Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+  have hGmono : Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
       + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ)
-      ≤ Real.log N ^ 2 + 2 * Real.log N := by
+      ≤ Real.log N ^ (2 : ℕ) + 2 * Real.log N := by
     have := pow_le_pow_left₀ hlogY10 hlogY1N 2
     linarith
   -- split `(x₁, N]` at the ladder top and combine
@@ -335,22 +335,22 @@ theorem m_window_contraction_of_ratio {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
   rw [hsplit, Finset.sum_union hdisj]
   -- assemble the two halves against the closed form
   have hb1 : (N : ℝ) * ((a - θ)
-        * ((Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+        * ((Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
             + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
-          - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+          - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
       + ((J : ℝ) + 1) * (3 * a * ((2 * Real.log N + 8) / x₁)))
       ≤ (N : ℝ) * ((a - θ)
-          * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+          * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
         + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))) := by
     apply mul_le_mul_of_nonneg_left _ hNR.le
     have hm1 : (a - θ)
-        * ((Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+        * ((Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
             + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
-          - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+          - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
         ≤ (a - θ)
-          * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log x₁ ^ 2 + 2 * Real.log x₁)) := by
+          * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁)) := by
       apply mul_le_mul_of_nonneg_left (by linarith [hGmono])
         (by linarith [hθa])
     have hm2 : ((J : ℝ) + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
@@ -358,28 +358,28 @@ theorem m_window_contraction_of_ratio {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
       apply mul_le_mul_of_nonneg_right (by linarith [hJcount])
       positivity
     linarith
-  have hb2 : 8 * (N : ℝ) * ((Real.log N ^ 2 + 2 * Real.log N)
-        - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+  have hb2 : 8 * (N : ℝ) * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+        - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
           + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
       + (2 * Real.log (((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) + 1) + 6)
         / (x₁ * (2 * Q) ^ (J + 1) : ℕ))
       ≤ (N : ℝ) * (8 * ((2 * Real.log N + 8) / x₁)
         + 8 * Real.log c * (2 * Real.log N + 2)) := by
-    have hinner : 8 * ((Real.log N ^ 2 + 2 * Real.log N)
-        - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+    have hinner : 8 * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+        - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
           + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
         + (2 * Real.log (((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) + 1) + 6)
           / (x₁ * (2 * Q) ^ (J + 1) : ℕ))
         ≤ 8 * ((2 * Real.log N + 8) / x₁)
           + 8 * Real.log c * (2 * Real.log N + 2) := by
       linarith [hGtail, htailerr]
-    calc 8 * (N : ℝ) * ((Real.log N ^ 2 + 2 * Real.log N)
-          - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+    calc 8 * (N : ℝ) * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+          - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
             + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
         + (2 * Real.log (((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) + 1) + 6)
           / (x₁ * (2 * Q) ^ (J + 1) : ℕ))
-        = (N : ℝ) * (8 * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ 2
+        = (N : ℝ) * (8 * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) ^ (2 : ℕ)
               + 2 * Real.log ((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ))
           + (2 * Real.log (((x₁ * (2 * Q) ^ (J + 1) : ℕ) : ℝ) + 1) + 6)
             / (x₁ * (2 * Q) ^ (J + 1) : ℕ))) := by
@@ -388,14 +388,14 @@ theorem m_window_contraction_of_ratio {a δ ρ κ : ℝ} {Q x₀ x₁ c N : ℕ}
           + 8 * Real.log c * (2 * Real.log N + 2)) :=
           mul_le_mul_of_nonneg_left hinner hNR.le
   have hfinal : (N : ℝ) * ((a - θ)
-        * ((Real.log N ^ 2 + 2 * Real.log N)
-          - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+        * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+          - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
       + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁)))
       + (N : ℝ) * (8 * ((2 * Real.log N + 8) / x₁)
         + 8 * Real.log c * (2 * Real.log N + 2))
       = (N : ℝ) * ((a - θ)
-          * ((Real.log N ^ 2 + 2 * Real.log N)
-            - (Real.log x₁ ^ 2 + 2 * Real.log x₁))
+          * ((Real.log N ^ (2 : ℕ) + 2 * Real.log N)
+            - (Real.log x₁ ^ (2 : ℕ) + 2 * Real.log x₁))
         + (2 * Real.log N + 1) * (3 * a * ((2 * Real.log N + 8) / x₁))
         + 8 * ((2 * Real.log N + 8) / x₁)
         + 8 * Real.log c * (2 * Real.log N + 2)) := by

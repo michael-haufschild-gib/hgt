@@ -511,7 +511,7 @@ theorem sum_card_divisors_pow_Ioc_le_polylog
         hT hL hLU hTU hpow
 
 /-- Sharp local square domination for stars-and-bars coefficients.  The adjacent-coefficient
-ratio reduces the claim to `(a+r)^2 ≤ (a+1)(a+r^2)`. -/
+ratio reduces the claim to `(a+r)^(2 : ℕ) ≤ (a+1)(a+r^(2 : ℕ))`. -/
 theorem multichoose_sq_le_multichoose_sq_order
     (r a : ℕ) (hr : 1 ≤ r) :
     (r.multichoose a) ^ 2 ≤ (r ^ 2).multichoose a := by
@@ -547,7 +547,7 @@ theorem multichoose_sq_le_multichoose_sq_order
       exact Nat.le_of_mul_le_mul_left hmul (by positivity)
 
 /-- The square of an `r`-fold generalized-divisor coefficient is bounded by the corresponding
-`r^2`-fold coefficient, prime by prime. -/
+`r^(2 : ℕ)`-fold coefficient, prime by prime. -/
 theorem zeta_pow_apply_sq_le_zeta_sq_order
     (r n : ℕ) (hr : 1 ≤ r) (hn : n ≠ 0) :
     (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n) ^ 2 ≤

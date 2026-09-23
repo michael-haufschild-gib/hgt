@@ -14,8 +14,8 @@ def principalExponent (q : XiZeroCopy) (i : Fin 3) : ℂ :=
   ![2*(q.1:ℂ),1,2-2*(q.1:ℂ)] i
 
 def principalAmplitude (q : XiZeroCopy) (i : Fin 3) : ℂ :=
-  ![(weylCoefficient q true)^2/2,weylCoefficient q true*weylCoefficient q false,
-    (weylCoefficient q false)^2/2] i
+  ![(weylCoefficient q true)^(2 : ℕ)/2,weylCoefficient q true*weylCoefficient q false,
+    (weylCoefficient q false)^(2 : ℕ)/2] i
 
 /-- The gradient coefficient forced by the literal angular equation of each principal power. -/
 def principalGradient (q : XiZeroCopy) (branch : Bool) (i : Fin 3) : ℂ :=
@@ -27,7 +27,7 @@ def principalFrequency (q : XiZeroCopy) (i : Fin 3) : ℂ :=
 
 /-- Only the explicit cusp powers use these scalar radial parameters. -/
 theorem principalFrequency_parameter (q : XiZeroCopy) (i : Fin 3) :
-    1/4+(principalFrequency q i)^2 = principalExponent q i*(1-principalExponent q i) := by
+    1/4+(principalFrequency q i)^(2 : ℕ) = principalExponent q i*(1-principalExponent q i) := by
   unfold principalFrequency
   rw [mul_pow,Complex.I_sq]
   ring
@@ -51,10 +51,10 @@ theorem principalSquare_expansion (q : XiZeroCopy) (z : Fin 2 → ℝ) (hz : 0 <
   rw [principalSquare,principal_weyl]
   simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero]
   change (weylCoefficient q true*(z 1:ℂ)^(q.1:ℂ)+
-      weylCoefficient q false*(z 1:ℂ)^(1-(q.1:ℂ)))^2/2 =
-    (weylCoefficient q true)^2/2*(z 1:ℂ)^(2*(q.1:ℂ))+
+      weylCoefficient q false*(z 1:ℂ)^(1-(q.1:ℂ)))^(2 : ℕ)/2 =
+    (weylCoefficient q true)^(2 : ℕ)/2*(z 1:ℂ)^(2*(q.1:ℂ))+
       (weylCoefficient q true*weylCoefficient q false*(z 1:ℂ)^(1:ℂ)+
-        (weylCoefficient q false)^2/2*(z 1:ℂ)^(2-2*(q.1:ℂ)))
+        (weylCoefficient q false)^(2 : ℕ)/2*(z 1:ℂ)^(2-2*(q.1:ℂ)))
   have he := cusp_power_square (q.1:ℂ) (weylCoefficient q true) (weylCoefficient q false) z hz
   linear_combination (-1/2:ℂ)*he
 

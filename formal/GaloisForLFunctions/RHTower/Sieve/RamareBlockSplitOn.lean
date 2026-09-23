@@ -23,33 +23,33 @@ theorem setIntegral_normSq_ramareBilinear_le_blocks {P : Finset ℕ} (M : ℕ) {
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     {ι : Type*} [DecidableEq ι] (I : Finset ι) (B : ι → Finset ℕ)
     (hdisj : (I : Set ι).PairwiseDisjoint B) (hcover : I.biUnion B = P) :
-    (∫ w in E, ‖ramareBilinear P M w‖ ^ 2)
-      ≤ (I.card : ℝ) * ∑ i ∈ I, ∫ w in E, ‖ramareBlock P M (B i) w‖ ^ 2 := by
+    (∫ w in E, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
+      ≤ (I.card : ℝ) * ∑ i ∈ I, ∫ w in E, ‖ramareBlock P M (B i) w‖ ^ (2 : ℕ) := by
   classical
-  have hpt : ∀ w : ℝ, ‖ramareBilinear P M w‖ ^ 2
-      ≤ (I.card : ℝ) * ∑ i ∈ I, ‖ramareBlock P M (B i) w‖ ^ 2 := by
+  have hpt : ∀ w : ℝ, ‖ramareBilinear P M w‖ ^ (2 : ℕ)
+      ≤ (I.card : ℝ) * ∑ i ∈ I, ‖ramareBlock P M (B i) w‖ ^ (2 : ℕ) := by
     intro w
     rw [ramareBilinear_eq_sum_blocks M w I B hdisj hcover]
     have h1 : ‖∑ i ∈ I, ramareBlock P M (B i) w‖ ≤ ∑ i ∈ I, ‖ramareBlock P M (B i) w‖ :=
       norm_sum_le _ _
-    have h2 : (∑ i ∈ I, ‖ramareBlock P M (B i) w‖) ^ 2
-        ≤ (I.card : ℝ) * ∑ i ∈ I, ‖ramareBlock P M (B i) w‖ ^ 2 :=
+    have h2 : (∑ i ∈ I, ‖ramareBlock P M (B i) w‖) ^ (2 : ℕ)
+        ≤ (I.card : ℝ) * ∑ i ∈ I, ‖ramareBlock P M (B i) w‖ ^ (2 : ℕ) :=
       sq_sum_le_card_mul_sum_sq
-    have h3 : ‖∑ i ∈ I, ramareBlock P M (B i) w‖ ^ 2
-        ≤ (∑ i ∈ I, ‖ramareBlock P M (B i) w‖) ^ 2 :=
+    have h3 : ‖∑ i ∈ I, ramareBlock P M (B i) w‖ ^ (2 : ℕ)
+        ≤ (∑ i ∈ I, ‖ramareBlock P M (B i) w‖) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) h1 2
     linarith
-  have hcont : Continuous fun w : ℝ => ‖ramareBilinear P M w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖ramareBilinear P M w‖ ^ (2 : ℕ) :=
     ((continuous_ramareBilinear P M).norm).pow 2
-  have hcontB : ∀ i : ι, Continuous fun w : ℝ => ‖ramareBlock P M (B i) w‖ ^ 2 := fun i =>
+  have hcontB : ∀ i : ι, Continuous fun w : ℝ => ‖ramareBlock P M (B i) w‖ ^ (2 : ℕ) := fun i =>
     ((continuous_ramareBlock P M (B i)).norm).pow 2
   have hcontS : Continuous fun w : ℝ =>
-      (I.card : ℝ) * ∑ i ∈ I, ‖ramareBlock P M (B i) w‖ ^ 2 :=
+      (I.card : ℝ) * ∑ i ∈ I, ‖ramareBlock P M (B i) w‖ ^ (2 : ℕ) :=
     (continuous_finsetSum I fun i _ => hcontB i).const_mul _
-  have hint1 : IntegrableOn (fun w : ℝ => ‖ramareBilinear P M w‖ ^ 2) E volume :=
+  have hint1 : IntegrableOn (fun w : ℝ => ‖ramareBilinear P M w‖ ^ (2 : ℕ)) E volume :=
     (hcont.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hint2 : IntegrableOn (fun w : ℝ =>
-      (I.card : ℝ) * ∑ i ∈ I, ‖ramareBlock P M (B i) w‖ ^ 2) E volume :=
+      (I.card : ℝ) * ∑ i ∈ I, ‖ramareBlock P M (B i) w‖ ^ (2 : ℕ)) E volume :=
     (hcontS.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hmono := setIntegral_mono_on hint1 hint2 hEm (fun w _ => hpt w)
   refine hmono.trans (le_of_eq ?_)
@@ -63,9 +63,9 @@ theorem setIntegral_normSq_ramareBilinear_le_geomLadder {P : Finset ℕ} (M : �
     (hQ : 0 < Q) (hr : 1 ≤ r) {L : ℕ} (hL : 1 ≤ L)
     (hcover : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * r ^ L)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in E, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
-          ∫ w in E, ‖ramareBlock P M (geomBlock P Q r j) w‖ ^ 2 := by
+          ∫ w in E, ‖ramareBlock P M (geomBlock P Q r j) w‖ ^ (2 : ℕ) := by
   classical
   have h := setIntegral_normSq_ramareBilinear_le_blocks (P := P) M hEm hEs
     (Finset.range L) (geomBlock P Q r)
@@ -86,10 +86,10 @@ noncomputable section
 theorem setIntegral_normSq_ramareBlock_le_product {P : Finset ℕ} (M : ℕ) {B : Finset ℕ}
     (hBprime : ∀ q ∈ B, q.Prime) (C : Finset ℕ) {W : ℝ}
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖ramareBlock P M B w‖ ^ 2)
-      ≤ 2 * (∫ w in E, ‖primeBlockPoly B w * logPoly (ramareCofactorCoeff P) C w‖ ^ 2)
+    (∫ w in E, ‖ramareBlock P M B w‖ ^ (2 : ℕ))
+      ≤ 2 * (∫ w in E, ‖primeBlockPoly B w * logPoly (ramareCofactorCoeff P) C w‖ ^ (2 : ℕ))
         + 2 * (B.card : ℝ) * ∑ p ∈ B, ∫ w in E,
-            ‖ramareCofactorPoly P M p w - logPoly (ramareCofactorCoeff P) C w‖ ^ 2 := by
+            ‖ramareCofactorPoly P M p w - logPoly (ramareCofactorCoeff P) C w‖ ^ (2 : ℕ) := by
   classical
   set G : ℝ → ℂ := fun w => logPoly (ramareCofactorCoeff P) C w with hG
   have hdecomp : ∀ w : ℝ, ramareBlock P M B w
@@ -99,17 +99,17 @@ theorem setIntegral_normSq_ramareBlock_le_product {P : Finset ℕ} (M : ℕ) {B 
     rw [ramareBlock, primeBlockPoly, Finset.sum_mul, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun p _ => ?_
     ring
-  have hpt : ∀ w : ℝ, ‖ramareBlock P M B w‖ ^ 2
-      ≤ 2 * ‖primeBlockPoly B w * G w‖ ^ 2
-        + 2 * (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ 2 := by
+  have hpt : ∀ w : ℝ, ‖ramareBlock P M B w‖ ^ (2 : ℕ)
+      ≤ 2 * ‖primeBlockPoly B w * G w‖ ^ (2 : ℕ)
+        + 2 * (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ (2 : ℕ) := by
     intro w
     rw [hdecomp w]
     have hY : ‖∑ p ∈ B, moebiusPhase w p * (ramareCofactorPoly P M p w - G w)‖
         ≤ ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ := by
       refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun p hp => ?_)
       rw [norm_mul, norm_moebiusPhase_prime (hBprime p hp), one_mul]
-    have hY2 : ‖∑ p ∈ B, moebiusPhase w p * (ramareCofactorPoly P M p w - G w)‖ ^ 2
-        ≤ (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ 2 := by
+    have hY2 : ‖∑ p ∈ B, moebiusPhase w p * (ramareCofactorPoly P M p w - G w)‖ ^ (2 : ℕ)
+        ≤ (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ (2 : ℕ) := by
       refine le_trans (pow_le_pow_left₀ (norm_nonneg _) hY 2) ?_
       exact sq_sum_le_card_mul_sum_sq
     have htri := norm_add_le (primeBlockPoly B w * G w)
@@ -118,29 +118,29 @@ theorem setIntegral_normSq_ramareBlock_le_product {P : Finset ℕ} (M : ℕ) {B 
     nlinarith [hsq, hY2, sq_nonneg (‖primeBlockPoly B w * G w‖
       - ‖∑ p ∈ B, moebiusPhase w p * (ramareCofactorPoly P M p w - G w)‖), norm_nonneg
       (∑ p ∈ B, moebiusPhase w p * (ramareCofactorPoly P M p w - G w))]
-  have hcontZ : Continuous fun w : ℝ => ‖ramareBlock P M B w‖ ^ 2 :=
+  have hcontZ : Continuous fun w : ℝ => ‖ramareBlock P M B w‖ ^ (2 : ℕ) :=
     ((continuous_ramareBlock P M B).norm).pow 2
-  have hcontX : Continuous fun w : ℝ => ‖primeBlockPoly B w * G w‖ ^ 2 :=
+  have hcontX : Continuous fun w : ℝ => ‖primeBlockPoly B w * G w‖ ^ (2 : ℕ) :=
     (((continuous_primeBlockPoly B).mul (continuous_logPoly _ _)).norm).pow 2
   have hcontD : ∀ p : ℕ, Continuous fun w : ℝ =>
-      ‖ramareCofactorPoly P M p w - G w‖ ^ 2 := fun p =>
+      ‖ramareCofactorPoly P M p w - G w‖ ^ (2 : ℕ) := fun p =>
     ((((continuous_ramareCofactorPoly P M p).sub (continuous_logPoly _ _))).norm).pow 2
   have hcontR : Continuous fun w : ℝ =>
-      2 * ‖primeBlockPoly B w * G w‖ ^ 2
-        + 2 * (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ 2 :=
+      2 * ‖primeBlockPoly B w * G w‖ ^ (2 : ℕ)
+        + 2 * (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ (2 : ℕ) :=
     (hcontX.const_mul 2).add ((continuous_finsetSum B fun p _ => hcontD p).const_mul _)
-  have hint1 : IntegrableOn (fun w : ℝ => ‖ramareBlock P M B w‖ ^ 2) E volume :=
+  have hint1 : IntegrableOn (fun w : ℝ => ‖ramareBlock P M B w‖ ^ (2 : ℕ)) E volume :=
     (hcontZ.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hint2 : IntegrableOn (fun w : ℝ =>
-      2 * ‖primeBlockPoly B w * G w‖ ^ 2
-        + 2 * (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ 2) E volume :=
+      2 * ‖primeBlockPoly B w * G w‖ ^ (2 : ℕ)
+        + 2 * (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ (2 : ℕ)) E volume :=
     (hcontR.integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hmono := setIntegral_mono_on hint1 hint2 hEm (fun w _ => hpt w)
   refine hmono.trans (le_of_eq ?_)
-  have hiX : IntegrableOn (fun w : ℝ => 2 * ‖primeBlockPoly B w * G w‖ ^ 2) E volume :=
+  have hiX : IntegrableOn (fun w : ℝ => 2 * ‖primeBlockPoly B w * G w‖ ^ (2 : ℕ)) E volume :=
     ((hcontX.const_mul 2).integrableOn_Icc (a := -W) (b := W)).mono_set hEs
   have hiD : IntegrableOn (fun w : ℝ =>
-      2 * (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ 2) E volume :=
+      2 * (B.card : ℝ) * ∑ p ∈ B, ‖ramareCofactorPoly P M p w - G w‖ ^ (2 : ℕ)) E volume :=
     (((continuous_finsetSum B fun p _ => hcontD p).const_mul _).integrableOn_Icc
       (a := -W) (b := W)).mono_set hEs
   rw [integral_add hiX hiD, integral_const_mul, integral_const_mul]
@@ -164,14 +164,14 @@ its value over the whole window, since the integrand is nonnegative. -/
 theorem setIntegral_normSq_ramareBlock_geom_le {P : Finset ℕ} (M : ℕ) {Q η W : ℝ}
     (hQ : 1 ≤ Q) (hη : 0 ≤ η) (hW : 1 ≤ W) (j : ℕ) (hPprime : ∀ q ∈ P, q.Prime)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖ramareBlock P M (geomBlock P Q (1 + η) j) w‖ ^ 2)
+    (∫ w in E, ‖ramareBlock P M (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ))
       ≤ 2 * (∫ w in E,
             ‖primeBlockPoly (geomBlock P Q (1 + η) j) w
-              * logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
-        + 2 * ((geomBlock P Q (1 + η) j).card : ℝ) ^ 2
+              * logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
+        + 2 * ((geomBlock P Q (1 + η) j).card : ℝ) ^ (2 : ℕ)
             * (2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
                 * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 4
-                  + (((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2 + 1))) := by
+                  + (((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ) + 1))) := by
   classical
   set B : Finset ℕ := geomBlock P Q (1 + η) j with hB
   set Qj : ℝ := Q * (1 + η) ^ j with hQj
@@ -195,30 +195,30 @@ theorem setIntegral_normSq_ramareBlock_geom_le {P : Finset ℕ} (M : ℕ) {Q η 
     (geomCofactorBlock M Q η j) hEm hEs
   have hterm : ∀ p ∈ B, (∫ w in E,
       ‖ramareCofactorPoly P M p w
-        - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
+        - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
       ≤ 2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
-          * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / Qj + 4 + (((M : ℕ) : ℝ) / Qj ^ 2 + 1)) := by
+          * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / Qj + 4 + (((M : ℕ) : ℝ) / Qj ^ (2 : ℕ) + 1)) := by
     intro p hp
     obtain ⟨hp0, hplo, hphi⟩ := hrange p hp
     have hcont : Continuous fun w : ℝ =>
         ‖ramareCofactorPoly P M p w
-          - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2 :=
+          - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ) :=
       ((((continuous_ramareCofactorPoly P M p).sub (continuous_logPoly _ _))).norm).pow 2
     have hmono : (∫ w in E, ‖ramareCofactorPoly P M p w
-          - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
+          - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
         ≤ ∫ w in Set.Icc (-W) W, ‖ramareCofactorPoly P M p w
-          - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2 := by
+          - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ) := by
       refine MeasureTheory.setIntegral_mono_set (hcont.integrableOn_Icc (a := -W) (b := W))
         (Filter.Eventually.of_forall fun w => by positivity)
         (Filter.Eventually.of_forall hEs)
     exact hmono.trans (integral_normSq_cofactor_sub_common_le (P := P) M hQj1 hη hW hp0 hplo hphi)
   have hsum : (∑ p ∈ B, ∫ w in E,
       ‖ramareCofactorPoly P M p w
-        - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
+        - logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
       ≤ (B.card : ℝ)
           * (2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
               * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / Qj + 4
-                + (((M : ℕ) : ℝ) / Qj ^ 2 + 1))) := by
+                + (((M : ℕ) : ℝ) / Qj ^ (2 : ℕ) + 1))) := by
     have h := Finset.sum_le_sum hterm
     rw [Finset.sum_const, nsmul_eq_mul] at h
     exact h
@@ -228,11 +228,11 @@ theorem setIntegral_normSq_ramareBlock_geom_le {P : Finset ℕ} (M : ℕ) {Q η 
   have hval : 2 * (B.card : ℝ)
       * ((B.card : ℝ)
           * (2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
-              * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / Qj + 4 + (((M : ℕ) : ℝ) / Qj ^ 2 + 1))))
-      = 2 * (B.card : ℝ) ^ 2
+              * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / Qj + 4 + (((M : ℕ) : ℝ) / Qj ^ (2 : ℕ) + 1))))
+      = 2 * (B.card : ℝ) ^ (2 : ℕ)
           * (2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
               * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / Qj + 4
-                + (((M : ℕ) : ℝ) / Qj ^ 2 + 1))) := by ring
+                + (((M : ℕ) : ℝ) / Qj ^ (2 : ℕ) + 1))) := by ring
   rw [hval] at hmul
   linarith [hmul]
 
@@ -242,15 +242,15 @@ theorem setIntegral_normSq_ramareBilinear_le_ladder_assembled {P : Finset ℕ} (
     (hPprime : ∀ q ∈ P, q.Prime)
     (hP : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * (1 + η) ^ L)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in E, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
           (2 * (∫ w in E,
                 ‖primeBlockPoly (geomBlock P Q (1 + η) j) w
-                  * logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
-            + 2 * ((geomBlock P Q (1 + η) j).card : ℝ) ^ 2
+                  * logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
+            + 2 * ((geomBlock P Q (1 + η) j).card : ℝ) ^ (2 : ℕ)
                 * (2 * (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
                     * ((((1 : ℕ) : ℝ) + ((M : ℕ) : ℝ)) * η / (Q * (1 + η) ^ j) + 4
-                      + (((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ 2 + 1)))) := by
+                      + (((M : ℕ) : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ) + 1)))) := by
   have hQ0 : (0 : ℝ) < Q := lt_of_lt_of_le zero_lt_one hQ
   have hr1 : (1 : ℝ) ≤ 1 + η := by linarith
   have hladder := setIntegral_normSq_ramareBilinear_le_geomLadder (P := P) M hQ0 hr1 hL hP hEm hEs

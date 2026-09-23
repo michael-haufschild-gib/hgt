@@ -23,19 +23,19 @@ theorem momentFunctional_X_mul_sq_nonneg {μ : Measure ℝ} (s : ℕ → ℝ)
     (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
     (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ)
     (hμpos : ∀ᵐ x ∂μ, 0 ≤ x) (p : Polynomial ℝ) :
-    0 ≤ momentFunctional s (X * p ^ 2) := by
+    0 ≤ momentFunctional s (X * p ^ (2 : ℕ)) := by
   rw [momentFunctional_eq_integral s hs hint]
-  have hcongr : ∫ x, Polynomial.eval x (X * p ^ 2) ∂μ
-      = ∫ x, x * (Polynomial.eval x p) ^ 2 ∂μ := by
+  have hcongr : ∫ x, Polynomial.eval x (X * p ^ (2 : ℕ)) ∂μ
+      = ∫ x, x * (Polynomial.eval x p) ^ (2 : ℕ) ∂μ := by
     refine integral_congr_ae (ae_of_all μ (fun x => ?_))
-    show Polynomial.eval x (X * p ^ 2) = x * (Polynomial.eval x p) ^ 2
+    show Polynomial.eval x (X * p ^ (2 : ℕ)) = x * (Polynomial.eval x p) ^ (2 : ℕ)
     rw [eval_mul, eval_X, eval_pow]
   rw [hcongr]
   exact integral_nonneg_of_ae (hμpos.mono (fun x hx => mul_nonneg hx (sq_nonneg _)))
 
 /-- The moment functional of `x·(∑ᵢ vᵢ Xⁱ)²` is the shifted Hankel form `∑ᵢⱼ vᵢ vⱼ s_{i+j+1}`. -/
 theorem momentFunctional_X_mul_sq_eq_shiftedHankel (s : ℕ → ℝ) {n : ℕ} (v : Fin n → ℝ) :
-    momentFunctional s (X * (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ 2)
+    momentFunctional s (X * (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ (2 : ℕ))
       = ∑ i : Fin n, ∑ j : Fin n, v i * v j * s ((i : ℕ) + (j : ℕ) + 1) := by
   rw [sq, Finset.sum_mul_sum, Finset.mul_sum, momentFunctional_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -101,12 +101,12 @@ theorem momentFunctional_one_sub_X_mul_sq_nonneg {μ : Measure ℝ} (s : ℕ →
     (hs : ∀ k, s k = ∫ x, (x : ℝ) ^ k ∂μ)
     (hint : ∀ k, Integrable (fun x : ℝ => (x : ℝ) ^ k) μ)
     (hμle : ∀ᵐ x ∂μ, x ≤ 1) (p : Polynomial ℝ) :
-    0 ≤ momentFunctional s ((1 - X) * p ^ 2) := by
+    0 ≤ momentFunctional s ((1 - X) * p ^ (2 : ℕ)) := by
   rw [momentFunctional_eq_integral s hs hint]
-  have hcongr : ∫ x, Polynomial.eval x ((1 - X) * p ^ 2) ∂μ
-      = ∫ x, (1 - x) * (Polynomial.eval x p) ^ 2 ∂μ := by
+  have hcongr : ∫ x, Polynomial.eval x ((1 - X) * p ^ (2 : ℕ)) ∂μ
+      = ∫ x, (1 - x) * (Polynomial.eval x p) ^ (2 : ℕ) ∂μ := by
     refine integral_congr_ae (ae_of_all μ (fun x => ?_))
-    show Polynomial.eval x ((1 - X) * p ^ 2) = (1 - x) * (Polynomial.eval x p) ^ 2
+    show Polynomial.eval x ((1 - X) * p ^ (2 : ℕ)) = (1 - x) * (Polynomial.eval x p) ^ (2 : ℕ)
     rw [eval_mul, eval_sub, eval_one, eval_X, eval_pow]
   rw [hcongr]
   exact integral_nonneg_of_ae (hμle.mono (fun x hx => mul_nonneg (by linarith) (sq_nonneg _)))
@@ -121,12 +121,12 @@ theorem hausdorffDiffForm_nonneg {μ : Measure ℝ} (s : ℕ → ℝ)
     (hμle : ∀ᵐ x ∂μ, x ≤ 1) {n : ℕ} (v : Fin n → ℝ) :
     0 ≤ ∑ i : Fin n, ∑ j : Fin n,
       v i * v j * (s ((i : ℕ) + (j : ℕ)) - s ((i : ℕ) + (j : ℕ) + 1)) := by
-  have hid : momentFunctional s ((1 - X) * (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ 2)
+  have hid : momentFunctional s ((1 - X) * (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ (2 : ℕ))
       = ∑ i : Fin n, ∑ j : Fin n,
         v i * v j * (s ((i : ℕ) + (j : ℕ)) - s ((i : ℕ) + (j : ℕ) + 1)) := by
-    have hpoly : ((1 : Polynomial ℝ) - X) * (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ 2
-        = (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ 2
-          - X * (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ 2 := by ring
+    have hpoly : ((1 : Polynomial ℝ) - X) * (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ (2 : ℕ)
+        = (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ (2 : ℕ)
+          - X * (∑ i : Fin n, v i • X ^ (i : ℕ)) ^ (2 : ℕ) := by ring
     rw [hpoly, momentFunctional_sub, momentFunctional_sq_eq_hankelForm,
       momentFunctional_X_mul_sq_eq_shiftedHankel, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl (fun i _ => ?_)

@@ -99,7 +99,7 @@ theorem deriv_riemannZeta_two_mul {s : ℂ} (hs : 1 < s.re) :
     simpa using ((hasDerivAt_id s).const_mul (2 : ℂ))
   exact (hz.comp s hin).deriv
 
-theorem logDeriv_riemannZeta_two_mul {s : ℂ} (hs : 1 < s.re) :
+theorem logDeriv_riemannZeta_two_mul_eulerSquarefreeDyadicAnalyticTelescope {s : ℂ} (hs : 1 < s.re) :
     logDeriv (fun z : ℂ => riemannZeta (2 * z)) s = 2 * logDeriv riemannZeta (2 * s) := by
   rw [logDeriv_apply, logDeriv_apply, deriv_riemannZeta_two_mul hs]
   ring
@@ -125,7 +125,7 @@ theorem eulerLogMorphism_step {s : ℂ} (hs : 1 < s.re) :
     logDeriv_mul s (squarefreeZeta_ne_zero hs) (riemannZeta_ne_zero_of_one_lt_re hs2)
       (differentiableAt_squarefreeZeta hs) (differentiableAt_riemannZeta_two_mul hs)
   rw [eulerLogMorphism, squarefreeLogMorphism, eulerLogMorphism, hlog, hmul,
-    logDeriv_riemannZeta_two_mul hs]
+    logDeriv_riemannZeta_two_mul_eulerSquarefreeDyadicAnalyticTelescope hs]
   ring
 
 /-- **Equation (29).**  The exact finite dyadic reconstruction of the Euler logarithmic

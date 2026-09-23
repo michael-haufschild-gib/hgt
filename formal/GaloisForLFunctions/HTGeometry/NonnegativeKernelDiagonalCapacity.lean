@@ -21,10 +21,10 @@ normalized translation kernel. -/
 theorem realKernelPacketDiagonal_le_energy_of_nonneg
     (K : ℝ → ℝ) (hK : ∀ y, 0 ≤ K y) (hK0 : K 0 = 1)
     {N : ℕ} (t b : Fin N → ℝ) (hb : ∀ i, 0 ≤ b i) :
-    ∑ i, b i ^ 2 ≤ realKernelPacketEnergy K t b := by
+    ∑ i, b i ^ (2 : ℕ) ≤ realKernelPacketEnergy K t b := by
   rw [realKernelPacketEnergy]
   calc
-    ∑ i, b i ^ 2 = ∑ i, b i * K (t i - t i) * b i := by
+    ∑ i, b i ^ (2 : ℕ) = ∑ i, b i * K (t i - t i) * b i := by
       apply Finset.sum_congr rfl
       intro i _
       simp [hK0, pow_two]
@@ -44,7 +44,7 @@ theorem realKernelPacketEnergy_scale_tendsto_mass_sq
     (K : ℝ → ℝ) (hK : Tendsto K (𝓝 0) (𝓝 1))
     {N : ℕ} (t b : Fin N → ℝ) :
     Tendsto (fun x => realKernelPacketEnergy K (fun i => x * t i) b)
-      (𝓝 0) (𝓝 ((∑ i, b i) ^ 2)) := by
+      (𝓝 0) (𝓝 ((∑ i, b i) ^ (2 : ℕ))) := by
   unfold realKernelPacketEnergy
   have hterm : ∀ i j, Tendsto
       (fun x => b i * K (x * t j - x * t i) * b j)
@@ -63,9 +63,9 @@ theorem realKernelPacketEnergy_scale_tendsto_mass_sq
 capacity inequality: the one-node unit packet would force `1 ≤ 0`. -/
 theorem normalizedKernel_anchor_sq_not_le_energy_sub_diagonal
     (K : ℝ → ℝ) (hK0 : K 0 = 1) :
-    ¬ ((∑ _i : Fin 1, (1 : ℝ) * K 0) ^ 2 ≤
+    ¬ ((∑ _i : Fin 1, (1 : ℝ) * K 0) ^ (2 : ℕ) ≤
         realKernelPacketEnergy K (fun _i : Fin 1 => 0) (fun _i => 1) -
-          ∑ _i : Fin 1, (1 : ℝ) ^ 2) := by
+          ∑ _i : Fin 1, (1 : ℝ) ^ (2 : ℕ)) := by
   simp [realKernelPacketEnergy, hK0]
 
 end

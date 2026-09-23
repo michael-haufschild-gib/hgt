@@ -35,7 +35,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The endpoint-plus-variation budget of one oscillatory term. -/
 noncomputable def oscBudget (a b m : ℝ) (g g' Θ'' : ℝ → ℝ) : ℝ :=
-  |g a| / m + |g b| / m + ∫ x in a..b, (|g' x| / m + |g x| * |Θ'' x| / m ^ 2)
+  |g a| / m + |g b| / m + ∫ x in a..b, (|g' x| / m + |g x| * |Θ'' x| / m ^ (2 : ℕ))
 
 theorem oscBudget_nonneg {a b m : ℝ} (hab : a ≤ b) (hm : 0 < m) (g g' Θ'' : ℝ → ℝ) :
     0 ≤ oscBudget a b m g g' Θ'' := by

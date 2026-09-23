@@ -51,15 +51,15 @@ theorem thetaCuspSecondAtomMoment_eq_allOrderProfile (n : ℕ) {B : ℝ} (hB : 0
     exact neg_injective (h1.unique h2)
 
 private theorem second_num_0 : thetaCuspSecondMomentNumerator 0 =
-  C (18)*X^0 +
-    C (16)*X^1 := by
+  C (18)*X^(0 : ℕ) +
+    C (16)*X^(1 : ℕ) := by
   simp only [thetaCuspSecondMomentNumerator]
   ring
 
 private theorem second_num_1 : thetaCuspSecondMomentNumerator 1 =
-  C (18)*X^0 +
-    C (54)*X^1 +
-    C (48)*X^2 := by
+  C (18)*X^(0 : ℕ) +
+    C (54)*X^(1 : ℕ) +
+    C (48)*X^(2 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 1 =
     (C 3*X+C (1 : ℝ))*thetaCuspSecondMomentNumerator 0-
       X*(thetaCuspSecondMomentNumerator 0).derivative from by norm_num [thetaCuspSecondMomentNumerator], second_num_0]
@@ -70,10 +70,10 @@ private theorem second_num_1 : thetaCuspSecondMomentNumerator 1 =
   ring
 
 private theorem second_num_2 : thetaCuspSecondMomentNumerator 2 =
-  C (36)*X^0 +
-    C (108)*X^1 +
-    C (162)*X^2 +
-    C (144)*X^3 := by
+  C (36)*X^(0 : ℕ) +
+    C (108)*X^(1 : ℕ) +
+    C (162)*X^(2 : ℕ) +
+    C (144)*X^(3 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 2 =
     (C 3*X+C (2 : ℝ))*thetaCuspSecondMomentNumerator 1-
       X*(thetaCuspSecondMomentNumerator 1).derivative from by rw [thetaCuspSecondMomentNumerator]; norm_num, second_num_1]
@@ -84,11 +84,11 @@ private theorem second_num_2 : thetaCuspSecondMomentNumerator 2 =
   ring
 
 private theorem second_num_3 : thetaCuspSecondMomentNumerator 3 =
-  C (108)*X^0 +
-    C (324)*X^1 +
-    C (486)*X^2 +
-    C (486)*X^3 +
-    C (432)*X^4 := by
+  C (108)*X^(0 : ℕ) +
+    C (324)*X^(1 : ℕ) +
+    C (486)*X^(2 : ℕ) +
+    C (486)*X^(3 : ℕ) +
+    C (432)*X^(4 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 3 =
     (C 3*X+C (3 : ℝ))*thetaCuspSecondMomentNumerator 2-
       X*(thetaCuspSecondMomentNumerator 2).derivative from by rw [thetaCuspSecondMomentNumerator]; norm_num, second_num_2]
@@ -99,12 +99,12 @@ private theorem second_num_3 : thetaCuspSecondMomentNumerator 3 =
   ring
 
 private theorem second_num_4 : thetaCuspSecondMomentNumerator 4 =
-  C (432)*X^0 +
-    C (1296)*X^1 +
-    C (1944)*X^2 +
-    C (1944)*X^3 +
-    C (1458)*X^4 +
-    C (1296)*X^5 := by
+  C (432)*X^(0 : ℕ) +
+    C (1296)*X^(1 : ℕ) +
+    C (1944)*X^(2 : ℕ) +
+    C (1944)*X^(3 : ℕ) +
+    C (1458)*X^(4 : ℕ) +
+    C (1296)*X^(5 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 4 =
     (C 3*X+C (4 : ℝ))*thetaCuspSecondMomentNumerator 3-
       X*(thetaCuspSecondMomentNumerator 3).derivative from by rw [thetaCuspSecondMomentNumerator]; norm_num, second_num_3]
@@ -115,13 +115,13 @@ private theorem second_num_4 : thetaCuspSecondMomentNumerator 4 =
   ring
 
 private theorem second_num_5 : thetaCuspSecondMomentNumerator 5 =
-  C (2160)*X^0 +
-    C (6480)*X^1 +
-    C (9720)*X^2 +
-    C (9720)*X^3 +
-    C (7290)*X^4 +
-    C (4374)*X^5 +
-    C (3888)*X^6 := by
+  C (2160)*X^(0 : ℕ) +
+    C (6480)*X^(1 : ℕ) +
+    C (9720)*X^(2 : ℕ) +
+    C (9720)*X^(3 : ℕ) +
+    C (7290)*X^(4 : ℕ) +
+    C (4374)*X^(5 : ℕ) +
+    C (3888)*X^(6 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 5 =
     (C 3*X+C (5 : ℝ))*thetaCuspSecondMomentNumerator 4-
       X*(thetaCuspSecondMomentNumerator 4).derivative from by rw [thetaCuspSecondMomentNumerator]; norm_num, second_num_4]
@@ -132,14 +132,14 @@ private theorem second_num_5 : thetaCuspSecondMomentNumerator 5 =
   ring
 
 private theorem second_num_6 : thetaCuspSecondMomentNumerator 6 =
-  C (12960)*X^0 +
-    C (38880)*X^1 +
-    C (58320)*X^2 +
-    C (58320)*X^3 +
-    C (43740)*X^4 +
-    C (26244)*X^5 +
-    C (13122)*X^6 +
-    C (11664)*X^7 := by
+  C (12960)*X^(0 : ℕ) +
+    C (38880)*X^(1 : ℕ) +
+    C (58320)*X^(2 : ℕ) +
+    C (58320)*X^(3 : ℕ) +
+    C (43740)*X^(4 : ℕ) +
+    C (26244)*X^(5 : ℕ) +
+    C (13122)*X^(6 : ℕ) +
+    C (11664)*X^(7 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 6 =
     (C 3*X+C (6 : ℝ))*thetaCuspSecondMomentNumerator 5-
       X*(thetaCuspSecondMomentNumerator 5).derivative from by rw [thetaCuspSecondMomentNumerator]; norm_num, second_num_5]
@@ -150,15 +150,15 @@ private theorem second_num_6 : thetaCuspSecondMomentNumerator 6 =
   ring
 
 private theorem second_num_7 : thetaCuspSecondMomentNumerator 7 =
-  C (90720)*X^0 +
-    C (272160)*X^1 +
-    C (408240)*X^2 +
-    C (408240)*X^3 +
-    C (306180)*X^4 +
-    C (183708)*X^5 +
-    C (91854)*X^6 +
-    C (39366)*X^7 +
-    C (34992)*X^8 := by
+  C (90720)*X^(0 : ℕ) +
+    C (272160)*X^(1 : ℕ) +
+    C (408240)*X^(2 : ℕ) +
+    C (408240)*X^(3 : ℕ) +
+    C (306180)*X^(4 : ℕ) +
+    C (183708)*X^(5 : ℕ) +
+    C (91854)*X^(6 : ℕ) +
+    C (39366)*X^(7 : ℕ) +
+    C (34992)*X^(8 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 7 =
     (C 3*X+C (7 : ℝ))*thetaCuspSecondMomentNumerator 6-
       X*(thetaCuspSecondMomentNumerator 6).derivative from by rw [thetaCuspSecondMomentNumerator]; norm_num, second_num_6]
@@ -169,16 +169,16 @@ private theorem second_num_7 : thetaCuspSecondMomentNumerator 7 =
   ring
 
 private theorem second_num_8 : thetaCuspSecondMomentNumerator 8 =
-  C (725760)*X^0 +
-    C (2177280)*X^1 +
-    C (3265920)*X^2 +
-    C (3265920)*X^3 +
-    C (2449440)*X^4 +
-    C (1469664)*X^5 +
-    C (734832)*X^6 +
-    C (314928)*X^7 +
-    C (118098)*X^8 +
-    C (104976)*X^9 := by
+  C (725760)*X^(0 : ℕ) +
+    C (2177280)*X^(1 : ℕ) +
+    C (3265920)*X^(2 : ℕ) +
+    C (3265920)*X^(3 : ℕ) +
+    C (2449440)*X^(4 : ℕ) +
+    C (1469664)*X^(5 : ℕ) +
+    C (734832)*X^(6 : ℕ) +
+    C (314928)*X^(7 : ℕ) +
+    C (118098)*X^(8 : ℕ) +
+    C (104976)*X^(9 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 8 =
     (C 3*X+C (8 : ℝ))*thetaCuspSecondMomentNumerator 7-
       X*(thetaCuspSecondMomentNumerator 7).derivative from by rw [thetaCuspSecondMomentNumerator]; norm_num, second_num_7]
@@ -189,17 +189,17 @@ private theorem second_num_8 : thetaCuspSecondMomentNumerator 8 =
   ring
 
 private theorem second_num_9 : thetaCuspSecondMomentNumerator 9 =
-  C (6531840)*X^0 +
-    C (19595520)*X^1 +
-    C (29393280)*X^2 +
-    C (29393280)*X^3 +
-    C (22044960)*X^4 +
-    C (13226976)*X^5 +
-    C (6613488)*X^6 +
-    C (2834352)*X^7 +
-    C (1062882)*X^8 +
-    C (354294)*X^9 +
-    C (314928)*X^10 := by
+  C (6531840)*X^(0 : ℕ) +
+    C (19595520)*X^(1 : ℕ) +
+    C (29393280)*X^(2 : ℕ) +
+    C (29393280)*X^(3 : ℕ) +
+    C (22044960)*X^(4 : ℕ) +
+    C (13226976)*X^(5 : ℕ) +
+    C (6613488)*X^(6 : ℕ) +
+    C (2834352)*X^(7 : ℕ) +
+    C (1062882)*X^(8 : ℕ) +
+    C (354294)*X^(9 : ℕ) +
+    C (314928)*X^(10 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 9 =
     (C 3*X+C (9 : ℝ))*thetaCuspSecondMomentNumerator 8-
       X*(thetaCuspSecondMomentNumerator 8).derivative from by rw [thetaCuspSecondMomentNumerator]; norm_num, second_num_8]
@@ -210,18 +210,18 @@ private theorem second_num_9 : thetaCuspSecondMomentNumerator 9 =
   ring
 
 private theorem second_num_10 : thetaCuspSecondMomentNumerator 10 =
-  C (65318400)*X^0 +
-    C (195955200)*X^1 +
-    C (293932800)*X^2 +
-    C (293932800)*X^3 +
-    C (220449600)*X^4 +
-    C (132269760)*X^5 +
-    C (66134880)*X^6 +
-    C (28343520)*X^7 +
-    C (10628820)*X^8 +
-    C (3542940)*X^9 +
-    C (1062882)*X^10 +
-    C (944784)*X^11 := by
+  C (65318400)*X^(0 : ℕ) +
+    C (195955200)*X^(1 : ℕ) +
+    C (293932800)*X^(2 : ℕ) +
+    C (293932800)*X^(3 : ℕ) +
+    C (220449600)*X^(4 : ℕ) +
+    C (132269760)*X^(5 : ℕ) +
+    C (66134880)*X^(6 : ℕ) +
+    C (28343520)*X^(7 : ℕ) +
+    C (10628820)*X^(8 : ℕ) +
+    C (3542940)*X^(9 : ℕ) +
+    C (1062882)*X^(10 : ℕ) +
+    C (944784)*X^(11 : ℕ) := by
   rw [show thetaCuspSecondMomentNumerator 10 =
     (C 3*X+C (10 : ℝ))*thetaCuspSecondMomentNumerator 9-
       X*(thetaCuspSecondMomentNumerator 9).derivative from by rw [thetaCuspSecondMomentNumerator]; norm_num, second_num_9]
@@ -244,7 +244,7 @@ private theorem exp_ten_half_lower : (30000 : ℝ) ≤ Real.exp (21/2) := by
 
 /-- The complete second-atom tenth moment has a symbolic rational endpoint ceiling. -/
 theorem thetaCuspSecondAtomMoment_ten_at_two_le :
-    thetaCuspSecondAtomMoment 2 10 ≤ (3 : ℝ)^10/100 := by
+    thetaCuspSecondAtomMoment 2 10 ≤ (3 : ℝ)^(10 : ℕ)/100 := by
   rw [thetaCuspSecondAtomMoment_eq_allOrderProfile 10 (by norm_num)]
   unfold thetaCuspSecondMomentProfile
   rw [second_num_10]

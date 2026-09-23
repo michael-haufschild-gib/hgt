@@ -169,7 +169,7 @@ theorem sum_probOutcome_phaseState (t : Nat) (phi : Real) :
 
 theorem norm_phaseState (t : Nat) (phi : Real) :
     ‖phaseState t phi‖ = 1 := by
-  have hsq : ‖phaseState t phi‖ ^ 2 = (1 : ℝ) ^ 2 := by
+  have hsq : ‖phaseState t phi‖ ^ (2 : ℕ) = (1 : ℝ) ^ (2 : ℕ) := by
     rw [← StateVector.sum_probOutcome, sum_probOutcome_phaseState]
     norm_num
   exact (sq_eq_sq₀ (norm_nonneg _) zero_le_one).mp hsq
@@ -307,18 +307,18 @@ theorem QuantumPhaseEstimation.main_exact_probability_one (t : Nat) (j : Fin (2 
 def qpeExactResourceProfile (t : Nat) : ResourceProfile where
   oracleQueries := 2 ^ t - 1
   hadamardGates := t
-  elementaryGates := t ^ 2
+  elementaryGates := t ^ (2 : ℕ)
   classicalOps := 0
 
 theorem qpeExactResourceProfile_exact (t : Nat) :
     ResourceProfile.HasExactCounts
-      (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ 2) 0 := by
+      (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ (2 : ℕ)) 0 := by
   simp [ResourceProfile.HasExactCounts, qpeExactResourceProfile]
 
 /-- Typed circuit witness for the exact QPE phase-register endpoint. -/
 def qpeExactCircuit (t : Nat) : Circuit (Qubits t) :=
   Circuit.abstract (Qubits t) "quantum-phase-estimation" (qpeExactResourceProfile t)
-    (t ^ 2) (2 ^ t - 1)
+    (t ^ (2 : ℕ)) (2 ^ t - 1)
 
 /-- Exact QPE readout with the decoupled phase-register resource profile. -/
 theorem QuantumPhaseEstimation.main_exact_dyadic_with_resources (t : Nat)
@@ -327,7 +327,7 @@ theorem QuantumPhaseEstimation.main_exact_dyadic_with_resources (t : Nat)
     (invQFT t).applyVec (phaseState t phi)
       = (PureState.ket (R := Qubits t) j : StateVector (Qubits t)) ∧
       ResourceProfile.HasExactCounts
-        (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ 2) 0 := by
+        (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ (2 : ℕ)) 0 := by
   constructor
   · exact QuantumPhaseEstimation.main_exact_dyadic t j phi hphi
   · exact qpeExactResourceProfile_exact t
@@ -343,7 +343,7 @@ theorem QuantumPhaseEstimation.main_exact_eigenstate_readout_with_resources {n :
       (invQFT t).applyVec (phaseState t P.phase)
         = (PureState.ket (R := Qubits t) j : StateVector (Qubits t)) ∧
         ResourceProfile.HasExactCounts
-          (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ 2) 0 := by
+          (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ (2 : ℕ)) 0 := by
   constructor
   · exact qpe_eigenstate_controlled_power_kickbacks P
   · exact QuantumPhaseEstimation.main_exact_dyadic_with_resources t j P.phase hphase
@@ -362,7 +362,7 @@ theorem QuantumPhaseEstimation.main {n : Nat}
         |P.phase - (j.val : ℝ) / (2 : ℝ) ^ t| ≤ eps ∧
           1 - PureState.probOutcome (ket j : PureState (Qubits t)) j ≤ eta ∧
             ResourceProfile.HasExactCounts
-              (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ 2) 0 := by
+              (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ (2 : ℕ)) 0 := by
   refine ⟨qpe_eigenstate_controlled_power_kickbacks P, ?_⟩
   have hreadout :
       (invQFT t).applyVec (phaseState t P.phase)
@@ -389,9 +389,9 @@ def QuantumPhaseEstimation.mainResourceCorrectWitness {n : Nat}
           |P.phase - (j.val : ℝ) / (2 : ℝ) ^ t| ≤ eps ∧
             1 - PureState.probOutcome (ket j : PureState (Qubits t)) j ≤ eta ∧
               ResourceProfile.HasExactCounts
-                (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ 2) 0)
+                (qpeExactResourceProfile t) (2 ^ t - 1) t (t ^ (2 : ℕ)) 0)
       (ResourceProfile.HasExactCounts (qpeExactCircuit t).resources
-        (2 ^ t - 1) t (t ^ 2) 0) := by
+        (2 ^ t - 1) t (t ^ (2 : ℕ)) 0) := by
   exact
     { circuit := qpeExactCircuit t
       correctness := QuantumPhaseEstimation.main P t j eps eta heps heta hphase

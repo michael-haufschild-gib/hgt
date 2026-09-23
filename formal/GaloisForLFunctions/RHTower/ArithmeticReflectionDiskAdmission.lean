@@ -24,22 +24,22 @@ def reflectionDiskSource (s : ℂ) : ℂ :=
 
 /-- Both quadratic factors retain at least the squared height. -/
 theorem reflection_target_normSq_lower (s : ℂ) :
-    |s.im|^4 ≤ Complex.normSq (star s*(1-star s)) := by
-  have ha : |s.im|^2 ≤ Complex.normSq (star s) := by
+    |s.im|^(4 : ℕ) ≤ Complex.normSq (star s*(1-star s)) := by
+  have ha : |s.im|^(2 : ℕ) ≤ Complex.normSq (star s) := by
     simp only [sq_abs,Complex.normSq_apply,Complex.star_def,Complex.conj_re,Complex.conj_im]
     nlinarith [sq_nonneg s.re]
-  have hb : |s.im|^2 ≤ Complex.normSq (1-star s) := by
+  have hb : |s.im|^(2 : ℕ) ≤ Complex.normSq (1-star s) := by
     simp only [sq_abs,Complex.normSq_apply,Complex.star_def,Complex.sub_re,Complex.one_re,
       Complex.conj_re,Complex.sub_im,Complex.one_im,Complex.conj_im]
     nlinarith [sq_nonneg (1-s.re)]
   rw [Complex.normSq_mul]
-  calc |s.im|^4 = |s.im|^2*|s.im|^2 := by ring
+  calc |s.im|^(4 : ℕ) = |s.im|^(2 : ℕ)*|s.im|^(2 : ℕ) := by ring
        _ ≤ Complex.normSq (star s)*Complex.normSq (1-star s) :=
          mul_le_mul ha hb (sq_nonneg _) (Complex.normSq_nonneg _)
 
 /-- The exact mean denominator retains two factors of the height. -/
 theorem reflection_target_mean_norm_lower (s : ℂ) :
-    12*|s.im|^2 ≤ ‖(12:ℂ)*(star s+1)*(2-s)‖ := by
+    12*|s.im|^(2 : ℕ) ≤ ‖(12:ℂ)*(star s+1)*(2-s)‖ := by
   have ha : |s.im| ≤ ‖star s+1‖ := by
     simpa using Complex.abs_im_le_norm (star s+1)
   have hb : |s.im| ≤ ‖2-s‖ := by
@@ -52,15 +52,15 @@ theorem reflection_target_mean_norm_lower (s : ℂ) :
 theorem norm_reflectionDiskSource_le {s : ℂ} (ht : 1 ≤ |s.im|) :
     ‖reflectionDiskSource s‖ ≤ 115/(36*|s.im|) := by
   have hu : 0 < |s.im| := by linarith
-  have hu2 : |s.im| ≤ |s.im|^2 := by nlinarith
-  have hu4 : |s.im|^2 ≤ |s.im|^4 := by nlinarith [sq_nonneg (|s.im|^2-1)]
+  have hu2 : |s.im| ≤ |s.im|^(2 : ℕ) := by nlinarith
+  have hu4 : |s.im|^(2 : ℕ) ≤ |s.im|^(4 : ℕ) := by nlinarith [sq_nonneg (|s.im|^(2 : ℕ)-1)]
   have hC := hu4.trans (reflection_target_normSq_lower s)
   have hC0 : 0 < Complex.normSq (star s*(1-star s)) := lt_of_lt_of_le (sq_pos_of_pos hu) hC
   have hmean := reflection_target_mean_norm_lower s
   have ha : ‖(((s.im/Complex.normSq (star s*(1-star s)):ℝ):ℂ)*Complex.I)‖ ≤ 1/|s.im| := by
     rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,Complex.norm_I,mul_one,
       abs_div,abs_of_pos hC0]
-    calc |s.im|/Complex.normSq (star s*(1-star s)) ≤ |s.im|/(|s.im|^2) :=
+    calc |s.im|/Complex.normSq (star s*(1-star s)) ≤ |s.im|/(|s.im|^(2 : ℕ)) :=
           div_le_div_of_nonneg_left (abs_nonneg _) (sq_pos_of_pos hu) hC
          _ = 1/|s.im| := by field_simp
   have hb : ‖1/((12:ℂ)*(star s+1)*(2-s))‖ ≤ 1/(12*|s.im|) := by
@@ -100,31 +100,31 @@ theorem reflectionCubicHeightCost_outer_lower {s : ℂ}
     linarith
   have hep : 1/2-|s.re-1/2| ≤ 1/4 := by linarith
   have hp := pow_le_pow_left₀ he.le hep 4
-  have hb : (256:ℝ) ≤ 1/(1/2-|s.re-1/2|)^4 := by
+  have hb : (256:ℝ) ≤ 1/(1/2-|s.re-1/2|)^(4 : ℕ) := by
     apply (le_div_iff₀ (pow_pos he 4)).mpr
     norm_num at hp
     nlinarith
   unfold reflectionCubicHeightCost
-  have h2 : 0 ≤ 1/(4*(1+(1/2-|s.re-1/2|))^4) := by positivity
-  have h3 : 0 ≤ 1/(6*(1+(1/2-|s.re-1/2|))^3) := by positivity
+  have h2 : 0 ≤ 1/(4*(1+(1/2-|s.re-1/2|))^(4 : ℕ)) := by positivity
+  have h3 : 0 ≤ 1/(6*(1+(1/2-|s.re-1/2|))^(3 : ℕ)) := by positivity
   linarith
 
 /-- Strict admission to the height disk, with explicit positive slack, for all outer-quarter sources. -/
 theorem reflection_height_disk_admission {s : ℂ}
     (hs : 0 < s.re) (hs' : s.re < 1) (hd : 1/4 ≤ |s.re-1/2|) (ht : 1 ≤ |s.im|) :
     ‖reflectionDiskSource s‖+4/|s.im| <
-      (s.re-1/2)^2*reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|) := by
+      (s.re-1/2)^(2 : ℕ)*reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|) := by
   have hu : 0 < |s.im| := by linarith
-  have hδ : (1:ℝ)/16 ≤ (s.re-1/2)^2 := by nlinarith [sq_abs (s.re-1/2)]
+  have hδ : (1:ℝ)/16 ≤ (s.re-1/2)^(2 : ℕ) := by nlinarith [sq_abs (s.re-1/2)]
   have hB := reflectionCubicHeightCost_outer_lower hs hs' hd
-  have hprod : (16:ℝ) ≤ (s.re-1/2)^2*reflectionCubicHeightCost (1/2-|s.re-1/2|) := by
+  have hprod : (16:ℝ) ≤ (s.re-1/2)^(2 : ℕ)*reflectionCubicHeightCost (1/2-|s.re-1/2|) := by
     nlinarith
   calc ‖reflectionDiskSource s‖+4/|s.im| < 4/|s.im|+4/|s.im| :=
         by
           have h := norm_reflectionDiskSource_lt ht
           linarith only [h]
        _ = 8/|s.im| := by ring
-       _ ≤ (s.re-1/2)^2*reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|) := by
+       _ ≤ (s.re-1/2)^(2 : ℕ)*reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|) := by
         apply (le_div_iff₀ (by positivity : 0 < 2*|s.im|)).mpr
         calc 8/|s.im| *(2*|s.im|) = 16 := by field_simp; norm_num
              _ ≤ _ := hprod
@@ -132,8 +132,8 @@ theorem reflection_height_disk_admission {s : ℂ}
 /-- The older disk also admits every outer-quarter source above an explicit height. -/
 theorem reflection_fixed_disk_admission {s : ℂ}
     (hd : 1/4 ≤ |s.re-1/2|) (ht : 1536 ≤ |s.im|) :
-    ‖reflectionDiskSource s‖+1/384 < (s.re-1/2)^2/12 := by
-  have hδ : (1:ℝ)/16 ≤ (s.re-1/2)^2 := by nlinarith [sq_abs (s.re-1/2)]
+    ‖reflectionDiskSource s‖+1/384 < (s.re-1/2)^(2 : ℕ)/12 := by
+  have hδ : (1:ℝ)/16 ≤ (s.re-1/2)^(2 : ℕ) := by nlinarith [sq_abs (s.re-1/2)]
   have hb : 4/|s.im| ≤ (1:ℝ)/384 := by
     apply (div_le_iff₀ (by linarith : 0 < |s.im|)).mpr
     linarith
@@ -143,9 +143,9 @@ theorem reflection_fixed_disk_admission {s : ℂ}
 /-- At arbitrarily large heights, actual nonzeros on the line `Re(s)=3/4` satisfy both disks strictly. -/
 theorem exists_nonzero_reflection_disks_admitted (T : ℝ) :
     ∃ s : ℂ, s.re=3/4 ∧ T<s.im ∧ 1536<s.im ∧ riemannZeta s≠0 ∧
-      ‖reflectionDiskSource s‖+1/384 < (s.re-1/2)^2/12 ∧
+      ‖reflectionDiskSource s‖+1/384 < (s.re-1/2)^(2 : ℕ)/12 ∧
       ‖reflectionDiskSource s‖+4/|s.im| <
-        (s.re-1/2)^2*reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|) := by
+        (s.re-1/2)^(2 : ℕ)*reflectionCubicHeightCost (1/2-|s.re-1/2|)/(2*|s.im|) := by
   let w : ℂ := (3/4:ℂ)+((max T 1536:ℝ):ℂ)*Complex.I
   have hwre : w.re=3/4 := by simp [w]
   have hwim : w.im=max T 1536 := by simp [w]

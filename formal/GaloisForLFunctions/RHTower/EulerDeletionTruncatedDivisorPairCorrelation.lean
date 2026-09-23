@@ -4411,7 +4411,7 @@ theorem selectedRefinementBlock_betaDeviation_sq_eq_childClockFactor_nonclockLcm
 
 /-- Exact signed energy factorization of the selected EDQ beta deviation.  The square retains a
 joint finite bilinear future-divisor cofactor, multiplied by the forced child-clock factor
-`(1 - x^C)^2`. -/
+`(1 - x^C)^(2 : ℕ)`. -/
 theorem selectedRefinementBlock_betaDeviation_sq_eq_childClockFactor_futureBilinear
     (N l u b : ℕ) (x : ℝ) (hlN : l < N) :
     let t := u + b * clock l + 1

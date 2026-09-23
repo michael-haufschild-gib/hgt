@@ -7,7 +7,7 @@ import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 The Möbius chart `x ↦ x/(1-x)` carries the unit interval onto the half line and turns the Euler
 integral of the second kind into the first:
 
-`∫_0^∞ z^{-σ} / (1+z) dz = ∫_0^1 x^{-σ} (1-x)^{σ-1} dx = Β(1-σ, σ) = Γ(σ)Γ(1-σ) = π / sin(πσ)`.
+`∫_0^∞ z^{-σ} / (1+z) dz = ∫_0^(1 : ℕ) x^{-σ} (1-x)^{σ-1} dx = Β(1-σ, σ) = Γ(σ)Γ(1-σ) = π / sin(πσ)`.
 
 This is the constant of the logistic coupling in the paired seam normal form.
 -/
@@ -132,7 +132,7 @@ theorem betaIntegral_eq_ofReal (σ : ℝ) :
   exact integral_complex_ofReal
 
 /-- **The reflection integral.**  `∫_0^∞ z^{-σ}/(1+z) dz = π / sin (πσ)` for `0 < σ < 1`. -/
-theorem integral_Ioi_rpow_div_one_add {σ : ℝ} (h0 : 0 < σ) (h1 : σ < 1) :
+theorem integral_Ioi_rpow_div_one_add_reflectionIntegral {σ : ℝ} (h0 : 0 < σ) (h1 : σ < 1) :
     (∫ z in Ioi (0:ℝ), z ^ (-σ) / (1 + z)) = Real.pi / Real.sin (Real.pi * σ) := by
   have hre1 : (0:ℝ) < (1 - (σ:ℂ)).re := by
     simp only [Complex.sub_re, Complex.one_re, Complex.ofReal_re]

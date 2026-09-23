@@ -65,8 +65,8 @@ theorem phase_sub (w x y : ℝ) :
 theorem sum_phase_eq_normSq (a : ℕ → ℂ) (s : Finset ℕ) (w : ℝ) :
     (∑ n ∈ s, ∑ m ∈ s, (a n * (starRingEnd ℂ) (a m))
         * Complex.exp (((2 * Real.pi * (w * (Real.log n - Real.log m)) : ℝ) : ℂ) * Complex.I))
-      = ((‖logPoly a s w‖ ^ 2 : ℝ) : ℂ) := by
-  have hzc : ((‖logPoly a s w‖ ^ 2 : ℝ) : ℂ)
+      = ((‖logPoly a s w‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
+  have hzc : ((‖logPoly a s w‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = logPoly a s w * (starRingEnd ℂ) (logPoly a s w) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [hzc, logPoly, map_sum, Finset.sum_mul_sum]
@@ -77,7 +77,7 @@ theorem sum_phase_eq_normSq (a : ℕ → ℂ) (s : Finset ℕ) (w : ℝ) :
 /-- The summed integrand is the weight times the squared modulus. -/
 theorem sum_gallagherTerm (a : ℕ → ℂ) (s : Finset ℕ) (δ : ℝ) (w : ℝ) :
     (∑ n ∈ s, ∑ m ∈ s, gallagherTerm a δ n m w)
-      = 𝓕 (triC δ) w * ((‖logPoly a s w‖ ^ 2 : ℝ) : ℂ) := by
+      = 𝓕 (triC δ) w * ((‖logPoly a s w‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [← sum_phase_eq_normSq a s w, Finset.mul_sum]
   refine Finset.sum_congr rfl fun n _ => ?_
   rw [Finset.mul_sum]
@@ -93,11 +93,11 @@ theorem re_mul_ofReal (z : ℂ) (r : ℝ) : (z * (r : ℂ)).re = z.re * r := by
 /-- **Gallagher's lemma.**  The logarithmic short-interval mean square is a nonnegative weighted mean
 of the Dirichlet polynomial. -/
 theorem gallagher_identity (a : ℕ → ℂ) (s : Finset ℕ) {δ : ℝ} (hδ : 0 < δ) :
-    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2)
-      = ∫ w : ℝ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 := by
+    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ (2 : ℕ))
+      = ∫ w : ℝ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) := by
   classical
   have hGint : Integrable fun w : ℝ =>
-      𝓕 (triC δ) w * ((‖logPoly a s w‖ ^ 2 : ℝ) : ℂ) := by
+      𝓕 (triC δ) w * ((‖logPoly a s w‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     have h : Integrable fun w : ℝ => ∑ n ∈ s, ∑ m ∈ s, gallagherTerm a δ n m w :=
       integrable_finsetSum _ fun n _ =>
         integrable_finsetSum _ fun m _ => integrable_gallagherTerm hδ a n m
@@ -121,9 +121,9 @@ theorem gallagher_identity (a : ℕ → ℂ) (s : Finset ℕ) {δ : ℝ} (hδ : 
         congr 1
         exact Finset.sum_congr rfl fun n _ =>
           (integral_finsetSum _ fun m _ => integrable_gallagherTerm hδ a n m).symm
-    _ = (∫ w : ℝ, 𝓕 (triC δ) w * ((‖logPoly a s w‖ ^ 2 : ℝ) : ℂ)).re := by
+    _ = (∫ w : ℝ, 𝓕 (triC δ) w * ((‖logPoly a s w‖ ^ (2 : ℕ) : ℝ) : ℂ)).re := by
         rw [integral_congr_ae (Filter.Eventually.of_forall (sum_gallagherTerm a s δ))]
-    _ = ∫ w : ℝ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 := by
+    _ = ∫ w : ℝ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) := by
         have h := integral_re (μ := volume) hGint
         simp only [RCLike.re_to_complex] at h
         rw [← h]
@@ -147,9 +147,9 @@ theorem integral_fourier_triC_re {δ : ℝ} (hδ : 0 < δ) :
   simp [triC, tri, max_eq_left hδ.le]
 
 theorem integrable_gallagher_weight_mul {δ : ℝ} (hδ : 0 < δ) (a : ℕ → ℂ) (s : Finset ℕ) :
-    Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 := by
+    Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) := by
   have hGint : Integrable fun w : ℝ =>
-      𝓕 (triC δ) w * ((‖logPoly a s w‖ ^ 2 : ℝ) : ℂ) := by
+      𝓕 (triC δ) w * ((‖logPoly a s w‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     have h : Integrable fun w : ℝ => ∑ n ∈ s, ∑ m ∈ s, gallagherTerm a δ n m w :=
       integrable_finsetSum _ fun n _ =>
         integrable_finsetSum _ fun m _ => integrable_gallagherTerm hδ a n m
@@ -159,11 +159,11 @@ theorem integrable_gallagher_weight_mul {δ : ℝ} (hδ : 0 < δ) (a : ℕ → �
 /-- **Gallagher's mean value bound.**  A uniform bound on the Dirichlet polynomial bounds the
 logarithmic short-interval mean square by `δ` times it. -/
 theorem gallagher_le_of_sup (a : ℕ → ℂ) (s : Finset ℕ) {δ M : ℝ} (hδ : 0 < δ)
-    (hbd : ∀ w : ℝ, ‖logPoly a s w‖ ^ 2 ≤ M) :
-    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2) ≤ M * δ := by
+    (hbd : ∀ w : ℝ, ‖logPoly a s w‖ ^ (2 : ℕ) ≤ M) :
+    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ (2 : ℕ)) ≤ M * δ := by
   rw [gallagher_identity a s hδ]
   have hmono : ∀ w : ℝ,
-      (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 ≤ (𝓕 (triC δ) w).re * M :=
+      (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) ≤ (𝓕 (triC δ) w).re * M :=
     fun w => mul_le_mul_of_nonneg_left (hbd w) (fourier_triC_re_nonneg hδ w)
   have hint2 : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * M :=
     ((integrable_fourier_triC hδ).re).mul_const M

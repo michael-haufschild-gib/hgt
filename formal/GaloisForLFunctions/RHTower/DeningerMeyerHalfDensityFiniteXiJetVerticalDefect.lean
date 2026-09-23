@@ -156,7 +156,7 @@ private theorem tendsto_graphTime_pow_mul_countercharacter
   have ha : a ≠ 0 := by
     dsimp [a, deningerMeyerHalfDensityXiHorizontalRate]
     exact sub_ne_zero.mpr hrho
-  have ha2 : 0 < a ^ 2 := sq_pos_of_ne_zero ha
+  have ha2 : 0 < a ^ (2 : ℕ) := sq_pos_of_ne_zero ha
   have hbase :=
     (GaloisForLFunctions.HTGeometry.tendsto_pow_mul_exp_neg_scaled i ha2).comp
       tendsto_natCast_atTop_atTop

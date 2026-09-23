@@ -13,9 +13,9 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The primitive of `e^{-a s} cos(b s)`. -/
 noncomputable def cosLaplacePrimitive (a b s : ℝ) : ℝ :=
-  Real.exp (-(a * s)) * (-a * Real.cos (b * s) + b * Real.sin (b * s)) / (a ^ 2 + b ^ 2)
+  Real.exp (-(a * s)) * (-a * Real.cos (b * s) + b * Real.sin (b * s)) / (a ^ (2 : ℕ) + b ^ (2 : ℕ))
 
-theorem hasDerivAt_cosLaplacePrimitive {a b : ℝ} (hab : a ^ 2 + b ^ 2 ≠ 0) (s : ℝ) :
+theorem hasDerivAt_cosLaplacePrimitive {a b : ℝ} (hab : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0) (s : ℝ) :
     HasDerivAt (cosLaplacePrimitive a b) (Real.exp (-(a * s)) * Real.cos (b * s)) s := by
   have he : HasDerivAt (fun s : ℝ => Real.exp (-(a * s))) (Real.exp (-(a * s)) * -a) s := by
     have h1 : HasDerivAt (fun s : ℝ => -(a * s)) (-a) s := by
@@ -35,7 +35,7 @@ theorem hasDerivAt_cosLaplacePrimitive {a b : ℝ} (hab : a ^ 2 + b ^ 2 ≠ 0) (
       (-a * (-Real.sin (b * s) * b) + b * (Real.cos (b * s) * b)) s :=
     (hc.const_mul (-a)).add (hs.const_mul b)
   have hmul := he.mul hnum
-  have hdiv := hmul.div_const (a ^ 2 + b ^ 2)
+  have hdiv := hmul.div_const (a ^ (2 : ℕ) + b ^ (2 : ℕ))
   refine hdiv.congr_deriv ?_
   field_simp
   ring
@@ -56,9 +56,9 @@ theorem integrableOn_cosLaplace {a b : ℝ} (ha : 0 < a) :
 theorem tendsto_cosLaplacePrimitive_atTop {a b : ℝ} (ha : 0 < a) :
     Tendsto (cosLaplacePrimitive a b) atTop (𝓝 0) := by
   have hbound : ∀ s : ℝ, |cosLaplacePrimitive a b s|
-      ≤ (|a| + |b|) / (a ^ 2 + b ^ 2) * Real.exp (-(a * s)) := by
+      ≤ (|a| + |b|) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * Real.exp (-(a * s)) := by
     intro s
-    have hden : (0 : ℝ) < a ^ 2 + b ^ 2 := by positivity
+    have hden : (0 : ℝ) < a ^ (2 : ℕ) + b ^ (2 : ℕ) := by positivity
     rw [cosLaplacePrimitive, abs_div, abs_of_pos hden, abs_mul,
       abs_of_pos (Real.exp_pos _)]
     have hnum : |-a * Real.cos (b * s) + b * Real.sin (b * s)| ≤ |a| + |b| := by
@@ -73,16 +73,16 @@ theorem tendsto_cosLaplacePrimitive_atTop {a b : ℝ} (ha : 0 < a) :
     have hpos : (0 : ℝ) < Real.exp (-(a * s)) := Real.exp_pos _
     calc Real.exp (-(a * s)) * |-a * Real.cos (b * s) + b * Real.sin (b * s)|
         ≤ Real.exp (-(a * s)) * (|a| + |b|) := by gcongr
-      _ = (|a| + |b|) / (a ^ 2 + b ^ 2) * Real.exp (-(a * s)) * (a ^ 2 + b ^ 2) := by
+      _ = (|a| + |b|) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * Real.exp (-(a * s)) * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
           field_simp
-  have hzero : Tendsto (fun s : ℝ => (|a| + |b|) / (a ^ 2 + b ^ 2) * Real.exp (-(a * s)))
+  have hzero : Tendsto (fun s : ℝ => (|a| + |b|) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)) * Real.exp (-(a * s)))
       atTop (𝓝 0) := by
     have h1 : Tendsto (fun s : ℝ => Real.exp (-(a * s))) atTop (𝓝 0) := by
       have h3 : Tendsto (fun s : ℝ => a * s) atTop atTop :=
         Filter.Tendsto.const_mul_atTop ha tendsto_id
       have h2 : Tendsto (fun s : ℝ => -(a * s)) atTop atBot := tendsto_neg_atTop_atBot.comp h3
       simpa [Function.comp_def] using Real.tendsto_exp_atBot.comp h2
-    simpa using h1.const_mul ((|a| + |b|) / (a ^ 2 + b ^ 2))
+    simpa using h1.const_mul ((|a| + |b|) / (a ^ (2 : ℕ) + b ^ (2 : ℕ)))
   refine squeeze_zero_norm ?_ hzero
   intro s
   rw [Real.norm_eq_abs]
@@ -90,8 +90,8 @@ theorem tendsto_cosLaplacePrimitive_atTop {a b : ℝ} (ha : 0 < a) :
 
 /-- **The cosine Laplace transform.** -/
 theorem integral_cosLaplace {a b : ℝ} (ha : 0 < a) :
-    (∫ s in Ioi (0 : ℝ), Real.exp (-(a * s)) * Real.cos (b * s)) = a / (a ^ 2 + b ^ 2) := by
-  have hab : a ^ 2 + b ^ 2 ≠ 0 := by positivity
+    (∫ s in Ioi (0 : ℝ), Real.exp (-(a * s)) * Real.cos (b * s)) = a / (a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
+  have hab : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≠ 0 := by positivity
   have hderiv : ∀ s ∈ Ioi (0 : ℝ),
       HasDerivAt (cosLaplacePrimitive a b) (Real.exp (-(a * s)) * Real.cos (b * s)) s :=
     fun s _ => hasDerivAt_cosLaplacePrimitive hab s

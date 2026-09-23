@@ -21,15 +21,15 @@ namespace GaloisForLFunctions.HTGeometry.SchafferExl
 noncomputable section
 
 /-- A positive Bloch radius at most one, constructed from an unrestricted real mixing coordinate. -/
-def spinMixRadius (u : ℝ) : ℝ := (1 + u ^ 2)⁻¹
+def spinMixRadius (u : ℝ) : ℝ := (1 + u ^ (2 : ℕ))⁻¹
 
 /-- The mixing construction never produces a negative or zero radius. -/
 theorem spinMixRadius_pos (u : ℝ) : 0 < spinMixRadius u := by unfold spinMixRadius; positivity
 
 /-- The mixing radius always stays in the physical Bloch ball. -/
 theorem spinMixRadius_le_one (u : ℝ) : spinMixRadius u ≤ 1 := by
-  have hd : 1 + u ^ 2 ≠ 0 := by positivity
-  have he : spinMixRadius u * (1 + u ^ 2) = 1 := by simp [spinMixRadius, hd]
+  have hd : 1 + u ^ (2 : ℕ) ≠ 0 := by positivity
+  have he : spinMixRadius u * (1 + u ^ (2 : ℕ)) = 1 := by simp [spinMixRadius, hd]
   have hp := mul_nonneg (spinMixRadius_pos u).le (sq_nonneg u)
   nlinarith
 
@@ -37,7 +37,7 @@ theorem spinMixRadius_le_one (u : ℝ) : spinMixRadius u ≤ 1 := by
 def spinMixAmplitude (a u : ℝ) : ℝ := a * spinChartScale (u : ℂ)
 
 /-- The effective squared damping is exactly the original damping times the Bloch radius. -/
-theorem spinMixAmplitude_sq (a u : ℝ) : spinMixAmplitude a u ^ 2 = a ^ 2 * spinMixRadius u := by
+theorem spinMixAmplitude_sq (a u : ℝ) : spinMixAmplitude a u ^ (2 : ℕ) = a ^ (2 : ℕ) * spinMixRadius u := by
   rw [spinMixAmplitude, mul_pow, spinChartScale_sq]
   simp [spinMixRadius, Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
@@ -146,8 +146,8 @@ theorem spinMixedDensity_trace_pow (a u : ℝ) (z : ℂ) (t : ℝ) (n : ℕ) :
 
 /-- The determinant of every real-spin matrix records its squared Bloch radius. -/
 theorem spinMatrix_det (m : EuclideanSpace ℝ (Fin 3)) :
-    (spinMatrix m).det = (((1 - ‖m‖ ^ 2) / 4 : ℝ) : ℂ) := by
-  have hn : ‖m‖ ^ 2 = m 0 ^ 2 + m 1 ^ 2 + m 2 ^ 2 := by
+    (spinMatrix m).det = (((1 - ‖m‖ ^ (2 : ℕ)) / 4 : ℝ) : ℂ) := by
+  have hn : ‖m‖ ^ (2 : ℕ) = m 0 ^ (2 : ℕ) + m 1 ^ (2 : ℕ) + m 2 ^ (2 : ℕ) := by
     rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity), Fin.sum_univ_three]
     simp [Real.norm_eq_abs, sq_abs]
   rw [spinMatrix, Matrix.det_smul, lorentzHermitianMatrix_det, hn]
@@ -174,7 +174,7 @@ theorem spinMixedDensity_charpoly (a u : ℝ) (z : ℂ) (t : ℝ) :
   rw [Matrix.charpoly_fin_two, (spinMixedDensity_state a u z t).2, spinMixedDensity_det,
     map_mul, map_one, one_mul]
   calc
-    _ = Polynomial.X ^ 2 -
+    _ = Polynomial.X ^ (2 : ℕ) -
         (Polynomial.C (spinMixEigenPlus u : ℂ) + Polynomial.C (spinMixEigenMinus u : ℂ)) *
           Polynomial.X + Polynomial.C (spinMixEigenPlus u : ℂ) *
             Polynomial.C (spinMixEigenMinus u : ℂ) := by

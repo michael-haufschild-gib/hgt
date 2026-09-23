@@ -28,7 +28,7 @@ theorem sourceAmplitude_profile_norm_le_exp (s w a T : ℂ) (P : ℝ → ℂ)
     intro u hu
     exact (((power_derivatives (2*s) (by linarith [hu.1] : 0 < 1+u)).1.continuousAt).comp_of_eq
       (continuous_const.add continuous_id).continuousAt rfl).continuousWithinAt
-  have h := laplaceProfile_norm_le_exp w (fun u => power (2*s) (1+u)*a^2*T*P u)
+  have h := laplaceProfile_norm_le_exp w (fun u => power (2*s) (1+u)*a^(2 : ℕ)*T*P u)
     (((hpow.mul continuousOn_const).mul continuousOn_const).mul hP)
   simpa only [sourceAmplitude,mul_assoc] using h
 
@@ -36,11 +36,11 @@ theorem sourceAmplitude_profile_norm_le_exp (s w a T : ℂ) (P : ℝ → ℂ)
 theorem radialLift_bounded (s w a T : ℂ) (hw : 0 < w.re) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ, t < 0 → ‖radialLift s w a T t‖ ≤ C := by
   obtain ⟨C,hC,hb⟩ := sourceAmplitude_profile_norm_le_exp s w a T
-    (fun u : ℝ => (-s*(s-1)/4)*(u:ℂ)^3) (by fun_prop)
+    (fun u : ℝ => (-s*(s-1)/4)*(u:ℂ)^(3 : ℕ)) (by fun_prop)
   refine ⟨C,hC,fun t ht => ?_⟩
   have he : Real.exp (w.re*t) ≤ 1 := Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hw.le ht.le)
   have ht' := hb t ht
-  have hid : sourceAmplitude s w a T t*((-s*(s-1)/4)*(radialUnit t:ℂ)^3) = radialLift s w a T t := by
+  have hid : sourceAmplitude s w a T t*((-s*(s-1)/4)*(radialUnit t:ℂ)^(3 : ℕ)) = radialLift s w a T t := by
     unfold radialLift
     ring
   rw [hid] at ht'

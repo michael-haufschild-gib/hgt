@@ -86,13 +86,13 @@ theorem completedFluxTaylorCoeff_one_sub (ρ : ℂ) (n : ℕ) :
     completedFluxTaylorCoeff (1 - ρ) n =
       (-1 : ℂ) ^ n * completedFluxTaylorCoeff ρ n := by
   have h := completedFluxTaylorCoeff_reflection ρ n
-  have hs : ((-1 : ℂ) ^ n) ^ 2 = 1 := by
+  have hs : ((-1 : ℂ) ^ n) ^ (2 : ℕ) = 1 := by
     rw [← pow_mul]
     simp
   calc
     completedFluxTaylorCoeff (1 - ρ) n =
         1 * completedFluxTaylorCoeff (1 - ρ) n := by ring
-    _ = (((-1 : ℂ) ^ n) ^ 2) * completedFluxTaylorCoeff (1 - ρ) n := by rw [hs]
+    _ = (((-1 : ℂ) ^ n) ^ (2 : ℕ)) * completedFluxTaylorCoeff (1 - ρ) n := by rw [hs]
     _ = (-1 : ℂ) ^ n *
         ((-1 : ℂ) ^ n * completedFluxTaylorCoeff (1 - ρ) n) := by ring
     _ = (-1 : ℂ) ^ n * completedFluxTaylorCoeff ρ n := by rw [h]

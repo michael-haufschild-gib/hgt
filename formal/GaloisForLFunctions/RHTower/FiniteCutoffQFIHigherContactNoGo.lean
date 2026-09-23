@@ -27,7 +27,7 @@ def qfiOpenBallCoordinate (w : ℂ) : ℂ :=
 /-- Explicit radial formula for the QFI open-ball coordinate. -/
 theorem qfiOpenBallCoordinate_eq (w : ℂ) :
     qfiOpenBallCoordinate w =
-      (Real.sqrt (1 + ‖w‖ ^ 2))⁻¹ • w := by
+      (Real.sqrt (1 + ‖w‖ ^ (2 : ℕ)))⁻¹ • w := by
   rfl
 
 /-- No finite complex output is identified with another by the QFI chart. -/

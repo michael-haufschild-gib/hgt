@@ -43,7 +43,7 @@ theorem rawSecondSlope_tendsto_endpoint (q : SchwartzMap ℝ ℂ) (k : ℝ) (v :
 
 theorem rawSecondPrimitive_tendsto (q : SchwartzMap ℝ ℂ) (v : SpectralVector) (left : Bool) :
     Tendsto (fun x : ℝ => rawSecondPrimitive q v (if left then -x else x)) atTop
-      (𝓝 ((-rawMixedEndpoint q left-(q 0)^2)*v.1,rawMixedEndpoint q left*v.2)) := by
+      (𝓝 ((-rawMixedEndpoint q left-(q 0)^(2 : ℕ))*v.1,rawMixedEndpoint q left*v.2)) := by
   have hJ := rawMixedPrimitive_tendsto q left
   have hq : Tendsto (fun x : ℝ => q (if left then -x else x)) atTop (𝓝 0) := by
     cases left
@@ -54,21 +54,21 @@ theorem rawSecondPrimitive_tendsto (q : SchwartzMap ℝ ℂ) (v : SpectralVector
     · exact (q.tendsto_cocompact.mono_left atBot_le_cocompact).comp tendsto_neg_atTop_atBot
     · simpa only [↓reduceIte,neg_neg] using (q.tendsto_cocompact.mono_left atTop_le_cocompact)
   have hc : Continuous (fun p : ℂ × (ℂ × ℂ) =>
-      (((-p.1+q 0*p.2.2-(q 0)^2)*v.1,(p.1-p.2.1*p.2.2+q 0*p.2.1)*v.2) : SpectralVector)) := by fun_prop
+      (((-p.1+q 0*p.2.2-(q 0)^(2 : ℕ))*v.1,(p.1-p.2.1*p.2.2+q 0*p.2.1)*v.2) : SpectralVector)) := by fun_prop
   have hh := (hc.tendsto (rawMixedEndpoint q left,(0,0))).comp (hJ.prodMk_nhds (hq.prodMk_nhds hg))
   simpa only [Function.comp_def,rawSecondPrimitive,mul_zero,zero_mul,add_zero,sub_zero] using hh
 
 /-- The actual quadratic endpoint coefficient is explicitly diagonal for arbitrary Schwartz profiles. -/
 theorem rawSecondEndpoint_eq (q : SchwartzMap ℝ ℂ) (v : SpectralVector) (left : Bool) :
     rawSecondEndpoint q 0 v left =
-      ((-rawMixedEndpoint q left-(q 0)^2)*v.1,rawMixedEndpoint q left*v.2) := by
+      ((-rawMixedEndpoint q left-(q 0)^(2 : ℕ))*v.1,rawMixedEndpoint q left*v.2) := by
   have hh := rawSecondSlope_tendsto_endpoint q 0 v left
   simp only [rawSecondSlope_zero_eq] at hh
   exact tendsto_nhds_unique hh (rawSecondPrimitive_tendsto q v left)
 
 theorem rawQuadraticEndpointMatrix_eq (q : SchwartzMap ℝ ℂ) (left : Bool) :
     rawQuadraticEndpointMatrix q left =
-      !![-rawMixedEndpoint q left-(q 0)^2,0;0,rawMixedEndpoint q left] := by
+      !![-rawMixedEndpoint q left-(q 0)^(2 : ℕ),0;0,rawMixedEndpoint q left] := by
   simp only [rawQuadraticEndpointMatrix,rawSecondEndpoint_eq,mul_one,mul_zero]
 
 /-- The difference of the actual oriented endpoints is the full mixed integral. -/

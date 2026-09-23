@@ -18,7 +18,7 @@ private abbrev Jet := ScalarTwoJet (Fin 4) ℂ
 def radialJet (w H H1 H2 : ℂ) : Jet where
   value := H
   first := ![w*H,H1,0,0]
-  second := !![w^2*H,w*H1,0,0; w*H1,H2,0,0; 0,0,0,0; 0,0,0,0]
+  second := !![w^(2 : ℕ)*H,w*H1,0,0; w*H1,H2,0,0; 0,0,0,0; 0,0,0,0]
 
 /-- First component of a divergence-free angular covector jet. -/
 def covector0 (A P Q U V Z : ℂ) : Jet where
@@ -49,27 +49,27 @@ def metricJet (w r H H1 H2 H3 A C P Q R U V W Z : ℂ) : CoordinateMetricTwoJet 
 
 /-- Forced vector master expression, with the actual angular Laplacian component. -/
 def master (w r H H1 H2 A D : ℂ) : ℂ :=
-  (r^2*(r^2-1)*H2+2*r*H1-(w^2*r^2/(r^2-1)+2)*H)*A+H*D
+  (r^(2 : ℕ)*(r^(2 : ℕ)-1)*H2+2*r*H1-(w^(2 : ℕ)*r^(2 : ℕ)/(r^(2 : ℕ)-1)+2)*H)*A+H*D
 
 /-- Full radial derivative of the forced vector master expression. -/
 def masterFirst (w r H H1 H2 H3 A D : ℂ) : ℂ :=
-  (r^2*(r^2-1)*H3+4*r^3*H2-w^2*r^2/(r^2-1)*H1+
-    2*w^2*r/(r^2-1)^2*H)*A+H1*D
+  (r^(2 : ℕ)*(r^(2 : ℕ)-1)*H3+4*r^(3 : ℕ)*H2-w^(2 : ℕ)*r^(2 : ℕ)/(r^(2 : ℕ)-1)*H1+
+    2*w^(2 : ℕ)*r/(r^(2 : ℕ)-1)^(2 : ℕ)*H)*A+H1*D
 
 private theorem background_metric (r y : ℂ) :
     (D4BMBackground.jet r y).metric = D4BMBackground.metric r y := rfl
 
 private theorem background_first (r y : ℂ) (k : Fin 4) :
     (D4BMBackground.jet r y).first k = Matrix.diagonal
-      (if k = 1 then ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2]
-       else if k = 3 then ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] else 0) := rfl
+      (if k = 1 then ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)]
+       else if k = 3 then ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] else 0) := rfl
 
 private theorem background_second (r y : ℂ) (k l : Fin 4) :
     (D4BMBackground.jet r y).second k l = Matrix.diagonal
-      (if k = 1 ∧ l = 1 then ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3,
-        2*y⁻¹^2, 2*y⁻¹^2]
-       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3]
-       else if k = 3 ∧ l = 3 then ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] else 0) := rfl
+      (if k = 1 ∧ l = 1 then ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ),
+        2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)]
+       else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)]
+       else if k = 3 ∧ l = 3 then ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] else 0) := rfl
 
 /-- Background first/second entries with the index conditionals already resolved, so the
 expansion below never evaluates a decidable branch. -/
@@ -78,13 +78,13 @@ private theorem background_first_0 (r y : ℂ) :
     (D4BMBackground.jet r y).first 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_first_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^2-1)⁻¹^2, 2*r*y⁻¹^2, 2*r*y⁻¹^2] := rfl
+    (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)] := rfl
 
 private theorem background_first_2 (r y : ℂ) :
     (D4BMBackground.jet r y).first 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_first_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^2*y⁻¹^3, -2*r^2*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_0_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 0 0 = Matrix.diagonal 0 := rfl
@@ -102,13 +102,13 @@ private theorem background_second_1_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_1_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^2-1)⁻¹^2+8*r^2*(r^2-1)⁻¹^3, 2*y⁻¹^2, 2*y⁻¹^2] := rfl
+    (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ), 2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)] := rfl
 
 private theorem background_second_1_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_1_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_2_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 2 0 = Matrix.diagonal 0 := rfl
@@ -126,23 +126,23 @@ private theorem background_second_3_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 0 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_3_1 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^3,-4*r*y⁻¹^3] := rfl
+    (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
 
 private theorem background_second_3_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 2 = Matrix.diagonal 0 := rfl
 
 private theorem background_second_3_3 (r y : ℂ) :
-    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^2*y⁻¹^4,6*r^2*y⁻¹^4] := rfl
+    (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] := rfl
 
 
 /-- Complete mixed source tensor determined by the vector master and its radial derivative. -/
 def sourceTensor (w r y H H1 H2 H3 A C Q R U V W Z : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  let D0 := y^2*(U+Z)+2*y*(Q-R)
-  let D1 := y^2*(W-V)
-  let T0 := -(r^2-1)/(2*r^2)*masterFirst w r H H1 H2 H3 A D0
-  let T1 := -(r^2-1)/(2*r^2)*masterFirst w r H H1 H2 H3 C D1
-  let R0 := -w/(2*r^2*(r^2-1))*master w r H H1 H2 A D0
-  let R1 := -w/(2*r^2*(r^2-1))*master w r H H1 H2 C D1
+  let D0 := y^(2 : ℕ)*(U+Z)+2*y*(Q-R)
+  let D1 := y^(2 : ℕ)*(W-V)
+  let T0 := -(r^(2 : ℕ)-1)/(2*r^(2 : ℕ))*masterFirst w r H H1 H2 H3 A D0
+  let T1 := -(r^(2 : ℕ)-1)/(2*r^(2 : ℕ))*masterFirst w r H H1 H2 H3 C D1
+  let R0 := -w/(2*r^(2 : ℕ)*(r^(2 : ℕ)-1))*master w r H H1 H2 A D0
+  let R1 := -w/(2*r^(2 : ℕ)*(r^(2 : ℕ)-1))*master w r H H1 H2 C D1
   !![0,0,T0,T1; 0,0,R0,R1; T0,R0,0,0; T1,R1,0,0]
 
 set_option maxRecDepth 8192 in
@@ -150,7 +150,7 @@ set_option maxHeartbeats 8000000 in
 /-- All sixteen actual Ricci residual components are the displayed master curl.
 No angular eigen-equation or radial field equation is assumed. -/
 theorem ricci_component (w r y H H1 H2 H3 A C P Q R U V W Z : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y)
       (metricJet w r H H1 H2 H3 A C P Q R U V W Z) i j +
       3*(metricJet w r H H1 H2 H3 A C P Q R U V W Z).metric i j =
@@ -176,7 +176,7 @@ theorem ricci_component (w r y H H1 H2 H3 A C P Q R U V W Z : ℂ)
 
 /-- The actual scalar variation vanishes because both the metric and source have only mixed entries. -/
 theorem scalar_zero (w r y H H1 H2 H3 A C P Q R U V W Z : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.scalar (D4BMBackground.jet r y)
       (metricJet w r H H1 H2 H3 A C P Q R U V W Z) = 0 := by
   have hR (i j : Fin 4) := eq_sub_iff_add_eq.mpr
@@ -189,7 +189,7 @@ theorem scalar_zero (w r y H H1 H2 H3 A C P Q R U V W Z : ℂ)
 
 /-- The complete cosmological Einstein operator is the derived vector master curl. -/
 theorem cosmological_component (w r y H H1 H2 H3 A C P Q R U V W Z : ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (metricJet w r H H1 H2 H3 A C P Q R U V W Z) (-3) i j =
     sourceTensor w r y H H1 H2 H3 A C Q R U V W Z i j := by
@@ -202,19 +202,19 @@ theorem cosmological_component (w r y H H1 H2 H3 A C P Q R U V W Z : ℂ)
 
 /-- Restoring the fundamental envelope gives the exact polynomial-coefficient
 master operator on the remaining radial factor. -/
-theorem master_dressing (w r B F F1 F2 A D : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
-    master w r (B*F) (B*(F1+w*F/(r*(r^2-1))))
-      (B*(F2+2*w*F1/(r*(r^2-1))+
-        (w^2-w*(3*r^2-1))*F/(r^2*(r^2-1)^2))) A D =
-    B*((r^2*(r^2-1)*F2+2*r*(w+1)*F1-(w+1)*(w+2)*F)*A+F*D) := by
+theorem master_dressing (w r B F F1 F2 A D : ℂ) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
+    master w r (B*F) (B*(F1+w*F/(r*(r^(2 : ℕ)-1))))
+      (B*(F2+2*w*F1/(r*(r^(2 : ℕ)-1))+
+        (w^(2 : ℕ)-w*(3*r^(2 : ℕ)-1))*F/(r^(2 : ℕ)*(r^(2 : ℕ)-1)^(2 : ℕ)))) A D =
+    B*((r^(2 : ℕ)*(r^(2 : ℕ)-1)*F2+2*r*(w+1)*F1-(w+1)*(w+2)*F)*A+F*D) := by
   dsimp [master]
   field_simp [hr, hf]
   ring
 
 /-- The constant radial factor exposes the angular resolvent at the shifted frequency. -/
-theorem master_constant_factor (w r B A D : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
-    master w r B (B*w/(r*(r^2-1)))
-      (B*(w^2-w*(3*r^2-1))/(r^2*(r^2-1)^2)) A D =
+theorem master_constant_factor (w r B A D : ℂ) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
+    master w r B (B*w/(r*(r^(2 : ℕ)-1)))
+      (B*(w^(2 : ℕ)-w*(3*r^(2 : ℕ)-1))/(r^(2 : ℕ)*(r^(2 : ℕ)-1)^(2 : ℕ))) A D =
       B*(D-(w+1)*(w+2)*A) := by
   dsimp [master]
   field_simp [hr, hf]
@@ -222,11 +222,11 @@ theorem master_constant_factor (w r B A D : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠ 
 
 /-- The inverse-square radial factor produces the shifted angular operator and
 its exact constant remainder. -/
-theorem master_inverse_square_factor (w r B A D : ℂ) (hr : r ≠ 0) (hf : r^2-1 ≠ 0) :
-    master w r (B/r^2) (B*(-2/r^3+w/(r^3*(r^2-1))))
-      (B*(6/r^4-4*w/(r^4*(r^2-1))+
-        (w^2-w*(3*r^2-1))/(r^4*(r^2-1)^2))) A D =
-      B*(6*A+(D-(w+3)*(w+4)*A)/r^2) := by
+theorem master_inverse_square_factor (w r B A D : ℂ) (hr : r ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
+    master w r (B/r^(2 : ℕ)) (B*(-2/r^(3 : ℕ)+w/(r^(3 : ℕ)*(r^(2 : ℕ)-1))))
+      (B*(6/r^(4 : ℕ)-4*w/(r^(4 : ℕ)*(r^(2 : ℕ)-1))+
+        (w^(2 : ℕ)-w*(3*r^(2 : ℕ)-1))/(r^(4 : ℕ)*(r^(2 : ℕ)-1)^(2 : ℕ)))) A D =
+      B*(6*A+(D-(w+3)*(w+4)*A)/r^(2 : ℕ)) := by
   dsimp [master]
   field_simp [hr, hf]
   ring

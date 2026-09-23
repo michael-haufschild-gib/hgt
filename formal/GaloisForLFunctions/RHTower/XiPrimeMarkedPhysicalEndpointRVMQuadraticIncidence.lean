@@ -61,7 +61,7 @@ inside the universal reflected self-adjoint moment bound `M₁ ≤ M₀²/2`.  T
 not ruled out by positivity or Schatten purity; the remaining issue is exact prime-source matrix
 incidence. -/
 theorem routeKSourceFirstMoment_lt_half_sq_zeroth :
-    routeKSourceFirstMoment < routeKSourceZerothMoment ^ 2 / 2 := by
+    routeKSourceFirstMoment < routeKSourceZerothMoment ^ (2 : ℕ) / 2 := by
   have hzero :
       (1 / 25 : ℝ) < routeKSourceZerothMoment := by
     rw [routeKSourceZerothMoment_eq_normalizedPrimeArchMoment]
@@ -71,7 +71,7 @@ theorem routeKSourceFirstMoment_lt_half_sq_zeroth :
     rw [routeKSourceFirstMoment_eq_normalizedPrimeArchMoment]
     exact normalizedPrimeArchMoment_one_lt_one_over_fiveThousand
   have hsquare :
-      (1 / 25 : ℝ) ^ 2 < routeKSourceZerothMoment ^ 2 := by
+      (1 / 25 : ℝ) ^ (2 : ℕ) < routeKSourceZerothMoment ^ (2 : ℕ) := by
     have hprod :=
       mul_pos (sub_pos.mpr hzero)
         (add_pos (by norm_num : (0 : ℝ) < 1 / 25)
@@ -98,7 +98,7 @@ theorem routeKRVMTailWeight_nonneg
 
 theorem summable_routeKRVMHeadWeight_sq
     (s : Finset Nat.Primes) :
-    Summable (fun p => routeKRVMHeadWeight s p ^ 2) := by
+    Summable (fun p => routeKRVMHeadWeight s p ^ (2 : ℕ)) := by
   apply Summable.of_nonneg_of_le
     (fun p => sq_nonneg (routeKRVMHeadWeight s p))
     (fun p => ?_) summable_routeKPrimeRVMReciprocal_sq
@@ -108,7 +108,7 @@ theorem summable_routeKRVMHeadWeight_sq
 
 theorem summable_routeKRVMTailWeight_sq
     (s : Finset Nat.Primes) :
-    Summable (fun p => routeKRVMTailWeight s p ^ 2) := by
+    Summable (fun p => routeKRVMTailWeight s p ^ (2 : ℕ)) := by
   apply Summable.of_nonneg_of_le
     (fun p => sq_nonneg (routeKRVMTailWeight s p))
     (fun p => ?_) summable_routeKPrimeRVMReciprocal_sq
@@ -276,14 +276,14 @@ theorem routeKRVMHeadOperator_add_tail
 theorem hsNormSq_routeKRVMTailOperator
     (s : Finset Nat.Primes) :
     hsNormSq (routeKRVMTailOperator s) =
-      ∑' p : Nat.Primes, routeKRVMTailWeight s p ^ 2 := by
+      ∑' p : Nat.Primes, routeKRVMTailWeight s p ^ (2 : ℕ) := by
   rw [routeKRVMTailOperator,
     HilbertSchmidt.hsNormSq_toOperator]
   change
     HilbertSchmidt.hsNormSq
         (HilbertSchmidt.diagMul
           (fun p => (routeKRVMTailWeight s p : ℂ))) =
-      ∑' p : Nat.Primes, routeKRVMTailWeight s p ^ 2
+      ∑' p : Nat.Primes, routeKRVMTailWeight s p ^ (2 : ℕ)
   rw [HilbertSchmidt.hsNormSq_diagMul_infinite]
   apply tsum_congr
   intro p
@@ -301,23 +301,23 @@ theorem exists_routeKRVM_tail_energy_lt_source_half :
   refine ⟨s, ?_⟩
   rw [hsNormSq_routeKRVMTailOperator]
   calc
-    ∑' p : Nat.Primes, routeKRVMTailWeight s p ^ 2 =
+    ∑' p : Nat.Primes, routeKRVMTailWeight s p ^ (2 : ℕ) =
         ∑' p : Nat.Primes,
           ({p : Nat.Primes | p ∉ s}.indicator
-            (fun p => routeKPrimeRVMReciprocal p ^ 2)) p := by
+            (fun p => routeKPrimeRVMReciprocal p ^ (2 : ℕ))) p := by
       apply tsum_congr
       intro p
       by_cases hp : p ∈ s <;>
         simp [routeKRVMTailWeight, Set.indicator, hp]
     _ = ∑' p : {p : Nat.Primes // p ∉ s},
-          routeKPrimeRVMReciprocal p ^ 2 := by
+          routeKPrimeRVMReciprocal p ^ (2 : ℕ) := by
       exact
         (tsum_subtype {p : Nat.Primes | p ∉ s}
-          (fun p => routeKPrimeRVMReciprocal p ^ 2)).symm
+          (fun p => routeKPrimeRVMReciprocal p ^ (2 : ℕ))).symm
     _ < routeKSourceZerothMoment / 2 := by
       change
         (∑' p : {p : Nat.Primes // p ∉ s},
-          routeKPrimeRVMReciprocal p ^ 2) <
+          routeKPrimeRVMReciprocal p ^ (2 : ℕ)) <
             routeKSourceZerothMoment / 2 at hs
       exact hs
 
@@ -462,7 +462,7 @@ theorem routeKQuadraticAdmissionScale_pos :
     (hsNormSq_routeKRVMHead_add_physicalEndpointRVMRelocation_pos _)
 
 theorem routeKQuadraticAdmissionScale_sq :
-    routeKQuadraticAdmissionScale ^ 2 =
+    routeKQuadraticAdmissionScale ^ (2 : ℕ) =
       (routeKSourceZerothMoment / 2 -
           hsNormSq
             (routeKRVMTailOperator routeKQuadraticAdmissionFinset)) /
@@ -479,7 +479,7 @@ theorem routeKQuadraticAdmissionScale_sq :
 theorem routeKQuadraticAdmissionScale_unique
     {c : ℝ} (hc : 0 < c)
     (henergy :
-      2 * (c ^ 2 *
+      2 * (c ^ (2 : ℕ) *
             hsNormSq
               (routeKRVMHeadOperator routeKQuadraticAdmissionFinset +
                 routeKPhysicalEndpointRVMRelocation) +
@@ -494,7 +494,7 @@ theorem routeKQuadraticAdmissionScale_unique
             routeKPhysicalEndpointRVMRelocation) :=
     hsNormSq_routeKRVMHead_add_physicalEndpointRVMRelocation_pos _
   have hsquare :
-      c ^ 2 = routeKQuadraticAdmissionScale ^ 2 := by
+      c ^ (2 : ℕ) = routeKQuadraticAdmissionScale ^ (2 : ℕ) := by
     rw [routeKQuadraticAdmissionScale_sq]
     apply (eq_div_iff hE.ne').2
     nlinarith
@@ -568,7 +568,7 @@ theorem two_mul_hsNormSq_routeKQuadraticallyAdmittedOperator :
   ring
 
 theorem two_mul_opTrace_sq_routeKQuadraticallyAdmittedOperator :
-    2 * opTrace (routeKQuadraticallyAdmittedOperator ^ 2) =
+    2 * opTrace (routeKQuadraticallyAdmittedOperator ^ (2 : ℕ)) =
       (routeKSourceZerothMoment : ℂ) := by
   rw [HTGeometry.opTrace_sq_eq_ofReal_hsNormSq
     routeKQuadraticallyAdmittedOperator_isHilbertSchmidt

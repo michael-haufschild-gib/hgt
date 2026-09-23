@@ -128,7 +128,7 @@ theorem norm_le_two_mul_div_one_add_sq_of_radialAutomorphism_sub
     (hbound :
       ‖unitDiskAutomorphism (radialDiskPoint r s) s -
           unitDiskAutomorphism (radialDiskPoint r s) 0‖ ≤ 2 * r) :
-    ‖s‖ ≤ 2 * r / (1 + r ^ 2) := by
+    ‖s‖ ≤ 2 * r / (1 + r ^ (2 : ℕ)) := by
   by_cases hs : s = 0
   · rw [hs, norm_zero]
     positivity
@@ -147,15 +147,15 @@ theorem norm_le_two_mul_div_one_add_sq_of_radialAutomorphism_sub
   rw [unitDiskAutomorphism_sub_zero hden, norm_div, norm_mul,
     hconj] at hbound
   norm_cast at hbound
-  have hnormSq : Complex.normSq a = r ^ 2 := by
+  have hnormSq : Complex.normSq a = r ^ (2 : ℕ) := by
     rw [Complex.normSq_eq_norm_sq, haNorm]
   rw [hnormSq] at hbound
-  have hcoeff : 0 ≤ 1 - r ^ 2 := by nlinarith
+  have hcoeff : 0 ≤ 1 - r ^ (2 : ℕ) := by nlinarith
   have hdenReal : 0 < 1 - r * x := sub_pos.mpr hrx
   rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hcoeff,
     abs_of_pos hdenReal] at hbound
-  apply (le_div_iff₀ (by positivity : 0 < 1 + r ^ 2)).2
-  change x * (1 + r ^ 2) ≤ 2 * r
+  apply (le_div_iff₀ (by positivity : 0 < 1 + r ^ (2 : ℕ))).2
+  change x * (1 + r ^ (2 : ℕ)) ≤ 2 * r
   rw [div_le_iff₀ hdenReal] at hbound
   nlinarith
 
@@ -169,7 +169,7 @@ theorem norm_apply_le_two_mul_div_one_add_sq_of_radialCommonTransform_sub
     (hbound :
       ‖unitDiskAutomorphism (radialDiskPoint r (f z)) (f z) -
           unitDiskAutomorphism (radialDiskPoint r (f z)) (g z)‖ ≤ 2 * r) :
-    ‖f z‖ ≤ 2 * r / (1 + r ^ 2) := by
+    ‖f z‖ ≤ 2 * r / (1 + r ^ (2 : ℕ)) := by
   apply norm_le_two_mul_div_one_add_sq_of_radialAutomorphism_sub
     hr hrone hf
   simpa [hgz] using hbound

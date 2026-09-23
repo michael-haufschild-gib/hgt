@@ -7,7 +7,7 @@ The derivatives of the Poisson trace carry a factor `alpha^^n`, so the real-vari
 converse needs the weight to stay summable against any polynomial factor.  It does, for the same
 reason the weight itself is summable: a height `R` satisfies `‖alpha^‖ <= R + 1/2` because the
 displacement is bounded by `1/2`, and `y^(n+2) exp(-sigma y) <= (n+2)! / sigma^(n+2)`, so the
-polynomially weighted term is dominated by a constant times `1 / ‖alpha‖^2`.
+polynomially weighted term is dominated by a constant times `1 / ‖alpha‖^(2 : ℕ)`.
 -/
 
 open Complex
@@ -43,7 +43,7 @@ theorem summable_pow_mul_xiPoissonWeight {σ : ℝ} (hσ : 0 < σ) (n : ℕ) :
     positivity
   have hbase : Summable (fun q : XiZeroCopy =>
       Real.exp (σ / 2) * ((n + 2).factorial : ℝ) / σ ^ (n + 2) *
-        (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
+        (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
     xiSpectralPoint_inv_sq_summable.mul_left _
   refine Summable.of_nonneg_of_le (fun q => ?_) (fun q => ?_) hbase
   · exact mul_nonneg (pow_nonneg (norm_nonneg _) n) (xiPoissonWeight_pos σ q).le
@@ -68,12 +68,12 @@ theorem summable_pow_mul_xiPoissonWeight {σ : ℝ} (hσ : 0 < σ) (n : ℕ) :
       rw [Real.exp_neg, ← div_eq_mul_inv,
         div_le_div_iff₀ (Real.exp_pos _) hσp]
       nlinarith [hq]
-    rw [mul_one_div, le_div_iff₀ (by positivity : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ 2)]
+    rw [mul_one_div, le_div_iff₀ (by positivity : (0 : ℝ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ))]
     have h1 : ‖xiPoissonPoint q‖ ^ n ≤ y ^ n := pow_le_pow_left₀ (norm_nonneg _) hnormle n
-    have h2 : ‖xiSpectralPoint q‖ ^ 2 ≤ y ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hNy 2
+    have h2 : ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg _) hNy 2
     have h3 : (0 : ℝ) ≤ Real.exp (σ / 2) * Real.exp (-(σ * y)) := by positivity
-    calc ‖xiPoissonPoint q‖ ^ n * xiPoissonWeight σ q * ‖xiSpectralPoint q‖ ^ 2
-        ≤ y ^ n * (Real.exp (σ / 2) * Real.exp (-(σ * y))) * y ^ 2 := by
+    calc ‖xiPoissonPoint q‖ ^ n * xiPoissonWeight σ q * ‖xiSpectralPoint q‖ ^ (2 : ℕ)
+        ≤ y ^ n * (Real.exp (σ / 2) * Real.exp (-(σ * y))) * y ^ (2 : ℕ) := by
           rw [hexpw]
           exact mul_le_mul (mul_le_mul_of_nonneg_right h1 h3) h2 (by positivity) (by positivity)
       _ = Real.exp (σ / 2) * (y ^ (n + 2) * Real.exp (-(σ * y))) := by ring

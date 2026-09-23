@@ -64,7 +64,7 @@ theorem jointWaveSolution_angularEnergyTest (w : ℂ) (F : SpatialSpace) (u : jo
         ((u : JointEnergySpace) 2) +
       inner ℂ (l2SeparatedProduct (radialWeightedValue f) ((g : D4BMModularCore.EnergySpace) 2))
         ((u : JointEnergySpace) 3) +
-      w^2*inner ℂ (l2SeparatedProduct (radialValue f) (D4BMModularCore.embedding g))
+      w^(2 : ℕ)*inner ℂ (l2SeparatedProduct (radialValue f) (D4BMModularCore.embedding g))
         (jointEmbedding u) =
       inner ℂ (l2SeparatedProduct (radialValue f) (D4BMModularCore.embedding g)) F := by
   have he := (jointWaveSolution_gradient w F u).mp hu (angularEnergyTest f g)

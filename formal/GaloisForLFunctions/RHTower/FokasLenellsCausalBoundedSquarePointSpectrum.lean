@@ -32,7 +32,7 @@ private theorem left_square_root_strict (z : ℂ) (hz : 0 < z.re ∨ z.im ≠ 0)
     (causalLeftPowerRoot 0 z).re < 0 := by
   let r := causalLeftPowerRoot 0 z
   have hr : r.re ≤ 0 := causalLeftPowerRoot_re_nonpos 0 z
-  have hp : r^2 = z := causalLeftPowerRoot_pow 0 z
+  have hp : r^(2 : ℕ) = z := causalLeftPowerRoot_pow 0 z
   by_contra hn
   have he : r.re = 0 := le_antisymm hr (le_of_not_gt hn)
   have hre := congrArg Complex.re hp
@@ -44,8 +44,8 @@ private theorem left_square_root_strict (z : ℂ) (hz : 0 < z.re ∨ z.im ≠ 0)
   · exact hz him.symm
 
 private theorem strict_left_square_avoids_radius (r : causalBoundedDiskRate) :
-    0 < (r.val^2).re ∨ (r.val^2).im ≠ 0 := by
-  by_cases him : (r.val^2).im = 0
+    0 < (r.val^(2 : ℕ)).re ∨ (r.val^(2 : ℕ)).im ≠ 0 := by
+  by_cases him : (r.val^(2 : ℕ)).im = 0
   · left
     have hmul : r.val.re * r.val.im = 0 := by
       have h := him
@@ -75,17 +75,17 @@ theorem norm_causalBoundedSquareDiskEigenchain (z : causalSquarePointDisk) :
 
 /-- The actual squared generator has exactly the prescribed eigenvalue on its constructed chain. -/
 theorem causalBoundedChainShift_square_diskEigenchain (z : causalSquarePointDisk) :
-    (causalBoundedChainShift^2) (causalBoundedSquareDiskEigenchain z) =
+    (causalBoundedChainShift^(2 : ℕ)) (causalBoundedSquareDiskEigenchain z) =
       z.val • causalBoundedSquareDiskEigenchain z :=
   (causalBoundedChainShift_pow_diskEigenchain 2 (causalBoundedSquareDiskRoot z)).trans
     (congrArg (fun r : ℂ => r • causalBoundedSquareDiskEigenchain z) (causalLeftPowerRoot_pow 0 z))
 
 private theorem square_eigen_root (z : ℂ) (u : causalBoundedChain) (hu : u ≠ 0)
-    (he : (causalBoundedChainShift^2) u = z • u) :
-    ∃ r : causalBoundedDiskRate, r.val^2 = z := by
+    (he : (causalBoundedChainShift^(2 : ℕ)) u = z • u) :
+    ∃ r : causalBoundedDiskRate, r.val^(2 : ℕ) = z := by
   let r := causalLeftPowerRoot 0 z
   have hr : r.re ≤ 0 := causalLeftPowerRoot_re_nonpos 0 z
-  have hp : r^2 = z := causalLeftPowerRoot_pow 0 z
+  have hp : r^(2 : ℕ) = z := causalLeftPowerRoot_pow 0 z
   let v := causalBoundedChainShift u + r • u
   have hv : v ≠ 0 := by
     intro hv
@@ -114,7 +114,7 @@ theorem causalBoundedChainShift_square_mem_pointSpectrum_iff (z : ℂ) :
   constructor
   · rintro ⟨u, hu, he⟩
     let r := Classical.choose (square_eigen_root z u hu he)
-    have hp : r.val^2 = z := Classical.choose_spec (square_eigen_root z u hu he)
+    have hp : r.val^(2 : ℕ) = z := Classical.choose_spec (square_eigen_root z u hu he)
     have hn : ‖z‖ ≤ 1 :=
       ((congrArg (fun w : ℂ => ‖w‖) hp).symm.trans (norm_pow _ _)).trans_le
         (pow_le_one₀ (norm_nonneg _) r.property.2)

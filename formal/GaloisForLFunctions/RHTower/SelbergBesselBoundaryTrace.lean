@@ -49,8 +49,8 @@ theorem logK_zero_antitone (a : ℝ) : Antitone (fun t => K 0 (Real.exp (a + t))
 
 /-- The height weight cancels the actual mode half-density exactly. -/
 theorem weighted_mode_square (a t : ℝ) :
-    Real.exp (-t) * logMode a t ^ 2 = K 0 (Real.exp (a + t)) ^ 2 := by
-  have he : Real.exp (t / 2) ^ 2 = Real.exp t := by
+    Real.exp (-t) * logMode a t ^ (2 : ℕ) = K 0 (Real.exp (a + t)) ^ (2 : ℕ) := by
+  have he : Real.exp (t / 2) ^ (2 : ℕ) = Real.exp t := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -58,13 +58,13 @@ theorem weighted_mode_square (a t : ℝ) :
   field_simp
 
 private theorem normalized_weight_le (a T t : ℝ) (ht : T ≤ t) :
-    Real.exp (-t) * (logMode a t / logMode a T) ^ 2 ≤ Real.exp (-T) := by
+    Real.exp (-t) * (logMode a t / logMode a T) ^ (2 : ℕ) ≤ Real.exp (-T) := by
   have hk := logK_zero_antitone a ht
-  have hk2 : K 0 (Real.exp (a + t)) ^ 2 ≤ K 0 (Real.exp (a + T)) ^ 2 := by
+  have hk2 : K 0 (Real.exp (a + t)) ^ (2 : ℕ) ≤ K 0 (Real.exp (a + T)) ^ (2 : ℕ) := by
     nlinarith [K_pos (Real.exp_pos (a + t)) 0, K_pos (Real.exp_pos (a + T)) 0]
   rw [div_pow, ← mul_div_assoc, weighted_mode_square]
   calc
-    _ ≤ K 0 (Real.exp (a + T)) ^ 2 / logMode a T ^ 2 :=
+    _ ≤ K 0 (Real.exp (a + T)) ^ (2 : ℕ) / logMode a T ^ (2 : ℕ) :=
       div_le_div_of_nonneg_right hk2 (sq_nonneg _)
     _ = Real.exp (-T) := by
       apply (div_eq_iff (pow_ne_zero _ (logMode_pos a T).ne')).mpr
@@ -126,7 +126,7 @@ theorem cutoffSlope_compact (T ell : ℝ) : HasCompactSupport (cutoffSlope T ell
   rfl
 
 /-- The actual squared cutoff derivative is integrable. -/
-theorem cutoffSlope_sq_integrable (T ell : ℝ) : Integrable (fun t => cutoffSlope T ell t ^ 2) := by
+theorem cutoffSlope_sq_integrable (T ell : ℝ) : Integrable (fun t => cutoffSlope T ell t ^ (2 : ℕ)) := by
   apply ((cutoffSlope_continuous T ell).pow 2).integrable_of_hasCompactSupport
   convert compact_mul (cutoffSlope T ell) (cutoffSlope T ell) (cutoffSlope_compact T ell) using 1 <;>
     first | rfl | (funext t; simp only [Pi.pow_apply, pow_two])
@@ -152,27 +152,27 @@ theorem approximation_hasDerivAt (a T ell t : ℝ) :
 /-- The critical square remainder contains only the differentiated cutoff. -/
 theorem approximation_square (a T ell t : ℝ) :
     squareField (approximation a T ell) a t =
-      (Real.exp (-t) * (logMode a t / logMode a T) ^ 2) * cutoffSlope T ell t ^ 2 := by
+      (Real.exp (-t) * (logMode a t / logMode a T) ^ (2 : ℕ)) * cutoffSlope T ell t ^ (2 : ℕ) := by
   rw [squareField, (approximation_hasDerivAt a T ell t).deriv]
   ring
 
 /-- The squared-derivative integral of the single fixed cutoff. -/
-def seedEnergy : ℝ := ∫ t, deriv seed t ^ 2
+def seedEnergy : ℝ := ∫ t, deriv seed t ^ (2 : ℕ)
 
 /-- The cutoff energy is nonnegative. -/
 theorem seedEnergy_nonneg : 0 ≤ seedEnergy := integral_nonneg (fun _ => sq_nonneg _)
 
 /-- Exact inverse-scale law for the squared cutoff derivative integral. -/
 theorem integral_cutoffSlope_sq (T ell : ℝ) :
-    (∫ t, cutoffSlope T ell t ^ 2) = seedEnergy / Real.exp ell := by
-  have hfun : (fun t => cutoffSlope T ell t ^ 2) =
-      fun t => (deriv seed ((t - T) / Real.exp ell)) ^ 2 / Real.exp ell ^ 2 := by
+    (∫ t, cutoffSlope T ell t ^ (2 : ℕ)) = seedEnergy / Real.exp ell := by
+  have hfun : (fun t => cutoffSlope T ell t ^ (2 : ℕ)) =
+      fun t => (deriv seed ((t - T) / Real.exp ell)) ^ (2 : ℕ) / Real.exp ell ^ (2 : ℕ) := by
     funext t
     exact div_pow _ _ _
   rw [hfun, integral_div]
   have htrans := integral_sub_right_eq_self (μ := volume)
-    (fun t : ℝ => deriv seed (t / Real.exp ell) ^ 2) T
-  rw [htrans, Measure.integral_comp_div (fun t => deriv seed t ^ 2),
+    (fun t : ℝ => deriv seed (t / Real.exp ell) ^ (2 : ℕ)) T
+  rw [htrans, Measure.integral_comp_div (fun t => deriv seed t ^ (2 : ℕ)),
     abs_of_pos (Real.exp_pos ell), smul_eq_mul]
   unfold seedEnergy
   field_simp
@@ -183,13 +183,13 @@ theorem approximation_remainder_bound (a T ell : ℝ) :
       Real.exp (-T) * seedEnergy / Real.exp ell := by
   have hmaj := (cutoffSlope_sq_integrable T ell).const_mul (Real.exp (-T))
   calc
-    _ ≤ ∫ t in Ioi T, Real.exp (-T) * cutoffSlope T ell t ^ 2 := by
+    _ ≤ ∫ t in Ioi T, Real.exp (-T) * cutoffSlope T ell t ^ (2 : ℕ) := by
       apply integral_mono_ae (squareField_integrable (approximation a T ell) a).integrableOn
         hmaj.integrableOn
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
       rw [approximation_square]
       exact mul_le_mul_of_nonneg_right (normalized_weight_le a T t ht.le) (sq_nonneg _)
-    _ ≤ ∫ t, Real.exp (-T) * cutoffSlope T ell t ^ 2 :=
+    _ ≤ ∫ t, Real.exp (-T) * cutoffSlope T ell t ^ (2 : ℕ) :=
       setIntegral_le_integral hmaj (Eventually.of_forall (fun t =>
         mul_nonneg (Real.exp_pos _).le (sq_nonneg _)))
     _ = _ := by rw [integral_const_mul, integral_cutoffSlope_sq]; ring
@@ -261,7 +261,7 @@ theorem negative_energy_iff (a T : ℝ) :
     have ho : 0 ≤ outgoing a T := le_of_not_gt hn
     have h := exact_boundary_lower_bound f a T
     have hb := mul_nonneg ho (sq_nonneg (f T))
-    change outgoing a T * f T ^ 2 ≤ energy f a T at h
+    change outgoing a T * f T ^ (2 : ℕ) ≤ energy f a T at h
     linarith
   · intro hT
     have ho := (outgoing_neg_iff a T).mpr hT

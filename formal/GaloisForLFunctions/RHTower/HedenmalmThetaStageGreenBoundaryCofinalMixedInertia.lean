@@ -88,9 +88,9 @@ theorem not_eventually_neg_thetaSourceSignedStageGreenBoundary_isPositive :
 
 /-- Exact squared norm of the fixed positive witness. -/
 theorem norm_pinnedPositiveMode_sq :
-    ‖pinnedPositiveMode‖ ^ 2 = (13 : ℝ) / 12 := by
+    ‖pinnedPositiveMode‖ ^ (2 : ℕ) = (13 : ℝ) / 12 := by
   calc
-    ‖pinnedPositiveMode‖ ^ 2 =
+    ‖pinnedPositiveMode‖ ^ (2 : ℕ) =
         (inner ℂ pinnedPositiveMode pinnedPositiveMode : ℂ).re :=
       (inner_self_eq_norm_sq (𝕜 := ℂ) pinnedPositiveMode).symm
     _ = (13 : ℝ) / 12 := by
@@ -101,9 +101,9 @@ theorem norm_pinnedPositiveMode_sq :
 
 /-- Exact squared norm of the fixed negative witness. -/
 theorem norm_pinnedNegativeMode_sq :
-    ‖pinnedNegativeMode‖ ^ 2 = (13 : ℝ) / 12 := by
+    ‖pinnedNegativeMode‖ ^ (2 : ℕ) = (13 : ℝ) / 12 := by
   calc
-    ‖pinnedNegativeMode‖ ^ 2 =
+    ‖pinnedNegativeMode‖ ^ (2 : ℕ) =
         (inner ℂ pinnedNegativeMode pinnedNegativeMode : ℂ).re :=
       (inner_self_eq_norm_sq (𝕜 := ℂ) pinnedNegativeMode).symm
     _ = (13 : ℝ) / 12 := by
@@ -137,7 +137,7 @@ theorem eventually_thetaSourceSignedStageGreenBoundary_distance_positiveCone :
       |(inner ℂ
         ((thetaSourceSignedStageGreenBoundary k - P) pinnedNegativeMode)
         pinnedNegativeMode : ℂ).re| ≤
-        ‖thetaSourceSignedStageGreenBoundary k - P‖ * ‖pinnedNegativeMode‖ ^ 2 := by
+        ‖thetaSourceSignedStageGreenBoundary k - P‖ * ‖pinnedNegativeMode‖ ^ (2 : ℕ) := by
     calc
       |_|≤ ‖(inner ℂ
           ((thetaSourceSignedStageGreenBoundary k - P) pinnedNegativeMode)
@@ -150,7 +150,7 @@ theorem eventually_thetaSourceSignedStageGreenBoundary_distance_positiveCone :
               ((thetaSourceSignedStageGreenBoundary k - P).le_opNorm _)
               (norm_nonneg _)
       _ = ‖thetaSourceSignedStageGreenBoundary k - P‖ *
-          ‖pinnedNegativeMode‖ ^ 2 := by ring
+          ‖pinnedNegativeMode‖ ^ (2 : ℕ) := by ring
   rw [norm_pinnedNegativeMode_sq] at hbound
   nlinarith [norm_nonneg (thetaSourceSignedStageGreenBoundary k - P)]
 
@@ -179,7 +179,7 @@ theorem eventually_thetaSourceSignedStageGreenBoundary_distance_negativeCone :
       |(inner ℂ
         ((thetaSourceSignedStageGreenBoundary k + P) pinnedPositiveMode)
         pinnedPositiveMode : ℂ).re| ≤
-        ‖thetaSourceSignedStageGreenBoundary k + P‖ * ‖pinnedPositiveMode‖ ^ 2 := by
+        ‖thetaSourceSignedStageGreenBoundary k + P‖ * ‖pinnedPositiveMode‖ ^ (2 : ℕ) := by
     calc
       |_|≤ ‖(inner ℂ
           ((thetaSourceSignedStageGreenBoundary k + P) pinnedPositiveMode)
@@ -192,7 +192,7 @@ theorem eventually_thetaSourceSignedStageGreenBoundary_distance_negativeCone :
               ((thetaSourceSignedStageGreenBoundary k + P).le_opNorm _)
               (norm_nonneg _)
       _ = ‖thetaSourceSignedStageGreenBoundary k + P‖ *
-          ‖pinnedPositiveMode‖ ^ 2 := by ring
+          ‖pinnedPositiveMode‖ ^ (2 : ℕ) := by ring
   rw [norm_pinnedPositiveMode_sq] at hbound
   nlinarith [norm_nonneg (thetaSourceSignedStageGreenBoundary k + P)]
 

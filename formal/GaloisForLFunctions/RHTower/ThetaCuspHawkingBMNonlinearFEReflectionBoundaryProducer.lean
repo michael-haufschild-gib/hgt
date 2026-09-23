@@ -93,7 +93,7 @@ theorem d4BMXiRetardedCubicBoundaryCoefficient_re
 theorem d4BMXiRetardedCubicBoundaryPower_eq (period defect : ℂ) :
     (((starRingEnd ℂ) defect) *
       (defect - Complex.I * period * (Complex.normSq defect : ℂ) * defect)).re =
-      Complex.normSq defect + period.im * Complex.normSq defect ^ 2 := by
+      Complex.normSq defect + period.im * Complex.normSq defect ^ (2 : ℕ) := by
   simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
   ring
 
@@ -108,7 +108,7 @@ theorem d4BMXiFESchwarzNonlinearBoundaryCurrent_power_eq
         (d4BMXiFESchwarzFoldedTotalRetardedPeriod conservativeFinitePart seed
           reflectedMixing conjugateMixing q).im *
           Complex.normSq
-            (d4BMXiFESchwarzFoldedBoundaryDefectAmplitude q horizon) ^ 2 := by
+            (d4BMXiFESchwarzFoldedBoundaryDefectAmplitude q horizon) ^ (2 : ℕ) := by
   exact d4BMXiRetardedCubicBoundaryPower_eq _ _
 
 /-- Every nonzero folded defect has strictly positive nonlinear boundary power. -/

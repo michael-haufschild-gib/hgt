@@ -34,17 +34,17 @@ theorem continuous_linearCutoffFeature (A : ℝ) : Continuous (linearCutoffFeatu
 
 theorem integral_linearGramKernel (A B u : ℝ) :
     (∫ t in (0 : ℝ)..u, A * B * (A - t) * (B - t)) =
-      A * B * (u * A * B - u ^ 2 / 2 * (A + B) + u ^ 3 / 3) := by
+      A * B * (u * A * B - u ^ (2 : ℕ) / 2 * (A + B) + u ^ (3 : ℕ) / 3) := by
   let F : ℝ → ℝ := fun t =>
-    A * B * ((A * B) * t - ((A + B) / 2) * t ^ 2 + (1 / 3) * t ^ 3)
+    A * B * ((A * B) * t - ((A + B) / 2) * t ^ (2 : ℕ) + (1 / 3) * t ^ (3 : ℕ))
   have hderiv : ∀ t : ℝ, HasDerivAt F (A * B * (A - t) * (B - t)) t := by
     intro t
     have hraw := (((hasDerivAt_id t).const_mul (A * B)).sub
       (((hasDerivAt_id t).pow 2).const_mul ((A + B) / 2))).add
         (((hasDerivAt_id t).pow 3).const_mul (1 / 3)) |>.const_mul (A * B)
     have hder : HasDerivAt
-        (fun y => A * B * (((A * B) * y - ((A + B) / 2) * y ^ 2) +
-          (1 / 3) * y ^ 3))
+        (fun y => A * B * (((A * B) * y - ((A + B) / 2) * y ^ (2 : ℕ)) +
+          (1 / 3) * y ^ (3 : ℕ)))
         (A * B * (A - t) * (B - t)) t :=
       hraw.congr_deriv (by norm_num; ring)
     simpa only [F, id_eq] using hder
@@ -58,7 +58,7 @@ theorem integral_linearCutoffFeature_mul
     {A B H : ℝ} (hA0 : 0 ≤ A) (hB0 : 0 ≤ B) (hAH : A ≤ H) (hBH : B ≤ H) :
     (∫ t in (0 : ℝ)..H, linearCutoffFeature A t * linearCutoffFeature B t) =
       A * B *
-        (min A B * A * B - min A B ^ 2 / 2 * (A + B) + min A B ^ 3 / 3) := by
+        (min A B * A * B - min A B ^ (2 : ℕ) / 2 * (A + B) + min A B ^ (3 : ℕ) / 3) := by
   have hcont : Continuous (fun t : ℝ =>
       linearCutoffFeature A t * linearCutoffFeature B t) :=
     (continuous_linearCutoffFeature A).mul (continuous_linearCutoffFeature B)
@@ -129,7 +129,7 @@ theorem sum_gcd_mul_weight_eq_sum_totient_mul_sq
     (hpos : ∀ d ∈ S, 0 < d) (hM : ∀ d ∈ S, d ≤ M) :
     (∑ p ∈ S ×ˢ S, (Nat.gcd p.1 p.2 : ℝ) * f p.1 * f p.2) =
       ∑ g ∈ Finset.Icc 1 M, (Nat.totient g : ℝ) *
-        (∑ d ∈ S.filter (fun d => g ∣ d), f d) ^ 2 := by
+        (∑ d ∈ S.filter (fun d => g ∣ d), f d) ^ (2 : ℕ) := by
   classical
   have hpair : ∀ p ∈ S ×ˢ S,
       (Nat.gcd p.1 p.2 : ℝ) * f p.1 * f p.2 =
@@ -181,7 +181,7 @@ theorem selbergOriginalTunedMinLogRemainder_eq_kernel (M : ℕ) :
         let B := Real.log ((M : ℝ) / (p.2 : ℝ))
         let u := min A B
         selbergOriginalCoeff p.1 p.2 *
-          (A * B * (u * A * B - u ^ 2 / 2 * (A + B) + u ^ 3 / 3)) := by
+          (A * B * (u * A * B - u ^ (2 : ℕ) / 2 * (A + B) + u ^ (3 : ℕ) / 3)) := by
   unfold selbergOriginalTunedMinLogRemainder
   have hsym : -selbergOriginalMinLogMonomial 2 1 2 M =
       -(1 / 2 : ℝ) * selbergOriginalMinLogMonomial 2 1 2 M -
@@ -207,7 +207,7 @@ theorem selbergOriginalTunedMinLogRemainder_eq_integral_totient_sq
         ∑ g ∈ Finset.Icc 1 M, (Nat.totient g : ℝ) *
           (∑ m ∈ (Finset.Icc 1 M).filter (fun m => g ∣ m),
             (((ArithmeticFunction.moebius m : ℤ) : ℝ) / (m : ℝ)) *
-              linearCutoffFeature (Real.log ((M : ℝ) / (m : ℝ))) t) ^ 2 := by
+              linearCutoffFeature (Real.log ((M : ℝ) / (m : ℝ))) t) ^ (2 : ℕ) := by
   let S : Finset ℕ := Finset.Icc 1 M
   let H : ℝ := Real.log M
   let A : ℕ → ℝ := fun m => Real.log ((M : ℝ) / (m : ℝ))
@@ -241,8 +241,8 @@ theorem selbergOriginalTunedMinLogRemainder_eq_integral_totient_sq
       selbergOriginalCoeff p.1 p.2 *
           (A p.1 * A p.2 *
             (min (A p.1) (A p.2) * A p.1 * A p.2 -
-              min (A p.1) (A p.2) ^ 2 / 2 * (A p.1 + A p.2) +
-                min (A p.1) (A p.2) ^ 3 / 3)) =
+              min (A p.1) (A p.2) ^ (2 : ℕ) / 2 * (A p.1 + A p.2) +
+                min (A p.1) (A p.2) ^ (3 : ℕ) / 3)) =
         ∫ t in (0 : ℝ)..H,
           selbergOriginalCoeff p.1 p.2 *
             (linearCutoffFeature (A p.1) t * linearCutoffFeature (A p.2) t) := by
@@ -255,8 +255,8 @@ theorem selbergOriginalTunedMinLogRemainder_eq_integral_totient_sq
       selbergOriginalCoeff p.1 p.2 *
         (A p.1 * A p.2 *
           (min (A p.1) (A p.2) * A p.1 * A p.2 -
-            min (A p.1) (A p.2) ^ 2 / 2 * (A p.1 + A p.2) +
-              min (A p.1) (A p.2) ^ 3 / 3))) = _
+            min (A p.1) (A p.2) ^ (2 : ℕ) / 2 * (A p.1 + A p.2) +
+              min (A p.1) (A p.2) ^ (3 : ℕ) / 3))) = _
   rw [Finset.sum_congr rfl hterm]
   have hintegrable : ∀ p ∈ S ×ˢ S, IntervalIntegrable
       (fun t : ℝ => selbergOriginalCoeff p.1 p.2 *
@@ -271,7 +271,7 @@ theorem selbergOriginalTunedMinLogRemainder_eq_integral_totient_sq
   change (∑ p ∈ S ×ˢ S, selbergOriginalCoeff p.1 p.2 *
       (linearCutoffFeature (A p.1) t * linearCutoffFeature (A p.2) t)) =
     ∑ g ∈ Finset.Icc 1 M, (Nat.totient g : ℝ) *
-      (∑ m ∈ S.filter (fun m => g ∣ m), f t m) ^ 2
+      (∑ m ∈ S.filter (fun m => g ∣ m), f t m) ^ (2 : ℕ)
   have hinner :
       (∑ p ∈ S ×ˢ S, selbergOriginalCoeff p.1 p.2 *
         (linearCutoffFeature (A p.1) t * linearCutoffFeature (A p.2) t)) =
@@ -301,8 +301,8 @@ def selbergOriginalIncludedMinLogEnergy (lam ell : ℝ) (M : ℕ) : ℝ :=
       (-ell * selbergOriginalMinLogMonomial 1 1 1 M -
         (1 / 2 : ℝ) * selbergOriginalMinLogMonomial 1 1 2 M +
           selbergOriginalMinLogMonomial 2 1 1 M) +
-    lam ^ 2 *
-      (ell ^ 2 * selbergOriginalMinLogMonomial 1 1 1 M +
+    lam ^ (2 : ℕ) *
+      (ell ^ (2 : ℕ) * selbergOriginalMinLogMonomial 1 1 1 M +
         ell * selbergOriginalMinLogMonomial 1 1 2 M +
         (1 / 3 : ℝ) * selbergOriginalMinLogMonomial 1 1 3 M -
         2 * ell * selbergOriginalMinLogMonomial 2 1 1 M -
@@ -314,8 +314,8 @@ each carrying an explicit factor of `1 - lam * ell`. -/
 theorem selbergOriginalIncludedMinLogEnergy_eq_tunedRemainder_add_mismatch
     (lam ell : ℝ) (M : ℕ) :
     selbergOriginalIncludedMinLogEnergy lam ell M =
-      lam ^ 2 * selbergOriginalTunedMinLogRemainder M +
-        (1 - lam * ell) ^ 2 * selbergOriginalMinLogMonomial 1 1 1 M -
+      lam ^ (2 : ℕ) * selbergOriginalTunedMinLogRemainder M +
+        (1 - lam * ell) ^ (2 : ℕ) * selbergOriginalMinLogMonomial 1 1 1 M -
         lam * (1 - lam * ell) * selbergOriginalMinLogMonomial 1 1 2 M +
         2 * lam * (1 - lam * ell) * selbergOriginalMinLogMonomial 2 1 1 M := by
   unfold selbergOriginalIncludedMinLogEnergy
@@ -326,7 +326,7 @@ theorem selbergOriginalIncludedMinLogEnergy_eq_tunedRemainder_add_mismatch
 theorem selbergOriginalIncludedMinLogEnergy_eq_tunedRemainder
     {lam ell : ℝ} (M : ℕ) (htune : lam * ell = 1) :
     selbergOriginalIncludedMinLogEnergy lam ell M =
-      lam ^ 2 * selbergOriginalTunedMinLogRemainder M := by
+      lam ^ (2 : ℕ) * selbergOriginalTunedMinLogRemainder M := by
   rw [selbergOriginalIncludedMinLogEnergy_eq_tunedRemainder_add_mismatch]
   rw [htune]
   ring
@@ -343,13 +343,13 @@ def selbergOriginalIncludedOrdinaryEnergy (lam ell : ℝ) (M : ℕ) : ℝ :=
   (Real.log M * selbergOriginalLogMonomial 1 1 M -
       2 * selbergOriginalLogMonomial 1 2 M) +
     2 * lam *
-      (-(ell * Real.log M - Real.log M ^ 2 / 2) *
+      (-(ell * Real.log M - Real.log M ^ (2 : ℕ) / 2) *
           selbergOriginalLogMonomial 1 1 M +
         (2 * ell - Real.log M) * selbergOriginalLogMonomial 1 2 M) +
-    lam ^ 2 *
-      ((Real.log M * ell ^ 2 - ell * Real.log M ^ 2 + Real.log M ^ 3 / 3) *
+    lam ^ (2 : ℕ) *
+      ((Real.log M * ell ^ (2 : ℕ) - ell * Real.log M ^ (2 : ℕ) + Real.log M ^ (3 : ℕ) / 3) *
           selbergOriginalLogMonomial 1 1 M -
-        2 * (ell ^ 2 - ell * Real.log M + Real.log M ^ 2 / 2) *
+        2 * (ell ^ (2 : ℕ) - ell * Real.log M + Real.log M ^ (2 : ℕ) / 2) *
           selbergOriginalLogMonomial 1 2 M +
         (1 / 3 : ℝ) * selbergOriginalLogMonomial 1 4 M -
         selbergOriginalLogMonomial 2 3 M +
@@ -360,7 +360,7 @@ theorem selbergOriginalIncludedBoundaryEnergy_eq_ordinary_add_minLog
     (lam ell : ℝ) (M : ℕ) :
     selbergOriginalIncludedBaseBoundary M +
         2 * lam * selbergOriginalIncludedCrossBoundary ell M +
-        lam ^ 2 * selbergOriginalIncludedDerivativeBoundary ell M =
+        lam ^ (2 : ℕ) * selbergOriginalIncludedDerivativeBoundary ell M =
       selbergOriginalIncludedOrdinaryEnergy lam ell M +
         selbergOriginalIncludedMinLogEnergy lam ell M := by
   rw [selbergOriginalIncludedBaseBoundary_eq_logMonomials,
@@ -375,9 +375,9 @@ theorem selbergOriginalIncludedBoundaryEnergy_eq_ordinary_add_tunedRemainder
     {lam ell : ℝ} (M : ℕ) (htune : lam * ell = 1) :
     selbergOriginalIncludedBaseBoundary M +
         2 * lam * selbergOriginalIncludedCrossBoundary ell M +
-        lam ^ 2 * selbergOriginalIncludedDerivativeBoundary ell M =
+        lam ^ (2 : ℕ) * selbergOriginalIncludedDerivativeBoundary ell M =
       selbergOriginalIncludedOrdinaryEnergy lam ell M +
-        lam ^ 2 * selbergOriginalTunedMinLogRemainder M := by
+        lam ^ (2 : ℕ) * selbergOriginalTunedMinLogRemainder M := by
   rw [selbergOriginalIncludedBoundaryEnergy_eq_ordinary_add_minLog,
     selbergOriginalIncludedMinLogEnergy_eq_tunedRemainder M htune]
 
@@ -387,7 +387,7 @@ theorem barbanVehovIncludedLongEnergyPolynomialMain_eq_ordinary_add_tunedRemaind
     {lam ell : ℝ} {M : ℕ} (hM : 0 < M) (htune : lam * ell = 1) :
     barbanVehovIncludedLongEnergyPolynomialMain lam ell M =
       (selbergOriginalIncludedOrdinaryEnergy lam ell M +
-        lam ^ 2 * selbergOriginalTunedMinLogRemainder M) / Real.log M ^ 2 := by
+        lam ^ (2 : ℕ) * selbergOriginalTunedMinLogRemainder M) / Real.log M ^ (2 : ℕ) := by
   rw [barbanVehovIncludedLongEnergyPolynomialMain,
     barbanVehovIncludedLongBasePolynomialMain_eq_originalBoundary hM,
     barbanVehovIncludedLongCrossPolynomialMain_eq_originalBoundary ell hM,
@@ -398,7 +398,7 @@ theorem barbanVehovIncludedLongEnergyPolynomialMain_eq_ordinary_add_tunedRemaind
 polynomial by one nonnegative Gram remainder. -/
 theorem selbergOriginalIncludedOrdinaryEnergy_div_log_sq_le_polynomialMain_of_tuned
     {lam ell : ℝ} {M : ℕ} (hM : 1 < M) (htune : lam * ell = 1) :
-    selbergOriginalIncludedOrdinaryEnergy lam ell M / Real.log M ^ 2 ≤
+    selbergOriginalIncludedOrdinaryEnergy lam ell M / Real.log M ^ (2 : ℕ) ≤
       barbanVehovIncludedLongEnergyPolynomialMain lam ell M := by
   rw [barbanVehovIncludedLongEnergyPolynomialMain_eq_ordinary_add_tunedRemainder
     (Nat.zero_lt_of_lt hM) htune]

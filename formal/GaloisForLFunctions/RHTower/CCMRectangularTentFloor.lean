@@ -136,7 +136,7 @@ theorem haar_overlap_eq_zero {c L T : ℝ} (hL : 0 < L) (hc : 0 ≤ c - L)
 its value on one of them, when the two have equal energy. -/
 theorem quadratic_two_translate_bound {H : Type*} [NormedAddCommGroup H]
     [InnerProductSpace ℝ H] (u v : H) (hnorm : ‖v‖ = ‖u‖) :
-    ‖u + v‖ ^ 2 ≤ 4 * ‖u‖ ^ 2 := by
+    ‖u + v‖ ^ (2 : ℕ) ≤ 4 * ‖u‖ ^ (2 : ℕ) := by
   have htri : ‖u + v‖ ≤ ‖u‖ + ‖v‖ := norm_add_le u v
   have hnn : 0 ≤ ‖u‖ := norm_nonneg u
   rw [hnorm] at htri

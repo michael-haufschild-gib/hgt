@@ -21,7 +21,7 @@ namespace RHTower
 
 /-- Every repeated deletion generator splits into a constant channel and one deletion channel. -/
 theorem blockDeletionCoefficient_sq_eq (p n : ℕ) :
-    blockDeletionCoefficient p n ^ 2 =
+    blockDeletionCoefficient p n ^ (2 : ℕ) =
       (p : ℤ) - 1 + (2 - (p : ℤ)) * blockDeletionCoefficient p n := by
   by_cases hpn : p ∣ n
   · simp [blockDeletionCoefficient, hpn]
@@ -30,25 +30,25 @@ theorem blockDeletionCoefficient_sq_eq (p n : ℕ) :
 
 /-- The dyadic deletion generator is pointwise involutive. -/
 theorem blockDeletionCoefficient_two_sq (n : ℕ) :
-    blockDeletionCoefficient 2 n ^ 2 = 1 := by
+    blockDeletionCoefficient 2 n ^ (2 : ℕ) = 1 := by
   simpa using blockDeletionCoefficient_sq_eq 2 n
 
 /-- Subtracting the constant square component produces only the original channel again. -/
 theorem blockDeletionCoefficient_centered_sq_eq (p n : ℕ) :
-    blockDeletionCoefficient p n ^ 2 - ((p : ℤ) - 1) =
+    blockDeletionCoefficient p n ^ (2 : ℕ) - ((p : ℤ) - 1) =
       (2 - (p : ℤ)) * blockDeletionCoefficient p n := by
   rw [blockDeletionCoefficient_sq_eq]
   ring
 
 /-- Centering the dyadic square erases it completely. -/
 theorem blockDeletionCoefficient_two_centered_sq_eq_zero (n : ℕ) :
-    blockDeletionCoefficient 2 n ^ 2 - 1 = 0 := by
+    blockDeletionCoefficient 2 n ^ (2 : ℕ) - 1 = 0 := by
   rw [blockDeletionCoefficient_two_sq]
   ring
 
 /-- Dyadic square prefixes grow exactly linearly, so the bounded-prefix cancellation is lost. -/
 theorem sum_blockDeletionCoefficient_two_sq (N : ℕ) :
-    ∑ n ∈ Finset.range N, blockDeletionCoefficient 2 (n + 1) ^ 2 = (N : ℤ) := by
+    ∑ n ∈ Finset.range N, blockDeletionCoefficient 2 (n + 1) ^ (2 : ℕ) = (N : ℤ) := by
   simp_rw [blockDeletionCoefficient_two_sq]
   simp
 

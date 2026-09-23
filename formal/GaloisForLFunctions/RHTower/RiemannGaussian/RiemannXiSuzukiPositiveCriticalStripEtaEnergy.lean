@@ -8,12 +8,12 @@ eta series. This module exposes the precise nonlinear obstruction in that
 representation. Write `E(s)` for paired eta and `D(s)` for the sum of its
 explicit differentiated series. The singular logarithmic-gradient vector is
 
-`(Re (D * conj E) / |E|^2, Im (D * conj E) / |E|^2)`.
+`(Re (D * conj E) / |E|^(2 : ℕ), Im (D * conj E) / |E|^(2 : ℕ))`.
 
 Lean proves that its denominator vanishes exactly on the xi divisor in
 `1 / 2 < re s < 1`, that its numerator has the exact squared norm
-`|D|^2 * |E|^2`, and that the squared magnitude of `D / E` is the nonnegative
-density `|D|^2 / |E|^2`. It also differentiates `|E|^2` in both detector
+`|D|^(2 : ℕ) * |E|^(2 : ℕ)`, and that the squared magnitude of `D / E` is the nonnegative
+density `|D|^(2 : ℕ) / |E|^(2 : ℕ)`. It also differentiates `|E|^(2 : ℕ)` in both detector
 coordinates, identifying the two bilinear numerators as its exact gradient.
 
 Finally, the paired-eta detector field is split pointwise into this normalized
@@ -109,7 +109,7 @@ theorem pairedEtaCoreNormSq_pos_of_riemannXi_ne_zero
     hlower hupper).mp (Complex.normSq_eq_zero.mpr heta)
 
 /-- The two bilinear eta numerators have exact squared magnitude
-`|D|^2 * |E|^2`. -/
+`|D|^(2 : ℕ) * |E|^(2 : ℕ)`. -/
 theorem pairedEtaLogDerivativeNumerator_sq_add_sq
     (s : ℂ) :
     (pairedEtaLogDerivativeRealNumerator s) ^ 2 +
@@ -247,7 +247,7 @@ def shiftedPairedEtaArithmeticXiRegularCorrection (a y : ℝ) : ℂ :=
   pairedEtaArithmeticXiRegularCorrection
     (((a + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * Complex.I)
 
-/-- The horizontal derivative of `|E|^2` is twice the real bilinear eta
+/-- The horizontal derivative of `|E|^(2 : ℕ)` is twice the real bilinear eta
 numerator. This remains valid at an eta zero. -/
 theorem hasDerivAt_shiftedPairedEtaCoreNormSq_realCoordinate
     {a y : ℝ} (ha : -(1 / 2) < a) :
@@ -287,7 +287,7 @@ theorem hasDerivAt_shiftedPairedEtaCoreNormSq_realCoordinate
       pairedEtaLogDerivativeRealNumerator, g, s, Complex.mul_re,
       Complex.conj_re, Complex.conj_im]
 
-/-- The vertical derivative of `|E|^2` is minus twice the imaginary bilinear
+/-- The vertical derivative of `|E|^(2 : ℕ)` is minus twice the imaginary bilinear
 eta numerator. This remains valid at an eta zero. -/
 theorem hasDerivAt_shiftedPairedEtaCoreNormSq_imaginaryCoordinate
     {a y : ℝ} (ha : -(1 / 2) < a) :

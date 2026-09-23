@@ -45,7 +45,7 @@ theorem polynomial_directional_dissipation
     (P : MvPolynomial ι ℝ) (x : EuclideanSpace ℝ ι) :
     HasDerivAt
       (fun t => MvPolynomial.aeval (fun i => x i + t * polynomialField A B P x i) P)
-      (-‖B (polynomialForce P x)‖ ^ 2) 0 := by
+      (-‖B (polynomialForce P x)‖ ^ (2 : ℕ)) 0 := by
   have hd := hasDerivAt_polynomial_line P (fun i => x i)
     (fun i => polynomialField A B P x i) 0
   have hp := generator_power A B (polynomialForce P x)

@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.OmittedValueCharacteristicBound
 # The wild branch turns the characteristic into a logarithmic derivative
 
 If the relation forces `c‖f‖^{m+1} ≤ ‖z f′‖^m` at every point where `‖f‖` is large — which happens
-exactly when the maximal total degree of the relation sits at the coefficient of `(z f′)^0` — then
+exactly when the maximal total degree of the relation sits at the coefficient of `(z f′)^(0 : ℕ)` — then
 taking `log⁺` and integrating over the circle gives
 
 ```text

@@ -64,8 +64,8 @@ theorem norm_xiZeroCopyReciprocalSquare_eq_spectral (q : XiZeroCopy) :
 /-- Real part of the reciprocal-square coordinate in rotated tangent/normal variables. -/
 theorem xiZeroCopyReciprocalSquare_re_eq_spectral (q : XiZeroCopy) :
     (xiZeroCopyReciprocalSquare q).re =
-      ((xiSpectralPoint q).re ^ 2 - (xiSpectralPoint q).im ^ 2) /
-        Complex.normSq (xiSpectralPoint q) ^ 2 := by
+      ((xiSpectralPoint q).re ^ (2 : ℕ) - (xiSpectralPoint q).im ^ (2 : ℕ)) /
+        Complex.normSq (xiSpectralPoint q) ^ (2 : ℕ) := by
   have hD : Complex.normSq (xiSpectralPoint q) ≠ 0 :=
     (Complex.normSq_pos.mpr (xiSpectralPoint_ne_zero q)).ne'
   rw [xiZeroCopyReciprocalSquare, pow_two, Complex.mul_re,
@@ -74,7 +74,7 @@ theorem xiZeroCopyReciprocalSquare_re_eq_spectral (q : XiZeroCopy) :
 
 /-- Tangential crossing rate is the positive longitudinal half of reciprocal-square energy. -/
 theorem xiSchwarzPairTangentialCrossingRate_sq (q : XiZeroCopy) :
-    xiSchwarzPairTangentialCrossingRate q ^ 2 =
+    xiSchwarzPairTangentialCrossingRate q ^ (2 : ℕ) =
       2 * (‖xiZeroCopyReciprocalSquare q‖ +
         (xiZeroCopyReciprocalSquare q).re) := by
   have hD : Complex.normSq (xiSpectralPoint q) ≠ 0 :=
@@ -98,7 +98,7 @@ theorem xiSchwarzPairSourceNormalRate_eq (q : XiZeroCopy) :
 
 /-- Source-normal rate is exactly the square root of twice the RH-bearing transverse defect. -/
 theorem xiSchwarzPairSourceNormalRate_sq (q : XiZeroCopy) :
-    xiSchwarzPairSourceNormalRate q ^ 2 =
+    xiSchwarzPairSourceNormalRate q ^ (2 : ℕ) =
       2 * HTGeometry.transverseDefect (xiZeroCopyReciprocalSquare q) := by
   have hD : Complex.normSq (xiSpectralPoint q) ≠ 0 :=
     (Complex.normSq_pos.mpr (xiSpectralPoint_ne_zero q)).ne'
@@ -112,8 +112,8 @@ theorem xiSchwarzPairSourceNormalRate_sq (q : XiZeroCopy) :
 
 /-- Exact Lorentz/Pythagorean conservation between tangential and source-normal rates. -/
 theorem xiSchwarzPairLorentzPythagoras (q : XiZeroCopy) :
-    xiSchwarzPairTangentialCrossingRate q ^ 2 +
-        xiSchwarzPairSourceNormalRate q ^ 2 =
+    xiSchwarzPairTangentialCrossingRate q ^ (2 : ℕ) +
+        xiSchwarzPairSourceNormalRate q ^ (2 : ℕ) =
       4 / Complex.normSq (xiSpectralPoint q) := by
   rw [xiSchwarzPairTangentialCrossingRate_sq,
     xiSchwarzPairSourceNormalRate_sq, HTGeometry.transverseDefect,
@@ -154,8 +154,8 @@ theorem forall_xiSchwarzPairSourceNormalRate_eq_zero_iff_riemannHypothesis :
 
 /-- Multiplicity-weighted crossing square is longitudinal reciprocal-square energy. -/
 theorem xiSchwarzPairTangentialCrossingCoefficient_sq (q : XiZeroCopy) :
-    xiSchwarzPairTangentialCrossingCoefficient q ^ 2 =
-      2 * xiSchwarzPairAnalyticMultiplicity q ^ 2 *
+    xiSchwarzPairTangentialCrossingCoefficient q ^ (2 : ℕ) =
+      2 * xiSchwarzPairAnalyticMultiplicity q ^ (2 : ℕ) *
         (‖xiZeroCopyReciprocalSquare q‖ +
           (xiZeroCopyReciprocalSquare q).re) := by
   rw [xiSchwarzPairTangentialCrossingCoefficient,
@@ -164,8 +164,8 @@ theorem xiSchwarzPairTangentialCrossingCoefficient_sq (q : XiZeroCopy) :
 
 /-- Multiplicity-weighted normal square is the RH-bearing transverse energy. -/
 theorem xiSchwarzPairSourceNormalCoefficient_sq (q : XiZeroCopy) :
-    xiSchwarzPairSourceNormalCoefficient q ^ 2 =
-      2 * xiSchwarzPairAnalyticMultiplicity q ^ 2 *
+    xiSchwarzPairSourceNormalCoefficient q ^ (2 : ℕ) =
+      2 * xiSchwarzPairAnalyticMultiplicity q ^ (2 : ℕ) *
         HTGeometry.transverseDefect (xiZeroCopyReciprocalSquare q) := by
   rw [xiSchwarzPairSourceNormalCoefficient, mul_pow,
     xiSchwarzPairSourceNormalRate_sq]
@@ -213,24 +213,24 @@ theorem forall_xiSchwarzPairSourceNormalCoefficient_eq_zero_iff_riemannHypothesi
 
 /-- Analytic multiplicity preserves the exact tangent/normal Pythagorean conservation law. -/
 theorem xiSchwarzPairCoefficientPythagoras (q : XiZeroCopy) :
-    xiSchwarzPairTangentialCrossingCoefficient q ^ 2 +
-        xiSchwarzPairSourceNormalCoefficient q ^ 2 =
-      4 * xiSchwarzPairAnalyticMultiplicity q ^ 2 /
+    xiSchwarzPairTangentialCrossingCoefficient q ^ (2 : ℕ) +
+        xiSchwarzPairSourceNormalCoefficient q ^ (2 : ℕ) =
+      4 * xiSchwarzPairAnalyticMultiplicity q ^ (2 : ℕ) /
         Complex.normSq (xiSpectralPoint q) := by
   rw [xiSchwarzPairTangentialCrossingCoefficient,
     xiSchwarzPairSourceNormalCoefficient, mul_pow, mul_pow, neg_sq]
   calc
-    xiSchwarzPairAnalyticMultiplicity q ^ 2 *
-          xiSchwarzPairTangentialCrossingRate q ^ 2 +
-        xiSchwarzPairAnalyticMultiplicity q ^ 2 *
-          xiSchwarzPairSourceNormalRate q ^ 2 =
-        xiSchwarzPairAnalyticMultiplicity q ^ 2 *
-          (xiSchwarzPairTangentialCrossingRate q ^ 2 +
-            xiSchwarzPairSourceNormalRate q ^ 2) := by ring
-    _ = xiSchwarzPairAnalyticMultiplicity q ^ 2 *
+    xiSchwarzPairAnalyticMultiplicity q ^ (2 : ℕ) *
+          xiSchwarzPairTangentialCrossingRate q ^ (2 : ℕ) +
+        xiSchwarzPairAnalyticMultiplicity q ^ (2 : ℕ) *
+          xiSchwarzPairSourceNormalRate q ^ (2 : ℕ) =
+        xiSchwarzPairAnalyticMultiplicity q ^ (2 : ℕ) *
+          (xiSchwarzPairTangentialCrossingRate q ^ (2 : ℕ) +
+            xiSchwarzPairSourceNormalRate q ^ (2 : ℕ)) := by ring
+    _ = xiSchwarzPairAnalyticMultiplicity q ^ (2 : ℕ) *
         (4 / Complex.normSq (xiSpectralPoint q)) := by
       rw [xiSchwarzPairLorentzPythagoras]
-    _ = 4 * xiSchwarzPairAnalyticMultiplicity q ^ 2 /
+    _ = 4 * xiSchwarzPairAnalyticMultiplicity q ^ (2 : ℕ) /
         Complex.normSq (xiSpectralPoint q) := by ring
 
 /-- The abstract crossing limit specializes to the actual Xi divisor and equals the tangential,

@@ -17,7 +17,7 @@ theorem thetaCuspLikelihoodEighthHigherEvenSectorTail_lt_oneOverTwoHundredThousa
   rcases eq_or_lt_of_le hr0 with rfl | hrpos
   · unfold thetaCuspLikelihoodEighthHigherEvenSectorTail
     have hzero : (fun m : ℕ =>
-        (((2 * (m + 2) : ℕ) : ℝ) ^ 7) *
+        (((2 * (m + 2) : ℕ) : ℝ) ^ (7 : ℕ)) *
           (0 : ℝ) ^ (2 * (m + 2) - 1)) = (fun _ : ℕ => (0 : ℝ)) := by
       funext m
       rw [zero_pow (by omega), mul_zero]
@@ -25,10 +25,10 @@ theorem thetaCuspLikelihoodEighthHigherEvenSectorTail_lt_oneOverTwoHundredThousa
     norm_num
   have hr1 : r < 1 / 1670 := by nlinarith
   have hr399 : 399 * r < 1 := by nlinarith
-  have hden : 0 < 1 - 144 * r ^ 2 := by
+  have hden : 0 < 1 - 144 * r ^ (2 : ℕ) := by
     have hrSq := pow_lt_pow_left₀ hr1 hr0 (by norm_num : 2 ≠ 0)
     nlinarith
-  have hinv : (1 - 144 * r ^ 2)⁻¹ < (19000 / 18999 : ℝ) := by
+  have hinv : (1 - 144 * r ^ (2 : ℕ))⁻¹ < (19000 / 18999 : ℝ) := by
     rw [inv_eq_one_div]
     apply (one_div_lt hden (by norm_num)).2
     have hrSq := pow_lt_pow_left₀ hr1 hr0 (by norm_num : 2 ≠ 0)
@@ -38,9 +38,9 @@ theorem thetaCuspLikelihoodEighthHigherEvenSectorTail_lt_oneOverTwoHundredThousa
     (summable_thetaCuspLikelihoodEighthHigherEvenSectorTail_and_le hr0 hr399).2
   calc
     thetaCuspLikelihoodEighthHigherEvenSectorTail r ≤
-        20736 * r ^ 3 * (1 - 144 * r ^ 2)⁻¹ := htail
-    _ < 20736 * r ^ 3 * (19000 / 18999 : ℝ) := by gcongr
-    _ < 20736 * (1 / 1670 : ℝ) ^ 3 * (19000 / 18999 : ℝ) := by gcongr
+        20736 * r ^ (3 : ℕ) * (1 - 144 * r ^ (2 : ℕ))⁻¹ := htail
+    _ < 20736 * r ^ (3 : ℕ) * (19000 / 18999 : ℝ) := by gcongr
+    _ < 20736 * (1 / 1670 : ℝ) ^ (3 : ℕ) * (19000 / 18999 : ℝ) := by gcongr
     _ < (1 / 200000 : ℝ) := by norm_num
 
 theorem thetaCuspLikelihoodEighthHigherEvenFockLoss_le_thirteenHalves_of_1670_response_lt_one
@@ -48,7 +48,7 @@ theorem thetaCuspLikelihoodEighthHigherEvenFockLoss_le_thirteenHalves_of_1670_re
     (hrLocal : 1670 * thetaCuspHigherLikelihoodSpectralResponse
       (thetaCuspLikelihoodCoordinate x) < 1) :
     thetaCuspLikelihoodEighthHigherEvenFockLoss x ≤
-      (13 / 2 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+      (13 / 2 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
         Real.exp (-(3 * thetaCuspSingleAtomReflectionScale 1 x)) := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
@@ -62,7 +62,7 @@ theorem thetaCuspLikelihoodEighthHigherEvenFockLoss_le_thirteenHalves_of_1670_re
     dsimp only [A, B]
     unfold thetaCuspLikelihoodCoordinate thetaCuspSingleAtomReflectionScale
     norm_num
-    rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+    rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have hB : 0 < B := by simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx
@@ -93,8 +93,8 @@ theorem thetaCuspLikelihoodEighthHigherEvenFockLoss_le_thirteenHalves_of_1670_re
           (∑' k : ℕ, thetaCuspLikelihoodAtomEighthMonomialMass (k + 2) A B) :=
       mul_le_mul_of_nonneg_right htail.le hmass0
     _ ≤ (1 / 200000 : ℝ) *
-        (1300000 * A ^ 8 * Real.exp (-(3 * A))) := by gcongr
-    _ = (13 / 2 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) := by ring
+        (1300000 * A ^ (8 : ℕ) * Real.exp (-(3 * A))) := by gcongr
+    _ = (13 / 2 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by ring
 
 /-- The same cubic tail ceiling survives under the weaker local response bound `1650r < 1`. -/
 theorem thetaCuspLikelihoodEighthHigherEvenSectorTail_lt_oneOverTwoHundredThousand_of_1650_mul_lt_one
@@ -103,7 +103,7 @@ theorem thetaCuspLikelihoodEighthHigherEvenSectorTail_lt_oneOverTwoHundredThousa
   rcases eq_or_lt_of_le hr0 with rfl | hrpos
   · unfold thetaCuspLikelihoodEighthHigherEvenSectorTail
     have hzero : (fun m : ℕ =>
-        (((2 * (m + 2) : ℕ) : ℝ) ^ 7) *
+        (((2 * (m + 2) : ℕ) : ℝ) ^ (7 : ℕ)) *
           (0 : ℝ) ^ (2 * (m + 2) - 1)) = (fun _ : ℕ => (0 : ℝ)) := by
       funext m
       rw [zero_pow (by omega), mul_zero]
@@ -111,10 +111,10 @@ theorem thetaCuspLikelihoodEighthHigherEvenSectorTail_lt_oneOverTwoHundredThousa
     norm_num
   have hr1 : r < 1 / 1650 := by nlinarith
   have hr399 : 399 * r < 1 := by nlinarith
-  have hden : 0 < 1 - 144 * r ^ 2 := by
+  have hden : 0 < 1 - 144 * r ^ (2 : ℕ) := by
     have hrSq := pow_lt_pow_left₀ hr1 hr0 (by norm_num : 2 ≠ 0)
     nlinarith
-  have hinv : (1 - 144 * r ^ 2)⁻¹ < (18000 / 17999 : ℝ) := by
+  have hinv : (1 - 144 * r ^ (2 : ℕ))⁻¹ < (18000 / 17999 : ℝ) := by
     rw [inv_eq_one_div]
     apply (one_div_lt hden (by norm_num)).2
     have hrSq := pow_lt_pow_left₀ hr1 hr0 (by norm_num : 2 ≠ 0)
@@ -124,9 +124,9 @@ theorem thetaCuspLikelihoodEighthHigherEvenSectorTail_lt_oneOverTwoHundredThousa
     (summable_thetaCuspLikelihoodEighthHigherEvenSectorTail_and_le hr0 hr399).2
   calc
     thetaCuspLikelihoodEighthHigherEvenSectorTail r ≤
-        20736 * r ^ 3 * (1 - 144 * r ^ 2)⁻¹ := htail
-    _ < 20736 * r ^ 3 * (18000 / 17999 : ℝ) := by gcongr
-    _ < 20736 * (1 / 1650 : ℝ) ^ 3 * (18000 / 17999 : ℝ) := by gcongr
+        20736 * r ^ (3 : ℕ) * (1 - 144 * r ^ (2 : ℕ))⁻¹ := htail
+    _ < 20736 * r ^ (3 : ℕ) * (18000 / 17999 : ℝ) := by gcongr
+    _ < 20736 * (1 / 1650 : ℝ) ^ (3 : ℕ) * (18000 / 17999 : ℝ) := by gcongr
     _ < (1 / 200000 : ℝ) := by norm_num
 
 /-- Under `1650r < 1`, complete higher-even order-eight loss still costs at most `13/2`. -/
@@ -135,7 +135,7 @@ theorem thetaCuspLikelihoodEighthHigherEvenFockLoss_le_thirteenHalves_of_1650_re
     (hrLocal : 1650 * thetaCuspHigherLikelihoodSpectralResponse
       (thetaCuspLikelihoodCoordinate x) < 1) :
     thetaCuspLikelihoodEighthHigherEvenFockLoss x ≤
-      (13 / 2 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+      (13 / 2 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
         Real.exp (-(3 * thetaCuspSingleAtomReflectionScale 1 x)) := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
@@ -149,7 +149,7 @@ theorem thetaCuspLikelihoodEighthHigherEvenFockLoss_le_thirteenHalves_of_1650_re
     dsimp only [A, B]
     unfold thetaCuspLikelihoodCoordinate thetaCuspSingleAtomReflectionScale
     norm_num
-    rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+    rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have hB : 0 < B := by simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx
@@ -182,8 +182,8 @@ theorem thetaCuspLikelihoodEighthHigherEvenFockLoss_le_thirteenHalves_of_1650_re
           (∑' k : ℕ, thetaCuspLikelihoodAtomEighthMonomialMass (k + 2) A B) :=
       mul_le_mul_of_nonneg_right htail.le hmass0
     _ ≤ (1 / 200000 : ℝ) *
-        (1300000 * A ^ 8 * Real.exp (-(3 * A))) := by gcongr
-    _ = (13 / 2 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) := by ring
+        (1300000 * A ^ (8 : ℕ) * Real.exp (-(3 * A))) := by gcongr
+    _ = (13 / 2 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by ring
 
 end
 end RHTower

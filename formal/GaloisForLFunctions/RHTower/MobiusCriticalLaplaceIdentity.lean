@@ -35,7 +35,7 @@ theorem norm_mertensLaplaceAtom (w : ℂ) (n : ℕ) (t : ℝ) :
     simp [Complex.mul_re]
   · rw [Set.indicator_of_notMem h, Set.indicator_of_notMem h, norm_zero]
 
-theorem log_natCast_nonneg (n : ℕ) : 0 ≤ Real.log n := by
+theorem log_natCast_nonneg_mobiusCriticalLaplaceIdentity (n : ℕ) : 0 ≤ Real.log n := by
   rcases Nat.eq_zero_or_pos n with h | h
   · simp [h]
   · exact Real.log_nonneg (by exact_mod_cast h)
@@ -83,7 +83,7 @@ theorem integral_mertensLaplaceAtom {w : ℂ} (hw : 0 < w.re) (n : ℕ) :
   simp only [mertensLaplaceAtom]
   rw [MeasureTheory.integral_mul_const,
     MeasureTheory.setIntegral_indicator measurableSet_Ici,
-    MeasureTheory.setIntegral_congr_set (ioi_inter_ici_ae (log_natCast_nonneg n)),
+    MeasureTheory.setIntegral_congr_set (ioi_inter_ici_ae (log_natCast_nonneg_mobiusCriticalLaplaceIdentity n)),
     GaloisForLFunctions.RHTower.integral_Ioi_cexp_neg_mul_shift hw (Real.log n)]
   ring
 
@@ -93,7 +93,7 @@ theorem integral_norm_mertensLaplaceAtom {w : ℂ} (hw : 0 < w.re) (n : ℕ) :
   simp only [norm_mertensLaplaceAtom]
   rw [MeasureTheory.integral_mul_const,
     MeasureTheory.setIntegral_indicator measurableSet_Ici,
-    MeasureTheory.setIntegral_congr_set (ioi_inter_ici_ae (log_natCast_nonneg n)),
+    MeasureTheory.setIntegral_congr_set (ioi_inter_ici_ae (log_natCast_nonneg_mobiusCriticalLaplaceIdentity n)),
     integral_Ioi_exp_neg_mul_shift hw (Real.log n)]
   ring
 

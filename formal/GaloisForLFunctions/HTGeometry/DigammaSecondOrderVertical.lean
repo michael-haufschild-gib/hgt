@@ -86,7 +86,7 @@ theorem digamma_second_defect {z : ℂ} (hre : 0 < z.re) (hz : 2 ≤ ‖z‖) :
 
 /-- The defect vanishes to third order. -/
 theorem norm_digamma_second_defect_le {z : ℂ} (hre : 0 < z.re) (hz : 2 ≤ ‖z‖) :
-    ‖1 / z - Complex.log (1 + 1 / z) - 1 / (2 * z * (z + 1))‖ ≤ (5 / 3) / ‖z‖ ^ 3 := by
+    ‖1 / z - Complex.log (1 + 1 / z) - 1 / (2 * z * (z + 1))‖ ≤ (5 / 3) / ‖z‖ ^ (3 : ℕ) := by
   have hz0 : z ≠ 0 := by
     intro h0
     rw [h0] at hre
@@ -105,13 +105,13 @@ theorem norm_digamma_second_defect_le {z : ℂ} (hre : 0 < z.re) (hz : 2 ≤ ‖
     linarith
   -- the exact decomposition
   have hdecomp : 1 / z - Complex.log (1 + 1 / z) - 1 / (2 * z * (z + 1))
-      = -(Complex.log (1 + w) - Complex.logTaylor 3 w) + w ^ 3 / (2 * (1 + w)) := by
+      = -(Complex.log (1 + w) - Complex.logTaylor 3 w) + w ^ (3 : ℕ) / (2 * (1 + w)) := by
     have hz1 : z + 1 ≠ 0 := by
       intro h0
       have : (z + 1).re = 0 := by rw [h0]; simp
       simp only [Complex.add_re, Complex.one_re] at this
       linarith
-    have htay : Complex.logTaylor 3 w = w - w ^ 2 / 2 := by
+    have htay : Complex.logTaylor 3 w = w - w ^ (2 : ℕ) / 2 := by
       rw [Complex.logTaylor]
       simp [Finset.sum_range_succ]
       ring
@@ -124,31 +124,31 @@ theorem norm_digamma_second_defect_le {z : ℂ} (hre : 0 < z.re) (hz : 2 ≤ ‖
     ring
   rw [hdecomp]
   have hlog : ‖Complex.log (1 + w) - Complex.logTaylor 3 w‖
-      ≤ ‖w‖ ^ 3 * (1 - ‖w‖)⁻¹ / 3 := by
+      ≤ ‖w‖ ^ (3 : ℕ) * (1 - ‖w‖)⁻¹ / 3 := by
     have := Complex.norm_log_sub_logTaylor_le 2 hwlt
     norm_num at this ⊢
     exact this
-  have hcube : ‖w ^ 3 / (2 * (1 + w))‖ ≤ ‖w‖ ^ 3 := by
+  have hcube : ‖w ^ (3 : ℕ) / (2 * (1 + w))‖ ≤ ‖w‖ ^ (3 : ℕ) := by
     rw [norm_div, norm_mul, norm_pow]
     have h2 : ‖(2 : ℂ)‖ = 2 := by norm_num
     rw [h2]
     rw [div_le_iff₀ (by positivity)]
     nlinarith [norm_nonneg w, pow_nonneg (norm_nonneg w) 3]
-  have hlog' : ‖Complex.log (1 + w) - Complex.logTaylor 3 w‖ ≤ (2 / 3) * ‖w‖ ^ 3 := by
+  have hlog' : ‖Complex.log (1 + w) - Complex.logTaylor 3 w‖ ≤ (2 / 3) * ‖w‖ ^ (3 : ℕ) := by
     refine le_trans hlog ?_
     have hinv : (1 - ‖w‖)⁻¹ ≤ 2 := by
       rw [inv_le_comm₀ (by linarith) (by norm_num)]
       linarith
-    have hnn : (0 : ℝ) ≤ ‖w‖ ^ 3 := by positivity
+    have hnn : (0 : ℝ) ≤ ‖w‖ ^ (3 : ℕ) := by positivity
     nlinarith
-  calc ‖-(Complex.log (1 + w) - Complex.logTaylor 3 w) + w ^ 3 / (2 * (1 + w))‖
-      ≤ ‖(-(Complex.log (1 + w) - Complex.logTaylor 3 w))‖ + ‖w ^ 3 / (2 * (1 + w))‖ :=
+  calc ‖-(Complex.log (1 + w) - Complex.logTaylor 3 w) + w ^ (3 : ℕ) / (2 * (1 + w))‖
+      ≤ ‖(-(Complex.log (1 + w) - Complex.logTaylor 3 w))‖ + ‖w ^ (3 : ℕ) / (2 * (1 + w))‖ :=
         norm_add_le _ _
-    _ ≤ (2 / 3) * ‖w‖ ^ 3 + ‖w‖ ^ 3 := by
+    _ ≤ (2 / 3) * ‖w‖ ^ (3 : ℕ) + ‖w‖ ^ (3 : ℕ) := by
         rw [norm_neg]
         exact add_le_add hlog' hcube
-    _ = (5 / 3) * ‖w‖ ^ 3 := by ring
-    _ = (5 / 3) / ‖z‖ ^ 3 := by
+    _ = (5 / 3) * ‖w‖ ^ (3 : ℕ) := by ring
+    _ = (5 / 3) / ‖z‖ ^ (3 : ℕ) := by
         rw [hwnorm]
         field_simp
 
@@ -158,7 +158,7 @@ theorem norm_digamma_second_defect_le {z : ℂ} (hre : 0 < z.re) (hz : 2 ≤ ‖
 theorem norm_digamma_sub_log_add_half_inv_le {σ t : ℝ} (hσ : 0 < σ) (ht : 2 ≤ t) :
     ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
         - Complex.log ((σ : ℂ) + (t : ℂ) * Complex.I)
-        + 1 / (2 * ((σ : ℂ) + (t : ℂ) * Complex.I))‖ ≤ (20 / 3) / t ^ 2 := by
+        + 1 / (2 * ((σ : ℂ) + (t : ℂ) * Complex.I))‖ ≤ (20 / 3) / t ^ (2 : ℕ) := by
   have htpos : (0 : ℝ) < t := by linarith
   set R : ℂ → ℂ := fun z => Complex.digamma z - Complex.log z + 1 / (2 * z) with hR
   set E : ℂ → ℂ := fun z => 1 / z - Complex.log (1 + 1 / z) - 1 / (2 * z * (z + 1)) with hE

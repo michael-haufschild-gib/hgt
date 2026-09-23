@@ -38,9 +38,9 @@ variable {r : ℕ}
 def quartetNode (a : ℝ) : ℂ := (a : ℂ) + ((Real.pi : ℂ) / 2) * I
 
 /-- Its square. -/
-def quartetNodeSq (a : ℝ) : ℂ := (quartetNode a) ^ 2
+def quartetNodeSq (a : ℝ) : ℂ := (quartetNode a) ^ (2 : ℕ)
 
-theorem quartetNodeSq_re (a : ℝ) : (quartetNodeSq a).re = a ^ 2 - Real.pi ^ 2 / 4 := by
+theorem quartetNodeSq_re (a : ℝ) : (quartetNodeSq a).re = a ^ (2 : ℕ) - Real.pi ^ (2 : ℕ) / 4 := by
   simp only [quartetNodeSq, quartetNode]
   simp [pow_two, Complex.add_re, Complex.mul_re, Complex.add_im, Complex.mul_im]
   ring
@@ -57,7 +57,7 @@ theorem quartetNode_ne_zero {a : ℝ} : quartetNode a ≠ 0 := by
 
 /-- The real even quartet polynomial with roots `±α_a`, `±conj α_a`. -/
 def quartetFactor (a : ℝ) (w : ℂ) : ℂ :=
-  (w ^ 2 - quartetNodeSq a) * (w ^ 2 - (starRingEnd ℂ) (quartetNodeSq a))
+  (w ^ (2 : ℕ) - quartetNodeSq a) * (w ^ (2 : ℕ) - (starRingEnd ℂ) (quartetNodeSq a))
 
 theorem quartetFactor_neg (a : ℝ) (w : ℂ) : quartetFactor a (-w) = quartetFactor a w := by
   simp only [quartetFactor]
@@ -86,25 +86,25 @@ theorem quartetFactor_neg_conj_node (a : ℝ) :
 /-- On the imaginary axis every quartet polynomial is a nonnegative real square. -/
 theorem quartetFactor_mul_I (a : ℝ) (y : ℝ) :
     quartetFactor a ((y : ℂ) * I)
-      = ((Complex.normSq ((y : ℂ) ^ 2 + quartetNodeSq a) : ℝ) : ℂ) := by
-  have hsq : ((y : ℂ) * I) ^ 2 = -((y : ℂ) ^ 2) := by
-    linear_combination ((y : ℂ) ^ 2) * Complex.I_sq
-  have hconj : (starRingEnd ℂ) ((y : ℂ) ^ 2 + quartetNodeSq a)
-      = (y : ℂ) ^ 2 + (starRingEnd ℂ) (quartetNodeSq a) := by
+      = ((Complex.normSq ((y : ℂ) ^ (2 : ℕ) + quartetNodeSq a) : ℝ) : ℂ) := by
+  have hsq : ((y : ℂ) * I) ^ (2 : ℕ) = -((y : ℂ) ^ (2 : ℕ)) := by
+    linear_combination ((y : ℂ) ^ (2 : ℕ)) * Complex.I_sq
+  have hconj : (starRingEnd ℂ) ((y : ℂ) ^ (2 : ℕ) + quartetNodeSq a)
+      = (y : ℂ) ^ (2 : ℕ) + (starRingEnd ℂ) (quartetNodeSq a) := by
     simp [map_add, map_pow, Complex.conj_ofReal]
   rw [quartetFactor, hsq,
-    show (-((y : ℂ) ^ 2) - quartetNodeSq a) * (-((y : ℂ) ^ 2)
+    show (-((y : ℂ) ^ (2 : ℕ)) - quartetNodeSq a) * (-((y : ℂ) ^ (2 : ℕ))
         - (starRingEnd ℂ) (quartetNodeSq a))
-      = ((y : ℂ) ^ 2 + quartetNodeSq a) * (starRingEnd ℂ) ((y : ℂ) ^ 2 + quartetNodeSq a) by
+      = ((y : ℂ) ^ (2 : ℕ) + quartetNodeSq a) * (starRingEnd ℂ) ((y : ℂ) ^ (2 : ℕ) + quartetNodeSq a) by
       rw [hconj]; ring,
     Complex.mul_conj]
 
 theorem quartetFactor_mul_I_pos {a : ℝ} (ha : a ≠ 0) (y : ℝ) :
-    0 < Complex.normSq ((y : ℂ) ^ 2 + quartetNodeSq a) := by
+    0 < Complex.normSq ((y : ℂ) ^ (2 : ℕ) + quartetNodeSq a) := by
   refine Complex.normSq_pos.mpr ?_
   intro hc
   have him := congrArg Complex.im hc
-  have hy : (((y : ℂ)) ^ 2).im = 0 := by
+  have hy : (((y : ℂ)) ^ (2 : ℕ)).im = 0 := by
     rw [← Complex.ofReal_pow, Complex.ofReal_im]
   simp only [Complex.add_im, Complex.zero_im, quartetNodeSq_im, hy, zero_add] at him
   rcases mul_eq_zero.mp him with h | h
@@ -114,7 +114,7 @@ theorem quartetFactor_mul_I_pos {a : ℝ} (ha : a ≠ 0) (y : ℝ) :
 /-- Distinct positive displacements give disjoint quartets. -/
 theorem quartetFactor_ne_zero_of_ne {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (hab : a ≠ b) :
     quartetFactor b (quartetNode a) ≠ 0 := by
-  have hA : (quartetNode a) ^ 2 = quartetNodeSq a := rfl
+  have hA : (quartetNode a) ^ (2 : ℕ) = quartetNodeSq a := rfl
   rw [quartetFactor, hA]
   refine mul_ne_zero ?_ ?_
   · intro hc
@@ -395,7 +395,7 @@ theorem analyticOrderAt_multiQuartetFn_mqSchwarzCentre {A : Fin r → ℝ} {M : 
 
 theorem flatProduct_mul_I_nonneg (A : Fin r → ℝ) (M : Fin r → ℕ) (y : ℝ) :
     flatProduct A M ((y : ℂ) * I)
-      = ((∏ j, (Complex.normSq ((y : ℂ) ^ 2 + quartetNodeSq (A j))) ^ (M j) : ℝ) : ℂ) := by
+      = ((∏ j, (Complex.normSq ((y : ℂ) ^ (2 : ℕ) + quartetNodeSq (A j))) ^ (M j) : ℝ) : ℂ) := by
   unfold flatProduct
   rw [Complex.ofReal_prod]
   exact Finset.prod_congr rfl fun j _ => by
@@ -404,10 +404,10 @@ theorem flatProduct_mul_I_nonneg (A : Fin r → ℝ) (M : Fin r → ℕ) (y : �
 theorem multiFlatMultiplier_mul_I_ne_zero (A : Fin r → ℝ) (M : Fin r → ℕ) (y : ℝ) :
     multiFlatMultiplier A M ((y : ℂ) * I) ≠ 0 := by
   rw [multiFlatMultiplier, flatProduct_mul_I_nonneg]
-  have hnn : (0 : ℝ) ≤ ∏ j, (Complex.normSq ((y : ℂ) ^ 2 + quartetNodeSq (A j))) ^ (M j) :=
+  have hnn : (0 : ℝ) ≤ ∏ j, (Complex.normSq ((y : ℂ) ^ (2 : ℕ) + quartetNodeSq (A j))) ^ (M j) :=
     Finset.prod_nonneg fun j _ => pow_nonneg (Complex.normSq_nonneg _) _
   intro hc
-  have hre : (1 : ℝ) + ∏ j, (Complex.normSq ((y : ℂ) ^ 2 + quartetNodeSq (A j))) ^ (M j) = 0 := by
+  have hre : (1 : ℝ) + ∏ j, (Complex.normSq ((y : ℂ) ^ (2 : ℕ) + quartetNodeSq (A j))) ^ (M j) = 0 := by
     have := congrArg Complex.re hc
     simpa only [Complex.add_re, Complex.one_re, Complex.ofReal_re, Complex.zero_re] using this
   linarith
@@ -436,8 +436,8 @@ theorem multiQuartetXi_ne_zero_of_real {A : Fin r → ℝ} (hA : ∀ j, A j ≠ 
 
 /-- The quartet factor as a genuine polynomial. -/
 def quartetFactorPoly (a : ℝ) : Polynomial ℂ :=
-  (Polynomial.X ^ 2 - Polynomial.C (quartetNodeSq a)) *
-    (Polynomial.X ^ 2 - Polynomial.C ((starRingEnd ℂ) (quartetNodeSq a)))
+  (Polynomial.X ^ (2 : ℕ) - Polynomial.C (quartetNodeSq a)) *
+    (Polynomial.X ^ (2 : ℕ) - Polynomial.C ((starRingEnd ℂ) (quartetNodeSq a)))
 
 theorem quartetFactorPoly_eval (a : ℝ) (w : ℂ) :
     (quartetFactorPoly a).eval w = quartetFactor a w := by
@@ -538,7 +538,7 @@ theorem multiQuartetFn_order_one_bounds {A : Fin r → ℝ} {M : Fin r → ℕ} 
 
 /-- The shifted quartet factor: `quartetFactor a (c + x) = x · mqShift a c x` at a root `c`. -/
 def mqShift (a : ℝ) (c x : ℂ) : ℂ :=
-  4 * c ^ 3 + 6 * c ^ 2 * x + 4 * c * x ^ 2 + x ^ 3
+  4 * c ^ (3 : ℕ) + 6 * c ^ (2 : ℕ) * x + 4 * c * x ^ (2 : ℕ) + x ^ (3 : ℕ)
     - (quartetNodeSq a + (starRingEnd ℂ) (quartetNodeSq a)) * (2 * c + x)
 
 theorem quartetFactor_add (a : ℝ) (c x : ℂ) :
@@ -564,7 +564,7 @@ theorem quartetNodeSq_sub_conj_ne_zero {a : ℝ} (ha : a ≠ 0) :
 theorem mqShift_mqFeCentre_zero (a : ℝ) :
     mqShift a (mqFeCentre a) 0
       = 2 * (mqFeCentre a) * (quartetNodeSq a - (starRingEnd ℂ) (quartetNodeSq a)) := by
-  have hc2 : (mqFeCentre a) ^ 2 = quartetNodeSq a := by
+  have hc2 : (mqFeCentre a) ^ (2 : ℕ) = quartetNodeSq a := by
     simp only [mqFeCentre, quartetNodeSq]
     ring
   simp only [mqShift]
@@ -573,7 +573,7 @@ theorem mqShift_mqFeCentre_zero (a : ℝ) :
 theorem mqShift_mqSchwarzCentre_zero (a : ℝ) :
     mqShift a (mqSchwarzCentre a) 0
       = 2 * (mqSchwarzCentre a) * ((starRingEnd ℂ) (quartetNodeSq a) - quartetNodeSq a) := by
-  have hc2 : (mqSchwarzCentre a) ^ 2 = (starRingEnd ℂ) (quartetNodeSq a) := by
+  have hc2 : (mqSchwarzCentre a) ^ (2 : ℕ) = (starRingEnd ℂ) (quartetNodeSq a) := by
     simp only [mqSchwarzCentre, quartetNodeSq, map_pow]
     ring
   simp only [mqShift]

@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.CoulombGammaPhaseClock
 
 The relativistic Fermi function governing the Coulomb correction to beta decay contains
 
-`exp(pi*xi) * |Gamma(eta+i*xi)|^2`.
+`exp(pi*xi) * |Gamma(eta+i*xi)|^(2 : ℕ)`.
 
 This is equation (1) of R. J. Hill and R. Plestid, *Field Theory of the Fermi Function*,
 arXiv:2309.07343.  Its Gamma--Boltzmann core is exactly the thermal-CFT KMS response after the
@@ -75,7 +75,7 @@ theorem fermiCoulombGammaCoreValue_mul_coulombPhaseValue
     fermiCoulombGammaCoreValue (((ell + 1 : ℕ) : ℂ) : ℂ) (xi : ℂ) *
         coulombPhaseValue ell xi =
       Complex.exp ((Real.pi : ℂ) * (xi : ℂ)) *
-        Complex.Gamma (((ell + 1 : ℕ) : ℂ) + Complex.I * (xi : ℂ)) ^ 2 := by
+        Complex.Gamma (((ell + 1 : ℕ) : ℂ) + Complex.I * (xi : ℂ)) ^ (2 : ℕ) := by
   have hp : (((ell + 1 : ℕ) : ℂ) + Complex.I * (xi : ℂ)) =
       (ell : ℂ) + 1 + (xi : ℂ) * Complex.I := by
     push_cast

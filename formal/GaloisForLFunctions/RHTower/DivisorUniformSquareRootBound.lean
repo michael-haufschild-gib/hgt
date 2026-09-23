@@ -39,23 +39,23 @@ theorem sum_log_Icc_le_half_log_stirling {N : ℕ} (hN : 1 ≤ N) :
   linarith only [hseq]
 
 private theorem hyperbola_boundary_upper {x s : ℝ} (hs : 0 < s)
-    (hlo : s^2 ≤ x) (hhi : x ≤ s^2+2*s) :
-    x*(Real.log x-2*Real.log s)-x+s^2 ≤ 4 := by
+    (hlo : s^(2 : ℕ) ≤ x) (hhi : x ≤ s^(2 : ℕ)+2*s) :
+    x*(Real.log x-2*Real.log s)-x+s^(2 : ℕ) ≤ 4 := by
   have hx : 0 < x := lt_of_lt_of_le (sq_pos_of_pos hs) hlo
-  have hs2 : 0 < s^2 := sq_pos_of_pos hs
-  have hupper := Real.log_le_sub_one_of_pos (x := x/s^2) (by positivity)
+  have hs2 : 0 < s^(2 : ℕ) := sq_pos_of_pos hs
+  have hupper := Real.log_le_sub_one_of_pos (x := x/s^(2 : ℕ)) (by positivity)
   rw [Real.log_div hx.ne' (ne_of_gt hs2),Real.log_pow] at hupper
   push_cast at hupper
   have hhi' := mul_le_mul_of_nonneg_left hupper hs2.le
-  have hcancel : s^2*(x/s^2-1)=x-s^2 := by field_simp
+  have hcancel : s^(2 : ℕ)*(x/s^(2 : ℕ)-1)=x-s^(2 : ℕ) := by field_simp
   rw [hcancel] at hhi'
   have hlog : Real.log x-2*Real.log s ≤ 2/s := by
-    apply le_of_mul_le_mul_left (a := s^2) ?_ hs2
-    have he : s^2*(2/s)=2*s := by field_simp
+    apply le_of_mul_le_mul_left (a := s^(2 : ℕ)) ?_ hs2
+    have he : s^(2 : ℕ)*(2/s)=2*s := by field_simp
     rw [he]
     linarith only [hhi',hhi]
   have hdelta := mul_le_mul_of_nonneg_left hlog (sub_nonneg.mpr hlo)
-  have hprod : (x-s^2)*(2/s) ≤ 4 := by
+  have hprod : (x-s^(2 : ℕ))*(2/s) ≤ 4 := by
     rw [← mul_div_assoc,div_le_iff₀ hs]
     nlinarith only [hhi]
   nlinarith only [hdelta,hprod,hhi']
@@ -72,10 +72,10 @@ theorem divisorHyperbolaSmoothRemainder_le_seven (N : ℕ) :
   have hs1 : (1:ℝ) ≤ s := by exact_mod_cast hs
   have hs0 : (0:ℝ) < s := by positivity
   have hNp : (0:ℝ) < N := by positivity
-  have hlo : (s:ℝ)^2 ≤ N := by
+  have hlo : (s:ℝ)^(2 : ℕ) ≤ N := by
     rw [pow_two]
     exact_mod_cast Nat.sqrt_le N
-  have hhi : (N:ℝ) ≤ (s:ℝ)^2+2*s := by
+  have hhi : (N:ℝ) ≤ (s:ℝ)^(2 : ℕ)+2*s := by
     have h := Nat.lt_succ_sqrt N
     change N < (s+1)*(s+1) at h
     have h' : N ≤ s*s+2*s := by nlinarith
@@ -91,10 +91,10 @@ theorem divisorHyperbolaSmoothRemainder_le_seven (N : ℕ) :
     nlinarith only [hlo]
   have hcorrection : (s:ℝ)-2*N*(((harmonic s:ℚ):ℝ)-Real.log s-Real.eulerMascheroniConstant) ≤ 1 := by
     linarith only [hHmul,hquot]
-  have hratio : (N:ℝ)/(s:ℝ)^2 ≤ 3 := by
+  have hratio : (N:ℝ)/(s:ℝ)^(2 : ℕ) ≤ 3 := by
     rw [div_le_iff₀ (sq_pos_of_pos hs0)]
     nlinarith only [hhi,hs1]
-  have hlog := Real.log_le_sub_one_of_pos (x := (N:ℝ)/(s:ℝ)^2) (by positivity)
+  have hlog := Real.log_le_sub_one_of_pos (x := (N:ℝ)/(s:ℝ)^(2 : ℕ)) (by positivity)
   rw [Real.log_div hNp.ne' (ne_of_gt (sq_pos_of_pos hs0)),Real.log_pow] at hlog
   push_cast at hlog
   have hloghalf : Real.log N/2-Real.log s ≤ 1 := by linarith only [hlog,hratio]
@@ -108,7 +108,7 @@ theorem divisorHyperbolaSmoothRemainder_le_seven (N : ℕ) :
     linarith only [hfact,hHfloor,hloghalf,hg]
   have hid : divisorHyperbolaSmoothRemainder N =
       ((∑ k ∈ Icc 1 N,Real.log k)-(N:ℝ)*Real.log N+N-((harmonic s:ℚ):ℝ))+
-      ((N:ℝ)*(Real.log N-2*Real.log s)-N+(s:ℝ)^2)+
+      ((N:ℝ)*(Real.log N-2*Real.log s)-N+(s:ℝ)^(2 : ℕ))+
       ((s:ℝ)-2*N*(((harmonic s:ℚ):ℝ)-Real.log s-Real.eulerMascheroniConstant)) := by
     dsimp [divisorHyperbolaSmoothRemainder,s]
     ring
@@ -163,7 +163,7 @@ theorem divisorUnsignedDilationChannel_le_seven_sqrt (M d : ℕ) :
 
 /-- The entire initial head-square reserve is at most linear in the cutoff. -/
 theorem mobiusDivisorSelectionHead_empty_sq_le_linear (M : ℕ) :
-    (mobiusDivisorSelectionFibre M ∅ ∅)^2 ≤ 49*M := by
+    (mobiusDivisorSelectionFibre M ∅ ∅)^(2 : ℕ) ≤ 49*M := by
   have hlo := mobiusDivisorSelectionHead_empty_nonneg M
   have hhi := divisorUnsignedDilationChannel_one_le_seven_sqrt M
   rw [← mobiusDivisorSelectionHead_empty_eq_unit_channel] at hhi
@@ -173,7 +173,7 @@ theorem mobiusDivisorSelectionHead_empty_sq_le_linear (M : ℕ) :
 
 /-- Initial head balancing releases a subquadratic reserve, below every positive quadratic multiple eventually. -/
 theorem eventually_mobiusDivisorInitialHeadSquare_le_quadratic_multiple (ε : ℝ) (hε : 0 < ε) :
-    ∀ᶠ M : ℕ in atTop,(mobiusDivisorSelectionFibre M ∅ ∅)^2 ≤ ε*(M:ℝ)^2 := by
+    ∀ᶠ M : ℕ in atTop,(mobiusDivisorSelectionFibre M ∅ ∅)^(2 : ℕ) ≤ ε*(M:ℝ)^(2 : ℕ) := by
   have ht : ∀ᶠ M : ℕ in atTop,(49:ℝ)/ε ≤ M :=
     tendsto_natCast_atTop_atTop.eventually_ge_atTop (49/ε)
   filter_upwards [ht] with M hM
@@ -206,7 +206,7 @@ theorem mobiusDivisorInitialLateBlock_release_le_linear (M : ℕ) (L : Finset �
   rw [← mobiusDivisorSelectionHead_empty_eq_unit_channel] at hunit
   have hmass : (∑ p ∈ L,divisorUnsignedDilationChannel M p) ≤ 8*Real.sqrt M := by
     linarith only [hheadL,hunit,hhead]
-  have hsquares : (∑ p ∈ L,(mobiusDivisorDilationChannel M p)^2) ≤
+  have hsquares : (∑ p ∈ L,(mobiusDivisorDilationChannel M p)^(2 : ℕ)) ≤
       Real.sqrt M*(∑ p ∈ L,divisorUnsignedDilationChannel M p) := by
     rw [mul_sum]
     apply sum_le_sum
@@ -217,7 +217,7 @@ theorem mobiusDivisorInitialLateBlock_release_le_linear (M : ℕ) (L : Finset �
     have hprod := mul_nonneg (sub_nonneg.mpr hhi) hlo
     nlinarith only [hprod]
   have hscaled := mul_le_mul_of_nonneg_left hmass (Real.sqrt_nonneg (M:ℝ))
-  have hsq : (∑ p ∈ L,(mobiusDivisorDilationChannel M p)^2) ≤ 8*M := by
+  have hsq : (∑ p ∈ L,(mobiusDivisorDilationChannel M p)^(2 : ℕ)) ≤ 8*M := by
     nlinarith only [hsquares,hscaled,Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) M)]
   have hV := mobiusDivisorNonemptyEnergy_union_late_primes M ∅ L hL (by simp)
   simp only [empty_union] at hV
@@ -230,7 +230,7 @@ theorem eventually_mobiusDivisorInitialLateBlock_release_le_quadratic_multiple (
     ∀ᶠ M : ℕ in atTop,∀ L : Finset ℕ,
       (∀ p ∈ L,p.Prime ∧ p<M ∧ M≤2*p) →
       -Real.sqrt M ≤ mobiusDivisorSelectionFibre M L ∅ →
-      mobiusDivisorSelectionEnergy M ∅-mobiusDivisorSelectionEnergy M L ≤ ε*(M:ℝ)^2 := by
+      mobiusDivisorSelectionEnergy M ∅-mobiusDivisorSelectionEnergy M L ≤ ε*(M:ℝ)^(2 : ℕ) := by
   have ht : ∀ᶠ M : ℕ in atTop,(57:ℝ)/ε ≤ M :=
     tendsto_natCast_atTop_atTop.eventually_ge_atTop (57/ε)
   filter_upwards [ht] with M hM

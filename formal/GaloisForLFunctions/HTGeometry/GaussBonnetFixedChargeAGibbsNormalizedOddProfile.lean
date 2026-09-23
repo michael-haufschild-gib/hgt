@@ -15,7 +15,7 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAMeanGibbsDeficit_fifth_zero_limit (w φ l : ℝ) :
-    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / egbCoexistenceASymmetricRatio τ ^ 5)
+    Tendsto (fun τ => egbFixedChargeAMeanGibbsDeficit w φ τ l / egbCoexistenceASymmetricRatio τ ^ (5 : ℕ))
       atBot (𝓝 (0 : ℝ)) := by
   have h := (egbFixedChargeAMeanGibbsDeficit_sixth_critical_limit w φ l).mul egbCoexistenceASymmetricRatio_critical_limit
   simp only [mul_zero] at h
@@ -25,7 +25,7 @@ theorem egbFixedChargeAMeanGibbsDeficit_fifth_zero_limit (w φ l : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeAGibbsBarrier_first_correction_limit (w φ l : ℝ) :
-    Tendsto (fun τ => (egbFixedChargeAGibbsBarrier w φ τ l / egbCoexistenceASymmetricRatio τ ^ 4 -
+    Tendsto (fun τ => (egbFixedChargeAGibbsBarrier w φ τ l / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) -
       egbFixedChargeAGibbsBarrierCoefficient w φ) / egbCoexistenceASymmetricRatio τ)
       atBot (𝓝 (0 : ℝ)) := by
   have h := (egbFixedChargeAMeanGibbsGap_first_correction_limit w φ l).add
@@ -45,14 +45,14 @@ theorem egbFixedChargeAGibbsOddCoefficient_barrier_ratio (w φ : ℝ) :
 
 theorem egbFixedChargeAInteriorGibbsGap_normalized_first_correction_limit (w φ l₁ l₂ ψ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ -
-      cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ)
-      atBot (𝓝 (4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4)) := by
+      cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ)
+      atBot (𝓝 (4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ))) := by
   have h := ((egbFixedChargeAInteriorGibbsGap_first_correction_limit w φ l₁ ψ).sub
-    ((tendsto_const_nhds (x := cos ψ ^ 4)).mul (egbFixedChargeAGibbsBarrier_first_correction_limit w φ l₂))).div
+    ((tendsto_const_nhds (x := cos ψ ^ (4 : ℕ))).mul (egbFixedChargeAGibbsBarrier_first_correction_limit w φ l₂))).div
       (egbFixedChargeAGibbsBarrier_quartic_critical_limit w φ l₂) (egbFixedChargeAGibbsBarrierCoefficient_pos w φ).ne'
   simp only [mul_zero, sub_zero, Pi.div_def] at h
-  have he : egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ 4 / egbFixedChargeAGibbsBarrierCoefficient w φ =
-      4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4 := by
+  have he : egbFixedChargeAGibbsOddCoefficient w φ * sin ψ * cos ψ ^ (4 : ℕ) / egbFixedChargeAGibbsBarrierCoefficient w φ =
+      4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ) := by
     rw [← egbFixedChargeAGibbsOddCoefficient_barrier_ratio w φ]
     ring
   rw [he] at h
@@ -64,13 +64,13 @@ theorem egbFixedChargeAInteriorGibbsGap_normalized_first_correction_limit (w φ 
 
 theorem egbFixedChargeAInteriorGibbsGap_peak_displacement_correction_limit (w φ l₁ l₂ ψ : ℝ) :
     Tendsto (fun τ => (egbFixedChargeAInteriorGibbsGap w φ τ l₁ ψ / egbFixedChargeAGibbsBarrier w φ τ l₂ -
-      cos ψ ^ 4) / egbFixedChargeAMiddleGapCoordinate τ φ)
-      atBot (𝓝 (4 * sin ψ * cos ψ ^ 4)) := by
+      cos ψ ^ (4 : ℕ)) / egbFixedChargeAMiddleGapCoordinate τ φ)
+      atBot (𝓝 (4 * sin ψ * cos ψ ^ (4 : ℕ))) := by
   have hc := egbFixedChargeAMiddleMeanCorrection_neg φ
   have h := (egbFixedChargeAInteriorGibbsGap_normalized_first_correction_limit w φ l₁ l₂ ψ).div
     (egbFixedChargeAMiddleGapCoordinate_linear_limit φ) hc.ne
-  have he : 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4 / egbFixedChargeAMiddleMeanCorrection φ =
-      4 * sin ψ * cos ψ ^ 4 := by field_simp [hc.ne]
+  have he : 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ) / egbFixedChargeAMiddleMeanCorrection φ =
+      4 * sin ψ * cos ψ ^ (4 : ℕ) := by field_simp [hc.ne]
   rw [he] at h
   simp only [Pi.div_def] at h
   convert h using 1

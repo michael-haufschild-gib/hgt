@@ -168,7 +168,7 @@ theorem integrableOn_inv_Ioc {c : ℝ} (hc : 0 < c) (hc1 : c ≤ 1) :
   have hii := hcont.intervalIntegrable (μ := volume)
   exact (intervalIntegrable_iff_integrableOn_Ioc_of_le hc1).mp hii
 
-theorem integral_inv_Ioc {c : ℝ} (hc : 0 < c) (hc1 : c ≤ 1) :
+theorem integral_inv_Ioc_exponentialIntegralE1Quantile {c : ℝ} (hc : 0 < c) (hc1 : c ≤ 1) :
     ∫ u in Ioc c 1, u⁻¹ = -Real.log c := by
   have h := integral_inv_of_pos hc (zero_lt_one : (0:ℝ) < 1)
   rw [intervalIntegral.integral_of_le hc1] at h
@@ -188,7 +188,7 @@ theorem exp_neg_one_mul_neg_log_le {c : ℝ} (hc : 0 < c) (hc1 : c ≤ 1) :
     rw [div_eq_mul_inv]
     exact mul_le_mul_of_nonneg_right hexp (inv_nonneg.mpr hu0.le)
   have hval : ∫ u in Ioc c 1, Real.exp (-1) * u⁻¹ = Real.exp (-1) * (-Real.log c) := by
-    rw [MeasureTheory.integral_const_mul, integral_inv_Ioc hc hc1]
+    rw [MeasureTheory.integral_const_mul, integral_inv_Ioc_exponentialIntegralE1Quantile hc hc1]
   have hsub := expIntegralOne_sub hc hc1
   have hpos1 : 0 ≤ expIntegralOne 1 := expIntegralOne_nonneg one_pos
   rw [hval] at hcmp

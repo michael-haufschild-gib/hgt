@@ -27,7 +27,7 @@ def thetaHalfPeriodDerivativePair (τ : ℂ) (n : ℕ) : ℂ :=
 theorem norm_jacobiTheta₂'_term_thetaHalfPeriod (τ : ℂ) (n : ℤ) :
     ‖jacobiTheta₂'_term n (thetaHalfPeriod τ) τ‖ =
       2 * Real.pi * |n| *
-        Real.exp (-Real.pi * ((n : ℝ) ^ 2 + (n : ℝ)) * τ.im) := by
+        Real.exp (-Real.pi * ((n : ℝ) ^ (2 : ℕ) + (n : ℝ)) * τ.im) := by
   rw [jacobiTheta₂'_term, norm_mul, norm_jacobiTheta₂_term]
   have him : (thetaHalfPeriod τ).im = τ.im / 2 := by
     simp only [thetaHalfPeriod, div_eq_mul_inv]
@@ -53,7 +53,7 @@ theorem thetaHalfPeriodDerivativePair_zero (τ : ℂ) :
     jacobiTheta₂_term, Int.cast_neg, Int.cast_one]
   have hexponent :
       2 * Real.pi * Complex.I * (-1 : ℂ) * thetaHalfPeriod τ +
-          Real.pi * Complex.I * (-1 : ℂ) ^ 2 * τ =
+          Real.pi * Complex.I * (-1 : ℂ) ^ (2 : ℕ) * τ =
         -(Real.pi * Complex.I) := by
     rw [thetaHalfPeriod]
     ring

@@ -28,7 +28,7 @@ noncomputable section
 /-! ## The cubic Taylor bound -/
 
 theorem norm_log_one_add_sub_taylor_two_le {u : ℂ} (hu : ‖u‖ ≤ 1 / 2) :
-    ‖Complex.log (1 + u) - u + u ^ 2 / 2‖ ≤ ‖u‖ ^ 3 := by
+    ‖Complex.log (1 + u) - u + u ^ (2 : ℕ) / 2‖ ≤ ‖u‖ ^ (3 : ℕ) := by
   have hu0 : (0 : ℝ) ≤ ‖u‖ := norm_nonneg u
   have hu1 : ‖u‖ < 1 := lt_of_le_of_lt hu (by norm_num)
   have hsum := Complex.hasSum_taylorSeries_log hu1
@@ -36,16 +36,16 @@ theorem norm_log_one_add_sub_taylor_two_le {u : ℂ} (hu : ‖u‖ ≤ 1 / 2) :
   have hsplit := hsummable.sum_add_tsum_nat_add 3
   have hlog : Complex.log (1 + u) = ∑' n : ℕ, (-1 : ℂ) ^ (n + 1) * u ^ n / (n : ℂ) :=
     hsum.tsum_eq.symm
-  have hfirst : ∑ n ∈ Finset.range 3, (-1 : ℂ) ^ (n + 1) * u ^ n / (n : ℂ) = u - u ^ 2 / 2 := by
+  have hfirst : ∑ n ∈ Finset.range 3, (-1 : ℂ) ^ (n + 1) * u ^ n / (n : ℂ) = u - u ^ (2 : ℕ) / 2 := by
     rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one]
     norm_num
     ring
-  have htail : Complex.log (1 + u) - u + u ^ 2 / 2
+  have htail : Complex.log (1 + u) - u + u ^ (2 : ℕ) / 2
       = ∑' n : ℕ, (-1 : ℂ) ^ (n + 3 + 1) * u ^ (n + 3) / ((n + 3 : ℕ) : ℂ) := by
     rw [hlog, ← hsplit, hfirst]
     ring
   have hbound : ∀ n : ℕ, ‖(-1 : ℂ) ^ (n + 3 + 1) * u ^ (n + 3) / ((n + 3 : ℕ) : ℂ)‖
-      ≤ (‖u‖ ^ 3 / 3) * ‖u‖ ^ n := by
+      ≤ (‖u‖ ^ (3 : ℕ) / 3) * ‖u‖ ^ n := by
     intro n
     rw [norm_div, norm_mul, norm_pow, norm_pow, norm_neg, norm_one, one_pow, one_mul,
       Complex.norm_natCast]
@@ -54,14 +54,14 @@ theorem norm_log_one_add_sub_taylor_two_le {u : ℂ} (hu : ‖u‖ ≤ 1 / 2) :
     have hden : (3 : ℝ) ≤ (n : ℝ) + 3 := by
       have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
       linarith
-    have hnum : ‖u‖ ^ (n + 3) = ‖u‖ ^ 3 * ‖u‖ ^ n := by
+    have hnum : ‖u‖ ^ (n + 3) = ‖u‖ ^ (3 : ℕ) * ‖u‖ ^ n := by
       rw [pow_add]
       ring
     rw [hnum]
     rw [div_le_iff₀ (by linarith : (0 : ℝ) < (n : ℝ) + 3)]
-    have hpos : (0 : ℝ) ≤ ‖u‖ ^ 3 * ‖u‖ ^ n := by positivity
+    have hpos : (0 : ℝ) ≤ ‖u‖ ^ (3 : ℕ) * ‖u‖ ^ n := by positivity
     nlinarith [hpos, hden]
-  have hgeo : Summable (fun n : ℕ => (‖u‖ ^ 3 / 3) * ‖u‖ ^ n) :=
+  have hgeo : Summable (fun n : ℕ => (‖u‖ ^ (3 : ℕ) / 3) * ‖u‖ ^ n) :=
     (summable_geometric_of_lt_one hu0 hu1).mul_left _
   have hnormsummable : Summable (fun n : ℕ =>
       ‖(-1 : ℂ) ^ (n + 3 + 1) * u ^ (n + 3) / ((n + 3 : ℕ) : ℂ)‖) :=
@@ -150,7 +150,7 @@ theorem digammaStirlingDefect_step {z : ℂ} (hz : 0 < z.re) :
   ring
 
 theorem norm_digammaStirlingDefect_step_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖) :
-    ‖digammaStirlingDefect (z + 1) - digammaStirlingDefect z‖ ≤ 2 / ‖z‖ ^ 3 := by
+    ‖digammaStirlingDefect (z + 1) - digammaStirlingDefect z‖ ≤ 2 / ‖z‖ ^ (3 : ℕ) := by
   have hz0 : z ≠ 0 := by
     intro h
     rw [h] at h2
@@ -169,7 +169,7 @@ theorem norm_digammaStirlingDefect_step_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤
     rw [div_le_div_iff₀ hzpos (by norm_num : (0:ℝ) < 2)]
     linarith
   have hsplit : 1 / z - Complex.log (1 + 1 / z) - 1 / (2 * z * (z + 1))
-      = -(Complex.log (1 + u) - u + u ^ 2 / 2) + 1 / (2 * z ^ 2 * (z + 1)) := by
+      = -(Complex.log (1 + u) - u + u ^ (2 : ℕ) / 2) + 1 / (2 * z ^ (2 : ℕ) * (z + 1)) := by
     rw [hudef]
     field_simp
     ring
@@ -180,18 +180,18 @@ theorem norm_digammaStirlingDefect_step_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤
     rw [add_sub_cancel_right, norm_one] at h
     linarith
   have hz1pos : (0 : ℝ) < ‖z + 1‖ := by linarith
-  have hsecond : ‖(1 : ℂ) / (2 * z ^ 2 * (z + 1))‖ ≤ 1 / ‖z‖ ^ 3 := by
+  have hsecond : ‖(1 : ℂ) / (2 * z ^ (2 : ℕ) * (z + 1))‖ ≤ 1 / ‖z‖ ^ (3 : ℕ) := by
     rw [norm_div, norm_one, norm_mul, norm_mul, norm_pow]
     have h2n : ‖(2 : ℂ)‖ = 2 := by norm_num
     rw [h2n]
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [hz1norm, hzpos, pow_pos hzpos 2, pow_pos hzpos 3, sq_nonneg ‖z‖]
-  have hfirst : ‖-(Complex.log (1 + u) - u + u ^ 2 / 2)‖ ≤ 1 / ‖z‖ ^ 3 := by
+  have hfirst : ‖-(Complex.log (1 + u) - u + u ^ (2 : ℕ) / 2)‖ ≤ 1 / ‖z‖ ^ (3 : ℕ) := by
     rw [norm_neg]
     refine le_trans hcube (le_of_eq ?_)
     rw [hunorm, div_pow, one_pow]
   refine le_trans (norm_add_le _ _) ?_
-  have : (1 : ℝ) / ‖z‖ ^ 3 + 1 / ‖z‖ ^ 3 = 2 / ‖z‖ ^ 3 := by ring
+  have : (1 : ℝ) / ‖z‖ ^ (3 : ℕ) + 1 / ‖z‖ ^ (3 : ℕ) = 2 / ‖z‖ ^ (3 : ℕ) := by ring
   linarith [hfirst, hsecond]
 
 end

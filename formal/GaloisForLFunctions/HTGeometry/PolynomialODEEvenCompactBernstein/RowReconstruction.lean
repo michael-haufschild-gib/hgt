@@ -39,7 +39,7 @@ theorem tensorRealCoefficient_reconstruction
 
 def rowCorrection0 : ℝ := (341/480)*(3*(341/480)-6/19)-1/100
 def rowCorrection1 : ℝ := (35/480)*(6*(341/480)-6/19)
-def rowCorrection2 : ℝ := 3*(35/480)^2
+def rowCorrection2 : ℝ := 3*(35/480)^(2 : ℕ)
 
 theorem rowCoefficient_eq_split (a b : ℕ) :
     rowCoefficient a b =

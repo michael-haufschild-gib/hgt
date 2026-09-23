@@ -42,7 +42,7 @@ theorem ratOrd_ratShift {g : RatFunc K} (hg : g ≠ 0) (c : K) :
   have hrep : FieldShift.ratShift g
       * algebraMap (Polynomial K) (RatFunc K) (g.denom.comp (X + C 1))
       = algebraMap (Polynomial K) (RatFunc K) (g.num.comp (X + C 1)) := by
-    have h := congrArg (FieldShift.ratShift (F := K)) (algebraMap_num_eq g)
+    have h := congrArg (FieldShift.ratShift (F := K)) (algebraMap_num_eq_ratFuncOrderSquare g)
     rw [map_mul, FieldShift.ratShift_algebraMap, FieldShift.ratShift_algebraMap] at h
     exact h.symm
   rw [ratOrd_of_rep hA hB hrep c, rootMultiplicity_comp_X_add_one,
@@ -69,16 +69,16 @@ theorem finite_ratOrd_support {g : RatFunc K} (hg : g ≠ 0) :
 
 /-- **The order of `f` is even everywhere.** -/
 theorem even_ratOrd_of_ratShift_mul_sq {f g : RatFunc K} (hf : f ≠ 0) (hg : g ≠ 0)
-    (heq : FieldShift.ratShift f * g ^ 2 = f) (c : K) : Even (ratOrd f c) := by
+    (heq : FieldShift.ratShift f * g ^ (2 : ℕ) = f) (c : K) : Even (ratOrd f c) := by
   classical
   have hsf : FieldShift.ratShift f ≠ 0 := by
     intro h0
     exact hf (FieldShift.ratShift_injective (by rw [h0, map_zero]))
   have hrel : ∀ a : K, ratOrd f (a + 1) + 2 * ratOrd g a = ratOrd f a := by
     intro a
-    have h : ratOrd (FieldShift.ratShift f * g ^ 2) a = ratOrd f a := by rw [heq]
+    have h : ratOrd (FieldShift.ratShift f * g ^ (2 : ℕ)) a = ratOrd f a := by rw [heq]
     rw [ratOrd_mul hsf (pow_ne_zero 2 hg) a, ratOrd_ratShift hf a,
-      show g ^ 2 = g * g from sq g, ratOrd_mul hg hg a] at h
+      show g ^ (2 : ℕ) = g * g from sq g, ratOrd_mul hg hg a] at h
     omega
   set D : ℤ → ℤ := fun n => ratOrd f (c + (n : K)) with hD
   set E : ℤ → ℤ := fun n => ratOrd g (c + (n : K)) with hE
@@ -133,7 +133,7 @@ theorem even_ratOrd_of_ratShift_mul_sq {f g : RatFunc K} (hf : f ≠ 0) (hg : g 
 
 /-- **A rational function whose shift differs from it by a square is a square.** -/
 theorem isSquare_of_ratShift_mul_sq [IsAlgClosed K] {f g : RatFunc K} (hf : f ≠ 0) (hg : g ≠ 0)
-    (heq : FieldShift.ratShift f * g ^ 2 = f) : IsSquare f :=
+    (heq : FieldShift.ratShift f * g ^ (2 : ℕ) = f) : IsSquare f :=
   isSquare_of_even_ratOrd hf (even_ratOrd_of_ratShift_mul_sq hf hg heq)
 
 end GaloisForLFunctions.HTGeometry

@@ -26,7 +26,7 @@ namespace RHTower
 noncomputable section
 
 /-- Continuous interpolation of `invNatLogSq` used for the integral tail comparison. -/
-def routePInvLogSqContinuous (x : ℝ) : ℝ := x⁻¹ / (Real.log x) ^ 2
+def routePInvLogSqContinuous (x : ℝ) : ℝ := x⁻¹ / (Real.log x) ^ (2 : ℕ)
 
 /-- The logarithmic inverse-square density decreases from `2` onward. -/
 theorem routePInvLogSqContinuous_antitoneOn :
@@ -41,7 +41,7 @@ theorem routePInvLogSqContinuous_antitoneOn :
   have hinv : y⁻¹ ≤ x⁻¹ := (inv_le_inv₀ hypos hxpos).2 hxy
   have hlog : Real.log x ≤ Real.log y :=
     Real.strictMonoOn_log.monotoneOn hxpos hypos hxy
-  have hsq : (Real.log x) ^ 2 ≤ (Real.log y) ^ 2 :=
+  have hsq : (Real.log x) ^ (2 : ℕ) ≤ (Real.log y) ^ (2 : ℕ) :=
     (sq_le_sq₀ hlogx.le hlogy.le).2 hlog
   exact div_le_div₀ (inv_nonneg.mpr hxpos.le) hinv (sq_pos_of_pos hlogx) hsq
 
@@ -71,7 +71,7 @@ theorem tsum_invNatLogSq_lt_four :
   have hlog : (2 / 3 : ℝ) < Real.log 2 := by
     exact lt_trans (by norm_num) Real.log_two_gt_d9
   have hlogpos : 0 < Real.log 2 := by linarith
-  have hlogsq : (2 / 3 : ℝ) ^ 2 < (Real.log 2) ^ 2 :=
+  have hlogsq : (2 / 3 : ℝ) ^ (2 : ℕ) < (Real.log 2) ^ (2 : ℕ) :=
     (sq_lt_sq₀ (by norm_num : (0 : ℝ) ≤ 2 / 3) hlogpos.le).2 hlog
   have hfirst : invNatLogSq 2 < 2 := by
     rw [invNatLogSq]

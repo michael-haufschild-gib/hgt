@@ -21,12 +21,12 @@ namespace RHTower
 theorem LadderEnvelope.ccm_depth_summable_secularVector_sq
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j))) :
     ∀ᶠ lam in atTop, Summable fun j =>
-      secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j ^ 2 := by
+      secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j ^ (2 : ℕ) := by
   have hroot := (h.ccm_depth_ratio_and_exactEigenpair_eventually k hsum hbessel hl).2
   filter_upwards [h.depth_struct k, hsum, hroot] with lam hstruct hsumLam hrootLam
   obtain ⟨hhead, hfloor⟩ := hstruct
@@ -38,8 +38,8 @@ theorem LadderEnvelope.ccm_depth_summable_secularVector_sq
 theorem LadderEnvelope.ccm_depth_memℓp
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j))) :
     ∀ᶠ lam in atTop,
@@ -53,8 +53,8 @@ explicit Hermite contrast. -/
 theorem LadderEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j))) :
     Tendsto (fun lam =>
@@ -84,11 +84,11 @@ theorem LadderEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast
       ∑ j ∈ Finset.range (k + 2),
         (secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j /
             secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0
-          - w j / w0) ^ 2) atTop (nhds 0) := by
+          - w j / w0) ^ (2 : ℕ)) atTop (nhds 0) := by
     have hterms : ∀ j ∈ Finset.range (k + 2), Tendsto (fun lam =>
         (secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j /
             secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0
-          - w j / w0) ^ 2) atTop (nhds 0) := by
+          - w j / w0) ^ (2 : ℕ)) atTop (nhds 0) := by
       intro j hj
       have hj' : j < k + 2 := Finset.mem_range.mp hj
       have hratio := h.ccm_depth_secularVector_coordinate_ratio_tendsto
@@ -103,33 +103,33 @@ theorem LadderEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast
       (∑ j ∈ Finset.range (k + 2),
         (secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j /
             secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0
-          - w j / w0) ^ 2) +
+          - w j / w0) ^ (2 : ℕ)) +
       (∑' j : ℕ,
         secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k)
-          (j + (k + 2)) ^ 2) /
-        secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0 ^ 2)
+          (j + (k + 2)) ^ (2 : ℕ)) /
+        secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0 ^ (2 : ℕ))
       atTop (nhds 0) := by
     simpa using hfinite.add htail
   have hsq : Tendsto (fun lam =>
       ‖(secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0)⁻¹ •
           secularLp (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k)
-        - w0⁻¹ • hermiteContrastLp k‖ ^ 2) atTop (nhds 0) := by
+        - w0⁻¹ • hermiteContrastLp k‖ ^ (2 : ℕ)) atTop (nhds 0) := by
     refine htotal.congr' ?_
     filter_upwards [hmem, hsumV, hv0] with lam hmemLam hsumVLam hv0Lam
     let v0 := secularVector (D lam) (ℓ lam)
       (depthSecularRoot (D lam) (ℓ lam) k) 0
     have hvscaled : Summable fun j =>
-        (secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j / v0) ^ 2 := by
-      have hs := hsumVLam.div_const (v0 ^ 2)
+        (secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j / v0) ^ (2 : ℕ) := by
+      have hs := hsumVLam.div_const (v0 ^ (2 : ℕ))
       refine hs.congr fun j => ?_
       rw [div_pow]
-    have hwscaled : Summable fun j => (w j / w0) ^ 2 := by
-      have hs := (summable_constrainedProlateHermiteContrast_sq k).div_const (w0 ^ 2)
+    have hwscaled : Summable fun j => (w j / w0) ^ (2 : ℕ) := by
+      have hs := (summable_constrainedProlateHermiteContrast_sq k).div_const (w0 ^ (2 : ℕ))
       refine hs.congr fun j => ?_
       rw [div_pow]
     have herr : Summable fun j =>
         (secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j / v0
-          - w j / w0) ^ 2 := by
+          - w j / w0) ^ (2 : ℕ) := by
       refine Summable.of_nonneg_of_le (fun j => sq_nonneg _) (fun j => ?_)
         ((hvscaled.mul_left 2).add (hwscaled.mul_left 2))
       nlinarith [sq_nonneg
@@ -139,20 +139,20 @@ theorem LadderEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast
     have hcoord : ∀ j : ℕ,
         (((v0⁻¹ • secularLp (D lam) (ℓ lam)
             (depthSecularRoot (D lam) (ℓ lam) k)
-          - w0⁻¹ • hermiteContrastLp k : lp (fun _ : ℕ => ℝ) 2) : ℕ → ℝ) j) ^ 2 =
+          - w0⁻¹ • hermiteContrastLp k : lp (fun _ : ℕ => ℝ) 2) : ℕ → ℝ) j) ^ (2 : ℕ) =
           (secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j / v0
-            - w j / w0) ^ 2 := by
+            - w j / w0) ^ (2 : ℕ) := by
       intro j
       change (v0⁻¹ * (secularLp (D lam) (ℓ lam)
           (depthSecularRoot (D lam) (ℓ lam) k)) j
-        - w0⁻¹ * (hermiteContrastLp k) j) ^ 2 = _
+        - w0⁻¹ * (hermiteContrastLp k) j) ^ (2 : ℕ) = _
       rw [show (secularLp (D lam) (ℓ lam)
           (depthSecularRoot (D lam) (ℓ lam) k)) j =
             secularVector (D lam) (ℓ lam)
               (depthSecularRoot (D lam) (ℓ lam) k) j from
         congrFun (secularLp_coeFn hmemLam) j]
       change (v0⁻¹ * secularVector (D lam) (ℓ lam)
-          (depthSecularRoot (D lam) (ℓ lam) k) j - w0⁻¹ * w j) ^ 2 = _
+          (depthSecularRoot (D lam) (ℓ lam) k) j - w0⁻¹ * w j) ^ (2 : ℕ) = _
       rw [div_eq_mul_inv, div_eq_mul_inv]
       ring
     rw [tsum_congr hcoord, ← herr.sum_add_tsum_nat_add (k + 2)]
@@ -168,7 +168,7 @@ theorem LadderEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast
   have hsqrt : Tendsto (fun lam => Real.sqrt
       (‖(secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0)⁻¹ •
           secularLp (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k)
-        - w0⁻¹ • hermiteContrastLp k‖ ^ 2)) atTop (nhds 0) := by
+        - w0⁻¹ • hermiteContrastLp k‖ ^ (2 : ℕ))) atTop (nhds 0) := by
     simpa only [Function.comp_def, Real.sqrt_zero] using
       (Real.continuous_sqrt.tendsto 0).comp hsq
   have hnorm : Tendsto (fun lam =>
@@ -205,8 +205,8 @@ the card's eigenvector limit. -/
 theorem LadderEnvelope.ccm_depth_normalized_rescaled_secularLp_tendsto_hermiteContrastUnit
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j))) :
     Tendsto (fun lam =>

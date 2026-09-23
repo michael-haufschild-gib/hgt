@@ -172,7 +172,7 @@ theorem horizontal_area_eq_arc
 /-- Inversion turns the horizontal area term into the full lower vertical current. -/
 theorem horizontal_area_eq_bottom
     (hside : ∀ {y : ℝ}, 0 < y → currentAt F 1 (1 / 2) y = currentAt F 1 (-(1 / 2)) y)
-    (harc : ∀ {x y : ℝ}, 0 < y → x ^ 2 + y ^ 2 = 1 →
+    (harc : ∀ {x y : ℝ}, 0 < y → x ^ (2 : ℕ) + y ^ (2 : ℕ) = 1 →
       (x / y) * (currentAt F 1 (-x) y - currentAt F 1 x y) -
         currentAt F Complex.I (-x) y - currentAt F Complex.I x y = 0) {Y : ℝ} (hY : 1 ≤ Y) :
     (∫ p in domain Y, secondAt F 1 1 p) =
@@ -210,7 +210,7 @@ theorem vertical_area_eq_top_sub_bottom {Y : ℝ} (hY : 1 ≤ Y) :
 /-- Standard planar Green identity with the side and circular conditions explicit. -/
 theorem area_laplacian_eq_top
     (hside : ∀ {y : ℝ}, 0 < y → currentAt F 1 (1 / 2) y = currentAt F 1 (-(1 / 2)) y)
-    (harc : ∀ {x y : ℝ}, 0 < y → x ^ 2 + y ^ 2 = 1 →
+    (harc : ∀ {x y : ℝ}, 0 < y → x ^ (2 : ℕ) + y ^ (2 : ℕ) = 1 →
       (x / y) * (currentAt F 1 (-x) y - currentAt F 1 x y) -
         currentAt F Complex.I (-x) y - currentAt F Complex.I x y = 0)
     {Y : ℝ} (hY : 1 ≤ Y) :

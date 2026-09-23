@@ -241,7 +241,7 @@ def xiHeatCassiniWoldPositiveTenthJointAbelCurrent (N : ℕ) (x : ℝ) : ℂ :=
   (xiHeatCassiniOrderedWoldResidualLogDiscrepancy 0 : ℂ) *
       xiHeatCassiniOrderedPrimeComplexNegativePhase 0
         ((x : ℂ) + Complex.I * ((1 / 10 : ℝ) : ℂ)) +
-    expSum (Finset.range N) xiHeatCassiniWoldPositiveTenthJointCoefficient
+    expSum_exponentialSumMeanSquareLower (Finset.range N) xiHeatCassiniWoldPositiveTenthJointCoefficient
       xiHeatCassiniWoldPositiveTenthJointFrequency x
 
 theorem xiHeatCassiniWoldResidualBorelUpperRayFiniteRenormalizedCurrent_positiveTenth_eq_abel
@@ -251,7 +251,7 @@ theorem xiHeatCassiniWoldResidualBorelUpperRayFiniteRenormalizedCurrent_positive
   rw [← integral_xiHeatCassiniWoldResidualBorelUpperRayFiniteJointLaplace_eq_renormalized,
     integral_xiHeatCassiniWoldResidualBorelUpperRayFiniteJointLaplace]
   rw [xiHeatCassiniWoldResidualComplexFiniteAbel]
-  unfold xiHeatCassiniWoldPositiveTenthJointAbelCurrent expSum
+  unfold xiHeatCassiniWoldPositiveTenthJointAbelCurrent expSum_exponentialSumMeanSquareLower
   apply congrArg₂ (fun a b : ℂ => a + b) rfl
   apply Finset.sum_congr rfl
   intro n hn
@@ -313,12 +313,12 @@ theorem xiHeatCassiniWoldResidualBorelUpperRayFiniteRenormalizedCurrent_positive
     {L M : ℕ} (hLM : L ≤ M) (x : ℝ) :
     xiHeatCassiniWoldResidualBorelUpperRayFiniteRenormalizedCurrent x (1 / 10) M -
         xiHeatCassiniWoldResidualBorelUpperRayFiniteRenormalizedCurrent x (1 / 10) L =
-      expSum (Finset.Ico L M) xiHeatCassiniWoldPositiveTenthJointCoefficient
+      expSum_exponentialSumMeanSquareLower (Finset.Ico L M) xiHeatCassiniWoldPositiveTenthJointCoefficient
         xiHeatCassiniWoldPositiveTenthJointFrequency x := by
   rw [
     xiHeatCassiniWoldResidualBorelUpperRayFiniteRenormalizedCurrent_positiveTenth_eq_abel,
     xiHeatCassiniWoldResidualBorelUpperRayFiniteRenormalizedCurrent_positiveTenth_eq_abel]
-  unfold xiHeatCassiniWoldPositiveTenthJointAbelCurrent expSum
+  unfold xiHeatCassiniWoldPositiveTenthJointAbelCurrent expSum_exponentialSumMeanSquareLower
   let f : ℕ → ℂ := fun j =>
     xiHeatCassiniWoldPositiveTenthJointCoefficient j *
       Complex.exp (-Complex.I *

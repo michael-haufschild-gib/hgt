@@ -60,7 +60,7 @@ theorem sum_sq_far_le {En : I → ℝ} {gap : ℝ} (hgap : 0 < gap)
     {H : Matrix I I ℂ} {delta : ℝ} (hdelta : 0 ≤ delta)
     (hnear : ‖H - Matrix.diagonal (fun k => ((En k : ℝ) : ℂ))‖ ≤ delta)
     {e : I → ℂ} (hunit : ‖eucVec e‖ = 1) {mu : ℝ} (heig : H *ᵥ e = (mu : ℂ) • e) :
-    ∑ k ∈ farSet En gap mu, ‖e k‖ ^ 2 ≤ (2 * delta / gap) ^ 2 := by
+    ∑ k ∈ farSet En gap mu, ‖e k‖ ^ (2 : ℕ) ≤ (2 * delta / gap) ^ (2 : ℕ) := by
   classical
   have hres : ∀ k, ((H - Matrix.diagonal (fun k => ((En k : ℝ) : ℂ))) *ᵥ e) k
       = ((mu : ℂ) - (En k : ℂ)) * e k := by
@@ -72,18 +72,18 @@ theorem sum_sq_far_le {En : I → ℝ} {gap : ℝ} (hgap : 0 < gap)
     refine le_trans (Matrix.l2_opNorm_mulVec _ (eucVec e)) ?_
     rw [hunit, mul_one]
     exact hnear
-  have hsum : ∑ k, ‖((mu : ℂ) - (En k : ℂ)) * e k‖ ^ 2 ≤ delta ^ 2 := by
+  have hsum : ∑ k, ‖((mu : ℂ) - (En k : ℂ)) * e k‖ ^ (2 : ℕ) ≤ delta ^ (2 : ℕ) := by
     have hnormsq := norm_eucVec ((H - Matrix.diagonal (fun k => ((En k : ℝ) : ℂ))) *ᵥ e)
-    have hnn : (0 : ℝ) ≤ ∑ k, ‖((H - Matrix.diagonal (fun k => ((En k : ℝ) : ℂ))) *ᵥ e) k‖ ^ 2 := by
+    have hnn : (0 : ℝ) ≤ ∑ k, ‖((H - Matrix.diagonal (fun k => ((En k : ℝ) : ℂ))) *ᵥ e) k‖ ^ (2 : ℕ) := by
       positivity
-    have hsq : Real.sqrt (∑ k, ‖((H - Matrix.diagonal (fun k => ((En k : ℝ) : ℂ))) *ᵥ e) k‖ ^ 2)
+    have hsq : Real.sqrt (∑ k, ‖((H - Matrix.diagonal (fun k => ((En k : ℝ) : ℂ))) *ᵥ e) k‖ ^ (2 : ℕ))
         ≤ delta := by rw [← hnormsq]; exact hbound
     have := Real.sq_sqrt hnn
     nlinarith [hsq, Real.sqrt_nonneg
-      (∑ k, ‖((H - Matrix.diagonal (fun k => ((En k : ℝ) : ℂ))) *ᵥ e) k‖ ^ 2),
-      Finset.sum_congr rfl (fun k (_ : k ∈ Finset.univ) => congrArg (fun z : ℂ => ‖z‖ ^ 2)
+      (∑ k, ‖((H - Matrix.diagonal (fun k => ((En k : ℝ) : ℂ))) *ᵥ e) k‖ ^ (2 : ℕ)),
+      Finset.sum_congr rfl (fun k (_ : k ∈ Finset.univ) => congrArg (fun z : ℂ => ‖z‖ ^ (2 : ℕ))
         (hres k))]
-  have hfar : (gap / 2) ^ 2 * ∑ k ∈ farSet En gap mu, ‖e k‖ ^ 2 ≤ delta ^ 2 := by
+  have hfar : (gap / 2) ^ (2 : ℕ) * ∑ k ∈ farSet En gap mu, ‖e k‖ ^ (2 : ℕ) ≤ delta ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine le_trans (Finset.sum_le_sum fun k hk => ?_)
       (le_trans (Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ (farSet En gap mu))
@@ -96,7 +96,7 @@ theorem sum_sq_far_le {En : I → ℝ} {gap : ℝ} (hgap : 0 < gap)
     rw [norm_mul, mul_pow, hcoef]
     refine mul_le_mul_of_nonneg_right ?_ (by positivity)
     exact pow_le_pow_left₀ (by positivity) hk' 2
-  have hgap2 : (0 : ℝ) < (gap / 2) ^ 2 := by positivity
+  have hgap2 : (0 : ℝ) < (gap / 2) ^ (2 : ℕ) := by positivity
   rw [div_pow, le_div_iff₀ (by positivity)]
   nlinarith [hfar]
 
@@ -112,20 +112,20 @@ theorem norm_inner_eigenvector_uniform_le {En : I → ℝ} {gap : ℝ} (hgap : 0
     (hchiunit : ‖eucVec chi‖ = 1) :
     ‖finiteComplexInner e chi‖ ≤ c + 2 * delta / gap := by
   classical
-  have hesq : ∑ k, ‖e k‖ ^ 2 = 1 := by
+  have hesq : ∑ k, ‖e k‖ ^ (2 : ℕ) = 1 := by
     have := norm_eucVec e
     rw [hunit] at this
-    have hnn : (0 : ℝ) ≤ ∑ k, ‖e k‖ ^ 2 := by positivity
+    have hnn : (0 : ℝ) ≤ ∑ k, ‖e k‖ ^ (2 : ℕ) := by positivity
     nlinarith [Real.sq_sqrt hnn, this]
-  have hchisq : ∑ k, ‖chi k‖ ^ 2 = 1 := by
+  have hchisq : ∑ k, ‖chi k‖ ^ (2 : ℕ) = 1 := by
     have := norm_eucVec chi
     rw [hchiunit] at this
-    have hnn : (0 : ℝ) ≤ ∑ k, ‖chi k‖ ^ 2 := by positivity
+    have hnn : (0 : ℝ) ≤ ∑ k, ‖chi k‖ ^ (2 : ℕ) := by positivity
     nlinarith [Real.sq_sqrt hnn, this]
   have hek : ∀ k, ‖e k‖ ≤ 1 := by
     intro k
-    have hle : ‖e k‖ ^ 2 ≤ ∑ j, ‖e j‖ ^ 2 :=
-      Finset.single_le_sum (f := fun j => ‖e j‖ ^ 2) (fun j _ => by positivity)
+    have hle : ‖e k‖ ^ (2 : ℕ) ≤ ∑ j, ‖e j‖ ^ (2 : ℕ) :=
+      Finset.single_le_sum (f := fun j => ‖e j‖ ^ (2 : ℕ)) (fun j _ => by positivity)
         (Finset.mem_univ k)
     rw [hesq] at hle
     nlinarith [norm_nonneg (e k)]
@@ -151,17 +151,17 @@ theorem norm_inner_eigenvector_uniform_le {En : I → ℝ} {gap : ℝ} (hgap : 0
   have hfar' : ∑ k ∈ farSet En gap mu, ‖e k‖ * ‖chi k‖ ≤ 2 * delta / gap := by
     have hcs := sum_mul_sq_le_sq_mul_sq (farSet En gap mu) (fun k => ‖e k‖) (fun k => ‖chi k‖)
     have hA := sum_sq_far_le (En := En) (gap := gap) hgap hdelta hnear hunit heig
-    have hB : ∑ k ∈ farSet En gap mu, ‖chi k‖ ^ 2 ≤ 1 := by
+    have hB : ∑ k ∈ farSet En gap mu, ‖chi k‖ ^ (2 : ℕ) ≤ 1 := by
       rw [← hchisq]
       exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
         (fun k _ _ => by positivity)
     have hquot : (0 : ℝ) ≤ 2 * delta / gap := by positivity
-    have hAnn : (0 : ℝ) ≤ ∑ k ∈ farSet En gap mu, ‖e k‖ ^ 2 :=
+    have hAnn : (0 : ℝ) ≤ ∑ k ∈ farSet En gap mu, ‖e k‖ ^ (2 : ℕ) :=
       Finset.sum_nonneg fun _ _ => by positivity
-    have hBnn : (0 : ℝ) ≤ ∑ k ∈ farSet En gap mu, ‖chi k‖ ^ 2 :=
+    have hBnn : (0 : ℝ) ≤ ∑ k ∈ farSet En gap mu, ‖chi k‖ ^ (2 : ℕ) :=
       Finset.sum_nonneg fun _ _ => by positivity
-    have hprod : (∑ k ∈ farSet En gap mu, ‖e k‖ * ‖chi k‖) ^ 2
-        ≤ (2 * delta / gap) ^ 2 := by
+    have hprod : (∑ k ∈ farSet En gap mu, ‖e k‖ * ‖chi k‖) ^ (2 : ℕ)
+        ≤ (2 * delta / gap) ^ (2 : ℕ) := by
       refine le_trans hcs ?_
       nlinarith [hA, hB, hAnn, hBnn]
     exact le_of_pow_le_pow_left₀ (by norm_num) hquot hprod
@@ -176,43 +176,43 @@ theorem spectralCollision_le_of_near_diagonal {En : I → ℝ} {gap : ℝ} (hgap
     {ebasis : I → I → ℂ} {lam : I → ℝ} (heb : IsOrthoEigenBasis H ebasis lam)
     {chi : I → ℂ} {c : ℝ} (hc : 0 ≤ c) (hchi : ∀ k, ‖chi k‖ ≤ c)
     (hchiunit : ‖eucVec chi‖ = 1) :
-    spectralCollision ebasis chi ≤ (c + 2 * delta / gap) ^ 2 := by
+    spectralCollision ebasis chi ≤ (c + 2 * delta / gap) ^ (2 : ℕ) := by
   classical
   have hunit : ∀ j, ‖eucVec (ebasis j)‖ = 1 := by
     intro j
     have h := heb.orth j j
     rw [if_pos rfl] at h
     exact norm_eucVec_eq_one h
-  have hparseval : ∑ j, ‖finiteComplexInner (ebasis j) chi‖ ^ 2 = 1 := by
+  have hparseval : ∑ j, ‖finiteComplexInner (ebasis j) chi‖ ^ (2 : ℕ) = 1 := by
     have hpar := parseval_finiteComplexInner heb chi chi
     have hchi1 : finiteComplexInner chi chi = 1 := by
       have := norm_eucVec chi
       rw [hchiunit] at this
-      have hnn : (0 : ℝ) ≤ ∑ k, ‖chi k‖ ^ 2 := by positivity
-      have hsum : ∑ k, ‖chi k‖ ^ 2 = 1 := by nlinarith [Real.sq_sqrt hnn, this]
+      have hnn : (0 : ℝ) ≤ ∑ k, ‖chi k‖ ^ (2 : ℕ) := by positivity
+      have hsum : ∑ k, ‖chi k‖ ^ (2 : ℕ) = 1 := by nlinarith [Real.sq_sqrt hnn, this]
       rw [finiteComplexInner_self_eq_sum_normSq, hsum]
       norm_num
     rw [hchi1] at hpar
-    have : (1 : ℂ) = ((∑ j, ‖finiteComplexInner (ebasis j) chi‖ ^ 2 : ℝ) : ℂ) := by
+    have : (1 : ℂ) = ((∑ j, ‖finiteComplexInner (ebasis j) chi‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [hpar, Complex.ofReal_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [Complex.sq_norm]
       exact (Complex.normSq_eq_conj_mul_self).symm
     exact_mod_cast this.symm
-  have hbound : ∀ j, ‖finiteComplexInner (ebasis j) chi‖ ^ 2 ≤ (c + 2 * delta / gap) ^ 2 := by
+  have hbound : ∀ j, ‖finiteComplexInner (ebasis j) chi‖ ^ (2 : ℕ) ≤ (c + 2 * delta / gap) ^ (2 : ℕ) := by
     intro j
     refine pow_le_pow_left₀ (norm_nonneg _) ?_ 2
     exact norm_inner_eigenvector_uniform_le hgap hsep hdelta hnear (hunit j) (heb.eigen j)
       hc hchi hchiunit
   calc spectralCollision ebasis chi
-      = ∑ j, (‖finiteComplexInner (ebasis j) chi‖ ^ 2) ^ 2 := by
+      = ∑ j, (‖finiteComplexInner (ebasis j) chi‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [finitePureStateFidelity]
-    _ ≤ ∑ j, (c + 2 * delta / gap) ^ 2 * ‖finiteComplexInner (ebasis j) chi‖ ^ 2 := by
+    _ ≤ ∑ j, (c + 2 * delta / gap) ^ (2 : ℕ) * ‖finiteComplexInner (ebasis j) chi‖ ^ (2 : ℕ) := by
         refine Finset.sum_le_sum fun j _ => ?_
         have := hbound j
         nlinarith [sq_nonneg ‖finiteComplexInner (ebasis j) chi‖]
-    _ = (c + 2 * delta / gap) ^ 2 := by
+    _ = (c + 2 * delta / gap) ^ (2 : ℕ) := by
         rw [← Finset.mul_sum, hparseval, mul_one]
 
 end GaloisForLFunctions.HTGeometry

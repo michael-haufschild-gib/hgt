@@ -28,8 +28,8 @@ theorem regularSecondReflectionDecay_nonneg (q : SchwartzMap ℝ ℂ) (upper : B
 
 /-- Uniform nonvanishing of the actual transmissions preserves the second spectral power in both quotients. -/
 theorem globalSmall_regularReflection_second_frequency_bound (q : SchwartzMap ℝ ℂ) (z : ℝ) :
-    |z|^2*‖regularReflectionCoefficient (globalSmallScatteringPotential q) z‖ ≤ regularSecondReflectionDecay q false ∧
-    |z|^2*‖regularReverseReflectionCoefficient (globalSmallScatteringPotential q) z‖ ≤ regularSecondReflectionDecay q true := by
+    |z|^(2 : ℕ)*‖regularReflectionCoefficient (globalSmallScatteringPotential q) z‖ ≤ regularSecondReflectionDecay q false ∧
+    |z|^(2 : ℕ)*‖regularReverseReflectionCoefficient (globalSmallScatteringPotential q) z‖ ≤ regularSecondReflectionDecay q true := by
   have hl := globalSmall_regularTransmission_lower q z
   have hb (upper : Bool) := uniformizedOffDiagonal_second_frequency_bound
     (SchwartzMap.derivCLM ℂ ℂ (globalSmallScatteringPotential q))
@@ -43,26 +43,26 @@ theorem globalSmall_regularReflection_second_frequency_bound (q : SchwartzMap �
   · rw [regularReflectionCoefficient,norm_div,← mul_div_assoc]
     apply (div_le_iff₀ (by linarith [hl.1])).mpr
     have hbf := hb false
-    change |z|^2*‖regularScatteringMatrix (globalSmallScatteringPotential q) z 1 0‖ ≤ _ at hbf
+    change |z|^(2 : ℕ)*‖regularScatteringMatrix (globalSmallScatteringPotential q) z 1 0‖ ≤ _ at hbf
     unfold regularSecondReflectionDecay
     nlinarith [mul_nonneg (hn false) (by linarith : 0 ≤ ‖regularScatteringMatrix (globalSmallScatteringPotential q) z 0 0‖-3/4)]
   · rw [regularReverseReflectionCoefficient,norm_div,← mul_div_assoc]
     apply (div_le_iff₀ (by linarith [hl.2])).mpr
     have hbt := hb true
-    change |z|^2*‖regularScatteringMatrix (globalSmallScatteringPotential q) z 0 1‖ ≤ _ at hbt
+    change |z|^(2 : ℕ)*‖regularScatteringMatrix (globalSmallScatteringPotential q) z 0 1‖ ≤ _ at hbt
     unfold regularSecondReflectionDecay
     nlinarith [mul_nonneg (hn true) (by linarith : 0 ≤ ‖regularScatteringMatrix (globalSmallScatteringPotential q) z 1 1‖-3/4)]
 
 /-- The actual reflection coefficients admit nonsingular, integrable quadratic envelopes. -/
 theorem globalSmall_regularReflection_quadratic_bound (q : SchwartzMap ℝ ℂ) (z : ℝ) :
-    ‖regularReflectionCoefficient (globalSmallScatteringPotential q) z‖ ≤ (1/3+regularSecondReflectionDecay q false)/(1+z^2) ∧
-    ‖regularReverseReflectionCoefficient (globalSmallScatteringPotential q) z‖ ≤ (1/3+regularSecondReflectionDecay q true)/(1+z^2) := by
+    ‖regularReflectionCoefficient (globalSmallScatteringPotential q) z‖ ≤ (1/3+regularSecondReflectionDecay q false)/(1+z^(2 : ℕ)) ∧
+    ‖regularReverseReflectionCoefficient (globalSmallScatteringPotential q) z‖ ≤ (1/3+regularSecondReflectionDecay q true)/(1+z^(2 : ℕ)) := by
   have h0 := globalSmall_regularReflection_bounds q z
   have h2 := globalSmall_regularReflection_second_frequency_bound q z
   rw [sq_abs] at h2
   constructor <;> apply (le_div_iff₀ (by positivity)).mpr <;> nlinarith [h0.1,h0.2,h2.1,h2.2]
 
-theorem quadraticEnvelope_integrable (C : ℝ) : Integrable (fun z : ℝ => C/(1+z^2)) := by
+theorem quadraticEnvelope_integrable (C : ℝ) : Integrable (fun z : ℝ => C/(1+z^(2 : ℕ))) := by
   simpa only [div_eq_mul_inv] using integrable_inv_one_add_sq.const_mul C
 
 /-- Genuine regularized reflection coefficients are integrable, in addition to their already proved L² regularity. -/

@@ -227,7 +227,7 @@ theorem continuousOn_suzukiHankelPsiMinusQuasiDerivativeField
 theorem suzukiHankelSchrodingerPlusFactorized_eq
     {omega a : ℝ} (homega : 1 < omega) (ha : 0 < a) (z : ℂ) :
     suzukiHankelSchrodingerPlusFactorized omega homega z a =
-      z ^ 2 * suzukiHankelPsiPlus omega homega z a := by
+      z ^ (2 : ℕ) * suzukiHankelPsiPlus omega homega z a := by
   rw [suzukiHankelSchrodingerPlusFactorized, suzukiEulerDerivative,
     (hasDerivAt_suzukiHankelPsiPlusQuasiDerivative homega ha z).deriv,
     suzukiHankelPsiPlusQuasiDerivative_eq homega ha z]
@@ -238,7 +238,7 @@ theorem suzukiHankelSchrodingerPlusFactorized_eq
 theorem suzukiHankelSchrodingerMinusFactorized_eq
     {omega a : ℝ} (homega : 1 < omega) (ha : 0 < a) (z : ℂ) :
     suzukiHankelSchrodingerMinusFactorized omega homega z a =
-      z ^ 2 * suzukiHankelPsiMinus omega homega z a := by
+      z ^ (2 : ℕ) * suzukiHankelPsiMinus omega homega z a := by
   rw [suzukiHankelSchrodingerMinusFactorized, suzukiEulerDerivative,
     (hasDerivAt_suzukiHankelPsiMinusQuasiDerivative homega ha z).deriv,
     suzukiHankelPsiMinusQuasiDerivative_eq homega ha z]
@@ -251,7 +251,7 @@ theorem suzukiHankelPsiPlusQuasiDerivativeField_eq_residual
     suzukiHankelPsiPlusQuasiDerivativeField omega homega z a =
       (((suzukiHankelMuScalar omega homega a : ℂ) *
           suzukiHankelPsiPlusQuasiDerivative omega homega z a -
-        z ^ 2 * suzukiHankelPsiPlus omega homega z a) / (a : ℂ)) := by
+        z ^ (2 : ℕ) * suzukiHankelPsiPlus omega homega z a) / (a : ℂ)) := by
   have h := suzukiHankelSchrodingerPlusFactorized_eq homega ha z
   rw [suzukiHankelSchrodingerPlusFactorized, suzukiEulerDerivative,
     (hasDerivAt_suzukiHankelPsiPlusQuasiDerivativeField homega ha z).deriv] at h
@@ -264,7 +264,7 @@ theorem suzukiHankelPsiMinusQuasiDerivativeField_eq_residual
     suzukiHankelPsiMinusQuasiDerivativeField omega homega z a =
       ((-(suzukiHankelMuScalar omega homega a : ℂ) *
           suzukiHankelPsiMinusQuasiDerivative omega homega z a -
-        z ^ 2 * suzukiHankelPsiMinus omega homega z a) / (a : ℂ)) := by
+        z ^ (2 : ℕ) * suzukiHankelPsiMinus omega homega z a) / (a : ℂ)) := by
   have h := suzukiHankelSchrodingerMinusFactorized_eq homega ha z
   rw [suzukiHankelSchrodingerMinusFactorized, suzukiEulerDerivative,
     (hasDerivAt_suzukiHankelPsiMinusQuasiDerivativeField homega ha z).deriv] at h
@@ -303,7 +303,7 @@ theorem suzukiHankelSchrodingerPlus_weak
       (∫ x in p..q,
         (((suzukiHankelMuScalar omega homega x : ℂ) *
             suzukiHankelPsiPlusQuasiDerivative omega homega z x -
-          z ^ 2 * suzukiHankelPsiPlus omega homega z x) / (x : ℂ)) * φ x) = 0 := by
+          z ^ (2 : ℕ) * suzukiHankelPsiPlus omega homega z x) / (x : ℂ)) * φ x) = 0 := by
   have hpos : Icc p q ⊆ Ioi (0 : ℝ) := fun x hx => lt_of_lt_of_le hp hx.1
   have hbase := integral_quasiDerivative_mul_test_add_eq_zero hpq
     (fun x hx => hasDerivAt_suzukiHankelPsiPlusQuasiDerivativeField
@@ -313,14 +313,14 @@ theorem suzukiHankelSchrodingerPlus_weak
   have hInt : (∫ x in p..q,
         (((suzukiHankelMuScalar omega homega x : ℂ) *
             suzukiHankelPsiPlusQuasiDerivative omega homega z x -
-          z ^ 2 * suzukiHankelPsiPlus omega homega z x) / (x : ℂ)) * φ x) =
+          z ^ (2 : ℕ) * suzukiHankelPsiPlus omega homega z x) / (x : ℂ)) * φ x) =
       ∫ x in p..q,
         suzukiHankelPsiPlusQuasiDerivativeField omega homega z x * φ x := by
     apply intervalIntegral.integral_congr
     intro x hx
     change (((suzukiHankelMuScalar omega homega x : ℂ) *
           suzukiHankelPsiPlusQuasiDerivative omega homega z x -
-        z ^ 2 * suzukiHankelPsiPlus omega homega z x) / (x : ℂ)) * φ x =
+        z ^ (2 : ℕ) * suzukiHankelPsiPlus omega homega z x) / (x : ℂ)) * φ x =
       suzukiHankelPsiPlusQuasiDerivativeField omega homega z x * φ x
     rw [suzukiHankelPsiPlusQuasiDerivativeField_eq_residual
       homega (hpos (by simpa [uIcc_of_le hpq] using hx)) z]
@@ -336,7 +336,7 @@ theorem suzukiHankelSchrodingerMinus_weak
       (∫ x in p..q,
         ((-(suzukiHankelMuScalar omega homega x : ℂ) *
             suzukiHankelPsiMinusQuasiDerivative omega homega z x -
-          z ^ 2 * suzukiHankelPsiMinus omega homega z x) / (x : ℂ)) * φ x) = 0 := by
+          z ^ (2 : ℕ) * suzukiHankelPsiMinus omega homega z x) / (x : ℂ)) * φ x) = 0 := by
   have hpos : Icc p q ⊆ Ioi (0 : ℝ) := fun x hx => lt_of_lt_of_le hp hx.1
   have hbase := integral_quasiDerivative_mul_test_add_eq_zero hpq
     (fun x hx => hasDerivAt_suzukiHankelPsiMinusQuasiDerivativeField
@@ -346,14 +346,14 @@ theorem suzukiHankelSchrodingerMinus_weak
   have hInt : (∫ x in p..q,
         ((-(suzukiHankelMuScalar omega homega x : ℂ) *
             suzukiHankelPsiMinusQuasiDerivative omega homega z x -
-          z ^ 2 * suzukiHankelPsiMinus omega homega z x) / (x : ℂ)) * φ x) =
+          z ^ (2 : ℕ) * suzukiHankelPsiMinus omega homega z x) / (x : ℂ)) * φ x) =
       ∫ x in p..q,
         suzukiHankelPsiMinusQuasiDerivativeField omega homega z x * φ x := by
     apply intervalIntegral.integral_congr
     intro x hx
     change ((-(suzukiHankelMuScalar omega homega x : ℂ) *
           suzukiHankelPsiMinusQuasiDerivative omega homega z x -
-        z ^ 2 * suzukiHankelPsiMinus omega homega z x) / (x : ℂ)) * φ x =
+        z ^ (2 : ℕ) * suzukiHankelPsiMinus omega homega z x) / (x : ℂ)) * φ x =
       suzukiHankelPsiMinusQuasiDerivativeField omega homega z x * φ x
     rw [suzukiHankelPsiMinusQuasiDerivativeField_eq_residual
       homega (hpos (by simpa [uIcc_of_le hpq] using hx)) z]
@@ -436,7 +436,7 @@ def suzukiHankelSchrodingerPlusExpanded
   -suzukiEulerDerivative
       (fun b => suzukiEulerDerivative
         (suzukiHankelPsiPlus omega homega z) b) a +
-    ((suzukiHankelMuScalar omega homega a : ℂ) ^ 2 -
+    ((suzukiHankelMuScalar omega homega a : ℂ) ^ (2 : ℕ) -
       suzukiEulerDerivative
         (fun b => (suzukiHankelMuScalar omega homega b : ℂ)) a) *
       suzukiHankelPsiPlus omega homega z a
@@ -446,7 +446,7 @@ def suzukiHankelSchrodingerMinusExpanded
   -suzukiEulerDerivative
       (fun b => suzukiEulerDerivative
         (suzukiHankelPsiMinus omega homega z) b) a +
-    ((suzukiHankelMuScalar omega homega a : ℂ) ^ 2 +
+    ((suzukiHankelMuScalar omega homega a : ℂ) ^ (2 : ℕ) +
       suzukiEulerDerivative
         (fun b => (suzukiHankelMuScalar omega homega b : ℂ)) a) *
       suzukiHankelPsiMinus omega homega z a
@@ -515,7 +515,7 @@ theorem suzukiHankelSchrodingerPlusExpanded_eq_of_regular
     {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a)
     (hsquare : ∀ n : ℕ, a ≠ Real.sqrt n) (z : ℂ) :
     suzukiHankelSchrodingerPlusExpanded omega homega z a =
-      z ^ 2 * suzukiHankelPsiPlus omega homega z a := by
+      z ^ (2 : ℕ) * suzukiHankelPsiPlus omega homega z a := by
   rw [suzukiHankelSchrodingerPlusExpanded_eq_factorized_of_regular
     homega ha hsquare z,
     suzukiHankelSchrodingerPlusFactorized_eq homega
@@ -525,7 +525,7 @@ theorem suzukiHankelSchrodingerMinusExpanded_eq_of_regular
     {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a)
     (hsquare : ∀ n : ℕ, a ≠ Real.sqrt n) (z : ℂ) :
     suzukiHankelSchrodingerMinusExpanded omega homega z a =
-      z ^ 2 * suzukiHankelPsiMinus omega homega z a := by
+      z ^ (2 : ℕ) * suzukiHankelPsiMinus omega homega z a := by
   rw [suzukiHankelSchrodingerMinusExpanded_eq_factorized_of_regular
     homega ha hsquare z,
     suzukiHankelSchrodingerMinusFactorized_eq homega
@@ -537,9 +537,9 @@ arithmetic cusp. -/
 theorem suzuki2012_theorem_four_schrodinger_pair :
     ∀ (omega : ℝ) (homega : 1 < omega) (a : ℝ), 0 < a → ∀ (z : ℂ),
       suzukiHankelSchrodingerPlusFactorized omega homega z a =
-          z ^ 2 * suzukiHankelPsiPlus omega homega z a ∧
+          z ^ (2 : ℕ) * suzukiHankelPsiPlus omega homega z a ∧
         suzukiHankelSchrodingerMinusFactorized omega homega z a =
-          z ^ 2 * suzukiHankelPsiMinus omega homega z a := by
+          z ^ (2 : ℕ) * suzukiHankelPsiMinus omega homega z a := by
   intro omega homega a ha z
   exact ⟨suzukiHankelSchrodingerPlusFactorized_eq homega ha z,
     suzukiHankelSchrodingerMinusFactorized_eq homega ha z⟩
@@ -556,13 +556,13 @@ theorem suzuki2012_theorem_four_schrodinger_pair_weak :
         (∫ x in p..q,
           (((suzukiHankelMuScalar omega homega x : ℂ) *
               suzukiHankelPsiPlusQuasiDerivative omega homega z x -
-            z ^ 2 * suzukiHankelPsiPlus omega homega z x) / (x : ℂ)) * φ x) = 0) ∧
+            z ^ (2 : ℕ) * suzukiHankelPsiPlus omega homega z x) / (x : ℂ)) * φ x) = 0) ∧
       ((∫ x in p..q,
           suzukiHankelPsiMinusQuasiDerivative omega homega z x * deriv φ x) +
         (∫ x in p..q,
           ((-(suzukiHankelMuScalar omega homega x : ℂ) *
               suzukiHankelPsiMinusQuasiDerivative omega homega z x -
-            z ^ 2 * suzukiHankelPsiMinus omega homega z x) / (x : ℂ)) * φ x) = 0) := by
+            z ^ (2 : ℕ) * suzukiHankelPsiMinus omega homega z x) / (x : ℂ)) * φ x) = 0) := by
   intro omega homega p q hp hpq z φ hφ hφp hφq
   exact ⟨suzukiHankelSchrodingerPlus_weak homega hp hpq z φ hφ hφp hφq,
     suzukiHankelSchrodingerMinus_weak homega hp hpq z φ hφ hφp hφq⟩

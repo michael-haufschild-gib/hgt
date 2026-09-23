@@ -78,7 +78,7 @@ theorem reader_contact_normal (r : XiZeroCopy) (side outer : Bool) (x : P)
 /-- Actual ingoing orbit coefficient of the original left reader. -/
 def readerOrbitAmplitude (r : XiZeroCopy) (side outer : Bool) (j : Fin 2) (p R : ℝ) : ℂ :=
   if j=0 then deriv (fun u => leftAmplitude r side outer ![p,u]) R
-  else ((R:ℂ)^2-1)*deriv (fun u => leftAmplitude r side outer ![p,u]) R+
+  else ((R:ℂ)^(2 : ℕ)-1)*deriv (fun u => leftAmplitude r side outer ![p,u]) R+
     deriv (fun u => leftAmplitude r side outer ![u,R]) p
 
 /-- Original reader orbit differentiation retains its literal angular field. -/
@@ -125,9 +125,9 @@ private theorem reader_orbit_differentiable (r : XiZeroCopy) (side outer : Bool)
     coordDeriv_contDiffAt hW (by simp) 0
   have hR := hCR.differentiableAt (by simp)
   have hp := hCp.differentiableAt (by simp)
-  have hrad : DifferentiableAt ℝ (fun z : P => (z 1:ℂ)^2-1) x := by fun_prop
+  have hrad : DifferentiableAt ℝ (fun z : P => (z 1:ℂ)^(2 : ℕ)-1) x := by fun_prop
   change DifferentiableAt ℝ (fun z => if j=0 then coordDeriv 1 (leftScalar r side outer) z
-    else ((z 1:ℂ)^2-1)*coordDeriv 1 (leftScalar r side outer) z+
+    else ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (leftScalar r side outer) z+
       coordDeriv 0 (leftScalar r side outer) z) x
   by_cases hj : j=0
   · simpa only [if_pos hj] using hR
@@ -163,17 +163,17 @@ def forcingScale (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (p R : ℝ) : ℂ 
   let s := D4BMModularCore.physicalRate q branch
   let t := D4BMIngoingCoordinates.tortoise R
   let u := (radialUnit t:ℂ);
-  -2*(1-u^2)*u*sourceAmplitude s 0 amp 1 t*timeOnset (2*s) p
+  -2*(1-u^(2 : ℕ))*u*sourceAmplitude s 0 amp 1 t*timeOnset (2*s) p
 
 def forcingValueCoefficient (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (p R : ℝ) : ℂ :=
   let s := D4BMModularCore.physicalRate q branch
   let u := (radialUnit (D4BMIngoingCoordinates.tortoise R):ℂ)
-  forcingScale q branch amp p R*((5*s^2+15*s+4)/4+s*(s-1)*u^2*(s+2)*(2*s+3)/4)
+  forcingScale q branch amp p R*((5*s^(2 : ℕ)+15*s+4)/4+s*(s-1)*u^(2 : ℕ)*(s+2)*(2*s+3)/4)
 
 def forcingLaplacianCoefficient (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (p R : ℝ) : ℂ :=
   let s := D4BMModularCore.physicalRate q branch
   let u := (radialUnit (D4BMIngoingCoordinates.tortoise R):ℂ)
-  forcingScale q branch amp p R*(-s*(s-1)*u^2/8)
+  forcingScale q branch amp p R*(-s*(s-1)*u^(2 : ℕ)/8)
 
 /-- Full gradient energy is retained through the actual angular equation, not discarded. -/
 theorem original_forcing_laplacian (q : XiZeroCopy) (branch : Bool) (amp : ℂ)

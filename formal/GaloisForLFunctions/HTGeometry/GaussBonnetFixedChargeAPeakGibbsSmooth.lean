@@ -14,18 +14,18 @@ open scoped Topology ContDiff
 namespace GaloisForLFunctions.HTGeometry
 
 theorem egbFixedChargeAPeakNormalizedGibbsForce_decomposition (w φ τ l ψ : ℝ) :
-    egbFixedChargeAPeakNormalizedGibbsForce w φ τ l ψ = -4 * sin ψ * cos ψ ^ 3 +
+    egbFixedChargeAPeakNormalizedGibbsForce w φ τ l ψ = -4 * sin ψ * cos ψ ^ (3 : ℕ) +
       egbCoexistenceASymmetricRatio τ * egbFixedChargeAAlignedAngularCorrection w φ (egbFixedChargeAAlignedForceState w φ τ l) ψ := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have h := egbFixedChargeAPeakNormalizedGibbsForce_correction_formula w φ τ l ψ
-  change (egbFixedChargeAPeakNormalizedGibbsForce w φ τ l ψ + 4 * sin ψ * cos ψ ^ 3) / egbCoexistenceASymmetricRatio τ =
+  change (egbFixedChargeAPeakNormalizedGibbsForce w φ τ l ψ + 4 * sin ψ * cos ψ ^ (3 : ℕ)) / egbCoexistenceASymmetricRatio τ =
     egbFixedChargeAAlignedAngularCorrection w φ (egbFixedChargeAAlignedForceState w φ τ l) ψ at h
   have he := (div_eq_iff hd.ne').mp h
   nlinarith
 
 theorem egbFixedChargeAPeakNormalizedGibbsForce_contDiff (w φ τ l : ℝ) :
     ContDiff ℝ ∞ (egbFixedChargeAPeakNormalizedGibbsForce w φ τ l) := by
-  have hf : egbFixedChargeAPeakNormalizedGibbsForce w φ τ l = fun ψ => -4 * sin ψ * cos ψ ^ 3 +
+  have hf : egbFixedChargeAPeakNormalizedGibbsForce w φ τ l = fun ψ => -4 * sin ψ * cos ψ ^ (3 : ℕ) +
       egbCoexistenceASymmetricRatio τ * egbFixedChargeAAlignedAngularCorrection w φ (egbFixedChargeAAlignedForceState w φ τ l) ψ :=
     funext (egbFixedChargeAPeakNormalizedGibbsForce_decomposition w φ τ l)
   rw [hf]
@@ -44,7 +44,7 @@ theorem egbFixedChargeAPeakNormalizedGibbs_contDiff (w φ τ l₁ l₂ : ℝ) :
     exact egbFixedChargeAPeakNormalizedGibbsForce_contDiff w φ τ l₂
 
 theorem egbFixedChargeAQuarticProfile_hasDerivAt (ψ : ℝ) :
-    HasDerivAt (fun x : ℝ => cos x ^ 4) (-4 * sin ψ * cos ψ ^ 3) ψ := by
+    HasDerivAt (fun x : ℝ => cos x ^ (4 : ℕ)) (-4 * sin ψ * cos ψ ^ (3 : ℕ)) ψ := by
   have h := (hasDerivAt_cos ψ).pow 4
   apply h.congr_deriv
   norm_num only [Nat.reduceSub, Nat.cast_ofNat, Pi.pow_apply]

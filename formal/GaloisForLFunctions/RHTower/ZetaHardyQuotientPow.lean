@@ -46,7 +46,7 @@ theorem halfShift_ne_zero {w : ℂ} (hw : 0 < w.re) : w + 1 / 2 ≠ 0 := by
 
 /-- The Hardy representative computes the renormalised zeta quotient. -/
 theorem zetaHardyCore_eq {w : ℂ} (hw : 0 < w.re) (hw1 : w ≠ 1 / 2) :
-    zetaHardyCore w = (w + 1 / 2 - 1) * riemannZeta (w + 1 / 2) / (w + 1 / 2) ^ 2 := by
+    zetaHardyCore w = (w + 1 / 2 - 1) * riemannZeta (w + 1 / 2) / (w + 1 / 2) ^ (2 : ℕ) := by
   have hre : 0 < (w + 1 / 2).re := halfShift_re_pos hw
   have hne1 : w + 1 / 2 ≠ 1 := by
     intro h

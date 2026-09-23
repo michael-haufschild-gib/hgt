@@ -42,7 +42,7 @@ private theorem cast_heathBrownPrimitiveLogRayMass_le_realRatio_of_lt
     {m1 m2 delta : ℝ} (hm1 : 0 < m1) (hm2 : 0 < m2) (hm : m2 ≤ m1)
     (hdelta0 : 0 < delta) (hdelta1 : delta ≤ 1) :
     (heathBrownPrimitiveLogRayMass N m1 m2 delta : ℝ) ≤
-      4 * delta * (N : ℝ) ^ 2 +
+      4 * delta * (N : ℝ) ^ (2 : ℕ) +
         ((N : ℝ) / (N0 : ℝ)) *
           (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
         (N : ℝ) / (N0 : ℝ) := by
@@ -85,17 +85,17 @@ private theorem cast_heathBrownPrimitiveLogRayMass_le_realRatio_of_lt
       simp
       ring
     _ ≤ x * ((heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
-        (4 * delta * (N : ℝ) ^ 2 + 1)) := by
+        (4 * delta * (N : ℝ) ^ (2 : ℕ) + 1)) := by
       apply mul_le_mul_of_nonneg_left _ hx0
       exact add_le_add hsum (by simpa [D] using hcard)
-    _ ≤ 4 * delta * (N : ℝ) ^ 2 +
+    _ ≤ 4 * delta * (N : ℝ) ^ (2 : ℕ) +
         x * (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) + x := by
       have hx1 : x ≤ 1 := by
         dsimp [x]
         exact (div_le_one (by exact_mod_cast hN0)).mpr (by exact_mod_cast hNN0.le)
-      have hpack0 : 0 ≤ 4 * delta * (N : ℝ) ^ 2 := by positivity
+      have hpack0 : 0 ≤ 4 * delta * (N : ℝ) ^ (2 : ℕ) := by positivity
       nlinarith
-    _ = 4 * delta * (N : ℝ) ^ 2 +
+    _ = 4 * delta * (N : ℝ) ^ (2 : ℕ) +
         ((N : ℝ) / (N0 : ℝ)) *
           (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
         (N : ℝ) / (N0 : ℝ) := by rfl
@@ -106,7 +106,7 @@ theorem cast_heathBrownPrimitiveLogRayMass_le_twoScale_realRatio
     {m1 m2 delta : ℝ} (hm1 : 0 < m1) (hm2 : 0 < m2) (hm : m2 ≤ m1)
     (hdelta0 : 0 < delta) (hdelta1 : delta ≤ 1) :
     (heathBrownPrimitiveLogRayMass N m1 m2 delta : ℝ) ≤
-      19 * delta * (N : ℝ) ^ 2 +
+      19 * delta * (N : ℝ) ^ (2 : ℕ) +
         (2 * (N : ℝ) / (N0 : ℝ)) *
           (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
         3 * (N : ℝ) / (N0 : ℝ) := by
@@ -140,19 +140,19 @@ theorem cast_heathBrownPrimitiveLogRayMass_le_twoScale_realRatio
         _ = 3 * (N : ℝ) / (N0 : ℝ) := by ring
     calc
       (heathBrownPrimitiveLogRayMass N m1 m2 delta : ℝ) ≤
-          15 * delta * (N : ℝ) ^ 2 +
+          15 * delta * (N : ℝ) ^ (2 : ℕ) +
             ((N / N0 + 1 : ℕ) : ℝ) *
               (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
             ((2 * (N / N0) + 1 : ℕ) : ℝ) := hbase
-      _ ≤ 15 * delta * (N : ℝ) ^ 2 +
+      _ ≤ 15 * delta * (N : ℝ) ^ (2 : ℕ) +
             (2 * (N : ℝ) / (N0 : ℝ)) *
               (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
             3 * (N : ℝ) / (N0 : ℝ) := by gcongr
-      _ ≤ 19 * delta * (N : ℝ) ^ 2 +
+      _ ≤ 19 * delta * (N : ℝ) ^ (2 : ℕ) +
             (2 * (N : ℝ) / (N0 : ℝ)) *
               (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) +
             3 * (N : ℝ) / (N0 : ℝ) := by
-        have hdiag0 : 0 ≤ delta * (N : ℝ) ^ 2 := by positivity
+        have hdiag0 : 0 ≤ delta * (N : ℝ) ^ (2 : ℕ) := by positivity
         linarith
   · exact (cast_heathBrownPrimitiveLogRayMass_le_realRatio_of_lt
         hN hN0 (Nat.lt_of_not_ge hN0N) hm1 hm2 hm hdelta0 hdelta1).trans
@@ -160,12 +160,12 @@ theorem cast_heathBrownPrimitiveLogRayMass_le_twoScale_realRatio
         have hratio0 : 0 ≤ (N : ℝ) / (N0 : ℝ) := by positivity
         have hmass0 : 0 ≤
             (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) := by positivity
-        have hdiag0 : 0 ≤ delta * (N : ℝ) ^ 2 := by positivity
+        have hdiag0 : 0 ≤ delta * (N : ℝ) ^ (2 : ℕ) := by positivity
         have hmix0 : 0 ≤ (N : ℝ) / (N0 : ℝ) *
             (heathBrownPrimitiveLogRayMass N0 m1 m2 delta : ℝ) :=
           mul_nonneg hratio0 hmass0
-        have hdiag : 4 * delta * (N : ℝ) ^ 2 ≤
-            19 * delta * (N : ℝ) ^ 2 := by nlinarith
+        have hdiag : 4 * delta * (N : ℝ) ^ (2 : ℕ) ≤
+            19 * delta * (N : ℝ) ^ (2 : ℕ) := by nlinarith
         have hcoef : (N : ℝ) / (N0 : ℝ) ≤ 2 * (N : ℝ) / (N0 : ℝ) := by
           calc
             (N : ℝ) / (N0 : ℝ) ≤ 2 * ((N : ℝ) / (N0 : ℝ)) := by linarith

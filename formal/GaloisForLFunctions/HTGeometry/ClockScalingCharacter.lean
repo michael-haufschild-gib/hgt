@@ -32,7 +32,7 @@ theorem commuting_with_scaling_is_scaling
     (hν0 : ν ≠ 0) (hν1 : ν ≠ 1) (hνm1 : ν ≠ -1)
     (hinv : a * d - b * c ≠ 0)
     (hlin : ∀ x y z : C, algebraMap C E x + algebraMap C E y * q
-        + algebraMap C E z * q ^ 2 = 0 → x = 0 ∧ y = 0 ∧ z = 0)
+        + algebraMap C E z * q ^ (2 : ℕ) = 0 → x = 0 ∧ y = 0 ∧ z = 0)
     (hρ0q : ρ₀ q = algebraMap C E ν * q)
     (hΨq : Ψ q * (algebraMap C E c * q + algebraMap C E d)
         = algebraMap C E a * q + algebraMap C E b)
@@ -71,7 +71,7 @@ theorem commuting_family_scaling_character
     (hν0 : ν ≠ 0) (hν1 : ν ≠ 1) (hνm1 : ν ≠ -1)
     (hanchor : ρ ν₀ q = algebraMap C E ν * q)
     (hlin : ∀ x y z : C, algebraMap C E x + algebraMap C E y * q
-        + algebraMap C E z * q ^ 2 = 0 → x = 0 ∧ y = 0 ∧ z = 0)
+        + algebraMap C E z * q ^ (2 : ℕ) = 0 → x = 0 ∧ y = 0 ∧ z = 0)
     (hmob : ∀ lam, ∃ a b c d : C, a * d - b * c ≠ 0 ∧
       ρ lam q * (algebraMap C E c * q + algebraMap C E d)
         = algebraMap C E a * q + algebraMap C E b)

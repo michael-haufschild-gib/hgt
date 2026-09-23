@@ -16,7 +16,7 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 /-- The weighted source in the radial first-order equation. -/
-def radialPolynomialSource (P : ℝ[X]) : ℝ[X] := C (8 * Real.pi) * (X ^ 2 * P)
+def radialPolynomialSource (P : ℝ[X]) : ℝ[X] := C (8 * Real.pi) * (X ^ (2 : ℕ) * P)
 
 /-- Reuse the existing anchored antiderivative at the regular center. -/
 def radialPolynomialPrimitive (P : ℝ[X]) : ℝ[X] :=
@@ -101,7 +101,7 @@ theorem radialPolynomialCorrection_coeff (P : ℝ[X]) (n : ℕ) :
 
 /-- The exact primitive is the actual interval integral from the regular center. -/
 theorem radialPolynomialCorrection_integral_balance (P : ℝ[X]) (r : ℝ) :
-    r * (radialPolynomialCorrection P).eval r = ∫ s in 0..r, 8 * Real.pi * s ^ 2 * P.eval s := by
+    r * (radialPolynomialCorrection P).eval r = ∫ s in 0..r, 8 * Real.pi * s ^ (2 : ℕ) * P.eval s := by
   have h := congrArg (fun Q : ℝ[X] => Q.eval r) (radialPolynomialCorrection_primitive P)
   rw [eval_mul, eval_X, radialPolynomialPrimitive,
     eval_anchoredRealAntiderivative_eq_add_integral] at h
@@ -109,7 +109,7 @@ theorem radialPolynomialCorrection_integral_balance (P : ℝ[X]) (r : ℝ) :
 
 /-- Equation (15) holds at every radius; the polynomial gives the regular value at zero. -/
 theorem radialPolynomialCorrection_integral (P : ℝ[X]) (r : ℝ) :
-    (radialPolynomialCorrection P).eval r = (∫ s in 0..r, 8 * Real.pi * s ^ 2 * P.eval s) / r := by
+    (radialPolynomialCorrection P).eval r = (∫ s in 0..r, 8 * Real.pi * s ^ (2 : ℕ) * P.eval s) / r := by
   by_cases hr : r = 0
   · subst r
     simp only [radialPolynomialCorrection_zero, intervalIntegral.integral_same, zero_div]
@@ -118,7 +118,7 @@ theorem radialPolynomialCorrection_integral (P : ℝ[X]) (r : ℝ) :
 
 /-- The constructed correction satisfies the actual differential equation. -/
 theorem radialPolynomialCorrection_hasDerivAt (P : ℝ[X]) (r : ℝ) :
-    HasDerivAt (fun s => s * (radialPolynomialCorrection P).eval s) (8 * Real.pi * r ^ 2 * P.eval r) r := by
+    HasDerivAt (fun s => s * (radialPolynomialCorrection P).eval s) (8 * Real.pi * r ^ (2 : ℕ) * P.eval r) r := by
   have h := congrArg (fun Q : ℝ[X] => Q.eval r) (radialPolynomialCorrection_equation P)
   simp only [radialPolynomialOperator, radialPolynomialSource, eval_add, eval_mul, eval_X, eval_C, eval_pow] at h
   have hd := (hasDerivAt_id r).mul ((radialPolynomialCorrection P).hasDerivAt r)
@@ -127,7 +127,7 @@ theorem radialPolynomialCorrection_hasDerivAt (P : ℝ[X]) (r : ℝ) :
 
 /-- The regular correction starts at quadratic order, exactly. -/
 theorem radialPolynomialCorrection_quadratic_factor (P : ℝ[X]) :
-    radialPolynomialCorrection P = X ^ 2 * (radialPolynomialCorrection P).divX.divX := by
+    radialPolynomialCorrection P = X ^ (2 : ℕ) * (radialPolynomialCorrection P).divX.divX := by
   have h0 := X_mul_divX_add (radialPolynomialCorrection P)
   rw [radialPolynomialCorrection_coeff_zero, C_0, add_zero] at h0
   have h1 := X_mul_divX_add (radialPolynomialCorrection P).divX
@@ -135,7 +135,7 @@ theorem radialPolynomialCorrection_quadratic_factor (P : ℝ[X]) :
   calc
     radialPolynomialCorrection P = X * (radialPolynomialCorrection P).divX := h0.symm
     _ = X * (X * (radialPolynomialCorrection P).divX.divX) := congrArg (fun Q : ℝ[X] => X * Q) h1.symm
-    _ = X ^ 2 * (radialPolynomialCorrection P).divX.divX := by ring
+    _ = X ^ (2 : ℕ) * (radialPolynomialCorrection P).divX.divX := by ring
 
 theorem radialPolynomialCorrection_normalized_core (P : ℝ[X]) :
     (radialPolynomialCorrection P).divX.divX.eval 0 = 8 * Real.pi * P.eval 0 / 3 := by
@@ -156,9 +156,9 @@ theorem radialPolynomialCorrection_derivative_zero (P : ℝ[X]) :
 
 /-- Exact normalized quadratic core limit along every positive radial approach. -/
 theorem radialPolynomialCorrection_core_limit (P : ℝ[X]) :
-    Tendsto (fun t => (radialPolynomialCorrection P).eval (Real.exp t) / Real.exp t ^ 2) atBot
+    Tendsto (fun t => (radialPolynomialCorrection P).eval (Real.exp t) / Real.exp t ^ (2 : ℕ)) atBot
       (𝓝 (8 * Real.pi * P.eval 0 / 3)) := by
-  have he : (fun t => (radialPolynomialCorrection P).eval (Real.exp t) / Real.exp t ^ 2) =
+  have he : (fun t => (radialPolynomialCorrection P).eval (Real.exp t) / Real.exp t ^ (2 : ℕ)) =
       (fun t => (radialPolynomialCorrection P).divX.divX.eval (Real.exp t)) := by
     funext t
     have h := congrArg (fun Q : ℝ[X] => Q.eval (Real.exp t))
@@ -171,15 +171,15 @@ theorem radialPolynomialCorrection_core_limit (P : ℝ[X]) :
 
 /-- A constant curvature source produces a purely quadratic metric correction. -/
 theorem radialPolynomialCorrection_constant (c : ℝ) :
-    radialPolynomialCorrection (C c) = C (8 * Real.pi * c / 3) * X ^ 2 := by
+    radialPolynomialCorrection (C c) = C (8 * Real.pi * c / 3) * X ^ (2 : ℕ) := by
   ext n
   cases n with
   | zero => simp only [radialPolynomialCorrection_coeff_zero, coeff_C_mul, coeff_X_pow, OfNat.zero_ne_ofNat, if_false, mul_zero]
   | succ n =>
     cases n with
-    | zero => simpa only [Nat.zero_add] using (show (radialPolynomialCorrection (C c)).coeff 1 = (C (8 * Real.pi * c / 3) * X ^ 2).coeff 1 by simp [radialPolynomialCorrection_coeff_one])
+    | zero => simpa only [Nat.zero_add] using (show (radialPolynomialCorrection (C c)).coeff 1 = (C (8 * Real.pi * c / 3) * X ^ (2 : ℕ)).coeff 1 by simp [radialPolynomialCorrection_coeff_one])
     | succ n =>
-      change (radialPolynomialCorrection (C c)).coeff (n + 2) = (C (8 * Real.pi * c / 3) * X ^ 2).coeff (n + 2)
+      change (radialPolynomialCorrection (C c)).coeff (n + 2) = (C (8 * Real.pi * c / 3) * X ^ (2 : ℕ)).coeff (n + 2)
       rw [radialPolynomialCorrection_coeff]
       by_cases hn : n = 0
       · subst n
@@ -193,7 +193,7 @@ def radialPolynomialCorrectionFamily (P : ℝ[X]) (c r : ℝ) : ℝ :=
 /-- Every integration constant solves the same radial equation at every positive radius. -/
 theorem radialPolynomialCorrectionFamily_equation (P : ℝ[X]) (c t : ℝ) :
     HasDerivAt (fun r => r * radialPolynomialCorrectionFamily P c r)
-      (8 * Real.pi * Real.exp t ^ 2 * P.eval (Real.exp t)) (Real.exp t) := by
+      (8 * Real.pi * Real.exp t ^ (2 : ℕ) * P.eval (Real.exp t)) (Real.exp t) := by
   have he : (fun r => r * radialPolynomialCorrectionFamily P c r) =ᶠ[𝓝 (Real.exp t)]
       (fun r => r * (radialPolynomialCorrection P).eval r + c) := by
     filter_upwards [eventually_gt_nhds (Real.exp_pos t)] with r hr

@@ -21,7 +21,7 @@ import GaloisForLFunctions.HTGeometry.MotohashiContinuousTerm
 namespace HTGeometry
 
 /-- Weyl-law exponent for the cuspidal spectrum of `GL(n)`: the dimension of `SL(n,ℝ)/SO(n)`. -/
-def cuspidalWeylExponent (n : ℚ) : ℚ := (n^2 + n - 2) / 2
+def cuspidalWeylExponent (n : ℚ) : ℚ := (n^(2 : ℕ) + n - 2) / 2
 
 /-- Dimension of the minimal Eisenstein family on `GL(n)`: its continuous spectral parameters. -/
 def eisensteinFamilyExponent (n : ℚ) : ℚ := n - 1

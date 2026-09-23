@@ -64,7 +64,7 @@ theorem connesScaleWindow_eq {Λ u : ℝ} (hΛ : 0 < Λ) :
 
 /-- **§V (30).**  The `x`-window integral of the multiplicative Haar density. -/
 theorem connes_scaleWindow_integral {Λ u : ℝ} (hΛ : 0 < Λ) (hu0 : u ≠ 0)
-    (hu : |u| ≤ Λ ^ 2) :
+    (hu : |u| ≤ Λ ^ (2 : ℕ)) :
     (∫ x in connesScaleWindow Λ u, |x|⁻¹) = 2 * (2 * Real.log Λ - Real.log |u|) := by
   have hq0 : (0:ℝ) < |u| / Λ := div_pos (abs_pos.mpr hu0) hΛ
   have hqΛ : |u| / Λ ≤ Λ := by
@@ -174,7 +174,7 @@ theorem connesFubiniIntegrand_slice_fst (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (h�
   · rw [connesFubiniIntegrand, Set.indicator_of_notMem hx,
       Set.indicator_of_notMem (fun hc => hx (hiff.mpr hc))]
 
-theorem connesScaleWindow_eq_empty {Λ u : ℝ} (hΛ : 0 < Λ) (hu : Λ ^ 2 < |u|) :
+theorem connesScaleWindow_eq_empty {Λ u : ℝ} (hΛ : 0 < Λ) (hu : Λ ^ (2 : ℕ) < |u|) :
     connesScaleWindow Λ u = ∅ := by
   ext x
   simp only [connesScaleWindow, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_and]
@@ -196,7 +196,7 @@ theorem measurableSet_connesScaleWindow (Λ u : ℝ) : MeasurableSet (connesScal
 theorem connes_fubini_slice_norm (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (hΛ : 0 < Λ) {u : ℝ}
     (hu : u ≠ 0) :
     (∫ x : ℝ, ‖connesFubiniIntegrand G Λ (x, u)‖)
-      = ‖G u‖ * Set.indicator {v : ℝ | |v| ≤ Λ ^ 2}
+      = ‖G u‖ * Set.indicator {v : ℝ | |v| ≤ Λ ^ (2 : ℕ)}
         (fun v : ℝ => 2 * (2 * Real.log Λ - Real.log |v|)) u := by
   have hslice : ∀ x : ℝ, ‖connesFubiniIntegrand G Λ (x, u)‖
       = Set.indicator (connesScaleWindow Λ u) (fun x : ℝ => ‖G u‖ * |x|⁻¹) x := by
@@ -210,16 +210,16 @@ theorem connes_fubini_slice_norm (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (hΛ : 0 <
   simp only [hslice]
   rw [MeasureTheory.integral_indicator (measurableSet_connesScaleWindow Λ u),
     MeasureTheory.integral_const_mul]
-  by_cases hcase : |u| ≤ Λ ^ 2
-  · have hmem : u ∈ {v : ℝ | |v| ≤ Λ ^ 2} := hcase
+  by_cases hcase : |u| ≤ Λ ^ (2 : ℕ)
+  · have hmem : u ∈ {v : ℝ | |v| ≤ Λ ^ (2 : ℕ)} := hcase
     rw [Set.indicator_of_mem hmem, connes_scaleWindow_integral hΛ hu hcase]
-  · have hmem : u ∉ {v : ℝ | |v| ≤ Λ ^ 2} := hcase
+  · have hmem : u ∉ {v : ℝ | |v| ≤ Λ ^ (2 : ℕ)} := hcase
     rw [Set.indicator_of_notMem hmem, connesScaleWindow_eq_empty hΛ (not_le.mp hcase)]
     simp
 
 theorem connes_scaleWindow_integrableOn {Λ u : ℝ} (hΛ : 0 < Λ) (hu0 : u ≠ 0) :
     IntegrableOn (fun x : ℝ => |x|⁻¹) (connesScaleWindow Λ u) := by
-  by_cases hcase : |u| ≤ Λ ^ 2
+  by_cases hcase : |u| ≤ Λ ^ (2 : ℕ)
   · have hq0 : (0:ℝ) < |u| / Λ := div_pos (abs_pos.mpr hu0) hΛ
     have hqΛ : |u| / Λ ≤ Λ := by rw [div_le_iff₀ hΛ]; nlinarith
     have hcont : ContinuousOn (fun x : ℝ => |x|⁻¹)
@@ -266,7 +266,7 @@ theorem connes_fubiniIntegrand_integrable (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (
       exact hr.mul_const _
     simpa using this
   · have hcongr : (fun u : ℝ => ∫ x : ℝ, ‖connesFubiniIntegrand G Λ (x, u)‖)
-        =ᵐ[volume] fun u : ℝ => ‖G u‖ * Set.indicator {v : ℝ | |v| ≤ Λ ^ 2}
+        =ᵐ[volume] fun u : ℝ => ‖G u‖ * Set.indicator {v : ℝ | |v| ≤ Λ ^ (2 : ℕ)}
           (fun v : ℝ => 2 * (2 * Real.log Λ - Real.log |v|)) u := by
       filter_upwards [hae0] with u hu
       exact connes_fubini_slice_norm G hΛ0 hu
@@ -287,8 +287,8 @@ theorem connes_fubiniIntegrand_integrable (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (
       exact ((measurable_const.sub (measurable_norm.log)).const_mul 2).aestronglyMeasurable
     · filter_upwards with u
       have hGnn : (0:ℝ) ≤ ‖G u‖ := norm_nonneg _
-      by_cases hc : |u| ≤ Λ ^ 2
-      · have hmem : u ∈ {v : ℝ | |v| ≤ Λ ^ 2} := hc
+      by_cases hc : |u| ≤ Λ ^ (2 : ℕ)
+      · have hmem : u ∈ {v : ℝ | |v| ≤ Λ ^ (2 : ℕ)} := hc
         rw [Set.indicator_of_mem hmem, Real.norm_eq_abs, abs_mul, abs_of_nonneg hGnn]
         have htri : abs (2 * Real.log Λ - Real.log |u|)
             ≤ abs (2 * Real.log Λ) + abs (Real.log |u|) :=
@@ -302,7 +302,7 @@ theorem connes_fubiniIntegrand_integrable (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (
           linarith
         simp only [Pi.add_apply]
         nlinarith [hGnn, hb, abs_nonneg (Real.log |u|)]
-      · have hmem : u ∉ {v : ℝ | |v| ≤ Λ ^ 2} := hc
+      · have hmem : u ∉ {v : ℝ | |v| ≤ Λ ^ (2 : ℕ)} := hc
         rw [Set.indicator_of_notMem hmem, mul_zero, norm_zero]
         simp only [Pi.add_apply]
         positivity
@@ -359,7 +359,7 @@ the square `|x| ≤ Λ`, `|ξ| ≤ Λ` into the frequency integral against the l
 `2 log' Λ - log|u|` over `|u| ≤ Λ²`. -/
 theorem connes_symbol_changeOfVariables (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (hΛ : 1 < Λ) :
     (2:ℂ)⁻¹ * (∫ x in {x : ℝ | |x| ≤ Λ}, ∫ ξ in {ξ : ℝ | |ξ| ≤ Λ}, G (x * ξ))
-      = ∫ u in {u : ℝ | |u| ≤ Λ ^ 2}, G u * (((2 * Real.log Λ - Real.log |u|) : ℝ) : ℂ) := by
+      = ∫ u in {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)}, G u * (((2 * Real.log Λ - Real.log |u|) : ℝ) : ℂ) := by
   have hΛ0 : (0:ℝ) < Λ := lt_trans one_pos hΛ
   have hae0 : ∀ᵐ u : ℝ, u ≠ 0 := by
     have h0 : (volume : Measure ℝ) {(0:ℝ)} = 0 := Real.volume_singleton
@@ -367,7 +367,7 @@ theorem connes_symbol_changeOfVariables (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (h�
     simpa using hu
   have hmeasX : MeasurableSet {x : ℝ | |x| ≤ Λ} :=
     measurableSet_le measurable_norm measurable_const
-  have hmeasU : MeasurableSet {u : ℝ | |u| ≤ Λ ^ 2} :=
+  have hmeasU : MeasurableSet {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)} :=
     measurableSet_le measurable_norm measurable_const
   -- step A: the iterated integral in `x` first
   have hstepA : (∫ x : ℝ, ∫ u : ℝ, connesFubiniIntegrand G Λ (x, u))
@@ -390,7 +390,7 @@ theorem connes_symbol_changeOfVariables (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (h�
     exact connes_fubiniIntegrand_integrable G hΛ
   -- step C: the inner `x`-integral is the logarithmic weight
   have hstepC : (∫ u : ℝ, ∫ x : ℝ, connesFubiniIntegrand G Λ (x, u))
-      = 2 * ∫ u in {u : ℝ | |u| ≤ Λ ^ 2},
+      = 2 * ∫ u in {u : ℝ | |u| ≤ Λ ^ (2 : ℕ)},
           G u * (((2 * Real.log Λ - Real.log |u|) : ℝ) : ℂ) := by
     rw [← MeasureTheory.integral_indicator hmeasU, ← MeasureTheory.integral_const_mul]
     refine integral_congr_ae ?_
@@ -405,8 +405,8 @@ theorem connes_symbol_changeOfVariables (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (h�
     simp only [hslice]
     rw [MeasureTheory.integral_mul_const,
       MeasureTheory.integral_indicator (measurableSet_connesScaleWindow Λ u)]
-    by_cases hcase : |u| ≤ Λ ^ 2
-    · have hmem : u ∈ {v : ℝ | |v| ≤ Λ ^ 2} := hcase
+    by_cases hcase : |u| ≤ Λ ^ (2 : ℕ)
+    · have hmem : u ∈ {v : ℝ | |v| ≤ Λ ^ (2 : ℕ)} := hcase
       rw [Set.indicator_of_mem hmem]
       have hwin : IntegrableOn (fun x : ℝ => |x|⁻¹) (connesScaleWindow Λ u) :=
         connes_scaleWindow_integrableOn hΛ0 hu
@@ -417,7 +417,7 @@ theorem connes_symbol_changeOfVariables (G : SchwartzMap ℝ ℂ) {Λ : ℝ} (h�
       rw [hcast, connes_scaleWindow_integral hΛ0 hu hcase]
       push_cast
       ring
-    · have hmem : u ∉ {v : ℝ | |v| ≤ Λ ^ 2} := hcase
+    · have hmem : u ∉ {v : ℝ | |v| ≤ Λ ^ (2 : ℕ)} := hcase
       rw [Set.indicator_of_notMem hmem, connesScaleWindow_eq_empty hΛ0 (not_le.mp hcase)]
       simp
   rw [← hstepA, hstepB, hstepC]

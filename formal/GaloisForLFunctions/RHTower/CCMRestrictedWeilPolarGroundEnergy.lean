@@ -24,7 +24,7 @@ namespace RHTower
 def polarRayleighSet (a : SuzukiPositiveAperture) : Set ℝ :=
   {r | ∃ u : CCMArchimedeanFormDomain a, IsPolarConstrained a u ∧
     ccmArchimedeanFormToAperture a u ≠ 0 ∧
-    r = ccmRestrictedWeilSourceQuadratic a u / ‖ccmArchimedeanFormToAperture a u‖ ^ 2}
+    r = ccmRestrictedWeilSourceQuadratic a u / ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ)}
 
 /-- The pole-vanishing ground energy. -/
 noncomputable def ccmRestrictedWeilPolarGroundEnergy (a : SuzukiPositiveAperture) : ℝ :=
@@ -37,7 +37,7 @@ theorem polarRayleighSet_nonempty (a : SuzukiPositiveAperture) : (polarRayleighS
 theorem ccmRestrictedWeilGroundEnergy_mem_lowerBounds (a : SuzukiPositiveAperture) :
     ccmRestrictedWeilGroundEnergy a ∈ lowerBounds (polarRayleighSet a) := by
   rintro r ⟨u, -, hne, rfl⟩
-  have hpos : 0 < ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+  have hpos : 0 < ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) := by
     have := norm_pos_iff.mpr hne
     positivity
   rw [le_div_iff₀ hpos]
@@ -55,19 +55,19 @@ theorem ccmRestrictedWeilPolarGroundEnergy_le_rayleigh (a : SuzukiPositiveApertu
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u)
     (hne : ccmArchimedeanFormToAperture a u ≠ 0) :
     ccmRestrictedWeilPolarGroundEnergy a ≤
-      ccmRestrictedWeilSourceQuadratic a u / ‖ccmArchimedeanFormToAperture a u‖ ^ 2 :=
+      ccmRestrictedWeilSourceQuadratic a u / ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) :=
   csInf_le (polarRayleighSet_bddBelow a) ⟨u, hu, hne, rfl⟩
 
 /-- **The constrained Rayleigh floor.** -/
 theorem ccmRestrictedWeilPolarGroundEnergy_mul_le (a : SuzukiPositiveAperture)
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u) :
-    ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ≤
+    ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ≤
       ccmRestrictedWeilSourceQuadratic a u := by
   by_cases hne : ccmArchimedeanFormToAperture a u = 0
   · have hu0 : u = 0 := ccmArchimedeanFormToAperture_injective a (by rw [hne, map_zero])
     rw [hne, norm_zero, hu0, ccmRestrictedWeilSourceQuadratic_zero]
     simp
-  · have hpos : 0 < ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+  · have hpos : 0 < ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) := by
       have := norm_pos_iff.mpr hne
       positivity
     have := ccmRestrictedWeilPolarGroundEnergy_le_rayleigh a u hu hne
@@ -76,11 +76,11 @@ theorem ccmRestrictedWeilPolarGroundEnergy_mul_le (a : SuzukiPositiveAperture)
 /-- A floor on constrained vectors is below the pole-vanishing ground energy. -/
 theorem le_ccmRestrictedWeilPolarGroundEnergy_of_floor (a : SuzukiPositiveAperture) {m : ℝ}
     (hm : ∀ u : CCMArchimedeanFormDomain a, IsPolarConstrained a u →
-      m * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ≤ ccmRestrictedWeilSourceQuadratic a u) :
+      m * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ≤ ccmRestrictedWeilSourceQuadratic a u) :
     m ≤ ccmRestrictedWeilPolarGroundEnergy a := by
   refine le_csInf (polarRayleighSet_nonempty a) ?_
   rintro r ⟨u, hu, hne, rfl⟩
-  have hpos : 0 < ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+  have hpos : 0 < ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) := by
     have := norm_pos_iff.mpr hne
     positivity
   rw [le_div_iff₀ hpos]
@@ -136,15 +136,15 @@ theorem exists_polarConstrained_smooth_rayleigh_lt (a : SuzukiPositiveAperture) 
       IsPolarConstrained a g.toCCMFormVector ∧
         ccmArchimedeanFormToAperture a g.toCCMFormVector ≠ 0 ∧
         ccmRestrictedWeilSourceQuadratic a g.toCCMFormVector /
-            ‖ccmArchimedeanFormToAperture a g.toCCMFormVector‖ ^ 2 <
+            ‖ccmArchimedeanFormToAperture a g.toCCMFormVector‖ ^ (2 : ℕ) <
           ccmRestrictedWeilPolarGroundEnergy a + ε := by
   obtain ⟨r, ⟨u, hu, hne, rfl⟩, hr⟩ := exists_lt_of_csInf_lt (polarRayleighSet_nonempty a)
     (show sInf (polarRayleighSet a) < ccmRestrictedWeilPolarGroundEnergy a + ε / 2 by
       unfold ccmRestrictedWeilPolarGroundEnergy; linarith)
   -- continuity of the Rayleigh quotient at `u`
   let R : CCMArchimedeanFormDomain a → ℝ := fun v =>
-    ccmRestrictedWeilSourceQuadratic a v / ‖ccmArchimedeanFormToAperture a v‖ ^ 2
-  have hnorm0 : ‖ccmArchimedeanFormToAperture a u‖ ^ 2 ≠ 0 := by
+    ccmRestrictedWeilSourceQuadratic a v / ‖ccmArchimedeanFormToAperture a v‖ ^ (2 : ℕ)
+  have hnorm0 : ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ) ≠ 0 := by
     have := norm_pos_iff.mpr hne
     positivity
   have hR : ContinuousAt R u := by

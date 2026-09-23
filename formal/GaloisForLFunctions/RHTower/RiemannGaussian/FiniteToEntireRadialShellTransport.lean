@@ -593,10 +593,10 @@ theorem exists_radialRouche_fixedShellHeatTransport_sequence_of_not_rh
                 (quantitativeSpectralRadialBoundary (m + 1))) tau ≤
             (K *
                 (2 *
-                    (quantitativeSpectralRadialBoundary (m + 1) + 1) + 1) ^ 2 /
+                    (quantitativeSpectralRadialBoundary (m + 1) + 1) + 1) ^ (2 : ℕ) /
                   Real.log 2) *
               (tau⁻¹ * Real.exp
-                (-((quantitativeSpectralRadialBoundary m - ‖u‖) ^ 2 *
+                (-((quantitativeSpectralRadialBoundary m - ‖u‖) ^ (2 : ℕ) *
                   tau))) := by
   obtain ⟨eta, heta, z, hz, _hxi, A, _, C, _, B, hdata⟩ :=
     exists_radialRouche_crossStageDivisor_vanishingHeatTail_sequence_of_not_rh

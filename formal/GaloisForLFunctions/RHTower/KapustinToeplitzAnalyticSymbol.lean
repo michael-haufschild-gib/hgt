@@ -23,7 +23,7 @@ def kapustinToeplitzAnalyticSymbol (z : ℂ) : ℂ :=
   (Complex.Gamma ((1 / 2 : ℂ) + z * I) /
       Complex.Gamma ((1 / 2 : ℂ) - z * I)) *
     Complex.exp (-2 * I * z * (Real.log (2 * Real.pi) : ℂ)) *
-      ((z + I) / (z - I)) ^ 4
+      ((z + I) / (z - I)) ^ (4 : ℕ)
 
 theorem gammaVertical_ratio_eq_exp_two_phase (x : ℝ) :
     Complex.Gamma ((1 / 2 : ℂ) + (x : ℂ) * I) /
@@ -120,7 +120,7 @@ theorem analyticAt_kapustinToeplitzAnalyticSymbol_ofReal (x : ℝ) :
     (fun z => (Complex.Gamma ((1 / 2 : ℂ) + z * I) /
       Complex.Gamma ((1 / 2 : ℂ) - z * I)) *
       Complex.exp (-2 * I * z * (Real.log (2 * Real.pi) : ℂ)) *
-      ((z + I) / (z - I)) ^ 4) (x : ℂ)
+      ((z + I) / (z - I)) ^ (4 : ℕ)) (x : ℂ)
   exact ((hplusGamma.div hminusGamma hminusNe).mul
     (((analyticAt_const.mul analyticAt_id).mul analyticAt_const).cexp)).mul
       (hcayley.pow 4)

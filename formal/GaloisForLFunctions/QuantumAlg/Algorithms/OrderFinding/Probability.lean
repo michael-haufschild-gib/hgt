@@ -105,7 +105,7 @@ private theorem goodPhaseRegisterOutcome_error_bound {t s r : ℕ} {j : Fin (2 ^
 
 /-- Shor's nearest-fraction condition `|c/q - d/r| ≤ 1/(2q)` implies the
 continued-fraction recovery radius used by the Lean good-outcome predicate when
-the phase register size satisfies `q > r^2`. -/
+the phase register size satisfies `q > r^(2 : ℕ)`. -/
 theorem shorNearestFraction_isGoodPhaseRegisterOutcome {t d r : ℕ}
     {j : Fin (2 ^ t)} (hr : 0 < r)
     (hq : (r : ℝ) ^ 2 < (2 : ℝ) ^ t)
@@ -267,7 +267,7 @@ private theorem shorOrderRecoverySuccessLowerBound_nonneg (r : ℕ) :
   unfold shorOrderRecoverySuccessLowerBound
   positivity
 
-/-- The source count `r * φ(r)` and pointwise lower bound `1/(3r^2)` multiply
+/-- The source count `r * φ(r)` and pointwise lower bound `1/(3r^(2 : ℕ))` multiply
 to Shor's stated order-recovery lower bound `φ(r)/(3r)`. -/
 theorem shorRecoverableStateCount_mul_pointwiseLowerBound_eq_successLowerBound
     {r : ℕ} (hr : 0 < r) :

@@ -31,7 +31,7 @@ theorem integral_Iic_fourier_triC_re_eq {δ : ℝ} (hδ : 0 < δ) (W : ℝ) :
 
 /-- **The mass of the weight outside a symmetric band.** -/
 theorem integral_compl_Icc_fourier_triC_re_le {δ : ℝ} (hδ : 0 < δ) {W : ℝ} (hW : 0 < W) :
-    (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re) ≤ 2 / (Real.pi ^ 2 * W) := by
+    (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re) ≤ 2 / (Real.pi ^ (2 : ℕ) * W) := by
   have hK : Integrable fun w : ℝ => (𝓕 (triC δ) w).re := (integrable_fourier_triC hδ).re
   have hnn : 0 ≤ᵐ[volume] fun w : ℝ => (𝓕 (triC δ) w).re :=
     Filter.Eventually.of_forall (fourier_triC_re_nonneg hδ)
@@ -59,28 +59,28 @@ theorem integral_compl_Icc_fourier_triC_re_le {δ : ℝ} (hδ : 0 < δ) {W : ℝ
       (Filter.Eventually.of_forall hsub)
   have htail := integral_Ioi_fourier_triC_re_le hδ hW
   rw [hunion, integral_Iic_fourier_triC_re_eq hδ] at hmono
-  have hW2 : (0 : ℝ) < Real.pi ^ 2 * W := by positivity
+  have hW2 : (0 : ℝ) < Real.pi ^ (2 : ℕ) * W := by positivity
   calc (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re)
       ≤ (∫ w in Set.Ioi W, (𝓕 (triC δ) w).re)
           + ∫ w in Set.Ioi W, (𝓕 (triC δ) w).re := hmono
-    _ ≤ 1 / (Real.pi ^ 2 * W) + 1 / (Real.pi ^ 2 * W) := by linarith
-    _ = 2 / (Real.pi ^ 2 * W) := by ring
+    _ ≤ 1 / (Real.pi ^ (2 : ℕ) * W) + 1 / (Real.pi ^ (2 : ℕ) * W) := by linarith
+    _ = 2 / (Real.pi ^ (2 : ℕ) * W) := by ring
 
 /-- **Gallagher's identity, split at a frequency height.** -/
 theorem gallagher_split (a : ℕ → ℂ) (s : Finset ℕ) {δ M₁ M₂ W : ℝ} (hδ : 0 < δ) (hW : 0 < W)
     (hM₁ : 0 ≤ M₁) (hM₂ : 0 ≤ M₂)
-    (h₁ : ∀ w ∈ Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2 ≤ M₁)
-    (h₂ : ∀ w : ℝ, ‖logPoly a s w‖ ^ 2 ≤ M₂) :
-    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2) ≤ M₁ * δ + M₂ * (2 / (Real.pi ^ 2 * W)) := by
+    (h₁ : ∀ w ∈ Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ) ≤ M₁)
+    (h₂ : ∀ w : ℝ, ‖logPoly a s w‖ ^ (2 : ℕ) ≤ M₂) :
+    (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ (2 : ℕ)) ≤ M₁ * δ + M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)) := by
   have hK : Integrable fun w : ℝ => (𝓕 (triC δ) w).re := (integrable_fourier_triC hδ).re
   have hnn : 0 ≤ᵐ[volume] fun w : ℝ => (𝓕 (triC δ) w).re :=
     Filter.Eventually.of_forall (fourier_triC_re_nonneg hδ)
-  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2 :=
+  have hF : Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ) :=
     integrable_gallagher_weight_mul hδ a s
   rw [gallagher_identity a s hδ]
   rw [← integral_add_compl (measurableSet_Icc (a := -W) (b := W)) hF]
-  have hin : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2) ≤ M₁ * δ := by
-    have hstep : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
+  have hin : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ)) ≤ M₁ * δ := by
+    have hstep : (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
         ≤ ∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re * M₁ := by
       refine setIntegral_mono_on hF.integrableOn (hK.mul_const M₁).integrableOn
         measurableSet_Icc fun w hw => ?_
@@ -93,9 +93,9 @@ theorem gallagher_split (a : ℕ → ℂ) (s : Finset ℕ) {δ M₁ M₂ W : ℝ
     calc (∫ w in Set.Icc (-W) W, (𝓕 (triC δ) w).re) * M₁ ≤ δ * M₁ :=
           mul_le_mul_of_nonneg_right hmass hM₁
       _ = M₁ * δ := by ring
-  have hout : (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
-      ≤ M₂ * (2 / (Real.pi ^ 2 * W)) := by
-    have hstep : (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ 2)
+  have hout : (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)) := by
+    have hstep : (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * ‖logPoly a s w‖ ^ (2 : ℕ))
         ≤ ∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re * M₂ := by
       refine setIntegral_mono_on hF.integrableOn (hK.mul_const M₂).integrableOn
         (measurableSet_Icc.compl) fun w _ => ?_
@@ -104,8 +104,8 @@ theorem gallagher_split (a : ℕ → ℂ) (s : Finset ℕ) {δ M₁ M₂ W : ℝ
     rw [integral_mul_const]
     have hmass := integral_compl_Icc_fourier_triC_re_le hδ hW
     calc (∫ w in (Set.Icc (-W) W)ᶜ, (𝓕 (triC δ) w).re) * M₂
-        ≤ (2 / (Real.pi ^ 2 * W)) * M₂ := mul_le_mul_of_nonneg_right hmass hM₂
-      _ = M₂ * (2 / (Real.pi ^ 2 * W)) := by ring
+        ≤ (2 / (Real.pi ^ (2 : ℕ) * W)) * M₂ := mul_le_mul_of_nonneg_right hmass hM₂
+      _ = M₂ * (2 / (Real.pi ^ (2 : ℕ) * W)) := by ring
   linarith
 
 end RHTower.Sieve

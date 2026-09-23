@@ -80,7 +80,7 @@ theorem hypertranscendental_deBrangesReciprocalGammaExponent :
       rw [deBrangesReciprocalGammaExponent]
       have hp := reciprocalGammaEntire_mul_one_sub_eq_deBrangesProduct z
       calc
-        reciprocalGammaEntire z ^ 2 -
+        reciprocalGammaEntire z ^ (2 : ℕ) -
               (reciprocalGammaEntire z + reciprocalGammaEntire (1 - z)) *
                 reciprocalGammaEntire z + deBrangesReciprocalGammaProduct z =
             -(reciprocalGammaEntire z * reciprocalGammaEntire (1 - z)) +

@@ -133,7 +133,7 @@ theorem laguerre_zeroList_length_le :
   induction m with
   | zero =>
     intro c a _ hc l hl
-    have hN : ∀ x : ℝ, expSum (fun i => c i * a i ^ 0) a x ≠ 0 := by
+    have hN : ∀ x : ℝ, expSum (fun i => c i * a i ^ (0 : ℕ)) a x ≠ 0 := by
       intro x
       rw [expSum, Fin.sum_univ_one]
       simp only [pow_zero, mul_one]

@@ -32,26 +32,26 @@ namespace RHTower
 /-! ### The right half-plane -/
 
 /-- The open right half-plane. -/
-def rightHalfPlane : Set ℂ := {z : ℂ | 0 < z.re}
+def rightHalfPlane_chronologicalTailKernelAnalytic : Set ℂ := {z : ℂ | 0 < z.re}
 
-theorem mem_rightHalfPlane {z : ℂ} : z ∈ rightHalfPlane ↔ 0 < z.re := Iff.rfl
+theorem mem_rightHalfPlane {z : ℂ} : z ∈ rightHalfPlane_chronologicalTailKernelAnalytic ↔ 0 < z.re := Iff.rfl
 
-theorem isOpen_rightHalfPlane : IsOpen rightHalfPlane :=
+theorem isOpen_rightHalfPlane_chronologicalTailKernelAnalytic : IsOpen rightHalfPlane_chronologicalTailKernelAnalytic :=
   isOpen_lt continuous_const Complex.continuous_re
 
-theorem convex_rightHalfPlane : Convex ℝ rightHalfPlane := by
-  have : rightHalfPlane = {z : ℂ | 0 < Complex.reLm z} := rfl
+theorem convex_rightHalfPlane_chronologicalTailKernelAnalytic : Convex ℝ rightHalfPlane_chronologicalTailKernelAnalytic := by
+  have : rightHalfPlane_chronologicalTailKernelAnalytic = {z : ℂ | 0 < Complex.reLm z} := rfl
   rw [this]
   exact convex_halfSpace_gt (LinearMap.isLinear Complex.reLm) 0
 
-theorem isPreconnected_rightHalfPlane : IsPreconnected rightHalfPlane :=
-  (convex_rightHalfPlane).isPreconnected
+theorem isPreconnected_rightHalfPlane : IsPreconnected rightHalfPlane_chronologicalTailKernelAnalytic :=
+  (convex_rightHalfPlane_chronologicalTailKernelAnalytic).isPreconnected
 
-theorem ofReal_mem_rightHalfPlane {t : ℝ} (ht : 0 < t) : (t : ℂ) ∈ rightHalfPlane := by
+theorem ofReal_mem_rightHalfPlane {t : ℝ} (ht : 0 < t) : (t : ℂ) ∈ rightHalfPlane_chronologicalTailKernelAnalytic := by
   simpa [mem_rightHalfPlane] using ht
 
 theorem mul_ofReal_mem_rightHalfPlane {x : ℝ} (hx : 0 < x) {u : ℂ}
-    (hu : u ∈ rightHalfPlane) : (x : ℂ) * u ∈ rightHalfPlane := by
+    (hu : u ∈ rightHalfPlane_chronologicalTailKernelAnalytic) : (x : ℂ) * u ∈ rightHalfPlane_chronologicalTailKernelAnalytic := by
   rw [mem_rightHalfPlane, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
     sub_zero]
   exact mul_pos hx hu
@@ -75,7 +75,7 @@ theorem ne_zero_of_re_pos {z : ℂ} (hz : 0 < z.re) : z ≠ 0 := by
 
 /-- **The kernel is analytic on the open right half-plane.** -/
 theorem boseKernelC_differentiableOn :
-    DifferentiableOn ℂ boseKernelC rightHalfPlane := by
+    DifferentiableOn ℂ boseKernelC rightHalfPlane_chronologicalTailKernelAnalytic := by
   intro z hz
   have hz' : 0 < z.re := hz
   have hz0 : z ≠ 0 := ne_zero_of_re_pos hz'
@@ -86,8 +86,8 @@ theorem boseKernelC_differentiableOn :
   · exact (differentiableAt_const 1).div
       ((Complex.differentiable_exp z).sub (differentiableAt_const 1)) hden
 
-theorem boseKernelC_analyticOnNhd : AnalyticOnNhd ℂ boseKernelC rightHalfPlane :=
-  boseKernelC_differentiableOn.analyticOnNhd isOpen_rightHalfPlane
+theorem boseKernelC_analyticOnNhd : AnalyticOnNhd ℂ boseKernelC rightHalfPlane_chronologicalTailKernelAnalytic :=
+  boseKernelC_differentiableOn.analyticOnNhd isOpen_rightHalfPlane_chronologicalTailKernelAnalytic
 
 /-- On the positive axis the complex kernel is the real Bose defect. -/
 theorem boseKernelC_ofReal {t : ℝ} (ht : 0 < t) :

@@ -23,16 +23,16 @@ noncomputable section
 /-- The slope of the partitioned affine majorant. -/
 def ramarePartSlope (M L : ℕ) (Q η : ℝ) (V : ℕ → ℝ) (Dslope : ℝ) : ℝ :=
   2 * (L : ℝ) * ∑ j ∈ Finset.range L,
-      V j ^ 2 * (5 * Real.pi / 2 * ((geomCofactorBlock M Q η j).card : ℝ))
+      V j ^ (2 : ℕ) * (5 * Real.pi / 2 * ((geomCofactorBlock M Q η j).card : ℝ))
     + 2 * Dslope
 
 /-- The constant of the partitioned affine majorant. -/
 def ramarePartConst (M L : ℕ) (Q η w₀ : ℝ) (V U Vlow Us J : ℕ → ℝ) (Dconst : ℝ) : ℝ :=
   2 * (L : ℝ) * ∑ j ∈ Finset.range L,
-      (V j ^ 2 * (5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
+      (V j ^ (2 : ℕ) * (5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
             * ((geomCofactorBlock M Q η j).card : ℝ))
-        + Us j ^ 2 * J j
-        + Vlow j ^ 2 * U j ^ 2 * (2 * w₀))
+        + Us j ^ (2 : ℕ) * J j
+        + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀))
     + 2 * Dconst
 
 /-- **The partitioned affine majorant.**  Uniform over every window below `T₀`. -/
@@ -40,7 +40,7 @@ theorem integral_normSq_ramareBilinear_affine_partitioned_le {P : Finset ℕ} (M
     {Q η w₀ T₀ Dslope Dconst : ℝ} (hQ : 1 < Q) (hη : 0 ≤ η) (hw₀ : 0 ≤ w₀) {L : ℕ} (hL : 1 ≤ L)
     (hP : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * (1 + η) ^ L)
     (hDfct : ∀ W : ℝ, 1 ≤ W → W ≤ T₀ →
-      (∫ w in Set.Icc (-W) W, ‖ramareLadderError P M Q η L w‖ ^ 2) ≤ Dslope * W + Dconst)
+      (∫ w in Set.Icc (-W) W, ‖ramareLadderError P M Q η L w‖ ^ (2 : ℕ)) ≤ Dslope * W + Dconst)
     {S : Set ℝ} (hSm : MeasurableSet S)
     (V U Vlow Us J : ℕ → ℝ) (hV : ∀ j, 0 ≤ V j) (hU : ∀ j, 0 ≤ U j) (hVlow : ∀ j, 0 ≤ Vlow j)
     (hann : ∀ j ∈ Finset.range L, ∀ w ∈ S \ Set.Icc (-w₀) w₀,
@@ -49,13 +49,13 @@ theorem integral_normSq_ramareBilinear_affine_partitioned_le {P : Finset ℕ} (M
       ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ≤ Us j)
     (hJ : ∀ j ∈ Finset.range L,
       (∫ w in (Set.Icc (-T₀) T₀ \ S) \ Set.Icc (-w₀) w₀,
-        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2) ≤ J j)
+        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)) ≤ J j)
     (hlowP : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ≤ U j) :
     ∀ W : ℝ, 1 ≤ W → w₀ ≤ W → W ≤ T₀ →
-      (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ 2)
+      (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
         ≤ ramarePartSlope M L Q η V Dslope * W
           + ramarePartConst M L Q η w₀ V U Vlow Us J Dconst := by
   classical
@@ -85,11 +85,11 @@ theorem integral_normSq_ramareBilinear_affine_partitioned_le {P : Finset ℕ} (M
     fun j hj w hw => hcof j hj w (hsubU hw)
   have hJW : ∀ j ∈ Finset.range L,
       (∫ w in (Set.Icc (-W) W \ SW) \ Set.Icc (-w₀) w₀,
-        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2) ≤ J j := by
+        ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)) ≤ J j := by
     intro j hj
-    have hcont : Continuous fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2 :=
+    have hcont : Continuous fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ) :=
       ((continuous_primeBlockPoly _).norm).pow 2
-    have hint : IntegrableOn (fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2)
+    have hint : IntegrableOn (fun w : ℝ => ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ))
         ((Set.Icc (-T₀) T₀ \ S) \ Set.Icc (-w₀) w₀) volume :=
       (hcont.integrableOn_Icc (a := -T₀) (b := T₀)).mono_set
         (fun u hu => hu.1.1)
@@ -102,16 +102,16 @@ theorem integral_normSq_ramareBilinear_affine_partitioned_le {P : Finset ℕ} (M
   refine hbase.trans (le_of_eq ?_)
   rw [ramarePartSlope, ramarePartConst]
   have hterm : ∀ j ∈ Finset.range L,
-      (V j ^ 2 * ((5 * Real.pi / 2 * W
+      (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * W
             + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
           * ((geomCofactorBlock M Q η j).card : ℝ))
-        + Us j ^ 2 * J j
-        + Vlow j ^ 2 * U j ^ 2 * (2 * w₀))
-      = V j ^ 2 * (5 * Real.pi / 2 * ((geomCofactorBlock M Q η j).card : ℝ)) * W
-        + (V j ^ 2 * (5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
+        + Us j ^ (2 : ℕ) * J j
+        + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀))
+      = V j ^ (2 : ℕ) * (5 * Real.pi / 2 * ((geomCofactorBlock M Q η j).card : ℝ)) * W
+        + (V j ^ (2 : ℕ) * (5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
               * ((geomCofactorBlock M Q η j).card : ℝ))
-            + Us j ^ 2 * J j
-            + Vlow j ^ 2 * U j ^ 2 * (2 * w₀)) := by
+            + Us j ^ (2 : ℕ) * J j
+            + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)) := by
     intro j _
     ring
   rw [Finset.sum_congr rfl hterm, Finset.sum_add_distrib, ← Finset.sum_mul]
@@ -139,10 +139,10 @@ theorem ramarePartConst_nonneg (M L : ℕ) (Q η : ℝ) {w₀ Dconst : ℝ}
     0 ≤ ramarePartConst M L Q η w₀ V U Vlow Us J Dconst := by
   refine add_nonneg (mul_nonneg (by positivity) (Finset.sum_nonneg fun j _ => ?_))
     (by linarith)
-  have h1 : (0 : ℝ) ≤ V j ^ 2 * (5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
+  have h1 : (0 : ℝ) ≤ V j ^ (2 : ℕ) * (5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
       * ((geomCofactorBlock M Q η j).card : ℝ)) := by positivity
-  have h2 : (0 : ℝ) ≤ Us j ^ 2 * J j := mul_nonneg (sq_nonneg _) (hJ0 j)
-  have h3 : (0 : ℝ) ≤ Vlow j ^ 2 * U j ^ 2 * (2 * w₀) := by positivity
+  have h2 : (0 : ℝ) ≤ Us j ^ (2 : ℕ) * J j := mul_nonneg (sq_nonneg _) (hJ0 j)
+  have h3 : (0 : ℝ) ≤ Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀) := by positivity
   linarith
 
 end

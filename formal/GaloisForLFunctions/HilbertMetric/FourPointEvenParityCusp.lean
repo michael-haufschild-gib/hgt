@@ -17,7 +17,7 @@ noncomputable section
 
 /-- Determinant of the reflection-even block on equispaced four-point data. -/
 def fourPointEvenWall (f : ℝ → ℝ) (t : ℝ) : ℝ :=
-  (f 0 + f (3 * t)) * (f 0 + f t) - (f t + f (2 * t)) ^ 2
+  (f 0 + f (3 * t)) * (f 0 + f t) - (f t + f (2 * t)) ^ (2 : ℕ)
 
 private def scalarJetProductAtZero
     (n : ℕ) (P Q : ℝ → ℝ) : ℝ :=
@@ -67,7 +67,7 @@ theorem iteratedDeriv_four_fourPointEvenWall_zero
     (h₁ : iteratedDeriv 1 f 0 = 0)
     (h₃ : iteratedDeriv 3 f 0 = 0) :
     iteratedDeriv 4 (fourPointEvenWall f) 0 =
-      96 * (f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ 2) := by
+      96 * (f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ (2 : ℕ)) := by
   let L : ℝ → ℝ := fun t => f 0 + f (3 * t)
   let R : ℝ → ℝ := fun t => f 0 + f t
   let M : ℝ → ℝ := fun t => f t + f (2 * t)
@@ -191,7 +191,7 @@ theorem exists_fourPointEvenWall_pos_right
     {f : ℝ → ℝ} (hf : ContDiff ℝ 4 f)
     (h₁ : iteratedDeriv 1 f 0 = 0)
     (h₃ : iteratedDeriv 3 f 0 = 0)
-    (h₄ : 0 < f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ 2) :
+    (h₄ : 0 < f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ (2 : ℕ)) :
     ∃ delta : ℝ, 0 < delta ∧ ∀ t : ℝ, 0 < t → t < delta →
       0 < fourPointEvenWall f t := by
   let W := fourPointEvenWall f

@@ -18,7 +18,7 @@ noncomputable section
 
 /-- The Nevanlinna multiplier translated by `c`. -/
 def translatedNevanlinnaMultiplier (c : ℂ) : Polynomial ℂ :=
-  1 + (Polynomial.X + Polynomial.C c) ^ 2
+  1 + (Polynomial.X + Polynomial.C c) ^ (2 : ℕ)
 
 /-- The mass term translated by `c`. -/
 def translatedMassShift (c M : ℂ) : Polynomial ℂ :=
@@ -26,7 +26,7 @@ def translatedMassShift (c M : ℂ) : Polynomial ℂ :=
 
 @[simp]
 theorem eval_translatedNevanlinnaMultiplier (c z : ℂ) :
-    Polynomial.eval z (translatedNevanlinnaMultiplier c) = 1 + (z + c) ^ 2 := by
+    Polynomial.eval z (translatedNevanlinnaMultiplier c) = 1 + (z + c) ^ (2 : ℕ) := by
   simp [translatedNevanlinnaMultiplier]
 
 @[simp]
@@ -59,7 +59,7 @@ theorem familyDifferentiallyAlgebraicOn_translatedCauchy_of_presentation
     {m : ℕ} {U : Set ℂ} (ν : Measure ℝ) [IsFiniteMeasure ν] (M : ℂ) (h : Fin m → ℂ)
     (hU : ∀ z ∈ U, ∀ i, (z + h i).im ≠ 0)
     (hrel : FamilyDifferentiallyAlgebraicOn
-      (fun i z => (z + h i) * M + (1 + (z + h i) ^ 2) * cauchyTransform ν (z + h i)) U) :
+      (fun i z => (z + h i) * M + (1 + (z + h i) ^ (2 : ℕ)) * cauchyTransform ν (z + h i)) U) :
     FamilyDifferentiallyAlgebraicOn (fun i z => cauchyTransform ν (z + h i)) U := by
   refine familyDifferentiallyAlgebraicOn_of_affine
     (fun i z => cauchyTransform ν (z + h i))
@@ -73,7 +73,7 @@ theorem familyDifferentiallyAlgebraicOn_translatedCauchy_of_presentation
       + Polynomial.eval z (translatedNevanlinnaMultiplier (h i))
         * cauchyTransform ν (z + h i))
       = fun i (z : ℂ) => (z + h i) * M
-        + (1 + (z + h i) ^ 2) * cauchyTransform ν (z + h i) := by
+        + (1 + (z + h i) ^ (2 : ℕ)) * cauchyTransform ν (z + h i) := by
     funext i w
     rw [eval_translatedMassShift, eval_translatedNevanlinnaMultiplier]
   rw [hfun]

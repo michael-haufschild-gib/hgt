@@ -7,10 +7,10 @@ import GaloisForLFunctions.RHTower.PrimeLogTripleCluster
 The physical endpoint marginal `log p / p` forces a much larger normalization than the original
 Möbius half-density.  After this normalization its square has the exact closed form
 
-`log(p) * φ_p(q)^2 = (1 - p^(-|a(q)|))^2`.
+`log(p) * φ_p(q)^(2 : ℕ) = (1 - p^(-|a(q)|))^(2 : ℕ)`.
 
 Thus every nonneutral divisor copy has the universal logarithmic boundary profile
-`φ_p(q)^2 ~ 1 / log p`.  This is not an `ℓ²` source vector: square summability is equivalent to
+`φ_p(q)^(2 : ℕ) ~ 1 / log p`.  This is not an `ℓ²` source vector: square summability is equivalent to
 neutrality, and global `ℓ²` admission is equivalent to RH.  The corrected endpoint coupling must
 therefore act as a singular response form on finite packets; it cannot be justified by first
 placing the normalized profile in an ordinary prime Hilbert space.

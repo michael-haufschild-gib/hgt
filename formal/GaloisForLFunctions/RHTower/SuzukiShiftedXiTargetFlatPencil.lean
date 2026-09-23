@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiHadamardFactorization
 The boundary-free Fourier symbol suggested by Suzuki's shifted continuous kernel is, up to a
 fixed nonzero scalar,
 
-`R_eta(z) = z^2 * XiC(z) / (XiC'(z) - eta * XiC(z))`.
+`R_eta(z) = z^(2 : ℕ) * XiC(z) / (XiC'(z) - eta * XiC(z))`.
 
 This module proves the exact unconditional structure of that pencil.  Distinct shift fibres recover
 `XiC` by an affine secant, targets are related by a flat Mobius transport, and every Xi zero of
@@ -29,7 +29,7 @@ def suzukiShiftedXiDenominator (eta z : ℂ) : ℂ :=
 
 /-- The centered, scalar-normalized shifted reciprocal-logarithmic Xi target. -/
 def suzukiShiftedXiTarget (eta z : ℂ) : ℂ :=
-  z ^ 2 * XiC z / suzukiShiftedXiDenominator eta z
+  z ^ (2 : ℕ) * XiC z / suzukiShiftedXiDenominator eta z
 
 /-- Flat transport between two denominator fibres. -/
 def suzukiXiShiftTransport (alpha beta z : ℂ) : ℂ :=
@@ -74,9 +74,9 @@ theorem suzukiXiShiftTransport_cocycle {alpha beta gamma z : ℂ}
 theorem suzukiShiftedXiTarget_mobius_cross {alpha beta z : ℂ}
     (ha : suzukiShiftedXiDenominator alpha z ≠ 0)
     (hb : suzukiShiftedXiDenominator beta z ≠ 0) :
-    (z ^ 2 - (beta - alpha) * suzukiShiftedXiTarget alpha z) *
+    (z ^ (2 : ℕ) - (beta - alpha) * suzukiShiftedXiTarget alpha z) *
         suzukiShiftedXiTarget beta z =
-      z ^ 2 * suzukiShiftedXiTarget alpha z := by
+      z ^ (2 : ℕ) * suzukiShiftedXiTarget alpha z := by
   simp only [suzukiShiftedXiTarget]
   field_simp [ha, hb]
   simp only [suzukiShiftedXiDenominator]
@@ -86,8 +86,8 @@ theorem suzukiShiftedXiTarget_mobius_cross {alpha beta z : ℂ}
 not needed: the identity remains valid in the totalized field once the numerator is nonzero. -/
 theorem suzukiShiftedXiTarget_reciprocal_translation {alpha beta z : ℂ}
     (hz : z ≠ 0) (hXi : XiC z ≠ 0) :
-    z ^ 2 / suzukiShiftedXiTarget beta z -
-        z ^ 2 / suzukiShiftedXiTarget alpha z = alpha - beta := by
+    z ^ (2 : ℕ) / suzukiShiftedXiTarget beta z -
+        z ^ (2 : ℕ) / suzukiShiftedXiTarget alpha z = alpha - beta := by
   simp only [suzukiShiftedXiTarget]
   field_simp [hz, hXi]
   simp only [suzukiShiftedXiDenominator]
@@ -158,15 +158,15 @@ theorem meromorphicOrderAt_suzukiShiftedXiTarget_eq_one_of_XiC_zero
   obtain ⟨k, hXi, hden⟩ :=
     analyticOrderAt_suzukiShiftedXiDenominator_eq_pred_of_XiC_zero
       (eta := eta) hz
-  have hnum : AnalyticAt ℂ (fun w : ℂ => w ^ 2 * XiC w) z := by
-    have hpow : AnalyticAt ℂ (fun w : ℂ => w ^ 2) z := by fun_prop
+  have hnum : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ) * XiC w) z := by
+    have hpow : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ)) z := by fun_prop
     exact hpow.mul (XiC_analytic z (Set.mem_univ z))
   have hdenAn : AnalyticAt ℂ (suzukiShiftedXiDenominator eta) z := by
     apply (XiC_analytic z (Set.mem_univ z)).deriv.sub
     exact analyticAt_const.mul (XiC_analytic z (Set.mem_univ z))
   have hnumOrder :
-      analyticOrderAt (fun w : ℂ => w ^ 2 * XiC w) z = (k + 1 : ℕ) := by
-    let Q : ℂ → ℂ := fun w => w ^ 2
+      analyticOrderAt (fun w : ℂ => w ^ (2 : ℕ) * XiC w) z = (k + 1 : ℕ) := by
+    let Q : ℂ → ℂ := fun w => w ^ (2 : ℕ)
     have hQ : AnalyticAt ℂ Q z := by fun_prop
     have hQOrder : analyticOrderAt Q z = 0 :=
       analyticOrderAt_eq_zero.mpr (Or.inr (pow_ne_zero 2 hz0))
@@ -174,7 +174,7 @@ theorem meromorphicOrderAt_suzukiShiftedXiTarget_eq_one_of_XiC_zero
     rw [analyticOrderAt_mul hQ (XiC_analytic z (Set.mem_univ z)),
       hQOrder, zero_add, hXi]
   change meromorphicOrderAt
-    ((fun w : ℂ => w ^ 2 * XiC w) / suzukiShiftedXiDenominator eta) z = 1
+    ((fun w : ℂ => w ^ (2 : ℕ) * XiC w) / suzukiShiftedXiDenominator eta) z = 1
   rw [meromorphicOrderAt_div hnum.meromorphicAt hdenAn.meromorphicAt,
     hnum.meromorphicOrderAt_eq, hdenAn.meromorphicOrderAt_eq, hnumOrder, hden]
   change ENat.map Nat.cast ((k + 1 : ℕ) : ℕ∞) - (k : WithTop ℤ) = 1
@@ -182,11 +182,11 @@ theorem meromorphicOrderAt_suzukiShiftedXiTarget_eq_one_of_XiC_zero
   exact_mod_cast (by omega : (k : ℤ) + 1 - k = 1)
 
 /-- Exact multiplicity fingerprint.  At an Xi zero of multiplicity `m`, the shifted target's
-simple-zero trailing coefficient is `z^2 / m`, independent of the shift. -/
+simple-zero trailing coefficient is `z^(2 : ℕ) / m`, independent of the shift. -/
 theorem exists_multiplicity_meromorphicTrailingCoeffAt_suzukiShiftedXiTarget
     {eta z : ℂ} (hz : XiC z = 0) :
     ∃ m : ℕ, 0 < m ∧ analyticOrderAt XiC z = (m : ℕ) ∧
-      meromorphicTrailingCoeffAt (suzukiShiftedXiTarget eta) z = z ^ 2 / (m : ℂ) := by
+      meromorphicTrailingCoeffAt (suzukiShiftedXiTarget eta) z = z ^ (2 : ℕ) / (m : ℂ) := by
   have hz0 : z ≠ 0 := XiC_zero_point_ne_zero hz
   obtain ⟨k, hXiOrder, _⟩ :=
     analyticOrderAt_suzukiShiftedXiDenominator_eq_pred_of_XiC_zero
@@ -234,16 +234,16 @@ theorem exists_multiplicity_meromorphicTrailingCoeffAt_suzukiShiftedXiTarget
     rw [suzukiShiftedXiDenominator, hd, hf]
     simp only [H, m, pow_succ]
     ring
-  have hnumEq : (fun w : ℂ => w ^ 2 * XiC w) =ᶠ[𝓝 z]
-      fun w => (w - z) ^ m * (w ^ 2 * g w) := by
+  have hnumEq : (fun w : ℂ => w ^ (2 : ℕ) * XiC w) =ᶠ[𝓝 z]
+      fun w => (w - z) ^ m * (w ^ (2 : ℕ) * g w) := by
     filter_upwards [hfgMul] with w hf
     rw [hf]
     ring
-  let Q : ℂ → ℂ := fun w => w ^ 2 * g w / H w
+  let Q : ℂ → ℂ := fun w => w ^ (2 : ℕ) * g w / H w
   have hQ : AnalyticAt ℂ Q z := by
     dsimp only [Q]
-    exact ((by fun_prop : AnalyticAt ℂ (fun w : ℂ => w ^ 2) z).mul hg).div hH hH0
-  have hQz : Q z = z ^ 2 / (m : ℂ) := by
+    exact ((by fun_prop : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ)) z).mul hg).div hH hH0
+  have hQz : Q z = z ^ (2 : ℕ) / (m : ℂ) := by
     simp only [Q, hHz]
     field_simp [hmC, hg0]
   have hQ0 : Q z ≠ 0 := by
@@ -272,7 +272,7 @@ theorem exists_multiplicity_meromorphicTrailingCoeffAt_suzukiShiftedXiTarget
 theorem meromorphicTrailingCoeffAt_suzukiShiftedXiTarget_of_XiC_zero
     {eta z : ℂ} (hz : XiC z = 0) :
     meromorphicTrailingCoeffAt (suzukiShiftedXiTarget eta) z =
-      z ^ 2 / ((analyticOrderAt XiC z).toNat : ℂ) := by
+      z ^ (2 : ℕ) / ((analyticOrderAt XiC z).toNat : ℂ) := by
   obtain ⟨m, _, hm, htrail⟩ :=
     exists_multiplicity_meromorphicTrailingCoeffAt_suzukiShiftedXiTarget
       (eta := eta) hz
@@ -283,8 +283,8 @@ theorem meromorphicTrailingCoeffAt_suzukiShiftedXiTarget_of_XiC_zero
 theorem hasDerivAt_suzukiShiftedXiTarget_parameter {eta z : ℂ}
     (hden : suzukiShiftedXiDenominator eta z ≠ 0) :
     HasDerivAt (fun tau => suzukiShiftedXiTarget tau z)
-      (z ^ 2 * XiC z ^ 2 / suzukiShiftedXiDenominator eta z ^ 2) eta := by
-  have hnum : HasDerivAt (fun _ : ℂ => z ^ 2 * XiC z) 0 eta :=
+      (z ^ (2 : ℕ) * XiC z ^ (2 : ℕ) / suzukiShiftedXiDenominator eta z ^ (2 : ℕ)) eta := by
+  have hnum : HasDerivAt (fun _ : ℂ => z ^ (2 : ℕ) * XiC z) 0 eta :=
     hasDerivAt_const _ _
   have hden' : HasDerivAt (fun tau : ℂ => suzukiShiftedXiDenominator tau z)
       (-XiC z) eta := by
@@ -293,8 +293,8 @@ theorem hasDerivAt_suzukiShiftedXiTarget_parameter {eta z : ℂ}
         ((hasDerivAt_id eta).mul_const (XiC z))
   have hquot := hnum.div hden' hden
   change HasDerivAt
-    (fun tau : ℂ => z ^ 2 * XiC z / suzukiShiftedXiDenominator tau z)
-      (z ^ 2 * XiC z ^ 2 / suzukiShiftedXiDenominator eta z ^ 2) eta
+    (fun tau : ℂ => z ^ (2 : ℕ) * XiC z / suzukiShiftedXiDenominator tau z)
+      (z ^ (2 : ℕ) * XiC z ^ (2 : ℕ) / suzukiShiftedXiDenominator eta z ^ (2 : ℕ)) eta
   convert! hquot using 1
   ring
 
@@ -302,20 +302,20 @@ theorem hasDerivAt_suzukiShiftedXiTarget_parameter {eta z : ℂ}
 theorem hasDerivAt_suzukiShiftedXiTarget_parameter_riccati {eta z : ℂ}
     (hz : z ≠ 0) (hden : suzukiShiftedXiDenominator eta z ≠ 0) :
     HasDerivAt (fun tau => suzukiShiftedXiTarget tau z)
-      (suzukiShiftedXiTarget eta z ^ 2 / z ^ 2) eta := by
+      (suzukiShiftedXiTarget eta z ^ (2 : ℕ) / z ^ (2 : ℕ)) eta := by
   convert! hasDerivAt_suzukiShiftedXiTarget_parameter hden using 1
   simp only [suzukiShiftedXiTarget]
   field_simp
 
-/-- At a simple Xi zero, every shifted target has the same first jet `z^2`. -/
+/-- At a simple Xi zero, every shifted target has the same first jet `z^(2 : ℕ)`. -/
 theorem hasDerivAt_suzukiShiftedXiTarget_of_simple_XiC_zero
     {eta z : ℂ} (hz : XiC z = 0) (hsimple : deriv XiC z ≠ 0) :
-    HasDerivAt (suzukiShiftedXiTarget eta) (z ^ 2) z := by
+    HasDerivAt (suzukiShiftedXiTarget eta) (z ^ (2 : ℕ)) z := by
   have hXi : HasDerivAt XiC (deriv XiC z) z :=
     (XiC_analytic z (Set.mem_univ z)).differentiableAt.hasDerivAt
   have hXi' : HasDerivAt (deriv XiC) (deriv (deriv XiC) z) z :=
     ((XiC_analytic z (Set.mem_univ z)).deriv).differentiableAt.hasDerivAt
-  have hsq : HasDerivAt (fun w : ℂ => w ^ 2) (2 * z) z := by
+  have hsq : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ)) (2 * z) z := by
     simpa [id, mul_comm] using! (hasDerivAt_id z).pow 2
   have hnum := hsq.mul hXi
   have hden : HasDerivAt (suzukiShiftedXiDenominator eta)
@@ -326,7 +326,7 @@ theorem hasDerivAt_suzukiShiftedXiTarget_of_simple_XiC_zero
     simpa [suzukiShiftedXiDenominator, hz] using! hsimple
   have hquot := hnum.div hden hdenne
   change HasDerivAt
-    (fun w : ℂ => w ^ 2 * XiC w / suzukiShiftedXiDenominator eta w) (z ^ 2) z
+    (fun w : ℂ => w ^ (2 : ℕ) * XiC w / suzukiShiftedXiDenominator eta w) (z ^ (2 : ℕ)) z
   convert! hquot using 1
   simp only [hz, mul_zero, suzukiShiftedXiDenominator, Pi.mul_apply]
   field_simp [hsimple]

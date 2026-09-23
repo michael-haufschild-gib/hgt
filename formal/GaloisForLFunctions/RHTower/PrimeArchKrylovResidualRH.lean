@@ -21,7 +21,7 @@ noncomputable section
 def complexKrylovResidualNormSq
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℂ F]
     (v : ℕ → F) (k : ℕ) : ℝ :=
-  ‖InnerProductSpace.gramSchmidt ℂ v k‖ ^ 2
+  ‖InnerProductSpace.gramSchmidt ℂ v k‖ ^ (2 : ℕ)
 
 /-- The complex Krylov/Gram--Schmidt chain does not terminate in any degree. -/
 def ComplexKrylovResidualsNonzero
@@ -40,7 +40,7 @@ theorem det_primeArchSourceMomentHankelMatrix_eq_prod_complexKrylovResidualNormS
     (hli : LinearIndependent ℂ (fun i : Fin n => v (i : ℕ))) :
     (primeArchSourceMomentHankelMatrix n).det =
       ∏ k : Fin n, ‖InnerProductSpace.gramSchmidt ℂ
-        (fun i : Fin n => v (i : ℕ)) k‖ ^ 2 := by
+        (fun i : Fin n => v (i : ℕ)) k‖ ^ (2 : ℕ) := by
   have hmatrix : primeArchSourceMomentHankelMatrix n =
       HTGeometry.momentHankelMatrix normalizedPrimeArchMoment n := by
     ext i j
@@ -60,7 +60,7 @@ theorem det_xiCentralMomentHankelMatrix_eq_prod_complexKrylovResidualNormSq
     (hli : LinearIndependent ℂ (fun i : Fin n => v (i : ℕ))) :
     (xiCentralMomentHankelMatrix n).det =
       ∏ k : Fin n, ‖InnerProductSpace.gramSchmidt ℂ
-        (fun i : Fin n => v (i : ℕ)) k‖ ^ 2 := by
+        (fun i : Fin n => v (i : ℕ)) k‖ ^ (2 : ℕ) := by
   rw [← primeArchSourceMomentHankelMatrix_eq_xiCentralMomentHankelMatrix]
   exact det_primeArchSourceMomentHankelMatrix_eq_prod_complexKrylovResidualNormSq
     v hgram n hli
@@ -71,7 +71,7 @@ theorem complexKrylovResidualNormSq_zero_eq_moment_zero
     (v : ℕ → F) (m : ℕ → ℝ)
     (hgram : ∀ i j, inner ℂ (v i) (v j) = (m (i + j) : ℂ)) :
     complexKrylovResidualNormSq v 0 = m 0 := by
-  change ‖InnerProductSpace.gramSchmidt ℂ v (⊥ : ℕ)‖ ^ 2 = m 0
+  change ‖InnerProductSpace.gramSchmidt ℂ v (⊥ : ℕ)‖ ^ (2 : ℕ) = m 0
   rw [InnerProductSpace.gramSchmidt_bot]
   apply Complex.ofReal_injective
   have h := hgram 0 0
@@ -89,7 +89,7 @@ theorem det_primeArchSourceMomentHankelMatrix_lanczosScaling
     (hresidual : ComplexKrylovResidualsNonzero v)
     (b : ℕ → ℝ)
     (hrec : ∀ k, complexKrylovResidualNormSq v (k + 1) =
-      complexKrylovResidualNormSq v k * b (k + 1) ^ 2)
+      complexKrylovResidualNormSq v k * b (k + 1) ^ (2 : ℕ))
     (N : ℕ) :
     (primeArchSourceMomentHankelMatrix N).det =
       normalizedPrimeArchMoment 0 ^ N *
@@ -103,7 +103,7 @@ theorem det_primeArchSourceMomentHankelMatrix_lanczosScaling
     v hgram N hli]
   have hprod :
       (∏ k : Fin N, ‖InnerProductSpace.gramSchmidt ℂ
-        (fun i : Fin N => v (i : ℕ)) k‖ ^ 2) =
+        (fun i : Fin N => v (i : ℕ)) k‖ ^ (2 : ℕ)) =
       ∏ k ∈ Finset.range N, complexKrylovResidualNormSq v k := by
     rw [← Fin.prod_univ_eq_prod_range]
     apply Finset.prod_congr rfl
@@ -125,7 +125,7 @@ theorem det_xiCentralMomentHankelMatrix_lanczosScaling
     (hresidual : ComplexKrylovResidualsNonzero v)
     (b : ℕ → ℝ)
     (hrec : ∀ k, complexKrylovResidualNormSq v (k + 1) =
-      complexKrylovResidualNormSq v k * b (k + 1) ^ 2)
+      complexKrylovResidualNormSq v k * b (k + 1) ^ (2 : ℕ))
     (N : ℕ) :
     (xiCentralMomentHankelMatrix N).det =
       normalizedPrimeArchMoment 0 ^ N *

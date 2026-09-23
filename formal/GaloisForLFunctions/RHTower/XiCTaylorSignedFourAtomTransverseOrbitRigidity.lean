@@ -28,7 +28,7 @@ theorem signedFourAtomLiteralRayThree_eq_radiusOrbitFormula
       (r + r⁻¹) * (2 * (r + r⁻¹) + 3) / (1 + (r + r⁻¹)) := by
   have hr0 := hr.ne'
   have hden : 1 + (r + r⁻¹) ≠ 0 := by positivity
-  have hsource : r * (1 + r + r ^ 2) ≠ 0 := by positivity
+  have hsource : r * (1 + r + r ^ (2 : ℕ)) ≠ 0 := by positivity
   unfold signedFourAtomLiteralRayThree signedFourAtomLiteralRootSum
     signedFourAtomLiteralAuxRoot
   field_simp [hr0, hden, hsource]
@@ -130,21 +130,21 @@ theorem signedFourAtom_literalReflection_equalCharge_profile_classification
   let x : ℝ := r + r⁻¹
   have hxpos : 0 < x := by dsimp [x]; positivity
   have hxgt : 2 < x := by
-    have hsq : 0 < (r - 1) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hr1)
-    have hquot : 0 < (r - 1) ^ 2 / r := div_pos hsq hr
-    have hid : (r - 1) ^ 2 / r = r + r⁻¹ - 2 := by
+    have hsq : 0 < (r - 1) ^ (2 : ℕ) := sq_pos_of_ne_zero (sub_ne_zero.mpr hr1)
+    have hquot : 0 < (r - 1) ^ (2 : ℕ) / r := div_pos hsq hr
+    have hid : (r - 1) ^ (2 : ℕ) / r = r + r⁻¹ - 2 := by
       field_simp [hr0]
       ring
     rw [hid] at hquot
     dsimp [x]
     linarith
   have hplus :
-      a₁ + (1 + r) * a₂ + (1 + r + r ^ 2) * a₃ +
-        (1 + r + r ^ 2 + r ^ 3) * a₄ = 0 := by
+      a₁ + (1 + r) * a₂ + (1 + r + r ^ (2 : ℕ)) * a₃ +
+        (1 + r + r ^ (2 : ℕ) + r ^ (3 : ℕ)) * a₄ = 0 := by
     have hfac :
         (1 - r) *
-          (a₁ + (1 + r) * a₂ + (1 + r + r ^ 2) * a₃ +
-            (1 + r + r ^ 2 + r ^ 3) * a₄) = 0 := by
+          (a₁ + (1 + r) * a₂ + (1 + r + r ^ (2 : ℕ)) * a₃ +
+            (1 + r + r ^ (2 : ℕ) + r ^ (3 : ℕ)) * a₄) = 0 := by
       calc
         _ = signedFourAtomFullTurnValueCoefficient r a₁ a₂ a₃ a₄ := by
           unfold signedFourAtomFullTurnValueCoefficient
@@ -154,13 +154,13 @@ theorem signedFourAtom_literalReflection_equalCharge_profile_classification
       (sub_ne_zero.mpr hr1.symm)
   have hminus :
       a₁ + (1 + r⁻¹) * a₂ +
-        (1 + r⁻¹ + (r⁻¹) ^ 2) * a₃ +
-        (1 + r⁻¹ + (r⁻¹) ^ 2 + (r⁻¹) ^ 3) * a₄ = 0 := by
+        (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ)) * a₃ +
+        (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ) + (r⁻¹) ^ (3 : ℕ)) * a₄ = 0 := by
     have hfac :
         (1 - r⁻¹) *
           (a₁ + (1 + r⁻¹) * a₂ +
-            (1 + r⁻¹ + (r⁻¹) ^ 2) * a₃ +
-            (1 + r⁻¹ + (r⁻¹) ^ 2 + (r⁻¹) ^ 3) * a₄) = 0 := by
+            (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ)) * a₃ +
+            (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ) + (r⁻¹) ^ (3 : ℕ)) * a₄) = 0 := by
       calc
         _ = signedFourAtomFullTurnValueCoefficient r⁻¹ a₁ a₂ a₃ a₄ := by
           unfold signedFourAtomFullTurnValueCoefficient
@@ -169,9 +169,9 @@ theorem signedFourAtom_literalReflection_equalCharge_profile_classification
     exact (mul_eq_zero.mp hfac).resolve_left
       (sub_ne_zero.mpr hrInv1.symm)
   have hchargeRaw :
-      r * a₁ + 2 * r ^ 2 * a₂ + 3 * r ^ 3 * a₃ + 4 * r ^ 4 * a₄ =
-        r⁻¹ * a₁ + 2 * (r⁻¹) ^ 2 * a₂ +
-          3 * (r⁻¹) ^ 3 * a₃ + 4 * (r⁻¹) ^ 4 * a₄ := by
+      r * a₁ + 2 * r ^ (2 : ℕ) * a₂ + 3 * r ^ (3 : ℕ) * a₃ + 4 * r ^ (4 : ℕ) * a₄ =
+        r⁻¹ * a₁ + 2 * (r⁻¹) ^ (2 : ℕ) * a₂ +
+          3 * (r⁻¹) ^ (3 : ℕ) * a₃ + 4 * (r⁻¹) ^ (4 : ℕ) * a₄ := by
     have hnegT : -T ≠ 0 := neg_ne_zero.mpr hT
     apply mul_left_cancel₀ hnegT
     simpa only [signedFourAtomFullTurnDerivativeCoefficient] using hcharge
@@ -182,11 +182,11 @@ theorem signedFourAtom_literalReflection_equalCharge_profile_classification
           (a₂ + (1 + x) * a₃ + x * (1 + x) * a₄) = 0 := by
       calc
         _ =
-            (a₁ + (1 + r) * a₂ + (1 + r + r ^ 2) * a₃ +
-              (1 + r + r ^ 2 + r ^ 3) * a₄) -
+            (a₁ + (1 + r) * a₂ + (1 + r + r ^ (2 : ℕ)) * a₃ +
+              (1 + r + r ^ (2 : ℕ) + r ^ (3 : ℕ)) * a₄) -
             (a₁ + (1 + r⁻¹) * a₂ +
-              (1 + r⁻¹ + (r⁻¹) ^ 2) * a₃ +
-              (1 + r⁻¹ + (r⁻¹) ^ 2 + (r⁻¹) ^ 3) * a₄) := by
+              (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ)) * a₃ +
+              (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ) + (r⁻¹) ^ (3 : ℕ)) * a₄) := by
                 dsimp [x]
                 field_simp [hr0]
                 ring
@@ -194,17 +194,17 @@ theorem signedFourAtom_literalReflection_equalCharge_profile_classification
     exact (mul_eq_zero.mp hfac).resolve_left
       (sub_ne_zero.mpr hrNeInv)
   have hder :
-      a₁ + 2 * x * a₂ + 3 * (x ^ 2 - 1) * a₃ +
-        4 * (x ^ 3 - 2 * x) * a₄ = 0 := by
+      a₁ + 2 * x * a₂ + 3 * (x ^ (2 : ℕ) - 1) * a₃ +
+        4 * (x ^ (3 : ℕ) - 2 * x) * a₄ = 0 := by
     have hfac :
         (r - r⁻¹) *
-          (a₁ + 2 * x * a₂ + 3 * (x ^ 2 - 1) * a₃ +
-            4 * (x ^ 3 - 2 * x) * a₄) = 0 := by
+          (a₁ + 2 * x * a₂ + 3 * (x ^ (2 : ℕ) - 1) * a₃ +
+            4 * (x ^ (3 : ℕ) - 2 * x) * a₄) = 0 := by
       calc
         _ =
-            (r * a₁ + 2 * r ^ 2 * a₂ + 3 * r ^ 3 * a₃ + 4 * r ^ 4 * a₄) -
-            (r⁻¹ * a₁ + 2 * (r⁻¹) ^ 2 * a₂ +
-              3 * (r⁻¹) ^ 3 * a₃ + 4 * (r⁻¹) ^ 4 * a₄) := by
+            (r * a₁ + 2 * r ^ (2 : ℕ) * a₂ + 3 * r ^ (3 : ℕ) * a₃ + 4 * r ^ (4 : ℕ) * a₄) -
+            (r⁻¹ * a₁ + 2 * (r⁻¹) ^ (2 : ℕ) * a₂ +
+              3 * (r⁻¹) ^ (3 : ℕ) * a₃ + 4 * (r⁻¹) ^ (4 : ℕ) * a₄) := by
                 dsimp [x]
                 field_simp [hr0]
                 ring
@@ -213,14 +213,14 @@ theorem signedFourAtom_literalReflection_equalCharge_profile_classification
       (sub_ne_zero.mpr hrNeInv)
   have hsum :
       2 * a₁ + (2 + x) * a₂ + x * (1 + x) * a₃ +
-        (x ^ 3 + x ^ 2 - 2 * x) * a₄ = 0 := by
+        (x ^ (3 : ℕ) + x ^ (2 : ℕ) - 2 * x) * a₄ = 0 := by
     calc
       _ =
-          (a₁ + (1 + r) * a₂ + (1 + r + r ^ 2) * a₃ +
-            (1 + r + r ^ 2 + r ^ 3) * a₄) +
+          (a₁ + (1 + r) * a₂ + (1 + r + r ^ (2 : ℕ)) * a₃ +
+            (1 + r + r ^ (2 : ℕ) + r ^ (3 : ℕ)) * a₄) +
           (a₁ + (1 + r⁻¹) * a₂ +
-            (1 + r⁻¹ + (r⁻¹) ^ 2) * a₃ +
-            (1 + r⁻¹ + (r⁻¹) ^ 2 + (r⁻¹) ^ 3) * a₄) := by
+            (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ)) * a₃ +
+            (1 + r⁻¹ + (r⁻¹) ^ (2 : ℕ) + (r⁻¹) ^ (3 : ℕ)) * a₄) := by
               dsimp [x]
               field_simp [hr0]
               ring
@@ -272,8 +272,8 @@ theorem signedFourAtom_literalReflection_equalCharge_profile_classification
     have ha₂' : a₂ = a₄ * x * (x + 2) := by
       rw [ha₂, hRay₂]
       ring
-    rw [show a₁ = -2 * x * a₂ - 3 * (x ^ 2 - 1) * a₃ -
-        4 * (x ^ 3 - 2 * x) * a₄ by linarith [hder],
+    rw [show a₁ = -2 * x * a₂ - 3 * (x ^ (2 : ℕ) - 1) * a₃ -
+        4 * (x ^ (3 : ℕ) - 2 * x) * a₄ by linarith [hder],
       ha₂', ha₃']
     field_simp [hxden]
     ring

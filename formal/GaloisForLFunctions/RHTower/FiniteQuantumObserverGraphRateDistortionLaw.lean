@@ -150,7 +150,7 @@ theorem exists_finiteQuantumObserver_graph_rateDistortion
       finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) block ≤
         4 * finiteObserverOmittedDirectedWeightMass G lam block +
-          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
             finiteObserverSelectedDirectedWeightMass G lam block := by
   classical
   obtain ⟨n, hn0, hnQ, hedge⟩ :=
@@ -166,10 +166,10 @@ theorem exists_finiteQuantumObserver_graph_rateDistortion
       (∑ i, ∑ j, weight i j *
           ‖finiteQuantumObserverPhase
             (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) i j -
-              1‖ ^ 2) ≤
+              1‖ ^ (2 : ℕ)) ≤
           ∑ i, ∑ j, (
             4 * (if i ≠ j ∧ ¬ G.Adj i j then weight i j else 0) +
-              4 * δ ^ 2 *
+              4 * δ ^ (2 : ℕ) *
                 (if G.Adj i j then weight i j else 0)) := by
         apply Finset.sum_le_sum
         intro i hi
@@ -191,19 +191,19 @@ theorem exists_finiteQuantumObserver_graph_rateDistortion
           have hsq :
               ‖finiteQuantumObserverPhase
                   (finiteObserverHamiltonianVertexPhase
-                    (n : ℝ) energy) i j - 1‖ ^ 2 ≤
-                (2 * δ) ^ 2 :=
+                    (n : ℝ) energy) i j - 1‖ ^ (2 : ℕ) ≤
+                (2 * δ) ^ (2 : ℕ) :=
             (sq_le_sq₀ (norm_nonneg _) (by positivity)).2 hchord
           calc
             weight i j *
                 ‖finiteQuantumObserverPhase
                   (finiteObserverHamiltonianVertexPhase
-                    (n : ℝ) energy) i j - 1‖ ^ 2 ≤
-                weight i j * (2 * δ) ^ 2 :=
+                    (n : ℝ) energy) i j - 1‖ ^ (2 : ℕ) ≤
+                weight i j * (2 * δ) ^ (2 : ℕ) :=
               mul_le_mul_of_nonneg_left hsq
                 (finiteObserverUnionWeight_nonneg
                   lam block hlam i j)
-            _ = 4 * δ ^ 2 * weight i j := by ring
+            _ = 4 * δ ^ (2 : ℕ) * weight i j := by ring
         · by_cases hieqj : i = j
           · subst j
             have hunit :
@@ -230,22 +230,22 @@ theorem exists_finiteQuantumObserver_graph_rateDistortion
             have hsq :
                 ‖finiteQuantumObserverPhase
                     (finiteObserverHamiltonianVertexPhase
-                      (n : ℝ) energy) i j - 1‖ ^ 2 ≤
-                  (2 : ℝ) ^ 2 :=
+                      (n : ℝ) energy) i j - 1‖ ^ (2 : ℕ) ≤
+                  (2 : ℝ) ^ (2 : ℕ) :=
               (sq_le_sq₀ (norm_nonneg _) (by norm_num)).2 hchord
             simp [hij, hieqj]
             calc
               weight i j *
                   ‖finiteQuantumObserverPhase
                     (finiteObserverHamiltonianVertexPhase
-                      (n : ℝ) energy) i j - 1‖ ^ 2 ≤
-                  weight i j * (2 : ℝ) ^ 2 :=
+                      (n : ℝ) energy) i j - 1‖ ^ (2 : ℕ) ≤
+                  weight i j * (2 : ℝ) ^ (2 : ℕ) :=
                 mul_le_mul_of_nonneg_left hsq
                   (finiteObserverUnionWeight_nonneg
                     lam block hlam i j)
               _ = 4 * weight i j := by ring
       _ = 4 * finiteObserverOmittedDirectedWeightMass G lam block +
-          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
             finiteObserverSelectedDirectedWeightMass G lam block := by
         dsimp only [δ, weight]
         unfold finiteObserverOmittedDirectedWeightMass
@@ -302,7 +302,7 @@ theorem exists_finiteQuantumObserver_thresholdGraph_rateDistortion
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) block ≤
         4 * finiteObserverOmittedDirectedWeightMass
             (finiteObserverThresholdCoherenceGraph τ lam block) lam block +
-          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+          4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
             finiteObserverSelectedDirectedWeightMass
               (finiteObserverThresholdCoherenceGraph τ lam block)
               lam block :=

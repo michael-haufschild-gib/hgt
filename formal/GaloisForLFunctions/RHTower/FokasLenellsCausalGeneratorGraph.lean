@@ -18,7 +18,7 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalGeneratorGraphInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 /-- The actual integrated graph of causal evolution on the completed lower Hardy space. -/
 def causalGeneratorGraph : Submodule ℂ ((hardyL2ᗮ) × (hardyL2ᗮ)) where

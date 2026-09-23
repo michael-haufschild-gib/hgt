@@ -59,8 +59,8 @@ private theorem complex_radius_smooth (e : Ioi (0 : ℝ)) :
 
 private theorem complex_radius_laplacian (e : Ioi (0 : ℝ)) (z : ℍ) :
     positiveHyperbolicLaplacian (fun w : ℍ => (radius N f e (w : ℂ) : ℂ)) z =
-      (-(z.im ^ 2 * realLaplacian (radius N f e) (z : ℂ)) : ℝ) := by
-  change -(z.im : ℂ) ^ 2 * laplacian
+      (-(z.im ^ (2 : ℕ) * realLaplacian (radius N f e) (z : ℂ)) : ℝ) := by
+  change -(z.im : ℂ) ^ (2 : ℕ) * laplacian
     ((fun w : ℍ => (radius N f e (w : ℂ) : ℂ)) ∘ ofComplex) (z : ℂ) = _
   rw [radius_chart, laplacian_ofReal ((radius_contDiffOn N f e).contDiffAt
     (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos))]
@@ -68,8 +68,8 @@ private theorem complex_radius_laplacian (e : Ioi (0 : ℝ)) (z : ℍ) :
 
 /-- The actual regularized radius has an invariant hyperbolic Laplacian. -/
 theorem radius_hyperbolic_laplacian_invariant (e : Ioi (0 : ℝ)) (A : SL2Z) (z : ℍ) :
-    (A • z : ℍ).im ^ 2 * realLaplacian (radius N f e) (A • z : ℍ) =
-      z.im ^ 2 * realLaplacian (radius N f e) (z : ℂ) := by
+    (A • z : ℍ).im ^ (2 : ℕ) * realLaplacian (radius N f e) (A • z : ℍ) =
+      z.im ^ (2 : ℕ) * realLaplacian (radius N f e) (z : ℂ) := by
   have h := positive_laplacian_pullback A
     (fun w : ℍ => (radius N f e (w : ℂ) : ℂ)) (complex_radius_smooth N f e) z
   have he : (fun w : ℍ => (radius N f e (A • w : ℍ) : ℂ)) =
@@ -81,12 +81,12 @@ theorem radius_hyperbolic_laplacian_invariant (e : Ioi (0 : ℝ)) (A : SL2Z) (z 
 
 /-- The actual regularized curvature density relative to hyperbolic volume. -/
 def hyperbolicCurvature (e : Ioi (0 : ℝ)) (z : ℍ) : ℝ :=
-  z.im ^ 2 * curvatureWeight N f e (z : ℂ)
+  z.im ^ (2 : ℕ) * curvatureWeight N f e (z : ℂ)
 
 /-- The full retained hyperbolic curvature has the exact source decomposition. -/
 theorem hyperbolicCurvature_eq (e : Ioi (0 : ℝ)) (z : ℍ) :
     hyperbolicCurvature N f e z =
-      z.im ^ 2 * realLaplacian (radius N f e) (z : ℂ) +
+      z.im ^ (2 : ℕ) * realLaplacian (radius N f e) (z : ℂ) +
         lam * density N f z / radius N f e (z : ℂ) := by
   rw [hyperbolicCurvature, curvatureWeight_eq N f e z.im_pos]
   simp only [massWeight, ofComplex_apply, UpperHalfPlane.coe_im]

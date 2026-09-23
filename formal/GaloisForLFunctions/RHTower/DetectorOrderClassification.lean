@@ -69,7 +69,7 @@ theorem exists_second_order_factor (F G : ℂ → ℂ → ℂ)
     (hFG : ∀ z w : ℂ, F z w = (z - w) * G z w)
     (hGdiag : AnalyticOnNhd ℂ (fun z => G z z) Set.univ)
     (hG : ∀ x : ℝ, G (x : ℂ) (x : ℂ) = 0) :
-    ∃ H : ℂ → ℂ → ℂ, ∀ z w : ℂ, F z w = (z - w) ^ 2 * H z w := by
+    ∃ H : ℂ → ℂ → ℂ, ∀ z w : ℂ, F z w = (z - w) ^ (2 : ℕ) * H z w := by
   obtain ⟨H, hH⟩ := exists_displacement_factor G hGdiag hG
   refine ⟨H, fun z w => ?_⟩
   rw [hFG, hH]
@@ -122,7 +122,7 @@ theorem mirror_mean_kill (s : Finset ι) (m d : ι → ℝ) (σ : ι → ι)
 
 /-- The displacement variance of a fiber: masses `m`, displacements `d`. -/
 noncomputable def displacementVariance (s : Finset ι) (m d : ι → ℝ) : ℝ :=
-  ∑ j ∈ s, m j * d j ^ 2
+  ∑ j ∈ s, m j * d j ^ (2 : ℕ)
 
 theorem displacementVariance_nonneg (s : Finset ι) (m d : ι → ℝ)
     (hm : ∀ j ∈ s, 0 ≤ m j) : 0 ≤ displacementVariance s m d :=
@@ -135,7 +135,7 @@ theorem displacementVariance_eq_zero_iff (s : Finset ι) (m d : ι → ℝ)
     displacementVariance s m d = 0 ↔ ∀ j ∈ s, d j = 0 := by
   constructor
   · intro h j hj
-    have hnn : ∀ i ∈ s, 0 ≤ m i * d i ^ 2 :=
+    have hnn : ∀ i ∈ s, 0 ≤ m i * d i ^ (2 : ℕ) :=
       fun i hi => mul_nonneg (hm i hi).le (sq_nonneg _)
     have := (Finset.sum_eq_zero_iff_of_nonneg hnn).mp h j hj
     rcases mul_eq_zero.mp this with hm0 | hd0
@@ -147,11 +147,11 @@ theorem displacementVariance_eq_zero_iff (s : Finset ι) (m d : ι → ℝ)
     ring
 
 /-- **Order two on a fiber is a weighted displacement variance.**  A kernel with a double zero on
-the diagonal produces, at every fiber point, the factor `(z - conj z)^2 = -4 (Im z)^2`. -/
+the diagonal produces, at every fiber point, the factor `(z - conj z)^(2 : ℕ) = -4 (Im z)^(2 : ℕ)`. -/
 theorem fiberReader_orderTwo_eq_variance (F H : ℂ → ℂ → ℂ)
-    (hFH : ∀ z w : ℂ, F z w = (z - w) ^ 2 * H z w) (s : Finset ι) (m : ι → ℝ) (z : ι → ℂ) :
+    (hFH : ∀ z w : ℂ, F z w = (z - w) ^ (2 : ℕ) * H z w) (s : Finset ι) (m : ι → ℝ) (z : ι → ℂ) :
     fiberReader F s m z
-      = ∑ j ∈ s, (m j : ℂ) * (-4 * (((z j).im : ℝ) : ℂ) ^ 2) *
+      = ∑ j ∈ s, (m j : ℂ) * (-4 * (((z j).im : ℝ) : ℂ) ^ (2 : ℕ)) *
           H (z j) ((starRingEnd ℂ) (z j)) := by
   refine Finset.sum_congr rfl ?_
   intro j _
@@ -162,17 +162,17 @@ theorem fiberReader_orderTwo_eq_variance (F H : ℂ → ℂ → ℂ)
   ring
 
 /-- **Classification capstone (constant-weight case).**  The minimal order-two reader, kernel
-`(z - w)^2`, evaluates on a fiber to `-4` times the displacement variance, and vanishes precisely
+`(z - w)^(2 : ℕ)`, evaluates on a fiber to `-4` times the displacement variance, and vanishes precisely
 when the fiber lies on the critical line.  Every reader of the class considered here is a
 holomorphic reweighting of this one. -/
 theorem orderTwo_reader_eq_zero_iff (s : Finset ι) (m : ι → ℝ) (z : ι → ℂ)
     (hm : ∀ j ∈ s, 0 < m j) :
-    fiberReader (fun zz ww => (zz - ww) ^ 2) s m z
+    fiberReader (fun zz ww => (zz - ww) ^ (2 : ℕ)) s m z
         = (-4 : ℂ) * ((displacementVariance s m fun j => (z j).im : ℝ) : ℂ)
-      ∧ (fiberReader (fun zz ww => (zz - ww) ^ 2) s m z = 0 ↔ ∀ j ∈ s, (z j).im = 0) := by
-  have hval : fiberReader (fun zz ww => (zz - ww) ^ 2) s m z
+      ∧ (fiberReader (fun zz ww => (zz - ww) ^ (2 : ℕ)) s m z = 0 ↔ ∀ j ∈ s, (z j).im = 0) := by
+  have hval : fiberReader (fun zz ww => (zz - ww) ^ (2 : ℕ)) s m z
       = (-4 : ℂ) * ((displacementVariance s m fun j => (z j).im : ℝ) : ℂ) := by
-    have h := fiberReader_orderTwo_eq_variance (fun zz ww => (zz - ww) ^ 2) (fun _ _ => 1)
+    have h := fiberReader_orderTwo_eq_variance (fun zz ww => (zz - ww) ^ (2 : ℕ)) (fun _ _ => 1)
       (fun zz ww => by ring) s m z
     rw [h, displacementVariance]
     push_cast

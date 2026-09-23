@@ -91,7 +91,7 @@ theorem innerHermitian_hermitian (c : ℝ) (x y : W) :
     inner_conj_symm]
 
 theorem innerHermitian_self_re (c : ℝ) (x : W) :
-    (innerHermitian c x x).re = c * ‖x‖ ^ 2 := by
+    (innerHermitian c x x).re = c * ‖x‖ ^ (2 : ℕ) := by
   rw [innerHermitian, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
     ← RCLike.re_to_complex, ← RCLike.im_to_complex, inner_self_eq_norm_sq, inner_self_im]
   ring

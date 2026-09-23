@@ -29,14 +29,14 @@ three original source periods. -/
 theorem canonicalQNMValue_eq_source_periods (q : XiZeroCopy) (br side : Bool) (a : ℂ) :
     let w := physicalFundamentalFrequency q side
     let s := physicalRate q br
-    let mu := physicalAngularParameter q^2-1/4
+    let mu := physicalAngularParameter q^(2 : ℕ)-1/4
     canonicalQNMValue q br side a = -mu*physicalSelfSourceCoefficient q*
       ((mu-2)*(deriv (continuedOnset s) w*fundamentalSourceMoment w s a+
         continuedOnset s w*fundamentalSourceTortoiseMoment w s a)+
           continuedOnset s w*fundamentalSourceForcingMoment w s a) := by
   let w := physicalFundamentalFrequency q side
   let s := physicalRate q br
-  let mu := physicalAngularParameter q^2-1/4
+  let mu := physicalAngularParameter q^(2 : ℕ)-1/4
   let T := continuedOnset s w
   let Td := deriv (continuedOnset s) w
   have hstrip := physicalFundamentalFrequency_strip q side
@@ -96,7 +96,7 @@ theorem canonicalQNMValue_eq_source_periods (q : XiZeroCopy) (br side : Bool) (a
   change _ = -mu*physicalSelfSourceCoefficient q*((∫ z in b..1,
     (z:ℂ)^w*fundamentalSourceCore w s a z*((mu-2)*((tortoiseOf z:ℂ)*T+Td)+w*T/(z:ℂ)))+
     (mu-2)*fundamentalSourceCore w s a 0*(b:ℂ)^(w+1)*
-      ((((Real.log b:ℂ)/2-(Real.log 2:ℂ))*T)/(w+1)-T/(2*(w+1)^2)+Td/(w+1))+
+      ((((Real.log b:ℂ)/2-(Real.log 2:ℂ))*T)/(w+1)-T/(2*(w+1)^(2 : ℕ))+Td/(w+1))+
     w*T*(fundamentalSourceCore w s a 0*(b:ℂ)^w/w+
       fundamentalSourceCoreSlope w s a*(b:ℂ)^(w+1)/(w+1)))
   rw [hsplit]

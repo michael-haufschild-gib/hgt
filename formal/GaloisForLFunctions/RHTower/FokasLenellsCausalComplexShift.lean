@@ -8,7 +8,7 @@ open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
-local instance : InnerProductSpace ℝ (hardyL2ᗮ) :=
+local instance fokasLenellsCausalComplexShiftInst1 : InnerProductSpace ℝ (hardyL2ᗮ) :=
   InnerProductSpace.rclikeToReal ℂ (hardyL2ᗮ)
 
 /-- Complex spectral shift on the actual unchanged maximal generator domain. -/
@@ -27,10 +27,10 @@ theorem causalGenerator_re_inner_nonpos (u : causalGeneratorDomain) :
 /-- The actual shifted energy pairing separates damping from generator dissipation. -/
 theorem causalComplexGeneratorShift_re_inner (z : ℂ) (u : causalGeneratorDomain) :
     (inner ℂ u.val (causalComplexGeneratorShift z u)).re =
-      z.re * ‖u.val‖^2 - (inner ℂ u.val (causalGenerator u)).re := by
+      z.re * ‖u.val‖^(2 : ℕ) - (inner ℂ u.val (causalGenerator u)).re := by
   change (inner ℂ u.val (z • u.val - causalGenerator u)).re = _
   rw [inner_sub_right, inner_smul_right, inner_self_eq_norm_sq_to_K]
-  change (z * ((‖u.val‖ : ℝ) : ℂ)^2 - inner ℂ u.val (causalGenerator u)).re = _
+  change (z * ((‖u.val‖ : ℝ) : ℂ)^(2 : ℕ) - inner ℂ u.val (causalGenerator u)).re = _
   simp only [← Complex.ofReal_pow, Complex.sub_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
     mul_zero, sub_zero]
 

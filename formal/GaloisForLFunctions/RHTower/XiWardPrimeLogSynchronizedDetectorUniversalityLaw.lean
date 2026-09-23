@@ -40,7 +40,7 @@ theorem not_riemannHypothesis_iff_continuedXiWardSynchronizedOneNodeFailure
     have hm1024 :=
       xiWardZeroFreeMargin_le_inv1024 (xiRightCenteredZero q.1).im
     have hclose : |t + (xiRightCenteredZero q.1).im| ≤ 1 := by
-      have hsq : (t + (xiRightCenteredZero q.1).im) ^ 2 ≤ 1 := by
+      have hsq : (t + (xiRightCenteredZero q.1).im) ^ (2 : ℕ) ≤ 1 := by
         nlinarith [htwin]
       nlinarith [sq_abs (t + (xiRightCenteredZero q.1).im),
         abs_nonneg (t + (xiRightCenteredZero q.1).im),

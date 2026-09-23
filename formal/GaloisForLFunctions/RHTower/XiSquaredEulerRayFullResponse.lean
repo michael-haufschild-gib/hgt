@@ -11,7 +11,7 @@ multiplicity-exact Xi divisor and is exactly the real logarithmic derivative of 
 
 The relative-resolvent identity fixes the normalization: if `x > 0`, then
 
-`xi'(1/2+x) / (x * xi(1/2+x)) = sum_q Re (x^2 + a_q^2)^(-1)`.
+`xi'(1/2+x) / (x * xi(1/2+x)) = sum_q Re (x^(2 : ℕ) + a_q^(2 : ℕ))^(-1)`.
 
 Here `a_q` is the centered Xi spectral point.  Each real part is the chamber response already
 controlled by the source height gap.  Consequently the actual infinite Xi response is strictly
@@ -57,7 +57,7 @@ lemma xiSquaredEulerResolvent_den_ne (q : XiZeroCopy) (x : ℝ) :
   nlinarith [sq_nonneg x]
 
 /-- The paired reciprocal-square resolvent at the imaginary centered point is the ordinary
-reciprocal of the squared spectral point shifted by `x^2`. -/
+reciprocal of the squared spectral point shifted by `x^(2 : ℕ)`. -/
 theorem xiReciprocalSquareResolventTerm_neg_mul_I_eq
     (q : XiZeroCopy) (x : ℝ) :
     xiReciprocalSquareResolventTerm (-(x : ℂ) * I) q =

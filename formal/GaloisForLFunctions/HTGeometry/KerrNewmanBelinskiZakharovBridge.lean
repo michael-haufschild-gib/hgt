@@ -69,24 +69,24 @@ theorem kerrLowFrequencyRightGammaRatioMero_eq_pochhammer
 
 /-- Standard Boyer--Lindquist quantity `Σ = r² + a² cos² θ`. -/
 def kerrNewmanSigma (spin radius polar : ℝ) : ℝ :=
-  radius ^ 2 + spin ^ 2 * Real.cos polar ^ 2
+  radius ^ (2 : ℕ) + spin ^ (2 : ℕ) * Real.cos polar ^ (2 : ℕ)
 
 /-- Standard Boyer--Lindquist quantity `Δ = r² - 2Mr + a² + Q²`. -/
 def kerrNewmanDelta (mass spin charge radius : ℝ) : ℝ :=
-  radius ^ 2 - 2 * mass * radius + spin ^ 2 + charge ^ 2
+  radius ^ (2 : ℕ) - 2 * mass * radius + spin ^ (2 : ℕ) + charge ^ (2 : ℕ)
 
 /-- The stationary `t--φ` Killing block of the Boyer--Lindquist Kerr--Newman metric. -/
 def kerrNewmanKillingBlock
     (mass spin charge radius polar : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
   !![
-    -(kerrNewmanDelta mass spin charge radius - spin ^ 2 * Real.sin polar ^ 2) /
+    -(kerrNewmanDelta mass spin charge radius - spin ^ (2 : ℕ) * Real.sin polar ^ (2 : ℕ)) /
       kerrNewmanSigma spin radius polar,
-    -spin * Real.sin polar ^ 2 * (2 * mass * radius - charge ^ 2) /
+    -spin * Real.sin polar ^ (2 : ℕ) * (2 * mass * radius - charge ^ (2 : ℕ)) /
       kerrNewmanSigma spin radius polar;
-    -spin * Real.sin polar ^ 2 * (2 * mass * radius - charge ^ 2) /
+    -spin * Real.sin polar ^ (2 : ℕ) * (2 * mass * radius - charge ^ (2 : ℕ)) /
       kerrNewmanSigma spin radius polar,
-    Real.sin polar ^ 2 * ((radius ^ 2 + spin ^ 2) ^ 2 -
-      spin ^ 2 * kerrNewmanDelta mass spin charge radius * Real.sin polar ^ 2) /
+    Real.sin polar ^ (2 : ℕ) * ((radius ^ (2 : ℕ) + spin ^ (2 : ℕ)) ^ (2 : ℕ) -
+      spin ^ (2 : ℕ) * kerrNewmanDelta mass spin charge radius * Real.sin polar ^ (2 : ℕ)) /
       kerrNewmanSigma spin radius polar
   ]
 
@@ -102,16 +102,16 @@ theorem kerrNewmanKillingBlock_transpose
 This includes the coordinate-singular locus where Lean's division is totalized. -/
 theorem kerrNewmanKillingBlock_det_cleared
     (mass spin charge radius polar : ℝ) :
-    kerrNewmanSigma spin radius polar ^ 2 *
+    kerrNewmanSigma spin radius polar ^ (2 : ℕ) *
         (kerrNewmanKillingBlock mass spin charge radius polar).det =
-      -kerrNewmanDelta mass spin charge radius * Real.sin polar ^ 2 *
-        kerrNewmanSigma spin radius polar ^ 2 := by
+      -kerrNewmanDelta mass spin charge radius * Real.sin polar ^ (2 : ℕ) *
+        kerrNewmanSigma spin radius polar ^ (2 : ℕ) := by
   rw [Matrix.det_fin_two]
   simp [kerrNewmanKillingBlock]
   by_cases hSigma : kerrNewmanSigma spin radius polar = 0
   · simp [hSigma]
   · field_simp [hSigma]
-    have htrig : Real.sin polar ^ 2 = 1 - Real.cos polar ^ 2 := by
+    have htrig : Real.sin polar ^ (2 : ℕ) = 1 - Real.cos polar ^ (2 : ℕ) := by
       nlinarith [Real.sin_sq_add_cos_sq polar]
     rw [htrig]
     simp only [kerrNewmanDelta, kerrNewmanSigma]
@@ -151,10 +151,10 @@ theorem reissnerNordstromBoyerLindquistMetric_explicit
     (mass charge radius polar : ℝ) :
     reissnerNordstromBoyerLindquistMetric mass charge radius polar =
       !![
-        -kerrNewmanDelta mass 0 charge radius / radius ^ 2, 0, 0, 0;
-        0, radius ^ 2 / kerrNewmanDelta mass 0 charge radius, 0, 0;
-        0, 0, radius ^ 2, 0;
-        0, 0, 0, Real.sin polar ^ 2 * radius ^ 2
+        -kerrNewmanDelta mass 0 charge radius / radius ^ (2 : ℕ), 0, 0, 0;
+        0, radius ^ (2 : ℕ) / kerrNewmanDelta mass 0 charge radius, 0, 0;
+        0, 0, radius ^ (2 : ℕ), 0;
+        0, 0, 0, Real.sin polar ^ (2 : ℕ) * radius ^ (2 : ℕ)
       ] := by
   unfold reissnerNordstromBoyerLindquistMetric
   ext i j
@@ -170,10 +170,10 @@ theorem schwarzschildBoyerLindquistMetric_explicit
     (mass radius polar : ℝ) :
     schwarzschildBoyerLindquistMetric mass radius polar =
       !![
-        -(radius ^ 2 - 2 * mass * radius) / radius ^ 2, 0, 0, 0;
-        0, radius ^ 2 / (radius ^ 2 - 2 * mass * radius), 0, 0;
-        0, 0, radius ^ 2, 0;
-        0, 0, 0, Real.sin polar ^ 2 * radius ^ 2
+        -(radius ^ (2 : ℕ) - 2 * mass * radius) / radius ^ (2 : ℕ), 0, 0, 0;
+        0, radius ^ (2 : ℕ) / (radius ^ (2 : ℕ) - 2 * mass * radius), 0, 0;
+        0, 0, radius ^ (2 : ℕ), 0;
+        0, 0, 0, Real.sin polar ^ (2 : ℕ) * radius ^ (2 : ℕ)
       ] := by
   unfold schwarzschildBoyerLindquistMetric reissnerNordstromBoyerLindquistMetric
   ext i j
@@ -238,7 +238,7 @@ theorem kerrNewmanBoyerLindquistMetric_flatLimit_interval_eq_neg_hlsMinkowskiFor
 background. -/
 theorem kerrNewmanBoyerLindquistMetric_flatLimit_restMomentum_interval (mass : ℝ) :
     clockSquaredInterval4 (kerrNewmanBoyerLindquistMetric 0 0 0 1 (Real.pi / 2))
-      (hlsRestMomentum mass) = -mass ^ 2 := by
+      (hlsRestMomentum mass) = -mass ^ (2 : ℕ) := by
   rw [kerrNewmanBoyerLindquistMetric_flatLimit_interval_eq_neg_hlsMinkowskiForm,
     hlsRestMomentum_mass_shell]
 
@@ -459,7 +459,7 @@ determinant. -/
 theorem belinskiZakharovDressing_det
     (dressing metric : Matrix (Fin 2) (Fin 2) ℝ) :
     (belinskiZakharovDressing dressing metric).det =
-      dressing.det ^ 2 * metric.det := by
+      dressing.det ^ (2 : ℕ) * metric.det := by
   simp [belinskiZakharovDressing, Matrix.det_mul, pow_two]
   ring
 
@@ -508,22 +508,22 @@ theorem belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_det
 unipotent BZ-style dressing. -/
 theorem belinskiZakharovDressedKerrNewmanKillingBlock_det_cleared
     (parameter mass spin charge radius polar : ℝ) :
-    kerrNewmanSigma spin radius polar ^ 2 *
+    kerrNewmanSigma spin radius polar ^ (2 : ℕ) *
         (belinskiZakharovDressing (belinskiZakharovUnipotentDressing parameter)
           (kerrNewmanKillingBlock mass spin charge radius polar)).det =
-      -kerrNewmanDelta mass spin charge radius * Real.sin polar ^ 2 *
-        kerrNewmanSigma spin radius polar ^ 2 := by
+      -kerrNewmanDelta mass spin charge radius * Real.sin polar ^ (2 : ℕ) *
+        kerrNewmanSigma spin radius polar ^ (2 : ℕ) := by
   rw [belinskiZakharovDressedKerrNewmanKillingBlock_det]
   exact kerrNewmanKillingBlock_det_cleared mass spin charge radius polar
 
 /-- The Kerr--Newman determinant normalization also survives the one-pole spectral dressing. -/
 theorem belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_det_cleared
     (spectral pole residue mass spin charge radius polar : ℝ) :
-    kerrNewmanSigma spin radius polar ^ 2 *
+    kerrNewmanSigma spin radius polar ^ (2 : ℕ) *
         (belinskiZakharovDressing (belinskiZakharovOnePoleDressing spectral pole residue)
           (kerrNewmanKillingBlock mass spin charge radius polar)).det =
-      -kerrNewmanDelta mass spin charge radius * Real.sin polar ^ 2 *
-        kerrNewmanSigma spin radius polar ^ 2 := by
+      -kerrNewmanDelta mass spin charge radius * Real.sin polar ^ (2 : ℕ) *
+        kerrNewmanSigma spin radius polar ^ (2 : ℕ) := by
   rw [belinskiZakharovOnePoleDressedKerrNewmanKillingBlock_det]
   exact kerrNewmanKillingBlock_det_cleared mass spin charge radius polar
 

@@ -63,13 +63,13 @@ theorem differentiableAt_l2Family_of_cauchy_dominated (μ : Measure A) (F : ℂ 
     calc
       _ ≤ ‖u-z‖⁻¹*(B a*‖u-z‖) := mul_le_mul_of_nonneg_left h (by positivity)
       _ = B a := by rw [mul_left_comm,inv_mul_cancel₀ (norm_ne_zero_iff.mpr (sub_ne_zero.mpr he)),mul_one]
-  have hi : Integrable (fun a => 4*(B a)^2) μ :=
+  have hi : Integrable (fun a => 4*(B a)^(2 : ℕ)) μ :=
     ((memLp_two_iff_integrable_sq hB.aestronglyMeasurable).mp hB).const_mul 4
   have hnhds0 : ∀ᶠ u in 𝓝 z, u ∈ ball z (R/2) := ball_mem_nhds z hhalf
   have hnhds : ∀ᶠ u in 𝓝[≠] z, u ∈ ball z (R/2) := hnhds0.filter_mono nhdsWithin_le_nhds
-  have hlim : Tendsto (fun u => ∫ a, ‖g u a-d a‖^2 ∂μ) (𝓝[≠] z) (𝓝 0) := by
+  have hlim : Tendsto (fun u => ∫ a, ‖g u a-d a‖^(2 : ℕ) ∂μ) (𝓝[≠] z) (𝓝 0) := by
     have h := tendsto_integral_filter_of_dominated_convergence (μ := μ) (l := 𝓝[≠] z)
-      (F := fun u a => ‖g u a-d a‖^2) (f := fun _ : A => (0:ℝ)) (fun a => 4*(B a)^2)
+      (F := fun u a => ‖g u a-d a‖^(2 : ℕ)) (f := fun _ : A => (0:ℝ)) (fun a => 4*(B a)^(2 : ℕ))
       (hnhds.mono (fun u hu => ((hg u hu).aestronglyMeasurable.sub hdf.aestronglyMeasurable).norm.pow 2))
       (hnhds.mono (fun u hu => Eventually.of_forall (fun a => ?_))) hi ?_
     · simpa only [integral_zero] using h
@@ -89,7 +89,7 @@ theorem differentiableAt_l2Family_of_cauchy_dominated (μ : Measure A) (F : ℂ 
     change (((hf u (hsub hu)).sub (hf z hz)).const_smul (u-z)⁻¹).toLp _ = _
     rw [MemLp.toLp_const_smul _ ((hf u (hsub hu)).sub (hf z hz)),MemLp.toLp_sub]
   have hn (u : ℂ) (hu : u ∈ ball z (R/2)) :
-      ‖(u-z)⁻¹ • (l2Family μ F u-l2Family μ F z)-D‖^2 = ∫ a, ‖g u a-d a‖^2 ∂μ := by
+      ‖(u-z)⁻¹ • (l2Family μ F u-l2Family μ F z)-D‖^(2 : ℕ) = ∫ a, ‖g u a-d a‖^(2 : ℕ) ∂μ := by
     rw [← he u hu]
     dsimp [D]
     rw [← MemLp.toLp_sub,_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
@@ -97,7 +97,7 @@ theorem differentiableAt_l2Family_of_cauchy_dominated (μ : Measure A) (F : ℂ 
     filter_upwards [((hg u hu).sub hdf).coeFn_toLp] with a ha
     rw [ha]
     rfl
-  have hs : Tendsto (fun u => ‖(u-z)⁻¹ • (l2Family μ F u-l2Family μ F z)-D‖^2) (𝓝[≠] z) (𝓝 0) :=
+  have hs : Tendsto (fun u => ‖(u-z)⁻¹ • (l2Family μ F u-l2Family μ F z)-D‖^(2 : ℕ)) (𝓝[≠] z) (𝓝 0) :=
     hlim.congr' (hnhds.mono (fun u hu => (hn u hu).symm))
   have hnorm := (Real.continuous_sqrt.tendsto 0).comp hs
   have hderiv : HasDerivAt (l2Family μ F) D z := by

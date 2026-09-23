@@ -60,7 +60,7 @@ theorem coppoFiniteEdgeConstraint_profile (a : ℝ) (N : ℕ) (i : Fin (N + 1)) 
 /-- Squared terminal error is the exact exponentially decaying power. -/
 theorem coppoFiniteEdgeConstraint_terminal_sq (a : ℝ) (N : ℕ) :
     coppoFiniteEdgeConstraint (coppoSSHRatio a) N
-        (fun j => coppoSSHEdgeProfile a j.val) ⟨N, by omega⟩ ^ 2 =
+        (fun j => coppoSSHEdgeProfile a j.val) ⟨N, by omega⟩ ^ (2 : ℕ) =
       coppoSSHRatio a ^ (2 * (N + 1)) := by
   rw [coppoFiniteEdgeConstraint_profile]
   simp only [ite_true]

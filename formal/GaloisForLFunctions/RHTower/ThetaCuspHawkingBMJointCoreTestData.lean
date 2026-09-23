@@ -61,7 +61,7 @@ theorem RadialCore.angularWeighted_value (f : RadialCore) :
 /-- The second geometric weight in the transposed angular term is the original squared coefficient. -/
 theorem RadialCore.angularWeighted_twice_ae (f : RadialCore) :
     radialWeightedValue f.angularWeighted =ᵐ[radialMeasure]
-      fun t => angularWeight t^2*f.field t := by
+      fun t => angularWeight t^(2 : ℕ)*f.field t := by
   apply (radialWeightedValue_ae _).trans
   filter_upwards with t
   change angularWeight t*(angularWeight t*f.field t) = _

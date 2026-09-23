@@ -9,7 +9,7 @@ The exact Davies--Fulling theta-mirror numerator is not a sectorwise `SU(2)` Cay
 Its nonzero second coupling jet already rules out that identification.  More fundamentally, a
 bosonic pair-creation block has `SU(1,1)` signature:
 
-`gain^2 - |beta|^2 = 1`,
+`gain^(2 : ℕ) - |beta|^(2 : ℕ) = 1`,
 
 not the plus-sign conservation law of a beam splitter.  This file inserts the standard balanced
 Bogoliubov prefactor into the complete eikonal numerator and performs its canonical minimal
@@ -23,7 +23,7 @@ coupling activates every countable tilted family, unconditionally.  Thus finite-
 Bogoliubov activity cannot prove RH.
 
 The RH-sensitive survivor is the standard Davies clock.  Dividing the exact full-mirror pair
-number by `lambda^2` selects the physical Born coefficient and kills every delayed nonlinear
+number by `lambda^(2 : ℕ)` selects the physical Born coefficient and kills every delayed nonlinear
 channel.  Positivity of this no-Cayley limit in every noncentral tilted sector is equivalent to RH.
 
 The `SU(1,1)` completion is the bosonic CCR structure of Hawking/dynamical-Casimir pair creation;
@@ -50,7 +50,7 @@ def thetaCuspHawkingFullMirrorBogoliubovBeta
 /-- Exact pair number in one balanced full-mirror sector. -/
 def thetaCuspHawkingFullMirrorBogoliubovNumber
     (a lambda omega : ℝ) : ℝ :=
-  ‖thetaCuspHawkingFullMirrorBogoliubovBeta a lambda omega‖ ^ 2
+  ‖thetaCuspHawkingFullMirrorBogoliubovBeta a lambda omega‖ ^ (2 : ℕ)
 
 /-- Minimal positive bosonic gain completing the exact pair block. -/
 def thetaCuspHawkingFullMirrorBogoliubovGain
@@ -65,7 +65,7 @@ theorem thetaCuspHawkingFullMirrorBogoliubovNumber_nonneg
 
 theorem thetaCuspHawkingFullMirrorBogoliubovGain_sq
     (a lambda omega : ℝ) :
-    thetaCuspHawkingFullMirrorBogoliubovGain a lambda omega ^ 2 =
+    thetaCuspHawkingFullMirrorBogoliubovGain a lambda omega ^ (2 : ℕ) =
       1 + thetaCuspHawkingFullMirrorBogoliubovNumber a lambda omega := by
   rw [thetaCuspHawkingFullMirrorBogoliubovGain, Real.sq_sqrt]
   exact add_nonneg zero_le_one
@@ -120,9 +120,9 @@ theorem thetaCuspHawkingFullMirrorBogoliubov_preserves_signedHermitian
   rw [thetaCuspHawkingFullMirrorBogoliubovNumber] at hgain
   have hgainC := congrArg (fun r : ℝ => (r : ℂ)) hgain
   push_cast at hgainC
-  change (gain : ℂ) ^ 2 = 1 + (‖beta‖ : ℂ) ^ 2 at hgainC
-  have hnormC : (‖beta‖ : ℂ) ^ 2 = conj beta * beta := by
-    rw [show (‖beta‖ : ℂ) ^ 2 = ((‖beta‖ ^ 2 : ℝ) : ℂ) by
+  change (gain : ℂ) ^ (2 : ℕ) = 1 + (‖beta‖ : ℂ) ^ (2 : ℕ) at hgainC
+  have hnormC : (‖beta‖ : ℂ) ^ (2 : ℕ) = conj beta * beta := by
+    rw [show (‖beta‖ : ℂ) ^ (2 : ℕ) = ((‖beta‖ ^ (2 : ℕ) : ℝ) : ℂ) by
       push_cast
       rfl]
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
@@ -166,9 +166,9 @@ theorem thetaCuspHawkingFullMirrorBogoliubov_inverse_after_scattering
   rw [thetaCuspHawkingFullMirrorBogoliubovNumber] at hgain
   have hgainC := congrArg (fun r : ℝ => (r : ℂ)) hgain
   push_cast at hgainC
-  change (gain : ℂ) ^ 2 = 1 + (‖beta‖ : ℂ) ^ 2 at hgainC
-  have hnormC : (‖beta‖ : ℂ) ^ 2 = conj beta * beta := by
-    rw [show (‖beta‖ : ℂ) ^ 2 = ((‖beta‖ ^ 2 : ℝ) : ℂ) by
+  change (gain : ℂ) ^ (2 : ℕ) = 1 + (‖beta‖ : ℂ) ^ (2 : ℕ) at hgainC
+  have hnormC : (‖beta‖ : ℂ) ^ (2 : ℕ) = conj beta * beta := by
+    rw [show (‖beta‖ : ℂ) ^ (2 : ℕ) = ((‖beta‖ ^ (2 : ℕ) : ℝ) : ℂ) by
       push_cast
       rfl]
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_eq_conj_mul_self]
@@ -187,11 +187,11 @@ theorem thetaCuspHawkingFullMirrorBogoliubov_inverse_after_scattering
 /-- A nontrivial two-mode block cannot obey both `SU(2)` lossless and bosonic `SU(1,1)` laws. -/
 theorem pair_eq_zero_of_lossless_and_bosonicCCR
     {gain : ℝ} {pair : ℂ}
-    (hlossless : gain ^ 2 + ‖pair‖ ^ 2 = 1)
+    (hlossless : gain ^ (2 : ℕ) + ‖pair‖ ^ (2 : ℕ) = 1)
     (hCCR : IsTwoModeBosonicCCR gain pair) :
     pair = 0 := by
   rw [IsTwoModeBosonicCCR] at hCCR
-  have hnormSq : ‖pair‖ ^ 2 = 0 := by
+  have hnormSq : ‖pair‖ ^ (2 : ℕ) = 0 := by
     linarith
   have hnorm : ‖pair‖ = 0 := by
     nlinarith [norm_nonneg pair]
@@ -201,8 +201,8 @@ theorem pair_eq_zero_of_lossless_and_bosonicCCR
 theorem thetaCuspHawkingFullMirrorBogoliubov_not_lossless_of_beta_ne_zero
     {a lambda omega : ℝ}
     (hbeta : thetaCuspHawkingFullMirrorBogoliubovBeta a lambda omega ≠ 0) :
-    ¬(thetaCuspHawkingFullMirrorBogoliubovGain a lambda omega ^ 2 +
-        ‖thetaCuspHawkingFullMirrorBogoliubovBeta a lambda omega‖ ^ 2 = 1) := by
+    ¬(thetaCuspHawkingFullMirrorBogoliubovGain a lambda omega ^ (2 : ℕ) +
+        ‖thetaCuspHawkingFullMirrorBogoliubovBeta a lambda omega‖ ^ (2 : ℕ) = 1) := by
   intro hlossless
   exact hbeta (pair_eq_zero_of_lossless_and_bosonicCCR hlossless
     (thetaCuspHawkingFullMirrorBogoliubov_isTwoModeBosonicCCR
@@ -228,7 +228,7 @@ theorem thetaCuspHawkingFullMirrorBogoliubovKMSOccupation_nonneg
 /-- Exterior occupation after one exact squeeze against an uncorrelated KMS partner. -/
 def thetaCuspHawkingFullMirrorBogoliubovKMSOutputPopulation
     (kappa a lambda omega p : ℝ) : ℝ :=
-  thetaCuspHawkingFullMirrorBogoliubovGain a lambda omega ^ 2 * p +
+  thetaCuspHawkingFullMirrorBogoliubovGain a lambda omega ^ (2 : ℕ) * p +
     thetaCuspHawkingFullMirrorBogoliubovNumber a lambda omega *
       (thetaCuspHawkingFullMirrorBogoliubovKMSOccupation kappa omega + 1)
 
@@ -302,7 +302,7 @@ theorem exists_arbitrarily_weak_common_thetaCuspHawkingFullMirrorBogoliubov_sque
 /-- Exact full-mirror Bogoliubov pair number per unit standard van-Hove time. -/
 def thetaCuspHawkingFullMirrorBogoliubovVanHoveRate
     (a lambda omega : ℝ) : ℝ :=
-  thetaCuspHawkingFullMirrorBogoliubovNumber a lambda omega / lambda ^ 2
+  thetaCuspHawkingFullMirrorBogoliubovNumber a lambda omega / lambda ^ (2 : ℕ)
 
 /-- Standard balanced prefactor intensity. -/
 def thetaCuspHawkingFullMirrorBogoliubovPrefactorNumber (omega : ℝ) : ℝ :=

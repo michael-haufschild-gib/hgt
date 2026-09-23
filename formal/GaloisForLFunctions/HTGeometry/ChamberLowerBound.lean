@@ -23,7 +23,7 @@ theorem sub_upperNode_ne_zero {a y : ℝ} (hy : y ≠ 0) (t : ℝ) :
   intro h
   have hns := normSq_sub_upperNode a y t
   rw [h, map_zero] at hns
-  have hy2 : 0 < y ^ 2 := by positivity
+  have hy2 : 0 < y ^ (2 : ℕ) := by positivity
   nlinarith [sq_nonneg (t - a)]
 
 /-- The modulus of the scaled Cauchy kernel is continuous at a nonzero height. -/

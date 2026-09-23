@@ -86,7 +86,7 @@ private theorem coefficient_continuous (q : XiZeroCopy) (br : Bool) (amp w : ℂ
 including both source endpoints and the fourth forcing moment. -/
 def boundaryCombination (mu w R : ℂ) (a b : ℝ) (F : Fin 4→ℝ→ℂ) : ℂ :=
   (-(mu-2)*(F 0 b-F 0 a)+w*(mu*(∫ p in a..b,F 1 p)-(∫ p in a..b,F 2 p)-
-    2*(mu-2)*(∫ p in a..b,F 0 p)-R^3/(R^2-1)*(∫ p in a..b,F 3 p)))/(R^2*(R^2-1))
+    2*(mu-2)*(∫ p in a..b,F 0 p)-R^(3 : ℕ)/(R^(2 : ℕ)-1)*(∫ p in a..b,F 3 p)))/(R^(2 : ℕ)*(R^(2 : ℕ)-1))
 
 private theorem top_integrable (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hw : w.im≠0)
     (a b R Y : ℝ) (ha : 0<a) (hab : a≤b) (hr : 1<R) (hy : 0<Y) (j : Fin 4) :
@@ -108,7 +108,7 @@ theorem complete_metric_boundary_combination (q : XiZeroCopy) (br : Bool) (amp w
     (a b R Y : ℝ) (ha : 0<a) (hab : a≤b) (hr : 1<R) (hy : 0<Y) :
     (∫ p in a..b,
       (D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 0 p R Y-
-        D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 1 p R Y/((R:ℂ)^2-1))/(R:ℂ)^2)=
+        D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 1 p R Y/((R:ℂ)^(2 : ℕ)-1))/(R:ℂ)^(2 : ℕ))=
       boundaryCombination (eigenvalue q) w R a b
         (fun j p => ∫ x in (-1/2:ℝ)..1/2,physicalTransfer q br amp w j p R x Y) := by
   have h0 := top_integrable q br amp w hw a b R Y ha hab hr hy 0
@@ -186,7 +186,7 @@ theorem complete_metric_boundary_cut (q : XiZeroCopy) (br : Bool) (amp w : ℂ) 
     (∫ p in a..b,
       (D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 0 p (tortoiseRadius (-L/2)) (Real.exp k)-
         D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 1 p (tortoiseRadius (-L/2)) (Real.exp k)/
-          ((tortoiseRadius (-L/2):ℂ)^2-1))/(tortoiseRadius (-L/2):ℂ)^2)-
+          ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1))/(tortoiseRadius (-L/2):ℂ)^(2 : ℕ))-
       ∑ i : Fin 3,compactBoundaryCoefficient q q br true amp w a b (tortoiseRadius (-L/2)) i*
         Complex.exp (fluxExponent q q i*(k:ℂ))=
       boundaryCombination (eigenvalue q) w (tortoiseRadius (-L/2)) a b
@@ -215,8 +215,8 @@ def normalizedTransfer (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (j : Fin 4)
 private theorem normalized_cut (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (hw : w.im≠0)
     (p L x k : ℝ) (hp : 0<p) (hL : 0<L) (j : Fin 4) :
     transferCut q br amp w j p L x k=
-      ![(tortoiseRadius (-L/2):ℂ)^2,(tortoiseRadius (-L/2):ℂ)^2,
-        (tortoiseRadius (-L/2):ℂ)^2,(tortoiseRadius (-L/2):ℂ)] j*
+      ![(tortoiseRadius (-L/2):ℂ)^(2 : ℕ),(tortoiseRadius (-L/2):ℂ)^(2 : ℕ),
+        (tortoiseRadius (-L/2):ℂ)^(2 : ℕ),(tortoiseRadius (-L/2):ℂ)] j*
         normalizedTransfer q br amp w j p L x k := by
   have hs := physical_source_transfer_products q br amp w hw p L x k hp hL
   have hf := physical_forcing_transfer_product q br amp w hw p L x k hL
@@ -237,7 +237,7 @@ def normalizedBoundary (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (a b L k : ℝ
   let mu := eigenvalue q
   let F := fun j p => ∫ x in (-1/2:ℝ)..1/2,normalizedTransfer q br amp w j p L x k
   (-(mu-2)*(F 0 b-F 0 a)+w*(mu*(∫ p in a..b,F 1 p)-(∫ p in a..b,F 2 p)-
-    2*(mu-2)*(∫ p in a..b,F 0 p)-R^2/(R^2-1)*(∫ p in a..b,F 3 p)))/(R^2-1)
+    2*(mu-2)*(∫ p in a..b,F 0 p)-R^(2 : ℕ)/(R^(2 : ℕ)-1)*(∫ p in a..b,F 3 p)))/(R^(2 : ℕ)-1)
 
 /-- The complete original metric boundary with its unchanged three counterterms
 is exactly the full source-product expression, including both temporal endpoints. -/
@@ -246,13 +246,13 @@ theorem complete_metric_boundary_products (q : XiZeroCopy) (br : Bool) (amp w : 
     (∫ p in a..b,
       (D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 0 p (tortoiseRadius (-L/2)) (Real.exp k)-
         D4BMOriginalModularOrbit.modeCompleteTopFlux q q br true amp w 1 p (tortoiseRadius (-L/2)) (Real.exp k)/
-          ((tortoiseRadius (-L/2):ℂ)^2-1))/(tortoiseRadius (-L/2):ℂ)^2)-
+          ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1))/(tortoiseRadius (-L/2):ℂ)^(2 : ℕ))-
       ∑ i : Fin 3,compactBoundaryCoefficient q q br true amp w a b (tortoiseRadius (-L/2)) i*
         Complex.exp (fluxExponent q q i*(k:ℂ))=
       normalizedBoundary q br amp w a b L k := by
   rw [complete_metric_boundary_cut q br amp w hw a b L k ha hab hL]
   let R : ℂ := tortoiseRadius (-L/2)
-  let c := ![R^2,R^2,R^2,R]
+  let c := ![R^(2 : ℕ),R^(2 : ℕ),R^(2 : ℕ),R]
   have hh (j : Fin 4) (p : ℝ) (hp : 0<p) :
       (∫ x in (-1/2:ℝ)..1/2,transferCut q br amp w j p L x k)=
         c j*(∫ x in (-1/2:ℝ)..1/2,normalizedTransfer q br amp w j p L x k) := by
@@ -278,11 +278,11 @@ theorem complete_metric_boundary_products (q : XiZeroCopy) (br : Bool) (amp w : 
   dsimp only [c,Matrix.cons_val]
   have hR : 1<tortoiseRadius (-L/2) := tortoiseRadius_exterior (-L/2) (by linarith)
   have hr : R≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hf : R^2-1≠0 := by
-    change (tortoiseRadius (-L/2):ℂ)^2-1≠0
-    exact_mod_cast (show tortoiseRadius (-L/2)^2-1≠0 by nlinarith)
-  change _= (-(eigenvalue q-2)*_+w*(_-_-_-R^2/(R^2-1)*_))/(R^2-1)
-  change (-(eigenvalue q-2)*(R^2*_-R^2*_)+w*(_-_-_-R^3/(R^2-1)*(R*_)))/(R^2*(R^2-1))=_
+  have hf : R^(2 : ℕ)-1≠0 := by
+    change (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1≠0
+    exact_mod_cast (show tortoiseRadius (-L/2)^(2 : ℕ)-1≠0 by nlinarith)
+  change _= (-(eigenvalue q-2)*_+w*(_-_-_-R^(2 : ℕ)/(R^(2 : ℕ)-1)*_))/(R^(2 : ℕ)-1)
+  change (-(eigenvalue q-2)*(R^(2 : ℕ)*_-R^(2 : ℕ)*_)+w*(_-_-_-R^(3 : ℕ)/(R^(2 : ℕ)-1)*(R*_)))/(R^(2 : ℕ)*(R^(2 : ℕ)-1))=_
   field_simp [hr,hf]
 
 /-- After the actual radial Jacobian, the fourth transfer uses normalized forcing;
@@ -304,19 +304,19 @@ def radialBoundary (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (a b L k : ℝ) : 
 complete source/forcing boundary. The collar coordinate contributes a further factor one-half. -/
 theorem complete_boundary_radial_density (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
     (a b L k : ℝ) (hL : 0<L) :
-    ((tortoiseRadius (-L/2):ℂ)^2-1)*normalizedBoundary q br amp w a b L k=
+    ((tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1)*normalizedBoundary q br amp w a b L k=
       radialBoundary q br amp w a b L k := by
   let R : ℂ := tortoiseRadius (-L/2)
   let Z : ℂ := horizonCoordinate (-L/2)
   have hR : 1<tortoiseRadius (-L/2) := tortoiseRadius_exterior (-L/2) (by linarith)
-  have hf : R^2-1≠0 := by
-    change (tortoiseRadius (-L/2):ℂ)^2-1≠0
-    exact_mod_cast (show tortoiseRadius (-L/2)^2-1≠0 by nlinarith)
-  have hZ : R^2*Z=R^2-1 := by
+  have hf : R^(2 : ℕ)-1≠0 := by
+    change (tortoiseRadius (-L/2):ℂ)^(2 : ℕ)-1≠0
+    exact_mod_cast (show tortoiseRadius (-L/2)^(2 : ℕ)-1≠0 by nlinarith)
+  have hZ : R^(2 : ℕ)*Z=R^(2 : ℕ)-1 := by
     dsimp only [Z,horizonCoordinate]
     rw [radialUnit_inverse_radius]
     push_cast
-    change R^2*(1-(R⁻¹)^2)=R^2-1
+    change R^(2 : ℕ)*(1-(R⁻¹)^(2 : ℕ))=R^(2 : ℕ)-1
     field_simp [show R≠0 from Complex.ofReal_ne_zero.mpr (by linarith)]
   have h3 (p x : ℝ) : normalizedTransfer q br amp w 3 p L x k=
       Z*radialTransfer q br amp w 3 p L x k := by
@@ -330,9 +330,9 @@ theorem complete_boundary_radial_density (q : XiZeroCopy) (br : Bool) (amp w : �
   simp only [radialTransfer,show (0:Fin 4)≠3 by decide,show (1:Fin 4)≠3 by decide,
     show (2:Fin 4)≠3 by decide,if_false,if_true]
   rw [hi]
-  change (R^2-1)*(_/(R^2-1))=_
+  change (R^(2 : ℕ)-1)*(_/(R^(2 : ℕ)-1))=_
   rw [mul_div_cancel₀ _ hf]
-  have he : R^2/(R^2-1)*Z=1 := by rw [div_mul_eq_mul_div,hZ];exact div_self hf
+  have he : R^(2 : ℕ)/(R^(2 : ℕ)-1)*Z=1 := by rw [div_mul_eq_mul_div,hZ];exact div_self hf
   rw [← mul_assoc,he,one_mul]
   rfl
 
@@ -343,7 +343,7 @@ theorem radial_transfer_continuousAt (q : XiZeroCopy) (br : Bool) (amp w : ℂ) 
     ContinuousAt (fun t : ℝ×ℝ => radialTransfer q br amp w j t.1 L t.2 k) z := by
   let R : ℂ := tortoiseRadius (-L/2)
   let Z : ℂ := horizonCoordinate (-L/2)
-  let c : Fin 4→ℂ := ![R^2,R^2,R^2,R*Z]
+  let c : Fin 4→ℂ := ![R^(2 : ℕ),R^(2 : ℕ),R^(2 : ℕ),R*Z]
   have hR := tortoiseRadius_exterior (-L/2) (by linarith : -L/2<0)
   have hR0 : R≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
   have hZ0 : Z≠0 := Complex.ofReal_ne_zero.mpr

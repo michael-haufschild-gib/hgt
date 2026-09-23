@@ -37,12 +37,12 @@ abbrev PrimeJetOddLaw (n : ℕ) := Polynomial.degreeLT ℂ n
 
 /-- Odd polynomial represented by its square-coordinate factor. -/
 def primeJetOddLawValue {n : ℕ} (Q : PrimeJetOddLaw n) (z : ℂ) : ℂ :=
-  z * Q.1.eval (z ^ 2)
+  z * Q.1.eval (z ^ (2 : ℕ))
 
 /-- Reflected sample `P(r)-P(-r)=2rQ(r²)` of an odd law. -/
 def primeJetOddSample {n : ℕ} (r : Fin n → ℂ) (Q : PrimeJetOddLaw n)
     (i : Fin n) : ℂ :=
-  2 * r i * Q.1.eval (r i ^ 2)
+  2 * r i * Q.1.eval (r i ^ (2 : ℕ))
 
 /-- Square reflected-sample chart. -/
 def primeJetSampleMap {n : ℕ} (r : Fin n → ℂ) :
@@ -64,14 +64,14 @@ def primeJetOriginReporter (n : ℕ) : PrimeJetOddLaw n →ₗ[ℂ] ℂ where
   map_smul' c Q := by simp
 
 theorem primeJetSampleMap_injective {n : ℕ} {r : Fin n → ℂ}
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     Function.Injective (primeJetSampleMap r) := by
   intro Q S hQS
   apply Subtype.ext
   let D : PrimeJetOddLaw n := Q - S
   have hzero : primeJetSampleMap r D = 0 := by
     rw [map_sub, hQS, sub_self]
-  have heval : ∀ i : Fin n, D.1.eval (r i ^ 2) = 0 := by
+  have heval : ∀ i : Fin n, D.1.eval (r i ^ (2 : ℕ)) = 0 := by
     intro i
     have hi := congrFun hzero i
     simp [primeJetSampleMap, primeJetOddSample, hr0 i] at hi
@@ -80,7 +80,7 @@ theorem primeJetSampleMap_injective {n : ℕ} {r : Fin n → ℂ}
       (((Finset.univ : Finset (Fin n)).card : ℕ) : WithBot ℕ) := by
     simpa using (Polynomial.mem_degreeLT.mp D.2)
   have hinterp := Lagrange.eq_interpolate
-    (s := (Finset.univ : Finset (Fin n))) (v := fun i => r i ^ 2)
+    (s := (Finset.univ : Finset (Fin n))) (v := fun i => r i ^ (2 : ℕ))
     hr2inj.injOn hdeg
   have hD : D.1 = 0 := by
     rw [hinterp, Lagrange.interpolate_apply]
@@ -90,7 +90,7 @@ theorem primeJetSampleMap_injective {n : ℕ} {r : Fin n → ℂ}
 
 /-- Reflected sampling is a linear equivalence at nonzero square-distinct radii. -/
 def primeJetSampleEquiv {n : ℕ} (r : Fin n → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     PrimeJetOddLaw n ≃ₗ[ℂ] (Fin n → ℂ) := by
   let E := Polynomial.degreeLTEquiv ℂ n
   let F := (primeJetSampleMap r).comp E.symm.toLinearMap
@@ -105,7 +105,7 @@ def primeJetSampleEquiv {n : ℕ} (r : Fin n → ℂ)
     ⟨primeJetSampleMap_injective hr0 hr2inj, hsurj⟩
 
 @[simp] theorem primeJetSampleEquiv_apply {n : ℕ} (r : Fin n → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (Q : PrimeJetOddLaw n) :
     primeJetSampleEquiv r hr0 hr2inj Q = primeJetSampleMap r Q := rfl
 
@@ -134,8 +134,8 @@ theorem primeJetLawInclusion_trans {n m k : ℕ} (hnm : n ≤ m) (hmk : m ≤ k)
 
 /-- Source-generated transport between two finite reflected-sample charts. -/
 def primeJetTransport {n m : ℕ} (rn : Fin n → ℂ) (rm : Fin m → ℂ)
-    (hrn0 : ∀ i, rn i ≠ 0) (hrn2 : Function.Injective fun i => rn i ^ 2)
-    (hrm0 : ∀ i, rm i ≠ 0) (hrm2 : Function.Injective fun i => rm i ^ 2)
+    (hrn0 : ∀ i, rn i ≠ 0) (hrn2 : Function.Injective fun i => rn i ^ (2 : ℕ))
+    (hrm0 : ∀ i, rm i ≠ 0) (hrm2 : Function.Injective fun i => rm i ^ (2 : ℕ))
     (hnm : n ≤ m) : (Fin n → ℂ) →ₗ[ℂ] (Fin m → ℂ) :=
   (primeJetSampleEquiv rm hrm0 hrm2).toLinearMap.comp
     ((primeJetLawInclusion hnm).comp
@@ -143,8 +143,8 @@ def primeJetTransport {n m : ℕ} (rn : Fin n → ℂ) (rm : Fin m → ℂ)
 
 theorem primeJetTransport_eq_chart_conjugation {n m : ℕ}
     (rn : Fin n → ℂ) (rm : Fin m → ℂ)
-    (hrn0 : ∀ i, rn i ≠ 0) (hrn2 : Function.Injective fun i => rn i ^ 2)
-    (hrm0 : ∀ i, rm i ≠ 0) (hrm2 : Function.Injective fun i => rm i ^ 2)
+    (hrn0 : ∀ i, rn i ≠ 0) (hrn2 : Function.Injective fun i => rn i ^ (2 : ℕ))
+    (hrm0 : ∀ i, rm i ≠ 0) (hrm2 : Function.Injective fun i => rm i ^ (2 : ℕ))
     (hnm : n ≤ m) (y : Fin n → ℂ) :
     primeJetTransport rn rm hrn0 hrn2 hrm0 hrm2 hnm y =
       primeJetSampleEquiv rm hrm0 hrm2
@@ -153,9 +153,9 @@ theorem primeJetTransport_eq_chart_conjugation {n m : ℕ}
 /-- Formation transports compose strictly, with no projective scalar or cocycle. -/
 theorem primeJetTransport_trans {n m k : ℕ}
     (rn : Fin n → ℂ) (rm : Fin m → ℂ) (rk : Fin k → ℂ)
-    (hrn0 : ∀ i, rn i ≠ 0) (hrn2 : Function.Injective fun i => rn i ^ 2)
-    (hrm0 : ∀ i, rm i ≠ 0) (hrm2 : Function.Injective fun i => rm i ^ 2)
-    (hrk0 : ∀ i, rk i ≠ 0) (hrk2 : Function.Injective fun i => rk i ^ 2)
+    (hrn0 : ∀ i, rn i ≠ 0) (hrn2 : Function.Injective fun i => rn i ^ (2 : ℕ))
+    (hrm0 : ∀ i, rm i ≠ 0) (hrm2 : Function.Injective fun i => rm i ^ (2 : ℕ))
+    (hrk0 : ∀ i, rk i ≠ 0) (hrk2 : Function.Injective fun i => rk i ^ (2 : ℕ))
     (hnm : n ≤ m) (hmk : m ≤ k) :
     (primeJetTransport rm rk hrm0 hrm2 hrk0 hrk2 hmk).comp
         (primeJetTransport rn rm hrn0 hrn2 hrm0 hrm2 hnm) =
@@ -181,15 +181,15 @@ theorem primeJetTransport_trans {n m k : ℕ}
 
 /-- Reporter on sample coordinates, transported from the origin derivative. -/
 def primeJetCoordinateReporter {n : ℕ} (r : Fin n → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     (Fin n → ℂ) →ₗ[ℂ] ℂ :=
   (primeJetOriginReporter n).comp (primeJetSampleEquiv r hr0 hr2inj).symm.toLinearMap
 
 /-- Contravariant reporter conservation under every source-generated transport. -/
 theorem primeJetCoordinateReporter_transport {n m : ℕ}
     (rn : Fin n → ℂ) (rm : Fin m → ℂ)
-    (hrn0 : ∀ i, rn i ≠ 0) (hrn2 : Function.Injective fun i => rn i ^ 2)
-    (hrm0 : ∀ i, rm i ≠ 0) (hrm2 : Function.Injective fun i => rm i ^ 2)
+    (hrn0 : ∀ i, rn i ≠ 0) (hrn2 : Function.Injective fun i => rn i ^ (2 : ℕ))
+    (hrm0 : ∀ i, rm i ≠ 0) (hrm2 : Function.Injective fun i => rm i ^ (2 : ℕ))
     (hnm : n ≤ m) :
     (primeJetCoordinateReporter rm hrm0 hrm2).comp
         (primeJetTransport rn rm hrn0 hrn2 hrm0 hrm2 hnm) =
@@ -212,13 +212,13 @@ theorem primeJetCoordinateReporter_transport {n m : ℕ}
 /-- The coordinate reporter is exactly the barycentric coefficient packet. -/
 theorem primeJetCoordinateReporter_eq_barycentric {n : ℕ} (hn : 0 < n)
     (r : Fin n → ℂ) (hr0 : ∀ i, r i ≠ 0)
-    (hr2inj : Function.Injective fun i => r i ^ 2) (y : Fin n → ℂ) :
+    (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) (y : Fin n → ℂ) :
     primeJetCoordinateReporter r hr0 hr2inj y =
       ∑ i : Fin n, fePairedOriginCoefficient r i * y i := by
   let Q := (primeJetSampleEquiv r hr0 hr2inj).symm y
-  have hmom := originInterpolationWeight_moments (fun i => r i ^ 2) hr2inj
+  have hmom := originInterpolationWeight_moments (fun i => r i ^ (2 : ℕ)) hr2inj
   have hrecover := weighted_eval_eq_coeff_zero_of_finMoments hn
-    (fun i => r i ^ 2) (originInterpolationWeight fun i => r i ^ 2) Q.1
+    (fun i => r i ^ (2 : ℕ)) (originInterpolationWeight fun i => r i ^ (2 : ℕ)) Q.1
     (by
       by_cases hQ : Q.1 = 0
       · simp [hQ, hn]
@@ -228,13 +228,13 @@ theorem primeJetCoordinateReporter_eq_barycentric {n : ℕ} (hn : 0 < n)
   calc
     Q.1.eval 0 = Q.1.coeff 0 := (Polynomial.coeff_zero_eq_eval_zero Q.1).symm
     _ = ∑ i : Fin n,
-        originInterpolationWeight (fun j => r j ^ 2) i * Q.1.eval (r i ^ 2) :=
+        originInterpolationWeight (fun j => r j ^ (2 : ℕ)) i * Q.1.eval (r i ^ (2 : ℕ)) :=
       hrecover.symm
     _ = ∑ i : Fin n, fePairedOriginCoefficient r i * y i := by
       apply Finset.sum_congr rfl
       intro i _
       have hy := congrFun ((primeJetSampleEquiv r hr0 hr2inj).apply_symm_apply y) i
-      change 2 * r i * Q.1.eval (r i ^ 2) = y i at hy
+      change 2 * r i * Q.1.eval (r i ^ (2 : ℕ)) = y i at hy
       rw [← hy]
       simp only [fePairedOriginCoefficient]
       field_simp [hr0 i]
@@ -250,19 +250,19 @@ theorem primeJetPrefixRadii_ne_zero {n : ℕ} {r : Fin (n + 1) → ℂ}
   fun i => hr0 i.castSucc
 
 theorem primeJetPrefixRadii_sq_injective {n : ℕ} {r : Fin (n + 1) → ℂ}
-    (hr2inj : Function.Injective fun i => r i ^ 2) :
-    Function.Injective fun i => primeJetPrefixRadii r i ^ 2 := by
+    (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
+    Function.Injective fun i => primeJetPrefixRadii r i ^ (2 : ℕ) := by
   intro i j hij
   exact Fin.castSucc_inj.mp (hr2inj hij)
 
 /-- Terminal coordinate added by one formation step. -/
 def primeJetTailReporter {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     (Fin n → ℂ) →ₗ[ℂ] ℂ where
   toFun y := 2 * r (Fin.last n) *
     ((primeJetSampleEquiv (primeJetPrefixRadii r)
       (primeJetPrefixRadii_ne_zero hr0)
-      (primeJetPrefixRadii_sq_injective hr2inj)).symm y).1.eval (r (Fin.last n) ^ 2)
+      (primeJetPrefixRadii_sq_injective hr2inj)).symm y).1.eval (r (Fin.last n) ^ (2 : ℕ))
   map_add' y z := by
     simp
     ring
@@ -272,7 +272,7 @@ def primeJetTailReporter {n : ℕ} (r : Fin (n + 1) → ℂ)
 
 /-- One-step formation transport is the graph of its terminal reporter. -/
 def primeJetOneStepTransport {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     (Fin n → ℂ) →ₗ[ℂ] (Fin (n + 1) → ℂ) where
   toFun y := Fin.snoc y (primeJetTailReporter r hr0 hr2inj y)
   map_add' y z := by
@@ -284,20 +284,20 @@ def primeJetOneStepTransport {n : ℕ} (r : Fin (n + 1) → ℂ)
 
 /-- Old coordinates are unchanged by one-step transport. -/
 theorem primeJetOneStepTransport_castSucc {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (y : Fin n → ℂ) (i : Fin n) :
     primeJetOneStepTransport r hr0 hr2inj y i.castSucc = y i := by
   simp [primeJetOneStepTransport]
 
 @[simp] theorem primeJetOneStepTransport_last {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (y : Fin n → ℂ) :
     primeJetOneStepTransport r hr0 hr2inj y (Fin.last n) =
       primeJetTailReporter r hr0 hr2inj y := by simp [primeJetOneStepTransport]
 
 /-- One-step graph transport is exactly law inclusion in reflected-sample charts. -/
 theorem primeJetOneStepTransport_sample {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (Q : PrimeJetOddLaw n) :
     primeJetOneStepTransport r hr0 hr2inj
         (primeJetSampleEquiv (primeJetPrefixRadii r)
@@ -312,7 +312,7 @@ theorem primeJetOneStepTransport_sample {n : ℕ} (r : Fin (n + 1) → ℂ)
         (primeJetSampleEquiv (primeJetPrefixRadii r)
           (primeJetPrefixRadii_ne_zero hr0)
           (primeJetPrefixRadii_sq_injective hr2inj) Q) =
-        2 * r (Fin.last n) * Q.1.eval (r (Fin.last n) ^ 2) by
+        2 * r (Fin.last n) * Q.1.eval (r (Fin.last n) ^ (2 : ℕ)) by
       change 2 * r (Fin.last n) *
         ((primeJetSampleEquiv (primeJetPrefixRadii r)
           (primeJetPrefixRadii_ne_zero hr0)
@@ -320,9 +320,9 @@ theorem primeJetOneStepTransport_sample {n : ℕ} (r : Fin (n + 1) → ℂ)
             (primeJetSampleEquiv (primeJetPrefixRadii r)
               (primeJetPrefixRadii_ne_zero hr0)
               (primeJetPrefixRadii_sq_injective hr2inj) Q)).1.eval
-              (r (Fin.last n) ^ 2) = _
+              (r (Fin.last n) ^ (2 : ℕ)) = _
       rw [LinearEquiv.symm_apply_apply]]
-    change 2 * r (Fin.last n) * Q.1.eval (r (Fin.last n) ^ 2) =
+    change 2 * r (Fin.last n) * Q.1.eval (r (Fin.last n) ^ (2 : ℕ)) =
       primeJetOddSample r (primeJetLawInclusion (Nat.le_succ n) Q) (Fin.last n)
     simp [primeJetOddSample, primeJetLawInclusion_apply]
   · rw [primeJetOneStepTransport_castSucc]
@@ -332,7 +332,7 @@ theorem primeJetOneStepTransport_sample {n : ℕ} (r : Fin (n + 1) → ℂ)
 
 /-- One-step graph transport conserves the origin reporter. -/
 theorem primeJetCoordinateReporter_oneStep {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     (primeJetCoordinateReporter r hr0 hr2inj).comp
         (primeJetOneStepTransport r hr0 hr2inj) =
       primeJetCoordinateReporter (primeJetPrefixRadii r)
@@ -385,7 +385,7 @@ def primeJetZeroExtend (n : ℕ) : (Fin n → ℂ) →ₗ[ℂ] (Fin (n + 1) → 
 
 /-- One-step transport is the graph of its terminal reporter. -/
 theorem primeJetOneStepTransport_eq_graph {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (y : Fin n → ℂ) :
     primeJetOneStepTransport r hr0 hr2inj y =
       primeJetZeroExtend n y +
@@ -398,7 +398,7 @@ theorem primeJetOneStepTransport_eq_graph {n : ℕ} (r : Fin (n + 1) → ℂ)
 /-- Exact coefficient transmutation when one node is adjoined. -/
 theorem primeJetOriginCoefficient_transmutation {n : ℕ} (hn : 0 < n)
     (r : Fin (n + 1) → ℂ) (hr0 : ∀ i, r i ≠ 0)
-    (hr2inj : Function.Injective fun i => r i ^ 2) (i : Fin n) :
+    (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) (i : Fin n) :
     fePairedOriginCoefficient (primeJetPrefixRadii r) i =
       fePairedOriginCoefficient r i.castSucc +
         fePairedOriginCoefficient r (Fin.last n) *
@@ -418,7 +418,7 @@ theorem primeJetOriginCoefficient_transmutation {n : ℕ} (hn : 0 < n)
 /-- Locality defect equals one coefficient times the new terminal reporter. -/
 theorem primeJetReporter_localityDefect {n : ℕ}
     (r : Fin (n + 1) → ℂ) (hr0 : ∀ i, r i ≠ 0)
-    (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     primeJetCoordinateReporter (primeJetPrefixRadii r)
         (primeJetPrefixRadii_ne_zero hr0) (primeJetPrefixRadii_sq_injective hr2inj) -
       (primeJetCoordinateReporter r hr0 hr2inj).comp (primeJetZeroExtend n) =
@@ -448,12 +448,12 @@ theorem primeJetReporter_localityDefect {n : ℕ}
 /-- Barycentric coefficient of the newly formed terminal sample. -/
 def primeJetTailWeight {n : ℕ} (r : Fin (n + 1) → ℂ) (i : Fin n) : ℂ :=
   (r (Fin.last n) / r i.castSucc) *
-    (Lagrange.basis Finset.univ (fun j : Fin n => r j.castSucc ^ 2) i).eval
-      (r (Fin.last n) ^ 2)
+    (Lagrange.basis Finset.univ (fun j : Fin n => r j.castSucc ^ (2 : ℕ)) i).eval
+      (r (Fin.last n) ^ (2 : ℕ))
 
 /-- Explicit Lagrange formula `τᵢ=(r*/rᵢ)Lᵢ(r*²)` for the terminal reporter. -/
 theorem primeJetTailReporter_eq_sum {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (y : Fin n → ℂ) :
     primeJetTailReporter r hr0 hr2inj y =
       ∑ i : Fin n, primeJetTailWeight r i * y i := by
@@ -468,30 +468,30 @@ theorem primeJetTailReporter_eq_sum {n : ℕ} (r : Fin (n + 1) → ℂ)
     simpa using (Polynomial.mem_degreeLT.mp Q.2)
   have hpoly := Lagrange.eq_interpolate
     (s := (Finset.univ : Finset (Fin n)))
-    (v := fun i => ro i ^ 2) hro2.injOn hdeg
-  have heval := congrArg (Polynomial.eval (r (Fin.last n) ^ 2)) hpoly
+    (v := fun i => ro i ^ (2 : ℕ)) hro2.injOn hdeg
+  have heval := congrArg (Polynomial.eval (r (Fin.last n) ^ (2 : ℕ))) hpoly
   rw [Lagrange.interpolate_apply, Polynomial.eval_finsetSum] at heval
   simp only [Polynomial.eval_mul, Polynomial.eval_C] at heval
-  change 2 * r (Fin.last n) * Q.1.eval (r (Fin.last n) ^ 2) = _
+  change 2 * r (Fin.last n) * Q.1.eval (r (Fin.last n) ^ (2 : ℕ)) = _
   calc
-    2 * r (Fin.last n) * Q.1.eval (r (Fin.last n) ^ 2) =
+    2 * r (Fin.last n) * Q.1.eval (r (Fin.last n) ^ (2 : ℕ)) =
         2 * r (Fin.last n) *
-          ∑ i : Fin n, Q.1.eval (ro i ^ 2) *
-            (Lagrange.basis Finset.univ (fun j : Fin n => ro j ^ 2) i).eval
-              (r (Fin.last n) ^ 2) := by rw [heval]
+          ∑ i : Fin n, Q.1.eval (ro i ^ (2 : ℕ)) *
+            (Lagrange.basis Finset.univ (fun j : Fin n => ro j ^ (2 : ℕ)) i).eval
+              (r (Fin.last n) ^ (2 : ℕ)) := by rw [heval]
     _ = ∑ i : Fin n, primeJetTailWeight r i * y i := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro i _
       have hyi := congrFun hy i
-      change 2 * ro i * Q.1.eval (ro i ^ 2) = y i at hyi
+      change 2 * ro i * Q.1.eval (ro i ^ (2 : ℕ)) = y i at hyi
       rw [← hyi]
       simp only [primeJetTailWeight, ro, primeJetPrefixRadii]
       field_simp [hr0 i.castSucc]
 
 /-- Every terminal Lagrange coefficient is nonzero. -/
 theorem primeJetTailWeight_ne_zero {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (i : Fin n) : primeJetTailWeight r i ≠ 0 := by
   classical
   apply mul_ne_zero (div_ne_zero (hr0 (Fin.last n)) (hr0 i.castSucc))
@@ -515,7 +515,7 @@ theorem primeJetTailWeight_ne_zero {n : ℕ} (r : Fin (n + 1) → ℂ)
 /-- For every nonempty prefix, terminal reporter is genuinely nonzero. -/
 theorem primeJetTailReporter_ne_zero {n : ℕ} (hn : 0 < n)
     (r : Fin (n + 1) → ℂ) (hr0 : ∀ i, r i ≠ 0)
-    (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     primeJetTailReporter r hr0 hr2inj ≠ 0 := by
   let i : Fin n := ⟨0, hn⟩
   intro hzero
@@ -529,7 +529,7 @@ theorem primeJetTailReporter_ne_zero {n : ℕ} (hn : 0 < n)
 /-- Locality defect is a nonzero rank-one functional for every nonempty prefix. -/
 theorem primeJetReporter_localityDefect_ne_zero {n : ℕ} (hn : 0 < n)
     (r : Fin (n + 1) → ℂ) (hr0 : ∀ i, r i ≠ 0)
-    (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     primeJetCoordinateReporter (primeJetPrefixRadii r)
         (primeJetPrefixRadii_ne_zero hr0) (primeJetPrefixRadii_sq_injective hr2inj) -
       (primeJetCoordinateReporter r hr0 hr2inj).comp (primeJetZeroExtend n) ≠ 0 := by
@@ -542,27 +542,27 @@ theorem primeJetReporter_localityDefect_ne_zero {n : ℕ} (hn : 0 < n)
 
 /-- Square-coordinate boundary factor vanishing at every old node. -/
 def primeJetBoundaryFactor {n : ℕ} (r : Fin n → ℂ) : Polynomial ℂ :=
-  ∏ i : Fin n, (Polynomial.X - Polynomial.C (r i ^ 2))
+  ∏ i : Fin n, (Polynomial.X - Polynomial.C (r i ^ (2 : ℕ)))
 
 theorem primeJetBoundaryFactor_natDegree {n : ℕ} (r : Fin n → ℂ) :
     (primeJetBoundaryFactor r).natDegree = n := by
   classical
   calc
     (primeJetBoundaryFactor r).natDegree =
-        ∑ i : Fin n, (Polynomial.X - Polynomial.C (r i ^ 2)).natDegree := by
+        ∑ i : Fin n, (Polynomial.X - Polynomial.C (r i ^ (2 : ℕ))).natDegree := by
       rw [primeJetBoundaryFactor,
-        Polynomial.natDegree_prod _ _ (fun i _ => Polynomial.X_sub_C_ne_zero (r i ^ 2))]
+        Polynomial.natDegree_prod _ _ (fun i _ => Polynomial.X_sub_C_ne_zero (r i ^ (2 : ℕ)))]
     _ = ∑ _i : Fin n, 1 := by
       apply Finset.sum_congr rfl
       intro i _
-      exact Polynomial.natDegree_X_sub_C (r i ^ 2)
+      exact Polynomial.natDegree_X_sub_C (r i ^ (2 : ℕ))
     _ = n := by simp
 
 theorem primeJetBoundaryFactor_ne_zero {n : ℕ} (r : Fin n → ℂ) :
     primeJetBoundaryFactor r ≠ 0 := by
   classical
   rw [primeJetBoundaryFactor]
-  exact Finset.prod_ne_zero_iff.mpr fun i _ => Polynomial.X_sub_C_ne_zero (r i ^ 2)
+  exact Finset.prod_ne_zero_iff.mpr fun i _ => Polynomial.X_sub_C_ne_zero (r i ^ (2 : ℕ))
 
 /-- The boundary odd law `z∏ᵢ(z²-rᵢ²)` in the next law space. -/
 def primeJetBoundaryLaw {n : ℕ} (r : Fin n → ℂ) : PrimeJetOddLaw (n + 1) :=
@@ -574,7 +574,7 @@ def primeJetBoundaryLaw {n : ℕ} (r : Fin n → ℂ) : PrimeJetOddLaw (n + 1) :
 /-- Old samples of a law in the enlarged law space. -/
 def primeJetOldSampleMap {n : ℕ} (r : Fin n → ℂ) :
     PrimeJetOddLaw (n + 1) →ₗ[ℂ] (Fin n → ℂ) where
-  toFun Q i := 2 * r i * Q.1.eval (r i ^ 2)
+  toFun Q i := 2 * r i * Q.1.eval (r i ^ (2 : ℕ))
   map_add' Q S := by
     ext i
     simp
@@ -589,7 +589,7 @@ theorem primeJetOldSampleMap_boundaryLaw {n : ℕ} (r : Fin n → ℂ) :
     primeJetOldSampleMap r (primeJetBoundaryLaw r) = 0 := by
   classical
   ext i
-  change 2 * r i * (primeJetBoundaryFactor r).eval (r i ^ 2) = 0
+  change 2 * r i * (primeJetBoundaryFactor r).eval (r i ^ (2 : ℕ)) = 0
   apply mul_eq_zero_of_right
   rw [primeJetBoundaryFactor, Polynomial.eval_prod]
   exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
@@ -633,7 +633,7 @@ def primeJetPairEquiv (n : ℕ) : ((Fin n → ℂ) × ℂ) ≃ₗ[ℂ] (Fin (n +
     refine Fin.lastCases ?_ (fun j => ?_) i <;> simp
 
 theorem primeJetEnhancedMap_injective {n : ℕ} (r : Fin n → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     Function.Injective (primeJetEnhancedMap r) := by
   intro Q S hQS
   let D : PrimeJetOddLaw (n + 1) := Q - S
@@ -641,7 +641,7 @@ theorem primeJetEnhancedMap_injective {n : ℕ} (r : Fin n → ℂ)
     rw [map_sub, hQS, sub_self]
   have hsamples : primeJetOldSampleMap r D = 0 := congrArg Prod.fst hzero
   have hreport : primeJetOriginReporter (n + 1) D = 0 := congrArg Prod.snd hzero
-  let nodes : Fin (n + 1) → ℂ := Fin.snoc (fun i : Fin n => r i ^ 2) 0
+  let nodes : Fin (n + 1) → ℂ := Fin.snoc (fun i : Fin n => r i ^ (2 : ℕ)) 0
   have hnodes : Function.Injective nodes := by
     intro i j hij
     rcases Fin.eq_castSucc_or_eq_last i with ⟨a, rfl⟩ | rfl
@@ -664,7 +664,7 @@ theorem primeJetEnhancedMap_injective {n : ℕ} (r : Fin n → ℂ)
     · have hj := congrFun hsamples j
       simp only [primeJetOldSampleMap, Pi.zero_apply] at hj
       have hr : 2 * r j ≠ 0 := mul_ne_zero (by norm_num) (hr0 j)
-      have hz : D.1.eval (r j ^ 2) = 0 := (mul_eq_zero.mp hj).resolve_left hr
+      have hz : D.1.eval (r j ^ (2 : ℕ)) = 0 := (mul_eq_zero.mp hj).resolve_left hr
       simpa only [nodes, Fin.snoc_castSucc] using hz
   have hdeg : D.1.degree <
       (((Finset.univ : Finset (Fin (n + 1))).card : ℕ) : WithBot ℕ) := by
@@ -680,7 +680,7 @@ theorem primeJetEnhancedMap_injective {n : ℕ} (r : Fin n → ℂ)
 
 /-- Enhanced old-sample/reporter map is a linear equivalence. -/
 def primeJetEnhancedEquiv {n : ℕ} (r : Fin n → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2) :
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ)) :
     PrimeJetOddLaw (n + 1) ≃ₗ[ℂ] ((Fin n → ℂ) × ℂ) := by
   let E := Polynomial.degreeLTEquiv ℂ (n + 1)
   let P := primeJetPairEquiv n
@@ -698,7 +698,7 @@ def primeJetEnhancedEquiv {n : ℕ} (r : Fin n → ℂ)
 
 /-- Old-sample kernel is exactly the boundary-law line. -/
 theorem primeJetOldSampleMap_eq_zero_iff {n : ℕ} (r : Fin n → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (Q : PrimeJetOddLaw (n + 1)) :
     primeJetOldSampleMap r Q = 0 ↔
       ∃ c : ℂ, Q = c • primeJetBoundaryLaw r := by
@@ -727,13 +727,13 @@ theorem primeJetOldSampleMap_inclusion {n : ℕ} (r : Fin n → ℂ)
     primeJetOldSampleMap r (primeJetLawInclusion (Nat.le_succ n) Q) =
       primeJetSampleMap r Q := by
   ext i
-  change 2 * r i * (primeJetLawInclusion (Nat.le_succ n) Q).1.eval (r i ^ 2) =
-    2 * r i * Q.1.eval (r i ^ 2)
+  change 2 * r i * (primeJetLawInclusion (Nat.le_succ n) Q).1.eval (r i ^ (2 : ℕ)) =
+    2 * r i * Q.1.eval (r i ^ (2 : ℕ))
   rw [primeJetLawInclusion_apply]
 
 /-- Old law space lands as graph of its conserved reporter in enhanced coordinates. -/
 theorem primeJetEnhancedMap_inclusion_graph {n : ℕ} (r : Fin n → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (y : Fin n → ℂ) :
     primeJetEnhancedMap r
         (primeJetLawInclusion (Nat.le_succ n)
@@ -775,7 +775,7 @@ theorem primeJetGraphReporter_apply {n : ℕ} (τ : Fin n → ℂ)
 
 /-- Positive real scalar shared by graph determinant, reporter capacity, and inverse work. -/
 def primeJetGraphDeterminantScalar {n : ℕ} (τ : Fin n → ℂ) : ℝ :=
-  1 + ∑ i, ‖τ i‖ ^ 2
+  1 + ∑ i, ‖τ i‖ ^ (2 : ℕ)
 
 theorem primeJetGraphDeterminantScalar_pos {n : ℕ} (τ : Fin n → ℂ) :
     0 < primeJetGraphDeterminantScalar τ := by
@@ -784,7 +784,7 @@ theorem primeJetGraphDeterminantScalar_pos {n : ℕ} (τ : Fin n → ℂ) :
 
 /-- Reporter norm is exactly the rank-one graph determinant scalar. -/
 theorem primeJetGraphReporter_norm_sq {n : ℕ} (τ : Fin n → ℂ) :
-    ‖primeJetGraphReporter τ‖ ^ 2 = primeJetGraphDeterminantScalar τ := by
+    ‖primeJetGraphReporter τ‖ ^ (2 : ℕ) = primeJetGraphDeterminantScalar τ := by
   rw [primeJetGraphReporter, LinearIsometryEquiv.norm_map, primeJetGraphNormal,
     PiLp.norm_sq_eq_of_L2]
   simp [primeJetGraphDeterminantScalar, add_comm]
@@ -866,7 +866,7 @@ theorem primeJetGraphGram_det_eq_scalar {n : ℕ} (τ : Fin n → ℂ) :
   simp only [dotProduct, Pi.star_apply]
   calc
     1 + ∑ i, τ i * star (τ i) =
-        1 + ∑ i, ((‖τ i‖ ^ 2 : ℝ) : ℂ) := by
+        1 + ∑ i, ((‖τ i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       congr 1
       apply Finset.sum_congr rfl
       intro i _
@@ -881,7 +881,7 @@ theorem primeJetGraphGram_det_eq_scalar {n : ℕ} (τ : Fin n → ℂ) :
       rfl
 
 theorem primeJetGraphGram_det_eq_reporter_norm_sq {n : ℕ} (τ : Fin n → ℂ) :
-    (primeJetGraphGram τ).det = ((‖primeJetGraphReporter τ‖ ^ 2 : ℝ) : ℂ) := by
+    (primeJetGraphGram τ).det = ((‖primeJetGraphReporter τ‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [primeJetGraphGram_det_eq_scalar, primeJetGraphReporter_norm_sq]
 
 /-- Terminal squared distance to the graph, equivalently least formation work. -/
@@ -905,7 +905,7 @@ theorem primeJetGraphFormationWork {n : ℕ} (τ : Fin n → ℂ) :
 
 theorem primeJetGraphTerminalDistance_sq {n : ℕ} (τ : Fin n → ℂ) :
     _root_.HTGeometry.ConstraintRelativity.quotientDistance
-        (primeJetGraph τ) (primeJetTerminalVector n) ^ 2 =
+        (primeJetGraph τ) (primeJetTerminalVector n) ^ (2 : ℕ) =
       (primeJetGraphDeterminantScalar τ)⁻¹ := by
   exact primeJetGraphFormationWork τ
 
@@ -949,13 +949,13 @@ def primeJetTailCoefficientVector {n : ℕ} (r : Fin (n + 1) → ℂ) : Fin n �
 
 /-- Hilbert realization of the actual one-step formation graph. -/
 def primeJetOneStepHilbertGraphPoint {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (y : Fin n → ℂ) : PrimeJetGraphSpace n :=
   WithLp.toLp 2 fun j =>
     Sum.elim y (fun _ => primeJetTailReporter r hr0 hr2inj y) j
 
 theorem primeJetOneStepHilbertGraphPoint_mem {n : ℕ} (r : Fin (n + 1) → ℂ)
-    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ 2)
+    (hr0 : ∀ i, r i ≠ 0) (hr2inj : Function.Injective fun i => r i ^ (2 : ℕ))
     (y : Fin n → ℂ) :
     primeJetOneStepHilbertGraphPoint r hr0 hr2inj y ∈
       primeJetGraph (primeJetTailCoefficientVector r) := by
@@ -970,14 +970,14 @@ theorem primeJetOneStepHilbertGraphPoint_mem {n : ℕ} (r : Fin (n + 1) → ℂ)
 
 theorem primeJetTailGraphGram_det {n : ℕ} (r : Fin (n + 1) → ℂ) :
     (primeJetGraphGram (primeJetTailCoefficientVector r)).det =
-      ((1 + ∑ i, ‖primeJetTailWeight r i‖ ^ 2 : ℝ) : ℂ) := by
+      ((1 + ∑ i, ‖primeJetTailWeight r i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   simpa [primeJetGraphDeterminantScalar, primeJetTailCoefficientVector] using
     primeJetGraphGram_det_eq_scalar (primeJetTailCoefficientVector r)
 
 theorem primeJetTailGraphFormationWork {n : ℕ} (r : Fin (n + 1) → ℂ) :
     conjugateFormationWork (primeJetGraph (primeJetTailCoefficientVector r))
         (primeJetTerminalVector n) =
-      (1 + ∑ i, ‖primeJetTailWeight r i‖ ^ 2)⁻¹ := by
+      (1 + ∑ i, ‖primeJetTailWeight r i‖ ^ (2 : ℕ))⁻¹ := by
   simpa [primeJetGraphDeterminantScalar, primeJetTailCoefficientVector] using
     primeJetGraphFormationWork (primeJetTailCoefficientVector r)
 
@@ -1013,7 +1013,7 @@ theorem primeJetFormationWork_tendsto_zero_of_reporterNorm_atTop
       l (nhds 0) := by
   have hwork (i : I) :
       conjugateFormationWork (LinearMap.ker (reporter i : H →ₗ[ℂ] ℂ)) (x i) =
-        (‖reporter i‖⁻¹) ^ 2 := by
+        (‖reporter i‖⁻¹) ^ (2 : ℕ) := by
     have h := conjugateFormationWork_ker_mul_norm_sq (reporter i) (hne i) (x i)
     rw [hvalue i, norm_one, one_pow] at h
     have hp : 0 < ‖reporter i‖ := norm_pos_iff.mpr (hne i)
@@ -1021,10 +1021,10 @@ theorem primeJetFormationWork_tendsto_zero_of_reporterNorm_atTop
       conjugateFormationWork (LinearMap.ker (reporter i : H →ₗ[ℂ] ℂ)) (x i) =
           (conjugateFormationWork
             (LinearMap.ker (reporter i : H →ₗ[ℂ] ℂ)) (x i) *
-            ‖reporter i‖ ^ 2) * (‖reporter i‖ ^ 2)⁻¹ := by
+            ‖reporter i‖ ^ (2 : ℕ)) * (‖reporter i‖ ^ (2 : ℕ))⁻¹ := by
         rw [mul_assoc, mul_inv_cancel₀ (pow_ne_zero 2 hp.ne'), mul_one]
-      _ = (‖reporter i‖ ^ 2)⁻¹ := by rw [h, one_mul]
-      _ = (‖reporter i‖⁻¹) ^ 2 := by rw [inv_pow]
+      _ = (‖reporter i‖ ^ (2 : ℕ))⁻¹ := by rw [h, one_mul]
+      _ = (‖reporter i‖⁻¹) ^ (2 : ℕ) := by rw [inv_pow]
   have hinv := hnorm.inv_tendsto_atTop
   have hsquare := hinv.pow 2
   convert hsquare using 1
@@ -1121,10 +1121,10 @@ theorem primeJetOriginReporter_cauchy_sharp {R : ℝ} (hR : 0 < R) :
 
 /-- Odd entire witness annihilating every escaping reflected sample while retaining derivative one. -/
 def primeJetInfiniteSampleWitness (r : ℕ → ℂ) (z : ℂ) : ℂ :=
-  z * weierstrassGenusProduct (fun n => r n ^ 2) (z ^ 2)
+  z * weierstrassGenusProduct (fun n => r n ^ (2 : ℕ)) (z ^ (2 : ℕ))
 
 theorem differentiable_primeJetInfiniteSampleWitness {r : ℕ → ℂ}
-    (hescape : Filter.Tendsto (fun n => ‖r n ^ 2‖) Filter.atTop Filter.atTop)
+    (hescape : Filter.Tendsto (fun n => ‖r n ^ (2 : ℕ)‖) Filter.atTop Filter.atTop)
     (hr0 : ∀ n, r n ≠ 0) :
     Differentiable ℂ (primeJetInfiniteSampleWitness r) := by
   exact differentiable_id.mul
@@ -1136,27 +1136,27 @@ theorem primeJetInfiniteSampleWitness_odd (r : ℕ → ℂ) (z : ℂ) :
   simp [primeJetInfiniteSampleWitness]
 
 theorem primeJetInfiniteSampleWitness_sample_zero {r : ℕ → ℂ}
-    (hescape : Filter.Tendsto (fun n => ‖r n ^ 2‖) Filter.atTop Filter.atTop)
+    (hescape : Filter.Tendsto (fun n => ‖r n ^ (2 : ℕ)‖) Filter.atTop Filter.atTop)
     (hr0 : ∀ n, r n ≠ 0) (n : ℕ) :
     primeJetInfiniteSampleWitness r (r n) = 0 := by
   rw [primeJetInfiniteSampleWitness]
-  have hz : weierstrassGenusProduct (fun k => r k ^ 2) (r n ^ 2) = 0 :=
+  have hz : weierstrassGenusProduct (fun k => r k ^ (2 : ℕ)) (r n ^ (2 : ℕ)) = 0 :=
     (weierstrassGenusProduct_eq_zero_iff hescape
-      (fun k => pow_ne_zero 2 (hr0 k)) (r n ^ 2)).mpr ⟨n, rfl⟩
+      (fun k => pow_ne_zero 2 (hr0 k)) (r n ^ (2 : ℕ))).mpr ⟨n, rfl⟩
   rw [hz, mul_zero]
 
 theorem primeJetInfiniteSampleWitness_hasDerivAt_one {r : ℕ → ℂ}
-    (hescape : Filter.Tendsto (fun n => ‖r n ^ 2‖) Filter.atTop Filter.atTop)
+    (hescape : Filter.Tendsto (fun n => ‖r n ^ (2 : ℕ)‖) Filter.atTop Filter.atTop)
     (hr0 : ∀ n, r n ≠ 0) :
     HasDerivAt (primeJetInfiniteSampleWitness r) 1 0 := by
   have hg : Differentiable ℂ
-      (fun z : ℂ => weierstrassGenusProduct (fun n => r n ^ 2) (z ^ 2)) :=
+      (fun z : ℂ => weierstrassGenusProduct (fun n => r n ^ (2 : ℕ)) (z ^ (2 : ℕ))) :=
     (differentiable_weierstrassGenusProduct hescape
       (fun n => pow_ne_zero 2 (hr0 n))).comp (differentiable_id.pow 2)
   have hmul := (hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul
     hg.differentiableAt.hasDerivAt
   have hfun : (id * fun z : ℂ =>
-      weierstrassGenusProduct (fun n => r n ^ 2) (z ^ 2)) =
+      weierstrassGenusProduct (fun n => r n ^ (2 : ℕ)) (z ^ (2 : ℕ))) =
       primeJetInfiniteSampleWitness r := by
     funext z
     rfl
@@ -1166,7 +1166,7 @@ theorem primeJetInfiniteSampleWitness_hasDerivAt_one {r : ℕ → ℂ}
 /-- Corrected completion fracture: escaping nonzero radii are not faithful on unrestricted odd
 entire functions.  Strict increase without escape is intentionally not used. -/
 theorem exists_oddEntire_infiniteSamples_zero_deriv_one
-    (r : ℕ → ℂ) (hescape : Filter.Tendsto (fun n => ‖r n ^ 2‖) Filter.atTop Filter.atTop)
+    (r : ℕ → ℂ) (hescape : Filter.Tendsto (fun n => ‖r n ^ (2 : ℕ)‖) Filter.atTop Filter.atTop)
     (hr0 : ∀ n, r n ≠ 0) :
     ∃ f : ℂ → ℂ, Differentiable ℂ f ∧
       (∀ z, f (-z) = -f z) ∧

@@ -47,7 +47,7 @@ theorem abs_suzukiEulerianCompletedOutgoingResidual_le (N : ℕ) :
   have hMpos : (0 : ℝ) < ((N + 1 : ℕ) : ℝ) := by positivity
   have hMone : (1 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by
     exact_mod_cast (by omega : 1 ≤ N + 1)
-  have hsqrtSq : Real.sqrt ((N + 1 : ℕ) : ℝ) ^ 2 = ((N + 1 : ℕ) : ℝ) :=
+  have hsqrtSq : Real.sqrt ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) = ((N + 1 : ℕ) : ℝ) :=
     Real.sq_sqrt hMpos.le
   have hsqrtLe : Real.sqrt ((N + 1 : ℕ) : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by
     nlinarith [Real.sqrt_nonneg ((N + 1 : ℕ) : ℝ)]

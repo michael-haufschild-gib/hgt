@@ -67,8 +67,8 @@ theorem arcsineVacuumRenormalizedJacobiDegreeInnovation_eq
           HTGeometry.monicOrthoAlpha s n) *
         (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
       HTGeometry.monicOrthoAlpha s n * HTGeometry.monicOrthoAlpha s (n + 1) -
-      (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ 2 +
-      (n + 2 : ℝ) * HTGeometry.monicOrthoAlpha s (n + 1) ^ 2 +
+      (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
+      (n + 2 : ℝ) * HTGeometry.monicOrthoAlpha s (n + 1) ^ (2 : ℕ) +
       (1 - (n : ℝ)) * HTGeometry.monicOrthoBeta s n +
       (16 * (n : ℝ) + 7) * HTGeometry.monicOrthoBeta s (n + 1) -
       (15 * (n : ℝ) + 20) * HTGeometry.monicOrthoBeta s (n + 2) := by
@@ -145,7 +145,7 @@ theorem coordinateDilated_arcsineVacuumRenormalizedRelativeArithmeticSource_eq_z
             (XiShiftedArcsineAdmission.coordinateDilatedAmplitude r n)) /
         HTGeometry.momentFunctional
           (XiShiftedArcsineAdmission.coordinateDilatedMoment r)
-          ((XiShiftedArcsineAdmission.coordinateDilatedAmplitude r n) ^ 2) -
+          ((XiShiftedArcsineAdmission.coordinateDilatedAmplitude r n) ^ (2 : ℕ)) -
       arcsineVacuumSourceCounterterm n *
         XiShiftedArcsineAdmission.coordinateDilatedAdmissionChristoffelScaleSq r n = 0 := by
   rw [XiShiftedArcsineAdmission.coordinateDilated_adaptiveShear_div_norm hr hn,
@@ -168,12 +168,12 @@ adaptive mixed rational--Gamma-minus-von-Mangoldt `P^sharp` source minus its cur
 newborn-norm vacuum. -/
 theorem xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceCharge_eq_literal
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
-    xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceCharge (w ^ 2) n =
+    xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceCharge (w ^ (2 : ℕ)) n =
       xiShiftedAdaptiveMixedCompletedArithmeticSource w
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) n) -
         32 * XiShiftedCanonicalAdmission.arcsineVacuumSourceCounterterm n *
-          xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1) := by
+          xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1) := by
   have hsource := two_mul_xiShiftedAdaptiveShear_eq_arithmeticSource hw
     (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n)
   rw [xiShiftedCanonicalAdmissionArcsineVacuumCompletedSourceCharge]

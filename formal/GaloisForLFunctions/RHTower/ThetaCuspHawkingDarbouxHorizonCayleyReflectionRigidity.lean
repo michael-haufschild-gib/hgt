@@ -138,7 +138,7 @@ theorem d4DarbouxCayleyPhase_neg_eq_inv
 def d4BMXiAbsorbedHorizonDarbouxSMatrix
     (q : XiZeroCopy) (horizonAmplitude omega : ℝ) : ℂ :=
   d4TopologicalDarbouxHorizonForwardSMatrix
-    (horizonAmplitude ^ 2 : ℂ)
+    (horizonAmplitude ^ (2 : ℕ) : ℂ)
     (d4BMXiReflectedRealPairMediatorAngularQ q : ℂ)
     (omega : ℂ)
 
@@ -146,7 +146,7 @@ theorem d4BMXiAbsorbedHorizonDarbouxSMatrix_eq_phase
     (q : XiZeroCopy) (horizonAmplitude omega : ℝ) :
     d4BMXiAbsorbedHorizonDarbouxSMatrix q horizonAmplitude omega =
       d4DarbouxCayleyPhase (d4BMXiHorizonDarbouxAlgebraicWeight q)
-        (12 * horizonAmplitude ^ 2 * omega) := by
+        (12 * horizonAmplitude ^ (2 : ℕ) * omega) := by
   unfold d4BMXiAbsorbedHorizonDarbouxSMatrix
     d4TopologicalDarbouxHorizonForwardSMatrix
     d4TopologicalTeukolskyStarobinskyConstant
@@ -168,8 +168,8 @@ theorem d4BMXiAbsorbedHorizonDarbouxSMatrix_neg_frequency
       (d4BMXiAbsorbedHorizonDarbouxSMatrix q horizonAmplitude omega)⁻¹ := by
   rw [d4BMXiAbsorbedHorizonDarbouxSMatrix_eq_phase,
     d4BMXiAbsorbedHorizonDarbouxSMatrix_eq_phase]
-  rw [show 12 * horizonAmplitude ^ 2 * -omega =
-      -(12 * horizonAmplitude ^ 2 * omega) by ring]
+  rw [show 12 * horizonAmplitude ^ (2 : ℕ) * -omega =
+      -(12 * horizonAmplitude ^ (2 : ℕ) * omega) by ring]
   exact d4DarbouxCayleyPhase_neg_eq_inv _ _
 
 /-- Exact horizon Cayley phases of reflected sectors coincide exactly on critical line. -/
@@ -185,7 +185,7 @@ theorem d4BMXiAbsorbedHorizonDarbouxSMatrix_eq_reflect_iff
   have hc := ne_of_lt (d4BMXiHorizonDarbouxAlgebraicWeight_neg q)
   have hd := ne_of_lt
     (d4BMXiHorizonDarbouxAlgebraicWeight_neg (xiZeroCopyReflectEquiv q))
-  have hy : 12 * horizonAmplitude ^ 2 * omega ≠ 0 := by
+  have hy : 12 * horizonAmplitude ^ (2 : ℕ) * omega ≠ 0 := by
     exact mul_ne_zero (mul_ne_zero (by norm_num) (pow_ne_zero 2 hamp)) homega
   rw [d4DarbouxCayleyPhase_eq_iff hc hd hy,
     d4BMXiHorizonDarbouxAlgebraicWeight_eq_reflect_iff]

@@ -66,15 +66,15 @@ theorem summable_xi_relativeResolventTerms (z : ℂ) :
   let a : XiZeroCopy → ℂ := xiSpectralPoint
   let S : ℝ := 2 * ‖z‖ + 1
   have hS : 0 < S := by dsimp [S]; positivity
-  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖a q‖ ^ 2) :=
+  have hbase : Summable (fun q : XiZeroCopy => 1 / ‖a q‖ ^ (2 : ℕ)) :=
     xiSpectralPoint_inv_sq_summable
   have hev : ∀ᶠ q in cofinite, S ≤ ‖a q‖ := by
     have htend := hbase.tendsto_cofinite_zero
-    have hlt : ∀ᶠ q in cofinite, 1 / ‖a q‖ ^ 2 < 1 / S ^ 2 :=
+    have hlt : ∀ᶠ q in cofinite, 1 / ‖a q‖ ^ (2 : ℕ) < 1 / S ^ (2 : ℕ) :=
       htend.eventually_lt_const (by positivity)
     filter_upwards [hlt] with q hq
     have haq : 0 < ‖a q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
-    have hsq : S ^ 2 < ‖a q‖ ^ 2 :=
+    have hsq : S ^ (2 : ℕ) < ‖a q‖ ^ (2 : ℕ) :=
       lt_of_one_div_lt_one_div (pow_pos haq 2) hq
     exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
   refine (hbase.mul_left (2 * ‖z‖)).of_norm_bounded_eventually ?_
@@ -88,8 +88,8 @@ theorem summable_xi_relativeResolventTerms (z : ℂ) :
   have ha0 : 0 < ‖a q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hd0 : 0 < ‖a q - z‖ := lt_of_lt_of_le (half_pos ha0) hdiff
   rw [norm_div, norm_neg, norm_mul]
-  change ‖z‖ / (‖a q‖ * ‖a q - z‖) ≤ 2 * ‖z‖ * (1 / ‖a q‖ ^ 2)
-  have hden : ‖a q‖ ^ 2 / 2 ≤ ‖a q‖ * ‖a q - z‖ := by
+  change ‖z‖ / (‖a q‖ * ‖a q - z‖) ≤ 2 * ‖z‖ * (1 / ‖a q‖ ^ (2 : ℕ))
+  have hden : ‖a q‖ ^ (2 : ℕ) / 2 ≤ ‖a q‖ * ‖a q - z‖ := by
     nlinarith [mul_le_mul_of_nonneg_left hdiff (norm_nonneg (a q))]
   by_cases hz0 : ‖z‖ = 0
   · simp [hz0]
@@ -195,7 +195,7 @@ theorem logDeriv_XiC_eq_relativeResolventTrace {z : ℂ} (hz : XiC z ≠ 0) :
 /-- The inverse square of the centered spectral coordinate, indexed with the exact multiplicity
 of the Xi divisor. -/
 def xiZeroCopyReciprocalSquare (q : XiZeroCopy) : ℂ :=
-  (xiSpectralPoint q)⁻¹ ^ 2
+  (xiSpectralPoint q)⁻¹ ^ (2 : ℕ)
 
 theorem xiZeroCopyReciprocalSquare_eq (q : XiZeroCopy) :
     xiZeroCopyReciprocalSquare q = xiCentralReciprocalSquare (q.1 : ℂ) := by
@@ -214,7 +214,7 @@ theorem summable_xiZeroCopyReciprocalSquare :
 functional-equation reflection. -/
 def xiReciprocalSquareResolventTerm (z : ℂ) (q : XiZeroCopy) : ℂ :=
   xiZeroCopyReciprocalSquare q /
-    (1 - z ^ 2 * xiZeroCopyReciprocalSquare q)
+    (1 - z ^ (2 : ℕ) * xiZeroCopyReciprocalSquare q)
 
 theorem pair_xiRelativeResolventTerm (z : ℂ) (q : XiZeroCopy)
     (hzp : z ≠ xiSpectralPoint q) (hzn : z ≠ -xiSpectralPoint q) :
@@ -228,7 +228,7 @@ theorem pair_xiRelativeResolventTerm (z : ℂ) (q : XiZeroCopy)
     intro h
     apply hzn
     linear_combination h
-  have hsq : xiSpectralPoint q ^ 2 - z ^ 2 ≠ 0 := by
+  have hsq : xiSpectralPoint q ^ (2 : ℕ) - z ^ (2 : ℕ) ≠ 0 := by
     rw [sq_sub_sq]
     exact mul_ne_zero hapz hp
   rw [xiRelativeResolventTerm, xiRelativeResolventTerm,

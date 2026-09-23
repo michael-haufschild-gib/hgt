@@ -18,8 +18,8 @@ open Finset
 
 /-- The complex and real window sums have the same square. -/
 theorem normSq_moebiusC_eq_sq_real (T : Finset ℕ) :
-    ‖∑ n ∈ T, moebiusC n‖ ^ 2
-      = (∑ n ∈ T, ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ 2 := by
+    ‖∑ n ∈ T, moebiusC n‖ ^ (2 : ℕ)
+      = (∑ n ∈ T, ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ (2 : ℕ) := by
   have hcast : (∑ n ∈ T, moebiusC n)
       = (((∑ n ∈ T, ((ArithmeticFunction.moebius n : ℤ) : ℝ)) : ℝ) : ℂ) := by
     rw [Complex.ofReal_sum]
@@ -30,8 +30,8 @@ theorem normSq_moebiusC_eq_sq_real (T : Finset ℕ) :
 /-- **The mean square in real form, over a range of integer starts.** -/
 theorem sum_sq_real_moebius_Ico_eq (L Y K : ℕ) :
     (∑ t ∈ Finset.Ico Y (Y + K),
-        (∑ n ∈ Finset.Ioc t (t + L), ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ 2)
-      = ∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), moebiusC n‖ ^ 2 := by
+        (∑ n ∈ Finset.Ioc t (t + L), ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ (2 : ℕ))
+      = ∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), moebiusC n‖ ^ (2 : ℕ) := by
   rw [Finset.sum_Ico_eq_sum_range]
   simp only [Nat.add_sub_cancel_left]
   refine Finset.sum_congr rfl fun k _ => ?_
@@ -45,10 +45,10 @@ theorem exists_sum_sq_real_moebius_Ico_le :
         8 * Real.pi * W + 5 ≤ ((contourParam (N + smoothWidth N) : ℕ) : ℝ) →
         (Y : ℝ) + K = (Y : ℝ) * (1 + ε) ^ J →
         (∑ t ∈ Finset.Ico Y (Y + K),
-            (∑ n ∈ Finset.Ioc t (t + L), ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ 2)
+            (∑ n ∈ Finset.Ioc t (t + L), ((ArithmeticFunction.moebius n : ℤ) : ℝ)) ^ (2 : ℕ))
           ≤ ((Y : ℝ) * (1 + ε) ^ J)
-              * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε ((B N * N) ^ 2)
-                  ((((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ 2) W) := by
+              * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε ((B N * N) ^ (2 : ℕ))
+                  ((((⌊N⌋₊ + 1 : ℕ) : ℝ)) ^ (2 : ℕ)) W) := by
   obtain ⟨B, hB, hev⟩ := exists_sum_normSq_moebius_window_le
   refine ⟨B, hB, ?_⟩
   filter_upwards [hev] with N hN

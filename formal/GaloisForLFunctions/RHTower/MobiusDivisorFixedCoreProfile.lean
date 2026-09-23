@@ -112,7 +112,7 @@ theorem mobiusDivisorSelectionEnergy_eq_processedHead_scales
     mobiusDivisorSelectionEnergy M P =
       ∑ R ∈ mobiusDivisorActiveLabels M P,
         let r := ∏ p ∈ R, p
-        (r : ℝ) * (mobiusDivisorInterpolatedFibre M r P ∅)^2 := by
+        (r : ℝ) * (mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) := by
   rw [mobiusDivisorSelectionEnergy_eq_sum_active]
   apply sum_congr rfl
   intro R hR
@@ -126,7 +126,7 @@ theorem mobiusDivisorSelectionEnergy_eq_processedHead_scales
     exact (Finset.mem_sdiff.mp (hsub hp)).2 hpP
   rw [mobiusDivisorSelectionFibre_product_interpolation M P R hprime hdis]
   dsimp only
-  have hmu : (((ArithmeticFunction.moebius (∏ p ∈ R, p) : ℤ) : ℝ))^2 = 1 := by
+  have hmu : (((ArithmeticFunction.moebius (∏ p ∈ R, p) : ℤ) : ℝ))^(2 : ℕ) = 1 := by
     exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree
       (GibbsGas.squarefree_prod_primes hprime)
   rw [mul_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg _), hmu, mul_one]
@@ -138,7 +138,7 @@ theorem mobiusDivisorSelectionEnergy_eq_squarefree_processedHead
     mobiusDivisorSelectionEnergy M P =
       ∑ r ∈ (mobiusDivisorSelectionIndices M).filter
         (fun r => Disjoint r.primeFactors P),
-        (r : ℝ) * (mobiusDivisorInterpolatedFibre M r P ∅)^2 := by
+        (r : ℝ) * (mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) := by
   rw [mobiusDivisorSelectionEnergy_eq_processedHead_scales]
   have hprime (R : Finset ℕ) (hR : R ∈ mobiusDivisorActiveLabels M P) :
       ∀ p ∈ R, p.Prime := by
@@ -346,7 +346,7 @@ theorem exists_mobiusDivisorSelectionEnergy_quotient_tail_bound
     (ε : ℝ) (hε : 0 < ε) :
     ∃ T : ℕ, 1 ≤ T ∧ ∀ M : ℕ,
       (∑ R ∈ (mobiusDivisorActiveLabels M P).filter
-        (fun R => T ≤ M/(∏ p ∈ R, p)), (mobiusDivisorSelectionFibre M P R)^2) ≤ ε^2*(M : ℝ)^2 := by
+        (fun R => T ≤ M/(∏ p ∈ R, p)), (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)) ≤ ε^(2 : ℕ)*(M : ℝ)^(2 : ℕ) := by
   obtain ⟨T, hT, hbound⟩ := exists_mobiusDivisorSelectionFibre_uniform_head_tail P hP hne ε hε
   refine ⟨T, hT, ?_⟩
   intro M
@@ -354,7 +354,7 @@ theorem exists_mobiusDivisorSelectionEnergy_quotient_tail_bound
   have hcard : A.card ≤ M :=
     (card_filter_le _ _).trans ((card_mobiusDivisorActiveLabels_le M P).trans (Nat.sub_le _ _))
   calc
-    _ ≤ ∑ R ∈ A, ε^2*(M : ℝ) := by
+    _ ≤ ∑ R ∈ A, ε^(2 : ℕ)*(M : ℝ) := by
       apply sum_le_sum
       intro R hR
       obtain ⟨hRa, hquot⟩ := mem_filter.mp hR
@@ -370,8 +370,8 @@ theorem exists_mobiusDivisorSelectionEnergy_quotient_tail_bound
       have hab := abs_nonneg (mobiusDivisorSelectionFibre M P R)
       have hsq := sq_abs (mobiusDivisorSelectionFibre M P R)
       nlinarith [sq_nonneg (ε*Real.sqrt M - |mobiusDivisorSelectionFibre M P R|)]
-    _ = (A.card : ℝ)*(ε^2*(M : ℝ)) := by simp
-    _ ≤ (M : ℝ)*(ε^2*(M : ℝ)) := by
+    _ = (A.card : ℝ)*(ε^(2 : ℕ)*(M : ℝ)) := by simp
+    _ ≤ (M : ℝ)*(ε^(2 : ℕ)*(M : ℝ)) := by
       apply mul_le_mul_of_nonneg_right (by exact_mod_cast hcard)
       positivity
     _ = _ := by ring

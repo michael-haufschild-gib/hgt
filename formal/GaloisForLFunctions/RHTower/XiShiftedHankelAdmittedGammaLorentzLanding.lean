@@ -32,7 +32,7 @@ noncomputable section
 centered horizontal Xi rate on a strict-right upper quartet representative. -/
 def xiRightUpperGammaPhaseGauge
     (y : ℝ) (q : XiRightUpperZeroCopy) : ℝ :=
-  Complex.normSq ((q.1.1.1 : ℂ) - 1 / 2) ^ 2 *
+  Complex.normSq ((q.1.1.1 : ℂ) - 1 / 2) ^ (2 : ℕ) *
       Complex.normSq
         (1 + (y : ℂ) * xiZeroCopyReciprocalSquare q.1.1) /
     (q.1.1.1 : ℂ).im
@@ -76,7 +76,7 @@ theorem primeDepthBVWoldXiCenteredRate_eq_gammaPhaseGauge_mul_shiftedIm
     primeDepthBVWoldXiCenteredRate q.1.1.1 =
       xiRightUpperGammaPhaseGauge y q *
         (xiShiftedReciprocalSquare y q.1.1).im := by
-  let D₀ : ℝ := Complex.normSq ((q.1.1.1 : ℂ) - 1 / 2) ^ 2
+  let D₀ : ℝ := Complex.normSq ((q.1.1.1 : ℂ) - 1 / 2) ^ (2 : ℕ)
   let D₁ : ℝ := Complex.normSq
     (1 + (y : ℂ) * xiZeroCopyReciprocalSquare q.1.1)
   have hD₀ : D₀ ≠ 0 := by

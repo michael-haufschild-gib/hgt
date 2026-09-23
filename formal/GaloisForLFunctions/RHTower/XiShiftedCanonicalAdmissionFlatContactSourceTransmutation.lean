@@ -223,7 +223,7 @@ theorem finitePolynomialVelocity_xiShiftedCanonicalAdmission_eval_root_of_flatFa
     (hroot : (HTGeometry.monicMomentAdmissionPolynomial
       (fun k => (xiShiftedReciprocalMoment y k).re) n).eval x = 0) :
     (finitePolynomialVelocity (xiShiftedCanonicalAdmissionVelocity y n)).eval x =
-      x ^ 2 * (HTGeometry.monicMomentAdmissionPolynomial
+      x ^ (2 : ℕ) * (HTGeometry.monicMomentAdmissionPolynomial
         (fun k => (xiShiftedReciprocalMoment y k).re) n).derivative.eval x := by
   rw [finitePolynomialVelocity_xiShiftedCanonicalAdmission_eq_normRemainder_of_flatFace
     hy hn hhead hflat]
@@ -245,7 +245,7 @@ theorem xiShiftedCanonicalAdmission_flatRootCurve_deriv_eq_neg_sq
           fun _ => 0)
     (hsimple : (HTGeometry.monicMomentAdmissionPolynomial
       (fun k => (xiShiftedReciprocalMoment y k).re) n).derivative.eval (x y) ≠ 0) :
-    xdot = -(x y) ^ 2 := by
+    xdot = -(x y) ^ (2 : ℕ) := by
   have hhead' : (HTGeometry.momentHankelMatrix
       (fun k => (xiShiftedReciprocalMoment y k).re) n).PosDef := by
     rw [show HTGeometry.momentHankelMatrix
@@ -265,7 +265,7 @@ theorem xiShiftedCanonicalAdmission_flatRootCurve_deriv_eq_neg_sq
       hy hn hhead hflat hroot_y
   have hchain := xiShiftedCanonicalAdmission_rootCurve_chain hy n hdet hx hroot
   rw [hvelocity] at hchain
-  have hproduct : ((x y) ^ 2 + xdot) *
+  have hproduct : ((x y) ^ (2 : ℕ) + xdot) *
       (HTGeometry.monicMomentAdmissionPolynomial
         (fun k => (xiShiftedReciprocalMoment y k).re) n).derivative.eval (x y) = 0 := by
     nlinarith only [hchain]
@@ -302,34 +302,34 @@ observer freezes to first order while actual admission norm flux differentiates 
 completed `P^sharp` source formed before reflection aggregation. -/
 theorem xiShiftedCanonicalAdmission_flatTangent_hardRootFreeze_and_completedSource
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
-    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
-    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ (2 : ℕ)) (n + 1) *ᵥ
       HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0)
-    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ 2)
+    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ (2 : ℕ))
       (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) = 0)
-    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ 2))
+    {x : ℝ → ℝ} {xdot : ℝ} (hx : HasDerivAt x xdot (w ^ (2 : ℕ)))
     (hroot : (fun v =>
       (HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ 2)]
+        (fun k => (xiShiftedReciprocalMoment v k).re) n).eval (x v)) =ᶠ[nhds (w ^ (2 : ℕ))]
           fun _ => 0)
-    (hx0 : x (w ^ 2) ≠ 0)
+    (hx0 : x (w ^ (2 : ℕ)) ≠ 0)
     (hsimple : (HTGeometry.monicMomentAdmissionPolynomial
-      (xiShiftedRealMomentSequence w) n).derivative.eval (x (w ^ 2)) ≠ 0) :
-    HasDerivAt (fun v => (x v)⁻¹ - v) 0 (w ^ 2) ∧
+      (xiShiftedRealMomentSequence w) n).derivative.eval (x (w ^ (2 : ℕ))) ≠ 0) :
+    HasDerivAt (fun v => (x v)⁻¹ - v) 0 (w ^ (2 : ℕ)) ∧
       (let P := HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n
        HasDerivAt (fun v => xiShiftedCanonicalAdmissionNormFlux v n)
         (((2 * n + 1 : ℕ) : ℝ) *
-          xiShiftedCompletedMomentAggregate (w ^ 2) 2
+          xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
             (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
-              (xiShiftedOddCrossingCoefficientPacket P))) (w ^ 2)) := by
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
+              (xiShiftedOddCrossingCoefficientPacket P))) (w ^ (2 : ℕ))) := by
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (by linarith : 0 < w)
   constructor
   · apply hasDerivAt_xiShiftedCanonicalAdmission_reciprocalHardRoot_zero_of_flatFace
       hy hn hhead hflat hx hroot hx0
     change (HTGeometry.monicMomentAdmissionPolynomial
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n).derivative.eval
-        (x (w ^ 2)) ≠ 0 at hsimple
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n).derivative.eval
+        (x (w ^ (2 : ℕ))) ≠ 0 at hsimple
     exact hsimple
   · exact hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_completedAggregate_of_flatTangent
       hw hn hhead hflat htangent

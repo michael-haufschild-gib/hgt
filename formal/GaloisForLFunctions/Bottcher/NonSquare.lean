@@ -19,7 +19,7 @@ namespace Bottcher
 theorem no_analytic_sqrt_bottcher {c : ℂ} {R : ℝ} (hR : max 2 ‖c‖ < R)
     {h : ℂ → ℂ} {L : ℝ → ℂ}
     (hh : AnalyticOnNhd ℂ h (escapeOpen c))
-    (hsq : Set.EqOn (fun z => (h z) ^ 2) (bottcherCoord c) (escapeOpen c))
+    (hsq : Set.EqOn (fun z => (h z) ^ (2 : ℕ)) (bottcherCoord c) (escapeOpen c))
     (hL : ∀ θ ∈ Set.Icc (0 : ℝ) (2 * Real.pi),
         HasDerivAt L (deriv (fun t => h (circleMap 0 R t)) θ / h (circleMap 0 R θ)) θ) :
     False := by
@@ -32,7 +32,7 @@ theorem no_analytic_sqrt_bottcher {c : ℂ} {R : ℝ} (hR : max 2 ‖c‖ < R)
     rw [escapeOpen, Set.mem_setOf_eq, this]; exact hR
   have hne : ∀ θ : ℝ, h (γ θ) ≠ 0 := by
     intro θ hz0
-    have he : (h (γ θ)) ^ 2 = bottcherCoord c (γ θ) := hsq (hmem θ)
+    have he : (h (γ θ)) ^ (2 : ℕ) = bottcherCoord c (γ θ) := hsq (hmem θ)
     rw [hz0, zero_pow (by norm_num : (2 : ℕ) ≠ 0)] at he
     exact bottcherCoord_ne_zero c (γ θ) he.symm
   have hγclosed : γ (2 * Real.pi) = γ 0 := by
@@ -62,23 +62,23 @@ theorem no_analytic_sqrt_bottcher {c : ℂ} {R : ℝ} (hR : max 2 ‖c‖ < R)
   -- the base period `∮ d log φ_c = 2πi`
   have hbase : (∮ z in C(0, R), logDeriv (bottcherCoord c) z) = 2 * (Real.pi : ℂ) * Complex.I :=
     circleIntegral_logDeriv_bottcher hR
-  have hlogcong : ∀ θ : ℝ, logDeriv (bottcherCoord c) (γ θ) = logDeriv (fun w => (h w) ^ 2) (γ θ) := by
+  have hlogcong : ∀ θ : ℝ, logDeriv (bottcherCoord c) (γ θ) = logDeriv (fun w => (h w) ^ (2 : ℕ)) (γ θ) := by
     intro θ
-    have heq : bottcherCoord c =ᶠ[nhds (γ θ)] (fun w => (h w) ^ 2) :=
+    have heq : bottcherCoord c =ᶠ[nhds (γ θ)] (fun w => (h w) ^ (2 : ℕ)) :=
       Filter.eventuallyEq_of_mem ((isOpen_escapeOpen c).mem_nhds (hmem θ)) (fun w hw => (hsq hw).symm)
     simp only [logDeriv_apply]
     rw [heq.deriv_eq, heq.eq_of_nhds]
   have hcong : (∮ z in C(0, R), logDeriv (bottcherCoord c) z)
-      = ∫ θ in (0 : ℝ)..(2 * Real.pi), logDeriv (fun w => (h w) ^ 2) (γ θ) * deriv γ θ := by
+      = ∫ θ in (0 : ℝ)..(2 * Real.pi), logDeriv (fun w => (h w) ^ (2 : ℕ)) (γ θ) * deriv γ θ := by
     show (∫ θ in (0 : ℝ)..(2 * Real.pi), deriv γ θ • logDeriv (bottcherCoord c) (γ θ))
-        = ∫ θ in (0 : ℝ)..(2 * Real.pi), logDeriv (fun w => (h w) ^ 2) (γ θ) * deriv γ θ
+        = ∫ θ in (0 : ℝ)..(2 * Real.pi), logDeriv (fun w => (h w) ^ (2 : ℕ)) (γ θ) * deriv γ θ
     apply intervalIntegral.integral_congr
     intro θ _
     dsimp only
     rw [hlogcong θ, smul_eq_mul, mul_comm]
   have hd : ∀ θ ∈ Set.uIcc (0 : ℝ) (2 * Real.pi), DifferentiableAt ℂ h (γ θ) :=
     fun θ _ => (hh (γ θ) (hmem θ)).differentiableAt
-  have hsq2 : (∫ θ in (0 : ℝ)..(2 * Real.pi), logDeriv (fun w => (h w) ^ 2) (γ θ) * deriv γ θ)
+  have hsq2 : (∫ θ in (0 : ℝ)..(2 * Real.pi), logDeriv (fun w => (h w) ^ (2 : ℕ)) (γ θ) * deriv γ θ)
       = 2 * ∫ θ in (0 : ℝ)..(2 * Real.pi), logDeriv h (γ θ) * deriv γ θ :=
     pathInt_logDeriv_sq (h := h) (γ := γ) (γ' := deriv γ) hd
   have hL'' : ∀ θ ∈ Set.uIcc (0 : ℝ) (2 * Real.pi),
@@ -123,7 +123,7 @@ route consumes, with no remaining hypothesis. -/
 theorem no_analytic_sqrt_bottcher' {c : ℂ} {R : ℝ} (hR : max 2 ‖c‖ < R)
     {h : ℂ → ℂ}
     (hh : AnalyticOnNhd ℂ h (escapeOpen c))
-    (hsq : Set.EqOn (fun z => (h z) ^ 2) (bottcherCoord c) (escapeOpen c)) :
+    (hsq : Set.EqOn (fun z => (h z) ^ (2 : ℕ)) (bottcherCoord c) (escapeOpen c)) :
     False := by
   have hRpos : 0 < R := lt_of_le_of_lt (le_trans (by norm_num) (le_max_left 2 ‖c‖)) hR
   have hγcont : Continuous (circleMap 0 R) := continuous_circleMap 0 R
@@ -133,7 +133,7 @@ theorem no_analytic_sqrt_bottcher' {c : ℂ} {R : ℝ} (hR : max 2 ‖c‖ < R)
     rw [escapeOpen, Set.mem_setOf_eq, this]; exact hR
   have hne : ∀ θ : ℝ, h (circleMap 0 R θ) ≠ 0 := by
     intro θ hz0
-    have he : (h (circleMap 0 R θ)) ^ 2 = bottcherCoord c (circleMap 0 R θ) := hsq (hmem θ)
+    have he : (h (circleMap 0 R θ)) ^ (2 : ℕ) = bottcherCoord c (circleMap 0 R θ) := hsq (hmem θ)
     rw [hz0, zero_pow (by norm_num : (2 : ℕ) ≠ 0)] at he
     exact bottcherCoord_ne_zero c _ he.symm
   have hderivφ : ∀ θ, deriv (fun t => h (circleMap 0 R t)) θ

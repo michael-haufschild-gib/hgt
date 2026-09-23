@@ -33,9 +33,9 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The golden-rule kernel `K t x = 4 sin(x t/2)²/x²`, written through `Real.sinc` so that it is
 continuous at the resonance `x = 0`, where its value is `t²`. -/
-def goldenRuleKernel (t x : ℝ) : ℝ := t ^ 2 * Real.sinc (x * t / 2) ^ 2
+def goldenRuleKernel (t x : ℝ) : ℝ := t ^ (2 : ℕ) * Real.sinc (x * t / 2) ^ (2 : ℕ)
 
-@[simp] theorem goldenRuleKernel_zero_arg (t : ℝ) : goldenRuleKernel t 0 = t ^ 2 := by
+@[simp] theorem goldenRuleKernel_zero_arg (t : ℝ) : goldenRuleKernel t 0 = t ^ (2 : ℕ) := by
   simp [goldenRuleKernel]
 
 theorem goldenRuleKernel_nonneg (t x : ℝ) : 0 ≤ goldenRuleKernel t x := by
@@ -43,7 +43,7 @@ theorem goldenRuleKernel_nonneg (t x : ℝ) : 0 ≤ goldenRuleKernel t x := by
 
 /-- Away from the resonance the kernel is the classical `4 sin²/x²`. -/
 theorem goldenRuleKernel_eq {x : ℝ} (t : ℝ) (hx : x ≠ 0) :
-    goldenRuleKernel t x = 4 * Real.sin (x * t / 2) ^ 2 / x ^ 2 := by
+    goldenRuleKernel t x = 4 * Real.sin (x * t / 2) ^ (2 : ℕ) / x ^ (2 : ℕ) := by
   rcases eq_or_ne t 0 with ht | ht
   · simp [goldenRuleKernel, ht]
   · have hxt : x * t / 2 ≠ 0 := by
@@ -55,38 +55,38 @@ theorem goldenRuleKernel_eq {x : ℝ} (t : ℝ) (hx : x ≠ 0) :
     field_simp
     ring
 
-theorem goldenRuleKernel_le_sq (t x : ℝ) : goldenRuleKernel t x ≤ t ^ 2 := by
-  have h : Real.sinc (x * t / 2) ^ 2 ≤ 1 := by
+theorem goldenRuleKernel_le_sq (t x : ℝ) : goldenRuleKernel t x ≤ t ^ (2 : ℕ) := by
+  have h : Real.sinc (x * t / 2) ^ (2 : ℕ) ≤ 1 := by
     have := Real.abs_sinc_le_one (x * t / 2)
     nlinarith [abs_nonneg (Real.sinc (x * t / 2)), sq_abs (Real.sinc (x * t / 2))]
-  have ht : (0 : ℝ) ≤ t ^ 2 := sq_nonneg t
-  calc goldenRuleKernel t x = t ^ 2 * Real.sinc (x * t / 2) ^ 2 := rfl
-    _ ≤ t ^ 2 * 1 := by exact mul_le_mul_of_nonneg_left h ht
-    _ = t ^ 2 := mul_one _
+  have ht : (0 : ℝ) ≤ t ^ (2 : ℕ) := sq_nonneg t
+  calc goldenRuleKernel t x = t ^ (2 : ℕ) * Real.sinc (x * t / 2) ^ (2 : ℕ) := rfl
+    _ ≤ t ^ (2 : ℕ) * 1 := by exact mul_le_mul_of_nonneg_left h ht
+    _ = t ^ (2 : ℕ) := mul_one _
 
 theorem goldenRuleKernel_le_four_div_sq {x : ℝ} (t : ℝ) (hx : x ≠ 0) :
-    goldenRuleKernel t x ≤ 4 / x ^ 2 := by
+    goldenRuleKernel t x ≤ 4 / x ^ (2 : ℕ) := by
   rw [goldenRuleKernel_eq t hx]
-  have hx2 : (0 : ℝ) < x ^ 2 := by positivity
+  have hx2 : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
   rw [div_le_div_iff_of_pos_right hx2]
   nlinarith [Real.sin_sq_le_one (x * t / 2)]
 
 /-- A single integrable majorant valid for every time. -/
 theorem goldenRuleKernel_le_majorant (t x : ℝ) :
-    goldenRuleKernel t x ≤ (t ^ 2 + 4) * (1 + x ^ 2)⁻¹ := by
-  have hpos : (0 : ℝ) < 1 + x ^ 2 := by positivity
+    goldenRuleKernel t x ≤ (t ^ (2 : ℕ) + 4) * (1 + x ^ (2 : ℕ))⁻¹ := by
+  have hpos : (0 : ℝ) < 1 + x ^ (2 : ℕ) := by positivity
   rw [← div_eq_mul_inv, le_div_iff₀ hpos]
-  rcases le_or_gt (x ^ 2 * t ^ 2) 4 with hcase | hcase
-  · calc goldenRuleKernel t x * (1 + x ^ 2) ≤ t ^ 2 * (1 + x ^ 2) := by
+  rcases le_or_gt (x ^ (2 : ℕ) * t ^ (2 : ℕ)) 4 with hcase | hcase
+  · calc goldenRuleKernel t x * (1 + x ^ (2 : ℕ)) ≤ t ^ (2 : ℕ) * (1 + x ^ (2 : ℕ)) := by
           exact mul_le_mul_of_nonneg_right (goldenRuleKernel_le_sq t x) (le_of_lt hpos)
-      _ ≤ t ^ 2 + 4 := by nlinarith
+      _ ≤ t ^ (2 : ℕ) + 4 := by nlinarith
   · have hx : x ≠ 0 := by
       intro h
       rw [h] at hcase; simp at hcase; linarith
-    have hx2 : (0 : ℝ) < x ^ 2 := by positivity
-    calc goldenRuleKernel t x * (1 + x ^ 2) ≤ (4 / x ^ 2) * (1 + x ^ 2) := by
+    have hx2 : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
+    calc goldenRuleKernel t x * (1 + x ^ (2 : ℕ)) ≤ (4 / x ^ (2 : ℕ)) * (1 + x ^ (2 : ℕ)) := by
           exact mul_le_mul_of_nonneg_right (goldenRuleKernel_le_four_div_sq t hx) (le_of_lt hpos)
-      _ ≤ t ^ 2 + 4 := by
+      _ ≤ t ^ (2 : ℕ) + 4 := by
           rw [div_mul_eq_mul_div, div_le_iff₀ hx2]
           nlinarith
 
@@ -98,7 +98,7 @@ theorem continuous_goldenRuleKernel (t : ℝ) : Continuous (goldenRuleKernel t) 
 theorem integrable_goldenRuleKernel (t : ℝ) :
     Integrable (goldenRuleKernel t) (volume : Measure ℝ) := by
   refine MeasureTheory.Integrable.mono'
-    (((integrable_inv_one_add_sq).const_mul (t ^ 2 + 4)))
+    (((integrable_inv_one_add_sq).const_mul (t ^ (2 : ℕ) + 4)))
     (continuous_goldenRuleKernel t).aestronglyMeasurable ?_
   filter_upwards with x
   rw [Real.norm_eq_abs, abs_of_nonneg (goldenRuleKernel_nonneg t x)]
@@ -108,7 +108,7 @@ theorem integrable_goldenRuleKernel (t : ℝ) :
 theorem integral_goldenRuleKernel {t : ℝ} (ht : 0 ≤ t) :
     ∫ x : ℝ, goldenRuleKernel t x = 2 * Real.pi * t := by
   have hstep : (∫ x : ℝ, goldenRuleKernel t x)
-      = ∫ x : ℝ, 4 * (Real.sin (t / 2 * x) ^ 2 / x ^ 2) := by
+      = ∫ x : ℝ, 4 * (Real.sin (t / 2 * x) ^ (2 : ℕ) / x ^ (2 : ℕ)) := by
     refine MeasureTheory.integral_congr_ae ?_
     have hnull : (volume : Measure ℝ) {(0 : ℝ)} = 0 := by simp
     filter_upwards [MeasureTheory.compl_mem_ae_iff.mpr hnull] with x hx
@@ -121,7 +121,7 @@ theorem integral_goldenRuleKernel {t : ℝ} (ht : 0 ≤ t) :
 /-- **The kernel is the squared modulus of the first-order amplitude.** -/
 theorem goldenRuleKernel_eq_normSq (t x : ℝ) :
     goldenRuleKernel t x
-      = ‖∫ s in (0 : ℝ)..t, Complex.exp (((s * x : ℝ) : ℂ) * Complex.I)‖ ^ 2 := by
+      = ‖∫ s in (0 : ℝ)..t, Complex.exp (((s * x : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ) := by
   rcases eq_or_ne x 0 with hx | hx
   · simp [hx]
   · have hc : (Complex.I * (x : ℂ)) ≠ 0 := by simp [Complex.I_ne_zero, hx]
@@ -138,9 +138,9 @@ theorem goldenRuleKernel_eq_normSq (t x : ℝ) :
     simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero]
     rw [Complex.exp_mul_I]
     have hnorm : ‖(Complex.cos ((t * x : ℝ) : ℂ) + Complex.sin ((t * x : ℝ) : ℂ) * Complex.I - 1)
-        / (Complex.I * (x : ℂ))‖ ^ 2
-        = ‖Complex.cos ((t * x : ℝ) : ℂ) + Complex.sin ((t * x : ℝ) : ℂ) * Complex.I - 1‖ ^ 2
-          / ‖Complex.I * (x : ℂ)‖ ^ 2 := by
+        / (Complex.I * (x : ℂ))‖ ^ (2 : ℕ)
+        = ‖Complex.cos ((t * x : ℝ) : ℂ) + Complex.sin ((t * x : ℝ) : ℂ) * Complex.I - 1‖ ^ (2 : ℕ)
+          / ‖Complex.I * (x : ℂ)‖ ^ (2 : ℕ) := by
       rw [norm_div, div_pow]
     rw [hnorm]
     rw [← Complex.ofReal_cos, ← Complex.ofReal_sin]
@@ -149,11 +149,11 @@ theorem goldenRuleKernel_eq_normSq (t x : ℝ) :
       push_cast; ring
     rw [hre, Complex.norm_add_mul_I]
     rw [Real.sq_sqrt (by positivity)]
-    have hden : ‖Complex.I * (x : ℂ)‖ ^ 2 = x ^ 2 := by
+    have hden : ‖Complex.I * (x : ℂ)‖ ^ (2 : ℕ) = x ^ (2 : ℕ) := by
       rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs, sq_abs]
     rw [hden, goldenRuleKernel_eq t hx]
-    have hsin2 : Real.sin (x * t / 2) ^ 2 = (1 - Real.cos (t * x)) / 2 := by
-      have h2 : Real.cos (2 * (t * x / 2)) = 2 * Real.cos (t * x / 2) ^ 2 - 1 :=
+    have hsin2 : Real.sin (x * t / 2) ^ (2 : ℕ) = (1 - Real.cos (t * x)) / 2 := by
+      have h2 : Real.cos (2 * (t * x / 2)) = 2 * Real.cos (t * x / 2) ^ (2 : ℕ) - 1 :=
         Real.cos_two_mul _
       have h3 : (2 : ℝ) * (t * x / 2) = t * x := by ring
       rw [h3] at h2

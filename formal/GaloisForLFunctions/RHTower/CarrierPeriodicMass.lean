@@ -32,7 +32,7 @@ open Complex Metric Set
 /-- The pointwise `L²` density of any root trace is the member's modulus. -/
 theorem trace_normSq_eq_norm {f : ℂ → ℂ} {a : ℂ} {r : ℝ} {U : ℝ → ℂ}
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap a r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap a r θ)) :
     ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
       Complex.normSq (U θ) = ‖f (circleMap a r θ)‖ := by
   intro θ hθ
@@ -62,7 +62,7 @@ mass of a closed-up root trace is `2∮‖f‖` — independent of the chosen tr
 theorem doubledTrace_self_pairing_value {f : ℂ → ℂ} {a : ℂ} {r : ℝ} {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap a r θ))
+      U θ ^ (2 : ℕ) = f (circleMap a r θ))
     (hhol : U (3 * Real.pi / 2) = U (-(Real.pi / 2))) :
     ∫ θ in (-(Real.pi / 2))..(3 * Real.pi / 2 + 2 * Real.pi),
         doubledTrace 1 U θ * (starRingEnd ℂ) (doubledTrace 1 U θ)
@@ -124,7 +124,7 @@ theorem exists_chartLA_sqrt {f : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ} (h0 : 0 <
     (hf : AnalyticOnNhd ℂ f (chartLA a r₀ R))
     (hf0 : ∀ z ∈ chartLA a r₀ R, f z ≠ 0) :
     ∃ G : ℂ → ℂ, AnalyticOnNhd ℂ G (chartLA a r₀ R) ∧
-      ∀ z ∈ chartLA a r₀ R, G z ^ 2 = f z := by
+      ∀ z ∈ chartLA a r₀ R, G z ^ (2 : ℕ) = f z := by
   obtain ⟨χ, hχan, -, hχpow⟩ := U0KummerBranch.exists_analyticOnNhd_pow_eq
     (isOpen_chartLA a r₀ R) (isSimplyConnected_chartLA a h0 hrR) hf hf0
     (by norm_num : (2 : ℕ) ≠ 0)
@@ -138,7 +138,7 @@ theorem exists_circle_trace {f : ℂ → ℂ} {a : ℂ} {r₀ r R : ℝ} (h0 : 0
     (hf0 : ∀ z ∈ ball a R \ closedBall a r₀, f z ≠ 0) :
     ∃ U : ℝ → ℂ, ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) ∧
       ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-        U θ ^ 2 = f (circleMap a r θ) := by
+        U θ ^ (2 : ℕ) = f (circleMap a r θ) := by
   have h0' : (0 : ℝ) ≤ r₀ := le_of_lt h0
   obtain ⟨G₁, hG₁, hpG₁⟩ := exists_chartRA_sqrt h0 (lt_trans hr₀ hrR)
     (fun z hz => hfan z hz.2) (fun z hz => hf0 z hz.2)
@@ -166,7 +166,7 @@ theorem trace_holonomy_of_sign {μ : ℝ} {f : ℂ → ℂ} {a : ℂ} {r₀ r R 
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = f (circleMap a r θ)) :
+      U θ ^ (2 : ℕ) = f (circleMap a r θ)) :
     (0 < (f (a + (r : ℂ) * I)).re * (f (a - (r : ℂ) * I)).re →
       U (3 * Real.pi / 2) = U (-(Real.pi / 2))) ∧
     ((f (a + (r : ℂ) * I)).re * (f (a - (r : ℂ) * I)).re < 0 →
@@ -190,9 +190,9 @@ theorem trace_holonomy_of_sign {μ : ℝ} {f : ℂ → ℂ} {a : ℂ} {r₀ r R 
     (top_port_mem_charts h0' hr₀ hrR).1.2
   have hBmem : a - (r : ℂ) * I ∈ ball a R \ closedBall a r₀ :=
     (bottom_port_mem_charts h0' hr₀ hrR).1.2
-  have hGT : G (a + (r : ℂ) * I) ^ 2 = f (a + (r : ℂ) * I) :=
+  have hGT : G (a + (r : ℂ) * I) ^ (2 : ℕ) = f (a + (r : ℂ) * I) :=
     hpG _ (top_port_mem_charts h0' hr₀ hrR).1
-  have hGB : G (a - (r : ℂ) * I) ^ 2 = f (a - (r : ℂ) * I) :=
+  have hGB : G (a - (r : ℂ) * I) ^ (2 : ℕ) = f (a - (r : ℂ) * I) :=
     hpG _ (bottom_port_mem_charts h0' hr₀ hrR).1
   constructor
   · intro hsign
@@ -295,7 +295,7 @@ theorem exists_carrier_trace {N : ℕ} (hN : 1 ≤ N) {a : ℂ} {r₀ r R : ℝ}
     (hf0 : ∀ z ∈ ball a R \ closedBall a r₀, completedSEM N z ≠ 0) :
     ∃ U : ℝ → ℂ, ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)) ∧
       ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-        U θ ^ 2 = completedSEM N (circleMap a r θ) :=
+        U θ ^ (2 : ℕ) = completedSEM N (circleMap a r θ) :=
   exists_circle_trace h0 hr₀ hrR
     (fun z hz => completedSEM_analyticOnNhd_strip hN z
       (annulus_strip_of_center_half ha hR hz))
@@ -311,7 +311,7 @@ theorem carrier_periodic_mass_of_sign_pos {N : ℕ} (hN : 1 ≤ N) {a : ℂ}
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = completedSEM N (circleMap a r θ))
+      U θ ^ (2 : ℕ) = completedSEM N (circleMap a r θ))
     (hsign : 0 < (completedSEM N (a + (r : ℂ) * I)).re
       * (completedSEM N (a - (r : ℂ) * I)).re) :
     U (3 * Real.pi / 2) = U (-(Real.pi / 2)) ∧
@@ -342,7 +342,7 @@ theorem carrier_periodic_mass_of_sign_neg {N : ℕ} (hN : 1 ≤ N) {a : ℂ}
     {U : ℝ → ℂ}
     (hUc : ContinuousOn U (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hUsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      U θ ^ 2 = completedSEM N (circleMap a r θ))
+      U θ ^ (2 : ℕ) = completedSEM N (circleMap a r θ))
     (hsign : (completedSEM N (a + (r : ℂ) * I)).re
       * (completedSEM N (a - (r : ℂ) * I)).re < 0) :
     U (3 * Real.pi / 2) = -U (-(Real.pi / 2)) ∧
@@ -403,7 +403,7 @@ theorem carrier_mass_zero_of_odd_isolated_zero {g F : ℂ → ℂ} {ρ : ℂ}
     {V : ℝ → ℂ}
     (hVc : ContinuousOn V (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hVsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      V θ ^ 2 = F (circleMap ρ r θ)) :
+      V θ ^ (2 : ℕ) = F (circleMap ρ r θ)) :
     V (3 * Real.pi / 2) = -V (-(Real.pi / 2)) ∧
     ∀ p : ℝ → ℂ,
       ContinuousOn p (Icc (-(Real.pi / 2)) (3 * Real.pi / 2 + 2 * Real.pi)) →
@@ -461,7 +461,7 @@ theorem carrier_mass_zero_of_odd_xi_zero {N : ℕ} (hN : 1 ≤ N) {ρ : ℂ}
     {V : ℝ → ℂ}
     (hVc : ContinuousOn V (Icc (-(Real.pi / 2)) (3 * Real.pi / 2)))
     (hVsq : ∀ θ ∈ Icc (-(Real.pi / 2)) (3 * Real.pi / 2),
-      V θ ^ 2 = completedSEM N (circleMap ρ r θ)) :
+      V θ ^ (2 : ℕ) = completedSEM N (circleMap ρ r θ)) :
     V (3 * Real.pi / 2) = -V (-(Real.pi / 2)) ∧
     ∀ p : ℝ → ℂ,
       ContinuousOn p (Icc (-(Real.pi / 2)) (3 * Real.pi / 2 + 2 * Real.pi)) →

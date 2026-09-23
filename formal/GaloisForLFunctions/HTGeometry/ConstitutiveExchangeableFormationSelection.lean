@@ -45,7 +45,7 @@ def formationThinningReporterDefect (φ : V →ₗ[ℝ] ℝ) (p q : V) : ℝ :=
 /-- The predicted positive-organ response is exactly the squared reflected reporter difference. -/
 theorem formationThinningReporterDefect_eq_sq
     (φ : V →ₗ[ℝ] ℝ) (p q : V) :
-    formationThinningReporterDefect φ p q = (φ p - φ q) ^ 2 := by
+    formationThinningReporterDefect φ p q = (φ p - φ q) ^ (2 : ℕ) := by
   unfold formationThinningReporterDefect
   ring
 
@@ -79,7 +79,7 @@ def symAlternatingCylinder121 (p q : ℝ) : ℝ :=
 /-- The three-slot transposition defect is exactly one half of the reflected mass square. -/
 theorem symAlternatingCylinder_gap (p q : ℝ) :
     symAlternatingCylinder121 p q - symAlternatingCylinder112 p q =
-      (p - q) ^ 2 / 2 := by
+      (p - q) ^ (2 : ℕ) / 2 := by
   unfold symAlternatingCylinder121 symAlternatingCylinder112
   ring
 
@@ -88,7 +88,7 @@ theorem symAlternatingCylinder_eq_iff (p q : ℝ) :
     symAlternatingCylinder121 p q = symAlternatingCylinder112 p q ↔ p = q := by
   constructor
   · intro h
-    have hzero : (p - q) ^ 2 / 2 = 0 := by
+    have hzero : (p - q) ^ (2 : ℕ) / 2 = 0 := by
       rw [← symAlternatingCylinder_gap, h, sub_self]
     nlinarith [sq_nonneg (p - q)]
   · rintro rfl
@@ -104,12 +104,12 @@ theorem twoSlotOrbitSymmetrization_swap (p q : ℝ) :
 def phaseAveragedAdjacentCoincidence (p q : ℝ) : ℝ := p * q
 
 /-- Coincidence probability after deleting one slot and retaining equal-parity slots. -/
-def phaseAveragedSkippedCoincidence (p q : ℝ) : ℝ := (p ^ 2 + q ^ 2) / 2
+def phaseAveragedSkippedCoincidence (p q : ℝ) : ℝ := (p ^ (2 : ℕ) + q ^ (2 : ℕ)) / 2
 
 /-- A single deletion exposes exactly the reflected square hidden by shift stationarity. -/
 theorem phaseAveragedSkipped_sub_adjacent (p q : ℝ) :
     phaseAveragedSkippedCoincidence p q - phaseAveragedAdjacentCoincidence p q =
-      (p - q) ^ 2 / 2 := by
+      (p - q) ^ (2 : ℕ) / 2 := by
   unfold phaseAveragedSkippedCoincidence phaseAveragedAdjacentCoincidence
   ring
 
@@ -118,7 +118,7 @@ theorem phaseAveragedThinningConsistent_iff (p q : ℝ) :
     phaseAveragedSkippedCoincidence p q = phaseAveragedAdjacentCoincidence p q ↔ p = q := by
   constructor
   · intro h
-    have hzero : (p - q) ^ 2 / 2 = 0 := by
+    have hzero : (p - q) ^ (2 : ℕ) / 2 = 0 := by
       rw [← phaseAveragedSkipped_sub_adjacent, h, sub_self]
     nlinarith [sq_nonneg (p - q)]
   · rintro rfl
@@ -146,7 +146,7 @@ def threeSlotExchangeDefect (p q : ℝ) : ℝ :=
   symAlternatingCylinder121 p q - symAlternatingCylinder112 p q
 
 theorem threeSlotExchangeDefect_eq (p q : ℝ) :
-    threeSlotExchangeDefect p q = (p - q) ^ 2 / 2 :=
+    threeSlotExchangeDefect p q = (p - q) ^ (2 : ℕ) / 2 :=
   symAlternatingCylinder_gap p q
 
 theorem threeSlotExchangeDefect_nonneg (p q : ℝ) :

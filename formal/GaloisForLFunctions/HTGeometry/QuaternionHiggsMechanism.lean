@@ -30,7 +30,7 @@ instance : MulAction QuaternionGaugeGroup EventQuaternion where
     rw [mul_assoc]
 
 def quaternionHiggsPotential (q : EventQuaternion) : ℝ :=
-  (Quaternion.normSq q - 1) ^ 2
+  (Quaternion.normSq q - 1) ^ (2 : ℕ)
 
 def quaternionHiggsVacuum : EventQuaternion := 1
 

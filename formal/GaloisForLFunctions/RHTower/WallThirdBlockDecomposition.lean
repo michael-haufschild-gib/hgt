@@ -71,7 +71,7 @@ theorem continuousOn_invFamilyProduct2_position {σ : ℝ} (hσ0 : 0 < σ) (hσ1
 `∂D₁` the new boundary term is `D₂ = C⁻¹∂D₁`. -/
 theorem wall_phase_ibp_third_step {σ L : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     (hσ0 : 0 < σ) (hσ1 : σ < 1) {a b : ℝ}
     (hgap : ∀ t ∈ uIcc a b, 0 < wallFloor T σ t + L) :
@@ -118,7 +118,7 @@ theorem norm_thirdThresholdOperator_le' {σ K₂ μ₀ : ℝ} (hσ0 : 0 < σ) (h
     {Y : ℝ} (hY : 1 ≤ |Y|) {L : ℝ} (hfloor : μ₀ ≤ wallFloor T σ Y + L) :
     ‖thirdThresholdOperator E T σ L Y‖
       ≤ (K₂ * (1 + |Y|) ^ (1 / 2 + σ))
-        * ((μ₀⁻¹ * wallAmplitudeConst μ₀) * ((1 + |Y|)⁻¹) ^ 2) := by
+        * ((μ₀⁻¹ * wallAmplitudeConst μ₀) * ((1 + |Y|)⁻¹) ^ (2 : ℕ)) := by
   have hW : ‖wallPhaseMap E T σ L Y‖ ≤ K₂ * (1 + |Y|) ^ (1 / 2 + σ) := by
     rw [wallPhaseMap, norm_smul, norm_expPhase, one_mul]
     exact hb₂ Y
@@ -146,7 +146,7 @@ inside the block integral turns the tail remainder into a boundary term at the m
 fixed vector deposited at the threshold, and a remainder whose amplitude decays cubically. -/
 theorem tailRemainder_third_decomposition
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0) (hT : IsSelfAdjoint T)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     {g : ℝ → X} {m Y x μ₀ : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))

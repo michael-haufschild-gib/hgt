@@ -70,7 +70,7 @@ lemma abs_gaussianPrimeSummand_le_zero_center
     |gaussianPrimeSummand ε t n| ≤ gaussianPrimeSummand ε 0 n := by
   have hcoefficient : 0 ≤
       ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-        Real.exp (-(Real.log n) ^ 2 / (4 * ε)) := by
+        Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε)) := by
     positivity
   unfold gaussianPrimeSummand
   simp only [zero_mul, Real.cos_zero, mul_one]
@@ -139,13 +139,13 @@ center. -/
 def vonMangoldtDivSqTail (cutoff : ℕ) : ℝ :=
   ∑' k : ℕ,
     ArithmeticFunction.vonMangoldt (k + cutoff) /
-      ((k + cutoff : ℕ) : ℝ) ^ 2
+      ((k + cutoff : ℕ) : ℝ) ^ (2 : ℕ)
 
 /-- The fixed comparison tail vanishes as the cutoff tends to infinity. -/
 theorem tendsto_vonMangoldtDivSqTail_atTop :
     Tendsto vonMangoldtDivSqTail atTop (𝓝 0) := by
   let f : ℕ → ℝ := fun n =>
-    ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ 2
+    ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ (2 : ℕ)
   have hf : Summable f := GaloisForLFunctions.RHTower.summable_vonMangoldt_div_sq
   have hpartial := hf.tendsto_sum_tsum_nat
   have hdifference : Tendsto
@@ -164,7 +164,7 @@ lemma gaussianPrimeSummand_zero_le_vonMangoldt_div_sq
     {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hn : 0 < n)
     (hlog : 8 * ε ≤ Real.log n) :
     gaussianPrimeSummand ε 0 n ≤
-      ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ 2 := by
+      ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ (2 : ℕ) := by
   have hn0 : 0 < (n : ℝ) := by exact_mod_cast hn
   have hn1 : 1 ≤ (n : ℝ) := by exact_mod_cast hn
   have hsqrt1 : 1 ≤ Real.sqrt (n : ℝ) := by
@@ -179,11 +179,11 @@ lemma gaussianPrimeSummand_zero_le_vonMangoldt_div_sq
   simp only [zero_mul, Real.cos_zero, mul_one]
   calc
     ArithmeticFunction.vonMangoldt n / Real.sqrt (n : ℝ) *
-          Real.exp (-(Real.log (n : ℝ)) ^ 2 / (4 * ε)) ≤
+          Real.exp (-(Real.log (n : ℝ)) ^ (2 : ℕ) / (4 * ε)) ≤
         ArithmeticFunction.vonMangoldt n / Real.sqrt (n : ℝ) *
-          (1 / (n : ℝ) ^ 2) :=
+          (1 / (n : ℝ) ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hweight hcoef0
-    _ ≤ ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ 2 := by
+    _ ≤ ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ (2 : ℕ) := by
       have hdiv : ArithmeticFunction.vonMangoldt n /
           Real.sqrt (n : ℝ) ≤ ArithmeticFunction.vonMangoldt n := by
         rw [div_eq_mul_inv]
@@ -202,7 +202,7 @@ theorem gaussianPrimeTailEnvelope_le_vonMangoldtDivSqTail
   let f : ℕ → ℝ := fun k => gaussianPrimeSummand ε 0 (k + cutoff)
   let g : ℕ → ℝ := fun k =>
     ArithmeticFunction.vonMangoldt (k + cutoff) /
-      ((k + cutoff : ℕ) : ℝ) ^ 2
+      ((k + cutoff : ℕ) : ℝ) ^ (2 : ℕ)
   have hf : Summable f :=
     summable_gaussianPrimeTailSummand hε 0 cutoff
   have hg : Summable g := by
@@ -247,7 +247,7 @@ theorem gaussianPrimeOscillationSummand_eq
     (ε t : ℝ) (n : ℕ) :
     gaussianPrimeOscillationSummand ε t n =
       (ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-        Real.exp (-(Real.log n) ^ 2 / (4 * ε))) *
+        Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε))) *
           (1 - Real.cos (t * Real.log n)) := by
   unfold gaussianPrimeOscillationSummand gaussianPrimeSummand
   simp only [zero_mul, Real.cos_zero, mul_one]
@@ -422,7 +422,7 @@ theorem gaussianPrimeEnergyGoodWidthsUnbounded_iff_riemannHypothesis :
 def gaussianPrimeSummandCenterDerivative
     (ε t : ℝ) (n : ℕ) : ℝ :=
   -(ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-      Real.exp (-(Real.log n) ^ 2 / (4 * ε)) *
+      Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε)) *
         Real.log n * Real.sin (t * Real.log n))
 
 theorem hasDerivAt_gaussianPrimeSummand_center
@@ -436,7 +436,7 @@ theorem hasDerivAt_gaussianPrimeSummand_center
   have hcos := hphase.cos
   have hscaled := hcos.const_mul
     (ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-      Real.exp (-(Real.log n) ^ 2 / (4 * ε)))
+      Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε)))
   apply hscaled.congr_deriv
   unfold gaussianPrimeSummandCenterDerivative
   ring
@@ -484,8 +484,8 @@ prime derivative model. -/
 def gaussianPrimeSincCoefficient (ε : ℝ) (n : ℕ) : ℝ :=
   2 / Real.sqrt (Real.pi * ε) *
     (ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-      Real.exp (-(Real.log n) ^ 2 / (4 * ε))) *
-        (Real.log n) ^ 2
+      Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε))) *
+        (Real.log n) ^ (2 : ℕ)
 
 /-- The parameterized signed-sinc model for the retained prime derivative. -/
 def gaussianRetainedPrimeSincModel
@@ -494,12 +494,12 @@ def gaussianRetainedPrimeSincModel
     gaussianPrimeSincCoefficient ε n * Real.sinc (t * Real.log n)
 
 lemma mul_sq_sinc_identity (t x : ℝ) :
-    t * (x ^ 2 * Real.sinc (t * x)) =
+    t * (x ^ (2 : ℕ) * Real.sinc (t * x)) =
       x * Real.sin (t * x) := by
   by_cases htx : t * x = 0
-  · have htx2 : t * x ^ 2 = 0 := by
+  · have htx2 : t * x ^ (2 : ℕ) = 0 := by
       calc
-        t * x ^ 2 = (t * x) * x := by ring
+        t * x ^ (2 : ℕ) = (t * x) * x := by ring
         _ = 0 := by rw [htx, zero_mul]
     rw [htx, Real.sinc_zero, Real.sin_zero, mul_zero]
     simpa only [mul_one, mul_assoc] using htx2
@@ -522,22 +522,22 @@ theorem gaussianRetainedPrimeCenterDerivative_eq_mul_sincModel
           Real.sinc (t * Real.log n)) := by
     intro n
     let weight : ℝ := ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-      Real.exp (-(Real.log n) ^ 2 / (4 * ε))
+      Real.exp (-(Real.log n) ^ (2 : ℕ) / (4 * ε))
     change -(scale * -(weight * Real.log n *
         Real.sin (t * Real.log n))) =
       t * ((2 / Real.sqrt (Real.pi * ε) * weight *
-        (Real.log n) ^ 2) * Real.sinc (t * Real.log n))
+        (Real.log n) ^ (2 : ℕ)) * Real.sinc (t * Real.log n))
     calc
       -(scale * -(weight * Real.log n *
           Real.sin (t * Real.log n))) =
           scale * weight * (Real.log n *
             Real.sin (t * Real.log n)) := by ring
       _ = scale * weight *
-          (t * ((Real.log n) ^ 2 *
+          (t * ((Real.log n) ^ (2 : ℕ) *
             Real.sinc (t * Real.log n))) := by
         rw [mul_sq_sinc_identity]
       _ = t * ((2 / Real.sqrt (Real.pi * ε) * weight *
-          (Real.log n) ^ 2) * Real.sinc (t * Real.log n)) := by
+          (Real.log n) ^ (2 : ℕ)) * Real.sinc (t * Real.log n)) := by
         dsimp only [scale]
         ring
   unfold gaussianRetainedPrimeCenterDerivative

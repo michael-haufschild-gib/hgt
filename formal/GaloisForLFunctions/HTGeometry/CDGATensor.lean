@@ -233,7 +233,7 @@ theorem tensorDL_tensorDR_add (P : CDGAModuleStructure A M) (Q : CDGAModuleStruc
       | zero => rfl
       | succ b' =>
           show tensorDL P Q (n + 1) (tensorDR P Q n f) ⟨(0, b' + 1), h⟩
-            + ((-1 : R)) ^ 0 • TensorProduct.map LinearMap.id (Q.dₗ b')
+            + ((-1 : R)) ^ (0 : ℕ) • TensorProduct.map LinearMap.id (Q.dₗ b')
                 (tensorDL P Q n f ⟨(0, b'), by omega⟩) = 0
           simp only [tensorDL_zero, map_zero, smul_zero, add_zero, zero_add]
   | succ a' =>

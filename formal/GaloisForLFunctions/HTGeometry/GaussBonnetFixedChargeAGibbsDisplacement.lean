@@ -59,7 +59,7 @@ theorem egbFixedChargeAGibbsDisplacement_above_neg_one (n m : ℕ) (β : ℝ)
 theorem egbFixedChargeAGibbsDisplacement_collision_formula (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     egbFixedChargeAGibbsCollisionExcess n m β E =
-      (∑ i, egbFixedChargeAGibbsDisplacement n m β E i ^ 2) / ((2 : ℝ) ^ (n + 3)) ^ 2 := by
+      (∑ i, egbFixedChargeAGibbsDisplacement n m β E i ^ (2 : ℕ)) / ((2 : ℝ) ^ (n + 3)) ^ (2 : ℕ) := by
   unfold egbFixedChargeAGibbsCollisionExcess
   simp_rw [egbFixedChargeAGibbsDisplacement_population]
   rw [Finset.sum_div]

@@ -50,7 +50,7 @@ def freeOrbitExtension (P : Finset ℕ) (S : Finset ℝ) (m : ℝ → ℕ) (ρ :
 
 /-- Evaluation of one crease block at another critical-line representative. -/
 theorem linePair_criticalLinePoint (σ τ : ℝ) :
-    linePair σ (criticalLinePoint τ) = ((σ ^ 2 - τ ^ 2 : ℝ) : ℂ) := by
+    linePair σ (criticalLinePoint τ) = ((σ ^ (2 : ℕ) - τ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [linePair_eq]
   simp only [criticalLinePoint]
   push_cast

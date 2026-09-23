@@ -186,7 +186,7 @@ theorem deriv_polarTerm (hx : Transcendental ℂ x) (hδx : (x)′ = algebraMap 
   have hdx : (x - algebraMap ℂ K α)′ = algebraMap ℂ K d := by
     rw [Derivation.map_sub, hδx, hδc α, sub_zero]
   have hv : ((x - algebraMap ℂ K α)⁻¹)′
-      = algebraMap ℂ K (-d) * ((x - algebraMap ℂ K α)⁻¹) ^ 2 := by
+      = algebraMap ℂ K (-d) * ((x - algebraMap ℂ K α)⁻¹) ^ (2 : ℕ) := by
     have hprod : (x - algebraMap ℂ K α)⁻¹ * (x - algebraMap ℂ K α) = 1 :=
       inv_mul_cancel₀ hne
     have hd := congrArg (fun z : K => z′) hprod

@@ -10,7 +10,7 @@ noncomputable section
 set_option autoImplicit false
 
 def fundamentalSourceTortoiseMoment (w s a : ℂ) : ℂ :=
-  2*a^2*(fundamentalMomentConstant s*fundamentalJacobiTortoiseMoment 2 w s+
+  2*a^(2 : ℕ)*(fundamentalMomentConstant s*fundamentalJacobiTortoiseMoment 2 w s+
     fundamentalMomentQuadratic w s*fundamentalJacobiTortoiseMoment 4 w s)
 
 theorem fundamentalJacobiTortoiseDensity_intervalIntegrable (n : ℕ) (w s : ℂ)
@@ -31,7 +31,7 @@ theorem fundamentalJacobiTortoiseDensity_intervalIntegrable (n : ℕ) (w s : ℂ
 theorem fundamentalSourceTortoise_polynomial_cutoff (w s a : ℂ) {e : ℝ}
     (he : 0<e) (he1 : e≤1) :
     (∫ z in (e*(2-e))..1, (z:ℂ)^w*fundamentalSourceCore w s a z*(tortoiseOf z:ℂ))=
-      2*a^2*(fundamentalMomentConstant s*
+      2*a^(2 : ℕ)*(fundamentalMomentConstant s*
         (∫ x in e..1, (x:ℂ)^w*fundamentalJacobiCore 2 s x*
           (((Real.log x:ℂ)-(Real.log (2-x):ℂ))/2))+
       fundamentalMomentQuadratic w s*
@@ -48,7 +48,7 @@ theorem fundamentalSourceTortoise_polynomial_cutoff (w s a : ℂ) {e : ℝ}
   norm_num only [sub_self,sub_zero,mul_one,one_mul] at hi
   rw [← hi]
   calc
-    _ = ∫ x in e..1, 2*a^2*(fundamentalMomentConstant s*
+    _ = ∫ x in e..1, 2*a^(2 : ℕ)*(fundamentalMomentConstant s*
         ((x:ℂ)^w*fundamentalJacobiCore 2 s x*(((Real.log x:ℂ)-(Real.log (2-x):ℂ))/2))+
       fundamentalMomentQuadratic w s*
         ((x:ℂ)^w*fundamentalJacobiCore 4 s x*(((Real.log x:ℂ)-(Real.log (2-x):ℂ))/2))) := by
@@ -75,10 +75,10 @@ theorem fundamentalSourceTortoiseMoment_original_cutoff (w s a : ℂ)
     Tendsto (fun e : ℝ =>
       (∫ z in (e*(2-e))..1, (z:ℂ)^w*fundamentalSourceCore w s a z*(tortoiseOf z:ℂ))+
       fundamentalSourceCore w s a 0*((e*(2-e):ℝ):ℂ)^(w+1)*
-        (((Real.log (e*(2-e)):ℂ)/2-(Real.log 2:ℂ))/(w+1)-1/(2*(w+1)^2)))
+        (((Real.log (e*(2-e)):ℂ)/2-(Real.log 2:ℂ))/(w+1)-1/(2*(w+1)^(2 : ℕ))))
       (𝓝[>] (0:ℝ)) (𝓝 (fundamentalSourceTortoiseMoment w s a)) := by
   have hj := (((fundamentalJacobiTortoiseMoment_cutoff 2 w s hw hw1).const_mul (fundamentalMomentConstant s)).add
-    ((fundamentalJacobiTortoiseMoment_cutoff 4 w s hw hw1).const_mul (fundamentalMomentQuadratic w s))).const_mul (2*a^2)
+    ((fundamentalJacobiTortoiseMoment_cutoff 4 w s hw hw1).const_mul (fundamentalMomentQuadratic w s))).const_mul (2*a^(2 : ℕ))
   have hc := fundamentalMoment_log_counterterm_transport (fundamentalSourceCore w s a 0) w hw
   have h := hj.add hc
   simp only [add_zero] at h

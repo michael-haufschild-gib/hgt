@@ -21,8 +21,8 @@ noncomputable section
 endpoint value. -/
 theorem thetaCuspTailSecondDensityAtomMoment_zero_eq_endpoint (m : ℕ) :
     thetaCuspTailSecondDensityAtomMoment (m + 1) 0 =
-      (8 * Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2 - 2) *
-        Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2) := by
+      (8 * Real.pi * ((m + 1 : ℕ) : ℝ) ^ (2 : ℕ) - 2) *
+        Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   have hphase :=
     thetaCuspTailSecondDensityAtomPhase_eq_arithmeticEndpoint_sub_sq_potential
       (n := m + 1) (by omega) (z := 0) (by simp)
@@ -35,7 +35,7 @@ theorem thetaCuspTailSecondDensityAtomMoment_zero_eq_endpoint (m : ℕ) :
 endpoint weight. -/
 theorem thetaCuspTailSecondDensityAtomMoment_one_eq_endpoint (m : ℕ) :
     thetaCuspTailSecondDensityAtomMoment (m + 1) 1 =
-      4 * Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2) := by
+      4 * Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   have hphase :=
     thetaCuspTailSecondDensityAtomPhaseDerivative_eq_arithmeticEndpoint_sub_sq_potential
       (n := m + 1) (by omega) (z := 0) (by simp)
@@ -43,12 +43,12 @@ theorem thetaCuspTailSecondDensityAtomMoment_one_eq_endpoint (m : ℕ) :
   simp only [pow_two, mul_zero, zero_mul, sub_zero] at hphase
   have hcancel :
       (thetaCuspTailSecondDensityAtomMoment (m + 1) 1 : ℂ) =
-        (4 : ℂ) * (Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2) : ℂ) := by
+        (4 : ℂ) * (Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ (2 : ℕ)) : ℂ) := by
     apply mul_left_cancel₀ Complex.I_ne_zero
     calc
       I * (thetaCuspTailSecondDensityAtomMoment (m + 1) 1 : ℂ) = _ := hphase
       _ = I * ((4 : ℂ) *
-          (Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2) : ℂ)) := by ring
+          (Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ (2 : ℕ)) : ℂ)) := by ring
   exact_mod_cast hcancel
 
 /-- Every product-fibre current at the reflection fixed point is an explicit finite product of
@@ -56,9 +56,9 @@ the two arithmetic endpoint weights. -/
 theorem thetaProductFiberActualPhaseCurrent_zero_eq_endpointGibbsSum (k : ℕ) :
     thetaProductFiberActualPhaseCurrent k 0 =
       ∑ q ∈ thetaPositiveFactorPairs k,
-        (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ 2)) *
-          ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2 - 2) *
-            Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2)) := by
+        (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ (2 : ℕ))) *
+          ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ) - 2) *
+            Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ))) := by
   rw [thetaProductFiberActualPhaseCurrent_zero]
   apply Finset.sum_congr rfl
   intro q _hq
@@ -71,17 +71,17 @@ product-fibre currents into explicit Gaussian endpoint data. -/
 theorem thetaFixedPoint_momentProductFiberUniversality :
     (∀ m : ℕ,
       thetaCuspTailSecondDensityAtomMoment (m + 1) 0 =
-        (8 * Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2 - 2) *
-          Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2)) ∧
+        (8 * Real.pi * ((m + 1 : ℕ) : ℝ) ^ (2 : ℕ) - 2) *
+          Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ (2 : ℕ))) ∧
     (∀ m : ℕ,
       thetaCuspTailSecondDensityAtomMoment (m + 1) 1 =
-        4 * Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ 2)) ∧
+        4 * Real.exp (-Real.pi * ((m + 1 : ℕ) : ℝ) ^ (2 : ℕ))) ∧
     ∀ k : ℕ,
       thetaProductFiberActualPhaseCurrent k 0 =
         ∑ q ∈ thetaPositiveFactorPairs k,
-          (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ 2)) *
-            ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2 - 2) *
-              Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ 2)) := by
+          (4 * Real.exp (-Real.pi * ((q.1 + 1 : ℕ) : ℝ) ^ (2 : ℕ))) *
+            ((8 * Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ) - 2) *
+              Real.exp (-Real.pi * ((q.2 + 1 : ℕ) : ℝ) ^ (2 : ℕ))) := by
   exact ⟨thetaCuspTailSecondDensityAtomMoment_zero_eq_endpoint,
     thetaCuspTailSecondDensityAtomMoment_one_eq_endpoint,
     thetaProductFiberActualPhaseCurrent_zero_eq_endpointGibbsSum⟩

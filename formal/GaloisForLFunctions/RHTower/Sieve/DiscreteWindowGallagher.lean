@@ -63,12 +63,12 @@ theorem norm_linSum_le (a : ℕ → ℂ) (s : Finset ℕ) (L x : ℝ) :
 /-- **The mean square of a linear window sum is integrable on every set of finite measure.** -/
 theorem integrableOn_normSq_linSum (a : ℕ → ℂ) (s : Finset ℕ) (L : ℝ) {E : Set ℝ}
     (hE : volume E ≠ ⊤) :
-    IntegrableOn (fun x : ℝ => ‖linSum a s L x‖ ^ 2) E := by
+    IntegrableOn (fun x : ℝ => ‖linSum a s L x‖ ^ (2 : ℕ)) E := by
   classical
-  have hmeas : AEStronglyMeasurable (fun x : ℝ => ‖linSum a s L x‖ ^ 2)
+  have hmeas : AEStronglyMeasurable (fun x : ℝ => ‖linSum a s L x‖ ^ (2 : ℕ))
       (volume.restrict E) :=
     (((measurable_linSum a s L).norm.pow_const 2)).aestronglyMeasurable
-  refine Integrable.mono' (g := fun _ : ℝ => (∑ n ∈ s, ‖a n‖) ^ 2)
+  refine Integrable.mono' (g := fun _ : ℝ => (∑ n ∈ s, ‖a n‖) ^ (2 : ℕ))
     (integrableOn_const hE (by finiteness)) hmeas ?_
   refine Filter.Eventually.of_forall fun x => ?_
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
@@ -103,9 +103,9 @@ theorem sum_normSq_window_le_gallagher (c : ℕ → ℂ) (hc : ∀ n : ℕ, ‖c
     (hL : 0 < L) (hY : 0 < Y) (hε : 0 ≤ ε) (hW : 0 < W) (hM₁ : 0 ≤ M₁) (hM₂ : 0 ≤ M₂)
     (hM : Y + K + L < M + 1)
     (hcover : (Y : ℝ) + (K : ℝ) ≤ (Y : ℝ) * (1 + ε) ^ K')
-    (h₁ : ∀ w ∈ Set.Icc (-W) W, ‖logPoly c (Finset.Icc 1 M) w‖ ^ 2 ≤ M₁)
-    (h₂ : ∀ w : ℝ, ‖logPoly c (Finset.Icc 1 M) w‖ ^ 2 ≤ M₂) :
-    ∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), c n‖ ^ 2
+    (h₁ : ∀ w ∈ Set.Icc (-W) W, ‖logPoly c (Finset.Icc 1 M) w‖ ^ (2 : ℕ) ≤ M₁)
+    (h₂ : ∀ w : ℝ, ‖logPoly c (Finset.Icc 1 M) w‖ ^ (2 : ℕ) ≤ M₂) :
+    ∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), c n‖ ^ (2 : ℕ)
       ≤ ((Y : ℝ) * (1 + ε) ^ K') * ((K' : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε M₁ M₂ W) := by
   classical
   have hY0 : (0 : ℝ) < (Y : ℝ) := by exact_mod_cast hY
@@ -118,28 +118,28 @@ theorem sum_normSq_window_le_gallagher (c : ℕ → ℂ) (hc : ∀ n : ℕ, ‖c
   -- the discrete mean square is an interval integral
   have hdisc := integral_realWindow_eq_sum c L Y K (M + 1) hM
   -- rewrite the integrand as the corpus's linear window sum
-  have hcongr : (∫ x in (Y : ℝ)..((Y : ℝ) + (K : ℝ)), ‖∑ n ∈ realWindow x L (M + 1), c n‖ ^ 2)
-      = ∫ x in (Y : ℝ)..((Y : ℝ) + (K : ℝ)), ‖linSum c s (L : ℝ) x‖ ^ 2 := by
+  have hcongr : (∫ x in (Y : ℝ)..((Y : ℝ) + (K : ℝ)), ‖∑ n ∈ realWindow x L (M + 1), c n‖ ^ (2 : ℕ))
+      = ∫ x in (Y : ℝ)..((Y : ℝ) + (K : ℝ)), ‖linSum c s (L : ℝ) x‖ ^ (2 : ℕ) := by
     refine intervalIntegral.integral_congr_uIoo ?_
     intro x hx
     rw [Set.uIoo_of_le (by linarith), Set.mem_Ioo] at hx
     have hx0 : (0 : ℝ) ≤ x := le_of_lt (lt_of_lt_of_le hY0 hx.1.le)
-    show ‖∑ n ∈ realWindow x L (M + 1), c n‖ ^ 2 = ‖linSum c s (L : ℝ) x‖ ^ 2
+    show ‖∑ n ∈ realWindow x L (M + 1), c n‖ ^ (2 : ℕ) = ‖linSum c s (L : ℝ) x‖ ^ (2 : ℕ)
     rw [sum_realWindow_eq_linSum c hx0 L M]
   -- pass to a set integral and enlarge the range
-  have hnonneg : ∀ x : ℝ, (0 : ℝ) ≤ ‖linSum c s (L : ℝ) x‖ ^ 2 := fun x => by positivity
+  have hnonneg : ∀ x : ℝ, (0 : ℝ) ≤ ‖linSum c s (L : ℝ) x‖ ^ (2 : ℕ) := fun x => by positivity
   have hsub : Set.Ioc (Y : ℝ) ((Y : ℝ) + (K : ℝ))
       ⊆ Set.Ioc (Y : ℝ) ((Y : ℝ) * (1 + ε) ^ K') :=
     Set.Ioc_subset_Ioc_right hcover
-  have hbig : IntegrableOn (fun x : ℝ => ‖linSum c s (L : ℝ) x‖ ^ 2)
+  have hbig : IntegrableOn (fun x : ℝ => ‖linSum c s (L : ℝ) x‖ ^ (2 : ℕ))
       (Set.Ioc (Y : ℝ) ((Y : ℝ) * (1 + ε) ^ K')) :=
     integrableOn_normSq_linSum c s (L : ℝ) measure_Ioc_lt_top.ne
-  have hmono : (∫ x in Set.Ioc (Y : ℝ) ((Y : ℝ) + (K : ℝ)), ‖linSum c s (L : ℝ) x‖ ^ 2)
-      ≤ ∫ x in Set.Ioc (Y : ℝ) ((Y : ℝ) * (1 + ε) ^ K'), ‖linSum c s (L : ℝ) x‖ ^ 2 := by
+  have hmono : (∫ x in Set.Ioc (Y : ℝ) ((Y : ℝ) + (K : ℝ)), ‖linSum c s (L : ℝ) x‖ ^ (2 : ℕ))
+      ≤ ∫ x in Set.Ioc (Y : ℝ) ((Y : ℝ) * (1 + ε) ^ K'), ‖linSum c s (L : ℝ) x‖ ^ (2 : ℕ) := by
     refine setIntegral_mono_set hbig ?_ (LE.le.eventuallyLE hsub)
     exact Filter.Eventually.of_forall hnonneg
-  have hIval : (∫ x in (Y : ℝ)..((Y : ℝ) + (K : ℝ)), ‖linSum c s (L : ℝ) x‖ ^ 2)
-      = ∫ x in Set.Ioc (Y : ℝ) ((Y : ℝ) + (K : ℝ)), ‖linSum c s (L : ℝ) x‖ ^ 2 :=
+  have hIval : (∫ x in (Y : ℝ)..((Y : ℝ) + (K : ℝ)), ‖linSum c s (L : ℝ) x‖ ^ (2 : ℕ))
+      = ∫ x in Set.Ioc (Y : ℝ) ((Y : ℝ) + (K : ℝ)), ‖linSum c s (L : ℝ) x‖ ^ (2 : ℕ) :=
     intervalIntegral.integral_of_le (by linarith)
   have hLR : (0 : ℝ) < (L : ℝ) := by exact_mod_cast hL
   have hfinal := integral_Ioc_normSq_linSum_range_le c s hspos hc hLR hY0 hε hW hM₁ hM₂ h₁ h₂ K'

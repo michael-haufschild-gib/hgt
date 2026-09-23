@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance : Differential (LaurentSeries ℂ) := laurentSDifferential
+local instance ratFuncLaurentDifferentialInst1 : Differential (LaurentSeries ℂ) := laurentSDifferential
 
 theorem deriv_laurentCHom (c : ℂ) : (laurentCHom c)′ = 0 := by
   show (algebraMap (PowerSeries ℂ) (LaurentSeries ℂ) (PowerSeries.C c))′ = 0
@@ -63,7 +63,7 @@ local instance ratFuncIntAlgebra : Algebra ℤ (RatFunc ℂ) := Ring.toIntAlgebr
 @[reducible] def ratFuncSDifferential : Differential (RatFunc ℂ) where
   deriv := Derivation.restrictScalars ℤ (ratFuncDerivative ℂ)
 
-local instance : Differential (RatFunc ℂ) := ratFuncSDifferential
+local instance ratFuncLaurentDifferentialInst2 : Differential (RatFunc ℂ) := ratFuncSDifferential
 
 theorem ratFuncSDeriv_apply (r : RatFunc ℂ) : r′ = ratFuncDerivative ℂ r := by
   show (Derivation.restrictScalars ℤ (ratFuncDerivative ℂ)) r = _

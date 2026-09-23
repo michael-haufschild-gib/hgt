@@ -47,7 +47,7 @@ theorem complementaryLowering_toModel (lam : SelbergExceptionalEigenvalue)
 /-- The source-attached pre-Hilbert norm is exactly the complementary Hermitian energy. -/
 theorem complementaryKFinite_re_inner (lam : SelbergExceptionalEigenvalue)
     (v : ComplementaryKFinite lam) :
-    ‖v‖ ^ 2 =
+    ‖v‖ ^ (2 : ℕ) =
       (sphericalComplementaryHermitianForm (2 * lam.complementaryExponent)
         (ComplementaryKFinite.toModel lam v) (ComplementaryKFinite.toModel lam v)).re := by
   have h := @norm_sq_eq_re_inner ℂ (ComplementaryKFinite lam) _ _ _ v
@@ -69,17 +69,17 @@ theorem complementaryRaising_norm_le_of_support (lam : SelbergExceptionalEigenva
   have hs : |s| < 1 := complementaryParameter_abs lam
   have henergy := sphericalPrincipalE_complementary_energy_re_le_of_support s r hs hr
     (ComplementaryKFinite.toModel lam v) hsupp
-  have hleft : ‖complementaryRaising lam v‖ ^ 2 =
+  have hleft : ‖complementaryRaising lam v‖ ^ (2 : ℕ) =
       (sphericalComplementaryHermitianForm s
         (sphericalPrincipalE (s : ℂ) (ComplementaryKFinite.toModel lam v))
         (sphericalPrincipalE (s : ℂ) (ComplementaryKFinite.toModel lam v))).re := by
     rw [complementaryKFinite_re_inner, complementaryRaising_toModel]
-  have hright : ‖v‖ ^ 2 =
+  have hright : ‖v‖ ^ (2 : ℕ) =
       (sphericalComplementaryHermitianForm s
         (ComplementaryKFinite.toModel lam v) (ComplementaryKFinite.toModel lam v)).re :=
     complementaryKFinite_re_inner lam v
   rw [← hleft, ← hright] at henergy
-  have hfactor : (2 * r + 1) ^ 2 / 4 = (r + 1 / 2) ^ 2 := by ring
+  have hfactor : (2 * r + 1) ^ (2 : ℕ) / 4 = (r + 1 / 2) ^ (2 : ℕ) := by ring
   rw [hfactor] at henergy
   have hA : 0 ≤ r + 1 / 2 := by linarith
   have hB : 0 ≤ (r + 1 / 2) * ‖v‖ := mul_nonneg hA (norm_nonneg _)
@@ -94,17 +94,17 @@ theorem complementaryLowering_norm_le_of_support (lam : SelbergExceptionalEigenv
   have hs : |s| < 1 := complementaryParameter_abs lam
   have henergy := sphericalPrincipalF_complementary_energy_re_le_of_support s r hs hr
     (ComplementaryKFinite.toModel lam v) hsupp
-  have hleft : ‖complementaryLowering lam v‖ ^ 2 =
+  have hleft : ‖complementaryLowering lam v‖ ^ (2 : ℕ) =
       (sphericalComplementaryHermitianForm s
         (sphericalPrincipalF (s : ℂ) (ComplementaryKFinite.toModel lam v))
         (sphericalPrincipalF (s : ℂ) (ComplementaryKFinite.toModel lam v))).re := by
     rw [complementaryKFinite_re_inner, complementaryLowering_toModel]
-  have hright : ‖v‖ ^ 2 =
+  have hright : ‖v‖ ^ (2 : ℕ) =
       (sphericalComplementaryHermitianForm s
         (ComplementaryKFinite.toModel lam v) (ComplementaryKFinite.toModel lam v)).re :=
     complementaryKFinite_re_inner lam v
   rw [← hleft, ← hright] at henergy
-  have hfactor : (2 * r + 1) ^ 2 / 4 = (r + 1 / 2) ^ 2 := by ring
+  have hfactor : (2 * r + 1) ^ (2 : ℕ) / 4 = (r + 1 / 2) ^ (2 : ℕ) := by ring
   rw [hfactor] at henergy
   have hA : 0 ≤ r + 1 / 2 := by linarith
   have hB : 0 ≤ (r + 1 / 2) * ‖v‖ := mul_nonneg hA (norm_nonneg _)

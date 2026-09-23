@@ -48,7 +48,7 @@ theorem centralSoninFreeFermionVariance_eq_transition_hsNormSq
 theorem centralSoninFreeFermionVariance_mem_areaInterval
     (a : ℝ) (ha : 0 < a) :
     0 ≤ centralSoninFreeFermionVariance a ∧
-      centralSoninFreeFermionVariance a ≤ 4 * a ^ 2 := by
+      centralSoninFreeFermionVariance a ≤ 4 * a ^ (2 : ℕ) := by
   have hvariance :=
     centralSoninFreeFermionVariance_eq_transition_hsNormSq a ha
   have hbudget :=
@@ -70,20 +70,20 @@ theorem centralSoninFreeFermionVariance_mem_areaInterval
                     (centralFourierForbidden a) *
                 soninAlternatingBlock (centralPhysicalForbidden a)
                   (centralFourierForbidden a))) ≤
-        4 * a ^ 2
+        4 * a ^ (2 : ℕ)
     linarith
 
 /-- The complete Witten partition is exactly the Shannon time--frequency aperture area `8a²`. -/
 theorem centralSoninWittenAreaBudget_eq_eight_mul_sq
     (a : ℝ) (ha : 0 < a) :
-    centralSoninWittenAreaBudget a = 8 * a ^ 2 := by
+    centralSoninWittenAreaBudget a = 8 * a ^ (2 : ℕ) := by
   calc
     centralSoninWittenAreaBudget a =
         hsNormSq (centralSoninProjectionCorrection a) := by
       exact
         (hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_re_opTrace_prolateImpurity
           a ha).symm
-    _ = 8 * a ^ 2 :=
+    _ = 8 * a ^ (2 : ℕ) :=
       hsNormSq_centralSoninProjectionCorrection_eq_eight_mul_sq a ha
 
 /-- Every prime-power semilocal response is controlled by the same exact Witten-area partition. -/
@@ -104,12 +104,12 @@ share one exact aperture-area budget. -/
 theorem soninSemilocal_wittenArea_responseUniversality
     (a : ℝ) (ha : 0 < a) :
     (0 ≤ centralSoninFreeFermionVariance a ∧
-        centralSoninFreeFermionVariance a ≤ 4 * a ^ 2) ∧
+        centralSoninFreeFermionVariance a ≤ 4 * a ^ (2 : ℕ)) ∧
       (hsNormSq
           (soninAlternatingBlock (centralPhysicalForbidden a)
             (centralFourierForbidden a)) +
-          centralSoninFreeFermionVariance a = 4 * a ^ 2) ∧
-      centralSoninWittenAreaBudget a = 8 * a ^ 2 ∧
+          centralSoninFreeFermionVariance a = 4 * a ^ (2 : ℕ)) ∧
+      centralSoninWittenAreaBudget a = 8 * a ^ (2 : ℕ) ∧
       ∀ pk : Nat.Primes × ℕ,
         ‖soninSemilocalGeometricTraceResponse a pk‖ ≤
           Real.sqrt (centralSoninWittenAreaBudget a) *

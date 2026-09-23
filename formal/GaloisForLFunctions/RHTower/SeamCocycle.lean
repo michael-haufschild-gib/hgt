@@ -162,7 +162,7 @@ theorem seam_jump {f h GU GD G₁ G₂ : ℂ → ℂ} {a : ℂ} {R : ℝ} (hR : 
 theorem xiDescent_orderAt_ne_top (w : ℂ) : analyticOrderAt xiDescent w ≠ ⊤ := by
   intro htop
   have hne : xiDescent ((9 : ℂ) / 4) ≠ 0 := by
-    rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ 2 from by norm_num, ← xi_eq_xiDescent]
+    rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ (2 : ℕ) from by norm_num, ← xi_eq_xiDescent]
     exact xi_two_ne_zero
   have hev0 : xiDescent =ᶠ[nhds w] (0 : ℂ → ℂ) := by
     filter_upwards [analyticOrderAt_eq_top.mp htop] with z hz

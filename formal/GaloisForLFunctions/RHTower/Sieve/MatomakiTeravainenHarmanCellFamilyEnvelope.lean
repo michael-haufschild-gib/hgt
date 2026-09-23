@@ -25,7 +25,7 @@ theorem sum_norm_mtHarmanPairCellFamilyCoefficientAF_le_zeta_sq
         ‖mtCoefficientAF (mtHarmanPairCellCoefficient
           (mtHarmanSourceBlock endpoint P cell.1)
           (mtHarmanSourceBlock endpoint P cell.2)) m‖ ≤
-      (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 2) m : ℝ) := by
+      (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (2 : ℕ)) m : ℝ) := by
   rcases m.eq_zero_or_pos with rfl | hm
   · simp [mtCoefficientAF]
   let cells := mtHarmanActiveGoodPairCells (t := t) endpoint E
@@ -47,7 +47,7 @@ theorem sum_norm_mtHarmanPairCellFamilyCoefficientAF_le_zeta_sq
         (fun q : ℕ × ℕ => q.1 * q.2 = m)).symm
   let v : (ℕ × ℕ) → Fin 2 → ℕ := fun q => ![q.1, q.2]
   have hRcard : R.card ≤
-      ((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 2) m := by
+      ((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (2 : ℕ)) m := by
     apply card_le_zeta_pow_of_injective_factorVectors 1 m hm R v
     · intro q hq r hr hqr
       apply Prod.ext
@@ -83,7 +83,7 @@ theorem sum_norm_mtHarmanPairCellFamilyCoefficientAF_le_zeta_sq
         mtHarmanPairCellSourceTuples, mtHarmanPairCellTuples]
     _ = ((R.card : ℕ) : ℝ) := by
       rw [← Nat.cast_sum, ← Finset.card_biUnion hpair, hUnion]
-    _ ≤ (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 2) m : ℝ) := by
+    _ ≤ (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (2 : ℕ)) m : ℝ) := by
       exact_mod_cast hRcard
 
 /-- Every active good triple cell, aggregated before taking moments, has the `ζ³` envelope. -/
@@ -95,7 +95,7 @@ theorem sum_norm_mtHarmanTripleCellFamilyCoefficientAF_le_zeta_cube
           (mtHarmanSourceBlock endpoint P cell.1.1)
           (mtHarmanSourceBlock endpoint P cell.1.2)
           (mtHarmanSourceBlock endpoint P cell.2)) m‖ ≤
-      (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 3) m : ℝ) := by
+      (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (3 : ℕ)) m : ℝ) := by
   rcases m.eq_zero_or_pos with rfl | hm
   · simp [mtCoefficientAF]
   let cells := mtHarmanActiveGoodTripleCells (t := t) endpoint E
@@ -118,7 +118,7 @@ theorem sum_norm_mtHarmanTripleCellFamilyCoefficientAF_le_zeta_cube
   let v : ((ℕ × ℕ) × ℕ) → Fin 3 → ℕ := fun q =>
     ![q.1.1, q.1.2, q.2]
   have hRcard : R.card ≤
-      ((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 3) m := by
+      ((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (3 : ℕ)) m := by
     apply card_le_zeta_pow_of_injective_factorVectors 2 m hm R v
     · intro q hq r hr hqr
       apply Prod.ext
@@ -154,7 +154,7 @@ theorem sum_norm_mtHarmanTripleCellFamilyCoefficientAF_le_zeta_cube
         mtHarmanTripleCellSourceTuples, mtHarmanTripleCellTuples]
     _ = ((R.card : ℕ) : ℝ) := by
       rw [← Nat.cast_sum, ← Finset.card_biUnion hpair, hUnion]
-    _ ≤ (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 3) m : ℝ) := by
+    _ ≤ (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (3 : ℕ)) m : ℝ) := by
       exact_mod_cast hRcard
 
 end

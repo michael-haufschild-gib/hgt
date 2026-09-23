@@ -25,7 +25,7 @@ theorem physicalGreenMetric_corner_eq_source_below (q : XiZeroCopy) (br : Bool) 
     let s := physicalRate q br
     let chi := physicalRadialFrequency q
     let K := reducedGreenGradient chi s 1
-    let mu := physicalAngularParameter q^2-1/4
+    let mu := physicalAngularParameter q^(2 : ℕ)-1/4
     let C := physicalSelfSourceCoefficient q
     ∃ B : ℝ, 0<B ∧ B≤1/2 ∧ ∀ b : ℝ, 0<b → b≤B →
       greenCoefficient q w*(normalizableHorizonPairingFinitePart s chi amp 1 K b w+
@@ -37,7 +37,7 @@ theorem physicalGreenMetric_corner_eq_source_below (q : XiZeroCopy) (br : Bool) 
   let s := physicalRate q br
   let chi := physicalRadialFrequency q
   let K := reducedGreenGradient chi s 1
-  let mu := physicalAngularParameter q^2-1/4
+  let mu := physicalAngularParameter q^(2 : ℕ)-1/4
   let C := physicalSelfSourceCoefficient q
   have hwr := chamber_re_pos hw
   have hs : (2*s).re<w.re := by
@@ -80,7 +80,7 @@ theorem nativeForcing_pullback_eq_source (q : XiZeroCopy) (br : Bool) (amp K w :
         continuedSourceProfile (physicalRate q br) amp 1 K w z/(z:ℂ)) := by
   have hu := radialUnit_eq_sqrt (tortoiseOf z) (tortoiseOf_neg hz)
   rw [horizonCoordinate_tortoiseOf hz] at hu
-  have hr : (Real.sqrt (1-z):ℂ)^2=1-(z:ℂ) := by
+  have hr : (Real.sqrt (1-z):ℂ)^(2 : ℕ)=1-(z:ℂ) := by
     exact_mod_cast Real.sq_sqrt (sub_nonneg.mpr hz.2.le)
   have hz0 : (z:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hz.1.ne'
   have hr0 : (Real.sqrt (1-z):ℂ)≠0 := Complex.ofReal_ne_zero.mpr
@@ -102,7 +102,7 @@ theorem physicalQNM_sourceAction_density (q : XiZeroCopy) (br side : Bool) (amp 
     let s := physicalRate q br
     let chi := physicalRadialFrequency q
     let K := reducedGreenGradient chi s 1
-    let mu := physicalAngularParameter q^2-1/4
+    let mu := physicalAngularParameter q^(2 : ℕ)-1/4
     normalizable w chi z*((mu-2)*deriv (fun u => continuedSourceProfile s amp 1 K u z) w+
       w*continuedSourceProfile s amp 1 K w z/(z:ℂ))=
     (z:ℂ)^w*fundamentalSourceCore w s amp z*
@@ -113,7 +113,7 @@ theorem physicalQNM_sourceAction_density (q : XiZeroCopy) (br side : Bool) (amp 
   let s := physicalRate q br
   let chi := physicalRadialFrequency q
   let K := reducedGreenGradient chi s 1
-  let mu := physicalAngularParameter q^2-1/4
+  let mu := physicalAngularParameter q^(2 : ℕ)-1/4
   have hf : w=-3/2-Complex.I*chi ∨ w=-3/2+Complex.I*chi := by
     dsimp only [w,chi]
     rw [physicalFundamentalFrequency_connection_root]

@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.DirichletConvolutionDivisorReindex
 
 The long fourth moment is the affine mean square of the Dirichlet-convolution square of one
 dyadic coefficient block.  This file identifies that square with the corpus's finite `dirConv`
-coefficient and applies the unconditional divisor-fibre `ell^2` estimate.
+coefficient and applies the unconditional divisor-fibre `ell^(2 : ℕ)` estimate.
 -/
 
 namespace RHTower.Sieve
@@ -58,7 +58,7 @@ theorem mtTypeILongSquareAF_succ_eq_dirConv
       simp_rw [finCoeffNat_arithmeticFunctionFinCoeff_eq F (2 * A) _ hsupport]
       rfl
 
-/-- Complete `ell^2` energy of the long-factor convolution square. -/
+/-- Complete `ell^(2 : ℕ)` energy of the long-factor convolution square. -/
 theorem exists_sum_normSq_mtTypeILongSquareAF_le_rpow
     {eta : ℝ} (heta : 0 < eta) :
     ∃ C : ℝ, 0 < C ∧ ∀ (a : ℕ → ℂ) (A : ℕ),

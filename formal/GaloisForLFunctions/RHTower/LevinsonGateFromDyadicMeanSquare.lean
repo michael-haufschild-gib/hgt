@@ -44,7 +44,7 @@ def DyadicDetectorMeanSquareLaw (R c : ℝ) : Prop :=
       ∀ a v : ℝ, 20 ≤ a → a ≤ v → v ≤ 2 * a → v ≤ U →
         (∫ t in a..v,
           ‖levinsonMollifiedDetector ((((1 : ℝ) / Real.log U : ℝ)) : ℂ)
-            b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2)
+            b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ))
           ≤ (c + ε) * (v - a) + ε * (a + U / Real.log U)
 
 /-- **Item 7.** A dyadic mean-square law yields the reciprocal-log Levinson gate. -/
@@ -159,7 +159,7 @@ theorem levinsonReciprocalLogMeanSquareGate_of_dyadicLaw {R c : ℝ} (hR : 0 < R
   -- the mean square via dyadic blocks
   set f : ℝ → ℝ := fun t =>
     ‖levinsonMollifiedDetector ((lam : ℝ) : ℂ) b (Finset.Icc 1 N)
-      ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2 with hfdef
+      ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ) with hfdef
   have hcont : ∀ t : ℝ, 20 ≤ t → ContinuousAt f t := by
     intro t ht
     have hz : ((σ₀ : ℂ) + (t : ℂ) * I) ≠ 1 := by

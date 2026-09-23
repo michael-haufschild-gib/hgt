@@ -101,7 +101,7 @@ theorem xiMobiusPrimeSchurValuationDamping_pos (p : Nat.Primes) :
 variance.  Thus the Möbius difference frame is the Fisher-damped Gamma--valuation frame. -/
 theorem xiMobiusPrimeSchurValuationDamping_sq_eq_parityVariance
     (p : Nat.Primes) :
-    xiMobiusPrimeSchurValuationDamping p ^ 2 =
+    xiMobiusPrimeSchurValuationDamping p ^ (2 : ℕ) =
       dyadicSquarefreeParityVariance (primeSchurWeight 1 p) := by
   have hq0 : 0 ≤ xiTransversePrimeApertureDiskNode 1 p :=
     (xiTransversePrimeApertureDiskNode_pos 1 p).le
@@ -181,9 +181,9 @@ theorem tsum_xiMobiusPrimeSchurForwardDifference_mul_eq_kernel
 /-- Exact diagonal mass of one prime in the globally damped source frame. -/
 theorem xiMobiusPrimeSchurDifferenceKernel_self (p : Nat.Primes) :
     xiMobiusPrimeSchurDifferenceKernel p p =
-      xiTransversePrimeApertureDiskNode 1 p ^ 2 *
+      xiTransversePrimeApertureDiskNode 1 p ^ (2 : ℕ) *
         (1 - xiTransversePrimeApertureDiskNode 1 p) /
-          (1 + xiTransversePrimeApertureDiskNode 1 p) ^ 3 := by
+          (1 + xiTransversePrimeApertureDiskNode 1 p) ^ (3 : ℕ) := by
   let q := xiTransversePrimeApertureDiskNode 1 p
   have hq0 : 0 < q := xiTransversePrimeApertureDiskNode_pos 1 p
   have hq1 : q < 1 := xiTransversePrimeApertureDiskNode_lt_one (by norm_num) p
@@ -208,32 +208,32 @@ theorem xiMobiusPrimeSchurDifferenceKernel_self_nonneg (p : Nat.Primes) :
 /-- The source damping improves the prime-diagonal mass from harmonic to square summable. -/
 theorem xiMobiusPrimeSchurDifferenceKernel_self_le_invSq (p : Nat.Primes) :
     xiMobiusPrimeSchurDifferenceKernel p p <=
-      xiTransversePrimeApertureDiskNode 1 p ^ 2 := by
+      xiTransversePrimeApertureDiskNode 1 p ^ (2 : ℕ) := by
   let q := xiTransversePrimeApertureDiskNode 1 p
   have hq0 : 0 <= q := (xiTransversePrimeApertureDiskNode_pos 1 p).le
   have hq1 : q < 1 := xiTransversePrimeApertureDiskNode_lt_one (by norm_num) p
-  have hden : 0 < (1 + q) ^ 3 := by positivity
-  have hnum : 1 - q <= (1 + q) ^ 3 := by
+  have hden : 0 < (1 + q) ^ (3 : ℕ) := by positivity
+  have hnum : 1 - q <= (1 + q) ^ (3 : ℕ) := by
     nlinarith [sq_nonneg q, mul_nonneg (sq_nonneg q) hq0]
-  have hfrac : (1 - q) / (1 + q) ^ 3 <= 1 :=
+  have hfrac : (1 - q) / (1 + q) ^ (3 : ℕ) <= 1 :=
     (div_le_one hden).2 hnum
   rw [xiMobiusPrimeSchurDifferenceKernel_self]
-  change q ^ 2 * (1 - q) / (1 + q) ^ 3 <= q ^ 2
+  change q ^ (2 : ℕ) * (1 - q) / (1 + q) ^ (3 : ℕ) <= q ^ (2 : ℕ)
   calc
-    q ^ 2 * (1 - q) / (1 + q) ^ 3 =
-        q ^ 2 * ((1 - q) / (1 + q) ^ 3) := by ring
-    _ <= q ^ 2 * 1 := mul_le_mul_of_nonneg_left hfrac (sq_nonneg q)
-    _ = q ^ 2 := mul_one _
+    q ^ (2 : ℕ) * (1 - q) / (1 + q) ^ (3 : ℕ) =
+        q ^ (2 : ℕ) * ((1 - q) / (1 + q) ^ (3 : ℕ)) := by ring
+    _ <= q ^ (2 : ℕ) * 1 := mul_le_mul_of_nonneg_left hfrac (sq_nonneg q)
+    _ = q ^ (2 : ℕ) := mul_one _
 
 /-- The complete all-prime Möbius difference frame has finite Hilbert mass. -/
 theorem summable_xiMobiusPrimeSchurDifferenceKernel_self :
     Summable (fun p : Nat.Primes => xiMobiusPrimeSchurDifferenceKernel p p) := by
-  have hnat : Summable (fun n : ℕ => ((n : ℝ) ^ 2)⁻¹) :=
+  have hnat : Summable (fun n : ℕ => ((n : ℝ) ^ (2 : ℕ))⁻¹) :=
     Real.summable_nat_pow_inv.mpr (by norm_num)
-  have hprime : Summable (fun p : Nat.Primes => ((p : ℝ) ^ 2)⁻¹) :=
+  have hprime : Summable (fun p : Nat.Primes => ((p : ℝ) ^ (2 : ℕ))⁻¹) :=
     hnat.comp_injective Subtype.val_injective
   have hnodes : Summable
-      (fun p : Nat.Primes => xiTransversePrimeApertureDiskNode 1 p ^ 2) := by
+      (fun p : Nat.Primes => xiTransversePrimeApertureDiskNode 1 p ^ (2 : ℕ)) := by
     simpa [xiTransversePrimeApertureDiskNode_one_eq_inv, inv_pow] using hprime
   exact Summable.of_nonneg_of_le
     xiMobiusPrimeSchurDifferenceKernel_self_nonneg
@@ -244,13 +244,13 @@ def xiMobiusPrimeSchurDifferenceNormalizedCorrelationSq
     (p r : Nat.Primes) : ℝ :=
   let q := xiTransversePrimeApertureDiskNode 1 p
   let s := xiTransversePrimeApertureDiskNode 1 r
-  (1 - q ^ 2) * (1 - s ^ 2) / (1 - q * s) ^ 2
+  (1 - q ^ (2 : ℕ)) * (1 - s ^ (2 : ℕ)) / (1 - q * s) ^ (2 : ℕ)
 
 /-- The displayed correlation is literally the unit-normalized completed source Gram. -/
 theorem xiMobiusPrimeSchurDifferenceNormalizedCorrelationSq_eq_kernelRatio
     (p r : Nat.Primes) :
     xiMobiusPrimeSchurDifferenceNormalizedCorrelationSq p r =
-      xiMobiusPrimeSchurDifferenceKernel p r ^ 2 /
+      xiMobiusPrimeSchurDifferenceKernel p r ^ (2 : ℕ) /
         (xiMobiusPrimeSchurDifferenceKernel p p *
           xiMobiusPrimeSchurDifferenceKernel r r) := by
   let q := xiTransversePrimeApertureDiskNode 1 p
@@ -269,11 +269,11 @@ theorem xiMobiusPrimeSchurDifferenceNormalizedCorrelationSq_eq_kernelRatio
     linarith
   rw [xiMobiusPrimeSchurDifferenceKernel_self,
     xiMobiusPrimeSchurDifferenceKernel_self]
-  change (1 - q ^ 2) * (1 - s ^ 2) / (1 - q * s) ^ 2 =
+  change (1 - q ^ (2 : ℕ)) * (1 - s ^ (2 : ℕ)) / (1 - q * s) ^ (2 : ℕ) =
     (q * s * (1 - q) * (1 - s) /
-        ((1 + q) * (1 + s) * (1 - q * s))) ^ 2 /
-      ((q ^ 2 * (1 - q) / (1 + q) ^ 3) *
-        (s ^ 2 * (1 - s) / (1 + s) ^ 3))
+        ((1 + q) * (1 + s) * (1 - q * s))) ^ (2 : ℕ) /
+      ((q ^ (2 : ℕ) * (1 - q) / (1 + q) ^ (3 : ℕ)) *
+        (s ^ (2 : ℕ) * (1 - s) / (1 + s) ^ (3 : ℕ)))
   field_simp [hq0.ne', hs0.ne', hqminus, hsminus, hqplus, hsplus, hqsminus]
   ring
 
@@ -284,7 +284,7 @@ theorem one_sub_xiMobiusPrimeSchurDifferenceNormalizedCorrelationSq
       ((xiTransversePrimeApertureDiskNode 1 p -
           xiTransversePrimeApertureDiskNode 1 r) /
         (1 - xiTransversePrimeApertureDiskNode 1 p *
-          xiTransversePrimeApertureDiskNode 1 r)) ^ 2 := by
+          xiTransversePrimeApertureDiskNode 1 r)) ^ (2 : ℕ) := by
   let q := xiTransversePrimeApertureDiskNode 1 p
   let s := xiTransversePrimeApertureDiskNode 1 r
   have hq0 : 0 <= q := (xiTransversePrimeApertureDiskNode_pos 1 p).le
@@ -294,8 +294,8 @@ theorem one_sub_xiMobiusPrimeSchurDifferenceNormalizedCorrelationSq
   have hden : 1 - q * s ≠ 0 := by
     have : q * s < 1 := mul_lt_one_of_nonneg_of_lt_one_left hq0 hq1 hs1.le
     linarith
-  change 1 - (1 - q ^ 2) * (1 - s ^ 2) / (1 - q * s) ^ 2 =
-    ((q - s) / (1 - q * s)) ^ 2
+  change 1 - (1 - q ^ (2 : ℕ)) * (1 - s ^ (2 : ℕ)) / (1 - q * s) ^ (2 : ℕ) =
+    ((q - s) / (1 - q * s)) ^ (2 : ℕ)
   field_simp [hden]
   ring
 
@@ -380,7 +380,7 @@ theorem gammaValuationHardyCorrectedCross_eq_mobiusSchurDifference
 
 /-- The inverse recovery already costs at least the square root of the prime scale. -/
 theorem prime_le_xiMobiusPrimeSchurValuationRecovery_sq (p : Nat.Primes) :
-    (p : ℝ) <= xiMobiusPrimeSchurValuationRecovery p ^ 2 := by
+    (p : ℝ) <= xiMobiusPrimeSchurValuationRecovery p ^ (2 : ℕ) := by
   let q := xiTransversePrimeApertureDiskNode 1 p
   have hp0 : 0 < (p : ℝ) := by exact_mod_cast p.2.pos
   have hq0 : 0 < q := xiTransversePrimeApertureDiskNode_pos 1 p
@@ -388,7 +388,7 @@ theorem prime_le_xiMobiusPrimeSchurValuationRecovery_sq (p : Nat.Primes) :
     change (p : ℝ) * xiTransversePrimeApertureDiskNode 1 p = 1
     rw [xiTransversePrimeApertureDiskNode_one_eq_inv]
     exact mul_inv_cancel₀ hp0.ne'
-  have hrec : xiMobiusPrimeSchurValuationRecovery p ^ 2 = (1 + q) ^ 2 / q := by
+  have hrec : xiMobiusPrimeSchurValuationRecovery p ^ (2 : ℕ) = (1 + q) ^ (2 : ℕ) / q := by
     simp only [xiMobiusPrimeSchurValuationRecovery, q, div_pow]
     rw [Real.sq_sqrt hq0.le]
   rw [hrec, le_div_iff₀ hq0]
@@ -396,7 +396,7 @@ theorem prime_le_xiMobiusPrimeSchurValuationRecovery_sq (p : Nat.Primes) :
 
 /-- The channelwise inverse dressing is unbounded along the primes. -/
 theorem xiMobiusPrimeSchurValuationRecovery_sq_unbounded (B : ℝ) :
-    exists p : Nat.Primes, B < xiMobiusPrimeSchurValuationRecovery p ^ 2 := by
+    exists p : Nat.Primes, B < xiMobiusPrimeSchurValuationRecovery p ^ (2 : ℕ) := by
   by_cases hB : B < 0
   · refine ⟨⟨2, Nat.prime_two⟩, lt_trans hB ?_⟩
     exact sq_pos_of_pos (xiMobiusPrimeSchurValuationRecovery_pos ⟨2, Nat.prime_two⟩)

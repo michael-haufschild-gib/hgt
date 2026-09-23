@@ -156,7 +156,7 @@ theorem norm_suzukiCoalescingCayley_lt_one
     linarith
   rw [suzukiCoalescingCayley, norm_div,
     div_lt_one (norm_pos_iff.mpr hden)]
-  have hsq : ‖z - (c : ℂ) * I‖ ^ 2 < ‖z + (c : ℂ) * I‖ ^ 2 := by
+  have hsq : ‖z - (c : ℂ) * I‖ ^ (2 : ℕ) < ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm,
       Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
@@ -185,8 +185,8 @@ theorem norm_one_sub_suzukiCoalescingCayley
 
 theorem one_sub_norm_sq_suzukiCoalescingCayley
     {c : ℝ} (hc : 0 < c) {z : ℂ} (hz : 0 < z.im) :
-    1 - ‖suzukiCoalescingCayley c z‖ ^ 2 =
-      4 * c * z.im / ‖z + (c : ℂ) * I‖ ^ 2 := by
+    1 - ‖suzukiCoalescingCayley c z‖ ^ (2 : ℕ) =
+      4 * c * z.im / ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) := by
   have hden : z + (c : ℂ) * I ≠ 0 := by
     intro h
     have him := congrArg Complex.im h
@@ -206,14 +206,14 @@ theorem suzukiCoalescingCayley_hyperbolicFactor_le
     {c : ℝ} (hc : 0 < c) {z : ℂ} (hz : 0 < z.im) :
     (1 + ‖suzukiCoalescingCayley c z‖) /
         (1 - ‖suzukiCoalescingCayley c z‖) ≤
-      ‖z + (c : ℂ) * I‖ ^ 2 / (c * z.im) := by
+      ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) / (c * z.im) := by
   let r := ‖suzukiCoalescingCayley c z‖
   have hr0 : 0 ≤ r := norm_nonneg _
   have hr1 : r < 1 := norm_suzukiCoalescingCayley_lt_one hc hz
-  have hgap : 1 - r ^ 2 =
-      4 * c * z.im / ‖z + (c : ℂ) * I‖ ^ 2 := by
+  have hgap : 1 - r ^ (2 : ℕ) =
+      4 * c * z.im / ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) := by
     exact one_sub_norm_sq_suzukiCoalescingCayley hc hz
-  have hdenNorm : 0 < ‖z + (c : ℂ) * I‖ ^ 2 := by
+  have hdenNorm : 0 < ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) := by
     apply pow_pos
     apply norm_pos_iff.mpr
     intro h
@@ -221,21 +221,21 @@ theorem suzukiCoalescingCayley_hyperbolicFactor_le
     simp only [Complex.add_im, Complex.mul_im, ofReal_re, I_im, ofReal_im,
       I_re, mul_one, zero_mul, add_zero, Complex.zero_im] at him
     linarith
-  have hfactor : (1 + r) / (1 - r) = (1 + r) ^ 2 / (1 - r ^ 2) := by
-    rw [show 1 - r ^ 2 = (1 - r) * (1 + r) by ring]
+  have hfactor : (1 + r) / (1 - r) = (1 + r) ^ (2 : ℕ) / (1 - r ^ (2 : ℕ)) := by
+    rw [show 1 - r ^ (2 : ℕ) = (1 - r) * (1 + r) by ring]
     field_simp [sub_ne_zero.mpr hr1.ne, ne_of_gt (by positivity : 0 < 1 + r)]
-  have hsquare : (1 + r) ^ 2 ≤ 4 := by nlinarith
+  have hsquare : (1 + r) ^ (2 : ℕ) ≤ 4 := by nlinarith
   rw [hfactor, hgap]
   have hsource : 0 < 4 * c * z.im := by positivity
   calc
-    (1 + r) ^ 2 / (4 * c * z.im / ‖z + (c : ℂ) * I‖ ^ 2) =
-        (1 + r) ^ 2 * ‖z + (c : ℂ) * I‖ ^ 2 /
+    (1 + r) ^ (2 : ℕ) / (4 * c * z.im / ‖z + (c : ℂ) * I‖ ^ (2 : ℕ)) =
+        (1 + r) ^ (2 : ℕ) * ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) /
           (4 * c * z.im) := by
       field_simp [hdenNorm.ne', hsource.ne']
-    _ ≤ 4 * ‖z + (c : ℂ) * I‖ ^ 2 / (4 * c * z.im) := by
+    _ ≤ 4 * ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) / (4 * c * z.im) := by
       exact div_le_div_of_nonneg_right
         (mul_le_mul_of_nonneg_right hsquare hdenNorm.le) hsource.le
-    _ = ‖z + (c : ℂ) * I‖ ^ 2 / (c * z.im) := by
+    _ = ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) / (c * z.im) := by
       field_simp [hc.ne', hz.ne']
 
 theorem hasDerivAt_suzukiCoalescingCayleyInv_zero (c : ℝ) :
@@ -338,10 +338,10 @@ theorem norm_one_sub_suzukiSchur_le_linear
     (hθanchor : θ ((c : ℂ) * I) = 0)
     (hκderiv : 2 * (c : ℂ) * I * deriv θ ((c : ℂ) * I) = (κ : ℂ))
     (hκ0 : 0 ≤ κ) (hκ1 : κ < 1)
-    (hκgap : 1 - κ ≤ C * c ^ 2)
+    (hκgap : 1 - κ ≤ C * c ^ (2 : ℕ))
     {z : ℂ} (hzδ : δ ≤ z.im)
     (hzB : ‖z + (c : ℂ) * I‖ ≤ B) :
-    ‖1 - θ z‖ ≤ c * ((2 + C * B ^ 2) / δ) := by
+    ‖1 - θ z‖ ≤ c * ((2 + C * B ^ (2 : ℕ)) / δ) := by
   have hz : 0 < z.im := lt_of_lt_of_le hδ hzδ
   have hbase := norm_one_sub_suzukiSchur_le hc hθdiff hθbd hθanchor
     hκderiv hκ0 hκ1 hz
@@ -356,47 +356,47 @@ theorem norm_one_sub_suzukiSchur_le_linear
     rw [norm_one_sub_suzukiCoalescingCayley hc hz]
     exact div_le_div_of_nonneg_left (by positivity) hδ hdenδ
   have hhyp := suzukiCoalescingCayley_hyperbolicFactor_le hc hz
-  have hdenSq : ‖z + (c : ℂ) * I‖ ^ 2 ≤ B ^ 2 := by
+  have hdenSq : ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) ≤ B ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (z + (c : ℂ) * I)]
-  have hgeom : ‖z + (c : ℂ) * I‖ ^ 2 / (c * z.im) ≤
-      B ^ 2 / (c * δ) := by
+  have hgeom : ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) / (c * z.im) ≤
+      B ^ (2 : ℕ) / (c * δ) := by
     have hcz : 0 < c * z.im := mul_pos hc hz
     have hcδ : 0 < c * δ := mul_pos hc hδ
     rw [div_le_div_iff₀ hcz hcδ]
     calc
-      ‖z + (c : ℂ) * I‖ ^ 2 * (c * δ)
-          ≤ B ^ 2 * (c * δ) :=
+      ‖z + (c : ℂ) * I‖ ^ (2 : ℕ) * (c * δ)
+          ≤ B ^ (2 : ℕ) * (c * δ) :=
             mul_le_mul_of_nonneg_right hdenSq hcδ.le
-      _ ≤ B ^ 2 * (c * z.im) := by
+      _ ≤ B ^ (2 : ℕ) * (c * z.im) := by
         exact mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left hzδ hc.le) (sq_nonneg B)
   have hhypB :
       (1 + ‖suzukiCoalescingCayley c z‖) /
           (1 - ‖suzukiCoalescingCayley c z‖) ≤
-        B ^ 2 / (c * δ) := le_trans hhyp hgeom
+        B ^ (2 : ℕ) / (c * δ) := le_trans hhyp hgeom
   have hgap0 : 0 ≤ 1 - κ := sub_nonneg.mpr hκ1.le
   have hsecond :
       (1 - κ) *
           ((1 + ‖suzukiCoalescingCayley c z‖) /
             (1 - ‖suzukiCoalescingCayley c z‖)) ≤
-        C * c * B ^ 2 / δ := by
+        C * c * B ^ (2 : ℕ) / δ := by
     calc
       (1 - κ) *
           ((1 + ‖suzukiCoalescingCayley c z‖) /
             (1 - ‖suzukiCoalescingCayley c z‖))
-          ≤ (1 - κ) * (B ^ 2 / (c * δ)) :=
+          ≤ (1 - κ) * (B ^ (2 : ℕ) / (c * δ)) :=
             mul_le_mul_of_nonneg_left hhypB hgap0
-      _ ≤ (C * c ^ 2) * (B ^ 2 / (c * δ)) := by
+      _ ≤ (C * c ^ (2 : ℕ)) * (B ^ (2 : ℕ) / (c * δ)) := by
         gcongr
-      _ = C * c * B ^ 2 / δ := by
+      _ = C * c * B ^ (2 : ℕ) / δ := by
         field_simp [hc.ne', hδ.ne']
   calc
     ‖1 - θ z‖ ≤ ‖1 - suzukiCoalescingCayley c z‖ +
         (1 - κ) * (1 + ‖suzukiCoalescingCayley c z‖) /
           (1 - ‖suzukiCoalescingCayley c z‖) := hbase
-    _ ≤ 2 * c / δ + C * c * B ^ 2 / δ := by
+    _ ≤ 2 * c / δ + C * c * B ^ (2 : ℕ) / δ := by
       exact add_le_add hfirst (by simpa [mul_div_assoc] using hsecond)
-    _ = c * ((2 + C * B ^ 2) / δ) := by ring
+    _ = c * ((2 + C * B ^ (2 : ℕ)) / δ) := by ring
 
 /-- Singularly normalized half-plane resolvent used in the coalescing limit. -/
 def suzukiCoalescingResolvent (θ : ℂ → ℂ) (c : ℝ) (z : ℂ) : ℂ :=
@@ -463,9 +463,9 @@ theorem exists_suzukiCoalescingResolvent_montel_subseq
     (hκderiv : ∀ n,
       2 * (c n : ℂ) * I * deriv (θ n) ((c n : ℂ) * I) = (κ n : ℂ))
     (hκ0 : ∀ n, 0 ≤ κ n) (hκ1 : ∀ n, κ n < 1)
-    (hκgap : ∀ n, 1 - κ n ≤ C * (c n) ^ 2)
+    (hκgap : ∀ n, 1 - κ n ≤ C * (c n) ^ (2 : ℕ))
     (hsmall : ∀ n,
-      c n * ((2 + C * (‖q‖ + R + 1) ^ 2) / (q.im - R)) ≤ 1) :
+      c n * ((2 + C * (‖q‖ + R + 1) ^ (2 : ℕ)) / (q.im - R)) ≤ 1) :
     ∃ (φ : ℕ → ℕ) (g : ℂ → ℂ), StrictMono φ ∧
       TendstoUniformlyOn
         (fun k => suzukiCoalescingResolvent (θ (φ k)) (c (φ k)))
@@ -473,7 +473,7 @@ theorem exists_suzukiCoalescingResolvent_montel_subseq
       DifferentiableOn ℂ g (ball q r) := by
   let δ : ℝ := q.im - R
   let B : ℝ := ‖q‖ + R + 1
-  let A : ℝ := (2 + C * B ^ 2) / δ
+  let A : ℝ := (2 + C * B ^ (2 : ℕ)) / δ
   have hδ : 0 < δ := by dsimp [δ]; linarith
   have hB : 0 ≤ B := by dsimp [B]; positivity
   have hA : 0 ≤ A := by

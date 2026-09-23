@@ -31,13 +31,13 @@ def sliceDeriv (Φ : ℂ × ℂ → ℂ) : ℂ × ℂ → ℂ :=
 
 theorem sliceDeriv_eq_circleIntegral {Φ : ℂ × ℂ → ℂ} (hΦ : Differentiable ℂ Φ) (p : ℂ × ℂ) :
     sliceDeriv Φ p
-      = (2 * (Real.pi : ℂ) * Complex.I)⁻¹ • ∮ ζ in C(0, 1), (1 / ζ ^ 2) • Φ (p.1, p.2 + ζ) := by
+      = (2 * (Real.pi : ℂ) * Complex.I)⁻¹ • ∮ ζ in C(0, 1), (1 / ζ ^ (2 : ℕ)) • Φ (p.1, p.2 + ζ) := by
   have hf : DifferentiableOn ℂ (fun w => Φ (p.1, w)) (closedBall p.2 1) :=
     (hΦ.comp (by fun_prop : Differentiable ℂ fun w : ℂ => (p.1, w))).differentiableOn
   have hcauchy := hf.deriv_eq_smul_circleIntegral (R := 1) (c := p.2) one_pos
-  have htrans : (∮ ζ in C(0, 1), (1 / ζ ^ 2) • Φ (p.1, p.2 + ζ))
-      = ∮ w in C(p.2, 1), (1 / (w - p.2) ^ 2) • Φ (p.1, w) := by
-    have := circleIntegral_comp_add_left (fun w => (1 / (w - p.2) ^ 2) • Φ (p.1, w)) p.2 1
+  have htrans : (∮ ζ in C(0, 1), (1 / ζ ^ (2 : ℕ)) • Φ (p.1, p.2 + ζ))
+      = ∮ w in C(p.2, 1), (1 / (w - p.2) ^ (2 : ℕ)) • Φ (p.1, w) := by
+    have := circleIntegral_comp_add_left (fun w => (1 / (w - p.2) ^ (2 : ℕ)) • Φ (p.1, w)) p.2 1
     simpa using this
   rw [htrans, hcauchy]
   have h2pi : (2 * (Real.pi : ℂ) * Complex.I) ≠ 0 := by
@@ -46,14 +46,14 @@ theorem sliceDeriv_eq_circleIntegral {Φ : ℂ × ℂ → ℂ} (hΦ : Differenti
   rfl
 
 theorem continuous_one_div_circleMap_sq :
-    Continuous fun θ : ℝ => 1 / (circleMap 0 1 θ) ^ 2 := by
+    Continuous fun θ : ℝ => 1 / (circleMap 0 1 θ) ^ (2 : ℕ) := by
   refine continuous_const.div (((continuous_circleMap 0 1).pow 2)) fun θ => ?_
   have : circleMap 0 1 θ ≠ 0 := circleMap_ne_center one_ne_zero
   exact pow_ne_zero 2 this
 
 theorem differentiableAt_circleIntegral_slice_prod {Φ : ℂ × ℂ → ℂ} (hΦ : Differentiable ℂ Φ)
     (p : ℂ × ℂ) :
-    DifferentiableAt ℂ (fun q : ℂ × ℂ => ∮ ζ in C(0, 1), (1 / ζ ^ 2) • Φ (q.1, q.2 + ζ)) p := by
+    DifferentiableAt ℂ (fun q : ℂ × ℂ => ∮ ζ in C(0, 1), (1 / ζ ^ (2 : ℕ)) • Φ (q.1, q.2 + ζ)) p := by
   classical
   set f : (Fin 3 → ℂ) → ℂ := fun q => Φ (q 1, q 2 + q 0) with hfdef
   have hproj : ∀ i : Fin 3, Differentiable ℂ fun q : Fin 3 → ℂ => q i := fun i =>
@@ -62,7 +62,7 @@ theorem differentiableAt_circleIntegral_slice_prod {Φ : ℂ × ℂ → ℂ} (h�
     hΦ.comp (((hproj 1).prodMk ((hproj 2).add (hproj 0))))
   have hint := HTGeometry.differentiableAt_circleIntegral_slice_open (n := 2)
       (f := f) (U := Set.univ) (V := Set.univ) isOpen_univ isOpen_univ hfdiff.differentiableOn
-      one_pos (fun ζ => 1 / ζ ^ 2) continuous_one_div_circleMap_sq
+      one_pos (fun ζ => 1 / ζ ^ (2 : ℕ)) continuous_one_div_circleMap_sq
       (fun _ _ _ => Set.mem_univ _) (y₀ := ![p.1, p.2]) (Set.mem_univ _)
   have he : Differentiable ℂ fun q : ℂ × ℂ => (![q.1, q.2] : Fin 2 → ℂ) := by
     refine differentiable_pi.2 fun i => ?_
@@ -70,8 +70,8 @@ theorem differentiableAt_circleIntegral_slice_prod {Φ : ℂ × ℂ → ℂ} (h�
   have hcomp := hint.comp p (he p)
   refine hcomp.congr_of_eventuallyEq ?_
   filter_upwards with q
-  show (∮ ζ in C(0, 1), (1 / ζ ^ 2) • Φ (q.1, q.2 + ζ))
-      = ∮ ζ in C(0, 1), (1 / ζ ^ 2) • f (Fin.cons ζ ![q.1, q.2])
+  show (∮ ζ in C(0, 1), (1 / ζ ^ (2 : ℕ)) • Φ (q.1, q.2 + ζ))
+      = ∮ ζ in C(0, 1), (1 / ζ ^ (2 : ℕ)) • f (Fin.cons ζ ![q.1, q.2])
   congr 1
 
 theorem differentiable_sliceDeriv {Φ : ℂ × ℂ → ℂ} (hΦ : Differentiable ℂ Φ) :

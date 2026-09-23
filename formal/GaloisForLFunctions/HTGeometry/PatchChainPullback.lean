@@ -162,7 +162,7 @@ theorem measurableSet_patchGood (kap : ℝ) (c : MonLe (Fin (k + 3)) 3 → ZMod 
 cubic seeds are collision-good. -/
 theorem density_patchGood {kap : ℝ} (hkap : 0 < kap)
     (ω : PatchSphere k) :
-    ((Fintype.card (MonLe (Fin (k + 3)) 3 → ZMod 8) : ℝ)) * (1 - 96 / (kap ^ 2 * regDim k))
+    ((Fintype.card (MonLe (Fin (k + 3)) 3 → ZMod 8) : ℝ)) * (1 - 96 / (kap ^ (2 : ℕ) * regDim k))
       ≤ ∑ c : MonLe (Fin (k + 3)) 3 → ZMod 8,
         Set.indicator (patchGood k kap c) (1 : PatchSphere k → ℝ) ω := by
   classical
@@ -208,7 +208,7 @@ theorem density_patchGood {kap : ℝ} (hkap : 0 < kap)
     have hcard := Finset.card_le_card hsub
     rw [Finset.card_univ] at hcard
     exact le_trans hcard (Finset.card_union_le Sg Sb)
-  have hbad : (Sb.card : ℝ) ≤ N * (96 / (kap ^ 2 * regDim k)) := by
+  have hbad : (Sb.card : ℝ) ≤ N * (96 / (kap ^ (2 : ℕ) * regDim k)) := by
     have horth := orth_registerEigenBasis (k + 3) (chainPauliFin_isHermitian (k + 3)) x
     have htail := card_filter_phaseCollision_polyEval_gt_le (ι := Fin (k + 3))
       (J := FiniteQubitConfiguration (Fin (k + 3))) 3 (by norm_num)
@@ -296,7 +296,7 @@ theorem hsNormSq_matrix_eq_trace {ι : Type*} [Fintype ι] [DecidableEq ι] (A :
 theorem hsNormSq_pauliCombination {m : ℕ} {κ : Type*} [Fintype κ] [DecidableEq κ]
     {P : κ → Fin m → Option (Fin 3)} (hP : Function.Injective P) (J : κ → ℝ) :
     hsNormSq (∑ q, ((J q : ℝ) : ℂ) • finitePauliMatrix (P q))
-      = (2 ^ m : ℝ) * ∑ q, J q ^ 2 := by
+      = (2 ^ m : ℝ) * ∑ q, J q ^ (2 : ℕ) := by
   classical
   obtain ⟨A, hAdef⟩ : ∃ A, A = ∑ q, ((J q : ℝ) : ℂ) • finitePauliMatrix (P q) := ⟨_, rfl⟩
   have hherm : Aᴴ = A := by
@@ -304,7 +304,7 @@ theorem hsNormSq_pauliCombination {m : ℕ} {κ : Type*} [Fintype κ] [Decidable
     refine Finset.sum_congr rfl fun q _ => ?_
     rw [Matrix.conjTranspose_smul, RCLike.star_def, Complex.conj_ofReal]
     exact congrArg _ (finitePauliMatrix_isHermitian (P q))
-  have hcomplex : ((hsNormSq A : ℝ) : ℂ) = ((((2 : ℝ) ^ m : ℝ) * ∑ q, J q ^ 2 : ℝ) : ℂ) := by
+  have hcomplex : ((hsNormSq A : ℝ) : ℂ) = ((((2 : ℝ) ^ m : ℝ) * ∑ q, J q ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [hsNormSq_matrix_eq_trace, hherm, hAdef, Finset.sum_mul_sum, Matrix.trace_sum]
     have hterm : ∀ q, (∑ p, (((J q : ℝ) : ℂ) • finitePauliMatrix (P q)) *
         (((J p : ℝ) : ℂ) • finitePauliMatrix (P p))).trace
@@ -355,14 +355,14 @@ theorem edgeRho_le_norm_edgePart {n : ℕ} (u : PathShell n) (e : Fin (n + 1)) :
     rw [if_pos rfl, if_pos rfl] at h1
     rw [if_neg hne, if_pos rfl, if_neg hne, if_pos rfl] at h2
     exact Prod.ext (Option.some_injective _ h1) (Option.some_injective _ h2)
-  have hhs : hsNormSq (edgePart u e) = (2 ^ (n + 2) : ℝ) * ∑ ab, edgeCoeff u e ab ^ 2 :=
+  have hhs : hsNormSq (edgePart u e) = (2 ^ (n + 2) : ℝ) * ∑ ab, edgeCoeff u e ab ^ (2 : ℕ) :=
     hsNormSq_pauliCombination hinj (fun ab => edgeCoeff u e ab)
   have hle := hsNormSq_le_card_mul_sq (edgePart u e)
   have hcard : (Fintype.card (FiniteQubitConfiguration (Fin (n + 2))) : ℝ) = (2 ^ (n + 2) : ℝ) := by
     simp [FiniteQubitConfiguration]
   rw [hhs, hcard] at hle
   have hpow : (0 : ℝ) < (2 ^ (n + 2) : ℝ) := by positivity
-  have hsq : edgeRho (edgeCoeff u e) ^ 2 ≤ ‖edgePart u e‖ ^ 2 := by
+  have hsq : edgeRho (edgeCoeff u e) ^ (2 : ℕ) ≤ ‖edgePart u e‖ ^ (2 : ℕ) := by
     rw [edgeRho_sq]
     nlinarith [hle, hpow]
   nlinarith [hsq, edgeRho_nonneg (edgeCoeff u e), norm_nonneg (edgePart u e)]
@@ -372,7 +372,7 @@ theorem abs_edgeCoeff_le_edgeRho (J : Fin 3 × Fin 3 → ℝ) (ab : Fin 3 × Fin
   rw [edgeRho, ← Real.sqrt_sq (abs_nonneg (J ab))]
   refine Real.sqrt_le_sqrt ?_
   rw [sq_abs]
-  exact Finset.single_le_sum (f := fun q => J q ^ 2) (fun q _ => by positivity)
+  exact Finset.single_le_sum (f := fun q => J q ^ (2 : ℕ)) (fun q _ => by positivity)
     (Finset.mem_univ ab)
 
 /-- The coordinates of an embedded carrier point. -/

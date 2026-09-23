@@ -36,24 +36,24 @@ theorem continuous_smoothAFEZetaDisplacedPoleResidueHeightDerivative
   have hA : ContinuousAt (fun u : ℝ => (x : ℂ) ^ z u) t :=
     (Complex.hasStrictDerivAt_const_cpow
       (x := (x : ℂ)) (y := z t) (Or.inl hxC)).hasDerivAt.continuousAt.comp hz
-  have hE : ContinuousAt (fun u : ℝ => Complex.exp ((z u) ^ 2)) t :=
+  have hE : ContinuousAt (fun u : ℝ => Complex.exp ((z u) ^ (2 : ℕ))) t :=
     (hz.pow 2).cexp
   have hAz : ContinuousAt
       (fun u : ℝ => ((x : ℂ) ^ z u * Complex.log (x : ℂ)) * (-I)) t :=
     (hA.mul continuousAt_const).mul continuousAt_const
   have hEz : ContinuousAt
-      (fun u : ℝ => Complex.exp ((z u) ^ 2) * (2 * z u * (-I))) t :=
+      (fun u : ℝ => Complex.exp ((z u) ^ (2 : ℕ)) * (2 * z u * (-I))) t :=
     hE.mul ((continuousAt_const.mul hz).mul continuousAt_const)
   have hnum : ContinuousAt
       (fun u : ℝ =>
         ((((x : ℂ) ^ z u * Complex.log (x : ℂ)) * (-I) *
-              Complex.exp ((z u) ^ 2) +
+              Complex.exp ((z u) ^ (2 : ℕ)) +
             (x : ℂ) ^ z u *
-              (Complex.exp ((z u) ^ 2) * (2 * z u * (-I)))) * z u -
-          ((x : ℂ) ^ z u * Complex.exp ((z u) ^ 2)) * (-I))) t :=
+              (Complex.exp ((z u) ^ (2 : ℕ)) * (2 * z u * (-I)))) * z u -
+          ((x : ℂ) ^ z u * Complex.exp ((z u) ^ (2 : ℕ))) * (-I))) t :=
     (((hAz.mul hE).add (hA.mul hEz)).mul hz).sub
       ((hA.mul hE).mul continuousAt_const)
-  have hden : ContinuousAt (fun u : ℝ => (z u) ^ 2) t := hz.pow 2
+  have hden : ContinuousAt (fun u : ℝ => (z u) ^ (2 : ℕ)) t := hz.pow 2
   have hquot := hnum.div hden (pow_ne_zero 2 hz0)
   unfold smoothAFEZetaDisplacedPoleResidueHeightDerivative
   dsimp only
@@ -83,19 +83,19 @@ theorem integral_smoothAFEZetaDisplacedMollifiedPoleRemainder_normSq_le
     (hT : 1 ≤ T) (haT : T ≤ a) (hab : a ≤ b)
     {M : ℕ} (hM : 1 < M) :
     (∫ t in a..b,
-      ‖smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t‖ ^ 2) ≤
+      ‖smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t‖ ^ (2 : ℕ)) ≤
       (b - a) *
         ((2 * Real.sqrt M) *
-          (x ^ (1 / 2 + d) * Real.exp ((1 / 2 + d) ^ 2)) *
+          (x ^ (1 / 2 + d) * Real.exp ((1 / 2 + d) ^ (2 : ℕ))) *
           (1 + |lam| * (|Real.log x| + 3)) *
-          Real.exp (-(T ^ 2))) ^ 2 := by
+          Real.exp (-(T ^ (2 : ℕ)))) ^ (2 : ℕ) := by
   let C : ℝ := (2 * Real.sqrt M) *
-    (x ^ (1 / 2 + d) * Real.exp ((1 / 2 + d) ^ 2)) *
+    (x ^ (1 / 2 + d) * Real.exp ((1 / 2 + d) ^ (2 : ℕ))) *
     (1 + |lam| * (|Real.log x| + 3))
   have hC0 : 0 ≤ C := by dsimp only [C]; positivity
   have hpoint : ∀ t ∈ Set.Icc a b,
-      ‖smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t‖ ^ 2 ≤
-        (C * Real.exp (-(T ^ 2))) ^ 2 := by
+      ‖smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t‖ ^ (2 : ℕ) ≤
+        (C * Real.exp (-(T ^ (2 : ℕ)))) ^ (2 : ℕ) := by
     intro t ht
     have ht1 : 1 ≤ |t| := by
       have htpos : 0 ≤ t := by linarith [hT, haT, ht.1]
@@ -104,15 +104,15 @@ theorem integral_smoothAFEZetaDisplacedMollifiedPoleRemainder_normSq_le
     have hrem := norm_smoothAFEZetaDisplacedMollifiedPoleRemainder_le
       (lam := lam) hd hx ht1 hM
     change ‖smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t‖ ≤
-      C * Real.exp (-(t ^ 2)) at hrem
-    have hsquare : T ^ 2 ≤ t ^ 2 := by
+      C * Real.exp (-(t ^ (2 : ℕ))) at hrem
+    have hsquare : T ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by
       have hT0 : 0 ≤ T := by linarith
       have htt : T ≤ t := haT.trans ht.1
       nlinarith
-    have hexp : Real.exp (-(t ^ 2)) ≤ Real.exp (-(T ^ 2)) :=
+    have hexp : Real.exp (-(t ^ (2 : ℕ))) ≤ Real.exp (-(T ^ (2 : ℕ))) :=
       Real.exp_le_exp.mpr (by linarith)
     have hnorm := hrem.trans (mul_le_mul_of_nonneg_left hexp hC0)
-    have hright0 : 0 ≤ C * Real.exp (-(T ^ 2)) := by positivity
+    have hright0 : 0 ≤ C * Real.exp (-(T ^ (2 : ℕ))) := by positivity
     nlinarith [norm_nonneg
       (smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t)]
   have hcont :=
@@ -121,7 +121,7 @@ theorem integral_smoothAFEZetaDisplacedMollifiedPoleRemainder_normSq_le
     (hcont.intervalIntegrable (μ := MeasureTheory.volume) a b)
     (continuous_const.intervalIntegrable (μ := MeasureTheory.volume) a b) hpoint
   change (∫ t in a..b,
-    ‖smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t‖ ^ 2) ≤ _
+    ‖smoothAFEZetaDisplacedMollifiedPoleRemainder lam d x M t‖ ^ (2 : ℕ)) ≤ _
   refine hmono.trans_eq ?_
   simp only [intervalIntegral.integral_const]
   dsimp only [C]

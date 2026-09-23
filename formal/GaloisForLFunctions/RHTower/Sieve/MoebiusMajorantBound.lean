@@ -40,7 +40,7 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_majorant :
     gap_le_one hL1
   -- the two logarithmic comparisons between `x` and `x + 1`
   have hx1le : Real.log x ≤ Real.log (x + 1) := Real.log_le_log hx0 (by linarith)
-  have hsq : x + 1 ≤ x ^ 2 := by nlinarith [hx1]
+  have hsq : x + 1 ≤ x ^ (2 : ℕ) := by nlinarith [hx1]
   have hy : Real.log (x + 1) ≤ 2 * Real.log x := by
     have h := Real.log_le_log (by linarith) hsq
     rwa [Real.log_pow] at h

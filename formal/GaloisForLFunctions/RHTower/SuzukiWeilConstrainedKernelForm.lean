@@ -39,9 +39,9 @@ noncomputable def weilPositiveKernel (h : ℝ) : ℝ := Real.exp (h / 2) / Real.
 theorem weilPositiveKernel_eq {h : ℝ} (hh : 0 < h) :
     weilPositiveKernel h = 2 * Real.exp (-(h / 2)) / (1 - Real.exp (-(2 * h))) := by
   unfold weilPositiveKernel
-  have hx : Real.exp h = Real.exp (h / 2) ^ 2 := by
+  have hx : Real.exp h = Real.exp (h / 2) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
-  have hx2 : Real.exp (2 * h) = Real.exp (h / 2) ^ 4 := by
+  have hx2 : Real.exp (2 * h) = Real.exp (h / 2) ^ (4 : ℕ) := by
     rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
   have hpos : 0 < Real.exp (h / 2) := Real.exp_pos _
   have hsinh : Real.sinh h ≠ 0 := (Real.sinh_ne_zero).2 hh.ne'
@@ -280,7 +280,7 @@ theorem suzukiRestrictedWeilForm_eq_constrainedKernelForm (A : SuzukiPositiveApe
   have htail := integral_Ioi_inv_sinh_eq_log hS
   have hJ := integral_Ioc_exp_half_sub_one_div_sinh hS
   have hlog4 : Real.log (4 * Real.pi) = 2 * Real.log 2 + Real.log Real.pi := by
-    rw [Real.log_mul (by norm_num) Real.pi_ne_zero, show (4 : ℝ) = 2 ^ 2 by norm_num,
+    rw [Real.log_mul (by norm_num) Real.pi_ne_zero, show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num,
       Real.log_pow]
     push_cast; ring
   have hlog2S : Real.log (1 - Real.exp (-(2 * (2 * A.1)))) =
@@ -290,7 +290,7 @@ theorem suzukiRestrictedWeilForm_eq_constrainedKernelForm (A : SuzukiPositiveApe
       rwa [Real.exp_zero] at this
     rw [← Real.log_mul (by positivity) (by linarith)]
     congr 1
-    have : Real.exp (-(2 * (2 * A.1))) = Real.exp (-(2 * A.1)) ^ 2 := by
+    have : Real.exp (-(2 * (2 * A.1))) = Real.exp (-(2 * A.1)) ^ (2 : ℕ) := by
       rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
     rw [this]; ring
   unfold weilConstrainedConstant

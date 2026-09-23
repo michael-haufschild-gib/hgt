@@ -45,7 +45,7 @@ theorem spectralPacketSiteContrast_germ_eq_zero_of_miss
     (x alternative : ∀ v, A v) (sites : Finset V)
     (packet : Finset E) (hpacket : packet.Nonempty)
     {i : V} (hi_sites : i ∈ sites)
-    (hi_support : i ∉ L.packetSiteSupport packet) :
+    (hi : i ∉ L.packetSiteSupport packet) :
     spectralPacketSiteContrast L onsite hinj x alternative sites packet
       =ᶠ[𝓝 0] (fun _ : E → ℂ => (0 : ℂ)) := by
   have hactive : ∀ active : Finset V,
@@ -62,7 +62,7 @@ theorem spectralPacketSiteContrast_germ_eq_zero_of_miss
     intro v hv
     have hvi : v ≠ i := by
       intro h
-      exact hi_support (h ▸ hv)
+      exact hi (h ▸ hv)
     simp [dependentUpdateOnFinset, hvi]
   have hall : ∀ᶠ z : E → ℂ in 𝓝 0,
       ∀ active ∈ (Finset.univ : Finset (Finset V)),
@@ -309,10 +309,10 @@ theorem productSpectralInteractionShiftSiteContrast_eq_sum_observerSpanningPacke
     · have hnsubset : ¬sites ⊆ L.packetSiteSupport packet := by
         intro hsub
         exact hpnot ⟨hpnonempty, hdisc, hsub⟩
-      obtain ⟨i, hi_sites, hi_support⟩ := Finset.not_subset.mp hnsubset
+      obtain ⟨i, hi_sites, hi⟩ := Finset.not_subset.mp hnsubset
       exact spectralPacketSiteContrast_germ_eq_zero_of_miss
         L onsite hinj x alternative sites packet hpnonempty
-        hi_sites hi_support
+        hi_sites hi
   have hall : ∀ᶠ z : E → ℂ in 𝓝 0,
       ∀ packet ∈ excludedPackets,
         spectralPacketSiteContrast L onsite hinj x alternative sites packet z = 0 := by

@@ -59,9 +59,9 @@ theorem d4BMXiEventHorizonThirdMassToAIMEChiralSusceptibility_gt_fiftyFour
   have hBeq : B = (1 - a) * (2 + a) := by
     simpa [B, a] using d4BMXiHorizonAngularShift_reflect_eq q
   have hNgt : 2 * A * B < N := by
-    have hleft : 0 < A ^ 2 * (2 - B) :=
+    have hleft : 0 < A ^ (2 : ℕ) * (2 - B) :=
       mul_pos (sq_pos_of_pos hA0) (sub_pos.mpr hB2)
-    have hright : 0 < B ^ 2 * (2 - A) :=
+    have hright : 0 < B ^ (2 : ℕ) * (2 - A) :=
       mul_pos (sq_pos_of_pos hB0) (sub_pos.mpr hA2)
     unfold N d4EventHorizonThirdMassParityCrossNumerator
     linarith
@@ -75,9 +75,9 @@ theorem d4BMXiEventHorizonThirdMassToAIMEChiralSusceptibility_gt_fiftyFour
     have h := mul_lt_mul hA2 (le_of_lt hB2) hB0 (by norm_num : (0 : ℝ) ≤ 2)
     norm_num at h ⊢
     exact h
-  have hden : 0 < A ^ 2 * B ^ 2 :=
+  have hden : 0 < A ^ (2 : ℕ) * B ^ (2 : ℕ) :=
     mul_pos (sq_pos_of_pos hA0) (sq_pos_of_pos hB0)
-  have hden_lt_fourAB : A ^ 2 * B ^ 2 < 4 * (A * B) := by
+  have hden_lt_fourAB : A ^ (2 : ℕ) * B ^ (2 : ℕ) < 4 * (A * B) := by
     nlinarith [mul_pos hAB0 (sub_pos.mpr hABlt)]
   have hfourAB_lt_NC : 4 * (A * B) < N * C := by
     have hNdiff : 0 < N - 2 * A * B := sub_pos.mpr hNgt
@@ -85,20 +85,20 @@ theorem d4BMXiEventHorizonThirdMassToAIMEChiralSusceptibility_gt_fiftyFour
     have hC0 : 0 < C := by linarith
     nlinarith [mul_pos hNdiff hC0,
       mul_pos (mul_pos (by norm_num : (0 : ℝ) < 2) hAB0) hCdiff]
-  have hcore : A ^ 2 * B ^ 2 < N * C :=
+  have hcore : A ^ (2 : ℕ) * B ^ (2 : ℕ) < N * C :=
     lt_trans hden_lt_fourAB hfourAB_lt_NC
   have hformula :
       d4BMXiEventHorizonThirdMassToAIMEChiralSusceptibility q =
-        54 * N * C / (A ^ 2 * B ^ 2) := by
+        54 * N * C / (A ^ (2 : ℕ) * B ^ (2 : ℕ)) := by
     have hAne : A ≠ 0 := ne_of_gt hA0
     have hBne : B ≠ 0 := ne_of_gt hB0
     unfold d4BMXiEventHorizonThirdMassToAIMEChiralSusceptibility
       d4BMXiEventHorizonThirdMassReflectionSusceptibility
       d4BMXiThetaMirrorAIMEDenominator
     change
-      (648 * N / (A ^ 3 * B ^ 3)) *
+      (648 * N / (A ^ (3 : ℕ) * B ^ (3 : ℕ))) *
           (a * (1 - a) * (2 - a) * (3 - a) * (a + 1) * (a + 2)) / 12 =
-        54 * N * C / (A ^ 2 * B ^ 2)
+        54 * N * C / (A ^ (2 : ℕ) * B ^ (2 : ℕ))
     rw [hAeq, hBeq]
     dsimp [C]
     field_simp [hAne, hBne]

@@ -100,7 +100,7 @@ theorem exists_realPart_lt_in_nhds_of_punctured_residue
 /-- Direct infinite-prime source weighted by the square of an actual physical two-edge test. -/
 def xiPhysicalThetaAbelEnergyPrimeWeightedSource
     (L A c a : ℝ) (z : ℂ) : ℂ :=
-  xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+  xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
     (-I * infinitePrimeFlux (1 / 2 + z * I))
 
 /-- Exact local residue of the physical square times the direct infinite-prime source. -/
@@ -112,7 +112,7 @@ theorem tendsto_xiPhysicalThetaAbelEnergyPrimeWeightedSource_normalizedResidue
         xiPhysicalThetaAbelEnergyPrimeWeightedSource L A c a z)
       (nhdsWithin alpha ({alpha}ᶜ))
       (nhds (((analyticOrderAt xi (1 / 2 + alpha * I)).toNat : ℂ) *
-        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a alpha ^ 2)) := by
+        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a alpha ^ (2 : ℕ))) := by
   let sigma : ℂ := 1 / 2 + alpha * I
   let coord : ℂ → ℂ := fun z ↦ 1 / 2 + z * I
   have hsigmaRe : sigma.re = 1 / 2 - alpha.im := by
@@ -156,9 +156,9 @@ theorem tendsto_xiPhysicalThetaAbelEnergyPrimeWeightedSource_normalizedResidue
       (nhds ((analyticOrderAt xi sigma).toNat : ℂ))
     exact hbase
   have hweight : Tendsto
-      (fun z : ℂ ↦ xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2)
+      (fun z : ℂ ↦ xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ))
       (nhdsWithin alpha ({alpha}ᶜ))
-      (nhds (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a alpha ^ 2)) := by
+      (nhds (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a alpha ^ (2 : ℕ))) := by
     exact tendsto_nhdsWithin_of_tendsto_nhds
       ((xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_analyticOnNhd L A c a
         alpha (mem_univ alpha)).continuousAt.tendsto)
@@ -227,7 +227,7 @@ theorem exists_logMesh_physicalPrimeWeightedSource_cofinally_unboundedBelow_near
   let sigma : ℂ := 1 / 2 + alpha * I
   let m : ℕ := (analyticOrderAt xi sigma).toNat
   let Talpha : ℂ := xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a alpha
-  let C : ℂ := (m : ℂ) * Talpha ^ 2
+  let C : ℂ := (m : ℂ) * Talpha ^ (2 : ℕ)
   let f : ℂ → ℂ := xiPhysicalThetaAbelEnergyPrimeWeightedSource L A c a
   have hTalphaNe : Talpha ≠ 0 := by
     intro hzero
@@ -283,7 +283,7 @@ theorem exists_logMesh_physicalPrimeWeightedSource_cofinally_unboundedBelow_near
     apply hfNe
     dsimp only [f]
     rw [xiPhysicalThetaAbelEnergyPrimeWeightedSource]
-    change xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+    change xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
       (-I * infinitePrimeFlux s) = 0
     simp [infinitePrimeFlux, logDeriv_apply, hzetaZero]
   exact ⟨z, hzRe, hzIm, hzImHalf, hzXi,
@@ -334,7 +334,7 @@ theorem xiPhysicalThetaAbelEnergyPrimeLogMeshLocallyBoundedBelow_of_riemannHypot
   change ContinuousAt infinitePrimeFlux (1 / 2 + alpha * I) at hflux
   have hweight : ContinuousAt
       (fun z : ℂ ↦ xiPhysicalThetaAbelEnergyTwoEdgeTransform
-        L A c (Real.log n / 2) z ^ 2) alpha :=
+        L A c (Real.log n / 2) z ^ (2 : ℕ)) alpha :=
     (xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_analyticOnNhd
       L A c (Real.log n / 2) alpha (mem_univ alpha)).continuousAt
   have hfluxCoord : ContinuousAt
@@ -345,7 +345,7 @@ theorem xiPhysicalThetaAbelEnergyPrimeLogMeshLocallyBoundedBelow_of_riemannHypot
       (xiPhysicalThetaAbelEnergyPrimeWeightedSource
         L A c (Real.log n / 2)) alpha := by
     change ContinuousAt (fun z : ℂ ↦
-      xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c (Real.log n / 2) z ^ 2 *
+      xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c (Real.log n / 2) z ^ (2 : ℕ) *
         (-I * infinitePrimeFlux (1 / 2 + z * I))) alpha
     exact hweight.mul (continuousAt_const.mul hfluxCoord)
   have hsourceRe : Tendsto (fun z : ℂ ↦

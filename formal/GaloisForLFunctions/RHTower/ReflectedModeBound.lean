@@ -24,8 +24,8 @@ theorem reflected_per_mode_bound {N : ℕ} (hN : 1 ≤ N) {σ τ : ℝ} (hσ : -
   set w' : ℝ → ℝ := fun x => Real.exp ((-σ - 2) * Real.log x) * ((-σ - 2) * x⁻¹) with hw'_def
   set g : ℝ → ℝ := fun x => (2 * π * (n : ℝ)) * x - τ * Real.log x with hg_def
   set g' : ℝ → ℝ := fun x => (2 * π * (n : ℝ)) - τ * x⁻¹ with hg'_def
-  set g'' : ℝ → ℝ := fun x => τ * (x ^ 2)⁻¹ with hg''_def
-  set lam : ℝ := -τ / (N : ℝ) ^ 2 with hlam_def
+  set g'' : ℝ → ℝ := fun x => τ * (x ^ (2 : ℕ))⁻¹ with hg''_def
+  set lam : ℝ := -τ / (N : ℝ) ^ (2 : ℕ) with hlam_def
   have hN1 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   have hNpos : (0 : ℝ) < (N : ℝ) := by linarith
   have hlampos : 0 < lam := by rw [hlam_def]; exact div_pos (by linarith) (by positivity)
@@ -46,8 +46,8 @@ theorem reflected_per_mode_bound {N : ℕ} (hN : 1 ≤ N) {σ τ : ℝ} (hσ : -
     simpa [hg_def, hg'_def] using! h1.sub h2
   have hg'D : ∀ x ∈ Set.uIcc (1 : ℝ) (N : ℝ), HasDerivAt g' (g'' x) x := by
     intro x hx
-    have hinv : HasDerivAt (fun y : ℝ => y⁻¹) (-(x ^ 2)⁻¹) x := hasDerivAt_inv (hxne x hx)
-    have h2 : HasDerivAt (fun y : ℝ => τ * y⁻¹) (τ * -(x ^ 2)⁻¹) x := hinv.const_mul τ
+    have hinv : HasDerivAt (fun y : ℝ => y⁻¹) (-(x ^ (2 : ℕ))⁻¹) x := hasDerivAt_inv (hxne x hx)
+    have h2 : HasDerivAt (fun y : ℝ => τ * y⁻¹) (τ * -(x ^ (2 : ℕ))⁻¹) x := hinv.const_mul τ
     have := (hasDerivAt_const x (2 * π * (n : ℝ))).sub h2
     simpa [hg'_def, hg''_def, mul_neg] using! this
   -- continuity of w', g''
@@ -75,10 +75,10 @@ theorem reflected_per_mode_bound {N : ℕ} (hN : 1 ≤ N) {σ τ : ℝ} (hσ : -
   have hg''ub : ∀ x ∈ Set.uIcc (1 : ℝ) (N : ℝ), g'' x ≤ -lam := by
     intro x hx
     rw [Set.uIcc_of_le hN1] at hx
-    have hneglam : -lam = τ / (N : ℝ) ^ 2 := by rw [hlam_def]; ring
+    have hneglam : -lam = τ / (N : ℝ) ^ (2 : ℕ) := by rw [hlam_def]; ring
     rw [hg''_def, hneglam, div_eq_mul_inv]
-    have hx2 : x ^ 2 ≤ (N : ℝ) ^ 2 := by nlinarith [hx.1, hx.2]
-    have hxpos2 : (0 : ℝ) < x ^ 2 := pow_pos (by linarith [hx.1]) 2
+    have hx2 : x ^ (2 : ℕ) ≤ (N : ℝ) ^ (2 : ℕ) := by nlinarith [hx.1, hx.2]
+    have hxpos2 : (0 : ℝ) < x ^ (2 : ℕ) := pow_pos (by linarith [hx.1]) 2
     apply mul_le_mul_of_nonpos_left _ hτ.le
     exact inv_anti₀ hxpos2 hx2
   have hbound := norm_integral_weight_cexp_secondDeriv_neg (a := (1:ℝ)) (b := (N:ℝ))

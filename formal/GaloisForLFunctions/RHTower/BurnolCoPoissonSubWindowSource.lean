@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.BurnolCoPoissonMellinNonvanishing
 
 Every multiplicative sub-window `[c,d]` gives a co-Poisson pair: the reciprocal function on `[c,d]`
 and the indicator of the inverted window `[1/d,1/c]`.  Both carry the full analytic data, so the
-`L^2` intertwining applies and the pair produces a vector of the extended Sonine space at aperture
+`L^(2 : ℕ)` intertwining applies and the pair produces a vector of the extended Sonine space at aperture
 `min (c, 1/d)`.
 
 The Mellin transform of that vector is `(d^(-w) - c^(-w)) zeta(w)/w` up to the archimedean factor,

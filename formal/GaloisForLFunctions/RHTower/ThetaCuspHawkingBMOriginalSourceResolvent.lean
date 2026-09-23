@@ -28,7 +28,7 @@ theorem mixedBracket_hasDerivAt (s chi amp J K w v : ℂ)
     (hwi : w.im≠0) (hwr : -2<w.re) (hc : connection w chi≠0)
     {z : ℝ} (hz : z∈Ioo (0:ℝ) 1) :
     HasDerivAt (mixedBracket s chi amp J K w v)
-      (((v^2-w^2)*mixedDensity s chi amp J K w v z-
+      (((v^(2 : ℕ)-w^(2 : ℕ))*mixedDensity s chi amp J K w v z-
         sourceDensity s chi amp J K w v z)/2) z := by
   obtain ⟨hU,hD⟩ := continuedResponse_hasDerivAt s chi amp J K w hwi hwr hz
   obtain ⟨hN,hE⟩ := normalizable_derivatives_continued (w:=v) (chi:=chi) hz
@@ -46,11 +46,11 @@ theorem mixedBracket_hasDerivAt (s chi amp J K w v : ℂ)
   have hz0 : (z:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hz.1.ne'
   have ht0 : (Real.sqrt (1-z):ℂ)≠0 :=
     Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (sub_pos.mpr hz.2)).ne'
-  have hsq : (Real.sqrt (1-z):ℂ)^2=1-(z:ℂ) := by
+  have hsq : (Real.sqrt (1-z):ℂ)^(2 : ℕ)=1-(z:ℂ) := by
     exact_mod_cast Real.sq_sqrt (sub_nonneg.mpr hz.2.le)
   have hNw : D4BMPhysicalMaster.radialJet (Complex.I*w) chi z
       (normalizable v chi z) (normalizableFirst v chi z) (normalizableSecond v chi z)=
-      (v^2-w^2)/(4*(z:ℂ))*normalizable v chi z := by
+      (v^(2 : ℕ)-w^(2 : ℕ))/(4*(z:ℂ))*normalizable v chi z := by
     dsimp only [D4BMPhysicalMaster.radialJet] at hNv ⊢
     simp only [mul_pow,Complex.I_sq] at hNv ⊢
     linear_combination hNv
@@ -86,7 +86,7 @@ theorem mixed_source_integral (s chi amp J K w v : ℂ)
     {e b : ℝ} (he : 0<e) (heb : e≤b) (hb : b<1) :
     IntervalIntegrable (mixedDensity s chi amp J K w v) volume e b ∧
     IntervalIntegrable (sourceDensity s chi amp J K w v) volume e b ∧
-    (v^2-w^2)*(∫ z in e..b,mixedDensity s chi amp J K w v z)=
+    (v^(2 : ℕ)-w^(2 : ℕ))*(∫ z in e..b,mixedDensity s chi amp J K w v z)=
       2*(mixedBracket s chi amp J K w v b-mixedBracket s chi amp J K w v e)+
         ∫ z in e..b,sourceDensity s chi amp J K w v z := by
   have hsub : uIcc e b⊆Ioo (0:ℝ) 1 := by
@@ -98,7 +98,7 @@ theorem mixed_source_integral (s chi amp J K w v : ℂ)
     ((sourceDensity_continuousOn s chi amp J K w v).mono hsub).intervalIntegrable
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun z hz => mixedBracket_hasDerivAt s chi amp J K w v hwi hwr hc (hsub hz))
-    (((hI.const_mul (v^2-w^2)).sub hS).div_const 2)
+    (((hI.const_mul (v^(2 : ℕ)-w^(2 : ℕ))).sub hS).div_const 2)
   rw [intervalIntegral.integral_div,intervalIntegral.integral_sub (hI.const_mul _) hS,
     intervalIntegral.integral_const_mul] at h
   refine ⟨hI,hS,?_⟩
@@ -172,7 +172,7 @@ theorem diagonal_source_identity (s chi amp J K w : ℂ)
   let I := fun v => mixedIntegral s chi amp J K w v e b
   let B := fun v => 2*(mixedBracket s chi amp J K w v b-mixedBracket s chi amp J K w v e)
   let D := fun v => B v+sourceIntegral s chi amp J K w v e b
-  have hEq (v : ℂ) : D v=(v^2-w^2)*I v :=
+  have hEq (v : ℂ) : D v=(v^(2 : ℕ)-w^(2 : ℕ))*I v :=
     (mixed_source_integral s chi amp J K w v hwi hwr hc he heb hb).2.2.symm
   have hD0 : D w=0 := by rw [hEq];ring
   have hcont := mixedIntegral_continuousAt s chi amp J K w w hwi hwr he heb hb

@@ -89,9 +89,9 @@ a nonzero vector, so the diagonal instantiation supplies edge data outright. -/
 omit [CompleteSpace H] [Nontrivial H] in
 /-- Any prescribed pairing value against a nonzero vector is realised by some vector. -/
 theorem exists_inner_eq {v : H} (hv : v ≠ 0) (a : ℂ) : ∃ g : H, inner ℂ g v = a := by
-  have hn : (‖v‖ : ℂ) ^ 2 ≠ 0 :=
+  have hn : (‖v‖ : ℂ) ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr hv))
-  refine ⟨((starRingEnd ℂ) (a / (‖v‖ : ℂ) ^ 2)) • v, ?_⟩
+  refine ⟨((starRingEnd ℂ) (a / (‖v‖ : ℂ) ^ (2 : ℕ))) • v, ?_⟩
   rw [inner_smul_left, RingHomCompTriple.comp_apply, RingHom.id_apply,
     inner_self_eq_norm_sq_to_K]
   exact div_mul_cancel₀ a hn

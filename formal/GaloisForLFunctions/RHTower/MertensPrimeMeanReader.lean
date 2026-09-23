@@ -37,8 +37,8 @@ theorem tendsto_const_div_log_nat (C : ℝ) :
 
 theorem mertensPrimeMean_unit_eq (X : ℕ) :
     mertensPrimeMean (fun _ => (1 : ℝ)) X =
-      primeLogMass (fun _ => (1 : ℝ)) X / Real.log X := by
-  rw [mertensPrimeMean, primeLogMass]
+      primeLogMass_weightedEulerCoefficientSpaces (fun _ => (1 : ℝ)) X / Real.log X := by
+  rw [mertensPrimeMean, primeLogMass_weightedEulerCoefficientSpaces]
   congr 1
   exact Finset.sum_congr rfl fun n _ => by simp
 
@@ -99,11 +99,11 @@ theorem tendsto_mertensPrimeMean_zero_of_criticalSummable {b : ℕ → ℝ}
       have hlog : (0 : ℝ) ≤ Real.log n := Real.log_nonneg (by linarith)
       positivity
     · rw [Set.indicator_of_notMem hn]
-  have hmass : ∀ X : ℕ, primeLogMass b X ≤ ∑' n, f n := by
+  have hmass : ∀ X : ℕ, primeLogMass_weightedEulerCoefficientSpaces b X ≤ ∑' n, f n := by
     intro X
-    have hEq : primeLogMass b X =
+    have hEq : primeLogMass_weightedEulerCoefficientSpaces b X =
         ∑ n ∈ Finset.Icc 1 X with n.Prime, f n := by
-      rw [primeLogMass]
+      rw [primeLogMass_weightedEulerCoefficientSpaces]
       refine Finset.sum_congr rfl fun n hn => ?_
       have hnp : n.Prime := (Finset.mem_filter.mp hn).2
       rw [hf, Set.indicator_of_mem (show n ∈ {p : ℕ | p.Prime} from hnp)]
@@ -130,12 +130,12 @@ theorem tendsto_mertensPrimeMean_head_zero (b : ℕ → ℝ) (P : ℕ) :
   rw [NormedAddGroup.tendsto_nhds_zero]
   intro ε hε
   filter_upwards [eventually_ge_atTop 2,
-    (tendsto_const_div_log_nat (primeLogMass b P)).eventually
+    (tendsto_const_div_log_nat (primeLogMass_weightedEulerCoefficientSpaces b P)).eventually
       (gt_mem_nhds hε)] with X hX hlt
   have hlogX : 0 < Real.log X := log_cutoff_pos hX
   have h1 := abs_mertensPrimeMean_le (primeCoefficientHead b P) hX
   have h2 : marcinkiewiczLogQuotient (primeCoefficientHead b P) X ≤
-      primeLogMass b P / Real.log X := by
+      primeLogMass_weightedEulerCoefficientSpaces b P / Real.log X := by
     rw [marcinkiewiczLogQuotient]
     exact div_le_div_of_nonneg_right (primeLogMass_head_le b P X) hlogX.le
   rw [Real.norm_eq_abs]
@@ -225,8 +225,8 @@ theorem mertensPrimeMean_const_unique {b : ℕ → ℝ} {c d : ℝ}
 /-! ## The vanishing-tail layer is a subspace -/
 
 theorem primeLogMass_smul (k : ℝ) (b : ℕ → ℝ) (X : ℕ) :
-    primeLogMass (fun n => k * b n) X = |k| * primeLogMass b X := by
-  rw [primeLogMass, primeLogMass, Finset.mul_sum]
+    primeLogMass_weightedEulerCoefficientSpaces (fun n => k * b n) X = |k| * primeLogMass_weightedEulerCoefficientSpaces b X := by
+  rw [primeLogMass_weightedEulerCoefficientSpaces, primeLogMass_weightedEulerCoefficientSpaces, Finset.mul_sum]
   refine Finset.sum_congr rfl fun n _ => ?_
   rw [abs_mul]
   ring
@@ -238,9 +238,9 @@ theorem marcinkiewiczLogQuotient_smul (k : ℝ) (b : ℕ → ℝ) (X : ℕ) :
     mul_div_assoc]
 
 theorem primeLogMass_add_le (b b' : ℕ → ℝ) (X : ℕ) :
-    primeLogMass (fun n => b n + b' n) X ≤
-      primeLogMass b X + primeLogMass b' X := by
-  rw [primeLogMass, primeLogMass, primeLogMass, ← Finset.sum_add_distrib]
+    primeLogMass_weightedEulerCoefficientSpaces (fun n => b n + b' n) X ≤
+      primeLogMass_weightedEulerCoefficientSpaces b X + primeLogMass_weightedEulerCoefficientSpaces b' X := by
+  rw [primeLogMass_weightedEulerCoefficientSpaces, primeLogMass_weightedEulerCoefficientSpaces, primeLogMass_weightedEulerCoefficientSpaces, ← Finset.sum_add_distrib]
   refine Finset.sum_le_sum fun n _ => ?_
   have hnn := primeLog_term_nonneg (fun _ => (1 : ℝ)) n
   have hterm : (0 : ℝ) ≤ Real.log n / n := by
@@ -260,7 +260,7 @@ theorem memVanishingTailLayer_smul {b : ℕ → ℝ}
       split_ifs <;> simp
     have : marcinkiewiczLogQuotient
         (primeCoefficientTail (fun n => k * b n) 0) X = 0 := by
-      rw [marcinkiewiczLogQuotient, primeLogMass]
+      rw [marcinkiewiczLogQuotient, primeLogMass_weightedEulerCoefficientSpaces]
       simp [hzero]
     rw [this]
     exact hε.le

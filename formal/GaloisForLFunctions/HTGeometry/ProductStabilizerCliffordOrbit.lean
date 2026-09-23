@@ -81,8 +81,8 @@ theorem spectralCollision_comp_equiv (φ : α ≃ β) (e : D → β → ℂ) (ψ
   rw [finitePureStateFidelity, finitePureStateFidelity, hinner]
 
 theorem sum_normSq_comp_equiv (φ : α ≃ β) (z : β → ℂ) :
-    (∑ a, ‖(z ∘ φ) a‖ ^ 2) = ∑ b, ‖z b‖ ^ 2 :=
-  Fintype.sum_equiv φ (fun a => ‖(z ∘ φ) a‖ ^ 2) (fun b => ‖z b‖ ^ 2) fun _ => rfl
+    (∑ a, ‖(z ∘ φ) a‖ ^ (2 : ℕ)) = ∑ b, ‖z b‖ ^ (2 : ℕ) :=
+  Fintype.sum_equiv φ (fun a => ‖(z ∘ φ) a‖ ^ (2 : ℕ)) (fun b => ‖z b‖ ^ (2 : ℕ)) fun _ => rfl
 
 end Invariance
 

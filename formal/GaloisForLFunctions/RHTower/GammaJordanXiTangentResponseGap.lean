@@ -30,16 +30,16 @@ def gammaJordanHeightResponse (t : ℝ) : ℝ :=
 
 /-- The positive sewing component of the Gamma response. -/
 def gammaJordanSewingResponse (t : ℝ) : ℝ :=
-  (3 / 2 : ℝ) * semilocalArchimedeanCharacteristic t ^ 5
+  (3 / 2 : ℝ) * semilocalArchimedeanCharacteristic t ^ (5 : ℕ)
 
 /-- The invariant joined response.  Its two summands must remain correlated. -/
 def gammaJordanJoinedResponse (t : ℝ) : ℝ :=
   gammaJordanHeightResponse t + gammaJordanSewingResponse t
 
 theorem semilocalArchimedeanCharacteristic_pow_four_add_tanh_sq (t : ℝ) :
-    semilocalArchimedeanCharacteristic t ^ 4 + Real.tanh t ^ 2 = 1 := by
-  rw [show semilocalArchimedeanCharacteristic t ^ 4 =
-    (semilocalArchimedeanCharacteristic t ^ 2) ^ 2 by ring,
+    semilocalArchimedeanCharacteristic t ^ (4 : ℕ) + Real.tanh t ^ (2 : ℕ) = 1 := by
+  rw [show semilocalArchimedeanCharacteristic t ^ (4 : ℕ) =
+    (semilocalArchimedeanCharacteristic t ^ (2 : ℕ)) ^ (2 : ℕ) by ring,
     semilocalArchimedeanCharacteristic_sq, Real.tanh_eq_sinh_div_cosh]
   have hcosh : Real.cosh t ≠ 0 := (Real.cosh_pos t).ne'
   field_simp [hcosh]
@@ -54,9 +54,9 @@ theorem gammaJordanJoinedResponse_eq_characteristic_add_two_covariance (t : ℝ)
   have hunit := semilocalArchimedeanCharacteristic_pow_four_add_tanh_sq t
   unfold gammaJordanJoinedResponse gammaJordanHeightResponse gammaJordanSewingResponse
     semilocalArchimedeanSecondMomentCovarianceKernel
-  rw [show semilocalArchimedeanCharacteristic t ^ 5 =
+  rw [show semilocalArchimedeanCharacteristic t ^ (5 : ℕ) =
     semilocalArchimedeanCharacteristic t *
-      semilocalArchimedeanCharacteristic t ^ 4 by ring]
+      semilocalArchimedeanCharacteristic t ^ (4 : ℕ) by ring]
   linear_combination
     (3 / 2 * semilocalArchimedeanCharacteristic t) * hunit
 
@@ -105,7 +105,7 @@ private theorem gammaJordanPolynomialFourier_const_mul
   ring
 
 private theorem two_mul_X_sq_eq_gammaJacobi_zero_add_two :
-    C (2 : ℝ) * X ^ 2 =
+    C (2 : ℝ) * X ^ (2 : ℕ) =
       semilocalArchimedeanJacobiPolynomial 0 +
         C (2 * semilocalArchimedeanJacobiCoefficient 0 *
           semilocalArchimedeanJacobiCoefficient 1) *
@@ -124,7 +124,7 @@ private theorem two_mul_X_sq_eq_gammaJacobi_zero_add_two :
 correlation, not a difference of two target norms. -/
 theorem semilocalArchimedeanPolynomialFourier_two_mul_X_sq_eq_gammaJordanJoinedResponse
     (t : ℝ) :
-    semilocalArchimedeanPolynomialFourier (C (2 : ℝ) * X ^ 2) t =
+    semilocalArchimedeanPolynomialFourier (C (2 : ℝ) * X ^ (2 : ℕ)) t =
       (gammaJordanJoinedResponse t : ℂ) := by
   rw [two_mul_X_sq_eq_gammaJacobi_zero_add_two,
     gammaJordanPolynomialFourier_add,
@@ -167,7 +167,7 @@ theorem semilocalArchimedeanPolynomialFourier_two_mul_X_sq_eq_gammaJordanJoinedR
           semilocalArchimedeanJacobiFourier 2 t =
         -((3 / 2 : ℝ) : ℂ) *
           (semilocalArchimedeanCharacteristic t : ℂ) *
-            (Real.tanh t : ℂ) ^ 2 := by
+            (Real.tanh t : ℂ) ^ (2 : ℕ) := by
     rw [semilocalArchimedeanJacobiFourier_eq_closedForm,
       semilocalArchimedeanJacobiFourierClosedForm]
     have hprodC := congrArg Complex.ofReal hprod
@@ -178,10 +178,10 @@ theorem semilocalArchimedeanPolynomialFourier_two_mul_X_sq_eq_gammaJordanJoinedR
             (semilocalArchimedeanJacobiCoefficient 1 : ℂ) *
             (semilocalArchimedeanJacobiNormalization 2 : ℂ)) *
           (semilocalArchimedeanCharacteristic t : ℂ) *
-            (Real.tanh t : ℂ) ^ 2 := by push_cast; ring
+            (Real.tanh t : ℂ) ^ (2 : ℕ) := by push_cast; ring
       _ = -((3 / 2 : ℝ) : ℂ) *
           (semilocalArchimedeanCharacteristic t : ℂ) *
-            (Real.tanh t : ℂ) ^ 2 := by rw [hprodC]; norm_num
+            (Real.tanh t : ℂ) ^ (2 : ℕ) := by rw [hprodC]; norm_num
   rw [hzero, htwo, gammaJordanJoinedResponse_eq_characteristic_add_two_covariance]
   unfold semilocalArchimedeanSecondMomentCovarianceKernel
   push_cast
@@ -189,7 +189,7 @@ theorem semilocalArchimedeanPolynomialFourier_two_mul_X_sq_eq_gammaJordanJoinedR
 
 /-- Integral form of the variance-biased response. -/
 theorem integral_two_mul_sq_cexp_semilocalArchimedeanGammaMeasure (t : ℝ) :
-    (∫ s : ℝ, ((2 * s ^ 2 : ℝ) : ℂ) *
+    (∫ s : ℝ, ((2 * s ^ (2 : ℕ) : ℝ) : ℂ) *
         Complex.exp (((t * s : ℝ) : ℂ) * Complex.I)
           ∂semilocalArchimedeanGammaMeasure) =
       (gammaJordanJoinedResponse t : ℂ) := by
@@ -238,15 +238,15 @@ theorem gammaSewnFourRateBoundaryComplementary_join_eq_response_zero_mul_fisher
 def gammaXiFisherBaseCorrelation (p q : Nat.Primes) : ℝ :=
   let a := (p : ℝ)⁻¹
   let b := (q : ℝ)⁻¹
-  Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) / (1 - a * b)
+  Real.sqrt ((1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))) / (1 - a * b)
 
 /-- The variance-biased Gamma response written as a function of its base correlation. -/
 def gammaJordanResponseFromBase (k : ℝ) : ℝ :=
-  Real.sqrt k * (3 * k ^ 2 - 1) / 2
+  Real.sqrt k * (3 * k ^ (2 : ℕ) - 1) / 2
 
 /-- The Fisher tangent response of the unit geometric depth curve. -/
 def xiShiftTangentResponseFromBase (k : ℝ) : ℝ :=
-  k * (2 * k ^ 2 - 1)
+  k * (2 * k ^ (2 : ℕ) - 1)
 
 /-- The joined-Gamma surplus over the Xi-shift Fisher tangent response. -/
 def gammaJordanXiResponseGapFromBase (k : ℝ) : ℝ :=
@@ -267,9 +267,9 @@ private theorem inversePrime_le_half (p : Nat.Primes) :
 private theorem fisherBaseCorrelation_data
     {a b : ℝ} (ha0 : 0 < a) (hb0 : 0 < b)
     (haHalf : a ≤ 1 / 2) (hbHalf : b ≤ 1 / 2) :
-    let k := Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) / (1 - a * b)
-    0 < k ∧ k ≤ 1 ∧ 3 / 4 < k ^ 2 ∧ (k = 1 ↔ a = b) := by
-  let A := (1 - a ^ 2) * (1 - b ^ 2)
+    let k := Real.sqrt ((1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))) / (1 - a * b)
+    0 < k ∧ k ≤ 1 ∧ 3 / 4 < k ^ (2 : ℕ) ∧ (k = 1 ↔ a = b) := by
+  let A := (1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))
   let d := 1 - a * b
   let k := Real.sqrt A / d
   have ha1 : a < 1 := lt_of_le_of_lt haHalf (by norm_num)
@@ -280,9 +280,9 @@ private theorem fisherBaseCorrelation_data
         mul_le_mul haHalf hbHalf hb0.le (by norm_num)
       _ = 1 / 4 := by norm_num
   have hd : 0 < d := by dsimp only [d]; nlinarith
-  have haSq : 0 < 1 - a ^ 2 := by
+  have haSq : 0 < 1 - a ^ (2 : ℕ) := by
     nlinarith [(sq_lt_sq₀ ha0.le (by norm_num)).2 ha1]
-  have hbSq : 0 < 1 - b ^ 2 := by
+  have hbSq : 0 < 1 - b ^ (2 : ℕ) := by
     nlinarith [(sq_lt_sq₀ hb0.le (by norm_num)).2 hb1]
   have hA : 0 < A := by exact mul_pos haSq hbSq
   have hk0 : 0 < k := div_pos (Real.sqrt_pos.2 hA) hd
@@ -301,28 +301,28 @@ private theorem fisherBaseCorrelation_data
     dsimp only [d]
     nlinarith
   have habs : |2 * (a - b)| < d := (abs_lt).2 ⟨hlower, hupper⟩
-  have hsquare : (2 * (a - b)) ^ 2 < d ^ 2 := by
+  have hsquare : (2 * (a - b)) ^ (2 : ℕ) < d ^ (2 : ℕ) := by
     have hs := (sq_lt_sq₀ (abs_nonneg (2 * (a - b))) hd.le).2 habs
     nlinarith [sq_abs (a - b)]
-  have hratio : ((a - b) / d) ^ 2 < 1 / 4 := by
+  have hratio : ((a - b) / d) ^ (2 : ℕ) < 1 / 4 := by
     rw [div_pow, div_lt_iff₀ (sq_pos_of_pos hd)]
     nlinarith
-  have hksq : k ^ 2 = 1 - ((a - b) / d) ^ 2 := by
+  have hksq : k ^ (2 : ℕ) = 1 - ((a - b) / d) ^ (2 : ℕ) := by
     dsimp only [k]
     rw [div_pow, Real.sq_sqrt hA.le]
     field_simp [hd.ne']
     dsimp only [A, d]
     ring
-  have hkSqLower : 3 / 4 < k ^ 2 := by rw [hksq]; nlinarith
+  have hkSqLower : 3 / 4 < k ^ (2 : ℕ) := by rw [hksq]; nlinarith
   have hk1 : k ≤ 1 := by
-    have hratio0 : 0 ≤ ((a - b) / d) ^ 2 := sq_nonneg _
-    have hkSqLe : k ^ 2 ≤ 1 := by rw [hksq]; nlinarith
+    have hratio0 : 0 ≤ ((a - b) / d) ^ (2 : ℕ) := sq_nonneg _
+    have hkSqLe : k ^ (2 : ℕ) ≤ 1 := by rw [hksq]; nlinarith
     nlinarith
   have hkEq : k = 1 ↔ a = b := by
     constructor
     · intro hk
       rw [hk, one_pow] at hksq
-      have : ((a - b) / d) ^ 2 = 0 := by linarith
+      have : ((a - b) / d) ^ (2 : ℕ) = 0 := by linarith
       have : (a - b) / d = 0 := sq_eq_zero_iff.mp this
       exact sub_eq_zero.mp ((div_eq_zero_iff).mp this |>.resolve_right hd.ne')
     · intro hab
@@ -345,7 +345,7 @@ theorem gammaXiFisherBaseCorrelation_le_one (p q : Nat.Primes) :
 /-- Prime localization is substantially narrower than the full Fisher line: the squared base
 correlation is uniformly greater than `3/4`. -/
 theorem gammaXiFisherBaseCorrelation_sq_gt_three_fourths (p q : Nat.Primes) :
-    3 / 4 < gammaXiFisherBaseCorrelation p q ^ 2 := by
+    3 / 4 < gammaXiFisherBaseCorrelation p q ^ (2 : ℕ) := by
   simpa only [gammaXiFisherBaseCorrelation] using
     (fisherBaseCorrelation_data (inversePrime_pos p) (inversePrime_pos q)
       (inversePrime_le_half p) (inversePrime_le_half q)).2.2.1
@@ -374,7 +374,7 @@ theorem gammaSewnXiShiftEndpointUnitTangentKernel_eq_responseFromBase
       xiShiftTangentResponseFromBase (gammaXiFisherBaseCorrelation p q) := by
   let a := (p : ℝ)⁻¹
   let b := (q : ℝ)⁻¹
-  let A := (1 - a ^ 2) * (1 - b ^ 2)
+  let A := (1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ))
   let d := 1 - a * b
   have hp0 : (p : ℝ) ≠ 0 := by exact_mod_cast p.2.ne_zero
   have hq0 : (q : ℝ) ≠ 0 := by exact_mod_cast q.2.ne_zero
@@ -390,32 +390,32 @@ theorem gammaSewnXiShiftEndpointUnitTangentKernel_eq_responseFromBase
   have hd : 0 < d := by dsimp only [d]; nlinarith
   have hA : 0 ≤ A := by
     dsimp only [A]
-    have haSq : 0 ≤ 1 - a ^ 2 := by nlinarith [sq_nonneg (a - 1 / 2)]
-    have hbSq : 0 ≤ 1 - b ^ 2 := by nlinarith [sq_nonneg (b - 1 / 2)]
+    have haSq : 0 ≤ 1 - a ^ (2 : ℕ) := by nlinarith [sq_nonneg (a - 1 / 2)]
+    have hbSq : 0 ≤ 1 - b ^ (2 : ℕ) := by nlinarith [sq_nonneg (b - 1 / 2)]
     exact mul_nonneg haSq hbSq
   rw [gammaSewnXiShiftEndpointUnitTangentKernel,
     gammaSewnXiShiftEndpointTangentKernel_eq_closed]
-  change (p : ℝ) ^ 2 * (q : ℝ) ^ 2 *
-      (a ^ 2 * b ^ 2 * Real.sqrt A *
-        ((1 + a * b) ^ 2 - 2 * (a ^ 2 + b ^ 2)) / d ^ 3) = _
-  have hpa : (p : ℝ) ^ 2 * a ^ 2 = 1 := by
+  change (p : ℝ) ^ (2 : ℕ) * (q : ℝ) ^ (2 : ℕ) *
+      (a ^ (2 : ℕ) * b ^ (2 : ℕ) * Real.sqrt A *
+        ((1 + a * b) ^ (2 : ℕ) - 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ))) / d ^ (3 : ℕ)) = _
+  have hpa : (p : ℝ) ^ (2 : ℕ) * a ^ (2 : ℕ) = 1 := by
     dsimp only [a]
     field_simp [hp0]
-  have hqb : (q : ℝ) ^ 2 * b ^ 2 = 1 := by
+  have hqb : (q : ℝ) ^ (2 : ℕ) * b ^ (2 : ℕ) = 1 := by
     dsimp only [b]
     field_simp [hq0]
-  rw [show (p : ℝ) ^ 2 * (q : ℝ) ^ 2 *
-      (a ^ 2 * b ^ 2 * Real.sqrt A *
-        ((1 + a * b) ^ 2 - 2 * (a ^ 2 + b ^ 2)) / d ^ 3) =
-      Real.sqrt A * ((1 + a * b) ^ 2 - 2 * (a ^ 2 + b ^ 2)) / d ^ 3 by
+  rw [show (p : ℝ) ^ (2 : ℕ) * (q : ℝ) ^ (2 : ℕ) *
+      (a ^ (2 : ℕ) * b ^ (2 : ℕ) * Real.sqrt A *
+        ((1 + a * b) ^ (2 : ℕ) - 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ))) / d ^ (3 : ℕ)) =
+      Real.sqrt A * ((1 + a * b) ^ (2 : ℕ) - 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ))) / d ^ (3 : ℕ) by
     calc
-      _ = (((p : ℝ) ^ 2 * a ^ 2) * ((q : ℝ) ^ 2 * b ^ 2)) *
-          (Real.sqrt A * ((1 + a * b) ^ 2 - 2 * (a ^ 2 + b ^ 2)) / d ^ 3) := by
+      _ = (((p : ℝ) ^ (2 : ℕ) * a ^ (2 : ℕ)) * ((q : ℝ) ^ (2 : ℕ) * b ^ (2 : ℕ))) *
+          (Real.sqrt A * ((1 + a * b) ^ (2 : ℕ) - 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ))) / d ^ (3 : ℕ)) := by
             ring
       _ = _ := by rw [hpa, hqb]; ring]
   unfold xiShiftTangentResponseFromBase gammaXiFisherBaseCorrelation
-  change Real.sqrt A * ((1 + a * b) ^ 2 - 2 * (a ^ 2 + b ^ 2)) / d ^ 3 =
-    (Real.sqrt A / d) * (2 * (Real.sqrt A / d) ^ 2 - 1)
+  change Real.sqrt A * ((1 + a * b) ^ (2 : ℕ) - 2 * (a ^ (2 : ℕ) + b ^ (2 : ℕ))) / d ^ (3 : ℕ) =
+    (Real.sqrt A / d) * (2 * (Real.sqrt A / d) ^ (2 : ℕ) - 1)
   rw [div_pow, Real.sq_sqrt hA]
   field_simp [hd.ne']
   dsimp only [A, d]
@@ -427,37 +427,37 @@ theorem gammaSewnXiShiftEndpointUnitTangentKernel_eq_responseFromBase
 theorem gammaJordanXiResponseGapFromBase_factor {k : ℝ} (hk : 0 ≤ k) :
     gammaJordanXiResponseGapFromBase k =
       Real.sqrt k / 2 * (1 - Real.sqrt k) *
-        (4 * Real.sqrt k ^ 4 + Real.sqrt k ^ 3 +
-          Real.sqrt k ^ 2 + Real.sqrt k - 1) := by
+        (4 * Real.sqrt k ^ (4 : ℕ) + Real.sqrt k ^ (3 : ℕ) +
+          Real.sqrt k ^ (2 : ℕ) + Real.sqrt k - 1) := by
   let x := Real.sqrt k
-  have hxSq : x ^ 2 = k := Real.sq_sqrt hk
+  have hxSq : x ^ (2 : ℕ) = k := Real.sq_sqrt hk
   unfold gammaJordanXiResponseGapFromBase gammaJordanResponseFromBase
     xiShiftTangentResponseFromBase
-  change x * (3 * k ^ 2 - 1) / 2 - k * (2 * k ^ 2 - 1) =
-    x / 2 * (1 - x) * (4 * x ^ 4 + x ^ 3 + x ^ 2 + x - 1)
+  change x * (3 * k ^ (2 : ℕ) - 1) / 2 - k * (2 * k ^ (2 : ℕ) - 1) =
+    x / 2 * (1 - x) * (4 * x ^ (4 : ℕ) + x ^ (3 : ℕ) + x ^ (2 : ℕ) + x - 1)
   rw [← hxSq]
   ring
 
 theorem gammaJordanXiResponseGapFromBase_pos
-    {k : ℝ} (hk0 : 0 < k) (hk1 : k < 1) (hkLoc : 3 / 4 < k ^ 2) :
+    {k : ℝ} (hk0 : 0 < k) (hk1 : k < 1) (hkLoc : 3 / 4 < k ^ (2 : ℕ)) :
     0 < gammaJordanXiResponseGapFromBase k := by
   let x := Real.sqrt k
   have hx0 : 0 < x := Real.sqrt_pos.2 hk0
-  have hxSq : x ^ 2 = k := Real.sq_sqrt hk0.le
-  have hxSqLt : x ^ 2 < 1 := by rw [hxSq]; exact hk1
+  have hxSq : x ^ (2 : ℕ) = k := Real.sq_sqrt hk0.le
+  have hxSqLt : x ^ (2 : ℕ) < 1 := by rw [hxSq]; exact hk1
   have hx1 : x < 1 :=
     (sq_lt_sq₀ hx0.le (by norm_num)).mp (by simpa using hxSqLt)
-  have hxFourth : 3 / 4 < x ^ 4 := by
-    rw [show x ^ 4 = (x ^ 2) ^ 2 by ring, hxSq]
+  have hxFourth : 3 / 4 < x ^ (4 : ℕ) := by
+    rw [show x ^ (4 : ℕ) = (x ^ (2 : ℕ)) ^ (2 : ℕ) by ring, hxSq]
     exact hkLoc
-  have hbracket : 0 < 4 * x ^ 4 + x ^ 3 + x ^ 2 + x - 1 := by
+  have hbracket : 0 < 4 * x ^ (4 : ℕ) + x ^ (3 : ℕ) + x ^ (2 : ℕ) + x - 1 := by
     nlinarith [pow_nonneg hx0.le 3, sq_nonneg x]
   rw [gammaJordanXiResponseGapFromBase_factor hk0.le]
-  change 0 < x / 2 * (1 - x) * (4 * x ^ 4 + x ^ 3 + x ^ 2 + x - 1)
+  change 0 < x / 2 * (1 - x) * (4 * x ^ (4 : ℕ) + x ^ (3 : ℕ) + x ^ (2 : ℕ) + x - 1)
   positivity
 
 theorem gammaJordanXiResponseGapFromBase_nonneg
-    {k : ℝ} (hk0 : 0 < k) (hk1 : k ≤ 1) (hkLoc : 3 / 4 < k ^ 2) :
+    {k : ℝ} (hk0 : 0 < k) (hk1 : k ≤ 1) (hkLoc : 3 / 4 < k ^ (2 : ℕ)) :
     0 ≤ gammaJordanXiResponseGapFromBase k := by
   rcases hk1.eq_or_lt with rfl | hklt
   · norm_num [gammaJordanXiResponseGapFromBase, gammaJordanResponseFromBase,
@@ -465,7 +465,7 @@ theorem gammaJordanXiResponseGapFromBase_nonneg
   · exact (gammaJordanXiResponseGapFromBase_pos hk0 hklt hkLoc).le
 
 theorem gammaJordanXiResponseGapFromBase_eq_zero_iff
-    {k : ℝ} (hk0 : 0 < k) (hk1 : k ≤ 1) (hkLoc : 3 / 4 < k ^ 2) :
+    {k : ℝ} (hk0 : 0 < k) (hk1 : k ≤ 1) (hkLoc : 3 / 4 < k ^ (2 : ℕ)) :
     gammaJordanXiResponseGapFromBase k = 0 ↔ k = 1 := by
   constructor
   · intro hzero
@@ -524,38 +524,38 @@ theorem gammaJordanXiPrimeResponseGap_eq_joined_sub_tangent
 /-- On the localized Fisher chamber the response gap controls at least one quarter of the actual
 tangent correlation defect. -/
 theorem one_fourth_tangentResponseDefect_lt_gammaJordanXiResponseGapFromBase
-    {k : ℝ} (hk0 : 0 < k) (hk1 : k < 1) (hkLoc : 3 / 4 < k ^ 2) :
+    {k : ℝ} (hk0 : 0 < k) (hk1 : k < 1) (hkLoc : 3 / 4 < k ^ (2 : ℕ)) :
     (1 / 4 : ℝ) * (1 - xiShiftTangentResponseFromBase k) <
       gammaJordanXiResponseGapFromBase k := by
   let x := Real.sqrt k
   have hx0 : 0 < x := Real.sqrt_pos.2 hk0
-  have hxSq : x ^ 2 = k := Real.sq_sqrt hk0.le
-  have hxSqLt : x ^ 2 < 1 := by rw [hxSq]; exact hk1
+  have hxSq : x ^ (2 : ℕ) = k := Real.sq_sqrt hk0.le
+  have hxSqLt : x ^ (2 : ℕ) < 1 := by rw [hxSq]; exact hk1
   have hx1 : x < 1 :=
     (sq_lt_sq₀ hx0.le (by norm_num)).mp (by simpa using hxSqLt)
-  have hxFourth : 3 / 4 < x ^ 4 := by
-    rw [show x ^ 4 = (x ^ 2) ^ 2 by ring, hxSq]
+  have hxFourth : 3 / 4 < x ^ (4 : ℕ) := by
+    rw [show x ^ (4 : ℕ) = (x ^ (2 : ℕ)) ^ (2 : ℕ) by ring, hxSq]
     exact hkLoc
   have hxTwoThirds : 2 / 3 < x := by
     by_contra h
     have hxle : x ≤ 2 / 3 := le_of_not_gt h
     have hsquare := (sq_le_sq₀ hx0.le (by norm_num : (0 : ℝ) ≤ 2 / 3)).2 hxle
-    have hfourth : x ^ 4 ≤ (2 / 3 : ℝ) ^ 4 := by
-      nlinarith [sq_nonneg (x ^ 2), sq_nonneg ((2 / 3 : ℝ) ^ 2)]
+    have hfourth : x ^ (4 : ℕ) ≤ (2 / 3 : ℝ) ^ (4 : ℕ) := by
+      nlinarith [sq_nonneg (x ^ (2 : ℕ)), sq_nonneg ((2 / 3 : ℝ) ^ (2 : ℕ))]
     norm_num at hfourth
     nlinarith
-  have hscaled : (9 / 2 : ℝ) * x < 6 * x ^ 5 := by
+  have hscaled : (9 / 2 : ℝ) * x < 6 * x ^ (5 : ℕ) := by
     have h := mul_lt_mul_of_pos_left hxFourth (show 0 < 6 * x by positivity)
     nlinarith
-  have hfactor : 0 < 6 * x ^ 5 - 3 * x - 1 := by nlinarith
+  have hfactor : 0 < 6 * x ^ (5 : ℕ) - 3 * x - 1 := by nlinarith
   have hid :
       4 * gammaJordanXiResponseGapFromBase k -
           (1 - xiShiftTangentResponseFromBase k) =
-        (1 - x) * (6 * x ^ 5 - 3 * x - 1) := by
+        (1 - x) * (6 * x ^ (5 : ℕ) - 3 * x - 1) := by
     unfold gammaJordanXiResponseGapFromBase gammaJordanResponseFromBase
       xiShiftTangentResponseFromBase
-    change 4 * (x * (3 * k ^ 2 - 1) / 2 -
-        k * (2 * k ^ 2 - 1)) - (1 - k * (2 * k ^ 2 - 1)) = _
+    change 4 * (x * (3 * k ^ (2 : ℕ) - 1) / 2 -
+        k * (2 * k ^ (2 : ℕ) - 1)) - (1 - k * (2 * k ^ (2 : ℕ) - 1)) = _
     rw [← hxSq]
     ring
   nlinarith [mul_pos (sub_pos.mpr hx1) hfactor]
@@ -567,34 +567,34 @@ theorem gammaJordanXiResponseGapFromBase_lt_one_third_tangentResponseDefect
       (1 / 3 : ℝ) * (1 - xiShiftTangentResponseFromBase k) := by
   let x := Real.sqrt k
   have hx0 : 0 < x := Real.sqrt_pos.2 hk0
-  have hxSq : x ^ 2 = k := Real.sq_sqrt hk0.le
-  have hxSqLt : x ^ 2 < 1 := by rw [hxSq]; exact hk1
+  have hxSq : x ^ (2 : ℕ) = k := Real.sq_sqrt hk0.le
+  have hxSqLt : x ^ (2 : ℕ) < 1 := by rw [hxSq]; exact hk1
   have hx1 : x < 1 :=
     (sq_lt_sq₀ hx0.le (by norm_num)).mp (by simpa using hxSqLt)
   have hx1le : x ≤ 1 := hx1.le
-  have hxFourthLe : x ^ 4 ≤ 1 := by
+  have hxFourthLe : x ^ (4 : ℕ) ≤ 1 := by
     nlinarith [(sq_le_sq₀ hx0.le (by norm_num)).2 hx1le,
-      sq_nonneg (x ^ 2), sq_nonneg (1 - x ^ 2)]
-  have hpow : 8 * x ^ 5 ≤ 8 * x := by
+      sq_nonneg (x ^ (2 : ℕ)), sq_nonneg (1 - x ^ (2 : ℕ))]
+  have hpow : 8 * x ^ (5 : ℕ) ≤ 8 * x := by
     calc
-      8 * x ^ 5 = (8 * x) * x ^ 4 := by ring
+      8 * x ^ (5 : ℕ) = (8 * x) * x ^ (4 : ℕ) := by ring
       _ ≤ (8 * x) * 1 :=
         mul_le_mul_of_nonneg_left hxFourthLe (by positivity)
       _ = 8 * x := by ring
-  have hpoly : 0 < x ^ 4 + x ^ 3 + x ^ 2 + 2 - 3 * x := by
+  have hpoly : 0 < x ^ (4 : ℕ) + x ^ (3 : ℕ) + x ^ (2 : ℕ) + 2 - 3 * x := by
     nlinarith [sq_nonneg (x - 1), pow_nonneg hx0.le 3, pow_nonneg hx0.le 4,
       sub_pos.mpr hx1]
-  have hfactor : 0 < -8 * x ^ 5 + x ^ 4 + x ^ 3 + x ^ 2 + 5 * x + 2 := by
+  have hfactor : 0 < -8 * x ^ (5 : ℕ) + x ^ (4 : ℕ) + x ^ (3 : ℕ) + x ^ (2 : ℕ) + 5 * x + 2 := by
     nlinarith
   have hid :
       2 * ((1 - xiShiftTangentResponseFromBase k) -
           3 * gammaJordanXiResponseGapFromBase k) =
         (1 - x) *
-          (-8 * x ^ 5 + x ^ 4 + x ^ 3 + x ^ 2 + 5 * x + 2) := by
+          (-8 * x ^ (5 : ℕ) + x ^ (4 : ℕ) + x ^ (3 : ℕ) + x ^ (2 : ℕ) + 5 * x + 2) := by
     unfold gammaJordanXiResponseGapFromBase gammaJordanResponseFromBase
       xiShiftTangentResponseFromBase
-    change 2 * ((1 - k * (2 * k ^ 2 - 1)) -
-      3 * (x * (3 * k ^ 2 - 1) / 2 - k * (2 * k ^ 2 - 1))) = _
+    change 2 * ((1 - k * (2 * k ^ (2 : ℕ) - 1)) -
+      3 * (x * (3 * k ^ (2 : ℕ) - 1) / 2 - k * (2 * k ^ (2 : ℕ) - 1))) = _
     rw [← hxSq]
     ring
   nlinarith [mul_pos (sub_pos.mpr hx1) hfactor]
@@ -613,7 +613,7 @@ theorem gammaJordanXiPrimeResponseGap_bilipschitz_tangentDistanceSq
   have hkne : k ≠ 1 := by
     exact fun h => hpq ((gammaXiFisherBaseCorrelation_eq_one_iff p q).mp h)
   have hk1 : k < 1 := lt_of_le_of_ne hkle hkne
-  have hkLoc : 3 / 4 < k ^ 2 :=
+  have hkLoc : 3 / 4 < k ^ (2 : ℕ) :=
     gammaXiFisherBaseCorrelation_sq_gt_three_fourths p q
   have hlower :=
     one_fourth_tangentResponseDefect_lt_gammaJordanXiResponseGapFromBase
@@ -634,7 +634,7 @@ theorem gammaJordanXiPrimeResponseGap_bilipschitz_tangentDistanceSq
 def gammaJordanXiFiniteResponseGapLaplacian
     (S : Finset Nat.Primes) (slope : Nat.Primes → ℝ) : ℝ :=
   (1 / 2 : ℝ) * ∑ p ∈ S, ∑ q ∈ S,
-    gammaJordanXiPrimeResponseGap p q * (slope p - slope q) ^ 2
+    gammaJordanXiPrimeResponseGap p q * (slope p - slope q) ^ (2 : ℕ)
 
 theorem gammaJordanXiFiniteResponseGapLaplacian_nonneg
     (S : Finset Nat.Primes) (slope : Nat.Primes → ℝ) :
@@ -658,7 +658,7 @@ theorem gammaJordanXiFiniteResponseGapLaplacian_pos
     apply hpqSlope
     rw [hpq]
   have hterm : 0 <
-      gammaJordanXiPrimeResponseGap p q * (slope p - slope q) ^ 2 :=
+      gammaJordanXiPrimeResponseGap p q * (slope p - slope q) ^ (2 : ℕ) :=
     mul_pos ((gammaJordanXiPrimeResponseGap_pos_iff p q).2 hpq)
       (sq_pos_of_ne_zero (sub_ne_zero.mpr hpqSlope))
   unfold gammaJordanXiFiniteResponseGapLaplacian

@@ -56,10 +56,10 @@ theorem norm_bellVec : ‖bellVec‖ = 1 := by
     rw [EuclideanSpace.norm_eq]
     have hsum :
         ∑ i, ‖(((ket 0 : PureState (Qubits 2)) + (ket 3 : PureState (Qubits 2))
-          : StateVector (Qubits 2)) i)‖ ^ 2 = 2 := by
-      refine (Fin.sum_univ_four (f := fun i : Fin (2 ^ 2) =>
+          : StateVector (Qubits 2)) i)‖ ^ (2 : ℕ) = 2 := by
+      refine (Fin.sum_univ_four (f := fun i : Fin (2 ^ (2 : ℕ)) =>
         ‖(((ket 0 : PureState (Qubits 2)) + (ket 3 : PureState (Qubits 2))
-          : StateVector (Qubits 2)) i)‖ ^ 2)).trans ?_
+          : StateVector (Qubits 2)) i)‖ ^ (2 : ℕ))).trans ?_
       simp +decide [PureState.ket_apply]
       all_goals norm_num
     rw [hsum]

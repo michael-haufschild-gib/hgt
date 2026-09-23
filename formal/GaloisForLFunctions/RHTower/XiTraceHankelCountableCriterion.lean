@@ -47,7 +47,7 @@ theorem xiCentralTraceHankel_ofFn (n : ℕ) (a : Fin n → ℝ) :
       intro ρ
       rw [xiCentralTraceHankelTerm]
       change ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ *
-          evalRealPolynomial (Polynomial.ofFn n a) (lam ρ) ^ 2 = _
+          evalRealPolynomial (Polynomial.ofFn n a) (lam ρ) ^ (2 : ℕ) = _
       rw [heval, pow_two]
       simp_rw [Finset.mul_sum, Finset.sum_mul]
       apply Finset.sum_congr rfl
@@ -102,14 +102,14 @@ theorem continuous_xiCentralTraceHankelVector (n : ℕ) :
 /-- Homogeneity of the finite coefficient-vector Xi trace-Hankel form. -/
 theorem xiCentralTraceHankelVector_smul (n : ℕ) (c : ℝ) (a : Fin n → ℝ) :
     xiCentralTraceHankelVector n (c • a) =
-      c ^ 2 * xiCentralTraceHankelVector n a := by
+      c ^ (2 : ℕ) * xiCentralTraceHankelVector n a := by
   simp only [xiCentralTraceHankelVector]
   rw [xiCentralTraceHankel_ofFn, xiCentralTraceHankel_ofFn]
   have hcomplex :
       (∑ i : Fin n, ∑ j : Fin n,
         (((c • a) i * (c • a) j : ℝ) : ℂ) *
           xiCentralReciprocalMoment ((i : ℕ) + (j : ℕ))) =
-      ((c ^ 2 : ℝ) : ℂ) *
+      ((c ^ (2 : ℕ) : ℝ) : ℂ) *
         ∑ i : Fin n, ∑ j : Fin n,
           ((a i * a j : ℝ) : ℂ) *
             xiCentralReciprocalMoment ((i : ℕ) + (j : ℕ)) := by
@@ -167,7 +167,7 @@ theorem xiCentralTraceHankelNonnegative_of_int
     rw [hzreal, show (fun i => (D : ℝ) * (q i : ℝ)) =
         (D : ℝ) • (fun i => (q i : ℝ)) by rfl,
       xiCentralTraceHankelVector_smul] at hscaled
-    have hDsq : 0 < (D : ℝ) ^ 2 := sq_pos_of_pos (by exact_mod_cast hDpos)
+    have hDsq : 0 < (D : ℝ) ^ (2 : ℕ) := sq_pos_of_pos (by exact_mod_cast hDpos)
     exact nonneg_of_mul_nonneg_right hscaled hDsq
   have hall : ∀ x : Fin n → ℝ, 0 ≤ xiCentralTraceHankelVector n x := by
     intro x

@@ -21,16 +21,16 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_boxCores
     (L X : ℕ) (T0 t N : ℝ) (S : Finset ℕ)
     (s : ℕ → ℂ) (D : ℕ → ℂ) :
     ∑ r ∈ S,
-        ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ 2 ≤
+        ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ (2 : ℕ) ≤
       (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
         ∑ box : HeathBrownBoxChoice L X 3, ∑ r ∈ S,
-          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ 2 := by
+          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ (2 : ℕ) := by
   classical
   have hpoint : ∀ r : ℕ,
-      ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ 2 ≤
+      ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ (2 : ℕ) ≤
         (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
           ∑ box : HeathBrownBoxChoice L X 3,
-            ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ 2 := by
+            ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ (2 : ℕ) := by
     intro r
     let f : HeathBrownBoxChoice L X 3 → ℂ := fun box =>
       (if IsHeathBrownBoxEligible L X 3 T0 t box ∧
@@ -42,15 +42,15 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_boxCores
           ∑ box : HeathBrownBoxChoice L X 3, f box := by
       rw [heathBrownWindowRelevantEligibleDyadicAggregate, Finset.sum_mul]
     have hcs :
-        ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ^ 2 ≤
+        ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ^ (2 : ℕ) ≤
           (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
-            ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 := by
+            ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ (2 : ℕ) := by
       have htri : ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ≤
           ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ := norm_sum_le _ _
       have hcauchy :
-          (∑ box : HeathBrownBoxChoice L X 3, ‖f box‖) ^ 2 ≤
+          (∑ box : HeathBrownBoxChoice L X 3, ‖f box‖) ^ (2 : ℕ) ≤
             (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
-              ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 := by
+              ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ (2 : ℕ) := by
         simpa using (sq_sum_le_card_mul_sum_sq
           (s := (Finset.univ : Finset (HeathBrownBoxChoice L X 3)))
           (f := fun box => ‖f box‖))
@@ -58,8 +58,8 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_boxCores
         Finset.sum_nonneg (fun box (_ : box ∈
           (Finset.univ : Finset (HeathBrownBoxChoice L X 3))) => norm_nonneg (f box))]
     have hterm : ∀ box : HeathBrownBoxChoice L X 3,
-        ‖f box‖ ^ 2 ≤ 64 *
-          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ 2 := by
+        ‖f box‖ ^ (2 : ℕ) ≤ 64 *
+          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ (2 : ℕ) := by
       intro box
       by_cases hbox : IsHeathBrownBoxEligible L X 3 T0 t box ∧
           IsHeathBrownBoxWindowRelevant N X 3 box
@@ -86,31 +86,31 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_boxCores
                 (s r) * D r‖))
     rw [hsum]
     calc
-      ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ^ 2 ≤
+      ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ^ (2 : ℕ) ≤
           (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
-            ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 := hcs
+            ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ (2 : ℕ) := hcs
       _ ≤ (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
             ∑ box : HeathBrownBoxChoice L X 3,
               (64 * ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
-                (s r) * D r‖ ^ 2) := by
+                (s r) * D r‖ ^ (2 : ℕ)) := by
           gcongr with box
           exact hterm box
       _ = (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
             ∑ box : HeathBrownBoxChoice L X 3,
               ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
-                (s r) * D r‖ ^ 2 := by
+                (s r) * D r‖ ^ (2 : ℕ) := by
           rw [← Finset.mul_sum]
           ring
   calc
     ∑ r ∈ S,
-        ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ 2 ≤
+        ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ (2 : ℕ) ≤
       ∑ r ∈ S, (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
         ∑ box : HeathBrownBoxChoice L X 3,
-          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ 2 :=
+          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ (2 : ℕ) :=
         Finset.sum_le_sum fun r _ => hpoint r
     _ = (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
         ∑ box : HeathBrownBoxChoice L X 3, ∑ r ∈ S,
-          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ 2 := by
+          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ (2 : ℕ) := by
       rw [← Finset.mul_sum]
       congr 1
       exact Finset.sum_comm
@@ -129,19 +129,19 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_activeBoxCores
     (L X : ℕ) (T0 t N : ℝ) (S : Finset ℕ)
     (s : ℕ → ℂ) (D : ℕ → ℂ) :
     ∑ r ∈ S,
-        ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ 2 ≤
+        ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ (2 : ℕ) ≤
       (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
         ∑ box ∈ menonHeathBrownActiveBoxes L X T0 t N,
           ∑ r ∈ S,
-            ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ 2 := by
+            ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ (2 : ℕ) := by
   classical
   let active : Finset (HeathBrownBoxChoice L X 3) :=
     menonHeathBrownActiveBoxes L X T0 t N
   have hpoint : ∀ r : ℕ,
-      ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ 2 ≤
+      ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ (2 : ℕ) ≤
         (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
           ∑ box ∈ active,
-            ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ 2 := by
+            ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ (2 : ℕ) := by
     intro r
     let f : HeathBrownBoxChoice L X 3 → ℂ := fun box =>
       (if IsHeathBrownBoxEligible L X 3 T0 t box ∧
@@ -153,15 +153,15 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_activeBoxCores
           ∑ box : HeathBrownBoxChoice L X 3, f box := by
       rw [heathBrownWindowRelevantEligibleDyadicAggregate, Finset.sum_mul]
     have hcs :
-        ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ^ 2 ≤
+        ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ^ (2 : ℕ) ≤
           (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
-            ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 := by
+            ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ (2 : ℕ) := by
       have htri : ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ≤
           ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ := norm_sum_le _ _
       have hcauchy :
-          (∑ box : HeathBrownBoxChoice L X 3, ‖f box‖) ^ 2 ≤
+          (∑ box : HeathBrownBoxChoice L X 3, ‖f box‖) ^ (2 : ℕ) ≤
             (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
-              ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 := by
+              ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ (2 : ℕ) := by
         simpa using (sq_sum_le_card_mul_sum_sq
           (s := (Finset.univ : Finset (HeathBrownBoxChoice L X 3)))
           (f := fun box => ‖f box‖))
@@ -169,12 +169,12 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_activeBoxCores
         Finset.sum_nonneg (fun box (_ : box ∈
           (Finset.univ : Finset (HeathBrownBoxChoice L X 3))) => norm_nonneg (f box))]
     have hsumActive :
-        ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 ≤
+        ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ (2 : ℕ) ≤
           64 * ∑ box ∈ active,
-            ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ 2 := by
+            ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ (2 : ℕ) := by
       calc
-        ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 =
-            ∑ box ∈ active, ‖f box‖ ^ 2 := by
+        ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ (2 : ℕ) =
+            ∑ box ∈ active, ‖f box‖ ^ (2 : ℕ) := by
           symm
           refine Finset.sum_subset (Finset.subset_univ active) ?_
           intro box _ hnot
@@ -188,7 +188,7 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_activeBoxCores
           simp [f, hbox]
         _ ≤ ∑ box ∈ active,
             64 * ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
-              (s r) * D r‖ ^ 2 := by
+              (s r) * D r‖ ^ (2 : ℕ) := by
           refine Finset.sum_le_sum fun box hbox => ?_
           have hactive := (Finset.mem_filter.mp hbox).2
           have hbase := norm_heathBrownBoxTerm_three_le_eight_mul_core box (s r)
@@ -209,31 +209,31 @@ theorem sum_normSq_windowRelevantAggregate_mul_le_activeBoxCores
               (heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r)]
         _ = 64 * ∑ box ∈ active,
             ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
-              (s r) * D r‖ ^ 2 := by rw [Finset.mul_sum]
+              (s r) * D r‖ ^ (2 : ℕ) := by rw [Finset.mul_sum]
     rw [hsum]
     have hcard0 : 0 ≤ (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) := by
       positivity
     calc
-      ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ^ 2 ≤
+      ‖∑ box : HeathBrownBoxChoice L X 3, f box‖ ^ (2 : ℕ) ≤
           (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
-            ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ 2 := hcs
+            ∑ box : HeathBrownBoxChoice L X 3, ‖f box‖ ^ (2 : ℕ) := hcs
       _ ≤ (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) *
           (64 * ∑ box ∈ active,
             ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
-              (s r) * D r‖ ^ 2) :=
+              (s r) * D r‖ ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hsumActive hcard0
       _ = _ := by ring
   calc
     ∑ r ∈ S,
-        ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ 2 ≤
+        ‖heathBrownWindowRelevantEligibleDyadicAggregate L X 3 T0 t N (s r) * D r‖ ^ (2 : ℕ) ≤
       ∑ r ∈ S, (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
         ∑ box ∈ active,
-          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ 2 :=
+          ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q (s r) * D r‖ ^ (2 : ℕ) :=
         Finset.sum_le_sum fun r _ => hpoint r
     _ = (Fintype.card (HeathBrownBoxChoice L X 3) : ℝ) * 64 *
         ∑ box ∈ active, ∑ r ∈ S,
           ‖heathBrownDyadicCoreProduct L X 3 box.m box.a box.b box.q
-            (s r) * D r‖ ^ 2 := by
+            (s r) * D r‖ ^ (2 : ℕ) := by
       rw [← Finset.mul_sum]
       congr 1
       exact Finset.sum_comm

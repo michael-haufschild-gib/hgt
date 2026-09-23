@@ -23,9 +23,9 @@ theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_zero_iff_observedPhys
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ) :
-    HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
         (‖inner ℂ ψ ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
-        (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) = 0 ↔
+        (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ (2 : ℕ)) = 0 ↔
       GaloisForLFunctions.PhysicalState
         (soninLogFourierScattering - 1).toLinearMap (X ψ) := by
   rw [GaloisForLFunctions.PhysicalState] at hψ
@@ -45,9 +45,9 @@ theorem soninLogClock_zeroQFI_WardValue_eq_zero
     {ψ : SoninL2} (hψnorm : ‖ψ‖ = 1)
     (hψ : GaloisForLFunctions.PhysicalState
       (soninLogFourierScattering - 1).toLinearMap ψ)
-    (hzero : HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    (hzero : HTGeometry.pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
         (‖inner ℂ ψ ((1 - soninLogFourierInvariantAverage) (X ψ))‖)
-        (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ 2) = 0) :
+        (‖(1 - soninLogFourierInvariantAverage) (X ψ)‖ ^ (2 : ℕ)) = 0) :
     inner ℂ (X ψ)
       (HTGeometry.quantumMasterConstraint (soninLogFourierScattering - 1)
         (A (X ψ))) = 0 := by

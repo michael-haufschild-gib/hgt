@@ -26,8 +26,8 @@ theorem sqrt_quarter_sub_pos {lam : ℝ} (h1 : lam < 1 / 4) :
 
 theorem sqrt_quarter_sub_lt_half {lam : ℝ} (h0 : 0 < lam) :
     Real.sqrt (1 / 4 - lam) < 1 / 2 := by
-  have hlt : 1 / 4 - lam < (1 / 2 : ℝ) ^ 2 := by norm_num; linarith
-  calc Real.sqrt (1 / 4 - lam) < Real.sqrt ((1 / 2 : ℝ) ^ 2) := by
+  have hlt : 1 / 4 - lam < (1 / 2 : ℝ) ^ (2 : ℕ) := by norm_num; linarith
+  calc Real.sqrt (1 / 4 - lam) < Real.sqrt ((1 / 2 : ℝ) ^ (2 : ℕ)) := by
         rcases le_or_gt (1 / 4 - lam) 0 with hneg | hpos
         · rw [Real.sqrt_eq_zero_of_nonpos hneg, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 1/2)]
           norm_num

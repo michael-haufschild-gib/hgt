@@ -38,7 +38,7 @@ def selbergY (s : BoundingSieve) (w : ℕ → ℝ) (l : ℕ) : ℝ :=
 /-- The main term in the diagonalising variables. -/
 theorem mainSum_lambdaSquared_eq_sum_selbergY (s : BoundingSieve) (w : ℕ → ℝ) :
     s.mainSum (lambdaSquared w)
-      = ∑ l ∈ s.prodPrimes.divisors, (s.selbergTerms l)⁻¹ * (selbergY s w l) ^ 2 :=
+      = ∑ l ∈ s.prodPrimes.divisors, (s.selbergTerms l)⁻¹ * (selbergY s w l) ^ (2 : ℕ) :=
   mainSum_lambdaSquared_eq_sum_mul_sum_sq w
 
 /-- **Möbius inversion of the normalisation.**  The hypothesis `w 1 = 1` of
@@ -91,13 +91,13 @@ theorem inv_sum_selbergTerms_le_mainSum (s : BoundingSieve) (w : ℕ → ℝ) (h
       (fun l => (μ l : ℝ) * selbergY s w l) hg
   rw [sum_moebius_mul_selbergY, hw] at hcs
   have hmu : ∑ l ∈ s.prodPrimes.divisors,
-      ((μ l : ℝ) * selbergY s w l) ^ 2 / s.selbergTerms l
-      = ∑ l ∈ s.prodPrimes.divisors, (s.selbergTerms l)⁻¹ * (selbergY s w l) ^ 2 := by
+      ((μ l : ℝ) * selbergY s w l) ^ (2 : ℕ) / s.selbergTerms l
+      = ∑ l ∈ s.prodPrimes.divisors, (s.selbergTerms l)⁻¹ * (selbergY s w l) ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl ?_
     intro l hl
     have hsq : Squarefree l :=
       s.prodPrimes_squarefree.squarefree_of_dvd (Nat.dvd_of_mem_divisors hl)
-    have hmusq : (μ l : ℝ) ^ 2 = 1 := by
+    have hmusq : (μ l : ℝ) ^ (2 : ℕ) = 1 := by
       have h : (μ l : ℤ) = (-1) ^ (ArithmeticFunction.cardFactors l) :=
         moebius_apply_of_squarefree hsq
       have hcast : (μ l : ℝ) = (-1 : ℝ) ^ (ArithmeticFunction.cardFactors l) := by
@@ -207,7 +207,7 @@ theorem selbergY_selbergW (s : BoundingSieve) (y : ℕ → ℝ) {l₀ : ℕ}
 
 /-- Möbius values on divisors of a squarefree modulus are signs. -/
 theorem moebius_sq_eq_one_of_dvd {s : BoundingSieve} {l : ℕ} (hl : l ∣ s.prodPrimes) :
-    (μ l : ℝ) ^ 2 = 1 := by
+    (μ l : ℝ) ^ (2 : ℕ) = 1 := by
   have hsq : Squarefree l := s.prodPrimes_squarefree.squarefree_of_dvd hl
   have h : (μ l : ℤ) = (-1) ^ (ArithmeticFunction.cardFactors l) :=
     moebius_apply_of_squarefree hsq
@@ -244,7 +244,7 @@ theorem selbergOptimalWeight_one (s : BoundingSieve) : selbergOptimalWeight s 1 
     rw [if_pos (one_dvd l), Nat.div_one, selbergOptimalY]
     have hmusq := moebius_sq_eq_one_of_dvd (s := s) (Nat.dvd_of_mem_divisors hl)
     have hrw : (μ l : ℝ) * ((μ l : ℝ) * s.selbergTerms l / selbergMass s)
-        = (μ l : ℝ) ^ 2 * s.selbergTerms l / selbergMass s := by ring
+        = (μ l : ℝ) ^ (2 : ℕ) * s.selbergTerms l / selbergMass s := by ring
     rw [hrw, hmusq, one_mul]
   rw [Finset.sum_congr rfl hterm]
   simp only [div_eq_mul_inv]
@@ -259,8 +259,8 @@ theorem mainSum_selbergOptimalWeight (s : BoundingSieve) :
   have hS := selbergMass_pos s
   rw [mainSum_lambdaSquared_eq_sum_selbergY]
   have hterm : ∀ l ∈ s.prodPrimes.divisors,
-      (s.selbergTerms l)⁻¹ * (selbergY s (selbergOptimalWeight s) l) ^ 2
-        = s.selbergTerms l / (selbergMass s) ^ 2 := by
+      (s.selbergTerms l)⁻¹ * (selbergY s (selbergOptimalWeight s) l) ^ (2 : ℕ)
+        = s.selbergTerms l / (selbergMass s) ^ (2 : ℕ) := by
     intro l hl
     have hdvd := Nat.dvd_of_mem_divisors hl
     have hy : selbergY s (selbergOptimalWeight s) l = selbergOptimalY s l :=

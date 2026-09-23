@@ -88,7 +88,7 @@ theorem exists_even_joint_prolate_eigen_gt_of_trial {c K : ℝ} (hc0 : 0 < c)
         inner_eq_inner_bandComponent c v _ hTmem
       -- the quadratic form is at most `-(c²/2)` times the squared norm
       have hquad : (inner ℝ u (GaloisForLFunctions.RHTower.bandClass
-            (prolateSLAction c Phi) hLPhic) : ℝ) ≤ -K * ‖u‖ ^ 2 := by
+            (prolateSLAction c Phi) hLPhic) : ℝ) ≤ -K * ‖u‖ ^ (2 : ℕ) := by
         by_contra hgt
         push Not at hgt
         have hform : (inner ℝ (prolateOnEvenEigenspace hc0 hμ bu) bu : ℝ)
@@ -104,14 +104,14 @@ theorem exists_even_joint_prolate_eigen_gt_of_trial {c K : ℝ} (hc0 : 0 < c)
                   GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1) : ℝ) from rfl, hval]
           exact real_inner_comm _ _
         have hnorm : ‖bu‖ = ‖u‖ := rfl
-        have hlt : -K * ‖bu‖ ^ 2
+        have hlt : -K * ‖bu‖ ^ (2 : ℕ)
             < (inner ℝ (prolateOnEvenEigenspace hc0 hμ bu) bu : ℝ) := by
           rw [hnorm, hform]
           exact hgt
         obtain ⟨eta, Phi', heta, hsm, hne, heven, hband, hprolate⟩ :=
           exists_joint_even_prolate_eigen_gt hc0 hμ hlt
         exact absurd heta (not_lt.mpr (hcon μ eta Phi' hμ hsm hne heven hband hprolate))
-      have hselfinner : (inner ℝ v u : ℝ) = ‖u‖ ^ 2 := inner_self_bandComponent c v μ
+      have hselfinner : (inner ℝ v u : ℝ) = ‖u‖ ^ (2 : ℕ) := inner_self_bandComponent c v μ
       rw [hmove, hproj, hselfinner]
       exact hquad
   -- sum the estimate

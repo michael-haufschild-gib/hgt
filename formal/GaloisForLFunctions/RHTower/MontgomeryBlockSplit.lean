@@ -94,7 +94,7 @@ theorem montgomeryForm_block_split {x T : ℝ} (hx : 0 < x)
   classical
   rw [montgomeryForm_eq_sum_pairEntry, montgomeryForm_eq_sum_pairEntry]
   refine configuration_energy_block_split (zeroWindow T) A hA (pairEntry x) (zeroAmp x)
-    (fun j k => 1 / (3 + ((j.1 : ℂ).im - (k.1 : ℂ).im) ^ 2)) hΘ
+    (fun j k => 1 / (3 + ((j.1 : ℂ).im - (k.1 : ℂ).im) ^ (2 : ℕ))) hΘ
     (zeroAmp_nonneg hx.le) (fun j k => by positivity) ?_ ?_ ?_ hR ?_
   · intro j k
     rw [show (j.1 : ℂ).im - (k.1 : ℂ).im = -((k.1 : ℂ).im - (j.1 : ℂ).im) by ring, neg_sq]

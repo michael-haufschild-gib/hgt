@@ -15,7 +15,7 @@ noncomputable section
 /-- Every coefficient window has Hankel rank at most two, uniformly in its size. -/
 theorem quadraticResponseCoeff_hankel_rank_le_two (a b : ℂ) (N : ℕ) :
     (seqHankel (quadraticResponseCoeff a b) N).rank ≤ 2 := by
-  let p : Polynomial ℂ := Polynomial.C 1 * Polynomial.X ^ 2 +
+  let p : Polynomial ℂ := Polynomial.C 1 * Polynomial.X ^ (2 : ℕ) +
     Polynomial.C a * Polynomial.X + Polynomial.C b
   have hd : p.natDegree = 2 := Polynomial.natDegree_quadratic (by simp)
   have hp : p ≠ 0 := by
@@ -40,12 +40,12 @@ theorem quadraticResponseCoeff_real_hankel_minor (a b : ℝ) (n : ℕ) :
   linear_combination -quadraticResponseCoeff_cassini a b n
 /-- Positive quadratic response gives strictly negative adjacent moment minors at every depth. -/
 theorem quadraticResponseCoeff_positive_quadratic_negative_minor (a r : ℝ) (n : ℕ) :
-    Matrix.det !![quadraticResponseCoeff a (r ^ 2 + 1) n,
-      quadraticResponseCoeff a (r ^ 2 + 1) (n + 1);
-      quadraticResponseCoeff a (r ^ 2 + 1) (n + 1),
-      quadraticResponseCoeff a (r ^ 2 + 1) (n + 2)] < 0 := by
+    Matrix.det !![quadraticResponseCoeff a (r ^ (2 : ℕ) + 1) n,
+      quadraticResponseCoeff a (r ^ (2 : ℕ) + 1) (n + 1);
+      quadraticResponseCoeff a (r ^ (2 : ℕ) + 1) (n + 1),
+      quadraticResponseCoeff a (r ^ (2 : ℕ) + 1) (n + 2)] < 0 := by
   rw [quadraticResponseCoeff_real_hankel_minor]
-  have h : 0 < (r ^ 2 + 1) ^ (n + 1) := by positivity
+  have h : 0 < (r ^ (2 : ℕ) + 1) ^ (n + 1) := by positivity
   linarith
 end
 end GaloisForLFunctions.HTGeometry

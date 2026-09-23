@@ -9,7 +9,7 @@ The vacuum-Feshbach source interface currently permits an aperture-dependent sca
 Gram value
 
 ```text
-D_a(p) = ||V_a(1)||^2 ||V_a(p)||^2 - |<V_a(1),V_a(p)>|^2.
+D_a(p) = ||V_a(1)||^(2 : ℕ) ||V_a(p)||^(2 : ℕ) - |<V_a(1),V_a(p)>|^(2 : ℕ).
 ```
 
 This is the unnormalised Fubini--Study tangent energy.  It is nonnegative before any comparison
@@ -48,7 +48,7 @@ normalization uses the same zeroth source energy that canonically normalizes the
 def soninAllPrimeCoupledPureStateQuantumFisherValue
     (a : SoninPositiveAperture) (p : Polynomial ℝ) : ℝ :=
   4 * soninAllPrimeCoupledProjectiveTangentEnergy a p /
-    (soninAllPrimeCoupledTraceMoment a 0).re ^ 2
+    (soninAllPrimeCoupledTraceMoment a 0).re ^ (2 : ℕ)
 
 /-- Every coupled pure-state quantum Fisher value is nonnegative. -/
 theorem soninAllPrimeCoupledPureStateQuantumFisherValue_nonneg
@@ -72,7 +72,7 @@ def SoninCoupledPrimeArchVacuumProjectiveFisherUpperBound : Prop :=
               (q.map (Int.castRingHom ℝ)) ≤
           (HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + ε) *
-            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2
+            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ)
 
 /-- The projective-Fisher comparison forces every target vacuum Feshbach remainder to be
 nonnegative.  The contradiction uses only structural source Gram positivity and concrete source
@@ -93,13 +93,13 @@ theorem primeArchVacuumFeshbachIntNonnegative_of_soninCoupledProjectiveFisher
   obtain ⟨a, ha⟩ := h q hq ε hε
   have hmass : 0 < (soninAllPrimeCoupledTraceMoment a.1 0).re :=
     (soninAllPrimeCoupledTraceMoment_zero_re_pos_iff_column_ne_zero a.1).2 a.2
-  have hmassSq : 0 < (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2 :=
+  have hmassSq : 0 < (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ) :=
     sq_pos_of_pos hmass
   have htargetε : target + ε < 0 := by
     dsimp only [ε]
     linarith
   have hright :
-      (target + ε) * (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2 < 0 :=
+      (target + ε) * (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ) < 0 :=
     mul_neg_of_neg_of_pos htargetε hmassSq
   have hleft :
       0 ≤ normalizedPrimeArchMoment 0 *
@@ -110,7 +110,7 @@ theorem primeArchVacuumFeshbachIntNonnegative_of_soninCoupledProjectiveFisher
   change normalizedPrimeArchMoment 0 *
       soninAllPrimeCoupledProjectiveTangentEnergy a.1
         (q.map (Int.castRingHom ℝ)) ≤
-    (target + ε) * (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2 at ha
+    (target + ε) * (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ) at ha
   linarith
 
 /-- **Projective quantum-Fisher coupled-Sonin RH capstone.**  The new source obligation has one
@@ -127,12 +127,12 @@ def SoninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound : Prop :=
   ∀ (q : Polynomial ℤ), q.coeff 0 = 0 →
     ∀ ε : ℝ, 0 < ε →
       ∃ a : SoninCoupledNondegenerateAperture,
-        normalizedPrimeArchMoment 0 ^ 2 *
+        normalizedPrimeArchMoment 0 ^ (2 : ℕ) *
             soninAllPrimeCoupledProjectiveTangentEnergy a.1
               (q.map (Int.castRingHom ℝ)) ≤
           (HTGeometry.momentVacuumRobertsonDeterminant normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + ε) *
-            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2
+            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ)
 
 /-- The quotient-free Robertson projective comparison implies the Feshbach form by rescaling the
 positive error with the target vacuum mass. -/
@@ -152,22 +152,22 @@ theorem soninCoupledPrimeArchVacuumProjectiveFisherUpperBound_of_robertson
         normalizedPrimeArchMoment 0 *
           ((HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + ε) *
-            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2) := by
+            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ)) := by
     calc
       normalizedPrimeArchMoment 0 *
           (normalizedPrimeArchMoment 0 *
             soninAllPrimeCoupledProjectiveTangentEnergy a.1
               (q.map (Int.castRingHom ℝ))) =
-          normalizedPrimeArchMoment 0 ^ 2 *
+          normalizedPrimeArchMoment 0 ^ (2 : ℕ) *
             soninAllPrimeCoupledProjectiveTangentEnergy a.1
               (q.map (Int.castRingHom ℝ)) := by ring
       _ ≤ (HTGeometry.momentVacuumRobertsonDeterminant normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + δ) *
-            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2 := ha
+            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ) := ha
       _ = normalizedPrimeArchMoment 0 *
           ((HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
               (q.map (Int.castRingHom ℝ)) + ε) *
-            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2) := by
+            (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ)) := by
         rw [HTGeometry.momentVacuumRobertsonDeterminant_eq_mul_feshbach
           normalizedPrimeArchMoment normalizedPrimeArchMoment_zero_pos.ne']
         dsimp only [δ]
@@ -188,7 +188,7 @@ theorem soninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound_of_fisher
   have hscaled := mul_le_mul_of_nonneg_left ha
     normalizedPrimeArchMoment_zero_pos.le
   calc
-    normalizedPrimeArchMoment 0 ^ 2 *
+    normalizedPrimeArchMoment 0 ^ (2 : ℕ) *
           soninAllPrimeCoupledProjectiveTangentEnergy a.1
             (q.map (Int.castRingHom ℝ)) =
         normalizedPrimeArchMoment 0 *
@@ -199,10 +199,10 @@ theorem soninCoupledPrimeArchVacuumProjectiveRobertsonUpperBound_of_fisher
         ((HTGeometry.momentVacuumFeshbachRemainder normalizedPrimeArchMoment
             (q.map (Int.castRingHom ℝ)) +
               ε / normalizedPrimeArchMoment 0) *
-          (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2) := hscaled
+          (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ)) := hscaled
     _ = (HTGeometry.momentVacuumRobertsonDeterminant normalizedPrimeArchMoment
             (q.map (Int.castRingHom ℝ)) + ε) *
-          (soninAllPrimeCoupledTraceMoment a.1 0).re ^ 2 := by
+          (soninAllPrimeCoupledTraceMoment a.1 0).re ^ (2 : ℕ) := by
       rw [HTGeometry.momentVacuumRobertsonDeterminant_eq_mul_feshbach
         normalizedPrimeArchMoment normalizedPrimeArchMoment_zero_pos.ne']
       field_simp [normalizedPrimeArchMoment_zero_pos.ne']

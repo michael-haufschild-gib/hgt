@@ -344,12 +344,12 @@ theorem eventually_xiCTaylorThetaTailCrossInterference_lt_scaled_normSq
     htolM.eventually (eventually_lt_nhds (half_pos hc))
   have hsmallInterference : ∀ᶠ n : ℕ in atTop,
       K * (xiCTaylorScheduleTolerance (xiCTaylorAnisotropicScheduleStage sigma n) *
-        (((n + 1 : ℕ) : ℝ) ^ (2 * m))) < epsilon * c ^ 2 / 4 := by
+        (((n + 1 : ℕ) : ℝ) ^ (2 * m))) < epsilon * c ^ (2 : ℕ) / 4 := by
     have htend : Tendsto (fun n : ℕ =>
         K * (xiCTaylorScheduleTolerance (xiCTaylorAnisotropicScheduleStage sigma n) *
           (((n + 1 : ℕ) : ℝ) ^ (2 * m)))) atTop (𝓝 0) := by
       simpa using htolTwoM.const_mul K
-    have htarget : 0 < epsilon * c ^ 2 / 4 := by positivity
+    have htarget : 0 < epsilon * c ^ (2 : ℕ) / 4 := by positivity
     exact htend.eventually (eventually_lt_nhds htarget)
   filter_upwards [hvalueLower, hderivUpper, hvalueUpper,
     hsmallValue, hsmallInterference] with n hnLower hnDeriv hnValue hnSmall hnInterference
@@ -416,38 +416,38 @@ theorem eventually_xiCTaylorThetaTailCrossInterference_lt_scaled_normSq
       _ ≤ K * tol := by
         dsimp [K]
         nlinarith [htolPos.le, htolOne]
-  have hnInterference' : K * (tol * q ^ (2 * m)) < epsilon * c ^ 2 / 4 := by
+  have hnInterference' : K * (tol * q ^ (2 * m)) < epsilon * c ^ (2 : ℕ) / 4 := by
     simpa only [K, tol, q, k, m] using hnInterference
   have hcrossVsBase : K * tol <
-      (epsilon * q) * (c / (2 * q ^ m)) ^ 2 := by
+      (epsilon * q) * (c / (2 * q ^ m)) ^ (2 : ℕ) := by
     have hqOne : 1 ≤ q := by dsimp [q]; exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
-    have hpowEq : q ^ (2 * m) = (q ^ m) ^ 2 := by
+    have hpowEq : q ^ (2 * m) = (q ^ m) ^ (2 : ℕ) := by
       rw [show 2 * m = m * 2 by omega, pow_mul]
-    rw [show (epsilon * q) * (c / (2 * q ^ m)) ^ 2 =
-        (epsilon * q * c ^ 2 / 4) / (q ^ m) ^ 2 by
+    rw [show (epsilon * q) * (c / (2 * q ^ m)) ^ (2 : ℕ) =
+        (epsilon * q * c ^ (2 : ℕ) / 4) / (q ^ m) ^ (2 : ℕ) by
           field_simp
           ring]
     rw [lt_div_iff₀ (sq_pos_of_pos hqpow)]
     rw [hpowEq] at hnInterference'
-    have hnInterference'' : K * tol * (q ^ m) ^ 2 < epsilon * c ^ 2 / 4 := by
+    have hnInterference'' : K * tol * (q ^ m) ^ (2 : ℕ) < epsilon * c ^ (2 : ℕ) / 4 := by
       calc
-        K * tol * (q ^ m) ^ 2 = K * (tol * (q ^ m) ^ 2) := by ring
-        _ < epsilon * c ^ 2 / 4 := hnInterference'
-    have htargetMono : epsilon * c ^ 2 / 4 ≤ epsilon * q * c ^ 2 / 4 := by
-      have hnonneg : 0 ≤ epsilon * c ^ 2 / 4 := by positivity
+        K * tol * (q ^ m) ^ (2 : ℕ) = K * (tol * (q ^ m) ^ (2 : ℕ)) := by ring
+        _ < epsilon * c ^ (2 : ℕ) / 4 := hnInterference'
+    have htargetMono : epsilon * c ^ (2 : ℕ) / 4 ≤ epsilon * q * c ^ (2 : ℕ) / 4 := by
+      have hnonneg : 0 ≤ epsilon * c ^ (2 : ℕ) / 4 := by positivity
       calc
-        epsilon * c ^ 2 / 4 = 1 * (epsilon * c ^ 2 / 4) := by ring
-        _ ≤ q * (epsilon * c ^ 2 / 4) :=
+        epsilon * c ^ (2 : ℕ) / 4 = 1 * (epsilon * c ^ (2 : ℕ) / 4) := by ring
+        _ ≤ q * (epsilon * c ^ (2 : ℕ) / 4) :=
           mul_le_mul_of_nonneg_right hqOne hnonneg
-        _ = epsilon * q * c ^ 2 / 4 := by ring
+        _ = epsilon * q * c ^ (2 : ℕ) / 4 := by ring
     exact hnInterference''.trans_le htargetMono
-  have hbaseSq : (c / (2 * q ^ m)) ^ 2 ≤ ‖P.eval z‖ ^ 2 := by
+  have hbaseSq : (c / (2 * q ^ m)) ^ (2 : ℕ) ≤ ‖P.eval z‖ ^ (2 : ℕ) := by
     have ha : 0 ≤ c / (2 * q ^ m) := by positivity
     have hb : 0 ≤ ‖P.eval z‖ := norm_nonneg _
     nlinarith [mul_nonneg (sub_nonneg.mpr hPValueLower.le) (add_nonneg hb ha)]
   calc
     xiCTaylorThetaTailCrossInterference d z ≤ K * tol := hcrossUpper
-    _ < (epsilon * q) * (c / (2 * q ^ m)) ^ 2 := hcrossVsBase
+    _ < (epsilon * q) * (c / (2 * q ^ m)) ^ (2 : ℕ) := hcrossVsBase
     _ ≤ (epsilon * q) * Complex.normSq (P.eval z) := by
       rw [Complex.normSq_eq_norm_sq]
       exact mul_le_mul_of_nonneg_left hbaseSq (mul_nonneg hepsilon.le hq.le)

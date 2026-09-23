@@ -117,14 +117,14 @@ theorem xiThermalNode_le_primeArchEndpointHausdorffRadius (q : XiZeroCopy) :
   have hC : 0 < C := xiEndpointCompletedCurvature_pos
   have hC1 : 0 < 1 - C := sub_pos.mpr xiEndpointCompletedCurvature_lt_one
   have hheight := xiZeroCopy_im_sq_ge_endpoint_source_inverse_gap q
-  change 1 / C - 1 ≤ (q.1 : ℂ).im ^ 2 at hheight
-  have hspec : (1 - C) / C ≤ ‖xiSpectralPoint q‖ ^ 2 := by
+  change 1 / C - 1 ≤ (q.1 : ℂ).im ^ (2 : ℕ) at hheight
+  have hspec : (1 - C) / C ≤ ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     rw [norm_xiSpectralPoint, Complex.sq_norm, Complex.normSq_apply]
     norm_num
     have heq : (1 - C) / C = 1 / C - 1 := by field_simp
     rw [heq]
     nlinarith [sq_nonneg ((q.1 : ℂ).re - 1 / 2)]
-  have hspecpos : 0 < ‖xiSpectralPoint q‖ ^ 2 :=
+  have hspecpos : 0 < ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
     sq_pos_of_pos (norm_pos_iff.mpr (xiSpectralPoint_ne_zero q))
   have hnorm : ‖xiZeroCopyReciprocalSquare q‖ ≤ C / (1 - C) := by
     rw [xiZeroCopyReciprocalSquare, norm_pow, norm_inv, inv_pow]

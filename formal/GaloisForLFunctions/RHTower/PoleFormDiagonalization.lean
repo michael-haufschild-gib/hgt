@@ -61,10 +61,10 @@ namespace RHTower
 /-- **Exact diagonalization of the pole form.**  With `⟨h,e₊⟩ = P + Q` and `⟨h,e₋⟩ = P - Q`, where
 `P = ⟨h,cosh(·/2)⟩` and `Q = ⟨h,sinh(·/2)⟩`, the rank-two pole form becomes a difference of
 squares. -/
-theorem pole_diagonalize (P Q : ℝ) : 2 * (P + Q) * (P - Q) = 2 * P ^ 2 - 2 * Q ^ 2 := by ring
+theorem pole_diagonalize (P Q : ℝ) : 2 * (P + Q) * (P - Q) = 2 * P ^ (2 : ℕ) - 2 * Q ^ (2 : ℕ) := by ring
 
 /-- `sinh²(u/2) = (cosh u - 1)/2`. -/
-theorem sinh_half_sq (u : ℝ) : Real.sinh (u / 2) ^ 2 = (Real.cosh u - 1) / 2 := by
+theorem sinh_half_sq (u : ℝ) : Real.sinh (u / 2) ^ (2 : ℕ) = (Real.cosh u - 1) / 2 := by
   exact HTGeometry.sinh_half_sq u
 
 /-- `sinh x ≤ x cosh x` for `x ≥ 0`: the difference has derivative `x sinh x ≥ 0` and vanishes at
@@ -93,21 +93,21 @@ theorem sinh_sub_self_nonneg {ℓ : ℝ} (hℓ : 0 ≤ ℓ) : 0 ≤ Real.sinh �
 
 /-- **Cubic smallness.**  `cosh t - 1 ≤ (t²/2)·cosh t`, the pointwise input to
 `sinh ℓ - ℓ ≤ (ℓ³/6)cosh ℓ`. -/
-theorem cosh_sub_one_le {t : ℝ} (ht : 0 ≤ t) : Real.cosh t - 1 ≤ t ^ 2 / 2 * Real.cosh t := by
+theorem cosh_sub_one_le {t : ℝ} (ht : 0 ≤ t) : Real.cosh t - 1 ≤ t ^ (2 : ℕ) / 2 * Real.cosh t := by
   exact HTGeometry.cosh_sub_one_le ht
 
 /-- **The baseline dichotomy.**  Either the even functional carries mass, in which case the pole form
 contributes `2P²`, or it does not, in which case the high-frequency fraction is near one and the
 archimedean average is near `σ(Ξ)`.  Stated as the explicit trade-off. -/
 theorem baseline_dichotomy {P Q σ₀ σΞ β Ξ ℓ A : ℝ}
-    (hQ : Q ^ 2 ≤ Real.sinh ℓ - ℓ)
-    (hβ : 1 - Ξ / Real.pi * P ^ 2 - 2 / (3 * Real.pi) * ℓ ^ 3 * Ξ ^ 3 ≤ β)
+    (hQ : Q ^ (2 : ℕ) ≤ Real.sinh ℓ - ℓ)
+    (hβ : 1 - Ξ / Real.pi * P ^ (2 : ℕ) - 2 / (3 * Real.pi) * ℓ ^ (3 : ℕ) * Ξ ^ (3 : ℕ) ≤ β)
     (hmono : σ₀ ≤ σΞ)
     (hA : σ₀ + β * (σΞ - σ₀) ≤ A) :
-    2 * P ^ 2 - 2 * (Real.sinh ℓ - ℓ) + σ₀
-        + (1 - Ξ / Real.pi * P ^ 2 - 2 / (3 * Real.pi) * ℓ ^ 3 * Ξ ^ 3) * (σΞ - σ₀)
-      ≤ 2 * P ^ 2 - 2 * Q ^ 2 + A := by
-  have hstep : (1 - Ξ / Real.pi * P ^ 2 - 2 / (3 * Real.pi) * ℓ ^ 3 * Ξ ^ 3) * (σΞ - σ₀)
+    2 * P ^ (2 : ℕ) - 2 * (Real.sinh ℓ - ℓ) + σ₀
+        + (1 - Ξ / Real.pi * P ^ (2 : ℕ) - 2 / (3 * Real.pi) * ℓ ^ (3 : ℕ) * Ξ ^ (3 : ℕ)) * (σΞ - σ₀)
+      ≤ 2 * P ^ (2 : ℕ) - 2 * Q ^ (2 : ℕ) + A := by
+  have hstep : (1 - Ξ / Real.pi * P ^ (2 : ℕ) - 2 / (3 * Real.pi) * ℓ ^ (3 : ℕ) * Ξ ^ (3 : ℕ)) * (σΞ - σ₀)
       ≤ β * (σΞ - σ₀) := mul_le_mul_of_nonneg_right hβ (by linarith)
   linarith
 

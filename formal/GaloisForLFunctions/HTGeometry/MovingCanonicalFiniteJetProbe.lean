@@ -213,7 +213,7 @@ theorem inverseSquareCauchyJetRealLinearCombination_surjective_of_card
         (∑ j : Fin 2,
           (if j.1 = 1 then ((2 * r : ℝ) : ℂ) else 0) *
             (((t a : ℂ) - 0)⁻¹) ^ (j.1 + 1)) =
-          ((2 * r : ℝ) : ℂ) * (((t a : ℂ) - 0)⁻¹) ^ 2 := by
+          ((2 * r : ℝ) : ℂ) * (((t a : ℂ) - 0)⁻¹) ^ (2 : ℕ) := by
       rw [Fin.sum_univ_two]
       simp
     rw [hpole]
@@ -223,7 +223,7 @@ theorem inverseSquareCauchyJetRealLinearCombination_surjective_of_card
           c i j * (((t a : ℂ) - x i)⁻¹) ^ (j.1 + 1)) +
         (∑ i, ∑ j : Fin (n i),
           star (c i j) * (((t a : ℂ) - star (x i))⁻¹) ^ (j.1 + 1))) +
-        ((2 * r : ℝ) : ℂ) * (((t a : ℂ) - 0)⁻¹) ^ 2 = 0
+        ((2 * r : ℝ) : ℂ) * (((t a : ℂ) - 0)⁻¹) ^ (2 : ℕ) = 0
     let R : ℂ := ∑ i, ∑ j : Fin (n i),
       c i j * (((t a : ℂ) - x i)⁻¹) ^ (j.1 + 1)
     have hconj : (∑ i, ∑ j : Fin (n i),
@@ -232,10 +232,10 @@ theorem inverseSquareCauchyJetRealLinearCombination_surjective_of_card
       simp [R]
     change (R + (∑ i, ∑ j : Fin (n i),
       star (c i j) * (((t a : ℂ) - star (x i))⁻¹) ^ (j.1 + 1))) +
-        ((2 * r : ℝ) : ℂ) * (((t a : ℂ) - 0)⁻¹) ^ 2 = 0
+        ((2 * r : ℝ) : ℂ) * (((t a : ℂ) - 0)⁻¹) ^ (2 : ℕ) = 0
     rw [hconj]
-    have hqC : (((t a : ℂ) - 0)⁻¹) ^ 2 =
-        ((1 / (t a) ^ 2 : ℝ) : ℂ) := by
+    have hqC : (((t a : ℂ) - 0)⁻¹) ^ (2 : ℕ) =
+        ((1 / (t a) ^ (2 : ℕ) : ℝ) : ℂ) := by
       simp only [sub_zero, ← Complex.ofReal_inv, ← Complex.ofReal_pow]
       congr 1
       simp [one_div, inv_pow]

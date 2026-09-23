@@ -146,7 +146,7 @@ def gammaPoleSecondSubprincipalBoundarySymbol
         (MvPolynomial.pderiv (0 : Fin (n + 2))
           (MvPolynomial.pderiv (0 : Fin (n + 2)) P)) *
       (-LaurentPolynomial.C
-        (MvPolynomial.X 0 : MvPolynomial ℕ GammaPoleRationalBase)) ^ 2
+        (MvPolynomial.X 0 : MvPolynomial ℕ GammaPoleRationalBase)) ^ (2 : ℕ)
 
 /-- Actual pole-index germ obtained from the symbolic second boundary. -/
 def gammaPoleSecondSubprincipalBoundaryGerm
@@ -181,7 +181,7 @@ theorem gammaPoleSecondSubprincipalBoundaryGerm_eq_sequence
         gammaPolePrincipalReflectionGerm (n + 1)
           (MvPolynomial.pderiv (0 : Fin (n + 2))
             (MvPolynomial.pderiv (0 : Fin (n + 2)) P)) *
-        gammaPoleFinitePartJetGerm 0 ^ 2 = _
+        gammaPoleFinitePartJetGerm 0 ^ (2 : ℕ) = _
   rw [gammaPolePrincipalReflectionGerm_eq_sequence,
     gammaPolePrincipalReflectionGerm_eq_sequence,
     gammaPolePrincipalReflectionGerm_eq_sequence]
@@ -199,7 +199,7 @@ theorem gammaPoleSecondSubprincipalBoundaryGerm_eq_sequence
           (fun j : Fin (n + 2) => gammaPoleJetPrincipalCoefficient (N - 1) (j : ℕ))
           (MvPolynomial.pderiv (0 : Fin (n + 2))
             (MvPolynomial.pderiv (0 : Fin (n + 2)) P))) : NatGerm) *
-        gammaPoleFinitePartJetGerm 0 ^ 2 = _
+        gammaPoleFinitePartJetGerm 0 ^ (2 : ℕ) = _
   simp_rw [complexNatGerm_eq_constGerm]
   change
     (↑(fun N : ℕ => MvPolynomial.eval
@@ -216,7 +216,7 @@ theorem gammaPoleSecondSubprincipalBoundaryGerm_eq_sequence
           (fun j : Fin (n + 2) => gammaPoleJetPrincipalCoefficient (N - 1) (j : ℕ))
           (MvPolynomial.pderiv (0 : Fin (n + 2))
             (MvPolynomial.pderiv (0 : Fin (n + 2)) P))) : NatGerm) *
-        (↑(fun N : ℕ => gammaPoleJetRegularRemainder (N - 1) 0 0) : NatGerm) ^ 2 = _
+        (↑(fun N : ℕ => gammaPoleJetRegularRemainder (N - 1) 0 0) : NatGerm) ^ (2 : ℕ) = _
   rw [← Filter.Germ.coe_mul, ← Filter.Germ.coe_mul,
     ← Filter.Germ.coe_mul, ← Filter.Germ.coe_pow, ← Filter.Germ.coe_mul,
     ← Filter.Germ.coe_add, ← Filter.Germ.coe_add, Filter.Germ.coe_eq]

@@ -35,7 +35,7 @@ theorem norm_LSeries_moebius_le_uniform :
 
 
 /-- The Möbius values have modulus at most one. -/
-theorem norm_moebius_le_one (n : ℕ) : ‖((ArithmeticFunction.moebius n : ℤ) : ℂ)‖ ≤ 1 := by
+theorem norm_moebius_le_one_moebiusPartialSumBound (n : ℕ) : ‖((ArithmeticFunction.moebius n : ℤ) : ℂ)‖ ≤ 1 := by
   have h : (ArithmeticFunction.moebius n : ℤ) = 0 ∨ (ArithmeticFunction.moebius n : ℤ) = 1
       ∨ (ArithmeticFunction.moebius n : ℤ) = -1 := by
     rcases eq_or_ne (ArithmeticFunction.moebius n) 0 with h | h
@@ -54,7 +54,7 @@ theorem norm_moebius_partialSum_le_trivial (s : ℂ) (N : ℕ) :
       ≤ ∑ n ∈ Finset.Icc 1 N, ‖LSeries.term (fun _ : ℕ => (1 : ℂ)) s n‖ := by
   refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun n _ => ?_)
   refine LSeries.norm_term_le s ?_
-  simpa using norm_moebius_le_one n
+  simpa using norm_moebius_le_one_moebiusPartialSumBound n
 
 
 /-- **The abscissa transfer.**  A truncated Dirichlet polynomial on the one-line is bounded by the
@@ -133,7 +133,7 @@ theorem norm_mertens_sub_perron_integral_le (N : ℕ) {σ T : ℝ} (hσ : 1 ≤ 
   have hmin : min N N = N := min_self N
   have hmain := RHTower.Sieve.norm_sum_Icc_sub_perron_integral_near_le
     (c := fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) (M := N) (N := N)
-    (B := 1) norm_moebius_le_one hσ hT
+    (B := 1) norm_moebius_le_one_moebiusPartialSumBound hσ hT
   rw [hmin, one_mul] at hmain
   exact hmain
 

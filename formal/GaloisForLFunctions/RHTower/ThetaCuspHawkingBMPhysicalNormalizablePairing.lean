@@ -162,7 +162,7 @@ theorem physicalNormalizableOuterPairing_residue_and_restoration_below (q : XiZe
   have hNjoin := D4BMFundamentalNorm.physicalFundamentalNorm_join q side T hT
   have hvalue : physicalIncomingPoleAmplitude q branch side a*incomingNormFinitePart chi b w+
       (fundamentalSourceMoment w s a*clearedOnset s w)*
-        (∫ t in Ioo T (0:ℝ), normalizable w chi (horizonCoordinate t)^2)/
+        (∫ t in Ioo T (0:ℝ), normalizable w chi (horizonCoordinate t)^(2 : ℕ))/
           physicalFundamentalDenominatorSlope q branch side=
       physicalIncomingPoleAmplitude q branch side a*D4BMFundamentalNorm.normFinitePart w := by
     change incomingNormFinitePart chi (horizonCoordinate T) w+_=D4BMFundamentalNorm.normFinitePart w at hNjoin

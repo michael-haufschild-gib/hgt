@@ -72,9 +72,9 @@ theorem egbFixedChargeAGibbsOddKernel_dominated (w φ : ℝ) :
   have hNabs : |N| ≤ 4 := by rw [abs_of_pos hN]; exact hNhi.le
   have hRabs : |R| ≤ 2 := abs_le.mpr ⟨hRlo.le, hRhi.le⟩
   have htabs : |t| ≤ 1 := abs_le.mpr ht
-  have ht2 : t ^ 2 ≤ 1 := by
+  have ht2 : t ^ (2 : ℕ) ≤ 1 := by
     nlinarith [mul_nonneg (show 0 ≤ 1 - t by linarith [ht.2]) (show 0 ≤ t + 1 by linarith [ht.1])]
-  have htf : |t ^ 2 - 1| ≤ 1 := by
+  have htf : |t ^ (2 : ℕ) - 1| ≤ 1 := by
     apply abs_le.mpr
     constructor <;> nlinarith [sq_nonneg t]
   have hterm1 : |EA * E * L * t| ≤ 20 := by
@@ -98,35 +98,35 @@ theorem egbFixedChargeAGibbsOddKernel_dominated (w φ : ℝ) :
         mul_le_mul (mul_le_mul (mul_le_mul hA0abs hL0abs (abs_nonneg _) hA0.le) htabs (abs_nonneg _) (by positivity))
           hE.2 (abs_nonneg _) (by positivity)
       _ = _ := by ring
-  have hNr : |N * t ^ 2 + R| ≤ 6 := by
-    have hNt : |N * t ^ 2| ≤ 4 := by
+  have hNr : |N * t ^ (2 : ℕ) + R| ≤ 6 := by
+    have hNt : |N * t ^ (2 : ℕ)| ≤ 4 := by
       rw [abs_mul, abs_of_nonneg (sq_nonneg t)]
       calc
         _ ≤ 4 * 1 := mul_le_mul hNabs ht2 (sq_nonneg t) (by norm_num)
         _ = _ := by norm_num
     calc
-      _ ≤ |N * t ^ 2| + |R| := abs_add_le _ _
+      _ ≤ |N * t ^ (2 : ℕ)| + |R| := abs_add_le _ _
       _ ≤ 4 + 2 := add_le_add hNt hRabs
       _ = _ := by norm_num
-  have hterm4 : |A * E * (N * t ^ 2 + R)| ≤ 24 * (A0 + 1) := by
+  have hterm4 : |A * E * (N * t ^ (2 : ℕ) + R)| ≤ 24 * (A0 + 1) := by
     simp only [abs_mul]
     calc
       _ ≤ ((A0 + 1) * 4) * 6 :=
         mul_le_mul (mul_le_mul hAabs hEabs (abs_nonneg _) (by positivity)) hNr (abs_nonneg _) (by positivity)
       _ = _ := by ring
-  have hsum : |EA * E * L * t + A0 * EL * E * t + A0 * L0 * t * ER + A * E * (N * t ^ 2 + R)| ≤
+  have hsum : |EA * E * L * t + A0 * EL * E * t + A0 * L0 * t * ER + A * E * (N * t ^ (2 : ℕ) + R)| ≤
       80 * (A0 + 1) := by
     calc
-      _ ≤ |EA * E * L * t + A0 * EL * E * t + A0 * L0 * t * ER| + |A * E * (N * t ^ 2 + R)| := abs_add_le _ _
-      _ ≤ (|EA * E * L * t + A0 * EL * E * t| + |A0 * L0 * t * ER|) + |A * E * (N * t ^ 2 + R)| :=
+      _ ≤ |EA * E * L * t + A0 * EL * E * t + A0 * L0 * t * ER| + |A * E * (N * t ^ (2 : ℕ) + R)| := abs_add_le _ _
+      _ ≤ (|EA * E * L * t + A0 * EL * E * t| + |A0 * L0 * t * ER|) + |A * E * (N * t ^ (2 : ℕ) + R)| :=
         add_le_add (abs_add_le _ _) le_rfl
-      _ ≤ ((|EA * E * L * t| + |A0 * EL * E * t|) + |A0 * L0 * t * ER|) + |A * E * (N * t ^ 2 + R)| :=
+      _ ≤ ((|EA * E * L * t| + |A0 * EL * E * t|) + |A0 * L0 * t * ER|) + |A * E * (N * t ^ (2 : ℕ) + R)| :=
         add_le_add (add_le_add (abs_add_le _ _) le_rfl) le_rfl
       _ ≤ ((20 + 4 * A0) + 48 * A0) + 24 * (A0 + 1) :=
         add_le_add (add_le_add (add_le_add hterm1 hterm2) hterm3) hterm4
       _ ≤ _ := by linarith
   rw [egbFixedChargeAGibbsOddKernel_decomposition]
-  change |(t ^ 2 - 1) * (EA * E * L * t + A0 * EL * E * t + A0 * L0 * t * ER + A * E * (N * t ^ 2 + R))| ≤ 80 * (A0 + 1)
+  change |(t ^ (2 : ℕ) - 1) * (EA * E * L * t + A0 * EL * E * t + A0 * L0 * t * ER + A * E * (N * t ^ (2 : ℕ) + R))| ≤ 80 * (A0 + 1)
   rw [abs_mul]
   calc
     _ ≤ 1 * (80 * (A0 + 1)) := mul_le_mul htf hsum (abs_nonneg _) (by norm_num)

@@ -36,7 +36,7 @@ theorem wide_re_inv_ge {γ : ℝ} {ρ : ℂ}
   have hnorm : ‖w‖ ≤ 21 / 40 := by
     rw [hwdef, ← norm_neg]
     simpa using hd
-  have hnormsq : Complex.normSq w = ‖w‖ ^ 2 := Complex.normSq_eq_norm_sq w
+  have hnormsq : Complex.normSq w = ‖w‖ ^ (2 : ℕ) := Complex.normSq_eq_norm_sq w
   have hnormpos : (0 : ℝ) < ‖w‖ := norm_pos_iff.mpr hw0
   have hsq : Complex.normSq w ≤ 441 / 1600 := by
     rw [hnormsq]; nlinarith [hnormpos, hnorm]

@@ -229,7 +229,7 @@ theorem norm_complexTranslatedPolyGauss_le (P : Polynomial ℝ) (z : ℂ) :
 
 /-- The even polynomial `x ↦ P(x²)` appearing in the completed-source heat filter. -/
 def evenSquarePolynomial (P : Polynomial ℝ) : Polynomial ℝ :=
-  P.comp (Polynomial.X ^ 2)
+  P.comp (Polynomial.X ^ (2 : ℕ))
 
 @[simp] theorem natDegree_evenSquarePolynomial (P : Polynomial ℝ) :
     (evenSquarePolynomial P).natDegree = 2 * P.natDegree := by
@@ -240,7 +240,7 @@ def evenSquarePolynomial (P : Polynomial ℝ) : Polynomial ℝ :=
 theorem complexTranslatedEvenPolyGauss_apply
     (P : Polynomial ℝ) (z : ℂ) (x : ℝ) :
     complexTranslatedPolyGauss (evenSquarePolynomial P) z x =
-      Polynomial.eval₂ (algebraMap ℝ ℂ) (((x : ℂ) + z) ^ 2) P * gaussReal x := by
+      Polynomial.eval₂ (algebraMap ℝ ℂ) (((x : ℂ) + z) ^ (2 : ℕ)) P * gaussReal x := by
   rw [complexTranslatedPolyGauss_apply, evenSquarePolynomial, Polynomial.eval₂_comp,
     Polynomial.eval₂_pow, Polynomial.eval₂_X]
 

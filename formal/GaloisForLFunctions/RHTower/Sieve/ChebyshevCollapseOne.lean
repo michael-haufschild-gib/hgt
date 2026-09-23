@@ -39,23 +39,23 @@ theorem one_add_width_mul_factor_le {Cm N Z : ℝ} (hCm : 0 ≤ Cm) (hN0 : 0 < N
 
 /-- **The polynomial is absorbed**, at the cost of one last halving of the exponent. -/
 theorem sq_mul_exp_neg_le {s : ℝ} (hs : 0 ≤ s) :
-    s ^ 2 * Real.exp (-(s / 240000))
-      ≤ 4 * 480000 ^ 2 * Real.exp (-(s / 480000)) := by
+    s ^ (2 : ℕ) * Real.exp (-(s / 240000))
+      ≤ 4 * 480000 ^ (2 : ℕ) * Real.exp (-(s / 480000)) := by
   have hbound := sq_le_exp_div_gen hs (k := 480000) (by norm_num)
   have hexp : Real.exp (s / 480000) * Real.exp (-(s / 240000))
       = Real.exp (-(s / 480000)) := by
     rw [← Real.exp_add]
     ring_nf
   have hpos : (0 : ℝ) < Real.exp (-(s / 240000)) := Real.exp_pos _
-  calc s ^ 2 * Real.exp (-(s / 240000))
-      ≤ 4 * 480000 ^ 2 * Real.exp (s / 480000) * Real.exp (-(s / 240000)) :=
+  calc s ^ (2 : ℕ) * Real.exp (-(s / 240000))
+      ≤ 4 * 480000 ^ (2 : ℕ) * Real.exp (s / 480000) * Real.exp (-(s / 240000)) :=
         mul_le_mul_of_nonneg_right hbound hpos.le
-    _ = 4 * 480000 ^ 2 * (Real.exp (s / 480000) * Real.exp (-(s / 240000))) := by ring
-    _ = 4 * 480000 ^ 2 * Real.exp (-(s / 480000)) := by rw [hexp]
+    _ = 4 * 480000 ^ (2 : ℕ) * (Real.exp (s / 480000) * Real.exp (-(s / 240000))) := by ring
+    _ = 4 * 480000 ^ (2 : ℕ) * Real.exp (-(s / 480000)) := by rw [hexp]
 
 /-- The truncation height's logarithm, squared, is four times the cutoff's. -/
 theorem sq_log_chebHeightOne (Z : ℝ) (hZ : 0 ≤ Real.log Z) :
-    Real.log (chebHeightOne Z) ^ 2 = 4 * Real.log Z := by
+    Real.log (chebHeightOne Z) ^ (2 : ℕ) = 4 * Real.log Z := by
   rw [log_chebHeightOne]
   have hsq : Real.sqrt (Real.log Z) * Real.sqrt (Real.log Z) = Real.log Z :=
     Real.mul_self_sqrt hZ

@@ -162,7 +162,7 @@ theorem pairAnn_state_zero (d : ℕ) : pairAnn (pairState d 0) = 0 := by
 theorem pairCasimir_state (d n : ℕ) :
     (pairCartan * pairCartan - (2 : ℂ) • pairCartan -
       (4 : ℂ) • (pairCreate * pairAnn)) (pairState d n) =
-      ((d : ℂ) ^ 2 - 1) • pairState d n := by
+      ((d : ℂ) ^ (2 : ℕ) - 1) • pairState d n := by
   rw [pairCasimir_charge]
   simp only [LinearMap.sub_apply, Module.End.mul_apply, pairCharge_state,
     map_smul, Module.End.one_apply, sub_smul, one_smul, smul_smul, pow_two]

@@ -58,8 +58,8 @@ private theorem inverseVariation_partial (g h : ComplexMetricField.Field d) (x :
     ext i j
     simp only [inverse, twoJet, Matrix.neg_apply, matrixPartial, coordDeriv,
       fderiv_fun_neg, neg_apply]
-  rw [he, matrixPartial_mul _ _ x (mul_diff _ _ x hgi hhd) hgi,
-    matrixPartial_mul _ _ x hgi hhd, ComplexMetricField.inverse_partial g x hg hdet]
+  rw [he, matrixPartial_mul_complexMatrixDerivativeRules _ _ x (mul_diff _ _ x hgi hhd) hgi,
+    matrixPartial_mul_complexMatrixDerivativeRules _ _ x hgi hhd, ComplexMetricField.inverse_partial g x hg hdet]
   change -(((twoJet g x).inverseDerivative k * h x + (g x)⁻¹ * (twoJet h x).first k) * (g x)⁻¹ +
     (g x)⁻¹ * h x * (twoJet g x).inverseDerivative k) = _
   simp only [inverseSpatial, inverse, CoordinateMetricTwoJet.inverseDerivative, twoJet]

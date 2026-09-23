@@ -29,7 +29,7 @@ theorem allChannel_phaseStressXY_sum (N : ℕ) {lam : ℝ}
     (z : ℍ) :
     (∑ r : ZMod (N + 1), ∑ s : ZMod (N + 1),
       phaseStressXY N r s f (z : ℂ)) =
-      2 * (((N + 1 : ℕ) : ℝ) ^ 2 - 1) *
+      2 * (((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) - 1) *
         (inner ℂ (sourceDerivative N f 1 z)
           (sourceDerivative N f Complex.I z)).re := by
   simp_rw [phaseStressXY_eq]

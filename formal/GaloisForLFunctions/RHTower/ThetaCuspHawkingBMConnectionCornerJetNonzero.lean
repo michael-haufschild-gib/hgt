@@ -67,12 +67,12 @@ private theorem plusShiftedFactor_im_neg {x t : ℝ}
       linarith
     have hfourth : 3 / t - Real.pi / 2 < 0 := by linarith
     exact hfirst.trans_lt (hsecond.trans_lt (hthird.trans hfourth))
-  have hden1 : 0 < (x - 2) ^ 2 + t ^ 2 := by nlinarith [sq_nonneg (x - 2), sq_pos_of_pos ht0]
-  have hden2 : 0 < (x - 1) ^ 2 + t ^ 2 := by nlinarith [sq_nonneg (x - 1), sq_pos_of_pos ht0]
-  have hr1' : (1 / 2 : ℝ) * (-t / ((x - 2) ^ 2 + t ^ 2)) < 0 :=
+  have hden1 : 0 < (x - 2) ^ (2 : ℕ) + t ^ (2 : ℕ) := by nlinarith [sq_nonneg (x - 2), sq_pos_of_pos ht0]
+  have hden2 : 0 < (x - 1) ^ (2 : ℕ) + t ^ (2 : ℕ) := by nlinarith [sq_nonneg (x - 1), sq_pos_of_pos ht0]
+  have hr1' : (1 / 2 : ℝ) * (-t / ((x - 2) ^ (2 : ℕ) + t ^ (2 : ℕ))) < 0 :=
     mul_neg_of_pos_of_neg (by norm_num)
       (div_neg_of_neg_of_pos (neg_neg_of_pos ht0) hden1)
-  have hr2' : (2 : ℝ) * (-t / ((x - 1) ^ 2 + t ^ 2)) < 0 :=
+  have hr2' : (2 : ℝ) * (-t / ((x - 1) ^ (2 : ℕ) + t ^ (2 : ℕ))) < 0 :=
     mul_neg_of_pos_of_neg (by norm_num)
       (div_neg_of_neg_of_pos (neg_neg_of_pos ht0) hden2)
   unfold plusShiftedFactor
@@ -83,11 +83,11 @@ private theorem plusShiftedFactor_im_neg {x t : ℝ}
   simp only [sub_im, mul_im, add_im, digamma_one_im]
   norm_num
   have hnorm1 : Complex.normSq ((x : ℂ) - 2 + (t : ℂ) * I) =
-      (x - 2) ^ 2 + t ^ 2 := by
+      (x - 2) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     norm_num [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
     ring
   have hnorm2 : Complex.normSq ((x : ℂ) - 1 + (t : ℂ) * I) =
-      (x - 1) ^ 2 + t ^ 2 := by
+      (x - 1) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     norm_num [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
     ring
   rw [hnorm1, hnorm2]
@@ -150,26 +150,26 @@ private theorem minusShiftedFactor_im_neg {x t : ℝ}
       linarith
     have hfourth : 2 / t - Real.pi / 2 < 0 := by linarith
     exact hfirst.trans_lt (hsecond.trans_lt (hthird.trans hfourth))
-  have hdenW : 0 < (x - 2) ^ 2 + t ^ 2 := by
+  have hdenW : 0 < (x - 2) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (x - 2), sq_pos_of_pos ht0]
-  have hdenZ : 0 < (x - 1) ^ 2 + t ^ 2 := by
+  have hdenZ : 0 < (x - 1) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (x - 1), sq_pos_of_pos ht0]
-  have hdenO : 0 < (x - 1 / 2) ^ 2 + t ^ 2 := by
+  have hdenO : 0 < (x - 1 / 2) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (x - 1 / 2), sq_pos_of_pos ht0]
-  have hinvcompare : 1 / ((x - 1 / 2) ^ 2 + t ^ 2) <
-      2 / ((x - 1) ^ 2 + t ^ 2) := by
+  have hinvcompare : 1 / ((x - 1 / 2) ^ (2 : ℕ) + t ^ (2 : ℕ)) <
+      2 / ((x - 1) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
     rw [div_lt_div_iff₀ hdenO hdenZ]
     nlinarith
-  have hrW : (1 / 2 : ℝ) * (-t / ((x - 2) ^ 2 + t ^ 2)) < 0 :=
+  have hrW : (1 / 2 : ℝ) * (-t / ((x - 2) ^ (2 : ℕ) + t ^ (2 : ℕ))) < 0 :=
     mul_neg_of_pos_of_neg (by norm_num)
       (div_neg_of_neg_of_pos (neg_neg_of_pos ht0) hdenW)
-  have hrPair : (2 : ℝ) * (-t / ((x - 1) ^ 2 + t ^ 2)) -
-      (-t / ((x - 1 / 2) ^ 2 + t ^ 2)) < 0 := by
+  have hrPair : (2 : ℝ) * (-t / ((x - 1) ^ (2 : ℕ) + t ^ (2 : ℕ))) -
+      (-t / ((x - 1 / 2) ^ (2 : ℕ) + t ^ (2 : ℕ))) < 0 := by
     have htinv := mul_lt_mul_of_pos_left hinvcompare ht0
-    have heq : (2 : ℝ) * (-t / ((x - 1) ^ 2 + t ^ 2)) -
-        (-t / ((x - 1 / 2) ^ 2 + t ^ 2)) =
-      t * (1 / ((x - 1 / 2) ^ 2 + t ^ 2)) -
-        t * (2 / ((x - 1) ^ 2 + t ^ 2)) := by ring
+    have heq : (2 : ℝ) * (-t / ((x - 1) ^ (2 : ℕ) + t ^ (2 : ℕ))) -
+        (-t / ((x - 1 / 2) ^ (2 : ℕ) + t ^ (2 : ℕ))) =
+      t * (1 / ((x - 1 / 2) ^ (2 : ℕ) + t ^ (2 : ℕ))) -
+        t * (2 / ((x - 1) ^ (2 : ℕ) + t ^ (2 : ℕ))) := by ring
     rw [heq]
     linarith
   unfold minusShiftedFactor
@@ -182,15 +182,15 @@ private theorem minusShiftedFactor_im_neg {x t : ℝ}
   simp only [sub_im, mul_im, add_im, digamma_one_im]
   norm_num
   have hnormW : Complex.normSq ((x : ℂ) - 2 + (t : ℂ) * I) =
-      (x - 2) ^ 2 + t ^ 2 := by
+      (x - 2) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     norm_num [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
     ring
   have hnormZ : Complex.normSq ((x : ℂ) - 1 + (t : ℂ) * I) =
-      (x - 1) ^ 2 + t ^ 2 := by
+      (x - 1) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     norm_num [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
     ring
   have hnormO : Complex.normSq ((x : ℂ) - 1 / 2 + (t : ℂ) * I) =
-      (x - 1 / 2) ^ 2 + t ^ 2 := by
+      (x - 1 / 2) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     norm_num [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
     ring
   rw [hnormW, hnormZ, hnormO]

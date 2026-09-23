@@ -17,20 +17,20 @@ namespace RHTower
 
 /-- Complete retained energy outside the empty and prime-two receiving coordinates. -/
 def mobiusDivisorTwoTransverseEnergy (M : ℕ) (P : Finset ℕ) : ℝ :=
-  mobiusDivisorSelectionEnergy M P-(mobiusDivisorSelectionFibre M P ∅)^2-
-    (mobiusDivisorSelectionFibre M P {2})^2
+  mobiusDivisorSelectionEnergy M P-(mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)-
+    (mobiusDivisorSelectionFibre M P {2})^(2 : ℕ)
 
 /-- The transverse energy is exactly the sum over the complementary actual labels. -/
 theorem mobiusDivisorTwoTransverseEnergy_eq_sum (M : ℕ) (P : Finset ℕ) (hM : 2 < M) :
     mobiusDivisorTwoTransverseEnergy M P =
       ∑ R ∈ ((mobiusDivisorSelectionPrimes M).powerset.erase ∅).erase {2},
-        (mobiusDivisorSelectionFibre M P R)^2 := by
+        (mobiusDivisorSelectionFibre M P R)^(2 : ℕ) := by
   have hmem : ({2}:Finset ℕ) ∈ (mobiusDivisorSelectionPrimes M).powerset.erase ∅ := by
     apply mem_erase.mpr
     refine ⟨by simp,mem_powerset.mpr ?_⟩
     exact singleton_subset_iff.mpr (mem_filter.mpr ⟨mem_range.mpr hM,Nat.prime_two⟩)
   have hh := sum_erase_add (s := (mobiusDivisorSelectionPrimes M).powerset.erase ∅)
-    (f := fun R => (mobiusDivisorSelectionFibre M P R)^2) hmem
+    (f := fun R => (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)) hmem
   have h0 := mobiusDivisorNonemptyEnergy_eq_sum M P
   unfold mobiusDivisorTwoTransverseEnergy mobiusDivisorNonemptyEnergy at *
   linarith only [hh,h0]
@@ -49,8 +49,8 @@ theorem mobiusDivisorTwoTransverseEnergy_union_two_child_inactive
     (hcore : ∀ p ∈ L,mobiusDivisorSelectionPrimes (M/p+1)\{2} ⊆ P)
     (hchild : ∀ p ∈ L,∀ q ∈ L,p ≠ q → M/p+1 ≤ q) :
     mobiusDivisorTwoTransverseEnergy M (P ∪ L) = mobiusDivisorTwoTransverseEnergy M P-
-      ∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-        (mobiusDivisorInterpolatedFibre M p P {2})^2) := by
+      ∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+        (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by
   have he := mobiusDivisorSelectionEnergy_union_two_child_inactive M P L hM hL hcore hchild
   have h0 := mobiusDivisorSelectionFibre_union_two_child_inactive M P L ∅
     (fun p hp => ⟨(hL p hp).1,(hL p hp).2.2.1,by simp⟩) hchild
@@ -95,10 +95,10 @@ theorem mobiusDivisorTwoTransverseEnergy_insert_gain_union
   have h0 := mobiusDivisorTwoTransverseEnergy_union_two_child_inactive M P L hM hL hcore hchild
   have h1 := mobiusDivisorTwoTransverseEnergy_union_two_child_inactive M (insert q P) L hM hL'
     (fun p hp => (hcore p hp).trans (subset_insert q P)) hchild
-  have hs : (∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p (insert q P) ∅)^2+
-      (mobiusDivisorInterpolatedFibre M p (insert q P) {2})^2)) =
-      ∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-      (mobiusDivisorInterpolatedFibre M p P {2})^2) := by
+  have hs : (∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p (insert q P) ∅)^(2 : ℕ)+
+      (mobiusDivisorInterpolatedFibre M p (insert q P) {2})^(2 : ℕ))) =
+      ∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+      (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by
     apply sum_congr rfl
     intro p hp
     rw [packet_insert_inactive M p q P ∅ (hqcut p hp),packet_insert_inactive M p q P {2} (hqcut p hp)]
@@ -153,8 +153,8 @@ theorem mobiusDivisorTwoTransverseEnergy_insert_cross
     mobiusDivisorTwoTransverseEnergy M (insert q P)-mobiusDivisorTwoTransverseEnergy M P =
       2*(∑ R ∈ ((((mobiusDivisorSelectionPrimes M).erase q).powerset.erase ∅).erase {2}),
         mobiusDivisorSelectionFibre M P R*mobiusDivisorSelectionFibre M P (insert q R))-
-        (mobiusDivisorSelectionFibre M P {q})^2-
-        (mobiusDivisorSelectionFibre M P (insert q {2}))^2 := by
+        (mobiusDivisorSelectionFibre M P {q})^(2 : ℕ)-
+        (mobiusDivisorSelectionFibre M P (insert q {2}))^(2 : ℕ) := by
   have hmem : ({2}:Finset ℕ) ∈ ((mobiusDivisorSelectionPrimes M).erase q).powerset.erase ∅ := by
     apply mem_erase.mpr
     refine ⟨by simp,mem_powerset.mpr ?_⟩

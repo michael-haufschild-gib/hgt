@@ -51,10 +51,10 @@ theorem schwarzschildParikhWilczekInfiniteGradeDarkWeight_endpointPower_hasSum
       ring)
     simpa only [div_eq_mul_inv] using hgeoPower
   have hzero := hasSum_ite_eq (0 : ℕ) (2 * q)
-  have hone := hasSum_ite_eq (1 : ℕ) (-4 * q ^ 2)
+  have hone := hasSum_ite_eq (1 : ℕ) (-4 * q ^ (2 : ℕ))
   have hraw : HasSum (fun n : ℕ =>
       schwarzschildParikhWilczekInfiniteGradeDarkWeight n * q ^ (n + 1))
-      ((q / (1 - q / 2) + 2 * q) + (-4 * q ^ 2)) := by
+      ((q / (1 - q / 2) + 2 * q) + (-4 * q ^ (2 : ℕ))) := by
     apply ((hgeo.add hzero).add hone).congr_fun
     intro n
     by_cases hn0 : n = 0
@@ -66,7 +66,7 @@ theorem schwarzschildParikhWilczekInfiniteGradeDarkWeight_endpointPower_hasSum
       norm_num [schwarzschildParikhWilczekInfiniteGradeDarkWeight]
       ring
     simp [schwarzschildParikhWilczekInfiniteGradeDarkWeight, hn0, hn1]
-  have hid : (q / (1 - q / 2) + 2 * q) + (-4 * q ^ 2) =
+  have hid : (q / (1 - q / 2) + 2 * q) + (-4 * q ^ (2 : ℕ)) =
       q * (1 - q) * (3 - 2 * q) / (1 - q / 2) := by
     have htwo : 2 - q ≠ 0 := by linarith
     field_simp [htwo]
@@ -129,7 +129,7 @@ def schwarzschildParikhWilczekInfiniteDarkEndpointWindingEnergy
 theorem schwarzschildParikhWilczekInfiniteDarkEndpointWindingEnergy_eq_sq
     {epsilon : ℝ} (hepsilon : 0 < epsilon) :
     schwarzschildParikhWilczekInfiniteDarkEndpointWindingEnergy epsilon =
-      schwarzschildParikhWilczekInfiniteDarkEndpointWindingResponse epsilon ^ 2 := by
+      schwarzschildParikhWilczekInfiniteDarkEndpointWindingResponse epsilon ^ (2 : ℕ) := by
   let q := schwarzschildParikhWilczekEndpointWindingLaplaceBase epsilon
   let f : ℕ → ℝ := fun n =>
     schwarzschildParikhWilczekInfiniteGradeDarkWeight n * q ^ (n + 1)
@@ -157,7 +157,7 @@ theorem schwarzschildParikhWilczekInfiniteDarkEndpointWindingEnergy_eq_sq
           ring
     _ = (∑' i : ℕ, f i) * ∑' j : ℕ, f j := by
       rw [tsum_mul_tsum_of_summable_norm (f := f) (g := f) hfnorm hfnorm]
-    _ = schwarzschildParikhWilczekInfiniteDarkEndpointWindingResponse epsilon ^ 2 := by
+    _ = schwarzschildParikhWilczekInfiniteDarkEndpointWindingResponse epsilon ^ (2 : ℕ) := by
       rw [pow_two, schwarzschildParikhWilczekInfiniteDarkEndpointWindingResponse]
       congr 1 <;> apply tsum_congr <;> intro n <;>
         rw [schwarzschildParikhWilczekWindingTerm_energyEndpoint_eq_laplaceBase_pow n hepsilon]

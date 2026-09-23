@@ -10,7 +10,7 @@ For a finite real coefficient vector `a`, its Laplace pencil
 
 has exact weighted energy
 
-`integral_0^infinity x^(r-1) F_N(x)^2 dx
+`integral_0^infinity x^(r-1) F_N(x)^(2 : ℕ) dx
   = Gamma(r) sum_{m,n<N} a_m a_n / (m+n+2)^r`.
 
 Thus archimedean Gamma localization does not diagonalize the source channels.  It turns them into

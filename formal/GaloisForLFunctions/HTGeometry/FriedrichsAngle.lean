@@ -34,7 +34,7 @@ noncomputable def friedrichsCosine (U V : Submodule 𝕜 H) : ℝ :=
 /-- The total precision defect of the pair `(U, V)` at `x`. -/
 noncomputable def pairPrecision (U V : Submodule 𝕜 H)
     [U.HasOrthogonalProjection] [V.HasOrthogonalProjection] (x : H) : ℝ :=
-  ‖x - U.starProjection x‖ ^ 2 + ‖x - V.starProjection x‖ ^ 2
+  ‖x - U.starProjection x‖ ^ (2 : ℕ) + ‖x - V.starProjection x‖ ^ (2 : ℕ)
 
 omit [CompleteSpace H] in
 theorem friedrichsCosineSet_subset_Icc (U V : Submodule 𝕜 H) :
@@ -113,7 +113,7 @@ theorem starProjection_mem_genericPart (x : H) (hx : x ∈ ((U ⊓ V)ᗮ : Submo
 
 include hU in
 theorem norm_sub_starProjection_sq (x : H) :
-    ‖x - U.starProjection x‖ ^ 2 = ‖x‖ ^ 2 - ‖U.starProjection x‖ ^ 2 := by
+    ‖x - U.starProjection x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) - ‖U.starProjection x‖ ^ (2 : ℕ) := by
   haveI : CompleteSpace U := hU.completeSpace_coe
   have hsplit : x - U.starProjection x = Uᗮ.starProjection x := by
     rw [eq_comm, eq_sub_iff_add_eq, add_comm]
@@ -153,7 +153,7 @@ include hU hV in
 theorem pairPrecision_smul (c : 𝕜) (x : H) :
     haveI : CompleteSpace U := hU.completeSpace_coe
     haveI : CompleteSpace V := hV.completeSpace_coe
-    pairPrecision U V (c • x) = ‖c‖ ^ 2 * pairPrecision U V x := by
+    pairPrecision U V (c • x) = ‖c‖ ^ (2 : ℕ) * pairPrecision U V x := by
   haveI : CompleteSpace U := hU.completeSpace_coe
   haveI : CompleteSpace V := hV.completeSpace_coe
   have hU' : c • x - U.starProjection (c • x) = c • (x - U.starProjection x) := by
@@ -169,7 +169,7 @@ Friedrichs precision cost. -/
 theorem pair_precision_lower_bound (x : H) (hx : x ∈ ((U ⊓ V)ᗮ : Submodule 𝕜 H)) :
     haveI : CompleteSpace U := hU.completeSpace_coe
     haveI : CompleteSpace V := hV.completeSpace_coe
-    (1 - friedrichsCosine U V) * ‖x‖ ^ 2 ≤ pairPrecision U V x := by
+    (1 - friedrichsCosine U V) * ‖x‖ ^ (2 : ℕ) ≤ pairPrecision U V x := by
   haveI : CompleteSpace U := hU.completeSpace_coe
   haveI : CompleteSpace V := hV.completeSpace_coe
   set c : ℝ := friedrichsCosine U V with hc
@@ -184,27 +184,27 @@ theorem pair_precision_lower_bound (x : H) (hx : x ∈ ((U ⊓ V)ᗮ : Submodule
     exact hmem
   have hab : ‖⟪a, b⟫_𝕜‖ ≤ c * ‖a‖ * ‖b‖ := norm_inner_le_friedrichsCosine U V hamem hbmem
   have hcnn : 0 ≤ c := friedrichsCosine_nonneg U V
-  set s : ℝ := ‖a‖ ^ 2 + ‖b‖ ^ 2 with hs
+  set s : ℝ := ‖a‖ ^ (2 : ℕ) + ‖b‖ ^ (2 : ℕ) with hs
   have hsnn : 0 ≤ s := by positivity
-  have hax : RCLike.re (⟪a, x⟫_𝕜) = ‖a‖ ^ 2 := by
+  have hax : RCLike.re (⟪a, x⟫_𝕜) = ‖a‖ ^ (2 : ℕ) := by
     rw [hadef, inner_starProjection_self hU x, inner_self_eq_norm_sq]
-  have hbx : RCLike.re (⟪b, x⟫_𝕜) = ‖b‖ ^ 2 := by
+  have hbx : RCLike.re (⟪b, x⟫_𝕜) = ‖b‖ ^ (2 : ℕ) := by
     rw [hbdef, inner_starProjection_self hV x, inner_self_eq_norm_sq]
   have hsum : RCLike.re (⟪a + b, x⟫_𝕜) = s := by
     rw [inner_add_left, map_add, hax, hbx]
   have hs_le : s ≤ ‖a + b‖ * ‖x‖ := by
     rw [← hsum]
     exact le_trans (RCLike.re_le_norm _) (norm_inner_le_norm _ _)
-  have hnorm_add : ‖a + b‖ ^ 2 ≤ (1 + c) * s := by
-    have hexp : ‖a + b‖ ^ 2 = ‖a‖ ^ 2 + 2 * RCLike.re (⟪a, b⟫_𝕜) + ‖b‖ ^ 2 :=
+  have hnorm_add : ‖a + b‖ ^ (2 : ℕ) ≤ (1 + c) * s := by
+    have hexp : ‖a + b‖ ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) + 2 * RCLike.re (⟪a, b⟫_𝕜) + ‖b‖ ^ (2 : ℕ) :=
       norm_add_sq (𝕜 := 𝕜) a b
     have hre : RCLike.re (⟪a, b⟫_𝕜) ≤ c * ‖a‖ * ‖b‖ := le_trans (RCLike.re_le_norm _) hab
     nlinarith [sq_nonneg (‖a‖ - ‖b‖), hcnn]
-  have hsbound : s ≤ (1 + c) * ‖x‖ ^ 2 := by
+  have hsbound : s ≤ (1 + c) * ‖x‖ ^ (2 : ℕ) := by
     rcases eq_or_lt_of_le hsnn with hzero | hpos
     · nlinarith [sq_nonneg ‖x‖]
-    · have h1 : s ^ 2 ≤ (‖a + b‖ * ‖x‖) ^ 2 := by nlinarith [norm_nonneg (a + b), norm_nonneg x]
-      have h3 : ‖a + b‖ ^ 2 * ‖x‖ ^ 2 ≤ (1 + c) * s * ‖x‖ ^ 2 :=
+    · have h1 : s ^ (2 : ℕ) ≤ (‖a + b‖ * ‖x‖) ^ (2 : ℕ) := by nlinarith [norm_nonneg (a + b), norm_nonneg x]
+      have h3 : ‖a + b‖ ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) ≤ (1 + c) * s * ‖x‖ ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hnorm_add (sq_nonneg _)
       nlinarith
   rw [pairPrecision, norm_sub_starProjection_sq hU x, norm_sub_starProjection_sq hV x,
@@ -216,7 +216,7 @@ include hV in
 at least `√(1 − c_F²)` from the second observer's sector. -/
 theorem one_sharp_tradeoff (x : H) (hx : x ∈ U ⊓ ((U ⊓ V)ᗮ : Submodule 𝕜 H)) :
     haveI : CompleteSpace V := hV.completeSpace_coe
-    (1 - friedrichsCosine U V ^ 2) * ‖x‖ ^ 2 ≤ ‖x - V.starProjection x‖ ^ 2 := by
+    (1 - friedrichsCosine U V ^ (2 : ℕ)) * ‖x‖ ^ (2 : ℕ) ≤ ‖x - V.starProjection x‖ ^ (2 : ℕ) := by
   haveI : CompleteSpace V := hV.completeSpace_coe
   set c : ℝ := friedrichsCosine U V with hc
   have hcnn : 0 ≤ c := friedrichsCosine_nonneg U V
@@ -228,12 +228,12 @@ theorem one_sharp_tradeoff (x : H) (hx : x ∈ U ⊓ ((U ⊓ V)ᗮ : Submodule �
     exact hmem
   have hab : ‖⟪x, V.starProjection x⟫_𝕜‖ ≤ c * ‖x‖ * ‖V.starProjection x‖ :=
     norm_inner_le_friedrichsCosine U V hx hbmem
-  have hval : ‖⟪V.starProjection x, x⟫_𝕜‖ = ‖V.starProjection x‖ ^ 2 := by
+  have hval : ‖⟪V.starProjection x, x⟫_𝕜‖ = ‖V.starProjection x‖ ^ (2 : ℕ) := by
     rw [inner_starProjection_self hV x, inner_self_eq_norm_sq_to_K, norm_pow,
       RCLike.norm_ofReal, abs_of_nonneg (norm_nonneg _)]
   have hconj : ‖⟪V.starProjection x, x⟫_𝕜‖ = ‖⟪x, V.starProjection x⟫_𝕜‖ := by
     rw [← inner_conj_symm, RCLike.norm_conj]
-  have hnormsq : ‖V.starProjection x‖ ^ 2 ≤ c * ‖x‖ * ‖V.starProjection x‖ := by
+  have hnormsq : ‖V.starProjection x‖ ^ (2 : ℕ) ≤ c * ‖x‖ * ‖V.starProjection x‖ := by
     rw [← hval, hconj]
     exact hab
   have hbnorm : ‖V.starProjection x‖ ≤ c * ‖x‖ := by
@@ -294,11 +294,11 @@ theorem exists_transverse_unit_pairPrecision_le
       rw [← inner_conj_symm, hpq, RCLike.conj_ofReal]
     set x0 : H := p + q' with hx0
     have hx0mem : x0 ∈ ((U ⊓ V)ᗮ : Submodule 𝕜 H) := Submodule.add_mem _ hpmem.2 hq'mem.2
-    have hx0n : ‖x0‖ ^ 2 = 2 * (1 + t) := by
+    have hx0n : ‖x0‖ ^ (2 : ℕ) = 2 * (1 + t) := by
       rw [hx0, norm_add_sq (𝕜 := 𝕜) p q', hpn, hq'n, hpq, RCLike.ofReal_re]
       ring
     have hx0pos : (0 : ℝ) < ‖x0‖ := by
-      have hsq : (0 : ℝ) < ‖x0‖ ^ 2 := by rw [hx0n]; nlinarith
+      have hsq : (0 : ℝ) < ‖x0‖ ^ (2 : ℕ) := by rw [hx0n]; nlinarith
       nlinarith [norm_nonneg x0]
     have hPU : 1 + t ≤ ‖U.starProjection x0‖ := by
       have hinner : ⟪x0, p⟫_𝕜 = ((1 + t : ℝ) : 𝕜) := by

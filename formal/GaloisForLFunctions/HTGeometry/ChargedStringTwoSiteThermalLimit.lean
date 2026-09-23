@@ -17,7 +17,7 @@ def stringTwoSiteThermalCenter (h ell tau : ℝ) : ℝ :=
 
 /-- Temperature-calibrated upper bound on squared growth. -/
 def stringTwoSiteThermalGrowthCeiling (h ell tau : ℝ) : ℝ :=
-  (Real.exp h) ^ 2 * (1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell) / 64
+  (Real.exp h) ^ (2 : ℕ) * (1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell) / 64
 
 /-- An explicit sequence of finite positive couplings, all within the massless instability window. -/
 def stringTwoSiteThermalLimitCoupling (h ell tau : ℝ) (j : ℕ) : ℝ :=
@@ -41,7 +41,7 @@ theorem stringTwoSiteThermalGap_pos (h ell tau : ℝ) : 0 < stringTwoSiteThermal
 
 /-- The squared selected gap is exactly the temperature-calibrated ceiling. -/
 theorem stringTwoSiteThermalGap_sq (h ell tau : ℝ) :
-    stringTwoSiteThermalGap h ell tau ^ 2 = stringTwoSiteThermalGrowthCeiling h ell tau := by
+    stringTwoSiteThermalGap h ell tau ^ (2 : ℕ) = stringTwoSiteThermalGrowthCeiling h ell tau := by
   unfold stringTwoSiteThermalGap
   rw [stringTwoSiteHalfGap_sq, stringTwoSiteGap_at_optimal_temperature]
   unfold stringTwoSiteThermalGrowthCeiling
@@ -83,7 +83,7 @@ theorem stringTwoSiteThermalLimitVector_mode (h ell tau : ℝ) (j : ℕ) :
 
 /-- Actual squared growth along the frequency path equals the exact algebraic branch. -/
 theorem stringTwoSiteThermalLimitFrequency_growth (h ell tau : ℝ) (j : ℕ) :
-    (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ 2 =
+    (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ (2 : ℕ) =
       chargedTwoSiteGrowthSquare (stringTwoSiteThermalLimitCoupling h ell tau j) 0
         (stringTwoSiteThermalGap h ell tau) :=
   ((chargedTwoSite_growing_frequency_classification (stringTwoSiteThermalLimitCoupling h ell tau j) 0
@@ -92,7 +92,7 @@ theorem stringTwoSiteThermalLimitFrequency_growth (h ell tau : ℝ) (j : ℕ) :
 
 /-- Actual growing-mode rates tend to the sharp thermal ceiling. -/
 theorem stringTwoSiteThermalLimitFrequency_growth_limit (h ell tau : ℝ) :
-    Tendsto (fun j => (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ 2) atTop
+    Tendsto (fun j => (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ (2 : ℕ)) atTop
       (nhds (stringTwoSiteThermalGrowthCeiling h ell tau)) := by
   simp only [stringTwoSiteThermalLimitFrequency_growth]
   change Tendsto (fun j => chargedTwoSiteGrowthSquare
@@ -103,11 +103,11 @@ theorem stringTwoSiteThermalLimitFrequency_growth_limit (h ell tau : ℝ) :
 
 /-- Every finite-coupling mode stays strictly below the limiting ceiling. -/
 theorem stringTwoSiteThermalLimitFrequency_growth_lt (h ell tau : ℝ) (j : ℕ) :
-    (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ 2 < stringTwoSiteThermalGrowthCeiling h ell tau := by
+    (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ (2 : ℕ) < stringTwoSiteThermalGrowthCeiling h ell tau := by
   have hm := stringTwoSiteThermalLimitFrequency_mode h ell tau j
   by_contra hn
   have hb : stringTwoSiteThermalGrowthCeiling h ell tau ≤
-      (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ 2 := by linarith
+      (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ (2 : ℕ) := by linarith
   exact stringTwoSite_no_growth_at_temperature_bound (stringTwoSiteThermalLimitCoupling h ell tau j) 0
     (Real.exp h) ell tau (stringTwoSiteOptimalRadiusCoordinate ell)
     ⟨stringTwoSiteThermalLimitFrequency h ell tau j, hm.1, hm.2, hb⟩

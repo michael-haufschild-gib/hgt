@@ -31,9 +31,9 @@ theorem chebyshevTheta_remainder_eventually_le {ε : ℝ} (hε : 0 < ε) :
       |Chebyshev.theta N - N| ≤ ε * N := by
   obtain ⟨x₁, hx₁⟩ := psiRemainder_eventually_le
     (show (0 : ℝ) < ε / 2 by linarith)
-  refine ⟨max x₁ (max ⌈(16 / ε) ^ 4⌉₊ 1), fun N hN => ?_⟩
+  refine ⟨max x₁ (max ⌈(16 / ε) ^ (4 : ℕ)⌉₊ 1), fun N hN => ?_⟩
   have hNx₁ : x₁ ≤ N := le_trans (le_max_left _ _) hN
-  have hNc : ⌈(16 / ε) ^ 4⌉₊ ≤ N :=
+  have hNc : ⌈(16 / ε) ^ (4 : ℕ)⌉₊ ≤ N :=
     le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hN
   have hN1 : 1 ≤ N :=
     le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hN
@@ -50,9 +50,9 @@ theorem chebyshevTheta_remainder_eventually_le {ε : ℝ} (hε : 0 < ε) :
     Chebyshev.psi_sub_theta_le hNR1
   have hθψ0 : Chebyshev.theta N ≤ Chebyshev.psi N :=
     Chebyshev.theta_le_psi _
-  have hquartic : (16 / ε) ^ 4 ≤ (N : ℝ) := by
-    have h1 := Nat.le_ceil ((16 / ε) ^ 4)
-    have h2 : ((⌈(16 / ε) ^ 4⌉₊ : ℕ) : ℝ) ≤ (N : ℝ) := by
+  have hquartic : (16 / ε) ^ (4 : ℕ) ≤ (N : ℝ) := by
+    have h1 := Nat.le_ceil ((16 / ε) ^ (4 : ℕ))
+    have h2 : ((⌈(16 / ε) ^ (4 : ℕ)⌉₊ : ℕ) : ℝ) ≤ (N : ℝ) := by
       exact_mod_cast hNc
     linarith
   have hsqrtN : 2 * Real.sqrt N * Real.log N ≤ ε / 2 * N :=

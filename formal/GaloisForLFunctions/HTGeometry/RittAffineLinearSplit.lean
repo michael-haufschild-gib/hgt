@@ -28,9 +28,9 @@ theorem affine_eigen_dichotomy_split (σ : L →+* L) (φ : E →+* E)
     (α = 0 ∧ ∃ x : E, W = algebraMap E L x) ∨
     algebraMap E L b = 0 ∨
     (∃ (w : E) (N : ℕ), w ≠ 0 ∧ 1 ≤ N ∧ φ w + (N : E) * b = a * w) ∨
-    (∃ v Z Y : E, v ≠ 0 ∧ α ≠ 0 ∧ φ v * a ^ 2 = c * v ∧
+    (∃ v Z Y : E, v ≠ 0 ∧ α ≠ 0 ∧ φ v * a ^ (2 : ℕ) = c * v ∧
       φ Z = a * Z + a * α / (c * v) - 2 * b ∧
-      φ Y = a ^ 2 * Y - a * b * Z + b ^ 2 + a * (a * β - α * b) / (c * v)) ∨
+      φ Y = a ^ (2 : ℕ) * Y - a * b * Z + b ^ (2 : ℕ) + a * (a * β - α * b) / (c * v)) ∨
     (∃ v p : E, v ≠ 0 ∧ W = algebraMap E L v * t + algebraMap E L p ∧
       φ v * a = c * v + α ∧ φ v * b + φ p = c * p + β) := by
   classical

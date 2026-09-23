@@ -38,7 +38,7 @@ variable {m : Type*} [Fintype m] [DecidableEq m]
 /-! ## The Hilbert–Schmidt norm of a matrix -/
 
 /-- The squared Hilbert–Schmidt norm `∑ᵢⱼ ‖Mᵢⱼ‖²` of a square matrix. -/
-noncomputable def matHSNormSq (M : Matrix m m ℂ) : ℝ := ∑ i, ∑ j, ‖M i j‖ ^ 2
+noncomputable def matHSNormSq (M : Matrix m m ℂ) : ℝ := ∑ i, ∑ j, ‖M i j‖ ^ (2 : ℕ)
 
 omit [DecidableEq m] in
 theorem matHSNormSq_nonneg (M : Matrix m m ℂ) : 0 ≤ matHSNormSq M := by
@@ -72,9 +72,9 @@ theorem matHSNormSq_conj {M U : Matrix m m ℂ} (hU2 : U * Uᴴ = 1) :
 omit [DecidableEq m] in
 /-- The diagonal energy is at most the total Hilbert–Schmidt energy. -/
 theorem sum_diag_normSq_le (M : Matrix m m ℂ) :
-    ∑ i, ‖M i i‖ ^ 2 ≤ matHSNormSq M := by
+    ∑ i, ‖M i i‖ ^ (2 : ℕ) ≤ matHSNormSq M := by
   refine Finset.sum_le_sum fun i _ => ?_
-  refine Finset.single_le_sum (f := fun j => ‖M i j‖ ^ 2) (fun j _ => by positivity)
+  refine Finset.single_le_sum (f := fun j => ‖M i j‖ ^ (2 : ℕ)) (fun j _ => by positivity)
     (Finset.mem_univ i)
 
 /-! ## Diagonal of a power of a triangular matrix -/
@@ -158,8 +158,8 @@ theorem trace_pow_eq_sum_diag [LinearOrder m] (hU1 : Uᴴ * U = 1) (hU2 : U * U�
 /-- **Schur's inequality.**  The eigenvalue energy of a matrix is at most its Hilbert–Schmidt
 energy. -/
 theorem sum_diag_normSq_le_matHSNormSq (hU2 : U * Uᴴ = 1)
-    (hMT : Uᴴ * M * U = T) : ∑ i, ‖T i i‖ ^ 2 ≤ matHSNormSq M := by
-  calc ∑ i, ‖T i i‖ ^ 2 ≤ matHSNormSq T := sum_diag_normSq_le T
+    (hMT : Uᴴ * M * U = T) : ∑ i, ‖T i i‖ ^ (2 : ℕ) ≤ matHSNormSq M := by
+  calc ∑ i, ‖T i i‖ ^ (2 : ℕ) ≤ matHSNormSq T := sum_diag_normSq_le T
     _ = matHSNormSq M := by rw [← hMT]; exact matHSNormSq_conj hU2
 
 /-! ## The scalar Carleman inequality -/
@@ -167,8 +167,8 @@ theorem sum_diag_normSq_le_matHSNormSq (hU2 : U * Uᴴ = 1)
 /-- `‖(1 + w)e^{−w}‖ ≤ exp(‖w‖²/2)`, the scalar factor of the regularized determinant.
 It is `log u ≤ u − 1` applied to `u = ‖1 + w‖² = 1 + 2 Re w + ‖w‖²`. -/
 theorem norm_one_add_mul_exp_neg_le (w : ℂ) :
-    ‖(1 + w) * Complex.exp (-w)‖ ≤ Real.exp (‖w‖ ^ 2 / 2) := by
-  have hnorm : ‖(1 : ℂ) + w‖ ^ 2 = 1 + 2 * w.re + ‖w‖ ^ 2 := by
+    ‖(1 + w) * Complex.exp (-w)‖ ≤ Real.exp (‖w‖ ^ (2 : ℕ) / 2) := by
+  have hnorm : ‖(1 : ℂ) + w‖ ^ (2 : ℕ) = 1 + 2 * w.re + ‖w‖ ^ (2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply]
     ring
@@ -176,20 +176,20 @@ theorem norm_one_add_mul_exp_neg_le (w : ℂ) :
   · rw [norm_mul, ← h]
     simpa using Real.exp_nonneg _
   · rw [norm_mul, Complex.norm_exp]
-    have hlog : Real.log (‖(1 : ℂ) + w‖) ≤ w.re + ‖w‖ ^ 2 / 2 := by
-      have h2 : Real.log (‖(1 : ℂ) + w‖ ^ 2) ≤ ‖(1 : ℂ) + w‖ ^ 2 - 1 :=
+    have hlog : Real.log (‖(1 : ℂ) + w‖) ≤ w.re + ‖w‖ ^ (2 : ℕ) / 2 := by
+      have h2 : Real.log (‖(1 : ℂ) + w‖ ^ (2 : ℕ)) ≤ ‖(1 : ℂ) + w‖ ^ (2 : ℕ) - 1 :=
         Real.log_le_sub_one_of_pos (by positivity)
       rw [Real.log_pow] at h2
       rw [hnorm] at h2
       push_cast at h2
       linarith
-    have hle : ‖(1 : ℂ) + w‖ ≤ Real.exp (w.re + ‖w‖ ^ 2 / 2) := by
+    have hle : ‖(1 : ℂ) + w‖ ≤ Real.exp (w.re + ‖w‖ ^ (2 : ℕ) / 2) := by
       rw [← Real.exp_log h]
       exact Real.exp_le_exp.mpr hlog
     calc ‖(1 : ℂ) + w‖ * Real.exp (-w).re
-        ≤ Real.exp (w.re + ‖w‖ ^ 2 / 2) * Real.exp (-w).re :=
+        ≤ Real.exp (w.re + ‖w‖ ^ (2 : ℕ) / 2) * Real.exp (-w).re :=
           mul_le_mul_of_nonneg_right hle (Real.exp_nonneg _)
-      _ = Real.exp (‖w‖ ^ 2 / 2) := by
+      _ = Real.exp (‖w‖ ^ (2 : ℕ) / 2) := by
           rw [← Real.exp_add]; simp
 
 /-! ## The finite regularized determinant -/
@@ -233,22 +233,22 @@ theorem finiteDet2_eq_prod [LinearOrder m] (hU1 : Uᴴ * U = 1) (hU2 : U * Uᴴ 
 /-- The Carleman bound for a matrix indexed by `Fin n`, where the Schur decomposition is available
 directly. -/
 theorem norm_finiteDet2_fin_le {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (z : ℂ) :
-    ‖finiteDet2 M z‖ ≤ Real.exp (‖z‖ ^ 2 * matHSNormSq M / 2) := by
+    ‖finiteDet2 M z‖ ≤ Real.exp (‖z‖ ^ (2 : ℕ) * matHSNormSq M / 2) := by
   obtain ⟨U, T, hU1, hU2, hT, hMT⟩ := exists_schur_triangulation n M
   rw [finiteDet2_eq_prod hU1 hU2 hT hMT z, norm_prod]
   calc ∏ i, ‖(1 + z * T i i) * Complex.exp (-(z * T i i))‖
-      ≤ ∏ i, Real.exp (‖z * T i i‖ ^ 2 / 2) :=
+      ≤ ∏ i, Real.exp (‖z * T i i‖ ^ (2 : ℕ) / 2) :=
         Finset.prod_le_prod (fun i _ => norm_nonneg _)
           (fun i _ => norm_one_add_mul_exp_neg_le (z * T i i))
-    _ = Real.exp (∑ i, ‖z * T i i‖ ^ 2 / 2) := by rw [Real.exp_sum]
-    _ = Real.exp (‖z‖ ^ 2 * (∑ i, ‖T i i‖ ^ 2) / 2) := by
+    _ = Real.exp (∑ i, ‖z * T i i‖ ^ (2 : ℕ) / 2) := by rw [Real.exp_sum]
+    _ = Real.exp (‖z‖ ^ (2 : ℕ) * (∑ i, ‖T i i‖ ^ (2 : ℕ)) / 2) := by
         congr 1
         rw [Finset.mul_sum, Finset.sum_div]
         exact Finset.sum_congr rfl fun i _ => by rw [norm_mul, mul_pow]
-    _ ≤ Real.exp (‖z‖ ^ 2 * matHSNormSq M / 2) := by
+    _ ≤ Real.exp (‖z‖ ^ (2 : ℕ) * matHSNormSq M / 2) := by
         refine Real.exp_le_exp.mpr ?_
         have := sum_diag_normSq_le_matHSNormSq hU2 hMT
-        have hz : (0 : ℝ) ≤ ‖z‖ ^ 2 := by positivity
+        have hz : (0 : ℝ) ≤ ‖z‖ ^ (2 : ℕ) := by positivity
         nlinarith
 
 
@@ -259,10 +259,10 @@ theorem matHSNormSq_submatrix {p : Type*} [Fintype p] [DecidableEq p] (e : p ≃
     (M : Matrix m m ℂ) : matHSNormSq (M.submatrix e e) = matHSNormSq M := by
   unfold matHSNormSq
   simp only [Matrix.submatrix_apply]
-  calc ∑ i : p, ∑ j : p, ‖M (e i) (e j)‖ ^ 2
-      = ∑ i : p, ∑ j : m, ‖M (e i) j‖ ^ 2 :=
-        Finset.sum_congr rfl fun i _ => Equiv.sum_comp e (fun j => ‖M (e i) j‖ ^ 2)
-    _ = ∑ i : m, ∑ j : m, ‖M i j‖ ^ 2 := Equiv.sum_comp e (fun i => ∑ j, ‖M i j‖ ^ 2)
+  calc ∑ i : p, ∑ j : p, ‖M (e i) (e j)‖ ^ (2 : ℕ)
+      = ∑ i : p, ∑ j : m, ‖M (e i) j‖ ^ (2 : ℕ) :=
+        Finset.sum_congr rfl fun i _ => Equiv.sum_comp e (fun j => ‖M (e i) j‖ ^ (2 : ℕ))
+    _ = ∑ i : m, ∑ j : m, ‖M i j‖ ^ (2 : ℕ) := Equiv.sum_comp e (fun i => ∑ j, ‖M i j‖ ^ (2 : ℕ))
 
 omit [DecidableEq m] in
 theorem trace_submatrix_equiv {p : Type*} [Fintype p] [DecidableEq p] (e : p ≃ m)
@@ -281,7 +281,7 @@ theorem finiteDet2_submatrix {p : Type*} [Fintype p] [DecidableEq p] (e : p ≃ 
 /-- **The Carleman bound.**  `‖det₂(1 + zM)‖ ≤ exp(‖z‖²‖M‖²_HS/2)` — the growth is controlled by
 the Hilbert–Schmidt norm alone, for a matrix indexed by any finite type. -/
 theorem norm_finiteDet2_le (M : Matrix m m ℂ) (z : ℂ) :
-    ‖finiteDet2 M z‖ ≤ Real.exp (‖z‖ ^ 2 * matHSNormSq M / 2) := by
+    ‖finiteDet2 M z‖ ≤ Real.exp (‖z‖ ^ (2 : ℕ) * matHSNormSq M / 2) := by
   set e : Fin (Fintype.card m) ≃ m := (Fintype.equivFin m).symm with he
   rw [← finiteDet2_submatrix e M z, ← matHSNormSq_submatrix e M]
   exact norm_finiteDet2_fin_le (M.submatrix e e) z

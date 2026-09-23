@@ -48,7 +48,7 @@ theorem evenProlateSignedAbsValue_antitone (a : ℝ) (ha : 0 < a) :
 
 /-- The leakage of the actual signed prolate spectrum, `d_n = 1 - χ_n²`. -/
 def evenProlateSignedLeakage (a : ℝ) (n : ℕ) : ℝ :=
-  1 - evenProlateSignedValue a n ^ 2
+  1 - evenProlateSignedValue a n ^ (2 : ℕ)
 
 /-- **The actual leakage hierarchy is monotone**, with no classical input: squaring an antitone
 nonnegative sequence keeps it antitone, and subtracting from one reverses the order. -/
@@ -56,14 +56,14 @@ theorem evenProlateSignedLeakage_monotone (a : ℝ) (ha : 0 < a) :
     Monotone (evenProlateSignedLeakage a) := by
   intro m n hmn
   have habs := evenProlateSignedAbsValue_antitone a ha hmn
-  have hsq : evenProlateSignedValue a n ^ 2 ≤ evenProlateSignedValue a m ^ 2 := by
+  have hsq : evenProlateSignedValue a n ^ (2 : ℕ) ≤ evenProlateSignedValue a m ^ (2 : ℕ) := by
     rw [← sq_abs (evenProlateSignedValue a n), ← sq_abs (evenProlateSignedValue a m)]
     exact pow_le_pow_left₀ (abs_nonneg _) habs 2
   unfold evenProlateSignedLeakage
   linarith
 
 theorem evenProlateSignedValue_sq_le_one (a : ℝ) (n : ℕ) :
-    evenProlateSignedValue a n ^ 2 ≤ 1 := by
+    evenProlateSignedValue a n ^ (2 : ℕ) ≤ 1 := by
   rcases evenProlateSignedMode_norm_zero_or_one a n with hzero | hone
   · have : evenProlateSignedValue a n = 0 :=
       ContinuousLinearMap.sgVal_zero_of_dead hzero
@@ -78,8 +78,8 @@ theorem evenProlateSignedValue_sq_le_one (a : ℝ) (n : ℕ) :
           ContinuousLinearMap.le_opNorm _ _
         _ = ‖evenProlateConcentration a‖ := by rw [hone, mul_one]
     rw [happ, norm_smul] at hnorm
-    have hsq : ‖((evenProlateSignedValue a n ^ 2 : ℝ) : ℂ)‖
-        = evenProlateSignedValue a n ^ 2 := by
+    have hsq : ‖((evenProlateSignedValue a n ^ (2 : ℕ) : ℝ) : ℂ)‖
+        = evenProlateSignedValue a n ^ (2 : ℕ) := by
       rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
     rw [hsq, hone, mul_one] at hnorm
     exact hnorm.trans (norm_evenProlateConcentration_le_one a)
@@ -98,7 +98,7 @@ theorem evenProlateSignedLeakage_le_one (a : ℝ) (n : ℕ) :
 theorem evenProlateSignedLeakage_tendsto_one (a : ℝ) (ha : 0 < a) :
     Tendsto (evenProlateSignedLeakage a) atTop (nhds 1) := by
   have hz := evenProlateSignedValue_tendsto_zero a ha
-  have hsq : Tendsto (fun n => evenProlateSignedValue a n ^ 2) atTop (nhds 0) := by
+  have hsq : Tendsto (fun n => evenProlateSignedValue a n ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa using hz.pow 2
   unfold evenProlateSignedLeakage
   simpa using (tendsto_const_nhds (x := (1 : ℝ)) (f := atTop)).sub hsq

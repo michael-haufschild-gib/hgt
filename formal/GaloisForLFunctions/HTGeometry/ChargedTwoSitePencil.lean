@@ -12,7 +12,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- Positive nearest-neighbor coupling plus a nonnegative mass term. -/
-def chargedTwoSiteBase (k m : ℝ) : ℝ := Real.exp k + m ^ 2
+def chargedTwoSiteBase (k m : ℝ) : ℝ := Real.exp k + m ^ (2 : ℕ)
 
 /-- The uncoupled diagonal energy is strictly positive for every parameter choice. -/
 theorem chargedTwoSiteBase_pos (k m : ℝ) : 0 < chargedTwoSiteBase k m := by
@@ -32,7 +32,7 @@ def chargedTwoSiteHamiltonian (k m : ℝ) : (ℂ × ℂ) →ₗ[ℂ] (ℂ × ℂ
 
 /-- Constant coefficient of the charged frequency pencil. -/
 def chargedTwoSiteStiffness (k m c d : ℝ) : (ℂ × ℂ) →ₗ[ℂ] (ℂ × ℂ) :=
-  chargedTwoSiteHamiltonian k m - chargedTwoSiteDiagonal (((c + d : ℝ) : ℂ) ^ 2) (((c - d : ℝ) : ℂ) ^ 2)
+  chargedTwoSiteHamiltonian k m - chargedTwoSiteDiagonal (((c + d : ℝ) : ℂ) ^ (2 : ℕ)) (((c - d : ℝ) : ℂ) ^ (2 : ℕ))
 
 /-- Linear frequency coefficient induced by the two electrostatic site values. -/
 def chargedTwoSiteDrift (c d : ℝ) : (ℂ × ℂ) →ₗ[ℂ] (ℂ × ℂ) :=
@@ -45,8 +45,8 @@ def chargedTwoSitePencil (k m c d : ℝ) (ω : ℂ) : (ℂ × ℂ) →ₗ[ℂ] (
 /-- The reused pencil is exactly the charged two-site wave residual. -/
 theorem chargedTwoSitePencil_apply (k m c d : ℝ) (ω : ℂ) (v : ℂ × ℂ) :
     chargedTwoSitePencil k m c d ω v =
-      ((((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c + d : ℝ) : ℂ)) ^ 2) * v.1 - (Real.exp k : ℂ) * v.2,
-        (((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c - d : ℝ) : ℂ)) ^ 2) * v.2 - (Real.exp k : ℂ) * v.1) := by
+      ((((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c + d : ℝ) : ℂ)) ^ (2 : ℕ)) * v.1 - (Real.exp k : ℂ) * v.2,
+        (((chargedTwoSiteBase k m : ℝ) : ℂ) - (ω - ((c - d : ℝ) : ℂ)) ^ (2 : ℕ)) * v.2 - (Real.exp k : ℂ) * v.1) := by
   ext <;> simp [chargedTwoSitePencil, qnmQuadraticPencil, chargedTwoSiteStiffness,
     chargedTwoSiteDrift, chargedTwoSiteDiagonal, chargedTwoSiteHamiltonian] <;> ring
 
@@ -71,7 +71,7 @@ theorem chargedTwoSiteHamiltonian_energy (k m : ℝ) (v : ℂ × ℂ) :
     (((starRingEnd ℂ) v.1 * (chargedTwoSiteHamiltonian k m v).1 +
       (starRingEnd ℂ) v.2 * (chargedTwoSiteHamiltonian k m v).2).re) =
         Real.exp k * Complex.normSq (v.1 - v.2) +
-          m ^ 2 * (Complex.normSq v.1 + Complex.normSq v.2) := by
+          m ^ (2 : ℕ) * (Complex.normSq v.1 + Complex.normSq v.2) := by
   change (((starRingEnd ℂ) v.1 *
     (((chargedTwoSiteBase k m : ℝ) : ℂ) * v.1 - (Real.exp k : ℂ) * v.2) +
     (starRingEnd ℂ) v.2 *

@@ -144,8 +144,8 @@ variable {G H : Subgroup GL2R}
 
 local notation "𝒬" => H ⧸ (G.subgroupOf H)
 
-local instance : MulAction H H := Monoid.toMulAction ..
-local instance : MulAction H 𝒬 := .quotient ..
+local instance selbergMaassGLAutomorphicIntertwinerInst1 : MulAction H H := Monoid.toMulAction ..
+local instance selbergMaassGLAutomorphicIntertwinerInst2 : MulAction H 𝒬 := .quotient ..
 
 /-- One relative-coset summand in the `GL(2, ℝ)` automorphic carrier. -/
 def glAutomorphicTraceQuotientFunc

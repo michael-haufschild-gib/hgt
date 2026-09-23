@@ -30,7 +30,7 @@ def tiedPowerMultiplicityThreeMoment (nodes : Fin 4 → ℂ) (k : ℕ) : ℝ :=
 
 /-- Transverse-square energy of three identical copies of a four-atom cloud. -/
 def tiedPowerMultiplicityThreeOrientationEnergy (nodes : Fin 4 → ℂ) : ℝ :=
-  3 * ∑ i, (nodes i).im ^ 2
+  3 * ∑ i, (nodes i).im ^ (2 : ℕ)
 
 def tiedPowerMultiplicityThreeTrajectory
     (nodes : Fin 4 → ℂ) (k : ℕ) (h : ℂ) : ℂ :=
@@ -45,9 +45,9 @@ theorem tiedPowerMultiplicityThreeTrajectory_hasDerivAt
 
 theorem tiedPowerGlobalBudgetPositiveNodes_geometry :
     ∀ i, 0 < (tiedPowerGlobalBudgetPositiveNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerGlobalBudgetPositiveNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerGlobalBudgetPositiveNodes i).re ^ 2 ∧
-      (41 : ℝ) ^ 2 * Complex.normSq (tiedPowerGlobalBudgetPositiveNodes i) < 4 := by
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerGlobalBudgetPositiveNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerGlobalBudgetPositiveNodes i).re ^ (2 : ℕ) ∧
+      (41 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerGlobalBudgetPositiveNodes i) < 4 := by
   intro i
   fin_cases i <;>
     norm_num [tiedPowerGlobalBudgetPositiveNodes, tiedPowerScaleNodes,
@@ -55,9 +55,9 @@ theorem tiedPowerGlobalBudgetPositiveNodes_geometry :
 
 theorem tiedPowerGlobalBudgetNegativeNodes_geometry :
     ∀ i, 0 < (tiedPowerGlobalBudgetNegativeNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerGlobalBudgetNegativeNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerGlobalBudgetNegativeNodes i).re ^ 2 ∧
-      (41 : ℝ) ^ 2 * Complex.normSq (tiedPowerGlobalBudgetNegativeNodes i) < 4 := by
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerGlobalBudgetNegativeNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerGlobalBudgetNegativeNodes i).re ^ (2 : ℕ) ∧
+      (41 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerGlobalBudgetNegativeNodes i) < 4 := by
   intro i
   fin_cases i <;>
     norm_num [tiedPowerGlobalBudgetNegativeNodes, tiedPowerScaleNodes,
@@ -260,22 +260,22 @@ theorem tiedPowerGlobalBudgetPositive_monicRemainder :
     simp
   rw [finiteHankelBoundaryMonicRemainder, hmonic]
   norm_num only [Nat.reduceAdd]
-  have hpoly : (X : Polynomial ℝ) ^ 2 * (X - C (1 / 288)) =
-      X ^ 3 - C (1 / 288) * X ^ 2 := by ring
+  have hpoly : (X : Polynomial ℝ) ^ (2 : ℕ) * (X - C (1 / 288)) =
+      X ^ (3 : ℕ) - C (1 / 288) * X ^ (2 : ℕ) := by ring
   calc
     momentFunctional
         (tiedPowerMultiplicityThreeMoment tiedPowerGlobalBudgetPositiveNodes)
-        (X ^ 2 * (X - C (1 / 288))) =
+        (X ^ (2 : ℕ) * (X - C (1 / 288))) =
       momentFunctional
         (tiedPowerMultiplicityThreeMoment tiedPowerGlobalBudgetPositiveNodes)
-        (X ^ 3 - C (1 / 288) * X ^ 2) := congrArg _ hpoly
+        (X ^ (3 : ℕ) - C (1 / 288) * X ^ (2 : ℕ)) := congrArg _ hpoly
     _ = 1 / 5733089280000 := by
       rw [sub_eq_add_neg, momentFunctional_add]
-      rw [show -((C (1 / 288) * X ^ 2 : Polynomial ℝ)) =
-          (-1 : ℝ) • (C (1 / 288) * X ^ 2 : Polynomial ℝ) by rw [neg_one_smul],
+      rw [show -((C (1 / 288) * X ^ (2 : ℕ) : Polynomial ℝ)) =
+          (-1 : ℝ) • (C (1 / 288) * X ^ (2 : ℕ) : Polynomial ℝ) by rw [neg_one_smul],
         momentFunctional_smul, momentFunctional_X_pow]
-      rw [show (C (1 / 288) * X ^ 2 : Polynomial ℝ) =
-          (1 / 288 : ℝ) • X ^ 2 by rw [Polynomial.smul_eq_C_mul],
+      rw [show (C (1 / 288) * X ^ (2 : ℕ) : Polynomial ℝ) =
+          (1 / 288 : ℝ) • X ^ (2 : ℕ) by rw [Polynomial.smul_eq_C_mul],
         momentFunctional_smul, momentFunctional_X_pow]
       rw [tiedPowerGlobalBudgetPositiveMoment_three,
         tiedPowerGlobalBudgetPositiveMoment_two]
@@ -297,22 +297,22 @@ theorem tiedPowerGlobalBudgetNegative_monicRemainder :
     simp
   rw [finiteHankelBoundaryMonicRemainder, hmonic]
   norm_num only [Nat.reduceAdd]
-  have hpoly : (X : Polynomial ℝ) ^ 2 * (X - C (1 / 288)) =
-      X ^ 3 - C (1 / 288) * X ^ 2 := by ring
+  have hpoly : (X : Polynomial ℝ) ^ (2 : ℕ) * (X - C (1 / 288)) =
+      X ^ (3 : ℕ) - C (1 / 288) * X ^ (2 : ℕ) := by ring
   calc
     momentFunctional
         (tiedPowerMultiplicityThreeMoment tiedPowerGlobalBudgetNegativeNodes)
-        (X ^ 2 * (X - C (1 / 288))) =
+        (X ^ (2 : ℕ) * (X - C (1 / 288))) =
       momentFunctional
         (tiedPowerMultiplicityThreeMoment tiedPowerGlobalBudgetNegativeNodes)
-        (X ^ 3 - C (1 / 288) * X ^ 2) := congrArg _ hpoly
+        (X ^ (3 : ℕ) - C (1 / 288) * X ^ (2 : ℕ)) := congrArg _ hpoly
     _ = -(1 / 1433272320000) := by
       rw [sub_eq_add_neg, momentFunctional_add]
-      rw [show -((C (1 / 288) * X ^ 2 : Polynomial ℝ)) =
-          (-1 : ℝ) • (C (1 / 288) * X ^ 2 : Polynomial ℝ) by rw [neg_one_smul],
+      rw [show -((C (1 / 288) * X ^ (2 : ℕ) : Polynomial ℝ)) =
+          (-1 : ℝ) • (C (1 / 288) * X ^ (2 : ℕ) : Polynomial ℝ) by rw [neg_one_smul],
         momentFunctional_smul, momentFunctional_X_pow]
-      rw [show (C (1 / 288) * X ^ 2 : Polynomial ℝ) =
-          (1 / 288 : ℝ) • X ^ 2 by rw [Polynomial.smul_eq_C_mul],
+      rw [show (C (1 / 288) * X ^ (2 : ℕ) : Polynomial ℝ) =
+          (1 / 288 : ℝ) • X ^ (2 : ℕ) by rw [Polynomial.smul_eq_C_mul],
         momentFunctional_smul, momentFunctional_X_pow]
       rw [tiedPowerGlobalBudgetNegativeMoment_three,
         tiedPowerGlobalBudgetNegativeMoment_two]
@@ -326,13 +326,13 @@ theorem tiedPowerGlobalBudgetOrientationNoGo :
     (∀ i, ∃ j, conj (tiedPowerGlobalBudgetNegativeNodes i) =
       tiedPowerGlobalBudgetNegativeNodes j) ∧
     (∀ i, 0 < (tiedPowerGlobalBudgetPositiveNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerGlobalBudgetPositiveNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerGlobalBudgetPositiveNodes i).re ^ 2 ∧
-      (41 : ℝ) ^ 2 * Complex.normSq (tiedPowerGlobalBudgetPositiveNodes i) < 4) ∧
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerGlobalBudgetPositiveNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerGlobalBudgetPositiveNodes i).re ^ (2 : ℕ) ∧
+      (41 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerGlobalBudgetPositiveNodes i) < 4) ∧
     (∀ i, 0 < (tiedPowerGlobalBudgetNegativeNodes i).re ∧
-      (84 : ℝ) ^ 2 * Complex.normSq (tiedPowerGlobalBudgetNegativeNodes i) <
-        (85 : ℝ) ^ 2 * (tiedPowerGlobalBudgetNegativeNodes i).re ^ 2 ∧
-      (41 : ℝ) ^ 2 * Complex.normSq (tiedPowerGlobalBudgetNegativeNodes i) < 4) ∧
+      (84 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerGlobalBudgetNegativeNodes i) <
+        (85 : ℝ) ^ (2 : ℕ) * (tiedPowerGlobalBudgetNegativeNodes i).re ^ (2 : ℕ) ∧
+      (41 : ℝ) ^ (2 : ℕ) * Complex.normSq (tiedPowerGlobalBudgetNegativeNodes i) < 4) ∧
     ((1 / 25 : ℝ) <
         tiedPowerMultiplicityThreeMoment tiedPowerGlobalBudgetPositiveNodes 0 ∧
       tiedPowerMultiplicityThreeMoment tiedPowerGlobalBudgetPositiveNodes 0 < 29 / 625 ∧

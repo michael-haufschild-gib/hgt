@@ -33,7 +33,7 @@ theorem card_mul_omitted_le (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (A : Finset ℕ)
     (w : ℕ → ℝ) (hwp : ∀ p ∈ P, w p < (p : ℝ))
     (hocc : ∀ p ∈ P, ((occupiedClasses p A).card : ℝ) + w p ≤ (p : ℝ)) :
     (A.card : ℝ) * ∑ p ∈ P, w p / ((p : ℝ) - w p)
-      ≤ (N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1)) := by
+      ≤ (N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1)) := by
   have hbase := montgomery_sieve N hQ A hA hAne P hP
   have hcard : (0 : ℝ) ≤ (A.card : ℝ) := by positivity
   have hmono : ∑ p ∈ P, w p / ((p : ℝ) - w p)
@@ -55,7 +55,7 @@ theorem card_le_of_sieve (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (A : Finset ℕ)
     (hocc : ∀ p ∈ P, ((occupiedClasses p A).card : ℝ) + w p ≤ (p : ℝ))
     {L : ℝ} (hL : 0 < L) (hLle : L ≤ ∑ p ∈ P, w p / ((p : ℝ) - w p)) :
     (A.card : ℝ)
-      ≤ ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1))) / L := by
+      ≤ ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1))) / L := by
   have hbase := card_mul_omitted_le N hQ A hA hAne P hP w hwp hocc
   have hcard : (0 : ℝ) ≤ (A.card : ℝ) := by positivity
   rw [le_div_iff₀ hL]

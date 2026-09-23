@@ -37,17 +37,17 @@ theorem cglProposition51_axialFrequencyTailMass_le_timeBudget
     (u : CGLLemma45FibreEqualCharacterOffDiagonalTriple P) :
     cglProposition51AxialFrequencyTailMass w N (cglLemma45FibreModulus q)
         (P.ordinate u.1.2.2 - P.ordinate u.1.1) ≤
-      ((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-        (1 + 2 * S.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+      ((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+        (1 + 2 * S.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
           cglProposition51PuncturedInverseSquareMass := by
   have hgap := cglProposition51_axialThirdGap_abs_le_doubleTime S u
   have hbase : 0 ≤ 1 + |P.ordinate u.1.2.2 - P.ordinate u.1.1| := by positivity
   have htime : 0 ≤ 1 + 2 * S.time := by linarith [S.time_one]
-  have hpow : (1 + |P.ordinate u.1.2.2 - P.ordinate u.1.1|) ^ 2 ≤
-      (1 + 2 * S.time) ^ 2 := by
+  have hpow : (1 + |P.ordinate u.1.2.2 - P.ordinate u.1.1|) ^ (2 : ℕ) ≤
+      (1 + 2 * S.time) ^ (2 : ℕ) := by
     nlinarith
   have hconst : 0 ≤ cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 /
-      (2 * Real.pi) ^ 2 := by
+      (2 * Real.pi) ^ (2 : ℕ) := by
     exact div_nonneg (cglSmoothBumpHtAllOrderBudget_nonneg w.toCGLSmoothBump 2)
       (sq_nonneg _)
   have hscale : 0 < cglAffineFourierScale N (cglLemma45FibreModulus q) :=
@@ -58,13 +58,13 @@ theorem cglProposition51_axialFrequencyTailMass_le_timeBudget
   calc
     cglProposition51AxialFrequencyTailMass w N (cglLemma45FibreModulus q)
         (P.ordinate u.1.2.2 - P.ordinate u.1.1) ≤
-      ((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-        (1 + |P.ordinate u.1.2.2 - P.ordinate u.1.1|) ^ 2 /
+      ((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+        (1 + |P.ordinate u.1.2.2 - P.ordinate u.1.1|) ^ (2 : ℕ) /
           cglAffineFourierScale N (cglLemma45FibreModulus q)) *
             cglProposition51PuncturedInverseSquareMass :=
       cglProposition51_axialFrequencyTailMass_le w N (cglLemma45FibreModulus q) _
-    _ ≤ ((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ 2) *
-        (1 + 2 * S.time) ^ 2 / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
+    _ ≤ ((cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 2 / (2 * Real.pi) ^ (2 : ℕ)) *
+        (1 + 2 * S.time) ^ (2 : ℕ) / cglAffineFourierScale N (cglLemma45FibreModulus q)) *
           cglProposition51PuncturedInverseSquareMass := by
       gcongr
 

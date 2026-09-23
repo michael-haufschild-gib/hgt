@@ -96,11 +96,11 @@ theorem hsTrace_hsPow_truncKernel (K : ι × ι → ℂ) (s : Finset ι) (n : �
 omit [DecidableEq ι] in
 /-- The Hilbert–Schmidt energy of the block is the partial entry sum. -/
 theorem matHSNormSq_blockMatrix (K : ι × ι → ℂ) (s : Finset ι) :
-    GaloisForLFunctions.HTGeometry.matHSNormSq (blockMatrix K s) = ∑ p ∈ s ×ˢ s, ‖K p‖ ^ 2 := by
+    GaloisForLFunctions.HTGeometry.matHSNormSq (blockMatrix K s) = ∑ p ∈ s ×ˢ s, ‖K p‖ ^ (2 : ℕ) := by
   rw [GaloisForLFunctions.HTGeometry.matHSNormSq, Finset.sum_product,
-    ← Finset.sum_coe_sort s fun i : ι => ∑ j ∈ s, ‖K (i, j)‖ ^ 2]
+    ← Finset.sum_coe_sort s fun i : ι => ∑ j ∈ s, ‖K (i, j)‖ ^ (2 : ℕ)]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [← Finset.sum_coe_sort s fun j : ι => ‖K ((i : ι), j)‖ ^ 2]
+  rw [← Finset.sum_coe_sort s fun j : ι => ‖K ((i : ι), j)‖ ^ (2 : ℕ)]
   rfl
 
 /-- The block energy never exceeds the kernel energy. -/

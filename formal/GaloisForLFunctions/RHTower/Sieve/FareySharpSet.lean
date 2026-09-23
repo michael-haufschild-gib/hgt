@@ -30,7 +30,7 @@ theorem properFarey_val_injOn {Q : ℕ} (hQ : 0 < Q) :
     norm_num
   rw [hzero] at hsep
   have hQR : (0 : ℝ) < (Q : ℝ) := by exact_mod_cast hQ
-  have : (0 : ℝ) < 1 / (Q : ℝ) ^ 2 := by positivity
+  have : (0 : ℝ) < 1 / (Q : ℝ) ^ (2 : ℕ) := by positivity
   linarith
 
 /-- The sum over values equals the sum over fractions. -/
@@ -44,12 +44,12 @@ theorem sum_properFareyReals_eq {Q : ℕ} (hQ : 0 < Q) (f : ℝ → ℝ) :
 theorem largeSieve_set_properFarey (N : ℕ) (hN : 0 < N) {Q : ℕ} (hQ : 2 ≤ Q) (A : Finset ℕ)
     (hA : A ⊆ Finset.range N) :
     ∑ p ∈ properFareySet Q,
-        ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((p.1 : ℝ) / (p.2 : ℝ)))‖ ^ 2
-      ≤ ((Q : ℝ) ^ 2 + 4 * Real.pi * (N : ℝ)) * (A.card : ℝ) := by
+        ‖∑ n ∈ A, circleFreq ((n : ℝ) * ((p.1 : ℝ) / (p.2 : ℝ)))‖ ^ (2 : ℕ)
+      ≤ ((Q : ℝ) ^ (2 : ℕ) + 4 * Real.pi * (N : ℝ)) * (A.card : ℝ) := by
   have hQ0 : 0 < Q := by omega
   have hbase := largeSieve_farey_sharp N hN hQ (indicatorVec N A)
   rw [sum_normSq_indicatorVec A hA] at hbase
-  rw [sum_properFareyReals_eq hQ0 (fun x => ‖expSum N (indicatorVec N A) x‖ ^ 2)] at hbase
+  rw [sum_properFareyReals_eq hQ0 (fun x => ‖expSum N (indicatorVec N A) x‖ ^ (2 : ℕ))] at hbase
   simp only [expSum_indicatorVec A hA] at hbase
   exact hbase
 

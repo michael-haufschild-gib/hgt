@@ -14,7 +14,7 @@ def routeUShiftedCompletedPrimeGammaBalance
     (t : {τ : ℝ // 0 < τ}) : ℝ :=
   let Q := xiShiftedReversedPolynomial y d c
   (∫ x : ℝ, ‖routeUPolynomialGaussianDensity Q t x‖ * gammaHardyPhaseRate x) +
-    2 * Real.pi * (Q.eval (-(1 / 4 : ℝ))) ^ 2 * Real.exp (t.1 / 4) -
+    2 * Real.pi * (Q.eval (-(1 / 4 : ℝ))) ^ (2 : ℕ) * Real.exp (t.1 / 4) -
       (routeUPolynomialGaussianPrimeSource Q t).re
 
 /-- The literal completed balance is exactly pi times the polynomial Xi heat trace. -/
@@ -127,40 +127,40 @@ theorem exists_routeUShiftedCompletedPrimeGammaBalance_neg_beyond_aperture
 
 /-- Reciprocal hard-edge lift after the shifted-reversal heat filter. -/
 def routeUHardEdgeFilteredPolynomial (a : ℝ) (P : Polynomial ℝ) : Polynomial ℝ :=
-  xiShiftedReversedPolynomial (a ^ 2)
+  xiShiftedReversedPolynomial (a ^ (2 : ℕ))
     (xiHardEdgeReciprocalPolynomial a P).natDegree
     (xiHardEdgeLiftCoefficients a P)
 
 /-- Degree-free Cauchy hard-edge density. -/
 def routeUHardEdgeCauchyDensity (a : ℝ) (P : Polynomial ℝ) (x : ℝ) : ℝ :=
-  a ^ 2 / (a ^ 2 + x ^ 2) *
-    (P.eval ((a ^ 2 - x ^ 2) / (a ^ 2 + x ^ 2))) ^ 2
+  a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) *
+    (P.eval ((a ^ (2 : ℕ) - x ^ (2 : ℕ)) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)))) ^ (2 : ℕ)
 
 /-- Exact cancellation of every admission-degree power in the hard-edge source density. -/
 theorem routeUHardEdgeFilteredPolynomial_degree_cancellation
     {a : ℝ} (ha : 0 < a) (P : Polynomial ℝ) (x : ℝ) :
-    a ^ 2 * (routeUHardEdgeFilteredPolynomial a P).eval (x ^ 2) ^ 2 /
-        (a ^ 2 + x ^ 2) ^
+    a ^ (2 : ℕ) * (routeUHardEdgeFilteredPolynomial a P).eval (x ^ (2 : ℕ)) ^ (2 : ℕ) /
+        (a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^
           (2 * (xiHardEdgeReciprocalPolynomial a P).natDegree + 1) =
       routeUHardEdgeCauchyDensity a P x := by
   let d := (xiHardEdgeReciprocalPolynomial a P).natDegree
   let c : Fin (d + 1) → ℝ := xiHardEdgeLiftCoefficients a P
-  have hden : 0 < a ^ 2 + x ^ 2 := by positivity
-  have hdenC : ((a ^ 2 : ℝ) : ℂ) + (x ^ 2 : ℝ) ≠ 0 := by
+  have hden : 0 < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
+  have hdenC : ((a ^ (2 : ℕ) : ℝ) : ℂ) + (x ^ (2 : ℕ) : ℝ) ≠ 0 := by
     intro hzero
     have hre := congrArg Complex.re hzero
     norm_num [pow_two, Complex.mul_re] at hre
     nlinarith
-  have hsumC : ((a ^ 2 : ℝ) : ℂ) + (x ^ 2 : ℝ) =
-      ((a ^ 2 + x ^ 2 : ℝ) : ℂ) := by push_cast; rfl
+  have hsumC : ((a ^ (2 : ℕ) : ℝ) : ℂ) + (x ^ (2 : ℕ) : ℝ) =
+      ((a ^ (2 : ℕ) + x ^ (2 : ℕ) : ℝ) : ℂ) := by push_cast; rfl
   have hQ := eval_xiShiftedReversedPolynomial_eq
-    (a ^ 2) d c ((x ^ 2 : ℝ) : ℂ) hdenC
+    (a ^ (2 : ℕ)) d c ((x ^ (2 : ℕ) : ℝ) : ℂ) hdenC
   rw [show Polynomial.ofFn (d + 1) c = xiHardEdgeReciprocalPolynomial a P by
     exact ofFn_xiHardEdgeLiftCoefficients a P] at hQ
   rw [evalRealPolynomial_xiHardEdgeReciprocalPolynomial] at hQ
-  have harg : (((2 * a ^ 2 : ℝ) : ℂ) *
-        ((((a ^ 2 : ℝ) : ℂ) + (x ^ 2 : ℝ))⁻¹) - 1) =
-      (((a ^ 2 - x ^ 2) / (a ^ 2 + x ^ 2) : ℝ) : ℂ) := by
+  have harg : (((2 * a ^ (2 : ℕ) : ℝ) : ℂ) *
+        ((((a ^ (2 : ℕ) : ℝ) : ℂ) + (x ^ (2 : ℕ) : ℝ))⁻¹) - 1) =
+      (((a ^ (2 : ℕ) - x ^ (2 : ℕ)) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [hsumC]
     norm_cast
     field_simp [hden.ne']
@@ -169,9 +169,9 @@ theorem routeUHardEdgeFilteredPolynomial_degree_cancellation
   rw [hsumC] at hQ
   simp only [evalRealPolynomial_ofReal] at hQ
   norm_cast at hQ
-  have hQreal : (routeUHardEdgeFilteredPolynomial a P).eval (x ^ 2) =
-      (a ^ 2 + x ^ 2) ^ d *
-        P.eval ((a ^ 2 - x ^ 2) / (a ^ 2 + x ^ 2)) := by
+  have hQreal : (routeUHardEdgeFilteredPolynomial a P).eval (x ^ (2 : ℕ)) =
+      (a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ d *
+        P.eval ((a ^ (2 : ℕ) - x ^ (2 : ℕ)) / (a ^ (2 : ℕ) + x ^ (2 : ℕ))) := by
     simpa [routeUHardEdgeFilteredPolynomial, d, c] using hQ
   rw [hQreal]
   simp only [routeUHardEdgeCauchyDensity]
@@ -197,7 +197,7 @@ def routeUExplicitFinitePrimeGammaBalance
     (P : Polynomial ℝ) (t : {τ : ℝ // 0 < τ}) (n k : ℕ)
     (s : {σ : ℝ // 0 < σ}) : ℝ :=
   routeUShiftedCompletedPrimeGammaBalance
-    (routeUHardEdgeMass (k : ℝ) ^ 2)
+    (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
     (routeUExplicitFinitePrimeGammaDegree P t n k)
     (routeUExplicitFinitePrimeGammaCoefficients P t n k) s
 
@@ -205,7 +205,7 @@ def routeUExplicitFinitePrimeGammaBalance
 def routeUExplicitFinitePrimeGammaCapital
     (P : Polynomial ℝ) (t : {τ : ℝ // 0 < τ}) (n k : ℕ) : ℝ :=
   routeUShiftedFilteredCompletedSourceCapital
-    (routeUHardEdgeMass (k : ℝ) ^ 2)
+    (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
     (routeUExplicitFinitePrimeGammaDegree P t n k)
     (routeUExplicitFinitePrimeGammaCoefficients P t n k)
 
@@ -229,12 +229,12 @@ def XiShiftedHardEdgeCofinalPrimeGammaInversionPhase : Prop :=
         routeUExplicitFinitePrimeGammaBalance P t n k s < 0 ∧
         routeUCompletedPrimeGammaAperture <
           s.1 * ((xiShiftedReversedPolynomial
-            (routeUHardEdgeMass (k : ℝ) ^ 2)
+            (routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ))
             (routeUExplicitFinitePrimeGammaDegree P t n k)
             (routeUExplicitFinitePrimeGammaCoefficients P t n k)).natDegree + 1)) ∧
-      routeUHardEdgeMass (k : ℝ) ^ 2 <
+      routeUHardEdgeMass (k : ℝ) ^ (2 : ℕ) <
         routeUParabolicDegreeHorizon *
-          (routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) : ℝ) ^ 2 ∧
+          (routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) : ℝ) ^ (2 : ℕ) ∧
       routeUExplicitFiniteHankelSize n k (routeUXiHeatPhysicalReal P t) ≤
         (n + 1) * (k + 1) + 2
 

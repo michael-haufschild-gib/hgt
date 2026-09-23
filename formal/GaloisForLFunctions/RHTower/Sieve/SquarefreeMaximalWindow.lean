@@ -34,11 +34,11 @@ theorem squarefreeDensity_le_one : squarefreeDensity ≤ 1 := by
 
 /-- The squarefree count of a window is between `0` and its length. -/
 theorem sum_moebius_sq_window_mem (t L : ℕ) :
-    0 ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
-      ∧ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2 ≤ (L : ℝ) := by
+    0 ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
+      ∧ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) ≤ (L : ℝ) := by
   constructor
   · positivity
-  · have hterm : ∀ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2 ≤ 1 := by
+  · have hterm : ∀ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) ≤ 1 := by
       intro n _
       have h := abs_moebius_sq_real_le_one n
       exact le_trans (le_abs_self _) h
@@ -48,7 +48,7 @@ theorem sum_moebius_sq_window_mem (t L : ℕ) :
 
 /-- **The trivial window bound.** -/
 theorem abs_window_squarefree_sub_le_len (t L : ℕ) :
-    |∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2 - (L : ℝ) * squarefreeDensity|
+    |∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) - (L : ℝ) * squarefreeDensity|
       ≤ (L : ℝ) := by
   obtain ⟨h0, h1⟩ := sum_moebius_sq_window_mem t L
   have hD0 := squarefreeDensity_nonneg'
@@ -61,20 +61,20 @@ theorem abs_window_squarefree_sub_le_len (t L : ℕ) :
 
 /-- **The window bound with the truncation defect.** -/
 theorem abs_window_squarefree_sub_le_defect (t L R M : ℕ) (hR : 1 ≤ R) (hM : t + L ≤ M) :
-    |∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2 - (L : ℝ) * squarefreeDensity|
+    |∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) - (L : ℝ) * squarefreeDensity|
       ≤ (R : ℝ) + (L : ℝ) / (R : ℝ)
         + ∑ d ∈ Finset.Icc (R + 1) M,
-            ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+            ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
   classical
   have h1 := abs_window_squarefree_sub_trunc_le t L R M hM
   have h2 := abs_truncated_squarefree_sub_le t L R hR
-  have hsplit : ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+  have hsplit : ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
         - (L : ℝ) * squarefreeDensity
-      = (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2
+      = (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)
           - ∑ n ∈ Finset.Ioc t (t + L),
-              ∑ d ∈ (Finset.Icc 1 R).filter (fun d => d ^ 2 ∣ n), ((moebius d : ℤ) : ℝ))
+              ∑ d ∈ (Finset.Icc 1 R).filter (fun d => d ^ (2 : ℕ) ∣ n), ((moebius d : ℤ) : ℝ))
         + (∑ n ∈ Finset.Ioc t (t + L),
-              ∑ d ∈ (Finset.Icc 1 R).filter (fun d => d ^ 2 ∣ n), ((moebius d : ℤ) : ℝ)
+              ∑ d ∈ (Finset.Icc 1 R).filter (fun d => d ^ (2 : ℕ) ∣ n), ((moebius d : ℤ) : ℝ)
             - (L : ℝ) * squarefreeDensity) := by ring
   rw [hsplit]
   refine le_trans (abs_add_le _ _) ?_
@@ -83,14 +83,14 @@ theorem abs_window_squarefree_sub_le_defect (t L R M : ℕ) (hR : 1 ≤ R) (hM :
 /-- The defect is monotone in the window length. -/
 theorem defect_mono {t L L' R M : ℕ} (hL : L ≤ L') :
     ∑ d ∈ Finset.Icc (R + 1) M,
-        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ)
+        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)
       ≤ ∑ d ∈ Finset.Icc (R + 1) M,
-        ((((Finset.Ioc t (t + L')).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+        ((((Finset.Ioc t (t + L')).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
   classical
   refine Finset.sum_le_sum ?_
   intro d _
-  have hsub : (Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)
-      ⊆ (Finset.Ioc t (t + L')).filter (fun n => d ^ 2 ∣ n) := by
+  have hsub : (Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)
+      ⊆ (Finset.Ioc t (t + L')).filter (fun n => d ^ (2 : ℕ) ∣ n) := by
     refine Finset.filter_subset_filter _ ?_
     exact Finset.Ioc_subset_Ioc_right (by omega)
   exact_mod_cast Finset.card_le_card hsub
@@ -105,11 +105,11 @@ theorem Icc_eq_Ioc_pred_len {y m : ℕ} (hy : 1 ≤ y) :
 /-- **The maximal squared window deviation, pointwise.** -/
 theorem maxWindowDevSq_moebius_sq_le {y H R M : ℕ} (hy : 1 ≤ y) (hR : 1 ≤ R)
     (hM : (y - 1) + (H + 1) ≤ M) :
-    maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y
+    maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) squarefreeDensity H y
       ≤ ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)
         + ∑ d ∈ Finset.Icc (R + 1) M,
             ((((Finset.Ioc (y - 1) ((y - 1) + (H + 1))).filter
-              (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ)) := by
+              (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)) := by
   classical
   refine Finset.sup'_le _ _ ?_
   intro m hm
@@ -117,10 +117,10 @@ theorem maxWindowDevSq_moebius_sq_le {y H R M : ℕ} (hy : 1 ≤ y) (hR : 1 ≤ 
   have hmH : m ≤ H := by omega
   rw [Icc_eq_Ioc_pred_len hy]
   set t : ℕ := y - 1 with ht
-  set E : ℝ := (∑ b ∈ Finset.Ioc t (t + (m + 1)), ((moebius b : ℤ) : ℝ) ^ 2)
+  set E : ℝ := (∑ b ∈ Finset.Ioc t (t + (m + 1)), ((moebius b : ℤ) : ℝ) ^ (2 : ℕ))
     - squarefreeDensity * ((m : ℝ) + 1) with hE
   have hcast : ((m + 1 : ℕ) : ℝ) = (m : ℝ) + 1 := by push_cast; ring
-  have hEeq : E = (∑ b ∈ Finset.Ioc t (t + (m + 1)), ((moebius b : ℤ) : ℝ) ^ 2)
+  have hEeq : E = (∑ b ∈ Finset.Ioc t (t + (m + 1)), ((moebius b : ℤ) : ℝ) ^ (2 : ℕ))
       - ((m + 1 : ℕ) : ℝ) * squarefreeDensity := by
     rw [hE, hcast]
     ring
@@ -133,7 +133,7 @@ theorem maxWindowDevSq_moebius_sq_le {y H R M : ℕ} (hy : 1 ≤ y) (hR : 1 ≤ 
   have hMle : t + (m + 1) ≤ M := by omega
   have hmain : |E| ≤ (R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)
       + ∑ d ∈ Finset.Icc (R + 1) M,
-          ((((Finset.Ioc t (t + (H + 1))).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+          ((((Finset.Ioc t (t + (H + 1))).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
     rw [hEeq]
     refine le_trans (abs_window_squarefree_sub_le_defect t (m + 1) R M hR hMle) ?_
     have hmono := defect_mono (t := t) (L := m + 1) (L' := H + 1) (R := R) (M := M) (by omega)
@@ -145,8 +145,8 @@ theorem maxWindowDevSq_moebius_sq_le {y H R M : ℕ} (hy : 1 ≤ y) (hR : 1 ≤ 
     have hdiv : ((m + 1 : ℕ) : ℝ) / (R : ℝ) ≤ ((H : ℝ) + 1) / (R : ℝ) :=
       div_le_div_of_nonneg_right hlen hR0.le
     linarith
-  have hsq : E ^ 2 ≤ ((H : ℝ) + 1) * |E| := by
-    have habs : |E| ^ 2 = E ^ 2 := sq_abs E
+  have hsq : E ^ (2 : ℕ) ≤ ((H : ℝ) + 1) * |E| := by
+    have habs : |E| ^ (2 : ℕ) = E ^ (2 : ℕ) := sq_abs E
     nlinarith [abs_nonneg E, htriv]
   refine le_trans hsq ?_
   refine mul_le_mul_of_nonneg_left hmain (by positivity)
@@ -169,7 +169,7 @@ theorem pred_injOn {A B : ℕ} (hA : 1 ≤ A) {y y' : ℕ}
 /-- The mass of the square divisors above `R` in a window of length `H + 1`. -/
 noncomputable def tailDefect (R M H t : ℕ) : ℝ :=
   ∑ d ∈ Finset.Icc (R + 1) M,
-    ((((Finset.Ioc t (t + (H + 1))).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ)
+    ((((Finset.Ioc t (t + (H + 1))).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)
 
 theorem tailDefect_nonneg (R M H t : ℕ) : 0 ≤ tailDefect R M H t := by
   rw [tailDefect]
@@ -179,13 +179,13 @@ theorem tailDefect_nonneg (R M H t : ℕ) : 0 ≤ tailDefect R M H t := by
 theorem sum_maxWindowDevSq_moebius_sq_le {A B H R M : ℕ} (hA : 1 ≤ A) (hR : 1 ≤ R)
     (hM : B + (H + 1) ≤ M) (hAB : A - 1 ≤ B + (H + 1)) :
     ∑ y ∈ Finset.Icc A B,
-        maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y
+        maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) squarefreeDensity H y
       ≤ ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)) * ((Finset.Icc A B).card : ℝ)
         + ((H : ℝ) + 1) * (((H : ℝ) + 1)
             * (((B : ℝ) + ((H : ℝ) + 1) - ((A - 1 : ℕ) : ℝ)) / (R : ℝ) + (M : ℝ))) := by
   classical
   have hterm : ∀ y ∈ Finset.Icc A B,
-      maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y
+      maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) squarefreeDensity H y
         ≤ ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ))
           + ((H : ℝ) + 1) * tailDefect R M H (y - 1) := by
     intro y hy
@@ -194,15 +194,15 @@ theorem sum_maxWindowDevSq_moebius_sq_le {A B H R M : ℕ} (hA : 1 ≤ A) (hR : 
     have hMy : (y - 1) + (H + 1) ≤ M := by omega
     have hbase := maxWindowDevSq_moebius_sq_le (y := y) (H := H) (R := R) (M := M) hy1 hR hMy
     rw [tailDefect]
-    calc maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y
+    calc maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) squarefreeDensity H y
         ≤ ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)
             + ∑ d ∈ Finset.Icc (R + 1) M,
                 ((((Finset.Ioc (y - 1) ((y - 1) + (H + 1))).filter
-                  (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ)) := hbase
+                  (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)) := hbase
       _ = ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ))
             + ((H : ℝ) + 1) * ∑ d ∈ Finset.Icc (R + 1) M,
                 ((((Finset.Ioc (y - 1) ((y - 1) + (H + 1))).filter
-                  (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by ring
+                  (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by ring
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul, ← Finset.mul_sum]
   have himg : ∑ y ∈ Finset.Icc A B, tailDefect R M H (y - 1)
@@ -225,17 +225,17 @@ theorem sum_maxWindowDevSq_moebius_sq_le {A B H R M : ℕ} (hA : 1 ≤ A) (hR : 
 
 /-- A square divisor larger than the square root of the range cannot occur. -/
 theorem count_sq_dvd_eq_zero_of_large {t L B d : ℕ} (ht : t < B) (hd : Nat.sqrt (B + L) < d) :
-    (((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) = 0 := by
+    (((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) = 0 := by
   classical
   rw [Finset.card_eq_zero]
   refine Finset.filter_eq_empty_iff.2 ?_
   intro n hn hdvd
   rw [Finset.mem_Ioc] at hn
   have hn0 : 0 < n := lt_of_le_of_lt (Nat.zero_le t) hn.1
-  have hle : d ^ 2 ≤ n := Nat.le_of_dvd hn0 hdvd
+  have hle : d ^ (2 : ℕ) ≤ n := Nat.le_of_dvd hn0 hdvd
   have hnB : n ≤ B + L := by omega
   have hbig : B + L < d * d := Nat.sqrt_lt.mp hd
-  have hsq : d ^ 2 = d * d := by ring
+  have hsq : d ^ (2 : ℕ) = d * d := by ring
   omega
 
 /-- **The averaged tail, with the divisor range cut at the square root.**  Divisors above
@@ -244,15 +244,15 @@ theorem count_sq_dvd_eq_zero_of_large {t L B d : ℕ} (ht : t < B) (hd : Nat.sqr
 theorem sum_tail_divisor_count_le_sqrt (A B L R M : ℕ) (hR : 1 ≤ R) (hAB : A ≤ B + L) :
     (∑ t ∈ Finset.Ico A B,
         ∑ d ∈ Finset.Icc (R + 1) M,
-          ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ))
+          ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ))
       ≤ (L : ℝ) * (((B : ℝ) + L - A) / (R : ℝ) + ((Nat.sqrt (B + L) : ℕ) : ℝ)) := by
   classical
   set M' : ℕ := min M (Nat.sqrt (B + L)) with hM'
   have hcut : ∀ t ∈ Finset.Ico A B,
       ∑ d ∈ Finset.Icc (R + 1) M,
-        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ)
+        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)
       = ∑ d ∈ Finset.Icc (R + 1) M',
-        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by
+        ((((Finset.Ioc t (t + L)).filter (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by
     intro t ht
     rw [Finset.mem_Ico] at ht
     refine (Finset.sum_subset ?_ ?_).symm
@@ -279,14 +279,14 @@ theorem sum_tail_divisor_count_le_sqrt (A B L R M : ℕ) (hR : 1 ≤ R) (hAB : A
 theorem sum_maxWindowDevSq_moebius_sq_le_sqrt {A B H R : ℕ} (hA : 1 ≤ A) (hR : 1 ≤ R)
     (hAB : A - 1 ≤ B + (H + 1)) :
     ∑ y ∈ Finset.Icc A B,
-        maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y
+        maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) squarefreeDensity H y
       ≤ ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)) * ((Finset.Icc A B).card : ℝ)
         + ((H : ℝ) + 1) * (((H : ℝ) + 1)
             * (((B : ℝ) + ((H : ℝ) + 1) - ((A - 1 : ℕ) : ℝ)) / (R : ℝ)
               + ((Nat.sqrt (B + (H + 1)) : ℕ) : ℝ))) := by
   classical
   have hterm : ∀ y ∈ Finset.Icc A B,
-      maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y
+      maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) squarefreeDensity H y
         ≤ ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ))
           + ((H : ℝ) + 1) * tailDefect R (B + (H + 1)) H (y - 1) := by
     intro y hy
@@ -296,15 +296,15 @@ theorem sum_maxWindowDevSq_moebius_sq_le_sqrt {A B H R : ℕ} (hA : 1 ≤ A) (hR
     have hbase := maxWindowDevSq_moebius_sq_le (y := y) (H := H) (R := R)
       (M := B + (H + 1)) hy1 hR hMy
     rw [tailDefect]
-    calc maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y
+    calc maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) squarefreeDensity H y
         ≤ ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)
             + ∑ d ∈ Finset.Icc (R + 1) (B + (H + 1)),
                 ((((Finset.Ioc (y - 1) ((y - 1) + (H + 1))).filter
-                  (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ)) := hbase
+                  (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ)) := hbase
       _ = ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ))
             + ((H : ℝ) + 1) * ∑ d ∈ Finset.Icc (R + 1) (B + (H + 1)),
                 ((((Finset.Ioc (y - 1) ((y - 1) + (H + 1))).filter
-                  (fun n => d ^ 2 ∣ n)).card : ℕ) : ℝ) := by ring
+                  (fun n => d ^ (2 : ℕ) ∣ n)).card : ℕ) : ℝ) := by ring
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul, ← Finset.mul_sum]
   have himg : ∑ y ∈ Finset.Icc A B, tailDefect R (B + (H + 1)) H (y - 1)
@@ -332,41 +332,41 @@ theorem sum_maxWindowDevSq_moebius_sq_le_sqrt {A B H R : ℕ} (hA : 1 ≤ A) (hR
 `h²√x` is at most `16/u + 8/v`. -/
 theorem maximal_bound_arith {u v HH RR cardv Bv sqv : ℝ}
     (hu : 3 ≤ u) (hv : 3 ≤ v)
-    (hHH0 : 0 ≤ HH) (hHH : HH ≤ 2 * u ^ 2)
+    (hHH0 : 0 ≤ HH) (hHH : HH ≤ 2 * u ^ (2 : ℕ))
     (hRlow : u ≤ RR) (hRup : RR ≤ 2 * u)
-    (hcard0 : 0 ≤ cardv) (hcard : cardv ≤ v ^ 2)
-    (hrange0 : 0 ≤ Bv) (hrange : Bv ≤ 2 * v ^ 2)
+    (hcard0 : 0 ≤ cardv) (hcard : cardv ≤ v ^ (2 : ℕ))
+    (hrange0 : 0 ≤ Bv) (hrange : Bv ≤ 2 * v ^ (2 : ℕ))
     (hsq0 : 0 ≤ sqv) (hsq : sqv ≤ 2 * v) :
     HH * (2 * RR + HH / RR) * cardv + HH * (HH * (Bv / RR + sqv))
-      ≤ 20 * u ^ 3 * v ^ 2 + 8 * u ^ 4 * v := by
+      ≤ 20 * u ^ (3 : ℕ) * v ^ (2 : ℕ) + 8 * u ^ (4 : ℕ) * v := by
   have hu0 : (0 : ℝ) < u := by linarith
   have hv0 : (0 : ℝ) < v := by linarith
   have hR0 : (0 : ℝ) < RR := by linarith
   have hdiv1 : HH / RR ≤ 2 * u := by
     rw [div_le_iff₀ hR0]
     nlinarith
-  have hdiv2 : Bv / RR ≤ 2 * v ^ 2 / u := by
+  have hdiv2 : Bv / RR ≤ 2 * v ^ (2 : ℕ) / u := by
     rw [div_le_div_iff₀ hR0 hu0]
     nlinarith
-  have hfirst : HH * (2 * RR + HH / RR) * cardv ≤ 12 * u ^ 3 * v ^ 2 := by
+  have hfirst : HH * (2 * RR + HH / RR) * cardv ≤ 12 * u ^ (3 : ℕ) * v ^ (2 : ℕ) := by
     have hsum : 2 * RR + HH / RR ≤ 6 * u := by linarith
-    have h1 : HH * (2 * RR + HH / RR) ≤ 2 * u ^ 2 * (6 * u) := by
+    have h1 : HH * (2 * RR + HH / RR) ≤ 2 * u ^ (2 : ℕ) * (6 * u) := by
       refine mul_le_mul hHH hsum ?_ (by positivity)
       have : (0 : ℝ) ≤ HH / RR := by positivity
       linarith
-    have h2 : HH * (2 * RR + HH / RR) * cardv ≤ (2 * u ^ 2 * (6 * u)) * v ^ 2 := by
+    have h2 : HH * (2 * RR + HH / RR) * cardv ≤ (2 * u ^ (2 : ℕ) * (6 * u)) * v ^ (2 : ℕ) := by
       refine mul_le_mul h1 hcard hcard0 (by positivity)
     nlinarith [h2]
-  have hsecond : HH * (HH * (Bv / RR + sqv)) ≤ 8 * u ^ 3 * v ^ 2 + 8 * u ^ 4 * v := by
-    have hinner : Bv / RR + sqv ≤ 2 * v ^ 2 / u + 2 * v := by linarith
+  have hsecond : HH * (HH * (Bv / RR + sqv)) ≤ 8 * u ^ (3 : ℕ) * v ^ (2 : ℕ) + 8 * u ^ (4 : ℕ) * v := by
+    have hinner : Bv / RR + sqv ≤ 2 * v ^ (2 : ℕ) / u + 2 * v := by linarith
     have hinner0 : (0 : ℝ) ≤ Bv / RR + sqv := by positivity
-    have h1 : HH * (Bv / RR + sqv) ≤ 2 * u ^ 2 * (2 * v ^ 2 / u + 2 * v) :=
+    have h1 : HH * (Bv / RR + sqv) ≤ 2 * u ^ (2 : ℕ) * (2 * v ^ (2 : ℕ) / u + 2 * v) :=
       mul_le_mul hHH hinner hinner0 (by positivity)
     have h10 : (0 : ℝ) ≤ HH * (Bv / RR + sqv) := by positivity
-    have h2 : HH * (HH * (Bv / RR + sqv)) ≤ 2 * u ^ 2 * (2 * u ^ 2 * (2 * v ^ 2 / u + 2 * v)) :=
+    have h2 : HH * (HH * (Bv / RR + sqv)) ≤ 2 * u ^ (2 : ℕ) * (2 * u ^ (2 : ℕ) * (2 * v ^ (2 : ℕ) / u + 2 * v)) :=
       mul_le_mul hHH h1 h10 (by positivity)
-    have hval : 2 * u ^ 2 * (2 * u ^ 2 * (2 * v ^ 2 / u + 2 * v))
-        = 8 * u ^ 3 * v ^ 2 + 8 * u ^ 4 * v := by
+    have hval : 2 * u ^ (2 : ℕ) * (2 * u ^ (2 : ℕ) * (2 * v ^ (2 : ℕ) / u + 2 * v))
+        = 8 * u ^ (3 : ℕ) * v ^ (2 : ℕ) + 8 * u ^ (4 : ℕ) * v := by
       field_simp
       ring
     rw [hval] at h2
@@ -408,21 +408,21 @@ theorem maximalWindowDevMeanSquareAt_of_sum_bound {f : ℕ → ℝ} {c : ℝ} {X
   have hs9 : (9 : ℝ) ≤ s := by
     have : Real.sqrt 81 ≤ Real.sqrt (X x) := Real.sqrt_le_sqrt hx
     rwa [show Real.sqrt 81 = 9 by
-      rw [show (81 : ℝ) = 9 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at this
+      rw [show (81 : ℝ) = 9 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at this
   have hh9 : (9 : ℝ) ≤ h := hhx
   set u : ℝ := Real.sqrt h with hudef
   set v : ℝ := Real.sqrt s with hvdef
   have hu3 : (3 : ℝ) ≤ u := by
     have : Real.sqrt 9 ≤ Real.sqrt h := Real.sqrt_le_sqrt hh9
     rwa [show Real.sqrt 9 = 3 by
-      rw [show (9 : ℝ) = 3 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at this
+      rw [show (9 : ℝ) = 3 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at this
   have hv3 : (3 : ℝ) ≤ v := by
     have : Real.sqrt 9 ≤ Real.sqrt s := Real.sqrt_le_sqrt hs9
     rwa [show Real.sqrt 9 = 3 by
-      rw [show (9 : ℝ) = 3 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at this
+      rw [show (9 : ℝ) = 3 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at this
   have huv : u ≤ v := Real.sqrt_le_sqrt hle
-  have hu2 : u ^ 2 = h := Real.sq_sqrt (by linarith)
-  have hv2 : v ^ 2 = s := Real.sq_sqrt (by linarith)
+  have hu2 : u ^ (2 : ℕ) = h := Real.sq_sqrt (by linarith)
+  have hv2 : v ^ (2 : ℕ) = s := Real.sq_sqrt (by linarith)
   have hu0 : (0 : ℝ) < u := by linarith
   have hv0 : (0 : ℝ) < v := by linarith
   set A : ℕ := ⌈s / 2⌉₊ with hA
@@ -447,7 +447,7 @@ theorem maximalWindowDevMeanSquareAt_of_sum_bound {f : ℕ → ℝ} {c : ℝ} {X
   have hApredle : ((A - 1 : ℕ) : ℝ) ≤ (B : ℝ) := by
     have hnat : A - 1 ≤ B := by omega
     exact_mod_cast hnat
-  have hcardv : (((Finset.Icc A B).card : ℕ) : ℝ) ≤ v ^ 2 := by
+  have hcardv : (((Finset.Icc A B).card : ℕ) : ℝ) ≤ v ^ (2 : ℕ) := by
     rw [Nat.card_Icc]
     have hcast : ((B + 1 - A : ℕ) : ℝ) = (B : ℝ) + 1 - (A : ℝ) := by
       push_cast [Nat.cast_sub (by omega : A ≤ B + 1)]
@@ -462,7 +462,7 @@ theorem maximalWindowDevMeanSquareAt_of_sum_bound {f : ℕ → ℝ} {c : ℝ} {X
     have hstep : Real.sqrt ((B : ℝ) + (H : ℝ) + 1) ≤ Real.sqrt (4 * s) :=
       Real.sqrt_le_sqrt hin
     have hfour : Real.sqrt (4 * s) = 2 * v := by
-      rw [hvdef, show (4 : ℝ) * s = 2 ^ 2 * s by norm_num, Real.sqrt_mul (by positivity),
+      rw [hvdef, show (4 : ℝ) * s = 2 ^ (2 : ℕ) * s by norm_num, Real.sqrt_mul (by positivity),
         Real.sqrt_sq (by norm_num)]
     linarith [hnat, hstep, hfour.le, hfour.ge]
   have harith := maximal_bound_arith (u := u) (v := v) (HH := (H : ℝ) + 1) (RR := (R : ℝ))
@@ -471,14 +471,14 @@ theorem maximalWindowDevMeanSquareAt_of_sum_bound {f : ℕ → ℝ} {c : ℝ} {X
     (sqv := ((Nat.sqrt (B + (H + 1)) : ℕ) : ℝ))
     hu3 hv3 (by positivity) (by rw [hu2]; linarith) hRlow (by linarith)
     (by positivity) hcardv (by linarith) (by rw [hv2]; linarith) (by positivity) hsqv
-  have hden : (0 : ℝ) < h ^ 2 * s := by positivity
+  have hden : (0 : ℝ) < h ^ (2 : ℕ) * s := by positivity
   have hnum0 : (0 : ℝ) ≤ ∑ y ∈ Finset.Icc A B, maxWindowDevSq f c H y := by
     refine Finset.sum_nonneg ?_
     intro y _
     exact maxWindowDevSq_nonneg _ _ _ _
   have hchain : ∑ y ∈ Finset.Icc A B, maxWindowDevSq f c H y
-      ≤ 20 * u ^ 3 * v ^ 2 + 8 * u ^ 4 * v := le_trans hbase harith
-  have hfinal : (∑ y ∈ Finset.Icc A B, maxWindowDevSq f c H y) / (h ^ 2 * s)
+      ≤ 20 * u ^ (3 : ℕ) * v ^ (2 : ℕ) + 8 * u ^ (4 : ℕ) * v := le_trans hbase harith
+  have hfinal : (∑ y ∈ Finset.Icc A B, maxWindowDevSq f c H y) / (h ^ (2 : ℕ) * s)
       ≤ 20 / u + 8 / v := by
     refine le_trans (div_le_div_of_nonneg_right hchain hden.le) (le_of_eq ?_)
     rw [← hu2, ← hv2]
@@ -491,7 +491,7 @@ open Filter Topology in
 not a hypothesis: it needs no short-interval theorem, only the truncation machinery. -/
 theorem maximalWindowDevMeanSquare_moebius_sq {hh : ℝ → ℝ}
     (hgrow : Tendsto hh atTop atTop) (hsmall : ∀ᶠ x in atTop, hh x ≤ Real.sqrt x) :
-    MaximalWindowDevMeanSquareAt (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2)
+    MaximalWindowDevMeanSquareAt (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity id hh := by
   refine maximalWindowDevMeanSquareAt_of_sum_bound tendsto_id hgrow hsmall ?_
   intro A B H R hA hR hAB

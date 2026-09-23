@@ -23,12 +23,12 @@ def summablePhaseEnergyAt
     (a omega : ℕ → ℝ) (t : ℝ) : ℝ :=
   ∑' p, a p *
     ‖Complex.exp
-      (Complex.I * (((t * omega p : ℝ) : ℂ))) - 1‖ ^ 2
+      (Complex.I * (((t * omega p : ℝ) : ℂ))) - 1‖ ^ (2 : ℕ)
 
 /-- Head-synchronization plus summable-tail recurrence budget. -/
 def summablePhaseRecurrenceBudget
     (a : ℕ → ℝ) (M Q : ℕ) : ℝ :=
-  (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+  (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
       ∑ p ∈ Finset.range M, a p +
     4 * ∑' p : {p : ℕ // p ∉ Finset.range M}, a p
 

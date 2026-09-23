@@ -33,24 +33,24 @@ theorem setIntegral_normSq_omegaWeighted_le_blocks_cofactorSup {Q : Finset ℕ} 
     (hCk : ∀ k ∈ Finset.range L, ∀ w ∈ E,
       ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ≤ Ck k)
     (hJk : ∀ k ∈ Finset.range L,
-      (∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ 2) ≤ Jk k) :
-    (∫ w in E, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ 2)
+      (∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ (2 : ℕ)) ≤ Jk k) :
+    (∫ w in E, ‖omegaWeightedMoebiusPoly Q (Finset.Icc A₁ B₁) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ k ∈ Finset.range L, 1 / v k)
-            * ∑ k ∈ Finset.range L, v k * (Ck k ^ 2 * Jk k))
-        + 2 * ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ 2 := by
+            * ∑ k ∈ Finset.range L, v k * (Ck k ^ (2 : ℕ) * Jk k))
+        + 2 * ∫ w in E, ‖ladderProductDefect Q A₁ B₁ R η L w‖ ^ (2 : ℕ) := by
   classical
   have hstep2 := setIntegral_normSq_omegaWeighted_le_ladder (Q := Q) (A₁ := A₁) (B₁ := B₁)
     hR hη hL hQprime hQrange v hv hEm hEs
   have hblock : ∀ k ∈ Finset.range L,
-      v k * (∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ 2
-              * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2)
-        ≤ v k * (Ck k ^ 2 * Jk k) := by
+      v k * (∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ (2 : ℕ)
+              * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ))
+        ≤ v k * (Ck k ^ (2 : ℕ) * Jk k) := by
     intro k hk
     refine mul_le_mul_of_nonneg_left ?_ (hv k hk).le
-    have hcomm : (∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ 2
-            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2)
-        = ∫ w in E, ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ 2
-            * ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ 2 :=
+    have hcomm : (∫ w in E, ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ (2 : ℕ)
+            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ))
+        = ∫ w in E, ‖logPoly moebiusCoeff (geomCofactorBlockAt A₁ B₁ R η k) w‖ ^ (2 : ℕ)
+            * ‖primeBlockPoly (geomBlock Q R (1 + η) k) w‖ ^ (2 : ℕ) :=
       MeasureTheory.setIntegral_congr_fun hEm fun w _ => by ring
     rw [hcomm]
     have hb := setIntegral_normSq_mul_le_of_bound

@@ -33,7 +33,7 @@ theorem eventually_one_sub_le_norm_soninApertureCoupling
     have h1 : Tendsto (fun n : ℕ => r n * q) atTop atTop :=
       Filter.Tendsto.atTop_mul_const hq hr
     exact Filter.Tendsto.const_mul_atTop (by positivity : (0 : ℝ) < 2 * Real.pi) h1
-  set L : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) with hL
+  set L : ℝ := Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ (2 : ℕ)) with hL
   have hLpos : 0 < L := sqrt_half_energy_pos b c hb hbc
   have hpacket : Tendsto (fun n : ℕ =>
       ‖soninPacketEven b c hb hbc (2 * Real.pi * (r n * q))‖) atTop (𝓝 L) :=

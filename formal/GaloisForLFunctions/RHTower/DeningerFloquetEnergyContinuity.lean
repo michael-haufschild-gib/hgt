@@ -26,10 +26,10 @@ open SchwartzMap MeasureTheory Filter Topology
 noncomputable section
 
 /-- The arithmetic constant `∑_q (log q)/q²`. -/
-def deningerPrimeLogWeight : ℝ := ∑' q : Nat.Primes, Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ 2
+def deningerPrimeLogWeight : ℝ := ∑' q : Nat.Primes, Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ (2 : ℕ)
 
 theorem deningerPrimeLogWeight_summable :
-    Summable fun q : Nat.Primes => Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ 2 :=
+    Summable fun q : Nat.Primes => Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ (2 : ℕ) :=
   deningerLogDivSq_summable.comp_injective Nat.Primes.coe_nat_injective
 
 theorem deningerPrimeLogWeight_nonneg : 0 ≤ deningerPrimeLogWeight := by
@@ -39,8 +39,8 @@ theorem deningerPrimeLogWeight_nonneg : 0 ≤ deningerPrimeLogWeight := by
   positivity
 
 /-- The elementary quadratic estimate `| ‖u‖² - ‖v‖² | ≤ ‖u-v‖(‖u‖+‖v‖)`. -/
-theorem normSq_sub_normSq_le (u v : ℂ) : |‖u‖ ^ 2 - ‖v‖ ^ 2| ≤ ‖u - v‖ * (‖u‖ + ‖v‖) := by
-  have hfac : ‖u‖ ^ 2 - ‖v‖ ^ 2 = (‖u‖ - ‖v‖) * (‖u‖ + ‖v‖) := by ring
+theorem normSq_sub_normSq_le (u v : ℂ) : |‖u‖ ^ (2 : ℕ) - ‖v‖ ^ (2 : ℕ)| ≤ ‖u - v‖ * (‖u‖ + ‖v‖) := by
+  have hfac : ‖u‖ ^ (2 : ℕ) - ‖v‖ ^ (2 : ℕ) = (‖u‖ - ‖v‖) * (‖u‖ + ‖v‖) := by ring
   rw [hfac, abs_mul]
   have habs : |‖u‖ - ‖v‖| ≤ ‖u - v‖ := abs_norm_sub_norm_le u v
   have hsum : |‖u‖ + ‖v‖| = ‖u‖ + ‖v‖ := abs_of_nonneg (by positivity)
@@ -52,7 +52,7 @@ theorem deningerFloquetTerm_sub_le (h k : DeningerExpSchwartz) {q : ℕ} (hq : 2
     |deningerFloquetTerm h q - deningerFloquetTerm k q|
       ≤ 25 * (deningerMeyerSeminormFun 1 0 (h - k)
           * (deningerMeyerSeminormFun 1 0 h + deningerMeyerSeminormFun 1 0 k))
-        * (Real.log q / (q : ℝ) ^ 2) := by
+        * (Real.log q / (q : ℝ) ^ (2 : ℕ)) := by
   have hqR : (2 : ℝ) ≤ (q : ℝ) := by exact_mod_cast hq
   have hL : Real.log 2 ≤ Real.log q := Real.log_le_log two_pos hqR
   have hLpos : 0 < Real.log q := lt_of_lt_of_le (Real.log_pos one_lt_two) hL
@@ -61,13 +61,13 @@ theorem deningerFloquetTerm_sub_le (h k : DeningerExpSchwartz) {q : ℕ} (hq : 2
   set Sk := deningerPeriodizationSum ((k : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log q) with hSk
   have hcontH : Continuous Sh := deningerPeriodizationSum_continuous (h := h) hLpos
   have hcontK : Continuous Sk := deningerPeriodizationSum_continuous (h := k) hLpos
-  have hintH : IntervalIntegrable (fun t => ‖Sh t‖ ^ 2) volume 0 (Real.log q) :=
+  have hintH : IntervalIntegrable (fun t => ‖Sh t‖ ^ (2 : ℕ)) volume 0 (Real.log q) :=
     (hcontH.norm.pow 2).intervalIntegrable _ _
-  have hintK : IntervalIntegrable (fun t => ‖Sk t‖ ^ 2) volume 0 (Real.log q) :=
+  have hintK : IntervalIntegrable (fun t => ‖Sk t‖ ^ (2 : ℕ)) volume 0 (Real.log q) :=
     (hcontK.norm.pow 2).intervalIntegrable _ _
   -- the pointwise bound
   have hpoint : ∀ t ∈ Set.uIoc (0 : ℝ) (Real.log q),
-      ‖‖Sh t‖ ^ 2 - ‖Sk t‖ ^ 2‖
+      ‖‖Sh t‖ ^ (2 : ℕ) - ‖Sk t‖ ^ (2 : ℕ)‖
         ≤ 5 * deningerMeyerSeminormFun 1 0 (h - k)
           * (5 * deningerMeyerSeminormFun 1 0 h + 5 * deningerMeyerSeminormFun 1 0 k) := by
     intro t ht
@@ -95,14 +95,14 @@ theorem deningerFloquetTerm_sub_le (h k : DeningerExpSchwartz) {q : ℕ} (hq : 2
       linarith
     exact mul_le_mul hbd (by linarith) hnn hnnk
   -- integrate
-  have hintsub : (∫ t in (0 : ℝ)..Real.log q, ‖Sh t‖ ^ 2)
-      - ∫ t in (0 : ℝ)..Real.log q, ‖Sk t‖ ^ 2
-      = ∫ t in (0 : ℝ)..Real.log q, (‖Sh t‖ ^ 2 - ‖Sk t‖ ^ 2) :=
+  have hintsub : (∫ t in (0 : ℝ)..Real.log q, ‖Sh t‖ ^ (2 : ℕ))
+      - ∫ t in (0 : ℝ)..Real.log q, ‖Sk t‖ ^ (2 : ℕ)
+      = ∫ t in (0 : ℝ)..Real.log q, (‖Sh t‖ ^ (2 : ℕ) - ‖Sk t‖ ^ (2 : ℕ)) :=
     (intervalIntegral.integral_sub hintH hintK).symm
   have hnormint := intervalIntegral.norm_integral_le_of_norm_le_const hpoint
     (a := (0 : ℝ)) (b := Real.log q)
-  have habsdiff : |(∫ t in (0 : ℝ)..Real.log q, ‖Sh t‖ ^ 2)
-      - ∫ t in (0 : ℝ)..Real.log q, ‖Sk t‖ ^ 2|
+  have habsdiff : |(∫ t in (0 : ℝ)..Real.log q, ‖Sh t‖ ^ (2 : ℕ))
+      - ∫ t in (0 : ℝ)..Real.log q, ‖Sk t‖ ^ (2 : ℕ)|
       ≤ (5 * deningerMeyerSeminormFun 1 0 (h - k)
         * (5 * deningerMeyerSeminormFun 1 0 h + 5 * deningerMeyerSeminormFun 1 0 k))
         * Real.log q := by
@@ -113,9 +113,9 @@ theorem deningerFloquetTerm_sub_le (h k : DeningerExpSchwartz) {q : ℕ} (hq : 2
     exact hnormint
   -- assemble
   rw [deningerFloquetTerm, deningerFloquetTerm, ← mul_sub, abs_mul,
-    abs_of_nonneg (by positivity : (0 : ℝ) ≤ ((q : ℝ) ^ 2)⁻¹)]
+    abs_of_nonneg (by positivity : (0 : ℝ) ≤ ((q : ℝ) ^ (2 : ℕ))⁻¹)]
   have hstep := mul_le_mul_of_nonneg_left habsdiff
-    (by positivity : (0 : ℝ) ≤ ((q : ℝ) ^ 2)⁻¹)
+    (by positivity : (0 : ℝ) ≤ ((q : ℝ) ^ (2 : ℕ))⁻¹)
   refine hstep.trans (le_of_eq ?_)
   field_simp
   ring
@@ -131,7 +131,7 @@ theorem deningerFloquetEnergy_sub_le (h k : DeningerExpSchwartz) :
   have hmaj : Summable fun q : Nat.Primes =>
       25 * (deningerMeyerSeminormFun 1 0 (h - k)
         * (deningerMeyerSeminormFun 1 0 h + deningerMeyerSeminormFun 1 0 k))
-      * (Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ 2) :=
+      * (Real.log (q : ℕ) / ((q : ℕ) : ℝ) ^ (2 : ℕ)) :=
     deningerPrimeLogWeight_summable.mul_left _
   have hsub : Summable fun q : Nat.Primes =>
       deningerFloquetTerm h (q : ℕ) - deningerFloquetTerm k (q : ℕ) := hsh.sub hsk

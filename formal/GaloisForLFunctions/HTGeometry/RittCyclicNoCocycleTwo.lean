@@ -68,10 +68,10 @@ theorem cnfFiber_two_eq_pair [DecidableEq K] [IsAlgClosed K] {A B lam y : K} (hl
 
 /-- **The support of a solution in degree two lies in the two critical values.** -/
 theorem cnf_support_subset_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
-    (hA0 : A ≠ 0) (hB0 : B ≠ 0) (hAB : A ≠ B) (hpow : A ^ 2 ≠ B ^ 2)
-    (hApole : 1 - lam * A ^ 2 ≠ 0)
-    (hnegA : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ -A)
-    (hnegB : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ -B)
+    (hA0 : A ≠ 0) (hB0 : B ≠ 0) (hAB : A ≠ B) (hpow : A ^ (2 : ℕ) ≠ B ^ (2 : ℕ))
+    (hApole : 1 - lam * A ^ (2 : ℕ) ≠ 0)
+    (hnegA : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) ≠ -A)
+    (hnegB : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) ≠ -B)
     {hP : ¬ ∃ c : K, cnf 2 A B lam = RatFunc.C c}
     {k : ℤ} (hk : k ≠ 0) {b : K} (hb : b ≠ 0) {F : RatFunc K} (hF : F ≠ 0)
     (heq : IsRatAffineTransport (cnf 2 A B lam) hP k (RatFunc.C b) 0 F)
@@ -136,18 +136,18 @@ theorem cnf_support_subset_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
   have hT1 : 1 ≤ T.card := Finset.card_pos.mpr ⟨y₀, hy₀T⟩
   have hT2 : T.card ≤ 2 := by omega
   -- the value of the map at the critical value `A`
-  have hAimg : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ A := by
+  have hAimg : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) ≠ A := by
     intro h
     rw [div_eq_iff hApole] at h
-    have hz : lam * A ^ 2 * (A - B) = 0 := by linear_combination h
+    have hz : lam * A ^ (2 : ℕ) * (A - B) = 0 := by linear_combination h
     rcases mul_eq_zero.mp hz with h1 | h2
     · exact (mul_ne_zero hlam (pow_ne_zero _ hA0)) h1
     · exact hAB (by linear_combination h2)
-  have hAimgB : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ B := by
+  have hAimgB : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) ≠ B := by
     intro h
     rw [div_eq_iff hApole] at h
     exact hAB (by linear_combination h)
-  have hAimgT : ratOrder F A ≠ 0 → (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ∈ T := by
+  have hAimgT : ratOrder F A ≠ 0 → (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) ∈ T := by
     intro hAne
     have hreg := cnf_transport_regular hp0 hlam hAB hb hF heq hA0 hApole
     exact (hmemT _).mpr ⟨hAimgB, hAimg, by rw [hreg]; exact hAne⟩
@@ -260,7 +260,7 @@ theorem cnf_support_subset_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
     obtain ⟨y, hy, hAf⟩ := Finset.mem_biUnion.mp hASu
     obtain ⟨hyB, hyA, -⟩ := (hmemT y).mp hy
     have hc : (B - y) * lam ≠ 0 := mul_ne_zero (sub_ne_zero.mpr (Ne.symm hyB)) hlam
-    have hyval : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) = y :=
+    have hyval : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) = y :=
       cnfFiber_value hp0 hAB hc hAf
     have hfibeq : cnfFiber 2 A B lam y = {A, -A} := cnfFiber_two_eq_pair hlam hyA hyB hAf
     have hBSu : B ∈ T.biUnion (cnfFiber 2 A B lam) := by rw [← hunion]; exact hBS
@@ -305,10 +305,10 @@ theorem cnf_support_subset_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
 
 /-- **Degree two carries no invariant differential.** -/
 theorem cnf_no_cocycle_two [IsAlgClosed K] {A B lam : K} (hlam : lam ≠ 0)
-    (hA0 : A ≠ 0) (hB0 : B ≠ 0) (hAB : A ≠ B) (hpow : A ^ 2 ≠ B ^ 2)
-    (hApole : 1 - lam * A ^ 2 ≠ 0)
-    (hnegA : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ -A)
-    (hnegB : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ -B)
+    (hA0 : A ≠ 0) (hB0 : B ≠ 0) (hAB : A ≠ B) (hpow : A ^ (2 : ℕ) ≠ B ^ (2 : ℕ))
+    (hApole : 1 - lam * A ^ (2 : ℕ) ≠ 0)
+    (hnegA : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) ≠ -A)
+    (hnegB : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) ≠ -B)
     {hP : ¬ ∃ c : K, cnf 2 A B lam = RatFunc.C c}
     {k : ℤ} (hk : k ≠ 0) {b : K} (hb : b ≠ 0) {F : RatFunc K} (hF : F ≠ 0)
     (heq : IsRatAffineTransport (cnf 2 A B lam) hP k (RatFunc.C b) 0 F) : False :=

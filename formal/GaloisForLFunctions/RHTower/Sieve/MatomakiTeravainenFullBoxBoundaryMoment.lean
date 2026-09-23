@@ -313,11 +313,11 @@ theorem sum_normSq_mtSignedPairBoxFamily_productBoundary_le_collar_zeta_sq
     let M : MTPairFullBoxIndex (mtMinimalGeometricDepth delta start z hdelta) → ℝ :=
       fun idx => mtMinimalGeometricPairBoxProductScale
       delta start idx.1.1.1.1 idx.1.1.1.2 idx.1.1.2.2 idx.1.2 idx.2
-    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ 2 ≤
+    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   classical
   dsimp only
   let data := MTFiniteIterationSourceData.ofMinimalGeometricSchedule
@@ -388,11 +388,11 @@ theorem sum_normSq_mtSignedTripleBoxFamily_productBoundary_le_collar_zeta_sq
       fun idx => mtMinimalGeometricTripleBoxProductScale
       delta start idx.1.1.1.1.1 idx.1.1.1.1.2 idx.1.1.1.2
         idx.1.1.2.2 idx.1.2 idx.2
-    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ 2 ≤
+    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   classical
   dsimp only
   let data := MTFiniteIterationSourceData.ofMinimalGeometricSchedule
@@ -454,11 +454,11 @@ theorem sum_normSq_mtRootedSignedPairBoxFamily_productBoundary_le_collar_zeta_sq
     ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF
       (mtPairFullBoxIndexSet endpoint E data maxDepth j eMax kMax)
       (mtPairFullBoxAF data z0 D delta)
-      (mtPairFullBoxScale delta start) Y n‖ ^ 2 ≤
+      (mtPairFullBoxScale delta start) Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 5) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (5 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   classical
   dsimp only
   let data := MTFiniteIterationSourceData.ofMinimalGeometricRootedSchedule
@@ -509,11 +509,11 @@ theorem sum_normSq_mtRootedSignedTripleBoxFamily_productBoundary_le_collar_zeta_
     ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF
       (mtTripleFullBoxIndexSet endpoint E data maxDepth j eMax kMax)
       (mtTripleFullBoxAF data z0 D delta)
-      (mtTripleFullBoxScale delta start) Y n‖ ^ 2 ≤
+      (mtTripleFullBoxScale delta start) Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ 6) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ (6 : ℕ)) n : ℝ) ^ (2 : ℕ)) := by
   classical
   dsimp only
   let data := MTFiniteIterationSourceData.ofMinimalGeometricRootedSchedule

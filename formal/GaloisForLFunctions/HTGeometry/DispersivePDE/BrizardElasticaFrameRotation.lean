@@ -68,9 +68,9 @@ theorem tangent_dot_normal (α β : ℝ) :
   simp only [frameDot, tangentCoordinates, normalCoordinates]
   calc
     _ = Real.sin α * Real.cos α *
-        (-1 + (Real.sin β) ^ 2 + (Real.cos β) ^ 2) := by ring
+        (-1 + (Real.sin β) ^ (2 : ℕ) + (Real.cos β) ^ (2 : ℕ)) := by ring
     _ = 0 := by
-      have h : -1 + (Real.sin β) ^ 2 + (Real.cos β) ^ 2 = 0 := by
+      have h : -1 + (Real.sin β) ^ (2 : ℕ) + (Real.cos β) ^ (2 : ℕ) = 0 := by
         nlinarith [Real.sin_sq_add_cos_sq β]
       rw [h, mul_zero]
 
@@ -93,11 +93,11 @@ theorem tangent_cross_normal (α β : ℝ) :
     ring
   · simp only [frameCross, tangentCoordinates, normalCoordinates, binormalCoordinates]
     calc
-      _ = -((Real.sin α) ^ 2 + (Real.cos α) ^ 2) * Real.cos β := by ring
+      _ = -((Real.sin α) ^ (2 : ℕ) + (Real.cos α) ^ (2 : ℕ)) * Real.cos β := by ring
       _ = -Real.cos β := by rw [Real.sin_sq_add_cos_sq]; ring
   · simp only [frameCross, tangentCoordinates, normalCoordinates, binormalCoordinates]
     calc
-      _ = ((Real.sin α) ^ 2 + (Real.cos α) ^ 2) * Real.sin β := by ring
+      _ = ((Real.sin α) ^ (2 : ℕ) + (Real.cos α) ^ (2 : ℕ)) * Real.sin β := by ring
       _ = Real.sin β := by rw [Real.sin_sq_add_cos_sq]; ring
 
 theorem normal_cross_binormal (α β : ℝ) :
@@ -106,7 +106,7 @@ theorem normal_cross_binormal (α β : ℝ) :
   ext
   · simp only [frameCross, tangentCoordinates, normalCoordinates, binormalCoordinates]
     calc
-      _ = Real.sin α * ((Real.sin β) ^ 2 + (Real.cos β) ^ 2) := by ring
+      _ = Real.sin α * ((Real.sin β) ^ (2 : ℕ) + (Real.cos β) ^ (2 : ℕ)) := by ring
       _ = Real.sin α := by rw [Real.sin_sq_add_cos_sq]; ring
   · simp only [frameCross, tangentCoordinates, normalCoordinates, binormalCoordinates]
     ring
@@ -119,7 +119,7 @@ theorem binormal_cross_tangent (α β : ℝ) :
   ext
   · simp only [frameCross, tangentCoordinates, normalCoordinates, binormalCoordinates]
     calc
-      _ = -Real.cos α * ((Real.sin β) ^ 2 + (Real.cos β) ^ 2) := by ring
+      _ = -Real.cos α * ((Real.sin β) ^ (2 : ℕ) + (Real.cos β) ^ (2 : ℕ)) := by ring
       _ = -Real.cos α := by rw [Real.sin_sq_add_cos_sq]; ring
   · simp only [frameCross, tangentCoordinates, normalCoordinates, binormalCoordinates]
     ring

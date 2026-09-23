@@ -28,14 +28,14 @@ theorem tendsto_dslope_lineLp (hRH : RiemannHypothesis) {γ : ℂ} (hγ : XiC γ
     (σ : ℕ → ℝ) (hσnn : ∀ n, 0 ≤ σ n) (hσ0 : Tendsto σ atTop (𝓝 0)) :
     Tendsto (fun n => (memLp_dslope_line hRH hγ hC1 hCb (hσnn n)).toLp _) atTop
       (𝓝 ((memLp_dslope_line hRH hγ hC1 hCb (le_refl (0 : ℝ))).toLp _)) := by
-  have hmaj : Integrable (fun x : ℝ => 8 * C ^ 2 / (1 + (x - γ.re) ^ 2)) volume :=
-    integrable_lineMajorant γ.re (8 * C ^ 2)
+  have hmaj : Integrable (fun x : ℝ => 8 * C ^ (2 : ℕ) / (1 + (x - γ.re) ^ (2 : ℕ))) volume :=
+    integrable_lineMajorant γ.re (8 * C ^ (2 : ℕ))
   have hdiff : ∀ n : ℕ, ∀ᵐ x : ℝ,
       ‖(((memLp_dslope_line hRH hγ hC1 hCb (hσnn n)).toLp _
           - (memLp_dslope_line hRH hγ hC1 hCb (le_refl (0 : ℝ))).toLp _
-            : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) x‖ ^ 2
+            : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) x‖ ^ (2 : ℕ)
         = ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ n : ℝ) : ℂ) * I)
-            - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ 2 := by
+            - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ (2 : ℕ) := by
     intro n
     filter_upwards [MeasureTheory.Lp.coeFn_sub
         ((memLp_dslope_line hRH hγ hC1 hCb (hσnn n)).toLp _)
@@ -45,8 +45,8 @@ theorem tendsto_dslope_lineLp (hRH : RiemannHypothesis) {γ : ℂ} (hγ : XiC γ
     rw [h1, Pi.sub_apply, h2, h3]
   have hbnd : ∀ n : ℕ, ∀ x : ℝ,
       ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ n : ℝ) : ℂ) * I)
-          - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ 2
-        ≤ 8 * C ^ 2 / (1 + (x - γ.re) ^ 2) := by
+          - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ (2 : ℕ)
+        ≤ 8 * C ^ (2 : ℕ) / (1 + (x - γ.re) ^ (2 : ℕ)) := by
     intro n x
     have hz1 : (0 : ℝ) ≤ (((x : ℂ) + ((σ n : ℝ) : ℂ) * I)).im := by simpa using hσnn n
     have hz2 : (0 : ℝ) ≤ (((x : ℂ) + ((0 : ℝ) : ℂ) * I)).im := by simp
@@ -58,9 +58,9 @@ theorem tendsto_dslope_lineLp (hRH : RiemannHypothesis) {γ : ℂ} (hγ : XiC γ
     rw [hre2] at hb2
     have hsub := norm_sub_le (dslope suzukiHalfInner γ ((x : ℂ) + ((σ n : ℝ) : ℂ) * I))
       (dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I))
-    have hden : (0 : ℝ) < 1 + (x - γ.re) ^ 2 := by positivity
-    have hd : (8 : ℝ) * C ^ 2 / (1 + (x - γ.re) ^ 2)
-        = 4 * (2 * C ^ 2 / (1 + (x - γ.re) ^ 2)) := by ring
+    have hden : (0 : ℝ) < 1 + (x - γ.re) ^ (2 : ℕ) := by positivity
+    have hd : (8 : ℝ) * C ^ (2 : ℕ) / (1 + (x - γ.re) ^ (2 : ℕ))
+        = 4 * (2 * C ^ (2 : ℕ) / (1 + (x - γ.re) ^ (2 : ℕ))) := by ring
     rw [hd]
     set a := ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ n : ℝ) : ℂ) * I)‖ with ha
     set b := ‖dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ with hb
@@ -69,11 +69,11 @@ theorem tendsto_dslope_lineLp (hRH : RiemannHypothesis) {γ : ℂ} (hγ : XiC γ
     have hdnn : 0 ≤ d := norm_nonneg _
     have hann : 0 ≤ a := norm_nonneg _
     have hbnn : 0 ≤ b := norm_nonneg _
-    have hd2 : d ^ 2 ≤ (a + b) ^ 2 := by nlinarith [hsub]
+    have hd2 : d ^ (2 : ℕ) ≤ (a + b) ^ (2 : ℕ) := by nlinarith [hsub]
     nlinarith [hb1, hb2, hd2, sq_nonneg (a - b)]
   have hptw : ∀ᵐ x : ℝ, Tendsto (fun n =>
       ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ n : ℝ) : ℂ) * I)
-        - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ 2) atTop (𝓝 0) := by
+        - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     filter_upwards with x
     have hz : (0 : ℝ) ≤ (((x : ℂ) + ((0 : ℝ) : ℂ) * I)).im := by simp
     have hcont := (differentiableAt_dslope_suzukiHalfInner_of_rh hRH hγ hz).continuousAt
@@ -90,15 +90,15 @@ theorem tendsto_dslope_lineLp (hRH : RiemannHypothesis) {γ : ℂ} (hγ : XiC γ
     simpa using h2
   have hintTo : Tendsto (fun n => ∫ x : ℝ,
       ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ n : ℝ) : ℂ) * I)
-        - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ 2) atTop (𝓝 0) := by
+        - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     have hmeasn : ∀ n : ℕ, AEStronglyMeasurable (fun x : ℝ =>
         ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ n : ℝ) : ℂ) * I)
-          - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ 2) volume := by
+          - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ (2 : ℕ)) volume := by
       intro n
       exact (((continuous_dslope_line hRH hγ (hσnn n)).sub
         (continuous_dslope_line hRH hγ (le_refl (0 : ℝ)))).norm.pow 2).aestronglyMeasurable
     have := MeasureTheory.tendsto_integral_of_dominated_convergence
-      (fun x : ℝ => 8 * C ^ 2 / (1 + (x - γ.re) ^ 2)) hmeasn hmaj
+      (fun x : ℝ => 8 * C ^ (2 : ℕ) / (1 + (x - γ.re) ^ (2 : ℕ))) hmeasn hmaj
       (fun n => Filter.Eventually.of_forall fun x => by
         rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
         exact hbnd n x) hptw
@@ -106,15 +106,15 @@ theorem tendsto_dslope_lineLp (hRH : RiemannHypothesis) {γ : ℂ} (hγ : XiC γ
   rw [tendsto_iff_norm_sub_tendsto_zero]
   have hsq : ∀ n : ℕ,
       ‖(memLp_dslope_line hRH hγ hC1 hCb (hσnn n)).toLp _
-          - (memLp_dslope_line hRH hγ hC1 hCb (le_refl (0 : ℝ))).toLp _‖ ^ 2
+          - (memLp_dslope_line hRH hγ hC1 hCb (le_refl (0 : ℝ))).toLp _‖ ^ (2 : ℕ)
         = ∫ x : ℝ, ‖dslope suzukiHalfInner γ ((x : ℂ) + ((σ n : ℝ) : ℂ) * I)
-            - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ 2 := by
+            - dslope suzukiHalfInner γ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ^ (2 : ℕ) := by
     intro n
     rw [norm_sq_lp_eq_integral]
     exact MeasureTheory.integral_congr_ae (hdiff n)
   have hsqTo : Tendsto (fun n =>
       ‖(memLp_dslope_line hRH hγ hC1 hCb (hσnn n)).toLp _
-        - (memLp_dslope_line hRH hγ hC1 hCb (le_refl (0 : ℝ))).toLp _‖ ^ 2) atTop (𝓝 0) := by
+        - (memLp_dslope_line hRH hγ hC1 hCb (le_refl (0 : ℝ))).toLp _‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     simpa only [hsq] using hintTo
   have hroot := (Real.continuous_sqrt.tendsto 0).comp hsqTo
   simp only [Real.sqrt_zero] at hroot

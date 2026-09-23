@@ -55,7 +55,7 @@ theorem ccmWeilEvenPole_le_smooth (a : SuzukiPositiveAperture) :
       criticalMellinAtomWeight n * ccmWeilEvenWallEnergyResponse n a.1 ≤ 0 := by
     apply Finset.sum_nonpos
     intro n hn
-    apply mul_nonpos_of_nonneg_of_nonpos (criticalMellinAtomWeight_nonneg n)
+    apply mul_nonpos_of_nonneg_of_nonpos (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n)
     apply ccmWeilEvenWallEnergyResponse_nonpos_after_entry
     have hlog : Real.log n ≤ 2 * a.1 := by
       apply log_natCast_le

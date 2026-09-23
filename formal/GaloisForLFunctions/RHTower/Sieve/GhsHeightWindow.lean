@@ -24,7 +24,7 @@ open Complex MeasureTheory Set Finset
 /-- **The height inequality at the maximal scale count.** -/
 theorem ghs_height_of_scaleCount {N n : ℕ} (hN : 16 ≤ N) (hn : 1 ≤ n)
     (hheight : (5 / (4 * (n : ℝ)))
-        * ((16 / 9) * (Real.log N / (4 * Real.log 2)) ^ 2 * (Real.log N + Real.log 4))
+        * ((16 / 9) * (Real.log N / (4 * Real.log 2)) ^ (2 : ℕ) * (Real.log N + Real.log 4))
       ≤ 1750 * ghsShapeConst) :
     (5 / (4 * (n : ℝ)))
         * ((16 / 9) * 4 ^ (ghsScaleCount N) * (Real.log N + Real.log 4))
@@ -37,7 +37,7 @@ theorem ghs_height_of_scaleCount {N n : ℕ} (hN : 16 ≤ N) (hn : 1 ≤ n)
   have hcoef : (0 : ℝ) ≤ 5 / (4 * (n : ℝ)) := by positivity
   have hsum : (0 : ℝ) ≤ Real.log N + Real.log 4 := by linarith
   have hstep : (16 / 9 : ℝ) * 4 ^ (ghsScaleCount N) * (Real.log N + Real.log 4)
-      ≤ (16 / 9) * (Real.log N / (4 * Real.log 2)) ^ 2 * (Real.log N + Real.log 4) := by
+      ≤ (16 / 9) * (Real.log N / (4 * Real.log 2)) ^ (2 : ℕ) * (Real.log N + Real.log 4) := by
     have hpow := four_pow_ghsScaleCount_le hN
     nlinarith [hpow, hsum]
   exact le_trans (mul_le_mul_of_nonneg_left hstep hcoef) hheight
@@ -53,10 +53,10 @@ theorem norm_sum_Icc_le_ghs_window
     (hunif : ∀ y : ℝ, |y| ≤ (n : ℝ) →
       δ ≤ Real.sqrt (mulDistSqPair f (charFn y) (Nat.primesLE z)))
     (hne : Real.exp 4 ≤ (n : ℝ)) (hN : 16 ≤ N)
-    (hPN : n ^ 2 ≤ N) (hNP : 2 ≤ N / n ^ 2)
-    (hroot : n ^ 2 ≤ ghsScale N 1)
+    (hPN : n ^ (2 : ℕ) ≤ N) (hNP : 2 ≤ N / n ^ (2 : ℕ))
+    (hroot : n ^ (2 : ℕ) ≤ ghsScale N 1)
     (hheight : (5 / (4 * (n : ℝ)))
-        * ((16 / 9) * (Real.log N / (4 * Real.log 2)) ^ 2 * (Real.log N + Real.log 4))
+        * ((16 / 9) * (Real.log N / (4 * Real.log 2)) ^ (2 : ℕ) * (Real.log N + Real.log 4))
       ≤ 1750 * ghsShapeConst) :
     ‖∑ m ∈ Finset.Icc 1 N, f m‖
       ≤ (ghsRecursionError N

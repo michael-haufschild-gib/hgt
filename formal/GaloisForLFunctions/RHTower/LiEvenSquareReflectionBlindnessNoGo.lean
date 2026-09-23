@@ -45,7 +45,7 @@ theorem liHardEdgeReflection_liEvenShiftedSquarePolynomial (n : ℕ) :
   have hreflect : 1 - 1 / 2 * (4 - x) = -(1 - 1 / 2 * x) := by ring
   rw [hreflect, Polynomial.Chebyshev.U_eval_neg]
   rw [mul_pow]
-  have hsign : (((n : ℤ).negOnePow : ℤ) : ℂ) ^ 2 = 1 := by
+  have hsign : (((n : ℤ).negOnePow : ℤ) : ℂ) ^ (2 : ℕ) = 1 := by
     rcases Int.units_eq_one_or (n : ℤ).negOnePow with h | h
     · rw [h]
       norm_num
@@ -82,7 +82,7 @@ theorem liHardEdgeReflectionBlindFunctional_liEvenShiftedSquarePolynomial
 
 /-- Another literal hard-edge weighted square, exposing the blind sector. -/
 def liHardEdgeWeightedSquareWitness : Polynomial ℂ :=
-  X * (C 4 - X) * X ^ 2
+  X * (C 4 - X) * X ^ (2 : ℕ)
 
 /-- The reflected pair at one and three sees the witness with negative orientation. -/
 theorem liHardEdgeReflectionBlindFunctional_weightedSquareWitness_neg :
@@ -158,7 +158,7 @@ theorem natDegree_liEvenShiftedSquarePolynomial (n : ℕ) :
     have hc := congrArg (fun P : Polynomial ℂ => P.coeff 1) h
     norm_num at hc
   rw [liEvenShiftedSquarePolynomial]
-  change (X * (C 4 - X) * (U.comp A) ^ 2).natDegree = _
+  change (X * (C 4 - X) * (U.comp A) ^ (2 : ℕ)).natDegree = _
   rw [Polynomial.natDegree_mul houterne (pow_ne_zero 2 hcomp),
     liEvenShiftedSquarePolynomial_outer_natDegree,
     Polynomial.natDegree_pow, hcompdeg]

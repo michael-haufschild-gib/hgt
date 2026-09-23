@@ -13,9 +13,9 @@ def symmetricPair (x y : Fin 2 → A) : Fin 3 → A :=
 /-- Matrix of the symmetric-square representation in product coordinates. -/
 def symmetricSquareMatrix (M : Matrix (Fin 2) (Fin 2) A) :
     Matrix (Fin 3) (Fin 3) A :=
-  !![M 0 0 ^ 2, M 0 0 * M 0 1, M 0 1 ^ 2;
+  !![M 0 0 ^ (2 : ℕ), M 0 0 * M 0 1, M 0 1 ^ (2 : ℕ);
      2 * M 0 0 * M 1 0, M 0 0 * M 1 1 + M 0 1 * M 1 0, 2 * M 0 1 * M 1 1;
-     M 1 0 ^ 2, M 1 0 * M 1 1, M 1 1 ^ 2]
+     M 1 0 ^ (2 : ℕ), M 1 0 * M 1 1, M 1 1 ^ (2 : ℕ)]
 
 /-- Symmetric products intertwine matrix-vector multiplication. -/
 theorem symmetricPair_mulVec (M : Matrix (Fin 2) (Fin 2) A) (x y : Fin 2 → A) :
@@ -49,7 +49,7 @@ theorem symmetricSquareMatrix_map
 /-- The determinant of the quadratic representation is the cube of the original determinant.
 This is the rank-two instance of the symmetric-square determinant law. -/
 theorem det_symmetricSquareMatrix (M : Matrix (Fin 2) (Fin 2) A) :
-    (symmetricSquareMatrix M).det = M.det ^ 3 := by
+    (symmetricSquareMatrix M).det = M.det ^ (3 : ℕ) := by
   simp [symmetricSquareMatrix, Matrix.det_fin_three, Matrix.det_fin_two]
   ring
 
@@ -66,14 +66,14 @@ theorem det_symmetricSquare_companion (b : A) :
 symmetric-square representation is determined by the character of `M` and of `M²`. -/
 theorem two_mul_trace_symmetricSquareMatrix (M : Matrix (Fin 2) (Fin 2) A) :
     2 * Matrix.trace (symmetricSquareMatrix M) =
-      Matrix.trace M ^ 2 + Matrix.trace (M * M) := by
+      Matrix.trace M ^ (2 : ℕ) + Matrix.trace (M * M) := by
   simp [Matrix.trace, symmetricSquareMatrix, Matrix.mul_apply, Fin.sum_univ_succ]
   ring
 
 /-- Moreau equation (44) for a two-dimensional complex representation. -/
 theorem trace_symmetricSquareMatrix_complex (M : Matrix (Fin 2) (Fin 2) ℂ) :
     Matrix.trace (symmetricSquareMatrix M) =
-      (Matrix.trace M ^ 2 + Matrix.trace (M * M)) / 2 := by
+      (Matrix.trace M ^ (2 : ℕ) + Matrix.trace (M * M)) / 2 := by
   have h := two_mul_trace_symmetricSquareMatrix M
   linear_combination (1 / 2 : ℂ) * h
 
@@ -98,18 +98,18 @@ theorem symmetricPair_columns_ne_zero
     simpa [symmetricPair] using congrFun hzero 1
   have h2 : P 1 0 * P 1 1 = 0 := by
     simpa [symmetricPair] using congrFun hzero 2
-  have hdetSq : P.det ^ 2 = 0 := by
+  have hdetSq : P.det ^ (2 : ℕ) = 0 := by
     rw [Matrix.det_fin_two]
     calc
-      (P 0 0 * P 1 1 - P 0 1 * P 1 0) ^ 2 =
-          (P 0 0 * P 1 1 + P 1 0 * P 0 1) ^ 2 -
+      (P 0 0 * P 1 1 - P 0 1 * P 1 0) ^ (2 : ℕ) =
+          (P 0 0 * P 1 1 + P 1 0 * P 0 1) ^ (2 : ℕ) -
             4 * (P 0 0 * P 0 1) * (P 1 0 * P 1 1) := by ring
       _ = 0 := by rw [h0, h1, h2]; ring
   have hdetprod : P.det * Q.det = 1 := by
     rw [← Matrix.det_mul, hPQ, Matrix.det_one]
-  have hone : P.det ^ 2 * Q.det ^ 2 = 1 := by
+  have hone : P.det ^ (2 : ℕ) * Q.det ^ (2 : ℕ) = 1 := by
     calc
-      P.det ^ 2 * Q.det ^ 2 = (P.det * Q.det) ^ 2 := by ring
+      P.det ^ (2 : ℕ) * Q.det ^ (2 : ℕ) = (P.det * Q.det) ^ (2 : ℕ) := by ring
       _ = 1 := by rw [hdetprod]; ring
   rw [hdetSq, zero_mul] at hone
   exact zero_ne_one hone

@@ -47,7 +47,7 @@ theorem measureReal_gaussianGoodSet_compl_le (w : (Fin n → Option (Fin 3)) →
       w (((pauliTracelessLabelEquivFin n q).symm t).1) ≠ 0)
     (hcard : 0 < Fintype.card (Fin n → Option (Fin 3)))
     {B : ℝ} (hB0 : 0 ≤ B)
-    (hB : 2 * Real.log (8 * Fintype.card (Fin n → Option (Fin 3))) ≤ B ^ 2) :
+    (hB : 2 * Real.log (8 * Fintype.card (Fin n → Option (Fin 3))) ≤ B ^ (2 : ℕ)) :
     (centredProductGaussian (Fin n → Option (Fin 3)) 1).real ((gaussianGoodSet w B 4)ᶜ)
       ≤ 1 / 2 := by
   classical
@@ -100,7 +100,7 @@ theorem half_le_measureReal_gaussianGoodSet (w : (Fin n → Option (Fin 3)) → 
       w (((pauliTracelessLabelEquivFin n q).symm t).1) ≠ 0)
     (hcard : 0 < Fintype.card (Fin n → Option (Fin 3)))
     {B : ℝ} (hB0 : 0 ≤ B)
-    (hB : 2 * Real.log (8 * Fintype.card (Fin n → Option (Fin 3))) ≤ B ^ 2) :
+    (hB : 2 * Real.log (8 * Fintype.card (Fin n → Option (Fin 3))) ≤ B ^ (2 : ℕ)) :
     1 / 2 ≤ (centredProductGaussian (Fin n → Option (Fin 3)) 1).real (gaussianGoodSet w B 4) := by
   have hcompl := measureReal_gaussianGoodSet_compl_le w hq hwsupp hw hwne hcard hB0 hB
   have htotal : (1 : ℝ) ≤

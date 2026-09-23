@@ -38,7 +38,7 @@ theorem four_le_sqrt_mul_log {A x : ℝ} (hx : 16 ≤ A * Real.log x) :
     4 ≤ Real.sqrt (A * Real.log x) := by
   have h : Real.sqrt 16 ≤ Real.sqrt (A * Real.log x) := Real.sqrt_le_sqrt hx
   have h16 : Real.sqrt 16 = 4 := by
-    rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]
+    rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]
   linarith [h, h16]
 
 theorem eight_le_log_chebHeightLw {A x : ℝ} (hx : 16 ≤ A * Real.log x) :
@@ -80,7 +80,7 @@ theorem right_exponent_lw {A x : ℝ} (hA : 0 < A) (hx : 0 < Real.log x) :
 
 /-- The height's logarithm, squared. -/
 theorem sq_log_chebHeightLw (A x : ℝ) (hAx : 0 ≤ A * Real.log x) :
-    Real.log (chebHeightLw A x) ^ 2 = 4 * (A * Real.log x) := by
+    Real.log (chebHeightLw A x) ^ (2 : ℕ) = 4 * (A * Real.log x) := by
   rw [log_chebHeightLw]
   have hsq : Real.sqrt (A * Real.log x) * Real.sqrt (A * Real.log x) = A * Real.log x :=
     Real.mul_self_sqrt hAx

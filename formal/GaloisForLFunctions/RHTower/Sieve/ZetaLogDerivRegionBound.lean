@@ -79,7 +79,7 @@ theorem exists_logDeriv_zeta_bound_of_region {c T₀ : ℝ} (hc0 : 0 < c)
       ∀ σ γ : ℝ, max 4 (T₀ + 1) ≤ |γ| →
         1 - min (c / 4) (1 / 160) / Real.log |γ| ≤ σ → σ ≤ 9 / 8 →
         ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
-          ≤ C * Real.log |γ| ^ 2 := by
+          ≤ C * Real.log |γ| ^ (2 : ℕ) := by
   obtain ⟨E, hE0, hcount⟩ := exists_wide_zero_count
   have hCpos : (0 : ℝ) < 320 / 21 * wideD + 4 * E / c := by
     have h1 : (0 : ℝ) < 320 / 21 * wideD := by nlinarith [wideD_pos]
@@ -176,15 +176,15 @@ theorem exists_logDeriv_zeta_bound_of_region {c T₀ : ℝ} (hc0 : 0 < c)
       (∑ ρ ∈ Z, (m ρ : ℂ) / (((σ : ℂ) + (γ : ℂ) * Complex.I) - ρ))
     simpa using h
   have hprod : (∑ ρ ∈ Z, (m ρ : ℝ)) * (4 * Real.log |γ| / c)
-      ≤ 4 * E / c * Real.log |γ| ^ 2 := by
+      ≤ 4 * E / c * Real.log |γ| ^ (2 : ℕ) := by
     have hfac : (0 : ℝ) ≤ 4 * Real.log |γ| / c := by positivity
     have hstep := mul_le_mul_of_nonneg_right hcnt hfac
     calc (∑ ρ ∈ Z, (m ρ : ℝ)) * (4 * Real.log |γ| / c)
         ≤ (E * Real.log |γ|) * (4 * Real.log |γ| / c) := hstep
-      _ = 4 * E / c * Real.log |γ| ^ 2 := by field_simp
+      _ = 4 * E / c * Real.log |γ| ^ (2 : ℕ) := by field_simp
   have hlin : 320 / 21 * wideD * Real.log |γ|
-      ≤ 320 / 21 * wideD * Real.log |γ| ^ 2 := by
-    have hsq : (0 : ℝ) ≤ Real.log |γ| ^ 2 - Real.log |γ| := by nlinarith [hL1]
+      ≤ 320 / 21 * wideD * Real.log |γ| ^ (2 : ℕ) := by
+    have hsq : (0 : ℝ) ≤ Real.log |γ| ^ (2 : ℕ) - Real.log |γ| := by nlinarith [hL1]
     nlinarith [mul_nonneg (le_of_lt wideD_pos) hsq]
   calc ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
       ≤ ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)
@@ -193,16 +193,16 @@ theorem exists_logDeriv_zeta_bound_of_region {c T₀ : ℝ} (hc0 : 0 < c)
     _ ≤ 320 / 21 * wideD * Real.log |γ|
           + (∑ ρ ∈ Z, (m ρ : ℝ)) * (4 * Real.log |γ| / c) := by
         linarith [hkeyz, hsumz]
-    _ ≤ 320 / 21 * wideD * Real.log |γ| ^ 2 + 4 * E / c * Real.log |γ| ^ 2 := by
+    _ ≤ 320 / 21 * wideD * Real.log |γ| ^ (2 : ℕ) + 4 * E / c * Real.log |γ| ^ (2 : ℕ) := by
         linarith [hlin, hprod]
-    _ = (320 / 21 * wideD + 4 * E / c) * Real.log |γ| ^ 2 := by ring
+    _ = (320 / 21 * wideD + 4 * E / c) * Real.log |γ| ^ (2 : ℕ) := by ring
 
 /-- **`ζ'/ζ` is `O(log²|γ|)` inside the zero-free region.** -/
 theorem exists_logDeriv_zeta_bound :
     ∃ c' C T : ℝ, 0 < c' ∧ 0 < C ∧ 4 ≤ T ∧
       ∀ σ γ : ℝ, T ≤ |γ| → 1 - c' / Real.log |γ| ≤ σ → σ ≤ 9 / 8 →
         ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
-          ≤ C * Real.log |γ| ^ 2 := by
+          ≤ C * Real.log |γ| ^ (2 : ℕ) := by
   obtain ⟨c, T₀, hc0, hT₀, hregion⟩ := exists_zero_free_region
   obtain ⟨C, hC0, hb⟩ := exists_logDeriv_zeta_bound_of_region hc0 hregion
   exact ⟨min (c / 4) (1 / 160), C, max 4 (T₀ + 1),
@@ -214,7 +214,7 @@ theorem exists_logDeriv_zeta_bound_from_ten :
     ∃ c' C : ℝ, 0 < c' ∧ 0 < C ∧
       ∀ σ γ : ℝ, (10 : ℝ) ≤ |γ| → 1 - c' / Real.log |γ| ≤ σ → σ ≤ 9 / 8 →
         ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
-          ≤ C * Real.log |γ| ^ 2 := by
+          ≤ C * Real.log |γ| ^ (2 : ℕ) := by
   obtain ⟨c, hc0, hregion⟩ := exists_zero_free_region_from_nine
   obtain ⟨C, hC0, hb⟩ := exists_logDeriv_zeta_bound_of_region (T₀ := 9) hc0 hregion
   refine ⟨min (c / 4) (1 / 160), C, lt_min (by linarith) (by norm_num), hC0,
@@ -228,7 +228,7 @@ theorem exists_logDeriv_zeta_bound_explicit :
     ∃ C T : ℝ, 0 < C ∧ 4 ≤ T ∧
       ∀ σ γ : ℝ, T ≤ |γ| → 1 - 1 / 40000 / Real.log |γ| ≤ σ → σ ≤ 9 / 8 →
         ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
-          ≤ C * Real.log |γ| ^ 2 := by
+          ≤ C * Real.log |γ| ^ (2 : ℕ) := by
   obtain ⟨T, hT, hregion⟩ := exists_zero_free_region_explicit
   obtain ⟨C, hC0, hb⟩ :=
     exists_logDeriv_zeta_bound_of_region (c := 1 / 10000) (T₀ := T) (by norm_num) hregion

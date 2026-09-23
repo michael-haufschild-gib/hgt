@@ -265,7 +265,7 @@ theorem inwardDilatedEvenShellEven_orthonormal_scales
 
 /-- The Euclidean norm of a finite complex coefficient family. -/
 def finiteCoefficientL2Norm {n : ℕ} (c : Fin n → ℂ) : ℝ :=
-  Real.sqrt (∑ i, ‖c i‖ ^ 2)
+  Real.sqrt (∑ i, ‖c i‖ ^ (2 : ℕ))
 
 theorem finiteCoefficientL2Norm_nonneg {n : ℕ} (c : Fin n → ℂ) :
     0 ≤ finiteCoefficientL2Norm c :=
@@ -275,14 +275,14 @@ theorem norm_sum_smul_orthonormal_eq_finiteCoefficientL2Norm
     {n : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (v : Fin n → H) (hv : Orthonormal ℂ v) (c : Fin n → ℂ) :
     ‖∑ i, c i • v i‖ = finiteCoefficientL2Norm c := by
-  have hsquare : ‖∑ i, c i • v i‖ ^ 2 = ∑ i, ‖c i‖ ^ 2 := by
+  have hsquare : ‖∑ i, c i • v i‖ ^ (2 : ℕ) = ∑ i, ‖c i‖ ^ (2 : ℕ) := by
     simpa [LinearIsometry.toSpanSingleton_apply] using
       hv.orthogonalFamily.norm_sum c Finset.univ
-  have hsum : 0 ≤ ∑ i, ‖c i‖ ^ 2 :=
+  have hsum : 0 ≤ ∑ i, ‖c i‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hsqrt := Real.sq_sqrt hsum
   have hnorm : 0 ≤ ‖∑ i, c i • v i‖ := norm_nonneg _
-  have hsqrtnonneg : 0 ≤ Real.sqrt (∑ i, ‖c i‖ ^ 2) := Real.sqrt_nonneg _
+  have hsqrtnonneg : 0 ≤ Real.sqrt (∑ i, ‖c i‖ ^ (2 : ℕ)) := Real.sqrt_nonneg _
   dsimp [finiteCoefficientL2Norm]
   nlinarith
 
@@ -443,7 +443,7 @@ theorem finiteCoefficientL2Norm_le_norm_finiteEvenDilationCorners_sub_compact_al
 
 /-- The Euclidean coefficient norm after the positive Euler normalization. -/
 def finiteEulerCoefficientL2Norm {n : ℕ} (r : Fin n → ℝ) (c : Fin n → ℂ) : ℝ :=
-  Real.sqrt (∑ i, ‖c i‖ ^ 2 / r i)
+  Real.sqrt (∑ i, ‖c i‖ ^ (2 : ℕ) / r i)
 
 theorem finiteCoefficientL2Norm_eulerScaled
     {n : ℕ} (r : Fin n → ℝ) (hr : ∀ i, 1 < r i) (c : Fin n → ℂ) :
@@ -456,7 +456,7 @@ theorem finiteCoefficientL2Norm_eulerScaled
   intro i _
   rw [norm_mul, norm_neg, norm_inv, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.sqrt_pos.2 (zero_lt_one.trans (hr i)))]
-  have hs : Real.sqrt (r i) ^ 2 = r i :=
+  have hs : Real.sqrt (r i) ^ (2 : ℕ) = r i :=
     Real.sq_sqrt (zero_lt_one.trans (hr i)).le
   field_simp [Real.sqrt_ne_zero'.mpr (zero_lt_one.trans (hr i)),
     ne_of_gt (zero_lt_one.trans (hr i))]
@@ -598,8 +598,8 @@ theorem summable_primeEulerCoefficientEnergy_of_uniform_sub_compact_bound
         IsCompactOperator K ∧
           ‖finiteArchimedeanPrimeEulerCorners a (fun i => (p i : ℝ))
             (fun i => c (p i)) - K‖ ≤ B) :
-    Summable (fun p : Nat.Primes => ‖c (p : ℕ)‖ ^ 2 / (p : ℝ)) := by
-  apply summable_of_sum_le (c := B ^ 2) (fun p => by positivity)
+    Summable (fun p : Nat.Primes => ‖c (p : ℕ)‖ ^ (2 : ℕ) / (p : ℝ)) := by
+  apply summable_of_sum_le (c := B ^ (2 : ℕ)) (fun p => by positivity)
   intro s
   let e : Fin s.card ≃ s := s.equivFin.symm
   let p : Fin s.card → ℕ := fun i => (e i : Nat.Primes)
@@ -619,29 +619,29 @@ theorem summable_primeEulerCoefficientEnergy_of_uniform_sub_compact_bound
           change (p i : ℝ) = (p j : ℝ) at hij
           exact_mod_cast hij) (fun i => c (p i)) K hK
   have hsqrt :
-      Real.sqrt (∑ i, ‖c (p i)‖ ^ 2 / (p i : ℝ)) ≤ B := by
+      Real.sqrt (∑ i, ‖c (p i)‖ ^ (2 : ℕ) / (p i : ℝ)) ≤ B := by
     exact hlower.trans hupper
   have hsum :
-      (∑ i, ‖c (p i)‖ ^ 2 / (p i : ℝ)) =
-        ∑ q ∈ s, ‖c (q : ℕ)‖ ^ 2 / (q : ℝ) := by
+      (∑ i, ‖c (p i)‖ ^ (2 : ℕ) / (p i : ℝ)) =
+        ∑ q ∈ s, ‖c (q : ℕ)‖ ^ (2 : ℕ) / (q : ℝ) := by
     calc
-      (∑ i, ‖c (p i)‖ ^ 2 / (p i : ℝ)) =
-          ∑ q : s, ‖c ((q.1 : Nat.Primes) : ℕ)‖ ^ 2 /
+      (∑ i, ‖c (p i)‖ ^ (2 : ℕ) / (p i : ℝ)) =
+          ∑ q : s, ‖c ((q.1 : Nat.Primes) : ℕ)‖ ^ (2 : ℕ) /
             ((q.1 : Nat.Primes) : ℝ) := by
         simpa [p] using Equiv.sum_comp e
-          (fun q : s => ‖c ((q.1 : Nat.Primes) : ℕ)‖ ^ 2 /
+          (fun q : s => ‖c ((q.1 : Nat.Primes) : ℕ)‖ ^ (2 : ℕ) /
             ((q.1 : Nat.Primes) : ℝ))
-      _ = ∑ q ∈ s, ‖c (q : ℕ)‖ ^ 2 / (q : ℝ) := by
+      _ = ∑ q ∈ s, ‖c (q : ℕ)‖ ^ (2 : ℕ) / (q : ℝ) := by
         simpa using Finset.sum_coe_sort s
-          (fun q : Nat.Primes => ‖c (q : ℕ)‖ ^ 2 / (q : ℝ))
-  have hnonneg : 0 ≤ ∑ i, ‖c (p i)‖ ^ 2 / (p i : ℝ) := by
+          (fun q : Nat.Primes => ‖c (q : ℕ)‖ ^ (2 : ℕ) / (q : ℝ))
+  have hnonneg : 0 ≤ ∑ i, ‖c (p i)‖ ^ (2 : ℕ) / (p i : ℝ) := by
     positivity
   have hsquare :
-      (Real.sqrt (∑ i, ‖c (p i)‖ ^ 2 / (p i : ℝ))) ^ 2 =
-        ∑ i, ‖c (p i)‖ ^ 2 / (p i : ℝ) :=
+      (Real.sqrt (∑ i, ‖c (p i)‖ ^ (2 : ℕ) / (p i : ℝ))) ^ (2 : ℕ) =
+        ∑ i, ‖c (p i)‖ ^ (2 : ℕ) / (p i : ℝ) :=
     Real.sq_sqrt hnonneg
   rw [← hsum]
-  nlinarith [Real.sqrt_nonneg (∑ i, ‖c (p i)‖ ^ 2 / (p i : ℝ))]
+  nlinarith [Real.sqrt_nonneg (∑ i, ‖c (p i)‖ ^ (2 : ℕ) / (p i : ℝ))]
 
 theorem exists_finset_primes_sum_one_div_gt (B : ℝ) :
     ∃ s : Finset Nat.Primes, B < ∑ p ∈ s, (1 / (p : ℝ)) := by
@@ -656,7 +656,7 @@ theorem exists_finitePrimeFamily_reciprocalL2Norm_gt (M : ℝ) (hM : 0 ≤ M) :
     ∃ (n : ℕ) (p : Fin n → ℕ),
       (∀ i, (p i).Prime) ∧ Function.Injective p ∧
         M < finiteReciprocalScaleL2Norm (fun i => (p i : ℝ)) := by
-  obtain ⟨s, hs⟩ := exists_finset_primes_sum_one_div_gt (M ^ 2)
+  obtain ⟨s, hs⟩ := exists_finset_primes_sum_one_div_gt (M ^ (2 : ℕ))
   let e : Fin s.card ≃ s := s.equivFin.symm
   let p : Fin s.card → ℕ := fun i => (e i : Nat.Primes)
   have hp : ∀ i, (p i).Prime := fun i => (e i).1.prop

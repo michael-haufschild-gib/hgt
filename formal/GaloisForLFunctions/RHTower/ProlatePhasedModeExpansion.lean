@@ -42,13 +42,13 @@ theorem inner_even_conj_symm (u w : evenSubspace) :
 
 /-- The modulus square of a complex number as a real cast. -/
 theorem mul_conj_ofReal_norm_sq (z : ℂ) :
-    z * (starRingEnd ℂ) z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+    z * (starRingEnd ℂ) z = ((‖z‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [RCLike.mul_conj]
   norm_cast
 
 theorem inner_even_self_eq_norm_sq (u : evenSubspace) :
-    (inner ℂ u u : ℂ) = ((‖u‖ ^ 2 : ℝ) : ℂ) := by
-  have h : (inner ℂ u u : ℂ) = (‖u‖ : ℂ) ^ 2 := inner_self_eq_norm_sq_to_K u
+    (inner ℂ u u : ℂ) = ((‖u‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
+  have h : (inner ℂ u u : ℂ) = (‖u‖ : ℂ) ^ (2 : ℕ) := inner_self_eq_norm_sq_to_K u
   rw [h]
   push_cast
   ring
@@ -137,10 +137,10 @@ theorem inner_eq_of_hasSum_smul {v : ℕ → evenSubspace} (hv : Orthonormal ℂ
 /-- **Parseval along a convergent orthonormal expansion.** -/
 theorem hasSum_norm_sq_of_hasSum_smul {v : ℕ → evenSubspace} (hv : Orthonormal ℂ v)
     {x : ℕ → ℂ} {f : evenSubspace} (hf : HasSum (fun j : ℕ => x j • v j) f) :
-    HasSum (fun j : ℕ => ‖x j‖ ^ 2) (‖f‖ ^ 2) := by
+    HasSum (fun j : ℕ => ‖x j‖ ^ (2 : ℕ)) (‖f‖ ^ (2 : ℕ)) := by
   have h : HasSum (fun j : ℕ => (inner ℂ f (x j • v j) : ℂ)) (inner ℂ f f) :=
     (innerSL ℂ f).hasSum hf
-  have hterm : ∀ j : ℕ, (inner ℂ f (x j • v j) : ℂ) = ((‖x j‖ ^ 2 : ℝ) : ℂ) := by
+  have hterm : ∀ j : ℕ, (inner ℂ f (x j • v j) : ℂ) = ((‖x j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro j
     rw [inner_even_smul_right, inner_even_conj_symm f (v j),
       inner_eq_of_hasSum_smul hv hf j, mul_conj_ofReal_norm_sq]
@@ -165,13 +165,13 @@ theorem hasSum_leakage_apply {a : ℝ} {v : ℕ → evenSubspace}
 theorem hasSum_leakage_of_hasSum_smul {a : ℝ} {v : ℕ → evenSubspace} (hv : Orthonormal ℂ v)
     {D : ℕ → ℝ} (hD : ∀ j, evenProlateLeakage a (v j) = ((D j : ℝ) : ℂ) • v j)
     {x : ℕ → ℂ} {f : evenSubspace} (hf : HasSum (fun j : ℕ => x j • v j) f) :
-    HasSum (fun j : ℕ => D j * ‖x j‖ ^ 2)
+    HasSum (fun j : ℕ => D j * ‖x j‖ ^ (2 : ℕ))
       ((inner ℂ (evenProlateLeakage a f) f : ℂ).re) := by
   have hBf := hasSum_leakage_apply hD hf
   have h : HasSum (fun j : ℕ => (inner ℂ (evenProlateLeakage a f) (x j • v j) : ℂ))
       (inner ℂ (evenProlateLeakage a f) f) := (innerSL ℂ (evenProlateLeakage a f)).hasSum hf
   have hterm : ∀ j : ℕ, (inner ℂ (evenProlateLeakage a f) (x j • v j) : ℂ)
-      = ((D j * ‖x j‖ ^ 2 : ℝ) : ℂ) := by
+      = ((D j * ‖x j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro j
     rw [inner_even_smul_right, inner_even_conj_symm (evenProlateLeakage a f) (v j),
       inner_eq_of_hasSum_smul hv hBf j, map_mul, Complex.conj_ofReal,

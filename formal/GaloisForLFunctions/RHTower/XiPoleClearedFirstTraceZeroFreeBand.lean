@@ -141,7 +141,7 @@ theorem exists_poleClearedFirstTrace_zeroFreeBand_arithmetic_extensions :
       ∃ g : ℂ → ℂ,
         AnalyticOnNhd ℂ g (firstTraceZeroFreeBand Y) ∧
           (∀ s ∈ firstTraceZeroFreeBand Y,
-            g s ^ 2 = poleClearedFirstTraceExponentialContinuation s) ∧
+            g s ^ (2 : ℕ) = poleClearedFirstTraceExponentialContinuation s) ∧
           EqOn g poleClearedPrimeZetaHalfEulerGerm
             (firstTraceZeroFreeBand Y ∩ farHalf) := by
   obtain ⟨T, hT, hzf⟩ := Sieve.exists_zero_free_region_explicit
@@ -158,8 +158,8 @@ theorem exists_poleClearedFirstTrace_zeroFreeBand_arithmetic_extensions :
       hT hzf hY hs) (N := 2) (by norm_num)
   have hanchorFar := firstTraceZeroFreeBandAnchor_mem_farHalf Y
   have hsquares :
-      g (firstTraceZeroFreeBandAnchor Y) ^ 2 =
-        poleClearedPrimeZetaHalfEulerGerm (firstTraceZeroFreeBandAnchor Y) ^ 2 := by
+      g (firstTraceZeroFreeBandAnchor Y) ^ (2 : ℕ) =
+        poleClearedPrimeZetaHalfEulerGerm (firstTraceZeroFreeBandAnchor Y) ^ (2 : ℕ) := by
     rw [hgsq _ hanchorBand, poleClearedPrimeZetaHalfEulerGerm_sq hanchorFar]
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsquares with hmatch | hmatch
   · refine ⟨g, hg, hgsq, ?_⟩

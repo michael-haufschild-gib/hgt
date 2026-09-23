@@ -24,7 +24,7 @@ noncomputable section
 def xiHeatCassiniWoldGammaSixBoundaryMajorant
     (k : ℕ) (p : Nat.Primes) : ℝ :=
   Real.log (p : ℝ) ^ (2 * k) * primeActivationOccupancyFisherDensity p *
-    xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2
+    xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ)
 
 theorem xiHeatCassiniWoldGammaSixBoundaryMajorant_nonneg
     (k : ℕ) (p : Nat.Primes) :
@@ -39,7 +39,7 @@ theorem summable_xiHeatCassiniWoldGammaSixBoundaryMajorant (k : ℕ) :
     Summable (xiHeatCassiniWoldGammaSixBoundaryMajorant k) := by
   change Summable (fun p : Nat.Primes =>
     Real.log (p : ℝ) ^ (2 * k) * primeActivationOccupancyFisherDensity p *
-      xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ 2)
+      xiHeatCassiniPrimeWoldResidualLogDiscrepancy p ^ (2 : ℕ))
   exact summable_xiHeatCassiniPrimeWoldResidual_activationFisherLogPowEnergy k
 
 /-- Coefficient-faithful cross-route producer target: the Wold source energy controls the literal

@@ -24,8 +24,8 @@ theorem xiPairGramTerm_diag_eq (q : XiRightUpperZeroCopy) :
       8 * π *
         (1 / ((xiRightCenteredZero q.1).re + 1 / 2) +
           ((xiRightCenteredZero q.1).re + 1 / 2) /
-            (((xiRightCenteredZero q.1).re + 1 / 2) ^ 2 +
-              (xiRightCenteredZero q.1).im ^ 2)) := by
+            (((xiRightCenteredZero q.1).re + 1 / 2) ^ (2 : ℕ) +
+              (xiRightCenteredZero q.1).im ^ (2 : ℕ))) := by
   have hre := xiRightCenteredZero_re_pos q.1
   have hx : (xiRightCenteredZero q.1).re + 1 / 2 ≠ 0 := by
     linarith
@@ -48,13 +48,13 @@ theorem xiPairGramTerm_diag_lt_heightCap (q : XiRightUpperZeroCopy) :
     rw [div_lt_iff₀ hx]
     nlinarith
   have hden : 0 <
-      ((xiRightCenteredZero q.1).re + 1 / 2) ^ 2 +
-        (xiRightCenteredZero q.1).im ^ 2 := by
+      ((xiRightCenteredZero q.1).re + 1 / 2) ^ (2 : ℕ) +
+        (xiRightCenteredZero q.1).im ^ (2 : ℕ) := by
     positivity
   have hsecond :
       ((xiRightCenteredZero q.1).re + 1 / 2) /
-          (((xiRightCenteredZero q.1).re + 1 / 2) ^ 2 +
-            (xiRightCenteredZero q.1).im ^ 2) <
+          (((xiRightCenteredZero q.1).re + 1 / 2) ^ (2 : ℕ) +
+            (xiRightCenteredZero q.1).im ^ (2 : ℕ)) <
         1 / 65 := by
     rw [div_lt_div_iff₀ hden (by norm_num : (0 : ℝ) < 65)]
     nlinarith [sq_nonneg ((xiRightCenteredZero q.1).re + 1 / 2)]

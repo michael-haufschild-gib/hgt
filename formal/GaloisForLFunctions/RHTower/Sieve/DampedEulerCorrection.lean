@@ -33,7 +33,7 @@ theorem norm_dampedEulerFactor_le {p : ℕ} (hp : 2 ≤ p) {t : ℝ} (ht0 : 0 �
   have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
   have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
   have hnorm : ‖(p : ℂ) ^ (-s)‖ = (p : ℝ) ^ (-s.re) := by
-    rw [RHTower.norm_natCast_cpow hp1, Complex.neg_re]
+    rw [RHTower.norm_natCast_cpow_zetaVerticalLineBound hp1, Complex.neg_re]
   have hpow0 : (0 : ℝ) < (p : ℝ) ^ (-s.re) := Real.rpow_pos_of_pos hp0 _
   -- the damping factor never reaches one
   have hhalf : (p : ℝ) ^ (-s.re) ≤ (2 : ℝ) ^ (-(1 / 2) : ℝ) := by

@@ -58,7 +58,7 @@ theorem iteratedDeriv_ratFunc (p q : Polynomial ℂ) (k : ℕ) {z : ℂ}
         = (Polynomial.eval z (ratDerivNum p q k).derivative * Polynomial.eval z q ^ (k + 1)
             - Polynomial.eval z (ratDerivNum p q k) *
               (((k + 1 : ℕ) : ℂ) * Polynomial.eval z q ^ k * Polynomial.eval z q.derivative))
-          / (Polynomial.eval z q ^ (k + 1)) ^ 2 := hdiv.deriv
+          / (Polynomial.eval z q ^ (k + 1)) ^ (2 : ℕ) := hdiv.deriv
     rw [hd, ratDerivNum_succ]
     have hqz : Polynomial.eval z q ≠ 0 := hq z
     simp only [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_smul, nsmul_eq_mul,

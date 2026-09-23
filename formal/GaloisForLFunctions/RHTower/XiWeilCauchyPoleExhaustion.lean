@@ -10,7 +10,7 @@ direction.  At a centered divisor location `alpha`, normalized kernels
 
 `(alpha - z) / (xiSpectralPoint q - z)`
 
-converge in the multiplicity-exact divisor `ell^2` carrier to the indicator of
+converge in the multiplicity-exact divisor `ell^(2 : ℕ)` carrier to the indicator of
 the complete `alpha` fiber as regular points `z` approach `alpha`.  The proof
 uses analytic isolation of Xi zeros and a Cauchy-square majorant.
 
@@ -158,9 +158,9 @@ theorem exists_normalizedCauchyLp_tendsto_fiberIndicator_with_cap
     simpa [zval] using tendsto_const_nhds.add (Complex.ofRealCLM.continuous.tendsto 0 |>.comp hrtend)
   let term : ℕ → XiZeroCopy → ℝ := fun n q =>
     ‖(alpha - zval n) * xiWeilCauchyTest (zval n) (xiSpectralPoint q) -
-      xiWeilFiberIndicator alpha (xiSpectralPoint q)‖ ^ 2
+      xiWeilFiberIndicator alpha (xiSpectralPoint q)‖ ^ (2 : ℕ)
   let bound : XiZeroCopy → ℝ := fun q =>
-    4 * ‖xiWeilCauchyTest alpha (xiSpectralPoint q)‖ ^ 2
+    4 * ‖xiWeilCauchyTest alpha (xiSpectralPoint q)‖ ^ (2 : ℕ)
   have hboundsum : Summable bound := by
     exact (XiWeilSquareSummable_cauchy alpha).mul_left 4
   have hterm_tend : ∀ q, Tendsto (fun n => term n q) atTop (𝓝 0) := by
@@ -213,17 +213,17 @@ theorem exists_normalizedCauchyLp_tendsto_fiberIndicator_with_cap
           apply div_le_div_of_nonneg_right ?_ hp.le
           nlinarith [hznorm n, hrone n])
       have hsq :
-          ‖(alpha - zval n) * xiWeilCauchyTest (zval n) (xiSpectralPoint q)‖ ^ 2 ≤
-            (2 / ‖xiSpectralPoint q - alpha‖) ^ 2 := by
+          ‖(alpha - zval n) * xiWeilCauchyTest (zval n) (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
+            (2 / ‖xiSpectralPoint q - alpha‖) ^ (2 : ℕ) := by
         gcongr
       dsimp only [term, bound]
       rw [hind, sub_zero, Real.norm_of_nonneg (sq_nonneg _)]
       simp only [xiWeilCauchyTest]
       rw [norm_inv]
       calc
-        ‖(alpha - zval n) * (xiSpectralPoint q - zval n)⁻¹‖ ^ 2 ≤
-            (2 / ‖xiSpectralPoint q - alpha‖) ^ 2 := hsq
-        _ = 4 * ‖xiSpectralPoint q - alpha‖⁻¹ ^ 2 := by
+        ‖(alpha - zval n) * (xiSpectralPoint q - zval n)⁻¹‖ ^ (2 : ℕ) ≤
+            (2 / ‖xiSpectralPoint q - alpha‖) ^ (2 : ℕ) := hsq
+        _ = 4 * ‖xiSpectralPoint q - alpha‖⁻¹ ^ (2 : ℕ) := by
           field_simp
           ring
   have htsum : Tendsto (fun n => ∑' q, term n q) atTop (𝓝 0) := by
@@ -232,13 +232,13 @@ theorem exists_normalizedCauchyLp_tendsto_fiberIndicator_with_cap
   let V : ℕ → lp (fun _ : XiZeroCopy => ℂ) 2 := fun n =>
     (alpha - (z n : ℂ)) • xiWeilCauchyLp (z n)
   let Ialpha : lp (fun _ : XiZeroCopy => ℂ) 2 := xiWeilFiberIndicatorLp alpha
-  have hnormsq : ∀ n, ‖V n - Ialpha‖ ^ 2 = ∑' q, term n q := by
+  have hnormsq : ∀ n, ‖V n - Ialpha‖ ^ (2 : ℕ) = ∑' q, term n q := by
     intro n
     rw [HilbertSchmidt.lp_norm_sq_eq]
     apply tsum_congr
     intro q
     rfl
-  have hsqzero : Tendsto (fun n => ‖V n - Ialpha‖ ^ 2) atTop (𝓝 0) := by
+  have hsqzero : Tendsto (fun n => ‖V n - Ialpha‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     exact htsum.congr' (Eventually.of_forall fun n => (hnormsq n).symm)
   have hnormzero : Tendsto (fun n => ‖V n - Ialpha‖) atTop (𝓝 0) := by
     have hsqrt := hsqzero.sqrt

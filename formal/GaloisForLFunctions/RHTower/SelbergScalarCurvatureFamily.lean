@@ -48,16 +48,16 @@ private theorem laplacian_eventuallyEq {F G : ℂ → ℂ} {z : ℂ} (h : F =ᶠ
 
 private theorem complex_model_laplacian (lam : Ioi (0 : ℝ)) (z : ℍ) :
     positiveHyperbolicLaplacian (complexModel lam) z =
-      (-(z.im ^ 2 * realLaplacian (model lam) (z : ℂ)) : ℝ) := by
-  change -(z.im : ℂ) ^ 2 * laplacian ((complexModel lam) ∘ ofComplex) (z : ℂ) = _
+      (-(z.im ^ (2 : ℕ) * realLaplacian (model lam) (z : ℂ)) : ℝ) := by
+  change -(z.im : ℂ) ^ (2 : ℕ) * laplacian ((complexModel lam) ∘ ofComplex) (z : ℂ) = _
   rw [laplacian_eventuallyEq (complex_chart_eq lam z),
     laplacian_ofReal ((model_c2 lam).contDiffAt (isOpen_upperHalfPlaneSet.mem_nhds z.im_pos))]
   simp only [Complex.ofReal_neg, Complex.ofReal_mul, Complex.ofReal_pow, neg_mul]
 
 /-- The original scalar model's actual hyperbolic Laplacian is modular invariant. -/
 theorem model_hyperbolic_laplacian_modular (lam : Ioi (0 : ℝ)) (A : SL2Z) (z : ℍ) :
-    (A • z : ℍ).im ^ 2 * realLaplacian (model lam) ((A • z : ℍ) : ℂ) =
-      z.im ^ 2 * realLaplacian (model lam) (z : ℂ) := by
+    (A • z : ℍ).im ^ (2 : ℕ) * realLaplacian (model lam) ((A • z : ℍ) : ℂ) =
+      z.im ^ (2 : ℕ) * realLaplacian (model lam) (z : ℂ) := by
   have h := positive_laplacian_pullback A (complexModel lam) (complex_model_smooth lam) z
   have he : (fun w : ℍ => complexModel lam (A • w)) = complexModel lam := by
     funext w
@@ -80,7 +80,7 @@ theorem cell_mass_eq (lam : Ioi (0 : ℝ)) :
   rw [← integral_height_sq_cell (massDensity lam)]
   apply setIntegral_congr_fun isClosed_fd.measurableSet
   intro z _
-  change model lam (z : ℂ) = z.im ^ 2 * (model lam (point z.re z.im) / z.im ^ 2)
+  change model lam (z : ℂ) = z.im ^ (2 : ℕ) * (model lam (point z.re z.im) / z.im ^ (2 : ℕ))
   rw [point_self]
   field_simp [z.im_pos.ne']
 
@@ -90,7 +90,7 @@ theorem cell_curvature_eq (lam : Ioi (0 : ℝ)) :
   rw [← integral_height_sq_cell (curveDensity lam)]
   apply setIntegral_congr_fun isClosed_fd.measurableSet
   intro z _
-  change curvature lam (z : ℂ) = z.im ^ 2 * (curvature lam (point z.re z.im) / z.im ^ 2)
+  change curvature lam (z : ℂ) = z.im ^ (2 : ℕ) * (curvature lam (point z.re z.im) / z.im ^ (2 : ℕ))
   rw [point_self]
   field_simp [z.im_pos.ne']
 

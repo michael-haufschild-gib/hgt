@@ -47,12 +47,12 @@ theorem xi_scalar_modular (q : XiZeroCopy) (A : SL(2, ℤ)) (z : UpperHalfPlane)
 theorem nonparabolic_height_le (A : SL(2, ℤ)) (hc : A 1 0 ≠ 0) (z : UpperHalfPlane) :
     (A • z).im ≤ 1/z.im := by
   rw [ModularGroup.im_smul_eq_div_normSq,denom_apply]
-  rw [show 1/z.im = z.im/z.im^2 by field_simp]
+  rw [show 1/z.im = z.im/z.im^(2 : ℕ) by field_simp]
   gcongr
   rw [show Complex.normSq ((A 1 0)*z+(A 1 1)) =
-    ((A 1 0 : ℝ)*z.re+(A 1 1 : ℝ))^2+(A 1 0 : ℝ)^2*z.im^2 by
+    ((A 1 0 : ℝ)*z.re+(A 1 1 : ℝ))^(2 : ℕ)+(A 1 0 : ℝ)^(2 : ℕ)*z.im^(2 : ℕ) by
       simp [Complex.normSq_apply]; ring]
-  have hs : (1 : ℝ) ≤ (A 1 0 : ℝ)^2 := by
+  have hs : (1 : ℝ) ≤ (A 1 0 : ℝ)^(2 : ℕ) := by
     exact_mod_cast (one_le_sq_iff_one_le_abs _).mpr (Int.one_le_abs hc)
   nlinarith [sq_nonneg ((A 1 0 : ℝ)*z.re+(A 1 1 : ℝ))]
 

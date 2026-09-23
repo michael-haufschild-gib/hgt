@@ -83,14 +83,14 @@ theorem toCopy_fst_coe (ρ : {ρ : ℂ // Zeta23.IsNontrivialZero ρ}) :
 /-! ## Ordinates -/
 
 theorem fortyOne_div_two_lt_im_sq_of_nontrivialZero {ρ : ℂ} (h : Zeta23.IsNontrivialZero ρ) :
-    (41 / 2 : ℝ) < ρ.im ^ 2 :=
+    (41 / 2 : ℝ) < ρ.im ^ (2 : ℕ) :=
   xiZeroCopy_fortyOne_div_two_lt_im_sq (toCopy ⟨ρ, h⟩)
 
 theorem fortyOne_div_two_lt_normSq_gammaOf_of_nontrivialZero {ρ : ℂ}
-    (h : Zeta23.IsNontrivialZero ρ) : (41 / 2 : ℝ) < ‖Zeta23.gammaOf ρ‖ ^ 2 := by
+    (h : Zeta23.IsNontrivialZero ρ) : (41 / 2 : ℝ) < ‖Zeta23.gammaOf ρ‖ ^ (2 : ℕ) := by
   have h1 := fortyOne_div_two_lt_im_sq_of_nontrivialZero h
   have h2 := Zeta23.WeilEF.abs_im_le_norm_gammaOf ρ
-  have h3 : ρ.im ^ 2 ≤ ‖Zeta23.gammaOf ρ‖ ^ 2 := by
+  have h3 : ρ.im ^ (2 : ℕ) ≤ ‖Zeta23.gammaOf ρ‖ ^ (2 : ℕ) := by
     rw [← sq_abs ρ.im]
     exact pow_le_pow_left₀ (abs_nonneg _) h2 2
   linarith
@@ -116,10 +116,10 @@ theorem gammaOf_eq_xiSpectralPoint (q : XiZeroCopy) :
 
 /-! ## The inverse-square sum over the zeros -/
 
-theorem key_ineq {x y : ℝ} (hx : 41 / 2 < x ^ 2) (hy : y ^ 2 < 1 / 4) :
-    (x * x + y * y)⁻¹ ≤ (11 / 10) * ((1 / 4 + x ^ 2 - y ^ 2) /
-      ((1 / 4 + x ^ 2 - y ^ 2) * (1 / 4 + x ^ 2 - y ^ 2) + (2 * x * y) * (2 * x * y))) := by
-  set A := 1 / 4 + x ^ 2 - y ^ 2 with hAdef
+theorem key_ineq {x y : ℝ} (hx : 41 / 2 < x ^ (2 : ℕ)) (hy : y ^ (2 : ℕ) < 1 / 4) :
+    (x * x + y * y)⁻¹ ≤ (11 / 10) * ((1 / 4 + x ^ (2 : ℕ) - y ^ (2 : ℕ)) /
+      ((1 / 4 + x ^ (2 : ℕ) - y ^ (2 : ℕ)) * (1 / 4 + x ^ (2 : ℕ) - y ^ (2 : ℕ)) + (2 * x * y) * (2 * x * y))) := by
+  set A := 1 / 4 + x ^ (2 : ℕ) - y ^ (2 : ℕ) with hAdef
   have hApos : 0 < A := by rw [hAdef]; nlinarith
   have hS : 0 < x * x + y * y := by nlinarith
   have hD : 0 < A * A + (2 * x * y) * (2 * x * y) :=
@@ -128,34 +128,34 @@ theorem key_ineq {x y : ℝ} (hx : 41 / 2 < x ^ 2) (hy : y ^ 2 < 1 / 4) :
       (11 * A) / (10 * (A * A + 2 * x * y * (2 * x * y))) := by
     field_simp
   rw [inv_eq_one_div, hrw, div_le_div_iff₀ hS (by positivity)]
-  have h0 : 0 ≤ x ^ 2 * (1 - 4 * y ^ 2) := mul_nonneg (sq_nonneg x) (by linarith)
-  have h1 : A * A + 2 * x * y * (2 * x * y) ≤ A * A + x ^ 2 := by nlinarith [h0]
-  have h2 : x ^ 2 ≤ A := by rw [hAdef]; linarith
+  have h0 : 0 ≤ x ^ (2 : ℕ) * (1 - 4 * y ^ (2 : ℕ)) := mul_nonneg (sq_nonneg x) (by linarith)
+  have h1 : A * A + 2 * x * y * (2 * x * y) ≤ A * A + x ^ (2 : ℕ) := by nlinarith [h0]
+  have h2 : x ^ (2 : ℕ) ≤ A := by rw [hAdef]; linarith
   have h3 : A + 1 ≤ 11 / 10 * (x * x + y * y) := by rw [hAdef]; nlinarith
   have h4 := mul_le_mul_of_nonneg_left h3 hApos.le
   nlinarith [h1, h2, h4]
 
 theorem inv_normSq_spectralPoint_le (q : XiZeroCopy) :
-    1 / ‖xiSpectralPoint q‖ ^ 2 ≤
+    1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤
       (11 / 10) * ((1 : ℂ) / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re := by
   have hρ := xiZeroCopy_eq_half_add q
   have hx : (xiSpectralPoint q).re = (q.1 : ℂ).im := by rw [hρ]; simp
   have hy : (xiSpectralPoint q).im = 1 / 2 - (q.1 : ℂ).re := by rw [hρ]; simp
-  have hx2 : (41 / 2 : ℝ) < (xiSpectralPoint q).re ^ 2 := by
+  have hx2 : (41 / 2 : ℝ) < (xiSpectralPoint q).re ^ (2 : ℕ) := by
     rw [hx]; exact xiZeroCopy_fortyOne_div_two_lt_im_sq q
   have hre0 := xiZeroCopy_re_pos q
   have hre1 := xiZeroCopy_re_lt_one q
-  have hy2 : (xiSpectralPoint q).im ^ 2 < 1 / 4 := by rw [hy]; nlinarith
-  have hprod : (q.1 : ℂ) * (1 - (q.1 : ℂ)) = 1 / 4 + xiSpectralPoint q ^ 2 := by
+  have hy2 : (xiSpectralPoint q).im ^ (2 : ℕ) < 1 / 4 := by rw [hy]; nlinarith
+  have hprod : (q.1 : ℂ) * (1 - (q.1 : ℂ)) = 1 / 4 + xiSpectralPoint q ^ (2 : ℕ) := by
     rw [hρ]
-    linear_combination (-(xiSpectralPoint q ^ 2)) * Complex.I_mul_I
+    linear_combination (-(xiSpectralPoint q ^ (2 : ℕ))) * Complex.I_mul_I
   rw [hprod, one_div, one_div, Complex.inv_re, Complex.sq_norm, Complex.normSq_apply,
     Complex.normSq_apply]
-  have hA : (1 / 4 + xiSpectralPoint q ^ 2).re =
-      1 / 4 + (xiSpectralPoint q).re ^ 2 - (xiSpectralPoint q).im ^ 2 := by
+  have hA : (1 / 4 + xiSpectralPoint q ^ (2 : ℕ)).re =
+      1 / 4 + (xiSpectralPoint q).re ^ (2 : ℕ) - (xiSpectralPoint q).im ^ (2 : ℕ) := by
     simp [sq, Complex.add_re, Complex.mul_re]
     ring
-  have hB : (1 / 4 + xiSpectralPoint q ^ 2).im =
+  have hB : (1 / 4 + xiSpectralPoint q ^ (2 : ℕ)).im =
       2 * (xiSpectralPoint q).re * (xiSpectralPoint q).im := by
     simp [sq, Complex.add_im, Complex.mul_im]
     ring
@@ -164,11 +164,11 @@ theorem inv_normSq_spectralPoint_le (q : XiZeroCopy) :
 
 /-- `Σ_ρ 1/‖γ_ρ‖² ≤ (11/10)·(2 + γ − log 4π)` over all zero copies. -/
 theorem tsum_inv_normSq_spectralPoint_le :
-    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 ≤ (11 / 10) * poleSharpConstant := by
+    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ (11 / 10) * poleSharpConstant := by
   have hsum := summable_inv_mul_one_sub
   have hre : Summable (fun q : XiZeroCopy => ((1 : ℂ) / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re) :=
     hsum.mapL Complex.reCLM
-  calc ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+  calc ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
       ≤ ∑' q : XiZeroCopy, (11 / 10) * ((1 : ℂ) / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re :=
         (xiSpectralPoint_inv_sq_summable).tsum_le_tsum (fun q => inv_normSq_spectralPoint_le q)
           (hre.mul_left _)
@@ -183,7 +183,7 @@ theorem poleSharpConstant_lt : poleSharpConstant < 3 / 10 := by
   have h12 : (12 : ℝ) ≤ 4 * Real.pi := by linarith [Real.pi_gt_three]
   have hlog12 : Real.log 12 ≤ Real.log (4 * Real.pi) := Real.log_le_log (by norm_num) h12
   have h12' : Real.log 12 = 2 * Real.log 2 + Real.log 3 := by
-    rw [show (12 : ℝ) = 2 ^ 2 * 3 by norm_num, Real.log_mul (by norm_num) (by norm_num),
+    rw [show (12 : ℝ) = 2 ^ (2 : ℕ) * 3 by norm_num, Real.log_mul (by norm_num) (by norm_num),
       Real.log_pow]
     push_cast
     ring
@@ -194,7 +194,7 @@ theorem poleSharpConstant_lt : poleSharpConstant < 3 / 10 := by
   linarith
 
 theorem tsum_inv_normSq_spectralPoint_lt :
-    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 < 33 / 100 := by
+    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) < 33 / 100 := by
   have := tsum_inv_normSq_spectralPoint_le
   have := poleSharpConstant_lt
   linarith

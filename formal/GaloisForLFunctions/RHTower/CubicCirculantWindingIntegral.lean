@@ -40,19 +40,19 @@ theorem hasDerivAt_cyclicAmplitudeGraph {a : ℝ → ℝ} {da s : ℝ}
     (ha : HasDerivAt a da s) :
     HasDerivAt (fun x => cyclicAmplitudeGraph (a x)) (cyclicAmplitudeGraphJet (a s) da) s := by
   have haC := ha.ofReal_comp
-  have hden : HasDerivAt (fun x => 1+(a x:ℂ)^2) (2*(a s:ℂ)*da) s := by
+  have hden : HasDerivAt (fun x => 1+(a x:ℂ)^(2 : ℕ)) (2*(a s:ℂ)*da) s := by
     convert (haC.pow 2).const_add 1 using 1 <;> norm_num
     congr
-  have hne : 1+(a s:ℂ)^2 ≠ 0 := by
-    exact_mod_cast (ne_of_gt (by positivity : (0:ℝ)<1+a s^2))
-  have h00 : HasDerivAt (fun x => 1/(1+(a x:ℂ)^2))
-      (-2*(a s:ℂ)*da/(1+(a s:ℂ)^2)^2) s := by
+  have hne : 1+(a s:ℂ)^(2 : ℕ) ≠ 0 := by
+    exact_mod_cast (ne_of_gt (by positivity : (0:ℝ)<1+a s^(2 : ℕ)))
+  have h00 : HasDerivAt (fun x => 1/(1+(a x:ℂ)^(2 : ℕ)))
+      (-2*(a s:ℂ)*da/(1+(a s:ℂ)^(2 : ℕ))^(2 : ℕ)) s := by
     convert (hasDerivAt_const s (1:ℂ)).div hden hne using 1 <;> try congr <;> ring
-  have h01 : HasDerivAt (fun x => (a x:ℂ)/(1+(a x:ℂ)^2))
-      ((1-(a s:ℂ)^2)*da/(1+(a s:ℂ)^2)^2) s := by
+  have h01 : HasDerivAt (fun x => (a x:ℂ)/(1+(a x:ℂ)^(2 : ℕ)))
+      ((1-(a s:ℂ)^(2 : ℕ))*da/(1+(a s:ℂ)^(2 : ℕ))^(2 : ℕ)) s := by
     convert haC.div hden hne using 1 <;> try congr <;> ring
-  have h11 : HasDerivAt (fun x => (a x:ℂ)^2/(1+(a x:ℂ)^2))
-      (2*(a s:ℂ)*da/(1+(a s:ℂ)^2)^2) s := by
+  have h11 : HasDerivAt (fun x => (a x:ℂ)^(2 : ℕ)/(1+(a x:ℂ)^(2 : ℕ)))
+      (2*(a s:ℂ)*da/(1+(a s:ℂ)^(2 : ℕ))^(2 : ℕ)) s := by
     convert (haC.pow 2).div hden hne using 1 <;> try congr <;> norm_num <;> ring
   apply hasDerivAt_pi.mpr
   intro i
@@ -105,7 +105,7 @@ theorem cyclicLoopPhase_logarithmic_derivative {f : ℝ → ℂ}
   have hn : ‖f x‖ ≠ 0 := norm_ne_zero_iff.mpr (hz x)
   have hnc : (‖f x‖:ℂ) ≠ 0 := by exact_mod_cast hn
   have hphase : deriv (cyclicLoopPhase f) x =
-      (deriv f x*(‖f x‖:ℂ)-f x*((deriv (fun w => ‖f w‖) x:ℝ):ℂ))/(‖f x‖:ℂ)^2 :=
+      (deriv f x*(‖f x‖:ℂ)-f x*((deriv (fun w => ‖f w‖) x:ℝ):ℂ))/(‖f x‖:ℂ)^(2 : ℕ) :=
     ((hf.differentiable (by simp) x).hasDerivAt.div ha.ofReal_comp hnc).deriv
   have hlog : HasDerivAt (fun w => (Real.log ‖f w‖:ℂ))
       (((‖f x‖⁻¹ * deriv (fun w => ‖f w‖) x):ℝ):ℂ) x := by
@@ -149,13 +149,13 @@ def cyclicLoopMatrixCurrent (r : ℝ) (f : ℝ → ℂ) (x : ℝ) :
     cyclicSourceCurrent ((r:ℂ)*cyclicLoopPhase f x) ((r:ℂ)*conj (cyclicLoopPhase f x))
 
 def cyclicLoopPrimitive (r : ℝ) (f : ℝ → ℂ) (x : ℝ) : ℂ :=
-  2*(((r:ℂ)*cyclicLoopPhase f x)^3-((r:ℂ)*conj (cyclicLoopPhase f x))^3)
+  2*(((r:ℂ)*cyclicLoopPhase f x)^(3 : ℕ)-((r:ℂ)*conj (cyclicLoopPhase f x))^(3 : ℕ))
 
 def cyclicLoopTraceDensity (r : ℝ) (f : ℝ → ℂ) (x : ℝ) : ℂ :=
   Matrix.trace (cyclicFaithfulSourceAggregate r (f x) * deriv (cyclicLoopMatrixCurrent r f) x)
 
 /-- Single-copy, literal derivative formula; the normalization is source-independent. -/
-theorem cyclicLoopTraceDensity_eq (r : ℝ) (hr : 6*r^2=1) {f : ℝ → ℂ}
+theorem cyclicLoopTraceDensity_eq (r : ℝ) (hr : 6*r^(2 : ℕ)=1) {f : ℝ → ℂ}
     (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0) (x : ℝ) :
     cyclicLoopTraceDensity r f x =
       deriv (cyclicLoopPrimitive r f) x + deriv (cyclicLoopPhase f) x/cyclicLoopPhase f x := by
@@ -177,10 +177,10 @@ theorem cyclicLoopTraceDensity_eq (r : ℝ) (hr : 6*r^2=1) {f : ℝ → ℂ}
   have hY := hv.const_mul (r:ℂ)
   have hK := hasDerivAt_cyclicGraphCurrent ha hX hY
   have hprim : HasDerivAt (cyclicLoopPrimitive r f)
-      (6*((r:ℂ)*q x)^2*((r:ℂ)*deriv q x)-
-        6*((r:ℂ)*v x)^2*((r:ℂ)*deriv v x)) x := by
+      (6*((r:ℂ)*q x)^(2 : ℕ)*((r:ℂ)*deriv q x)-
+        6*((r:ℂ)*v x)^(2 : ℕ)*((r:ℂ)*deriv v x)) x := by
     convert ((hX.pow 3).sub (hY.pow 3)).const_mul (2:ℂ) using 1 <;> try congr <;> norm_num <;> ring
-  have hrc : (6:ℂ)*(r:ℂ)^2=1 := by exact_mod_cast hr
+  have hrc : (6:ℂ)*(r:ℂ)^(2 : ℕ)=1 := by exact_mod_cast hr
   have hnorm := cyclicSource_twoCopy_unit_normalization (r:ℂ) (q x) (v x)
     (deriv q x) (deriv v x) hrc (huv x) htangent
   unfold cyclicLoopTraceDensity
@@ -200,14 +200,14 @@ theorem cyclicLoopPrimitive_smooth (r : ℝ) {f : ℝ → ℂ}
 
 /-- The literal amplitude-retaining six-channel current integrates to the source logarithmic
 derivative. This identity is proved before choosing an arithmetic contour or its zero count. -/
-theorem integral_cyclicLoopTraceDensity (r : ℝ) (hr : 6*r^2=1) {f : ℝ → ℂ} {c : ℂ}
+theorem integral_cyclicLoopTraceDensity (r : ℝ) (hr : 6*r^(2 : ℕ)=1) {f : ℝ → ℂ} {c : ℂ}
     (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0)
     (hc : HasCompactSupport (fun x => f x-c)) :
     (∫ x : ℝ, cyclicLoopTraceDensity r f x) = ∫ x : ℝ, deriv f x/f x := by
-  let pc : ℂ := 2*(((r:ℂ)*(c/(‖c‖:ℂ)))^3-((r:ℂ)*conj (c/(‖c‖:ℂ)))^3)
+  let pc : ℂ := 2*(((r:ℂ)*(c/(‖c‖:ℂ)))^(3 : ℕ)-((r:ℂ)*conj (c/(‖c‖:ℂ)))^(3 : ℕ))
   have hpc : HasCompactSupport (fun x => cyclicLoopPrimitive r f x-pc) :=
     cubic_source_compact_deviation hc
-      (fun z => 2*(((r:ℂ)*(z/(‖z‖:ℂ)))^3-((r:ℂ)*conj (z/(‖z‖:ℂ)))^3))
+      (fun z => 2*(((r:ℂ)*(z/(‖z‖:ℂ)))^(3 : ℕ)-((r:ℂ)*conj (z/(‖z‖:ℂ)))^(3 : ℕ)))
   have hp := cubic_compact_derivative_integral _ pc (cyclicLoopPrimitive_smooth r hf hz) hpc
   have hqc : HasCompactSupport (fun x => cyclicLoopPhase f x-c/(‖c‖:ℂ)) :=
     cubic_source_compact_deviation hc (fun z => z/(‖z‖:ℂ))
@@ -229,7 +229,7 @@ theorem integral_cyclicLoopTraceDensity (r : ℝ) (hr : 6*r^2=1) {f : ℝ → �
   rw [integral_add hp.1 hqi, hp.2, zero_add]
   exact integral_cyclicLoopPhase_logarithmic_derivative hf hz hc
 
-theorem cyclicFaithfulSourceProjection_current (t b : ℝ) (hnorm : t^2+b^2=1)
+theorem cyclicFaithfulSourceProjection_current (t b : ℝ) (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1)
     {z : ℂ} (hz : z ≠ 0) :
     let P := cyclicFaithfulSourceProjection t b z
     (P 0*P 1-P 1*P 0)+(P 1*P 2-P 2*P 1)+(P 2*P 0-P 0*P 2) =
@@ -238,11 +238,11 @@ theorem cyclicFaithfulSourceProjection_current (t b : ℝ) (hnorm : t^2+b^2=1)
           (((t*b:ℝ):ℂ)*conj (z/(‖z‖:ℂ))) := by
   let E := cyclicAmplitudeGraph ‖z‖
   let u : ℂ := (b:ℂ)*(z/(‖z‖:ℂ))
-  have hncomplex : (t:ℂ)^2+(b:ℂ)^2=1 := by exact_mod_cast hnorm
-  have hu : (t:ℂ)^2+u*conj u=1 := by
+  have hncomplex : (t:ℂ)^(2 : ℕ)+(b:ℂ)^(2 : ℕ)=1 := by exact_mod_cast hnorm
+  have hu : (t:ℂ)^(2 : ℕ)+u*conj u=1 := by
     dsimp [u]
     simp only [map_mul, Complex.conj_ofReal]
-    linear_combination hncomplex + (b:ℂ)^2*(cyclicSource_phase_unit hz)
+    linear_combination hncomplex + (b:ℂ)^(2 : ℕ)*(cyclicSource_phase_unit hz)
   have hm (M N : Matrix (Fin 3) (Fin 3) ℂ) : (E⊗ₖM)*(E⊗ₖN)=E⊗ₖ(M*N) := by
     rw [← Matrix.mul_kronecker_mul, cyclicAmplitudeGraph_idempotent]
   have hs (M N : Matrix (Fin 3) (Fin 3) ℂ) : E⊗ₖ(M-N)=E⊗ₖM-E⊗ₖN := by
@@ -268,7 +268,7 @@ theorem cyclicLoopMatrixCurrent_differentiable (r : ℝ) {f : ℝ → ℂ}
     (((hq.differentiable (by simp) x).hasDerivAt).const_mul (r:ℂ))
     (((hv.differentiable (by simp) x).hasDerivAt).const_mul (r:ℂ))).differentiableAt
 
-theorem cyclicFaithfulSourceSymbol_current_value (t b : ℝ) (hnorm : t^2+b^2=1)
+theorem cyclicFaithfulSourceSymbol_current_value (t b : ℝ) (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1)
     (f : ℝ → ℂ) (c : ℂ) (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0)
     (hc : HasCompactSupport (fun x => f x-c)) (x : ℝ) :
     let A := cyclicFaithfulSourceSymbol t b f c hf hz hc
@@ -284,7 +284,7 @@ theorem cyclicFaithfulSourceSymbol_current_value (t b : ℝ) (hnorm : t^2+b^2=1)
     cubicFiniteSymbolValue_add, cubicFiniteSymbolValue_mul, heval]
   exact cyclicFaithfulSourceProjection_current t b hnorm (hz x)
 
-theorem cyclicFaithfulSourceSymbol_current_jet (t b : ℝ) (hnorm : t^2+b^2=1)
+theorem cyclicFaithfulSourceSymbol_current_jet (t b : ℝ) (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1)
     (f : ℝ → ℂ) (c : ℂ) (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0)
     (hc : HasCompactSupport (fun x => f x-c)) (x : ℝ) :
     let A := cyclicFaithfulSourceSymbol t b f c hf hz hc
@@ -304,7 +304,7 @@ theorem cyclicFaithfulSourceSymbol_current_jet (t b : ℝ) (hnorm : t^2+b^2=1)
 
 /-- The already-admitted literal source matrices, not a replacement current, carry this winding. -/
 theorem integral_cyclicFaithfulSourceSymbol_current (t b : ℝ)
-    (hnorm : t^2+b^2=1) (hunit : 6*(t*b)^2=1)
+    (hnorm : t^(2 : ℕ)+b^(2 : ℕ)=1) (hunit : 6*(t*b)^(2 : ℕ)=1)
     (f : ℝ → ℂ) (c : ℂ) (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0)
     (hc : HasCompactSupport (fun x => f x-c)) :
     let A := cyclicFaithfulSourceSymbol t b f c hf hz hc
@@ -379,7 +379,7 @@ end DoubleOperator
 /-- Fixed constants, exact source recovery, genuine doubled/reversed source compression,
 and ordinary cubic winding charge. This produces no arithmetic zero-charge estimate. -/
 theorem exists_faithful_circulant_winding_cubic :
-    ∃ t b : ℝ, t^2+b^2=1 ∧ 6*(t*b)^2=1 ∧ t*b ≠ 0 ∧
+    ∃ t b : ℝ, t^(2 : ℕ)+b^(2 : ℕ)=1 ∧ 6*(t*b)^(2 : ℕ)=1 ∧ t*b ≠ 0 ∧
     ∀ (f : ℝ → ℂ) (c : ℂ) (hf : ContDiff ℝ ∞ f) (hz : ∀ x, f x ≠ 0)
       (hc : HasCompactSupport (fun x => f x-c)),
     let A := cyclicFaithfulSourceSymbol t b f c hf hz hc

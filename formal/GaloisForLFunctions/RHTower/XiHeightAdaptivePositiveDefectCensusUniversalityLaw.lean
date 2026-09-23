@@ -98,7 +98,7 @@ theorem xiNatHeightAdaptivePositiveDefectCollision_of_linearQuadratic
     {C : ℝ} (h : XiNatHeightAdaptiveLinearQuadraticCensus C) :
     XiNatHeightAdaptivePositiveDefectCollision
       (fun n =>
-        (C * (1 + ((n : ℝ) + 2)) * Real.log (2 + ((n : ℝ) + 2))) ^ 2)
+        (C * (1 + ((n : ℝ) + 2)) * Real.log (2 + ((n : ℝ) + 2))) ^ (2 : ℕ))
       boxSquareOrderSum boxOrderSum := by
   intro n hn
   obtain ⟨k, hk, hcensus⟩ := h n hn

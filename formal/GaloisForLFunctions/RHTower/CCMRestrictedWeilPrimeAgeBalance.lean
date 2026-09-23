@@ -40,11 +40,11 @@ theorem ccmWeilPoleAgeKernel_eq_green_integral (t : ℝ) :
 
 /-- Nonnegative initial slope of a new odd prime-power energy contribution. -/
 def ccmWeilOddPrimeEntrySlope (n : ℕ) : ℝ :=
-  4*ArithmeticFunction.vonMangoldt n*(1-Real.exp (-(Real.log n/2)))^2
+  4*ArithmeticFunction.vonMangoldt n*(1-Real.exp (-(Real.log n/2)))^(2 : ℕ)
 
 /-- Magnitude of the nonpositive initial slope of the new even contribution. -/
 def ccmWeilEvenPrimeEntrySlopeMagnitude (n : ℕ) : ℝ :=
-  4*ArithmeticFunction.vonMangoldt n*(1+Real.exp (-(Real.log n/2)))^2
+  4*ArithmeticFunction.vonMangoldt n*(1+Real.exp (-(Real.log n/2)))^(2 : ℕ)
 
 /-- Common post-entry loss in both parity corrections. -/
 def ccmWeilPrimeAgeLoss (n : ℕ) (s : ℝ) : ℝ :=
@@ -57,7 +57,7 @@ private theorem halfLog_exp (n : ℕ) (hn : 2 ≤ n) :
   exact Real.exp_log (by exact_mod_cast (by omega : 0 < n))
 
 private theorem halfLog_inv (n : ℕ) (hn : 2 ≤ n) :
-    1/(n:ℝ) = Real.exp (-(Real.log n/2))^2 := by
+    1/(n:ℝ) = Real.exp (-(Real.log n/2))^(2 : ℕ) := by
   conv_lhs => rw [← halfLog_exp n hn]
   rw [one_div,← Real.exp_neg,← Real.exp_nat_mul]
   congr 1

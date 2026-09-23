@@ -10,7 +10,7 @@ import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
 /-!
 # Complete Euler quotients after quartic prime-block compression
 
-Group the literal ordinary primes in `[k^4,(k+1)^4)`, `k >= 2`, and replace each
+Group the literal ordinary primes in `[k^(4 : ℕ),(k+1)^(4 : ℕ))`, `k >= 2`, and replace each
 nonempty block by repeated copies of its geometric mean. The zeroth and first
 logarithmic moments are retained. Centering removes the linear Taylor term.
 
@@ -104,16 +104,16 @@ theorem norm_centered_exp_sum_le {ι : Type*} (P : Finset ι) (x : ι → ℝ)
 
 
 theorem quarticPrimeBlock_card_le {k : ℕ} (hk : 1 ≤ k) :
-    ((quarticPrimeBlock k).card : ℝ) ≤ 15 * (k : ℝ)^3 := by
-  have hnat : (quarticPrimeBlock k).card ≤ (k + 1)^4 - k^4 := by
+    ((quarticPrimeBlock k).card : ℝ) ≤ 15 * (k : ℝ)^(3 : ℕ) := by
+  have hnat : (quarticPrimeBlock k).card ≤ (k + 1)^(4 : ℕ) - k^(4 : ℕ) := by
     exact (Finset.card_filter_le _ _).trans_eq (Nat.card_Ico _ _)
-  have hpow : k^4 ≤ (k+1)^4 := Nat.pow_le_pow_left (by omega) 4
-  have hr : ((quarticPrimeBlock k).card : ℝ) ≤ ((k : ℝ)+1)^4 - (k : ℝ)^4 := by
+  have hpow : k^(4 : ℕ) ≤ (k+1)^(4 : ℕ) := Nat.pow_le_pow_left (by omega) 4
+  have hr : ((quarticPrimeBlock k).card : ℝ) ≤ ((k : ℝ)+1)^(4 : ℕ) - (k : ℝ)^(4 : ℕ) := by
     exact_mod_cast hnat
   have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hk
-  have h2 : (k : ℝ)^2 ≤ (k : ℝ)^3 := by nlinarith [sq_nonneg ((k : ℝ)-1)]
-  have h1 : (k : ℝ) ≤ (k : ℝ)^3 := by nlinarith [sq_nonneg ((k : ℝ)-1)]
-  have h0 : (1 : ℝ) ≤ (k : ℝ)^3 := h1.trans' hkR
+  have h2 : (k : ℝ)^(2 : ℕ) ≤ (k : ℝ)^(3 : ℕ) := by nlinarith [sq_nonneg ((k : ℝ)-1)]
+  have h1 : (k : ℝ) ≤ (k : ℝ)^(3 : ℕ) := by nlinarith [sq_nonneg ((k : ℝ)-1)]
+  have h0 : (1 : ℝ) ≤ (k : ℝ)^(3 : ℕ) := h1.trans' hkR
   nlinarith
 
 private theorem quarticPrime_log_bounds {k p : ℕ} (hk : 1 ≤ k)
@@ -124,9 +124,9 @@ private theorem quarticPrime_log_bounds {k p : ℕ} (hk : 1 ≤ k)
   have hp0 : (0 : ℝ) < p := by
     exact_mod_cast (Finset.mem_filter.mp hp).2.pos
   constructor
-  · have h := Real.log_le_log (pow_pos hk0 4) (show (k : ℝ)^4 ≤ p by exact_mod_cast hm.1)
+  · have h := Real.log_le_log (pow_pos hk0 4) (show (k : ℝ)^(4 : ℕ) ≤ p by exact_mod_cast hm.1)
     simpa only [Real.log_pow, Nat.cast_ofNat] using h
-  · have h := Real.log_le_log hp0 (show (p : ℝ) ≤ ((k : ℝ)+1)^4 by exact_mod_cast hm.2.le)
+  · have h := Real.log_le_log hp0 (show (p : ℝ) ≤ ((k : ℝ)+1)^(4 : ℕ) by exact_mod_cast hm.2.le)
     simpa only [Real.log_pow, Nat.cast_ofNat, Nat.cast_add, Nat.cast_one] using h
 
 private theorem quarticPrime_center_bounds {k : ℕ} (hk : 1 ≤ k)
@@ -173,7 +173,7 @@ private theorem quarticPrime_log_diameter {k p : ℕ} (hk : 1 ≤ k)
 theorem quarticPrimeFirstDiscrepancy_bound {k : ℕ} (hk : 2 ≤ k)
     (s : ℂ) (hs : 0 ≤ s.re) :
     ‖quarticPrimeFirstDiscrepancy k s‖ ≤
-      240 * ‖s‖^2 * Real.exp (2*‖s‖) * (k : ℝ)^(1-4*s.re) := by
+      240 * ‖s‖^(2 : ℕ) * Real.exp (2*‖s‖) * (k : ℝ)^(1-4*s.re) := by
   classical
   by_cases hne : (quarticPrimeBlock k).Nonempty
   swap
@@ -193,16 +193,16 @@ theorem quarticPrimeFirstDiscrepancy_bound {k : ℕ} (hk : 2 ≤ k)
     nlinarith
   have hdiam : 4 / (k : ℝ) ≤ 2 := (div_le_iff₀ hk0).mpr (by linarith)
   have hcard := quarticPrimeBlock_card_le (k:=k) (by omega)
-  have hpows : (k : ℝ)^(-4*s.re) * (15*(k : ℝ)^3) * ‖s‖^2 * (4/(k : ℝ))^2 *
-      Real.exp (2*‖s‖) = 240 * ‖s‖^2 * Real.exp (2*‖s‖) * (k : ℝ)^(1-4*s.re) := by
+  have hpows : (k : ℝ)^(-4*s.re) * (15*(k : ℝ)^(3 : ℕ)) * ‖s‖^(2 : ℕ) * (4/(k : ℝ))^(2 : ℕ) *
+      Real.exp (2*‖s‖) = 240 * ‖s‖^(2 : ℕ) * Real.exp (2*‖s‖) * (k : ℝ)^(1-4*s.re) := by
     rw [show (1 : ℝ)-4*s.re = (-4*s.re)+1 by ring, Real.rpow_add hk0, Real.rpow_one]
     field_simp
     ring
   calc
     ‖quarticPrimeFirstDiscrepancy k s‖ ≤
-      Real.exp (-s.re * quarticPrimeLogCenter k) * (quarticPrimeBlock k).card * ‖s‖^2 *
-        (4/(k : ℝ))^2 * Real.exp (‖s‖*(4/(k : ℝ))) := hb
-    _ ≤ (k : ℝ)^(-4*s.re) * (15*(k : ℝ)^3) * ‖s‖^2 * (4/(k : ℝ))^2 *
+      Real.exp (-s.re * quarticPrimeLogCenter k) * (quarticPrimeBlock k).card * ‖s‖^(2 : ℕ) *
+        (4/(k : ℝ))^(2 : ℕ) * Real.exp (‖s‖*(4/(k : ℝ))) := hb
+    _ ≤ (k : ℝ)^(-4*s.re) * (15*(k : ℝ)^(3 : ℕ)) * ‖s‖^(2 : ℕ) * (4/(k : ℝ))^(2 : ℕ) *
         Real.exp (2*‖s‖) := by
           rw [mul_comm 2 ‖s‖]
           gcongr
@@ -215,7 +215,7 @@ theorem summable_quarticPrimeFirstDiscrepancy (s : ℂ) (hs : 1/2 < s.re) :
     Summable fun k : ℕ => quarticPrimeFirstDiscrepancy (k+2) s := by
   have hpow : Summable fun k : ℕ => ((k+2 : ℕ) : ℝ)^(1-4*s.re) :=
     (summable_nat_add_iff 2).mpr (Real.summable_nat_rpow.mpr (by linarith))
-  apply Summable.of_norm_bounded (hpow.mul_left (240*‖s‖^2*Real.exp (2*‖s‖)))
+  apply Summable.of_norm_bounded (hpow.mul_left (240*‖s‖^(2 : ℕ)*Real.exp (2*‖s‖)))
   intro k
   exact quarticPrimeFirstDiscrepancy_bound (by omega) s (by linarith)
 
@@ -234,7 +234,7 @@ theorem quarticPrimeFirstDiscrepancy_uniform_bound (σ T : ℝ)
     (hσ : 0 ≤ σ) (_hT : 0 ≤ T) (k : ℕ) (s : ℂ)
     (hs : σ ≤ s.re) (hnorm : ‖s‖ ≤ T) :
     ‖quarticPrimeFirstDiscrepancy (k+2) s‖ ≤
-      240*T^2*Real.exp (2*T)*((k+2 : ℕ) : ℝ)^(1-4*σ) := by
+      240*T^(2 : ℕ)*Real.exp (2*T)*((k+2 : ℕ) : ℝ)^(1-4*σ) := by
   have h := quarticPrimeFirstDiscrepancy_bound (k:=k+2) (by omega) s (hσ.trans hs)
   refine h.trans ?_
   have hbase : (1 : ℝ) ≤ (k+2 : ℕ) := by exact_mod_cast (by omega : 1 ≤ k+2)
@@ -268,7 +268,7 @@ theorem differentiableOn_quarticPrimeFirstDiscrepancySum :
   have hpow : Summable fun k : ℕ => ((k+2 : ℕ) : ℝ)^(1-4*σ) :=
     (summable_nat_add_iff 2).mpr (Real.summable_nat_rpow.mpr (by linarith))
   have hdiff := differentiableOn_tsum_of_summable_norm
-    (hpow.mul_left (240*T^2*Real.exp (2*T)))
+    (hpow.mul_left (240*T^(2 : ℕ)*Real.exp (2*T)))
     (fun k => (differentiable_quarticPrimeFirstDiscrepancy (k+2)).differentiableOn)
     Metric.isOpen_ball
     (fun k w hw => quarticPrimeFirstDiscrepancy_uniform_bound σ T
@@ -302,15 +302,15 @@ private theorem norm_eulerLog_sub_exp {x : ℝ} {s : ℂ}
     ring_nf
   rw [heq, norm_neg]
   simp only [norm_neg] at ht
-  have hn : ‖z‖^2 = Real.exp (-2*s.re*x) := by
+  have hn : ‖z‖^(2 : ℕ) = Real.exp (-2*s.re*x) := by
     dsimp [z]
     rw [Complex.norm_exp, ← Real.exp_nat_mul]
     congr 1
     simp
     ring
   calc
-    ‖Complex.log (1 + -z) - -z‖ ≤ ‖z‖^2 * (1-‖z‖)⁻¹ / 2 := ht
-    _ ≤ ‖z‖^2 := by nlinarith [sq_nonneg ‖z‖]
+    ‖Complex.log (1 + -z) - -z‖ ≤ ‖z‖^(2 : ℕ) * (1-‖z‖)⁻¹ / 2 := ht
+    _ ≤ ‖z‖^(2 : ℕ) := by nlinarith [sq_nonneg ‖z‖]
     _ = _ := hn
 
 private theorem primeScale_exp_bound {k : ℕ} (hk : 2 ≤ k) (s : ℂ)
@@ -346,7 +346,7 @@ private theorem primeScale_remainder_bound {k : ℕ} (hk : 2 ≤ k) (s : ℂ)
 theorem quarticPrimeEulerDiscrepancy_bound {k : ℕ} (hk : 2 ≤ k)
     (s : ℂ) (hs : 1/2 ≤ s.re) :
     ‖quarticPrimeEulerDiscrepancy k s‖ ≤
-      (240*‖s‖^2*Real.exp (2*‖s‖)+30) * (k : ℝ)^(1-4*s.re) := by
+      (240*‖s‖^(2 : ℕ)*Real.exp (2*‖s‖)+30) * (k : ℝ)^(1-4*s.re) := by
   classical
   by_cases hne : (quarticPrimeBlock k).Nonempty
   swap
@@ -383,7 +383,7 @@ theorem quarticPrimeEulerDiscrepancy_bound {k : ℕ} (hk : 2 ≤ k)
       30 * (k : ℝ)^(1-4*s.re) := by
     refine hrem.trans ?_
     calc
-      _ ≤ 2*(15*(k : ℝ)^3)*(k : ℝ)^(-8*s.re) := by
+      _ ≤ 2*(15*(k : ℝ)^(3 : ℕ))*(k : ℝ)^(-8*s.re) := by
         gcongr
         exact quarticPrimeBlock_card_le (by omega)
       _ = 30*(k : ℝ)^(3-8*s.re) := by
@@ -396,7 +396,7 @@ theorem quarticPrimeEulerDiscrepancy_bound {k : ℕ} (hk : 2 ≤ k)
     _ ≤ ‖quarticPrimeEulerDiscrepancy k s - quarticPrimeFirstDiscrepancy k s‖ +
         ‖quarticPrimeFirstDiscrepancy k s‖ := by simpa only [add_comm] using norm_le_insert' (quarticPrimeEulerDiscrepancy k s) (quarticPrimeFirstDiscrepancy k s)
     _ ≤ 30*(k : ℝ)^(1-4*s.re) +
-        240*‖s‖^2*Real.exp (2*‖s‖)*(k : ℝ)^(1-4*s.re) := add_le_add hrem' hfirst
+        240*‖s‖^(2 : ℕ)*Real.exp (2*‖s‖)*(k : ℝ)^(1-4*s.re) := add_le_add hrem' hfirst
     _ = _ := by ring
 
 
@@ -449,7 +449,7 @@ theorem summable_quarticPrimeEulerDiscrepancy (s : ℂ) (hs : 1/2 < s.re) :
     Summable fun k : ℕ => quarticPrimeEulerDiscrepancy (k+2) s := by
   have hpow : Summable fun k : ℕ => ((k+2 : ℕ) : ℝ)^(1-4*s.re) :=
     (summable_nat_add_iff 2).mpr (Real.summable_nat_rpow.mpr (by linarith))
-  apply Summable.of_norm_bounded (hpow.mul_left (240*‖s‖^2*Real.exp (2*‖s‖)+30))
+  apply Summable.of_norm_bounded (hpow.mul_left (240*‖s‖^(2 : ℕ)*Real.exp (2*‖s‖)+30))
   intro k
   exact quarticPrimeEulerDiscrepancy_bound (by omega) s hs.le
 
@@ -461,7 +461,7 @@ private theorem quarticPrimeEulerDiscrepancy_uniform_bound (σ T : ℝ)
     (hσ : 1/2 ≤ σ) (_hT : 0 ≤ T) (k : ℕ) (s : ℂ)
     (hs : σ ≤ s.re) (hnorm : ‖s‖ ≤ T) :
     ‖quarticPrimeEulerDiscrepancy (k+2) s‖ ≤
-      (240*T^2*Real.exp (2*T)+30)*((k+2 : ℕ) : ℝ)^(1-4*σ) := by
+      (240*T^(2 : ℕ)*Real.exp (2*T)+30)*((k+2 : ℕ) : ℝ)^(1-4*σ) := by
   have h := quarticPrimeEulerDiscrepancy_bound (k:=k+2) (by omega) s (hσ.trans hs)
   refine h.trans ?_
   have hbase : (1 : ℝ) ≤ (k+2 : ℕ) := by exact_mod_cast (by omega : 1 ≤ k+2)
@@ -502,7 +502,7 @@ theorem differentiableOn_quarticPrimeEulerDiscrepancySum :
     change 0 < w.re
     linarith
   have hdiff := differentiableOn_tsum_of_summable_norm
-    (hpow.mul_left (240*T^2*Real.exp (2*T)+30)) hf Metric.isOpen_ball
+    (hpow.mul_left (240*T^(2 : ℕ)*Real.exp (2*T)+30)) hf Metric.isOpen_ball
     (fun k w hw => quarticPrimeEulerDiscrepancy_uniform_bound σ T
       hσ.le hT k w (hball w hw).1 (hball w hw).2)
   exact (hdiff.differentiableAt (Metric.isOpen_ball.mem_nhds

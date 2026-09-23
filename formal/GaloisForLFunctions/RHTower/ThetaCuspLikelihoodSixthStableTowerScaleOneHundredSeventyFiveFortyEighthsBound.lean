@@ -17,11 +17,11 @@ noncomputable section
 /-- Elementary exponential input for the scale-`175/48` stable edge. -/
 theorem exp_neg_four_lt_oneFiftyFourth_scale175Over48 :
     Real.exp (-4) < (1 / 54 : ℝ) := by
-  have hpow : (2.7182818283 : ℝ) ^ 4 < Real.exp 1 ^ 4 :=
+  have hpow : (2.7182818283 : ℝ) ^ (4 : ℕ) < Real.exp 1 ^ (4 : ℕ) :=
     pow_lt_pow_left₀ Real.exp_one_gt_d9 (by norm_num) (by norm_num)
   have hlarge : (54 : ℝ) < Real.exp 4 := by
     rw [show (4 : ℝ) = (4 : ℕ) * (1 : ℝ) by norm_num, Real.exp_nat_mul]
-    exact (by norm_num : (54 : ℝ) < (2.7182818283 : ℝ) ^ 4).trans hpow
+    exact (by norm_num : (54 : ℝ) < (2.7182818283 : ℝ) ^ (4 : ℕ)).trans hpow
   have hprod : Real.exp (-4) * Real.exp 4 = 1 := by
     rw [← Real.exp_add]
     norm_num
@@ -30,23 +30,23 @@ theorem exp_neg_four_lt_oneFiftyFourth_scale175Over48 :
 /-- Above `175/48`, stable-edge scale decay still gains `1/20` over the frozen π envelope. -/
 theorem thetaSixthScalePowExp_le_oneTwentieth_pi_of_175Over48_le
     {A d : ℝ} (hA : (175 / 48 : ℝ) ≤ A) (hd : 8 ≤ d) :
-    A ^ 6 * Real.exp (-A * d) ≤
-      (1 / 20 : ℝ) * Real.pi ^ 6 * Real.exp (-Real.pi * d) := by
+    A ^ (6 : ℕ) * Real.exp (-A * d) ≤
+      (1 / 20 : ℝ) * Real.pi ^ (6 : ℕ) * Real.exp (-Real.pi * d) := by
   have hd0 : 0 < d := by linarith
   have hmono := thetaSixthScalePowExp_le_of_scale_ge
     (a := (175 / 48 : ℝ)) (A := A) (d := d) (by
       apply (div_le_iff₀ hd0).2
       nlinarith) hA hd0
-  have hpi6lo : (3.1415 : ℝ) ^ 6 < Real.pi ^ 6 :=
+  have hpi6lo : (3.1415 : ℝ) ^ (6 : ℕ) < Real.pi ^ (6 : ℕ) :=
     pow_lt_pow_left₀ Real.pi_gt_d4 (by norm_num) (by norm_num)
-  have hscale6 : (175 / 48 : ℝ) ^ 6 < (13 / 5 : ℝ) * Real.pi ^ 6 := by
-    nlinarith [show (175 / 48 : ℝ) ^ 6 < (13 / 5 : ℝ) * (3.1415 : ℝ) ^ 6 by norm_num]
+  have hscale6 : (175 / 48 : ℝ) ^ (6 : ℕ) < (13 / 5 : ℝ) * Real.pi ^ (6 : ℕ) := by
+    nlinarith [show (175 / 48 : ℝ) ^ (6 : ℕ) < (13 / 5 : ℝ) * (3.1415 : ℝ) ^ (6 : ℕ) by norm_num]
   have hdiff : (4 : ℝ) < (175 / 48 - Real.pi) * d := by
     nlinarith [Real.pi_lt_d4]
   have hextra : Real.exp (-((175 / 48 - Real.pi) * d)) < (1 / 54 : ℝ) := by
     exact (Real.exp_lt_exp.mpr (by linarith)).trans exp_neg_four_lt_oneFiftyFourth_scale175Over48
-  have hbase : (175 / 48 : ℝ) ^ 6 * Real.exp (-(175 / 48 : ℝ) * d) <
-      (1 / 20 : ℝ) * Real.pi ^ 6 * Real.exp (-Real.pi * d) := by
+  have hbase : (175 / 48 : ℝ) ^ (6 : ℕ) * Real.exp (-(175 / 48 : ℝ) * d) <
+      (1 / 20 : ℝ) * Real.pi ^ (6 : ℕ) * Real.exp (-Real.pi * d) := by
     rw [show -(175 / 48 : ℝ) * d =
         -Real.pi * d + -((175 / 48 - Real.pi) * d) by ring,
       Real.exp_add]
@@ -58,7 +58,7 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_oneTwentieth_of_175Over48_le
     {n : ℕ} (hn : 3 ≤ n) {A B : ℝ} (hA : (175 / 48 : ℝ) ≤ A)
     (hBA : B = A - 3 / 2) :
     thetaCuspLikelihoodAtomSixthScoreMass n A B ≤
-      (3 / 20 : ℝ) * Real.pi ^ 6 * thetaCuspReflectionJetTailWeight 6 (n - 2) := by
+      (3 / 20 : ℝ) * Real.pi ^ (6 : ℕ) * thetaCuspReflectionJetTailWeight 6 (n - 2) := by
   let d := thetaCuspLikelihoodGap n
   have hnR : (3 : ℝ) ≤ n := by exact_mod_cast hn
   have hd : 8 ≤ d := by
@@ -84,7 +84,7 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_oneTwentieth_of_175Over48_le
   have hrayPoly := thetaLikelihoodSixthScoreRayTransformPolynomial_le_two_pow hr0 hr hy
   have hrayPoly' :
       thetaLikelihoodSixthScoreRayTransformPolynomial (A / B) (A * d - 9) ≤
-        2 * (A * d) ^ 6 := by
+        2 * (A * d) ^ (6 : ℕ) := by
     convert hrayPoly using 1
     ring
   have hexp :
@@ -96,16 +96,16 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_oneTwentieth_of_175Over48_le
   have hpoint :
       thetaCuspLikelihoodAtomWeight n *
           (thetaLikelihoodSixthScore (A * d) * Real.exp (-(B * d))) ≤
-        (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := by
+        (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
     unfold thetaCuspLikelihoodAtomWeight
     calc
-      _ ≤ Real.exp (-(3 / 2 : ℝ) * d) * (n : ℝ) ^ 4 *
-          ((A * d) ^ 6 * Real.exp (-(B * d))) := by gcongr
+      _ ≤ Real.exp (-(3 / 2 : ℝ) * d) * (n : ℝ) ^ (4 : ℕ) *
+          ((A * d) ^ (6 : ℕ) * Real.exp (-(B * d))) := by gcongr
       _ = _ := by
         rw [mul_pow]
-        rw [show Real.exp (-(3 / 2 : ℝ) * d) * (n : ℝ) ^ 4 *
-            (A ^ 6 * d ^ 6 * Real.exp (-(B * d))) =
-          (n : ℝ) ^ 4 * A ^ 6 * d ^ 6 *
+        rw [show Real.exp (-(3 / 2 : ℝ) * d) * (n : ℝ) ^ (4 : ℕ) *
+            (A ^ (6 : ℕ) * d ^ (6 : ℕ) * Real.exp (-(B * d))) =
+          (n : ℝ) ^ (4 : ℕ) * A ^ (6 : ℕ) * d ^ (6 : ℕ) *
             (Real.exp (-(3 / 2 : ℝ) * d) * Real.exp (-(B * d))) by ring,
           hexp]
         ring
@@ -113,25 +113,25 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_oneTwentieth_of_175Over48_le
       thetaCuspLikelihoodRayWeight n *
           (Real.exp (-(B * d)) / B *
             thetaLikelihoodSixthScoreRayTransformPolynomial (A / B) (A * d - 9)) ≤
-        2 * (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := by
-    have hnd : (n : ℝ) ^ 2 * d ≤ (n : ℝ) ^ 4 := by
+        2 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
+    have hnd : (n : ℝ) ^ (2 : ℕ) * d ≤ (n : ℝ) ^ (4 : ℕ) := by
       dsimp [d, thetaCuspLikelihoodGap]
       nlinarith [sq_nonneg (n : ℝ)]
     unfold thetaCuspLikelihoodRayWeight
     calc
-      _ ≤ Real.exp (-(3 / 2 : ℝ) * d) * (3 / 2 : ℝ) * (n : ℝ) ^ 2 * d *
-          (Real.exp (-(B * d)) / B * (2 * (A * d) ^ 6)) := by gcongr
-      _ = (3 / B) * ((n : ℝ) ^ 2 * d) * d ^ 6 *
-          (A ^ 6 * Real.exp (-A * d)) := by
+      _ ≤ Real.exp (-(3 / 2 : ℝ) * d) * (3 / 2 : ℝ) * (n : ℝ) ^ (2 : ℕ) * d *
+          (Real.exp (-(B * d)) / B * (2 * (A * d) ^ (6 : ℕ))) := by gcongr
+      _ = (3 / B) * ((n : ℝ) ^ (2 : ℕ) * d) * d ^ (6 : ℕ) *
+          (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
         rw [mul_pow]
         rw [show Real.exp (-(3 / 2 : ℝ) * d) * (3 / 2 : ℝ) *
-            (n : ℝ) ^ 2 * d *
-              (Real.exp (-(B * d)) / B * (2 * (A ^ 6 * d ^ 6))) =
-          (3 / B) * ((n : ℝ) ^ 2 * d) * d ^ 6 * A ^ 6 *
+            (n : ℝ) ^ (2 : ℕ) * d *
+              (Real.exp (-(B * d)) / B * (2 * (A ^ (6 : ℕ) * d ^ (6 : ℕ)))) =
+          (3 / B) * ((n : ℝ) ^ (2 : ℕ) * d) * d ^ (6 : ℕ) * A ^ (6 : ℕ) *
             (Real.exp (-(3 / 2 : ℝ) * d) * Real.exp (-(B * d))) by ring,
           hexp]
         ring
-      _ ≤ 2 * (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := by
+      _ ≤ 2 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
         have hthree : 3 / B < 2 := by
           apply (div_lt_iff₀ hB).2
           linarith
@@ -147,13 +147,13 @@ theorem thetaCuspLikelihoodAtomSixthScoreMass_le_oneTwentieth_of_175Over48_le
         thetaCuspLikelihoodRayWeight n *
           (Real.exp (-(B * d)) / B *
             thetaLikelihoodSixthScoreRayTransformPolynomial (A / B) (A * d - 9)) ≤
-        3 * (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := by
+        3 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := by
     nlinarith
   calc
-    _ ≤ 3 * (n : ℝ) ^ 4 * d ^ 6 * (A ^ 6 * Real.exp (-A * d)) := hsum
-    _ ≤ 3 * (n : ℝ) ^ 4 * d ^ 6 *
-        ((1 / 20 : ℝ) * Real.pi ^ 6 * Real.exp (-Real.pi * d)) := by gcongr
-    _ = (3 / 20 : ℝ) * Real.pi ^ 6 *
+    _ ≤ 3 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) * (A ^ (6 : ℕ) * Real.exp (-A * d)) := hsum
+    _ ≤ 3 * (n : ℝ) ^ (4 : ℕ) * d ^ (6 : ℕ) *
+        ((1 / 20 : ℝ) * Real.pi ^ (6 : ℕ) * Real.exp (-Real.pi * d)) := by gcongr
+    _ = (3 / 20 : ℝ) * Real.pi ^ (6 : ℕ) *
         thetaCuspReflectionJetTailWeight 6 (n - 2) := by
       unfold thetaCuspReflectionJetTailWeight
       have hnsub : n - 2 + 2 = n := by omega
@@ -169,35 +169,35 @@ theorem tsum_thetaCuspLikelihoodStableAtomSixthScoreMass_lt_oneHalf_of_175Over48
     (Real.pi_lt_d4.trans (by norm_num : (3.1416 : ℝ) < 175 / 48)).le.trans hA
   have hs := summable_thetaCuspLikelihoodStableAtomSixthScoreMass hApi hBA
   have hw : Summable (fun k : ℕ =>
-      ((3 / 20 : ℝ) * Real.pi ^ 6) * thetaCuspReflectionJetTailWeight 6 (k + 1)) :=
+      ((3 / 20 : ℝ) * Real.pi ^ (6 : ℕ)) * thetaCuspReflectionJetTailWeight 6 (k + 1)) :=
     ((summable_nat_add_iff 1).2 (summable_thetaCuspReflectionJetTailWeight 6)).mul_left _
   have hsum :
       (∑' k : ℕ, thetaCuspLikelihoodAtomSixthScoreMass (k + 3) A B) ≤
-        (1 / 1998 : ℝ) * Real.pi ^ 6 := by
+        (1 / 1998 : ℝ) * Real.pi ^ (6 : ℕ) := by
     calc
       (∑' k : ℕ, thetaCuspLikelihoodAtomSixthScoreMass (k + 3) A B) ≤
-          ∑' k : ℕ, ((3 / 20 : ℝ) * Real.pi ^ 6) *
+          ∑' k : ℕ, ((3 / 20 : ℝ) * Real.pi ^ (6 : ℕ)) *
             thetaCuspReflectionJetTailWeight 6 (k + 1) := by
         apply Summable.tsum_le_tsum _ hs hw
         intro k
         simpa only [show k + 3 - 2 = k + 1 by omega] using
           thetaCuspLikelihoodAtomSixthScoreMass_le_oneTwentieth_of_175Over48_le
             (n := k + 3) (by omega) hA hBA
-      _ = ((3 / 20 : ℝ) * Real.pi ^ 6) *
+      _ = ((3 / 20 : ℝ) * Real.pi ^ (6 : ℕ)) *
           (∑' k : ℕ, thetaCuspReflectionJetTailWeight 6 (k + 1)) := by
         rw [tsum_mul_left]
-      _ ≤ ((3 / 20 : ℝ) * Real.pi ^ 6) * (10 / 2997 : ℝ) := by
+      _ ≤ ((3 / 20 : ℝ) * Real.pi ^ (6 : ℕ)) * (10 / 2997 : ℝ) := by
         gcongr
         exact tsum_thetaCuspReflectionJetTailWeight_six_tail_le
-      _ = (1 / 1998 : ℝ) * Real.pi ^ 6 := by ring
-  have hpi2 : Real.pi ^ 2 < (987 / 100 : ℝ) := by
+      _ = (1 / 1998 : ℝ) * Real.pi ^ (6 : ℕ) := by ring
+  have hpi2 : Real.pi ^ (2 : ℕ) < (987 / 100 : ℝ) := by
     nlinarith [Real.pi_pos, Real.pi_lt_d4]
   have hpow :=
     pow_lt_pow_left₀ hpi2 (sq_nonneg Real.pi) (by norm_num : (3 : ℕ) ≠ 0)
-  have hpi6 : Real.pi ^ 6 < (970 : ℝ) := by
+  have hpi6 : Real.pi ^ (6 : ℕ) < (970 : ℝ) := by
     calc
-      Real.pi ^ 6 = (Real.pi ^ 2) ^ 3 := by ring
-      _ < (987 / 100 : ℝ) ^ 3 := hpow
+      Real.pi ^ (6 : ℕ) = (Real.pi ^ (2 : ℕ)) ^ (3 : ℕ) := by ring
+      _ < (987 / 100 : ℝ) ^ (3 : ℕ) := hpow
       _ < 970 := by norm_num
   nlinarith
 

@@ -30,27 +30,27 @@ theorem exists_repr_of_mem_adjoin_sqrt {δ α : L} {c : F} (hsq : α * α = alge
   rw [Algebra.adjoin_singleton_eq_range_aeval] at hmem
   obtain ⟨p, hp⟩ := hmem
   have hpa : Polynomial.aeval α p = δ := hp
-  have hmonic : (Polynomial.X ^ 2 - Polynomial.C c : Polynomial F).Monic := by
+  have hmonic : (Polynomial.X ^ (2 : ℕ) - Polynomial.C c : Polynomial F).Monic := by
     refine (Polynomial.monic_X_pow 2).sub_of_left ?_
     refine lt_of_le_of_lt Polynomial.degree_C_le ?_
     rw [Polynomial.degree_X_pow]
     exact WithBot.coe_lt_coe.2 (by norm_num)
-  have hgα : Polynomial.aeval α (Polynomial.X ^ 2 - Polynomial.C c : Polynomial F) = 0 := by
+  have hgα : Polynomial.aeval α (Polynomial.X ^ (2 : ℕ) - Polynomial.C c : Polynomial F) = 0 := by
     rw [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, pow_two, hsq, sub_self]
-  have hred : Polynomial.aeval α (p %ₘ (Polynomial.X ^ 2 - Polynomial.C c)) =
+  have hred : Polynomial.aeval α (p %ₘ (Polynomial.X ^ (2 : ℕ) - Polynomial.C c)) =
       Polynomial.aeval α p :=
     Polynomial.aeval_modByMonic_eq_self_of_root hgα
-  have hdegg : (Polynomial.X ^ 2 - Polynomial.C c : Polynomial F).natDegree = 2 := by
+  have hdegg : (Polynomial.X ^ (2 : ℕ) - Polynomial.C c : Polynomial F).natDegree = 2 := by
     rw [Polynomial.natDegree_sub_C, Polynomial.natDegree_X_pow]
-  have hdeg : (p %ₘ (Polynomial.X ^ 2 - Polynomial.C c)).natDegree ≤ 1 := by
+  have hdeg : (p %ₘ (Polynomial.X ^ (2 : ℕ) - Polynomial.C c)).natDegree ≤ 1 := by
     have h := Polynomial.natDegree_modByMonic_lt p hmonic (by
       intro hcon
       rw [hcon, Polynomial.natDegree_one] at hdegg
       exact absurd hdegg (by norm_num))
     rw [hdegg] at h
     omega
-  refine ⟨(p %ₘ (Polynomial.X ^ 2 - Polynomial.C c)).coeff 0,
-    (p %ₘ (Polynomial.X ^ 2 - Polynomial.C c)).coeff 1, ?_⟩
+  refine ⟨(p %ₘ (Polynomial.X ^ (2 : ℕ) - Polynomial.C c)).coeff 0,
+    (p %ₘ (Polynomial.X ^ (2 : ℕ) - Polynomial.C c)).coeff 1, ?_⟩
   rw [← hpa, ← hred]
   conv_lhs => rw [Polynomial.eq_X_add_C_of_natDegree_le_one hdeg]
   rw [map_add, map_mul, Polynomial.aeval_C, Polynomial.aeval_C, Polynomial.aeval_X]

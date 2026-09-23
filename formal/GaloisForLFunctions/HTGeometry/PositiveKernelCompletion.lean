@@ -178,9 +178,9 @@ theorem positiveKernelPreInner_null_left (K : PositiveKernelData I B) {x : I →
   let c : B := M.inner y y
   change M.inner x x = 0 at hxx
   by_contra hd
-  have hdpos : 0 < ‖d‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hd)
+  have hdpos : 0 < ‖d‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hd)
   have hc0 : 0 ≤ ‖c‖ := norm_nonneg c
-  let r : ℝ := ‖d‖ ^ 2 / (‖c‖ + 1)
+  let r : ℝ := ‖d‖ ^ (2 : ℕ) / (‖c‖ + 1)
   have hr : 0 < r := div_pos hdpos (by positivity)
   let z : I →₀ B := M.rmul x d - (r : ℂ) • y
   have hzpos : 0 ≤ M.inner z z := positiveKernelPreInner_self_nonneg K z
@@ -188,7 +188,7 @@ theorem positiveKernelPreInner_null_left (K : PositiveKernelData I B) {x : I →
       M.inner (q • u) v = star q • M.inner u v := by
     rw [← M.star_inner, M.inner_smul_right, star_smul, M.star_inner]
   have hform : M.inner z z =
-      (r ^ 2 : ℝ) • c - (2 * r : ℝ) • (star d * d) := by
+      (r ^ (2 : ℕ) : ℝ) • c - (2 * r : ℝ) • (star d * d) := by
     dsimp only [z]
     rw [M.inner_sub_left, M.inner_sub_right, M.inner_sub_right]
     simp_rw [M.inner_rmul_left, M.inner_rmul_right,
@@ -207,28 +207,28 @@ theorem positiveKernelPreInner_null_left (K : PositiveKernelData I B) {x : I →
     simp only [mul_zero, mul_smul_comm, smul_mul_assoc]
     push_cast
     module
-  have hle : (2 * r : ℝ) • (star d * d) ≤ (r ^ 2 : ℝ) • c := by
+  have hle : (2 * r : ℝ) • (star d * d) ≤ (r ^ (2 : ℕ) : ℝ) • c := by
     rw [hform] at hzpos
     exact sub_nonneg.mp hzpos
   have hleft : 0 ≤ (2 * r : ℝ) • (star d * d) :=
     smul_nonneg (by positivity) (star_mul_self_nonneg d)
   have hnorm := CStarAlgebra.norm_le_norm_of_nonneg_of_le hleft hle
-  have hstar : ‖star d * d‖ = ‖d‖ ^ 2 := by
+  have hstar : ‖star d * d‖ = ‖d‖ ^ (2 : ℕ) := by
     rw [CStarRing.norm_star_mul_self]
     ring
   rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
     abs_of_pos (by positivity : 0 < 2 * r), abs_of_pos (sq_pos_of_pos hr), hstar] at hnorm
-  have hrv : r * ‖c‖ < ‖d‖ ^ 2 := by
+  have hrv : r * ‖c‖ < ‖d‖ ^ (2 : ℕ) := by
     dsimp [r]
     have hv : ‖c‖ / (‖c‖ + 1) < 1 := by
       rw [div_lt_one (by positivity)]
       linarith
     rw [div_mul_eq_mul_div]
     calc
-      ‖d‖ ^ 2 * ‖c‖ / (‖c‖ + 1) = ‖d‖ ^ 2 * (‖c‖ / (‖c‖ + 1)) := by ring
-      _ < ‖d‖ ^ 2 * 1 := mul_lt_mul_of_pos_left hv hdpos
-      _ = ‖d‖ ^ 2 := mul_one _
-  have hbound : 2 * ‖d‖ ^ 2 ≤ r * ‖c‖ := by
+      ‖d‖ ^ (2 : ℕ) * ‖c‖ / (‖c‖ + 1) = ‖d‖ ^ (2 : ℕ) * (‖c‖ / (‖c‖ + 1)) := by ring
+      _ < ‖d‖ ^ (2 : ℕ) * 1 := mul_lt_mul_of_pos_left hv hdpos
+      _ = ‖d‖ ^ (2 : ℕ) := mul_one _
+  have hbound : 2 * ‖d‖ ^ (2 : ℕ) ≤ r * ‖c‖ := by
     nlinarith [hnorm]
   nlinarith
 
@@ -640,8 +640,8 @@ theorem norm_positiveKernelSeparated_op_smul_le (b : Bᵐᵒᵖ) (x : PositiveKe
                 (A := Bᵐᵒᵖ) (a := b) (x := x) (y := x)]
     _ ≤ ‖b‖ * ‖⟪x, x⟫_Bᵐᵒᵖ‖ * ‖star b‖ := by
           exact (norm_mul_le _ _).trans (mul_le_mul_of_nonneg_right (norm_mul_le _ _) (norm_nonneg _))
-    _ = ‖b‖ ^ 2 * ‖x‖ ^ 2 := by
-          have hxnorm : ‖⟪x, x⟫_Bᵐᵒᵖ‖ = ‖x‖ ^ 2 :=
+    _ = ‖b‖ ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) := by
+          have hxnorm : ‖⟪x, x⟫_Bᵐᵒᵖ‖ = ‖x‖ ^ (2 : ℕ) :=
             (CStarModule.norm_sq_eq (A := Bᵐᵒᵖ) (x := x)).symm
           rw [norm_star, hxnorm]
           ring

@@ -8,8 +8,8 @@ threshold: exceeding the threshold by `kappa` forces a deviation of at least `ka
 mean.  This is the form a moment calculation delivers, where the mean is estimated from above and
 the variance from above, and both bounds are used without computing either exactly.
 
-At collision scale the two bounds `2/D` and `96/D^3` at deviation `kappa/D` give the tail
-`96/(kappa^2 D)`.
+At collision scale the two bounds `2/D` and `96/D^(3 : ℕ)` at deviation `kappa/D` give the tail
+`96/(kappa^(2 : ℕ) D)`.
 -/
 
 open MeasureTheory ProbabilityTheory

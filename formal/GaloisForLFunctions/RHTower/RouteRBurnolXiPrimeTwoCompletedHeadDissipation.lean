@@ -35,9 +35,9 @@ This estimate is independent of the horizontal position of the divisor. -/
 theorem burnolCartierDividedShiftHeadFlux_lt_half_at_xiDivisor
     (rho : XiDivisorSupport) :
     burnolCartierDividedShiftHeadFlux (rho : ℂ) < 1 / 2 := by
-  have hheight : (41 / 2 : ℝ) < (rho : ℂ).im ^ 2 :=
+  have hheight : (41 / 2 : ℝ) < (rho : ℂ).im ^ (2 : ℕ) :=
     xiDivisorSupport_fortyOne_div_two_lt_im_sq rho
-  have hnormSq : 2 < ‖(1 : ℂ) - (rho : ℂ)‖ ^ 2 := by
+  have hnormSq : 2 < ‖(1 : ℂ) - (rho : ℂ)‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im,
       zero_sub]
@@ -50,10 +50,10 @@ theorem burnolCartierDividedShiftHeadFlux_lt_half_at_xiDivisor
       simpa using this.symm
     rw [him] at hheight
     norm_num at hheight
-  have hinvSq : ‖((1 : ℂ) - (rho : ℂ))⁻¹‖ ^ 2 < 1 / 2 := by
+  have hinvSq : ‖((1 : ℂ) - (rho : ℂ))⁻¹‖ ^ (2 : ℕ) < 1 / 2 := by
     rw [norm_inv]
     have hcancel :
-        ‖(1 : ℂ) - (rho : ℂ)‖⁻¹ ^ 2 * ‖(1 : ℂ) - (rho : ℂ)‖ ^ 2 = 1 := by
+        ‖(1 : ℂ) - (rho : ℂ)‖⁻¹ ^ (2 : ℕ) * ‖(1 : ℂ) - (rho : ℂ)‖ ^ (2 : ℕ) = 1 := by
       rw [← mul_pow, inv_mul_cancel₀ (ne_of_gt hnormPos), one_pow]
     nlinarith [hcancel, hnormSq, sq_nonneg ‖(1 : ℂ) - (rho : ℂ)‖⁻¹]
   unfold burnolCartierDividedShiftHeadFlux

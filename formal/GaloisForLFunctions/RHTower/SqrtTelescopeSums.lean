@@ -23,7 +23,7 @@ theorem sum_inv_sqrt_le (N : ℕ) :
     linarith [ih, hstep]
 
 theorem inv_sqrt_cube_le_telescope {r : ℕ} (hr : 2 ≤ r) :
-    1 / Real.sqrt ((r : ℝ) ^ 3)
+    1 / Real.sqrt ((r : ℝ) ^ (3 : ℕ))
       ≤ 2 * (1 / Real.sqrt ((r - 1 : ℕ) : ℝ) - 1 / Real.sqrt r) := by
   have hr0 : (0 : ℝ) < (r : ℝ) := by
     have : (0 : ℕ) < r := by omega
@@ -36,9 +36,9 @@ theorem inv_sqrt_cube_le_telescope {r : ℕ} (hr : 2 ≤ r) :
   have hle : Real.sqrt ((r - 1 : ℕ) : ℝ) ≤ Real.sqrt r := by
     refine Real.sqrt_le_sqrt ?_
     exact_mod_cast Nat.sub_le r 1
-  have hsq : Real.sqrt ((r - 1 : ℕ) : ℝ) ^ 2 = ((r - 1 : ℕ) : ℝ) :=
+  have hsq : Real.sqrt ((r - 1 : ℕ) : ℝ) ^ (2 : ℕ) = ((r - 1 : ℕ) : ℝ) :=
     Real.sq_sqrt hr1.le
-  have hsqr : Real.sqrt (r : ℝ) ^ 2 = (r : ℝ) := Real.sq_sqrt hr0.le
+  have hsqr : Real.sqrt (r : ℝ) ^ (2 : ℕ) = (r : ℝ) := Real.sq_sqrt hr0.le
   have hdiff : (r : ℝ) - ((r - 1 : ℕ) : ℝ) = 1 := by
     have hc : ((r - 1 : ℕ) : ℝ) = (r : ℝ) - 1 := by
       have h1 : (1 : ℕ) ≤ r := by omega
@@ -46,14 +46,14 @@ theorem inv_sqrt_cube_le_telescope {r : ℕ} (hr : 2 ≤ r) :
       ring
     rw [hc]
     ring
-  have hcube : Real.sqrt ((r : ℝ) ^ 3) = (r : ℝ) * Real.sqrt r := by
-    rw [show ((r : ℝ)) ^ 3 = (r : ℝ) ^ 2 * (r : ℝ) by ring, Real.sqrt_mul (by positivity),
+  have hcube : Real.sqrt ((r : ℝ) ^ (3 : ℕ)) = (r : ℝ) * Real.sqrt r := by
+    rw [show ((r : ℝ)) ^ (3 : ℕ) = (r : ℝ) ^ (2 : ℕ) * (r : ℝ) by ring, Real.sqrt_mul (by positivity),
       Real.sqrt_sq hr0.le]
   have hkey : (Real.sqrt r - Real.sqrt ((r - 1 : ℕ) : ℝ))
       * (Real.sqrt r + Real.sqrt ((r - 1 : ℕ) : ℝ)) = 1 := by
     have h : (Real.sqrt r - Real.sqrt ((r - 1 : ℕ) : ℝ))
         * (Real.sqrt r + Real.sqrt ((r - 1 : ℕ) : ℝ))
-        = Real.sqrt r ^ 2 - Real.sqrt ((r - 1 : ℕ) : ℝ) ^ 2 := by ring
+        = Real.sqrt r ^ (2 : ℕ) - Real.sqrt ((r - 1 : ℕ) : ℝ) ^ (2 : ℕ) := by ring
     rw [h, hsq, hsqr, hdiff]
   have hrhs : 2 * (1 / Real.sqrt ((r - 1 : ℕ) : ℝ) - 1 / Real.sqrt r)
       = 2 * (Real.sqrt r - Real.sqrt ((r - 1 : ℕ) : ℝ))
@@ -75,7 +75,7 @@ theorem inv_sqrt_cube_le_telescope {r : ℕ} (hr : 2 ≤ r) :
   nlinarith [h1, h2, hsq, hsqr]
 
 theorem sum_inv_sqrt_cube_telescope {R : ℕ} (hR : 2 ≤ R) (N : ℕ) (hN : R - 1 ≤ N) :
-    ∑ r ∈ Finset.Icc R N, 1 / Real.sqrt ((r : ℝ) ^ 3)
+    ∑ r ∈ Finset.Icc R N, 1 / Real.sqrt ((r : ℝ) ^ (3 : ℕ))
       ≤ 2 / Real.sqrt ((R - 1 : ℕ) : ℝ) - 2 / Real.sqrt (N : ℝ) := by
   induction N, hN using Nat.le_induction with
   | base =>
@@ -88,7 +88,7 @@ theorem sum_inv_sqrt_cube_telescope {R : ℕ} (hR : 2 ≤ R) (N : ℕ) (hN : R -
     have hstep := inv_sqrt_cube_le_telescope (r := N + 1) (by omega)
     have hcast : ((N + 1 - 1 : ℕ) : ℝ) = (N : ℝ) := by simp
     rw [hcast] at hstep
-    have hstep' : 1 / Real.sqrt (((N + 1 : ℕ) : ℝ) ^ 3)
+    have hstep' : 1 / Real.sqrt (((N + 1 : ℕ) : ℝ) ^ (3 : ℕ))
         ≤ 2 / Real.sqrt (N : ℝ) - 2 / Real.sqrt (((N + 1 : ℕ)) : ℝ) := by
       rw [mul_sub, mul_one_div, mul_one_div] at hstep
       exact hstep
@@ -96,7 +96,7 @@ theorem sum_inv_sqrt_cube_telescope {R : ℕ} (hR : 2 ≤ R) (N : ℕ) (hN : R -
 
 /-- The tail sum of `r^{-3/2}`. -/
 theorem sum_inv_sqrt_cube_le {R : ℕ} (hR : 2 ≤ R) (N : ℕ) (hN : R - 1 ≤ N) :
-    ∑ r ∈ Finset.Icc R N, 1 / Real.sqrt ((r : ℝ) ^ 3)
+    ∑ r ∈ Finset.Icc R N, 1 / Real.sqrt ((r : ℝ) ^ (3 : ℕ))
       ≤ 2 / Real.sqrt ((R - 1 : ℕ) : ℝ) := by
   have h := sum_inv_sqrt_cube_telescope hR N hN
   have hpos : (0 : ℝ) ≤ 2 / Real.sqrt (N : ℝ) := by positivity

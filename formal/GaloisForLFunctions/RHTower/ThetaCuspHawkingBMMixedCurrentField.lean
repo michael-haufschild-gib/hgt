@@ -20,15 +20,15 @@ def orbitCurrent (q : XiZeroCopy) (branch : Bool) (a : ℂ) (z : Point) (k : Fin
 
 private def angular0 (q : XiZeroCopy) (branch : Bool) (z : Point) (k : Fin 2) : ℂ :=
   let s := physicalRate q branch
-  (5*s^2+15*s+4)/4*fullSquareCovector q k z
+  (5*s^(2 : ℕ)+15*s+4)/4*fullSquareCovector q k z
 
 private def angular1 (q : XiZeroCopy) (branch : Bool) (z : Point) (k : Fin 2) : ℂ :=
   let s := physicalRate q branch
-  s*(s-1)*(s+2)^2/4*fullSquareCovector q k z-
+  s*(s-1)*(s+2)^(2 : ℕ)/4*fullSquareCovector q k z-
     s*(s-1)/4*fullGradientCovector q branch k z
 
 private theorem expansion (q : XiZeroCopy) (branch : Bool) (a : ℂ) (z : Point) (k : Fin 2) :
-    orbitCurrent q branch a z k = fun x => envelope (currentRate q branch) (a^2) x *
+    orbitCurrent q branch a z k = fun x => envelope (currentRate q branch) (a^(2 : ℕ)) x *
       (angular0 q branch z k+((x 1 : ℂ)⁻¹*(x 1 : ℂ)⁻¹)*angular1 q branch z k) := by
   funext x
   rw [currentRate,envelope_double]
@@ -77,8 +77,8 @@ theorem orbitCurrent_derivatives (q : XiZeroCopy) (branch : Bool) (a : ℂ) (z :
         (fullSquareCovector q k z) (fullGradientCovector q branch k z) := by
   have hr : (p.val 1 : ℂ) ≠ 0 := by
     exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
   have h := currentJet_components (physicalRate q branch) (p.val 1)
     (envelope (physicalRate q branch) a p.val) (fullSquareCovector q k z) (fullGradientCovector q branch k z) hr hf
   rw [← orbitCurrent_jet q branch a z k p] at h

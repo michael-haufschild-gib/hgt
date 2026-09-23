@@ -37,7 +37,7 @@ def polyatomicThermalizingEvent (v : CollisionVelocity) (s : CollisionDirection)
 
 /-- The available energy of opposite velocities is their common squared speed. -/
 theorem polyatomicCollisionEnergy_opposite (v : CollisionVelocity) :
-    polyatomicCollisionEnergy v (-v) 0 0 = ‖v‖^2 := by
+    polyatomicCollisionEnergy v (-v) 0 0 = ‖v‖^(2 : ℕ) := by
   simp only [polyatomicCollisionEnergy, NNReal.coe_zero, add_zero, sub_neg_eq_add]
   rw [← two_smul ℝ v, norm_smul]
   norm_num
@@ -49,7 +49,7 @@ theorem polyatomicQuadraticTest_thermalizing
     (Q : QuadraticForm ℝ CollisionVelocity) (mass energy : ℝ)
     (momentum v : CollisionVelocity) (s : CollisionDirection) :
     polyatomicTestDefect (polyatomicQuadraticTest Q mass energy momentum)
-      (polyatomicThermalizingEvent v s) = energy * ‖v‖^2 - 2 * Q v := by
+      (polyatomicThermalizingEvent v s) = energy * ‖v‖^(2 : ℕ) - 2 * Q v := by
   simp [polyatomicTestDefect, polyatomicQuadraticTest, polyatomicThermalizingEvent,
     polyatomicVelocitiesOut, polyatomicRelativeOut, polyatomicInternalOut,
     polyatomicCollisionEnergy_opposite, Q.map_neg]
@@ -61,7 +61,7 @@ theorem polyatomicQuadraticTest_invariant_iff
     (Q : QuadraticForm ℝ CollisionVelocity) (mass energy : ℝ)
     (momentum : CollisionVelocity) (s : CollisionDirection) :
     (∀ event, polyatomicTestDefect (polyatomicQuadraticTest Q mass energy momentum) event = 0) ↔
-      ∀ v, Q v = energy * (‖v‖^2 / 2) := by
+      ∀ v, Q v = energy * (‖v‖^(2 : ℕ) / 2) := by
   constructor
   · intro h v
     have hv := h (polyatomicThermalizingEvent v s)
@@ -93,7 +93,7 @@ theorem polyatomicQuadraticTest_violation_iff
     (Q : QuadraticForm ℝ CollisionVelocity) (mass energy : ℝ)
     (momentum : CollisionVelocity) (s : CollisionDirection) :
     (∃ event, polyatomicTestDefect (polyatomicQuadraticTest Q mass energy momentum) event ≠ 0) ↔
-      ∃ v, Q v ≠ energy * (‖v‖^2 / 2) := by
+      ∃ v, Q v ≠ energy * (‖v‖^(2 : ℕ) / 2) := by
   simpa only [not_forall] using
     not_congr (polyatomicQuadraticTest_invariant_iff Q mass energy momentum s)
 

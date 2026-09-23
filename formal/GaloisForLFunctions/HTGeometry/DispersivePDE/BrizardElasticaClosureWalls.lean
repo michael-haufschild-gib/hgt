@@ -35,7 +35,7 @@ theorem negative_speedIntegral_iff_classical (m : NegativeModulus) :
   have hm : 1 - (m : ℝ) ≠ 0 := by linarith [hm0]
   have hs : Real.sqrt (1 - (m : ℝ)) ≠ 0 :=
     ne_of_gt (Real.sqrt_pos.mpr (by linarith [hm0]))
-  have hs2 : Real.sqrt (1 - (m : ℝ)) ^ 2 = 1 - (m : ℝ) :=
+  have hs2 : Real.sqrt (1 - (m : ℝ)) ^ (2 : ℕ) = 1 - (m : ℝ) :=
     Real.sq_sqrt (by linarith [hm0])
   rw [completeEllipticE_negative_transform_raw,
     completeEllipticK_negative_transform_raw, extendedToClassical]

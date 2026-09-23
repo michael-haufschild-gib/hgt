@@ -23,37 +23,37 @@ noncomputable section
 
 private theorem frostman_profile_deficit_le_phase_sq {q θ : ℝ} (hq : 1 < q) :
     1 - ccmFrostmanPoissonProfile q θ ≤
-      (q / (q - 1)^2) * ‖1 - Complex.exp ((θ : ℂ) * I)‖ ^ 2 := by
-  have hD : 0 < q ^ 2 - 2 * q * Real.cos θ + 1 :=
+      (q / (q - 1)^(2 : ℕ)) * ‖1 - Complex.exp ((θ : ℂ) * I)‖ ^ (2 : ℕ) := by
+  have hD : 0 < q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1 :=
     ccmFrostman_denominator_pos hq
-  have hbase : 0 < (q - 1)^2 := sq_pos_of_pos (sub_pos.mpr hq)
-  have hbasele : (q - 1)^2 ≤ q ^ 2 - 2 * q * Real.cos θ + 1 := by
+  have hbase : 0 < (q - 1)^(2 : ℕ) := sq_pos_of_pos (sub_pos.mpr hq)
+  have hbasele : (q - 1)^(2 : ℕ) ≤ q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1 := by
     have hc := Real.cos_le_one θ
     nlinarith
   rw [ccmFrostmanPoissonProfile, Complex.sq_norm, normSq_one_sub_exp_I_mul]
-  have hid : 1 - (q - 1) ^ 2 / (q ^ 2 - 2 * q * Real.cos θ + 1) =
-      q * (2 - 2 * Real.cos θ) / (q ^ 2 - 2 * q * Real.cos θ + 1) := by
+  have hid : 1 - (q - 1) ^ (2 : ℕ) / (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) =
+      q * (2 - 2 * Real.cos θ) / (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) := by
     calc
-      1 - (q - 1) ^ 2 / (q ^ 2 - 2 * q * Real.cos θ + 1) =
-          (q ^ 2 - 2 * q * Real.cos θ + 1) /
-              (q ^ 2 - 2 * q * Real.cos θ + 1) -
-            (q - 1) ^ 2 / (q ^ 2 - 2 * q * Real.cos θ + 1) := by
+      1 - (q - 1) ^ (2 : ℕ) / (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) =
+          (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) /
+              (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) -
+            (q - 1) ^ (2 : ℕ) / (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) := by
               nth_rewrite 1 [← div_self hD.ne']
               rfl
-      _ = ((q ^ 2 - 2 * q * Real.cos θ + 1) - (q - 1) ^ 2) /
-            (q ^ 2 - 2 * q * Real.cos θ + 1) := by
+      _ = ((q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) - (q - 1) ^ (2 : ℕ)) /
+            (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) := by
               exact (sub_div _ _ _).symm
-      _ = q * (2 - 2 * Real.cos θ) / (q ^ 2 - 2 * q * Real.cos θ + 1) := by
+      _ = q * (2 - 2 * Real.cos θ) / (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1) := by
               congr 1
               ring
   rw [hid]
   have hnon : 0 ≤ 2 - 2 * Real.cos θ := by
     linarith [Real.cos_le_one θ]
   calc
-    q * (2 - 2 * Real.cos θ) / (q ^ 2 - 2 * q * Real.cos θ + 1)
-        ≤ q * (2 - 2 * Real.cos θ) / (q - 1)^2 := by
+    q * (2 - 2 * Real.cos θ) / (q ^ (2 : ℕ) - 2 * q * Real.cos θ + 1)
+        ≤ q * (2 - 2 * Real.cos θ) / (q - 1)^(2 : ℕ) := by
           exact (div_le_div_iff₀ hD hbase).mpr (by nlinarith)
-    _ = (q / (q - 1)^2) * (2 - 2 * Real.cos θ) := by ring
+    _ = (q / (q - 1)^(2 : ℕ)) * (2 - 2 * Real.cos θ) := by ring
 
 /-- The Bohr character at the reflected rate is the prime-phase clock. -/
 theorem bohrChar_neg_eq_phaseClock (r t : ℝ) :
@@ -66,7 +66,7 @@ theorem bohrChar_neg_eq_phaseClock (r t : ℝ) :
 /-- A Frostman deficit is quadratically controlled by its literal phase displacement. -/
 theorem frostman_profile_deficit_le_phaseClock_sq {q r t : ℝ} (hq : 1 < q) :
     1 - ccmFrostmanPoissonProfile q (r * t) ≤
-      (q / (q - 1)^2) * ‖HTGeometry.phaseClockValue r t - 1‖ ^ 2 := by
+      (q / (q - 1)^(2 : ℕ)) * ‖HTGeometry.phaseClockValue r t - 1‖ ^ (2 : ℕ) := by
   have hprofile := frostman_profile_deficit_le_phase_sq (θ := r * t) hq
   have hnorm : ‖1 - Complex.exp (((r * t : ℝ) : ℂ) * I)‖ =
       ‖HTGeometry.phaseClockValue r t - 1‖ := by
@@ -84,9 +84,9 @@ theorem exists_late_suzukiCriticalApertureDepthFrostmanSeparation_le
     ∃ t : ℝ, T ≤ t ∧
       suzukiCriticalApertureDepthFrostmanSeparation h a p q t 0 ≤
         ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ /
-          ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^2 +
+          ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^(2 : ℕ) +
           (suzukiCriticalApertureDepthFusionRadius h a q)⁻¹ /
-          ((suzukiCriticalApertureDepthFusionRadius h a q)⁻¹ - 1)^2) * δ^2 := by
+          ((suzukiCriticalApertureDepthFusionRadius h a q)⁻¹ - 1)^(2 : ℕ)) * δ^(2 : ℕ) := by
   let B : Fin 2 → ℝ := fun j =>
     if j = 0 then -(Real.log (p : ℝ) / 2) else -(Real.log (q : ℝ) / 2)
   obtain ⟨t, ht, hpq⟩ := exists_simultaneous_phase_recurrence B hδ T
@@ -101,40 +101,40 @@ theorem exists_late_suzukiCriticalApertureDepthFrostmanSeparation_le
   let qq : ℝ := (suzukiCriticalApertureDepthFusionRadius h a q)⁻¹
   have hqp : 1 < qp := one_lt_inv_suzukiCriticalApertureDepthFusionRadius hh ha p
   have hqq : 1 < qq := one_lt_inv_suzukiCriticalApertureDepthFusionRadius hh ha q
-  have hpsq : ‖HTGeometry.phaseClockValue (Real.log (p : ℝ) / 2) t - 1‖ ^ 2 ≤ δ^2 :=
+  have hpsq : ‖HTGeometry.phaseClockValue (Real.log (p : ℝ) / 2) t - 1‖ ^ (2 : ℕ) ≤ δ^(2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) hδ.le).mpr hpPhase
-  have hqsq : ‖HTGeometry.phaseClockValue (Real.log (q : ℝ) / 2) t - 1‖ ^ 2 ≤ δ^2 :=
+  have hqsq : ‖HTGeometry.phaseClockValue (Real.log (q : ℝ) / 2) t - 1‖ ^ (2 : ℕ) ≤ δ^(2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _) hδ.le).mpr hqPhase
   have hpdef : 1 - suzukiCriticalApertureDepthFrostmanProfile h a t p ≤
-      (qp / (qp - 1)^2) * δ^2 := by
+      (qp / (qp - 1)^(2 : ℕ)) * δ^(2 : ℕ) := by
     rw [suzukiCriticalApertureDepthFrostmanProfile]
     have hprofile := frostman_profile_deficit_le_phaseClock_sq hqp
       (r := Real.log (p : ℝ) / 2) (t := t)
-    have hmul := mul_le_mul_of_nonneg_left hpsq (by positivity : 0 ≤ qp / (qp - 1)^2)
+    have hmul := mul_le_mul_of_nonneg_left hpsq (by positivity : 0 ≤ qp / (qp - 1)^(2 : ℕ))
     calc
       1 - ccmFrostmanPoissonProfile
           (suzukiCriticalApertureDepthFusionRadius h a p)⁻¹
           (t * Real.log (p : ℝ) / 2) =
           1 - ccmFrostmanPoissonProfile qp
             ((Real.log (p : ℝ) / 2) * t) := by simp only [qp]; ring
-      _ ≤ (qp / (qp - 1)^2) *
-          ‖HTGeometry.phaseClockValue (Real.log (p : ℝ) / 2) t - 1‖ ^ 2 := hprofile
-      _ ≤ (qp / (qp - 1)^2) * δ^2 := hmul
+      _ ≤ (qp / (qp - 1)^(2 : ℕ)) *
+          ‖HTGeometry.phaseClockValue (Real.log (p : ℝ) / 2) t - 1‖ ^ (2 : ℕ) := hprofile
+      _ ≤ (qp / (qp - 1)^(2 : ℕ)) * δ^(2 : ℕ) := hmul
   have hqdef : 1 - suzukiCriticalApertureDepthFrostmanProfile h a t q ≤
-      (qq / (qq - 1)^2) * δ^2 := by
+      (qq / (qq - 1)^(2 : ℕ)) * δ^(2 : ℕ) := by
     rw [suzukiCriticalApertureDepthFrostmanProfile]
     have hprofile := frostman_profile_deficit_le_phaseClock_sq hqq
       (r := Real.log (q : ℝ) / 2) (t := t)
-    have hmul := mul_le_mul_of_nonneg_left hqsq (by positivity : 0 ≤ qq / (qq - 1)^2)
+    have hmul := mul_le_mul_of_nonneg_left hqsq (by positivity : 0 ≤ qq / (qq - 1)^(2 : ℕ))
     calc
       1 - ccmFrostmanPoissonProfile
           (suzukiCriticalApertureDepthFusionRadius h a q)⁻¹
           (t * Real.log (q : ℝ) / 2) =
           1 - ccmFrostmanPoissonProfile qq
             ((Real.log (q : ℝ) / 2) * t) := by simp only [qq]; ring
-      _ ≤ (qq / (qq - 1)^2) *
-          ‖HTGeometry.phaseClockValue (Real.log (q : ℝ) / 2) t - 1‖ ^ 2 := hprofile
-      _ ≤ (qq / (qq - 1)^2) * δ^2 := hmul
+      _ ≤ (qq / (qq - 1)^(2 : ℕ)) *
+          ‖HTGeometry.phaseClockValue (Real.log (q : ℝ) / 2) t - 1‖ ^ (2 : ℕ) := hprofile
+      _ ≤ (qq / (qq - 1)^(2 : ℕ)) * δ^(2 : ℕ) := hmul
   rw [suzukiCriticalApertureDepthFrostmanSeparation,
     suzukiCriticalApertureDepthFrostmanPairProfile]
   simp only [sub_zero]
@@ -152,15 +152,15 @@ theorem not_exists_eventual_positive_lowerBound_suzukiCriticalApertureDepthFrost
   rintro ⟨ε, hε, T, hsep⟩
   let C : ℝ :=
     (suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ /
-        ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^2 +
+        ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^(2 : ℕ) +
       (suzukiCriticalApertureDepthFusionRadius h a q)⁻¹ /
-        ((suzukiCriticalApertureDepthFusionRadius h a q)⁻¹ - 1)^2
+        ((suzukiCriticalApertureDepthFusionRadius h a q)⁻¹ - 1)^(2 : ℕ)
   have hCp : 0 ≤ (suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ /
-      ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^2 := by
+      ((suzukiCriticalApertureDepthFusionRadius h a p)⁻¹ - 1)^(2 : ℕ) := by
     have hp := one_lt_inv_suzukiCriticalApertureDepthFusionRadius hh ha p
     positivity
   have hCq : 0 ≤ (suzukiCriticalApertureDepthFusionRadius h a q)⁻¹ /
-      ((suzukiCriticalApertureDepthFusionRadius h a q)⁻¹ - 1)^2 := by
+      ((suzukiCriticalApertureDepthFusionRadius h a q)⁻¹ - 1)^(2 : ℕ) := by
     have hq := one_lt_inv_suzukiCriticalApertureDepthFusionRadius hh ha q
     positivity
   have hC : 0 ≤ C := by dsimp [C]; linarith
@@ -175,9 +175,9 @@ theorem not_exists_eventual_positive_lowerBound_suzukiCriticalApertureDepthFrost
   have hδone : δ ≤ 1 := by
     dsimp [δ]
     exact min_le_left _ _
-  have hsq : δ ^ 2 ≤ δ := by
+  have hsq : δ ^ (2 : ℕ) ≤ δ := by
     nlinarith [mul_self_nonneg (δ - 1)]
-  have hCδsq : C * δ ^ 2 ≤ C * δ :=
+  have hCδsq : C * δ ^ (2 : ℕ) ≤ C * δ :=
     mul_le_mul_of_nonneg_left hsq hC
   have hδfrac : δ ≤ ε / (C + 1) := by
     dsimp [δ]

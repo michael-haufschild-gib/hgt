@@ -8,9 +8,9 @@ Planat--Solé second-level concavity controls an ordinary consecutive-derivative
 determinant of the squared-radius profile. TCD needs the different signed even-jet Hankel
 determinant of the centered reflected product.
 
-The positive even kernel `F(r) = exp (-r^4)` separates them exactly. Its squared-radius profile
-`s(t) = exp (-t^2)` has positive first Laguerre expression and globally strict second-level
-logarithmic concavity. Its centered reflected product is `P(t) = exp (-2t^4)`, whose even jets
+The positive even kernel `F(r) = exp (-r^(4 : ℕ))` separates them exactly. Its squared-radius profile
+`s(t) = exp (-t^(2 : ℕ))` has positive first Laguerre expression and globally strict second-level
+logarithmic concavity. Its centered reflected product is `P(t) = exp (-2t^(4 : ℕ))`, whose even jets
 through order eight are `1, 0, -48, 0, 80640`; hence its signed rank-three determinant is
 `-3760128`.
 
@@ -24,27 +24,27 @@ noncomputable section
 
 /-- Ordinary consecutive-derivative `3 × 3` Hankel determinant. -/
 def derivativeHankelThreeDet (s0 s1 s2 s3 s4 : ℝ) : ℝ :=
-  s0 * s2 * s4 - s0 * s3 ^ 2 - s1 ^ 2 * s4 +
-    2 * s1 * s2 * s3 - s2 ^ 3
+  s0 * s2 * s4 - s0 * s3 ^ (2 : ℕ) - s1 ^ (2 : ℕ) * s4 +
+    2 * s1 * s2 * s3 - s2 ^ (3 : ℕ)
 
 /-- Second-level Laguerre curvature is an ordinary derivative-Hankel determinant. -/
 theorem secondLevelCurvature_eq_mul_derivativeHankelThreeDet
     (s0 s1 s2 s3 s4 : ℝ) :
-    (s1 ^ 2 - s0 * s2) * (s2 ^ 2 - s0 * s4) -
-        (s1 * s2 - s0 * s3) ^ 2 =
+    (s1 ^ (2 : ℕ) - s0 * s2) * (s2 ^ (2 : ℕ) - s0 * s4) -
+        (s1 * s2 - s0 * s3) ^ (2 : ℕ) =
       s0 * derivativeHankelThreeDet s0 s1 s2 s3 s4 := by
   unfold derivativeHankelThreeDet
   ring
 
 private def quarticGaussianReflectedPotentialPolynomial : Polynomial ℝ :=
-  -Polynomial.C 24 * Polynomial.X ^ 2 +
-    Polynomial.C 64 * Polynomial.X ^ 6
+  -Polynomial.C 24 * Polynomial.X ^ (2 : ℕ) +
+    Polynomial.C 64 * Polynomial.X ^ (6 : ℕ)
 
 private def quarticGaussianReflectedPotential (x : ℝ) : ℝ :=
   quarticGaussianReflectedPotentialPolynomial.eval x
 
 private theorem quarticGaussianReflectedPotential_eq (x : ℝ) :
-    quarticGaussianReflectedPotential x = -24 * x ^ 2 + 64 * x ^ 6 := by
+    quarticGaussianReflectedPotential x = -24 * x ^ (2 : ℕ) + 64 * x ^ (6 : ℕ) := by
   simp [quarticGaussianReflectedPotential,
     quarticGaussianReflectedPotentialPolynomial]
 
@@ -81,7 +81,7 @@ private theorem quarticGaussianReflectedProfile_jet_shift (n : ℕ) :
   exact iteratedDeriv_fun_mul
     (by
       rw [show quarticGaussianReflectedPotential =
-          fun x => -24 * x ^ 2 + 64 * x ^ 6 from
+          fun x => -24 * x ^ (2 : ℕ) + 64 * x ^ (6 : ℕ) from
         funext quarticGaussianReflectedPotential_eq]
       fun_prop)
     (by

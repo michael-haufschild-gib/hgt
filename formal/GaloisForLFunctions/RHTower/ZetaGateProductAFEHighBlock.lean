@@ -189,7 +189,7 @@ theorem exists_highBlock_bound_productAFE {R : ℝ} (hR : 0 < R) :
       (by norm_num) one_pos]
     with U hU2 hUe hUM hUerr hUη
   intro d hd hd8 hRd hdU a v ha haU hav hv2 hvU
-  -- consequences of `2^800 ≤ U`; the hypothesis itself is cleared (its numeral is too large for
+  -- consequences of `2^(800 : ℕ) ≤ U`; the hypothesis itself is cleared (its numeral is too large for
   -- the linear-arithmetic preprocessing)
   have hU1 : (1 : ℝ) ≤ U := le_trans (one_le_pow₀ (by norm_num)) hU2
   have hU100 : (256 : ℝ) ≤ U ^ ((1 : ℝ) / 100) := by

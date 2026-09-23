@@ -119,7 +119,7 @@ theorem lgHessian_eq {F : ℂ → ℂ} {p : ℂ × ℂ} (hF : AnalyticAt ℂ F p
 
 /-- **The Hessian determinant is the negative square of the derivative of `F`.** -/
 theorem det_lgHessian {F : ℂ → ℂ} {p : ℂ × ℂ} (hF : AnalyticAt ℂ F p.1) :
-    (lgHessian F p).det = -(deriv F p.1) ^ 2 := by
+    (lgHessian F p).det = -(deriv F p.1) ^ (2 : ℕ) := by
   rw [lgHessian_eq hF, Matrix.det_fin_two_of]
   ring
 

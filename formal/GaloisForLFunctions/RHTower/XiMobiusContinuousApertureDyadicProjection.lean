@@ -9,7 +9,7 @@ The normalized kernel `K(h*a,h*b)/h` is the Gram obtained by averaging the conti
 features over valuation-depth bins of width `h`.  This file formalizes the exact innovation created
 by refining every bin into two halves.
 
-The refinement difference is not merely entrywise nonnegative: it is an actual `ell^2` Gram, both
+The refinement difference is not merely entrywise nonnegative: it is an actual `ell^(2 : ℕ)` Gram, both
 at one prime and after the all-prime completion.  Thus the true aperture metrics increase in
 Loewner order under dyadic refinement.  This is the first genuinely noninvertible infinite-level
 map exposed by the continuous aperture construction; no Xi positivity or RH hypothesis is used.
@@ -270,7 +270,7 @@ private theorem memℓp_two_of_sq_summable_real {f : ℕ → ℝ}
   rw [show ((2 : ENNReal)).toReal = ((2 : ℕ) : ℝ) by simp,
     Real.rpow_natCast, Real.norm_eq_abs, sq_abs]
 
-/-- The local dyadic innovation feature is an actual depth `ell^2` vector. -/
+/-- The local dyadic innovation feature is an actual depth `ell^(2 : ℕ)` vector. -/
 def xiMobiusPrimeContinuousApertureDyadicInnovationFeatureLp
     (h a : ℝ) (p : Nat.Primes) (hh : 0 < h) (ha : 0 < a) :
     lp (fun _ : ℕ => ℝ) 2 :=
@@ -368,7 +368,7 @@ private theorem memℓp_two_of_sq_summable_real_prod
   rw [show ((2 : ENNReal)).toReal = ((2 : ℕ) : ℝ) by simp,
     Real.rpow_natCast, Real.norm_eq_abs, sq_abs]
 
-/-- The completed all-prime dyadic innovation is a genuine direct-sum `ell^2` vector. -/
+/-- The completed all-prime dyadic innovation is a genuine direct-sum `ell^(2 : ℕ)` vector. -/
 def xiMobiusContinuousApertureDyadicInnovationFeatureLp
     (h a : ℝ) (hh : 0 < h) (ha : 0 < a) :
     lp (fun _ : Nat.Primes × ℕ => ℝ) 2 :=

@@ -19,7 +19,7 @@ namespace RHTower
 private lemma near_parent_block {a b c e s : ℝ} (hs : 0 ≤ s)
     (ha : s/16 ≤ a) (hb : s/16 ≤ b) (hab : |a-b| ≤ s/500)
     (hc0 : 0 ≤ c) (he0 : 0 ≤ e) (hc : c ≤ (3/5)*s) (he : e ≤ (3/5)*s) :
-    (a-b-c+e)^2 ≤ a^2+b^2+c^2+e^2 := by
+    (a-b-c+e)^(2 : ℕ) ≤ a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+e^(2 : ℕ) := by
   have hce : |c-e| ≤ (3/5)*s := abs_le.mpr ⟨by linarith,by linarith⟩
   have hprod := mul_le_mul hab hce (abs_nonneg _) (by positivity : 0 ≤ s/500)
   rw [← abs_mul] at hprod
@@ -33,11 +33,11 @@ private lemma separated_blocks :
       (divisorUnsignedDilationChannel M d-
         divisorUnsignedDilationChannel M (p*d)-
         divisorUnsignedDilationChannel M (q*d)+
-        divisorUnsignedDilationChannel M (p*(q*d)))^2 ≤
-      (divisorUnsignedDilationChannel M d)^2+
-        (divisorUnsignedDilationChannel M (p*d))^2+
-        (divisorUnsignedDilationChannel M (q*d))^2+
-        (divisorUnsignedDilationChannel M (p*(q*d)))^2 := by
+        divisorUnsignedDilationChannel M (p*(q*d)))^(2 : ℕ) ≤
+      (divisorUnsignedDilationChannel M d)^(2 : ℕ)+
+        (divisorUnsignedDilationChannel M (p*d))^(2 : ℕ)+
+        (divisorUnsignedDilationChannel M (q*d))^(2 : ℕ)+
+        (divisorUnsignedDilationChannel M (p*(q*d)))^(2 : ℕ) := by
   obtain ⟨T,hT,hmean⟩ := exists_divisorUnsignedDilationChannel_uniform_mean_error
     (1/1000) (by norm_num)
   refine ⟨T,hT,fun M p q d hp hd hq => ?_⟩
@@ -90,10 +90,10 @@ private lemma inactive_insert (M p : ℕ) (P : Finset ℕ) (hp : M ≤ p) :
   unfold mobiusDivisorSelectionEnergy subsetLabelEnergy
   apply sum_congr rfl
   intro R _
-  change (mobiusDivisorSelectionFibre M (insert p P) R)^2 =
-    (mobiusDivisorSelectionFibre M P R)^2
+  change (mobiusDivisorSelectionFibre M (insert p P) R)^(2 : ℕ) =
+    (mobiusDivisorSelectionFibre M P R)^(2 : ℕ)
   have h := mobiusDivisorSelectionFibre_union_inactive M P {p} R (by simpa using hp)
-  simpa only [union_singleton] using congrArg (fun x : ℝ => x^2) h
+  simpa only [union_singleton] using congrArg (fun x : ℝ => x^(2 : ℕ)) h
 
 private lemma separated_pair :
     ∃ T : ℕ, 1 ≤ T ∧ ∀ M p q : ℕ, p.Prime → q.Prime → p ≠ q → T*p ≤ q →

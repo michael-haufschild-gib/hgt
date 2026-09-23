@@ -20,11 +20,11 @@ namespace RHTower.DeletionResidueMartingale
 /-- Exact canonical-resolvent form of one genuine chronological fibre energy. -/
 theorem historyLayer_predictableDrift_norm_sq_eq_canonicalBetaResolvent_fibre_energy
     (l N : ℕ) (hlN : l < N) :
-    ‖historyLayer l (predictableDrift N)‖ ^ 2 =
+    ‖historyLayer l (predictableDrift N)‖ ^ (2 : ℕ) =
       ∑ r ∈ range (clock (l + 1)),
         cellMeasure.real (historyFibre (l + 1) r) *
           (canonicalBetaResolvent N (l + 1) r -
-            canonicalBetaResolvent N l (r % clock l) - signedInnovation l r) ^ 2 := by
+            canonicalBetaResolvent N l (r % clock l) - signedInnovation l r) ^ (2 : ℕ) := by
   rw [historyLayer_predictableDrift_norm_sq_eq_reverse_tail_fibre_energy]
   apply Finset.sum_congr rfl
   intro r hr
@@ -45,13 +45,13 @@ theorem historyLayer_predictableDrift_norm_sq_eq_canonicalBetaResolvent_fibre_en
 finite signed Möbius resolvent difference; no positivity, averaging, or componentwise bound has
 been introduced. -/
 theorem predictableDrift_norm_sq_eq_primePower_canonicalBetaResolvent_energy (N : ℕ) :
-    ‖predictableDrift N‖ ^ 2 =
-      ‖(historySpace 0).starProjection (predictableDrift N)‖ ^ 2 +
+    ‖predictableDrift N‖ ^ (2 : ℕ) =
+      ‖(historySpace 0).starProjection (predictableDrift N)‖ ^ (2 : ℕ) +
         ∑ l ∈ (range N).filter (fun l => IsPrimePow (l + 1)),
           ∑ r ∈ range (clock (l + 1)),
             cellMeasure.real (historyFibre (l + 1) r) *
               (canonicalBetaResolvent N (l + 1) r -
-                canonicalBetaResolvent N l (r % clock l) - signedInnovation l r) ^ 2 := by
+                canonicalBetaResolvent N l (r % clock l) - signedInnovation l r) ^ (2 : ℕ) := by
   rw [predictableDrift_norm_sq_eq_historyLayer_sum,
     predictableDrift_historyLayer_energy_eq_primePower_filter]
   congr 1

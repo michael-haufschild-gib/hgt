@@ -105,7 +105,7 @@ theorem matsumotoSuzukiProposition4_1_oneFrequency_gram
     (n : ℕ) (t : Fin n → ℝ) (ξ : Fin n → ℂ) :
     (∑ i, ∑ j,
         matsumotoSuzukiProposition4_1Kernel (t i) (t j) * ξ i * star (ξ j)).re =
-      ‖∑ i, matsumotoSuzukiPhase (t i) * ξ i‖ ^ 2 := by
+      ‖∑ i, matsumotoSuzukiPhase (t i) * ξ i‖ ^ (2 : ℕ) := by
   rw [show (∑ i, ∑ j,
       matsumotoSuzukiProposition4_1Kernel (t i) (t j) * ξ i * star (ξ j)) =
       ∑ i, ∑ j,

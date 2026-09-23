@@ -96,7 +96,7 @@ theorem coefficient_horizontal_second_with_boundary (w : ℝ) (hw : 0 < w) (n : 
     coefficient w n (directional 1 (directional 1 F)) y =
       (directional 1 F (point w y) - directional 1 F (point 0 y)) / w +
         ((2 * Real.pi * Complex.I * n) / w) * (F (point w y) - F (point 0 y)) / w -
-          ((signedFrequency w n : ℝ) : ℂ) ^ 2 * coefficient w n F y := by
+          ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) * coefficient w n F y := by
   have hf1 := hf.of_le (by simp : (1 : WithTop ℕ∞) ≤ 2)
   have hd := directional_contDiffOn hf (m := 1) le_rfl (1 : ℂ)
   have hdd := directional_contDiffOn hd (m := 0) (by simp) (1 : ℂ)
@@ -111,8 +111,8 @@ theorem coefficient_horizontal_second_with_boundary (w : ℝ) (hw : 0 < w) (n : 
           ((F (point w y) - F (point 0 y)) / w +
             ((2 * Real.pi * Complex.I * n) / w) * coefficient w n F y) at h2
   rw [h2]
-  have hr : ((2 * Real.pi * Complex.I * n) / (w : ℂ)) ^ 2 =
-      -((signedFrequency w n : ℝ) : ℂ) ^ 2 := by
+  have hr : ((2 * Real.pi * Complex.I * n) / (w : ℂ)) ^ (2 : ℕ) =
+      -((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) := by
     unfold signedFrequency
     push_cast
     simp only [div_pow, mul_pow, Complex.I_sq]
@@ -120,7 +120,7 @@ theorem coefficient_horizontal_second_with_boundary (w : ℝ) (hw : 0 < w) (n : 
   calc
     _ = (directional 1 F (point w y) - directional 1 F (point 0 y)) / w +
         ((2 * Real.pi * Complex.I * n) / w) * (F (point w y) - F (point 0 y)) / w +
-          ((2 * Real.pi * Complex.I * n) / w) ^ 2 * coefficient w n F y := by ring
+          ((2 * Real.pi * Complex.I * n) / w) ^ (2 : ℕ) * coefficient w n F y := by ring
     _ = _ := by rw [hr]; ring
 
 /-- The Maass equation over an arbitrary horizontal Fourier window.
@@ -130,8 +130,8 @@ No periodicity is used. -/
 theorem windowedCoefficient_modal_equation {lam : ℝ}
     (f : ℍ → ℂ) (hfmaass : IsMaassEigenfunction lam f)
     (w : ℝ) (hw : 0 < w) (n : ℤ) {y : ℝ} (hy : 0 < y) :
-    -(y : ℂ) ^ 2 * (deriv (deriv (coefficient w n (f ∘ ofComplex))) y -
-      ((signedFrequency w n : ℝ) : ℂ) ^ 2 * coefficient w n (f ∘ ofComplex) y +
+    -(y : ℂ) ^ (2 : ℕ) * (deriv (deriv (coefficient w n (f ∘ ofComplex))) y -
+      ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) * coefficient w n (f ∘ ofComplex) y +
         (directional 1 (f ∘ ofComplex) (point w y) -
           directional 1 (f ∘ ofComplex) (point 0 y)) / w +
         ((2 * Real.pi * Complex.I * n) / w) *
@@ -152,13 +152,13 @@ theorem windowedCoefficient_modal_equation {lam : ℝ}
       (directional_contDiffOn hdI (m := 0) (by simp) Complex.I).continuousOn hy
       ).integrableOn_Icc.mono_set Ioc_subset_Icc_self
   have he : ∀ x : ℝ,
-      -(y : ℂ) ^ 2 * (directional 1 (directional 1 F) (point x y) +
+      -(y : ℂ) ^ (2 : ℕ) * (directional 1 (directional 1 F) (point x y) +
         directional Complex.I (directional Complex.I F) (point x y)) =
       (lam : ℂ) * F (point x y) := by
     intro x
     have hp : 0 < (point x y).im := by simpa [point] using hy
     have hh := hfmaass.2 ⟨point x y, hp⟩
-    change -(y : ℂ) ^ 2 * (directional 1 (directional 1 F) (point x y) +
+    change -(y : ℂ) ^ (2 : ℕ) * (directional 1 (directional 1 F) (point x y) +
       directional Complex.I (directional Complex.I F) (point x y)) =
       (lam : ℂ) * f (ofComplex (point x y))
     rw [ofComplex_apply_of_im_pos hp]
@@ -166,7 +166,7 @@ theorem windowedCoefficient_modal_equation {lam : ℝ}
     simp [positiveHyperbolicLaplacian, directional, F, UpperHalfPlane.im, point]
     exact Or.inl rfl
   have hew : ∀ x : ℝ,
-      -(y : ℂ) ^ 2 * (deningerFourierKernel w n x *
+      -(y : ℂ) ^ (2 : ℕ) * (deningerFourierKernel w n x *
         directional 1 (directional 1 F) (point x y) + deningerFourierKernel w n x *
         directional Complex.I (directional Complex.I F) (point x y)) =
       (lam : ℂ) * (deningerFourierKernel w n x * F (point x y)) := by
@@ -176,7 +176,7 @@ theorem windowedCoefficient_modal_equation {lam : ℝ}
     (Filter.Eventually.of_forall hew)
   rw [integral_const_mul, integral_const_mul, integral_add hi1 hiI] at hint
   have hnorm := congrArg (fun q : ℂ => (1 / (w : ℂ)) * q) hint
-  have hc : -(y : ℂ) ^ 2 *
+  have hc : -(y : ℂ) ^ (2 : ℕ) *
       (coefficient w n (directional 1 (directional 1 F)) y +
         coefficient w n (directional Complex.I (directional Complex.I F)) y) =
       (lam : ℂ) * coefficient w n F y := by
@@ -184,8 +184,8 @@ theorem windowedCoefficient_modal_equation {lam : ℝ}
     linear_combination hnorm
   rw [coefficient_horizontal_second_with_boundary w hw n hf hy,
     ← (coefficient_second_hasDerivAt w hw.le n hf hy).deriv] at hc
-  change -(y : ℂ) ^ 2 * (deriv (deriv (coefficient w n F)) y -
-      ((signedFrequency w n : ℝ) : ℂ) ^ 2 * coefficient w n F y +
+  change -(y : ℂ) ^ (2 : ℕ) * (deriv (deriv (coefficient w n F)) y -
+      ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) * coefficient w n F y +
         (directional 1 F (point w y) - directional 1 F (point 0 y)) / w +
         ((2 * Real.pi * Complex.I * n) / w) *
           (F (point w y) - F (point 0 y)) / w) =
@@ -195,8 +195,8 @@ theorem windowedCoefficient_modal_equation {lam : ℝ}
 /-- The arbitrary-window equation specialized to a Maass cusp eigenform. -/
 theorem maassWindowedCoefficient_modal_equation {Γ : Subgroup SL2R} {lam : ℝ}
     (f : MaassCuspEigenform Γ lam) (w : ℝ) (hw : 0 < w) (n : ℤ) {y : ℝ} (hy : 0 < y) :
-    -(y : ℂ) ^ 2 * (deriv (deriv (coefficient w n (f.1.1 ∘ ofComplex))) y -
-      ((signedFrequency w n : ℝ) : ℂ) ^ 2 * coefficient w n (f.1.1 ∘ ofComplex) y +
+    -(y : ℂ) ^ (2 : ℕ) * (deriv (deriv (coefficient w n (f.1.1 ∘ ofComplex))) y -
+      ((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) * coefficient w n (f.1.1 ∘ ofComplex) y +
         (directional 1 (f.1.1 ∘ ofComplex) (point w y) -
           directional 1 (f.1.1 ∘ ofComplex) (point 0 y)) / w +
         ((2 * Real.pi * Complex.I * n) / w) *
@@ -209,7 +209,7 @@ theorem coefficient_horizontal_second (w : ℝ) (hw : 0 < w) (n : ℤ) {F : ℂ 
     (hf : ContDiffOn ℝ 2 F {z : ℂ | 0 < z.im}) {y : ℝ} (hy : 0 < y)
     (hp : ∀ x, F (point (x + w) y) = F (point x y)) :
     coefficient w n (directional 1 (directional 1 F)) y =
-      -((signedFrequency w n : ℝ) : ℂ) ^ 2 * coefficient w n F y := by
+      -((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) * coefficient w n F y := by
   have hf1 := hf.of_le (by simp : (1 : WithTop ℕ∞) ≤ 2)
   have hd := directional_contDiffOn hf (m := 1) le_rfl (1 : ℂ)
   have hdd := directional_contDiffOn hd (m := 0) (by simp) (1 : ℂ)
@@ -225,8 +225,8 @@ theorem coefficient_horizontal_second (w : ℝ) (hw : 0 < w) (n : ℤ) {F : ℂ 
     ((2 * Real.pi * Complex.I * n) / w) *
       (((2 * Real.pi * Complex.I * n) / w) * coefficient w n F y) at h2
   rw [h2]
-  have hr : ((2 * Real.pi * Complex.I * n) / (w : ℂ)) ^ 2 =
-      -((signedFrequency w n : ℝ) : ℂ) ^ 2 := by
+  have hr : ((2 * Real.pi * Complex.I * n) / (w : ℂ)) ^ (2 : ℕ) =
+      -((signedFrequency w n : ℝ) : ℂ) ^ (2 : ℕ) := by
     unfold signedFrequency
     push_cast
     simp only [div_pow, mul_pow, Complex.I_sq]
@@ -257,8 +257,8 @@ theorem maassCoefficient_second_hasDerivAt (N : ℕ) {lam : ℝ}
 theorem maassCoefficient_modal_equation (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     (n : ℤ) {y : ℝ} (hy : 0 < y) :
-    -(y : ℂ) ^ 2 * (deriv (deriv (maassCoefficient N f n)) y -
-      ((signedFrequency (N + 1 : ℕ) n : ℝ) : ℂ) ^ 2 * maassCoefficient N f n y) =
+    -(y : ℂ) ^ (2 : ℕ) * (deriv (deriv (maassCoefficient N f n)) y -
+      ((signedFrequency (N + 1 : ℕ) n : ℝ) : ℂ) ^ (2 : ℕ) * maassCoefficient N f n y) =
         (lam : ℂ) * maassCoefficient N f n y := by
   let F := f.1.1 ∘ ofComplex
   have hf : ContDiffOn ℝ 2 F {z : ℂ | 0 < z.im} := f.2.2.1.1
@@ -275,13 +275,13 @@ theorem maassCoefficient_modal_equation (N : ℕ) {lam : ℝ}
       (directional_contDiffOn hdI (m := 0) (by simp) Complex.I).continuousOn hy
       ).integrableOn_Icc.mono_set Ioc_subset_Icc_self
   have he : ∀ x : ℝ,
-      -(y : ℂ) ^ 2 * (directional 1 (directional 1 F) (point x y) +
+      -(y : ℂ) ^ (2 : ℕ) * (directional 1 (directional 1 F) (point x y) +
         directional Complex.I (directional Complex.I F) (point x y)) =
       (lam : ℂ) * F (point x y) := by
     intro x
     have hp : 0 < (point x y).im := by simpa [point] using hy
     have hh := f.2.2.1.2 ⟨point x y, hp⟩
-    change -(y : ℂ) ^ 2 * (directional 1 (directional 1 F) (point x y) +
+    change -(y : ℂ) ^ (2 : ℕ) * (directional 1 (directional 1 F) (point x y) +
       directional Complex.I (directional Complex.I F) (point x y)) =
       (lam : ℂ) * f.1.1 (ofComplex (point x y))
     rw [ofComplex_apply_of_im_pos hp]
@@ -289,7 +289,7 @@ theorem maassCoefficient_modal_equation (N : ℕ) {lam : ℝ}
     simp [positiveHyperbolicLaplacian, directional, F, UpperHalfPlane.im, point]
     exact Or.inl rfl
   have hew : ∀ x : ℝ,
-      -(y : ℂ) ^ 2 * (deningerFourierKernel (N + 1 : ℕ) n x *
+      -(y : ℂ) ^ (2 : ℕ) * (deningerFourierKernel (N + 1 : ℕ) n x *
         directional 1 (directional 1 F) (point x y) + deningerFourierKernel (N + 1 : ℕ) n x *
         directional Complex.I (directional Complex.I F) (point x y)) =
       (lam : ℂ) * (deningerFourierKernel (N + 1 : ℕ) n x * F (point x y)) := by
@@ -299,7 +299,7 @@ theorem maassCoefficient_modal_equation (N : ℕ) {lam : ℝ}
     (Filter.Eventually.of_forall hew)
   rw [integral_const_mul, integral_const_mul, integral_add hi1 hiI] at hint
   have hnorm := congrArg (fun q : ℂ => (1 / ((N + 1 : ℕ) : ℂ)) * q) hint
-  have hc : -(y : ℂ) ^ 2 *
+  have hc : -(y : ℂ) ^ (2 : ℕ) *
       (coefficient (N + 1 : ℕ) n (directional 1 (directional 1 F)) y +
         coefficient (N + 1 : ℕ) n (directional Complex.I (directional Complex.I F)) y) =
       (lam : ℂ) * coefficient (N + 1 : ℕ) n F y := by
@@ -308,8 +308,8 @@ theorem maassCoefficient_modal_equation (N : ℕ) {lam : ℝ}
   rw [coefficient_horizontal_second (N + 1 : ℕ) (by positivity) n hf hy
       (fun x => maass_periodic N f x hy),
     ← (coefficient_second_hasDerivAt (N + 1 : ℕ) (by positivity) n hf hy).deriv] at hc
-  change -(y : ℂ) ^ 2 * (deriv (deriv (coefficient (N + 1 : ℕ) n F)) y -
-      ((signedFrequency (N + 1 : ℕ) n : ℝ) : ℂ) ^ 2 * coefficient (N + 1 : ℕ) n F y) =
+  change -(y : ℂ) ^ (2 : ℕ) * (deriv (deriv (coefficient (N + 1 : ℕ) n F)) y -
+      ((signedFrequency (N + 1 : ℕ) n : ℝ) : ℂ) ^ (2 : ℕ) * coefficient (N + 1 : ℕ) n F y) =
         (lam : ℂ) * coefficient (N + 1 : ℕ) n F y
   linear_combination hc
 
@@ -358,7 +358,7 @@ theorem maassCoefficient_frequency_square_bound (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     {y : ℝ} (hy : 0 < y) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ n : ℤ,
-      signedFrequency (N + 1 : ℕ) n ^ 2 * ‖maassCoefficient N f n y‖ ≤ M := by
+      signedFrequency (N + 1 : ℕ) n ^ (2 : ℕ) * ‖maassCoefficient N f n y‖ ≤ M := by
   let F := f.1.1 ∘ ofComplex
   have hf : ContDiffOn ℝ 2 F {z : ℂ | 0 < z.im} := f.2.2.1.1
   have hd := directional_contDiffOn hf (m := 1) le_rfl (1 : ℂ)

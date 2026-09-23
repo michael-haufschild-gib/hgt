@@ -22,19 +22,19 @@ namespace RHTower
 open scoped BigOperators
 
 /-- The reciprocal seam coordinate of a Xi zero copy. -/
-def reciprocalSeamAtom (q : XiZeroCopy) : ℂ := -(((q.1 : ℂ) - 1 / 2) ^ 2)⁻¹
+def reciprocalSeamAtom (q : XiZeroCopy) : ℂ := -(((q.1 : ℂ) - 1 / 2) ^ (2 : ℕ))⁻¹
 
 theorem reciprocalSeamAtom_eq (q : XiZeroCopy) :
-    reciprocalSeamAtom q = (xiSpectralPoint q ^ 2)⁻¹ := by
+    reciprocalSeamAtom q = (xiSpectralPoint q ^ (2 : ℕ))⁻¹ := by
   rw [reciprocalSeamAtom, xiSpectralPoint]
-  have hI : ((-Complex.I) ^ 2 : ℂ) = -1 := by
+  have hI : ((-Complex.I) ^ (2 : ℕ) : ℂ) = -1 := by
     rw [neg_pow, Complex.I_sq]
     norm_num
   rw [mul_pow, hI]
   field_simp
 
 theorem norm_reciprocalSeamAtom (q : XiZeroCopy) :
-    ‖reciprocalSeamAtom q‖ = 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+    ‖reciprocalSeamAtom q‖ = 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   rw [reciprocalSeamAtom_eq, norm_inv, norm_pow, one_div]
 
 /-- The reciprocal seam weights are summable: this is the genus-one convergence condition of the

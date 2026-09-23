@@ -47,7 +47,7 @@ theorem norm_weighted_sub_partialSum_convolution_le {a b c : ℕ → ℂ}
           * ((smoothWeight (K : ℝ) H (n : ℝ) : ℝ) : ℂ))
         - ∑ n ∈ Finset.range (K + 1), (LSeries.convolution a (LSeries.convolution b c)) n‖
       ≤ ((⌊(K : ℝ) + H⌋₊ - K : ℕ) : ℝ)
-          * ((Real.log ((⌊(K : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 2) := by
+          * ((Real.log ((⌊(K : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (2 : ℕ)) := by
   refine norm_weighted_sub_partialSum_le_uniform hH K m hm fun n hn hnle => ?_
   have hn1 : 1 ≤ n := by omega
   refine (norm_convolution_triple_le_log_pow ha haB hb hbB hc hn1).trans ?_
@@ -69,7 +69,7 @@ theorem norm_weighted_sub_partialSum_ghs_le {f : ℕ → ℂ} (hf : ∀ n, ‖f 
         - ∑ n ∈ Finset.range (K + 1),
             (LSeries.convolution (ghsOuter f N) (LSeries.convolution (ghsInner f M) f)) n‖
       ≤ ((⌊(K : ℝ) + H⌋₊ - K : ℕ) : ℝ)
-          * ((Real.log ((⌊(K : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3) := by
+          * ((Real.log ((⌊(K : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ (4 : ℕ) / (Real.log 2) ^ (3 : ℕ)) := by
   refine norm_weighted_sub_partialSum_le_uniform hH K m hm fun n hn hnle => ?_
   have hn1 : 1 ≤ n := by omega
   refine (norm_ghsTriple_le hf N M hn1).trans ?_

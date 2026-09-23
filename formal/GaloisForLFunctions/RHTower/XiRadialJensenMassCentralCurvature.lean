@@ -6,7 +6,7 @@ import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 /-!
 # Xi radial Jensen mass and central-curvature saturation
 
-Jensen's circle-average formula is integrated against the exact radial kernel `4 / r^3`.
+Jensen's circle-average formula is integrated against the exact radial kernel `4 / r^(3 : ℕ)`.
 Tonelli and a multiplicity-exact regrouping identify the resulting source-defined mass with
 the Hermitian reciprocal-square mass of the complete Xi divisor.  Combining this value relation
 with the established global reflection-defect identity proves that the reverse scalar inequality

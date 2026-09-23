@@ -52,7 +52,7 @@ theorem gamma2_fix_eq_one_or_neg_one {γ : Matrix.SpecialLinearGroup (Fin 2) ℤ
     have hd0 : (d : ℝ) = 0 := by exact_mod_cast (by simpa using h0)
     have : d = 0 := by exact_mod_cast hd0
     rw [hcz, this] at hdet; simp at hdet
-  have key : (c : ℂ) * (z : ℂ) ^ 2 + ((d : ℂ) - (a : ℂ)) * (z : ℂ) - (b : ℂ) = 0 := by
+  have key : (c : ℂ) * (z : ℂ) ^ (2 : ℕ) + ((d : ℂ) - (a : ℂ)) * (z : ℂ) - (b : ℂ) = 0 := by
     have happ : ((γ • z : ℍ) : ℂ)
         = ((a : ℂ) * (z : ℂ) + (b : ℂ)) / ((c : ℂ) * (z : ℂ) + (d : ℂ)) := by
       rw [UpperHalfPlane.specialLinearGroup_apply]
@@ -115,10 +115,10 @@ theorem gamma2_fix_eq_one_or_neg_one {γ : Matrix.SpecialLinearGroup (Fin 2) ℤ
     exfalso
     have hcR : (c:ℝ) ≠ 0 := by exact_mod_cast hcne
     have hdetR : (a:ℝ)*d - b*c = 1 := by exact_mod_cast hdet
-    have htr : 4 * (c:ℝ)^2 * y^2 = 4 - ((a:ℝ)+d)^2 := by
+    have htr : 4 * (c:ℝ)^(2 : ℕ) * y^(2 : ℕ) = 4 - ((a:ℝ)+d)^(2 : ℕ) := by
       linear_combination (-4*(c:ℝ))*hreC + (2*(c:ℝ)*x + ((d:ℝ)-(a:ℝ)))*him + 4*hdetR
-    have hy2 : 0 < (c:ℝ)^2 * y^2 := by positivity
-    have htrbound : ((a:ℝ)+d)^2 < 4 := by nlinarith [htr, hy2]
+    have hy2 : 0 < (c:ℝ)^(2 : ℕ) * y^(2 : ℕ) := by positivity
+    have htrbound : ((a:ℝ)+d)^(2 : ℕ) < 4 := by nlinarith [htr, hy2]
     have htri : ((a + d) * (a + d) : ℤ) < 4 := by
       have h' : (((a + d) * (a + d) : ℤ) : ℝ) < 4 := by push_cast; nlinarith [htrbound]
       exact_mod_cast h'

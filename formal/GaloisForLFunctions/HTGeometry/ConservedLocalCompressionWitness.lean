@@ -40,7 +40,7 @@ the coefficient vector of the Hamiltonian itself. -/
 theorem localCompression_frobenius_sq_ge_one
     (C : Matrix ι ι ℝ) (h : ι → ℝ) (hh : h ≠ 0)
     (hfix : C *ᵥ h = h) :
-    1 ≤ ∑ i, ∑ j, (C i j) ^ 2 := by
+    1 ≤ ∑ i, ∑ j, (C i j) ^ (2 : ℕ) := by
   classical
   have hex : ∃ i, h i ≠ 0 := by
     by_contra hnone
@@ -48,23 +48,23 @@ theorem localCompression_frobenius_sq_ge_one
     funext i
     by_contra hi
     exact hnone ⟨i, hi⟩
-  let S : ℝ := ∑ j, (h j) ^ 2
-  let F : ℝ := ∑ i, ∑ j, (C i j) ^ 2
+  let S : ℝ := ∑ j, (h j) ^ (2 : ℕ)
+  let F : ℝ := ∑ i, ∑ j, (C i j) ^ (2 : ℕ)
   have hSpos : 0 < S := by
     obtain ⟨i, hi⟩ := hex
     exact Finset.sum_pos' (fun j _ => sq_nonneg (h j))
       ⟨i, Finset.mem_univ _, sq_pos_of_ne_zero hi⟩
   have hrow (i : ι) :
-      (h i) ^ 2 ≤ (∑ j, (C i j) ^ 2) * S := by
+      (h i) ^ (2 : ℕ) ≤ (∑ j, (C i j) ^ (2 : ℕ)) * S := by
     rw [← hfix]
     exact Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (C i) h
   have hSF : S ≤ F * S := by
     dsimp only [S, F]
     calc
-      (∑ j, (h j) ^ 2) ≤
-          ∑ i, (∑ j, (C i j) ^ 2) * (∑ j, (h j) ^ 2) :=
+      (∑ j, (h j) ^ (2 : ℕ)) ≤
+          ∑ i, (∑ j, (C i j) ^ (2 : ℕ)) * (∑ j, (h j) ^ (2 : ℕ)) :=
         Finset.sum_le_sum fun i _ => hrow i
-      _ = (∑ i, ∑ j, (C i j) ^ 2) * (∑ j, (h j) ^ 2) := by
+      _ = (∑ i, ∑ j, (C i j) ^ (2 : ℕ)) * (∑ j, (h j) ^ (2 : ℕ)) := by
         rw [Finset.sum_mul]
   dsimp only [F] at hSF ⊢
   nlinarith
@@ -72,15 +72,15 @@ theorem localCompression_frobenius_sq_ge_one
 /-- Mean squared transition coefficient obtained by choosing local input and
 output dictionary coordinates independently and uniformly. -/
 def twoQueryLocalRetentionMean (C : Matrix ι ι ℝ) : ℝ :=
-  (∑ i, ∑ j, (C i j) ^ 2) / (Fintype.card ι : ℝ) ^ 2
+  (∑ i, ∑ j, (C i j) ^ (2 : ℕ)) / (Fintype.card ι : ℝ) ^ (2 : ℕ)
 
 /-- Every nonzero conserved local coordinate gives inverse-dictionary-squared
 mean signal, uniformly in evolution time. -/
 theorem twoQueryLocalRetentionMean_ge_card_sq_inv
     [Nonempty ι] (C : Matrix ι ι ℝ) (h : ι → ℝ) (hh : h ≠ 0)
     (hfix : C *ᵥ h = h) :
-    1 / (Fintype.card ι : ℝ) ^ 2 ≤ twoQueryLocalRetentionMean C := by
-  have hden : 0 < (Fintype.card ι : ℝ) ^ 2 := by
+    1 / (Fintype.card ι : ℝ) ^ (2 : ℕ) ≤ twoQueryLocalRetentionMean C := by
+  have hden : 0 < (Fintype.card ι : ℝ) ^ (2 : ℕ) := by
     positivity
   rw [twoQueryLocalRetentionMean, div_le_div_iff_of_pos_right hden]
   exact localCompression_frobenius_sq_ge_one C h hh hfix
@@ -92,12 +92,12 @@ Pauli dictionary has polynomial cardinality. -/
 theorem twoQueryLocalRetentionMean_gt_isotropicBenchmark
     [Nonempty ι] (C : Matrix ι ι ℝ) (h : ι → ℝ) (hh : h ≠ 0)
     (hfix : C *ᵥ h = h) (K : ℕ)
-    (hK : (Fintype.card ι) ^ 2 < K) :
+    (hK : (Fintype.card ι) ^ (2 : ℕ) < K) :
     1 / (K : ℝ) < twoQueryLocalRetentionMean C := by
-  have hcard : 0 < (Fintype.card ι : ℝ) ^ 2 := by positivity
-  have hKreal : (Fintype.card ι : ℝ) ^ 2 < (K : ℝ) := by
+  have hcard : 0 < (Fintype.card ι : ℝ) ^ (2 : ℕ) := by positivity
+  have hKreal : (Fintype.card ι : ℝ) ^ (2 : ℕ) < (K : ℝ) := by
     exact_mod_cast hK
-  have hinv : 1 / (K : ℝ) < 1 / (Fintype.card ι : ℝ) ^ 2 :=
+  have hinv : 1 / (K : ℝ) < 1 / (Fintype.card ι : ℝ) ^ (2 : ℕ) :=
     one_div_lt_one_div_of_lt hcard hKreal
   exact hinv.trans_le
     (twoQueryLocalRetentionMean_ge_card_sq_inv C h hh hfix)

@@ -37,7 +37,7 @@ completely; only the logarithmic separation survives. -/
 theorem thetaMellinPairCore_twoPoint_det (C d u v : ℝ) :
     thetaMellinPairCore C d u u * thetaMellinPairCore C d v v -
         thetaMellinPairCore C d u v * thetaMellinPairCore C d v u =
-      -(d * (u - v)) ^ 2 := by
+      -(d * (u - v)) ^ (2 : ℕ) := by
   simp only [thetaMellinPairCore]
   ring
 
@@ -53,9 +53,9 @@ theorem thetaMellinPairCore_twoPoint_det_neg
 /-- The quadratic form of a two-point affine-logarithmic block. -/
 def thetaMellinPairQuadratic
     (C d u v x y : ℝ) : ℝ :=
-  x ^ 2 * thetaMellinPairCore C d u u +
+  x ^ (2 : ℕ) * thetaMellinPairCore C d u u +
     2 * x * y * thetaMellinPairCore C d u v +
-    y ^ 2 * thetaMellinPairCore C d v v
+    y ^ (2 : ℕ) * thetaMellinPairCore C d v v
 
 /-- Light-cone normal form of the two-point quadratic block. -/
 theorem thetaMellinPairQuadratic_eq
@@ -104,7 +104,7 @@ theorem thetaMellinWeightedPairCore_twoPoint_det
         thetaMellinWeightedPairCore C d weight logCoordinate i j *
           thetaMellinWeightedPairCore C d weight logCoordinate j i =
       -(weight i * weight j * d *
-          (logCoordinate i - logCoordinate j)) ^ 2 := by
+          (logCoordinate i - logCoordinate j)) ^ (2 : ℕ) := by
   simp only [thetaMellinWeightedPairCore, thetaMellinPairCore]
   ring
 
@@ -146,7 +146,7 @@ theorem thetaMellinPhasedPairCore_twoPoint_det (C d b u v : ℝ) :
           thetaMellinPhasedPairCore C d b v v -
         thetaMellinPhasedPairCore C d b u v *
           thetaMellinPhasedPairCore C d b v u =
-      -((d * (u - v)) ^ 2 : ℝ) := by
+      -((d * (u - v)) ^ (2 : ℕ) : ℝ) := by
   have hdiagU : thetaMellinPairPhase b u u = 1 := by
     simp [thetaMellinPairPhase]
   have hdiagV : thetaMellinPairPhase b v v = 1 := by
@@ -165,7 +165,7 @@ theorem thetaMellinPhasedPairCore_twoPoint_det (C d b u v : ℝ) :
             rw [mul_mul_mul_comm, hswap, one_mul]
             push_cast
             rfl
-    _ = -((d * (u - v)) ^ 2 : ℝ) := by
+    _ = -((d * (u - v)) ^ (2 : ℕ) : ℝ) := by
       rw [thetaMellinPairCore_twoPoint_det]
       push_cast
       rfl

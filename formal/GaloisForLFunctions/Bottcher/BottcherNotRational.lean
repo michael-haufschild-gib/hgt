@@ -34,12 +34,12 @@ theorem quadratic_mem_escapeOpen {c w : ℂ} (hw : w ∈ escapeOpen c) :
     quadratic c w ∈ escapeOpen c := by
   obtain ⟨hcw, h2w⟩ := mem_escapeOpen_regime hw
   have hmax : max 2 ‖c‖ < ‖w‖ := hw
-  show max 2 ‖c‖ < ‖w ^ 2 + c‖
-  have htri : ‖w ^ 2‖ ≤ ‖w ^ 2 + c‖ + ‖(-c : ℂ)‖ := by
-    calc ‖w ^ 2‖ = ‖w ^ 2 + c + (-c)‖ := by ring_nf
-      _ ≤ ‖w ^ 2 + c‖ + ‖(-c : ℂ)‖ := norm_add_le _ _
+  show max 2 ‖c‖ < ‖w ^ (2 : ℕ) + c‖
+  have htri : ‖w ^ (2 : ℕ)‖ ≤ ‖w ^ (2 : ℕ) + c‖ + ‖(-c : ℂ)‖ := by
+    calc ‖w ^ (2 : ℕ)‖ = ‖w ^ (2 : ℕ) + c + (-c)‖ := by ring_nf
+      _ ≤ ‖w ^ (2 : ℕ) + c‖ + ‖(-c : ℂ)‖ := norm_add_le _ _
   rw [norm_neg] at htri
-  have hp : ‖w ^ 2‖ = ‖w‖ ^ 2 := norm_pow w 2
+  have hp : ‖w ^ (2 : ℕ)‖ = ‖w‖ ^ (2 : ℕ) := norm_pow w 2
   have h3 : ‖c‖ ≤ max 2 ‖c‖ := le_max_right _ _
   nlinarith [htri, hp, hmax, h3, h2w, mul_pos (sub_pos.mpr h2w)
     (sub_pos.mpr (lt_of_le_of_lt h3 hmax))]
@@ -66,16 +66,16 @@ theorem invariant_finite_empty {c : ℂ} (hc : c ≠ 0) {T : Set ℂ} (hfin : T.
   by_contra hne
   have hTne : T.Nonempty := Set.nonempty_iff_ne_empty.mpr hne
   -- the square-root selector
-  have hsel : ∀ b ∈ T, ∃ z : ℂ, z ^ 2 = b - c := fun b _ =>
+  have hsel : ∀ b ∈ T, ∃ z : ℂ, z ^ (2 : ℕ) = b - c := fun b _ =>
     IsAlgClosed.exists_pow_nat_eq (b - c) (by norm_num)
   choose σ hσ using hsel
   have hfσ : ∀ b (hb : b ∈ T), quadratic c (σ b hb) = b := by
     intro b hb
-    show σ b hb ^ 2 + c = b
+    show σ b hb ^ (2 : ℕ) + c = b
     rw [hσ b hb]; ring
   have hfnσ : ∀ b (hb : b ∈ T), quadratic c (-σ b hb) = b := by
     intro b hb
-    show (-σ b hb) ^ 2 + c = b
+    show (-σ b hb) ^ (2 : ℕ) + c = b
     rw [neg_sq, hσ b hb]; ring
   have hσT : ∀ b (hb : b ∈ T), σ b hb ∈ T := by
     intro b hb
@@ -148,7 +148,7 @@ theorem invariant_finite_empty {c : ℂ} (hc : c ≠ 0) {T : Set ℂ} (hfin : T.
   rw [hb₀0] at hcT
   have hcT' : c ∈ T := by
     have : quadratic c 0 = c := by
-      show (0 : ℂ) ^ 2 + c = c
+      show (0 : ℂ) ^ (2 : ℕ) + c = c
       ring
     rwa [this] at hcT
   rw [hb₀T, hb₀0] at hcT'
@@ -180,26 +180,26 @@ theorem rootMultiplicity_linear_pow (a r : ℂ) (m : ℕ) :
 /-- **Quadratic-composition multiplicity**: `μ_a(q∘(X²+c)) = e_a · μ_{a²+c}(q)` with `e_a = 2`
 at `a = 0` and `e_a = 1` otherwise. -/
 theorem rootMultiplicity_comp_quadratic {q : Polynomial ℂ} (hq : q ≠ 0) (c a : ℂ) :
-    rootMultiplicity a (q.comp (X ^ 2 + C c))
-      = (if a = 0 then 2 else 1) * rootMultiplicity (a ^ 2 + c) q := by
-  set b : ℂ := a ^ 2 + c with hb
+    rootMultiplicity a (q.comp (X ^ (2 : ℕ) + C c))
+      = (if a = 0 then 2 else 1) * rootMultiplicity (a ^ (2 : ℕ) + c) q := by
+  set b : ℂ := a ^ (2 : ℕ) + c with hb
   set m : ℕ := rootMultiplicity b q with hm
   set u : Polynomial ℂ := q /ₘ (X - C b) ^ m with hu
   have hdecomp : (X - C b) ^ m * u = q := pow_mul_divByMonic_rootMultiplicity_eq q b
   have hune : u.eval b ≠ 0 := eval_divByMonic_pow_rootMultiplicity_ne_zero b hq
-  have hcomp : q.comp (X ^ 2 + C c)
-      = ((X - C b) ^ m).comp (X ^ 2 + C c) * u.comp (X ^ 2 + C c) := by
+  have hcomp : q.comp (X ^ (2 : ℕ) + C c)
+      = ((X - C b) ^ m).comp (X ^ (2 : ℕ) + C c) * u.comp (X ^ (2 : ℕ) + C c) := by
     rw [← hdecomp, mul_comp]
-  have hlin : (X - C b).comp (X ^ 2 + C c) = (X - C a) * (X + C a) := by
+  have hlin : (X - C b).comp (X ^ (2 : ℕ) + C c) = (X - C a) * (X + C a) := by
     rw [sub_comp, X_comp, C_comp, hb, map_add, map_pow]
     ring
-  have hpowlin : ((X - C b) ^ m).comp (X ^ 2 + C c) = ((X - C a) * (X + C a)) ^ m := by
+  have hpowlin : ((X - C b) ^ m).comp (X ^ (2 : ℕ) + C c) = ((X - C a) * (X + C a)) ^ m := by
     rw [pow_comp, hlin]
-  have hueval : (u.comp (X ^ 2 + C c)).eval a ≠ 0 := by
+  have hueval : (u.comp (X ^ (2 : ℕ) + C c)).eval a ≠ 0 := by
     rw [eval_comp]
-    have : (X ^ 2 + C c).eval a = b := by rw [hb]; simp
+    have : (X ^ (2 : ℕ) + C c).eval a = b := by rw [hb]; simp
     rwa [this]
-  have hu0 : rootMultiplicity a (u.comp (X ^ 2 + C c)) = 0 :=
+  have hu0 : rootMultiplicity a (u.comp (X ^ (2 : ℕ) + C c)) = 0 :=
     rootMultiplicity_eq_zero (fun h => hueval h)
   have hpowne : ((X - C a) * (X + C a)) ^ m ≠ 0 := by
     have h1 : Monic ((X - C a) * (X + C a)) := by
@@ -207,8 +207,8 @@ theorem rootMultiplicity_comp_quadratic {q : Polynomial ℂ} (hq : q ≠ 0) (c a
       rw [this]
       exact (monic_X_sub_C a).mul (monic_X_sub_C (-a))
     exact (h1.pow m).ne_zero
-  have hucompne : u.comp (X ^ 2 + C c) ≠ 0 := fun h => hueval (by rw [h]; simp)
-  have hprodne : ((X - C a) * (X + C a)) ^ m * u.comp (X ^ 2 + C c) ≠ 0 :=
+  have hucompne : u.comp (X ^ (2 : ℕ) + C c) ≠ 0 := fun h => hueval (by rw [h]; simp)
+  have hprodne : ((X - C a) * (X + C a)) ^ m * u.comp (X ^ (2 : ℕ) + C c) ≠ 0 :=
     mul_ne_zero hpowne hucompne
   rw [hcomp, hpowlin, rootMultiplicity_mul hprodne, hu0, add_zero]
   have hsplit : ((X - C a) * (X + C a)) ^ m = (X - C a) ^ m * (X - C (-a)) ^ m := by
@@ -239,7 +239,7 @@ noncomputable def defect (p q : Polynomial ℂ) (a : ℂ) : ℤ :=
 
 /-- Chained defect doubling along a zero-free orbit segment. -/
 theorem defect_iterate {p q : Polynomial ℂ} {c : ℂ}
-    (hrel : ∀ a : ℂ, a ≠ 0 → defect p q (a ^ 2 + c) = 2 * defect p q a)
+    (hrel : ∀ a : ℂ, a ≠ 0 → defect p q (a ^ (2 : ℕ) + c) = 2 * defect p q a)
     (a : ℂ) (k : ℕ) (hfree : ∀ j < k, (quadratic c)^[j] a ≠ 0) :
     defect p q ((quadratic c)^[k] a) = 2 ^ k * defect p q a := by
   induction k with
@@ -248,7 +248,7 @@ theorem defect_iterate {p q : Polynomial ℂ} {c : ℂ}
     have hfree' : ∀ j < n, (quadratic c)^[j] a ≠ 0 := fun j hj => hfree j (by omega)
     have hne : (quadratic c)^[n] a ≠ 0 := hfree n (by omega)
     rw [Function.iterate_succ_apply',
-      show quadratic c ((quadratic c)^[n] a) = ((quadratic c)^[n] a) ^ 2 + c from rfl,
+      show quadratic c ((quadratic c)^[n] a) = ((quadratic c)^[n] a) ^ (2 : ℕ) + c from rfl,
       hrel _ hne, ih hfree']
     ring
 
@@ -270,7 +270,7 @@ theorem bottcherCoord_not_rational {c : ℂ} (hc : c ≠ 0) (p q : Polynomial �
     · exact h
     · exact absurd h (bottcherCoord_ne_zero c w)
   -- the composed polynomials are nonzero
-  set fpoly : Polynomial ℂ := X ^ 2 + C c with hfpoly
+  set fpoly : Polynomial ℂ := X ^ (2 : ℕ) + C c with hfpoly
   have hfp_ne_const : fpoly ≠ C (fpoly.coeff 0) := by
     intro h
     have := congrArg (fun r => Polynomial.coeff r 2) h
@@ -285,10 +285,10 @@ theorem bottcherCoord_not_rational {c : ℂ} (hc : c ≠ 0) (p q : Polynomial �
     rcases comp_eq_zero_iff.mp h with h | ⟨_, h⟩
     · exact hp h
     · exact hfp_ne_const h
-  have hfeval : ∀ w : ℂ, fpoly.eval w = w ^ 2 + c := by
+  have hfeval : ∀ w : ℂ, fpoly.eval w = w ^ (2 : ℕ) + c := by
     intro w; rw [hfpoly]; simp
   -- the key polynomial identity from the functional equation
-  have hkey : q.comp fpoly * p ^ 2 = p.comp fpoly * q ^ 2 := by
+  have hkey : q.comp fpoly * p ^ (2 : ℕ) = p.comp fpoly * q ^ (2 : ℕ) := by
     apply eq_of_infinite_eval_eq
     refine (escapeOpen_infinite c).mono ?_
     intro w hw
@@ -298,20 +298,20 @@ theorem bottcherCoord_not_rational {c : ℂ} (hc : c ≠ 0) (p q : Polynomial �
     have h2 := hrat _ hfw
     have h3 := bottcherCoord_quadratic hcw h2w
     simp only [quadratic_apply] at h2 h3
-    show (q.comp fpoly * p ^ 2).eval w = (p.comp fpoly * q ^ 2).eval w
+    show (q.comp fpoly * p ^ (2 : ℕ)).eval w = (p.comp fpoly * q ^ (2 : ℕ)).eval w
     simp only [eval_mul, eval_pow, eval_comp, hfeval]
-    linear_combination (-(q.eval (w ^ 2 + c)) * (q.eval w * bottcherCoord c w + p.eval w)) * h1
-      + (q.eval w) ^ 2 * h2 + (-(q.eval (w ^ 2 + c)) * (q.eval w) ^ 2) * h3
+    linear_combination (-(q.eval (w ^ (2 : ℕ) + c)) * (q.eval w * bottcherCoord c w + p.eval w)) * h1
+      + (q.eval w) ^ (2 : ℕ) * h2 + (-(q.eval (w ^ (2 : ℕ) + c)) * (q.eval w) ^ (2 : ℕ)) * h3
   -- the defect doubling relation
-  have hrelδ : ∀ a : ℂ, a ≠ 0 → defect p q (a ^ 2 + c) = 2 * defect p q a := by
+  have hrelδ : ∀ a : ℂ, a ≠ 0 → defect p q (a ^ (2 : ℕ) + c) = 2 * defect p q a := by
     intro a ha
-    have hL : q.comp fpoly * p ^ 2 ≠ 0 := mul_ne_zero hqcomp (pow_ne_zero 2 hp)
-    have hR : p.comp fpoly * q ^ 2 ≠ 0 := mul_ne_zero hpcomp (pow_ne_zero 2 hq)
+    have hL : q.comp fpoly * p ^ (2 : ℕ) ≠ 0 := mul_ne_zero hqcomp (pow_ne_zero 2 hp)
+    have hR : p.comp fpoly * q ^ (2 : ℕ) ≠ 0 := mul_ne_zero hpcomp (pow_ne_zero 2 hq)
     have hμ := congrArg (rootMultiplicity a) hkey
     rw [rootMultiplicity_mul hL, rootMultiplicity_mul hR] at hμ
-    have hp2 : rootMultiplicity a (p ^ 2) = 2 * rootMultiplicity a p := by
+    have hp2 : rootMultiplicity a (p ^ (2 : ℕ)) = 2 * rootMultiplicity a p := by
       rw [pow_two, rootMultiplicity_mul (mul_ne_zero hp hp)]; ring
-    have hq2 : rootMultiplicity a (q ^ 2) = 2 * rootMultiplicity a q := by
+    have hq2 : rootMultiplicity a (q ^ (2 : ℕ)) = 2 * rootMultiplicity a q := by
       rw [pow_two, rootMultiplicity_mul (mul_ne_zero hq hq)]; ring
     have hqc := rootMultiplicity_comp_quadratic hq c a
     have hpc := rootMultiplicity_comp_quadratic hp c a
@@ -320,18 +320,18 @@ theorem bottcherCoord_not_rational {c : ℂ} (hc : c ≠ 0) (p q : Polynomial �
     unfold defect
     omega
   have hrelδ0 : defect p q c = defect p q 0 := by
-    have hL : q.comp fpoly * p ^ 2 ≠ 0 := mul_ne_zero hqcomp (pow_ne_zero 2 hp)
-    have hR : p.comp fpoly * q ^ 2 ≠ 0 := mul_ne_zero hpcomp (pow_ne_zero 2 hq)
+    have hL : q.comp fpoly * p ^ (2 : ℕ) ≠ 0 := mul_ne_zero hqcomp (pow_ne_zero 2 hp)
+    have hR : p.comp fpoly * q ^ (2 : ℕ) ≠ 0 := mul_ne_zero hpcomp (pow_ne_zero 2 hq)
     have hμ := congrArg (rootMultiplicity 0) hkey
     rw [rootMultiplicity_mul hL, rootMultiplicity_mul hR] at hμ
-    have hp2 : rootMultiplicity 0 (p ^ 2) = 2 * rootMultiplicity 0 p := by
+    have hp2 : rootMultiplicity 0 (p ^ (2 : ℕ)) = 2 * rootMultiplicity 0 p := by
       rw [pow_two, rootMultiplicity_mul (mul_ne_zero hp hp)]; ring
-    have hq2 : rootMultiplicity 0 (q ^ 2) = 2 * rootMultiplicity 0 q := by
+    have hq2 : rootMultiplicity 0 (q ^ (2 : ℕ)) = 2 * rootMultiplicity 0 q := by
       rw [pow_two, rootMultiplicity_mul (mul_ne_zero hq hq)]; ring
     have hqc := rootMultiplicity_comp_quadratic hq c 0
     have hpc := rootMultiplicity_comp_quadratic hp c 0
     rw [if_pos rfl] at hqc hpc
-    have h0c : (0 : ℂ) ^ 2 + c = c := by ring
+    have h0c : (0 : ℂ) ^ (2 : ℕ) + c = c := by ring
     rw [h0c] at hqc hpc
     rw [hqc, hpc, hp2, hq2] at hμ
     unfold defect
@@ -411,7 +411,7 @@ theorem bottcherCoord_not_rational {c : ℂ} (hc : c ≠ 0) (p q : Polynomial �
       -- δ(0) = 2^{m-1}·δ(c) = 2^{m-1}·δ(0), with 2^{m-1} ≥ 2
       rw [hrelδ0] at hchain
       have hpow : (2 : ℤ) ≤ 2 ^ (m - 1) := by
-        calc (2 : ℤ) = 2 ^ 1 := by ring
+        calc (2 : ℤ) = 2 ^ (1 : ℕ) := by ring
           _ ≤ 2 ^ (m - 1) := by
               apply pow_le_pow_right₀ (by norm_num)
               omega
@@ -467,7 +467,7 @@ theorem bottcherCoord_not_rational {c : ℂ} (hc : c ≠ 0) (p q : Polynomial �
   have hwesc : w ∈ escapeOpen c := hw.1
   have hwgood : w ∉ ({w : ℂ | q.IsRoot w} ∪ {w : ℂ | (q.comp fpoly).IsRoot w}) := hw.2
   have hqw : q.eval w ≠ 0 := fun h => hwgood (Or.inl h)
-  have hqfw : q.eval (w ^ 2 + c) ≠ 0 := by
+  have hqfw : q.eval (w ^ (2 : ℕ) + c) ≠ 0 := by
     intro h
     apply hwgood
     right
@@ -497,9 +497,9 @@ theorem bottcherCoord_not_rational {c : ℂ} (hc : c ≠ 0) (p q : Polynomial �
   rw [hFE] at hv2
   -- φ(w)² lq = φ(w) lq ⟹ φ(w) = 1 (φ ≠ 0, lq ≠ 0)
   have hφw : bottcherCoord c w = 1 := by
-    have h1 : bottcherCoord c w ^ 2 * q.leadingCoeff
+    have h1 : bottcherCoord c w ^ (2 : ℕ) * q.leadingCoeff
         = bottcherCoord c w * q.leadingCoeff := by
-      calc bottcherCoord c w ^ 2 * q.leadingCoeff = p.leadingCoeff := hv2
+      calc bottcherCoord c w ^ (2 : ℕ) * q.leadingCoeff = p.leadingCoeff := hv2
         _ = bottcherCoord c w * q.leadingCoeff := hv1.symm
     have h2 : (bottcherCoord c w - 1) * (bottcherCoord c w * q.leadingCoeff) = 0 := by
       linear_combination h1

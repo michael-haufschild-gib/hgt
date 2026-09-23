@@ -43,8 +43,8 @@ theorem prolateSLAction_comp_neg (c : ℝ) {f : ℝ → ℝ} (_hf : Differentiab
     rw [hstep, deriv_comp_neg (deriv f) y]
     ring
   rw [prolateSLAction, prolateSLAction, hd1, hd2]
-  show (1 - x ^ 2) * deriv (deriv f) (-x) - 2 * x * (-deriv f (-x)) - c ^ 2 * x ^ 2 * f (-x)
-    = (1 - (-x) ^ 2) * deriv (deriv f) (-x) - 2 * -x * deriv f (-x) - c ^ 2 * (-x) ^ 2 * f (-x)
+  show (1 - x ^ (2 : ℕ)) * deriv (deriv f) (-x) - 2 * x * (-deriv f (-x)) - c ^ (2 : ℕ) * x ^ (2 : ℕ) * f (-x)
+    = (1 - (-x) ^ (2 : ℕ)) * deriv (deriv f) (-x) - 2 * -x * deriv f (-x) - c ^ (2 : ℕ) * (-x) ^ (2 : ℕ) * f (-x)
   ring
 
 /-- Reflection preserves the global band eigenrelation. -/

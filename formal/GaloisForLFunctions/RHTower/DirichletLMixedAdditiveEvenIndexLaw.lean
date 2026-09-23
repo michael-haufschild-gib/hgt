@@ -127,8 +127,8 @@ cheaply. -/
 theorem generatingFunction_even_odd_split (a : ℕ → ℂ) (x : ℂ)
     (hx : Summable (fun N : ℕ => ‖a N * x ^ N‖)) :
     (∑' N : ℕ, a N * x ^ N)
-      = (∑' q : ℕ, a (2 * q) * (x ^ 2) ^ q)
-        + x * ∑' q : ℕ, a (2 * q + 1) * (x ^ 2) ^ q := by
+      = (∑' q : ℕ, a (2 * q) * (x ^ (2 : ℕ)) ^ q)
+        + x * ∑' q : ℕ, a (2 * q + 1) * (x ^ (2 : ℕ)) ^ q := by
   set f : ℕ → ℂ := fun N => a N * x ^ N with hf
   have hs : Summable f := hx.of_norm
   have hE : Summable (fun q : ℕ => f (2 * q)) :=
@@ -150,16 +150,16 @@ mere radial nonnegativity: the even channel is an exact parity Gram decompositio
 theorem tsum_evenIndex_binary_eq_evenOddGram (a : ℕ → ℂ) (r : ℝ)
     (ha : Summable (fun N : ℕ => ‖a N * (r : ℂ) ^ N‖)) :
     (∑' q : ℕ, mixedAdditiveConvolutionPower a 1 (2 * q) * (r : ℂ) ^ (2 * q))
-      = (∑' q : ℕ, a (2 * q) * ((r : ℂ) ^ 2) ^ q)
-          * (starRingEnd ℂ) (∑' q : ℕ, a (2 * q) * ((r : ℂ) ^ 2) ^ q)
-        + (r : ℂ) ^ 2 * ((∑' q : ℕ, a (2 * q + 1) * ((r : ℂ) ^ 2) ^ q)
-          * (starRingEnd ℂ) (∑' q : ℕ, a (2 * q + 1) * ((r : ℂ) ^ 2) ^ q)) := by
+      = (∑' q : ℕ, a (2 * q) * ((r : ℂ) ^ (2 : ℕ)) ^ q)
+          * (starRingEnd ℂ) (∑' q : ℕ, a (2 * q) * ((r : ℂ) ^ (2 : ℕ)) ^ q)
+        + (r : ℂ) ^ (2 : ℕ) * ((∑' q : ℕ, a (2 * q + 1) * ((r : ℂ) ^ (2 : ℕ)) ^ q)
+          * (starRingEnd ℂ) (∑' q : ℕ, a (2 * q + 1) * ((r : ℂ) ^ (2 : ℕ)) ^ q)) := by
   have haNeg : Summable (fun N : ℕ => ‖a N * (-(r : ℂ)) ^ N‖) := by
     convert ha using 1; funext N
     simp only [norm_mul, norm_pow, norm_neg]
   have hAr := generatingFunction_even_odd_split a (r : ℂ) ha
   have hAnegr := generatingFunction_even_odd_split a (-(r : ℂ)) haNeg
-  rw [show (-(r : ℂ)) ^ 2 = (r : ℂ) ^ 2 from by ring] at hAnegr
+  rw [show (-(r : ℂ)) ^ (2 : ℕ) = (r : ℂ) ^ (2 : ℕ) from by ring] at hAnegr
   have hproj := add_pos_neg_hermitianAbel_eq_two_mul_tsum_evenIndex a r ha 1
   simp only [pow_one] at hproj
   rw [hAr, hAnegr] at hproj

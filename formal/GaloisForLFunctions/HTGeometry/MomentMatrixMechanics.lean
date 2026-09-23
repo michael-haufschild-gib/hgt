@@ -35,7 +35,7 @@ theorem momentMechanics_centeredExpectation_zero
 theorem momentMechanics_centeredSecondMoment_eq_variance
     (S : MomentMechanicsState) (p : Polynomial ℝ) :
     momentNormalizedExpectation S.sequence
-      ((momentVacuumCenteredPolynomial S.sequence p) ^ 2) =
+      ((momentVacuumCenteredPolynomial S.sequence p) ^ (2 : ℕ)) =
         momentNormalizedVariance S.sequence p :=
   momentNormalizedExpectation_centered_sq S.sequence S.vacuumMass_ne p
 
@@ -43,7 +43,7 @@ theorem momentMechanics_centeredSecondMoment_eq_variance
 theorem momentMechanics_quantumFisher_eq_four_variance
     (S : MomentMechanicsState) (p : Polynomial ℝ) :
     pureStateQuantumFisherValue (S.sequence 0)
-        (momentFunctional S.sequence p) (momentFunctional S.sequence (p ^ 2)) =
+        (momentFunctional S.sequence p) (momentFunctional S.sequence (p ^ (2 : ℕ))) =
       4 * momentNormalizedVariance S.sequence p :=
   pureStateQuantumFisherValue_moment_eq_four_mul_normalizedVariance
     S.sequence S.vacuumMass_ne p

@@ -15,7 +15,7 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 
 theorem qnm_hasDerivAt_tanh (x : ℝ) :
-    HasDerivAt Real.tanh (1 - Real.tanh x ^ 2) x := by
+    HasDerivAt Real.tanh (1 - Real.tanh x ^ (2 : ℕ)) x := by
   have h := (Real.hasDerivAt_sinh x).div (Real.hasDerivAt_cosh x) (Real.cosh_pos x).ne'
   convert! h using 1
   · funext y

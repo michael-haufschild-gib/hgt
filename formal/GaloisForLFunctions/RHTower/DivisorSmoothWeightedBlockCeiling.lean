@@ -27,15 +27,15 @@ private lemma sum_symmetric (f : ℕ → ℝ) {c s : ℕ} (hs : s ≤ c) :
 
 private lemma weighted_correction_nonpos {s : ℝ} (hs : 2 ≤ s) :
     let c := s*(s+1);
-    -1/(4*c)+(2*c+1)/(30*c^2)+1/(12*s^2)+1/(36*s*(s+2))+
-      (1/c-1/(2*c^2)+1/(6*c*s*(s+2)))/36 ≤ 0 := by
+    -1/(4*c)+(2*c+1)/(30*c^(2 : ℕ))+1/(12*s^(2 : ℕ))+1/(36*s*(s+2))+
+      (1/c-1/(2*c^(2 : ℕ))+1/(6*c*s*(s+2)))/36 ≤ 0 := by
   have hs0 : 0<s := by linarith
   have ht : 0 ≤ s-2 := by linarith
   dsimp only
-  have he : -1/(4*(s*(s+1)))+(2*(s*(s+1))+1)/(30*(s*(s+1))^2)+
-      1/(12*s^2)+1/(36*s*(s+2))+
-      (1/(s*(s+1))-1/(2*(s*(s+1))^2)+1/(6*(s*(s+1))*s*(s+2)))/36 =
-      -(48*(s-2)^3+372*(s-2)^2+742*(s-2)+153)/(1080*s^2*(s+1)^2*(s+2)) := by
+  have he : -1/(4*(s*(s+1)))+(2*(s*(s+1))+1)/(30*(s*(s+1))^(2 : ℕ))+
+      1/(12*s^(2 : ℕ))+1/(36*s*(s+2))+
+      (1/(s*(s+1))-1/(2*(s*(s+1))^(2 : ℕ))+1/(6*(s*(s+1))*s*(s+2)))/36 =
+      -(48*(s-2)^(3 : ℕ)+372*(s-2)^(2 : ℕ)+742*(s-2)+153)/(1080*s^(2 : ℕ)*(s+1)^(2 : ℕ)*(s+2)) := by
     field_simp
     ring
   rw [he]
@@ -49,16 +49,16 @@ private lemma weighted_block_of_two {s : ℕ} (hs : 2 ≤ s) :
   let C := s*(s+1)
   let c : ℝ := s*(s+1)
   let B := Real.log (2*Real.pi)/2-Real.eulerMascheroniConstant-
-    (2*c+1)*(1/(6*c)-1/(30*c^2))+1/(12*(s:ℝ)^2)
-  let A := 1/c-1/(2*c^2)+1/(6*c*s*(s+2))
+    (2*c+1)*(1/(6*c)-1/(30*c^(2 : ℕ)))+1/(12*(s:ℝ)^(2 : ℕ))
+  let A := 1/c-1/(2*c^(2 : ℕ))+1/(6*c*s*(s+2))
   let w := halfOrderAbelStep 0
-  let q := fun n : ℕ => ((n:ℝ)-c)^2
+  let q := fun n : ℕ => ((n:ℝ)-c)^(2 : ℕ)
   have hs1 : 1 ≤ s := by omega
   have hsR : (2:ℝ) ≤ s := by exact_mod_cast hs
   have hs0 : (0:ℝ)<s := by positivity
   have hc : 0<c := by dsimp [c]; positivity
   have hA : 0 ≤ A := by
-    have hh : 1/(2*c^2) ≤ 1/c := by
+    have hh : 1/(2*c^(2 : ℕ)) ≤ 1/c := by
       apply one_div_le_one_div_of_le hc
       have hc1 : 1 ≤ c := by dsimp [c]; nlinarith only [hsR]
       nlinarith only [hc1]
@@ -73,11 +73,11 @@ private lemma weighted_block_of_two {s : ℕ} (hs : 2 ≤ s) :
   have hpair (j : ℕ) (hj : j ≤ s) :
       divisorHyperbolaSmoothRemainder (C-j)*w (C-j)+
         divisorHyperbolaSmoothRemainder (C+j)*w (C+j) ≤
-          B*(w (C-j)+w (C+j))+A/2*((j:ℝ)^2*w (C-j)+(j:ℝ)^2*w (C+j)) := by
+          B*(w (C-j)+w (C+j))+A/2*((j:ℝ)^(2 : ℕ)*w (C-j)+(j:ℝ)^(2 : ℕ)*w (C+j)) := by
     have hsource := divisorHyperbolaSmoothRemainder_reflection_le hs1 hj
     have hp := divisorHyperbolaSmoothRemainder_pair_le_geometric_quadratic hs1 hj
     change divisorHyperbolaSmoothRemainder (C-j) ≤ divisorHyperbolaSmoothRemainder (C+j) at hsource
-    change divisorHyperbolaSmoothRemainder (C-j)+divisorHyperbolaSmoothRemainder (C+j) ≤ 2*B+(j:ℝ)^2*A at hp
+    change divisorHyperbolaSmoothRemainder (C-j)+divisorHyperbolaSmoothRemainder (C+j) ≤ 2*B+(j:ℝ)^(2 : ℕ)*A at hp
     have hw := halfOrderAbelStep_antitone 0 (show C-j ≤ C+j by omega)
     have hprod := mul_nonneg (sub_nonneg.mpr hsource) (sub_nonneg.mpr hw)
     have hpmul := mul_le_mul_of_nonneg_right hp
@@ -96,7 +96,7 @@ private lemma weighted_block_of_two {s : ℕ} (hs : 2 ≤ s) :
     have hc0 : divisorHyperbolaSmoothRemainder C ≤ B := by linarith only [h]
     exact mul_le_mul_of_nonneg_right hc0 (halfOrderAbelStep_nonneg 0 C)
   have hm (j : ℕ) (hj : j ≤ s) :
-      q (C-j)=(j:ℝ)^2 ∧ q (C+j)=(j:ℝ)^2 := by
+      q (C-j)=(j:ℝ)^(2 : ℕ) ∧ q (C+j)=(j:ℝ)^(2 : ℕ) := by
     have hjc : j ≤ C := hj.trans hcs
     dsimp [q]
     rw [Nat.cast_sub hjc]
@@ -110,7 +110,7 @@ private lemma weighted_block_of_two {s : ℕ} (hs : 2 ≤ s) :
     rw [← ha,← hb,sum_symmetric _ hcs,sum_symmetric _ hcs,sum_symmetric _ hcs]
     have hh := sum_le_sum (fun j (hj : j ∈ Icc 1 s) => hpair j (mem_Icc.mp hj).2)
     have hq : (∑ j ∈ Icc 1 s,(q (C-j)*w (C-j)+q (C+j)*w (C+j)))=
-        ∑ j ∈ Icc 1 s,((j:ℝ)^2*w (C-j)+(j:ℝ)^2*w (C+j)) := by
+        ∑ j ∈ Icc 1 s,((j:ℝ)^(2 : ℕ)*w (C-j)+(j:ℝ)^(2 : ℕ)*w (C+j)) := by
       exact sum_congr rfl (fun j hj => by rw [(hm j (mem_Icc.mp hj).2).1,(hm j (mem_Icc.mp hj).2).2])
     rw [hq0,zero_mul,hq]
     simp only [sum_add_distrib,← mul_sum] at hh
@@ -131,7 +131,7 @@ private lemma weighted_block_of_two {s : ℕ} (hs : 2 ≤ s) :
   rw [hw,mul_one] at hmajor
   have hcor := weighted_correction_nonpos hsR
   have he : B+A/2*(c/3+1/18)=divisorHyperbolaSmoothMean+
-      (-1/(4*c)+(2*c+1)/(30*c^2)+1/(12*(s:ℝ)^2)+1/(36*(s:ℝ)*(s+2))+A/36) := by
+      (-1/(4*c)+(2*c+1)/(30*c^(2 : ℕ))+1/(12*(s:ℝ)^(2 : ℕ))+1/(36*(s:ℝ)*(s+2))+A/36) := by
     dsimp [B,A,c,divisorHyperbolaSmoothMean]
     field_simp
     ring

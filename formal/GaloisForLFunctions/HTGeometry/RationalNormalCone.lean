@@ -32,7 +32,7 @@ coneExp_refl_translate                    the semigroup identity
 isRegularOn_coneTop                       U T ^ d is regular modulo U
 isRingRegularSeq_cone                     (U, U T ^ d) is a regular sequence
 isIntegral_cone                           the cone ring is integral over K[U, U T ^ d]
-ringKrullDim_le_of_isIntegral             ** dimension does not grow along an integral extension **
+ringKrullDim_le_of_isIntegral_rationalNormalCone             ** dimension does not grow along an integral extension **
 ringKrullDim_rationalNormalCone           dim = 2
 isCohenMacaulayRing_rationalNormalCone    ** the cone is Cohen–Macaulay **
 ```
@@ -344,7 +344,7 @@ theorem strictMono_primeSpectrum_comap_of_isIntegral
 /-- **Krull dimension does not grow along an integral extension.**  Comap of primes is strictly
 monotone for an integral extension, so every chain upstairs contracts to a chain of the same
 length. -/
-theorem ringKrullDim_le_of_isIntegral
+theorem ringKrullDim_le_of_isIntegral_rationalNormalCone
     {A B : Type*} [CommRing A] [CommRing B] [Algebra A B] [Algebra.IsIntegral A B] :
     ringKrullDim B ≤ ringKrullDim A :=
   Order.krullDim_le_of_strictMono _ strictMono_primeSpectrum_comap_of_isIntegral
@@ -362,7 +362,7 @@ theorem ringKrullDim_rationalNormalCone {d : ℕ} (hd : 0 < d) :
   haveI : Fact (0 < d) := ⟨hd⟩
   refine le_antisymm ?_ ?_
   · calc ringKrullDim (rationalNormalCone K d)
-        ≤ ringKrullDim (MvPolynomial (Fin 2) K) := ringKrullDim_le_of_isIntegral
+        ≤ ringKrullDim (MvPolynomial (Fin 2) K) := ringKrullDim_le_of_isIntegral_rationalNormalCone
       _ = 2 := ringKrullDim_mvPolynomial_fin_two K
   · have h := length_le_ringKrullDim_of_isRingRegularSeq
       [coneApex K d, coneTop K d] (isRingRegularSeq_cone (K := K) hd)

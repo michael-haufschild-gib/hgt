@@ -282,7 +282,7 @@ theorem norm_xiMassPolyVerticalRawTerm_le_inv_sq
     ‖xiMassPolyVerticalRawTerm Q a τ R q y‖ ≤
       evalRealPolynomialNormBound Q (R + c) *
           ((3 / 2 : ℝ) * xiMassVerticalEnvelope c τ R * (R + c)) /
-        ‖xiSpectralPoint q‖ ^ 2 := by
+        ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have hR0 : 0 ≤ R := le_trans (by norm_num) hR
   have hB : ‖evalRealPolynomial Q ((R : ℂ) + y * I)‖ ≤
       evalRealPolynomialNormBound Q (R + c) :=
@@ -294,7 +294,7 @@ theorem norm_xiMassPolyVerticalRawTerm_le_inv_sq
   calc ‖evalRealPolynomial Q ((R : ℂ) + y * I)‖ * ‖xiMassVerticalRawTerm a τ R q y‖
       ≤ evalRealPolynomialNormBound Q (R + c) *
           (((3 / 2 : ℝ) * xiMassVerticalEnvelope c τ R * (R + c)) /
-            ‖xiSpectralPoint q‖ ^ 2) :=
+            ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
         mul_le_mul hB hraw (norm_nonneg _) hB0
     _ = _ := by ring
 
@@ -305,12 +305,12 @@ theorem norm_integral_xiMassPolyVerticalRawTerm_le_inv_sq
     ‖∫ y in -c..c, xiMassPolyVerticalRawTerm Q a τ R q y‖ ≤
       evalRealPolynomialNormBound Q (R + c) *
           (3 * c * xiMassVerticalEnvelope c τ R * (R + c)) /
-        ‖xiSpectralPoint q‖ ^ 2 := by
+        ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have hpoint : ∀ y ∈ uIoc (-c) c,
       ‖xiMassPolyVerticalRawTerm Q a τ R q y‖ ≤
         evalRealPolynomialNormBound Q (R + c) *
             ((3 / 2 : ℝ) * xiMassVerticalEnvelope c τ R * (R + c)) /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
     intro y hy
     have hyIoc : y ∈ Ioc (-c) c := by
       simpa [uIoc_of_le (by linarith : -c ≤ c)] using hy
@@ -320,7 +320,7 @@ theorem norm_integral_xiMassPolyVerticalRawTerm_le_inv_sq
     ‖∫ y in -c..c, xiMassPolyVerticalRawTerm Q a τ R q y‖ ≤
         (evalRealPolynomialNormBound Q (R + c) *
             ((3 / 2 : ℝ) * xiMassVerticalEnvelope c τ R * (R + c)) /
-          ‖xiSpectralPoint q‖ ^ 2) * |c - (-c)| :=
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ)) * |c - (-c)| :=
       intervalIntegral.norm_integral_le_of_norm_le_const hpoint
     _ = _ := by
       rw [abs_of_nonneg (by linarith : 0 ≤ c - -c)]
@@ -335,7 +335,7 @@ def xiMassPolyVerticalIntegratedMajorant (Q : Polynomial ℝ) (c : ℝ) (τ : �
         1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)) +
     (evalRealPolynomialNormBound Q (R + c) *
         (3 * c * xiMassVerticalEnvelope c τ R * (R + c))) *
-      (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2)
+      (∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))
 
 theorem summable_integral_xiMassPolyVerticalRawTerm_and_norm_tsum_le
     (Q : Polynomial ℝ) {a c R : ℝ} (ha : 0 < a) (hc : 1 / 2 < c) (hca : c < a)
@@ -348,7 +348,7 @@ theorem summable_integral_xiMassPolyVerticalRawTerm_and_norm_tsum_le
     ∫ y in -c..c, xiMassPolyVerticalRawTerm Q a τ R q y
   let w₃ : XiZeroCopy → ℝ := fun q =>
     1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖)
-  let w₂ : XiZeroCopy → ℝ := fun q => 1 / ‖xiSpectralPoint q‖ ^ 2
+  let w₂ : XiZeroCopy → ℝ := fun q => 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   let N : ℝ := xiMassPolyVerticalIntegratedNumerator Q c τ R
   let c₃ : ℝ := N * Real.sqrt (3 * (R + c))
   let c₂ : ℝ := evalRealPolynomialNormBound Q (R + c) *
@@ -389,7 +389,7 @@ theorem summable_integral_xiMassPolyVerticalRawTerm_and_norm_tsum_le
           le_add_of_nonneg_right (mul_nonneg hc₂ (by dsimp only [w₂]; positivity))
     · have hfar : 3 * (R + c) ≤ ‖xiSpectralPoint q‖ := le_of_lt (lt_of_not_ge hnear)
       calc
-        ‖T q‖ ≤ c₂ / ‖xiSpectralPoint q‖ ^ 2 := by
+        ‖T q‖ ≤ c₂ / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
           simpa only [T, c₂] using
             norm_integral_xiMassPolyVerticalRawTerm_le_inv_sq Q ha hca hτ hR hc0 q hfar
         _ = c₂ * w₂ q := by dsimp only [w₂]; ring
@@ -463,7 +463,7 @@ private theorem tendsto_polyEnvelope_aux {delta c A A' K TN S₃ S₂ E₀ : ℝ
     have hB'R0 := hB'0 R hR
     have hsqrt : Real.sqrt (3 * (R + c)) ≤ 3 * (1 + c + R) := by
       have h2 : Real.sqrt (3 * (R + c)) ≤ 3 * (R + c) := by
-        have h := Real.sqrt_le_sqrt (show 3 * (R + c) ≤ (3 * (R + c)) ^ 2 by nlinarith)
+        have h := Real.sqrt_le_sqrt (show 3 * (R + c) ≤ (3 * (R + c)) ^ (2 : ℕ) by nlinarith)
         rwa [Real.sqrt_sq (by linarith)] at h
       linarith
     have hinner : B R * (R + c) * K +
@@ -570,7 +570,7 @@ theorem tendsto_xiMassPolyVerticalIntegratedMajorant_atTop
     (A' := evalRealPolynomialCoeffSum (Polynomial.derivative Q))
     (K := xiVerticalCauchyKernelBoundAt c) (TN := ‖τ‖)
     (S₃ := ∑' q : XiZeroCopy, 1 / (‖xiSpectralPoint q‖ * Real.sqrt ‖xiSpectralPoint q‖))
-    (S₂ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2)
+    (S₂ := ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))
     (E₀ := Real.exp (|τ.im| * c))
     hτ hc0 (evalRealPolynomialCoeffSum_nonneg Q) (evalRealPolynomialCoeffSum_nonneg _)
     (xiVerticalCauchyKernelBoundAt_nonneg hc) (norm_nonneg τ)
@@ -611,7 +611,7 @@ theorem integral_norm_xiMassPolyVerticalRawTerm_le_inv_sq
     (∫ y in -c..c, ‖xiMassPolyVerticalRawTerm Q a τ R q y‖) ≤
       evalRealPolynomialNormBound Q (R + c) *
           (3 * c * xiMassVerticalEnvelope c τ R * (R + c)) /
-        ‖xiSpectralPoint q‖ ^ 2 := by
+        ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have hc0 : 0 ≤ c := (lt_trans (by norm_num) hc).le
   have hR0 : 0 ≤ R := le_trans (by norm_num) hR
   have him := xiSpectralPoint_im_mem_openHalf q
@@ -629,7 +629,7 @@ theorem integral_norm_xiMassPolyVerticalRawTerm_le_inv_sq
   have hfint : IntervalIntegrable (xiMassPolyVerticalRawTerm Q a τ R q) volume (-c) c :=
     hcontu.intervalIntegrable
   let C : ℝ := evalRealPolynomialNormBound Q (R + c) *
-    ((3 / 2 : ℝ) * xiMassVerticalEnvelope c τ R * (R + c)) / ‖xiSpectralPoint q‖ ^ 2
+    ((3 / 2 : ℝ) * xiMassVerticalEnvelope c τ R * (R + c)) / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   have hmono : (∫ y in -c..c, ‖xiMassPolyVerticalRawTerm Q a τ R q y‖) ≤
       ∫ _y in -c..c, C := by
     apply intervalIntegral.integral_mono_on (by linarith) hfint.norm
@@ -655,7 +655,7 @@ theorem integral_tsum_xiMassPolyVerticalRawTerm_eq_tsum_integral
       ∑' q : XiZeroCopy, ∫ y in -c..c, xiMassPolyVerticalRawTerm Q a τ R q y := by
   let A : ℝ := evalRealPolynomialNormBound Q (R + c) *
     (3 * c * xiMassVerticalEnvelope c τ R * (R + c))
-  let b : XiZeroCopy → ℝ := fun q => A / ‖xiSpectralPoint q‖ ^ 2
+  let b : XiZeroCopy → ℝ := fun q => A / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   have hc0 : 0 ≤ c := (lt_trans (by norm_num) hc).le
   have hb : Summable b := by
     have hscaled := xiSpectralPoint_inv_sq_summable.mul_left A

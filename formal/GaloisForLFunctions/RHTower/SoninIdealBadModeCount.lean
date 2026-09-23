@@ -37,7 +37,7 @@ theorem card_filter_le_hsNormSq_of_isSoninPrincipalRelativeIdeal
     {T : evenSubspace →L[ℂ] evenSubspace} (hT : IsSoninPrincipalRelativeIdeal T)
     {ι : Type*} [Fintype ι] [DecidableEq ι] {e : ι → evenSubspace} (he : Orthonormal ℂ e)
     (ε : ℝ) (hε : 0 < ε) :
-    (((Finset.univ.filter fun i => ε ≤ ‖T (e i)‖).card : ℝ)) * ε ^ 2 ≤ hsNormSq T :=
+    (((Finset.univ.filter fun i => ε ≤ ‖T (e i)‖).card : ℝ)) * ε ^ (2 : ℕ) ≤ hsNormSq T :=
   card_filter_le_hsNormSq (isHilbertSchmidt_of_isSoninPrincipalRelativeIdeal hT) he ε hε
 
 /-- **Surviving modes.**  All but at most `hsNormSq T / ε²` members of a finite orthonormal family
@@ -47,7 +47,7 @@ theorem card_le_card_filter_lt_of_isSoninPrincipalRelativeIdeal
     {ι : Type*} [Fintype ι] [DecidableEq ι] {e : ι → evenSubspace} (he : Orthonormal ℂ e)
     (ε : ℝ) (hε : 0 < ε) :
     (Fintype.card ι : ℝ) ≤
-      ((Finset.univ.filter fun i => ‖T (e i)‖ < ε).card : ℝ) + hsNormSq T / ε ^ 2 :=
+      ((Finset.univ.filter fun i => ‖T (e i)‖ < ε).card : ℝ) + hsNormSq T / ε ^ (2 : ℕ) :=
   card_le_card_filter_lt_add_hsNormSq (isHilbertSchmidt_of_isSoninPrincipalRelativeIdeal hT)
     he ε hε
 
@@ -62,7 +62,7 @@ theorem card_le_card_filter_forall_lt_of_isSoninPrincipalRelativeIdeal
     (ε : ℝ) (hε : 0 < ε) :
     (Fintype.card ι : ℝ) ≤
       ((Finset.univ.filter fun i => ∀ k, ‖T k (e i)‖ < ε).card : ℝ) +
-        ∑ k : κ, hsNormSq (T k) / ε ^ 2 := by
+        ∑ k : κ, hsNormSq (T k) / ε ^ (2 : ℕ) := by
   classical
   have hcover : (Finset.univ.filter fun i : ι => ¬ ∀ k, ‖T k (e i)‖ < ε) ⊆
       Finset.univ.biUnion fun k : κ => Finset.univ.filter fun i : ι => ε ≤ ‖T k (e i)‖ := by
@@ -75,13 +75,13 @@ theorem card_le_card_filter_forall_lt_of_isSoninPrincipalRelativeIdeal
     have hnat := le_trans (Finset.card_le_card hcover) (Finset.card_biUnion_le)
     have := (Nat.cast_le (α := ℝ)).mpr hnat
     simpa only [Nat.cast_sum] using this
-  have hεsq : (0 : ℝ) < ε ^ 2 := by positivity
+  have hεsq : (0 : ℝ) < ε ^ (2 : ℕ) := by positivity
   have hterm : ∀ k : κ, ((Finset.univ.filter fun i : ι => ε ≤ ‖T k (e i)‖).card : ℝ) ≤
-      hsNormSq (T k) / ε ^ 2 := fun k =>
+      hsNormSq (T k) / ε ^ (2 : ℕ) := fun k =>
     (le_div_iff₀ hεsq).mpr
       (card_filter_le_hsNormSq_of_isSoninPrincipalRelativeIdeal (hT k) he ε hε)
   have hsum : ((Finset.univ.filter fun i : ι => ¬ ∀ k, ‖T k (e i)‖ < ε).card : ℝ) ≤
-      ∑ k : κ, hsNormSq (T k) / ε ^ 2 :=
+      ∑ k : κ, hsNormSq (T k) / ε ^ (2 : ℕ) :=
     le_trans hcard (Finset.sum_le_sum fun k _ => hterm k)
   have hsplit : (Finset.univ.filter fun i : ι => ∀ k, ‖T k (e i)‖ < ε).card +
       (Finset.univ.filter fun i : ι => ¬ ∀ k, ‖T k (e i)‖ < ε).card = Fintype.card ι := by

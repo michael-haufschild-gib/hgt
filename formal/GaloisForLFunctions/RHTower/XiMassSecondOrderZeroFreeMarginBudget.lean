@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.XiMassParameterizedZeroFreeMarginBudget
 # Second-order moving Xi zero-free margin budget
 
 The spent budget fraction now tends to one: only a second zero-free width remains as decay.
-The residual scale `A / log(A)^18` still absorbs exact widened-corona entropy, so the complete
+The residual scale `A / log(A)^(18 : ℕ)` still absorbs exact widened-corona entropy, so the complete
 literal Euler/Gamma source vanishes on an explicit genuinely subcritical schedule.
 -/
 
@@ -42,7 +42,7 @@ theorem tendsto_xiZeroFreeScale_pow (n : ℕ) :
 /-- Rescaled envelope when the unspent margin fraction equals one further zero-free width. -/
 def xiMassSecondOrderScaledEnvelope (σ B : ℝ) : ℝ :=
   xiZeroCountEnvelopeConstant * (2 * B + 3) * Real.log (2 * B + 4) *
-    Real.exp (-(2 * σ / 13) * B * xiWardZeroFreeMargin (2 * B) ^ 2)
+    Real.exp (-(2 * σ / 13) * B * xiWardZeroFreeMargin (2 * B) ^ (2 : ℕ))
 
 /-- A second-order residual margin still absorbs the full widened-corona entropy. -/
 theorem tendsto_xiMassSecondOrderScaledEnvelope_zero
@@ -50,7 +50,7 @@ theorem tendsto_xiMassSecondOrderScaledEnvelope_zero
     Tendsto (xiMassSecondOrderScaledEnvelope σ) atTop (𝓝 0) := by
   let C : ℝ := xiZeroCountEnvelopeConstant
   let D : ℝ := C + 1
-  let c : ℝ := (2 * σ / 13) * xiWardZeroFreeMarginC ^ 2
+  let c : ℝ := (2 * σ / 13) * xiWardZeroFreeMarginC ^ (2 : ℕ)
   have hC : 0 < C := by dsimp only [C]; exact xiZeroCountEnvelopeConstant_pos
   have hD : 0 < D := by dsimp only [D]; linarith
   have hc : 0 < c := by
@@ -83,7 +83,7 @@ theorem tendsto_xiMassSecondOrderScaledEnvelope_zero
     have hlog : 0 ≤ Real.log (2 * B + 4) :=
       Real.log_nonneg (by linarith)
     change 0 ≤ C * (2 * B + 3) * Real.log (2 * B + 4) *
-      Real.exp (-(2 * σ / 13) * B * xiWardZeroFreeMargin (2 * B) ^ 2)
+      Real.exp (-(2 * σ / 13) * B * xiWardZeroFreeMargin (2 * B) ^ (2 : ℕ))
     positivity
   · filter_upwards [hsmall, eventually_gt_atTop (0 : ℝ)] with B hsmallB hB
     let x : ℝ := 2 * B + 9
@@ -109,11 +109,11 @@ theorem tendsto_xiMassSecondOrderScaledEnvelope_zero
       dsimp only [L]
       linarith
     have hlogyx' : Real.log y ≤ x := hlogyx.trans hLx
-    have hP : P ≤ D * x ^ 2 := by
+    have hP : P ≤ D * x ^ (2 : ℕ) := by
       dsimp only [P]
       calc
         C * (2 * B + 3) * Real.log y ≤ D * x * x := by gcongr
-        _ = D * x ^ 2 := by ring
+        _ = D * x ^ (2 : ℕ) := by ring
     have hsmallMul :
         Real.log D * L ^ (18 : ℕ) + 2 * L ^ (19 : ℕ) ≤ c / 2 * B := by
       have hmul := mul_le_mul_of_nonneg_left hsmallB hB.le
@@ -132,7 +132,7 @@ theorem tendsto_xiMassSecondOrderScaledEnvelope_zero
         (Real.log D + 2 * L) * L ^ (18 : ℕ) =
             Real.log D * L ^ (18 : ℕ) + 2 * L ^ (19 : ℕ) := by ring
         _ ≤ c / 2 * B := hsmallMul
-    have hexpEq : Real.exp (Real.log D + 2 * L) = D * x ^ 2 := by
+    have hexpEq : Real.exp (Real.log D + 2 * L) = D * x ^ (2 : ℕ) := by
       rw [Real.exp_add, Real.exp_log hD]
       have htwo : 2 * L = L + L := by ring
       rw [htwo, Real.exp_add]
@@ -141,7 +141,7 @@ theorem tendsto_xiMassSecondOrderScaledEnvelope_zero
       ring
     have hPexp : P ≤ Real.exp (c / 2 * X) := by
       calc
-        P ≤ D * x ^ 2 := hP
+        P ≤ D * x ^ (2 : ℕ) := hP
         _ = Real.exp (Real.log D + 2 * L) := hexpEq.symm
         _ ≤ Real.exp (c / 2 * X) := Real.exp_le_exp.mpr hbudget
     have hcalc :
@@ -161,10 +161,10 @@ theorem tendsto_xiMassSecondOrderScaledEnvelope_zero
       rw [abs_of_nonneg (by positivity : 0 ≤ 2 * B)]
     have hexponent :
         -(2 * σ / 13) * B *
-            (xiWardZeroFreeMarginC / L ^ (9 : ℕ)) ^ 2 = -c * X := by
+            (xiWardZeroFreeMarginC / L ^ (9 : ℕ)) ^ (2 : ℕ) = -c * X := by
       dsimp only [c, X]
       field_simp
-    change P * Real.exp (-(2 * σ / 13) * B * xiWardZeroFreeMargin (2 * B) ^ 2) ≤
+    change P * Real.exp (-(2 * σ / 13) * B * xiWardZeroFreeMargin (2 * B) ^ (2 : ℕ)) ≤
       Real.exp (-(c / 2) * X)
     rw [hmargin, hexponent]
     exact hcalc

@@ -141,7 +141,7 @@ theorem norm_sq_pow_eq_re_tsum_mixedAdditiveConvolutionPower_mul_pow
     (a : ℕ → ℂ) (q : ℂ)
     (hq : (starRingEnd ℂ) q = q)
     (ha : Summable (fun N : ℕ => ‖a N * q ^ N‖)) (k : ℕ) :
-    ‖(∑' N : ℕ, a N * q ^ N) ^ k‖ ^ 2 =
+    ‖(∑' N : ℕ, a N * q ^ N) ^ k‖ ^ (2 : ℕ) =
       (∑' N : ℕ, mixedAdditiveConvolutionPower a k N * q ^ N).re := by
   have h := congrArg Complex.re
     (pow_mul_star_pow_eq_tsum_mixedAdditiveConvolutionPower_mul_pow a q hq ha k)
@@ -156,7 +156,7 @@ theorem norm_sq_pow_le_tsum_of_mixedAdditiveConvolutionPower_upper
     (b : ℕ → ℝ)
     (hupper : ∀ N : ℕ, (mixedAdditiveConvolutionPower a k N).re ≤ b N)
     (hb : Summable (fun N : ℕ => b N * r ^ N)) :
-    ‖(∑' N : ℕ, a N * (r : ℂ) ^ N) ^ k‖ ^ 2 ≤
+    ‖(∑' N : ℕ, a N * (r : ℂ) ^ N) ^ k‖ ^ (2 : ℕ) ≤
       ∑' N : ℕ, b N * r ^ N := by
   have hmixNorm :=
     summable_norm_mixedAdditiveConvolutionPower_mul_pow a (r : ℂ) ha k
@@ -180,7 +180,7 @@ theorem norm_sq_pow_le_tsum_of_mixedAdditiveConvolutionPower_upper
     apply Summable.tsum_le_tsum (fun N => ?_) hmixR hb
     exact mul_le_mul_of_nonneg_right (hupper N) (pow_nonneg hr N)
   calc
-    ‖(∑' N : ℕ, a N * (r : ℂ) ^ N) ^ k‖ ^ 2 =
+    ‖(∑' N : ℕ, a N * (r : ℂ) ^ N) ^ k‖ ^ (2 : ℕ) =
         (∑' N : ℕ,
           mixedAdditiveConvolutionPower a k N * (r : ℂ) ^ N).re :=
       norm_sq_pow_eq_re_tsum_mixedAdditiveConvolutionPower_mul_pow

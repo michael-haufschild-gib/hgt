@@ -36,14 +36,14 @@ def primeRecipSum (N : ℕ) : ℝ := ∑ n ∈ Finset.Icc 0 N, primeRecipWeight 
 
 private def invLog (t : ℝ) : ℝ := (Real.log t)⁻¹
 
-private def invLogDeriv (t : ℝ) : ℝ := -(t * Real.log t ^ 2)⁻¹
+private def invLogDeriv (t : ℝ) : ℝ := -(t * Real.log t ^ (2 : ℕ))⁻¹
 
 private theorem hasDerivAt_invLog {t : ℝ} (ht : 1 < t) :
     HasDerivAt invLog (invLogDeriv t) t := by
   have ht0 : t ≠ 0 := by linarith
   have hlog : Real.log t ≠ 0 := (Real.log_pos ht).ne'
   have h := (Real.hasDerivAt_log ht0).inv hlog
-  have heq : -t⁻¹ / Real.log t ^ 2 = invLogDeriv t := by
+  have heq : -t⁻¹ / Real.log t ^ (2 : ℕ) = invLogDeriv t := by
     rw [invLogDeriv]
     field_simp
   rw [← heq]
@@ -53,7 +53,7 @@ private theorem continuousAt_invLogDeriv {t : ℝ} (ht : 1 < t) :
     ContinuousAt invLogDeriv t := by
   have ht0 : t ≠ 0 := by linarith
   have hlog : Real.log t ≠ 0 := (Real.log_pos ht).ne'
-  have hden : ContinuousAt (fun x : ℝ => x * Real.log x ^ 2) t :=
+  have hden : ContinuousAt (fun x : ℝ => x * Real.log x ^ (2 : ℕ)) t :=
     continuousAt_id.mul ((Real.continuousAt_log ht0).pow 2)
   exact (hden.inv₀ (by positivity)).neg
 
@@ -153,7 +153,7 @@ private theorem measurable_mertensFloorError : Measurable mertensFloorError := b
   exact h1.sub Real.measurable_log
 
 /-- The weight `1/(t log² t)` against which the Mertens error is integrated. -/
-def mertensErrorWeight (t : ℝ) : ℝ := (t * Real.log t ^ 2)⁻¹
+def mertensErrorWeight (t : ℝ) : ℝ := (t * Real.log t ^ (2 : ℕ))⁻¹
 
 private theorem hasDerivAt_negInvLog {t : ℝ} (ht : 1 < t) :
     HasDerivAt (fun x : ℝ => -invLog x) (mertensErrorWeight t) t := by

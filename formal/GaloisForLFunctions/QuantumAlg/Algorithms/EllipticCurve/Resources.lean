@@ -100,11 +100,11 @@ def rationalCoefficientCeil (num den term : Nat) : Nat :=
 
 /-- Cubic bit-size monomial used by the fitted full-algorithm formulas. -/
 def nCubed (params : FormulaParameters) : Nat :=
-  params.bitSize ^ 3
+  params.bitSize ^ (3 : ℕ)
 
 /-- Square bit-size monomial used by the low-depth fitted formulas. -/
 def nSquared (params : FormulaParameters) : Nat :=
-  params.bitSize ^ 2
+  params.bitSize ^ (2 : ℕ)
 
 namespace LowWidth
 
@@ -115,22 +115,22 @@ def logicalQubits (params : FormulaParameters) : Nat :=
   8 * params.bitSize + rationalCoefficientCeil 102 10 params.logBitSizeFloor
 
 /-- Low-width T-gate upper bound, conservatively dropping the fitted negative
-constant in `436 n^3 - 1.05 * 2^26`. -/
+constant in `436 n^(3 : ℕ) - 1.05 * 2^(26 : ℕ)`. -/
 def tGates (params : FormulaParameters) : Nat :=
   436 * nCubed params
 
 /-- Low-width T-depth upper bound, conservatively dropping the fitted negative
-constant in `120 n^3 - 1.67 * 2^22`. -/
+constant in `120 n^(3 : ℕ) - 1.67 * 2^(22 : ℕ)`. -/
 def tDepth (params : FormulaParameters) : Nat :=
   120 * nCubed params
 
 /-- Low-width all-gate depth upper bound, conservatively dropping the fitted
-negative constant in `509 n^3 - 1.84 * 2^27`. -/
+negative constant in `509 n^(3 : ℕ) - 1.84 * 2^(27 : ℕ)`. -/
 def allGateDepth (params : FormulaParameters) : Nat :=
   509 * nCubed params
 
-/-- Low-width total-gate upper bound.  The prose summary gives `2900 n^3`,
-while the appendix table gives `2800 n^3`; this module keeps the larger source
+/-- Low-width total-gate upper bound.  The prose summary gives `2900 n^(3 : ℕ)`,
+while the appendix table gives `2800 n^(3 : ℕ)`; this module keeps the larger source
 coefficient as a conservative integer upper bound.
 -/
 def totalGates (params : FormulaParameters) : Nat :=
@@ -160,22 +160,22 @@ def logicalQubits (params : FormulaParameters) : Nat :=
   10 * params.bitSize +
     rationalCoefficientCeil 74 10 params.logBitSizeFloor + 2
 
-/-- Low-T T-gate upper bound from `1115 n^3 / log n`, with the fitted negative
+/-- Low-T T-gate upper bound from `1115 n^(3 : ℕ) / log n`, with the fitted negative
 constant dropped. -/
 def tGates (params : FormulaParameters) : Nat :=
   QuantumAlg.Nat.ceilDiv (1115 * nCubed params) params.logDivisor
 
-/-- Low-T T-depth upper bound from `389 n^3 / log n`, with the fitted negative
+/-- Low-T T-depth upper bound from `389 n^(3 : ℕ) / log n`, with the fitted negative
 constant dropped. -/
 def tDepth (params : FormulaParameters) : Nat :=
   QuantumAlg.Nat.ceilDiv (389 * nCubed params) params.logDivisor
 
-/-- Low-T all-gate depth upper bound from `1701 n^3 / log n`, with the fitted
+/-- Low-T all-gate depth upper bound from `1701 n^(3 : ℕ) / log n`, with the fitted
 negative constant dropped. -/
 def allGateDepth (params : FormulaParameters) : Nat :=
   QuantumAlg.Nat.ceilDiv (1701 * nCubed params) params.logDivisor
 
-/-- Low-T total-gate upper bound from `6262 n^3 / log n`, with the fitted
+/-- Low-T total-gate upper bound from `6262 n^(3 : ℕ) / log n`, with the fitted
 negative constant dropped. -/
 def totalGates (params : FormulaParameters) : Nat :=
   QuantumAlg.Nat.ceilDiv (6262 * nCubed params) params.logDivisor
@@ -204,22 +204,22 @@ def logicalQubits (params : FormulaParameters) : Nat :=
   11 * params.bitSize +
     rationalCoefficientCeil 39 10 params.logBitSizeFloor + 17
 
-/-- Low-depth T-gate upper bound from `3120 n^3 / log n`, with the fitted
+/-- Low-depth T-gate upper bound from `3120 n^(3 : ℕ) / log n`, with the fitted
 negative constant dropped. -/
 def tGates (params : FormulaParameters) : Nat :=
   QuantumAlg.Nat.ceilDiv (3120 * nCubed params) params.logDivisor
 
 /-- Low-depth T-depth upper bound, conservatively dropping the fitted negative
-constant in `285 n^2 - 1.54 * 2^17`. -/
+constant in `285 n^(2 : ℕ) - 1.54 * 2^(17 : ℕ)`. -/
 def tDepth (params : FormulaParameters) : Nat :=
   285 * nSquared params
 
 /-- Low-depth all-gate depth upper bound:
-`2523 n^2 + ceil(1.10 * 2^20)`. -/
+`2523 n^(2 : ℕ) + ceil(1.10 * 2^(20 : ℕ))`. -/
 def allGateDepth (params : FormulaParameters) : Nat :=
-  2523 * nSquared params + QuantumAlg.Nat.ceilDiv (110 * 2 ^ 20) 100
+  2523 * nSquared params + QuantumAlg.Nat.ceilDiv (110 * 2 ^ (20 : ℕ)) 100
 
-/-- Low-depth total-gate upper bound from `12478 n^3 / log n`, with the fitted
+/-- Low-depth total-gate upper bound from `12478 n^(3 : ℕ) / log n`, with the fitted
 negative constant dropped. -/
 def totalGates (params : FormulaParameters) : Nat :=
   QuantumAlg.Nat.ceilDiv (12478 * nCubed params) params.logDivisor

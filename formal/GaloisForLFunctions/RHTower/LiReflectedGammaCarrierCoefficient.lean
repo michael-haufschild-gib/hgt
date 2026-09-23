@@ -24,51 +24,51 @@ def liReflectedGammaCarrierCoefficient (alpha : ℝ) (n : ℕ) : ℝ :=
 theorem liCarrierPairContribution_le_natMajorant {alpha : ℝ} (halpha : 0 < alpha)
     (n k : ℕ) :
     liCarrierPairContribution n (alpha + k) ≤
-      4 * (n : ℝ) ^ 2 / ((k : ℝ) + 1) ^ 2 := by
+      4 * (n : ℝ) ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ) := by
   have hgamma : alpha + (k : ℝ) ≠ 0 := by positivity
   have hquad := liCarrierPairContribution_le_quadratic
     (n := n) (gamma := alpha + k) hgamma
   have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k
   have hgammaLower : (k : ℝ) ≤ alpha + k := by linarith
-  have hsquares : (k : ℝ) ^ 2 ≤ (alpha + k) ^ 2 := by nlinarith
-  have hden : ((k : ℝ) + 1) ^ 2 / 4 ≤ (alpha + k) ^ 2 + 1 / 4 := by
+  have hsquares : (k : ℝ) ^ (2 : ℕ) ≤ (alpha + k) ^ (2 : ℕ) := by nlinarith
+  have hden : ((k : ℝ) + 1) ^ (2 : ℕ) / 4 ≤ (alpha + k) ^ (2 : ℕ) + 1 / 4 := by
     cases k with
     | zero => norm_num; positivity
     | succ k =>
         have hk1 : (1 : ℝ) ≤ (Nat.succ k : ℕ) := by
           exact_mod_cast Nat.succ_le_succ (Nat.zero_le k)
         nlinarith
-  have hleft : 0 < ((k : ℝ) + 1) ^ 2 / 4 := by positivity
-  have hrecip : 1 / ((alpha + k) ^ 2 + 1 / 4) ≤
-      4 / ((k : ℝ) + 1) ^ 2 := by
+  have hleft : 0 < ((k : ℝ) + 1) ^ (2 : ℕ) / 4 := by positivity
+  have hrecip : 1 / ((alpha + k) ^ (2 : ℕ) + 1 / 4) ≤
+      4 / ((k : ℝ) + 1) ^ (2 : ℕ) := by
     have h := one_div_le_one_div_of_le hleft hden
     calc
-      1 / ((alpha + k) ^ 2 + 1 / 4)
-          ≤ 1 / (((k : ℝ) + 1) ^ 2 / 4) := h
-      _ = 4 / ((k : ℝ) + 1) ^ 2 := by
+      1 / ((alpha + k) ^ (2 : ℕ) + 1 / 4)
+          ≤ 1 / (((k : ℝ) + 1) ^ (2 : ℕ) / 4) := h
+      _ = 4 / ((k : ℝ) + 1) ^ (2 : ℕ) := by
         field_simp
   calc
     liCarrierPairContribution n (alpha + k)
-        ≤ (n : ℝ) ^ 2 / ((alpha + k) ^ 2 + 1 / 4) := hquad
-    _ ≤ 4 * (n : ℝ) ^ 2 / ((k : ℝ) + 1) ^ 2 := by
+        ≤ (n : ℝ) ^ (2 : ℕ) / ((alpha + k) ^ (2 : ℕ) + 1 / 4) := hquad
+    _ ≤ 4 * (n : ℝ) ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ) := by
       have hmul := mul_le_mul_of_nonneg_left hrecip (sq_nonneg (n : ℝ))
       calc
-        (n : ℝ) ^ 2 / ((alpha + k) ^ 2 + 1 / 4) =
-            (n : ℝ) ^ 2 * (1 / ((alpha + k) ^ 2 + 1 / 4)) := by ring
-        _ ≤ (n : ℝ) ^ 2 * (4 / ((k : ℝ) + 1) ^ 2) := hmul
-        _ = 4 * (n : ℝ) ^ 2 / ((k : ℝ) + 1) ^ 2 := by ring
+        (n : ℝ) ^ (2 : ℕ) / ((alpha + k) ^ (2 : ℕ) + 1 / 4) =
+            (n : ℝ) ^ (2 : ℕ) * (1 / ((alpha + k) ^ (2 : ℕ) + 1 / 4)) := by ring
+        _ ≤ (n : ℝ) ^ (2 : ℕ) * (4 / ((k : ℝ) + 1) ^ (2 : ℕ)) := hmul
+        _ = 4 * (n : ℝ) ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ) := by ring
 
 /-- Absolute summability of the complete critical-line pair contribution series. -/
 theorem summable_liCarrierPairContribution {alpha : ℝ} (halpha : 0 < alpha)
     (n : ℕ) : Summable (fun k : ℕ => liCarrierPairContribution n (alpha + k)) := by
-  have hp : Summable (fun k : ℕ => 1 / (k : ℝ) ^ 2) :=
+  have hp : Summable (fun k : ℕ => 1 / (k : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr (by norm_num)
-  have hshift : Summable (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ 2) := by
+  have hshift : Summable (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
     have h := (summable_nat_add_iff 1).mpr hp
     simpa [Nat.cast_add] using h
   have hmajor : Summable (fun k : ℕ =>
-      4 * (n : ℝ) ^ 2 / ((k : ℝ) + 1) ^ 2) := by
-    have h := hshift.mul_left (4 * (n : ℝ) ^ 2)
+      4 * (n : ℝ) ^ (2 : ℕ) / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
+    have h := hshift.mul_left (4 * (n : ℝ) ^ (2 : ℕ))
     exact h.congr (fun k => by ring)
   refine Summable.of_norm_bounded hmajor ?_
   intro k
@@ -107,19 +107,19 @@ theorem liReflectedGammaCarrierCoefficient_upper {alpha : ℝ} (halpha : 0 < alp
             exact liCarrierPairContribution_le_four (by positivity : alpha + (k : ℝ) ≠ 0)
       _ = 4 * ((n : ℝ) + 1) := by simp; ring
   let g : ℕ → ℝ := fun k =>
-    4 * (n : ℝ) ^ 2 / (((k + (n + 1) : ℕ) : ℝ) + 1) ^ 2
+    4 * (n : ℝ) ^ (2 : ℕ) / (((k + (n + 1) : ℕ) : ℝ) + 1) ^ (2 : ℕ)
   have htailPoint : ∀ k : ℕ, f (k + (n + 1)) ≤ g k := by
     intro k
     have h := liCarrierPairContribution_le_natMajorant halpha n (k + (n + 1))
     simpa [f, g, add_assoc] using h
   have hgSummable : Summable g := by
-    have hp : Summable (fun k : ℕ => 1 / (k : ℝ) ^ 2) :=
+    have hp : Summable (fun k : ℕ => 1 / (k : ℝ) ^ (2 : ℕ)) :=
       Real.summable_one_div_nat_pow.mpr (by norm_num)
-    have hshiftOne : Summable (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ 2) := by
+    have hshiftOne : Summable (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
       have h := (summable_nat_add_iff 1).mpr hp
       simpa [Nat.cast_add] using h
     have hbase := (summable_nat_add_iff (n + 1)).mpr hshiftOne
-    have hmul := hbase.mul_left (4 * (n : ℝ) ^ 2)
+    have hmul := hbase.mul_left (4 * (n : ℝ) ^ (2 : ℕ))
     exact hmul.congr (fun k => by simp only [g, Nat.cast_add]; ring)
   have htailTsum : (∑' k : ℕ, f (k + (n + 1))) ≤ ∑' k : ℕ, g k :=
     ((summable_nat_add_iff (n + 1)).mpr hs).tsum_le_tsum htailPoint hgSummable
@@ -128,12 +128,12 @@ theorem liReflectedGammaCarrierCoefficient_upper {alpha : ℝ} (halpha : 0 < alp
   have hgBound : (∑' k : ℕ, g k) ≤ 4 * (n : ℝ) := by
     have hnpos : (0 : ℝ) < n := by exact_mod_cast hn
     calc
-      (∑' k : ℕ, g k) = 4 * (n : ℝ) ^ 2 *
-          (∑' k : ℕ, 1 / ((((k + (n + 1) : ℕ) : ℝ)) + 1) ^ 2) := by
+      (∑' k : ℕ, g k) = 4 * (n : ℝ) ^ (2 : ℕ) *
+          (∑' k : ℕ, 1 / ((((k + (n + 1) : ℕ) : ℝ)) + 1) ^ (2 : ℕ)) := by
             simp only [g, div_eq_mul_inv]
             rw [tsum_mul_left]
             simp only [one_mul]
-      _ ≤ 4 * (n : ℝ) ^ 2 * (1 / ((n + 1 : ℕ) : ℝ)) := by
+      _ ≤ 4 * (n : ℝ) ^ (2 : ℕ) * (1 / ((n + 1 : ℕ) : ℝ)) := by
         apply mul_le_mul_of_nonneg_left _ (by positivity)
         simpa [add_comm, add_left_comm, add_assoc] using hrecip
       _ ≤ 4 * (n : ℝ) := by
@@ -141,10 +141,10 @@ theorem liReflectedGammaCarrierCoefficient_upper {alpha : ℝ} (halpha : 0 < alp
         have hinv : 1 / ((n : ℝ) + 1) ≤ 1 / (n : ℝ) :=
           one_div_le_one_div_of_le hnpos (by linarith)
         have hmul := mul_le_mul_of_nonneg_left hinv
-          (by positivity : 0 ≤ 4 * (n : ℝ) ^ 2)
+          (by positivity : 0 ≤ 4 * (n : ℝ) ^ (2 : ℕ))
         calc
-          4 * (n : ℝ) ^ 2 * (1 / ((n : ℝ) + 1)) ≤
-              4 * (n : ℝ) ^ 2 * (1 / (n : ℝ)) := hmul
+          4 * (n : ℝ) ^ (2 : ℕ) * (1 / ((n : ℝ) + 1)) ≤
+              4 * (n : ℝ) ^ (2 : ℕ) * (1 / (n : ℝ)) := hmul
           _ = 4 * (n : ℝ) := by field_simp
   rw [liReflectedGammaCarrierCoefficient]
   change ∑' k : ℕ, f k ≤ _

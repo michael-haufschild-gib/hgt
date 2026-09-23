@@ -75,7 +75,7 @@ theorem hasDerivAt_mul_besselJ1_scaled (c r : ℝ) :
 theorem abs_besselJ1_le (u : ℝ) : |besselJ1 u| ≤ |u| / 2 := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hle : |∫ θ in (0 : ℝ)..Real.pi, Real.sin θ * Real.sin (u * Real.sin θ)|
-      ≤ ∫ θ in (0 : ℝ)..Real.pi, |u| * Real.sin θ ^ 2 := by
+      ≤ ∫ θ in (0 : ℝ)..Real.pi, |u| * Real.sin θ ^ (2 : ℕ) := by
     refine le_trans (intervalIntegral.abs_integral_le_integral_abs hpi.le) ?_
     refine intervalIntegral.integral_mono_on hpi.le
       ((continuous_sin_mul_sin u).abs.intervalIntegrable _ _)
@@ -87,10 +87,10 @@ theorem abs_besselJ1_le (u : ℝ) : |besselJ1 u| ≤ |u| / 2 := by
       _ ≤ Real.sin θ * |u * Real.sin θ| := by
           rw [abs_of_nonneg hsnn]
           exact mul_le_mul_of_nonneg_left (Real.abs_sin_le_abs) hsnn
-      _ = |u| * Real.sin θ ^ 2 := by
+      _ = |u| * Real.sin θ ^ (2 : ℕ) := by
           rw [abs_mul, abs_of_nonneg hsnn]
           ring
-  have hint : (∫ θ in (0 : ℝ)..Real.pi, |u| * Real.sin θ ^ 2) = |u| * (Real.pi / 2) := by
+  have hint : (∫ θ in (0 : ℝ)..Real.pi, |u| * Real.sin θ ^ (2 : ℕ)) = |u| * (Real.pi / 2) := by
     rw [intervalIntegral.integral_const_mul, integral_sin_sq]
     simp
   rw [hint] at hle

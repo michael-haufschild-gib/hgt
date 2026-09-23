@@ -27,7 +27,7 @@ theorem sharedSector_tail_le {x h : ℝ} (hx : 4 ≤ x) (hh : 1 ≤ h) {P Q : �
   have hs2 : (2 : ℝ) ≤ Real.sqrt x := by
     have h4 : Real.sqrt 4 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
     have heq : Real.sqrt 4 = 2 := by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
     linarith [h4, heq.le, heq.ge]
   have hterm : ∀ p ∈ bigPrimeSet P Q,
       sharedSectorCount x h p ≤ (3 * Real.sqrt x / (p : ℝ) + 1) * (3 * h / (p : ℝ) + 1) := by

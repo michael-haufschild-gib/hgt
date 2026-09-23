@@ -11,7 +11,7 @@ above-bottom part is suppressed by the spectral gap.  What is left is a **finite
 `xiPoissonShellPoly n t = sum_{q in bottom} alpha^_q ^ n * exp (-i t (Im alpha^_q))`,
 
 a trigonometric polynomial in `t` whose coefficients are the `n`-th powers of the shell's Poisson
-points.  Its moduli `‖alpha^‖^n = (g_1^2 + J^2)^(n/2)` are what `GeometricAmplitudeDominance`
+points.  Its moduli `‖alpha^‖^n = (g_1^(2 : ℕ) + J^(2 : ℕ))^(n/2)` are what `GeometricAmplitudeDominance`
 separates.
 -/
 

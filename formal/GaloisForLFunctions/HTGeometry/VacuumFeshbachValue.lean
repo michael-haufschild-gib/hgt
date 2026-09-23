@@ -41,11 +41,11 @@ theorem C_coeff_zero_add_polynomialVacuumTail
 
 /-- The scalar Schur complement obtained after eliminating the constant-polynomial channel. -/
 def momentVacuumFeshbachRemainder (s : ℕ → ℝ) (q : Polynomial ℝ) : ℝ :=
-  momentFunctional s (q ^ 2) - momentFunctional s q ^ 2 / s 0
+  momentFunctional s (q ^ (2 : ℕ)) - momentFunctional s q ^ (2 : ℕ) / s 0
 
 /-- Quotient-free two-channel determinant between the constant vacuum and one observable. -/
 def momentVacuumRobertsonDeterminant (s : ℕ → ℝ) (q : Polynomial ℝ) : ℝ :=
-  s 0 * momentFunctional s (q ^ 2) - momentFunctional s q ^ 2
+  s 0 * momentFunctional s (q ^ (2 : ℕ)) - momentFunctional s q ^ (2 : ℕ)
 
 /-- The vacuum Robertson determinant is literally the projective quantum tangent value of the
 vacuum mass, mixed moment, and observable speed. -/
@@ -53,7 +53,7 @@ theorem momentVacuumRobertsonDeterminant_eq_projectiveQuantumTangentValue
     (s : ℕ → ℝ) (q : Polynomial ℝ) :
     momentVacuumRobertsonDeterminant s q =
       projectiveQuantumTangentValue (s 0)
-        (momentFunctional s q) (momentFunctional s (q ^ 2)) := by
+        (momentFunctional s q) (momentFunctional s (q ^ (2 : ℕ))) := by
   rfl
 
 /-- Subtract the moment-functional mean of `q`.  This is the canonical representative orthogonal
@@ -81,11 +81,11 @@ theorem momentFunctional_C_mul (s : ℕ → ℝ) (c : ℝ) (q : Polynomial ℝ) 
 /-- Block expansion before eliminating the constant channel. -/
 theorem momentFunctional_C_add_sq
     (s : ℕ → ℝ) (c : ℝ) (q : Polynomial ℝ) :
-    momentFunctional s ((C c + q) ^ 2) =
-      s 0 * c ^ 2 + 2 * c * momentFunctional s q +
-        momentFunctional s (q ^ 2) := by
+    momentFunctional s ((C c + q) ^ (2 : ℕ)) =
+      s 0 * c ^ (2 : ℕ) + 2 * c * momentFunctional s q +
+        momentFunctional s (q ^ (2 : ℕ)) := by
   have hpoly :
-      (C c + q) ^ 2 = C (c ^ 2) + C (2 * c) * q + q ^ 2 := by
+      (C c + q) ^ (2 : ℕ) = C (c ^ (2 : ℕ)) + C (2 * c) * q + q ^ (2 : ℕ) := by
     simp only [pow_two, add_mul, mul_add, map_ofNat, map_mul]
     ring
   rw [hpoly, momentFunctional_add, momentFunctional_add,
@@ -96,8 +96,8 @@ theorem momentFunctional_C_add_sq
 plus the scalar Schur complement on the zero-constant sector. -/
 theorem momentFunctional_C_add_sq_eq_vacuumSquare_add_feshbach
     (s : ℕ → ℝ) (h0 : s 0 ≠ 0) (c : ℝ) (q : Polynomial ℝ) :
-    momentFunctional s ((C c + q) ^ 2) =
-      s 0 * (c + momentFunctional s q / s 0) ^ 2 +
+    momentFunctional s ((C c + q) ^ (2 : ℕ)) =
+      s 0 * (c + momentFunctional s q / s 0) ^ (2 : ℕ) +
         momentVacuumFeshbachRemainder s q := by
   rw [momentFunctional_C_add_sq]
   unfold momentVacuumFeshbachRemainder
@@ -107,7 +107,7 @@ theorem momentFunctional_C_add_sq_eq_vacuumSquare_add_feshbach
 /-- The canonically centered observable has exactly the Feshbach/Schur-complement value. -/
 theorem momentFunctional_momentVacuumCenteredPolynomial_sq
     (s : ℕ → ℝ) (h0 : s 0 ≠ 0) (q : Polynomial ℝ) :
-    momentFunctional s ((momentVacuumCenteredPolynomial s q) ^ 2) =
+    momentFunctional s ((momentVacuumCenteredPolynomial s q) ^ (2 : ℕ)) =
       momentVacuumFeshbachRemainder s q := by
   have hpoly :
       momentVacuumCenteredPolynomial s q =
@@ -144,7 +144,7 @@ its vacuum Feshbach remainder divided by the vacuum mass. -/
 theorem pureStateQuantumFisherValue_moment_eq
     (s : ℕ → ℝ) (h0 : s 0 ≠ 0) (q : Polynomial ℝ) :
     pureStateQuantumFisherValue (s 0)
-        (momentFunctional s q) (momentFunctional s (q ^ 2)) =
+        (momentFunctional s q) (momentFunctional s (q ^ (2 : ℕ))) =
       4 * momentVacuumFeshbachRemainder s q / s 0 := by
   rw [pureStateQuantumFisherValue,
     ← momentVacuumRobertsonDeterminant_eq_projectiveQuantumTangentValue,
@@ -164,7 +164,7 @@ theorem momentVacuumFeshbachRemainder_nonneg_iff_robertson
 theorem momentVacuumRobertsonDeterminant_nonneg_iff_cauchySchwarz
     (s : ℕ → ℝ) (q : Polynomial ℝ) :
     0 ≤ momentVacuumRobertsonDeterminant s q ↔
-      momentFunctional s q ^ 2 ≤ s 0 * momentFunctional s (q ^ 2) := by
+      momentFunctional s q ^ (2 : ℕ) ≤ s 0 * momentFunctional s (q ^ (2 : ℕ)) := by
   unfold momentVacuumRobertsonDeterminant
   constructor <;> intro h <;> linarith
 
@@ -173,7 +173,7 @@ scalar recentering of the observable. -/
 theorem momentVacuumFeshbachRemainder_le_shifted_sq
     (s : ℕ → ℝ) (h0 : 0 < s 0) (q : Polynomial ℝ) (c : ℝ) :
     momentVacuumFeshbachRemainder s q ≤
-      momentFunctional s ((q - C c) ^ 2) := by
+      momentFunctional s ((q - C c) ^ (2 : ℕ)) := by
   have hpoly : q - C c = C (-c) + q := by
     rw [sub_eq_add_neg, map_neg, add_comm]
   rw [hpoly,
@@ -184,7 +184,7 @@ theorem momentVacuumFeshbachRemainder_le_shifted_sq
 theorem exists_shifted_sq_eq_momentVacuumFeshbachRemainder
     (s : ℕ → ℝ) (h0 : s 0 ≠ 0) (q : Polynomial ℝ) :
     ∃ c : ℝ,
-      momentFunctional s ((q - C c) ^ 2) =
+      momentFunctional s ((q - C c) ^ (2 : ℕ)) =
         momentVacuumFeshbachRemainder s q := by
   refine ⟨momentFunctional s q / s 0, ?_⟩
   exact momentFunctional_momentVacuumCenteredPolynomial_sq s h0 q
@@ -194,7 +194,7 @@ quadratic form is nonnegative exactly when the Feshbach remainder is nonnegative
 tails with zero constant coefficient. -/
 theorem all_momentFunctional_sq_nonneg_iff_vacuumFeshbach
     (s : ℕ → ℝ) (h0 : 0 < s 0) :
-    (∀ p : Polynomial ℝ, 0 ≤ momentFunctional s (p ^ 2)) ↔
+    (∀ p : Polynomial ℝ, 0 ≤ momentFunctional s (p ^ (2 : ℕ))) ↔
       ∀ q : Polynomial ℝ, q.coeff 0 = 0 →
         0 ≤ momentVacuumFeshbachRemainder s q := by
   constructor
@@ -216,9 +216,9 @@ theorem all_momentFunctional_sq_nonneg_iff_vacuumFeshbach
 /-- Equivalent centered-observable form of the one-channel reduction. -/
 theorem all_momentFunctional_sq_nonneg_iff_vacuumCentered
     (s : ℕ → ℝ) (h0 : 0 < s 0) :
-    (∀ p : Polynomial ℝ, 0 ≤ momentFunctional s (p ^ 2)) ↔
+    (∀ p : Polynomial ℝ, 0 ≤ momentFunctional s (p ^ (2 : ℕ))) ↔
       ∀ q : Polynomial ℝ, q.coeff 0 = 0 →
-        0 ≤ momentFunctional s ((momentVacuumCenteredPolynomial s q) ^ 2) := by
+        0 ≤ momentFunctional s ((momentVacuumCenteredPolynomial s q) ^ (2 : ℕ)) := by
   rw [all_momentFunctional_sq_nonneg_iff_vacuumFeshbach s h0]
   constructor
   · intro h q hq

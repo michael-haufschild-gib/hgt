@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.BurnolSoninProjectedEvaluationTransport
 For a point `ρ` of the open right half of the critical strip the two operators
 
 ```text
-(A_ρ f)(t) = ∫_1^∞ u^(-ρ) f(u t) du,     (C_ρ f)(t) = ∫_0^1 u^(ρ-1) f(u t) du
+(A_ρ f)(t) = ∫_1^∞ u^(-ρ) f(u t) du,     (C_ρ f)(t) = ∫_0^(1 : ℕ) u^(ρ-1) f(u t) du
 ```
 
 are bounded on `L²(0,∞)`; they are the Bochner integrals of the normalized dilation group against

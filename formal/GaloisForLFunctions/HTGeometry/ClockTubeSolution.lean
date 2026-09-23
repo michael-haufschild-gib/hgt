@@ -29,13 +29,13 @@ theorem summable_tubeIterate {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ
     (hV : TubePotential V ρ₀) (hMv0 : 0 ≤ Mv)
     (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ tube k ρ₀, ‖V s t z‖ ≤ Mv)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / (ρ₀ - ρ) ^ 2 < 1)
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / (ρ₀ - ρ) ^ (2 : ℕ) < 1)
     {s t : ℝ} (hsT : |s| ≤ T) (htT : |t| ≤ T)
     {z : Fin k → ℂ} (hz : ∀ i, |(z i).im| ≤ ρ) :
     Summable fun m : ℕ => tubeIterate V m s t z := by
-  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hG : (0 : ℝ) < ρ₀ - ρ := by linarith
-  have hmaj := summable_ovsyannikov_bound (K := 4 * k + Mv * ρ₀ ^ 2 / 4) (G := ρ₀ - ρ) (T := T)
+  have hmaj := summable_ovsyannikov_bound (K := 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) (G := ρ₀ - ρ) (T := T)
     hK0 hG hT hsmall
   refine Summable.of_norm_bounded hmaj fun m => ?_
   have hbase := tubeIterate_norm_le hρ₀ hV hMv0 hMv m ρ hρ0 hρ s t hsT htT z hz
@@ -45,9 +45,9 @@ theorem summable_tubeIterate {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ
 
 /-- The majorant of the step applied to the `m`-th iterate on a rectangle of side `T`. -/
 noncomputable def tubeStepMajorant (k : ℕ) (Mv ρ₀ ρ T : ℝ) (m : ℕ) : ℝ :=
-  (16 * k / (ρ₀ - ρ) ^ 2 + Mv / 4)
-    * ((4 * k + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-      / ((m.factorial : ℝ) ^ 2 * ((ρ₀ - ρ) / 2) ^ (2 * m)))
+  (16 * k / (ρ₀ - ρ) ^ (2 : ℕ) + Mv / 4)
+    * ((4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+      / ((m.factorial : ℝ) ^ (2 : ℕ) * ((ρ₀ - ρ) / 2) ^ (2 * m)))
 
 /-- **The step applied to an iterate is dominated by the majorant.** -/
 theorem norm_tubeStep_tubeIterate_le {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
@@ -70,8 +70,8 @@ theorem norm_tubeStep_tubeIterate_le {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     fun w hw => hMv s t hsT htT w (tube_mono hσρ₀.le hw)
   -- the iterate bound at the intermediate radius, uniform over the rectangle
   have hMw : ∀ w ∈ tube k σ, ‖tubeIterate V m s t w‖
-      ≤ (4 * k + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
-        / ((m.factorial : ℝ) ^ 2 * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
+      ≤ (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) ^ m * (m : ℝ) ^ (2 * m) * (T ^ m * T ^ m)
+        / ((m.factorial : ℝ) ^ (2 : ℕ) * ((ρ₀ - ρ) / 2) ^ (2 * m)) := by
     intro w hw
     have hbase := tubeIterate_norm_le hρ₀ hV hMv0 hMv m σ hσ0 hσρ₀ s t hsT htT w
       fun i => (hw i).le
@@ -81,7 +81,7 @@ theorem norm_tubeStep_tubeIterate_le {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
     gcongr
   have hstep := norm_tubeStep_le_of_sliceHolo hρσ hMv0 hwσ hMw hMvσ hz
   rw [hgap] at hstep
-  have hrw : 4 * (k : ℝ) / ((ρ₀ - ρ) / 2) ^ 2 = 16 * k / (ρ₀ - ρ) ^ 2 := by
+  have hrw : 4 * (k : ℝ) / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) = 16 * k / (ρ₀ - ρ) ^ (2 : ℕ) := by
     rw [div_pow]
     field_simp
     ring
@@ -90,9 +90,9 @@ theorem norm_tubeStep_tubeIterate_le {ρ₀ Mv ρ T : ℝ} (hρ₀ : 0 < ρ₀)
 
 /-- **The majorant is summable when the rectangle is small.** -/
 theorem summable_tubeStepMajorant {ρ₀ Mv ρ T : ℝ} (hMv0 : 0 ≤ Mv) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 * k + Mv * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1) :
+    (hsmall : (4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1) :
     Summable (tubeStepMajorant k Mv ρ₀ ρ T) := by
-  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ 2 / 4 := by positivity
+  have hK0 : (0 : ℝ) ≤ 4 * k + Mv * ρ₀ ^ (2 : ℕ) / 4 := by positivity
   have hG : (0 : ℝ) < (ρ₀ - ρ) / 2 := by linarith
   exact (summable_ovsyannikov_bound hK0 hG hT hsmall).mul_left _
 

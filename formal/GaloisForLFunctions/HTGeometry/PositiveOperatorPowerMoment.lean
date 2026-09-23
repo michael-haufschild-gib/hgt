@@ -33,7 +33,7 @@ theorem IsPositive.inner_pow_left_eq_inner_pow_right {T : H →L[ℂ] H}
 /-- Even vector moments of a positive operator are squared norms. -/
 theorem IsPositive.re_inner_pow_two_mul {T : H →L[ℂ] H}
     (hT : T.IsPositive) (x : H) (n : ℕ) :
-    re (inner ℂ x ((T ^ (2 * n)) x)) = ‖(T ^ n) x‖ ^ 2 := by
+    re (inner ℂ x ((T ^ (2 * n)) x)) = ‖(T ^ n) x‖ ^ (2 : ℕ) := by
   rw [show 2 * n = n + n by omega, pow_add]
   change re (inner ℂ x ((T ^ n) ((T ^ n) x))) = _
   rw [← hT.inner_pow_left_eq_inner_pow_right n]
@@ -64,7 +64,7 @@ theorem IsPositive.re_inner_pow_nonneg {T : H →L[ℂ] H}
 /-- Adjacent vector moments of a positive operator are log-convex. -/
 theorem IsPositive.re_inner_pow_logConvex {T : H →L[ℂ] H}
     (hT : T.IsPositive) (x : H) (n : ℕ) :
-    (re (inner ℂ x ((T ^ (n + 1)) x))) ^ 2 ≤
+    (re (inner ℂ x ((T ^ (n + 1)) x))) ^ (2 : ℕ) ≤
       re (inner ℂ x ((T ^ n) x)) *
         re (inner ℂ x ((T ^ (n + 2)) x)) := by
   obtain ⟨k, rfl | rfl⟩ := Nat.even_or_odd' n
@@ -110,7 +110,7 @@ theorem IsPositive.re_inner_pow_logConvex {T : H →L[ℂ] H}
 /-- A nonnegative log-convex sequence starting at one dominates powers of its first term. -/
 theorem pow_first_le_of_nonneg_logConvex
     (a : ℕ → ℝ) (ha : ∀ n, 0 ≤ a n) (hzero : a 0 = 1)
-    (hlog : ∀ n, a (n + 1) ^ 2 ≤ a n * a (n + 2)) (n : ℕ) :
+    (hlog : ∀ n, a (n + 1) ^ (2 : ℕ) ≤ a n * a (n + 2)) (n : ℕ) :
     a 1 ^ n ≤ a n := by
   have hratio : ∀ k : ℕ, a 1 * a k ≤ a (k + 1) := by
     intro k
@@ -131,7 +131,7 @@ theorem pow_first_le_of_nonneg_logConvex
               a k * (a 1 * a (k + 1)) =
                   (a 1 * a k) * a (k + 1) := by ring
               _ ≤ a (k + 1) * a (k + 1) := hmul
-              _ = a (k + 1) ^ 2 := by ring
+              _ = a (k + 1) ^ (2 : ℕ) := by ring
               _ ≤ a k * a (k + 2) := hlog k
           nlinarith
   induction n with
@@ -149,7 +149,7 @@ theorem IsPositive.re_inner_pow_ge {T : H →L[ℂ] H}
   have ha : ∀ k, 0 ≤ a k := fun k => hT.re_inner_pow_nonneg x k
   have hzero : a 0 = 1 := by
     simp [a, inner_self_eq_norm_sq_to_K, hx]
-  have hlog : ∀ k, a (k + 1) ^ 2 ≤ a k * a (k + 2) :=
+  have hlog : ∀ k, a (k + 1) ^ (2 : ℕ) ≤ a k * a (k + 2) :=
     fun k => hT.re_inner_pow_logConvex x k
   simpa [a] using pow_first_le_of_nonneg_logConvex a ha hzero hlog n
 

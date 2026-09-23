@@ -93,27 +93,27 @@ theorem false_of_orthogonal_same_limit {ι : Type*} {L : Filter ι} [L.NeBot] {C
     {f g : ι → ℝ → ℝ} {v : ℝ → ℝ}
     (hconv : ∀ K : ℝ, 0 < K → Tendsto (fun i => ∫ x in (-K)..K, f i x * g i x) L
       (𝓝 (∫ x in (-K)..K, v x * v x)))
-    (horth : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, |∫ x in (-K)..K, f i x * g i x| ≤ C / K ^ 2)
+    (horth : ∀ K : ℝ, 0 < K → ∀ᶠ i in L, |∫ x in (-K)..K, f i x * g i x| ≤ C / K ^ (2 : ℕ))
     (hvpos : 0 < ∫ x in (-1 : ℝ)..1, v x * v x)
     (hmono : ∀ K : ℝ, 1 ≤ K →
       (∫ x in (-1 : ℝ)..1, v x * v x) ≤ ∫ x in (-K)..K, v x * v x) :
     False := by
   set δ : ℝ := ∫ x in (-1 : ℝ)..1, v x * v x with hδ
   -- every window mass of the limit profile is at most `C/K²`
-  have hbound : ∀ K : ℝ, 0 < K → (∫ x in (-K)..K, v x * v x) ≤ C / K ^ 2 := by
+  have hbound : ∀ K : ℝ, 0 < K → (∫ x in (-K)..K, v x * v x) ≤ C / K ^ (2 : ℕ) := by
     intro K hKpos
     refine le_of_tendsto (hconv K hKpos) ?_
     filter_upwards [horth K hKpos] with i hi
     exact le_trans (le_abs_self _) hi
   -- so `δ ≤ C/K²` for every `K ≥ 1`
-  have hδle : ∀ K : ℝ, 1 ≤ K → δ ≤ C / K ^ 2 := fun K hK =>
+  have hδle : ∀ K : ℝ, 1 ≤ K → δ ≤ C / K ^ (2 : ℕ) := fun K hK =>
     le_trans (hmono K hK) (hbound K (lt_of_lt_of_le one_pos hK))
   -- but `C/K² → 0`
-  have hCzero : Tendsto (fun K : ℝ => C / K ^ 2) atTop (𝓝 0) := by
-    have hsq : Tendsto (fun K : ℝ => K ^ 2) atTop atTop :=
+  have hCzero : Tendsto (fun K : ℝ => C / K ^ (2 : ℕ)) atTop (𝓝 0) := by
+    have hsq : Tendsto (fun K : ℝ => K ^ (2 : ℕ)) atTop atTop :=
       tendsto_pow_atTop (n := 2) (Nat.succ_ne_zero 1)
     exact tendsto_const_nhds.div_atTop hsq
-  obtain ⟨K, hK1, hKlt⟩ : ∃ K : ℝ, 1 ≤ K ∧ C / K ^ 2 < δ := by
+  obtain ⟨K, hK1, hKlt⟩ : ∃ K : ℝ, 1 ≤ K ∧ C / K ^ (2 : ℕ) < δ := by
     obtain ⟨K, hKa, hKb⟩ :=
       ((hCzero.eventually (eventually_lt_nhds hvpos)).and (eventually_ge_atTop (1 : ℝ))).exists
     exact ⟨K, hKb, hKa⟩

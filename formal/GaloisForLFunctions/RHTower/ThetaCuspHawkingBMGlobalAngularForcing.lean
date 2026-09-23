@@ -28,7 +28,7 @@ def tail (u : ℂ) (z : Fin 2 → ℝ) : ℂ :=
 
 /-- Every tail and cross term left after subtracting the full squared principal part. -/
 def squareRemainder (u : ℂ) (z : Fin 2 → ℝ) : ℂ :=
-  scalar u z ^ 2 - principal u z ^ 2
+  scalar u z ^ (2 : ℕ) - principal u z ^ (2 : ℕ)
 
 /-- Uniform bound on an arbitrary complex-power-weighted full signed scalar tail. -/
 theorem weighted_tail_bounded (u w : ℂ) (l : ℝ) (hl : 0 < l) :
@@ -51,7 +51,7 @@ theorem weighted_tail_bounded (u w : ℂ) (l : ℝ) (hl : 0 < l) :
 
 /-- Exact remainder expansion keeps the constant--tail and tail--tail interactions. -/
 theorem squareRemainder_eq (u : ℂ) (z : Fin 2 → ℝ) :
-    squareRemainder u z = 2*(principal u z*tail u z) + tail u z^2 := by
+    squareRemainder u z = 2*(principal u z*tail u z) + tail u z^(2 : ℕ) := by
   dsimp [squareRemainder, scalar, principal, tail, d4BMCompletedEisensteinCuspLeg]
   ring
 
@@ -64,7 +64,7 @@ theorem squareRemainder_bounded (u : ℂ) (l : ℝ) (hl : 0 < l) :
   obtain ⟨Cp,hCp,hp⟩ := weighted_tail_bounded u (d4BMCompletedEisensteinCuspWeylExponent u true) l hl
   let A := d4BMCompletedEisensteinCuspConstantCoefficient u false
   let D := d4BMCompletedEisensteinCuspConstantCoefficient u true
-  refine ⟨2*(‖A‖*Cm+‖D‖*Cp)+C0^2, by positivity, ?_⟩
+  refine ⟨2*(‖A‖*Cm+‖D‖*Cp)+C0^(2 : ℕ), by positivity, ?_⟩
   intro z hz
   have ht : ‖tail u z‖ ≤ C0 := by simpa only [Complex.cpow_zero, one_mul] using h0 z hz
   have hcross : ‖principal u z*tail u z‖ ≤ ‖A‖*Cm+‖D‖*Cp := by
@@ -80,8 +80,8 @@ theorem squareRemainder_bounded (u : ℂ) (l : ℝ) (hl : 0 < l) :
       _ ≤ _ := by rw [norm_mul A, norm_mul D]; gcongr; exacts [hm z hz,hp z hz]
   rw [squareRemainder_eq]
   calc
-    _ ≤ ‖2*(principal u z*tail u z)‖ + ‖tail u z^2‖ := norm_add_le _ _
-    _ = 2*‖principal u z*tail u z‖ + ‖tail u z‖^2 := by rw [norm_mul,norm_pow]; norm_num
+    _ ≤ ‖2*(principal u z*tail u z)‖ + ‖tail u z^(2 : ℕ)‖ := norm_add_le _ _
+    _ = 2*‖principal u z*tail u z‖ + ‖tail u z‖^(2 : ℕ) := by rw [norm_mul,norm_pow]; norm_num
     _ ≤ _ := by gcongr
 
 end
@@ -118,7 +118,7 @@ def cutoffResponse (q : XiZeroCopy) (minusBranch : Bool) (z : Fin 2 → ℝ) : �
 /-- The literal full forcing remaining after the cutoff response; all cutoff derivatives
 remain in the actual hyperbolic differential expression. -/
 def forcing (q : XiZeroCopy) (minusBranch : Bool) (z : Fin 2 → ℝ) : ℂ :=
-  (parameter q minusBranch/2)*scalar (center q) z^2 -
+  (parameter q minusBranch/2)*scalar (center q) z^(2 : ℕ) -
     (hyperbolicLaplacian (cutoffResponse q minusBranch) z -
       parameter q minusBranch*cutoffResponse q minusBranch z)
 
@@ -141,7 +141,7 @@ theorem cuspResponse_equation (q : XiZeroCopy) (minusBranch : Bool)
     (z : Fin 2 → ℝ) (hz : 0 < z 1) :
     hyperbolicLaplacian (cuspResponse q minusBranch) z -
       parameter q minusBranch*cuspResponse q minusBranch z =
-      (parameter q minusBranch/2)*principal (center q) z^2 := by
+      (parameter q minusBranch/2)*principal (center q) z^(2 : ℕ) := by
   rw [principal_center]
   exact xi_forced_cusp_response_equation q minusBranch (parameter q minusBranch/2)
     (d4BMCompletedEisensteinCuspConstantCoefficient (center q) true)

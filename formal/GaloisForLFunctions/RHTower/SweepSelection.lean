@@ -35,12 +35,12 @@ every stage to the swept member value there.  The interface mentions no charts,
 arcs, or chosen roots — only the readings themselves. -/
 def SweepSelection (P : Finset ℕ) (pP pM vP vM : ℂ) (F₁ F₂ : ℝ → ℂ) : Prop :=
   Continuous F₁ ∧ Continuous F₂ ∧
-    (∀ t, F₁ t ^ 2 = anchorSweep P t pP * vP) ∧
-    (∀ t, F₂ t ^ 2 = anchorSweep P t pM * vM)
+    (∀ t, F₁ t ^ (2 : ℕ) = anchorSweep P t pP * vP) ∧
+    (∀ t, F₂ t ^ (2 : ℕ) = anchorSweep P t pM * vM)
 
 /-- A family whose square tracks the swept value never vanishes. -/
 theorem continuous_root_family_ne_zero {P : Finset ℕ} {z v : ℂ} {g : ℝ → ℂ}
-    (hsq : ∀ t, g t ^ 2 = anchorSweep P t z * v) (hv : v ≠ 0) (t : ℝ) :
+    (hsq : ∀ t, g t ^ (2 : ℕ) = anchorSweep P t z * v) (hv : v ≠ 0) (t : ℝ) :
     g t ≠ 0 := by
   intro h0
   have h : anchorSweep P t z * v = 0 := by rw [← hsq t, h0]; ring
@@ -54,7 +54,7 @@ transport is a continuous `±1`-valued function of the stage, hence constant by
 the intermediate value theorem: continuity forbids the only other motion, a
 sheet jump. -/
 theorem continuous_root_family_eq_transport {P : Finset ℕ} {z v : ℂ} {g : ℝ → ℂ}
-    (hg : Continuous g) (hsq : ∀ t, g t ^ 2 = anchorSweep P t z * v)
+    (hg : Continuous g) (hsq : ∀ t, g t ^ (2 : ℕ) = anchorSweep P t z * v)
     (hv : v ≠ 0) :
     ∀ t, g t = Complex.exp ((t : ℂ) * anchorLog P z / 2) * g 0 := by
   have hg0 : g 0 ≠ 0 := continuous_root_family_ne_zero hsq hv 0
@@ -64,14 +64,14 @@ theorem continuous_root_family_eq_transport {P : Finset ℕ} {z v : ℂ} {g : �
     (Complex.continuous_exp.comp
       ((Complex.continuous_ofReal.mul continuous_const).div_const 2)).mul
       continuous_const
-  have hgv : g 0 ^ 2 = v := by
+  have hgv : g 0 ^ (2 : ℕ) = v := by
     have := hsq 0
     rwa [anchorSweep_zero, one_mul] at this
-  have hdsq : ∀ t, d t ^ 2 = anchorSweep P t z * v := by
+  have hdsq : ∀ t, d t ^ (2 : ℕ) = anchorSweep P t z * v := by
     intro t
-    show (Complex.exp ((t : ℂ) * anchorLog P z / 2) * g 0) ^ 2
+    show (Complex.exp ((t : ℂ) * anchorLog P z / 2) * g 0) ^ (2 : ℕ)
       = anchorSweep P t z * v
-    have h2 : Complex.exp ((t : ℂ) * anchorLog P z / 2) ^ 2
+    have h2 : Complex.exp ((t : ℂ) * anchorLog P z / 2) ^ (2 : ℕ)
         = anchorSweep P t z := by
       rw [← Complex.exp_nat_mul, anchorSweep]
       congr 1
@@ -82,8 +82,8 @@ theorem continuous_root_family_eq_transport {P : Finset ℕ} {z v : ℂ} {g : �
   have hq_cont : Continuous q := hg.div hd_cont hd0
   have hq_pm : ∀ t, q t = 1 ∨ q t = -1 := by
     intro t
-    have hsq1 : q t ^ 2 = 1 := by
-      show (g t / d t) ^ 2 = 1
+    have hsq1 : q t ^ (2 : ℕ) = 1 := by
+      show (g t / d t) ^ (2 : ℕ) = 1
       rw [div_pow, hsq t, hdsq t,
         div_self (mul_ne_zero (anchorSweep_ne_zero P t z) hv)]
     have hfac : (q t - 1) * (q t + 1) = 0 := by linear_combination hsq1
@@ -127,7 +127,7 @@ theorem SweepSelection.transport {P : Finset ℕ} {pP pM vP vM : ℂ}
 rules over fixed data is exactly the four sign pairs. -/
 theorem SweepSelection.initial_sq {P : Finset ℕ} {pP pM vP vM : ℂ}
     {F₁ F₂ : ℝ → ℂ} (h : SweepSelection P pP pM vP vM F₁ F₂) :
-    F₁ 0 ^ 2 = vP ∧ F₂ 0 ^ 2 = vM := by
+    F₁ 0 ^ (2 : ℕ) = vP ∧ F₂ 0 ^ (2 : ℕ) = vM := by
   obtain ⟨-, -, hsq1, hsq2⟩ := h
   constructor
   · have := hsq1 0
@@ -283,7 +283,7 @@ theorem SweepSelection.endpoint_sq_anchoredSEM {P : Finset ℕ}
     (hP : ∀ p ∈ P, 2 ≤ p) {N : ℕ} {pP pM : ℂ}
     (hreP : 0 < pP.re) (hreM : 0 < pM.re) {F₁ F₂ : ℝ → ℂ}
     (h : SweepSelection P pP pM (completedSEM N pP) (completedSEM N pM) F₁ F₂) :
-    F₁ 1 ^ 2 = anchoredSEM P N pP ∧ F₂ 1 ^ 2 = anchoredSEM P N pM := by
+    F₁ 1 ^ (2 : ℕ) = anchoredSEM P N pP ∧ F₂ 1 ^ (2 : ℕ) = anchoredSEM P N pM := by
   obtain ⟨-, -, hsq1, hsq2⟩ := h
   constructor
   · rw [hsq1 1, anchorSweep_one hP hreP]
@@ -301,8 +301,8 @@ theorem exists_extending_sweepSelection_iff_deckClass_one {P : Finset ℕ}
     (hre : ∀ z ∈ ball a R \ closedBall a r₀, 0 < z.re)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hfP : f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hfM : f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0) :
     (∃ F₁ F₂ : ℝ → ℂ,
@@ -311,7 +311,7 @@ theorem exists_extending_sweepSelection_iff_deckClass_one {P : Finset ℕ}
         (f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I))
         (f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)) F₁ F₂ ∧
       ∀ t : ℝ, ∃ G : ℂ → ℂ, AnalyticOnNhd ℂ G (ball a R \ closedBall a r₀) ∧
-        (∀ z ∈ ball a R \ closedBall a r₀, G z ^ 2 = anchorSweep P t z * f z) ∧
+        (∀ z ∈ ball a R \ closedBall a r₀, G z ^ (2 : ℕ) = anchorSweep P t z * f z) ∧
         G (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) = F₁ t ∧
         G (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) = F₂ t)
       ↔ deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
@@ -319,7 +319,7 @@ theorem exists_extending_sweepSelection_iff_deckClass_one {P : Finset ℕ}
   constructor
   · rintro ⟨F₁, F₂, -, hExt⟩
     obtain ⟨G, hGan, hGsq, -, -⟩ := hExt 0
-    have hGf : ∀ z ∈ ball a R \ closedBall a r₀, G z ^ 2 = f z := fun z hz => by
+    have hGf : ∀ z ∈ ball a R \ closedBall a r₀, G z ^ (2 : ℕ) = f z := fun z hz => by
       rw [hGsq z hz, anchorSweep_zero, one_mul]
     exact deckClass_eq_one_of_global_sqrt h0 hrR hG₁ hG₂ hpG₁ hpG₂ hGan hGf
       hfP hfM
@@ -350,8 +350,8 @@ theorem no_extending_sweepSelection_of_deckClass_ne_one {P : Finset ℕ}
     (hre : ∀ z ∈ ball a R \ closedBall a r₀, 0 < z.re)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hfP : f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hfM : f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hdeck : deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
@@ -362,7 +362,7 @@ theorem no_extending_sweepSelection_of_deckClass_ne_one {P : Finset ℕ}
         (f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I))
         (f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)) F₁ F₂ ∧
       ∀ t : ℝ, ∃ G : ℂ → ℂ, AnalyticOnNhd ℂ G (ball a R \ closedBall a r₀) ∧
-        (∀ z ∈ ball a R \ closedBall a r₀, G z ^ 2 = anchorSweep P t z * f z) ∧
+        (∀ z ∈ ball a R \ closedBall a r₀, G z ^ (2 : ℕ) = anchorSweep P t z * f z) ∧
         G (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) = F₁ t ∧
         G (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) = F₂ t) := fun hsel =>
   hdeck ((exists_extending_sweepSelection_iff_deckClass_one hP h0 hrR hre
@@ -386,8 +386,8 @@ theorem selection_principle_weld {ρ : ℂ} {r₀ R : ℝ}
     {f G₁ G₂ : ℂ → ℂ}
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA ρ r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA ρ r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA ρ r₀ R, G₁ z ^ 2 = f z)
-    (hpG₂ : ∀ z ∈ chartLA ρ r₀ R, G₂ z ^ 2 = f z)
+    (hpG₁ : ∀ z ∈ chartRA ρ r₀ R, G₁ z ^ (2 : ℕ) = f z)
+    (hpG₂ : ∀ z ∈ chartLA ρ r₀ R, G₂ z ^ (2 : ℕ) = f z)
     (hfP : f (ρ + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hfM : f (ρ - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
     (hdeck : deckClass G₁ G₂ (ρ + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
@@ -399,7 +399,7 @@ theorem selection_principle_weld {ρ : ℂ} {r₀ R : ℝ}
           (F₁ 1 / F₂ 1 / (F₁ 0 / F₂ 0)).re < 0) ∧
       ∀ t : ℝ, ¬∃ G : ℂ → ℂ, AnalyticOnNhd ℂ G (ball ρ R \ closedBall ρ r₀) ∧
         ∀ z ∈ ball ρ R \ closedBall ρ r₀,
-          G z ^ 2 = anchorSweep P t z * f z := by
+          G z ^ (2 : ℕ) = anchorSweep P t z * f z := by
   have hc : 0 < (r₀ + R) / 2 := by linarith
   obtain ⟨P, hP, hrev⟩ := selection_reversal_steerable hre0 hre1 hc hcτ
     hnarrow hcap Q
@@ -499,7 +499,7 @@ class, unchanged by dividing out any anchor), never in cross-anchor
 compatibility of the readings. -/
 theorem exists_sweepSelection_with_endpoint {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
     {pP pM : ℂ} (hreP : 0 < pP.re) (hreM : 0 < pM.re)
-    {W₁ W₂ w₁ w₂ : ℂ} (hw₁ : w₁ ^ 2 = W₁) (hw₂ : w₂ ^ 2 = W₂) :
+    {W₁ W₂ w₁ w₂ : ℂ} (hw₁ : w₁ ^ (2 : ℕ) = W₁) (hw₂ : w₂ ^ (2 : ℕ) = W₂) :
     ∃ F₁ F₂ : ℝ → ℂ,
       SweepSelection P pP pM (W₁ / eulerHeadAnchor P pP)
         (W₂ / eulerHeadAnchor P pM) F₁ F₂ ∧ F₁ 1 = w₁ ∧ F₂ 1 = w₂ := by

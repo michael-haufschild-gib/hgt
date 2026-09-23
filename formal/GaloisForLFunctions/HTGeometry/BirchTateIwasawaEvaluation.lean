@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.PadicPowerSeriesEvaluation
 
 For the trivial-character dyadic main conjecture, analytic and algebraic characteristic series
 live in the one-variable Iwasawa algebra `ℤ₂⟦T⟧` and are specialized at
-`T = κ(γ)^2 - 1`. This module constructs the required evaluation homomorphism over `ℤ_p`; the
+`T = κ(γ)^(2 : ℕ) - 1`. This module constructs the required evaluation homomorphism over `ℤ_p`; the
 existing corpus map had only integer coefficients.
 -/
 
@@ -41,8 +41,8 @@ theorem isRoot_padicIntEval {a : ℤ_[p]} (ha : ‖a‖ < 1)
 /-- If `x` lies in the principal-unit neighbourhood of `1`, then the weight-two
 specialization point `x² - 1` is topologically nilpotent. -/
 theorem norm_sq_sub_one_lt_one {x : ℤ_[p]} (hx : ‖x - 1‖ < 1) :
-    ‖x ^ 2 - 1‖ < 1 := by
-  rw [show x ^ 2 - 1 = (x + 1) * (x - 1) by ring, norm_mul]
+    ‖x ^ (2 : ℕ) - 1‖ < 1 := by
+  rw [show x ^ (2 : ℕ) - 1 = (x + 1) * (x - 1) by ring, norm_mul]
   calc
     ‖x + 1‖ * ‖x - 1‖ ≤ 1 * ‖x - 1‖ :=
       mul_le_mul_of_nonneg_right (PadicInt.norm_le_one _) (norm_nonneg _)
@@ -60,7 +60,7 @@ theorem padicIntWeightTwoEval_C {x : ℤ_[p]} (hx : ‖x - 1‖ < 1) (a : ℤ_[p
 
 @[simp]
 theorem padicIntWeightTwoEval_X {x : ℤ_[p]} (hx : ‖x - 1‖ < 1) :
-    padicIntWeightTwoEval p hx (PowerSeries.X : PowerSeries ℤ_[p]) = x ^ 2 - 1 := by
+    padicIntWeightTwoEval p hx (PowerSeries.X : PowerSeries ℤ_[p]) = x ^ (2 : ℕ) - 1 := by
   exact padicIntEval_X p (norm_sq_sub_one_lt_one p hx)
 
 end GaloisForLFunctions.HTGeometry

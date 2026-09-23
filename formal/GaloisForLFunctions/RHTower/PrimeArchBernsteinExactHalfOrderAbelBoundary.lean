@@ -18,17 +18,17 @@ theorem exists_exactRadius_positiveHalfOrder_primeArchEndpointBernsteinAbelBound
       (∀ q ∈ D, xiEndpointBernsteinAtomAmplitudeBase q = B) ∧
       (∀ q ∉ D, xiEndpointBernsteinAtomAmplitudeBase q ≤ beta) ∧
       L = ∑ u ∈ xiEndpointCoordinateSet D,
-        ‖xiEndpointCoordinateWeight D u‖ ^ 2 *
+        ‖xiEndpointCoordinateWeight D u‖ ^ (2 : ℕ) *
           bernsteinAffineRowHalfOrderConstant u ∧
       0 < L ∧ 0 < Real.sqrt Real.pi * L ∧
-      PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ 2) ∧
+      PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ (2 : ℕ)) ∧
       Tendsto
-        (fun t : ℝ => Real.sqrt (1 - B ^ 2 * t) *
+        (fun t : ℝ => Real.sqrt (1 - B ^ (2 : ℕ) * t) *
           primeArchEndpointBernsteinAbelSusceptibility t)
-        (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2)))
+        (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ))))
         (nhds (Real.sqrt Real.pi * L)) ∧
       Tendsto primeArchEndpointBernsteinAbelSusceptibility
-        (nhdsWithin (1 / B ^ 2) (Set.Ico 0 (1 / B ^ 2))) atTop := by
+        (nhdsWithin (1 / B ^ (2 : ℕ)) (Set.Ico 0 (1 / B ^ (2 : ℕ)))) atTop := by
   obtain ⟨D, B, beta, L, hB, hbeta1, hbeta, hDne, hD, hDsub,
       hL, hLpos, hboundaryPos, hboundary⟩ :=
     exists_positive_halfOrder_primeArchEndpointBernsteinAbelBoundary_of_not_rh hRH
@@ -48,7 +48,7 @@ theorem exists_exactRadius_positiveHalfOrder_primeArchEndpointBernsteinAbelBound
         · exact (hD q' hqmem).le
         · exact (hDsub q' hqmem).trans hbeta.le
   have hBB' : B = B' := le_antisymm hB_le hB'_le
-  have hcriticalB : PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ 2) := by
+  have hcriticalB : PrimeArchEndpointBernsteinAbelCriticalRadius (1 / B ^ (2 : ℕ)) := by
     rw [hBB']
     exact hcritical
   have hblowup :=

@@ -107,11 +107,11 @@ theorem exists_analyticOnNhd_sq_eq_of_even_winding
     {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g U)
     (gSub : C(U, {w : ℂ // w ≠ 0})) (hgSub : ∀ a : U, (gSub a : ℂ) = g a)
     {a₀ : U} {e₀ : {w : ℂ // w ≠ 0}}
-    (he : (⟨(e₀ : ℂ) ^ 2, pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
+    (he : (⟨(e₀ : ℂ) ^ (2 : ℕ), pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
     (hwind : ∀ p : Path a₀ a₀,
       Even (Pi1CMinusZero.degZ ⟦transLoop (fun a : U => (gSub a : ℂ))
         (continuous_subtype_val.comp gSub.continuous) (fun a => (gSub a).2) p⟧)) :
-    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s U ∧ (∀ z ∈ U, s z ^ 2 = g z) ∧
+    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s U ∧ (∀ z ∈ U, s z ^ (2 : ℕ) = g z) ∧
       (∀ z ∈ U, s z ≠ 0) := by
   refine exists_analyticOnNhd_pow_eq_of_lift hUo hUc hg (by norm_num : ((2 : ℕ) : ℂ) ≠ 0)
     gSub hgSub he ?_

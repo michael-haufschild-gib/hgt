@@ -17,7 +17,7 @@ def egbFixedChargeAInteriorGibbsIntegrand (w φ τ ψ u : ℝ) : ℝ :=
 
 def egbFixedChargeAInteriorGibbsLimitIntegrand (w φ ψ u : ℝ) : ℝ :=
   (sin ψ - 1) * (4 * egbFixedChargeAGibbsBarrierCoefficient w φ *
-    (egbFixedChargeAInteriorPathCoordinate ψ u ^ 2 - 1) * egbFixedChargeAInteriorPathCoordinate ψ u)
+    (egbFixedChargeAInteriorPathCoordinate ψ u ^ (2 : ℕ) - 1) * egbFixedChargeAInteriorPathCoordinate ψ u)
 
 theorem egbFixedChargeAInteriorGibbsIntegrand_critical_limit (w φ ψ u : ℝ) :
     Tendsto (fun τ => egbFixedChargeAInteriorGibbsIntegrand w φ τ ψ u) atBot

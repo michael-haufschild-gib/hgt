@@ -69,20 +69,20 @@ every `dₖ γₖᵢ²` is bounded by a fixed multiple of `d'ᵢ`. -/
 theorem siegel_entry_bound {J J' : JacobiData n} {t u c : ℝ} (ht : 1 ≤ t) (hc : 0 < c)
     (hS' : J'.IsSiegel t u) (hred' : ∀ a b : Fin n, a < b → |J'.U a b| ≤ 1 / 2)
     {γ : Matrix (Fin n) (Fin n) ℝ} (hγ : J'.form = γᵀ * J.form * γ)
-    (hquasi : ∀ v : Fin n → ℝ, c * (∑ m, J.d m * (v m) ^ 2) ≤ v ⬝ᵥ (J.form *ᵥ v))
+    (hquasi : ∀ v : Fin n → ℝ, c * (∑ m, J.d m * (v m) ^ (2 : ℕ)) ≤ v ⬝ᵥ (J.form *ᵥ v))
     (k i : Fin n) :
-    c * (J.d k * (γ k i) ^ 2) ≤ (1 + (n : ℝ) / 4 * t ^ n) * J'.d i := by
+    c * (J.d k * (γ k i) ^ (2 : ℕ)) ≤ (1 + (n : ℝ) / 4 * t ^ n) * J'.d i := by
   classical
   set v : Fin n → ℝ := fun m => γ m i with hv
   have hcol : J'.form i i = v ⬝ᵥ (J.form *ᵥ v) := by
     rw [hγ]
     exact congr_diag_eq_quadForm_col _ _ i
-  have hlow : c * (J.d k * (v k) ^ 2) ≤ c * (∑ m, J.d m * (v m) ^ 2) := by
+  have hlow : c * (J.d k * (v k) ^ (2 : ℕ)) ≤ c * (∑ m, J.d m * (v m) ^ (2 : ℕ)) := by
     refine mul_le_mul_of_nonneg_left ?_ hc.le
-    exact Finset.single_le_sum (f := fun m => J.d m * (v m) ^ 2)
+    exact Finset.single_le_sum (f := fun m => J.d m * (v m) ^ (2 : ℕ))
       (fun m _ => mul_nonneg (J.pos m).le (sq_nonneg _)) (Finset.mem_univ k)
-  calc c * (J.d k * (γ k i) ^ 2) = c * (J.d k * (v k) ^ 2) := rfl
-    _ ≤ c * (∑ m, J.d m * (v m) ^ 2) := hlow
+  calc c * (J.d k * (γ k i) ^ (2 : ℕ)) = c * (J.d k * (v k) ^ (2 : ℕ)) := rfl
+    _ ≤ c * (∑ m, J.d m * (v m) ^ (2 : ℕ)) := hlow
     _ ≤ v ⬝ᵥ (J.form *ᵥ v) := hquasi v
     _ = J'.form i i := hcol.symm
     _ ≤ (1 + (n : ℝ) / 4 * t ^ n) * J'.d i := J'.form_diag_le_pow ht hS' hred' i

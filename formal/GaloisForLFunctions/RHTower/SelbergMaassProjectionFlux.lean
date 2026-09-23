@@ -41,10 +41,10 @@ theorem projection_mismatch_corners (N : ℕ) (r s : ZMod (N+1))
 /-- Exact original transfer loss is projection mismatch plus the retained double-complement square. -/
 theorem transfer_loss_mismatch_identity (N : ℕ) (r s : ZMod (N+1))
     (v : EuclideanSpace ℂ (Deck N)) :
-    ‖v‖^2-‖inversionTransfer N r s v‖^2=
-      ‖characterProjection N (upperBlock N) s v-characterProjection N (lowerBlock N) (-r) v‖^2+
+    ‖v‖^(2 : ℕ)-‖inversionTransfer N r s v‖^(2 : ℕ)=
+      ‖characterProjection N (upperBlock N) s v-characterProjection N (lowerBlock N) (-r) v‖^(2 : ℕ)+
       ‖(v-characterProjection N (upperBlock N) s v)-
-        characterProjection N (lowerBlock N) (-r) (v-characterProjection N (upperBlock N) s v)‖^2 := by
+        characterProjection N (lowerBlock N) (-r) (v-characterProjection N (upperBlock N) s v)‖^(2 : ℕ) := by
   rw [projection_mismatch_corners,norm_sub_sq (𝕜 := ℂ),character_complement_orthogonal]
   simp only [map_zero,mul_zero,sub_zero]
   rw [transfer_loss_decomposition]
@@ -54,14 +54,14 @@ theorem transfer_loss_mismatch_identity (N : ℕ) (r s : ZMod (N+1))
 /-- Actual inversion loss bounds the complete upper/lower character mismatch. -/
 theorem projection_mismatch_le_transfer_loss (N : ℕ) (r s : ZMod (N+1))
     (v : EuclideanSpace ℂ (Deck N)) :
-    ‖characterProjection N (upperBlock N) s v-characterProjection N (lowerBlock N) (-r) v‖^2 ≤
-      ‖v‖^2-‖inversionTransfer N r s v‖^2 := by
+    ‖characterProjection N (upperBlock N) s v-characterProjection N (lowerBlock N) (-r) v‖^(2 : ℕ) ≤
+      ‖v‖^(2 : ℕ)-‖inversionTransfer N r s v‖^(2 : ℕ) := by
   rw [transfer_loss_mismatch_identity]
   exact le_add_of_nonneg_right (sq_nonneg _)
 
 /-- The actual transfer loss is nonnegative, with no assumed operator bound. -/
 theorem transfer_loss_nonneg (N : ℕ) (r s : ZMod (N+1))
-    (v : EuclideanSpace ℂ (Deck N)) : 0 ≤ ‖v‖^2-‖inversionTransfer N r s v‖^2 := by
+    (v : EuclideanSpace ℂ (Deck N)) : 0 ≤ ‖v‖^(2 : ℕ)-‖inversionTransfer N r s v‖^(2 : ℕ) := by
   rw [transfer_loss_mismatch_identity]
   positivity
 
@@ -78,13 +78,13 @@ theorem character_flux_difference (N : ℕ) (r s : ZMod (N+1))
 theorem character_flux_sq_le_transfer_loss (N : ℕ) (r s : ZMod (N+1))
     (v w : EuclideanSpace ℂ (Deck N)) :
     ((inner ℂ (characterProjection N (upperBlock N) s v) w).re-
-      (inner ℂ (characterProjection N (lowerBlock N) (-r) v) w).re)^2 ≤
-      (‖v‖^2-‖inversionTransfer N r s v‖^2)*‖w‖^2 := by
+      (inner ℂ (characterProjection N (lowerBlock N) (-r) v) w).re)^(2 : ℕ) ≤
+      (‖v‖^(2 : ℕ)-‖inversionTransfer N r s v‖^(2 : ℕ))*‖w‖^(2 : ℕ) := by
   rw [character_flux_difference]
   let a := characterProjection N (upperBlock N) s v-characterProjection N (lowerBlock N) (-r) v
   have hi : |(inner ℂ a w).re| ≤ ‖a‖*‖w‖ :=
     (Complex.abs_re_le_norm _).trans (norm_inner_le_norm a w)
-  have hs : (inner ℂ a w).re^2 ≤ ‖a‖^2*‖w‖^2 := by
+  have hs : (inner ℂ a w).re^(2 : ℕ) ≤ ‖a‖^(2 : ℕ)*‖w‖^(2 : ℕ) := by
     have h := abs_le.mp hi
     nlinarith [norm_nonneg a,norm_nonneg w]
   exact hs.trans (mul_le_mul_of_nonneg_right (projection_mismatch_le_transfer_loss N r s v) (sq_nonneg _))
@@ -93,10 +93,10 @@ theorem character_flux_sq_le_transfer_loss (N : ℕ) (r s : ZMod (N+1))
 theorem character_flux_sq_le_phase_energy (N : ℕ) (r s : ZMod (N+1))
     (v w : EuclideanSpace ℂ (Deck N)) :
     ((inner ℂ (characterProjection N (upperBlock N) s v) w).re-
-      (inner ℂ (characterProjection N (lowerBlock N) (-r) v) w).re)^2 ≤
-      (((((N+1 : ℕ) : ℝ)⁻¹)^3/2)*
+      (inner ℂ (characterProjection N (lowerBlock N) (-r) v) w).re)^(2 : ℕ) ≤
+      (((((N+1 : ℕ) : ℝ)⁻¹)^(3 : ℕ)/2)*
         (∑ a : ZMod (N+1), ∑ b : ZMod (N+1), ∑ c : ZMod (N+1),
-          ‖v-tripleMotion N r s a b c v‖^2))*‖w‖^2 := by
+          ‖v-tripleMotion N r s a b c v‖^(2 : ℕ)))*‖w‖^(2 : ℕ) := by
   rw [triple_displacement_energy]
   exact character_flux_sq_le_transfer_loss N r s v w
 

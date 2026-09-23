@@ -38,14 +38,14 @@ def xiWardWalshSourceMeanEnergy
     {κ : Type*} [Fintype κ] [DecidableEq κ]
     (R : κ → ℝ → ℂ) : ℝ :=
   ((2 : ℝ) ^ Fintype.card κ)⁻¹ *
-    ∑ epsilon : κ → Bool, ∫ t : ℝ, (xiWardWalshSourceResponse R epsilon t).re ^ 2
+    ∑ epsilon : κ → Bool, ∫ t : ℝ, (xiWardWalshSourceResponse R epsilon t).re ^ (2 : ℕ)
 
 theorem xiWardWalshSourceMeanEnergy_eq_diagonal
     {κ : Type*} [Fintype κ] [DecidableEq κ]
     (R : κ → ℝ → ℂ)
     (hR : ∀ c d : κ, Integrable (fun t : ℝ => (R c t).re * (R d t).re)) :
     xiWardWalshSourceMeanEnergy R =
-      ∑ c : κ, ∫ t : ℝ, (R c t).re ^ 2 := by
+      ∑ c : κ, ∫ t : ℝ, (R c t).re ^ (2 : ℕ) := by
   classical
   have hwalsh (c d : κ) :
       (∑ epsilon : κ → Bool,
@@ -60,7 +60,7 @@ theorem xiWardWalshSourceMeanEnergy_eq_diagonal
           ((R c t).re * (R d t).re)) := by
     exact (hR c d).const_mul _
   have hexpand (epsilon : κ → Bool) (t : ℝ) :
-      (xiWardWalshSourceResponse R epsilon t).re ^ 2 =
+      (xiWardWalshSourceResponse R epsilon t).re ^ (2 : ℕ) =
         ∑ c : κ, ∑ d : κ,
           wardCellSign epsilon c * wardCellSign epsilon d *
             ((R c t).re * (R d t).re) := by
@@ -72,12 +72,12 @@ theorem xiWardWalshSourceMeanEnergy_eq_diagonal
     ring
   have hsum :
       (∑ epsilon : κ → Bool,
-        ∫ t : ℝ, (xiWardWalshSourceResponse R epsilon t).re ^ 2) =
+        ∫ t : ℝ, (xiWardWalshSourceResponse R epsilon t).re ^ (2 : ℕ)) =
         (2 : ℝ) ^ Fintype.card κ *
-          ∑ c : κ, ∫ t : ℝ, (R c t).re ^ 2 := by
+          ∑ c : κ, ∫ t : ℝ, (R c t).re ^ (2 : ℕ) := by
     calc
       (∑ epsilon : κ → Bool,
-        ∫ t : ℝ, (xiWardWalshSourceResponse R epsilon t).re ^ 2) =
+        ∫ t : ℝ, (xiWardWalshSourceResponse R epsilon t).re ^ (2 : ℕ)) =
           ∑ epsilon : κ → Bool, ∑ c : κ, ∑ d : κ,
             ∫ t : ℝ,
               wardCellSign epsilon c * wardCellSign epsilon d *
@@ -85,7 +85,7 @@ theorem xiWardWalshSourceMeanEnergy_eq_diagonal
           apply Finset.sum_congr rfl
           intro epsilon hepsilon
           calc
-            ∫ t : ℝ, (xiWardWalshSourceResponse R epsilon t).re ^ 2 =
+            ∫ t : ℝ, (xiWardWalshSourceResponse R epsilon t).re ^ (2 : ℕ) =
                 ∫ t : ℝ, ∑ c : κ, ∑ d : κ,
                   wardCellSign epsilon c * wardCellSign epsilon d *
                     ((R c t).re * (R d t).re) := by
@@ -144,7 +144,7 @@ theorem xiWardWalshSourceMeanEnergy_eq_diagonal
                   ∫ t : ℝ, (R c t).re * (R d t).re := by
               rw [← Finset.sum_mul]
       _ = (2 : ℝ) ^ Fintype.card κ *
-          ∑ c : κ, ∫ t : ℝ, (R c t).re ^ 2 := by
+          ∑ c : κ, ∫ t : ℝ, (R c t).re ^ (2 : ℕ) := by
           calc
             ∑ c : κ, ∑ d : κ,
                 (∑ epsilon : κ → Bool,
@@ -161,7 +161,7 @@ theorem xiWardWalshSourceMeanEnergy_eq_diagonal
                 ∫ t : ℝ, (R c t).re * (R d t).re)
                 (hwalsh c d)
             _ = (2 : ℝ) ^ Fintype.card κ *
-                ∑ c : κ, ∫ t : ℝ, (R c t).re ^ 2 := by
+                ∑ c : κ, ∫ t : ℝ, (R c t).re ^ (2 : ℕ) := by
               rw [Finset.mul_sum]
               apply Finset.sum_congr rfl
               intro c hc

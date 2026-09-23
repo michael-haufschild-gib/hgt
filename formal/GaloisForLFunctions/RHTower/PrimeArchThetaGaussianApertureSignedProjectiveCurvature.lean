@@ -22,7 +22,7 @@ noncomputable section
 /-- Adjacent projective minor of the signed first-atom amplitude factors. -/
 def thetaCuspGaussianApertureTailAmplitudeProjectiveMinor
     (lambda : ℝ) (j : ℕ) : ℝ :=
-  thetaCuspGaussianApertureTailAmplitudeFactor lambda (j + 1) ^ 2 -
+  thetaCuspGaussianApertureTailAmplitudeFactor lambda (j + 1) ^ (2 : ℕ) -
     thetaCuspGaussianApertureTailAmplitudeFactor lambda j *
       thetaCuspGaussianApertureTailAmplitudeFactor lambda (j + 2)
 
@@ -35,8 +35,8 @@ theorem thetaCuspGaussianApertureTailAmplitudeProjectiveMinor_eq_correctionRatio
           (thetaCuspGaussianApertureTailCorrectionRatio lambda j -
             2 * thetaCuspGaussianApertureTailCorrectionRatio lambda (j + 1) +
             thetaCuspGaussianApertureTailCorrectionRatio lambda (j + 2)) +
-        (3 / (2 * Real.pi)) ^ 2 *
-          (thetaCuspGaussianApertureTailCorrectionRatio lambda (j + 1) ^ 2 -
+        (3 / (2 * Real.pi)) ^ (2 : ℕ) *
+          (thetaCuspGaussianApertureTailCorrectionRatio lambda (j + 1) ^ (2 : ℕ) -
             thetaCuspGaussianApertureTailCorrectionRatio lambda j *
               thetaCuspGaussianApertureTailCorrectionRatio lambda (j + 2)) := by
   unfold thetaCuspGaussianApertureTailAmplitudeProjectiveMinor

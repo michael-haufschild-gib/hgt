@@ -73,8 +73,8 @@ theorem measurable_unitExponentialThirdDifferenceGraphLeakProfile (a h : ℝ) :
 
 theorem leakDensity_unitExponentialThirdDifferenceGraphLeakProfile (a h u : ℝ) :
     leakDensity (unitExponentialThirdDifferenceGraphLeakProfile a h) u =
-      4 * unitExponentialThirdDifferenceWeakGenerator a h u ^ 2 +
-        unitExponentialThirdDifferenceResponse a h u ^ 2 := by
+      4 * unitExponentialThirdDifferenceWeakGenerator a h u ^ (2 : ℕ) +
+        unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) := by
   unfold leakDensity unitExponentialThirdDifferenceGraphLeakProfile
   rw [Complex.sq_norm]
   simp [Complex.normSq_apply]
@@ -135,8 +135,8 @@ theorem leakProfile_unitExponentialThirdDifferenceGraphLeakProfile
         unfold unitExponentialThirdDifferenceFirstGenerator
         fun_prop
       have hc : Continuous (fun u : ℝ =>
-          (1 + u) * (4 * unitExponentialThirdDifferenceFirstGenerator a u ^ 2 +
-            unitExponentialThirdDifferenceResponse a h u ^ 2)) := by
+          (1 + u) * (4 * unitExponentialThirdDifferenceFirstGenerator a u ^ (2 : ℕ) +
+            unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ))) := by
         exact (continuous_const.add continuous_id).mul
           ((continuous_const.mul (hgen.pow 2)).add
             ((continuous_unitExponentialThirdDifferenceResponse a h).pow 2))
@@ -151,8 +151,8 @@ theorem leakProfile_unitExponentialThirdDifferenceGraphLeakProfile
         unfold unitExponentialThirdDifferenceMiddleGenerator
         fun_prop
       have hc : Continuous (fun u : ℝ =>
-          (1 + u) * (4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ 2 +
-            unitExponentialThirdDifferenceResponse a h u ^ 2)) := by
+          (1 + u) * (4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ (2 : ℕ) +
+            unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ))) := by
         exact (continuous_const.add continuous_id).mul
           ((continuous_const.mul (hgen.pow 2)).add
             ((continuous_unitExponentialThirdDifferenceResponse a h).pow 2))
@@ -167,8 +167,8 @@ theorem leakProfile_unitExponentialThirdDifferenceGraphLeakProfile
         unfold unitExponentialThirdDifferenceLastGenerator
         fun_prop
       have hc : Continuous (fun u : ℝ =>
-          (1 + u) * (4 * unitExponentialThirdDifferenceLastGenerator a h u ^ 2 +
-            unitExponentialThirdDifferenceResponse a h u ^ 2)) := by
+          (1 + u) * (4 * unitExponentialThirdDifferenceLastGenerator a h u ^ (2 : ℕ) +
+            unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ))) := by
         exact (continuous_const.add continuous_id).mul
           ((continuous_const.mul (hgen.pow 2)).add
             ((continuous_unitExponentialThirdDifferenceResponse a h).pow 2))
@@ -255,8 +255,8 @@ theorem integral_leakDensity_unitExponentialThirdDifferenceGraphLeakProfile
     simp
   have hc1 : (∫ u in Ioc a (a + h), D u) =
       ∫ u in a..(a + h),
-        4 * unitExponentialThirdDifferenceFirstGenerator a u ^ 2 +
-          unitExponentialThirdDifferenceResponse a h u ^ 2 := by
+        4 * unitExponentialThirdDifferenceFirstGenerator a u ^ (2 : ℕ) +
+          unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_of_le (by linarith : a ≤ a + h)]
     apply setIntegral_congr_fun measurableSet_Ioc
     intro u hu
@@ -265,8 +265,8 @@ theorem integral_leakDensity_unitExponentialThirdDifferenceGraphLeakProfile
       unitExponentialThirdDifferenceWeakGenerator_eq_first hu.1 hu.2]
   have hc2 : (∫ u in Ioc (a + h) (a + 2 * h), D u) =
       ∫ u in (a + h)..(a + 2 * h),
-        4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ 2 +
-          unitExponentialThirdDifferenceResponse a h u ^ 2 := by
+        4 * unitExponentialThirdDifferenceMiddleGenerator a h u ^ (2 : ℕ) +
+          unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_of_le (by linarith : a + h ≤ a + 2 * h)]
     apply setIntegral_congr_fun measurableSet_Ioc
     intro u hu
@@ -275,8 +275,8 @@ theorem integral_leakDensity_unitExponentialThirdDifferenceGraphLeakProfile
       unitExponentialThirdDifferenceWeakGenerator_eq_middle hu.1 hu.2]
   have hc3 : (∫ u in Ioc (a + 2 * h) (a + 3 * h), D u) =
       ∫ u in (a + 2 * h)..(a + 3 * h),
-        4 * unitExponentialThirdDifferenceLastGenerator a h u ^ 2 +
-          unitExponentialThirdDifferenceResponse a h u ^ 2 := by
+        4 * unitExponentialThirdDifferenceLastGenerator a h u ^ (2 : ℕ) +
+          unitExponentialThirdDifferenceResponse a h u ^ (2 : ℕ) := by
     rw [intervalIntegral.integral_of_le (by linarith : a + 2 * h ≤ a + 3 * h)]
     apply setIntegral_congr_fun measurableSet_Ioc
     intro u hu
@@ -347,7 +347,7 @@ theorem tendsto_unitExponentialThirdDifference_fixedSample_boundaryDensity
         (boundaryRelativeTrace
           (unitExponentialThirdDifferenceGraphLeakProfile (1 - h) h) u / u))
       (𝓝[>] (0 : ℝ))
-      (𝓝 (unitExponentialThirdDifferenceResponse (1 - h) h 1 ^ 2)) := by
+      (𝓝 (unitExponentialThirdDifferenceResponse (1 - h) h 1 ^ (2 : ℕ))) := by
   have hlim :=
     (tendsto_boundaryRelativeTrace_div_unitExponentialThirdDifferenceGraphLeakProfile
       (a := 1 - h) (h := h) (by linarith) hh.le).const_mul

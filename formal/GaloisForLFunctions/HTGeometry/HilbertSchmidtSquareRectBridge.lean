@@ -2,7 +2,7 @@
 The square Hilbert--Schmidt kernel layer is the rectangular one with equal index types.
 
 `IsHS (K : ι × ι → ℂ)` and `IsHSRect (K : κ × ι → ℂ)` are the same predicate
-`Summable fun p => ‖K p‖ ^ 2`, the two norms are the same square root, and the two represented
+`Summable fun p => ‖K p‖ ^ (2 : ℕ)`, the two norms are the same square root, and the two represented
 operators are the same `LinearMap.mkContinuous` datum.  So at `κ = ι` the rectangular layer *is*
 the square layer, and everything proved only on the rectangular side transfers.
 

@@ -62,9 +62,9 @@ lemma endpoint_term_eq (q : XiZeroCopy) :
     apply hrhalf
     linear_combination -h / 2
   have hpoly :
-      1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ 2 * 4 ≠ 0 := by
-    rw [show 1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ 2 * 4 =
-      (1 - 2 * (q.1 : ℂ)) ^ 2 by ring]
+      1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ (2 : ℕ) * 4 ≠ 0 := by
+    rw [show 1 - (q.1 : ℂ) * 4 + (q.1 : ℂ) ^ (2 : ℕ) * 4 =
+      (1 - 2 * (q.1 : ℂ)) ^ (2 : ℕ) by ring]
     exact pow_ne_zero 2 hlinear
   have hline : ((xiZeroCopyLineConjEquiv q).1 : ℂ) =
       1 - (starRingEnd ℂ) (q.1 : ℂ) := rfl
@@ -73,11 +73,11 @@ lemma endpoint_term_eq (q : XiZeroCopy) :
     simp
   rw [hstar]
   have hmu : xiCentralReciprocalSquare (q.1 : ℂ) =
-      -4 / (2 * (q.1 : ℂ) - 1) ^ 2 := by
+      -4 / (2 * (q.1 : ℂ) - 1) ^ (2 : ℕ) := by
     rw [xiCentralReciprocalSquare]
     field_simp [hrhalf, hlinear]
     ring
-  have hzsq : (I / 2 : ℂ) ^ 2 = -1 / 4 := by
+  have hzsq : (I / 2 : ℂ) ^ (2 : ℕ) = -1 / 4 := by
     field_simp
     rw [Complex.I_sq]
     ring
@@ -86,14 +86,14 @@ lemma endpoint_term_eq (q : XiZeroCopy) :
     intro h
     apply hlinear
     linear_combination -h
-  have hquad : (2 * (q.1 : ℂ) - 1) ^ 2 - 1 ≠ 0 := by
-    rw [show (2 * (q.1 : ℂ) - 1) ^ 2 - 1 =
+  have hquad : (2 * (q.1 : ℂ) - 1) ^ (2 : ℕ) - 1 ≠ 0 := by
+    rw [show (2 * (q.1 : ℂ) - 1) ^ (2 : ℕ) - 1 =
       4 * (q.1 : ℂ) * ((q.1 : ℂ) - 1) by ring]
     exact mul_ne_zero (mul_ne_zero (by norm_num) hr0) (sub_ne_zero.mpr hr1)
   have hden :
-      1 - (-1 / 4 : ℂ) * (-4 / (2 * (q.1 : ℂ) - 1) ^ 2) =
-        ((2 * (q.1 : ℂ) - 1) ^ 2 - 1) /
-          (2 * (q.1 : ℂ) - 1) ^ 2 := by
+      1 - (-1 / 4 : ℂ) * (-4 / (2 * (q.1 : ℂ) - 1) ^ (2 : ℕ)) =
+        ((2 * (q.1 : ℂ) - 1) ^ (2 : ℕ) - 1) /
+          (2 * (q.1 : ℂ) - 1) ^ (2 : ℕ) := by
     field_simp [hL]
   rw [hden]
   have hone : 1 - (q.1 : ℂ) ≠ 0 := sub_ne_zero.mpr (Ne.symm hr1)
@@ -101,7 +101,7 @@ lemma endpoint_term_eq (q : XiZeroCopy) :
   ring
 
 theorem summable_norm_xiRawReciprocalCoordinate_sq :
-    Summable (fun q : XiZeroCopy => ‖xiRawReciprocalCoordinate q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ)) := by
   rw [summable_sigma_of_nonneg (fun _ => sq_nonneg _)]
   constructor
   · intro ρ
@@ -123,16 +123,16 @@ theorem summable_norm_xiRawReciprocalCoordinate_sq :
 def xiEndpointReflectionDefectEnergy : ℝ :=
   ∑' q : XiZeroCopy,
     ‖xiRawReciprocalCoordinate q -
-      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2
+      xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ)
 
 def xiRawReciprocalHermitianMass : ℝ :=
-  ∑' q : XiZeroCopy, ‖xiRawReciprocalCoordinate q‖ ^ 2
+  ∑' q : XiZeroCopy, ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ)
 
 def xiEndpointCompletedCurvature : ℝ :=
   (-logDeriv XiC (I / 2) / (I / 2)).re
 
 lemma norm_sub_sq_eq (z w : ℂ) :
-    ‖z - w‖ ^ 2 = ‖z‖ ^ 2 + ‖w‖ ^ 2 -
+    ‖z - w‖ ^ (2 : ℕ) = ‖z‖ ^ (2 : ℕ) + ‖w‖ ^ (2 : ℕ) -
       2 * (z * (starRingEnd ℂ) w).re := by
   rw [Complex.sq_norm, Complex.normSq_apply, Complex.sq_norm,
     Complex.normSq_apply, Complex.sq_norm, Complex.normSq_apply]
@@ -142,10 +142,10 @@ lemma norm_sub_sq_eq (z w : ℂ) :
 theorem summable_xiEndpointReflectionDefectEnergy :
     Summable (fun q : XiZeroCopy =>
       ‖xiRawReciprocalCoordinate q -
-        xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2) := by
+        xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ)) := by
   have hA := summable_norm_xiRawReciprocalCoordinate_sq
   have hB : Summable (fun q : XiZeroCopy =>
-      ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ 2) :=
+      ‖xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)‖ ^ (2 : ℕ)) :=
     hA.comp_injective xiZeroCopyLineConjEquiv.injective
   exact
     GaloisForLFunctions.HTGeometry.summable_norm_sub_sq_of_summable_norm_sq hA hB
@@ -190,7 +190,7 @@ theorem xiEndpointReflectionDefectEnergy_eq_mass_sub_source :
       (𝕜 := ℂ) xiZeroCopyLineConjEquiv xiRawReciprocalCoordinate hA
   calc
     xiEndpointReflectionDefectEnergy =
-        2 * ((∑' q : XiZeroCopy, ‖xiRawReciprocalCoordinate q‖ ^ 2) -
+        2 * ((∑' q : XiZeroCopy, ‖xiRawReciprocalCoordinate q‖ ^ (2 : ℕ)) -
           ∑' q : XiZeroCopy,
             (xiRawReciprocalCoordinate q *
               (starRingEnd ℂ)

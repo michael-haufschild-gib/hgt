@@ -20,7 +20,7 @@ noncomputable section
 /-- A nonzero wave number, with no external positivity hypothesis. -/
 def waveNumber (κ : ℝ) : ℝ := Real.exp κ
 
-def waveFrequency (a κ : ℝ) : ℝ := (waveNumber κ)⁻¹ + a^2
+def waveFrequency (a κ : ℝ) : ℝ := (waveNumber κ)⁻¹ + a^(2 : ℕ)
 
 /-- A global plane wave of the reverse-space-time nonlocal equation. -/
 def planeWave (a κ t x : ℝ) : ℂ :=
@@ -32,10 +32,10 @@ theorem phase_reverse_mul (r t : ℝ) :
   simp [FDNLS.staggerPhase, ← Complex.exp_add]
 
 theorem planeWave_reverse_mul (a κ t x : ℝ) :
-    planeWave a κ t x * planeWave a κ (-t) (-x) = (a:ℂ)^2 := by
+    planeWave a κ t x * planeWave a κ (-t) (-x) = (a:ℂ)^(2 : ℕ) := by
   unfold planeWave
   calc
-    _ = (a:ℂ)^2 *
+    _ = (a:ℂ)^(2 : ℕ) *
       (FDNLS.staggerPhase (-waveNumber κ) x * FDNLS.staggerPhase (-waveNumber κ) (-x)) *
       (FDNLS.staggerPhase (waveFrequency a κ) t *
         FDNLS.staggerPhase (waveFrequency a κ) (-t)) := by ring
@@ -86,12 +86,12 @@ theorem planeWave_solves_nonlocal (a κ t x : ℝ) :
   have hk : (waveNumber κ:ℂ) ≠ 0 := by
     exact_mod_cast Real.exp_ne_zero κ
   have hfreq : (waveNumber κ:ℂ)*(waveFrequency a κ:ℂ) =
-      1+(waveNumber κ:ℂ)*(a:ℂ)^2 := by
+      1+(waveNumber κ:ℂ)*(a:ℂ)^(2 : ℕ) := by
     simp [waveFrequency, mul_add, hk]
   rw [hfreq]
   calc
-    _ = (1+(waveNumber κ:ℂ)*(a:ℂ)^2)*planeWave a κ t x - planeWave a κ t x +
-      I^2*(waveNumber κ:ℂ)*(planeWave a κ t x*planeWave a κ (-t) (-x))*
+    _ = (1+(waveNumber κ:ℂ)*(a:ℂ)^(2 : ℕ))*planeWave a κ t x - planeWave a κ t x +
+      I^(2 : ℕ)*(waveNumber κ:ℂ)*(planeWave a κ t x*planeWave a κ (-t) (-x))*
         planeWave a κ t x := by ring
     _ = 0 := by rw [hprod, Complex.I_sq]; ring
 

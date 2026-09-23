@@ -24,7 +24,7 @@ translation unless it vanishes. -/
 theorem translationInvariant_summable_normSq_eq_zero
     {G : Type*} [AddGroup G] [Infinite G]
     (w : G → ℂ)
-    (hsum : Summable (fun g => ‖w g‖ ^ 2))
+    (hsum : Summable (fun g => ‖w g‖ ^ (2 : ℕ)))
     (hinv : ∀ g δ, w (g + δ) = w g) :
     w = 0 := by
   funext g
@@ -37,8 +37,8 @@ theorem translationInvariant_summable_normSq_eq_zero
     intro hzero
     apply hne
     rw [hconst g, hzero]
-  have hpos : 0 < ‖w 0‖ ^ 2 := by positivity
-  have hs : Summable (fun _ : G => ‖w 0‖ ^ 2) := by
+  have hpos : 0 < ‖w 0‖ ^ (2 : ℕ) := by positivity
+  have hs : Summable (fun _ : G => ‖w 0‖ ^ (2 : ℕ)) := by
     simpa only [hconst] using hsum
   haveI : Finite G := Finite.of_summable_const hpos hs
   exact not_finite G
@@ -49,7 +49,7 @@ edge. -/
 theorem translationInvariantNorm_summable_normSq_eq_zero
     {G : Type*} [AddGroup G] [Infinite G]
     (w : G → ℂ)
-    (hsum : Summable (fun g => ‖w g‖ ^ 2))
+    (hsum : Summable (fun g => ‖w g‖ ^ (2 : ℕ)))
     (hinv : ∀ g δ, ‖w (g + δ)‖ = ‖w g‖) :
     w = 0 := by
   funext g
@@ -63,8 +63,8 @@ theorem translationInvariantNorm_summable_normSq_eq_zero
     apply hne
     apply norm_eq_zero.mp
     rw [hconst g, hzero, norm_zero]
-  have hpos : 0 < ‖w 0‖ ^ 2 := by positivity
-  have hs : Summable (fun _ : G => ‖w 0‖ ^ 2) := by
+  have hpos : 0 < ‖w 0‖ ^ (2 : ℕ) := by positivity
+  have hs : Summable (fun _ : G => ‖w 0‖ ^ (2 : ℕ)) := by
     simpa only [hconst] using hsum
   haveI : Finite G := Finite.of_summable_const hpos hs
   exact not_finite G
@@ -74,7 +74,7 @@ Allowing a phase at each translation therefore does not repair the localized Hil
 theorem projectivelyTranslationCovariant_summable_normSq_eq_zero
     {G : Type*} [AddGroup G] [Infinite G]
     (w phase : G → ℂ)
-    (hsum : Summable (fun g => ‖w g‖ ^ 2))
+    (hsum : Summable (fun g => ‖w g‖ ^ (2 : ℕ)))
     (hphase : ∀ δ, ‖phase δ‖ = 1)
     (hcov : ∀ g δ, w (g + δ) = phase δ * w g) :
     w = 0 := by
@@ -86,7 +86,7 @@ theorem projectivelyTranslationCovariant_summable_normSq_eq_zero
 no nonzero square-summable valuation weight can retain exact projective translation covariance. -/
 theorem suzukiProjectivelyCovariantSummableWeight_eq_zero
     (w phase : SuzukiSeamValuation → ℂ)
-    (hsum : Summable (fun ν => ‖w ν‖ ^ 2))
+    (hsum : Summable (fun ν => ‖w ν‖ ^ (2 : ℕ)))
     (hphase : ∀ δ, ‖phase δ‖ = 1)
     (hcov : ∀ ν δ, w (ν + δ) = phase δ * w ν) :
     w = 0 := by

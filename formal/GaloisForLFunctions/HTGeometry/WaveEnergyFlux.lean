@@ -34,7 +34,7 @@ def SolvesWaveEq (u V : ℝ × (Fin d → ℝ) → ℝ) : Prop :=
 
 /-- The energy density of a wave field. -/
 noncomputable def energyDensity (u : ℝ × (Fin d → ℝ) → ℝ) (p : ℝ × (Fin d → ℝ)) : ℝ :=
-  (waveDirDeriv (timeDir d) u p) ^ 2 + (∑ i : Fin d, (waveDirDeriv (spaceDir d i) u p) ^ 2) + (u p) ^ 2
+  (waveDirDeriv (timeDir d) u p) ^ (2 : ℕ) + (∑ i : Fin d, (waveDirDeriv (spaceDir d i) u p) ^ (2 : ℕ)) + (u p) ^ (2 : ℕ)
 
 /-! ## The product rule for a directional derivative -/
 
@@ -50,8 +50,8 @@ theorem waveDirDeriv_mul {f g : ℝ × (Fin d → ℝ) → ℝ} (hf : ContDiff �
   ring
 
 theorem waveDirDeriv_sq {f : ℝ × (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ ∞ f) (v p : ℝ × (Fin d → ℝ)) :
-    waveDirDeriv v (fun q => (f q) ^ 2) p = 2 * (f p * waveDirDeriv v f p) := by
-  have hsq : (fun q : ℝ × (Fin d → ℝ) => (f q) ^ 2) = fun q => f q * f q := by
+    waveDirDeriv v (fun q => (f q) ^ (2 : ℕ)) p = 2 * (f p * waveDirDeriv v f p) := by
+  have hsq : (fun q : ℝ × (Fin d → ℝ) => (f q) ^ (2 : ℕ)) = fun q => f q * f q := by
     funext q; ring
   rw [hsq, waveDirDeriv_mul hf hf v p]
   ring
@@ -90,15 +90,15 @@ theorem waveDirDeriv_energyDensity {u : ℝ × (Fin d → ℝ) → ℝ} (hu : Co
         + (∑ i : Fin d, 2 * (waveDirDeriv (spaceDir d i) u p
             * waveDirDeriv (timeDir d) (waveDirDeriv (spaceDir d i) u) p))
         + 2 * (u p * waveDirDeriv (timeDir d) u p) := by
-  have h1 : ContDiff ℝ ∞ fun q : ℝ × (Fin d → ℝ) => (waveDirDeriv (timeDir d) u q) ^ 2 :=
+  have h1 : ContDiff ℝ ∞ fun q : ℝ × (Fin d → ℝ) => (waveDirDeriv (timeDir d) u q) ^ (2 : ℕ) :=
     (contDiff_dirDeriv hu _).pow 2
   have h2 : ContDiff ℝ ∞ fun q : ℝ × (Fin d → ℝ) =>
-      ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u q) ^ 2 :=
+      ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u q) ^ (2 : ℕ) :=
     ContDiff.sum fun i _ => (contDiff_dirDeriv hu _).pow 2
-  have h3 : ContDiff ℝ ∞ fun q : ℝ × (Fin d → ℝ) => (u q) ^ 2 := hu.pow 2
+  have h3 : ContDiff ℝ ∞ fun q : ℝ × (Fin d → ℝ) => (u q) ^ (2 : ℕ) := hu.pow 2
   have hsplit : energyDensity u = fun q : ℝ × (Fin d → ℝ) =>
-      ((waveDirDeriv (timeDir d) u q) ^ 2 + ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u q) ^ 2)
-        + (u q) ^ 2 := rfl
+      ((waveDirDeriv (timeDir d) u q) ^ (2 : ℕ) + ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u q) ^ (2 : ℕ))
+        + (u q) ^ (2 : ℕ) := rfl
   rw [hsplit, waveDirDeriv_add (h1.add h2) h3, waveDirDeriv_add h1 h2,
     waveDirDeriv_sq (contDiff_dirDeriv hu _), waveDirDeriv_sq hu,
     waveDirDeriv_sum Finset.univ (fun i => (contDiff_dirDeriv hu (spaceDir d i)).pow 2)]

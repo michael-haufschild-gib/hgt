@@ -16,7 +16,7 @@ open MeasureTheory Set Filter Topology
 namespace RHTower.DeletionMixedRefinement
 
 private theorem continuous_bernoulli : Continuous RHTower.bernoulliPeriodic := by
-  have hc : Continuous (fun x : ℝ => (x^2-x)/2) := by fun_prop
+  have hc : Continuous (fun x : ℝ => (x^(2 : ℕ)-x)/2) := by fun_prop
   exact hc.continuousOn.comp_fract'' (by norm_num)
 
 private def centeredBernoulli (x : ℝ) : ℝ := RHTower.bernoulliPeriodic x + 1/12
@@ -26,7 +26,7 @@ private theorem continuous_centeredBernoulli : Continuous centeredBernoulli :=
 
 private theorem centeredBernoulli_mean : (∫ x in (0:ℝ)..1, centeredBernoulli x) = 0 := by
   have he : (∫ x in (0:ℝ)..1, centeredBernoulli x) =
-      ∫ x in (0:ℝ)..1, (x^2-x)/2+1/12 := by
+      ∫ x in (0:ℝ)..1, (x^(2 : ℕ)-x)/2+1/12 := by
     apply intervalIntegral.integral_congr
     intro x hxi
     have hxi' : x ∈ Icc (0:ℝ) 1 := by simpa using hxi
@@ -37,7 +37,7 @@ private theorem centeredBernoulli_mean : (∫ x in (0:ℝ)..1, centeredBernoulli
       simp only [centeredBernoulli, RHTower.bernoulliPeriodic, hf]
   rw [he]
   have hd : ∀ x ∈ Set.uIcc (0:ℝ) 1,
-      HasDerivAt (fun y:ℝ => y^3/6-y^2/4+y/12) ((x^2-x)/2+1/12) x := by
+      HasDerivAt (fun y:ℝ => y^(3 : ℕ)/6-y^(2 : ℕ)/4+y/12) ((x^(2 : ℕ)-x)/2+1/12) x := by
     intro x _
     convert! ((((hasDerivAt_id x).pow 3).div_const 6).sub
       (((hasDerivAt_id x).pow 2).div_const 4)).add ((hasDerivAt_id x).div_const 12) using 1

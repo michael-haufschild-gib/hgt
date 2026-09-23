@@ -35,7 +35,7 @@ theorem fzzCigarParityDilatedCovariantReporterRatio_eq
 theorem fzzCigarParityDilatedCovariantReporter_pullbackA_eq_zero
     (beta t : ℝ) :
     fzzCigarParityDilatedStabilizedFlowHermitianA beta t
-        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
         (fzzCigarParityDilatedCovariantReporterRatio beta t) 1 = 0 := by
   rw [fzzCigarParityDilatedStabilizedFlowHermitianA,
     fzzCigarParityDilatedCovariantReporterRatio]
@@ -57,7 +57,7 @@ theorem fzzCigarParityDilatedCovariantReporter_pullbackB_eq_zero
 theorem fzzCigarParityDilatedCovariantReporter_conservation
     (beta t : ℝ) (u : ℂ × ℂ) :
     fzzCigarParityHermitianQuadraticObservable
-        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
         (fzzCigarParityDilatedCovariantReporterRatio beta t) 0 1
         (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t u) =
       fzzCigarParityHermitianQuadraticObservable 0 0 0 1 u := by
@@ -73,7 +73,7 @@ theorem fzzCigarParityDilatedReporter_pullback_eq_unitSecondDiagonal_iff
       fzzCigarParityDilatedStabilizedFlowHermitianB beta t b d = 0 ∧
       fzzCigarParityDilatedStabilizedFlowHermitianC beta t c = 0 ∧
       d = 1) ↔
-    (a = fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2 ∧
+    (a = fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ) ∧
       b = fzzCigarParityDilatedCovariantReporterRatio beta t ∧
       c = 0 ∧ d = 1) := by
   let e := Real.exp (fzzKreinPAt beta * t)
@@ -89,7 +89,7 @@ theorem fzzCigarParityDilatedReporter_pullback_eq_unitSecondDiagonal_iff
       rw [fzzCigarParityDilatedCovariantReporterRatio]
       field_simp [he] at hB ⊢
       linarith
-    have ha : a = fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2 := by
+    have ha : a = fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ) := by
       rw [fzzCigarParityDilatedStabilizedFlowHermitianA, hd, hb] at hA
       rw [fzzCigarParityDilatedCovariantReporterRatio] at hA ⊢
       field_simp [he] at hA ⊢
@@ -105,12 +105,12 @@ theorem fzzCigarParityDilatedReporter_pullback_eq_unitSecondDiagonal_iff
 theorem fzzCigarParityDilatedCovariantReporter_mellinReading_eq_reflection_iff
     (beta t : ℝ) (rho : ℂ) :
     fzzCigarParityHermitianQuadraticObservable
-        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
         (fzzCigarParityDilatedCovariantReporterRatio beta t) 0 1
         (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t
           (fzzCigarParityMellinCharacterCarrier rho)) =
       fzzCigarParityHermitianQuadraticObservable
-        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
         (fzzCigarParityDilatedCovariantReporterRatio beta t) 0 1
         (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t
           (fzzCigarParityMellinCharacterCarrier
@@ -124,12 +124,12 @@ theorem fzzCigarParityDilatedCovariantReporter_mellinReading_eq_reflection_iff
 theorem fzzCigarParityDilatedCovariantReporter_reflectionDefect_conserved
     (beta t : ℝ) (rho : ℂ) :
     fzzCigarParityHermitianQuadraticObservable
-          (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+          (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
           (fzzCigarParityDilatedCovariantReporterRatio beta t) 0 1
           (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t
             (fzzCigarParityMellinCharacterCarrier rho)) -
         fzzCigarParityHermitianQuadraticObservable
-          (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+          (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
           (fzzCigarParityDilatedCovariantReporterRatio beta t) 0 1
           (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t
             (fzzCigarParityMellinCharacterCarrier
@@ -144,12 +144,12 @@ theorem fzzCigarParityDilatedCovariantReporter_reflectionDefect_conserved
 theorem fzzCigarParityDilatedCovariantReporter_mellinReading_ne_reflection_of_re_ne_half
     (beta t : ℝ) (rho : ℂ) (hre : rho.re ≠ 1 / 2) :
     fzzCigarParityHermitianQuadraticObservable
-        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
         (fzzCigarParityDilatedCovariantReporterRatio beta t) 0 1
         (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t
           (fzzCigarParityMellinCharacterCarrier rho)) ≠
       fzzCigarParityHermitianQuadraticObservable
-        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
         (fzzCigarParityDilatedCovariantReporterRatio beta t) 0 1
         (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t
           (fzzCigarParityMellinCharacterCarrier
@@ -164,12 +164,12 @@ def FZZCigarParityDilatedCovariantReporterReflectionMatchedAt
     (beta t : ℝ) : Prop :=
   ∀ rho : ℂ, 0 < rho.re → rho.re < 1 → FZZCigarParityMellinMode rho →
     fzzCigarParityHermitianQuadraticObservable
-        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
         (fzzCigarParityDilatedCovariantReporterRatio beta t) 0 1
         (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t
           (fzzCigarParityMellinCharacterCarrier rho)) =
       fzzCigarParityHermitianQuadraticObservable
-        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ 2)
+        (fzzCigarParityDilatedCovariantReporterRatio beta t ^ (2 : ℕ))
         (fzzCigarParityDilatedCovariantReporterRatio beta t) 0 1
         (fzzCigarParityDilatedSecondDiagonalStabilizedFlow beta t
           (fzzCigarParityMellinCharacterCarrier

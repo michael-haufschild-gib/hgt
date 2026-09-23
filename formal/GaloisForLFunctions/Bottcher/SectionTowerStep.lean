@@ -292,11 +292,11 @@ set_option maxHeartbeats 1600000 in
 `(σ₁, σ₂)` lies strictly above the critical value's level extends across the square root of the
 band: there is a tower section on `{√σ₁ < ‖w‖ < R₀}`. -/
 theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
-    (hrlo : 1 < rlo) (hrloR₀ : rlo ^ 2 < R₀)
+    (hrlo : 1 < rlo) (hrloR₀ : rlo ^ (2 : ℕ) < R₀)
     (S : TowerSection c rlo R₀)
     (h0 : greenFunctionDyn c 0 < Real.log rlo)
-    {σ₁ σ₂ : ℝ} (hσ₁lo : rlo < σ₁) (hσ₁hi : σ₁ < rlo ^ 2)
-    (hσ₂lo : rlo ^ 2 < σ₂) (hσ₂hi : σ₂ ≤ R₀)
+    {σ₁ σ₂ : ℝ} (hσ₁lo : rlo < σ₁) (hσ₁hi : σ₁ < rlo ^ (2 : ℕ))
+    (hσ₂lo : rlo ^ (2 : ℕ) < σ₂) (hσ₂hi : σ₂ ≤ R₀)
     (hcab : greenFunctionDyn c c < Real.log σ₁)
     (hsurj : ∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
       greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀) :
@@ -313,7 +313,7 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     rw [Real.sqrt_lt' (by linarith)]
     exact hσ₁hi
   have hs₂ : rlo < Real.sqrt σ₂ := by
-    rw [show rlo = Real.sqrt (rlo ^ 2) from (Real.sqrt_sq (by linarith)).symm]
+    rw [show rlo = Real.sqrt (rlo ^ (2 : ℕ)) from (Real.sqrt_sq (by linarith)).symm]
     exact Real.sqrt_lt_sqrt (by positivity) hσ₂lo
   have hs₁pos : (0:ℝ) < Real.sqrt σ₁ := Real.sqrt_pos.mpr hσ₁pos
   have hs₁s₂ : Real.sqrt σ₁ < Real.sqrt σ₂ := Real.sqrt_lt_sqrt (le_of_lt hσ₁pos) hσ
@@ -321,40 +321,40 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     have h1 : Real.sqrt σ₂ ≤ Real.sqrt R₀ := Real.sqrt_le_sqrt hσ₂hi
     have h2 : Real.sqrt R₀ < R₀ := by
       have hR₀1 : (1:ℝ) < R₀ := by nlinarith
-      nth_rewrite 2 [show R₀ = Real.sqrt (R₀ ^ 2) from (Real.sqrt_sq (by linarith)).symm]
+      nth_rewrite 2 [show R₀ = Real.sqrt (R₀ ^ (2 : ℕ)) from (Real.sqrt_sq (by linarith)).symm]
       exact Real.sqrt_lt_sqrt (by linarith) (by nlinarith)
     linarith
   -- the squared-argument membership
   have hsqmem : ∀ w : ℂ, w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) →
-      w ^ 2 ∈ annulusSet σ₁ σ₂ := by
+      w ^ (2 : ℕ) ∈ annulusSet σ₁ σ₂ := by
     rintro w ⟨h1, h2⟩
     constructor
     · rw [norm_pow]
-      calc σ₁ = Real.sqrt σ₁ ^ 2 := (Real.sq_sqrt (le_of_lt hσ₁pos)).symm
-        _ < ‖w‖ ^ 2 := by nlinarith [norm_nonneg w]
+      calc σ₁ = Real.sqrt σ₁ ^ (2 : ℕ) := (Real.sq_sqrt (le_of_lt hσ₁pos)).symm
+        _ < ‖w‖ ^ (2 : ℕ) := by nlinarith [norm_nonneg w]
     · rw [norm_pow]
-      calc ‖w‖ ^ 2 < Real.sqrt σ₂ ^ 2 := by nlinarith [norm_nonneg w, hs₁pos.trans h1]
+      calc ‖w‖ ^ (2 : ℕ) < Real.sqrt σ₂ ^ (2 : ℕ) := by nlinarith [norm_nonneg w, hs₁pos.trans h1]
         _ = σ₂ := Real.sq_sqrt (le_of_lt hσ₂pos)
   have hsrcmem : ∀ v : ℂ, v ∈ annulusSet σ₁ σ₂ → v ∈ annulusSet rlo R₀ := by
     rintro v ⟨h1, h2⟩
     exact ⟨lt_trans hσ₁lo h1, lt_of_lt_of_le h2 hσ₂hi⟩
   -- the pulled-back radicand g := T(w²) − c on the target band
-  set g : ℂ → ℂ := fun w => S.T (w ^ 2) - c with hgdef
+  set g : ℂ → ℂ := fun w => S.T (w ^ (2 : ℕ)) - c with hgdef
   have hg_an : AnalyticOnNhd ℂ g (annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)) := by
     intro w hw
-    have h1 : AnalyticAt ℂ (fun w : ℂ => w ^ 2) w := analyticAt_id.pow 2
-    have h2 : AnalyticAt ℂ S.T (w ^ 2) := S.an _ (hsrcmem _ (hsqmem w hw))
-    have h3 : AnalyticAt ℂ (S.T ∘ fun w : ℂ => w ^ 2) w :=
-      AnalyticAt.comp (g := S.T) (f := fun w : ℂ => w ^ 2) h2 h1
+    have h1 : AnalyticAt ℂ (fun w : ℂ => w ^ (2 : ℕ)) w := analyticAt_id.pow 2
+    have h2 : AnalyticAt ℂ S.T (w ^ (2 : ℕ)) := S.an _ (hsrcmem _ (hsqmem w hw))
+    have h3 : AnalyticAt ℂ (S.T ∘ fun w : ℂ => w ^ (2 : ℕ)) w :=
+      AnalyticAt.comp (g := S.T) (f := fun w : ℂ => w ^ (2 : ℕ)) h2 h1
     exact h3.sub analyticAt_const
   have hg_ne : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂), g w ≠ 0 := by
     intro w hw h
-    have hval : S.T (w ^ 2) = c := by
+    have hval : S.T (w ^ (2 : ℕ)) = c := by
       have := sub_eq_zero.mp h
       exact this
     have hlev := S.level _ (hsrcmem _ (hsqmem w hw))
     rw [hval] at hlev
-    have h1 : Real.log σ₁ < Real.log ‖w ^ 2‖ := by
+    have h1 : Real.log σ₁ < Real.log ‖w ^ (2 : ℕ)‖ := by
       apply Real.log_lt_log hσ₁pos
       exact (hsqmem w hw).1
     rw [← hlev] at h1
@@ -373,15 +373,15 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
   have hρ1 : Real.sqrt σ₁ < ρ := by rw [hρdef]; linarith
   have hρ2 : ρ < Real.sqrt σ₂ := by rw [hρdef]; linarith
   have hρpos : (0:ℝ) < ρ := lt_trans hs₁pos hρ1
-  have hρsq₁ : σ₁ < ρ ^ 2 := by
-    have h1 : Real.sqrt σ₁ ^ 2 < ρ ^ 2 := by nlinarith [hs₁pos]
+  have hρsq₁ : σ₁ < ρ ^ (2 : ℕ) := by
+    have h1 : Real.sqrt σ₁ ^ (2 : ℕ) < ρ ^ (2 : ℕ) := by nlinarith [hs₁pos]
     rwa [Real.sq_sqrt (le_of_lt hσ₁pos)] at h1
-  have hρsq₂ : ρ ^ 2 < σ₂ := by
-    have h1 : ρ ^ 2 < Real.sqrt σ₂ ^ 2 := by nlinarith [hρpos]
+  have hρsq₂ : ρ ^ (2 : ℕ) < σ₂ := by
+    have h1 : ρ ^ (2 : ℕ) < Real.sqrt σ₂ ^ (2 : ℕ) := by nlinarith [hρpos]
     rwa [Real.sq_sqrt (le_of_lt hσ₂pos)] at h1
-  have hρsqrlo : rlo < ρ ^ 2 := lt_trans hσ₁lo hρsq₁
-  have hρsqR₀ : ρ ^ 2 < R₀ := lt_of_lt_of_le hρsq₂ hσ₂hi
-  have hρsqpos : (0:ℝ) < ρ ^ 2 := by positivity
+  have hρsqrlo : rlo < ρ ^ (2 : ℕ) := lt_trans hσ₁lo hρsq₁
+  have hρsqR₀ : ρ ^ (2 : ℕ) < R₀ := lt_of_lt_of_le hρsq₂ hσ₂hi
+  have hρsqpos : (0:ℝ) < ρ ^ (2 : ℕ) := by positivity
   -- T never takes the value c on the source band
   have hTnec : ∀ v ∈ annulusSet σ₁ σ₂, S.T v ≠ c := by
     intro v hv h
@@ -394,49 +394,49 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
   have hgwindAll : ∀ r : ℝ, Real.sqrt σ₁ < r → r < Real.sqrt σ₂ →
       (∫ θ in (0:ℝ)..(2 * Real.pi),
         logDeriv g (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I))
-      = ((2 ^ 1 * 1 : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
+      = ((2 ^ (1 : ℕ) * 1 : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
     intro r hr1 hr2
     have hrpos : (0:ℝ) < r := lt_trans hs₁pos hr1
-    have hrsq₁ : σ₁ < r ^ 2 := by
-      have h1 : Real.sqrt σ₁ ^ 2 < r ^ 2 := by nlinarith [hs₁pos]
+    have hrsq₁ : σ₁ < r ^ (2 : ℕ) := by
+      have h1 : Real.sqrt σ₁ ^ (2 : ℕ) < r ^ (2 : ℕ) := by nlinarith [hs₁pos]
       rwa [Real.sq_sqrt (le_of_lt hσ₁pos)] at h1
-    have hrsq₂ : r ^ 2 < σ₂ := by
-      have h1 : r ^ 2 < Real.sqrt σ₂ ^ 2 := by nlinarith [hrpos]
+    have hrsq₂ : r ^ (2 : ℕ) < σ₂ := by
+      have h1 : r ^ (2 : ℕ) < Real.sqrt σ₂ ^ (2 : ℕ) := by nlinarith [hrpos]
       rwa [Real.sq_sqrt (le_of_lt hσ₂pos)] at h1
-    have hrsqrlo : rlo < r ^ 2 := lt_trans hσ₁lo hrsq₁
-    have hrsqR₀ : r ^ 2 < R₀ := lt_of_lt_of_le hrsq₂ hσ₂hi
-    have hrsqpos : (0:ℝ) < r ^ 2 := by positivity
-    set δ : ℝ → ℂ := fun u => S.T (circleMap 0 (r ^ 2) u) - c with hδdef
+    have hrsqrlo : rlo < r ^ (2 : ℕ) := lt_trans hσ₁lo hrsq₁
+    have hrsqR₀ : r ^ (2 : ℕ) < R₀ := lt_of_lt_of_le hrsq₂ hσ₂hi
+    have hrsqpos : (0:ℝ) < r ^ (2 : ℕ) := by positivity
+    set δ : ℝ → ℂ := fun u => S.T (circleMap 0 (r ^ (2 : ℕ)) u) - c with hδdef
     set δ' : ℝ → ℂ := fun u =>
-      deriv S.T (circleMap 0 (r ^ 2) u) * (circleMap 0 (r ^ 2) u * Complex.I) with hδ'def
-    have hcmsq : ∀ u : ℝ, circleMap 0 (r ^ 2) u ∈ annulusSet σ₁ σ₂ := by
+      deriv S.T (circleMap 0 (r ^ (2 : ℕ)) u) * (circleMap 0 (r ^ (2 : ℕ)) u * Complex.I) with hδ'def
+    have hcmsq : ∀ u : ℝ, circleMap 0 (r ^ (2 : ℕ)) u ∈ annulusSet σ₁ σ₂ := by
       intro u
       exact circleMap_mem_annulusSet hrsqpos hrsq₁ hrsq₂ u
     have hδcont : Continuous δ := by
       have h1 : ContinuousOn S.T (annulusSet rlo R₀) := S.an.continuousOn
-      exact (h1.comp_continuous (continuous_circleMap 0 (r ^ 2))
+      exact (h1.comp_continuous (continuous_circleMap 0 (r ^ (2 : ℕ)))
         (fun u => hsrcmem _ (hcmsq u))).sub continuous_const
     have hδ'cont : Continuous δ' := by
       have h1 : ContinuousOn (deriv S.T) (annulusSet rlo R₀) := (S.an.deriv).continuousOn
-      exact (h1.comp_continuous (continuous_circleMap 0 (r ^ 2))
+      exact (h1.comp_continuous (continuous_circleMap 0 (r ^ (2 : ℕ)))
         (fun u => hsrcmem _ (hcmsq u))).mul
-        ((continuous_circleMap 0 (r ^ 2)).mul continuous_const)
+        ((continuous_circleMap 0 (r ^ (2 : ℕ))).mul continuous_const)
     have hδne : ∀ u : ℝ, δ u ≠ 0 := by
       intro u h
       exact hTnec _ (hcmsq u)
-        (sub_eq_zero.mp (show S.T (circleMap 0 (r ^ 2) u) - c = 0 from h))
+        (sub_eq_zero.mp (show S.T (circleMap 0 (r ^ (2 : ℕ)) u) - c = 0 from h))
     have hδper : Function.Periodic δ (2 * Real.pi) := by
       intro u
-      show S.T (circleMap 0 (r ^ 2) (u + 2 * Real.pi)) - c
-        = S.T (circleMap 0 (r ^ 2) u) - c
-      rw [periodic_circleMap 0 (r ^ 2) u]
+      show S.T (circleMap 0 (r ^ (2 : ℕ)) (u + 2 * Real.pi)) - c
+        = S.T (circleMap 0 (r ^ (2 : ℕ)) u) - c
+      rw [periodic_circleMap 0 (r ^ (2 : ℕ)) u]
     have hδ'per : Function.Periodic δ' (2 * Real.pi) := by
       intro u
-      show deriv S.T (circleMap 0 (r ^ 2) (u + 2 * Real.pi))
-          * (circleMap 0 (r ^ 2) (u + 2 * Real.pi) * Complex.I)
-        = deriv S.T (circleMap 0 (r ^ 2) u) * (circleMap 0 (r ^ 2) u * Complex.I)
-      rw [periodic_circleMap 0 (r ^ 2) u]
-    have hcmsqid : ∀ θ : ℝ, (circleMap 0 r θ) ^ 2 = circleMap 0 (r ^ 2) (2 * θ) := by
+      show deriv S.T (circleMap 0 (r ^ (2 : ℕ)) (u + 2 * Real.pi))
+          * (circleMap 0 (r ^ (2 : ℕ)) (u + 2 * Real.pi) * Complex.I)
+        = deriv S.T (circleMap 0 (r ^ (2 : ℕ)) u) * (circleMap 0 (r ^ (2 : ℕ)) u * Complex.I)
+      rw [periodic_circleMap 0 (r ^ (2 : ℕ)) u]
+    have hcmsqid : ∀ θ : ℝ, (circleMap 0 r θ) ^ (2 : ℕ) = circleMap 0 (r ^ (2 : ℕ)) (2 * θ) := by
       intro θ
       simp only [circleMap, zero_add]
       rw [mul_pow, ← Complex.exp_nat_mul]
@@ -452,35 +452,35 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
       set w : ℂ := circleMap 0 r θ with hwdef
       have hwmem : w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) :=
         circleMap_mem_annulusSet hrpos hr1 hr2 θ
-      have hDdiff : DifferentiableAt ℂ (fun z => S.T z - c) (w ^ 2) :=
+      have hDdiff : DifferentiableAt ℂ (fun z => S.T z - c) (w ^ (2 : ℕ)) :=
         ((S.an _ (hsrcmem _ (hsqmem w hwmem))).differentiableAt).sub_const c
-      have hsqdiff : DifferentiableAt ℂ (fun z : ℂ => z ^ 2) w :=
+      have hsqdiff : DifferentiableAt ℂ (fun z : ℂ => z ^ (2 : ℕ)) w :=
         (hasDerivAt_pow 2 w).differentiableAt
       have hcomp : logDeriv g w
-          = logDeriv (fun z => S.T z - c) (w ^ 2) * deriv (fun z : ℂ => z ^ 2) w := by
-        have h1 : g = (fun z => S.T z - c) ∘ (fun z : ℂ => z ^ 2) := rfl
+          = logDeriv (fun z => S.T z - c) (w ^ (2 : ℕ)) * deriv (fun z : ℂ => z ^ (2 : ℕ)) w := by
+        have h1 : g = (fun z => S.T z - c) ∘ (fun z : ℂ => z ^ (2 : ℕ)) := rfl
         rw [h1]
         exact logDeriv_comp hDdiff hsqdiff
-      have hderivsq : deriv (fun z : ℂ => z ^ 2) w = 2 * w := by
+      have hderivsq : deriv (fun z : ℂ => z ^ (2 : ℕ)) w = 2 * w := by
         have h6 := (hasDerivAt_pow 2 w).deriv
         rw [h6]
         push_cast
         ring
-      have hlogD : logDeriv (fun z => S.T z - c) (w ^ 2)
-          = deriv S.T (w ^ 2) / (S.T (w ^ 2) - c) := by
+      have hlogD : logDeriv (fun z => S.T z - c) (w ^ (2 : ℕ))
+          = deriv S.T (w ^ (2 : ℕ)) / (S.T (w ^ (2 : ℕ)) - c) := by
         rw [logDeriv_apply]
         congr 1
         exact deriv_sub_const c
-      have hw2 : w ^ 2 = circleMap 0 (r ^ 2) (2 * θ) := hcmsqid θ
+      have hw2 : w ^ (2 : ℕ) = circleMap 0 (r ^ (2 : ℕ)) (2 * θ) := hcmsqid θ
       have hRHS : (δ (2 * θ))⁻¹ * (2 * δ' (2 * θ))
-          = (S.T (w ^ 2) - c)⁻¹ * (2 * (deriv S.T (w ^ 2) * (w ^ 2 * Complex.I))) := by
-        show (S.T (circleMap 0 (r ^ 2) (2 * θ)) - c)⁻¹
-            * (2 * (deriv S.T (circleMap 0 (r ^ 2) (2 * θ))
-                * (circleMap 0 (r ^ 2) (2 * θ) * Complex.I)))
+          = (S.T (w ^ (2 : ℕ)) - c)⁻¹ * (2 * (deriv S.T (w ^ (2 : ℕ)) * (w ^ (2 : ℕ) * Complex.I))) := by
+        show (S.T (circleMap 0 (r ^ (2 : ℕ)) (2 * θ)) - c)⁻¹
+            * (2 * (deriv S.T (circleMap 0 (r ^ (2 : ℕ)) (2 * θ))
+                * (circleMap 0 (r ^ (2 : ℕ)) (2 * θ) * Complex.I)))
           = _
         rw [← hw2]
       rw [hcomp, hderivsq, hlogD, hRHS]
-      have hne2 : S.T (w ^ 2) - c ≠ 0 := fun h => hTnec _ (hsqmem w hwmem) (sub_eq_zero.mp h)
+      have hne2 : S.T (w ^ (2 : ℕ)) - c ≠ 0 := fun h => hTnec _ (hsqmem w hwmem) (sub_eq_zero.mp h)
       field_simp
     rw [intervalIntegral.integral_congr (fun θ _ => hstep1 θ)]
     have hdouble := windInt_double (a := 0) hδcont hδ'cont hδne hδper hδ'per
@@ -500,14 +500,14 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
       rfl
     have hlogσ₁pos : 0 < Real.log σ₁ :=
       Real.log_pos (by nlinarith)
-    have hlogrhosq : Real.log σ₁ < Real.log (r ^ 2) :=
+    have hlogrhosq : Real.log σ₁ < Real.log (r ^ (2 : ℕ)) :=
       Real.log_lt_log hσ₁pos hrsq₁
-    have h0' : greenFunctionDyn c 0 < Real.log (r ^ 2) := by
+    have h0' : greenFunctionDyn c 0 < Real.log (r ^ (2 : ℕ)) := by
       have h1 : Real.log (Real.sqrt σ₁) = Real.log σ₁ / 2 :=
         Real.log_sqrt (le_of_lt hσ₁pos)
       rw [h1] at hbandh
       linarith
-    have hp' : greenFunctionDyn c c < Real.log (r ^ 2) := by linarith
+    have hp' : greenFunctionDyn c c < Real.log (r ^ (2 : ℕ)) := by linarith
     have hpoint := S.windInt_loop_point hrsqpos hrsqrlo hrsqR₀ h0' hp'
     rw [hLHS, hdouble, hinner, hpoint]
     push_cast
@@ -515,7 +515,7 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
   have hgwind := hgwindAll ρ hρ1 hρ2
   obtain ⟨s, hs_an, hs_sq, hs_ne⟩ :=
     exists_pow_root_on_annulus hs₁pos hρ1 hρ2 hg_an hg_ne 1 1 hgwind
-  have hs_sq' : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂), s w ^ 2 = g w := by
+  have hs_sq' : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂), s w ^ (2 : ℕ) = g w := by
     intro w hw
     have := hs_sq w hw
     rwa [pow_one 2] at this
@@ -523,7 +523,7 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
   have hlogs : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂),
       logDeriv g w = 2 * logDeriv s w := by
     intro w hw
-    have hev : g =ᶠ[nhds w] (fun z => s z ^ 2) := by
+    have hev : g =ᶠ[nhds w] (fun z => s z ^ (2 : ℕ)) := by
       filter_upwards [(isOpen_annulusSet _ _).mem_nhds hw] with z hz
       exact (hs_sq' z hz).symm
     rw [logDeriv_congr_of_eventuallyEq hev,
@@ -549,7 +549,7 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     have h1 := hgwindAll r hr1 hr2
     rw [intervalIntegral.integral_congr (fun θ _ => hcongr θ),
       intervalIntegral.integral_const_mul] at h1
-    have h2 : ((2 ^ 1 * 1 : ℤ) : ℂ) * (2 * Real.pi * Complex.I)
+    have h2 : ((2 ^ (1 : ℕ) * 1 : ℤ) : ℂ) * (2 * Real.pi * Complex.I)
         = 2 * (2 * (Real.pi:ℂ) * Complex.I) := by push_cast; ring
     rw [h2] at h1
     exact mul_left_cancel₀ (by norm_num : (2:ℂ) ≠ 0) h1
@@ -563,10 +563,10 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     have hsq_ratio : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂),
         s (-w) = s w ∨ s (-w) = -s w := by
       intro w hw
-      have h1 : s (-w) ^ 2 = s w ^ 2 := by
+      have h1 : s (-w) ^ (2 : ℕ) = s w ^ (2 : ℕ) := by
         rw [hs_sq' _ (hnegmem w hw), hs_sq' _ hw]
-        show S.T ((-w) ^ 2) - c = S.T (w ^ 2) - c
-        rw [neg_pow, show (-1:ℂ)^2 = 1 from by norm_num, one_mul]
+        show S.T ((-w) ^ (2 : ℕ)) - c = S.T (w ^ (2 : ℕ)) - c
+        rw [neg_pow, show (-1:ℂ)^(2 : ℕ) = 1 from by norm_num, one_mul]
       have h2 : (s (-w) - s w) * (s (-w) + s w) = 0 := by linear_combination h1
       rcases mul_eq_zero.mp h2 with h | h
       · exact Or.inl (sub_eq_zero.mp h)
@@ -667,13 +667,13 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
   have hO2 : ∀ w ∈ O, w ∈ B₂ := by
     rintro w ⟨h1, h2⟩
     exact ⟨h1, lt_trans h2 hs₂R₀⟩
-  have hOsq : ∀ w ∈ O, w ^ 2 ∈ B₂ := by
+  have hOsq : ∀ w ∈ O, w ^ (2 : ℕ) ∈ B₂ := by
     rintro w ⟨h1, h2⟩
     have hw1 : (1:ℝ) < ‖w‖ := lt_trans hrlo h1
     constructor
     · rw [norm_pow]; nlinarith
     · rw [norm_pow]
-      have h3 : ‖w‖ ^ 2 < Real.sqrt σ₂ ^ 2 := by nlinarith
+      have h3 : ‖w‖ ^ (2 : ℕ) < Real.sqrt σ₂ ^ (2 : ℕ) := by nlinarith
       rw [Real.sq_sqrt (le_of_lt hσ₂pos)] at h3
       linarith
   have hTneO : ∀ w ∈ O, S.T w ≠ 0 := by
@@ -685,9 +685,9 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     linarith
   have hsqO : ∀ w ∈ O, s w = S.T w ∨ s w = -S.T w := by
     intro w hw
-    have h1 : s w ^ 2 = S.T w ^ 2 := by
+    have h1 : s w ^ (2 : ℕ) = S.T w ^ (2 : ℕ) := by
       rw [hs_sq' _ (hO1 w hw)]
-      show S.T (w ^ 2) - c = S.T w ^ 2
+      show S.T (w ^ (2 : ℕ)) - c = S.T w ^ (2 : ℕ)
       rw [S.fe w (hO2 w hw) (hOsq w hw)]
       ring
     have h2 : (s w - S.T w) * (s w + S.T w) = 0 := by linear_combination h1
@@ -702,7 +702,7 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     hTneO hsqO
   -- the normalized root s'
   have hkey : ∃ s' : ℂ → ℂ, AnalyticOnNhd ℂ s' B₁ ∧
-      (∀ w ∈ B₁, s' w ^ 2 = S.T (w ^ 2) - c) ∧ (∀ w ∈ B₁, s' w ≠ 0) ∧
+      (∀ w ∈ B₁, s' w ^ (2 : ℕ) = S.T (w ^ (2 : ℕ)) - c) ∧ (∀ w ∈ B₁, s' w ≠ 0) ∧
       (∀ w ∈ B₁, s' (-w) = -s' w) ∧
       (∀ r : ℝ, Real.sqrt σ₁ < r → r < Real.sqrt σ₂ →
         (∫ θ in (0:ℝ)..(2 * Real.pi), (s' (circleMap 0 r θ))⁻¹
@@ -714,7 +714,7 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     · refine ⟨fun w => -s w, hs_an.neg, ?_, ?_, ?_, ?_, ?_⟩
       · intro w hw
         have := hs_sq' w hw
-        show (-s w) ^ 2 = S.T (w ^ 2) - c
+        show (-s w) ^ (2 : ℕ) = S.T (w ^ (2 : ℕ)) - c
         rw [neg_pow]
         simpa using this
       · intro w hw
@@ -786,13 +786,13 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     by_cases h : ‖w‖ < Real.sqrt σ₂
     · rw [hmem₁ w h1 h]
       have hwB₁ : w ∈ B₁ := ⟨h1, h⟩
-      have hfe : quadratic c (s' w) = S.T (w ^ 2) := by
+      have hfe : quadratic c (s' w) = S.T (w ^ (2 : ℕ)) := by
         unfold quadratic
         rw [hs'_sq w hwB₁]
         ring
       have h3 := greenFunctionDyn_quadratic c (s' w)
       rw [hfe, S.level _ (hsrcmem _ (hsqmem w hwB₁))] at h3
-      have h4 : Real.log ‖w ^ 2‖ = 2 * Real.log ‖w‖ := by
+      have h4 : Real.log ‖w ^ (2 : ℕ)‖ = 2 * Real.log ‖w‖ := by
         rw [norm_pow, Real.log_pow]
         push_cast
         ring
@@ -824,13 +824,13 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     by_cases h : ‖w‖ < Real.sqrt σ₂
     · rw [hmem₁ w h1 h]
       have hwB₁ : w ∈ B₁ := ⟨h1, h⟩
-      have hfe : quadratic c (s' w) = S.T (w ^ 2) := by
+      have hfe : quadratic c (s' w) = S.T (w ^ (2 : ℕ)) := by
         unfold quadratic
         rw [hs'_sq w hwB₁]
         ring
       have h3 := greenFunctionDyn_quadratic c (s' w)
       rw [hfe, S.level _ (hsrcmem _ (hsqmem w hwB₁))] at h3
-      have h4 : Real.log ‖w ^ 2‖ = 2 * Real.log ‖w‖ := by
+      have h4 : Real.log ‖w ^ (2 : ℕ)‖ = 2 * Real.log ‖w‖ := by
         rw [norm_pow]
         rw [Real.log_pow]
         push_cast
@@ -857,8 +857,8 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     rintro w ⟨h1, h2⟩ ⟨h3, h4⟩
     by_cases h : ‖w‖ < Real.sqrt σ₂
     · have hwB₁ : w ∈ B₁ := ⟨h1, h⟩
-      have hsq : w ^ 2 ∈ annulusSet σ₁ σ₂ := hsqmem w hwB₁
-      have h5 : Tn (w ^ 2) = S.T (w ^ 2) := by
+      have hsq : w ^ (2 : ℕ) ∈ annulusSet σ₁ σ₂ := hsqmem w hwB₁
+      have h5 : Tn (w ^ (2 : ℕ)) = S.T (w ^ (2 : ℕ)) := by
         apply hmem₂
         · exact lt_trans hσ₁lo hsq.1
         · exact lt_of_lt_of_le hsq.2 hσ₂hi
@@ -866,10 +866,10 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
       linear_combination -hs'_sq w hwB₁
     · push Not at h
       have hwB₂lo : rlo < ‖w‖ := lt_of_lt_of_le hs₂ h
-      have hsqlo : rlo < ‖w ^ 2‖ := by
+      have hsqlo : rlo < ‖w ^ (2 : ℕ)‖ := by
         rw [norm_pow]
         nlinarith [lt_trans hrlo hwB₂lo]
-      rw [hmem₂ w hwB₂lo h2, hmem₂ (w ^ 2) hsqlo h4]
+      rw [hmem₂ w hwB₂lo h2, hmem₂ (w ^ (2 : ℕ)) hsqlo h4]
       exact S.fe w ⟨hwB₂lo, h2⟩ ⟨hsqlo, h4⟩
   · -- injectivity
     rintro w₁ ⟨h1, h2⟩ w₂ ⟨h3, h4⟩ heq
@@ -880,13 +880,13 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
       by_cases h : ‖w‖ < Real.sqrt σ₂
       · rw [hmem₁ w ha h]
         have hwB₁ : w ∈ B₁ := ⟨ha, h⟩
-        have hfe : quadratic c (s' w) = S.T (w ^ 2) := by
+        have hfe : quadratic c (s' w) = S.T (w ^ (2 : ℕ)) := by
           unfold quadratic
           rw [hs'_sq w hwB₁]
           ring
         have h3' := greenFunctionDyn_quadratic c (s' w)
         rw [hfe, S.level _ (hsrcmem _ (hsqmem w hwB₁))] at h3'
-        have h4' : Real.log ‖w ^ 2‖ = 2 * Real.log ‖w‖ := by
+        have h4' : Real.log ‖w ^ (2 : ℕ)‖ = 2 * Real.log ‖w‖ := by
           rw [norm_pow, Real.log_pow]
           push_cast
           ring
@@ -917,15 +917,15 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
       have hw₁B : w₁ ∈ B₁ := ⟨h1, hb₁⟩
       have hw₂B : w₂ ∈ B₁ := ⟨h3, hb₂⟩
       rw [hmem₁ w₁ h1 hb₁, hmem₁ w₂ h3 hb₂] at heq
-      have hsq' : S.T (w₁ ^ 2) = S.T (w₂ ^ 2) := by
+      have hsq' : S.T (w₁ ^ (2 : ℕ)) = S.T (w₂ ^ (2 : ℕ)) := by
         have e1 := hs'_sq w₁ hw₁B
         have e2 := hs'_sq w₂ hw₂B
-        have : S.T (w₁ ^ 2) - c = S.T (w₂ ^ 2) - c := by
+        have : S.T (w₁ ^ (2 : ℕ)) - c = S.T (w₂ ^ (2 : ℕ)) - c := by
           rw [← e1, ← e2, heq]
         linear_combination this
-      have hmem₁' : w₁ ^ 2 ∈ B₂ := hsrcmem _ (hsqmem w₁ hw₁B)
-      have hmem₂' : w₂ ^ 2 ∈ B₂ := hsrcmem _ (hsqmem w₂ hw₂B)
-      have hsqeq : w₁ ^ 2 = w₂ ^ 2 := S.inj hmem₁' hmem₂' hsq'
+      have hmem₁' : w₁ ^ (2 : ℕ) ∈ B₂ := hsrcmem _ (hsqmem w₁ hw₁B)
+      have hmem₂' : w₂ ^ (2 : ℕ) ∈ B₂ := hsrcmem _ (hsqmem w₂ hw₂B)
+      have hsqeq : w₁ ^ (2 : ℕ) = w₂ ^ (2 : ℕ) := S.inj hmem₁' hmem₂' hsq'
       have hpm : w₂ = w₁ ∨ w₂ = -w₁ := by
         have h5 : (w₂ - w₁) * (w₂ + w₁) = 0 := by linear_combination -hsqeq
         rcases mul_eq_zero.mp h5 with h6 | h6
@@ -949,32 +949,32 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
       rw [hder]
       have hs'd : HasDerivAt s' (deriv s' w) w :=
         (hs'_an w hwB₁).differentiableAt.hasDerivAt
-      have hLd : HasDerivAt (fun x => s' x ^ 2) (2 * s' w * deriv s' w) w := by
+      have hLd : HasDerivAt (fun x => s' x ^ (2 : ℕ)) (2 * s' w * deriv s' w) w := by
         have h4 := hs'd.pow 2
         have h5 : (2:ℕ) * s' w ^ (2 - 1) * deriv s' w = 2 * s' w * deriv s' w := by
           push_cast
           ring
         rwa [h5] at h4
-      have hRd : HasDerivAt (fun x : ℂ => S.T (x ^ 2) - c)
-          (deriv S.T (w ^ 2) * (2 * w)) w := by
-        have h3 : HasDerivAt S.T (deriv S.T (w ^ 2)) (w ^ 2) :=
+      have hRd : HasDerivAt (fun x : ℂ => S.T (x ^ (2 : ℕ)) - c)
+          (deriv S.T (w ^ (2 : ℕ)) * (2 * w)) w := by
+        have h3 : HasDerivAt S.T (deriv S.T (w ^ (2 : ℕ))) (w ^ (2 : ℕ)) :=
           (S.an _ (hsrcmem _ (hsqmem w hwB₁))).differentiableAt.hasDerivAt
-        have h4 : HasDerivAt (fun x : ℂ => x ^ 2) (2 * w) w := by
+        have h4 : HasDerivAt (fun x : ℂ => x ^ (2 : ℕ)) (2 * w) w := by
           have h5 := hasDerivAt_pow 2 w
           have h6 : ((2:ℕ):ℂ) * w ^ (2 - 1) = 2 * w := by push_cast; ring
           rwa [h6] at h5
         exact (HasDerivAt.comp w h3 h4).sub_const c
-      have hEqF : (fun x => s' x ^ 2) =ᶠ[nhds w] (fun x : ℂ => S.T (x ^ 2) - c) := by
+      have hEqF : (fun x => s' x ^ (2 : ℕ)) =ᶠ[nhds w] (fun x : ℂ => S.T (x ^ (2 : ℕ)) - c) := by
         filter_upwards [(isOpen_annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)).mem_nhds hwB₁]
           with z hz
         exact hs'_sq z hz
-      have h7 : HasDerivAt (fun x : ℂ => S.T (x ^ 2) - c) (2 * s' w * deriv s' w) w :=
+      have h7 : HasDerivAt (fun x : ℂ => S.T (x ^ (2 : ℕ)) - c) (2 * s' w * deriv s' w) w :=
         hLd.congr_of_eventuallyEq hEqF.symm
-      have hEqD : deriv S.T (w ^ 2) * (2 * w) = 2 * s' w * deriv s' w := hRd.unique h7
+      have hEqD : deriv S.T (w ^ (2 : ℕ)) * (2 * w) = 2 * s' w * deriv s' w := hRd.unique h7
       intro h0
       rw [h0, mul_zero] at hEqD
       have hwne : w ≠ 0 := annulus_mem_ne_zero hs₁pos hwB₁
-      have hne : deriv S.T (w ^ 2) * (2 * w) ≠ 0 :=
+      have hne : deriv S.T (w ^ (2 : ℕ)) * (2 * w) ≠ 0 :=
         mul_ne_zero (S.dne _ (hsrcmem _ (hsqmem w hwB₁)))
           (mul_ne_zero two_ne_zero hwne)
       exact hne hEqD
@@ -1043,7 +1043,7 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
         linarith
       have hfz2 : greenFunctionDyn c (quadratic c z) < Real.log R₀ := by
         rw [greenFunctionDyn_quadratic]
-        have h1 : Real.log (rlo ^ 2) < Real.log R₀ :=
+        have h1 : Real.log (rlo ^ (2 : ℕ)) < Real.log R₀ :=
           Real.log_lt_log (by positivity) hrloR₀
         rw [Real.log_pow] at h1
         push_cast at h1
@@ -1063,7 +1063,7 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
         rw [hw'eq, greenFunctionDyn_quadratic] at h1
         linarith
       have hnw : Real.log ‖w‖ = greenFunctionDyn c z := by
-        have h1 : ‖w‖ ^ 2 = ‖w'‖ := by
+        have h1 : ‖w‖ ^ (2 : ℕ) = ‖w'‖ := by
           rw [← hwsq, norm_pow]
         have h2 : 2 * Real.log ‖w‖ = Real.log ‖w'‖ := by
           rw [← h1, Real.log_pow]
@@ -1099,9 +1099,9 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
             _ ≤ Real.exp (Real.log rlo) := Real.exp_le_exp.mpr h1
             _ = rlo := Real.exp_log (by linarith)
         exact lt_of_le_of_lt h2 hs₂
-      have hsq : Tn w ^ 2 = z ^ 2 := by
+      have hsq : Tn w ^ (2 : ℕ) = z ^ (2 : ℕ) := by
         rw [hmem₁ w hwB₁.1 hwB₁.2, hs'_sq w hwB₁]
-        have h1 : w ^ 2 = w' := hwsq
+        have h1 : w ^ (2 : ℕ) = w' := hwsq
         rw [h1, hw'eq]
         unfold quadratic
         ring
@@ -1131,7 +1131,7 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
         bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
       (∀ z : ℂ, Real.log Ra < greenFunctionDyn c z →
         greenFunctionDyn c z < Real.log rhi → z ∈ S.T '' annulusSet Ra rhi)) :
-    ∃ (rlo R₀ : ℝ), 1 < rlo ∧ rlo ≤ Ra ∧ Ra < R₀ ∧ rlo ^ 2 < R₀ ∧
+    ∃ (rlo R₀ : ℝ), 1 < rlo ∧ rlo ≤ Ra ∧ Ra < R₀ ∧ rlo ^ (2 : ℕ) < R₀ ∧
       M < R₀ ∧
       greenFunctionDyn c 0 < Real.log rlo ∧
       Real.log rlo < greenFunctionDyn c 0 + ε ∧
@@ -1143,11 +1143,11 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hh0 : 0 ≤ h := greenFunctionDyn_nonneg c 0
-  set R₀ : ℝ := Ra ^ 2 + max M 0 + 1 with hR₀def
+  set R₀ : ℝ := Ra ^ (2 : ℕ) + max M 0 + 1 with hR₀def
   have hMnn : (0:ℝ) ≤ max M 0 := le_max_right M 0
   have hR₀Ra : Ra < R₀ := by
     rw [hR₀def]; nlinarith
-  have hRasqR₀ : Ra ^ 2 < R₀ := by
+  have hRasqR₀ : Ra ^ (2 : ℕ) < R₀ := by
     rw [hR₀def]; nlinarith
   have hR₀exp : M < R₀ := by
     have h1 : M ≤ max M 0 := le_max_left M 0
@@ -1157,13 +1157,13 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
     calc h = Real.log (Real.exp h) := (Real.log_exp h).symm
       _ < Real.log Ra := Real.log_lt_log (Real.exp_pos h) hRaG
   -- the one-step descent with uniform gap contraction
-  have hstep : ∀ rlo : ℝ, 1 < rlo → rlo ^ 2 < R₀ → h < Real.log rlo → rlo ≤ Ra →
+  have hstep : ∀ rlo : ℝ, 1 < rlo → rlo ^ (2 : ℕ) < R₀ → h < Real.log rlo → rlo ≤ Ra →
       (∃ S : TowerSection c rlo R₀,
         (∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
           bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
         (∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
           greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀)) →
-      ∃ rlo' : ℝ, 1 < rlo' ∧ rlo' ^ 2 < R₀ ∧ h < Real.log rlo' ∧ rlo' ≤ Ra ∧
+      ∃ rlo' : ℝ, 1 < rlo' ∧ rlo' ^ (2 : ℕ) < R₀ ∧ h < Real.log rlo' ∧ rlo' ≤ Ra ∧
         Real.log rlo' - h ≤ (3/4) * (Real.log rlo - h) ∧
         ∃ S' : TowerSection c rlo' R₀,
           (∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
@@ -1207,7 +1207,7 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
     have hσ₁rlo : rlo < σ₁ := by
       rw [hσ₁def, hrloexp]
       exact Real.exp_lt_exp.mpr hτℓ
-    have hσ₁sq : σ₁ < rlo ^ 2 := by
+    have hσ₁sq : σ₁ < rlo ^ (2 : ℕ) := by
       rw [hσ₁def, hrloexp, ← Real.exp_nat_mul]
       apply Real.exp_lt_exp.mpr
       push_cast
@@ -1237,9 +1237,9 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
           _ < Real.exp τ := Real.exp_lt_exp.mpr h4
       calc (1:ℝ) = Real.sqrt 1 := Real.sqrt_one.symm
         _ < Real.sqrt σ₁ := Real.sqrt_lt_sqrt (by norm_num) h5
-    · have h4 : Real.sqrt σ₁ ^ 2 = σ₁ := Real.sq_sqrt (le_of_lt (Real.exp_pos _))
+    · have h4 : Real.sqrt σ₁ ^ (2 : ℕ) = σ₁ := Real.sq_sqrt (le_of_lt (Real.exp_pos _))
       rw [h4]
-      calc σ₁ < rlo ^ 2 := hσ₁sq
+      calc σ₁ < rlo ^ (2 : ℕ) := hσ₁sq
         _ < R₀ := h2
     · have h4 : Real.log (Real.sqrt σ₁) = τ / 2 := by
         rw [Real.log_sqrt (le_of_lt (Real.exp_pos _)), Real.log_exp]
@@ -1250,7 +1250,7 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
       rw [h4]
       linarith
   -- iterate: geometric decay of the level gap
-  have hiter : ∀ n : ℕ, ∃ rlo : ℝ, 1 < rlo ∧ rlo ^ 2 < R₀ ∧ h < Real.log rlo ∧ rlo ≤ Ra ∧
+  have hiter : ∀ n : ℕ, ∃ rlo : ℝ, 1 < rlo ∧ rlo ^ (2 : ℕ) < R₀ ∧ h < Real.log rlo ∧ rlo ≤ Ra ∧
       Real.log rlo - h ≤ (3/4) ^ n * (Real.log Ra - h) ∧
       ∃ S : TowerSection c rlo R₀,
         (∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
@@ -1284,7 +1284,7 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
 
 /-- The self-contained form: anchor obtained internally. -/
 theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
-    ∃ (rlo Rb R₀ Rinj : ℝ), 1 < rlo ∧ rlo ≤ Rb ∧ Rb < R₀ ∧ rlo ^ 2 < R₀ ∧
+    ∃ (rlo Rb R₀ Rinj : ℝ), 1 < rlo ∧ rlo ≤ Rb ∧ Rb < R₀ ∧ rlo ^ (2 : ℕ) < R₀ ∧
       M < R₀ ∧
       greenFunctionDyn c 0 < Real.log rlo ∧
       Real.log rlo < greenFunctionDyn c 0 + ε ∧

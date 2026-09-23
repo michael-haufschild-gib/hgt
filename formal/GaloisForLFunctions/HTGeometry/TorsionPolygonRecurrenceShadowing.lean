@@ -36,10 +36,10 @@ theorem pureStateTraceDistance_le_norm_sub {ι : Type*} [Fintype ι] (u v : Eucl
   have hns := norm_sub_sq (𝕜 := ℂ) u v
   rw [hu, hv] at hns
   have hre : RCLike.re (inner ℂ u v : ℂ) ≤ ‖(inner ℂ u v : ℂ)‖ := RCLike.re_le_norm _
-  have hkey : 1 - ‖(inner ℂ u v : ℂ)‖ ^ 2 ≤ ‖u - v‖ ^ 2 := by
+  have hkey : 1 - ‖(inner ℂ u v : ℂ)‖ ^ (2 : ℕ) ≤ ‖u - v‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (‖(inner ℂ u v : ℂ)‖ - 1)]
   rw [pureStateTraceDistance]
-  calc Real.sqrt (1 - ‖(inner ℂ u v : ℂ)‖ ^ 2) ≤ Real.sqrt (‖u - v‖ ^ 2) := Real.sqrt_le_sqrt hkey
+  calc Real.sqrt (1 - ‖(inner ℂ u v : ℂ)‖ ^ (2 : ℕ)) ≤ Real.sqrt (‖u - v‖ ^ (2 : ℕ)) := Real.sqrt_le_sqrt hkey
     _ = ‖u - v‖ := Real.sqrt_sq (norm_nonneg _)
 
 /-- A uniform coordinate bound bounds the distance between the corresponding rays. -/
@@ -50,18 +50,18 @@ theorem norm_phaseRay_sub_le {D : ℕ} (q r : Fin D → ℂ) {ε : ℝ} (hε : 0
   · simp only [Finset.univ_eq_empty, Finset.sum_empty, Real.sqrt_zero]
     exact hε
   · have hDR : (0 : ℝ) < (D : ℝ) := by exact_mod_cast hD
-    have hterm : ∀ a : Fin D, ‖(phaseRay (fun a => q a - r a)).ofLp a‖ ^ 2 ≤ ε ^ 2 / (D : ℝ) := by
+    have hterm : ∀ a : Fin D, ‖(phaseRay (fun a => q a - r a)).ofLp a‖ ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) / (D : ℝ) := by
       intro a
-      show ‖((Real.sqrt (D : ℝ))⁻¹ : ℂ) * (q a - r a)‖ ^ 2 ≤ ε ^ 2 / (D : ℝ)
+      show ‖((Real.sqrt (D : ℝ))⁻¹ : ℂ) * (q a - r a)‖ ^ (2 : ℕ) ≤ ε ^ (2 : ℕ) / (D : ℝ)
       rw [norm_mul, norm_inv, Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg _),
         mul_pow, inv_pow, Real.sq_sqrt hDR.le, div_eq_inv_mul]
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       nlinarith [norm_nonneg (q a - r a), h a]
-    have hsum : ∑ _a : Fin D, ε ^ 2 / (D : ℝ) = ε ^ 2 := by
+    have hsum : ∑ _a : Fin D, ε ^ (2 : ℕ) / (D : ℝ) = ε ^ (2 : ℕ) := by
       rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
       field_simp
-    calc Real.sqrt (∑ a, ‖(phaseRay (fun a => q a - r a)).ofLp a‖ ^ 2)
-        ≤ Real.sqrt (∑ _a : Fin D, ε ^ 2 / (D : ℝ)) :=
+    calc Real.sqrt (∑ a, ‖(phaseRay (fun a => q a - r a)).ofLp a‖ ^ (2 : ℕ))
+        ≤ Real.sqrt (∑ _a : Fin D, ε ^ (2 : ℕ) / (D : ℝ)) :=
           Real.sqrt_le_sqrt (Finset.sum_le_sum fun a _ => hterm a)
       _ = ε := by rw [hsum, Real.sqrt_sq hε]
 
@@ -69,11 +69,11 @@ theorem norm_phaseRay_sub_le {D : ℕ} (q r : Fin D → ℂ) {ε : ℝ} (hε : 0
 theorem norm_exp_ofReal_mul_I_sub_le (x y : ℝ) :
     ‖Complex.exp ((x : ℂ) * Complex.I) - Complex.exp ((y : ℂ) * Complex.I)‖ ≤ |x - y| := by
   have hsq := norm_expChar_sub_sq x y
-  have hcos : 1 - (x - y) ^ 2 / 2 ≤ Real.cos (x - y) := Real.one_sub_sq_div_two_le_cos
+  have hcos : 1 - (x - y) ^ (2 : ℕ) / 2 ≤ Real.cos (x - y) := Real.one_sub_sq_div_two_le_cos
   have hn : (0 : ℝ) ≤ ‖Complex.exp ((x : ℂ) * Complex.I) - Complex.exp ((y : ℂ) * Complex.I)‖ :=
     norm_nonneg _
-  have h2 : ‖Complex.exp ((x : ℂ) * Complex.I) - Complex.exp ((y : ℂ) * Complex.I)‖ ^ 2
-      ≤ |x - y| ^ 2 := by
+  have h2 : ‖Complex.exp ((x : ℂ) * Complex.I) - Complex.exp ((y : ℂ) * Complex.I)‖ ^ (2 : ℕ)
+      ≤ |x - y| ^ (2 : ℕ) := by
     rw [hsq, sq_abs]
     linarith
   nlinarith [abs_nonneg (x - y)]

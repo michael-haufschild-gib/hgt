@@ -51,7 +51,7 @@ theorem finiteBlaschkeGeneralizedSchurOperator_quadratic
       finiteBlaschkeGeneralizedSchurForm F B x := by
   have hnorm : ∀ (A : HardyDisk →L[ℂ] HardyDisk),
       (inner ℂ x (A (ContinuousLinearMap.adjoint A x))).re =
-        ‖ContinuousLinearMap.adjoint A x‖ ^ 2 := by
+        ‖ContinuousLinearMap.adjoint A x‖ ^ (2 : ℕ) := by
     intro A
     rw [show inner ℂ x (A (ContinuousLinearMap.adjoint A x)) =
         inner ℂ (ContinuousLinearMap.adjoint A x)

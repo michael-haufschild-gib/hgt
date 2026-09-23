@@ -6,7 +6,7 @@ Bourgain (1.23)--(1.24) uses first and second jets at two separated points.
 Writing those points as `a²` and `b²`, this file computes the determinant of
 the resulting jet matrix exactly:
 
-`det = 3 (b-a)^4 / (8 a^3 b^3)`.
+`det = 3 (b-a)^(4 : ℕ) / (8 a^(3 : ℕ) b^(3 : ℕ))`.
 
 Thus the change of variables is unconditionally invertible whenever
 `0 < a < b`.

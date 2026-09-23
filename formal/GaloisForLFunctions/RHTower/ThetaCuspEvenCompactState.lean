@@ -12,7 +12,7 @@ private abbrev w := thetaCuspModularTransverseShear
 /-- The actual modular gap is trapped between two quadratic functions of the same drift. -/
 theorem thetaCuspModularGapAmplitude_drift_tube {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (8/95)) :
-    191/10-(12/5)*u x^2 ≤ a x ∧ a x ≤ 96/5-(4/3)*u x^2 := by
+    191/10-(12/5)*u x^(2 : ℕ) ≤ a x ∧ a x ≤ 96/5-(4/3)*u x^(2 : ℕ) := by
   have hl := thetaCuspModularGapAmplitude_energy_lower hx
   have hinit := thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one
   have hu := thetaCuspModularMassDrift_energy_lower hx
@@ -24,7 +24,7 @@ theorem thetaCuspModularGapAmplitude_drift_tube {x : ℝ}
 theorem thetaCuspModularState_coupled_even_tube {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (8/95)) :
     0 ≤ u x ∧ u x ≤ 1 ∧
-      191/10-(12/5)*u x^2 ≤ a x ∧ a x ≤ 96/5-(4/3)*u x^2 ∧
+      191/10-(12/5)*u x^(2 : ℕ) ≤ a x ∧ a x ≤ 96/5-(4/3)*u x^(2 : ℕ) ∧
       u x ≤ w x ∧ w x ≤ (5/4)*u x := by
   have hb := thetaCuspModularState_energy_box hx
   have ha := thetaCuspModularGapAmplitude_drift_tube hx
@@ -35,16 +35,16 @@ theorem thetaCuspModularState_coupled_even_tube {x : ℝ}
 theorem exists_thetaCuspModularState_even_unit_coordinates {x : ℝ}
     (hx : x ∈ Icc (0 : ℝ) (8/95)) :
     ∃ t v : ℝ, t ∈ Icc (0 : ℝ) 1 ∧ v ∈ Icc (0 : ℝ) 1 ∧
-      a x = 191/10-(12/5)*u x^2+t*(1/10+(16/15)*u x^2) ∧
+      a x = 191/10-(12/5)*u x^(2 : ℕ)+t*(1/10+(16/15)*u x^(2 : ℕ)) ∧
       w x = u x*(1+v/4) := by
   obtain ⟨hu0, _, ha0, ha1, hw0, hw1⟩ := thetaCuspModularState_coupled_even_tube hx
-  let t := (a x-(191/10-(12/5)*u x^2))/(1/10+(16/15)*u x^2)
-  have hd : 0 < 1/10+(16/15)*u x^2 := by positivity
+  let t := (a x-(191/10-(12/5)*u x^(2 : ℕ)))/(1/10+(16/15)*u x^(2 : ℕ))
+  have hd : 0 < 1/10+(16/15)*u x^(2 : ℕ) := by positivity
   have ht0 : 0 ≤ t := div_nonneg (sub_nonneg.mpr ha0) hd.le
   have ht1 : t ≤ 1 := by
     apply (div_le_iff₀ hd).mpr
     linarith only [ha1]
-  have hat : a x = 191/10-(12/5)*u x^2+t*(1/10+(16/15)*u x^2) := by
+  have hat : a x = 191/10-(12/5)*u x^(2 : ℕ)+t*(1/10+(16/15)*u x^(2 : ℕ)) := by
     dsimp [t]
     field_simp
     ring

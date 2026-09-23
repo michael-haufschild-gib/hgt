@@ -42,10 +42,10 @@ theorem integral_coordinate_twistedPotential (q : SchwartzMap ℝ ℂ) :
 /-- Exact physical fifth quotient, with both square-root signs canceled. -/
 theorem contourReflection_fifth_quotient_eq (q : SchwartzMap ℝ ℂ)
     (vertical negative : Bool) (κ : ℝ) :
-    contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^5 =
-      (if vertical then I else 1)*(reflectionAmplitude (contourSource q vertical) κ/(Real.exp κ : ℂ)^5) := by
+    contourReflectionAmplitude q vertical negative κ/(contourParameter vertical negative κ)^(5 : ℕ) =
+      (if vertical then I else 1)*(reflectionAmplitude (contourSource q vertical) κ/(Real.exp κ : ℂ)^(5 : ℕ)) := by
   rw [← signedOriginWeightedReflection_eq_contour]
-  have hp : 0 < (Real.exp κ)^2 := sq_pos_of_pos (Real.exp_pos κ)
+  have hp : 0 < (Real.exp κ)^(2 : ℕ) := sq_pos_of_pos (Real.exp_pos κ)
   cases vertical <;> simp [contourSquaredParameter,signedOriginWeightedReflection,
     hp.le,not_le.mpr (neg_neg_of_pos hp),originWeightedReflection_exp,contourSource]
 
@@ -53,12 +53,12 @@ theorem contourReflection_fifth_quotient_eq (q : SchwartzMap ℝ ℂ)
 theorem contourReflection_oddInitialPart_fifth_quotient_tendsto (q : SchwartzMap ℝ ℂ)
     (vertical negative : Bool) :
     Tendsto (fun κ : ℝ => contourReflectionAmplitude (oddInitialPart q) vertical negative κ/
-      (contourParameter vertical negative κ)^5) atBot (𝓝 (4*I*∫ x : ℝ, (x : ℂ)*q x)) := by
+      (contourParameter vertical negative κ)^(5 : ℕ)) atBot (𝓝 (4*I*∫ x : ℝ, (x : ℂ)*q x)) := by
   have hh := (reflectionAmplitude_oddInitialPart_fifth_quotient_tendsto (contourSource q vertical)).const_mul
     (if vertical then I else 1)
   have hf : (fun κ : ℝ => contourReflectionAmplitude (oddInitialPart q) vertical negative κ/
-      (contourParameter vertical negative κ)^5) = fun κ : ℝ =>
-      (if vertical then I else 1)*(reflectionAmplitude (oddInitialPart (contourSource q vertical)) κ/(Real.exp κ : ℂ)^5) := by
+      (contourParameter vertical negative κ)^(5 : ℕ)) = fun κ : ℝ =>
+      (if vertical then I else 1)*(reflectionAmplitude (oddInitialPart (contourSource q vertical)) κ/(Real.exp κ : ℂ)^(5 : ℕ)) := by
     funext κ
     rw [contourReflection_fifth_quotient_eq,oddInitialPart_contourSource]
   rw [hf]
@@ -76,7 +76,7 @@ theorem contourReflection_oddInitialPart_fifth_quotient_tendsto (q : SchwartzMap
 theorem contourReverseReflection_oddInitialPart_fifth_quotient_tendsto (q : SchwartzMap ℝ ℂ)
     (vertical negative : Bool) :
     Tendsto (fun κ : ℝ => contourReverseReflectionAmplitude (oddInitialPart q) vertical negative κ/
-      (contourParameter vertical negative κ)^5) atBot (𝓝 (-4*I*∫ x : ℝ, (x : ℂ)*q x)) := by
+      (contourParameter vertical negative κ)^(5 : ℕ)) atBot (𝓝 (-4*I*∫ x : ℝ, (x : ℂ)*q x)) := by
   simpa only [contourReverseReflectionAmplitude_eq_neg,neg_div,neg_mul] using
     (contourReflection_oddInitialPart_fifth_quotient_tendsto q vertical negative).neg
 
@@ -84,7 +84,7 @@ theorem contourReverseReflection_oddInitialPart_fifth_quotient_tendsto (q : Schw
 theorem contourReflection_oddInitialPart_isLittleO_fifth_iff (q : SchwartzMap ℝ ℂ)
     (vertical negative : Bool) :
     ((fun κ : ℝ => contourReflectionAmplitude (oddInitialPart q) vertical negative κ) =o[atBot]
-      fun κ => (contourParameter vertical negative κ)^5) ↔ (∫ x : ℝ, (x : ℂ)*q x) = 0 := by
+      fun κ => (contourParameter vertical negative κ)^(5 : ℕ)) ↔ (∫ x : ℝ, (x : ℂ)*q x) = 0 := by
   constructor
   · intro h
     have hz := tendsto_nhds_unique (contourReflection_oddInitialPart_fifth_quotient_tendsto q vertical negative)
@@ -132,7 +132,7 @@ theorem compatibilityMoment_globalSmall_quinticGaussianProfile (a : ℝ) (c : �
 /-- Fifth order remains sharp even within the corpus's explicitly globally small compatible data. -/
 theorem rawReflection_globalSmall_quinticGaussianProfile_one_not_isLittleO_fifth (a : ℝ) :
     ¬ ((fun k : ℝ => rawScatteringMatrix (globalSmallScatteringPotential (quinticGaussianProfile a 1)) k 1 0)
-      =o[𝓝[≠] 0] fun k => (k : ℂ)^5) := by
+      =o[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) := by
   intro h
   have ht := rawReflection_sub_cubic_quotient_tendsto
     (globalSmallScatteringPotential (quinticGaussianProfile a 1))
@@ -143,7 +143,7 @@ theorem rawReflection_globalSmall_quinticGaussianProfile_one_not_isLittleO_fifth
 /-- On odd projected derivatives, the next cancellation is exactly zero mass of the parent profile. -/
 theorem rawReflection_oddDerivative_isLittleO_fifth_iff (q : SchwartzMap ℝ ℂ) :
     ((fun k : ℝ => rawScatteringMatrix (oddInitialPart (SchwartzMap.derivCLM ℂ ℂ q)) k 1 0)
-      =o[𝓝[≠] 0] fun k => (k : ℂ)^5) ↔ (∫ x : ℝ, q x) = 0 := by
+      =o[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ)) ↔ (∫ x : ℝ, q x) = 0 := by
   rw [rawReflection_oddInitialPart_isLittleO_fifth_iff]
   simp only [SchwartzMap.derivCLM_apply,integral_coordinate_derivative,neg_eq_zero]
 
@@ -151,7 +151,7 @@ theorem rawReflection_oddDerivative_isLittleO_fifth_iff (q : SchwartzMap ℝ ℂ
 theorem rawReflection_oddSecondDerivative_isLittleO_fifth (q : SchwartzMap ℝ ℂ) :
     (fun k : ℝ => rawScatteringMatrix
       (oddInitialPart (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q))) k 1 0)
-      =o[𝓝[≠] 0] fun k => (k : ℂ)^5 := by
+      =o[𝓝[≠] 0] fun k => (k : ℂ)^(5 : ℕ) := by
   rw [rawReflection_oddDerivative_isLittleO_fifth_iff]
   simpa only [SchwartzMap.derivCLM_apply] using RHTower.integral_deriv_schwartz_eq_zero q
 
@@ -160,7 +160,7 @@ theorem contourReflection_oddSecondDerivative_isLittleO_fifth (q : SchwartzMap �
     (vertical negative : Bool) :
     (fun κ : ℝ => contourReflectionAmplitude
       (oddInitialPart (SchwartzMap.derivCLM ℂ ℂ (SchwartzMap.derivCLM ℂ ℂ q))) vertical negative κ)
-      =o[atBot] fun κ => (contourParameter vertical negative κ)^5 := by
+      =o[atBot] fun κ => (contourParameter vertical negative κ)^(5 : ℕ) := by
   rw [contourReflection_oddInitialPart_isLittleO_fifth_iff]
   simp only [SchwartzMap.derivCLM_apply,integral_coordinate_derivative,neg_eq_zero]
   exact RHTower.integral_deriv_schwartz_eq_zero q

@@ -31,11 +31,11 @@ hyperbolic-sine factor. -/
 theorem pairHyperbolicHeatIntegrand_eq_gaussian_sinh
     (d v a t : ℝ) :
     pairHyperbolicHeatIntegrand d v a t =
-      2 * t⁻¹ * Real.exp (-(t * (d ^ 2 + v ^ 2 + a ^ 2))) *
+      2 * t⁻¹ * Real.exp (-(t * (d ^ (2 : ℕ) + v ^ (2 : ℕ) + a ^ (2 : ℕ)))) *
         Real.sinh (2 * t * v * a) := by
   have hupper :
       Real.exp (-(pairHyperbolicUpperSq d v a * t)) =
-        Real.exp (-(t * (d ^ 2 + v ^ 2 + a ^ 2))) *
+        Real.exp (-(t * (d ^ (2 : ℕ) + v ^ (2 : ℕ) + a ^ (2 : ℕ)))) *
           Real.exp (2 * t * v * a) := by
     rw [← Real.exp_add]
     unfold pairHyperbolicUpperSq
@@ -43,7 +43,7 @@ theorem pairHyperbolicHeatIntegrand_eq_gaussian_sinh
     ring
   have hlower :
       Real.exp (-(pairHyperbolicLowerSq d v a * t)) =
-        Real.exp (-(t * (d ^ 2 + v ^ 2 + a ^ 2))) *
+        Real.exp (-(t * (d ^ (2 : ℕ) + v ^ (2 : ℕ) + a ^ (2 : ℕ)))) *
           Real.exp (-(2 * t * v * a)) := by
     rw [← Real.exp_add]
     unfold pairHyperbolicLowerSq

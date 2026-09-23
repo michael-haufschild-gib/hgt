@@ -321,7 +321,7 @@ We index by `n + 1` qubits so the dimension `2ⁿ⁺¹·2ⁿ⁺¹ − 1` is posi
 theorem suHermBasis_dim_pos (n : ℕ) : 0 < (suHermBasis (n + 1)).dim := by
   change 0 < 2 ^ (n + 1) * 2 ^ (n + 1) - 1
   have h2 : 2 ≤ 2 ^ (n + 1) := by
-    calc (2 : ℕ) = 2 ^ 1 := (pow_one 2).symm
+    calc (2 : ℕ) = 2 ^ (1 : ℕ) := (pow_one 2).symm
       _ ≤ 2 ^ (n + 1) := Nat.pow_le_pow_right (by norm_num) (by omega)
   have h4 : 4 ≤ 2 ^ (n + 1) * 2 ^ (n + 1) := by nlinarith [h2]
   omega

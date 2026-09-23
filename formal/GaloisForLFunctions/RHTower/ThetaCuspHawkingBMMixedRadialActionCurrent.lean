@@ -134,15 +134,15 @@ def mixedJet (T R : Fin 2 → ℂ) (dT dR : Fin 4 → Fin 2 → ℂ) : Coordinat
 
 private theorem bg_first (r y : ℂ) (k : Fin 4) :
     (RHTower.D4BMBackground.jet r y).first k = Matrix.diagonal
-      (if k = 1 then ![-2*r,-2*r*(r^2-1)⁻¹^2,2*r*y⁻¹^2,2*r*y⁻¹^2]
-       else if k = 3 then ![0,0,-2*r^2*y⁻¹^3,-2*r^2*y⁻¹^3] else 0) := rfl
+      (if k = 1 then ![-2*r,-2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ),2*r*y⁻¹^(2 : ℕ),2*r*y⁻¹^(2 : ℕ)]
+       else if k = 3 then ![0,0,-2*r^(2 : ℕ)*y⁻¹^(3 : ℕ),-2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] else 0) := rfl
 
 set_option maxRecDepth 8192 in
 set_option maxHeartbeats 1600000 in
 private theorem radial_current_chart (r y : ℂ)
     (T R U V : Fin 2 → ℂ) (dT dR dU dV : Fin 4 → Fin 2 → ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
-    r^2/y^2 * actionSymplectic (RHTower.D4BMBackground.jet r y)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
+    r^(2 : ℕ)/y^(2 : ℕ) * actionSymplectic (RHTower.D4BMBackground.jet r y)
       (mixedJet T R dT dR) (mixedJet U V dU dV) 1 =
       ∑ a : Fin 2, (T a*(dV 0 a-dU 1 a)-U a*(dR 0 a-dT 1 a)) := by
   have hdet : (RHTower.D4BMBackground.jet r y).metric.det ≠ 0 := by
@@ -162,23 +162,23 @@ All derivatives of the action current and its volume weight are differentiated;
 all mixed metric first jets are free. No field equation or cancellation is assumed. -/
 theorem mixed_radial_action_current (p : D4BMBackground.ExteriorPoint)
     (T R U V : Fin 2 → ℂ) (dT dR dU dV : Fin 4 → Fin 2 → ℂ) :
-    (p.val 1:ℂ)^2/(p.val 3:ℂ)^2 * actionSymplectic
+    (p.val 1:ℂ)^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) * actionSymplectic
       (D4BMBackground.jet (p.val 1) (p.val 3))
       (mixedJet T R dT dR) (mixedJet U V dU dV) 1 =
       ∑ a : Fin 2, (T a*(dV 0 a-dU 1 a)-U a*(dR 0 a-dT 1 a)) := by
   have hr : (p.val 1:ℂ) ≠ 0 := by
     exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
   have hy : (p.val 3:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
   exact radial_current_chart _ _ T R U V dT dR dU dV hr hy hf
 
 set_option maxRecDepth 8192 in
 set_option maxHeartbeats 1600000 in
 private theorem temporal_current_chart (r y : ℂ)
     (T R U V : Fin 2 → ℂ) (dT dR dU dV : Fin 4 → Fin 2 → ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
-    r^2/y^2 * actionSymplectic (RHTower.D4BMBackground.jet r y)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
+    r^(2 : ℕ)/y^(2 : ℕ) * actionSymplectic (RHTower.D4BMBackground.jet r y)
       (mixedJet T R dT dR) (mixedJet U V dU dV) 0 =
       ∑ a : Fin 2, (-R a*(dV 0 a-dU 1 a)+V a*(dR 0 a-dT 1 a)+
         2/r*(T a*V a-U a*R a)) := by
@@ -203,11 +203,11 @@ set_option maxRecDepth 8192 in
 set_option maxHeartbeats 1600000 in
 private theorem angular_current_chart (r y : ℂ)
     (T R U V : Fin 2 → ℂ) (dT dR dU dV : Fin 4 → Fin 2 → ℂ)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (a : Fin 2) :
-    r^2/y^2 * actionSymplectic (RHTower.D4BMBackground.jet r y)
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (a : Fin 2) :
+    r^(2 : ℕ)/y^(2 : ℕ) * actionSymplectic (RHTower.D4BMBackground.jet r y)
       (mixedJet T R dT dR) (mixedJet U V dU dV) (if a=0 then 2 else 3) =
-      y^2/r^2*(-(angularRotation T a*angularCurl dU-angularRotation U a*angularCurl dT)/(r^2-1)+
-        (r^2-1)*(angularRotation R a*angularCurl dV-angularRotation V a*angularCurl dR)) := by
+      y^(2 : ℕ)/r^(2 : ℕ)*(-(angularRotation T a*angularCurl dU-angularRotation U a*angularCurl dT)/(r^(2 : ℕ)-1)+
+        (r^(2 : ℕ)-1)*(angularRotation R a*angularCurl dV-angularRotation V a*angularCurl dR)) := by
   have hdet : (RHTower.D4BMBackground.jet r y).metric.det ≠ 0 := by
     change (RHTower.D4BMBackground.metric r y).det ≠ 0
     rw [RHTower.D4BMBackground.metric_det r y hf]
@@ -227,22 +227,22 @@ def completeCurrentDensity (r y : ℂ) (T R U V : Fin 2 → ℂ)
   ![∑ a : Fin 2, (-R a*(dV 0 a-dU 1 a)+V a*(dR 0 a-dT 1 a)+
       2/r*(T a*V a-U a*R a)),
     ∑ a : Fin 2, (T a*(dV 0 a-dU 1 a)-U a*(dR 0 a-dT 1 a)),
-    y^2/r^2*(-(T 1*angularCurl dU-U 1*angularCurl dT)/(r^2-1)+
-      (r^2-1)*(R 1*angularCurl dV-V 1*angularCurl dR)),
-    y^2/r^2*((T 0*angularCurl dU-U 0*angularCurl dT)/(r^2-1)-
-      (r^2-1)*(R 0*angularCurl dV-V 0*angularCurl dR))]
+    y^(2 : ℕ)/r^(2 : ℕ)*(-(T 1*angularCurl dU-U 1*angularCurl dT)/(r^(2 : ℕ)-1)+
+      (r^(2 : ℕ)-1)*(R 1*angularCurl dV-V 1*angularCurl dR)),
+    y^(2 : ℕ)/r^(2 : ℕ)*((T 0*angularCurl dU-U 0*angularCurl dT)/(r^(2 : ℕ)-1)-
+      (r^(2 : ℕ)-1)*(R 0*angularCurl dV-V 0*angularCurl dR))]
 
 /-- The literal Einstein action supplies all four fluxes, including the temporal
 curvature term and both angular curls. No field equation or boundary condition is assumed. -/
 theorem mixed_complete_action_current (p : D4BMBackground.ExteriorPoint)
     (T R U V : Fin 2 → ℂ) (dT dR dU dV : Fin 4 → Fin 2 → ℂ) (j : Fin 4) :
-    (p.val 1:ℂ)^2/(p.val 3:ℂ)^2 * actionSymplectic
+    (p.val 1:ℂ)^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) * actionSymplectic
       (D4BMBackground.jet (p.val 1) (p.val 3))
       (mixedJet T R dT dR) (mixedJet U V dU dV) j =
       completeCurrentDensity (p.val 1) (p.val 3) T R U V dT dR dU dV j := by
   have hr : (p.val 1:ℂ) ≠ 0 := by exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
   have hy : (p.val 3:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr p.property.2.ne'
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
   fin_cases j
   · exact temporal_current_chart _ _ T R U V dT dR dU dV hr hy hf
   · exact mixed_radial_action_current p T R U V dT dR dU dV
@@ -255,20 +255,20 @@ theorem mixed_complete_action_current (p : D4BMBackground.ExteriorPoint)
 
 /-- The mixed metric first jet reconstructed from both actual stream two-jets. -/
 def streamMetricJet (r : ℂ) (P : Fin 2 → ScalarTwoJet (Fin 4) ℂ) : CoordinateMetricTwoJet 4 ℂ :=
-  mixedJet (fun a => (r^2-1)*(P a).first 1) (fun a => (P a).first 0/(r^2-1))
-    (fun k a => (if k=1 then 2*r*(P a).first 1 else 0)+(r^2-1)*(P a).second k 1)
-    (fun k a => (P a).second k 0/(r^2-1)-(if k=1 then 2*r*(P a).first 0/(r^2-1)^2 else 0))
+  mixedJet (fun a => (r^(2 : ℕ)-1)*(P a).first 1) (fun a => (P a).first 0/(r^(2 : ℕ)-1))
+    (fun k a => (if k=1 then 2*r*(P a).first 1 else 0)+(r^(2 : ℕ)-1)*(P a).second k 1)
+    (fun k a => (P a).second k 0/(r^(2 : ℕ)-1)-(if k=1 then 2*r*(P a).first 0/(r^(2 : ℕ)-1)^(2 : ℕ) else 0))
 
 /-- The angular operator rough Laplacian minus one in the original coordinate two-jet. -/
 def streamAngularAction (y : ℂ) (P : Fin 2 → ScalarTwoJet (Fin 4) ℂ) (a : Fin 2) : ℂ :=
-  y^2*((P a).second 2 2+(P a).second 3 3)+
+  y^(2 : ℕ)*((P a).second 2 2+(P a).second 3 3)+
     2*y*(if a=0 then (P 0).first 3-(P 1).first 2 else (P 1).first 3+(P 0).first 2)-
     2*(P a).value
 
 /-- The original unseparated BM stream master, retaining the complete angular action. -/
 def streamMasterValue (r y : ℂ) (P : Fin 2 → ScalarTwoJet (Fin 4) ℂ) (a : Fin 2) : ℂ :=
-  r^2*(r^2-1)*(P a).second 1 1+2*r*(P a).first 1-
-    r^2/(r^2-1)*(P a).second 0 0+streamAngularAction y P a
+  r^(2 : ℕ)*(r^(2 : ℕ)-1)*(P a).second 1 1+2*r*(P a).first 1-
+    r^(2 : ℕ)/(r^(2 : ℕ)-1)*(P a).second 0 0+streamAngularAction y P a
 
 private def streamCurl (P : Fin 2 → ScalarTwoJet (Fin 4) ℂ) (k : Fin 4) : ℂ :=
   (P 1).second 2 k-(P 0).second 3 k
@@ -276,23 +276,23 @@ private def streamCurl (P : Fin 2 → ScalarTwoJet (Fin 4) ℂ) (k : Fin 4) : �
 /-- Complete source-contact representation of the stream's four current components. -/
 def streamCurrentDensity (r y : ℂ) (P Q : Fin 2 → ScalarTwoJet (Fin 4) ℂ) : Fin 4 → ℂ :=
   let C := fun X a => streamAngularAction y X a-streamMasterValue r y X a
-  ![-1/((r^2-1)*r^2)*(∑ a : Fin 2, ((P a).first 0*C Q a-(Q a).first 0*C P a)),
-    (r^2-1)/r^2*(∑ a : Fin 2, ((P a).first 1*C Q a-(Q a).first 1*C P a)),
-    y^2/r^2*(-(r^2-1)*((P 1).first 1*streamCurl Q 1-(Q 1).first 1*streamCurl P 1)+
-      ((P 1).first 0*streamCurl Q 0-(Q 1).first 0*streamCurl P 0)/(r^2-1)),
-    y^2/r^2*((r^2-1)*((P 0).first 1*streamCurl Q 1-(Q 0).first 1*streamCurl P 1)-
-      ((P 0).first 0*streamCurl Q 0-(Q 0).first 0*streamCurl P 0)/(r^2-1))]
+  ![-1/((r^(2 : ℕ)-1)*r^(2 : ℕ))*(∑ a : Fin 2, ((P a).first 0*C Q a-(Q a).first 0*C P a)),
+    (r^(2 : ℕ)-1)/r^(2 : ℕ)*(∑ a : Fin 2, ((P a).first 1*C Q a-(Q a).first 1*C P a)),
+    y^(2 : ℕ)/r^(2 : ℕ)*(-(r^(2 : ℕ)-1)*((P 1).first 1*streamCurl Q 1-(Q 1).first 1*streamCurl P 1)+
+      ((P 1).first 0*streamCurl Q 0-(Q 1).first 0*streamCurl P 0)/(r^(2 : ℕ)-1)),
+    y^(2 : ℕ)/r^(2 : ℕ)*((r^(2 : ℕ)-1)*((P 0).first 1*streamCurl Q 1-(Q 0).first 1*streamCurl P 1)-
+      ((P 0).first 0*streamCurl Q 0-(Q 0).first 0*streamCurl P 0)/(r^(2 : ℕ)-1))]
 
 /-- All four actual Einstein flux components have the displayed stream-master representation.
 The source contacts in time and radius and both cusp flux components remain present. -/
 theorem stream_complete_action_current (p : D4BMBackground.ExteriorPoint)
     (P Q : Fin 2 → ScalarTwoJet (Fin 4) ℂ) (j : Fin 4) :
-    (p.val 1:ℂ)^2/(p.val 3:ℂ)^2 * actionSymplectic
+    (p.val 1:ℂ)^(2 : ℕ)/(p.val 3:ℂ)^(2 : ℕ) * actionSymplectic
       (D4BMBackground.jet (p.val 1) (p.val 3))
       (streamMetricJet (p.val 1) P) (streamMetricJet (p.val 1) Q) j =
       streamCurrentDensity (p.val 1) (p.val 3) P Q j := by
   have hr : (p.val 1:ℂ) ≠ 0 := by exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
-  have hf : (p.val 1:ℂ)^2-1 ≠ 0 := by exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  have hf : (p.val 1:ℂ)^(2 : ℕ)-1 ≠ 0 := by exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
   unfold streamMetricJet
   rw [mixed_complete_action_current]
   fin_cases j <;> simp [completeCurrentDensity,streamCurrentDensity,angularCurl,streamCurl,

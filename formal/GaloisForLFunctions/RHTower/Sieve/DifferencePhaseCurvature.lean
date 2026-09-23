@@ -40,7 +40,7 @@ theorem hasDerivAt_diffPhaseD1 (T : ℝ) {s₁ s₂ u : ℝ} (hs₁ : 0 ≤ s₁
 theorem diffPhaseD2_eq (T : ℝ) {s₁ s₂ u : ℝ} (hs₁ : 0 ≤ s₁) (hs₂ : 0 ≤ s₂) (hu : 0 < u) :
     diffPhaseD2 T s₁ s₂ u
       = T / (2 * Real.pi)
-          * ((s₁ - s₂) * (2 * u + s₁ + s₂) / ((u + s₁) ^ 2 * (u + s₂) ^ 2)) := by
+          * ((s₁ - s₂) * (2 * u + s₁ + s₂) / ((u + s₁) ^ (2 : ℕ) * (u + s₂) ^ (2 : ℕ))) := by
   have hu1 : (0 : ℝ) < u + s₁ := by linarith
   have hu2 : (0 : ℝ) < u + s₂ := by linarith
   rw [diffPhaseD2, nearDiagonalPhaseD2, nearDiagonalPhaseD2]
@@ -51,7 +51,7 @@ theorem diffPhaseD2_eq (T : ℝ) {s₁ s₂ u : ℝ} (hs₁ : 0 ≤ s₁) (hs₂
 theorem diffPhaseD2_eq' (T : ℝ) {s₁ s₂ u : ℝ} (hs₁ : 0 ≤ s₁) (hs₂ : 0 ≤ s₂) (hu : 0 < u) :
     diffPhaseD2 T s₁ s₂ u
       = T * ((s₁ - s₂) * (2 * u + s₁ + s₂))
-          / (2 * Real.pi * ((u + s₁) ^ 2 * (u + s₂) ^ 2)) := by
+          / (2 * Real.pi * ((u + s₁) ^ (2 : ℕ) * (u + s₂) ^ (2 : ℕ))) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hu1 : (0 : ℝ) < u + s₁ := by linarith
   have hu2 : (0 : ℝ) < u + s₂ := by linarith
@@ -70,16 +70,16 @@ theorem curvedLambda_le_diffPhaseD2 {T s₁ s₂ M u : ℝ} (hT : 0 < T) (hs₂ 
   have hΔ : (0 : ℝ) ≤ s₁ - s₂ := by linarith
   have hcoef : (0 : ℝ) ≤ T * (s₁ - s₂) * Real.pi :=
     mul_nonneg (mul_nonneg hT.le hΔ) hpi.le
-  have hkey : 2 * ((u + s₁) ^ 2 * (u + s₂) ^ 2) ≤ 36 * M ^ 3 * (2 * u + s₁ + s₂) := by
+  have hkey : 2 * ((u + s₁) ^ (2 : ℕ) * (u + s₂) ^ (2 : ℕ)) ≤ 36 * M ^ (3 : ℕ) * (2 * u + s₁ + s₂) := by
     have h1 : u + s₁ ≤ 9 / 4 * M := by linarith
     have h2 : u + s₂ ≤ 9 / 4 * M := by linarith
     have h3 : (2 : ℝ) * M ≤ 2 * u + s₁ + s₂ := by linarith
-    have hA : (u + s₁) ^ 2 ≤ (9 / 4 * M) ^ 2 := by nlinarith
-    have hB : (u + s₂) ^ 2 ≤ (9 / 4 * M) ^ 2 := by nlinarith
-    have hC : (u + s₁) ^ 2 * (u + s₂) ^ 2 ≤ (9 / 4 * M) ^ 2 * (9 / 4 * M) ^ 2 :=
+    have hA : (u + s₁) ^ (2 : ℕ) ≤ (9 / 4 * M) ^ (2 : ℕ) := by nlinarith
+    have hB : (u + s₂) ^ (2 : ℕ) ≤ (9 / 4 * M) ^ (2 : ℕ) := by nlinarith
+    have hC : (u + s₁) ^ (2 : ℕ) * (u + s₂) ^ (2 : ℕ) ≤ (9 / 4 * M) ^ (2 : ℕ) * (9 / 4 * M) ^ (2 : ℕ) :=
       mul_le_mul hA hB (by positivity) (by positivity)
-    have hD : 36 * M ^ 3 * (2 * M) ≤ 36 * M ^ 3 * (2 * u + s₁ + s₂) := by
-      have hM3 : (0 : ℝ) ≤ 36 * M ^ 3 := by positivity
+    have hD : 36 * M ^ (3 : ℕ) * (2 * M) ≤ 36 * M ^ (3 : ℕ) * (2 * u + s₁ + s₂) := by
+      have hM3 : (0 : ℝ) ≤ 36 * M ^ (3 : ℕ) := by positivity
       nlinarith
     nlinarith [hC, hD]
   rw [diffPhaseD2_eq' T hs₁ hs₂ hu0, curvedLambda,
@@ -98,18 +98,18 @@ theorem diffPhaseD2_le_curvedLambda {T s₁ s₂ M u : ℝ} (hT : 0 < T) (hs₂ 
   have hΔ : (0 : ℝ) ≤ s₁ - s₂ := by linarith
   have hcoef : (0 : ℝ) ≤ T * (s₁ - s₂) * Real.pi :=
     mul_nonneg (mul_nonneg hT.le hΔ) hpi.le
-  have hkey : M ^ 3 * (2 * u + s₁ + s₂) ≤ 5 * ((u + s₁) ^ 2 * (u + s₂) ^ 2) := by
+  have hkey : M ^ (3 : ℕ) * (2 * u + s₁ + s₂) ≤ 5 * ((u + s₁) ^ (2 : ℕ) * (u + s₂) ^ (2 : ℕ)) := by
     have h3 : 2 * u + s₁ + s₂ ≤ 9 / 2 * M := by linarith
-    have hA : M ^ 2 ≤ (u + s₁) ^ 2 := by nlinarith
-    have hB : M ^ 2 ≤ (u + s₂) ^ 2 := by nlinarith
-    have hC : M ^ 2 * M ^ 2 ≤ (u + s₁) ^ 2 * (u + s₂) ^ 2 :=
+    have hA : M ^ (2 : ℕ) ≤ (u + s₁) ^ (2 : ℕ) := by nlinarith
+    have hB : M ^ (2 : ℕ) ≤ (u + s₂) ^ (2 : ℕ) := by nlinarith
+    have hC : M ^ (2 : ℕ) * M ^ (2 : ℕ) ≤ (u + s₁) ^ (2 : ℕ) * (u + s₂) ^ (2 : ℕ) :=
       mul_le_mul hA hB (by positivity) (by positivity)
-    have hD : M ^ 3 * (2 * u + s₁ + s₂) ≤ M ^ 3 * (9 / 2 * M) := by
-      have hM3 : (0 : ℝ) ≤ M ^ 3 := by positivity
+    have hD : M ^ (3 : ℕ) * (2 * u + s₁ + s₂) ≤ M ^ (3 : ℕ) * (9 / 2 * M) := by
+      have hM3 : (0 : ℝ) ≤ M ^ (3 : ℕ) := by positivity
       nlinarith
     nlinarith [hC, hD]
   have hrhs : 90 * curvedLambda (T * (s₁ - s₂)) M
-      = 90 * (T * (s₁ - s₂)) / (36 * Real.pi * M ^ 3) := by
+      = 90 * (T * (s₁ - s₂)) / (36 * Real.pi * M ^ (3 : ℕ)) := by
     rw [curvedLambda]
     ring
   rw [diffPhaseD2_eq' T hs₁ hs₂ hu0, hrhs,

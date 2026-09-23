@@ -10,9 +10,9 @@ in the fast/slow span.
 
 After four-unit normalization, the slow negative coefficient is
 `B(u)=4(1-exp(-u/2))`, whereas the entire pole slack is
-`S(u)=4(1-exp(-u/2))^2`.  Thus `S(u)<B(u)` for every positive aperture.  Any rank-one feature with
+`S(u)=4(1-exp(-u/2))^(2 : ℕ)`.  Thus `S(u)<B(u)` for every positive aperture.  Any rank-one feature with
 slow coordinate normalized to one has form `slow-kappa*fast`; a two-point vector cancelling its
-fast coordinate sees quadratic energy `(delta-B(u))*y^2`.  Consequently positivity forces
+fast coordinate sees quadratic energy `(delta-B(u))*y^(2 : ℕ)`.  Consequently positivity forces
 `delta>=B(u)`, independently of `kappa`, and no amplitude paid from `0<=delta<=S(u)` can work.
 
 The closed one-channel theorem has no proof premise: aperture, separation, and budget are encoded as
@@ -54,7 +54,7 @@ def unitRieszFourUnitBoundaryCovarianceCore (u y z : ℝ) : ℝ :=
 
 /-- Entire scalar budget left between incoming pole trace and normalized FU--UR pulse. -/
 def unitRieszFourUnitPoleSlack (u : ℝ) : ℝ :=
-  4 * (1 - Real.exp (-u / 2)) ^ 2
+  4 * (1 - Real.exp (-u / 2)) ^ (2 : ℕ)
 
 /-- One positive rank-one completion in the fast/slow span, normalized to slow coordinate one. -/
 def unitRieszOneChannelCompletedBoundaryCore
@@ -174,8 +174,8 @@ theorem unitRieszOneChannelCompletedBoundaryMatrix_det
     (unitRieszOneChannelCompletedBoundaryMatrix u κ δ L).det =
       (unitRieszFourUnitFastBoundaryCoefficient u *
           (δ - unitRieszFourUnitSlowBoundaryCoefficient u) -
-        δ * unitRieszFourUnitSlowBoundaryCoefficient u * κ ^ 2) *
-      (unitRieszSlowBoundaryFeature L - unitRieszFastBoundaryFeature L) ^ 2 := by
+        δ * unitRieszFourUnitSlowBoundaryCoefficient u * κ ^ (2 : ℕ)) *
+      (unitRieszSlowBoundaryFeature L - unitRieszFastBoundaryFeature L) ^ (2 : ℕ) := by
   rw [unitRieszOneChannelCompletedBoundaryMatrix, Matrix.det_fin_two_of]
   simp only [unitRieszOneChannelCompletedBoundaryCore,
     unitRieszFourUnitBoundaryCovarianceCore,
@@ -191,7 +191,7 @@ theorem unitRieszFastNullTwoPointVector_energy
         ((unitRieszSpanLocalCompletedBoundaryMatrix u p q r L).mulVec
           (unitRieszFastNullTwoPointVector L)) =
       (r - unitRieszFourUnitSlowBoundaryCoefficient u) *
-        (unitRieszSlowBoundaryFeature L - unitRieszFastBoundaryFeature L) ^ 2 := by
+        (unitRieszSlowBoundaryFeature L - unitRieszFastBoundaryFeature L) ^ (2 : ℕ) := by
   norm_num [unitRieszFastNullTwoPointVector,
     unitRieszSpanLocalCompletedBoundaryMatrix,
     unitRieszSpanLocalCompletedBoundaryCore,
@@ -218,16 +218,16 @@ theorem unitRieszOneChannelCompletedBoundaryMatrix_det_neg_of_lt_slow
           (δ - unitRieszFourUnitSlowBoundaryCoefficient u) < 0 :=
     mul_neg_of_pos_of_neg hA (sub_neg.mpr hδslow)
   have hsecond :
-      0 ≤ δ * unitRieszFourUnitSlowBoundaryCoefficient u * κ ^ 2 :=
+      0 ≤ δ * unitRieszFourUnitSlowBoundaryCoefficient u * κ ^ (2 : ℕ) :=
     mul_nonneg (mul_nonneg hδ hB.le) (sq_nonneg κ)
   have hcoeff :
       unitRieszFourUnitFastBoundaryCoefficient u *
           (δ - unitRieszFourUnitSlowBoundaryCoefficient u) -
-        δ * unitRieszFourUnitSlowBoundaryCoefficient u * κ ^ 2 < 0 := by
+        δ * unitRieszFourUnitSlowBoundaryCoefficient u * κ ^ (2 : ℕ) < 0 := by
     linarith
   have hfeature :
       0 < (unitRieszSlowBoundaryFeature L -
-        unitRieszFastBoundaryFeature L) ^ 2 := by
+        unitRieszFastBoundaryFeature L) ^ (2 : ℕ) := by
     apply sq_pos_of_pos
     unfold unitRieszSlowBoundaryFeature unitRieszFastBoundaryFeature
     exact sub_pos.mpr (Real.exp_lt_exp.mpr (by linarith))
@@ -259,7 +259,7 @@ theorem unitRieszSpanLocalCompletedBoundaryMatrix_not_posSemidef_of_lt_slow
   rw [unitRieszFastNullTwoPointVector_energy] at henergy
   have hfeature :
       0 < (unitRieszSlowBoundaryFeature L -
-        unitRieszFastBoundaryFeature L) ^ 2 := by
+        unitRieszFastBoundaryFeature L) ^ (2 : ℕ) := by
     apply sq_pos_of_pos
     unfold unitRieszSlowBoundaryFeature unitRieszFastBoundaryFeature
     exact sub_pos.mpr (Real.exp_lt_exp.mpr (by linarith))

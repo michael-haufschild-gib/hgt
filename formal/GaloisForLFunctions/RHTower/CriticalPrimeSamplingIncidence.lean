@@ -19,7 +19,7 @@ open ContinuousLinearMap
 
 /-- Critical prime weight used by every normalized sampling carrier. -/
 def criticalPrimeSamplingWeight (p : Nat.Primes) : ℝ :=
-  Real.log (p : ℝ) ^ 2 / (p : ℝ)
+  Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ)
 
 theorem criticalPrimeSamplingWeight_pos (p : Nat.Primes) :
     0 < criticalPrimeSamplingWeight p := by
@@ -31,16 +31,16 @@ theorem criticalPrimeSamplingWeight_pos (p : Nat.Primes) :
 theorem criticalPrimeSamplingWeight_not_summable :
     ¬ Summable criticalPrimeSamplingWeight := by
   intro hsum
-  have hc : 0 < Real.log (2 : ℝ) ^ 2 :=
+  have hc : 0 < Real.log (2 : ℝ) ^ (2 : ℕ) :=
     sq_pos_of_pos (Real.log_pos (by norm_num))
   have hscaled : Summable (fun p : Nat.Primes =>
-      Real.log (2 : ℝ) ^ 2 * (1 / (p : ℝ))) := by
+      Real.log (2 : ℝ) ^ (2 : ℕ) * (1 / (p : ℝ))) := by
     refine Summable.of_nonneg_of_le (fun p => mul_nonneg hc.le (by positivity)) ?_ hsum
     intro p
     have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast p.2.two_le
     have hlog : Real.log (2 : ℝ) ≤ Real.log (p : ℝ) := Real.log_le_log (by norm_num) hp2
     have hlog2 : 0 ≤ Real.log (2 : ℝ) := (Real.log_pos (by norm_num)).le
-    have hsq : Real.log (2 : ℝ) ^ 2 ≤ Real.log (p : ℝ) ^ 2 := by
+    have hsq : Real.log (2 : ℝ) ^ (2 : ℕ) ≤ Real.log (p : ℝ) ^ (2 : ℕ) := by
       nlinarith [Real.log_nonneg (by linarith : (1 : ℝ) ≤ (p : ℝ))]
     simpa [criticalPrimeSamplingWeight, one_div, div_eq_mul_inv] using
       (mul_le_mul_of_nonneg_right hsq (show 0 ≤ ((p : ℝ)⁻¹) by positivity))
@@ -72,13 +72,13 @@ Hilbert--Schmidt. -/
 theorem not_isHilbertSchmidt_of_adjoint_coordinate_normSq_eq_criticalPrimeSamplingWeight
     (S : H →L[ℂ] CriticalPrimeEllTwo)
     (hcoord : ∀ p : Nat.Primes,
-      ‖adjoint S (HTGeometry.ellTwoCoordinateBasis Nat.Primes p)‖ ^ 2 =
+      ‖adjoint S (HTGeometry.ellTwoCoordinateBasis Nat.Primes p)‖ ^ (2 : ℕ) =
         criticalPrimeSamplingWeight p) :
     ¬ S.IsHilbertSchmidt := by
   intro hS
   have hAdj : (adjoint S).IsHilbertSchmidt := hS.adjoint
   have hsum : Summable (fun p : Nat.Primes =>
-      ‖adjoint S (HTGeometry.ellTwoCoordinateBasis Nat.Primes p)‖ ^ 2) :=
+      ‖adjoint S (HTGeometry.ellTwoCoordinateBasis Nat.Primes p)‖ ^ (2 : ℕ)) :=
     hAdj.summable (HTGeometry.ellTwoCoordinateBasis Nat.Primes)
   exact criticalPrimeSamplingWeight_not_summable
     (hsum.congr fun p => hcoord p)
@@ -101,7 +101,7 @@ theorem isHilbertSchmidt_of_adjoint_comp_self_memSchattenClass_one
 theorem criticalPrimeSamplingIncidence_not_memSchattenClass_one
     (S : H →L[ℂ] CriticalPrimeEllTwo)
     (hcoord : ∀ p : Nat.Primes,
-      ‖adjoint S (HTGeometry.ellTwoCoordinateBasis Nat.Primes p)‖ ^ 2 =
+      ‖adjoint S (HTGeometry.ellTwoCoordinateBasis Nat.Primes p)‖ ^ (2 : ℕ) =
         criticalPrimeSamplingWeight p) :
     ¬ MemSchattenClass 1 (criticalPrimeSamplingIncidence S) := by
   intro hT

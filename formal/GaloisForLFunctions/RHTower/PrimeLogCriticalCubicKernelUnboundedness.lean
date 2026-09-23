@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.VonMangoldtHarmonicSquareAsymptotic
 # Critical prime-log cubic-kernel block growth
 
 The critical inverse-heat endpoint has prime weight `log(p)/p`.  Its mass on
-`n < p <= n^2` grows at least linearly in `log n`; this is the arithmetic input to the
+`n < p <= n^(2 : ℕ)` grows at least linearly in `log n`; this is the arithmetic input to the
 unbounded finite-compression theorem.
 -/
 
@@ -14,46 +14,46 @@ noncomputable section
 
 open Finset
 
-/-- Prime packet between `n` and `n^2`. -/
+/-- Prime packet between `n` and `n^(2 : ℕ)`. -/
 def primeLogCriticalBlock (n : ℕ) : Finset ℕ :=
-  Nat.primesLE (n ^ 2) \ Nat.primesLE n
+  Nat.primesLE (n ^ (2 : ℕ)) \ Nat.primesLE n
 
 /-- Critical first-clock mass on a multiplicative prime packet. -/
 def primeLogCriticalBlockMass (n : ℕ) : ℝ :=
   ∑ p ∈ primeLogCriticalBlock n, Real.log (p : ℝ) / (p : ℝ)
 
 /-- Existing explicit Mangoldt-square laws force linear logarithmic growth of the critical
-prime mass on `n < p <= n^2`. -/
+prime mass on `n < p <= n^(2 : ℕ)`. -/
 theorem primeLogCriticalBlockMass_growth
     (n : ℕ) (hn : 2 ≤ n) :
-    (3 / 2 : ℝ) * Real.log n ^ 2 - 117 * Real.log n - 50 ≤
+    (3 / 2 : ℝ) * Real.log n ^ (2 : ℕ) - 117 * Real.log n - 50 ≤
       2 * Real.log n * primeLogCriticalBlockMass n := by
   have hn1 : 1 ≤ n := hn.trans' (by norm_num)
-  have hnn : n ≤ n ^ 2 := by
+  have hnn : n ≤ n ^ (2 : ℕ) := by
     nlinarith
-  have hsubset : Nat.primesLE n ⊆ Nat.primesLE (n ^ 2) := by
+  have hsubset : Nat.primesLE n ⊆ Nat.primesLE (n ^ (2 : ℕ)) := by
     intro p hp
     rw [Nat.mem_primesLE] at hp ⊢
     exact ⟨hp.1.trans hnn, hp.2⟩
-  have hn2one : 1 ≤ n ^ 2 := by nlinarith
-  have hlarge := Sieve.sum_prime_log_sq_div_ge (n ^ 2) hn2one
+  have hn2one : 1 ≤ n ^ (2 : ℕ) := by nlinarith
+  have hlarge := Sieve.sum_prime_log_sq_div_ge (n ^ (2 : ℕ)) hn2one
   have hsmallPrime :=
     Sieve.sum_prime_log_sq_div_le_vonMangoldtHarmonicSquareSum n hn1
   have hsmallVM := Sieve.abs_vonMangoldtHarmonicSquareSum_sub_le n hn1
   rw [abs_le] at hsmallVM
-  have hlogpow : Real.log ((n ^ 2 : ℕ) : ℝ) = 2 * Real.log (n : ℝ) := by
+  have hlogpow : Real.log ((n ^ (2 : ℕ) : ℕ) : ℝ) = 2 * Real.log (n : ℝ) := by
     norm_num [Nat.cast_pow, Real.log_pow]
   rw [hlogpow] at hlarge
   have hsmall :
-      ∑ p ∈ Nat.primesLE n, Real.log (p : ℝ) ^ 2 / (p : ℝ) ≤
-        Real.log n ^ 2 / 2 + 39 * Real.log n + 25 := by
+      ∑ p ∈ Nat.primesLE n, Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) ≤
+        Real.log n ^ (2 : ℕ) / 2 + 39 * Real.log n + 25 := by
     exact hsmallPrime.trans (by linarith [hsmallVM.2])
   have hsplit := Finset.sum_sdiff hsubset
-    (f := fun p : ℕ => Real.log (p : ℝ) ^ 2 / (p : ℝ))
+    (f := fun p : ℕ => Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ))
   have hblockSq :
-      (3 / 2 : ℝ) * Real.log n ^ 2 - 117 * Real.log n - 50 ≤
+      (3 / 2 : ℝ) * Real.log n ^ (2 : ℕ) - 117 * Real.log n - 50 ≤
         ∑ p ∈ primeLogCriticalBlock n,
-          Real.log (p : ℝ) ^ 2 / (p : ℝ) := by
+          Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) := by
     rw [primeLogCriticalBlock]
     nlinarith [hlarge, hsmall, hsplit]
   refine hblockSq.trans ?_
@@ -68,15 +68,15 @@ theorem primeLogCriticalBlockMass_growth
   have hnpos : 0 < n := lt_of_lt_of_le (by norm_num) hn
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hnpos
   have hlogn0 : 0 ≤ Real.log (n : ℝ) := Real.log_nonneg (by exact_mod_cast hn1)
-  have hple : (p : ℝ) ≤ (n : ℝ) ^ 2 := by
+  have hple : (p : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by
     exact_mod_cast hp.1.1
   have hlogle : Real.log (p : ℝ) ≤ 2 * Real.log (n : ℝ) := by
     calc
-      Real.log (p : ℝ) ≤ Real.log ((n : ℝ) ^ 2) :=
+      Real.log (p : ℝ) ≤ Real.log ((n : ℝ) ^ (2 : ℕ)) :=
         Real.log_le_log hp0 hple
       _ = 2 * Real.log (n : ℝ) := by rw [Real.log_pow]; norm_num
   calc
-    Real.log (p : ℝ) ^ 2 / (p : ℝ) =
+    Real.log (p : ℝ) ^ (2 : ℕ) / (p : ℝ) =
         Real.log (p : ℝ) * (Real.log (p : ℝ) / (p : ℝ)) := by ring
     _ ≤ (2 * Real.log (n : ℝ)) * (Real.log (p : ℝ) / (p : ℝ)) := by
       exact mul_le_mul_of_nonneg_right hlogle (div_nonneg hlog0 hp0.le)
@@ -85,7 +85,7 @@ theorem primeLogCriticalBlockMass_growth
 /-- Critical cubic Cauchy correlation of two prime-log clocks. -/
 def primeLogCriticalCubicCorrelation (p q : ℕ) : ℝ :=
   (2 * Real.sqrt (Real.log (p : ℝ) * Real.log (q : ℝ)) /
-    (Real.log (p : ℝ) + Real.log (q : ℝ))) ^ 3
+    (Real.log (p : ℝ) + Real.log (q : ℝ))) ^ (3 : ℕ)
 
 /-- Every pair in one multiplicative critical block retains a uniform cubic correlation. -/
 theorem primeLogCriticalCubicCorrelation_ge
@@ -121,15 +121,15 @@ theorem primeLogCriticalCubicCorrelation_ge
     exact Real.log_le_log hnR (by exact_mod_cast hnq.le)
   have hx2L : x ≤ 2 * L := by
     calc
-      x ≤ Real.log ((n : ℝ) ^ 2) :=
+      x ≤ Real.log ((n : ℝ) ^ (2 : ℕ)) :=
         Real.log_le_log hpR (by exact_mod_cast hpn2)
       _ = 2 * L := by dsimp [L]; rw [Real.log_pow]; norm_num
   have hy2L : y ≤ 2 * L := by
     calc
-      y ≤ Real.log ((n : ℝ) ^ 2) :=
+      y ≤ Real.log ((n : ℝ) ^ (2 : ℕ)) :=
         Real.log_le_log hqR (by exact_mod_cast hqn2)
       _ = 2 * L := by dsimp [L]; rw [Real.log_pow]; norm_num
-  have hprod : L ^ 2 ≤ x * y := by
+  have hprod : L ^ (2 : ℕ) ≤ x * y := by
     have hxy := mul_nonneg (sub_nonneg.mpr hLx) (sub_nonneg.mpr hLy)
     nlinarith
   have hsqrt : L ≤ Real.sqrt (x * y) := by
@@ -141,10 +141,10 @@ theorem primeLogCriticalCubicCorrelation_ge
     rw [le_div_iff₀ (add_pos hxpos hypos)]
     nlinarith
   rw [primeLogCriticalCubicCorrelation]
-  change (1 / 8 : ℝ) ≤ (2 * Real.sqrt (x * y) / (x + y)) ^ 3
+  change (1 / 8 : ℝ) ≤ (2 * Real.sqrt (x * y) / (x + y)) ^ (3 : ℕ)
   calc
-    (1 / 8 : ℝ) = (1 / 2 : ℝ) ^ 3 := by norm_num
-    _ ≤ (2 * Real.sqrt (x * y) / (x + y)) ^ 3 := by gcongr
+    (1 / 8 : ℝ) = (1 / 2 : ℝ) ^ (3 : ℕ) := by norm_num
+    _ ≤ (2 * Real.sqrt (x * y) / (x + y)) ^ (3 : ℕ) := by gcongr
 
 /-- Critical prime mass escapes every bounded set. -/
 theorem tendsto_primeLogCriticalBlockMass_atTop :
@@ -171,11 +171,11 @@ def primeLogCriticalCubicRayleighNumerator (n : ℕ) : ℝ :=
 /-- Cubic correlation turns critical block mass into a quadratic Rayleigh lower bound. -/
 theorem primeLogCriticalCubicRayleighNumerator_ge
     (n : ℕ) (hn : 2 ≤ n) :
-    (1 / 8 : ℝ) * primeLogCriticalBlockMass n ^ 2 ≤
+    (1 / 8 : ℝ) * primeLogCriticalBlockMass n ^ (2 : ℕ) ≤
       primeLogCriticalCubicRayleighNumerator n := by
   rw [primeLogCriticalCubicRayleighNumerator]
   calc
-    (1 / 8 : ℝ) * primeLogCriticalBlockMass n ^ 2 =
+    (1 / 8 : ℝ) * primeLogCriticalBlockMass n ^ (2 : ℕ) =
         ∑ p ∈ primeLogCriticalBlock n, ∑ q ∈ primeLogCriticalBlock n,
           (1 / 8 : ℝ) * (Real.log (p : ℝ) / (p : ℝ)) *
             (Real.log (q : ℝ) / (q : ℝ)) := by

@@ -27,7 +27,7 @@ theorem mobiusCriticalContinuousCalibrationDeterminantBlindSynchronizationUniver
     (hu : Tendsto u l (nhdsWithin 0 (Set.Ioi 0))) :
     Tendsto
         (fun v : ℝ => squarefreeMobiusCriticalFisherCutoffWardLimit v /
-          (2 * v / (1 + v) ^ 2))
+          (2 * v / (1 + v) ^ (2 : ℕ)))
         (nhdsWithin 0 (Set.Ioi 0)) (nhds 4) ∧
       Tendsto
         (fun a =>
@@ -121,18 +121,18 @@ theorem mobiusCriticalContinuousCalibration_recoversQuadraticReporterBlindness
         (ell : InfiniteMobiusShiftChannel →L[ℂ] ℂ),
       (¬ Tendsto
         (fun a =>
-          (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+          (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
             mobiusCriticalPointedFisherDeterminantBoundarySignal (sigma a))
         l (nhds 0)) ∧
       (¬ Tendsto
         (fun a =>
-          (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ 2 -
+          (ell (mobiusCriticalShiftChannel (sigma a) f)) ^ (2 : ℕ) -
             mobiusCriticalSoftHardDeterminantBoundarySignal (u a))
         l (nhds 0)) := by
   intro f ell
   simpa only [id_eq] using
     (mobiusCriticalContinuousCalibrationDeterminantBlindSynchronizationUniversality
-      sigma u hsigma hu).2.2.2.2 f ell (fun z : ℂ => z ^ 2)
+      sigma u hsigma hu).2.2.2.2 f ell (fun z : ℂ => z ^ (2 : ℕ))
       (continuousAt_id.pow 2) (by norm_num)
 
 end

@@ -14,7 +14,7 @@ open scoped InnerProductSpace
 namespace GaloisForLFunctions.HTGeometry.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace UpperHardyL2 := RHTower.isClosed_hardyL2.completeSpace_coe
+local instance fokasLenellsHardyMultiplierEvaluationInst1 : CompleteSpace UpperHardyL2 := RHTower.isClosed_hardyL2.completeSpace_coe
 
 private theorem upper_minus_conj_ne_zero (v : {v : ℂ // 0 < v.im})
     {z : ℂ} (hz : 0 ≤ z.im) : z - (starRingEnd ℂ) v.val ≠ 0 := by

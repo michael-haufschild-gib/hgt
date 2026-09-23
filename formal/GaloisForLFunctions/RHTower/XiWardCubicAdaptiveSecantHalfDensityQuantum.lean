@@ -9,11 +9,11 @@ line to pay the cubic Hellinger quantum.  This module identifies the unique scal
 failure which has the correct homogeneity.  Coalesce the secant aperture and set its pole rate to
 twice the horizontal depth.  The resulting reflection defect is exactly
 
-`-8 / (9 a^2)`.
+`-8 / (9 a^(2 : ℕ))`.
 
 After multiplication by the half-density factor `a`, its square is not merely comparable to the
 cubic Hellinger self-charge: with universal normalization `345 / 2048` it is exactly equal to
-`115 / (864 a^3)`.  The doubled rate is the same horizontal doubling already generated
+`115 / (864 a^(3 : ℕ))`.  The doubled rate is the same horizontal doubling already generated
 holomorphically by the W-H199 bichamber map.
 
 This exact identity is not itself a source contraction.  For `a <= 1/4`, the adaptive rate
@@ -34,7 +34,7 @@ noncomputable section
 def xiWardCubicCoalescentLowerSecantReflectionDefect
     (lambda a : ℝ) : ℝ :=
   -4 * a * lambda /
-    ((lambda - a) ^ 2 * (lambda + a) ^ 2)
+    ((lambda - a) ^ (2 : ℕ) * (lambda + a) ^ (2 : ℕ))
 
 /-- Finite-aperture primitive defect converges to its coalescent boundary value. -/
 theorem tendsto_xiWardCubicPrimitiveLowerSecantReflectionDefect_aperture_zero
@@ -67,7 +67,7 @@ defect has the exact inverse-square scale required by the cubic charge. -/
 theorem xiWardCubicCoalescentLowerSecantReflectionDefect_two_mul
     {a : ℝ} (ha : 0 < a) :
     xiWardCubicCoalescentLowerSecantReflectionDefect (2 * a) a =
-      -8 / (9 * a ^ 2) := by
+      -8 / (9 * a ^ (2 : ℕ)) := by
   unfold xiWardCubicCoalescentLowerSecantReflectionDefect
   field_simp [ha.ne']
   ring
@@ -78,7 +78,7 @@ theorem cubicLogMomentHellingerHorizontalKernel_eq_adaptiveSecantHalfDensity
     {a : ℝ} (ha : 0 < a) :
     cubicLogMomentHellingerHorizontalKernel a a =
       (345 / 2048 : ℝ) * a *
-        xiWardCubicCoalescentLowerSecantReflectionDefect (2 * a) a ^ 2 := by
+        xiWardCubicCoalescentLowerSecantReflectionDefect (2 * a) a ^ (2 : ℕ) := by
   rw [xiWardCubicCoalescentLowerSecantReflectionDefect_two_mul ha,
     cubicLogMomentHellingerHorizontalKernel_self ha]
   field_simp [ha.ne']
@@ -91,7 +91,7 @@ theorem tendsto_xiWardCubicAdaptiveSecantHalfDensity_charge
     Tendsto
       (fun c : ℝ =>
         (345 / 2048 : ℝ) * a *
-          xiWardCubicPrimitiveLowerSecantReflectionDefect (2 * a) c a ^ 2)
+          xiWardCubicPrimitiveLowerSecantReflectionDefect (2 * a) c a ^ (2 : ℕ))
       (nhds 0)
       (nhds (cubicLogMomentHellingerHorizontalKernel a a)) := by
   have hala : a < 2 * a := by linarith
@@ -100,10 +100,10 @@ theorem tendsto_xiWardCubicAdaptiveSecantHalfDensity_charge
   have hscaled : Tendsto
       (fun c : ℝ =>
         ((345 / 2048 : ℝ) * a) *
-          xiWardCubicPrimitiveLowerSecantReflectionDefect (2 * a) c a ^ 2)
+          xiWardCubicPrimitiveLowerSecantReflectionDefect (2 * a) c a ^ (2 : ℕ))
       (nhds 0)
       (nhds (((345 / 2048 : ℝ) * a) *
-        xiWardCubicCoalescentLowerSecantReflectionDefect (2 * a) a ^ 2)) :=
+        xiWardCubicCoalescentLowerSecantReflectionDefect (2 * a) a ^ (2 : ℕ))) :=
     (hdef.pow 2).const_mul ((345 / 2048 : ℝ) * a)
   rw [cubicLogMomentHellingerHorizontalKernel_eq_adaptiveSecantHalfDensity ha]
   simpa only [mul_assoc] using hscaled

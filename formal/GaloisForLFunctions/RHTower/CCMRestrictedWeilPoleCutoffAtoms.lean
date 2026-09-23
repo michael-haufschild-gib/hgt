@@ -20,8 +20,8 @@ def ccmWeilPoleDiagonalSmooth (s : ℝ) : ℝ :=
 
 /-- Smooth Gamma and polar part of the moving opposite-pole entry. -/
 def ccmWeilPoleCrossSmooth (s : ℝ) : ℝ :=
-  (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*s)+2*s^2+
-    (2*Real.sinh s)^2+ccmGammaPoleCrossBoundaryPrimitive s
+  (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*s)+2*s^(2 : ℕ)+
+    (2*Real.sinh s)^(2 : ℕ)+ccmGammaPoleCrossBoundaryPrimitive s
 
 /-- Literal Mangoldt diagonal atom before its subtraction from the Weil form. -/
 def ccmWeilPolePrimeDiagonalAtom (n : ℕ) (s : ℝ) : ℝ :=

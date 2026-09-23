@@ -252,7 +252,7 @@ def parabolicCayleyPole (a T : ℝ) : ℂ :=
 
 /-- Canonical parabolic observation time for a pole at height `T`. -/
 def parabolicCayleyTime (a T tau : ℝ) : ℝ :=
-  ((a - 1 / 2) ^ 2 + T ^ 2) * tau
+  ((a - 1 / 2) ^ (2 : ℕ) + T ^ (2 : ℕ)) * tau
 
 theorem parabolicCayleyPole_ne_one
     (a T : ℝ) (hT : T ≠ 0) :
@@ -265,7 +265,7 @@ theorem parabolicCayleyPole_ne_one
 theorem normSq_parabolicCayleyPole_sub_one
     (a T : ℝ) :
     Complex.normSq (parabolicCayleyPole a T - 1) =
-      (a - 1 / 2) ^ 2 + T ^ 2 := by
+      (a - 1 / 2) ^ (2 : ℕ) + T ^ (2 : ℕ) := by
   rw [Complex.normSq_apply]
   simp only [parabolicCayleyPole, Complex.add_re, Complex.ofReal_re,
     Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_im,
@@ -286,7 +286,7 @@ theorem parabolicCayley_drift_time
   rw [cayleyFockDrift_of_rho
     (parabolicCayleyPole_ne_one a T hT)]
   rw [normSq_parabolicCayleyPole_sub_one, parabolicCayleyTime]
-  have hden : (a - 1 / 2) ^ 2 + T ^ 2 ≠ 0 := by
+  have hden : (a - 1 / 2) ^ (2 : ℕ) + T ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero hT]
   field_simp [hden]
 
@@ -389,8 +389,8 @@ energy of a transported residue is a Poisson packet. -/
 theorem cayleyPoleResidueMode_poisson_conservation
     (m c rho : ℂ) (x : ℝ) (r : ℕ) :
     x ^ r / r.factorial *
-        ‖iteratedDeriv r (cayleyPoleResidueMode m c rho) (x : ℂ)‖ ^ 2 =
-      ‖m‖ ^ 2 *
+        ‖iteratedDeriv r (cayleyPoleResidueMode m c rho) (x : ℂ)‖ ^ (2 : ℕ) =
+      ‖m‖ ^ (2 : ℕ) *
         Real.exp (cayleyFockExponent ((rho - c)⁻¹) * x) *
           poissonOrderWeight
             (cayleyFockDrift ((rho - c)⁻¹) * x) r := by
@@ -408,8 +408,8 @@ theorem sourceCayleyResidueMode_horizon_conservation
     let x := sourceCayleyObservationTime c rho tau
     x ^ r / r.factorial *
         ‖iteratedDeriv r
-          (cayleyPoleResidueMode m c rho) (x : ℂ)‖ ^ 2 =
-      ‖m‖ ^ 2 *
+          (cayleyPoleResidueMode m c rho) (x : ℂ)‖ ^ (2 : ℕ) =
+      ‖m‖ ^ (2 : ℕ) *
         Real.exp (sourceCayleyTransverseRate c rho * tau) *
           poissonOrderWeight tau r := by
   dsimp only
@@ -427,8 +427,8 @@ theorem parabolicCayleyResidueMode_renormalization
     x ^ r / r.factorial *
         ‖iteratedDeriv r
           (cayleyPoleResidueMode m 1
-            (parabolicCayleyPole a T)) (x : ℂ)‖ ^ 2 =
-      ‖m‖ ^ 2 * Real.exp (2 * a * tau) *
+            (parabolicCayleyPole a T)) (x : ℂ)‖ ^ (2 : ℕ) =
+      ‖m‖ ^ (2 : ℕ) * Real.exp (2 * a * tau) *
         poissonOrderWeight tau r := by
   dsimp only
   rw [cayleyPoleResidueMode_poisson_conservation]

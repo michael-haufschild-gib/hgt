@@ -25,7 +25,7 @@ def moebiusShiftedLogKernelReal (t Y : ℝ) : ℝ :=
 def moebiusShiftedLogSqKernelReal (t Y : ℝ) : ℝ :=
   ∑ d ∈ Finset.Icc 1 ⌊Y⌋₊,
     ((moebius d : ℤ) : ℝ) / (d : ℝ) *
-      (t + Real.log (Y / (d : ℝ))) ^ 2
+      (t + Real.log (Y / (d : ℝ))) ^ (2 : ℕ)
 
 /-- Exact affine-shift identity for the linear logarithmic Möbius kernel. -/
 theorem moebiusShiftedLogKernelReal_eq
@@ -54,7 +54,7 @@ theorem moebiusShiftedLogSqKernelReal_eq
     (t Y : ℝ) :
     moebiusShiftedLogSqKernelReal t Y =
       moebiusDoubleLogKernelReal Y + 2 * t * coprimeLogMoebius 1 Y +
-        t ^ 2 * RHTower.deningerHarmonicPartial ⌊Y⌋₊ := by
+        t ^ (2 : ℕ) * RHTower.deningerHarmonicPartial ⌊Y⌋₊ := by
   have hpartial : RHTower.deningerHarmonicPartial ⌊Y⌋₊ =
       ∑ d ∈ Finset.Icc 1 ⌊Y⌋₊,
         ((moebius d : ℤ) : ℝ) / (d : ℝ) := by

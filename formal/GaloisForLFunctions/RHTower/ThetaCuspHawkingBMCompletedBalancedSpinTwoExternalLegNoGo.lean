@@ -12,7 +12,7 @@ vertex.  Its projecting Eisenstein parameter on an actual Xi fibre is
 The diagonal four-Xi factorization contains the projecting factor twice.  Hence the unamputated
 completed vertex is annihilated on shell by
 
-`thetaXi(v)^2 = XiC(xiSpectralPoint q)^2 = 0`.
+`thetaXi(v)^(2 : ℕ) = XiC(xiSpectralPoint q)^(2 : ℕ) = 0`.
 
 This is unaffected by the repeated positive leg or by any multiplicative radial Green/left-QNM
 response.  A nonzero AIME seed therefore retains its exact simple negative-branch QNM pole, and on

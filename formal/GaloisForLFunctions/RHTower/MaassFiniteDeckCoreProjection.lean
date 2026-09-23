@@ -51,8 +51,8 @@ def finiteGridCoreProjection {N M K : ℕ} (a c hx hy : ℝ) :
 theorem normSq_finiteGridCoreProjection_toDeckL2 {N M K : ℕ} (a c hx hy : ℝ)
     (F : ℍ → DeckSpace N) (hF : MemLp F 2 cellMeasure) :
     ‖finiteGridCoreProjection (N := N) (M := M) (K := K) a c hx hy
-      (toDeckL2 F hF)‖ ^ 2 =
-      ∫ z in fdUpperChartGridCore (M := M) (K := K) a c hx hy, ‖F z‖ ^ 2 := by
+      (toDeckL2 F hF)‖ ^ (2 : ℕ) =
+      ∫ z in fdUpperChartGridCore (M := M) (K := K) a c hx hy, ‖F z‖ ^ (2 : ℕ) := by
   rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
   have hproj :
       ((finiteGridCoreProjection (N := N) (M := M) (K := K) a c hx hy
@@ -65,25 +65,25 @@ theorem normSq_finiteGridCoreProjection_toDeckL2 {N M K : ℕ} (a c hx hy : ℝ)
   have hFae := MemLp.coeFn_toLp hF
   calc
     (∫ z, ‖((finiteGridCoreProjection (N := N) (M := M) (K := K) a c hx hy
-      (toDeckL2 F hF) : DeckL2 N) : ℍ → DeckSpace N) z‖ ^ 2 ∂cellMeasure) =
-        ∫ z, ‖finiteGridCoreCutoff (M := M) (K := K) a c hx hy z • F z‖ ^ 2
+      (toDeckL2 F hF) : DeckL2 N) : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) ∂cellMeasure) =
+        ∫ z, ‖finiteGridCoreCutoff (M := M) (K := K) a c hx hy z • F z‖ ^ (2 : ℕ)
           ∂cellMeasure := by
       apply integral_congr_ae
       filter_upwards [hproj, hFae] with z hp hFz
       rw [hp]
       change ‖finiteGridCoreCutoff (M := M) (K := K) a c hx hy z •
-        (MemLp.toLp F hF : ℍ → DeckSpace N) z‖ ^ 2 = _
+        (MemLp.toLp F hF : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) = _
       rw [hFz]
     _ = ∫ z in ModularGroup.fd,
-        ‖finiteGridCoreCutoff (M := M) (K := K) a c hx hy z • F z‖ ^ 2 := by rfl
+        ‖finiteGridCoreCutoff (M := M) (K := K) a c hx hy z • F z‖ ^ (2 : ℕ) := by rfl
     _ = ∫ z in ModularGroup.fd,
         (fdUpperChartGridCore (M := M) (K := K) a c hx hy).indicator
-          (fun z => ‖F z‖ ^ 2) z := by
+          (fun z => ‖F z‖ ^ (2 : ℕ)) z := by
       apply setIntegral_congr_fun ModularGroup.isClosed_fd.measurableSet
       intro z hz
       by_cases hcore : z ∈ fdUpperChartGridCore (M := M) (K := K) a c hx hy <;>
         simp [finiteGridCoreCutoff, hcore]
-    _ = ∫ z in fdUpperChartGridCore (M := M) (K := K) a c hx hy, ‖F z‖ ^ 2 := by
+    _ = ∫ z in fdUpperChartGridCore (M := M) (K := K) a c hx hy, ‖F z‖ ^ (2 : ℕ) := by
       rw [MeasureTheory.setIntegral_indicator]
       · have hsubset : fdUpperChartGridCore (M := M) (K := K) a c hx hy ⊆
             ModularGroup.fd := by

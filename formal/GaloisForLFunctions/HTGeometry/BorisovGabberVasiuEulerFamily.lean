@@ -71,7 +71,7 @@ theorem bgv_eulerFactors_response (a : R) (g : Polynomial R) :
 /-- A closed determinant-one family in every positive dimension, including arbitrary
 characteristic-power twists of the shared source. -/
 theorem bgv_eulerFamily_jacobian_one (g : Polynomial R) (L : MvPolynomial (Option ι) R) :
-    let w := L ^ 2 * ∏ j : Option ι, MvPolynomial.X j
+    let w := L ^ (2 : ℕ) * ∏ j : Option ι, MvPolynomial.X j
     (jacobian R (Option ι) (bgvSharedSourceMap (bgvEulerFactors 1 g) w)).det = 1 := by
   have h := bgv_det_jacobian_twistedSource_response 2 L
     (fun _ : Option ι => 1) (bgvEulerFactors 1 g)
@@ -80,7 +80,7 @@ theorem bgv_eulerFamily_jacobian_one (g : Polynomial R) (L : MvPolynomial (Optio
 /-- The same explicit family preserves the determinant of the corpus's differential pullback. -/
 theorem bgv_eulerFamily_pullback_det_one (g : Polynomial R)
     (L : MvPolynomial (Option ι) R) :
-    let w := L ^ 2 * ∏ j : Option ι, MvPolynomial.X j
+    let w := L ^ (2 : ℕ) * ∏ j : Option ι, MvPolynomial.X j
     LinearMap.det (pullbackDifferential R (Option ι)
       (bgvSharedSourceMap (bgvEulerFactors 1 g) w)) = 1 := by
   dsimp only

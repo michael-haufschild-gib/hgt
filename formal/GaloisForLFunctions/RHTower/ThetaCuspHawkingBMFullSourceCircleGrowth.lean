@@ -85,13 +85,13 @@ private theorem square_cell_bound (q : XiZeroCopy) :
       · exact UpperHalfPlane.continuous_im
     exact hcoord.continuousAt
   obtain ⟨C,hC⟩ := (truncated_cell_compact 1).exists_bound_of_continuousOn hc.continuousOn
-  refine ⟨max 0 (max C (D^2/2)),le_max_left _ _,?_⟩
+  refine ⟨max 0 (max C (D^(2 : ℕ)/2)),le_max_left _ _,?_⟩
   intro z hz
   by_cases hy : z.im ≤ 1
   · rw [max_eq_left hy,Real.one_rpow,mul_one]
     exact (hC z ⟨hz,hy⟩).trans ((le_max_left _ _).trans (le_max_right _ _))
   · have hy1 : 1 ≤ z.im := (lt_of_not_ge hy).le
-    have hpow : (z.im^(1/2+|(center q).re|))^2=z.im^sourceGrowthExponent q := by
+    have hpow : (z.im^(1/2+|(center q).re|))^(2 : ℕ)=z.im^sourceGrowthExponent q := by
       rw [← Real.rpow_natCast,← Real.rpow_mul z.im_pos.le]
       congr 1
       dsimp [sourceGrowthExponent]
@@ -100,11 +100,11 @@ private theorem square_cell_bound (q : XiZeroCopy) :
     have hb := hd (coordinates z) hy1
     change ‖scalar (center q) (coordinates z)‖ ≤ D*z.im^(1/2+|(center q).re|) at hb
     calc
-      _ = ‖scalar (center q) (coordinates z)‖^2/2 := by
+      _ = ‖scalar (center q) (coordinates z)‖^(2 : ℕ)/2 := by
         simp only [fullSquarePotential,norm_mul,norm_div,norm_one,Complex.norm_ofNat]
         ring
-      _ ≤ (D*z.im^(1/2+|(center q).re|))^2/2 := by gcongr
-      _ = (D^2/2)*z.im^sourceGrowthExponent q := by rw [mul_pow,hpow]; ring
+      _ ≤ (D*z.im^(1/2+|(center q).re|))^(2 : ℕ)/2 := by gcongr
+      _ = (D^(2 : ℕ)/2)*z.im^sourceGrowthExponent q := by rw [mul_pow,hpow]; ring
       _ ≤ _ := mul_le_mul_of_nonneg_right
         ((le_max_right C _).trans (le_max_right 0 _)) (Real.rpow_nonneg z.im_pos.le _)
 

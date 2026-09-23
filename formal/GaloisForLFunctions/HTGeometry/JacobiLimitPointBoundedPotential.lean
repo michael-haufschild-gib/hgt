@@ -58,9 +58,9 @@ theorem sum_Ico_sqrtinv_telescope {N P : ℕ} (hNP : N ≤ P) :
       ring
 
 theorem sum_Ico_inv_sq_le {N P : ℕ} (hN : 1 ≤ N) (hNP : N ≤ P) :
-    ∑ k ∈ Finset.Ico N P, (1 : ℝ) / (k : ℝ) ^ 2 ≤ 2 / (N : ℝ) := by
+    ∑ k ∈ Finset.Ico N P, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) ≤ 2 / (N : ℝ) := by
   have hstep : ∀ k ∈ Finset.Ico N P,
-      (1 : ℝ) / (k : ℝ) ^ 2 ≤ 2 * ((1 : ℝ) / (k : ℝ) - 1 / ((k : ℝ) + 1)) := by
+      (1 : ℝ) / (k : ℝ) ^ (2 : ℕ) ≤ 2 * ((1 : ℝ) / (k : ℝ) - 1 / ((k : ℝ) + 1)) := by
     intro k hk
     rw [Finset.mem_Ico] at hk
     have hk1 : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast le_trans hN hk.1
@@ -78,9 +78,9 @@ theorem sum_Ico_inv_sq_le {N P : ℕ} (hN : 1 ≤ N) (hNP : N ≤ P) :
   linarith
 
 theorem sum_Ico_sqrt_div_sq_le {N P : ℕ} (hN : 1 ≤ N) (hNP : N ≤ P) :
-    ∑ k ∈ Finset.Ico N P, Real.sqrt (k : ℝ) / (k : ℝ) ^ 2 ≤ 4 / Real.sqrt (N : ℝ) := by
+    ∑ k ∈ Finset.Ico N P, Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ) ≤ 4 / Real.sqrt (N : ℝ) := by
   have hstep : ∀ k ∈ Finset.Ico N P,
-      Real.sqrt (k : ℝ) / (k : ℝ) ^ 2
+      Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)
         ≤ 4 * (1 / Real.sqrt (k : ℝ) - 1 / Real.sqrt ((k : ℝ) + 1)) := by
     intro k hk
     rw [Finset.mem_Ico] at hk
@@ -89,24 +89,24 @@ theorem sum_Ico_sqrt_div_sq_le {N P : ℕ} (hN : 1 ≤ N) (hNP : N ≤ P) :
     set t := Real.sqrt ((k : ℝ) + 1) with ht
     have hs0 : 0 < s := Real.sqrt_pos.mpr (by linarith)
     have ht0 : 0 < t := Real.sqrt_pos.mpr (by linarith)
-    have hs2 : s ^ 2 = (k : ℝ) := Real.sq_sqrt (by linarith)
-    have ht2 : t ^ 2 = (k : ℝ) + 1 := Real.sq_sqrt (by linarith)
+    have hs2 : s ^ (2 : ℕ) = (k : ℝ) := Real.sq_sqrt (by linarith)
+    have ht2 : t ^ (2 : ℕ) = (k : ℝ) + 1 := Real.sq_sqrt (by linarith)
     have hst : s < t := by
       rw [hs, ht]
       exact Real.sqrt_lt_sqrt (by linarith) (by linarith)
-    have hkey : s / (k : ℝ) ^ 2 = 1 / s ^ 3 := by
+    have hkey : s / (k : ℝ) ^ (2 : ℕ) = 1 / s ^ (3 : ℕ) := by
       rw [← hs2]
       field_simp
     have hrw : (4 : ℝ) * (1 / s - 1 / t) = 4 * (t - s) / (s * t) := by
       field_simp
     rw [hkey, hrw, div_le_div_iff₀ (by positivity) (by positivity)]
-    have htle : t ^ 2 ≤ 2 * s ^ 2 := by rw [hs2, ht2]; linarith
+    have htle : t ^ (2 : ℕ) ≤ 2 * s ^ (2 : ℕ) := by rw [hs2, ht2]; linarith
     have hts : t ≤ 2 * s := by nlinarith
     have hdiff : (t - s) * (t + s) = 1 := by linear_combination ht2 - hs2
-    have hkey2 : s * t * (t + s) ≤ 4 * s ^ 3 := by nlinarith [hs0, ht0, htle, hts]
+    have hkey2 : s * t * (t + s) ≤ 4 * s ^ (3 : ℕ) := by nlinarith [hs0, ht0, htle, hts]
     have hpos : 0 < t + s := by linarith
-    have hgoal : 1 * (s * t) * (t + s) ≤ (4 * (t - s) * s ^ 3) * (t + s) := by
-      rw [show (4 * (t - s) * s ^ 3) * (t + s) = 4 * s ^ 3 * ((t - s) * (t + s)) by ring, hdiff]
+    have hgoal : 1 * (s * t) * (t + s) ≤ (4 * (t - s) * s ^ (3 : ℕ)) * (t + s) := by
+      rw [show (4 * (t - s) * s ^ (3 : ℕ)) * (t + s) = 4 * s ^ (3 : ℕ) * ((t - s) * (t + s)) by ring, hdiff]
       linarith
     exact le_of_mul_le_mul_right hgoal hpos
   refine le_trans (Finset.sum_le_sum hstep) ?_
@@ -143,30 +143,30 @@ theorem norm_diff_eq_norm_slFlux_div {n : ℕ} (han : a n ≠ 0) :
 
 /-! ## Cauchy--Schwarz for a range sum -/
 
-theorem sum_range_le_sqrt_mul {y : ℕ → ℂ} (M L : ℕ) (hy : Summable fun n => ‖y n‖ ^ 2) :
+theorem sum_range_le_sqrt_mul {y : ℕ → ℂ} (M L : ℕ) (hy : Summable fun n => ‖y n‖ ^ (2 : ℕ)) :
     ∑ i ∈ Finset.range L, ‖y (i + M)‖
-      ≤ Real.sqrt (L : ℝ) * Real.sqrt (∑' k, ‖y (k + M)‖ ^ 2) := by
-  have hshift : Summable fun k => ‖y (k + M)‖ ^ 2 := (summable_nat_add_iff M).mpr hy
-  have hpart : ∑ i ∈ Finset.range L, ‖y (i + M)‖ ^ 2 ≤ ∑' k, ‖y (k + M)‖ ^ 2 :=
+      ≤ Real.sqrt (L : ℝ) * Real.sqrt (∑' k, ‖y (k + M)‖ ^ (2 : ℕ)) := by
+  have hshift : Summable fun k => ‖y (k + M)‖ ^ (2 : ℕ) := (summable_nat_add_iff M).mpr hy
+  have hpart : ∑ i ∈ Finset.range L, ‖y (i + M)‖ ^ (2 : ℕ) ≤ ∑' k, ‖y (k + M)‖ ^ (2 : ℕ) :=
     hshift.sum_le_tsum _ (fun i _ => by positivity)
   have hcs := sq_sum_le_card_mul_sum_sq (s := Finset.range L)
     (f := fun i => ‖y (i + M)‖)
   have hcard : ((Finset.range L).card : ℝ) = (L : ℝ) := by simp
   rw [hcard] at hcs
-  have hle : (∑ i ∈ Finset.range L, ‖y (i + M)‖) ^ 2
-      ≤ (L : ℝ) * ∑' k, ‖y (k + M)‖ ^ 2 := by
+  have hle : (∑ i ∈ Finset.range L, ‖y (i + M)‖) ^ (2 : ℕ)
+      ≤ (L : ℝ) * ∑' k, ‖y (k + M)‖ ^ (2 : ℕ) := by
     refine le_trans hcs ?_
     exact mul_le_mul_of_nonneg_left hpart (by positivity)
   have hnn : (0:ℝ) ≤ ∑ i ∈ Finset.range L, ‖y (i + M)‖ :=
     Finset.sum_nonneg (fun i _ => norm_nonneg _)
-  have hT : (0:ℝ) ≤ ∑' k, ‖y (k + M)‖ ^ 2 := tsum_nonneg (fun k => by positivity)
+  have hT : (0:ℝ) ≤ ∑' k, ‖y (k + M)‖ ^ (2 : ℕ) := tsum_nonneg (fun k => by positivity)
   have := Real.sqrt_le_sqrt hle
   rwa [Real.sqrt_sq hnn, Real.sqrt_mul (by positivity)] at this
 
-theorem tendsto_norm_zero_of_summable_sq {y : ℕ → ℂ} (hy : Summable fun n => ‖y n‖ ^ 2) :
+theorem tendsto_norm_zero_of_summable_sq {y : ℕ → ℂ} (hy : Summable fun n => ‖y n‖ ^ (2 : ℕ)) :
     Filter.Tendsto (fun n => ‖y n‖) Filter.atTop (nhds 0) := by
   have h := hy.tendsto_atTop_zero
-  have h2 : Filter.Tendsto (fun n => Real.sqrt (‖y n‖ ^ 2)) Filter.atTop (nhds (Real.sqrt 0)) :=
+  have h2 : Filter.Tendsto (fun n => Real.sqrt (‖y n‖ ^ (2 : ℕ))) Filter.atTop (nhds (Real.sqrt 0)) :=
     (Real.continuous_sqrt.tendsto 0).comp h
   simpa [Real.sqrt_sq (norm_nonneg _)] using h2
 
@@ -174,10 +174,10 @@ theorem tendsto_norm_zero_of_summable_sq {y : ℕ → ℂ} (hy : Summable fun n 
 
 theorem norm_slFlux_le {Cq : ℝ} {N₀ : ℕ} (hu : IsJacobiRec a b z u)
     (hQ : ∀ n, N₀ ≤ n → ‖slPotential a b z n‖ ≤ Cq) (hCq : 0 ≤ Cq)
-    (hu2 : Summable fun n => ‖u n‖ ^ 2)
+    (hu2 : Summable fun n => ‖u n‖ ^ (2 : ℕ))
     {M N : ℕ} (hM : N₀ ≤ M) (hMN : M ≤ N) :
     ‖slFlux a u N‖ ≤ ‖slFlux a u M‖
-      + Cq * (Real.sqrt (N : ℝ) * Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ 2)) := by
+      + Cq * (Real.sqrt (N : ℝ) * Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ (2 : ℕ))) := by
   have hdiff := slFlux_sub hu hMN
   have hb1 : ‖slFlux a u N - slFlux a u M‖ ≤ Cq * ∑ k ∈ Finset.Ico M N, ‖u (k + 1)‖ := by
     rw [hdiff, norm_neg]
@@ -197,13 +197,13 @@ theorem norm_slFlux_le {Cq : ℝ} {N₀ : ℕ} (hu : IsJacobiRec a b z u)
   have hsq : Real.sqrt ((N - M : ℕ) : ℝ) ≤ Real.sqrt (N : ℝ) := by
     refine Real.sqrt_le_sqrt ?_
     exact_mod_cast Nat.sub_le N M
-  have hTn : (0:ℝ) ≤ Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ 2) := Real.sqrt_nonneg _
+  have hTn : (0:ℝ) ≤ Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ (2 : ℕ)) := Real.sqrt_nonneg _
   have hb2 : ∑ k ∈ Finset.Ico M N, ‖u (k + 1)‖
-      ≤ Real.sqrt (N : ℝ) * Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ 2) := by
+      ≤ Real.sqrt (N : ℝ) * Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ (2 : ℕ)) := by
     rw [hre]
     exact le_trans hcs (mul_le_mul_of_nonneg_right hsq hTn)
   have hb3 : ‖slFlux a u N - slFlux a u M‖
-      ≤ Cq * (Real.sqrt (N : ℝ) * Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ 2)) :=
+      ≤ Cq * (Real.sqrt (N : ℝ) * Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ (2 : ℕ))) :=
     le_trans hb1 (mul_le_mul_of_nonneg_left hb2 hCq)
   have := norm_sub_norm_le (slFlux a u N) (slFlux a u M)
   linarith
@@ -211,14 +211,14 @@ theorem norm_slFlux_le {Cq : ℝ} {N₀ : ℕ} (hu : IsJacobiRec a b z u)
 /-! ## A square-summable solution decays at least like `n^{-1/2}` times its own tail -/
 
 theorem norm_le_tail_decay {c₀ Cq : ℝ} {N₀ : ℕ} (hu : IsJacobiRec a b z u)
-    (hc₀ : 0 < c₀) (ha : ∀ n, N₀ ≤ n → c₀ * (n : ℝ) ^ 2 ≤ a n)
+    (hc₀ : 0 < c₀) (ha : ∀ n, N₀ ≤ n → c₀ * (n : ℝ) ^ (2 : ℕ) ≤ a n)
     (hQ : ∀ n, N₀ ≤ n → ‖slPotential a b z n‖ ≤ Cq) (hCq : 0 ≤ Cq)
-    (hu2 : Summable fun n => ‖u n‖ ^ 2)
+    (hu2 : Summable fun n => ‖u n‖ ^ (2 : ℕ))
     {M L : ℕ} (hN₀ : 1 ≤ N₀) (hM : N₀ ≤ M) (hML : M ≤ L) :
     ‖u L‖ ≤ 2 * ‖slFlux a u M‖ / c₀ * (1 / (L : ℝ))
-      + 4 * Cq * Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ 2) / c₀ * (1 / Real.sqrt (L : ℝ)) := by
+      + 4 * Cq * Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ (2 : ℕ)) / c₀ * (1 / Real.sqrt (L : ℝ)) := by
   set B : ℝ := ‖slFlux a u M‖ with hBdef
-  set ε : ℝ := Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ 2) with hεdef
+  set ε : ℝ := Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ (2 : ℕ)) with hεdef
   have hB0 : 0 ≤ B := norm_nonneg _
   have hε0 : 0 ≤ ε := Real.sqrt_nonneg _
   have hL1 : 1 ≤ L := le_trans hN₀ (le_trans hM hML)
@@ -227,24 +227,24 @@ theorem norm_le_tail_decay {c₀ Cq : ℝ} {N₀ : ℕ} (hu : IsJacobiRec a b z 
   have hbound : ∀ N : ℕ, L ≤ N → ‖u N - u L‖ ≤ R := by
     intro N hLN
     have hterm : ∀ k ∈ Finset.Ico L N,
-        ‖u (k + 1) - u k‖ ≤ B / c₀ * (1 / (k : ℝ) ^ 2)
-          + Cq * ε / c₀ * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2) := by
+        ‖u (k + 1) - u k‖ ≤ B / c₀ * (1 / (k : ℝ) ^ (2 : ℕ))
+          + Cq * ε / c₀ * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)) := by
       intro k hk
       rw [Finset.mem_Ico] at hk
       have hkN₀ : N₀ ≤ k := le_trans hM (le_trans hML hk.1)
       have hk1 : (1:ℝ) ≤ (k : ℝ) := by exact_mod_cast le_trans hN₀ hkN₀
-      have hka : c₀ * (k : ℝ) ^ 2 ≤ a k := ha k hkN₀
-      have hkpos : (0:ℝ) < c₀ * (k : ℝ) ^ 2 := by positivity
+      have hka : c₀ * (k : ℝ) ^ (2 : ℕ) ≤ a k := ha k hkN₀
+      have hkpos : (0:ℝ) < c₀ * (k : ℝ) ^ (2 : ℕ) := by positivity
       have hapos : (0:ℝ) < a k := lt_of_lt_of_le hkpos hka
       have hF := norm_slFlux_le hu hQ hCq hu2 hM (le_trans hML hk.1)
       have hnum : (0:ℝ) ≤ B + Cq * (Real.sqrt (k : ℝ) * ε) := by positivity
       have hdiv : ‖slFlux a u k‖ / |a k|
-          ≤ (B + Cq * (Real.sqrt (k : ℝ) * ε)) / (c₀ * (k : ℝ) ^ 2) := by
+          ≤ (B + Cq * (Real.sqrt (k : ℝ) * ε)) / (c₀ * (k : ℝ) ^ (2 : ℕ)) := by
         rw [abs_of_pos hapos, div_le_div_iff₀ hapos hkpos]
         nlinarith [norm_nonneg (slFlux a u k)]
-      have hsplit : (B + Cq * (Real.sqrt (k : ℝ) * ε)) / (c₀ * (k : ℝ) ^ 2)
-          = B / c₀ * (1 / (k : ℝ) ^ 2)
-            + Cq * ε / c₀ * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2) := by
+      have hsplit : (B + Cq * (Real.sqrt (k : ℝ) * ε)) / (c₀ * (k : ℝ) ^ (2 : ℕ))
+          = B / c₀ * (1 / (k : ℝ) ^ (2 : ℕ))
+            + Cq * ε / c₀ * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)) := by
         field_simp
       rw [norm_diff_eq_norm_slFlux_div (ne_of_gt hapos)]
       rw [← hsplit]
@@ -252,10 +252,10 @@ theorem norm_le_tail_decay {c₀ Cq : ℝ} {N₀ : ℕ} (hu : IsJacobiRec a b z 
     calc ‖u N - u L‖ = ‖∑ k ∈ Finset.Ico L N, (u (k + 1) - u k)‖ := by
           rw [← sub_eq_sum_diff u hLN]
       _ ≤ ∑ k ∈ Finset.Ico L N, ‖u (k + 1) - u k‖ := norm_sum_le _ _
-      _ ≤ ∑ k ∈ Finset.Ico L N, (B / c₀ * (1 / (k : ℝ) ^ 2)
-            + Cq * ε / c₀ * (Real.sqrt (k : ℝ) / (k : ℝ) ^ 2)) := Finset.sum_le_sum hterm
-      _ = B / c₀ * (∑ k ∈ Finset.Ico L N, (1 : ℝ) / (k : ℝ) ^ 2)
-            + Cq * ε / c₀ * (∑ k ∈ Finset.Ico L N, Real.sqrt (k : ℝ) / (k : ℝ) ^ 2) := by
+      _ ≤ ∑ k ∈ Finset.Ico L N, (B / c₀ * (1 / (k : ℝ) ^ (2 : ℕ))
+            + Cq * ε / c₀ * (Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ))) := Finset.sum_le_sum hterm
+      _ = B / c₀ * (∑ k ∈ Finset.Ico L N, (1 : ℝ) / (k : ℝ) ^ (2 : ℕ))
+            + Cq * ε / c₀ * (∑ k ∈ Finset.Ico L N, Real.sqrt (k : ℝ) / (k : ℝ) ^ (2 : ℕ)) := by
           rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
       _ ≤ B / c₀ * (2 / (L : ℝ)) + Cq * ε / c₀ * (4 / Real.sqrt (L : ℝ)) := by
           have h1 := sum_Ico_inv_sq_le (N := L) (P := N) hL1 hLN
@@ -285,17 +285,17 @@ theorem le_of_le_add_div_sqrt {X K R : ℝ} (hK : 0 ≤ K) (M : ℕ)
   rw [not_le] at hcon
   set e : ℝ := X - R with hedef
   have he0 : 0 < e := by linarith
-  obtain ⟨L, hL⟩ := exists_nat_gt (max ((K / e) ^ 2 + 1) ((M : ℝ) + 1))
+  obtain ⟨L, hL⟩ := exists_nat_gt (max ((K / e) ^ (2 : ℕ) + 1) ((M : ℝ) + 1))
   have hLM : M ≤ L := by
     have : (M : ℝ) + 1 ≤ (L : ℝ) := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hL)
     have : (M : ℝ) < (L : ℝ) := by linarith
     exact_mod_cast this.le
-  have hLsq : (K / e) ^ 2 < (L : ℝ) := by
-    have : (K / e) ^ 2 + 1 ≤ (L : ℝ) := le_of_lt (lt_of_le_of_lt (le_max_left _ _) hL)
+  have hLsq : (K / e) ^ (2 : ℕ) < (L : ℝ) := by
+    have : (K / e) ^ (2 : ℕ) + 1 ≤ (L : ℝ) := le_of_lt (lt_of_le_of_lt (le_max_left _ _) hL)
     linarith
   have hLpos : (0:ℝ) < (L : ℝ) := lt_of_le_of_lt (by positivity) hLsq
   have hsq : K / e < Real.sqrt (L : ℝ) := by
-    rw [show K / e = Real.sqrt ((K / e) ^ 2) from (Real.sqrt_sq (by positivity)).symm]
+    rw [show K / e = Real.sqrt ((K / e) ^ (2 : ℕ)) from (Real.sqrt_sq (by positivity)).symm]
     exact Real.sqrt_lt_sqrt (by positivity) hLsq
   have hs0 : (0:ℝ) < Real.sqrt (L : ℝ) := Real.sqrt_pos.mpr hLpos
   have hlt : K / Real.sqrt (L : ℝ) < e := by
@@ -318,21 +318,21 @@ theorem crossWronskian_eq_zero_of_both_summable
     {c₀ Cq : ℝ} {N₀ : ℕ}
     (hu : IsJacobiRec a b z u) (hw : IsJacobiRec a b z w)
     (hN₀ : 1 ≤ N₀) (hc₀ : 0 < c₀)
-    (ha : ∀ n, N₀ ≤ n → c₀ * (n : ℝ) ^ 2 ≤ a n)
+    (ha : ∀ n, N₀ ≤ n → c₀ * (n : ℝ) ^ (2 : ℕ) ≤ a n)
     (hQ : ∀ n, N₀ ≤ n → ‖slPotential a b z n‖ ≤ Cq) (hCq : 0 ≤ Cq)
-    (hu2 : Summable fun n => ‖u n‖ ^ 2) (hw2 : Summable fun n => ‖w n‖ ^ 2) :
+    (hu2 : Summable fun n => ‖u n‖ ^ (2 : ℕ)) (hw2 : Summable fun n => ‖w n‖ ^ (2 : ℕ)) :
     crossWronskian a u w N₀ = 0 := by
   set X : ℝ := ‖crossWronskian a u w N₀‖ with hXdef
   have hXconst : ∀ L, ‖crossWronskian a u w L‖ = X := fun L => by
     rw [hXdef, crossWronskian_eq_zero_of_const hu hw (m := L) (n := N₀)]
   have hX0 : 0 ≤ X := norm_nonneg _
   -- the two tail scales
-  set eu : ℕ → ℝ := fun M => Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ 2) with heudef
-  set ew : ℕ → ℝ := fun M => Real.sqrt (∑' k, ‖w (k + (M + 1))‖ ^ 2) with hewdef
+  set eu : ℕ → ℝ := fun M => Real.sqrt (∑' k, ‖u (k + (M + 1))‖ ^ (2 : ℕ)) with heudef
+  set ew : ℕ → ℝ := fun M => Real.sqrt (∑' k, ‖w (k + (M + 1))‖ ^ (2 : ℕ)) with hewdef
   have heu0 : ∀ M, 0 ≤ eu M := fun M => Real.sqrt_nonneg _
   have hew0 : ∀ M, 0 ≤ ew M := fun M => Real.sqrt_nonneg _
   -- the `M`-uniform bound
-  have hmain : ∀ M : ℕ, N₀ ≤ M → X ≤ 8 * Cq ^ 2 * eu M * ew M / c₀ := by
+  have hmain : ∀ M : ℕ, N₀ ≤ M → X ≤ 8 * Cq ^ (2 : ℕ) * eu M * ew M / c₀ := by
     intro M hM
     set Bu : ℝ := ‖slFlux a u M‖ with hBudef
     set Bw : ℝ := ‖slFlux a w M‖ with hBwdef
@@ -354,7 +354,7 @@ theorem crossWronskian_eq_zero_of_both_summable
       rw [hsdef, show (1:ℝ) = Real.sqrt 1 by simp]
       exact Real.sqrt_le_sqrt hLr
     have hs0 : 0 < s := by linarith
-    have hs2 : s ^ 2 = (L : ℝ) := Real.sq_sqrt (by linarith)
+    have hs2 : s ^ (2 : ℕ) = (L : ℝ) := Real.sq_sqrt (by linarith)
     -- decay and flux bounds at the index `L`
     have hEu := norm_le_tail_decay hu hc₀ ha hQ hCq hu2 hN₀ hM hML
     have hEw := norm_le_tail_decay hw hc₀ ha hQ hCq hw2 hN₀ hM hML
@@ -392,36 +392,36 @@ theorem crossWronskian_eq_zero_of_both_summable
       refine le_trans (norm_sub_le _ _) ?_
       rw [norm_mul, norm_mul]
     -- multiply out
-    have hp1 : (c₀ * s ^ 2 * ‖w L‖) * ‖slFlux a u L‖
+    have hp1 : (c₀ * s ^ (2 : ℕ) * ‖w L‖) * ‖slFlux a u L‖
         ≤ (2 * Bw + 4 * Cq * ew M * s) * (Bu + Cq * (s * eu M)) := by
       refine mul_le_mul ?_ hFu (norm_nonneg _)
         (by nlinarith [hBw0, mul_nonneg (mul_nonneg hCq (hew0 M)) hs0.le])
       rw [hs2]
       linarith [hEw']
-    have hp2 : (c₀ * s ^ 2 * ‖u L‖) * ‖slFlux a w L‖
+    have hp2 : (c₀ * s ^ (2 : ℕ) * ‖u L‖) * ‖slFlux a w L‖
         ≤ (2 * Bu + 4 * Cq * eu M * s) * (Bw + Cq * (s * ew M)) := by
       refine mul_le_mul ?_ hFw (norm_nonneg _)
         (by nlinarith [hBu0, mul_nonneg (mul_nonneg hCq (heu0 M)) hs0.le])
       rw [hs2]
       linarith [hEu']
-    have hcs0 : (0:ℝ) < c₀ * s ^ 2 := by positivity
-    have hXmul : (c₀ * s ^ 2) * X ≤ A + C * s + 8 * Cq ^ 2 * eu M * ew M * s ^ 2 := by
-      have hxx : (c₀ * s ^ 2) * X
-          ≤ (c₀ * s ^ 2 * ‖w L‖) * ‖slFlux a u L‖ + (c₀ * s ^ 2 * ‖u L‖) * ‖slFlux a w L‖ := by
-        calc (c₀ * s ^ 2) * X
-            ≤ (c₀ * s ^ 2) * (‖w L‖ * ‖slFlux a u L‖ + ‖u L‖ * ‖slFlux a w L‖) :=
+    have hcs0 : (0:ℝ) < c₀ * s ^ (2 : ℕ) := by positivity
+    have hXmul : (c₀ * s ^ (2 : ℕ)) * X ≤ A + C * s + 8 * Cq ^ (2 : ℕ) * eu M * ew M * s ^ (2 : ℕ) := by
+      have hxx : (c₀ * s ^ (2 : ℕ)) * X
+          ≤ (c₀ * s ^ (2 : ℕ) * ‖w L‖) * ‖slFlux a u L‖ + (c₀ * s ^ (2 : ℕ) * ‖u L‖) * ‖slFlux a w L‖ := by
+        calc (c₀ * s ^ (2 : ℕ)) * X
+            ≤ (c₀ * s ^ (2 : ℕ)) * (‖w L‖ * ‖slFlux a u L‖ + ‖u L‖ * ‖slFlux a w L‖) :=
               mul_le_mul_of_nonneg_left hXle hcs0.le
           _ = _ := by ring
       have hsum := add_le_add hp1 hp2
       have hid : (2 * Bw + 4 * Cq * ew M * s) * (Bu + Cq * (s * eu M))
           + (2 * Bu + 4 * Cq * eu M * s) * (Bw + Cq * (s * ew M))
-          = A + C * s + 8 * Cq ^ 2 * eu M * ew M * s ^ 2 := by
+          = A + C * s + 8 * Cq ^ (2 : ℕ) * eu M * ew M * s ^ (2 : ℕ) := by
         rw [hAdef, hCdef]; ring
       linarith [hxx, hsum, hid]
-    have hfin : (c₀ * s ^ 2) * X
-        ≤ (c₀ * s ^ 2) * ((A + C) / c₀ / s + 8 * Cq ^ 2 * eu M * ew M / c₀) := by
-      have hrw : (c₀ * s ^ 2) * ((A + C) / c₀ / s + 8 * Cq ^ 2 * eu M * ew M / c₀)
-          = (A + C) * s + 8 * Cq ^ 2 * eu M * ew M * s ^ 2 := by
+    have hfin : (c₀ * s ^ (2 : ℕ)) * X
+        ≤ (c₀ * s ^ (2 : ℕ)) * ((A + C) / c₀ / s + 8 * Cq ^ (2 : ℕ) * eu M * ew M / c₀) := by
+      have hrw : (c₀ * s ^ (2 : ℕ)) * ((A + C) / c₀ / s + 8 * Cq ^ (2 : ℕ) * eu M * ew M / c₀)
+          = (A + C) * s + 8 * Cq ^ (2 : ℕ) * eu M * ew M * s ^ (2 : ℕ) := by
         field_simp
       rw [hrw]
       have hAs : A ≤ A * s := by nlinarith [hA0, hs1]
@@ -431,22 +431,22 @@ theorem crossWronskian_eq_zero_of_both_summable
     linarith [this]
   -- let the window start tend to infinity
   have htu : Filter.Tendsto (fun M : ℕ => eu M) Filter.atTop (nhds 0) := by
-    have h0 : Filter.Tendsto (fun i : ℕ => ∑' k, ‖u (k + i)‖ ^ 2) Filter.atTop (nhds 0) :=
-      tendsto_sum_nat_add fun n => ‖u n‖ ^ 2
-    have h1 : Filter.Tendsto (fun M : ℕ => ∑' k, ‖u (k + (M + 1))‖ ^ 2)
+    have h0 : Filter.Tendsto (fun i : ℕ => ∑' k, ‖u (k + i)‖ ^ (2 : ℕ)) Filter.atTop (nhds 0) :=
+      tendsto_sum_nat_add fun n => ‖u n‖ ^ (2 : ℕ)
+    have h1 : Filter.Tendsto (fun M : ℕ => ∑' k, ‖u (k + (M + 1))‖ ^ (2 : ℕ))
         Filter.atTop (nhds 0) := h0.comp (Filter.tendsto_add_atTop_nat 1)
     have h2 := (Real.continuous_sqrt.tendsto 0).comp h1
     simpa [heudef, Function.comp_def] using h2
   have htw : Filter.Tendsto (fun M : ℕ => ew M) Filter.atTop (nhds 0) := by
-    have h0 : Filter.Tendsto (fun i : ℕ => ∑' k, ‖w (k + i)‖ ^ 2) Filter.atTop (nhds 0) :=
-      tendsto_sum_nat_add fun n => ‖w n‖ ^ 2
-    have h1 : Filter.Tendsto (fun M : ℕ => ∑' k, ‖w (k + (M + 1))‖ ^ 2)
+    have h0 : Filter.Tendsto (fun i : ℕ => ∑' k, ‖w (k + i)‖ ^ (2 : ℕ)) Filter.atTop (nhds 0) :=
+      tendsto_sum_nat_add fun n => ‖w n‖ ^ (2 : ℕ)
+    have h1 : Filter.Tendsto (fun M : ℕ => ∑' k, ‖w (k + (M + 1))‖ ^ (2 : ℕ))
         Filter.atTop (nhds 0) := h0.comp (Filter.tendsto_add_atTop_nat 1)
     have h2 := (Real.continuous_sqrt.tendsto 0).comp h1
     simpa [hewdef, Function.comp_def] using h2
-  have htend : Filter.Tendsto (fun M : ℕ => 8 * Cq ^ 2 * eu M * ew M / c₀)
+  have htend : Filter.Tendsto (fun M : ℕ => 8 * Cq ^ (2 : ℕ) * eu M * ew M / c₀)
       Filter.atTop (nhds 0) := by
-    have := ((htu.const_mul (8 * Cq ^ 2)).mul htw).div_const c₀
+    have := ((htu.const_mul (8 * Cq ^ (2 : ℕ))).mul htw).div_const c₀
     simpa using this
   have hXle0 : X ≤ 0 := by
     refine ge_of_tendsto htend ?_

@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- The frequency of the Klein–Gordon operator shifted by a real diagonal potential. -/
-def kgShiftedFreq (v : E → ℝ) (ξ : E) : ℝ := Real.sqrt (kgFreq ξ ^ 2 + v ξ)
+def kgShiftedFreq (v : E → ℝ) (ξ : E) : ℝ := Real.sqrt (kgFreq ξ ^ (2 : ℕ) + v ξ)
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem kgShiftedFreq_nonneg (v : E → ℝ) (ξ : E) : 0 ≤ kgShiftedFreq v ξ := Real.sqrt_nonneg _
@@ -41,9 +41,9 @@ variable {v : E → ℝ} {b : ℝ}
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem kgShiftedFreq_sq_arg_pos (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b) (ξ : E) :
-    0 < kgFreq ξ ^ 2 + v ξ := by
+    0 < kgFreq ξ ^ (2 : ℕ) + v ξ := by
   have h1 : (1 : ℝ) ≤ kgFreq ξ := one_le_kgFreq ξ
-  have h2 : (1 : ℝ) ≤ kgFreq ξ ^ 2 := by nlinarith
+  have h2 : (1 : ℝ) ≤ kgFreq ξ ^ (2 : ℕ) := by nlinarith
   have h3 : -b ≤ v ξ := neg_le_of_abs_le (hvb ξ)
   linarith
 
@@ -56,15 +56,15 @@ theorem kgShiftedFreq_pos (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b) (ξ : E
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- **The shifted frequency squares to the shifted symbol.** -/
 theorem kgShiftedFreq_sq (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b) (ξ : E) :
-    kgShiftedFreq v ξ ^ 2 = kgFreq ξ ^ 2 + v ξ :=
+    kgShiftedFreq v ξ ^ (2 : ℕ) = kgFreq ξ ^ (2 : ℕ) + v ξ :=
   Real.sq_sqrt (kgShiftedFreq_sq_arg_pos hb1 hvb ξ).le
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 /-- The shifted frequency is bounded below away from zero. -/
 theorem one_sub_le_kgShiftedFreq_sq (hb1 : b < 1) (hvb : ∀ ξ : E, |v ξ| ≤ b) (ξ : E) :
-    1 - b ≤ kgShiftedFreq v ξ ^ 2 := by
+    1 - b ≤ kgShiftedFreq v ξ ^ (2 : ℕ) := by
   have h1 : (1 : ℝ) ≤ kgFreq ξ := one_le_kgFreq ξ
-  have h2 : (1 : ℝ) ≤ kgFreq ξ ^ 2 := by nlinarith
+  have h2 : (1 : ℝ) ≤ kgFreq ξ ^ (2 : ℕ) := by nlinarith
   have h3 : -b ≤ v ξ := neg_le_of_abs_le (hvb ξ)
   rw [kgShiftedFreq_sq hb1 hvb ξ]
   linarith

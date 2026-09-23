@@ -22,11 +22,11 @@ variable {E : Type*} [SeminormedAddCommGroup E] [InnerProductSpace ℝ E]
 The two mixed responses on the left are controlled by the determinant of the
 two generator channels. -/
 theorem twoChannelRobertsonGram (f g h : E) :
-    inner ℝ f g ^ 2 * inner ℝ h h -
+    inner ℝ f g ^ (2 : ℕ) * inner ℝ h h -
           2 * inner ℝ f g * inner ℝ f h * inner ℝ g h +
-          inner ℝ f h ^ 2 * inner ℝ g g ≤
+          inner ℝ f h ^ (2 : ℕ) * inner ℝ g g ≤
       inner ℝ f f *
-        (inner ℝ g g * inner ℝ h h - inner ℝ g h ^ 2) := by
+        (inner ℝ g g * inner ℝ h h - inner ℝ g h ^ (2 : ℕ)) := by
   let v : Fin 3 → E := ![f, g, h]
   have hdet := (Matrix.posSemidef_gram ℝ v).det_nonneg
   simp [Matrix.det_fin_three, Matrix.gram_apply, v, real_inner_comm] at hdet
@@ -40,13 +40,13 @@ variable {alpha : Type*} [MeasurableSpace alpha] {mu : Measure alpha}
 multi-observable uncertainty law for three real square-integrable fields. -/
 theorem twoChannelIntegralRobertson {f g h : alpha → ℝ}
     (hf : MemLp f 2 mu) (hg : MemLp g 2 mu) (hh : MemLp h 2 mu) :
-    (∫ x, f x * g x ∂mu) ^ 2 * (∫ x, h x ^ 2 ∂mu) -
+    (∫ x, f x * g x ∂mu) ^ (2 : ℕ) * (∫ x, h x ^ (2 : ℕ) ∂mu) -
           2 * (∫ x, f x * g x ∂mu) * (∫ x, f x * h x ∂mu) *
             (∫ x, g x * h x ∂mu) +
-          (∫ x, f x * h x ∂mu) ^ 2 * (∫ x, g x ^ 2 ∂mu) ≤
-      (∫ x, f x ^ 2 ∂mu) *
-        ((∫ x, g x ^ 2 ∂mu) * (∫ x, h x ^ 2 ∂mu) -
-          (∫ x, g x * h x ∂mu) ^ 2) := by
+          (∫ x, f x * h x ∂mu) ^ (2 : ℕ) * (∫ x, g x ^ (2 : ℕ) ∂mu) ≤
+      (∫ x, f x ^ (2 : ℕ) ∂mu) *
+        ((∫ x, g x ^ (2 : ℕ) ∂mu) * (∫ x, h x ^ (2 : ℕ) ∂mu) -
+          (∫ x, g x * h x ∂mu) ^ (2 : ℕ)) := by
   let F : Lp ℝ 2 mu := hf.toLp f
   let G : Lp ℝ 2 mu := hg.toLp g
   let H : Lp ℝ 2 mu := hh.toLp h
@@ -57,17 +57,17 @@ theorem twoChannelIntegralRobertson {f g h : alpha → ℝ}
     filter_upwards [hu.coeFn_toLp, hv.coeFn_toLp] with x hux hvx
     rw [hux, hvx]
     simp [mul_comm]
-  have hF2 : inner ℝ F F = ∫ x, f x ^ 2 ∂mu := by
+  have hF2 : inner ℝ F F = ∫ x, f x ^ (2 : ℕ) ∂mu := by
     rw [show F = hf.toLp f by rfl, hinner f f hf hf]
     apply integral_congr_ae
     filter_upwards [] with x
     ring
-  have hG2 : inner ℝ G G = ∫ x, g x ^ 2 ∂mu := by
+  have hG2 : inner ℝ G G = ∫ x, g x ^ (2 : ℕ) ∂mu := by
     rw [show G = hg.toLp g by rfl, hinner g g hg hg]
     apply integral_congr_ae
     filter_upwards [] with x
     ring
-  have hH2 : inner ℝ H H = ∫ x, h x ^ 2 ∂mu := by
+  have hH2 : inner ℝ H H = ∫ x, h x ^ (2 : ℕ) ∂mu := by
     rw [show H = hh.toLp h by rfl, hinner h h hh hh]
     apply integral_congr_ae
     filter_upwards [] with x

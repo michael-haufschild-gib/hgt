@@ -180,7 +180,7 @@ theorem integrable_xiMassBottomPrimeSquareAtomIntegrand
     {τ : ℂ} (hτ : 0 < τ.re) (p : Nat.Primes) :
     Integrable (xiMassBottomPrimeAtomIntegrand a d τ ((p : ℕ) ^ 2)) := by
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs hτ).const_mul
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hτ).const_mul
       (Real.exp (|τ.im| * d) * xiMassPrimeSquareEulerWeight d p))
     (continuous_xiMassBottomPrimeSquareAtomIntegrand hd hda τ p).aestronglyMeasurable
     (Filter.Eventually.of_forall fun x =>
@@ -202,7 +202,7 @@ theorem summable_integral_norm_xiMassBottomPrimeSquareAtomIntegrand
     have hmajor : Integrable (fun x : ℝ =>
         (E * xiMassPrimeSquareEulerWeight d p) *
           Real.exp (-(τ.re * |x|))) :=
-      (integrable_exp_neg_mul_abs hτ).const_mul _
+      (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hτ).const_mul _
     calc
       (∫ x : ℝ,
           ‖xiMassBottomPrimeAtomIntegrand a d τ ((p : ℕ) ^ 2) x‖) ≤
@@ -769,7 +769,7 @@ theorem integrable_xiMassBottomTest_mul_naturalPole
     · fun_prop
     · exact hden0 x
   refine Integrable.mono'
-    ((integrable_exp_neg_mul_abs hσ).const_mul
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ).const_mul
       (Real.exp (|u| * d) * (2 * d)⁻¹))
     hcont.aestronglyMeasurable
     (Filter.Eventually.of_forall fun x => ?_)
@@ -881,7 +881,7 @@ theorem exists_norm_xiMassPrimeSquareLayer_vertical_bound
       (1 + 2 * |x|) ^ 9 * Real.exp (-σ * |x|)) :=
     integrable_one_add_two_abs_pow_nine_mul_exp_neg hσ
   have hJint : Integrable (fun x : ℝ => Real.exp (-σ * |x|)) := by
-    simpa only [neg_mul] using integrable_exp_neg_mul_abs hσ
+    simpa only [neg_mul] using integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hσ
   let pole : ℝ → ℂ := fun x =>
     xiMassBottomTest a d ((σ : ℂ) + u * I) x *
       (((((1 + 2 * d : ℝ) : ℂ) + 2 * x * I) - 1)⁻¹)

@@ -94,14 +94,14 @@ gates are merely restatements of its linear quartet charge floor. -/
 theorem xiZeroCopy_homogeneousChargeGate_all_powers
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
     {k : ℕ} (hk : k ≠ 0) :
-    HomogeneousChargeGate xiEndpointCompletedCurvature ((q.1 : ℂ).im ^ 2) k := by
+    HomogeneousChargeGate xiEndpointCompletedCurvature ((q.1 : ℂ).im ^ (2 : ℕ)) k := by
   rw [xiCompletedCurvature_homogeneousChargeGate_iff_heightFloor
     (sq_nonneg _) hk]
   have hself := four_le_offLineCharge_mul_one_add_im_sq q hoff
   have hcharge := xiEndpointOffLineCharge_le_curvature
-  have hy1 : 0 ≤ (q.1 : ℂ).im ^ 2 + 1 := by positivity
+  have hy1 : 0 ≤ (q.1 : ℂ).im ^ (2 : ℕ) + 1 := by positivity
   have hfull :
-      4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ 2 + 1) := by
+      4 ≤ xiEndpointCompletedCurvature * ((q.1 : ℂ).im ^ (2 : ℕ) + 1) := by
     exact hself.trans
       (mul_le_mul_of_nonneg_right hcharge hy1)
   apply (div_le_iff₀ xiEndpointCompletedCurvature_pos).2

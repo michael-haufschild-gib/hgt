@@ -103,11 +103,11 @@ private theorem rotation_diagonal_orbit_deriv (k : upperHalfPlaneStabilizer) :
       (fun t : ℝ => ((((k : SL2R) * (realPositiveDiagonalBorel (-t) : SL2R)) •
         UpperHalfPlane.I : ℍ) : ℂ))
       (-4 * ((k : SL2R) 1 0 : ℂ) * ((k : SL2R) 1 1 : ℂ) +
-        (2 * (((k : SL2R) 1 0 : ℂ)^2 - ((k : SL2R) 1 1 : ℂ)^2)) * Complex.I) 0 := by
+        (2 * (((k : SL2R) 1 0 : ℂ)^(2 : ℕ) - ((k : SL2R) 1 1 : ℂ)^(2 : ℕ))) * Complex.I) 0 := by
   have hk := (UpperHalfPlane.hasStrictFDerivAt_smul ((k : SL2R).mapGL ℝ)
     UpperHalfPlane.I).hasFDerivAt
   have h := hk.comp_hasDerivAt_of_eq 0 diagonal_orbit_deriv (by simp)
-  have hn : ((k : SL2R) 1 0 : ℂ)^2 + ((k : SL2R) 1 1 : ℂ)^2 = 1 := by
+  have hn : ((k : SL2R) 1 0 : ℂ)^(2 : ℕ) + ((k : SL2R) 1 1 : ℂ)^(2 : ℕ) = 1 := by
     exact_mod_cast sphericalK_lower_row_normSq k
   let c : ℂ := ((k : SL2R) 1 0 : ℂ)
   let d : ℂ := ((k : SL2R) 1 1 : ℂ)
@@ -121,11 +121,11 @@ private theorem rotation_diagonal_orbit_deriv (k : upperHalfPlaneStabilizer) :
     simp [mul_smul]
     rfl
   · have hj : UpperHalfPlane.smulFDeriv ((k : SL2R).mapGL ℝ) UpperHalfPlane.I
-        (-2 * Complex.I) = (-2 * Complex.I) / (d + Complex.I*c)^2 := by
+        (-2 * Complex.I) = (-2 * Complex.I) / (d + Complex.I*c)^(2 : ℕ) := by
       simp [UpperHalfPlane.smulFDeriv, UpperHalfPlane.σ, UpperHalfPlane.denom,
         c, d, mul_comm, add_comm, div_eq_mul_inv]
     rw [hj, div_eq_mul_inv, ← inv_pow, hinv]
-    change -4*c*d + 2*(c^2-d^2)*Complex.I = _
+    change -4*c*d + 2*(c^(2 : ℕ)-d^(2 : ℕ))*Complex.I = _
     ring_nf
     simp only [Complex.I_sq, Complex.I_pow_three]
     ring
@@ -135,7 +135,7 @@ private theorem section_rotation_orbit_deriv (z : ℍ) (k : upperHalfPlaneStabil
       (fun t : ℝ => (((z.toSL2R * (k : SL2R) *
         (realPositiveDiagonalBorel (-t) : SL2R)) • UpperHalfPlane.I : ℍ) : ℂ))
       ((z.im : ℂ) * (-4 * ((k : SL2R) 1 0 : ℂ) * ((k : SL2R) 1 1 : ℂ) +
-        (2 * (((k : SL2R) 1 0 : ℂ)^2 - ((k : SL2R) 1 1 : ℂ)^2)) * Complex.I)) 0 := by
+        (2 * (((k : SL2R) 1 0 : ℂ)^(2 : ℕ) - ((k : SL2R) 1 1 : ℂ)^(2 : ℕ))) * Complex.I)) 0 := by
   have h := ((rotation_diagonal_orbit_deriv k).const_mul (z.im : ℂ)).const_add (z.re : ℂ)
   convert! h using 1
   funext t
@@ -148,7 +148,7 @@ private theorem source_orbit_deriv (f : FunctionSpace) (z : ℍ)
         (realPositiveDiagonalBorel (-t) : SL2R)) • UpperHalfPlane.I))
       ((-4 * (z.im : ℂ) * ((k : SL2R) 1 0 : ℂ) * ((k : SL2R) 1 1 : ℂ)) *
         directional 1 f z +
-       (2 * (z.im : ℂ) * (((k : SL2R) 1 0 : ℂ)^2 - ((k : SL2R) 1 1 : ℂ)^2)) *
+       (2 * (z.im : ℂ) * (((k : SL2R) 1 0 : ℂ)^(2 : ℕ) - ((k : SL2R) 1 1 : ℂ)^(2 : ℕ))) *
         directional Complex.I f z) 0 := by
   have h := (differentiableAt f z).hasFDerivAt.comp_hasDerivAt_of_eq 0
     (section_rotation_orbit_deriv z k) (by
@@ -159,7 +159,7 @@ private theorem source_orbit_deriv (f : FunctionSpace) (z : ℍ)
   · let a : ℝ := -4 * z.im * (k : SL2R) 1 0 * (k : SL2R) 1 1
     let b : ℝ := 2 * z.im * ((k : SL2R) 1 0 ^ 2 - (k : SL2R) 1 1 ^ 2)
     have hv : (z.im : ℂ) * (-4 * ((k : SL2R) 1 0 : ℂ) * ((k : SL2R) 1 1 : ℂ) +
-        (2 * (((k : SL2R) 1 0 : ℂ)^2 - ((k : SL2R) 1 1 : ℂ)^2)) * Complex.I) =
+        (2 * (((k : SL2R) 1 0 : ℂ)^(2 : ℕ) - ((k : SL2R) 1 1 : ℂ)^(2 : ℕ))) * Complex.I) =
         a • (1 : ℂ) + b • Complex.I := by
       simp [a, b, Complex.real_smul]
       ring
@@ -188,18 +188,18 @@ private theorem character_diagonal_deriv (m : ℤ) (z : ℍ)
   simp
 
 private theorem weighted_phase_identity (m : ℤ) (c d p y fx fy u : ℂ)
-    (hp : p ≠ 0) (hphase : p = d + Complex.I*c) (hnorm : c^2+d^2 = 1) :
+    (hp : p ≠ 0) (hphase : p = d + Complex.I*c) (hnorm : c^(2 : ℕ)+d^(2 : ℕ) = 1) :
     (Complex.I*y*fx-y*fy-(m : ℂ)*u) * p^(2*(m+1)) +
       (-Complex.I*y*fx-y*fy+(m : ℂ)*u) * p^(2*(m-1)) =
-      ((-4*y*c*d)*fx + (2*y*(c^2-d^2))*fy - 4*(m : ℂ)*Complex.I*c*d*u) * p^(2*m) := by
+      ((-4*y*c*d)*fx + (2*y*(c^(2 : ℕ)-d^(2 : ℕ)))*fy - 4*(m : ℂ)*Complex.I*c*d*u) * p^(2*m) := by
   have hinv : p⁻¹ = d-Complex.I*c := by
     apply inv_eq_of_mul_eq_one_right
     rw [hphase]
     ring_nf
     rw [Complex.I_sq]
     linear_combination hnorm
-  have hpos : p^(2 : ℤ) = (d+Complex.I*c)^2 := by rw [hphase]; rfl
-  have hneg : p^(-2 : ℤ) = (d-Complex.I*c)^2 := by
+  have hpos : p^(2 : ℤ) = (d+Complex.I*c)^(2 : ℕ) := by rw [hphase]; rfl
+  have hneg : p^(-2 : ℤ) = (d-Complex.I*c)^(2 : ℕ) := by
     rw [zpow_neg, zpow_ofNat, ← inv_pow, hinv]
   rw [show 2*(m+1) = 2*m+2 by ring, zpow_add₀ hp,
     show 2*(m-1) = 2*m+(-2) by ring, zpow_add₀ hp, hpos, hneg]
@@ -228,7 +228,7 @@ private theorem weightLift_section_rotation_diagonal (m : ℤ) (f : FunctionSpac
       rcases upperHalfPlaneStabilizer_matrix_relations k with ⟨h10, h11⟩
       simp [realSphericalKPhase, h10, h11]
       ring
-    have hnorm : ((k : SL2R) 1 0 : ℂ)^2 + ((k : SL2R) 1 1 : ℂ)^2 = 1 := by
+    have hnorm : ((k : SL2R) 1 0 : ℂ)^(2 : ℕ) + ((k : SL2R) 1 1 : ℂ)^(2 : ℕ) = 1 := by
       exact_mod_cast sphericalK_lower_row_normSq k
     have hi := weighted_phase_identity m _ _ _ (z.im : ℂ)
       (directional 1 f z) (directional Complex.I f z) (f z)

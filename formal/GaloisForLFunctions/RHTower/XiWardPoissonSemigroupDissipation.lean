@@ -142,7 +142,7 @@ theorem integrable_sq_xiWardFinitePairRealProfile
     {sigma : ℝ} (hsigma : 0 < sigma)
     (S : Finset XiRightUpperZeroCopy) :
     MeasureTheory.Integrable (fun t : ℝ =>
-      xiWardFinitePairRealProfile sigma S t ^ 2) := by
+      xiWardFinitePairRealProfile sigma S t ^ (2 : ℕ)) := by
   classical
   let F : XiRightUpperZeroCopy × XiRightUpperZeroCopy → ℝ → ℝ :=
     fun p t =>
@@ -166,7 +166,7 @@ theorem integrable_sq_xiWardFinitePairRealProfile
         filter_upwards with t
         rw [Pi.add_apply, Finset.sum_insert hp]
   rw [show
-      (fun t : ℝ => xiWardFinitePairRealProfile sigma S t ^ 2) =
+      (fun t : ℝ => xiWardFinitePairRealProfile sigma S t ^ (2 : ℕ)) =
       (fun t : ℝ => ∑ p ∈ S ×ˢ S, F p t) by
     funext t
     unfold xiWardFinitePairRealProfile F
@@ -184,7 +184,7 @@ theorem continuous_wardLorentzianHalf
   unfold wardLorentzianHalf
   apply Continuous.div continuous_const (by fun_prop)
   intro t hzero
-  have hpos : 0 < x ^ 2 + (t + beta) ^ 2 := by positivity
+  have hpos : 0 < x ^ (2 : ℕ) + (t + beta) ^ (2 : ℕ) := by positivity
   linarith
 
 theorem continuous_wardReflectedLorentzianProfile
@@ -273,7 +273,7 @@ theorem mollify_halfPlanePoisson_xiWardFinitePairRealProfile
 theorem xiWardFinitePairRealEnergyAtLine_eq_profile
     (sigma : ℝ) (S : Finset XiRightUpperZeroCopy) :
     xiWardFinitePairRealEnergyAtLine sigma S =
-      ∫ t : ℝ, xiWardFinitePairRealProfile sigma S t ^ 2 := by
+      ∫ t : ℝ, xiWardFinitePairRealProfile sigma S t ^ (2 : ℕ) := by
   rfl
 
 /-- **Global Ward dissipation.** Advancing every Ward width is exactly
@@ -285,12 +285,12 @@ theorem xiWardFinitePairRealEnergyAtLine_add_le
       xiWardFinitePairRealEnergyAtLine sigma S := by
   have hconv : MeasureTheory.Integrable (fun t : ℝ =>
       mollify (halfPlanePoisson D)
-        (xiWardFinitePairRealProfile sigma S) t ^ 2) := by
+        (xiWardFinitePairRealProfile sigma S) t ^ (2 : ℕ)) := by
     rw [show (fun t : ℝ =>
       mollify (halfPlanePoisson D)
-        (xiWardFinitePairRealProfile sigma S) t ^ 2) =
+        (xiWardFinitePairRealProfile sigma S) t ^ (2 : ℕ)) =
       (fun t : ℝ =>
-        xiWardFinitePairRealProfile (sigma + D) S t ^ 2) by
+        xiWardFinitePairRealProfile (sigma + D) S t ^ (2 : ℕ)) by
         funext t
         rw [mollify_halfPlanePoisson_xiWardFinitePairRealProfile
           hsigma hD S t]]
@@ -305,7 +305,7 @@ theorem xiWardFinitePairRealEnergyAtLine_add_le
     hconv
   rw [show (∫ t : ℝ,
       mollify (halfPlanePoisson D)
-        (xiWardFinitePairRealProfile sigma S) t ^ 2) =
+        (xiWardFinitePairRealProfile sigma S) t ^ (2 : ℕ)) =
       xiWardFinitePairRealEnergyAtLine (sigma + D) S by
         rw [xiWardFinitePairRealEnergyAtLine_eq_profile]
         apply MeasureTheory.integral_congr_ae

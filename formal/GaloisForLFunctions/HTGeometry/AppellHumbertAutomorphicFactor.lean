@@ -161,9 +161,9 @@ noncomputable def appellHumbertAutomorphicFactor (hχ : ∀ γ, ‖χ γ‖ = 1)
 theorem norm_inv_appellHumbertAutomorphicFactor_le (hpos : ∀ w : Fin d → ℂ, 0 ≤ (H w w).re)
     (hχ : ∀ γ, ‖χ γ‖ = 1) {Γ : AddSubgroup (Fin d → ℂ)}
     (hsemi : IsSemicharacterOn H χ Γ) {C : ℝ} (hC : 0 ≤ C) {x : Fin d → ℂ}
-    (hx : (H x x).re ≤ C ^ 2) (γ : Γ) :
+    (hx : (H x x).re ≤ C ^ (2 : ℕ)) (γ : Γ) :
     ‖(((appellHumbertAutomorphicFactor hH hχ hsemi).factor γ).1 x)⁻¹‖
-      ≤ Real.exp (Real.pi * C ^ 2) * Real.exp (-(Real.pi / 4) * (H γ.1 γ.1).re) :=
+      ≤ Real.exp (Real.pi * C ^ (2 : ℕ)) * Real.exp (-(Real.pi / 4) * (H γ.1 γ.1).re) :=
   norm_inv_appellHumbertFactor_le hH hpos hχ hC hx _
 
 end Factor

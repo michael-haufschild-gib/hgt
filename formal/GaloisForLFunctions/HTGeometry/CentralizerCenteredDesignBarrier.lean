@@ -58,7 +58,7 @@ theorem eq_zero_of_hsNormSq_eq_zero {n : Type*} [Fintype n] (A : Matrix n n ℂ)
     (h : hsNormSq A = 0) : A = 0 := by
   classical
   funext x y
-  have hall : ∀ v ∈ (Finset.univ : Finset n), (∑ u, ‖A u v‖ ^ 2) = 0 := by
+  have hall : ∀ v ∈ (Finset.univ : Finset n), (∑ u, ‖A u v‖ ^ (2 : ℕ)) = 0 := by
     refine (Finset.sum_eq_zero_iff_of_nonneg fun v _ => ?_).mp h
     exact Finset.sum_nonneg fun u _ => sq_nonneg _
   have hrow := hall y (Finset.mem_univ y)

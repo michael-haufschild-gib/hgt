@@ -56,14 +56,14 @@ def abeDampingPacketDataAppellHumbert
     (hrad : ∀ i : FiniteJetPacketIndex d I m,
       ((Fintype.card (MultiIndexSlot i.2.1) : ℕ) : ℝ) ≤ Rad)
     (hDsup : ∀ (i : FiniteJetPacketIndex d I m) (y : Fin d → ℂ),
-      ‖y - w i.1‖ ≤ Rad → (Hu y y - Hl y y).re ≤ C₀ ^ 2)
+      ‖y - w i.1‖ ≤ Rad → (Hu y y - Hl y y).re ≤ C₀ ^ (2 : ℕ))
     (hLsup : ∀ (i : FiniteJetPacketIndex d I m) (y : Fin d → ℂ),
       ‖y - w i.1‖ ≤ Rad → (Hl y y).re ≤ L)
     (hseednorm : ∀ B : ℝ, 0 ≤ B → ∀ (j : FiniteJetPacketIndex d I m) (y : Fin d → ℂ),
       ‖(seed B j).1 y‖ ≤ Cs * B ^ r * Real.exp (Real.pi / 2 * (Hl y y).re))
     {kappa : ℝ} (hkappa : 0 < kappa) {Z : ℝ → ℝ} (hZ : ∀ B : ℝ, 0 ≤ B → kappa * B ≤ Z B)
     (hvanish : ∀ B : ℝ, 0 ≤ B → ∀ (z : Fin c → ℤ) (i j : FiniteJetPacketIndex d I m), z ≠ 0 →
-      (∑ k, ((z k : ℝ)) ^ 2) ≤ Z B →
+      (∑ k, ((z k : ℝ)) ^ (2 : ℕ)) ≤ Z B →
       multiIndexJetEvalCLM (w i.1) i.2.1
           (poincareTermEntire (appellHumbertAutomorphicFactor hHu hχu hsemiu) (seed B j)
             (complementEmbedding comp comp_mem z)) = 0) :

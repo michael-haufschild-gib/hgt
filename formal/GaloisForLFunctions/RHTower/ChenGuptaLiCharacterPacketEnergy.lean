@@ -47,7 +47,7 @@ def cglCharacterPacketEnergy {q R : ℕ}
 /-- The source energy is a literal subcount of the four-row label space. -/
 theorem cglCharacterPacketEnergy_le_fourthPower {q R : ℕ}
     (w : Fin R → CGLCharacterDyadicRowData (q + 1)) :
-    cglCharacterPacketEnergy w ≤ R ^ 4 := by
+    cglCharacterPacketEnergy w ≤ R ^ (4 : ℕ) := by
   unfold cglCharacterPacketEnergy cglCharacterPacketEnergyIndexSet
   calc
     (Finset.univ.filter fun pq : CGLCharacterPacketPairIndex R × CGLCharacterPacketPairIndex R =>
@@ -55,7 +55,7 @@ theorem cglCharacterPacketEnergy_le_fourthPower {q R : ℕ}
           |cglCharacterPacketPairOrdinate w pq.1 - cglCharacterPacketPairOrdinate w pq.2| ≤ 1).card ≤
         (Finset.univ : Finset (CGLCharacterPacketPairIndex R × CGLCharacterPacketPairIndex R)).card :=
       Finset.card_filter_le _ _
-    _ = R ^ 4 := by
+    _ = R ^ (4 : ℕ) := by
       simp only [Fintype.card_prod, Fintype.card_fin, Finset.card_univ]
       ring
 

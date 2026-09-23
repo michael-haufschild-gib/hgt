@@ -43,21 +43,21 @@ theorem dirConv_sum_left {ι : Type*} (s : Finset ι) (L N : ℕ) (c : ι → �
 
 /-- Weighted Cauchy–Schwarz: `‖Σ w z‖² ≤ (Σ|w|)(Σ|w|‖z‖²)`. -/
 theorem norm_sum_mul_sq_le {ι : Type*} (s : Finset ι) (w z : ι → ℂ) :
-    ‖∑ u ∈ s, w u * z u‖ ^ 2 ≤ (∑ u ∈ s, ‖w u‖) * ∑ u ∈ s, ‖w u‖ * ‖z u‖ ^ 2 := by
+    ‖∑ u ∈ s, w u * z u‖ ^ (2 : ℕ) ≤ (∑ u ∈ s, ‖w u‖) * ∑ u ∈ s, ‖w u‖ * ‖z u‖ ^ (2 : ℕ) := by
   have h1 : ‖∑ u ∈ s, w u * z u‖ ≤ ∑ u ∈ s, ‖w u‖ * ‖z u‖ := by
     refine (norm_sum_le _ _).trans ?_
     exact Finset.sum_le_sum fun u _ => le_of_eq (norm_mul _ _)
-  have h2 : (∑ u ∈ s, ‖w u‖ * ‖z u‖) ^ 2 ≤ (∑ u ∈ s, ‖w u‖) * ∑ u ∈ s, ‖w u‖ * ‖z u‖ ^ 2 := by
+  have h2 : (∑ u ∈ s, ‖w u‖ * ‖z u‖) ^ (2 : ℕ) ≤ (∑ u ∈ s, ‖w u‖) * ∑ u ∈ s, ‖w u‖ * ‖z u‖ ^ (2 : ℕ) := by
     have := Finset.sum_mul_sq_le_sq_mul_sq s (fun u => Real.sqrt ‖w u‖)
       (fun u => Real.sqrt ‖w u‖ * ‖z u‖)
     have e1 : ∀ u, Real.sqrt ‖w u‖ * (Real.sqrt ‖w u‖ * ‖z u‖) = ‖w u‖ * ‖z u‖ := fun u => by
       rw [← mul_assoc, Real.mul_self_sqrt (norm_nonneg _)]
-    have e2 : ∀ u, Real.sqrt ‖w u‖ ^ 2 = ‖w u‖ := fun u => Real.sq_sqrt (norm_nonneg _)
-    have e3 : ∀ u, (Real.sqrt ‖w u‖ * ‖z u‖) ^ 2 = ‖w u‖ * ‖z u‖ ^ 2 := fun u => by
+    have e2 : ∀ u, Real.sqrt ‖w u‖ ^ (2 : ℕ) = ‖w u‖ := fun u => Real.sq_sqrt (norm_nonneg _)
+    have e3 : ∀ u, (Real.sqrt ‖w u‖ * ‖z u‖) ^ (2 : ℕ) = ‖w u‖ * ‖z u‖ ^ (2 : ℕ) := fun u => by
       rw [mul_pow, Real.sq_sqrt (norm_nonneg _)]
     simp only [e1, e2, e3] at this
     exact this
-  calc ‖∑ u ∈ s, w u * z u‖ ^ 2 ≤ (∑ u ∈ s, ‖w u‖ * ‖z u‖) ^ 2 :=
+  calc ‖∑ u ∈ s, w u * z u‖ ^ (2 : ℕ) ≤ (∑ u ∈ s, ‖w u‖ * ‖z u‖) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg _) h1 2
     _ ≤ _ := h2
 
@@ -105,9 +105,9 @@ theorem smooth_head_eq_sum_sharp (g h : ℕ → ℂ) (L : ℕ) (n : Fin L) :
 /-- **Smooth-to-sharp energy transfer.** -/
 theorem energy_smooth_le_sharp (L N : ℕ) (g h : ℕ → ℂ) (b : Fin N → ℂ) {C : ℝ}
     (hC : ∀ u ∈ Finset.range L,
-      ∑ r : Fin (L * N), ‖Sieve.dirConv L N (sharpHead h L u) b r‖ ^ 2 ≤ C) :
-    ∑ r : Fin (L * N), ‖Sieve.dirConv L N (fun n => g n * h n) b r‖ ^ 2 ≤
-      (∑ u ∈ Finset.range L, ‖headDiff g L u‖) ^ 2 * C := by
+      ∑ r : Fin (L * N), ‖Sieve.dirConv L N (sharpHead h L u) b r‖ ^ (2 : ℕ) ≤ C) :
+    ∑ r : Fin (L * N), ‖Sieve.dirConv L N (fun n => g n * h n) b r‖ ^ (2 : ℕ) ≤
+      (∑ u ∈ Finset.range L, ‖headDiff g L u‖) ^ (2 : ℕ) * C := by
   set W := ∑ u ∈ Finset.range L, ‖headDiff g L u‖ with hW
   have hW0 : 0 ≤ W := Finset.sum_nonneg fun _ _ => norm_nonneg _
   have hconv : ∀ r : Fin (L * N), Sieve.dirConv L N (fun n => g n * h n) b r =
@@ -117,16 +117,16 @@ theorem energy_smooth_le_sharp (L N : ℕ) (g h : ℕ → ℂ) (b : Fin N → �
     congr 1
     funext n
     exact smooth_head_eq_sum_sharp g h L n
-  calc ∑ r : Fin (L * N), ‖Sieve.dirConv L N (fun n => g n * h n) b r‖ ^ 2
+  calc ∑ r : Fin (L * N), ‖Sieve.dirConv L N (fun n => g n * h n) b r‖ ^ (2 : ℕ)
       = ∑ r : Fin (L * N), ‖∑ u ∈ Finset.range L,
-          headDiff g L u * Sieve.dirConv L N (sharpHead h L u) b r‖ ^ 2 := by
+          headDiff g L u * Sieve.dirConv L N (sharpHead h L u) b r‖ ^ (2 : ℕ) := by
         refine Finset.sum_congr rfl fun r _ => ?_
         rw [hconv r]
     _ ≤ ∑ r : Fin (L * N), W * ∑ u ∈ Finset.range L,
-          ‖headDiff g L u‖ * ‖Sieve.dirConv L N (sharpHead h L u) b r‖ ^ 2 :=
+          ‖headDiff g L u‖ * ‖Sieve.dirConv L N (sharpHead h L u) b r‖ ^ (2 : ℕ) :=
         Finset.sum_le_sum fun r _ => norm_sum_mul_sq_le _ _ _
     _ = W * ∑ u ∈ Finset.range L, ‖headDiff g L u‖ *
-          ∑ r : Fin (L * N), ‖Sieve.dirConv L N (sharpHead h L u) b r‖ ^ 2 := by
+          ∑ r : Fin (L * N), ‖Sieve.dirConv L N (sharpHead h L u) b r‖ ^ (2 : ℕ) := by
         rw [← Finset.mul_sum, Finset.sum_comm]
         congr 1
         refine Finset.sum_congr rfl fun u _ => ?_
@@ -134,7 +134,7 @@ theorem energy_smooth_le_sharp (L N : ℕ) (g h : ℕ → ℂ) (b : Fin N → �
     _ ≤ W * ∑ u ∈ Finset.range L, ‖headDiff g L u‖ * C := by
         gcongr with u hu
         exact hC u hu
-    _ = W ^ 2 * C := by
+    _ = W ^ (2 : ℕ) * C := by
         rw [← Finset.sum_mul, ← hW]
         ring
 

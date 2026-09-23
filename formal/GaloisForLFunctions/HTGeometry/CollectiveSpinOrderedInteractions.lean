@@ -60,7 +60,7 @@ theorem collective_distinct_site_words_above_card_eq_zero
 theorem localZPauliObservable_even_power
     {σ : Type*} [Fintype σ] [DecidableEq σ] (i : σ) (k : ℕ) :
     localZPauliObservable i ^ (2 * k) = 1 := by
-  have h : localZPauliObservable i ^ 2 = 1 := by
+  have h : localZPauliObservable i ^ (2 : ℕ) = 1 := by
     rw [pow_two]
     exact finitePauliMatrix_mul_self _
   rw [pow_mul, h, one_pow]

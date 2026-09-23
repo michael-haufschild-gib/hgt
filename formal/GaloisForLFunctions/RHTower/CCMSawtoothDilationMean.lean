@@ -97,21 +97,21 @@ theorem sawWave_add_two_pi (x : ℝ) : sawWave (x + 2 * Real.pi) = sawWave x := 
 
 /-- The fundamental theorem of calculus for a quadratic. -/
 theorem integral_quadratic (A B C a b : ℝ) :
-    (∫ u in a..b, (A + B * u + C * u ^ 2))
-      = (A * b + B * b ^ 2 / 2 + C * b ^ 3 / 3)
-        - (A * a + B * a ^ 2 / 2 + C * a ^ 3 / 3) := by
+    (∫ u in a..b, (A + B * u + C * u ^ (2 : ℕ)))
+      = (A * b + B * b ^ (2 : ℕ) / 2 + C * b ^ (3 : ℕ) / 3)
+        - (A * a + B * a ^ (2 : ℕ) / 2 + C * a ^ (3 : ℕ) / 3) := by
   have hd : ∀ u ∈ uIcc a b,
-      HasDerivAt (fun t : ℝ => A * t + B * t ^ 2 / 2 + C * t ^ 3 / 3)
-        (A + B * u + C * u ^ 2) u := by
+      HasDerivAt (fun t : ℝ => A * t + B * t ^ (2 : ℕ) / 2 + C * t ^ (3 : ℕ) / 3)
+        (A + B * u + C * u ^ (2 : ℕ)) u := by
     intro u _
     have h1 : HasDerivAt (fun t : ℝ => A * t) (A * 1) u := (hasDerivAt_id u).const_mul A
-    have h2 : HasDerivAt (fun t : ℝ => B * t ^ 2 / 2) (B * ((2 : ℕ) * u ^ (2 - 1)) / 2) u :=
+    have h2 : HasDerivAt (fun t : ℝ => B * t ^ (2 : ℕ) / 2) (B * ((2 : ℕ) * u ^ (2 - 1)) / 2) u :=
       ((hasDerivAt_pow 2 u).const_mul B).div_const 2
-    have h3 : HasDerivAt (fun t : ℝ => C * t ^ 3 / 3) (C * ((3 : ℕ) * u ^ (3 - 1)) / 3) u :=
+    have h3 : HasDerivAt (fun t : ℝ => C * t ^ (3 : ℕ) / 3) (C * ((3 : ℕ) * u ^ (3 - 1)) / 3) u :=
       ((hasDerivAt_pow 3 u).const_mul C).div_const 3
     have h := (h1.add h2).add h3
     have heq : A * 1 + B * ((2 : ℕ) * u ^ (2 - 1)) / 2 + C * ((3 : ℕ) * u ^ (3 - 1)) / 3
-        = A + B * u + C * u ^ 2 := by push_cast; ring
+        = A + B * u + C * u ^ (2 : ℕ) := by push_cast; ring
     rw [← heq]
     exact h
   refine intervalIntegral.integral_eq_sub_of_hasDerivAt hd ?_
@@ -148,7 +148,7 @@ theorem intervalIntegrable_sawUnit_dilate (n : ℕ) (a b : ℝ) :
 /-- One period of the fast factor contributes `1/(12 n²)`, whatever the period index. -/
 theorem integral_sawUnit_dilate_piece {n j : ℕ} (hn : 0 < n) (hj : j < n) :
     (∫ u in ((j : ℝ) / n)..(((j : ℝ) + 1) / n), sawUnit u * sawUnit ((n : ℝ) * u))
-      = 1 / (12 * (n : ℝ) ^ 2) := by
+      = 1 / (12 * (n : ℝ) ^ (2 : ℕ)) := by
   have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hn.ne'
   have hnpos : (0 : ℝ) < (n : ℝ) := by positivity
   have hcongr : (∫ u in ((j : ℝ) / n)..(((j : ℝ) + 1) / n), sawUnit u * sawUnit ((n : ℝ) * u))
@@ -167,7 +167,7 @@ theorem integral_sawUnit_dilate_piece {n j : ℕ} (hn : 0 < n) (hj : j < n) :
   have hlin : ∀ t ∈ Ioo (0 : ℝ) 1,
       sawUnit ((t + (j : ℝ)) / (n : ℝ)) * sawUnit (t + (j : ℝ))
         = (1 / 4 - (j : ℝ) / (2 * n))
-          + (-(1 / 2) + (j : ℝ) / n - 1 / (2 * n)) * t + (1 / n) * t ^ 2 := by
+          + (-(1 / 2) + (j : ℝ) / n - 1 / (2 * n)) * t + (1 / n) * t ^ (2 : ℕ) := by
     intro t ht
     have hmem : (t + (j : ℝ)) / (n : ℝ) ∈ Ico (0 : ℝ) 1 := by
       refine ⟨div_nonneg (by linarith [ht.1]) hnpos.le, ?_⟩
@@ -189,9 +189,9 @@ theorem integral_sawUnit_dilate_piece {n j : ℕ} (hn : 0 < n) (hj : j < n) :
           sawUnit ((t + (j : ℝ)) / (n : ℝ)) * sawUnit (t + (j : ℝ)) := by
         rw [hshift]
     _ = (n : ℝ)⁻¹ • ∫ t in (0 : ℝ)..1, ((1 / 4 - (j : ℝ) / (2 * n))
-          + (-(1 / 2) + (j : ℝ) / n - 1 / (2 * n)) * t + (1 / n) * t ^ 2) := by
+          + (-(1 / 2) + (j : ℝ) / n - 1 / (2 * n)) * t + (1 / n) * t ^ (2 : ℕ)) := by
         rw [integral_congr_of_Ioo (by norm_num : (0:ℝ) ≤ 1) hlin]
-    _ = 1 / (12 * (n : ℝ) ^ 2) := by
+    _ = 1 / (12 * (n : ℝ) ^ (2 : ℕ)) := by
         rw [integral_quadratic, smul_eq_mul]
         field_simp
         ring
@@ -205,7 +205,7 @@ theorem integral_sawUnit_dilate {n : ℕ} (hn : 0 < n) :
     (n := n) (fun k _ => intervalIntegrable_sawUnit_dilate n _ _)
   have hpiece : ∀ k ∈ Finset.range n,
       (∫ u in ((k : ℝ) / n)..(((k : ℝ) + 1) / n), sawUnit u * sawUnit ((n : ℝ) * u))
-        = 1 / (12 * (n : ℝ) ^ 2) := by
+        = 1 / (12 * (n : ℝ) ^ (2 : ℕ)) := by
     intro k hk
     exact integral_sawUnit_dilate_piece hn (Finset.mem_range.mp hk)
   have hcast : ∀ k : ℕ, ((k + 1 : ℕ) : ℝ) / n = ((k : ℝ) + 1) / n := by
@@ -244,7 +244,7 @@ theorem intervalIntegrable_sawUnit (a b : ℝ) :
 
 /-- The sawtooth has mean zero over a period. -/
 theorem integral_sawUnit_unit : (∫ t in (0 : ℝ)..1, sawUnit t) = 0 := by
-  have hlin : ∀ t ∈ Ioo (0 : ℝ) 1, sawUnit t = (1 / 2 : ℝ) + (-1) * t + 0 * t ^ 2 := by
+  have hlin : ∀ t ∈ Ioo (0 : ℝ) 1, sawUnit t = (1 / 2 : ℝ) + (-1) * t + 0 * t ^ (2 : ℕ) := by
     intro t ht
     rw [sawUnit_eq_of_mem_Ico ⟨ht.1.le, ht.2⟩]
     ring
@@ -357,8 +357,8 @@ theorem periodic_integral_sawUnit :
   rw [← hadj, htrans, integral_sawUnit_unit, add_zero]
 
 theorem integral_sawUnit_eq_of_mem_Icc {x : ℝ} (hx : x ∈ Icc (0 : ℝ) 1) :
-    (∫ t in (0 : ℝ)..x, sawUnit t) = x / 2 - x ^ 2 / 2 := by
-  have hlin : ∀ t ∈ Ioo (0 : ℝ) x, sawUnit t = (1 / 2 : ℝ) + (-1) * t + 0 * t ^ 2 := by
+    (∫ t in (0 : ℝ)..x, sawUnit t) = x / 2 - x ^ (2 : ℕ) / 2 := by
+  have hlin : ∀ t ∈ Ioo (0 : ℝ) x, sawUnit t = (1 / 2 : ℝ) + (-1) * t + 0 * t ^ (2 : ℕ) := by
     intro t ht
     rw [sawUnit_eq_of_mem_Ico ⟨ht.1.le, lt_of_lt_of_le ht.2 hx.2⟩]
     ring

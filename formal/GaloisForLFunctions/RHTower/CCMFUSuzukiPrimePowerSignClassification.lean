@@ -30,8 +30,8 @@ private theorem sqrt_endpoint_data {k : ℕ} (hk : 4 ≤ k) :
     exact_mod_cast (Nat.sub_le k 1)
   have hab := Real.sqrt_le_sqrt hpredle
   have hpoly : (729 : ℝ) ≤ 200 * (k : ℝ) := by nlinarith
-  have hratioSq : (23 * Real.sqrt (k : ℝ)) ^ 2 ≤
-      (27 * Real.sqrt ((k - 1 : ℕ) : ℝ)) ^ 2 := by
+  have hratioSq : (23 * Real.sqrt (k : ℝ)) ^ (2 : ℕ) ≤
+      (27 * Real.sqrt ((k - 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
     rw [mul_pow, mul_pow, ha2, hb2, hcast]
     norm_num
     nlinarith
@@ -112,7 +112,7 @@ theorem suzukiCheckpointSignedCurvature_forwardBlock_le
       have hkm : 3 ≤ k + m + 1 := by omega
       have hcell := suzukiCheckpointSignedCurvatureCell_le_expHalfGap hkm
       have hweight : 0 ≤ criticalMellinAtomWeight (k + m + 1) := by
-        exact criticalMellinAtomWeight_nonneg _
+        exact criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
       have hnext : suzukiCheckpointSignedCurvatureCell (k + m) ≤
           2 * (Real.sqrt (k + m + 1 : ℕ) - Real.sqrt (k + m : ℕ)) := by
         simpa only [Nat.add_sub_cancel] using hcell.trans (sub_le_self _ hweight)
@@ -152,8 +152,8 @@ private theorem integral_screwRegularKernel_checkpoint_lower {k : ℕ} (hk : 4 �
   let b := Real.sqrt (k : ℝ)
   obtain ⟨ha, hb, hab, hgap, _⟩ := sqrt_endpoint_data hk
   have hkR : (4 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
-  have ha2 : a ^ 2 = ((k - 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
-  have hb2 : b ^ 2 = (k : ℝ) := Real.sq_sqrt (by positivity)
+  have ha2 : a ^ (2 : ℕ) = ((k - 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have hb2 : b ^ (2 : ℕ) = (k : ℝ) := Real.sq_sqrt (by positivity)
   have hcast : (((k - 1 : ℕ) : ℝ)) = (k : ℝ) - 1 := by
     rw [Nat.cast_sub (by omega : 1 ≤ k)]
     norm_num
@@ -161,14 +161,14 @@ private theorem integral_screwRegularKernel_checkpoint_lower {k : ℕ} (hk : 4 �
   have hexpLower : 1 / b ≤ 2 * (b - a) := by
     rw [div_le_iff₀ hb]
     nlinarith
-  have hprodSq : (b * a) ^ 2 = (k : ℝ) * ((k - 1 : ℕ) : ℝ) := by
+  have hprodSq : (b * a) ^ (2 : ℕ) = (k : ℝ) * ((k - 1 : ℕ) : ℝ) := by
     rw [mul_pow, hb2, ha2]
   have hpoly : (100 : ℝ) ≤ 9 * (k : ℝ) * ((k - 1 : ℕ) : ℝ) := by
     rw [hcast]
     nlinarith [mul_nonneg (sub_nonneg.mpr hkR) (by linarith : 0 ≤ (k : ℝ) + 3)]
   have hprod : 10 ≤ 3 * b * a := by
-    have hsq : (100 : ℝ) ≤ (3 * b * a) ^ 2 := by
-      rw [show (3 * b * a) ^ 2 = 9 * (b * a) ^ 2 by ring, hprodSq]
+    have hsq : (100 : ℝ) ≤ (3 * b * a) ^ (2 : ℕ) := by
+      rw [show (3 * b * a) ^ (2 : ℕ) = 9 * (b * a) ^ (2 : ℕ) by ring, hprodSq]
       simpa only [mul_assoc] using hpoly
     nlinarith [mul_nonneg hb.le ha.le]
   have hbBudget : b ≤ (3 / 10 : ℝ) * (k : ℝ) * a := by

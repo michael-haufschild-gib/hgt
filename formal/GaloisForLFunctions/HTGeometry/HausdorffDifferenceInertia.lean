@@ -24,10 +24,10 @@ variable {s : ℕ → ℝ}
 
 /-- The first Hausdorff-difference form at mass `y`. -/
 def hausdorffDifferenceForm (s : ℕ → ℝ) (y : ℝ) (q : Polynomial ℝ) : ℝ :=
-  momentFunctional s ((1 - Polynomial.C y * Polynomial.X) * q ^ 2)
+  momentFunctional s ((1 - Polynomial.C y * Polynomial.X) * q ^ (2 : ℕ))
 
 theorem natDegree_hausdorffIntegrand_le (y : ℝ) (q : Polynomial ℝ) :
-    ((1 - Polynomial.C y * Polynomial.X) * q ^ 2).natDegree ≤ 1 + 2 * q.natDegree := by
+    ((1 - Polynomial.C y * Polynomial.X) * q ^ (2 : ℕ)).natDegree ≤ 1 + 2 * q.natDegree := by
   refine le_trans (Polynomial.natDegree_mul_le) ?_
   have h1 : (1 - Polynomial.C y * Polynomial.X).natDegree ≤ 1 := by
     refine le_trans (Polynomial.natDegree_sub_le _ _) ?_
@@ -35,7 +35,7 @@ theorem natDegree_hausdorffIntegrand_le (y : ℝ) (q : Polynomial ℝ) :
     refine ⟨Nat.zero_le _, ?_⟩
     refine le_trans (Polynomial.natDegree_mul_le) ?_
     simp
-  have h2 : (q ^ 2).natDegree ≤ 2 * q.natDegree := by
+  have h2 : (q ^ (2 : ℕ)).natDegree ≤ 2 * q.natDegree := by
     rw [Polynomial.natDegree_pow]
   omega
 
@@ -43,8 +43,8 @@ theorem natDegree_hausdorffIntegrand_le (y : ℝ) (q : Polynomial ℝ) :
 theorem hausdorffDifferenceForm_eq_gaussSum (h : PositiveMomentForm s) (n : ℕ) (y : ℝ)
     (q : Polynomial ℝ) (hq : q.natDegree ≤ n) :
     hausdorffDifferenceForm s y q
-      = ∑ x ∈ gaussNodes s n, christoffel s n x * ((1 - y * x) * (q.eval x) ^ 2) := by
-  have hdeg : ((1 - Polynomial.C y * Polynomial.X) * q ^ 2).degree
+      = ∑ x ∈ gaussNodes s n, christoffel s n x * ((1 - y * x) * (q.eval x) ^ (2 : ℕ)) := by
+  have hdeg : ((1 - Polynomial.C y * Polynomial.X) * q ^ (2 : ℕ)).degree
       < ((2 * n + 2 : ℕ) : WithBot ℕ) := by
     refine lt_of_le_of_lt Polynomial.degree_le_natDegree ?_
     have hnd := natDegree_hausdorffIntegrand_le y q
@@ -88,7 +88,7 @@ theorem eval_lagrangeQuotient_self_ne_zero (h : PositiveMomentForm s) (n : ℕ) 
   intro hzero
   have hroot : (monicOrtho s (n + 1)).eval x₀ = 0 := (mem_gaussNodes_iff n x₀).1 hx₀
   have hfac := nodeCofactor_mul (monicOrtho s (n + 1)) hroot
-  have hdvd : ((Polynomial.X - Polynomial.C x₀) ^ 2 : Polynomial ℝ) ∣ monicOrtho s (n + 1) := by
+  have hdvd : ((Polynomial.X - Polynomial.C x₀) ^ (2 : ℕ) : Polynomial ℝ) ∣ monicOrtho s (n + 1) := by
     have hq : (Polynomial.X - Polynomial.C x₀) ∣ nodeCofactor (monicOrtho s (n + 1)) x₀ :=
       Polynomial.dvd_iff_isRoot.2 (by rw [lagrangeQuotient] at hzero; exact hzero)
     obtain ⟨g, hg⟩ := hq
@@ -99,15 +99,15 @@ theorem eval_lagrangeQuotient_self_ne_zero (h : PositiveMomentForm s) (n : ℕ) 
 
 /-- The energy of the Lagrange quotient at a node. -/
 def lagrangeEnergy (s : ℕ → ℝ) (n : ℕ) (x₀ : ℝ) : ℝ :=
-  momentFunctional s (lagrangeQuotient s n x₀ ^ 2)
+  momentFunctional s (lagrangeQuotient s n x₀ ^ (2 : ℕ))
 
 theorem lagrangeEnergy_eq (h : PositiveMomentForm s) (n : ℕ) {x₀ : ℝ}
     (hx₀ : x₀ ∈ gaussNodes s n) :
-    lagrangeEnergy s n x₀ = christoffel s n x₀ * (lagrangeQuotient s n x₀).eval x₀ ^ 2 := by
+    lagrangeEnergy s n x₀ = christoffel s n x₀ * (lagrangeQuotient s n x₀).eval x₀ ^ (2 : ℕ) := by
   classical
-  have hdeg : ((lagrangeQuotient s n x₀) ^ 2).degree < ((2 * n + 2 : ℕ) : WithBot ℕ) := by
+  have hdeg : ((lagrangeQuotient s n x₀) ^ (2 : ℕ)).degree < ((2 * n + 2 : ℕ) : WithBot ℕ) := by
     refine lt_of_le_of_lt Polynomial.degree_le_natDegree ?_
-    have hnd : ((lagrangeQuotient s n x₀) ^ 2).natDegree = 2 * n := by
+    have hnd : ((lagrangeQuotient s n x₀) ^ (2 : ℕ)).natDegree = 2 * n := by
       rw [Polynomial.natDegree_pow, natDegree_lagrangeQuotient]
     rw [hnd]
     exact_mod_cast Nat.lt_succ_of_le (by omega)
@@ -301,7 +301,7 @@ count of nodes below, at and above the moving apex `1/y`. -/
 theorem hausdorffDifferenceForm_lagrangeCombination (h : PositiveMomentForm s) (n : ℕ) (y : ℝ)
     (c : ℝ → ℝ) :
     hausdorffDifferenceForm s y (∑ x ∈ gaussNodes s n, Polynomial.C (c x) * gaussBasis s n x)
-      = ∑ x ∈ gaussNodes s n, christoffel s n x * ((1 - y * x) * (c x) ^ 2) := by
+      = ∑ x ∈ gaussNodes s n, christoffel s n x * ((1 - y * x) * (c x) ^ (2 : ℕ)) := by
   rw [hausdorffDifferenceForm_eq_gaussSum h n y _ (natDegree_lagrangeCombination_le s n c)]
   refine Finset.sum_congr rfl fun x hx => ?_
   rw [eval_lagrangeCombination h n c hx]
@@ -361,7 +361,7 @@ theorem momentFunctional_C_mul_X_pow (s : ℕ → ℝ) (b : ℝ) (k : ℕ) :
   rw [← Polynomial.smul_eq_C_mul, momentFunctional_smul, momentFunctional_X_pow]
 
 theorem sq_sum_C_mul_X_pow {n : ℕ} (a : Fin n → ℝ) :
-    (∑ i : Fin n, Polynomial.C (a i) * Polynomial.X ^ (i : ℕ)) ^ 2
+    (∑ i : Fin n, Polynomial.C (a i) * Polynomial.X ^ (i : ℕ)) ^ (2 : ℕ)
       = ∑ i : Fin n, ∑ j : Fin n,
           Polynomial.C (a i * a j) * Polynomial.X ^ ((i : ℕ) + (j : ℕ)) := by
   rw [sq, Finset.sum_mul_sum]

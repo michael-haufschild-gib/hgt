@@ -54,10 +54,10 @@ def divisorMass (m : ℂ →₀ ℕ) : ℕ := ∑ ρ ∈ m.support, m ρ
 
 /-- The census of squared horizontal-fibre masses. -/
 def horizontalSquareMass (m : ℂ →₀ ℕ) : ℕ :=
-  ∑ γ ∈ m.support.image Complex.im, (horizontalMass m γ) ^ 2
+  ∑ γ ∈ m.support.image Complex.im, (horizontalMass m γ) ^ (2 : ℕ)
 
 /-- The census of squared local multiplicities. -/
-def localSquareMass (m : ℂ →₀ ℕ) : ℕ := ∑ ρ ∈ m.support, (m ρ) ^ 2
+def localSquareMass (m : ℂ →₀ ℕ) : ℕ := ∑ ρ ∈ m.support, (m ρ) ^ (2 : ℕ)
 
 /-- The off-line (cross) charge `O`. -/
 def offLineCharge (m : ℂ →₀ ℕ) : ℤ := (horizontalSquareMass m : ℤ) - localSquareMass m
@@ -73,7 +73,7 @@ theorem divisorMass_eq_sum_of_subset {m : ℂ →₀ ℕ} {S : Finset ℂ} (hS :
   exact Finsupp.notMem_support_iff.mp hρ
 
 theorem localSquareMass_eq_sum_of_subset {m : ℂ →₀ ℕ} {S : Finset ℂ} (hS : m.support ⊆ S) :
-    localSquareMass m = ∑ ρ ∈ S, (m ρ) ^ 2 := by
+    localSquareMass m = ∑ ρ ∈ S, (m ρ) ^ (2 : ℕ) := by
   refine Finset.sum_subset hS (fun ρ _ hρ => ?_)
   rw [Finsupp.notMem_support_iff.mp hρ]
   simp
@@ -95,14 +95,14 @@ theorem sum_horizontalMass : ∀ m : ℂ →₀ ℕ,
 
 theorem sum_localSquare_fiberwise (m : ℂ →₀ ℕ) :
     ∑ γ ∈ m.support.image Complex.im,
-      (∑ ρ ∈ m.support.filter (fun ρ => ρ.im = γ), (m ρ) ^ 2) = localSquareMass m := by
+      (∑ ρ ∈ m.support.filter (fun ρ => ρ.im = γ), (m ρ) ^ (2 : ℕ)) = localSquareMass m := by
   rw [localSquareMass]
   exact Finset.sum_fiberwise_of_maps_to (fun ρ hρ => Finset.mem_image_of_mem _ hρ) _
 
 /-- The square of a fibre mass splits into the local squares and the ordered cross pairs. -/
 theorem sq_sum_eq_sum_sq_add_offDiag (S : Finset ℂ) (f : ℂ → ℕ) :
-    (∑ ρ ∈ S, f ρ) ^ 2 = (∑ ρ ∈ S, (f ρ) ^ 2) + ∑ p ∈ S.offDiag, f p.1 * f p.2 := by
-  have h1 : (∑ ρ ∈ S, f ρ) ^ 2 = ∑ p ∈ S ×ˢ S, f p.1 * f p.2 := by
+    (∑ ρ ∈ S, f ρ) ^ (2 : ℕ) = (∑ ρ ∈ S, (f ρ) ^ (2 : ℕ)) + ∑ p ∈ S.offDiag, f p.1 * f p.2 := by
+  have h1 : (∑ ρ ∈ S, f ρ) ^ (2 : ℕ) = ∑ p ∈ S ×ˢ S, f p.1 * f p.2 := by
     rw [sq, Finset.sum_mul_sum]
     rw [Finset.sum_product]
   rw [h1, ← Finset.diag_union_offDiag S,
@@ -150,8 +150,8 @@ theorem multiplicityCharge_nonneg (m : ℂ →₀ ℕ) : 0 ≤ multiplicityCharg
   rw [multiplicityCharge, sub_nonneg]
   exact_mod_cast divisorMass_le_localSquareMass m
 
-theorem two_dvd_sq_sub_self (n : ℕ) : (2 : ℤ) ∣ (n : ℤ) ^ 2 - n := by
-  have h : ((n : ℤ) - 1) * n = (n : ℤ) ^ 2 - n := by ring
+theorem two_dvd_sq_sub_self (n : ℕ) : (2 : ℤ) ∣ (n : ℤ) ^ (2 : ℕ) - n := by
+  have h : ((n : ℤ) - 1) * n = (n : ℤ) ^ (2 : ℕ) - n := by ring
   rw [← h]
   rcases Int.even_or_odd (n : ℤ) with he | ho
   · exact Dvd.dvd.mul_left he.two_dvd _
@@ -168,7 +168,7 @@ theorem two_dvd_horizontalSquareMass_sub_divisorMass (m : ℂ →₀ ℕ) :
     push_cast
     ring
   have hC : ((horizontalSquareMass m : ℤ))
-      = ∑ γ ∈ m.support.image Complex.im, ((horizontalMass m γ : ℤ)) ^ 2 := by
+      = ∑ γ ∈ m.support.image Complex.im, ((horizontalMass m γ : ℤ)) ^ (2 : ℕ) := by
     rw [horizontalSquareMass]
     push_cast
     ring
@@ -179,7 +179,7 @@ theorem two_dvd_localSquareMass_sub_divisorMass (m : ℂ →₀ ℕ) :
     (2 : ℤ) ∣ ((localSquareMass m : ℤ) - divisorMass m) := by
   have hN : ((divisorMass m : ℤ)) = ∑ ρ ∈ m.support, (m ρ : ℤ) := by
     rw [divisorMass]; push_cast; ring
-  have hD : ((localSquareMass m : ℤ)) = ∑ ρ ∈ m.support, ((m ρ : ℤ)) ^ 2 := by
+  have hD : ((localSquareMass m : ℤ)) = ∑ ρ ∈ m.support, ((m ρ : ℤ)) ^ (2 : ℕ) := by
     rw [localSquareMass]; push_cast; ring
   rw [hD, hN, ← Finset.sum_sub_distrib]
   exact Finset.dvd_sum (fun ρ _ => two_dvd_sq_sub_self _)
@@ -290,7 +290,7 @@ theorem offsetPoint_injective {γ : ℝ} {a b : ℝ} (h : offsetPoint γ a = off
 /-- If every zero sits at one ordinate, the horizontal census is the square of the total mass. -/
 theorem horizontalSquareMass_of_single_ordinate {m : ℂ →₀ ℕ} {γ : ℝ}
     (him : ∀ ρ ∈ m.support, ρ.im = γ) :
-    horizontalSquareMass m = (divisorMass m) ^ 2 := by
+    horizontalSquareMass m = (divisorMass m) ^ (2 : ℕ) := by
   by_cases hne : m.support.Nonempty
   · have himg : m.support.image Complex.im = {γ} := by
       refine Finset.eq_singleton_iff_nonempty_unique_mem.mpr ⟨hne.image _, ?_⟩
@@ -367,7 +367,7 @@ theorem divisorMass_collisionBefore : divisorMass (collisionBefore γ a r) = r +
   omega
 
 theorem localSquareMass_collisionBefore :
-    localSquareMass (collisionBefore γ a r) = r ^ 2 + 2 := by
+    localSquareMass (collisionBefore γ a r) = r ^ (2 : ℕ) + 2 := by
   rw [localSquareMass_eq_sum_of_subset (collisionBefore_support_subset ha r)]
   rw [Finset.sum_insert (by
       simp [offsetPoint_ne_neg ha, offsetPoint_neg_ne_zero ha]),
@@ -376,7 +376,7 @@ theorem localSquareMass_collisionBefore :
   ring
 
 theorem horizontalSquareMass_collisionBefore :
-    horizontalSquareMass (collisionBefore γ a r) = (r + 2) ^ 2 := by
+    horizontalSquareMass (collisionBefore γ a r) = (r + 2) ^ (2 : ℕ) := by
   rw [horizontalSquareMass_of_single_ordinate (γ := γ) (fun ρ hρ => ?_),
     divisorMass_collisionBefore ha]
   have hmem := collisionBefore_support_subset ha r hρ
@@ -392,13 +392,13 @@ theorem divisorMass_collisionAfter (γ : ℝ) (r : ℕ) :
     Finset.sum_singleton, Finsupp.single_eq_same]
 
 theorem localSquareMass_collisionAfter (γ : ℝ) (r : ℕ) :
-    localSquareMass (collisionAfter γ r) = (r + 2) ^ 2 := by
+    localSquareMass (collisionAfter γ r) = (r + 2) ^ (2 : ℕ) := by
   rw [collisionAfter, localSquareMass_eq_sum_of_subset
     (S := ({offsetPoint γ 0} : Finset ℂ)) Finsupp.support_single_subset,
     Finset.sum_singleton, Finsupp.single_eq_same]
 
 theorem horizontalSquareMass_collisionAfter (γ : ℝ) (r : ℕ) :
-    horizontalSquareMass (collisionAfter γ r) = (r + 2) ^ 2 := by
+    horizontalSquareMass (collisionAfter γ r) = (r + 2) ^ (2 : ℕ) := by
   rw [horizontalSquareMass_of_single_ordinate (γ := γ) (fun ρ hρ => ?_),
     divisorMass_collisionAfter]
   have hmem := Finsupp.support_single_subset (a := offsetPoint γ 0) (b := r + 2) hρ
@@ -411,9 +411,9 @@ critical-line zero of multiplicity `r`, the off-line charge `4r + 2` is converte
 multiplicity charge, and the total horizontal excess `C − N` is conserved. -/
 theorem collision_transfer {γ a : ℝ} (ha : a ≠ 0) (r : ℕ) :
     offLineCharge (collisionBefore γ a r) = 4 * r + 2
-      ∧ multiplicityCharge (collisionBefore γ a r) = (r : ℤ) ^ 2 - r
+      ∧ multiplicityCharge (collisionBefore γ a r) = (r : ℤ) ^ (2 : ℕ) - r
       ∧ offLineCharge (collisionAfter γ r) = 0
-      ∧ multiplicityCharge (collisionAfter γ r) = (r : ℤ) ^ 2 + 3 * r + 2
+      ∧ multiplicityCharge (collisionAfter γ r) = (r : ℤ) ^ (2 : ℕ) + 3 * r + 2
       ∧ (horizontalSquareMass (collisionBefore γ a r) : ℤ) - divisorMass (collisionBefore γ a r)
           = (horizontalSquareMass (collisionAfter γ r) : ℤ)
             - divisorMass (collisionAfter γ r) := by

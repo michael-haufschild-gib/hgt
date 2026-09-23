@@ -152,7 +152,7 @@ theorem finiteSpectralSurvivalDeviation_eq_half_weightedPureObserverDistanceSq
 retained-phase resolution. -/
 def finiteLocalizedSurvivalQuadraticBudget
     (α : ℝ) (Q : ℕ) : ℝ :=
-  4 * α + 2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2
+  4 * α + 2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ)
 
 /--
 **Quadratic finite localized-support survival recurrence.**
@@ -223,13 +223,13 @@ theorem exists_finiteLocalizedSurvival_quadratic_recurrence
             (finiteLocalizedSpectralSupportGraph S)
             finiteWeightedPureObserverWeight
             (finiteWeightedPureObserverBlock p) +
-          4 * δ ^ 2 *
+          4 * δ ^ (2 : ℕ) *
             finiteObserverSelectedDirectedWeightMass
               (finiteLocalizedSpectralSupportGraph S)
               finiteWeightedPureObserverWeight
               (finiteWeightedPureObserverBlock p)) / 2 := by
       exact div_le_div_of_nonneg_right hdistance (by norm_num)
-    _ ≤ (4 * (2 * α) + 4 * δ ^ 2 * 1) / 2 := by
+    _ ≤ (4 * (2 * α) + 4 * δ ^ (2 : ℕ) * 1) / 2 := by
       apply div_le_div_of_nonneg_right
       · exact add_le_add
           (mul_le_mul_of_nonneg_left homitted (by norm_num))
@@ -252,7 +252,7 @@ theorem exists_finiteLocalizedSurvival_quadratic_recurrence_exactTail
       finiteSpectralSurvivalDeviation p
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) ≤
         4 * finiteLocalizedSubsetTail p S +
-          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 := by
+          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) := by
   simpa only [finiteLocalizedSurvivalQuadraticBudget] using
     exists_finiteLocalizedSurvival_quadratic_recurrence
       p hp hpSum S hS (finiteLocalizedSubsetTail p S) le_rfl energy Q
@@ -363,7 +363,7 @@ theorem exists_finiteAndersonLocalizedSurvival_quadratic_recurrence
       finiteSpectralSurvivalDeviation p
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) ≤
         4 * finiteLocalizationGeometricTailBound C μ A B R +
-          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 := by
+          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) := by
   have htail :
       finiteLocalizedSubsetTail p (finiteLocalizationBall radius R) ≤
         finiteLocalizationGeometricTailBound C μ A B R := by
@@ -403,14 +403,14 @@ theorem
       finiteSpectralSurvivalDeviation p
           (finiteObserverHamiltonianVertexPhase t energy) ≤
         4 * finiteLocalizationGeometricTailBound C μ A B R +
-          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2) ∨
+          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ)) ∨
     ∃ exitTime : ℝ, ∃ n : ℕ,
       0 ≤ exitTime ∧
       0 < n ∧
       n ≤ (Q + 1) ^
         ((finiteLocalizationBall radius R).card - 1) ∧
       4 * finiteLocalizationGeometricTailBound C μ A B R +
-          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 <
+          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) <
         finiteSpectralSurvivalDeviation p
           (finiteObserverHamiltonianVertexPhase exitTime energy) ∧
       exitTime < (n : ℝ) * (exitTime + guardTime) ∧
@@ -422,7 +422,7 @@ theorem
           (finiteObserverHamiltonianVertexPhase
             ((n : ℝ) * (exitTime + guardTime)) energy) ≤
         4 * finiteLocalizationGeometricTailBound C μ A B R +
-          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 := by
+          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) := by
   have htail :
       finiteLocalizedSubsetTail p (finiteLocalizationBall radius R) ≤
         finiteLocalizationGeometricTailBound C μ A B R := by
@@ -456,7 +456,7 @@ theorem exists_finiteAndersonLocalizedSurvival_quadratic_volume_recurrence
       finiteSpectralSurvivalDeviation p
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) ≤
         4 * finiteLocalizationGeometricTailBound C μ A B R +
-          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 := by
+          2 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) := by
   obtain ⟨n, hn0, hnBall, hdev⟩ :=
     exists_finiteAndersonLocalizedSurvival_quadratic_recurrence
       p hp hpSum radius R hBall C μ A B hC hμ hA hB
@@ -503,7 +503,7 @@ theorem exists_finiteAndersonLocalizedSurvival_quadratic_resolutionScale_recurre
       finiteSpectralSurvivalDeviation p
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) ≤
         4 * finiteLocalizationGeometricTailBound C μ A B N +
-          2 * (2 * Real.pi / (2 : ℝ) ^ N) ^ 2 := by
+          2 * (2 * Real.pi / (2 : ℝ) ^ N) ^ (2 : ℕ) := by
   obtain ⟨n, hn0, hnQ, hdev⟩ :=
     exists_finiteAndersonLocalizedSurvival_quadratic_volume_recurrence
       p hp hpSum radius N (V * (N + 1) ^ ν)
@@ -555,13 +555,13 @@ theorem
       finiteSpectralSurvivalDeviation p
           (finiteObserverHamiltonianVertexPhase t energy) ≤
         4 * finiteLocalizationGeometricTailBound C μ A B N +
-          2 * (2 * Real.pi / (2 : ℝ) ^ N) ^ 2) ∨
+          2 * (2 * Real.pi / (2 : ℝ) ^ N) ^ (2 : ℕ)) ∨
     ∃ exitTime : ℝ, ∃ n : ℕ,
       0 ≤ exitTime ∧
       0 < n ∧
       n ≤ 2 ^ (N * (V * (N + 1) ^ ν - 1)) ∧
       4 * finiteLocalizationGeometricTailBound C μ A B N +
-          2 * (2 * Real.pi / (2 : ℝ) ^ N) ^ 2 <
+          2 * (2 * Real.pi / (2 : ℝ) ^ N) ^ (2 : ℕ) <
         finiteSpectralSurvivalDeviation p
           (finiteObserverHamiltonianVertexPhase exitTime energy) ∧
       exitTime < (n : ℝ) * (exitTime + guardTime) ∧
@@ -572,7 +572,7 @@ theorem
           (finiteObserverHamiltonianVertexPhase
             ((n : ℝ) * (exitTime + guardTime)) energy) ≤
         4 * finiteLocalizationGeometricTailBound C μ A B N +
-          2 * (2 * Real.pi / (2 : ℝ) ^ N) ^ 2 := by
+          2 * (2 * Real.pi / (2 : ℝ) ^ N) ^ (2 : ℕ) := by
   have hbaseReal :
       (((2 ^ N - 1 : ℕ) : ℝ) + 1) =
         ((2 ^ N : ℕ) : ℝ) := by

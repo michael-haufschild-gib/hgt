@@ -205,7 +205,7 @@ theorem norm_criticalJetDeriv_single (N : ℕ) :
   have hcast : ((N : ℂ) + 1) = (((N : ℝ) + 1 : ℝ) : ℂ) := by push_cast; ring
   rw [hcast, Complex.norm_real, Real.norm_of_nonneg (by positivity)]
 
-theorem norm_single_one (N : ℕ) :
+theorem norm_single_one_criticalJetShift (N : ℕ) :
     ‖(lp.single (E := fun _ : ℕ => ℂ) 2 (N + 1) (1 : ℂ) : JetSpace)‖ = 1 := by
   rw [lp.norm_single (by norm_num)]
   simp

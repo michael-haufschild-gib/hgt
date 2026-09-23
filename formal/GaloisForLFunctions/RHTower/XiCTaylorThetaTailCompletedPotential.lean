@@ -95,11 +95,11 @@ def thetaCuspCompletedSurvivalValueTransform
       thetaCuspTailSecondCoreAtomSourceDerivative d z x
 
 def thetaCuspCompletedSurvivalMonomial (d : ℕ) (z : ℂ) : ℂ :=
-  (-4 * z ^ 2) ^ (d + 1)
+  (-4 * z ^ (2 : ℕ)) ^ (d + 1)
 
 def thetaCuspCompletedSurvivalMonomialDerivative
     (d : ℕ) (z : ℂ) : ℂ :=
-  -8 * ((d + 1 : ℕ) : ℂ) * z * (-4 * z ^ 2) ^ d
+  -8 * ((d + 1 : ℕ) : ℂ) * z * (-4 * z ^ (2 : ℕ)) ^ d
 
 theorem xiCTaylorThetaTailCorePolynomial_eval_eq_completedSurvival
     (d : ℕ) (z : ℂ) :
@@ -115,7 +115,7 @@ theorem hasDerivAt_thetaCuspCompletedSurvivalMonomial
     (d : ℕ) (z : ℂ) :
     HasDerivAt (thetaCuspCompletedSurvivalMonomial d)
       (thetaCuspCompletedSurvivalMonomialDerivative d z) z := by
-  have hbase : HasDerivAt (fun w : ℂ => -4 * w ^ 2) (-8 * z) z := by
+  have hbase : HasDerivAt (fun w : ℂ => -4 * w ^ (2 : ℕ)) (-8 * z) z := by
     have hraw :=
       (hasDerivAt_const z (-4 : ℂ)).mul ((hasDerivAt_id z).pow 2)
     have hraw' := hraw.congr_deriv (g' := -8 * z) (by

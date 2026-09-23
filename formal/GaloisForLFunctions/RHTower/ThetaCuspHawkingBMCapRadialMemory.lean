@@ -503,7 +503,7 @@ open D4BMJointWave
 
 private theorem radius_scale (x : ℝ) (hx : x < 0) :
     tortoiseRadius x=1/(1-capScale x) ∧
-      (tortoiseRadius x)^2-1=(tortoiseRadius x)^2*capScale x*(2-capScale x) := by
+      (tortoiseRadius x)^(2 : ℕ)-1=(tortoiseRadius x)^(2 : ℕ)*capScale x*(2-capScale x) := by
   have hc := (Real.cosh_pos x).ne'
   have hs := (Real.sinh_neg_iff.mpr hx).ne
   have he : 1-capScale x= -Real.sinh x/Real.cosh x := by
@@ -532,14 +532,14 @@ def radialArm (q : XiZeroCopy) (branch : Bool) (v X k r : ℝ) : ℂ :=
 
 private theorem radialArm_derivative (q : XiZeroCopy) (branch : Bool) (v X k x : ℝ) (hx : x < 0) :
     HasDerivAt (radialArm q branch v X k)
-      (-normalArm q branch v x X k/((tortoiseRadius x:ℂ)^2*(capScale x:ℂ))) (tortoiseRadius x) := by
+      (-normalArm q branch v x X k/((tortoiseRadius x:ℂ)^(2 : ℕ)*(capScale x:ℂ))) (tortoiseRadius x) := by
   have hr := tortoiseRadius_exterior x hx
   have hR : (tortoiseRadius x:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith)
-  have hF : (tortoiseRadius x:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (tortoiseRadius x)^2-1 ≠ 0 by nlinarith)
+  have hF : (tortoiseRadius x:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (tortoiseRadius x)^(2 : ℕ)-1 ≠ 0 by nlinarith)
   have hC : (capScale x:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (scale_pos x).ne'
-  have hfac : (tortoiseRadius x:ℂ)^2-1=
-      (tortoiseRadius x:ℂ)^2*(capScale x:ℂ)*(2-(capScale x:ℂ)) := by
+  have hfac : (tortoiseRadius x:ℂ)^(2 : ℕ)-1=
+      (tortoiseRadius x:ℂ)^(2 : ℕ)*(capScale x:ℂ)*(2-(capScale x:ℂ)) := by
     exact_mod_cast (radius_scale x hx).2
   have ht := (boundaryArm_normal_hasDerivAt q branch v
     (D4BMIngoingCoordinates.tortoise (tortoiseRadius x)) X k).scomp (tortoiseRadius x)
@@ -558,8 +558,8 @@ theorem radialArm_derivative_ingoing (q : XiZeroCopy) (branch : Bool) (v X k : �
   have hr : Tendsto (fun x => (tortoiseRadius x:ℂ)) atBot (𝓝 (1:ℂ)) := by
     simpa only [Complex.ofReal_one,Function.comp_def] using!
       (Complex.continuous_ofReal.tendsto (1:ℝ)).comp radius_limit
-  have ht := (normalArm_div_scale_ingoing q branch v X k).neg.div (hr.pow 2) (by norm_num : (1:ℂ)^2 ≠ 0)
-  have hl : Tendsto (fun x => -(normalArm q branch v x X k/(capScale x:ℂ))/(tortoiseRadius x:ℂ)^2)
+  have ht := (normalArm_div_scale_ingoing q branch v X k).neg.div (hr.pow 2) (by norm_num : (1:ℂ)^(2 : ℕ) ≠ 0)
+  have hl : Tendsto (fun x => -(normalArm q branch v x X k/(capScale x:ℂ))/(tortoiseRadius x:ℂ)^(2 : ℕ))
       atBot (𝓝 (-(D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*sourceMemory q branch v)) := by
     simpa only [one_pow,div_one,neg_mul,Pi.div_apply] using! ht
   apply hl.congr'
@@ -720,14 +720,14 @@ private theorem radialCap_derivative (q : XiZeroCopy) (branch : Bool) (amplitude
     (v X k x : ℝ) (hx : x < 0) :
     deriv (radialCap q branch amplitude v X k) (tortoiseRadius x)=
       (deriv (fun y => capBoundaryField q branch amplitude (v-y) y X k) x/(capScale x:ℂ))/
-        ((tortoiseRadius x:ℂ)^2*(2-(capScale x:ℂ))) := by
+        ((tortoiseRadius x:ℂ)^(2 : ℕ)*(2-(capScale x:ℂ))) := by
   have hr := tortoiseRadius_exterior x hx
   have hd := capBoundaryField_ingoing_normal_hasDerivAt q branch amplitude v
     (D4BMIngoingCoordinates.tortoise (tortoiseRadius x)) X k
   have ht := hd.scomp (tortoiseRadius x) (D4BMIngoingCoordinates.tortoise_hasDerivAt _ hr)
   rw [tortoise_original_inverse x hx] at hd ht
-  have he : (tortoiseRadius x:ℂ)^2-1=
-      (tortoiseRadius x:ℂ)^2*(capScale x:ℂ)*(2-(capScale x:ℂ)) := by
+  have he : (tortoiseRadius x:ℂ)^(2 : ℕ)-1=
+      (tortoiseRadius x:ℂ)^(2 : ℕ)*(capScale x:ℂ)*(2-(capScale x:ℂ)) := by
     exact_mod_cast (radius_scale x hx).2
   change deriv (fun r => capBoundaryField q branch amplitude (v-D4BMIngoingCoordinates.tortoise r)
     (D4BMIngoingCoordinates.tortoise r) X k) (tortoiseRadius x)=_
@@ -750,10 +750,10 @@ theorem radialCap_derivative_ingoing (q : XiZeroCopy) (branch : Bool) (amplitude
     simpa only [Complex.ofReal_zero,Function.comp_def] using!
       (Complex.continuous_ofReal.tendsto (0:ℝ)).comp scale_limit
   have ht := (cap_normal_scaled_limit q branch amplitude v X k).div
-    ((hr.pow 2).mul ((tendsto_const_nhds (x := (2:ℂ))).sub hc)) (by norm_num : (1:ℂ)^2*(2-0) ≠ 0)
+    ((hr.pow 2).mul ((tendsto_const_nhds (x := (2:ℂ))).sub hc)) (by norm_num : (1:ℂ)^(2 : ℕ)*(2-0) ≠ 0)
   have hl : Tendsto (fun x =>
       (deriv (fun y => capBoundaryField q branch amplitude (v-y) y X k) x/(capScale x:ℂ))/
-        ((tortoiseRadius x:ℂ)^2*(2-(capScale x:ℂ)))) atBot
+        ((tortoiseRadius x:ℂ)^(2 : ℕ)*(2-(capScale x:ℂ)))) atBot
       (𝓝 (liftTraceCoefficient q branch amplitude*
         (D4BMHorizon.scalarLaplacian (fullSquarePotential q) ![X,Real.exp k]/2)*sourceMemory q branch v)) := by
     convert! ht using 1

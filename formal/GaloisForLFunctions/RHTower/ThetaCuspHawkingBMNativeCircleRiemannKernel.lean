@@ -19,11 +19,11 @@ def angularKernel (q : XiZeroCopy) (z X k : ℝ) : ℂ := mean q (Real.arcosh z)
 def argumentFirst (q : XiZeroCopy) (z X k : ℝ) : ℂ :=
   deriv (fun r => mean q r X k) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)
 def argumentSecond (q : XiZeroCopy) (z X k : ℝ) : ℂ :=
-  deriv (deriv (fun r => mean q r X k)) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)^2-
+  deriv (deriv (fun r => mean q r X k)) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)-
     (Real.cosh (Real.arcosh z):ℂ)*deriv (fun r => mean q r X k) (Real.arcosh z)/
-      (Real.sinh (Real.arcosh z):ℂ)^3
+      (Real.sinh (Real.arcosh z):ℂ)^(3 : ℕ)
 def angularAction (q : XiZeroCopy) (z X k : ℝ) : ℂ :=
-  (Real.exp k:ℂ)^2*deriv (deriv (fun r => angularKernel q z r k)) X+
+  (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => angularKernel q z r k)) X+
     deriv (deriv (fun r => angularKernel q z X r)) k-deriv (fun r => angularKernel q z X r) k
 
 private theorem radius_derivative {z : ℝ} (hz : 1 < z) :
@@ -51,32 +51,32 @@ private theorem angular_derivatives (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz :
     field_simp [hnC]
 
 private theorem angular_equation (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    ((z:ℂ)^2-1)*argumentSecond q z X k+2*(z:ℂ)*argumentFirst q z X k=angularAction q z X k := by
+    ((z:ℂ)^(2 : ℕ)-1)*argumentSecond q z X k+2*(z:ℂ)*argumentFirst q z X k=angularAction q z X k := by
   have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have he : (z:ℂ)^2-1=(Real.sinh (Real.arcosh z):ℂ)^2 := by
+  have he : (z:ℂ)^(2 : ℕ)-1=(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ) := by
     have h := Real.cosh_sq_sub_sinh_sq (Real.arcosh z)
     rw [Real.cosh_arcosh hz.le] at h
-    exact_mod_cast (by linarith : z^2-1=Real.sinh (Real.arcosh z)^2)
+    exact_mod_cast (by linarith : z^(2 : ℕ)-1=Real.sinh (Real.arcosh z)^(2 : ℕ))
   have h := mean_darboux q (Real.arcosh z) X k
-  change _ = (Real.sinh (Real.arcosh z):ℂ)^2*angularAction q z X k at h
+  change _ = (Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)*angularAction q z X k at h
   rw [Real.cosh_arcosh hz.le] at h
   rw [he]
   dsimp [argumentSecond,argumentFirst]
   rw [Real.cosh_arcosh hz.le]
-  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^2
+  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)
 
 def nativeRiemannKernel (q : XiZeroCopy) (h x y X k : ℝ) : ℂ :=
   angularKernel q (invariant h x y) X k
 def nativeTimeFirst (q : XiZeroCopy) (h x y X k : ℝ) : ℂ :=
   argumentFirst q (invariant h x y) X k*(invariantTimeFirst h x y:ℂ)
 def nativeTimeSecond (q : XiZeroCopy) (h x y X k : ℝ) : ℂ :=
-  argumentSecond q (invariant h x y) X k*(invariantTimeFirst h x y:ℂ)^2+
+  argumentSecond q (invariant h x y) X k*(invariantTimeFirst h x y:ℂ)^(2 : ℕ)+
     argumentFirst q (invariant h x y) X k*(invariantTimeSecond h x y:ℂ)
 def nativeSpaceFirst (q : XiZeroCopy) (h x y X k : ℝ) : ℂ :=
   argumentFirst q (invariant h x y) X k*(invariantSpaceFirst h x y:ℂ)
 def nativeSpaceSecond (q : XiZeroCopy) (h x y X k : ℝ) : ℂ :=
-  argumentSecond q (invariant h x y) X k*(invariantSpaceFirst h x y:ℂ)^2+
+  argumentSecond q (invariant h x y) X k*(invariantSpaceFirst h x y:ℂ)^(2 : ℕ)+
     argumentFirst q (invariant h x y) X k*(invariantSpaceSecond h x y:ℂ)
 
 private theorem time_derivatives (q : XiZeroCopy) (h x y X k : ℝ) (hz : 1 < invariant h x y) :
@@ -113,10 +113,10 @@ with the actual hyperbolic Laplacian in horizontal and logarithmic-height coordi
 theorem nativeRiemannKernel_wave (q : XiZeroCopy) (p : InteriorPoint) (X k : ℝ) :
     deriv (deriv (fun h => nativeRiemannKernel q h p.val.target p.val.source X k)) p.val.time-
       deriv (deriv (fun x => nativeRiemannKernel q p.val.time x p.val.source X k)) p.val.target-
-      ((Real.exp k:ℂ)^2*deriv (deriv (fun a => nativeRiemannKernel q p.val.time p.val.target p.val.source a k)) X+
+      ((Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun a => nativeRiemannKernel q p.val.time p.val.target p.val.source a k)) X+
         deriv (deriv (fun a => nativeRiemannKernel q p.val.time p.val.target p.val.source X a)) k-
         deriv (fun a => nativeRiemannKernel q p.val.time p.val.target p.val.source X a) k)/
-          (Real.cosh p.val.target:ℂ)^2=0 := by
+          (Real.cosh p.val.target:ℂ)^(2 : ℕ)=0 := by
   obtain ⟨ht,htt⟩ := time_derivatives q p.val.time p.val.target p.val.source X k p.property
   obtain ⟨hx,hxx⟩ := space_derivatives q p.val.time p.val.target p.val.source X k p.property
   have et : deriv (fun h => nativeRiemannKernel q h p.val.target p.val.source X k) =ᶠ[𝓝 p.val.time]
@@ -128,21 +128,21 @@ theorem nativeRiemannKernel_wave (q : XiZeroCopy) (p : InteriorPoint) (X k : ℝ
     filter_upwards [(invariant_space_derivatives p.val.time p.val.target p.val.source).1.continuousAt.eventually_const_lt p.property] with x hh
     exact (space_derivatives q p.val.time x p.val.source X k hh).1.deriv
   rw [et.deriv_eq,ex.deriv_eq,htt.deriv,hxx.deriv]
-  have h1 : (invariantTimeFirst p.val.time p.val.target p.val.source:ℂ)^2-
-      (invariantSpaceFirst p.val.time p.val.target p.val.source:ℂ)^2=
-      ((invariant p.val.time p.val.target p.val.source:ℂ)^2-1)/(Real.cosh p.val.target:ℂ)^2 := by
+  have h1 : (invariantTimeFirst p.val.time p.val.target p.val.source:ℂ)^(2 : ℕ)-
+      (invariantSpaceFirst p.val.time p.val.target p.val.source:ℂ)^(2 : ℕ)=
+      ((invariant p.val.time p.val.target p.val.source:ℂ)^(2 : ℕ)-1)/(Real.cosh p.val.target:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry p.val.time p.val.target p.val.source).1
   have h2 : (invariantTimeSecond p.val.time p.val.target p.val.source:ℂ)-
       (invariantSpaceSecond p.val.time p.val.target p.val.source:ℂ)=
-      2*(invariant p.val.time p.val.target p.val.source:ℂ)/(Real.cosh p.val.target:ℂ)^2 := by
+      2*(invariant p.val.time p.val.target p.val.source:ℂ)/(Real.cosh p.val.target:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry p.val.time p.val.target p.val.source).2
   have h := angular_equation q X k p.property
-  change _-_ - angularAction q (invariant p.val.time p.val.target p.val.source) X k/(Real.cosh p.val.target:ℂ)^2=0
+  change _-_ - angularAction q (invariant p.val.time p.val.target p.val.source) X k/(Real.cosh p.val.target:ℂ)^(2 : ℕ)=0
   dsimp [nativeTimeSecond,nativeSpaceSecond]
   linear_combination
     argumentSecond q (invariant p.val.time p.val.target p.val.source) X k*h1+
     argumentFirst q (invariant p.val.time p.val.target p.val.source) X k*h2+
-    h/(Real.cosh p.val.target:ℂ)^2
+    h/(Real.cosh p.val.target:ℂ)^(2 : ℕ)
 
 /-- The characteristic value is the literal original source, without a spectral projection. -/
 theorem nativeRiemannKernel_characteristic (q : XiZeroCopy) (x y X k : ℝ) :

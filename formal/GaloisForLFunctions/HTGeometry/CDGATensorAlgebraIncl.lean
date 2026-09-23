@@ -150,7 +150,7 @@ theorem extTensorD_tensorSingleRight (A : CDGAStructure R X) (B : CDGAStructure 
       cases p₁ with
       | zero =>
           rw [tensorDL_zero, zero_add, tensorDR_succ]
-          show ((-1 : R)) ^ 0 • TensorProduct.map LinearMap.id (B.dₗ β)
+          show ((-1 : R)) ^ (0 : ℕ) • TensorProduct.map LinearMap.id (B.dₗ β)
             (tensorSingle (M := X) (N := Y) ⟨(n, 0), hn⟩ (x ⊗ₜ[R] v.one)
               ⟨(0, β), by simp only at hp ⊢; omega⟩) = 0
           cases β with
@@ -243,7 +243,7 @@ theorem extTensorD_tensorSingleLeft (A : CDGAStructure R X) (B : CDGAStructure R
       | succ β =>
           obtain rfl : n = β := by simp only at hp; omega
           rw [tensorDR_succ]
-          show ((-1 : R)) ^ 0 • TensorProduct.map LinearMap.id (B.dₗ n)
+          show ((-1 : R)) ^ (0 : ℕ) • TensorProduct.map LinearMap.id (B.dₗ n)
             (tensorSingle (M := X) (N := Y) ⟨(0, n), hn⟩ (u.one ⊗ₜ[R] y) ⟨(0, n), hn⟩) = _
           rw [tensorSingleLeft_apply n u.one y hn, pow_zero, one_smul, TensorProduct.map_tmul,
             tensorSingleLeft_apply (n + 1) u.one (B.d n y) hn1]

@@ -35,7 +35,7 @@ theorem coeff_four_mul_plateau {N m : ℕ} (hm : m ≤ N) (hN : N < 2*m) :
         by_contra hnonzero
         have hs : Squarefree d := moebius_ne_zero_iff_squarefree.mp hnonzero
         have hd4 : d ∣ 4*m := (Nat.mem_divisors.mp hd).1
-        have hdPow : d ∣ (2*m)^2 := hd4.trans ⟨m, by ring⟩
+        have hdPow : d ∣ (2*m)^(2 : ℕ) := hd4.trans ⟨m, by ring⟩
         have hd2 : d ∣ 2*m := (hs.dvd_pow_iff_dvd (by omega : 2 ≠ 0)).mp hdPow
         have hproper : d ∈ (2*m).properDivisors :=
           Nat.mem_properDivisors.mpr ⟨hd2, by omega⟩

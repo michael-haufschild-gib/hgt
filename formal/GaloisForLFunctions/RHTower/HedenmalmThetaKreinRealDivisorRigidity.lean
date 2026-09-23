@@ -87,7 +87,7 @@ theorem thetaSourceKreinRealDivisorRigidity_certificate :
         (thetaSourceKreinDouble k) ^ m).trace =
       ((thetaSourceKreinFiniteMatrix k) ^ m).trace) ∧
     TendstoLocallyUniformly thetaSourceKreinDoubleDet
-      (fun z => (XiC z / XiC 0) ^ 2) atTop ∧
+      (fun z => (XiC z / XiC 0) ^ (2 : ℕ)) atTop ∧
     (∀ k,
       ThetaSourceKreinDoubleStageRealDivisor k ↔
         ThetaSourceSignedStageRealDivisor k) ∧

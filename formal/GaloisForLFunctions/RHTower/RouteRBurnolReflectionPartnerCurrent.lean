@@ -40,7 +40,7 @@ def burnolXiReflectionPartner (rho : ℂ) : ℂ := 1 - starRingEnd ℂ rho
 /-- Reflection exchanges the two reciprocal heads of the bare current. -/
 theorem burnolCartierDividedShiftHeadFlux_reflectionPartner (rho : ℂ) :
     burnolCartierDividedShiftHeadFlux (burnolXiReflectionPartner rho) =
-      ‖rho⁻¹‖ ^ 2 - (Real.log 2) ^ 2 * ‖((1 : ℂ) - rho)⁻¹‖ ^ 2 := by
+      ‖rho⁻¹‖ ^ (2 : ℕ) - (Real.log 2) ^ (2 : ℕ) * ‖((1 : ℂ) - rho)⁻¹‖ ^ (2 : ℕ) := by
   have hforward :
       ‖((1 : ℂ) - burnolXiReflectionPartner rho)⁻¹‖ = ‖rho⁻¹‖ := by
     simp [burnolXiReflectionPartner]
@@ -54,8 +54,8 @@ theorem burnolCartierDividedShiftHeadFlux_reflectionPartner (rho : ℂ) :
 theorem burnolCartierDividedShiftHeadFlux_add_reflectionPartner (rho : ℂ) :
     burnolCartierDividedShiftHeadFlux rho +
         burnolCartierDividedShiftHeadFlux (burnolXiReflectionPartner rho) =
-      (1 - (Real.log 2) ^ 2) *
-        (‖((1 : ℂ) - rho)⁻¹‖ ^ 2 + ‖rho⁻¹‖ ^ 2) := by
+      (1 - (Real.log 2) ^ (2 : ℕ)) *
+        (‖((1 : ℂ) - rho)⁻¹‖ ^ (2 : ℕ) + ‖rho⁻¹‖ ^ (2 : ℕ)) := by
   rw [burnolCartierDividedShiftHeadFlux,
     burnolCartierDividedShiftHeadFlux_reflectionPartner]
   ring
@@ -64,8 +64,8 @@ theorem burnolCartierDividedShiftHeadFlux_add_reflectionPartner (rho : ℂ) :
 theorem burnolCartierDividedShiftHeadFlux_sub_reflectionPartner (rho : ℂ) :
     burnolCartierDividedShiftHeadFlux rho -
         burnolCartierDividedShiftHeadFlux (burnolXiReflectionPartner rho) =
-      (1 + (Real.log 2) ^ 2) *
-        (‖((1 : ℂ) - rho)⁻¹‖ ^ 2 - ‖rho⁻¹‖ ^ 2) := by
+      (1 + (Real.log 2) ^ (2 : ℕ)) *
+        (‖((1 : ℂ) - rho)⁻¹‖ ^ (2 : ℕ) - ‖rho⁻¹‖ ^ (2 : ℕ)) := by
   rw [burnolCartierDividedShiftHeadFlux,
     burnolCartierDividedShiftHeadFlux_reflectionPartner]
   ring
@@ -75,12 +75,12 @@ theorem burnolCartierDividedShiftHeadFlux_sub_reflectionPartner_eq_horizontal
     {rho : ℂ} (hrho : rho ≠ 0) (hrhoOne : rho ≠ 1) :
     burnolCartierDividedShiftHeadFlux rho -
         burnolCartierDividedShiftHeadFlux (burnolXiReflectionPartner rho) =
-      (1 + (Real.log 2) ^ 2) * (2 * rho.re - 1) /
-        (‖rho‖ ^ 2 * ‖(1 - rho)‖ ^ 2) := by
+      (1 + (Real.log 2) ^ (2 : ℕ)) * (2 * rho.re - 1) /
+        (‖rho‖ ^ (2 : ℕ) * ‖(1 - rho)‖ ^ (2 : ℕ)) := by
   have hnormRho : ‖rho‖ ≠ 0 := norm_ne_zero_iff.mpr hrho
   have hnormOneSub : ‖(1 - rho)‖ ≠ 0 :=
     norm_ne_zero_iff.mpr (sub_ne_zero.mpr hrhoOne.symm)
-  have hhorizontal : ‖rho‖ ^ 2 - ‖(1 - rho)‖ ^ 2 = 2 * rho.re - 1 := by
+  have hhorizontal : ‖rho‖ ^ (2 : ℕ) - ‖(1 - rho)‖ ^ (2 : ℕ) = 2 * rho.re - 1 := by
     rw [Complex.sq_norm, Complex.sq_norm]
     simp only [Complex.normSq_apply, Complex.sub_re, Complex.one_re,
       Complex.sub_im, Complex.one_im]
@@ -97,11 +97,11 @@ theorem burnolCartierDividedShiftHeadFlux_add_reflectionPartner_pos
   rw [burnolCartierDividedShiftHeadFlux_add_reflectionPartner]
   have hlogPos : 0 < Real.log 2 := Real.log_pos one_lt_two
   have hlogLt : Real.log 2 < 1 := by linarith [Real.log_two_lt_d9]
-  have hcoefficient : 0 < 1 - (Real.log 2) ^ 2 := by nlinarith
-  have hleft : 0 < ‖((1 : ℂ) - rho)⁻¹‖ ^ 2 := by
+  have hcoefficient : 0 < 1 - (Real.log 2) ^ (2 : ℕ) := by nlinarith
+  have hleft : 0 < ‖((1 : ℂ) - rho)⁻¹‖ ^ (2 : ℕ) := by
     exact sq_pos_of_ne_zero
       (norm_ne_zero_iff.mpr (inv_ne_zero (sub_ne_zero.mpr hrhoOne.symm)))
-  have hright : 0 < ‖rho⁻¹‖ ^ 2 := by
+  have hright : 0 < ‖rho⁻¹‖ ^ (2 : ℕ) := by
     exact sq_pos_of_ne_zero (norm_ne_zero_iff.mpr (inv_ne_zero hrho))
   positivity
 
@@ -113,10 +113,10 @@ theorem burnolCartierDividedShiftHeadFlux_eq_reflectionPartner_iff
       rho.re = 1 / 2 := by
   rw [← sub_eq_zero, burnolCartierDividedShiftHeadFlux_sub_reflectionPartner_eq_horizontal
     hrho hrhoOne]
-  have hden : ‖rho‖ ^ 2 * ‖(1 - rho)‖ ^ 2 ≠ 0 := by
+  have hden : ‖rho‖ ^ (2 : ℕ) * ‖(1 - rho)‖ ^ (2 : ℕ) ≠ 0 := by
     exact mul_ne_zero (pow_ne_zero 2 (norm_ne_zero_iff.mpr hrho))
       (pow_ne_zero 2 (norm_ne_zero_iff.mpr (sub_ne_zero.mpr hrhoOne.symm)))
-  have hcoefficient : 1 + (Real.log 2) ^ 2 ≠ 0 := by positivity
+  have hcoefficient : 1 + (Real.log 2) ^ (2 : ℕ) ≠ 0 := by positivity
   rw [div_eq_zero_iff, mul_eq_zero, or_iff_right hcoefficient,
     or_iff_left hden]
   constructor <;> intro h <;> linarith
@@ -128,12 +128,12 @@ theorem burnolCartierDividedShiftHeadFlux_reflectionPartner_lt
       burnolCartierDividedShiftHeadFlux rho := by
   rw [← sub_pos]
   rw [burnolCartierDividedShiftHeadFlux_sub_reflectionPartner_eq_horizontal hrho hrhoOne]
-  have hden : 0 < ‖rho‖ ^ 2 * ‖(1 - rho)‖ ^ 2 := by
+  have hden : 0 < ‖rho‖ ^ (2 : ℕ) * ‖(1 - rho)‖ ^ (2 : ℕ) := by
     have h0 : 0 < ‖rho‖ := norm_pos_iff.mpr hrho
     have h1 : 0 < ‖(1 : ℂ) - rho‖ :=
       norm_pos_iff.mpr (sub_ne_zero.mpr hrhoOne.symm)
     positivity
-  have hcoefficient : 0 < 1 + (Real.log 2) ^ 2 := by positivity
+  have hcoefficient : 0 < 1 + (Real.log 2) ^ (2 : ℕ) := by positivity
   exact div_pos (mul_pos hcoefficient (by linarith)) hden
 
 /-- Completion contributes the same normal current to functional-equation partners, hence cancels

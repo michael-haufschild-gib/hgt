@@ -27,32 +27,32 @@ private theorem two_ray_tendsto (f : ℝ → ℂ) (c : ℂ)
 
 /-- The original logarithmic-frequency amplitude retains the genuine fifth trace after cubic subtraction. -/
 theorem reflectionAmplitude_sub_cubic_fifth_quotient_tendsto (q : SchwartzMap ℝ ℂ) :
-    Tendsto (fun κ : ℝ => (reflectionAmplitude q κ - (Real.exp κ : ℂ)^3*(2*compatibilityMoment q)) /
-      (Real.exp κ : ℂ)^5) atBot (𝓝 (rawScatteringFifthCoefficient q 1 0)) := by
+    Tendsto (fun κ : ℝ => (reflectionAmplitude q κ - (Real.exp κ : ℂ)^(3 : ℕ)*(2*compatibilityMoment q)) /
+      (Real.exp κ : ℂ)^(5 : ℕ)) atBot (𝓝 (rawScatteringFifthCoefficient q 1 0)) := by
   have he : Tendsto Real.exp atBot (𝓝[≠] (0 : ℝ)) :=
     Real.tendsto_exp_atBot_nhdsGT.mono_right (nhdsWithin_mono 0 (fun _ hx => ne_of_gt hx))
   have hh := (rawReflection_sub_cubic_quotient_tendsto q).comp he
   change Tendsto (fun κ : ℝ => (rawScatteringMatrix q (Real.exp κ) 1 0 -
-    (Real.exp κ : ℂ)^3*(2*compatibilityMoment q))/(Real.exp κ : ℂ)^5) atBot
+    (Real.exp κ : ℂ)^(3 : ℕ)*(2*compatibilityMoment q))/(Real.exp κ : ℂ)^(5 : ℕ)) atBot
       (𝓝 (rawScatteringFifthCoefficient q 1 0)) at hh
   simpa only [rawScatteringMatrix_exp_eq, reflectionAmplitude] using hh
 
 /-- The exact source twist also transports the subtracted cubic term with the physical fifth power. -/
 theorem contourReflection_sub_cubic_fifth_quotient_eq (q : SchwartzMap ℝ ℂ) (vertical negative : Bool) (κ : ℝ) :
     (contourReflectionAmplitude q vertical negative κ -
-      (contourParameter vertical negative κ)^3*(2*compatibilityMoment q)) /
-        (contourParameter vertical negative κ)^5 =
+      (contourParameter vertical negative κ)^(3 : ℕ)*(2*compatibilityMoment q)) /
+        (contourParameter vertical negative κ)^(5 : ℕ) =
     (if vertical then I else 1)*
       ((reflectionAmplitude (contourSource q vertical) κ -
-        (Real.exp κ : ℂ)^3*(2*compatibilityMoment (contourSource q vertical))) /(Real.exp κ : ℂ)^5) := by
+        (Real.exp κ : ℂ)^(3 : ℕ)*(2*compatibilityMoment (contourSource q vertical))) /(Real.exp κ : ℂ)^(5 : ℕ)) := by
   have he : (Real.exp κ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.exp_ne_zero κ)
-  have hi6 : (I : ℂ)^6 = -1 := by
+  have hi6 : (I : ℂ)^(6 : ℕ) = -1 := by
     calc
-      Complex.I^6 = Complex.I^4*Complex.I^2 := by ring
+      Complex.I^(6 : ℕ) = Complex.I^(4 : ℕ)*Complex.I^(2 : ℕ) := by ring
       _ = -1 := by rw [I_pow_four, I_sq, one_mul]
-  have hi7 : (I : ℂ)^7 = -I := by
+  have hi7 : (I : ℂ)^(7 : ℕ) = -I := by
     calc
-      Complex.I^7 = Complex.I^6*Complex.I := by ring
+      Complex.I^(7 : ℕ) = Complex.I^(6 : ℕ)*Complex.I := by ring
       _ = -I := by rw [hi6, neg_one_mul]
   rw [contourReflectionAmplitude_eq, compatibilityMoment_contourSource]
   cases vertical <;> cases negative <;>
@@ -61,8 +61,8 @@ theorem contourReflection_sub_cubic_fifth_quotient_eq (q : SchwartzMap ℝ ℂ) 
 /-- Every physical contour ray has the same actual fifth scattering trace after its cubic compatibility term is removed. -/
 theorem contourReflection_sub_cubic_fifth_quotient_tendsto (q : SchwartzMap ℝ ℂ) (vertical negative : Bool) :
     Tendsto (fun κ : ℝ => (contourReflectionAmplitude q vertical negative κ -
-      (contourParameter vertical negative κ)^3*(2*compatibilityMoment q)) /
-        (contourParameter vertical negative κ)^5) atBot (𝓝 (rawScatteringFifthCoefficient q 1 0)) := by
+      (contourParameter vertical negative κ)^(3 : ℕ)*(2*compatibilityMoment q)) /
+        (contourParameter vertical negative κ)^(5 : ℕ)) atBot (𝓝 (rawScatteringFifthCoefficient q 1 0)) := by
   have hh := (reflectionAmplitude_sub_cubic_fifth_quotient_tendsto (contourSource q vertical)).const_mul
     (if vertical then I else 1)
   have he : (if vertical then I else 1)*rawScatteringFifthCoefficient (contourSource q vertical) 1 0 =
@@ -77,8 +77,8 @@ theorem contourReflection_sub_cubic_fifth_quotient_tendsto (q : SchwartzMap ℝ 
 /-- The reverse channel has the opposite cubic-subtracted fifth trace on every physical ray. -/
 theorem contourReverseReflection_sub_cubic_fifth_quotient_tendsto (q : SchwartzMap ℝ ℂ) (vertical negative : Bool) :
     Tendsto (fun κ : ℝ => (contourReverseReflectionAmplitude q vertical negative κ -
-      (contourParameter vertical negative κ)^3*(-2*compatibilityMoment q)) /
-        (contourParameter vertical negative κ)^5) atBot (𝓝 (-rawScatteringFifthCoefficient q 1 0)) := by
+      (contourParameter vertical negative κ)^(3 : ℕ)*(-2*compatibilityMoment q)) /
+        (contourParameter vertical negative κ)^(5 : ℕ)) atBot (𝓝 (-rawScatteringFifthCoefficient q 1 0)) := by
   apply (contourReflection_sub_cubic_fifth_quotient_tendsto q vertical negative).neg.congr'
   apply Eventually.of_forall
   intro κ

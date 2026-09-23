@@ -86,7 +86,7 @@ theorem optionHeadAwayToPolynomial_affineCoordinate (i : σ) :
       MvPolynomial.X i := by
   change (Localization.awayLift optionHeadDehomogenize (MvPolynomial.X none) (by simp))
     (Localization.mk (MvPolynomial.X (some i))
-      ⟨MvPolynomial.X none ^ 1, by use 1⟩) = _
+      ⟨MvPolynomial.X none ^ (1 : ℕ), by use 1⟩) = _
   rw [Localization.awayLift_mk (v := 1) (hv := by simp)]
   simp [optionHeadDehomogenize]
 
@@ -96,7 +96,7 @@ theorem optionHeadAwayToPolynomial_base (r : R) :
       (optionHeadBaseToAway r) = MvPolynomial.C r := by
   change (Localization.awayLift optionHeadDehomogenize (MvPolynomial.X none) (by simp))
     (Localization.mk (MvPolynomial.C r)
-      ⟨MvPolynomial.X none ^ 0, by exact Submonoid.one_mem _⟩) = _
+      ⟨MvPolynomial.X none ^ (0 : ℕ), by exact Submonoid.one_mem _⟩) = _
   rw [Localization.awayLift_mk (v := 1) (hv := by simp)]
   simp [optionHeadDehomogenize]
 

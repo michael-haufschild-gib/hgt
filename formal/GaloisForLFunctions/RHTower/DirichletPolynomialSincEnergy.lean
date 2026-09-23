@@ -88,8 +88,8 @@ def dpolyWindowOffDiagonalEnergy (a : ℕ → ℝ) (s : Finset ℕ) (U : ℝ) : 
 /-- Exact normalized moment decomposition on an arbitrary positive window. -/
 theorem secondMoment_window_kernel
     (a : ℕ → ℝ) (s : Finset ℕ) (A U : ℝ) (hU : 0 < U) :
-    (∫ t in A..(A + U), ‖dpoly a s t‖ ^ 2) / U =
-      (∑ m ∈ s, (a m) ^ 2) +
+    (∫ t in A..(A + U), ‖dpoly a s t‖ ^ (2 : ℕ)) / U =
+      (∑ m ∈ s, (a m) ^ (2 : ℕ)) +
         ∑ m ∈ s, ∑ n ∈ s.erase m,
           a m * a n * (cosInt (Real.log n - Real.log m) A U / U) := by
   rw [secondMoment_meanValue, add_div, mul_div_cancel_left₀ _ hU.ne']
@@ -107,8 +107,8 @@ multiplicative near-collision energy; only the window length enters the envelope
 theorem secondMoment_window_independence_error_le
     (a : ℕ → ℝ) (s : Finset ℕ) (A U : ℝ) (hU : 0 < U)
     (hs : ∀ n ∈ s, 1 ≤ n) :
-    |(∫ t in A..(A + U), ‖dpoly a s t‖ ^ 2) / U -
-        ∑ m ∈ s, (a m) ^ 2| ≤
+    |(∫ t in A..(A + U), ‖dpoly a s t‖ ^ (2 : ℕ)) / U -
+        ∑ m ∈ s, (a m) ^ (2 : ℕ)| ≤
       dpolyWindowOffDiagonalEnergy a s U := by
   rw [secondMoment_window_kernel a s A U hU, add_sub_cancel_left]
   unfold dpolyWindowOffDiagonalEnergy
@@ -139,8 +139,8 @@ theorem secondMoment_window_independence_error_le
 /-- Exact symmetric finite-time moment decomposition: diagonal independent-phase mass plus the
 sinc-weighted multiplicative collision spectrum. -/
 theorem secondMoment_symmetric_sinc (a : ℕ → ℝ) (s : Finset ℕ) (T : ℝ) (hT : 0 < T) :
-    (∫ t in (-T)..T, ‖dpoly a s t‖ ^ 2) / (2 * T) =
-      (∑ m ∈ s, (a m) ^ 2) +
+    (∫ t in (-T)..T, ‖dpoly a s t‖ ^ (2 : ℕ)) / (2 * T) =
+      (∑ m ∈ s, (a m) ^ (2 : ℕ)) +
         ∑ m ∈ s, ∑ n ∈ s.erase m,
           a m * a n * Real.sinc ((Real.log n - Real.log m) * T) := by
   have hmean := secondMoment_meanValue a s (-T) (2 * T)
@@ -166,8 +166,8 @@ theorem secondMoment_symmetric_sinc (a : ℕ → ℝ) (s : Finset ℕ) (T : ℝ)
 theorem secondMoment_symmetric_sinc_error_le
     (a : ℕ → ℝ) (s : Finset ℕ) (T : ℝ) (hT : 0 < T)
     (hs : ∀ n ∈ s, 1 ≤ n) :
-    |(∫ t in (-T)..T, ‖dpoly a s t‖ ^ 2) / (2 * T) -
-        ∑ m ∈ s, (a m) ^ 2| ≤
+    |(∫ t in (-T)..T, ‖dpoly a s t‖ ^ (2 : ℕ)) / (2 * T) -
+        ∑ m ∈ s, (a m) ^ (2 : ℕ)| ≤
       dpolySincOffDiagonalEnergy a s T := by
   rw [secondMoment_symmetric_sinc a s T hT, add_sub_cancel_left]
   unfold dpolySincOffDiagonalEnergy
@@ -202,13 +202,13 @@ theorem evenMoment_symmetric_sinc
     (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n) (k : ℕ)
     (T : ℝ) (hT : 0 < T) :
     (∫ t in (-T)..T, ‖dpoly a s t‖ ^ (2 * k)) / (2 * T) =
-      (∑ m ∈ powSupport s k, (powConv a s k m) ^ 2) +
+      (∑ m ∈ powSupport s k, (powConv a s k m) ^ (2 : ℕ)) +
         ∑ m ∈ powSupport s k, ∑ n ∈ (powSupport s k).erase m,
           powConv a s k m * powConv a s k n *
             Real.sinc ((Real.log n - Real.log m) * T) := by
   have hrw : ∀ t : ℝ,
       ‖dpoly a s t‖ ^ (2 * k) =
-        ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ 2 := by
+        ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ (2 : ℕ) := by
     intro t
     rw [show 2 * k = k * 2 by ring, pow_mul, ← norm_pow, dpoly_pow a s hs t k]
   rw [intervalIntegral.integral_congr (fun t _ => hrw t)]
@@ -228,7 +228,7 @@ theorem evenMoment_symmetric_independence_error_le
   rw [integral_normPow_dpoly a s hs k]
   have hrw : ∀ t : ℝ,
       ‖dpoly a s t‖ ^ (2 * k) =
-        ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ 2 := by
+        ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ (2 : ℕ) := by
     intro t
     rw [show 2 * k = k * 2 by ring, pow_mul, ← norm_pow, dpoly_pow a s hs t k]
   rw [intervalIntegral.integral_congr (fun t _ => hrw t)]
@@ -241,13 +241,13 @@ theorem evenMoment_window_kernel
     (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n) (k : ℕ)
     (A U : ℝ) (hU : 0 < U) :
     (∫ t in A..(A + U), ‖dpoly a s t‖ ^ (2 * k)) / U =
-      (∑ m ∈ powSupport s k, (powConv a s k m) ^ 2) +
+      (∑ m ∈ powSupport s k, (powConv a s k m) ^ (2 : ℕ)) +
         ∑ m ∈ powSupport s k, ∑ n ∈ (powSupport s k).erase m,
           powConv a s k m * powConv a s k n *
             (cosInt (Real.log n - Real.log m) A U / U) := by
   have hrw : ∀ t : ℝ,
       ‖dpoly a s t‖ ^ (2 * k) =
-        ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ 2 := by
+        ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ (2 : ℕ) := by
     intro t
     rw [show 2 * k = k * 2 by ring, pow_mul, ← norm_pow, dpoly_pow a s hs t k]
   rw [intervalIntegral.integral_congr (fun t _ => hrw t)]
@@ -268,7 +268,7 @@ theorem evenMoment_window_independence_error_le
   rw [integral_normPow_dpoly a s hs k]
   have hrw : ∀ t : ℝ,
       ‖dpoly a s t‖ ^ (2 * k) =
-        ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ 2 := by
+        ‖dpoly (powConv a s k) (powSupport s k) t‖ ^ (2 : ℕ) := by
     intro t
     rw [show 2 * k = k * 2 by ring, pow_mul, ← norm_pow, dpoly_pow a s hs t k]
   rw [intervalIntegral.integral_congr (fun t _ => hrw t)]

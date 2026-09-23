@@ -41,13 +41,13 @@ theorem eventually_pos_normalisation {hh : ℝ → ℝ} (hgrow : Tendsto hh atTo
 theorem route_e_sign_density_of_averaged {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (havg1 : AveragedShortInterval (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity hh)
     (hMRp : ∀ p : ℕ, p.Prime → MRBilinearAt (coprimeSquarefreeWeight p)
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ)))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   exact route_e_sign_density hs hgrow
@@ -58,10 +58,10 @@ theorem route_e_sign_density_of_averaged {hh : ℝ → ℝ} {s : ℤ} (hs : s = 
 theorem route_e_signClass_nonempty_of_averaged {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (havg1 : AveragedShortInterval (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity hh)
     (hMRp : ∀ p : ℕ, p.Prime → MRBilinearAt (coprimeSquarefreeWeight p)
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ))) :
     ∀ᶠ x in atTop, (coprimeSignClass x (hh x) s).Nonempty := by
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   exact route_e_signClass_nonempty hs hgrow
@@ -75,14 +75,14 @@ rescaled pair of parameters. -/
 theorem route_e_sign_density_of_averaged_all {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (havg1 : AveragedShortInterval (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity hh)
     (havgp : ∀ p : ℕ, p.Prime → AveragedShortIntervalDensityAt (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ)))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
   route_e_sign_density_of_averaged hs hgrow havg1 havg2
     (fun p hp => MRBilinearAt_coprime_of_averaged hp (tendsto_of_growth hgrow) (havgp p hp)) hε
@@ -91,11 +91,11 @@ theorem route_e_sign_density_of_averaged_all {hh : ℝ → ℝ} {s : ℤ} (hs : 
 theorem route_e_signClass_nonempty_of_averaged_all {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (havg1 : AveragedShortInterval (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity hh)
     (havgp : ∀ p : ℕ, p.Prime → AveragedShortIntervalDensityAt (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ))) :
     ∀ᶠ x in atTop, (coprimeSignClass x (hh x) s).Nonempty :=
   route_e_signClass_nonempty_of_averaged hs hgrow havg1 havg2
     (fun p hp => MRBilinearAt_coprime_of_averaged hp (tendsto_of_growth hgrow) (havgp p hp))
@@ -106,14 +106,14 @@ short-interval estimates for `μ` are proved and stated. -/
 theorem route_e_sign_density_of_meanSquare {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (hms1 : AveragedMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (hms2 : AveragedMeanSquareDensityAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+    (hms2 : AveragedMeanSquareDensityAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity id hh)
     (hmsp : ∀ p : ℕ, p.Prime → AveragedMeanSquareDensityAt (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ)))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   refine route_e_sign_density_of_averaged_all hs hgrow
@@ -121,7 +121,7 @@ theorem route_e_sign_density_of_meanSquare {hh : ℝ → ℝ} {s : ℤ} (hs : s 
     (averagedShortIntervalDensity_of_meanSquare hhtop hms2) ?_ hε
   intro p hp
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
-  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ (2 : ℕ) := by positivity
   exact averagedShortIntervalDensityAt_of_meanSquare (tendsto_id.atTop_div_const hpsq)
     (hhtop.atTop_div_const hp0) (hmsp p hp)
 
@@ -129,11 +129,11 @@ theorem route_e_sign_density_of_meanSquare {hh : ℝ → ℝ} {s : ℤ} (hs : s 
 theorem route_e_signClass_nonempty_of_meanSquare {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (hms1 : AveragedMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (hms2 : AveragedMeanSquareDensityAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+    (hms2 : AveragedMeanSquareDensityAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity id hh)
     (hmsp : ∀ p : ℕ, p.Prime → AveragedMeanSquareDensityAt (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ))) :
     ∀ᶠ x in atTop, (coprimeSignClass x (hh x) s).Nonempty := by
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   refine route_e_signClass_nonempty_of_averaged_all hs hgrow
@@ -141,7 +141,7 @@ theorem route_e_signClass_nonempty_of_meanSquare {hh : ℝ → ℝ} {s : ℤ} (h
     (averagedShortIntervalDensity_of_meanSquare hhtop hms2) ?_
   intro p hp
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
-  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ (2 : ℕ) := by positivity
   exact averagedShortIntervalDensityAt_of_meanSquare (tendsto_id.atTop_div_const hpsq)
     (hhtop.atTop_div_const hp0) (hmsp p hp)
 
@@ -151,14 +151,14 @@ hypothesis for `μ` is now the maximal-window mean square over *all* starting po
 theorem route_e_sign_density_of_maximalWindow {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (hmax : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (hms2 : AveragedMeanSquareDensityAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+    (hms2 : AveragedMeanSquareDensityAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity id hh)
     (hmsp : ∀ p : ℕ, p.Prime → AveragedMeanSquareDensityAt (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ)))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
   route_e_sign_density_of_meanSquare hs hgrow
     (averagedMeanSquare_of_maximal (tendsto_of_growth hgrow) hmax) hms2 hmsp hε
@@ -170,14 +170,14 @@ geometry has disappeared completely. -/
 theorem route_e_sign_density_of_maximalWindow_all {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (hmax1 : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (hmax2 : MaximalWindowDevMeanSquareAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+    (hmax2 : MaximalWindowDevMeanSquareAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity id hh)
     (hmaxp : ∀ p : ℕ, p.Prime → MaximalWindowDevMeanSquareAt (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ)))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   refine route_e_sign_density_of_meanSquare hs hgrow
@@ -185,7 +185,7 @@ theorem route_e_sign_density_of_maximalWindow_all {hh : ℝ → ℝ} {s : ℤ} (
     (averagedMeanSquareDensityAt_of_maximal squarefreeDensity_nonneg' tendsto_id hhtop hmax2) ?_ hε
   intro p hp
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
-  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ (2 : ℕ) := by positivity
   exact averagedMeanSquareDensityAt_of_maximal (coprime_block_density_nonneg hp)
     (tendsto_id.atTop_div_const hpsq) (hhtop.atTop_div_const hp0) (hmaxp p hp)
 
@@ -194,11 +194,11 @@ theorem route_e_signClass_nonempty_of_maximalWindow_all {hh : ℝ → ℝ} {s : 
     (hs : s = 1 ∨ s = -1)
     (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
     (hmax1 : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
-    (hmax2 : MaximalWindowDevMeanSquareAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+    (hmax2 : MaximalWindowDevMeanSquareAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))
       squarefreeDensity id hh)
     (hmaxp : ∀ p : ℕ, p.Prime → MaximalWindowDevMeanSquareAt (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ))) :
     ∀ᶠ x in atTop, (coprimeSignClass x (hh x) s).Nonempty := by
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   refine route_e_signClass_nonempty_of_meanSquare hs hgrow
@@ -206,7 +206,7 @@ theorem route_e_signClass_nonempty_of_maximalWindow_all {hh : ℝ → ℝ} {s : 
     (averagedMeanSquareDensityAt_of_maximal squarefreeDensity_nonneg' tendsto_id hhtop hmax2) ?_
   intro p hp
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
-  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ (2 : ℕ) := by positivity
   exact averagedMeanSquareDensityAt_of_maximal (coprime_block_density_nonneg hp)
     (tendsto_id.atTop_div_const hpsq) (hhtop.atTop_div_const hp0) (hmaxp p hp)
 
@@ -219,10 +219,10 @@ theorem route_e_sign_density_of_maximalWindow_moebius {hh : ℝ → ℝ} {s : �
     (hmax1 : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
     (hmaxp : ∀ p : ℕ, p.Prime → MaximalWindowDevMeanSquareAt (coprimeSquarefreeWeight p)
       (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
-      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+      (fun x => x / (p : ℝ) ^ (2 : ℕ)) (fun x => hh x / (p : ℝ)))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
   route_e_sign_density_of_maximalWindow_all hs hgrow hmax1
     (maximalWindowDevMeanSquare_moebius_sq (tendsto_of_growth hgrow) hsmall) hmaxp hε
@@ -236,13 +236,13 @@ theorem route_e_sign_density_of_moebius_maximal {hh : ℝ → ℝ} {s : ℤ} (hs
     (hmax1 : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   refine route_e_sign_density_of_maximalWindow_moebius hs hgrow hsmall hmax1 ?_ hε
   intro p hp
   have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
-  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ (2 : ℕ) := by positivity
   refine maximalWindowDevMeanSquareAt_coprime hp (tendsto_id.atTop_div_const hpsq)
     (hhtop.atTop_div_const hp0) ?_
   filter_upwards [hsmall, eventually_ge_atTop (0 : ℝ)] with x hx hx0
@@ -259,7 +259,7 @@ theorem route_e_sign_density_long_window {hh : ℝ → ℝ} {s : ℤ} (hs : s = 
     (hlow : ∀ᶠ x in atTop, Real.sqrt x / K ≤ hh x)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
   route_e_sign_density_of_moebius_maximal hs hgrow hsmall
     (maximalWindowMeanSquare_of_firstMoment abs_moebius_real_le_one (tendsto_of_growth hgrow)
@@ -274,7 +274,7 @@ theorem route_e_sign_density_of_mertens_rate {hh : ℝ → ℝ} {s : ℤ} (hs : 
     (hrate : Tendsto (fun x => mertensSup ⌈3 * Real.sqrt x⌉₊ / hh x) atTop (𝓝 0))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ x in atTop,
-      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+      squarefreeDensity ^ (2 : ℕ) / 2 - squarefreeDensity ^ (2 : ℕ) * RHTower.coprimeSharedPrimeDensity - ε
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
   have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
   exact route_e_sign_density_of_moebius_maximal hs hgrow hsmall

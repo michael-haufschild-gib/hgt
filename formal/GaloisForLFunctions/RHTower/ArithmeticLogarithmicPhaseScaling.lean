@@ -61,7 +61,7 @@ theorem scaledLogarithmicSegment_eq_positive_scale (sigma lam a b : ℝ)
   ring
 
 private theorem clock_bernoulli_continuous : Continuous RHTower.bernoulliPeriodic :=
-  (show Continuous (fun x : ℝ => (x^2-x)/2) by fun_prop).continuousOn.comp_fract'' (by norm_num)
+  (show Continuous (fun x : ℝ => (x^(2 : ℕ)-x)/2) by fun_prop).continuousOn.comp_fract'' (by norm_num)
 
 private theorem clock_integrand_continuous (sigma lam : ℝ) (N : ℕ) :
     Continuous (arithmeticClockIntegrand sigma lam N) := by

@@ -843,7 +843,7 @@ structure HLSAnalyticScatteringData where
   regular_region : regularPhysicalRegion = physicalRegion \ normalThresholds
   analytic_regular_region : AnalyticOn ℂ elasticAmplitude regularPhysicalRegion
   scattering_occurs : ∃ st ∈ regularPhysicalRegion, elasticAmplitude st ≠ 0
-  scattering_generic : regularPhysicalRegion ⊆
+  scattering : regularPhysicalRegion ⊆
     closure {st | st ∈ regularPhysicalRegion ∧ elasticAmplitude st ≠ 0}
 
 /-- Removing closed normal thresholds from the open physical region leaves an open analytic

@@ -26,7 +26,7 @@ theorem prolate_form_le_of_orthogonal_high
     {u : evenBandEigenspace c lam}
     (horth : ∀ (v : evenBandEigenspace c lam) (eta : ℝ), -K < eta →
       prolateOnEvenEigenspace hc hlam v = eta • v → (inner ℝ v u : ℝ) = 0) :
-    (inner ℝ (prolateOnEvenEigenspace hc hlam u) u : ℝ) ≤ -K * ‖u‖ ^ 2 := by
+    (inner ℝ (prolateOnEvenEigenspace hc hlam u) u : ℝ) ≤ -K * ‖u‖ ^ (2 : ℕ) := by
   letI : FiniteDimensional ℝ (evenBandEigenspace c lam) :=
     finiteDimensional_evenBandEigenspace hlam
   set T := prolateOnEvenEigenspace hc hlam with hT
@@ -35,7 +35,7 @@ theorem prolate_form_le_of_orthogonal_high
   have hn : Module.finrank ℝ (evenBandEigenspace c lam) = m := rfl
   set b := hsym.eigenvectorBasis hn with hb
   set ev := hsym.eigenvalues hn with hev
-  have hquad : (inner ℝ (T u) u : ℝ) = ∑ j : Fin m, ev j * (inner ℝ (b j) u : ℝ) ^ 2 := by
+  have hquad : (inner ℝ (T u) u : ℝ) = ∑ j : Fin m, ev j * (inner ℝ (b j) u : ℝ) ^ (2 : ℕ) := by
     have h1 := b.sum_inner_mul_inner (T u) u
     rw [← h1]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -45,13 +45,13 @@ theorem prolate_form_le_of_orthogonal_high
       norm_cast
     rw [h2]
     ring
-  have hnorm : ‖u‖ ^ 2 = ∑ j : Fin m, (inner ℝ (b j) u : ℝ) ^ 2 := by
+  have hnorm : ‖u‖ ^ (2 : ℕ) = ∑ j : Fin m, (inner ℝ (b j) u : ℝ) ^ (2 : ℕ) := by
     have h := b.sum_sq_norm_inner_right u
     rw [← h]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Real.norm_eq_abs, sq_abs]
-  have hle : ∑ j : Fin m, ev j * (inner ℝ (b j) u : ℝ) ^ 2
-      ≤ ∑ j : Fin m, (-K) * (inner ℝ (b j) u : ℝ) ^ 2 := by
+  have hle : ∑ j : Fin m, ev j * (inner ℝ (b j) u : ℝ) ^ (2 : ℕ)
+      ≤ ∑ j : Fin m, (-K) * (inner ℝ (b j) u : ℝ) ^ (2 : ℕ) := by
     refine Finset.sum_le_sum fun i _ => ?_
     by_cases hi : -K < ev i
     · have heig : T (b i) = ev i • b i := by

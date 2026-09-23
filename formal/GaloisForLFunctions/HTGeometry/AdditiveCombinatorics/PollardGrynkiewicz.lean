@@ -30,7 +30,7 @@ def holes (H A' B' : Finset G) : ℕ := ((A' * H) \ A').card + ((B' * H) \ B').c
 
 /-- The weak Pollard bound `∑_{i=1}^t #(A ·_i B) ≥ t#A + t#B − 2t² + 1`. -/
 def PollardWeak (A B : Finset G) (t : ℕ) : Prop :=
-  t * A.card + t * B.card + 1 ≤ repSum A B t + 2 * t ^ 2
+  t * A.card + t * B.card + 1 ≤ repSum A B t + 2 * t ^ (2 : ℕ)
 
 /-- The structural alternative of Grynkiewicz's theorem. -/
 def PollardStruct (A B : Finset G) (t : ℕ) : Prop :=

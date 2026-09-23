@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLa
 /-- Elementary inverse-square tail bound by telescoping `1/n - 1/(n+1)`. -/
 theorem sum_inv_square_Ioc_le (K : ℕ) (hK : 1 ≤ K) :
     ∀ L : ℕ, K ≤ L →
-      ∑ n ∈ Finset.Ioc K L, (1 : ℝ) / (n : ℝ) ^ 2
+      ∑ n ∈ Finset.Ioc K L, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ)
         ≤ 1 / (K : ℝ) - 1 / (L : ℝ) := by
   intro L
   induction L with
@@ -33,7 +33,7 @@ theorem sum_inv_square_Ioc_le (K : ℕ) (hK : 1 ≤ K) :
           have : 1 ≤ L := le_trans hK hKle
           exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one this
         have hL1pos : (0 : ℝ) < (L : ℝ) + 1 := by linarith
-        have hstep : (1 : ℝ) / ((L : ℝ) + 1) ^ 2 ≤
+        have hstep : (1 : ℝ) / ((L : ℝ) + 1) ^ (2 : ℕ) ≤
             1 / (L : ℝ) - 1 / ((L : ℝ) + 1) := by
           rw [div_le_iff₀ (pow_pos hL1pos 2)]
           field_simp
@@ -48,12 +48,12 @@ theorem sum_inv_square_Ioc_le (K : ℕ) (hK : 1 ≤ K) :
 /-- A finite suffix indexed by `j+1>K` is bounded by `1/K`. -/
 theorem sum_fin_succ_inv_square_indicator_le
     (N K : ℕ) (hK : 1 ≤ K) (hKN : K ≤ N) :
-    (∑ j : Fin N, if K < j.val + 1 then (1 : ℝ) / ((j.val + 1 : ℕ) : ℝ) ^ 2 else 0)
+    (∑ j : Fin N, if K < j.val + 1 then (1 : ℝ) / ((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ) else 0)
       ≤ 1 / (K : ℝ) := by
   have heq :
       (∑ j : Fin N,
-        if K < j.val + 1 then (1 : ℝ) / ((j.val + 1 : ℕ) : ℝ) ^ 2 else 0) =
-        ∑ n ∈ Finset.Ioc K N, (1 : ℝ) / (n : ℝ) ^ 2 := by
+        if K < j.val + 1 then (1 : ℝ) / ((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ) else 0) =
+        ∑ n ∈ Finset.Ioc K N, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ) := by
     rw [← Finset.sum_filter]
     refine Finset.sum_bij (fun j _ => j.val + 1) ?_ ?_ ?_ ?_
     · intro j hj
@@ -82,17 +82,17 @@ theorem sum_fin_succ_inv_square_indicator_le
 theorem sum_fin_succ_inv_square_over_million_le
     (N K : ℕ) (m : ℝ) (hm : 0 ≤ m) (hK : 1 ≤ K) (hKN : K ≤ N) :
     (∑ j : Fin N,
-      if K < j.val + 1 then m / (1000000 * (((j.val + 1 : ℕ) : ℝ) ^ 2)) else 0)
+      if K < j.val + 1 then m / (1000000 * (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) else 0)
       ≤ m / (1000000 * (K : ℝ)) := by
   have hbase := sum_fin_succ_inv_square_indicator_le N K hK hKN
   have hscale : 0 ≤ m / 1000000 := by positivity
   have hmul := mul_le_mul_of_nonneg_left hbase hscale
   calc
     (∑ j : Fin N,
-      if K < j.val + 1 then m / (1000000 * (((j.val + 1 : ℕ) : ℝ) ^ 2)) else 0) =
+      if K < j.val + 1 then m / (1000000 * (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) else 0) =
         (m / 1000000) *
           (∑ j : Fin N,
-            if K < j.val + 1 then (1 : ℝ) / (((j.val + 1 : ℕ) : ℝ) ^ 2) else 0) := by
+            if K < j.val + 1 then (1 : ℝ) / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) else 0) := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro j hj
@@ -106,18 +106,18 @@ theorem sum_fin_succ_inv_square_over_million_le
 theorem mobileCut_baseDuhamel_lt_half {K : ℕ} {t ε : ℝ}
     (hK : 8 ≤ K) (hε : 0 < ε)
     (ht : t < 256 * Real.pi * ε * (K + 1)) :
-    t * (1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4)) < ε / 2 := by
+    t * (1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ))) < ε / 2 := by
   have hk : (8 : ℝ) ≤ K := by exact_mod_cast hK
   have hk0 : (0 : ℝ) < K := lt_of_lt_of_le (by norm_num) hk
-  have hk3 : (8 : ℝ) ^ 3 ≤ (K : ℝ) ^ 3 := by gcongr
-  have hk4 : 512 * (K : ℝ) ≤ (K : ℝ) ^ 4 := by
+  have hk3 : (8 : ℝ) ^ (3 : ℕ) ≤ (K : ℝ) ^ (3 : ℕ) := by gcongr
+  have hk4 : 512 * (K : ℝ) ≤ (K : ℝ) ^ (4 : ℕ) := by
     have hm := mul_le_mul_of_nonneg_left hk3 (le_of_lt hk0)
     norm_num [pow_succ] at hm ⊢
     nlinarith
-  have hpoly : 2048 * ((K : ℝ) + 1) < (2 * (K : ℝ) + 1) ^ 4 := by
-    have hrough : 2048 * ((K : ℝ) + 1) < 16 * (K : ℝ) ^ 4 := by
+  have hpoly : 2048 * ((K : ℝ) + 1) < (2 * (K : ℝ) + 1) ^ (4 : ℕ) := by
+    have hrough : 2048 * ((K : ℝ) + 1) < 16 * (K : ℝ) ^ (4 : ℕ) := by
       nlinarith
-    have hsquare : (2 * (K : ℝ)) ^ 4 < (2 * (K : ℝ) + 1) ^ 4 := by
+    have hsquare : (2 * (K : ℝ)) ^ (4 : ℕ) < (2 * (K : ℝ) + 1) ^ (4 : ℕ) := by
       gcongr
       norm_num
     norm_num [mul_pow] at hsquare
@@ -129,7 +129,7 @@ theorem mobileCut_baseDuhamel_lt_half {K : ℕ} {t ε : ℝ}
       (mul_pos (mul_pos (by norm_num : (0 : ℝ) < 256) hε) hk1)
     refine lt_trans (by simpa using ht) ?_
     convert hm using 1 <;> ring
-  have hden : (0 : ℝ) < (2 * (K : ℝ) + 1) ^ 4 := by positivity
+  have hden : (0 : ℝ) < (2 * (K : ℝ) + 1) ^ (4 : ℕ) := by positivity
   norm_num [Nat.cast_add, Nat.cast_mul]
   rw [← div_eq_mul_inv, div_lt_iff₀ hden]
   nlinarith
@@ -165,15 +165,15 @@ share one four-phase error allowance. -/
 theorem mobileCut_baseDuhamel_lt_eighth {K : ℕ} {t ε : ℝ}
     (hK : 8 ≤ K) (hε : 0 < ε)
     (ht : t < 256 * Real.pi * ε * (K + 1)) :
-    t * (1 / (((2 * K + 1 : ℕ) : ℝ) ^ 4)) < ε / 8 := by
+    t * (1 / (((2 * K + 1 : ℕ) : ℝ) ^ (4 : ℕ))) < ε / 8 := by
   have hk : (8 : ℝ) ≤ K := by exact_mod_cast hK
   have hk0 : (0 : ℝ) < K := lt_of_lt_of_le (by norm_num) hk
   have hqpos : 0 <
-      16 * (K : ℝ) ^ 3 + 160 * (K : ℝ) ^ 2 + 1304 * K + 10440 := by positivity
+      16 * (K : ℝ) ^ (3 : ℕ) + 160 * (K : ℝ) ^ (2 : ℕ) + 1304 * K + 10440 := by positivity
   have hfactor : 0 ≤ ((K : ℝ) - 8) *
-      (16 * (K : ℝ) ^ 3 + 160 * (K : ℝ) ^ 2 + 1304 * K + 10440) :=
+      (16 * (K : ℝ) ^ (3 : ℕ) + 160 * (K : ℝ) ^ (2 : ℕ) + 1304 * K + 10440) :=
     mul_nonneg (sub_nonneg.mpr hk) (le_of_lt hqpos)
-  have hpoly : 8192 * ((K : ℝ) + 1) < (2 * (K : ℝ) + 1) ^ 4 := by
+  have hpoly : 8192 * ((K : ℝ) + 1) < (2 * (K : ℝ) + 1) ^ (4 : ℕ) := by
     nlinarith [hfactor]
   have htScale : t < 1024 * ε * ((K : ℝ) + 1) := by
     have hpi := Real.pi_lt_four
@@ -182,7 +182,7 @@ theorem mobileCut_baseDuhamel_lt_eighth {K : ℕ} {t ε : ℝ}
       (mul_pos (mul_pos (by norm_num : (0 : ℝ) < 256) hε) hk1)
     refine lt_trans (by simpa using ht) ?_
     convert hm using 1 <;> ring
-  have hden : (0 : ℝ) < (2 * (K : ℝ) + 1) ^ 4 := by positivity
+  have hden : (0 : ℝ) < (2 * (K : ℝ) + 1) ^ (4 : ℕ) := by positivity
   norm_num [Nat.cast_add, Nat.cast_mul]
   rw [← div_eq_mul_inv, div_lt_iff₀ hden]
   nlinarith
@@ -219,24 +219,24 @@ quarter of the phase window. -/
 theorem mobilePhaseBridgeTail_lt_quarter {K : ℕ} {t ε : ℝ}
     (hK : 8 ≤ K) (hε : 0 < ε)
     (ht : t < 128 * Real.pi * ε * (K + 1)) :
-    t * (1 / ((4 * K : ℕ) : ℝ) ^ 3) < ε / 4 := by
+    t * (1 / ((4 * K : ℕ) : ℝ) ^ (3 : ℕ)) < ε / 4 := by
   have hKreal : (8 : ℝ) ≤ K := by exact_mod_cast hK
   have hKpos : (0 : ℝ) < K := by positivity
   have hscale : 128 * Real.pi * ε * ((K : ℝ) + 1) <
-      ε / 4 * (4 * (K : ℝ)) ^ 3 := by
-    have hpoly : 32 * ((K : ℝ) + 1) < (K : ℝ) ^ 3 := by
+      ε / 4 * (4 * (K : ℝ)) ^ (3 : ℕ) := by
+    have hpoly : 32 * ((K : ℝ) + 1) < (K : ℝ) ^ (3 : ℕ) := by
       nlinarith [sq_nonneg ((K : ℝ) - 8)]
     have hpi : Real.pi < 4 := Real.pi_lt_four
-    have hpiScale : 8 * Real.pi * ((K : ℝ) + 1) < (K : ℝ) ^ 3 := by
+    have hpiScale : 8 * Real.pi * ((K : ℝ) + 1) < (K : ℝ) ^ (3 : ℕ) := by
       nlinarith
     have hm := mul_lt_mul_of_pos_left hpiScale
       (mul_pos hε (by norm_num : (0 : ℝ) < 16))
     nlinarith
-  have htScale : t < ε / 4 * (4 * (K : ℝ)) ^ 3 := by
+  have htScale : t < ε / 4 * (4 * (K : ℝ)) ^ (3 : ℕ) := by
     have ht' : t < 128 * Real.pi * ε * ((K : ℝ) + 1) := by
       exact_mod_cast ht
     exact lt_trans ht' hscale
-  have hden : (0 : ℝ) < (4 * (K : ℝ)) ^ 3 := by positivity
+  have hden : (0 : ℝ) < (4 * (K : ℝ)) ^ (3 : ℕ) := by positivity
   norm_num [Nat.cast_mul]
   rw [← div_eq_mul_inv, div_lt_iff₀ hden]
   exact htScale

@@ -95,7 +95,7 @@ def xiFullDensityReflectedConnection (z : ℂ) : ℂ :=
       (thetaCuspTailSecondDensityPhaseValue z +
         thetaCuspTailSecondDensityPhaseValue (-z)) *
       thetaCuspTailSecondDensityPhaseValue z -
-    (z ^ 2 + 1 / 4) *
+    (z ^ (2 : ℕ) + 1 / 4) *
       (thetaCuspTailSecondDensityPhaseDerivative (-z) *
           thetaCuspTailSecondDensityPhaseValue z +
         thetaCuspTailSecondDensityPhaseValue (-z) *
@@ -107,7 +107,7 @@ theorem xiFullDensityReflectedConnection_eq_background
     {z : ℂ} (hz : |z.im| < 1) :
     xiFullDensityReflectedConnection z =
       8 * z * XiC z * thetaCuspTailSecondDensityPhaseValue z +
-        4 * z ^ 2 * xiFullDensityWronskian z := by
+        4 * z ^ (2 : ℕ) * xiFullDensityWronskian z := by
   have hvalue := thetaCuspTailSecondDensityPhaseValue_twoSided_crossed hz
   have hderivative :=
     thetaCuspTailSecondDensityPhaseValue_twoSided_derivative_crossed hz
@@ -121,7 +121,7 @@ channel, including the exact completion monomial. -/
 theorem xiFullDensityReflectedConnection_eq_at_XiC_zero
     {z : ℂ} (hzstrip : |z.im| < 1) (hz : XiC z = 0) :
     xiFullDensityReflectedConnection z =
-      4 * z ^ 2 * deriv XiC z *
+      4 * z ^ (2 : ℕ) * deriv XiC z *
         thetaCuspTailSecondDensityPhaseValue z := by
   rw [xiFullDensityReflectedConnection_eq_background hzstrip]
   unfold xiFullDensityWronskian
@@ -262,7 +262,7 @@ def xiFullDensityQuotientValue (z : ℂ) : ℂ :=
 /-- Quotient-rule derivative of the full Xi/full-density quotient. -/
 def xiFullDensityQuotientDerivative (z : ℂ) : ℂ :=
   xiFullDensityWronskian z /
-    thetaCuspTailSecondDensityPhaseValue z ^ 2
+    thetaCuspTailSecondDensityPhaseValue z ^ (2 : ℕ)
 
 /-- Oriented current of the full Xi/full-density quotient. -/
 def xiFullDensityQuotientCurrent (z : ℂ) : ℝ :=
@@ -281,7 +281,7 @@ theorem xiCTaylorFullDensityTransferDerivative_eq_wronskian_div
     (d : ℕ) (z : ℂ) :
     xiCTaylorFullDensityTransferDerivative d z =
       xiCTaylorFullDensityWronskian d z /
-        thetaCuspTailSecondDensityPhaseValue z ^ 2 := by
+        thetaCuspTailSecondDensityPhaseValue z ^ (2 : ℕ) := by
   rfl
 
 private theorem tendsto_xiCTaylorOddIndex :
@@ -316,7 +316,7 @@ theorem tendsto_xiCTaylorFullDensityTransferDerivative
   simpa only [xiCTaylorFullDensityTransferDerivative_eq_wronskian_div,
     xiFullDensityQuotientDerivative] using
     (tendsto_xiCTaylorFullDensityWronskian z).div_const
-      (thetaCuspTailSecondDensityPhaseValue z ^ 2)
+      (thetaCuspTailSecondDensityPhaseValue z ^ (2 : ℕ))
 
 /-- Canonical transfer currents converge pointwise to the current of the full Xi quotient. -/
 theorem tendsto_xiCTaylorFullDensityTransferCurrent

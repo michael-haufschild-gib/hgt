@@ -84,7 +84,7 @@ theorem firstOrderGaugeNormSq_hasDerivAt_zero
     (hV : IsSelfAdjoint (V u))
     (hG : HasDerivAt G (firstOrderGaugeCoefficient c • (V u * G u)) u)
     (x : E) :
-    HasDerivAt (fun t => ‖G t x‖ ^ 2) 0 u := by
+    HasDerivAt (fun t => ‖G t x‖ ^ (2 : ℕ)) 0 u := by
   have hgx : HasDerivAt (fun t => G t x)
       ((firstOrderGaugeCoefficient c • (V u * G u)) x) u := by
     change HasDerivAt (fun t => G t • x)
@@ -108,7 +108,7 @@ theorem firstOrderGaugeNorm_preserved
     (hG : ∀ u, HasDerivAt G (firstOrderGaugeCoefficient c • (V u * G u)) u)
     (hG0 : G 0 = 1) (t : ℝ) (x : E) :
     ‖G t x‖ = ‖x‖ := by
-  have hsquare : ‖G 0 x‖ ^ 2 = ‖G t x‖ ^ 2 := by
+  have hsquare : ‖G 0 x‖ ^ (2 : ℕ) = ‖G t x‖ ^ (2 : ℕ) := by
     refine is_const_of_fderiv_eq_zero
       (fun u => (firstOrderGaugeNormSq_hasDerivAt_zero hc (hV u) (hG u) x).differentiableAt)
       (fun u => ?_) 0 t
@@ -117,7 +117,7 @@ theorem firstOrderGaugeNorm_preserved
     ext
     simp
   rw [hG0] at hsquare
-  change ‖x‖ ^ 2 = ‖G t x‖ ^ 2 at hsquare
+  change ‖x‖ ^ (2 : ℕ) = ‖G t x‖ ^ (2 : ℕ) at hsquare
   nlinarith [norm_nonneg (G t x), norm_nonneg x]
 
 theorem firstOrderGauge_isometry
@@ -201,7 +201,7 @@ theorem firstOrderGaugeNormSq_absolutelyContinuousOnInterval
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
     {c : ℝ} {V : ℝ → E →L[ℂ] E} (hV : LocallyIntegrable V MeasureTheory.volume)
     (x : E) (a b : ℝ) :
-    AbsolutelyContinuousOnInterval (fun t => ‖caratheodoryGauge c V t x‖ ^ 2) a b := by
+    AbsolutelyContinuousOnInterval (fun t => ‖caratheodoryGauge c V t x‖ ^ (2 : ℕ)) a b := by
   have hG := absolutelyContinuousOnInterval_caratheodoryGauge (c := c) hV a b
   let ev : (E →L[ℂ] E) →L[ℂ] E := (ContinuousLinearMap.apply ℂ E) x
   have hev : AbsolutelyContinuousOnInterval
@@ -226,7 +226,7 @@ theorem ae_hasDerivAt_caratheodoryGauge_normSq_zero
     {V : ℝ → E →L[ℂ] E} (hV : LocallyIntegrable V MeasureTheory.volume)
     (hVstar : ∀ t, IsSelfAdjoint (V t)) (x : E) :
     ∀ᵐ t : ℝ ∂MeasureTheory.volume,
-      HasDerivAt (fun u => ‖caratheodoryGauge c V u x‖ ^ 2) 0 t := by
+      HasDerivAt (fun u => ‖caratheodoryGauge c V u x‖ ^ (2 : ℕ)) 0 t := by
   filter_upwards [ae_hasDerivAt_caratheodoryGauge hV] with t ht
   exact firstOrderGaugeNormSq_hasDerivAt_zero hc (hVstar t) ht x
 
@@ -236,7 +236,7 @@ theorem caratheodoryGauge_norm_preserved
     {V : ℝ → E →L[ℂ] E} (hV : LocallyIntegrable V MeasureTheory.volume)
     (hVstar : ∀ t, IsSelfAdjoint (V t)) (t : ℝ) (x : E) :
     ‖caratheodoryGauge c V t x‖ = ‖x‖ := by
-  let q : ℝ → ℝ := fun u => ‖caratheodoryGauge c V u x‖ ^ 2
+  let q : ℝ → ℝ := fun u => ‖caratheodoryGauge c V u x‖ ^ (2 : ℕ)
   have hqAC : AbsolutelyContinuousOnInterval q 0 t :=
     firstOrderGaugeNormSq_absolutelyContinuousOnInterval hV x 0 t
   have hqAE : ∀ᵐ u : ℝ ∂MeasureTheory.volume, HasDerivAt q 0 u :=
@@ -252,10 +252,10 @@ theorem caratheodoryGauge_norm_preserved
     have hFTC := hqAC.integral_deriv_eq_sub
     rw [hintzero] at hFTC
     linarith
-  rw [show q t = ‖caratheodoryGauge c V t x‖ ^ 2 by rfl,
-    show q 0 = ‖caratheodoryGauge c V 0 x‖ ^ 2 by rfl,
+  rw [show q t = ‖caratheodoryGauge c V t x‖ ^ (2 : ℕ) by rfl,
+    show q 0 = ‖caratheodoryGauge c V 0 x‖ ^ (2 : ℕ) by rfl,
     caratheodoryGauge_zero hV] at hsq
-  change ‖caratheodoryGauge c V t x‖ ^ 2 = ‖x‖ ^ 2 at hsq
+  change ‖caratheodoryGauge c V t x‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) at hsq
   change ‖caratheodoryGauge c V t x‖ = ‖x‖
   nlinarith [norm_nonneg (caratheodoryGauge c V t x), norm_nonneg x]
 

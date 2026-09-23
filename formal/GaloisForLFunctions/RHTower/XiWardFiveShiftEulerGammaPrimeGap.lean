@@ -14,9 +14,9 @@ def fiveShiftEulerGammaPolynomial (q t u x : ℝ) : ℝ :=
 theorem fiveShiftEulerGammaPolynomial_eq_coefficients (q t u x : ℝ) :
     fiveShiftEulerGammaPolynomial q t u x =
       -(t * q * u) * x +
-      (t * q + t * u + q * u + t * q * u) * x ^ 2 -
-      (t + q + u + t * q + t * u + q * u) * x ^ 3 +
-      (1 + t + q + u) * x ^ 4 - x ^ 5 := by
+      (t * q + t * u + q * u + t * q * u) * x ^ (2 : ℕ) -
+      (t + q + u + t * q + t * u + q * u) * x ^ (3 : ℕ) +
+      (1 + t + q + u) * x ^ (4 : ℕ) - x ^ (5 : ℕ) := by
   rw [fiveShiftEulerGammaPolynomial]
   ring
 
@@ -171,9 +171,9 @@ theorem fiveShiftEulerGammaCoefficient_sum (q t u : ℝ) :
 
 theorem fiveShiftEulerGammaCoefficient_qsum (q t u : ℝ) :
     -(t * q * u) * q +
-      (t * q + t * u + q * u + t * q * u) * q ^ 2 -
-      (t + q + u + t * q + t * u + q * u) * q ^ 3 +
-      (1 + t + q + u) * q ^ 4 - q ^ 5 = 0 := by ring
+      (t * q + t * u + q * u + t * q * u) * q ^ (2 : ℕ) -
+      (t + q + u + t * q + t * u + q * u) * q ^ (3 : ℕ) +
+      (1 + t + q + u) * q ^ (4 : ℕ) - q ^ (5 : ℕ) = 0 := by ring
 
 theorem fiveShiftEulerGammaFeature_eq_sourceEnergy (r : ℝ) (z : ℂ) :
     fiveShiftEulerGammaFeature r (-z.im) =
@@ -204,29 +204,29 @@ theorem fiveShiftEulerGammaFeature_eq_sourceEnergy (r : ℝ) (z : ℂ) :
     ring
   rw [hx]
   rw [show centeredRealSourceShiftEnergyGain (2 * r) z =
-      centeredRealSourceShiftEnergyGain r z ^ 2 by
+      centeredRealSourceShiftEnergyGain r z ^ (2 : ℕ) by
         simpa using centeredRealSourceShiftEnergyGain_nat_mul 2 r z,
     show centeredRealSourceShiftEnergyGain (3 * r) z =
-      centeredRealSourceShiftEnergyGain r z ^ 3 by
+      centeredRealSourceShiftEnergyGain r z ^ (3 : ℕ) by
         simpa using centeredRealSourceShiftEnergyGain_nat_mul 3 r z,
     show centeredRealSourceShiftEnergyGain (4 * r) z =
-      centeredRealSourceShiftEnergyGain r z ^ 4 by
+      centeredRealSourceShiftEnergyGain r z ^ (4 : ℕ) by
         simpa using centeredRealSourceShiftEnergyGain_nat_mul 4 r z,
     show centeredRealSourceShiftEnergyGain (5 * r) z =
-      centeredRealSourceShiftEnergyGain r z ^ 5 by
+      centeredRealSourceShiftEnergyGain r z ^ (5 : ℕ) by
         simpa using centeredRealSourceShiftEnergyGain_nat_mul 5 r z]
 
 def fiveShiftCriticalSymbolEnergyCurrent (r x : ℝ) : ℝ :=
   let q := Real.exp (-2 * r)
   let t := Real.exp (-(6 / 5 : ℝ) * r)
   let u := Real.exp (-(21 / 10 : ℝ) * r)
-  (-(t * q * u) * ‖criticalShiftSymbol r x‖ ^ 2 +
+  (-(t * q * u) * ‖criticalShiftSymbol r x‖ ^ (2 : ℕ) +
     (t * q + t * u + q * u + t * q * u) *
-      ‖criticalShiftSymbol (2 * r) x‖ ^ 2 -
+      ‖criticalShiftSymbol (2 * r) x‖ ^ (2 : ℕ) -
     (t + q + u + t * q + t * u + q * u) *
-      ‖criticalShiftSymbol (3 * r) x‖ ^ 2 +
-    (1 + t + q + u) * ‖criticalShiftSymbol (4 * r) x‖ ^ 2 -
-    ‖criticalShiftSymbol (5 * r) x‖ ^ 2)
+      ‖criticalShiftSymbol (3 * r) x‖ ^ (2 : ℕ) +
+    (1 + t + q + u) * ‖criticalShiftSymbol (4 * r) x‖ ^ (2 : ℕ) -
+    ‖criticalShiftSymbol (5 * r) x‖ ^ (2 : ℕ))
 
 theorem fiveShiftCriticalSymbolEnergyCurrent_rightTail
     {r x : ℝ} (hr : 0 ≤ r) (hx : 0 ≤ x) :
@@ -237,19 +237,19 @@ theorem fiveShiftCriticalSymbolEnergyCurrent_rightTail
     norm_criticalShiftSymbol_sq_of_nonneg (by nlinarith : 0 ≤ 3 * r) hx,
     norm_criticalShiftSymbol_sq_of_nonneg (by nlinarith : 0 ≤ 4 * r) hx,
     norm_criticalShiftSymbol_sq_of_nonneg (by nlinarith : 0 ≤ 5 * r) hx]
-  have h2 : Real.exp (-2 * (2 * r)) = Real.exp (-2 * r) ^ 2 := by
+  have h2 : Real.exp (-2 * (2 * r)) = Real.exp (-2 * r) ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  have h3 : Real.exp (-2 * (3 * r)) = Real.exp (-2 * r) ^ 3 := by
+  have h3 : Real.exp (-2 * (3 * r)) = Real.exp (-2 * r) ^ (3 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
-  have h4 : Real.exp (-2 * (4 * r)) = Real.exp (-2 * r) ^ 4 := by
+  have h4 : Real.exp (-2 * (4 * r)) = Real.exp (-2 * r) ^ (4 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
-  have h5 : Real.exp (-2 * (5 * r)) = Real.exp (-2 * r) ^ 5 := by
+  have h5 : Real.exp (-2 * (5 * r)) = Real.exp (-2 * r) ^ (5 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring

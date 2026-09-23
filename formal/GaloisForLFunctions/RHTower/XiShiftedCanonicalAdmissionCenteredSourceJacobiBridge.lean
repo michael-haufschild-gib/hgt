@@ -24,7 +24,7 @@ theorem degreeCenteredOrthoJacobiHistory_eq_gaussNodeEnergy_add_alphaTrace
     {s : ℕ → ℝ} {N n : ℕ} (h : PositiveMomentFormBelow s N)
     (hn : 2 ≤ n) (hnN : n < N) :
     degreeCenteredOrthoJacobiHistory s n =
-      (∑ x ∈ gaussNodes s (n - 1), x ^ 2) +
+      (∑ x ∈ gaussNodes s (n - 1), x ^ (2 : ℕ)) +
         monicOrthoAlpha s n * gaussNodeTrace s (n - 1) := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt (by omega : 0 < n))
   simp only [Nat.succ_sub_one]
@@ -34,8 +34,8 @@ theorem degreeCenteredOrthoJacobiHistory_eq_gaussNodeEnergy_add_alphaTrace
     rw [gaussNodeTrace, gaussNodes, Finset.sum_eq_multiset_sum, Multiset.toFinset_val,
       Multiset.dedup_eq_self.mpr hnodup]
     simp
-  have henergy : (∑ x ∈ gaussNodes s m, x ^ 2) =
-      ((monicOrtho s (m + 1)).roots.map fun x => x ^ 2).sum := by
+  have henergy : (∑ x ∈ gaussNodes s m, x ^ (2 : ℕ)) =
+      ((monicOrtho s (m + 1)).roots.map fun x => x ^ (2 : ℕ)).sum := by
     rw [gaussNodes, Finset.sum_eq_multiset_sum, Multiset.toFinset_val,
       Multiset.dedup_eq_self.mpr hnodup]
   have hrootsum := monicOrtho_roots_sum_eq_sum_alpha_below
@@ -65,7 +65,7 @@ theorem xiShiftedCanonicalAdmissionDegreeCenteredCompletedArithmeticSource_eq_no
           (xiShiftedRealMomentSequence w) n) =
       2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
         ((∑ x ∈ HTGeometry.gaussNodes
-            (xiShiftedRealMomentSequence w) (n - 1), x ^ 2) +
+            (xiShiftedRealMomentSequence w) (n - 1), x ^ (2 : ℕ)) +
           HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n *
             HTGeometry.gaussNodeTrace (xiShiftedRealMomentSequence w) (n - 1)) := by
   let s := xiShiftedRealMomentSequence w
@@ -87,15 +87,15 @@ theorem massSq_mul_degreeCenteredCompletedArithmeticSource_eq_centeredResidueBal
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 2 ≤ n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
-    (w ^ 2) ^ 2 *
+    (w ^ (2 : ℕ)) ^ (2 : ℕ) *
         xiShiftedDegreeCenteredCompletedArithmeticSource w n
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) n) =
       2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
         (HTGeometry.gaussApexCenteredResidueTotal
-            (xiShiftedRealMomentSequence w) (n - 1) (w ^ 2) +
+            (xiShiftedRealMomentSequence w) (n - 1) (w ^ (2 : ℕ)) +
           (n : ℝ) +
-          (w ^ 2) ^ 2 *
+          (w ^ (2 : ℕ)) ^ (2 : ℕ) *
             HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n *
               HTGeometry.gaussNodeTrace
                 (xiShiftedRealMomentSequence w) (n - 1)) := by
@@ -113,14 +113,14 @@ theorem gaussApexCenteredResidueTotal_eq_completedArithmeticSource
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     HTGeometry.gaussApexCenteredResidueTotal
-        (xiShiftedRealMomentSequence w) (n - 1) (w ^ 2) =
-      (w ^ 2) ^ 2 *
+        (xiShiftedRealMomentSequence w) (n - 1) (w ^ (2 : ℕ)) =
+      (w ^ (2 : ℕ)) ^ (2 : ℕ) *
           xiShiftedDegreeCenteredCompletedArithmeticSource w n
             (HTGeometry.monicMomentAdmissionPolynomial
               (xiShiftedRealMomentSequence w) n) /
         (2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n) -
       (n : ℝ) -
-      (w ^ 2) ^ 2 * HTGeometry.monicOrthoAlpha
+      (w ^ (2 : ℕ)) ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha
           (xiShiftedRealMomentSequence w) n *
         HTGeometry.gaussNodeTrace (xiShiftedRealMomentSequence w) (n - 1) := by
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
@@ -133,15 +133,15 @@ theorem gaussApexCenteredResidueTotal_eq_completedArithmeticSource
   have hden : 2 * HTGeometry.monicOrthoNormSq
       (xiShiftedRealMomentSequence w) n ≠ 0 := mul_ne_zero (by norm_num) hnorm
   have hquot :
-      (w ^ 2) ^ 2 *
+      (w ^ (2 : ℕ)) ^ (2 : ℕ) *
           xiShiftedDegreeCenteredCompletedArithmeticSource w n
             (HTGeometry.monicMomentAdmissionPolynomial
               (xiShiftedRealMomentSequence w) n) /
         (2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n) =
       HTGeometry.gaussApexCenteredResidueTotal
-          (xiShiftedRealMomentSequence w) (n - 1) (w ^ 2) +
+          (xiShiftedRealMomentSequence w) (n - 1) (w ^ (2 : ℕ)) +
         (n : ℝ) +
-        (w ^ 2) ^ 2 * HTGeometry.monicOrthoAlpha
+        (w ^ (2 : ℕ)) ^ (2 : ℕ) * HTGeometry.monicOrthoAlpha
             (xiShiftedRealMomentSequence w) n *
           HTGeometry.gaussNodeTrace (xiShiftedRealMomentSequence w) (n - 1) := by
     apply (div_eq_iff hden).2

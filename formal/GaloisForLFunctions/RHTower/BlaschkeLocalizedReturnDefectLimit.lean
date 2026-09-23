@@ -37,7 +37,7 @@ theorem tendsto_one_add_nat_mul_exp_neg_sqrt :
         atTop (𝓝 0) := by
     apply htwo.congr'
     filter_upwards with k
-    change Real.sqrt (k : ℝ) ^ 2 *
+    change Real.sqrt (k : ℝ) ^ (2 : ℕ) *
         Real.exp (-Real.sqrt (k : ℝ)) =
       (k : ℝ) * Real.exp (-Real.sqrt (k : ℝ))
     rw [Real.sq_sqrt (Nat.cast_nonneg k)]
@@ -65,7 +65,7 @@ theorem tendsto_blaschkeActiveWaterReturnDefect_sqrtShift_ratio_zero
   have hC : 0 ≤ C := by
     dsimp only [C, blaschkeReturnDefectLinearConstant]
     have hrho := blaschkeSpectralSlope_pos a ha0 ha1
-    have hbase : 0 < 1 - a ^ 2 := by nlinarith
+    have hbase : 0 < 1 - a ^ (2 : ℕ) := by nlinarith
     positivity
   have hD : 0 ≤ D := by
     dsimp only [D]
@@ -81,7 +81,7 @@ theorem tendsto_blaschkeActiveWaterReturnDefect_sqrtShift_ratio_zero
   · filter_upwards with k
     apply div_nonneg
     · rw [blaschkeActiveWaterReturnDefect]
-      have hbase : 0 < 1 - a ^ 2 := by nlinarith
+      have hbase : 0 < 1 - a ^ (2 : ℕ) := by nlinarith
       positivity
     · exact (Real.exp_pos _).le
   · filter_upwards [eventually_ge_atTop 1] with k hk

@@ -31,16 +31,16 @@ theorem egbCoexistenceASymmetricRatio_radius_sum (τ : ℝ) :
   nlinarith [egbCoexistenceASymmetricRatio_cross τ]
 
 theorem egbCoexistenceASymmetricRatio_square_sum (τ : ℝ) :
-    thermalRatio τ ^ 2 + 1 =
-      2 * (1 + egbCoexistenceASymmetricRatio τ ^ 2) / (1 + egbCoexistenceASymmetricRatio τ) ^ 2 := by
+    thermalRatio τ ^ (2 : ℕ) + 1 =
+      2 * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) / (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   rw [egbCoexistenceASymmetricRatio_inversion]
   field_simp
   ring
 
 theorem egbCoexistenceASymmetricRatio_quadratic_sum (τ : ℝ) :
-    thermalRatio τ ^ 2 + thermalRatio τ + 1 =
-      (3 + egbCoexistenceASymmetricRatio τ ^ 2) / (1 + egbCoexistenceASymmetricRatio τ) ^ 2 := by
+    thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1 =
+      (3 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) / (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   simp only [egbCoexistenceASymmetricRatio_inversion]
   field_simp
@@ -48,7 +48,7 @@ theorem egbCoexistenceASymmetricRatio_quadratic_sum (τ : ℝ) :
 
 theorem egbCoexistenceASymmetricRatio_shape (τ : ℝ) :
     egbCoexistenceShape τ =
-      (6 - 2 * egbCoexistenceASymmetricRatio τ ^ 2) / (1 + egbCoexistenceASymmetricRatio τ) ^ 2 := by
+      (6 - 2 * egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) / (1 + egbCoexistenceASymmetricRatio τ) ^ (2 : ℕ) := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   simp only [egbCoexistenceShape, egbCoexistenceASymmetricRatio_inversion]
   field_simp

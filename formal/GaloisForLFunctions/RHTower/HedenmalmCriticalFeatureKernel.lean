@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.CCMQuartetPaleyWiener
 Critical conormal features have an explicit two-sided Laplace kernel.  For strip points `w,z`,
 evaluation of the feature centered at `w` is
 
-`2 / (1 + (z - conj w)^2)`.
+`2 / (1 + (z - conj w)^(2 : ℕ))`.
 
 The open half-strip makes both Laplace rates strict and keeps the denominator nonzero.  In
 particular every strip evaluation is seen by every real-centered critical feature.  This removes
@@ -141,11 +141,11 @@ theorem integral_criticalFeatureRaw_mul_sourceChar {w z : ℂ}
 
 theorem criticalFeatureKernelDenominator_ne_zero {w z : ℂ}
     (hw : |w.im| < 1 / 2) (hz : |z.im| < 1 / 2) :
-    1 + (z - (starRingEnd ℂ) w) ^ 2 ≠ 0 := by
+    1 + (z - (starRingEnd ℂ) w) ^ (2 : ℕ) ≠ 0 := by
   have hp := criticalFeatureKernelPlusRate_ne_zero hw hz
   have hm := criticalFeatureKernelMinusRate_ne_zero hw hz
   have hfactor :
-      1 + (z - (starRingEnd ℂ) w) ^ 2 =
+      1 + (z - (starRingEnd ℂ) w) ^ (2 : ℕ) =
         -(criticalFeatureKernelMinusRate w z *
           criticalFeatureKernelPlusRate w z) := by
     rw [criticalFeatureKernelMinusRate, criticalFeatureKernelPlusRate]
@@ -159,7 +159,7 @@ theorem criticalFeatureKernel_rate_algebra {w z : ℂ}
     (hw : |w.im| < 1 / 2) (hz : |z.im| < 1 / 2) :
     (criticalFeatureKernelMinusRate w z)⁻¹ -
         (criticalFeatureKernelPlusRate w z)⁻¹ =
-      2 / (1 + (z - (starRingEnd ℂ) w) ^ 2) := by
+      2 / (1 + (z - (starRingEnd ℂ) w) ^ (2 : ℕ)) := by
   have hp := criticalFeatureKernelPlusRate_ne_zero hw hz
   have hm := criticalFeatureKernelMinusRate_ne_zero hw hz
   have hden := criticalFeatureKernelDenominator_ne_zero hw hz
@@ -173,7 +173,7 @@ theorem criticalFeatureKernel_rate_algebra {w z : ℂ}
 theorem criticalEvaluation_criticalFeature_eq {w z : ℂ}
     (hw : |w.im| < 1 / 2) (hz : |z.im| < 1 / 2) :
     criticalEvaluation z hz (criticalFeature w hw) =
-      2 / (1 + (z - (starRingEnd ℂ) w) ^ 2) := by
+      2 / (1 + (z - (starRingEnd ℂ) w) ^ (2 : ℕ)) := by
   rw [criticalEvaluation_eq_integral]
   calc
     (∫ x : ℝ, (criticalFeature w hw : ℝ → ℂ) x * sourceChar z x) =
@@ -186,7 +186,7 @@ theorem criticalEvaluation_criticalFeature_eq {w z : ℂ}
     _ = (criticalFeatureKernelMinusRate w z)⁻¹ -
         (criticalFeatureKernelPlusRate w z)⁻¹ :=
       integral_criticalFeatureRaw_mul_sourceChar hw hz
-    _ = 2 / (1 + (z - (starRingEnd ℂ) w) ^ 2) :=
+    _ = 2 / (1 + (z - (starRingEnd ℂ) w) ^ (2 : ℕ)) :=
       criticalFeatureKernel_rate_algebra hw hz
 
 theorem criticalEvaluation_criticalFeature_ne_zero {w z : ℂ}

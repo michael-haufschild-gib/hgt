@@ -25,7 +25,7 @@ variable {I : Type*} [Fintype I]
 /-- The quadratic-rate defect of a spectral action: the square of the action minus the given
 multiple of the Hilbert--Schmidt rate. -/
 def quadraticRateDefect (c : I → ℝ) (κ : ℝ) (E : I → ℝ) : ℝ :=
-  (∑ i, c i * E i) ^ 2 - κ * ∑ i, E i ^ 2
+  (∑ i, c i * E i) ^ (2 : ℕ) - κ * ∑ i, E i ^ (2 : ℕ)
 
 /-! ## Localisation along a line -/
 
@@ -35,14 +35,14 @@ theorem quadraticRateDefect_affine (c : I → ℝ) (κ : ℝ) (p E : I → ℝ) 
     quadraticRateDefect c κ (fun i => p i + s * E i)
       = quadraticRateDefect c κ p
         + s * (2 * (∑ i, c i * p i) * (∑ i, c i * E i) - 2 * κ * ∑ i, p i * E i)
-        + s ^ 2 * quadraticRateDefect c κ E := by
+        + s ^ (2 : ℕ) * quadraticRateDefect c κ E := by
   have h1 : (∑ i, c i * (p i + s * E i)) = (∑ i, c i * p i) + s * ∑ i, c i * E i := by
     rw [Finset.mul_sum, ← Finset.sum_add_distrib]
     exact Finset.sum_congr rfl fun i _ => by ring
-  have h2 : (∑ i, (p i + s * E i) ^ 2)
-      = (∑ i, p i ^ 2) + 2 * s * (∑ i, p i * E i) + s ^ 2 * ∑ i, E i ^ 2 := by
-    rw [show (∑ i, p i ^ 2) + 2 * s * (∑ i, p i * E i) + s ^ 2 * ∑ i, E i ^ 2
-        = ∑ i, (p i ^ 2 + 2 * s * (p i * E i) + s ^ 2 * E i ^ 2) from by
+  have h2 : (∑ i, (p i + s * E i) ^ (2 : ℕ))
+      = (∑ i, p i ^ (2 : ℕ)) + 2 * s * (∑ i, p i * E i) + s ^ (2 : ℕ) * ∑ i, E i ^ (2 : ℕ) := by
+    rw [show (∑ i, p i ^ (2 : ℕ)) + 2 * s * (∑ i, p i * E i) + s ^ (2 : ℕ) * ∑ i, E i ^ (2 : ℕ)
+        = ∑ i, (p i ^ (2 : ℕ) + 2 * s * (p i * E i) + s ^ (2 : ℕ) * E i ^ (2 : ℕ)) from by
       rw [Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]]
     exact Finset.sum_congr rfl fun i _ => by ring
   simp only [quadraticRateDefect]
@@ -57,11 +57,11 @@ theorem quadraticRateDefect_eq_zero_of_symmetric_pair (c : I → ℝ) (κ : ℝ)
     quadraticRateDefect c κ E = 0 := by
   rw [quadraticRateDefect_affine c κ p E s, h0, zero_add] at hplus
   rw [quadraticRateDefect_affine c κ p E (-s), h0, zero_add] at hminus
-  have hsum : 2 * s ^ 2 * quadraticRateDefect c κ E = 0 := by
-    have : (-s) ^ 2 = s ^ 2 := by ring
+  have hsum : 2 * s ^ (2 : ℕ) * quadraticRateDefect c κ E = 0 := by
+    have : (-s) ^ (2 : ℕ) = s ^ (2 : ℕ) := by ring
     rw [this] at hminus
     linarith
-  have hs2 : (s : ℝ) ^ 2 ≠ 0 := pow_ne_zero 2 hs
+  have hs2 : (s : ℝ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hs
   rcases mul_eq_zero.mp hsum with h | h
   · exact absurd h (by positivity)
   · exact h
@@ -98,11 +98,11 @@ theorem quadraticRateDefect_eq_zero_of_nhds (c : I → ℝ) (κ : ℝ) (p : I �
 /-- **Homogeneity.**  The quadratic-rate defect is homogeneous of degree two, so vanishing on a
 sphere patch is the same as vanishing on the open cone over it. -/
 theorem quadraticRateDefect_smul (c : I → ℝ) (κ t : ℝ) (F : I → ℝ) :
-    quadraticRateDefect c κ (fun i => t * F i) = t ^ 2 * quadraticRateDefect c κ F := by
+    quadraticRateDefect c κ (fun i => t * F i) = t ^ (2 : ℕ) * quadraticRateDefect c κ F := by
   have h1 : (∑ i, c i * (t * F i)) = t * ∑ i, c i * F i := by
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => by ring
-  have h2 : (∑ i, (t * F i) ^ 2) = t ^ 2 * ∑ i, F i ^ 2 := by
+  have h2 : (∑ i, (t * F i) ^ (2 : ℕ)) = t ^ (2 : ℕ) * ∑ i, F i ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => by ring
   simp only [quadraticRateDefect]
@@ -126,8 +126,8 @@ theorem sum_mul_levelPairDirection (c : I → ℝ) (i j : I) :
   simp
 
 theorem sum_sq_levelPairDirection {i j : I} (hij : i ≠ j) :
-    ∑ x, levelPairDirection (I := I) i j x ^ 2 = 2 := by
-  have hval : ∀ x : I, levelPairDirection (I := I) i j x ^ 2
+    ∑ x, levelPairDirection (I := I) i j x ^ (2 : ℕ) = 2 := by
+  have hval : ∀ x : I, levelPairDirection (I := I) i j x ^ (2 : ℕ)
       = (if x = i then (1:ℝ) else 0) + (if x = j then (1:ℝ) else 0) := by
     intro x
     have hji : ¬ (j = i) := fun hh => hij hh.symm
@@ -142,7 +142,7 @@ theorem sum_sq_levelPairDirection {i j : I} (hij : i ≠ j) :
 
 /-- The quadratic-rate defect on a two-level direction. -/
 theorem quadraticRateDefect_levelPairDirection (c : I → ℝ) (κ : ℝ) {i j : I} (hij : i ≠ j) :
-    quadraticRateDefect c κ (levelPairDirection (I := I) i j) = (c i - c j) ^ 2 - 2 * κ := by
+    quadraticRateDefect c κ (levelPairDirection (I := I) i j) = (c i - c j) ^ (2 : ℕ) - 2 * κ := by
   rw [quadraticRateDefect, sum_mul_levelPairDirection c i j, sum_sq_levelPairDirection hij]
   ring
 
@@ -157,15 +157,15 @@ theorem quadraticRate_traceless_rigidity (hcard : 3 ≤ Fintype.card I) (c : I �
   obtain ⟨t, -, ht3⟩ := Finset.exists_subset_card_eq (s := (Finset.univ : Finset I)) (n := 3)
     (by simpa using hcard)
   obtain ⟨i, j, l, hij, hil, hjl, -⟩ := Finset.card_eq_three.mp ht3
-  have hpair : ∀ x y : I, x ≠ y → (c x - c y) ^ 2 = 2 * κ := by
+  have hpair : ∀ x y : I, x ≠ y → (c x - c y) ^ (2 : ℕ) = 2 * κ := by
     intro x y hxy
     have := h (levelPairDirection (I := I) x y) (sum_levelPairDirection x y)
     rw [quadraticRateDefect_levelPairDirection c κ hxy] at this
     linarith
   -- three pairwise differences of one triple force the multiple to vanish
-  have hu : (c i - c j) ^ 2 = 2 * κ := hpair i j hij
-  have hv : (c i - c l) ^ 2 = 2 * κ := hpair i l hil
-  have hw : (c j - c l) ^ 2 = 2 * κ := hpair j l hjl
+  have hu : (c i - c j) ^ (2 : ℕ) = 2 * κ := hpair i j hij
+  have hv : (c i - c l) ^ (2 : ℕ) = 2 * κ := hpair i l hil
+  have hw : (c j - c l) ^ (2 : ℕ) = 2 * κ := hpair j l hjl
   have hprod : (c i - c l) * (c j - c l) = κ := by nlinarith [hu, hv, hw]
   have hkappa : κ = 0 := by nlinarith [hv, hw, hprod]
   refine ⟨hkappa, ?_⟩
@@ -176,7 +176,7 @@ theorem quadraticRate_traceless_rigidity (hcard : 3 ≤ Fintype.card I) (c : I �
     · rw [hxy]
     · have := hpair x y hxy
       rw [hkappa] at this
-      have hzero : (c x - c y) ^ 2 = 0 := by linarith
+      have hzero : (c x - c y) ^ (2 : ℕ) = 0 := by linarith
       have := pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hzero
       linarith
   have hne : Nonempty I := by

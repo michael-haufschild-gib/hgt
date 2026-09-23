@@ -16,12 +16,12 @@ corner is exactly the Schur-complement capacity of the actual Gamma--Xi source r
 
 The heads are canonical grids `i/(N+1)` containing both wall origin and collapsing node
 `1/(N+1)`. Two-node saturation and global singular graph wall squeeze target capacity to exact
-graph energy `4+|d|^2`. Fixed-head source convergence is then upgraded by one strictly cofinal
+graph energy `4+|d|^(2 : ℕ)`. Fixed-head source convergence is then upgraded by one strictly cofinal
 diagonal selection. Along that same schedule:
 
 * source finite self-adjoint operators converge in operator norm to singular target heads;
-* complete moving boundary column converges in `ell^1`, hence at every moving node;
-* actual minimum completion budgets converge to `4+|d|^2`.
+* complete moving boundary column converges in `ell^(1 : ℕ)`, hence at every moving node;
+* actual minimum completion budgets converge to `4+|d|^(2 : ℕ)`.
 
 Thus boundary transport preserves singular Gamma--Xi debt instead of erasing it through an
 uncontrolled completion. No RH assumption or abstract source-convergence premise is used.
@@ -325,9 +325,9 @@ theorem mobiusGammaXiCoupledErrorSingularWall_firstTwo (N : ℕ) :
 
 theorem mobiusGammaXiCoupledErrorSingularBudget_lower (N : ℕ) :
     4 + mobiusGammaXiCoupledErrorSingularGraphDebt -
-        8 * mobiusCriticalHardySaturationScale N ^ 2 *
+        8 * mobiusCriticalHardySaturationScale N ^ (2 : ℕ) *
           (2 * mobiusCriticalHardySaturationScale N + 3) /
-          ((1 + mobiusCriticalHardySaturationScale N) ^ 2 *
+          ((1 + mobiusCriticalHardySaturationScale N) ^ (2 : ℕ) *
             (1 + 2 * mobiusCriticalHardySaturationScale N)) ≤
       mobiusGammaXiCoupledErrorSingularBudget N := by
   have hpos : (mobiusGammaXiCoupledErrorSingularCompletion N).PosSemidef :=
@@ -342,9 +342,9 @@ theorem mobiusGammaXiCoupledErrorSingularBudget_lower (N : ℕ) :
   rw [mobiusCriticalHardyMassSaturation_budget_quadratic_eq
     (mobiusCriticalHardySaturationScale_pos N)] at hquad
   have hc : (0 : ℂ) ≤
-      ((8 * mobiusCriticalHardySaturationScale N ^ 2 *
+      ((8 * mobiusCriticalHardySaturationScale N ^ (2 : ℕ) *
             (2 * mobiusCriticalHardySaturationScale N + 3) /
-            ((1 + mobiusCriticalHardySaturationScale N) ^ 2 *
+            ((1 + mobiusCriticalHardySaturationScale N) ^ (2 : ℕ) *
               (1 + 2 * mobiusCriticalHardySaturationScale N)) +
           mobiusGammaXiCoupledErrorSingularBudget N - 4 -
           Complex.normSq mobiusGammaXiCoupledErrorCriticalCoefficient : ℝ) : ℂ) := by
@@ -354,9 +354,9 @@ theorem mobiusGammaXiCoupledErrorSingularBudget_lower (N : ℕ) :
   rw [RCLike.le_iff_re_im] at hc
   have hre := hc.1
   change 0 ≤
-    8 * mobiusCriticalHardySaturationScale N ^ 2 *
+    8 * mobiusCriticalHardySaturationScale N ^ (2 : ℕ) *
           (2 * mobiusCriticalHardySaturationScale N + 3) /
-          ((1 + mobiusCriticalHardySaturationScale N) ^ 2 *
+          ((1 + mobiusCriticalHardySaturationScale N) ^ (2 : ℕ) *
             (1 + 2 * mobiusCriticalHardySaturationScale N)) +
       mobiusGammaXiCoupledErrorSingularBudget N - 4 -
         Complex.normSq mobiusGammaXiCoupledErrorCriticalCoefficient at hre
@@ -364,19 +364,19 @@ theorem mobiusGammaXiCoupledErrorSingularBudget_lower (N : ℕ) :
   linarith
 
 def mobiusGammaXiCoupledErrorSaturationResidual (N : ℕ) : ℝ :=
-  8 * mobiusCriticalHardySaturationScale N ^ 2 *
+  8 * mobiusCriticalHardySaturationScale N ^ (2 : ℕ) *
       (2 * mobiusCriticalHardySaturationScale N + 3) /
-    ((1 + mobiusCriticalHardySaturationScale N) ^ 2 *
+    ((1 + mobiusCriticalHardySaturationScale N) ^ (2 : ℕ) *
       (1 + 2 * mobiusCriticalHardySaturationScale N))
 
 theorem tendsto_mobiusGammaXiCoupledErrorSaturationResidual :
     Tendsto mobiusGammaXiCoupledErrorSaturationResidual atTop (𝓝 0) := by
   let r : ℝ → ℝ := fun t =>
-    8 * t ^ 2 * (2 * t + 3) / ((1 + t) ^ 2 * (1 + 2 * t))
+    8 * t ^ (2 : ℕ) * (2 * t + 3) / ((1 + t) ^ (2 : ℕ) * (1 + 2 * t))
   have hr : ContinuousAt r 0 := by
-    have hn : ContinuousAt (fun t : ℝ => 8 * t ^ 2 * (2 * t + 3)) 0 := by
+    have hn : ContinuousAt (fun t : ℝ => 8 * t ^ (2 : ℕ) * (2 * t + 3)) 0 := by
       fun_prop
-    have hd : ContinuousAt (fun t : ℝ => (1 + t) ^ 2 * (1 + 2 * t)) 0 := by
+    have hd : ContinuousAt (fun t : ℝ => (1 + t) ^ (2 : ℕ) * (1 + 2 * t)) 0 := by
       fun_prop
     exact hn.div hd (by norm_num)
   have hscale : Tendsto mobiusCriticalHardySaturationScale atTop (𝓝 0) :=
@@ -386,9 +386,9 @@ theorem tendsto_mobiusGammaXiCoupledErrorSaturationResidual :
   have hr0 : r 0 = 0 := by norm_num [r]
   rw [hr0] at hcomp
   change Tendsto (fun N =>
-    8 * mobiusCriticalHardySaturationScale N ^ 2 *
+    8 * mobiusCriticalHardySaturationScale N ^ (2 : ℕ) *
         (2 * mobiusCriticalHardySaturationScale N + 3) /
-      ((1 + mobiusCriticalHardySaturationScale N) ^ 2 *
+      ((1 + mobiusCriticalHardySaturationScale N) ^ (2 : ℕ) *
         (1 + 2 * mobiusCriticalHardySaturationScale N))) atTop (𝓝 0)
   simpa [Function.comp_def, r] using hcomp
 

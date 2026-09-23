@@ -53,9 +53,9 @@ theorem canonicalNegativeEulerSheet_divisor_polarity :
     exact _root_.RHTower.riemannZeta_real_strip_ne_zero (σ := 1 / 2)
       (by norm_num) (by norm_num) (by simpa using hzero)
   have hnum : AnalyticAt ℂ (fun z : ℂ => riemannZeta (2 * z)) ρ :=
-    (_root_.RHTower.analyticAt_riemannZeta h2ρ1).comp (by fun_prop)
+    (_root_.RHTower.analyticAt_riemannZeta_primeShiftResidueClosability h2ρ1).comp (by fun_prop)
   have hden : AnalyticAt ℂ riemannZeta ρ :=
-    _root_.RHTower.analyticAt_riemannZeta hρ1
+    _root_.RHTower.analyticAt_riemannZeta_primeShiftResidueClosability hρ1
   have hz2 : riemannZeta (2 * ρ) ≠ 0 := by
     apply riemannZeta_ne_zero_of_one_le_re
     rw [Complex.mul_re]
@@ -81,7 +81,7 @@ theorem canonicalNegativeEulerSheet_has_pole_at_right_half_zeta_zero :
     subst ρ
     exact riemannZeta_ne_zero_of_one_le_re (by simp) hzero
   have hana : AnalyticAt ℂ riemannZeta ρ :=
-    _root_.RHTower.analyticAt_riemannZeta hρ1
+    _root_.RHTower.analyticAt_riemannZeta_primeShiftResidueClosability hρ1
   have htend : Tendsto riemannZeta (nhdsWithin ρ {ρ}ᶜ) (nhds 0) := by
     have hc : ContinuousWithinAt riemannZeta {ρ}ᶜ ρ :=
       hana.continuousAt.continuousWithinAt

@@ -32,8 +32,8 @@ private theorem diskToRight_re_neg_of_one_lt_norm {u : ℂ} (hu : 1 < ‖u‖) :
     norm_num at hu
   have hden : 1 - u ≠ 0 := sub_ne_zero.mpr (Ne.symm hu1)
   have hnormsq : 0 < Complex.normSq (1 - u) := Complex.normSq_pos.mpr hden
-  have hsq : 1 < u.re ^ 2 + u.im ^ 2 := by
-    have hsquare : 1 < ‖u‖ ^ 2 := by
+  have hsq : 1 < u.re ^ (2 : ℕ) + u.im ^ (2 : ℕ) := by
+    have hsquare : 1 < ‖u‖ ^ (2 : ℕ) := by
       nlinarith [norm_nonneg u]
     rw [Complex.sq_norm, Complex.normSq_apply] at hsquare
     simpa [pow_two] using hsquare

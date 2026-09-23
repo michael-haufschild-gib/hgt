@@ -33,7 +33,7 @@ theorem continuous_plainKernel (N : ℕ) : Continuous (plainKernel N) :=
 /-- **The sum of the squared dual coefficients is the kernel double integral.** -/
 theorem sum_normSq_dualCoeff_eq {N : ℕ} (a : Fin N → ℂ) {T : ℝ} {E : Set ℝ}
     (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-T) T) :
-    ((∑ n : Fin N, ‖dualCoeff N a E n‖ ^ 2 : ℝ) : ℂ)
+    ((∑ n : Fin N, ‖dualCoeff N a E n‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∫ t in E, ∫ u in E, plainKernel N (t - u)
           * (starRingEnd ℂ) (dirPoly N a t) * dirPoly N a u := by
   classical
@@ -114,26 +114,26 @@ theorem setIntegral_normSq_dirPoly_le_HM {N : ℕ} (a : Fin N → ℂ) {T M : �
     (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-T) T)
     (hrow : ∀ t ∈ E, (∫ u in E, ‖plainKernel N (t - u)‖) ≤ M)
     (hcol : ∀ u ∈ E, (∫ t in E, ‖plainKernel N (t - u)‖) ≤ M) (hM0 : 0 ≤ M) :
-    (∫ t in E, ‖dirPoly N a t‖ ^ 2) ≤ M * ∑ n : Fin N, ‖a n‖ ^ 2 := by
+    (∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ)) ≤ M * ∑ n : Fin N, ‖a n‖ ^ (2 : ℕ) := by
   classical
-  have hI0 : (0 : ℝ) ≤ ∫ t in E, ‖dirPoly N a t‖ ^ 2 :=
+  have hI0 : (0 : ℝ) ≤ ∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ) :=
     MeasureTheory.setIntegral_nonneg hEm fun t _ => sq_nonneg _
-  have hE0 : (0 : ℝ) ≤ ∑ n : Fin N, ‖a n‖ ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hE0 : (0 : ℝ) ≤ ∑ n : Fin N, ‖a n‖ ^ (2 : ℕ) := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have h1 := setIntegral_normSq_dirPoly_sq_le a hEm hEs
   -- the dual energy is the norm of the double integral
-  have hdual : (∑ n : Fin N, ‖dualCoeff N a E n‖ ^ 2)
+  have hdual : (∑ n : Fin N, ‖dualCoeff N a E n‖ ^ (2 : ℕ))
       = ‖∫ t in E, ∫ u in E, plainKernel N (t - u)
           * (starRingEnd ℂ) (dirPoly N a t) * dirPoly N a u‖ := by
     have hid := sum_normSq_dualCoeff_eq a hEm hEs
-    have hnn : (0 : ℝ) ≤ ∑ n : Fin N, ‖dualCoeff N a E n‖ ^ 2 :=
+    have hnn : (0 : ℝ) ≤ ∑ n : Fin N, ‖dualCoeff N a E n‖ ^ (2 : ℕ) :=
       Finset.sum_nonneg fun _ _ => sq_nonneg _
     rw [← hid, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hnn]
   have h3 := setIntegral_double_kernel_le (A := dirPoly N a) (K := plainKernel N)
     (continuous_dirPoly N a) (continuous_plainKernel N) hEs hEm hrow hcol
   rw [← hdual] at h3
   -- `I² ≤ (∑‖a‖²)·M·I`
-  have hsq : (∫ t in E, ‖dirPoly N a t‖ ^ 2) ^ 2
-      ≤ (∑ n : Fin N, ‖a n‖ ^ 2) * (M * ∫ t in E, ‖dirPoly N a t‖ ^ 2) := by
+  have hsq : (∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ)) ^ (2 : ℕ)
+      ≤ (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) * (M * ∫ t in E, ‖dirPoly N a t‖ ^ (2 : ℕ)) := by
     refine h1.trans (mul_le_mul_of_nonneg_left h3 hE0)
   rcases eq_or_lt_of_le hI0 with heq | hpos
   · rw [← heq]

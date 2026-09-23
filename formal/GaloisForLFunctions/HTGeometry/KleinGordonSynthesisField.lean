@@ -133,20 +133,20 @@ theorem aestronglyMeasurable_kgFlowDensityDeriv (a : WienerFamily E N) (G₀ : E
 theorem kgFlowDensityDeriv2_eq (a : WienerFamily E N) (G₀ : E →ᵇ ℂ) (t : ℝ) (ξ : E) :
     kgFlowDensityDeriv2 a G₀ t ξ
       = ((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹
-        * (-(((kgFreq ξ : ℝ) : ℂ) ^ 2 * kgPotentialFlow a G₀ t ξ) + kgFlowSource a G₀ ξ t) := by
+        * (-(((kgFreq ξ : ℝ) : ℂ) ^ (2 : ℕ) * kgPotentialFlow a G₀ t ξ) + kgFlowSource a G₀ ξ t) := by
   rw [kgFlowDensityDeriv2, (hasDerivAt_deriv_kgPotentialFlow_apply a G₀ ξ t).deriv]
 
 theorem continuous_kgFlowDensityDeriv2 (a : WienerFamily E N) (G₀ : E →ᵇ ℂ) (t : ℝ) :
     Continuous (kgFlowDensityDeriv2 a G₀ t) := by
   have hfun : kgFlowDensityDeriv2 a G₀ t = fun ξ : E => ((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹
-      * (-(((kgFreq ξ : ℝ) : ℂ) ^ 2 * kgPotentialFlow a G₀ t ξ) + kgFlowSource a G₀ ξ t) := by
+      * (-(((kgFreq ξ : ℝ) : ℂ) ^ (2 : ℕ) * kgPotentialFlow a G₀ t ξ) + kgFlowSource a G₀ ξ t) := by
     funext ξ
     exact kgFlowDensityDeriv2_eq a G₀ t ξ
   rw [hfun]
   have hinv : Continuous fun ξ : E => ((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ := by
     refine Continuous.inv₀ (Complex.continuous_ofReal.comp (continuous_kgFreq.pow N)) fun ξ => ?_
     exact Complex.ofReal_ne_zero.mpr (pow_pos (kgFreq_pos ξ) N).ne'
-  have hfreq : Continuous fun ξ : E => ((kgFreq ξ : ℝ) : ℂ) ^ 2 :=
+  have hfreq : Continuous fun ξ : E => ((kgFreq ξ : ℝ) : ℂ) ^ (2 : ℕ) :=
     (Complex.continuous_ofReal.comp continuous_kgFreq).pow 2
   have hsrc : Continuous fun ξ : E => kgFlowSource a G₀ ξ t :=
     continuous_kgConv (a.density t) (kgPotentialFlow a G₀ t)
@@ -235,12 +235,12 @@ theorem hasDerivAt_deriv_kgFlowField (hN : (Module.finrank ℝ E : ℝ) + 2 < N)
   rw [hfun]
   have hbound : ∀ (t : ℝ), |t| ≤ T → ∀ ξ : E,
       ‖kgChar x ξ * kgFlowDensityDeriv2 a G₀ t ξ‖
-        ≤ kgFreq ξ ^ 2 * (kgFreq ξ ^ N)⁻¹ * S + (kgFreq ξ ^ N)⁻¹ * (kgFlowBoundConst a * S) := by
+        ≤ kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ N)⁻¹ * S + (kgFreq ξ ^ N)⁻¹ * (kgFlowBoundConst a * S) := by
     intro t ht ξ
     have hd := norm_deriv_deriv_kgPotentialFlow_apply_le_of_abs_le a G₀ ξ ht
     rw [norm_mul, norm_kgChar, one_mul, norm_kgFlowDensityDeriv2]
     have hstep : (kgFreq ξ ^ N)⁻¹ * ‖deriv (deriv fun r : ℝ => kgPotentialFlow a G₀ r ξ) t‖
-        ≤ (kgFreq ξ ^ N)⁻¹ * (kgFreq ξ ^ 2 * S + kgFlowBoundConst a * S) :=
+        ≤ (kgFreq ξ ^ N)⁻¹ * (kgFreq ξ ^ (2 : ℕ) * S + kgFlowBoundConst a * S) :=
       mul_le_mul_of_nonneg_left hd (inv_nonneg.mpr (pow_pos (kgFreq_pos ξ) N).le)
     refine hstep.trans_eq ?_
     ring
@@ -263,7 +263,7 @@ theorem hasDerivAt_deriv_kgFlowField (hN : (Module.finrank ℝ E : ℝ) + 2 < N)
     filter_upwards with ξ
     exact hbound' ξ
   have hbint : Integrable (fun ξ : E =>
-      kgFreq ξ ^ 2 * (kgFreq ξ ^ N)⁻¹ * S + (kgFreq ξ ^ N)⁻¹ * (kgFlowBoundConst a * S))
+      kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ N)⁻¹ * S + (kgFreq ξ ^ N)⁻¹ * (kgFlowBoundConst a * S))
       (volume : Measure E) :=
     ((integrable_kgFreq_pow_mul_inv_pow (E := E) (j := 2) hN).mul_const S).add
       ((integrable_kgFreq_inv_pow (E := E) hNdim).mul_const (kgFlowBoundConst a * S))
@@ -271,7 +271,7 @@ theorem hasDerivAt_deriv_kgFlowField (hN : (Module.finrank ℝ E : ℝ) + 2 < N)
     (x₀ := t₀) (s := Metric.ball t₀ 1)
     (F := fun t ξ => kgChar x ξ * kgFlowDensityDeriv a G₀ t ξ)
     (F' := fun t ξ => kgChar x ξ * kgFlowDensityDeriv2 a G₀ t ξ)
-    (bound := fun ξ => kgFreq ξ ^ 2 * (kgFreq ξ ^ N)⁻¹ * S
+    (bound := fun ξ => kgFreq ξ ^ (2 : ℕ) * (kgFreq ξ ^ N)⁻¹ * S
       + (kgFreq ξ ^ N)⁻¹ * (kgFlowBoundConst a * S)) (Metric.ball_mem_nhds t₀ one_pos)
     (Filter.Eventually.of_forall fun t =>
       ((continuous_kgChar' x).aestronglyMeasurable).mul

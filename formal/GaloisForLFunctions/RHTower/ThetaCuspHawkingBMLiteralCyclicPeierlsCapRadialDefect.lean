@@ -24,6 +24,7 @@ open D4BMHorizon D4BMModularCore D4BMJointSource D4BMJointWave
 open D4BMGlobalAngularResponse D4BMLeftModeRadialEquation
 open D4BMMixedQuadraticCurrent D4BMMixedRadialOverlap
 open D4BMCapAngularFluxCusp D4BMLiteralCyclicPeierlsCapCurrent
+open D4BMPhysicalModeAction D4BMFundamentalScalarMetric
 
 noncomputable section
 set_option autoImplicit false
@@ -33,9 +34,9 @@ noncompact integration. -/
 def cyclicPeierlsAngularDivergence (q reader : XiZeroCopy) (branch : Bool)
     (z : {z : Point // 0 < z 1}) : ℂ :=
   ∑ j : Fin 2,
-    coordDeriv j (angularGreenCurrent q branch reader j) z.val -
+    (coordDeriv j (angularGreenCurrent q branch reader j) z.val -
       (physicalRate q branch * (physicalRate q branch - 1) / 4) *
-        coordDeriv j (angularFlux q reader j) z.val
+        coordDeriv j (angularFlux q reader j) z.val)
 
 /-- Residual between the actual mixed metric radial current and the literal
 cyclic cap-current divergence.  Every coefficient is the original physical
@@ -45,7 +46,7 @@ def cyclicPeierlsRadialDefect (q reader : XiZeroCopy) (branch side outer : Bool)
   let p := modePoint t z.val z.property
   let s := physicalRate q branch
   let r := (p.val 1 : ℂ)
-  let E := envelope (2 * s) (a ^ 2) p.val
+  let E := envelope (2 * s) (a ^ (2 : ℕ)) p.val
   let g := profile reader side outer t
   let dg := profileFirst reader side outer t
   let lam := eigenvalue reader
@@ -53,9 +54,9 @@ def cyclicPeierlsRadialDefect (q reader : XiZeroCopy) (branch side outer : Bool)
   let C := radialPairCoefficient s r E lam g dg 1 0
   let Omega := bulkOverlapCoefficient q reader branch side outer a t z
   (lam - mu) * current q branch a reader side outer t z 1 +
-      Omega * lam * (D4BMAngularTwoTensor.source q z.val) ^ 2 *
+      Omega * lam * (D4BMAngularTwoTensor.source q z.val) ^ (2 : ℕ) *
         D4BMLiteralCusp.scalar (physicalAngularParameter reader) z.val /
-          (2 * (z.val 1 : ℂ) ^ 2) -
+          (2 * (z.val 1 : ℂ) ^ (2 : ℕ)) -
     C * cyclicPeierlsAngularDivergence q reader branch z
 
 /-- The physical radial coefficient of the retained source-square/reader
@@ -71,7 +72,7 @@ def cyclicPeierlsCapFluxCoefficient (q reader : XiZeroCopy) (branch side outer :
   (physicalRate q branch * (physicalRate q branch - 1) / 4) *
     radialPairCoefficient (physicalRate q branch)
       ((modePoint t z.val z.property).val 1 : ℂ)
-      (envelope (2 * physicalRate q branch) (a ^ 2)
+      (envelope (2 * physicalRate q branch) (a ^ (2 : ℕ))
         (modePoint t z.val z.property).val)
       (eigenvalue reader) (profile reader side outer t)
       (profileFirst reader side outer t) 1 0
@@ -108,17 +109,17 @@ def cyclicPeierlsResidualCurrent (q reader : XiZeroCopy) (branch side outer : Bo
 private theorem scalarLaplacian_differentiableAt (S : Field) (z : Point) (hz : 0 < z 1)
     (hS : ContDiffAt ℝ 3 S z) :
     DifferentiableAt ℝ (scalarLaplacian S) z := by
-  have hY : DifferentiableAt ℝ (fun w : Point => (w 1 : ℂ) ^ 2) z :=
+  have hY : DifferentiableAt ℝ (fun w : Point => (w 1 : ℂ) ^ (2 : ℕ)) z :=
     ((Complex.ofRealCLM.hasFDerivAt.comp z
       ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).hasFDerivAt)).pow 2).differentiableAt
   have h00 :=
-    (coordDeriv_hasFDerivAt (coordDeriv_contDiffAt (m := 2) hS 0) 0).differentiableAt
+    (D4BMHorizon.coordDeriv_hasFDerivAt (D4BMHorizon.coordDeriv_contDiffAt (m := 2) hS 0) 0).differentiableAt
   have h11 :=
-    (coordDeriv_hasFDerivAt (coordDeriv_contDiffAt (m := 2) hS 1) 1).differentiableAt
-  have hbase : DifferentiableAt ℝ (fun w : Point => (w 1 : ℂ) ^ 2 *
+    (D4BMHorizon.coordDeriv_hasFDerivAt (D4BMHorizon.coordDeriv_contDiffAt (m := 2) hS 1) 1).differentiableAt
+  have hbase : DifferentiableAt ℝ (fun w : Point => (w 1 : ℂ) ^ (2 : ℕ) *
       (coordDeriv 0 (coordDeriv 0 S) w + coordDeriv 1 (coordDeriv 1 S) w)) z :=
     hY.mul (h00.add h11)
-  have he : scalarLaplacian S =ᶠ[𝓝 z] (fun w => (w 1 : ℂ) ^ 2 *
+  have he : scalarLaplacian S =ᶠ[𝓝 z] (fun w => (w 1 : ℂ) ^ (2 : ℕ) *
       (coordDeriv 0 (coordDeriv 0 S) w + coordDeriv 1 (coordDeriv 1 S) w)) := by
     have hpos : ∀ᶠ w : Point in 𝓝 z, 0 < w 1 :=
       (isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hz
@@ -129,17 +130,17 @@ private theorem scalarLaplacian_differentiableAt (S : Field) (z : Point) (hz : 0
 private theorem scalarLaplacian_contDiffAt (S : Field) (z : Point) (hz : 0 < z 1)
     (hS : ContDiffAt ℝ ∞ S z) :
     ContDiffAt ℝ ∞ (scalarLaplacian S) z := by
-  have hY : ContDiffAt ℝ ∞ (fun w : Point => (w 1 : ℂ) ^ 2) z :=
+  have hY : ContDiffAt ℝ ∞ (fun w : Point => (w 1 : ℂ) ^ (2 : ℕ)) z :=
     ((Complex.ofRealCLM.contDiff.comp
       ((ContinuousLinearMap.proj 1 : Point →L[ℝ] ℝ).contDiff)).pow 2).contDiffAt
   have h00 : ContDiffAt ℝ ∞ (fun w => coordDeriv 0 (coordDeriv 0 S) w) z :=
-    coordDeriv_contDiffAt (m := ∞) (coordDeriv_contDiffAt (m := ∞) hS 0) 0
+    D4BMHorizon.coordDeriv_contDiffAt (m := ∞) (D4BMHorizon.coordDeriv_contDiffAt (m := ∞) hS 0) 0
   have h11 : ContDiffAt ℝ ∞ (fun w => coordDeriv 1 (coordDeriv 1 S) w) z :=
-    coordDeriv_contDiffAt (m := ∞) (coordDeriv_contDiffAt (m := ∞) hS 1) 1
-  have hbase : ContDiffAt ℝ ∞ (fun w : Point => (w 1 : ℂ) ^ 2 *
+    D4BMHorizon.coordDeriv_contDiffAt (m := ∞) (D4BMHorizon.coordDeriv_contDiffAt (m := ∞) hS 1) 1
+  have hbase : ContDiffAt ℝ ∞ (fun w : Point => (w 1 : ℂ) ^ (2 : ℕ) *
       (coordDeriv 0 (coordDeriv 0 S) w + coordDeriv 1 (coordDeriv 1 S) w)) z :=
     hY.mul (h00.add h11)
-  have he : scalarLaplacian S =ᶠ[𝓝 z] (fun w => (w 1 : ℂ) ^ 2 *
+  have he : scalarLaplacian S =ᶠ[𝓝 z] (fun w => (w 1 : ℂ) ^ (2 : ℕ) *
       (coordDeriv 0 (coordDeriv 0 S) w + coordDeriv 1 (coordDeriv 1 S) w)) := by
     have hpos : ∀ᶠ w : Point in 𝓝 z, 0 < w 1 :=
       (isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hz
@@ -157,7 +158,7 @@ private theorem squareReaderCurrent_differentiableAt (q reader : XiZeroCopy)
   have hR : ContDiffAt ℝ 2 R z.val :=
     D4BMLiteralCusp.scalar_contDiffAt (physicalAngularParameter reader) 2 z.val z.property
   have hRj : DifferentiableAt ℝ (fun w => coordDeriv j R w) z.val :=
-    (coordDeriv_hasFDerivAt hR j).differentiableAt
+    (D4BMHorizon.coordDeriv_hasFDerivAt hR j).differentiableAt
   have hSq : DifferentiableAt ℝ (fun w => S w * S w * (2 : ℂ)⁻¹) z.val :=
     ((hS.differentiableAt (by norm_num)).mul
       (hS.differentiableAt (by norm_num))).mul_const _
@@ -165,6 +166,7 @@ private theorem squareReaderCurrent_differentiableAt (q reader : XiZeroCopy)
       (fun w => (S w * S w * (2 : ℂ)⁻¹) * coordDeriv j R w) := by
     funext w
     simp only [squareReaderCurrent, S, R, div_eq_mul_inv]
+    ring
   rw [hfun]
   exact hSq.mul hRj
 
@@ -183,14 +185,15 @@ theorem squareReaderCurrent_contDiffAt (q reader : XiZeroCopy)
     intro n
     exact D4BMLiteralCusp.scalar_contDiffAt (physicalAngularParameter reader) n z.val z.property
   have hRj : ContDiffAt ℝ ∞ (fun w => coordDeriv j R w) z.val := by
-    apply coordDeriv_contDiffAt
+    apply D4BMHorizon.coordDeriv_contDiffAt
     simpa using hR
   have hSq : ContDiffAt ℝ ∞ (fun w => S w * S w * (2 : ℂ)⁻¹) z.val :=
-    ((hS.mul hS).mul_const _)
+    ((hS.mul hS).mul contDiffAt_const)
   have hfun : squareReaderCurrent q reader j =
       (fun w => (S w * S w * (2 : ℂ)⁻¹) * coordDeriv j R w) := by
     funext w
     simp only [squareReaderCurrent, S, R, div_eq_mul_inv]
+    ring
   rw [hfun]
   exact hSq.mul hRj
 
@@ -204,13 +207,13 @@ private theorem angularFlux_differentiableAt (q reader : XiZeroCopy)
   have hR : ContDiffAt ℝ 3 R z.val :=
     D4BMLiteralCusp.scalar_contDiffAt (physicalAngularParameter reader) 3 z.val z.property
   have hQj : DifferentiableAt ℝ (fun w => coordDeriv j Q w) z.val :=
-    (coordDeriv_hasFDerivAt (hQ.of_le (by norm_num)) j).differentiableAt
+    (D4BMHorizon.coordDeriv_hasFDerivAt (hQ.of_le (by norm_num)) j).differentiableAt
   have hRj : DifferentiableAt ℝ (fun w => coordDeriv j R w) z.val :=
-    (coordDeriv_hasFDerivAt (hR.of_le (by norm_num)) j).differentiableAt
+    (D4BMHorizon.coordDeriv_hasFDerivAt (hR.of_le (by norm_num)) j).differentiableAt
   have hL : DifferentiableAt ℝ (scalarLaplacian Q) z.val :=
     scalarLaplacian_differentiableAt Q z.val z.property hQ
   have hfun : angularFlux q reader j = fun w =>
-      (physicalAngularParameter reader ^ 2 - 1 / 4) * R w * coordDeriv j Q w -
+      (physicalAngularParameter reader ^ (2 : ℕ) - 1 / 4) * R w * coordDeriv j Q w -
         scalarLaplacian Q w * coordDeriv j R w := by
     funext w
     exact angularFlux_eq q reader j w
@@ -236,20 +239,20 @@ private theorem angularFlux_contDiffAt (q reader : XiZeroCopy)
     intro n
     exact D4BMLiteralCusp.scalar_contDiffAt (physicalAngularParameter reader) n z.val z.property
   have hQj : ContDiffAt ℝ ∞ (fun w => coordDeriv j Q w) z.val := by
-    apply coordDeriv_contDiffAt
+    apply D4BMHorizon.coordDeriv_contDiffAt
     simpa using hQ
   have hRj : ContDiffAt ℝ ∞ (fun w => coordDeriv j R w) z.val := by
-    apply coordDeriv_contDiffAt
+    apply D4BMHorizon.coordDeriv_contDiffAt
     simpa using hR
   have hL : ContDiffAt ℝ ∞ (scalarLaplacian Q) z.val :=
     scalarLaplacian_contDiffAt Q z.val z.property hQ
   have hfun : angularFlux q reader j = fun w =>
-      (physicalAngularParameter reader ^ 2 - 1 / 4) * R w * coordDeriv j Q w -
+      (physicalAngularParameter reader ^ (2 : ℕ) - 1 / 4) * R w * coordDeriv j Q w -
         scalarLaplacian Q w * coordDeriv j R w := by
     funext w
     exact angularFlux_eq q reader j w
   rw [hfun]
-  exact ((hR.const_mul _).mul hQj).sub (hL.mul hRj)
+  exact ((contDiffAt_const.mul hR).mul hQj).sub (hL.mul hRj)
 
 /-- The literal residual current is smooth throughout the physical upper
 half-plane.  This is the regularity input for finite-cusp Stokes, not a
@@ -294,8 +297,8 @@ theorem cyclicPeierlsResidualCurrent_divergence (q reader : XiZeroCopy)
       congrArg (fun L => L (Pi.single j 1)) h.fderiv
   calc
     _ = ∑ j : Fin 2,
-        A * coordDeriv j (squareReaderCurrent q reader j) z.val +
-          B * coordDeriv j (angularFlux q reader j) z.val := by
+        (A * coordDeriv j (squareReaderCurrent q reader j) z.val +
+          B * coordDeriv j (angularFlux q reader j) z.val) := by
       apply Finset.sum_congr rfl
       intro j _
       rw [coordDeriv_add
@@ -316,13 +319,17 @@ theorem cyclicPeierlsRadialDefect_eq (q reader : XiZeroCopy) (branch side outer 
       (physicalRate q branch * (physicalRate q branch - 1) / 4) *
         radialPairCoefficient (physicalRate q branch)
           ((modePoint t z.val z.property).val 1 : ℂ)
-          (envelope (2 * physicalRate q branch) (a ^ 2)
+          (envelope (2 * physicalRate q branch) (a ^ (2 : ℕ))
             (modePoint t z.val z.property).val)
           (eigenvalue reader) (profile reader side outer t)
           (profileFirst reader side outer t) 1 0 *
         (∑ j : Fin 2, coordDeriv j (angularFlux q reader j) z.val) := by
   unfold cyclicPeierlsRadialDefect cyclicPeierlsAngularDivergence
+  simp only []
   rw [original_radial_triple_balance q reader branch side outer a t z]
+  simp only [Finset.sum_add_distrib, Finset.sum_mul, Finset.mul_sum,
+    ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
   ring
 
 /-- The actual radial defect is exactly the divergence of the literal
@@ -353,6 +360,7 @@ theorem cyclicPeierlsRadialDefect_eq_residualCurrent_divergence_at
   rw [cyclicPeierlsResidualCurrent_divergence]
   rw [cyclicPeierlsSquareCoefficient_angular_independent q reader branch side outer a t base z,
     cyclicPeierlsCapFluxCoefficient_angular_independent q reader branch side outer a t base z]
+  simp only [cyclicPeierlsSquareCoefficient, cyclicPeierlsCapFluxCoefficient]
 
 end
 

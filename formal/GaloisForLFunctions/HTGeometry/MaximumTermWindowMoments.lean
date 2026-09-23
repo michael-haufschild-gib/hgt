@@ -30,17 +30,17 @@ theorem sum_window_le_sqrt_card_mul_bound
     ∑ n ∈ s, ‖a n‖ * r ^ n ≤ Real.sqrt (s.card) * M := by
   classical
   have hbessel := tsum_normSq_coeff_le_of_bound ha hr0 hM0 hM
-  have hsummable : Summable fun k : ℕ => ‖a k‖ ^ 2 * r ^ (2 * k) :=
+  have hsummable : Summable fun k : ℕ => ‖a k‖ ^ (2 : ℕ) * r ^ (2 * k) :=
     (hasSum_gutzmer_coeffFun ha hr0).summable
-  have hnn : ∀ n : ℕ, (0 : ℝ) ≤ ‖a n‖ ^ 2 * r ^ (2 * n) := fun n => by positivity
+  have hnn : ∀ n : ℕ, (0 : ℝ) ≤ ‖a n‖ ^ (2 : ℕ) * r ^ (2 * n) := fun n => by positivity
   -- the window's `l²` mass is below the total
-  have hpart : ∑ n ∈ s, ‖a n‖ ^ 2 * r ^ (2 * n) ≤ M ^ 2 :=
+  have hpart : ∑ n ∈ s, ‖a n‖ ^ (2 : ℕ) * r ^ (2 * n) ≤ M ^ (2 : ℕ) :=
     le_trans (Summable.sum_le_tsum s (fun n _ => hnn n) hsummable) hbessel
   -- Cauchy--Schwarz against the constant one
   have hCS := Finset.sum_mul_sq_le_sq_mul_sq s (fun _ => (1 : ℝ)) (fun n => ‖a n‖ * r ^ n)
-  have hone : ∑ _n ∈ s, (1 : ℝ) ^ 2 = (s.card : ℝ) := by
+  have hone : ∑ _n ∈ s, (1 : ℝ) ^ (2 : ℕ) = (s.card : ℝ) := by
     simp
-  have hsq : ∀ n : ℕ, (‖a n‖ * r ^ n) ^ 2 = ‖a n‖ ^ 2 * r ^ (2 * n) := by
+  have hsq : ∀ n : ℕ, (‖a n‖ * r ^ n) ^ (2 : ℕ) = ‖a n‖ ^ (2 : ℕ) * r ^ (2 * n) := by
     intro n
     rw [mul_pow, ← pow_mul]
     ring_nf
@@ -48,16 +48,16 @@ theorem sum_window_le_sqrt_card_mul_bound
   rw [Finset.sum_congr rfl (fun n _ => hprod n), hone,
     Finset.sum_congr rfl (fun n _ => hsq n)] at hCS
   have hcard : (0 : ℝ) ≤ (s.card : ℝ) := Nat.cast_nonneg _
-  have hchain : (∑ n ∈ s, ‖a n‖ * r ^ n) ^ 2 ≤ (s.card : ℝ) * M ^ 2 := by
+  have hchain : (∑ n ∈ s, ‖a n‖ * r ^ n) ^ (2 : ℕ) ≤ (s.card : ℝ) * M ^ (2 : ℕ) := by
     refine le_trans hCS ?_
     exact mul_le_mul_of_nonneg_left hpart hcard
   have hsum_nn : (0 : ℝ) ≤ ∑ n ∈ s, ‖a n‖ * r ^ n :=
     Finset.sum_nonneg fun n _ => by positivity
-  have hsqrt : Real.sqrt (s.card) * M = Real.sqrt ((s.card : ℝ) * M ^ 2) := by
+  have hsqrt : Real.sqrt (s.card) * M = Real.sqrt ((s.card : ℝ) * M ^ (2 : ℕ)) := by
     rw [Real.sqrt_mul hcard, Real.sqrt_sq hM0]
   rw [hsqrt]
-  have hnonneg : (0 : ℝ) ≤ (s.card : ℝ) * M ^ 2 := by positivity
-  nlinarith [Real.sq_sqrt hnonneg, Real.sqrt_nonneg ((s.card : ℝ) * M ^ 2), hchain, hsum_nn]
+  have hnonneg : (0 : ℝ) ≤ (s.card : ℝ) * M ^ (2 : ℕ) := by positivity
+  nlinarith [Real.sq_sqrt hnonneg, Real.sqrt_nonneg ((s.card : ℝ) * M ^ (2 : ℕ)), hchain, hsum_nn]
 
 /-- **The same bound for the normalised coefficients.**  Dividing by the central term turns the
 window bound into a statement about the profile: a window of `k` indices carries `l¹` mass at most

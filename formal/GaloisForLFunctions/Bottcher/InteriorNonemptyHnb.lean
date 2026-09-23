@@ -56,7 +56,7 @@ theorem not_continuesAcross_beta_of_connected_package
     (hψβ : ∀ z ∈ (filledJulia c)ᶜ, ψ (β z) = z)
     (hhd : DifferentiableOn ℂ h (ball 0 1))
     (hhe : ∀ t ∈ ball (0:ℂ) 1, h (-t) = h t)
-    (hfe : ∀ t ∈ ball (0:ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t ∈ ball (0:ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hh0 : h 0 = 1)
     (hbridge : ∀ t : ℂ, t ≠ 0 → ‖t‖ < 1 → h t = t * ψ (1 / t)) :
     ¬ U0NaturalBoundary.ContinuesAcross β (filledJulia c)ᶜ z₀ := by

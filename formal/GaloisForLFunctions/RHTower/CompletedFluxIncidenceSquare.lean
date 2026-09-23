@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.CompletedFluxIncidencePower
 # The completed-flux incidence square reads multiplicity squared
 
 The removable completed local flux germ has center value `-ord_ρ(Xi)`.  Squaring it produces an
-analytic reflection-invariant germ with center value `ord_ρ(Xi)^2`.  On the open strip, the existing
+analytic reflection-invariant germ with center value `ord_ρ(Xi)^(2 : ℕ)`.  On the open strip, the existing
 prime--archimedean germ decomposition expands its square into three source incidence terms:
 
 * prime--prime;
@@ -34,7 +34,7 @@ theorem completedFluxIncidenceSquareGermAt_analyticAt_zero (ρ : ℂ) :
 /-- Its center value is exactly the square of the finite local Xi order. -/
 theorem completedFluxIncidenceSquareGermAt_zero (ρ : ℂ) :
     completedFluxIncidenceSquareGermAt ρ 0 =
-      ((analyticOrderAt xi ρ).toNat : ℂ) ^ 2 := by
+      ((analyticOrderAt xi ρ).toNat : ℂ) ^ (2 : ℕ) := by
   exact completedFluxIncidencePowerGermAt_zero_of_even (by norm_num) ρ
 
 /-- The local square is invariant under functional-equation reflection in reflected coordinates. -/
@@ -48,7 +48,7 @@ archimedean/boundary source germ. -/
 theorem completedFluxIncidenceSquareGermAt_eq_primeArch_square_eventually
     {ρ : ℂ} (hstrip : 0 < ρ.re ∧ ρ.re < 1) :
     completedFluxIncidenceSquareGermAt ρ =ᶠ[nhds 0]
-      fun x => (infinitePrimeFluxGermAt ρ x + archimedeanBoundaryFluxGermAt ρ x) ^ 2 := by
+      fun x => (infinitePrimeFluxGermAt ρ x + archimedeanBoundaryFluxGermAt ρ x) ^ (2 : ℕ) := by
   exact completedFluxIncidencePowerGermAt_eq_primeArch_pow_eventually 2 hstrip
 
 /-- Expanded symmetric incidence law: prime--prime plus twice prime--archimedean plus
@@ -56,9 +56,9 @@ archimedean--archimedean. -/
 theorem completedFluxIncidenceSquareGermAt_eq_incidence_decomposition_eventually
     {ρ : ℂ} (hstrip : 0 < ρ.re ∧ ρ.re < 1) :
     completedFluxIncidenceSquareGermAt ρ =ᶠ[nhds 0]
-      fun x => (infinitePrimeFluxGermAt ρ x) ^ 2 +
+      fun x => (infinitePrimeFluxGermAt ρ x) ^ (2 : ℕ) +
         2 * infinitePrimeFluxGermAt ρ x * archimedeanBoundaryFluxGermAt ρ x +
-        (archimedeanBoundaryFluxGermAt ρ x) ^ 2 := by
+        (archimedeanBoundaryFluxGermAt ρ x) ^ (2 : ℕ) := by
   have h :=
     completedFluxIncidencePowerGermAt_eq_incidence_decomposition_eventually 2 hstrip
   filter_upwards [h] with x hx

@@ -256,3 +256,275 @@
   subleading, moving-endpoint defect in this channel relation.  A proof using
   only positive mass, homogeneity, or leading asymptotics cannot resolve it;
   it needs a new uniform nonvanishing/decorrelation law for that defect.
+- A proposed fixed-core multiplicative cocycle for the unit mismatch
+  `C(a*b*N)-sqrt(a*b)*C(N)` is an exact algebraic identity, but it does not
+  advance the changing-core problem: after each dilation the processed core
+  changes.  The literal two-prime source already expands that update as the
+  full four-channel inclusion--exclusion block
+  `a-b-c+e` (`mobiusDivisorSelectionEnergy_two_primes_eq_blocks`).  Hence a
+  fixed-core cocycle would discard precisely the new background/copy terms
+  whose signed covariance is open.  Do not promote that identity as a
+  CCM-FU payment mechanism; any viable composition law must retain the
+  changing processed-core field and its complete cross term.
+- `UniformPrimeSubsetBooleanInversion` is now source-compiled and
+  axiom-audited.  For every finite source and every packet `A`, the normalized
+  Boolean difference of label energy is *exactly* the ordered source-pair sum
+  restricted by `label(i) ∆ label(j) = A`; it is not merely an inclusion or a
+  low-order approximation.  If each coefficient has its label parity, the
+  unnormalized alternating Boolean energy is nonnegative in every finite
+  order.  This is a strict all-order replacement for the prior isolated
+  third-order sign calculation.
+- `MobiusDivisorAllOrderBooleanSign` specializes that theorem to the literal
+  Möbius divisor source at the original core: for every finite prime packet
+  `A`, `mobiusDivisorEnergyBooleanAlternating M ∅ A ≥ 0`, equivalently the
+  forward order-`A` interaction has sign `(-1)^A.card`.  The source check and
+  an identical scratch axiom audit close the theorem without premises or
+  nonstandard axioms.  This does **not** fund a changing core: the existing
+  late-block transport adds `2 * signedBlockMass * matchingFibre` to each
+  nonzero Boolean grade, whose sign is not controlled by original-core
+  parity.  Therefore the CCM-FU hard barrier is now exact: prove a
+  cancellation-stable bound on that transported matching-fibre term (or a
+  stronger orientation invariant preserved by an exhaustive schedule), not
+  another finite-order interaction identity.
+- `UniformPrimeSubsetCompression` is now source-compiled and axiom-audited.
+  Residualization is associative: processing `P ∪ B` is exactly the same as
+  replacing the atomic source by its `P`-residual fibres and processing `B`.
+  Therefore full residual-fibre parity orientation at *any* core controls all
+  finite future Boolean grades at that core.  This converts the moving-core
+  problem from a hierarchy of higher interactions into one concrete invariant:
+  preservation of the oriented compressed residual source.
+- The strengthened `MobiusDivisorAllOrderBooleanSign` leaf proves and its
+  scratch audit closes the sharp late-block boundary.  If a legal late block
+  still has nonnegative residual head, then every finite future Boolean grade
+  has nonnegative alternating energy.  Since late-block parity was already
+  known for every nonempty residual label, the head is the sole missing label
+  in this all-order orientation argument.  Hence head crossing is not a
+  technical first-order defect: it is precisely where the current
+  orientation-based CCM-FU mechanism ceases to control the complete future
+  interaction field.  The next hard problem is a quantitative,
+  cancellation-stable head-crossing law compatible with exhaustive funding.
+
+- `MobiusDivisorPrimeDilationBooleanJet` source-proves the exact all-order
+  prime-dilation cocycle.  For every finite p-free residual detector and
+  every finite Boolean packet disjoint from `p`, its post-processing jet is
+  `J_background + p * J_old - 2 * sqrt(p) * J_cross`, with `J_cross` the
+  literal detector-weighted background/copy pairing.  Thus replicated old
+  data and diagonal energy cannot pay changing-core debt: cumulative signed
+  control of this explicitly identified cross-jet family is a necessary
+  CCM-FU target.  The leaf is wired into `RHTower.lean` and source-checked;
+  its Olean/axiom audit remains pending because its exact target build tried
+  to replay more than 8,776 unrelated dependencies and was stopped.
+
+- `MobiusDivisorPrimeDilationBilinearCocycle` source-proves the directed
+  finite residual Gram law.  Under a fresh processed dilation, every signed
+  kernel is exactly its large-cutoff background Gram term plus `p` times its
+  inherited Gram term minus both directed background/copy cross Grams.  Thus
+  the core-changing charge cannot be reduced to a diagonal detector even at
+  finite order: a CCM-FU payment theorem must bound the signed two-direction
+  cross kernel itself.  The source check closed; the exact leaf build was
+  stopped after replaying more than 8,750 unrelated dependencies, so Olean
+  and axiom audit remain pending a non-broad cache path.
+
+- Failed novelty check: the attempted raw core-changing parity-mass split was
+  only a summed restatement of the existing processed-core parity law and
+  signed-measure representation.  It was source-checked but deliberately not
+  retained or wired.  The actual unsolved object remains the cofinal signed
+  correlation of adjacent even-minus-odd core measures, together with the
+  independent cutoff-defect covariance; a raw parity regrouping cannot pay it.
+
+- Route T audit: the corpus already proves every-base prime supply in
+  `(x, x + x^(71/100)]`, hence a `p^(171/100)` ordered gap-square prefix
+  bound.  The critical mesh-energy receiver is proved only below exponent
+  `3/2`; consequently that supply route misses its receiver by a real
+  `21/100` exponent gap and cannot be promoted through the existing Abel
+  argument.
+
+- Route T no-go: the corpus proves
+  `¬ (Summable residualUpperVariation(1/2) ∧ Summable primeGapCriticalEnergy)`
+  and the corresponding positive-ray absolute-Borel/Tonelli obstruction.
+  It also proves the lower-boundary residual Fourier kernel is absolutely
+  convergent and `C∞`; neither fact yields the required continuation.  Any
+  viable Route-T producer must therefore be a nonabsolute, source-specific
+  continuation/cancellation law, not a stronger pointwise supply, an
+  absolute variation estimate, or boundary smoothness.
+
+- Route T small-shell closure: `MaynardOrderedPrimeGapSmallShell` proves
+  `Σ_{shell(k,j)} gap² ≤ 8·2ʲ·2ᵏ` from literal disjoint occupancy and block
+  containment alone.  Consequently every shell with
+  `2ʲ ≤ 4·(2ᵏ)^(31/80)` has square mass at most
+  `32·(2ᵏ)^(111/80)`.  Since `111/80 < 3/2`, all gap scales below the exact
+  fixed-width packet threshold are subcritical without prime-density input.
+  The remaining Route-T gap-moment obstruction is therefore confined to
+  shells `2ʲ ≥ 4·(2ᵏ)^(31/80)`, precisely where the fixed-width packet width
+  `H0 = 2ʲ/(4·2ᵏ)` is admissible (`H0 ≥ (2ᵏ)^(-49/80)`).
+
+- Route T buffered-weld obstruction: `MaynardBufferedPhysicalSelectedCellNoGo`
+  proves the exact interface deficit
+  `1 - μB * (1 - (1 + ν)/2) = d / (2 + 3d) > 0`, where
+  `μB = routeTPairedKernelBufferedMu`, `ν = routeTGapMomentNu`, and
+  `d = maynardLongGlobalAmplitudeDeficit`. Hence there is no
+  `0 < μ ≤ μB` and `α ≥ (1 + ν)/2` with the physical-slice phase
+  `1 < μ * (1 - α)`. The available transition selected-cell theorem cannot
+  weld to any buffered low shell even at its weakest threshold. The positive
+  survivor is exact: every viable low-shell weld must prove a
+  cancellation-preserving reciprocal paired bad-set estimate below
+  `(1 + ν)/2`, or replace the physical phase inequality itself.
+
+- Route T direct Guth--Maynard exclusion: at the explicit buffered physical
+  witness `(μ, α) = (19/5, 18/25)`, one has `μ ≤ μB` and
+  `1 < μ(1-α)`, while the unpolarized Guth--Maynard middle-term exponent
+  `μ(18/5-4α)` is strictly larger than Route T's required second-alternative
+  exponent `1 + μ(1+ν-2α)`.  This closed comparison is formalized by
+  `routeT_buffered_guthMaynard_middleTerm_direct_noGo`.  Therefore the
+  published three-term large-value bound cannot be composed verbatim with the
+  buffered physical receiver; any use of cubic-trace technology must suppress
+  that middle term by a genuinely paired correlation before the usual
+  large-value count.
+
+- Route T strengthened Guth--Maynard no-go:
+  `routeT_guthMaynard_middleTerm_fails_physicalPhase` proves the preceding
+  incompatibility on the whole physical phase, with no buffered-range
+  restriction.  The exact excess is
+  `mu * (3/5 - nu) + 2 * mu * (1 - alpha) - 1`; it is positive from
+  `nu < 1/2`, `mu > 0`, and `1 < mu * (1-alpha)`.  Consequently no parameter
+  choice within the physical receiver can make the ordinary unpolarized
+  Guth--Maynard middle term fit Route T.  This removes parameter tuning as a
+  possible weld and leaves only a pre-Gram polarised correlation law (or a
+  different arithmetic receiver) as a live cubic-trace direction.
+
+- Route T cubic-trace mechanism check: the CGL/Guth--Maynard matrix route is
+  built from a positive Gram operator.  Replacing two normalized windows by
+  their difference preserves linear pole cancellation but its Gram energy is
+  the positive self-energy of the difference, so it does not inherit the
+  linear zero-mode cancellation automatically.  A viable paired cubic-trace
+  attack must therefore be polarised before Gram formation, with a new
+  positivity/large-value mechanism; ordinary signed coefficient substitution
+  is not the sought weld.
+
+- Route T common-mode physical comparability no-go:
+  `eventually_routeT_commonMode_reference_exceeds_two_targetWidths` proves
+  uniformly for `lambda ∈ [x,2x]` that the frozen reference relative width
+  exceeds twice the target width.  The separation has exact positive exponent
+  `theta - 1 + 49/80 = 29/80 - d/2`.  Therefore neither existing outer nor
+  arbitrary-order physical-slice receiver can be applied directly to the
+  common-mode pair: both require `R ≤ 2H`.  A dyadic width telescope is not a
+  shortcut, because it must additionally control its polynomially wide
+  transition rungs; a valid successor needs a paired noncomparable receiver
+  or a new transition-band mechanism.
+
+- Correction to the immediately preceding route-T inference: the corpus
+  already has the fixed-source proportional width ladder through
+  `exists_eventually_routeT_proportional_primeFree_large_range_packet_natOrder`.
+  It reaches the literal `N^(31/80)` target width, so proposing that ladder
+  again is redundant.  Its known failure is quantitative, not structural:
+  the generic cell/L2/L4 assembly leaves the exact `1/50` gap above the
+  required `3/2` moment exponent.  The common-mode comparability theorem
+  therefore isolates the real new target: a cancellation-preserving,
+  arithmetic transition-band estimate whose gain survives before any
+  positive Gram or generic fourth-moment reduction.
+
+- Route T phase-extraction exponent correction (Lean-closed): the pointwise
+  target approximation threshold is `80/49`, but a dyadic-shell integral
+  pays the shell length as well as the pointwise Mellin defect.  Its true
+  exponent is `2 - 49*mu/80`, so the analytic transfer can have a decaying
+  target error only for `160/49 < mu < mu_ref`, where
+  `mu_ref = 1/(1-theta)`.  `MaynardCommonModePhaseExtraction` now formalizes
+  both boundaries and their strict overlap.  The earlier `80/49` interval was
+  an integrand-level condition, not a valid phase-integral window.  This
+  correction changes the route: the known selected-cell receiver through
+  `11/5` cannot consume the phase bridge at all.
+
+- Route T receiver consequence of that correction: the corpus extends literal
+  physical-cutoff selected-cell counting through `mu <= 11/5`, and its scalar
+  adjacent/overweight comparisons have no upper-height restriction.  But
+  `160/49 > 11/5`; there is **no** overlap between the actual phase-integral
+  window and the known selected-cell extraction.  The hard obstacle is not
+  merely phase-integral-to-cell conversion: a new all-amplitude receiver or a
+  phase-aware signed correlation must work above `160/49` before the bridge
+  can touch Route T's existing count machinery.
+
+- Route T phase-window localization (Lean-closed): every exponent with both
+  integrated target reserve and arbitrary-order reference reserve satisfies
+  `11/5 < mu < 17/4`
+  (`routeT_phaseExtraction_integratedWindow_in_selectedCellGap`).  This
+  places the whole phase-transfer window strictly between—not merely outside
+  one endpoint of—the two existing selected-cell regimes.  The missing object
+  is therefore now concrete: a cancellation-preserving, all-amplitude,
+  phase-aware selected-cell/count receiver on that intermediate band.
+
+- Route T phase-extraction bridge (new, Lean-closed):
+  `exists_fixedSource_pointMassPhase_lower_of_pairedShell` proves that every
+  positive paired shell with lower mass `B` yields a phase integral of the
+  *same frozen literal Heath--Brown aggregate* at least
+  `B - E_reference - E_target`.  Here
+  `E_reference = P*Cj*(N/R)^(j+1)*U^(-j)` is the arbitrary-order wide
+  reference tail, while
+  `E_target = 4*P*V*(H/N)*|V-U|` is the sharp narrow target-to-point-mass
+  error.  This is the first Route-T theorem that retains paired cancellation
+  all the way to a norm-one Mellin phase on the selected shell.  It removes
+  the analytic-interface obstruction, but the integrated target error places
+  any decaying application above `160/49`, already beyond the `11/5`
+  selected-cell ceiling.  The successor must be a new high-height,
+  phase-aware all-amplitude receiver rather than a direct handoff to the
+  existing count.
+
+- Route T inverse-Mellin test (negative, with survivor): the frozen aggregate
+  is indeed an exactly finite `LSeries` packet
+  (`LSeries_heathBrownWindowRelevantEligiblePacket`) with explicit finite
+  support, and the corpus already supplies the exact finite-window phase and
+  sinc kernels (`SymmetricPhaseIntegral`, `DirichletPolynomialSincEnergy`).
+  However the packet is an *eligible, window-relevant signed subpacket*, not
+  the full von Mangoldt coefficient sequence.  Prime-freeness therefore gives
+  no coefficientwise sign, vanishing, or local-mass law for it.  A phase
+  integral lower bound alone can only be converted generically to an `L2` or
+  pointwise bound after a shell-length loss, below the existing `alpha >= 3/4`
+  selected-cell threshold.  Thus unweighted inverse-Mellin localization is
+  not a Route-T closure.  The positive survivor is precise: construct a
+  *signed local coefficient correlation* for the eligible packet—retaining
+  the paired kernel's cancellation—whose Fourier kernel has a source-proved
+  one-sided lower bound.  This is a different hard target from another
+  generic cell/L2/L4 extraction.
+
+- Route T phase derivative reserve (Lean-closed): in the full integrated
+  phase window `mu < 1/(1-theta)`, every Route-T amplitude `alpha >= 3/4`
+  has canonical derivative-complement exponent at most
+  `mu*(1-alpha) - (1-mu_ref/4)`.  The reserve is strictly positive, and
+  arbitrary fixed polylogarithmic receiver costs absorb into half of it.
+  Thus scalar derivative counting is not the high-phase obstruction; the
+  missing theorem is phase-aware selection/correlation before count formation.
+
+- Route T bare-phase spatial boundary (Lean-closed): the extracted point-mass
+  shell is exactly a zero-real-part unit-cell Mellin packet.  Its unconditional
+  spatial `L2` energy is bounded by `8*x` times the squared cell envelope sum
+  (up to the established logarithmic factor), so generic phase `L2/L4` retains
+  one full physical-base factor and cannot supply Route T's second-count
+  measure scale.  The exact positive survivor is an anchored phase difference
+  or signed phase correlation that contributes one reciprocal-base gain before
+  the spatial energy step; with that gain, the existing second-count
+  cancellation closes without additional exponent loss.
+
+- Route T local-anchor no-go (Lean-closed): in the actual phase window
+  `mu > 160/49`, the phase oscillation of a shell of height `M^(1/mu)` across
+  one target-width prime-free interval has base exponent
+  `1/mu - 49/80 < -49/160`.  It is therefore asymptotically phase-flat across
+  every available local gap.  Endpoint differencing inside a single prime-free
+  interval cannot create the reciprocal-base gain missing from bare-phase
+  spatial energy.  The surviving target is necessarily nonlocal: correlate
+  separated physical bases, or prove a source-specific signed correlation law
+  that does not reduce to local phase variation.
+
+- Route T phase-orientation no-go (Lean-closed): the point-mass phase packet
+  is exactly covariant under global source multiplication, and in particular
+  `a ↦ -a` reverses its real part while preserving every norm-level datum used
+  by the current common-mode transfer.  Hence no positive signed phase lower
+  can be deduced from the paired-shell norm lower and norm-only analytic bounds
+  alone.  A separated-base continuation must introduce a source-specific,
+  non-gauge-invariant signed correlation; more norm estimates cannot supply
+  the missing orientation.
+
+- CCM-FU factorial endpoint (Lean-closed): the deterministic boundary in the
+  critical Chebyshev--factorial prefix satisfies
+  `|E_N| ≤ log(N+3) + 1 + log 2`, using only finite Stirling comparison.
+  Thus it cannot create a power-scale obstruction in the completed profile;
+  any such obstruction must remain in the signed Chebyshev-remainder
+  transform.  This does not bound that transform.

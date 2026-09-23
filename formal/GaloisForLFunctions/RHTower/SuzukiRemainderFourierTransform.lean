@@ -339,7 +339,7 @@ right half plane.  The `-1/(2s)` term of the digamma asymptotic contributes `Re(
 which is `O(|s|^{-2})` uniformly on any vertical strip. -/
 theorem abs_re_digamma_half_sub_log_le {s : ℂ} (hre : 0 < s.re) (hs : 4 ≤ ‖s‖) :
     |(Complex.digamma (s / 2)).re - (Real.log ‖s‖ - Real.log 2)|
-      ≤ (20 + s.re) / ‖s‖ ^ 2 := by
+      ≤ (20 + s.re) / ‖s‖ ^ (2 : ℕ) := by
   have hnorm2 : ‖s / 2‖ = ‖s‖ / 2 := by
     rw [norm_div]
     norm_num
@@ -355,23 +355,23 @@ theorem abs_re_digamma_half_sub_log_le {s : ℂ} (hre : 0 < s.re) (hs : 4 ≤ �
       = Complex.digamma (s / 2) - Complex.log (s / 2) + 1 / s := by rw [hhalf]
   rw [hrw] at h
   have hre_le : |(Complex.digamma (s / 2) - Complex.log (s / 2) + 1 / s).re|
-      ≤ 5 / ‖s / 2‖ ^ 2 := le_trans (Complex.abs_re_le_norm _) h
+      ≤ 5 / ‖s / 2‖ ^ (2 : ℕ) := le_trans (Complex.abs_re_le_norm _) h
   have hlogre : (Complex.log (s / 2)).re = Real.log ‖s‖ - Real.log 2 := by
     rw [Complex.log_re, hnorm2, Real.log_div (ne_of_gt hspos) two_ne_zero]
-  have hinvre : (1 / s : ℂ).re = s.re / ‖s‖ ^ 2 := by
+  have hinvre : (1 / s : ℂ).re = s.re / ‖s‖ ^ (2 : ℕ) := by
     rw [one_div, Complex.inv_re, Complex.normSq_eq_norm_sq]
   have hsplit : (Complex.digamma (s / 2) - Complex.log (s / 2) + 1 / s).re
-      = ((Complex.digamma (s / 2)).re - (Real.log ‖s‖ - Real.log 2)) + s.re / ‖s‖ ^ 2 := by
+      = ((Complex.digamma (s / 2)).re - (Real.log ‖s‖ - Real.log 2)) + s.re / ‖s‖ ^ (2 : ℕ) := by
     rw [Complex.add_re, Complex.sub_re, hlogre, hinvre]
   rw [hsplit] at hre_le
-  have hbound : (5 : ℝ) / ‖s / 2‖ ^ 2 = 20 / ‖s‖ ^ 2 := by
+  have hbound : (5 : ℝ) / ‖s / 2‖ ^ (2 : ℕ) = 20 / ‖s‖ ^ (2 : ℕ) := by
     rw [hnorm2]
     field_simp
     ring
   rw [hbound] at hre_le
-  have hnn : (0 : ℝ) ≤ s.re / ‖s‖ ^ 2 := by positivity
+  have hnn : (0 : ℝ) ≤ s.re / ‖s‖ ^ (2 : ℕ) := by positivity
   have hAB := abs_le.mp hre_le
-  have hsum : (20 : ℝ) / ‖s‖ ^ 2 + s.re / ‖s‖ ^ 2 = (20 + s.re) / ‖s‖ ^ 2 := by ring
+  have hsum : (20 : ℝ) / ‖s‖ ^ (2 : ℕ) + s.re / ‖s‖ ^ (2 : ℕ) = (20 + s.re) / ‖s‖ ^ (2 : ℕ) := by ring
   rw [abs_le]
   constructor
   · linarith [hAB.1, hnn, hsum.le, hsum.ge]

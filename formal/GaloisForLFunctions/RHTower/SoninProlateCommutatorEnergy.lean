@@ -54,7 +54,7 @@ theorem re_opTrace_centralProlateBlock_eq_four_mul_sq
         (opTrace
           (soninAlternatingBlock (centralPhysicalForbidden a)
             (centralFourierForbidden a))) =
-      4 * a ^ 2 := by
+      4 * a ^ (2 : ℕ) := by
   let A := centralPhysicalForbidden a
   let B := centralFourierForbidden a
   let P : SoninL2 →L[ℂ] SoninL2 := B.starProjection
@@ -86,7 +86,7 @@ theorem re_opTrace_centralProlateBlock_eq_four_mul_sq
         HTGeometry.re_opTrace_twoProjectionInteriorCompression_eq_hsNormSq_overlap
           P R hR hPadj hRadj hRP
     _ = hsNormSq (P * R) := hNorm
-    _ = 4 * a ^ 2 := by
+    _ = 4 * a ^ (2 : ℕ) := by
       simpa only [P, R, A, B] using
         hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha
 
@@ -366,7 +366,7 @@ theorem hsNormSq_centralProlateBlock_add_transition_eq_four_mul_sq
         hsNormSq
           (crossBoundary (centralFourierForbidden a).starProjection
             (centralPhysicalForbidden a).starProjection) =
-      4 * a ^ 2 := by
+      4 * a ^ (2 : ℕ) := by
   have h := hsNormSq_centralTimeBandOverlap_eq_prolateBlock_add_transition a ha
   rw [hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha] at h
   exact h.symm
@@ -386,7 +386,7 @@ theorem hsNormSq_centralProlateBlock_add_re_opTrace_impurity_eq_four_mul_sq
                   (centralFourierForbidden a) *
                 soninAlternatingBlock (centralPhysicalForbidden a)
                   (centralFourierForbidden a))) =
-      4 * a ^ 2 := by
+      4 * a ^ (2 : ℕ) := by
   rw [re_opTrace_centralProlateImpurity_eq_transition_hsNormSq a ha]
   exact hsNormSq_centralProlateBlock_add_transition_eq_four_mul_sq a ha
 
@@ -400,7 +400,7 @@ theorem two_mul_hsNormSq_centralProlateBlock_add_commutator_eq_eight_mul_sq
         hsNormSq
           (ccmCommutator (centralPhysicalForbidden a).starProjection
             (centralFourierForbidden a).starProjection) =
-      8 * a ^ 2 := by
+      8 * a ^ (2 : ℕ) := by
   have hbudget := hsNormSq_centralProlateBlock_add_transition_eq_four_mul_sq a ha
   have hcomm := hsNormSq_centralCutoffCommutator_eq_two_mul_transition a ha
   nlinarith
@@ -416,7 +416,7 @@ theorem two_mul_hsNormSq_centralProlateBlock_add_ludersDisturbance_eq_eight_mul_
           ((centralPhysicalForbidden a).starProjection -
             ludersPinching (centralFourierForbidden a).starProjection
               (centralPhysicalForbidden a).starProjection) =
-      8 * a ^ 2 := by
+      8 * a ^ (2 : ℕ) := by
   rw [hsNormSq_ludersDisturbance_eq_cutoffCommutator
     (centralFourierForbidden a).starProjection
     (centralPhysicalForbidden a).starProjection

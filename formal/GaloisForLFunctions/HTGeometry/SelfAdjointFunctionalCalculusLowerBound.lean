@@ -29,7 +29,7 @@ theorem isPositive_cfc_of_nonneg (A : H →L[ℂ] H) {g : ℝ → ℝ}
 `c · ‖f‖² ≤ Re ⟪g(A) f, f⟫` for every vector `f`. -/
 theorem re_inner_cfc_self_ge (A : H →L[ℂ] H) (hA : IsSelfAdjoint A) {g : ℝ → ℝ}
     (hg : ContinuousOn g (spectrum ℝ A)) {c : ℝ} (hc : ∀ x ∈ spectrum ℝ A, c ≤ g x) (f : H) :
-    c * ‖f‖ ^ 2 ≤ RCLike.re ⟪cfc g A f, f⟫_ℂ := by
+    c * ‖f‖ ^ (2 : ℕ) ≤ RCLike.re ⟪cfc g A f, f⟫_ℂ := by
   have hsub : cfc (fun x : ℝ => g x - c) A = cfc g A - algebraMap ℝ (H →L[ℂ] H) c := by
     rw [cfc_sub g (fun _ => c) A hg (continuousOn_const), cfc_const c A hA]
   have hpos : (cfc (fun x : ℝ => g x - c) A).IsPositive :=
@@ -37,7 +37,7 @@ theorem re_inner_cfc_self_ge (A : H →L[ℂ] H) (hA : IsSelfAdjoint A) {g : ℝ
   have h0 := hpos.inner_nonneg_left f
   rw [hsub] at h0
   have hre : RCLike.re ⟪(cfc g A - algebraMap ℝ (H →L[ℂ] H) c) f, f⟫_ℂ =
-      RCLike.re ⟪cfc g A f, f⟫_ℂ - c * ‖f‖ ^ 2 := by
+      RCLike.re ⟪cfc g A f, f⟫_ℂ - c * ‖f‖ ^ (2 : ℕ) := by
     rw [sub_apply, inner_sub_left, map_sub, Algebra.algebraMap_eq_smul_one, smul_apply,
       one_apply_eq_self, RCLike.real_smul_eq_coe_smul (K := ℂ), inner_smul_left,
       inner_self_eq_norm_sq_to_K]

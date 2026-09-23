@@ -57,7 +57,7 @@ def sourceHorizontalWoldNormalizedPolarRateWeight (u : ℝ) : ℝ :=
 theorem sourceHorizontalWoldPrimeClockPolarRateWork_nonneg (u : ℝ) :
     0 ≤ sourceHorizontalWoldPrimeClockPolarRateWork u := by
   have hlower := sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower u
-  have hbase : 0 ≤ Real.log 2 / 18 * u ^ 4 := by positivity
+  have hbase : 0 ≤ Real.log 2 / 18 * u ^ (4 : ℕ) := by positivity
   linarith
 
 @[simp] theorem sourceHorizontalWoldNormalizedPolarRateWeight_zero :
@@ -69,7 +69,7 @@ theorem sourceHorizontalWoldNormalizedPolarRateWeight_pos_of_ne_zero
     {u : ℝ} (hu : u ≠ 0) :
     0 < sourceHorizontalWoldNormalizedPolarRateWeight u := by
   have hlower := sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower u
-  have hbase : 0 < Real.log 2 / 18 * u ^ 4 := by positivity
+  have hbase : 0 < Real.log 2 / 18 * u ^ (4 : ℕ) := by positivity
   have hwork : 0 < sourceHorizontalWoldPrimeClockPolarRateWork u := lt_of_lt_of_le hbase hlower
   rw [sourceHorizontalWoldNormalizedPolarRateWeight]
   exact div_pos hwork (by linarith)

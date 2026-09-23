@@ -56,8 +56,8 @@ private theorem oppositeCoefficient_analytic (q : XiZeroCopy) (w : ℂ) (hw : w.
 theorem remainderProfile_germ (q : XiZeroCopy) (br : Bool) (amp K w : ℂ) :
     AnalyticJet2At w (remainderProfile q br amp K) := by
   let s := physicalRate q br
-  let A : ℂ := (5*s^2+15*s+4)/4
-  let B : ℂ := s*(s-1)/4*((s+2)^2-K)
+  let A : ℂ := (5*s^(2 : ℕ)+15*s+4)/4
+  let B : ℂ := s*(s-1)/4*((s+2)^(2 : ℕ)-K)
   have hlin : AnalyticJet2At w (fun (_ : ℂ) (z : ℝ) => A+(1-(z:ℂ))*B) := by
     refine AnalyticJet2At.of_jet (R:=1) (b:=1/2) (C:=0)
       (c₀:=fun _ => A+B) (c₁:=fun _ => -B) (by norm_num) (by norm_num) le_rfl
@@ -109,12 +109,12 @@ private theorem forcing_pullback (q : XiZeroCopy) (br : Bool) (amp K w : ℂ)
   rw [horizonCoordinate_tortoiseOf hz] at hS
   simp only [sourceAmplitude,mul_one,amplitudeProfile] at hS
   rw [hu] at hS
-  have hr : (Real.sqrt (1-z):ℂ)^2=1-(z:ℂ) := by
+  have hr : (Real.sqrt (1-z):ℂ)^(2 : ℕ)=1-(z:ℂ) := by
     exact_mod_cast Real.sq_sqrt (show 0≤1-z by linarith [hz.2])
   simp only [forcingProfile,remainderProfile,sourceRemainder,mul_one,hu,hr,power] at hS ⊢
   linear_combination (-2*(Real.sqrt (1-z):ℂ)*
-    ((5*physicalRate q br^2+15*physicalRate q br+4)/4+
-      (1-(z:ℂ))*physicalRate q br*(physicalRate q br-1)/4*((physicalRate q br+2)^2-K)))*hS
+    ((5*physicalRate q br^(2 : ℕ)+15*physicalRate q br+4)/4+
+      (1-(z:ℂ))*physicalRate q br*(physicalRate q br-1)/4*((physicalRate q br+2)^(2 : ℕ)-K)))*hS
 
 /-- Both branches of the actual normalizable reader survive the coordinate change. -/
 theorem pullback_decomposition (q : XiZeroCopy) (br : Bool) (amp K w : ℂ)
@@ -244,7 +244,7 @@ theorem forcing_horizon_restoration (q : XiZeroCopy) (br side : Bool) (amp K : �
     calc
       _ = ‖(oppositeProfile q br amp K u z-d₀ u-d₁ u*(z:ℂ))+d₁ u*(z:ℂ)‖ := by ring_nf
       _ ≤ ‖oppositeProfile q br amp K u z-d₀ u-d₁ u*(z:ℂ)‖+‖d₁ u*(z:ℂ)‖ := norm_add_le _ _
-      _ ≤ E*z^2+M*z := add_le_add hjet hcoef
+      _ ≤ E*z^(2 : ℕ)+M*z := add_le_add hjet hcoef
       _ ≤ (M+E*D)*z := by
         have hzz : z≤D := hz.2.trans hbD
         have := mul_le_mul_of_nonneg_left hzz (mul_nonneg hE hz.1.le)

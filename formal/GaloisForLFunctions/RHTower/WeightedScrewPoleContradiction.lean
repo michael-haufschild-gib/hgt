@@ -36,16 +36,16 @@ theorem finite_xiZeroCopy_norm_le (K : ℝ) :
     rw [hempty]
     exact finite_empty
   · have hev := xiSpectralPoint_inv_sq_summable.tendsto_cofinite_zero.eventually
-      (gt_mem_nhds (show (0 : ℝ) < 1 / (2 * K ^ 2) by positivity))
+      (gt_mem_nhds (show (0 : ℝ) < 1 / (2 * K ^ (2 : ℕ)) by positivity))
     rw [Filter.eventually_cofinite] at hev
     refine hev.subset ?_
     intro q hq
     simp only [mem_setOf_eq, not_lt] at hq ⊢
     have hγ : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
-    have h1 : ‖xiSpectralPoint q‖ ^ 2 ≤ K ^ 2 := pow_le_pow_left₀ hγ.le hq 2
-    calc 1 / (2 * K ^ 2) ≤ 1 / (2 * ‖xiSpectralPoint q‖ ^ 2) :=
+    have h1 : ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ K ^ (2 : ℕ) := pow_le_pow_left₀ hγ.le hq 2
+    calc 1 / (2 * K ^ (2 : ℕ)) ≤ 1 / (2 * ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
           one_div_le_one_div_of_le (by positivity) (by linarith)
-      _ ≤ 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+      _ ≤ 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
           rw [div_le_div_iff₀ (by positivity) (by positivity)]
           nlinarith [sq_nonneg ‖xiSpectralPoint q‖]
 
@@ -128,7 +128,7 @@ theorem isPreconnected_rightHalfPunctured : IsPreconnected rightHalfPunctured :=
 
 /-! ## Atom bounds away from the poles -/
 
-theorem sq_add_sq_eq_mul (s γ : ℂ) : s ^ 2 + γ ^ 2 = (s - I * γ) * (s + I * γ) := by
+theorem sq_add_sq_eq_mul (s γ : ℂ) : s ^ (2 : ℕ) + γ ^ (2 : ℕ) = (s - I * γ) * (s + I * γ) := by
   ring_nf
   rw [I_sq]
   ring
@@ -146,7 +146,7 @@ theorem differentiableOn_atom_of_ne {γ : ℂ} {U : Set ℂ}
     (h0 : ∀ s ∈ U, s ≠ 0) (hm : ∀ s ∈ U, s - I * γ ≠ 0) (hp : ∀ s ∈ U, s + I * γ ≠ 0) :
     DifferentiableOn ℂ (fun s => suzukiPsiLaplaceAtom s γ) U := by
   intro s hs
-  have hquad : s ^ 2 + γ ^ 2 ≠ 0 := by
+  have hquad : s ^ (2 : ℕ) + γ ^ (2 : ℕ) ≠ 0 := by
     rw [sq_add_sq_eq_mul]
     exact mul_ne_zero (hm s hs) (hp s hs)
   apply DifferentiableAt.differentiableWithinAt
@@ -223,13 +223,13 @@ theorem exists_uniform_atom_bound {C : ℝ} (hC : 0 ≤ C) (hW : ∀ q, ‖W q�
   -- the majorant
   let u : XiZeroCopy → ℝ := fun q =>
     if q ∈ A then C * (1 / ((‖s₁‖ / 2) * (δ₀ / 2) * (δ₀ / 2)))
-    else C * (32 / ‖s₁‖) * (1 / ‖xiSpectralPoint q‖ ^ 2)
+    else C * (32 / ‖s₁‖) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))
   have hu_summable : Summable u := by
     have h1 : Summable (fun q : XiZeroCopy =>
         if q ∈ A then C * (1 / ((‖s₁‖ / 2) * (δ₀ / 2) * (δ₀ / 2))) else 0) :=
       summable_of_ne_finset_zero (s := A) fun q hq => by simp [hq]
     have h2 : Summable (fun q : XiZeroCopy =>
-        C * (32 / ‖s₁‖) * (1 / ‖xiSpectralPoint q‖ ^ 2)) :=
+        C * (32 / ‖s₁‖) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ))) :=
       xiSpectralPoint_inv_sq_summable.mul_left _
     refine (h1.add h2).of_nonneg_of_le (fun q => ?_) (fun q => ?_)
     · dsimp only [u]
@@ -237,7 +237,7 @@ theorem exists_uniform_atom_bound {C : ℝ} (hC : 0 ≤ C) (hW : ∀ q, ‖W q�
     · dsimp only [u]
       by_cases hq : q ∈ A
       · simp only [hq, if_true]
-        have : 0 ≤ C * (32 / ‖s₁‖) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by positivity
+        have : 0 ≤ C * (32 / ‖s₁‖) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by positivity
         linarith
       · simp only [hq, if_false, zero_add, le_refl]
   have hu_nonneg : ∀ q, 0 ≤ u q := by
@@ -322,7 +322,7 @@ theorem exists_uniform_atom_bound {C : ℝ} (hC : 0 ≤ C) (hW : ∀ q, ‖W q�
       calc ‖W q‖ * ‖suzukiPsiLaplaceAtom s (xiSpectralPoint q)‖
           ≤ C * (1 / ((‖s₁‖ / 2) * (‖xiSpectralPoint q‖ / 4) * (‖xiSpectralPoint q‖ / 4))) :=
             mul_le_mul (hW q) hatom (norm_nonneg _) hC
-        _ = C * (32 / ‖s₁‖) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by
+        _ = C * (32 / ‖s₁‖) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
             field_simp
             ring
 
@@ -563,14 +563,14 @@ theorem riemannHypothesis_of_weighted_positive {C : ℝ} (hC : 0 ≤ C) (hW : �
   have hatomE : ∀ n, ∀ q ∈ E,
       (c n : ℂ) * suzukiPsiLaplaceAtom (sn n) (xiSpectralPoint q) = 1 / (sn n * (sn n + s₀)) := by
     intro n q hq
-    have hsq : xiSpectralPoint q ^ 2 = γ₀ ^ 2 := by
+    have hsq : xiSpectralPoint q ^ (2 : ℕ) = γ₀ ^ (2 : ℕ) := by
       rcases (hEmem q).mp hq with h | h <;> rw [h] <;> ring
     unfold suzukiPsiLaplaceAtom
     rw [hsq]
-    have hs₀sq : s₀ ^ 2 = -γ₀ ^ 2 := by rw [hs₀, mul_pow, I_sq]; ring
-    have hfac : sn n ^ 2 + γ₀ ^ 2 = (c n : ℂ) * (sn n + s₀) := by
+    have hs₀sq : s₀ ^ (2 : ℕ) = -γ₀ ^ (2 : ℕ) := by rw [hs₀, mul_pow, I_sq]; ring
+    have hfac : sn n ^ (2 : ℕ) + γ₀ ^ (2 : ℕ) = (c n : ℂ) * (sn n + s₀) := by
       have : (sn n : ℂ) - s₀ = (c n : ℂ) := by dsimp only [sn]; ring
-      rw [← this, ← sub_neg_eq_add (sn n ^ 2), ← hs₀sq]
+      rw [← this, ← sub_neg_eq_add (sn n ^ (2 : ℕ)), ← hs₀sq]
       ring
     rw [hfac]
     have hc0 : (c n : ℂ) ≠ 0 := by exact_mod_cast (hc_pos n).ne'

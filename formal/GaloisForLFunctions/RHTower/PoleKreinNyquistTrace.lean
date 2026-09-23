@@ -58,7 +58,7 @@ noncomputable section
 namespace RHTower
 
 /-- `cosh²(u/2) = (cosh u + 1)/2`, the companion of `sinh_half_sq`. -/
-theorem cosh_half_sq (u : ℝ) : Real.cosh (u / 2) ^ 2 = (Real.cosh u + 1) / 2 := by
+theorem cosh_half_sq (u : ℝ) : Real.cosh (u / 2) ^ (2 : ℕ) = (Real.cosh u + 1) / 2 := by
   have h := Real.cosh_two_mul (u / 2)
   rw [show 2 * (u / 2) = u by ring] at h
   have h2 := Real.cosh_sq_sub_sinh_sq (u / 2)
@@ -74,12 +74,12 @@ theorem integral_cosh_interval (a b : ℝ) :
 
 /-- **The positive direction.**  `‖cosh(·/2)‖²_{L²[-ℓ,ℓ]} = sinh ℓ + ℓ`. -/
 theorem cosh_half_norm_sq (ℓ : ℝ) :
-    ∫ u in (-ℓ)..ℓ, Real.cosh (u / 2) ^ 2 = Real.sinh ℓ + ℓ := by
+    ∫ u in (-ℓ)..ℓ, Real.cosh (u / 2) ^ (2 : ℕ) = Real.sinh ℓ + ℓ := by
   have hint1 : IntervalIntegrable (fun u => Real.cosh u / 2) MeasureTheory.volume (-ℓ) ℓ :=
     (Real.continuous_cosh.div_const 2).intervalIntegrable _ _
   have hint2 : IntervalIntegrable (fun _ : ℝ => (1:ℝ) / 2) MeasureTheory.volume (-ℓ) ℓ :=
     _root_.intervalIntegrable_const
-  have hcongr : ∫ u in (-ℓ)..ℓ, Real.cosh (u / 2) ^ 2
+  have hcongr : ∫ u in (-ℓ)..ℓ, Real.cosh (u / 2) ^ (2 : ℕ)
       = ∫ u in (-ℓ)..ℓ, (Real.cosh u / 2 + 1 / 2) := by
     apply intervalIntegral.integral_congr
     intro u _
@@ -92,12 +92,12 @@ theorem cosh_half_norm_sq (ℓ : ℝ) :
 
 /-- **The negative direction.**  `‖sinh(·/2)‖²_{L²[-ℓ,ℓ]} = sinh ℓ - ℓ`. -/
 theorem sinh_half_norm_sq (ℓ : ℝ) :
-    ∫ u in (-ℓ)..ℓ, Real.sinh (u / 2) ^ 2 = Real.sinh ℓ - ℓ := by
+    ∫ u in (-ℓ)..ℓ, Real.sinh (u / 2) ^ (2 : ℕ) = Real.sinh ℓ - ℓ := by
   have hint1 : IntervalIntegrable (fun u => Real.cosh u / 2) MeasureTheory.volume (-ℓ) ℓ :=
     (Real.continuous_cosh.div_const 2).intervalIntegrable _ _
   have hint2 : IntervalIntegrable (fun _ : ℝ => (1:ℝ) / 2) MeasureTheory.volume (-ℓ) ℓ :=
     _root_.intervalIntegrable_const
-  have hcongr : ∫ u in (-ℓ)..ℓ, Real.sinh (u / 2) ^ 2
+  have hcongr : ∫ u in (-ℓ)..ℓ, Real.sinh (u / 2) ^ (2 : ℕ)
       = ∫ u in (-ℓ)..ℓ, (Real.cosh u / 2 - 1 / 2) := by
     apply intervalIntegral.integral_congr
     intro u _
@@ -115,7 +115,7 @@ theorem pole_trace_eq_length (ℓ : ℝ) :
 
 /-- The cancellation made explicit: the integrands differ by the constant `1`. -/
 theorem pythagorean_source (u : ℝ) :
-    Real.cosh (u / 2) ^ 2 - Real.sinh (u / 2) ^ 2 = 1 := by
+    Real.cosh (u / 2) ^ (2 : ℕ) - Real.sinh (u / 2) ^ (2 : ℕ) = 1 := by
   rw [cosh_half_sq, sinh_half_sq]; ring
 
 /-- **The positive eigenvalue is the detection ceiling.**  With `ℓ = L/2` the Krein-positive

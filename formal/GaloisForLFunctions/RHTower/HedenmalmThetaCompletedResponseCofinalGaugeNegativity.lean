@@ -13,8 +13,8 @@ zero-marginal gauge.  On a two-prime packet that gauge is exactly the signed gra
 ```
 
 where `c` is the completed pair response.  Its quadratic pairing is
-`-c (phi_p - phi_r)^2`, while its signed Dirichlet form is
-`2 c (phi_p - phi_r)^2`.
+`-c (phi_p - phi_r)^(2 : ℕ)`, while its signed Dirichlet form is
+`2 c (phi_p - phi_r)^(2 : ℕ)`.
 
 The source corpus supplies positive completed pair responses on arbitrarily late adjacent-prime
 packets.  Hence the gauge has strict negative quadratic directions and strict positive Dirichlet
@@ -39,7 +39,7 @@ def thetaPhysicalEndpointCompletedGaugeQuadraticForm
 def thetaPhysicalEndpointCompletedGaugeDirichletForm
     (P : Finset Nat.Primes) (phi : Nat.Primes → ℝ) : ℝ :=
   ∑ p ∈ P, ∑ r ∈ P,
-    thetaPhysicalEndpointCompletedGaugeCoupling P p r * (phi p - phi r) ^ 2
+    thetaPhysicalEndpointCompletedGaugeCoupling P p r * (phi p - phi r) ^ (2 : ℕ)
 
 theorem thetaPhysicalEndpointCompletedGaugeCoupling_pair_left_self
     (p r : Nat.Primes) (hpr : p ≠ r) :
@@ -82,7 +82,7 @@ theorem thetaPhysicalEndpointCompletedGaugeCoupling_pair_offDiagonal
 theorem thetaPhysicalEndpointCompletedGaugeQuadraticForm_pair
     (p r : Nat.Primes) (hpr : p ≠ r) (phi : Nat.Primes → ℝ) :
     thetaPhysicalEndpointCompletedGaugeQuadraticForm {p, r} phi =
-      -xiPhysicalEndpointCompletedPairResponse p r * (phi p - phi r) ^ 2 := by
+      -xiPhysicalEndpointCompletedPairResponse p r * (phi p - phi r) ^ (2 : ℕ) := by
   rw [thetaPhysicalEndpointCompletedGaugeQuadraticForm]
   simp only [Finset.sum_insert, Finset.mem_singleton, not_false_eq_true,
     Finset.sum_singleton, hpr]
@@ -97,7 +97,7 @@ theorem thetaPhysicalEndpointCompletedGaugeQuadraticForm_pair
 theorem thetaPhysicalEndpointCompletedGaugeDirichletForm_pair
     (p r : Nat.Primes) (hpr : p ≠ r) (phi : Nat.Primes → ℝ) :
     thetaPhysicalEndpointCompletedGaugeDirichletForm {p, r} phi =
-      2 * xiPhysicalEndpointCompletedPairResponse p r * (phi p - phi r) ^ 2 := by
+      2 * xiPhysicalEndpointCompletedPairResponse p r * (phi p - phi r) ^ (2 : ℕ) := by
   rw [thetaPhysicalEndpointCompletedGaugeDirichletForm]
   simp only [Finset.sum_insert, Finset.mem_singleton, not_false_eq_true,
     Finset.sum_singleton, hpr]

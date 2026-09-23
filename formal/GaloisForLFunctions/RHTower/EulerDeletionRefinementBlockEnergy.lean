@@ -32,7 +32,7 @@ the selected literal block, the complete literal aggregate, and the single
 local innovation.  The signed Möbius source remains unsplit in both kernels. -/
 theorem historyLayer_predictableDrift_norm_sq_eq_refinementBlockKernel_energy
     (l N : ℕ) (hlN : l < N) :
-    ‖historyLayer l (predictableDrift N)‖ ^ 2 =
+    ‖historyLayer l (predictableDrift N)‖ ^ (2 : ℕ) =
       ∑ r ∈ range (clock (l + 1)),
         cellMeasure.real (historyFibre (l + 1) r) *
           ((∫ x in (0 : ℝ)..1,
@@ -42,7 +42,7 @@ theorem historyLayer_predictableDrift_norm_sq_eq_refinementBlockKernel_energy
             (∫ x in (0 : ℝ)..1,
               canonicalRefinementAggregateKernel N l (r % clock l) x) /
                 cellMeasure.real (historyFibre l (r % clock l)) -
-            signedInnovation l r) ^ 2 := by
+            signedInnovation l r) ^ (2 : ℕ) := by
   rw [historyLayer_predictableDrift_norm_sq_eq_canonicalBetaResolvent_fibre_energy l N hlN]
   apply Finset.sum_congr rfl
   intro r hr
@@ -53,8 +53,8 @@ theorem historyLayer_predictableDrift_norm_sq_eq_refinementBlockKernel_energy
 prime-power clock refinements remain; every surviving square contains its
 selected signed block, the complete signed aggregate, and its one innovation. -/
 theorem predictableDrift_norm_sq_eq_primePower_refinementBlockKernel_energy (N : ℕ) :
-    ‖predictableDrift N‖ ^ 2 =
-      ‖(historySpace 0).starProjection (predictableDrift N)‖ ^ 2 +
+    ‖predictableDrift N‖ ^ (2 : ℕ) =
+      ‖(historySpace 0).starProjection (predictableDrift N)‖ ^ (2 : ℕ) +
         ∑ l ∈ (range N).filter (fun l => IsPrimePow (l + 1)),
           ∑ r ∈ range (clock (l + 1)),
             cellMeasure.real (historyFibre (l + 1) r) *
@@ -65,7 +65,7 @@ theorem predictableDrift_norm_sq_eq_primePower_refinementBlockKernel_energy (N :
                 (∫ x in (0 : ℝ)..1,
                   canonicalRefinementAggregateKernel N l (r % clock l) x) /
                     cellMeasure.real (historyFibre l (r % clock l)) -
-                signedInnovation l r) ^ 2 := by
+                signedInnovation l r) ^ (2 : ℕ) := by
   rw [predictableDrift_norm_sq_eq_historyLayer_sum,
     predictableDrift_historyLayer_energy_eq_primePower_filter]
   congr 1

@@ -112,11 +112,11 @@ theorem memLp_two_of_integrable_of_norm_le
     (hbound : ∀ y, ‖f y‖ ≤ C) :
     MemLp f 2 volume := by
   have hdom : Integrable (fun y => C * ‖f y‖) := hf.norm.const_mul C
-  have hsq : Integrable (fun y => ‖f y‖ ^ 2) := by
+  have hsq : Integrable (fun y => ‖f y‖ ^ (2 : ℕ)) := by
     apply hdom.mono' (hf.aestronglyMeasurable.norm.pow 2)
     filter_upwards [] with y
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-    change ‖f y‖ ^ 2 ≤ C * ‖f y‖
+    change ‖f y‖ ^ (2 : ℕ) ≤ C * ‖f y‖
     nlinarith [norm_nonneg (f y), hbound y]
   exact (memLp_two_iff_integrable_sq_norm hf.aestronglyMeasurable).2 hsq
 

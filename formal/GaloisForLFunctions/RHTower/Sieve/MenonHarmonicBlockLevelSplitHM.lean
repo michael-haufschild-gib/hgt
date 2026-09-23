@@ -41,16 +41,16 @@ theorem setIntegral_normSq_harmonicBlockProduct_levelSplit_HM
     {W : ℝ} (hW : 1 ≤ W) {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     {V₀ : ℝ} (hV₀ : 0 < V₀) {J : ℕ} (hJ : harmonicPrimeMass B ≤ 2 ^ J * V₀) :
     (∫ w in E,
-      ‖harmonicPrimeBlockPoly B w * logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ 2)
-      ≤ V₀ ^ 2 * ((2 * Real.pi)⁻¹ *
+      ‖harmonicPrimeBlockPoly B w * logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ (2 : ℕ))
+      ≤ V₀ ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
             (hmMassRecip N (2 * Real.pi * W) (2 * Real.pi * volume.real E)
-              * ((1 / (L' : ℝ)) ^ 2 * (D.card : ℝ))))
+              * ((1 / (L' : ℝ)) ^ (2 : ℕ) * (D.card : ℝ))))
         + ∑ i ∈ Finset.range J,
-            (2 ^ (i + 1) * V₀) ^ 2 * ((2 * Real.pi)⁻¹ *
+            (2 ^ (i + 1) * V₀) ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
               (hmMassRecip N (2 * Real.pi * W)
                   (2 * Real.pi *
                     volume.real (harmonicBlockLevelSet B E (2 ^ i * V₀)))
-                * ((1 / (L' : ℝ)) ^ 2 * (D.card : ℝ)))) := by
+                * ((1 / (L' : ℝ)) ^ (2 : ℕ) * (D.card : ℝ)))) := by
   classical
   have hbase := setIntegral_normSq_harmonicBlockProduct_levelSplit
     (harmonicRamareCofactorCoeff P) D hBprime hEm hEs hV₀ hJ
@@ -58,11 +58,11 @@ theorem setIntegral_normSq_harmonicBlockProduct_levelSplit_HM
     P D hL' hN hD hEm hW hEs
   have hHMi : ∀ i ∈ Finset.range J,
       (∫ w in harmonicBlockLevelSet B E (2 ^ i * V₀),
-        ‖logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ 2)
+        ‖logPoly (harmonicRamareCofactorCoeff P) D w‖ ^ (2 : ℕ))
         ≤ (2 * Real.pi)⁻¹ *
             (hmMassRecip N (2 * Real.pi * W)
                 (2 * Real.pi * volume.real (harmonicBlockLevelSet B E (2 ^ i * V₀)))
-              * ((1 / (L' : ℝ)) ^ 2 * (D.card : ℝ))) := by
+              * ((1 / (L' : ℝ)) ^ (2 : ℕ) * (D.card : ℝ))) := by
     intro i _
     exact setIntegral_normSq_harmonicRamareCofactor_le_HM_recip
       P D hL' hN hD (measurableSet_harmonicBlockLevelSet hEm _) hW

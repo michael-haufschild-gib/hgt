@@ -17,14 +17,14 @@ abbrev RecognitionQuery (n : ℕ) :=
   PairRecognitionQuery n ⊕ TriangleRecognitionQuery n
 
 /-- Exact number of pair and triangle queries in the exhaustive recognizer. -/
-def recognitionComparisonBudget (n : ℕ) : ℕ := n ^ 2 + n ^ 3
+def recognitionComparisonBudget (n : ℕ) : ℕ := n ^ (2 : ℕ) + n ^ (3 : ℕ)
 
 theorem card_pairRecognitionQuery (n : ℕ) :
-    Fintype.card (PairRecognitionQuery n) = n ^ 2 := by
+    Fintype.card (PairRecognitionQuery n) = n ^ (2 : ℕ) := by
   simp [PairRecognitionQuery, pow_two]
 
 theorem card_triangleRecognitionQuery (n : ℕ) :
-    Fintype.card (TriangleRecognitionQuery n) = n ^ 3 := by
+    Fintype.card (TriangleRecognitionQuery n) = n ^ (3 : ℕ) := by
   simp [TriangleRecognitionQuery, pow_succ, Nat.mul_assoc]
 
 theorem card_recognitionQuery (n : ℕ) :
@@ -34,13 +34,13 @@ theorem card_recognitionQuery (n : ℕ) :
 
 /-- Concrete cubic bound, avoiding asymptotic notation or a hidden bit-complexity model. -/
 theorem recognitionComparisonBudget_le_two_cubes {n : ℕ} (hn : 0 < n) :
-    recognitionComparisonBudget n ≤ 2 * n ^ 3 := by
+    recognitionComparisonBudget n ≤ 2 * n ^ (3 : ℕ) := by
   unfold recognitionComparisonBudget
-  have hnle : n ^ 2 ≤ n ^ 3 := by
+  have hnle : n ^ (2 : ℕ) ≤ n ^ (3 : ℕ) := by
     calc
-      n ^ 2 = n ^ 2 * 1 := by simp
-      _ ≤ n ^ 2 * n := Nat.mul_le_mul_left _ hn
-      _ = n ^ 3 := by ring
+      n ^ (2 : ℕ) = n ^ (2 : ℕ) * 1 := by simp
+      _ ≤ n ^ (2 : ℕ) * n := Nat.mul_le_mul_left _ hn
+      _ = n ^ (3 : ℕ) := by ring
   omega
 
 /-- Truth value represented by one ordered pair query. -/

@@ -34,7 +34,7 @@ def criticalPrimeCharacterL2 (t : ℝ) (n : Nat.Primes →₀ ℤ) :
 /-- Every finite prime character is a unit vector in critical prime-Poisson `L²`. -/
 theorem norm_criticalPrimeCharacterL2 (t : ℝ) (n : Nat.Primes →₀ ℤ) :
     ‖criticalPrimeCharacterL2 t n‖ = 1 := by
-  have hsq : ‖criticalPrimeCharacterL2 t n‖ ^ 2 = 1 := by
+  have hsq : ‖criticalPrimeCharacterL2 t n‖ ^ (2 : ℕ) = 1 := by
     rw [_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     have hcoe : ((criticalPrimeCharacterL2 t n :
         PrimePoissonL2 (1 / 2 : ℝ) t (by norm_num)) : PrimeTorus → ℂ) =ᵐ[
@@ -46,7 +46,7 @@ theorem norm_criticalPrimeCharacterL2 (t : ℝ) (n : Nat.Primes →₀ ℤ) :
           (infiniteTorusFourier n)
     calc
       (∫ x, ‖((criticalPrimeCharacterL2 t n :
-          PrimePoissonL2 (1 / 2 : ℝ) t (by norm_num)) : PrimeTorus → ℂ) x‖ ^ 2
+          PrimePoissonL2 (1 / 2 : ℝ) t (by norm_num)) : PrimeTorus → ℂ) x‖ ^ (2 : ℕ)
           ∂primePoissonMeasure (1 / 2 : ℝ) t (by norm_num)) =
           ∫ _x : PrimeTorus, (1 : ℝ)
             ∂primePoissonMeasure (1 / 2 : ℝ) t (by norm_num) := by

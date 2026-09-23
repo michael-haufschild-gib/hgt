@@ -59,9 +59,9 @@ theorem le_xiOddFiberCount_of_mollified_meanSquare :
               * Ψ (((4 : ℝ) : ℂ) + (t : ℂ) * I)‖) →
       (∫ t in T₁..T₂,
         ‖levinsonGEntire (lam : ℂ) ((σ₀ : ℂ) + (t : ℂ) * I)
-          * Ψ ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq →
+          * Ψ ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ Msq →
       ∀ n : ℕ,
-        ((n : ℝ) + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ 2)
+        ((n : ℝ) + 2) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ))
             + c * Real.log T₁ + c * Real.log T₂
             + levinsonMollifiedBudget (lam : ℂ) Ψ σ₀ T₁ T₂ Msq A
           ≤ gammaHardyTheta T₂ - gammaHardyTheta T₁ →

@@ -54,8 +54,8 @@ theorem refutation_localised {ι : Type*} [DecidableEq ι] (s : Finset ι) (lam 
 /-- **Verification is not localised.**  The witness of the previous entry has its first two rungs
 nonnegative and its third negative, so checking a proper initial segment certifies nothing. -/
 theorem verification_not_localised :
-    (0:ℝ) < 1 ∧ (0:ℝ) < 1 - (-(3:ℝ) / 5) ^ 2 ∧
-      (1 - (-(3:ℝ) / 5)) ^ 2 * (1 + 2 * (-(3:ℝ) / 5)) < 0 :=
+    (0:ℝ) < 1 ∧ (0:ℝ) < 1 - (-(3:ℝ) / 5) ^ (2 : ℕ) ∧
+      (1 - (-(3:ℝ) / 5)) ^ (2 : ℕ) * (1 + 2 * (-(3:ℝ) / 5)) < 0 :=
   truncation_insufficient
 
 /-- **The asymmetry, stated.**  One negative rung refutes; nonnegativity of a proper initial segment
@@ -63,8 +63,8 @@ does not verify. -/
 theorem asymmetry {ι : Type*} [DecidableEq ι] (s : Finset ι) (lam : ι → ℝ) {k : ℕ}
     (hneg : ∑ t ∈ s.powersetCard k, ∏ i ∈ t, lam i < 0) :
     (∃ i ∈ s, lam i < 0) ∧
-      ((0:ℝ) < 1 - (-(3:ℝ) / 5) ^ 2 ∧
-        (1 - (-(3:ℝ) / 5)) ^ 2 * (1 + 2 * (-(3:ℝ) / 5)) < 0) :=
+      ((0:ℝ) < 1 - (-(3:ℝ) / 5) ^ (2 : ℕ) ∧
+        (1 - (-(3:ℝ) / 5)) ^ (2 : ℕ) * (1 + 2 * (-(3:ℝ) / 5)) < 0) :=
   ⟨refutation_localised s lam hneg, minors_pos_at_witness, det_neg_at_witness⟩
 
 /-- The first rung is the trace, and it is nonnegative whenever the spectrum is. -/

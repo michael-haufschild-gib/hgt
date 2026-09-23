@@ -30,87 +30,87 @@ private def d4BMSeedH1Coefficient
 private def d4BMSeedH2Coefficient
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  -2 * s * (p.pair.1 : ℂ) ^ 2 /
+  -2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) /
       (d4BMPoincareQuadratic z p.pair : ℂ) +
-    4 * s * (s + 1) * (p.pair.1 : ℂ) ^ 2 *
-      (d4BMPoincareHorizontalLinear z p : ℂ) ^ 2 /
-        (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2
+    4 * s * (s + 1) * (p.pair.1 : ℂ) ^ (2 : ℕ) *
+      (d4BMPoincareHorizontalLinear z p : ℂ) ^ (2 : ℕ) /
+        (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ)
 
 private def d4BMSeedV1Coefficient
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
   s / (z.y : ℂ) -
-    2 * s * (p.pair.1 : ℂ) ^ 2 * (z.y : ℂ) /
+    2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * (z.y : ℂ) /
       (d4BMPoincareQuadratic z p.pair : ℂ)
 
 private def d4BMSeedV2Coefficient
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  s * (s - 1) / (z.y : ℂ) ^ 2 -
-    2 * s * (1 + 2 * s) * (p.pair.1 : ℂ) ^ 2 /
+  s * (s - 1) / (z.y : ℂ) ^ (2 : ℕ) -
+    2 * s * (1 + 2 * s) * (p.pair.1 : ℂ) ^ (2 : ℕ) /
       (d4BMPoincareQuadratic z p.pair : ℂ) +
-    4 * s * (s + 1) * (p.pair.1 : ℂ) ^ 4 * (z.y : ℂ) ^ 2 /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2
+    4 * s * (s + 1) * (p.pair.1 : ℂ) ^ (4 : ℕ) * (z.y : ℂ) ^ (2 : ℕ) /
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ)
 
 private def d4BMSeedMixedCoefficient
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  4 * s * (p.pair.1 : ℂ) ^ 3 * (z.y : ℂ) *
+  4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ) * (z.y : ℂ) *
       (d4BMPoincareHorizontalLinear z p : ℂ) /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2 +
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ) +
     d4BMSeedV1Coefficient z s p * d4BMSeedH1Coefficient z s p
 
 private def d4BMSeedH2HorizontalDerivativeCoefficient
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  4 * s * (p.pair.1 : ℂ) ^ 3 *
+  4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ) *
       (d4BMPoincareHorizontalLinear z p : ℂ) /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2 +
-    8 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3 *
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ) +
+    8 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ) *
       (d4BMPoincareHorizontalLinear z p : ℂ) /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2 -
-    16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3 *
-      (d4BMPoincareHorizontalLinear z p : ℂ) ^ 3 /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 3
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ) -
+    16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ) *
+      (d4BMPoincareHorizontalLinear z p : ℂ) ^ (3 : ℕ) /
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (3 : ℕ)
 
 private def d4BMSeedH2VerticalDerivativeCoefficient
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  4 * s * (p.pair.1 : ℂ) ^ 4 * (z.y : ℂ) /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2 -
-    16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 4 *
-      (d4BMPoincareHorizontalLinear z p : ℂ) ^ 2 * (z.y : ℂ) /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 3
+  4 * s * (p.pair.1 : ℂ) ^ (4 : ℕ) * (z.y : ℂ) /
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ) -
+    16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (4 : ℕ) *
+      (d4BMPoincareHorizontalLinear z p : ℂ) ^ (2 : ℕ) * (z.y : ℂ) /
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (3 : ℕ)
 
 private def d4BMSeedV2HorizontalDerivativeCoefficient
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  4 * s * (1 + 2 * s) * (p.pair.1 : ℂ) ^ 3 *
+  4 * s * (1 + 2 * s) * (p.pair.1 : ℂ) ^ (3 : ℕ) *
       (d4BMPoincareHorizontalLinear z p : ℂ) /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2 -
-    16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 5 * (z.y : ℂ) ^ 2 *
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ) -
+    16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (5 : ℕ) * (z.y : ℂ) ^ (2 : ℕ) *
       (d4BMPoincareHorizontalLinear z p : ℂ) /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 3
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (3 : ℕ)
 
-/-- Actual `partial_x^3` jet of one primitive Poincare seed. -/
+/-- Actual `partial_x^(3 : ℕ)` jet of one primitive Poincare seed. -/
 def d4BMPoincareSeedHorizontalThirdJet
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
   d4BMSeedH2HorizontalDerivativeCoefficient z s p * d4BMPoincareSeed z s p +
     d4BMSeedH1Coefficient z s p * d4BMPoincareSeedHorizontalSecondJet z s p
 
-/-- Actual `partial_x^2 partial_y` jet of one primitive Poincare seed. -/
+/-- Actual `partial_x^(2 : ℕ) partial_y` jet of one primitive Poincare seed. -/
 def d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
   d4BMSeedH2VerticalDerivativeCoefficient z s p * d4BMPoincareSeed z s p +
     d4BMSeedV1Coefficient z s p * d4BMPoincareSeedHorizontalSecondJet z s p
 
-/-- Actual `partial_x partial_y^2` jet of one primitive Poincare seed. -/
+/-- Actual `partial_x partial_y^(2 : ℕ)` jet of one primitive Poincare seed. -/
 def d4BMPoincareSeedHorizontalVerticalVerticalThirdJet
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) : ℂ :=
-  s * (s - 1) / (z.y : ℂ) ^ 2 *
+  s * (s - 1) / (z.y : ℂ) ^ (2 : ℕ) *
       d4BMPoincareSeedHorizontalFirstJet z s p -
     d4BMPoincareSeedHorizontalThirdJet z s p
 
@@ -149,11 +149,11 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalSecondJet_horizontal
       (d4BMPoincareSeedHorizontalThirdJet z s p) z.x := by
   let c : ℝ := p.pair.1
   let d : ℝ := p.pair.2
-  let Q : ℝ → ℝ := fun x => (c * z.y) ^ 2 + (c * x + d) ^ 2
+  let Q : ℝ → ℝ := fun x => (c * z.y) ^ (2 : ℕ) + (c * x + d) ^ (2 : ℕ)
   let u : ℝ → ℝ := fun x => c * x + d
   let B : ℝ → ℂ := fun x =>
-    -2 * s * (c : ℂ) ^ 2 / (Q x : ℂ) +
-      4 * s * (s + 1) * (c : ℂ) ^ 2 * (u x : ℂ) ^ 2 / (Q x : ℂ) ^ 2
+    -2 * s * (c : ℂ) ^ (2 : ℕ) / (Q x : ℂ) +
+      4 * s * (s + 1) * (c : ℂ) ^ (2 : ℕ) * (u x : ℂ) ^ (2 : ℕ) / (Q x : ℂ) ^ (2 : ℕ)
   let f : ℝ → ℂ := fun x => d4BMPoincareSeed (d4BMHorizontalCoordinate z x) s p
   have hQpos : 0 < Q z.x := by
     change 0 < d4BMPoincareQuadratic z p.pair
@@ -169,17 +169,17 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalSecondJet_horizontal
   have hQderiv : HasDerivAt (fun x : ℝ => (Q x : ℂ))
       ((2 * c * u z.x : ℝ) : ℂ) z.x := hQderivR.ofReal_comp
   have hterm1 :=
-    (hasDerivAt_const z.x (-2 * s * (c : ℂ) ^ 2)).div hQderiv hQne
+    (hasDerivAt_const z.x (-2 * s * (c : ℂ) ^ (2 : ℕ))).div hQderiv hQne
   have hterm2 :=
-    ((((hu.pow 2).const_mul (4 * s * (s + 1) * (c : ℂ) ^ 2))).div
+    ((((hu.pow 2).const_mul (4 * s * (s + 1) * (c : ℂ) ^ (2 : ℕ)))).div
       (hQderiv.pow 2) (pow_ne_zero 2 hQne))
   have hBraw := hterm1.add hterm2
   let BX : ℂ :=
-    4 * s * (c : ℂ) ^ 3 * (u z.x : ℂ) / (Q z.x : ℂ) ^ 2 +
-      8 * s * (s + 1) * (c : ℂ) ^ 3 * (u z.x : ℂ) /
-        (Q z.x : ℂ) ^ 2 -
-      16 * s * (s + 1) * (c : ℂ) ^ 3 * (u z.x : ℂ) ^ 3 /
-        (Q z.x : ℂ) ^ 3
+    4 * s * (c : ℂ) ^ (3 : ℕ) * (u z.x : ℂ) / (Q z.x : ℂ) ^ (2 : ℕ) +
+      8 * s * (s + 1) * (c : ℂ) ^ (3 : ℕ) * (u z.x : ℂ) /
+        (Q z.x : ℂ) ^ (2 : ℕ) -
+      16 * s * (s + 1) * (c : ℂ) ^ (3 : ℕ) * (u z.x : ℂ) ^ (3 : ℕ) /
+        (Q z.x : ℂ) ^ (3 : ℕ)
   have hBlocal : HasDerivAt B BX z.x := by
     dsimp only [B, BX]
     apply hBraw.congr_deriv
@@ -233,12 +233,12 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJet_horizontal
       (d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet z s p) z.x := by
   let c : ℝ := p.pair.1
   let d : ℝ := p.pair.2
-  let Q : ℝ → ℝ := fun x => (c * z.y) ^ 2 + (c * x + d) ^ 2
+  let Q : ℝ → ℝ := fun x => (c * z.y) ^ (2 : ℕ) + (c * x + d) ^ (2 : ℕ)
   let u : ℝ → ℝ := fun x => c * x + d
   let T : ℝ → ℂ := fun x =>
-    4 * s * (c : ℂ) ^ 3 * (z.y : ℂ) * (u x : ℂ) / (Q x : ℂ) ^ 2
+    4 * s * (c : ℂ) ^ (3 : ℕ) * (z.y : ℂ) * (u x : ℂ) / (Q x : ℂ) ^ (2 : ℕ)
   let V : ℝ → ℂ := fun x =>
-    s / (z.y : ℂ) - 2 * s * (c : ℂ) ^ 2 * (z.y : ℂ) / (Q x : ℂ)
+    s / (z.y : ℂ) - 2 * s * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ) / (Q x : ℂ)
   let H : ℝ → ℂ := fun x =>
     -2 * s * (c : ℂ) * (u x : ℂ) / (Q x : ℂ)
   let M : ℝ → ℂ := fun x => T x + V x * H x
@@ -257,11 +257,11 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJet_horizontal
   have hQderiv : HasDerivAt (fun x : ℝ => (Q x : ℂ))
       ((2 * c * u z.x : ℝ) : ℂ) z.x := hQderivR.ofReal_comp
   let TX : ℂ :=
-    4 * s * (c : ℂ) ^ 4 * (z.y : ℂ) / (Q z.x : ℂ) ^ 2 -
-      16 * s * (c : ℂ) ^ 4 * (z.y : ℂ) * (u z.x : ℂ) ^ 2 /
-        (Q z.x : ℂ) ^ 3
+    4 * s * (c : ℂ) ^ (4 : ℕ) * (z.y : ℂ) / (Q z.x : ℂ) ^ (2 : ℕ) -
+      16 * s * (c : ℂ) ^ (4 : ℕ) * (z.y : ℂ) * (u z.x : ℂ) ^ (2 : ℕ) /
+        (Q z.x : ℂ) ^ (3 : ℕ)
   have hTraw :=
-    ((hu.const_mul (4 * s * (c : ℂ) ^ 3 * (z.y : ℂ))).div
+    ((hu.const_mul (4 * s * (c : ℂ) ^ (3 : ℕ) * (z.y : ℂ))).div
       (hQderiv.pow 2) (pow_ne_zero 2 hQne))
   have hT : HasDerivAt T TX z.x := by
     dsimp only [T, TX]
@@ -271,11 +271,11 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJet_horizontal
     field_simp [hQne]
     ring
   let VX : ℂ :=
-    4 * s * (c : ℂ) ^ 3 * (z.y : ℂ) * (u z.x : ℂ) /
-      (Q z.x : ℂ) ^ 2
+    4 * s * (c : ℂ) ^ (3 : ℕ) * (z.y : ℂ) * (u z.x : ℂ) /
+      (Q z.x : ℂ) ^ (2 : ℕ)
   have hVraw :=
     (hasDerivAt_const z.x (s / (z.y : ℂ))).sub
-      ((hasDerivAt_const z.x (2 * s * (c : ℂ) ^ 2 * (z.y : ℂ))).div
+      ((hasDerivAt_const z.x (2 * s * (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ))).div
         hQderiv hQne)
   have hV : HasDerivAt V VX z.x := by
     dsimp only [V, VX]
@@ -284,8 +284,8 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJet_horizontal
     field_simp [hQne]
     ring
   let HX : ℂ :=
-    -2 * s * (c : ℂ) ^ 2 / (Q z.x : ℂ) +
-      4 * s * (c : ℂ) ^ 2 * (u z.x : ℂ) ^ 2 / (Q z.x : ℂ) ^ 2
+    -2 * s * (c : ℂ) ^ (2 : ℕ) / (Q z.x : ℂ) +
+      4 * s * (c : ℂ) ^ (2 : ℕ) * (u z.x : ℂ) ^ (2 : ℕ) / (Q z.x : ℂ) ^ (2 : ℕ)
   have hHraw :=
     (hu.const_mul (-2 * s * (c : ℂ))).div hQderiv hQne
   have hH : HasDerivAt H HX z.x := by
@@ -295,13 +295,13 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJet_horizontal
     field_simp [hQne]
     ring
   let H2C : ℂ :=
-    -2 * s * (c : ℂ) ^ 2 / (Q z.x : ℂ) +
-      4 * s * (s + 1) * (c : ℂ) ^ 2 * (u z.x : ℂ) ^ 2 /
-        (Q z.x : ℂ) ^ 2
+    -2 * s * (c : ℂ) ^ (2 : ℕ) / (Q z.x : ℂ) +
+      4 * s * (s + 1) * (c : ℂ) ^ (2 : ℕ) * (u z.x : ℂ) ^ (2 : ℕ) /
+        (Q z.x : ℂ) ^ (2 : ℕ)
   let H2Y : ℂ :=
-    4 * s * (c : ℂ) ^ 4 * (z.y : ℂ) / (Q z.x : ℂ) ^ 2 -
-      16 * s * (s + 1) * (c : ℂ) ^ 4 * (u z.x : ℂ) ^ 2 *
-        (z.y : ℂ) / (Q z.x : ℂ) ^ 3
+    4 * s * (c : ℂ) ^ (4 : ℕ) * (z.y : ℂ) / (Q z.x : ℂ) ^ (2 : ℕ) -
+      16 * s * (s + 1) * (c : ℂ) ^ (4 : ℕ) * (u z.x : ℂ) ^ (2 : ℕ) *
+        (z.y : ℂ) / (Q z.x : ℂ) ^ (3 : ℕ)
   let MX : ℂ := TX + VX * H z.x + V z.x * HX
   have hM : HasDerivAt M MX z.x := by
     change HasDerivAt (T + V * H) MX z.x
@@ -358,7 +358,7 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJet_horizontal
     rfl
   rw [← hHvalue, ← hVvalue, ← hH2value, ← hH2Yvalue]
   have hQalg : (Q z.x : ℂ) =
-      (c : ℂ) ^ 2 * (z.y : ℂ) ^ 2 + (u z.x : ℂ) ^ 2 := by
+      (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ) ^ (2 : ℕ) + (u z.x : ℂ) ^ (2 : ℕ) := by
     dsimp only [Q, u]
     push_cast
     ring
@@ -373,39 +373,39 @@ def d4BMPoincareSeedHorizontalFirstJetVerticalSlice
     (p : D4BMPrimitiveIntegerPair) (y : ℝ) : ℂ :=
   (-2 * s * (p.pair.1 : ℂ) *
       (((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ) : ℝ) : ℂ) /
-      ((((p.pair.1 : ℝ) * y) ^ 2 +
-        ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 : ℝ) : ℂ)) *
+      ((((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+        ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) : ℝ) : ℂ)) *
     d4BMPoincareSeedVerticalSlice z s p y
 
 /-- Vertical slice of the horizontal second seed jet. -/
 def d4BMPoincareSeedHorizontalSecondJetVerticalSlice
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) (y : ℝ) : ℂ :=
-  (-2 * s * (p.pair.1 : ℂ) ^ 2 /
-        ((((p.pair.1 : ℝ) * y) ^ 2 +
-          ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 : ℝ) : ℂ) +
-      4 * s * (s + 1) * (p.pair.1 : ℂ) ^ 2 *
-        (((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ) : ℝ) : ℂ) ^ 2 /
-        ((((p.pair.1 : ℝ) * y) ^ 2 +
-          ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 : ℝ) : ℂ) ^ 2) *
+  (-2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) /
+        ((((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+          ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) : ℝ) : ℂ) +
+      4 * s * (s + 1) * (p.pair.1 : ℂ) ^ (2 : ℕ) *
+        (((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ) : ℝ) : ℂ) ^ (2 : ℕ) /
+        ((((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+          ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) : ℝ) : ℂ) ^ (2 : ℕ)) *
     d4BMPoincareSeedVerticalSlice z s p y
 
 /-- Vertical slice of the mixed second seed jet. -/
 def d4BMPoincareSeedMixedSecondJetVerticalSlice
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) (y : ℝ) : ℂ :=
-  (4 * s * (p.pair.1 : ℂ) ^ 3 * (y : ℂ) *
+  (4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ) * (y : ℂ) *
         (((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ) : ℝ) : ℂ) /
-        ((((p.pair.1 : ℝ) * y) ^ 2 +
-          ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 : ℝ) : ℂ) ^ 2 +
+        ((((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+          ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) : ℝ) : ℂ) ^ (2 : ℕ) +
       (s / (y : ℂ) -
-        2 * s * (p.pair.1 : ℂ) ^ 2 * (y : ℂ) /
-          ((((p.pair.1 : ℝ) * y) ^ 2 +
-            ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 : ℝ) : ℂ)) *
+        2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * (y : ℂ) /
+          ((((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+            ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) : ℝ) : ℂ)) *
         (-2 * s * (p.pair.1 : ℂ) *
           (((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ) : ℝ) : ℂ) /
-          ((((p.pair.1 : ℝ) * y) ^ 2 +
-            ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ 2 : ℝ) : ℂ))) *
+          ((((p.pair.1 : ℝ) * y) ^ (2 : ℕ) +
+            ((p.pair.1 : ℝ) * z.x + (p.pair.2 : ℝ)) ^ (2 : ℕ) : ℝ) : ℂ))) *
     d4BMPoincareSeedVerticalSlice z s p y
 
 @[simp] theorem d4BM_poincareSeedHorizontalFirstJetVerticalSlice_at_height
@@ -437,7 +437,7 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalFirstJetVerticalSlice
       (d4BMPoincareSeedMixedSecondJet z s p) z.y := by
   let c : ℝ := p.pair.1
   let u : ℝ := c * z.x + p.pair.2
-  let Q : ℝ → ℝ := fun y => (c * y) ^ 2 + u ^ 2
+  let Q : ℝ → ℝ := fun y => (c * y) ^ (2 : ℕ) + u ^ (2 : ℕ)
   let B : ℝ → ℂ := fun y => -2 * s * (c : ℂ) * (u : ℂ) / (Q y : ℂ)
   let f : ℝ → ℂ := d4BMPoincareSeedVerticalSlice z s p
   have hQpos : 0 < Q z.y := by
@@ -445,14 +445,14 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalFirstJetVerticalSlice
     exact d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
   have hQne : (Q z.y : ℂ) ≠ 0 := by exact_mod_cast hQpos.ne'
   have hidR : HasDerivAt (fun y : ℝ => y) 1 z.y := hasDerivAt_id z.y
-  have hQderivR : HasDerivAt Q (2 * c ^ 2 * z.y) z.y := by
+  have hQderivR : HasDerivAt Q (2 * c ^ (2 : ℕ) * z.y) z.y := by
     dsimp only [Q]
     exact ((((hidR.const_mul c).pow 2).add
-      (hasDerivAt_const z.y (u ^ 2)))).congr_deriv (by ring)
+      (hasDerivAt_const z.y (u ^ (2 : ℕ))))).congr_deriv (by ring)
   have hQderiv : HasDerivAt (fun y : ℝ => (Q y : ℂ))
-      ((2 * c ^ 2 * z.y : ℝ) : ℂ) z.y := hQderivR.ofReal_comp
+      ((2 * c ^ (2 : ℕ) * z.y : ℝ) : ℂ) z.y := hQderivR.ofReal_comp
   let BY : ℂ :=
-    4 * s * (c : ℂ) ^ 3 * (u : ℂ) * (z.y : ℂ) / (Q z.y : ℂ) ^ 2
+    4 * s * (c : ℂ) ^ (3 : ℕ) * (u : ℂ) * (z.y : ℂ) / (Q z.y : ℂ) ^ (2 : ℕ)
   have hBraw :=
     (hasDerivAt_const z.y (-2 * s * (c : ℂ) * (u : ℂ))).div hQderiv hQne
   have hB : HasDerivAt B BY z.y := by
@@ -482,9 +482,9 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalFirstJetVerticalSlice
     push_cast
     rfl
   have hBYvalue : BY =
-      4 * s * (p.pair.1 : ℂ) ^ 3 * (z.y : ℂ) *
+      4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ) * (z.y : ℂ) *
         (d4BMPoincareHorizontalLinear z p : ℂ) /
-          (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2 := by
+          (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ) := by
     unfold d4BMPoincareHorizontalLinear d4BMPoincareQuadratic
     dsimp only [BY, Q, c, u]
     push_cast
@@ -501,30 +501,30 @@ theorem hasDerivAt_d4BMPoincareSeedHorizontalSecondJetVerticalSlice
       (d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet z s p) z.y := by
   let c : ℝ := p.pair.1
   let u : ℝ := c * z.x + p.pair.2
-  let Q : ℝ → ℝ := fun y => (c * y) ^ 2 + u ^ 2
+  let Q : ℝ → ℝ := fun y => (c * y) ^ (2 : ℕ) + u ^ (2 : ℕ)
   let B : ℝ → ℂ := fun y =>
-    -2 * s * (c : ℂ) ^ 2 / (Q y : ℂ) +
-      4 * s * (s + 1) * (c : ℂ) ^ 2 * (u : ℂ) ^ 2 / (Q y : ℂ) ^ 2
+    -2 * s * (c : ℂ) ^ (2 : ℕ) / (Q y : ℂ) +
+      4 * s * (s + 1) * (c : ℂ) ^ (2 : ℕ) * (u : ℂ) ^ (2 : ℕ) / (Q y : ℂ) ^ (2 : ℕ)
   let f : ℝ → ℂ := d4BMPoincareSeedVerticalSlice z s p
   have hQpos : 0 < Q z.y := by
     change 0 < d4BMPoincareQuadratic z p.pair
     exact d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
   have hQne : (Q z.y : ℂ) ≠ 0 := by exact_mod_cast hQpos.ne'
   have hidR : HasDerivAt (fun y : ℝ => y) 1 z.y := hasDerivAt_id z.y
-  have hQderivR : HasDerivAt Q (2 * c ^ 2 * z.y) z.y := by
+  have hQderivR : HasDerivAt Q (2 * c ^ (2 : ℕ) * z.y) z.y := by
     dsimp only [Q]
     exact ((((hidR.const_mul c).pow 2).add
-      (hasDerivAt_const z.y (u ^ 2)))).congr_deriv (by ring)
+      (hasDerivAt_const z.y (u ^ (2 : ℕ))))).congr_deriv (by ring)
   have hQderiv : HasDerivAt (fun y : ℝ => (Q y : ℂ))
-      ((2 * c ^ 2 * z.y : ℝ) : ℂ) z.y := hQderivR.ofReal_comp
+      ((2 * c ^ (2 : ℕ) * z.y : ℝ) : ℂ) z.y := hQderivR.ofReal_comp
   let BY : ℂ :=
-    4 * s * (c : ℂ) ^ 4 * (z.y : ℂ) / (Q z.y : ℂ) ^ 2 -
-      16 * s * (s + 1) * (c : ℂ) ^ 4 * (u : ℂ) ^ 2 *
-        (z.y : ℂ) / (Q z.y : ℂ) ^ 3
+    4 * s * (c : ℂ) ^ (4 : ℕ) * (z.y : ℂ) / (Q z.y : ℂ) ^ (2 : ℕ) -
+      16 * s * (s + 1) * (c : ℂ) ^ (4 : ℕ) * (u : ℂ) ^ (2 : ℕ) *
+        (z.y : ℂ) / (Q z.y : ℂ) ^ (3 : ℕ)
   have hterm1 :=
-    (hasDerivAt_const z.y (-2 * s * (c : ℂ) ^ 2)).div hQderiv hQne
+    (hasDerivAt_const z.y (-2 * s * (c : ℂ) ^ (2 : ℕ))).div hQderiv hQne
   have hterm2 :=
-    (hasDerivAt_const z.y (4 * s * (s + 1) * (c : ℂ) ^ 2 * (u : ℂ) ^ 2)).div
+    (hasDerivAt_const z.y (4 * s * (s + 1) * (c : ℂ) ^ (2 : ℕ) * (u : ℂ) ^ (2 : ℕ))).div
       (hQderiv.pow 2) (pow_ne_zero 2 hQne)
   have hBraw := hterm1.add hterm2
   have hB : HasDerivAt B BY z.y := by
@@ -580,7 +580,7 @@ theorem hasDerivAt_d4BMPoincareSeedVerticalSecondJet_horizontal
     d4BMPoincareSeedHorizontalSecondJet (d4BMHorizontalCoordinate z x) s p
   let V2 : ℝ → ℂ := fun x =>
     d4BMPoincareSeedVerticalSecondJet (d4BMHorizontalCoordinate z x) s p
-  let C : ℂ := s * (s - 1) / (z.y : ℂ) ^ 2
+  let C : ℂ := s * (s - 1) / (z.y : ℂ) ^ (2 : ℕ)
   have hy : (z.y : ℂ) ≠ 0 := by exact_mod_cast z.y_pos.ne'
   have hfun : V2 = fun x => C * F x - H2 x := by
     funext x
@@ -613,11 +613,11 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJetVerticalSlice
       (d4BMPoincareSeedHorizontalVerticalVerticalThirdJet z s p) z.y := by
   let c : ℝ := p.pair.1
   let u : ℝ := c * z.x + p.pair.2
-  let Q : ℝ → ℝ := fun y => (c * y) ^ 2 + u ^ 2
+  let Q : ℝ → ℝ := fun y => (c * y) ^ (2 : ℕ) + u ^ (2 : ℕ)
   let T : ℝ → ℂ := fun y =>
-    4 * s * (c : ℂ) ^ 3 * (u : ℂ) * (y : ℂ) / (Q y : ℂ) ^ 2
+    4 * s * (c : ℂ) ^ (3 : ℕ) * (u : ℂ) * (y : ℂ) / (Q y : ℂ) ^ (2 : ℕ)
   let V : ℝ → ℂ := fun y =>
-    s / (y : ℂ) - 2 * s * (c : ℂ) ^ 2 * (y : ℂ) / (Q y : ℂ)
+    s / (y : ℂ) - 2 * s * (c : ℂ) ^ (2 : ℕ) * (y : ℂ) / (Q y : ℂ)
   let H : ℝ → ℂ := fun y =>
     -2 * s * (c : ℂ) * (u : ℂ) / (Q y : ℂ)
   let M : ℝ → ℂ := fun y => T y + V y * H y
@@ -629,18 +629,18 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJetVerticalSlice
   have hy : (z.y : ℂ) ≠ 0 := by exact_mod_cast z.y_pos.ne'
   have hidR : HasDerivAt (fun y : ℝ => y) 1 z.y := hasDerivAt_id z.y
   have hid : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 z.y := hidR.ofReal_comp
-  have hQderivR : HasDerivAt Q (2 * c ^ 2 * z.y) z.y := by
+  have hQderivR : HasDerivAt Q (2 * c ^ (2 : ℕ) * z.y) z.y := by
     dsimp only [Q]
     exact ((((hidR.const_mul c).pow 2).add
-      (hasDerivAt_const z.y (u ^ 2)))).congr_deriv (by ring)
+      (hasDerivAt_const z.y (u ^ (2 : ℕ))))).congr_deriv (by ring)
   have hQderiv : HasDerivAt (fun y : ℝ => (Q y : ℂ))
-      ((2 * c ^ 2 * z.y : ℝ) : ℂ) z.y := hQderivR.ofReal_comp
+      ((2 * c ^ (2 : ℕ) * z.y : ℝ) : ℂ) z.y := hQderivR.ofReal_comp
   let TY : ℂ :=
-    4 * s * (c : ℂ) ^ 3 * (u : ℂ) / (Q z.y : ℂ) ^ 2 -
-      16 * s * (c : ℂ) ^ 5 * (z.y : ℂ) ^ 2 * (u : ℂ) /
-        (Q z.y : ℂ) ^ 3
+    4 * s * (c : ℂ) ^ (3 : ℕ) * (u : ℂ) / (Q z.y : ℂ) ^ (2 : ℕ) -
+      16 * s * (c : ℂ) ^ (5 : ℕ) * (z.y : ℂ) ^ (2 : ℕ) * (u : ℂ) /
+        (Q z.y : ℂ) ^ (3 : ℕ)
   have hTraw :=
-    ((hid.const_mul (4 * s * (c : ℂ) ^ 3 * (u : ℂ))).div
+    ((hid.const_mul (4 * s * (c : ℂ) ^ (3 : ℕ) * (u : ℂ))).div
       (hQderiv.pow 2) (pow_ne_zero 2 hQne))
   have hT : HasDerivAt T TY z.y := by
     dsimp only [T, TY]
@@ -650,12 +650,12 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJetVerticalSlice
     field_simp [hQne]
     ring
   let VY : ℂ :=
-    -s / (z.y : ℂ) ^ 2 -
-      2 * s * (c : ℂ) ^ 2 / (Q z.y : ℂ) +
-      4 * s * (c : ℂ) ^ 4 * (z.y : ℂ) ^ 2 / (Q z.y : ℂ) ^ 2
+    -s / (z.y : ℂ) ^ (2 : ℕ) -
+      2 * s * (c : ℂ) ^ (2 : ℕ) / (Q z.y : ℂ) +
+      4 * s * (c : ℂ) ^ (4 : ℕ) * (z.y : ℂ) ^ (2 : ℕ) / (Q z.y : ℂ) ^ (2 : ℕ)
   have hVraw :=
     ((hasDerivAt_const z.y s).div hid hy).sub
-      ((hid.const_mul (2 * s * (c : ℂ) ^ 2)).div hQderiv hQne)
+      ((hid.const_mul (2 * s * (c : ℂ) ^ (2 : ℕ))).div hQderiv hQne)
   have hV : HasDerivAt V VY z.y := by
     dsimp only [V, VY]
     apply hVraw.congr_deriv
@@ -663,7 +663,7 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJetVerticalSlice
     field_simp [hQne, hy]
     ring
   let HY : ℂ :=
-    4 * s * (c : ℂ) ^ 3 * (u : ℂ) * (z.y : ℂ) / (Q z.y : ℂ) ^ 2
+    4 * s * (c : ℂ) ^ (3 : ℕ) * (u : ℂ) * (z.y : ℂ) / (Q z.y : ℂ) ^ (2 : ℕ)
   have hHraw :=
     (hasDerivAt_const z.y (-2 * s * (c : ℂ) * (u : ℂ))).div hQderiv hQne
   have hH : HasDerivAt H HY z.y := by
@@ -697,22 +697,22 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJetVerticalSlice
     d4BM_seedJet_coefficient_eq z s p |>.2.1]
   change MY * d4BMPoincareSeed z s p +
       M z.y * (d4BMSeedV1Coefficient z s p * d4BMPoincareSeed z s p) =
-    s * (s - 1) / (z.y : ℂ) ^ 2 *
+    s * (s - 1) / (z.y : ℂ) ^ (2 : ℕ) *
         (d4BMSeedH1Coefficient z s p * d4BMPoincareSeed z s p) -
       (d4BMSeedH2HorizontalDerivativeCoefficient z s p *
           d4BMPoincareSeed z s p +
         d4BMSeedH1Coefficient z s p *
           (d4BMSeedH2Coefficient z s p * d4BMPoincareSeed z s p))
   let H2C : ℂ :=
-    -2 * s * (c : ℂ) ^ 2 / (Q z.y : ℂ) +
-      4 * s * (s + 1) * (c : ℂ) ^ 2 * (u : ℂ) ^ 2 /
-        (Q z.y : ℂ) ^ 2
+    -2 * s * (c : ℂ) ^ (2 : ℕ) / (Q z.y : ℂ) +
+      4 * s * (s + 1) * (c : ℂ) ^ (2 : ℕ) * (u : ℂ) ^ (2 : ℕ) /
+        (Q z.y : ℂ) ^ (2 : ℕ)
   let H2X : ℂ :=
-    4 * s * (c : ℂ) ^ 3 * (u : ℂ) / (Q z.y : ℂ) ^ 2 +
-      8 * s * (s + 1) * (c : ℂ) ^ 3 * (u : ℂ) /
-        (Q z.y : ℂ) ^ 2 -
-      16 * s * (s + 1) * (c : ℂ) ^ 3 * (u : ℂ) ^ 3 /
-        (Q z.y : ℂ) ^ 3
+    4 * s * (c : ℂ) ^ (3 : ℕ) * (u : ℂ) / (Q z.y : ℂ) ^ (2 : ℕ) +
+      8 * s * (s + 1) * (c : ℂ) ^ (3 : ℕ) * (u : ℂ) /
+        (Q z.y : ℂ) ^ (2 : ℕ) -
+      16 * s * (s + 1) * (c : ℂ) ^ (3 : ℕ) * (u : ℂ) ^ (3 : ℕ) /
+        (Q z.y : ℂ) ^ (3 : ℕ)
   have hHvalue : H z.y = d4BMSeedH1Coefficient z s p := by
     unfold d4BMSeedH1Coefficient d4BMPoincareHorizontalLinear
       d4BMPoincareQuadratic
@@ -746,7 +746,7 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJetVerticalSlice
     rfl
   rw [← hVvalue, ← hHvalue, ← hH2value, ← hH2Xvalue]
   have hQalg : (Q z.y : ℂ) =
-      (c : ℂ) ^ 2 * (z.y : ℂ) ^ 2 + (u : ℂ) ^ 2 := by
+      (c : ℂ) ^ (2 : ℕ) * (z.y : ℂ) ^ (2 : ℕ) + (u : ℂ) ^ (2 : ℕ) := by
     dsimp only [Q]
     push_cast
     ring
@@ -758,10 +758,10 @@ theorem hasDerivAt_d4BMPoincareSeedMixedSecondJetVerticalSlice
 private lemma d4BM_abs_c_sq_div_quadratic_le
     (z : D4BMUpperHalfPlaneCoordinate)
     (p : D4BMPrimitiveIntegerPair) :
-    |(p.pair.1 : ℝ)| ^ 2 / d4BMPoincareQuadratic z p.pair ≤
-      1 / z.y ^ 2 := by
+    |(p.pair.1 : ℝ)| ^ (2 : ℕ) / d4BMPoincareQuadratic z p.pair ≤
+      1 / z.y ^ (2 : ℕ) := by
   have hQ := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
-  have hy2 : 0 < z.y ^ 2 := sq_pos_of_pos z.y_pos
+  have hy2 : 0 < z.y ^ (2 : ℕ) := sq_pos_of_pos z.y_pos
   apply (div_le_div_iff₀ hQ hy2).2
   rw [sq_abs]
   unfold d4BMPoincareQuadratic
@@ -778,9 +778,9 @@ private lemma d4BM_abs_c_mul_abs_u_div_quadratic_le
   have hQ : 0 < Q := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
   have hamgm : 2 * z.y * |c| * |u| ≤ Q := by
     calc
-      2 * z.y * |c| * |u| ≤ (z.y * |c|) ^ 2 + |u| ^ 2 := by
+      2 * z.y * |c| * |u| ≤ (z.y * |c|) ^ (2 : ℕ) + |u| ^ (2 : ℕ) := by
         nlinarith [sq_nonneg (z.y * |c| - |u|)]
-      _ = z.y ^ 2 * c ^ 2 + u ^ 2 := by
+      _ = z.y ^ (2 : ℕ) * c ^ (2 : ℕ) + u ^ (2 : ℕ) := by
         rw [mul_pow, sq_abs c, sq_abs u]
       _ = Q := by
         dsimp only [Q, c, u, d4BMPoincareQuadratic,
@@ -793,7 +793,7 @@ private lemma d4BM_abs_c_mul_abs_u_div_quadratic_le
 private lemma d4BM_abs_u_sq_div_quadratic_le_one
     (z : D4BMUpperHalfPlaneCoordinate)
     (p : D4BMPrimitiveIntegerPair) :
-    |d4BMPoincareHorizontalLinear z p| ^ 2 /
+    |d4BMPoincareHorizontalLinear z p| ^ (2 : ℕ) /
         d4BMPoincareQuadratic z p.pair ≤ 1 := by
   have hQ := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
   apply (div_le_one hQ).2
@@ -804,27 +804,27 @@ private lemma d4BM_abs_u_sq_div_quadratic_le_one
 private lemma d4BM_abs_c_cubed_abs_u_div_quadratic_sq_le
     (z : D4BMUpperHalfPlaneCoordinate)
     (p : D4BMPrimitiveIntegerPair) :
-    |(p.pair.1 : ℝ)| ^ 3 * |d4BMPoincareHorizontalLinear z p| /
-        d4BMPoincareQuadratic z p.pair ^ 2 ≤ 1 / z.y ^ 3 := by
+    |(p.pair.1 : ℝ)| ^ (3 : ℕ) * |d4BMPoincareHorizontalLinear z p| /
+        d4BMPoincareQuadratic z p.pair ^ (2 : ℕ) ≤ 1 / z.y ^ (3 : ℕ) := by
   have h1 := d4BM_abs_c_sq_div_quadratic_le z p
   have h2 := d4BM_abs_c_mul_abs_u_div_quadratic_le z p
   have hQ := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
   calc
-    |(p.pair.1 : ℝ)| ^ 3 * |d4BMPoincareHorizontalLinear z p| /
-          d4BMPoincareQuadratic z p.pair ^ 2 =
-        (|(p.pair.1 : ℝ)| ^ 2 / d4BMPoincareQuadratic z p.pair) *
+    |(p.pair.1 : ℝ)| ^ (3 : ℕ) * |d4BMPoincareHorizontalLinear z p| /
+          d4BMPoincareQuadratic z p.pair ^ (2 : ℕ) =
+        (|(p.pair.1 : ℝ)| ^ (2 : ℕ) / d4BMPoincareQuadratic z p.pair) *
           (|(p.pair.1 : ℝ)| * |d4BMPoincareHorizontalLinear z p| /
             d4BMPoincareQuadratic z p.pair) := by
               field_simp [hQ.ne']
-    _ ≤ (1 / z.y ^ 2) * (1 / z.y) := by
+    _ ≤ (1 / z.y ^ (2 : ℕ)) * (1 / z.y) := by
       exact mul_le_mul h1 h2 (by positivity) (by positivity)
-    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne']
+    _ = 1 / z.y ^ (3 : ℕ) := by field_simp [z.y_pos.ne']
 
 private lemma d4BM_abs_c_cubed_abs_u_cubed_div_quadratic_cubed_le
     (z : D4BMUpperHalfPlaneCoordinate)
     (p : D4BMPrimitiveIntegerPair) :
-    |(p.pair.1 : ℝ)| ^ 3 * |d4BMPoincareHorizontalLinear z p| ^ 3 /
-        d4BMPoincareQuadratic z p.pair ^ 3 ≤ 1 / z.y ^ 3 := by
+    |(p.pair.1 : ℝ)| ^ (3 : ℕ) * |d4BMPoincareHorizontalLinear z p| ^ (3 : ℕ) /
+        d4BMPoincareQuadratic z p.pair ^ (3 : ℕ) ≤ 1 / z.y ^ (3 : ℕ) := by
   have h := d4BM_abs_c_mul_abs_u_div_quadratic_le z p
   have hQ := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
   have hnonneg : 0 ≤ |(p.pair.1 : ℝ)| *
@@ -832,55 +832,55 @@ private lemma d4BM_abs_c_cubed_abs_u_cubed_div_quadratic_cubed_le
         d4BMPoincareQuadratic z p.pair := by positivity
   have hynonneg : 0 ≤ 1 / z.y := div_nonneg zero_le_one z.y_pos.le
   calc
-    |(p.pair.1 : ℝ)| ^ 3 * |d4BMPoincareHorizontalLinear z p| ^ 3 /
-          d4BMPoincareQuadratic z p.pair ^ 3 =
+    |(p.pair.1 : ℝ)| ^ (3 : ℕ) * |d4BMPoincareHorizontalLinear z p| ^ (3 : ℕ) /
+          d4BMPoincareQuadratic z p.pair ^ (3 : ℕ) =
         (|(p.pair.1 : ℝ)| * |d4BMPoincareHorizontalLinear z p| /
-          d4BMPoincareQuadratic z p.pair) ^ 3 := by
+          d4BMPoincareQuadratic z p.pair) ^ (3 : ℕ) := by
             field_simp [hQ.ne']
-    _ ≤ (1 / z.y) ^ 3 := by exact pow_le_pow_left₀ hnonneg h 3
-    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne']
+    _ ≤ (1 / z.y) ^ (3 : ℕ) := by exact pow_le_pow_left₀ hnonneg h 3
+    _ = 1 / z.y ^ (3 : ℕ) := by field_simp [z.y_pos.ne']
 
 private lemma d4BM_abs_c_fourth_mul_y_div_quadratic_sq_le
     (z : D4BMUpperHalfPlaneCoordinate)
     (p : D4BMPrimitiveIntegerPair) :
-    |(p.pair.1 : ℝ)| ^ 4 * z.y /
-        d4BMPoincareQuadratic z p.pair ^ 2 ≤ 1 / z.y ^ 3 := by
+    |(p.pair.1 : ℝ)| ^ (4 : ℕ) * z.y /
+        d4BMPoincareQuadratic z p.pair ^ (2 : ℕ) ≤ 1 / z.y ^ (3 : ℕ) := by
   have h := d4BM_abs_c_sq_div_quadratic_le z p
   have hQ := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
-  have hnonneg : 0 ≤ |(p.pair.1 : ℝ)| ^ 2 /
+  have hnonneg : 0 ≤ |(p.pair.1 : ℝ)| ^ (2 : ℕ) /
       d4BMPoincareQuadratic z p.pair := by positivity
   calc
-    |(p.pair.1 : ℝ)| ^ 4 * z.y /
-          d4BMPoincareQuadratic z p.pair ^ 2 =
-        (|(p.pair.1 : ℝ)| ^ 2 / d4BMPoincareQuadratic z p.pair) ^ 2 * z.y := by
+    |(p.pair.1 : ℝ)| ^ (4 : ℕ) * z.y /
+          d4BMPoincareQuadratic z p.pair ^ (2 : ℕ) =
+        (|(p.pair.1 : ℝ)| ^ (2 : ℕ) / d4BMPoincareQuadratic z p.pair) ^ (2 : ℕ) * z.y := by
             field_simp [hQ.ne']
-    _ ≤ (1 / z.y ^ 2) ^ 2 * z.y := by
+    _ ≤ (1 / z.y ^ (2 : ℕ)) ^ (2 : ℕ) * z.y := by
       exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hnonneg h 2) z.y_pos.le
-    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne']
+    _ = 1 / z.y ^ (3 : ℕ) := by field_simp [z.y_pos.ne']
 
 private lemma d4BM_abs_c_fourth_abs_u_sq_mul_y_div_quadratic_cubed_le
     (z : D4BMUpperHalfPlaneCoordinate)
     (p : D4BMPrimitiveIntegerPair) :
-    |(p.pair.1 : ℝ)| ^ 4 * |d4BMPoincareHorizontalLinear z p| ^ 2 * z.y /
-        d4BMPoincareQuadratic z p.pair ^ 3 ≤ 1 / z.y ^ 3 := by
+    |(p.pair.1 : ℝ)| ^ (4 : ℕ) * |d4BMPoincareHorizontalLinear z p| ^ (2 : ℕ) * z.y /
+        d4BMPoincareQuadratic z p.pair ^ (3 : ℕ) ≤ 1 / z.y ^ (3 : ℕ) := by
   have hc := d4BM_abs_c_sq_div_quadratic_le z p
   have hu := d4BM_abs_u_sq_div_quadratic_le_one z p
   have hQ := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
-  have hc0 : 0 ≤ |(p.pair.1 : ℝ)| ^ 2 /
+  have hc0 : 0 ≤ |(p.pair.1 : ℝ)| ^ (2 : ℕ) /
       d4BMPoincareQuadratic z p.pair := by positivity
-  have hu0 : 0 ≤ |d4BMPoincareHorizontalLinear z p| ^ 2 /
+  have hu0 : 0 ≤ |d4BMPoincareHorizontalLinear z p| ^ (2 : ℕ) /
       d4BMPoincareQuadratic z p.pair := by positivity
   calc
-    |(p.pair.1 : ℝ)| ^ 4 * |d4BMPoincareHorizontalLinear z p| ^ 2 * z.y /
-          d4BMPoincareQuadratic z p.pair ^ 3 =
-        (|(p.pair.1 : ℝ)| ^ 2 / d4BMPoincareQuadratic z p.pair) ^ 2 *
-          (|d4BMPoincareHorizontalLinear z p| ^ 2 /
+    |(p.pair.1 : ℝ)| ^ (4 : ℕ) * |d4BMPoincareHorizontalLinear z p| ^ (2 : ℕ) * z.y /
+          d4BMPoincareQuadratic z p.pair ^ (3 : ℕ) =
+        (|(p.pair.1 : ℝ)| ^ (2 : ℕ) / d4BMPoincareQuadratic z p.pair) ^ (2 : ℕ) *
+          (|d4BMPoincareHorizontalLinear z p| ^ (2 : ℕ) /
             d4BMPoincareQuadratic z p.pair) * z.y := by
               field_simp [hQ.ne']
-    _ ≤ (1 / z.y ^ 2) ^ 2 * 1 * z.y := by
+    _ ≤ (1 / z.y ^ (2 : ℕ)) ^ (2 : ℕ) * 1 * z.y := by
       gcongr
       exact z.y_pos.le
-    _ = 1 / z.y ^ 3 := by field_simp [z.y_pos.ne']
+    _ = 1 / z.y ^ (3 : ℕ) := by field_simp [z.y_pos.ne']
 
 private lemma norm_d4BMSeedH1Coefficient_le
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
@@ -909,27 +909,27 @@ private lemma norm_d4BMSeedV1Coefficient_le
   have hc := d4BM_abs_c_sq_div_quadratic_le z p
   unfold d4BMSeedV1Coefficient
   calc
-    ‖s / (z.y : ℂ) - 2 * s * (p.pair.1 : ℂ) ^ 2 * (z.y : ℂ) /
+    ‖s / (z.y : ℂ) - 2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * (z.y : ℂ) /
           (d4BMPoincareQuadratic z p.pair : ℂ)‖ ≤
         ‖s / (z.y : ℂ)‖ +
-          ‖2 * s * (p.pair.1 : ℂ) ^ 2 * (z.y : ℂ) /
+          ‖2 * s * (p.pair.1 : ℂ) ^ (2 : ℕ) * (z.y : ℂ) /
             (d4BMPoincareQuadratic z p.pair : ℂ)‖ := norm_sub_le _ _
     _ = ‖s‖ / z.y +
-        2 * ‖s‖ * |(p.pair.1 : ℝ)| ^ 2 * z.y /
+        2 * ‖s‖ * |(p.pair.1 : ℝ)| ^ (2 : ℕ) * z.y /
           d4BMPoincareQuadratic z p.pair := by
       rw [norm_div, norm_div, norm_mul, norm_mul, norm_mul, norm_pow]
       simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos z.y_pos,
         abs_of_pos hQ]
       norm_num
-    _ ≤ ‖s‖ / z.y + 2 * ‖s‖ * (1 / z.y ^ 2) * z.y := by
+    _ ≤ ‖s‖ / z.y + 2 * ‖s‖ * (1 / z.y ^ (2 : ℕ)) * z.y := by
       apply add_le_add le_rfl
       calc
-        2 * ‖s‖ * |(p.pair.1 : ℝ)| ^ 2 * z.y /
+        2 * ‖s‖ * |(p.pair.1 : ℝ)| ^ (2 : ℕ) * z.y /
             d4BMPoincareQuadratic z p.pair =
           (2 * ‖s‖) *
-            (|(p.pair.1 : ℝ)| ^ 2 / d4BMPoincareQuadratic z p.pair) * z.y := by
+            (|(p.pair.1 : ℝ)| ^ (2 : ℕ) / d4BMPoincareQuadratic z p.pair) * z.y := by
               ring
-        _ ≤ (2 * ‖s‖) * (1 / z.y ^ 2) * z.y := by
+        _ ≤ (2 * ‖s‖) * (1 / z.y ^ (2 : ℕ)) * z.y := by
           exact mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left hc (by positivity)) z.y_pos.le
     _ = 3 * ‖s‖ / z.y := by field_simp [z.y_pos.ne']; ring
@@ -938,104 +938,104 @@ private lemma norm_d4BMSeedH2HorizontalDerivativeCoefficient_le
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) :
     ‖d4BMSeedH2HorizontalDerivativeCoefficient z s p‖ ≤
-      (4 * ‖s‖ + 24 * ‖s‖ * ‖s + 1‖) / z.y ^ 3 := by
+      (4 * ‖s‖ + 24 * ‖s‖ * ‖s + 1‖) / z.y ^ (3 : ℕ) := by
   have hQ := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
-  let a : ℂ := 4 * s * (p.pair.1 : ℂ) ^ 3 *
+  let a : ℂ := 4 * s * (p.pair.1 : ℂ) ^ (3 : ℕ) *
       (d4BMPoincareHorizontalLinear z p : ℂ) /
-        (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2
-  let b : ℂ := 8 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3 *
+        (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ)
+  let b : ℂ := 8 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ) *
       (d4BMPoincareHorizontalLinear z p : ℂ) /
-        (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2
-  let c : ℂ := 16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 3 *
-      (d4BMPoincareHorizontalLinear z p : ℂ) ^ 3 /
-        (d4BMPoincareQuadratic z p.pair : ℂ) ^ 3
-  have ha : ‖a‖ ≤ 4 * ‖s‖ / z.y ^ 3 := by
+        (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ)
+  let c : ℂ := 16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (3 : ℕ) *
+      (d4BMPoincareHorizontalLinear z p : ℂ) ^ (3 : ℕ) /
+        (d4BMPoincareQuadratic z p.pair : ℂ) ^ (3 : ℕ)
+  have ha : ‖a‖ ≤ 4 * ‖s‖ / z.y ^ (3 : ℕ) := by
     dsimp only [a]
     rw [norm_div, norm_mul, norm_mul, norm_mul, norm_pow, norm_pow]
     simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hQ]
     norm_num
     calc
-      4 * ‖s‖ * |(p.pair.1 : ℝ)| ^ 3 *
+      4 * ‖s‖ * |(p.pair.1 : ℝ)| ^ (3 : ℕ) *
           |d4BMPoincareHorizontalLinear z p| /
-            d4BMPoincareQuadratic z p.pair ^ 2 =
-          4 * ‖s‖ * (|(p.pair.1 : ℝ)| ^ 3 *
+            d4BMPoincareQuadratic z p.pair ^ (2 : ℕ) =
+          4 * ‖s‖ * (|(p.pair.1 : ℝ)| ^ (3 : ℕ) *
             |d4BMPoincareHorizontalLinear z p| /
-              d4BMPoincareQuadratic z p.pair ^ 2) := by ring
-      _ ≤ 4 * ‖s‖ * (1 / z.y ^ 3) :=
+              d4BMPoincareQuadratic z p.pair ^ (2 : ℕ)) := by ring
+      _ ≤ 4 * ‖s‖ * (1 / z.y ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_left
           (d4BM_abs_c_cubed_abs_u_div_quadratic_sq_le z p) (by positivity)
-      _ = 4 * ‖s‖ / z.y ^ 3 := by ring
-  have hb : ‖b‖ ≤ 8 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 := by
+      _ = 4 * ‖s‖ / z.y ^ (3 : ℕ) := by ring
+  have hb : ‖b‖ ≤ 8 * ‖s‖ * ‖s + 1‖ / z.y ^ (3 : ℕ) := by
     dsimp only [b]
     rw [norm_div, norm_mul, norm_mul, norm_mul, norm_mul, norm_pow, norm_pow]
     simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hQ]
     norm_num
     calc
-      8 * ‖s‖ * ‖s + 1‖ * |(p.pair.1 : ℝ)| ^ 3 *
+      8 * ‖s‖ * ‖s + 1‖ * |(p.pair.1 : ℝ)| ^ (3 : ℕ) *
           |d4BMPoincareHorizontalLinear z p| /
-            d4BMPoincareQuadratic z p.pair ^ 2 =
-          (8 * ‖s‖ * ‖s + 1‖) * (|(p.pair.1 : ℝ)| ^ 3 *
+            d4BMPoincareQuadratic z p.pair ^ (2 : ℕ) =
+          (8 * ‖s‖ * ‖s + 1‖) * (|(p.pair.1 : ℝ)| ^ (3 : ℕ) *
             |d4BMPoincareHorizontalLinear z p| /
-              d4BMPoincareQuadratic z p.pair ^ 2) := by ring
-      _ ≤ (8 * ‖s‖ * ‖s + 1‖) * (1 / z.y ^ 3) :=
+              d4BMPoincareQuadratic z p.pair ^ (2 : ℕ)) := by ring
+      _ ≤ (8 * ‖s‖ * ‖s + 1‖) * (1 / z.y ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_left
           (d4BM_abs_c_cubed_abs_u_div_quadratic_sq_le z p) (by positivity)
-      _ = 8 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 := by ring
-  have hc : ‖c‖ ≤ 16 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 := by
+      _ = 8 * ‖s‖ * ‖s + 1‖ / z.y ^ (3 : ℕ) := by ring
+  have hc : ‖c‖ ≤ 16 * ‖s‖ * ‖s + 1‖ / z.y ^ (3 : ℕ) := by
     dsimp only [c]
     rw [norm_div, norm_mul, norm_mul, norm_mul, norm_mul, norm_pow,
       norm_pow, norm_pow]
     simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hQ]
     norm_num
     calc
-      16 * ‖s‖ * ‖s + 1‖ * |(p.pair.1 : ℝ)| ^ 3 *
-          |d4BMPoincareHorizontalLinear z p| ^ 3 /
-            d4BMPoincareQuadratic z p.pair ^ 3 =
-          (16 * ‖s‖ * ‖s + 1‖) * (|(p.pair.1 : ℝ)| ^ 3 *
-            |d4BMPoincareHorizontalLinear z p| ^ 3 /
-              d4BMPoincareQuadratic z p.pair ^ 3) := by ring
-      _ ≤ (16 * ‖s‖ * ‖s + 1‖) * (1 / z.y ^ 3) :=
+      16 * ‖s‖ * ‖s + 1‖ * |(p.pair.1 : ℝ)| ^ (3 : ℕ) *
+          |d4BMPoincareHorizontalLinear z p| ^ (3 : ℕ) /
+            d4BMPoincareQuadratic z p.pair ^ (3 : ℕ) =
+          (16 * ‖s‖ * ‖s + 1‖) * (|(p.pair.1 : ℝ)| ^ (3 : ℕ) *
+            |d4BMPoincareHorizontalLinear z p| ^ (3 : ℕ) /
+              d4BMPoincareQuadratic z p.pair ^ (3 : ℕ)) := by ring
+      _ ≤ (16 * ‖s‖ * ‖s + 1‖) * (1 / z.y ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_left
           (d4BM_abs_c_cubed_abs_u_cubed_div_quadratic_cubed_le z p)
           (by positivity)
-      _ = 16 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 := by ring
+      _ = 16 * ‖s‖ * ‖s + 1‖ / z.y ^ (3 : ℕ) := by ring
   unfold d4BMSeedH2HorizontalDerivativeCoefficient
   change ‖a + b - c‖ ≤ _
   calc
     ‖a + b - c‖ ≤ ‖a‖ + ‖b‖ + ‖c‖ := by
       exact le_trans (norm_sub_le _ _) (add_le_add (norm_add_le _ _) le_rfl)
-    _ ≤ 4 * ‖s‖ / z.y ^ 3 +
-        8 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 +
-        16 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 := add_le_add (add_le_add ha hb) hc
-    _ = (4 * ‖s‖ + 24 * ‖s‖ * ‖s + 1‖) / z.y ^ 3 := by ring
+    _ ≤ 4 * ‖s‖ / z.y ^ (3 : ℕ) +
+        8 * ‖s‖ * ‖s + 1‖ / z.y ^ (3 : ℕ) +
+        16 * ‖s‖ * ‖s + 1‖ / z.y ^ (3 : ℕ) := add_le_add (add_le_add ha hb) hc
+    _ = (4 * ‖s‖ + 24 * ‖s‖ * ‖s + 1‖) / z.y ^ (3 : ℕ) := by ring
 
 private lemma norm_d4BMSeedH2VerticalDerivativeCoefficient_le
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) :
     ‖d4BMSeedH2VerticalDerivativeCoefficient z s p‖ ≤
-      (4 * ‖s‖ + 16 * ‖s‖ * ‖s + 1‖) / z.y ^ 3 := by
+      (4 * ‖s‖ + 16 * ‖s‖ * ‖s + 1‖) / z.y ^ (3 : ℕ) := by
   have hQ := d4BMPoincareQuadratic_pos z p.pair p.pair_ne_zero
-  let a : ℂ := 4 * s * (p.pair.1 : ℂ) ^ 4 * (z.y : ℂ) /
-      (d4BMPoincareQuadratic z p.pair : ℂ) ^ 2
-  let b : ℂ := 16 * s * (s + 1) * (p.pair.1 : ℂ) ^ 4 *
-      (d4BMPoincareHorizontalLinear z p : ℂ) ^ 2 * (z.y : ℂ) /
-        (d4BMPoincareQuadratic z p.pair : ℂ) ^ 3
-  have ha : ‖a‖ ≤ 4 * ‖s‖ / z.y ^ 3 := by
+  let a : ℂ := 4 * s * (p.pair.1 : ℂ) ^ (4 : ℕ) * (z.y : ℂ) /
+      (d4BMPoincareQuadratic z p.pair : ℂ) ^ (2 : ℕ)
+  let b : ℂ := 16 * s * (s + 1) * (p.pair.1 : ℂ) ^ (4 : ℕ) *
+      (d4BMPoincareHorizontalLinear z p : ℂ) ^ (2 : ℕ) * (z.y : ℂ) /
+        (d4BMPoincareQuadratic z p.pair : ℂ) ^ (3 : ℕ)
+  have ha : ‖a‖ ≤ 4 * ‖s‖ / z.y ^ (3 : ℕ) := by
     dsimp only [a]
     rw [norm_div, norm_mul, norm_mul, norm_mul, norm_pow, norm_pow]
     simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos z.y_pos,
       abs_of_pos hQ]
     norm_num
     calc
-      4 * ‖s‖ * |(p.pair.1 : ℝ)| ^ 4 * z.y /
-          d4BMPoincareQuadratic z p.pair ^ 2 =
-        4 * ‖s‖ * (|(p.pair.1 : ℝ)| ^ 4 * z.y /
-          d4BMPoincareQuadratic z p.pair ^ 2) := by ring
-      _ ≤ 4 * ‖s‖ * (1 / z.y ^ 3) :=
+      4 * ‖s‖ * |(p.pair.1 : ℝ)| ^ (4 : ℕ) * z.y /
+          d4BMPoincareQuadratic z p.pair ^ (2 : ℕ) =
+        4 * ‖s‖ * (|(p.pair.1 : ℝ)| ^ (4 : ℕ) * z.y /
+          d4BMPoincareQuadratic z p.pair ^ (2 : ℕ)) := by ring
+      _ ≤ 4 * ‖s‖ * (1 / z.y ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_left
           (d4BM_abs_c_fourth_mul_y_div_quadratic_sq_le z p) (by positivity)
-      _ = 4 * ‖s‖ / z.y ^ 3 := by ring
-  have hb : ‖b‖ ≤ 16 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 := by
+      _ = 4 * ‖s‖ / z.y ^ (3 : ℕ) := by ring
+  have hb : ‖b‖ ≤ 16 * ‖s‖ * ‖s + 1‖ / z.y ^ (3 : ℕ) := by
     dsimp only [b]
     rw [norm_div, norm_mul, norm_mul, norm_mul, norm_mul, norm_mul,
       norm_pow, norm_pow, norm_pow]
@@ -1043,25 +1043,25 @@ private lemma norm_d4BMSeedH2VerticalDerivativeCoefficient_le
       abs_of_pos hQ]
     norm_num
     calc
-      16 * ‖s‖ * ‖s + 1‖ * |(p.pair.1 : ℝ)| ^ 4 *
-          d4BMPoincareHorizontalLinear z p ^ 2 * z.y /
-            d4BMPoincareQuadratic z p.pair ^ 3 =
-        (16 * ‖s‖ * ‖s + 1‖) * (|(p.pair.1 : ℝ)| ^ 4 *
-          |d4BMPoincareHorizontalLinear z p| ^ 2 * z.y /
-            d4BMPoincareQuadratic z p.pair ^ 3) := by
+      16 * ‖s‖ * ‖s + 1‖ * |(p.pair.1 : ℝ)| ^ (4 : ℕ) *
+          d4BMPoincareHorizontalLinear z p ^ (2 : ℕ) * z.y /
+            d4BMPoincareQuadratic z p.pair ^ (3 : ℕ) =
+        (16 * ‖s‖ * ‖s + 1‖) * (|(p.pair.1 : ℝ)| ^ (4 : ℕ) *
+          |d4BMPoincareHorizontalLinear z p| ^ (2 : ℕ) * z.y /
+            d4BMPoincareQuadratic z p.pair ^ (3 : ℕ)) := by
               rw [sq_abs]
               ring
-      _ ≤ (16 * ‖s‖ * ‖s + 1‖) * (1 / z.y ^ 3) :=
+      _ ≤ (16 * ‖s‖ * ‖s + 1‖) * (1 / z.y ^ (3 : ℕ)) :=
         mul_le_mul_of_nonneg_left
           (d4BM_abs_c_fourth_abs_u_sq_mul_y_div_quadratic_cubed_le z p)
           (by positivity)
-      _ = 16 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 := by ring
+      _ = 16 * ‖s‖ * ‖s + 1‖ / z.y ^ (3 : ℕ) := by ring
   unfold d4BMSeedH2VerticalDerivativeCoefficient
   change ‖a - b‖ ≤ _
   calc
     ‖a - b‖ ≤ ‖a‖ + ‖b‖ := norm_sub_le _ _
-    _ ≤ 4 * ‖s‖ / z.y ^ 3 + 16 * ‖s‖ * ‖s + 1‖ / z.y ^ 3 := add_le_add ha hb
-    _ = (4 * ‖s‖ + 16 * ‖s‖ * ‖s + 1‖) / z.y ^ 3 := by ring
+    _ ≤ 4 * ‖s‖ / z.y ^ (3 : ℕ) + 16 * ‖s‖ * ‖s + 1‖ / z.y ^ (3 : ℕ) := add_le_add ha hb
+    _ = (4 * ‖s‖ + 16 * ‖s‖ * ‖s + 1‖) / z.y ^ (3 : ℕ) := by ring
 
 /-- Fixed spectral constant controlling the actual `xxx` Poincare seed jet. -/
 def d4BMHorizontalThirdJetNormConstant (s : ℂ) : ℝ :=
@@ -1075,7 +1075,7 @@ def d4BMHorizontalHorizontalVerticalThirdJetNormConstant (s : ℂ) : ℝ :=
 
 /-- Fixed spectral constant controlling the actual `xyy` Poincare seed jet. -/
 def d4BMHorizontalVerticalVerticalThirdJetNormConstant (s : ℂ) : ℝ :=
-  2 * ‖s‖ ^ 2 * ‖s - 1‖ + d4BMHorizontalThirdJetNormConstant s
+  2 * ‖s‖ ^ (2 : ℕ) * ‖s - 1‖ + d4BMHorizontalThirdJetNormConstant s
 
 lemma d4BMHorizontalThirdJetNormConstant_nonneg (s : ℂ) :
     0 ≤ d4BMHorizontalThirdJetNormConstant s := by
@@ -1096,7 +1096,7 @@ lemma norm_d4BMPoincareSeedHorizontalThirdJet_le
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) :
     ‖d4BMPoincareSeedHorizontalThirdJet z s p‖ ≤
-      (d4BMHorizontalThirdJetNormConstant s / z.y ^ 3) *
+      (d4BMHorizontalThirdJetNormConstant s / z.y ^ (3 : ℕ)) *
         ‖d4BMPoincareSeed z s p‖ := by
   have hA := norm_d4BMSeedH2HorizontalDerivativeCoefficient_le z s p
   have hB := norm_d4BMSeedH1Coefficient_le z s p
@@ -1118,15 +1118,15 @@ lemma norm_d4BMPoincareSeedHorizontalThirdJet_le
         ‖d4BMSeedH1Coefficient z s p‖ *
           ‖d4BMPoincareSeedHorizontalSecondJet z s p‖ := by
             rw [norm_mul, norm_mul]
-    _ ≤ ((4 * ‖s‖ + 24 * ‖s‖ * ‖s + 1‖) / z.y ^ 3) *
+    _ ≤ ((4 * ‖s‖ + 24 * ‖s‖ * ‖s + 1‖) / z.y ^ (3 : ℕ)) *
           ‖d4BMPoincareSeed z s p‖ +
         (2 * ‖s‖ / z.y) *
-          (((2 * ‖s‖ + 4 * ‖s‖ * ‖s + 1‖) / z.y ^ 2) *
+          (((2 * ‖s‖ + 4 * ‖s‖ * ‖s + 1‖) / z.y ^ (2 : ℕ)) *
             ‖d4BMPoincareSeed z s p‖) := by
       apply add_le_add
       · exact mul_le_mul_of_nonneg_right hA (norm_nonneg _)
       · exact mul_le_mul hB hH2 (norm_nonneg _) hBupper
-    _ = (d4BMHorizontalThirdJetNormConstant s / z.y ^ 3) *
+    _ = (d4BMHorizontalThirdJetNormConstant s / z.y ^ (3 : ℕ)) *
         ‖d4BMPoincareSeed z s p‖ := by
       unfold d4BMHorizontalThirdJetNormConstant
       field_simp [z.y_pos.ne']
@@ -1135,7 +1135,7 @@ lemma norm_d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet_le
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) :
     ‖d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet z s p‖ ≤
-      (d4BMHorizontalHorizontalVerticalThirdJetNormConstant s / z.y ^ 3) *
+      (d4BMHorizontalHorizontalVerticalThirdJetNormConstant s / z.y ^ (3 : ℕ)) *
         ‖d4BMPoincareSeed z s p‖ := by
   have hA := norm_d4BMSeedH2VerticalDerivativeCoefficient_le z s p
   have hB := norm_d4BMSeedV1Coefficient_le z s p
@@ -1157,15 +1157,15 @@ lemma norm_d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet_le
         ‖d4BMSeedV1Coefficient z s p‖ *
           ‖d4BMPoincareSeedHorizontalSecondJet z s p‖ := by
             rw [norm_mul, norm_mul]
-    _ ≤ ((4 * ‖s‖ + 16 * ‖s‖ * ‖s + 1‖) / z.y ^ 3) *
+    _ ≤ ((4 * ‖s‖ + 16 * ‖s‖ * ‖s + 1‖) / z.y ^ (3 : ℕ)) *
           ‖d4BMPoincareSeed z s p‖ +
         (3 * ‖s‖ / z.y) *
-          (((2 * ‖s‖ + 4 * ‖s‖ * ‖s + 1‖) / z.y ^ 2) *
+          (((2 * ‖s‖ + 4 * ‖s‖ * ‖s + 1‖) / z.y ^ (2 : ℕ)) *
             ‖d4BMPoincareSeed z s p‖) := by
       apply add_le_add
       · exact mul_le_mul_of_nonneg_right hA (norm_nonneg _)
       · exact mul_le_mul hB hH2 (norm_nonneg _) hBupper
-    _ = (d4BMHorizontalHorizontalVerticalThirdJetNormConstant s / z.y ^ 3) *
+    _ = (d4BMHorizontalHorizontalVerticalThirdJetNormConstant s / z.y ^ (3 : ℕ)) *
         ‖d4BMPoincareSeed z s p‖ := by
       unfold d4BMHorizontalHorizontalVerticalThirdJetNormConstant
       field_simp [z.y_pos.ne']
@@ -1174,16 +1174,16 @@ lemma norm_d4BMPoincareSeedHorizontalVerticalVerticalThirdJet_le
     (z : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : D4BMPrimitiveIntegerPair) :
     ‖d4BMPoincareSeedHorizontalVerticalVerticalThirdJet z s p‖ ≤
-      (d4BMHorizontalVerticalVerticalThirdJetNormConstant s / z.y ^ 3) *
+      (d4BMHorizontalVerticalVerticalThirdJetNormConstant s / z.y ^ (3 : ℕ)) *
         ‖d4BMPoincareSeed z s p‖ := by
-  let C : ℂ := s * (s - 1) / (z.y : ℂ) ^ 2
-  have hC : ‖C‖ = ‖s‖ * ‖s - 1‖ / z.y ^ 2 := by
+  let C : ℂ := s * (s - 1) / (z.y : ℂ) ^ (2 : ℕ)
+  have hC : ‖C‖ = ‖s‖ * ‖s - 1‖ / z.y ^ (2 : ℕ) := by
     dsimp only [C]
     rw [norm_div, norm_mul, norm_pow]
     simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos z.y_pos]
   have hfirst := norm_d4BMPoincareSeedHorizontalFirstJet_le z s p
   have hthird := norm_d4BMPoincareSeedHorizontalThirdJet_le z s p
-  have hCnonneg : 0 ≤ ‖s‖ * ‖s - 1‖ / z.y ^ 2 := by positivity
+  have hCnonneg : 0 ≤ ‖s‖ * ‖s - 1‖ / z.y ^ (2 : ℕ) := by positivity
   unfold d4BMPoincareSeedHorizontalVerticalVerticalThirdJet
   change ‖C * d4BMPoincareSeedHorizontalFirstJet z s p -
       d4BMPoincareSeedHorizontalThirdJet z s p‖ ≤ _
@@ -1194,13 +1194,13 @@ lemma norm_d4BMPoincareSeedHorizontalVerticalVerticalThirdJet_le
         ‖d4BMPoincareSeedHorizontalThirdJet z s p‖ := norm_sub_le _ _
     _ = ‖C‖ * ‖d4BMPoincareSeedHorizontalFirstJet z s p‖ +
         ‖d4BMPoincareSeedHorizontalThirdJet z s p‖ := by rw [norm_mul]
-    _ ≤ (‖s‖ * ‖s - 1‖ / z.y ^ 2) *
+    _ ≤ (‖s‖ * ‖s - 1‖ / z.y ^ (2 : ℕ)) *
           ((2 * ‖s‖ / z.y) * ‖d4BMPoincareSeed z s p‖) +
-        (d4BMHorizontalThirdJetNormConstant s / z.y ^ 3) *
+        (d4BMHorizontalThirdJetNormConstant s / z.y ^ (3 : ℕ)) *
           ‖d4BMPoincareSeed z s p‖ := by
       rw [hC]
       exact add_le_add (mul_le_mul_of_nonneg_left hfirst hCnonneg) hthird
-    _ = (d4BMHorizontalVerticalVerticalThirdJetNormConstant s / z.y ^ 3) *
+    _ = (d4BMHorizontalVerticalVerticalThirdJetNormConstant s / z.y ^ (3 : ℕ)) *
         ‖d4BMPoincareSeed z s p‖ := by
       unfold d4BMHorizontalVerticalVerticalThirdJetNormConstant
       field_simp [z.y_pos.ne']
@@ -1210,7 +1210,7 @@ def d4BMHorizontalThirdJetHorizontalLocalMajorant
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter)
     (p : D4BMPrimitiveIntegerPair) : ℝ :=
-  ((d4BMHorizontalThirdJetNormConstant P.s / z.y ^ 3) * 3 ^ P.s.re) *
+  ((d4BMHorizontalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) * 3 ^ P.s.re) *
     ‖d4BMPoincareSeed z P.s p‖
 
 /-- Horizontal-disc majorant for the `xxy` seed series. -/
@@ -1218,7 +1218,7 @@ def d4BMHorizontalHorizontalVerticalThirdJetHorizontalLocalMajorant
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter)
     (p : D4BMPrimitiveIntegerPair) : ℝ :=
-  ((d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+  ((d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
       3 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖
 
 lemma summable_d4BMHorizontalThirdJetHorizontalLocalMajorant
@@ -1251,7 +1251,7 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedHorizontalSecondJet_horizontal
     d4BMPoincareSeedHorizontalThirdJet (d4BMHorizontalCoordinate z x) P.s p
   let M := d4BMHorizontalThirdJetHorizontalLocalMajorant z P
   have hM : Summable M := summable_d4BMHorizontalThirdJetHorizontalLocalMajorant z P
-  have hK : 0 ≤ d4BMHorizontalThirdJetNormConstant P.s / z.y ^ 3 :=
+  have hK : 0 ≤ d4BMHorizontalThirdJetNormConstant P.s / z.y ^ (3 : ℕ) :=
     div_nonneg (d4BMHorizontalThirdJetNormConstant_nonneg P.s)
       (pow_nonneg z.y_pos.le 3)
   have hderiv : ∀ p, ∀ x ∈ t, HasDerivAt (g p) (g' p x) x := by
@@ -1262,13 +1262,13 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedHorizontalSecondJet_horizontal
   have hbound : ∀ p, ∀ x ∈ t, ‖g' p x‖ ≤ M p := by
     intro p x hx
     calc
-      ‖g' p x‖ ≤ (d4BMHorizontalThirdJetNormConstant P.s / z.y ^ 3) *
+      ‖g' p x‖ ≤ (d4BMHorizontalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
           ‖d4BMPoincareSeed (d4BMHorizontalCoordinate z x) P.s p‖ := by
         dsimp only [g']
         simpa [d4BMHorizontalCoordinate] using
           norm_d4BMPoincareSeedHorizontalThirdJet_le
             (d4BMHorizontalCoordinate z x) P.s p
-      _ ≤ (d4BMHorizontalThirdJetNormConstant P.s / z.y ^ 3) *
+      _ ≤ (d4BMHorizontalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
           (3 ^ P.s.re * ‖d4BMPoincareSeed z P.s p‖) :=
         mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_horizontal_le z P p hx) hK
       _ = M p := by
@@ -1304,7 +1304,7 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedMixedSecondJet_horizontal
   have hM : Summable M :=
     summable_d4BMHorizontalHorizontalVerticalThirdJetHorizontalLocalMajorant z P
   have hK : 0 ≤
-      d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3 :=
+      d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ) :=
     div_nonneg
       (d4BMHorizontalHorizontalVerticalThirdJetNormConstant_nonneg P.s)
       (pow_nonneg z.y_pos.le 3)
@@ -1317,13 +1317,13 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedMixedSecondJet_horizontal
     intro p x hx
     calc
       ‖g' p x‖ ≤
-          (d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+          (d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
             ‖d4BMPoincareSeed (d4BMHorizontalCoordinate z x) P.s p‖ := by
         dsimp only [g']
         simpa [d4BMHorizontalCoordinate] using
           norm_d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet_le
             (d4BMHorizontalCoordinate z x) P.s p
-      _ ≤ (d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      _ ≤ (d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
           (3 ^ P.s.re * ‖d4BMPoincareSeed z P.s p‖) :=
         mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_horizontal_le z P p hx) hK
       _ = M p := by
@@ -1341,22 +1341,22 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedMixedSecondJet_horizontal
 private lemma d4BM_inv_cube_vertical_local_le
     (z : D4BMUpperHalfPlaneCoordinate) {y : ℝ}
     (hy : y ∈ Ioo (z.y / 2) (2 * z.y)) :
-    1 / y ^ 3 ≤ 8 / z.y ^ 3 := by
+    1 / y ^ (3 : ℕ) ≤ 8 / z.y ^ (3 : ℕ) := by
   have hy0 : 0 < y := by linarith [z.y_pos, hy.1]
-  have hpow : z.y ^ 3 ≤ (2 * y) ^ 3 :=
+  have hpow : z.y ^ (3 : ℕ) ≤ (2 * y) ^ (3 : ℕ) :=
     pow_le_pow_left₀ z.y_pos.le (by linarith [hy.1]) 3
   apply (div_le_div_iff₀ (pow_pos hy0 3) (pow_pos z.y_pos 3)).2
   norm_num
   calc
-    z.y ^ 3 ≤ (2 * y) ^ 3 := hpow
-    _ = 8 * y ^ 3 := by ring
+    z.y ^ (3 : ℕ) ≤ (2 * y) ^ (3 : ℕ) := hpow
+    _ = 8 * y ^ (3 : ℕ) := by ring
 
 /-- Vertical-strip majorant for the `xxy` seed series. -/
 def d4BMHorizontalHorizontalVerticalThirdJetVerticalLocalMajorant
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter)
     (p : D4BMPrimitiveIntegerPair) : ℝ :=
-  ((8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+  ((8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
       (2 ^ P.s.re * 4 ^ P.s.re)) * ‖d4BMPoincareSeed z P.s p‖
 
 /-- Vertical-strip majorant for the `xyy` seed series. -/
@@ -1364,7 +1364,7 @@ def d4BMHorizontalVerticalVerticalThirdJetVerticalLocalMajorant
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter)
     (p : D4BMPrimitiveIntegerPair) : ℝ :=
-  ((8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+  ((8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
       (2 ^ P.s.re * 4 ^ P.s.re)) * ‖d4BMPoincareSeed z P.s p‖
 
 lemma summable_d4BMHorizontalHorizontalVerticalThirdJetVerticalLocalMajorant
@@ -1418,25 +1418,25 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedHorizontalSecondJet_vertical
       norm_d4BMPoincareSeedHorizontalHorizontalVerticalThirdJet_le zy P.s p
     have hinv := d4BM_inv_cube_vertical_local_le z hy
     have hK := d4BMHorizontalHorizontalVerticalThirdJetNormConstant_nonneg P.s
-    have hcoef : d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / y ^ 3 ≤
-        8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3 := by
+    have hcoef : d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / y ^ (3 : ℕ) ≤
+        8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ) := by
       calc
-        d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / y ^ 3 =
-            d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s * (1 / y ^ 3) := by ring
+        d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / y ^ (3 : ℕ) =
+            d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s * (1 / y ^ (3 : ℕ)) := by ring
         _ ≤ d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s *
-            (8 / z.y ^ 3) := mul_le_mul_of_nonneg_left hinv hK
+            (8 / z.y ^ (3 : ℕ)) := mul_le_mul_of_nonneg_left hinv hK
         _ = 8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s /
-            z.y ^ 3 := by ring
+            z.y ^ (3 : ℕ) := by ring
     calc
       ‖g' p y‖ ≤
-          (d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / y ^ 3) *
+          (d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / y ^ (3 : ℕ)) *
             ‖d4BMPoincareSeed zy P.s p‖ := by
               simpa only [g', zy, dif_pos hy0] using hnorm
-      _ ≤ (8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      _ ≤ (8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
           ‖d4BMPoincareSeedVerticalSlice z P.s p y‖ := by
         apply mul_le_mul hcoef le_rfl (norm_nonneg _)
         exact div_nonneg (mul_nonneg (by norm_num) hK) (pow_nonneg z.y_pos.le 3)
-      _ ≤ (8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      _ ≤ (8 * d4BMHorizontalHorizontalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
           ((2 ^ P.s.re * 4 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖) :=
         mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_vertical_le z P p hy)
           (div_nonneg (mul_nonneg (by norm_num) hK) (pow_nonneg z.y_pos.le 3))
@@ -1491,24 +1491,24 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedMixedSecondJet_vertical
     have hnorm := norm_d4BMPoincareSeedHorizontalVerticalVerticalThirdJet_le zy P.s p
     have hinv := d4BM_inv_cube_vertical_local_le z hy
     have hK := d4BMHorizontalVerticalVerticalThirdJetNormConstant_nonneg P.s
-    have hcoef : d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / y ^ 3 ≤
-        8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3 := by
+    have hcoef : d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / y ^ (3 : ℕ) ≤
+        8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ) := by
       calc
-        d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / y ^ 3 =
-            d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s * (1 / y ^ 3) := by ring
+        d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / y ^ (3 : ℕ) =
+            d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s * (1 / y ^ (3 : ℕ)) := by ring
         _ ≤ d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s *
-            (8 / z.y ^ 3) := mul_le_mul_of_nonneg_left hinv hK
+            (8 / z.y ^ (3 : ℕ)) := mul_le_mul_of_nonneg_left hinv hK
         _ = 8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s /
-            z.y ^ 3 := by ring
+            z.y ^ (3 : ℕ) := by ring
     calc
-      ‖g' p y‖ ≤ (d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / y ^ 3) *
+      ‖g' p y‖ ≤ (d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / y ^ (3 : ℕ)) *
           ‖d4BMPoincareSeed zy P.s p‖ := by
             simpa only [g', zy, dif_pos hy0] using hnorm
-      _ ≤ (8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      _ ≤ (8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
           ‖d4BMPoincareSeedVerticalSlice z P.s p y‖ := by
         apply mul_le_mul hcoef le_rfl (norm_nonneg _)
         exact div_nonneg (mul_nonneg (by norm_num) hK) (pow_nonneg z.y_pos.le 3)
-      _ ≤ (8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      _ ≤ (8 * d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
           ((2 ^ P.s.re * 4 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖) :=
         mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_vertical_le z P p hy)
           (div_nonneg (mul_nonneg (by norm_num) hK) (pow_nonneg z.y_pos.le 3))
@@ -1737,7 +1737,7 @@ theorem d4BM_completedPoincareVerticalSecondJetSlice_eq_eigenSlice
     (P : D4BMEisensteinAbsoluteConvergenceParameter)
     {y : ℝ} (hy : 0 < y) :
     d4BMCompletedPoincareVerticalSecondJetSlice z P y =
-      P.s * (P.s - 1) / (y : ℂ) ^ 2 *
+      P.s * (P.s - 1) / (y : ℂ) ^ (2 : ℕ) *
           d4BMCompletedPoincareVerticalSlice z P y -
         d4BMCompletedPoincareHorizontalSecondJetVerticalSlice z P y := by
   let zy : D4BMUpperHalfPlaneCoordinate := ⟨z.x, y, hy⟩
@@ -1755,9 +1755,9 @@ theorem d4BM_completedPoincareVerticalSecondJetSlice_eq_eigenSlice
 def d4BMCompletedPoincareVerticalThirdJet
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) : ℂ :=
-  (-2 * P.s * (P.s - 1) / (z.y : ℂ) ^ 3) *
+  (-2 * P.s * (P.s - 1) / (z.y : ℂ) ^ (3 : ℕ)) *
       d4BMCompletedEisensteinPoincareSeries z P +
-    (P.s * (P.s - 1) / (z.y : ℂ) ^ 2) *
+    (P.s * (P.s - 1) / (z.y : ℂ) ^ (2 : ℕ)) *
       d4BMCompletedPoincareVerticalFirstJet z P -
     d4BMCompletedPoincareHorizontalHorizontalVerticalThirdJet z P
 
@@ -1767,14 +1767,14 @@ theorem hasDerivAt_d4BMCompletedPoincareVerticalSecondJetSlice
     (P : D4BMEisensteinAbsoluteConvergenceParameter) :
     HasDerivAt (d4BMCompletedPoincareVerticalSecondJetSlice z P)
       (d4BMCompletedPoincareVerticalThirdJet z P) z.y := by
-  let C : ℝ → ℂ := fun y => P.s * (P.s - 1) / (y : ℂ) ^ 2
+  let C : ℝ → ℂ := fun y => P.s * (P.s - 1) / (y : ℂ) ^ (2 : ℕ)
   have hy : (z.y : ℂ) ≠ 0 := by exact_mod_cast z.y_pos.ne'
   have hidR : HasDerivAt (fun y : ℝ => y) 1 z.y := hasDerivAt_id z.y
   have hid : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 z.y := hidR.ofReal_comp
   have hCraw :=
     (hasDerivAt_const z.y (P.s * (P.s - 1))).div (hid.pow 2) (pow_ne_zero 2 hy)
   have hC : HasDerivAt C
-      (-2 * P.s * (P.s - 1) / (z.y : ℂ) ^ 3) z.y := by
+      (-2 * P.s * (P.s - 1) / (z.y : ℂ) ^ (3 : ℕ)) z.y := by
     dsimp only [C]
     apply hCraw.congr_deriv
     simp only [Pi.pow_apply]
@@ -1798,7 +1798,7 @@ def d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter)
     (p : D4BMPrimitiveIntegerPair) : ℝ :=
-  ((d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+  ((d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
       3 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖
 
 lemma summable_d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant
@@ -1825,7 +1825,7 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedVerticalSecondJet_horizontal
   let M := d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant z P
   have hM : Summable M :=
     summable_d4BMHorizontalVerticalVerticalThirdJetHorizontalLocalMajorant z P
-  have hK : 0 ≤ d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3 :=
+  have hK : 0 ≤ d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ) :=
     div_nonneg (d4BMHorizontalVerticalVerticalThirdJetNormConstant_nonneg P.s)
       (pow_nonneg z.y_pos.le 3)
   have hderiv : ∀ p, ∀ x ∈ t, HasDerivAt (g p) (g' p x) x := by
@@ -1836,13 +1836,13 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedVerticalSecondJet_horizontal
   have hbound : ∀ p, ∀ x ∈ t, ‖g' p x‖ ≤ M p := by
     intro p x hx
     calc
-      ‖g' p x‖ ≤ (d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      ‖g' p x‖ ≤ (d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
           ‖d4BMPoincareSeed (d4BMHorizontalCoordinate z x) P.s p‖ := by
         dsimp only [g']
         simpa [d4BMHorizontalCoordinate] using
           norm_d4BMPoincareSeedHorizontalVerticalVerticalThirdJet_le
             (d4BMHorizontalCoordinate z x) P.s p
-      _ ≤ (d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ 3) *
+      _ ≤ (d4BMHorizontalVerticalVerticalThirdJetNormConstant P.s / z.y ^ (3 : ℕ)) *
           (3 ^ P.s.re * ‖d4BMPoincareSeed z P.s p‖) :=
         mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_horizontal_le z P p hx) hK
       _ = M p := by
@@ -1887,11 +1887,11 @@ theorem hasDerivAt_d4BMCompletedPoincareVerticalSecondJet_horizontal
 theorem d4BM_completedPoincare_thirdJet_horizontalEigenEquation
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) :
-    (z.y : ℂ) ^ 2 *
+    (z.y : ℂ) ^ (2 : ℕ) *
         (d4BMCompletedPoincareHorizontalThirdJet z P +
           d4BMCompletedPoincareHorizontalVerticalVerticalThirdJet z P) =
       P.s * (P.s - 1) * d4BMCompletedPoincareHorizontalFirstJet z P := by
-  let C : ℂ := P.s * (P.s - 1) / (z.y : ℂ) ^ 2
+  let C : ℂ := P.s * (P.s - 1) / (z.y : ℂ) ^ (2 : ℕ)
   let F : ℝ → ℂ := fun x =>
     d4BMCompletedEisensteinPoincareSeries (d4BMHorizontalCoordinate z x) P
   let H2 : ℝ → ℂ := fun x =>
@@ -1927,7 +1927,7 @@ def d4BMMixedSecondJetVerticalLocalMajorant
     (z : D4BMUpperHalfPlaneCoordinate)
     (P : D4BMEisensteinAbsoluteConvergenceParameter)
     (p : D4BMPrimitiveIntegerPair) : ℝ :=
-  ((4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2) *
+  ((4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ)) *
       (2 ^ P.s.re * 4 ^ P.s.re)) * ‖d4BMPoincareSeed z P.s p‖
 
 lemma summable_d4BMMixedSecondJetVerticalLocalMajorant
@@ -1968,32 +1968,32 @@ theorem hasDerivAt_tsum_d4BMPoincareSeedHorizontalFirstJet_vertical
     have hy0 : 0 < y := by linarith [z.y_pos, hy.1]
     let zy : D4BMUpperHalfPlaneCoordinate := ⟨z.x, y, hy0⟩
     have hnorm := norm_d4BMPoincareSeedMixedSecondJet_le zy P.s p
-    have hinvSq : 1 / y ^ 2 ≤ 4 / z.y ^ 2 := by
-      have hpow : z.y ^ 2 ≤ (2 * y) ^ 2 :=
+    have hinvSq : 1 / y ^ (2 : ℕ) ≤ 4 / z.y ^ (2 : ℕ) := by
+      have hpow : z.y ^ (2 : ℕ) ≤ (2 * y) ^ (2 : ℕ) :=
         pow_le_pow_left₀ z.y_pos.le (by linarith [hy.1]) 2
       apply (div_le_div_iff₀ (sq_pos_of_pos hy0) (sq_pos_of_pos z.y_pos)).2
       norm_num
       calc
-        z.y ^ 2 ≤ (2 * y) ^ 2 := hpow
-        _ = 4 * y ^ 2 := by ring
-    have hK : 0 ≤ 4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2 := by positivity
-    have hcoef : (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / y ^ 2 ≤
-        4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2 := by
+        z.y ^ (2 : ℕ) ≤ (2 * y) ^ (2 : ℕ) := hpow
+        _ = 4 * y ^ (2 : ℕ) := by ring
+    have hK : 0 ≤ 4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ) := by positivity
+    have hcoef : (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / y ^ (2 : ℕ) ≤
+        4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ) := by
       calc
-        (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / y ^ 2 =
-            (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) * (1 / y ^ 2) := by ring
-        _ ≤ (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) * (4 / z.y ^ 2) :=
+        (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / y ^ (2 : ℕ) =
+            (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) * (1 / y ^ (2 : ℕ)) := by ring
+        _ ≤ (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) * (4 / z.y ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hinvSq hK
-        _ = 4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2 := by ring
+        _ = 4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ) := by ring
     calc
-      ‖g' p y‖ ≤ ((4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / y ^ 2) *
+      ‖g' p y‖ ≤ ((4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / y ^ (2 : ℕ)) *
           ‖d4BMPoincareSeed zy P.s p‖ := by
             simpa only [g', zy, dif_pos hy0] using hnorm
-      _ ≤ (4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2) *
+      _ ≤ (4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ)) *
           ‖d4BMPoincareSeedVerticalSlice z P.s p y‖ := by
         apply mul_le_mul hcoef le_rfl (norm_nonneg _)
         exact div_nonneg (mul_nonneg (by norm_num) hK) (sq_nonneg _)
-      _ ≤ (4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ 2) / z.y ^ 2) *
+      _ ≤ (4 * (4 * ‖P.s‖ + 6 * ‖P.s‖ ^ (2 : ℕ)) / z.y ^ (2 : ℕ)) *
           ((2 ^ P.s.re * 4 ^ P.s.re) * ‖d4BMPoincareSeed z P.s p‖) :=
         mul_le_mul_of_nonneg_left (norm_d4BMPoincareSeed_vertical_le z P p hy)
           (div_nonneg (mul_nonneg (by norm_num) hK) (sq_nonneg _))

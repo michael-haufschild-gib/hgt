@@ -109,7 +109,7 @@ theorem prod_lowerPole_finset_eq_conjNumerator
 
 /-- Nonzero algebraic scale of one reflection-paired canonical factor. -/
 def xiShiftPairScale (q : XiZeroCopy) : ℂ :=
-  -(xiSpectralPoint q ^ 2)⁻¹
+  -(xiSpectralPoint q ^ (2 : ℕ))⁻¹
 
 theorem xiShiftRightReflectionPairFactor_numerator_shift_scale
     (omega : ℝ) (z : ℂ) (q : XiShiftRightZeroCopy omega) :

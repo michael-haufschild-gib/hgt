@@ -52,7 +52,7 @@ theorem two_mul_one_add_le_two_pow {r : ℕ} (hr : 3 ≤ r) : (2 : ℝ) * (1 + (
       subst hn2; norm_num
     · have h := ih hn
       have h8 : (8 : ℝ) ≤ 2 ^ n := by
-        have : (2 : ℝ) ^ 3 ≤ 2 ^ n := pow_le_pow_right₀ (by norm_num) hn
+        have : (2 : ℝ) ^ (3 : ℕ) ≤ 2 ^ n := pow_le_pow_right₀ (by norm_num) hn
         norm_num at this; linarith
       rw [pow_succ]
       push_cast

@@ -14,17 +14,17 @@ def oppositeTemporalOuterDensity (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (zang : D4BMHorizon.Point) (u : ℂ) (t : ℝ) : ℂ :=
   oppositeCurrentRatio q branch u *
     (modeAngularSquare (physicalModeAngularJet q zang) *
-      ((-2*u*(physicalAngularParameter q^2-1/4-2)*selfExpression q branch a u t -
+      ((-2*u*(physicalAngularParameter q^(2 : ℕ)-1/4-2)*selfExpression q branch a u t -
         u*contactExpression q branch a u t) * tortoiseMode false (-u) (physicalRadialFrequency q) t))
 
 /-- The analytic density is the actual omitted part of the original normalizable temporal current. -/
 theorem oppositeTemporalOuterDensity_eq_original (q : XiZeroCopy) (branch : Bool) (a u : ℂ)
     (zang : D4BMHorizon.Point) (hu : u.im ≠ 0) (hs : u - 2*physicalRate q branch ≠ 0)
     (hc : connection u (physicalRadialFrequency q) ≠ 0) (t : ℝ) (ht : t < 0) :
-    ((tortoiseRadius t:ℂ)^2-1) * continuedPhysicalTimeAction q branch u a true t zang -
+    ((tortoiseRadius t:ℂ)^(2 : ℕ)-1) * continuedPhysicalTimeAction q branch u a true t zang -
       horizonRegularCoefficient u (physicalRadialFrequency q) (normalizable u (physicalRadialFrequency q))
         (normalizableFirst u (physicalRadialFrequency q)) *
-        (((tortoiseRadius t:ℂ)^2-1) * continuedPhysicalTimeAction q branch u a false t zang) =
+        (((tortoiseRadius t:ℂ)^(2 : ℕ)-1) * continuedPhysicalTimeAction q branch u a false t zang) =
       oppositeTemporalOuterDensity q branch a zang u t := by
   have hn := (original_homogeneous_horizon_representation u (physicalRadialFrequency q) hu
     (fun z hz => (normalizable_derivatives_continued hz).1)
@@ -99,11 +99,11 @@ theorem oppositeTemporalOuterDensity_norm_le (q : XiZeroCopy) (branch : Bool) (a
     (hBS : 0 ≤ BS) (hBK : 0 ≤ BK) (hZ : ‖oppositeCurrentRatio q branch u‖ ≤ CZ) (hCZ : 0 ≤ CZ) :
     ‖oppositeTemporalOuterDensity q branch a zang u t‖ ≤ CZ *
       (‖modeAngularSquare (physicalModeAngularJet q zang)‖ *
-        ((2*M*‖physicalAngularParameter q^2-1/4-2‖*BS + M*BK)*CH)) := by
+        ((2*M*‖physicalAngularParameter q^(2 : ℕ)-1/4-2‖*BS + M*BK)*CH)) := by
   have hM : 0 ≤ M := (norm_nonneg u).trans hu
   have h2 : ‖(-2:ℂ)‖ = 2 := by norm_num
-  have hinner : ‖-2*u*(physicalAngularParameter q^2-1/4-2)*selfExpression q branch a u t -
-      u*contactExpression q branch a u t‖ ≤ 2*M*‖physicalAngularParameter q^2-1/4-2‖*BS+M*BK := by
+  have hinner : ‖-2*u*(physicalAngularParameter q^(2 : ℕ)-1/4-2)*selfExpression q branch a u t -
+      u*contactExpression q branch a u t‖ ≤ 2*M*‖physicalAngularParameter q^(2 : ℕ)-1/4-2‖*BS+M*BK := by
     refine (norm_sub_le _ _).trans (add_le_add ?_ ?_)
     · rw [norm_mul, norm_mul, norm_mul, h2]
       exact mul_le_mul (mul_le_mul (mul_le_mul_of_nonneg_left hu (by norm_num)) le_rfl
@@ -176,7 +176,7 @@ theorem oppositeTemporalOuterDensity_outer_uniform_bound (q : XiZeroCopy) (branc
       Finset.sum_nonneg (fun i _ => norm_nonneg _)
     positivity
   refine ⟨r, CZ * (‖modeAngularSquare (physicalModeAngularJet q zang)‖ *
-    ((2 * M * ‖physicalAngularParameter q ^ 2 - 1 / 4 - 2‖ * BS + M * BK) * CH)), hr,
+    ((2 * M * ‖physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2‖ * BS + M * BK) * CH)), hr,
     by positivity, ?_⟩
   intro u hu t ht
   obtain ⟨huG, huH, hu0, hu1, hu2, huA, huF, hu1'⟩ := (hall (mem_ball.mp hu)).1

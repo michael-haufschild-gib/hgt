@@ -62,7 +62,7 @@ theorem generatorEnergy_nonneg (z : ℍ) : 0 ≤ generatorEnergy N f z :=
 
 theorem displacementEnergy_eq_norm (A : SL2Z) (z : ℍ) :
     displacementEnergy N f A z=
-      ‖finiteRegularUnitary (QuotientGroup.mk A : Deck N) (sourceVector N f z)-sourceVector N f z‖^2 := by
+      ‖finiteRegularUnitary (QuotientGroup.mk A : Deck N) (sourceVector N f z)-sourceVector N f z‖^(2 : ℕ) := by
   rw [← sourceVector_pullback,EuclideanSpace.norm_sq_eq]
   simp only [Complex.sq_norm]
   rfl

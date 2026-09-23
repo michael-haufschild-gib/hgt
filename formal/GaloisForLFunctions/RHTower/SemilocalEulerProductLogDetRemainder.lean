@@ -76,33 +76,33 @@ theorem abs_finset_prod_sub_prod_le {κ : Type*} [DecidableEq κ] (s : Finset κ
 theorem abs_prod_sub_quadratic_le_cubic {κ : Type*} [DecidableEq κ] (s : Finset κ) (x y : κ → ℝ)
     (hLam : ∑ a ∈ s, (|x a| + Real.sqrt |y a|) ≤ 1) :
     |∏ a ∈ s, (1 + x a + y a) -
-        (1 + ∑ a ∈ s, x a + (∑ a ∈ s, y a + (1 / 2) * ((∑ a ∈ s, x a) ^ 2 - ∑ a ∈ s, x a ^ 2)))| ≤
-      200 * (∑ a ∈ s, (|x a| + Real.sqrt |y a|)) ^ 3 := by
+        (1 + ∑ a ∈ s, x a + (∑ a ∈ s, y a + (1 / 2) * ((∑ a ∈ s, x a) ^ (2 : ℕ) - ∑ a ∈ s, x a ^ (2 : ℕ))))| ≤
+      200 * (∑ a ∈ s, (|x a| + Real.sqrt |y a|)) ^ (3 : ℕ) := by
   set L := ∑ a ∈ s, (|x a| + Real.sqrt |y a|) with hL
   have hL0 : 0 ≤ L := Finset.sum_nonneg fun a _ => by positivity
   rcases hL0.lt_or_eq with hpos | hzero
   · have hsx : ∑ a ∈ s, |x a| ≤ L := by
       rw [hL]
       exact Finset.sum_le_sum fun a _ => by linarith [Real.sqrt_nonneg |y a|]
-    have hsy : ∑ a ∈ s, |y a| ≤ L ^ 2 := by
-      calc ∑ a ∈ s, |y a| = ∑ a ∈ s, Real.sqrt |y a| ^ 2 :=
+    have hsy : ∑ a ∈ s, |y a| ≤ L ^ (2 : ℕ) := by
+      calc ∑ a ∈ s, |y a| = ∑ a ∈ s, Real.sqrt |y a| ^ (2 : ℕ) :=
             Finset.sum_congr rfl fun a _ => by rw [Real.sq_sqrt (abs_nonneg _)]
-        _ ≤ (∑ a ∈ s, Real.sqrt |y a|) ^ 2 :=
+        _ ≤ (∑ a ∈ s, Real.sqrt |y a|) ^ (2 : ℕ) :=
             Finset.sum_sq_le_sq_sum_of_nonneg fun a _ => Real.sqrt_nonneg _
-        _ ≤ L ^ 2 := by
+        _ ≤ L ^ (2 : ℕ) := by
             have : ∑ a ∈ s, Real.sqrt |y a| ≤ L := by
               rw [hL]
               exact Finset.sum_le_sum fun a _ => by linarith [abs_nonneg (x a)]
             exact pow_le_pow_left₀ (Finset.sum_nonneg fun a _ => Real.sqrt_nonneg _) this 2
-    have key := abs_prod_sub_quadratic_le s (fun a => x a / L) (fun a => y a / L ^ 2) (t := L)
+    have key := abs_prod_sub_quadratic_le s (fun a => x a / L) (fun a => y a / L ^ (2 : ℕ)) (t := L)
       (by rw [abs_of_pos hpos]; exact hLam)
     beta_reduce at key
-    have e1 : ∀ a, 1 + L * (x a / L) + L ^ 2 * (y a / L ^ 2) = 1 + x a + y a := fun a => by
+    have e1 : ∀ a, 1 + L * (x a / L) + L ^ (2 : ℕ) * (y a / L ^ (2 : ℕ)) = 1 + x a + y a := fun a => by
       field_simp
-    have e2 : 1 + L * ∑ a ∈ s, x a / L + L ^ 2 * (∑ a ∈ s, y a / L ^ 2 +
-        1 / 2 * ((∑ a ∈ s, x a / L) ^ 2 - ∑ a ∈ s, (x a / L) ^ 2)) =
-        1 + ∑ a ∈ s, x a + (∑ a ∈ s, y a + (1 / 2) * ((∑ a ∈ s, x a) ^ 2 - ∑ a ∈ s, x a ^ 2)) := by
-      have e3 : ∑ a ∈ s, (x a / L) ^ 2 = (∑ a ∈ s, x a ^ 2) / L ^ 2 := by
+    have e2 : 1 + L * ∑ a ∈ s, x a / L + L ^ (2 : ℕ) * (∑ a ∈ s, y a / L ^ (2 : ℕ) +
+        1 / 2 * ((∑ a ∈ s, x a / L) ^ (2 : ℕ) - ∑ a ∈ s, (x a / L) ^ (2 : ℕ))) =
+        1 + ∑ a ∈ s, x a + (∑ a ∈ s, y a + (1 / 2) * ((∑ a ∈ s, x a) ^ (2 : ℕ) - ∑ a ∈ s, x a ^ (2 : ℕ))) := by
+      have e3 : ∑ a ∈ s, (x a / L) ^ (2 : ℕ) = (∑ a ∈ s, x a ^ (2 : ℕ)) / L ^ (2 : ℕ) := by
         rw [Finset.sum_div]
         exact Finset.sum_congr rfl fun a _ => by ring
       rw [← Finset.sum_div, ← Finset.sum_div, e3]
@@ -110,29 +110,29 @@ theorem abs_prod_sub_quadratic_le_cubic {κ : Type*} [DecidableEq κ] (s : Finse
     simp only [e1] at key
     rw [e2] at key
     refine key.trans ?_
-    have hsum : ∑ a ∈ s, (|x a / L| + |y a / L ^ 2|) ≤ 2 := by
+    have hsum : ∑ a ∈ s, (|x a / L| + |y a / L ^ (2 : ℕ)|) ≤ 2 := by
       rw [Finset.sum_add_distrib]
       have h1 : ∑ a ∈ s, |x a / L| ≤ 1 := by
         calc ∑ a ∈ s, |x a / L| = (∑ a ∈ s, |x a|) / L := by
               rw [Finset.sum_div]
               exact Finset.sum_congr rfl fun a _ => by rw [abs_div, abs_of_pos hpos]
           _ ≤ 1 := by rw [div_le_one hpos]; exact hsx
-      have h2 : ∑ a ∈ s, |y a / L ^ 2| ≤ 1 := by
-        calc ∑ a ∈ s, |y a / L ^ 2| = (∑ a ∈ s, |y a|) / L ^ 2 := by
+      have h2 : ∑ a ∈ s, |y a / L ^ (2 : ℕ)| ≤ 1 := by
+        calc ∑ a ∈ s, |y a / L ^ (2 : ℕ)| = (∑ a ∈ s, |y a|) / L ^ (2 : ℕ) := by
               rw [Finset.sum_div]
               exact Finset.sum_congr rfl fun a _ => by rw [abs_div, abs_of_pos (pow_pos hpos 2)]
           _ ≤ 1 := by rw [div_le_one (by positivity)]; exact hsy
       linarith
-    have hprod : ∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ 2|)) ≤ Real.exp 2 := by
-      calc ∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ 2|)) ≤
-            ∏ a ∈ s, Real.exp (|x a / L| + |y a / L ^ 2|) :=
+    have hprod : ∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ (2 : ℕ)|)) ≤ Real.exp 2 := by
+      calc ∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ (2 : ℕ)|)) ≤
+            ∏ a ∈ s, Real.exp (|x a / L| + |y a / L ^ (2 : ℕ)|) :=
             Finset.prod_le_prod (fun a _ => by positivity)
-              (fun a _ => by linarith [Real.add_one_le_exp (|x a / L| + |y a / L ^ 2|)])
-        _ = Real.exp (∑ a ∈ s, (|x a / L| + |y a / L ^ 2|)) := (Real.exp_sum _ _).symm
+              (fun a _ => by linarith [Real.add_one_le_exp (|x a / L| + |y a / L ^ (2 : ℕ)|)])
+        _ = Real.exp (∑ a ∈ s, (|x a / L| + |y a / L ^ (2 : ℕ)|)) := (Real.exp_sum _ _).symm
         _ ≤ Real.exp 2 := Real.exp_le_exp.mpr hsum
-    have hcube : (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ 2|)) ^ 3 ≤ 27 := by
-      have h0 : 0 ≤ 1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ 2|) := by positivity
-      calc (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ 2|)) ^ 3 ≤ 3 ^ 3 :=
+    have hcube : (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ (2 : ℕ)|)) ^ (3 : ℕ) ≤ 27 := by
+      have h0 : 0 ≤ 1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ (2 : ℕ)|) := by positivity
+      calc (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ (2 : ℕ)|)) ^ (3 : ℕ) ≤ 3 ^ (3 : ℕ) :=
             pow_le_pow_left₀ h0 (by linarith) 3
         _ = 27 := by norm_num
     have hexp : Real.exp 2 ≤ 200 / 27 := by
@@ -145,21 +145,21 @@ theorem abs_prod_sub_quadratic_le_cubic {κ : Type*} [DecidableEq κ] (s : Finse
             mul_le_mul h.le h.le h0 (by norm_num)
         _ ≤ 200 / 27 := by norm_num
     rw [abs_of_pos hpos]
-    have hprod0 : 0 ≤ ∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ 2|)) :=
+    have hprod0 : 0 ≤ ∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ (2 : ℕ)|)) :=
       Finset.prod_nonneg fun a _ => by positivity
-    have hcube0 : 0 ≤ (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ 2|)) ^ 3 := by positivity
-    calc L ^ 3 * (∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ 2|))) *
-          (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ 2|)) ^ 3
-        ≤ L ^ 3 * (200 / 27) * 27 := by
+    have hcube0 : 0 ≤ (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ (2 : ℕ)|)) ^ (3 : ℕ) := by positivity
+    calc L ^ (3 : ℕ) * (∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ (2 : ℕ)|))) *
+          (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ (2 : ℕ)|)) ^ (3 : ℕ)
+        ≤ L ^ (3 : ℕ) * (200 / 27) * 27 := by
           have hp := hprod.trans hexp
-          have hL3 : 0 ≤ L ^ 3 := by positivity
-          calc L ^ 3 * (∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ 2|))) *
-                (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ 2|)) ^ 3
-              ≤ L ^ 3 * (200 / 27) * (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ 2|)) ^ 3 :=
+          have hL3 : 0 ≤ L ^ (3 : ℕ) := by positivity
+          calc L ^ (3 : ℕ) * (∏ a ∈ s, (1 + (|x a / L| + |y a / L ^ (2 : ℕ)|))) *
+                (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ (2 : ℕ)|)) ^ (3 : ℕ)
+              ≤ L ^ (3 : ℕ) * (200 / 27) * (1 + ∑ a ∈ s, (|x a / L| + |y a / L ^ (2 : ℕ)|)) ^ (3 : ℕ) :=
                 mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hp hL3) hcube0
-            _ ≤ L ^ 3 * (200 / 27) * 27 :=
+            _ ≤ L ^ (3 : ℕ) * (200 / 27) * 27 :=
                 mul_le_mul_of_nonneg_left hcube (by positivity)
-      _ = 200 * L ^ 3 := by ring
+      _ = 200 * L ^ (3 : ℕ) := by ring
   · have hall : ∀ a ∈ s, |x a| + Real.sqrt |y a| = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg fun a _ => by positivity).mp hzero.symm
     have hx0 : ∀ a ∈ s, x a = 0 := fun a ha => by
@@ -178,20 +178,20 @@ theorem abs_prod_sub_quadratic_le_cubic {κ : Type*} [DecidableEq κ] (s : Finse
     rw [Finset.prod_congr rfl (fun a ha => by rw [hx0 a ha, hy0 a ha]; ring :
         ∀ a ∈ s, (1 + x a + y a) = 1),
       Finset.sum_congr rfl hx0, Finset.sum_congr rfl hy0,
-      Finset.sum_congr rfl (fun a ha => by rw [hx0 a ha]; ring : ∀ a ∈ s, x a ^ 2 = 0)]
+      Finset.sum_congr rfl (fun a ha => by rw [hx0 a ha]; ring : ∀ a ∈ s, x a ^ (2 : ℕ) = 0)]
     simp
 
 /-! ## Euler factors and the true product weight -/
 
 /-- `1 / (1 − 2e cos x + e²)`. -/
-noncomputable def semilocalEulerFactor (e x : ℝ) : ℝ := 1 / (1 - 2 * e * Real.cos x + e ^ 2)
+noncomputable def semilocalEulerFactor (e x : ℝ) : ℝ := 1 / (1 - 2 * e * Real.cos x + e ^ (2 : ℕ))
 
 /-- Its quadratic truncation `1 + 2e cos x + e²(1 + 2 cos 2x)`. -/
 noncomputable def semilocalQuadraticFactor (e x : ℝ) : ℝ :=
-  1 + 2 * e * Real.cos x + e ^ 2 * (1 + 2 * Real.cos (2 * x))
+  1 + 2 * e * Real.cos x + e ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * x))
 
 theorem eulerFactor_denom_ge {e : ℝ} (he0 : 0 ≤ e) (he : e ≤ 1 / 6) (x : ℝ) :
-    (25 : ℝ) / 36 ≤ 1 - 2 * e * Real.cos x + e ^ 2 := by
+    (25 : ℝ) / 36 ≤ 1 - 2 * e * Real.cos x + e ^ (2 : ℕ) := by
   have hc := Real.cos_le_one x
   have h56 : (5 : ℝ) / 6 ≤ 1 - e := by linarith
   have h2 : (0 : ℝ) ≤ 1 - e + 5 / 6 := by linarith
@@ -212,15 +212,15 @@ theorem abs_quadraticFactor_le {e : ℝ} (he0 : 0 ≤ e) (he : e ≤ 1 / 6) (x :
   rw [abs_le] at hc hc2 ⊢
   have h1 : -e ≤ e * Real.cos x := by nlinarith
   have h2 : e * Real.cos x ≤ e := by nlinarith
-  have h3 : -(e ^ 2) ≤ e ^ 2 * Real.cos (2 * x) := by nlinarith [sq_nonneg e]
-  have h4 : e ^ 2 * Real.cos (2 * x) ≤ e ^ 2 := by nlinarith [sq_nonneg e]
-  have he2 : e ^ 2 ≤ 1 / 36 := by nlinarith
+  have h3 : -(e ^ (2 : ℕ)) ≤ e ^ (2 : ℕ) * Real.cos (2 * x) := by nlinarith [sq_nonneg e]
+  have h4 : e ^ (2 : ℕ) * Real.cos (2 * x) ≤ e ^ (2 : ℕ) := by nlinarith [sq_nonneg e]
+  have he2 : e ^ (2 : ℕ) ≤ 1 / 36 := by nlinarith
   constructor <;> nlinarith
 
 theorem abs_prod_eulerFactor_sub_prod_quadraticFactor_le {k : ℕ} (δ ε : Fin k → ℝ)
     (hε0 : ∀ a, 0 ≤ ε a) (hε : ∀ a, ε a ≤ 1 / 6) (s : ℝ) :
     |∏ a, semilocalEulerFactor (ε a) (δ a * s) - ∏ a, semilocalQuadraticFactor (ε a) (δ a * s)| ≤
-      (3 / 2) ^ k * ∑ a, 60 * ε a ^ 3 := by
+      (3 / 2) ^ k * ∑ a, 60 * ε a ^ (3 : ℕ) := by
   have h := abs_finset_prod_sub_prod_le Finset.univ (fun a => semilocalEulerFactor (ε a) (δ a * s))
     (fun a => semilocalQuadraticFactor (ε a) (δ a * s)) (C := 3 / 2) (by norm_num)
     (fun a _ => abs_eulerFactor_le (hε0 a) (hε a) _)
@@ -232,21 +232,21 @@ theorem abs_prod_eulerFactor_sub_prod_quadraticFactor_le {k : ℕ} (δ ε : Fin 
 /-- The quadratic truncation of the product is the ray weight at `t = 1`. -/
 theorem rayTruncation_eq {k : ℕ} (δ ε : Fin k → ℝ) (s : ℝ) :
     1 + ∑ a, 2 * ε a * Real.cos (δ a * s) +
-      (∑ a, ε a ^ 2 * (1 + 2 * Real.cos (2 * (δ a * s))) +
-        (1 / 2) * ((∑ a, 2 * ε a * Real.cos (δ a * s)) ^ 2 -
-          ∑ a, (2 * ε a * Real.cos (δ a * s)) ^ 2)) =
+      (∑ a, ε a ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * (δ a * s))) +
+        (1 / 2) * ((∑ a, 2 * ε a * Real.cos (δ a * s)) ^ (2 : ℕ) -
+          ∑ a, (2 * ε a * Real.cos (δ a * s)) ^ (2 : ℕ))) =
       1 + rayFirst δ ε s + raySecond δ ε s := by
   unfold raySecond
   unfold rayFirst
-  have hterm : ∀ a, ε a ^ 2 * (1 + 2 * Real.cos (2 * (δ a * s))) -
-      (1 / 2) * (2 * ε a * Real.cos (δ a * s)) ^ 2 - ε a ^ 2 * Real.cos (2 * δ a * s) = 0 := by
+  have hterm : ∀ a, ε a ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * (δ a * s))) -
+      (1 / 2) * (2 * ε a * Real.cos (δ a * s)) ^ (2 : ℕ) - ε a ^ (2 : ℕ) * Real.cos (2 * δ a * s) = 0 := by
     intro a
     have h1 := Real.cos_sq (δ a * s)
     have h2 : 2 * δ a * s = 2 * (δ a * s) := by ring
     rw [h2]
-    linear_combination (-(2 * ε a ^ 2)) * h1
-  have hsum : ∑ a, (ε a ^ 2 * (1 + 2 * Real.cos (2 * (δ a * s))) -
-      (1 / 2) * (2 * ε a * Real.cos (δ a * s)) ^ 2 - ε a ^ 2 * Real.cos (2 * δ a * s)) = 0 :=
+    linear_combination (-(2 * ε a ^ (2 : ℕ))) * h1
+  have hsum : ∑ a, (ε a ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * (δ a * s))) -
+      (1 / 2) * (2 * ε a * Real.cos (δ a * s)) ^ (2 : ℕ) - ε a ^ (2 : ℕ) * Real.cos (2 * δ a * s)) = 0 :=
     Finset.sum_eq_zero fun a _ => hterm a
   rw [Finset.sum_sub_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum] at hsum
   linear_combination hsum
@@ -257,11 +257,11 @@ variable {k : ℕ} (δ ε : Fin k → ℝ)
 noncomputable def eulerProductWeight (s : ℝ) : ℝ := ∏ a, semilocalEulerFactor (ε a) (δ a * s)
 
 /-- The explicit cubic weight remainder `(3/2)^k · 60 Σ ε_a³ + 12800 (Σ ε_a)³`. -/
-noncomputable def weightRemainder : ℝ := (3 / 2) ^ k * ∑ a, 60 * ε a ^ 3 + 12800 * (∑ a, ε a) ^ 3
+noncomputable def weightRemainder : ℝ := (3 / 2) ^ k * ∑ a, 60 * ε a ^ (3 : ℕ) + 12800 * (∑ a, ε a) ^ (3 : ℕ)
 
 theorem weightRemainder_nonneg (hε0 : ∀ a, 0 ≤ ε a) : 0 ≤ weightRemainder ε := by
   unfold weightRemainder
-  have h1 : 0 ≤ ∑ a, 60 * ε a ^ 3 := Finset.sum_nonneg fun a _ => by have := hε0 a; positivity
+  have h1 : 0 ≤ ∑ a, 60 * ε a ^ (3 : ℕ) := Finset.sum_nonneg fun a _ => by have := hε0 a; positivity
   have h2 : 0 ≤ ∑ a, ε a := Finset.sum_nonneg fun a _ => hε0 a
   positivity
 
@@ -270,13 +270,13 @@ theorem abs_eulerProductWeight_sub_rayWeight_le (hε0 : ∀ a, 0 ≤ ε a) (hε 
     (hV : ∑ a, ε a ≤ 1 / 4) (s : ℝ) :
     |eulerProductWeight δ ε s - (1 + rayFirst δ ε s + raySecond δ ε s)| ≤ weightRemainder ε := by
   set x : Fin k → ℝ := fun a => 2 * ε a * Real.cos (δ a * s) with hx
-  set y : Fin k → ℝ := fun a => ε a ^ 2 * (1 + 2 * Real.cos (2 * (δ a * s))) with hy
+  set y : Fin k → ℝ := fun a => ε a ^ (2 : ℕ) * (1 + 2 * Real.cos (2 * (δ a * s))) with hy
   have hxb : ∀ a, |x a| ≤ 2 * ε a := fun a => by
     simp only [hx]
     rw [abs_mul, abs_of_nonneg (by linarith [hε0 a] : (0 : ℝ) ≤ 2 * ε a)]
     exact mul_le_of_le_one_right (by linarith [hε0 a]) (Real.abs_cos_le_one _)
   have hyb : ∀ a, Real.sqrt |y a| ≤ 2 * ε a := fun a => by
-    have h1 : |y a| ≤ (2 * ε a) ^ 2 := by
+    have h1 : |y a| ≤ (2 * ε a) ^ (2 : ℕ) := by
       simp only [hy]
       rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
       have hc := Real.abs_cos_le_one (2 * (δ a * s))
@@ -284,7 +284,7 @@ theorem abs_eulerProductWeight_sub_rayWeight_le (hε0 : ∀ a, 0 ≤ ε a) (hε 
         rw [abs_le] at hc ⊢
         constructor <;> linarith
       nlinarith [sq_nonneg (ε a), hε0 a, abs_nonneg (1 + 2 * Real.cos (2 * (δ a * s)))]
-    calc Real.sqrt |y a| ≤ Real.sqrt ((2 * ε a) ^ 2) := Real.sqrt_le_sqrt h1
+    calc Real.sqrt |y a| ≤ Real.sqrt ((2 * ε a) ^ (2 : ℕ)) := Real.sqrt_le_sqrt h1
       _ = 2 * ε a := Real.sqrt_sq (by linarith [hε0 a])
   have hL : ∑ a, (|x a| + Real.sqrt |y a|) ≤ 4 * ∑ a, ε a := by
     rw [Finset.mul_sum]
@@ -296,7 +296,7 @@ theorem abs_eulerProductWeight_sub_rayWeight_le (hε0 : ∀ a, 0 ≤ ε a) (hε 
       simp only [hx, hy]
       unfold semilocalQuadraticFactor
       ring
-  have htrunc : 1 + ∑ a, x a + (∑ a, y a + (1 / 2) * ((∑ a, x a) ^ 2 - ∑ a, x a ^ 2)) =
+  have htrunc : 1 + ∑ a, x a + (∑ a, y a + (1 / 2) * ((∑ a, x a) ^ (2 : ℕ) - ∑ a, x a ^ (2 : ℕ))) =
       1 + rayFirst δ ε s + raySecond δ ε s := by
     simp only [hx, hy]
     exact rayTruncation_eq δ ε s
@@ -305,16 +305,16 @@ theorem abs_eulerProductWeight_sub_rayWeight_le (hε0 : ∀ a, 0 ≤ ε a) (hε 
   have hsplit : ∏ a, semilocalEulerFactor (ε a) (δ a * s) - (1 + rayFirst δ ε s + raySecond δ ε s) =
       (∏ a, semilocalEulerFactor (ε a) (δ a * s) - ∏ a, semilocalQuadraticFactor (ε a) (δ a * s)) +
       (∏ a, (1 + x a + y a) -
-        (1 + ∑ a, x a + (∑ a, y a + (1 / 2) * ((∑ a, x a) ^ 2 - ∑ a, x a ^ 2)))) := by
+        (1 + ∑ a, x a + (∑ a, y a + (1 / 2) * ((∑ a, x a) ^ (2 : ℕ) - ∑ a, x a ^ (2 : ℕ))))) := by
     rw [hprodQ, htrunc]
     ring
   rw [hsplit]
   refine (abs_add_le _ _).trans ?_
   have hL0 : 0 ≤ ∑ a, (|x a| + Real.sqrt |y a|) := Finset.sum_nonneg fun a _ => by positivity
-  have hcube : (∑ a, (|x a| + Real.sqrt |y a|)) ^ 3 ≤ (4 * ∑ a, ε a) ^ 3 := pow_le_pow_left₀ hL0 hL 3
-  calc _ ≤ (3 / 2) ^ k * ∑ a, 60 * ε a ^ 3 + 200 * (∑ a, (|x a| + Real.sqrt |y a|)) ^ 3 :=
+  have hcube : (∑ a, (|x a| + Real.sqrt |y a|)) ^ (3 : ℕ) ≤ (4 * ∑ a, ε a) ^ (3 : ℕ) := pow_le_pow_left₀ hL0 hL 3
+  calc _ ≤ (3 / 2) ^ k * ∑ a, 60 * ε a ^ (3 : ℕ) + 200 * (∑ a, (|x a| + Real.sqrt |y a|)) ^ (3 : ℕ) :=
         add_le_add hE hquad
-    _ ≤ (3 / 2) ^ k * ∑ a, 60 * ε a ^ 3 + 200 * (4 * ∑ a, ε a) ^ 3 := by
+    _ ≤ (3 / 2) ^ k * ∑ a, 60 * ε a ^ (3 : ℕ) + 200 * (4 * ∑ a, ε a) ^ (3 : ℕ) := by
         have := mul_le_mul_of_nonneg_left hcube (by norm_num : (0 : ℝ) ≤ 200)
         linarith
     _ = _ := by ring
@@ -351,27 +351,27 @@ theorem abs_rayFirst_le (hε0 : ∀ a, 0 ≤ ε a) (s : ℝ) : |rayFirst δ ε s
   exact mul_le_of_le_one_right (by linarith [hε0 a]) (Real.abs_cos_le_one _)
 
 theorem abs_raySecond_le (hε0 : ∀ a, 0 ≤ ε a) (s : ℝ) :
-    |raySecond δ ε s| ≤ 3 * (∑ a, ε a) ^ 2 := by
+    |raySecond δ ε s| ≤ 3 * (∑ a, ε a) ^ (2 : ℕ) := by
   unfold raySecond
   have h1 := abs_rayFirst_le δ ε hε0 s
-  have h2 : |∑ a, ε a ^ 2 * Real.cos (2 * δ a * s)| ≤ ∑ a, ε a ^ 2 := by
+  have h2 : |∑ a, ε a ^ (2 : ℕ) * Real.cos (2 * δ a * s)| ≤ ∑ a, ε a ^ (2 : ℕ) := by
     refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun a _ => ?_)
     rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
     exact mul_le_of_le_one_right (sq_nonneg _) (Real.abs_cos_le_one _)
-  have h3 : ∑ a, ε a ^ 2 ≤ (∑ a, ε a) ^ 2 := Finset.sum_sq_le_sq_sum_of_nonneg fun a _ => hε0 a
-  have h4 : rayFirst δ ε s ^ 2 ≤ (2 * ∑ a, ε a) ^ 2 := by
+  have h3 : ∑ a, ε a ^ (2 : ℕ) ≤ (∑ a, ε a) ^ (2 : ℕ) := Finset.sum_sq_le_sq_sum_of_nonneg fun a _ => hε0 a
+  have h4 : rayFirst δ ε s ^ (2 : ℕ) ≤ (2 * ∑ a, ε a) ^ (2 : ℕ) := by
     rw [← sq_abs]
     exact pow_le_pow_left₀ (abs_nonneg _) h1 2
-  calc |(1 / 2) * rayFirst δ ε s ^ 2 + ∑ a, ε a ^ 2 * Real.cos (2 * δ a * s)|
-      ≤ (1 / 2) * rayFirst δ ε s ^ 2 + ∑ a, ε a ^ 2 := by
+  calc |(1 / 2) * rayFirst δ ε s ^ (2 : ℕ) + ∑ a, ε a ^ (2 : ℕ) * Real.cos (2 * δ a * s)|
+      ≤ (1 / 2) * rayFirst δ ε s ^ (2 : ℕ) + ∑ a, ε a ^ (2 : ℕ) := by
         refine (abs_add_le _ _).trans ?_
         rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2), abs_of_nonneg (sq_nonneg _)]
         linarith
-    _ ≤ (1 / 2) * (2 * ∑ a, ε a) ^ 2 + (∑ a, ε a) ^ 2 := by linarith
-    _ = 3 * (∑ a, ε a) ^ 2 := by ring
+    _ ≤ (1 / 2) * (2 * ∑ a, ε a) ^ (2 : ℕ) + (∑ a, ε a) ^ (2 : ℕ) := by linarith
+    _ = 3 * (∑ a, ε a) ^ (2 : ℕ) := by ring
 
 theorem abs_rayWeight_le (hε0 : ∀ a, 0 ≤ ε a) (s : ℝ) :
-    |1 + rayFirst δ ε s + raySecond δ ε s| ≤ 1 + 2 * ∑ a, ε a + 3 * (∑ a, ε a) ^ 2 := by
+    |1 + rayFirst δ ε s + raySecond δ ε s| ≤ 1 + 2 * ∑ a, ε a + 3 * (∑ a, ε a) ^ (2 : ℕ) := by
   have h1 := abs_rayFirst_le δ ε hε0 s
   have h2 := abs_raySecond_le δ ε hε0 s
   calc |1 + rayFirst δ ε s + raySecond δ ε s| ≤ |1 + rayFirst δ ε s| + |raySecond δ ε s| :=
@@ -460,29 +460,29 @@ theorem abs_cosineModeTangent_le_two (c : ℝ) (n : ℕ) (i j : Fin (n + 1)) :
   linarith
 
 theorem entryNorm_cosineModeTangent_le (c : ℝ) (n : ℕ) :
-    entryNorm (cosineModeTangent c n) ≤ ((n : ℝ) + 1) ^ 2 * 2 := by
+    entryNorm (cosineModeTangent c n) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) * 2 := by
   have := entryNorm_le_of_abs_apply_le (fun i j => abs_cosineModeTangent_le_two c n i j)
   rwa [Fintype.card_fin, Nat.cast_succ] at this
 
 theorem entryNorm_rayM₁_le (n : ℕ) :
-    entryNorm (rayM₁ δ ε n) ≤ ((n : ℝ) + 1) ^ 2 * 2 * ∑ a, |ε a| := by
+    entryNorm (rayM₁ δ ε n) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) * 2 * ∑ a, |ε a| := by
   unfold rayM₁
   refine (entryNorm_sum_le _ _).trans ?_
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun a _ => ?_
   rw [entryNorm_smul]
-  calc |ε a| * entryNorm (cosineModeTangent (δ a) n) ≤ |ε a| * (((n : ℝ) + 1) ^ 2 * 2) :=
+  calc |ε a| * entryNorm (cosineModeTangent (δ a) n) ≤ |ε a| * (((n : ℝ) + 1) ^ (2 : ℕ) * 2) :=
         mul_le_mul_of_nonneg_left (entryNorm_cosineModeTangent_le _ _) (abs_nonneg _)
     _ = _ := by ring
 
 theorem entryNorm_rayM₂_le (n : ℕ) :
-    entryNorm (rayM₂ δ ε n) ≤ ((n : ℝ) + 1) ^ 2 * (2 * (∑ a, |ε a|) ^ 2 + ∑ a, ε a ^ 2) := by
+    entryNorm (rayM₂ δ ε n) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) * (2 * (∑ a, |ε a|) ^ (2 : ℕ) + ∑ a, ε a ^ (2 : ℕ)) := by
   unfold rayM₂
   refine (entryNorm_add_le _ _).trans ?_
   rw [entryNorm_smul, entryNorm_smul, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)]
   have h1 : entryNorm (∑ a, ∑ b, (ε a * ε b) •
       (cosineModeTangent (δ a + δ b) n + cosineModeTangent (δ a - δ b) n)) ≤
-      ∑ a, ∑ b, |ε a * ε b| * (2 * (((n : ℝ) + 1) ^ 2 * 2)) := by
+      ∑ a, ∑ b, |ε a * ε b| * (2 * (((n : ℝ) + 1) ^ (2 : ℕ) * 2)) := by
     refine (entryNorm_sum_le _ _).trans (Finset.sum_le_sum fun a _ =>
       (entryNorm_sum_le _ _).trans (Finset.sum_le_sum fun b _ => ?_))
     rw [entryNorm_smul]
@@ -490,20 +490,20 @@ theorem entryNorm_rayM₂_le (n : ℕ) :
     refine (entryNorm_add_le _ _).trans ?_
     linarith [entryNorm_cosineModeTangent_le (δ a + δ b) n,
       entryNorm_cosineModeTangent_le (δ a - δ b) n]
-  have h2 : entryNorm (∑ a, (ε a ^ 2) • cosineModeTangent (2 * δ a) n) ≤
-      ∑ a, ε a ^ 2 * (((n : ℝ) + 1) ^ 2 * 2) := by
+  have h2 : entryNorm (∑ a, (ε a ^ (2 : ℕ)) • cosineModeTangent (2 * δ a) n) ≤
+      ∑ a, ε a ^ (2 : ℕ) * (((n : ℝ) + 1) ^ (2 : ℕ) * 2) := by
     refine (entryNorm_sum_le _ _).trans (Finset.sum_le_sum fun a _ => ?_)
     rw [entryNorm_smul, abs_of_nonneg (sq_nonneg _)]
     exact mul_le_mul_of_nonneg_left (entryNorm_cosineModeTangent_le _ _) (sq_nonneg _)
-  have e1 : ∑ a, ∑ b, |ε a * ε b| * (2 * (((n : ℝ) + 1) ^ 2 * 2)) =
-      ((n : ℝ) + 1) ^ 2 * (4 * (∑ a, |ε a|) ^ 2) := by
+  have e1 : ∑ a, ∑ b, |ε a * ε b| * (2 * (((n : ℝ) + 1) ^ (2 : ℕ) * 2)) =
+      ((n : ℝ) + 1) ^ (2 : ℕ) * (4 * (∑ a, |ε a|) ^ (2 : ℕ)) := by
     rw [sq (∑ a, |ε a|), Finset.sum_mul_sum, Finset.mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Finset.mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [abs_mul]
     ring
-  have e2 : ∑ a, ε a ^ 2 * (((n : ℝ) + 1) ^ 2 * 2) = ((n : ℝ) + 1) ^ 2 * (2 * ∑ a, ε a ^ 2) := by
+  have e2 : ∑ a, ε a ^ (2 : ℕ) * (((n : ℝ) + 1) ^ (2 : ℕ) * 2) = ((n : ℝ) + 1) ^ (2 : ℕ) * (2 * ∑ a, ε a ^ (2 : ℕ)) := by
     rw [Finset.mul_sum, Finset.mul_sum]
     exact Finset.sum_congr rfl fun a _ => by ring
   rw [e1] at h1
@@ -556,7 +556,7 @@ noncomputable def sizeV : ℝ := ∑ a, ε a
 
 /-- The entry-norm size `(n+1)² (2V + 3V² + ρ)`. -/
 noncomputable def entrySize (n : ℕ) : ℝ :=
-  ((n : ℝ) + 1) ^ 2 * (2 * sizeV ε + 3 * sizeV ε ^ 2 + weightRemainder ε)
+  ((n : ℝ) + 1) ^ (2 : ℕ) * (2 * sizeV ε + 3 * sizeV ε ^ (2 : ℕ) + weightRemainder ε)
 
 /-- The second-order log-determinant jet `tr M₁ + tr M₂ − ½ tr M₁²`. -/
 noncomputable def secondOrderLogDetJet (n : ℕ) : ℝ :=
@@ -568,7 +568,7 @@ theorem secondOrderLogDetJet_eq (n : ℕ) :
     secondOrderLogDetJet δ ε n =
       ∑ a, ε a * cosineModeDeterminantJet (δ a) n +
         (1 / 2) * (∑ a, ∑ b, (ε a * ε b) * bilinearDeterminantJet (δ a) (δ b) n +
-          ∑ a, ε a ^ 2 * cosineModeDeterminantJet (2 * δ a) n) := by
+          ∑ a, ε a ^ (2 : ℕ) * cosineModeDeterminantJet (2 * δ a) n) := by
   unfold secondOrderLogDetJet
   rw [trace_rayM₁, ← rayLogJet_eq]
   unfold quadLogJet
@@ -576,10 +576,10 @@ theorem secondOrderLogDetJet_eq (n : ℕ) :
 
 /-- The explicit third-order remainder bound. -/
 noncomputable def logDetRemainderBound (n : ℕ) : ℝ :=
-  remainderConst ((n : ℝ) + 1) (entrySize ε n) + ((n : ℝ) + 1) ^ 2 * weightRemainder ε +
-    (1 / 2) * (2 * (((n : ℝ) + 1) ^ 2 * (2 * sizeV ε)) *
-      (((n : ℝ) + 1) ^ 2 * (3 * sizeV ε ^ 2 + weightRemainder ε)) +
-      (((n : ℝ) + 1) ^ 2 * (3 * sizeV ε ^ 2 + weightRemainder ε)) ^ 2)
+  remainderConst ((n : ℝ) + 1) (entrySize ε n) + ((n : ℝ) + 1) ^ (2 : ℕ) * weightRemainder ε +
+    (1 / 2) * (2 * (((n : ℝ) + 1) ^ (2 : ℕ) * (2 * sizeV ε)) *
+      (((n : ℝ) + 1) ^ (2 : ℕ) * (3 * sizeV ε ^ (2 : ℕ) + weightRemainder ε)) +
+      (((n : ℝ) + 1) ^ (2 : ℕ) * (3 * sizeV ε ^ (2 : ℕ) + weightRemainder ε)) ^ (2 : ℕ))
 
 theorem eulerProductGram_eq_one_add (n : ℕ) :
     eulerProductGram δ ε n =
@@ -592,23 +592,23 @@ theorem eulerProductGram_eq_one_add (n : ℕ) :
 
 theorem entryNorm_discrepancy_le (hε0 : ∀ a, 0 ≤ ε a) (hε : ∀ a, ε a ≤ 1 / 6)
     (hV : ∑ a, ε a ≤ 1 / 4) (n : ℕ) :
-    entryNorm (eulerProductGram δ ε n - rayGram δ ε 1 n) ≤ ((n : ℝ) + 1) ^ 2 * weightRemainder ε := by
+    entryNorm (eulerProductGram δ ε n - rayGram δ ε 1 n) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) * weightRemainder ε := by
   have := entryNorm_le_of_abs_apply_le
     (fun i j => abs_eulerProductGram_sub_rayGram_le δ ε hε0 hε hV n i j)
   rwa [Fintype.card_fin, Nat.cast_succ] at this
 
 theorem entryNorm_rayM₁_le' (hε0 : ∀ a, 0 ≤ ε a) (n : ℕ) :
-    entryNorm (rayM₁ δ ε n) ≤ ((n : ℝ) + 1) ^ 2 * (2 * sizeV ε) := by
+    entryNorm (rayM₁ δ ε n) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) * (2 * sizeV ε) := by
   have h := entryNorm_rayM₁_le δ ε n
   have habs : ∑ a, |ε a| = sizeV ε := Finset.sum_congr rfl fun a _ => abs_of_nonneg (hε0 a)
   rw [habs] at h
   linarith
 
 theorem entryNorm_rayM₂_le' (hε0 : ∀ a, 0 ≤ ε a) (n : ℕ) :
-    entryNorm (rayM₂ δ ε n) ≤ ((n : ℝ) + 1) ^ 2 * (3 * sizeV ε ^ 2) := by
+    entryNorm (rayM₂ δ ε n) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) * (3 * sizeV ε ^ (2 : ℕ)) := by
   have h := entryNorm_rayM₂_le δ ε n
   have habs : ∑ a, |ε a| = sizeV ε := Finset.sum_congr rfl fun a _ => abs_of_nonneg (hε0 a)
-  have hsq : ∑ a, ε a ^ 2 ≤ sizeV ε ^ 2 := Finset.sum_sq_le_sq_sum_of_nonneg fun a _ => hε0 a
+  have hsq : ∑ a, ε a ^ (2 : ℕ) ≤ sizeV ε ^ (2 : ℕ) := Finset.sum_sq_le_sq_sum_of_nonneg fun a _ => hε0 a
   rw [habs] at h
   have := mul_le_mul_of_nonneg_left hsq (sq_nonneg ((n : ℝ) + 1))
   nlinarith
@@ -627,11 +627,11 @@ theorem entryNorm_eulerProductGram_sub_one_le (hε0 : ∀ a, 0 ≤ ε a) (hε : 
 theorem remainderConst_mono {d η₁ η₂ : ℝ} (hd : 0 ≤ d) (h0 : 0 ≤ η₁) (h : η₁ ≤ η₂) (h2 : η₂ < 1) :
     remainderConst d η₁ ≤ remainderConst d η₂ := by
   unfold remainderConst
-  have hden : 0 < (1 - η₂) ^ 2 := pow_pos (by linarith) 2
-  have hden2 : (1 - η₂) ^ 2 ≤ (1 - η₁) ^ 2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
+  have hden : 0 < (1 - η₂) ^ (2 : ℕ) := pow_pos (by linarith) 2
+  have hden2 : (1 - η₂) ^ (2 : ℕ) ≤ (1 - η₁) ^ (2 : ℕ) := pow_le_pow_left₀ (by linarith) (by linarith) 2
   have hη2 : 0 ≤ η₂ := h0.trans h
   have hdd : 0 ≤ d * (d + 1) := mul_nonneg hd (by linarith)
-  have hnum : d * (d + 1) * η₁ ^ 3 ≤ d * (d + 1) * η₂ ^ 3 :=
+  have hnum : d * (d + 1) * η₁ ^ (3 : ℕ) ≤ d * (d + 1) * η₂ ^ (3 : ℕ) :=
     mul_le_mul_of_nonneg_left (pow_le_pow_left₀ h0 h 3) hdd
   exact div_le_div₀ (mul_nonneg hdd (pow_nonneg hη2 3)) hnum hden hden2
 
@@ -663,7 +663,7 @@ theorem abs_log_det_eulerProductGram_sub_jet_le (hε0 : ∀ a, 0 ≤ ε a) (hε 
   have hm2 := entryNorm_rayM₂_le' δ ε hε0 n
   have hE := entryNorm_discrepancy_le δ ε hε0 hε hV n
   have hK : entryNorm (rayM₂ δ ε n + (eulerProductGram δ ε n - rayGram δ ε 1 n)) ≤
-      ((n : ℝ) + 1) ^ 2 * (3 * sizeV ε ^ 2 + weightRemainder ε) := by
+      ((n : ℝ) + 1) ^ (2 : ℕ) * (3 * sizeV ε ^ (2 : ℕ) + weightRemainder ε) := by
     refine (entryNorm_add_le _ _).trans ?_
     linarith
   have hrem : remainderConst ((n : ℝ) + 1) (entryNorm (rayM₁ δ ε n + rayM₂ δ ε n +
@@ -673,11 +673,11 @@ theorem abs_log_det_eulerProductGram_sub_jet_le (hε0 : ∀ a, 0 ≤ ε a) (hε 
   have hm1nn := entryNorm_nonneg (rayM₁ δ ε n)
   have hprod : entryNorm (rayM₁ δ ε n) *
       entryNorm (rayM₂ δ ε n + (eulerProductGram δ ε n - rayGram δ ε 1 n)) ≤
-      (((n : ℝ) + 1) ^ 2 * (2 * sizeV ε)) *
-        (((n : ℝ) + 1) ^ 2 * (3 * sizeV ε ^ 2 + weightRemainder ε)) :=
+      (((n : ℝ) + 1) ^ (2 : ℕ) * (2 * sizeV ε)) *
+        (((n : ℝ) + 1) ^ (2 : ℕ) * (3 * sizeV ε ^ (2 : ℕ) + weightRemainder ε)) :=
     mul_le_mul hm1 hK hKnn (by positivity)
-  have hsq : entryNorm (rayM₂ δ ε n + (eulerProductGram δ ε n - rayGram δ ε 1 n)) ^ 2 ≤
-      (((n : ℝ) + 1) ^ 2 * (3 * sizeV ε ^ 2 + weightRemainder ε)) ^ 2 :=
+  have hsq : entryNorm (rayM₂ δ ε n + (eulerProductGram δ ε n - rayGram δ ε 1 n)) ^ (2 : ℕ) ≤
+      (((n : ℝ) + 1) ^ (2 : ℕ) * (3 * sizeV ε ^ (2 : ℕ) + weightRemainder ε)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hKnn hK 2
   linarith
 
@@ -688,14 +688,14 @@ theorem abs_log_det_eulerProductGram_sub_jet_le (hε0 : ∀ a, 0 ≤ ε a) (hε 
 noncomputable def eulerProductSquaredRadius (n : ℕ) : ℝ :=
   archimedeanSquaredRadius (n + 1) *
     ((eulerProductGram δ ε n).det * (eulerProductGram δ ε (n + 2)).det /
-      (eulerProductGram δ ε (n + 1)).det ^ 2)
+      (eulerProductGram δ ε (n + 1)).det ^ (2 : ℕ))
 
 theorem entrySize_mono (hε0 : ∀ a, 0 ≤ ε a) {m n : ℕ} (h : m ≤ n) :
     entrySize ε m ≤ entrySize ε n := by
   unfold entrySize
   have hV0 : 0 ≤ sizeV ε := Finset.sum_nonneg fun a _ => hε0 a
   have hρ0 : 0 ≤ weightRemainder ε := weightRemainder_nonneg ε hε0
-  have hmn : ((m : ℝ) + 1) ^ 2 ≤ ((n : ℝ) + 1) ^ 2 :=
+  have hmn : ((m : ℝ) + 1) ^ (2 : ℕ) ≤ ((n : ℝ) + 1) ^ (2 : ℕ) :=
     pow_le_pow_left₀ (by positivity) (by exact_mod_cast Nat.succ_le_succ h) 2
   exact mul_le_mul_of_nonneg_right hmn (by positivity)
 

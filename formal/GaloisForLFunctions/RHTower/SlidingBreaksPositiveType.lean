@@ -65,9 +65,9 @@ theorem centred_is_positiveType (H : ℝ) : Real.cos (0 * H) * H = H := by
 /-- The Fejér weight is strictly positive away from the lattice `γ ∈ (2π/L)ℤ`, so the negative value
 above is attained for every shift whose reciprocal frequency avoids that lattice. -/
 theorem fejer_pos_of_sin_ne {L gam : ℝ} (hg : gam ≠ 0) (hs : Real.sin (L * gam / 2) ≠ 0) :
-    0 < 4 * Real.sin (L * gam / 2) ^ 2 / gam ^ 2 := by
-  have hg2 : (0 : ℝ) < gam ^ 2 := by positivity
-  have hs2 : 0 < Real.sin (L * gam / 2) ^ 2 := by positivity
+    0 < 4 * Real.sin (L * gam / 2) ^ (2 : ℕ) / gam ^ (2 : ℕ) := by
+  have hg2 : (0 : ℝ) < gam ^ (2 : ℕ) := by positivity
+  have hs2 : 0 < Real.sin (L * gam / 2) ^ (2 : ℕ) := by positivity
   positivity
 
 /-- **The trade-off.**  A shift is either zero — giving positive type but a single inequality — or

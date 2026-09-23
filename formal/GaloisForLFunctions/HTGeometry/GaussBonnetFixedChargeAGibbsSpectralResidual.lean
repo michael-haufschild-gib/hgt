@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.GaussBonnetFixedChargeAQuarticHarmonicJets
 /-!
 # An asymptotic spectral differential equation for actual Gibbs energy
 
-The operator D(D^2+4)(D^2+16) annihilates the critical profile.
+The operator D(D^(2 : ℕ)+4)(D^(2 : ℕ)+16) annihilates the critical profile.
 Applied to the actual aligned Gibbs potential, every derivative of
 its residual is uniformly o(d), where d is phase asymmetry. This
 transfers the two nonconstant critical frequencies to an observable
@@ -23,11 +23,11 @@ def egbFixedChargeAGibbsSpectralResidual (w φ τ l₁ l₂ : ℝ) (n : ℕ) (ψ
 theorem egbFixedChargeAGibbsSpectralResidual_error_decomposition (w φ τ l₁ l₂ : ℝ) (n : ℕ) (ψ : ℝ) :
     egbFixedChargeAGibbsSpectralResidual w φ τ l₁ l₂ n ψ / egbCoexistenceASymmetricRatio τ =
       (iteratedDeriv (n + 5) (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ -
-        iteratedDeriv (n + 5) (fun x : ℝ => cos x ^ 4) ψ) / egbCoexistenceASymmetricRatio τ +
+        iteratedDeriv (n + 5) (fun x : ℝ => cos x ^ (4 : ℕ)) ψ) / egbCoexistenceASymmetricRatio τ +
       20 * ((iteratedDeriv (n + 3) (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ -
-        iteratedDeriv (n + 3) (fun x : ℝ => cos x ^ 4) ψ) / egbCoexistenceASymmetricRatio τ) +
+        iteratedDeriv (n + 3) (fun x : ℝ => cos x ^ (4 : ℕ)) ψ) / egbCoexistenceASymmetricRatio τ) +
       64 * ((iteratedDeriv (n + 1) (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ -
-        iteratedDeriv (n + 1) (fun x : ℝ => cos x ^ 4) ψ) / egbCoexistenceASymmetricRatio τ) := by
+        iteratedDeriv (n + 1) (fun x : ℝ => cos x ^ (4 : ℕ)) ψ) / egbCoexistenceASymmetricRatio τ) := by
   have hr := egbFixedChargeAQuarticProfile_differential_recurrence n ψ
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   unfold egbFixedChargeAGibbsSpectralResidual
@@ -54,7 +54,7 @@ theorem egbFixedChargeAGibbsSpectralResidual_uniform_first_zero_limit (w φ l₁
   simp only [Real.dist_eq, zero_sub, abs_neg] at h₅ h₃ h₁ ⊢
   rw [egbFixedChargeAGibbsSpectralResidual_error_decomposition]
   let e := fun j : ℕ => (iteratedDeriv j (egbFixedChargeAPeakNormalizedGibbs w φ τ l₁ l₂) ψ -
-    iteratedDeriv j (fun x : ℝ => cos x ^ 4) ψ) / egbCoexistenceASymmetricRatio τ
+    iteratedDeriv j (fun x : ℝ => cos x ^ (4 : ℕ)) ψ) / egbCoexistenceASymmetricRatio τ
   change |e (n + 5) + 20 * e (n + 3) + 64 * e (n + 1)| < ε
   change |e (n + 5)| < ε / 85 at h₅
   change |e (n + 3)| < ε / 85 at h₃

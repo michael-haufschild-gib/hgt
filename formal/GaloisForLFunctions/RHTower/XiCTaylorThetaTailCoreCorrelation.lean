@@ -37,14 +37,14 @@ theorem hasDerivAt_thetaCuspTailSecondSection
 def thetaCuspTailSecondCoreAtomDerivative
     (d : ℕ) (z : ℂ) (x : ℝ) : ℂ :=
   -2 * z * thetaCuspTailSecondSection d z x -
-    (z ^ 2 + 1 / 4) * thetaCuspTailSecondSectionDerivative d z x
+    (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondSectionDerivative d z x
 
 theorem hasDerivAt_thetaCuspTailSecondCoreAtom
     (d : ℕ) (z : ℂ) (x : ℝ) :
     HasDerivAt (fun w : ℂ => thetaCuspTailSecondCoreAtom d w x)
       (thetaCuspTailSecondCoreAtomDerivative d z x) z := by
   unfold thetaCuspTailSecondCoreAtom thetaCuspTailSecondCoreAtomDerivative
-  have hquad : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
+  have hquad : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 1 / 4) (2 * z) z := by
     convert (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ) using 1
     all_goals try rfl
     all_goals ring
@@ -91,13 +91,13 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_coreAtomDerivative
       fun x : ℝ => (-2 * z) *
           ((thetaCuspTailSecondDensity x : ℂ) *
             thetaCuspTailSecondSection d z x) -
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           ((thetaCuspTailSecondDensity x : ℂ) *
             thetaCuspTailSecondSectionDerivative d z x) by
     funext x
     unfold thetaCuspTailSecondCoreAtomDerivative
     ring]
-  exact (hs.const_mul (-2 * z)).sub (hsd.const_mul (z ^ 2 + 1 / 4))
+  exact (hs.const_mul (-2 * z)).sub (hsd.const_mul (z ^ (2 : ℕ) + 1 / 4))
 
 def thetaCuspTailSecondAverageSectionDerivative
     (d : ℕ) (z : ℂ) : ℂ :=
@@ -111,13 +111,13 @@ theorem evenMagnitudeLift_thetaCuspTailEvenPolynomial_eval_sum
       ∑ k ∈ Finset.range (d + 1),
         (thetaCuspTailEvenCoefficient k : ℂ) * (-1 : ℂ) ^ k * z ^ (2 * k) := by
   rw [evenMagnitudeLift_eval, thetaCuspTailEvenPolynomial]
-  rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+  rw [show eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
       (∑ k ∈ Finset.range (d + 1),
         C (thetaCuspTailEvenCoefficient k) * X ^ k) =
       ∑ k ∈ Finset.range (d + 1),
-        eval₂ (algebraMap ℝ ℂ) (-z ^ 2)
+        eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))
           (C (thetaCuspTailEvenCoefficient k) * X ^ k) by
-    change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ 2))
+    change (Polynomial.eval₂RingHom (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)))
         (∑ k ∈ Finset.range (d + 1),
           C (thetaCuspTailEvenCoefficient k) * X ^ k) = _
     rw [map_sum]
@@ -226,12 +226,12 @@ theorem xiCTaylorThetaTailCorePolynomial_derivative_eval
     (xiCTaylorThetaTailCorePolynomial d).derivative.eval z =
       -2 * z *
           (evenMagnitudeLift (thetaCuspTailEvenPolynomial d)).eval z -
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           thetaCuspTailSecondAverageSectionDerivative d z := by
   let U : Polynomial ℂ := xiCTaylorThetaTailCorePolynomial d
   let A : Polynomial ℂ := evenMagnitudeLift (thetaCuspTailEvenPolynomial d)
   have hfun : (fun w : ℂ => U.eval w) = fun w : ℂ =>
-      1 / 2 - (w ^ 2 + 1 / 4) * A.eval w := by
+      1 / 2 - (w ^ (2 : ℕ) + 1 / 4) * A.eval w := by
     funext w
     dsimp only [U, A]
     rw [xiCTaylorThetaTailCorePolynomial, evenMagnitudeLift_eval,
@@ -239,21 +239,21 @@ theorem xiCTaylorThetaTailCorePolynomial_derivative_eval
     simp only [eval₂_add, eval₂_C, eval₂_mul, eval₂_sub, eval₂_X]
     push_cast
     ring
-  have hquad : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
+  have hquad : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 1 / 4) (2 * z) z := by
     convert (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ) using 1
     all_goals try rfl
     all_goals ring
   have hformula : HasDerivAt (fun w : ℂ =>
-      1 / 2 - (w ^ 2 + 1 / 4) * A.eval w)
+      1 / 2 - (w ^ (2 : ℕ) + 1 / 4) * A.eval w)
       (-2 * z * A.eval z -
-        (z ^ 2 + 1 / 4) * A.derivative.eval z) z := by
+        (z ^ (2 : ℕ) + 1 / 4) * A.derivative.eval z) z := by
     convert (hasDerivAt_const z (1 / 2 : ℂ)).sub
       (hquad.mul (A.hasDerivAt z)) using 1
     all_goals try rfl
     all_goals ring
   have hU : HasDerivAt (fun w : ℂ => U.eval w)
       (-2 * z * A.eval z -
-        (z ^ 2 + 1 / 4) * A.derivative.eval z) z := by
+        (z ^ (2 : ℕ) + 1 / 4) * A.derivative.eval z) z := by
     rw [hfun]
     exact hformula
   have hunique := (U.hasDerivAt z).unique hU
@@ -279,14 +279,14 @@ theorem xiCTaylorThetaTailCorePolynomial_derivative_eval_eq_second_integral
       fun x : ℝ => (-2 * z) *
           ((thetaCuspTailSecondDensity x : ℂ) *
             thetaCuspTailSecondSection d z x) -
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           ((thetaCuspTailSecondDensity x : ℂ) *
             thetaCuspTailSecondSectionDerivative d z x) by
     funext x
     unfold thetaCuspTailSecondCoreAtomDerivative
     ring]
   rw [integral_sub (hintS.const_mul (-2 * z))
-      (hintSd.const_mul (z ^ 2 + 1 / 4)),
+      (hintSd.const_mul (z ^ (2 : ℕ) + 1 / 4)),
     integral_const_mul, integral_const_mul]
   rw [hS, hSd]
   ring
@@ -301,13 +301,13 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_coreAtom
   rw [show (fun x : ℝ => (thetaCuspTailSecondDensity x : ℂ) *
       thetaCuspTailSecondCoreAtom d z x) =
       fun x : ℝ => (thetaCuspTailSecondDensity x : ℂ) -
-        (z ^ 2 + 1 / 4) *
+        (z ^ (2 : ℕ) + 1 / 4) *
           ((thetaCuspTailSecondDensity x : ℂ) *
             thetaCuspTailSecondSection d z x) by
     funext x
     unfold thetaCuspTailSecondCoreAtom
     ring]
-  exact hmass.sub (hsection.const_mul (z ^ 2 + 1 / 4))
+  exact hmass.sub (hsection.const_mul (z ^ (2 : ℕ) + 1 / 4))
 
 def xiCTaylorThetaTailCoreCorrelationKernel
     (d : ℕ) (z : ℂ) (p : ℝ × ℝ) : ℝ :=

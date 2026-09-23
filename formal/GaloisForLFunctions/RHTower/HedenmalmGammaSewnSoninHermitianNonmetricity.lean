@@ -8,7 +8,7 @@ Full-quotient flatness kills every two-path curvature before zero specialization
 cannot orient an off-line Xi conormal.  The surviving invariant is instead the Hermitian trace
 excess of the two reciprocal Sonin edges.  For the Route N Kadison defect `D_t(p)` define
 
-`M_t(p) = D_t(p)^2 / (1 - D_t(p))`.
+`M_t(p) = D_t(p)^(2 : ℕ) / (1 - D_t(p))`.
 
 The defect--escape conservation law gives
 

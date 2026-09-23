@@ -75,20 +75,20 @@ theorem prod_one_add_sub_prod_one_sub_eq_two_oddSubsetProductSum
 
 /-- Critical transverse coordinate for one local Euler radius and phase. -/
 def criticalEulerTransverseCoordinate (radius phase : ℝ) : ℝ :=
-  2 * radius * Real.cos phase / (1 + radius ^ 2)
+  2 * radius * Real.cos phase / (1 + radius ^ (2 : ℕ))
 
 /-- Exact plus local norm-square factorization. -/
 theorem normSq_one_add_radius_exp_eq
     (radius phase : ℝ) :
     Complex.normSq
         (1 + (radius : ℂ) * Complex.exp ((phase : ℂ) * Complex.I)) =
-      (1 + radius ^ 2) *
+      (1 + radius ^ (2 : ℕ)) *
         (1 + criticalEulerTransverseCoordinate radius phase) := by
   rw [Complex.normSq_add, Complex.normSq_mul, Complex.normSq_ofReal]
   simp [Complex.normSq_eq_norm_sq, Complex.norm_exp,
     Complex.exp_ofReal_mul_I_re]
   unfold criticalEulerTransverseCoordinate
-  have hden : 0 < 1 + radius ^ 2 := by positivity
+  have hden : 0 < 1 + radius ^ (2 : ℕ) := by positivity
   field_simp
 
 /-- Exact minus local norm-square factorization. -/
@@ -96,13 +96,13 @@ theorem normSq_one_sub_radius_exp_eq
     (radius phase : ℝ) :
     Complex.normSq
         (1 - (radius : ℂ) * Complex.exp ((phase : ℂ) * Complex.I)) =
-      (1 + radius ^ 2) *
+      (1 + radius ^ (2 : ℕ)) *
         (1 - criticalEulerTransverseCoordinate radius phase) := by
   rw [Complex.normSq_sub, Complex.normSq_mul, Complex.normSq_ofReal]
   simp [Complex.normSq_eq_norm_sq, Complex.norm_exp,
     Complex.exp_ofReal_mul_I_re]
   unfold criticalEulerTransverseCoordinate
-  have hden : 0 < 1 + radius ^ 2 := by positivity
+  have hden : 0 < 1 + radius ^ (2 : ℕ) := by positivity
   field_simp
 
 /-- Exact finite Euler determinant factorization into baseline mass and transverse cube. -/
@@ -114,7 +114,7 @@ theorem prod_normSq_plus_sub_prod_normSq_minus_eq
       (∏ i ∈ s,
         Complex.normSq
           (1 - (radius i : ℂ) * Complex.exp ((phase i : ℂ) * Complex.I))) =
-      (∏ i ∈ s, (1 + radius i ^ 2)) *
+      (∏ i ∈ s, (1 + radius i ^ (2 : ℕ))) *
         ((∏ i ∈ s, (1 + criticalEulerTransverseCoordinate (radius i) (phase i))) -
           ∏ i ∈ s, (1 - criticalEulerTransverseCoordinate (radius i) (phase i))) := by
   simp_rw [normSq_one_add_radius_exp_eq, normSq_one_sub_radius_exp_eq,
@@ -130,7 +130,7 @@ theorem prod_normSq_plus_sub_prod_normSq_minus_eq_oddCube
       (∏ i ∈ s,
         Complex.normSq
           (1 - (radius i : ℂ) * Complex.exp ((phase i : ℂ) * Complex.I))) =
-      2 * (∏ i ∈ s, (1 + radius i ^ 2)) *
+      2 * (∏ i ∈ s, (1 + radius i ^ (2 : ℕ))) *
         oddSubsetProductSum s
           (fun i => criticalEulerTransverseCoordinate (radius i) (phase i)) := by
   rw [prod_normSq_plus_sub_prod_normSq_minus_eq]
@@ -139,8 +139,8 @@ theorem prod_normSq_plus_sub_prod_normSq_minus_eq_oddCube
 
 private theorem sqrt_one_sub_sq_mul_exp_artanh_eq_one_add
     {u : ℝ} (hu : u ∈ Set.Ioo (-1) 1) :
-    √(1 - u ^ 2) * Real.exp (Real.artanh u) = 1 + u := by
-  have hsqrt : √(1 - u ^ 2) ≠ 0 := by
+    √(1 - u ^ (2 : ℕ)) * Real.exp (Real.artanh u) = 1 + u := by
+  have hsqrt : √(1 - u ^ (2 : ℕ)) ≠ 0 := by
     rw [Real.sqrt_ne_zero']
     have hprod : 0 < (1 + u) * (1 - u) :=
       mul_pos (by linarith [hu.1]) (by linarith [hu.2])
@@ -154,8 +154,8 @@ private theorem sqrt_one_sub_sq_mul_exp_artanh_eq_one_add
 
 private theorem sqrt_one_sub_sq_mul_exp_neg_artanh_eq_one_sub
     {u : ℝ} (hu : u ∈ Set.Ioo (-1) 1) :
-    √(1 - u ^ 2) * Real.exp (-Real.artanh u) = 1 - u := by
-  have hsqrt : √(1 - u ^ 2) ≠ 0 := by
+    √(1 - u ^ (2 : ℕ)) * Real.exp (-Real.artanh u) = 1 - u := by
+  have hsqrt : √(1 - u ^ (2 : ℕ)) ≠ 0 := by
     rw [Real.sqrt_ne_zero']
     have hprod : 0 < (1 + u) * (1 - u) :=
       mul_pos (by linarith [hu.1]) (by linarith [hu.2])
@@ -173,38 +173,38 @@ theorem prod_one_add_sub_prod_one_sub_eq_rapidity
     {ι : Type*} (s : Finset ι) (u : ι → ℝ)
     (hu : ∀ i ∈ s, u i ∈ Set.Ioo (-1) 1) :
     (∏ i ∈ s, (1 + u i)) - (∏ i ∈ s, (1 - u i)) =
-      2 * (∏ i ∈ s, √(1 - u i ^ 2)) *
+      2 * (∏ i ∈ s, √(1 - u i ^ (2 : ℕ))) *
         Real.sinh (∑ i ∈ s, Real.artanh (u i)) := by
   have hplus :
       (∏ i ∈ s, (1 + u i)) =
-        (∏ i ∈ s, √(1 - u i ^ 2)) *
+        (∏ i ∈ s, √(1 - u i ^ (2 : ℕ))) *
           Real.exp (∑ i ∈ s, Real.artanh (u i)) := by
     calc
       ∏ i ∈ s, (1 + u i) =
           ∏ i ∈ s,
-            (√(1 - u i ^ 2) * Real.exp (Real.artanh (u i))) := by
+            (√(1 - u i ^ (2 : ℕ)) * Real.exp (Real.artanh (u i))) := by
         apply Finset.prod_congr rfl
         intro i hi
         exact (sqrt_one_sub_sq_mul_exp_artanh_eq_one_add (hu i hi)).symm
-      _ = (∏ i ∈ s, √(1 - u i ^ 2)) *
+      _ = (∏ i ∈ s, √(1 - u i ^ (2 : ℕ))) *
           ∏ i ∈ s, Real.exp (Real.artanh (u i)) := Finset.prod_mul_distrib
-      _ = (∏ i ∈ s, √(1 - u i ^ 2)) *
+      _ = (∏ i ∈ s, √(1 - u i ^ (2 : ℕ))) *
           Real.exp (∑ i ∈ s, Real.artanh (u i)) := by
         rw [Real.exp_sum]
   have hminus :
       (∏ i ∈ s, (1 - u i)) =
-        (∏ i ∈ s, √(1 - u i ^ 2)) *
+        (∏ i ∈ s, √(1 - u i ^ (2 : ℕ))) *
           Real.exp (-(∑ i ∈ s, Real.artanh (u i))) := by
     calc
       ∏ i ∈ s, (1 - u i) =
           ∏ i ∈ s,
-            (√(1 - u i ^ 2) * Real.exp (-Real.artanh (u i))) := by
+            (√(1 - u i ^ (2 : ℕ)) * Real.exp (-Real.artanh (u i))) := by
         apply Finset.prod_congr rfl
         intro i hi
         exact (sqrt_one_sub_sq_mul_exp_neg_artanh_eq_one_sub (hu i hi)).symm
-      _ = (∏ i ∈ s, √(1 - u i ^ 2)) *
+      _ = (∏ i ∈ s, √(1 - u i ^ (2 : ℕ))) *
           ∏ i ∈ s, Real.exp (-Real.artanh (u i)) := Finset.prod_mul_distrib
-      _ = (∏ i ∈ s, √(1 - u i ^ 2)) *
+      _ = (∏ i ∈ s, √(1 - u i ^ (2 : ℕ))) *
           Real.exp (-(∑ i ∈ s, Real.artanh (u i))) := by
         congr 1
         rw [← Real.exp_sum, Finset.sum_neg_distrib]
@@ -218,7 +218,7 @@ theorem prod_one_add_eq_prod_one_sub_iff_rapidity_eq_zero
     (∏ i ∈ s, (1 + u i)) = (∏ i ∈ s, (1 - u i)) ↔
       ∑ i ∈ s, Real.artanh (u i) = 0 := by
   have hroot :
-      0 < ∏ i ∈ s, √(1 - u i ^ 2) := by
+      0 < ∏ i ∈ s, √(1 - u i ^ (2 : ℕ)) := by
     apply Finset.prod_pos
     intro i hi
     apply Real.sqrt_pos.2

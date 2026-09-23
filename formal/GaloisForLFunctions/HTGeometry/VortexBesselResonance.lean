@@ -70,7 +70,7 @@ coefficient: degree-zero normalization alone cannot determine the solution there
 theorem vortexBessel_resonant_zero_initial_solution (u : ℝ) (m : ℕ) :
     ∃ F : PowerSeries ℂ, F ≠ 0 ∧ coeff 0 F = 0 ∧
       vortexWard (fun n => (n : ℂ) * ((n : ℂ) - ((m + 1 : ℕ) : ℂ)))
-        (fun _ => (Real.exp u : ℂ) ^ 2) F = 0 := by
+        (fun _ => (Real.exp u : ℂ) ^ (2 : ℕ)) F = 0 := by
   refine ⟨vortexBesselSeries (Real.exp u) (-((m + 1 : ℕ) : ℂ)), ?_, ?_, ?_⟩
   · intro hzero
     have hc := congrArg (coeff (m + 1)) hzero

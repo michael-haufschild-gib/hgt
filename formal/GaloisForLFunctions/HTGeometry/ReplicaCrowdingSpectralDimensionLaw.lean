@@ -348,7 +348,7 @@ theorem norm_twistedGaussianSpectralFidelityMean_le_collision_add_rank_floor
       fidelityReplicaCollisionMass weight energy n +
         (((2 * n + 1) ^ replicaNearActionRank energy n δ : ℕ) : ℝ) *
           fidelityReplicaPermutationFloor weight n +
-        Real.exp (-((T * δ) ^ 2) / 2) := by
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
   have hdegreeNat := replicaActionCrowdingDegree_le_pow_rank energy n δ
   have hdegree : (replicaActionCrowdingDegree energy n δ : ℝ) ≤
       (((2 * n + 1) ^ replicaNearActionRank energy n δ : ℕ) : ℝ) := by
@@ -392,7 +392,7 @@ theorem threshold_pow_mul_gaussianTwistedCoherenceCaptureSet_measureReal_le_rank
       fidelityReplicaCollisionMass weight energy n +
         (((2 * n + 1) ^ replicaNearActionRank energy n δ : ℕ) : ℝ) *
           fidelityReplicaPermutationFloor weight n +
-        Real.exp (-((T * δ) ^ 2) / 2) := by
+        Real.exp (-((T * δ) ^ (2 : ℕ)) / 2) := by
   exact (threshold_pow_mul_gaussianTwistedCoherenceCaptureSet_measureReal_le_norm
       hweight hweightSum htwist n hn hthreshold).trans
     (norm_twistedGaussianSpectralFidelityMean_le_collision_add_rank_floor

@@ -48,7 +48,7 @@ theorem egbFixedChargeA_large_reference_log_cold_limit (w φ l : ℝ) :
 
 theorem egbFixedChargeA_large_entropy_area_formula (w φ τ l : ℝ) :
     egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) /
-      (Real.pi * egbFixedChargeALargeRadius w φ τ ^ 2) =
+      (Real.pi * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) =
         1 + 4 * (egbFixedChargeACouplingWeight τ φ * (log (egbFixedChargeALargeRadius w φ τ) - l)) := by
   have hR := egbFixedChargeALargeRadius_pos w φ τ
   unfold egbEntropyA
@@ -57,7 +57,7 @@ theorem egbFixedChargeA_large_entropy_area_formula (w φ τ l : ℝ) :
 
 theorem egbFixedChargeA_large_entropy_area_cold_limit (w φ l : ℝ) :
     Tendsto (fun τ => egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) /
-      (Real.pi * egbFixedChargeALargeRadius w φ τ ^ 2)) atTop (𝓝 1) := by
+      (Real.pi * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ))) atTop (𝓝 1) := by
   simp only [egbFixedChargeA_large_entropy_area_formula]
   have h : Tendsto (fun τ => 1 + 4 * (egbFixedChargeACouplingWeight τ φ * (log (egbFixedChargeALargeRadius w φ τ) - l)))
       atTop (𝓝 ((1 : ℝ) + 4 * 0)) :=
@@ -67,11 +67,11 @@ theorem egbFixedChargeA_large_entropy_area_cold_limit (w φ l : ℝ) :
 
 theorem egbFixedChargeA_large_entropy_radius_square_cold_limit (w φ l : ℝ) :
     Tendsto (fun τ => egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) /
-      egbFixedChargeALargeRadius w φ τ ^ 2) atTop (𝓝 Real.pi) := by
+      egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) atTop (𝓝 Real.pi) := by
   have h := (egbFixedChargeA_large_entropy_area_cold_limit w φ l).mul (tendsto_const_nhds (x := Real.pi))
   have he : (fun τ => (egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) /
-      (Real.pi * egbFixedChargeALargeRadius w φ τ ^ 2)) * Real.pi) =
-      (fun τ => egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) / egbFixedChargeALargeRadius w φ τ ^ 2) := by
+      (Real.pi * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ))) * Real.pi) =
+      (fun τ => egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) / egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) := by
     funext τ
     field_simp
   rw [he] at h
@@ -82,7 +82,7 @@ theorem egbFixedChargeA_large_entropy_cold_limit (w φ l : ℝ) :
   have h := Filter.Tendsto.pos_mul_atTop Real.pi_pos (egbFixedChargeA_large_entropy_radius_square_cold_limit w φ l)
     (egbFixedChargeALargeRadius_square_cold_limit w φ)
   have he : (fun τ => (egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) /
-      egbFixedChargeALargeRadius w φ τ ^ 2) * egbFixedChargeALargeRadius w φ τ ^ 2) =
+      egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) * egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) =
       (fun τ => egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ)) := by
     funext τ
     have hR := egbFixedChargeALargeRadius_pos w φ τ
@@ -127,7 +127,7 @@ theorem egbFixedChargeA_large_thermal_entropy_radius_formula (w φ τ l : ℝ) :
     egbFixedChargeATemperature w φ τ * egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) /
       egbFixedChargeALargeRadius w φ τ =
     (egbFixedChargeATemperature w φ τ * egbFixedChargeALargeRadius w φ τ) *
-      (egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) / egbFixedChargeALargeRadius w φ τ ^ 2) := by
+      (egbEntropyA (exp w * sin φ) l (egbFixedChargeALargeRadius w φ τ) / egbFixedChargeALargeRadius w φ τ ^ (2 : ℕ)) := by
   have hR := egbFixedChargeALargeRadius_pos w φ τ
   field_simp <;> ring
 

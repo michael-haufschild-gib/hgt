@@ -74,12 +74,12 @@ theorem pwLogShiftedSourceMode_classification (z : ℂ) (f : ℝ → ℂ) :
 
 /-- Exact source-square density of every shifted mode and every amplitude. -/
 theorem pwLogShiftedSourceMode_energy_density (z c : ℂ) (t : ℝ) :
-    pwLogGammaSourceDensity t * ‖c * pwLogShiftedSourceMode z t‖ ^ 2 =
-      ‖c‖ ^ 2 * Real.exp (-2 * Real.cosh t + 2 * z.re * t) := by
+    pwLogGammaSourceDensity t * ‖c * pwLogShiftedSourceMode z t‖ ^ (2 : ℕ) =
+      ‖c‖ ^ (2 : ℕ) * Real.exp (-2 * Real.cosh t + 2 * z.re * t) := by
   rw [norm_mul, mul_pow]
   calc
-    pwLogGammaSourceDensity t * (‖c‖ ^ 2 * ‖pwLogShiftedSourceMode z t‖ ^ 2) =
-        ‖c‖ ^ 2 * (pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode z t‖ ^ 2) := by ring
+    pwLogGammaSourceDensity t * (‖c‖ ^ (2 : ℕ) * ‖pwLogShiftedSourceMode z t‖ ^ (2 : ℕ)) =
+        ‖c‖ ^ (2 : ℕ) * (pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode z t‖ ^ (2 : ℕ)) := by ring
     _ = _ := by
       congr 1
       unfold pwLogGammaSourceDensity pwLogShiftedSourceMode expShift
@@ -116,13 +116,13 @@ theorem pwLogGammaSourceCore_all_exponential_moments (b : ℝ) :
     nlinarith
 
 theorem pwLogShiftedSourceMode_energy_integrable (z c : ℂ) :
-    Integrable (fun t => pwLogGammaSourceDensity t * ‖c * pwLogShiftedSourceMode z t‖ ^ 2) := by
+    Integrable (fun t => pwLogGammaSourceDensity t * ‖c * pwLogShiftedSourceMode z t‖ ^ (2 : ℕ)) := by
   simp only [pwLogShiftedSourceMode_energy_density]
   exact (pwLogGammaSourceCore_all_exponential_moments (2 * z.re)).const_mul _
 
 theorem pwLogShiftedSourceMode_energy_pos (z : ℂ) :
-    0 < ∫ t, pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode z t‖ ^ 2 := by
-  have he (t : ℝ) : pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode z t‖ ^ 2 =
+    0 < ∫ t, pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode z t‖ ^ (2 : ℕ) := by
+  have he (t : ℝ) : pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode z t‖ ^ (2 : ℕ) =
       Real.exp (-2 * Real.cosh t + 2 * z.re * t) := by
     simpa only [one_mul, norm_one, one_pow] using pwLogShiftedSourceMode_energy_density z 1 t
   simp only [he]
@@ -140,10 +140,10 @@ theorem pwLogSingularComplexReflection_shiftedMode (z : ℂ) :
 
 /-- The reflected pair has equal finite total source energy at every shift. -/
 theorem pwLogShiftedSourceMode_reflected_energy (z : ℂ) :
-    (∫ t, pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode (-z) t‖ ^ 2) =
-      ∫ t, pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode z t‖ ^ 2 := by
+    (∫ t, pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode (-z) t‖ ^ (2 : ℕ)) =
+      ∫ t, pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode z t‖ ^ (2 : ℕ) := by
   have he (v : ℂ) (t : ℝ) :
-      pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode v t‖ ^ 2 =
+      pwLogGammaSourceDensity t * ‖pwLogShiftedSourceMode v t‖ ^ (2 : ℕ) =
         Real.exp (-2 * Real.cosh t + 2 * v.re * t) := by
     simpa only [one_mul, norm_one, one_pow] using pwLogShiftedSourceMode_energy_density v 1 t
   simp only [he]
@@ -160,10 +160,10 @@ theorem pwLogGammaSource_every_complex_shift_admitted :
     ∀ z : ℂ, ∃ f : ℝ → ℂ,
       f 0 = 1 ∧ (∀ t, f t ≠ 0) ∧
       (∀ t, HasDerivAt f (((pwLogSingularConnectionPotential t : ℂ) + z) * f t) t) ∧
-      Integrable (fun t => pwLogGammaSourceDensity t * ‖f t‖ ^ 2) ∧
-      Integrable (fun t => pwLogGammaSourceDensity t * ‖z * f t‖ ^ 2) ∧
-      (0 < ∫ t, pwLogGammaSourceDensity t * ‖f t‖ ^ 2) ∧
-      (∀ t, pwLogGammaSourceDensity t * ‖f t‖ ^ 2 =
+      Integrable (fun t => pwLogGammaSourceDensity t * ‖f t‖ ^ (2 : ℕ)) ∧
+      Integrable (fun t => pwLogGammaSourceDensity t * ‖z * f t‖ ^ (2 : ℕ)) ∧
+      (0 < ∫ t, pwLogGammaSourceDensity t * ‖f t‖ ^ (2 : ℕ)) ∧
+      (∀ t, pwLogGammaSourceDensity t * ‖f t‖ ^ (2 : ℕ) =
         Real.exp (-2 * Real.cosh t + 2 * z.re * t)) := by
   intro z
   refine ⟨pwLogShiftedSourceMode z, pwLogShiftedSourceMode_zero z,

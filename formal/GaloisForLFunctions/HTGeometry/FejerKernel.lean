@@ -23,7 +23,7 @@ namespace HTGeometry
 def fejerSum (N : ℕ) (θ : ℝ) : ℂ := ∑ n ∈ Finset.range (N + 1), Complex.exp ((n : ℂ) * θ * I)
 
 /-- The Fejér kernel. -/
-def fejerKernel (N : ℕ) (θ : ℝ) : ℝ := ‖fejerSum N θ‖ ^ 2 / (N + 1)
+def fejerKernel (N : ℕ) (θ : ℝ) : ℝ := ‖fejerSum N θ‖ ^ (2 : ℕ) / (N + 1)
 
 theorem fejerKernel_nonneg (N : ℕ) (θ : ℝ) : 0 ≤ fejerKernel N θ := by
   rw [fejerKernel]
@@ -34,7 +34,7 @@ theorem fejerKernel_eq_double_sum (N : ℕ) (θ : ℝ) :
     ((fejerKernel N θ : ℝ) : ℂ)
       = (((N : ℝ) + 1)⁻¹ : ℂ) * ∑ n ∈ Finset.range (N + 1), ∑ m ∈ Finset.range (N + 1),
           Complex.exp (((n : ℂ) - (m : ℂ)) * θ * I) := by
-  have hsq : ((‖fejerSum N θ‖ : ℂ)) ^ 2 = fejerSum N θ * (starRingEnd ℂ) (fejerSum N θ) :=
+  have hsq : ((‖fejerSum N θ‖ : ℂ)) ^ (2 : ℕ) = fejerSum N θ * (starRingEnd ℂ) (fejerSum N θ) :=
     (Complex.mul_conj' _).symm
   rw [fejerKernel]
   push_cast
@@ -48,7 +48,7 @@ theorem fejerKernel_eq_double_sum (N : ℕ) (θ : ℝ) :
   ring
 
 theorem normSq_exp_mul_I_sub_one (θ : ℝ) :
-    ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ 2 = 2 - 2 * Real.cos θ := by
+    ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ (2 : ℕ) = 2 - 2 * Real.cos θ := by
   have h : Complex.exp ((θ : ℂ) * I) - 1
       = ((Real.cos θ - 1 : ℝ) : ℂ) + ((Real.sin θ : ℝ) : ℂ) * I := by
     rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
@@ -78,27 +78,27 @@ theorem fejerKernel_le {N : ℕ} {θ : ℝ} (hθ : Complex.exp ((θ : ℂ) * I) 
   have hbound : ‖fejerSum N θ‖ ≤ 2 / ‖Complex.exp ((θ : ℂ) * I) - 1‖ := by
     rw [hgeom, norm_div]
     exact div_le_div_of_nonneg_right hnum hnormpos.le
-  have hcos : 2 - 2 * Real.cos θ = ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ 2 :=
+  have hcos : 2 - 2 * Real.cos θ = ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ (2 : ℕ) :=
     (normSq_exp_mul_I_sub_one θ).symm
   have hcospos : 0 < 1 - Real.cos θ := by
     have := normSq_exp_mul_I_sub_one θ
     nlinarith [hnormpos]
   rw [fejerKernel]
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
-  have hsq : ‖fejerSum N θ‖ ^ 2 ≤ 4 / ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ 2 := by
-    have h1 : ‖fejerSum N θ‖ ^ 2 ≤ (2 / ‖Complex.exp ((θ : ℂ) * I) - 1‖) ^ 2 := by
+  have hsq : ‖fejerSum N θ‖ ^ (2 : ℕ) ≤ 4 / ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ (2 : ℕ) := by
+    have h1 : ‖fejerSum N θ‖ ^ (2 : ℕ) ≤ (2 / ‖Complex.exp ((θ : ℂ) * I) - 1‖) ^ (2 : ℕ) := by
       nlinarith [hbound, norm_nonneg (fejerSum N θ), hnormpos]
-    calc ‖fejerSum N θ‖ ^ 2 ≤ (2 / ‖Complex.exp ((θ : ℂ) * I) - 1‖) ^ 2 := h1
-      _ = 4 / ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ 2 := by
+    calc ‖fejerSum N θ‖ ^ (2 : ℕ) ≤ (2 / ‖Complex.exp ((θ : ℂ) * I) - 1‖) ^ (2 : ℕ) := h1
+      _ = 4 / ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ (2 : ℕ) := by
           rw [div_pow]
           norm_num
-  have hden : ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ 2 = 2 * (1 - Real.cos θ) := by
+  have hden : ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ (2 : ℕ) = 2 * (1 - Real.cos θ) := by
     rw [normSq_exp_mul_I_sub_one]
     ring
   rw [hden] at hsq
   have hNn : (0 : ℝ) < (N : ℝ) + 1 := by positivity
   rw [le_div_iff₀ (by positivity)] at hsq
-  have hkey : ‖fejerSum N θ‖ ^ 2 * (1 - Real.cos θ) ≤ 2 := by nlinarith [hsq]
+  have hkey : ‖fejerSum N θ‖ ^ (2 : ℕ) * (1 - Real.cos θ) ≤ 2 := by nlinarith [hsq]
   nlinarith [hkey, hNn, sq_nonneg (‖fejerSum N θ‖)]
 
 theorem continuous_fejerSum (N : ℕ) : Continuous (fejerSum N) := by

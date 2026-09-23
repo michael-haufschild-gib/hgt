@@ -75,11 +75,11 @@ theorem not_exists_unitary_transport {D₁ N₁ : H₁ →L[ℂ] H₁}
 
 /-- The formal prolate operator `-D² + λ² N`. -/
 def prolateOp (D N : H₁ →L[ℂ] H₁) (lam : ℂ) : H₁ →L[ℂ] H₁ :=
-  -(D.comp D) + (lam ^ 2) • N
+  -(D.comp D) + (lam ^ (2 : ℕ)) • N
 
 /-- Two distinct prolate parameters recover the number-operator intertwining. -/
 theorem number_transport_of_two_prolate {D₁ N₁ : H₁ →L[ℂ] H₁} {D₂ N₂ : H₂ →L[ℂ] H₂}
-    {lam mu : ℂ} (hne : lam ^ 2 ≠ mu ^ 2) (U : H₁ ≃ₗᵢ[ℂ] H₂)
+    {lam mu : ℂ} (hne : lam ^ (2 : ℕ) ≠ mu ^ (2 : ℕ)) (U : H₁ ≃ₗᵢ[ℂ] H₂)
     (hlam : ∀ v, U (prolateOp D₁ N₁ lam v) = prolateOp D₂ N₂ lam (U v))
     (hmu : ∀ v, U (prolateOp D₁ N₁ mu v) = prolateOp D₂ N₂ mu (U v)) :
     (∀ v, U (N₁ v) = N₂ (U v)) ∧ (∀ v, U (D₁ (D₁ v)) = D₂ (D₂ (U v))) := by
@@ -90,7 +90,7 @@ theorem number_transport_of_two_prolate {D₁ N₁ : H₁ →L[ℂ] H₁} {D₂ 
     simp only [prolateOp, add_apply, neg_apply,
       smul_apply, ContinuousLinearMap.comp_apply] at h1 h2
     rw [map_add, map_neg, map_smul] at h1 h2
-    have key : (lam ^ 2 - mu ^ 2) • U (N₁ v) = (lam ^ 2 - mu ^ 2) • N₂ (U v) := by
+    have key : (lam ^ (2 : ℕ) - mu ^ (2 : ℕ)) • U (N₁ v) = (lam ^ (2 : ℕ) - mu ^ (2 : ℕ)) • N₂ (U v) := by
       rw [sub_smul, sub_smul]
       linear_combination (norm := module) h1 - h2
     exact smul_right_injective _ (sub_ne_zero.mpr hne) key
@@ -109,7 +109,7 @@ theorem norm_scaling_ground_eq_of_unitary_prolate_transport {D₁ N₁ : H₁ �
     (hsa₁ : ∀ x y : H₁, ⟪D₁ x, y⟫_ℂ = ⟪x, D₁ y⟫_ℂ)
     (hsa₂ : ∀ x y : H₂, ⟪D₂ x, y⟫_ℂ = ⟪x, D₂ y⟫_ℂ)
     (hker : ∀ v : H₂, N₂ v = 0 → ∃ c : ℂ, v = c • p₂)
-    (hne : lam ^ 2 ≠ mu ^ 2) (U : H₁ ≃ₗᵢ[ℂ] H₂)
+    (hne : lam ^ (2 : ℕ) ≠ mu ^ (2 : ℕ)) (U : H₁ ≃ₗᵢ[ℂ] H₂)
     (hlam : ∀ v, U (prolateOp D₁ N₁ lam v) = prolateOp D₂ N₂ lam (U v))
     (hmu : ∀ v, U (prolateOp D₁ N₁ mu v) = prolateOp D₂ N₂ mu (U v)) :
     ‖D₁ p₁‖ = ‖D₂ p₂‖ := by
@@ -122,14 +122,14 @@ theorem norm_scaling_ground_eq_of_unitary_prolate_transport {D₁ N₁ : H₁ �
     have h1 : (⟪p₁, D₁ (D₁ p₁)⟫_ℂ) = ⟪U p₁, U (D₁ (D₁ p₁))⟫_ℂ := (U.inner_map_map _ _).symm
     rw [h1, hDD p₁, hc, map_smul, map_smul, inner_smul_left, inner_smul_right,
       ← mul_assoc, hcc, one_mul]
-  have e₁ : (⟪p₁, D₁ (D₁ p₁)⟫_ℂ) = (‖D₁ p₁‖ : ℂ) ^ 2 := by
+  have e₁ : (⟪p₁, D₁ (D₁ p₁)⟫_ℂ) = (‖D₁ p₁‖ : ℂ) ^ (2 : ℕ) := by
     rw [← hsa₁ p₁ (D₁ p₁), inner_self_eq_norm_sq_to_K]
     norm_cast
-  have e₂ : (⟪p₂, D₂ (D₂ p₂)⟫_ℂ) = (‖D₂ p₂‖ : ℂ) ^ 2 := by
+  have e₂ : (⟪p₂, D₂ (D₂ p₂)⟫_ℂ) = (‖D₂ p₂‖ : ℂ) ^ (2 : ℕ) := by
     rw [← hsa₂ p₂ (D₂ p₂), inner_self_eq_norm_sq_to_K]
     norm_cast
   rw [e₁, e₂] at hinner
-  have hreal : (‖D₁ p₁‖ : ℝ) ^ 2 = (‖D₂ p₂‖ : ℝ) ^ 2 := by exact_mod_cast hinner
+  have hreal : (‖D₁ p₁‖ : ℝ) ^ (2 : ℕ) = (‖D₂ p₂‖ : ℝ) ^ (2 : ℕ) := by exact_mod_cast hinner
   nlinarith [norm_nonneg (D₁ p₁), norm_nonneg (D₂ p₂)]
 
 /-! ### The concrete semilocal contraction -/
@@ -139,7 +139,7 @@ strictly below the archimedean value `1/2`. -/
 theorem semilocal_normalizedSecondMoment_lt_archimedean {n : ℕ} (p : Fin (n + 1) → ℕ)
     (hp : Function.Injective p) (hprime : ∀ i, (p i).Prime) :
     semilocalFinitePrimeNormalizedSecondMoment p
-      < semilocalArchimedeanJacobiCoefficient 0 ^ 2 := by
+      < semilocalArchimedeanJacobiCoefficient 0 ^ (2 : ℕ) := by
   have hsq := semilocalArchimedeanJacobiCoefficient_sq 0
   norm_num at hsq
   rw [hsq]

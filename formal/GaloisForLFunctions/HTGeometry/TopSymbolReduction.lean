@@ -89,7 +89,7 @@ theorem norm_topSymbol_le {S : Finset (ℕ × ℕ)} {A : ℕ × ℕ → ℂ} {F 
     rw [norm_div, norm_mul, norm_pow, norm_pow]
   rw [hnorm]
   have hden : ‖F‖ ≤ ‖F‖ ^ (d - p.1 - p.2) := by
-    calc ‖F‖ = ‖F‖ ^ 1 := (pow_one _).symm
+    calc ‖F‖ = ‖F‖ ^ (1 : ℕ) := (pow_one _).symm
       _ ≤ ‖F‖ ^ (d - p.1 - p.2) := pow_le_pow_right₀ hF1 hpos
   have hnum : (0 : ℝ) ≤ ‖A p‖ * ‖W / F‖ ^ p.2 := by positivity
   exact div_le_div_of_nonneg_left hnum hFpos hden

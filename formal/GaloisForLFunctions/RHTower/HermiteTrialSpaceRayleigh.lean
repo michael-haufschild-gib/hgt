@@ -77,7 +77,7 @@ theorem deriv2_hermiteCombo (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) 
   (hasDerivAt_deriv_hermiteCombo r a ξ).deriv
 
 theorem continuous_deriv2_hermiteFun (m : ℕ) : Continuous (deriv (deriv (hermiteFun m))) := by
-  have h : deriv (deriv (hermiteFun m)) = fun x : ℝ => (x ^ 2 - 2 * (m : ℝ) - 1) * hermiteFun m x :=
+  have h : deriv (deriv (hermiteFun m)) = fun x : ℝ => (x ^ (2 : ℕ) - 2 * (m : ℝ) - 1) * hermiteFun m x :=
     funext (deriv2_hermiteFun m)
   rw [h]
   exact (((continuous_pow 2).sub continuous_const).sub continuous_const).mul
@@ -126,14 +126,14 @@ theorem hermiteSLAction_hermiteCombo (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) 
 /-- **One integration by parts for a combination.**  The two correction terms of the scaled prolate
 action are the two terms of `(ξ²ψ)′`, so pairing them with `ψ` gives a square. -/
 theorem integral_comboDefect (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) (R : ℝ) :
-    (∫ ξ in (-R)..R, (-(ξ ^ 2 * deriv (deriv (hermiteCombo r a)) ξ)
+    (∫ ξ in (-R)..R, (-(ξ ^ (2 : ℕ) * deriv (deriv (hermiteCombo r a)) ξ)
         - 2 * ξ * deriv (hermiteCombo r a) ξ) * hermiteCombo r a ξ)
-      = (∫ ξ in (-R)..R, ξ ^ 2 * deriv (hermiteCombo r a) ξ ^ 2)
-        - (R ^ 2 * hermiteCombo r a R * deriv (hermiteCombo r a) R
-            - (-R) ^ 2 * hermiteCombo r a (-R) * deriv (hermiteCombo r a) (-R)) := by
+      = (∫ ξ in (-R)..R, ξ ^ (2 : ℕ) * deriv (hermiteCombo r a) ξ ^ (2 : ℕ))
+        - (R ^ (2 : ℕ) * hermiteCombo r a R * deriv (hermiteCombo r a) R
+            - (-R) ^ (2 : ℕ) * hermiteCombo r a (-R) * deriv (hermiteCombo r a) (-R)) := by
   set ψ : ℝ → ℝ := hermiteCombo r a with hψdef
-  set u : ℝ → ℝ := fun ξ => ξ ^ 2 * ψ ξ with hu
-  set u' : ℝ → ℝ := fun ξ => 2 * ξ * ψ ξ + ξ ^ 2 * deriv ψ ξ with hu'
+  set u : ℝ → ℝ := fun ξ => ξ ^ (2 : ℕ) * ψ ξ with hu
+  set u' : ℝ → ℝ := fun ξ => 2 * ξ * ψ ξ + ξ ^ (2 : ℕ) * deriv ψ ξ with hu'
   set v : ℝ → ℝ := deriv ψ with hv
   set v' : ℝ → ℝ := fun ξ => deriv (deriv ψ) ξ with hv'
   have hcψ : Continuous ψ := continuous_hermiteCombo r a
@@ -153,7 +153,7 @@ theorem integral_comboDefect (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ)
     exact ((continuous_const.mul continuous_id).mul hcψ).add ((continuous_pow 2).mul hcv)
   have hv'i : IntervalIntegrable v' volume (-R) R := hcv2.intervalIntegrable _ _
   have hparts := intervalIntegral.integral_mul_deriv_eq_deriv_mul hud hvd hu'i hv'i
-  have hA : (∫ ξ in (-R)..R, ξ ^ 2 * deriv (deriv ψ) ξ * ψ ξ)
+  have hA : (∫ ξ in (-R)..R, ξ ^ (2 : ℕ) * deriv (deriv ψ) ξ * ψ ξ)
       = u R * v R - u (-R) * v (-R) - ∫ ξ in (-R)..R, u' ξ * v ξ := by
     rw [← hparts]
     refine intervalIntegral.integral_congr fun ξ _ => ?_
@@ -161,15 +161,15 @@ theorem integral_comboDefect (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ)
     ring
   have hrhs : (∫ ξ in (-R)..R, u' ξ * v ξ)
       = (∫ ξ in (-R)..R, 2 * ξ * deriv ψ ξ * ψ ξ)
-        + ∫ ξ in (-R)..R, ξ ^ 2 * deriv ψ ξ ^ 2 := by
+        + ∫ ξ in (-R)..R, ξ ^ (2 : ℕ) * deriv ψ ξ ^ (2 : ℕ) := by
     rw [← intervalIntegral.integral_add]
     · refine intervalIntegral.integral_congr fun ξ _ => ?_
       simp only [hu', hv]
       ring
     · exact (((continuous_const.mul continuous_id).mul hcv).mul hcψ).intervalIntegrable _ _
     · exact ((continuous_pow 2).mul (hcv.pow 2)).intervalIntegrable _ _
-  have hdef : (∫ ξ in (-R)..R, (-(ξ ^ 2 * deriv (deriv ψ) ξ) - 2 * ξ * deriv ψ ξ) * ψ ξ)
-      = -(∫ ξ in (-R)..R, ξ ^ 2 * deriv (deriv ψ) ξ * ψ ξ)
+  have hdef : (∫ ξ in (-R)..R, (-(ξ ^ (2 : ℕ) * deriv (deriv ψ) ξ) - 2 * ξ * deriv ψ ξ) * ψ ξ)
+      = -(∫ ξ in (-R)..R, ξ ^ (2 : ℕ) * deriv (deriv ψ) ξ * ψ ξ)
         - ∫ ξ in (-R)..R, 2 * ξ * deriv ψ ξ * ψ ξ := by
     rw [← intervalIntegral.integral_neg, ← intervalIntegral.integral_sub]
     · refine intervalIntegral.integral_congr fun ξ _ => ?_
@@ -186,7 +186,7 @@ theorem integral_comboDefect (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ)
 /-- The excess integrand in the Hermite variable: the rung-gap term plus the defect term. -/
 def comboExcessIntegrand (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) (N : ℕ) (c ξ : ℝ) : ℝ :=
   c * ((∑ i, a i * (2 * ((N : ℝ) - (r i : ℝ))) * hermiteFun (r i) ξ) * hermiteCombo r a ξ)
-    + (-(ξ ^ 2 * deriv (deriv (hermiteCombo r a)) ξ)
+    + (-(ξ ^ (2 : ℕ) * deriv (deriv (hermiteCombo r a)) ξ)
         - 2 * ξ * deriv (hermiteCombo r a) ξ) * hermiteCombo r a ξ
 
 theorem continuous_comboExcessIntegrand (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) (N : ℕ)
@@ -228,13 +228,13 @@ theorem integral_comboExcessIntegrand (r : Fin (n + 1) → ℕ) (a : Fin (n + 1)
     (∫ ξ in (-R)..R, comboExcessIntegrand r a N c ξ)
       = c * (∑ i, ∑ j, a i * a j * (2 * ((N : ℝ) - (r i : ℝ)))
               * ∫ ξ in (-R)..R, hermiteFun (r i) ξ * hermiteFun (r j) ξ)
-        + ((∫ ξ in (-R)..R, ξ ^ 2 * deriv (hermiteCombo r a) ξ ^ 2)
-            - (R ^ 2 * hermiteCombo r a R * deriv (hermiteCombo r a) R
-                - (-R) ^ 2 * hermiteCombo r a (-R) * deriv (hermiteCombo r a) (-R))) := by
+        + ((∫ ξ in (-R)..R, ξ ^ (2 : ℕ) * deriv (hermiteCombo r a) ξ ^ (2 : ℕ))
+            - (R ^ (2 : ℕ) * hermiteCombo r a R * deriv (hermiteCombo r a) R
+                - (-R) ^ (2 : ℕ) * hermiteCombo r a (-R) * deriv (hermiteCombo r a) (-R))) := by
   have hgap : Continuous fun ξ : ℝ =>
       ∑ i, a i * (2 * ((N : ℝ) - (r i : ℝ))) * hermiteFun (r i) ξ :=
     continuous_finsetSum _ fun i _ => continuous_const.mul (continuous_hermiteFun (r i))
-  have hdefc : Continuous fun ξ : ℝ => (-(ξ ^ 2 * deriv (deriv (hermiteCombo r a)) ξ)
+  have hdefc : Continuous fun ξ : ℝ => (-(ξ ^ (2 : ℕ) * deriv (deriv (hermiteCombo r a)) ξ)
       - 2 * ξ * deriv (hermiteCombo r a) ξ) * hermiteCombo r a ξ := by
     refine Continuous.mul ?_ (continuous_hermiteCombo r a)
     exact (((continuous_pow 2).mul (continuous_deriv2_hermiteCombo r a)).neg).sub
@@ -242,7 +242,7 @@ theorem integral_comboExcessIntegrand (r : Fin (n + 1) → ℕ) (a : Fin (n + 1)
   have hsplit : (∫ ξ in (-R)..R, comboExcessIntegrand r a N c ξ)
       = (∫ ξ in (-R)..R, c * ((∑ i, a i * (2 * ((N : ℝ) - (r i : ℝ))) * hermiteFun (r i) ξ)
             * hermiteCombo r a ξ))
-        + ∫ ξ in (-R)..R, (-(ξ ^ 2 * deriv (deriv (hermiteCombo r a)) ξ)
+        + ∫ ξ in (-R)..R, (-(ξ ^ (2 : ℕ) * deriv (deriv (hermiteCombo r a)) ξ)
             - 2 * ξ * deriv (hermiteCombo r a) ξ) * hermiteCombo r a ξ := by
     rw [← intervalIntegral.integral_add]
     · rfl
@@ -315,11 +315,11 @@ theorem integral_comboExcess {c : ℝ} (hc : 0 < c) (r : Fin (n + 1) → ℕ) (a
 
 /-- The Hermite Wronskian dies faster than a square grows. -/
 theorem tendsto_sq_mul_hermiteWronskian_atTop (m k : ℕ) :
-    Tendsto (fun R : ℝ => R ^ 2 * hermiteWronskian m k R) atTop (𝓝 0) := by
-  have h1 : Tendsto (fun R : ℝ => deriv (hermiteFun m) R * (R ^ 2 * hermiteFun k R))
+    Tendsto (fun R : ℝ => R ^ (2 : ℕ) * hermiteWronskian m k R) atTop (𝓝 0) := by
+  have h1 : Tendsto (fun R : ℝ => deriv (hermiteFun m) R * (R ^ (2 : ℕ) * hermiteFun k R))
       atTop (𝓝 0) := by
     simpa using (tendsto_deriv_hermiteFun_atTop m).mul (tendsto_sq_mul_hermiteFun_atTop k)
-  have h2 : Tendsto (fun R : ℝ => R ^ 2 * hermiteFun m R * deriv (hermiteFun k) R)
+  have h2 : Tendsto (fun R : ℝ => R ^ (2 : ℕ) * hermiteFun m R * deriv (hermiteFun k) R)
       atTop (𝓝 0) := by
     simpa using (tendsto_sq_mul_hermiteFun_atTop m).mul (tendsto_deriv_hermiteFun_atTop k)
   have h := h1.sub h2
@@ -329,13 +329,13 @@ theorem tendsto_sq_mul_hermiteWronskian_atTop (m k : ℕ) :
   ring
 
 theorem tendsto_sq_mul_hermiteWronskian_neg (m k : ℕ) :
-    Tendsto (fun R : ℝ => R ^ 2 * hermiteWronskian m k (-R)) atTop (𝓝 0) := by
+    Tendsto (fun R : ℝ => R ^ (2 : ℕ) * hermiteWronskian m k (-R)) atTop (𝓝 0) := by
   have hneg : Tendsto (fun R : ℝ => -R) atTop atBot := tendsto_neg_atTop_atBot
-  have h1 : Tendsto (fun R : ℝ => deriv (hermiteFun m) (-R) * ((-R) ^ 2 * hermiteFun k (-R)))
+  have h1 : Tendsto (fun R : ℝ => deriv (hermiteFun m) (-R) * ((-R) ^ (2 : ℕ) * hermiteFun k (-R)))
       atTop (𝓝 0) := by
     simpa using ((tendsto_deriv_hermiteFun_atBot m).comp hneg).mul
       ((tendsto_sq_mul_hermiteFun_atBot k).comp hneg)
-  have h2 : Tendsto (fun R : ℝ => (-R) ^ 2 * hermiteFun m (-R) * deriv (hermiteFun k) (-R))
+  have h2 : Tendsto (fun R : ℝ => (-R) ^ (2 : ℕ) * hermiteFun m (-R) * deriv (hermiteFun k) (-R))
       atTop (𝓝 0) := by
     simpa using ((tendsto_sq_mul_hermiteFun_atBot m).comp hneg).mul
       ((tendsto_deriv_hermiteFun_atBot k).comp hneg)
@@ -351,7 +351,7 @@ theorem tendsto_mul_integral_hermiteFun_mul {m k : ℕ} (hmk : m ≠ k) :
     Tendsto (fun c : ℝ => c *
         ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), hermiteFun m ξ * hermiteFun k ξ) atTop (𝓝 0) := by
   have hbase : Tendsto (fun R : ℝ =>
-      (R ^ 2 * hermiteWronskian m k R - R ^ 2 * hermiteWronskian m k (-R))
+      (R ^ (2 : ℕ) * hermiteWronskian m k R - R ^ (2 : ℕ) * hermiteWronskian m k (-R))
         / (2 * ((k : ℝ) - (m : ℝ)))) atTop (𝓝 0) := by
     have h := (tendsto_sq_mul_hermiteWronskian_atTop m k).sub
       (tendsto_sq_mul_hermiteWronskian_neg m k)
@@ -360,7 +360,7 @@ theorem tendsto_mul_integral_hermiteFun_mul {m k : ℕ} (hmk : m ≠ k) :
   have h := hbase.comp Real.tendsto_sqrt_atTop
   refine h.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with c hc
-  have hsq : Real.sqrt c ^ 2 = c := Real.sq_sqrt hc
+  have hsq : Real.sqrt c ^ (2 : ℕ) = c := Real.sq_sqrt hc
   simp only [Function.comp_apply, hsq]
   rw [integral_hermiteFun_mul_eq hmk]
   ring
@@ -422,11 +422,11 @@ theorem tendsto_comboBdryBound (r : Fin (n + 1) → ℕ) :
     intro i j
     have hsqrt : Tendsto (fun c : ℝ => Real.sqrt c) atTop atTop := Real.tendsto_sqrt_atTop
     have hA : Tendsto (fun R : ℝ =>
-        R ^ 2 * hermiteFun (r i) R * deriv (hermiteFun (r j)) R) atTop (𝓝 0) := by
+        R ^ (2 : ℕ) * hermiteFun (r i) R * deriv (hermiteFun (r j)) R) atTop (𝓝 0) := by
       simpa using (tendsto_sq_mul_hermiteFun_atTop (r i)).mul (tendsto_deriv_hermiteFun_atTop (r j))
     have hneg : Tendsto (fun R : ℝ => -R) atTop atBot := tendsto_neg_atTop_atBot
     have hB : Tendsto (fun R : ℝ =>
-        (-R) ^ 2 * hermiteFun (r i) (-R) * deriv (hermiteFun (r j)) (-R)) atTop (𝓝 0) := by
+        (-R) ^ (2 : ℕ) * hermiteFun (r i) (-R) * deriv (hermiteFun (r j)) (-R)) atTop (𝓝 0) := by
       simpa using ((tendsto_sq_mul_hermiteFun_atBot (r i)).comp hneg).mul
         ((tendsto_deriv_hermiteFun_atBot (r j)).comp hneg)
     have hA' := (hA.comp hsqrt).abs
@@ -436,8 +436,8 @@ theorem tendsto_comboBdryBound (r : Fin (n + 1) → ℕ) :
     rw [add_zero] at hsum
     refine hsum.congr' ?_
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with c hc
-    have hsq : Real.sqrt c ^ 2 = c := Real.sq_sqrt hc
-    have hsq' : (-Real.sqrt c) ^ 2 = c := by rw [neg_pow]; simp [hsq]
+    have hsq : Real.sqrt c ^ (2 : ℕ) = c := Real.sq_sqrt hc
+    have hsq' : (-Real.sqrt c) ^ (2 : ℕ) = c := by rw [neg_pow]; simp [hsq]
     simp only [Function.comp_apply]
     rw [hsq, hsq']
     ring_nf
@@ -458,21 +458,21 @@ theorem tendsto_comboBdryBound (r : Fin (n + 1) → ℕ) :
 /-- The bandwidth-free lower form of the trial space: rung gaps against a fixed window mass, plus
 the window square of the derivative. -/
 def comboLower (r : Fin (n + 1) → ℕ) (N : ℕ) (R₀ : ℝ) (a : Fin (n + 1) → ℝ) : ℝ :=
-  (∑ i, a i ^ 2 * (2 * ((N : ℝ) - (r i : ℝ))) * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ 2)
+  (∑ i, a i ^ (2 : ℕ) * (2 * ((N : ℝ) - (r i : ℝ))) * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ (2 : ℕ))
     + ∑ i, ∑ j, a i * a j *
-        ∫ ξ in (-R₀)..R₀, ξ ^ 2 * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ)
+        ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ)
 
 /-- The second part of the lower form is the window square of the combination's derivative. -/
 theorem comboLower_sq (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) (R₀ : ℝ) :
-    (∫ ξ in (-R₀)..R₀, ξ ^ 2 * deriv (hermiteCombo r a) ξ ^ 2)
+    (∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * deriv (hermiteCombo r a) ξ ^ (2 : ℕ))
       = ∑ i, ∑ j, a i * a j *
-        ∫ ξ in (-R₀)..R₀, ξ ^ 2 * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ) := by
-  have hpt : ∀ ξ : ℝ, ξ ^ 2 * deriv (hermiteCombo r a) ξ ^ 2
+        ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ) := by
+  have hpt : ∀ ξ : ℝ, ξ ^ (2 : ℕ) * deriv (hermiteCombo r a) ξ ^ (2 : ℕ)
       = ∑ i, ∑ j, a i * a j *
-          (ξ ^ 2 * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ)) := by
+          (ξ ^ (2 : ℕ) * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ)) := by
     intro ξ
     simp only [deriv_hermiteCombo]
-    have hs : (∑ i, a i * deriv (hermiteFun (r i)) ξ) ^ 2
+    have hs : (∑ i, a i * deriv (hermiteFun (r i)) ξ) ^ (2 : ℕ)
         = ∑ i, ∑ j, (a i * deriv (hermiteFun (r i)) ξ) * (a j * deriv (hermiteFun (r j)) ξ) := by
       rw [sq, Finset.sum_mul_sum]
     rw [hs, Finset.mul_sum]
@@ -492,7 +492,7 @@ theorem comboLower_sq (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) (R₀ 
         (continuous_deriv_hermiteFun (r j))))).intervalIntegrable _ _
 
 theorem comboLower_smul (r : Fin (n + 1) → ℕ) (N : ℕ) (R₀ t : ℝ) (a : Fin (n + 1) → ℝ) :
-    comboLower r N R₀ (fun i => t * a i) = t ^ 2 * comboLower r N R₀ a := by
+    comboLower r N R₀ (fun i => t * a i) = t ^ (2 : ℕ) * comboLower r N R₀ a := by
   simp only [comboLower]
   rw [mul_add, Finset.mul_sum, Finset.mul_sum]
   congr 1
@@ -516,16 +516,16 @@ theorem continuous_comboLower (r : Fin (n + 1) → ℕ) (N : ℕ) (R₀ : ℝ) :
 
 theorem comboLower_fst_nonneg (r : Fin (n + 1) → ℕ) (ν : Fin (n + 1)) (hν : ∀ i, r i ≤ r ν)
     {R₀ : ℝ} (hR₀ : 0 < R₀) (a : Fin (n + 1) → ℝ) (i : Fin (n + 1)) :
-    0 ≤ a i ^ 2 * (2 * ((r ν : ℝ) - (r i : ℝ))) * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ 2 := by
+    0 ≤ a i ^ (2 : ℕ) * (2 * ((r ν : ℝ) - (r i : ℝ))) * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ (2 : ℕ) := by
   have hcast : (r i : ℝ) ≤ (r ν : ℝ) := by exact_mod_cast hν i
-  have h2 : 0 ≤ ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ 2 :=
+  have h2 : 0 ≤ ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ (2 : ℕ) :=
     le_of_lt (integral_hermiteFun_sq_pos (r i) (by linarith))
   exact mul_nonneg (mul_nonneg (sq_nonneg _) (by linarith)) h2
 
 theorem comboLower_snd_nonneg (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) {R₀ : ℝ}
     (hR₀ : 0 < R₀) :
     0 ≤ ∑ i, ∑ j, a i * a j *
-      ∫ ξ in (-R₀)..R₀, ξ ^ 2 * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ) := by
+      ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ) := by
   rw [← comboLower_sq]
   refine intervalIntegral.integral_nonneg (by linarith) fun u _ => by positivity
 
@@ -534,13 +534,13 @@ rung — and then a rung gap contributes — or it sits on the top rung alone, w
 square contributes. -/
 theorem comboLower_pos (r : Fin (n + 1) → ℕ) (hinj : Function.Injective r) (ν : Fin (n + 1))
     (hν : ∀ i, r i ≤ r ν) {R₀ : ℝ} (hR₀ : 0 < R₀)
-    (hsq : 0 < ∫ ξ in (-R₀)..R₀, ξ ^ 2 * deriv (hermiteFun (r ν)) ξ ^ 2)
+    (hsq : 0 < ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * deriv (hermiteFun (r ν)) ξ ^ (2 : ℕ))
     {a : Fin (n + 1) → ℝ} (ha : a ≠ 0) : 0 < comboLower r (r ν) R₀ a := by
-  have hfst : 0 ≤ ∑ i, a i ^ 2 * (2 * ((r ν : ℝ) - (r i : ℝ)))
-      * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ 2 :=
+  have hfst : 0 ≤ ∑ i, a i ^ (2 : ℕ) * (2 * ((r ν : ℝ) - (r i : ℝ)))
+      * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun i _ => comboLower_fst_nonneg r ν hν hR₀ a i
   have hsnd : 0 ≤ ∑ i, ∑ j, a i * a j *
-      ∫ ξ in (-R₀)..R₀, ξ ^ 2 * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ) :=
+      ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ) :=
     comboLower_snd_nonneg r a hR₀
   by_cases hcase : ∀ i, i ≠ ν → a i = 0
   · have haν : a ν ≠ 0 := by
@@ -555,13 +555,13 @@ theorem comboLower_pos (r : Fin (n + 1) → ℕ) (hinj : Function.Injective r) (
       refine Finset.sum_eq_single ν (fun i _ hi => ?_) (fun h => absurd (Finset.mem_univ ν) h)
       rw [hcase i hi, zero_mul]
     have hs2 : (∑ i, ∑ j, a i * a j *
-        ∫ ξ in (-R₀)..R₀, ξ ^ 2 * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ))
-        = a ν ^ 2 * ∫ ξ in (-R₀)..R₀, ξ ^ 2 * deriv (hermiteFun (r ν)) ξ ^ 2 := by
+        ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ))
+        = a ν ^ (2 : ℕ) * ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * deriv (hermiteFun (r ν)) ξ ^ (2 : ℕ) := by
       rw [← comboLower_sq, ← intervalIntegral.integral_const_mul]
       refine intervalIntegral.integral_congr fun ξ _ => ?_
       rw [hderiv ξ]
       ring
-    have hpos : 0 < a ν ^ 2 * ∫ ξ in (-R₀)..R₀, ξ ^ 2 * deriv (hermiteFun (r ν)) ξ ^ 2 :=
+    have hpos : 0 < a ν ^ (2 : ℕ) * ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * deriv (hermiteFun (r ν)) ξ ^ (2 : ℕ) :=
       mul_pos (by positivity) hsq
     unfold comboLower
     rw [hs2]
@@ -575,13 +575,13 @@ theorem comboLower_pos (r : Fin (n + 1) → ℕ) (hinj : Function.Injective r) (
       have hle : r i₀ ≤ r ν := hν i₀
       have hne : r i₀ ≠ r ν := fun h => hi₀ne (hinj h)
       exact_mod_cast lt_of_le_of_ne hle hne
-    have hterm : 0 < a i₀ ^ 2 * (2 * ((r ν : ℝ) - (r i₀ : ℝ)))
-        * ∫ ξ in (-R₀)..R₀, hermiteFun (r i₀) ξ ^ 2 :=
+    have hterm : 0 < a i₀ ^ (2 : ℕ) * (2 * ((r ν : ℝ) - (r i₀ : ℝ)))
+        * ∫ ξ in (-R₀)..R₀, hermiteFun (r i₀) ξ ^ (2 : ℕ) :=
       mul_pos (mul_pos (by positivity) (by linarith))
         (integral_hermiteFun_sq_pos (r i₀) (by linarith))
     have hle := Finset.single_le_sum
-      (f := fun i => a i ^ 2 * (2 * ((r ν : ℝ) - (r i : ℝ)))
-        * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ 2)
+      (f := fun i => a i ^ (2 : ℕ) * (2 * ((r ν : ℝ) - (r i : ℝ)))
+        * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ (2 : ℕ))
       (fun i _ => comboLower_fst_nonneg r ν hν hR₀ a i) (Finset.mem_univ i₀)
     unfold comboLower
     linarith
@@ -590,12 +590,12 @@ theorem comboLower_pos (r : Fin (n + 1) → ℕ) (hinj : Function.Injective r) (
 positivity into a uniform quadratic bound. -/
 theorem exists_comboLower_bound (r : Fin (n + 1) → ℕ) (hinj : Function.Injective r)
     (ν : Fin (n + 1)) (hν : ∀ i, r i ≤ r ν) {R₀ : ℝ} (hR₀ : 0 < R₀)
-    (hsq : 0 < ∫ ξ in (-R₀)..R₀, ξ ^ 2 * deriv (hermiteFun (r ν)) ξ ^ 2) :
+    (hsq : 0 < ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * deriv (hermiteFun (r ν)) ξ ^ (2 : ℕ)) :
     ∃ κ : ℝ, 0 < κ ∧ ∀ a : Fin (n + 1) → ℝ,
-      κ * (∑ k, a k ^ 2) ≤ comboLower r (r ν) R₀ a := by
+      κ * (∑ k, a k ^ (2 : ℕ)) ≤ comboLower r (r ν) R₀ a := by
   classical
-  set S : Set (Fin (n + 1) → ℝ) := {a | ∑ k, a k ^ 2 = 1} with hS
-  have hsumcont : Continuous fun a : Fin (n + 1) → ℝ => ∑ k, a k ^ 2 :=
+  set S : Set (Fin (n + 1) → ℝ) := {a | ∑ k, a k ^ (2 : ℕ) = 1} with hS
+  have hsumcont : Continuous fun a : Fin (n + 1) → ℝ => ∑ k, a k ^ (2 : ℕ) :=
     continuous_finsetSum _ fun k _ => (continuous_apply k).pow 2
   have hclosed : IsClosed S := isClosed_eq hsumcont continuous_const
   have hbdd : Bornology.IsBounded S := by
@@ -603,17 +603,17 @@ theorem exists_comboLower_bound (r : Fin (n + 1) → ℕ) (hinj : Function.Injec
     refine ⟨1, fun a ha => ?_⟩
     rw [pi_norm_le_iff_of_nonneg zero_le_one]
     intro i
-    have h1 : a i ^ 2 ≤ ∑ k, a k ^ 2 :=
+    have h1 : a i ^ (2 : ℕ) ≤ ∑ k, a k ^ (2 : ℕ) :=
       Finset.single_le_sum (fun k _ => sq_nonneg _) (Finset.mem_univ i)
-    have h2 : a i ^ 2 ≤ 1 := by
-      have : (∑ k, a k ^ 2) = 1 := ha
+    have h2 : a i ^ (2 : ℕ) ≤ 1 := by
+      have : (∑ k, a k ^ (2 : ℕ)) = 1 := ha
       linarith
     have : |a i| ≤ 1 := by nlinarith [abs_nonneg (a i), sq_abs (a i)]
     simpa [Real.norm_eq_abs] using this
   have hcomp : IsCompact S := Metric.isCompact_of_isClosed_isBounded hclosed hbdd
   have hne : S.Nonempty := by
     refine ⟨fun i => if i = 0 then (1 : ℝ) else 0, ?_⟩
-    show ∑ k, (if k = (0 : Fin (n + 1)) then (1 : ℝ) else 0) ^ 2 = 1
+    show ∑ k, (if k = (0 : Fin (n + 1)) then (1 : ℝ) else 0) ^ (2 : ℕ) = 1
     rw [Finset.sum_eq_single (0 : Fin (n + 1))]
     · simp
     · intro b _ hb; simp [hb]
@@ -622,30 +622,30 @@ theorem exists_comboLower_bound (r : Fin (n + 1) → ℕ) (hinj : Function.Injec
     (continuous_comboLower r (r ν) R₀).continuousOn
   have ha₀ne : a₀ ≠ 0 := by
     intro h
-    have : (∑ k, a₀ k ^ 2) = 1 := ha₀S
+    have : (∑ k, a₀ k ^ (2 : ℕ)) = 1 := ha₀S
     rw [h] at this
     simp at this
   refine ⟨comboLower r (r ν) R₀ a₀, comboLower_pos r hinj ν hν hR₀ hsq ha₀ne, fun a => ?_⟩
   by_cases ha : a = 0
   · rw [ha, comboLower_zero]
     simp
-  · have hpos : 0 < ∑ k, a k ^ 2 := by
+  · have hpos : 0 < ∑ k, a k ^ (2 : ℕ) := by
       rcases lt_or_eq_of_le (Finset.sum_nonneg fun k (_ : k ∈ Finset.univ) => sq_nonneg (a k))
         with h | h
       · exact h
       · exfalso
         refine ha (funext fun i => ?_)
-        have hzero : ∀ k ∈ (Finset.univ : Finset (Fin (n + 1))), a k ^ 2 = 0 :=
+        have hzero : ∀ k ∈ (Finset.univ : Finset (Fin (n + 1))), a k ^ (2 : ℕ) = 0 :=
           (Finset.sum_eq_zero_iff_of_nonneg fun k _ => sq_nonneg (a k)).1 h.symm
         have := hzero i (Finset.mem_univ i)
         simpa using pow_eq_zero_iff (n := 2) (by norm_num) |>.1 this
-    set t : ℝ := Real.sqrt (∑ k, a k ^ 2) with ht
+    set t : ℝ := Real.sqrt (∑ k, a k ^ (2 : ℕ)) with ht
     have htpos : 0 < t := Real.sqrt_pos.2 hpos
-    have ht2 : t ^ 2 = ∑ k, a k ^ 2 := Real.sq_sqrt (le_of_lt hpos)
+    have ht2 : t ^ (2 : ℕ) = ∑ k, a k ^ (2 : ℕ) := Real.sq_sqrt (le_of_lt hpos)
     set b : Fin (n + 1) → ℝ := fun i => t⁻¹ * a i with hb
     have hbS : b ∈ S := by
-      show ∑ k, (t⁻¹ * a k) ^ 2 = 1
-      have : ∑ k, (t⁻¹ * a k) ^ 2 = t⁻¹ ^ 2 * ∑ k, a k ^ 2 := by
+      show ∑ k, (t⁻¹ * a k) ^ (2 : ℕ) = 1
+      have : ∑ k, (t⁻¹ * a k) ^ (2 : ℕ) = t⁻¹ ^ (2 : ℕ) * ∑ k, a k ^ (2 : ℕ) := by
         rw [Finset.mul_sum]
         exact Finset.sum_congr rfl fun k _ => by ring
       rw [this, ← ht2]
@@ -654,25 +654,25 @@ theorem exists_comboLower_bound (r : Fin (n + 1) → ℕ) (hinj : Function.Injec
       funext i
       simp only [hb]
       field_simp
-    have hkey : comboLower r (r ν) R₀ a = t ^ 2 * comboLower r (r ν) R₀ b := by
+    have hkey : comboLower r (r ν) R₀ a = t ^ (2 : ℕ) * comboLower r (r ν) R₀ b := by
       rw [← hab, comboLower_smul]
     rw [hkey, ← ht2]
     have := (isMinOn_iff.1 ha₀min) b hbS
-    have ht2pos : (0 : ℝ) < t ^ 2 := by positivity
-    calc comboLower r (r ν) R₀ a₀ * t ^ 2 ≤ comboLower r (r ν) R₀ b * t ^ 2 := by nlinarith
-      _ = t ^ 2 * comboLower r (r ν) R₀ b := by ring
+    have ht2pos : (0 : ℝ) < t ^ (2 : ℕ) := by positivity
+    calc comboLower r (r ν) R₀ a₀ * t ^ (2 : ℕ) ≤ comboLower r (r ν) R₀ b * t ^ (2 : ℕ) := by nlinarith
+      _ = t ^ (2 : ℕ) * comboLower r (r ν) R₀ b := by ring
 
 /-! ## The two error bounds -/
 
 theorem abs_mul_le_sum_sq (a : Fin (n + 1) → ℝ) (i j : Fin (n + 1)) :
-    |a i * a j| ≤ ∑ k, a k ^ 2 := by
-  have h1 : |a i * a j| ≤ (a i ^ 2 + a j ^ 2) / 2 := by
+    |a i * a j| ≤ ∑ k, a k ^ (2 : ℕ) := by
+  have h1 : |a i * a j| ≤ (a i ^ (2 : ℕ) + a j ^ (2 : ℕ)) / 2 := by
     rw [abs_mul]
     nlinarith [sq_nonneg (|a i| - |a j|), abs_nonneg (a i), abs_nonneg (a j),
       sq_abs (a i), sq_abs (a j)]
-  have h2 : a i ^ 2 ≤ ∑ k, a k ^ 2 :=
+  have h2 : a i ^ (2 : ℕ) ≤ ∑ k, a k ^ (2 : ℕ) :=
     Finset.single_le_sum (fun k _ => sq_nonneg (a k)) (Finset.mem_univ i)
-  have h3 : a j ^ 2 ≤ ∑ k, a k ^ 2 :=
+  have h3 : a j ^ (2 : ℕ) ≤ ∑ k, a k ^ (2 : ℕ) :=
     Finset.single_le_sum (fun k _ => sq_nonneg (a k)) (Finset.mem_univ j)
   linarith
 
@@ -698,7 +698,7 @@ theorem comboOffDiag_bound (r : Fin (n + 1) → ℕ) (ν : Fin (n + 1)) (hν : �
           * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), hermiteFun (r i) ξ * hermiteFun (r j) ξ)
         - c * (∑ i, a i * a i * (2 * ((r ν : ℝ) - (r i : ℝ)))
           * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), hermiteFun (r i) ξ * hermiteFun (r i) ξ)|
-      ≤ comboTailBound r (r ν) c * (∑ k, a k ^ 2) := by
+      ≤ comboTailBound r (r ν) c * (∑ k, a k ^ (2 : ℕ)) := by
   classical
   set f : Fin (n + 1) → Fin (n + 1) → ℝ := fun i j => a i * a j * (2 * ((r ν : ℝ) - (r i : ℝ)))
     * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), hermiteFun (r i) ξ * hermiteFun (r j) ξ with hf
@@ -714,7 +714,7 @@ theorem comboOffDiag_bound (r : Fin (n + 1) → ℕ) (ν : Fin (n + 1)) (hν : �
         Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ i, ∑ j, (if i = j then (0 : ℝ) else
           2 * ((r ν : ℕ) : ℝ) * |c * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
-            hermiteFun (r i) ξ * hermiteFun (r j) ξ|) * (∑ k, a k ^ 2) := by
+            hermiteFun (r i) ξ * hermiteFun (r j) ξ|) * (∑ k, a k ^ (2 : ℕ)) := by
         refine Finset.sum_le_sum fun i _ => ?_
         refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
         refine Finset.sum_le_sum fun j _ => ?_
@@ -728,7 +728,7 @@ theorem comboOffDiag_bound (r : Fin (n + 1) → ℕ) (ν : Fin (n + 1)) (hν : �
             linarith
           have hI : (0 : ℝ) ≤ |c * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
               hermiteFun (r i) ξ * hermiteFun (r j) ξ| := abs_nonneg _
-          have hS : (0 : ℝ) ≤ ∑ k, a k ^ 2 := Finset.sum_nonneg fun k _ => sq_nonneg (a k)
+          have hS : (0 : ℝ) ≤ ∑ k, a k ^ (2 : ℕ) := Finset.sum_nonneg fun k _ => sq_nonneg (a k)
           have hA := abs_mul_le_sum_sq a i j
           have habs : |c * f i j| = |a i * a j| * (2 * ((r ν : ℝ) - (r i : ℝ)))
               * |c * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
@@ -743,7 +743,7 @@ theorem comboOffDiag_bound (r : Fin (n + 1) → ℕ) (ν : Fin (n + 1)) (hν : �
           have e1 : |a i * a j| * (2 * ((r ν : ℝ) - (r i : ℝ)))
                 * |c * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
                     hermiteFun (r i) ξ * hermiteFun (r j) ξ|
-              ≤ (∑ k, a k ^ 2) * (2 * ((r ν : ℝ) - (r i : ℝ)))
+              ≤ (∑ k, a k ^ (2 : ℕ)) * (2 * ((r ν : ℝ) - (r i : ℝ)))
                 * |c * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
                     hermiteFun (r i) ξ * hermiteFun (r j) ξ| :=
             mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hA hw1) hI
@@ -751,7 +751,7 @@ theorem comboOffDiag_bound (r : Fin (n + 1) → ℕ) (ν : Fin (n + 1)) (hν : �
           simp only [hij, if_false]
           rw [habs]
           nlinarith [e1, e2]
-    _ = comboTailBound r (r ν) c * (∑ k, a k ^ 2) := by
+    _ = comboTailBound r (r ν) c * (∑ k, a k ^ (2 : ℕ)) := by
         rw [comboTailBound, Finset.sum_mul]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [Finset.sum_mul]
@@ -760,7 +760,7 @@ theorem comboOffDiag_bound (r : Fin (n + 1) → ℕ) (ν : Fin (n + 1)) (hν : �
 theorem comboBdry_bound (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) (c : ℝ) :
     |c * (hermiteCombo r a (Real.sqrt c) * deriv (hermiteCombo r a) (Real.sqrt c))
         - c * (hermiteCombo r a (-Real.sqrt c) * deriv (hermiteCombo r a) (-Real.sqrt c))|
-      ≤ comboBdryBound r c * (∑ k, a k ^ 2) := by
+      ≤ comboBdryBound r c * (∑ k, a k ^ (2 : ℕ)) := by
   have hprod : ∀ x : ℝ, hermiteCombo r a x * deriv (hermiteCombo r a) x
       = ∑ i, ∑ j, a i * a j * (hermiteFun (r i) x * deriv (hermiteFun (r j)) x) := by
     intro x
@@ -792,7 +792,7 @@ theorem comboBdry_bound (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) (c :
     _ ≤ ∑ i, ∑ j, (|c * (hermiteFun (r i) (Real.sqrt c)
             * deriv (hermiteFun (r j)) (Real.sqrt c))|
           + |c * (hermiteFun (r i) (-Real.sqrt c)
-            * deriv (hermiteFun (r j)) (-Real.sqrt c))|) * (∑ k, a k ^ 2) := by
+            * deriv (hermiteFun (r j)) (-Real.sqrt c))|) * (∑ k, a k ^ (2 : ℕ)) := by
         refine Finset.sum_le_sum fun i _ => ?_
         refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
         refine Finset.sum_le_sum fun j _ => ?_
@@ -814,20 +814,20 @@ theorem comboBdry_bound (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) (c :
         have e1 := mul_le_mul_of_nonneg_right hA h1
         have e2 := mul_le_mul_of_nonneg_right hA h2
         nlinarith [e1, e2]
-    _ = comboBdryBound r c * (∑ k, a k ^ 2) := by
+    _ = comboBdryBound r c * (∑ k, a k ^ (2 : ℕ)) := by
         rw [comboBdryBound, Finset.sum_mul]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [Finset.sum_mul]
 
 /-! ## The trial-space Rayleigh bound -/
 
-private theorem sum_sq_pos_of_ne_zero {a : Fin (n + 1) → ℝ} (ha : a ≠ 0) : 0 < ∑ k, a k ^ 2 := by
+private theorem sum_sq_pos_of_ne_zero {a : Fin (n + 1) → ℝ} (ha : a ≠ 0) : 0 < ∑ k, a k ^ (2 : ℕ) := by
   rcases lt_or_eq_of_le (Finset.sum_nonneg fun k (_ : k ∈ Finset.univ) => sq_nonneg (a k))
     with h | h
   · exact h
   · exfalso
     refine ha (funext fun i => ?_)
-    have hzero : ∀ k ∈ (Finset.univ : Finset (Fin (n + 1))), a k ^ 2 = 0 :=
+    have hzero : ∀ k ∈ (Finset.univ : Finset (Fin (n + 1))), a k ^ (2 : ℕ) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg fun k _ => sq_nonneg (a k)).1 h.symm
     have hk := hzero i (Finset.mem_univ i)
     simpa using pow_eq_zero_iff (n := 2) (by norm_num) |>.1 hk
@@ -836,14 +836,14 @@ private theorem sum_sq_pos_of_ne_zero {a : Fin (n + 1) → ℝ} (ha : a ≠ 0) :
 theorem comboExcess_lower_bound (r : Fin (n + 1) → ℕ) (ν : Fin (n + 1)) (hν : ∀ i, r i ≤ r ν)
     {R₀ c : ℝ} (hR₀ : 0 < R₀) (hc1 : 1 ≤ c) (hcR : R₀ ≤ Real.sqrt c) (a : Fin (n + 1) → ℝ) :
     comboLower r (r ν) R₀ a
-        - (comboTailBound r (r ν) c + comboBdryBound r c) * (∑ k, a k ^ 2)
+        - (comboTailBound r (r ν) c + comboBdryBound r c) * (∑ k, a k ^ (2 : ℕ))
       ≤ ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), comboExcessIntegrand r a (r ν) c ξ := by
   have hc0 : (0 : ℝ) ≤ c := by linarith
-  have hRsq : Real.sqrt c ^ 2 = c := Real.sq_sqrt hc0
-  have hRsq' : (-Real.sqrt c) ^ 2 = c := by rw [neg_pow]; simp [hRsq]
+  have hRsq : Real.sqrt c ^ (2 : ℕ) = c := Real.sq_sqrt hc0
+  have hRsq' : (-Real.sqrt c) ^ (2 : ℕ) = c := by rw [neg_pow]; simp [hRsq]
   have hR₀le : -R₀ ≤ R₀ := by linarith
-  have hdiag : (∑ i, a i ^ 2 * (2 * ((r ν : ℝ) - (r i : ℝ)))
-        * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ 2)
+  have hdiag : (∑ i, a i ^ (2 : ℕ) * (2 * ((r ν : ℝ) - (r i : ℝ)))
+        * ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ (2 : ℕ))
       ≤ c * (∑ i, a i * a i * (2 * ((r ν : ℝ) - (r i : ℝ)))
           * ∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
               hermiteFun (r i) ξ * hermiteFun (r i) ξ) := by
@@ -854,34 +854,34 @@ theorem comboExcess_lower_bound (r : Fin (n + 1) → ℕ) (ν : Fin (n + 1)) (h�
       linarith
     have hcongr : (∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
         hermiteFun (r i) ξ * hermiteFun (r i) ξ)
-        = ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), hermiteFun (r i) ξ ^ 2 :=
+        = ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), hermiteFun (r i) ξ ^ (2 : ℕ) :=
       intervalIntegral.integral_congr fun ξ _ => by ring
-    have hmono : (∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ 2)
-        ≤ ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), hermiteFun (r i) ξ ^ 2 := by
+    have hmono : (∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ (2 : ℕ))
+        ≤ ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), hermiteFun (r i) ξ ^ (2 : ℕ) := by
       refine intervalIntegral.integral_mono_interval (by linarith) hR₀le hcR ?_ ?_
       · filter_upwards with x
         positivity
       · exact ((continuous_hermiteFun (r i)).pow 2).intervalIntegrable _ _
-    have hnn : 0 ≤ ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ 2 :=
+    have hnn : 0 ≤ ∫ ξ in (-R₀)..R₀, hermiteFun (r i) ξ ^ (2 : ℕ) :=
       le_of_lt (integral_hermiteFun_sq_pos (r i) (by linarith))
-    have hF : (0 : ℝ) ≤ a i ^ 2 * (2 * ((r ν : ℝ) - (r i : ℝ))) := mul_nonneg (sq_nonneg _) hW
+    have hF : (0 : ℝ) ≤ a i ^ (2 : ℕ) * (2 * ((r ν : ℝ) - (r i : ℝ))) := mul_nonneg (sq_nonneg _) hW
     have e1 := mul_le_mul_of_nonneg_left hmono hF
     have e2 := mul_nonneg (by linarith : (0 : ℝ) ≤ c - 1)
       (mul_nonneg hF (le_trans hnn hmono))
     rw [hcongr]
     nlinarith [e1, e2]
   have hsqmono : (∑ i, ∑ j, a i * a j *
-        ∫ ξ in (-R₀)..R₀, ξ ^ 2 * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ))
-      ≤ ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), ξ ^ 2 * deriv (hermiteCombo r a) ξ ^ 2 := by
+        ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * (deriv (hermiteFun (r i)) ξ * deriv (hermiteFun (r j)) ξ))
+      ≤ ∫ ξ in (-Real.sqrt c)..(Real.sqrt c), ξ ^ (2 : ℕ) * deriv (hermiteCombo r a) ξ ^ (2 : ℕ) := by
     rw [← comboLower_sq]
     refine intervalIntegral.integral_mono_interval (by linarith) hR₀le hcR ?_ ?_
     · filter_upwards with x
       positivity
     · exact ((continuous_pow 2).mul
         ((continuous_deriv_hermiteCombo r a).pow 2)).intervalIntegrable _ _
-  have hbdryeq : (Real.sqrt c ^ 2 * hermiteCombo r a (Real.sqrt c)
+  have hbdryeq : (Real.sqrt c ^ (2 : ℕ) * hermiteCombo r a (Real.sqrt c)
         * deriv (hermiteCombo r a) (Real.sqrt c)
-      - (-Real.sqrt c) ^ 2 * hermiteCombo r a (-Real.sqrt c)
+      - (-Real.sqrt c) ^ (2 : ℕ) * hermiteCombo r a (-Real.sqrt c)
         * deriv (hermiteCombo r a) (-Real.sqrt c))
       = c * (hermiteCombo r a (Real.sqrt c) * deriv (hermiteCombo r a) (Real.sqrt c))
         - c * (hermiteCombo r a (-Real.sqrt c)
@@ -923,7 +923,7 @@ theorem eventually_hermiteTrial_combination_rayleigh_gt (r : Fin (n + 1) → ℕ
     have h2 := abs_nonneg p
     simp only [hR₀def]
     linarith
-  have hsq : 0 < ∫ ξ in (-R₀)..R₀, ξ ^ 2 * deriv (hermiteFun (r ν)) ξ ^ 2 := by
+  have hsq : 0 < ∫ ξ in (-R₀)..R₀, ξ ^ (2 : ℕ) * deriv (hermiteFun (r ν)) ξ ^ (2 : ℕ) := by
     refine lt_of_lt_of_le hposwin ?_
     refine intervalIntegral.integral_mono_interval hp hpq.le hq ?_ ?_
     · filter_upwards with x
@@ -944,7 +944,7 @@ theorem eventually_hermiteTrial_combination_rayleigh_gt (r : Fin (n + 1) → ℕ
   have hlow := comboExcess_lower_bound r ν hν hR₀ hc1 hcR a
   have hS := sum_sq_pos_of_ne_zero ha
   have hcoerc := hκle a
-  have hgap : 0 < (κ - (comboTailBound r (r ν) c + comboBdryBound r c)) * (∑ k, a k ^ 2) :=
+  have hgap : 0 < (κ - (comboTailBound r (r ν) c + comboBdryBound r c)) * (∑ k, a k ^ (2 : ℕ)) :=
     mul_pos (by linarith) hS
   have hpos : 0 < ∫ ξ in (-Real.sqrt c)..(Real.sqrt c),
       comboExcessIntegrand r a (r ν) c ξ := by nlinarith [hlow, hcoerc, hgap]

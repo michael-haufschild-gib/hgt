@@ -144,7 +144,7 @@ theorem xiEntireEquationWronskian_commutator (B F : DeningerEntire) :
 /-- The actual Xi Wronskian sends Xi multiples to Xi-square multiples. -/
 theorem xiEntireEquationWronskian_mul_Xi (F : DeningerEntire) :
     xiEntireEquationWronskian (deningerEntireXi * F) =
-      deningerEntireXi ^ 2 * deningerEntireDeriv F :=
+      deningerEntireXi ^ (2 : ℕ) * deningerEntireDeriv F :=
   equationWronskian_mul_equation deningerEntireDerivation deningerEntireXi F
 
 /-- Canonical actual-Xi conormal current on entire comparison cohomology. -/

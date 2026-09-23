@@ -10,7 +10,7 @@ attribute [-instance] RCLike.toInnerProductSpaceReal
 attribute [-instance] NormedSpace.complexToReal
 
 def coordinateFirst (t : ℝ) : ℝ := 2*radialUnit t*horizonCoordinate t
-def coordinateSecond (t : ℝ) : ℝ := 2*horizonCoordinate t*(3*radialUnit t^2-1)
+def coordinateSecond (t : ℝ) : ℝ := 2*horizonCoordinate t*(3*radialUnit t^(2 : ℕ)-1)
 
 theorem horizonCoordinate_hasDerivAt (t : ℝ) : HasDerivAt horizonCoordinate (coordinateFirst t) t := by
   apply (((radialUnit_hasDerivAt t).pow 2).const_sub 1).congr_deriv
@@ -26,7 +26,7 @@ def tortoiseGreenFirst (w chi s a J K T : ℂ) (t : ℝ) : ℂ :=
   (coordinateFirst t:ℂ)*responseFirst w chi s a J K T (horizonCoordinate t)
 
 def tortoiseGreenSecond (w chi s a J K T : ℂ) (t : ℝ) : ℂ :=
-  (coordinateFirst t:ℂ)^2*responseSecond w chi s a J K T (horizonCoordinate t)+
+  (coordinateFirst t:ℂ)^(2 : ℕ)*responseSecond w chi s a J K T (horizonCoordinate t)+
     (coordinateSecond t:ℂ)*responseFirst w chi s a J K T (horizonCoordinate t)
 
 /-- The two displayed tortoise jets are derivatives of the actual endpoint integral response. -/
@@ -49,7 +49,7 @@ theorem tortoiseGreen_hasDerivAt {w chi : ℂ} (h : Chamber w chi) (s a J K T : 
 /-- Full actual source profile in compact radius, preserving the original smooth-onset factor. -/
 theorem sourceProfile_tortoise (s w a J K T : ℂ) (t : ℝ) (ht : t < 0) :
     sourceProfile s w a J K T (horizonCoordinate t) = sourceAmplitude s w a T t*
-      (((5*s^2+15*s+4)/4)*J+s*(s-1)*(radialUnit t:ℂ)^2/4*((s+2)^2*J-K)) := by
+      (((5*s^(2 : ℕ)+15*s+4)/4)*J+s*(s-1)*(radialUnit t:ℂ)^(2 : ℕ)/4*((s+2)^(2 : ℕ)*J-K)) := by
   have hr := D4BMJointWave.tortoiseRadius_exterior t ht
   have hr0 : (D4BMJointWave.tortoiseRadius t:ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt (by linarith : 0 < D4BMJointWave.tortoiseRadius t))
   rw [horizonCoordinate,radialUnit_inverse_radius,sourceProfile_original _ _ _ _ _ _ hr,
@@ -62,8 +62,8 @@ theorem sourceProfile_tortoise (s w a J K T : ℂ) (t : ℝ) (ht : t < 0) :
 /-- The two-derivative actual tortoise response solves the original normalized radial wave. -/
 theorem tortoiseGreen_equation {w chi : ℂ} (h : Chamber w chi) (s a J K T : ℂ)
     (t : ℝ) (ht : t < 0) :
-    w^2*tortoiseGreen w chi s a J K T t-tortoiseGreenSecond w chi s a J K T t+
-      (horizonCoordinate t:ℂ)*(1/4+chi^2)*tortoiseGreen w chi s a J K T t =
+    w^(2 : ℕ)*tortoiseGreen w chi s a J K T t-tortoiseGreenSecond w chi s a J K T t+
+      (horizonCoordinate t:ℂ)*(1/4+chi^(2 : ℕ))*tortoiseGreen w chi s a J K T t =
         originalForcing s w a T J K t := by
   have hz := horizonCoordinate_interior t ht
   have hz0 : (horizonCoordinate t:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hz.1)
@@ -75,7 +75,7 @@ theorem tortoiseGreen_equation {w chi : ℂ} (h : Chamber w chi) (s a J K T : �
   rw [mul_pow,Complex.I_sq] at he
   field_simp at he
   dsimp only [tortoiseGreen,tortoiseGreenSecond,coordinateFirst,coordinateSecond,originalForcing]
-  have hu : (radialUnit t:ℂ)^2 = 1-(horizonCoordinate t:ℂ) := by
+  have hu : (radialUnit t:ℂ)^(2 : ℕ) = 1-(horizonCoordinate t:ℂ) := by
     simp only [horizonCoordinate,Complex.ofReal_sub,Complex.ofReal_one,Complex.ofReal_pow]
     ring
   push_cast

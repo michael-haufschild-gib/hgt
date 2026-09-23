@@ -119,20 +119,20 @@ theorem bourgainSquareRootExactLocalSum_eq_leftFrequencySum
         (bourgainSquareRootCurvePhase
           ((bourgainScaledOsculatingPhaseContinuousLinearEquiv
             hscale ha hab).symm (bourgainCoordinateScale L x))
-          (a ^ 2 + (bourgainIndex n : ℝ) / D)) =
+          (a ^ (2 : ℕ) + (bourgainIndex n : ℝ) / D)) =
       c n * bourgainUnitCharacter
         (bourgainSquareRootCurvePhase
             ((bourgainScaledOsculatingPhaseContinuousLinearEquiv
               hscale ha hab).symm (bourgainCoordinateScale L x))
-            (a ^ 2) +
+            (a ^ (2 : ℕ)) +
           (bourgainSquareRootCurvePhase
               ((bourgainScaledOsculatingPhaseContinuousLinearEquiv
                 hscale ha hab).symm (bourgainCoordinateScale L x))
-              (a ^ 2 + (bourgainIndex n : ℝ) / D) -
+              (a ^ (2 : ℕ) + (bourgainIndex n : ℝ) / D) -
             bourgainSquareRootCurvePhase
               ((bourgainScaledOsculatingPhaseContinuousLinearEquiv
                 hscale ha hab).symm (bourgainCoordinateScale L x))
-              (a ^ 2))) := by
+              (a ^ (2 : ℕ)))) := by
         congr 3
         ring
     _ = _ := by
@@ -168,20 +168,20 @@ theorem bourgainSquareRootExactLocalSum_eq_rightFrequencySum
         (bourgainSquareRootCurvePhase
           ((bourgainScaledOsculatingPhaseContinuousLinearEquiv
             hscale ha hab).symm (bourgainCoordinateScale L x))
-          (b ^ 2 + (bourgainIndex n : ℝ) / D)) =
+          (b ^ (2 : ℕ) + (bourgainIndex n : ℝ) / D)) =
       c n * bourgainUnitCharacter
         (bourgainSquareRootCurvePhase
             ((bourgainScaledOsculatingPhaseContinuousLinearEquiv
               hscale ha hab).symm (bourgainCoordinateScale L x))
-            (b ^ 2) +
+            (b ^ (2 : ℕ)) +
           (bourgainSquareRootCurvePhase
               ((bourgainScaledOsculatingPhaseContinuousLinearEquiv
                 hscale ha hab).symm (bourgainCoordinateScale L x))
-              (b ^ 2 + (bourgainIndex n : ℝ) / D) -
+              (b ^ (2 : ℕ) + (bourgainIndex n : ℝ) / D) -
             bourgainSquareRootCurvePhase
               ((bourgainScaledOsculatingPhaseContinuousLinearEquiv
                 hscale ha hab).symm (bourgainCoordinateScale L x))
-              (b ^ 2))) := by
+              (b ^ (2 : ℕ)))) := by
         congr 3
         ring
     _ = _ := by

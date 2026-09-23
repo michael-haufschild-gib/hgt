@@ -462,7 +462,7 @@ theorem freeCoordinate_rationalField_ne_zero
 def projectiveJetSchwarzian
     (C : Type*) [Field C] : FreeCoordinateRationalField C ℕ :=
   freeCoordinate C ℕ 3 / freeCoordinate C ℕ 1 -
-    (freeCoordinate C ℕ 2 / freeCoordinate C ℕ 1) ^ 2
+    (freeCoordinate C ℕ 2 / freeCoordinate C ℕ 1) ^ (2 : ℕ)
 
 /-- The constant translation mode fixes the normalized Schwarzian. -/
 theorem projectiveJetCurrentE_zero_schwarzian

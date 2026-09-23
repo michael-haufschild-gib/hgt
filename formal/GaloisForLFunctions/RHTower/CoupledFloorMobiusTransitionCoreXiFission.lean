@@ -50,14 +50,14 @@ theorem coupledFloorMobiusCompletedAbelReadout_eq_source_add_error
     mobiusDivisorSquareRootAbelMoment_eq_coherent_add_gammaBoundary hM]
   ring
 
-/-- A `1/M` affine-Riesz landing error becomes `1/M^2` after completed-source normalization. -/
+/-- A `1/M` affine-Riesz landing error becomes `1/M^(2 : ℕ)` after completed-source normalization. -/
 theorem abs_coupledFloorMobiusCompletedAbelLandingError_lt_inv_sq
     {omega : ℝ} {M : ℕ} (hM : 1 ≤ M)
     (herror :
       |coupledFloorMobiusAffineRieszReadout omega M -
         mobiusDivisorSquareRootAbelMoment M| < 1 / (M : ℝ)) :
     |coupledFloorMobiusCompletedAbelLandingError omega M| <
-      1 / (M : ℝ) ^ 2 := by
+      1 / (M : ℝ) ^ (2 : ℕ) := by
   have hMR : (0 : ℝ) < M := by exact_mod_cast (show 0 < M by omega)
   rw [coupledFloorMobiusCompletedAbelLandingError, abs_div, abs_of_pos hMR]
   calc
@@ -65,7 +65,7 @@ theorem abs_coupledFloorMobiusCompletedAbelLandingError_lt_inv_sq
           mobiusDivisorSquareRootAbelMoment M| / (M : ℝ) <
         (1 / (M : ℝ)) / (M : ℝ) :=
       div_lt_div_of_pos_right herror hMR
-    _ = 1 / (M : ℝ) ^ 2 := by ring
+    _ = 1 / (M : ℝ) ^ (2 : ℕ) := by ring
 
 /-- Exact CFI-to-SP-E/Route-P multi-gate source law.  One positive source-selected critical
 schedule has inverse-square completed landing error.  After subtracting that explicit error, the
@@ -78,7 +78,7 @@ theorem exists_coupledFloorMobiusCompletedAbelXiFissionSchedule :
         0 < omega N ∧
         omega N < 1 / ((N : ℝ) + 1) ∧
         |coupledFloorMobiusCompletedAbelLandingError (omega N) (N + 1)| <
-          1 / (((N + 1 : ℕ) : ℝ) ^ 2) ∧
+          1 / (((N + 1 : ℕ) : ℝ) ^ (2 : ℕ)) ∧
         ∀ (_hcharge : unitRieszCoherentPrimeOutgoingCharge (N + 1) ≠ 0)
             (rho : XiDivisorSupport) (r : ℝ),
           suzukiTransitionCoreAlignedXiSharedOrientationShortEnergy (N + 1) rho r =
@@ -86,7 +86,7 @@ theorem exists_coupledFloorMobiusCompletedAbelXiFissionSchedule :
               suzukiNaturalApertureTransitionCoreCauchyEnergy (N + 1) *
                 ((coupledFloorMobiusCompletedAbelReadout (omega N) (N + 1) -
                     coupledFloorMobiusCompletedAbelLandingError (omega N) (N + 1)) /
-                  unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ 2 *
+                  unitRieszCoherentPrimeOutgoingCharge (N + 1)) ^ (2 : ℕ) *
                 Complex.normSq
                   (routePXiBaseConormalResidueFeature (rho : ℂ) r) := by
   obtain ⟨omega, homega, _hlimit, hpoint⟩ :=

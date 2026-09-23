@@ -96,7 +96,7 @@ theorem charpoly_singleDirectionHam [Nontrivial R] [DecidableEq R]
     {m : ℕ} (d : (Fin (m + 1) → Bool) → R) (u : R) (i : Fin (m + 1)) :
     (singleDirectionHam d u i).charpoly
       = ∏ z : Fin m → Bool,
-          (X ^ 2 -
+          (X ^ (2 : ℕ) -
             C (d ((cubeRelabel (Equiv.swap 0 i)).symm (Fin.cons false z))
               + d ((cubeRelabel (Equiv.swap 0 i)).symm (Fin.cons true z))) * X
             + C (d ((cubeRelabel (Equiv.swap 0 i)).symm (Fin.cons false z))

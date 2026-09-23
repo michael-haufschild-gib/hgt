@@ -41,14 +41,14 @@ theorem realTrigDeg_cosPoly (N : ℕ) (b : ℕ → ℝ) : RealTrigDeg N (cosPoly
 /-! ## The Cayley transport is the spectral derivative -/
 
 theorem cos_half_inverseChart_sq {a : ℝ} (ha : 0 < a) (x : ℝ) :
-    Real.cos (routeUHardEdgeInverseChart a x / 2) ^ 2 = a ^ 2 / (a ^ 2 + x ^ 2) := by
+    Real.cos (routeUHardEdgeInverseChart a x / 2) ^ (2 : ℕ) = a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) := by
   have hane : a ≠ 0 := ne_of_gt ha
-  have hpos : (0 : ℝ) < a ^ 2 + x ^ 2 := by positivity
+  have hpos : (0 : ℝ) < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
   rw [routeUHardEdgeInverseChart_half, Real.cos_arctan]
-  have hsqrt : Real.sqrt (1 + (x / a) ^ 2) ^ 2 = 1 + (x / a) ^ 2 :=
+  have hsqrt : Real.sqrt (1 + (x / a) ^ (2 : ℕ)) ^ (2 : ℕ) = 1 + (x / a) ^ (2 : ℕ) :=
     Real.sq_sqrt (by positivity)
-  have hne : Real.sqrt (1 + (x / a) ^ 2) ≠ 0 := by
-    have : (0 : ℝ) < Real.sqrt (1 + (x / a) ^ 2) := Real.sqrt_pos.mpr (by positivity)
+  have hne : Real.sqrt (1 + (x / a) ^ (2 : ℕ)) ≠ 0 := by
+    have : (0 : ℝ) < Real.sqrt (1 + (x / a) ^ (2 : ℕ)) := Real.sqrt_pos.mpr (by positivity)
     exact ne_of_gt this
   rw [div_pow, one_pow, hsqrt]
   field_simp
@@ -57,7 +57,7 @@ theorem hasDerivAt_routeUCayleyLift_step {a : ℝ} (ha : 0 < a) {F F' : ℝ → 
     (hF : ∀ θ : ℝ, HasDerivAt F (F' θ) θ) (x : ℝ) :
     HasDerivAt (routeUCayleyLift a F) (routeUCayleyLift a (trigCayleyStep a F F') x) x := by
   have hane : a ≠ 0 := ne_of_gt ha
-  have hpos : (0 : ℝ) < a ^ 2 + x ^ 2 := by positivity
+  have hpos : (0 : ℝ) < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
   have hbase := hasDerivAt_routeUCayleyLift ha hF x
   refine hbase.congr_deriv ?_
   obtain ⟨ψ, hψ⟩ : ∃ ψ : ℝ, ψ = routeUHardEdgeInverseChart a x := ⟨_, rfl⟩
@@ -65,21 +65,21 @@ theorem hasDerivAt_routeUCayleyLift_step {a : ℝ} (ha : 0 < a) {F F' : ℝ → 
   have hsin : Real.sin ψ = 2 * Real.sin (ψ / 2) * Real.cos (ψ / 2) := by
     rw [show ψ = 2 * (ψ / 2) by ring, Real.sin_two_mul]
     ring_nf
-  have hcos : 1 + Real.cos ψ = 2 * Real.cos (ψ / 2) ^ 2 := by
+  have hcos : 1 + Real.cos ψ = 2 * Real.cos (ψ / 2) ^ (2 : ℕ) := by
     rw [show ψ = 2 * (ψ / 2) by ring, Real.cos_two_mul]
     ring_nf
-  have hsq : Real.cos (ψ / 2) ^ 2 = a ^ 2 / (a ^ 2 + x ^ 2) := by
+  have hsq : Real.cos (ψ / 2) ^ (2 : ℕ) = a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) := by
     rw [hψ]
     exact cos_half_inverseChart_sq ha x
   rw [hsin, hcos]
   have hexpand : Real.cos (ψ / 2)
       * (1 / a * (-(1 / 2) * (2 * Real.sin (ψ / 2) * Real.cos (ψ / 2)) * F ψ
-        + 2 * Real.cos (ψ / 2) ^ 2 * F' ψ))
-      = (2 / a) * Real.cos (ψ / 2) ^ 2
+        + 2 * Real.cos (ψ / 2) ^ (2 : ℕ) * F' ψ))
+      = (2 / a) * Real.cos (ψ / 2) ^ (2 : ℕ)
         * (-(1 / 2) * Real.sin (ψ / 2) * F ψ + Real.cos (ψ / 2) * F' ψ) := by
     field_simp
   rw [hexpand, hsq]
-  have hfac : (2 / a) * (a ^ 2 / (a ^ 2 + x ^ 2)) = 2 * a / (a ^ 2 + x ^ 2) := by
+  have hfac : (2 / a) * (a ^ (2 : ℕ) / (a ^ (2 : ℕ) + x ^ (2 : ℕ))) = 2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ)) := by
     field_simp
   rw [hfac]
 
@@ -107,9 +107,9 @@ theorem iteratedDeriv_routeUCayleyLift {a : ℝ} (ha : 0 < a) {D : ℕ} :
 /-- **The iterated spectral derivative bound for a Cayley lift.** -/
 theorem integral_iteratedDeriv_routeUCayleyLift_sq_le {a : ℝ} (ha : 0 < a) {D : ℕ} (m : ℕ)
     {F : ℝ → ℝ} (hF : RealTrigDeg D F) :
-    (∫ x : ℝ, iteratedDeriv m (routeUCayleyLift a F) x ^ 2)
-      ≤ (∏ i ∈ Finset.range m, (1 / a) * (1 / 2 + 2 * ((D : ℝ) + (i : ℝ)))) ^ 2
-          * ∫ x : ℝ, routeUCayleyLift a F x ^ 2 := by
+    (∫ x : ℝ, iteratedDeriv m (routeUCayleyLift a F) x ^ (2 : ℕ))
+      ≤ (∏ i ∈ Finset.range m, (1 / a) * (1 / 2 + 2 * ((D : ℝ) + (i : ℝ)))) ^ (2 : ℕ)
+          * ∫ x : ℝ, routeUCayleyLift a F x ^ (2 : ℕ) := by
   have hbound := trigNorm_trigCayleyIter_le ha m D hF
   have hP : (0 : ℝ) ≤ ∏ i ∈ Finset.range m, (1 / a) * (1 / 2 + 2 * ((D : ℝ) + (i : ℝ))) := by
     refine Finset.prod_nonneg fun i _ => ?_
@@ -117,9 +117,9 @@ theorem integral_iteratedDeriv_routeUCayleyLift_sq_le {a : ℝ} (ha : 0 < a) {D 
     have h2 : (0 : ℝ) ≤ (i : ℝ) := Nat.cast_nonneg i
     have h3 : (0 : ℝ) < 1 / a := by positivity
     nlinarith
-  have hsq : trigNorm (trigCayleyIter a m F) ^ 2
-      ≤ (∏ i ∈ Finset.range m, (1 / a) * (1 / 2 + 2 * ((D : ℝ) + (i : ℝ)))) ^ 2
-        * trigNorm F ^ 2 := by
+  have hsq : trigNorm (trigCayleyIter a m F) ^ (2 : ℕ)
+      ≤ (∏ i ∈ Finset.range m, (1 / a) * (1 / 2 + 2 * ((D : ℝ) + (i : ℝ)))) ^ (2 : ℕ)
+        * trigNorm F ^ (2 : ℕ) := by
     have hn : (0 : ℝ) ≤ trigNorm (trigCayleyIter a m F) := trigNorm_nonneg _
     have hn2 : (0 : ℝ) ≤ trigNorm F := trigNorm_nonneg F
     nlinarith [hbound, hP, hn, hn2]

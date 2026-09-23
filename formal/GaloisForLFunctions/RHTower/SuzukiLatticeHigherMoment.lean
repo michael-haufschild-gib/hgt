@@ -82,9 +82,9 @@ theorem eval_posMul_exp (Q : Finset (P → ℤ)) (c : (P → ℤ) → ℂ) (p : 
   rw [hAp] at hsumA
   rw [← tsum_mul_left, (hsumψ.mul_left ((r p : ℤ) : ℂ)).tsum_eq_zero_add,
     hsumφ.tsum_eq_zero_add, ← tsum_mul_left]
-  have hzero : ((r p : ℤ) : ℂ) * ((((Nat.factorial 0 : ℕ) : ℂ)⁻¹ * z ^ 0)
+  have hzero : ((r p : ℤ) : ℂ) * ((((Nat.factorial 0 : ℕ) : ℂ)⁻¹ * z ^ (0 : ℕ))
       * ((adjacencyField Q c)^[0] ((ψ : H) : (P → ℤ) → ℂ)) r)
-      = (((Nat.factorial 0 : ℕ) : ℂ)⁻¹ * z ^ 0)
+      = (((Nat.factorial 0 : ℕ) : ℂ)⁻¹ * z ^ (0 : ℕ))
         * ((adjacencyField Q c)^[0] (posMulField p ((ψ : H) : (P → ℤ) → ℂ))) r := by
     simp [posMulField]
   rw [hzero]

@@ -63,7 +63,7 @@ theorem mem_unitaryGroup_diagonal (w : Fin n → ℂ) (hw : ∀ i, ‖w i‖ = 1
   funext i
   have hsq : Complex.normSq (w i) = 1 := by
     have h1 := hw i
-    have h2 : ‖w i‖ ^ 2 = 1 := by rw [h1]; norm_num
+    have h2 : ‖w i‖ ^ (2 : ℕ) = 1 := by rw [h1]; norm_num
     rw [← Complex.normSq_eq_norm_sq] at h2
     exact h2
   have hmul : (w i) * (starRingEnd ℂ) (w i) = 1 := by

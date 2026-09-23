@@ -73,7 +73,7 @@ theorem exists_poleCrossing_admissible_physicalThetaAbelEnergySourceContour_cont
           (xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a)) < epsilon := by
   let f : XiZeroCopy → ℂ := fun q =>
     xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a
-      (xiSpectralPoint q) ^ 2
+      (xiSpectralPoint q) ^ (2 : ℕ)
   have hsum : Summable f :=
     xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_summable hA hc L a
   have hball : Metric.ball (∑' q, f q) epsilon ∈ nhds (∑' q, f q) :=

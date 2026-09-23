@@ -29,7 +29,7 @@ theorem bilinear_basis (B : Point3 →L[ℝ] Point3 →L[ℝ] ℂ) (v w : Point3
 /-- The full actual Hessian contracts to the Euclidean trace, without a symmetry premise. -/
 theorem principal_contraction (p : Point3) (B : Point3 →L[ℝ] Point3 →L[ℝ] ℂ) :
     (∑ i : Fin 3, (ellipticCoefficient p i:ℂ)*B (chartFirst p i) (chartFirst p i)) =
-      (chart p 1:ℂ)^2*∑ j : Fin 3, B (Pi.single j 1) (Pi.single j 1) := by
+      (chart p 1:ℂ)^(2 : ℕ)*∑ j : Fin 3, B (Pi.single j 1) (Pi.single j 1) := by
   calc
     _ = ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3,
         ((ellipticCoefficient p i:ℂ)*(chartFirst p i j:ℂ)*(chartFirst p i k:ℂ))*

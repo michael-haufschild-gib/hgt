@@ -12,7 +12,7 @@ open _root_.RHTower
 theorem complexUnitBandValue_eq_c_mul_fullSingular_sq
     {c : ℝ} (hc : 0 < c) (k : ℕ) :
     complexUnitBandValue c k =
-      (c / (2 * Real.pi)) * indexedFullSlepianSingularValue c k ^ 2 := by
+      (c / (2 * Real.pi)) * indexedFullSlepianSingularValue c k ^ (2 : ℕ) := by
   have h := rectApproxNumber_apertureMomentSynthesis_sq_eq_scaled_bandValue hc k
   field_simp [hc.ne', Real.pi_ne_zero] at h ⊢
   nlinarith
@@ -26,8 +26,8 @@ theorem exists_pos_eventually_complexUnitBandValue_twoSided (k : ℕ) :
           complexUnitBandValue c k ≤ B * c ^ (2 * k + 1) := by
   obtain ⟨C, D, hC, hD, hbounds⟩ :=
     exists_pos_eventually_rectApproxNumber_full_twoSided k
-  let A : ℝ := C ^ 2 / (2 * Real.pi)
-  let B : ℝ := D ^ 2 / (2 * Real.pi)
+  let A : ℝ := C ^ (2 : ℕ) / (2 * Real.pi)
+  let B : ℝ := D ^ (2 : ℕ) / (2 * Real.pi)
   have hA : 0 < A := by dsimp [A]; positivity
   have hB : 0 < B := by dsimp [B]; positivity
   refine ⟨A, B, hA, hB, ?_⟩
@@ -39,31 +39,31 @@ theorem exists_pos_eventually_complexUnitBandValue_twoSided (k : ℕ) :
   rw [hcAbs] at hcBounds
   let s : ℝ := indexedFullSlepianSingularValue c k
   have hs0 : 0 ≤ s := rectApproxNumber_nonneg _ _
-  have hlowSq : (C * c ^ k) ^ 2 ≤ s ^ 2 :=
+  have hlowSq : (C * c ^ k) ^ (2 : ℕ) ≤ s ^ (2 : ℕ) :=
     pow_le_pow_left₀ (mul_nonneg hC.le (pow_nonneg hc.le _)) hcBounds.1 2
-  have huppSq : s ^ 2 ≤ (D * c ^ k) ^ 2 :=
+  have huppSq : s ^ (2 : ℕ) ≤ (D * c ^ k) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hs0 hcBounds.2 2
-  have hpow : c ^ (2 * k + 1) = c * (c ^ k) ^ 2 := by
+  have hpow : c ^ (2 * k + 1) = c * (c ^ k) ^ (2 : ℕ) := by
     calc
       c ^ (2 * k + 1) = c ^ (1 + k * 2) := by congr 1; omega
-      _ = c ^ 1 * c ^ (k * 2) := pow_add _ _ _
-      _ = c * (c ^ k) ^ 2 := by rw [pow_one, pow_mul]
+      _ = c ^ (1 : ℕ) * c ^ (k * 2) := pow_add _ _ _
+      _ = c * (c ^ k) ^ (2 : ℕ) := by rw [pow_one, pow_mul]
   rw [complexUnitBandValue_eq_c_mul_fullSingular_sq hc k]
-  change A * c ^ (2 * k + 1) ≤ (c / (2 * Real.pi)) * s ^ 2 ∧
-    (c / (2 * Real.pi)) * s ^ 2 ≤ B * c ^ (2 * k + 1)
+  change A * c ^ (2 * k + 1) ≤ (c / (2 * Real.pi)) * s ^ (2 : ℕ) ∧
+    (c / (2 * Real.pi)) * s ^ (2 : ℕ) ≤ B * c ^ (2 * k + 1)
   constructor
   · calc
       A * c ^ (2 * k + 1) =
-          (c / (2 * Real.pi)) * (C * c ^ k) ^ 2 := by
+          (c / (2 * Real.pi)) * (C * c ^ k) ^ (2 : ℕ) := by
         dsimp [A]
         rw [hpow]
         field_simp [Real.pi_ne_zero]
-      _ ≤ (c / (2 * Real.pi)) * s ^ 2 :=
+      _ ≤ (c / (2 * Real.pi)) * s ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hlowSq
           (div_nonneg hc.le (mul_nonneg (by norm_num) Real.pi_pos.le))
   · calc
-      (c / (2 * Real.pi)) * s ^ 2 ≤
-          (c / (2 * Real.pi)) * (D * c ^ k) ^ 2 :=
+      (c / (2 * Real.pi)) * s ^ (2 : ℕ) ≤
+          (c / (2 * Real.pi)) * (D * c ^ k) ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left huppSq
           (div_nonneg hc.le (mul_nonneg (by norm_num) Real.pi_pos.le))
       _ = B * c ^ (2 * k + 1) := by
@@ -112,20 +112,20 @@ theorem eventually_lt_of_birth_order_succ_two
     (hg : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), g c ≤ B * c ^ (p + 2)) :
     ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), g c < f c := by
   let L := 𝓝[>] (0 : ℝ)
-  have hsq : Tendsto (fun c : ℝ => B * c ^ 2) L (nhds 0) := by
-    have h0 : Tendsto (fun c : ℝ => c ^ 2) L (nhds 0) := by
+  have hsq : Tendsto (fun c : ℝ => B * c ^ (2 : ℕ)) L (nhds 0) := by
+    have h0 : Tendsto (fun c : ℝ => c ^ (2 : ℕ)) L (nhds 0) := by
       simpa [L] using
         (continuousAt_pow (0 : ℝ) 2).tendsto.mono_left
           (show L ≤ 𝓝 (0 : ℝ) from inf_le_left)
     simpa using tendsto_const_nhds.mul h0
-  have hsmall : ∀ᶠ c : ℝ in L, B * c ^ 2 < A :=
+  have hsmall : ∀ᶠ c : ℝ in L, B * c ^ (2 : ℕ) < A :=
     (tendsto_order.1 hsq).2 A hA
   filter_upwards [hf, hg, hsmall, self_mem_nhdsWithin]
     with c hflow hgup hsmall hc
-  have hpow : c ^ (p + 2) = c ^ p * c ^ 2 := pow_add c p 2
+  have hpow : c ^ (p + 2) = c ^ p * c ^ (2 : ℕ) := pow_add c p 2
   calc
     g c ≤ B * c ^ (p + 2) := hgup
-    _ = c ^ p * (B * c ^ 2) := by rw [hpow]; ring
+    _ = c ^ p * (B * c ^ (2 : ℕ)) := by rw [hpow]; ring
     _ < c ^ p * A :=
       mul_lt_mul_of_pos_left hsmall (pow_pos hc p)
     _ = A * c ^ p := by ring
@@ -275,7 +275,7 @@ theorem exists_unit_phase_evenOutput_eq_fullOutput
     have hfull :=
       rectApproxNumber_apertureMomentSynthesis_sq_eq_scaled_bandValue hc (2 * n)
     have heven := rectApproxNumber_complexEven_sq_eq_scaled_evenValue hc n
-    change indexedEvenSlepianSingularValue c n ^ 2 =
+    change indexedEvenSlepianSingularValue c n ^ (2 : ℕ) =
       (2 * Real.pi / c) * complexUnitBandEvenValue c n at heven
     have hseven := indexedEvenSlepianSingularValue_pos hc n
     rw [hvalue] at hfull

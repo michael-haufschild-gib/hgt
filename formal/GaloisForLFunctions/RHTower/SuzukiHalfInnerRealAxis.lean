@@ -82,31 +82,31 @@ theorem norm_dslope_suzukiHalfInner_ofReal_le (hc : XiC c = 0) {x : ℝ}
   exact norm_suzukiHalfInner_ofReal_le_one x
 
 theorem norm_sq_ofReal_sub_center (w : ℂ) (x : ℝ) :
-    ‖((x : ℝ) : ℂ) - w‖ ^ 2 = (x - w.re) ^ 2 + w.im ^ 2 := by
+    ‖((x : ℝ) : ℂ) - w‖ ^ (2 : ℕ) = (x - w.re) ^ (2 : ℕ) + w.im ^ (2 : ℕ) := by
   rw [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
   simp
   ring
 
 /-- A single Cauchy-kernel majorant for the squared modulus of the divided slope along the real
-axis: bounded near the centre by compactness, and by `1/(x-c.re)^2` far away. -/
+axis: bounded near the centre by compactness, and by `1/(x-c.re)^(2 : ℕ)` far away. -/
 theorem exists_bound_norm_sq_dslope_suzukiHalfInner (hc : XiC c = 0) :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ x : ℝ,
-      ‖dslope suzukiHalfInner c ((x : ℝ) : ℂ)‖ ^ 2 ≤ D / (1 + (x - c.re) ^ 2) := by
+      ‖dslope suzukiHalfInner c ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) ≤ D / (1 + (x - c.re) ^ (2 : ℕ)) := by
   set f : ℝ → ℂ := fun x => dslope suzukiHalfInner c ((x : ℝ) : ℂ) with hf
   have hcont : Continuous f := continuous_dslope_suzukiHalfInner_ofReal hc
   obtain ⟨C, hC⟩ := (isCompact_Icc (a := c.re - 1) (b := c.re + 1)).exists_bound_of_continuousOn
     hcont.continuousOn
   have hC0 : 0 ≤ C := le_trans (norm_nonneg (f c.re)) (hC c.re (by constructor <;> linarith))
-  refine ⟨2 * C ^ 2 + 2, by positivity, fun x => ?_⟩
-  have hpos : (0 : ℝ) < 1 + (x - c.re) ^ 2 := by positivity
+  refine ⟨2 * C ^ (2 : ℕ) + 2, by positivity, fun x => ?_⟩
+  have hpos : (0 : ℝ) < 1 + (x - c.re) ^ (2 : ℕ) := by positivity
   rw [le_div_iff₀ hpos]
   by_cases hx : x ∈ Set.Icc (c.re - 1) (c.re + 1)
   · have h1 : ‖f x‖ ≤ C := hC x hx
-    have h2 : (x - c.re) ^ 2 ≤ 1 := by
+    have h2 : (x - c.re) ^ (2 : ℕ) ≤ 1 := by
       obtain ⟨hl, hr⟩ := hx
       nlinarith
     nlinarith [norm_nonneg (f x), sq_nonneg (x - c.re)]
-  · have hfar : 1 < (x - c.re) ^ 2 := by
+  · have hfar : 1 < (x - c.re) ^ (2 : ℕ) := by
       simp only [Set.mem_Icc, not_and_or, not_le] at hx
       rcases hx with h | h <;> nlinarith
     have hne : ((x : ℝ) : ℂ) ≠ c := by
@@ -118,23 +118,23 @@ theorem exists_bound_norm_sq_dslope_suzukiHalfInner (hc : XiC c = 0) :
     have hden : (0 : ℝ) < ‖((x : ℝ) : ℂ) - c‖ := by
       simpa [sub_eq_zero] using hne
     have h1 : ‖f x‖ ≤ 1 / ‖((x : ℝ) : ℂ) - c‖ := norm_dslope_suzukiHalfInner_ofReal_le hc hne
-    have h2 : ‖f x‖ ^ 2 ≤ 1 / ‖((x : ℝ) : ℂ) - c‖ ^ 2 := by
+    have h2 : ‖f x‖ ^ (2 : ℕ) ≤ 1 / ‖((x : ℝ) : ℂ) - c‖ ^ (2 : ℕ) := by
       have hsq := mul_self_le_mul_self (norm_nonneg (f x)) h1
       rw [← pow_two] at hsq
-      calc ‖f x‖ ^ 2
+      calc ‖f x‖ ^ (2 : ℕ)
           ≤ (1 / ‖((x : ℝ) : ℂ) - c‖) * (1 / ‖((x : ℝ) : ℂ) - c‖) := hsq
-        _ = 1 / ‖((x : ℝ) : ℂ) - c‖ ^ 2 := by field_simp
+        _ = 1 / ‖((x : ℝ) : ℂ) - c‖ ^ (2 : ℕ) := by field_simp
     rw [norm_sq_ofReal_sub_center] at h2
-    have h3 : (0 : ℝ) < (x - c.re) ^ 2 + c.im ^ 2 := by nlinarith [sq_nonneg c.im]
-    have h4 : ‖f x‖ ^ 2 * ((x - c.re) ^ 2 + c.im ^ 2) ≤ 1 := by
+    have h3 : (0 : ℝ) < (x - c.re) ^ (2 : ℕ) + c.im ^ (2 : ℕ) := by nlinarith [sq_nonneg c.im]
+    have h4 : ‖f x‖ ^ (2 : ℕ) * ((x - c.re) ^ (2 : ℕ) + c.im ^ (2 : ℕ)) ≤ 1 := by
       rw [← le_div_iff₀ h3]
       simpa using h2
     nlinarith [sq_nonneg c.im, norm_nonneg (f x), sq_nonneg (‖f x‖)]
 
 theorem integrable_norm_sq_dslope_suzukiHalfInner (hc : XiC c = 0) :
-    Integrable (fun x : ℝ => ‖dslope suzukiHalfInner c ((x : ℝ) : ℂ)‖ ^ 2) := by
+    Integrable (fun x : ℝ => ‖dslope suzukiHalfInner c ((x : ℝ) : ℂ)‖ ^ (2 : ℕ)) := by
   obtain ⟨D, hD0, hD⟩ := exists_bound_norm_sq_dslope_suzukiHalfInner hc
-  have hg : Integrable (fun x : ℝ => D * (1 + (x - c.re) ^ 2)⁻¹) :=
+  have hg : Integrable (fun x : ℝ => D * (1 + (x - c.re) ^ (2 : ℕ))⁻¹) :=
     (integrable_inv_one_add_sq.comp_sub_right c.re).const_mul D
   refine Integrable.mono' hg
     (((continuous_dslope_suzukiHalfInner_ofReal hc).norm.pow 2).aestronglyMeasurable) ?_

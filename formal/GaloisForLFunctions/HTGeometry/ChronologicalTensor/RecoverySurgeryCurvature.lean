@@ -22,7 +22,7 @@ theorem recoverySurgeryCorePower_deficit (n : ℕ) :
   ring
 
 theorem recoverySurgeryCorePower_deficit_bound (n : ℕ) :
-    1-recoverySurgeryCorePower n ≤ 11/(32*(n+2 : ℝ)^2) := by
+    1-recoverySurgeryCorePower n ≤ 11/(32*(n+2 : ℝ)^(2 : ℕ)) := by
   rw [recoverySurgeryCorePower_deficit]
   have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
   have he := recoverySurgeryEpsilon_pos n
@@ -36,16 +36,16 @@ theorem recoverySurgeryCorePower_deficit_bound (n : ℕ) :
       nlinarith [mul_nonneg (sq_nonneg (n+2 : ℝ)) (show 0 ≤ (n+2 : ℝ)-1 by linarith)]
 
 theorem recoverySurgeryCorePower_curvature_boundary (n : ℕ) :
-    1-1/(n+1 : ℝ)^2 < recoverySurgeryCorePower n := by
+    1-1/(n+1 : ℝ)^(2 : ℕ) < recoverySurgeryCorePower n := by
   have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
-  have he : 11/(32*(n+2 : ℝ)^2) < 1/(n+1 : ℝ)^2 := by
+  have he : 11/(32*(n+2 : ℝ)^(2 : ℕ)) < 1/(n+1 : ℝ)^(2 : ℕ) := by
     apply (div_lt_div_iff₀ (by positivity) (by positivity)).mpr
     nlinarith
   linarith [recoverySurgeryCorePower_deficit_bound n]
 
 theorem recoveryWedgeGap_curvature_ratio (k : ℕ) :
-    (recoveryWedgeGap (k+1))^2 =
-      (1-1/(k+2 : ℝ)^2)*recoveryWedgeGap k*recoveryWedgeGap (k+2) := by
+    (recoveryWedgeGap (k+1))^(2 : ℕ) =
+      (1-1/(k+2 : ℝ)^(2 : ℕ))*recoveryWedgeGap k*recoveryWedgeGap (k+2) := by
   unfold recoveryWedgeGap
   push_cast
   rw [pow_succ (2 : ℝ) (k+2), pow_succ (2 : ℝ) (k+1)]
@@ -53,13 +53,13 @@ theorem recoveryWedgeGap_curvature_ratio (k : ℕ) :
   ring
 
 theorem recoveryWedgeGap_strict_logconvex (k : ℕ) :
-    (recoveryWedgeGap (k+1))^2 < recoveryWedgeGap k*recoveryWedgeGap (k+2) := by
+    (recoveryWedgeGap (k+1))^(2 : ℕ) < recoveryWedgeGap k*recoveryWedgeGap (k+2) := by
   rw [recoveryWedgeGap_curvature_ratio]
-  have h : 0 < 1/(k+2 : ℝ)^2 := by positivity
+  have h : 0 < 1/(k+2 : ℝ)^(2 : ℕ) := by positivity
   nlinarith [mul_pos (recoveryWedgeGap_positive k) (recoveryWedgeGap_positive (k+2))]
 
 theorem recoverySurgeryGap_prefix_strict_logconvex (n : ℕ) (k : Fin n) :
-    (recoverySurgeryGap n (k.val+1))^2 <
+    (recoverySurgeryGap n (k.val+1))^(2 : ℕ) <
       recoverySurgeryGap n k.val * recoverySurgeryGap n (k.val+2) := by
   obtain ⟨k,hk⟩ := k
   rw [recoverySurgeryGap_prefix n ⟨k+1,by omega⟩,

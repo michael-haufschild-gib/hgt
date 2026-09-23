@@ -48,9 +48,9 @@ theorem exists_hermiteFun_ne_zero_Ioo (m : ℕ) {A B : ℝ} (hAB : A < B) :
     refine himg.mono ?_
     rintro y ⟨x, hx, rfl⟩
     have h := hcon x hx
-    have hexp : Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4)) ≠ 0 := (Real.exp_pos _).ne'
+    have hexp : Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4)) ≠ 0 := (Real.exp_pos _).ne'
     have hval : Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite m)
-        * Real.exp (-((Real.sqrt 2 * x) ^ 2 / 4)) = 0 := h
+        * Real.exp (-((Real.sqrt 2 * x) ^ (2 : ℕ) / 4)) = 0 := h
     have hz : Polynomial.aeval (Real.sqrt 2 * x) (Polynomial.hermite m) = 0 := by
       rcases mul_eq_zero.1 hval with h1 | h2
       · exact h1

@@ -52,7 +52,7 @@ theorem offDiagonal_norm_le_of_posSemidef_equalVacuumDiagonal
   have hmul : M 0 1 * star (M 0 1) =
       (Complex.normSq (M 0 1) : ℂ) := Complex.mul_conj _
   rw [hmul, Complex.le_def] at hdet
-  have hsq : ‖M 0 1‖ ^ 2 ≤ a ^ 2 := by
+  have hsq : ‖M 0 1‖ ^ (2 : ℕ) ≤ a ^ (2 : ℕ) := by
     rw [Complex.sq_norm]
     norm_num at hdet
     simpa [pow_two] using hdet
@@ -68,14 +68,14 @@ theorem offDiagonal_norm_eq_of_equalVacuumDiagonalPureLift
   have h10 : M 1 0 = star (M 0 1) := by
     simpa using congrArg star hherm
   rw [Matrix.det_fin_two, h00, h11, h10] at hdet
-  have hnormSq : Complex.normSq (M 0 1) = a ^ 2 := by
+  have hnormSq : Complex.normSq (M 0 1) = a ^ (2 : ℕ) := by
     have hmul : M 0 1 * star (M 0 1) =
         (Complex.normSq (M 0 1) : ℂ) := Complex.mul_conj _
     rw [hmul] at hdet
     have hre := congrArg Complex.re hdet
     norm_num at hre
     nlinarith
-  have hsq : ‖M 0 1‖ ^ 2 = a ^ 2 := by
+  have hsq : ‖M 0 1‖ ^ (2 : ℕ) = a ^ (2 : ℕ) := by
     rw [Complex.sq_norm]
     exact hnormSq
   nlinarith [norm_nonneg (M 0 1)]

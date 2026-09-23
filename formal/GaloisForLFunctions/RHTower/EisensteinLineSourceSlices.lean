@@ -43,7 +43,7 @@ theorem eisLineCoord_eq_cuspLeg (t x y : ℝ) :
 
 /-- The principal-subtraction source in cusp coordinates. -/
 def eisSourceCoord (t : ℝ) (x y : ℝ) : ℝ :=
-  ‖eisLineCoord t x y‖ ^ 2 - (if sourceHeight < y then ‖eisLineConst t y‖ ^ 2 else 0)
+  ‖eisLineCoord t x y‖ ^ (2 : ℕ) - (if sourceHeight < y then ‖eisLineConst t y‖ ^ (2 : ℕ) else 0)
 
 /-! ## Periodicity in `x` -/
 
@@ -113,7 +113,7 @@ theorem continuous_eisSourceCoord_x (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) :
 
 /-- `‖c + T‖² = ‖c‖² + 2 Re(conj c · T) + ‖T‖²`. -/
 theorem normSq_add_eq (c T : ℂ) :
-    ‖c + T‖ ^ 2 = ‖c‖ ^ 2 + 2 * ((starRingEnd ℂ) c * T).re + ‖T‖ ^ 2 := by
+    ‖c + T‖ ^ (2 : ℕ) = ‖c‖ ^ (2 : ℕ) + 2 * ((starRingEnd ℂ) c * T).re + ‖T‖ ^ (2 : ℕ) := by
   rw [Complex.sq_norm, Complex.sq_norm, Complex.sq_norm, Complex.normSq_add]
   have : (c * (starRingEnd ℂ) T).re = ((starRingEnd ℂ) c * T).re := by
     rw [← Complex.conj_re ((starRingEnd ℂ) c * T), map_mul, Complex.conj_conj, mul_comm]
@@ -133,23 +133,23 @@ theorem intervalIntegral_cross_eq_zero (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) :
   unfold eisensteinLineTailPart
   rw [h0, mul_zero, Complex.zero_re]
 
-/-- **The period integral of `‖E‖²`:** `∫_0^1 ‖c + T‖² dx = ‖c‖² + 8 ℓ²(y)`. -/
+/-- **The period integral of `‖E‖²`:** `∫_0^(1 : ℕ) ‖c + T‖² dx = ‖c‖² + 8 ℓ²(y)`. -/
 theorem intervalIntegral_normSq_eisLineCoord (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) :
-    ∫ x in (0 : ℝ)..1, ‖eisLineCoord t x y‖ ^ 2 =
-      ‖eisLineConst t y‖ ^ 2 + 8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2 := by
+    ∫ x in (0 : ℝ)..1, ‖eisLineCoord t x y‖ ^ (2 : ℕ) =
+      ‖eisLineConst t y‖ ^ (2 : ℕ) + 8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ) := by
   have hT := continuous_cuspTailPart_x t hy
   have hT' : Continuous (eisensteinLineTailPart t y) := hT
   simp_rw [eisLineCoord, normSq_add_eq]
-  have h1 : IntervalIntegrable (fun x : ℝ => ‖eisLineConst t y‖ ^ 2 +
+  have h1 : IntervalIntegrable (fun x : ℝ => ‖eisLineConst t y‖ ^ (2 : ℕ) +
       2 * ((starRingEnd ℂ) (eisLineConst t y) * eisensteinLineTailPart t y x).re) volume 0 1 :=
     (continuous_const.add (continuous_const.mul (Complex.continuous_re.comp
       (continuous_const.mul hT')))).intervalIntegrable _ _
-  have h2 : IntervalIntegrable (fun x : ℝ => ‖eisensteinLineTailPart t y x‖ ^ 2) volume 0 1 :=
+  have h2 : IntervalIntegrable (fun x : ℝ => ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ)) volume 0 1 :=
     (hT'.norm.pow 2).intervalIntegrable _ _
   have h3 : IntervalIntegrable (fun x : ℝ => 2 *
       ((starRingEnd ℂ) (eisLineConst t y) * eisensteinLineTailPart t y x).re) volume 0 1 :=
     (continuous_const.mul (Complex.continuous_re.comp (continuous_const.mul hT'))).intervalIntegrable _ _
-  rw [integral_add h1 h2, integral_add (intervalIntegrable_const (c := ‖eisLineConst t y‖ ^ 2)) h3,
+  rw [integral_add h1 h2, integral_add (intervalIntegrable_const (c := ‖eisLineConst t y‖ ^ (2 : ℕ))) h3,
     intervalIntegral.integral_const,
     intervalIntegral.integral_const_mul, intervalIntegral_cross_eq_zero t hy]
   have hP := intervalIntegral_normSq_eisensteinLineTailPart t hy
@@ -163,9 +163,9 @@ theorem intervalIntegral_normSq_eisLineCoord (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤
 theorem intervalIntegral_eisSourceCoord_of_le (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y)
     (hyH : y ≤ sourceHeight) :
     ∫ x in (-(1 / 2 : ℝ))..(1 / 2), eisSourceCoord t x y =
-      ‖eisLineConst t y‖ ^ 2 + 8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2 := by
+      ‖eisLineConst t y‖ ^ (2 : ℕ) + 8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ) := by
   rw [intervalIntegral_half_eq_zero_one (eisSourceCoord_periodic t y)]
-  have : ∀ x, eisSourceCoord t x y = ‖eisLineCoord t x y‖ ^ 2 := by
+  have : ∀ x, eisSourceCoord t x y = ‖eisLineCoord t x y‖ ^ (2 : ℕ) := by
     intro x; unfold eisSourceCoord; rw [if_neg (not_lt.mpr hyH), sub_zero]
   simp_rw [this]
   exact intervalIntegral_normSq_eisLineCoord t hy
@@ -174,14 +174,14 @@ theorem intervalIntegral_eisSourceCoord_of_le (t : ℝ) {y : ℝ} (hy : 1 / 2 �
 theorem intervalIntegral_eisSourceCoord_of_gt (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y)
     (hyH : sourceHeight < y) :
     ∫ x in (-(1 / 2 : ℝ))..(1 / 2), eisSourceCoord t x y =
-      8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2 := by
+      8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ) := by
   rw [intervalIntegral_half_eq_zero_one (eisSourceCoord_periodic t y)]
-  have : ∀ x, eisSourceCoord t x y = ‖eisLineCoord t x y‖ ^ 2 - ‖eisLineConst t y‖ ^ 2 := by
+  have : ∀ x, eisSourceCoord t x y = ‖eisLineCoord t x y‖ ^ (2 : ℕ) - ‖eisLineConst t y‖ ^ (2 : ℕ) := by
     intro x; unfold eisSourceCoord; rw [if_pos hyH]
   simp_rw [this]
-  have hi : IntervalIntegrable (fun x => ‖eisLineCoord t x y‖ ^ 2) volume 0 1 :=
+  have hi : IntervalIntegrable (fun x => ‖eisLineCoord t x y‖ ^ (2 : ℕ)) volume 0 1 :=
     ((continuous_eisLineCoord_x t hy).norm.pow 2).intervalIntegrable _ _
-  rw [intervalIntegral.integral_sub hi (intervalIntegrable_const (c := ‖eisLineConst t y‖ ^ 2)),
+  rw [intervalIntegral.integral_sub hi (intervalIntegrable_const (c := ‖eisLineConst t y‖ ^ (2 : ℕ))),
     intervalIntegral.integral_const, intervalIntegral_normSq_eisLineCoord t hy]
   simp
 
@@ -194,8 +194,8 @@ theorem norm_eisensteinLineTailPart_le (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) (x
 
 /-- Below the subtraction height, `g² ≤ 8 ‖c‖⁴ + 8 ‖T‖⁴` pointwise. -/
 theorem eisSourceCoord_sq_le_of_le (t : ℝ) {y : ℝ} (hyH : y ≤ sourceHeight) (x : ℝ) :
-    eisSourceCoord t x y ^ 2 ≤
-      8 * ‖eisLineConst t y‖ ^ 4 + 8 * ‖eisensteinLineTailPart t y x‖ ^ 4 := by
+    eisSourceCoord t x y ^ (2 : ℕ) ≤
+      8 * ‖eisLineConst t y‖ ^ (4 : ℕ) + 8 * ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ) := by
   unfold eisSourceCoord
   rw [if_neg (not_lt.mpr hyH), sub_zero]
   have hE : ‖eisLineCoord t x y‖ ≤ ‖eisLineConst t y‖ + ‖eisensteinLineTailPart t y x‖ :=
@@ -203,19 +203,19 @@ theorem eisSourceCoord_sq_le_of_le (t : ℝ) {y : ℝ} (hyH : y ≤ sourceHeight
   have hc := norm_nonneg (eisLineConst t y)
   have hT := norm_nonneg (eisensteinLineTailPart t y x)
   have hE0 := norm_nonneg (eisLineCoord t x y)
-  have h2 : ‖eisLineCoord t x y‖ ^ 2 ≤ 2 * ‖eisLineConst t y‖ ^ 2 +
-      2 * ‖eisensteinLineTailPart t y x‖ ^ 2 := by
+  have h2 : ‖eisLineCoord t x y‖ ^ (2 : ℕ) ≤ 2 * ‖eisLineConst t y‖ ^ (2 : ℕ) +
+      2 * ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (‖eisLineConst t y‖ - ‖eisensteinLineTailPart t y x‖)]
-  have h3 : (‖eisLineCoord t x y‖ ^ 2) ^ 2 ≤ (2 * ‖eisLineConst t y‖ ^ 2 +
-      2 * ‖eisensteinLineTailPart t y x‖ ^ 2) ^ 2 := by
+  have h3 : (‖eisLineCoord t x y‖ ^ (2 : ℕ)) ^ (2 : ℕ) ≤ (2 * ‖eisLineConst t y‖ ^ (2 : ℕ) +
+      2 * ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ)) ^ (2 : ℕ) := by
     exact pow_le_pow_left₀ (by positivity) h2 2
-  nlinarith [sq_nonneg (‖eisLineConst t y‖ ^ 2 - ‖eisensteinLineTailPart t y x‖ ^ 2)]
+  nlinarith [sq_nonneg (‖eisLineConst t y‖ ^ (2 : ℕ) - ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ))]
 
 /-- Above the subtraction height, `g² ≤ 8 ‖c‖² ‖T‖² + 2 ‖T‖⁴` pointwise. -/
 theorem eisSourceCoord_sq_le_of_gt (t : ℝ) {y : ℝ} (hyH : sourceHeight < y) (x : ℝ) :
-    eisSourceCoord t x y ^ 2 ≤
-      8 * ‖eisLineConst t y‖ ^ 2 * ‖eisensteinLineTailPart t y x‖ ^ 2 +
-        2 * ‖eisensteinLineTailPart t y x‖ ^ 4 := by
+    eisSourceCoord t x y ^ (2 : ℕ) ≤
+      8 * ‖eisLineConst t y‖ ^ (2 : ℕ) * ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) +
+        2 * ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ) := by
   unfold eisSourceCoord
   rw [if_pos hyH]
   unfold eisLineCoord
@@ -227,19 +227,19 @@ theorem eisSourceCoord_sq_le_of_gt (t : ℝ) {y : ℝ} (hyH : sourceHeight < y) 
   have hc := norm_nonneg (eisLineConst t y)
   have hT := norm_nonneg (eisensteinLineTailPart t y x)
   have hre' := abs_le.mp hre
-  have hg : (‖eisLineConst t y‖ ^ 2 + 2 * ((starRingEnd ℂ) (eisLineConst t y) *
-      eisensteinLineTailPart t y x).re + ‖eisensteinLineTailPart t y x‖ ^ 2 -
-        ‖eisLineConst t y‖ ^ 2) = 2 * ((starRingEnd ℂ) (eisLineConst t y) *
-      eisensteinLineTailPart t y x).re + ‖eisensteinLineTailPart t y x‖ ^ 2 := by ring
+  have hg : (‖eisLineConst t y‖ ^ (2 : ℕ) + 2 * ((starRingEnd ℂ) (eisLineConst t y) *
+      eisensteinLineTailPart t y x).re + ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) -
+        ‖eisLineConst t y‖ ^ (2 : ℕ)) = 2 * ((starRingEnd ℂ) (eisLineConst t y) *
+      eisensteinLineTailPart t y x).re + ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) := by ring
   rw [hg]
   nlinarith [sq_nonneg (2 * ((starRingEnd ℂ) (eisLineConst t y) * eisensteinLineTailPart t y x).re -
-    ‖eisensteinLineTailPart t y x‖ ^ 2), mul_nonneg hc hT]
+    ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ)), mul_nonneg hc hT]
 
 /-- The uniform pointwise bound of the source below the subtraction height. -/
 theorem abs_eisSourceCoord_le_of_le (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) (hyH : y ≤ sourceHeight)
     (x : ℝ) :
     |eisSourceCoord t x y| ≤
-      (‖eisLineConst t y‖ + 4 * ∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 := by
+      (‖eisLineConst t y‖ + 4 * ∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) := by
   unfold eisSourceCoord
   rw [if_neg (not_lt.mpr hyH), sub_zero, abs_of_nonneg (by positivity)]
   have hE : ‖eisLineCoord t x y‖ ≤ ‖eisLineConst t y‖ + ‖eisensteinLineTailPart t y x‖ :=
@@ -253,7 +253,7 @@ theorem abs_eisSourceCoord_le_of_gt (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) (hyH 
     (x : ℝ) :
     |eisSourceCoord t x y| ≤
       2 * ‖eisLineConst t y‖ * (4 * ∑' N : ℕ, eisensteinLineModeSize t y N) +
-        (4 * ∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 := by
+        (4 * ∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) := by
   unfold eisSourceCoord
   rw [if_pos hyH]
   unfold eisLineCoord
@@ -268,10 +268,10 @@ theorem abs_eisSourceCoord_le_of_gt (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) (hyH 
   have hL : 0 ≤ ∑' N : ℕ, eisensteinLineModeSize t y N := tsum_nonneg fun N =>
     eisensteinLineModeSize_nonneg t y N
   have hre' := abs_le.mp hre
-  rw [show ‖eisLineConst t y‖ ^ 2 + 2 * ((starRingEnd ℂ) (eisLineConst t y) *
-      eisensteinLineTailPart t y x).re + ‖eisensteinLineTailPart t y x‖ ^ 2 -
-        ‖eisLineConst t y‖ ^ 2 = 2 * ((starRingEnd ℂ) (eisLineConst t y) *
-      eisensteinLineTailPart t y x).re + ‖eisensteinLineTailPart t y x‖ ^ 2 by ring]
+  rw [show ‖eisLineConst t y‖ ^ (2 : ℕ) + 2 * ((starRingEnd ℂ) (eisLineConst t y) *
+      eisensteinLineTailPart t y x).re + ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) -
+        ‖eisLineConst t y‖ ^ (2 : ℕ) = 2 * ((starRingEnd ℂ) (eisLineConst t y) *
+      eisensteinLineTailPart t y x).re + ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) by ring]
   rw [abs_le]
   constructor
   · nlinarith [mul_le_mul_of_nonneg_left hT hc, pow_le_pow_left₀ hT0 hT 2]
@@ -280,64 +280,64 @@ theorem abs_eisSourceCoord_le_of_gt (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) (hyH 
 /-! ## Period integrals of `g²` -/
 
 theorem intervalIntegral_normSq_tail_eq (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) :
-    ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ 2 =
-      8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2 :=
+    ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) =
+      8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ) :=
   intervalIntegral_normSq_eisensteinLineTailPart t hy
 
-/-- `∫_0^1 ‖T‖⁴ dx ≤ 16 ℓ¹(y)² · 8 ℓ²(y)`. -/
+/-- `∫_0^(1 : ℕ) ‖T‖⁴ dx ≤ 16 ℓ¹(y)² · 8 ℓ²(y)`. -/
 theorem intervalIntegral_norm_tail_pow_four_le (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y) :
-    ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ 4 ≤
-      16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 *
-        (8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2) := by
+    ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ) ≤
+      16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) *
+        (8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ)) := by
   have hT : Continuous (eisensteinLineTailPart t y) := continuous_cuspTailPart_x t hy
-  have hpt : ∀ x ∈ Icc (0 : ℝ) 1, ‖eisensteinLineTailPart t y x‖ ^ 4 ≤
-      16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 * ‖eisensteinLineTailPart t y x‖ ^ 2 := by
+  have hpt : ∀ x ∈ Icc (0 : ℝ) 1, ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ) ≤
+      16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) * ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) := by
     intro x _
     have h := norm_eisensteinLineTailPart_le t hy x
     have h0 := norm_nonneg (eisensteinLineTailPart t y x)
-    have h2 : ‖eisensteinLineTailPart t y x‖ ^ 2 ≤
-        (4 * ∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 := pow_le_pow_left₀ h0 h 2
-    calc ‖eisensteinLineTailPart t y x‖ ^ 4 =
-          ‖eisensteinLineTailPart t y x‖ ^ 2 * ‖eisensteinLineTailPart t y x‖ ^ 2 := by ring
-      _ ≤ (4 * ∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 *
-          ‖eisensteinLineTailPart t y x‖ ^ 2 := by gcongr
+    have h2 : ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) ≤
+        (4 * ∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) := pow_le_pow_left₀ h0 h 2
+    calc ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ) =
+          ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) * ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) := by ring
+      _ ≤ (4 * ∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) *
+          ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) := by gcongr
       _ = _ := by ring
-  calc ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ 4
-      ≤ ∫ x in (0 : ℝ)..1, 16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 *
-          ‖eisensteinLineTailPart t y x‖ ^ 2 :=
+  calc ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ)
+      ≤ ∫ x in (0 : ℝ)..1, 16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) *
+          ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) :=
         integral_mono_on zero_le_one ((hT.norm.pow 4).intervalIntegrable _ _)
           ((continuous_const.mul (hT.norm.pow 2)).intervalIntegrable _ _) hpt
-    _ = 16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 *
-          ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ 2 :=
+    _ = 16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) *
+          ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) :=
         intervalIntegral.integral_const_mul _ _
     _ = _ := by rw [intervalIntegral_normSq_tail_eq t hy]
 
 /-- Below the subtraction height: `∫ g² dx ≤ 8 ‖c‖⁴ + 1024 ℓ¹² ℓ²`. -/
 theorem intervalIntegral_eisSourceCoord_sq_le_of_le (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y)
     (hyH : y ≤ sourceHeight) :
-    ∫ x in (-(1 / 2 : ℝ))..(1 / 2), eisSourceCoord t x y ^ 2 ≤
-      8 * ‖eisLineConst t y‖ ^ 4 + 1024 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 *
-        ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2 := by
-  have hper : Function.Periodic (fun x => eisSourceCoord t x y ^ 2) 1 := fun x => by
+    ∫ x in (-(1 / 2 : ℝ))..(1 / 2), eisSourceCoord t x y ^ (2 : ℕ) ≤
+      8 * ‖eisLineConst t y‖ ^ (4 : ℕ) + 1024 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) *
+        ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ) := by
+  have hper : Function.Periodic (fun x => eisSourceCoord t x y ^ (2 : ℕ)) 1 := fun x => by
     simp only [eisSourceCoord_add_one]
   rw [intervalIntegral_half_eq_zero_one hper]
   have hT : Continuous (eisensteinLineTailPart t y) := continuous_cuspTailPart_x t hy
   have hg : Continuous (fun x => eisSourceCoord t x y) := continuous_eisSourceCoord_x t hy
-  have hi4 : IntervalIntegrable (fun x => 8 * ‖eisensteinLineTailPart t y x‖ ^ 4) volume 0 1 :=
+  have hi4 : IntervalIntegrable (fun x => 8 * ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ)) volume 0 1 :=
     (continuous_const.mul (hT.norm.pow 4)).intervalIntegrable _ _
-  have hisum : IntervalIntegrable (fun x => 8 * ‖eisLineConst t y‖ ^ 4 +
-      8 * ‖eisensteinLineTailPart t y x‖ ^ 4) volume 0 1 :=
+  have hisum : IntervalIntegrable (fun x => 8 * ‖eisLineConst t y‖ ^ (4 : ℕ) +
+      8 * ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ)) volume 0 1 :=
     (continuous_const.add (continuous_const.mul (hT.norm.pow 4))).intervalIntegrable _ _
-  calc ∫ x in (0 : ℝ)..1, eisSourceCoord t x y ^ 2
-      ≤ ∫ x in (0 : ℝ)..1, (8 * ‖eisLineConst t y‖ ^ 4 + 8 * ‖eisensteinLineTailPart t y x‖ ^ 4) :=
+  calc ∫ x in (0 : ℝ)..1, eisSourceCoord t x y ^ (2 : ℕ)
+      ≤ ∫ x in (0 : ℝ)..1, (8 * ‖eisLineConst t y‖ ^ (4 : ℕ) + 8 * ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ)) :=
         integral_mono_on zero_le_one ((hg.pow 2).intervalIntegrable _ _) hisum
           (fun x _ => eisSourceCoord_sq_le_of_le t hyH x)
-    _ = 8 * ‖eisLineConst t y‖ ^ 4 + 8 * ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ 4 := by
-        rw [integral_add (intervalIntegrable_const (c := 8 * ‖eisLineConst t y‖ ^ 4)) hi4,
+    _ = 8 * ‖eisLineConst t y‖ ^ (4 : ℕ) + 8 * ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ) := by
+        rw [integral_add (intervalIntegrable_const (c := 8 * ‖eisLineConst t y‖ ^ (4 : ℕ))) hi4,
           intervalIntegral.integral_const, intervalIntegral.integral_const_mul]
         simp
-    _ ≤ 8 * ‖eisLineConst t y‖ ^ 4 + 8 * (16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 *
-          (8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2)) := by
+    _ ≤ 8 * ‖eisLineConst t y‖ ^ (4 : ℕ) + 8 * (16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) *
+          (8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ))) := by
         gcongr
         exact intervalIntegral_norm_tail_pow_four_le t hy
     _ = _ := by ring
@@ -345,36 +345,36 @@ theorem intervalIntegral_eisSourceCoord_sq_le_of_le (t : ℝ) {y : ℝ} (hy : 1 
 /-- Above the subtraction height: `∫ g² dx ≤ 64 ‖c‖² ℓ² + 256 ℓ¹² ℓ²`. -/
 theorem intervalIntegral_eisSourceCoord_sq_le_of_gt (t : ℝ) {y : ℝ} (hy : 1 / 2 ≤ y)
     (hyH : sourceHeight < y) :
-    ∫ x in (-(1 / 2 : ℝ))..(1 / 2), eisSourceCoord t x y ^ 2 ≤
-      64 * ‖eisLineConst t y‖ ^ 2 * (∑' N : ℕ, eisensteinLineModeSize t y N ^ 2) +
-        256 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 *
-          ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2 := by
-  have hper : Function.Periodic (fun x => eisSourceCoord t x y ^ 2) 1 := fun x => by
+    ∫ x in (-(1 / 2 : ℝ))..(1 / 2), eisSourceCoord t x y ^ (2 : ℕ) ≤
+      64 * ‖eisLineConst t y‖ ^ (2 : ℕ) * (∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ)) +
+        256 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) *
+          ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ) := by
+  have hper : Function.Periodic (fun x => eisSourceCoord t x y ^ (2 : ℕ)) 1 := fun x => by
     simp only [eisSourceCoord_add_one]
   rw [intervalIntegral_half_eq_zero_one hper]
   have hT : Continuous (eisensteinLineTailPart t y) := continuous_cuspTailPart_x t hy
   have hg : Continuous (fun x => eisSourceCoord t x y) := continuous_eisSourceCoord_x t hy
-  have hi2 : IntervalIntegrable (fun x => 8 * ‖eisLineConst t y‖ ^ 2 *
-      ‖eisensteinLineTailPart t y x‖ ^ 2) volume 0 1 :=
+  have hi2 : IntervalIntegrable (fun x => 8 * ‖eisLineConst t y‖ ^ (2 : ℕ) *
+      ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ)) volume 0 1 :=
     (continuous_const.mul (hT.norm.pow 2)).intervalIntegrable _ _
-  have hi4 : IntervalIntegrable (fun x => 2 * ‖eisensteinLineTailPart t y x‖ ^ 4) volume 0 1 :=
+  have hi4 : IntervalIntegrable (fun x => 2 * ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ)) volume 0 1 :=
     (continuous_const.mul (hT.norm.pow 4)).intervalIntegrable _ _
-  have hisum : IntervalIntegrable (fun x => 8 * ‖eisLineConst t y‖ ^ 2 *
-      ‖eisensteinLineTailPart t y x‖ ^ 2 + 2 * ‖eisensteinLineTailPart t y x‖ ^ 4) volume 0 1 :=
+  have hisum : IntervalIntegrable (fun x => 8 * ‖eisLineConst t y‖ ^ (2 : ℕ) *
+      ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) + 2 * ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ)) volume 0 1 :=
     ((continuous_const.mul (hT.norm.pow 2)).add
       (continuous_const.mul (hT.norm.pow 4))).intervalIntegrable _ _
-  calc ∫ x in (0 : ℝ)..1, eisSourceCoord t x y ^ 2
-      ≤ ∫ x in (0 : ℝ)..1, (8 * ‖eisLineConst t y‖ ^ 2 * ‖eisensteinLineTailPart t y x‖ ^ 2 +
-          2 * ‖eisensteinLineTailPart t y x‖ ^ 4) :=
+  calc ∫ x in (0 : ℝ)..1, eisSourceCoord t x y ^ (2 : ℕ)
+      ≤ ∫ x in (0 : ℝ)..1, (8 * ‖eisLineConst t y‖ ^ (2 : ℕ) * ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ) +
+          2 * ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ)) :=
         integral_mono_on zero_le_one ((hg.pow 2).intervalIntegrable _ _) hisum
           (fun x _ => eisSourceCoord_sq_le_of_gt t hyH x)
-    _ = 8 * ‖eisLineConst t y‖ ^ 2 * (∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ 2) +
-          2 * ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ 4 := by
+    _ = 8 * ‖eisLineConst t y‖ ^ (2 : ℕ) * (∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ (2 : ℕ)) +
+          2 * ∫ x in (0 : ℝ)..1, ‖eisensteinLineTailPart t y x‖ ^ (4 : ℕ) := by
         rw [integral_add hi2 hi4, intervalIntegral.integral_const_mul,
           intervalIntegral.integral_const_mul]
-    _ ≤ 8 * ‖eisLineConst t y‖ ^ 2 * (8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2) +
-          2 * (16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ 2 *
-            (8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ 2)) := by
+    _ ≤ 8 * ‖eisLineConst t y‖ ^ (2 : ℕ) * (8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ)) +
+          2 * (16 * (∑' N : ℕ, eisensteinLineModeSize t y N) ^ (2 : ℕ) *
+            (8 * ∑' N : ℕ, eisensteinLineModeSize t y N ^ (2 : ℕ))) := by
         rw [intervalIntegral_normSq_tail_eq t hy]
         gcongr
         exact intervalIntegral_norm_tail_pow_four_le t hy

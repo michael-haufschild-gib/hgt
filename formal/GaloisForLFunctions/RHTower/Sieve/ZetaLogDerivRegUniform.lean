@@ -98,7 +98,7 @@ theorem exists_zeta_uniform_kappa_one_zero_free :
 theorem exists_bound_zetaLogDerivReg_uniform :
     ∃ C L₀ : ℝ, 0 < C ∧ 1 ≤ L₀ ∧ ∀ (s : ℂ) (K : ℝ), L₀ ≤ Real.log K → |s.im| ≤ K →
       1 - 1 / 40000 / Real.log K ≤ s.re → s.re ≤ 9 / 8 →
-      ‖zetaLogDerivReg s‖ ≤ C * Real.log K ^ 2 := by
+      ‖zetaLogDerivReg s‖ ≤ C * Real.log K ^ (2 : ℕ) := by
   obtain ⟨C₁, T, hC₁0, hT4, hbound⟩ := exists_logDeriv_zeta_bound_explicit
   obtain ⟨δ, hδ0, M₀, hM₀0, hbox⟩ :=
     exists_bound_zetaLogDerivReg_box 2 T (by norm_num) (by linarith)
@@ -111,7 +111,7 @@ theorem exists_bound_zetaLogDerivReg_uniform :
   have hLδ : 1 / 40000 / δ ≤ Real.log K :=
     le_trans (le_max_right _ _) (le_trans (le_max_left _ _) hL)
   have hL₁K : L₁ ≤ Real.log K := le_trans (le_max_right _ _) hL
-  have hLsq : (1 : ℝ) ≤ Real.log K ^ 2 := by nlinarith
+  have hLsq : (1 : ℝ) ≤ Real.log K ^ (2 : ℕ) := by nlinarith
   rcases le_or_gt T |s.im| with hbig | hsmall
   · -- the region branch, with the pole term split off
     have habs4 : (4 : ℝ) ≤ |s.im| := le_trans hT4 hbig
@@ -123,7 +123,7 @@ theorem exists_bound_zetaLogDerivReg_uniform :
       linarith
     have hsplit : s = ((s.re : ℝ) : ℂ) + ((s.im : ℝ) : ℂ) * Complex.I :=
       (Complex.re_add_im s).symm
-    have hres : ‖logDeriv riemannZeta s‖ ≤ C₁ * Real.log |s.im| ^ 2 := by
+    have hres : ‖logDeriv riemannZeta s‖ ≤ C₁ * Real.log |s.im| ^ (2 : ℕ) := by
       have h := hbound s.re s.im hbig hwide hhi
       rwa [← hsplit] at h
     have hs1 : s ≠ 1 := by
@@ -150,7 +150,7 @@ theorem exists_bound_zetaLogDerivReg_uniform :
       calc ‖-(logDeriv riemannZeta s) - (s - 1)⁻¹‖
           ≤ ‖-(logDeriv riemannZeta s)‖ + ‖(s - 1)⁻¹‖ := norm_sub_le _ _
         _ = ‖logDeriv riemannZeta s‖ + ‖(s - 1)⁻¹‖ := by rw [norm_neg]
-    have hpow : Real.log |s.im| ^ 2 ≤ Real.log K ^ 2 :=
+    have hpow : Real.log |s.im| ^ (2 : ℕ) ≤ Real.log K ^ (2 : ℕ) :=
       pow_le_pow_left₀ (by linarith) hlt 2
     nlinarith [hres, hpole, hreg, hpow, hLsq, hM₀0, hC₁0]
   · -- the compact branch

@@ -6,9 +6,9 @@ import GaloisForLFunctions.RHTower.LiEvenCrossCompletedAbelLanding
 This module differentiates LI-CAB3's completed Xi-divisor Abel value in squared-mass time.  Every
 atom first collapses to the single Chebyshev defect
 
-`(1 - T_[2n+2](c_q(v))) / 4`,  `c_q(v) = 2v / (v + alpha_q^2) - 1`.
+`(1 - T_[2n+2](c_q(v))) / 4`,  `c_q(v) = 2v / (v + alpha_q^(2 : ℕ)) - 1`.
 
-The actual shifted-Xi resolvent law then gives `c'_q(v) = (1-c_q(v)^2)/(2v)`.  After proving the
+The actual shifted-Xi resolvent law then gives `c'_q(v) = (1-c_q(v)^(2 : ℕ))/(2v)`.  After proving the
 missing Chebyshev derivative identity from the corpus recurrences, the atom velocity becomes the
 adjacent-mode flux
 
@@ -35,10 +35,10 @@ noncomputable section
 theorem liEvenCrossDivisorAbelTerm_eq_cayleyWeightedSquare
     (a : ℝ) (n : ℕ) (q : XiZeroCopy) :
     liEvenCrossDivisorAbelTerm a n q =
-      ((a ^ 2 : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ 2) q *
+      ((a ^ (2 : ℕ) : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q *
         (1 - xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)) *
         evalRealPolynomial (liEvenCrossLeftPolynomial n)
-          (xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)) ^ 2 := by
+          (xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)) ^ (2 : ℕ) := by
   let c := xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)
   let P := liEvenCrossLeftPolynomial n
   let Q := liEvenCrossRightPolynomial n
@@ -52,7 +52,7 @@ theorem liEvenCrossDivisorAbelTerm_eq_cayleyWeightedSquare
     simp [Q, P, liEvenCrossRightPolynomial, evalRealPolynomial]
   rw [liEvenCrossDivisorAbelTerm, xiHardEdgeDivisorPacketTerm,
     xiHardEdgeDivisorPacketTerm, hadd, hsub, hQ]
-  change _ = _ * (1 - c) * evalRealPolynomial P c ^ 2
+  change _ = _ * (1 - c) * evalRealPolynomial P c ^ (2 : ℕ)
   ring
 
 theorem liEvenCrossDivisorAbelTerm_eq_chebyshevSquareDefect
@@ -60,10 +60,10 @@ theorem liEvenCrossDivisorAbelTerm_eq_chebyshevSquareDefect
     liEvenCrossDivisorAbelTerm a n q =
       (1 - evalRealPolynomial
         (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1))
-          (xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)) ^ 2) / 2 := by
+          (xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)) ^ (2 : ℕ)) / 2 := by
   rw [liEvenCrossDivisorAbelTerm_eq_cayleyWeightedSquare]
   let c := xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)
-  let z := ((a ^ 2 : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ 2) q
+  let z := ((a ^ (2 : ℕ) : ℝ) : ℂ) * xiShiftedReciprocalSquare (a ^ (2 : ℕ)) q
   have hc : c = 2 * z - 1 := by
     dsimp only [c, z]
     rw [xiHardEdgeCayleyCoordinate_xiSpectralPoint]
@@ -82,17 +82,17 @@ theorem liEvenCrossDivisorAbelTerm_eq_chebyshevSquareDefect
     simp [evalRealPolynomial]
   rw [← hT, ← hU] at hnorm
   change z * (1 - c) *
-      evalRealPolynomial (liEvenCrossLeftPolynomial n) c ^ 2 =
+      evalRealPolynomial (liEvenCrossLeftPolynomial n) c ^ (2 : ℕ) =
         (1 - evalRealPolynomial
-          (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1)) c ^ 2) / 2
+          (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1)) c ^ (2 : ℕ)) / 2
   rw [liEvenCrossLeftPolynomial]
   linear_combination (norm := ring_nf) hnorm / 2 -
     (1 - c) * evalRealPolynomial
-      (Polynomial.Chebyshev.U ℝ (n : ℤ)) c ^ 2 * hc / 2
+      (Polynomial.Chebyshev.U ℝ (n : ℤ)) c ^ (2 : ℕ) * hc / 2
 
 theorem chebyshevT_two_mul_eq_two_mul_sq_sub_one (m : ℕ) :
     Polynomial.Chebyshev.T ℝ (2 * (m : ℤ)) =
-      2 * (Polynomial.Chebyshev.T ℝ (m : ℤ)) ^ 2 - 1 := by
+      2 * (Polynomial.Chebyshev.T ℝ (m : ℤ)) ^ (2 : ℕ) - 1 := by
   have h := Polynomial.Chebyshev.T_mul_T ℝ (m : ℤ) (m : ℤ)
   simp at h
   linear_combination (norm := ring_nf) -h
@@ -106,11 +106,11 @@ theorem liEvenCrossDivisorAbelTerm_eq_singleChebyshevDefect
   rw [liEvenCrossDivisorAbelTerm_eq_chebyshevSquareDefect]
   let c := xiHardEdgeCayleyCoordinate (a : ℂ) (xiSpectralPoint q)
   have hpoly : Polynomial.Chebyshev.T ℝ (2 * ((n : ℤ) + 1)) =
-      2 * (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1)) ^ 2 - 1 := by
+      2 * (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1)) ^ (2 : ℕ) - 1 := by
     simpa only [Nat.cast_add, Nat.cast_one] using
       chebyshevT_two_mul_eq_two_mul_sq_sub_one (n + 1)
   change (1 - evalRealPolynomial
-      (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1)) c ^ 2) / 2 =
+      (Polynomial.Chebyshev.T ℝ ((n : ℤ) + 1)) c ^ (2 : ℕ)) / 2 =
     (1 - evalRealPolynomial
       (Polynomial.Chebyshev.T ℝ (2 * ((n : ℤ) + 1))) c) / 4
   rw [hpoly]
@@ -128,7 +128,7 @@ def liEvenCrossSquareMassAtom (v : ℝ) (n : ℕ) (q : XiZeroCopy) : ℂ :=
       (liEvenCrossCayleyAtSquareMass v q)) / 4
 
 theorem liEvenCrossSquareMassAtom_sq (a : ℝ) (n : ℕ) (q : XiZeroCopy) :
-    liEvenCrossSquareMassAtom (a ^ 2) n q =
+    liEvenCrossSquareMassAtom (a ^ (2 : ℕ)) n q =
       liEvenCrossDivisorAbelTerm a n q := by
   rw [liEvenCrossDivisorAbelTerm_eq_singleChebyshevDefect]
   simp only [liEvenCrossSquareMassAtom]
@@ -203,7 +203,7 @@ theorem continuousAt_liEvenCrossSquareMassAtom_zero (n : ℕ) (q : XiZeroCopy) :
     (continuousAt_const.sub heval).div_const 4
 
 theorem liEvenCrossSquareMassValue_sq (a : ℝ) (n : ℕ) :
-    liEvenCrossSquareMassValue (a ^ 2) n =
+    liEvenCrossSquareMassValue (a ^ (2 : ℕ)) n =
       liEvenCrossDivisorAbelValue a n := by
   rw [liEvenCrossSquareMassValue, liEvenCrossDivisorAbelValue_eq_tsum_term]
   exact tsum_congr (liEvenCrossSquareMassAtom_sq a n)
@@ -211,7 +211,7 @@ theorem liEvenCrossSquareMassValue_sq (a : ℝ) (n : ℕ) :
 theorem hasDerivAt_liEvenCrossCayleyAtSquareMass
     {v : ℝ} (hv : 0 < v) (q : XiZeroCopy) :
     HasDerivAt (fun t : ℝ => liEvenCrossCayleyAtSquareMass t q)
-      ((1 - liEvenCrossCayleyAtSquareMass v q ^ 2) / (2 * v)) v := by
+      ((1 - liEvenCrossCayleyAtSquareMass v q ^ (2 : ℕ)) / (2 * v)) v := by
   have ht : HasDerivAt (fun t : ℝ => ((t : ℝ) : ℂ)) (1 : ℂ) v := by
     simpa using (hasDerivAt_id v).ofReal_comp
   have hlam := hasDerivAt_xiShiftedReciprocalSquare_pow hv q 0
@@ -304,7 +304,7 @@ theorem derivative_chebyshevT_succ (n : ℕ) :
       ring
 
 theorem two_mul_one_sub_X_sq_mul_chebyshevU_eq_T_sub_T_add_two (k : ℕ) :
-    2 * (1 - X ^ 2) * Polynomial.Chebyshev.U ℝ (k : ℤ) =
+    2 * (1 - X ^ (2 : ℕ)) * Polynomial.Chebyshev.U ℝ (k : ℤ) =
       Polynomial.Chebyshev.T ℝ (k : ℤ) -
         Polynomial.Chebyshev.T ℝ ((k : ℤ) + 2) := by
   have hrec := Polynomial.Chebyshev.T_add_two ℝ (k : ℤ)
@@ -321,7 +321,7 @@ theorem hasDerivAt_liEvenCrossSquareMassAtom
       (-(evalRealPolynomial
           (Polynomial.Chebyshev.T ℝ (2 * ((n : ℤ) + 1))).derivative
             (liEvenCrossCayleyAtSquareMass v q) *
-          ((1 - liEvenCrossCayleyAtSquareMass v q ^ 2) / (2 * v))) / 4) v := by
+          ((1 - liEvenCrossCayleyAtSquareMass v q ^ (2 : ℕ)) / (2 * v))) / 4) v := by
   have hpoly := hasDerivAt_evalRealPolynomial_comp
     (p := Polynomial.Chebyshev.T ℝ (2 * ((n : ℤ) + 1)))
     (hasDerivAt_liEvenCrossCayleyAtSquareMass hv q)
@@ -330,11 +330,11 @@ theorem hasDerivAt_liEvenCrossSquareMassAtom
       (0 - evalRealPolynomial
           (Polynomial.Chebyshev.T ℝ (2 * ((n : ℤ) + 1))).derivative
             (liEvenCrossCayleyAtSquareMass v q) *
-          ((1 - liEvenCrossCayleyAtSquareMass v q ^ 2) / (2 * v))) / 4 =
+          ((1 - liEvenCrossCayleyAtSquareMass v q ^ (2 : ℕ)) / (2 * v))) / 4 =
         -(evalRealPolynomial
           (Polynomial.Chebyshev.T ℝ (2 * ((n : ℤ) + 1))).derivative
             (liEvenCrossCayleyAtSquareMass v q) *
-          ((1 - liEvenCrossCayleyAtSquareMass v q ^ 2) / (2 * v))) / 4 := by
+          ((1 - liEvenCrossCayleyAtSquareMass v q ^ (2 : ℕ)) / (2 * v))) / 4 := by
     ring
   have hh := hbase.congr_deriv hder
   simpa only [Pi.sub_apply] using hh
@@ -471,7 +471,7 @@ theorem hasDerivAt_liEvenCrossSquareMassAtom_adjacentFlux
   have hfluxPoly :=
     two_mul_one_sub_X_sq_mul_chebyshevU_eq_T_sub_T_add_two (2 * n + 1)
   have hflux :
-      2 * (1 - c ^ 2) *
+      2 * (1 - c ^ (2 : ℕ)) *
           evalRealPolynomial (Polynomial.Chebyshev.U ℝ (2 * (n : ℤ) + 1)) c =
         evalRealPolynomial
             (Polynomial.Chebyshev.T ℝ (2 * (n : ℤ) + 1)) c -
@@ -492,7 +492,7 @@ theorem hasDerivAt_liEvenCrossSquareMassAtom_adjacentFlux
   have hvC : (v : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hv
   change -(evalRealPolynomial (Polynomial.C (2 * ((n : ℝ) + 1))) c *
         evalRealPolynomial (Polynomial.Chebyshev.U ℝ (2 * (n : ℤ) + 1)) c *
-        ((1 - c ^ 2) / (2 * v))) / 4 =
+        ((1 - c ^ (2 : ℕ)) / (2 * v))) / 4 =
       (((n : ℂ) + 1) / (8 * v)) *
         (evalRealPolynomial
             (Polynomial.Chebyshev.T ℝ (2 * ((n : ℤ) + 1) + 1)) c -

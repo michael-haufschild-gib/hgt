@@ -26,11 +26,11 @@ namespace RHTower.SelbergScatteringNativeResidual
 noncomputable section
 
 /-- Complex spectral parameter above the original shifted cusp threshold. -/
-def cuspParameter (tau eta : ℝ) : ℂ := 5 / 4 + (tau : ℂ) ^ 2 + (eta : ℂ) * I
+def cuspParameter (tau eta : ℝ) : ℂ := 5 / 4 + (tau : ℂ) ^ (2 : ℕ) + (eta : ℂ) * I
 
 /-- Real part of the shifted cusp parameter. -/
 theorem cuspParameter_re (tau eta : ℝ) :
-    (cuspParameter tau eta).re = 5 / 4 + tau ^ 2 := by
+    (cuspParameter tau eta).re = 5 / 4 + tau ^ (2 : ℕ) := by
   simp [cuspParameter, pow_two]
 
 /-- Imaginary part of the shifted cusp parameter. -/
@@ -39,20 +39,20 @@ theorem cuspParameter_im (tau eta : ℝ) : (cuspParameter tau eta).im = eta := b
 
 /-- Exact Pythagorean residual identity in the actual modular operator domain. -/
 theorem native_residual_sq (z : ℂ) (x : energyOperator.domain) :
-    ‖energyOperator x - z • (x : Space)‖ ^ 2 =
-      ‖energyOperator x - (z.re : ℂ) • (x : Space)‖ ^ 2 +
-        z.im ^ 2 * ‖(x : Space)‖ ^ 2 := by
+    ‖energyOperator x - z • (x : Space)‖ ^ (2 : ℕ) =
+      ‖energyOperator x - (z.re : ℂ) • (x : Space)‖ ^ (2 : ℕ) +
+        z.im ^ (2 : ℕ) * ‖(x : Space)‖ ^ (2 : ℕ) := by
   apply complexSymmetric_residual_norm_sq
   exact (isFormalAdjoint_of_isSelfAdjoint energyOperator_selfAdjoint x x).symm
 
 /-- Constructed cusp packets retain exactly the imaginary floor and both cutoff derivative costs. -/
 theorem cuspUnitPacket_complex_residual_sq (tau eta : ℝ) {L : ℝ} (hL : 0 < L) :
     ‖energyOperator (cuspUnitPacket tau L hL) -
-      cuspParameter tau eta • (cuspUnitPacket tau L hL : Space)‖ ^ 2 =
-      eta ^ 2 + (4 * tau ^ 2 * cuspWindowMoment 1 / cuspWindowMoment 0) * L⁻¹ ^ 2 +
-        (cuspWindowMoment 2 / cuspWindowMoment 0) * L⁻¹ ^ 4 := by
+      cuspParameter tau eta • (cuspUnitPacket tau L hL : Space)‖ ^ (2 : ℕ) =
+      eta ^ (2 : ℕ) + (4 * tau ^ (2 : ℕ) * cuspWindowMoment 1 / cuspWindowMoment 0) * L⁻¹ ^ (2 : ℕ) +
+        (cuspWindowMoment 2 / cuspWindowMoment 0) * L⁻¹ ^ (4 : ℕ) := by
   rw [native_residual_sq, cuspParameter_re, cuspParameter_im, cuspUnitPacket_norm]
-  have hreal : ((5 / 4 + tau ^ 2 : ℝ) : ℂ) = 5 / 4 + (tau : ℂ) ^ 2 := by
+  have hreal : ((5 / 4 + tau ^ (2 : ℕ) : ℝ) : ℂ) = 5 / 4 + (tau : ℂ) ^ (2 : ℕ) := by
     push_cast
     rfl
   rw [hreal, cuspUnitPacket_residual_norm_sq]
@@ -71,12 +71,12 @@ theorem cuspApproximateVector_complex_residual_tendsto (tau eta : ℝ) :
       cuspParameter tau eta • (cuspApproximateVector tau n : Space)‖)
       atTop (𝓝 |eta|) := by
   have hsq : Tendsto (fun n : ℕ => ‖energyOperator (cuspApproximateVector tau n) -
-      cuspParameter tau eta • (cuspApproximateVector tau n : Space)‖ ^ 2)
-      atTop (𝓝 (eta ^ 2)) := by
-    have h := ((cuspApproximateVector_residual_tendsto tau).pow 2).add_const (eta ^ 2)
+      cuspParameter tau eta • (cuspApproximateVector tau n : Space)‖ ^ (2 : ℕ))
+      atTop (𝓝 (eta ^ (2 : ℕ))) := by
+    have h := ((cuspApproximateVector_residual_tendsto tau).pow 2).add_const (eta ^ (2 : ℕ))
     simp_rw [native_residual_sq (cuspParameter tau eta), cuspParameter_re, cuspParameter_im,
       cuspApproximateVector_norm, one_pow, mul_one]
-    have hreal : ((5 / 4 + tau ^ 2 : ℝ) : ℂ) = 5 / 4 + (tau : ℂ) ^ 2 := by
+    have hreal : ((5 / 4 + tau ^ (2 : ℕ) : ℝ) : ℂ) = 5 / 4 + (tau : ℂ) ^ (2 : ℕ) := by
       push_cast
       rfl
     simpa only [hreal, zero_pow (by norm_num : 2 ≠ 0), zero_add] using h
@@ -87,7 +87,7 @@ def scatteringEnergy (rho : ℂ) : ℂ := 1 + (rho / 2) * (1 - rho / 2)
 
 /-- Exact real native energy in the original uncentered argument. -/
 theorem scatteringEnergy_re (rho : ℂ) :
-    (scatteringEnergy rho).re = 5 / 4 + (rho.im ^ 2 - (1 - rho.re) ^ 2) / 4 := by
+    (scatteringEnergy rho).re = 5 / 4 + (rho.im ^ (2 : ℕ) - (1 - rho.re) ^ (2 : ℕ)) / 4 := by
   simp [scatteringEnergy, Complex.mul_re]
   ring
 

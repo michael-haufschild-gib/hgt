@@ -44,7 +44,7 @@ theorem deningerLeafStar_dv : deningerLeafStar (0, 1) = (-1, 0) := by
 
 /-- The wedge against the star is the squared length. -/
 theorem deningerLeafWedge_star (a : ℝ × ℝ) :
-    deningerLeafWedge a (deningerLeafStar a) = a.1 ^ 2 + a.2 ^ 2 := by
+    deningerLeafWedge a (deningerLeafStar a) = a.1 ^ (2 : ℕ) + a.2 ^ (2 : ℕ) := by
   rcases a with ⟨x, y⟩
   simp only [deningerLeafWedge, deningerLeafStar]
   ring
@@ -58,14 +58,14 @@ theorem deningerLeafWedge_star_pos {a : ℝ × ℝ} (ha : a ≠ 0) :
     intro h
     exact ha (by rw [h.1, h.2]; rfl)
   rcases not_and_or.mp hxy with hx | hy
-  · have : 0 < x ^ 2 := by positivity
+  · have : 0 < x ^ (2 : ℕ) := by positivity
     nlinarith [sq_nonneg y]
-  · have : 0 < y ^ 2 := by positivity
+  · have : 0 < y ^ (2 : ℕ) := by positivity
     nlinarith [sq_nonneg x]
 
 /-- Scaling both one-forms scales the Kähler coefficient quadratically. -/
 theorem deningerLeafWedge_smul (s : ℝ) (a b : ℝ × ℝ) :
-    deningerLeafWedge (s • a) (s • b) = s ^ 2 * deningerLeafWedge a b := by
+    deningerLeafWedge (s • a) (s • b) = s ^ (2 : ℕ) * deningerLeafWedge a b := by
   rcases a with ⟨x, y⟩
   rcases b with ⟨z, w⟩
   simp only [deningerLeafWedge, Prod.smul_mk, smul_eq_mul]
@@ -85,7 +85,7 @@ theorem deningerLeafFlow_wedge (t : ℝ) (a b : ℝ × ℝ) :
 /-- **The radial pullback law.**  A radial function pulls back along the flow at time `log n` by
 rescaling its argument by `n`. -/
 theorem deningerRadialFlowPullback (f : ℝ → ℂ) {n : ℝ} (hn : 0 < n) (z : ℂ) :
-    f (‖(Real.exp (Real.log n / 2) : ℂ) * z‖ ^ 2) = f (n * ‖z‖ ^ 2) := by
+    f (‖(Real.exp (Real.log n / 2) : ℂ) * z‖ ^ (2 : ℕ)) = f (n * ‖z‖ ^ (2 : ℕ)) := by
   congr 1
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (Real.exp_nonneg _), mul_pow]

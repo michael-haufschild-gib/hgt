@@ -27,7 +27,7 @@ open Filter Topology Asymptotics MeasureTheory Set
 
 /-- Splitting the Abel integral into the logarithm and the error density. -/
 theorem setIntegral_theta_div_sq {x : ℝ} (hx : 2 ≤ x) :
-    ∫ t in Set.Ioc 2 x, Chebyshev.theta t / t ^ 2
+    ∫ t in Set.Ioc 2 x, Chebyshev.theta t / t ^ (2 : ℕ)
       = (Real.log x - Real.log 2) + ∫ t in Set.Ioc 2 x, thetaErrorDensity t := by
   have hinv : IntegrableOn (fun t : ℝ => t⁻¹) (Set.Ioc 2 x) := by
     have hcont : ContinuousOn (fun t : ℝ => t⁻¹) (Set.Icc (2 : ℝ) x) := by
@@ -37,7 +37,7 @@ theorem setIntegral_theta_div_sq {x : ℝ} (hx : 2 ≤ x) :
       linarith
     exact hcont.integrableOn_Icc.mono_set Set.Ioc_subset_Icc_self
   have hden := integrableOn_thetaErrorDensity_Ioc (a := (2 : ℝ)) (b := x) (by norm_num)
-  have hsum : ∫ t in Set.Ioc 2 x, Chebyshev.theta t / t ^ 2
+  have hsum : ∫ t in Set.Ioc 2 x, Chebyshev.theta t / t ^ (2 : ℕ)
       = (∫ t in Set.Ioc 2 x, (t : ℝ)⁻¹) + ∫ t in Set.Ioc 2 x, thetaErrorDensity t := by
     rw [← MeasureTheory.integral_add hinv hden]
     refine setIntegral_congr_fun measurableSet_Ioc fun t ht => ?_
@@ -56,7 +56,7 @@ theorem abs_setIntegral_thetaErrorDensity_Ioi_le {c K x : ℝ} (hc : 0 < c) (hK 
     (hbd : ∀ t : ℝ, x < t →
       |Chebyshev.theta t - t| ≤ K * t * Real.exp (-c * Real.sqrt (Real.log t))) :
     |∫ t in Set.Ioi x, thetaErrorDensity t|
-      ≤ K * (4 / c ^ 2) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) := by
+      ≤ K * (4 / c ^ (2 : ℕ)) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) := by
   have hmaj : IntegrableOn
       (fun t : ℝ => K * (Real.exp (-c * Real.sqrt (Real.log t)) / t)) (Set.Ioi x) :=
     (integrableOn_expSqrtLog_div_Ioi hc hx).const_mul K
@@ -64,12 +64,12 @@ theorem abs_setIntegral_thetaErrorDensity_Ioi_le {c K x : ℝ} (hc : 0 < c) (hK 
       |thetaErrorDensity t| ≤ K * (Real.exp (-c * Real.sqrt (Real.log t)) / t) := by
     intro t ht
     have ht0 : (0 : ℝ) < t := lt_trans (by linarith) ht
-    have hsq : (0 : ℝ) < t ^ 2 := by positivity
-    have habs : |thetaErrorDensity t| = |Chebyshev.theta t - t| / t ^ 2 := by
+    have hsq : (0 : ℝ) < t ^ (2 : ℕ) := by positivity
+    have habs : |thetaErrorDensity t| = |Chebyshev.theta t - t| / t ^ (2 : ℕ) := by
       unfold thetaErrorDensity
       rw [abs_div, abs_of_pos hsq]
     rw [habs, div_le_iff₀ hsq]
-    have hstep : K * (Real.exp (-c * Real.sqrt (Real.log t)) / t) * t ^ 2
+    have hstep : K * (Real.exp (-c * Real.sqrt (Real.log t)) / t) * t ^ (2 : ℕ)
         = K * t * Real.exp (-c * Real.sqrt (Real.log t)) := by
       field_simp
     rw [hstep]
@@ -86,11 +86,11 @@ theorem abs_setIntegral_thetaErrorDensity_Ioi_le {c K x : ℝ} (hc : 0 < c) (hK 
       = K * sqrtLogTail c x := by
     rw [MeasureTheory.integral_const_mul, integral_expSqrtLog_div_Ioi hc hx]
   have hstep4 : K * sqrtLogTail c x
-      ≤ K * (4 / c ^ 2) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) := by
+      ≤ K * (4 / c ^ (2 : ℕ)) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) := by
     have := mul_le_mul_of_nonneg_left (sqrtLogTail_le (c := c) (t := x) hc) hK
     calc K * sqrtLogTail c x
-        ≤ K * (4 / c ^ 2 * Real.exp (-(c / 2) * Real.sqrt (Real.log x))) := this
-      _ = K * (4 / c ^ 2) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) := by ring
+        ≤ K * (4 / c ^ (2 : ℕ) * Real.exp (-(c / 2) * Real.sqrt (Real.log x))) := this
+      _ = K * (4 / c ^ (2 : ℕ)) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) := by ring
   linarith [hstep1, hstep2, hstep3 ▸ hstep2, hstep4]
 
 /-- **Mertens' first theorem with an exponential error term.** -/
@@ -119,7 +119,7 @@ theorem exists_mertensA_sub_log_exp_rate :
   have hInt : IntegrableOn thetaErrorDensity (Set.Ioi 2) :=
     integrableOn_thetaErrorDensity_Ioi hc0 hT2 hbdT
   refine ⟨1 - Real.log 2 + ∫ t in Set.Ioi (2 : ℝ), thetaErrorDensity t,
-    |K| + |K| * (4 / c ^ 2), c / 2, by linarith, by positivity, ?_⟩
+    |K| + |K| * (4 / c ^ (2 : ℕ)), c / 2, by linarith, by positivity, ?_⟩
   filter_upwards [eventually_gt_atTop T, eventually_ge_atTop (2 : ℝ)] with x hxT hx2
   have hx0 : (0 : ℝ) < x := by linarith
   have hx1 : (1 : ℝ) < x := by linarith
@@ -162,13 +162,13 @@ theorem exists_mertensA_sub_log_exp_rate :
         = |K| * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) * x := by ring
     linarith [hb, hstep, hring]
   have hb2 : |∫ t in Set.Ioi x, thetaErrorDensity t|
-      ≤ |K| * (4 / c ^ 2) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) :=
+      ≤ |K| * (4 / c ^ (2 : ℕ)) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) :=
     abs_setIntegral_thetaErrorDensity_Ioi_le hc0 hK0 hx1 hIoi
       (fun t ht => hbdT t (lt_trans hxT ht))
   have htri := abs_sub ((Chebyshev.theta x - x) / x) (∫ t in Set.Ioi x, thetaErrorDensity t)
-  have hexpand : (|K| + |K| * (4 / c ^ 2)) * Real.exp (-(c / 2) * Real.sqrt (Real.log x))
+  have hexpand : (|K| + |K| * (4 / c ^ (2 : ℕ))) * Real.exp (-(c / 2) * Real.sqrt (Real.log x))
       = |K| * Real.exp (-(c / 2) * Real.sqrt (Real.log x))
-        + |K| * (4 / c ^ 2) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) := by ring
+        + |K| * (4 / c ^ (2 : ℕ)) * Real.exp (-(c / 2) * Real.sqrt (Real.log x)) := by ring
   linarith [htri, hb1, hb2, hexpand]
 
 end RHTower.Sieve

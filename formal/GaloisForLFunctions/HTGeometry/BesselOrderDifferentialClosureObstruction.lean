@@ -74,7 +74,7 @@ theorem modifiedBesselOrder_no_imprimitive_pair_in_differentialClosure :
             e / p + 2 * FieldShift.orderShiftCoeff (slope s) ∧
           p * FieldShift.ratShift p =
             1 + FieldShift.orderShiftCoeff (slope s) * e +
-              FieldShift.orderShiftCoeff (slope s) ^ 2 * p := by
+              FieldShift.orderShiftCoeff (slope s) ^ (2 : ℕ) * p := by
   intro s hs
   rintro ⟨e, p, hp, hE, hP⟩
   exact FieldShift.orderBessel_no_imprimitive_pair (slope_ne_zero hs) hp hE hP

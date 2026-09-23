@@ -37,7 +37,7 @@ def speQuantileRieszStrictCrossFiveChannelProfile {ι : Type*}
       ccmActualHeadMatchedQuantilePolarDisplacement (atom i) *
       ccmActualHeadMatchedPolarCentroid (atom i) : ℝ) : ℂ),
     ((criticalMellinAtomWeight (atom i) *
-      ccmActualHeadMatchedQuantilePolarDisplacement (atom i) ^ 2 : ℝ) : ℂ)]
+      ccmActualHeadMatchedQuantilePolarDisplacement (atom i) ^ (2 : ℕ) : ℝ) : ℂ)]
 
 /-- Coefficient form of the five literal strict-cross profiles.  It retains both
 orientations of the quadratic debt, rather than treating debt as a remainder. -/
@@ -67,7 +67,7 @@ direction.  It is a source gauge, not an endpoint coordinate. -/
 def speQuantileRieszStrictCrossRadicalAggregate (K : ℕ) : ℝ :=
   ∑ n ∈ Finset.range (K + 1),
     criticalMellinAtomWeight (n + 2) *
-      (ccmActualHeadMatchedQuantilePolarDisplacement (n + 2) ^ 2 -
+      (ccmActualHeadMatchedQuantilePolarDisplacement (n + 2) ^ (2 : ℕ) -
         ccmActualHeadMatchedQuantilePolarDisplacement (n + 2) *
           ccmActualHeadMatchedPolarCentroid (n + 2) / 2)
 
@@ -144,7 +144,7 @@ theorem speQuantileRieszTerminalPJuliaIncrement_quadratic_eq_zero_of_not_isPrime
   let a : ℝ := 2 * (Real.sqrt ((K + 4 : ℕ) : ℝ) - Real.sqrt ((K + 3 : ℕ) : ℝ))
   change speQuantileRieszTerminalPJuliaQuadratic
     ![((8 * a - Real.sqrt 63 * a : ℝ) : ℂ), ((a / 8 : ℝ) : ℂ)] = 0
-  have hsqrt : Real.sqrt 63 ^ 2 = 63 := Real.sq_sqrt (by norm_num)
+  have hsqrt : Real.sqrt 63 ^ (2 : ℕ) = 63 := Real.sq_sqrt (by norm_num)
   have hstar8 : (starRingEnd ℂ) (8 : ℂ) = 8 := by
     simp only [starRingEnd_apply, star_ofNat]
   have hare : ((a : ℂ) / 8).re = a / 8 := by
@@ -216,7 +216,7 @@ theorem speQuantileRieszTerminalPJuliaIncrement_translate_firstBasis_sub_eq_wall
     all_goals
       dsimp [a]
       ring_nf
-  have hsqrt : Real.sqrt 63 ^ 2 = 63 := Real.sq_sqrt (by norm_num)
+  have hsqrt : Real.sqrt 63 ^ (2 : ℕ) = 63 := Real.sq_sqrt (by norm_num)
   have hstar8 : (starRingEnd ℂ) (8 : ℂ) = 8 := by
     simp only [starRingEnd_apply, star_ofNat]
   have hare : ((a : ℂ) / 8).re = a / 8 := by
@@ -297,9 +297,9 @@ theorem speQuantileRieszStrictCrossFiveChannelKreinForm_eq_doubleJulia_pullback 
       (speQuantileRieszStrictCrossFiveChannelToDoubleJulia)ᵀ *
         speQuantileRieszStrictCrossDoubleJuliaKreinForm *
         speQuantileRieszStrictCrossFiveChannelToDoubleJulia := by
-  have h63 : (Real.sqrt 63 : ℂ) ^ 2 = 63 := by
+  have h63 : (Real.sqrt 63 : ℂ) ^ (2 : ℕ) = 63 := by
     exact_mod_cast Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 63)
-  have h2 : (Real.sqrt 2 : ℂ) ^ 2 = 2 := by
+  have h2 : (Real.sqrt 2 : ℂ) ^ (2 : ℕ) = 2 := by
     exact_mod_cast Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)
   have h2ne : (Real.sqrt 2 : ℂ) ≠ 0 := by
     intro h

@@ -10,10 +10,10 @@ Let `H_N(u) = sum_(n<=N) mu(n) u^omega(n) b_n` in the complete Báez-Duarte
 carrier, and let `P_N` be the positive packet of every prime up to `N`.
 Every remaining nonzero coefficient has at least two distinct prime factors.
 Consequently the full remainder satisfies
-`norm(H_N(u) + u P_N) <= 4 u^2 sqrt(N)` for `0 <= u <= 1`.
+`norm(H_N(u) + u P_N) <= 4 u^(2 : ℕ) sqrt(N)` for `0 <= u <= 1`.
 
 The source-selected value `t_N = norm(P_N)/(8 sqrt(N))` lies in `[0,1/2]`
-and gives a full energy lower bound of order `N/(log N)^4`. The already
+and gives a full energy lower bound of order `N/(log N)^(4 : ℕ)`. The already
 proved undamped energy is smaller than this by every fixed logarithmic
 power. Thus no uniform multiplicative damping budget holds even on the
 literal arithmetic source. The proof retains every physical tail and cross
@@ -46,10 +46,10 @@ theorem generator_norm_le {n : ℕ} (hn : 1 ≤ n) :
   have hs : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn0
   have hb := DeletionMobiusGram.gram_self_le_two_div hn
   rw [bdGram_self] at hb
-  have hsq : (2/Real.sqrt n)^2 = 4/(n : ℝ) := by
+  have hsq : (2/Real.sqrt n)^(2 : ℕ) = 4/(n : ℝ) := by
     rw [div_pow, Real.sq_sqrt hn0.le]
     norm_num
-  have ht : ‖bdGen (1/(n : ℝ))‖^2 ≤ (2/Real.sqrt n)^2 := by
+  have ht : ‖bdGen (1/(n : ℝ))‖^(2 : ℕ) ≤ (2/Real.sqrt n)^(2 : ℕ) := by
     rw [hsq]
     exact hb.trans (div_le_div_of_nonneg_right (by norm_num) hn0.le)
   nlinarith [norm_nonneg (bdGen (1/(n : ℝ))), div_nonneg (by norm_num : (0 : ℝ) ≤ 2) hs.le]
@@ -86,7 +86,7 @@ private theorem two_le_count_of_nonprime {n : ℕ} (_hn : 1 ≤ n) (hn1 : n ≠ 
 
 private theorem remainder_coefficient_le {u : ℝ} (hu : u ∈ Set.Icc 0 1)
     {n : ℕ} (hn : 1 ≤ n) (hn1 : n ≠ 1) :
-    |Sieve.fullPrimeDampedMoebius u n + if n.Prime then u else 0| ≤ u^2 := by
+    |Sieve.fullPrimeDampedMoebius u n + if n.Prime then u else 0| ≤ u^(2 : ℕ) := by
   by_cases hp : n.Prime
   · simp [hp, Sieve.fullPrimeDampedMoebius, ArithmeticFunction.moebius_apply_prime hp,
       sq_nonneg u]
@@ -98,11 +98,11 @@ private theorem remainder_coefficient_le {u : ℝ} (hu : u ∈ Set.Icc 0 1)
         exact_mod_cast (ArithmeticFunction.abs_moebius_le_one (n := n))
       rw [Sieve.fullPrimeDampedMoebius, abs_mul, abs_of_nonneg (pow_nonneg hu.1 _)]
       calc _ ≤ u^n.primeFactors.card := mul_le_of_le_one_left (pow_nonneg hu.1 _) hmu
-        _ ≤ u^2 := pow_le_pow_of_le_one hu.1 hu.2 hcount
+        _ ≤ u^(2 : ℕ) := pow_le_pow_of_le_one hu.1 hu.2 hcount
 
 /-- Every higher-factor term, with the complete tail, is a quadratic remainder in damping. -/
 theorem source_add_prime_norm_le {u : ℝ} (hu : u ∈ Set.Icc 0 1) (N : ℕ) :
-    ‖source N u + (u : ℂ) • primePacket N‖ ≤ 4*u^2*Real.sqrt N := by
+    ‖source N u + (u : ℂ) • primePacket N‖ ≤ 4*u^(2 : ℕ)*Real.sqrt N := by
   have he : source N u + (u : ℂ) • primePacket N =
       ∑ n ∈ Icc 1 N,
         ((Sieve.fullPrimeDampedMoebius u n + if n.Prime then u else 0 : ℝ) : ℂ) •
@@ -115,7 +115,7 @@ theorem source_add_prime_norm_le {u : ℝ} (hu : u ∈ Set.Icc 0 1) (N : ℕ) :
   calc _ ≤ ∑ n ∈ Icc 1 N,
         ‖((Sieve.fullPrimeDampedMoebius u n + if n.Prime then u else 0 : ℝ) : ℂ) •
           bdGen (1/(n : ℝ))‖ := norm_sum_le _ _
-    _ ≤ ∑ n ∈ Icc 1 N, u^2 * ‖bdGen (1/(n : ℝ))‖ := by
+    _ ≤ ∑ n ∈ Icc 1 N, u^(2 : ℕ) * ‖bdGen (1/(n : ℝ))‖ := by
       apply Finset.sum_le_sum
       intro n hn
       by_cases hn1 : n = 1
@@ -123,8 +123,8 @@ theorem source_add_prime_norm_le {u : ℝ} (hu : u ∈ Set.Icc 0 1) (N : ℕ) :
       · rw [norm_smul, Complex.norm_real, Real.norm_eq_abs]
         exact mul_le_mul_of_nonneg_right
           (remainder_coefficient_le hu (Finset.mem_Icc.mp hn).1 hn1) (norm_nonneg _)
-    _ = u^2 * ∑ n ∈ Icc 1 N, ‖bdGen (1/(n : ℝ))‖ := (Finset.mul_sum _ _ _).symm
-    _ ≤ u^2*(4*Real.sqrt N) := mul_le_mul_of_nonneg_left (sum_generator_norm_le N) (sq_nonneg _)
+    _ = u^(2 : ℕ) * ∑ n ∈ Icc 1 N, ‖bdGen (1/(n : ℝ))‖ := (Finset.mul_sum _ _ _).symm
+    _ ≤ u^(2 : ℕ)*(4*Real.sqrt N) := mul_le_mul_of_nonneg_left (sum_generator_norm_le N) (sq_nonneg _)
     _ = _ := by ring
 
 
@@ -139,7 +139,7 @@ theorem aperture_mem (N : ℕ) : aperture N ∈ Set.Icc 0 (1/2) := by
 
 /-- A quantitative amplification point inside the actual damping path. -/
 theorem aperture_norm_lower (N : ℕ) :
-    ‖primePacket N‖^2 ≤ 16*Real.sqrt N*‖source N (aperture N)‖ := by
+    ‖primePacket N‖^(2 : ℕ) ≤ 16*Real.sqrt N*‖source N (aperture N)‖ := by
   by_cases hN : N=0
   · simp [hN, primePacket]
   · have hs : 0 < Real.sqrt (N : ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast Nat.pos_of_ne_zero hN)
@@ -149,11 +149,11 @@ theorem aperture_norm_lower (N : ℕ) :
       (source N (aperture N))
     rw [add_sub_cancel_left, norm_smul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg hu.1] at ht
-    have hb : aperture N*‖primePacket N‖ - 4*(aperture N)^2*Real.sqrt N ≤
+    have hb : aperture N*‖primePacket N‖ - 4*(aperture N)^(2 : ℕ)*Real.sqrt N ≤
         ‖source N (aperture N)‖ := by linarith
     calc
-      ‖primePacket N‖^2 =
-          (aperture N*‖primePacket N‖ - 4*(aperture N)^2*Real.sqrt N)*(16*Real.sqrt N) := by
+      ‖primePacket N‖^(2 : ℕ) =
+          (aperture N*‖primePacket N‖ - 4*(aperture N)^(2 : ℕ)*Real.sqrt N)*(16*Real.sqrt N) := by
         dsimp [aperture]
         field_simp [ne_of_gt hs]
         ring
@@ -163,7 +163,7 @@ theorem aperture_norm_lower (N : ℕ) :
 
 /-- The amplification lower bound before inserting any prime-number estimate. -/
 theorem aperture_energy_lower (N : ℕ) :
-    ‖primePacket N‖^4 ≤ 256*(N : ℝ)*‖source N (aperture N)‖^2 := by
+    ‖primePacket N‖^(4 : ℕ) ≤ 256*(N : ℝ)*‖source N (aperture N)‖^(2 : ℕ) := by
   have h := pow_le_pow_left₀ (sq_nonneg ‖primePacket N‖) (aperture_norm_lower N) 2
   norm_num only [mul_pow, Real.sq_sqrt (Nat.cast_nonneg N), ← pow_mul, Nat.reduceMul, OfNat.ofNat] at h ⊢
   nlinarith [h]
@@ -174,7 +174,7 @@ private theorem gram_nonneg {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) :
     (show 0 < m by omega) (show 0 < n by omega))
 
 /-- Positive physical Gram entries make the upper-half packet a lower bound for all primes. -/
-theorem packet_energy_le (N : ℕ) : ‖DeletionPrimePacket.packet N‖^2 ≤ ‖primePacket N‖^2 := by
+theorem packet_energy_le (N : ℕ) : ‖DeletionPrimePacket.packet N‖^(2 : ℕ) ≤ ‖primePacket N‖^(2 : ℕ) := by
   let S := (Icc 1 N).filter Nat.Prime
   have hsub : DeletionPeriodGrowth.upperPrimes N ⊆ S := by
     intro p hp
@@ -198,15 +198,15 @@ theorem packet_energy_le (N : ℕ) : ‖DeletionPrimePacket.packet N‖^2 ≤ �
       (fun p hp _ => Finset.sum_nonneg (fun q hq => hg p q hp hq))
 
 /-- Fixed denominator for the explicit physical amplification floor. -/
-def amplificationConstant : ℝ := 256*(8*(32768 : ℝ)^2)^2
+def amplificationConstant : ℝ := 256*(8*(32768 : ℝ)^(2 : ℕ))^(2 : ℕ)
 
 theorem amplificationConstant_pos : 0 < amplificationConstant := by
   norm_num [amplificationConstant]
 
-/-- Unconditional full energy of order at least N/log^4 N at the selected damping value. -/
+/-- Unconditional full energy of order at least N/log^(4 : ℕ) N at the selected damping value. -/
 theorem aperture_energy_eventually_lower :
     ∀ᶠ N : ℕ in atTop,
-      (N : ℝ)/(amplificationConstant*Real.log (N : ℝ)^4) ≤ ‖source N (aperture N)‖^2 := by
+      (N : ℝ)/(amplificationConstant*Real.log (N : ℝ)^(4 : ℕ)) ≤ ‖source N (aperture N)‖^(2 : ℕ) := by
   filter_upwards [DeletionPrimePacket.packet_norm_sq_eventually_lower,
     eventually_ge_atTop 2] with N hp hN
   have hN1 : (1 : ℝ) < N := by exact_mod_cast hN
@@ -214,11 +214,11 @@ theorem aperture_energy_eventually_lower :
   have hlog : 0 < Real.log (N : ℝ) := Real.log_pos hN1
   have hprime := hp.trans (packet_energy_le N)
   have hsq := pow_le_pow_left₀
-    (show 0 ≤ (N : ℝ)/(8*(32768 : ℝ)^2*Real.log (N : ℝ)^2) by positivity) hprime 2
+    (show 0 ≤ (N : ℝ)/(8*(32768 : ℝ)^(2 : ℕ)*Real.log (N : ℝ)^(2 : ℕ)) by positivity) hprime 2
   rw [div_pow, ← pow_mul] at hsq
   have h := hsq.trans (aperture_energy_lower N)
   have hclear := (div_le_iff₀
-    (show 0 < (8*(32768 : ℝ)^2*Real.log (N : ℝ)^2)^2 by positivity)).mp h
+    (show 0 < (8*(32768 : ℝ)^(2 : ℕ)*Real.log (N : ℝ)^(2 : ℕ))^(2 : ℕ) by positivity)).mp h
   apply (div_le_iff₀ (mul_pos amplificationConstant_pos (pow_pos hlog _))).mpr
   apply (mul_le_mul_iff_right₀ hN0).mp
   dsimp [amplificationConstant]
@@ -231,14 +231,14 @@ theorem aperture_source_norm_eventually_pos :
   filter_upwards [aperture_energy_eventually_lower, eventually_ge_atTop 2] with N hN hN2
   have hN1 : (1 : ℝ) < N := by exact_mod_cast hN2
   have hlog : 0 < Real.log (N : ℝ) := Real.log_pos hN1
-  have hp : 0 < (N : ℝ)/(amplificationConstant*Real.log (N : ℝ)^4) := by
+  have hp : 0 < (N : ℝ)/(amplificationConstant*Real.log (N : ℝ)^(4 : ℕ)) := by
     exact div_pos (by linarith) (mul_pos amplificationConstant_pos (pow_pos hlog _))
   nlinarith [norm_nonneg (source N (aperture N))]
 
 /-- The undamped source is smaller than the amplified source by every fixed log power. -/
 theorem source_relative_energy_log_pow_tendsto_zero (q : ℕ) :
-    Tendsto (fun N : ℕ => ‖source N 1‖^2*Real.log (N : ℝ)^q /
-      ‖source N (aperture N)‖^2) atTop (𝓝 0) := by
+    Tendsto (fun N : ℕ => ‖source N 1‖^(2 : ℕ)*Real.log (N : ℝ)^q /
+      ‖source N (aperture N)‖^(2 : ℕ)) atTop (𝓝 0) := by
   simp only [source_one, norm_neg]
   have hlim := (DeletionMobiusGlobal.modular_norm_log_pow_div_tendsto_zero (q+4)).const_mul
     amplificationConstant
@@ -255,17 +255,17 @@ theorem source_relative_energy_log_pow_tendsto_zero (q : ℕ) :
     have hmul := (div_le_iff₀
       (mul_pos amplificationConstant_pos (pow_pos hlog 4))).mp hN
     calc
-      _ ≤ (amplificationConstant*‖bdMobiusModularApproximantVec N‖^2*
+      _ ≤ (amplificationConstant*‖bdMobiusModularApproximantVec N‖^(2 : ℕ)*
           Real.log (N : ℝ)^(q+4))/(N : ℝ) := by
         apply (div_le_div_iff₀ (sq_pos_of_pos hp) hN0).mpr
         rw [pow_add]
         nlinarith [mul_le_mul_of_nonneg_left hmul
-          (show 0 ≤ ‖bdMobiusModularApproximantVec N‖^2*Real.log (N : ℝ)^q by positivity)]
+          (show 0 ≤ ‖bdMobiusModularApproximantVec N‖^(2 : ℕ)*Real.log (N : ℝ)^q by positivity)]
       _ = _ := by ring
 
 /-- Every fixed amplification factor is exceeded at every sufficiently large cutoff. -/
 theorem eventually_amplifies (K : ℝ) :
-    ∀ᶠ N : ℕ in atTop, K*‖source N 1‖^2 < ‖source N (aperture N)‖^2 := by
+    ∀ᶠ N : ℕ in atTop, K*‖source N 1‖^(2 : ℕ) < ‖source N (aperture N)‖^(2 : ℕ) := by
   have hlim := source_relative_energy_log_pow_tendsto_zero 0
   simp only [pow_zero, mul_one] at hlim
   have he := hlim.eventually (gt_mem_nhds
@@ -279,7 +279,7 @@ theorem eventually_amplifies (K : ℝ) :
 /-- Uniform prime-count contraction fails on the literal Möbius source itself. -/
 theorem not_exists_uniform_damping_budget :
     ¬ ∃ K : ℝ, ∀ N : ℕ, ∀ u ∈ Set.Icc (0 : ℝ) 1,
-      ‖source N u‖^2 ≤ K*‖source N 1‖^2 := by
+      ‖source N u‖^(2 : ℕ) ≤ K*‖source N 1‖^(2 : ℕ) := by
   rintro ⟨K,hK⟩
   obtain ⟨N,hN⟩ := (eventually_amplifies K).exists
   have hu := aperture_mem N

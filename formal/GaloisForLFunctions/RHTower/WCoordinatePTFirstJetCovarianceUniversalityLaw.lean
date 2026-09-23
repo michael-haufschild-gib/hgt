@@ -17,7 +17,7 @@ noncomputable section
 
 /-- The Li coordinate has inverse-square derivative away from its pole. -/
 theorem hasDerivAt_wCoordinate {z : ℂ} (hz : z ≠ 0) :
-    HasDerivAt wCoordinate (z⁻¹ ^ 2) z := by
+    HasDerivAt wCoordinate (z⁻¹ ^ (2 : ℕ)) z := by
   unfold wCoordinate
   simpa [inv_pow] using!
     (hasDerivAt_const (x := z) (c := (1 : ℂ))).sub (hasDerivAt_inv hz)
@@ -26,7 +26,7 @@ theorem hasDerivAt_wCoordinate {z : ℂ} (hz : z ≠ 0) :
 the inversion Jacobian. -/
 theorem wCoordinate_PT_derivativeWeight
     {z : ℂ} (hz0 : z ≠ 0) :
-    (sigma z)⁻¹ ^ 2 = z⁻¹ ^ 2 * (wCoordinate z)⁻¹ ^ 2 := by
+    (sigma z)⁻¹ ^ (2 : ℕ) = z⁻¹ ^ (2 : ℕ) * (wCoordinate z)⁻¹ ^ (2 : ℕ) := by
   unfold sigma wCoordinate
   field_simp
   ring
@@ -41,14 +41,14 @@ theorem wCoordinate_fePullback_firstJet
     fePullback (fun s => f (wCoordinate s)) z =
         f ((wCoordinate z)⁻¹) ∧
       HasDerivAt (fePullback (fun s => f (wCoordinate s)))
-        (-(f' * z⁻¹ ^ 2 * (wCoordinate z)⁻¹ ^ 2)) z := by
+        (-(f' * z⁻¹ ^ (2 : ℕ) * (wCoordinate z)⁻¹ ^ (2 : ℕ))) z := by
   have hsigma0 : sigma z ≠ 0 := by
     unfold sigma
     exact sub_ne_zero.mpr hz1.symm
   have hcoord : wCoordinate (sigma z) = (wCoordinate z)⁻¹ :=
     wCoordinate_sigma_eq_inv z hz0 hz1
   have hinner : HasDerivAt (fun s => f (wCoordinate s))
-      (f' * (sigma z)⁻¹ ^ 2) (sigma z) := by
+      (f' * (sigma z)⁻¹ ^ (2 : ℕ)) (sigma z) := by
     exact (hcoord ▸ hf).comp (sigma z) (hasDerivAt_wCoordinate hsigma0)
   refine ⟨by simp only [fePullback_apply, hcoord], ?_⟩
   have hpull := hasDerivAt_fePullback hinner

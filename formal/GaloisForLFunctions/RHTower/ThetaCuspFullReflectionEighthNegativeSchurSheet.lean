@@ -21,7 +21,7 @@ noncomputable section
 
 /-- Positive coordinate on the physical Schur sheet. -/
 def thetaCuspFullReflectionEighthNegativeSchurCoordinate (x : ℝ) : ℝ :=
-  64 * thetaCuspFullReflectedLogCurvature x ^ 3 -
+  64 * thetaCuspFullReflectedLogCurvature x ^ (3 : ℕ) -
     thetaCuspFullReflectedLogSixthJet x
 
 /-- The actual complete-theta sixth-jet Schur coupling is globally strictly negative.  Thus the
@@ -57,7 +57,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_eq_negativeSchurNormalForm
           (thetaCuspFullReflectedLogCurvature x)
           (thetaCuspFullReflectedLogFourthJet x)
           (thetaCuspFullReflectedLogEighthJet x) -
-      thetaCuspFullReflectionEighthNegativeSchurCoordinate x ^ 2 := by
+      thetaCuspFullReflectionEighthNegativeSchurCoordinate x ^ (2 : ℕ) := by
   rw [show thetaCuspFullReflectionEighthHankelCurvature x =
       thetaCuspReflectedEighthPolynomial
         (thetaCuspFullReflectedLogCurvature x)
@@ -73,7 +73,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_eq_negativeSchurNormalForm
 theorem thetaCuspFullReflectionEighthHankelCurvature_eq_zero_iff_negativeSchurCone
     (x : ℝ) :
     thetaCuspFullReflectionEighthHankelCurvature x = 0 ↔
-      thetaCuspFullReflectionEighthNegativeSchurCoordinate x ^ 2 =
+      thetaCuspFullReflectionEighthNegativeSchurCoordinate x ^ (2 : ℕ) =
         thetaCuspReflectedEighthSchurHead
             (thetaCuspFullReflectedLogCurvature x)
             (thetaCuspFullReflectedLogFourthJet x) *
@@ -94,7 +94,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_eq_zero_iff_unique_negative
         thetaCuspReflectedEighthSchurCoupling
           (thetaCuspFullReflectedLogCurvature x)
           (thetaCuspFullReflectedLogSixthJet x) = -q ∧
-        q ^ 2 =
+        q ^ (2 : ℕ) =
           thetaCuspReflectedEighthSchurHead
               (thetaCuspFullReflectedLogCurvature x)
               (thetaCuspFullReflectedLogFourthJet x) *
@@ -124,7 +124,7 @@ theorem thetaCuspFullReflectionEighthHankelCurvature_eq_zero_iff_unique_negative
   · rintro ⟨q, ⟨hq, hJq, hq2⟩, _⟩
     rw [hschur]
     change thetaCuspReflectedEighthSchurHead A B *
-        thetaCuspReflectedEighthSchurTail A B D - J ^ 2 = 0
+        thetaCuspReflectedEighthSchurTail A B D - J ^ (2 : ℕ) = 0
     nlinarith
 
 end

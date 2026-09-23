@@ -175,9 +175,9 @@ theorem xiCentBezoutian_eq_twoChannelWeil {w v : ℂ} (hw : 1 / 2 < w.re) (hv : 
     xiCentBezoutian_eq_mul_criticalKernel hw hv, criticalLogDerivKernel_eq_twoChannel hw hv]
   ring
 
-theorem channel_pair_value {w u z : ℂ} (hw : w ^ 2 + z ^ 2 ≠ 0) (hu : u ^ 2 + z ^ 2 ≠ 0) :
+theorem channel_pair_value {w u z : ℂ} (hw : w ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) (hu : u ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0) :
     weilChannelA w z * weilChannelA u z + weilChannelB w z * weilChannelB u z
-      = (w * u + z ^ 2) / ((w ^ 2 + z ^ 2) * (u ^ 2 + z ^ 2)) := by
+      = (w * u + z ^ (2 : ℕ)) / ((w ^ (2 : ℕ) + z ^ (2 : ℕ)) * (u ^ (2 : ℕ) + z ^ (2 : ℕ))) := by
   simp only [weilChannelA, weilChannelB]
   field_simp
 
@@ -185,8 +185,8 @@ theorem channel_pair_value {w u z : ℂ} (hw : w ^ 2 + z ^ 2 ≠ 0) (hu : u ^ 2 
 theorem xiCentBezoutian_eq_tsum {w v : ℂ} (hw : 1 / 2 < w.re) (hv : 1 / 2 < v.re) :
     xiCentBezoutian w (conj v)
       = ∑' q : XiZeroCopy, xiCent w * conj (xiCent v)
-          * ((w * conj v + xiSpectralPoint q ^ 2)
-            / ((w ^ 2 + xiSpectralPoint q ^ 2) * ((conj v) ^ 2 + xiSpectralPoint q ^ 2))) := by
+          * ((w * conj v + xiSpectralPoint q ^ (2 : ℕ))
+            / ((w ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ)) * ((conj v) ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ)))) := by
   have hcv : 1 / 2 < (conj v).re := by
     rwa [Complex.conj_re]
   have hA := summable_channelA_mul w (conj v)
@@ -217,10 +217,10 @@ theorem xiCentBezoutian_eq_featureGram_of_riemannHypothesis (hRH : RiemannHypoth
   obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
   have hconjq : conj (xiSpectralPoint q) = xiSpectralPoint q := by
     rw [ht, Complex.conj_ofReal]
-  have hne : (w : ℂ) ^ 2 + xiSpectralPoint q ^ 2 ≠ 0 := sq_add_spectral_sq_ne_zero hw q
+  have hne : (w : ℂ) ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ) ≠ 0 := sq_add_spectral_sq_ne_zero hw q
   have hcv : 1 / 2 < (conj v).re := by
     rwa [Complex.conj_re]
-  have hnev : (conj v : ℂ) ^ 2 + xiSpectralPoint q ^ 2 ≠ 0 := sq_add_spectral_sq_ne_zero hcv q
+  have hnev : (conj v : ℂ) ^ (2 : ℕ) + xiSpectralPoint q ^ (2 : ℕ) ≠ 0 := sq_add_spectral_sq_ne_zero hcv q
   simp only [xiFeatureChannelEven, xiFeatureChannelOdd, weilChannelA, weilChannelB, map_mul,
     map_div₀, map_add, map_pow, hconjq]
   field_simp

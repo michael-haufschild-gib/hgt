@@ -13,7 +13,7 @@ of multi-piece mollifiers therefore collapses to one unit-weighted combined poly
 Agreement with logarithmic prime half-density at enough exterior primes forces the combined
 polynomial to be `X`. It then assigns the same nonzero logarithmic coefficient to exterior prime
 squares, where true-prime half-density vanishes. An iterated Bertrand reservoir places enough
-primes and their squares inside the literal T1 window `M = N^49`, `L = N^100` once
+primes and their squares inside the literal T1 window `M = N^(49 : ℕ)`, `L = N^(100 : ℕ)` once
 `2^(d+2) <= N`, for every fixed residual degree `d`.
 
 Thus no fixed finite derivative order, no finite-support mollifier, and no finite
@@ -186,33 +186,33 @@ theorem natDegree_unitWeightedSum_sub_X_lt_succ
   rw [Polynomial.natDegree_X] at hsub
   omega
 
-/-- At the literal T1 schedule `M = N^49`, `L = N^100`, every fixed residual degree has enough
+/-- At the literal T1 schedule `M = N^(49 : ℕ)`, `L = N^(100 : ℕ)`, every fixed residual degree has enough
 room for its Bertrand prime reservoir and the associated prime-square obstruction once
 `2^(d+2) ≤ N`. -/
 theorem finiteOrderBertrandReservoir_square_le_t1AfeWindow
     {d N : ℕ} (hN : 2 ^ (d + 2) ≤ N) :
-    (2 ^ (d + 1) * (N ^ 49 + 2)) ^ 2 ≤ N ^ 100 := by
+    (2 ^ (d + 1) * (N ^ (49 : ℕ) + 2)) ^ (2 : ℕ) ≤ N ^ (100 : ℕ) := by
   have htwoN : 2 ≤ N := by
     exact (Nat.le_pow (by omega : 0 < d + 2)).trans hN
-  have htwoPow : 2 ≤ N ^ 49 :=
+  have htwoPow : 2 ≤ N ^ (49 : ℕ) :=
     htwoN.trans (Nat.le_pow (by omega : 0 < 49))
-  have hsum : N ^ 49 + 2 ≤ 2 * N ^ 49 := by omega
-  have hreassoc : 2 ^ (d + 1) * (2 * N ^ 49) = 2 ^ (d + 2) * N ^ 49 := by
+  have hsum : N ^ (49 : ℕ) + 2 ≤ 2 * N ^ (49 : ℕ) := by omega
+  have hreassoc : 2 ^ (d + 1) * (2 * N ^ (49 : ℕ)) = 2 ^ (d + 2) * N ^ (49 : ℕ) := by
     calc
-      2 ^ (d + 1) * (2 * N ^ 49) = (2 ^ (d + 1) * 2) * N ^ 49 := by
+      2 ^ (d + 1) * (2 * N ^ (49 : ℕ)) = (2 ^ (d + 1) * 2) * N ^ (49 : ℕ) := by
         ac_rfl
-      _ = 2 ^ (d + 2) * N ^ 49 := by congr 1
+      _ = 2 ^ (d + 2) * N ^ (49 : ℕ) := by congr 1
   calc
-    (2 ^ (d + 1) * (N ^ 49 + 2)) ^ 2 ≤
-        (2 ^ (d + 1) * (2 * N ^ 49)) ^ 2 :=
+    (2 ^ (d + 1) * (N ^ (49 : ℕ) + 2)) ^ (2 : ℕ) ≤
+        (2 ^ (d + 1) * (2 * N ^ (49 : ℕ))) ^ (2 : ℕ) :=
       Nat.pow_le_pow_left (Nat.mul_le_mul_left _ hsum) 2
-    _ = (2 ^ (d + 2)) ^ 2 * N ^ 98 := by
+    _ = (2 ^ (d + 2)) ^ (2 : ℕ) * N ^ (98 : ℕ) := by
       rw [hreassoc, mul_pow]
       congr 1
       rw [← pow_mul]
-    _ ≤ N ^ 2 * N ^ 98 :=
+    _ ≤ N ^ (2 : ℕ) * N ^ (98 : ℕ) :=
       Nat.mul_le_mul_right _ (Nat.pow_le_pow_left hN 2)
-    _ = N ^ 100 := by rw [← pow_add]
+    _ = N ^ (100 : ℕ) := by rw [← pow_add]
 
 /-- Any coefficient system with a fixed finite log-polynomial rough profile fails true-prime
 half-density on a window containing a Bertrand reservoir and its prime squares. -/
@@ -221,7 +221,7 @@ theorem not_forall_coeff_eq_truePrime_of_finiteOrderRoughProfile_reservoir
     (hprofile : ∀ n, 0 < n → IsApertureRough M n →
       coeff n = finiteOrderCriticalHeadCoeff P n)
     (hdeg : (P - X).natDegree < d + 1)
-    (hwindow : (2 ^ (d + 1) * (M + 2)) ^ 2 ≤ L) :
+    (hwindow : (2 ^ (d + 1) * (M + 2)) ^ (2 : ℕ) ≤ L) :
     ¬ ∀ n : ℕ, 0 < n → IsApertureRough M n → n ≤ L →
       coeff n = truePrimeLogHalfDensityCoeff n := by
   intro hall
@@ -237,10 +237,10 @@ theorem not_forall_coeff_eq_truePrime_of_finiteOrderRoughProfile_reservoir
     have hpR : p ≤ 2 ^ (d + 1) * (M + 2) := by
       have := vinogradovBertrandPrimeReservoir_add_two_le M (d + 1) i
       exact (Nat.le_add_right p 2).trans (by simpa only [p] using this)
-    have hp2L : p ^ 2 ≤ L :=
+    have hp2L : p ^ (2 : ℕ) ≤ L :=
       (Nat.pow_le_pow_left hpR 2).trans hwindow
     have hpL : p ≤ L := by
-      exact (show p ≤ p ^ 2 by nlinarith [hp.two_le]).trans hp2L
+      exact (show p ≤ p ^ (2 : ℕ) by nlinarith [hp.two_le]).trans hp2L
     have heq := hall p hp.pos (prime_isApertureRough hp hMp) hpL
     rw [hprofile p hp.pos (prime_isApertureRough hp hMp),
       finiteOrderCriticalHeadCoeff, truePrimeLogHalfDensityCoeff, if_pos hp] at heq
@@ -256,18 +256,18 @@ theorem not_forall_coeff_eq_truePrime_of_finiteOrderRoughProfile_reservoir
   have hpR : p ≤ 2 ^ (d + 1) * (M + 2) := by
     have := vinogradovBertrandPrimeReservoir_add_two_le M (d + 1) i
     exact (Nat.le_add_right p 2).trans (by simpa only [p, i] using this)
-  have hp2L : p ^ 2 ≤ L :=
+  have hp2L : p ^ (2 : ℕ) ≤ L :=
     (Nat.pow_le_pow_left hpR 2).trans hwindow
-  have hp2pos : 0 < p ^ 2 := pow_pos hp.pos 2
-  have hp2rough : IsApertureRough M (p ^ 2) :=
+  have hp2pos : 0 < p ^ (2 : ℕ) := pow_pos hp.pos 2
+  have hp2rough : IsApertureRough M (p ^ (2 : ℕ)) :=
     prime_sq_isApertureRough hp hMp
-  have hp2not : ¬(p ^ 2).Prime := Nat.Prime.not_prime_pow (by norm_num)
-  have heq := hall (p ^ 2) hp2pos hp2rough hp2L
-  rw [hprofile (p ^ 2) hp2pos hp2rough,
+  have hp2not : ¬(p ^ (2 : ℕ)).Prime := Nat.Prime.not_prime_pow (by norm_num)
+  have heq := hall (p ^ (2 : ℕ)) hp2pos hp2rough hp2L
+  rw [hprofile (p ^ (2 : ℕ)) hp2pos hp2rough,
     finiteOrderCriticalHeadCoeff, hPX, Polynomial.eval_X,
     truePrimeLogHalfDensityCoeff, if_neg hp2not] at heq
-  have hlogpos : 0 < Real.log (((p ^ 2 : ℕ) : ℝ)) := by
-    exact Real.log_pos (by exact_mod_cast (show 1 < p ^ 2 by nlinarith [hp.two_le]))
+  have hlogpos : 0 < Real.log (((p ^ (2 : ℕ) : ℕ) : ℝ)) := by
+    exact Real.log_pos (by exact_mod_cast (show 1 < p ^ (2 : ℕ) by nlinarith [hp.two_le]))
   exact (mul_ne_zero (by exact_mod_cast (ne_of_gt hlogpos))
     (one_div_sqrt_nat_cast_ne_zero hp2pos)) heq
 
@@ -277,7 +277,7 @@ theorem not_forall_finiteOrderMollifiedCriticalDetectorCoeff_eq_truePrime_of_res
     {P : ℂ[X]} {moll : ℕ → ℂ} {M L d : ℕ}
     (hmoll_one : moll 1 = 1) (hsupport : ∀ q, M < q → moll q = 0)
     (hdeg : (P - X).natDegree < d + 1)
-    (hwindow : (2 ^ (d + 1) * (M + 2)) ^ 2 ≤ L) :
+    (hwindow : (2 ^ (d + 1) * (M + 2)) ^ (2 : ℕ) ≤ L) :
     ¬ ∀ n : ℕ, 0 < n → IsApertureRough M n → n ≤ L →
       finiteOrderMollifiedCriticalDetectorCoeff P moll n =
         truePrimeLogHalfDensityCoeff n :=
@@ -293,7 +293,7 @@ theorem not_forall_finiteOrderMollifiedCriticalDetectorCombinationCoeff_eq_trueP
     {moll : ι → ℕ → ℂ} {M L d : ℕ}
     (hsupport : ∀ i ∈ S, ∀ q, M < q → moll i q = 0)
     (hdeg : ((∑ i ∈ S, Polynomial.C (moll i 1) * P i) - X).natDegree < d + 1)
-    (hwindow : (2 ^ (d + 1) * (M + 2)) ^ 2 ≤ L) :
+    (hwindow : (2 ^ (d + 1) * (M + 2)) ^ (2 : ℕ) ≤ L) :
     ¬ ∀ n : ℕ, 0 < n → IsApertureRough M n → n ≤ L →
       finiteOrderMollifiedCriticalDetectorCombinationCoeff S P moll n =
         truePrimeLogHalfDensityCoeff n :=
@@ -304,16 +304,16 @@ theorem not_forall_finiteOrderMollifiedCriticalDetectorCombinationCoeff_eq_trueP
     hdeg hwindow
 
 /-- **T1 fixed-finite-order LAND no-go at the actual AFE schedule.** Once `N` dominates the fixed
-residual degree, no finite sum of mollifiers supported through `N^49`, paired with any
-fixed finite differential polynomials, can equal true-prime half-density on every `N^49`-rough
-source index through `N^100`. -/
+residual degree, no finite sum of mollifiers supported through `N^(49 : ℕ)`, paired with any
+fixed finite differential polynomials, can equal true-prime half-density on every `N^(49 : ℕ)`-rough
+source index through `N^(100 : ℕ)`. -/
 theorem not_forall_finiteOrderMollifiedCriticalDetectorCombinationCoeff_eq_truePrime_t1AfeWindow
     {ι : Type*} {S : Finset ι} {P : ι → ℂ[X]}
     {moll : ι → ℕ → ℂ} {N d : ℕ}
-    (hsupport : ∀ i ∈ S, ∀ q, N ^ 49 < q → moll i q = 0)
+    (hsupport : ∀ i ∈ S, ∀ q, N ^ (49 : ℕ) < q → moll i q = 0)
     (hd : 1 ≤ d) (hPdeg : ∀ i ∈ S, (P i).natDegree ≤ d)
     (hN : 2 ^ (d + 2) ≤ N) :
-    ¬ ∀ n : ℕ, 0 < n → IsApertureRough (N ^ 49) n → n ≤ N ^ 100 →
+    ¬ ∀ n : ℕ, 0 < n → IsApertureRough (N ^ (49 : ℕ)) n → n ≤ N ^ (100 : ℕ) →
       finiteOrderMollifiedCriticalDetectorCombinationCoeff S P moll n =
         truePrimeLogHalfDensityCoeff n :=
   not_forall_finiteOrderMollifiedCriticalDetectorCombinationCoeff_eq_truePrime_of_reservoir

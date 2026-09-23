@@ -33,7 +33,7 @@ structure PWFiniteEnergyPositiveAtomicFEReflectionData
   mellinGradeOne : ∀ {x : ℝ}, 0 < x → x < X →
     (∑ i, weight x i) = x⁻¹
   mellinGradeTwo : ∀ {x : ℝ}, 0 < x → x < X →
-    (∑ i, weight x i * energy i) = x⁻¹ ^ 2
+    (∑ i, weight x i * energy i) = x⁻¹ ^ (2 : ℕ)
   contact : ℂ
   contact_ne_zero : contact ≠ 0
 
@@ -45,8 +45,8 @@ theorem no_PWFiniteEnergyPositiveAtomicFEReflectionData
     IsEmpty (PWFiniteEnergyPositiveAtomicFEReflectionData ι X) := by
   classical
   refine ⟨fun D => ?_⟩
-  let x : ℝ := X / (X ^ 2 + 1)
-  have hden : 0 < X ^ 2 + 1 := by positivity
+  let x : ℝ := X / (X ^ (2 : ℕ) + 1)
+  have hden : 0 < X ^ (2 : ℕ) + 1 := by positivity
   have hx0 : 0 < x := div_pos hX hden
   have hxX : x < X := by
     dsimp only [x]

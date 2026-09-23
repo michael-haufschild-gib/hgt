@@ -56,7 +56,7 @@ theorem compactFourier_one_eq (k : ℝ) {w : ℝ} (hw : w ≠ 0) :
 
 /-- **`∫_ℝ sin(a x)² / x² dx = π a`.**  The normalization constant behind Fermi's golden rule. -/
 theorem integral_sin_sq_div_sq {a : ℝ} (ha : 0 ≤ a) :
-    ∫ x : ℝ, Real.sin (a * x) ^ 2 / x ^ 2 = Real.pi * a := by
+    ∫ x : ℝ, Real.sin (a * x) ^ (2 : ℕ) / x ^ (2 : ℕ) = Real.pi * a := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   set k : ℝ := a / (2 * Real.pi) with hkdef
   have hk : 0 ≤ k := div_nonneg ha (by positivity)
@@ -64,12 +64,12 @@ theorem integral_sin_sq_div_sq {a : ℝ} (ha : 0 ≤ a) :
     rw [hkdef]; field_simp
   have hkey := GaloisForLFunctions.RHTower.integral_norm_sq_compactFourier
     (H := fun _ => (1 : ℂ)) continuous_const hk
-  have hrhs : (∫ _v in Icc (-k) k, ‖(1 : ℂ)‖ ^ 2) = 2 * k := by
+  have hrhs : (∫ _v in Icc (-k) k, ‖(1 : ℂ)‖ ^ (2 : ℕ)) = 2 * k := by
     rw [MeasureTheory.setIntegral_const, Real.volume_real_Icc_of_le (by linarith)]
     simp
     ring
-  have hlhs : (∫ x : ℝ, ‖compactFourier (fun _ => (1 : ℂ)) (-k) k ((2 * Real.pi * x : ℝ) : ℂ)‖ ^ 2)
-      = ∫ x : ℝ, (Real.pi ^ 2)⁻¹ * (Real.sin (a * x) ^ 2 / x ^ 2) := by
+  have hlhs : (∫ x : ℝ, ‖compactFourier (fun _ => (1 : ℂ)) (-k) k ((2 * Real.pi * x : ℝ) : ℂ)‖ ^ (2 : ℕ))
+      = ∫ x : ℝ, (Real.pi ^ (2 : ℕ))⁻¹ * (Real.sin (a * x) ^ (2 : ℕ) / x ^ (2 : ℕ)) := by
     refine MeasureTheory.integral_congr_ae ?_
     have hnull : (volume : Measure ℝ) {(0 : ℝ)} = 0 := by simp
     filter_upwards [MeasureTheory.compl_mem_ae_iff.mpr hnull] with x hx
@@ -81,14 +81,14 @@ theorem integral_sin_sq_div_sq {a : ℝ} (ha : 0 ≤ a) :
     rw [hwk]
     field_simp
   rw [hlhs, MeasureTheory.integral_const_mul, hrhs] at hkey
-  have hpi2 : (Real.pi ^ 2) ≠ 0 := by positivity
+  have hpi2 : (Real.pi ^ (2 : ℕ)) ≠ 0 := by positivity
   field_simp at hkey
   rw [hkdef] at hkey
   field_simp at hkey
   linarith [hkey]
 
 /-- **`∫_ℝ sinc² = π`.**  Mathlib's `Real.sinc` has unit-normalized square mass `π`. -/
-theorem integral_sinc_sq : ∫ x : ℝ, Real.sinc x ^ 2 = Real.pi := by
+theorem integral_sinc_sq : ∫ x : ℝ, Real.sinc x ^ (2 : ℕ) = Real.pi := by
   have h := integral_sin_sq_div_sq (a := 1) zero_le_one
   rw [mul_one] at h
   rw [← h]

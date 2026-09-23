@@ -22,7 +22,7 @@ theorem ccmActualHeadThirdJetKernelVector_moments (N : ℕ) :
     (∑ i, ccmActualHeadThirdJetKernelVector N i = 0) ∧
       (∑ i, ccmPublishedCenteredClock (N + 2) i *
         ccmActualHeadThirdJetKernelVector N i = 0) ∧
-      (∑ i, ccmPublishedCenteredClock (N + 2) i ^ 2 *
+      (∑ i, ccmPublishedCenteredClock (N + 2) i ^ (2 : ℕ) *
         ccmActualHeadThirdJetKernelVector N i = 0) := by
   classical
   let i0 : Fin (2 * (N + 2) + 1) := ⟨0, by omega⟩
@@ -118,7 +118,7 @@ theorem ccmActualHeadThirdJetKernelVector_moments (N : ℕ) :
     rw [sum_four]
     rw [hc0, hc1, hc2, hc3, hv0, hv1, hv2, hv3]
     ring
-  have hclockSq : ∑ i, ccmPublishedCenteredClock (N + 2) i ^ 2 *
+  have hclockSq : ∑ i, ccmPublishedCenteredClock (N + 2) i ^ (2 : ℕ) *
       ccmActualHeadThirdJetKernelVector N i = 0 := by
     rw [← Finset.sum_subset hsubset (fun i hi hnot => by rw [hsupp i hi hnot]; ring)]
     rw [sum_four]
@@ -143,7 +143,7 @@ theorem ccmActualHeadMatchedWallLightThirdJetConnection_kernelVector
   have hclock' : ccmPublishedCenteredClock (N + 2) ⬝ᵥ
       ccmActualHeadThirdJetKernelVector N = 0 := by
     simpa [dotProduct] using hclock
-  have hclockSq' : (fun i => ccmPublishedCenteredClock (N + 2) i ^ 2) ⬝ᵥ
+  have hclockSq' : (fun i => ccmPublishedCenteredClock (N + 2) i ^ (2 : ℕ)) ⬝ᵥ
       ccmActualHeadThirdJetKernelVector N = 0 := by
     simpa [dotProduct] using hclockSq
   rw [ccmActualHeadMatchedWallLightThirdJetConnection_eq_rate_smul,
@@ -161,13 +161,13 @@ theorem ccmActualHeadMatchedWallLightThirdJetConnection_range_threeMoment
     (v : Fin (2 * N + 1) → ℝ) :
     ∃ a b c : ℝ,
       Matrix.mulVec (ccmActualHeadMatchedWallLightThirdJetConnection S N) v =
-        a • (fun i => ccmPublishedCenteredClock N i ^ 2) +
+        a • (fun i => ccmPublishedCenteredClock N i ^ (2 : ℕ)) +
           b • ccmPublishedCenteredClock N + c • ccmConstantBoundary := by
   let rate : ℝ := ∑ pe ∈ S,
     ccmActualHeadMatchedWallLightOrientedQuadraticJet pe.1 pe.2
-  refine ⟨rate * (2 * Real.pi ^ 2) * (ccmConstantBoundary ⬝ᵥ v),
-    rate * (2 * Real.pi ^ 2) * (ccmPublishedCenteredClock N ⬝ᵥ v),
-    rate * ((2 * Real.pi ^ 2) * ((fun i => ccmPublishedCenteredClock N i ^ 2) ⬝ᵥ v) -
+  refine ⟨rate * (2 * Real.pi ^ (2 : ℕ)) * (ccmConstantBoundary ⬝ᵥ v),
+    rate * (2 * Real.pi ^ (2 : ℕ)) * (ccmPublishedCenteredClock N ⬝ᵥ v),
+    rate * ((2 * Real.pi ^ (2 : ℕ)) * ((fun i => ccmPublishedCenteredClock N i ^ (2 : ℕ)) ⬝ᵥ v) -
       3 * (ccmConstantBoundary ⬝ᵥ v)), ?_⟩
   rw [ccmActualHeadMatchedWallLightThirdJetConnection_eq_rate_smul,
     Matrix.smul_mulVec,

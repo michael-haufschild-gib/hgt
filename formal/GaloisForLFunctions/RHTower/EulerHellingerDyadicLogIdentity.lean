@@ -11,7 +11,7 @@ factors through the finite prime partition function
 Z_N(s) = ∏_{p < N} (1 - p^(-s))⁻¹,      P_N(s) = log Z_N(s)
 ```
 
-as `H_N(c) = Z_N(1-c)^2 / (Z_N(1) Z_N(1-2c))`.  Hence the logarithm of the reflected sewing
+as `H_N(c) = Z_N(1-c)^(2 : ℕ) / (Z_N(1) Z_N(1-2c))`.  Hence the logarithm of the reflected sewing
 multiplier `S_N(c) = H_N(-c)/H_N(c)` is exactly the dyadic reflection combination of `P_N` at the
 centre `s = 1`:
 
@@ -63,7 +63,7 @@ theorem primeEulerLogBelow_eq_sum {s : ℝ} (hs : 0 < s) (N : ℕ) :
 
 /-! ## The Euler factorization of the squared Hellinger affinity -/
 
-/-- **The finite Euler factorization.**  `H_N(c) = Z_N(1-c)^2 / (Z_N(1) Z_N(1-2c))`. -/
+/-- **The finite Euler factorization.**  `H_N(c) = Z_N(1-c)^(2 : ℕ) / (Z_N(1) Z_N(1-2c))`. -/
 theorem primeValuationSquaredHellingerBelow_eq_partitionRatio {c : ℝ} (h1 : 0 < 1 - 2 * c)
     (h2 : 0 < 1 - c) (N : ℕ) :
     primeValuationSquaredHellingerBelow c N

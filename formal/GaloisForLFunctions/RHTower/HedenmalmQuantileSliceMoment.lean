@@ -53,7 +53,7 @@ theorem abs_pinnedKernelSlice_le_weight {s t : ℝ} (hs : s ∈ Ioo (0 : ℝ) 1)
 
 /-- The dominating function of the slice moment. -/
 def sliceDominant (S : PositiveDensitySource) (s t : ℝ) : ℝ :=
-  (quantileSpeed S t ^ 2 * (t * (1 - t)) + t * (1 - t)) / (2 * min s (1 - s))
+  (quantileSpeed S t ^ (2 : ℕ) * (t * (1 - t)) + t * (1 - t)) / (2 * min s (1 - s))
 
 theorem integrable_sliceDominant (S : PositiveDensitySource) (hfin : HasFiniteKernelEnergy S)
     (s : ℝ) : Integrable (sliceDominant S s) unitIntervalMeasure := by
@@ -86,16 +86,16 @@ theorem integrable_quantileSpeed_mul_pinnedKernelSlice (S : PositiveDensitySourc
     have hw : 0 ≤ t * (1 - t) := by nlinarith [ht.1, ht.2]
     have hslice := abs_pinnedKernelSlice_le_weight hs ht
     have hAM : quantileSpeed S t * (t * (1 - t))
-        ≤ (quantileSpeed S t ^ 2 * (t * (1 - t)) + t * (1 - t)) / 2 := by
+        ≤ (quantileSpeed S t ^ (2 : ℕ) * (t * (1 - t)) + t * (1 - t)) / 2 := by
       nlinarith [sq_nonneg (quantileSpeed S t - 1), hw]
     rw [Real.norm_eq_abs, abs_mul, abs_of_pos hq, sliceDominant]
     calc quantileSpeed S t * |pinnedKernelSlice t s|
         ≤ quantileSpeed S t * (t * (1 - t) / min s (1 - s)) := by
           exact mul_le_mul_of_nonneg_left hslice hq.le
       _ = (quantileSpeed S t * (t * (1 - t))) / min s (1 - s) := by ring
-      _ ≤ ((quantileSpeed S t ^ 2 * (t * (1 - t)) + t * (1 - t)) / 2) / min s (1 - s) := by
+      _ ≤ ((quantileSpeed S t ^ (2 : ℕ) * (t * (1 - t)) + t * (1 - t)) / 2) / min s (1 - s) := by
           gcongr
-      _ = (quantileSpeed S t ^ 2 * (t * (1 - t)) + t * (1 - t)) / (2 * min s (1 - s)) := by
+      _ = (quantileSpeed S t ^ (2 : ℕ) * (t * (1 - t)) + t * (1 - t)) / (2 * min s (1 - s)) := by
           ring
 
 /-- The slice moment of the quantile speed. -/
@@ -247,8 +247,8 @@ theorem sliceMoment_eq_neg_quantileFun {s : ℝ} (hs : s ∈ Ioo (0 : ℝ) 1) :
 /-- **The trace calibration in quantile form.**  The mean square of the slice moment is the source
 variance, which is the value the trace invariant of the compressed inverse must take. -/
 theorem integral_sq_sliceMoment :
-    (∫ s in Ioo (0 : ℝ) 1, sliceMoment thetaSource s ^ 2)
-      = thetaSource.mass⁻¹ * ∫ x : ℝ, x ^ 2 * thetaCuspFullSource x := by
+    (∫ s in Ioo (0 : ℝ) 1, sliceMoment thetaSource s ^ (2 : ℕ))
+      = thetaSource.mass⁻¹ * ∫ x : ℝ, x ^ (2 : ℕ) * thetaCuspFullSource x := by
   rw [← integral_sq_quantileFun]
   refine setIntegral_congr_fun measurableSet_Ioo fun s hs => ?_
   rw [sliceMoment_eq_neg_quantileFun hs]
@@ -303,7 +303,7 @@ theorem integrableOn_quantileFun_thetaSource :
 /-- **The second absolute moment of the theta source is finite.**  The source is Schwartz, so every
 polynomial weight is integrable against it. -/
 theorem integrable_sq_mul_thetaSource :
-    Integrable (fun x : ℝ => x ^ 2 * thetaCuspFullSource x) (volume : Measure ℝ) := by
+    Integrable (fun x : ℝ => x ^ (2 : ℕ) * thetaCuspFullSource x) (volume : Measure ℝ) := by
   have hraw := thetaCuspSchwartzReal.integrable_pow_mul (volume : Measure ℝ) 2
   refine hraw.mono' ?_ ?_
   · exact ((continuous_pow 2).mul
@@ -315,16 +315,16 @@ theorem integrable_sq_mul_thetaSource :
 /-- **The quantile map is square integrable on the unit interval.**  Its transport is the second
 moment of the source. -/
 theorem integrableOn_sq_quantileFun_thetaSource :
-    IntegrableOn (fun t => thetaSource.quantileFun t ^ 2) (Ioo (0 : ℝ) 1) volume := by
+    IntegrableOn (fun t => thetaSource.quantileFun t ^ (2 : ℕ)) (Ioo (0 : ℝ) 1) volume := by
   rw [thetaSource.integrableOn_comp_quantileFun_iff
-    (g := fun x : ℝ => x ^ 2) (continuous_pow 2).aestronglyMeasurable]
+    (g := fun x : ℝ => x ^ (2 : ℕ)) (continuous_pow 2).aestronglyMeasurable]
   refine (integrable_sq_mul_thetaSource.const_mul thetaSource.mass⁻¹).congr ?_
   filter_upwards with x
-  show thetaSource.mass⁻¹ * (x ^ 2 * thetaCuspFullSource x) = thetaSource.normalized x • x ^ 2
-  show thetaSource.mass⁻¹ * (x ^ 2 * thetaCuspFullSource x)
-    = thetaSource.k x / thetaSource.mass * x ^ 2
-  show thetaSource.mass⁻¹ * (x ^ 2 * thetaCuspFullSource x)
-    = thetaCuspFullSource x / thetaSource.mass * x ^ 2
+  show thetaSource.mass⁻¹ * (x ^ (2 : ℕ) * thetaCuspFullSource x) = thetaSource.normalized x • x ^ (2 : ℕ)
+  show thetaSource.mass⁻¹ * (x ^ (2 : ℕ) * thetaCuspFullSource x)
+    = thetaSource.k x / thetaSource.mass * x ^ (2 : ℕ)
+  show thetaSource.mass⁻¹ * (x ^ (2 : ℕ) * thetaCuspFullSource x)
+    = thetaCuspFullSource x / thetaSource.mass * x ^ (2 : ℕ)
   field_simp
 
 

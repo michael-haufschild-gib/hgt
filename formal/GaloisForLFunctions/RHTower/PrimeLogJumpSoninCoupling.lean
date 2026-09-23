@@ -83,7 +83,7 @@ theorem tendsto_norm_adjoint_soninApertureCoupling_jumpDilatedPacket_sub
     (hA : 0 < A) (hAB : A < B) (a : ℝ) (ha : 0 < a) (q : ℝ)
     (haq : a < q) (hqA : q < A)
     (r : ℕ → ℝ) (hrpos : ∀ n, 0 < r n) (hrgt : ∀ n, 1 < r n)
-    (hsq : ∀ n, 0 < r n ^ 2) (hr : Tendsto r atTop atTop) :
+    (hsq : ∀ n, 0 < r n ^ (2 : ℕ)) (hr : Tendsto r atTop atTop) :
     Tendsto (fun n : ℕ =>
         ‖ContinuousLinearMap.adjoint
             (evenSoninApertureSuccessiveLayerTransition a A B (r n) (hrgt n))

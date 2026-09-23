@@ -24,7 +24,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable def periodicWitness : ℂ → ℂ :=
   fun z => dyadicLayerEntireFunction (Complex.exp (2 * Real.pi * Complex.I * z))
 
-theorem twoPiI_ne_zero : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by
+theorem twoPiI_ne_zero_periodicHypertranscendentalWitness : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by
   simp [Real.pi_ne_zero, Complex.I_ne_zero]
 
 theorem contDiff_periodicWitness : ContDiff ℂ (⊤ : ℕ∞) periodicWitness := by
@@ -43,7 +43,7 @@ theorem periodic_periodicWitness : Function.Periodic periodicWitness 1 := by
 /-- **The witness is hypertranscendental.**  Differential algebraicity would descend through the
 exponential to the entire layer-tower function, which has none. -/
 theorem hypertranscendental_periodicWitness : Hypertranscendental periodicWitness :=
-  hypertranscendental_comp_exp contDiff_dyadicLayerEntireFunction twoPiI_ne_zero
+  hypertranscendental_comp_exp contDiff_dyadicLayerEntireFunction twoPiI_ne_zero_periodicHypertranscendentalWitness
     hypertranscendental_dyadicLayerEntireFunction
 
 theorem meromorphicNFOn_periodicWitness : MeromorphicNFOn periodicWitness Set.univ := fun z _ =>

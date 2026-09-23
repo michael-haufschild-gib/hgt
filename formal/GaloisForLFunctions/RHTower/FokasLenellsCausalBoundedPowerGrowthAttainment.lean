@@ -112,7 +112,7 @@ theorem causalBoundedPowerGrowthRate_character (z : ℂ) :
     simp only [causalBoundedPowerGrowthRate, dif_neg hz]
     calc
       _ = (z*conj z).re / ‖z‖ := by rw [← mul_div_assoc, Complex.div_ofReal_re]
-      _ = ‖z‖^2 / ‖z‖ := by rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
+      _ = ‖z‖^(2 : ℕ) / ‖z‖ := by rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
       _ = ‖z‖ * (‖z‖/‖z‖) := by rw [pow_two, mul_div_assoc]
       _ = ‖z‖ := by rw [div_self hn, mul_one]
 

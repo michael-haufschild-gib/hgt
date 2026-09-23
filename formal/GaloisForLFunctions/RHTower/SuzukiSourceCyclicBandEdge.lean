@@ -17,9 +17,9 @@ namespace GaloisForLFunctions.RHTower
 
 /-- **`(469)`: the capacity gap bounds the odds transform at the spectral edge.** -/
 theorem odds_le_capacity {ρ C r : ℝ} (hr : 0 < r) (hρ0 : 0 ≤ ρ) (hρ1 : ρ < 1)
-    (hgap : ρ * r ≤ C * (1 - ρ ^ 2)) : ρ ^ 2 / (1 - ρ ^ 2) ≤ C / r := by
-  have hden : (0 : ℝ) < 1 - ρ ^ 2 := by nlinarith
-  have hsq : ρ ^ 2 ≤ ρ := by nlinarith
+    (hgap : ρ * r ≤ C * (1 - ρ ^ (2 : ℕ))) : ρ ^ (2 : ℕ) / (1 - ρ ^ (2 : ℕ)) ≤ C / r := by
+  have hden : (0 : ℝ) < 1 - ρ ^ (2 : ℕ) := by nlinarith
+  have hsq : ρ ^ (2 : ℕ) ≤ ρ := by nlinarith
   rw [div_le_div_iff₀ hden hr]
   nlinarith [hgap, mul_le_mul_of_nonneg_right hsq hr.le]
 

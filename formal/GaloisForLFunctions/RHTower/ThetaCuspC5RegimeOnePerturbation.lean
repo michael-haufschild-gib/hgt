@@ -22,10 +22,10 @@ open Set
 namespace RHTower
 
 theorem hasSum_c5HyperbolicShiftedSinhTerm' (x : ℝ) :
-    HasSum (c5HyperbolicShiftedSinhTerm x) (5 * x ^ 2 * Real.sinh x) := by
+    HasSum (c5HyperbolicShiftedSinhTerm x) (5 * x ^ (2 : ℕ) * Real.sinh x) := by
   have htail : HasSum (fun n => c5HyperbolicShiftedSinhTerm x (n + 1))
-      (5 * x ^ 2 * Real.sinh x) := by
-    have h := HasSum.const_smul (5 * x ^ 2) (Real.hasSum_sinh x)
+      (5 * x ^ (2 : ℕ) * Real.sinh x) := by
+    have h := HasSum.const_smul (5 * x ^ (2 : ℕ)) (Real.hasSum_sinh x)
     convert h using 1 <;> simp [c5HyperbolicShiftedSinhTerm, smul_eq_mul]
   have hfull := (hasSum_nat_add_iff (f := c5HyperbolicShiftedSinhTerm x) 1).1 htail
   simpa only [Finset.sum_range_one, c5HyperbolicShiftedSinhTerm, add_zero] using hfull
@@ -42,7 +42,7 @@ theorem hasSum_c5HyperbolicCertificateSeriesTerm' (x : ℝ) :
   have h := (((((h3.add h2).add h1).add hs).add hc2).add hc1).add hlin
   have hraw : HasSum (c5HyperbolicCertificateSeriesTerm x)
       (18 * Real.sinh (3 * x) - 119 / 2 * Real.sinh (2 * x) +
-          65 * Real.sinh x + 5 * x ^ 2 * Real.sinh x -
+          65 * Real.sinh x + 5 * x ^ (2 : ℕ) * Real.sinh x -
         41 * x * Real.cosh (2 * x) + 129 * x * Real.cosh x + -88 * x) := by
     convert h using 1
     · funext n
@@ -51,7 +51,7 @@ theorem hasSum_c5HyperbolicCertificateSeriesTerm' (x : ℝ) :
     · ring
   have hvalue : c5HyperbolicCertificate x =
       18 * Real.sinh (3 * x) - 119 / 2 * Real.sinh (2 * x) +
-          65 * Real.sinh x + 5 * x ^ 2 * Real.sinh x -
+          65 * Real.sinh x + 5 * x ^ (2 : ℕ) * Real.sinh x -
         41 * x * Real.cosh (2 * x) + 129 * x * Real.cosh x + -88 * x := by
     unfold c5HyperbolicCertificate
     rw [Real.sinh_three_mul, Real.sinh_two_mul, Real.cosh_two_mul]
@@ -84,7 +84,7 @@ theorem c5Hyperbolic_exponential_core_pos' {n : ℕ} (hn : 3 ≤ n) :
 theorem c5HyperbolicCertificateSeriesTerm_succ_eq (x : ℝ) (k : ℕ) :
     c5HyperbolicCertificateSeriesTerm x (k + 1) =
       (54 * (9 : ℝ) ^ (k + 1) - (160 + 82 * ((k + 1 : ℕ) : ℝ)) * (4 : ℝ) ^ (k + 1) +
-          (20 * ((k + 1 : ℕ) : ℝ) ^ 2 + 268 * ((k + 1 : ℕ) : ℝ) + 194)) *
+          (20 * ((k + 1 : ℕ) : ℝ) ^ (2 : ℕ) + 268 * ((k + 1 : ℕ) : ℝ) + 194)) *
         x ^ (2 * (k + 1) + 1) / (Nat.factorial (2 * (k + 1) + 1) : ℝ) := by
   simp only [c5HyperbolicCertificateSeriesTerm, c5HyperbolicShiftedSinhTerm]
   have hodd : 2 * (k + 1) + 1 = (2 * k + 1) + 2 := by omega
@@ -102,9 +102,9 @@ theorem c5HyperbolicCertificateSeriesTerm_succ_eq (x : ℝ) (k : ℕ) :
       Nat.factorial_succ]
     push_cast
     ring
-  have hxpow : x ^ (2 * (k + 1) + 1) = x ^ 2 * x ^ (2 * k + 1) := by
+  have hxpow : x ^ (2 * (k + 1) + 1) = x ^ (2 : ℕ) * x ^ (2 * k + 1) := by
     rw [hodd, pow_add]; ring
-  have hxeven : x ^ (2 * (k + 1)) = x ^ 2 * x ^ (2 * k) := by
+  have hxeven : x ^ (2 * (k + 1)) = x ^ (2 : ℕ) * x ^ (2 * k) := by
     rw [show 2 * (k + 1) = 2 + 2 * k by omega, pow_add]
   have htwoOdd : (2 : ℝ) ^ (2 * (k + 1) + 1) = 2 * 4 ^ (k + 1) := by
     rw [pow_add, pow_mul]
@@ -139,7 +139,7 @@ theorem c5HyperbolicCertificateSeriesTerm_nonneg' {x : ℝ} (hx : 0 ≤ x) (n : 
   · have hcore := c5Hyperbolic_exponential_core_pos' (show 3 ≤ n by omega)
     have hcoeff : 0 <
         54 * (9 : ℝ) ^ n - (160 + 82 * (n : ℝ)) * (4 : ℝ) ^ n +
-          (20 * (n : ℝ) ^ 2 + 268 * (n : ℝ) + 194) := by
+          (20 * (n : ℝ) ^ (2 : ℕ) + 268 * (n : ℝ) + 194) := by
       have hn0 : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
       nlinarith [sq_nonneg (n : ℝ)]
     have hfac : 0 < (Nat.factorial (2 * n + 1) : ℝ) := by positivity
@@ -164,7 +164,7 @@ theorem c5HyperbolicGaussianBaseShape_eq (t : ℝ) :
 
 /-- **Explicit lower bound for the shape:** the terms `n = 3, 4, 5` of the series. -/
 theorem c5HyperbolicGaussianBaseShape_ge {t : ℝ} (ht : 0 ≤ t) :
-    6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11 ≤
+    6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ) ≤
       c5HyperbolicGaussianBaseShape t := by
   rw [c5HyperbolicGaussianBaseShape_eq]
   have h := sum_range_le_c5HyperbolicCertificate (x := 2 * t) (by linarith) 6
@@ -177,15 +177,15 @@ theorem c5HyperbolicGaussianBaseShape_ge {t : ℝ} (ht : 0 ≤ t) :
   have h2 : c5HyperbolicCertificateSeriesTerm (2 * t) 2 = 0 := by
     rw [c5HyperbolicCertificateSeriesTerm_succ_eq]
     norm_num [Nat.factorial]
-  have h3 : c5HyperbolicCertificateSeriesTerm (2 * t) 3 = 3328 / 9 * t ^ 7 := by
+  have h3 : c5HyperbolicCertificateSeriesTerm (2 * t) 3 = 3328 / 9 * t ^ (7 : ℕ) := by
     rw [c5HyperbolicCertificateSeriesTerm_succ_eq]
     norm_num [Nat.factorial]
     ring
-  have h4 : c5HyperbolicCertificateSeriesTerm (2 * t) 4 = 307936 / 945 * t ^ 9 := by
+  have h4 : c5HyperbolicCertificateSeriesTerm (2 * t) 4 = 307936 / 945 * t ^ (9 : ℕ) := by
     rw [c5HyperbolicCertificateSeriesTerm_succ_eq]
     norm_num [Nat.factorial]
     ring
-  have h5 : c5HyperbolicCertificateSeriesTerm (2 * t) 5 = 25280 / 189 * t ^ 11 := by
+  have h5 : c5HyperbolicCertificateSeriesTerm (2 * t) 5 = 25280 / 189 * t ^ (11 : ℕ) := by
     rw [c5HyperbolicCertificateSeriesTerm_succ_eq]
     norm_num [Nat.factorial]
     ring
@@ -269,11 +269,11 @@ theorem regimeOne_homotopy_correction_bounds {u t : ℝ} (ht : 0 ≤ t)
     let Am := thetaCuspSingleAtomReflectionScale 1 (u - t)
     let ε := regimeOneLikelihoodScale (u - t)
     |thetaCuspReflectedLikelihoodCumulantJetOne u t| ≤ 12 * Am * ε ∧
-    |thetaCuspReflectedLikelihoodCumulantJetTwo u t| ≤ 76 * Am ^ 2 * ε ∧
-    |thetaCuspReflectedLikelihoodCumulantJetThree u t| ≤ 522 * Am ^ 3 * ε ∧
+    |thetaCuspReflectedLikelihoodCumulantJetTwo u t| ≤ 76 * Am ^ (2 : ℕ) * ε ∧
+    |thetaCuspReflectedLikelihoodCumulantJetThree u t| ≤ 522 * Am ^ (3 : ℕ) * ε ∧
     |c5LikelihoodScaleActionJetOne u t| ≤ 24 * Am * ε ∧
-    |c5LikelihoodScaleMixedJetOne u t| ≤ 76 * Am ^ 2 * ε ∧
-    |c5LikelihoodScaleMixedJetTwo u t| ≤ 522 * Am ^ 3 * ε ∧
+    |c5LikelihoodScaleMixedJetOne u t| ≤ 76 * Am ^ (2 : ℕ) * ε ∧
+    |c5LikelihoodScaleMixedJetTwo u t| ≤ 522 * Am ^ (3 : ℕ) * ε ∧
     |thetaCuspReflectedLikelihoodCumulantAction u t| ≤ 4 * ε := by
   intro Am ε
   have hmono : ∀ x : ℝ, u - t ≤ x → 6 ≤ thetaCuspSingleAtomReflectionScale 1 x := by
@@ -293,23 +293,23 @@ theorem regimeOne_homotopy_correction_bounds {u t : ℝ} (ht : 0 ≤ t)
       _ = 6 * (thetaCuspSingleAtomReflectionScale 1 x * regimeOneLikelihoodScale x) := by ring
       _ ≤ 6 * (Am * ε) := by gcongr
       _ = 6 * Am * ε := by ring
-  have hJ2 : ∀ x : ℝ, u - t ≤ x → |thetaCuspLikelihoodSourceLogPartitionJetTwo x| ≤ 38 * Am ^ 2 * ε := by
+  have hJ2 : ∀ x : ℝ, u - t ≤ x → |thetaCuspLikelihoodSourceLogPartitionJetTwo x| ≤ 38 * Am ^ (2 : ℕ) * ε := by
     intro x hx
     have h := regimeOne_jetTwo_bound (hmono x hx)
     have hm := regimeOne_pow_scale_le_left (k := 2) (by norm_num) hA hx
-    calc _ ≤ 38 * thetaCuspSingleAtomReflectionScale 1 x ^ 2 * regimeOneLikelihoodScale x := h
-      _ = 38 * (thetaCuspSingleAtomReflectionScale 1 x ^ 2 * regimeOneLikelihoodScale x) := by ring
-      _ ≤ 38 * (Am ^ 2 * ε) := by gcongr
-      _ = 38 * Am ^ 2 * ε := by ring
+    calc _ ≤ 38 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) * regimeOneLikelihoodScale x := h
+      _ = 38 * (thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) * regimeOneLikelihoodScale x) := by ring
+      _ ≤ 38 * (Am ^ (2 : ℕ) * ε) := by gcongr
+      _ = 38 * Am ^ (2 : ℕ) * ε := by ring
   have hJ3 : ∀ x : ℝ, u - t ≤ x → |thetaCuspLikelihoodSourceLogPartitionJetThree x| ≤
-      261 * Am ^ 3 * ε := by
+      261 * Am ^ (3 : ℕ) * ε := by
     intro x hx
     have h := regimeOne_jetThree_bound (hmono x hx)
     have hm := regimeOne_pow_scale_le_left (k := 3) (by norm_num) hA hx
-    calc _ ≤ 261 * thetaCuspSingleAtomReflectionScale 1 x ^ 3 * regimeOneLikelihoodScale x := h
-      _ = 261 * (thetaCuspSingleAtomReflectionScale 1 x ^ 3 * regimeOneLikelihoodScale x) := by ring
-      _ ≤ 261 * (Am ^ 3 * ε) := by gcongr
-      _ = 261 * Am ^ 3 * ε := by ring
+    calc _ ≤ 261 * thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) * regimeOneLikelihoodScale x := h
+      _ = 261 * (thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) * regimeOneLikelihoodScale x) := by ring
+      _ ≤ 261 * (Am ^ (3 : ℕ) * ε) := by gcongr
+      _ = 261 * Am ^ (3 : ℕ) * ε := by ring
   have hLP : ∀ x : ℝ, u - t ≤ x → |thetaCuspLikelihoodSourceLogPartition x| ≤ ε := by
     intro x hx
     have h := regimeOne_jetOne_logPartition_bounds (hmono x hx)
@@ -331,8 +331,8 @@ theorem regimeOne_homotopy_correction_bounds {u t : ℝ} (ht : 0 ≤ t)
           thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t)|
         ≤ |-thetaCuspLikelihoodSourceLogPartitionJetTwo (u + t)| +
           |thetaCuspLikelihoodSourceLogPartitionJetTwo (u - t)| := abs_sub _ _
-      _ ≤ 38 * Am ^ 2 * ε + 38 * Am ^ 2 * ε := by rw [abs_neg]; exact add_le_add h1 h2
-      _ = 76 * Am ^ 2 * ε := by ring
+      _ ≤ 38 * Am ^ (2 : ℕ) * ε + 38 * Am ^ (2 : ℕ) * ε := by rw [abs_neg]; exact add_le_add h1 h2
+      _ = 76 * Am ^ (2 : ℕ) * ε := by ring
   · unfold thetaCuspReflectedLikelihoodCumulantJetThree
     have := abs_sub _ _ |>.trans (add_le_add (hJ3 _ hl) (hJ3 _ hr))
     linarith
@@ -365,7 +365,7 @@ theorem regimeOne_homotopy_correction_bounds {u t : ℝ} (ht : 0 ≤ t)
           thetaCuspLikelihoodSourceLogPartitionJetThree (u - t)|
         ≤ |-thetaCuspLikelihoodSourceLogPartitionJetThree (u + t)| +
           |thetaCuspLikelihoodSourceLogPartitionJetThree (u - t)| := abs_sub _ _
-      _ ≤ 522 * Am ^ 3 * ε := by rw [abs_neg]; linarith
+      _ ≤ 522 * Am ^ (3 : ℕ) * ε := by rw [abs_neg]; linarith
   · unfold thetaCuspReflectedLikelihoodCumulantAction
     have h1 := hLP _ hc
     have h2 := hLP _ hr
@@ -395,7 +395,7 @@ theorem thetaCuspSingleAtomReflectionLambda_le {A : ℝ} (hA : 6 ≤ A) :
 theorem abs_c5SingleAtomScaleLambdaJetOne_le {A : ℝ} (hA : 6 ≤ A) :
     |c5SingleAtomScaleLambdaJetOne A| ≤ 18 / A := by
   unfold c5SingleAtomScaleLambdaJetOne
-  have hden : 0 < (A - 3 / 2) ^ 3 := pow_pos (by linarith) 3
+  have hden : 0 < (A - 3 / 2) ^ (3 : ℕ) := pow_pos (by linarith) 3
   rw [abs_div, abs_of_pos hden, abs_mul, abs_mul, abs_neg, abs_of_pos (by norm_num : (0:ℝ) < 6),
     abs_of_pos (by linarith : (0:ℝ) < A), abs_of_pos (by linarith : (0:ℝ) < A + 3 / 2)]
   rw [div_le_div_iff₀ hden (by linarith)]
@@ -409,13 +409,13 @@ theorem singleAtom_jet_bounds {A z z' : ℝ} (hA : 6 ≤ A) (hz : 0 ≤ z) (hz' 
     let r := thetaCuspSingleAtomReflectionFactor A z
     |thetaCuspSingleAtomReflectedActionJetOne A z z'| ≤ (2 * A + 12 / A) * z' ∧
     |thetaCuspSingleAtomReflectedActionJetTwo A z| ≤
-      4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1) ∧
+      4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1) ∧
     |thetaCuspSingleAtomReflectedActionJetThree A z z'| ≤
-      z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)) ∧
+      z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)) ∧
     |c5SingleAtomScaleActionJetOne A z| ≤ 4 * A * z + 36 / A * z ∧
     |c5SingleAtomScaleMixedJetOne A z z'| ≤ (4 * A + 72 / A) * z' ∧
     |c5SingleAtomScaleMixedJetTwo A z| ≤
-      4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)) ∧
+      4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)) ∧
     2 * A ≤ thetaCuspSingleAtomReflectionSlope A z ∧
     4 * A - 36 / A ≤ 4 * A + d / r := by
   intro l d r
@@ -440,16 +440,16 @@ theorem singleAtom_jet_bounds {A z z' : ℝ} (hA : 6 ≤ A) (hz : 0 ≤ z) (hz' 
     calc |d| ≤ 18 / A := hd
       _ = 36 / A * (1 / 2) := by ring
       _ ≤ 36 / A * r := by gcongr
-  have hdr2 : |d| / r ^ 2 ≤ 72 / A := by
+  have hdr2 : |d| / r ^ (2 : ℕ) ≤ 72 / A := by
     rw [div_le_iff₀ (by positivity)]
     calc |d| ≤ 18 / A := hd
-      _ = 72 / A * (1 / 2) ^ 2 := by ring
-      _ ≤ 72 / A * r ^ 2 := by gcongr
-  have hdr3 : |d| / r ^ 3 ≤ 144 / A := by
+      _ = 72 / A * (1 / 2) ^ (2 : ℕ) := by ring
+      _ ≤ 72 / A * r ^ (2 : ℕ) := by gcongr
+  have hdr3 : |d| / r ^ (3 : ℕ) ≤ 144 / A := by
     rw [div_le_iff₀ (by positivity)]
     calc |d| ≤ 18 / A := hd
-      _ = 144 / A * (1 / 2) ^ 3 := by ring
-      _ ≤ 144 / A * r ^ 3 := by gcongr
+      _ = 144 / A * (1 / 2) ^ (3 : ℕ) := by ring
+      _ ≤ 144 / A * r ^ (3 : ℕ) := by gcongr
   have hslope : thetaCuspSingleAtomReflectionSlope A z = 2 * A + l / r := rfl
   have hslope_le : thetaCuspSingleAtomReflectionSlope A z ≤ 2 * A + 12 / A := by
     rw [hslope]; linarith
@@ -461,31 +461,31 @@ theorem singleAtom_jet_bounds {A z z' : ℝ} (hA : 6 ≤ A) (hz : 0 ≤ z) (hz' 
     rw [abs_mul, abs_of_nonneg hslope0, abs_of_nonneg hz']
     exact mul_le_mul_of_nonneg_right hslope_le hz'
   · unfold thetaCuspSingleAtomReflectedActionJetTwo
-    have h1 : 0 ≤ 4 * (l ^ 2 / r ^ 2) * z * (z + 2) := by positivity
+    have h1 : 0 ≤ 4 * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) * z * (z + 2) := by positivity
     have h2 : 0 ≤ 4 * thetaCuspSingleAtomReflectionSlope A z * (z + 1) := by positivity
     rw [abs_of_nonneg (by positivity)]
-    have hlr2 : l ^ 2 / r ^ 2 ≤ (12 / A) ^ 2 := by
+    have hlr2 : l ^ (2 : ℕ) / r ^ (2 : ℕ) ≤ (12 / A) ^ (2 : ℕ) := by
       rw [← div_pow]; exact pow_le_pow_left₀ hlr0 hlr 2
-    have e1 : 4 * (l ^ 2 / r ^ 2) * z * (z + 2) ≤ 4 * (12 / A) ^ 2 * z * (z + 2) := by
+    have e1 : 4 * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) * z * (z + 2) ≤ 4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) := by
       have := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hlr2 hz) (by linarith : 0 ≤ z + 2)
       linarith
     have e2 := mul_le_mul_of_nonneg_right hslope_le (by linarith : 0 ≤ z + 1)
-    show 4 * (l ^ 2 / r ^ 2) * z * (z + 2) + 4 * thetaCuspSingleAtomReflectionSlope A z * (z + 1) ≤ _
+    show 4 * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) * z * (z + 2) + 4 * thetaCuspSingleAtomReflectionSlope A z * (z + 1) ≤ _
     linarith
   · unfold thetaCuspSingleAtomReflectedActionJetThree
     rw [abs_mul, abs_of_nonneg hz']
-    have hlr2 : l ^ 2 / r ^ 2 ≤ (12 / A) ^ 2 := by
+    have hlr2 : l ^ (2 : ℕ) / r ^ (2 : ℕ) ≤ (12 / A) ^ (2 : ℕ) := by
       rw [← div_pow]; exact pow_le_pow_left₀ hlr0 hlr 2
-    have hlr3 : l ^ 3 / r ^ 3 ≤ (12 / A) ^ 3 := by
+    have hlr3 : l ^ (3 : ℕ) / r ^ (3 : ℕ) ≤ (12 / A) ^ (3 : ℕ) := by
       rw [← div_pow]; exact pow_le_pow_left₀ hlr0 hlr 3
-    have hin : 0 ≤ 8 * (l ^ 3 / r ^ 3) * z * (z + 2) + 12 * (l ^ 2 / r ^ 2) * (z + 1) +
+    have hin : 0 ≤ 8 * (l ^ (3 : ℕ) / r ^ (3 : ℕ)) * z * (z + 2) + 12 * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) * (z + 1) +
         4 * thetaCuspSingleAtomReflectionSlope A z := by positivity
     rw [abs_of_nonneg hin]
     apply mul_le_mul_of_nonneg_left _ hz'
-    have e1 : 8 * (l ^ 3 / r ^ 3) * z * (z + 2) ≤ 8 * (12 / A) ^ 3 * z * (z + 2) := by
+    have e1 : 8 * (l ^ (3 : ℕ) / r ^ (3 : ℕ)) * z * (z + 2) ≤ 8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) := by
       have := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hlr3 hz) (by linarith : 0 ≤ z + 2)
       linarith
-    have e2 : 12 * (l ^ 2 / r ^ 2) * (z + 1) ≤ 12 * (12 / A) ^ 2 * (z + 1) := by
+    have e2 : 12 * (l ^ (2 : ℕ) / r ^ (2 : ℕ)) * (z + 1) ≤ 12 * (12 / A) ^ (2 : ℕ) * (z + 1) := by
       have := mul_le_mul_of_nonneg_right hlr2 (by linarith : 0 ≤ z + 1)
       linarith
     linarith
@@ -501,35 +501,35 @@ theorem singleAtom_jet_bounds {A z z' : ℝ} (hA : 6 ≤ A) (hz : 0 ≤ z) (hz' 
   · unfold c5SingleAtomScaleMixedJetOne
     rw [abs_mul, abs_of_nonneg hz']
     apply mul_le_mul_of_nonneg_right _ hz'
-    calc |4 * A + d / r ^ 2| ≤ |4 * A| + |d / r ^ 2| := abs_add_le _ _
+    calc |4 * A + d / r ^ (2 : ℕ)| ≤ |4 * A| + |d / r ^ (2 : ℕ)| := abs_add_le _ _
       _ ≤ 4 * A + 72 / A := by
-          rw [abs_of_pos (by linarith), abs_div, abs_of_pos (by positivity : 0 < r ^ 2)]
+          rw [abs_of_pos (by linarith), abs_div, abs_of_pos (by positivity : 0 < r ^ (2 : ℕ))]
           linarith
   · unfold c5SingleAtomScaleMixedJetTwo
     rw [abs_mul, abs_of_pos (by norm_num : (0:ℝ) < 4)]
     apply mul_le_mul_of_nonneg_left _ (by norm_num)
-    have e1 : |2 * l * d / r ^ 3 * z * (z + 2)| ≤ 1728 / A ^ 2 * z * (z + 2) := by
+    have e1 : |2 * l * d / r ^ (3 : ℕ) * z * (z + 2)| ≤ 1728 / A ^ (2 : ℕ) * z * (z + 2) := by
       rw [abs_mul, abs_mul, abs_of_nonneg hz, abs_of_nonneg (by linarith : (0:ℝ) ≤ z + 2)]
       apply mul_le_mul_of_nonneg_right _ (by linarith)
       apply mul_le_mul_of_nonneg_right _ hz
-      rw [abs_div, abs_of_pos (by positivity : 0 < r ^ 3), abs_mul, abs_mul,
+      rw [abs_div, abs_of_pos (by positivity : 0 < r ^ (3 : ℕ)), abs_mul, abs_mul,
         abs_of_pos (by norm_num : (0:ℝ) < 2), abs_of_pos hl0]
-      have hr3 : r ^ 3 = r * r ^ 2 := by ring
-      calc 2 * l * |d| / r ^ 3 = 2 * (l / r) * (|d| / r ^ 2) := by
+      have hr3 : r ^ (3 : ℕ) = r * r ^ (2 : ℕ) := by ring
+      calc 2 * l * |d| / r ^ (3 : ℕ) = 2 * (l / r) * (|d| / r ^ (2 : ℕ)) := by
             rw [hr3]; field_simp
         _ ≤ 2 * (12 / A) * (72 / A) := by
             apply mul_le_mul (mul_le_mul_of_nonneg_left hlr (by norm_num)) hdr2
               (div_nonneg (abs_nonneg _) (by positivity)) (by positivity)
-        _ = 1728 / A ^ 2 := by ring
-    have e2 : |(4 * A + d / r ^ 2) * (z + 1)| ≤ (4 * A + 72 / A) * (z + 1) := by
+        _ = 1728 / A ^ (2 : ℕ) := by ring
+    have e2 : |(4 * A + d / r ^ (2 : ℕ)) * (z + 1)| ≤ (4 * A + 72 / A) * (z + 1) := by
       rw [abs_mul, abs_of_nonneg (by linarith : (0:ℝ) ≤ z + 1)]
       apply mul_le_mul_of_nonneg_right _ (by linarith)
-      calc |4 * A + d / r ^ 2| ≤ |4 * A| + |d / r ^ 2| := abs_add_le _ _
+      calc |4 * A + d / r ^ (2 : ℕ)| ≤ |4 * A| + |d / r ^ (2 : ℕ)| := abs_add_le _ _
         _ ≤ 4 * A + 72 / A := by
-            rw [abs_of_pos (by linarith), abs_div, abs_of_pos (by positivity : 0 < r ^ 2)]
+            rw [abs_of_pos (by linarith), abs_div, abs_of_pos (by positivity : 0 < r ^ (2 : ℕ))]
             linarith
-    calc |2 * l * d / r ^ 3 * z * (z + 2) + (4 * A + d / r ^ 2) * (z + 1)|
-        ≤ |2 * l * d / r ^ 3 * z * (z + 2)| + |(4 * A + d / r ^ 2) * (z + 1)| := abs_add_le _ _
+    calc |2 * l * d / r ^ (3 : ℕ) * z * (z + 2) + (4 * A + d / r ^ (2 : ℕ)) * (z + 1)|
+        ≤ |2 * l * d / r ^ (3 : ℕ) * z * (z + 2)| + |(4 * A + d / r ^ (2 : ℕ)) * (z + 1)| := abs_add_le _ _
       _ ≤ _ := add_le_add e1 e2
   · have := (abs_le.mp (show |d / r| ≤ 36 / A by
       rw [abs_div, abs_of_pos hr0]; exact hdr)).1
@@ -561,9 +561,9 @@ theorem compensation_one_sub_zero (d : C5LikelihoodAffineData) :
 
 /-- Bound expressions. -/
 noncomputable def slopeDiffBound (t a' b' c' s' m' n' da' db' dc' ds' dm' dn' : ℝ) : ℝ :=
-  da' * (t * m' + t ^ 2 * n') + a' * (t * dm' + t ^ 2 * dn') +
-    (da' + 3 * t * db' + t ^ 2 * dc') * s' + (a' + 3 * t * b' + t ^ 2 * c') * ds' +
-    (da' * (t * dm' + t ^ 2 * dn') + (da' + 3 * t * db' + t ^ 2 * dc') * ds')
+  da' * (t * m' + t ^ (2 : ℕ) * n') + a' * (t * dm' + t ^ (2 : ℕ) * dn') +
+    (da' + 3 * t * db' + t ^ (2 : ℕ) * dc') * s' + (a' + 3 * t * b' + t ^ (2 : ℕ) * c') * ds' +
+    (da' * (t * dm' + t ^ (2 : ℕ) * dn') + (da' + 3 * t * db' + t ^ (2 : ℕ) * dc') * ds')
 
 noncomputable def centerDiffBound (t a' b' s' m' da' db' ds' dm' : ℝ) : ℝ :=
   da' * (t * m') + a' * (t * dm') + (da' + t * db') * s' + (a' + t * b') * ds' +
@@ -584,20 +584,20 @@ noncomputable def compensationDiffBound (t a' b' c' s' m' n' da' db' dc' ds' dm'
 
 theorem abs_three_term_le {t x y z x' y' z' : ℝ} (ht : 0 ≤ t) (k : ℝ) (hk : 0 ≤ k)
     (hx : |x| ≤ x') (hy : |y| ≤ y') (hz : |z| ≤ z') :
-    |x + k * t * y + t ^ 2 * z| ≤ x' + k * t * y' + t ^ 2 * z' := by
-  have ht2 : 0 ≤ t ^ 2 := by positivity
-  calc |x + k * t * y + t ^ 2 * z| ≤ |x + k * t * y| + |t ^ 2 * z| := abs_add_le _ _
-    _ ≤ (|x| + |k * t * y|) + |t ^ 2 * z| := by gcongr; exact abs_add_le _ _
-    _ = |x| + k * t * |y| + t ^ 2 * |z| := by
+    |x + k * t * y + t ^ (2 : ℕ) * z| ≤ x' + k * t * y' + t ^ (2 : ℕ) * z' := by
+  have ht2 : 0 ≤ t ^ (2 : ℕ) := by positivity
+  calc |x + k * t * y + t ^ (2 : ℕ) * z| ≤ |x + k * t * y| + |t ^ (2 : ℕ) * z| := abs_add_le _ _
+    _ ≤ (|x| + |k * t * y|) + |t ^ (2 : ℕ) * z| := by gcongr; exact abs_add_le _ _
+    _ = |x| + k * t * |y| + t ^ (2 : ℕ) * |z| := by
         rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg ht, abs_of_nonneg ht2, abs_of_nonneg hk]
-    _ ≤ x' + k * t * y' + t ^ 2 * z' := by gcongr
+    _ ≤ x' + k * t * y' + t ^ (2 : ℕ) * z' := by gcongr
 
 theorem abs_two_term_le {t x y x' y' : ℝ} (ht : 0 ≤ t) (hx : |x| ≤ x') (hy : |y| ≤ y') :
-    |t * x + t ^ 2 * y| ≤ t * x' + t ^ 2 * y' := by
-  have ht2 : 0 ≤ t ^ 2 := by positivity
-  calc |t * x + t ^ 2 * y| ≤ |t * x| + |t ^ 2 * y| := abs_add_le _ _
-    _ = t * |x| + t ^ 2 * |y| := by rw [abs_mul, abs_mul, abs_of_nonneg ht, abs_of_nonneg ht2]
-    _ ≤ t * x' + t ^ 2 * y' := by gcongr
+    |t * x + t ^ (2 : ℕ) * y| ≤ t * x' + t ^ (2 : ℕ) * y' := by
+  have ht2 : 0 ≤ t ^ (2 : ℕ) := by positivity
+  calc |t * x + t ^ (2 : ℕ) * y| ≤ |t * x| + |t ^ (2 : ℕ) * y| := abs_add_le _ _
+    _ = t * |x| + t ^ (2 : ℕ) * |y| := by rw [abs_mul, abs_mul, abs_of_nonneg ht, abs_of_nonneg ht2]
+    _ ≤ t * x' + t ^ (2 : ℕ) * y' := by gcongr
 
 theorem abs_mul_le_of_abs_le {x y x' y' : ℝ} (hx : |x| ≤ x') (hy : |y| ≤ y') : |x * y| ≤ x' * y' := by
   rw [abs_mul]
@@ -623,16 +623,16 @@ theorem abs_velocitySlope_diff_le (d : C5LikelihoodAffineData) {a' b' c' s' m' n
   have h4 := abs_mul_le_of_abs_le hbr' hds
   have h5 := abs_mul_le_of_abs_le hda (abs_two_term_le ht hdm hdn)
   have h6 := abs_mul_le_of_abs_le hbr hds
-  have hsplit : d.da * (d.t * d.m + d.t ^ 2 * d.n) + d.a * (d.t * d.dm + d.t ^ 2 * d.dn) -
-        (d.da + 3 * d.t * d.db + d.t ^ 2 * d.dc) * d.s -
-        (d.a + 3 * d.t * d.b + d.t ^ 2 * d.c) * d.ds +
-        2 * (d.da * (d.t * d.dm + d.t ^ 2 * d.dn) -
-          (d.da + 3 * d.t * d.db + d.t ^ 2 * d.dc) * d.ds) / 2 =
-      d.da * (d.t * d.m + d.t ^ 2 * d.n) + d.a * (d.t * d.dm + d.t ^ 2 * d.dn) -
-        (d.da + 3 * d.t * d.db + d.t ^ 2 * d.dc) * d.s -
-        (d.a + 3 * d.t * d.b + d.t ^ 2 * d.c) * d.ds +
-        (d.da * (d.t * d.dm + d.t ^ 2 * d.dn) -
-          (d.da + 3 * d.t * d.db + d.t ^ 2 * d.dc) * d.ds) := by ring
+  have hsplit : d.da * (d.t * d.m + d.t ^ (2 : ℕ) * d.n) + d.a * (d.t * d.dm + d.t ^ (2 : ℕ) * d.dn) -
+        (d.da + 3 * d.t * d.db + d.t ^ (2 : ℕ) * d.dc) * d.s -
+        (d.a + 3 * d.t * d.b + d.t ^ (2 : ℕ) * d.c) * d.ds +
+        2 * (d.da * (d.t * d.dm + d.t ^ (2 : ℕ) * d.dn) -
+          (d.da + 3 * d.t * d.db + d.t ^ (2 : ℕ) * d.dc) * d.ds) / 2 =
+      d.da * (d.t * d.m + d.t ^ (2 : ℕ) * d.n) + d.a * (d.t * d.dm + d.t ^ (2 : ℕ) * d.dn) -
+        (d.da + 3 * d.t * d.db + d.t ^ (2 : ℕ) * d.dc) * d.s -
+        (d.a + 3 * d.t * d.b + d.t ^ (2 : ℕ) * d.c) * d.ds +
+        (d.da * (d.t * d.dm + d.t ^ (2 : ℕ) * d.dn) -
+          (d.da + 3 * d.t * d.db + d.t ^ (2 : ℕ) * d.dc) * d.ds) := by ring
   rw [hsplit]
   have e1 := abs_le.mp h1
   have e2 := abs_le.mp h2
@@ -865,7 +865,7 @@ theorem c5SingleAtomCompensationMargin_ge {u t : ℝ} (ht : 0 < t) (htu : t ≤ 
     (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u) :
     2 * thetaCuspSingleAtomReflectionScale 1 u *
         (4 * thetaCuspSingleAtomReflectionScale 1 u - 36 / thetaCuspSingleAtomReflectionScale 1 u) *
-      (6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11) ≤
+      (6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ)) ≤
     c5SingleAtomCompensationMargin (thetaCuspSingleAtomReflectionScale 1 u) t := by
   set A := thetaCuspSingleAtomReflectionScale 1 u with hAdef
   set z := thetaCuspSingleAtomReflectionDefect t with hzdef
@@ -892,7 +892,7 @@ theorem c5SingleAtomCompensationMargin_ge {u t : ℝ} (ht : 0 < t) (htu : t ≤ 
     (show 3 / 2 < A by linarith) hr0.ne' hp.ne' hLpos.ne'
   have hcorr := c5SingleAtomBaseRationalCorrection_pos_of_sameHalfLine ht htu hscale
   have hshape := c5HyperbolicGaussianBaseShape_ge ht.le
-  have hshape0 : 0 ≤ 6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11 := by positivity
+  have hshape0 : 0 ≤ 6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ) := by positivity
   have hpL : 2 * A * (4 * A - 36 / A) ≤
       (2 * A + thetaCuspSingleAtomReflectionLambda A / thetaCuspSingleAtomReflectionFactor A z) *
         (4 * A + c5SingleAtomScaleLambdaJetOne A / thetaCuspSingleAtomReflectionFactor A z) := by
@@ -903,7 +903,7 @@ theorem c5SingleAtomCompensationMargin_ge {u t : ℝ} (ht : 0 < t) (htu : t ≤ 
       have : 36 / A ≤ 6 := by rw [div_le_iff₀ (by linarith)]; linarith
       linarith
     exact mul_le_mul h2A hL h36 hp.le
-  calc 2 * A * (4 * A - 36 / A) * (6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11)
+  calc 2 * A * (4 * A - 36 / A) * (6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ))
       ≤ (2 * A + thetaCuspSingleAtomReflectionLambda A / thetaCuspSingleAtomReflectionFactor A z) *
           (4 * A + c5SingleAtomScaleLambdaJetOne A / thetaCuspSingleAtomReflectionFactor A z) *
           c5HyperbolicGaussianBaseShape t :=
@@ -914,7 +914,7 @@ theorem c5SingleAtomCompensationMargin_ge {u t : ℝ} (ht : 0 < t) (htu : t ≤ 
 
 /-! ## §6 Assembly: regime I for `t ≥ 1/4` -/
 
-theorem one_add_sq_div_two_le_cosh' (x : ℝ) : 1 + x ^ 2 / 2 ≤ Real.cosh x := by
+theorem one_add_sq_div_two_le_cosh' (x : ℝ) : 1 + x ^ (2 : ℕ) / 2 ≤ Real.cosh x := by
   have h := Real.hasSum_cosh x
   have hle := sum_le_hasSum (Finset.range 2)
     (fun n _ => div_nonneg ((even_two_mul n).pow_nonneg x) (by positivity)) h
@@ -958,14 +958,14 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key {u t : ℝ}
       let z' := 2 * Real.sinh (2 * t)
       C5LikelihoodAffineData.compensationDiffBound t
         ((2 * A + 12 / A) * z')
-        (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
-        (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+        (4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+        (z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)))
         (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
-        (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
-        (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
-        (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) <
+        (4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+        (12 * Am * ε) (76 * Am ^ (2 : ℕ) * ε) (522 * Am ^ (3 : ℕ) * ε) (24 * Am * ε) (76 * Am ^ (2 : ℕ) * ε)
+        (522 * Am ^ (3 : ℕ) * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) <
       2 * A * (4 * A - 36 / A) *
-        (6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11)) :
+        (6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ))) :
     0 < c5CompletedCompensationMargin u t := by
   have ht0 : 0 < t := by linarith
   have hu : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u := by
@@ -1004,9 +1004,9 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key {u t : ℝ}
       linarith
     have hlog : Real.log (thetaCuspSingleAtomReflectionFactor A z) ≤ 0 :=
       Real.log_nonpos (by linarith) hr1
-    have hzt : 2 * t ^ 2 ≤ z := by
+    have hzt : 2 * t ^ (2 : ℕ) ≤ z := by
       have := one_add_sq_div_two_le_cosh' (2 * t)
-      show 2 * t ^ 2 ≤ Real.cosh (2 * t) - 1
+      show 2 * t ^ (2 : ℕ) ≤ Real.cosh (2 * t) - 1
       linarith only [this]
     have hAe : 6 * Real.exp (2 * t) ≤ A := by
       have : A = Am * Real.exp (2 * t) := by
@@ -1021,7 +1021,7 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key {u t : ℝ}
       have h1 : 9 ≤ A := by
         have := Real.add_one_le_exp (2 * t)
         linarith only [hAe, this, ht]
-      have ht2 : (1 / 4 : ℝ) ^ 2 ≤ t ^ 2 := pow_le_pow_left₀ (by norm_num) ht 2
+      have ht2 : (1 / 4 : ℝ) ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := pow_le_pow_left₀ (by norm_num) ht 2
       have h2 : 1 / 8 ≤ z := by linarith only [hzt, ht2]
       have := mul_le_mul h1 h2 (by norm_num) (by linarith)
       linarith only [this]
@@ -1032,12 +1032,12 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key {u t : ℝ}
     linarith [hdq']
   -- compare `M(1)` with `M(0)`
   have hdiff := d.abs_compensation_diff_le (a' := (2 * A + 12 / A) * z')
-    (b' := 4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
-    (c' := z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+    (b' := 4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+    (c' := z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)))
     (s' := 4 * A * z + 36 / A * z) (m' := (4 * A + 72 / A) * z')
-    (n' := 4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
-    (da' := 12 * Am * ε) (db' := 76 * Am ^ 2 * ε) (dc' := 522 * Am ^ 3 * ε) (ds' := 24 * Am * ε)
-    (dm' := 76 * Am ^ 2 * ε) (dn' := 522 * Am ^ 3 * ε) (dq' := 4 * ε)
+    (n' := 4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+    (da' := 12 * Am * ε) (db' := 76 * Am ^ (2 : ℕ) * ε) (dc' := 522 * Am ^ (3 : ℕ) * ε) (ds' := 24 * Am * ε)
+    (dm' := 76 * Am ^ (2 : ℕ) * ε) (dn' := 522 * Am ^ (3 : ℕ) * ε) (dq' := 4 * ε)
     (by rw [hdt]; exact ht0.le) (by rw [hdq]; exact hq2) hdq1 (by rw [hddq]; exact hdq')
     (by rw [hda]; exact ha) (by rw [hdb]; exact hb) (by rw [hdc]; exact hc) (by rw [hds]; exact hs)
     (by rw [hdm]; exact hm) (by rw [hdn]; exact hn) (by rw [hdda]; exact hda')
@@ -1053,14 +1053,14 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key {u t : ℝ}
   have hlow := (abs_le.mp hdiff).1
   simp only at hkey
   generalize hBd : C5LikelihoodAffineData.compensationDiffBound t ((2 * A + 12 / A) * z')
-    (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
-    (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+    (4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+    (z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)))
     (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
-    (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
-    (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
-    (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) = Bd at hlow hkey
+    (4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+    (12 * Am * ε) (76 * Am ^ (2 : ℕ) * ε) (522 * Am ^ (3 : ℕ) * ε) (24 * Am * ε) (76 * Am ^ (2 : ℕ) * ε)
+    (522 * Am ^ (3 : ℕ) * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) = Bd at hlow hkey
   generalize hMl : 2 * A * (4 * A - 36 / A) *
-    (6656 / 9 * t ^ 7 + 615872 / 945 * t ^ 9 + 50560 / 189 * t ^ 11) = Ml at hM0 hkey
+    (6656 / 9 * t ^ (7 : ℕ) + 615872 / 945 * t ^ (9 : ℕ) + 50560 / 189 * t ^ (11 : ℕ)) = Ml at hM0 hkey
   generalize hM1 : c5CompletedCompensationMargin u t = M1 at hlow ⊢
   generalize hM0' : c5SingleAtomCompensationMargin A t = M0 at hlow hM0
   linarith only [hlow, hkey, hM0]
@@ -1068,7 +1068,7 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key {u t : ℝ}
 /-! ## §5' Exponential shape bound and shape-generic assembly -/
 
 /-- `sinh x ≥ x + x³/6 + x⁵/120` for `x ≥ 0`. -/
-theorem sinh_ge_series_three (x : ℝ) (hx : 0 ≤ x) : x + x ^ 3 / 6 + x ^ 5 / 120 ≤ Real.sinh x := by
+theorem sinh_ge_series_three (x : ℝ) (hx : 0 ≤ x) : x + x ^ (3 : ℕ) / 6 + x ^ (5 : ℕ) / 120 ≤ Real.sinh x := by
   have h := Real.hasSum_sinh x
   have hle := sum_le_hasSum (Finset.range 3)
     (fun n _ => div_nonneg (pow_nonneg hx _) (by positivity)) h
@@ -1076,7 +1076,7 @@ theorem sinh_ge_series_three (x : ℝ) (hx : 0 ≤ x) : x + x ^ 3 / 6 + x ^ 5 / 
   linarith
 
 /-- `cosh x ≥ 1 + x²/2 + x⁴/24 + x⁶/720`. -/
-theorem cosh_ge_series_four (x : ℝ) : 1 + x ^ 2 / 2 + x ^ 4 / 24 + x ^ 6 / 720 ≤ Real.cosh x := by
+theorem cosh_ge_series_four (x : ℝ) : 1 + x ^ (2 : ℕ) / 2 + x ^ (4 : ℕ) / 24 + x ^ (6 : ℕ) / 720 ≤ Real.cosh x := by
   have h := Real.hasSum_cosh x
   have hle := sum_le_hasSum (Finset.range 4)
     (fun n _ => div_nonneg ((even_two_mul n).pow_nonneg x) (by positivity)) h
@@ -1085,26 +1085,26 @@ theorem cosh_ge_series_four (x : ℝ) : 1 + x ^ 2 / 2 + x ^ 4 / 24 + x ^ 6 / 720
 
 /-- For `x ≥ 5/2`: `cert(x) ≥ 16 sinh x cosh² x`. -/
 theorem c5HyperbolicCertificate_ge_exp {x : ℝ} (hx : 5 / 2 ≤ x) :
-    16 * Real.sinh x * Real.cosh x ^ 2 ≤ c5HyperbolicCertificate x := by
+    16 * Real.sinh x * Real.cosh x ^ (2 : ℕ) ≤ c5HyperbolicCertificate x := by
   unfold c5HyperbolicCertificate
   have hx0 : 0 ≤ x := by linarith
   have hs := sinh_ge_series_three x hx0
   have hc := cosh_ge_series_four x
   have hc6 : 6 ≤ Real.cosh x := by
-    have : (6 : ℝ) ≤ 1 + x ^ 2 / 2 + x ^ 4 / 24 + x ^ 6 / 720 := by
-      have h2 : (5 / 2 : ℝ) ^ 2 ≤ x ^ 2 := pow_le_pow_left₀ (by norm_num) hx 2
-      have h4 : (5 / 2 : ℝ) ^ 4 ≤ x ^ 4 := pow_le_pow_left₀ (by norm_num) hx 4
-      have h6 : (5 / 2 : ℝ) ^ 6 ≤ x ^ 6 := pow_le_pow_left₀ (by norm_num) hx 6
+    have : (6 : ℝ) ≤ 1 + x ^ (2 : ℕ) / 2 + x ^ (4 : ℕ) / 24 + x ^ (6 : ℕ) / 720 := by
+      have h2 : (5 / 2 : ℝ) ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := pow_le_pow_left₀ (by norm_num) hx 2
+      have h4 : (5 / 2 : ℝ) ^ (4 : ℕ) ≤ x ^ (4 : ℕ) := pow_le_pow_left₀ (by norm_num) hx 4
+      have h6 : (5 / 2 : ℝ) ^ (6 : ℕ) ≤ x ^ (6 : ℕ) := pow_le_pow_left₀ (by norm_num) hx 6
       norm_num at h2 h4 h6 ⊢
       linarith
     linarith
   -- `36 sinh x ≥ 82 x`, i.e. `72 sinh x − 82 x ≥ 36 sinh x`
   have hsx : 82 * x ≤ 36 * Real.sinh x := by
-    have h2 : (5 / 2 : ℝ) ^ 2 ≤ x ^ 2 := pow_le_pow_left₀ (by norm_num) hx 2
-    have h4 : (5 / 2 : ℝ) ^ 4 ≤ x ^ 4 := pow_le_pow_left₀ (by norm_num) hx 4
-    have hx3 : x ^ 3 = x * x ^ 2 := by ring
-    have hx5 : x ^ 5 = x * x ^ 4 := by ring
-    have : 82 * x ≤ 36 * (x + x ^ 3 / 6 + x ^ 5 / 120) := by
+    have h2 : (5 / 2 : ℝ) ^ (2 : ℕ) ≤ x ^ (2 : ℕ) := pow_le_pow_left₀ (by norm_num) hx 2
+    have h4 : (5 / 2 : ℝ) ^ (4 : ℕ) ≤ x ^ (4 : ℕ) := pow_le_pow_left₀ (by norm_num) hx 4
+    have hx3 : x ^ (3 : ℕ) = x * x ^ (2 : ℕ) := by ring
+    have hx5 : x ^ (5 : ℕ) = x * x ^ (4 : ℕ) := by ring
+    have : 82 * x ≤ 36 * (x + x ^ (3 : ℕ) / 6 + x ^ (5 : ℕ) / 120) := by
       rw [hx3, hx5]
       nlinarith [mul_le_mul_of_nonneg_left h2 hx0, mul_le_mul_of_nonneg_left h4 hx0]
     linarith
@@ -1113,9 +1113,9 @@ theorem c5HyperbolicCertificate_ge_exp {x : ℝ} (hx : 5 / 2 ≤ x) :
     have := Real.self_le_sinh_iff.mpr hx0; exact this
   have hcosh0 : 0 ≤ Real.cosh x := (Real.cosh_pos x).le
   -- `cosh² (72 sinh − 82 x) ≥ 36 sinh cosh²`
-  have h1 : 36 * Real.sinh x * Real.cosh x ^ 2 ≤ Real.cosh x ^ 2 * (72 * Real.sinh x - 82 * x) := by
+  have h1 : 36 * Real.sinh x * Real.cosh x ^ (2 : ℕ) ≤ Real.cosh x ^ (2 : ℕ) * (72 * Real.sinh x - 82 * x) := by
     have : 36 * Real.sinh x ≤ 72 * Real.sinh x - 82 * x := by linarith
-    have := mul_le_mul_of_nonneg_left this (by positivity : 0 ≤ Real.cosh x ^ 2)
+    have := mul_le_mul_of_nonneg_left this (by positivity : 0 ≤ Real.cosh x ^ (2 : ℕ))
     linarith
   -- `cosh (129 x − 119 sinh) ≥ −119 sinh cosh`
   have h2 : -(119 * Real.sinh x * Real.cosh x) ≤ Real.cosh x * (129 * x - 119 * Real.sinh x) := by
@@ -1123,26 +1123,26 @@ theorem c5HyperbolicCertificate_ge_exp {x : ℝ} (hx : 5 / 2 ≤ x) :
     have := mul_le_mul_of_nonneg_left this hcosh0
     linarith
   -- `(47 + 5x²) sinh − 47 x ≥ 0`
-  have h3 : 0 ≤ (47 + 5 * x ^ 2) * Real.sinh x - 47 * x := by
+  have h3 : 0 ≤ (47 + 5 * x ^ (2 : ℕ)) * Real.sinh x - 47 * x := by
     have : 47 * x ≤ 47 * Real.sinh x := by linarith
-    have : 0 ≤ 5 * x ^ 2 * Real.sinh x := by positivity
+    have : 0 ≤ 5 * x ^ (2 : ℕ) * Real.sinh x := by positivity
     linarith
   -- `36 cosh − 119 ≥ 16 cosh` when `cosh ≥ 6`
-  have h4 : 16 * Real.sinh x * Real.cosh x ^ 2 ≤
-      36 * Real.sinh x * Real.cosh x ^ 2 - 119 * Real.sinh x * Real.cosh x := by
+  have h4 : 16 * Real.sinh x * Real.cosh x ^ (2 : ℕ) ≤
+      36 * Real.sinh x * Real.cosh x ^ (2 : ℕ) - 119 * Real.sinh x * Real.cosh x := by
     have : 16 * Real.cosh x ≤ 36 * Real.cosh x - 119 := by linarith
     have := mul_le_mul_of_nonneg_left this (mul_nonneg hsinh0 hcosh0)
     nlinarith
-  have expand : Real.sinh x * (72 * Real.cosh x ^ 2 - 119 * Real.cosh x + 47 + 5 * x ^ 2) -
-      x * (82 * Real.cosh x ^ 2 - 129 * Real.cosh x + 47) =
-      Real.cosh x ^ 2 * (72 * Real.sinh x - 82 * x) + Real.cosh x * (129 * x - 119 * Real.sinh x) +
-        ((47 + 5 * x ^ 2) * Real.sinh x - 47 * x) := by ring
+  have expand : Real.sinh x * (72 * Real.cosh x ^ (2 : ℕ) - 119 * Real.cosh x + 47 + 5 * x ^ (2 : ℕ)) -
+      x * (82 * Real.cosh x ^ (2 : ℕ) - 129 * Real.cosh x + 47) =
+      Real.cosh x ^ (2 : ℕ) * (72 * Real.sinh x - 82 * x) + Real.cosh x * (129 * x - 119 * Real.sinh x) +
+        ((47 + 5 * x ^ (2 : ℕ)) * Real.sinh x - 47 * x) := by ring
   rw [expand]
   linarith
 
 /-- The shape for `t ≥ 5/4`: `shape(t) ≥ 32 sinh 2t cosh² 2t`. -/
 theorem c5HyperbolicGaussianBaseShape_ge_exp {t : ℝ} (ht : 5 / 4 ≤ t) :
-    32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ 2 ≤ c5HyperbolicGaussianBaseShape t := by
+    32 * Real.sinh (2 * t) * Real.cosh (2 * t) ^ (2 : ℕ) ≤ c5HyperbolicGaussianBaseShape t := by
   rw [c5HyperbolicGaussianBaseShape_eq]
   have := c5HyperbolicCertificate_ge_exp (x := 2 * t) (by linarith)
   linarith
@@ -1207,12 +1207,12 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key_of_shape {u t sh : �
       let z' := 2 * Real.sinh (2 * t)
       C5LikelihoodAffineData.compensationDiffBound t
         ((2 * A + 12 / A) * z')
-        (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
-        (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+        (4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+        (z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)))
         (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
-        (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
-        (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
-        (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) <
+        (4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+        (12 * Am * ε) (76 * Am ^ (2 : ℕ) * ε) (522 * Am ^ (3 : ℕ) * ε) (24 * Am * ε) (76 * Am ^ (2 : ℕ) * ε)
+        (522 * Am ^ (3 : ℕ) * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) <
       2 * A * (4 * A - 36 / A) * sh) :
     0 < c5CompletedCompensationMargin u t := by
   have ht0 : 0 < t := by linarith
@@ -1250,9 +1250,9 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key_of_shape {u t sh : �
       linarith
     have hlog : Real.log (thetaCuspSingleAtomReflectionFactor A z) ≤ 0 :=
       Real.log_nonpos (by linarith) hr1
-    have hzt : 2 * t ^ 2 ≤ z := by
+    have hzt : 2 * t ^ (2 : ℕ) ≤ z := by
       have := one_add_sq_div_two_le_cosh' (2 * t)
-      show 2 * t ^ 2 ≤ Real.cosh (2 * t) - 1
+      show 2 * t ^ (2 : ℕ) ≤ Real.cosh (2 * t) - 1
       linarith only [this]
     have hAe : 6 * Real.exp (2 * t) ≤ A := by
       have : A = Am * Real.exp (2 * t) := by
@@ -1265,7 +1265,7 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key_of_shape {u t sh : �
       have h1 : 9 ≤ A := by
         have := Real.add_one_le_exp (2 * t)
         linarith only [hAe, this, ht]
-      have ht2 : (1 / 4 : ℝ) ^ 2 ≤ t ^ 2 := pow_le_pow_left₀ (by norm_num) ht 2
+      have ht2 : (1 / 4 : ℝ) ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := pow_le_pow_left₀ (by norm_num) ht 2
       have h2 : 1 / 8 ≤ z := by linarith only [hzt, ht2]
       have := mul_le_mul h1 h2 (by norm_num) (by linarith)
       linarith only [this]
@@ -1275,12 +1275,12 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key_of_shape {u t sh : �
     have hε := regimeOneLikelihoodScale_le_of_six_le hA
     linarith [hdq']
   have hdiff := d.abs_compensation_diff_le (a' := (2 * A + 12 / A) * z')
-    (b' := 4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
-    (c' := z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+    (b' := 4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+    (c' := z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)))
     (s' := 4 * A * z + 36 / A * z) (m' := (4 * A + 72 / A) * z')
-    (n' := 4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
-    (da' := 12 * Am * ε) (db' := 76 * Am ^ 2 * ε) (dc' := 522 * Am ^ 3 * ε) (ds' := 24 * Am * ε)
-    (dm' := 76 * Am ^ 2 * ε) (dn' := 522 * Am ^ 3 * ε) (dq' := 4 * ε)
+    (n' := 4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+    (da' := 12 * Am * ε) (db' := 76 * Am ^ (2 : ℕ) * ε) (dc' := 522 * Am ^ (3 : ℕ) * ε) (ds' := 24 * Am * ε)
+    (dm' := 76 * Am ^ (2 : ℕ) * ε) (dn' := 522 * Am ^ (3 : ℕ) * ε) (dq' := 4 * ε)
     (by rw [hdt]; exact ht0.le) (by rw [hdq]; exact hq2) hdq1 (by rw [hddq]; exact hdq')
     (by rw [hda]; exact ha) (by rw [hdb]; exact hb) (by rw [hdc]; exact hc) (by rw [hds]; exact hs)
     (by rw [hdm]; exact hm) (by rw [hdn]; exact hn) (by rw [hdda]; exact hda')
@@ -1296,12 +1296,12 @@ theorem c5CompletedCompensationMargin_pos_of_regimeOne_key_of_shape {u t sh : �
   have hlow := (abs_le.mp hdiff).1
   simp only at hkey
   generalize hBd : C5LikelihoodAffineData.compensationDiffBound t ((2 * A + 12 / A) * z')
-    (4 * (12 / A) ^ 2 * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
-    (z' * (8 * (12 / A) ^ 3 * z * (z + 2) + 12 * (12 / A) ^ 2 * (z + 1) + 4 * (2 * A + 12 / A)))
+    (4 * (12 / A) ^ (2 : ℕ) * z * (z + 2) + 4 * (2 * A + 12 / A) * (z + 1))
+    (z' * (8 * (12 / A) ^ (3 : ℕ) * z * (z + 2) + 12 * (12 / A) ^ (2 : ℕ) * (z + 1) + 4 * (2 * A + 12 / A)))
     (4 * A * z + 36 / A * z) ((4 * A + 72 / A) * z')
-    (4 * (1728 / A ^ 2 * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
-    (12 * Am * ε) (76 * Am ^ 2 * ε) (522 * Am ^ 3 * ε) (24 * Am * ε) (76 * Am ^ 2 * ε)
-    (522 * Am ^ 3 * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) = Bd at hlow hkey
+    (4 * (1728 / A ^ (2 : ℕ) * z * (z + 2) + (4 * A + 72 / A) * (z + 1)))
+    (12 * Am * ε) (76 * Am ^ (2 : ℕ) * ε) (522 * Am ^ (3 : ℕ) * ε) (24 * Am * ε) (76 * Am ^ (2 : ℕ) * ε)
+    (522 * Am ^ (3 : ℕ) * ε) (4 * ε) (thetaCuspSingleAtomReflectedAction A t) = Bd at hlow hkey
   generalize hMl : 2 * A * (4 * A - 36 / A) * sh = Ml at hM0 hkey
   generalize hM1 : c5CompletedCompensationMargin u t = M1 at hlow ⊢
   generalize hM0' : c5SingleAtomCompensationMargin A t = M0 at hlow hM0

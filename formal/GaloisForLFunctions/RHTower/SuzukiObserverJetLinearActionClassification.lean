@@ -166,9 +166,9 @@ theorem harmonicCharge_eq_sourceEdge_mul_inverseClock (k : ℕ) :
       completedRieszSourceEdge k * completedRieszInverseClockEdge k := by
   have h1 : (0 : ℝ) < (k + 1 : ℕ) := by positivity
   have h2 : (0 : ℝ) < (k + 2 : ℕ) := by positivity
-  have hs1 : Real.sqrt (k + 1 : ℕ) ^ 2 = (k + 1 : ℕ) :=
+  have hs1 : Real.sqrt (k + 1 : ℕ) ^ (2 : ℕ) = (k + 1 : ℕ) :=
     Real.sq_sqrt h1.le
-  have hs2 : Real.sqrt (k + 2 : ℕ) ^ 2 = (k + 2 : ℕ) :=
+  have hs2 : Real.sqrt (k + 2 : ℕ) ^ (2 : ℕ) = (k + 2 : ℕ) :=
     Real.sq_sqrt h2.le
   rw [completedPrimePolarGammaHarmonicCharge]
   unfold completedRieszSourceEdge completedRieszInverseClockEdge
@@ -182,7 +182,7 @@ theorem harmonicCharge_eq_sourceEdge_mul_inverseClock (k : ℕ) :
       (Real.sqrt (k + 2 : ℕ) - Real.sqrt (k + 1 : ℕ)) *
           (Real.sqrt (k + 2 : ℕ) + Real.sqrt (k + 1 : ℕ)) = 1 := by
     calc
-      _ = Real.sqrt (k + 2 : ℕ) ^ 2 - Real.sqrt (k + 1 : ℕ) ^ 2 := by ring
+      _ = Real.sqrt (k + 2 : ℕ) ^ (2 : ℕ) - Real.sqrt (k + 1 : ℕ) ^ (2 : ℕ) := by ring
       _ = ((k + 2 : ℕ) : ℝ) - ((k + 1 : ℕ) : ℝ) := by rw [hs2, hs1]
       _ = 1 := by push_cast; ring
   symm
@@ -211,30 +211,30 @@ theorem inverseClockEdge_le (k : ℕ) :
   have ha : 0 < a := Real.sqrt_pos.2 (by positivity)
   have hb : 0 < b := Real.sqrt_pos.2 (by positivity)
   have hab : a ≤ b := Real.sqrt_le_sqrt (by exact_mod_cast (show k + 1 ≤ k + 2 by omega))
-  have haa : a ^ 2 = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
-  have hbb : b ^ 2 = ((k + 2 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have haa : a ^ (2 : ℕ) = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have hbb : b ^ (2 : ℕ) = ((k + 2 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
   unfold completedRieszInverseClockEdge
   change (b + a) / (((k + 1 : ℕ) : ℝ) * (k + 2 : ℕ)) ≤
     2 / (((k + 1 : ℕ) : ℝ) * a)
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   rw [← haa, ← hbb]
-  have hcore : (b + a) * a ≤ 2 * b ^ 2 := by
+  have hcore : (b + a) * a ≤ 2 * b ^ (2 : ℕ) := by
     calc
       (b + a) * a = a * (a + b) := by ring
       _ ≤ b * (a + b) := mul_le_mul_of_nonneg_right hab (by positivity)
       _ ≤ b * (b + b) := mul_le_mul_of_nonneg_left
         (add_le_add hab (le_refl b)) hb.le
-      _ = 2 * b ^ 2 := by ring
+      _ = 2 * b ^ (2 : ℕ) := by ring
   calc
-    (b + a) * (a ^ 2 * a) = a ^ 2 * ((b + a) * a) := by ring
-    _ ≤ a ^ 2 * (2 * b ^ 2) :=
+    (b + a) * (a ^ (2 : ℕ) * a) = a ^ (2 : ℕ) * ((b + a) * a) := by ring
+    _ ≤ a ^ (2 : ℕ) * (2 * b ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left hcore (sq_nonneg a)
-    _ = 2 * (a ^ 2 * b ^ 2) := by ring
+    _ = 2 * (a ^ (2 : ℕ) * b ^ (2 : ℕ)) := by ring
 
 theorem abs_inverseClockEdge_succ_sub_le (k : ℕ) :
     |completedRieszInverseClockEdge (k + 1) -
         completedRieszInverseClockEdge k| ≤
-      3 / (Real.sqrt (k + 1 : ℕ)) ^ 5 := by
+      3 / (Real.sqrt (k + 1 : ℕ)) ^ (5 : ℕ) := by
   let a := Real.sqrt (k + 1 : ℕ)
   let b := Real.sqrt (k + 2 : ℕ)
   let c := Real.sqrt (k + 3 : ℕ)
@@ -244,13 +244,13 @@ theorem abs_inverseClockEdge_succ_sub_le (k : ℕ) :
   have hab : a ≤ b := Real.sqrt_le_sqrt (by exact_mod_cast (show k + 1 ≤ k + 2 by omega))
   have hbc : b ≤ c := Real.sqrt_le_sqrt (by exact_mod_cast (show k + 2 ≤ k + 3 by omega))
   have hac : a ≤ c := hab.trans hbc
-  have haa : a ^ 2 = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
-  have hbb : b ^ 2 = ((k + 2 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
-  have hcc : c ^ 2 = ((k + 3 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have haa : a ^ (2 : ℕ) = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have hbb : b ^ (2 : ℕ) = ((k + 2 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have hcc : c ^ (2 : ℕ) = ((k + 3 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
   have hca : c - a = 2 / (c + a) := by
     apply (eq_div_iff (by positivity : c + a ≠ 0)).2
     calc
-      (c - a) * (c + a) = c ^ 2 - a ^ 2 := by ring
+      (c - a) * (c + a) = c ^ (2 : ℕ) - a ^ (2 : ℕ) := by ring
       _ = ((k + 3 : ℕ) : ℝ) - ((k + 1 : ℕ) : ℝ) := by rw [hcc, haa]
       _ = 2 := by push_cast; ring
   have hca0 : 0 ≤ c - a := sub_nonneg.mpr hac
@@ -259,7 +259,7 @@ theorem abs_inverseClockEdge_succ_sub_le (k : ℕ) :
     apply (div_le_div_iff₀ (by positivity : 0 < c + a) ha).2
     nlinarith
   have hbracket0 : 0 ≤ a * c + b * (c + a) := by positivity
-  have hbracket : a * c + b * (c + a) ≤ 3 * c ^ 2 := by
+  have hbracket : a * c + b * (c + a) ≤ 3 * c ^ (2 : ℕ) := by
     have hacmul : a * c ≤ c * c := mul_le_mul_of_nonneg_right hac hc.le
     have hbc1 : b * c ≤ c * c := mul_le_mul_of_nonneg_right hbc hc.le
     have hba : b * a ≤ c * c := by nlinarith [mul_nonneg (sub_nonneg.mpr hbc) (sub_nonneg.mpr hab)]
@@ -267,14 +267,14 @@ theorem abs_inverseClockEdge_succ_sub_le (k : ℕ) :
   have hfactor :
       (completedRieszInverseClockEdge k -
           completedRieszInverseClockEdge (k + 1)) =
-        (c - a) * (a * c + b * (c + a)) / (a ^ 2 * b ^ 2 * c ^ 2) := by
+        (c - a) * (a * c + b * (c + a)) / (a ^ (2 : ℕ) * b ^ (2 : ℕ) * c ^ (2 : ℕ)) := by
     have hr0 : completedRieszInverseClockEdge k =
-        (a + b) / (a ^ 2 * b ^ 2) := by
+        (a + b) / (a ^ (2 : ℕ) * b ^ (2 : ℕ)) := by
       unfold completedRieszInverseClockEdge
       rw [haa, hbb]
       ring
     have hr1 : completedRieszInverseClockEdge (k + 1) =
-        (b + c) / (b ^ 2 * c ^ 2) := by
+        (b + c) / (b ^ (2 : ℕ) * c ^ (2 : ℕ)) := by
       unfold completedRieszInverseClockEdge
       rw [show k + 1 + 1 = k + 2 by omega, show k + 1 + 2 = k + 3 by omega,
         hbb, hcc]
@@ -287,23 +287,23 @@ theorem abs_inverseClockEdge_succ_sub_le (k : ℕ) :
     rw [hfactor]
     positivity
   rw [abs_sub_comm, abs_of_nonneg hfactor0, hfactor]
-  have hnum : (c - a) * (a * c + b * (c + a)) ≤ 3 * c ^ 2 / a := by
+  have hnum : (c - a) * (a * c + b * (c + a)) ≤ 3 * c ^ (2 : ℕ) / a := by
     calc
-      _ ≤ (1 / a) * (3 * c ^ 2) :=
+      _ ≤ (1 / a) * (3 * c ^ (2 : ℕ)) :=
         mul_le_mul hca_le hbracket hbracket0 (by positivity)
-      _ = 3 * c ^ 2 / a := by ring
-  have hden0 : 0 < a ^ 2 * b ^ 2 * c ^ 2 := by positivity
+      _ = 3 * c ^ (2 : ℕ) / a := by ring
+  have hden0 : 0 < a ^ (2 : ℕ) * b ^ (2 : ℕ) * c ^ (2 : ℕ) := by positivity
   calc
-    (c - a) * (a * c + b * (c + a)) / (a ^ 2 * b ^ 2 * c ^ 2) ≤
-        (3 * c ^ 2 / a) / (a ^ 2 * b ^ 2 * c ^ 2) :=
+    (c - a) * (a * c + b * (c + a)) / (a ^ (2 : ℕ) * b ^ (2 : ℕ) * c ^ (2 : ℕ)) ≤
+        (3 * c ^ (2 : ℕ) / a) / (a ^ (2 : ℕ) * b ^ (2 : ℕ) * c ^ (2 : ℕ)) :=
       div_le_div_of_nonneg_right hnum hden0.le
-    _ = 3 / (a ^ 3 * b ^ 2) := by field_simp [ha.ne', hb.ne', hc.ne']
-    _ ≤ 3 / a ^ 5 := by
-      rw [div_le_div_iff₀ (by positivity : 0 < a ^ 3 * b ^ 2) (by positivity : 0 < a ^ 5)]
-      have hab2 : a ^ 2 ≤ b ^ 2 := by nlinarith
+    _ = 3 / (a ^ (3 : ℕ) * b ^ (2 : ℕ)) := by field_simp [ha.ne', hb.ne', hc.ne']
+    _ ≤ 3 / a ^ (5 : ℕ) := by
+      rw [div_le_div_iff₀ (by positivity : 0 < a ^ (3 : ℕ) * b ^ (2 : ℕ)) (by positivity : 0 < a ^ (5 : ℕ))]
+      have hab2 : a ^ (2 : ℕ) ≤ b ^ (2 : ℕ) := by nlinarith
       calc
-        3 * a ^ 5 = 3 * (a ^ 3 * a ^ 2) := by ring
-        _ ≤ 3 * (a ^ 3 * b ^ 2) := by gcongr
+        3 * a ^ (5 : ℕ) = 3 * (a ^ (3 : ℕ) * a ^ (2 : ℕ)) := by ring
+        _ ≤ 3 * (a ^ (3 : ℕ) * b ^ (2 : ℕ)) := by gcongr
 
 def completedRieszTailKernel (j k : ℕ) : ℝ :=
   ((k - (j + 1) : ℕ) : ℝ) * completedRieszInverseClockEdge k
@@ -355,50 +355,50 @@ theorem abs_driftKernel_le (k : ℕ) :
 
 private theorem inverseClockEdge_succ_le_cube (k : ℕ) :
     completedRieszInverseClockEdge (k + 1) ≤
-      2 / (Real.sqrt (k + 1 : ℕ)) ^ 3 := by
+      2 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) := by
   have h := inverseClockEdge_le (k + 1)
   let a := Real.sqrt (k + 1 : ℕ)
   let b := Real.sqrt (k + 2 : ℕ)
   have ha : 0 < a := Real.sqrt_pos.2 (by positivity)
   have hb : 0 < b := Real.sqrt_pos.2 (by positivity)
   have hab : a ≤ b := Real.sqrt_le_sqrt (by exact_mod_cast (show k + 1 ≤ k + 2 by omega))
-  have haa : a ^ 2 = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
-  have hbb : b ^ 2 = ((k + 2 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have haa : a ^ (2 : ℕ) = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have hbb : b ^ (2 : ℕ) = ((k + 2 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
   rw [show k + 1 + 1 = k + 2 by omega] at h
-  change completedRieszInverseClockEdge (k + 1) ≤ 2 / a ^ 3
+  change completedRieszInverseClockEdge (k + 1) ≤ 2 / a ^ (3 : ℕ)
   refine h.trans ?_
-  change 2 / (((k + 2 : ℕ) : ℝ) * b) ≤ 2 / a ^ 3
+  change 2 / (((k + 2 : ℕ) : ℝ) * b) ≤ 2 / a ^ (3 : ℕ)
   rw [← hbb]
-  apply (div_le_div_iff₀ (by positivity : 0 < b ^ 2 * b)
-    (by positivity : 0 < a ^ 3)).2
-  have hcub : a ^ 3 ≤ b ^ 3 := by gcongr
+  apply (div_le_div_iff₀ (by positivity : 0 < b ^ (2 : ℕ) * b)
+    (by positivity : 0 < a ^ (3 : ℕ))).2
+  have hcub : a ^ (3 : ℕ) ≤ b ^ (3 : ℕ) := by gcongr
   nlinarith
 
 private theorem nat_mul_inverseClockEdge_diff_le_cube (k d : ℕ) (hdk : d ≤ k) :
     (d : ℝ) * |completedRieszInverseClockEdge (k + 1) -
         completedRieszInverseClockEdge k| ≤
-      3 / (Real.sqrt (k + 1 : ℕ)) ^ 3 := by
+      3 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) := by
   let a := Real.sqrt (k + 1 : ℕ)
   have ha : 0 < a := Real.sqrt_pos.2 (by positivity)
-  have haa : a ^ 2 = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
-  have hd : (d : ℝ) ≤ a ^ 2 := by
+  have haa : a ^ (2 : ℕ) = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have hd : (d : ℝ) ≤ a ^ (2 : ℕ) := by
     rw [haa]
     exact_mod_cast hdk.trans (Nat.le_succ k)
   have hdiff := abs_inverseClockEdge_succ_sub_le k
-  change (d : ℝ) * _ ≤ 3 / a ^ 3
+  change (d : ℝ) * _ ≤ 3 / a ^ (3 : ℕ)
   calc
     (d : ℝ) * |completedRieszInverseClockEdge (k + 1) -
         completedRieszInverseClockEdge k| ≤
-      (d : ℝ) * (3 / a ^ 5) :=
+      (d : ℝ) * (3 / a ^ (5 : ℕ)) :=
         mul_le_mul_of_nonneg_left hdiff (by positivity)
-    _ ≤ a ^ 2 * (3 / a ^ 5) :=
+    _ ≤ a ^ (2 : ℕ) * (3 / a ^ (5 : ℕ)) :=
       mul_le_mul_of_nonneg_right hd (by positivity)
-    _ = 3 / a ^ 3 := by field_simp [ha.ne']
+    _ = 3 / a ^ (3 : ℕ) := by field_simp [ha.ne']
 
 theorem abs_tailKernel_sub_succ_le (j k : ℕ) :
     |completedRieszTailKernel j k -
         completedRieszTailKernel j (k + 1)| ≤
-      5 / (Real.sqrt (k + 1 : ℕ)) ^ 3 := by
+      5 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) := by
   by_cases hk : k ≤ j
   · have hk0 : k - (j + 1) = 0 := by omega
     have hk1 : k + 1 - (j + 1) = 0 := by omega
@@ -432,16 +432,16 @@ theorem abs_tailKernel_sub_succ_le (j k : ℕ) :
             completedRieszInverseClockEdge k| := by
         rw [abs_of_nonneg (inverseClockEdge_nonneg _), abs_mul,
           abs_of_nonneg (by positivity : 0 ≤ (d : ℝ))]
-      _ ≤ 2 / (Real.sqrt (k + 1 : ℕ)) ^ 3 +
-          3 / (Real.sqrt (k + 1 : ℕ)) ^ 3 :=
+      _ ≤ 2 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) +
+          3 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) :=
         add_le_add (inverseClockEdge_succ_le_cube k)
           (nat_mul_inverseClockEdge_diff_le_cube k d hd)
-      _ = 5 / (Real.sqrt (k + 1 : ℕ)) ^ 3 := by ring
+      _ = 5 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) := by ring
 
 theorem abs_driftKernel_sub_succ_le (k : ℕ) :
     |completedRieszDriftKernel k -
         completedRieszDriftKernel (k + 1)| ≤
-      5 / (Real.sqrt (k + 1 : ℕ)) ^ 3 := by
+      5 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) := by
   have hshape : completedRieszDriftKernel k -
         completedRieszDriftKernel (k + 1) =
       -(completedRieszInverseClockEdge (k + 1) +
@@ -463,11 +463,11 @@ theorem abs_driftKernel_sub_succ_le (k : ℕ) :
           completedRieszInverseClockEdge k| := by
       rw [abs_of_nonneg (inverseClockEdge_nonneg _), abs_mul,
         abs_of_nonneg (by positivity : 0 ≤ (k : ℝ))]
-    _ ≤ 2 / (Real.sqrt (k + 1 : ℕ)) ^ 3 +
-        3 / (Real.sqrt (k + 1 : ℕ)) ^ 3 :=
+    _ ≤ 2 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) +
+        3 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) :=
       add_le_add (inverseClockEdge_succ_le_cube k)
         (nat_mul_inverseClockEdge_diff_le_cube k k (le_refl k))
-    _ = 5 / (Real.sqrt (k + 1 : ℕ)) ^ 3 := by ring
+    _ = 5 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) := by ring
 
 theorem observerJetPrefix_sourceEdge_eq_mobiusMoment (N : ℕ) :
     observerJetPrefix completedRieszSourceEdge N =
@@ -497,16 +497,16 @@ theorem sourceEdge_prefix_linearBound
 
 private theorem succ_add_one_div_sqrt_cube_le (k : ℕ) :
     ((k + 2 : ℕ) : ℝ) /
-        (Real.sqrt (k + 1 : ℕ)) ^ 3 ≤
+        (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ) ≤
       2 / Real.sqrt (k + 1 : ℕ) := by
   let a := Real.sqrt (k + 1 : ℕ)
   have ha : 0 < a := Real.sqrt_pos.2 (by positivity)
-  have haa : a ^ 2 = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
-  change ((k + 2 : ℕ) : ℝ) / a ^ 3 ≤ 2 / a
-  apply (div_le_div_iff₀ (by positivity : 0 < a ^ 3) ha).2
+  have haa : a ^ (2 : ℕ) = ((k + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  change ((k + 2 : ℕ) : ℝ) / a ^ (3 : ℕ) ≤ 2 / a
+  apply (div_le_div_iff₀ (by positivity : 0 < a ^ (3 : ℕ)) ha).2
   rw [show ((k + 2 : ℕ) : ℝ) = ((k + 1 : ℕ) : ℝ) + 1 by push_cast; ring,
     ← haa]
-  have ha1 : 1 ≤ a ^ 2 := by rw [haa]; exact_mod_cast (show 1 ≤ k + 1 by omega)
+  have ha1 : 1 ≤ a ^ (2 : ℕ) := by rw [haa]; exact_mod_cast (show 1 ≤ k + 1 by omega)
   nlinarith [sq_nonneg a]
 
 private theorem prefix_mul_kernelDiff_le
@@ -515,7 +515,7 @@ private theorem prefix_mul_kernelDiff_le
       B * (k + 2 : ℕ))
     (w : ℕ → ℝ)
     (hdiff : ∀ k, |w k - w (k + 1)| ≤
-      5 / (Real.sqrt (k + 1 : ℕ)) ^ 3)
+      5 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ))
     (k : ℕ) :
     |observerJetPrefix completedRieszSourceEdge k * (w k - w (k + 1))| ≤
       10 * B * (1 / Real.sqrt (k + 1 : ℕ)) := by
@@ -523,10 +523,10 @@ private theorem prefix_mul_kernelDiff_le
   calc
     |observerJetPrefix completedRieszSourceEdge k| * |w k - w (k + 1)| ≤
       (B * (k + 2 : ℕ)) *
-        (5 / (Real.sqrt (k + 1 : ℕ)) ^ 3) :=
+        (5 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ)) :=
       mul_le_mul (hprefix k) (hdiff k) (abs_nonneg _) (by positivity)
     _ = 5 * B * (((k + 2 : ℕ) : ℝ) /
-        (Real.sqrt (k + 1 : ℕ)) ^ 3) := by ring
+        (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ)) := by ring
     _ ≤ 5 * B * (2 / Real.sqrt (k + 1 : ℕ)) :=
       mul_le_mul_of_nonneg_left (succ_add_one_div_sqrt_cube_le k) (by positivity)
     _ = 10 * B * (1 / Real.sqrt (k + 1 : ℕ)) := by ring
@@ -542,7 +542,7 @@ private theorem prefix_mul_kernel_boundary_le
       4 * B * Real.sqrt (N + 1 : ℕ) := by
   let a := Real.sqrt (N + 1 : ℕ)
   have ha : 0 < a := Real.sqrt_pos.2 (by positivity)
-  have haa : a ^ 2 = ((N + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have haa : a ^ (2 : ℕ) = ((N + 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
   rw [abs_mul]
   calc
     |observerJetPrefix completedRieszSourceEdge N| * |w N| ≤
@@ -550,13 +550,13 @@ private theorem prefix_mul_kernel_boundary_le
         mul_le_mul (hprefix N) (hvalue N) (abs_nonneg _) (by positivity)
     _ ≤ 4 * B * Real.sqrt (N + 1 : ℕ) := by
       change (B * ((N + 2 : ℕ) : ℝ)) * (2 / a) ≤ 4 * B * a
-      have hNshape : ((N + 2 : ℕ) : ℝ) = a ^ 2 + 1 := by
+      have hNshape : ((N + 2 : ℕ) : ℝ) = a ^ (2 : ℕ) + 1 := by
         rw [haa]
         push_cast
         ring
       rw [hNshape]
-      have ha1 : 1 ≤ a ^ 2 := by rw [haa]; exact_mod_cast (show 1 ≤ N + 1 by omega)
-      rw [show B * (a ^ 2 + 1) * (2 / a) = B * ((a ^ 2 + 1) * (2 / a)) by ring,
+      have ha1 : 1 ≤ a ^ (2 : ℕ) := by rw [haa]; exact_mod_cast (show 1 ≤ N + 1 by omega)
+      rw [show B * (a ^ (2 : ℕ) + 1) * (2 / a) = B * ((a ^ (2 : ℕ) + 1) * (2 / a)) by ring,
         show 4 * B * a = B * (4 * a) by ring]
       apply mul_le_mul_of_nonneg_left _ hB
       field_simp [ha.ne']
@@ -569,7 +569,7 @@ theorem abs_sourceEdge_sum_mul_le
     (w : ℕ → ℝ)
     (hvalue : ∀ k, |w k| ≤ 2 / Real.sqrt (k + 1 : ℕ))
     (hdiff : ∀ k, |w k - w (k + 1)| ≤
-      5 / (Real.sqrt (k + 1 : ℕ)) ^ 3)
+      5 / (Real.sqrt (k + 1 : ℕ)) ^ (3 : ℕ))
     (N : ℕ) :
     |∑ k ∈ Finset.range (N + 1), completedRieszSourceEdge k * w k| ≤
       24 * B * Real.sqrt (N + 1 : ℕ) := by

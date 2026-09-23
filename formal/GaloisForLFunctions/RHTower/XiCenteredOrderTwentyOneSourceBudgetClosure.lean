@@ -37,7 +37,7 @@ theorem oneHundredFortyThree_div_fiftyThousand_lt_sum_firstAtomFourthLowerMass64
 /-- The certified 64-cell mass is an unconditional floor for the dominant atom's fourth moment. -/
 theorem oneHundredFortyThree_div_fiftyThousand_lt_thetaCuspAtomRawEvenMoment_two_one :
     (143 / 50000 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
-  let f : ℝ → ℝ := fun x => 2 * (x ^ 4 * thetaCuspSourceTerm x 1)
+  let f : ℝ → ℝ := fun x => 2 * (x ^ (4 : ℕ) * thetaCuspSourceTerm x 1)
   have hfcont : Continuous f := by
     dsimp only [f]
     unfold thetaCuspSourceTerm thetaCuspSeed
@@ -122,7 +122,7 @@ theorem normalizedPrimeArchMoment_one_lt_three_over_twentyFiveThousand :
     normalizedPrimeArchMoment_zero_lt_fourThousandSixHundredThirtyThree_over_oneHundredThousand
   have hM0 : 0 < M := by
     simpa only [M] using normalizedPrimeArchMoment_zero_pos
-  have hMsq : M ^ 2 < (4633 / 100000 : ℝ) ^ 2 := by
+  have hMsq : M ^ (2 : ℕ) < (4633 / 100000 : ℝ) ^ (2 : ℕ) := by
     have hprod := mul_pos (sub_pos.mpr (by simpa only [M] using hM))
       (add_pos (by norm_num : (0 : ℝ) < 4633 / 100000) hM0)
     nlinarith
@@ -131,7 +131,7 @@ theorem normalizedPrimeArchMoment_one_lt_three_over_twentyFiveThousand :
   rw [normalizedPrimeArchMoment_one_eq_thetaCuspNormalizedEvenMoment,
     ← normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
   simpa only [M] using (by nlinarith :
-    M ^ 2 / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 3 / 25000)
+    M ^ (2 : ℕ) / 2 - thetaCuspNormalizedEvenMoment 2 / 6 < 3 / 25000)
 
 /-- The centered order-21 residual annulus is unconditionally empty. -/
 theorem xiCenteredOrderTwentyOneResidualAnnulusEmpty :

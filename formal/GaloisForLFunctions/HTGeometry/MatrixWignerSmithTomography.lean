@@ -50,7 +50,7 @@ def matrixDelayPanel {n : ℕ} (Q : Matrix (Fin n) (Fin n) ℂ) :
 
 /-- The delay panel contains exactly `n²` scalar reporters. -/
 theorem matrixDelayPanel_reporter_count (n : ℕ) :
-    Fintype.card (Fin n × Fin n) = n ^ 2 := by
+    Fintype.card (Fin n × Fin n) = n ^ (2 : ℕ) := by
   simp [pow_two]
 
 /-- Diagonal ordered pairs carry the diagonal matrix entries. -/

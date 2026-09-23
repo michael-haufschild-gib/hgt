@@ -51,11 +51,11 @@ namespace GaloisForLFunctions.RHTower
 
 /-- The Liouville speed squared, with the square root cleared. -/
 theorem xiSpeed_sq_mul {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    (x ^ 2 - 1) * xiSpeed s x ^ 2 = x ^ 2 - s := by
+    (x ^ (2 : ℕ) - 1) * xiSpeed s x ^ (2 : ℕ) = x ^ (2 : ℕ) - s := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have h : xiSpeed s x ^ 2 = (x ^ 2 - s) / (x ^ 2 - 1) := by
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have h : xiSpeed s x ^ (2 : ℕ) = (x ^ (2 : ℕ) - s) / (x ^ (2 : ℕ) - 1) := by
     rw [xiSpeed]
     exact Real.sq_sqrt (le_of_lt (div_pos hn hd))
   rw [h]
@@ -64,14 +64,14 @@ theorem xiSpeed_sq_mul {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
 /-! ## The normal-form potential of the radial prolate equation -/
 
 /-- The Liouville normal-form potential of the radial prolate equation with `chi = s c²`. -/
-def radialProlateQ (s c x : ℝ) : ℝ := c ^ 2 * ((x ^ 2 - s) / (x ^ 2 - 1)) + 1 / (x ^ 2 - 1) ^ 2
+def radialProlateQ (s c x : ℝ) : ℝ := c ^ (2 : ℕ) * ((x ^ (2 : ℕ) - s) / (x ^ (2 : ℕ) - 1)) + 1 / (x ^ (2 : ℕ) - 1) ^ (2 : ℕ)
 
 /-- The aperture cancels exactly: the normal-form potential exceeds the comparison potential
 `c² (xi')²` by the pure pole `1/(x²-1)²`. -/
 theorem radialProlateQ_sub_comparison {s c x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    radialProlateQ s c x - c ^ 2 * xiSpeed s x ^ 2 = 1 / (x ^ 2 - 1) ^ 2 := by
+    radialProlateQ s c x - c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) = 1 / (x ^ (2 : ℕ) - 1) ^ (2 : ℕ) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hV2 := xiSpeed_sq_mul hs1 hx
   rw [radialProlateQ, ← hV2]
   field_simp
@@ -82,9 +82,9 @@ theorem radialProlateQ_sub_comparison {s c x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 
 /-- `xi''/xi'` in closed rational form. -/
 theorem xiSpeedDeriv_div_xiSpeed_eq {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     xiSpeedDeriv s x / xiSpeed s x
-      = -(x * (1 - s)) / ((x ^ 2 - s) * (x ^ 2 - 1)) := by
+      = -(x * (1 - s)) / ((x ^ (2 : ℕ) - s) * (x ^ (2 : ℕ) - 1)) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hV : 0 < xiSpeed s x := xiSpeed_pos hs1 hx
   have hV2 := xiSpeed_sq_mul hs1 hx
   rw [xiSpeedDeriv, ← hV2]
@@ -94,10 +94,10 @@ theorem xiSpeedDeriv_div_xiSpeed_eq {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x)
 /-- `xi'''/xi'` in closed rational form. -/
 theorem xiSpeedSecondDeriv_div_xiSpeed_eq {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     xiSpeedSecondDeriv s x / xiSpeed s x
-      = (1 - s) * (x ^ 2 * (4 * (x ^ 2 - s) + s - 1) - (x ^ 2 - s) * (x ^ 2 - 1))
-        / ((x ^ 2 - s) * (x ^ 2 - 1)) ^ 2 := by
+      = (1 - s) * (x ^ (2 : ℕ) * (4 * (x ^ (2 : ℕ) - s) + s - 1) - (x ^ (2 : ℕ) - s) * (x ^ (2 : ℕ) - 1))
+        / ((x ^ (2 : ℕ) - s) * (x ^ (2 : ℕ) - 1)) ^ (2 : ℕ) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hV : 0 < xiSpeed s x := xiSpeed_pos hs1 hx
   have hV2 := xiSpeed_sq_mul hs1 hx
   rw [xiSpeedSecondDeriv, xiSpeedDeriv, ← hV2]
@@ -112,14 +112,14 @@ cancel identically and what is left involves only the three logarithmic derivati
 theorem lgNormalFormDefect_radialProlate_eq {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hx : 1 < x) :
     lgNormalFormDefect s c (radialProlateQ s c) x
-      = 1 / (x ^ 2 - 1) ^ 2 - (xiSpeed s x / xiEndpointPhase s x) ^ 2 / 4
-        + 3 / 4 * (xiSpeedDeriv s x / xiSpeed s x) ^ 2
+      = 1 / (x ^ (2 : ℕ) - 1) ^ (2 : ℕ) - (xiSpeed s x / xiEndpointPhase s x) ^ (2 : ℕ) / 4
+        + 3 / 4 * (xiSpeedDeriv s x / xiSpeed s x) ^ (2 : ℕ)
         - (xiSpeedSecondDeriv s x / xiSpeed s x) / 2 := by
   have hV : 0 < xiSpeed s x := xiSpeed_pos hs1 hx
   have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have hQ := radialProlateQ_sub_comparison (s := s) (c := c) hs1 hx
   rw [lgNormalFormDefect, lgFirstOrderCoeff, lgFirstOrderCoeffDeriv]
-  have hQ' : radialProlateQ s c x = 1 / (x ^ 2 - 1) ^ 2 + c ^ 2 * xiSpeed s x ^ 2 := by
+  have hQ' : radialProlateQ s c x = 1 / (x ^ (2 : ℕ) - 1) ^ (2 : ℕ) + c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) := by
     linarith [hQ]
   rw [hQ']
   field_simp
@@ -130,13 +130,13 @@ theorem lgNormalFormDefect_radialProlate_eq {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 :
 /-- The rational part of the defect: the whole defect except for the two terms carrying the
 logarithmic derivative of the phase.  Its only pole is simple. -/
 def prolateDefectAlg (s x : ℝ) : ℝ :=
-  (-(x ^ 4) + (8 * s - 3) * x ^ 2 - 2 * s * (s + 1))
-    / (4 * (x ^ 2 - s) ^ 2 * (x ^ 2 - 1))
+  (-(x ^ (4 : ℕ)) + (8 * s - 3) * x ^ (2 : ℕ) - 2 * s * (s + 1))
+    / (4 * (x ^ (2 : ℕ) - s) ^ (2 : ℕ) * (x ^ (2 : ℕ) - 1))
 
 /-- The deviation of `xi'/xi` from the `s = 0` value `x/(x²-1)`.  It is bounded on the whole ray, and
 that is what makes the defect's pole simple. -/
 def phaseLogDefect (s x : ℝ) : ℝ :=
-  xiSpeed s x / xiEndpointPhase s x - x / (x ^ 2 - 1)
+  xiSpeed s x / xiEndpointPhase s x - x / (x ^ (2 : ℕ) - 1)
 
 /-- **The defect with its double pole removed.**  The `1/(x²-1)²` of the normal form cancels against
 the double pole of `P²/4 + P'/2` exactly, leaving an explicit rational function with a simple pole and
@@ -144,12 +144,12 @@ two terms carrying the bounded phase defect. -/
 theorem lgNormalFormDefect_radialProlate_eq_alg {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hx : 1 < x) :
     lgNormalFormDefect s c (radialProlateQ s c) x
-      = prolateDefectAlg s x - x * phaseLogDefect s x / (2 * (x ^ 2 - 1))
-        - phaseLogDefect s x ^ 2 / 4 := by
+      = prolateDefectAlg s x - x * phaseLogDefect s x / (2 * (x ^ (2 : ℕ) - 1))
+        - phaseLogDefect s x ^ (2 : ℕ) / 4 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hnu : xiSpeed s x / xiEndpointPhase s x = phaseLogDefect s x + x / (x ^ 2 - 1) := by
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hnu : xiSpeed s x / xiEndpointPhase s x = phaseLogDefect s x + x / (x ^ (2 : ℕ) - 1) := by
     rw [phaseLogDefect]
     ring
   rw [lgNormalFormDefect_radialProlate_eq hs0 hs1 hx, xiSpeedDeriv_div_xiSpeed_eq hs1 hx,
@@ -162,23 +162,23 @@ theorem lgNormalFormDefect_radialProlate_eq_alg {s c x : ℝ} (hs0 : 0 ≤ s) (h
 /-- The rational part of the defect obeys `|a_alg| <= 6/(x²-1)`: its numerator is a quartic and its
 denominator carries `(x²-s)² >= x⁴/4`. -/
 theorem abs_prolateDefectAlg_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    |prolateDefectAlg s x| ≤ 6 / (x ^ 2 - 1) := by
+    |prolateDefectAlg s x| ≤ 6 / (x ^ (2 : ℕ) - 1) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hx1 : (1 : ℝ) ≤ x ^ 2 := by nlinarith
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hden : (0 : ℝ) < 4 * (x ^ 2 - s) ^ 2 * (x ^ 2 - 1) := by positivity
-  have hM : |(-(x ^ 4) + (8 * s - 3) * x ^ 2 - 2 * s * (s + 1))| ≤ x ^ 4 + 3 * x ^ 2 + 2 := by
+  have hx1 : (1 : ℝ) ≤ x ^ (2 : ℕ) := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hden : (0 : ℝ) < 4 * (x ^ (2 : ℕ) - s) ^ (2 : ℕ) * (x ^ (2 : ℕ) - 1) := by positivity
+  have hM : |(-(x ^ (4 : ℕ)) + (8 * s - 3) * x ^ (2 : ℕ) - 2 * s * (s + 1))| ≤ x ^ (4 : ℕ) + 3 * x ^ (2 : ℕ) + 2 := by
     rw [abs_le]
     constructor <;> nlinarith [sq_nonneg s, sq_nonneg x]
-  have hbig : x ^ 4 + 3 * x ^ 2 + 2 ≤ 24 * (x ^ 2 - s) ^ 2 := by
-    nlinarith [sq_nonneg (x ^ 2 - 1), sq_nonneg x]
+  have hbig : x ^ (4 : ℕ) + 3 * x ^ (2 : ℕ) + 2 ≤ 24 * (x ^ (2 : ℕ) - s) ^ (2 : ℕ) := by
+    nlinarith [sq_nonneg (x ^ (2 : ℕ) - 1), sq_nonneg x]
   rw [prolateDefectAlg, abs_div, abs_of_pos hden]
-  calc |(-(x ^ 4) + (8 * s - 3) * x ^ 2 - 2 * s * (s + 1))| / (4 * (x ^ 2 - s) ^ 2 * (x ^ 2 - 1))
-      ≤ (24 * (x ^ 2 - s) ^ 2) / (4 * (x ^ 2 - s) ^ 2 * (x ^ 2 - 1)) := by
+  calc |(-(x ^ (4 : ℕ)) + (8 * s - 3) * x ^ (2 : ℕ) - 2 * s * (s + 1))| / (4 * (x ^ (2 : ℕ) - s) ^ (2 : ℕ) * (x ^ (2 : ℕ) - 1))
+      ≤ (24 * (x ^ (2 : ℕ) - s) ^ (2 : ℕ)) / (4 * (x ^ (2 : ℕ) - s) ^ (2 : ℕ) * (x ^ (2 : ℕ) - 1)) := by
         gcongr
         exact le_trans hM hbig
-    _ = 6 / (x ^ 2 - 1) := by
+    _ = 6 / (x ^ (2 : ℕ) - 1) := by
         field_simp
         ring
 
@@ -192,21 +192,21 @@ than the naive size of either term. -/
 
 /-- The Liouville speed with the pole cleared: `xi'(x) (x²-1) = sqrt(x²-s) sqrt(x²-1)`. -/
 theorem xiSpeed_mul_sub_one {s x : ℝ} (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    xiSpeed s x * (x ^ 2 - 1) = Real.sqrt (x ^ 2 - s) * Real.sqrt (x ^ 2 - 1) := by
+    xiSpeed s x * (x ^ (2 : ℕ) - 1) = Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (x ^ (2 : ℕ) - 1) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   rw [xiSpeed, ← Real.sqrt_mul hn.le,
-    show (x ^ 2 - s) * (x ^ 2 - 1) = (x ^ 2 - s) / (x ^ 2 - 1) * (x ^ 2 - 1) ^ 2 by field_simp,
+    show (x ^ (2 : ℕ) - s) * (x ^ (2 : ℕ) - 1) = (x ^ (2 : ℕ) - s) / (x ^ (2 : ℕ) - 1) * (x ^ (2 : ℕ) - 1) ^ (2 : ℕ) by field_simp,
     Real.sqrt_mul (by positivity), Real.sqrt_sq hd.le]
 
 /-- The phase defect as a single quotient. -/
 theorem phaseLogDefect_eq {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
     phaseLogDefect s x
-      = (Real.sqrt (x ^ 2 - s) * Real.sqrt (x ^ 2 - 1) - x * xiEndpointPhase s x)
-        / (xiEndpointPhase s x * (x ^ 2 - 1)) := by
+      = (Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (x ^ (2 : ℕ) - 1) - x * xiEndpointPhase s x)
+        / (xiEndpointPhase s x * (x ^ (2 : ℕ) - 1)) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have hmul := xiSpeed_mul_sub_one hs1 hx
   rw [phaseLogDefect, ← hmul]
@@ -215,26 +215,26 @@ theorem phaseLogDefect_eq {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 
 /-- The logarithmic derivative of the phase is at most `sqrt 2 x/(x²-1)`: the speed is at most
 `x/sqrt(x²-1)` and the phase at least `sqrt(x²-1)/sqrt 2`. -/
 theorem xiSpeed_div_xiEndpointPhase_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    xiSpeed s x / xiEndpointPhase s x ≤ Real.sqrt 2 * x / (x ^ 2 - 1) := by
+    xiSpeed s x / xiEndpointPhase s x ≤ Real.sqrt 2 * x / (x ^ (2 : ℕ) - 1) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hr : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
-  have hrsq : Real.sqrt (x ^ 2 - 1) ^ 2 = x ^ 2 - 1 := Real.sq_sqrt hd.le
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hr : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
+  have hrsq : Real.sqrt (x ^ (2 : ℕ) - 1) ^ (2 : ℕ) = x ^ (2 : ℕ) - 1 := Real.sq_sqrt hd.le
   have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
-  have hnum : xiSpeed s x ≤ x / Real.sqrt (x ^ 2 - 1) := by
+  have hnum : xiSpeed s x ≤ x / Real.sqrt (x ^ (2 : ℕ) - 1) := by
     have h := xiSpeed_le_xiCompSpeed hs0 hx
     rwa [xiCompSpeed] at h
-  have hden : Real.sqrt (x ^ 2 - 1) / Real.sqrt 2 ≤ xiEndpointPhase s x :=
+  have hden : Real.sqrt (x ^ (2 : ℕ) - 1) / Real.sqrt 2 ≤ xiEndpointPhase s x :=
     sqrt_div_sqrt_two_le_xiEndpointPhase hs0 hs1 hx.le
   have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have e1 : xiSpeed s x / xiEndpointPhase s x
-      ≤ (x / Real.sqrt (x ^ 2 - 1)) / xiEndpointPhase s x :=
+      ≤ (x / Real.sqrt (x ^ (2 : ℕ) - 1)) / xiEndpointPhase s x :=
     div_le_div_of_nonneg_right hnum hph.le
-  have e2 : (x / Real.sqrt (x ^ 2 - 1)) / xiEndpointPhase s x
-      ≤ (x / Real.sqrt (x ^ 2 - 1)) / (Real.sqrt (x ^ 2 - 1) / Real.sqrt 2) :=
+  have e2 : (x / Real.sqrt (x ^ (2 : ℕ) - 1)) / xiEndpointPhase s x
+      ≤ (x / Real.sqrt (x ^ (2 : ℕ) - 1)) / (Real.sqrt (x ^ (2 : ℕ) - 1) / Real.sqrt 2) :=
     div_le_div_of_nonneg_left (by positivity) (by positivity) hden
-  have e3 : (x / Real.sqrt (x ^ 2 - 1)) / (Real.sqrt (x ^ 2 - 1) / Real.sqrt 2)
-      = Real.sqrt 2 * x / (x ^ 2 - 1) := by
+  have e3 : (x / Real.sqrt (x ^ (2 : ℕ) - 1)) / (Real.sqrt (x ^ (2 : ℕ) - 1) / Real.sqrt 2)
+      = Real.sqrt 2 * x / (x ^ (2 : ℕ) - 1) := by
     rw [div_div_eq_mul_div, div_mul_eq_mul_div, div_div, Real.mul_self_sqrt hd.le]
     ring
   linarith [e1, e2, e3.le, e3.ge]
@@ -242,27 +242,27 @@ theorem xiSpeed_div_xiEndpointPhase_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 
 /-- Away from the endpoint the phase defect is bounded by `x/(x²-1)`, because both of its two terms
 are: the logarithmic derivative is positive and at most `sqrt 2 x/(x²-1)`. -/
 theorem abs_phaseLogDefect_le_far {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    |phaseLogDefect s x| ≤ x / (x ^ 2 - 1) := by
+    |phaseLogDefect s x| ≤ x / (x ^ (2 : ℕ) - 1) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   have hV : 0 < xiSpeed s x := xiSpeed_pos hs1 hx
   have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have hpos : 0 < xiSpeed s x / xiEndpointPhase s x := div_pos hV hph
   have hup := xiSpeed_div_xiEndpointPhase_le hs0 hs1 hx
   have h2 : Real.sqrt 2 ≤ 3 / 2 := by
-    rw [show (3 : ℝ) / 2 = Real.sqrt ((3 / 2) ^ 2) from (Real.sqrt_sq (by norm_num)).symm]
+    rw [show (3 : ℝ) / 2 = Real.sqrt ((3 / 2) ^ (2 : ℕ)) from (Real.sqrt_sq (by norm_num)).symm]
     exact Real.sqrt_le_sqrt (by norm_num)
-  have hup' : xiSpeed s x / xiEndpointPhase s x ≤ 3 / 2 * x / (x ^ 2 - 1) := by
+  have hup' : xiSpeed s x / xiEndpointPhase s x ≤ 3 / 2 * x / (x ^ (2 : ℕ) - 1) := by
     refine hup.trans ?_
     exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right h2 hx0.le) hd.le
   rw [phaseLogDefect, abs_le]
   constructor
-  · have : (0 : ℝ) < x / (x ^ 2 - 1) := div_pos hx0 hd
+  · have : (0 : ℝ) < x / (x ^ (2 : ℕ) - 1) := div_pos hx0 hd
     linarith
-  · have hhalf : 3 / 2 * x / (x ^ 2 - 1) - x / (x ^ 2 - 1) = x / (2 * (x ^ 2 - 1)) := by
+  · have hhalf : 3 / 2 * x / (x ^ (2 : ℕ) - 1) - x / (x ^ (2 : ℕ) - 1) = x / (2 * (x ^ (2 : ℕ) - 1)) := by
       field_simp
       ring
-    have hle : x / (2 * (x ^ 2 - 1)) ≤ x / (x ^ 2 - 1) :=
+    have hle : x / (2 * (x ^ (2 : ℕ) - 1)) ≤ x / (x ^ (2 : ℕ) - 1) :=
       div_le_div_of_nonneg_left hx0.le hd (by linarith)
     linarith
 
@@ -273,65 +273,65 @@ its algebraic law: `p² = x²-s`, `q² = 1-s`, `r² = x²-1`, together with the 
 logarithm `L` and the phase `X`. -/
 private theorem near_defect_numeric {x s p q r L X : ℝ}
     (hx : 1 < x) (hx2 : x ≤ 2) (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
-    (hr0 : 0 < r) (hrsq : r * r = x ^ 2 - 1)
-    (hp0 : 0 < p) (hpsq : p * p = x ^ 2 - s)
+    (hr0 : 0 < r) (hrsq : r * r = x ^ (2 : ℕ) - 1)
+    (hp0 : 0 < p) (hpsq : p * p = x ^ (2 : ℕ) - s)
     (hq0 : 0 < q) (hqsq : q * q = 1 - s)
-    (hLu : L ≤ r) (hLl : r * (1 - (x ^ 2 - 1) / 6) ≤ L)
+    (hLu : L ≤ r) (hLl : r * (1 - (x ^ (2 : ℕ) - 1) / 6) ≤ L)
     (hXl : q * L ≤ X) (hXu : X ≤ p * L) (hXr : 2 / 3 * r ≤ X) :
-    |(p * r - x * X) / (X * (x ^ 2 - 1))| ≤ 2 := by
+    |(p * r - x * X) / (X * (x ^ (2 : ℕ) - 1))| ≤ 2 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by
     linarith [mul_pos (sub_pos.mpr hx) (show (0 : ℝ) < x + 1 by linarith)]
-  have hd3 : x ^ 2 - 1 ≤ 3 := by
+  have hd3 : x ^ (2 : ℕ) - 1 ≤ 3 := by
     linarith [mul_le_mul hx2 hx2 (by linarith) (by norm_num : (0 : ℝ) ≤ 2)]
   have hX0 : 0 < X := lt_of_lt_of_le (by linarith) hXr
   have hp2 : p ≤ 2 := by nlinarith
   have hphalf : 1 / 2 ≤ p := by nlinarith
   have hq1 : q ≤ 1 := by nlinarith
   have hL0 : 0 < L := by nlinarith
-  have hprod : (p - x * q) * (p + x * q) = s * (x ^ 2 - 1) := by
-    linear_combination hpsq - x ^ 2 * hqsq
-  have hpq : p - x * q ≤ x ^ 2 - 1 := by
+  have hprod : (p - x * q) * (p + x * q) = s * (x ^ (2 : ℕ) - 1) := by
+    linear_combination hpsq - x ^ (2 : ℕ) * hqsq
+  have hpq : p - x * q ≤ x ^ (2 : ℕ) - 1 := by
     nlinarith [hprod, hphalf, mul_nonneg hx0.le hq0.le]
-  have hnumU : p * r - x * X ≤ 4 / 3 * (r * (x ^ 2 - 1)) := by
+  have hnumU : p * r - x * X ≤ 4 / 3 * (r * (x ^ (2 : ℕ) - 1)) := by
     have s1 : x * (q * L) ≤ x * X := mul_le_mul_of_nonneg_left hXl hx0.le
-    have s2 : q * (r * (1 - (x ^ 2 - 1) / 6)) ≤ q * L := mul_le_mul_of_nonneg_left hLl hq0.le
-    have s3 : x * (q * (r * (1 - (x ^ 2 - 1) / 6))) ≤ x * (q * L) :=
+    have s2 : q * (r * (1 - (x ^ (2 : ℕ) - 1) / 6)) ≤ q * L := mul_le_mul_of_nonneg_left hLl hq0.le
+    have s3 : x * (q * (r * (1 - (x ^ (2 : ℕ) - 1) / 6))) ≤ x * (q * L) :=
       mul_le_mul_of_nonneg_left s2 hx0.le
-    have s4 : r * (p - x * q) ≤ r * (x ^ 2 - 1) := mul_le_mul_of_nonneg_left hpq hr0.le
+    have s4 : r * (p - x * q) ≤ r * (x ^ (2 : ℕ) - 1) := mul_le_mul_of_nonneg_left hpq hr0.le
     have s5 : x * q ≤ 2 := by nlinarith
-    have s6 : x * q * (r * (x ^ 2 - 1) / 6) ≤ 2 * (r * (x ^ 2 - 1) / 6) :=
+    have s6 : x * q * (r * (x ^ (2 : ℕ) - 1) / 6) ≤ 2 * (r * (x ^ (2 : ℕ) - 1) / 6) :=
       mul_le_mul_of_nonneg_right s5 (div_nonneg (mul_nonneg hr0.le hd.le) (by norm_num))
-    have c1 : x * (q * (r * (1 - (x ^ 2 - 1) / 6))) ≤ x * X := le_trans s3 s1
-    have c3 : p * r - x * (q * (r * (1 - (x ^ 2 - 1) / 6)))
-        = r * (p - x * q) + x * q * (r * (x ^ 2 - 1) / 6) := by ring
-    have c4 : r * (p - x * q) + x * q * (r * (x ^ 2 - 1) / 6)
-        ≤ r * (x ^ 2 - 1) + 2 * (r * (x ^ 2 - 1) / 6) := by linarith
-    have c5 : r * (x ^ 2 - 1) + 2 * (r * (x ^ 2 - 1) / 6) ≤ 4 / 3 * (r * (x ^ 2 - 1)) := by
+    have c1 : x * (q * (r * (1 - (x ^ (2 : ℕ) - 1) / 6))) ≤ x * X := le_trans s3 s1
+    have c3 : p * r - x * (q * (r * (1 - (x ^ (2 : ℕ) - 1) / 6)))
+        = r * (p - x * q) + x * q * (r * (x ^ (2 : ℕ) - 1) / 6) := by ring
+    have c4 : r * (p - x * q) + x * q * (r * (x ^ (2 : ℕ) - 1) / 6)
+        ≤ r * (x ^ (2 : ℕ) - 1) + 2 * (r * (x ^ (2 : ℕ) - 1) / 6) := by linarith
+    have c5 : r * (x ^ (2 : ℕ) - 1) + 2 * (r * (x ^ (2 : ℕ) - 1) / 6) ≤ 4 / 3 * (r * (x ^ (2 : ℕ) - 1)) := by
       linarith
     linarith [c1, c3.le, c3.ge, c4, c5]
-  have hnumL : -(4 / 3 * (r * (x ^ 2 - 1))) ≤ p * r - x * X := by
+  have hnumL : -(4 / 3 * (r * (x ^ (2 : ℕ) - 1))) ≤ p * r - x * X := by
     have s1 : x * X ≤ x * (p * L) := mul_le_mul_of_nonneg_left hXu hx0.le
     have s2 : p * L ≤ p * r := mul_le_mul_of_nonneg_left hLu hp0.le
     have s3 : x * (p * L) ≤ x * (p * r) := mul_le_mul_of_nonneg_left s2 hx0.le
-    have s4 : x - 1 ≤ (x ^ 2 - 1) / 2 := by nlinarith
+    have s4 : x - 1 ≤ (x ^ (2 : ℕ) - 1) / 2 := by nlinarith
     have t1 : p * (r * (x - 1)) ≤ 2 * (r * (x - 1)) :=
       mul_le_mul_of_nonneg_right hp2 (mul_nonneg hr0.le (by linarith))
-    have t2 : r * (x - 1) ≤ r * ((x ^ 2 - 1) / 2) := mul_le_mul_of_nonneg_left s4 hr0.le
+    have t2 : r * (x - 1) ≤ r * ((x ^ (2 : ℕ) - 1) / 2) := mul_le_mul_of_nonneg_left s4 hr0.le
     have c1 : x * X ≤ x * (p * r) := le_trans s1 s3
     have c3 : p * r - x * (p * r) = -(p * (r * (x - 1))) := by ring
-    have c6 : -(2 * (r * ((x ^ 2 - 1) / 2))) ≥ -(4 / 3 * (r * (x ^ 2 - 1))) := by
+    have c6 : -(2 * (r * ((x ^ (2 : ℕ) - 1) / 2))) ≥ -(4 / 3 * (r * (x ^ (2 : ℕ) - 1))) := by
       linarith [mul_nonneg hr0.le hd.le]
     linarith [c1, c3.le, c3.ge, t1, t2, c6]
-  have hkey : |p * r - x * X| ≤ 2 * (X * (x ^ 2 - 1)) := by
-    have habs : |p * r - x * X| ≤ 4 / 3 * (r * (x ^ 2 - 1)) := abs_le.mpr ⟨hnumL, hnumU⟩
-    have hstep : 4 / 3 * (r * (x ^ 2 - 1)) ≤ 2 * (X * (x ^ 2 - 1)) := by
+  have hkey : |p * r - x * X| ≤ 2 * (X * (x ^ (2 : ℕ) - 1)) := by
+    have habs : |p * r - x * X| ≤ 4 / 3 * (r * (x ^ (2 : ℕ) - 1)) := abs_le.mpr ⟨hnumL, hnumU⟩
+    have hstep : 4 / 3 * (r * (x ^ (2 : ℕ) - 1)) ≤ 2 * (X * (x ^ (2 : ℕ) - 1)) := by
       linarith [mul_le_mul_of_nonneg_right hXr hd.le]
     linarith
-  have hXd : (0 : ℝ) < X * (x ^ 2 - 1) := mul_pos hX0 hd
+  have hXd : (0 : ℝ) < X * (x ^ (2 : ℕ) - 1) := mul_pos hX0 hd
   rw [abs_div, abs_of_pos hXd]
-  calc |p * r - x * X| / (X * (x ^ 2 - 1))
-      ≤ 2 * (X * (x ^ 2 - 1)) / (X * (x ^ 2 - 1)) :=
+  calc |p * r - x * X| / (X * (x ^ (2 : ℕ) - 1))
+      ≤ 2 * (X * (x ^ (2 : ℕ) - 1)) / (X * (x ^ (2 : ℕ) - 1)) :=
         div_le_div_of_nonneg_right hkey hXd.le
     _ = 2 := by
         field_simp
@@ -344,29 +344,29 @@ the extra factor `x² - 1`, which is exactly the factor the denominator `xi (x²
 theorem abs_phaseLogDefect_le_near {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
     (hx2 : x ≤ 2) : |phaseLogDefect s x| ≤ 2 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
   have hA : (0 : ℝ) < 1 - s := by linarith
-  have hconv : Real.sqrt (1 - s) * Real.sqrt (1 + (x ^ 2 - 1) / (1 - s)) = Real.sqrt (x ^ 2 - s) := by
+  have hconv : Real.sqrt (1 - s) * Real.sqrt (1 + (x ^ (2 : ℕ) - 1) / (1 - s)) = Real.sqrt (x ^ (2 : ℕ) - s) := by
     rw [← Real.sqrt_mul hA.le]
     congr 1
     field_simp
     ring
   have hXu : xiEndpointPhase s x
-      ≤ Real.sqrt (x ^ 2 - s) * GaloisForLFunctions.HTGeometry.endpointLog x := by
+      ≤ Real.sqrt (x ^ (2 : ℕ) - s) * GaloisForLFunctions.HTGeometry.endpointLog x := by
     have h := xiEndpointPhase_le_sqrt_one_sub_mul_endpointLog hs0 hs1 hx.le
     rwa [hconv] at h
   have hXl : Real.sqrt (1 - s) * GaloisForLFunctions.HTGeometry.endpointLog x
       ≤ xiEndpointPhase s x := sqrt_one_sub_mul_endpointLog_le_xiEndpointPhase hs0 hs1 hx.le
   have h2 : Real.sqrt 2 ≤ 3 / 2 := by
-    rw [show (3 : ℝ) / 2 = Real.sqrt ((3 / 2) ^ 2) from (Real.sqrt_sq (by norm_num)).symm]
+    rw [show (3 : ℝ) / 2 = Real.sqrt ((3 / 2) ^ (2 : ℕ)) from (Real.sqrt_sq (by norm_num)).symm]
     exact Real.sqrt_le_sqrt (by norm_num)
   have h2pos : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
-  have hr0 : 0 < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
-  have hXr : 2 / 3 * Real.sqrt (x ^ 2 - 1) ≤ xiEndpointPhase s x := by
+  have hr0 : 0 < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
+  have hXr : 2 / 3 * Real.sqrt (x ^ (2 : ℕ) - 1) ≤ xiEndpointPhase s x := by
     refine le_trans ?_ (sqrt_div_sqrt_two_le_xiEndpointPhase hs0 hs1 hx.le)
-    calc 2 / 3 * Real.sqrt (x ^ 2 - 1) = Real.sqrt (x ^ 2 - 1) / (3 / 2) := by ring
-      _ ≤ Real.sqrt (x ^ 2 - 1) / Real.sqrt 2 :=
+    calc 2 / 3 * Real.sqrt (x ^ (2 : ℕ) - 1) = Real.sqrt (x ^ (2 : ℕ) - 1) / (3 / 2) := by ring
+      _ ≤ Real.sqrt (x ^ (2 : ℕ) - 1) / Real.sqrt 2 :=
         div_le_div_of_nonneg_left hr0.le h2pos h2
   rw [phaseLogDefect_eq hs0 hs1 hx]
   exact near_defect_numeric hx hx2 hs0 hs1 hr0 (Real.mul_self_sqrt hd.le)
@@ -400,40 +400,40 @@ and the surviving `1/(x²-1)` is integrable against the Liouville measure `dx/xi
 Volterra estimate consumes. -/
 theorem abs_lgNormalFormDefect_radialProlate_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hx : 1 < x) :
-    |lgNormalFormDefect s c (radialProlateQ s c) x| ≤ 40 / (x ^ 2 - 1) := by
+    |lgNormalFormDefect s c (radialProlateQ s c) x| ≤ 40 / (x ^ (2 : ℕ) - 1) := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
   rw [lgNormalFormDefect_radialProlate_eq_alg hs0 hs1 hx, le_div_iff₀ hd]
-  have htri := abs_sub_sub_le (prolateDefectAlg s x) (x * phaseLogDefect s x / (2 * (x ^ 2 - 1)))
-    (phaseLogDefect s x ^ 2 / 4)
+  have htri := abs_sub_sub_le (prolateDefectAlg s x) (x * phaseLogDefect s x / (2 * (x ^ (2 : ℕ) - 1)))
+    (phaseLogDefect s x ^ (2 : ℕ) / 4)
   have htrid := mul_le_mul_of_nonneg_right htri hd.le
-  have hAd : |prolateDefectAlg s x| * (x ^ 2 - 1) ≤ 6 :=
+  have hAd : |prolateDefectAlg s x| * (x ^ (2 : ℕ) - 1) ≤ 6 :=
     (le_div_iff₀ hd).mp (abs_prolateDefectAlg_le hs0 hs1 hx)
-  have hBd : |x * phaseLogDefect s x / (2 * (x ^ 2 - 1))| * (x ^ 2 - 1)
+  have hBd : |x * phaseLogDefect s x / (2 * (x ^ (2 : ℕ) - 1))| * (x ^ (2 : ℕ) - 1)
       = x * |phaseLogDefect s x| / 2 := by
     rw [abs_div, abs_mul, abs_of_pos hx0,
-      abs_of_pos (show (0 : ℝ) < 2 * (x ^ 2 - 1) by linarith)]
+      abs_of_pos (show (0 : ℝ) < 2 * (x ^ (2 : ℕ) - 1) by linarith)]
     field_simp
-  have hCd : |phaseLogDefect s x ^ 2 / 4| * (x ^ 2 - 1)
-      = phaseLogDefect s x ^ 2 * (x ^ 2 - 1) / 4 := by
+  have hCd : |phaseLogDefect s x ^ (2 : ℕ) / 4| * (x ^ (2 : ℕ) - 1)
+      = phaseLogDefect s x ^ (2 : ℕ) * (x ^ (2 : ℕ) - 1) / 4 := by
     rw [abs_div, abs_of_nonneg (sq_nonneg _), abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 4)]
     ring
   have habs0 : (0 : ℝ) ≤ |phaseLogDefect s x| := abs_nonneg _
-  have hsq : phaseLogDefect s x ^ 2 = |phaseLogDefect s x| ^ 2 := (sq_abs _).symm
+  have hsq : phaseLogDefect s x ^ (2 : ℕ) = |phaseLogDefect s x| ^ (2 : ℕ) := (sq_abs _).symm
   rcases le_or_gt x 2 with hx2 | hx2
   · have hD := abs_phaseLogDefect_le_near hs0 hs1 hx hx2
-    have hd3 : x ^ 2 - 1 ≤ 3 := by nlinarith
+    have hd3 : x ^ (2 : ℕ) - 1 ≤ 3 := by nlinarith
     have hB : x * |phaseLogDefect s x| / 2 ≤ 2 := by nlinarith
-    have hC : phaseLogDefect s x ^ 2 * (x ^ 2 - 1) / 4 ≤ 3 := by
+    have hC : phaseLogDefect s x ^ (2 : ℕ) * (x ^ (2 : ℕ) - 1) / 4 ≤ 3 := by
       rw [hsq]
       nlinarith
     linarith [htrid, hAd, hBd.le, hBd.ge, hCd.le, hCd.ge]
   · have hD := abs_phaseLogDefect_le_far hs0 hs1 hx
-    have hDx : |phaseLogDefect s x| * (x ^ 2 - 1) ≤ x := (le_div_iff₀ hd).mp hD
-    have hx4 : x ^ 2 ≤ 4 / 3 * (x ^ 2 - 1) := by nlinarith
+    have hDx : |phaseLogDefect s x| * (x ^ (2 : ℕ) - 1) ≤ x := (le_div_iff₀ hd).mp hD
+    have hx4 : x ^ (2 : ℕ) ≤ 4 / 3 * (x ^ (2 : ℕ) - 1) := by nlinarith
     have hB : x * |phaseLogDefect s x| / 2 ≤ 1 := by
       nlinarith [mul_le_mul_of_nonneg_left hDx hx0.le]
-    have hC : phaseLogDefect s x ^ 2 * (x ^ 2 - 1) / 4 ≤ 1 := by
+    have hC : phaseLogDefect s x ^ (2 : ℕ) * (x ^ (2 : ℕ) - 1) / 4 ≤ 1 := by
       rw [hsq]
       nlinarith [mul_le_mul_of_nonneg_left hDx habs0]
     linarith [htrid, hAd, hBd.le, hBd.ge, hCd.le, hCd.ge]
@@ -447,26 +447,26 @@ the `-1/w³ R` produced by the second derivative of the weight cancels the `1/(x
 which is the reason the normal form has a double pole at all. -/
 
 /-- The normal-form weight `sqrt(x²-1)`. -/
-def nfWeight (x : ℝ) : ℝ := Real.sqrt (x ^ 2 - 1)
+def nfWeight (x : ℝ) : ℝ := Real.sqrt (x ^ (2 : ℕ) - 1)
 
 /-- Its derivative `x/sqrt(x²-1)`. -/
-def nfWeightDeriv (x : ℝ) : ℝ := x / Real.sqrt (x ^ 2 - 1)
+def nfWeightDeriv (x : ℝ) : ℝ := x / Real.sqrt (x ^ (2 : ℕ) - 1)
 
 /-- Its second derivative `-1/(x²-1)^{3/2}`. -/
-def nfWeightSecondDeriv (x : ℝ) : ℝ := -(1 / ((x ^ 2 - 1) * Real.sqrt (x ^ 2 - 1)))
+def nfWeightSecondDeriv (x : ℝ) : ℝ := -(1 / ((x ^ (2 : ℕ) - 1) * Real.sqrt (x ^ (2 : ℕ) - 1)))
 
 theorem hasDerivAt_nfWeight {x : ℝ} (hx : 1 < x) :
     HasDerivAt nfWeight (nfWeightDeriv x) x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hinner : HasDerivAt (fun t : ℝ => t ^ 2 - 1) (2 * x) x := by
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hinner : HasDerivAt (fun t : ℝ => t ^ (2 : ℕ) - 1) (2 * x) x := by
     simpa using (hasDerivAt_pow 2 x).sub_const 1
   have h := hinner.sqrt hd.ne'
-  have hval : 2 * x / (2 * Real.sqrt (x ^ 2 - 1)) = nfWeightDeriv x := by
+  have hval : 2 * x / (2 * Real.sqrt (x ^ (2 : ℕ) - 1)) = nfWeightDeriv x := by
     rw [nfWeightDeriv]
-    have hr : Real.sqrt (x ^ 2 - 1) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hd)
+    have hr : Real.sqrt (x ^ (2 : ℕ) - 1) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hd)
     field_simp
-  have hfun : nfWeight = fun t : ℝ => Real.sqrt (t ^ 2 - 1) := by
+  have hfun : nfWeight = fun t : ℝ => Real.sqrt (t ^ (2 : ℕ) - 1) := by
     funext t
     rw [nfWeight]
   rw [hfun, ← hval]
@@ -475,19 +475,19 @@ theorem hasDerivAt_nfWeight {x : ℝ} (hx : 1 < x) :
 theorem hasDerivAt_nfWeightDeriv {x : ℝ} (hx : 1 < x) :
     HasDerivAt nfWeightDeriv (nfWeightSecondDeriv x) x := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hr : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
-  have hrsq : Real.sqrt (x ^ 2 - 1) * Real.sqrt (x ^ 2 - 1) = x ^ 2 - 1 :=
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hr : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
+  have hrsq : Real.sqrt (x ^ (2 : ℕ) - 1) * Real.sqrt (x ^ (2 : ℕ) - 1) = x ^ (2 : ℕ) - 1 :=
     Real.mul_self_sqrt hd.le
-  obtain ⟨W, hW0, hWsq, hWeq⟩ : ∃ W : ℝ, 0 < W ∧ W * W = x ^ 2 - 1
-      ∧ Real.sqrt (x ^ 2 - 1) = W := ⟨Real.sqrt (x ^ 2 - 1), hr, hrsq, rfl⟩
+  obtain ⟨W, hW0, hWsq, hWeq⟩ : ∃ W : ℝ, 0 < W ∧ W * W = x ^ (2 : ℕ) - 1
+      ∧ Real.sqrt (x ^ (2 : ℕ) - 1) = W := ⟨Real.sqrt (x ^ (2 : ℕ) - 1), hr, hrsq, rfl⟩
   have h := (hasDerivAt_id x).fun_div (hasDerivAt_nfWeight hx) (ne_of_gt hr)
   have hfun : nfWeightDeriv = fun t : ℝ => t / nfWeight t := by
     funext t
     rw [nfWeightDeriv, nfWeight]
-  have hval : (1 * nfWeight x - x * nfWeightDeriv x) / nfWeight x ^ 2
+  have hval : (1 * nfWeight x - x * nfWeightDeriv x) / nfWeight x ^ (2 : ℕ)
       = nfWeightSecondDeriv x := by
-    have e2 : W * W - x ^ 2 = -1 := by
+    have e2 : W * W - x ^ (2 : ℕ) = -1 := by
       rw [hWsq]
       ring
     rw [nfWeight, nfWeightDeriv, nfWeightSecondDeriv, hWeq, ← hWsq]
@@ -545,19 +545,19 @@ the radial spheroidal equation with separation constant `chi = s c²`, then `u =
 `u'' + Q u = 0` with `Q = radialProlateQ s c`.  The identity is exact: the whole expression equals the
 radial equation divided by `sqrt(x²-1)`. -/
 theorem prolate_normalForm_ode {s c x : ℝ} {R DR DDR : ℝ → ℝ} (hx : 1 < x)
-    (hode : (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+    (hode : (x ^ (2 : ℕ) - 1) * DDR x + 2 * x * DR x - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x = 0) :
     prolateNormalFormSolSecondDeriv R DR DDR x
       + radialProlateQ s c x * prolateNormalFormSol R x = 0 := by
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
-  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hr : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
-  have hrsq : Real.sqrt (x ^ 2 - 1) * Real.sqrt (x ^ 2 - 1) = x ^ 2 - 1 :=
+  have hd : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hr : (0 : ℝ) < Real.sqrt (x ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
+  have hrsq : Real.sqrt (x ^ (2 : ℕ) - 1) * Real.sqrt (x ^ (2 : ℕ) - 1) = x ^ (2 : ℕ) - 1 :=
     Real.mul_self_sqrt hd.le
-  obtain ⟨W, hW0, hWsq, hWeq⟩ : ∃ W : ℝ, 0 < W ∧ W * W = x ^ 2 - 1
-      ∧ Real.sqrt (x ^ 2 - 1) = W := ⟨Real.sqrt (x ^ 2 - 1), hr, hrsq, rfl⟩
+  obtain ⟨W, hW0, hWsq, hWeq⟩ : ∃ W : ℝ, 0 < W ∧ W * W = x ^ (2 : ℕ) - 1
+      ∧ Real.sqrt (x ^ (2 : ℕ) - 1) = W := ⟨Real.sqrt (x ^ (2 : ℕ) - 1), hr, hrsq, rfl⟩
   have key : prolateNormalFormSolSecondDeriv R DR DDR x
       + radialProlateQ s c x * prolateNormalFormSol R x
-      = ((x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x) / W := by
+      = ((x ^ (2 : ℕ) - 1) * DDR x + 2 * x * DR x - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x) / W := by
     rw [prolateNormalFormSolSecondDeriv, prolateNormalFormSol, radialProlateQ, nfWeight,
       nfWeightDeriv, nfWeightSecondDeriv, hWeq, ← hWsq]
     field_simp
@@ -581,7 +581,7 @@ def lgAmplitudeDeriv (s x : ℝ) : ℝ := lgAmplitude s x * lgFirstOrderCoeff s 
 
 /-- Its second derivative `g (P²/4 + P'/2)`. -/
 def lgAmplitudeSecondDeriv (s x : ℝ) : ℝ :=
-  lgAmplitude s x * (lgFirstOrderCoeff s x ^ 2 / 4 + lgFirstOrderCoeffDeriv s x / 2)
+  lgAmplitude s x * (lgFirstOrderCoeff s x ^ (2 : ℕ) / 4 + lgFirstOrderCoeffDeriv s x / 2)
 
 theorem lgWeight_pos {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) : 0 < lgWeight s x := by
   rw [lgWeight]
@@ -643,7 +643,7 @@ theorem hasDerivAt_comparisonSol {s x : ℝ} {u Du : ℝ → ℝ} (hs0 : 0 ≤ s
   have hfun : comparisonSol u s = fun t : ℝ => u t / lgAmplitude s t := by
     funext t
     rw [comparisonSol]
-  have hval : (Du x * lgAmplitude s x - u x * lgAmplitudeDeriv s x) / lgAmplitude s x ^ 2
+  have hval : (Du x * lgAmplitude s x - u x * lgAmplitudeDeriv s x) / lgAmplitude s x ^ (2 : ℕ)
       = comparisonSolDeriv u Du s x := by
     rw [comparisonSolDeriv]
     ring
@@ -665,7 +665,7 @@ theorem hasDerivAt_comparisonSolDeriv {s c x : ℝ} {u Du DDu Q : ℝ → ℝ}
     (hode : DDu x + Q x * u x = 0) :
     HasDerivAt (comparisonSolDeriv u Du s)
       (-(lgFirstOrderCoeff s x) * comparisonSolDeriv u Du s x
-        - (c ^ 2 * xiSpeed s x ^ 2 + lgNormalFormDefect s c Q x) * comparisonSol u s x) x := by
+        - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + lgNormalFormDefect s c Q x) * comparisonSol u s x) x := by
   have hg := hasDerivAt_lgAmplitude hs0 hs1 hx
   have hg2 := hasDerivAt_lgAmplitudeDeriv hs0 hs1 hx
   have hgpos := lgAmplitude_pos hs0 hs1 hx
@@ -711,15 +711,15 @@ mass. -/
 theorem radialProlate_comparison_pole_uniform {s c x : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
     (hR : HasDerivAt R (DR x) x) (hDR : HasDerivAt DR (DDR x) x)
-    (hode : (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+    (hode : (x ^ (2 : ℕ) - 1) * DDR x + 2 * x * DR x - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x = 0) :
     HasDerivAt (comparisonSol (prolateNormalFormSol R) s)
         (comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s x) x
       ∧ HasDerivAt (comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s)
         (-(lgFirstOrderCoeff s x)
             * comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s x
-          - (c ^ 2 * xiSpeed s x ^ 2 + lgNormalFormDefect s c (radialProlateQ s c) x)
+          - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + lgNormalFormDefect s c (radialProlateQ s c) x)
             * comparisonSol (prolateNormalFormSol R) s x) x
-      ∧ |lgNormalFormDefect s c (radialProlateQ s c) x| ≤ 40 / (x ^ 2 - 1) := by
+      ∧ |lgNormalFormDefect s c (radialProlateQ s c) x| ≤ 40 / (x ^ (2 : ℕ) - 1) := by
   have hu := hasDerivAt_prolateNormalFormSol hx hR
   have hDu := hasDerivAt_prolateNormalFormSolDeriv hx hR hDR
   have hnf := prolate_normalForm_ode (s := s) (c := c) hx hode
@@ -744,17 +744,17 @@ def defectMassIntegrand (s c t : ℝ) : ℝ :=
 theorem continuousOn_phaseLogDefect {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
     ContinuousOn (phaseLogDefect s) (Set.Ioi 1) := by
   have hfun : phaseLogDefect s
-      = fun t : ℝ => xiSpeed s t / xiEndpointPhase s t - t / (t ^ 2 - 1) := by
+      = fun t : ℝ => xiSpeed s t / xiEndpointPhase s t - t / (t ^ (2 : ℕ) - 1) := by
     funext t
     rw [phaseLogDefect]
   have h1 : ContinuousOn (fun t : ℝ => xiSpeed s t / xiEndpointPhase s t) (Set.Ioi 1) :=
     (continuousOn_xiSpeed s).div (continuousOn_xiEndpointPhase hs0)
       (fun t ht => (xiEndpointPhase_pos hs0 hs1 ht).ne')
-  have h2 : ContinuousOn (fun t : ℝ => t / (t ^ 2 - 1)) (Set.Ioi 1) := by
+  have h2 : ContinuousOn (fun t : ℝ => t / (t ^ (2 : ℕ) - 1)) (Set.Ioi 1) := by
     refine ContinuousOn.div (by fun_prop) (by fun_prop) ?_
     intro t ht
     have ht1 : (1 : ℝ) < t := ht
-    have : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+    have : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
     exact this.ne'
   rw [hfun]
   exact h1.sub h2
@@ -762,34 +762,34 @@ theorem continuousOn_phaseLogDefect {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2
 theorem continuousOn_prolateDefectAlg {s : ℝ} (hs1 : s ≤ 1 / 2) :
     ContinuousOn (prolateDefectAlg s) (Set.Ioi 1) := by
   have hfun : prolateDefectAlg s
-      = fun t : ℝ => (-(t ^ 4) + (8 * s - 3) * t ^ 2 - 2 * s * (s + 1))
-          / (4 * (t ^ 2 - s) ^ 2 * (t ^ 2 - 1)) := by
+      = fun t : ℝ => (-(t ^ (4 : ℕ)) + (8 * s - 3) * t ^ (2 : ℕ) - 2 * s * (s + 1))
+          / (4 * (t ^ (2 : ℕ) - s) ^ (2 : ℕ) * (t ^ (2 : ℕ) - 1)) := by
     funext t
     rw [prolateDefectAlg]
   rw [hfun]
   refine ContinuousOn.div (by fun_prop) (by fun_prop) ?_
   intro t ht
   have ht1 : (1 : ℝ) < t := ht
-  have h1 : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
-  have h2 : (0 : ℝ) < t ^ 2 - s := by nlinarith
-  have : (0 : ℝ) < 4 * (t ^ 2 - s) ^ 2 * (t ^ 2 - 1) := by positivity
+  have h1 : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
+  have h2 : (0 : ℝ) < t ^ (2 : ℕ) - s := by nlinarith
+  have : (0 : ℝ) < 4 * (t ^ (2 : ℕ) - s) ^ (2 : ℕ) * (t ^ (2 : ℕ) - 1) := by positivity
   exact this.ne'
 
 theorem continuousOn_lgNormalFormDefect_radialProlate {s c : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
     ContinuousOn (fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t) (Set.Ioi 1) := by
   have hcont : ContinuousOn (fun t : ℝ => prolateDefectAlg s t
-      - t * phaseLogDefect s t / (2 * (t ^ 2 - 1)) - phaseLogDefect s t ^ 2 / 4) (Set.Ioi 1) := by
+      - t * phaseLogDefect s t / (2 * (t ^ (2 : ℕ) - 1)) - phaseLogDefect s t ^ (2 : ℕ) / 4) (Set.Ioi 1) := by
     have hP := continuousOn_phaseLogDefect hs0 hs1
-    have h2 : ContinuousOn (fun t : ℝ => t * phaseLogDefect s t / (2 * (t ^ 2 - 1)))
+    have h2 : ContinuousOn (fun t : ℝ => t * phaseLogDefect s t / (2 * (t ^ (2 : ℕ) - 1)))
         (Set.Ioi 1) := by
       refine ContinuousOn.div ((by fun_prop : ContinuousOn (fun t : ℝ => t) (Set.Ioi 1)).mul hP)
         (by fun_prop) ?_
       intro t ht
       have ht1 : (1 : ℝ) < t := ht
-      have h1 : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
-      have : (0 : ℝ) < 2 * (t ^ 2 - 1) := by linarith
+      have h1 : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
+      have : (0 : ℝ) < 2 * (t ^ (2 : ℕ) - 1) := by linarith
       exact this.ne'
-    have h3 : ContinuousOn (fun t : ℝ => phaseLogDefect s t ^ 2 / 4) (Set.Ioi 1) :=
+    have h3 : ContinuousOn (fun t : ℝ => phaseLogDefect s t ^ (2 : ℕ) / 4) (Set.Ioi 1) :=
       (hP.pow 2).div_const 4
     exact ((continuousOn_prolateDefectAlg hs1).sub h2).sub h3
   refine hcont.congr ?_
@@ -809,22 +809,22 @@ theorem continuousOn_defectMassIntegrand {s c : ℝ} (hs0 : 0 ≤ s) (hs1 : s �
 /-- Near the endpoint the mass integrand is at most `40 sqrt 2 / sqrt(x²-1)`: the simple pole of the
 defect meets the vanishing Liouville measure `1/xi' <= sqrt 2 sqrt(x²-1)`. -/
 theorem defectMassIntegrand_le_near {s c t : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (ht : 1 < t) :
-    defectMassIntegrand s c t ≤ 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)) := by
+    defectMassIntegrand s c t ≤ 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ (2 : ℕ) - 1)) := by
   have ht0 : (0 : ℝ) < t := lt_trans zero_lt_one ht
-  have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
-  have hn : (0 : ℝ) < t ^ 2 - s := by nlinarith
-  have hr : (0 : ℝ) < Real.sqrt (t ^ 2 - 1) := Real.sqrt_pos.mpr hd
+  have hd : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
+  have hn : (0 : ℝ) < t ^ (2 : ℕ) - s := by nlinarith
+  have hr : (0 : ℝ) < Real.sqrt (t ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
   have hV : 0 < xiSpeed s t := xiSpeed_pos hs1 ht
   have ha := abs_lgNormalFormDefect_radialProlate_le (s := s) (c := c) hs0 hs1 ht
   -- `1/xi' <= sqrt 2 sqrt(t²-1)`
-  have hinv : 1 / xiSpeed s t ≤ Real.sqrt 2 * Real.sqrt (t ^ 2 - 1) := by
-    have hsq : (Real.sqrt 2 * Real.sqrt (t ^ 2 - 1)) * xiSpeed s t
-        = Real.sqrt (2 * (t ^ 2 - 1) * ((t ^ 2 - s) / (t ^ 2 - 1))) := by
+  have hinv : 1 / xiSpeed s t ≤ Real.sqrt 2 * Real.sqrt (t ^ (2 : ℕ) - 1) := by
+    have hsq : (Real.sqrt 2 * Real.sqrt (t ^ (2 : ℕ) - 1)) * xiSpeed s t
+        = Real.sqrt (2 * (t ^ (2 : ℕ) - 1) * ((t ^ (2 : ℕ) - s) / (t ^ (2 : ℕ) - 1))) := by
       rw [xiSpeed, ← Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2),
         ← Real.sqrt_mul (by positivity)]
-    have hge : (1 : ℝ) ≤ Real.sqrt (2 * (t ^ 2 - 1) * ((t ^ 2 - s) / (t ^ 2 - 1))) := by
-      rw [show 2 * (t ^ 2 - 1) * ((t ^ 2 - s) / (t ^ 2 - 1)) = 2 * (t ^ 2 - s) by field_simp]
-      have : (1 : ℝ) ≤ 2 * (t ^ 2 - s) := by nlinarith
+    have hge : (1 : ℝ) ≤ Real.sqrt (2 * (t ^ (2 : ℕ) - 1) * ((t ^ (2 : ℕ) - s) / (t ^ (2 : ℕ) - 1))) := by
+      rw [show 2 * (t ^ (2 : ℕ) - 1) * ((t ^ (2 : ℕ) - s) / (t ^ (2 : ℕ) - 1)) = 2 * (t ^ (2 : ℕ) - s) by field_simp]
+      have : (1 : ℝ) ≤ 2 * (t ^ (2 : ℕ) - s) := by nlinarith
       calc (1 : ℝ) = Real.sqrt 1 := by rw [Real.sqrt_one]
         _ ≤ _ := Real.sqrt_le_sqrt this
     rw [div_le_iff₀ hV]
@@ -833,30 +833,30 @@ theorem defectMassIntegrand_le_near {s c t : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1
       = |lgNormalFormDefect s c (radialProlateQ s c) t| * (1 / xiSpeed s t) := by
         rw [defectMassIntegrand]
         ring
-    _ ≤ (40 / (t ^ 2 - 1)) * (Real.sqrt 2 * Real.sqrt (t ^ 2 - 1)) := by
+    _ ≤ (40 / (t ^ (2 : ℕ) - 1)) * (Real.sqrt 2 * Real.sqrt (t ^ (2 : ℕ) - 1)) := by
         apply mul_le_mul ha hinv (by positivity) (by positivity)
-    _ = 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)) := by
-        obtain ⟨R, hR0, hRsq, hReq⟩ : ∃ R : ℝ, 0 < R ∧ R * R = t ^ 2 - 1
-            ∧ Real.sqrt (t ^ 2 - 1) = R := ⟨Real.sqrt (t ^ 2 - 1), hr, Real.mul_self_sqrt hd.le, rfl⟩
+    _ = 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ (2 : ℕ) - 1)) := by
+        obtain ⟨R, hR0, hRsq, hReq⟩ : ∃ R : ℝ, 0 < R ∧ R * R = t ^ (2 : ℕ) - 1
+            ∧ Real.sqrt (t ^ (2 : ℕ) - 1) = R := ⟨Real.sqrt (t ^ (2 : ℕ) - 1), hr, Real.mul_self_sqrt hd.le, rfl⟩
         rw [hReq, ← hRsq]
         field_simp
 
 /-- Away from the endpoint the mass integrand is at most `(160/3) x^{-2}`, because `xi' >= 1` there and
 `1/(x²-1) <= (4/3)/x²` for `x >= 2`. -/
 theorem defectMassIntegrand_le_far {s c t : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (ht : 2 ≤ t) :
-    defectMassIntegrand s c t ≤ 160 / 3 * (1 / t ^ 2) := by
+    defectMassIntegrand s c t ≤ 160 / 3 * (1 / t ^ (2 : ℕ)) := by
   have ht1 : (1 : ℝ) < t := by linarith
   have ht0 : (0 : ℝ) < t := by linarith
-  have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+  have hd : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
   have hV : 1 ≤ xiSpeed s t := one_le_xiSpeed (by linarith) ht1
   have ha := abs_lgNormalFormDefect_radialProlate_le (s := s) (c := c) hs0 hs1 ht1
   have habs : (0 : ℝ) ≤ |lgNormalFormDefect s c (radialProlateQ s c) t| := abs_nonneg _
   have hstep : defectMassIntegrand s c t ≤ |lgNormalFormDefect s c (radialProlateQ s c) t| := by
     rw [defectMassIntegrand, div_le_iff₀ (lt_of_lt_of_le zero_lt_one hV)]
     nlinarith
-  have hfar : (40 : ℝ) / (t ^ 2 - 1) ≤ 160 / 3 * (1 / t ^ 2) := by
+  have hfar : (40 : ℝ) / (t ^ (2 : ℕ) - 1) ≤ 160 / 3 * (1 / t ^ (2 : ℕ)) := by
     rw [div_le_iff₀ hd]
-    rw [show (160 : ℝ) / 3 * (1 / t ^ 2) = 160 / (3 * t ^ 2) by ring,
+    rw [show (160 : ℝ) / 3 * (1 / t ^ (2 : ℕ)) = 160 / (3 * t ^ (2 : ℕ)) by ring,
       div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
     nlinarith
   linarith [hstep, ha, hfar]
@@ -882,22 +882,22 @@ theorem integral_defectMassIntegrand_near_le {s c A B : ℝ} (hs0 : 0 ≤ s) (hs
     intro t ht
     exact lt_of_lt_of_le hA ht.1
   have hmaj : ContinuousOn
-      (fun t : ℝ => 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1))) (Set.Ioi 1) := by
+      (fun t : ℝ => 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ (2 : ℕ) - 1))) (Set.Ioi 1) := by
     refine ContinuousOn.mul continuousOn_const (ContinuousOn.div continuousOn_const ?_ ?_)
     · exact Real.continuous_sqrt.comp_continuousOn (by fun_prop)
     · intro t ht
       have ht1 : (1 : ℝ) < t := ht
-      have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+      have hd : (0 : ℝ) < t ^ (2 : ℕ) - 1 := by nlinarith
       exact (Real.sqrt_pos.mpr hd).ne'
-  have hgint : IntervalIntegrable (fun t : ℝ => 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)))
+  have hgint : IntervalIntegrable (fun t : ℝ => 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ (2 : ℕ) - 1)))
       MeasureTheory.volume A B := (hmaj.mono hsub).intervalIntegrable
   have hmono : (∫ t in A..B, defectMassIntegrand s c t)
-      ≤ ∫ t in A..B, 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)) := by
+      ≤ ∫ t in A..B, 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ (2 : ℕ) - 1)) := by
     refine intervalIntegral.integral_mono_on hAB
       (intervalIntegrable_defectMassIntegrand hs0 hs1 hA hAB) hgint ?_
     intro t ht
     exact defectMassIntegrand_le_near hs0 hs1 (lt_of_lt_of_le hA ht.1)
-  have hFTC : (∫ t in A..B, 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)))
+  have hFTC : (∫ t in A..B, 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ (2 : ℕ) - 1)))
       = 40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog B
         - 40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog A := by
     refine intervalIntegral.integral_eq_sub_of_hasDerivAt (f := fun t : ℝ =>
@@ -910,13 +910,13 @@ theorem integral_defectMassIntegrand_near_le {s c A B : ℝ} (hs0 : 0 ≤ s) (hs
     exact Real.sqrt_le_sqrt (by nlinarith)
   have hLA : 0 ≤ GaloisForLFunctions.HTGeometry.endpointLog A := by
     have h := GaloisForLFunctions.HTGeometry.sqrt_mul_one_sub_le_endpointLog (x := A) (by linarith)
-    have hd : (0 : ℝ) < A ^ 2 - 1 := by nlinarith
-    have hd3 : A ^ 2 - 1 ≤ 3 := by nlinarith
-    have hr : 0 < Real.sqrt (A ^ 2 - 1) := Real.sqrt_pos.mpr hd
+    have hd : (0 : ℝ) < A ^ (2 : ℕ) - 1 := by nlinarith
+    have hd3 : A ^ (2 : ℕ) - 1 ≤ 3 := by nlinarith
+    have hr : 0 < Real.sqrt (A ^ (2 : ℕ) - 1) := Real.sqrt_pos.mpr hd
     nlinarith [h, hr]
   have h6 : Real.sqrt 2 * Real.sqrt 3 ≤ 5 / 2 := by
     rw [← Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2)]
-    rw [show (5 : ℝ) / 2 = Real.sqrt ((5 / 2) ^ 2) from (Real.sqrt_sq (by norm_num)).symm]
+    rw [show (5 : ℝ) / 2 = Real.sqrt ((5 / 2) ^ (2 : ℕ)) from (Real.sqrt_sq (by norm_num)).symm]
     exact Real.sqrt_le_sqrt (by norm_num)
   have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
   have hfin : 40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog B
@@ -940,21 +940,21 @@ theorem integral_defectMassIntegrand_far_le {s c A B : ℝ} (hs0 : 0 ≤ s) (hs1
     rw [Set.uIcc_of_le hAB]
     intro t ht
     exact le_trans hA ht.1
-  have hmaj : ContinuousOn (fun t : ℝ => 160 / 3 * (1 / t ^ 2)) (Set.Ici 2) := by
+  have hmaj : ContinuousOn (fun t : ℝ => 160 / 3 * (1 / t ^ (2 : ℕ))) (Set.Ici 2) := by
     refine ContinuousOn.mul continuousOn_const (ContinuousOn.div continuousOn_const (by fun_prop) ?_)
     intro t ht
     have ht2 : (2 : ℝ) ≤ t := ht
-    have : (0 : ℝ) < t ^ 2 := by nlinarith
+    have : (0 : ℝ) < t ^ (2 : ℕ) := by nlinarith
     exact this.ne'
-  have hgint : IntervalIntegrable (fun t : ℝ => 160 / 3 * (1 / t ^ 2))
+  have hgint : IntervalIntegrable (fun t : ℝ => 160 / 3 * (1 / t ^ (2 : ℕ)))
       MeasureTheory.volume A B := (hmaj.mono hsub).intervalIntegrable
   have hmono : (∫ t in A..B, defectMassIntegrand s c t)
-      ≤ ∫ t in A..B, 160 / 3 * (1 / t ^ 2) := by
+      ≤ ∫ t in A..B, 160 / 3 * (1 / t ^ (2 : ℕ)) := by
     refine intervalIntegral.integral_mono_on hAB
       (intervalIntegrable_defectMassIntegrand hs0 hs1 hA1 hAB) hgint ?_
     intro t ht
     exact defectMassIntegrand_le_far hs0 hs1 (le_trans hA ht.1)
-  have hFTC : (∫ t in A..B, 160 / 3 * (1 / t ^ 2)) = -(160 / 3 * (1 / B)) - -(160 / 3 * (1 / A)) := by
+  have hFTC : (∫ t in A..B, 160 / 3 * (1 / t ^ (2 : ℕ))) = -(160 / 3 * (1 / B)) - -(160 / 3 * (1 / A)) := by
     refine intervalIntegral.integral_eq_sub_of_hasDerivAt
       (f := fun t : ℝ => -(160 / 3 * (1 / t))) ?_ hgint
     intro t ht
@@ -964,7 +964,7 @@ theorem integral_defectMassIntegrand_far_le {s c A B : ℝ} (hs0 : 0 ≤ s) (hs1
       rw [h] at ht2
       norm_num at ht2
     have h := ((hasDerivAt_inv ht0).const_mul (160 / 3 : ℝ)).neg
-    have hval : -(160 / 3 * -(t ^ 2)⁻¹) = 160 / 3 * (1 / t ^ 2) := by
+    have hval : -(160 / 3 * -(t ^ (2 : ℕ))⁻¹) = 160 / 3 * (1 / t ^ (2 : ℕ)) := by
       field_simp
     rw [← hval]
     have hfun : (fun t : ℝ => -(160 / 3 * (1 / t))) = fun t : ℝ => -(160 / 3 * t⁻¹) := by
@@ -1021,20 +1021,20 @@ theorem integral_defectMassIntegrand_le {s c A B : ℝ} (hs0 : 0 ≤ s) (hs1 : s
 theorem integral_volterra_exponent_le {s c A B C W : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 0 < c) (hW : 0 < W) (hA : 1 < A) (hAB : A ≤ B) :
     (∫ t in A..B, 2 * (lgWeight s t * |lgNormalFormDefect s c (radialProlateQ s c) t|)
-        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2 / W)
-      ≤ 2 * C ^ 2 / (c * W) * 127 := by
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ) / W)
+      ≤ 2 * C ^ (2 : ℕ) / (c * W) * 127 := by
   have hsub : Set.uIcc A B ⊆ Set.Ioi 1 := by
     rw [Set.uIcc_of_le hAB]
     intro t ht
     exact lt_of_lt_of_le hA ht.1
   have heq : Set.EqOn (fun t : ℝ => 2 * (lgWeight s t * |lgNormalFormDefect s c (radialProlateQ s c) t|)
-        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2 / W)
-      (fun t : ℝ => 2 * C ^ 2 / (c * W) * defectMassIntegrand s c t) (Set.uIcc A B) := by
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ) / W)
+      (fun t : ℝ => 2 * C ^ (2 : ℕ) / (c * W) * defectMassIntegrand s c t) (Set.uIcc A B) := by
     intro t ht
     have ht1 : (1 : ℝ) < t := hsub ht
     have hxi : 0 < xiEndpointPhase s t := xiEndpointPhase_pos hs0 hs1 ht1
     have hV : 0 < xiSpeed s t := xiSpeed_pos hs1 ht1
-    have hsq : Real.sqrt (c * xiEndpointPhase s t) ^ 2 = c * xiEndpointPhase s t :=
+    have hsq : Real.sqrt (c * xiEndpointPhase s t) ^ (2 : ℕ) = c * xiEndpointPhase s t :=
       Real.sq_sqrt (by positivity)
     simp only [defectMassIntegrand, lgWeight, div_pow, hsq]
     field_simp
@@ -1067,7 +1067,7 @@ theorem abs_radialProlate_comparison_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     (hR : ∀ x ∈ Set.Icc A B, HasDerivAt R (DR x) x)
     (hDR : ∀ x ∈ Set.Icc A B, HasDerivAt DR (DDR x) x)
     (hode : ∀ x ∈ Set.Icc A B,
-      (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+      (x ^ (2 : ℕ) - 1) * DDR x + 2 * x * DR x - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x = 0) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x ∈ Set.Icc A B,
       |comparisonSol (prolateNormalFormSol R) s x|
         ≤ C / Real.sqrt (c * xiEndpointPhase s x)
@@ -1080,7 +1080,7 @@ theorem abs_radialProlate_comparison_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
                   * lgBesselModel2Deriv s c A
                 - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
                   * lgBesselModel2 s c A)|)
-            * Real.exp (2 * C ^ 2
+            * Real.exp (2 * C ^ (2 : ℕ)
                 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127)) := by
   obtain ⟨C, hC0, hC⟩ := exists_lgBesselModel_common_envelope
   refine ⟨C, hC0, fun x hx => ?_⟩
@@ -1095,7 +1095,7 @@ theorem abs_radialProlate_comparison_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
       HasDerivAt (comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s)
         (-(lgFirstOrderCoeff s t)
             * comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s t
-          - (c ^ 2 * xiSpeed s t ^ 2 + lgNormalFormDefect s c (radialProlateQ s c) t)
+          - (c ^ (2 : ℕ) * xiSpeed s t ^ (2 : ℕ) + lgNormalFormDefect s c (radialProlateQ s c) t)
             * comparisonSol (prolateNormalFormSol R) s t) t :=
     fun t ht => (radialProlate_comparison_pole_uniform hs0 hs1 (hsub ht) (hR t ht) (hDR t ht)
       (hode t ht)).2.1
@@ -1105,9 +1105,9 @@ theorem abs_radialProlate_comparison_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     (a := fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t)
     hs0 hs1 hc hA hAB hC0 hcxi (fun y hy => hC s c y hy) hac hU hDU x hx
   have hexp : (∫ t in A..x, 2 * (lgWeight s t * |lgNormalFormDefect s c (radialProlateQ s c) t|)
-        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)
         / besselWronskian (c * xiEndpointPhase s A))
-      ≤ 2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127 :=
+      ≤ 2 * C ^ (2 : ℕ) / (c * besselWronskian (c * xiEndpointPhase s A)) * 127 :=
     integral_volterra_exponent_le hs0 hs1 hc hW hA hx.1
   have hxpos : 0 < Real.sqrt (c * xiEndpointPhase s x) :=
     Real.sqrt_pos.mpr (mul_pos hc (xiEndpointPhase_pos hs0 hs1 (hsub hx)))
@@ -1155,7 +1155,7 @@ theorem abs_perturbed_sub_model_le {s c A B K M : ℝ} {U DU a E : ℝ → ℝ}
     (hM : 0 ≤ M)
     (hU : ∀ x ∈ Set.Icc A B, HasDerivAt U (DU x) x)
     (hDU : ∀ x ∈ Set.Icc A B, HasDerivAt DU (-(lgFirstOrderCoeff s x) * DU x
-      - (c ^ 2 * xiSpeed s x ^ 2 + a x) * U x) x)
+      - (c ^ (2 : ℕ) * xiSpeed s x ^ (2 : ℕ) + a x) * U x) x)
     (hEnv : ∀ x ∈ Set.Icc A B, |lgBesselModel s c x| ≤ E x ∧ |lgBesselModel2 s c x| ≤ E x)
     (hUb : ∀ x ∈ Set.Icc A B, |U x| ≤ E x * K)
     (hi1 : ∀ x ∈ Set.Icc A B, IntervalIntegrable
@@ -1163,8 +1163,8 @@ theorem abs_perturbed_sub_model_le {s c A B K M : ℝ} {U DU a E : ℝ → ℝ}
     (hi2 : ∀ x ∈ Set.Icc A B, IntervalIntegrable
       (fun t : ℝ => lgWeight s t * a t * (U t * lgBesselModel2 s c t)) MeasureTheory.volume A x)
     (hmi : ∀ x ∈ Set.Icc A B, IntervalIntegrable
-      (fun t : ℝ => lgWeight s t * |a t| * E t ^ 2) MeasureTheory.volume A x)
-    (hmass : ∀ x ∈ Set.Icc A B, (∫ t in A..x, lgWeight s t * |a t| * E t ^ 2) ≤ M) :
+      (fun t : ℝ => lgWeight s t * |a t| * E t ^ (2 : ℕ)) MeasureTheory.volume A x)
+    (hmass : ∀ x ∈ Set.Icc A B, (∫ t in A..x, lgWeight s t * |a t| * E t ^ (2 : ℕ)) ≤ M) :
     ∀ x ∈ Set.Icc A B,
       |U x * besselWronskian (c * xiEndpointPhase s A)
           - ((lgWeight s A * (U A * lgBesselModel2Deriv s c A - DU A * lgBesselModel2 s c A))
@@ -1179,7 +1179,7 @@ theorem abs_perturbed_sub_model_le {s c A B K M : ℝ} {U DU a E : ℝ → ℝ}
     exact fun t ht => ⟨ht.1, le_trans ht.2 hx.2⟩
   have hU' : ∀ t ∈ Set.uIcc A x, HasDerivAt U (DU t) t := fun t ht => hU t (hxsub ht)
   have hDU' : ∀ t ∈ Set.uIcc A x, HasDerivAt DU (-(lgFirstOrderCoeff s t) * DU t
-      - (c ^ 2 * xiSpeed s t ^ 2 + a t) * U t) t := fun t ht => hDU t (hxsub ht)
+      - (c ^ (2 : ℕ) * xiSpeed s t ^ (2 : ℕ) + a t) * U t) t := fun t ht => hDU t (hxsub ht)
   have hrec := lgReconstruction_const (U := U) (DU := DU) hs0 hs1 hc hA hAx
   have htr1 := integral_lgBesselWronskian hs0 hs1 hc hAx hA hU' hDU' (hi1 x hx)
   have htr2 := integral_lgBessel2Wronskian hs0 hs1 hc hAx hA hU' hDU' (hi2 x hx)
@@ -1194,7 +1194,7 @@ theorem abs_perturbed_sub_model_le {s c A B K M : ℝ} {U DU a E : ℝ → ℝ}
         (f := fun t : ℝ => lgWeight s t * a t * (U t * V t)) hAx
       simpa [Real.norm_eq_abs] using h
     have h2 : (∫ t in A..x, |lgWeight s t * a t * (U t * V t)|)
-        ≤ ∫ t in A..x, K * (lgWeight s t * |a t| * E t ^ 2) := by
+        ≤ ∫ t in A..x, K * (lgWeight s t * |a t| * E t ^ (2 : ℕ)) := by
       refine intervalIntegral.integral_mono_on hAx hint.abs ((hmi x hx).const_mul K) ?_
       intro t ht
       have htIcc : t ∈ Set.Icc A B := hxsub (by rw [Set.uIcc_of_le hAx]; exact ht)
@@ -1206,11 +1206,11 @@ theorem abs_perturbed_sub_model_le {s c A B K M : ℝ} {U DU a E : ℝ → ℝ}
         _ ≤ lgWeight s t * |a t| * ((E t * K) * E t) := by
             refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hm.le (abs_nonneg _))
             exact mul_le_mul (hUb t htIcc) (hV t htIcc) (abs_nonneg _) (by positivity)
-        _ = K * (lgWeight s t * |a t| * E t ^ 2) := by ring
-    have h3 : (∫ t in A..x, K * (lgWeight s t * |a t| * E t ^ 2))
-        = K * ∫ t in A..x, lgWeight s t * |a t| * E t ^ 2 :=
+        _ = K * (lgWeight s t * |a t| * E t ^ (2 : ℕ)) := by ring
+    have h3 : (∫ t in A..x, K * (lgWeight s t * |a t| * E t ^ (2 : ℕ)))
+        = K * ∫ t in A..x, lgWeight s t * |a t| * E t ^ (2 : ℕ) :=
       intervalIntegral.integral_const_mul _ _
-    have h4 : K * (∫ t in A..x, lgWeight s t * |a t| * E t ^ 2) ≤ K * M :=
+    have h4 : K * (∫ t in A..x, lgWeight s t * |a t| * E t ^ (2 : ℕ)) ≤ K * M :=
       mul_le_mul_of_nonneg_left (hmass x hx) hK
     linarith [h1, h2, h3.le, h3.ge, h4]
   have hb1 := hbound (lgBesselModel s c) (fun t ht => (hEnv t ht).1) (hi1 x hx)
@@ -1244,14 +1244,14 @@ theorem intervalIntegrable_lgWeight_abs_defect_envelope {s c C A B : ℝ} (hs0 :
     (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hA : 1 < A) (hAB : A ≤ B) :
     IntervalIntegrable (fun t : ℝ => lgWeight s t
         * |lgNormalFormDefect s c (radialProlateQ s c) t|
-        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2) MeasureTheory.volume A B := by
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)) MeasureTheory.volume A B := by
   have hsub : Set.uIcc A B ⊆ Set.Ioi 1 := by
     rw [Set.uIcc_of_le hAB]
     exact fun t ht => lt_of_lt_of_le hA ht.1
   have hsqrt : ContinuousOn (fun t : ℝ => Real.sqrt (c * xiEndpointPhase s t)) (Set.uIcc A B) :=
     Real.continuous_sqrt.comp_continuousOn
       (continuousOn_const.mul ((continuousOn_xiEndpointPhase hs0).mono hsub))
-  have hpow : ContinuousOn (fun t : ℝ => (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2)
+  have hpow : ContinuousOn (fun t : ℝ => (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ))
       (Set.uIcc A B) := by
     refine ContinuousOn.pow (ContinuousOn.div continuousOn_const hsqrt ?_) 2
     intro t ht
@@ -1265,28 +1265,28 @@ mass bound then gives `127 C²/c`. -/
 theorem integral_lgWeight_abs_defect_envelope_le {s c C A B : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hc : 0 < c) (hA : 1 < A) (hAB : A ≤ B) :
     (∫ t in A..B, lgWeight s t * |lgNormalFormDefect s c (radialProlateQ s c) t|
-        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2) ≤ 127 * C ^ 2 / c := by
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ)) ≤ 127 * C ^ (2 : ℕ) / c := by
   have hsub : Set.uIcc A B ⊆ Set.Ioi 1 := by
     rw [Set.uIcc_of_le hAB]
     exact fun t ht => lt_of_lt_of_le hA ht.1
   have heq : Set.EqOn (fun t : ℝ => lgWeight s t
         * |lgNormalFormDefect s c (radialProlateQ s c) t|
-        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2)
-      (fun t : ℝ => C ^ 2 / c * defectMassIntegrand s c t) (Set.uIcc A B) := by
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ (2 : ℕ))
+      (fun t : ℝ => C ^ (2 : ℕ) / c * defectMassIntegrand s c t) (Set.uIcc A B) := by
     intro t ht
     have ht1 : (1 : ℝ) < t := hsub ht
     have hxi : 0 < xiEndpointPhase s t := xiEndpointPhase_pos hs0 hs1 ht1
     have hV : 0 < xiSpeed s t := xiSpeed_pos hs1 ht1
-    have hsq : Real.sqrt (c * xiEndpointPhase s t) ^ 2 = c * xiEndpointPhase s t :=
+    have hsq : Real.sqrt (c * xiEndpointPhase s t) ^ (2 : ℕ) = c * xiEndpointPhase s t :=
       Real.sq_sqrt (by positivity)
     simp only [defectMassIntegrand, lgWeight, div_pow, hsq]
     field_simp
   rw [intervalIntegral.integral_congr heq, intervalIntegral.integral_const_mul]
-  calc C ^ 2 / c * ∫ t in A..B, defectMassIntegrand s c t
-      ≤ C ^ 2 / c * 127 :=
+  calc C ^ (2 : ℕ) / c * ∫ t in A..B, defectMassIntegrand s c t
+      ≤ C ^ (2 : ℕ) / c * 127 :=
         mul_le_mul_of_nonneg_left (integral_defectMassIntegrand_le (s := s) (c := c) hs0 hs1 hA hAB)
           (by positivity)
-    _ = 127 * C ^ 2 / c := by ring
+    _ = 127 * C ^ (2 : ℕ) / c := by ring
 
 /-! ## Equation (14) in approximation form for the actual radial mode -/
 
@@ -1303,7 +1303,7 @@ def radialProlateVolterraDatum (s c A : ℝ) (R DR : ℝ → ℝ) : ℝ :=
 /-- Explicit Grönwall constant used in the actual radial Dunster approximation. -/
 def radialProlateVolterraK (s c A : ℝ) (R DR : ℝ → ℝ) (C : ℝ) : ℝ :=
   radialProlateVolterraDatum s c A R DR *
-      Real.exp (2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127) /
+      Real.exp (2 * C ^ (2 : ℕ) / (c * besselWronskian (c * xiEndpointPhase s A)) * 127) /
     besselWronskian (c * xiEndpointPhase s A)
 
 /-- **Dunster's expansion `(14)` for the actual radial prolate mode, in approximation form.**  Under the
@@ -1323,7 +1323,7 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     (hR : ∀ x ∈ Set.Icc A B, HasDerivAt R (DR x) x)
     (hDR : ∀ x ∈ Set.Icc A B, HasDerivAt DR (DDR x) x)
     (hode : ∀ x ∈ Set.Icc A B,
-      (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+      (x ^ (2 : ℕ) - 1) * DDR x + 2 * x * DR x - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * R x = 0) :
     ∃ C K : ℝ, 0 ≤ C ∧ C = lgBesselCommonEnvelopeConstant ∧ 0 ≤ K ∧
       (∀ s' c' x' : ℝ, 1 ≤ c' * xiEndpointPhase s' x' →
         |lgBesselModel s' c' x'| ≤ C / Real.sqrt (c' * xiEndpointPhase s' x') ∧
@@ -1339,7 +1339,7 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
                   * lgBesselModelDeriv s c A
                 - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
                   * lgBesselModel s c A)) * lgBesselModel2 s c x)|
-        ≤ 2 * (K * (127 * C ^ 2 / c)) * (C / Real.sqrt (c * xiEndpointPhase s x)) := by
+        ≤ 2 * (K * (127 * C ^ (2 : ℕ) / c)) * (C / Real.sqrt (c * xiEndpointPhase s x)) := by
   let C : ℝ := lgBesselCommonEnvelopeConstant
   have hC0 : 0 ≤ C := lgBesselCommonEnvelopeConstant_nonneg
   have hC : ∀ s' c' x' : ℝ, 1 ≤ c' * xiEndpointPhase s' x' →
@@ -1356,7 +1356,7 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     fun t ht => (radialProlate_comparison_pole_uniform hs0 hs1 (hsub ht) (hR t ht) (hDR t ht)
       (hode t ht)).1
   have hDU : ∀ t ∈ Set.Icc A B, HasDerivAt DU (-(lgFirstOrderCoeff s t) * DU t
-      - (c ^ 2 * xiSpeed s t ^ 2 + lgNormalFormDefect s c (radialProlateQ s c) t) * U t) t :=
+      - (c ^ (2 : ℕ) * xiSpeed s t ^ (2 : ℕ) + lgNormalFormDefect s c (radialProlateQ s c) t) * U t) t :=
     fun t ht => (radialProlate_comparison_pole_uniform hs0 hs1 (hsub ht) (hR t ht) (hDR t ht)
       (hode t ht)).2.1
   have hcxit : ∀ t ∈ Set.Icc A B, 1 ≤ c * xiEndpointPhase s t := by
@@ -1376,7 +1376,7 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     hs0 hs1 hc hA hAB hC0 hcxi (fun y hy => hC s c y hy) hac hU hDU
   set S := |lgWeight s A * (U A * lgBesselModelDeriv s c A - DU A * lgBesselModel s c A)|
     + |lgWeight s A * (U A * lgBesselModel2Deriv s c A - DU A * lgBesselModel2 s c A)| with hSdef
-  set K := S * Real.exp (2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127)
+  set K := S * Real.exp (2 * C ^ (2 : ℕ) / (c * besselWronskian (c * xiEndpointPhase s A)) * 127)
     / besselWronskian (c * xiEndpointPhase s A) with hKdef
   have hS0 : 0 ≤ S := by
     rw [hSdef]
@@ -1388,9 +1388,9 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     intro t ht
     have hexp : (∫ u in A..t, 2 * (lgWeight s u
           * |lgNormalFormDefect s c (radialProlateQ s c) u|)
-          * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+          * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ (2 : ℕ)
           / besselWronskian (c * xiEndpointPhase s A))
-        ≤ 2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127 :=
+        ≤ 2 * C ^ (2 : ℕ) / (c * besselWronskian (c * xiEndpointPhase s A)) * 127 :=
       integral_volterra_exponent_le hs0 hs1 hc hW hA ht.1
     have hE0 : 0 ≤ C / Real.sqrt (c * xiEndpointPhase s t) :=
       div_nonneg hC0 (Real.sqrt_nonneg _)
@@ -1398,25 +1398,25 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     rw [hKdef]
     have hstep : Real.exp (∫ u in A..t, 2 * (lgWeight s u
           * |lgNormalFormDefect s c (radialProlateQ s c) u|)
-          * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+          * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ (2 : ℕ)
           / besselWronskian (c * xiEndpointPhase s A))
-        ≤ Real.exp (2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127) :=
+        ≤ Real.exp (2 * C ^ (2 : ℕ) / (c * besselWronskian (c * xiEndpointPhase s A)) * 127) :=
       Real.exp_le_exp.mpr hexp
     have hmul : S * Real.exp (∫ u in A..t, 2 * (lgWeight s u
           * |lgNormalFormDefect s c (radialProlateQ s c) u|)
-          * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+          * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ (2 : ℕ)
           / besselWronskian (c * xiEndpointPhase s A))
-        ≤ S * Real.exp (2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127) :=
+        ≤ S * Real.exp (2 * C ^ (2 : ℕ) / (c * besselWronskian (c * xiEndpointPhase s A)) * 127) :=
       mul_le_mul_of_nonneg_left hstep hS0
     have hdiv : C / Real.sqrt (c * xiEndpointPhase s t)
           / besselWronskian (c * xiEndpointPhase s A) * (S * Real.exp (∫ u in A..t,
             2 * (lgWeight s u * |lgNormalFormDefect s c (radialProlateQ s c) u|)
-            * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+            * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A)))
         = C / Real.sqrt (c * xiEndpointPhase s t)
           * (S * Real.exp (∫ u in A..t,
             2 * (lgWeight s u * |lgNormalFormDefect s c (radialProlateQ s c) u|)
-            * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+            * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ (2 : ℕ)
             / besselWronskian (c * xiEndpointPhase s A))
             / besselWronskian (c * xiEndpointPhase s A)) := by
       field_simp
@@ -1441,7 +1441,7 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
   · rw [hKdef, hSdef, radialProlateVolterraK, radialProlateVolterraDatum]
   refine abs_perturbed_sub_model_le (a := fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t)
     (E := fun t : ℝ => C / Real.sqrt (c * xiEndpointPhase s t)) (K := K)
-    (M := 127 * C ^ 2 / c) hs0 hs1 hc hA hAB hK0 (by positivity) hU hDU hEnv hUb
+    (M := 127 * C ^ (2 : ℕ) / c) hs0 hs1 hc hA hAB hK0 (by positivity) hU hDU hEnv hUb
     (fun x hx => hprod (lgBesselModel s c) (continuousOn_lgBesselModel hs0) x hx)
     (fun x hx => hprod (lgBesselModel2 s c) (continuousOn_lgBesselModel2 hs0 hs1 hc) x hx)
     (fun x hx => intervalIntegrable_lgWeight_abs_defect_envelope hs0 hs1 hc hA hx.1)

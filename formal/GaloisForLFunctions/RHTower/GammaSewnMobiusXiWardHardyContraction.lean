@@ -37,8 +37,8 @@ theorem norm_xiWardHalfPlaneCayleyFactor_le_one
   rw [xiWardHalfPlaneCayleyFactor, norm_div,
     div_le_one (norm_pos_iff.mpr hden)]
   have hsquare :
-      ‖w + lam - (alpha : ℂ)‖ ^ 2 ≤
-        ‖w + lam + (alpha : ℂ)‖ ^ 2 := by
+      ‖w + lam - (alpha : ℂ)‖ ^ (2 : ℕ) ≤
+        ‖w + lam + (alpha : ℂ)‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm,
       Complex.normSq_apply, Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re,
@@ -292,7 +292,7 @@ theorem xiRightCanonicalProduct_hasProd_schwarzPairs (z : ℂ) :
         (show z ∈ Set.univ by simp)
   have hupperSum : Summable
       (fun q : XiRightUpperZeroCopy =>
-        1 / ‖xiRightSpectralPoint q.1‖ ^ 2) :=
+        1 / ‖xiRightSpectralPoint q.1‖ ^ (2 : ℕ)) :=
     xiRightSpectralPoint_inv_sq_summable.subtype
       (fun q : XiRightZeroCopy => 0 < (xiRightCenteredZero q).im)
   have hl : Multipliable
@@ -306,7 +306,7 @@ theorem xiRightCanonicalProduct_hasProd_schwarzPairs (z : ℂ) :
   have hlowerSum : Summable
       (fun q : XiRightUpperZeroCopy =>
         1 / ‖xiRightSpectralPoint
-          (xiRightZeroCopyConjEquiv q.1)‖ ^ 2) := by
+          (xiRightZeroCopyConjEquiv q.1)‖ ^ (2 : ℕ)) := by
     apply hupperSum.congr
     intro q
     have hnorm :

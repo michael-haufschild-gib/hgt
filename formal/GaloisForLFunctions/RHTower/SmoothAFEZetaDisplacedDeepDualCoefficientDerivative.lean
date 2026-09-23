@@ -18,7 +18,7 @@ open Complex MeasureTheory Filter Set
 
 namespace RHTower
 
-/-- Closed derivative of `exp(w^2)/w` away from its pole. -/
+/-- Closed derivative of `exp(w^(2 : ℕ))/w` away from its pole. -/
 def smoothAFEGaussianKernelDerivative (w : ℂ) : ℂ :=
   Complex.exp (w ^ 2) * (2 * w ^ 2 - 1) / w ^ 2
 

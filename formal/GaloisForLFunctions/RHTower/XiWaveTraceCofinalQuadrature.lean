@@ -119,12 +119,12 @@ theorem xiWaveSpectrum_re_ne_zero (ρ : XiDivisorSupport) :
   exact xi_divisor_support_im_ne_zero ρ
 
 theorem xiWaveSpectrum_squares_infinite :
-    (Set.range fun ρ : XiDivisorSupport => xiWaveSpectrum.gamma ρ ^ 2).Infinite := by
-  have hEq : (fun ρ : XiDivisorSupport => xiWaveSpectrum.gamma ρ ^ 2) =
+    (Set.range fun ρ : XiDivisorSupport => xiWaveSpectrum.gamma ρ ^ (2 : ℕ)).Infinite := by
+  have hEq : (fun ρ : XiDivisorSupport => xiWaveSpectrum.gamma ρ ^ (2 : ℕ)) =
       fun ρ : XiDivisorSupport => (xiCentralReciprocalSquare (ρ : ℂ))⁻¹ := by
     funext ρ
-    show (((ρ : ℂ) - 1 / 2) * (-Complex.I)) ^ 2 = (-(((ρ : ℂ) - 1 / 2)⁻¹) ^ 2)⁻¹
-    have hI : (-Complex.I) ^ 2 = -1 := by
+    show (((ρ : ℂ) - 1 / 2) * (-Complex.I)) ^ (2 : ℕ) = (-(((ρ : ℂ) - 1 / 2)⁻¹) ^ (2 : ℕ))⁻¹
+    have hI : (-Complex.I) ^ (2 : ℕ) = -1 := by
       rw [neg_pow, Complex.I_sq]
       norm_num
     rw [mul_pow, hI, inv_neg, inv_pow, inv_inv]

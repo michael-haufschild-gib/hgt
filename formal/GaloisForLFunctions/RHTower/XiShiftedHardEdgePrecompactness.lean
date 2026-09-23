@@ -25,7 +25,7 @@ namespace RHTower
 polynomial. -/
 def routeUHardEdgeTestDeriv (a : ℝ) (N : ℕ) (b : ℕ → ℝ) (x : ℝ) : ℝ :=
   halfCosPolyDeriv N (halfShiftCoeff N b) (routeUHardEdgeInverseChart a x)
-    * (2 * a / (a ^ 2 + x ^ 2))
+    * (2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ)))
 
 theorem continuous_halfCosPolyDeriv (M : ℕ) (c : ℕ → ℝ) : Continuous (halfCosPolyDeriv M c) := by
   unfold halfCosPolyDeriv
@@ -61,7 +61,7 @@ theorem continuous_routeUHardEdgeTestDeriv {a : ℝ} (ha : 0 < a) (N : ℕ) (b :
   refine Continuous.mul ?_ ?_
   · exact (continuous_halfCosPolyDeriv N _).comp (continuous_routeUHardEdgeInverseChart a)
   · refine Continuous.div continuous_const (by fun_prop) fun x => ?_
-    have h : (0 : ℝ) < a ^ 2 + x ^ 2 := by positivity
+    have h : (0 : ℝ) < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
     exact ne_of_gt h
 
 theorem hasDerivAt_routeUHardEdgeTestDeriv {a : ℝ} (ha : 0 < a) (p : Polynomial ℝ) {N : ℕ}
@@ -73,7 +73,7 @@ theorem hasDerivAt_routeUHardEdgeTestDeriv {a : ℝ} (ha : 0 < a) (p : Polynomia
   hasDerivAt_routeUHardEdgeRationalTest ha p hb x
 
 theorem integrable_routeUHardEdgeTestDeriv_sq {a : ℝ} (ha : 0 < a) (N : ℕ) (b : ℕ → ℝ) :
-    Integrable (fun x : ℝ => routeUHardEdgeTestDeriv a N b x ^ 2) volume := by
+    Integrable (fun x : ℝ => routeUHardEdgeTestDeriv a N b x ^ (2 : ℕ)) volume := by
   obtain ⟨B, hBdef⟩ : ∃ B : ℝ, B = ∑ j ∈ Finset.range (N + 1),
       |halfShiftCoeff N b j| * ((j : ℝ) + 1 / 2) := ⟨_, rfl⟩
   have hB0 : 0 ≤ B := by
@@ -82,26 +82,26 @@ theorem integrable_routeUHardEdgeTestDeriv_sq {a : ℝ} (ha : 0 < a) (N : ℕ) (
     have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
     have h2 : (0 : ℝ) ≤ |halfShiftCoeff N b j| := abs_nonneg _
     positivity
-  have hmaj : Integrable (fun x : ℝ => (2 * a * B) ^ 2 * (((a ^ 2 + x ^ 2) ^ 2)⁻¹)) volume :=
+  have hmaj : Integrable (fun x : ℝ => (2 * a * B) ^ (2 : ℕ) * (((a ^ (2 : ℕ) + x ^ (2 : ℕ)) ^ (2 : ℕ))⁻¹)) volume :=
     (integrable_inv_sq_add_sq_sq ha).const_mul _
   refine hmaj.mono' ?_ ?_
   · exact ((continuous_routeUHardEdgeTestDeriv ha N b).pow 2).aestronglyMeasurable
   filter_upwards with x
-  have hpos : (0 : ℝ) < a ^ 2 + x ^ 2 := by positivity
-  have hbound : |routeUHardEdgeTestDeriv a N b x| ≤ 2 * a * B * (a ^ 2 + x ^ 2)⁻¹ := by
+  have hpos : (0 : ℝ) < a ^ (2 : ℕ) + x ^ (2 : ℕ) := by positivity
+  have hbound : |routeUHardEdgeTestDeriv a N b x| ≤ 2 * a * B * (a ^ (2 : ℕ) + x ^ (2 : ℕ))⁻¹ := by
     rw [routeUHardEdgeTestDeriv, abs_mul]
     have h1 := abs_halfCosPolyDeriv_le N (halfShiftCoeff N b)
       (routeUHardEdgeInverseChart a x)
     rw [← hBdef] at h1
-    have h2 : |2 * a / (a ^ 2 + x ^ 2)| = 2 * a * (a ^ 2 + x ^ 2)⁻¹ := by
+    have h2 : |2 * a / (a ^ (2 : ℕ) + x ^ (2 : ℕ))| = 2 * a * (a ^ (2 : ℕ) + x ^ (2 : ℕ))⁻¹ := by
       rw [abs_of_nonneg (by positivity)]
       ring
     rw [h2]
-    have h3 : (0 : ℝ) ≤ 2 * a * (a ^ 2 + x ^ 2)⁻¹ := by positivity
+    have h3 : (0 : ℝ) ≤ 2 * a * (a ^ (2 : ℕ) + x ^ (2 : ℕ))⁻¹ := by positivity
     nlinarith [abs_nonneg (halfCosPolyDeriv N (halfShiftCoeff N b)
       (routeUHardEdgeInverseChart a x))]
   rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-  have hsq : routeUHardEdgeTestDeriv a N b x ^ 2 = |routeUHardEdgeTestDeriv a N b x| ^ 2 :=
+  have hsq : routeUHardEdgeTestDeriv a N b x ^ (2 : ℕ) = |routeUHardEdgeTestDeriv a N b x| ^ (2 : ℕ) :=
     (sq_abs _).symm
   rw [hsq]
   have hstep := pow_le_pow_left₀ (abs_nonneg (routeUHardEdgeTestDeriv a N b x)) hbound 2
@@ -110,7 +110,7 @@ theorem integrable_routeUHardEdgeTestDeriv_sq {a : ℝ} (ha : 0 < a) (N : ℕ) (
 
 theorem continuous_routeUHardEdgeRationalTest {a : ℝ} (ha : 0 < a) (p : Polynomial ℝ) :
     Continuous (routeUHardEdgeRationalTest a p) := by
-  have hpos : ∀ x : ℝ, (0 : ℝ) < a ^ 2 + x ^ 2 := fun x =>
+  have hpos : ∀ x : ℝ, (0 : ℝ) < a ^ (2 : ℕ) + x ^ (2 : ℕ) := fun x =>
     add_pos_of_pos_of_nonneg (pow_pos ha 2) (sq_nonneg x)
   unfold routeUHardEdgeRationalTest
   refine Continuous.mul ?_ ?_
@@ -133,7 +133,7 @@ theorem totallyBounded_routeUHardEdgeFamily {C : ℝ} (hC : 0 < C)
     (ha : ∀ i : ι, 4 ≤ a i)
     (hN : ∀ i : ι, (routeUHardEdgeAngularPoly (a i) (p i)).natDegree ≤ N i)
     (hNC : ∀ i : ι, ((N i : ℕ) : ℝ) ≤ C * a i)
-    (hnorm : ∀ i : ι, (∫ x : ℝ, routeUHardEdgeRationalTest (a i) (p i) x ^ 2) = 1)
+    (hnorm : ∀ i : ι, (∫ x : ℝ, routeUHardEdgeRationalTest (a i) (p i) x ^ (2 : ℕ)) = 1)
     (hW : ∀ i : ι, (∑' q : XiZeroCopy,
       routeUHardEdgeRationalTestSq (a i) (p i) (xiSpectralPoint q)).re ≤ 0) :
     TotallyBounded (Set.range fun i : ι =>
@@ -144,7 +144,7 @@ theorem totallyBounded_routeUHardEdgeFamily {C : ℝ} (hC : 0 < C)
     (routeUHardEdgeAngularPoly (a i) (p i)) (hN i)
   refine totallyBounded_toLp_of_tight_deriv
     (f' := fun i => routeUHardEdgeTestDeriv (a i) (N i) (b i))
-    (Mb := 1) (D := 4 * (C + 1 / 8) ^ 2)
+    (Mb := 1) (D := 4 * (C + 1 / 8) ^ (2 : ℕ))
     (fun i => memLp_routeUHardEdgeRationalTest (by linarith [ha i]) (p i))
     (fun i => hasDerivAt_routeUHardEdgeTestDeriv (ha0 i) (p i) (hb i))
     (fun i => continuous_routeUHardEdgeTestDeriv (ha0 i) _ _)
@@ -164,7 +164,7 @@ theorem totallyBounded_routeUHardEdgeFamily {C : ℝ} (hC : 0 < C)
     have hnn : (0 : ℝ) ≤ ((N i : ℕ) : ℝ) + 1 / 2 := by
       have : (0 : ℝ) ≤ ((N i : ℕ) : ℝ) := Nat.cast_nonneg _
       linarith
-    have hsq : (((N i : ℕ) : ℝ) + 1 / 2) ^ 2 ≤ ((C + 1 / 8) * a i) ^ 2 :=
+    have hsq : (((N i : ℕ) : ℝ) + 1 / 2) ^ (2 : ℕ) ≤ ((C + 1 / 8) * a i) ^ (2 : ℕ) :=
       pow_le_pow_left₀ hnn hratio 2
     rw [div_le_iff₀ (by positivity)]
     nlinarith [sq_nonneg (a i)]
@@ -203,7 +203,7 @@ theorem exists_subseq_tendsto_routeUHardEdge {C : ℝ} (hC : 0 < C)
     (ha : ∀ n : ℕ, 4 ≤ a n)
     (hN : ∀ n : ℕ, (routeUHardEdgeAngularPoly (a n) (p n)).natDegree ≤ N n)
     (hNC : ∀ n : ℕ, ((N n : ℕ) : ℝ) ≤ C * a n)
-    (hnorm : ∀ n : ℕ, (∫ x : ℝ, routeUHardEdgeRationalTest (a n) (p n) x ^ 2) = 1)
+    (hnorm : ∀ n : ℕ, (∫ x : ℝ, routeUHardEdgeRationalTest (a n) (p n) x ^ (2 : ℕ)) = 1)
     (hW : ∀ n : ℕ, (∑' q : XiZeroCopy,
       routeUHardEdgeRationalTestSq (a n) (p n) (xiSpectralPoint q)).re ≤ 0) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ L : Lp ℝ 2 (volume : Measure ℝ), ‖L‖ = 1 ∧
@@ -223,7 +223,7 @@ theorem exists_subseq_tendsto_routeUHardEdge {C : ℝ} (hC : 0 < C)
   obtain ⟨L, _, φ, hφ, htend⟩ := hcomp.tendsto_subseq hmemset
   have hnorm1 : ∀ n : ℕ, ‖F n‖ = 1 := by
     intro n
-    have h1 : ‖F n‖ ^ 2 = ∫ x : ℝ, routeUHardEdgeRationalTest (a n) (p n) x ^ 2 := by
+    have h1 : ‖F n‖ ^ (2 : ℕ) = ∫ x : ℝ, routeUHardEdgeRationalTest (a n) (p n) x ^ (2 : ℕ) := by
       rw [hFdef]
       exact norm_toLp_sq _
     rw [hnorm n] at h1

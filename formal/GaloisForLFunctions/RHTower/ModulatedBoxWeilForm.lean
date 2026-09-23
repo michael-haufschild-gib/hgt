@@ -82,10 +82,10 @@ theorem primeCompare_leading {N : ℝ} (hN : Real.exp 1 ≤ N) :
 form is bounded by `(e^{L/2}+1)/θ² + L/θ`; both summands are antitone in `θ`. -/
 theorem pole_bound_antitone {L E t₁ t₂ : ℝ} (hE : 0 ≤ E) (hL : 0 ≤ L)
     (h1 : 0 < t₁) (h12 : t₁ ≤ t₂) :
-    (E + 1) / t₂ ^ 2 + L / t₂ ≤ (E + 1) / t₁ ^ 2 + L / t₁ := by
+    (E + 1) / t₂ ^ (2 : ℕ) + L / t₂ ≤ (E + 1) / t₁ ^ (2 : ℕ) + L / t₁ := by
   have h2 : 0 < t₂ := lt_of_lt_of_le h1 h12
-  have hsq : t₁ ^ 2 ≤ t₂ ^ 2 := by nlinarith
-  have hA : (E + 1) / t₂ ^ 2 ≤ (E + 1) / t₁ ^ 2 := by
+  have hsq : t₁ ^ (2 : ℕ) ≤ t₂ ^ (2 : ℕ) := by nlinarith
+  have hA : (E + 1) / t₂ ^ (2 : ℕ) ≤ (E + 1) / t₁ ^ (2 : ℕ) := by
     apply div_le_div_of_nonneg_left (by linarith) (by positivity) hsq
   have hB : L / t₂ ≤ L / t₁ := by
     apply div_le_div_of_nonneg_left hL h1 h12
@@ -93,8 +93,8 @@ theorem pole_bound_antitone {L E t₁ t₂ : ℝ} (hE : 0 ≤ E) (hL : 0 ≤ L)
 
 /-- The bound falls below any `ε` once both summands do. -/
 theorem pole_decay_small {L E eps theta : ℝ}
-    (h1 : (E + 1) / theta ^ 2 < eps / 2) (h2 : L / theta < eps / 2) :
-    (E + 1) / theta ^ 2 + L / theta < eps := by linarith
+    (h1 : (E + 1) / theta ^ (2 : ℕ) < eps / 2) (h2 : L / theta < eps / 2) :
+    (E + 1) / theta ^ (2 : ℕ) + L / theta < eps := by linarith
 
 /-- **The threshold.**  Survival at a near-aligned modulation needs `L·log θ ≥ 4e^{L/2}`, i.e.
 `θ ≥ exp(4e^{L/2}/L)`. -/

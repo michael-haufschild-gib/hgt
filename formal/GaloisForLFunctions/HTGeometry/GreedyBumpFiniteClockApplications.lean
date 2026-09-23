@@ -64,7 +64,7 @@ theorem greedyBump_finiteClock_profileGain
     (A : GreedyBumpFiniteClockData E) (Q : PositiveSignal) :
     greedyBumpProfile Q A.erasedTangent
         (greedyBumpDisplacement Q A.erasedTangent) =
-      ‖A.erasedTangent‖ ^ 2 / (2 * (Q : ℝ)) :=
+      ‖A.erasedTangent‖ ^ (2 : ℕ) / (2 * (Q : ℝ)) :=
   greedyBumpProfile_at_displacement Q A.erasedTangent
 
 /-- Proposition 6.1: subtracting any matched amplitude leaves the erased-direction score intact. -/
@@ -81,15 +81,15 @@ def GreedyBumpFiniteClockData.erasedQuantumFisher
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     [InnerProductSpace ℝ E] [CompleteSpace E]
     (A : GreedyBumpFiniteClockData E) : ℝ :=
-  _root_.HTGeometry.pureStateQuantumFisherValue (‖A.state‖ ^ 2)
-    (‖inner ℂ A.state A.erasedTangent‖) (‖A.erasedTangent‖ ^ 2)
+  _root_.HTGeometry.pureStateQuantumFisherValue (‖A.state‖ ^ (2 : ℕ))
+    (‖inner ℂ A.state A.erasedTangent‖) (‖A.erasedTangent‖ ^ (2 : ℕ))
 
 /-- Clock-erased QFI is exactly four times squared tangent norm. -/
 theorem GreedyBumpFiniteClockData.erasedQuantumFisher_eq_four_mul_norm_sq
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     [InnerProductSpace ℝ E] [CompleteSpace E]
     (A : GreedyBumpFiniteClockData E) :
-    A.erasedQuantumFisher = 4 * ‖A.erasedTangent‖ ^ 2 := by
+    A.erasedQuantumFisher = 4 * ‖A.erasedTangent‖ ^ (2 : ℕ) := by
   rw [GreedyBumpFiniteClockData.erasedQuantumFisher,
     _root_.HTGeometry.pureStateQuantumFisherValue,
     _root_.HTGeometry.projectiveQuantumTangentValue,
@@ -116,7 +116,7 @@ structure GreedyBumpInvolutiveClockData (E : Type*) [NormedAddCommGroup E]
   evolution : E →L[ℂ] E
   observable : E →L[ℂ] E
   isometry : evolution.adjoint * evolution = 1
-  involutive : evolution ^ 2 = 1
+  involutive : evolution ^ (2 : ℕ) = 1
   state : E
   state_norm : ‖state‖ = 1
   state_fixed : evolution state = state
@@ -144,7 +144,7 @@ theorem greedyBump_involutiveClock_profileGain_eq_commutator
     greedyBumpProfile Q A.toFiniteClock.erasedTangent
         (greedyBumpDisplacement Q A.toFiniteClock.erasedTangent) =
       ‖((A.observable * A.evolution - A.evolution * A.observable) :
-        E →L[ℂ] E) A.state‖ ^ 2 / (8 * (Q : ℝ)) := by
+        E →L[ℂ] E) A.state‖ ^ (2 : ℕ) / (8 * (Q : ℝ)) := by
   rw [greedyBump_finiteClock_profileGain_eq_qfi]
   unfold GreedyBumpFiniteClockData.erasedQuantumFisher
     GreedyBumpFiniteClockData.erasedTangent
@@ -160,7 +160,7 @@ theorem greedyBump_involutiveClock_profileGain_eq_doubleCommutator
     greedyBumpProfile Q A.toFiniteClock.erasedTangent
         (greedyBumpDisplacement Q A.toFiniteClock.erasedTangent) =
       ‖_root_.HTGeometry.finiteInvolutiveClockDoubleCommutator
-        A.evolution A.observable A.state‖ ^ 2 / (32 * (Q : ℝ)) := by
+        A.evolution A.observable A.state‖ ^ (2 : ℕ) / (32 * (Q : ℝ)) := by
   rw [greedyBump_finiteClock_profileGain_eq_qfi]
   unfold GreedyBumpFiniteClockData.erasedQuantumFisher
     GreedyBumpFiniteClockData.erasedTangent

@@ -73,14 +73,14 @@ theorem projectiveCompleteTailPair_algebraicIndependent (j : η) :
 
 /-- The basis wedge assigned to an oriented tail pair. -/
 def projectiveCompleteTailPairWedge (p : ι × ι) :
-    ⋀[K]^2 (ι → K) :=
+    ⋀[K]^(2 : ℕ) (ι → K) :=
   exteriorPower.ιMulti K 2 ![Pi.basisFun K ι p.1, Pi.basisFun K ι p.2]
 
 /-- Decode the independent length-two tail family on its linear span. -/
 def projectiveCompleteTailPairSpanDecoder (j : η) :
     Submodule.span K (Set.range
       (projectiveCompleteTailPair (K := K) (ι := ι) (η := η) j)) →ₗ[K]
-      ⋀[K]^2 (ι → K) :=
+      ⋀[K]^(2 : ℕ) (ι → K) :=
   (Finsupp.linearCombination K fun p : ι × ι ↦
     (2 : K)⁻¹ • projectiveCompleteTailPairWedge (K := K) p).comp
       (projectiveCompleteTailPair_algebraicIndependent
@@ -88,7 +88,7 @@ def projectiveCompleteTailPairSpanDecoder (j : η) :
 
 /-- Extend the tail-pair decoder from its span to the whole free rational field. -/
 noncomputable def projectiveCompleteTailPairDecoder (j : η) :
-    ProjectiveCompleteField K ι η →ₗ[K] ⋀[K]^2 (ι → K) :=
+    ProjectiveCompleteField K ι η →ₗ[K] ⋀[K]^(2 : ℕ) (ι → K) :=
   Classical.choose (LinearMap.exists_extend
     (projectiveCompleteTailPairSpanDecoder (K := K) j))
 
@@ -149,7 +149,7 @@ theorem projectiveCompleteCommutator_evaluation
 /-- Evaluation followed by the tail decoder, composed with the free commutator map. -/
 def decodedProjectiveCompleteCommutatorMap
     (a : η → ProjectiveWordState ι → K) (d : ℕ) (j : η) :
-    (⋀[K]^2 (ι → K)) →ₗ[K] ⋀[K]^2 (ι → K) :=
+    (⋀[K]^(2 : ℕ) (ι → K)) →ₗ[K] ⋀[K]^(2 : ℕ) (ι → K) :=
   (projectiveCompleteTailPairDecoder (K := K) j).comp
     ((projectiveCompleteDerivationEvaluation (K := K) j).comp
       (derivationCommutatorMap (projectiveCompleteLawMap a d)))

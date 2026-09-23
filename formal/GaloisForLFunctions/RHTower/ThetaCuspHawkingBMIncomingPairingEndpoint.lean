@@ -11,7 +11,7 @@ set_option backward.isDefEq.respectTransparency false
 
 /-- The original radial Jacobian times the two incoming Gauss factors, with the indicial power removed. -/
 def incomingPairingFactor (w chi : ℂ) (z : ℝ) : ℂ :=
-  (gaussFactor w chi false (z:ℂ))^2/(2*(Real.sqrt (1-z):ℂ))
+  (gaussFactor w chi false (z:ℂ))^(2 : ℕ)/(2*(Real.sqrt (1-z):ℂ))
 
 /-- The Jacobian changes the linear Gauss coefficient by exactly one quarter. -/
 theorem incomingPairingFactor_uniform_second_bound (w chi : ℂ) (hw : w.im ≠ 0) :
@@ -19,7 +19,7 @@ theorem incomingPairingFactor_uniform_second_bound (w chi : ℂ) (hw : w.im ≠ 
       ∀ u ∈ ball w R, ‖horizonGaussFirstCoefficient u chi+(1/4:ℂ)‖ ≤ L ∧
         ∀ z ∈ Icc (0:ℝ) (1/2),
           ‖incomingPairingFactor u chi z-(1/2:ℂ)-
-            (horizonGaussFirstCoefficient u chi+1/4)*(z:ℂ)‖ ≤ C*z^2 := by
+            (horizonGaussFirstCoefficient u chi+1/4)*(z:ℂ)‖ ≤ C*z^(2 : ℕ) := by
   obtain ⟨R,C,L,hR,hC,hL,hH⟩ := horizonGauss_uniform_second_bound w chi hw
     (by norm_num : (0:ℝ)<1/2) (by norm_num : (1/2:ℝ)<1)
   let C₂ := C*(1+L+C)+(1+L)*C+L*L
@@ -39,8 +39,8 @@ theorem incomingPairingFactor_uniform_second_bound (w chi : ℂ) (hw : w.im ≠ 
   intro z hz
   have hz' : z ∈ Icc (0:ℝ) 1 := ⟨hz.1,by linarith [hz.2]⟩
   have he := (hH u hu).2 z hz
-  have hs : ‖(gaussFactor u chi false (z:ℂ))^2-1-
-      (2*horizonGaussFirstCoefficient u chi)*(z:ℂ)‖ ≤ C₂*z^2 := by
+  have hs : ‖(gaussFactor u chi false (z:ℂ))^(2 : ℕ)-1-
+      (2*horizonGaussFirstCoefficient u chi)*(z:ℂ)‖ ≤ C₂*z^(2 : ℕ) := by
     have hh := quadratic_endpoint_product_bound hz' hC hC he he
     have hid : (1:ℂ)*horizonGaussFirstCoefficient u chi+
         horizonGaussFirstCoefficient u chi*1=2*horizonGaussFirstCoefficient u chi := by ring
@@ -52,7 +52,7 @@ theorem incomingPairingFactor_uniform_second_bound (w chi : ℂ) (hw : w.im ≠ 
   have hid : (1:ℂ)*(1/4)+(2*horizonGaussFirstCoefficient u chi)*(1/2)=
       horizonGaussFirstCoefficient u chi+1/4 := by ring
   rw [hid,one_mul] at hp
-  rw [show (gaussFactor u chi false (z:ℂ))^2*(1/(2*(Real.sqrt (1-z):ℂ)))=
+  rw [show (gaussFactor u chi false (z:ℂ))^(2 : ℕ)*(1/(2*(Real.sqrt (1-z):ℂ)))=
     incomingPairingFactor u chi z by unfold incomingPairingFactor; ring] at hp
   change ‖incomingPairingFactor u chi z-(1/2:ℂ)-
     (horizonGaussFirstCoefficient u chi+1/4)*(z:ℂ)‖ ≤ _ at hp
@@ -95,15 +95,15 @@ theorem incomingResponsePairingCore_density (s chi a J K w : ℂ) {z : ℝ}
   have hz0 : (z:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hz.1)
   have hr0 : (Real.sqrt (1-z):ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr
     (ne_of_gt (Real.sqrt_pos.mpr (by linarith [hz.2])))
-  have hp : (horizon w chi z)^2=(z:ℂ)^w*(gaussFactor w chi false (z:ℂ))^2 := by
+  have hp : (horizon w chi z)^(2 : ℕ)=(z:ℂ)^w*(gaussFactor w chi false (z:ℂ))^(2 : ℕ) := by
     dsimp [horizon,dress,power]
     rw [mul_pow,pow_two,← Complex.cpow_add _ _ hz0,show w/2+w/2=w by ring]
   rw [Complex.cpow_sub _ _ hz0,Complex.cpow_one]
   unfold incomingResponsePairingCore incomingPairingFactor
   calc
-    _ = continuedResponse s chi a J K z w*((z:ℂ)^w*(gaussFactor w chi false (z:ℂ))^2)/
+    _ = continuedResponse s chi a J K z w*((z:ℂ)^w*(gaussFactor w chi false (z:ℂ))^(2 : ℕ))/
         (horizon w chi z*(2*(z:ℂ)*(Real.sqrt (1-z):ℂ))) := by ring
-    _ = continuedResponse s chi a J K z w*(horizon w chi z)^2/
+    _ = continuedResponse s chi a J K z w*(horizon w chi z)^(2 : ℕ)/
         (horizon w chi z*(2*(z:ℂ)*(Real.sqrt (1-z):ℂ))) := by rw [hp]
     _ = _ := by field_simp [hh,hz0,hr0]
 
@@ -115,7 +115,7 @@ theorem incomingResponsePairingCore_uniform_second_bound (s chi a J K w : ℂ)
         ‖incomingResponsePairingCore s chi a J K u z-incomingResponseEndpoint s chi a J K u b/2-
           ((horizonGaussFirstCoefficient u chi+1/4)*incomingResponseEndpoint s chi a J K u b+
             incomingResponseSlope s a J K u/2)*(z:ℂ)‖ ≤
-          C*(‖incomingResponseEndpoint s chi a J K u b‖+‖incomingResponseSlope s a J K u‖+1)*z^2 := by
+          C*(‖incomingResponseEndpoint s chi a J K u b‖+‖incomingResponseSlope s a J K u‖+1)*z^(2 : ℕ) := by
   obtain ⟨RQ,b,CQ,hRQ,hb,hbhalf,hCQ,hQ⟩ := continuedResponse_horizon_quadratic_expansion s chi a J K w hw hwr hs
   obtain ⟨RF,CF,L,hRF,hCF,hL,hF⟩ := incomingPairingFactor_uniform_second_bound w chi hw
   let C := CQ*(1/2+L+CF)+CF+L
@@ -127,7 +127,7 @@ theorem incomingResponsePairingCore_uniform_second_bound (s chi a J K w : ℂ)
   have hz' : z ∈ Icc (0:ℝ) (1/2) := ⟨hz.1.le,hz.2.trans hbhalf⟩
   have heQ := hQ u huQ hc z hz
   change ‖continuedResponse s chi a J K z u/horizon u chi z-incomingResponseEndpoint s chi a J K u b-
-    incomingResponseSlope s a J K u*(z:ℂ)‖ ≤ CQ*z^2 at heQ
+    incomingResponseSlope s a J K u*(z:ℂ)‖ ≤ CQ*z^(2 : ℕ) at heQ
   have heF := (hF u huF).2 z hz'
   have hl := (hF u huF).1
   have hp := quadratic_endpoint_product_bound (show z ∈ Icc (0:ℝ) 1 from ⟨hz.1.le,by linarith [hz'.2]⟩)

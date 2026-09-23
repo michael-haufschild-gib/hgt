@@ -35,18 +35,18 @@ omit [CharZero E] in
 transports to `(y′)²/(4y³ - g₂y - g₃)`; the denominator has three simple roots and a pole at
 infinity, the four order-two points of the signature. -/
 theorem weierstrass_square_current {p q u g₂ g₃ : E}
-    (hq : q ^ 2 = 4 * p ^ 3 - g₂ * p - g₃) (hp : Differential.deriv p = q * Differential.deriv u) :
-    (Differential.deriv p) ^ 2
-      = (4 * p ^ 3 - g₂ * p - g₃) * (Differential.deriv u) ^ 2 := by
+    (hq : q ^ (2 : ℕ) = 4 * p ^ (3 : ℕ) - g₂ * p - g₃) (hp : Differential.deriv p = q * Differential.deriv u) :
+    (Differential.deriv p) ^ (2 : ℕ)
+      = (4 * p ^ (3 : ℕ) - g₂ * p - g₃) * (Differential.deriv u) ^ (2 : ℕ) := by
   rw [hp, mul_pow, ← hq]
 
 omit [CharZero E] in
 /-- Quotient form of the `(2,2,2,2)` current. -/
 theorem weierstrass_square_current_div {p q u g₂ g₃ : E}
-    (hq : q ^ 2 = 4 * p ^ 3 - g₂ * p - g₃) (hp : Differential.deriv p = q * Differential.deriv u)
-    (hne : 4 * p ^ 3 - g₂ * p - g₃ ≠ 0) :
-    (Differential.deriv u) ^ 2
-      = (Differential.deriv p) ^ 2 / (4 * p ^ 3 - g₂ * p - g₃) := by
+    (hq : q ^ (2 : ℕ) = 4 * p ^ (3 : ℕ) - g₂ * p - g₃) (hp : Differential.deriv p = q * Differential.deriv u)
+    (hne : 4 * p ^ (3 : ℕ) - g₂ * p - g₃ ≠ 0) :
+    (Differential.deriv u) ^ (2 : ℕ)
+      = (Differential.deriv p) ^ (2 : ℕ) / (4 * p ^ (3 : ℕ) - g₂ * p - g₃) := by
   rw [weierstrass_square_current hq hp, mul_comm, mul_div_assoc, div_self hne, mul_one]
 
 omit [CharZero E] in
@@ -54,11 +54,11 @@ omit [CharZero E] in
 invariant under the order-three rotation, and the cube of the Maurer–Cartan form transports to
 `2(y′)³ = 27(y² + g₃)²(u′)³`. -/
 theorem weierstrass_cubic_current {p q u g₃ : E}
-    (hq : q ^ 2 = 4 * p ^ 3 - g₃)
-    (hq' : Differential.deriv q = 6 * p ^ 2 * Differential.deriv u) :
-    2 * (Differential.deriv q) ^ 3
-      = 27 * (q ^ 2 + g₃) ^ 2 * (Differential.deriv u) ^ 3 := by
-  have hcube : q ^ 2 + g₃ = 4 * p ^ 3 := by rw [hq]; ring
+    (hq : q ^ (2 : ℕ) = 4 * p ^ (3 : ℕ) - g₃)
+    (hq' : Differential.deriv q = 6 * p ^ (2 : ℕ) * Differential.deriv u) :
+    2 * (Differential.deriv q) ^ (3 : ℕ)
+      = 27 * (q ^ (2 : ℕ) + g₃) ^ (2 : ℕ) * (Differential.deriv u) ^ (3 : ℕ) := by
+  have hcube : q ^ (2 : ℕ) + g₃ = 4 * p ^ (3 : ℕ) := by rw [hq]; ring
   rw [hq', hcube, mul_pow, mul_pow]
   ring
 
@@ -67,15 +67,15 @@ omit [CharZero E] in
 under the order-four rotation, and the fourth power of the Maurer–Cartan form transports to
 `(y′)⁴ = 16 y³ (4y - g₂)² (u′)⁴`. -/
 theorem weierstrass_quartic_current {p q u g₂ : E}
-    (hq : q ^ 2 = 4 * p ^ 3 - g₂ * p) (hp : Differential.deriv p = q * Differential.deriv u) :
-    (Differential.deriv (p ^ 2)) ^ 4
-      = 16 * (p ^ 2) ^ 3 * (4 * p ^ 2 - g₂) ^ 2 * (Differential.deriv u) ^ 4 := by
-  have hderiv : Differential.deriv (p ^ 2) = 2 * p * (q * Differential.deriv u) := by
-    rw [show (p : E) ^ 2 = p * p by ring, Differential.deriv.leibniz, hp]
+    (hq : q ^ (2 : ℕ) = 4 * p ^ (3 : ℕ) - g₂ * p) (hp : Differential.deriv p = q * Differential.deriv u) :
+    (Differential.deriv (p ^ (2 : ℕ))) ^ (4 : ℕ)
+      = 16 * (p ^ (2 : ℕ)) ^ (3 : ℕ) * (4 * p ^ (2 : ℕ) - g₂) ^ (2 : ℕ) * (Differential.deriv u) ^ (4 : ℕ) := by
+  have hderiv : Differential.deriv (p ^ (2 : ℕ)) = 2 * p * (q * Differential.deriv u) := by
+    rw [show (p : E) ^ (2 : ℕ) = p * p by ring, Differential.deriv.leibniz, hp]
     ring
-  have hq2 : q ^ 2 = p * (4 * p ^ 2 - g₂) := by rw [hq]; ring
-  have hexp : (2 * p * (q * Differential.deriv u)) ^ 4
-      = 16 * p ^ 4 * (q ^ 2) ^ 2 * (Differential.deriv u) ^ 4 := by ring
+  have hq2 : q ^ (2 : ℕ) = p * (4 * p ^ (2 : ℕ) - g₂) := by rw [hq]; ring
+  have hexp : (2 * p * (q * Differential.deriv u)) ^ (4 : ℕ)
+      = 16 * p ^ (4 : ℕ) * (q ^ (2 : ℕ)) ^ (2 : ℕ) * (Differential.deriv u) ^ (4 : ℕ) := by ring
   rw [hderiv, hexp, hq2]
   ring
 
@@ -84,17 +84,17 @@ omit [CharZero E] in
 invariant under the order-six rotation, and the sixth power of the Maurer–Cartan form transports to
 `(y′)⁶ = 729 y⁴ (4y - g₃)³ (u′)⁶`. -/
 theorem weierstrass_sextic_current {p q u g₃ : E}
-    (hq : q ^ 2 = 4 * p ^ 3 - g₃) (hp : Differential.deriv p = q * Differential.deriv u) :
-    (Differential.deriv (p ^ 3)) ^ 6
-      = 729 * (p ^ 3) ^ 4 * (4 * p ^ 3 - g₃) ^ 3 * (Differential.deriv u) ^ 6 := by
-  have hsq : Differential.deriv (p ^ 2) = 2 * p * (q * Differential.deriv u) := by
-    rw [show (p : E) ^ 2 = p * p by ring, Differential.deriv.leibniz, hp]
+    (hq : q ^ (2 : ℕ) = 4 * p ^ (3 : ℕ) - g₃) (hp : Differential.deriv p = q * Differential.deriv u) :
+    (Differential.deriv (p ^ (3 : ℕ))) ^ (6 : ℕ)
+      = 729 * (p ^ (3 : ℕ)) ^ (4 : ℕ) * (4 * p ^ (3 : ℕ) - g₃) ^ (3 : ℕ) * (Differential.deriv u) ^ (6 : ℕ) := by
+  have hsq : Differential.deriv (p ^ (2 : ℕ)) = 2 * p * (q * Differential.deriv u) := by
+    rw [show (p : E) ^ (2 : ℕ) = p * p by ring, Differential.deriv.leibniz, hp]
     ring
-  have hderiv : Differential.deriv (p ^ 3) = 3 * p ^ 2 * (q * Differential.deriv u) := by
-    rw [show (p : E) ^ 3 = p ^ 2 * p by ring, Differential.deriv.leibniz, hsq, hp]
+  have hderiv : Differential.deriv (p ^ (3 : ℕ)) = 3 * p ^ (2 : ℕ) * (q * Differential.deriv u) := by
+    rw [show (p : E) ^ (3 : ℕ) = p ^ (2 : ℕ) * p by ring, Differential.deriv.leibniz, hsq, hp]
     ring
-  have hexp : (3 * p ^ 2 * (q * Differential.deriv u)) ^ 6
-      = 729 * p ^ 12 * (q ^ 2) ^ 3 * (Differential.deriv u) ^ 6 := by ring
+  have hexp : (3 * p ^ (2 : ℕ) * (q * Differential.deriv u)) ^ (6 : ℕ)
+      = 729 * p ^ (12 : ℕ) * (q ^ (2 : ℕ)) ^ (3 : ℕ) * (Differential.deriv u) ^ (6 : ℕ) := by ring
   rw [hderiv, hexp, hq]
   ring
 

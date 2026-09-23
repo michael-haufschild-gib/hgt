@@ -47,8 +47,8 @@ theorem tortoiseOf_horizonCoordinate {t : ℝ} (ht : t < 0) :
 
 theorem horizonCoordinate_tortoiseOf {z : ℝ} (hz : z ∈ Ioo (0:ℝ) 1) :
     horizonCoordinate (tortoiseOf z) = z := by
-  have hs1 : Real.sqrt z ^ 2 = z := Real.sq_sqrt hz.1.le
-  have hs2 : Real.sqrt (1 - z) ^ 2 = 1 - z := Real.sq_sqrt (by linarith [hz.2])
+  have hs1 : Real.sqrt z ^ (2 : ℕ) = z := Real.sq_sqrt hz.1.le
+  have hs2 : Real.sqrt (1 - z) ^ (2 : ℕ) = 1 - z := Real.sq_sqrt (by linarith [hz.2])
   have hs1p : 0 < Real.sqrt z := Real.sqrt_pos.mpr hz.1
   have hs2p : 0 ≤ Real.sqrt (1 - z) := Real.sqrt_nonneg _
   have hr : 0 < Real.sqrt z / (1 + Real.sqrt (1 - z)) := by positivity
@@ -224,8 +224,8 @@ theorem clearedResponseQuotient_jet (s chi a J K w : ℂ) (hw : w.im ≠ 0) (hwr
           ‖incomingSourcePrimitive s chi a J K u z -
             sourceRemainder s u a J K 1 0 * (1 / (u - 2 * s) + onsetCorrection (2 * s) u) /
               (2 * (u + 1)) * (z:ℂ)‖
-        ≤ KF' * (C₁ * z ^ 2) := mul_le_mul (hKFb u hu) hq (norm_nonneg _) hKF'0
-      _ = KF' * C₁ * z ^ 2 := by ring
+        ≤ KF' * (C₁ * z ^ (2 : ℕ)) := mul_le_mul (hKFb u hu) hq (norm_nonneg _) hKF'0
+      _ = KF' * C₁ * z ^ (2 : ℕ) := by ring
   have hprod := hgjet.mul (by linarith) hG2 hC₂ (mul_nonneg hKF'0 hC₁) hM0
     (fun _ _ => by simp; exact le_max_of_le_left (le_max_left _ _))
     (fun u hu => ((hg u (hRsub u hu).2.1).1).trans (le_max_of_le_left (le_max_right _ _)))
@@ -262,7 +262,7 @@ theorem clearedResponseQuotient_jet (s chi a J K w : ℂ) (hw : w.im ≠ 0) (hwr
     unfold clearedResponseQuotient
     rw [hresp, horizon_eq_pow_mul, ← hcE]
     field_simp
-  refine ⟨R, b, M ^ 2 + C₂ * (2 * M + KF' * C₁) + 2 * M * (KF' * C₁), hR0, hb0, hbh, hfacts,
+  refine ⟨R, b, M ^ (2 : ℕ) + C₂ * (2 * M + KF' * C₁) + 2 * M * (KF' * C₁), hR0, hb0, hbh, hfacts,
     hgauss, hE, ?_⟩
   exact ((hprod.mono sdiff_subset).congr hid).congr_coeff (fun u _ => by ring) (fun u _ => by ring)
 
@@ -283,7 +283,7 @@ def selfJetZero (q : XiZeroCopy) (branch : Bool) (a : ℂ) (b : ℝ) (u : ℂ) :
       (reducedGreenGradient (physicalRadialFrequency q) (physicalRate q branch) 1) b u +
     connection u (physicalRadialFrequency q) *
       ((-physicalRate q branch * (physicalRate q branch - 1) / 4) *
-        ((2:ℂ) ^ (2 * physicalRate q branch - u) * (a ^ 2 * clearedOnset (physicalRate q branch) u)))
+        ((2:ℂ) ^ (2 * physicalRate q branch - u) * (a ^ (2 : ℕ) * clearedOnset (physicalRate q branch) u)))
 
 /-- Linear jet coefficient of the cleared self profile. -/
 def selfJetOne (q : XiZeroCopy) (branch : Bool) (a : ℂ) (b : ℝ) (u : ℂ) : ℂ :=
@@ -295,10 +295,10 @@ def selfJetOne (q : XiZeroCopy) (branch : Bool) (a : ℂ) (b : ℝ) (u : ℂ) : 
         (reducedGreenGradient (physicalRadialFrequency q) (physicalRate q branch) 1) u) +
   connection u (physicalRadialFrequency q) *
     ((-physicalRate q branch * (physicalRate q branch - 1) / 4) *
-      ((2:ℂ) ^ (2 * physicalRate q branch - u) * (a ^ 2 * clearedOnset (physicalRate q branch) u) *
+      ((2:ℂ) ^ (2 * physicalRate q branch - u) * (a ^ (2 : ℕ) * clearedOnset (physicalRate q branch) u) *
           (-3 / 2) +
         -(2 * physicalRate q branch - u) * (2:ℂ) ^ (2 * physicalRate q branch - u) / 4 *
-          (a ^ 2 * clearedOnset (physicalRate q branch) u)))
+          (a ^ (2 : ℕ) * clearedOnset (physicalRate q branch) u)))
 
 /-- The cleared self profile has a uniform second-order horizon jet on a closed frequency ball
 around the fundamental QNM, with coefficients analytic at the QNM, and is analytic in the

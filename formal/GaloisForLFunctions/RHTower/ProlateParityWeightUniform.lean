@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.ConstrainedProlateTopWeightUniform
 # Depth-uniform top weights in both compressed-Fourier parity sectors
 
 The constrained-prolate constraint coordinates converge to Hermite values at the origin, and
-`h_{2m}(0)^2` is proportional to the central binomial weight `C(2m,m)/4^m`.  The positive
+`h_{2m}(0)^(2 : ℕ)` is proportional to the central binomial weight `C(2m,m)/4^m`.  The positive
 compressed-Fourier sector runs over prolate indices `4j`, i.e. `m = 2j`; the negative sector runs
 over `4j + 2`, i.e. `m = 2j + 1`.  Both sectors are therefore governed by the **same** sequence
 
@@ -52,7 +52,7 @@ theorem centralBinomWeight_le_half {m : ℕ} (hm : 1 ≤ m) : centralBinomWeight
     exact_mod_cast hchoose
   have hden : (4 : ℝ) ^ m = 2 * (2 : ℝ) ^ (2 * m - 1) := by
     calc
-      (4 : ℝ) ^ m = ((2 : ℝ) ^ 2) ^ m := by norm_num
+      (4 : ℝ) ^ m = ((2 : ℝ) ^ (2 : ℕ)) ^ m := by norm_num
       _ = (2 : ℝ) ^ (2 * m) := by rw [← pow_mul]
       _ = (2 : ℝ) ^ ((2 * m - 1) + 1) := by rw [← h2m]
       _ = 2 * (2 : ℝ) ^ (2 * m - 1) := by rw [pow_succ]; ring
@@ -83,7 +83,7 @@ theorem constrainedProlateHermiteWeight_eq_centralBinomWeight (j : ℕ) :
     omega
   rw [hcb]
   congr 1
-  rw [show (4 : ℝ) ^ (2 * j) = ((4 : ℝ) ^ 2) ^ j by rw [← pow_mul, mul_comm]]
+  rw [show (4 : ℝ) ^ (2 * j) = ((4 : ℝ) ^ (2 : ℕ)) ^ j by rw [← pow_mul, mul_comm]]
   norm_num
 
 /-! ## The negative compressed-Fourier sector -/

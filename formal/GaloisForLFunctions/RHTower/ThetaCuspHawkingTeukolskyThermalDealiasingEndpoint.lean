@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.ScrewCurvatureSumOfSquares
 Birmingham--Mokhtari's exact `d = 4` gravitational hypergeometric reduction uses the
 self-adjoint horizon-Laplacian eigenvalue
 
-`Q = 1/4 + xi^2`.
+`Q = 1/4 + xi^(2 : ℕ)`.
 
 The theta-cusp continuation used in the preceding black-hole modules has
 
@@ -34,7 +34,7 @@ Equivalently, the full complex separation of the exact QNM branches is
 The same re-centering subtracts `I/2` from this raw gap and produces the candidate physical
 eigenvalue
 
-`Q_H = 1/4 + z^2`.
+`Q_H = 1/4 + z^(2 : ℕ)`.
 
 For an Xi divisor, `re z != 0`, so
 

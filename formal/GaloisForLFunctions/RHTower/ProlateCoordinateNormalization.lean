@@ -39,7 +39,7 @@ theorem tendsto_sqrt_mul_prolateGround_coordSq :
         (∀ x : ℝ, bandTransform c (Psi c) x = lam * Psi c x) ∧
         (∀ x : ℝ, prolateSLAction c (Psi c) x = chi * Psi c x)) ∧
       Tendsto (fun c : ℝ => Real.sqrt c *
-          ((∫ u in (-1 : ℝ)..1, Psi c u) ^ 2 / ∫ u in (-1 : ℝ)..1, (Psi c u) ^ 2))
+          ((∫ u in (-1 : ℝ)..1, Psi c u) ^ (2 : ℕ) / ∫ u in (-1 : ℝ)..1, (Psi c u) ^ (2 : ℕ)))
         atTop (𝓝 (2 * Real.sqrt Real.pi)) := by
   obtain ⟨Psi, hfam, hlim⟩ := tendsto_prolateGround_shapeRatio
   refine ⟨Psi, hfam, ?_⟩
@@ -47,18 +47,18 @@ theorem tendsto_sqrt_mul_prolateGround_coordSq :
     have : 0 < Real.sqrt Real.pi := Real.sqrt_pos.2 Real.pi_pos
     positivity
   have hzero : ∀ c : ℝ, Psi c 0 = 0 →
-      ((∫ xi in (-Real.sqrt c)..(Real.sqrt c), normalizedProlateProfile c (Psi c) xi) ^ 2
+      ((∫ xi in (-Real.sqrt c)..(Real.sqrt c), normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)
         / ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-          (normalizedProlateProfile c (Psi c) xi) ^ 2) = 0 := by
+          (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)) = 0 := by
     intro c hc
     have hprof : ∀ xi : ℝ, normalizedProlateProfile c (Psi c) xi = 0 := by
       intro xi
       rw [normalizedProlateProfile, hc, div_zero]
     simp [hprof]
   have hratne : ∀ᶠ c : ℝ in atTop,
-      ((∫ xi in (-Real.sqrt c)..(Real.sqrt c), normalizedProlateProfile c (Psi c) xi) ^ 2
+      ((∫ xi in (-Real.sqrt c)..(Real.sqrt c), normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)
         / ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-          (normalizedProlateProfile c (Psi c) xi) ^ 2) ≠ 0 :=
+          (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)) ≠ 0 :=
     hlim.eventually_ne hlimne
   refine hlim.congr' ?_
   filter_upwards [hratne, eventually_gt_atTop (0 : ℝ)] with c hcne hcpos
@@ -73,16 +73,16 @@ theorem tendsto_sqrt_mul_prolateGround_coordSq :
   have hdil := HTGeometry.shapeRatio_dilate (Psi c) (α := Real.sqrt c)
     (β := (Psi c 0)⁻¹) (ne_of_gt hsq) (inv_ne_zero hamp) 1
   rw [mul_one] at hdil
-  calc ((∫ xi in (-Real.sqrt c)..(Real.sqrt c), normalizedProlateProfile c (Psi c) xi) ^ 2
+  calc ((∫ xi in (-Real.sqrt c)..(Real.sqrt c), normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)
         / ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-          (normalizedProlateProfile c (Psi c) xi) ^ 2)
+          (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ))
       = ((∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-            (Psi c 0)⁻¹ * Psi c (xi / Real.sqrt c)) ^ 2
+            (Psi c 0)⁻¹ * Psi c (xi / Real.sqrt c)) ^ (2 : ℕ)
           / ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-            ((Psi c 0)⁻¹ * Psi c (xi / Real.sqrt c)) ^ 2) := by
+            ((Psi c 0)⁻¹ * Psi c (xi / Real.sqrt c)) ^ (2 : ℕ)) := by
         simp only [hprof]
-    _ = Real.sqrt c * ((∫ u in (-1 : ℝ)..1, Psi c u) ^ 2
-          / ∫ u in (-1 : ℝ)..1, (Psi c u) ^ 2) := hdil
+    _ = Real.sqrt c * ((∫ u in (-1 : ℝ)..1, Psi c u) ^ (2 : ℕ)
+          / ∫ u in (-1 : ℝ)..1, (Psi c u) ^ (2 : ℕ)) := hdil
 
 end GaloisForLFunctions.RHTower
 

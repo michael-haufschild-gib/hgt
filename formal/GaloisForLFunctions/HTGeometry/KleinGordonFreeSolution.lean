@@ -49,20 +49,20 @@ theorem kgFreeVel_zero (f : 𝓢(E, F)) : kgFreeVel f 0 = 0 := by
 /-- **The Klein–Gordon operator applied to the free evolution** is the multiplier with symbol
 `⟨ξ⟩² cos(t⟨ξ⟩)`. -/
 theorem kgOperator_kgFree (f : 𝓢(E, F)) (t : ℝ) :
-    kgFree f t - (((2 * Real.pi) ^ 2)⁻¹ : ℝ) • Δ (kgFree f t)
+    kgFree f t - (((2 * Real.pi) ^ (2 : ℕ))⁻¹ : ℝ) • Δ (kgFree f t)
       = fourierMultiplierCLM F
-        (fun ξ : E => ((kgFreq ξ ^ 2 : ℝ) : ℂ) * kgCosSymbol t ξ) f := by
-  have hfreq : Function.HasTemperateGrowth fun ξ : E => ((kgFreq ξ ^ 2 : ℝ) : ℂ) := by
-    have hreal : Function.HasTemperateGrowth fun ξ : E => kgFreq ξ ^ 2 :=
+        (fun ξ : E => ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) * kgCosSymbol t ξ) f := by
+  have hfreq : Function.HasTemperateGrowth fun ξ : E => ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) := by
+    have hreal : Function.HasTemperateGrowth fun ξ : E => kgFreq ξ ^ (2 : ℕ) :=
       (hasTemperateGrowth_kgFreq E).pow 2
     exact Complex.hasTemperateGrowth_ofReal.comp hreal
   have hcos : Function.HasTemperateGrowth (kgCosSymbol (E := E) t) :=
     hasTemperateGrowth_kgCosSymbol t
   have hbase := fourierMultiplierCLM_kgFreqSq (F := F) (kgFree f t)
-  have hcast : fourierMultiplierCLM (𝕜 := ℝ) F (fun ξ : E => kgFreq ξ ^ 2) (kgFree f t)
-      = fourierMultiplierCLM F (fun ξ : E => ((kgFreq ξ ^ 2 : ℝ) : ℂ)) (kgFree f t) := by
+  have hcast : fourierMultiplierCLM (𝕜 := ℝ) F (fun ξ : E => kgFreq ξ ^ (2 : ℕ)) (kgFree f t)
+      = fourierMultiplierCLM F (fun ξ : E => ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ)) (kgFree f t) := by
     have h := fourierMultiplierCLM_ofReal (𝕜 := ℂ) (F := F)
-      (g := fun ξ : E => kgFreq ξ ^ 2) ((hasTemperateGrowth_kgFreq E).pow 2) (kgFree f t)
+      (g := fun ξ : E => kgFreq ξ ^ (2 : ℕ)) ((hasTemperateGrowth_kgFreq E).pow 2) (kgFree f t)
     exact h.symm
   rw [← hbase, hcast, kgFree,
     fourierMultiplierCLM_fourierMultiplierCLM_apply hfreq hcos]

@@ -98,23 +98,23 @@ structure MobiusContactGammaTotalPoleHierarchyCertificate : Prop where
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetDefect n x /
           mobiusContactGammaHigherJetHarmonicScale n)
-        atTop (𝓝 (6 / x ^ 2)) ∧
+        atTop (𝓝 (6 / x ^ (2 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetProjectiveDefect n x /
           mobiusContactGammaHigherJetHarmonicScale n)
-        atTop (𝓝 (2 / x ^ 3)) ∧
+        atTop (𝓝 (2 / x ^ (3 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialThirdJetProjectiveDefect n x /
-          mobiusContactGammaHigherJetHarmonicScale n ^ 2)
-        atTop (𝓝 (-6 / x ^ 4)) ∧
+          mobiusContactGammaHigherJetHarmonicScale n ^ (2 : ℕ))
+        atTop (𝓝 (-6 / x ^ (4 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
-          mobiusContactGammaHigherJetFactorialScale n ^ 2)
-        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ 2 / x ^ 4)) ∧
+          mobiusContactGammaHigherJetFactorialScale n ^ (2 : ℕ))
+        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (4 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x /
-          mobiusContactGammaHigherJetFactorialScale n ^ 2)
-        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ 2 / x ^ 10))
+          mobiusContactGammaHigherJetFactorialScale n ^ (2 : ℕ))
+        atTop (𝓝 (-4 * (Real.pi : ℂ) ^ (2 : ℕ) / x ^ (10 : ℕ)))
   scaleFreeJetRatios :
     ∀ x : ℂ, x ≠ 0 →
       Tendsto (fun n : ℕ =>
@@ -124,15 +124,15 @@ structure MobiusContactGammaTotalPoleHierarchyCertificate : Prop where
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialSecondJetProjectiveDefect n x /
           GaloisForLFunctions.gammaFactorialFirstJetDefect n x)
-        atTop (𝓝 (-1 / x ^ 2)) ∧
+        atTop (𝓝 (-1 / x ^ (2 : ℕ))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialThirdJetProjectiveDefect n x /
-          GaloisForLFunctions.gammaFactorialFirstJetDefect n x ^ 2)
-        atTop (𝓝 (-3 / (2 * x ^ 2))) ∧
+          GaloisForLFunctions.gammaFactorialFirstJetDefect n x ^ (2 : ℕ))
+        atTop (𝓝 (-3 / (2 * x ^ (2 : ℕ)))) ∧
       Tendsto (fun n : ℕ =>
         GaloisForLFunctions.gammaFactorialLogCurvatureDiscriminant n x /
           GaloisForLFunctions.gammaFactorialExponentialEnvelopeDefect n x)
-        atTop (𝓝 (x ^ 6))
+        atTop (𝓝 (x ^ (6 : ℕ)))
   punctureAtlas :
     ∀ n : ℕ, ∀ z : ℂ,
       gammaPunctureMobiusContactNormalizedSheet n z =
@@ -153,12 +153,12 @@ structure MobiusContactGammaTotalPoleHierarchyCertificate : Prop where
       GaloisForLFunctions.HTGeometry.gammaPunctureCoordinate z ∈
           Metric.closedBall (0 : ℂ) (1 / 4) →
       ‖GaloisForLFunctions.gammaMovingBaseShell n‖ < (1 / 2 : ℝ) →
-      (16 / 81 : ℝ) * ‖v‖ ^ 2 ≤
+      (16 / 81 : ℝ) * ‖v‖ ^ (2 : ℕ) ≤
           ‖(1 - GaloisForLFunctions.gammaMovingBaseShell n *
-            gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ 2 * v‖ ^ 2 ∧
+            gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ∧
         ‖(1 - GaloisForLFunctions.gammaMovingBaseShell n *
-            gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ 2 * v‖ ^ 2 ≤
-          16 * ‖v‖ ^ 2
+            gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ≤
+          16 * ‖v‖ ^ (2 : ℕ)
   punctureTangent :
     ∀ {z : ℂ},
       GaloisForLFunctions.HTGeometry.gammaPunctureCoordinate z ∈
@@ -166,7 +166,7 @@ structure MobiusContactGammaTotalPoleHierarchyCertificate : Prop where
       Tendsto
         (fun n : ℕ =>
           (1 - GaloisForLFunctions.gammaMovingBaseShell n *
-            gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ 2)
+            gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ (2 : ℕ))
         atTop (nhds 1)
   iterateFirstJet :
     (∀ (k : ℕ) (x : ℂ),

@@ -30,16 +30,16 @@ def ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpoint
     (K : ℕ) : ℝ :=
   (16 / 17 : ℝ) *
       (Real.exp ((-2 * Real.log 2) / 2) *
-          ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ 4 / 12 +
+          ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ (4 : ℕ) / 12 +
     (1 / 17 : ℝ) *
       (Real.exp ((2 * Real.log 2) / 2) *
-          ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ 4 / 12
+          ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ (4 : ℕ) / 12
 
 /-- Excess terminal completion over the unshifted literal endpoint. -/
 def ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpointDebt
     (K : ℕ) : ℝ :=
   (2 / 51 : ℝ) * ccmActualHeadQuantilePolarCoordinate (K + 3) *
-    (7 * ccmActualHeadQuantilePolarCoordinate (K + 3) ^ 2 -
+    (7 * ccmActualHeadQuantilePolarCoordinate (K + 3) ^ (2 : ℕ) -
       27 * ccmActualHeadQuantilePolarCoordinate (K + 3) + 28)
 
 private theorem ccm_twoOffset_exp_neg :
@@ -57,7 +57,7 @@ private theorem ccm_twoOffset_exp_pos :
 theorem ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpoint_eq_unshifted_add_debt
     (K : ℕ) :
     ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpoint K =
-      (ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ 4 / 12 +
+      (ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ (4 : ℕ) / 12 +
         ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpointDebt K := by
   unfold ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpoint
     ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpointDebt
@@ -73,7 +73,7 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpointDebt_pos
     unfold ccmActualHeadQuantilePolarCoordinate
     positivity
   have hquadratic :
-      0 < 7 * ccmActualHeadQuantilePolarCoordinate (K + 3) ^ 2 -
+      0 < 7 * ccmActualHeadQuantilePolarCoordinate (K + 3) ^ (2 : ℕ) -
         27 * ccmActualHeadQuantilePolarCoordinate (K + 3) + 28 := by
     nlinarith [sq_nonneg (ccmActualHeadQuantilePolarCoordinate (K + 3) - 27 / 14)]
   positivity
@@ -103,7 +103,7 @@ theorem ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetCurrent_eq_unshif
       rw [hminus, hplus]
       ring
     _ = ccmParabolicForm (ccmActualHeadMatchedParabolicAggregate K) -
-          ((ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ 4 / 12 +
+          ((ccmActualHeadQuantilePolarCoordinate (K + 3) - 2) ^ (4 : ℕ) / 12 +
             ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpointDebt K) := by
       rw [ccmActualHeadMatchedCompletedQuantileParabolicTwoOffsetEndpoint_eq_unshifted_add_debt]
     _ = ccmActualHeadMatchedCompletedQuantileParabolicSourceRelativeOffsetCurrent 0 K -

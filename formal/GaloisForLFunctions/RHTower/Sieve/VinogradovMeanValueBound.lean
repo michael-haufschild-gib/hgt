@@ -23,10 +23,10 @@ def vinogradovMeanConstant (k : ℕ) : ℕ → ℕ
       vinogradovReservoirSmallThreshold k ^ (2 * k * (r + 1)) +
       k.factorial +
       2 * vinogradovMeanConstant k r *
-        (vinogradovReservoirSize k ^ 2 * k.factorial *
+        (vinogradovReservoirSize k ^ (2 : ℕ) * k.factorial *
             2 ^ (vinogradovMeanExponent k r) *
             vinogradovReservoirPrimePowerConstant k ^ (k - 2) +
-          (k * k - k) ^ 2) + 1
+          (k * k - k) ^ (2 : ℕ)) + 1
 
 theorem vinogradovMeanExponent_one (k : ℕ) :
     vinogradovMeanExponent k 1 = k := by
@@ -90,7 +90,7 @@ theorem vinogradovMeanAdmissible_of_budget
 def vinogradovRouteTOrder (s : ℕ) : ℕ := 100 * s
 
 def vinogradovRouteTMomentSteps (s : ℕ) : ℕ :=
-  2500 * s ^ 2 - 200 * s
+  2500 * s ^ (2 : ℕ) - 200 * s
 
 theorem vinogradovRouteTMomentSteps_pos {s : ℕ} (hs : 1 ≤ s) :
     1 ≤ vinogradovRouteTMomentSteps s := by
@@ -110,9 +110,9 @@ theorem vinogradovRouteT_admissible {s : ℕ} (hs : 1 ≤ s) :
       vinogradovRouteTOrder s * (vinogradovRouteTOrder s - 1) := by
     simpa only [vinogradovLinnikWeight] using hdiv
   simp only [vinogradovRouteTOrder, vinogradovRouteTMomentSteps] at hhalf ⊢
-  have hsprod : 200 * s ≤ 2500 * s ^ 2 := by
+  have hsprod : 200 * s ≤ 2500 * s ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (s - 1)]
-  have hstep : (2500 * s ^ 2 - 200 * s) + 200 * s = 2500 * s ^ 2 :=
+  have hstep : (2500 * s ^ (2 : ℕ) - 200 * s) + 200 * s = 2500 * s ^ (2 : ℕ) :=
     Nat.sub_add_cancel hsprod
   have hk1 : 100 * s - 1 + 1 = 100 * s := by omega
   have hk2 : 100 * s - 2 + 2 = 100 * s := by omega
@@ -146,10 +146,10 @@ theorem vinogradovMeanConstant_ge_factorial
 theorem vinogradovMeanConstant_ge_step
     (k r : ℕ) :
     2 * vinogradovMeanConstant k r *
-        (vinogradovReservoirSize k ^ 2 * k.factorial *
+        (vinogradovReservoirSize k ^ (2 : ℕ) * k.factorial *
             2 ^ (vinogradovMeanExponent k r) *
             vinogradovReservoirPrimePowerConstant k ^ (k - 2) +
-          (k * k - k) ^ 2) ≤
+          (k * k - k) ^ (2 : ℕ)) ≤
       vinogradovMeanConstant k (r + 1) := by
   simp only [vinogradovMeanConstant]
   omega
@@ -284,9 +284,9 @@ theorem vinogradov_collision_induction_term
     {N k r : ℕ} (hk2 : 2 ≤ k) (hr : 1 ≤ r)
     (hIH : Fintype.card (VinogradovDiagonalSolution N (k * r) k) ≤
       vinogradovMeanConstant k r * N ^ (vinogradovMeanExponent k r)) :
-    ((k * k - k) * N ^ (k - 1)) ^ 2 *
+    ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
         Fintype.card (VinogradovDiagonalSolution N (k * r) k) ≤
-      vinogradovMeanConstant k r * (k * k - k) ^ 2 *
+      vinogradovMeanConstant k r * (k * k - k) ^ (2 : ℕ) *
         N ^ (vinogradovMeanExponent k (r + 1)) := by
   let E := vinogradovMeanExponent k r
   have hEsucc : vinogradovMeanExponent k (r + 1) = E + (2 * k - 2) :=
@@ -297,18 +297,18 @@ theorem vinogradov_collision_induction_term
       N ^ (E + (2 * k - 2)) := by
     rw [← pow_add, hexp']
   calc
-    ((k * k - k) * N ^ (k - 1)) ^ 2 *
+    ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
         Fintype.card (VinogradovDiagonalSolution N (k * r) k) ≤
-      ((k * k - k) * N ^ (k - 1)) ^ 2 *
+      ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
         (vinogradovMeanConstant k r * N ^ E) := by gcongr
-    _ = vinogradovMeanConstant k r * (k * k - k) ^ 2 *
+    _ = vinogradovMeanConstant k r * (k * k - k) ^ (2 : ℕ) *
         (N ^ (2 * (k - 1)) * N ^ E) := by
       rw [mul_pow, ← pow_mul]
       ring
-    _ = vinogradovMeanConstant k r * (k * k - k) ^ 2 *
+    _ = vinogradovMeanConstant k r * (k * k - k) ^ (2 : ℕ) *
         N ^ (E + (2 * k - 2)) := by
       rw [hpow]
-    _ = vinogradovMeanConstant k r * (k * k - k) ^ 2 *
+    _ = vinogradovMeanConstant k r * (k * k - k) ^ (2 : ℕ) *
         N ^ (vinogradovMeanExponent k (r + 1)) := by rw [hEsucc]
 
 theorem vinogradov_mean_value_bound
@@ -390,18 +390,18 @@ theorem vinogradov_mean_value_bound
                     (vinogradovReservoirPrime N k i) ^ (k * (k - 1) / 2) *
                     Fintype.card (VinogradovDiagonalSolution
                       (N ⌈/⌉ (vinogradovReservoirPrime N k i)) (k * r) k)))) ≤
-                D * (R ^ 2 * W) * X := by
+                D * (R ^ (2 : ℕ) * W) * X := by
             calc
               _ ≤ R * (R * (D * W * X)) := Nat.mul_le_mul_left R hsum
-              _ = D * (R ^ 2 * W) * X := by ring
+              _ = D * (R ^ (2 : ℕ) * W) * X := by ring
           have hIHN := ih hrpos hprevAdm N hN
-          have hbad : ((k * k - k) * N ^ (k - 1)) ^ 2 *
+          have hbad : ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
               Fintype.card (VinogradovDiagonalSolution N (k * r) k) ≤
-              D * (k * k - k) ^ 2 * X := by
+              D * (k * k - k) ^ (2 : ℕ) * X := by
             simpa [D, X] using
               vinogradov_collision_induction_term hk2 hrpos hIHN
           have hcoeff :
-              2 * D * (R ^ 2 * W + (k * k - k) ^ 2) ≤
+              2 * D * (R ^ (2 : ℕ) * W + (k * k - k) ^ (2 : ℕ)) ≤
                 vinogradovMeanConstant k (r + 1) := by
             simpa only [D, R, W, E, C, mul_assoc] using
               vinogradovMeanConstant_ge_step k r
@@ -413,13 +413,13 @@ theorem vinogradov_mean_value_bound
                         (vinogradovReservoirPrime N k i) ^ (k * (k - 1) / 2) *
                         Fintype.card (VinogradovDiagonalSolution
                           (N ⌈/⌉ (vinogradovReservoirPrime N k i)) (k * r) k)))) +
-                ((k * k - k) * N ^ (k - 1)) ^ 2 *
+                ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
                   Fintype.card (VinogradovDiagonalSolution N (k * r) k)) ≤
                 vinogradovMeanConstant k (r + 1) * X := by
             calc
-              _ ≤ 2 * (D * (R ^ 2 * W) * X +
-                    D * (k * k - k) ^ 2 * X) := by gcongr
-              _ = (2 * D * (R ^ 2 * W + (k * k - k) ^ 2)) * X := by ring
+              _ ≤ 2 * (D * (R ^ (2 : ℕ) * W) * X +
+                    D * (k * k - k) ^ (2 : ℕ) * X) := by gcongr
+              _ = (2 * D * (R ^ (2 : ℕ) * W + (k * k - k) ^ (2 : ℕ))) * X := by ring
               _ ≤ vinogradovMeanConstant k (r + 1) * X :=
                 Nat.mul_le_mul_right X hcoeff
           have hrec' :
@@ -431,7 +431,7 @@ theorem vinogradov_mean_value_bound
                           (vinogradovReservoirPrime N k i) ^ (k * (k - 1) / 2) *
                           Fintype.card (VinogradovDiagonalSolution
                             (N ⌈/⌉ (vinogradovReservoirPrime N k i)) (k * r) k)))) +
-                  ((k * k - k) * N ^ (k - 1)) ^ 2 *
+                  ((k * k - k) * N ^ (k - 1)) ^ (2 : ℕ) *
                     Fintype.card (VinogradovDiagonalSolution N (k * r) k)) := by
             rw [show k * (r + 1) = k + k * r by ring]
             simpa only [R] using hrec
@@ -445,34 +445,34 @@ theorem vinogradovRouteT_meanExponent_exact
           vinogradovRouteTOrder s * (vinogradovRouteTOrder s + 1) / 2 +
         (350 * s + 2) := by
   have hr := vinogradovRouteTMomentSteps_pos hs
-  have hsprod : 200 * s ≤ 2500 * s ^ 2 := by
+  have hsprod : 200 * s ≤ 2500 * s ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (s - 1)]
-  have hrval : (2500 * s ^ 2 - 200 * s) + 200 * s = 2500 * s ^ 2 :=
+  have hrval : (2500 * s ^ (2 : ℕ) - 200 * s) + 200 * s = 2500 * s ^ (2 : ℕ) :=
     Nat.sub_add_cancel hsprod
   have hdiv : (100 * s) * (100 * s + 1) / 2 =
-      5000 * s ^ 2 + 50 * s := by
+      5000 * s ^ (2 : ℕ) + 50 * s := by
     calc
       (100 * s) * (100 * s + 1) / 2 =
           2 * (50 * s * (100 * s + 1)) / 2 := by
             congr 1
             ring
       _ = 50 * s * (100 * s + 1) := Nat.mul_div_cancel_left _ (by omega)
-      _ = 5000 * s ^ 2 + 50 * s := by ring
+      _ = 5000 * s ^ (2 : ℕ) + 50 * s := by ring
   have hsub : (100 * s) * (100 * s + 1) / 2 ≤
-      2 * (100 * s) * (2500 * s ^ 2 - 200 * s) := by
+      2 * (100 * s) * (2500 * s ^ (2 : ℕ) - 200 * s) := by
     rw [hdiv]
     nlinarith
   unfold vinogradovMeanExponent vinogradovRouteTOrder
     vinogradovRouteTMomentSteps
   rw [hdiv]
-  have hrsub : 2500 * s ^ 2 - 200 * s - 1 + 1 =
-      2500 * s ^ 2 - 200 * s := Nat.sub_add_cancel hr
+  have hrsub : 2500 * s ^ (2 : ℕ) - 200 * s - 1 + 1 =
+      2500 * s ^ (2 : ℕ) - 200 * s := Nat.sub_add_cancel hr
   have hkcoef : 2 * (100 * s) - 2 + 2 = 2 * (100 * s) := by omega
   have hsum :
       (100 * s + (2 * (100 * s) - 2) *
-          (2500 * s ^ 2 - 200 * s - 1)) +
-          (5000 * s ^ 2 + 50 * s) =
-        2 * (100 * s) * (2500 * s ^ 2 - 200 * s) +
+          (2500 * s ^ (2 : ℕ) - 200 * s - 1)) +
+          (5000 * s ^ (2 : ℕ) + 50 * s) =
+        2 * (100 * s) * (2500 * s ^ (2 : ℕ) - 200 * s) +
           (350 * s + 2) := by
     nlinarith
   omega

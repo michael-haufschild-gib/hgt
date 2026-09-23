@@ -90,7 +90,7 @@ theorem soninAllPrimeColumnOperator_apply (a : ℝ) (ha : 0 < a) (x : SoninL2)
 
 /-- The square-summed logarithmic Euler weight.  It is finite before any aperture is chosen. -/
 def soninAllPrimeColumnWeightSqMass : ℝ :=
-  ∑' pk : Nat.Primes × ℕ, ‖soninLogPrimePowerCoefficient pk‖ ^ 2
+  ∑' pk : Nat.Primes × ℕ, ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ)
 
 theorem soninAllPrimeColumnWeightSqMass_nonneg :
     0 ≤ soninAllPrimeColumnWeightSqMass := by
@@ -148,7 +148,7 @@ theorem norm_centralSoninWeightedPrimePowerResidual_le_four_mul
 
 private theorem summable_four_mul_norm_soninLogPrimePowerCoefficient_sq :
     Summable (fun pk : Nat.Primes × ℕ =>
-      (4 * ‖soninLogPrimePowerCoefficient pk‖) ^ 2) := by
+      (4 * ‖soninLogPrimePowerCoefficient pk‖) ^ (2 : ℕ)) := by
   exact (summable_norm_soninLogPrimePowerCoefficient_sq.mul_left 16).congr
     (fun _ => by ring)
 
@@ -156,9 +156,9 @@ private theorem summable_four_mul_norm_soninLogPrimePowerCoefficient_sq :
 energies of its prime-power outcome channels. -/
 theorem norm_sq_soninAllPrimeColumnOperator_apply_eq_tsum
     (a : ℝ) (ha : 0 < a) (x : SoninL2) :
-    ‖soninAllPrimeColumnOperator a ha x‖ ^ 2 =
+    ‖soninAllPrimeColumnOperator a ha x‖ ^ (2 : ℕ) =
       ∑' pk : Nat.Primes × ℕ,
-        ‖centralSoninWeightedPrimePowerResidual a pk x‖ ^ 2 := by
+        ‖centralSoninWeightedPrimePowerResidual a pk x‖ ^ (2 : ℕ) := by
   rw [HilbertSchmidt.lp_norm_sq_eq]
   have hout := HilbertSchmidt.summable_coe_sq
     (soninAllPrimeColumnOperator a ha x)
@@ -174,8 +174,8 @@ theorem norm_sq_soninAllPrimeColumnOperator_apply_eq_tsum
 aperture-independent Bessel budget. -/
 theorem norm_sq_soninAllPrimeColumnOperator_apply_le_effectRadius
     (a : ℝ) (ha : 0 < a) (x : SoninL2) :
-    ‖soninAllPrimeColumnOperator a ha x‖ ^ 2 ≤
-      soninAllPrimeColumnEffectRadius * ‖x‖ ^ 2 := by
+    ‖soninAllPrimeColumnOperator a ha x‖ ^ (2 : ℕ) ≤
+      soninAllPrimeColumnEffectRadius * ‖x‖ ^ (2 : ℕ) := by
   rw [norm_sq_soninAllPrimeColumnOperator_apply_eq_tsum]
   have henergy := HTGeometry.orthogonalInstrumentEnergy_le
     (A := fun pk : Nat.Primes × ℕ =>
@@ -186,7 +186,7 @@ theorem norm_sq_soninAllPrimeColumnOperator_apply_le_effectRadius
     summable_four_mul_norm_soninLogPrimePowerCoefficient_sq x
   have hbudget :
       (∑' pk : Nat.Primes × ℕ,
-          (4 * ‖soninLogPrimePowerCoefficient pk‖) ^ 2) =
+          (4 * ‖soninLogPrimePowerCoefficient pk‖) ^ (2 : ℕ)) =
         soninAllPrimeColumnEffectRadius := by
     rw [soninAllPrimeColumnEffectRadius, soninAllPrimeColumnWeightSqMass,
       ← tsum_mul_left]
@@ -206,10 +206,10 @@ theorem norm_soninAllPrimeColumnOperator_le_sqrt_effectRadius
   apply (sq_le_sq₀ (norm_nonneg _)
     (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg x))).mp
   calc
-    ‖soninAllPrimeColumnOperator a ha x‖ ^ 2 ≤
-        soninAllPrimeColumnEffectRadius * ‖x‖ ^ 2 :=
+    ‖soninAllPrimeColumnOperator a ha x‖ ^ (2 : ℕ) ≤
+        soninAllPrimeColumnEffectRadius * ‖x‖ ^ (2 : ℕ) :=
       norm_sq_soninAllPrimeColumnOperator_apply_le_effectRadius a ha x
-    _ = (Real.sqrt soninAllPrimeColumnEffectRadius * ‖x‖) ^ 2 := by
+    _ = (Real.sqrt soninAllPrimeColumnEffectRadius * ‖x‖) ^ (2 : ℕ) := by
       rw [mul_pow, Real.sq_sqrt soninAllPrimeColumnEffectRadius_nonneg]
 
 /-- The Hilbert-coordinate presentation has the same aperture-independent norm ceiling as the
@@ -242,11 +242,11 @@ theorem norm_soninAllPrimeColumnCoordinateOperator_le_sqrt_effectRadius
 /-- Squared coordinate-column norm bound, in the form consumed by replica-moment estimates. -/
 theorem norm_soninAllPrimeColumnCoordinateOperator_sq_le_effectRadius
     (a : ℝ) (ha : 0 < a) :
-    ‖soninAllPrimeColumnCoordinateOperator a ha‖ ^ 2 ≤
+    ‖soninAllPrimeColumnCoordinateOperator a ha‖ ^ (2 : ℕ) ≤
       soninAllPrimeColumnEffectRadius := by
   calc
-    ‖soninAllPrimeColumnCoordinateOperator a ha‖ ^ 2 ≤
-        (Real.sqrt soninAllPrimeColumnEffectRadius) ^ 2 :=
+    ‖soninAllPrimeColumnCoordinateOperator a ha‖ ^ (2 : ℕ) ≤
+        (Real.sqrt soninAllPrimeColumnEffectRadius) ^ (2 : ℕ) :=
       (sq_le_sq₀ (norm_nonneg _)
         (Real.sqrt_nonneg _)).2
           (norm_soninAllPrimeColumnCoordinateOperator_le_sqrt_effectRadius a ha)
@@ -485,11 +485,11 @@ theorem summable_soninPrimePowerCrossOverlap_hsNormSq (a : ℝ) (ha : 0 < a) :
       (SoninHilbertIndex × SoninHilbertIndex) =>
       ‖inner ℂ (ContinuousLinearMap.hsBasis ℂ SoninL2 z.2.2)
         (soninPrimePowerCrossOverlap a z.1.1 z.1.2
-          (ContinuousLinearMap.hsBasis ℂ SoninL2 z.2.1))‖ ^ 2) := by
-    have hm : Summable (fun z : SoninAllPrimeIndex × SoninAllPrimeIndex => ‖M z‖ ^ 2) := hM
+          (ContinuousLinearMap.hsBasis ℂ SoninL2 z.2.1))‖ ^ (2 : ℕ)) := by
+    have hm : Summable (fun z : SoninAllPrimeIndex × SoninAllPrimeIndex => ‖M z‖ ^ (2 : ℕ)) := hM
     have he := (soninAllPrimeSecondMomentEquiv.summable_iff).mpr hm
     refine he.congr (fun z => ?_)
-    change ‖M (soninAllPrimeSecondMomentEquiv z)‖ ^ 2 = _
+    change ‖M (soninAllPrimeSecondMomentEquiv z)‖ ^ (2 : ℕ) = _
     rw [show M (soninAllPrimeSecondMomentEquiv z) =
         inner ℂ (ContinuousLinearMap.hsBasis ℂ SoninL2 z.2.2)
           (soninPrimePowerCrossOverlap a z.1.1 z.1.2
@@ -523,12 +523,12 @@ theorem hsNormSq_soninAllPrimeOutputEnergyOperator (a : ℝ) (ha : 0 < a) :
   have hnorm : ContinuousLinearMap.hsNormSq S = HilbertSchmidt.hsNormSq M := by
     rw [← hround, HilbertSchmidt.hsNormSq_toOperator]
   rw [show soninAllPrimeOutputEnergyOperator a ha = S from rfl, hnorm]
-  change (∑' z : SoninAllPrimeIndex × SoninAllPrimeIndex, ‖M z‖ ^ 2) = _
+  change (∑' z : SoninAllPrimeIndex × SoninAllPrimeIndex, ‖M z‖ ^ (2 : ℕ)) = _
   rw [← soninAllPrimeSecondMomentEquiv.tsum_eq
-    (fun z : SoninAllPrimeIndex × SoninAllPrimeIndex => ‖M z‖ ^ 2)]
+    (fun z : SoninAllPrimeIndex × SoninAllPrimeIndex => ‖M z‖ ^ (2 : ℕ))]
   have hflat : Summable (fun z : ((Nat.Primes × ℕ) × (Nat.Primes × ℕ)) ×
       (SoninHilbertIndex × SoninHilbertIndex) =>
-      ‖M (soninAllPrimeSecondMomentEquiv z)‖ ^ 2) :=
+      ‖M (soninAllPrimeSecondMomentEquiv z)‖ ^ (2 : ℕ)) :=
     (soninAllPrimeSecondMomentEquiv.summable_iff).mpr hM
   rw [hflat.tsum_prod]
   apply tsum_congr
@@ -537,7 +537,7 @@ theorem hsNormSq_soninAllPrimeOutputEnergyOperator (a : ℝ) (ha : 0 < a) :
     (soninPrimePowerCrossOverlap_isHilbertSchmidt a ha ab.1 ab.2)
     (ContinuousLinearMap.hsBasis ℂ SoninL2)]
   have hab : Summable (fun ji : SoninHilbertIndex × SoninHilbertIndex =>
-      ‖M (soninAllPrimeSecondMomentEquiv (ab, ji))‖ ^ 2) := by
+      ‖M (soninAllPrimeSecondMomentEquiv (ab, ji))‖ ^ (2 : ℕ)) := by
     exact hflat.comp_injective (fun ji ji' h => (Prod.ext_iff.mp h).2)
   rw [hab.tsum_prod]
   apply tsum_congr

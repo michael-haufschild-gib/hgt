@@ -10,8 +10,8 @@ cofactor expansion of a determinant along its first column: the alternating form
 the alternating sum of the values of the linear form against the form of the original element.  This
 is the wedge product with a one-form, and it computes the exterior derivative of a function times an
 invariant form.  Every form on a coordinate space is such a sum: the coordinate forms of the sets of
-coordinates are a basis of the invariant forms, and the coefficients of a form of class `C^1` are
-again of class `C^1`, so the exterior derivative of any form is the sum of the wedges of the
+coordinates are a basis of the invariant forms, and the coefficients of a form of class `C^(1 : ℕ)` are
+again of class `C^(1 : ℕ)`, so the exterior derivative of any form is the sum of the wedges of the
 differentials of its coefficients with the coordinate forms.
 
 * `exteriorConsMul` : multiplication by a vector on the left, one degree up.
@@ -32,7 +32,7 @@ section ConsMul
 
 variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] {q : ℕ}
 
-theorem ι_mem_exteriorPower_one (x : M) : ExteriorAlgebra.ι R x ∈ ⋀[R]^1 M := by
+theorem ι_mem_exteriorPower_one (x : M) : ExteriorAlgebra.ι R x ∈ ⋀[R]^(1 : ℕ) M := by
   simpa only [pow_one] using LinearMap.mem_range_self _ x
 
 /-- **Multiplication by a vector on the left**, raising the degree of an exterior power by one. -/

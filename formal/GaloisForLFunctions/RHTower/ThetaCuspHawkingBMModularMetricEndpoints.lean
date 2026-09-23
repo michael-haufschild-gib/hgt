@@ -13,10 +13,10 @@ private theorem compact_blocks (q : XiZeroCopy) (branch : Bool) (a : ℂ)
     (v : ℝ) (u : ℂ) (z : Fin 2 → ℝ) :
     let s := physicalRate q branch
     let c := s*(s-1)/4
-    let E := compactEnvelope (2*s) (a^2) v u
+    let E := compactEnvelope (2*s) (a^(2 : ℕ)) v u
     compactForcedMetric q branch a v u z =
       covectorBlock (E*(2*s*u)) (E*(-2*s/(1+u))) (fullAngularCovector q branch) z+
-      covectorBlock (E*(2*c*u*(1-(s+1)*u^2)))
+      covectorBlock (E*(2*c*u*(1-(s+1)*u^(2 : ℕ))))
         (E*(2*c*u*(1+(s+1)*u)/(1+u))) (fullSquareCovector q) z := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [compactForcedMetric,covectorBlock] <;> ring

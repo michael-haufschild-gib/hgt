@@ -21,7 +21,7 @@ noncomputable section
 
 private theorem hasSum_natSucc_mul_geometric
     {r : ℂ} (hr : ‖r‖ < 1) :
-    HasSum (fun n : ℕ => ((n : ℂ) + 1) * r ^ n) ((1 - r)⁻¹ ^ 2) := by
+    HasSum (fun n : ℕ => ((n : ℂ) + 1) * r ^ n) ((1 - r)⁻¹ ^ (2 : ℕ)) := by
   have hn := hasSum_coe_mul_geometric_of_norm_lt_one hr
   have hg := hasSum_geometric_of_norm_lt_one hr
   have h := hn.add hg
@@ -30,7 +30,7 @@ private theorem hasSum_natSucc_mul_geometric
     have hr1 : r = 1 := (sub_eq_zero.mp hz).symm
     rw [hr1] at hr
     norm_num at hr
-  have heq : r / (1 - r) ^ 2 + (1 - r)⁻¹ = (1 - r)⁻¹ ^ 2 := by
+  have heq : r / (1 - r) ^ (2 : ℕ) + (1 - r)⁻¹ = (1 - r)⁻¹ ^ (2 : ℕ) := by
     field_simp [hne]
     ring
   rw [heq] at h
@@ -79,13 +79,13 @@ private theorem norm_xiHardEdgeCayleyPhase_inv_le_three
 private theorem sqrt_add_I_mul_xiSpectralPoint_ne_zero
     {v : ℝ} (hv0 : 0 ≤ v) (q : XiZeroCopy) :
     (Real.sqrt v : ℂ) + I * xiSpectralPoint q ≠ 0 := by
-  have hden : (v : ℂ) + xiSpectralPoint q ^ 2 ≠ 0 := by
+  have hden : (v : ℂ) + xiSpectralPoint q ^ (2 : ℕ) ≠ 0 := by
     simpa [xiSquaredNode] using ofReal_add_xiSquaredNode_ne_zero hv0 q
   have hprod :
       ((Real.sqrt v : ℂ) + I * xiSpectralPoint q) *
         ((Real.sqrt v : ℂ) - I * xiSpectralPoint q) =
-          (v : ℂ) + xiSpectralPoint q ^ 2 := by
-    have hsqC : (Real.sqrt v : ℂ) ^ 2 = (v : ℂ) := by
+          (v : ℂ) + xiSpectralPoint q ^ (2 : ℕ) := by
+    have hsqC : (Real.sqrt v : ℂ) ^ (2 : ℕ) = (v : ℂ) := by
       exact_mod_cast Real.sq_sqrt hv0
     rw [show I * xiSpectralPoint q = xiSpectralPoint q * I by ring]
     ring_nf
@@ -96,13 +96,13 @@ private theorem sqrt_add_I_mul_xiSpectralPoint_ne_zero
 private theorem sqrt_sub_I_mul_xiSpectralPoint_ne_zero
     {v : ℝ} (hv0 : 0 ≤ v) (q : XiZeroCopy) :
     (Real.sqrt v : ℂ) - I * xiSpectralPoint q ≠ 0 := by
-  have hden : (v : ℂ) + xiSpectralPoint q ^ 2 ≠ 0 := by
+  have hden : (v : ℂ) + xiSpectralPoint q ^ (2 : ℕ) ≠ 0 := by
     simpa [xiSquaredNode] using ofReal_add_xiSquaredNode_ne_zero hv0 q
   have hprod :
       ((Real.sqrt v : ℂ) + I * xiSpectralPoint q) *
         ((Real.sqrt v : ℂ) - I * xiSpectralPoint q) =
-          (v : ℂ) + xiSpectralPoint q ^ 2 := by
-    have hsqC : (Real.sqrt v : ℂ) ^ 2 = (v : ℂ) := by
+          (v : ℂ) + xiSpectralPoint q ^ (2 : ℕ) := by
+    have hsqC : (Real.sqrt v : ℂ) ^ (2 : ℕ) = (v : ℂ) := by
       exact_mod_cast Real.sq_sqrt hv0
     rw [show I * xiSpectralPoint q = xiSpectralPoint q * I by ring]
     ring_nf
@@ -114,49 +114,49 @@ private theorem sqrt_sub_I_mul_xiSpectralPoint_ne_zero
 private def liEvenCrossPhaseGeneratingAtom
     (v s : ℝ) (q : XiZeroCopy) : ℂ :=
   let u := xiHardEdgeCayleyPhase (Real.sqrt v : ℂ) (xiSpectralPoint q)
-  let t : ℂ := (s : ℂ) ^ 2
+  let t : ℂ := (s : ℂ) ^ (2 : ℕ)
   (1 / (16 * (v : ℂ))) *
-    (u * (u ^ 2 - 1) * (1 - t * u ^ 2)⁻¹ ^ 2 +
-      u⁻¹ * (u⁻¹ ^ 2 - 1) * (1 - t * u⁻¹ ^ 2)⁻¹ ^ 2)
+    (u * (u ^ (2 : ℕ) - 1) * (1 - t * u ^ (2 : ℕ))⁻¹ ^ (2 : ℕ) +
+      u⁻¹ * (u⁻¹ ^ (2 : ℕ) - 1) * (1 - t * u⁻¹ ^ (2 : ℕ))⁻¹ ^ (2 : ℕ))
 
 private theorem hasSum_liEvenCrossSquareMassAdjacentFlux_mul_sq
     {v s : ℝ} (hv : 0 < v) (hv4 : v ≤ 1 / 4)
     (hs : 0 < s) (hs5 : s < 1 / 5) (q : XiZeroCopy) :
     HasSum (fun n : ℕ =>
-      liEvenCrossSquareMassAdjacentFlux v n q * (((s : ℂ) ^ 2) ^ n))
+      liEvenCrossSquareMassAdjacentFlux v n q * (((s : ℂ) ^ (2 : ℕ)) ^ n))
       (liEvenCrossPhaseGeneratingAtom v s q) := by
   let u : ℂ := xiHardEdgeCayleyPhase (Real.sqrt v : ℂ) (xiSpectralPoint q)
-  let t : ℂ := (s : ℂ) ^ 2
+  let t : ℂ := (s : ℂ) ^ (2 : ℕ)
   have hu : ‖u‖ ≤ 3 := norm_xiHardEdgeCayleyPhase_le_three hv.le hv4 q
   have hui : ‖u⁻¹‖ ≤ 3 := norm_xiHardEdgeCayleyPhase_inv_le_three hv.le hv4 q
-  have ht : ‖t‖ = s ^ 2 := by
+  have ht : ‖t‖ = s ^ (2 : ℕ) := by
     simp [t, abs_of_pos hs]
-  have htu : ‖t * u ^ 2‖ < 1 := by
-    have hu2 : ‖u‖ ^ 2 ≤ 3 ^ 2 :=
+  have htu : ‖t * u ^ (2 : ℕ)‖ < 1 := by
+    have hu2 : ‖u‖ ^ (2 : ℕ) ≤ 3 ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg u) hu 2
-    have hs2 : s ^ 2 < (1 / 5 : ℝ) ^ 2 := by nlinarith
+    have hs2 : s ^ (2 : ℕ) < (1 / 5 : ℝ) ^ (2 : ℕ) := by nlinarith
     calc
-      ‖t * u ^ 2‖ = s ^ 2 * ‖u‖ ^ 2 := by
+      ‖t * u ^ (2 : ℕ)‖ = s ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) := by
         simp [t, norm_pow, abs_of_pos hs]
-      _ ≤ s ^ 2 * 3 ^ 2 := by gcongr
+      _ ≤ s ^ (2 : ℕ) * 3 ^ (2 : ℕ) := by gcongr
       _ < 1 := by nlinarith [sq_nonneg s]
-  have htui : ‖t * u⁻¹ ^ 2‖ < 1 := by
-    have hu2 : ‖u⁻¹‖ ^ 2 ≤ 3 ^ 2 :=
+  have htui : ‖t * u⁻¹ ^ (2 : ℕ)‖ < 1 := by
+    have hu2 : ‖u⁻¹‖ ^ (2 : ℕ) ≤ 3 ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg u⁻¹) hui 2
-    have hs2 : s ^ 2 < (1 / 5 : ℝ) ^ 2 := by nlinarith
+    have hs2 : s ^ (2 : ℕ) < (1 / 5 : ℝ) ^ (2 : ℕ) := by nlinarith
     calc
-      ‖t * u⁻¹ ^ 2‖ = s ^ 2 * ‖u⁻¹‖ ^ 2 := by
+      ‖t * u⁻¹ ^ (2 : ℕ)‖ = s ^ (2 : ℕ) * ‖u⁻¹‖ ^ (2 : ℕ) := by
         simp [t, norm_pow, abs_of_pos hs]
-      _ ≤ s ^ 2 * 3 ^ 2 := by gcongr
+      _ ≤ s ^ (2 : ℕ) * 3 ^ (2 : ℕ) := by gcongr
       _ < 1 := by nlinarith [sq_nonneg s]
   have hsumU := hasSum_natSucc_mul_geometric htu
   have hsumUi := hasSum_natSucc_mul_geometric htui
-  let cU : ℂ := (1 / (16 * (v : ℂ))) * u * (u ^ 2 - 1)
-  let cUi : ℂ := (1 / (16 * (v : ℂ))) * u⁻¹ * (u⁻¹ ^ 2 - 1)
+  let cU : ℂ := (1 / (16 * (v : ℂ))) * u * (u ^ (2 : ℕ) - 1)
+  let cUi : ℂ := (1 / (16 * (v : ℂ))) * u⁻¹ * (u⁻¹ ^ (2 : ℕ) - 1)
   have hsum := (hsumU.mul_left cU).add (hsumUi.mul_left cUi)
   have hplus := sqrt_add_I_mul_xiSpectralPoint_ne_zero hv.le q
   have hminus := sqrt_sub_I_mul_xiSpectralPoint_ne_zero hv.le q
-  have hsqrt : Real.sqrt v ^ 2 = v := Real.sq_sqrt hv.le
+  have hsqrt : Real.sqrt v ^ (2 : ℕ) = v := Real.sq_sqrt hv.le
   have hcoord :
       liEvenCrossCayleyAtSquareMass v q =
         xiHardEdgeCayleyCoordinate (Real.sqrt v : ℂ) (xiSpectralPoint q) := by
@@ -177,8 +177,8 @@ private theorem hasSum_liEvenCrossSquareMassAdjacentFlux_mul_sq
     exact div_ne_zero hplus hminus
   have hterm (n : ℕ) :
       liEvenCrossSquareMassAdjacentFlux v n q * t ^ n =
-        cU * (((n : ℂ) + 1) * (t * u ^ 2) ^ n) +
-          cUi * (((n : ℂ) + 1) * (t * u⁻¹ ^ 2) ^ n) := by
+        cU * (((n : ℂ) + 1) * (t * u ^ (2 : ℕ)) ^ n) +
+          cUi * (((n : ℂ) + 1) * (t * u⁻¹ ^ (2 : ℕ)) ^ n) := by
     rw [liEvenCrossSquareMassAdjacentFlux, hcoord]
     rw [show 2 * ((n : ℤ) + 1) + 1 = ((2 * n + 3 : ℕ) : ℤ) by omega,
       show 2 * ((n : ℤ) + 1) - 1 = ((2 * n + 1 : ℕ) : ℤ) by omega]
@@ -188,14 +188,14 @@ private theorem hasSum_liEvenCrossSquareMassAdjacentFlux_mul_sq
       hu_def, hui_def]
     dsimp only [cU, cUi]
     rw [mul_pow]
-    have hp3 : u ^ (2 * n + 3) = u ^ 3 * (u ^ 2) ^ n := by
+    have hp3 : u ^ (2 * n + 3) = u ^ (3 : ℕ) * (u ^ (2 : ℕ)) ^ n := by
       rw [show 2 * n + 3 = 3 + 2 * n by omega, pow_add, pow_mul]
-    have hp1 : u ^ (2 * n + 1) = u * (u ^ 2) ^ n := by
+    have hp1 : u ^ (2 * n + 1) = u * (u ^ (2 : ℕ)) ^ n := by
       rw [show 2 * n + 1 = 1 + 2 * n by omega, pow_add, pow_mul]
       simp
-    have hip3 : u⁻¹ ^ (2 * n + 3) = u⁻¹ ^ 3 * (u⁻¹ ^ 2) ^ n := by
+    have hip3 : u⁻¹ ^ (2 * n + 3) = u⁻¹ ^ (3 : ℕ) * (u⁻¹ ^ (2 : ℕ)) ^ n := by
       rw [show 2 * n + 3 = 3 + 2 * n by omega, pow_add, pow_mul]
-    have hip1 : u⁻¹ ^ (2 * n + 1) = u⁻¹ * (u⁻¹ ^ 2) ^ n := by
+    have hip1 : u⁻¹ ^ (2 * n + 1) = u⁻¹ * (u⁻¹ ^ (2 : ℕ)) ^ n := by
       rw [show 2 * n + 1 = 1 + 2 * n by omega, pow_add, pow_mul]
       simp
     rw [hp3, hp1, hip3, hip1]
@@ -203,7 +203,7 @@ private theorem hasSum_liEvenCrossSquareMassAdjacentFlux_mul_sq
     ring
   have hsum' := HasSum.congr_fun hsum (fun n => hterm n)
   have hout :
-      cU * (1 - t * u ^ 2)⁻¹ ^ 2 + cUi * (1 - t * u⁻¹ ^ 2)⁻¹ ^ 2 =
+      cU * (1 - t * u ^ (2 : ℕ))⁻¹ ^ (2 : ℕ) + cUi * (1 - t * u⁻¹ ^ (2 : ℕ))⁻¹ ^ (2 : ℕ) =
         liEvenCrossPhaseGeneratingAtom v s q := by
     dsimp only [u, t, cU, cUi, liEvenCrossPhaseGeneratingAtom]
     ring
@@ -212,84 +212,84 @@ private theorem hasSum_liEvenCrossSquareMassAdjacentFlux_mul_sq
 
 /-- Reciprocal scale above the current mass. -/
 def liEvenCrossReciprocalScaleUp (v s : ℝ) : ℝ :=
-  v * ((1 + s) / (1 - s)) ^ 2
+  v * ((1 + s) / (1 - s)) ^ (2 : ℕ)
 
 /-- Reciprocal scale below the current mass. -/
 def liEvenCrossReciprocalScaleDown (v s : ℝ) : ℝ :=
-  v * ((1 - s) / (1 + s)) ^ 2
+  v * ((1 - s) / (1 + s)) ^ (2 : ℕ)
 
 /-- Rational squared-node form of one complete all-mode row. -/
 def liEvenCrossTwoScaleRationalAtom (v s : ℝ) (q : XiZeroCopy) : ℂ :=
-  -2 * (1 + (s : ℂ) ^ 2) / (1 - (s : ℂ) ^ 2) ^ 3 *
-    (xiSquaredNode q * ((v : ℂ) ^ 2 - xiSquaredNode q ^ 2) /
-      ((xiSquaredNode q + (liEvenCrossReciprocalScaleUp v s : ℂ)) ^ 2 *
-        (xiSquaredNode q + (liEvenCrossReciprocalScaleDown v s : ℂ)) ^ 2))
+  -2 * (1 + (s : ℂ) ^ (2 : ℕ)) / (1 - (s : ℂ) ^ (2 : ℕ)) ^ (3 : ℕ) *
+    (xiSquaredNode q * ((v : ℂ) ^ (2 : ℕ) - xiSquaredNode q ^ (2 : ℕ)) /
+      ((xiSquaredNode q + (liEvenCrossReciprocalScaleUp v s : ℂ)) ^ (2 : ℕ) *
+        (xiSquaredNode q + (liEvenCrossReciprocalScaleDown v s : ℂ)) ^ (2 : ℕ)))
 
 /-- Resolvent-side form before factorization into reciprocal scales. -/
 private def liEvenCrossResolventGeneratingAtom (v s : ℝ) (q : XiZeroCopy) : ℂ :=
   -2 * xiShiftedReciprocalSquare v q *
       (1 - (v : ℂ) * xiShiftedReciprocalSquare v q) *
       (2 * ((v : ℂ) * xiShiftedReciprocalSquare v q) - 1) *
-      (1 - (s : ℂ) ^ 4) /
-    ((1 - (s : ℂ) ^ 2) ^ 2 +
-      16 * (s : ℂ) ^ 2 * ((v : ℂ) * xiShiftedReciprocalSquare v q) *
-        (1 - (v : ℂ) * xiShiftedReciprocalSquare v q)) ^ 2
+      (1 - (s : ℂ) ^ (4 : ℕ)) /
+    ((1 - (s : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) +
+      16 * (s : ℂ) ^ (2 : ℕ) * ((v : ℂ) * xiShiftedReciprocalSquare v q) *
+        (1 - (v : ℂ) * xiShiftedReciprocalSquare v q)) ^ (2 : ℕ)
 
 private theorem add_inv_sq_eq_common_inv_sq
     {p q A B : ℂ} (hA : A ≠ 0) (hB : B ≠ 0) :
-    p * A⁻¹ ^ 2 + q * B⁻¹ ^ 2 =
-      (p * B ^ 2 + q * A ^ 2) * (A * B)⁻¹ ^ 2 := by
+    p * A⁻¹ ^ (2 : ℕ) + q * B⁻¹ ^ (2 : ℕ) =
+      (p * B ^ (2 : ℕ) + q * A ^ (2 : ℕ)) * (A * B)⁻¹ ^ (2 : ℕ) := by
   field_simp [hA, hB]
 
 private theorem phaseAdjacent_eq_resolvent_algebra
     {u t x : ℂ} (hu : u ≠ 0)
-    (hdu : 1 - t * u ^ 2 ≠ 0) (hdui : 1 - t * u⁻¹ ^ 2 ≠ 0)
+    (hdu : 1 - t * u ^ (2 : ℕ) ≠ 0) (hdui : 1 - t * u⁻¹ ^ (2 : ℕ) ≠ 0)
     (hx : x = (2 + u + u⁻¹) / 4) :
     (1 / 16) *
-        (u * (u ^ 2 - 1) * (1 - t * u ^ 2)⁻¹ ^ 2 +
-          u⁻¹ * (u⁻¹ ^ 2 - 1) * (1 - t * u⁻¹ ^ 2)⁻¹ ^ 2) =
-      -2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ 2) /
-        ((1 - t) ^ 2 + 16 * t * x * (1 - x)) ^ 2 := by
+        (u * (u ^ (2 : ℕ) - 1) * (1 - t * u ^ (2 : ℕ))⁻¹ ^ (2 : ℕ) +
+          u⁻¹ * (u⁻¹ ^ (2 : ℕ) - 1) * (1 - t * u⁻¹ ^ (2 : ℕ))⁻¹ ^ (2 : ℕ)) =
+      -2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ (2 : ℕ)) /
+        ((1 - t) ^ (2 : ℕ) + 16 * t * x * (1 - x)) ^ (2 : ℕ) := by
   have hc : 2 * x - 1 = (u + u⁻¹) / 2 := by
     rw [hx]
     field_simp [hu]
     ring
   have hD :
-      (1 - t) ^ 2 + 16 * t * x * (1 - x) =
-        (1 - t * u ^ 2) * (1 - t * u⁻¹ ^ 2) := by
+      (1 - t) ^ (2 : ℕ) + 16 * t * x * (1 - x) =
+        (1 - t * u ^ (2 : ℕ)) * (1 - t * u⁻¹ ^ (2 : ℕ)) := by
     rw [hx]
     field_simp [hu]
     ring
-  let A := 1 - t * u ^ 2
-  let B := 1 - t * u⁻¹ ^ 2
+  let A := 1 - t * u ^ (2 : ℕ)
+  let B := 1 - t * u⁻¹ ^ (2 : ℕ)
   have hcommon := add_inv_sq_eq_common_inv_sq
-    (p := u * (u ^ 2 - 1)) (q := u⁻¹ * (u⁻¹ ^ 2 - 1)) hdu hdui
+    (p := u * (u ^ (2 : ℕ) - 1)) (q := u⁻¹ * (u⁻¹ ^ (2 : ℕ) - 1)) hdu hdui
   have hpoly :
       (1 / 16) *
-          (u * (u ^ 2 - 1) * B ^ 2 +
-            u⁻¹ * (u⁻¹ ^ 2 - 1) * A ^ 2) =
-        -2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ 2) := by
+          (u * (u ^ (2 : ℕ) - 1) * B ^ (2 : ℕ) +
+            u⁻¹ * (u⁻¹ ^ (2 : ℕ) - 1) * A ^ (2 : ℕ)) =
+        -2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ (2 : ℕ)) := by
     dsimp only [A, B]
     rw [hx]
     field_simp [hu]
     ring
   calc
     (1 / 16) *
-        (u * (u ^ 2 - 1) * (1 - t * u ^ 2)⁻¹ ^ 2 +
-          u⁻¹ * (u⁻¹ ^ 2 - 1) * (1 - t * u⁻¹ ^ 2)⁻¹ ^ 2) =
+        (u * (u ^ (2 : ℕ) - 1) * (1 - t * u ^ (2 : ℕ))⁻¹ ^ (2 : ℕ) +
+          u⁻¹ * (u⁻¹ ^ (2 : ℕ) - 1) * (1 - t * u⁻¹ ^ (2 : ℕ))⁻¹ ^ (2 : ℕ)) =
       (1 / 16) *
-        (u * (u ^ 2 - 1) * B ^ 2 +
-          u⁻¹ * (u⁻¹ ^ 2 - 1) * A ^ 2) * (A * B)⁻¹ ^ 2 := by
+        (u * (u ^ (2 : ℕ) - 1) * B ^ (2 : ℕ) +
+          u⁻¹ * (u⁻¹ ^ (2 : ℕ) - 1) * A ^ (2 : ℕ)) * (A * B)⁻¹ ^ (2 : ℕ) := by
         rw [hcommon]
         ring
-    _ = (-2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ 2)) *
-        (A * B)⁻¹ ^ 2 := by rw [hpoly]
-    _ = -2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ 2) /
-        ((1 - t) ^ 2 + 16 * t * x * (1 - x)) ^ 2 := by
+    _ = (-2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ (2 : ℕ))) *
+        (A * B)⁻¹ ^ (2 : ℕ) := by rw [hpoly]
+    _ = -2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ (2 : ℕ)) /
+        ((1 - t) ^ (2 : ℕ) + 16 * t * x * (1 - x)) ^ (2 : ℕ) := by
       rw [hD]
       simp only [div_eq_mul_inv, inv_pow, mul_pow]
       dsimp only [A, B]
-      rw [show (u ^ 2)⁻¹ = u⁻¹ ^ 2 by rw [inv_pow]]
+      rw [show (u ^ (2 : ℕ))⁻¹ = u⁻¹ ^ (2 : ℕ) by rw [inv_pow]]
 
 private theorem liEvenCrossPhaseGeneratingAtom_eq_resolventAtom
     {v s : ℝ} (hv : 0 < v) (hv4 : v ≤ 1 / 4)
@@ -299,7 +299,7 @@ private theorem liEvenCrossPhaseGeneratingAtom_eq_resolventAtom
   let a : ℂ := Real.sqrt v
   let α : ℂ := xiSpectralPoint q
   let u : ℂ := xiHardEdgeCayleyPhase a α
-  let t : ℂ := (s : ℂ) ^ 2
+  let t : ℂ := (s : ℂ) ^ (2 : ℕ)
   let r : ℂ := xiShiftedReciprocalSquare v q
   let x : ℂ := (v : ℂ) * r
   have hplus : a + I * α ≠ 0 := sqrt_add_I_mul_xiSpectralPoint_ne_zero hv.le q
@@ -309,31 +309,31 @@ private theorem liEvenCrossPhaseGeneratingAtom_eq_resolventAtom
     exact div_ne_zero hplus hminus
   have hu : ‖u‖ ≤ 3 := norm_xiHardEdgeCayleyPhase_le_three hv.le hv4 q
   have hui : ‖u⁻¹‖ ≤ 3 := norm_xiHardEdgeCayleyPhase_inv_le_three hv.le hv4 q
-  have htu : ‖t * u ^ 2‖ < 1 := by
-    have hu2 : ‖u‖ ^ 2 ≤ 3 ^ 2 := pow_le_pow_left₀ (norm_nonneg u) hu 2
-    have hs2 : s ^ 2 < (1 / 5 : ℝ) ^ 2 := by nlinarith
+  have htu : ‖t * u ^ (2 : ℕ)‖ < 1 := by
+    have hu2 : ‖u‖ ^ (2 : ℕ) ≤ 3 ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg u) hu 2
+    have hs2 : s ^ (2 : ℕ) < (1 / 5 : ℝ) ^ (2 : ℕ) := by nlinarith
     calc
-      ‖t * u ^ 2‖ = s ^ 2 * ‖u‖ ^ 2 := by simp [t, norm_pow, abs_of_pos hs]
-      _ ≤ s ^ 2 * 3 ^ 2 := by gcongr
+      ‖t * u ^ (2 : ℕ)‖ = s ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ) := by simp [t, norm_pow, abs_of_pos hs]
+      _ ≤ s ^ (2 : ℕ) * 3 ^ (2 : ℕ) := by gcongr
       _ < 1 := by nlinarith [sq_nonneg s]
-  have htui : ‖t * u⁻¹ ^ 2‖ < 1 := by
-    have hu2 : ‖u⁻¹‖ ^ 2 ≤ 3 ^ 2 := pow_le_pow_left₀ (norm_nonneg u⁻¹) hui 2
-    have hs2 : s ^ 2 < (1 / 5 : ℝ) ^ 2 := by nlinarith
+  have htui : ‖t * u⁻¹ ^ (2 : ℕ)‖ < 1 := by
+    have hu2 : ‖u⁻¹‖ ^ (2 : ℕ) ≤ 3 ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg u⁻¹) hui 2
+    have hs2 : s ^ (2 : ℕ) < (1 / 5 : ℝ) ^ (2 : ℕ) := by nlinarith
     calc
-      ‖t * u⁻¹ ^ 2‖ = s ^ 2 * ‖u⁻¹‖ ^ 2 := by simp [t, norm_pow, abs_of_pos hs]
-      _ ≤ s ^ 2 * 3 ^ 2 := by gcongr
+      ‖t * u⁻¹ ^ (2 : ℕ)‖ = s ^ (2 : ℕ) * ‖u⁻¹‖ ^ (2 : ℕ) := by simp [t, norm_pow, abs_of_pos hs]
+      _ ≤ s ^ (2 : ℕ) * 3 ^ (2 : ℕ) := by gcongr
       _ < 1 := by nlinarith [sq_nonneg s]
-  have hdu : 1 - t * u ^ 2 ≠ 0 := by
+  have hdu : 1 - t * u ^ (2 : ℕ) ≠ 0 := by
     intro h
-    have : t * u ^ 2 = 1 := (sub_eq_zero.mp h).symm
+    have : t * u ^ (2 : ℕ) = 1 := (sub_eq_zero.mp h).symm
     rw [this] at htu
     norm_num at htu
-  have hdui : 1 - t * u⁻¹ ^ 2 ≠ 0 := by
+  have hdui : 1 - t * u⁻¹ ^ (2 : ℕ) ≠ 0 := by
     intro h
-    have : t * u⁻¹ ^ 2 = 1 := (sub_eq_zero.mp h).symm
+    have : t * u⁻¹ ^ (2 : ℕ) = 1 := (sub_eq_zero.mp h).symm
     rw [this] at htui
     norm_num at htui
-  have hsqrt : Real.sqrt v ^ 2 = v := Real.sq_sqrt hv.le
+  have hsqrt : Real.sqrt v ^ (2 : ℕ) = v := Real.sq_sqrt hv.le
   have hcoord :
       liEvenCrossCayleyAtSquareMass v q =
         xiHardEdgeCayleyCoordinate a α := by
@@ -367,14 +367,14 @@ private theorem liEvenCrossPhaseGeneratingAtom_eq_resolventAtom
     liEvenCrossPhaseGeneratingAtom v s q =
         (v : ℂ)⁻¹ *
           ((1 / 16) *
-            (u * (u ^ 2 - 1) * (1 - t * u ^ 2)⁻¹ ^ 2 +
-              u⁻¹ * (u⁻¹ ^ 2 - 1) * (1 - t * u⁻¹ ^ 2)⁻¹ ^ 2)) := by
+            (u * (u ^ (2 : ℕ) - 1) * (1 - t * u ^ (2 : ℕ))⁻¹ ^ (2 : ℕ) +
+              u⁻¹ * (u⁻¹ ^ (2 : ℕ) - 1) * (1 - t * u⁻¹ ^ (2 : ℕ))⁻¹ ^ (2 : ℕ))) := by
       dsimp only [liEvenCrossPhaseGeneratingAtom, u, t, a, α]
       have hvC : (v : ℂ) ≠ 0 := ofReal_ne_zero.mpr hv.ne'
       field_simp [hvC]
     _ = (v : ℂ)⁻¹ *
-        (-2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ 2) /
-          ((1 - t) ^ 2 + 16 * t * x * (1 - x)) ^ 2) := by rw [halg]
+        (-2 * x * (1 - x) * (2 * x - 1) * (1 - t ^ (2 : ℕ)) /
+          ((1 - t) ^ (2 : ℕ) + 16 * t * x * (1 - x)) ^ (2 : ℕ)) := by rw [halg]
     _ = liEvenCrossResolventGeneratingAtom v s q := by
       dsimp only [liEvenCrossResolventGeneratingAtom, x, r, t]
       have hvC : (v : ℂ) ≠ 0 := ofReal_ne_zero.mpr hv.ne'
@@ -385,10 +385,10 @@ private theorem resolventTwoScaleFactor_algebra
     (hvb : v + b ≠ 0) (hbA : b + A ≠ 0) (hbB : b + B ≠ 0)
     (ht : 1 - t ≠ 0) :
     -2 * (v + b)⁻¹ * (1 - v / (v + b)) *
-          (2 * (v / (v + b)) - 1) * (1 - t ^ 2) /
-        (((1 - t) ^ 2 * (b + A) * (b + B) / (v + b) ^ 2) ^ 2) =
-      -2 * (1 + t) / (1 - t) ^ 3 *
-        (b * (v ^ 2 - b ^ 2) / ((b + A) ^ 2 * (b + B) ^ 2)) := by
+          (2 * (v / (v + b)) - 1) * (1 - t ^ (2 : ℕ)) /
+        (((1 - t) ^ (2 : ℕ) * (b + A) * (b + B) / (v + b) ^ (2 : ℕ)) ^ (2 : ℕ)) =
+      -2 * (1 + t) / (1 - t) ^ (3 : ℕ) *
+        (b * (v ^ (2 : ℕ) - b ^ (2 : ℕ)) / ((b + A) ^ (2 : ℕ) * (b + B) ^ (2 : ℕ))) := by
   field_simp [hvb, hbA, hbB, ht]
   ring
 
@@ -400,7 +400,7 @@ private theorem liEvenCrossResolventGeneratingAtom_eq_rationalAtom
   let b : ℂ := xiSquaredNode q
   let A : ℂ := liEvenCrossReciprocalScaleUp v s
   let B : ℂ := liEvenCrossReciprocalScaleDown v s
-  let t : ℂ := (s : ℂ) ^ 2
+  let t : ℂ := (s : ℂ) ^ (2 : ℕ)
   have hsm : (1 - s : ℝ) ≠ 0 := by nlinarith
   have hsp : (1 + s : ℝ) ≠ 0 := by nlinarith
   have hsmC : (1 - (s : ℂ)) ≠ 0 := by exact_mod_cast hsm
@@ -428,9 +428,9 @@ private theorem liEvenCrossResolventGeneratingAtom_eq_rationalAtom
   have hr : xiShiftedReciprocalSquare v q = ((v : ℂ) + b)⁻¹ := by
     simpa only [b] using xiShiftedReciprocalSquare_eq_inv hv.le q
   have hfactor :
-      (1 - t) ^ 2 + 16 * t * ((v : ℂ) / ((v : ℂ) + b)) *
+      (1 - t) ^ (2 : ℕ) + 16 * t * ((v : ℂ) / ((v : ℂ) + b)) *
           (1 - (v : ℂ) / ((v : ℂ) + b)) =
-        (1 - t) ^ 2 * (b + A) * (b + B) / ((v : ℂ) + b) ^ 2 := by
+        (1 - t) ^ (2 : ℕ) * (b + A) * (b + B) / ((v : ℂ) + b) ^ (2 : ℕ) := by
     dsimp only [t, A, B, liEvenCrossReciprocalScaleUp,
       liEvenCrossReciprocalScaleDown]
     push_cast
@@ -441,18 +441,18 @@ private theorem liEvenCrossResolventGeneratingAtom_eq_rationalAtom
     liEvenCrossResolventGeneratingAtom v s q =
         -2 * ((v : ℂ) + b)⁻¹ *
             (1 - (v : ℂ) / ((v : ℂ) + b)) *
-            (2 * ((v : ℂ) / ((v : ℂ) + b)) - 1) * (1 - t ^ 2) /
-          (((1 - t) ^ 2 * (b + A) * (b + B) /
-            ((v : ℂ) + b) ^ 2) ^ 2) := by
+            (2 * ((v : ℂ) / ((v : ℂ) + b)) - 1) * (1 - t ^ (2 : ℕ)) /
+          (((1 - t) ^ (2 : ℕ) * (b + A) * (b + B) /
+            ((v : ℂ) + b) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
       rw [liEvenCrossResolventGeneratingAtom, hr]
       rw [show (v : ℂ) * ((v : ℂ) + b)⁻¹ =
           (v : ℂ) / ((v : ℂ) + b) by ring]
       rw [hfactor]
       dsimp only [t]
       ring
-    _ = -2 * (1 + t) / (1 - t) ^ 3 *
-        (b * ((v : ℂ) ^ 2 - b ^ 2) /
-          ((b + A) ^ 2 * (b + B) ^ 2)) := halg
+    _ = -2 * (1 + t) / (1 - t) ^ (3 : ℕ) *
+        (b * ((v : ℂ) ^ (2 : ℕ) - b ^ (2 : ℕ)) /
+          ((b + A) ^ (2 : ℕ) * (b + B) ^ (2 : ℕ))) := halg
     _ = liEvenCrossTwoScaleRationalAtom v s q := by
       dsimp only [liEvenCrossTwoScaleRationalAtom, b, A, B, t]
 
@@ -573,8 +573,8 @@ private theorem summable_liEvenCrossGeneratingFlux_prod
     {v s : ℝ} (hv : 0 < v) (hv4 : v ≤ 1 / 4)
     (hs : 0 < s) (hs5 : s < 1 / 5) :
     Summable (fun p : XiZeroCopy × ℕ =>
-      liEvenCrossSquareMassAdjacentFlux v p.2 p.1 * (((s : ℂ) ^ 2) ^ p.2)) := by
-  let ratio : ℝ := 25 * s ^ 2
+      liEvenCrossSquareMassAdjacentFlux v p.2 p.1 * (((s : ℂ) ^ (2 : ℕ)) ^ p.2)) := by
+  let ratio : ℝ := 25 * s ^ (2 : ℕ)
   have hratio0 : 0 ≤ ratio := by positivity
   have hratio1 : ratio < 1 := by
     dsimp only [ratio]
@@ -599,12 +599,12 @@ private theorem summable_liEvenCrossGeneratingFlux_prod
   · intro p
     rw [norm_mul, norm_pow]
     have hflux := norm_liEvenCrossSquareMassAdjacentFlux_le hv hv4 p.2 p.1
-    have hsNorm : ‖(s : ℂ)‖ ^ 2 = s ^ 2 := by simp [abs_of_pos hs]
+    have hsNorm : ‖(s : ℂ)‖ ^ (2 : ℕ) = s ^ (2 : ℕ) := by simp [abs_of_pos hs]
     calc
       ‖liEvenCrossSquareMassAdjacentFlux v p.2 p.1‖ *
-          ‖(s : ℂ) ^ 2‖ ^ p.2 ≤
+          ‖(s : ℂ) ^ (2 : ℕ)‖ ^ p.2 ≤
         (10 * ((p.2 : ℝ) + 1) * 25 ^ p.2 *
-          ‖xiZeroCopyReciprocalSquare p.1‖) * (s ^ 2) ^ p.2 := by
+          ‖xiZeroCopyReciprocalSquare p.1‖) * (s ^ (2 : ℕ)) ^ p.2 := by
             rw [norm_pow, hsNorm]
             gcongr
       _ = ‖xiZeroCopyReciprocalSquare p.1‖ *
@@ -620,10 +620,10 @@ theorem liEvenCrossSquareMassAdjacentFlux_generating_eq_twoScaleAtom_tsum
     {v s : ℝ} (hv : 0 < v) (hv4 : v ≤ 1 / 4)
     (hs : 0 < s) (hs5 : s < 1 / 5) :
     (∑' n : ℕ, (∑' q : XiZeroCopy,
-        liEvenCrossSquareMassAdjacentFlux v n q) * (((s : ℂ) ^ 2) ^ n)) =
+        liEvenCrossSquareMassAdjacentFlux v n q) * (((s : ℂ) ^ (2 : ℕ)) ^ n)) =
       ∑' q : XiZeroCopy, liEvenCrossTwoScaleRationalAtom v s q := by
   let F : XiZeroCopy → ℕ → ℂ := fun q n =>
-    liEvenCrossSquareMassAdjacentFlux v n q * (((s : ℂ) ^ 2) ^ n)
+    liEvenCrossSquareMassAdjacentFlux v n q * (((s : ℂ) ^ (2 : ℕ)) ^ n)
   have hprod : Summable (fun p : XiZeroCopy × ℕ => F p.1 p.2) := by
     simpa only [F] using summable_liEvenCrossGeneratingFlux_prod hv hv4 hs hs5
   have hinner (q : XiZeroCopy) :
@@ -637,7 +637,7 @@ theorem liEvenCrossSquareMassAdjacentFlux_generating_eq_twoScaleAtom_tsum
         liEvenCrossResolventGeneratingAtom_eq_rationalAtom hv hs hs5 q
   calc
     (∑' n : ℕ, (∑' q : XiZeroCopy,
-        liEvenCrossSquareMassAdjacentFlux v n q) * (((s : ℂ) ^ 2) ^ n)) =
+        liEvenCrossSquareMassAdjacentFlux v n q) * (((s : ℂ) ^ (2 : ℕ)) ^ n)) =
         ∑' n : ℕ, ∑' q : XiZeroCopy, F q n := by
       apply tsum_congr
       intro n
@@ -663,38 +663,38 @@ def liEvenCrossRadialDilationResponse (y : ℝ) : ℝ :=
 theorem tsum_xiSquaredNode_div_add_shift_sq_eq_shiftedMoment_response
     {y : ℝ} (hy : 0 ≤ y) :
     (∑' q : XiZeroCopy,
-        xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ 2) =
+        xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ (2 : ℕ)) =
       xiShiftedReciprocalMoment y 0 -
         (y : ℂ) * xiShiftedReciprocalMoment y 1 := by
   have h0 := summable_xiShiftedReciprocalSquare_pow hy 0
   have h1 := summable_xiShiftedReciprocalSquare_pow hy 1
   have h0' : Summable (fun q : XiZeroCopy => xiShiftedReciprocalSquare y q) := by
     simpa using h0
-  have h1' : Summable (fun q : XiZeroCopy => xiShiftedReciprocalSquare y q ^ 2) := by
+  have h1' : Summable (fun q : XiZeroCopy => xiShiftedReciprocalSquare y q ^ (2 : ℕ)) := by
     simpa using h1
   have hatom (q : XiZeroCopy) :
-      xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ 2 =
+      xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ (2 : ℕ) =
         xiShiftedReciprocalSquare y q -
-          (y : ℂ) * xiShiftedReciprocalSquare y q ^ 2 := by
+          (y : ℂ) * xiShiftedReciprocalSquare y q ^ (2 : ℕ) := by
     have hne : (y : ℂ) + xiSquaredNode q ≠ 0 :=
       ofReal_add_xiSquaredNode_ne_zero hy q
     rw [xiShiftedReciprocalSquare_eq_inv hy q]
     calc
-      xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ 2 =
-          xiSquaredNode q / ((y : ℂ) + xiSquaredNode q) ^ 2 := by
+      xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ (2 : ℕ) =
+          xiSquaredNode q / ((y : ℂ) + xiSquaredNode q) ^ (2 : ℕ) := by
             rw [add_comm (xiSquaredNode q) (y : ℂ)]
       _ = ((y : ℂ) + xiSquaredNode q)⁻¹ -
-          (y : ℂ) * ((y : ℂ) + xiSquaredNode q)⁻¹ ^ 2 := by
+          (y : ℂ) * ((y : ℂ) + xiSquaredNode q)⁻¹ ^ (2 : ℕ) := by
             field_simp [hne]
             ring
   calc
     (∑' q : XiZeroCopy,
-        xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ 2) =
+        xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ (2 : ℕ)) =
       ∑' q : XiZeroCopy,
         (xiShiftedReciprocalSquare y q -
-          (y : ℂ) * xiShiftedReciprocalSquare y q ^ 2) := tsum_congr hatom
+          (y : ℂ) * xiShiftedReciprocalSquare y q ^ (2 : ℕ)) := tsum_congr hatom
     _ = (∑' q : XiZeroCopy, xiShiftedReciprocalSquare y q) -
-        ∑' q : XiZeroCopy, (y : ℂ) * xiShiftedReciprocalSquare y q ^ 2 := by
+        ∑' q : XiZeroCopy, (y : ℂ) * xiShiftedReciprocalSquare y q ^ (2 : ℕ) := by
       rw [h0'.tsum_sub (h1'.mul_left (y : ℂ))]
     _ = xiShiftedReciprocalMoment y 0 -
         (y : ℂ) * xiShiftedReciprocalMoment y 1 := by
@@ -704,10 +704,10 @@ theorem tsum_xiSquaredNode_div_add_shift_sq_eq_shiftedMoment_response
 theorem summable_xiSquaredNode_div_add_shift_sq
     {y : ℝ} (hy : 0 ≤ y) :
     Summable (fun q : XiZeroCopy =>
-      xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ 2) := by
+      xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ (2 : ℕ)) := by
   have h0 : Summable (fun q : XiZeroCopy => xiShiftedReciprocalSquare y q) := by
     simpa using summable_xiShiftedReciprocalSquare_pow hy 0
-  have h1 : Summable (fun q : XiZeroCopy => xiShiftedReciprocalSquare y q ^ 2) := by
+  have h1 : Summable (fun q : XiZeroCopy => xiShiftedReciprocalSquare y q ^ (2 : ℕ)) := by
     simpa using summable_xiShiftedReciprocalSquare_pow hy 1
   refine (h0.sub (h1.mul_left (y : ℂ))).congr fun q => ?_
   have hne : (y : ℂ) + xiSquaredNode q ≠ 0 :=
@@ -715,24 +715,24 @@ theorem summable_xiSquaredNode_div_add_shift_sq
   rw [xiShiftedReciprocalSquare_eq_inv hy q]
   calc
     ((y : ℂ) + xiSquaredNode q)⁻¹ -
-        (y : ℂ) * ((y : ℂ) + xiSquaredNode q)⁻¹ ^ 2 =
-      xiSquaredNode q / ((y : ℂ) + xiSquaredNode q) ^ 2 := by
+        (y : ℂ) * ((y : ℂ) + xiSquaredNode q)⁻¹ ^ (2 : ℕ) =
+      xiSquaredNode q / ((y : ℂ) + xiSquaredNode q) ^ (2 : ℕ) := by
         field_simp [hne]
         ring
-    _ = xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ 2 := by
+    _ = xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ (2 : ℕ) := by
       rw [add_comm (y : ℂ) (xiSquaredNode q)]
 
 private theorem twoScaleRationalAtom_partialFraction
-    {v b A B t : ℂ} (hAB : A * B = v ^ 2)
+    {v b A B t : ℂ} (hAB : A * B = v ^ (2 : ℕ))
     (hABne : A - B ≠ 0) (hbA : b + A ≠ 0) (hbB : b + B ≠ 0) :
-    -2 * (1 + t) / (1 - t) ^ 3 *
-        (b * (v ^ 2 - b ^ 2) / ((b + A) ^ 2 * (b + B) ^ 2)) =
-      (2 * (1 + t) / (1 - t) ^ 3) *
-        ((A * (b / (b + A) ^ 2) - B * (b / (b + B) ^ 2)) /
+    -2 * (1 + t) / (1 - t) ^ (3 : ℕ) *
+        (b * (v ^ (2 : ℕ) - b ^ (2 : ℕ)) / ((b + A) ^ (2 : ℕ) * (b + B) ^ (2 : ℕ))) =
+      (2 * (1 + t) / (1 - t) ^ (3 : ℕ)) *
+        ((A * (b / (b + A) ^ (2 : ℕ)) - B * (b / (b + B) ^ (2 : ℕ))) /
           (A - B)) := by
   have hinner :
-      b * (v ^ 2 - b ^ 2) / ((b + A) ^ 2 * (b + B) ^ 2) =
-        (B * (b / (b + B) ^ 2) - A * (b / (b + A) ^ 2)) /
+      b * (v ^ (2 : ℕ) - b ^ (2 : ℕ)) / ((b + A) ^ (2 : ℕ) * (b + B) ^ (2 : ℕ)) =
+        (B * (b / (b + B) ^ (2 : ℕ)) - A * (b / (b + A) ^ (2 : ℕ))) /
           (A - B) := by
     rw [← hAB]
     field_simp [hABne, hbA, hbB]
@@ -744,13 +744,13 @@ private theorem liEvenCrossTwoScaleRationalAtom_eq_responseAtom
     {v s : ℝ} (hv : 0 < v) (hs : 0 < s) (hs5 : s < 1 / 5)
     (q : XiZeroCopy) :
     liEvenCrossTwoScaleRationalAtom v s q =
-      (2 * (1 + (s : ℂ) ^ 2) / (1 - (s : ℂ) ^ 2) ^ 3) *
+      (2 * (1 + (s : ℂ) ^ (2 : ℕ)) / (1 - (s : ℂ) ^ (2 : ℕ)) ^ (3 : ℕ)) *
         (((liEvenCrossReciprocalScaleUp v s : ℂ) *
               (xiSquaredNode q /
-                (xiSquaredNode q + (liEvenCrossReciprocalScaleUp v s : ℂ)) ^ 2) -
+                (xiSquaredNode q + (liEvenCrossReciprocalScaleUp v s : ℂ)) ^ (2 : ℕ)) -
             (liEvenCrossReciprocalScaleDown v s : ℂ) *
               (xiSquaredNode q /
-                (xiSquaredNode q + (liEvenCrossReciprocalScaleDown v s : ℂ)) ^ 2)) /
+                (xiSquaredNode q + (liEvenCrossReciprocalScaleDown v s : ℂ)) ^ (2 : ℕ))) /
           ((liEvenCrossReciprocalScaleUp v s : ℂ) -
             (liEvenCrossReciprocalScaleDown v s : ℂ))) := by
   let A : ℝ := liEvenCrossReciprocalScaleUp v s
@@ -765,7 +765,7 @@ private theorem liEvenCrossTwoScaleRationalAtom_eq_responseAtom
     have hsm : 0 < 1 - s := by nlinarith
     have hsp : 0 < 1 + s := by nlinarith
     positivity
-  have hABreal : A * B = v ^ 2 := by
+  have hABreal : A * B = v ^ (2 : ℕ) := by
     dsimp only [A, B, liEvenCrossReciprocalScaleUp,
       liEvenCrossReciprocalScaleDown]
     field_simp [hsm, hsp]
@@ -776,7 +776,7 @@ private theorem liEvenCrossTwoScaleRationalAtom_eq_responseAtom
       liEvenCrossReciprocalScaleDown] at hEq
     field_simp [hsm, hsp, hv.ne'] at hEq
     nlinarith [sq_nonneg s]
-  have hABC : (A : ℂ) * (B : ℂ) = (v : ℂ) ^ 2 := by exact_mod_cast hABreal
+  have hABC : (A : ℂ) * (B : ℂ) = (v : ℂ) ^ (2 : ℕ) := by exact_mod_cast hABreal
   have hdiffC : (A : ℂ) - (B : ℂ) ≠ 0 := by exact_mod_cast hdiff
   have hbA : xiSquaredNode q + (A : ℂ) ≠ 0 := by
     simpa only [add_comm] using ofReal_add_xiSquaredNode_ne_zero hApos.le q
@@ -784,7 +784,7 @@ private theorem liEvenCrossTwoScaleRationalAtom_eq_responseAtom
     simpa only [add_comm] using ofReal_add_xiSquaredNode_ne_zero hBpos.le q
   have halg := twoScaleRationalAtom_partialFraction
     (v := (v : ℂ)) (b := xiSquaredNode q) (A := (A : ℂ)) (B := (B : ℂ))
-    (t := (s : ℂ) ^ 2) hABC hdiffC hbA hbB
+    (t := (s : ℂ) ^ (2 : ℕ)) hABC hdiffC hbA hbB
   simpa only [liEvenCrossTwoScaleRationalAtom, A, B] using
     halg
 
@@ -793,7 +793,7 @@ shifted-moment response.  No zero truncation or mode truncation occurs. -/
 theorem tsum_liEvenCrossTwoScaleRationalAtom_eq_radialResponse_divDiff
     {v s : ℝ} (hv : 0 < v) (hs : 0 < s) (hs5 : s < 1 / 5) :
     (∑' q : XiZeroCopy, liEvenCrossTwoScaleRationalAtom v s q) =
-      (2 * (1 + (s : ℂ) ^ 2) / (1 - (s : ℂ) ^ 2) ^ 3) *
+      (2 * (1 + (s : ℂ) ^ (2 : ℕ)) / (1 - (s : ℂ) ^ (2 : ℕ)) ^ (3 : ℕ)) *
         ((liEvenCrossComplexRadialDilationResponse
               (liEvenCrossReciprocalScaleUp v s) -
             liEvenCrossComplexRadialDilationResponse
@@ -802,9 +802,9 @@ theorem tsum_liEvenCrossTwoScaleRationalAtom_eq_radialResponse_divDiff
             (liEvenCrossReciprocalScaleDown v s : ℂ))) := by
   let A : ℝ := liEvenCrossReciprocalScaleUp v s
   let B : ℝ := liEvenCrossReciprocalScaleDown v s
-  let C : ℂ := 2 * (1 + (s : ℂ) ^ 2) / (1 - (s : ℂ) ^ 2) ^ 3
+  let C : ℂ := 2 * (1 + (s : ℂ) ^ (2 : ℕ)) / (1 - (s : ℂ) ^ (2 : ℕ)) ^ (3 : ℕ)
   let f : ℝ → XiZeroCopy → ℂ := fun y q =>
-    xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ 2
+    xiSquaredNode q / (xiSquaredNode q + (y : ℂ)) ^ (2 : ℕ)
   have hApos : 0 < A := by
     dsimp only [A, liEvenCrossReciprocalScaleUp]
     have hsm : 0 < 1 - s := by nlinarith
@@ -858,7 +858,7 @@ theorem tsum_liEvenCrossTwoScaleRationalAtom_eq_radialResponse_divDiff
         simpa only [f] using
           tsum_xiSquaredNode_div_add_shift_sq_eq_shiftedMoment_response hBpos.le]
       simp only [liEvenCrossComplexRadialDilationResponse]
-    _ = (2 * (1 + (s : ℂ) ^ 2) / (1 - (s : ℂ) ^ 2) ^ 3) *
+    _ = (2 * (1 + (s : ℂ) ^ (2 : ℕ)) / (1 - (s : ℂ) ^ (2 : ℕ)) ^ (3 : ℕ)) *
         ((liEvenCrossComplexRadialDilationResponse
               (liEvenCrossReciprocalScaleUp v s) -
             liEvenCrossComplexRadialDilationResponse
@@ -885,9 +885,9 @@ theorem summable_liEvenCrossSquareMassAdjacentFlux_generating_rows
     (hs : 0 < s) (hs5 : s < 1 / 5) :
     Summable (fun n : ℕ =>
       (∑' q : XiZeroCopy, liEvenCrossSquareMassAdjacentFlux v n q) *
-        (((s : ℂ) ^ 2) ^ n)) := by
+        (((s : ℂ) ^ (2 : ℕ)) ^ n)) := by
   let F : XiZeroCopy → ℕ → ℂ := fun q n =>
-    liEvenCrossSquareMassAdjacentFlux v n q * (((s : ℂ) ^ 2) ^ n)
+    liEvenCrossSquareMassAdjacentFlux v n q * (((s : ℂ) ^ (2 : ℕ)) ^ n)
   have hprod : Summable (fun p : XiZeroCopy × ℕ => F p.1 p.2) := by
     simpa only [F] using summable_liEvenCrossGeneratingFlux_prod hv hv4 hs hs5
   have hswap : Summable (fun p : ℕ × XiZeroCopy => F p.2 p.1) := by
@@ -906,8 +906,8 @@ theorem liEvenCrossSquareMassAdjacentFlux_generating_eq_radialResponse_divDiff
     {v s : ℝ} (hv : 0 < v) (hv4 : v ≤ 1 / 4)
     (hs : 0 < s) (hs5 : s < 1 / 5) :
     (∑' n : ℕ, (∑' q : XiZeroCopy,
-        liEvenCrossSquareMassAdjacentFlux v n q) * (((s : ℂ) ^ 2) ^ n)) =
-      (2 * (1 + (s : ℂ) ^ 2) / (1 - (s : ℂ) ^ 2) ^ 3) *
+        liEvenCrossSquareMassAdjacentFlux v n q) * (((s : ℂ) ^ (2 : ℕ)) ^ n)) =
+      (2 * (1 + (s : ℂ) ^ (2 : ℕ)) / (1 - (s : ℂ) ^ (2 : ℕ)) ^ (3 : ℕ)) *
         ((liEvenCrossComplexRadialDilationResponse
               (liEvenCrossReciprocalScaleUp v s) -
             liEvenCrossComplexRadialDilationResponse
@@ -925,8 +925,8 @@ theorem liEvenCrossSquareMassAdjacentCurrent_generating_eq_radialResponse_divDif
     {v s : ℝ} (hv : 0 < v) (hv4 : v ≤ 1 / 4)
     (hs : 0 < s) (hs5 : s < 1 / 5) :
     (∑' n : ℕ,
-        liEvenCrossSquareMassAdjacentCurrent v n * (s ^ 2) ^ n) =
-      (2 * (1 + s ^ 2) / (1 - s ^ 2) ^ 3) *
+        liEvenCrossSquareMassAdjacentCurrent v n * (s ^ (2 : ℕ)) ^ n) =
+      (2 * (1 + s ^ (2 : ℕ)) / (1 - s ^ (2 : ℕ)) ^ (3 : ℕ)) *
         ((liEvenCrossRadialDilationResponse
               (liEvenCrossReciprocalScaleUp v s) -
             liEvenCrossRadialDilationResponse
@@ -935,18 +935,18 @@ theorem liEvenCrossSquareMassAdjacentCurrent_generating_eq_radialResponse_divDif
             liEvenCrossReciprocalScaleDown v s)) := by
   let row : ℕ → ℂ := fun n =>
     (∑' q : XiZeroCopy, liEvenCrossSquareMassAdjacentFlux v n q) *
-      (((s : ℂ) ^ 2) ^ n)
+      (((s : ℂ) ^ (2 : ℕ)) ^ n)
   have hrow : Summable row := by
     simpa only [row] using
       summable_liEvenCrossSquareMassAdjacentFlux_generating_rows hv hv4 hs hs5
   have hterm (n : ℕ) :
-      liEvenCrossSquareMassAdjacentCurrent v n * (s ^ 2) ^ n = (row n).re := by
+      liEvenCrossSquareMassAdjacentCurrent v n * (s ^ (2 : ℕ)) ^ n = (row n).re := by
     rw [liEvenCrossSquareMassAdjacentCurrent_eq_re_tsum hv n]
     dsimp only [row]
     rw [mul_re]
-    have hre : ((((s : ℂ) ^ 2) ^ n).re) = (s ^ 2) ^ n := by
+    have hre : ((((s : ℂ) ^ (2 : ℕ)) ^ n).re) = (s ^ (2 : ℕ)) ^ n := by
       norm_cast
-    have him : ((((s : ℂ) ^ 2) ^ n).im) = 0 := by
+    have him : ((((s : ℂ) ^ (2 : ℕ)) ^ n).im) = 0 := by
       norm_cast
     rw [hre, him]
     ring
@@ -964,11 +964,11 @@ theorem liEvenCrossSquareMassAdjacentCurrent_generating_eq_radialResponse_divDif
     positivity
   calc
     (∑' n : ℕ,
-        liEvenCrossSquareMassAdjacentCurrent v n * (s ^ 2) ^ n) =
+        liEvenCrossSquareMassAdjacentCurrent v n * (s ^ (2 : ℕ)) ^ n) =
       ∑' n : ℕ, (row n).re := tsum_congr hterm
     _ = (∑' n : ℕ, row n).re := by
       rw [Complex.re_tsum hrow]
-    _ = ((2 * (1 + (s : ℂ) ^ 2) / (1 - (s : ℂ) ^ 2) ^ 3) *
+    _ = ((2 * (1 + (s : ℂ) ^ (2 : ℕ)) / (1 - (s : ℂ) ^ (2 : ℕ)) ^ (3 : ℕ)) *
         ((liEvenCrossComplexRadialDilationResponse
               (liEvenCrossReciprocalScaleUp v s) -
             liEvenCrossComplexRadialDilationResponse
@@ -976,7 +976,7 @@ theorem liEvenCrossSquareMassAdjacentCurrent_generating_eq_radialResponse_divDif
           ((liEvenCrossReciprocalScaleUp v s : ℂ) -
             (liEvenCrossReciprocalScaleDown v s : ℂ)))).re := by
       exact congrArg Complex.re hcomplex
-    _ = (2 * (1 + s ^ 2) / (1 - s ^ 2) ^ 3) *
+    _ = (2 * (1 + s ^ (2 : ℕ)) / (1 - s ^ (2 : ℕ)) ^ (3 : ℕ)) *
         ((liEvenCrossRadialDilationResponse
               (liEvenCrossReciprocalScaleUp v s) -
             liEvenCrossRadialDilationResponse

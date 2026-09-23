@@ -31,19 +31,19 @@ noncomputable section
 /-- The imaginary part of digamma is strictly positive at every positive height. -/
 theorem verticalDigammaIm_pos (sigma t : ℝ) (ht : 0 < t) :
     0 < ReflectedDigammaAnomaly.verticalDigammaIm sigma t := by
-  let first : ℝ := t / (sigma ^ 2 + t ^ 2)
+  let first : ℝ := t / (sigma ^ (2 : ℕ) + t ^ (2 : ℕ))
   have hfirst : 0 < first := by
     dsimp [first]
     positivity
   have hlim :=
     ReflectedDigammaAnomaly.tendsto_verticalDigammaIm_partialSums (sigma := sigma) ht
   have hbound : ∀ᶠ N : ℕ in atTop,
-      first ≤ ∑ n ∈ Finset.range N, t / ((sigma + n) ^ 2 + t ^ 2) := by
+      first ≤ ∑ n ∈ Finset.range N, t / ((sigma + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
     filter_upwards [eventually_ge_atTop 1] with N hN
     dsimp [first]
     have hs := Finset.single_le_sum
       (s := Finset.range N)
-      (f := fun n : ℕ => t / ((sigma + n) ^ 2 + t ^ 2))
+      (f := fun n : ℕ => t / ((sigma + n) ^ (2 : ℕ) + t ^ (2 : ℕ)))
       (fun n hn => by positivity) (show 0 ∈ Finset.range N by
         simp only [Finset.mem_range]
         omega)

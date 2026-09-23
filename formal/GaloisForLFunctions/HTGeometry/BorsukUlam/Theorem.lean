@@ -29,26 +29,26 @@ section Coordinates
 variable {m : ℕ}
 
 theorem abs_coord_le_norm (z : EuclideanSpace ℝ (Fin m)) (i : Fin m) : |z i| ≤ ‖z‖ := by
-  have h1 : ‖z‖ ^ 2 = ∑ j, ‖z j‖ ^ 2 := EuclideanSpace.norm_sq_eq z
-  have h2 : ‖z i‖ ^ 2 ≤ ∑ j, ‖z j‖ ^ 2 :=
-    Finset.single_le_sum (f := fun j => ‖z j‖ ^ 2) (fun j _ => sq_nonneg _) (Finset.mem_univ i)
-  have h3 : |z i| ^ 2 ≤ ‖z‖ ^ 2 := by
+  have h1 : ‖z‖ ^ (2 : ℕ) = ∑ j, ‖z j‖ ^ (2 : ℕ) := EuclideanSpace.norm_sq_eq z
+  have h2 : ‖z i‖ ^ (2 : ℕ) ≤ ∑ j, ‖z j‖ ^ (2 : ℕ) :=
+    Finset.single_le_sum (f := fun j => ‖z j‖ ^ (2 : ℕ)) (fun j _ => sq_nonneg _) (Finset.mem_univ i)
+  have h3 : |z i| ^ (2 : ℕ) ≤ ‖z‖ ^ (2 : ℕ) := by
     rw [h1]
     simpa [Real.norm_eq_abs] using h2
   nlinarith [abs_nonneg (z i), norm_nonneg z]
 
 theorem norm_le_card_mul_max (hm : 1 ≤ m) (z : EuclideanSpace ℝ (Fin m)) (i : Fin m)
     (hi : ∀ j, |z j| ≤ |z i|) : ‖z‖ ≤ m * |z i| := by
-  have h1 : ‖z‖ ^ 2 = ∑ j, ‖z j‖ ^ 2 := EuclideanSpace.norm_sq_eq z
-  have h2 : ∑ j, ‖z j‖ ^ 2 ≤ ∑ _j : Fin m, |z i| ^ 2 := by
+  have h1 : ‖z‖ ^ (2 : ℕ) = ∑ j, ‖z j‖ ^ (2 : ℕ) := EuclideanSpace.norm_sq_eq z
+  have h2 : ∑ j, ‖z j‖ ^ (2 : ℕ) ≤ ∑ _j : Fin m, |z i| ^ (2 : ℕ) := by
     refine Finset.sum_le_sum (fun j _ => ?_)
     rw [Real.norm_eq_abs]
     nlinarith [abs_nonneg (z j), hi j]
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at h2
   have hmR : (1 : ℝ) ≤ m := by exact_mod_cast hm
   have habs : 0 ≤ |z i| := abs_nonneg _
-  have h5 : ‖z‖ ^ 2 ≤ (m : ℝ) * |z i| ^ 2 := by rw [h1]; exact h2
-  have hmm : (m : ℝ) * |z i| ^ 2 ≤ ((m : ℝ) * |z i|) ^ 2 := by nlinarith [sq_nonneg (|z i|)]
+  have h5 : ‖z‖ ^ (2 : ℕ) ≤ (m : ℝ) * |z i| ^ (2 : ℕ) := by rw [h1]; exact h2
+  have hmm : (m : ℝ) * |z i| ^ (2 : ℕ) ≤ ((m : ℝ) * |z i|) ^ (2 : ℕ) := by nlinarith [sq_nonneg (|z i|)]
   have hprod : 0 ≤ (m : ℝ) * |z i| := mul_nonneg (by linarith) habs
   by_contra hcon
   push Not at hcon
@@ -83,9 +83,9 @@ theorem norm_le_one_of_ell1 {y : EuclideanSpace ℝ (Fin (n + 1))} (hy : y ∈ e
     have := Finset.single_le_sum (f := fun j => |y j|) (fun j _ => abs_nonneg _) (Finset.mem_univ i)
     rw [hsum] at this
     exact this
-  have hsq : ‖y‖ ^ 2 ≤ 1 := by
+  have hsq : ‖y‖ ^ (2 : ℕ) ≤ 1 := by
     rw [EuclideanSpace.norm_sq_eq]
-    calc ∑ i, ‖y i‖ ^ 2 ≤ ∑ i, |y i| := by
+    calc ∑ i, ‖y i‖ ^ (2 : ℕ) ≤ ∑ i, |y i| := by
           refine Finset.sum_le_sum (fun i _ => ?_)
           rw [Real.norm_eq_abs]
           nlinarith [abs_nonneg (y i), hle i]

@@ -40,32 +40,32 @@ the Kaiser energy estimate hold eventually in physical aperture. -/
 theorem eventually_kaiserPhysicalGridSynthesis_injective {m : ℕ} (hm : 0 < m) :
     ∀ᶠ a : ℝ in atTop, ∀ ha : 0 < a,
       Function.Injective (kaiserPhysicalGridSynthesis (m := m) a ha) := by
-  have hc : ∀ᶠ a : ℝ in atTop, 1 ≤ 2 * Real.pi * a ^ 2 :=
+  have hc : ∀ᶠ a : ℝ in atTop, 1 ≤ 2 * Real.pi * a ^ (2 : ℕ) :=
     tendsto_two_pi_mul_sq_atTop.eventually_ge_atTop 1
-  have hsqrt : Tendsto (fun a : ℝ => Real.sqrt (2 * Real.pi * a ^ 2)) atTop atTop :=
+  have hsqrt : Tendsto (fun a : ℝ => Real.sqrt (2 * Real.pi * a ^ (2 : ℕ))) atTop atTop :=
     Real.tendsto_sqrt_atTop.comp tendsto_two_pi_mul_sq_atTop
   have hscale : ∀ᶠ a : ℝ in atTop,
-      8 * (m : ℝ) ^ 2 ≤ Real.sqrt (2 * Real.pi * a ^ 2) :=
-    hsqrt.eventually_ge_atTop (8 * (m : ℝ) ^ 2)
+      8 * (m : ℝ) ^ (2 : ℕ) ≤ Real.sqrt (2 * Real.pi * a ^ (2 : ℕ)) :=
+    hsqrt.eventually_ge_atTop (8 * (m : ℝ) ^ (2 : ℕ))
   have hsqrtDiv : Tendsto
-      (fun a : ℝ => Real.sqrt (2 * Real.pi * a ^ 2) / 2) atTop atTop :=
+      (fun a : ℝ => Real.sqrt (2 * Real.pi * a ^ (2 : ℕ)) / 2) atTop atTop :=
     hsqrt.atTop_div_const (by norm_num)
   have hnegSqrt : Tendsto
-      (fun a : ℝ => -(Real.sqrt (2 * Real.pi * a ^ 2) / 2)) atTop atBot := by
+      (fun a : ℝ => -(Real.sqrt (2 * Real.pi * a ^ (2 : ℕ)) / 2)) atTop atBot := by
     simpa only [Function.comp_def] using Filter.tendsto_neg_atTop_atBot.comp hsqrtDiv
   have hexpSqrt : Tendsto
-      (fun a : ℝ => Real.exp (-(Real.sqrt (2 * Real.pi * a ^ 2) / 2)))
+      (fun a : ℝ => Real.exp (-(Real.sqrt (2 * Real.pi * a ^ (2 : ℕ)) / 2)))
       atTop (nhds 0) :=
     Real.tendsto_exp_atBot.comp hnegSqrt
   have hsmallTendsto : Tendsto
       (fun a : ℝ => 32 * (m : ℝ) *
-        Real.exp (-(Real.sqrt (2 * Real.pi * a ^ 2) / 2))) atTop (nhds 0) := by
+        Real.exp (-(Real.sqrt (2 * Real.pi * a ^ (2 : ℕ)) / 2))) atTop (nhds 0) := by
     convert (tendsto_const_nhds.mul hexpSqrt : Tendsto
       (fun a : ℝ => (32 * (m : ℝ)) *
-        Real.exp (-(Real.sqrt (2 * Real.pi * a ^ 2) / 2))) atTop
+        Real.exp (-(Real.sqrt (2 * Real.pi * a ^ (2 : ℕ)) / 2))) atTop
       (nhds ((32 * (m : ℝ)) * 0))) using 1 <;> norm_num
   have hsmall : ∀ᶠ a : ℝ in atTop,
-      32 * (m : ℝ) * Real.exp (-(Real.sqrt (2 * Real.pi * a ^ 2) / 2)) ≤ 1 :=
+      32 * (m : ℝ) * Real.exp (-(Real.sqrt (2 * Real.pi * a ^ (2 : ℕ)) / 2)) ≤ 1 :=
     ((tendsto_order.1 hsmallTendsto).2 1 (by norm_num)).mono fun _ h => h.le
   filter_upwards [hc, hscale, hsmall] with a hca hscalea hsmalla
   intro ha
@@ -84,7 +84,7 @@ positive loss in the normalized exponent. -/
 theorem eventually_evenProlateLeakageValue_le_kaiser {n : ℕ} {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ a : ℝ in atTop,
       evenProlateLeakageValue a n ≤
-        Real.exp (-((2 - ε) * (2 * Real.pi * a ^ 2))) := by
+        Real.exp (-((2 - ε) * (2 * Real.pi * a ^ (2 : ℕ)))) := by
   let m : ℕ := n + 1
   have hm : 0 < m := by simp [m]
   have hinj := eventually_kaiserPhysicalGridSynthesis_injective hm
@@ -98,29 +98,29 @@ theorem eventually_evenProlateLeakageValue_le_kaiser {n : ℕ} {ε : ℝ} (hε :
   intro f hf
   rcases hf with ⟨z, rfl⟩
   rw [kaiserPhysicalGridSynthesis_apply]
-  let q : ℝ := Real.exp ((2 - ε) * (2 * Real.pi * a ^ 2))
-  let δ : ℝ := Real.exp (-((2 - ε) * (2 * Real.pi * a ^ 2)))
+  let q : ℝ := Real.exp ((2 - ε) * (2 * Real.pi * a ^ (2 : ℕ)))
+  let δ : ℝ := Real.exp (-((2 - ε) * (2 * Real.pi * a ^ (2 : ℕ))))
   have hq : 0 < q := Real.exp_pos _
   have hqδ : q * δ = 1 := by
     rw [← Real.exp_add]
     simp [q, δ]
   have hpacket := hdefecta ha z
-  change (1 - δ) * ‖kaiserPhysicalGridComplex a ha z‖ ^ 2 ≤
-    ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ 2
-  have hmul : q * ((1 - δ) * ‖kaiserPhysicalGridComplex a ha z‖ ^ 2) ≤
-      q * ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ 2 := by
+  change (1 - δ) * ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) ≤
+    ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ (2 : ℕ)
+  have hmul : q * ((1 - δ) * ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ)) ≤
+      q * ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ (2 : ℕ) := by
     calc
-    q * ((1 - δ) * ‖kaiserPhysicalGridComplex a ha z‖ ^ 2) =
-        q * ‖kaiserPhysicalGridComplex a ha z‖ ^ 2 -
-          (q * δ) * ‖kaiserPhysicalGridComplex a ha z‖ ^ 2 := by ring
-    _ = q * ‖kaiserPhysicalGridComplex a ha z‖ ^ 2 -
-          ‖kaiserPhysicalGridComplex a ha z‖ ^ 2 := by rw [hqδ, one_mul]
+    q * ((1 - δ) * ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ)) =
+        q * ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) -
+          (q * δ) * ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) := by ring
+    _ = q * ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) -
+          ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) := by rw [hqδ, one_mul]
     _ ≤ q * ‖evenTimeBandFourier a
-          (kaiserPhysicalGridComplex a ha z)‖ ^ 2 := by
+          (kaiserPhysicalGridComplex a ha z)‖ ^ (2 : ℕ) := by
       change q *
-          (‖kaiserPhysicalGridComplex a ha z‖ ^ 2 -
-            ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ 2) ≤
-        ‖kaiserPhysicalGridComplex a ha z‖ ^ 2 at hpacket
+          (‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) -
+            ‖evenTimeBandFourier a (kaiserPhysicalGridComplex a ha z)‖ ^ (2 : ℕ)) ≤
+        ‖kaiserPhysicalGridComplex a ha z‖ ^ (2 : ℕ) at hpacket
       linarith
   nlinarith
 
@@ -129,7 +129,7 @@ theorem eventually_evenProlateSignedLeakage_le_kaiser
     {n : ℕ} {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ a : ℝ in atTop,
       evenProlateSignedLeakage a n ≤
-        Real.exp (-((2 - ε) * (2 * Real.pi * a ^ 2))) := by
+        Real.exp (-((2 - ε) * (2 * Real.pi * a ^ (2 : ℕ)))) := by
   filter_upwards [eventually_evenProlateLeakageValue_le_kaiser (n := n) hε,
     eventually_gt_atTop (0 : ℝ)] with a hle ha
   rw [evenProlateSignedLeakage,
@@ -140,7 +140,7 @@ theorem eventually_evenProlateSignedLeakage_le_kaiser
 `exp (-2 pi a²)`, with no assumptions or supplied data. -/
 theorem eventually_evenProlateLeakageValue_le_exp_neg_two_pi_sq (n : ℕ) :
     ∀ᶠ a : ℝ in atTop,
-      evenProlateLeakageValue a n ≤ Real.exp (-(2 * Real.pi * a ^ 2)) := by
+      evenProlateLeakageValue a n ≤ Real.exp (-(2 * Real.pi * a ^ (2 : ℕ))) := by
   filter_upwards [eventually_evenProlateLeakageValue_le_kaiser (n := n)
     (ε := 1) zero_lt_one] with a ha
   convert ha using 1 <;> ring
@@ -148,7 +148,7 @@ theorem eventually_evenProlateLeakageValue_le_exp_neg_two_pi_sq (n : ℕ) :
 /-- The same closed exponential bound for the actual signed greedy prolate leakage. -/
 theorem eventually_evenProlateSignedLeakage_le_exp_neg_two_pi_sq (n : ℕ) :
     ∀ᶠ a : ℝ in atTop,
-      evenProlateSignedLeakage a n ≤ Real.exp (-(2 * Real.pi * a ^ 2)) := by
+      evenProlateSignedLeakage a n ≤ Real.exp (-(2 * Real.pi * a ^ (2 : ℕ))) := by
   filter_upwards [eventually_evenProlateLeakageValue_le_exp_neg_two_pi_sq n,
     eventually_gt_atTop (0 : ℝ)] with a hle ha
   rw [evenProlateSignedLeakage,

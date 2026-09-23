@@ -48,7 +48,7 @@ theorem xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_arithmeticSource_div
             (xiShiftedRealMomentSequence (Real.sqrt v)) n) /
         (32 * xiShiftedCanonicalAdmissionNorm v (n + 1)) := by
   have hv0 : 0 ≤ v := by linarith
-  have hsq : (Real.sqrt v) ^ 2 = v := Real.sq_sqrt hv0
+  have hsq : (Real.sqrt v) ^ (2 : ℕ) = v := Real.sq_sqrt hv0
   have hsqrt0 : 0 ≤ Real.sqrt v := Real.sqrt_nonneg v
   have hsqrt : 1 / 2 < Real.sqrt v := by nlinarith
   have hsource :=

@@ -70,18 +70,18 @@ theorem deningerMixedSourceReversal_eq (lam Q : ℂ) :
 
 /-- `‖Q‖²` as a product with the conjugate. -/
 theorem deningerNormSq_eq_mul_conj (Q : ℂ) :
-    ((‖Q‖ ^ 2 : ℝ) : ℂ) = Q * (starRingEnd ℂ) Q := by
+    ((‖Q‖ ^ (2 : ℕ) : ℝ) : ℂ) = Q * (starRingEnd ℂ) Q := by
   rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
 
 /-- **The analytic dagger is the metric adjoint coefficient.**  With the forced weights
 `h_{F∪{p}} = h_F ‖Q‖⁻²`, the ratio of weights times the conjugate transition is exactly
 `Q⁻¹ conj λ`. -/
 theorem deningerMixedAdjoint_metric_eq (lam Q : ℂ) (hQ : Q ≠ 0) :
-    ((‖Q‖⁻¹ ^ 2 : ℝ) : ℂ) * (starRingEnd ℂ) (lam * Q) = deningerMixedAdjoint lam Q := by
+    ((‖Q‖⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) * (starRingEnd ℂ) (lam * Q) = deningerMixedAdjoint lam Q := by
   have hQc : (starRingEnd ℂ) Q ≠ 0 := by simpa using hQ
-  have hns : ((‖Q‖ ^ 2 : ℝ) : ℂ) = Q * (starRingEnd ℂ) Q := deningerNormSq_eq_mul_conj Q
-  have hns0 : ((‖Q‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by rw [hns]; exact mul_ne_zero hQ hQc
-  have hinv : ((‖Q‖⁻¹ ^ 2 : ℝ) : ℂ) = (Q * (starRingEnd ℂ) Q)⁻¹ := by
+  have hns : ((‖Q‖ ^ (2 : ℕ) : ℝ) : ℂ) = Q * (starRingEnd ℂ) Q := deningerNormSq_eq_mul_conj Q
+  have hns0 : ((‖Q‖ ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 := by rw [hns]; exact mul_ne_zero hQ hQc
+  have hinv : ((‖Q‖⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) = (Q * (starRingEnd ℂ) Q)⁻¹ := by
     rw [← hns]
     push_cast
     ring
@@ -91,7 +91,7 @@ theorem deningerMixedAdjoint_metric_eq (lam Q : ℂ) (hQ : Q ≠ 0) :
 /-- **The adjunction identity `(5)`.**  The analytic dagger is characterized by moving the
 transition across the two weighted Hermitian pairings. -/
 theorem deningerMixed_adjunction (lam Q : ℂ) (hQ : Q ≠ 0) (hF : ℝ) (z w : ℂ) :
-    deningerMixedPairing (hF * ‖Q‖⁻¹ ^ 2) (lam * Q * z) w =
+    deningerMixedPairing (hF * ‖Q‖⁻¹ ^ (2 : ℕ)) (lam * Q * z) w =
       deningerMixedPairing hF z (deningerMixedAdjoint lam Q * w) := by
   have hadj := deningerMixedAdjoint_metric_eq lam Q hQ
   rw [deningerMixedPairing, deningerMixedPairing, ← hadj]
@@ -103,10 +103,10 @@ theorem deningerMixed_adjunction (lam Q : ℂ) (hQ : Q ≠ 0) (hF : ℝ) (z w : 
 modulus; the Euler gauge cancels. -/
 theorem deningerMixedModularRatio (lam Q : ℂ) (hlam : lam ≠ 0) (hQ : Q ≠ 0) :
     deningerMixedSourceReversal lam Q * (deningerMixedAdjoint lam Q)⁻¹ =
-      ((‖lam‖⁻¹ ^ 2 : ℝ) : ℂ) := by
+      ((‖lam‖⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hlc : (starRingEnd ℂ) lam ≠ 0 := by simpa using hlam
-  have hns : ((‖lam‖ ^ 2 : ℝ) : ℂ) = lam * (starRingEnd ℂ) lam := deningerNormSq_eq_mul_conj lam
-  have hinv : ((‖lam‖⁻¹ ^ 2 : ℝ) : ℂ) = (lam * (starRingEnd ℂ) lam)⁻¹ := by
+  have hns : ((‖lam‖ ^ (2 : ℕ) : ℝ) : ℂ) = lam * (starRingEnd ℂ) lam := deningerNormSq_eq_mul_conj lam
+  have hinv : ((‖lam‖⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) = (lam * (starRingEnd ℂ) lam)⁻¹ := by
     rw [← hns]
     push_cast
     ring
@@ -122,10 +122,10 @@ theorem deningerMixedDefect_eq (lam Q : ℂ) :
 /-- **The defect `(7)`, second form.**  All factors outside `‖λ‖⁻² − 1` are nonzero. -/
 theorem deningerMixedDefect_eq_mul_sub_one (lam Q : ℂ) (hlam : lam ≠ 0) :
     deningerMixedDefect lam Q =
-      Q⁻¹ * (starRingEnd ℂ) lam * (((‖lam‖⁻¹ ^ 2 : ℝ) : ℂ) - 1) := by
+      Q⁻¹ * (starRingEnd ℂ) lam * (((‖lam‖⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) - 1) := by
   have hlc : (starRingEnd ℂ) lam ≠ 0 := by simpa using hlam
-  have hns : ((‖lam‖ ^ 2 : ℝ) : ℂ) = lam * (starRingEnd ℂ) lam := deningerNormSq_eq_mul_conj lam
-  have hinv : ((‖lam‖⁻¹ ^ 2 : ℝ) : ℂ) = (lam * (starRingEnd ℂ) lam)⁻¹ := by
+  have hns : ((‖lam‖ ^ (2 : ℕ) : ℝ) : ℂ) = lam * (starRingEnd ℂ) lam := deningerNormSq_eq_mul_conj lam
+  have hinv : ((‖lam‖⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) = (lam * (starRingEnd ℂ) lam)⁻¹ := by
     rw [← hns]
     push_cast
     ring
@@ -137,7 +137,7 @@ locus of the radial character. -/
 theorem deningerMixedDefect_eq_zero_iff_norm_one (lam Q : ℂ) (hlam : lam ≠ 0) (hQ : Q ≠ 0) :
     deningerMixedDefect lam Q = 0 ↔ ‖lam‖ = 1 := by
   have hQinv : Q⁻¹ ≠ 0 := inv_ne_zero hQ
-  have hns : ((‖lam‖ ^ 2 : ℝ) : ℂ) = lam * (starRingEnd ℂ) lam := deningerNormSq_eq_mul_conj lam
+  have hns : ((‖lam‖ ^ (2 : ℕ) : ℝ) : ℂ) = lam * (starRingEnd ℂ) lam := deningerNormSq_eq_mul_conj lam
   rw [deningerMixedDefect_eq, mul_eq_zero]
   simp only [hQinv, false_or]
   rw [sub_eq_zero]
@@ -146,8 +146,8 @@ theorem deningerMixedDefect_eq_zero_iff_norm_one (lam Q : ℂ) (hlam : lam ≠ 0
     have h2 : lam * (starRingEnd ℂ) lam = 1 := by
       rw [← h]
       field_simp
-    have h3 : ((‖lam‖ ^ 2 : ℝ) : ℂ) = ((1 : ℝ) : ℂ) := by rw [hns, h2]; norm_num
-    have h4 : ‖lam‖ ^ 2 = 1 := by exact_mod_cast h3
+    have h3 : ((‖lam‖ ^ (2 : ℕ) : ℝ) : ℂ) = ((1 : ℝ) : ℂ) := by rw [hns, h2]; norm_num
+    have h4 : ‖lam‖ ^ (2 : ℕ) = 1 := by exact_mod_cast h3
     nlinarith [norm_nonneg lam]
   · intro h
     have h2 : lam * (starRingEnd ℂ) lam = 1 := by
@@ -249,8 +249,8 @@ theorem deningerFailureNerveMixedDefect_eq_zero_iff (hpm : 2 ≤ (p : ℕ) ^ m) 
 source reversal and analytic dagger are `‖λ‖⁻²` and `‖λ‖²`, and their difference is the
 tensor-square radial mate curvature. -/
 theorem deningerFailureNerveReverseGainDifference_eq :
-    ‖bilateralHalfDensityCharacter ((p : ℕ) ^ m) s‖⁻¹ ^ 2 -
-        ‖bilateralHalfDensityCharacter ((p : ℕ) ^ m) s‖ ^ 2 =
+    ‖bilateralHalfDensityCharacter ((p : ℕ) ^ m) s‖⁻¹ ^ (2 : ℕ) -
+        ‖bilateralHalfDensityCharacter ((p : ℕ) ^ m) s‖ ^ (2 : ℕ) =
       deningerTensorSquareRadialMateCurvature ((p : ℕ) ^ m) s := rfl
 
 /-- **The linear defect and the quadratic reporter vanish together on the actual edge, but only

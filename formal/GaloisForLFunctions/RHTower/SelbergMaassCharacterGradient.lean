@@ -50,7 +50,7 @@ theorem readout_periodic (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ)
 /-- The exact horizontal gradient of any actual linear source observation has its weighted Parseval sum. -/
 theorem readout_horizontal_hasSum (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ)
     {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^2 * normSq (L (coefficientVector N f n y)))
+    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^(2 : ℕ) * normSq (L (coefficientVector N f n y)))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         normSq (directional 1 (fun z => L (sourceVector N f (ofComplex z))) (point x y))) := by
   have hf := readout_contDiffOn N f L
@@ -81,19 +81,19 @@ theorem complementReadout_apply (N : ℕ) (r : ZMod (N+1)) (q : Deck N)
 
 /-- Exact weighted Fourier loss equals the physical horizontal energy of the original missing channel. -/
 theorem complement_horizontal_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^2 *
+    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^(2 : ℕ) *
       ‖coefficientVector N f n y-
-        characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^2)
+        characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^(2 : ℕ))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ∑ q : Deck N, normSq (directional 1 (complementField N f r q) (point x y))) := by
   have h := hasSum_sum (s := (Finset.univ : Finset (Deck N)))
     (fun q _ => readout_horizontal_hasSum N f (complementReadout N r q) hy)
   have hn (n : ℤ) :
-      (∑ q : Deck N, signedFrequency (N+1 : ℕ) n^2 *
+      (∑ q : Deck N, signedFrequency (N+1 : ℕ) n^(2 : ℕ) *
         normSq (complementReadout N r q (coefficientVector N f n y)))=
-          signedFrequency (N+1 : ℕ) n^2 *
+          signedFrequency (N+1 : ℕ) n^(2 : ℕ) *
             ‖coefficientVector N f n y-
-              characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^2 := by
+              characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^(2 : ℕ) := by
     rw [← Finset.mul_sum,EuclideanSpace.norm_sq_eq]
     simp only [Complex.sq_norm,complementReadout_apply]
     rfl
@@ -117,8 +117,8 @@ theorem complement_horizontal_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
 /-- Exact horizontal derivative Parseval for each actual original character field. -/
 theorem character_horizontal_hasSum (p : Multiplicative (ZMod (N+1)) →* Deck N)
     (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^2 *
-      ‖characterProjection N p r (coefficientVector N f n y)‖^2)
+    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^(2 : ℕ) *
+      ‖characterProjection N p r (coefficientVector N f n y)‖^(2 : ℕ))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ∑ q : Deck N, normSq (directional 1 (characterField N f p r q) (point x y))) := by
   let L (q : Deck N) : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ :=
@@ -126,8 +126,8 @@ theorem character_horizontal_hasSum (p : Multiplicative (ZMod (N+1)) →* Deck N
   have h := hasSum_sum (s := (Finset.univ : Finset (Deck N)))
     (fun q _ => readout_horizontal_hasSum N f (L q) hy)
   have hn (n : ℤ) :
-      (∑ q : Deck N, signedFrequency (N+1 : ℕ) n^2 * normSq (L q (coefficientVector N f n y)))=
-        signedFrequency (N+1 : ℕ) n^2 * ‖characterProjection N p r (coefficientVector N f n y)‖^2 := by
+      (∑ q : Deck N, signedFrequency (N+1 : ℕ) n^(2 : ℕ) * normSq (L q (coefficientVector N f n y)))=
+        signedFrequency (N+1 : ℕ) n^(2 : ℕ) * ‖characterProjection N p r (coefficientVector N f n y)‖^(2 : ℕ) := by
     rw [← Finset.mul_sum,EuclideanSpace.norm_sq_eq]
     simp only [Complex.sq_norm]
     rfl
@@ -158,10 +158,10 @@ theorem horizontal_energy_split (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
   have h := (complement_horizontal_hasSum N f r hy).add
     (character_horizontal_hasSum N f (lowerBlock N) r hy)
   have he (n : ℤ) :
-      signedFrequency (N+1 : ℕ) n^2 *
-        ‖coefficientVector N f n y-characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^2+
-      signedFrequency (N+1 : ℕ) n^2 * ‖characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^2=
-      signedFrequency (N+1 : ℕ) n^2 * ‖coefficientVector N f n y‖^2 := by
+      signedFrequency (N+1 : ℕ) n^(2 : ℕ) *
+        ‖coefficientVector N f n y-characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^(2 : ℕ)+
+      signedFrequency (N+1 : ℕ) n^(2 : ℕ) * ‖characterProjection N (lowerBlock N) r (coefficientVector N f n y)‖^(2 : ℕ)=
+      signedFrequency (N+1 : ℕ) n^(2 : ℕ) * ‖coefficientVector N f n y‖^(2 : ℕ) := by
     rw [characterProjection_loss]
     ring
   simp_rw [he] at h
@@ -172,10 +172,10 @@ theorem horizontal_energy_split (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
 
 /-- Frequency-weighted original lower phase displacement is precisely its physical missing-channel gradient. -/
 theorem source_phase_horizontal_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^2 *
+    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^(2 : ℕ) *
       ((((N+1 : ℕ) : ℝ)⁻¹/2) *
         (∑ b : ZMod (N+1), ‖coefficientVector N f n y-
-          blockMotion N (lowerBlock N) r b (coefficientVector N f n y)‖^2)))
+          blockMotion N (lowerBlock N) r b (coefficientVector N f n y)‖^(2 : ℕ))))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ∑ q : Deck N, normSq (directional 1 (complementField N f r q) (point x y))) := by
   simp_rw [block_displacement_energy]
@@ -183,11 +183,11 @@ theorem source_phase_horizontal_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
 
 /-- The full arithmetic three-factor phase energy retains exactly the same physical horizontal derivative. -/
 theorem source_triple_horizontal_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^2 *
-      (((((N+1 : ℕ) : ℝ)⁻¹)^3/2) *
+    HasSum (fun n : ℤ => signedFrequency (N+1 : ℕ) n^(2 : ℕ) *
+      (((((N+1 : ℕ) : ℝ)⁻¹)^(3 : ℕ)/2) *
         (∑ a : ZMod (N+1), ∑ b : ZMod (N+1), ∑ c : ZMod (N+1),
           ‖coefficientVector N f n y-
-            tripleMotion N (-r) (n : ZMod (N+1)) a b c (coefficientVector N f n y)‖^2)))
+            tripleMotion N (-r) (n : ZMod (N+1)) a b c (coefficientVector N f n y)‖^(2 : ℕ))))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ∑ q : Deck N, normSq (directional 1 (complementField N f r q) (point x y))) := by
   simp_rw [coefficient_triple_energy_eq_block N f (-r) _ hy,neg_neg]
@@ -253,13 +253,13 @@ theorem readout_vertical_hasSum (L : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ)
 /-- Actual coefficient height losses have exactly the physical missing-channel vertical energy. -/
 theorem complement_vertical_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
     HasSum (fun n : ℤ => ‖coefficientHeightVector N f n y-
-      characterProjection N (lowerBlock N) r (coefficientHeightVector N f n y)‖^2)
+      characterProjection N (lowerBlock N) r (coefficientHeightVector N f n y)‖^(2 : ℕ))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ∑ q : Deck N, normSq (directional Complex.I (complementField N f r q) (point x y))) := by
   have h := hasSum_sum (s := (Finset.univ : Finset (Deck N)))
     (fun q _ => readout_vertical_hasSum N f (complementReadout N r q) hy)
   have hn (n : ℤ) : (∑ q : Deck N, normSq (complementReadout N r q (coefficientHeightVector N f n y)))=
-      ‖coefficientHeightVector N f n y-characterProjection N (lowerBlock N) r (coefficientHeightVector N f n y)‖^2 := by
+      ‖coefficientHeightVector N f n y-characterProjection N (lowerBlock N) r (coefficientHeightVector N f n y)‖^(2 : ℕ) := by
     rw [EuclideanSpace.norm_sq_eq]
     simp only [Complex.sq_norm,complementReadout_apply]
     rfl
@@ -283,7 +283,7 @@ theorem complement_vertical_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
 /-- Each retained original character field has its exact physical vertical-energy sum. -/
 theorem character_vertical_hasSum (p : Multiplicative (ZMod (N+1)) →* Deck N)
     (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => ‖characterProjection N p r (coefficientHeightVector N f n y)‖^2)
+    HasSum (fun n : ℤ => ‖characterProjection N p r (coefficientHeightVector N f n y)‖^(2 : ℕ))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ∑ q : Deck N, normSq (directional Complex.I (characterField N f p r q) (point x y))) := by
   let L (q : Deck N) : EuclideanSpace ℂ (Deck N) →L[ℂ] ℂ :=
@@ -291,7 +291,7 @@ theorem character_vertical_hasSum (p : Multiplicative (ZMod (N+1)) →* Deck N)
   have h := hasSum_sum (s := (Finset.univ : Finset (Deck N)))
     (fun q _ => readout_vertical_hasSum N f (L q) hy)
   have hn (n : ℤ) : (∑ q : Deck N, normSq (L q (coefficientHeightVector N f n y)))=
-      ‖characterProjection N p r (coefficientHeightVector N f n y)‖^2 := by
+      ‖characterProjection N p r (coefficientHeightVector N f n y)‖^(2 : ℕ) := by
     rw [EuclideanSpace.norm_sq_eq]
     simp only [Complex.sq_norm]
     rfl
@@ -314,13 +314,13 @@ theorem character_vertical_hasSum (p : Multiplicative (ZMod (N+1)) →* Deck N)
 
 /-- Complete original source vertical Parseval, with its actual coefficient height vector. -/
 theorem coefficientVector_vertical_hasSum {y : ℝ} (hy : 0 < y) :
-    HasSum (fun n : ℤ => ‖coefficientHeightVector N f n y‖^2)
+    HasSum (fun n : ℤ => ‖coefficientHeightVector N f n y‖^(2 : ℕ))
       (((N+1 : ℕ) : ℝ)⁻¹ * ∫ x in (0 : ℝ)..(N+1 : ℕ),
         ∑ q : Deck N, normSq (directional Complex.I (field N f q) (point x y))) := by
   have h := hasSum_sum (s := (Finset.univ : Finset (Deck N)))
     (fun q _ => readout_vertical_hasSum N f (EuclideanSpace.proj q) hy)
   have hn (n : ℤ) : (∑ q : Deck N, normSq (coefficientHeightVector N f n y q))=
-      ‖coefficientHeightVector N f n y‖^2 := by
+      ‖coefficientHeightVector N f n y‖^(2 : ℕ) := by
     rw [EuclideanSpace.norm_sq_eq]
     simp only [Complex.sq_norm]
   change HasSum (fun n : ℤ => ∑ q : Deck N, normSq (coefficientHeightVector N f n y q)) _ at h
@@ -351,9 +351,9 @@ theorem vertical_energy_split (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
   have h := (complement_vertical_hasSum N f r hy).add
     (character_vertical_hasSum N f (lowerBlock N) r hy)
   have he (n : ℤ) :
-      ‖coefficientHeightVector N f n y-characterProjection N (lowerBlock N) r (coefficientHeightVector N f n y)‖^2+
-      ‖characterProjection N (lowerBlock N) r (coefficientHeightVector N f n y)‖^2=
-      ‖coefficientHeightVector N f n y‖^2 := by
+      ‖coefficientHeightVector N f n y-characterProjection N (lowerBlock N) r (coefficientHeightVector N f n y)‖^(2 : ℕ)+
+      ‖characterProjection N (lowerBlock N) r (coefficientHeightVector N f n y)‖^(2 : ℕ)=
+      ‖coefficientHeightVector N f n y‖^(2 : ℕ) := by
     rw [characterProjection_loss]
     ring
   simp_rw [he] at h
@@ -365,13 +365,13 @@ theorem vertical_energy_split (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
 /-- Actual height derivatives have the same single-block reduction of the complete arithmetic triple energy. -/
 theorem coefficientHeight_triple_energy_eq_block (r : ZMod (N+1)) (n : ℤ)
     {y : ℝ} (hy : 0 < y) :
-    ((((N+1 : ℕ) : ℝ)⁻¹)^3/2) *
+    ((((N+1 : ℕ) : ℝ)⁻¹)^(3 : ℕ)/2) *
       (∑ a : ZMod (N+1), ∑ b : ZMod (N+1), ∑ c : ZMod (N+1),
         ‖coefficientHeightVector N f n y-
-          tripleMotion N r (n : ZMod (N+1)) a b c (coefficientHeightVector N f n y)‖^2)=
+          tripleMotion N r (n : ZMod (N+1)) a b c (coefficientHeightVector N f n y)‖^(2 : ℕ))=
     (((N+1 : ℕ) : ℝ)⁻¹/2) *
       (∑ b : ZMod (N+1), ‖coefficientHeightVector N f n y-
-        blockMotion N (lowerBlock N) (-r) b (coefficientHeightVector N f n y)‖^2) := by
+        blockMotion N (lowerBlock N) (-r) b (coefficientHeightVector N f n y)‖^(2 : ℕ)) := by
   rw [triple_displacement_energy,transfer_loss_decomposition,
     coefficientHeight_upperProjection N f n hy,sub_self,norm_zero,block_displacement_energy]
   simp
@@ -379,12 +379,12 @@ theorem coefficientHeight_triple_energy_eq_block (r : ZMod (N+1)) (n : ℤ)
 /-- The complete original phase energy, including height derivatives, equals the full missing-channel physical gradient. -/
 theorem source_full_gradient_phase_hasSum (r : ZMod (N+1)) {y : ℝ} (hy : 0 < y) :
     HasSum (fun n : ℤ =>
-      signedFrequency (N+1 : ℕ) n^2 * ((((N+1 : ℕ) : ℝ)⁻¹/2) *
+      signedFrequency (N+1 : ℕ) n^(2 : ℕ) * ((((N+1 : ℕ) : ℝ)⁻¹/2) *
         (∑ b : ZMod (N+1), ‖coefficientVector N f n y-
-          blockMotion N (lowerBlock N) r b (coefficientVector N f n y)‖^2))+
+          blockMotion N (lowerBlock N) r b (coefficientVector N f n y)‖^(2 : ℕ)))+
       (((N+1 : ℕ) : ℝ)⁻¹/2) *
         (∑ b : ZMod (N+1), ‖coefficientHeightVector N f n y-
-          blockMotion N (lowerBlock N) r b (coefficientHeightVector N f n y)‖^2))
+          blockMotion N (lowerBlock N) r b (coefficientHeightVector N f n y)‖^(2 : ℕ)))
       (((N+1 : ℕ) : ℝ)⁻¹ *
         ((∫ x in (0 : ℝ)..(N+1 : ℕ), ∑ q : Deck N,
           normSq (directional 1 (complementField N f r q) (point x y)))+

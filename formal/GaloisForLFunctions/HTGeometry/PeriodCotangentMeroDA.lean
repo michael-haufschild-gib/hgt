@@ -88,7 +88,7 @@ theorem deriv_periodSin (w : ℂ) : deriv (periodSin w) = periodCosScaled w :=
 
 theorem hasDerivAt_periodCosScaled (w z : ℂ) :
     HasDerivAt (periodCosScaled w)
-      (-(((Real.pi : ℂ) / w) ^ 2) * periodSin w z) z := by
+      (-(((Real.pi : ℂ) / w) ^ (2 : ℕ)) * periodSin w z) z := by
   have hcos := (Complex.hasDerivAt_cos ((Real.pi : ℂ) * z / w)).comp z
     (hasDerivAt_periodArgument w z)
   refine (hcos.const_mul ((Real.pi : ℂ) / w)).congr_deriv ?_
@@ -96,7 +96,7 @@ theorem hasDerivAt_periodCosScaled (w z : ℂ) :
   ring
 
 theorem deriv_periodCosScaled (w : ℂ) :
-    deriv (periodCosScaled w) = fun z => -(((Real.pi : ℂ) / w) ^ 2) * periodSin w z :=
+    deriv (periodCosScaled w) = fun z => -(((Real.pi : ℂ) / w) ^ (2 : ℕ)) * periodSin w z :=
   funext fun z => (hasDerivAt_periodCosScaled w z).deriv
 
 theorem differentiable_periodSin (w : ℂ) : Differentiable ℂ (periodSin w) :=
@@ -119,17 +119,17 @@ theorem analyticOnNhd_periodCosScaled (w : ℂ) :
 
 theorem differentiallyAlgebraic_periodSin (w : ℂ) :
     DifferentiallyAlgebraic (periodSin w) := by
-  refine differentiallyAlgebraic_of_secondOrder (c := -(((Real.pi : ℂ) / w) ^ 2)) ?_
+  refine differentiallyAlgebraic_of_secondOrder (c := -(((Real.pi : ℂ) / w) ^ (2 : ℕ))) ?_
   intro z
   rw [deriv_periodSin, deriv_periodCosScaled]
 
 theorem differentiallyAlgebraic_periodCosScaled (w : ℂ) :
     DifferentiallyAlgebraic (periodCosScaled w) := by
-  refine differentiallyAlgebraic_of_secondOrder (c := -(((Real.pi : ℂ) / w) ^ 2)) ?_
+  refine differentiallyAlgebraic_of_secondOrder (c := -(((Real.pi : ℂ) / w) ^ (2 : ℕ))) ?_
   intro z
   rw [deriv_periodCosScaled]
-  have hderiv : HasDerivAt (fun x : ℂ => -(((Real.pi : ℂ) / w) ^ 2) * periodSin w x)
-      (-(((Real.pi : ℂ) / w) ^ 2) * periodCosScaled w z) z :=
+  have hderiv : HasDerivAt (fun x : ℂ => -(((Real.pi : ℂ) / w) ^ (2 : ℕ)) * periodSin w x)
+      (-(((Real.pi : ℂ) / w) ^ (2 : ℕ)) * periodCosScaled w z) z :=
     (hasDerivAt_periodSin w z).const_mul _
   rw [hderiv.deriv]
 

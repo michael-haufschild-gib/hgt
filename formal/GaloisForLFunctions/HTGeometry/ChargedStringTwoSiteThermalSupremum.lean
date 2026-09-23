@@ -8,11 +8,11 @@ noncomputable section
 def stringTwoSiteGrowthSet (h ell tau : ℝ) : Set ℝ :=
   {r | ∃ k m x : ℝ, ∃ ω : ℂ, ∃ v : ℂ × ℂ,
     v ≠ 0 ∧ stringTwoSitePencil k m (Real.exp h) ell tau x ω v = 0 ∧
-      0 < ω.im ∧ r = ω.im ^ 2}
+      0 < ω.im ∧ r = ω.im ^ (2 : ℕ)}
 
 /-- Every member of the explicit approaching sequence belongs to the actual mode-growth set. -/
 theorem stringTwoSiteThermalLimitFrequency_growth_mem (h ell tau : ℝ) (j : ℕ) :
-    (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ 2 ∈ stringTwoSiteGrowthSet h ell tau := by
+    (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ (2 : ℕ) ∈ stringTwoSiteGrowthSet h ell tau := by
   have hm := stringTwoSiteThermalLimitVector_mode h ell tau j
   exact ⟨stringTwoSiteThermalLimitCoupling h ell tau j, 0, stringTwoSiteOptimalRadiusCoordinate ell,
     stringTwoSiteThermalLimitFrequency h ell tau j, stringTwoSiteThermalLimitVector h ell tau j,
@@ -21,7 +21,7 @@ theorem stringTwoSiteThermalLimitFrequency_growth_mem (h ell tau : ℝ) (j : ℕ
 /-- The temperature-calibrated bound is the exact supremum over all actual positive-growth modes, couplings, masses, and doubled-radius samples. -/
 theorem stringTwoSiteGrowthSet_isLUB (h ell tau : ℝ) :
     IsLUB (stringTwoSiteGrowthSet h ell tau) (stringTwoSiteThermalGrowthCeiling h ell tau) := by
-  have hp : IsLUB (Set.range (fun j : ℕ => (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ 2))
+  have hp : IsLUB (Set.range (fun j : ℕ => (stringTwoSiteThermalLimitFrequency h ell tau j).im ^ (2 : ℕ)))
       (stringTwoSiteThermalGrowthCeiling h ell tau) :=
     IsLUB.range_of_tendsto (fun j => (stringTwoSiteThermalLimitFrequency_growth_lt h ell tau j).le)
       (stringTwoSiteThermalLimitFrequency_growth_limit h ell tau)
@@ -29,7 +29,7 @@ theorem stringTwoSiteGrowthSet_isLUB (h ell tau : ℝ) :
   · intro r hr
     rcases hr with ⟨k, m, x, ω, v, hv, hvp, hy, rfl⟩
     by_contra hn
-    have hb : stringTwoSiteThermalGrowthCeiling h ell tau ≤ ω.im ^ 2 := by linarith
+    have hb : stringTwoSiteThermalGrowthCeiling h ell tau ≤ ω.im ^ (2 : ℕ) := by linarith
     exact stringTwoSite_no_growth_at_temperature_bound k m (Real.exp h) ell tau x
       ⟨ω, ⟨v, hv, hvp⟩, hy, hb⟩
   · intro b hb
@@ -42,12 +42,12 @@ theorem stringTwoSiteGrowthSet_ceiling_not_mem (h ell tau : ℝ) :
     stringTwoSiteThermalGrowthCeiling h ell tau ∉ stringTwoSiteGrowthSet h ell tau := by
   rintro ⟨k, m, x, ω, v, hv, hvp, hy, he⟩
   exact stringTwoSite_no_growth_at_temperature_bound k m (Real.exp h) ell tau x
-    ⟨ω, ⟨v, hv, hvp⟩, hy, by change stringTwoSiteThermalGrowthCeiling h ell tau ≤ ω.im ^ 2; linarith⟩
+    ⟨ω, ⟨v, hv, hvp⟩, hy, by change stringTwoSiteThermalGrowthCeiling h ell tau ≤ ω.im ^ (2 : ℕ); linarith⟩
 
 /-- The attainable set is nonempty and contains strictly positive rates below its unattained supremum. -/
 theorem stringTwoSiteGrowthSet_positive_member (h ell tau : ℝ) :
     ∃ r ∈ stringTwoSiteGrowthSet h ell tau, 0 < r ∧ r < stringTwoSiteThermalGrowthCeiling h ell tau := by
-  refine ⟨(stringTwoSiteThermalLimitFrequency h ell tau 0).im ^ 2,
+  refine ⟨(stringTwoSiteThermalLimitFrequency h ell tau 0).im ^ (2 : ℕ),
     stringTwoSiteThermalLimitFrequency_growth_mem h ell tau 0, ?_,
     stringTwoSiteThermalLimitFrequency_growth_lt h ell tau 0⟩
   exact sq_pos_of_pos (stringTwoSiteThermalLimitFrequency_mode h ell tau 0).2

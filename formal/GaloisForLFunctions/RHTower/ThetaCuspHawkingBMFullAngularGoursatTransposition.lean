@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.VolterraRectangleTransposition
+import GaloisForLFunctions.HTGeometry.VolterraRectangleNonseparableTransposition
 import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularGoursat
 
 /-!
@@ -77,7 +78,7 @@ private def fullForcing (q : XiZeroCopy) (branch : Bool) (y X k : ℝ)
     (p : ℝ × ℝ) : ℂ :=
   parameter q branch *
       (closedFullKernel q branch y X k p + closedNativeKernel q y X k p) /
-    (4 * (Real.cosh (y + (p.1 - p.2) / 2) : ℂ) ^ 2)
+    (4 * (Real.cosh (y + (p.1 - p.2) / 2) : ℂ) ^ (2 : ℕ))
 
 private theorem fullForcing_continuous (q : XiZeroCopy) (branch : Bool) (y X k : ℝ) :
     Continuous (fullForcing q branch y X k) := by
@@ -106,7 +107,7 @@ private theorem closedFullKernel_goursat (q : XiZeroCopy) (branch : Bool)
           parameter q branch *
             (fullAngularRiemannKernel q branch ((a + b) / 2) (y + (a - b) / 2) y X k +
               D4BMNativeCircle.nativeRiemannKernel q ((a + b) / 2) (y + (a - b) / 2) y X k) /
-            (4 * (Real.cosh (y + (a - b) / 2) : ℂ) ^ 2) := by
+            (4 * (Real.cosh (y + (a - b) / 2) : ℂ) ^ (2 : ℕ)) := by
       simpa only [show (u + v) / 2 + (y + (u - v) / 2) - y = u by ring,
         show (u + v) / 2 - (y + (u - v) / 2) + y = v by ring] using
         (fullAngularRiemannKernel_goursat q branch
@@ -124,10 +125,10 @@ private theorem closedFullKernel_goursat (q : XiZeroCopy) (branch : Bool)
       change parameter q branch *
           (fullAngularRiemannKernel q branch ((a + b) / 2) (y + (a - b) / 2) y X k +
             D4BMNativeCircle.nativeRiemannKernel q ((a + b) / 2) (y + (a - b) / 2) y X k) /
-          (4 * (Real.cosh (y + (a - b) / 2) : ℂ) ^ 2) =
+          (4 * (Real.cosh (y + (a - b) / 2) : ℂ) ^ (2 : ℕ)) =
         parameter q branch *
           (closedFullKernel q branch y X k (a, b) + closedNativeKernel q y X k (a, b)) /
-          (4 * (Real.cosh (y + (a - b) / 2) : ℂ) ^ 2)
+          (4 * (Real.cosh (y + (a - b) / 2) : ℂ) ^ (2 : ℕ))
       rw [closedFullKernel_eq_actual q branch y a b X k ha0 hb0,
         closedNativeKernel_eq_actual q y a b X k ha0 hb0]
 
@@ -147,7 +148,7 @@ theorem fullAngularRiemannKernel_transposition (q : XiZeroCopy) (branch : Bool)
           parameter q branch *
             (fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k +
               D4BMNativeCircle.nativeRiemannKernel q ((u + v) / 2) (y + (u - v) / 2) y X k) /
-            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ 2) * phi u * psi v := by
+            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ (2 : ℕ)) * phi u * psi v := by
   have h := rectangle_volterra_transposition
     (closedFullKernel q branch y X k) (fullForcing q branch y X k)
     (fullAngularField q branch ![X, Real.exp k]) U V hU hV
@@ -177,7 +178,7 @@ theorem fullAngularRiemannKernel_transposition (q : XiZeroCopy) (branch : Bool)
           parameter q branch *
             (fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k +
               D4BMNativeCircle.nativeRiemannKernel q ((u + v) / 2) (y + (u - v) / 2) y X k) /
-            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ 2) * phi u * psi v := by
+            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ (2 : ℕ)) * phi u * psi v := by
       apply congrArg (fun z : ℂ => fullAngularField q branch ![X, Real.exp k] * phi 0 * psi 0 + z)
       apply intervalIntegral.integral_congr
       intro u hu
@@ -189,8 +190,72 @@ theorem fullAngularRiemannKernel_transposition (q : XiZeroCopy) (branch : Bool)
         parameter q branch *
             (fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k +
               D4BMNativeCircle.nativeRiemannKernel q ((u + v) / 2) (y + (u - v) / 2) y X k) /
-            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ 2) * phi u * psi v
+            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ (2 : ℕ)) * phi u * psi v
       unfold fullForcing
+      rw [closedFullKernel_eq_actual q branch y u v X k hu0 hv0,
+        closedNativeKernel_eq_actual q y u v X k hu0 hv0]
+
+/-- Compact-null transposition of the literal full angular kernel against an
+arbitrary continuous mixed test.  Unlike the product-test theorem above, this
+retains source couplings across both null variables. -/
+theorem fullAngularRiemannKernel_continuous_test_transposition (q : XiZeroCopy) (branch : Bool)
+    (y X k U V : ℝ) (hU : 0 ≤ U) (hV : 0 ≤ V) (H : ℝ × ℝ → ℂ) (hH : Continuous H) :
+    (∫ u in (0 : ℝ)..U, ∫ v in (0 : ℝ)..V,
+      fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k * H (u, v)) =
+      fullAngularField q branch ![X, Real.exp k] * backwardRectanglePrimitive H U V (0, 0) +
+        ∫ u in (0 : ℝ)..U, ∫ v in (0 : ℝ)..V,
+          parameter q branch *
+            (fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k +
+              D4BMNativeCircle.nativeRiemannKernel q ((u + v) / 2) (y + (u - v) / 2) y X k) /
+            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ (2 : ℕ)) *
+              backwardRectanglePrimitive H U V (u, v) := by
+  have h := rectangle_volterra_continuous_test_transposition
+    (closedFullKernel q branch y X k) (fullForcing q branch y X k)
+    (fullAngularField q branch ![X, Real.exp k]) U V hU hV
+    (fullForcing_continuous q branch y X k)
+    (fun u v hu hv => closedFullKernel_goursat q branch y u v X k hu hv) H hH
+  calc
+    (∫ u in (0 : ℝ)..U, ∫ v in (0 : ℝ)..V,
+      fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k * H (u, v)) =
+        ∫ u in (0 : ℝ)..U, ∫ v in (0 : ℝ)..V,
+          closedFullKernel q branch y X k (u, v) * H (u, v) := by
+      apply intervalIntegral.integral_congr
+      intro u hu
+      apply intervalIntegral.integral_congr
+      intro v hv
+      have hu0 : 0 ≤ u := (show u ∈ Icc 0 U by simpa [uIcc_of_le hU] using hu).1
+      have hv0 : 0 ≤ v := (show v ∈ Icc 0 V by simpa [uIcc_of_le hV] using hv).1
+      change fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k * H (u, v) =
+        closedFullKernel q branch y X k (u, v) * H (u, v)
+      rw [closedFullKernel_eq_actual q branch y u v X k hu0 hv0]
+    _ = fullAngularField q branch ![X, Real.exp k] * backwardRectanglePrimitive H U V (0, 0) +
+        ∫ u in (0 : ℝ)..U, ∫ v in (0 : ℝ)..V,
+          fullForcing q branch y X k (u, v) * backwardRectanglePrimitive H U V (u, v) := h
+    _ = fullAngularField q branch ![X, Real.exp k] * backwardRectanglePrimitive H U V (0, 0) +
+        ∫ u in (0 : ℝ)..U, ∫ v in (0 : ℝ)..V,
+          parameter q branch *
+            (fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k +
+              D4BMNativeCircle.nativeRiemannKernel q ((u + v) / 2) (y + (u - v) / 2) y X k) /
+            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ (2 : ℕ)) *
+              backwardRectanglePrimitive H U V (u, v) := by
+      apply congrArg (fun z : ℂ =>
+        fullAngularField q branch ![X, Real.exp k] * backwardRectanglePrimitive H U V (0, 0) + z)
+      apply intervalIntegral.integral_congr
+      intro u hu
+      apply intervalIntegral.integral_congr
+      intro v hv
+      have hu0 : 0 ≤ u := (show u ∈ Icc 0 U by simpa [uIcc_of_le hU] using hu).1
+      have hv0 : 0 ≤ v := (show v ∈ Icc 0 V by simpa [uIcc_of_le hV] using hv).1
+      unfold fullForcing
+      change parameter q branch *
+          (closedFullKernel q branch y X k (u, v) + closedNativeKernel q y X k (u, v)) /
+          (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ (2 : ℕ)) *
+            backwardRectanglePrimitive H U V (u, v) =
+        parameter q branch *
+            (fullAngularRiemannKernel q branch ((u + v) / 2) (y + (u - v) / 2) y X k +
+              D4BMNativeCircle.nativeRiemannKernel q ((u + v) / 2) (y + (u - v) / 2) y X k) /
+            (4 * (Real.cosh (y + (u - v) / 2) : ℂ) ^ (2 : ℕ)) *
+              backwardRectanglePrimitive H U V (u, v)
       rw [closedFullKernel_eq_actual q branch y u v X k hu0 hv0,
         closedNativeKernel_eq_actual q y u v X k hu0 hv0]
 

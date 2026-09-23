@@ -37,7 +37,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_someLarge
     (hright : ∀ j ∈ Finset.range L,
       1 ≤ ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊) :
     (∫ w in menonHarmonicSomeBlockLarge P Q eta L V W,
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ (L : ℝ) * ∑ j ∈ Finset.range L,
           menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W
             (harmonicPrimeMass (geomBlock P Q (1 + eta) j))

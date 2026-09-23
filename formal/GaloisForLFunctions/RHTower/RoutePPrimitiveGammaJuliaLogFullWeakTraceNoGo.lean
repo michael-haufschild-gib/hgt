@@ -167,7 +167,7 @@ def routePPrimitiveGammaJuliaLogBalancedRegularTailRealMultiplier
 /-- Summable product majorant for positive-depth balanced Route-P remainder. -/
 def routePPrimitiveGammaJuliaLogBalancedRegularTailMajor
     (ip : RoutePPrimitiveGammaJuliaLogBalancedIndex) : ℝ :=
-  4 * (1 / (ip.2.1 : ℝ) ^ 2) * (1 / 2 : ℝ) ^ ip.2.2
+  4 * (1 / (ip.2.1 : ℝ) ^ (2 : ℕ)) * (1 / 2 : ℝ) ^ ip.2.2
 
 theorem summable_routePPrimitiveGammaJuliaLogBalancedRegularTailMajor :
     Summable routePPrimitiveGammaJuliaLogBalancedRegularTailMajor := by
@@ -189,7 +189,7 @@ theorem summable_routePPrimitiveGammaJuliaLogBalancedRegularTailMajor :
     constructor
     · intro p
       exact (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left
-        (4 * (1 / (p : ℝ) ^ 2))
+        (4 * (1 / (p : ℝ) ^ (2 : ℕ)))
     · apply (burnolSummable_prime_one_div_sq.mul_left 8).congr
       intro p
       simp only [routePPrimitiveGammaJuliaLogBalancedRegularTailMajor]
@@ -216,16 +216,16 @@ theorem abs_routePPrimitiveGammaJuliaLogBalancedRegularTailRealMultiplier_le
         (inv_le_inv₀ hp (by norm_num : (0 : ℝ) < 2)).2 hp2
     have hpow : ((p : ℝ)⁻¹) ^ (e - 1) ≤ (1 / 2 : ℝ) ^ (e - 1) :=
       pow_le_pow_left₀ (inv_nonneg.mpr hp.le) hpInv (e - 1)
-    have hdepth : ((((e : ℝ) + 1) ^ 3)⁻¹) ≤ 1 := by
+    have hdepth : ((((e : ℝ) + 1) ^ (3 : ℕ))⁻¹) ≤ 1 := by
       apply (inv_le_one₀ (by positivity)).mpr
       exact one_le_pow₀ (by norm_num)
     have hsplit : ((p : ℝ)⁻¹) ^ (e + 1) =
-        ((p : ℝ)⁻¹) ^ 2 * ((p : ℝ)⁻¹) ^ (e - 1) := by
+        ((p : ℝ)⁻¹) ^ (2 : ℕ) * ((p : ℝ)⁻¹) ^ (e - 1) := by
       rw [← pow_add]
       congr 1
       omega
     have hpowTail : ((p : ℝ)⁻¹) ^ (e + 1) ≤
-        ((p : ℝ)⁻¹) ^ 2 * (1 / 2 : ℝ) ^ (e - 1) := by
+        ((p : ℝ)⁻¹) ^ (2 : ℕ) * (1 / 2 : ℝ) ^ (e - 1) := by
       rw [hsplit]
       gcongr
     rw [routePPrimitiveGammaJuliaLogBalancedRegularTailRealMultiplier,
@@ -237,16 +237,16 @@ theorem abs_routePPrimitiveGammaJuliaLogBalancedRegularTailRealMultiplier_le
       routePPrimitiveGammaJuliaLogCofinalTraceWeight_eq]
     have hbase : 0 ≤ ((p : ℝ)⁻¹) ^ (e + 1) := by positivity
     have htail :
-        ((p : ℝ)⁻¹) ^ (e + 1) * ((((e : ℝ) + 1) ^ 3)⁻¹) ≤
-          ((p : ℝ)⁻¹) ^ 2 * (1 / 2 : ℝ) ^ (e - 1) := by
+        ((p : ℝ)⁻¹) ^ (e + 1) * ((((e : ℝ) + 1) ^ (3 : ℕ))⁻¹) ≤
+          ((p : ℝ)⁻¹) ^ (2 : ℕ) * (1 / 2 : ℝ) ^ (e - 1) := by
       calc
-        ((p : ℝ)⁻¹) ^ (e + 1) * ((((e : ℝ) + 1) ^ 3)⁻¹) ≤
+        ((p : ℝ)⁻¹) ^ (e + 1) * ((((e : ℝ) + 1) ^ (3 : ℕ))⁻¹) ≤
             ((p : ℝ)⁻¹) ^ (e + 1) * 1 := by gcongr
-        _ ≤ ((p : ℝ)⁻¹) ^ 2 * (1 / 2 : ℝ) ^ (e - 1) := by
+        _ ≤ ((p : ℝ)⁻¹) ^ (2 : ℕ) * (1 / 2 : ℝ) ^ (e - 1) := by
           simpa using hpowTail
     change 8 * ((1 / 4 : ℝ) * ((p : ℝ)⁻¹) ^ (e + 1) *
-        (((e : ℝ) + 1) ^ 3)⁻¹) ≤
-      4 * (1 / (p : ℝ) ^ 2) * (1 / 2 : ℝ) ^ e
+        (((e : ℝ) + 1) ^ (3 : ℕ))⁻¹) ≤
+      4 * (1 / (p : ℝ) ^ (2 : ℕ)) * (1 / 2 : ℝ) ^ e
     have heq : (1 / 2 : ℝ) ^ (e - 1) =
         2 * (1 / 2 : ℝ) ^ e := by
       have hpowSucc : (1 / 2 : ℝ) ^ e =
@@ -258,7 +258,7 @@ theorem abs_routePPrimitiveGammaJuliaLogBalancedRegularTailRealMultiplier_le
             rw [pow_succ]
       rw [hpowSucc]
       ring
-    rw [show 1 / (p : ℝ) ^ 2 = ((p : ℝ)⁻¹) ^ 2 by
+    rw [show 1 / (p : ℝ) ^ (2 : ℕ) = ((p : ℝ)⁻¹) ^ (2 : ℕ) by
       simp [one_div]]
     nlinarith [htail, heq]
 

@@ -72,7 +72,7 @@ theorem exponentialSum_coeff_eq_zero {ι : Type*} [DecidableEq ι] (z : ι → �
     have ha0 : c a = 0 := by
       have h1 := h 1 le_rfl
       rw [Finset.sum_insert ha] at h1
-      have hrest : ∑ i ∈ S', c i * z i ^ 1 = 0 :=
+      have hrest : ∑ i ∈ S', c i * z i ^ (1 : ℕ) = 0 :=
         Finset.sum_eq_zero fun i hi => by rw [hczero i hi, zero_mul]
       rw [hrest, add_zero, pow_one] at h1
       exact (mul_eq_zero.mp h1).resolve_right (hz0 a (Finset.mem_insert_self a S'))

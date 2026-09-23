@@ -63,7 +63,7 @@ theorem sequenceTraceHankelNonnegative_of_thermalEvenGapMoments
   intro p
   have heq : sequenceTraceHankel (HTGeometry.thermalEvenGapMoment intensity energy) p =
       HTGeometry.momentFunctional
-        (HTGeometry.thermalEvenGapMoment intensity energy) (p ^ 2) := by
+        (HTGeometry.thermalEvenGapMoment intensity energy) (p ^ (2 : ℕ)) := by
     rw [sequenceTraceHankel, HTGeometry.momentFunctional_eq_support_sum, pow_two]
   rw [heq]
   exact HTGeometry.momentFunctional_thermalEvenGapMoment_sq_nonneg
@@ -102,10 +102,10 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_thermalEvenGapMoments
   intro p
   rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
   rw [show HTGeometry.momentFunctional normalizedPrimeArchMoment
-        ((p.map (Int.castRingHom ℝ)) ^ 2) =
+        ((p.map (Int.castRingHom ℝ)) ^ (2 : ℕ)) =
       HTGeometry.momentFunctional
         (HTGeometry.thermalEvenGapMoment intensity energy)
-          ((p.map (Int.castRingHom ℝ)) ^ 2) by
+          ((p.map (Int.castRingHom ℝ)) ^ (2 : ℕ)) by
     exact HTGeometry.momentFunctional_congr hmom _]
   exact HTGeometry.momentFunctional_thermalEvenGapMoment_sq_nonneg
     intensity energy hintensity (p.map (Int.castRingHom ℝ))
@@ -221,7 +221,7 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_squaredTransitionLiouvillian
       HTGeometry.thermalEvenGapMoment intensity energy n) :
     PrimeArchSourceTraceHankelIntNonnegative := by
   apply primeArchSourceTraceHankelIntNonnegative_of_complexSelfAdjointObservable
-    ((HTGeometry.transitionGapLiouvillian energy) ^ 2)
+    ((HTGeometry.transitionGapLiouvillian energy) ^ (2 : ℕ))
     (HTGeometry.thermalTransitionVector intensity)
     ((HTGeometry.transitionGapLiouvillian_isSelfAdjoint energy).pow 2)
   intro n

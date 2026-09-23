@@ -26,29 +26,29 @@ theorem xiDescent_farField_emptyCensusDeckChargeUniversality
       ∃ t : Finset ℂ,
         t = ∅ ∧
         (∀ w, w ∈ t ↔
-          ‖w - (ρ - (1 / 2 : ℂ)) ^ 2‖ < r ∧ xiDescent w = 0) ∧
+          ‖w - (ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)‖ < r ∧ xiDescent w = 0) ∧
         loopCharge k
-            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
               (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi) =
           ∑ w ∈ t,
             wCharge (2 ^ k) ((analyticOrderAt xiDescent w).toNat : ℤ) ∧
         deckChar (2 ^ k)
             (loopCharge k
-              (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+              (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
                 (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) =
           ∏ w ∈ t, carrierCharge xiDescent k w ∧
-        (∀ w, ‖w - (ρ - (1 / 2 : ℂ)) ^ 2‖ < r →
+        (∀ w, ‖w - (ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)‖ < r →
           xiDescent w ≠ 0) ∧
         loopCharge k
-            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+            (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
               (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi) = 0 ∧
         deckChar (2 ^ k)
             (loopCharge k
-              (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2 +
+              (fun θ => xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ) +
                 (r : ℂ) * exp (I * (θ : ℂ)))) 0 (2 * Real.pi)) = 1 ∧
-        carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ 2) = 1 ∧
+        carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)) = 1 ∧
         carrierCharge xi k ρ = 1 := by
-  let center : ℂ := (ρ - (1 / 2 : ℂ)) ^ 2
+  let center : ℂ := (ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)
   have hright : ρ ∈ rightHalf := by
     rw [mem_rightHalf]
     linarith
@@ -60,7 +60,7 @@ theorem xiDescent_farField_emptyCensusDeckChargeUniversality
   have hcenterSlit : center ∈ slitPlane := by
     exact sq_mem_slitPlane_of_re_pos hpositive
   have hcenterNe : xiDescent center ≠ 0 := by
-    change xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2) ≠ 0
+    change xiDescent ((ρ - (1 / 2 : ℂ)) ^ (2 : ℕ)) ≠ 0
     rw [← xi_eq_xiDescent ρ]
     exact xi_ne_zero_of_one_lt_re hfar
   have hnonzero : {w : ℂ | xiDescent w ≠ 0} ∈ nhds center :=

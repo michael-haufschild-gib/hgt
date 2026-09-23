@@ -27,15 +27,15 @@ theorem exists_integral_mtDI_lemma35_coveredRange
           ((((2 * A) * (N' * N') : ℕ) : ℝ) ≤
             (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)))) →
       (∫ t in (T / 2)..T,
-          ‖mtWattUnitBlock N N' t‖ ^ 4 *
-            ‖mtWattCoefficientBlock a A t‖ ^ 2) ≤
+          ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) *
+            ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ)) ≤
         C * T ^ ε *
-          (((T + (A : ℝ) ^ 2 * Real.sqrt T +
+          (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                   (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                ((N : ℝ) ^ 2 * (A : ℝ)) +
-              (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+                ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+              (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
             (1 / (A : ℝ)) *
-            (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ 2)) := by
+            (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ (2 : ℕ))) := by
   obtain ⟨C, hC, hdiv⟩ :=
     exists_integral_mtDI_lemma35_divisorRange_of_le_height hε
   have hOver : 0 < mtLemma35OverHeightConst := by
@@ -50,38 +50,38 @@ theorem exists_integral_mtDI_lemma35_coveredRange
     · have hbase := hdiv a A N N' hA hN hN' T hT hAT hNT.le hM
       calc
         _ ≤ C * T ^ ε *
-            (((T + (A : ℝ) ^ 2 * Real.sqrt T +
+            (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                     (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                  ((N : ℝ) ^ 2 * (A : ℝ)) +
-                (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+                  ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+                (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
               (1 / (A : ℝ)) *
-              (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ 2)) := hbase
+              (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ (2 : ℕ))) := hbase
         _ ≤ (C + mtLemma35OverHeightConst) * T ^ ε *
-            (((T + (A : ℝ) ^ 2 * Real.sqrt T +
+            (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                     (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                  ((N : ℝ) ^ 2 * (A : ℝ)) +
-                (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+                  ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+                (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
               (1 / (A : ℝ)) *
-              (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ 2)) := by
+              (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ (2 : ℕ))) := by
           gcongr
           linarith [hOver.le]
   · have hbase := integral_mtDI_lemma35_overHeight
       a hA hN hNN' hN' (one_le_two.trans hT) hTN hε
     calc
       _ ≤ mtLemma35OverHeightConst * T ^ ε *
-          (((T + (A : ℝ) ^ 2 * Real.sqrt T +
+          (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                   (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                ((N : ℝ) ^ 2 * (A : ℝ)) +
-              (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+                ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+              (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
             (1 / (A : ℝ)) *
-            (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ 2)) := hbase
+            (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ (2 : ℕ))) := hbase
       _ ≤ (C + mtLemma35OverHeightConst) * T ^ ε *
-          (((T + (A : ℝ) ^ 2 * Real.sqrt T +
+          (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T +
                   (A : ℝ) ^ (5 / 4 : ℝ) * T ^ (3 / 4 : ℝ)) /
-                ((N : ℝ) ^ 2 * (A : ℝ)) +
-              (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+                ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+              (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
             (1 / (A : ℝ)) *
-            (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ 2)) := by
+            (∑ m ∈ Finset.Ioc A (2 * A), ‖a m‖ ^ (2 : ℕ))) := by
         gcongr
         linarith [hC.le]
 
@@ -95,14 +95,14 @@ theorem exists_integral_mtWatt_lemma35_coveredRange
       (T ≤ (N : ℝ) ∨
         ((A : ℝ) ≤ T ∧
           ((((2 * A) * (N' * N') : ℕ) : ℝ) ≤
-            (A : ℝ) ^ 2 * Real.sqrt T))) →
+            (A : ℝ) ^ (2 : ℕ) * Real.sqrt T))) →
       (∫ t in (T / 2)..T,
-          ‖mtWattUnitBlock N N' t‖ ^ 4 *
-            ‖mtWattCoefficientBlock a A t‖ ^ 2) ≤
+          ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) *
+            ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ)) ≤
         C * T ^ ε *
-          (((T + (A : ℝ) ^ 2 * Real.sqrt T) /
-                ((N : ℝ) ^ 2 * (A : ℝ)) +
-              (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+          (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T) /
+                ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+              (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
             (mtWattCoefficientMaxSq a A : ℝ)) := by
   obtain ⟨C, hC, hdiv⟩ :=
     exists_integral_mtWatt_lemma35_divisorRange_of_le_height hε
@@ -118,14 +118,14 @@ theorem exists_integral_mtWatt_lemma35_coveredRange
     · have hbase := hdiv a A N N' hA hN hN' T hT hAT hNT.le hM
       calc
         _ ≤ C * T ^ ε *
-            (((T + (A : ℝ) ^ 2 * Real.sqrt T) /
-                  ((N : ℝ) ^ 2 * (A : ℝ)) +
-                (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+            (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T) /
+                  ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+                (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
               (mtWattCoefficientMaxSq a A : ℝ)) := hbase
         _ ≤ (C + mtLemma35OverHeightConst) * T ^ ε *
-            (((T + (A : ℝ) ^ 2 * Real.sqrt T) /
-                  ((N : ℝ) ^ 2 * (A : ℝ)) +
-                (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+            (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T) /
+                  ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+                (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
               (mtWattCoefficientMaxSq a A : ℝ)) := by
           gcongr
           linarith [hOver.le]
@@ -133,14 +133,14 @@ theorem exists_integral_mtWatt_lemma35_coveredRange
       a hA hN hNN' hN' (one_le_two.trans hT) hTN hε
     calc
       _ ≤ mtLemma35OverHeightConst * T ^ ε *
-          (((T + (A : ℝ) ^ 2 * Real.sqrt T) /
-                ((N : ℝ) ^ 2 * (A : ℝ)) +
-              (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+          (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T) /
+                ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+              (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
             (mtWattCoefficientMaxSq a A : ℝ)) := hbase
       _ ≤ (C + mtLemma35OverHeightConst) * T ^ ε *
-          (((T + (A : ℝ) ^ 2 * Real.sqrt T) /
-                ((N : ℝ) ^ 2 * (A : ℝ)) +
-              (T + (A : ℝ)) / (T ^ 4 * (A : ℝ))) *
+          (((T + (A : ℝ) ^ (2 : ℕ) * Real.sqrt T) /
+                ((N : ℝ) ^ (2 : ℕ) * (A : ℝ)) +
+              (T + (A : ℝ)) / (T ^ (4 : ℕ) * (A : ℝ))) *
             (mtWattCoefficientMaxSq a A : ℝ)) := by
         gcongr
         linarith [hC.le]

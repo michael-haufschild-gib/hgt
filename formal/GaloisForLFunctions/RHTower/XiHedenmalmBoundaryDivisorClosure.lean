@@ -123,7 +123,7 @@ theorem xiHedenmalmBezoutian_self_xiSpectralPointSupport
     (rho : XiDivisorSupport) :
     xiHedenmalmBezoutian (xiSpectralPointSupport rho)
         (xiSpectralPointSupport rho) =
-      deriv XiC (xiSpectralPointSupport rho) ^ 2 :=
+      deriv XiC (xiSpectralPointSupport rho) ^ (2 : ℕ) :=
   xiHedenmalmBezoutian_self_of_zero
     (XiC_xiSpectralPointSupport_eq_zero_sourceCircuit rho)
 
@@ -145,7 +145,7 @@ theorem xiHedenmalmBezoutian_xiDivisorSupport
     (rho tau : XiDivisorSupport) :
     xiHedenmalmBezoutian (xiSpectralPointSupport rho)
         (xiSpectralPointSupport tau) =
-      if rho = tau then deriv XiC (xiSpectralPointSupport rho) ^ 2 else 0 := by
+      if rho = tau then deriv XiC (xiSpectralPointSupport rho) ^ (2 : ℕ) else 0 := by
   by_cases h : rho = tau
   · subst tau
     simpa using xiHedenmalmBezoutian_self_xiSpectralPointSupport rho
@@ -188,9 +188,9 @@ theorem xiHedenmalmBezoutian_eq_neg_thetaEigenFourier_mul_swap
     rw [xiHedenmalmBezoutian_self_xiSpectralPointSupport,
       xiThetaEigenFourier_self]
     calc
-      deriv XiC (xiSpectralPointSupport rho) ^ 2 =
+      deriv XiC (xiSpectralPointSupport rho) ^ (2 : ℕ) =
           -((Complex.I * Complex.I) *
-            deriv XiC (xiSpectralPointSupport rho) ^ 2) := by
+            deriv XiC (xiSpectralPointSupport rho) ^ (2 : ℕ)) := by
             rw [Complex.I_mul_I]
             ring
       _ = -(Complex.I * deriv XiC (xiSpectralPointSupport rho)) *
@@ -239,7 +239,7 @@ theorem xiWeilPolarization_thetaEigenFourier_xiDivisorSupport
       if xiSpectralPointSupport tau =
           (starRingEnd ℂ) (xiSpectralPointSupport rho) then
         (xiSpectralMultiplicity (xiSpectralPointSupport rho) : ℂ) *
-          deriv XiC (xiSpectralPointSupport rho) ^ 2
+          deriv XiC (xiSpectralPointSupport rho) ^ (2 : ℕ)
       else 0 := by
   let alpha : ℂ := xiSpectralPointSupport rho
   let beta : ℂ := xiSpectralPointSupport tau
@@ -252,14 +252,14 @@ theorem xiWeilPolarization_thetaEigenFourier_xiDivisorSupport
   change xiWeilPolarization (xiThetaEigenFourier alpha)
       (xiThetaEigenFourier beta) =
     if beta = (starRingEnd ℂ) alpha then
-      (xiSpectralMultiplicity alpha : ℂ) * deriv XiC alpha ^ 2
+      (xiSpectralMultiplicity alpha : ℂ) * deriv XiC alpha ^ (2 : ℕ)
     else 0
   by_cases hab : beta = (starRingEnd ℂ) alpha
   · rw [if_pos hab]
     unfold xiWeilPolarization
     let S : Set XiZeroCopy := {q | xiSpectralPoint q = alpha}
     let T : Finset XiZeroCopy := (finite_xiSpectralPoint_fiber alpha).toFinset
-    let c : ℂ := deriv XiC alpha ^ 2
+    let c : ℂ := deriv XiC alpha ^ (2 : ℕ)
     let g : XiZeroCopy → ℂ := fun q => if q ∈ S then c else 0
     have heq (q : XiZeroCopy) :
         xiThetaEigenFourier alpha (xiSpectralPoint q) *
@@ -283,8 +283,8 @@ theorem xiWeilPolarization_thetaEigenFourier_xiDivisorSupport
         calc
           -(Complex.I * deriv XiC alpha *
               (Complex.I * deriv XiC alpha)) =
-              -(Complex.I ^ 2 * deriv XiC alpha ^ 2) := by ring
-          _ = deriv XiC alpha ^ 2 := by rw [Complex.I_sq]; ring
+              -(Complex.I ^ (2 : ℕ) * deriv XiC alpha ^ (2 : ℕ)) := by ring
+          _ = deriv XiC alpha ^ (2 : ℕ) := by rw [Complex.I_sq]; ring
       · rw [xiThetaEigenFourier_spectralPoint_eq_zero halpha q hq, zero_mul]
         simp only [g, S, Set.mem_setOf_eq, hq, if_false]
     calc
@@ -311,7 +311,7 @@ theorem xiWeilPolarization_thetaEigenFourier_xiDivisorSupport
             change (if q ∈ S then c else 0) = c
             rw [if_pos (hmem q hq)]
           _ = (T.card : ℂ) * c := by simp
-      _ = (xiSpectralMultiplicity alpha : ℂ) * deriv XiC alpha ^ 2 := by
+      _ = (xiSpectralMultiplicity alpha : ℂ) * deriv XiC alpha ^ (2 : ℕ) := by
         rfl
   · rw [if_neg hab]
     unfold xiWeilPolarization
@@ -354,7 +354,7 @@ theorem xiWeilPolarization_thetaEigenFourier_xiDivisorSupport_orbit
         (xiThetaEigenFourier (xiSpectralPointSupport tau)) =
       if tau = xiZeroLineConjEquiv rho then
         (xiSpectralMultiplicity (xiSpectralPointSupport rho) : ℂ) *
-          deriv XiC (xiSpectralPointSupport rho) ^ 2
+          deriv XiC (xiSpectralPointSupport rho) ^ (2 : ℕ)
       else 0 := by
   rw [xiWeilPolarization_thetaEigenFourier_xiDivisorSupport]
   have hiff :
@@ -379,7 +379,7 @@ theorem xiWeilPolarization_thetaEigenFourier_xiDivisorSupport_self
         (xiThetaEigenFourier (xiSpectralPointSupport rho)) =
       if xiZeroLineConjEquiv rho = rho then
         (xiSpectralMultiplicity (xiSpectralPointSupport rho) : ℂ) *
-          deriv XiC (xiSpectralPointSupport rho) ^ 2
+          deriv XiC (xiSpectralPointSupport rho) ^ (2 : ℕ)
       else 0 := by
   simpa only [eq_comm] using
     xiWeilPolarization_thetaEigenFourier_xiDivisorSupport_orbit rho rho

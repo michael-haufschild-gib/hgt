@@ -159,7 +159,7 @@ theorem InteriorTest.scalar_planar (g : InteriorTest) (u : Space) :
 
 /-- Exact transport of the height-squared scalar moment to ordinary planar measure. -/
 theorem InteriorTest.height_sq_planar (g : InteriorTest) (u : Space) :
-    (∫ z : UpperHalfPlane, (z.im : ℂ)^2*g.field z*u z ∂measure) =
+    (∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*g.field z*u z ∂measure) =
       ∫ z : ℂ, g.localValue u z := by
   rw [← local_integral_cell,← integral_height_sq_chart]
   apply integral_congr_ae

@@ -37,17 +37,17 @@ theorem routePPrimitiveGammaJuliaStokesCofinalChild_hsNorm_le_firstTrace
     exact summable_mul_of_summable_norm hw.norm hw.norm
   have hK : IsHS K := by
     exact routePPrimitiveGammaJuliaStokesCofinalChildKernel_isHS hd
-  have hentry : ∀ pq : Nat.Primes × Nat.Primes, ‖K pq‖ ^ 2 ≤ w pq.1 * w pq.2 := by
+  have hentry : ∀ pq : Nat.Primes × Nat.Primes, ‖K pq‖ ^ (2 : ℕ) ≤ w pq.1 * w pq.2 := by
     intro pq
     exact norm_sq_routePPrimitiveGammaJuliaStokesCofinalChildKernel_le hd pq
-  have hsq : hsNormSq K ≤ W ^ 2 := by
+  have hsq : hsNormSq K ≤ W ^ (2 : ℕ) := by
     calc
-      hsNormSq K = ∑' pq, ‖K pq‖ ^ 2 := rfl
+      hsNormSq K = ∑' pq, ‖K pq‖ ^ (2 : ℕ) := rfl
       _ ≤ ∑' pq : Nat.Primes × Nat.Primes, w pq.1 * w pq.2 :=
         Summable.tsum_mono hK hprod hentry
       _ = (∑' p, w p) * ∑' q, w q := by
         exact (hw.tsum_mul_tsum hw hprod).symm
-      _ = W ^ 2 := by
+      _ = W ^ (2 : ℕ) := by
         rw [tsum_routePPrimitiveGammaJuliaStokesTransportedPrimeWeight hd]
         simp [W, pow_two]
   have hW0 : 0 ≤ W := by
@@ -62,13 +62,13 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNormSq_delta_factor
           routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d 1) =
       (∑ ij : Fin 2 × Fin 2,
         ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2 -
-          routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ 2) *
+          routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ (2 : ℕ)) *
         hsNormSq (routePPrimitiveGammaJuliaStokesCofinalChildKernel d) := by
   let A := routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r
   let B := routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1
   let K := routePPrimitiveGammaJuliaStokesCofinalChildKernel d
-  let a : Fin 2 × Fin 2 → ℝ := fun ij => ‖A ij.1 ij.2 - B ij.1 ij.2‖ ^ 2
-  let b : Nat.Primes × Nat.Primes → ℝ := fun pq => ‖K pq‖ ^ 2
+  let a : Fin 2 × Fin 2 → ℝ := fun ij => ‖A ij.1 ij.2 - B ij.1 ij.2‖ ^ (2 : ℕ)
+  let b : Nat.Primes × Nat.Primes → ℝ := fun pq => ‖K pq‖ ^ (2 : ℕ)
   have ha : Summable a := Summable.of_finite
   have hK : IsHS K := routePPrimitiveGammaJuliaStokesCofinalChildKernel_isHS hd
   have hb : Summable b := hK
@@ -81,7 +81,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNormSq_delta_factor
           routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d 1) =
         ∑' xy,
           ‖(routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d r -
-            routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d 1) xy‖ ^ 2 := rfl
+            routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d 1) xy‖ ^ (2 : ℕ) := rfl
     _ = ∑' uv : (Fin 2 × Fin 2) × (Nat.Primes × Nat.Primes), a uv.1 * b uv.2 := by
       rw [← routePPrimitiveGammaJuliaPhysicalStokesHellingerPairEquiv.tsum_eq]
       apply tsum_congr
@@ -90,7 +90,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNormSq_delta_factor
         A, B, K, a, b, Pi.sub_apply,
         routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel]
       rw [← sub_mul, norm_mul, mul_pow]
-      change _ = ‖A i j - B i j‖ ^ 2 * ‖K (p, q)‖ ^ 2
+      change _ = ‖A i j - B i j‖ ^ (2 : ℕ) * ‖K (p, q)‖ ^ (2 : ℕ)
       rfl
     _ = (∑' ij, a ij) * ∑' pq, b pq :=
       (ha.tsum_mul_tsum hb hab).symm
@@ -101,12 +101,12 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNormSq_factor
     {d : ℝ} (hd : 0 < d) (r : ℝ) :
     hsNormSq (routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d r) =
       (∑ ij : Fin 2 × Fin 2,
-        ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2‖ ^ 2) *
+        ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2‖ ^ (2 : ℕ)) *
         hsNormSq (routePPrimitiveGammaJuliaStokesCofinalChildKernel d) := by
   let A := routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r
   let K := routePPrimitiveGammaJuliaStokesCofinalChildKernel d
-  let a : Fin 2 × Fin 2 → ℝ := fun ij => ‖A ij.1 ij.2‖ ^ 2
-  let b : Nat.Primes × Nat.Primes → ℝ := fun pq => ‖K pq‖ ^ 2
+  let a : Fin 2 × Fin 2 → ℝ := fun ij => ‖A ij.1 ij.2‖ ^ (2 : ℕ)
+  let b : Nat.Primes × Nat.Primes → ℝ := fun pq => ‖K pq‖ ^ (2 : ℕ)
   have ha : Summable a := Summable.of_finite
   have hK : IsHS K := routePPrimitiveGammaJuliaStokesCofinalChildKernel_isHS hd
   have hb : Summable b := hK
@@ -115,7 +115,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNormSq_factor
     exact summable_mul_of_summable_norm ha.norm hb.norm
   calc
     hsNormSq (routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d r) =
-        ∑' xy, ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d r xy‖ ^ 2 := rfl
+        ∑' xy, ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d r xy‖ ^ (2 : ℕ) := rfl
     _ = ∑' uv : (Fin 2 × Fin 2) × (Nat.Primes × Nat.Primes), a uv.1 * b uv.2 := by
       rw [← routePPrimitiveGammaJuliaPhysicalStokesHellingerPairEquiv.tsum_eq]
       apply tsum_congr
@@ -123,7 +123,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNormSq_factor
       simp only [routePPrimitiveGammaJuliaPhysicalStokesHellingerPairEquiv, A, K, a, b,
         routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel]
       rw [norm_mul, mul_pow]
-      change _ = ‖A i j‖ ^ 2 * ‖K (p, q)‖ ^ 2
+      change _ = ‖A i j‖ ^ (2 : ℕ) * ‖K (p, q)‖ ^ (2 : ℕ)
       rfl
     _ = (∑' ij, a ij) * ∑' pq, b pq :=
       (ha.tsum_mul_tsum hb hab).symm
@@ -134,14 +134,14 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNorm_le_channel_energ
     {d : ℝ} (hd : 0 < d) (r : ℝ) :
     hsNorm (routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d r) ≤
       Real.sqrt (∑ ij : Fin 2 × Fin 2,
-        ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2‖ ^ 2) *
+        ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2‖ ^ (2 : ℕ)) *
         gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d := by
   let E : ℝ := ∑ ij : Fin 2 × Fin 2,
-    ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2‖ ^ 2
+    ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2‖ ^ (2 : ℕ)
   let W : ℝ := gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d
   have hE : 0 ≤ E := Finset.sum_nonneg fun ij _ => sq_nonneg _
   have hW : 0 ≤ W := (gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent_pos hd).le
-  have hchild : hsNormSq (routePPrimitiveGammaJuliaStokesCofinalChildKernel d) ≤ W ^ 2 := by
+  have hchild : hsNormSq (routePPrimitiveGammaJuliaStokesCofinalChildKernel d) ≤ W ^ (2 : ℕ) := by
     have h := routePPrimitiveGammaJuliaStokesCofinalChild_hsNorm_le_firstTrace hd
     have hnonneg := hsNorm_nonneg (routePPrimitiveGammaJuliaStokesCofinalChildKernel d)
     have hsq := pow_le_pow_left₀ hnonneg h 2
@@ -151,7 +151,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNorm_le_channel_energ
     hsNorm (routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel d r) =
         Real.sqrt (E * hsNormSq (routePPrimitiveGammaJuliaStokesCofinalChildKernel d)) := by
       rw [hsNorm, routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNormSq_factor hd r]
-    _ ≤ Real.sqrt (E * W ^ 2) := by
+    _ ≤ Real.sqrt (E * W ^ (2 : ℕ)) := by
       apply Real.sqrt_le_sqrt
       exact mul_le_mul_of_nonneg_left hchild hE
     _ = Real.sqrt E * W := by
@@ -165,15 +165,15 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNorm_delta_le
       Real.sqrt
         ((∑ ij : Fin 2 × Fin 2,
           ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2 -
-            routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ 2) *
-          gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d ^ 2) := by
+            routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ (2 : ℕ)) *
+          gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d ^ (2 : ℕ)) := by
   let a : ℝ := ∑ ij : Fin 2 × Fin 2,
     ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2 -
-      routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ 2
+      routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ (2 : ℕ)
   have ha : 0 ≤ a := by
     exact Finset.sum_nonneg fun ij _ => sq_nonneg _
   have hchild : hsNormSq (routePPrimitiveGammaJuliaStokesCofinalChildKernel d) ≤
-      gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d ^ 2 := by
+      gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d ^ (2 : ℕ) := by
     have h := routePPrimitiveGammaJuliaStokesCofinalChild_hsNorm_le_firstTrace hd
     have hnonneg := hsNorm_nonneg (routePPrimitiveGammaJuliaStokesCofinalChildKernel d)
     have hsq := pow_le_pow_left₀ hnonneg h 2
@@ -187,7 +187,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_hsNorm_delta_le
 theorem continuous_routePPrimitiveGammaJuliaPhysicalStokesHellinger_channel_delta_energy :
     Continuous (fun r : ℝ => ∑ ij : Fin 2 × Fin 2,
       ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel r ij.1 ij.2 -
-        routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ 2) := by
+        routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ (2 : ℕ)) := by
   apply continuous_finsetSum
   rintro ⟨i, j⟩ _
   fin_cases i <;> fin_cases j <;>
@@ -197,7 +197,7 @@ theorem continuous_routePPrimitiveGammaJuliaPhysicalStokesHellinger_channel_delt
 theorem routePPrimitiveGammaJuliaPhysicalStokesHellinger_channel_delta_energy_one :
     (∑ ij : Fin 2 × Fin 2,
       ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2 -
-        routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ 2) = 0 := by
+        routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ (2 : ℕ)) = 0 := by
   simp
 
 theorem tendsto_routePPrimitiveGammaJuliaPhysicalStokesPivot_delta_hsNorm :
@@ -215,7 +215,7 @@ theorem tendsto_routePPrimitiveGammaJuliaPhysicalStokesPivot_delta_hsNorm :
   let W : ℕ → ℝ := fun n => gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent (d n)
   let E : ℕ → ℝ := fun n => ∑ ij : Fin 2 × Fin 2,
     ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel (r n) ij.1 ij.2 -
-      routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ 2
+      routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ (2 : ℕ)
   have hd : ∀ n, 0 < d n := fun n =>
     routePPrimitiveGammaJuliaStokesCanonicalApertureSequence_pos n
   have hr : Tendsto r atTop (nhds 1) := by
@@ -229,8 +229,8 @@ theorem tendsto_routePPrimitiveGammaJuliaPhysicalStokesPivot_delta_hsNorm :
       (continuous_routePPrimitiveGammaJuliaPhysicalStokesHellinger_channel_delta_energy.tendsto 1).comp hr
     simpa only [E, r, Function.comp_def,
       routePPrimitiveGammaJuliaPhysicalStokesHellinger_channel_delta_energy_one] using h
-  have hupper : Tendsto (fun n => Real.sqrt (E n * W n ^ 2)) atTop (nhds 0) := by
-    have hmul : Tendsto (fun n => E n * W n ^ 2) atTop (nhds 0) := by
+  have hupper : Tendsto (fun n => Real.sqrt (E n * W n ^ (2 : ℕ))) atTop (nhds 0) := by
+    have hmul : Tendsto (fun n => E n * W n ^ (2 : ℕ)) atTop (nhds 0) := by
       convert hE.mul (hW.pow 2) using 1
       norm_num
     simpa only [Function.comp_def, Real.sqrt_zero] using
@@ -296,7 +296,7 @@ theorem tendstoLocallyUniformly_routePPrimitiveGammaJuliaPhysicalStokesPivot_nor
   have hB : ∀ n, IsHS (B n) := fun n =>
     (routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel_isHS (hd n) 1).smul (c n)
   let C : ℝ := ∑ ij : Fin 2 × Fin 2,
-    ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ 2
+    ‖routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel 1 ij.1 ij.2‖ ^ (2 : ℕ)
   have hC : 0 ≤ C := Finset.sum_nonneg fun ij _ => sq_nonneg _
   have hWpos : ∀ n, 0 < W n := fun n =>
     gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent_pos (hd n)

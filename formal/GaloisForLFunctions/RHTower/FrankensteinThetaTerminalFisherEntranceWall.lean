@@ -10,7 +10,7 @@ reversing the same jet ratio gives `p^(1/2-rho)`.  Multiplication by the source-
 Euler--Fisher reciprocal-log potential therefore puts the two same-fibre orientations on the
 sharp Route-R entrance wall.
 
-The forward field is in `ell^2` exactly for `Re rho <= 1/2`, while the inverse field is in `ell^2`
+The forward field is in `ell^(2 : ℕ)` exactly for `Re rho <= 1/2`, while the inverse field is in `ell^(2 : ℕ)`
 exactly for `Re rho >= 1/2`.  Bilateral admission is consequently equivalent to the critical line
 for each retained divisor, and constructs the coefficient-faithful source-natural Gamma reporter.
 This is a coefficient-preserving cross-corpus reduction; no bilateral-admission premise is

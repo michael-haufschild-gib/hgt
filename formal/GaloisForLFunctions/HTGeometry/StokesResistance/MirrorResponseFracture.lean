@@ -38,11 +38,11 @@ theorem continuous_mirrorSymmetricResponse_finrank_constant
           (LinearMap.range (mirrorSymmetricResponseProjection (A y)).toLin') : ℂ) := by
     calc
       _ = Matrix.trace (mirrorSymmetricResponseProjection (A x)) := hx.symm
-      _ = ((Fintype.card n : ℂ) ^ 2 + 2 * Fintype.card n +
-          Matrix.trace (A x) ^ 2) / 4 :=
+      _ = ((Fintype.card n : ℂ) ^ (2 : ℕ) + 2 * Fintype.card n +
+          Matrix.trace (A x) ^ (2 : ℕ)) / 4 :=
         trace_mirrorSymmetricResponseProjection (A x) (hinvolution x)
-      _ = ((Fintype.card n : ℂ) ^ 2 + 2 * Fintype.card n +
-          Matrix.trace (A y) ^ 2) / 4 := by rw [htrace]
+      _ = ((Fintype.card n : ℂ) ^ (2 : ℕ) + 2 * Fintype.card n +
+          Matrix.trace (A y) ^ (2 : ℕ)) / 4 := by rw [htrace]
       _ = Matrix.trace (mirrorSymmetricResponseProjection (A y)) :=
         (trace_mirrorSymmetricResponseProjection (A y) (hinvolution y)).symm
       _ = _ := hy

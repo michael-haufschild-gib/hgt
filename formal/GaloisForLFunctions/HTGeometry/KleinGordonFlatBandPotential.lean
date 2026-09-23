@@ -30,7 +30,7 @@ section FlatPotential
 variable {b : ℝ}
 
 /-- The potential that flattens the frequency below `√b`. -/
-def kgFlatPot (b : ℝ) (ξ : E) : ℝ := if ‖ξ‖ ≤ Real.sqrt b then ‖ξ‖ ^ 2 else 0
+def kgFlatPot (b : ℝ) (ξ : E) : ℝ := if ‖ξ‖ ≤ Real.sqrt b then ‖ξ‖ ^ (2 : ℕ) else 0
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem measurable_kgFlatPot (b : ℝ) : Measurable (kgFlatPot (E := E) b) :=
@@ -43,7 +43,7 @@ theorem abs_kgFlatPot_le (hb0 : 0 ≤ b) (ξ : E) : |kgFlatPot b ξ| ≤ b := by
   split
   · rename_i hξ
     rw [abs_of_nonneg (sq_nonneg _)]
-    have hsq : ‖ξ‖ ^ 2 ≤ Real.sqrt b ^ 2 := by
+    have hsq : ‖ξ‖ ^ (2 : ℕ) ≤ Real.sqrt b ^ (2 : ℕ) := by
       have := norm_nonneg ξ
       nlinarith [Real.sqrt_nonneg b]
     rwa [Real.sq_sqrt hb0] at hsq
@@ -53,12 +53,12 @@ omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensi
 /-- **On its band the flattening potential makes the shifted frequency one.** -/
 theorem kgShiftedFreq_kgFlatPot {ξ : E} (hξ : ‖ξ‖ ≤ Real.sqrt b) :
     kgShiftedFreq (fun ζ : E => -(kgFlatPot b ζ)) ξ = 1 := by
-  have hpot : kgFlatPot b ξ = ‖ξ‖ ^ 2 := by
+  have hpot : kgFlatPot b ξ = ‖ξ‖ ^ (2 : ℕ) := by
     rw [kgFlatPot, if_pos hξ]
-  have hfreq : kgFreq ξ ^ 2 = 1 + ‖ξ‖ ^ 2 := by
+  have hfreq : kgFreq ξ ^ (2 : ℕ) = 1 + ‖ξ‖ ^ (2 : ℕ) := by
     rw [kgFreq, Real.sq_sqrt (by positivity)]
   rw [kgShiftedFreq, hpot, hfreq]
-  have harg : 1 + ‖ξ‖ ^ 2 + -‖ξ‖ ^ 2 = 1 := by ring
+  have harg : 1 + ‖ξ‖ ^ (2 : ℕ) + -‖ξ‖ ^ (2 : ℕ) = 1 := by ring
   rw [harg, Real.sqrt_one]
 
 omit [MeasurableSpace E] [BorelSpace E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in

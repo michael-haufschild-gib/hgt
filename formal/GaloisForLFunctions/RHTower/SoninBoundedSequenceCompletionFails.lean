@@ -22,8 +22,8 @@ open scoped Topology InnerProduct InnerProductSpace
 
 /-- The packet's square is integrable. -/
 theorem integrable_soninScaledPacket_sq (m δ κ : ℝ) (hδ : 0 < δ) :
-    Integrable fun x : ℝ => soninScaledPacket m δ κ x ^ 2 := by
-  have hcont : Continuous fun x : ℝ => soninScaledPacket m δ κ x ^ 2 :=
+    Integrable fun x : ℝ => soninScaledPacket m δ κ x ^ (2 : ℕ) := by
+  have hcont : Continuous fun x : ℝ => soninScaledPacket m δ κ x ^ (2 : ℕ) :=
     (continuous_soninScaledPacket m δ κ hδ).pow 2
   refine hcont.integrable_of_hasCompactSupport ?_
   refine HasCompactSupport.of_support_subset_isCompact
@@ -37,14 +37,14 @@ theorem integrable_soninScaledPacket_sq (m δ κ : ℝ) (hδ : 0 < δ) :
 at most four times the squared profile's mass. -/
 theorem norm_sq_soninScaledPacketEven_le (m δ w : ℝ) (hδ : 0 < δ) (hm : δ < m)
     (hmean : |soninScaledPacketMean m δ (2 * Real.pi * w)| ≤ 1) :
-    ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 ≤
+    ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) ≤
       8 * δ * ∫ y : ℝ, soninUnitBumpSq y := by
-  have hpt : ∀ x : ℝ, soninScaledPacket m δ (2 * Real.pi * w) x ^ 2 ≤
-      4 * soninScaledAnnulusBump m δ x ^ 2 := by
+  have hpt : ∀ x : ℝ, soninScaledPacket m δ (2 * Real.pi * w) x ^ (2 : ℕ) ≤
+      4 * soninScaledAnnulusBump m δ x ^ (2 : ℕ) := by
     intro x
     have hcos : |Real.cos (2 * Real.pi * w * x)| ≤ 1 := Real.abs_cos_le_one _
     have hfac : (Real.cos (2 * Real.pi * w * x) -
-        soninScaledPacketMean m δ (2 * Real.pi * w)) ^ 2 ≤ 4 := by
+        soninScaledPacketMean m δ (2 * Real.pi * w)) ^ (2 : ℕ) ≤ 4 := by
       rcases abs_le.mp hcos with ⟨hc1, hc2⟩
       rcases abs_le.mp hmean with ⟨hm1, hm2⟩
       nlinarith [hc1, hc2, hm1, hm2]
@@ -52,8 +52,8 @@ theorem norm_sq_soninScaledPacketEven_le (m δ w : ℝ) (hδ : 0 < δ) (hm : δ 
     nlinarith [hfac, sq_nonneg (soninScaledAnnulusBump m δ x)]
   have hint₁ := integrable_soninScaledPacket_sq m δ (2 * Real.pi * w) hδ
   have hint₂ := (integrable_soninScaledAnnulusBump_sq m δ hδ).const_mul 4
-  have hmono : (∫ x : ℝ, soninScaledPacket m δ (2 * Real.pi * w) x ^ 2) ≤
-      ∫ x : ℝ, 4 * soninScaledAnnulusBump m δ x ^ 2 :=
+  have hmono : (∫ x : ℝ, soninScaledPacket m δ (2 * Real.pi * w) x ^ (2 : ℕ)) ≤
+      ∫ x : ℝ, 4 * soninScaledAnnulusBump m δ x ^ (2 : ℕ) :=
     integral_mono hint₁ hint₂ hpt
   rw [norm_sq_soninScaledPacketEven m δ (2 * Real.pi * w) hδ]
   rw [integral_const_mul, integral_soninScaledAnnulusBump_sq_eq m δ hδ hm] at hmono

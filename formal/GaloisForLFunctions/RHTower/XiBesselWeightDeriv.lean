@@ -36,7 +36,7 @@ theorem hasDerivAt_xiSpeed_comp {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) 
   have hmem : (1 : ℝ) < xiInverse s r := xiInverse_mem_Ioi hs0 hs1 hr
   have hbase : HasDerivAt (xiSpeed s) (xiSpeedDeriv s (xiInverse s r)) (xiInverse s r) := by
     have h := hasDerivAt_xiSpeed (by linarith : s ≤ 1) hmem
-    rwa [show xiInverse s r * (s - 1) / ((xiInverse s r ^ 2 - 1) ^ 2 * xiSpeed s (xiInverse s r))
+    rwa [show xiInverse s r * (s - 1) / ((xiInverse s r ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s (xiInverse s r))
       = xiSpeedDeriv s (xiInverse s r) from rfl] at h
   exact hbase.comp r (hasDerivAt_xiInverse hs0 hs1 hr)
 
@@ -60,7 +60,7 @@ theorem hasDerivAt_xiBesselWeight {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2
         - xiAmplitude s (xiInverse s r)
           * (xiSpeedDeriv s (xiInverse s r) * (xiSpeed s (xiInverse s r))⁻¹ * r
               + xiSpeed s (xiInverse s r) * 1))
-        / (xiSpeed s (xiInverse s r) * r) ^ 2) r := by
+        / (xiSpeed s (xiInverse s r) * r) ^ (2 : ℕ)) r := by
   have hmem : (1 : ℝ) < xiInverse s r := xiInverse_mem_Ioi hs0 hs1 hr
   have hspeed : 0 < xiSpeed s (xiInverse s r) :=
     lt_of_lt_of_le zero_lt_one (one_le_xiSpeed (by linarith) hmem)
@@ -82,35 +82,35 @@ theorem xiBesselWeightDeriv_eq_mul {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
         - xiAmplitude s (xiInverse s r)
           * (xiSpeedDeriv s (xiInverse s r) * (xiSpeed s (xiInverse s r))⁻¹ * r
               + xiSpeed s (xiInverse s r) * 1))
-        / (xiSpeed s (xiInverse s r) * r) ^ 2
+        / (xiSpeed s (xiInverse s r) * r) ^ (2 : ℕ)
       = xiBesselWeight s r
         * (xiInverse s r
-              / (2 * Real.sqrt (xiInverse s r ^ 2 - 1) * Real.sqrt (xiInverse s r ^ 2 - s))
+              / (2 * Real.sqrt (xiInverse s r ^ (2 : ℕ) - 1) * Real.sqrt (xiInverse s r ^ (2 : ℕ) - s))
             - 1 / (2 * r)
-            - 3 * xiInverse s r * Real.sqrt (xiInverse s r ^ 2 - 1)
-                / (2 * (xiInverse s r ^ 2 - s) * Real.sqrt (xiInverse s r ^ 2 - s))) := by
+            - 3 * xiInverse s r * Real.sqrt (xiInverse s r ^ (2 : ℕ) - 1)
+                / (2 * (xiInverse s r ^ (2 : ℕ) - s) * Real.sqrt (xiInverse s r ^ (2 : ℕ) - s))) := by
   have hx1 : (1 : ℝ) < xiInverse s r := xiInverse_mem_Ioi hs0 hs1 hr
   have hxi : xiEndpointPhase s (xiInverse s r) = r := xiEndpointPhase_xiInverse hs0 hs1 hr
   set x : ℝ := xiInverse s r with hxdef
-  have hu : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hv : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  set a : ℝ := Real.sqrt (x ^ 2 - 1) with hadef
-  set b : ℝ := Real.sqrt (x ^ 2 - s) with hbdef
+  have hu : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hv : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  set a : ℝ := Real.sqrt (x ^ (2 : ℕ) - 1) with hadef
+  set b : ℝ := Real.sqrt (x ^ (2 : ℕ) - s) with hbdef
   have ha : 0 < a := Real.sqrt_pos.mpr hu
   have hb : 0 < b := Real.sqrt_pos.mpr hv
-  have ha2 : a ^ 2 = x ^ 2 - 1 := Real.sq_sqrt hu.le
-  have hb2 : b ^ 2 = x ^ 2 - s := Real.sq_sqrt hv.le
-  have hrel : a ^ 2 - b ^ 2 = s - 1 := by rw [ha2, hb2]; ring
+  have ha2 : a ^ (2 : ℕ) = x ^ (2 : ℕ) - 1 := Real.sq_sqrt hu.le
+  have hb2 : b ^ (2 : ℕ) = x ^ (2 : ℕ) - s := Real.sq_sqrt hv.le
+  have hrel : a ^ (2 : ℕ) - b ^ (2 : ℕ) = s - 1 := by rw [ha2, hb2]; ring
   have hV : xiSpeed s x = b / a := by
-    rw [xiSpeed, Real.sqrt_div hv.le (x ^ 2 - 1), ← hadef, ← hbdef]
+    rw [xiSpeed, Real.sqrt_div hv.le (x ^ (2 : ℕ) - 1), ← hadef, ← hbdef]
   have hVpos : (0 : ℝ) < xiSpeed s x := by rw [hV]; positivity
   have hA : 0 < xiAmplitude s x := xiAmplitude_pos hs0 hs1 hx1
   have hBq : xiBesselWeight s r = xiAmplitude s x / (xiSpeed s x * r) :=
     xiBesselWeight_eq_quotient hs0 hs1 hr
   have hA' : xiAmplitudeDeriv s x
-      = xiAmplitude s x * (phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s))) := rfl
-  have hPLD : phaseLogDefect s x = xiSpeed s x / xiEndpointPhase s x - x / (x ^ 2 - 1) := rfl
-  have hV' : xiSpeedDeriv s x = x * (s - 1) / ((x ^ 2 - 1) ^ 2 * xiSpeed s x) := rfl
+      = xiAmplitude s x * (phaseLogDefect s x / 2 - x / (2 * (x ^ (2 : ℕ) - s))) := rfl
+  have hPLD : phaseLogDefect s x = xiSpeed s x / xiEndpointPhase s x - x / (x ^ (2 : ℕ) - 1) := rfl
+  have hV' : xiSpeedDeriv s x = x * (s - 1) / ((x ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s x) := rfl
   rw [hBq, hA', hPLD, hV', hxi, hV, ← ha2, ← hb2]
   have hApos : xiAmplitude s x ≠ 0 := ne_of_gt hA
   field_simp
@@ -118,7 +118,7 @@ theorem xiBesselWeightDeriv_eq_mul {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
   linear_combination (2 * r * x) * hrel
 
 /-- **The derivative of Dunster's weight is bounded on the compact phase range.**  This is the
-derivative half of the `C^1` estimate: the weight is bounded by `2` and its logarithmic derivative
+derivative half of the `C^(1 : ℕ)` estimate: the weight is bounded by `2` and its logarithmic derivative
 by `32`. -/
 theorem abs_xiBesselWeightDeriv_le {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hr : 0 < r)
     (hxle : xiInverse s r ≤ 2) :
@@ -127,7 +127,7 @@ theorem abs_xiBesselWeightDeriv_le {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
         - xiAmplitude s (xiInverse s r)
           * (xiSpeedDeriv s (xiInverse s r) * (xiSpeed s (xiInverse s r))⁻¹ * r
               + xiSpeed s (xiInverse s r) * 1))
-        / (xiSpeed s (xiInverse s r) * r) ^ 2| ≤ 64 := by
+        / (xiSpeed s (xiInverse s r) * r) ^ (2 : ℕ)| ≤ 64 := by
   have hx1 : (1 : ℝ) < xiInverse s r := xiInverse_mem_Ioi hs0 hs1 hr
   have hxi : xiEndpointPhase s (xiInverse s r) = r := xiEndpointPhase_xiInverse hs0 hs1 hr
   rw [xiBesselWeightDeriv_eq_mul hs0 hs1 hr, abs_mul]
@@ -138,10 +138,10 @@ theorem abs_xiBesselWeightDeriv_le {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
   rw [hxi] at hL
   have hB0 : 0 ≤ |xiBesselWeight s r| := abs_nonneg _
   have hL0 : 0 ≤ |xiInverse s r
-      / (2 * Real.sqrt (xiInverse s r ^ 2 - 1) * Real.sqrt (xiInverse s r ^ 2 - s))
+      / (2 * Real.sqrt (xiInverse s r ^ (2 : ℕ) - 1) * Real.sqrt (xiInverse s r ^ (2 : ℕ) - s))
       - 1 / (2 * r)
-      - 3 * xiInverse s r * Real.sqrt (xiInverse s r ^ 2 - 1)
-          / (2 * (xiInverse s r ^ 2 - s) * Real.sqrt (xiInverse s r ^ 2 - s))| := abs_nonneg _
+      - 3 * xiInverse s r * Real.sqrt (xiInverse s r ^ (2 : ℕ) - 1)
+          / (2 * (xiInverse s r ^ (2 : ℕ) - s) * Real.sqrt (xiInverse s r ^ (2 : ℕ) - s))| := abs_nonneg _
   nlinarith [hB, hL, hB0, hL0]
 
 
@@ -152,7 +152,7 @@ def xiBesselWeightDeriv (s r : ℝ) : ℝ :=
     - xiAmplitude s (xiInverse s r)
       * (xiSpeedDeriv s (xiInverse s r) * (xiSpeed s (xiInverse s r))⁻¹ * r
           + xiSpeed s (xiInverse s r) * 1))
-    / (xiSpeed s (xiInverse s r) * r) ^ 2
+    / (xiSpeed s (xiInverse s r) * r) ^ (2 : ℕ)
 
 theorem hasDerivAt_xiBesselWeight' {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hr : 0 < r) :
     HasDerivAt (xiBesselWeight s) (xiBesselWeightDeriv s r) r :=
@@ -187,7 +187,7 @@ theorem continuousOn_xiBesselWeightDeriv {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 
     intro r hr
     exact ne_of_gt (lt_of_lt_of_le zero_lt_one
       (one_le_xiSpeed (by linarith) (xiInverse_mem_Ioi hs0 hs1 hr)))
-  have hden : ∀ r ∈ Set.Ioi (0 : ℝ), (xiSpeed s (xiInverse s r) * r) ^ 2 ≠ 0 := by
+  have hden : ∀ r ∈ Set.Ioi (0 : ℝ), (xiSpeed s (xiInverse s r) * r) ^ (2 : ℕ) ≠ 0 := by
     intro r hr
     exact pow_ne_zero 2 (mul_ne_zero (hVne r hr) (ne_of_gt hr))
   refine ContinuousOn.div ?_ ((hV.mul continuousOn_id).pow 2) hden

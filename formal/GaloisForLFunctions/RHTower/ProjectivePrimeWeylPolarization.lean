@@ -155,16 +155,16 @@ theorem projThreeValue_apply (a b : X) (w w' c : ℂ) (x : X) :
   simp [projThreeValue]
 
 theorem norm_sq_projTwoValue (a : X) (w c : ℝ) :
-    ‖projTwoValue a (w : ℂ) (c : ℂ)‖ ^ 2 = w ^ 2 + projDeg X * c ^ 2 := by
-  have hnorm : ‖projTwoValue a (w : ℂ) (c : ℂ)‖ ^ 2 =
+    ‖projTwoValue a (w : ℂ) (c : ℂ)‖ ^ (2 : ℕ) = w ^ (2 : ℕ) + projDeg X * c ^ (2 : ℕ) := by
+  have hnorm : ‖projTwoValue a (w : ℂ) (c : ℂ)‖ ^ (2 : ℕ) =
       RCLike.re (inner ℂ (projTwoValue a (w : ℂ) (c : ℂ)) (projTwoValue a (w : ℂ) (c : ℂ))) :=
     norm_sq_eq_re_inner _
   rw [hnorm, inner_projTwoValue_same_real]
   simp [pow_two]
 
 theorem norm_sq_projThreeValue {a b : X} (hab : a ≠ b) (w w' c : ℝ) :
-    ‖projThreeValue a b (w : ℂ) (w' : ℂ) (c : ℂ)‖ ^ 2 =
-      w ^ 2 + w' ^ 2 + (projDeg X - 1) * c ^ 2 := by
+    ‖projThreeValue a b (w : ℂ) (w' : ℂ) (c : ℂ)‖ ^ (2 : ℕ) =
+      w ^ (2 : ℕ) + w' ^ (2 : ℕ) + (projDeg X - 1) * c ^ (2 : ℕ) := by
   classical
   have hmemb : b ∈ Finset.univ.erase a := Finset.mem_erase.mpr ⟨Ne.symm hab, Finset.mem_univ b⟩
   have h2 : 2 ≤ Fintype.card X := by
@@ -174,12 +174,12 @@ theorem norm_sq_projThreeValue {a b : X} (hab : a ≠ b) (w w' c : ℝ) :
     have h1 : 1 ≤ Fintype.card X := le_trans (by norm_num) h2
     rw [projDeg, Nat.cast_sub (by omega), Nat.cast_sub h1]
     norm_num
-  have hsum : ∑ x : X, ‖projThreeValue a b (w : ℂ) (w' : ℂ) (c : ℂ) x‖ ^ 2 =
-      w ^ 2 + w' ^ 2 + (projDeg X - 1) * c ^ 2 := by
+  have hsum : ∑ x : X, ‖projThreeValue a b (w : ℂ) (w' : ℂ) (c : ℂ) x‖ ^ (2 : ℕ) =
+      w ^ (2 : ℕ) + w' ^ (2 : ℕ) + (projDeg X - 1) * c ^ (2 : ℕ) := by
     rw [← Finset.add_sum_erase _ _ (Finset.mem_univ a), ← Finset.add_sum_erase _ _ hmemb]
     have htail : ∑ x ∈ (Finset.univ.erase a).erase b,
-        ‖projThreeValue a b (w : ℂ) (w' : ℂ) (c : ℂ) x‖ ^ 2 =
-        ∑ _x ∈ (Finset.univ.erase a).erase b, c ^ 2 := by
+        ‖projThreeValue a b (w : ℂ) (w' : ℂ) (c : ℂ) x‖ ^ (2 : ℕ) =
+        ∑ _x ∈ (Finset.univ.erase a).erase b, c ^ (2 : ℕ) := by
       refine Finset.sum_congr rfl ?_
       intro x hx
       have hxb : x ≠ b := (Finset.mem_erase.mp hx).1
@@ -199,7 +199,7 @@ theorem norm_sq_projThreeValue {a b : X} (hab : a ≠ b) (w w' c : ℝ) :
 def projNorm (X : Type*) [Fintype X] (z : ℝ) : ℝ := Real.sqrt (projDeg X + Real.exp (2 * z))
 
 omit [Fintype X] [DecidableEq X] in
-theorem exp_two_mul_eq (z : ℝ) : Real.exp (2 * z) = Real.exp z ^ 2 := by
+theorem exp_two_mul_eq (z : ℝ) : Real.exp (2 * z) = Real.exp z ^ (2 : ℕ) := by
   rw [two_mul, Real.exp_add, sq]
 
 omit [DecidableEq X] in
@@ -209,7 +209,7 @@ theorem projNorm_pos (h : 2 ≤ Fintype.card X) (z : ℝ) : 0 < projNorm X z := 
 
 omit [DecidableEq X] in
 theorem projNorm_sq (h : 2 ≤ Fintype.card X) (z : ℝ) :
-    projNorm X z ^ 2 = projDeg X + Real.exp z ^ 2 := by
+    projNorm X z ^ (2 : ℕ) = projDeg X + Real.exp z ^ (2 : ℕ) := by
   have hp := projDeg_pos (X := X) h
   rw [projNorm, Real.sq_sqrt (by positivity), exp_two_mul_eq]
 
@@ -260,7 +260,7 @@ theorem norm_projNatural (h : 2 ≤ Fintype.card X) (a : X) (z : ℝ) :
   have hp := projDeg_pos (X := X) h
   have hN := projNorm_pos (X := X) h z
   have hsq := projNorm_sq (X := X) h z
-  have hnorm : ‖projNatural a z‖ ^ 2 = 1 := by
+  have hnorm : ‖projNatural a z‖ ^ (2 : ℕ) = 1 := by
     rw [projNatural, norm_sq_projTwoValue, div_pow, div_pow, hsq]
     field_simp
     ring
@@ -269,20 +269,20 @@ theorem norm_projNatural (h : 2 ≤ Fintype.card X) (a : X) (z : ℝ) :
 
 omit [DecidableEq X] in
 theorem sq_sqrt_projDeg_div (h : 2 ≤ Fintype.card X) :
-    Real.sqrt (projDeg X / (projDeg X + 1)) ^ 2 = projDeg X / (projDeg X + 1) := by
+    Real.sqrt (projDeg X / (projDeg X + 1)) ^ (2 : ℕ) = projDeg X / (projDeg X + 1) := by
   have hp := projDeg_pos (X := X) h
   exact Real.sq_sqrt (by positivity)
 
 omit [DecidableEq X] in
 theorem sq_sqrt_projDeg_mul (h : 2 ≤ Fintype.card X) :
-    Real.sqrt (projDeg X * (projDeg X + 1)) ^ 2 = projDeg X * (projDeg X + 1) := by
+    Real.sqrt (projDeg X * (projDeg X + 1)) ^ (2 : ℕ) = projDeg X * (projDeg X + 1) := by
   have hp := projDeg_pos (X := X) h
   exact Real.sq_sqrt (by positivity)
 
 theorem norm_projTransverse (h : 2 ≤ Fintype.card X) (a : X) :
     ‖projTransverse a‖ = 1 := by
   have hp := projDeg_pos (X := X) h
-  have hnorm : ‖projTransverse a‖ ^ 2 = 1 := by
+  have hnorm : ‖projTransverse a‖ ^ (2 : ℕ) = 1 := by
     rw [projTransverse, norm_sq_projTwoValue, sq_sqrt_projDeg_div (X := X) h,
       neg_pow, div_pow, sq_sqrt_projDeg_mul (X := X) h]
     field_simp
@@ -299,9 +299,9 @@ theorem projTransverse_mul (h : 2 ≤ Fintype.card X) :
   set B : ℝ := Real.sqrt (projDeg X * (projDeg X + 1)) with hB
   have hApos : 0 < A := Real.sqrt_pos.mpr (by positivity)
   have hBpos : 0 < B := Real.sqrt_pos.mpr (by positivity)
-  have hAsq : A ^ 2 = projDeg X / (projDeg X + 1) := sq_sqrt_projDeg_div (X := X) h
-  have hBsq : B ^ 2 = projDeg X * (projDeg X + 1) := sq_sqrt_projDeg_mul (X := X) h
-  have hprod : (A * (-(1 / B))) ^ 2 = (-(1 / (projDeg X + 1))) ^ 2 := by
+  have hAsq : A ^ (2 : ℕ) = projDeg X / (projDeg X + 1) := sq_sqrt_projDeg_div (X := X) h
+  have hBsq : B ^ (2 : ℕ) = projDeg X * (projDeg X + 1) := sq_sqrt_projDeg_mul (X := X) h
+  have hprod : (A * (-(1 / B))) ^ (2 : ℕ) = (-(1 / (projDeg X + 1))) ^ (2 : ℕ) := by
     rw [mul_pow, neg_pow, div_pow, hAsq, hBsq, neg_pow]
     field_simp
   have hneg : A * (-(1 / B)) ≤ 0 := by
@@ -342,7 +342,7 @@ numerator `1 - p⁻²`. -/
 theorem det_projTransverseGram (h : 2 ≤ Fintype.card X) {a b : X} (hab : a ≠ b) :
     (!![(1 : ℂ), ⟪projTransverse a, projTransverse b⟫_ℂ;
         ⟪projTransverse b, projTransverse a⟫_ℂ, 1]).det =
-      ((1 - (projDeg X)⁻¹ ^ 2 : ℝ) : ℂ) := by
+      ((1 - (projDeg X)⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) := by
   have hp := projDeg_pos (X := X) h
   rw [Matrix.det_fin_two_of, inner_projTransverse (X := X) h hab,
     inner_projTransverse (X := X) h (Ne.symm hab)]
@@ -666,7 +666,7 @@ theorem starProjection_projPolarization (h : 2 ≤ Fintype.card X) (a : X)
 
 /-- The exact compression leakage of a foreign natural-cone vector. -/
 def projLeakageValue (X : Type*) [Fintype X] (z : ℝ) : ℝ :=
-  (projDeg X - 1) / projDeg X * (Real.exp z - 1) ^ 2 / (projDeg X + Real.exp z ^ 2)
+  (projDeg X - 1) / projDeg X * (Real.exp z - 1) ^ (2 : ℕ) / (projDeg X + Real.exp z ^ (2 : ℕ))
 
 omit [DecidableEq X] in
 @[simp]
@@ -710,7 +710,7 @@ theorem projNatural_sub_compress (h : 2 ≤ Fintype.card X) {a b : X} (hab : a �
 /-- **Equation (9).**  The exact Weyl leakage of a foreign natural-cone vector through the
 point/complement compression. -/
 theorem projWeylLeakage (h : 2 ≤ Fintype.card X) {a b : X} (hab : a ≠ b) (z : ℝ) :
-    ‖projNatural b z - projCompress a (projNatural b z)‖ ^ 2 = projLeakageValue X z := by
+    ‖projNatural b z - projCompress a (projNatural b z)‖ ^ (2 : ℕ) = projLeakageValue X z := by
   have hp : (0 : ℝ) < projDeg X := projDeg_pos (X := X) h
   have hN : (0 : ℝ) < projNorm X z := projNorm_pos (X := X) h z
   have hNsq := projNorm_sq (X := X) h z
@@ -721,7 +721,7 @@ theorem projWeylLeakage (h : 2 ≤ Fintype.card X) {a b : X} (hab : a ≠ b) (z 
 
 /-- **Equation (10).**  The compressed norm is the complementary Hellinger weight. -/
 theorem projWeylCompressionNorm (h : 2 ≤ Fintype.card X) {a b : X} (hab : a ≠ b) (z : ℝ) :
-    ‖projCompress a (projNatural b z)‖ ^ 2 = 1 - projLeakageValue X z := by
+    ‖projCompress a (projNatural b z)‖ ^ (2 : ℕ) = 1 - projLeakageValue X z := by
   have hp : (0 : ℝ) < projDeg X := projDeg_pos (X := X) h
   have hN : (0 : ℝ) < projNorm X z := projNorm_pos (X := X) h z
   have hNsq := projNorm_sq (X := X) h z
@@ -757,8 +757,8 @@ theorem projLeakageValue_pos (h3 : 3 ≤ Fintype.card X) {z : ℝ} (hz : z ≠ 0
     intro hcon
     have hz0 : Real.exp z = Real.exp 0 := by rw [hcon, Real.exp_zero]
     exact hz (Real.exp_eq_exp.mp hz0)
-  have hEsub : (Real.exp z - 1) ^ 2 > 0 := by positivity
-  have hden : (0 : ℝ) < projDeg X + Real.exp z ^ 2 := by positivity
+  have hEsub : (Real.exp z - 1) ^ (2 : ℕ) > 0 := by positivity
+  have hden : (0 : ℝ) < projDeg X + Real.exp z ^ (2 : ℕ) := by positivity
   rw [projLeakageValue]
   have hnum : 0 < (projDeg X - 1) / projDeg X := by
     apply div_pos <;> linarith
@@ -808,7 +808,7 @@ theorem hasDerivAt_projNatural_zero (h : 2 ≤ Fintype.card X) (a : X) :
   have hp1 : (0 : ℝ) < projDeg X + 1 := by linarith
   have hN0 : projNorm X 0 = Real.sqrt (projDeg X + 1) := projNorm_zero_eq (X := X)
   have hspos : (0 : ℝ) < Real.sqrt (projDeg X + 1) := Real.sqrt_pos.mpr hp1
-  have hssq : Real.sqrt (projDeg X + 1) ^ 2 = projDeg X + 1 := Real.sq_sqrt (le_of_lt hp1)
+  have hssq : Real.sqrt (projDeg X + 1) ^ (2 : ℕ) = projDeg X + 1 := Real.sq_sqrt (le_of_lt hp1)
   have hNpos : (0 : ℝ) < projNorm X 0 := projNorm_pos (X := X) h 0
   have hNne : projNorm X 0 ≠ 0 := ne_of_gt hNpos
   have hNderiv' : HasDerivAt (fun t : ℝ => projNorm X t) (1 / Real.sqrt (projDeg X + 1)) 0 := by
@@ -891,12 +891,12 @@ Fisher capacity `p/(p+1)²`. -/
 theorem norm_sq_projNatural_deriv (h : 2 ≤ Fintype.card X) (a : X) :
     ‖projTwoValue a
         ((projDeg X / ((projDeg X + 1) * Real.sqrt (projDeg X + 1)) : ℝ) : ℂ)
-        ((-(1 / ((projDeg X + 1) * Real.sqrt (projDeg X + 1))) : ℝ) : ℂ)‖ ^ 2 =
-      projDeg X / (projDeg X + 1) ^ 2 := by
+        ((-(1 / ((projDeg X + 1) * Real.sqrt (projDeg X + 1))) : ℝ) : ℂ)‖ ^ (2 : ℕ) =
+      projDeg X / (projDeg X + 1) ^ (2 : ℕ) := by
   have hp := projDeg_pos (X := X) h
   have hp1 : (0 : ℝ) < projDeg X + 1 := by linarith
   have hspos : (0 : ℝ) < Real.sqrt (projDeg X + 1) := Real.sqrt_pos.mpr hp1
-  have hssq : Real.sqrt (projDeg X + 1) ^ 2 = projDeg X + 1 := Real.sq_sqrt (le_of_lt hp1)
+  have hssq : Real.sqrt (projDeg X + 1) ^ (2 : ℕ) = projDeg X + 1 := Real.sq_sqrt (le_of_lt hp1)
   rw [norm_sq_projTwoValue, div_pow, mul_pow, hssq, neg_pow, div_pow, mul_pow, hssq]
   field_simp
 
@@ -906,14 +906,14 @@ omit [DecidableEq X] in
 /-- **Equation (16).**  The exact compression leakage differs from its leading prime-density term
 `(e^z - 1)²/p` by a remainder of size `O(p⁻²)`, uniformly on bounded weight ranges. -/
 theorem abs_projLeakageValue_sub_le (h : 2 ≤ Fintype.card X) (z : ℝ) :
-    |projLeakageValue X z - (Real.exp z - 1) ^ 2 / projDeg X| ≤
-      (Real.exp z - 1) ^ 2 * (1 + Real.exp z ^ 2) / projDeg X ^ 2 := by
+    |projLeakageValue X z - (Real.exp z - 1) ^ (2 : ℕ) / projDeg X| ≤
+      (Real.exp z - 1) ^ (2 : ℕ) * (1 + Real.exp z ^ (2 : ℕ)) / projDeg X ^ (2 : ℕ) := by
   have hp : (0 : ℝ) < projDeg X := projDeg_pos (X := X) h
   have hE : (0 : ℝ) < Real.exp z := Real.exp_pos z
-  have hden : (0 : ℝ) < projDeg X + Real.exp z ^ 2 := by positivity
-  have hkey : projLeakageValue X z - (Real.exp z - 1) ^ 2 / projDeg X =
-      -((Real.exp z - 1) ^ 2 * (1 + Real.exp z ^ 2) /
-        (projDeg X * (projDeg X + Real.exp z ^ 2))) := by
+  have hden : (0 : ℝ) < projDeg X + Real.exp z ^ (2 : ℕ) := by positivity
+  have hkey : projLeakageValue X z - (Real.exp z - 1) ^ (2 : ℕ) / projDeg X =
+      -((Real.exp z - 1) ^ (2 : ℕ) * (1 + Real.exp z ^ (2 : ℕ)) /
+        (projDeg X * (projDeg X + Real.exp z ^ (2 : ℕ)))) := by
     rw [projLeakageValue]
     field_simp
     ring

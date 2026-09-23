@@ -90,15 +90,15 @@ theorem schwarzschildParikhWilczekBorelLinearOrbitAggregate_eq_zero_iff
 /-- Reflection-orbit quadratic energy of physical recoil holonomy. -/
 def schwarzschildParikhWilczekBorelQuadraticOrbitEnergy
     (s : ℂ) (k : ℕ) : ℝ :=
-  (schwarzschildParikhWilczekBorelRecoilHolonomy s k).im ^ 2 +
+  (schwarzschildParikhWilczekBorelRecoilHolonomy s k).im ^ (2 : ℕ) +
     (schwarzschildParikhWilczekBorelRecoilHolonomy
-      (schwarzschildParikhWilczekBorelLineReflection s) k).im ^ 2
+      (schwarzschildParikhWilczekBorelLineReflection s) k).im ^ (2 : ℕ)
 
 /-- Exact survivor: quadratic aggregation retains twice squared oriented phase. -/
 theorem schwarzschildParikhWilczekBorelQuadraticOrbitEnergy_eq
     (s : ℂ) (k : ℕ) :
     schwarzschildParikhWilczekBorelQuadraticOrbitEnergy s k =
-      2 * (schwarzschildParikhWilczekBorelRecoilHolonomy s k).im ^ 2 := by
+      2 * (schwarzschildParikhWilczekBorelRecoilHolonomy s k).im ^ (2 : ℕ) := by
   rw [schwarzschildParikhWilczekBorelQuadraticOrbitEnergy,
     schwarzschildParikhWilczekBorelRecoilHolonomy_im_lineReflection]
   ring

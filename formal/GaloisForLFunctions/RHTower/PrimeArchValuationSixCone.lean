@@ -84,8 +84,8 @@ theorem tsum_abs_primeArchShiftTwelveMoment_tail_le :
 theorem momentFunctional_primeArchShiftTwelveMoment_sq_nonneg
     (p : Polynomial ℝ)
     (hcone : 32 * HTGeometry.polynomialNonconstantCoeffSqEnergy p ≤
-      7 * (p.coeff 0) ^ 2) :
-    0 ≤ HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ 2) := by
+      7 * (p.coeff 0) ^ (2 : ℕ)) :
+    0 ≤ HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ (2 : ℕ)) := by
   let E : ℝ := HTGeometry.polynomialCoeffSqEnergy p
   let A : ℝ := xiShiftThirteenAbsoluteMass
   let m0 : ℝ := normalizedPrimeArchMoment 12
@@ -101,7 +101,7 @@ theorem momentFunctional_primeArchShiftTwelveMoment_sq_nonneg
     nlinarith
   have hE : 0 ≤ E := by
     simpa only [E] using HTGeometry.polynomialCoeffSqEnergy_nonneg p
-  have htotal : 32 * E ≤ 39 * (p.coeff 0) ^ 2 := by
+  have htotal : 32 * E ≤ 39 * (p.coeff 0) ^ (2 : ℕ) := by
     dsimp only [E, HTGeometry.polynomialCoeffSqEnergy]
     nlinarith
   have herr := HTGeometry.abs_momentFunctional_sq_sub_vacuum_le
@@ -109,9 +109,9 @@ theorem momentFunctional_primeArchShiftTwelveMoment_sq_nonneg
     summable_abs_primeArchShiftTwelveMoment_tail
     tsum_abs_primeArchShiftTwelveMoment_tail_le
   have herr' :
-      |HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ 2) -
-          (p.coeff 0) ^ 2 * m0| ≤
-        m0 * (p.coeff 0) ^ 2 := by
+      |HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ (2 : ℕ)) -
+          (p.coeff 0) ^ (2 : ℕ) * m0| ≤
+        m0 * (p.coeff 0) ^ (2 : ℕ) := by
     have hmiddle :
         2 * E * ((2 / 39 : ℝ) * A) ≤
           (32 * E) * m0 / 39 := by
@@ -121,13 +121,13 @@ theorem momentFunctional_primeArchShiftTwelveMoment_sq_nonneg
           gcongr
         _ = (32 * E) * m0 / 39 := by ring
     have hlast :
-        (32 * E) * m0 / 39 ≤ m0 * (p.coeff 0) ^ 2 := by
+        (32 * E) * m0 / 39 ≤ m0 * (p.coeff 0) ^ (2 : ℕ) := by
       have hmul := mul_le_mul_of_nonneg_right htotal hm0
       nlinarith
     exact (herr.trans hmiddle).trans hlast
   have hneg := neg_abs_le
-    (HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ 2) -
-      (p.coeff 0) ^ 2 * m0)
+    (HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ (2 : ℕ)) -
+      (p.coeff 0) ^ (2 : ℕ) * m0)
   nlinarith
 
 /-- Every real test `X⁶ p` in the coefficient cone has nonnegative canonical prime--Gamma
@@ -135,32 +135,32 @@ trace-Hankel value. -/
 theorem re_primeArchSourceTraceHankel_X_pow_six_mul_nonneg
     (p : Polynomial ℝ)
     (hcone : 32 * HTGeometry.polynomialNonconstantCoeffSqEnergy p ≤
-      7 * (p.coeff 0) ^ 2) :
+      7 * (p.coeff 0) ^ (2 : ℕ)) :
     0 ≤ (primeArchSourceTraceHankel
-      ((Polynomial.X : Polynomial ℝ) ^ 6 * p)).re := by
+      ((Polynomial.X : Polynomial ℝ) ^ (6 : ℕ) * p)).re := by
   rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
   have hshift :
       HTGeometry.momentFunctional normalizedPrimeArchMoment
-          (((Polynomial.X : Polynomial ℝ) ^ 6 * p) ^ 2) =
-        HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ 2) := by
+          (((Polynomial.X : Polynomial ℝ) ^ (6 : ℕ) * p) ^ (2 : ℕ)) =
+        HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ (2 : ℕ)) := by
     calc
       HTGeometry.momentFunctional normalizedPrimeArchMoment
-          (((Polynomial.X : Polynomial ℝ) ^ 6 * p) ^ 2) =
+          (((Polynomial.X : Polynomial ℝ) ^ (6 : ℕ) * p) ^ (2 : ℕ)) =
           HTGeometry.momentFunctional normalizedPrimeArchMoment
-            ((p ^ 2) * (((Polynomial.X : Polynomial ℝ) ^ 6) ^ 2)) := by
+            ((p ^ (2 : ℕ)) * (((Polynomial.X : Polynomial ℝ) ^ (6 : ℕ)) ^ (2 : ℕ))) := by
         congr 1
         ring
       _ = HTGeometry.momentFunctional
           (momentPolynomialTransform normalizedPrimeArchMoment
-            (((Polynomial.X : Polynomial ℝ) ^ 6) ^ 2)) (p ^ 2) := by
+            (((Polynomial.X : Polynomial ℝ) ^ (6 : ℕ)) ^ (2 : ℕ))) (p ^ (2 : ℕ)) := by
         rw [momentFunctional_momentPolynomialTransform]
-      _ = HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ 2) := by
+      _ = HTGeometry.momentFunctional primeArchShiftTwelveMoment (p ^ (2 : ℕ)) := by
         apply HTGeometry.momentFunctional_congr
         intro n
         unfold momentPolynomialTransform primeArchShiftTwelveMoment
         have hpoly :
             (Polynomial.X : Polynomial ℝ) ^ n *
-                ((Polynomial.X : Polynomial ℝ) ^ 6) ^ 2 =
+                ((Polynomial.X : Polynomial ℝ) ^ (6 : ℕ)) ^ (2 : ℕ) =
               Polynomial.X ^ (12 + n) := by
           rw [← pow_mul, ← pow_add]
           congr 1
@@ -172,10 +172,10 @@ theorem re_primeArchSourceTraceHankel_X_pow_six_mul_nonneg
 /-- Integer-polynomial family covered by the unconditional valuation-six cone. -/
 def PrimeArchValuationSixCoefficientCone (p : Polynomial ℤ) : Prop :=
   ∃ q : Polynomial ℤ,
-    p = (Polynomial.X : Polynomial ℤ) ^ 6 * q ∧
+    p = (Polynomial.X : Polynomial ℤ) ^ (6 : ℕ) * q ∧
       32 * HTGeometry.polynomialNonconstantCoeffSqEnergy
           (q.map (Int.castRingHom ℝ)) ≤
-        7 * ((q.coeff 0 : ℤ) : ℝ) ^ 2
+        7 * ((q.coeff 0 : ℤ) : ℝ) ^ (2 : ℕ)
 
 theorem re_primeArchSourceTraceHankel_nonneg_of_valuationSixCoefficientCone
     (p : Polynomial ℤ) (hp : PrimeArchValuationSixCoefficientCone p) :

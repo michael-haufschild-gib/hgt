@@ -18,7 +18,7 @@ noncomputable section
 
 /-- Positive radial part of the squared-Xi reciprocal coordinate at fixed shift `y = 1`. -/
 def xiSquaredSeamOneRadialA (q : XiZeroCopy) : ℝ :=
-  (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + 1
+  (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + 1
 
 /-- Transverse part of every shifted squared-Xi reciprocal coordinate. -/
 def xiSquaredSeamTransverseB (q : XiZeroCopy) : ℝ :=
@@ -37,7 +37,7 @@ def XiSquaredSeamDyadicHalfPlane : Prop :=
 
 theorem xiSquaredSeamOneRadialA_pos (q : XiZeroCopy) :
     0 < xiSquaredSeamOneRadialA q := by
-  have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 :=
+  have hu : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 :=
     xi_divisor_support_centered_re_sq_lt_quarter q.1
   dsimp only [xiSquaredSeamOneRadialA]
   nlinarith [sq_nonneg (q.1 : ℂ).im]
@@ -45,7 +45,7 @@ theorem xiSquaredSeamOneRadialA_pos (q : XiZeroCopy) :
 theorem xiSquaredSeamOneCoordinate_im_formula (q : XiZeroCopy) :
     (xiSquaredSeamOneCoordinate q).im =
       xiSquaredSeamTransverseB q /
-        (xiSquaredSeamOneRadialA q ^ 2 + xiSquaredSeamTransverseB q ^ 2) := by
+        (xiSquaredSeamOneRadialA q ^ (2 : ℕ) + xiSquaredSeamTransverseB q ^ (2 : ℕ)) := by
   rw [xiSquaredSeamOneCoordinate, Complex.inv_im, Complex.normSq_apply]
   norm_num [Complex.mul_re, Complex.mul_im]
   ring
@@ -61,7 +61,7 @@ theorem riemannHypothesis_of_xiSquaredSeamDyadicHalfPlane
   have him := hphase.1
   rw [xiSquaredSeamOneCoordinate_im_formula] at him
   have hA := xiSquaredSeamOneRadialA_pos q
-  have hden : 0 < xiSquaredSeamOneRadialA q ^ 2 + xiSquaredSeamTransverseB q ^ 2 := by
+  have hden : 0 < xiSquaredSeamOneRadialA q ^ (2 : ℕ) + xiSquaredSeamTransverseB q ^ (2 : ℕ) := by
     nlinarith [sq_pos_of_pos hA, sq_nonneg (xiSquaredSeamTransverseB q)]
   have hB : xiSquaredSeamTransverseB q = 0 := by
     field_simp [hden.ne'] at him
@@ -92,9 +92,9 @@ theorem xiSquaredSeamDyadicHalfPlane_of_riemannHypothesis
   · simp [xiSquaredSeamOneCoordinate, xiSquaredSeamTransverseB, hre]
   · simp [xiSquaredSeamOneCoordinate, xiSquaredSeamOneRadialA,
       xiSquaredSeamTransverseB, hre, Complex.inv_re, Complex.normSq_apply]
-    have hpowRe : ((((q.1 : ℂ).im : ℝ) : ℂ) ^ 2).re = (q.1 : ℂ).im ^ 2 := by
+    have hpowRe : ((((q.1 : ℂ).im : ℝ) : ℂ) ^ (2 : ℕ)).re = (q.1 : ℂ).im ^ (2 : ℕ) := by
       exact congrArg Complex.re (Complex.ofReal_pow (q.1 : ℂ).im 2).symm
-    have hpowIm : ((((q.1 : ℂ).im : ℝ) : ℂ) ^ 2).im = 0 := by
+    have hpowIm : ((((q.1 : ℂ).im : ℝ) : ℂ) ^ (2 : ℕ)).im = 0 := by
       exact congrArg Complex.im (Complex.ofReal_pow (q.1 : ℂ).im 2).symm
     rw [hpowRe, hpowIm]
     positivity
@@ -107,7 +107,7 @@ theorem xiSquaredSeamDyadicHalfPlane_iff_riemannHypothesis :
 
 /-- The existing order-sixteen source theorem unconditionally supplies dyadic rung `k = 4`. -/
 theorem xiSquaredSeamDyadic_rung_four_pos (q : XiZeroCopy) :
-    0 < ((xiSquaredSeamOneCoordinate q) ^ (2 ^ 4)).re := by
+    0 < ((xiSquaredSeamOneCoordinate q) ^ (2 ^ (4 : ℕ))).re := by
   have h := xiOrderSixteenReciprocalPower_re_pos q (y := 1) (by norm_num)
   simpa [xiSquaredSeamOneCoordinate, xiSquaredSeamOneRadialA,
     xiSquaredSeamTransverseB] using h

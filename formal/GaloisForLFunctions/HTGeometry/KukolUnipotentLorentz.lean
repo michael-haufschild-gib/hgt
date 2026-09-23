@@ -58,7 +58,7 @@ theorem kukolAction_future_iff (u : E) (x : KukolLightCone E) :
   rfl
 
 theorem kukolQuadratic_generator (u : E) (x : KukolLightCone E) :
-    kukolQuadratic (kukolGenerator u x) = -(x.1 ^ 2 * ‖u‖ ^ 2) := by
+    kukolQuadratic (kukolGenerator u x) = -(x.1 ^ (2 : ℕ) * ‖u‖ ^ (2 : ℕ)) := by
   simp only [kukolQuadratic, kukolGenerator, inner_smul_left, inner_smul_right,
     RCLike.conj_to_real, real_inner_self_eq_norm_sq]
   ring
@@ -160,7 +160,7 @@ def kukolImaginaryAction (u : E) (v w : KukolLightCone E) : KukolLightCone E :=
 theorem kukolQuadratic_imaginaryAction (u : E) (v w : KukolLightCone E) :
     kukolQuadratic (kukolImaginaryAction u v w) = kukolQuadratic w +
       2 * (w.1 * inner ℝ v.2.2 u - v.1 * inner ℝ w.2.2 u) -
-      (w.1 ^ 2 + v.1 ^ 2) * ‖u‖ ^ 2 := by
+      (w.1 ^ (2 : ℕ) + v.1 ^ (2 : ℕ)) * ‖u‖ ^ (2 : ℕ) := by
   simp only [kukolQuadratic, kukolImaginaryAction, inner_add_left, inner_add_right,
     inner_smul_left, inner_smul_right, RCLike.conj_to_real,
     real_inner_comm u w.2.2, real_inner_self_eq_norm_sq]
@@ -171,7 +171,7 @@ theorem kukolImaginaryAction_convex_defect (u z : E) (v w : KukolLightCone E) (t
     kukolQuadratic (kukolImaginaryAction (t • u + (1-t) • z) v w) =
       t * kukolQuadratic (kukolImaginaryAction u v w) +
       (1-t) * kukolQuadratic (kukolImaginaryAction z v w) +
-      t * (1-t) * (w.1 ^ 2 + v.1 ^ 2) * ‖u-z‖ ^ 2 := by
+      t * (1-t) * (w.1 ^ (2 : ℕ) + v.1 ^ (2 : ℕ)) * ‖u-z‖ ^ (2 : ℕ) := by
   simp only [kukolQuadratic, kukolImaginaryAction, inner_add_left, inner_add_right,
     inner_smul_left, inner_smul_right, RCLike.conj_to_real,
     ← real_inner_self_eq_norm_sq, inner_sub_left, inner_sub_right]

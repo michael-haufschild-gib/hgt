@@ -28,8 +28,8 @@ theorem exists_radialProlate_data_separation_le_half {c : ℝ} (hc : 400 ≤ c) 
         ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) R ∧
         (∀ t : ℝ, HasDerivAt R (deriv R t) t) ∧
         (∀ t : ℝ, HasDerivAt (deriv R) (deriv (deriv R) t) t) ∧
-        (∀ t : ℝ, (t ^ 2 - 1) * deriv (deriv R) t + 2 * t * deriv R t
-          - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) := by
+        (∀ t : ℝ, (t ^ (2 : ℕ) - 1) * deriv (deriv R) t + 2 * t * deriv R t
+          - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) := by
   have hc0 : (0 : ℝ) < c := by linarith
   obtain ⟨lam, eta, Phi, hlam, hsm, hne, heven, hband, heig, hsep⟩ :=
     exists_even_joint_prolate_eigen_separation_lt_half hc
@@ -61,8 +61,8 @@ theorem exists_radialProlate_channel_bound {c : ℝ} (hc : 400 ≤ c) :
     ∃ (R : ℝ → ℝ) (s : ℝ),
       0 ≤ s ∧ s ≤ 1 / 2 ∧ R 1 = 1 ∧ Function.Even R ∧
         ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) R ∧
-        (∀ t : ℝ, (t ^ 2 - 1) * deriv (deriv R) t + 2 * t * deriv R t
-          - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) ∧
+        (∀ t : ℝ, (t ^ (2 : ℕ) - 1) * deriv (deriv R) t + 2 * t * deriv R t
+          - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0) ∧
         ∀ X : ℝ, 1 ≤ X →
           ‖∫ t in (1 : ℝ)..X, ((R t : ℝ) : ℂ)‖
               + ∑' j : ℕ, ‖∫ t in (1 : ℝ)..X, ((R ((2 + (j : ℝ)) * t) : ℝ) : ℂ)‖

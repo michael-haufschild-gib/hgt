@@ -118,7 +118,7 @@ theorem inner_thermalLiouvillianVector {α : Type*} [Fintype α]
   simp only [thermalLiouvillianVector, WithLp.ofLp_toLp, RCLike.inner_apply,
     map_mul, Complex.conj_ofReal, map_pow]
   push_cast
-  have hsqrt : (Real.sqrt (intensity a b) : ℂ) ^ 2 = (intensity a b : ℂ) := by
+  have hsqrt : (Real.sqrt (intensity a b) : ℂ) ^ (2 : ℕ) = (intensity a b : ℂ) := by
     norm_cast
     exact Real.sq_sqrt (hintensity a b)
   rw [← hsqrt, pow_add]
@@ -155,7 +155,7 @@ theorem inner_transitionVector_pow_squaredGapLiouvillian
     (intensity : α → α → ℝ) (energy : α → ℝ)
     (hintensity : ∀ a b, 0 ≤ intensity a b) (n : ℕ) :
     inner ℂ (thermalTransitionVector intensity)
-      ((((transitionGapLiouvillian energy) ^ 2) ^ n) (thermalTransitionVector intensity)) =
+      ((((transitionGapLiouvillian energy) ^ (2 : ℕ)) ^ n) (thermalTransitionVector intensity)) =
       (thermalEvenGapMoment intensity energy n : ℂ) := by
   rw [← pow_mul, inner_transitionVector_pow_gapLiouvillian intensity energy hintensity,
     thermalEvenGapMoment]

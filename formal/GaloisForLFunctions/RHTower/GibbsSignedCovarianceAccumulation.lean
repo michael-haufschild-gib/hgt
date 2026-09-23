@@ -270,7 +270,7 @@ theorem gibbsPrimeInsertion_order_gauge
 
 /-- The normalized-current quadratic energy, with one partition mass retained. -/
 noncomputable def gibbsNormalizedCurrentEnergy (S : Finset ℕ) (x : ℝ) : ℝ :=
-  gibbsDiag S x (-1) ^ 2 / gibbsDiag S x 1
+  gibbsDiag S x (-1) ^ (2 : ℕ) / gibbsDiag S x 1
 
 /-- Positive loss created by same-sign coherence across one prime-dilation interval. -/
 noncomputable def gibbsSameSignDissipation
@@ -278,7 +278,7 @@ noncomputable def gibbsSameSignDissipation
   (gibbsDiag S x 1 * gibbsDiag S ((p : ℝ) * x) 1) /
       (gibbsDiag S x 1 + gibbsDiag S ((p : ℝ) * x) 1) *
     (normalizedGibbsCurrent S x +
-      normalizedGibbsCurrent S ((p : ℝ) * x)) ^ 2
+      normalizedGibbsCurrent S ((p : ℝ) * x)) ^ (2 : ℕ)
 
 /-- **Exact signed-energy polarization.**  Prime insertion loses precisely the positive
 same-sign coherence between normalized currents at the two dilated couplings. -/

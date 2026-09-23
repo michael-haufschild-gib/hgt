@@ -99,7 +99,7 @@ theorem heatTrace_eigenvalue_linear_bound
     {lam : ℕ → ℝ} {C lam0 : ℝ} {k : ℕ}
     (hC : 0 < C) (hlam0 : 0 < lam0) (hmono : Monotone lam) (hge : ∀ i, lam0 ≤ lam i)
     (htrace : ∀ t : ℝ, 0 < t → t ≤ 1 →
-      ∑ i ∈ Finset.range (k + 1), exp (-(t * lam i)) ≤ C / t ^ 1) :
+      ∑ i ∈ Finset.range (k + 1), exp (-(t * lam i)) ≤ C / t ^ (1 : ℕ)) :
     lam0 * exp (-lam0) / C * ((k : ℝ) + 1) ≤ lam k := by
   have h := heatTrace_eigenvalue_pow_bound hlam0 hmono hge htrace
   rw [pow_one] at h
@@ -119,10 +119,10 @@ theorem heatTrace_eigenvalue_sqrt_bound
     {lam : ℕ → ℝ} {C lam0 : ℝ} {k : ℕ}
     (hC : 0 < C) (hlam0 : 0 < lam0) (hmono : Monotone lam) (hge : ∀ i, lam0 ≤ lam i)
     (htrace : ∀ t : ℝ, 0 < t → t ≤ 1 →
-      ∑ i ∈ Finset.range (k + 1), exp (-(t * lam i)) ≤ C / t ^ 2) :
+      ∑ i ∈ Finset.range (k + 1), exp (-(t * lam i)) ≤ C / t ^ (2 : ℕ)) :
     lam0 * Real.sqrt (((k : ℝ) + 1) * exp (-lam0) / C) ≤ lam k := by
   have h := heatTrace_eigenvalue_pow_bound hlam0 hmono hge htrace
-  have hratio : ((k : ℝ) + 1) * exp (-lam0) / C ≤ (lam k / lam0) ^ 2 := by
+  have hratio : ((k : ℝ) + 1) * exp (-lam0) / C ≤ (lam k / lam0) ^ (2 : ℕ) := by
     rw [div_le_iff₀ hC]
     linarith [h]
   have hlamk : 0 < lam k := lt_of_lt_of_le hlam0 (hge k)
@@ -138,14 +138,14 @@ theorem heatTrace_eigenvalue_sqrt_bound
 Theorems 3.9 and 3.10 pass to the limit inside `∫₁^∞ Σ_m e^{−tλ_m(s)} dt/t` by dominating the tail
 uniformly in the deformation parameter by `Σ_m e^{−tB√m}`.  That series converges. -/
 
-/-- `(y/5)^5 ≤ e^y` for `y ≥ 0`: the tangent-line bound `1 + y/5 ≤ e^{y/5}`, raised to the fifth
+/-- `(y/5)^(5 : ℕ) ≤ e^y` for `y ≥ 0`: the tangent-line bound `1 + y/5 ≤ e^{y/5}`, raised to the fifth
 power. -/
-theorem pow_five_div_le_exp {y : ℝ} (hy : 0 ≤ y) : (y / 5) ^ 5 ≤ exp y := by
+theorem pow_five_div_le_exp {y : ℝ} (hy : 0 ≤ y) : (y / 5) ^ (5 : ℕ) ≤ exp y := by
   have h1 : y / 5 ≤ exp (y / 5) := by
     have := Real.add_one_le_exp (y / 5)
     linarith
-  have h2 : (y / 5) ^ 5 ≤ (exp (y / 5)) ^ 5 := pow_le_pow_left₀ (by positivity) h1 5
-  have h3 : (exp (y / 5)) ^ 5 = exp y := by
+  have h2 : (y / 5) ^ (5 : ℕ) ≤ (exp (y / 5)) ^ (5 : ℕ) := pow_le_pow_left₀ (by positivity) h1 5
+  have h3 : (exp (y / 5)) ^ (5 : ℕ) = exp y := by
     rw [← Real.exp_nat_mul]
     congr 1
     push_cast
@@ -157,31 +157,31 @@ theorem pow_five_div_le_exp {y : ℝ} (hy : 0 ≤ y) : (y / 5) ^ 5 ≤ exp y := 
 beyond `k ≥ (5/c)^{10}` one has `k² ≤ e^{c√k}`, and `Σ k^{−2}` converges. -/
 theorem summable_exp_neg_mul_sqrt {c : ℝ} (hc : 0 < c) :
     Summable fun k : ℕ => exp (-(c * Real.sqrt k)) := by
-  have hkey : ∀ᶠ k : ℕ in atTop, ‖exp (-(c * Real.sqrt k))‖ ≤ 1 / ((k : ℝ) ^ 2) := by
-    have hthr : ∀ᶠ k : ℕ in atTop, ((5 : ℝ) / c) ^ 10 ≤ (k : ℝ) :=
-      tendsto_natCast_atTop_atTop.eventually_ge_atTop (((5 : ℝ) / c) ^ 10)
+  have hkey : ∀ᶠ k : ℕ in atTop, ‖exp (-(c * Real.sqrt k))‖ ≤ 1 / ((k : ℝ) ^ (2 : ℕ)) := by
+    have hthr : ∀ᶠ k : ℕ in atTop, ((5 : ℝ) / c) ^ (10 : ℕ) ≤ (k : ℝ) :=
+      tendsto_natCast_atTop_atTop.eventually_ge_atTop (((5 : ℝ) / c) ^ (10 : ℕ))
     filter_upwards [hthr, eventually_gt_atTop 0] with k hk hk0
     have hkpos : (0 : ℝ) < (k : ℝ) := by exact_mod_cast hk0
-    -- `√k ≥ (5/c)^5`
-    have hsqrt : ((5 : ℝ) / c) ^ 5 ≤ Real.sqrt (k : ℝ) := by
+    -- `√k ≥ (5/c)^(5 : ℕ)`
+    have hsqrt : ((5 : ℝ) / c) ^ (5 : ℕ) ≤ Real.sqrt (k : ℝ) := by
       have h := Real.sqrt_le_sqrt hk
-      rwa [show ((5 : ℝ) / c) ^ 10 = (((5 : ℝ) / c) ^ 5) ^ 2 by ring,
+      rwa [show ((5 : ℝ) / c) ^ (10 : ℕ) = (((5 : ℝ) / c) ^ (5 : ℕ)) ^ (2 : ℕ) by ring,
         Real.sqrt_sq (by positivity)] at h
-    have hfactor : (1 : ℝ) ≤ (c / 5) ^ 5 * Real.sqrt (k : ℝ) := by
-      have h1 : (c / 5) ^ 5 * ((5 : ℝ) / c) ^ 5 = 1 := by field_simp
-      calc (1 : ℝ) = (c / 5) ^ 5 * ((5 : ℝ) / c) ^ 5 := h1.symm
-        _ ≤ (c / 5) ^ 5 * Real.sqrt (k : ℝ) :=
+    have hfactor : (1 : ℝ) ≤ (c / 5) ^ (5 : ℕ) * Real.sqrt (k : ℝ) := by
+      have h1 : (c / 5) ^ (5 : ℕ) * ((5 : ℝ) / c) ^ (5 : ℕ) = 1 := by field_simp
+      calc (1 : ℝ) = (c / 5) ^ (5 : ℕ) * ((5 : ℝ) / c) ^ (5 : ℕ) := h1.symm
+        _ ≤ (c / 5) ^ (5 : ℕ) * Real.sqrt (k : ℝ) :=
             mul_le_mul_of_nonneg_left hsqrt (by positivity)
-    have hsqk : Real.sqrt (k : ℝ) ^ 4 = (k : ℝ) ^ 2 := by
-      have h2 : Real.sqrt (k : ℝ) ^ 2 = (k : ℝ) := Real.sq_sqrt hkpos.le
-      calc Real.sqrt (k : ℝ) ^ 4 = (Real.sqrt (k : ℝ) ^ 2) ^ 2 := by ring
-        _ = (k : ℝ) ^ 2 := by rw [h2]
-    have hid : ((c * Real.sqrt (k : ℝ)) / 5) ^ 5
-        = ((c / 5) ^ 5 * Real.sqrt (k : ℝ)) * (k : ℝ) ^ 2 := by
+    have hsqk : Real.sqrt (k : ℝ) ^ (4 : ℕ) = (k : ℝ) ^ (2 : ℕ) := by
+      have h2 : Real.sqrt (k : ℝ) ^ (2 : ℕ) = (k : ℝ) := Real.sq_sqrt hkpos.le
+      calc Real.sqrt (k : ℝ) ^ (4 : ℕ) = (Real.sqrt (k : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+        _ = (k : ℝ) ^ (2 : ℕ) := by rw [h2]
+    have hid : ((c * Real.sqrt (k : ℝ)) / 5) ^ (5 : ℕ)
+        = ((c / 5) ^ (5 : ℕ) * Real.sqrt (k : ℝ)) * (k : ℝ) ^ (2 : ℕ) := by
       rw [← hsqk]; ring
-    have hexp : ((c * Real.sqrt (k : ℝ)) / 5) ^ 5 ≤ exp (c * Real.sqrt (k : ℝ)) :=
+    have hexp : ((c * Real.sqrt (k : ℝ)) / 5) ^ (5 : ℕ) ≤ exp (c * Real.sqrt (k : ℝ)) :=
       pow_five_div_le_exp (by positivity)
-    have hlow : (k : ℝ) ^ 2 ≤ exp (c * Real.sqrt (k : ℝ)) := by
+    have hlow : (k : ℝ) ^ (2 : ℕ) ≤ exp (c * Real.sqrt (k : ℝ)) := by
       refine le_trans ?_ hexp
       rw [hid]
       nlinarith [hfactor, sq_nonneg ((k : ℝ))]

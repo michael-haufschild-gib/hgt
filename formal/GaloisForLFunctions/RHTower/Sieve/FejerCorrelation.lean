@@ -98,10 +98,10 @@ theorem sum_dist_double (F : ℕ → ℝ) (H : ℕ) :
 
 /-- **The window mean square, expanded.** -/
 theorem sum_window_sq_eq (f : ℕ → ℝ) (Y H : ℕ) :
-    ∑ y ∈ Finset.range Y, (∑ i ∈ Finset.range H, f (y + i)) ^ 2
+    ∑ y ∈ Finset.range Y, (∑ i ∈ Finset.range H, f (y + i)) ^ (2 : ℕ)
       = ∑ i ∈ Finset.range H, ∑ j ∈ Finset.range H,
           ∑ y ∈ Finset.range Y, f (y + i) * f (y + j) := by
-  have hexp : ∀ y : ℕ, (∑ i ∈ Finset.range H, f (y + i)) ^ 2
+  have hexp : ∀ y : ℕ, (∑ i ∈ Finset.range H, f (y + i)) ^ (2 : ℕ)
       = ∑ i ∈ Finset.range H, ∑ j ∈ Finset.range H, f (y + i) * f (y + j) := by
     intro y
     rw [sq, Finset.sum_mul_sum]
@@ -186,8 +186,8 @@ theorem abs_pair_corr_sub_le {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (Y i j 
 
 /-- **The window mean square is the Fejér-weighted correlation sum, up to `2H³`.** -/
 theorem abs_sum_window_sq_sub_fejerCorr_le {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (Y H : ℕ) :
-    |∑ y ∈ Finset.range Y, (∑ i ∈ Finset.range H, f (y + i)) ^ 2 - fejerCorr f Y H|
-      ≤ 2 * (H : ℝ) ^ 3 := by
+    |∑ y ∈ Finset.range Y, (∑ i ∈ Finset.range H, f (y + i)) ^ (2 : ℕ) - fejerCorr f Y H|
+      ≤ 2 * (H : ℝ) ^ (3 : ℕ) := by
   classical
   have hfej : fejerCorr f Y H
       = ∑ i ∈ Finset.range H, ∑ j ∈ Finset.range H, corrSum f Y (max i j - min i j) := by
@@ -195,7 +195,7 @@ theorem abs_sum_window_sq_sub_fejerCorr_le {f : ℕ → ℝ} (hf : ∀ n, |f n| 
   rw [sum_window_sq_eq f Y H, hfej, ← Finset.sum_sub_distrib]
   have hrow : ∀ i ∈ Finset.range H,
       |(∑ j ∈ Finset.range H, ∑ y ∈ Finset.range Y, f (y + i) * f (y + j))
-        - ∑ j ∈ Finset.range H, corrSum f Y (max i j - min i j)| ≤ 2 * (H : ℝ) ^ 2 := by
+        - ∑ j ∈ Finset.range H, corrSum f Y (max i j - min i j)| ≤ 2 * (H : ℝ) ^ (2 : ℕ) := by
     intro i hi
     rw [Finset.mem_range] at hi
     rw [← Finset.sum_sub_distrib]
@@ -249,12 +249,12 @@ sum is bounded below by `−HY/2 − H³`, because the window mean square it com
 squares.  Only the upper bound, and the passage from the signed sum to the sum of moduli, carry
 arithmetic content. -/
 theorem fejer_ge {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (Y H : ℕ) :
-    -((H : ℝ) * (Y : ℝ) / 2) - (H : ℝ) ^ 3
+    -((H : ℝ) * (Y : ℝ) / 2) - (H : ℝ) ^ (3 : ℕ)
       ≤ ∑ k ∈ Finset.Ico 1 H, ((H : ℝ) - (k : ℝ)) * corrSum f Y k := by
-  have hsq : (0 : ℝ) ≤ ∑ y ∈ Finset.range Y, (∑ i ∈ Finset.range H, f (y + i)) ^ 2 :=
+  have hsq : (0 : ℝ) ≤ ∑ y ∈ Finset.range Y, (∑ i ∈ Finset.range H, f (y + i)) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun y _ => sq_nonneg _
   have hclose := abs_sum_window_sq_sub_fejerCorr_le hf Y H
-  have hlow : -(2 * (H : ℝ) ^ 3) ≤ fejerCorr f Y H := by
+  have hlow : -(2 * (H : ℝ) ^ (3 : ℕ)) ≤ fejerCorr f Y H := by
     have := (abs_le.1 hclose).2
     linarith
   rw [fejerCorr, sum_range_fejer_split f Y H] at hlow
@@ -265,10 +265,10 @@ theorem fejer_ge {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (Y H : ℕ) :
 
 /-- **The upper bound is exactly the window mean square.** -/
 theorem fejer_le_of_window {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (Y H : ℕ) {W : ℝ}
-    (hW : ∑ y ∈ Finset.range Y, (∑ i ∈ Finset.range H, f (y + i)) ^ 2 ≤ W) :
-    ∑ k ∈ Finset.Ico 1 H, ((H : ℝ) - (k : ℝ)) * corrSum f Y k ≤ (W + 2 * (H : ℝ) ^ 3) / 2 := by
+    (hW : ∑ y ∈ Finset.range Y, (∑ i ∈ Finset.range H, f (y + i)) ^ (2 : ℕ) ≤ W) :
+    ∑ k ∈ Finset.Ico 1 H, ((H : ℝ) - (k : ℝ)) * corrSum f Y k ≤ (W + 2 * (H : ℝ) ^ (3 : ℕ)) / 2 := by
   have hclose := abs_sum_window_sq_sub_fejerCorr_le hf Y H
-  have hup : fejerCorr f Y H ≤ W + 2 * (H : ℝ) ^ 3 := by
+  have hup : fejerCorr f Y H ≤ W + 2 * (H : ℝ) ^ (3 : ℕ) := by
     have := (abs_le.1 hclose).1
     linarith
   rw [fejerCorr, sum_range_fejer_split f Y H] at hup

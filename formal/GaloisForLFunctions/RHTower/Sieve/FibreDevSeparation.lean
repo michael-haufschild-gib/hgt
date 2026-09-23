@@ -23,18 +23,18 @@ open Finset Filter Topology
 /-- The largest squared centred window deviation of length at most `H` starting at `y`. -/
 noncomputable def maxWindowDevSq (f : ℕ → ℝ) (c : ℝ) (H y : ℕ) : ℝ :=
   (Finset.range (H + 1)).sup' Finset.nonempty_range_add_one
-    (fun m => ((∑ b ∈ Finset.Icc y (y + m), f b) - c * ((m : ℝ) + 1)) ^ 2)
+    (fun m => ((∑ b ∈ Finset.Icc y (y + m), f b) - c * ((m : ℝ) + 1)) ^ (2 : ℕ))
 
 theorem maxWindowDevSq_nonneg (f : ℕ → ℝ) (c : ℝ) (H y : ℕ) : 0 ≤ maxWindowDevSq f c H y := by
   refine le_trans (sq_nonneg ((∑ b ∈ Finset.Icc y (y + 0), f b) - c * ((0 : ℕ) + 1))) ?_
   exact Finset.le_sup'
-    (fun m => ((∑ b ∈ Finset.Icc y (y + m), f b) - c * ((m : ℝ) + 1)) ^ 2)
+    (fun m => ((∑ b ∈ Finset.Icc y (y + m), f b) - c * ((m : ℝ) + 1)) ^ (2 : ℕ))
     (Finset.mem_range.2 (by omega))
 
 theorem sq_dev_le_maxWindowDevSq {f : ℕ → ℝ} {c : ℝ} {H y m : ℕ} (hm : m ≤ H) :
-    ((∑ b ∈ Finset.Icc y (y + m), f b) - c * ((m : ℝ) + 1)) ^ 2 ≤ maxWindowDevSq f c H y :=
+    ((∑ b ∈ Finset.Icc y (y + m), f b) - c * ((m : ℝ) + 1)) ^ (2 : ℕ) ≤ maxWindowDevSq f c H y :=
   Finset.le_sup'
-    (fun m => ((∑ b ∈ Finset.Icc y (y + m), f b) - c * ((m : ℝ) + 1)) ^ 2)
+    (fun m => ((∑ b ∈ Finset.Icc y (y + m), f b) - c * ((m : ℝ) + 1)) ^ (2 : ℕ))
     (Finset.mem_range.2 (by omega))
 
 /-- **The fibre is a window whose integer length matches the real one to within one.** -/
@@ -88,13 +88,13 @@ theorem exists_fibre_window {x h : ℝ} (hx : 4 ≤ x) (hh : 4 ≤ h) {a : ℕ}
 theorem sum_fibre_dev_sq_le_maximal {x h : ℝ} (hx : 4 ≤ x) (hh : 4 ≤ h) (f : ℕ → ℝ) {c : ℝ}
     (hc : 0 ≤ c) :
     ∑ a ∈ outerBlock x h,
-        ((∑ b ∈ innerFibre x h a, f b) - c * (h * Real.sqrt x / (a : ℝ))) ^ 2
+        ((∑ b ∈ innerFibre x h a, f b) - c * (h * Real.sqrt x / (a : ℝ))) ^ (2 : ℕ)
       ≤ 8 * ∑ y ∈ Finset.Icc ⌈Real.sqrt x / 2⌉₊ ⌈Real.sqrt x⌉₊, maxWindowDevSq f c ⌈h⌉₊ y
-        + 2 * c ^ 2 * (Real.sqrt x + 1) := by
+        + 2 * c ^ (2 : ℕ) * (Real.sqrt x + 1) := by
   classical
   have hterm : ∀ a ∈ outerBlock x h,
-      ((∑ b ∈ innerFibre x h a, f b) - c * (h * Real.sqrt x / (a : ℝ))) ^ 2
-        ≤ 2 * maxWindowDevSq f c ⌈h⌉₊ ⌈x / (a : ℝ)⌉₊ + 2 * c ^ 2 := by
+      ((∑ b ∈ innerFibre x h a, f b) - c * (h * Real.sqrt x / (a : ℝ))) ^ (2 : ℕ)
+        ≤ 2 * maxWindowDevSq f c ⌈h⌉₊ ⌈x / (a : ℝ)⌉₊ + 2 * c ^ (2 : ℕ) := by
     intro a ha
     obtain ⟨m, hmH, hfib, hdiff⟩ := exists_fibre_window hx hh ha
     set y : ℕ := ⌈x / (a : ℝ)⌉₊ with hy
@@ -108,15 +108,15 @@ theorem sum_fibre_dev_sq_le_maximal {x h : ℝ} (hx : 4 ≤ x) (hh : 4 ≤ h) (f
       calc c * |((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ)| ≤ c * 1 :=
             mul_le_mul_of_nonneg_left hdiff hc
         _ = c := by ring
-    have hsq : ((S - c * ((m : ℝ) + 1)) + c * (((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ))) ^ 2
-        ≤ 2 * (S - c * ((m : ℝ) + 1)) ^ 2
-          + 2 * (c * (((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ))) ^ 2 := by
+    have hsq : ((S - c * ((m : ℝ) + 1)) + c * (((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ))) ^ (2 : ℕ)
+        ≤ 2 * (S - c * ((m : ℝ) + 1)) ^ (2 : ℕ)
+          + 2 * (c * (((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ))) ^ (2 : ℕ) := by
       nlinarith [sq_nonneg ((S - c * ((m : ℝ) + 1))
         - c * (((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ)))]
-    have hsq2 : (c * (((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ))) ^ 2 ≤ c ^ 2 := by
+    have hsq2 : (c * (((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ))) ^ (2 : ℕ) ≤ c ^ (2 : ℕ) := by
       have habs := abs_nonneg (c * (((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ)))
       nlinarith [sq_abs (c * (((m : ℝ) + 1) - h * Real.sqrt x / (a : ℝ))), hbound, hc]
-    have hmax : (S - c * ((m : ℝ) + 1)) ^ 2 ≤ maxWindowDevSq f c ⌈h⌉₊ y := by
+    have hmax : (S - c * ((m : ℝ) + 1)) ^ (2 : ℕ) ≤ maxWindowDevSq f c ⌈h⌉₊ y := by
       rw [hS]
       exact sq_dev_le_maxWindowDevSq hmH
     rw [hval]
@@ -128,13 +128,13 @@ theorem sum_fibre_dev_sq_le_maximal {x h : ℝ} (hx : 4 ≤ x) (hh : 4 ≤ h) (f
     sum_block_comp_start_le hx (fun y => maxWindowDevSq_nonneg f c ⌈h⌉₊ y)
   have hcard : ((outerBlock x h).card : ℝ) ≤ Real.sqrt x + 1 :=
     card_outerBlock_le hx (by linarith)
-  have hc2 : (0 : ℝ) ≤ 2 * c ^ 2 := by positivity
+  have hc2 : (0 : ℝ) ≤ 2 * c ^ (2 : ℕ) := by positivity
   nlinarith [htrans, hcard, hc2]
 
 /-- **The centred maximal-window mean square at a moving pair of parameters.** -/
 def MaximalWindowDevMeanSquareAt (f : ℕ → ℝ) (c : ℝ) (X hh : ℝ → ℝ) : Prop :=
   Tendsto (fun x => (∑ y ∈ Finset.Icc ⌈Real.sqrt (X x) / 2⌉₊ ⌈Real.sqrt (X x)⌉₊,
-      maxWindowDevSq f c ⌈hh x⌉₊ y) / (hh x ^ 2 * Real.sqrt (X x))) atTop (𝓝 0)
+      maxWindowDevSq f c ⌈hh x⌉₊ y) / (hh x ^ (2 : ℕ) * Real.sqrt (X x))) atTop (𝓝 0)
 
 /-- **The centred fibre mean square follows from the centred maximal-window mean square.** -/
 theorem averagedMeanSquareDensityAt_of_maximal {f : ℕ → ℝ} {c : ℝ} {X hh : ℝ → ℝ}
@@ -144,20 +144,20 @@ theorem averagedMeanSquareDensityAt_of_maximal {f : ℕ → ℝ} {c : ℝ} {X hh
   have hXsqrt : Tendsto (fun x => Real.sqrt (X x)) atTop atTop :=
     Real.tendsto_sqrt_atTop.comp hXtop
   have h8 : Tendsto (fun x => 8 * ((∑ y ∈ Finset.Icc ⌈Real.sqrt (X x) / 2⌉₊ ⌈Real.sqrt (X x)⌉₊,
-      maxWindowDevSq f c ⌈hh x⌉₊ y) / (hh x ^ 2 * Real.sqrt (X x)))) atTop (𝓝 0) := by
+      maxWindowDevSq f c ⌈hh x⌉₊ y) / (hh x ^ (2 : ℕ) * Real.sqrt (X x)))) atTop (𝓝 0) := by
     have := hmax.const_mul (8 : ℝ)
     rwa [mul_zero] at this
-  have hrest : Tendsto (fun x => 2 * c ^ 2 * (Real.sqrt (X x) + 1)
-      / (hh x ^ 2 * Real.sqrt (X x))) atTop (𝓝 0) := by
-    have hnum : Tendsto (fun x : ℝ => 2 * c ^ 2 * (1 + 1 / Real.sqrt (X x)))
-        atTop (𝓝 (2 * c ^ 2)) := by
+  have hrest : Tendsto (fun x => 2 * c ^ (2 : ℕ) * (Real.sqrt (X x) + 1)
+      / (hh x ^ (2 : ℕ) * Real.sqrt (X x))) atTop (𝓝 0) := by
+    have hnum : Tendsto (fun x : ℝ => 2 * c ^ (2 : ℕ) * (1 + 1 / Real.sqrt (X x)))
+        atTop (𝓝 (2 * c ^ (2 : ℕ))) := by
       have hinv : Tendsto (fun x : ℝ => 1 / Real.sqrt (X x)) atTop (𝓝 0) :=
         tendsto_one_div_atTop.comp hXsqrt
       have hbase := tendsto_const_nhds (x := (1 : ℝ)) (f := (atTop : Filter ℝ)) |>.add hinv
       rw [add_zero] at hbase
-      have := hbase.const_mul (2 * c ^ 2)
+      have := hbase.const_mul (2 * c ^ (2 : ℕ))
       rwa [mul_one] at this
-    have hden : Tendsto (fun x : ℝ => hh x ^ 2) atTop atTop := by
+    have hden : Tendsto (fun x : ℝ => hh x ^ (2 : ℕ)) atTop atTop := by
       have := hgrow.atTop_mul_atTop₀ hgrow
       refine this.congr fun x => ?_
       ring
@@ -170,7 +170,7 @@ theorem averagedMeanSquareDensityAt_of_maximal {f : ℕ → ℝ} {c : ℝ} {X hh
   refine squeeze_zero_norm' ?_ hsum
   filter_upwards [hXtop.eventually_ge_atTop 4, hgrow.eventually_ge_atTop 4,
     hXsqrt.eventually_gt_atTop 0, hgrow.eventually_gt_atTop 0] with x hx hhx hs hhpos
-  have hden : (0 : ℝ) < hh x ^ 2 * Real.sqrt (X x) := by positivity
+  have hden : (0 : ℝ) < hh x ^ (2 : ℕ) * Real.sqrt (X x) := by positivity
   have hbridge := sum_fibre_dev_sq_le_maximal hx hhx f hc
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   refine le_trans (div_le_div_of_nonneg_right hbridge hden.le) (le_of_eq ?_)

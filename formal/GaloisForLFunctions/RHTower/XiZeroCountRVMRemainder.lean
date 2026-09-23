@@ -29,11 +29,11 @@ theorem abs_re_digamma_one_add_vertical_sub_log_le {t : ℝ} (ht : 1 ≤ t) :
     have him := congrArg Complex.im h
     simp at him
     linarith
-  have hsq : ‖(1 : ℂ) + (t : ℂ) * I‖ ^ 2 = 1 ^ 2 + t ^ 2 := by
+  have hsq : ‖(1 : ℂ) + (t : ℂ) * I‖ ^ (2 : ℕ) = 1 ^ (2 : ℕ) + t ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply]
     simp
     ring
-  have hlognorm : (1 / 2 : ℝ) * Real.log (1 ^ 2 + t ^ 2) =
+  have hlognorm : (1 / 2 : ℝ) * Real.log (1 ^ (2 : ℕ) + t ^ (2 : ℕ)) =
       Real.log ‖(1 : ℂ) + (t : ℂ) * I‖ := by
     rw [← hsq, Real.log_pow]
     ring
@@ -52,7 +52,7 @@ theorem abs_re_digamma_one_add_vertical_sub_log_le {t : ℝ} (ht : 1 ≤ t) :
       |A - C| = |(A - B) + (B - C)| := by congr 1; ring
       _ ≤ |A - B| + |B - C| := abs_add_le _ _
   refine htri.trans ?_
-  have hinv2 : 1 / t ^ 2 ≤ 1 / t := by
+  have hinv2 : 1 / t ^ (2 : ℕ) ≤ 1 / t := by
     rw [div_le_div_iff₀ (by positivity) ht0]
     nlinarith
   have hpi : 0 < Real.pi := Real.pi_pos
@@ -60,14 +60,14 @@ theorem abs_re_digamma_one_add_vertical_sub_log_le {t : ℝ} (ht : 1 ≤ t) :
     |(Complex.digamma ((1 : ℂ) + (t : ℂ) * I)).re
           - Real.log ‖(1 : ℂ) + (t : ℂ) * I‖|
         + |Real.log ‖(1 : ℂ) + (t : ℂ) * I‖ - Real.log t|
-      ≤ (1 / t ^ 2 + Real.pi / (2 * t)) + 1 ^ 2 / t := add_le_add hdig hnorm
+      ≤ (1 / t ^ (2 : ℕ) + Real.pi / (2 * t)) + 1 ^ (2 : ℕ) / t := add_le_add hdig hnorm
     _ ≤ (2 + Real.pi) / t := by
       rw [one_pow]
       have hhalf : Real.pi / (2 * t) ≤ Real.pi / t := by
         rw [div_le_div_iff₀ (by positivity) ht0]
         nlinarith
       calc
-        1 / t ^ 2 + Real.pi / (2 * t) + 1 / t
+        1 / t ^ (2 : ℕ) + Real.pi / (2 * t) + 1 / t
             ≤ 1 / t + Real.pi / t + 1 / t := by linarith
         _ = (2 + Real.pi) / t := by field_simp; ring
 
@@ -195,12 +195,12 @@ theorem exists_abs_vertical_xi_sub_routeKRVM_main_le :
   have hmain := gammaVerticalPhase_routeKRVM_main_identity hT0
   rw [hsplit]
   have heq :
-      (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ 2) + 1 / (1 + y ^ 2)))
+      (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ (2 : ℕ)) + 1 / (1 + y ^ (2 : ℕ))))
           - T * Real.log Real.pi / 2 + gammaVerticalPhase 1 (T / 2)
           + (∫ y in (0 : ℝ)..T,
               (logDeriv riemannZeta ((2 : ℂ) + (y : ℂ) * I)).re)
           - Real.pi * (routeKSmoothRVMCount T - 7 / 8)
-        = (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ 2) + 1 / (1 + y ^ 2)))
+        = (∫ y in (0 : ℝ)..T, (2 / (4 + y ^ (2 : ℕ)) + 1 / (1 + y ^ (2 : ℕ))))
           + (gammaVerticalPhase 1 (T / 2)
               - (T / 2 * Real.log (T / 2) - T / 2))
           + (∫ y in (0 : ℝ)..T,
@@ -360,9 +360,9 @@ theorem exists_xiZeroCount_routeKSmoothRVMCount_log_remainder :
   have hTplus0 : 0 < Tplus := by linarith
   have hTminus0 : 0 < Tminus := by linarith
   have hlogPlus : Real.log Tplus ≤ 2 * Real.log T := by
-    have hsq : Tplus ≤ T ^ 2 := by nlinarith [sq_nonneg (T - 1)]
+    have hsq : Tplus ≤ T ^ (2 : ℕ) := by nlinarith [sq_nonneg (T - 1)]
     calc
-      Real.log Tplus ≤ Real.log (T ^ 2) := Real.log_le_log hTplus0 hsq
+      Real.log Tplus ≤ Real.log (T ^ (2 : ℕ)) := Real.log_le_log hTplus0 hsq
       _ = 2 * Real.log T := by rw [Real.log_pow]; norm_num
   have hlogMinus : Real.log Tminus ≤ Real.log T :=
     Real.log_le_log hTminus0 hTminusU'

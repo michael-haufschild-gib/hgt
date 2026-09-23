@@ -42,9 +42,9 @@ def ccmActualHeadMatchedQuantileParabolicNormalizedVarianceFlux (K : ℕ) : ℝ 
   criticalMellinAtomWeight (K + 3) * ccmActualHeadParabolicMass K /
       ccmActualHeadParabolicMass (K + 1) *
     ((ccmActualHeadMatchedPolarCentroid (K + 3) -
-        ccmActualHeadParabolicCentroidMean K ccmActualHeadMatchedPolarCentroid) ^ 2 -
+        ccmActualHeadParabolicCentroidMean K ccmActualHeadMatchedPolarCentroid) ^ (2 : ℕ) -
       (ccmActualHeadQuantilePolarCentroid (K + 3) -
-        ccmActualHeadParabolicCentroidMean K ccmActualHeadQuantilePolarCentroid) ^ 2)
+        ccmActualHeadParabolicCentroidMean K ccmActualHeadQuantilePolarCentroid) ^ (2 : ℕ))
 
 /-- New matched centroid relative to the barycentre of the preceding literal head. -/
 def ccmActualHeadMatchedQuantileParabolicCenteredMatchedOffset (K : ℕ) : ℝ :=
@@ -74,10 +74,10 @@ private lemma ccmActualHeadParabolicWeightedCentroidSum_succ (K : ℕ) (c : ℕ 
 
 private lemma ccmActualHeadParabolicWeightedCentroidSqSum_succ (K : ℕ) (c : ℕ → ℝ) :
     (∑ n ∈ Finset.range (K + 2),
-      criticalMellinAtomWeight (n + 2) * c (n + 2) ^ 2) =
+      criticalMellinAtomWeight (n + 2) * c (n + 2) ^ (2 : ℕ)) =
       (∑ n ∈ Finset.range (K + 1),
-        criticalMellinAtomWeight (n + 2) * c (n + 2) ^ 2) +
-        criticalMellinAtomWeight (K + 3) * c (K + 3) ^ 2 := by
+        criticalMellinAtomWeight (n + 2) * c (n + 2) ^ (2 : ℕ)) +
+        criticalMellinAtomWeight (K + 3) * c (K + 3) ^ (2 : ℕ) := by
   rw [Finset.sum_range_succ]
 
 private lemma ccmActualHeadParabolicNormalizedCentroidVariance_succ_sub
@@ -86,7 +86,7 @@ private lemma ccmActualHeadParabolicNormalizedCentroidVariance_succ_sub
         ccmActualHeadParabolicNormalizedCentroidVariance K c =
       criticalMellinAtomWeight (K + 3) * ccmActualHeadParabolicMass K /
           ccmActualHeadParabolicMass (K + 1) *
-        (c (K + 3) - ccmActualHeadParabolicCentroidMean K c) ^ 2 := by
+        (c (K + 3) - ccmActualHeadParabolicCentroidMean K c) ^ (2 : ℕ) := by
   have hM : 0 < ccmActualHeadParabolicMass K := ccmActualHeadParabolicMass_pos K
   have hM' : 0 < ccmActualHeadParabolicMass (K + 1) :=
     ccmActualHeadParabolicMass_pos (K + 1)
@@ -141,7 +141,7 @@ theorem ccmActualHeadMatchedQuantileParabolicNormalizedVarianceFlux_eq_centered_
         ccmActualHeadParabolicMass (K + 1)) *
         (2 * ccmActualHeadMatchedQuantileParabolicCenteredMatchedOffset K *
             ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K +
-          ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K ^ 2) := by
+          ccmActualHeadMatchedQuantileParabolicCenteredDisplacement K ^ (2 : ℕ)) := by
   unfold ccmActualHeadMatchedQuantileParabolicNormalizedVarianceFlux
     ccmActualHeadMatchedQuantileParabolicCenteredMatchedOffset
     ccmActualHeadMatchedQuantileParabolicCenteredDisplacement

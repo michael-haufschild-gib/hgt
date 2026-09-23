@@ -38,16 +38,16 @@ theorem gaussDigammaSeriesTerm_pair (η : ℝ) (n : ℕ) :
   have hapos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
   have ha : ((n : ℂ) + 1) ≠ 0 := by
     exact_mod_cast hapos.ne'
-  have hA : (((n : ℝ) + 1) ^ 2 + η ^ 2) ≠ 0 := by positivity
-  have hAC : (((n : ℂ) + 1) ^ 2 + (η : ℂ) ^ 2) ≠ 0 := by
-    have : ((((n : ℝ) + 1) ^ 2 + η ^ 2 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hA
+  have hA : (((n : ℝ) + 1) ^ (2 : ℕ) + η ^ (2 : ℕ)) ≠ 0 := by positivity
+  have hAC : (((n : ℂ) + 1) ^ (2 : ℕ) + (η : ℂ) ^ (2 : ℕ)) ≠ 0 := by
+    have : ((((n : ℝ) + 1) ^ (2 : ℕ) + η ^ (2 : ℕ) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hA
     convert this using 1
     push_cast
     ring
   have hp : (1 + (η : ℂ) * Complex.I + (n : ℂ)) = ((n : ℂ) + 1) + (η : ℂ) * Complex.I := by ring
   have hm : (1 - (η : ℂ) * Complex.I + (n : ℂ)) = ((n : ℂ) + 1) - (η : ℂ) * Complex.I := by ring
   have hprod : (((n : ℂ) + 1) + (η : ℂ) * Complex.I) * (((n : ℂ) + 1) - (η : ℂ) * Complex.I)
-      = ((n : ℂ) + 1) ^ 2 + (η : ℂ) ^ 2 := by
+      = ((n : ℂ) + 1) ^ (2 : ℕ) + (η : ℂ) ^ (2 : ℕ) := by
     have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
     ring_nf
     rw [Complex.I_sq]
@@ -98,7 +98,7 @@ theorem gammaJumpSymbol_eq_ofReal_nonneg (η : ℝ) :
 
 /-- The literal Gamma symbol obeys the elementary affine growth bound. -/
 theorem norm_gammaJumpSymbol_le (η : ℝ) :
-    ‖gammaJumpSymbol η‖ ≤ (∑' n : ℕ, (1 : ℝ) / (((n : ℝ) + 1) ^ 2)) * (1 + |η|) := by
+    ‖gammaJumpSymbol η‖ ≤ (∑' n : ℕ, (1 : ℝ) / (((n : ℝ) + 1) ^ (2 : ℕ))) * (1 + |η|) := by
   rw [gammaJumpSymbol_eq, Complex.norm_real, Real.norm_eq_abs]
   exact abs_gammaJumpMultiplier_le η
 

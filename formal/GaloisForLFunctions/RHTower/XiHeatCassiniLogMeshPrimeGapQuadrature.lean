@@ -227,7 +227,7 @@ theorem norm_xiMassCriticalGrowingFourierProfile_rightCellError_le
     (u : ℝ) {r s : ℝ} (hrs : r ≤ s) :
     ‖((s - r : ℝ) : ℂ) * xiMassCriticalGrowingFourierProfile a sigma u s -
         ∫ h in r..s, xiMassCriticalGrowingFourierProfile a sigma u h‖ ≤
-      (s - r) ^ 2 * Real.exp (s / 2) *
+      (s - r) ^ (2 : ℕ) * Real.exp (s / 2) *
         xiMassCriticalOutgoingZeroShiftBound sigma := by
   rw [xiMassCriticalGrowingFourierProfile_rightCellError_eq ha hsigma]
   let J : ℝ := xiMassCriticalOutgoingZeroShiftBound sigma
@@ -260,7 +260,7 @@ theorem norm_xiMassCriticalGrowingFourierProfile_rightCellError_le
         xiMassCriticalGrowingFourierDerivative a sigma u h‖ ≤
         C * |s - r| :=
       intervalIntegral.norm_integral_le_of_norm_le_const hpoint
-    _ = (s - r) ^ 2 * Real.exp (s / 2) *
+    _ = (s - r) ^ (2 : ℕ) * Real.exp (s / 2) *
         xiMassCriticalOutgoingZeroShiftBound sigma := by
       rw [abs_of_nonneg (sub_nonneg.mpr hrs)]
       dsimp only [C, J]
@@ -275,7 +275,7 @@ theorem norm_xiMassCriticalGrowingFourierProfile_primeLogCellError_le
             a sigma u (xiMassNthPrimeLogHeight (N + 1)) -
         ∫ h in xiMassNthPrimeLogHeight N..xiMassNthPrimeLogHeight (N + 1),
           xiMassCriticalGrowingFourierProfile a sigma u h‖ ≤
-      xiHeatCassiniOrderedPrimeLogGap N ^ 2 *
+      xiHeatCassiniOrderedPrimeLogGap N ^ (2 : ℕ) *
         Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2) *
           xiMassCriticalOutgoingZeroShiftBound sigma := by
   simpa [xiHeatCassiniOrderedPrimeLogGap, xiMassNthPrimeLogHeight] using
@@ -312,10 +312,10 @@ theorem xiHeatCassiniOrderedPrimeLogGap_le_gap_div_prime (N : ℕ) :
 /-- Critical prime-log cell weight is dominated by normalized additive prime-gap square.
 Bertrand is used only to replace the right-endpoint square root by twice the left-endpoint one. -/
 theorem primeLogGap_sq_mul_criticalHalfDensity_le_primeGapSq (N : ℕ) :
-    xiHeatCassiniOrderedPrimeLogGap N ^ 2 *
+    xiHeatCassiniOrderedPrimeLogGap N ^ (2 : ℕ) *
         Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2) ≤
       2 * (xiHeatCassiniOrderedPrimeGap N /
-          (nthPrimeSubtype N : ℝ)) ^ 2 *
+          (nthPrimeSubtype N : ℝ)) ^ (2 : ℕ) *
         Real.sqrt (nthPrimeSubtype N : ℝ) := by
   let p : ℝ := nthPrimeSubtype N
   let q : ℝ := nthPrimeSubtype (N + 1)
@@ -328,7 +328,7 @@ theorem primeLogGap_sq_mul_criticalHalfDensity_le_primeGapSq (N : ℕ) :
   have hratio : 0 ≤ gap / p := div_nonneg hgap hp.le
   have hdle : delta ≤ gap / p :=
     xiHeatCassiniOrderedPrimeLogGap_le_gap_div_prime N
-  have hsq : delta ^ 2 ≤ (gap / p) ^ 2 :=
+  have hsq : delta ^ (2 : ℕ) ≤ (gap / p) ^ (2 : ℕ) :=
     (sq_le_sq₀ hdelta hratio).mpr hdle
   have hq2p : q ≤ 2 * p := by
     dsimp only [p, q]
@@ -348,15 +348,15 @@ theorem primeLogGap_sq_mul_criticalHalfDensity_le_primeGapSq (N : ℕ) :
       Real.sqrt q := by
     dsimp only [xiMassNthPrimeLogHeight, q]
     rw [← Real.log_sqrt hq.le, Real.exp_log (Real.sqrt_pos.mpr hq)]
-  change delta ^ 2 *
+  change delta ^ (2 : ℕ) *
       Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2) ≤
-    2 * (gap / p) ^ 2 * Real.sqrt p
+    2 * (gap / p) ^ (2 : ℕ) * Real.sqrt p
   rw [hexp]
   calc
-    delta ^ 2 * Real.sqrt q ≤
-        (gap / p) ^ 2 * (2 * Real.sqrt p) :=
+    delta ^ (2 : ℕ) * Real.sqrt q ≤
+        (gap / p) ^ (2 : ℕ) * (2 * Real.sqrt p) :=
       mul_le_mul hsq hsqrt (Real.sqrt_nonneg q) (sq_nonneg (gap / p))
-    _ = 2 * (gap / p) ^ 2 * Real.sqrt p := by ring
+    _ = 2 * (gap / p) ^ (2 : ℕ) * Real.sqrt p := by ring
 
 /-- Exact Route-T cell error now has a purely additive-prime-gap majorant. -/
 theorem norm_xiMassCriticalGrowingFourierProfile_primeLogCellError_le_primeGapSq
@@ -368,7 +368,7 @@ theorem norm_xiMassCriticalGrowingFourierProfile_primeLogCellError_le_primeGapSq
         ∫ h in xiMassNthPrimeLogHeight N..xiMassNthPrimeLogHeight (N + 1),
           xiMassCriticalGrowingFourierProfile a sigma u h‖ ≤
       (2 * (xiHeatCassiniOrderedPrimeGap N /
-          (nthPrimeSubtype N : ℝ)) ^ 2 *
+          (nthPrimeSubtype N : ℝ)) ^ (2 : ℕ) *
         Real.sqrt (nthPrimeSubtype N : ℝ)) *
           xiMassCriticalOutgoingZeroShiftBound sigma := by
   calc
@@ -377,14 +377,14 @@ theorem norm_xiMassCriticalGrowingFourierProfile_primeLogCellError_le_primeGapSq
             a sigma u (xiMassNthPrimeLogHeight (N + 1)) -
         ∫ h in xiMassNthPrimeLogHeight N..xiMassNthPrimeLogHeight (N + 1),
           xiMassCriticalGrowingFourierProfile a sigma u h‖ ≤
-      (xiHeatCassiniOrderedPrimeLogGap N ^ 2 *
+      (xiHeatCassiniOrderedPrimeLogGap N ^ (2 : ℕ) *
         Real.exp (xiMassNthPrimeLogHeight (N + 1) / 2)) *
           xiMassCriticalOutgoingZeroShiftBound sigma := by
         simpa [mul_assoc] using
           norm_xiMassCriticalGrowingFourierProfile_primeLogCellError_le
             ha hsigma u N
     _ ≤ (2 * (xiHeatCassiniOrderedPrimeGap N /
-          (nthPrimeSubtype N : ℝ)) ^ 2 *
+          (nthPrimeSubtype N : ℝ)) ^ (2 : ℕ) *
         Real.sqrt (nthPrimeSubtype N : ℝ)) *
           xiMassCriticalOutgoingZeroShiftBound sigma :=
       mul_le_mul_of_nonneg_right

@@ -22,7 +22,7 @@ namespace HTGeometry
 theorem sqrt_mul_le_add_div_two {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     Real.sqrt (a * b) ≤ (a + b) / 2 := by
   have hnn : 0 ≤ a * b := mul_nonneg ha hb
-  have hsq : Real.sqrt (a * b) ^ 2 = a * b := Real.sq_sqrt hnn
+  have hsq : Real.sqrt (a * b) ^ (2 : ℕ) = a * b := Real.sq_sqrt hnn
   have hmid : (0:ℝ) ≤ (a + b) / 2 := by linarith
   nlinarith [Real.sqrt_nonneg (a * b), hsq, sq_nonneg (a - b), sq_nonneg (Real.sqrt (a * b))]
 

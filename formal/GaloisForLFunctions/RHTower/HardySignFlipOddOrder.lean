@@ -69,15 +69,15 @@ theorem exists_odd_order_line_zero_of_sign_flip {τ₁ τ₂ : ℝ} (hτ : τ₁
 
 /-- The real restriction of `ξ` on the critical line is a negative multiple of Hardy's `Z`. -/
 theorem re_xi_linePt_eq (τ : ℝ) :
-    (xi (linePt τ)).re = (-(1 / 4 + τ ^ 2) / 2) * ‖Gammaℝ (linePt τ)‖ * hardyZ τ := by
+    (xi (linePt τ)).re = (-(1 / 4 + τ ^ (2 : ℕ)) / 2) * ‖Gammaℝ (linePt τ)‖ * hardyZ τ := by
   rw [xi_line_eq_scale_mul_hardyZ, Complex.ofReal_re]
 
 theorem re_xi_linePt_scale_pos (τ : ℝ) :
-    0 < (1 / 4 + τ ^ 2) / 2 * ‖Gammaℝ (linePt τ)‖ := by
+    0 < (1 / 4 + τ ^ (2 : ℕ)) / 2 * ‖Gammaℝ (linePt τ)‖ := by
   have hre : (0 : ℝ) < (linePt τ).re := by rw [linePt_re]; norm_num
   have hne : Gammaℝ (linePt τ) ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos hre
   have hpos : 0 < ‖Gammaℝ (linePt τ)‖ := norm_pos_iff.mpr hne
-  have : (0 : ℝ) < (1 / 4 + τ ^ 2) / 2 := by positivity
+  have : (0 : ℝ) < (1 / 4 + τ ^ (2 : ℕ)) / 2 := by positivity
   exact mul_pos this hpos
 
 /-- **A Hardy sign change produces a critical-line zero of odd order.**  Hardy's `Z` differs from
@@ -97,10 +97,10 @@ theorem exists_odd_order_line_zero_of_hardyZ_sign_flip {τ₁ τ₂ : ℝ} (hτ 
   rw [re_xi_linePt_eq, re_xi_linePt_eq]
   have hs₁ := re_xi_linePt_scale_pos τ₁
   have hs₂ := re_xi_linePt_scale_pos τ₂
-  have hrw : ((-(1 / 4 + τ₁ ^ 2) / 2) * ‖Gammaℝ (linePt τ₁)‖ * hardyZ τ₁)
-      * ((-(1 / 4 + τ₂ ^ 2) / 2) * ‖Gammaℝ (linePt τ₂)‖ * hardyZ τ₂)
-      = ((1 / 4 + τ₁ ^ 2) / 2 * ‖Gammaℝ (linePt τ₁)‖)
-        * ((1 / 4 + τ₂ ^ 2) / 2 * ‖Gammaℝ (linePt τ₂)‖) * (hardyZ τ₁ * hardyZ τ₂) := by
+  have hrw : ((-(1 / 4 + τ₁ ^ (2 : ℕ)) / 2) * ‖Gammaℝ (linePt τ₁)‖ * hardyZ τ₁)
+      * ((-(1 / 4 + τ₂ ^ (2 : ℕ)) / 2) * ‖Gammaℝ (linePt τ₂)‖ * hardyZ τ₂)
+      = ((1 / 4 + τ₁ ^ (2 : ℕ)) / 2 * ‖Gammaℝ (linePt τ₁)‖)
+        * ((1 / 4 + τ₂ ^ (2 : ℕ)) / 2 * ‖Gammaℝ (linePt τ₂)‖) * (hardyZ τ₁ * hardyZ τ₂) := by
     ring
   rw [hrw]
   exact mul_neg_of_pos_of_neg (mul_pos hs₁ hs₂) hsign

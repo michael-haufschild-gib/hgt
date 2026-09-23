@@ -12,7 +12,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {R E : Type*} [CommRing R] [AddCommGroup E] [Module R E]
 
 def qnmQuadraticPencil (A B W : E →ₗ[R] E) (z : R) : E →ₗ[R] E :=
-  A + z • B - z ^ 2 • W
+  A + z • B - z ^ (2 : ℕ) • W
 
 def qnmCompanionLeft (A B : E →ₗ[R] E) : E × E →ₗ[R] E × E :=
   schurBlockOperator 0 LinearMap.id A B

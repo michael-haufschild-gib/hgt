@@ -80,9 +80,9 @@ theorem finiteAllReplicaFullPauli_incidenceNormalized_wordLeakage (hn : 1 ≤ n)
       (∀ q w, W q w ∈ twoLocalReplicaCommutatorSet R n ^ n) ∧
       (∀ q, ∑ w, ‖c q w‖ = 1) ∧
       (∀ q, finiteReplicaFullPauliCommutatorMatrix R n q = ∑ w, c q w • W q w) ∧
-      2 * ((2 : ℝ) ^ n) ^ 2 * ((PU.trace).re - (PV.trace).re) / (((2 : ℝ) ^ n) ^ 2 - 1)
+      2 * ((2 : ℝ) ^ n) ^ (2 : ℕ) * ((PU.trace).re - (PV.trace).re) / (((2 : ℝ) ^ n) ^ (2 : ℕ) - 1)
         ≤ (∑ q : NonidentityPauliLabel n, ∑ w, ‖c q w‖ * hsSqRe ((1 - PV) * W q w * PU))
-            / (((2 : ℝ) ^ n) ^ 2 - 1) := by
+            / (((2 : ℝ) ^ n) ^ (2 : ℕ) - 1) := by
   obtain ⟨ι, hι, c, W, hmem, hmass, hsyn⟩ := exists_uniformUnitMassSynthesis R n
   letI : Fintype ι := hι
   exact ⟨ι, hι, c, W, hmem, hmass, hsyn,

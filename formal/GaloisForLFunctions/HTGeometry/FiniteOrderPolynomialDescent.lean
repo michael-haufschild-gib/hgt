@@ -74,7 +74,7 @@ theorem exists_norm_le_of_natDegree_pos {P : Polynomial ℂ} (hP : 1 ≤ P.natDe
     nlinarith [hppos]
   have hhalf : Lc * ‖w‖ ^ n / 2 ≤ ‖P.eval w‖ := by linarith
   have hwn : ‖w‖ ≤ ‖w‖ ^ n := by
-    calc ‖w‖ = ‖w‖ ^ 1 := (pow_one _).symm
+    calc ‖w‖ = ‖w‖ ^ (1 : ℕ) := (pow_one _).symm
       _ ≤ ‖w‖ ^ n := pow_le_pow_right₀ hw1 hP
   have hfinal : ‖w‖ ≤ 2 / Lc * ‖P.eval w‖ := by
     rw [div_mul_eq_mul_div, le_div_iff₀ hLpos]

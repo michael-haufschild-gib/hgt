@@ -12,7 +12,7 @@ theorem exists_zetaLittlewoodZeroCountAbove_eq_zero_near_one :
     ∃ L0 : ℝ, 1 ≤ L0 ∧
       ∀ {sigma : ℝ} {X : ℕ}, 10 ≤ X →
         L0 ≤ Real.log (X : ℝ) →
-        1 - 1 / Real.log (X : ℝ) ^ 2 ≤ sigma →
+        1 - 1 / Real.log (X : ℝ) ^ (2 : ℕ) ≤ sigma →
         zetaLittlewoodZeroCountAbove (inghamUniformGabrielCenter sigma) 4
           ((X : ℝ) - 2) sigma = 0 := by
   obtain ⟨L0, hL0, hzf⟩ := exists_zeta_uniform_strip_zero_free

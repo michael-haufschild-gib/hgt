@@ -53,7 +53,7 @@ theorem norm_integral_growingFourierProfile_movingSlope_le {a sigma kappa0 u c e
     (hcone : kappa0 * u ≤ c) (hce : c ≤ e) :
     ‖∫ h in c..e, xiMassCriticalGrowingFourierProfile a sigma u h‖
       ≤ xiMassBesselContinuumTailConstant a sigma kappa0
-        * Real.exp (c / 2 - a * Real.sqrt (c ^ 2 - u ^ 2)) := by
+        * Real.exp (c / 2 - a * Real.sqrt (c ^ (2 : ℕ) - u ^ (2 : ℕ))) := by
   have hkappa00 : (0 : ℝ) < kappa0 := lt_trans zero_lt_one hkappa0
   have hcpos : (0 : ℝ) < c := lt_of_lt_of_le (by positivity) hcone
   have hslope : kappa0 ≤ c / u := (le_div_iff₀ hu).2 hcone
@@ -63,7 +63,7 @@ theorem norm_integral_growingFourierProfile_movingSlope_le {a sigma kappa0 u c e
     (kappa := c / u) (u := u) (c := c) (e := e) ha hsigma hone hu.le hcpos (by rw [hmul]) hce
   refine hbase.trans ?_
   have hexp : Real.exp (-(xiMassBesselConeExponent a (c / u) * u))
-      = Real.exp (c / 2 - a * Real.sqrt (c ^ 2 - u ^ 2)) := by
+      = Real.exp (c / 2 - a * Real.sqrt (c ^ (2 : ℕ) - u ^ (2 : ℕ))) := by
     have hact := xiMassAction_at_slope (a := a) (kappa := c / u) (u := u) hone hu.le
     rw [hmul] at hact
     rw [hact]
@@ -196,7 +196,7 @@ theorem xiMassTypeZero_continuumPrefix {a c sigma : ℝ} (hhalf : 1 / 2 < c) (hc
       have hcone' : k0 * u ≤ WB := by rw [hWBval]; exact hk0le
       have hbd := norm_integral_growingFourierProfile_movingSlope_le (a := a) (sigma := sigma)
         (kappa0 := k0) (u := u) (c := WB) (e := WH) ha hsigma hk0one hupos hcone' hle
-      have hexpeq : Real.exp (WB / 2 - a * Real.sqrt (WB ^ 2 - u ^ 2))
+      have hexpeq : Real.exp (WB / 2 - a * Real.sqrt (WB ^ (2 : ℕ) - u ^ (2 : ℕ)))
           = Real.exp (-(xiMassBesselConeExponent a kk) * u) := by
         rw [hWBval, xiMassAction_at_slope hkone hupos.le]
       rw [hexpeq] at hbd
@@ -205,7 +205,7 @@ theorem xiMassTypeZero_continuumPrefix {a c sigma : ℝ} (hhalf : 1 / 2 < c) (hc
       have hcone' : k0 * u ≤ WH := by rw [hWHval]; exact hk0le
       have hbd := norm_integral_growingFourierProfile_movingSlope_le (a := a) (sigma := sigma)
         (kappa0 := k0) (u := u) (c := WH) (e := WB) ha hsigma hk0one hupos hcone' hle
-      have hexpeq : Real.exp (WH / 2 - a * Real.sqrt (WH ^ 2 - u ^ 2))
+      have hexpeq : Real.exp (WH / 2 - a * Real.sqrt (WH ^ (2 : ℕ) - u ^ (2 : ℕ)))
           = Real.exp (-(xiMassBesselConeExponent a kk) * u) := by
         rw [hWHval, xiMassAction_at_slope hkone hupos.le]
       rw [hexpeq] at hbd

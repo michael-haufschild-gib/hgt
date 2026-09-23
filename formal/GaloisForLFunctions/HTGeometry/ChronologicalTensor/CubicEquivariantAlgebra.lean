@@ -83,7 +83,7 @@ theorem cubicEquivariantRecoveries_classification (P : Polynomial (Polynomial �
   · rintro ⟨α,rfl⟩
     refine ⟨cubicCuspAlgebra.smul_mem (cubicCuspAlgebra_constant _) α,?_⟩
     have h : cubicPolynomialFlow (1/2) (α • Polynomial.C Polynomial.X)=
-        (1/2:ℝ)^1 • (α • Polynomial.C Polynomial.X) := by
+        (1/2:ℝ)^(1 : ℕ) • (α • Polynomial.C Polynomial.X) := by
       rw [cubicPolynomialFlow_halfWeight]
       intro m n hmn
       by_cases hm : m=0

@@ -153,7 +153,7 @@ theorem re_mul_conj_le_zero_of_isMinOn {K : Set ℂ} (hconv : Convex ℝ K) {v p
       rw [normSq_eq_norm_sq, normSq_eq_norm_sq]
       exact pow_le_pow_left₀ (norm_nonneg _) hnorm 2
     have hexpand : normSq ((v - p) - (t : ℂ) * (z - p))
-        = normSq (v - p) + t ^ 2 * normSq (z - p)
+        = normSq (v - p) + t ^ (2 : ℕ) * normSq (z - p)
           - 2 * (t * ((v - p) * (starRingEnd ℂ) (z - p)).re) := by
       rw [normSq_sub (v - p) ((t : ℂ) * (z - p)), normSq_mul, normSq_ofReal, map_mul,
         Complex.conj_ofReal,
@@ -212,7 +212,7 @@ theorem exists_far_center {K : Set ℂ} (hK : IsCompact K) (hconv : Convex ℝ K
     rw [hc, hn]
     push_cast
     ring
-  have hnormvc : normSq (v - c) = (1 + s) ^ 2 * normSq n := by
+  have hnormvc : normSq (v - c) = (1 + s) ^ (2 : ℕ) * normSq n := by
     rw [hvc, normSq_mul, normSq_ofReal]
     ring
   have hzc : ∀ z ∈ K, normSq (z - c) < normSq (v - c) := by
@@ -220,7 +220,7 @@ theorem exists_far_center {K : Set ℂ} (hK : IsCompact K) (hconv : Convex ℝ K
     have hzcv : z - c = (z - p) + (s : ℂ) * n := by rw [hc]; ring
     have hre := re_mul_conj_le_zero_of_isMinOn hconv hpK hpmin hz
     have hexp : normSq (z - c)
-        = normSq (z - p) + s ^ 2 * normSq n + 2 * (s * ((z - p) * (starRingEnd ℂ) n).re) := by
+        = normSq (z - p) + s ^ (2 : ℕ) * normSq n + 2 * (s * ((z - p) * (starRingEnd ℂ) n).re) := by
       rw [hzcv, normSq_add (z - p) ((s : ℂ) * n), normSq_mul, normSq_ofReal, map_mul,
         Complex.conj_ofReal,
         show (z - p) * ((s : ℂ) * (starRingEnd ℂ) n)

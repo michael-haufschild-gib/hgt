@@ -47,20 +47,20 @@ paired `coth` differences lose at most the mean-value boxes, the unpaired terms 
 theorem paired_train_sum_ge {M E : ℕ} {A B ex : ℕ → ℝ}
     (hpair : ∀ k ∈ range M, 0 < A k ∧ A k ≤ B k)
     (hex : ∀ j ∈ range E, 0 < ex j) :
-    (E : ℝ) - (∑ k ∈ range M, ((B k - A k) / 2) * (rcsch (A k / 2)) ^ 2)
+    (E : ℝ) - (∑ k ∈ range M, ((B k - A k) / 2) * (rcsch (A k / 2)) ^ (2 : ℕ))
       ≤ (∑ k ∈ range M, (rcoth (B k / 2) - rcoth (A k / 2)))
         + ∑ j ∈ range E, rcoth (ex j / 2) := by
   have hdef : ∀ k ∈ range M,
-      -(((B k - A k) / 2) * (rcsch (A k / 2)) ^ 2)
+      -(((B k - A k) / 2) * (rcsch (A k / 2)) ^ (2 : ℕ))
         ≤ rcoth (B k / 2) - rcoth (A k / 2) := by
     intro k hk
     obtain ⟨hA, hAB⟩ := hpair k hk
     have := rcoth_pair_le' (show (0 : ℝ) < A k / 2 by positivity)
       (show A k / 2 ≤ B k / 2 by linarith)
-    have harg : (B k / 2 - A k / 2) * (rcsch (A k / 2)) ^ 2
-        = ((B k - A k) / 2) * (rcsch (A k / 2)) ^ 2 := by ring
+    have harg : (B k / 2 - A k / 2) * (rcsch (A k / 2)) ^ (2 : ℕ)
+        = ((B k - A k) / 2) * (rcsch (A k / 2)) ^ (2 : ℕ) := by ring
     linarith [harg ▸ this]
-  have h1 : -(∑ k ∈ range M, ((B k - A k) / 2) * (rcsch (A k / 2)) ^ 2)
+  have h1 : -(∑ k ∈ range M, ((B k - A k) / 2) * (rcsch (A k / 2)) ^ (2 : ℕ))
       ≤ ∑ k ∈ range M, (rcoth (B k / 2) - rcoth (A k / 2)) := by
     rw [← Finset.sum_neg_distrib]
     exact Finset.sum_le_sum hdef
@@ -119,7 +119,7 @@ theorem midpoint_push_of_deficit {M E : ℕ} {t : ℕ → ℝ} {a b x : ℝ} (ha
     (hea : t (2 * M + E) = a) (heb : t (2 * M + E + 1) = b)
     (hbudget : (∑ k ∈ range M,
         ((((a + b) / 2 - t k) - (t (M + k) - (a + b) / 2)) / 2)
-          * (rcsch ((t (M + k) - (a + b) / 2) / 2)) ^ 2)
+          * (rcsch ((t (M + k) - (a + b) / 2) / 2)) ^ (2 : ℕ))
       < 2 * (M : ℝ) + 2 * E + 2)
     (hx : x ∈ Set.Ioo a b)
     (heq : cothField (range (2 * M + E + 2)) t x = -(2 * (M : ℝ) + E + 2)) :

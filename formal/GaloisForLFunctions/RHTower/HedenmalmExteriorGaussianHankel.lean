@@ -30,10 +30,10 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonneg_lowerExterior
       xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im := by
   let a : ℂ := xiSpectralPoint q
   have haimMem := xiSpectralPoint_im_mem_openHalf q
-  have haimSq : a.im ^ 2 < z.im ^ 2 := by
+  have haimSq : a.im ^ (2 : ℕ) < z.im ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (a.im + 1 / 2), sq_nonneg (1 / 2 - a.im),
       sq_nonneg (z.im + 1 / 2)]
-  have hcore : 0 < (z.re - a.re) ^ 2 + z.im ^ 2 - a.im ^ 2 := by
+  have hcore : 0 < (z.re - a.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) - a.im ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (z.re - a.re)]
   have hza : z ≠ a := by
     intro h
@@ -45,12 +45,12 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonneg_lowerExterior
     simp only [Complex.conj_im] at him
     linarith [haimMem.2]
   have hdenOne :
-      0 < (z.re - a.re) ^ 2 + (z.im - a.im) ^ 2 := by
+      0 < (z.re - a.re) ^ (2 : ℕ) + (z.im - a.im) ^ (2 : ℕ) := by
     have h : z - a ≠ 0 := sub_ne_zero.mpr hza
     simpa only [Complex.normSq_apply, sub_re, sub_im, pow_two] using
       Complex.normSq_pos.mpr h
   have hdenTwo :
-      0 < (z.re - a.re) ^ 2 + (z.im + a.im) ^ 2 := by
+      0 < (z.re - a.re) ^ (2 : ℕ) + (z.im + a.im) ^ (2 : ℕ) := by
     have h : z - (starRingEnd ℂ) a ≠ 0 := sub_ne_zero.mpr hzac
     simpa only [Complex.normSq_apply, Complex.conj_re, Complex.conj_im,
       sub_re, sub_im, sub_neg_eq_add, pow_two] using Complex.normSq_pos.mpr h
@@ -90,7 +90,7 @@ lemma kreinCurrent_eq_normSq_mul_logDeriv_im
   rw [Complex.div_im]
   simp only [mul_re, mul_im, conj_re, conj_im, neg_re, neg_im, I_re, I_im,
     Complex.normSq_apply]
-  have hnorm : u.re ^ 2 + u.im ^ 2 ≠ 0 := by
+  have hnorm : u.re ^ (2 : ℕ) + u.im ^ (2 : ℕ) ≠ 0 := by
     simpa only [Complex.normSq_apply, pow_two] using
       (Complex.normSq_pos.mpr hu).ne'
   field_simp [hnorm]

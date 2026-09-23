@@ -1060,7 +1060,7 @@ theorem gammaClockBoundaryCompression_eq_projector (n : ℕ) :
 /-! ### Formal-unit/global-nonunit specialization -/
 
 /-- Positive-degree coefficients of the formal shift cofactor
-`(exp D - 1) / D = 1 + D/2! + D^2/3! + ...`. -/
+`(exp D - 1) / D = 1 + D/2! + D^(2 : ℕ)/3! + ...`. -/
 def gammaShiftCofactorCoefficients (n : ℕ) : ℂ :=
   1 / ((n + 2).factorial : ℂ)
 

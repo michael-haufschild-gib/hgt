@@ -80,8 +80,8 @@ theorem tendsto_critTilt {A : ℝ} (hA0 : 0 < A) :
 
 /-- The exact value of the critical tilt against the power law `A λ² log(1/λ)`. -/
 theorem critTilt_value {A q : ℝ} (hA0 : 0 < A) (hq0 : 0 < q) (ht : 0 < Real.log (1 / q)) :
-    critTilt A q * q - A * critTilt A q ^ 2 * Real.log (1 / critTilt A q)
-      = q ^ 2 / Real.log (1 / q) * critLowerProfile A (Real.log (1 / q)) := by
+    critTilt A q * q - A * critTilt A q ^ (2 : ℕ) * Real.log (1 / critTilt A q)
+      = q ^ (2 : ℕ) / Real.log (1 / q) * critLowerProfile A (Real.log (1 / q)) := by
   set t : ℝ := Real.log (1 / q) with hT
   have hden : (0 : ℝ) < 2 * A * t := by positivity
   have hlam : critTilt A q = q / (2 * A * t) := rfl
@@ -99,9 +99,9 @@ theorem critTilt_value {A q : ℝ} (hA0 : 0 < A) (hq0 : 0 < q) (ht : 0 < Real.lo
 /-- **The critical rate from below.** -/
 theorem eventually_critLowerProfile_le {A : ℝ} (hA0 : 0 < A)
     (h : ∀ᶠ lam in 𝓝[>] (0 : ℝ),
-        rvCumulant (1 / 2) lam ≤ A * lam ^ 2 * Real.log (1 / lam)) :
+        rvCumulant (1 / 2) lam ≤ A * lam ^ (2 : ℕ) * Real.log (1 / lam)) :
     ∀ᶠ q in 𝓝[>] (0 : ℝ),
-      critLowerProfile A (Real.log (1 / q)) ≤ rvRate (1 / 2) q * Real.log (1 / q) / q ^ 2 := by
+      critLowerProfile A (Real.log (1 / q)) ≤ rvRate (1 / 2) q * Real.log (1 / q) / q ^ (2 : ℕ) := by
   have hpull := (tendsto_critTilt hA0).eventually h
   have hlog : ∀ᶠ q in 𝓝[>] (0 : ℝ), 0 < Real.log (1 / q) :=
     tendsto_logInv_atTop.eventually_gt_atTop 0
@@ -114,11 +114,11 @@ theorem eventually_critLowerProfile_le {A : ℝ} (hA0 : 0 < A)
     positivity
   have hle := le_rvRate (α := (1 / 2 : ℝ)) (by norm_num) hqlt hlam0.le
   have hval := critTilt_value hA0 hq0 ht
-  have hkey : q ^ 2 / Real.log (1 / q) * critLowerProfile A (Real.log (1 / q))
+  have hkey : q ^ (2 : ℕ) / Real.log (1 / q) * critLowerProfile A (Real.log (1 / q))
       ≤ rvRate (1 / 2) q := by
     rw [← hval]
     linarith
-  rw [le_div_iff₀ (by positivity : (0 : ℝ) < q ^ 2)]
+  rw [le_div_iff₀ (by positivity : (0 : ℝ) < q ^ (2 : ℕ))]
   rw [div_mul_eq_mul_div, div_le_iff₀ ht] at hkey
   linarith [hkey]
 
@@ -126,9 +126,9 @@ theorem eventually_critLowerProfile_le {A : ℝ} (hA0 : 0 < A)
 /-- **The critical rate from above.** -/
 theorem eventually_rvRate_crit_le_profile {A : ℝ} (hA0 : 0 < A)
     (h : ∀ᶠ lam in 𝓝[>] (0 : ℝ),
-        A * lam ^ 2 * Real.log (1 / lam) ≤ rvCumulant (1 / 2) lam) :
+        A * lam ^ (2 : ℕ) * Real.log (1 / lam) ≤ rvCumulant (1 / 2) lam) :
     ∀ᶠ q in 𝓝[>] (0 : ℝ),
-      rvRate (1 / 2) q * Real.log (1 / q) / q ^ 2
+      rvRate (1 / 2) q * Real.log (1 / q) / q ^ (2 : ℕ)
         ≤ Real.log (1 / q) / (4 * A * (Real.log (1 / q) + Real.log A)) := by
   obtain ⟨t, ht, htP⟩ := Filter.eventually_iff_exists_mem.1 h
   obtain ⟨u, hu, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp ht
@@ -138,7 +138,7 @@ theorem eventually_rvRate_crit_le_profile {A : ℝ} (hA0 : 0 < A)
   have hδu : δ < u := lt_of_le_of_lt (min_le_left _ _) (by linarith)
   have hδe : δ ≤ Real.exp (-1) := min_le_right _ _
   have hlow : ∀ lam : ℝ, 0 < lam → lam ≤ δ →
-      A * lam ^ 2 * Real.log (1 / lam) ≤ rvCumulant (1 / 2) lam := by
+      A * lam ^ (2 : ℕ) * Real.log (1 / lam) ≤ rvCumulant (1 / 2) lam := by
     intro lam hlam0 hlamδ
     exact htP lam (hsub ⟨hlam0, lt_of_le_of_lt hlamδ hδu⟩)
   have hLone : ∀ lam : ℝ, 0 < lam → lam ≤ δ → 1 ≤ Real.log (1 / lam) := by
@@ -170,10 +170,10 @@ theorem eventually_rvRate_crit_le_profile {A : ℝ} (hA0 : 0 < A)
   have hlogQA : Real.log (1 / (q / A)) = Real.log (1 / q) + Real.log A := by
     rw [one_div, one_div, inv_div, Real.log_div hA0.ne' hq0.ne', Real.log_inv]
     ring
-  have hsup : rvRate (1 / 2) q ≤ q ^ 2 / (4 * B) := by
+  have hsup : rvRate (1 / 2) q ≤ q ^ (2 : ℕ) / (4 * B) := by
     refine csSup_le (rvLegendreSet_nonempty _ _) ?_
     rintro y ⟨lam, hlam, rfl⟩
-    have hRHS : (0 : ℝ) ≤ q ^ 2 / (4 * B) := by positivity
+    have hRHS : (0 : ℝ) ≤ q ^ (2 : ℕ) / (4 * B) := by positivity
     rcases eq_or_lt_of_le hlam with hzero | hpos
     · rw [← hzero, rvCumulant_zero]
       simpa using hRHS
@@ -185,22 +185,22 @@ theorem eventually_rvRate_crit_le_profile {A : ℝ} (hA0 : 0 < A)
           exact inv_anti₀ hpos hle
         rw [hlogQA] at hLmono
         have hΛ := hlow lam hpos hlamδ
-        have hBd : B * lam ^ 2 ≤ rvCumulant (1 / 2) lam := by
-          have : A * lam ^ 2 * (Real.log (1 / q) + Real.log A)
-              ≤ A * lam ^ 2 * Real.log (1 / lam) := by
-            have : (0 : ℝ) ≤ A * lam ^ 2 := by positivity
+        have hBd : B * lam ^ (2 : ℕ) ≤ rvCumulant (1 / 2) lam := by
+          have : A * lam ^ (2 : ℕ) * (Real.log (1 / q) + Real.log A)
+              ≤ A * lam ^ (2 : ℕ) * Real.log (1 / lam) := by
+            have : (0 : ℝ) ≤ A * lam ^ (2 : ℕ) := by positivity
             nlinarith [hLmono]
           rw [hB]
           nlinarith [hΛ, this]
-        have hyoung : lam * q - B * lam ^ 2 ≤ q ^ 2 / (4 * B) := by
+        have hyoung : lam * q - B * lam ^ (2 : ℕ) ≤ q ^ (2 : ℕ) / (4 * B) := by
           rw [le_div_iff₀ (by positivity)]
           nlinarith [sq_nonneg (2 * B * lam - q)]
         linarith
       · rcases le_or_gt lam δ with hlamδ | hbig
         · have hΛ := hlow lam hpos hlamδ
           have hL1 := hLone lam hpos hlamδ
-          have hstep : A * lam ^ 2 ≤ A * lam ^ 2 * Real.log (1 / lam) := by
-            nlinarith [hL1, (by positivity : (0 : ℝ) ≤ A * lam ^ 2)]
+          have hstep : A * lam ^ (2 : ℕ) ≤ A * lam ^ (2 : ℕ) * Real.log (1 / lam) := by
+            nlinarith [hL1, (by positivity : (0 : ℝ) ≤ A * lam ^ (2 : ℕ))]
           have hqlt : q < A * lam := by
             rw [div_lt_iff₀ hA0] at hgt
             linarith
@@ -214,15 +214,15 @@ theorem eventually_rvRate_crit_le_profile {A : ℝ} (hA0 : 0 < A)
     exact Real.log_neg hq0 hq1'
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   have hstep : rvRate (1 / 2) q * Real.log (1 / q) * (4 * A * (Real.log (1 / q) + Real.log A))
-      ≤ (q ^ 2 / (4 * B)) * Real.log (1 / q) * (4 * B) := by
+      ≤ (q ^ (2 : ℕ) / (4 * B)) * Real.log (1 / q) * (4 * B) := by
     have h4B : (0 : ℝ) < 4 * B := by positivity
-    have : rvRate (1 / 2) q * Real.log (1 / q) ≤ (q ^ 2 / (4 * B)) * Real.log (1 / q) :=
+    have : rvRate (1 / 2) q * Real.log (1 / q) ≤ (q ^ (2 : ℕ) / (4 * B)) * Real.log (1 / q) :=
       mul_le_mul_of_nonneg_right hsup hLq.le
     have heq : 4 * A * (Real.log (1 / q) + Real.log A) = 4 * B := by rw [hB]; ring
     rw [heq]
     exact mul_le_mul_of_nonneg_right this h4B.le
-  have hcancel : (q ^ 2 / (4 * B)) * Real.log (1 / q) * (4 * B)
-      = Real.log (1 / q) * q ^ 2 := by
+  have hcancel : (q ^ (2 : ℕ) / (4 * B)) * Real.log (1 / q) * (4 * B)
+      = Real.log (1 / q) * q ^ (2 : ℕ) := by
     field_simp
   linarith [hstep, hcancel]
 
@@ -243,33 +243,33 @@ theorem tendsto_critUpperProfile {A : ℝ} (hA0 : 0 < A) :
 /-- The eventual upper power bound on the critical cumulant. -/
 theorem eventually_rvCumulant_crit_le {A : ℝ} (hA : 1 / 8 < A) :
     ∀ᶠ lam in 𝓝[>] (0 : ℝ),
-      rvCumulant (1 / 2) lam ≤ A * lam ^ 2 * Real.log (1 / lam) := by
+      rvCumulant (1 / 2) lam ≤ A * lam ^ (2 : ℕ) * Real.log (1 / lam) := by
   have hlt := tendsto_rvCumulant_crit.eventually (eventually_lt_nhds hA)
   have hlog : ∀ᶠ lam in 𝓝[>] (0 : ℝ), 0 < Real.log (1 / lam) :=
     tendsto_logInv_atTop.eventually_gt_atTop 0
   filter_upwards [hlt, hlog, self_mem_nhdsWithin] with lam hratio hL hlam
   have hlam0 : (0 : ℝ) < lam := hlam
-  have hden : (0 : ℝ) < lam ^ 2 * Real.log (1 / lam) := by positivity
+  have hden : (0 : ℝ) < lam ^ (2 : ℕ) * Real.log (1 / lam) := by positivity
   rw [div_lt_iff₀ hden] at hratio
   nlinarith [hratio]
 
 /-- The eventual lower power bound on the critical cumulant. -/
 theorem eventually_le_rvCumulant_crit {A : ℝ} (hA : A < 1 / 8) :
     ∀ᶠ lam in 𝓝[>] (0 : ℝ),
-      A * lam ^ 2 * Real.log (1 / lam) ≤ rvCumulant (1 / 2) lam := by
+      A * lam ^ (2 : ℕ) * Real.log (1 / lam) ≤ rvCumulant (1 / 2) lam := by
   have hgt := tendsto_rvCumulant_crit.eventually (eventually_gt_nhds hA)
   have hlog : ∀ᶠ lam in 𝓝[>] (0 : ℝ), 0 < Real.log (1 / lam) :=
     tendsto_logInv_atTop.eventually_gt_atTop 0
   filter_upwards [hgt, hlog, self_mem_nhdsWithin] with lam hratio hL hlam
   have hlam0 : (0 : ℝ) < lam := hlam
-  have hden : (0 : ℝ) < lam ^ 2 * Real.log (1 / lam) := by positivity
+  have hden : (0 : ℝ) < lam ^ (2 : ℕ) * Real.log (1 / lam) := by positivity
   rw [lt_div_iff₀ hden] at hratio
   nlinarith [hratio]
 
 /-- **The critical regime of the rate function**, the card's `(6)` middle line:
 `I_{1/2}(q) ∼ 2q²/log(1/q)`. -/
 theorem tendsto_rvRate_crit :
-    Tendsto (fun q : ℝ => rvRate (1 / 2) q * Real.log (1 / q) / q ^ 2)
+    Tendsto (fun q : ℝ => rvRate (1 / 2) q * Real.log (1 / q) / q ^ (2 : ℕ))
       (𝓝[>] (0 : ℝ)) (𝓝 2) := by
   have hq1 : ∀ᶠ q in 𝓝[>] (0 : ℝ), q < 1 :=
     (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1)).filter_mono nhdsWithin_le_nhds
@@ -282,7 +282,7 @@ theorem tendsto_rvRate_crit :
       have hq0 : (0 : ℝ) < q := hq
       have hpos : 0 < rvRate (1 / 2) q :=
         rvRate_pos (by norm_num) (by norm_num) hq0 hqlt
-      have : (0 : ℝ) < rvRate (1 / 2) q * Real.log (1 / q) / q ^ 2 := by positivity
+      have : (0 : ℝ) < rvRate (1 / 2) q * Real.log (1 / q) / q ^ (2 : ℕ) := by positivity
       linarith
     · have hlt : (1 : ℝ) / 8 < 1 / (4 * c) := by
         rw [div_lt_div_iff₀ (by norm_num) (by positivity)]

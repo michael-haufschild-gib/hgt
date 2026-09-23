@@ -120,7 +120,7 @@ theorem natCast_mul_tsum_normSq_xiPhysicalPrimeLogCharacterAmplitude_le_aperture
         Complex.normSq (xiPhysicalPrimeLogCharacterAmplitude P A
           ((N + 1 + r : ℕ) : ℤ) m k) ≤
       (2 * A / Real.pi) * (N : ℝ) * (k - m) *
-        xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 := by
+        xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) := by
   by_cases hPempty : P = ∅
   · subst P
     simp [xiPhysicalPrimeLogEndpointTotalWeight,
@@ -143,21 +143,21 @@ theorem natCast_mul_tsum_normSq_xiPhysicalPrimeLogCharacterAmplitude_le_aperture
       P hA hactive N hN
   have hpi : 0 < Real.pi := Real.pi_pos
   calc
-    _ ≤ (A ^ 2 / (4 * Real.pi ^ 2)) *
+    _ ≤ (A ^ (2 : ℕ) / (4 * Real.pi ^ (2 : ℕ))) *
         (4 * (N : ℝ) * xiPhysicalPrimeLogEndpointTotalWeight P *
           xiPhysicalPrimeLogEndpointDipoleChordMass P A m k) := hsource
-    _ ≤ (A ^ 2 / (4 * Real.pi ^ 2)) *
+    _ ≤ (A ^ (2 : ℕ) / (4 * Real.pi ^ (2 : ℕ))) *
         (4 * (N : ℝ) * xiPhysicalPrimeLogEndpointTotalWeight P *
           ((2 * Real.pi / A) *
             xiPhysicalPrimeLogApertureWeightedLengthMass P A m k)) := by
       gcongr
-    _ ≤ (A ^ 2 / (4 * Real.pi ^ 2)) *
+    _ ≤ (A ^ (2 : ℕ) / (4 * Real.pi ^ (2 : ℕ))) *
         (4 * (N : ℝ) * xiPhysicalPrimeLogEndpointTotalWeight P *
           ((2 * Real.pi / A) *
             ((k - m) * xiPhysicalPrimeLogEndpointTotalWeight P))) := by
       gcongr
     _ = (2 * A / Real.pi) * (N : ℝ) * (k - m) *
-        xiPhysicalPrimeLogEndpointTotalWeight P ^ 2 := by
+        xiPhysicalPrimeLogEndpointTotalWeight P ^ (2 : ℕ) := by
       field_simp [hA.ne', hpi.ne']
 
 end

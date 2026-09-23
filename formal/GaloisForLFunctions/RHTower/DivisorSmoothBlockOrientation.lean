@@ -13,16 +13,16 @@ open Finset
 namespace RHTower
 
 private lemma log_one_add_lower {x : ℝ} (hx : 0 ≤ x) :
-    x-x^2/2 ≤ Real.log (1+x) := by
+    x-x^(2 : ℕ)/2 ≤ Real.log (1+x) := by
   have h := Real.le_log_one_add_of_nonneg hx
   have hp : 0<x+2 := by linarith
-  have he : 2*x/(x+2)-(x-x^2/2)=x^3/(2*(x+2)) := by field_simp; ring
-  have hn : 0 ≤ x^3/(2*(x+2)) := by positivity
+  have he : 2*x/(x+2)-(x-x^(2 : ℕ)/2)=x^(3 : ℕ)/(2*(x+2)) := by field_simp; ring
+  have hn : 0 ≤ x^(3 : ℕ)/(2*(x+2)) := by positivity
   linarith only [h,he,hn]
 
 private def profile (s n : ℕ) : ℝ :=
   (∑ m ∈ Icc 1 n,Real.log m)-(2*(n:ℝ)+1)*((harmonic s:ℚ):ℝ)+
-    (s:ℝ)^2+s+2*Real.eulerMascheroniConstant*n
+    (s:ℝ)^(2 : ℕ)+s+2*Real.eulerMascheroniConstant*n
 
 private lemma profile_step (s n : ℕ) :
     profile s (n+1)-profile s n=
@@ -53,7 +53,7 @@ private lemma profile_pair_difference {s j : ℕ} (hj : j ≤ s) :
 
 private lemma log_pair_lower {s i : ℕ} (hs : 1 ≤ s) (hi1 : 1 ≤ i) (his : i ≤ s) :
     let c : ℝ := s*(s+1)
-    2*Real.log c+(1-1/(2*c))*((c-(i:ℝ)*((i:ℝ)-1))/c^2) ≤
+    2*Real.log c+(1-1/(2*c))*((c-(i:ℝ)*((i:ℝ)-1))/c^(2 : ℕ)) ≤
       Real.log (s*(s+1)-i+1:ℕ)+Real.log (s*(s+1)+i:ℕ) := by
   let c : ℝ := s*(s+1)
   have hsR : (1:ℝ) ≤ s := by exact_mod_cast hs
@@ -63,7 +63,7 @@ private lemma log_pair_lower {s i : ℕ} (hs : 1 ≤ s) (hi1 : 1 ≤ i) (his : i
   have hci : 0<c-(i:ℝ)*((i:ℝ)-1) := by
     dsimp [c]
     nlinarith [mul_self_le_mul_self (show (0:ℝ) ≤ i by positivity) hisR]
-  let x := (c-(i:ℝ)*((i:ℝ)-1))/c^2
+  let x := (c-(i:ℝ)*((i:ℝ)-1))/c^(2 : ℕ)
   have hx : 0 ≤ x := by dsimp [x]; positivity
   have hxc : x ≤ 1/c := by
     dsimp [x]
@@ -78,7 +78,7 @@ private lemma log_pair_lower {s i : ℕ} (hs : 1 ≤ s) (hi1 : 1 ≤ i) (his : i
   have hjc : i ≤ s*(s+1) := by nlinarith
   have hm : (0:ℝ)<c-(i:ℝ)+1 := by dsimp [c]; nlinarith
   have hp : (0:ℝ)<c+(i:ℝ) := by positivity
-  have hid : (c-(i:ℝ)+1)*(c+(i:ℝ))=c^2*(1+x) := by
+  have hid : (c-(i:ℝ)+1)*(c+(i:ℝ))=c^(2 : ℕ)*(1+x) := by
     dsimp [x]
     field_simp
     ring
@@ -95,7 +95,7 @@ private lemma log_pair_lower {s i : ℕ} (hs : 1 ≤ s) (hi1 : 1 ≤ i) (his : i
   exact add_le_add_right hlow _
 
 private lemma sum_i_mul_sub_one (j : ℕ) :
-    (∑ i ∈ Icc 1 j,(i:ℝ)*((i:ℝ)-1))=(j:ℝ)*((j:ℝ)^2-1)/3 := by
+    (∑ i ∈ Icc 1 j,(i:ℝ)*((i:ℝ)-1))=(j:ℝ)*((j:ℝ)^(2 : ℕ)-1)/3 := by
   induction j with
   | zero => simp
   | succ j ih => rw [sum_Icc_succ_top (by omega : 1 ≤ j+1),ih]; push_cast; ring
@@ -120,21 +120,21 @@ theorem divisorHyperbolaSmoothRemainder_reflection_le {s j : ℕ}
   simp only [sum_add_distrib,sum_const,← mul_sum,← sum_div,sum_sub_distrib,
     Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,sum_i_mul_sub_one] at hsum
   change (j:ℝ)*(2*Real.log c)+(1-1/(2*c))*
-    (((j:ℝ)*c-(j:ℝ)*((j:ℝ)^2-1)/3)/c^2) ≤ _ at hsum
-  have hsq : (j:ℝ)^2 ≤ (s:ℝ)^2 := by nlinarith [Nat.cast_nonneg (α:=ℝ) j]
-  have hpoly : (j:ℝ)/c-(j:ℝ)*((s:ℝ)^2-1)/(3*c^2) ≤
-      ((j:ℝ)*c-(j:ℝ)*((j:ℝ)^2-1)/3)/c^2 := by
+    (((j:ℝ)*c-(j:ℝ)*((j:ℝ)^(2 : ℕ)-1)/3)/c^(2 : ℕ)) ≤ _ at hsum
+  have hsq : (j:ℝ)^(2 : ℕ) ≤ (s:ℝ)^(2 : ℕ) := by nlinarith [Nat.cast_nonneg (α:=ℝ) j]
+  have hpoly : (j:ℝ)/c-(j:ℝ)*((s:ℝ)^(2 : ℕ)-1)/(3*c^(2 : ℕ)) ≤
+      ((j:ℝ)*c-(j:ℝ)*((j:ℝ)^(2 : ℕ)-1)/3)/c^(2 : ℕ) := by
     rw [le_div_iff₀ (sq_pos_of_pos hc)]
     field_simp
     nlinarith only [mul_nonneg (Nat.cast_nonneg (α:=ℝ) j) (sub_nonneg.mpr hsq)]
   have hcorr := mul_le_mul_of_nonneg_left hpoly hcor
-  have he : (1-1/(2*c))*((j:ℝ)/c-(j:ℝ)*((s:ℝ)^2-1)/(3*c^2))=
-      2*(j:ℝ)/(3*c)+(j:ℝ)*(2*(s:ℝ)^2-1)/(6*c^2*s) := by
+  have he : (1-1/(2*c))*((j:ℝ)/c-(j:ℝ)*((s:ℝ)^(2 : ℕ)-1)/(3*c^(2 : ℕ)))=
+      2*(j:ℝ)/(3*c)+(j:ℝ)*(2*(s:ℝ)^(2 : ℕ)-1)/(6*c^(2 : ℕ)*s) := by
     dsimp [c]
     field_simp
     ring
   rw [he] at hcorr
-  have hpos : 0 ≤ (j:ℝ)*(2*(s:ℝ)^2-1)/(6*c^2*s) := by
+  have hpos : 0 ≤ (j:ℝ)*(2*(s:ℝ)^(2 : ℕ)-1)/(6*c^(2 : ℕ)*s) := by
     apply div_nonneg
     · apply mul_nonneg (Nat.cast_nonneg j); nlinarith
     · positivity

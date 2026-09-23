@@ -62,7 +62,7 @@ def ccmLeadingEigenSubspace {n : ℕ} {T : E →ₗ[ℂ] E}
 theorem ccmHermitianQuadraticValue_eq_sum {n : ℕ} {T : E →ₗ[ℂ] E}
     (hT : T.IsSymmetric) (hn : Module.finrank ℂ E = n) (x : E) :
     ccmHermitianQuadraticValue T x =
-      ∑ j : Fin n, hT.eigenvalues hn j * ‖(hT.eigenvectorBasis hn).repr x j‖ ^ 2 := by
+      ∑ j : Fin n, hT.eigenvalues hn j * ‖(hT.eigenvectorBasis hn).repr x j‖ ^ (2 : ℕ) := by
   rw [ccmHermitianQuadraticValue]
   have hinner :
       inner ℂ x (T x) =
@@ -124,20 +124,20 @@ theorem ccmLeadingEigenSubspace_eigenvalue_le_quadratic {n : ℕ}
     hT.eigenvalues hn i ≤ ccmHermitianQuadraticValue T x := by
   rw [ccmHermitianQuadraticValue_eq_sum hT hn x]
   have hnormsum :
-      ∑ j : Fin n, ‖(hT.eigenvectorBasis hn).repr x j‖ ^ 2 = ‖x‖ ^ 2 := by
+      ∑ j : Fin n, ‖(hT.eigenvectorBasis hn).repr x j‖ ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
     simpa only [(hT.eigenvectorBasis hn).repr_apply_apply] using
       (hT.eigenvectorBasis hn).sum_sq_norm_inner_right x
   calc
     hT.eigenvalues hn i =
         hT.eigenvalues hn i *
-          (∑ j : Fin n, ‖(hT.eigenvectorBasis hn).repr x j‖ ^ 2) := by
+          (∑ j : Fin n, ‖(hT.eigenvectorBasis hn).repr x j‖ ^ (2 : ℕ)) := by
             rw [hnormsum, hxnorm]
             ring
     _ = ∑ j : Fin n,
-          hT.eigenvalues hn i * ‖(hT.eigenvectorBasis hn).repr x j‖ ^ 2 := by
+          hT.eigenvalues hn i * ‖(hT.eigenvectorBasis hn).repr x j‖ ^ (2 : ℕ) := by
             rw [Finset.mul_sum]
     _ ≤ ∑ j : Fin n,
-          hT.eigenvalues hn j * ‖(hT.eigenvectorBasis hn).repr x j‖ ^ 2 := by
+          hT.eigenvalues hn j * ‖(hT.eigenvectorBasis hn).repr x j‖ ^ (2 : ℕ) := by
             apply Finset.sum_le_sum
             intro j _
             by_cases hji : j ≤ i
@@ -236,11 +236,11 @@ theorem exists_unit_mem_quadratic_le_eigenvalue {n : ℕ}
     simp only [y, map_smul, PiLp.smul_apply, hxrepr j hji, smul_eq_mul, mul_zero]
   refine ⟨y, hyF, hynorm, ?_⟩
   rw [ccmHermitianQuadraticValue_eq_sum hT hn y]
-  have hnormsum : ∑ j : Fin n, ‖b.repr y j‖ ^ 2 = ‖y‖ ^ 2 := by
+  have hnormsum : ∑ j : Fin n, ‖b.repr y j‖ ^ (2 : ℕ) = ‖y‖ ^ (2 : ℕ) := by
     simpa only [b.repr_apply_apply] using b.sum_sq_norm_inner_right y
   calc
-    ∑ j : Fin n, hT.eigenvalues hn j * ‖b.repr y j‖ ^ 2 ≤
-        ∑ j : Fin n, hT.eigenvalues hn i * ‖b.repr y j‖ ^ 2 := by
+    ∑ j : Fin n, hT.eigenvalues hn j * ‖b.repr y j‖ ^ (2 : ℕ) ≤
+        ∑ j : Fin n, hT.eigenvalues hn i * ‖b.repr y j‖ ^ (2 : ℕ) := by
           apply Finset.sum_le_sum
           intro j _
           by_cases hij : i ≤ j
@@ -249,7 +249,7 @@ theorem exists_unit_mem_quadratic_le_eigenvalue {n : ℕ}
           · have hji : j < i := lt_of_not_ge hij
             rw [hyrepr j hji, norm_zero,
               zero_pow (by norm_num : (2 : ℕ) ≠ 0), mul_zero, mul_zero]
-    _ = hT.eigenvalues hn i * (∑ j : Fin n, ‖b.repr y j‖ ^ 2) := by
+    _ = hT.eigenvalues hn i * (∑ j : Fin n, ‖b.repr y j‖ ^ (2 : ℕ)) := by
           rw [Finset.mul_sum]
     _ = hT.eigenvalues hn i := by rw [hnormsum, hynorm]; ring
 

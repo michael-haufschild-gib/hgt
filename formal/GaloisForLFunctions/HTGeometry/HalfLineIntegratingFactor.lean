@@ -212,7 +212,7 @@ theorem deriv_invCut {x : ℝ} (hx : x ≠ 0) (h1 : ∀ᶠ y in nhds x, χ y = 1
     have h0 := (hasDerivAt_id x).ofReal_comp
     rw [Complex.ofReal_one] at h0
     exact h0
-  have hd : HasDerivAt (fun y : ℝ => ((y : ℂ))⁻¹) (-1 / ((x : ℂ)) ^ 2) x := hbase.inv hne
+  have hd : HasDerivAt (fun y : ℝ => ((y : ℂ))⁻¹) (-1 / ((x : ℂ)) ^ (2 : ℕ)) x := hbase.inv hne
   have hx1 : χ x = 1 := h1.self_of_nhds
   rw [hev.deriv_eq, hd.deriv, invCut, hx1]
   push_cast

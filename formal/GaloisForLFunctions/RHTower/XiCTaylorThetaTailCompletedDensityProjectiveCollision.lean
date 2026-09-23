@@ -10,7 +10,7 @@ boundary entry law at every positive simple real Xi zero.
 
 The resulting projective Wronskian is not the full-density reflected connection previously used
 for the transfer quotient.  At a Xi zero their carriers are respectively `E` and `F`, and their
-normalized difference is the nonzero completion seam `-z^2 XiC'` at every noncentral simple zero.
+normalized difference is the nonzero completion seam `-z^(2 : ℕ) XiC'` at every noncentral simple zero.
 Thus any negative-ray argument must control the projective Wronskian defined here.
 
 All results are unconditional.  No zero-location or simplicity assertion is assumed globally.
@@ -25,12 +25,12 @@ noncomputable section
 /-- Complex derivative selected by the damped completed-density channel. -/
 def thetaCuspTailSecondDensityDeBrangesEDerivative (z : ℂ) : ℂ :=
   2 * z * thetaCuspTailSecondDensityPhaseValue z +
-    (z ^ 2 + 1 / 4) * thetaCuspTailSecondDensityPhaseDerivative z
+    (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondDensityPhaseDerivative z
 
 /-- Complex derivative selected by the reflected growing channel. -/
 def thetaCuspTailSecondDensityDeBrangesESharpDerivative (z : ℂ) : ℂ :=
   2 * z * thetaCuspTailSecondDensityPhaseValue (-z) -
-    (z ^ 2 + 1 / 4) * thetaCuspTailSecondDensityPhaseDerivative (-z)
+    (z ^ (2 : ℕ) + 1 / 4) * thetaCuspTailSecondDensityPhaseDerivative (-z)
 
 /-- Meromorphic projective ratio of the two completed-density channels. -/
 def thetaCuspTailSecondDensityDeBrangesProjectiveRatio (z : ℂ) : ℂ :=
@@ -44,10 +44,10 @@ def thetaCuspTailSecondDensityDeBrangesProjectiveWronskian (z : ℂ) : ℂ :=
     thetaCuspTailSecondDensityDeBrangesESharp z *
       thetaCuspTailSecondDensityDeBrangesEDerivative z
 
-/-- Division-free tangent vector for projective level curves.  Multiplying by `E^2` removes the
+/-- Division-free tangent vector for projective level curves.  Multiplying by `E^(2 : ℕ)` removes the
 quotient denominator, while conjugating the Wronskian orients increasing real ratio. -/
 def thetaCuspTailSecondDensityDeBrangesProjectiveFlow (z : ℂ) : ℂ :=
-  thetaCuspTailSecondDensityDeBrangesE z ^ 2 *
+  thetaCuspTailSecondDensityDeBrangesE z ^ (2 : ℕ) *
     starRingEnd ℂ
       (thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z)
 
@@ -55,7 +55,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesE
     {z : ℂ} (hz : -1 < z.im) :
     HasDerivAt thetaCuspTailSecondDensityDeBrangesE
       (thetaCuspTailSecondDensityDeBrangesEDerivative z) z := by
-  have hq : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
+  have hq : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 1 / 4) (2 * z) z := by
     simpa [mul_comm] using ((hasDerivAt_id z).pow 2).add_const (1 / 4)
   have hF := hasDerivAt_thetaCuspTailSecondDensityPhaseValue (z₀ := z) hz
   unfold thetaCuspTailSecondDensityDeBrangesE
@@ -66,7 +66,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesESharp
     {z : ℂ} (hz : z.im < 1) :
     HasDerivAt thetaCuspTailSecondDensityDeBrangesESharp
       (thetaCuspTailSecondDensityDeBrangesESharpDerivative z) z := by
-  have hq : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
+  have hq : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ) + 1 / 4) (2 * z) z := by
     simpa [mul_comm] using ((hasDerivAt_id z).pow 2).add_const (1 / 4)
   have hneg : HasDerivAt (fun w : ℂ => -w) (-1) z := (hasDerivAt_id z).neg
   have hF0 := hasDerivAt_thetaCuspTailSecondDensityPhaseValue
@@ -83,7 +83,7 @@ theorem thetaCuspTailSecondDensityDeBrangesDerivative_add_sharp
     {z : ℂ} (hz : |z.im| < 1) :
     thetaCuspTailSecondDensityDeBrangesEDerivative z +
         thetaCuspTailSecondDensityDeBrangesESharpDerivative z =
-      8 * z * XiC z + 4 * z ^ 2 * deriv XiC z := by
+      8 * z * XiC z + 4 * z ^ (2 : ℕ) * deriv XiC z := by
   convert thetaCuspTailSecondDensityPhaseValue_twoSided_derivative_crossed hz using 1
   simp only [thetaCuspTailSecondDensityDeBrangesEDerivative,
     thetaCuspTailSecondDensityDeBrangesESharpDerivative]
@@ -95,7 +95,7 @@ theorem thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_eq_connection
     {z : ℂ} (hz : |z.im| < 1) :
     thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z =
       8 * z * XiC z * thetaCuspTailSecondDensityDeBrangesE z +
-        4 * z ^ 2 *
+        4 * z ^ (2 : ℕ) *
           (deriv XiC z * thetaCuspTailSecondDensityDeBrangesE z -
             XiC z * thetaCuspTailSecondDensityDeBrangesEDerivative z) := by
   have hv := thetaCuspTailSecondDensityDeBrangesE_add_sharp hz
@@ -109,7 +109,7 @@ theorem thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_eq_connection
 theorem thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_eq_at_XiC_zero
     {z : ℂ} (hzstrip : |z.im| < 1) (hz : XiC z = 0) :
     thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z =
-      4 * z ^ 2 * deriv XiC z *
+      4 * z ^ (2 : ℕ) * deriv XiC z *
         thetaCuspTailSecondDensityDeBrangesE z := by
   rw [thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_eq_connection hzstrip,
     hz]
@@ -121,7 +121,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesProjectiveRatio
     (hE : thetaCuspTailSecondDensityDeBrangesE z ≠ 0) :
     HasDerivAt thetaCuspTailSecondDensityDeBrangesProjectiveRatio
       (thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z /
-        thetaCuspTailSecondDensityDeBrangesE z ^ 2) z := by
+        thetaCuspTailSecondDensityDeBrangesE z ^ (2 : ℕ)) z := by
   have hS := hasDerivAt_thetaCuspTailSecondDensityDeBrangesESharp
     (z := z) (abs_lt.mp hzstrip).2
   have hE' := hasDerivAt_thetaCuspTailSecondDensityDeBrangesE
@@ -133,7 +133,7 @@ nonnegative Wronskian norm-square.  It is strictly positive exactly at regular p
 theorem thetaCuspTailSecondDensityDeBrangesProjectiveRatioDerivative_mul_flow
     {z : ℂ} (hE : thetaCuspTailSecondDensityDeBrangesE z ≠ 0) :
     (thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z /
-        thetaCuspTailSecondDensityDeBrangesE z ^ 2) *
+        thetaCuspTailSecondDensityDeBrangesE z ^ (2 : ℕ)) *
         thetaCuspTailSecondDensityDeBrangesProjectiveFlow z =
       (Complex.normSq
         (thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z) : ℂ) := by
@@ -158,11 +158,11 @@ theorem thetaCuspTailSecondDensityDeBrangesProjectiveRatio_eq_neg_one_iff
         div_eq_iff hE] at hratio
       simpa using hratio
     rw [hsharp] at hsum
-    have hfac : (4 : ℂ) * z ^ 2 ≠ 0 :=
+    have hfac : (4 : ℂ) * z ^ (2 : ℕ) ≠ 0 :=
       mul_ne_zero (by norm_num) (pow_ne_zero 2 hz0)
-    have hprod : ((4 : ℂ) * z ^ 2) * XiC z = 0 := by
+    have hprod : ((4 : ℂ) * z ^ (2 : ℕ)) * XiC z = 0 := by
       calc
-        ((4 : ℂ) * z ^ 2) * XiC z =
+        ((4 : ℂ) * z ^ (2 : ℕ)) * XiC z =
             thetaCuspTailSecondDensityDeBrangesE z +
               -thetaCuspTailSecondDensityDeBrangesE z := by
                 simpa only [mul_assoc] using hsum.symm
@@ -176,9 +176,9 @@ theorem thetaCuspTailSecondDensityDeBrangesProjectiveRatio_eq_neg_one_iff
 /-- Public real-boundary value law for the source-selected completed channel. -/
 theorem thetaCuspTailSecondDensityDeBrangesE_re_ofReal (t : ℝ) :
     (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).re =
-      2 * t ^ 2 * (XiC (t : ℂ)).re := by
+      2 * t ^ (2 : ℕ) * (XiC (t : ℂ)).re := by
   have h := thetaCuspTailSecondDensityPhaseValue_re_ofReal_crossed t
-  have hq : (t : ℂ) ^ 2 + 1 / 4 = ((t ^ 2 + 1 / 4 : ℝ) : ℂ) := by
+  have hq : (t : ℂ) ^ (2 : ℕ) + 1 / 4 = ((t ^ (2 : ℕ) + 1 / 4 : ℝ) : ℂ) := by
     push_cast
     ring
   unfold thetaCuspTailSecondDensityDeBrangesE
@@ -232,8 +232,8 @@ connection.  The latter differentiates `XiC / F`; it does not differentiate `E# 
 theorem thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_sub_fullConnection
     {z : ℂ} (hzstrip : |z.im| < 1) (hz : XiC z = 0) :
     thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z -
-        (z ^ 2 + 1 / 4) * xiFullDensityReflectedConnection z =
-      -(z ^ 2 * deriv XiC z) := by
+        (z ^ (2 : ℕ) + 1 / 4) * xiFullDensityReflectedConnection z =
+      -(z ^ (2 : ℕ) * deriv XiC z) := by
   rw [thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_eq_at_XiC_zero
       hzstrip hz,
     xiFullDensityReflectedConnection_eq_at_XiC_zero hzstrip hz]
@@ -245,15 +245,15 @@ theorem thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_ne_fullConnection
     {z : ℂ} (hzstrip : |z.im| < 1)
     (hz : XiC z = 0) (hsimple : deriv XiC z ≠ 0) :
     thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z ≠
-      (z ^ 2 + 1 / 4) * xiFullDensityReflectedConnection z := by
+      (z ^ (2 : ℕ) + 1 / 4) * xiFullDensityReflectedConnection z := by
   intro heq
   have hzero :
       thetaCuspTailSecondDensityDeBrangesProjectiveWronskian z -
-        (z ^ 2 + 1 / 4) * xiFullDensityReflectedConnection z = 0 :=
+        (z ^ (2 : ℕ) + 1 / 4) * xiFullDensityReflectedConnection z = 0 :=
     sub_eq_zero.mpr heq
   rw [thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_sub_fullConnection
     hzstrip hz] at hzero
-  have hprod : z ^ 2 * deriv XiC z = 0 := neg_eq_zero.mp hzero
+  have hprod : z ^ (2 : ℕ) * deriv XiC z = 0 := neg_eq_zero.mp hzero
   have hz0 : z ≠ 0 := by
     intro h
     subst z
@@ -264,7 +264,7 @@ theorem thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_ne_fullConnection
 theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesProjectiveRatio_ofReal
     {t : ℝ} (ht : 0 < t) (hz : XiC (t : ℂ) = 0) :
     HasDerivAt thetaCuspTailSecondDensityDeBrangesProjectiveRatio
-      (4 * (t : ℂ) ^ 2 * deriv XiC (t : ℂ) /
+      (4 * (t : ℂ) ^ (2 : ℕ) * deriv XiC (t : ℂ) /
         thetaCuspTailSecondDensityDeBrangesE (t : ℂ)) (t : ℂ) := by
   have h := hasDerivAt_thetaCuspTailSecondDensityDeBrangesProjectiveRatio
     (z := (t : ℂ)) (by simp)
@@ -276,7 +276,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesProjectiveRatio_ofReal
 
 /-- Real normal velocity with which the projective ratio leaves `-1` above a real Xi zero. -/
 def thetaCuspTailSecondDensityDeBrangesProjectiveVerticalVelocity (t : ℝ) : ℝ :=
-  4 * t ^ 2 * (deriv XiC (t : ℂ)).re /
+  4 * t ^ (2 : ℕ) * (deriv XiC (t : ℂ)).re /
     (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im
 
 /-- Exact boundary-entry law.  The horizontal derivative is imaginary, while the inward normal
@@ -299,7 +299,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesProjectiveRatio_vertical
       (fun y : ℝ => thetaCuspTailSecondDensityDeBrangesProjectiveRatio
         ((t : ℂ) + (y : ℂ) * I))
       ((thetaCuspTailSecondDensityDeBrangesProjectiveWronskian (t : ℂ) /
-        thetaCuspTailSecondDensityDeBrangesE (t : ℂ) ^ 2) * I) 0 := by
+        thetaCuspTailSecondDensityDeBrangesE (t : ℂ) ^ (2 : ℕ)) * I) 0 := by
     simpa [Function.comp_def] using hratio0.comp 0 hpath
   have hEre := thetaCuspTailSecondDensityDeBrangesE_re_ofReal_eq_zero hz
   have hEeq : thetaCuspTailSecondDensityDeBrangesE (t : ℂ) =
@@ -318,7 +318,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesProjectiveRatio_vertical
   have hcoeff :
       (thetaCuspTailSecondDensityDeBrangesProjectiveVerticalVelocity t : ℂ) =
         (thetaCuspTailSecondDensityDeBrangesProjectiveWronskian (t : ℂ) /
-          thetaCuspTailSecondDensityDeBrangesE (t : ℂ) ^ 2) * I := by
+          thetaCuspTailSecondDensityDeBrangesE (t : ℂ) ^ (2 : ℕ)) * I := by
     unfold thetaCuspTailSecondDensityDeBrangesProjectiveVerticalVelocity
     rw [thetaCuspTailSecondDensityDeBrangesProjectiveWronskian_eq_at_XiC_zero
       (z := (t : ℂ)) (by simp) hz, hEeq, hXieq]

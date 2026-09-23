@@ -27,12 +27,12 @@ theorem summable_thetaCuspTailSecondDensityAtomMoment (m : ℕ) :
   let C : ℝ := 5 * Real.exp Real.pi *
     thetaCuspTailSecondDensityAtomMoment 1 m
   have hgauss : Summable (fun n : ℕ =>
-      (n : ℝ) ^ 4 * Real.exp (-Real.pi * (n : ℝ) ^ 2)) := by
+      (n : ℝ) ^ (4 : ℕ) * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ))) := by
     simpa only [Nat.cast_ofNat] using
       summable_pow_mul_exp_neg_nat_sq 4 Real.pi_pos
   have hmajor : Summable (fun n : ℕ =>
-      C * (((n + 1 : ℕ) : ℝ) ^ 4 *
-        Real.exp (-Real.pi * (((n + 1 : ℕ) : ℝ) ^ 2)))) :=
+      C * (((n + 1 : ℕ) : ℝ) ^ (4 : ℕ) *
+        Real.exp (-Real.pi * (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))))) :=
     ((summable_nat_add_iff 1).mpr hgauss).mul_left C
   apply Summable.of_nonneg_of_le
     (fun n => thetaCuspTailSecondDensityAtomMoment_nonneg (n + 1) m)
@@ -41,14 +41,14 @@ theorem summable_thetaCuspTailSecondDensityAtomMoment (m : ℕ) :
       (Nat.succ_pos n) m
     calc
       thetaCuspTailSecondDensityAtomMoment (n + 1) m ≤
-          (5 * (((n + 1 : ℕ) : ℝ)) ^ 4 *
-            Real.exp (-Real.pi * ((((n + 1 : ℕ) : ℝ)) ^ 2 - 1))) *
+          (5 * (((n + 1 : ℕ) : ℝ)) ^ (4 : ℕ) *
+            Real.exp (-Real.pi * ((((n + 1 : ℕ) : ℝ)) ^ (2 : ℕ) - 1))) *
               thetaCuspTailSecondDensityAtomMoment 1 m := h
-      _ = C * (((n + 1 : ℕ) : ℝ) ^ 4 *
-          Real.exp (-Real.pi * (((n + 1 : ℕ) : ℝ) ^ 2))) := by
+      _ = C * (((n + 1 : ℕ) : ℝ) ^ (4 : ℕ) *
+          Real.exp (-Real.pi * (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ)))) := by
         dsimp [C]
-        rw [show -Real.pi * ((((n + 1 : ℕ) : ℝ)) ^ 2 - 1) =
-            Real.pi + (-Real.pi * (((n + 1 : ℕ) : ℝ) ^ 2)) by ring,
+        rw [show -Real.pi * ((((n + 1 : ℕ) : ℝ)) ^ (2 : ℕ) - 1) =
+            Real.pi + (-Real.pi * (((n + 1 : ℕ) : ℝ) ^ (2 : ℕ))) by ring,
           Real.exp_add]
         ring
   · exact hmajor
@@ -58,7 +58,7 @@ theorem summable_thetaCuspTailSecondDensityAtomMoment (m : ℕ) :
 def thetaCuspTailSecondDensityAtomCoreValueMomentPacket
     (d : ℕ) (z : ℂ) (n : ℕ) : ℂ :=
   (thetaCuspTailSecondDensityAtomMoment (n + 1) 0 : ℂ) -
-    (z ^ 2 + 1 / 4) *
+    (z ^ (2 : ℕ) + 1 / 4) *
       ∑ r ∈ Finset.range (d + 1),
         thetaCuspTailSecondSectionSourceCoefficient z r *
           (thetaCuspTailSecondDensityAtomMoment (n + 1) (2 * r + 2) : ℂ)
@@ -86,7 +86,7 @@ theorem summable_thetaCuspTailSecondDensityAtomCoreValueMomentPacket
     intro r _hr
     exact ((summable_thetaCuspTailSecondDensityAtomMoment (2 * r + 2)).map
       Complex.ofRealCLM Complex.ofRealCLM.continuous).mul_left _
-  exact h0.sub (hs.mul_left (z ^ 2 + 1 / 4))
+  exact h0.sub (hs.mul_left (z ^ (2 : ℕ) + 1 / 4))
 
 theorem summable_thetaCuspTailSecondDensityAtomCoreDerivativeMomentPacket
     (d : ℕ) (z : ℂ) :
@@ -207,7 +207,7 @@ theorem integrableOn_thetaCuspTailSecondDensityAtom_mul_coreAtom
         thetaCuspTailSecondCoreAtom d z x) =
       fun x : ℝ =>
         (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) -
-          (z ^ 2 + 1 / 4) *
+          (z ^ (2 : ℕ) + 1 / 4) *
             ((thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) *
               thetaCuspTailSecondSection d z x) by
     funext x
@@ -252,7 +252,7 @@ theorem integral_thetaCuspTailSecondDensityAtom_mul_coreAtom
         thetaCuspTailSecondCoreAtom d z x) =
       fun x : ℝ =>
         (thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) -
-          (z ^ 2 + 1 / 4) *
+          (z ^ (2 : ℕ) + 1 / 4) *
             ((thetaCuspTailSecondDensityAtom (n + 1) x : ℂ) *
               thetaCuspTailSecondSection d z x) by
     funext x

@@ -15,12 +15,12 @@ open GaloisForLFunctions.HTGeometry
 /-- Seven signed source moments in the full modular chart. -/
 def evenCompactSignedMoment (k : Fin 7) (u a w : ℝ) : ℝ :=
   match k.val with
-  | 0 => (oddCompactSourceZero u a)^2
-  | 1 => (-1 : ℝ)^1*oddCompactReflectedScalar2 u a w
-  | 2 => (-1 : ℝ)^2*oddCompactReflectedScalar4 u a w
-  | 3 => (-1 : ℝ)^3*oddCompactReflectedScalar6 u a w
-  | 4 => (-1 : ℝ)^4*oddCompactReflectedScalar8 u a w
-  | 5 => (-1 : ℝ)^5*oddCompactReflectedScalar10 u a w
+  | 0 => (oddCompactSourceZero u a)^(2 : ℕ)
+  | 1 => (-1 : ℝ)^(1 : ℕ)*oddCompactReflectedScalar2 u a w
+  | 2 => (-1 : ℝ)^(2 : ℕ)*oddCompactReflectedScalar4 u a w
+  | 3 => (-1 : ℝ)^(3 : ℕ)*oddCompactReflectedScalar6 u a w
+  | 4 => (-1 : ℝ)^(4 : ℕ)*oddCompactReflectedScalar8 u a w
+  | 5 => (-1 : ℝ)^(5 : ℕ)*oddCompactReflectedScalar10 u a w
   | _ => evenCompactReflectedScalar12 u a w
 
 /-- Seven moments after the proved coupled-coordinate substitution and fixed balancing. -/
@@ -36,8 +36,8 @@ def evenCompactUnitMoment (k : Fin 7) (r t v : ℝ) : ℝ :=
 
 /-- The exact finite-coordinate identity holds for every real state. -/
 theorem evenCompactSignedMoment_unit_eq (k : Fin 7) (u t v : ℝ) :
-    evenCompactSignedMoment k u (evenCompactUnitGap (u^2) t) (u*(1+v/4))/(100 : ℝ)^k.val =
-      evenCompactUnitMoment k (u^2) t v := by
+    evenCompactSignedMoment k u (evenCompactUnitGap (u^(2 : ℕ)) t) (u*(1+v/4))/(100 : ℝ)^k.val =
+      evenCompactUnitMoment k (u^(2 : ℕ)) t v := by
   fin_cases k
   · simpa [evenCompactSignedMoment, evenCompactUnitMoment] using evenCompactUnitMomentZero_eq u t v
   · simpa [evenCompactSignedMoment, evenCompactUnitMoment] using evenCompactUnitMomentOne_eq u t v

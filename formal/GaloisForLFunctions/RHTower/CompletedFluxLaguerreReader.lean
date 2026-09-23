@@ -94,7 +94,7 @@ private theorem XiC_secondDeriv_eq_neg_xi_secondDeriv (z : ℂ) :
 
 private theorem seamFluxCochain_deriv_eq_xi_laguerre_div {ρ : ℂ} (hρ : xi ρ ≠ 0) :
     deriv seamFluxCochain ρ =
-      ((deriv xi ρ) ^ 2 - xi ρ * deriv (deriv xi) ρ) / (xi ρ) ^ 2 := by
+      ((deriv xi ρ) ^ (2 : ℕ) - xi ρ * deriv (deriv xi) ρ) / (xi ρ) ^ (2 : ℕ) := by
   have hxi : HasDerivAt xi (deriv xi ρ) ρ := xi_differentiable.differentiableAt.hasDerivAt
   have hxi2 : HasDerivAt (deriv xi) (deriv (deriv xi) ρ) ρ :=
     (xi_analyticOnNhd_univ ρ (Set.mem_univ ρ)).deriv.differentiableAt.hasDerivAt
@@ -102,7 +102,7 @@ private theorem seamFluxCochain_deriv_eq_xi_laguerre_div {ρ : ℂ} (hρ : xi ρ
   have hquot := hxi2.div hxi hρ
   rw [show logDeriv xi = fun z => deriv xi z / xi z by rfl]
   have hder : deriv (fun z => -(deriv xi z / xi z)) ρ =
-      -((deriv (deriv xi) ρ * xi ρ - deriv xi ρ * deriv xi ρ) / xi ρ ^ 2) := by
+      -((deriv (deriv xi) ρ * xi ρ - deriv xi ρ * deriv xi ρ) / xi ρ ^ (2 : ℕ)) := by
     simpa only [Pi.neg_apply, Pi.div_apply] using! hquot.neg.deriv
   rw [hder]
   field_simp
@@ -112,8 +112,8 @@ private theorem seamFluxCochain_deriv_eq_xi_laguerre_div {ρ : ℂ} (hρ : xi ρ
 margin is `-Xi(t)²` times the quadratic Taylor coefficient of the completed-flux germ. -/
 theorem xi_laguerre_margin_eq_neg_sq_mul_completedFluxTaylorCoeff_two
     (t : ℝ) (ht : Xi t ≠ 0) :
-    (((deriv Xi t) ^ 2 - Xi t * deriv (deriv Xi) t : ℝ) : ℂ) =
-      -((Xi t : ℂ) ^ 2) * completedFluxTaylorCoeff (linePt t) 2 := by
+    (((deriv Xi t) ^ (2 : ℕ) - Xi t * deriv (deriv Xi) t : ℝ) : ℂ) =
+      -((Xi t : ℂ) ^ (2 : ℕ)) * completedFluxTaylorCoeff (linePt t) 2 := by
   have hline : linePt t = 1 / 2 + (t : ℂ) * I := by
     unfold linePt
     norm_num
@@ -153,9 +153,9 @@ failure of the first Laguerre inequality. -/
 theorem completedFluxTaylorCoeff_two_line_re_pos_iff_laguerre_failure
     (t : ℝ) (ht : Xi t ≠ 0) :
     0 < (completedFluxTaylorCoeff (linePt t) 2).re ↔
-      (deriv Xi t) ^ 2 < Xi t * deriv (deriv Xi) t := by
+      (deriv Xi t) ^ (2 : ℕ) < Xi t * deriv (deriv Xi) t := by
   have hreaderC := xi_laguerre_margin_eq_neg_sq_mul_completedFluxTaylorCoeff_two t ht
-  have hscale : -((Xi t : ℂ) ^ 2) = ((-(Xi t) ^ 2 : ℝ) : ℂ) := by
+  have hscale : -((Xi t : ℂ) ^ (2 : ℕ)) = ((-(Xi t) ^ (2 : ℕ) : ℝ) : ℂ) := by
     push_cast
     ring
   rw [hscale] at hreaderC
@@ -167,7 +167,7 @@ theorem completedFluxTaylorCoeff_two_line_re_pos_iff_laguerre_failure
 certificate.  The nonvanishing clause on the source side is automatic on the Laguerre side. -/
 theorem exists_completedFluxTaylorCoeff_two_line_re_pos_iff_laguerre_failure :
     (∃ t : ℝ, Xi t ≠ 0 ∧ 0 < (completedFluxTaylorCoeff (linePt t) 2).re) ↔
-      ∃ t : ℝ, (deriv Xi t) ^ 2 < Xi t * deriv (deriv Xi) t := by
+      ∃ t : ℝ, (deriv Xi t) ^ (2 : ℕ) < Xi t * deriv (deriv Xi) t := by
   constructor
   · rintro ⟨t, ht, hcoeff⟩
     exact ⟨t, (completedFluxTaylorCoeff_two_line_re_pos_iff_laguerre_failure t ht).mp hcoeff⟩

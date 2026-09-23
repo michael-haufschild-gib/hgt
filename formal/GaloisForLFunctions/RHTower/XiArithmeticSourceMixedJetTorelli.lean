@@ -12,7 +12,7 @@ noncomputable section
 
 /-- The mixed Real defect read directly from a centered spectral point. -/
 def xiMixedJetFromSpectralPoint (w : ℂ) : ℝ :=
-  -2 * (w ^ 2).im
+  -2 * (w ^ (2 : ℕ)).im
 
 /-- The spectral-point defect is exactly the source-marked mixed jet. -/
 theorem xiMixedJetFromSpectralPoint_eq_reflectedPhaseNeutralMixedJet

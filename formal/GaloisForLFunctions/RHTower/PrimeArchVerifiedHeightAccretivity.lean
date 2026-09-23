@@ -99,7 +99,7 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_verifiedHeight
   have haimAbs : |a.im| < 1 / 2 := by
     rw [abs_lt]
     constructor <;> dsimp only [a] <;> linarith [haimMem.1, haimMem.2]
-  have hcore : 0 < (z.re - a.re) ^ 2 + z.im ^ 2 - a.im ^ 2 := by
+  have hcore : 0 < (z.re - a.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) - a.im ^ (2 : ℕ) := by
     by_cases hheight : |(q.1 : ℂ).im| ≤ H
     · have hline :=
         xiZeroCopy_re_eq_half_of_verifiedThrough_of_abs_im_le H hverified q hheight
@@ -115,7 +115,7 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_verifiedHeight
       have hdistAbs : 1 / 2 < |z.re - a.re| := by
         rw [abs_sub_comm]
         linarith
-      have hdistSq : a.im ^ 2 < (z.re - a.re) ^ 2 := by
+      have hdistSq : a.im ^ (2 : ℕ) < (z.re - a.re) ^ (2 : ℕ) := by
         nlinarith [sq_abs a.im, sq_abs (z.re - a.re),
           abs_nonneg a.im, abs_nonneg (z.re - a.re)]
       nlinarith [sq_nonneg z.im]

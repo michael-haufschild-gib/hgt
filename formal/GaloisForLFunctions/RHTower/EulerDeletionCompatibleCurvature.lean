@@ -117,7 +117,7 @@ theorem tsum_divisibilityWeight {b : ℕ → ℝ}
   simp only [divisibilityWeight, dvd_mul_right, if_true, massWeight,
     deletionDirichletWeight, Nat.cast_mul, hm]
   calc
-    (∑' n : ℕ, (b d * b n)^2 * ((d : ℝ)*n)^(-α)) =
+    (∑' n : ℕ, (b d * b n)^(2 : ℕ) * ((d : ℝ)*n)^(-α)) =
         ∑' n : ℕ, (b d ^ 2 * (d : ℝ)^(-α)) * (b n ^ 2 * (n : ℝ)^(-α)) := by
       apply tsum_congr
       intro n
@@ -201,7 +201,7 @@ theorem curvature_eq {b : ℕ → ℝ}
     tsum_coefficient_mass hm hb hα hq,
     tsum_coefficient_mass hm hb hα (Nat.mul_pos hq hr),
     tsum_coefficient_mass hm hb hα (Nat.mul_pos hp (Nat.mul_pos hq hr))]
-  have hrpow : (r : ℝ)^(2-α) = (r : ℝ)^2 * (r : ℝ)^(-α) := by
+  have hrpow : (r : ℝ)^(2-α) = (r : ℝ)^(2 : ℕ) * (r : ℝ)^(-α) := by
     rw [sub_eq_add_neg, Real.rpow_add (by exact_mod_cast hr), Real.rpow_two]
   rw [hrpow]
   simp only [amplitude, Nat.cast_mul, hm,

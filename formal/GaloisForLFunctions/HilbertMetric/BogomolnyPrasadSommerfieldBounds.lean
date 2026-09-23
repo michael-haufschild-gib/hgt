@@ -12,20 +12,20 @@ namespace GaloisForLFunctions.HilbertMetric
 noncomputable section
 
 /-- Two-channel quadratic energy. -/
-def bpsEnergy (x y : ℝ) : ℝ := x ^ 2 + y ^ 2
+def bpsEnergy (x y : ℝ) : ℝ := x ^ (2 : ℕ) + y ^ (2 : ℕ)
 
 /-- Bilinear signed charge paired with `bpsEnergy`. -/
 def bpsCharge (x y : ℝ) : ℝ := 2 * x * y
 
 /-- Negative-chirality square completion. -/
 theorem bpsEnergy_eq_charge_add_defect (x y : ℝ) :
-    bpsEnergy x y = bpsCharge x y + (x - y) ^ 2 := by
+    bpsEnergy x y = bpsCharge x y + (x - y) ^ (2 : ℕ) := by
   simp only [bpsEnergy, bpsCharge]
   ring
 
 /-- Positive-chirality square completion. -/
 theorem bpsEnergy_eq_neg_charge_add_defect (x y : ℝ) :
-    bpsEnergy x y = -bpsCharge x y + (x + y) ^ 2 := by
+    bpsEnergy x y = -bpsCharge x y + (x + y) ^ (2 : ℕ) := by
   simp only [bpsEnergy, bpsCharge]
   ring
 
@@ -124,7 +124,7 @@ def transverseChannelBPSCharge
 
 /-- Sum of channel phase-square BPS defects. -/
 def transverseChannelBPSDefect (topDegree : ℝ) (p : ι → ℝ) : ℝ :=
-  ∑ i, ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ 2
+  ∑ i, ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ (2 : ℕ)
 
 /-- Equal-gap transverse Fano margin is charge plus phase defect. -/
 theorem transverseChannelFanoMargin_eq_bpsCharge_add_defect
@@ -151,7 +151,7 @@ theorem transverseChannelBPSSaturation_iff
   constructor
   · intro h i
     have hzero : transverseChannelBPSDefect topDegree p = 0 := by linarith
-    have hi : ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ 2 = 0 :=
+    have hi : ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ (2 : ℕ) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg
         (fun j (_hj : j ∈ Finset.univ) => sq_nonneg
           ((topDegree - 1) * p j - (topDegree - 2) / 2))).1
@@ -167,11 +167,11 @@ theorem transverseChannelBPSSaturation_iff
 /-- Sharp baseline charge in the unequal-gap transverse channel law. -/
 def unequalGapChannelBPSCharge
     (loweringCharge : ℝ) (lowerDegree gap : ι → ℝ) : ℝ :=
-  loweringCharge + ∑ i, (lowerDegree i - (gap i - 1) ^ 2 / 4)
+  loweringCharge + ∑ i, (lowerDegree i - (gap i - 1) ^ (2 : ℕ) / 4)
 
 /-- Sum of unequal-gap phase-square BPS defects. -/
 def unequalGapChannelBPSDefect (gap p : ι → ℝ) : ℝ :=
-  ∑ i, (gap i * p i - (gap i - 1) / 2) ^ 2
+  ∑ i, (gap i * p i - (gap i - 1) / 2) ^ (2 : ℕ)
 
 /-- Unequal-gap transverse Fano margin is charge plus phase defect. -/
 theorem unequalGapChannelFanoMargin_eq_bpsCharge_add_defect
@@ -200,7 +200,7 @@ theorem unequalGapChannelBPSSaturation_iff
   constructor
   · intro h i
     have hzero : unequalGapChannelBPSDefect gap p = 0 := by linarith
-    have hi : (gap i * p i - (gap i - 1) / 2) ^ 2 = 0 :=
+    have hi : (gap i * p i - (gap i - 1) / 2) ^ (2 : ℕ) = 0 :=
       (Finset.sum_eq_zero_iff_of_nonneg
         (fun j (_hj : j ∈ Finset.univ) => sq_nonneg
           (gap j * p j - (gap j - 1) / 2))).1

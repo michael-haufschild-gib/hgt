@@ -132,7 +132,7 @@ theorem cosPotential_im (s t w : ℝ) : (cosPotential s t ((w : ℝ) : ℂ)).im 
 rectangle. -/
 theorem clockDatum_cosPotential {ρ₀ ρ ρ₁ ρ₂ ρ₃ T : ℝ} (hρ₀ : 0 < ρ₀)
     (hρ0 : 0 ≤ ρ) (hρ : ρ < ρ₀) (hT : 0 ≤ T)
-    (hsmall : (4 + Real.cosh ρ₀ * ρ₀ ^ 2 / 4) * T ^ 2 * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ 2 < 1)
+    (hsmall : (4 + Real.cosh ρ₀ * ρ₀ ^ (2 : ℕ) / 4) * T ^ (2 : ℕ) * Real.exp 2 / ((ρ₀ - ρ) / 2) ^ (2 : ℕ) < 1)
     (hρ₁0 : 0 ≤ ρ₁) (hρ₁ : ρ₁ < ρ) (hρ₂0 : 0 ≤ ρ₂) (hρ₂ : ρ₂ < ρ₁)
     (hρ₃0 : 0 < ρ₃) (hρ₃ : ρ₃ < ρ₂) :
     ClockDatum cosPotential cosPotentialFst cosPotentialSnd ρ₀ (Real.cosh ρ₀) ρ ρ₁ ρ₂ ρ₃ T where
@@ -153,14 +153,14 @@ theorem clockDatum_cosPotential {ρ₀ ρ ρ₁ ρ₂ ρ₃ T : ℝ} (hρ₀ : 0
 
 /-- A positive side small enough for the smallness condition. -/
 theorem exists_small_side {A B : ℝ} (hA : 0 < A) (hB : 0 < B) :
-    ∃ T : ℝ, 0 < T ∧ A * T ^ 2 * Real.exp 2 / B ^ 2 < 1 := by
-  set K : ℝ := A * Real.exp 2 / B ^ 2 with hK
+    ∃ T : ℝ, 0 < T ∧ A * T ^ (2 : ℕ) * Real.exp 2 / B ^ (2 : ℕ) < 1 := by
+  set K : ℝ := A * Real.exp 2 / B ^ (2 : ℕ) with hK
   have hK0 : 0 < K := by
     rw [hK]
     positivity
   refine ⟨1 / (1 + K), by positivity, ?_⟩
-  have hBne : B ^ 2 ≠ 0 := by positivity
-  have hrw : A * (1 / (1 + K)) ^ 2 * Real.exp 2 / B ^ 2 = K * (1 / (1 + K)) ^ 2 := by
+  have hBne : B ^ (2 : ℕ) ≠ 0 := by positivity
+  have hrw : A * (1 / (1 + K)) ^ (2 : ℕ) * Real.exp 2 / B ^ (2 : ℕ) = K * (1 / (1 + K)) ^ (2 : ℕ) := by
     rw [hK]
     field_simp
   rw [hrw, div_pow, one_pow, mul_one_div, div_lt_one (by positivity)]
@@ -175,7 +175,7 @@ theorem exists_clockDatum_coupled :
         (∀ s t w : ℝ, (V s t ((w : ℝ) : ℂ)).im = 0) ∧
         (∃ s t z z', V s t z ≠ V s t z') ∧ (∃ s s' t z, V s t z ≠ V s' t z) := by
   obtain ⟨T, hTpos, hsmall⟩ := exists_small_side
-    (A := 4 + Real.cosh 1 * (1 : ℝ) ^ 2 / 4) (B := ((1 : ℝ) - 1 / 2) / 2)
+    (A := 4 + Real.cosh 1 * (1 : ℝ) ^ (2 : ℕ) / 4) (B := ((1 : ℝ) - 1 / 2) / 2)
     (by positivity) (by norm_num)
   refine ⟨cosPotential, cosPotentialFst, cosPotentialSnd, 1, Real.cosh 1, 1 / 2, 1 / 4, 1 / 8,
     1 / 16, T, clockDatum_cosPotential one_pos (by norm_num) (by norm_num) hTpos.le hsmall

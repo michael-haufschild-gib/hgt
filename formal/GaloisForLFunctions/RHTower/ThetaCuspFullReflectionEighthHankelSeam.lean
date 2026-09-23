@@ -20,7 +20,7 @@ noncomputable section
 def thetaCuspFullSourceReflectionEighthHankelCurvature (x : ℝ) : ℝ :=
   let f : ℕ → ℝ := fun n => iteratedDeriv n thetaCuspFullSource x
   HilbertMetric.signedEvenHankelThreeDet
-    (f 0 ^ 2)
+    (f 0 ^ (2 : ℕ))
     (HilbertMetric.reflectedProductSecondJet (f 0) (f 1) (f 2))
     (HilbertMetric.reflectedProductFourthJet (f 0) (f 1) (f 2) (f 3) (f 4))
     (HilbertMetric.reflectedProductSixthJet
@@ -65,17 +65,17 @@ theorem thetaCuspReflectedEighthSeamModularPolynomial_pos_of_lower
       ((191 / 10 : ℝ) + y) =
       4075547277524906301332145380433 / 343597383680000000000 +
         y * (48657767906672334213535260501 / 8589934592000000000) +
-        y ^ 2 * (2058454591589504228738468673 / 1717986918400000000) +
-        y ^ 3 * (2570296295059853406891357 / 17179869184000000) +
-        y ^ 4 * (86519286078761293715763 / 6871947673600000) +
-        y ^ 5 * (340888644173348221077 / 429496729600000) +
-        y ^ 6 * (3552536624066274087 / 85899345920000) +
-        y ^ 7 * (7979356617267429 / 4294967296000) +
-        y ^ 8 * (46868665912083 / 687194767360) +
-        y ^ 9 * (31741202637 / 17179869184) +
-        y ^ 10 * (571238529 / 17179869184) +
-        y ^ 11 * (1501305 / 4294967296) +
-        y ^ 12 * (14025 / 8589934592) by
+        y ^ (2 : ℕ) * (2058454591589504228738468673 / 1717986918400000000) +
+        y ^ (3 : ℕ) * (2570296295059853406891357 / 17179869184000000) +
+        y ^ (4 : ℕ) * (86519286078761293715763 / 6871947673600000) +
+        y ^ (5 : ℕ) * (340888644173348221077 / 429496729600000) +
+        y ^ (6 : ℕ) * (3552536624066274087 / 85899345920000) +
+        y ^ (7 : ℕ) * (7979356617267429 / 4294967296000) +
+        y ^ (8 : ℕ) * (46868665912083 / 687194767360) +
+        y ^ (9 : ℕ) * (31741202637 / 17179869184) +
+        y ^ (10 : ℕ) * (571238529 / 17179869184) +
+        y ^ (11 : ℕ) * (1501305 / 4294967296) +
+        y ^ (12 : ℕ) * (14025 / 8589934592) by
       unfold thetaCuspReflectedEighthSeamModularPolynomial
       ring]
   positivity
@@ -83,7 +83,7 @@ theorem thetaCuspReflectedEighthSeamModularPolynomial_pos_of_lower
 /-- The actual self-dual theta scale lies in the strict rank-three chamber. -/
 theorem thetaCuspReflectedEighthSeamModularPolynomial_source_pos :
     0 < thetaCuspReflectedEighthSeamModularPolynomial
-      (thetaCuspSelfDualModularScale ^ 2) :=
+      (thetaCuspSelfDualModularScale ^ (2 : ℕ)) :=
   thetaCuspReflectedEighthSeamModularPolynomial_pos_of_lower
     thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
 

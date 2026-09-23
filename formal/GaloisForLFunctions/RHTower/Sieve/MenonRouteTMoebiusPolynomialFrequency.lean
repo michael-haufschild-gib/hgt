@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.RouteTMoebiusTwistRate
 # Menon's polynomial-frequency twisted Mobius bound
 
 The sharp twisted Mertens sum retains a super-polylogarithmic saving uniformly through
-`|tau| <= N^24`, the frequency range used in Menon's Heath--Brown Case IIa.
+`|tau| <= N^(24 : ℕ)`, the frequency range used in Menon's Heath--Brown Case IIa.
 -/
 
 namespace RHTower.Sieve
@@ -16,7 +16,7 @@ noncomputable section
 
 set_option maxHeartbeats 2000000 in
 /-- The twisted Mertens sum with a super-polylogarithmic saving, uniformly on Menon's literal
-polynomial frequency range `|tau| <= N^24`. -/
+polynomial frequency range `|tau| <= N^(24 : ℕ)`. -/
 theorem exists_norm_sum_moebiusTwist_le_rate_pow_twentyFour :
     ∃ K : ℝ, 0 < K ∧ ∀ᶠ N : ℝ in atTop, ∀ tau : ℝ,
       |tau| ≤ N ^ (24 : ℕ) →

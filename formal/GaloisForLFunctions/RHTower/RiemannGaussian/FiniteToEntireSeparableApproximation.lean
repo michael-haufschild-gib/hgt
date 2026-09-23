@@ -34,18 +34,18 @@ noncomputable section
 /-- An explicit monic real quadratic in the kernel of finite homotopy
 evaluation at `z`. -/
 def finiteERootKernelQuadratic (eta : ℝ) (z : ℂ) : ℝ[X] :=
-  (X - C z.re) ^ 2 + C (z.im * (z.im + 2 * eta))
+  (X - C z.re) ^ (2 : ℕ) + C (z.im * (z.im + 2 * eta))
 
 /-- The quadratic homotopy kernel is monic of degree two. -/
 theorem finiteERootKernelQuadratic_isMonicOfDegree (eta : ℝ) (z : ℂ) :
     (finiteERootKernelQuadratic eta z).IsMonicOfDegree 2 := by
   have hdegree :
       (C (z.im * (z.im + 2 * eta)) : ℝ[X]).degree <
-        ((X - C z.re) ^ 2 : ℝ[X]).degree := by
+        ((X - C z.re) ^ (2 : ℕ) : ℝ[X]).degree := by
     calc
       (C (z.im * (z.im + 2 * eta)) : ℝ[X]).degree ≤ 0 := degree_C_le
       _ < 2 := by norm_num
-      _ = ((X - C z.re) ^ 2 : ℝ[X]).degree := by simp
+      _ = ((X - C z.re) ^ (2 : ℕ) : ℝ[X]).degree := by simp
   refine ⟨?_, ?_⟩
   · rw [finiteERootKernelQuadratic,
       natDegree_add_eq_left_of_degree_lt hdegree]
@@ -75,7 +75,7 @@ theorem finiteERootKernelQuadratic_isRoot (eta : ℝ) (z : ℂ) :
     (finiteEPolynomial (finiteERootKernelQuadratic eta z) eta).eval z = 0 := by
   have hqeval :
       (finiteERootKernelQuadratic eta z).eval₂ Complex.ofRealHom z =
-        (z - (z.re : ℂ)) ^ 2 +
+        (z - (z.re : ℂ)) ^ (2 : ℕ) +
           (z.im * (z.im + 2 * eta) : ℝ) := by
     rw [finiteERootKernelQuadratic, eval₂_add, eval₂_pow]
     simp
@@ -123,16 +123,16 @@ theorem finiteERootKernelQuadratic_separable
       linarith
   · exact Or.inr hd
 
-/-- A monic cubic obtained by root-pinning `X ^ 3`. -/
+/-- A monic cubic obtained by root-pinning `X ^ (3 : ℕ)`. -/
 def finiteERootKernelCubic (eta : ℝ) (z : ℂ) : ℝ[X] :=
-  finiteERootPinnedPolynomial (X ^ 3) eta z
+  finiteERootPinnedPolynomial (X ^ (3 : ℕ)) eta z
 
 /-- The cubic kernel retains `z` as an exact finite homotopy root whenever
 the affine pinning denominator is nonzero. -/
 theorem finiteERootKernelCubic_isRoot
     (eta : ℝ) {z : ℂ} (hz : z.im + eta ≠ 0) :
     (finiteEPolynomial (finiteERootKernelCubic eta z) eta).eval z = 0 := by
-  exact finiteERootPinnedPolynomial_isRoot (X ^ 3) eta hz
+  exact finiteERootPinnedPolynomial_isRoot (X ^ (3 : ℕ)) eta hz
 
 /-- The cubic homotopy kernel is monic of degree three. -/
 theorem finiteERootKernelCubic_isMonicOfDegree (eta : ℝ) (z : ℂ) :

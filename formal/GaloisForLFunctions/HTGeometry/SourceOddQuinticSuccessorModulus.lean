@@ -41,17 +41,17 @@ def sourceOddQuinticReparam
     (lam u v : K)
     (q : SourceOddQuinticCoefficients K) :
     SourceOddQuinticCoefficients K where
-  lead := lam * q.lead * u ^ 4 * v
-  middle := lam * q.middle * u ^ 2 * v ^ 3
-  tail := lam * q.tail * v ^ 5
+  lead := lam * q.lead * u ^ (4 : ℕ) * v
+  middle := lam * q.middle * u ^ (2 : ℕ) * v ^ (3 : ℕ)
+  tail := lam * q.tail * v ^ (5 : ℕ)
 
 /-- The division-free quintic cross product is invariant under every diagonal projective source
 reparametrization. This is the polynomial form of preservation of `middle² / (lead * tail)`. -/
 theorem sourceOddQuinticReparam_cross_invariant
     (lam u v : K)
     (q : SourceOddQuinticCoefficients K) :
-    (sourceOddQuinticReparam lam u v q).middle ^ 2 * q.lead * q.tail =
-      q.middle ^ 2 *
+    (sourceOddQuinticReparam lam u v q).middle ^ (2 : ℕ) * q.lead * q.tail =
+      q.middle ^ (2 : ℕ) *
         (sourceOddQuinticReparam lam u v q).lead *
         (sourceOddQuinticReparam lam u v q).tail := by
   simp only [sourceOddQuinticReparam]
@@ -69,8 +69,8 @@ def SourceProjectivelyEquivalentOddQuintic
 theorem sourceProjectivelyEquivalentOddQuintic_cross_invariant
     {q r : SourceOddQuinticCoefficients K}
     (h : SourceProjectivelyEquivalentOddQuintic q r) :
-    r.middle ^ 2 * q.lead * q.tail =
-      q.middle ^ 2 * r.lead * r.tail := by
+    r.middle ^ (2 : ℕ) * q.lead * q.tail =
+      q.middle ^ (2 : ℕ) * r.lead * r.tail := by
   rcases h with ⟨lam, u, v, _hlam, _hu, _hv, rfl⟩
   exact sourceOddQuinticReparam_cross_invariant lam u v q
 
@@ -86,7 +86,7 @@ theorem normalizedSourceOddQuintic_sq_eq_of_projectivelyEquivalent
     (h : SourceProjectivelyEquivalentOddQuintic
       (normalizedSourceOddQuintic b)
       (normalizedSourceOddQuintic d)) :
-    d ^ 2 = b ^ 2 := by
+    d ^ (2 : ℕ) = b ^ (2 : ℕ) := by
   have hinvariant :=
     sourceProjectivelyEquivalentOddQuintic_cross_invariant h
   simpa [normalizedSourceOddQuintic] using hinvariant
@@ -95,7 +95,7 @@ theorem normalizedSourceOddQuintic_sq_eq_of_projectivelyEquivalent
 orbits. Thus source polarity and oddness do not select one quintic projective orbit. -/
 theorem normalizedSourceOddQuintic_not_projectivelyEquivalent_of_sq_ne
     {b d : K}
-    (hbd : d ^ 2 ≠ b ^ 2) :
+    (hbd : d ^ (2 : ℕ) ≠ b ^ (2 : ℕ)) :
     ¬ SourceProjectivelyEquivalentOddQuintic
       (normalizedSourceOddQuintic b)
       (normalizedSourceOddQuintic d) := by

@@ -241,9 +241,9 @@ theorem trace_conjTranspose_mul_eq_norm_sq
     (x : EuclideanSpace ℂ (Fin d × Fin d)) :
     Matrix.trace
         ((hilbertSchmidtToMatrix x)ᴴ * hilbertSchmidtToMatrix x) =
-      (‖x‖ ^ 2 : ℂ) := by
+      (‖x‖ ^ (2 : ℕ) : ℂ) := by
   have hnorm :
-      (‖x‖ ^ 2 : ℂ) = ∑ ij, (‖x ij‖ ^ 2 : ℂ) := by
+      (‖x‖ ^ (2 : ℕ) : ℂ) = ∑ ij, (‖x ij‖ ^ (2 : ℕ) : ℂ) := by
     norm_cast
     exact EuclideanSpace.norm_sq_eq x
   rw [hnorm, Fintype.sum_prod_type, Finset.sum_comm]
@@ -254,7 +254,7 @@ theorem trace_conjTranspose_mul_eq_norm_sq
   apply Finset.sum_congr rfl
   intro j _hj
   rw [Matrix.conjTranspose_apply]
-  change star (x (j, i)) * x (j, i) = (‖x (j, i)‖ ^ 2 : ℂ)
+  change star (x (j, i)) * x (j, i) = (‖x (j, i)‖ ^ (2 : ℕ) : ℂ)
   rw [Complex.star_def, ← Complex.normSq_eq_conj_mul_self]
   simpa only [Complex.ofReal_pow] using
     congrArg (fun r : ℝ => (r : ℂ))
@@ -301,12 +301,12 @@ theorem norm_hilbertSchmidtLinearMap_apply_le
     Matrix.trace (Φ (Xᴴ * X)) at htrace
   rw [Φ.trace_preserving] at htrace
   have hsquareComplex :
-      (‖Φ.hilbertSchmidtLinearMap x‖ ^ 2 : ℂ) ≤ (‖x‖ ^ 2 : ℂ) := by
+      (‖Φ.hilbertSchmidtLinearMap x‖ ^ (2 : ℕ) : ℂ) ≤ (‖x‖ ^ (2 : ℕ) : ℂ) := by
     rw [← trace_conjTranspose_mul_eq_norm_sq
       (Φ.hilbertSchmidtLinearMap x),
       ← trace_conjTranspose_mul_eq_norm_sq x]
     simpa [hilbertSchmidtLinearMap, X] using htrace
-  have hsquare : ‖Φ.hilbertSchmidtLinearMap x‖ ^ 2 ≤ ‖x‖ ^ 2 := by
+  have hsquare : ‖Φ.hilbertSchmidtLinearMap x‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ) := by
     exact_mod_cast hsquareComplex
   exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsquare
 
@@ -340,7 +340,7 @@ theorem returnFidelity_exactAsymptoticCeiling
     (x : EuclideanSpace ℂ (Fin d × Fin d)) :
     IsExactAsymptoticReturnFidelityCeiling
       (fun n : ℕ => inner ℂ x ((Φ.hilbertSchmidtOperator ^ n) x))
-      ((finiteContractionPersistentMass Φ.hilbertSchmidtOperator x) ^ 2) :=
+      ((finiteContractionPersistentMass Φ.hilbertSchmidtOperator x) ^ (2 : ℕ)) :=
   finiteContraction_returnFidelity_exactAsymptoticCeiling
     Φ.hilbertSchmidtOperator Φ.norm_hilbertSchmidtOperator_le_one x
 

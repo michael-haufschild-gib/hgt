@@ -25,10 +25,10 @@ def streamRadialDerivative (w a : ℂ) (square : Bool) (x : Fin 4 → ℝ) : ℂ
   if square then D*(U*U)+((-2)*E)*(U*(U*U)) else D
 
 private theorem radial_domain (p : D4BMBackground.ExteriorPoint) :
-    (p.val 1 : ℂ) ≠ 0 ∧ (p.val 1 : ℂ)^2-1 ≠ 0 := by
+    (p.val 1 : ℂ) ≠ 0 ∧ (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
   constructor
   · exact_mod_cast (by linarith [p.property.1] : p.val 1 ≠ 0)
-  · exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^2-1 ≠ 0)
+  · exact_mod_cast (by nlinarith [p.property.1] : (p.val 1)^(2 : ℕ)-1 ≠ 0)
 
 /-- Both original radial fields and their displayed derivatives have every local smoothness order. -/
 theorem streamRadialFields_smooth (w a : ℂ) (square : Bool) (p : D4BMBackground.ExteriorPoint)
@@ -121,7 +121,7 @@ theorem streamRadialDerivative_actual (w a : ℂ) (square : Bool) (p : D4BMBackg
 
 /-- The doubled envelope is exactly the square of the original amplitude and time-radial factor. -/
 theorem envelope_double (s a : ℂ) (x : Fin 4 → ℝ) :
-    envelope (2*s) (a^2) x = envelope s a x^2 := by
+    envelope (2*s) (a^(2 : ℕ)) x = envelope s a x^(2 : ℕ) := by
   simp only [envelope_eq_exp,mul_pow]
   congr 1
   rw [pow_two,← Complex.exp_add]

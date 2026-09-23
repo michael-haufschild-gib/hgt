@@ -37,15 +37,15 @@ theorem norm_expResidual_heatRate (n : ℕ) :
   have hsqrt : Tendsto
       (fun N : ℕ => ‖gramSchmidt ℂ
         (expSystem (fun k => heatRateSeq (coIdx n N k)) (fun _ => heatRateSeq_pos _)) N‖)
-      atTop (nhds (Real.sqrt (Real.pi / (2 * Real.sinh (Real.pi * ((n : ℝ) + 1)) ^ 2)))) := by
+      atTop (nhds (Real.sqrt (Real.pi / (2 * Real.sinh (Real.pi * ((n : ℝ) + 1)) ^ (2 : ℕ))))) := by
     have hcomp := (Real.continuous_sqrt.tendsto _).comp hnorm
     rw [Function.comp_def] at hcomp
     refine hcomp.congr (fun N => ?_)
     exact Real.sqrt_sq (norm_nonneg _)
   have hres := norm_expResidual_eq_of_tendsto heatRateSeq_pos hsqrt
   rw [hres]
-  have hsplit : Real.pi / (2 * Real.sinh (Real.pi * ((n : ℝ) + 1)) ^ 2) =
-      (Real.pi / 2) / (Real.sinh (Real.pi * ((n : ℝ) + 1))) ^ 2 := by
+  have hsplit : Real.pi / (2 * Real.sinh (Real.pi * ((n : ℝ) + 1)) ^ (2 : ℕ)) =
+      (Real.pi / 2) / (Real.sinh (Real.pi * ((n : ℝ) + 1))) ^ (2 : ℕ) := by
     field_simp
   rw [hsplit, Real.sqrt_div (by positivity), Real.sqrt_sq (le_of_lt hsinhpos)]
 

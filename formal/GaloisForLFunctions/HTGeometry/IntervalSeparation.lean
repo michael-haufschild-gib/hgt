@@ -120,16 +120,16 @@ theorem exists_separating_of_le_on_interval {m : ℕ} (c a : Fin m → ℝ) (hm 
     deriv_mul_sub_nonpos_of_isMaxOn hPdiff htsK (fun s hs => htsmax hs) ht
   have hPderiv : HasDerivAt P
       ((deriv C ts * expSum c a ts - C ts * expSum (fun i => c i * a i) a ts)
-        / (expSum c a ts) ^ 2) ts :=
+        / (expSum c a ts) ^ (2 : ℕ)) ts :=
     ((hCdiff ts).hasDerivAt).div (hasDerivAt_expSum c a ts) (ne_of_gt (hRpos ts))
   have hderivP : deriv P ts
       = (deriv C ts * expSum c a ts - C ts * expSum (fun i => c i * a i) a ts)
-          / (expSum c a ts) ^ 2 := hPderiv.deriv
+          / (expSum c a ts) ^ (2 : ℕ) := hPderiv.deriv
   have hslope : ∀ t ∈ Icc u v, (deriv C ts / C ts - nu) * (t - ts) ≤ 0 := by
     intro t ht
     have h1 := hfirst t ht
     rw [hderivP, div_mul_eq_mul_div] at h1
-    have hR2 : (0 : ℝ) < (expSum c a ts) ^ 2 := pow_pos (hRpos ts) 2
+    have hR2 : (0 : ℝ) < (expSum c a ts) ^ (2 : ℕ) := pow_pos (hRpos ts) 2
     have h2 : (deriv C ts * expSum c a ts - C ts * expSum (fun i => c i * a i) a ts)
         * (t - ts) ≤ 0 := by
       rcases div_nonpos_iff.mp h1 with ⟨_, hb⟩ | ⟨ha, _⟩

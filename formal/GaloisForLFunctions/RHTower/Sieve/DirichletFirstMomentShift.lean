@@ -39,12 +39,12 @@ theorem integral_norm_dirPoly_le_largeValues_shift (N : ℕ) (hN : 2 ≤ N) (a :
     (∫ t in t₀..(t₀ + ((2 * n : ℕ) : ℝ) * Δ), ‖dirPoly N a t‖)
       ≤ 2 * Δ * Real.sqrt ((n : ℝ)
           * ((((2 * n + 1 : ℕ) : ℝ) * Δ + 4 * (N : ℝ) * (1 + Real.log N))
-              * (1 / Δ + 2 * Real.log N) * ∑ i : Fin N, ‖a i‖ ^ 2)) := by
+              * (1 / Δ + 2 * Real.log N) * ∑ i : Fin N, ‖a i‖ ^ (2 : ℕ))) := by
   classical
   set s : ℝ := t₀ - Δ / 2 with hs
   set ã : Fin N → ℂ := fun i => a i
     * Complex.exp (((s * Real.log (((i : ℕ) : ℝ) + 1) : ℝ) : ℂ) * I) with hã
-  have hmass : ∑ i : Fin N, ‖ã i‖ ^ 2 = ∑ i : Fin N, ‖a i‖ ^ 2 := by
+  have hmass : ∑ i : Fin N, ‖ã i‖ ^ (2 : ℕ) = ∑ i : Fin N, ‖a i‖ ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hã]
     simp only

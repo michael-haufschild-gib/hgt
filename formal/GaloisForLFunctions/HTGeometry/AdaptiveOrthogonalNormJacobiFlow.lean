@@ -18,7 +18,7 @@ noncomputable section
 
 /-- Derivative companion appearing in the norm transport. -/
 def adaptiveOrthoNormCompanion (s : ℕ → ℝ) (n : ℕ) : Polynomial ℝ :=
-  X ^ 2 * (monicOrtho s n).derivative
+  X ^ (2 : ℕ) * (monicOrtho s n).derivative
 
 /-- Remainder after removing the only two orthogonal degrees visible to `Pₙ`. -/
 def adaptiveOrthoNormRemainder (s : ℕ → ℝ) (n : ℕ) : Polynomial ℝ :=
@@ -127,7 +127,7 @@ theorem momentFunctional_X_shiftedEuler_one_sq_monicOrtho
     {s : ℕ → ℝ} (h : PositiveMomentFormBelow s N) {n : ℕ}
     (hn : 0 < n) (hnN : n + 1 ≤ N) :
     momentFunctional s
-        (X * (X * ((monicOrtho s n) ^ 2).derivative + (monicOrtho s n) ^ 2)) =
+        (X * (X * ((monicOrtho s n) ^ (2 : ℕ)).derivative + (monicOrtho s n) ^ (2 : ℕ))) =
       ((2 * n + 1 : ℕ) : ℝ) * monicOrthoAlpha s n * monicOrthoNormSq s n -
         2 * monicOrthoFirstCoeff s n * monicOrthoNormSq s n := by
   have hcomp := momentInner_monicOrtho_adaptiveOrthoNormCompanion h hn hnN
@@ -140,7 +140,7 @@ theorem momentFunctional_X_shiftedEuler_one_sq_monicOrtho
     rw [momentInner_comm, monicOrthoAlpha, monicOrthoNormSq,
       div_mul_cancel₀ _ hrawne]
   have hpoly :
-      X * (X * ((monicOrtho s n) ^ 2).derivative + (monicOrtho s n) ^ 2) =
+      X * (X * ((monicOrtho s n) ^ (2 : ℕ)).derivative + (monicOrtho s n) ^ (2 : ℕ)) =
         (2 : ℝ) • (monicOrtho s n * adaptiveOrthoNormCompanion s n) +
           monicOrtho s n * (X * monicOrtho s n) := by
     have hC : C (2 : ℝ) = (2 : Polynomial ℝ) := by

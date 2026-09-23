@@ -41,7 +41,7 @@ theorem cglLemma62_tailContour_horizontal_point_bound
     (d : CGLLemma62TailContourDepth) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ p : CGLLemma62TailHorizontalPoint d t,
       ‖cglLemma62TailContourIntegrand w N B t M.value
-        ((p.x : ℂ) + (p.y : ℂ) * I)‖ ≤ C / |p.y|^2 := by
+        ((p.x : ℂ) + (p.y : ℂ) * I)‖ ≤ C / |p.y|^(2 : ℕ) := by
   rcases cglLemma62_primitiveFunctionalFactor_tail_strip_high_bound B.primitive d with
     ⟨A,hA,hA_bound⟩
   let K := cglLemma62TailMellinUniformBudget w d (2*d.value+3)
@@ -116,7 +116,7 @@ theorem cglLemma62_tailContour_horizontal_point_bound
     rw [htail_eq]
     exact htail
   have hpoly := cgl_tail_one_add_abs_pow_le p.y (2*d.value+1) p.y_large
-  change ‖cglLemma62TailContourIntegrand w N B t M.value s‖ ≤ C/|p.y|^2
+  change ‖cglLemma62TailContourIntegrand w N B t M.value s‖ ≤ C/|p.y|^(2 : ℕ)
   unfold cglLemma62TailContourIntegrand
   rw [norm_mul,norm_mul,norm_mul,norm_mul]
   calc
@@ -130,7 +130,7 @@ theorem cglLemma62_tailContour_horizontal_point_bound
           gcongr
     _ ≤ (K/|p.y|^(2*d.value+3))*1*
         (A*(1+|t|)^(2*d.value+1)*(2^(2*d.value+1)*|p.y|^(2*d.value+1)))*E*D := by gcongr
-    _ = C/|p.y|^2 := by
+    _ = C/|p.y|^(2 : ℕ) := by
       dsimp [C]
       field_simp [ne_of_gt hypos]
       calc
@@ -150,7 +150,7 @@ theorem cglLemma62_tailContour_horizontal_top
         cglLemma62TailContourIntegrand w N B t M.value ((x : ℂ) + (y : ℂ) * I))
       atTop (𝓝 0) := by
   rcases cglLemma62_tailContour_horizontal_point_bound w N B t M d with ⟨C,hC,hpoint⟩
-  have hdecay : Tendsto (fun y : ℝ => C / y^2) atTop (𝓝 0) := by
+  have hdecay : Tendsto (fun y : ℝ => C / y^(2 : ℕ)) atTop (𝓝 0) := by
     have hpow : Tendsto (fun y : ℝ => y ^ (-(2:ℝ))) atTop (𝓝 0) :=
       tendsto_rpow_neg_atTop (by norm_num)
     have hscaled : Tendsto (fun y : ℝ => C*y^(-(2:ℝ))) atTop (𝓝 0) := by
@@ -159,7 +159,7 @@ theorem cglLemma62_tailContour_horizontal_top
     filter_upwards [eventually_ge_atTop (0:ℝ)] with y hy
     rw [Real.rpow_neg hy, Real.rpow_two, div_eq_mul_inv]
   apply GaloisForLFunctions.HTGeometry.tendsto_intervalIntegral_of_tendsto_bound
-    (M := fun y : ℝ => C/y^2) (hgt := fun y : ℝ => y)
+    (M := fun y : ℝ => C/y^(2 : ℕ)) (hgt := fun y : ℝ => y)
   · filter_upwards [eventually_ge_atTop (|t|+2)] with y hy x hx
     have hleft : -2*(d.value:ℝ) ≤ (-1:ℝ) := by
       have hd : (1:ℝ) ≤ d.value := by exact_mod_cast d.positive
@@ -190,7 +190,7 @@ theorem cglLemma62_tailContour_horizontal_bottom
         cglLemma62TailContourIntegrand w N B t M.value ((x : ℂ) + (y : ℂ) * I))
       atBot (𝓝 0) := by
   rcases cglLemma62_tailContour_horizontal_point_bound w N B t M d with ⟨C,hC,hpoint⟩
-  have hdecay : Tendsto (fun y : ℝ => C/y^2) atTop (𝓝 0) := by
+  have hdecay : Tendsto (fun y : ℝ => C/y^(2 : ℕ)) atTop (𝓝 0) := by
     have hpow : Tendsto (fun y : ℝ => y ^ (-(2:ℝ))) atTop (𝓝 0) :=
       tendsto_rpow_neg_atTop (by norm_num)
     have hscaled : Tendsto (fun y : ℝ => C*y^(-(2:ℝ))) atTop (𝓝 0) := by
@@ -203,7 +203,7 @@ theorem cglLemma62_tailContour_horizontal_bottom
         cglLemma62TailContourIntegrand w N B t M.value ((x : ℂ) + ((-y:ℝ) : ℂ) * I))
       atTop (𝓝 0) := by
     apply GaloisForLFunctions.HTGeometry.tendsto_intervalIntegral_of_tendsto_bound
-      (M := fun y : ℝ => C/y^2) (hgt := fun y : ℝ => -y)
+      (M := fun y : ℝ => C/y^(2 : ℕ)) (hgt := fun y : ℝ => -y)
     · filter_upwards [eventually_ge_atTop (|t|+2)] with y hy x hx
       have hleft : -2*(d.value:ℝ) ≤ (-1:ℝ) := by
         have hd : (1:ℝ) ≤ d.value := by exact_mod_cast d.positive

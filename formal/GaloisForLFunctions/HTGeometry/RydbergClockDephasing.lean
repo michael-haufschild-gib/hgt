@@ -11,7 +11,7 @@ omit [CompleteSpace E] in
 /-- Projective dephasing by an involutive clock's invariant-sector projection is exactly
 minus one eighth of the clock double commutator. -/
 theorem projectorDephasingGenerator_finiteInvolutiveGaugeAverage_eq
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) :
     projectorDephasingGenerator (k := k) (finiteCyclicGaugeAverage U 2) X =
       -(8 : k)⁻¹ • finiteInvolutiveClockDoubleCommutator U X := by
   rw [projectorDephasingGenerator_eq_half_pinching_sub (k := k)
@@ -24,7 +24,7 @@ theorem projectorDephasingGenerator_finiteInvolutiveGaugeAverage_eq
 omit [CompleteSpace E] in
 /-- The clock-projector dissipator has exactly the clock commutant as kernel. -/
 theorem projectorDephasingGenerator_finiteInvolutiveGaugeAverage_eq_zero_iff
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) :
     projectorDephasingGenerator (k := k) (finiteCyclicGaugeAverage U 2) X = 0 ↔
       U * X = X * U := by
   rw [projectorDephasingGenerator_finiteInvolutiveGaugeAverage_eq U X hsq]

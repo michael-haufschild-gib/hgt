@@ -47,7 +47,7 @@ theorem finiteDerivativeReporterConditionalInformation_le_recovery_norm_sq_mul
     (hrecover : recover.toLinearMap.comp
         (decode.toLinearMap.comp report) = report) :
     finiteDerivativeReporterConditionalInformation N f report ≤
-      ‖recover‖ ^ 2 *
+      ‖recover‖ ^ (2 : ℕ) *
         finiteDerivativeReporterConditionalInformation N f
           (decode.toLinearMap.comp report) := by
   have h := finiteDerivativeReporterConditionalInformation_postcomp_le
@@ -68,9 +68,9 @@ theorem finiteDerivativeReporterConditionalInformation_boundedRecovery_sandwich
         (decode.toLinearMap.comp report) = report) :
     finiteDerivativeReporterConditionalInformation N f
         (decode.toLinearMap.comp report) ≤
-        ‖decode‖ ^ 2 * finiteDerivativeReporterConditionalInformation N f report ∧
+        ‖decode‖ ^ (2 : ℕ) * finiteDerivativeReporterConditionalInformation N f report ∧
       finiteDerivativeReporterConditionalInformation N f report ≤
-        ‖recover‖ ^ 2 *
+        ‖recover‖ ^ (2 : ℕ) *
           finiteDerivativeReporterConditionalInformation N f
             (decode.toLinearMap.comp report) :=
   ⟨finiteDerivativeReporterConditionalInformation_postcomp_le N f report decode,
@@ -99,9 +99,9 @@ theorem finiteDerivativeReporter_recoverableCapacityAndInformationProfile
         LinearMap.ker (finiteDerivativeReporterMap N f report) ∧
       finiteDerivativeReporterConditionalInformation N f
           (decode.toLinearMap.comp report) ≤
-        ‖decode‖ ^ 2 * finiteDerivativeReporterConditionalInformation N f report ∧
+        ‖decode‖ ^ (2 : ℕ) * finiteDerivativeReporterConditionalInformation N f report ∧
       finiteDerivativeReporterConditionalInformation N f report ≤
-        ‖recover‖ ^ 2 *
+        ‖recover‖ ^ (2 : ℕ) *
           finiteDerivativeReporterConditionalInformation N f
             (decode.toLinearMap.comp report) := by
   have hcapacity := finiteDerivativeReporterMap_postcomp_capacity_eq_of_recovery
@@ -123,7 +123,7 @@ theorem finiteDerivativeReporterConditionalInformation_div_recovery_bound_le
     (hrecover : recover.toLinearMap.comp
         (decode.toLinearMap.comp report) = report)
     {C : ℝ} (hC : 0 < C) (hrecoverNorm : ‖recover‖ ≤ C) :
-    finiteDerivativeReporterConditionalInformation N f report / C ^ 2 ≤
+    finiteDerivativeReporterConditionalInformation N f report / C ^ (2 : ℕ) ≤
       finiteDerivativeReporterConditionalInformation N f
         (decode.toLinearMap.comp report) := by
   rw [div_le_iff₀ (sq_pos_of_pos hC)]
@@ -132,7 +132,7 @@ theorem finiteDerivativeReporterConditionalInformation_div_recovery_bound_le
       N f report decode recover hrecover
   have hpost := finiteDerivativeReporterConditionalInformation_nonneg N f
     (decode.toLinearMap.comp report)
-  have hnorm : ‖recover‖ ^ 2 ≤ C ^ 2 := by
+  have hnorm : ‖recover‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
     nlinarith [norm_nonneg recover]
   exact hbound.trans (by
     simpa [mul_comm] using mul_le_mul_of_nonneg_right hnorm hpost)
@@ -160,7 +160,7 @@ theorem finiteDerivativeReporterConditionalInformation_eq_of_contractive_recover
         N f report decode recover hrecover
     have hpost := finiteDerivativeReporterConditionalInformation_nonneg N f
       (decode.toLinearMap.comp report)
-    have hnorm : ‖recover‖ ^ 2 ≤ 1 := by
+    have hnorm : ‖recover‖ ^ (2 : ℕ) ≤ 1 := by
       nlinarith [norm_nonneg recover]
     exact hbound.trans (by
       simpa using mul_le_mul_of_nonneg_right hnorm hpost)

@@ -24,23 +24,23 @@ theorem twoChannelSteinScaledEnergyCertificate_of_le
   rcases hcert with ⟨a, b, henergy, hcert⟩
   refine ⟨a, b, henergy, ?_⟩
   have hfactor :
-      0 ≤ thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 *
+      0 ≤ thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ (2 : ℕ) *
         thetaCuspFirstRadialTwoChannelSteinEnergy a b :=
     mul_nonneg (sq_nonneg _) henergy.le
   calc
-    (κ₁ - 9) * thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 *
+    (κ₁ - 9) * thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ (2 : ℕ) *
           thetaCuspFirstRadialTwoChannelSteinEnergy a b =
         (κ₁ - 9) *
-          (thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 *
+          (thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ (2 : ℕ) *
             thetaCuspFirstRadialTwoChannelSteinEnergy a b) := by ring
     _ ≤ (κ₂ - 9) *
-          (thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 *
+          (thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ (2 : ℕ) *
             thetaCuspFirstRadialTwoChannelSteinEnergy a b) :=
       mul_le_mul_of_nonneg_right (by linarith) hfactor
-    _ = (κ₂ - 9) * thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 *
+    _ = (κ₂ - 9) * thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ (2 : ℕ) *
           thetaCuspFirstRadialTwoChannelSteinEnergy a b := by ring
     _ ≤ 9 * thetaCuspBornWittenRadialPowerMoment 0 1 1 *
-          thetaCuspFirstRadialTwoChannelSteinCoupling a b ^ 2 := hcert
+          thetaCuspFirstRadialTwoChannelSteinCoupling a b ^ (2 : ℕ) := hcert
 
 /-- The original two-channel squared-loss certificate implies its likelihood single-loss
 counterpart without returning to a fixed quadratic witness. -/
@@ -49,7 +49,7 @@ theorem twoChannelSteinSingleLossEnergyCertificate_of_squaredLoss
     ThetaCuspFirstRadialTwoChannelSteinSingleLossEnergyCertificate := by
   apply twoChannelSteinScaledEnergyCertificate_of_le
     (κ₁ := 14 * (3005 / 2997 : ℝ))
-    (κ₂ := 14 * (3005 / 2997 : ℝ) ^ 2)
+    (κ₂ := 14 * (3005 / 2997 : ℝ) ^ (2 : ℕ))
   · norm_num
   · exact hcert
 
@@ -60,10 +60,10 @@ theorem thetaCuspFirstRadial_relaxedSingleFactor_of_squaredFactor
     (hrelaxed :
       16 * (c * thetaCuspBornWittenRadialRawMoment 0 0 1) *
           (c * thetaCuspBornWittenRadialRawMoment 2 0 1) ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) :
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) :
     16 * c * thetaCuspBornWittenRadialRawMoment 0 0 1 *
           thetaCuspBornWittenRadialRawMoment 2 0 1 ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2 := by
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ) := by
   have hc0 : 0 ≤ c := le_trans (by norm_num) hc
   have hp :
       0 ≤ thetaCuspBornWittenRadialRawMoment 0 0 1 *
@@ -77,7 +77,7 @@ theorem thetaCuspFirstRadial_relaxedSingleFactor_of_squaredFactor
         have h := thetaCuspAtomRawEvenMoment_nonneg 2 1
         rw [thetaCuspAtomRawEvenMoment_eq_radialBornWittenRawMoment 2 0 1] at h
         nlinarith [Real.pi_pos])
-  have hcoeff : 16 * c ≤ 16 * c ^ 2 := by
+  have hcoeff : 16 * c ≤ 16 * c ^ (2 : ℕ) := by
     nlinarith
   calc
     16 * c * thetaCuspBornWittenRadialRawMoment 0 0 1 *
@@ -85,13 +85,13 @@ theorem thetaCuspFirstRadial_relaxedSingleFactor_of_squaredFactor
         (16 * c) *
           (thetaCuspBornWittenRadialRawMoment 0 0 1 *
             thetaCuspBornWittenRadialRawMoment 2 0 1) := by ring
-    _ ≤ (16 * c ^ 2) *
+    _ ≤ (16 * c ^ (2 : ℕ)) *
           (thetaCuspBornWittenRadialRawMoment 0 0 1 *
             thetaCuspBornWittenRadialRawMoment 2 0 1) :=
       mul_le_mul_of_nonneg_right hcoeff hp
     _ = 16 * (c * thetaCuspBornWittenRadialRawMoment 0 0 1) *
           (c * thetaCuspBornWittenRadialRawMoment 2 0 1) := by ring
-    _ ≤ 45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2 := hrelaxed
+    _ ≤ 45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ) := hrelaxed
 
 /-- A single rational enclosure supplies the likelihood single-loss two-channel certificate,
 the matching relaxed inequality, and all linear source-Hankel tests. -/
@@ -102,7 +102,7 @@ theorem
     (16 * (3005 / 2997 : ℝ) *
           thetaCuspBornWittenRadialRawMoment 0 0 1 *
           thetaCuspBornWittenRadialRawMoment 2 0 1 ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) ∧
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) ∧
     (∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re) := by
   have hold :=
     thetaCuspFirstAtomSingleGibbs_twoChannelHypervirialClosure_of_rationalEnclosure h
@@ -180,11 +180,11 @@ theorem exp_neg_pi_rationalEnclosure_lower :
   have hrootpi : (0.4559381277659 : ℝ) ≤ Real.exp (-Real.pi / 4) :=
     hroot.trans (Real.exp_le_exp.mpr hxpi)
   have hpow :
-      Real.exp (-Real.pi) = Real.exp (-Real.pi / 4) ^ 4 := by
+      Real.exp (-Real.pi) = Real.exp (-Real.pi / 4) ^ (4 : ℕ) := by
     calc
       Real.exp (-Real.pi) =
           Real.exp ((4 : ℕ) * (-Real.pi / 4)) := by congr 1; norm_num; ring
-      _ = Real.exp (-Real.pi / 4) ^ 4 := by rw [Real.exp_nat_mul]
+      _ = Real.exp (-Real.pi / 4) ^ (4 : ℕ) := by rw [Real.exp_nat_mul]
   rw [hpow]
   nlinarith [pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 0.4559381277659)
     hrootpi 4]
@@ -211,11 +211,11 @@ theorem exp_neg_pi_rationalEnclosure_upper :
   have hrootpi : Real.exp (-Real.pi / 4) ≤ (0.45593812776605 : ℝ) :=
     (Real.exp_le_exp.mpr hpix).trans hroot
   have hpow :
-      Real.exp (-Real.pi) = Real.exp (-Real.pi / 4) ^ 4 := by
+      Real.exp (-Real.pi) = Real.exp (-Real.pi / 4) ^ (4 : ℕ) := by
     calc
       Real.exp (-Real.pi) =
           Real.exp ((4 : ℕ) * (-Real.pi / 4)) := by congr 1; norm_num; ring
-      _ = Real.exp (-Real.pi / 4) ^ 4 := by rw [Real.exp_nat_mul]
+      _ = Real.exp (-Real.pi / 4) ^ (4 : ℕ) := by rw [Real.exp_nat_mul]
   rw [hpow]
   nlinarith [pow_le_pow_left₀ (Real.exp_pos _).le hrootpi 4]
 
@@ -292,7 +292,7 @@ theorem thetaCuspFirstAtomSingleGibbs_likelihoodSingleLossClosure_of_momentBound
     (16 * (3005 / 2997 : ℝ) *
           thetaCuspBornWittenRadialRawMoment 0 0 1 *
           thetaCuspBornWittenRadialRawMoment 2 0 1 ≤
-        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ 2) ∧
+        45 * thetaCuspBornWittenRadialRawMoment 1 0 1 ^ (2 : ℕ)) ∧
     (∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re) :=
   thetaCuspFirstAtomSingleGibbs_likelihoodSingleLossClosure_of_rationalEnclosure
     (thetaCuspFirstAtomSingleGibbsRationalMomentEnclosure_of_momentBounds h)

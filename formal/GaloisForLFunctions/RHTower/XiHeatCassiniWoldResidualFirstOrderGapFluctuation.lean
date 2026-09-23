@@ -59,20 +59,20 @@ theorem xiHeatCassiniPrimeLogQuadratureError_nonneg (N : ℕ) :
 /-- Logarithmic reparametrization costs at most half the normalized gap square. -/
 theorem xiHeatCassiniPrimeLogQuadratureError_le_half_sq (N : ℕ) :
     xiHeatCassiniPrimeLogQuadratureError N ≤
-      xiHeatCassiniOrderedPrimeRelativeGap N ^ 2 / 2 := by
+      xiHeatCassiniOrderedPrimeRelativeGap N ^ (2 : ℕ) / 2 := by
   let x : ℝ := xiHeatCassiniOrderedPrimeRelativeGap N
   have hx : 0 ≤ x := xiHeatCassiniOrderedPrimeRelativeGap_nonneg N
   have hden : 0 < x + 2 := by linarith
   have hlog : 2 * x / (x + 2) ≤ Real.log (1 + x) :=
     Real.le_log_one_add_of_nonneg hx
-  have halgebra : x - x ^ 2 / 2 ≤ 2 * x / (x + 2) := by
+  have halgebra : x - x ^ (2 : ℕ) / 2 ≤ 2 * x / (x + 2) := by
     apply (le_div_iff₀ hden).2
     nlinarith [sq_nonneg x]
   change xiHeatCassiniOrderedPrimeRelativeGap N -
       xiHeatCassiniOrderedPrimeLogGap N ≤
-    xiHeatCassiniOrderedPrimeRelativeGap N ^ 2 / 2
+    xiHeatCassiniOrderedPrimeRelativeGap N ^ (2 : ℕ) / 2
   rw [xiHeatCassiniOrderedPrimeLogGap_eq_log_one_add_relativeGap]
-  change x - Real.log (1 + x) ≤ x ^ 2 / 2
+  change x - Real.log (1 + x) ≤ x ^ (2 : ℕ) / 2
   linarith
 
 /-- Exact local split: Wold residual variation is first-order spacing fluctuation plus

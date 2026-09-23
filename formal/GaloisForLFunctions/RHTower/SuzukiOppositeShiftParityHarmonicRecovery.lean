@@ -91,9 +91,9 @@ theorem suzukiShiftedXiTarget_not_odd {eta : ℂ} (heta : eta ≠ 0) :
 shifted-denominator hypothesis is needed; only the common Xi numerator must be nonzero. -/
 theorem suzukiShiftedXiTarget_opposite_reciprocal_midpoint
     {eta z : ℂ} (hz : z ≠ 0) (hXi : XiC z ≠ 0) :
-    z ^ 2 / suzukiShiftedXiTarget eta z +
-        z ^ 2 / suzukiShiftedXiTarget (-eta) z =
-      2 * (z ^ 2 / suzukiShiftedXiTarget 0 z) := by
+    z ^ (2 : ℕ) / suzukiShiftedXiTarget eta z +
+        z ^ (2 : ℕ) / suzukiShiftedXiTarget (-eta) z =
+      2 * (z ^ (2 : ℕ) / suzukiShiftedXiTarget 0 z) := by
   have hp := suzukiShiftedXiTarget_reciprocal_translation
     (alpha := eta) (beta := 0) (z := z) hz hXi
   have hm := suzukiShiftedXiTarget_reciprocal_translation
@@ -143,7 +143,7 @@ theorem suzukiExteriorRemainder_opposite_average
 the explicit shift coordinate remains. -/
 theorem suzukiShiftedXiMultiplier_opposite_difference
     {eta z : ℂ} (hz : z ≠ 0) (hXi : XiC z ≠ 0) :
-    z ^ 2 * (suzukiShiftedXiMultiplier (-eta) z -
+    z ^ (2 : ℕ) * (suzukiShiftedXiMultiplier (-eta) z -
         suzukiShiftedXiMultiplier eta z) = 2 * eta := by
   rw [suzukiShiftedXiMultiplier_eq, suzukiShiftedXiMultiplier_eq]
   field_simp [hz, hXi]
@@ -155,7 +155,7 @@ multiplier, leaving the explicit source factor `2 eta W / z²`. -/
 theorem suzukiExteriorRemainder_opposite_difference
     {eta z : ℂ} (W intervalPart : ℂ → ℂ)
     (hz : z ≠ 0) (hXi : XiC z ≠ 0) :
-    z ^ 2 * (suzukiExteriorRemainder (-eta) W intervalPart z -
+    z ^ (2 : ℕ) * (suzukiExteriorRemainder (-eta) W intervalPart z -
         suzukiExteriorRemainder eta W intervalPart z) =
       2 * eta * W z := by
   rw [suzukiExteriorRemainder, suzukiExteriorRemainder]

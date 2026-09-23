@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.ExpSquareRayTail
 
 The sharp factor in Lemma 2.4 of Guo--Fang--Lu is the elementary identity
 `E |G| = sqrt (2 / pi)` for a standard real Gaussian.  The corpus already
-contains the exact positive-ray primitive for `x * exp (-b x^2)`; this module
+contains the exact positive-ray primitive for `x * exp (-b x^(2 : ℕ))`; this module
 normalizes it and records the arbitrary-scale form used after conditioning.
 -/
 
@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Standard real Gaussian density with variance one. -/
 def banaszczykStandardGaussianDensity (x : ℝ) : ℝ :=
-  (Real.sqrt (2 * Real.pi))⁻¹ * Real.exp (-(1 / 2) * x ^ 2)
+  (Real.sqrt (2 * Real.pi))⁻¹ * Real.exp (-(1 / 2) * x ^ (2 : ℕ))
 
 theorem banaszczykStandardGaussianDensity_nonneg (x : ℝ) :
     0 ≤ banaszczykStandardGaussianDensity x := by
@@ -52,29 +52,29 @@ theorem integrable_abs_mul_banaszczykStandardGaussianDensity :
   exact Filter.Eventually.of_forall fun x => by
     unfold banaszczykStandardGaussianDensity
     change (Real.sqrt (2 * Real.pi))⁻¹ *
-        ‖x * Real.exp (-(1 / 2) * x ^ 2)‖ =
-      |x| * ((Real.sqrt (2 * Real.pi))⁻¹ * Real.exp (-(1 / 2) * x ^ 2))
+        ‖x * Real.exp (-(1 / 2) * x ^ (2 : ℕ))‖ =
+      |x| * ((Real.sqrt (2 * Real.pi))⁻¹ * Real.exp (-(1 / 2) * x ^ (2 : ℕ)))
     rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
     ring
 
 private theorem integral_abs_mul_standardGaussianKernel :
-    ∫ x : ℝ, |x| * Real.exp (-(1 / 2) * x ^ 2) = 2 := by
+    ∫ x : ℝ, |x| * Real.exp (-(1 / 2) * x ^ (2 : ℕ)) = 2 := by
   have htail := GaloisForLFunctions.integral_Ioi_id_mul_expNegSq
     (b := (1 / 2 : ℝ)) (a := (0 : ℝ)) (by norm_num)
   have htail' :
-      ∫ x in Ioi (0 : ℝ), x * Real.exp (-(1 / 2) * x ^ 2) = 1 := by
+      ∫ x in Ioi (0 : ℝ), x * Real.exp (-(1 / 2) * x ^ (2 : ℕ)) = 1 := by
     convert htail using 1 <;> simp
   calc
-    (∫ x : ℝ, |x| * Real.exp (-(1 / 2) * x ^ 2)) =
-        ∫ x : ℝ, (fun y => y * Real.exp (-(1 / 2) * y ^ 2)) |x| := by
+    (∫ x : ℝ, |x| * Real.exp (-(1 / 2) * x ^ (2 : ℕ))) =
+        ∫ x : ℝ, (fun y => y * Real.exp (-(1 / 2) * y ^ (2 : ℕ))) |x| := by
       congr 1
       funext x
       simp only
       rw [sq_abs]
     _ = 2 * ∫ x in Ioi (0 : ℝ),
-          x * Real.exp (-(1 / 2) * x ^ 2) := by
+          x * Real.exp (-(1 / 2) * x ^ (2 : ℕ)) := by
       simpa only using
-        (integral_comp_abs (f := fun y => y * Real.exp (-(1 / 2) * y ^ 2)))
+        (integral_comp_abs (f := fun y => y * Real.exp (-(1 / 2) * y ^ (2 : ℕ))))
     _ = 2 := by rw [htail']; norm_num
 
 /-- Exact sharp standard-Gaussian absolute moment. -/
@@ -83,7 +83,7 @@ theorem integral_abs_mul_banaszczykStandardGaussianDensity :
     ∫ x : ℝ, |x| * banaszczykStandardGaussianDensity x = Real.sqrt (2 / Real.pi) := by
   rw [show (fun x : ℝ => |x| * banaszczykStandardGaussianDensity x) =
       fun x => (Real.sqrt (2 * Real.pi))⁻¹ *
-        (|x| * Real.exp (-(1 / 2) * x ^ 2)) by
+        (|x| * Real.exp (-(1 / 2) * x ^ (2 : ℕ))) by
     funext x
     unfold banaszczykStandardGaussianDensity
     ring]

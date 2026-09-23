@@ -207,7 +207,7 @@ theorem integrable_sourceModeFWeightedEnergyDensity {z : ℂ} (hz : |z.im| < 1)
       (fun x : ℝ => (C * thetaEnvelope 1 * Real.exp a) * Real.exp (-a * |x|))
       (volume : Measure ℝ) :=
     by simpa only [neg_mul] using
-      (integrable_exp_neg_mul_abs ha).const_mul (C * thetaEnvelope 1 * Real.exp a)
+      (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic ha).const_mul (C * thetaEnvelope 1 * Real.exp a)
   have htail : ∀ x : ℝ, 1 ≤ |x| →
       sourceModeFWeightedEnergyDensity z x ≤
         (C * thetaEnvelope 1 * Real.exp a) * Real.exp (-a * |x|) := by

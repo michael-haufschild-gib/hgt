@@ -50,7 +50,7 @@ theorem twin_eq_sqrt_mul_unit {a d : ℂ → ℂ}
     (ha : AnalyticOnNhd ℂ a rightHalf) (hd : AnalyticOnNhd ℂ d rightHalf)
     (hprod : ∀ s ∈ rightHalf, a s * d s = xi s)
     (hord : ∀ ρ ∈ rightHalf, analyticOrderAt a ρ = analyticOrderAt d ρ) :
-    ∃ g v : ℂ → ℂ, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 = xi s) ∧
+    ∃ g v : ℂ → ℂ, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ (2 : ℕ) = xi s) ∧
       AnalyticOnNhd ℂ v rightHalf ∧ (∀ s ∈ rightHalf, v s ≠ 0) ∧
       (∀ s ∈ rightHalf, a s = g s * v s) ∧ ∀ s ∈ rightHalf, g s = d s * v s := by
   have hfin : ∀ z ∈ rightHalf, analyticOrderAt a z ≠ ⊤ :=
@@ -76,7 +76,7 @@ theorem twin_eq_sqrt_mul_unit {a d : ℂ → ℂ}
     have h1 := hvsq s hs
     have h2 := hqeq s hs
     have h3 := hprod s hs
-    calc (d s * v s) ^ 2 = d s * (v s ^ 2 * d s) := by ring
+    calc (d s * v s) ^ (2 : ℕ) = d s * (v s ^ (2 : ℕ) * d s) := by ring
       _ = d s * (q s * d s) := by rw [h1]
       _ = d s * a s := by rw [← h2]
       _ = xi s := by rw [mul_comm]; exact h3
@@ -84,20 +84,20 @@ theorem twin_eq_sqrt_mul_unit {a d : ℂ → ℂ}
     have h1 := hvsq s hs
     have h2 := hqeq s hs
     calc a s = q s * d s := h2
-      _ = v s ^ 2 * d s := by rw [h1]
+      _ = v s ^ (2 : ℕ) * d s := by rw [h1]
       _ = d s * v s * v s := by ring
 
 /-- **Twins from a square root and a unit.**  For any analytic square root `g` of ξ on the right
 half-plane and any analytic nonvanishing `v` there, `(g v, g / v)` is a twin factorization. -/
 theorem twinFactorization_of_sqrt_mul_unit {g v : ℂ → ℂ}
-    (hg : AnalyticOnNhd ℂ g rightHalf) (hgsq : ∀ s ∈ rightHalf, g s ^ 2 = xi s)
+    (hg : AnalyticOnNhd ℂ g rightHalf) (hgsq : ∀ s ∈ rightHalf, g s ^ (2 : ℕ) = xi s)
     (hv : AnalyticOnNhd ℂ v rightHalf) (hvne : ∀ s ∈ rightHalf, v s ≠ 0) :
     TwinFactorization := by
   have hvinv : AnalyticOnNhd ℂ (fun s => (v s)⁻¹) rightHalf := hv.inv hvne
   refine ⟨fun s => g s * v s, fun s => g s * (v s)⁻¹, hg.mul hv, hg.mul hvinv, ?_, ?_⟩
   · intro s hs
     have := hgsq s hs
-    calc g s * v s * (g s * (v s)⁻¹) = g s ^ 2 * (v s * (v s)⁻¹) := by ring
+    calc g s * v s * (g s * (v s)⁻¹) = g s ^ (2 : ℕ) * (v s * (v s)⁻¹) := by ring
       _ = xi s := by rw [mul_inv_cancel₀ (hvne s hs), mul_one, this]
   · intro ρ hρ
     have h1 : analyticOrderAt (fun s => g s * v s) ρ
@@ -115,7 +115,7 @@ theorem twinFactorization_of_sqrt_mul_unit {g v : ℂ → ℂ}
 an analytic square root on the right half-plane, and every twin is `(g v, g / v)` for such a root
 `g` and an analytic unit `v`. -/
 theorem twinFactorization_iff_exists_sqrt :
-    TwinFactorization ↔ ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ 2 = xi s := by
+    TwinFactorization ↔ ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ (2 : ℕ) = xi s := by
   rw [← rhLadder_one_iff_twinFactorization, rhLadder_one_iff_sqrt_rightHalf]
 
 end RHTower

@@ -32,7 +32,7 @@ noncomputable section
 def divProfile (F : ℝ → ℝ) (t : ℝ) : ℝ := if t = 0 then 0 else F t / t
 
 theorem divProfile_critProfile (u : ℝ) :
-    divProfile (fun t => (Real.exp (u * t) - 1) ^ 2) = critProfile u := by
+    divProfile (fun t => (Real.exp (u * t) - 1) ^ (2 : ℕ)) = critProfile u := by
   funext t
   rw [divProfile, critProfile]
 

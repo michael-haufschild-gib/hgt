@@ -56,7 +56,7 @@ theorem exists_linear_le_exp_rpow {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
   have hMexp : M ≤ Real.exp (b * u / 2) := by
     rw [← Real.exp_log hM0]
     exact Real.exp_le_exp.2 hlogM
-  -- `a·R ≤ a·10!·(2/b)^10·exp(b·u/2)`
+  -- `a·R ≤ a·10!·(2/b)^(10 : ℕ)·exp(b·u/2)`
   have hu10 : u ^ (10 : ℕ) = R := by
     rw [hu, show ((1 : ℝ) / 10) = ((10 : ℕ) : ℝ)⁻¹ from by norm_num]
     exact Real.rpow_inv_natCast_pow hR0 (by norm_num)

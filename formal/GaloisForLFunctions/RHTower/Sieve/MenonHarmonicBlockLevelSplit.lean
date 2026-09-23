@@ -31,19 +31,19 @@ theorem setIntegral_normSq_harmonicBlockProduct_levelSplit
     (a : ℕ → ℂ) {B : Finset ℕ} (D : Finset ℕ) (hBprime : ∀ p ∈ B, p.Prime) {W : ℝ}
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     {V₀ : ℝ} (hV₀ : 0 < V₀) {J : ℕ} (hJ : harmonicPrimeMass B ≤ 2 ^ J * V₀) :
-    (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ 2)
-      ≤ V₀ ^ 2 * (∫ w in E, ‖logPoly a D w‖ ^ 2)
+    (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      ≤ V₀ ^ (2 : ℕ) * (∫ w in E, ‖logPoly a D w‖ ^ (2 : ℕ))
         + ∑ j ∈ Finset.range J,
-            (2 ^ (j + 1) * V₀) ^ 2
+            (2 ^ (j + 1) * V₀) ^ (2 : ℕ)
               * ∫ w in E ∩ {w | 2 ^ j * V₀ ≤ ‖harmonicPrimeBlockPoly B w‖},
-                  ‖logPoly a D w‖ ^ 2 := by
+                  ‖logPoly a D w‖ ^ (2 : ℕ) := by
   classical
   have hcontP : Continuous fun w : ℝ => ‖harmonicPrimeBlockPoly B w‖ :=
     (continuous_harmonicPrimeBlockPoly B).norm
-  have hcontC : Continuous fun w : ℝ => ‖logPoly a D w‖ ^ 2 :=
+  have hcontC : Continuous fun w : ℝ => ‖logPoly a D w‖ ^ (2 : ℕ) :=
     ((continuous_logPoly a D).norm).pow 2
-  have hrw : (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ 2)
-      = ∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ 2 * ‖logPoly a D w‖ ^ 2 := by
+  have hrw : (∫ w in E, ‖harmonicPrimeBlockPoly B w * logPoly a D w‖ ^ (2 : ℕ))
+      = ∫ w in E, ‖harmonicPrimeBlockPoly B w‖ ^ (2 : ℕ) * ‖logPoly a D w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun hEm fun w _ => ?_
     rw [norm_mul, mul_pow]
   rw [hrw]
@@ -60,16 +60,16 @@ theorem setIntegral_normSq_harmonicRamareBlock_le_levelSplit
     {P s B : Finset ℕ} (C : Finset ℕ) (hBprime : ∀ p ∈ B, p.Prime) {W : ℝ}
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     {V₀ : ℝ} (hV₀ : 0 < V₀) {J : ℕ} (hJ : harmonicPrimeMass B ≤ 2 ^ J * V₀) :
-    (∫ w in E, ‖harmonicRamareBlock P s B w‖ ^ 2)
-      ≤ 2 * (V₀ ^ 2 *
-            (∫ w in E, ‖logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBlock P s B w‖ ^ (2 : ℕ))
+      ≤ 2 * (V₀ ^ (2 : ℕ) *
+            (∫ w in E, ‖logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ))
           + ∑ j ∈ Finset.range J,
-              (2 ^ (j + 1) * V₀) ^ 2
+              (2 ^ (j + 1) * V₀) ^ (2 : ℕ)
                 * ∫ w in E ∩ {w | 2 ^ j * V₀ ≤ ‖harmonicPrimeBlockPoly B w‖},
-                    ‖logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2)
+                    ‖logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ))
         + 2 * harmonicPrimeMass B * ∑ p ∈ B, (1 / (p : ℝ)) *
             (∫ w in E, ‖harmonicRamareCofactorPoly P s p w
-              - logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ 2) := by
+              - logPoly (harmonicRamareCofactorCoeff P) C w‖ ^ (2 : ℕ)) := by
   have hbase := setIntegral_normSq_harmonicRamareBlock_le_product
     (P := P) (s := s) (B := B) hBprime C hEm hEs
   have hsplit := setIntegral_normSq_harmonicBlockProduct_levelSplit

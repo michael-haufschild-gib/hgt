@@ -41,7 +41,7 @@ theorem fullCCR_dimension_fluctuation_pairwise_identity_of_commutingFullTuple
     (Fintype.card I : ℝ) * ((Fintype.card I : ℝ) + 1) *
         ((Fintype.card I : ℝ) * ccrMeanEnergy (fullCCRCompressionBlock T) -
           ccrNumberVariance (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)) =
-      (Fintype.card I : ℝ) ^ 2 *
+      (Fintype.card I : ℝ) ^ (2 : ℕ) *
           ccrPairwiseMixedCommutatorEnergy (fullCCRCompressionBlock T) +
         ccrScaledTracelessLeakageEnergy
           (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) :=

@@ -14,19 +14,19 @@ other path phases by their unfurled positive values. -/
 noncomputable def nestedFoldedPhase (L : ℕ) (s δ : ℝ)
     (e : Sym2 (PairQubit L)) : ℝ :=
   (∑ j : Fin L, if nestedMatchingEdge j = e then
-      if j.val = 0 then -δ else s / (((j.val + 1 : ℕ) : ℝ) ^ 2) else 0) +
+      if j.val = 0 then -δ else s / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) else 0) +
     ∑ k : Fin (L - 1), if nestedBridgeEdge k = e then
-      s / (((k.val + 2 : ℕ) : ℝ) ^ 4) else 0
+      s / (((k.val + 2 : ℕ) : ℝ) ^ (4 : ℕ)) else 0
 
 theorem nestedFoldedPhase_matching {L : ℕ} (s δ : ℝ) (j : Fin L) :
     nestedFoldedPhase L s δ (nestedMatchingEdge j) =
-      if j.val = 0 then -δ else s / (((j.val + 1 : ℕ) : ℝ) ^ 2) := by
+      if j.val = 0 then -δ else s / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
   classical
   unfold nestedFoldedPhase
   rw [Finset.sum_eq_single j]
   · have hbridge : (∑ k : Fin (L - 1),
         if nestedBridgeEdge k = nestedMatchingEdge j then
-          s / (((k.val + 2 : ℕ) : ℝ) ^ 4) else 0) = 0 := by
+          s / (((k.val + 2 : ℕ) : ℝ) ^ (4 : ℕ)) else 0) = 0 := by
       apply Finset.sum_eq_zero
       intro k hk
       rw [if_neg]
@@ -40,11 +40,11 @@ theorem nestedFoldedPhase_matching {L : ℕ} (s δ : ℝ) (j : Fin L) :
 
 theorem nestedFoldedPhase_bridge {L : ℕ} (s δ : ℝ) (k : Fin (L - 1)) :
     nestedFoldedPhase L s δ (nestedBridgeEdge k) =
-      s / (((k.val + 2 : ℕ) : ℝ) ^ 4) := by
+      s / (((k.val + 2 : ℕ) : ℝ) ^ (4 : ℕ)) := by
   classical
   unfold nestedFoldedPhase
   have hmatch : (∑ j : Fin L, if nestedMatchingEdge j = nestedBridgeEdge k then
-      (if j.val = 0 then -δ else s / (((j.val + 1 : ℕ) : ℝ) ^ 2)) else 0) = 0 := by
+      (if j.val = 0 then -δ else s / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) else 0) = 0 := by
     apply Finset.sum_eq_zero
     intro j hj
     rw [if_neg]
@@ -63,10 +63,10 @@ theorem treePhaseEnergy_nestedFolded_expand {L : ℕ} (hL : 0 < L)
     (s δ : ℝ) (x : Config (PairQubit L)) :
     treePhaseEnergy (nestedQubitPathGraph L) (nestedFoldedPhase L s δ) x =
       (∑ j : Fin L,
-        (if j.val = 0 then -δ else s / (((j.val + 1 : ℕ) : ℝ) ^ 2)) *
+        (if j.val = 0 then -δ else s / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) *
           edgeP11Value x (nestedMatchingEdge j)) +
       ∑ k : Fin (L - 1),
-        (s / (((k.val + 2 : ℕ) : ℝ) ^ 4)) *
+        (s / (((k.val + 2 : ℕ) : ℝ) ^ (4 : ℕ))) *
           edgeP11Value x (nestedBridgeEdge k) := by
   classical
   rw [treePhaseEnergy, nestedPath_edgeFinset_eq_union hL]

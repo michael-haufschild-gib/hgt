@@ -49,10 +49,10 @@ theorem thetaCuspModularColdSignedSlopeCoefficient_pos (j : ℕ) :
 coefficient lies strictly inside the likelihood order-two moment cone, scaled by the square of its
 positive half-order Gamma curvature factor. -/
 theorem thetaCuspModularColdSignedSlope_strictFluctuation (j : ℕ) :
-    thetaCuspModularColdSignedSlopeCoefficient j ^ 2 *
+    thetaCuspModularColdSignedSlopeCoefficient j ^ (2 : ℕ) *
           (1 + thetaCuspHigherLikelihoodSpectralMoment
-            (thetaCuspLikelihoodCoordinate 0) 0) ^ 2 <
-      (2 * Real.pi) ^ 2 * thetaCuspModularColdCurvatureFactor j ^ 2 *
+            (thetaCuspLikelihoodCoordinate 0) 0) ^ (2 : ℕ) <
+      (2 * Real.pi) ^ (2 : ℕ) * thetaCuspModularColdCurvatureFactor j ^ (2 : ℕ) *
         thetaCuspHigherLikelihoodSpectralMoment
           (thetaCuspLikelihoodCoordinate 0) 0 *
         thetaCuspHigherLikelihoodSpectralMoment

@@ -39,7 +39,7 @@ private theorem full_kernel_negative (q : XiZeroCopy) (branch : Bool)
     angularDirichletKernel q branch h x y X k = 0 := by
   have h1 : ¬ |x - y| ≤ h := not_le.mpr ((abs_nonneg _).trans_lt' hh)
   have h2 : ¬ |x + y| ≤ h := not_le.mpr ((abs_nonneg _).trans_lt' hh)
-  simp only [angularDirichletKernel, h1, h2, if_neg, sub_self, zero_div]
+  simp [angularDirichletKernel, h1, h2]
 
 private theorem full_kernel_measurable (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
     Measurable (fun z : ℝ × ℝ × ℝ =>
@@ -59,7 +59,8 @@ private theorem full_kernel_measurable (q : XiZeroCopy) (branch : Bool) (X k : �
     have hr : Continuous (fun p : ℝ × ℝ × ℝ =>
         Real.arcosh (max 1 (invariant p.1 p.2.1 (y p)))) :=
       Real.continuousOn_arcosh.comp_continuous (continuous_const.max hi)
-        (fun p => le_max_left _ _)
+        (fun p => show max 1 (invariant p.1 p.2.1 (y p)) ∈ Ici 1 from
+          le_max_left 1 (invariant p.1 p.2.1 (y p)))
     have hm := ((angularMean_smooth q branch X k).continuous.comp hr).measurable
     have hs : MeasurableSet {p : ℝ × ℝ × ℝ | |p.2.1 - y p| ≤ p.1} :=
       (isClosed_le (continuous_snd.fst.sub hy).abs continuous_fst).measurableSet
@@ -125,7 +126,7 @@ private theorem full_pair_bound (q : XiZeroCopy) (branch b c : Bool)
     rw [fullSourcePairDensity, norm_mul, norm_mul]
     apply h.trans_eq
     simp only [eventWeight]
-    simp only [sub_mul, mul_add, mul_sub, neg_mul, Real.exp_add, Real.exp_sub, Real.exp_neg]
+    simp only [sub_mul, mul_sub, neg_mul, Real.exp_sub, Real.exp_neg]
     ring
   · rw [fullSourcePairDensity,
       full_kernel_negative q branch _ p.2 r.2 X k (lt_of_not_ge ht), mul_zero, zero_mul, norm_zero]
@@ -139,9 +140,12 @@ theorem fullSourcePairDensity_integrable (q : XiZeroCopy) (branch b c : Bool)
     Integrable (fullSourcePairDensity q branch b c a d X k) (eventMeasure.prod eventMeasure) := by
   obtain ⟨D, hD, h⟩ := full_pair_bound q branch b c a d X k
   have hp : -decayExponent q - strictGrowthExponent q < 0 := by
-    linarith [(decayExponent_bounds q).1, (strictGrowthExponent_bounds q).1]
-  have hr : strictGrowthExponent q - decayExponent q < 0 :=
-    (strictGrowthExponent_bounds q).2
+    have hs := (sourceGrowthExponent_bounds q).1
+    have hd := (decayExponent_bounds q).1
+    have hg := (strictGrowthExponent_bounds q).1
+    linarith
+  have hr : strictGrowthExponent q - decayExponent q < 0 := by
+    linarith [(strictGrowthExponent_bounds q).2]
   have hm := ((eventWeight_integrable q (-decayExponent q - strictGrowthExponent q) hp).mul_prod
     (eventWeight_integrable q (strictGrowthExponent q - decayExponent q) hr)).const_mul D
   apply hm.mono' (full_pair_measurable q branch b c a d X k).aestronglyMeasurable
@@ -178,8 +182,11 @@ private theorem directed_integrable (q : XiZeroCopy) (branch b : Bool) (a : ℂ)
     exact hk.mul (timeReducedCoefficient_joint_continuous (physicalRate q b) a).measurable
   let v := if future then strictGrowthExponent q else -strictGrowthExponent q
   have hv : v - decayExponent q < 0 := by
-    cases future <;> simp only [v, Bool.false_eq_true, if_false, if_true] <;>
-      linarith [(decayExponent_bounds q).1, (strictGrowthExponent_bounds q).1]
+    have hs := (sourceGrowthExponent_bounds q).1
+    have hd := (decayExponent_bounds q).1
+    have hg := (strictGrowthExponent_bounds q).1
+    have hgd := (strictGrowthExponent_bounds q).2
+    cases future <;> simp only [v, Bool.false_eq_true, if_false, if_true] <;> linarith
   have hi := (eventWeight_integrable q (v - decayExponent q) hv).const_mul
     (C * A * Real.exp (-v * τ))
   apply hi.mono' hm.aestronglyMeasurable
@@ -195,7 +202,7 @@ private theorem directed_integrable (q : XiZeroCopy) (branch b : Bool) (a : ℂ)
     apply hh.trans_eq
     cases future <;> simp only [v, eventWeight, Bool.false_eq_true, if_false, if_true]
     all_goals
-      simp only [sub_mul, mul_add, mul_sub, neg_mul, Real.exp_add, Real.exp_sub, Real.exp_neg, inv_inv]
+      simp only [sub_mul, mul_sub, neg_mul, Real.exp_sub, Real.exp_neg, inv_inv]
       ring
   · rw [directedFullDensity,
       full_kernel_negative q branch _ x p.2 X k (lt_of_not_ge ht), zero_mul, norm_zero]

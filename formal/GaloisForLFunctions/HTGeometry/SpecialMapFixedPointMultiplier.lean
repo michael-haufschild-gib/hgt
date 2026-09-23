@@ -103,15 +103,15 @@ theorem hasDerivAt_dicksonMap (n : ℕ) (c : ℂ) :
 
 /-- Every complex number is a Joukowski image of a nonzero point. -/
 theorem exists_joukowski (c : ℂ) : ∃ w : ℂ, w ≠ 0 ∧ w + w⁻¹ = c := by
-  obtain ⟨s, hs⟩ := IsAlgClosed.exists_pow_nat_eq (c ^ 2 - 4 : ℂ) (n := 2) (by norm_num)
+  obtain ⟨s, hs⟩ := IsAlgClosed.exists_pow_nat_eq (c ^ (2 : ℕ) - 4 : ℂ) (n := 2) (by norm_num)
   refine ⟨(c + s) / 2, ?_, ?_⟩
   · intro h
-    have hq : ((c + s) / 2) ^ 2 - c * ((c + s) / 2) + 1 = 0 := by
+    have hq : ((c + s) / 2) ^ (2 : ℕ) - c * ((c + s) / 2) + 1 = 0 := by
       field_simp
       linear_combination hs
     rw [h] at hq
     simp at hq
-  · have hq : ((c + s) / 2) ^ 2 - c * ((c + s) / 2) + 1 = 0 := by
+  · have hq : ((c + s) / 2) ^ (2 : ℕ) - c * ((c + s) / 2) + 1 = 0 := by
       field_simp
       linear_combination hs
     have hne : ((c + s) / 2 : ℂ) ≠ 0 := by
@@ -123,9 +123,9 @@ theorem exists_joukowski (c : ℂ) : ∃ w : ℂ, w ≠ 0 ∧ w + w⁻¹ = c := 
       apply hne
       rw [h]
       simp
-    have h1 : ((c + s) / 2) * ((c + s) / 2 + ((c + s) / 2)⁻¹) = ((c + s) / 2) ^ 2 + 1 := by
+    have h1 : ((c + s) / 2) * ((c + s) / 2 + ((c + s) / 2)⁻¹) = ((c + s) / 2) ^ (2 : ℕ) + 1 := by
       field_simp
-    have h2 : ((c + s) / 2) ^ 2 + 1 = ((c + s) / 2) * c := by linear_combination hq
+    have h2 : ((c + s) / 2) ^ (2 : ℕ) + 1 = ((c + s) / 2) * c := by linear_combination hq
     rw [h2] at h1
     exact mul_left_cancel₀ hne h1
 
@@ -135,14 +135,14 @@ theorem dicksonMap_joukowski (n : ℕ) {w : ℂ} (hw : w ≠ 0) :
 
 /-- Differentiating the Joukowski semiconjugacy. -/
 theorem dicksonMap_deriv_joukowski (n : ℕ) {w : ℂ} (hw : w ≠ 0) :
-    (Polynomial.derivative (Polynomial.dickson 1 1 n)).eval (w + w⁻¹) * (1 + -(w ^ 2)⁻¹) =
-      (n : ℂ) * w ^ (n - 1) + -((n : ℂ) * w ^ (n - 1)) / (w ^ n) ^ 2 := by
+    (Polynomial.derivative (Polynomial.dickson 1 1 n)).eval (w + w⁻¹) * (1 + -(w ^ (2 : ℕ))⁻¹) =
+      (n : ℂ) * w ^ (n - 1) + -((n : ℂ) * w ^ (n - 1)) / (w ^ n) ^ (2 : ℕ) := by
   have hjou := (hasDerivAt_id w).add (hasDerivAt_inv hw)
   have hf := (hasDerivAt_dicksonMap n (w + w⁻¹)).comp w hjou
   have hpow : HasDerivAt (fun t : ℂ => t ^ n) ((n : ℂ) * w ^ (n - 1)) w := hasDerivAt_pow n w
   have hwn : w ^ n ≠ 0 := pow_ne_zero n hw
   have hg : HasDerivAt (fun t : ℂ => t ^ n + (t ^ n)⁻¹)
-      ((n : ℂ) * w ^ (n - 1) + -((n : ℂ) * w ^ (n - 1)) / (w ^ n) ^ 2) w :=
+      ((n : ℂ) * w ^ (n - 1) + -((n : ℂ) * w ^ (n - 1)) / (w ^ n) ^ (2 : ℕ)) w :=
     hpow.add (hpow.inv hwn)
   have heq : (fun t : ℂ => t ^ n + (t ^ n)⁻¹) =ᶠ[nhds w] fun t : ℂ => dicksonMap n (t + t⁻¹) := by
     filter_upwards [isOpen_compl_singleton.mem_nhds hw] with t ht
@@ -174,7 +174,7 @@ theorem two_le_norm_dicksonMap_multiplier {n : ℕ} (hn : 2 ≤ n) {c : ℂ}
     2 ≤ ‖(Polynomial.derivative (Polynomial.dickson 1 1 n)).eval c‖ := by
   obtain ⟨w, hw, rfl⟩ := exists_joukowski c
   have hn' : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
-  by_cases hw2 : w ^ 2 = 1
+  by_cases hw2 : w ^ (2 : ℕ) = 1
   · have hcases : w = 1 ∨ w = -1 := by
       have : (w - 1) * (w + 1) = 0 := by linear_combination hw2
       rcases mul_eq_zero.mp this with h | h
@@ -198,10 +198,10 @@ theorem two_le_norm_dicksonMap_multiplier {n : ℕ} (hn : 2 ≤ n) {c : ℂ}
       rw [show ‖((n : ℂ) - 1 + 1)‖ = ‖(n : ℂ)‖ by rw [show ((n : ℂ) - 1 + 1) = (n : ℂ) by ring]]
       simp only [Complex.norm_natCast, one_mul]
       nlinarith
-  · have hfac : (1 : ℂ) - (w ^ 2)⁻¹ ≠ 0 := by
+  · have hfac : (1 : ℂ) - (w ^ (2 : ℕ))⁻¹ ≠ 0 := by
       intro h
       apply hw2
-      have hw2ne : (w ^ 2 : ℂ) ≠ 0 := pow_ne_zero 2 hw
+      have hw2ne : (w ^ (2 : ℕ) : ℂ) ≠ 0 := pow_ne_zero 2 hw
       field_simp at h
       linear_combination h
     have hjfix : w ^ n + (w ^ n)⁻¹ = w + w⁻¹ := by
@@ -224,9 +224,9 @@ theorem two_le_norm_dicksonMap_multiplier {n : ℕ} (hn : 2 ≤ n) {c : ℂ}
         rw [hstep, one_mul]
       rw [hwn1, hwn_eq] at hderiv
       have hstep2 : (Polynomial.derivative (Polynomial.dickson 1 1 n)).eval (w + w⁻¹) *
-          (1 + -(w ^ 2)⁻¹) = (n : ℂ) * (1 + -(w ^ 2)⁻¹) := by
+          (1 + -(w ^ (2 : ℕ))⁻¹) = (n : ℂ) * (1 + -(w ^ (2 : ℕ))⁻¹) := by
         rw [hderiv]
-        have hw2ne : (w ^ 2 : ℂ) ≠ 0 := pow_ne_zero 2 hw
+        have hw2ne : (w ^ (2 : ℕ) : ℂ) ≠ 0 := pow_ne_zero 2 hw
         field_simp
         try ring
       have hval := mul_right_cancel₀ hfac hstep2
@@ -235,7 +235,7 @@ theorem two_le_norm_dicksonMap_multiplier {n : ℕ} (hn : 2 ≤ n) {c : ℂ}
     · have hwn_eq : w ^ n = w⁻¹ := by
         field_simp
         linear_combination h
-      have hwn1 : w ^ (n - 1) = (w ^ 2)⁻¹ := by
+      have hwn1 : w ^ (n - 1) = (w ^ (2 : ℕ))⁻¹ := by
         have hstep : w ^ (n - 1) * w = w ^ n := by
           rw [← pow_succ]
           congr 1
@@ -246,9 +246,9 @@ theorem two_le_norm_dicksonMap_multiplier {n : ℕ} (hn : 2 ≤ n) {c : ℂ}
         field_simp
       rw [hwn1, hwn_eq] at hderiv
       have hstep2 : (Polynomial.derivative (Polynomial.dickson 1 1 n)).eval (w + w⁻¹) *
-          (1 + -(w ^ 2)⁻¹) = -(n : ℂ) * (1 + -(w ^ 2)⁻¹) := by
+          (1 + -(w ^ (2 : ℕ))⁻¹) = -(n : ℂ) * (1 + -(w ^ (2 : ℕ))⁻¹) := by
         rw [hderiv]
-        have hw2ne : (w ^ 2 : ℂ) ≠ 0 := pow_ne_zero 2 hw
+        have hw2ne : (w ^ (2 : ℕ) : ℂ) ≠ 0 := pow_ne_zero 2 hw
         field_simp
         try ring
       have hval := mul_right_cancel₀ hfac hstep2
@@ -276,13 +276,13 @@ theorem not_conj_dicksonMap_of_nonrepelling {n : ℕ} (hn : 2 ≤ n)
 def invPowerMap (n : ℕ) : ℂ → ℂ := fun z => (z ^ n)⁻¹
 
 theorem hasDerivAt_invPowerMap (n : ℕ) {c : ℂ} (hc : c ≠ 0) :
-    HasDerivAt (invPowerMap n) (-((n : ℂ) * c ^ (n - 1)) / (c ^ n) ^ 2) c :=
+    HasDerivAt (invPowerMap n) (-((n : ℂ) * c ^ (n - 1)) / (c ^ n) ^ (2 : ℕ)) c :=
   (hasDerivAt_pow n c).inv (pow_ne_zero n hc)
 
 /-- **Every finite nonzero fixed point of an inverse power map is repelling.** -/
 theorem invPowerMap_multiplier {n : ℕ} (hn : 2 ≤ n) {c : ℂ} (hc : c ≠ 0)
     (hfix : invPowerMap n c = c) :
-    -((n : ℂ) * c ^ (n - 1)) / (c ^ n) ^ 2 = -(n : ℂ) := by
+    -((n : ℂ) * c ^ (n - 1)) / (c ^ n) ^ (2 : ℕ) = -(n : ℂ) := by
   have hcn : c ^ n ≠ 0 := pow_ne_zero n hc
   have hkey : c ^ (n + 1) = 1 := by
     have : (c ^ n)⁻¹ = c := hfix
@@ -365,8 +365,8 @@ theorem norm_derivWeierstrassP_eq_of_weierstrassP_eq {L : PeriodPair} {u v : ℂ
   have h1 := L.derivWeierstrassP_sq u hu
   have h2 := L.derivWeierstrassP_sq v hv
   rw [h] at h1
-  have hsq : L.derivWeierstrassP u ^ 2 = L.derivWeierstrassP v ^ 2 := by rw [h1, ← h2]
-  have hn : ‖L.derivWeierstrassP u‖ ^ 2 = ‖L.derivWeierstrassP v‖ ^ 2 := by
+  have hsq : L.derivWeierstrassP u ^ (2 : ℕ) = L.derivWeierstrassP v ^ (2 : ℕ) := by rw [h1, ← h2]
+  have hn : ‖L.derivWeierstrassP u‖ ^ (2 : ℕ) = ‖L.derivWeierstrassP v‖ ^ (2 : ℕ) := by
     rw [← norm_pow, ← norm_pow, hsq]
   have h0 : (0 : ℝ) ≤ ‖L.derivWeierstrassP u‖ := norm_nonneg _
   have h0' : (0 : ℝ) ≤ ‖L.derivWeierstrassP v‖ := norm_nonneg _

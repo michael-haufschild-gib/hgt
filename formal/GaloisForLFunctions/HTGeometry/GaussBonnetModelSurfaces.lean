@@ -98,7 +98,7 @@ theorem roundSphere_d2 {R : ℝ} (hR : R ≠ 0) :
 
 /-- **The round sphere of radius `R` has constant Gaussian curvature `1/R²`.** -/
 theorem roundSphere_gaussCurvature {R r : ℝ} (hR : R ≠ 0) (hs : Real.sin (r / R) ≠ 0) :
-    (roundSphere R).gaussCurvature r = 1 / R ^ 2 := by
+    (roundSphere R).gaussCurvature r = 1 / R ^ (2 : ℕ) := by
   unfold WarpProfile.gaussCurvature
   rw [roundSphere_d2 hR, roundSphere_f]
   field_simp

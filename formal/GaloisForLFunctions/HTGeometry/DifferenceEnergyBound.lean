@@ -64,21 +64,21 @@ bound that sees the structure of the sampling set. -/
 theorem sum_pairs_le_sqrt_energy (d : ι → ι → D) (f : D → ℝ) (S : Finset D)
     (hmem : ∀ p : ι × ι, d p.1 p.2 ∈ S) :
     ∑ p : ι × ι, f (d p.1 p.2)
-      ≤ Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ 2) * Real.sqrt (∑ x ∈ S, f x ^ 2) := by
+      ≤ Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ)) * Real.sqrt (∑ x ∈ S, f x ^ (2 : ℕ)) := by
   classical
   rw [sum_pairs_eq_sum_diff d f S hmem]
-  have hcs : (∑ x ∈ S, (diffMult d x : ℝ) * f x) ^ 2
-      ≤ (∑ x ∈ S, (diffMult d x : ℝ) ^ 2) * ∑ x ∈ S, f x ^ 2 :=
+  have hcs : (∑ x ∈ S, (diffMult d x : ℝ) * f x) ^ (2 : ℕ)
+      ≤ (∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ)) * ∑ x ∈ S, f x ^ (2 : ℕ) :=
     Finset.sum_mul_sq_le_sq_mul_sq S (fun x => (diffMult d x : ℝ)) f
-  have hE : 0 ≤ ∑ x ∈ S, (diffMult d x : ℝ) ^ 2 :=
+  have hE : 0 ≤ ∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
-  have hF : 0 ≤ ∑ x ∈ S, f x ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
-  have hprod : Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ 2) * Real.sqrt (∑ x ∈ S, f x ^ 2)
-      = Real.sqrt ((∑ x ∈ S, (diffMult d x : ℝ) ^ 2) * ∑ x ∈ S, f x ^ 2) :=
+  have hF : 0 ≤ ∑ x ∈ S, f x ^ (2 : ℕ) := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hprod : Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ)) * Real.sqrt (∑ x ∈ S, f x ^ (2 : ℕ))
+      = Real.sqrt ((∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ)) * ∑ x ∈ S, f x ^ (2 : ℕ)) :=
     (Real.sqrt_mul hE _).symm
   rw [hprod]
-  have h1 : Real.sqrt ((∑ x ∈ S, (diffMult d x : ℝ) * f x) ^ 2)
-      ≤ Real.sqrt ((∑ x ∈ S, (diffMult d x : ℝ) ^ 2) * ∑ x ∈ S, f x ^ 2) :=
+  have h1 : Real.sqrt ((∑ x ∈ S, (diffMult d x : ℝ) * f x) ^ (2 : ℕ))
+      ≤ Real.sqrt ((∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ)) * ∑ x ∈ S, f x ^ (2 : ℕ)) :=
     Real.sqrt_le_sqrt hcs
   rw [Real.sqrt_sq_eq_abs] at h1
   exact le_trans (le_abs_self _) h1
@@ -88,7 +88,7 @@ theorem sum_pairs_le_sqrt_energy (d : ι → ι → D) (f : D → ℝ) (S : Fins
 case — an arithmetic progression. -/
 theorem sum_diffMult (d : ι → ι → D) (S : Finset D)
     (hmem : ∀ p : ι × ι, d p.1 p.2 ∈ S) :
-    ∑ x ∈ S, (diffMult d x : ℝ) = (Fintype.card ι : ℝ) ^ 2 := by
+    ∑ x ∈ S, (diffMult d x : ℝ) = (Fintype.card ι : ℝ) ^ (2 : ℕ) := by
   classical
   have h := sum_pairs_eq_sum_diff d (fun _ => (1 : ℝ)) S hmem
   simp only [mul_one] at h
@@ -148,10 +148,10 @@ one. -/
 theorem weighted_pairs_le_of_bounded {b : ι → ℝ} {B : ℝ} (d : ι → ι → D) (f : D → ℝ)
     (hb : ∀ r, |b r| ≤ B) (hB : 0 ≤ B) (hf : ∀ x, 0 ≤ f x) :
     ∑ p : ι × ι, |b p.1| * |b p.2| * f (d p.1 p.2)
-      ≤ B ^ 2 * ∑ p : ι × ι, f (d p.1 p.2) := by
+      ≤ B ^ (2 : ℕ) * ∑ p : ι × ι, f (d p.1 p.2) := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun p _ => ?_
-  have h1 : |b p.1| * |b p.2| ≤ B ^ 2 := by
+  have h1 : |b p.1| * |b p.2| ≤ B ^ (2 : ℕ) := by
     have := mul_le_mul (hb p.1) (hb p.2) (abs_nonneg _) hB
     nlinarith [this]
   exact mul_le_mul_of_nonneg_right h1 (hf _)
@@ -181,19 +181,19 @@ energy is at most `R³` — so `√E ≤ R^{3/2}`, against the `R²` that a `sup
 theorem energy_le_cube (d : ι → ι → D) (S : Finset D)
     (hmem : ∀ p : ι × ι, d p.1 p.2 ∈ S)
     (hdet : ∀ x : D, ∀ r s s' : ι, d r s = x → d r s' = x → s = s') :
-    ∑ x ∈ S, (diffMult d x : ℝ) ^ 2
-      ≤ (Fintype.card ι : ℝ) * (Fintype.card ι : ℝ) ^ 2 := by
+    ∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ)
+      ≤ (Fintype.card ι : ℝ) * (Fintype.card ι : ℝ) ^ (2 : ℕ) := by
   classical
-  have hle : ∀ x ∈ S, (diffMult d x : ℝ) ^ 2
+  have hle : ∀ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ)
       ≤ (Fintype.card ι : ℝ) * (diffMult d x : ℝ) := by
     intro x _
     have h := diffMult_le_card d x (hdet x)
     have hcast : (diffMult d x : ℝ) ≤ (Fintype.card ι : ℝ) := by exact_mod_cast h
     nlinarith [Nat.cast_nonneg (α := ℝ) (diffMult d x)]
-  calc ∑ x ∈ S, (diffMult d x : ℝ) ^ 2
+  calc ∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ)
       ≤ ∑ x ∈ S, (Fintype.card ι : ℝ) * (diffMult d x : ℝ) := Finset.sum_le_sum hle
     _ = (Fintype.card ι : ℝ) * ∑ x ∈ S, (diffMult d x : ℝ) := by rw [Finset.mul_sum]
-    _ = (Fintype.card ι : ℝ) * (Fintype.card ι : ℝ) ^ 2 := by
+    _ = (Fintype.card ι : ℝ) * (Fintype.card ι : ℝ) ^ (2 : ℕ) := by
         rw [sum_diffMult d S hmem]
 
 
@@ -232,7 +232,7 @@ theorem sum_pairs_le_min (d : ι → ι → D) (f : D → ℝ) (S : Finset D)
     (hdet : ∀ x : D, ∀ r s s' : ι, d r s = x → d r s' = x → s = s') :
     ∑ p : ι × ι, f (d p.1 p.2)
       ≤ min ((Fintype.card ι : ℝ) * ∑ x ∈ S, f x)
-          (Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ 2) * Real.sqrt (∑ x ∈ S, f x ^ 2)) :=
+          (Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ (2 : ℕ)) * Real.sqrt (∑ x ∈ S, f x ^ (2 : ℕ))) :=
   le_min (sum_pairs_le_card_mul_l1 d f S hmem hf hdet)
     (sum_pairs_le_sqrt_energy d f S hmem)
 

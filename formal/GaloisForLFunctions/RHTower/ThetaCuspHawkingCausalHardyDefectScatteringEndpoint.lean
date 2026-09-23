@@ -131,8 +131,8 @@ theorem thetaCuspHawkingCausalHardyDefectDilation_on_gamowKernel
 theorem thetaCuspHawkingCausalHardyVacuumPartner_krein
     (mode : ThetaCuspHawkingBackreactionResonantMode)
     (hmode : 0 < mode.1.im) (r : ℝ) (f : ThetaCuspHawkingHardyCarrier) :
-    ‖thetaCuspHawkingCausalHardyExterior mode hmode r f‖ ^ 2 -
-        ‖thetaCuspHawkingCausalHardyPartner mode hmode r f‖ ^ 2 = ‖f‖ ^ 2 := by
+    ‖thetaCuspHawkingCausalHardyExterior mode hmode r f‖ ^ (2 : ℕ) -
+        ‖thetaCuspHawkingCausalHardyPartner mode hmode r f‖ ^ (2 : ℕ) = ‖f‖ ^ (2 : ℕ) := by
   let S := thetaCuspHawkingCausalHardyDefectLine mode hmode
   let p := S.starProjection f
   let q := Sᗮ.starProjection f
@@ -141,21 +141,21 @@ theorem thetaCuspHawkingCausalHardyVacuumPartner_krein
   have horth : (inner ℂ ((Real.cosh r : ℂ) • p) q : ℂ) = 0 := by
     rw [inner_smul_left]
     rw [(Submodule.mem_orthogonal S q).mp hq p hp, mul_zero]
-  have hext : ‖thetaCuspHawkingCausalHardyExterior mode hmode r f‖ ^ 2 =
-      ‖(Real.cosh r : ℂ) • p‖ ^ 2 + ‖q‖ ^ 2 := by
+  have hext : ‖thetaCuspHawkingCausalHardyExterior mode hmode r f‖ ^ (2 : ℕ) =
+      ‖(Real.cosh r : ℂ) • p‖ ^ (2 : ℕ) + ‖q‖ ^ (2 : ℕ) := by
     rw [thetaCuspHawkingCausalHardyExterior_apply]
     simpa only [S, p, q, pow_two] using
       norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _ horth
-  have hsplit : ‖f‖ ^ 2 = ‖p‖ ^ 2 + ‖q‖ ^ 2 := by
+  have hsplit : ‖f‖ ^ (2 : ℕ) = ‖p‖ ^ (2 : ℕ) + ‖q‖ ^ (2 : ℕ) := by
     simpa only [p, q] using Submodule.norm_sq_eq_add_norm_sq_starProjection f S
-  have hext' : ‖thetaCuspHawkingCausalHardyExterior mode hmode r f‖ ^ 2 =
-      Real.cosh r ^ 2 * ‖p‖ ^ 2 + ‖q‖ ^ 2 := by
+  have hext' : ‖thetaCuspHawkingCausalHardyExterior mode hmode r f‖ ^ (2 : ℕ) =
+      Real.cosh r ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) + ‖q‖ ^ (2 : ℕ) := by
     rw [hext, norm_smul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos (Real.cosh_pos r), mul_pow]
-  have hpartner : ‖thetaCuspHawkingCausalHardyPartner mode hmode r f‖ ^ 2 =
-      Real.sinh r ^ 2 * ‖p‖ ^ 2 := by
+  have hpartner : ‖thetaCuspHawkingCausalHardyPartner mode hmode r f‖ ^ (2 : ℕ) =
+      Real.sinh r ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) := by
     rw [thetaCuspHawkingCausalHardyPartner_apply, norm_smul, Complex.norm_real, Real.norm_eq_abs]
-    change (|Real.sinh r| * ‖p‖) ^ 2 = _
+    change (|Real.sinh r| * ‖p‖) ^ (2 : ℕ) = _
     rw [mul_pow, sq_abs]
   rw [hext', hpartner]
   nlinarith [Real.cosh_sq_sub_sinh_sq r]
@@ -192,12 +192,12 @@ def thetaCuspHawkingCausalHardyReconstructedSpectralSquare
     (mode : ThetaCuspHawkingBackreactionResonantMode)
     (_hmode : 0 < mode.1.im) : ℂ :=
   -((1 + thetaCuspHawkingCausalHardyNode mode) /
-      (1 - thetaCuspHawkingCausalHardyNode mode)) ^ 2
+      (1 - thetaCuspHawkingCausalHardyNode mode)) ^ (2 : ℕ)
 
 theorem thetaCuspHawkingCausalHardyReconstructedSpectralSquare_eq
     (mode : ThetaCuspHawkingBackreactionResonantMode)
     (hmode : 0 < mode.1.im) :
-    thetaCuspHawkingCausalHardyReconstructedSpectralSquare mode hmode = mode.1 ^ 2 := by
+    thetaCuspHawkingCausalHardyReconstructedSpectralSquare mode hmode = mode.1 ^ (2 : ℕ) := by
   unfold thetaCuspHawkingCausalHardyReconstructedSpectralSquare thetaCuspHawkingCausalHardyNode
   rw [GaloisForLFunctions.HTGeometry.cayleyRight_inv]
   · unfold thetaCuspHawkingCausalZero
@@ -214,7 +214,7 @@ def thetaCuspHawkingCausalHardyOrbitT
 def thetaCuspHawkingCausalHardyOrbitCharge
     (mode : ThetaCuspHawkingBackreactionResonantMode)
     (hmode : 0 < mode.1.im) : ℝ :=
-  (thetaCuspHawkingCausalHardyReconstructedSpectralSquare mode hmode).im ^ 2
+  (thetaCuspHawkingCausalHardyReconstructedSpectralSquare mode hmode).im ^ (2 : ℕ)
 
 def thetaCuspHawkingCausalHardyOrbitKernel
     (mode : ThetaCuspHawkingBackreactionResonantMode)
@@ -248,7 +248,7 @@ theorem thetaCuspHawkingCausalHardyOrbitT_reflected
         (thetaCuspHawkingXiOrbitResonantMode q)) hmode =
       xiSquaredEulerOrbitT q := by
   rw [thetaCuspHawkingCausalHardyOrbitT, thetaCuspHawkingCausalHardyReconstructedSpectralSquare_eq]
-  change ((-xiSpectralPoint q) ^ 2).re = _
+  change ((-xiSpectralPoint q) ^ (2 : ℕ)).re = _
   rw [neg_sq, xiSpectralPoint_sq_re_eq_squaredEulerOrbitT]
 
 theorem thetaCuspHawkingCausalHardyOrbitCharge_reflected
@@ -259,7 +259,7 @@ theorem thetaCuspHawkingCausalHardyOrbitCharge_reflected
         (thetaCuspHawkingXiOrbitResonantMode q)) hmode =
       xiSquaredEulerOrbitCharge q := by
   rw [thetaCuspHawkingCausalHardyOrbitCharge, thetaCuspHawkingCausalHardyReconstructedSpectralSquare_eq]
-  change ((-xiSpectralPoint q) ^ 2).im ^ 2 = _
+  change ((-xiSpectralPoint q) ^ (2 : ℕ)).im ^ (2 : ℕ) = _
   rw [neg_sq, xiSpectralPoint_sq_im_sq_eq_squaredEulerOrbitCharge]
 
 theorem thetaCuspHawkingCausalHardyOrbitKernel_eq_xiSquaredEulerOrbitKernel
@@ -279,9 +279,9 @@ theorem thetaCuspHawkingCausalHardyOrbitKernel_eq_xiSquaredEulerOrbitKernel
 theorem thetaCuspHawkingCausalHardyPartner_energy
     (mode : ThetaCuspHawkingBackreactionResonantMode)
     (hmode : 0 < mode.1.im) (r : ℝ) (f : ThetaCuspHawkingHardyCarrier) :
-    ‖thetaCuspHawkingCausalHardyPartner mode hmode r f‖ ^ 2 =
+    ‖thetaCuspHawkingCausalHardyPartner mode hmode r f‖ ^ (2 : ℕ) =
       thetaCuspHawkingModularPartnerNumber r *
-        ‖(thetaCuspHawkingCausalHardyDefectLine mode hmode).starProjection f‖ ^ 2 := by
+        ‖(thetaCuspHawkingCausalHardyDefectLine mode hmode).starProjection f‖ ^ (2 : ℕ) := by
   rw [thetaCuspHawkingCausalHardyPartner_apply, norm_smul, Complex.norm_real, Real.norm_eq_abs,
     thetaCuspHawkingModularPartnerNumber]
   rw [mul_pow, sq_abs]
@@ -289,9 +289,9 @@ theorem thetaCuspHawkingCausalHardyPartner_energy
 theorem thetaCuspHawkingCausalHardyExterior_energy_sub
     (mode : ThetaCuspHawkingBackreactionResonantMode)
     (hmode : 0 < mode.1.im) (r : ℝ) (f : ThetaCuspHawkingHardyCarrier) :
-    ‖thetaCuspHawkingCausalHardyExterior mode hmode r f‖ ^ 2 - ‖f‖ ^ 2 =
+    ‖thetaCuspHawkingCausalHardyExterior mode hmode r f‖ ^ (2 : ℕ) - ‖f‖ ^ (2 : ℕ) =
       (thetaCuspHawkingModularGain r - 1) *
-        ‖(thetaCuspHawkingCausalHardyDefectLine mode hmode).starProjection f‖ ^ 2 := by
+        ‖(thetaCuspHawkingCausalHardyDefectLine mode hmode).starProjection f‖ ^ (2 : ℕ) := by
   have hkrein := thetaCuspHawkingCausalHardyVacuumPartner_krein mode hmode r f
   have hpartner := thetaCuspHawkingCausalHardyPartner_energy mode hmode r f
   rw [hpartner] at hkrein
@@ -482,14 +482,14 @@ theorem thetaCuspHawkingCausalHardyFullScattering_inverse
 
 private theorem thetaCuspHawkingCausalHardy_lorentzNorm
     (r : ℝ) (p h : ThetaCuspHawkingHardyCarrier) :
-    ‖(Real.cosh r : ℂ) • p + (Real.sinh r : ℂ) • h‖ ^ 2 -
-        ‖(Real.sinh r : ℂ) • p + (Real.cosh r : ℂ) • h‖ ^ 2 =
-      ‖p‖ ^ 2 - ‖h‖ ^ 2 := by
+    ‖(Real.cosh r : ℂ) • p + (Real.sinh r : ℂ) • h‖ ^ (2 : ℕ) -
+        ‖(Real.sinh r : ℂ) • p + (Real.cosh r : ℂ) • h‖ ^ (2 : ℕ) =
+      ‖p‖ ^ (2 : ℕ) - ‖h‖ ^ (2 : ℕ) := by
   rw [norm_add_sq (𝕜 := ℂ), norm_add_sq (𝕜 := ℂ)]
   simp only [norm_smul, Complex.norm_real, Real.norm_eq_abs,
     inner_smul_left, inner_smul_right, Complex.conj_ofReal]
   rw [abs_of_pos (Real.cosh_pos r)]
-  have hsinh : |Real.sinh r| ^ 2 = Real.sinh r ^ 2 := sq_abs _
+  have hsinh : |Real.sinh r| ^ (2 : ℕ) = Real.sinh r ^ (2 : ℕ) := sq_abs _
   simp only [mul_pow]
   rw [hsinh]
   have hcross :
@@ -505,9 +505,9 @@ private theorem thetaCuspHawkingCausalHardy_lorentzNorm
 theorem thetaCuspHawkingCausalHardyFullScattering_krein
     (mode : ThetaCuspHawkingBackreactionResonantMode)
     (hmode : 0 < mode.1.im) (r : ℝ) (f h : ThetaCuspHawkingHardyCarrier) :
-    ‖thetaCuspHawkingCausalHardyFullExteriorOutput mode hmode r f h‖ ^ 2 -
-        ‖thetaCuspHawkingCausalHardyFullPartnerOutput mode hmode r f h‖ ^ 2 =
-      ‖f‖ ^ 2 - ‖h‖ ^ 2 := by
+    ‖thetaCuspHawkingCausalHardyFullExteriorOutput mode hmode r f h‖ ^ (2 : ℕ) -
+        ‖thetaCuspHawkingCausalHardyFullPartnerOutput mode hmode r f h‖ ^ (2 : ℕ) =
+      ‖f‖ ^ (2 : ℕ) - ‖h‖ ^ (2 : ℕ) := by
   let S := thetaCuspHawkingCausalHardyDefectLine mode hmode
   let pf := S.starProjection f
   let ph := S.starProjection h
@@ -535,19 +535,19 @@ theorem thetaCuspHawkingCausalHardyFullScattering_krein
     rw [thetaCuspHawkingCausalHardyFullPartnerOutput, thetaCuspHawkingCausalHardyPartner_apply, thetaCuspHawkingCausalHardyExterior_apply]
     dsimp only [S, pf, ph, qh, dh]
     module
-  have hnormE : ‖thetaCuspHawkingCausalHardyFullExteriorOutput mode hmode r f h‖ ^ 2 =
-      ‖de‖ ^ 2 + ‖qf‖ ^ 2 := by
+  have hnormE : ‖thetaCuspHawkingCausalHardyFullExteriorOutput mode hmode r f h‖ ^ (2 : ℕ) =
+      ‖de‖ ^ (2 : ℕ) + ‖qf‖ ^ (2 : ℕ) := by
     rw [houtE]
     simpa only [pow_two] using
       norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero de qf horthE
-  have hnormH : ‖thetaCuspHawkingCausalHardyFullPartnerOutput mode hmode r f h‖ ^ 2 =
-      ‖dh‖ ^ 2 + ‖qh‖ ^ 2 := by
+  have hnormH : ‖thetaCuspHawkingCausalHardyFullPartnerOutput mode hmode r f h‖ ^ (2 : ℕ) =
+      ‖dh‖ ^ (2 : ℕ) + ‖qh‖ ^ (2 : ℕ) := by
     rw [houtH]
     simpa only [pow_two] using
       norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero dh qh horthH
-  have hsplitF : ‖f‖ ^ 2 = ‖pf‖ ^ 2 + ‖qf‖ ^ 2 := by
+  have hsplitF : ‖f‖ ^ (2 : ℕ) = ‖pf‖ ^ (2 : ℕ) + ‖qf‖ ^ (2 : ℕ) := by
     simpa only [pf, qf] using Submodule.norm_sq_eq_add_norm_sq_starProjection f S
-  have hsplitH : ‖h‖ ^ 2 = ‖ph‖ ^ 2 + ‖qh‖ ^ 2 := by
+  have hsplitH : ‖h‖ ^ (2 : ℕ) = ‖ph‖ ^ (2 : ℕ) + ‖qh‖ ^ (2 : ℕ) := by
     simpa only [ph, qh] using Submodule.norm_sq_eq_add_norm_sq_starProjection h S
   have hdefect := thetaCuspHawkingCausalHardy_lorentzNorm r pf ph
   rw [hnormE, hnormH]
@@ -587,9 +587,9 @@ theorem exists_thetaCuspHawkingCausalHardyDefect_fullScattering_eventually_negat
         Module.finrank ℂ ((thetaCuspHawkingCausalHardyRange mode hmode)ᗮ) = 1 ∧
         thetaCuspHawkingCausalHardyOrbitKernel mode hmode = xiSquaredEulerOrbitKernel q ∧
         (∀ r : ℝ, ∀ f h : ThetaCuspHawkingHardyCarrier,
-          ‖thetaCuspHawkingCausalHardyFullExteriorOutput mode hmode r f h‖ ^ 2 -
-            ‖thetaCuspHawkingCausalHardyFullPartnerOutput mode hmode r f h‖ ^ 2 =
-              ‖f‖ ^ 2 - ‖h‖ ^ 2) ∧
+          ‖thetaCuspHawkingCausalHardyFullExteriorOutput mode hmode r f h‖ ^ (2 : ℕ) -
+            ‖thetaCuspHawkingCausalHardyFullPartnerOutput mode hmode r f h‖ ^ (2 : ℕ) =
+              ‖f‖ ^ (2 : ℕ) - ‖h‖ ^ (2 : ℕ)) ∧
         ∃ R : ℝ, ∀ r : ℝ, R ≤ r →
           symmetricThreePointDet (thetaCuspHawkingCausalHardyStimulatedKernel mode hmode r) x y z < 0 := by
   obtain ⟨mode, hmode, horient⟩ :=

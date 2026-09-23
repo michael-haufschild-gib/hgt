@@ -21,10 +21,10 @@ theorem logJetJacobian_one_det {Q : ℕ → Polynomial ℂ} (v : ℕ → Polynom
     (logJetJacobian Q v 1).det
       = logFactor (Q 1) 1
           * (prodHead Q 2
-              * (fact (scaledLogWronskian (Q 2) (v 2)) 2 / fact (Q 2) 2 ^ 2))
+              * (fact (scaledLogWronskian (Q 2) (v 2)) 2 / fact (Q 2) 2 ^ (2 : ℕ)))
         - logFactor (Q 2) 2
           * (prodHead Q 1
-                * (fact (scaledLogWronskian (Q 1) (v 1)) 1 / fact (Q 1) 1 ^ 2)
+                * (fact (scaledLogWronskian (Q 1) (v 1)) 1 / fact (Q 1) 1 ^ (2 : ℕ))
               + logFactor (Q 1) 1 * (logFactor (Q 2) 2 * prodJet Q v 2)) := by
   have h00 : logJetJacobian Q v 1 0 0 = logFactor (Q 1) 1 := by
     simp [logJetJacobian, uniformBordered, logGradient]
@@ -39,7 +39,7 @@ theorem logJetJacobian_one_det {Q : ℕ → Polynomial ℂ} (v : ℕ → Polynom
     rw [show (1 : Fin 2) = Fin.succ 0 from rfl, Fin.cases_succ]
     simp
   have hrow0 : fpderiv 1 (logSum Q v 3)
-      = prodHead Q 1 * (fact (scaledLogWronskian (Q 1) (v 1)) 1 / fact (Q 1) 1 ^ 2)
+      = prodHead Q 1 * (fact (scaledLogWronskian (Q 1) (v 1)) 1 / fact (Q 1) 1 ^ (2 : ℕ))
         + logFactor (Q 1) 1 * (logFactor (Q 2) 2 * prodJet Q v 2) := by
     have h := fpderiv_logSum_row (Q := Q) v hQ (n := 1) (j := 0) (by omega)
     rw [h]
@@ -48,7 +48,7 @@ theorem logJetJacobian_one_det {Q : ℕ → Polynomial ℂ} (v : ℕ → Polynom
     rw [show (3 : ℕ) = 2 + 1 from rfl, logSum_succ]
     ring
   have hrow1 : fpderiv 2 (logSum Q v 3)
-      = prodHead Q 2 * (fact (scaledLogWronskian (Q 2) (v 2)) 2 / fact (Q 2) 2 ^ 2) := by
+      = prodHead Q 2 * (fact (scaledLogWronskian (Q 2) (v 2)) 2 / fact (Q 2) 2 ^ (2 : ℕ)) := by
     have h := fpderiv_logSum_row (Q := Q) v hQ (n := 1) (j := 1) (by omega)
     rw [h]
     simp

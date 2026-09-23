@@ -139,10 +139,10 @@ theorem tendsto_routeUDyadicParabolicEvenSample
     filter_upwards [hzReBound, hperiodBound] with k hk hK
     exact hk.le.trans hK
   have hperiodSq : Tendsto
-      (fun k : ℕ => routeUHardEdgeAliasPeriod (k : ℝ) ^ 2) atTop atTop := by
+      (fun k : ℕ => routeUHardEdgeAliasPeriod (k : ℝ) ^ (2 : ℕ)) atTop atTop := by
     simpa only [pow_two] using hperiod.atTop_mul_atTop₀ hperiod
   have hbound : Tendsto
-      (fun k : ℕ => C / routeUHardEdgeAliasPeriod (k : ℝ) ^ 2)
+      (fun k : ℕ => C / routeUHardEdgeAliasPeriod (k : ℝ) ^ (2 : ℕ))
       atTop (nhds 0) := tendsto_const_nhds.div_atTop hperiodSq
   have htail : Tendsto
       (fun k : ℕ => routeUComplexHardEdgeAliasTail n f (k : ℝ) (z k))
@@ -231,10 +231,10 @@ theorem tendsto_routeUDyadicParabolicFullSample_zero
   have hkg : Tendsto (fun k : ℕ => kgFreq (x k)) atTop atTop := by
     refine tendsto_atTop_mono' atTop ?_ hxAbs
     exact Eventually.of_forall fun k => abs_le_kgFreq_real (x k)
-  have hkgSq : Tendsto (fun k : ℕ => kgFreq (x k) ^ 2) atTop atTop :=
+  have hkgSq : Tendsto (fun k : ℕ => kgFreq (x k) ^ (2 : ℕ)) atTop atTop :=
     (tendsto_pow_atTop (n := 2) (by norm_num)).comp hkg
   have hcentralBound : Tendsto
-      (fun k : ℕ => D / kgFreq (x k) ^ 2) atTop (nhds 0) :=
+      (fun k : ℕ => D / kgFreq (x k) ^ (2 : ℕ)) atTop (nhds 0) :=
     tendsto_const_nhds.div_atTop hkgSq
   have hpIm : ∀ k, |(p k).im| ≤ 1 := by
     intro k
@@ -256,8 +256,8 @@ theorem tendsto_routeUDyadicParabolicFullSample_zero
       apply (le_div_iff₀ (pow_pos (kgFreq_pos (x k)) 2)).2
       calc
         ‖routeUComplexPositiveFourierExtension n f (p k)‖ *
-            kgFreq (x k) ^ 2 =
-          kgFreq (x k) ^ 2 *
+            kgFreq (x k) ^ (2 : ℕ) =
+          kgFreq (x k) ^ (2 : ℕ) *
             ‖routeUComplexPositiveFourierExtension n f (p k)‖ := by ring
         _ ≤ D := by simpa only [x, D, Nat.mul_one] using hdecay
   have hperiodFine : Tendsto
@@ -266,11 +266,11 @@ theorem tendsto_routeUDyadicParabolicFullSample_zero
     hperiod.comp tendsto_routeUDyadicFineIndex_atTop
   have hperiodFineSq : Tendsto
       (fun k : ℕ => routeUHardEdgeAliasPeriod
-        (routeUDyadicFineIndex k : ℝ) ^ 2) atTop atTop := by
+        (routeUDyadicFineIndex k : ℝ) ^ (2 : ℕ)) atTop atTop := by
     simpa only [pow_two] using hperiodFine.atTop_mul_atTop₀ hperiodFine
   have htailBound : Tendsto
       (fun k : ℕ => C / routeUHardEdgeAliasPeriod
-        (routeUDyadicFineIndex k : ℝ) ^ 2) atTop (nhds 0) :=
+        (routeUDyadicFineIndex k : ℝ) ^ (2 : ℕ)) atTop (nhds 0) :=
     tendsto_const_nhds.div_atTop hperiodFineSq
   have hphaseWindow : ∀ k,
       |(p k).re| ≤ routeUHardEdgeAliasPeriod

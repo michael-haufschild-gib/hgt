@@ -13,8 +13,8 @@ set_option backward.isDefEq.respectTransparency false
 /-- The original radial equation's second derivative density for the actual complete physical response. -/
 def physicalCuspSecond (q r : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (hw : 0 < w.re) (hd : 3/2 < w.re) (hwi : w.im ≠ 0) (hwr : |w.re| < 2) (t : ℝ) : ℂ :=
-  w^2*physicalCuspProfile q r branch w a hw hd hwi hwr t-
-    (physicalAngularParameter r^2-1/4)*angularWeight t^2*physicalCuspProfile q r branch w a hw hd hwi hwr t-
+  w^(2 : ℕ)*physicalCuspProfile q r branch w a hw hd hwi hwr t-
+    (physicalAngularParameter r^(2 : ℕ)-1/4)*angularWeight t^(2 : ℕ)*physicalCuspProfile q r branch w a hw hd hwi hwr t-
     continuedAngularSourceProjection q branch (physicalAngularParameter r) a w t
 
 theorem physicalCuspSecond_continuousOn (q r : XiZeroCopy) (branch : Bool) (w a : ℂ)
@@ -54,9 +54,9 @@ private theorem physical_local_weak (q r : XiZeroCopy) (branch : Bool) (w a : �
   rw [negativePairing _ _ h₂,negativePairing _ _ hψ,negativePairing _ _ hψ,
     negativePairing _ _ hψ] at h
   let P := physicalCuspProfile q r branch w a hw hd hwi hwr
-  let V : ℝ → ℂ := fun t => angularWeight t^2*P t
+  let V : ℝ → ℂ := fun t => angularWeight t^(2 : ℕ)*P t
   let S := continuedAngularSourceProjection q branch (physicalAngularParameter r) a w
-  let lambda := physicalAngularParameter r^2-1/4
+  let lambda := physicalAngularParameter r^(2 : ℕ)-1/4
   have hiP := schwartz_pair_integrable ψ hk P (physicalCuspProfile_continuous q r branch w a hw hd hwi hwr)
   have hVc : Continuous V := (angularWeight_smooth.continuous.pow 2).mul
     (physicalCuspProfile_continuous q r branch w a hw hd hwi hwr)
@@ -64,18 +64,18 @@ private theorem physical_local_weak (q r : XiZeroCopy) (branch : Bool) (w a : �
   have hiS : Integrable (fun t => ψ t*S t) :=
     radial_test_representative_integrable f _ S (continuedAngularSourceL2_ae q branch _ a w hwi hwr)
   have he (t : ℝ) : ψ t*physicalCuspSecond q r branch w a hw hd hwi hwr t =
-      w^2*(ψ t*P t)-lambda*(ψ t*V t)-ψ t*S t := by
+      w^(2 : ℕ)*(ψ t*P t)-lambda*(ψ t*V t)-ψ t*S t := by
     dsimp [physicalCuspSecond,P,V,S,lambda]
     ring
   simp only [he]
-  have hiPV : Integrable (fun t => w^2*(ψ t*P t)-lambda*(ψ t*V t)) := by
-    convert (hiP.const_mul (w^2)).sub (hiV.const_mul lambda) using 1
+  have hiPV : Integrable (fun t => w^(2 : ℕ)*(ψ t*P t)-lambda*(ψ t*V t)) := by
+    convert (hiP.const_mul (w^(2 : ℕ))).sub (hiV.const_mul lambda) using 1
     rfl
   rw [integral_sub hiPV hiS,
-    integral_sub (hiP.const_mul (w^2)) (hiV.const_mul lambda),integral_const_mul,integral_const_mul]
+    integral_sub (hiP.const_mul (w^(2 : ℕ))) (hiV.const_mul lambda),integral_const_mul,integral_const_mul]
   change (∫ t : ℝ, deriv (deriv (ψ : ℝ → ℂ)) t*P t) = _
   change (∫ t : ℝ, deriv (deriv (ψ : ℝ → ℂ)) t*P t)+lambda*(∫ t : ℝ, ψ t*V t)-
-    w^2*(∫ t : ℝ, ψ t*P t) = -(∫ t : ℝ, ψ t*S t) at h
+    w^(2 : ℕ)*(∫ t : ℝ, ψ t*P t) = -(∫ t : ℝ, ψ t*S t) at h
   linear_combination h
 
 /-- Both classical radial derivatives belong to the original complete-source physical profile. -/
@@ -99,9 +99,9 @@ theorem physicalCuspProfile_hasDerivAt (q r : XiZeroCopy) (branch : Bool) (w a :
 theorem physicalCuspProfile_equation (q r : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (hw : 0 < w.re) (hd : 3/2 < w.re) (hwi : w.im ≠ 0) (hwr : |w.re| < 2)
     (t : ℝ) (ht : t < 0) :
-    w^2*physicalCuspProfile q r branch w a hw hd hwi hwr t-
+    w^(2 : ℕ)*physicalCuspProfile q r branch w a hw hd hwi hwr t-
       deriv (deriv (physicalCuspProfile q r branch w a hw hd hwi hwr)) t-
-      (physicalAngularParameter r^2-1/4)*angularWeight t^2*physicalCuspProfile q r branch w a hw hd hwi hwr t =
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*angularWeight t^(2 : ℕ)*physicalCuspProfile q r branch w a hw hd hwi hwr t =
       continuedAngularSourceProjection q branch (physicalAngularParameter r) a w t := by
   rw [(physicalCuspProfile_hasDerivAt q r branch w a hw hd hwi hwr t ht).2.deriv]
   unfold physicalCuspSecond

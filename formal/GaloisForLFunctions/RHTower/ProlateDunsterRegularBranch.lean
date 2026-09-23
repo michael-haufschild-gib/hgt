@@ -37,7 +37,7 @@ theorem besselK_tendsto_atBot_zero :
 /-- The Bessel weighted Wronskian has the endpoint value `pi/4`. -/
 theorem besselWronskian_tendsto_pi_div_four :
     Tendsto besselWronskian (nhdsWithin 0 (Ioi 0)) (nhds (Real.pi / 4)) := by
-  let rhs : ℝ → ℝ := fun u => Real.pi / 4 * besselJ0 u ^ 2
+  let rhs : ℝ → ℝ := fun u => Real.pi / 4 * besselJ0 u ^ (2 : ℕ)
     + u * (besselJ0 u * besselMDeriv u - besselJ0Deriv u * besselM u)
   have hrhs : ContinuousAt rhs 0 := by
     dsimp [rhs]
@@ -81,12 +81,12 @@ theorem besselWronskian_eq_pi_div_four {u : ℝ} (hu : 0 < u) :
 theorem xiEndpointPhase_tendsto_zero_at_endpoint
     {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
     Tendsto (xiEndpointPhase s) (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
-  have hd : Tendsto (fun x : ℝ => x ^ 2 - 1)
+  have hd : Tendsto (fun x : ℝ => x ^ (2 : ℕ) - 1)
       (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
-    have hcont : ContinuousAt (fun x : ℝ => x ^ 2 - 1) 1 := by fun_prop
+    have hcont : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ) - 1) 1 := by fun_prop
     convert hcont.tendsto.mono_left
       (show nhdsWithin (1 : ℝ) (Ioi 1) ≤ nhds 1 from inf_le_left) using 1; norm_num
-  have hsqrt : Tendsto (fun x : ℝ => Real.sqrt (x ^ 2 - 1))
+  have hsqrt : Tendsto (fun x : ℝ => Real.sqrt (x ^ (2 : ℕ) - 1))
       (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
     simpa only [Function.comp_def, Real.sqrt_zero] using
       Real.continuous_sqrt.continuousAt.tendsto.comp hd

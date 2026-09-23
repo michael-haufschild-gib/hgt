@@ -8,9 +8,9 @@ The literal adaptive mixed/completed `P^sharp` source has a stronger use than si
 linear report.  After intrinsic admitted-norm normalization and subtraction of the endogenous
 Jacobi drift, it leaves the strict weighted-Cauchy surplus
 
-`(2n+1) D_n - F_n^2`.
+`(2n+1) D_n - F_n^(2 : ℕ)`.
 
-Dividing by `F_n^2` gives the velocity of the reciprocal projective flux clock.  In the normalized
+Dividing by `F_n^(2 : ℕ)` gives the velocity of the reciprocal projective flux clock.  In the normalized
 far-right gauge this arithmetic work rate tends exactly to one at every fixed positive degree.
 Thus monic norm collapse and coordinate dilation do not erase the producer; only diagonal
 degree/mass shape escape remains.
@@ -27,8 +27,8 @@ noncomputable section
 /-- Dimensionless Jacobi dissipation in the reciprocal-mass recession gauge. -/
 def dimensionlessCumulativeJacobiDissipation (w : ℝ) (n : ℕ) : ℝ :=
   let s := xiShiftedFarRightNormalizedMoment w
-  2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-    HTGeometry.monicOrthoAlpha s n ^ 2 +
+  2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+    HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
     4 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
     2 * (n + 1 : ℝ) *
       (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1))
@@ -41,13 +41,13 @@ def dimensionlessProjectiveArithmeticSurplus (w : ℝ) (n : ℕ) : ℝ :=
   let alpha := HTGeometry.monicOrthoAlpha s n
   let F := dimensionlessCumulativeJacobiFlux w n
   (2 * n + 1 : ℝ) *
-      (2 * relativeArithmeticSource w n - alpha * F - 2 * (n : ℝ) * alpha ^ 2) -
-    F ^ 2
+      (2 * relativeArithmeticSource w n - alpha * F - 2 * (n : ℝ) * alpha ^ (2 : ℕ)) -
+    F ^ (2 : ℕ)
 
 /-- Scale-free nonlinear arithmetic work per squared cumulative-flux amplitude. -/
 def dimensionlessProjectiveArithmeticWorkRate (w : ℝ) (n : ℕ) : ℝ :=
   dimensionlessProjectiveArithmeticSurplus w n /
-    dimensionlessCumulativeJacobiFlux w n ^ 2
+    dimensionlessCumulativeJacobiFlux w n ^ (2 : ℕ)
 
 /-- Exact energy/dissipation decomposition in the normalized recession gauge. -/
 theorem two_mul_adaptiveOrthoJacobiEnergy_eq_dimensionlessDissipation_add_riccatiDrift
@@ -58,19 +58,19 @@ theorem two_mul_adaptiveOrthoJacobiEnergy_eq_dimensionlessDissipation_add_riccat
         HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) n *
           dimensionlessCumulativeJacobiFlux w n +
         2 * (n : ℝ) *
-          HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) n ^ 2 := by
+          HTGeometry.monicOrthoAlpha (xiShiftedFarRightNormalizedMoment w) n ^ (2 : ℕ) := by
   let s := xiShiftedFarRightNormalizedMoment w
   let alpha := HTGeometry.monicOrthoAlpha s n
   have hsquares :
       (∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2) =
-        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ)) =
+        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
           alpha * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-          (n : ℝ) * alpha ^ 2 / 4 := by
+          (n : ℝ) * alpha ^ (2 : ℕ) / 4 := by
     have hpoint (j : ℕ) :
-        (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2 =
-          HTGeometry.monicOrthoAlpha s j ^ 2 +
-            alpha * HTGeometry.monicOrthoAlpha s j + alpha ^ 2 / 4 := by
+        (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ) =
+          HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) +
+            alpha * HTGeometry.monicOrthoAlpha s j + alpha ^ (2 : ℕ) / 4 := by
       ring
     simp_rw [hpoint]
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
@@ -81,8 +81,8 @@ theorem two_mul_adaptiveOrthoJacobiEnergy_eq_dimensionlessDissipation_add_riccat
     dimensionlessCumulativeJacobiFlux]
   change 2 *
       ((∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2) +
-        (3 * (n : ℝ) / 4 + 1) * alpha ^ 2 +
+          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ)) +
+        (3 * (n : ℝ) / 4 + 1) * alpha ^ (2 : ℕ) +
         2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
         (n + 1 : ℝ) *
           (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1))) = _
@@ -95,7 +95,7 @@ theorem dimensionlessCumulativeJacobiFlux_sq_lt_mul_dissipation
     {w : ℝ} {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef) :
-    dimensionlessCumulativeJacobiFlux w n ^ 2 <
+    dimensionlessCumulativeJacobiFlux w n ^ (2 : ℕ) <
       (2 * n + 1 : ℝ) * dimensionlessCumulativeJacobiDissipation w n := by
   let s := xiShiftedFarRightNormalizedMoment w
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
@@ -118,7 +118,7 @@ theorem dimensionlessCumulativeJacobiFlux_sq_lt_mul_dissipation
   simp only [dimensionlessCumulativeJacobiFlux,
     dimensionlessCumulativeJacobiDissipation]
   change (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-      HTGeometry.monicOrthoAlpha s n) ^ 2 < _
+      HTGeometry.monicOrthoAlpha s n) ^ (2 : ℕ) < _
   have hweight : 0 < (2 * n + 1 : ℝ) := by positivity
   have hextra : 0 <
       4 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
@@ -127,10 +127,10 @@ theorem dimensionlessCumulativeJacobiFlux_sq_lt_mul_dissipation
     exact add_pos_of_nonneg_of_pos (mul_nonneg (by norm_num) hbetas)
       (mul_pos (mul_pos (by norm_num) (by positivity)) hboundary)
   have henergyLt :
-      2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-          HTGeometry.monicOrthoAlpha s n ^ 2 <
-        2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-          HTGeometry.monicOrthoAlpha s n ^ 2 +
+      2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+          HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) <
+        2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+          HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
           4 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
           2 * (n + 1 : ℝ) *
             (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1)) := by
@@ -145,7 +145,7 @@ theorem dimensionlessProjectiveArithmeticSurplus_eq_cauchyGap
       (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef) :
     dimensionlessProjectiveArithmeticSurplus w n =
       (2 * n + 1 : ℝ) * dimensionlessCumulativeJacobiDissipation w n -
-        dimensionlessCumulativeJacobiFlux w n ^ 2 := by
+        dimensionlessCumulativeJacobiFlux w n ^ (2 : ℕ) := by
   have hsource := relativeArithmeticSource_eq_adaptiveOrthoJacobiEnergy hw hn hH
   have henergy :=
     two_mul_adaptiveOrthoJacobiEnergy_eq_dimensionlessDissipation_add_riccatiDrift w n
@@ -164,11 +164,11 @@ theorem dimensionlessProjectiveArithmeticSurplus_pos
   rw [dimensionlessProjectiveArithmeticSurplus_eq_cauchyGap hw hn hH]
   exact sub_pos.mpr (dimensionlessCumulativeJacobiFlux_sq_lt_mul_dissipation hn hH)
 
-/-- Fixed-degree normalized arithmetic surplus has the exact arcsine boundary `c^2/4`. -/
+/-- Fixed-degree normalized arithmetic surplus has the exact arcsine boundary `c^(2 : ℕ)/4`. -/
 theorem tendsto_dimensionlessProjectiveArithmeticSurplus
     {n : ℕ} (hn : n ≠ 0) :
     Tendsto (fun w : ℝ => dimensionlessProjectiveArithmeticSurplus w n) atTop
-      (nhds ((((2 * n + 1 : ℕ) : ℝ) ^ 2) / 4)) := by
+      (nhds ((((2 * n + 1 : ℕ) : ℝ) ^ (2 : ℕ)) / 4)) := by
   have hsource := tendsto_relativeArithmeticSource hn
   have halpha := tendsto_dimensionless_monicOrthoAlpha n
   have hflux := tendsto_dimensionlessCumulativeJacobiFlux n
@@ -190,7 +190,7 @@ theorem tendsto_dimensionlessProjectiveArithmeticWorkRate_one
       atTop (nhds 1) := by
   have hsurplus := tendsto_dimensionlessProjectiveArithmeticSurplus hn
   have hflux := (tendsto_dimensionlessCumulativeJacobiFlux n).pow 2
-  have hden : ((((2 * n + 1 : ℕ) : ℝ) / 2) ^ 2) ≠ 0 := by
+  have hden : ((((2 * n + 1 : ℕ) : ℝ) / 2) ^ (2 : ℕ)) ≠ 0 := by
     positivity
   have h := hsurplus.div hflux hden
   convert h using 1
@@ -205,22 +205,22 @@ theorem tendsto_dimensionlessProjectiveArithmeticWorkRate_one
 def xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus (w : ℝ) (n : ℕ) : ℝ :=
   let s := xiShiftedRealMomentSequence w
   let alpha := HTGeometry.monicOrthoAlpha s n
-  let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n
+  let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n
   let h := HTGeometry.monicOrthoNormSq s n
   let source := xiShiftedAdaptiveMixedCompletedArithmeticSource w
     (HTGeometry.monicMomentAdmissionPolynomial s n)
   (2 * n + 1 : ℝ) *
-      (source / h - alpha * F - 2 * (n : ℝ) * alpha ^ 2) - F ^ 2
+      (source / h - alpha * F - 2 * (n : ℝ) * alpha ^ (2 : ℕ)) - F ^ (2 : ℕ)
 
-/-- Actual-mass literal source surplus is exactly `(2n+1)D-F^2`. -/
+/-- Actual-mass literal source surplus is exactly `(2n+1)D-F^(2 : ℕ)`. -/
 theorem xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_cauchyGap
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus w n =
       (2 * n + 1 : ℝ) *
-          xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ 2) n -
-        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n ^ 2 := by
+          xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ (2 : ℕ)) n -
+        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n ^ (2 : ℕ) := by
   have hsource :=
     xiShiftedAdaptiveMixedCompletedArithmeticSource_canonicalAdmission_eq_jacobiEnergy
       hw hn hH
@@ -238,13 +238,13 @@ theorem xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_cauchyGap
     hn hH
   have henergy' :
       2 * HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n =
-        xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ 2) n +
+        xiShiftedCanonicalAdmissionCumulativeJacobiDissipation (w ^ (2 : ℕ)) n +
           HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n *
-            xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n +
+            xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n +
           2 * (n : ℝ) *
-            HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n ^ 2 := by
+            HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n ^ (2 : ℕ) := by
     change 2 * HTGeometry.adaptiveOrthoJacobiEnergy
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n = _
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n = _
     exact henergy
   unfold xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus
   dsimp only
@@ -270,30 +270,30 @@ theorem mul_flux_sq_lt_mul_relativeCompletedSource
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     let s := xiShiftedRealMomentSequence w
-    let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n
+    let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n
     let source := xiShiftedAdaptiveMixedCompletedArithmeticSource w
       (HTGeometry.monicMomentAdmissionPolynomial s n)
-    (6 * n - 1 : ℝ) * F ^ 2 <
+    (6 * n - 1 : ℝ) * F ^ (2 : ℕ) <
       8 * (n : ℝ) * (2 * n + 1 : ℝ) *
         (source / HTGeometry.monicOrthoNormSq s n) := by
   let s := xiShiftedRealMomentSequence w
-  let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n
+  let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n
   let alpha := HTGeometry.monicOrthoAlpha s n
   let source := xiShiftedAdaptiveMixedCompletedArithmeticSource w
     (HTGeometry.monicMomentAdmissionPolynomial s n)
   let c : ℝ := (2 * n + 1 : ℝ)
   let R : ℝ := source / HTGeometry.monicOrthoNormSq s n
   have hsurplus := xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_pos hw hn hH
-  have hbase : F ^ 2 < c * (R - alpha * F - 2 * (n : ℝ) * alpha ^ 2) := by
+  have hbase : F ^ (2 : ℕ) < c * (R - alpha * F - 2 * (n : ℝ) * alpha ^ (2 : ℕ)) := by
     unfold xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus at hsurplus
     simpa only [s, F, alpha, source, c, R] using sub_pos.mp hsurplus
   have hnR : 0 < 8 * (n : ℝ) := by positivity
   have hscaled := mul_lt_mul_of_pos_left hbase hnR
   have hc : 0 ≤ c := by dsimp only [c]; positivity
-  have hsquare : 0 ≤ c * (4 * (n : ℝ) * alpha + F) ^ 2 :=
+  have hsquare : 0 ≤ c * (4 * (n : ℝ) * alpha + F) ^ (2 : ℕ) :=
     mul_nonneg hc (sq_nonneg _)
   dsimp only
-  change (6 * (n : ℝ) - 1) * F ^ 2 < 8 * (n : ℝ) * c * R
+  change (6 * (n : ℝ) - 1) * F ^ (2 : ℕ) < 8 * (n : ℝ) * c * R
   nlinarith
 
 /-- Reciprocal projective clock of the degree-normalized cumulative Jacobi flux. -/
@@ -306,21 +306,21 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionArithmeticProjectiveClock_eq_sourc
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    (hF : xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n ≠ 0) :
+    (hF : xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n ≠ 0) :
     HasDerivAt
       (fun y => xiShiftedCanonicalAdmissionArithmeticProjectiveClock y n)
       (xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus w n /
-        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n ^ 2)
-      (w ^ 2) := by
+        xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n ^ (2 : ℕ))
+      (w ^ (2 : ℕ)) := by
   let c : ℝ := (2 * n + 1 : ℝ)
   have hc : 0 < c := by positivity
   have hflux := hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux
     (sq_pos_of_pos (lt_trans (by norm_num) hw)) hn hH
   have hU := hflux.div_const c
-  have hUne : xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ 2) n ≠ 0 := by
+  have hUne : xiShiftedCanonicalAdmissionRenormalizedJacobiFlux (w ^ (2 : ℕ)) n ≠ 0 := by
     unfold xiShiftedCanonicalAdmissionRenormalizedJacobiFlux
     exact div_ne_zero hF (ne_of_gt hc)
-  have hclock := (hU.inv hUne).sub (hasDerivAt_id (w ^ 2))
+  have hclock := (hU.inv hUne).sub (hasDerivAt_id (w ^ (2 : ℕ)))
   have hsurplus :=
     xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_cauchyGap hw hn hH
   apply hclock.congr_deriv
@@ -334,9 +334,9 @@ theorem deriv_xiShiftedCanonicalAdmissionArithmeticProjectiveClock_pos
     {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef)
-    (hF : xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n ≠ 0) :
+    (hF : xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n ≠ 0) :
     0 < deriv
-      (fun y => xiShiftedCanonicalAdmissionArithmeticProjectiveClock y n) (w ^ 2) := by
+      (fun y => xiShiftedCanonicalAdmissionArithmeticProjectiveClock y n) (w ^ (2 : ℕ)) := by
   rw [(hasDerivAt_xiShiftedCanonicalAdmissionArithmeticProjectiveClock_eq_sourceWorkRate
     hw hn hH hF).deriv]
   exact div_pos (xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_pos hw hn hH)

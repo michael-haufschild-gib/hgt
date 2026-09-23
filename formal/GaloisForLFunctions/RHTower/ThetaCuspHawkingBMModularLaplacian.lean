@@ -30,7 +30,7 @@ theorem chartLaplacian_modular_pullback (A : SL(2,ℤ)) (f : UpperHalfPlane → 
     funext w
     simp only [G,Function.comp_apply,ofComplex_apply]
   rw [hfun] at hc
-  have hd : deriv G (z:ℂ) = 1/(denom A z)^2 := by
+  have hd : deriv G (z:ℂ) = 1/(denom A z)^(2 : ℕ) := by
     have hdetone : (A : GL (Fin 2) ℝ).val.det = 1 :=
       (Matrix.SpecialLinearGroup.map (Int.castRingHom ℝ) A).det_coe
     simpa only [G,hdetone,Complex.ofReal_one,sl_moeb] using

@@ -64,13 +64,13 @@ theorem physicalOppositeTemporalCurrent_horizon_restoration (q : XiZeroCopy) (br
     have hlinear : ‖d₁ u * (z : ℂ)‖ ≤ M * z := by
       rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hz.1]
       exact mul_le_mul_of_nonneg_right (hd₁ u (hJ u hu)) hz.1.le
-    have hzsq : z ^ 2 ≤ z := by nlinarith [hz.1, hz.2, hBh]
+    have hzsq : z ^ (2 : ℕ) ≤ z := by nlinarith [hz.1, hz.2, hBh]
     calc
       _ = ‖(oppositeTemporalProfile q branch a zang u z - d u - d₁ u * (z : ℂ)) +
           d₁ u * (z : ℂ)‖ := by congr 1; ring
       _ ≤ ‖oppositeTemporalProfile q branch a zang u z - d u - d₁ u * (z : ℂ)‖ +
           ‖d₁ u * (z : ℂ)‖ := norm_add_le _ _
-      _ ≤ C * z ^ 2 + M * z := add_le_add hrem hlinear
+      _ ≤ C * z ^ (2 : ℕ) + M * z := add_le_add hrem hlinear
       _ ≤ (C + M) * z := by nlinarith [mul_le_mul_of_nonneg_left hzsq hC]
   refine ⟨R, B, d, hR, hB, hBh, ?_⟩
   intro b hb hbB

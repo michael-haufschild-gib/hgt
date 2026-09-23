@@ -33,7 +33,7 @@ namespace HedenmalmThetaSource
 /-- Quantile energy of the actual Hedenmalm theta root mode. -/
 def thetaRootEnergy (z : ℂ) : ℝ :=
   ∫ t in Ioo (0 : ℝ) 1,
-    quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ 2
+    quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ (2 : ℕ)
 
 /-- **Strict root-energy law.** At a zero of the completed theta transform, the actual quantile
 root mode has strictly positive energy. Zero energy would force the continuous mode to vanish on
@@ -42,7 +42,7 @@ theorem thetaRootEnergy_pos {z : ℂ} (hz : |z.im| < 1)
     (hzero : xiC thetaSource z = 0) :
     0 < thetaRootEnergy z := by
   let f : ℝ → ℝ := fun t =>
-    quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ 2
+    quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ (2 : ℕ)
   have he := rootModeEndpoints_thetaSource hz hzero
   have hf_nonneg : ∀ t : ℝ, 0 ≤ f t := by
     intro t
@@ -65,9 +65,9 @@ theorem thetaRootEnergy_pos {z : ℂ} (hz : |z.im| < 1)
       (subset_closure : Ioo (0 : ℝ) 1 ⊆ closure (Ioo (0 : ℝ) 1))
   have hroot_zero : ∀ t ∈ Ioo (0 : ℝ) 1, rootH thetaSource z t = 0 := by
     intro t ht
-    have hprod : quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ 2 = 0 :=
+    have hprod : quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ (2 : ℕ) = 0 :=
       hf_eq_zero ht
-    have hsq : ‖rootH thetaSource z t‖ ^ 2 = 0 :=
+    have hsq : ‖rootH thetaSource z t‖ ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hprod).resolve_left (quantileSpeed_pos thetaSource t).ne'
     exact norm_eq_zero.mp (sq_eq_zero_iff.mp hsq)
   let t0 : ℝ := 1 / 2

@@ -50,7 +50,7 @@ theorem integral_abs_firstRowModelDeriv_le {s c a b : ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 ≤ c) (ha : 1 < a) (hab : a ≤ b) :
     (∫ x in a..b, |firstRowModelDeriv s c x|)
       ≤ 6 * (b - a)
-        + 2 * c ^ 2 * (xiEndpointPhase s b ^ 2 - xiEndpointPhase s a ^ 2) / Real.pi := by
+        + 2 * c ^ (2 : ℕ) * (xiEndpointPhase s b ^ (2 : ℕ) - xiEndpointPhase s a ^ (2 : ℕ)) / Real.pi := by
   have hsub : Icc a b ⊆ Ioi (1 : ℝ) := fun x hx => lt_of_lt_of_le ha hx.1
   have hlt : ∀ x ∈ Icc a b, (1 : ℝ) < x := fun x hx => lt_of_lt_of_le ha hx.1
   have hmain := integral_abs_deriv_besselModulated_le (a := a) (b := b) (c := c)

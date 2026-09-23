@@ -19,7 +19,7 @@ theorem physicalRadialFrequency_eq (r : XiZeroCopy) :
 
 /-- The actual angular eigenvalue matches the original radial hypergeometric parameter exactly. -/
 theorem physicalRadialFrequency_parameter (r : XiZeroCopy) :
-    1/4+physicalRadialFrequency r^2 = -(physicalAngularParameter r^2-1/4) := by
+    1/4+physicalRadialFrequency r^(2 : ℕ) = -(physicalAngularParameter r^(2 : ℕ)-1/4) := by
   unfold physicalRadialFrequency
   rw [mul_pow,neg_sq,Complex.I_sq]
   ring
@@ -41,7 +41,7 @@ theorem physicalTortoiseMode_hasDerivAt (r : XiZeroCopy) (w : ℂ) (hw : 1/2 < w
     HasDerivAt (tortoiseMode outer w (physicalRadialFrequency r))
       (tortoiseModeFirst outer w (physicalRadialFrequency r) t) t ∧
     HasDerivAt (tortoiseModeFirst outer w (physicalRadialFrequency r))
-      ((w^2-(physicalAngularParameter r^2-1/4)*angularWeight t^2)*
+      ((w^(2 : ℕ)-(physicalAngularParameter r^(2 : ℕ)-1/4)*angularWeight t^(2 : ℕ))*
         tortoiseMode outer w (physicalRadialFrequency r) t) t := by
   have hc := physicalRadialFrequency_chamber r w hw
   have h := tortoiseMode_hasDerivAt hc outer t ht

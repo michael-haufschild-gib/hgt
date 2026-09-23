@@ -169,7 +169,7 @@ theorem routeERamareSquarefreeActiveScalar_intervalEnergy_pos
     (hactive : (ramareSquarefreeActiveSet P M).Nonempty)
     {t₀ r : ℝ} (hr : 0 < r) :
     0 < ∫ t in (t₀ - r)..(t₀ + r),
-      ‖∑ n ∈ ramareSquarefreeActiveSet P M, moebiusPhase t n‖ ^ 2 := by
+      ‖∑ n ∈ ramareSquarefreeActiveSet P M, moebiusPhase t n‖ ^ (2 : ℕ) := by
   let F : ℝ → ℂ := fun t =>
     ∑ n ∈ ramareSquarefreeActiveSet P M, moebiusPhase t n
   have hF : Continuous F := by
@@ -193,7 +193,7 @@ theorem routeERamareBilinear_intervalEnergy_pos
     (P : Finset ℕ) (hPprime : ∀ p ∈ P, p.Prime) (M : ℕ)
     (hactive : (ramareSquarefreeActiveSet P M).Nonempty)
     {t₀ r : ℝ} (hr : 0 < r) :
-    0 < ∫ t in (t₀ - r)..(t₀ + r), ‖ramareBilinear P M t‖ ^ 2 := by
+    0 < ∫ t in (t₀ - r)..(t₀ + r), ‖ramareBilinear P M t‖ ^ (2 : ℕ) := by
   simpa only [ramareBilinear_eq_squarefreeActiveSum hPprime M] using
     routeERamareSquarefreeActiveScalar_intervalEnergy_pos P M hactive hr
 

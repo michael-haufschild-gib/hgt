@@ -68,19 +68,19 @@ boundary functional vanishes identically. -/
 theorem weightedLittlewoodBoundary_poleGauge_eq_zero
     {c d T₁ T₂ : ℝ} (hcd : c < d) (hT : T₁ < T₂)
     (hone : (1 : ℂ) ∉ (uIcc c d ×ℂ uIcc T₁ T₂)) :
-    weightedLittlewoodBoundary (fun z : ℂ => (z - 1) ^ 2) c d T₁ T₂ = 0 := by
+    weightedLittlewoodBoundary (fun z : ℂ => (z - 1) ^ (2 : ℕ)) c d T₁ T₂ = 0 := by
   classical
-  have hana : AnalyticOnNhd ℂ (fun z : ℂ => (z - 1) ^ 2) Set.univ :=
+  have hana : AnalyticOnNhd ℂ (fun z : ℂ => (z - 1) ^ (2 : ℕ)) Set.univ :=
     analyticOnNhd_univ_iff_differentiable.mpr (by fun_prop)
-  have hnezero : ∃ z : ℂ, (z - 1) ^ 2 ≠ 0 := ⟨0, by norm_num⟩
-  have hzero_iff : ∀ z : ℂ, (z - 1) ^ 2 = 0 ↔ z = 1 := by
+  have hnezero : ∃ z : ℂ, (z - 1) ^ (2 : ℕ) ≠ 0 := ⟨0, by norm_num⟩
+  have hzero_iff : ∀ z : ℂ, (z - 1) ^ (2 : ℕ) = 0 ↔ z = 1 := by
     intro z
     constructor
     · intro h
       have := pow_eq_zero_iff (n := 2) (by norm_num) |>.mp h
       linear_combination this
     · intro h; rw [h]; ring
-  have hedge : ∀ z : ℂ, z ∈ (uIcc c d ×ℂ uIcc T₁ T₂) → (z - 1) ^ 2 ≠ 0 := by
+  have hedge : ∀ z : ℂ, z ∈ (uIcc c d ×ℂ uIcc T₁ T₂) → (z - 1) ^ (2 : ℕ) ≠ 0 := by
     intro z hz h0
     exact hone ((hzero_iff z).mp h0 ▸ hz)
   have hmembot : ∀ x ∈ uIcc c d, ((x : ℂ) + (T₁ : ℂ) * I) ∈ (uIcc c d ×ℂ uIcc T₁ T₂) := by
@@ -162,11 +162,11 @@ theorem weightedLittlewoodBoundary_poleGauge_mul {g : ℂ → ℂ} {c d T₁ T�
     (hgtop : ∀ x ∈ uIcc c d, g ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0)
     (hgright : ∀ t ∈ uIcc T₁ T₂, g ((d : ℂ) + (t : ℂ) * I) ≠ 0)
     (hgleft : {t : ℝ | t ∈ uIcc T₁ T₂ ∧ g ((c : ℂ) + (t : ℂ) * I) = 0}.Finite) :
-    weightedLittlewoodBoundary (fun z : ℂ => (z - 1) ^ 2 * g z) c d T₁ T₂
+    weightedLittlewoodBoundary (fun z : ℂ => (z - 1) ^ (2 : ℕ) * g z) c d T₁ T₂
       = weightedLittlewoodBoundary g c d T₁ T₂ := by
   classical
   have hgauge := weightedLittlewoodBoundary_poleGauge_eq_zero hcd hT hone
-  set u : ℂ → ℂ := fun z : ℂ => (z - 1) ^ 2 with hu
+  set u : ℂ → ℂ := fun z : ℂ => (z - 1) ^ (2 : ℕ) with hu
   have huana : ∀ z : ℂ, AnalyticAt ℂ u z := by
     intro z
     exact (analyticOnNhd_univ_iff_differentiable.mpr (by fun_prop : Differentiable ℂ u)) z

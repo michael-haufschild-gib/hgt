@@ -278,7 +278,7 @@ theorem exists_large_complexReplicaDyadicActionWavelet
         complexReplicaGaussianCollisionPlateau coefficient energy n‖)
     (htail :
       complexReplicaPairTotalVariation coefficient n *
-          Real.exp (-((((2 : ℝ) ^ levels * time) * gap) ^ 2) / 2) ≤
+          Real.exp (-((((2 : ℝ) ^ levels * time) * gap) ^ (2 : ℕ)) / 2) ≤
         η / 2) :
     ∃ j ∈ Finset.range levels,
       η / (2 * (levels : ℝ)) ≤
@@ -318,7 +318,7 @@ theorem exists_large_complexReplicaDyadicActionWavelet_of_oneCopyVariation
         complexReplicaGaussianCollisionPlateau coefficient energy n‖)
     (htail :
       (∑ i, ‖coefficient i‖) ^ (2 * n) *
-          Real.exp (-((((2 : ℝ) ^ levels * time) * gap) ^ 2) / 2) ≤
+          Real.exp (-((((2 : ℝ) ^ levels * time) * gap) ^ (2 : ℕ)) / 2) ≤
         η / 2) :
     ∃ j ∈ Finset.range levels,
       η / (2 * (levels : ℝ)) ≤

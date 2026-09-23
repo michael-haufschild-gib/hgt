@@ -19,7 +19,7 @@ open _root_.RHTower
 
 /-- Positive finite-window kernel forced by one more primitive of the cubic completed-error flux. -/
 def ccmGuinandWeilThirdGradeCesaroErrorKernel (H h : ℝ) : ℝ :=
-  (96 - 64 * h / H) / h ^ 4
+  (96 - 64 * h / H) / h ^ (4 : ℕ)
 
 /-- Moving triangular source weight whose negative derivative is the anchored error kernel. -/
 def ccmGuinandWeilThirdGradeCesaroTriangularWeight (H h : ℝ) : ℝ :=
@@ -90,10 +90,10 @@ private theorem integral_intervalIntegral_eq_endpoint_mul_sub_moment
 private theorem intervalIntegrable_completedError_div_fourth
     {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
     IntervalIntegrable
-      (fun h : ℝ => 96 * criticalMellinCompletedError h / h ^ 4)
+      (fun h : ℝ => 96 * criticalMellinCompletedError h / h ^ (4 : ℕ))
       volume b H := by
   have hE := intervalIntegrable_criticalMellinCompletedError_on_Icc hbH
-  have hc : ContinuousOn (fun h : ℝ => 96 / h ^ 4) (Set.uIcc b H) := by
+  have hc : ContinuousOn (fun h : ℝ => 96 / h ^ (4 : ℕ)) (Set.uIcc b H) := by
     rw [Set.uIcc_of_le hbH]
     intro h hh
     exact (continuousAt_const.div (continuousAt_id.pow 4)
@@ -109,11 +109,11 @@ theorem ccmCesaroPrimitive_thirdGradeCumulative_eq_errorMoment
     {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
     ccmCesaroPrimitive
         (ccmGuinandWeilThirdGradeCumulativeMeasurable b) b H =
-      32 * criticalMellinCompletedError b / b ^ 3 * (H - b) +
-        64 * (∫ h in b..H, criticalMellinCompletedError h / h ^ 3) -
-          96 * H * (∫ h in b..H, criticalMellinCompletedError h / h ^ 4) := by
+      32 * criticalMellinCompletedError b / b ^ (3 : ℕ) * (H - b) +
+        64 * (∫ h in b..H, criticalMellinCompletedError h / h ^ (3 : ℕ)) -
+          96 * H * (∫ h in b..H, criticalMellinCompletedError h / h ^ (4 : ℕ)) := by
   let E := criticalMellinCompletedError
-  let g : ℝ → ℝ := fun h => 96 * E h / h ^ 4
+  let g : ℝ → ℝ := fun h => 96 * E h / h ^ (4 : ℕ)
   have hg : IntervalIntegrable g volume b H :=
     intervalIntegrable_completedError_div_fourth hb hbH
   have hdouble := integral_intervalIntegral_eq_endpoint_mul_sub_moment hbH hg
@@ -121,7 +121,7 @@ theorem ccmCesaroPrimitive_thirdGradeCumulative_eq_errorMoment
   calc
     (∫ s in b..H, ccmGuinandWeilThirdGradeCumulativeMeasurable b s) =
         ∫ s in b..H,
-          (32 * E b / b ^ 3 - 32 * E s / s ^ 3 - ∫ h in b..s, g h) := by
+          (32 * E b / b ^ (3 : ℕ) - 32 * E s / s ^ (3 : ℕ) - ∫ h in b..s, g h) := by
       apply intervalIntegral.integral_congr
       intro s hs
       rw [Set.uIcc_of_le hbH] at hs
@@ -129,24 +129,24 @@ theorem ccmCesaroPrimitive_thirdGradeCumulative_eq_errorMoment
       unfold ccmGuinandWeilThirdGradeWeight ccmGuinandWeilThirdGradeWeightDeriv
       dsimp only [E, g]
       have hint :
-          (∫ v in b..s, criticalMellinCompletedError v * (-96 / v ^ 4)) =
-            -(∫ v in b..s, 96 * criticalMellinCompletedError v / v ^ 4) := by
+          (∫ v in b..s, criticalMellinCompletedError v * (-96 / v ^ (4 : ℕ))) =
+            -(∫ v in b..s, 96 * criticalMellinCompletedError v / v ^ (4 : ℕ)) := by
         rw [← intervalIntegral.integral_neg]
         apply intervalIntegral.integral_congr
         intro v _
         ring
       rw [hint]
       ring
-    _ = (∫ s in b..H, 32 * E b / b ^ 3) -
-          (∫ s in b..H, 32 * E s / s ^ 3) -
+    _ = (∫ s in b..H, 32 * E b / b ^ (3 : ℕ)) -
+          (∫ s in b..H, 32 * E s / s ^ (3 : ℕ)) -
             ∫ s in b..H, ∫ h in b..s, g h := by
       have hE := intervalIntegrable_criticalMellinCompletedError_on_Icc hbH
-      have hc3 : ContinuousOn (fun h : ℝ => 32 / h ^ 3) (Set.uIcc b H) := by
+      have hc3 : ContinuousOn (fun h : ℝ => 32 / h ^ (3 : ℕ)) (Set.uIcc b H) := by
         rw [Set.uIcc_of_le hbH]
         intro h hh
         exact (continuousAt_const.div (continuousAt_id.pow 3)
           (pow_ne_zero 3 (ne_of_gt (hb.trans_le hh.1)))).continuousWithinAt
-      have hthird : IntervalIntegrable (fun s : ℝ => 32 * E s / s ^ 3) volume b H := by
+      have hthird : IntervalIntegrable (fun s : ℝ => 32 * E s / s ^ (3 : ℕ)) volume b H := by
         have hm := hE.mul_continuousOn hc3
         apply hm.congr
         intro s _
@@ -156,30 +156,30 @@ theorem ccmCesaroPrimitive_thirdGradeCumulative_eq_errorMoment
           (show b ∈ Set.uIcc b H by simp [hbH])).continuousOn.intervalIntegrable
       rw [intervalIntegral.integral_sub
           ((intervalIntegrable_const : IntervalIntegrable
-            (fun _ : ℝ => 32 * E b / b ^ 3) volume b H).sub hthird) hprimitive,
+            (fun _ : ℝ => 32 * E b / b ^ (3 : ℕ)) volume b H).sub hthird) hprimitive,
         intervalIntegral.integral_sub
           (intervalIntegrable_const : IntervalIntegrable
-            (fun _ : ℝ => 32 * E b / b ^ 3) volume b H) hthird]
+            (fun _ : ℝ => 32 * E b / b ^ (3 : ℕ)) volume b H) hthird]
     _ = _ := by
       rw [intervalIntegral.integral_const, hdouble]
       dsimp only [g, E]
       have hthirdScale :
-          (∫ s in b..H, 32 * criticalMellinCompletedError s / s ^ 3) =
-            32 * ∫ s in b..H, criticalMellinCompletedError s / s ^ 3 := by
+          (∫ s in b..H, 32 * criticalMellinCompletedError s / s ^ (3 : ℕ)) =
+            32 * ∫ s in b..H, criticalMellinCompletedError s / s ^ (3 : ℕ) := by
         rw [← intervalIntegral.integral_const_mul]
         apply intervalIntegral.integral_congr
         intro s _
         ring
       have hfourthScale :
-          (∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ 4) =
-            96 * ∫ h in b..H, criticalMellinCompletedError h / h ^ 4 := by
+          (∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ (4 : ℕ)) =
+            96 * ∫ h in b..H, criticalMellinCompletedError h / h ^ (4 : ℕ) := by
         rw [← intervalIntegral.integral_const_mul]
         apply intervalIntegral.integral_congr
         intro h _
         ring
       have hmomentScale :
-          (∫ h in b..H, h * (96 * criticalMellinCompletedError h / h ^ 4)) =
-            96 * ∫ h in b..H, criticalMellinCompletedError h / h ^ 3 := by
+          (∫ h in b..H, h * (96 * criticalMellinCompletedError h / h ^ (4 : ℕ))) =
+            96 * ∫ h in b..H, criticalMellinCompletedError h / h ^ (3 : ℕ) := by
         rw [← intervalIntegral.integral_const_mul]
         apply intervalIntegral.integral_congr
         intro h hh
@@ -193,28 +193,28 @@ theorem ccmCesaroPrimitive_thirdGradeCumulative_eq_errorMoment
 theorem integral_ccmGuinandWeilThirdGradeCesaroErrorKernel
     {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
     (∫ h in b..H, ccmGuinandWeilThirdGradeCesaroErrorKernel H h) =
-      32 / b ^ 3 * (1 - b / H) := by
+      32 / b ^ (3 : ℕ) * (1 - b / H) := by
   have hH : 0 < H := hb.trans_le hbH
-  change (∫ h in b..H, (96 - 64 * h / H) / h ^ 4) = _
+  change (∫ h in b..H, (96 - 64 * h / H) / h ^ (4 : ℕ)) = _
   have hfun : ∀ h ∈ Set.uIcc b H,
-      (96 - 64 * h / H) / h ^ 4 =
-        96 / h ^ 4 - (64 / H) / h ^ 3 := by
+      (96 - 64 * h / H) / h ^ (4 : ℕ) =
+        96 / h ^ (4 : ℕ) - (64 / H) / h ^ (3 : ℕ) := by
     intro h hh
     rw [Set.uIcc_of_le hbH] at hh
     have hh0 : h ≠ 0 := ne_of_gt (hb.trans_le hh.1)
     field_simp [hh0, hH.ne']
   rw [intervalIntegral.integral_congr hfun]
   have hfour :
-      (∫ h in b..H, 96 / h ^ 4) = 32 / b ^ 3 - 32 / H ^ 3 := by
-    have hint : IntervalIntegrable (fun h : ℝ => 96 / h ^ 4) volume b H := by
-      have hc : ContinuousOn (fun h : ℝ => 96 / h ^ 4) (Set.uIcc b H) := by
+      (∫ h in b..H, 96 / h ^ (4 : ℕ)) = 32 / b ^ (3 : ℕ) - 32 / H ^ (3 : ℕ) := by
+    have hint : IntervalIntegrable (fun h : ℝ => 96 / h ^ (4 : ℕ)) volume b H := by
+      have hc : ContinuousOn (fun h : ℝ => 96 / h ^ (4 : ℕ)) (Set.uIcc b H) := by
         rw [Set.uIcc_of_le hbH]
         intro h hh
         exact (continuousAt_const.div (continuousAt_id.pow 4)
           (pow_ne_zero 4 (ne_of_gt (hb.trans_le hh.1)))).continuousWithinAt
       exact hc.intervalIntegrable
     have hderiv : ∀ h ∈ Set.uIcc b H,
-        HasDerivAt (fun x : ℝ => -32 * (x ^ 3)⁻¹) (96 / h ^ 4) h := by
+        HasDerivAt (fun x : ℝ => -32 * (x ^ (3 : ℕ))⁻¹) (96 / h ^ (4 : ℕ)) h := by
       intro h hh
       rw [Set.uIcc_of_le hbH] at hh
       have hh0 : h ≠ 0 := ne_of_gt (hb.trans_le hh.1)
@@ -227,17 +227,17 @@ theorem integral_ccmGuinandWeilThirdGradeCesaroErrorKernel
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
     ring
   have hthree :
-      (∫ h in b..H, (64 / H) / h ^ 3) =
-        32 / (H * b ^ 2) - 32 / H ^ 3 := by
-    have hint : IntervalIntegrable (fun h : ℝ => (64 / H) / h ^ 3) volume b H := by
-      have hc : ContinuousOn (fun h : ℝ => (64 / H) / h ^ 3) (Set.uIcc b H) := by
+      (∫ h in b..H, (64 / H) / h ^ (3 : ℕ)) =
+        32 / (H * b ^ (2 : ℕ)) - 32 / H ^ (3 : ℕ) := by
+    have hint : IntervalIntegrable (fun h : ℝ => (64 / H) / h ^ (3 : ℕ)) volume b H := by
+      have hc : ContinuousOn (fun h : ℝ => (64 / H) / h ^ (3 : ℕ)) (Set.uIcc b H) := by
         rw [Set.uIcc_of_le hbH]
         intro h hh
         exact (continuousAt_const.div (continuousAt_id.pow 3)
           (pow_ne_zero 3 (ne_of_gt (hb.trans_le hh.1)))).continuousWithinAt
       exact hc.intervalIntegrable
     have hderiv : ∀ h ∈ Set.uIcc b H,
-        HasDerivAt (fun x : ℝ => -(32 / H) * (x ^ 2)⁻¹) ((64 / H) / h ^ 3) h := by
+        HasDerivAt (fun x : ℝ => -(32 / H) * (x ^ (2 : ℕ))⁻¹) ((64 / H) / h ^ (3 : ℕ)) h := by
       intro h hh
       rw [Set.uIcc_of_le hbH] at hh
       have hh0 : h ≠ 0 := ne_of_gt (hb.trans_le hh.1)
@@ -250,15 +250,15 @@ theorem integral_ccmGuinandWeilThirdGradeCesaroErrorKernel
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
     field_simp [hb.ne', hH.ne']
     ring
-  have hfourInt : IntervalIntegrable (fun h : ℝ => 96 / h ^ 4) volume b H := by
-    have hc : ContinuousOn (fun h : ℝ => 96 / h ^ 4) (Set.uIcc b H) := by
+  have hfourInt : IntervalIntegrable (fun h : ℝ => 96 / h ^ (4 : ℕ)) volume b H := by
+    have hc : ContinuousOn (fun h : ℝ => 96 / h ^ (4 : ℕ)) (Set.uIcc b H) := by
       rw [Set.uIcc_of_le hbH]
       intro h hh
       exact (continuousAt_const.div (continuousAt_id.pow 4)
         (pow_ne_zero 4 (ne_of_gt (hb.trans_le hh.1)))).continuousWithinAt
     exact hc.intervalIntegrable
-  have hthreeInt : IntervalIntegrable (fun h : ℝ => (64 / H) / h ^ 3) volume b H := by
-    have hc : ContinuousOn (fun h : ℝ => (64 / H) / h ^ 3) (Set.uIcc b H) := by
+  have hthreeInt : IntervalIntegrable (fun h : ℝ => (64 / H) / h ^ (3 : ℕ)) volume b H := by
+    have hc : ContinuousOn (fun h : ℝ => (64 / H) / h ^ (3 : ℕ)) (Set.uIcc b H) := by
       rw [Set.uIcc_of_le hbH]
       intro h hh
       exact (continuousAt_const.div (continuousAt_id.pow 3)
@@ -357,46 +357,46 @@ theorem ccmCesaroPrimitive_thirdGradeCumulative_div_eq_anchoredErrorMoment
     intervalIntegral.integral_const_mul,
     integral_ccmGuinandWeilThirdGradeCesaroErrorKernel hb hbH]
   · change
-      (32 * criticalMellinCompletedError b / b ^ 3 * (H - b) +
-          64 * (∫ h in b..H, criticalMellinCompletedError h / h ^ 3) -
-            96 * H * (∫ h in b..H, criticalMellinCompletedError h / h ^ 4)) / H =
-        criticalMellinCompletedError b * (32 / b ^ 3 * (1 - b / H)) -
+      (32 * criticalMellinCompletedError b / b ^ (3 : ℕ) * (H - b) +
+          64 * (∫ h in b..H, criticalMellinCompletedError h / h ^ (3 : ℕ)) -
+            96 * H * (∫ h in b..H, criticalMellinCompletedError h / h ^ (4 : ℕ))) / H =
+        criticalMellinCompletedError b * (32 / b ^ (3 : ℕ) * (1 - b / H)) -
           ∫ h in b..H,
-            (96 - 64 * h / H) / h ^ 4 * criticalMellinCompletedError h
+            (96 - 64 * h / H) / h ^ (4 : ℕ) * criticalMellinCompletedError h
     have hsplit :
         (∫ h in b..H,
-          (96 - 64 * h / H) / h ^ 4 * criticalMellinCompletedError h) =
-          96 * (∫ h in b..H, criticalMellinCompletedError h / h ^ 4) -
+          (96 - 64 * h / H) / h ^ (4 : ℕ) * criticalMellinCompletedError h) =
+          96 * (∫ h in b..H, criticalMellinCompletedError h / h ^ (4 : ℕ)) -
             (64 / H) * (∫ h in b..H,
-              criticalMellinCompletedError h / h ^ 3) := by
+              criticalMellinCompletedError h / h ^ (3 : ℕ)) := by
       have hE4 := intervalIntegrable_completedError_div_fourth hb hbH
       have hE := intervalIntegrable_criticalMellinCompletedError_on_Icc hbH
-      have hc3 : ContinuousOn (fun h : ℝ => (64 / H) / h ^ 3) (Set.uIcc b H) := by
+      have hc3 : ContinuousOn (fun h : ℝ => (64 / H) / h ^ (3 : ℕ)) (Set.uIcc b H) := by
         rw [Set.uIcc_of_le hbH]
         intro h hh
         exact (continuousAt_const.div (continuousAt_id.pow 3)
           (pow_ne_zero 3 (ne_of_gt (hb.trans_le hh.1)))).continuousWithinAt
       have hE3raw := hE.mul_continuousOn hc3
       have hE3 : IntervalIntegrable
-          (fun h : ℝ => (64 / H) * (criticalMellinCompletedError h / h ^ 3))
+          (fun h : ℝ => (64 / H) * (criticalMellinCompletedError h / h ^ (3 : ℕ)))
           volume b H := by
         apply hE3raw.congr
         intro h _
         ring
       calc
         (∫ h in b..H,
-            (96 - 64 * h / H) / h ^ 4 * criticalMellinCompletedError h) =
+            (96 - 64 * h / H) / h ^ (4 : ℕ) * criticalMellinCompletedError h) =
             ∫ h in b..H,
-              (96 * criticalMellinCompletedError h / h ^ 4 -
-                (64 / H) * (criticalMellinCompletedError h / h ^ 3)) := by
+              (96 * criticalMellinCompletedError h / h ^ (4 : ℕ) -
+                (64 / H) * (criticalMellinCompletedError h / h ^ (3 : ℕ))) := by
           apply intervalIntegral.integral_congr
           intro h hh
           rw [Set.uIcc_of_le hbH] at hh
           have hh0 : h ≠ 0 := ne_of_gt (hb.trans_le hh.1)
           field_simp [hh0, hH.ne']
-        _ = (∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ 4) -
+        _ = (∫ h in b..H, 96 * criticalMellinCompletedError h / h ^ (4 : ℕ)) -
               ∫ h in b..H, (64 / H) *
-                (criticalMellinCompletedError h / h ^ 3) :=
+                (criticalMellinCompletedError h / h ^ (3 : ℕ)) :=
           intervalIntegral.integral_sub hE4 hE3
         _ = _ := by
           rw [← intervalIntegral.integral_const_mul,
@@ -412,7 +412,7 @@ theorem ccmCesaroPrimitive_thirdGradeCumulative_div_eq_anchoredErrorMoment
       have hc : ContinuousOn
           (ccmGuinandWeilThirdGradeCesaroErrorKernel H) (Set.uIcc b H) := by
         change ContinuousOn
-          (fun h : ℝ => ((96 : ℝ) - 64 * h / H) / h ^ 4) (Set.uIcc b H)
+          (fun h : ℝ => ((96 : ℝ) - 64 * h / H) / h ^ (4 : ℕ)) (Set.uIcc b H)
         rw [Set.uIcc_of_le hbH]
         intro h hh
         exact ((continuousAt_const.sub
@@ -424,7 +424,7 @@ theorem ccmCesaroPrimitive_thirdGradeCumulative_div_eq_anchoredErrorMoment
     have hc : ContinuousOn
         (ccmGuinandWeilThirdGradeCesaroErrorKernel H) (Set.uIcc b H) := by
       change ContinuousOn
-        (fun h : ℝ => ((96 : ℝ) - 64 * h / H) / h ^ 4) (Set.uIcc b H)
+        (fun h : ℝ => ((96 : ℝ) - 64 * h / H) / h ^ (4 : ℕ)) (Set.uIcc b H)
       rw [Set.uIcc_of_le hbH]
       intro h hh
       exact ((continuousAt_const.sub
@@ -457,8 +457,8 @@ theorem ccmGuinandWeilThirdGradeCesaroErrorKernel_pos
 /-- The positive kernel stays between its endpoint cubic grades throughout the physical window. -/
 theorem ccmGuinandWeilThirdGradeCesaroErrorKernel_bounds
     {b H h : ℝ} (hb : 0 < b) (hbH : b ≤ H) (hh : h ∈ Set.Icc b H) :
-    32 / h ^ 4 ≤ ccmGuinandWeilThirdGradeCesaroErrorKernel H h ∧
-      ccmGuinandWeilThirdGradeCesaroErrorKernel H h ≤ 96 / h ^ 4 := by
+    32 / h ^ (4 : ℕ) ≤ ccmGuinandWeilThirdGradeCesaroErrorKernel H h ∧
+      ccmGuinandWeilThirdGradeCesaroErrorKernel H h ≤ 96 / h ^ (4 : ℕ) := by
   have hH : 0 < H := hb.trans_le hbH
   have hh0 : 0 < h := hb.trans_le hh.1
   have hratio0 : 0 ≤ h / H := div_nonneg hh0.le hH.le

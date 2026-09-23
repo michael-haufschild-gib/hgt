@@ -10,7 +10,7 @@ Suzuki's restricted-Weil operator. This module supplies that measure-level carri
 For even node `t`, odd node `s`, source weights `a,b`, and a shift below the spectrum, the exact
 cross-parity kernel is
 
-`a b (s-t) / ((t-lambda)^2 (s-lambda)^2)`.
+`a b (s-t) / ((t-lambda)^(2 : ℕ) (s-lambda)^(2 : ℕ))`.
 
 Fubini factorization proves that its product-measure integral is exactly the cross-Wronskian
 `E' O - E O'`. After normalization it is the parity hazard `E'/E-O'/O`. Its positive and
@@ -39,14 +39,14 @@ def suzukiParitySpectralEnergy
 /-- Squared-resolvent velocity of one weighted source spectral measure. -/
 def suzukiParitySquaredSpectralEnergy
     (μ : Measure α) (node weight : α → ℝ) (lambda : ℝ) : ℝ :=
-  ∫ x, weight x * suzukiShiftResolventKernel node lambda x ^ 2 ∂μ
+  ∫ x, weight x * suzukiShiftResolventKernel node lambda x ^ (2 : ℕ) ∂μ
 
 /-- Pointwise signed odd-minus-even spectral-gap contribution. -/
 def suzukiParitySpectralCrossGapKernel
     (evenNode evenWeight : α → ℝ) (oddNode oddWeight : β → ℝ)
     (lambda : ℝ) (z : α × β) : ℝ :=
   evenWeight z.1 * oddWeight z.2 * (oddNode z.2 - evenNode z.1) /
-    ((evenNode z.1 - lambda) ^ 2 * (oddNode z.2 - lambda) ^ 2)
+    ((evenNode z.1 - lambda) ^ (2 : ℕ) * (oddNode z.2 - lambda) ^ (2 : ℕ))
 
 /-- Total signed cross-parity spectral-gap mass. -/
 def suzukiParitySpectralCrossGapMass
@@ -89,10 +89,10 @@ theorem suzukiParitySpectralCrossGapKernel_eq_crossProduct
     (lambda : ℝ) (z : α × β) :
     suzukiParitySpectralCrossGapKernel
         evenNode evenWeight oddNode oddWeight lambda z =
-      (evenWeight z.1 * suzukiShiftResolventKernel evenNode lambda z.1 ^ 2) *
+      (evenWeight z.1 * suzukiShiftResolventKernel evenNode lambda z.1 ^ (2 : ℕ)) *
           (oddWeight z.2 * suzukiShiftResolventKernel oddNode lambda z.2) -
         (evenWeight z.1 * suzukiShiftResolventKernel evenNode lambda z.1) *
-          (oddWeight z.2 * suzukiShiftResolventKernel oddNode lambda z.2 ^ 2) := by
+          (oddWeight z.2 * suzukiShiftResolventKernel oddNode lambda z.2 ^ (2 : ℕ)) := by
   simp only [suzukiParitySpectralCrossGapKernel, suzukiShiftResolventKernel]
   field_simp
   ring
@@ -106,11 +106,11 @@ theorem suzukiParitySpectral_crossWronskian_eq_crossGapIntegral
     (heven : Integrable
       (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x) μ)
     (hevenSq : Integrable
-      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)) μ)
     (hodd : Integrable
       (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y) ν)
     (hoddSq : Integrable
-      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2) ν) :
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)) ν) :
     suzukiParitySquaredSpectralEnergy μ evenNode evenWeight lambda *
           suzukiParitySpectralEnergy ν oddNode oddWeight lambda -
         suzukiParitySpectralEnergy μ evenNode evenWeight lambda *
@@ -120,11 +120,11 @@ theorem suzukiParitySpectral_crossWronskian_eq_crossGapIntegral
   let even : α → ℝ := fun x =>
     evenWeight x * suzukiShiftResolventKernel evenNode lambda x
   let evenSq : α → ℝ := fun x =>
-    evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2
+    evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)
   let odd : β → ℝ := fun y =>
     oddWeight y * suzukiShiftResolventKernel oddNode lambda y
   let oddSq : β → ℝ := fun y =>
-    oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2
+    oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)
   have hprod₁ : Integrable (fun z : α × β => evenSq z.1 * odd z.2) (μ.prod ν) :=
     hevenSq.mul_prod hodd
   have hprod₂ : Integrable (fun z : α × β => even z.1 * oddSq z.2) (μ.prod ν) :=
@@ -153,21 +153,21 @@ theorem integrable_suzukiParitySpectralCrossGapKernel
     (heven : Integrable
       (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x) μ)
     (hevenSq : Integrable
-      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)) μ)
     (hodd : Integrable
       (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y) ν)
     (hoddSq : Integrable
-      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2) ν) :
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)) ν) :
     Integrable (suzukiParitySpectralCrossGapKernel
       evenNode evenWeight oddNode oddWeight lambda) (μ.prod ν) := by
   let even : α → ℝ := fun x =>
     evenWeight x * suzukiShiftResolventKernel evenNode lambda x
   let evenSq : α → ℝ := fun x =>
-    evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2
+    evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)
   let odd : β → ℝ := fun y =>
     oddWeight y * suzukiShiftResolventKernel oddNode lambda y
   let oddSq : β → ℝ := fun y =>
-    oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2
+    oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)
   have hprod₁ : Integrable (fun z : α × β => evenSq z.1 * odd z.2) (μ.prod ν) :=
     hevenSq.mul_prod hodd
   have hprod₂ : Integrable (fun z : α × β => even z.1 * oddSq z.2) (μ.prod ν) :=
@@ -193,11 +193,11 @@ theorem suzukiParitySpectral_hazardGap_eq_crossGapMass_div
     (heven : Integrable
       (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x) μ)
     (hevenSq : Integrable
-      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)) μ)
     (hodd : Integrable
       (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y) ν)
     (hoddSq : Integrable
-      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2) ν)
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)) ν)
     (heven0 : suzukiParitySpectralEnergy μ evenNode evenWeight lambda ≠ 0)
     (hodd0 : suzukiParitySpectralEnergy ν oddNode oddWeight lambda ≠ 0) :
     suzukiParitySpectralHazardGap
@@ -221,11 +221,11 @@ theorem suzukiParitySpectralCrossGapMass_eq_credit_sub_inversionDebt
     (heven : Integrable
       (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x) μ)
     (hevenSq : Integrable
-      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)) μ)
     (hodd : Integrable
       (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y) ν)
     (hoddSq : Integrable
-      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2) ν) :
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)) ν) :
     suzukiParitySpectralCrossGapMass
         μ ν evenNode evenWeight oddNode oddWeight lambda =
       suzukiParitySpectralLowerPairCredit
@@ -275,11 +275,11 @@ theorem suzukiParitySpectral_hazardGap_pos_iff_inversionDebt_lt_credit
     (heven : Integrable
       (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x) μ)
     (hevenSq : Integrable
-      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)) μ)
     (hodd : Integrable
       (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y) ν)
     (hoddSq : Integrable
-      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2) ν)
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)) ν)
     (hevenPos : 0 < suzukiParitySpectralEnergy μ evenNode evenWeight lambda)
     (hoddPos : 0 < suzukiParitySpectralEnergy ν oddNode oddWeight lambda) :
     0 < suzukiParitySpectralHazardGap
@@ -310,11 +310,11 @@ theorem suzukiParitySpectral_hazardGap_eq_zero_iff_inversionDebt_eq_credit
     (heven : Integrable
       (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x) μ)
     (hevenSq : Integrable
-      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)) μ)
     (hodd : Integrable
       (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y) ν)
     (hoddSq : Integrable
-      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2) ν)
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)) ν)
     (hevenPos : 0 < suzukiParitySpectralEnergy μ evenNode evenWeight lambda)
     (hoddPos : 0 < suzukiParitySpectralEnergy ν oddNode oddWeight lambda) :
     suzukiParitySpectralHazardGap
@@ -340,11 +340,11 @@ theorem suzukiParitySpectral_hazardGap_neg_iff_credit_lt_inversionDebt
     (heven : Integrable
       (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x) μ)
     (hevenSq : Integrable
-      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ (2 : ℕ)) μ)
     (hodd : Integrable
       (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y) ν)
     (hoddSq : Integrable
-      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2) ν)
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ (2 : ℕ)) ν)
     (hevenPos : 0 < suzukiParitySpectralEnergy μ evenNode evenWeight lambda)
     (hoddPos : 0 < suzukiParitySpectralEnergy ν oddNode oddWeight lambda) :
     suzukiParitySpectralHazardGap

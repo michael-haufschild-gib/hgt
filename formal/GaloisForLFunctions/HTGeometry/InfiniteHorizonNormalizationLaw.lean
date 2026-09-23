@@ -20,20 +20,20 @@ noncomputable section
 /-- Square-summability after coefficientwise division by a horizon. -/
 def InverseHorizonSquareSummable
     {I : Type*} (h z : I -> ℂ) : Prop :=
-  Summable fun i => ‖z i / h i‖ ^ 2
+  Summable fun i => ‖z i / h i‖ ^ (2 : ℕ)
 
 /-- Weighted square-summability after coefficientwise division by a
 horizon. -/
 def WeightedInverseHorizonSquareSummable
     {I : Type*} (w : I -> ℝ) (h z : I -> ℂ) : Prop :=
-  Summable fun i => w i * ‖z i / h i‖ ^ 2
+  Summable fun i => w i * ‖z i / h i‖ ^ (2 : ℕ)
 
 /-- Inverse-horizon normalization sends a nowhere-zero weighted ray to the
 corresponding constant family. -/
 theorem inverseHorizon_normalizes_ray_to_constant
     {I : Type*} (h : I -> ℂ) (hzero : forall i, h i ≠ 0) (c : ℂ) :
-    (fun i => ‖(c * h i) / h i‖ ^ 2) =
-      (fun _ : I => ‖c‖ ^ 2) := by
+    (fun i => ‖(c * h i) / h i‖ ^ (2 : ℕ)) =
+      (fun _ : I => ‖c‖ ^ (2 : ℕ)) := by
   funext i
   rw [mul_div_cancel_right₀ c (hzero i)]
 
@@ -69,8 +69,8 @@ theorem weightedInverseHorizonSquareSummable_ray_iff
       c = 0 ∨ Summable w := by
   rw [WeightedInverseHorizonSquareSummable]
   have hfun :
-      (fun i => w i * ‖(c * h i) / h i‖ ^ 2) =
-        (fun i => w i * ‖c‖ ^ 2) := by
+      (fun i => w i * ‖(c * h i) / h i‖ ^ (2 : ℕ)) =
+        (fun i => w i * ‖c‖ ^ (2 : ℕ)) := by
     funext i
     rw [mul_div_cancel_right₀ c (hzero i)]
   rw [hfun]
@@ -79,8 +79,8 @@ theorem weightedInverseHorizonSquareSummable_ray_iff
     by_cases hc : c = 0
     · exact Or.inl hc
     · right
-      have hnorm : ‖c‖ ^ 2 ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr hc)
-      have hdiv := hsum.div_const (‖c‖ ^ 2)
+      have hnorm : ‖c‖ ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr hc)
+      have hdiv := hsum.div_const (‖c‖ ^ (2 : ℕ))
       simpa [mul_div_cancel_right₀ _ hnorm] using hdiv
   · rintro (rfl | hw)
     · simp

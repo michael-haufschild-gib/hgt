@@ -169,9 +169,9 @@ private theorem D_L_twice {f : Field} (hf : ContDiff ℝ ∞ f) (p : Point) :
   rw [he,D_L (D_smooth hf.contDiffAt 0)]
 
 private def radialEquation (f g : Field) : Prop := ∀ p,
-  (Real.sinh (p 0):ℂ)^2*D 0 (D 0 f) p+
+  (Real.sinh (p 0):ℂ)^(2 : ℕ)*D 0 (D 0 f) p+
     ((Real.sinh (p 0):ℂ)*(Real.cosh (p 0):ℂ))*D 0 f p=
-      (Real.sinh (p 0):ℂ)^2*g p
+      (Real.sinh (p 0):ℂ)^(2 : ℕ)*g p
 
 private theorem radialEquation_laplacian {f g : Field}
     (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g) (h : radialEquation f g) :
@@ -187,7 +187,7 @@ private theorem radialEquation_laplacian {f g : Field}
   have hsc := hS.mul hC
   intro p
   have he := congrArg (fun F : Field => L F p) (funext h)
-  have hA : ContDiff ℝ ∞ (fun z : Point => (Real.sinh (z 0):ℂ)^2*D 0 (D 0 f) z) := by
+  have hA : ContDiff ℝ ∞ (fun z : Point => (Real.sinh (z 0):ℂ)^(2 : ℕ)*D 0 (D 0 f) z) := by
     simpa only [radialCoefficient] using! (radialCoefficient_smooth hs).mul hf00
   have hB : ContDiff ℝ ∞ (fun z : Point => ((Real.sinh (z 0):ℂ)*(Real.cosh (z 0):ℂ))*D 0 f z) := by
     simpa only [radialCoefficient] using! (radialCoefficient_smooth hsc).mul hf0
@@ -223,7 +223,7 @@ private theorem circle_smooth (q : XiZeroCopy) : ContDiff ℝ ∞ (circle q) := 
   simpa only [circle,Function.comp_def] using!
     (nativeMean_joint_smooth q).comp
       (show ContDiff ℝ ∞ (fun p : Point => (p 0,p 1,p 2)) by fun_prop)
-private theorem E_two (p : Point) : E 2 p=(Real.exp (p 2):ℂ)^2 := by
+private theorem E_two (p : Point) : E 2 p=(Real.exp (p 2):ℂ)^(2 : ℕ) := by
   unfold E
   rw [show (2:ℂ)*(p 2:ℂ)=(p 2:ℂ)+(p 2:ℂ) by ring,Complex.exp_add,← Complex.ofReal_exp]
   ring
@@ -267,9 +267,9 @@ private theorem radialSlice_smooth (q : XiZeroCopy) (n : ℕ) (X k : ℝ) :
 
 /-- Every actual angular iterate satisfies the same source-faithful radial Darboux equation. -/
 theorem laplaceMean_darboux (q : XiZeroCopy) (n : ℕ) (d X k : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => laplaceMean q n ![r,X,k])) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => laplaceMean q n ![r,X,k])) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => laplaceMean q n ![r,X,k]) d=
-      (Real.sinh d:ℂ)^2*laplaceMean q (n+1) ![d,X,k] := by
+      (Real.sinh d:ℂ)^(2 : ℕ)*laplaceMean q (n+1) ![d,X,k] := by
   have h := laplaceMean_radialEquation q n ![d,X,k]
   rw [D_twice_slice (laplaceMean_smooth q n) 0,D_slice (laplaceMean_smooth q n) 0] at h
   have he : (fun r => Function.update (![d,X,k]:Point) 0 r)=fun r => (![r,X,k]:Point) := by
@@ -280,8 +280,8 @@ theorem laplaceMean_darboux (q : XiZeroCopy) (n : ℕ) (d X k : ℝ) :
 
 
 private theorem regular_equation {f g : ℝ → ℂ}
-    (he : ∀ d, (Real.sinh d:ℂ)^2*deriv (deriv f) d+
-      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^2*g d)
+    (he : ∀ d, (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv f) d+
+      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^(2 : ℕ)*g d)
     {d : ℝ} (hd : d ≠ 0) :
     (Real.sinh d:ℂ)*deriv (deriv f) d+(Real.cosh d:ℂ)*deriv f d-(Real.sinh d:ℂ)*g d=0 := by
   have hn : (Real.sinh d:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by simpa using hd)
@@ -289,8 +289,8 @@ private theorem regular_equation {f g : ℝ → ℂ}
   linear_combination he d
 
 private theorem radial_first_zero {f g : ℝ → ℂ} (hf : ContDiff ℝ ∞ f) (hg : Continuous g)
-    (he : ∀ d, (Real.sinh d:ℂ)^2*deriv (deriv f) d+
-      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^2*g d) : deriv f 0=0 := by
+    (he : ∀ d, (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv f) d+
+      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^(2 : ℕ)*g d) : deriv f 0=0 := by
   have h1 := (contDiff_infty_iff_deriv.mp hf).2
   have h2 := (contDiff_infty_iff_deriv.mp h1).2
   have hS : Continuous (fun d : ℝ => (Real.sinh d:ℂ)) := by fun_prop
@@ -322,8 +322,8 @@ private theorem sinh_ratio_limit {f : ℝ → ℂ} {a : ℂ} (hf : HasDerivAt f 
   field_simp [hn]
 
 private theorem radial_second_zero {f g : ℝ → ℂ} (hf : ContDiff ℝ ∞ f) (hg : Continuous g)
-    (he : ∀ d, (Real.sinh d:ℂ)^2*deriv (deriv f) d+
-      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^2*g d) :
+    (he : ∀ d, (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv f) d+
+      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^(2 : ℕ)*g d) :
     deriv (deriv f) 0=g 0/2 := by
   have hs1 := (contDiff_infty_iff_deriv.mp hf).2
   have hs2 := (contDiff_infty_iff_deriv.mp hs1).2
@@ -351,9 +351,9 @@ def argument (q : XiZeroCopy) (n : ℕ) (z X k : ℝ) : ℂ :=
 def first (q : XiZeroCopy) (n : ℕ) (z X k : ℝ) : ℂ :=
   deriv (fun d => laplaceMean q n ![d,X,k]) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)
 private def second (q : XiZeroCopy) (n : ℕ) (z X k : ℝ) : ℂ :=
-  deriv (deriv (fun d => laplaceMean q n ![d,X,k])) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)^2-
+  deriv (deriv (fun d => laplaceMean q n ![d,X,k])) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)-
     (Real.cosh (Real.arcosh z):ℂ)*deriv (fun d => laplaceMean q n ![d,X,k]) (Real.arcosh z)/
-      (Real.sinh (Real.arcosh z):ℂ)^3
+      (Real.sinh (Real.arcosh z):ℂ)^(3 : ℕ)
 
 private theorem argument_derivatives (q : XiZeroCopy) (n : ℕ) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
     HasDerivAt (fun r => argument q n r X k) (first q n z X k) z ∧
@@ -377,20 +377,20 @@ private theorem argument_derivatives (q : XiZeroCopy) (n : ℕ) (X k : ℝ) {z :
     field_simp [hn]
 
 private theorem argument_equation (q : XiZeroCopy) (n : ℕ) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    ((z:ℂ)^2-1)*second q n z X k+2*z*first q n z X k=argument q (n+1) z X k := by
+    ((z:ℂ)^(2 : ℕ)-1)*second q n z X k+2*z*first q n z X k=argument q (n+1) z X k := by
   have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have he : (z:ℂ)^2-1=(Real.sinh (Real.arcosh z):ℂ)^2 := by
+  have he : (z:ℂ)^(2 : ℕ)-1=(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ) := by
     have h := Real.cosh_sq_sub_sinh_sq (Real.arcosh z)
     rw [Real.cosh_arcosh hz.le] at h
-    exact_mod_cast (by linarith : z^2-1=Real.sinh (Real.arcosh z)^2)
+    exact_mod_cast (by linarith : z^(2 : ℕ)-1=Real.sinh (Real.arcosh z)^(2 : ℕ))
   have h := laplaceMean_darboux q n (Real.arcosh z) X k
-  change _=(Real.sinh (Real.arcosh z):ℂ)^2*argument q (n+1) z X k at h
+  change _=(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)*argument q (n+1) z X k at h
   rw [Real.cosh_arcosh hz.le] at h
   rw [he]
   dsimp [second,first]
   rw [Real.cosh_arcosh hz.le]
-  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^2
+  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)
 
 private theorem argument_continuousOn (q : XiZeroCopy) (n : ℕ) (X k : ℝ) :
     ContinuousOn (fun z => argument q n z X k) (Ici 1) := by
@@ -464,10 +464,10 @@ theorem spinTwo_derivative_tendsto_characteristic (q : XiZeroCopy) (X k : ℝ) :
 
 /-- Double primitive with both original characteristic jets retained. -/
 def primitive (q : XiZeroCopy) (X k z : ℝ) : ℂ :=
-  ((z:ℂ)^2-1)*(argument q 1 z X k-2*z*first q 0 z X k)
+  ((z:ℂ)^(2 : ℕ)-1)*(argument q 1 z X k-2*z*first q 0 z X k)
 /-- First primitive jet in the original invariant coordinate. -/
 def primitiveFirst (q : XiZeroCopy) (X k z : ℝ) : ℂ :=
-  ((z:ℂ)^2-1)*(first q 1 z X k-2*first q 0 z X k)
+  ((z:ℂ)^(2 : ℕ)-1)*(first q 1 z X k-2*first q 0 z X k)
 
 /-- The full-source primitive has the actual retained spin-two second derivative. -/
 theorem primitive_derivatives (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
@@ -489,7 +489,7 @@ theorem primitive_derivatives (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z
 
 /-- The primitive is the original second invariant derivative with a double zero. -/
 theorem primitive_eq_weighted_second (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    primitive q X k z=((z:ℂ)^2-1)^2*
+    primitive q X k z=((z:ℂ)^(2 : ℕ)-1)^(2 : ℕ)*
       deriv (deriv (fun r => argument q 0 r X k)) z := by
   have he : deriv (fun r => argument q 0 r X k)=ᶠ[𝓝 z]
       fun r => first q 0 r X k := by
@@ -497,7 +497,7 @@ theorem primitive_eq_weighted_second (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz 
     exact (argument_derivatives q 0 X k hr).1.deriv
   rw [he.deriv_eq,(argument_derivatives q 0 X k hz).2.deriv]
   dsimp [primitive]
-  linear_combination -((z:ℂ)^2-1)*(argument_equation q 0 X k hz)
+  linear_combination -((z:ℂ)^(2 : ℕ)-1)*(argument_equation q 0 X k hz)
 
 /-- Both displayed primitive jets vanish at the original characteristic. -/
 theorem primitive_characteristic (q : XiZeroCopy) (X k : ℝ) :
@@ -511,7 +511,7 @@ theorem primitive_tendsto_characteristic (q : XiZeroCopy) (X k : ℝ) :
   have hx : Tendsto (fun r : ℝ => (r:ℂ)) (𝓝[>] 1) (𝓝 (1:ℂ)) := by
     simpa using (Complex.continuous_ofReal.continuousAt (x := (1:ℝ))).tendsto.mono_left
       (show 𝓝[>] (1:ℝ) ≤ 𝓝 1 from nhdsWithin_le_nhds)
-  have hp : Tendsto (fun r : ℝ => (r:ℂ)^2-1) (𝓝[>] 1) (𝓝 (0:ℂ)) := by
+  have hp : Tendsto (fun r : ℝ => (r:ℂ)^(2 : ℕ)-1) (𝓝[>] 1) (𝓝 (0:ℂ)) := by
     simpa using (hx.pow 2).sub_const (1:ℂ)
   have ha := ((argument_continuousOn q 1 X k) 1 (by simp)).mono Ioi_subset_Ici_self
   have h0 := first_tendsto_characteristic q 0 X k
@@ -567,7 +567,7 @@ theorem primitive_volterra (q : XiZeroCopy) (X k : ℝ) (z : Ici (1:ℝ)) :
 /-- The original primitive has a quadratic characteristic zero and its first jet a linear zero. -/
 theorem primitive_characteristic_bounds (q : XiZeroCopy) (X k : ℝ) (R : Ici (1:ℝ)) :
     ∃ C : ℝ, 0 < C ∧ ∀ z : Icc (1:ℝ) R.val,
-      ‖primitive q X k z‖ ≤ C*(z.val-1)^2 ∧
+      ‖primitive q X k z‖ ≤ C*(z.val-1)^(2 : ℕ) ∧
       ‖primitiveFirst q X k z‖ ≤ C*(z.val-1) := by
   obtain ⟨B,hB⟩ := isCompact_Icc.exists_bound_of_continuousOn
     ((spinTwo_continuousOn q X k).mono (show Icc (1:ℝ) R.val ⊆ Ici 1 from Icc_subset_Ici_self))
@@ -593,7 +593,7 @@ theorem primitive_characteristic_bounds (q : XiZeroCopy) (X k : ℝ) (R : Ici (1
     rw [abs_of_nonneg (sub_nonneg.mpr hz)] at hi
     calc
       _ ≤ (z.val-1)*C*(z.val-1) := hi
-      _ = C*(z.val-1)^2 := by ring
+      _ = C*(z.val-1)^(2 : ℕ) := by ring
   · have hp := primitiveFirst_integral q X k ⟨z.val,hz⟩
     change primitiveFirst q X k z.val=_ at hp
     rw [hp,norm_neg]

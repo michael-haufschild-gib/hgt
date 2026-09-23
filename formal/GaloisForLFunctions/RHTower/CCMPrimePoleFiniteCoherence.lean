@@ -252,7 +252,7 @@ theorem exists_fin_primeLog_phase_recurrence_quantitative
     (Q := Q) (fun i => Real.log (p i))
 
 /-- Quantitative recurrence in a cofinal clock annulus.  Multiplying a
-`(Q^2+1)^{-1}` recurrence clock by `Q` forces the clock past `Q` while
+`(Q^(2 : ℕ)+1)^{-1}` recurrence clock by `Q` forces the clock past `Q` while
 retaining phase error at most `2π/Q`. -/
 theorem exists_fin_simultaneous_two_pi_phase_approximation_annular_quantitative
     {d Q : ℕ} (hQ : 0 < Q) (ω : Fin d → ℝ) :
@@ -530,7 +530,7 @@ theorem exists_fin_primeLog_weighted_phaseSum_recurrence_delayed_quantitative
     (L := L) (fun i => Real.log (p i)) w
 
 /-- A cofinal weighted recurrence: the clock is forced beyond `Q`, remains
-at most `Q * (Q^2+1)^d`, and the source returns within `(2π/Q)` times its
+at most `Q * (Q^(2 : ℕ)+1)^d`, and the source returns within `(2π/Q)` times its
 total variation of full coherence. -/
 theorem exists_fin_weighted_phaseSum_recurrence_annular_quantitative
     {d Q : ℕ} (hQ : 0 < Q) (ω : Fin d → ℝ) (w : Fin d → ℂ) :

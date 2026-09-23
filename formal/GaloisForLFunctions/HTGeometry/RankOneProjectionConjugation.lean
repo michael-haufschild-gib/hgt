@@ -22,7 +22,7 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 /-- Every eigenvalue of a Hermitian idempotent is `0` or `1`. -/
 theorem hermitianEigenvalues_sq_eq_self_of_mul_self_eq_self
     {A : Matrix ι ι ℂ} (hA : A.IsHermitian) (hmul : A * A = A) (i : ι) :
-    (hA.eigenvalues i) ^ 2 = hA.eigenvalues i := by
+    (hA.eigenvalues i) ^ (2 : ℕ) = hA.eigenvalues i := by
   let K := hA.eigenvectorUnitary
   have hdiag := congrArg
     (fun X : Matrix ι ι ℂ => ((Unitary.conjStarAlgAut ℂ (Matrix ι ι ℂ)) (star K)) X) hmul

@@ -66,7 +66,7 @@ theorem fzzCigarParityTwoScaleKreinOperator_formallySelfAdjoint :
 
 /-- Positive discriminant complementary to the strictly negative source Hankel determinant. -/
 def fzzCigarParityTwoScaleKreinDiscriminant : ℝ :=
-  fzzKreinP * (fzzKreinQ ^ 2 - fzzKreinP * fzzKreinR) / fzzKreinR
+  fzzKreinP * (fzzKreinQ ^ (2 : ℕ) - fzzKreinP * fzzKreinR) / fzzKreinR
 
 theorem fzzCigarParityTwoScaleKreinDiscriminant_pos :
     0 < fzzCigarParityTwoScaleKreinDiscriminant := by
@@ -75,7 +75,7 @@ theorem fzzCigarParityTwoScaleKreinDiscriminant_pos :
     rw [fzzCigarParityDelay_eq_fermi (by norm_num : (0 : ℝ) < 1)]
     positivity
   have hminor := fzzCigarParityTwoScaleHankelMinor_neg
-  change fzzKreinP * fzzKreinR - fzzKreinQ ^ 2 < 0 at hminor
+  change fzzKreinP * fzzKreinR - fzzKreinQ ^ (2 : ℕ) < 0 at hminor
   rw [fzzCigarParityTwoScaleKreinDiscriminant]
   exact div_pos (mul_pos hP (by linarith)) fzzKreinR_pos
 
@@ -89,13 +89,13 @@ def fzzCigarParityTwoScaleKreinEigenvector : ℂ × ℂ :=
     fzzCigarParityTwoScaleKreinEigenvalue - (fzzKreinP : ℂ))
 
 theorem fzzCigarParityTwoScaleKreinEigenvalue_sq :
-    fzzCigarParityTwoScaleKreinEigenvalue ^ 2 =
+    fzzCigarParityTwoScaleKreinEigenvalue ^ (2 : ℕ) =
       -(fzzCigarParityTwoScaleKreinDiscriminant : ℂ) := by
   rw [fzzCigarParityTwoScaleKreinEigenvalue]
-  have hsqrt : Real.sqrt fzzCigarParityTwoScaleKreinDiscriminant ^ 2 =
+  have hsqrt : Real.sqrt fzzCigarParityTwoScaleKreinDiscriminant ^ (2 : ℕ) =
       fzzCigarParityTwoScaleKreinDiscriminant :=
     Real.sq_sqrt fzzCigarParityTwoScaleKreinDiscriminant_pos.le
-  have hcast : ((Real.sqrt fzzCigarParityTwoScaleKreinDiscriminant : ℝ) : ℂ) ^ 2 =
+  have hcast : ((Real.sqrt fzzCigarParityTwoScaleKreinDiscriminant : ℝ) : ℂ) ^ (2 : ℕ) =
       (fzzCigarParityTwoScaleKreinDiscriminant : ℂ) := by exact_mod_cast hsqrt
   rw [mul_pow, I_sq, hcast]
   ring
@@ -134,7 +134,7 @@ theorem fzzCigarParityTwoScaleKreinEigenpair :
               push_cast
               field_simp
               ring
-      _ = fzzCigarParityTwoScaleKreinEigenvalue ^ 2 -
+      _ = fzzCigarParityTwoScaleKreinEigenvalue ^ (2 : ℕ) -
             (fzzKreinP : ℂ) * fzzCigarParityTwoScaleKreinEigenvalue := by
               rw [fzzCigarParityTwoScaleKreinEigenvalue_sq]
       _ = fzzCigarParityTwoScaleKreinEigenvalue *

@@ -10,12 +10,12 @@ import Mathlib.Analysis.Complex.RealDeriv
 
 Let `k` be an even `C¹` kernel and let
 
-`(A f)(x) = ∫_0^1 k(x-y) f(y) dy`
+`(A f)(x) = ∫_0^(1 : ℕ) k(x-y) f(y) dy`
 
 be the associated truncated convolution on the unit interval.  In the exponential basis
 `e_j(x) = e^{2πijx}` the matrix `Q_{ij} = ⟨e_i, A e_j⟩` obeys the exact divided-difference law
 
-`(i - j) Q_{ij} = b_j - b_i`,   `b_j = -(2πi)^{-1} ∫_0^1 (k(1-y) - k(y)) e_j(y) dy`,
+`(i - j) Q_{ij} = b_j - b_i`,   `b_j = -(2πi)^{-1} ∫_0^(1 : ℕ) (k(1-y) - k(y)) e_j(y) dy`,
 
 with an odd source `b_{-j} = -b_j`.  The proof is two integrations by parts — one in the outer
 variable against `e_{-i}`, one in the inner variable against `e_j` — whose interior terms are the
@@ -76,7 +76,7 @@ theorem fourierChar_neg_one_sub (j : ℤ) (u : ℝ) :
 
 /-! ## The truncated convolution -/
 
-/-- The truncated convolution `(A f)(x) = ∫_0^1 k(x-y) f(y) dy`. -/
+/-- The truncated convolution `(A f)(x) = ∫_0^(1 : ℕ) k(x-y) f(y) dy`. -/
 def truncConv (k : ℝ → ℝ) (f : ℝ → ℂ) (x : ℝ) : ℂ :=
   ∫ y in (0 : ℝ)..1, ((k (x - y) : ℝ) : ℂ) * f y
 

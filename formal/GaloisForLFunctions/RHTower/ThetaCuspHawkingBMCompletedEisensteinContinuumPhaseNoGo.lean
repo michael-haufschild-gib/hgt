@@ -52,7 +52,7 @@ theorem exists_thetaCuspHawkingCompletedEisensteinContinuumDensity_bounded
     exists_thetaCuspHawkingCompletedEisensteinLineNormSq_bounded ha cPlus
   obtain ⟨BMinus, hBMinus, hbMinus⟩ :=
     exists_thetaCuspHawkingCompletedEisensteinLineNormSq_bounded ha cMinus
-  refine ⟨BPlus ^ 2 * BMinus ^ 2,
+  refine ⟨BPlus ^ (2 : ℕ) * BMinus ^ (2 : ℕ),
     mul_nonneg (sq_nonneg BPlus) (sq_nonneg BMinus), fun r => ?_⟩
   rw [thetaCuspHawkingCompletedEisensteinContinuumDensity_eq_lineFactors]
   calc
@@ -65,7 +65,7 @@ theorem exists_thetaCuspHawkingCompletedEisensteinContinuumDensity_bounded
       · exact hbPlus (-r)
       · exact hbMinus r
       · exact hbMinus (-r)
-    _ = BPlus ^ 2 * BMinus ^ 2 := by ring
+    _ = BPlus ^ (2 : ℕ) * BMinus ^ (2 : ℕ) := by ring
 
 /-- Integrability and the four-factor bound admit the literal density to physical continuum
 energy space. -/

@@ -5,7 +5,7 @@ import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 /-!
 # Sixth-jet raywise coalesced three-point cone
 
-For a `C^6` radial profile, the three-point determinant along a fixed positive aspect-ratio ray
+For a `C^(6 : ℕ)` radial profile, the three-point determinant along a fixed positive aspect-ratio ray
 has a universal first nonzero jet.  Negative center curvature and a strict fourth Hankel gap make
 that sixth jet positive, so every fixed ray enters the positive determinant chamber near the
 coalesced corner.  The radius may depend on the ray; no uniform neighbourhood is asserted.
@@ -30,7 +30,7 @@ def correlationRayDeficit (f : ℝ → ℝ) (c t : ℝ) : ℝ :=
 def threePointCorrelationDeficitDeterminant
     (d : ℝ) (P Q R : ℝ → ℝ) (t : ℝ) : ℝ :=
   d * (2 * (P t * Q t + P t * R t + Q t * R t) -
-    (P t ^ 2 + Q t ^ 2 + R t ^ 2)) - 2 * P t * Q t * R t
+    (P t ^ (2 : ℕ) + Q t ^ (2 : ℕ) + R t ^ (2 : ℕ))) - 2 * P t * Q t * R t
 
 /-- Exact diagonal-deficit form of the ray determinant. -/
 theorem threePointCorrelationDeterminantRay_eq_deficit
@@ -210,8 +210,8 @@ theorem iteratedDeriv_six_threePointCorrelationDeterminantRay_zero
     (lambda : ℝ) :
     iteratedDeriv 6 (threePointCorrelationDeterminantRay f lambda) 0 =
       -180 * iteratedDeriv 2 f 0 *
-        (f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ 2) *
-        lambda ^ 2 * (1 + lambda) ^ 2 := by
+        (f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ (2 : ℕ)) *
+        lambda ^ (2 : ℕ) * (1 + lambda) ^ (2 : ℕ) := by
   let P := correlationRayDeficit f 1
   let Q := correlationRayDeficit f lambda
   let R := correlationRayDeficit f (1 + lambda)
@@ -231,21 +231,21 @@ theorem iteratedDeriv_six_threePointCorrelationDeterminantRay_zero
     simpa [h₁] using iteratedDeriv_correlationRayDeficit_zero (n := 1)
       (hf.of_le (by norm_num)) c
   have hdef2 (c : ℝ) : iteratedDeriv 2 (correlationRayDeficit f c) 0 =
-      -(c ^ 2 * iteratedDeriv 2 f 0) := by
+      -(c ^ (2 : ℕ) * iteratedDeriv 2 f 0) := by
     simpa using iteratedDeriv_correlationRayDeficit_zero (n := 2)
       (hf.of_le (by norm_num)) c
   have hdef3 (c : ℝ) : iteratedDeriv 3 (correlationRayDeficit f c) 0 = 0 := by
     simpa [h₃] using iteratedDeriv_correlationRayDeficit_zero (n := 3)
       (hf.of_le (by norm_num)) c
   have hdef4 (c : ℝ) : iteratedDeriv 4 (correlationRayDeficit f c) 0 =
-      -(c ^ 4 * iteratedDeriv 4 f 0) := by
+      -(c ^ (4 : ℕ) * iteratedDeriv 4 f 0) := by
     simpa using iteratedDeriv_correlationRayDeficit_zero (n := 4)
       (hf.of_le (by norm_num)) c
   have hdef5 (c : ℝ) : iteratedDeriv 5 (correlationRayDeficit f c) 0 = 0 := by
     simpa [h₅] using iteratedDeriv_correlationRayDeficit_zero (n := 5)
       (hf.of_le (by norm_num)) c
   have hdef6 (c : ℝ) : iteratedDeriv 6 (correlationRayDeficit f c) 0 =
-      -(c ^ 6 * iteratedDeriv 6 f 0) := by
+      -(c ^ (6 : ℕ) * iteratedDeriv 6 f 0) := by
     simpa using iteratedDeriv_correlationRayDeficit_zero (n := 6)
       (hf.of_le (by norm_num)) c
   rw [show threePointCorrelationDeterminantRay f lambda =
@@ -291,14 +291,14 @@ theorem iteratedDeriv_threePointCorrelationDeterminantRay_zero_of_lt_six
     simpa [h₁] using iteratedDeriv_correlationRayDeficit_zero (n := 1)
       (hf.of_le (by norm_num)) c
   have hdef2 (c : ℝ) : iteratedDeriv 2 (correlationRayDeficit f c) 0 =
-      -(c ^ 2 * iteratedDeriv 2 f 0) := by
+      -(c ^ (2 : ℕ) * iteratedDeriv 2 f 0) := by
     simpa using iteratedDeriv_correlationRayDeficit_zero (n := 2)
       (hf.of_le (by norm_num)) c
   have hdef3 (c : ℝ) : iteratedDeriv 3 (correlationRayDeficit f c) 0 = 0 := by
     simpa [h₃] using iteratedDeriv_correlationRayDeficit_zero (n := 3)
       (hf.of_le (by norm_num)) c
   have hdef4 (c : ℝ) : iteratedDeriv 4 (correlationRayDeficit f c) 0 =
-      -(c ^ 4 * iteratedDeriv 4 f 0) := by
+      -(c ^ (4 : ℕ) * iteratedDeriv 4 f 0) := by
     simpa using iteratedDeriv_correlationRayDeficit_zero (n := 4)
       (hf.of_le (by norm_num)) c
   have hdef5 (c : ℝ) : iteratedDeriv 5 (correlationRayDeficit f c) 0 = 0 := by
@@ -322,7 +322,7 @@ theorem exists_threePointCorrelationDeterminantRay_pos_right
     (h₃ : iteratedDeriv 3 f 0 = 0)
     (h₅ : iteratedDeriv 5 f 0 = 0)
     (h₂ : iteratedDeriv 2 f 0 < 0)
-    (h₄ : 0 < f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ 2)
+    (h₄ : 0 < f 0 * iteratedDeriv 4 f 0 - iteratedDeriv 2 f 0 ^ (2 : ℕ))
     {lambda : ℝ} (hlambda : 0 < lambda) :
     ∃ delta : ℝ, 0 < delta ∧ ∀ t : ℝ, 0 < t → t < delta →
       0 < threePointCorrelationDeterminantRay f lambda t := by

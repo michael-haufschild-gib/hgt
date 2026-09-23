@@ -20,7 +20,7 @@ Comparing with the closed Beta value of the same integral bounds the Gamma quoti
 4 √2 arsinh 1 ≤ √π Γ(1/4)/Γ(3/4) ,
 ```
 
-and `arsinh 1 = log (1 + √2) > 7/8` because `e^7 < 577 + 408 √2 = (1 + √2)^8`.
+and `arsinh 1 = log (1 + √2) > 7/8` because `e^(7 : ℕ) < 577 + 408 √2 = (1 + √2)^(8 : ℕ)`.
 -/
 
 open MeasureTheory Filter Topology

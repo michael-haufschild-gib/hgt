@@ -77,25 +77,25 @@ def thetaCuspFullReflectionEighthHankelCurvature (x : ℝ) : ℝ :=
   let B := thetaCuspFullReflectedLogFourthJet x
   let C := thetaCuspFullReflectedLogSixthJet x
   let D := thetaCuspFullReflectedLogEighthJet x
-  768 * A ^ 6 - 1344 * A ^ 4 * B + 304 * A ^ 2 * B ^ 2 -
-    68 * B ^ 3 + 128 * A ^ 3 * C - 4 * A ^ 2 * D + B * D - C ^ 2
+  768 * A ^ (6 : ℕ) - 1344 * A ^ (4 : ℕ) * B + 304 * A ^ (2 : ℕ) * B ^ (2 : ℕ) -
+    68 * B ^ (3 : ℕ) + 128 * A ^ (3 : ℕ) * C - 4 * A ^ (2 : ℕ) * D + B * D - C ^ (2 : ℕ)
 
 /-- The exact even-log rank-three polynomial is the native complete-source curvature. -/
 theorem thetaCuspLogSource_eighthHankel_eq_fullReflectionEighthCurvature
     {x : ℝ} (hx : 0 < x) :
     iteratedDeriv 4 thetaCuspLogSource x *
           iteratedDeriv 8 thetaCuspLogSource x -
-        iteratedDeriv 6 thetaCuspLogSource x ^ 2 +
-      4 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 *
+        iteratedDeriv 6 thetaCuspLogSource x ^ (2 : ℕ) +
+      4 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) *
         iteratedDeriv 8 thetaCuspLogSource x +
-      128 * iteratedDeriv 2 thetaCuspLogSource x ^ 3 *
+      128 * iteratedDeriv 2 thetaCuspLogSource x ^ (3 : ℕ) *
         iteratedDeriv 6 thetaCuspLogSource x +
-      68 * iteratedDeriv 4 thetaCuspLogSource x ^ 3 +
-      304 * iteratedDeriv 2 thetaCuspLogSource x ^ 2 *
-        iteratedDeriv 4 thetaCuspLogSource x ^ 2 +
-      1344 * iteratedDeriv 2 thetaCuspLogSource x ^ 4 *
+      68 * iteratedDeriv 4 thetaCuspLogSource x ^ (3 : ℕ) +
+      304 * iteratedDeriv 2 thetaCuspLogSource x ^ (2 : ℕ) *
+        iteratedDeriv 4 thetaCuspLogSource x ^ (2 : ℕ) +
+      1344 * iteratedDeriv 2 thetaCuspLogSource x ^ (4 : ℕ) *
         iteratedDeriv 4 thetaCuspLogSource x +
-      768 * iteratedDeriv 2 thetaCuspLogSource x ^ 6 =
+      768 * iteratedDeriv 2 thetaCuspLogSource x ^ (6 : ℕ) =
     thetaCuspFullReflectionEighthHankelCurvature x := by
   rw [iteratedDeriv_two_thetaCuspLogSource_eq_factor hx,
     iteratedDeriv_four_thetaCuspLogSource_eq_factor hx,

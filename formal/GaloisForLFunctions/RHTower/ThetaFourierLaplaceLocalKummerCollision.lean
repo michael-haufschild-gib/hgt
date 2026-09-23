@@ -45,7 +45,7 @@ def ThetaCuspDerivativeSquareRootRightZeroBand : Prop :=
   ∃ h : ℂ → ℂ,
     AnalyticOnNhd ℂ h thetaCuspFourierLaplaceRightZeroBand ∧
       ∀ w ∈ thetaCuspFourierLaplaceRightZeroBand,
-        h w ^ 2 = deriv thetaCuspFourierLaplace w
+        h w ^ (2 : ℕ) = deriv thetaCuspFourierLaplace w
 
 theorem rightZeroBand_mem_fourierLaplaceStrip
     {w : ℂ} (hw : w ∈ thetaCuspFourierLaplaceRightZeroBand) :
@@ -154,11 +154,11 @@ theorem riemannHypothesis_of_rhLadder_one_of_thetaCuspDerivativeSquareRootRightZ
     exact AnalyticAt.comp (f := pull) (x := w)
       (hg (pull w) (hpull_mem w hw)) (by dsimp only [pull]; fun_prop)
   have hGpow : ∀ w ∈ thetaCuspFourierLaplaceRightZeroBand,
-      G w ^ 2 = thetaCuspFourierLaplace w := by
+      G w ^ (2 : ℕ) = thetaCuspFourierLaplace w := by
     intro w hw
     have hwStrip := rightZeroBand_mem_fourierLaplaceStrip hw
     calc
-      G w ^ 2 = xi (pull w) := hgpow (pull w) (hpull_mem w hw)
+      G w ^ (2 : ℕ) = xi (pull w) := hgpow (pull w) (hpull_mem w hw)
       _ = XiC w := by rfl
       _ = thetaCuspFourierLaplace w :=
         (thetaCuspFourierLaplace_eq_XiC_on_strip hwStrip).symm

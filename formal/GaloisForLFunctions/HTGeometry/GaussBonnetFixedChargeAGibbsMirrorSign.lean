@@ -17,26 +17,26 @@ open CPV
 
 def egbFixedChargeAMirrorAngle (σ : ℝ) : ℝ := arcsin (thermalRatio σ)
 def egbFixedChargeAGibbsMirrorCoefficient (w φ σ : ℝ) : ℝ :=
-  2 * egbFixedChargeAGibbsOddCoefficient w φ * thermalRatio σ * (1 - thermalRatio σ ^ 2) ^ 2
+  2 * egbFixedChargeAGibbsOddCoefficient w φ * thermalRatio σ * (1 - thermalRatio σ ^ (2 : ℕ)) ^ (2 : ℕ)
 
 theorem egbFixedChargeAMirrorAngle_sin (σ : ℝ) : sin (egbFixedChargeAMirrorAngle σ) = thermalRatio σ := by
   unfold egbFixedChargeAMirrorAngle
   exact sin_arcsin (by linarith [thermalRatio_pos σ]) (thermalRatio_lt_one σ).le
 
 theorem egbFixedChargeAMirrorAngle_cos_fourth (σ : ℝ) :
-    cos (egbFixedChargeAMirrorAngle σ) ^ 4 = (1 - thermalRatio σ ^ 2) ^ 2 := by
+    cos (egbFixedChargeAMirrorAngle σ) ^ (4 : ℕ) = (1 - thermalRatio σ ^ (2 : ℕ)) ^ (2 : ℕ) := by
   have h := sin_sq_add_cos_sq (egbFixedChargeAMirrorAngle σ)
   rw [egbFixedChargeAMirrorAngle_sin] at h
-  have he : cos (egbFixedChargeAMirrorAngle σ) ^ 2 = 1 - thermalRatio σ ^ 2 := by linarith
+  have he : cos (egbFixedChargeAMirrorAngle σ) ^ (2 : ℕ) = 1 - thermalRatio σ ^ (2 : ℕ) := by linarith
   calc
-    _ = (cos (egbFixedChargeAMirrorAngle σ) ^ 2) ^ 2 := by ring
+    _ = (cos (egbFixedChargeAMirrorAngle σ) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
     _ = _ := by rw [he]
 
 theorem egbFixedChargeAGibbsMirrorCoefficient_neg (w φ σ : ℝ) :
     egbFixedChargeAGibbsMirrorCoefficient w φ σ < 0 := by
   have hz := thermalRatio_pos σ
   have hz1 := thermalRatio_lt_one σ
-  have ht : 0 < 1 - thermalRatio σ ^ 2 := by
+  have ht : 0 < 1 - thermalRatio σ ^ (2 : ℕ) := by
     nlinarith [mul_pos (by linarith : 0 < 1 - thermalRatio σ) (by linarith : 0 < 1 + thermalRatio σ)]
   have hc := egbFixedChargeAGibbsOddCoefficient_neg w φ
   unfold egbFixedChargeAGibbsMirrorCoefficient
@@ -44,7 +44,7 @@ theorem egbFixedChargeAGibbsMirrorCoefficient_neg (w φ σ : ℝ) :
 
 theorem egbFixedChargeAGibbsMirrorDifference_positive_coordinate_limit (w φ l σ : ℝ) :
     Tendsto (fun τ => egbFixedChargeAGibbsMirrorDifference w φ τ l (egbFixedChargeAMirrorAngle σ) /
-      egbCoexistenceASymmetricRatio τ ^ 5) atBot (𝓝 (egbFixedChargeAGibbsMirrorCoefficient w φ σ)) := by
+      egbCoexistenceASymmetricRatio τ ^ (5 : ℕ)) atBot (𝓝 (egbFixedChargeAGibbsMirrorCoefficient w φ σ)) := by
   simpa only [egbFixedChargeAMirrorAngle_sin, egbFixedChargeAMirrorAngle_cos_fourth,
     egbFixedChargeAGibbsMirrorCoefficient] using
     egbFixedChargeAGibbsMirrorDifference_fifth_order_limit w φ l (egbFixedChargeAMirrorAngle σ)
@@ -55,7 +55,7 @@ theorem egbFixedChargeAGibbsMirrorDifference_eventually_neg (w φ l σ : ℝ) :
     (egbFixedChargeAGibbsMirrorCoefficient_neg w φ σ)
   filter_upwards [h] with τ hτ
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hd5 : 0 < egbCoexistenceASymmetricRatio τ ^ 5 := by positivity
+  have hd5 : 0 < egbCoexistenceASymmetricRatio τ ^ (5 : ℕ) := by positivity
   have he := (div_lt_iff₀ hd5).mp hτ
   linarith
 

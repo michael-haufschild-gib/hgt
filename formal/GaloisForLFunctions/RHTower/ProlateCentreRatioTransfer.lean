@@ -74,8 +74,8 @@ theorem eventually_pairAnchor_quotient_bounds (m n : ℕ) (k : ℕ) (hk : k = m 
 
 /-- The constant of the centre comparison. -/
 def centreRatioConst (m n : ℕ) : ℝ :=
-  16 * ratioLimitConst m n * pairAnchorHermiteQuotient m n m ^ 2
-    / pairAnchorHermiteQuotient m n n ^ 2
+  16 * ratioLimitConst m n * pairAnchorHermiteQuotient m n m ^ (2 : ℕ)
+    / pairAnchorHermiteQuotient m n n ^ (2 : ℕ)
 
 theorem centreRatioConst_nonneg (m n : ℕ) : 0 ≤ centreRatioConst m n := by
   have h := ratioLimitConst_nonneg m n
@@ -85,14 +85,14 @@ theorem centreRatioConst_nonneg (m n : ℕ) : 0 ≤ centreRatioConst m n := by
 /-- **The centre amplitudes inherit the `c^{-1/2}` comparison.** -/
 theorem eventually_centre_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
     ∀ᶠ a : ℝ in atTop,
-      (signedModeRadialData a n).R 0 ^ 2
+      (signedModeRadialData a n).R 0 ^ (2 : ℕ)
         ≤ centreRatioConst m n / prolateRatioScale a
-          * (signedModeRadialData a m).R 0 ^ 2 := by
+          * (signedModeRadialData a m).R 0 ^ (2 : ℕ) := by
   have hqn : pairAnchorHermiteQuotient m n n ≠ 0 :=
     pairAnchorHermiteQuotient_ne_zero m n n (Or.inr rfl)
   have hqm : pairAnchorHermiteQuotient m n m ≠ 0 :=
     pairAnchorHermiteQuotient_ne_zero m n m (Or.inl rfl)
-  have hqnpos : 0 < pairAnchorHermiteQuotient m n n ^ 2 := by positivity
+  have hqnpos : 0 < pairAnchorHermiteQuotient m n n ^ (2 : ℕ) := by positivity
   filter_upwards [eventually_prolateBand_sq_ratio_le_div_sqrt m n hmn,
     eventually_pairAnchor_quotient_bounds m n n (Or.inr rfl),
     eventually_pairAnchor_quotient_bounds m n m (Or.inl rfl),
@@ -126,56 +126,56 @@ theorem eventually_centre_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
     field_simp
   set ρn : ℝ := (signedModeRadialData a n).R y₀ / (signedModeRadialData a n).R 0 with hρn
   set ρm : ℝ := (signedModeRadialData a m).R y₀ / (signedModeRadialData a m).R 0 with hρm
-  have hnsq : pairAnchorHermiteQuotient m n n ^ 2 / 4 * (signedModeRadialData a n).R 0 ^ 2
-      ≤ (signedModeRadialData a n).R y₀ ^ 2 := by
+  have hnsq : pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 * (signedModeRadialData a n).R 0 ^ (2 : ℕ)
+      ≤ (signedModeRadialData a n).R y₀ ^ (2 : ℕ) := by
     have h1 : |pairAnchorHermiteQuotient m n n| / 2 ≤ |ρn| := hbn.1
-    have h2 : (|pairAnchorHermiteQuotient m n n| / 2) ^ 2 ≤ |ρn| ^ 2 :=
+    have h2 : (|pairAnchorHermiteQuotient m n n| / 2) ^ (2 : ℕ) ≤ |ρn| ^ (2 : ℕ) :=
       pow_le_pow_left₀ (by positivity) h1 2
-    have habs1 : |ρn| ^ 2 = ρn ^ 2 := sq_abs ρn
-    have habs2 : |pairAnchorHermiteQuotient m n n| ^ 2
-        = pairAnchorHermiteQuotient m n n ^ 2 := sq_abs _
+    have habs1 : |ρn| ^ (2 : ℕ) = ρn ^ (2 : ℕ) := sq_abs ρn
+    have habs2 : |pairAnchorHermiteQuotient m n n| ^ (2 : ℕ)
+        = pairAnchorHermiteQuotient m n n ^ (2 : ℕ) := sq_abs _
     rw [hfn]
-    have hR2 : (0 : ℝ) ≤ (signedModeRadialData a n).R 0 ^ 2 := sq_nonneg _
-    have hkey : pairAnchorHermiteQuotient m n n ^ 2 / 4 ≤ ρn ^ 2 := by
+    have hR2 : (0 : ℝ) ≤ (signedModeRadialData a n).R 0 ^ (2 : ℕ) := sq_nonneg _
+    have hkey : pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 ≤ ρn ^ (2 : ℕ) := by
       rw [div_pow] at h2
       rw [habs1, habs2] at h2
       norm_num at h2
       linarith [h2]
-    calc pairAnchorHermiteQuotient m n n ^ 2 / 4 * (signedModeRadialData a n).R 0 ^ 2
-        ≤ ρn ^ 2 * (signedModeRadialData a n).R 0 ^ 2 :=
+    calc pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 * (signedModeRadialData a n).R 0 ^ (2 : ℕ)
+        ≤ ρn ^ (2 : ℕ) * (signedModeRadialData a n).R 0 ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hkey hR2
-      _ = (ρn * (signedModeRadialData a n).R 0) ^ 2 := by ring
-  have hmsq : (signedModeRadialData a m).R y₀ ^ 2
-      ≤ 4 * pairAnchorHermiteQuotient m n m ^ 2 * (signedModeRadialData a m).R 0 ^ 2 := by
+      _ = (ρn * (signedModeRadialData a n).R 0) ^ (2 : ℕ) := by ring
+  have hmsq : (signedModeRadialData a m).R y₀ ^ (2 : ℕ)
+      ≤ 4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) * (signedModeRadialData a m).R 0 ^ (2 : ℕ) := by
     have h1 : |ρm| ≤ 2 * |pairAnchorHermiteQuotient m n m| := hbm.2
-    have h2 : |ρm| ^ 2 ≤ (2 * |pairAnchorHermiteQuotient m n m|) ^ 2 :=
+    have h2 : |ρm| ^ (2 : ℕ) ≤ (2 * |pairAnchorHermiteQuotient m n m|) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (abs_nonneg _) h1 2
-    have habs1 : |ρm| ^ 2 = ρm ^ 2 := sq_abs ρm
-    have habs2 : |pairAnchorHermiteQuotient m n m| ^ 2
-        = pairAnchorHermiteQuotient m n m ^ 2 := sq_abs _
-    have hkey : ρm ^ 2 ≤ 4 * pairAnchorHermiteQuotient m n m ^ 2 := by
+    have habs1 : |ρm| ^ (2 : ℕ) = ρm ^ (2 : ℕ) := sq_abs ρm
+    have habs2 : |pairAnchorHermiteQuotient m n m| ^ (2 : ℕ)
+        = pairAnchorHermiteQuotient m n m ^ (2 : ℕ) := sq_abs _
+    have hkey : ρm ^ (2 : ℕ) ≤ 4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) := by
       rw [mul_pow, habs1, habs2] at h2
       norm_num at h2
       linarith [h2]
     rw [hfm]
-    have hR2 : (0 : ℝ) ≤ (signedModeRadialData a m).R 0 ^ 2 := sq_nonneg _
-    calc (ρm * (signedModeRadialData a m).R 0) ^ 2
-        = ρm ^ 2 * (signedModeRadialData a m).R 0 ^ 2 := by ring
-      _ ≤ 4 * pairAnchorHermiteQuotient m n m ^ 2 * (signedModeRadialData a m).R 0 ^ 2 :=
+    have hR2 : (0 : ℝ) ≤ (signedModeRadialData a m).R 0 ^ (2 : ℕ) := sq_nonneg _
+    calc (ρm * (signedModeRadialData a m).R 0) ^ (2 : ℕ)
+        = ρm ^ (2 : ℕ) * (signedModeRadialData a m).R 0 ^ (2 : ℕ) := by ring
+      _ ≤ 4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) * (signedModeRadialData a m).R 0 ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hkey hR2
   -- assemble
   have hKnn : 0 ≤ ratioLimitConst m n := ratioLimitConst_nonneg m n
-  have hchain : pairAnchorHermiteQuotient m n n ^ 2 / 4 * (signedModeRadialData a n).R 0 ^ 2
+  have hchain : pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 * (signedModeRadialData a n).R 0 ^ (2 : ℕ)
       ≤ ratioLimitConst m n / prolateRatioScale a
-        * (4 * pairAnchorHermiteQuotient m n m ^ 2 * (signedModeRadialData a m).R 0 ^ 2) := by
+        * (4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) * (signedModeRadialData a m).R 0 ^ (2 : ℕ)) := by
     refine le_trans hnsq (le_trans hratio ?_)
     refine mul_le_mul_of_nonneg_left hmsq ?_
     positivity
-  have h4 : (0 : ℝ) < pairAnchorHermiteQuotient m n n ^ 2 / 4 := by positivity
-  have hX : (signedModeRadialData a n).R 0 ^ 2
+  have h4 : (0 : ℝ) < pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4 := by positivity
+  have hX : (signedModeRadialData a n).R 0 ^ (2 : ℕ)
       ≤ (ratioLimitConst m n / prolateRatioScale a
-          * (4 * pairAnchorHermiteQuotient m n m ^ 2 * (signedModeRadialData a m).R 0 ^ 2))
-        / (pairAnchorHermiteQuotient m n n ^ 2 / 4) := by
+          * (4 * pairAnchorHermiteQuotient m n m ^ (2 : ℕ) * (signedModeRadialData a m).R 0 ^ (2 : ℕ)))
+        / (pairAnchorHermiteQuotient m n n ^ (2 : ℕ) / 4) := by
     rw [le_div_iff₀ h4]
     linarith [hchain]
   refine le_trans hX (le_of_eq ?_)

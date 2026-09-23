@@ -13,7 +13,7 @@ second **exactly and unconditionally**:
 The evaluation is elementary — no zeta function and, notably, no Euler--Mascheroni constant.  Writing
 `g(v) = {v}·v^{-2}`, the dilation identity `∫_{u>1} g(θu) du = θ^{-1}∫_{v>θ} g` turns the pairing into
 
-`θ·(∫_{v>θ} g − ∫_{v>1} g) = θ·∫_θ^1 {v}v^{-2} dv = θ·∫_θ^1 v^{-1} dv = −θ log θ`,
+`θ·(∫_{v>θ} g − ∫_{v>1} g) = θ·∫_θ^(1 : ℕ) {v}v^{-2} dv = θ·∫_θ^(1 : ℕ) v^{-1} dv = −θ log θ`,
 
 and the divergent-looking constant `∫_1^∞ {v}v^{-2}dv = 1 − γ` cancels between the two terms before it is
 ever needed.  That cancellation is the whole point of Báez-Duarte's normalisation `{θ/t} − θ{1/t}`.

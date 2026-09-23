@@ -49,16 +49,16 @@ theorem monicOrtho_aeval_ne_zero_below {N n : ℕ}
     refine lt_of_le_of_lt Polynomial.natDegree_mul_le ?_
     simp only [natDegree_X_sub_C]
     omega
-  have hpoly : conjQuadratic z * g * g = A * A + (z.im ^ 2) • (g * g) := by
+  have hpoly : conjQuadratic z * g * g = A * A + (z.im ^ (2 : ℕ)) • (g * g) := by
     simp only [conjQuadratic, A, Polynomial.smul_eq_C_mul]
     ring
   have hexp : momentInner s (monicOrtho s (n + 1)) g =
-      momentInner s A A + z.im ^ 2 * momentInner s g g := by
+      momentInner s A A + z.im ^ (2 : ℕ) * momentInner s g g := by
     rw [hQg, momentInner_def, hpoly, momentFunctional_add, momentFunctional_smul,
       momentInner_def, momentInner_def]
   have hApos : 0 < momentInner s A A := h.self_pos hAne hAN
   have hgpos : 0 < momentInner s g g := h.self_pos hgne hgN
-  have himpos : 0 < z.im ^ 2 := sq_pos_of_ne_zero hz
+  have himpos : 0 < z.im ^ (2 : ℕ) := sq_pos_of_ne_zero hz
   rw [hexp] at hzero
   nlinarith
 
@@ -77,9 +77,9 @@ theorem monicOrtho_splits_below {N n : ℕ}
 
 theorem monicOrtho_not_sq_dvd_below {N n : ℕ}
     (h : PositiveMomentFormBelow s N) (hnN : n + 1 < N) (r : ℝ) :
-    ¬ (((X - C r) ^ 2 : Polynomial ℝ) ∣ monicOrtho s (n + 1)) := by
+    ¬ (((X - C r) ^ (2 : ℕ) : Polynomial ℝ) ∣ monicOrtho s (n + 1)) := by
   rintro ⟨g, hg⟩
-  have hsqne : ((X - C r) ^ 2 : Polynomial ℝ) ≠ 0 :=
+  have hsqne : ((X - C r) ^ (2 : ℕ) : Polynomial ℝ) ≠ 0 :=
     pow_ne_zero 2 (X_sub_C_ne_zero r)
   have hgne : g ≠ 0 := by
     intro h0
@@ -390,13 +390,13 @@ theorem momentFunctional_sub_gaussSum_eq_topCoeff_mul_nextNorm_below {N : ℕ}
   classical
   let Q : Polynomial ℝ := monicOrtho s (n + 1)
   let a : ℝ := p.coeff (2 * n + 2)
-  let r : Polynomial ℝ := p - a • Q ^ 2
+  let r : Polynomial ℝ := p - a • Q ^ (2 : ℕ)
   have hQnat : Q.natDegree = n + 1 := by
     exact natDegree_monicOrtho_eq s (n + 1)
-  have hQsqnat : (Q ^ 2).natDegree = 2 * n + 2 := by
+  have hQsqnat : (Q ^ (2 : ℕ)).natDegree = 2 * n + 2 := by
     rw [natDegree_pow, hQnat]
     omega
-  have hQsqcoeff : (Q ^ 2).coeff (2 * n + 2) = 1 := by
+  have hQsqcoeff : (Q ^ (2 : ℕ)).coeff (2 * n + 2) = 1 := by
     rw [← hQsqnat]
     exact ((monicOrtho_monic s (n + 1)).pow 2).coeff_natDegree
   have hrdeg : r.degree < ((2 * n + 2 : ℕ) : WithBot ℕ) := by
@@ -407,23 +407,23 @@ theorem momentFunctional_sub_gaussSum_eq_topCoeff_mul_nextNorm_below {N : ℕ}
     · have hpzero : p.coeff k = 0 := by
         apply coeff_eq_zero_of_degree_lt
         exact lt_of_lt_of_le hp (by exact_mod_cast (show 2 * n + 3 ≤ k by omega))
-      have hQzero : (Q ^ 2).coeff k = 0 :=
+      have hQzero : (Q ^ (2 : ℕ)).coeff k = 0 :=
         coeff_eq_zero_of_natDegree_lt (by rw [hQsqnat]; exact hkgt)
       simp [r, hpzero, hQzero]
   have hrquad := momentFunctional_eq_gaussSum_below h n hnN r hrdeg
-  have hQeval : ∀ x ∈ gaussNodes s n, (Q ^ 2).eval x = 0 := by
+  have hQeval : ∀ x ∈ gaussNodes s n, (Q ^ (2 : ℕ)).eval x = 0 := by
     intro x hx
     have hxroot : Q.eval x = 0 := (mem_gaussNodes_iff n x).mp hx
     rw [eval_pow, hxroot, zero_pow]
     norm_num
-  have hQmoment : momentFunctional s (Q ^ 2) = momentInner s Q Q := by
+  have hQmoment : momentFunctional s (Q ^ (2 : ℕ)) = momentInner s Q Q := by
     rw [pow_two, momentInner_def]
   have hrmoment : momentFunctional s r =
-      momentFunctional s p - a * momentFunctional s (Q ^ 2) := by
-    change momentFunctional s (p - a • Q ^ 2) =
-      momentFunctional s p - a * momentFunctional s (Q ^ 2)
+      momentFunctional s p - a * momentFunctional s (Q ^ (2 : ℕ)) := by
+    change momentFunctional s (p - a • Q ^ (2 : ℕ)) =
+      momentFunctional s p - a * momentFunctional s (Q ^ (2 : ℕ))
     rw [sub_eq_add_neg, momentFunctional_add]
-    rw [show -(a • Q ^ 2) = (-a) • Q ^ 2 by simp,
+    rw [show -(a • Q ^ (2 : ℕ)) = (-a) • Q ^ (2 : ℕ) by simp,
       momentFunctional_smul]
     ring
   have hrsum :
@@ -431,7 +431,7 @@ theorem momentFunctional_sub_gaussSum_eq_topCoeff_mul_nextNorm_below {N : ℕ}
         ∑ x ∈ gaussNodes s n, christoffel s n x * p.eval x := by
     apply Finset.sum_congr rfl
     intro x hx
-    change christoffel s n x * (p - a • Q ^ 2).eval x =
+    change christoffel s n x * (p - a • Q ^ (2 : ℕ)).eval x =
       christoffel s n x * p.eval x
     rw [eval_sub, eval_smul, smul_eq_mul, hQeval x hx]
     ring

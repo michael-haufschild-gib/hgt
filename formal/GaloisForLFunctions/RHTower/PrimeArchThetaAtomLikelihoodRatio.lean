@@ -55,7 +55,7 @@ theorem thetaCuspMorseScale_strictMono_nat
   have hprod : (m : ℝ) * Real.exp x < (n : ℝ) * Real.exp x :=
     mul_lt_mul_of_pos_right hmnR (Real.exp_pos x)
   have hsquare :
-      ((m : ℝ) * Real.exp x) ^ 2 < ((n : ℝ) * Real.exp x) ^ 2 := by
+      ((m : ℝ) * Real.exp x) ^ (2 : ℕ) < ((n : ℝ) * Real.exp x) ^ (2 : ℕ) := by
     nlinarith
   simp only [thetaCuspMorseScale]
   exact mul_lt_mul_of_pos_left hsquare Real.pi_pos
@@ -176,13 +176,13 @@ theorem hasDerivAt_thetaCuspSourceTerm_eq_bornWittenScore
         thetaCuspSourceTerm x n) x := by
   have heq :
       (fun y : ℝ => thetaCuspSourceTerm y n) =ᶠ[nhds x]
-        fun y : ℝ => Real.pi * thetaCuspBornWittenAmplitude n y ^ 2 := by
+        fun y : ℝ => Real.pi * thetaCuspBornWittenAmplitude n y ^ (2 : ℕ) := by
     filter_upwards [show ∀ᶠ y : ℝ in nhds x, y ∈ Ioi 0 from Ioi_mem_nhds hx] with y hy
     exact thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq hn hy.le
   have hamp : HasDerivAt
-      (fun y : ℝ => Real.pi * thetaCuspBornWittenAmplitude n y ^ 2)
+      (fun y : ℝ => Real.pi * thetaCuspBornWittenAmplitude n y ^ (2 : ℕ))
       (Real.pi * (-2 * thetaCuspBornWittenSuperpotential n x *
-        thetaCuspBornWittenAmplitude n x ^ 2)) x :=
+        thetaCuspBornWittenAmplitude n x ^ (2 : ℕ))) x :=
     (hasDerivAt_thetaCuspBornWittenAmplitude_sq hn hx.le).const_mul Real.pi
   have hsource := hamp.congr_of_eventuallyEq heq
   refine hsource.congr_deriv ?_
@@ -552,7 +552,7 @@ theorem thetaCuspSizeBiasPowerCovariance_within_le (k n : ℕ) :
       thetaCuspFirstAtomSizeBiasedSequence k 0 *
           thetaCuspHigherAtomSizeBiasedSequence k 0 /
         (thetaCuspFirstAtomSizeBiasedSequence k 0 +
-          thetaCuspHigherAtomSizeBiasedSequence k 0) ^ 2 :=
+          thetaCuspHigherAtomSizeBiasedSequence k 0) ^ (2 : ℕ) :=
     div_nonneg
       (mul_nonneg
         (thetaCuspFirstAtomSizeBiasedSequence_zero_pos k).le

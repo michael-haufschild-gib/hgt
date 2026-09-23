@@ -27,7 +27,7 @@ def MobiusDivisorQuadraticEnergyCompletion : Prop :=
       Q N = mobiusDivisorSelectionPrimes M ∧
       (∀ k < N, ∃ p ∈ mobiusDivisorSelectionPrimes M \ Q k,
         Q (k + 1) = insert p (Q k)) ∧
-      ∀ k ≤ N, mobiusDivisorSelectionEnergy M (Q k) ≤ C * (M : ℝ) ^ 2
+      ∀ k ≤ N, mobiusDivisorSelectionEnergy M (Q k) ≤ C * (M : ℝ) ^ (2 : ℕ)
 
 private theorem mobiusDivisorDilationChannel_terminal_zero (M : ℕ) :
     mobiusDivisorDilationChannel M M = 0 := by

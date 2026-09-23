@@ -3,11 +3,11 @@ import GaloisForLFunctions.RHTower.SuzukiAffineSewnWeilRobinFarTailFactorization
 /-!
 # Suzuki causal-entry third-jet boundary law
 
-After `z^2` removes the screw primitive, a delayed hinge crosses the aperture wall with matching
+After `z^(2 : ℕ)` removes the screw primitive, a delayed hinge crosses the aperture wall with matching
 value, slope, and curvature.  Moving-boundary point evaluations cancel twice.  The first possible
 wall defect is the third jet
 
-`z^2 * exp (I*a*z) * endpointTrace`.
+`z^(2 : ℕ) * exp (I*a*z) * endpointTrace`.
 
 Affine sewing turns this into one forced marked endpoint bracket.  Thus a prime delay does not
 enter the completed channel as an instantaneous kernel jump; the source reporter for a causal
@@ -23,7 +23,7 @@ noncomputable section
 
 /-! ## Denominator-matched entry jets -/
 
-/-- Completed near-entry delayed-hinge channel after multiplication by `z^2`. -/
+/-- Completed near-entry delayed-hinge channel after multiplication by `z^(2 : ℕ)`. -/
 def suzukiDelayedHingeNearCompletedJet0
     (a ell : ℝ) (highMoment firstMoment mass z : ℂ) : ℂ :=
   suzukiOscillatoryKernel z a * (I * z * firstMoment - mass) -
@@ -43,15 +43,15 @@ def suzukiDelayedHingeNearCompletedJet1
 /-- Second delay jet: only the moving upper Fourier window survives. -/
 def suzukiDelayedHingeNearCompletedJet2
     (ell : ℝ) (highMoment z : ℂ) : ℂ :=
-  z ^ 2 * suzukiOscillatoryKernel z ell * highMoment
+  z ^ (2 : ℕ) * suzukiOscillatoryKernel z ell * highMoment
 
 /-- Third delay jet: the first source-density term is the endpoint trace. -/
 def suzukiDelayedHingeNearCompletedJet3
     (a ell : ℝ) (highMoment endpointTrace z : ℂ) : ℂ :=
-  I * z ^ 3 * suzukiOscillatoryKernel z ell * highMoment +
-    z ^ 2 * suzukiOscillatoryKernel z a * endpointTrace
+  I * z ^ (3 : ℕ) * suzukiOscillatoryKernel z ell * highMoment +
+    z ^ (2 : ℕ) * suzukiOscillatoryKernel z a * endpointTrace
 
-/-- Far delayed-hinge completed channel after multiplication by `z^2`. -/
+/-- Far delayed-hinge completed channel after multiplication by `z^(2 : ℕ)`. -/
 def suzukiDelayedHingeFarCompletedJet0
     (ell : ℝ) (wholeMoment z : ℂ) : ℂ :=
   -suzukiOscillatoryKernel z ell * wholeMoment
@@ -62,11 +62,11 @@ def suzukiDelayedHingeFarCompletedJet1
 
 def suzukiDelayedHingeFarCompletedJet2
     (ell : ℝ) (wholeMoment z : ℂ) : ℂ :=
-  z ^ 2 * suzukiOscillatoryKernel z ell * wholeMoment
+  z ^ (2 : ℕ) * suzukiOscillatoryKernel z ell * wholeMoment
 
 def suzukiDelayedHingeFarCompletedJet3
     (ell : ℝ) (wholeMoment z : ℂ) : ℂ :=
-  I * z ^ 3 * suzukiOscillatoryKernel z ell * wholeMoment
+  I * z ^ (3 : ℕ) * suzukiOscillatoryKernel z ell * wholeMoment
 
 /-- The jet-zero definition is exactly the existing causal Weil--Robin completed channel. -/
 theorem suzukiDelayedHingeNearCompletedJet0_eq_weilRobinCompletedChannel
@@ -167,8 +167,8 @@ theorem hasDerivAt_suzukiDelayedHingeNearCompletedJet1
   symm
   simp only [suzukiDelayedHingeNearCompletedJet2]
   calc
-    z ^ 2 * suzukiOscillatoryKernel z ell * highMoment ell =
-        -(I * I) * z ^ 2 * suzukiOscillatoryKernel z ell * highMoment ell := by
+    z ^ (2 : ℕ) * suzukiOscillatoryKernel z ell * highMoment ell =
+        -(I * I) * z ^ (2 : ℕ) * suzukiOscillatoryKernel z ell * highMoment ell := by
           rw [Complex.I_mul_I]
           ring
     _ = -I * z * (I * z * suzukiOscillatoryKernel z ell * highMoment ell) := by
@@ -187,12 +187,12 @@ theorem hasDerivAt_suzukiDelayedHingeNearCompletedJet2
   have hOsc := hasDerivAt_suzukiOscillatoryKernel z ell
   have hProduct := hOsc.mul hHigh
   have hfun : (fun u => suzukiDelayedHingeNearCompletedJet2 u (highMoment u) z) =
-      fun y => z ^ 2 * ((suzukiOscillatoryKernel z * highMoment) y) := by
+      fun y => z ^ (2 : ℕ) * ((suzukiOscillatoryKernel z * highMoment) y) := by
     funext u
     simp only [suzukiDelayedHingeNearCompletedJet2, Pi.mul_apply]
     ring
   rw [hfun]
-  refine (hProduct.const_mul (z ^ 2)).congr_deriv ?_
+  refine (hProduct.const_mul (z ^ (2 : ℕ))).congr_deriv ?_
   symm
   rw [← mul_assoc (suzukiOscillatoryKernel z ell)
     (suzukiOscillatoryKernel z (a - ell)) endpointTrace,
@@ -231,7 +231,7 @@ theorem suzukiDelayedHingeCompletedJet3_entryWall_sub
     suzukiDelayedHingeNearCompletedJet3 a (2 * a)
         wholeMoment endpointTrace z -
       suzukiDelayedHingeFarCompletedJet3 (2 * a) wholeMoment z =
-        z ^ 2 * suzukiOscillatoryKernel z a * endpointTrace := by
+        z ^ (2 : ℕ) * suzukiOscillatoryKernel z a * endpointTrace := by
   simp only [suzukiDelayedHingeNearCompletedJet3,
     suzukiDelayedHingeFarCompletedJet3]
   ring
@@ -251,7 +251,7 @@ theorem suzukiAffineSewnIntervalPart_entryThirdJet_sub
       suzukiAffineSewnIntervalPart alpha beta gamma WAlpha WBeta
         (fun u => suzukiDelayedHingeFarCompletedJet3 (2 * a) (WAlpha u) u)
         (fun u => suzukiDelayedHingeFarCompletedJet3 (2 * a) (WBeta u) u) z =
-      z ^ 2 * suzukiOscillatoryKernel z a *
+      z ^ (2 : ℕ) * suzukiOscillatoryKernel z a *
         ((beta - gamma) * WBeta z * tauAlpha -
           (alpha - gamma) * WAlpha z * tauBeta) := by
   simp only [suzukiAffineSewnIntervalPart,
@@ -265,10 +265,10 @@ theorem suzukiAffineSewnEntryThirdJet_commonNormalizedTrace
     (WAlpha WBeta : ℂ → ℂ) (z : ℂ)
     (hAlpha : tauAlpha = m * WAlpha z)
     (hBeta : tauBeta = m * WBeta z) :
-    z ^ 2 * suzukiOscillatoryKernel z a *
+    z ^ (2 : ℕ) * suzukiOscillatoryKernel z a *
         ((beta - gamma) * WBeta z * tauAlpha -
           (alpha - gamma) * WAlpha z * tauBeta) =
-      z ^ 2 * suzukiOscillatoryKernel z a * m *
+      z ^ (2 : ℕ) * suzukiOscillatoryKernel z a * m *
         suzukiAffineSewnCharacteristic alpha beta WAlpha WBeta z := by
   rw [hAlpha, hBeta]
   simp only [suzukiAffineSewnCharacteristic]

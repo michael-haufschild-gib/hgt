@@ -358,7 +358,7 @@ theorem measureReal_zeroAnchoredPaddedCircuitTarget_le
     volume.real (zeroAnchoredPaddedCircuitTarget d s target δ) ≤
       (Fintype.card gate : ℝ) ^ (s + 1) *
         (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-          Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ ((d + 1 : ℕ) - 1)) := by
+          Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^ ((d + 1 : ℕ) - 1)) := by
   rw [measureReal_def, volume_zeroAnchoredPaddedCircuitTarget_eq_full,
     ← measureReal_def]
   exact measureReal_iUnion_uniformPhaseDensity_paddedCircuitTargets_le
@@ -383,7 +383,7 @@ theorem completedTime_zeroAnchoredPaddedCircuitTargets
       volume.real A ≤
         (Fintype.card gate : ℝ) ^ (s + 1) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^
               ((d + 1 : ℕ) - 1)) := by
   dsimp only
   constructor

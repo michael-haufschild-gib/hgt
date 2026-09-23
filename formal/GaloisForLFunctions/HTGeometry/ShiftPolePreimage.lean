@@ -222,7 +222,7 @@ theorem exists_preimage_of_Theta_zero (lam : ℂ) : ∀ (N : ℕ) (u : RatFunc �
           have := Theta_eq_ThetaN lam u β hvan
           rw [hTheta β] at this
           rw [ThetaN, Finset.sum_range_one] at this
-          have h2 : ((-lam) ^ 0 / (Nat.factorial 0 : ℂ)) * polePart u β (0 + 1) = 0 := this.symm
+          have h2 : ((-lam) ^ (0 : ℕ) / (Nat.factorial 0 : ℂ)) * polePart u β (0 + 1) = 0 := this.symm
           norm_num at h2
           exact h2
       · have hfin : (Function.support fun β : ℂ => polePart u β (N + 1)).Finite := by

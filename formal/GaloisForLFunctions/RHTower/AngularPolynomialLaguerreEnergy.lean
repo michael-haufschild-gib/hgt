@@ -28,37 +28,37 @@ def multisetQuadraticOutlierCount (r : Multiset ℝ) (center eta : ℝ) : ℕ :=
 `eta²` of centered quadratic spread. -/
 theorem sq_mul_multisetQuadraticOutlierCount_le_centeredSum
     (r : Multiset ℝ) (center eta : ℝ) (heta : 0 ≤ eta) :
-    eta ^ 2 * (multisetQuadraticOutlierCount r center eta : ℝ) ≤
-      (r.map fun x => (x - center) ^ 2).sum := by
+    eta ^ (2 : ℕ) * (multisetQuadraticOutlierCount r center eta : ℝ) ≤
+      (r.map fun x => (x - center) ^ (2 : ℕ)).sum := by
   classical
   induction r using Multiset.induction_on with
   | empty => simp [multisetQuadraticOutlierCount]
   | @cons a r ih =>
       by_cases ha : eta ≤ |a - center|
-      · have hsq : eta ^ 2 ≤ (a - center) ^ 2 := by
+      · have hsq : eta ^ (2 : ℕ) ≤ (a - center) ^ (2 : ℕ) := by
           nlinarith [sq_nonneg (|a - center| - eta), sq_abs (a - center)]
-        have ih' : eta ^ 2 * (multisetQuadraticOutlierCount r center eta : ℝ) ≤
-            (r.map fun x => (x - center) ^ 2).sum := ih
+        have ih' : eta ^ (2 : ℕ) * (multisetQuadraticOutlierCount r center eta : ℝ) ≤
+            (r.map fun x => (x - center) ^ (2 : ℕ)).sum := ih
         simp [multisetQuadraticOutlierCount, ha]
         dsimp only [multisetQuadraticOutlierCount] at ih'
         nlinarith
       · simp [multisetQuadraticOutlierCount, ha]
-        have hsquare : 0 ≤ (a - center) ^ 2 := sq_nonneg _
+        have hsquare : 0 ≤ (a - center) ^ (2 : ℕ) := sq_nonneg _
         exact ih.trans (le_add_of_nonneg_left hsquare)
 
 /-- Centering at the empirical mean converts the centered square sum exactly into
 `multisetQuadraticSpread`. -/
 theorem multiset_sum_centered_sq_eq_quadraticSpread
     (r : Multiset ℝ) (n : ℕ) (hcard : r.card = n) (hn : 0 < n) :
-    (r.map fun x => (x - r.sum / (n : ℝ)) ^ 2).sum = multisetQuadraticSpread r n := by
+    (r.map fun x => (x - r.sum / (n : ℝ)) ^ (2 : ℕ)).sum = multisetQuadraticSpread r n := by
   have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast Nat.ne_of_gt hn
-  have hsum : (r.map fun x => (x - r.sum / (n : ℝ)) ^ 2).sum =
-      (r.map fun x => x ^ 2).sum -
+  have hsum : (r.map fun x => (x - r.sum / (n : ℝ)) ^ (2 : ℕ)).sum =
+      (r.map fun x => x ^ (2 : ℕ)).sum -
         2 * (r.sum / (n : ℝ)) * r.sum +
-          (n : ℝ) * (r.sum / (n : ℝ)) ^ 2 := by
-    simp_rw [show ∀ x : ℝ, (x - r.sum / (n : ℝ)) ^ 2 =
-        x ^ 2 + (-2 * (r.sum / (n : ℝ))) * x +
-          (r.sum / (n : ℝ)) ^ 2 by
+          (n : ℝ) * (r.sum / (n : ℝ)) ^ (2 : ℕ) := by
+    simp_rw [show ∀ x : ℝ, (x - r.sum / (n : ℝ)) ^ (2 : ℕ) =
+        x ^ (2 : ℕ) + (-2 * (r.sum / (n : ℝ))) * x +
+          (r.sum / (n : ℝ)) ^ (2 : ℕ) by
       intro x
       ring]
     rw [Multiset.sum_map_add, Multiset.sum_map_add,
@@ -75,7 +75,7 @@ concentration-window outlier count with the sharp quadratic price `eta²`. -/
 theorem sq_mul_multisetQuadraticOutlierCount_le_quadraticSpread
     (r : Multiset ℝ) (n : ℕ) (eta : ℝ)
     (hcard : r.card = n) (hn : 0 < n) (heta : 0 ≤ eta) :
-    eta ^ 2 *
+    eta ^ (2 : ℕ) *
         (multisetQuadraticOutlierCount r (r.sum / (n : ℝ)) eta : ℝ) ≤
       multisetQuadraticSpread r n := by
   rw [← multiset_sum_centered_sq_eq_quadraticSpread r n hcard hn]
@@ -101,7 +101,7 @@ def angularPolynomialVelocity (Q : Polynomial ℝ) (theta : ℝ) : ℝ :=
 /-- Exact second angular derivative of `angularPolynomialEval`. -/
 def angularPolynomialAcceleration (Q : Polynomial ℝ) (theta : ℝ) : ℝ :=
   -Real.cos theta * Polynomial.aeval (Real.cos theta) Q.derivative +
-    Real.sin theta ^ 2 * Polynomial.aeval (Real.cos theta) Q.derivative.derivative
+    Real.sin theta ^ (2 : ℕ) * Polynomial.aeval (Real.cos theta) Q.derivative.derivative
 
 /-- First derivative law for cosine-circle polynomial evaluation. -/
 theorem hasDerivAt_angularPolynomialEval (Q : Polynomial ℝ) (theta : ℝ) :
@@ -125,14 +125,14 @@ theorem hasDerivAt_angularPolynomialVelocity (Q : Polynomial ℝ) (theta : ℝ) 
   change HasDerivAt
     (fun t : ℝ => -Real.sin t * Polynomial.aeval (Real.cos t) Q.derivative)
     (-Real.cos theta * Polynomial.aeval (Real.cos theta) Q.derivative +
-      Real.sin theta ^ 2 * Polynomial.aeval (Real.cos theta) Q.derivative.derivative) theta
+      Real.sin theta ^ (2 : ℕ) * Polynomial.aeval (Real.cos theta) Q.derivative.derivative) theta
   convert hsin.mul hpoly using 1 <;> first | apply Subsingleton.elim | ext <;> rfl | ring
 
 /-- Full-period integration by parts has no endpoint term because angular velocity vanishes at
 `±π`. -/
 theorem integral_angularPolynomialVelocity_sq_eq_neg_eval_mul_acceleration
     (Q : Polynomial ℝ) :
-    (∫ theta in (-Real.pi)..Real.pi, angularPolynomialVelocity Q theta ^ 2) =
+    (∫ theta in (-Real.pi)..Real.pi, angularPolynomialVelocity Q theta ^ (2 : ℕ)) =
       -∫ theta in (-Real.pi)..Real.pi,
         angularPolynomialEval Q theta * angularPolynomialAcceleration Q theta := by
   have hq : ∀ theta ∈ Set.uIcc (-Real.pi) Real.pi,
@@ -184,20 +184,20 @@ theorem integral_angularPolynomialVelocity_sq_eq_neg_eval_mul_acceleration
 /-- **Exact angular Laguerre transport identity.** Twice angular kinetic energy is signed radial
 transport plus integrated first-Laguerre root-deletion density. -/
 theorem angularPolynomialEnergy_eq_transport_add_laguerre (Q : Polynomial ℝ) :
-    2 * (∫ theta in (-Real.pi)..Real.pi, angularPolynomialVelocity Q theta ^ 2) =
+    2 * (∫ theta in (-Real.pi)..Real.pi, angularPolynomialVelocity Q theta ^ (2 : ℕ)) =
       ∫ theta in (-Real.pi)..Real.pi,
         Real.cos theta * Polynomial.aeval (Real.cos theta) Q *
           Polynomial.aeval (Real.cos theta) Q.derivative +
-          Real.sin theta ^ 2 *
+          Real.sin theta ^ (2 : ℕ) *
             (laguerreL1 Q).eval (Real.cos theta) := by
   have hibp := integral_angularPolynomialVelocity_sq_eq_neg_eval_mul_acceleration Q
   have hcongr : (fun theta : ℝ =>
       Real.cos theta * Polynomial.aeval (Real.cos theta) Q *
           Polynomial.aeval (Real.cos theta) Q.derivative +
-        Real.sin theta ^ 2 *
+        Real.sin theta ^ (2 : ℕ) *
           (laguerreL1 Q).eval (Real.cos theta)) =
       fun theta =>
-        angularPolynomialVelocity Q theta ^ 2 -
+        angularPolynomialVelocity Q theta ^ (2 : ℕ) -
           Polynomial.aeval (Real.cos theta) Q * angularPolynomialAcceleration Q theta := by
     funext theta
     simp [laguerreL1, angularPolynomialVelocity, angularPolynomialAcceleration]
@@ -216,7 +216,7 @@ theorem angularPolynomialEnergy_eq_transport_add_laguerre (Q : Polynomial ℝ) :
 root-deletion density. -/
 theorem angularPolynomialLaguerreDensity_nonneg {Q : Polynomial ℝ}
     (hQ : Q.Splits) (theta : ℝ) :
-    0 ≤ Real.sin theta ^ 2 *
+    0 ≤ Real.sin theta ^ (2 : ℕ) *
       (laguerreL1 Q).eval (Real.cos theta) := by
   apply mul_nonneg (sq_nonneg _)
   exact laguerreL1_eval_nonneg hQ (Real.cos theta)
@@ -225,7 +225,7 @@ theorem angularPolynomialLaguerreDensity_nonneg {Q : Polynomial ℝ}
 theorem integral_angularPolynomialLaguerreDensity_nonneg {Q : Polynomial ℝ}
     (hQ : Q.Splits) :
     0 ≤ ∫ theta in (-Real.pi)..Real.pi,
-      Real.sin theta ^ 2 *
+      Real.sin theta ^ (2 : ℕ) *
         (laguerreL1 Q).eval (Real.cos theta) := by
   apply intervalIntegral.integral_nonneg (by linarith [Real.pi_pos])
   intro theta _
@@ -239,20 +239,20 @@ theorem integral_angularPolynomialTransport_le_two_energy {Q : Polynomial ℝ}
       Real.cos theta * Polynomial.aeval (Real.cos theta) Q *
         Polynomial.aeval (Real.cos theta) Q.derivative) ≤
       2 * (∫ theta in (-Real.pi)..Real.pi,
-        angularPolynomialVelocity Q theta ^ 2) := by
+        angularPolynomialVelocity Q theta ^ (2 : ℕ)) := by
   have hid := angularPolynomialEnergy_eq_transport_add_laguerre Q
   have hnonneg := integral_angularPolynomialLaguerreDensity_nonneg hQ
   have hsplit :
       (∫ theta in (-Real.pi)..Real.pi,
         Real.cos theta * Polynomial.aeval (Real.cos theta) Q *
             Polynomial.aeval (Real.cos theta) Q.derivative +
-          Real.sin theta ^ 2 *
+          Real.sin theta ^ (2 : ℕ) *
             (laguerreL1 Q).eval (Real.cos theta)) =
         (∫ theta in (-Real.pi)..Real.pi,
           Real.cos theta * Polynomial.aeval (Real.cos theta) Q *
             Polynomial.aeval (Real.cos theta) Q.derivative) +
         ∫ theta in (-Real.pi)..Real.pi,
-          Real.sin theta ^ 2 *
+          Real.sin theta ^ (2 : ℕ) *
             (laguerreL1 Q).eval (Real.cos theta) := by
     rw [intervalIntegral.integral_add]
     · apply Continuous.intervalIntegrable
@@ -273,7 +273,7 @@ def projectiveGaussRootOutlierCount (s : ℕ → ℝ) (n : ℕ) (eta : ℝ) : �
 theorem sq_mul_projectiveGaussRootOutlierCount_le_spread
     {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hn : 2 ≤ n) (hnN : n < N) (eta : ℝ) (heta : 0 ≤ eta) :
-    eta ^ 2 * (projectiveGaussRootOutlierCount s n eta : ℝ) ≤
+    eta ^ (2 : ℕ) * (projectiveGaussRootOutlierCount s n eta : ℝ) ≤
       projectiveGaussRootSpread s n := by
   have hsplit : (HTGeometry.monicOrtho s n).Splits := by
     obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt (by omega : 0 < n))
@@ -290,7 +290,7 @@ account into the constrained-zero parameter required by root-sensitive Bernstein
 theorem projectiveGaussRootOutlierWork_le_retainedInventory
     {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hn : 2 ≤ n) (hnN : n < N) (eta : ℝ) (heta : 0 ≤ eta) :
-    2 * (2 * n + 1 : ℝ) * eta ^ 2 *
+    2 * (2 * n + 1 : ℝ) * eta ^ (2 : ℕ) *
         (projectiveGaussRootOutlierCount s n eta : ℝ) ≤
       projectiveJacobiRetainedInventory s n := by
   have hout := sq_mul_projectiveGaussRootOutlierCount_le_spread h hn hnN eta heta

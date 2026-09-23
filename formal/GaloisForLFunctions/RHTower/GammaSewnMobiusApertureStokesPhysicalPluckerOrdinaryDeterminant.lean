@@ -130,7 +130,7 @@ def gammaSewnCriticalPhysicalPluckerNuclearTraceMass : ℝ :=
   ∑' idx : (ℕ × ℕ) × Fin 6,
     gammaSewnCriticalAdjacentPrime_PluckerBlockWeight idx.1 *
       gammaSewnCriticalAdjacentPrime_PluckerProbability idx.1 idx.2 *
-        ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ 2
+        ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ (2 : ℕ)
 
 theorem opTrace_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm
     (idx : (ℕ × ℕ) × Fin 6) :
@@ -138,7 +138,7 @@ theorem opTrace_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm
       (gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm idx) =
       ((gammaSewnCriticalAdjacentPrime_PluckerBlockWeight idx.1 *
         gammaSewnCriticalAdjacentPrime_PluckerProbability idx.1 idx.2 *
-          ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ 2 : ℝ) : ℂ) := by
+          ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm,
     RHTower.opTrace_smul_rankOne_self]
   push_cast
@@ -161,9 +161,9 @@ theorem gammaSewnCriticalPhysicalPluckerSourceTrace_eq_nuclearTraceMass :
 /-- Squared norm of one four-cell centered source vector is its literal coordinate energy. -/
 theorem norm_gammaSewnCriticalPhysicalPluckerCenteredVector_sq
     (z : ℕ × ℕ) (s : Fin 6) :
-    ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ 2 =
+    ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ (2 : ℕ) =
       ∑ i : Fin 4,
-        gammaSewnCriticalAdjacentPrime_PluckerCenteredNodeFeature z s i ^ 2 := by
+        gammaSewnCriticalAdjacentPrime_PluckerCenteredNodeFeature z s i ^ (2 : ℕ) := by
   have hortho : Orthonormal ℂ (fun i : Fin 4 =>
       gammaSewnCriticalPhysicalPluckerBasis
         (gammaSewnCriticalAdjacentPrime_PluckerPhysicalLabel z i)) := by
@@ -186,7 +186,7 @@ theorem gammaSewnCriticalPhysicalPlucker_localNuclearTraceMass_eq_spectralTrace
     (z : ℕ × ℕ) :
     ∑ s : Fin 6,
       gammaSewnCriticalAdjacentPrime_PluckerProbability z s *
-        ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ 2 =
+        ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ (2 : ℕ) =
       ∑ i : Fin 4, gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock z i i := by
   simp_rw [norm_gammaSewnCriticalPhysicalPluckerCenteredVector_sq,
     gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock_eq_centered]
@@ -202,7 +202,7 @@ theorem summable_gammaSewnCriticalPhysicalPluckerNuclearTraceMass_terms :
     Summable (fun idx : (ℕ × ℕ) × Fin 6 =>
       gammaSewnCriticalAdjacentPrime_PluckerBlockWeight idx.1 *
         gammaSewnCriticalAdjacentPrime_PluckerProbability idx.1 idx.2 *
-          ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ 2) := by
+          ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ (2 : ℕ)) := by
   exact summable_norm_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm.congr
     (fun idx => norm_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm idx)
 
@@ -222,11 +222,11 @@ theorem gammaSewnCriticalPhysicalPluckerNuclearTraceMass_eq_tsum_spectralTrace :
     ∑ s : Fin 6,
         gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z *
           gammaSewnCriticalAdjacentPrime_PluckerProbability z s *
-            ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ 2 =
+            ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ (2 : ℕ) =
         gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z *
           ∑ s : Fin 6,
             gammaSewnCriticalAdjacentPrime_PluckerProbability z s *
-              ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ 2 := by
+              ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ (2 : ℕ) := by
           rw [Finset.mul_sum]
           apply Finset.sum_congr rfl
           intro s _

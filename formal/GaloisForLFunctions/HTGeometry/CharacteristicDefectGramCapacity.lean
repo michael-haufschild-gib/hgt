@@ -41,8 +41,8 @@ under the square-biased source law. -/
 theorem normalizedCharacteristicDefect_nonneg
     (μ : Measure ℝ) [IsProbabilityMeasure μ]
     {m : ℝ} (hm : 0 < m)
-    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
-    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) (y : ℝ) :
+    (hsq : Integrable (fun x : ℝ => x ^ (2 : ℕ)) μ)
+    (hmoment : ∫ x : ℝ, x ^ (2 : ℕ) ∂μ = m) (y : ℝ) :
     0 ≤ normalizedCharacteristicDefect μ m y := by
   rw [← integral_squareBias_sinc_sq_eq_normalizedCharacteristicDefect
     μ hm hsq hmoment y]
@@ -55,8 +55,8 @@ probability characteristic function. -/
 theorem normalizedCharacteristicDefect_le_one
     (μ : Measure ℝ) [IsProbabilityMeasure μ]
     {m : ℝ} (hm : 0 < m)
-    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
-    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) (y : ℝ) :
+    (hsq : Integrable (fun x : ℝ => x ^ (2 : ℕ)) μ)
+    (hmoment : ∫ x : ℝ, x ^ (2 : ℕ) ∂μ = m) (y : ℝ) :
     normalizedCharacteristicDefect μ m y ≤ 1 := by
   have hnorm := norm_charFun_le_one
     (μ := (equilibriumClockProbabilityMeasure μ hm hsq hmoment : Measure ℝ)) y
@@ -69,11 +69,11 @@ for a normalized characteristic defect is controlled by the product of their coh
 theorem normalizedCharacteristicDefect_packetCross_sq_le_energy_mul_energy
     (μ : Measure ℝ) [IsProbabilityMeasure μ]
     {m : ℝ} (hm : 0 < m)
-    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
-    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m)
+    (hsq : Integrable (fun x : ℝ => x ^ (2 : ℕ)) μ)
+    (hmoment : ∫ x : ℝ, x ^ (2 : ℕ) ∂μ = m)
     {N M : ℕ} (s a : Fin N → ℝ) (t b : Fin M → ℝ) :
     (∑ i, ∑ j,
-        a i * normalizedCharacteristicDefect μ m (t j - s i) * b j) ^ 2 ≤
+        a i * normalizedCharacteristicDefect μ m (t j - s i) * b j) ^ (2 : ℕ) ≤
       (∑ i, ∑ j,
           a i * normalizedCharacteristicDefect μ m (s j - s i) * a j) *
         ∑ i, ∑ j,
@@ -92,10 +92,10 @@ energy. -/
 theorem normalizedCharacteristicDefect_anchorCorrelation_sq_le_gramEnergy
     (μ : Measure ℝ) [IsProbabilityMeasure μ]
     {m : ℝ} (hm : 0 < m)
-    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
-    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m)
+    (hsq : Integrable (fun x : ℝ => x ^ (2 : ℕ)) μ)
+    (hmoment : ∫ x : ℝ, x ^ (2 : ℕ) ∂μ = m)
     {N : ℕ} (t b : Fin N → ℝ) :
-    (∑ i, b i * normalizedCharacteristicDefect μ m (t i)) ^ 2 ≤
+    (∑ i, b i * normalizedCharacteristicDefect μ m (t i)) ^ (2 : ℕ) ≤
       ∑ i, ∑ j,
         b i * normalizedCharacteristicDefect μ m (t j - t i) * b j := by
   exact anchorCorrelation_sq_le_gramEnergy_of_positiveDefinite
@@ -107,7 +107,7 @@ theorem normalizedCharacteristicDefect_anchorCorrelation_sq_le_gramEnergy
 /-- Julia center-mixed capacity is the source-specific shadow of the universal equilibrium law. -/
 theorem juliaDefectAttenuationKernel_anchorCorrelation_sq_le_gramEnergy
     {N : ℕ} (t b : Fin N → ℝ) :
-    (∑ i, b i * juliaDefectAttenuationKernel (t i)) ^ 2 ≤
+    (∑ i, b i * juliaDefectAttenuationKernel (t i)) ^ (2 : ℕ) ≤
       ∑ i, ∑ j,
         b i * juliaDefectAttenuationKernel (t j - t i) * b j := by
   simpa only [normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMeasure]
@@ -122,7 +122,7 @@ theorem juliaDefectAttenuationKernel_anchorCorrelation_sq_le_gramEnergy
 theorem juliaDefectAttenuationKernel_packetCross_sq_le_energy_mul_energy
     {N M : ℕ} (s a : Fin N → ℝ) (t b : Fin M → ℝ) :
     (∑ i, ∑ j,
-        a i * juliaDefectAttenuationKernel (t j - s i) * b j) ^ 2 ≤
+        a i * juliaDefectAttenuationKernel (t j - s i) * b j) ^ (2 : ℕ) ≤
       (∑ i, ∑ j,
           a i * juliaDefectAttenuationKernel (s j - s i) * a j) *
         ∑ i, ∑ j,

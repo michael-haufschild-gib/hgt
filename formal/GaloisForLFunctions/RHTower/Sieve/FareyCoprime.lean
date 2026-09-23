@@ -73,8 +73,8 @@ theorem not_dvd_farey_cross {q q' a a' : ℕ} (hq : 0 < q) (hq' : 0 < q')
 theorem largeSieve_farey_reduced (N : ℕ) {Q : ℕ} (hQ : 2 ≤ Q) (s : Finset (ℕ × ℕ))
     (hmem : ∀ p ∈ s, 0 < p.2 ∧ p.2 ≤ Q ∧ 1 ≤ p.1 ∧ p.1 ≤ p.2 ∧ Nat.Coprime p.1 p.2)
     (x : EuclideanSpace ℂ (Fin N)) :
-    ∑ p ∈ s, ‖⟪expRow N (circleFreq ((p.1 : ℝ) / (p.2 : ℝ))), x⟫_ℂ‖ ^ 2
-      ≤ ((N : ℝ) + (Q : ℝ) ^ 2 * (1 + Real.log ((Q : ℝ) ^ 2 / 2 + 1))) * ‖x‖ ^ 2 := by
+    ∑ p ∈ s, ‖⟪expRow N (circleFreq ((p.1 : ℝ) / (p.2 : ℝ))), x⟫_ℂ‖ ^ (2 : ℕ)
+      ≤ ((N : ℝ) + (Q : ℝ) ^ (2 : ℕ) * (1 + Real.log ((Q : ℝ) ^ (2 : ℕ) / 2 + 1))) * ‖x‖ ^ (2 : ℕ) := by
   classical
   have hden : ∀ p ∈ s, 0 < (fun p : ℕ × ℕ => p.2) p := fun p hp => (hmem p hp).1
   have hQden : ∀ p ∈ s, (fun p : ℕ × ℕ => p.2) p ≤ Q := fun p hp => (hmem p hp).2.1

@@ -89,9 +89,9 @@ theorem transcendental_gaussElem : Transcendental ↥ratField gaussElem := by
 
 /-! ### The Gaussian primitive -/
 
-theorem differentiable_gaussianExp : Differentiable ℂ (fun z : ℂ => Complex.exp (-z ^ 2)) := by
+theorem differentiable_gaussianExp : Differentiable ℂ (fun z : ℂ => Complex.exp (-z ^ (2 : ℕ))) := by
   intro z
-  have h2 : HasDerivAt (fun w : ℂ => -(w ^ 2)) (-((2 : ℕ) * z ^ (2 - 1))) z :=
+  have h2 : HasDerivAt (fun w : ℂ => -(w ^ (2 : ℕ))) (-((2 : ℕ) * z ^ (2 - 1))) z :=
     (hasDerivAt_pow 2 z).neg
   exact (h2.cexp).differentiableAt
 
@@ -99,13 +99,13 @@ theorem differentiable_gaussianExp : Differentiable ℂ (fun z : ℂ => Complex.
 def gaussPrimitive : ℂ → ℂ := Classical.choose differentiable_gaussianExp.isExactOn_univ
 
 theorem hasDerivAt_gaussPrimitive (z : ℂ) :
-    HasDerivAt gaussPrimitive (Complex.exp (-z ^ 2)) z :=
+    HasDerivAt gaussPrimitive (Complex.exp (-z ^ (2 : ℕ))) z :=
   Classical.choose_spec differentiable_gaussianExp.isExactOn_univ z (Set.mem_univ z)
 
 theorem differentiable_gaussPrimitive : Differentiable ℂ gaussPrimitive :=
   fun z => (hasDerivAt_gaussPrimitive z).differentiableAt
 
-theorem deriv_gaussPrimitive : deriv gaussPrimitive = fun z : ℂ => Complex.exp (-z ^ 2) := by
+theorem deriv_gaussPrimitive : deriv gaussPrimitive = fun z : ℂ => Complex.exp (-z ^ (2 : ℕ)) := by
   funext z
   exact (hasDerivAt_gaussPrimitive z).deriv
 

@@ -26,15 +26,15 @@ noncomputable section
 /-- Weighted trace variance of the two adjacent monic Jacobi truncations. -/
 def projectiveJacobiTraceVariance (s : ℕ → ℝ) (n : ℕ) : ℝ :=
   (2 * n + 1 : ℝ) *
-      (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-        HTGeometry.monicOrthoAlpha s n ^ 2) -
+      (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+        HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ)) -
     (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-      HTGeometry.monicOrthoAlpha s n) ^ 2
+      HTGeometry.monicOrthoAlpha s n) ^ (2 : ℕ)
 
 /-- Variance of lower diagonal Jacobi coordinates around their own mean. -/
 def projectiveJacobiLowerAlphaDispersion (s : ℕ → ℝ) (n : ℕ) : ℝ :=
-  (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) -
-    (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) ^ 2 / (n : ℝ)
+  (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) -
+    (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) ^ (2 : ℕ) / (n : ℝ)
 
 /-- Mismatch between lower diagonal mean and current diagonal coordinate. -/
 def projectiveJacobiTerminalAlphaMismatch (s : ℕ → ℝ) (n : ℕ) : ℝ :=
@@ -89,7 +89,7 @@ theorem projectiveJacobiTraceVariance_eq_dispersion_add_mismatch
     (s : ℕ → ℝ) {n : ℕ} (hn : 0 < n) :
     projectiveJacobiTraceVariance s n =
       2 * (2 * n + 1 : ℝ) * projectiveJacobiLowerAlphaDispersion s n +
-        2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ 2 := by
+        2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ (2 : ℕ) := by
   have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast Nat.ne_of_gt hn
   unfold projectiveJacobiTraceVariance projectiveJacobiLowerAlphaDispersion
     projectiveJacobiTerminalAlphaMismatch
@@ -105,7 +105,7 @@ theorem dispersion_part_le_projectiveJacobiTraceVariance
 
 theorem mismatch_part_le_projectiveJacobiTraceVariance
     (s : ℕ → ℝ) {n : ℕ} (hn : 0 < n) :
-    2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ 2 ≤
+    2 / (n : ℝ) * projectiveJacobiTerminalAlphaMismatch s n ^ (2 : ℕ) ≤
       projectiveJacobiTraceVariance s n := by
   rw [projectiveJacobiTraceVariance_eq_dispersion_add_mismatch s hn]
   exact le_add_of_nonneg_left
@@ -129,7 +129,7 @@ theorem xiShiftedCanonicalAdmissionProjectiveArithmeticSurplus_eq_nextEdge_add_r
   unfold xiShiftedCanonicalAdmissionCumulativeJacobiDissipation
     projectiveJacobiRetainedInventory projectiveJacobiTraceVariance
   have hs : xiShiftedRealMomentSequence w =
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) := rfl
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) := rfl
   rw [hs]
   ring
 
@@ -226,12 +226,12 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_projectiveWork_eq_nextNo
       (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     let s := xiShiftedRealMomentSequence w
     let alpha := HTGeometry.monicOrthoAlpha s n
-    let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n
+    let F := xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n
     let h := HTGeometry.monicOrthoNormSq s n
     let source := xiShiftedAdaptiveMixedCompletedArithmeticSource w
       (HTGeometry.monicMomentAdmissionPolynomial s n)
     (2 * n + 1 : ℝ) *
-        (source - h * (alpha * F + 2 * (n : ℝ) * alpha ^ 2)) - h * F ^ 2 =
+        (source - h * (alpha * F + 2 * (n : ℝ) * alpha ^ (2 : ℕ))) - h * F ^ (2 : ℕ) =
       2 * (2 * n + 1 : ℝ) * (n + 1 : ℝ) *
           HTGeometry.monicOrthoNormSq s (n + 1) +
         xiShiftedCanonicalAdmissionRetainedProjectiveArithmeticWork w n := by

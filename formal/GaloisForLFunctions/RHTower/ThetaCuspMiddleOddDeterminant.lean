@@ -45,7 +45,7 @@ theorem thetaCuspNativeOddHankelThreeDet_middle_normalized_error {x : ℝ}
     (hq0 : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hq1 : thetaCuspSingleAtomReflectionScale 1 x ≤ 7) :
     |thetaCuspNativeOddHankelThreeDet x /
-      (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9)-
+      (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ))-
         thetaCuspTwoAtomOddDetNormalized x| ≤ 14500000000 := by
   rw [thetaCuspNativeOddHankelThreeDet_normalized (thetaCusp_pos_of_thirtySevenTenths_le hq0)]
   obtain ⟨h1,h2,h3,h4,h5⟩ := thetaCuspTwoAtomScaledEvenJet_interval_bounds_middle hq0 hq1
@@ -62,7 +62,7 @@ theorem thetaCuspNativeOddHankelThreeDet_lower_middle_normalized_lower {x : ℝ}
     (hq0 : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hq1 : thetaCuspSingleAtomReflectionScale 1 x ≤ 5) :
     500000000 ≤ thetaCuspNativeOddHankelThreeDet x /
-      (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9) := by
+      (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)) := by
   have he := thetaCuspNativeOddHankelThreeDet_middle_normalized_error (x := x) (by linarith) (by linarith)
   have hl := thetaCuspTwoAtomOddDetNormalized_lower_middle hq0 hq1
   have he' := (abs_le.mp he).1
@@ -73,7 +73,7 @@ theorem thetaCuspNativeOddHankelThreeDet_upper_middle_normalized_lower {x : ℝ}
     (hq0 : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hq1 : thetaCuspSingleAtomReflectionScale 1 x ≤ 7) :
     70500000000 ≤ thetaCuspNativeOddHankelThreeDet x /
-      (thetaCuspSourceTerm x 1^6*thetaCuspSingleAtomReflectionScale 1 x^9) := by
+      (thetaCuspSourceTerm x 1^(6 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(9 : ℕ)) := by
   have he := thetaCuspNativeOddHankelThreeDet_middle_normalized_error (x := x) (by linarith) (by linarith)
   have hl := thetaCuspTwoAtomOddDetNormalized_upper_middle hq0 hq1
   have he' := (abs_le.mp he).1
@@ -84,9 +84,9 @@ theorem thetaCuspNativeOddHeadDet_upper_middle_normalized_bounds {x : ℝ}
     (hq0 : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x)
     (hq1 : thetaCuspSingleAtomReflectionScale 1 x ≤ 7) :
     0 < thetaCuspNativeOddHeadDet x /
-      (thetaCuspSourceTerm x 1^4*thetaCuspSingleAtomReflectionScale 1 x^4) ∧
+      (thetaCuspSourceTerm x 1^(4 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(4 : ℕ)) ∧
     thetaCuspNativeOddHeadDet x /
-      (thetaCuspSourceTerm x 1^4*thetaCuspSingleAtomReflectionScale 1 x^4) ≤ 33100 := by
+      (thetaCuspSourceTerm x 1^(4 : ℕ)*thetaCuspSingleAtomReflectionScale 1 x^(4 : ℕ)) ≤ 33100 := by
   have hq : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x := by linarith
   have hx := thetaCusp_pos_of_thirtySevenTenths_le hq
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))

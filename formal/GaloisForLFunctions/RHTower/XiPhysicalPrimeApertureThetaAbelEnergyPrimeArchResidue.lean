@@ -11,7 +11,7 @@ principle collapses the whole archimedean contour to one detector value.
 
 For the physical-energy detector this value is the explicit real square
 
-`(exp(a/2) * 2 * (1-exp(-L/2)) * c * A)^2`.
+`(exp(a/2) * 2 * (1-exp(-L/2)) * c * A)^(2 : ℕ)`.
 
 It is nonnegative without parameter assumptions and strictly positive for
 `L,A,c>0`.  Hence no Gamma-tail estimate remains in this source family; all
@@ -81,11 +81,11 @@ theorem xiPhysicalThetaAbelEnergyTwoEdgeTransform_archPole_eq_real
 
 theorem physicalThetaAbelEnergy_sourceIntegrand_eq_prime_add_arch
     (L A c a : ℝ) (z : ℂ) :
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
         continuedPrimeArchSourceRelativeTrace z =
-      xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+      xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
           (-I * infinitePrimeFlux (1 / 2 + z * I)) +
-        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
           (I * logDeriv archFactor (1 / 2 + z * I)) := by
   rw [continuedPrimeArchSourceRelativeTrace]
   ring
@@ -125,12 +125,12 @@ theorem rectIntegral_physicalThetaAbelEnergy_mul_archSource_eq
     (hbelow : z₁.im < -(1 / 2)) (habove : -(1 / 2) < z₂.im)
     (htop : z₂.im < 1 / 2) :
     rectIntegral (fun z =>
-        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
           (I * logDeriv archFactor (1 / 2 + z * I))) z₁ z₂ =
       2 * Real.pi * I *
-        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a xiMassArchPole ^ 2 := by
+        xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a xiMassArchPole ^ (2 : ℕ) := by
   let g : ℂ → ℂ := fun z =>
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ)
   let U : Set ℂ := xiPhysicalThetaAbelArchDomain
   let rho : Unit → ℂ := fun _ => xiMassArchPole
   let mult : Unit → ℕ := fun _ => 1
@@ -211,7 +211,7 @@ contour. -/
 def xiPhysicalThetaAbelEnergyNormalizedArchSourceContour
     (L A c a : ℝ) (z₁ z₂ : ℂ) : ℂ :=
   (2 * Real.pi * I)⁻¹ * rectIntegral (fun z =>
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ 2 *
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a z ^ (2 : ℕ) *
       (I * logDeriv archFactor (1 / 2 + z * I))) z₁ z₂
 
 theorem xiPhysicalThetaAbelEnergyNormalizedArchSourceContour_eq_archPole_sq
@@ -221,7 +221,7 @@ theorem xiPhysicalThetaAbelEnergyNormalizedArchSourceContour_eq_archPole_sq
     (hbelow : z₁.im < -(1 / 2)) (habove : -(1 / 2) < z₂.im)
     (htop : z₂.im < 1 / 2) :
     xiPhysicalThetaAbelEnergyNormalizedArchSourceContour L A c a z₁ z₂ =
-      xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a xiMassArchPole ^ 2 := by
+      xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a xiMassArchPole ^ (2 : ℕ) := by
   rw [xiPhysicalThetaAbelEnergyNormalizedArchSourceContour,
     rectIntegral_physicalThetaAbelEnergy_mul_archSource_eq
       him hleft hright hbelow habove htop]
@@ -240,7 +240,7 @@ theorem xiPhysicalThetaAbelEnergyNormalizedArchSourceContour_eq_explicit
     (hbelow : z₁.im < -(1 / 2)) (habove : -(1 / 2) < z₂.im)
     (htop : z₂.im < 1 / 2) :
     xiPhysicalThetaAbelEnergyNormalizedArchSourceContour L A c a z₁ z₂ =
-      ((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ 2 := by
+      ((Real.exp (a / 2) * 2 * (1 - Real.exp (-(L / 2))) * c * A : ℝ) : ℂ) ^ (2 : ℕ) := by
   rw [xiPhysicalThetaAbelEnergyNormalizedArchSourceContour_eq_archPole_sq
     him hleft hright hbelow habove htop,
     xiPhysicalThetaAbelEnergyTwoEdgeTransform_archPole_eq_real]

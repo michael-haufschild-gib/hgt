@@ -70,7 +70,7 @@ theorem tendsto_digamma_pow_div_vertical_pow {σ : ℝ} (hσ : 0 ≤ σ) (j : �
         _ ≤ _ := Complex.abs_im_le_norm _
     have htpos : (0 : ℝ) < t := by linarith
     have hden : t ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ^ m := by
-      calc t = t ^ 1 := (pow_one t).symm
+      calc t = t ^ (1 : ℕ) := (pow_one t).symm
         _ ≤ t ^ m := pow_le_pow_right₀ ht1 hm
         _ ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ^ m := pow_le_pow_left₀ (by linarith) hnormz m
     rw [norm_div, norm_pow, norm_pow]

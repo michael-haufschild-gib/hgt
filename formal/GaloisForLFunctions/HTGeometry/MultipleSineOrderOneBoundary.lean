@@ -46,15 +46,15 @@ theorem cot_add_pi (w : ℂ) : Complex.cot (w + Real.pi) = Complex.cot w := by
 
 /-- **Derivative of the cotangent.**  Off the zeros of the sine, `cot' = -1/sin²`. -/
 theorem hasDerivAt_cot {w : ℂ} (hw : Complex.sin w ≠ 0) :
-    HasDerivAt Complex.cot (-(1 / Complex.sin w ^ 2)) w := by
+    HasDerivAt Complex.cot (-(1 / Complex.sin w ^ (2 : ℕ))) w := by
   have hderiv :
       HasDerivAt (fun x => Complex.cos x / Complex.sin x)
         ((-Complex.sin w * Complex.sin w - Complex.cos w * Complex.cos w) /
-          Complex.sin w ^ 2) w :=
+          Complex.sin w ^ (2 : ℕ)) w :=
     (Complex.hasDerivAt_cos w).div (Complex.hasDerivAt_sin w) hw
   have hval :
       (-Complex.sin w * Complex.sin w - Complex.cos w * Complex.cos w) /
-          Complex.sin w ^ 2 = -(1 / Complex.sin w ^ 2) := by
+          Complex.sin w ^ (2 : ℕ) = -(1 / Complex.sin w ^ (2 : ℕ)) := by
     have hpyth := Complex.sin_sq_add_cos_sq w
     field_simp
     linear_combination -hpyth
@@ -138,7 +138,7 @@ theorem deriv_multipleSineOne :
 
 theorem hasDerivAt_deriv_multipleSineOne (z : ℂ) :
     HasDerivAt (deriv (multipleSineOne ω))
-      (-(((Real.pi : ℂ) / (ω : ℂ)) ^ 2) * multipleSineOne ω z) z := by
+      (-(((Real.pi : ℂ) / (ω : ℂ)) ^ (2 : ℕ)) * multipleSineOne ω z) z := by
   rw [deriv_multipleSineOne]
   have hlin : HasDerivAt (fun x : ℂ => (Real.pi : ℂ) * x / (ω : ℂ))
       ((Real.pi : ℂ) / (ω : ℂ)) z := by
@@ -152,13 +152,13 @@ theorem hasDerivAt_deriv_multipleSineOne (z : ℂ) :
 /-- **The order-one sine solves the harmonic equation** `S_1'' + (π/ω)² S_1 = 0`, everywhere. -/
 theorem multipleSineOne_secondOrder (z : ℂ) :
     deriv (deriv (multipleSineOne ω)) z +
-      ((Real.pi : ℂ) / (ω : ℂ)) ^ 2 * multipleSineOne ω z = 0 := by
+      ((Real.pi : ℂ) / (ω : ℂ)) ^ (2 : ℕ) * multipleSineOne ω z = 0 := by
   rw [(hasDerivAt_deriv_multipleSineOne z).deriv]
   ring
 
 /-- The harmonic differential polynomial `y₂ + (π/ω)² y₀` in the jet variables `(s, y₀, y₁, y₂)`. -/
 def harmonicJetPolynomial (ω : ℝ) : MvPolynomial (Fin 4) ℂ :=
-  X 3 + C (((Real.pi : ℂ) / (ω : ℂ)) ^ 2) * X 1
+  X 3 + C (((Real.pi : ℂ) / (ω : ℂ)) ^ (2 : ℕ)) * X 1
 
 theorem harmonicJetPolynomial_ne_zero (ω : ℝ) : harmonicJetPolynomial ω ≠ 0 := by
   intro h
@@ -197,7 +197,7 @@ theorem differentiallyAlgebraic_multipleSineOne :
 theorem hasDerivAt_multipleSineOneLogDeriv (hω : (ω : ℂ) ≠ 0) {z : ℂ}
     (hz : z ∈ multipleSineOneRegularSet ω) :
     HasDerivAt (multipleSineOneLogDeriv ω)
-      (-(multipleSineOneLogDeriv ω z) ^ 2 - ((Real.pi : ℂ) / (ω : ℂ)) ^ 2) z := by
+      (-(multipleSineOneLogDeriv ω z) ^ (2 : ℕ) - ((Real.pi : ℂ) / (ω : ℂ)) ^ (2 : ℕ)) z := by
   have hsin : Complex.sin ((Real.pi : ℂ) * z / (ω : ℂ)) ≠ 0 := hz
   have hlin : HasDerivAt (fun x : ℂ => (Real.pi : ℂ) * x / (ω : ℂ))
       ((Real.pi : ℂ) / (ω : ℂ)) z := by
@@ -214,8 +214,8 @@ theorem hasDerivAt_multipleSineOneLogDeriv (hω : (ω : ℂ) ≠ 0) {z : ℂ}
 /-- **The order-one Riccati equation.**  `L_1' + L_1² + (π/ω)² = 0` on the regular set. -/
 theorem multipleSineOneLogDeriv_riccati (hω : (ω : ℂ) ≠ 0) {z : ℂ}
     (hz : z ∈ multipleSineOneRegularSet ω) :
-    deriv (multipleSineOneLogDeriv ω) z + (multipleSineOneLogDeriv ω z) ^ 2 +
-      ((Real.pi : ℂ) / (ω : ℂ)) ^ 2 = 0 := by
+    deriv (multipleSineOneLogDeriv ω) z + (multipleSineOneLogDeriv ω z) ^ (2 : ℕ) +
+      ((Real.pi : ℂ) / (ω : ℂ)) ^ (2 : ℕ) = 0 := by
   rw [(hasDerivAt_multipleSineOneLogDeriv hω hz).deriv]
   ring
 
@@ -224,12 +224,12 @@ theorem multipleSineOneLogDeriv_riccati (hω : (ω : ℂ) ≠ 0) {z : ℂ}
 /-- The order-one Riccati differential polynomial `y₁ + y₀² + (π/ω)²` in the jet variables
 `(s, y₀, y₁)`. -/
 def riccatiJetPolynomial (ω : ℝ) : MvPolynomial (Fin 3) ℂ :=
-  X 2 + X 1 ^ 2 + C (((Real.pi : ℂ) / (ω : ℂ)) ^ 2)
+  X 2 + X 1 ^ (2 : ℕ) + C (((Real.pi : ℂ) / (ω : ℂ)) ^ (2 : ℕ))
 
 theorem riccatiJetPolynomial_ne_zero (ω : ℝ) : riccatiJetPolynomial ω ≠ 0 := by
   intro h
   have hev := congrArg (MvPolynomial.eval
-    (fun i : Fin 3 => if i = 2 then 1 - ((Real.pi : ℂ) / (ω : ℂ)) ^ 2 else 0)) h
+    (fun i : Fin 3 => if i = 2 then 1 - ((Real.pi : ℂ) / (ω : ℂ)) ^ (2 : ℕ) else 0)) h
   simp [riccatiJetPolynomial] at hev
 
 /-- **The order-one boundary is differentially algebraic.**  It satisfies the explicit
@@ -269,8 +269,8 @@ theorem multipleSine_orderOne_boundary_law (hω : (ω : ℂ) ≠ 0) :
     (∀ z ∈ multipleSineOneRegularSet ω,
       logDeriv (multipleSineOne ω) z = multipleSineOneLogDeriv ω z) ∧
     (∀ z ∈ multipleSineOneRegularSet ω,
-      deriv (multipleSineOneLogDeriv ω) z + (multipleSineOneLogDeriv ω z) ^ 2 +
-        ((Real.pi : ℂ) / (ω : ℂ)) ^ 2 = 0) ∧
+      deriv (multipleSineOneLogDeriv ω) z + (multipleSineOneLogDeriv ω z) ^ (2 : ℕ) +
+        ((Real.pi : ℂ) / (ω : ℂ)) ^ (2 : ℕ) = 0) ∧
     DifferentiallyAlgebraicOn (multipleSineOneLogDeriv ω)
       (multipleSineOneRegularSet ω) :=
   ⟨multipleSineOne_add_period hω, multipleSineOneLogDeriv_add_period hω,

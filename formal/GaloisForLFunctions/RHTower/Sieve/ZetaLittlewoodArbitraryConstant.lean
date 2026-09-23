@@ -52,7 +52,7 @@ theorem exists_logDeriv_zeta_bound_arbitrary_constant (A : ℝ) :
     ∃ C T : ℝ, 0 < C ∧ 0 < T ∧
       ∀ σ γ : ℝ, T ≤ |γ| → 1 - A / Real.log |γ| ≤ σ → σ ≤ 9 / 8 →
         ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖
-          ≤ C * Real.log |γ| ^ 2 / Real.log (Real.log |γ|) := by
+          ≤ C * Real.log |γ| ^ (2 : ℕ) / Real.log (Real.log |γ|) := by
   obtain ⟨c, C, T₀, hc0, hC0, hT₀, hb⟩ := exists_logDeriv_zeta_bound_littlewood
   refine ⟨C, max T₀ (Real.exp (Real.exp (A / c))), hC0, ?_, ?_⟩
   · exact lt_of_lt_of_le hT₀ (le_max_left _ _)

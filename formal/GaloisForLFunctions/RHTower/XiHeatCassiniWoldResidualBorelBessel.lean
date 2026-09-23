@@ -22,7 +22,7 @@ open GaloisForLFunctions.RHTower
 noncomputable section
 
 def secondFactorialBorelKernel (z : ℂ) : ℂ :=
-  ∑' k : ℕ, z ^ k / ((k.factorial : ℂ) ^ 2)
+  ∑' k : ℕ, z ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))
 
 private def besselCosineSeriesTerm (u : ℝ) (k : ℕ) (theta : ℝ) : ℂ :=
   (-1 : ℂ) ^ k * (((u * Real.cos theta : ℝ) : ℂ) ^ (2 * k)) /
@@ -100,7 +100,7 @@ private theorem integral_besselCosineSeriesTerm (u : ℝ) (k : ℕ) :
 
 private theorem normalizedCentralBinom_div_evenFactorial (k : ℕ) :
     ((normalizedCentralBinom k : ℝ) : ℂ) / ((2 * k).factorial : ℂ) =
-      1 / ((4 : ℂ) ^ k * ((k.factorial : ℂ) ^ 2)) := by
+      1 / ((4 : ℂ) ^ k * ((k.factorial : ℂ) ^ (2 : ℕ))) := by
   rw [normalizedCentralBinom]
   push_cast
   have h4 : (4 : ℂ) ^ k ≠ 0 := by norm_num
@@ -115,7 +115,7 @@ theorem ofReal_besselJ0_eq_secondFactorial_series (u : ℝ) :
     ((besselJ0 u : ℝ) : ℂ) =
       ∑' k : ℕ,
         (-1 : ℂ) ^ k * (u : ℂ) ^ (2 * k) /
-          ((4 : ℂ) ^ k * ((k.factorial : ℂ) ^ 2)) := by
+          ((4 : ℂ) ^ k * ((k.factorial : ℂ) ^ (2 : ℕ))) := by
   rw [besselJ0_cos_form]
   push_cast
   rw [show (((∫ theta in (0 : ℝ)..Real.pi / 2,
@@ -161,13 +161,13 @@ theorem secondFactorialBorelKernel_neg_real_eq_besselJ0
     ofReal_besselJ0_eq_secondFactorial_series]
   apply tsum_congr
   intro k
-  have hs : (Real.sqrt r) ^ 2 = r := Real.sq_sqrt hr
-  have hsq : (2 * Real.sqrt r) ^ 2 = 4 * r := by nlinarith
+  have hs : (Real.sqrt r) ^ (2 : ℕ) = r := Real.sq_sqrt hr
+  have hsq : (2 * Real.sqrt r) ^ (2 : ℕ) = 4 * r := by nlinarith
   have hu : (((2 * Real.sqrt r : ℝ) : ℂ) ^ (2 * k)) / (4 : ℂ) ^ k =
       (r : ℂ) ^ k := by
     calc
       (((2 * Real.sqrt r : ℝ) : ℂ) ^ (2 * k)) / (4 : ℂ) ^ k =
-          ((((2 * Real.sqrt r : ℝ) : ℂ) ^ 2) ^ k) / (4 : ℂ) ^ k := by
+          ((((2 * Real.sqrt r : ℝ) : ℂ) ^ (2 : ℕ)) ^ k) / (4 : ℂ) ^ k := by
             rw [pow_mul]
       _ = (((4 : ℂ) * (r : ℂ)) ^ k) / (4 : ℂ) ^ k := by
             congr 2
@@ -182,7 +182,7 @@ theorem secondFactorialBorelKernel_neg_real_eq_besselJ0
 /-- The flat origin makes the Bessel edge Lipschitz in squared frequency. -/
 theorem abs_besselJ0_sub_le_sq_sub
     {u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v) :
-    |besselJ0 u - besselJ0 v| ≤ (v ^ 2 - u ^ 2) / 2 := by
+    |besselJ0 u - besselJ0 v| ≤ (v ^ (2 : ℕ) - u ^ (2 : ℕ)) / 2 := by
   have hv : 0 ≤ v := hu.trans huv
   have hdiff : ∀ theta ∈ uIcc v u, DifferentiableAt ℝ besselJ0 theta := by
     intro theta _
@@ -208,7 +208,7 @@ theorem abs_besselJ0_sub_le_sq_sub
     ring
   calc
     |besselJ0 u - besselJ0 v| ≤ v / 2 * (v - u) := h'
-    _ ≤ (v ^ 2 - u ^ 2) / 2 := by
+    _ ≤ (v ^ (2 : ℕ) - u ^ (2 : ℕ)) / 2 := by
       nlinarith
 
 theorem norm_secondFactorialBorelKernel_neg_mul_sub_le
@@ -230,8 +230,8 @@ theorem norm_secondFactorialBorelKernel_neg_mul_sub_le
   calc
     |besselJ0 (2 * Real.sqrt (h * q)) -
         besselJ0 (2 * Real.sqrt (H * q))| ≤
-        ((2 * Real.sqrt (H * q)) ^ 2 -
-          (2 * Real.sqrt (h * q)) ^ 2) / 2 := hb
+        ((2 * Real.sqrt (H * q)) ^ (2 : ℕ) -
+          (2 * Real.sqrt (h * q)) ^ (2 : ℕ)) / 2 := hb
     _ = 2 * (H - h) * q := by
       nlinarith [Real.sq_sqrt hhq, Real.sq_sqrt hHq]
 

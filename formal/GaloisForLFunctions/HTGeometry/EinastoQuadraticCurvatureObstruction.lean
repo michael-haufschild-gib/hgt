@@ -23,7 +23,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Standard spherical-lapse Kretschmann expression with actual derivatives. -/
 def radialKretschmannScalar (f : ℝ → ℝ) (r : ℝ) : ℝ :=
-  (deriv (deriv f) r) ^ 2 + 4 * (deriv f r / r) ^ 2 + 4 * ((1 - f r) / r ^ 2) ^ 2
+  (deriv (deriv f) r) ^ (2 : ℕ) + 4 * (deriv f r / r) ^ (2 : ℕ) + 4 * ((1 - f r) / r ^ (2 : ℕ)) ^ (2 : ℕ)
 
 /-- The first-order metric obtained from the actual curvature source integral. -/
 def einastoQuadraticPerturbedMetric (d l σ β r : ℝ) : ℝ :=
@@ -34,7 +34,7 @@ theorem radialKretschmannScalar_einasto (d l a r : ℝ) :
 
 /-- The angular term is a lower bound independent of any derivative cancellations. -/
 theorem radialKretschmannScalar_angular_lower (f : ℝ → ℝ) (r : ℝ) :
-    4 * ((1 - f r) / r ^ 2) ^ 2 ≤ radialKretschmannScalar f r := by
+    4 * ((1 - f r) / r ^ (2 : ℕ)) ^ (2 : ℕ) ≤ radialKretschmannScalar f r := by
   unfold radialKretschmannScalar
   nlinarith [sq_nonneg (deriv (deriv f) r), sq_nonneg (deriv f r / r)]
 
@@ -106,8 +106,8 @@ theorem einastoQuadraticPerturbedMetric_linear_limit (d l σ β : ℝ) :
 
 /-- The scaled angular-curvature contribution has a strictly positive limit at nonzero coupling. -/
 theorem einastoQuadraticPerturbedMetric_scaled_angular_limit (d l σ β : ℝ) :
-    Tendsto (fun t => 4 * ((1 - einastoQuadraticPerturbedMetric d l σ β (exp t)) / exp t) ^ 2) atBot
-      (𝓝 (4 * (80 * Real.pi * β * exp d / exp l) ^ 2)) :=
+    Tendsto (fun t => 4 * ((1 - einastoQuadraticPerturbedMetric d l σ β (exp t)) / exp t) ^ (2 : ℕ)) atBot
+      (𝓝 (4 * (80 * Real.pi * β * exp d / exp l) ^ (2 : ℕ))) :=
   ((einastoQuadraticPerturbedMetric_linear_limit d l σ β).pow 2).const_mul 4
 
 /-- Complete coupling classification: exactly the nonzero first-order perturbations have divergent curvature. -/
@@ -119,23 +119,23 @@ theorem einastoQuadraticPerturbedMetric_curvature_diverges_iff (d l σ β : ℝ)
     subst β
     simp only [einastoQuadraticPerturbedMetric_zero_coupling, radialKretschmannScalar_einasto] at h
     have hf := einastoRadialKretschmann_core_limit d l 0
-    have hgt := h.eventually_gt_atTop (512 * Real.pi ^ 2 * exp d ^ 2 / 3 + 1)
+    have hgt := h.eventually_gt_atTop (512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3 + 1)
     have hlt := hf.eventually (eventually_lt_nhds (by linarith :
-      512 * Real.pi ^ 2 * exp d ^ 2 / 3 < 512 * Real.pi ^ 2 * exp d ^ 2 / 3 + 1))
+      512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3 < 512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3 + 1))
     obtain ⟨t, ht, ht'⟩ := (hgt.and hlt).exists
     linarith
   · intro hβ
     have hne : 80 * Real.pi * β * exp d / exp l ≠ 0 := by
       exact div_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero (by norm_num) Real.pi_ne_zero) hβ) (exp_ne_zero d)) (exp_ne_zero l)
-    have hp : 0 < 4 * (80 * Real.pi * β * exp d / exp l) ^ 2 :=
+    have hp : 0 < 4 * (80 * Real.pi * β * exp d / exp l) ^ (2 : ℕ) :=
       mul_pos (by norm_num) (sq_pos_of_ne_zero hne)
-    have hi : Tendsto (fun t : ℝ => exp (-t) ^ 2) atBot atTop :=
+    have hi : Tendsto (fun t : ℝ => exp (-t) ^ (2 : ℕ)) atBot atTop :=
       (tendsto_pow_atTop (by norm_num : (2 : ℕ) ≠ 0)).comp
         (tendsto_exp_atTop.comp tendsto_neg_atBot_atTop)
     have ha := (einastoQuadraticPerturbedMetric_scaled_angular_limit d l σ β).pos_mul_atTop hp hi
     apply tendsto_atTop_mono (fun t => ?_) ha
-    have he : 4 * ((1 - einastoQuadraticPerturbedMetric d l σ β (exp t)) / exp t) ^ 2 * exp (-t) ^ 2 =
-        4 * ((1 - einastoQuadraticPerturbedMetric d l σ β (exp t)) / exp t ^ 2) ^ 2 := by
+    have he : 4 * ((1 - einastoQuadraticPerturbedMetric d l σ β (exp t)) / exp t) ^ (2 : ℕ) * exp (-t) ^ (2 : ℕ) =
+        4 * ((1 - einastoQuadraticPerturbedMetric d l σ β (exp t)) / exp t ^ (2 : ℕ)) ^ (2 : ℕ) := by
       rw [exp_neg]
       field_simp
     rw [he]

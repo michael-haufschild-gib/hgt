@@ -203,7 +203,7 @@ theorem rectangularGammaMovingKernel_le_exp
           (mul_nonneg (Real.exp_pos _).le hL) hdenOnePos hdenOne
       _ = (L / (1 - Real.exp (-1))) * Real.exp (-(a - L)) := by ring
 
-/-- Explicit `L^1` escape estimate for the moving cross-edge Gamma kernel. -/
+/-- Explicit `L^(1 : ℕ)` escape estimate for the moving cross-edge Gamma kernel. -/
 theorem integral_rectangularGammaMovingKernel_le_exp
     {L a : ℝ} (hL : 0 ≤ L) (ha : L + 1 / 4 ≤ a) :
     0 ≤ ∫ t : ℝ in Ioi 0, rectangularGammaMovingKernel L a t ∧

@@ -22,7 +22,7 @@ open Finset ArithmeticFunction
 
 /-- **Both Möbius signs occur at least `(3/16)DL` times.** -/
 theorem card_moebius_sign_ge {t L : ℕ} {D : ℝ}
-    (hQ : (1 / 2) * D * (L : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ 2)
+    (hQ : (1 / 2) * D * (L : ℝ) ≤ ∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ))
     (hM : |∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)| ≤ (1 / 8) * D * (L : ℝ)) :
     (3 / 16) * D * (L : ℝ)
         ≤ (((Finset.Ioc t (t + L)).filter (fun n => moebius n = 1)).card : ℝ)

@@ -854,7 +854,7 @@ theorem cast_div_lt {n p : ℕ} (hp : 0 < p) :
   nlinarith [hcast, hcast2]
 
 /-- The prime-power log-sum identity: `log n! = ∑_{p ≤ n} ν_p(n!)·log p`. -/
-theorem log_factorial_eq (n : ℕ) :
+theorem log_factorial_eq_creaseBudgetPrimeMass (n : ℕ) :
     Real.log (n.factorial : ℝ)
       = ∑ p ∈ Nat.primesBelow (n + 1), (n.factorial.factorization p : ℝ) * Real.log p := by
   have hne : (n.factorial : ℕ) ≠ 0 := Nat.factorial_ne_zero n
@@ -885,7 +885,7 @@ theorem mertens_first_upper {n : ℕ} (hn : 1 ≤ n) :
   have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
   have hkey : ∑ p ∈ Nat.primesBelow (n + 1), ((n : ℝ) / p - 1) * Real.log p
       ≤ Real.log (n.factorial : ℝ) := by
-    rw [log_factorial_eq]
+    rw [log_factorial_eq_creaseBudgetPrimeMass]
     refine Finset.sum_le_sum fun p hp => ?_
     have hpp := (Nat.mem_primesBelow.mp hp).2
     refine mul_le_mul_of_nonneg_right ?_
@@ -983,7 +983,7 @@ theorem mertens_first_lower {n : ℕ} (hn : 1 ≤ n) :
   have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
   have hkey : Real.log (n.factorial : ℝ)
       ≤ ∑ p ∈ Nat.primesBelow (n + 1), ((n : ℝ) / ((p : ℝ) - 1)) * Real.log p := by
-    rw [log_factorial_eq]
+    rw [log_factorial_eq_creaseBudgetPrimeMass]
     refine Finset.sum_le_sum fun p hp => ?_
     have hpp := (Nat.mem_primesBelow.mp hp).2
     exact mul_le_mul_of_nonneg_right (factorization_factorial_le hpp)

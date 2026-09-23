@@ -37,7 +37,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 /-- A projection satisfying the Pythagorean identity is a contraction. -/
 theorem norm_proj_le {P : H →L[ℂ] H}
-    (hpyth : ∀ x : H, ‖x‖ ^ 2 = ‖P x‖ ^ 2 + ‖x - P x‖ ^ 2) (x : H) :
+    (hpyth : ∀ x : H, ‖x‖ ^ (2 : ℕ) = ‖P x‖ ^ (2 : ℕ) + ‖x - P x‖ ^ (2 : ℕ)) (x : H) :
     ‖P x‖ ≤ ‖x‖ := by
   have hp := hpyth x
   nlinarith [norm_nonneg (x - P x), norm_nonneg x, norm_nonneg (P x), sq_nonneg ‖x - P x‖]
@@ -46,7 +46,7 @@ theorem norm_proj_le {P : H →L[ℂ] H}
 The linear form of the estimate: no square is lost, so it survives aggregation over a family. -/
 theorem norm_sub_proj_unitary_proj_le {U P : H →L[ℂ] H}
     (hU : ∀ x : H, ‖U x‖ = ‖x‖)
-    (hpyth : ∀ x : H, ‖x‖ ^ 2 = ‖P x‖ ^ 2 + ‖x - P x‖ ^ 2)
+    (hpyth : ∀ x : H, ‖x‖ ^ (2 : ℕ) = ‖P x‖ ^ (2 : ℕ) + ‖x - P x‖ ^ (2 : ℕ))
     {h : H} (hUh : U h = h) :
     ‖h - P (U (P h))‖ ≤ 2 * ‖h - P h‖ := by
   have hUsub : U (h - P h) = h - U (P h) := by
@@ -69,7 +69,7 @@ theorem norm_sq_apply_ge_of_orthonormal_span {m : ℕ} {g : Fin m → H} (hg : O
     (T : H →L[ℂ] H) {η : ℝ} (hη0 : 0 ≤ η) (hη : ∀ k, ‖g k - T (g k)‖ ≤ η)
     (hηm : Real.sqrt m * η ≤ 1)
     {f : H} (hf : f ∈ Submodule.span ℂ (Set.range g)) :
-    (1 - Real.sqrt m * η) ^ 2 * ‖f‖ ^ 2 ≤ ‖T f‖ ^ 2 := by
+    (1 - Real.sqrt m * η) ^ (2 : ℕ) * ‖f‖ ^ (2 : ℕ) ≤ ‖T f‖ ^ (2 : ℕ) := by
   set R : H →L[ℂ] H := ContinuousLinearMap.id ℂ H - T with hR
   have hRapply : ∀ x : H, R x = x - T x := fun x => by
     rw [hR, _root_.sub_apply, ContinuousLinearMap.id_apply]
@@ -78,10 +78,10 @@ theorem norm_sq_apply_ge_of_orthonormal_span {m : ℕ} {g : Fin m → H} (hg : O
   have hsqrt : ‖R f‖ ≤ Real.sqrt m * η * ‖f‖ := by
     have hnn : (0 : ℝ) ≤ Real.sqrt m * η * ‖f‖ :=
       mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) hη0) (norm_nonneg _)
-    have hsq : ‖R f‖ ^ 2 ≤ (Real.sqrt m * η * ‖f‖) ^ 2 := by
-      have hm : Real.sqrt m ^ 2 = (m : ℝ) := Real.sq_sqrt (Nat.cast_nonneg m)
-      calc ‖R f‖ ^ 2 ≤ (m * η ^ 2) * ‖f‖ ^ 2 := hagg
-        _ = (Real.sqrt m * η * ‖f‖) ^ 2 := by rw [mul_pow, mul_pow, hm]
+    have hsq : ‖R f‖ ^ (2 : ℕ) ≤ (Real.sqrt m * η * ‖f‖) ^ (2 : ℕ) := by
+      have hm : Real.sqrt m ^ (2 : ℕ) = (m : ℝ) := Real.sq_sqrt (Nat.cast_nonneg m)
+      calc ‖R f‖ ^ (2 : ℕ) ≤ (m * η ^ (2 : ℕ)) * ‖f‖ ^ (2 : ℕ) := hagg
+        _ = (Real.sqrt m * η * ‖f‖) ^ (2 : ℕ) := by rw [mul_pow, mul_pow, hm]
     nlinarith [hsq, norm_nonneg (R f), hnn]
   have hTf : (1 - Real.sqrt m * η) * ‖f‖ ≤ ‖T f‖ := by
     have hsub : T f = f - R f := by rw [hRapply]; abel
@@ -92,7 +92,7 @@ theorem norm_sq_apply_ge_of_orthonormal_span {m : ℕ} {g : Fin m → H} (hg : O
       _ ≤ ‖f - R f‖ := this
   have hnn : (0 : ℝ) ≤ (1 - Real.sqrt m * η) * ‖f‖ :=
     mul_nonneg (by linarith) (norm_nonneg _)
-  calc (1 - Real.sqrt m * η) ^ 2 * ‖f‖ ^ 2 = ((1 - Real.sqrt m * η) * ‖f‖) ^ 2 := by ring
-    _ ≤ ‖T f‖ ^ 2 := by nlinarith [hTf, hnn, norm_nonneg (T f)]
+  calc (1 - Real.sqrt m * η) ^ (2 : ℕ) * ‖f‖ ^ (2 : ℕ) = ((1 - Real.sqrt m * η) * ‖f‖) ^ (2 : ℕ) := by ring
+    _ ≤ ‖T f‖ ^ (2 : ℕ) := by nlinarith [hTf, hnn, norm_nonneg (T f)]
 
 end ContinuousLinearMap

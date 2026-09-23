@@ -70,7 +70,7 @@ private theorem argument_ge_one (E : Delay) (image : Bool) {u : ℝ} (hu : u ∈
     linarith
 
 private theorem metric_geometry (E : Delay) (image : Bool) (u : ℝ) :
-    (slope E image : ℂ)^2*metricCoeff E image u=(argument E image u : ℂ)^2-1 ∧
+    (slope E image : ℂ)^(2 : ℕ)*metricCoeff E image u=(argument E image u : ℂ)^(2 : ℕ)-1 ∧
     -(slope E image : ℂ)*metricFirst E image u=2*(argument E image u : ℂ) := by
   have hn : (slope E image : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt (slope_pos E image))
   simp only [metricCoeff,metricFirst,ratio,argument]
@@ -98,7 +98,7 @@ def branchKernel (nu : ℂ) (E : Delay) (image : Bool) (u : ℝ) : ℂ := legend
 def branchFirst (nu : ℂ) (E : Delay) (image : Bool) (u : ℝ) : ℂ :=
   -(slope E image : ℂ)*legendreKernelFirst nu (argument E image u)
 def branchSecond (nu : ℂ) (E : Delay) (image : Bool) (u : ℝ) : ℂ :=
-  (slope E image : ℂ)^2*legendreKernelSecond nu (argument E image u)
+  (slope E image : ℂ)^(2 : ℕ)*legendreKernelSecond nu (argument E image u)
 
 private theorem branch_derivatives (nu : ℂ) (E : Delay) (image : Bool) {u : ℝ}
     (hu : u ∈ Icc 0 (upper E image)) :
@@ -125,12 +125,12 @@ private theorem branch_equation (nu : ℂ) (E : Delay) (image : Bool) {u : ℝ}
   linear_combination he + legendreKernelSecond nu (argument E image u)*hg +
     legendreKernelFirst nu (argument E image u)*hg1
 
-def weight (s : ℂ) (u : ℝ) : ℂ := (u:ℂ)^3*power (2*s) (1+u)
+def weight (s : ℂ) (u : ℝ) : ℂ := (u:ℂ)^(3 : ℕ)*power (2*s) (1+u)
 def weightFirst (s : ℂ) (u : ℝ) : ℂ :=
-  3*(u:ℂ)^2*power (2*s) (1+u)+(u:ℂ)^3*powerFirst (2*s) (1+u)
+  3*(u:ℂ)^(2 : ℕ)*power (2*s) (1+u)+(u:ℂ)^(3 : ℕ)*powerFirst (2*s) (1+u)
 def weightSecond (s : ℂ) (u : ℝ) : ℂ :=
-  6*(u:ℂ)*power (2*s) (1+u)+6*(u:ℂ)^2*powerFirst (2*s) (1+u)+
-    (u:ℂ)^3*powerSecond (2*s) (1+u)
+  6*(u:ℂ)*power (2*s) (1+u)+6*(u:ℂ)^(2 : ℕ)*powerFirst (2*s) (1+u)+
+    (u:ℂ)^(3 : ℕ)*powerSecond (2*s) (1+u)
 
 private theorem weight_derivatives (s : ℂ) {u : ℝ} (hu : 0 < 1+u) :
     HasDerivAt (weight s) (weightFirst s u) u ∧
@@ -174,16 +174,16 @@ private theorem flux_endpoints (s nu : ℂ) (E : Delay) (image : Bool) :
   · simp [flux,weight,weightFirst]
 
 
-def sourceA (s : ℂ) : ℂ := (5*s^2+15*s+4)/4
+def sourceA (s : ℂ) : ℂ := (5*s^(2 : ℕ)+15*s+4)/4
 def sourceK (s : ℂ) : ℂ := s*(s-1)/4
 def sourceB (s : ℂ) : ℂ := (s+2)*(2*s+3)
 
 def originalDensity (s nu : ℂ) (E : Delay) (image : Bool) (u : ℝ) : ℂ :=
-  (u:ℂ)*power (2*s) (1+u)*(sourceA s+sourceK s*(u:ℂ)^2*(sourceB s-nu*(nu+1)/2))*
+  (u:ℂ)*power (2*s) (1+u)*(sourceA s+sourceK s*(u:ℂ)^(2 : ℕ)*(sourceB s-nu*(nu+1)/2))*
     branchKernel nu E image u
 
 def adjointDensity (s nu : ℂ) (E : Delay) (image : Bool) (u : ℝ) : ℂ :=
-  (((sourceA s)*(u:ℂ)+sourceK s*sourceB s*(u:ℂ)^3)*power (2*s) (1+u)-
+  (((sourceA s)*(u:ℂ)+sourceK s*sourceB s*(u:ℂ)^(3 : ℕ))*power (2*s) (1+u)-
     sourceK s/2*transportedWeight s E image u)*branchKernel nu E image u
 
 private theorem power_continuousAt (s : ℂ) {u : ℝ} (hu : 0 < 1+u) :
@@ -251,16 +251,16 @@ theorem original_source_integral_eq_adjoint (s nu : ℂ) (E : Delay) (image : Bo
 
 private def c0 (s D : ℂ) : ℂ := sourceA s-3*sourceK s*D
 private def c1 (s D : ℂ) : ℂ := 2*sourceA s+9*sourceK s/2-3*sourceK s*D*(4*s+1)/2
-private def c2 (s D : ℂ) : ℂ := sourceA s+sourceK s*(2*s^2+14*s+9-D*(2*s^2-2*s-6))
+private def c2 (s D : ℂ) : ℂ := sourceA s+sourceK s*(2*s^(2 : ℕ)+14*s+9-D*(2*s^(2 : ℕ)-2*s-6))
 private def c3 (s D : ℂ) : ℂ := sourceK s*(2*s+3)*(6*s+3+D*(2*s+3))/2
 
 /-- Explicit cubic remaining after the original source coefficient cancels the fourth radial power. -/
-def cubicPolynomial (s D u : ℂ) : ℂ := c0 s D+c1 s D*u+c2 s D*u^2+c3 s D*u^3
-private def cubicFirst (s D u : ℂ) : ℂ := c1 s D+2*c2 s D*u+3*c3 s D*u^2
+def cubicPolynomial (s D u : ℂ) : ℂ := c0 s D+c1 s D*u+c2 s D*u^(2 : ℕ)+c3 s D*u^(3 : ℕ)
+private def cubicFirst (s D u : ℂ) : ℂ := c1 s D+2*c2 s D*u+3*c3 s D*u^(2 : ℕ)
 private def cubicSecond (s D u : ℂ) : ℂ := 2*c2 s D+6*c3 s D*u
 
 def cubicDensity (s nu : ℂ) (E : Delay) (image : Bool) (u : ℝ) : ℂ :=
-  (u:ℂ)*power (2*s) (1+u)/((1+u:ℝ):ℂ)^2*
+  (u:ℂ)*power (2*s) (1+u)/((1+u:ℝ):ℂ)^(2 : ℕ)*
     cubicPolynomial s (ratio E image) u*branchKernel nu E image u
 
 /-- Pointwise evaluation of the transported source, with the physical rate left arbitrary. -/
@@ -412,20 +412,20 @@ private theorem cubic_integral_action (s nu : ℂ) (E : Delay) (image : Bool) :
 
 /-- Full direct-minus-image horizon kernel of the original scalar potential source. -/
 def sourceKernel (s nu a : ℂ) (E : Delay) : ℂ :=
-  -a^2*(∫ u in (0:ℝ)..upper E false, originalDensity s nu E false u)+
-    a^2*(∫ u in (0:ℝ)..upper E true, originalDensity s nu E true u)
+  -a^(2 : ℕ)*(∫ u in (0:ℝ)..upper E false, originalDensity s nu E false u)+
+    a^(2 : ℕ)*(∫ u in (0:ℝ)..upper E true, originalDensity s nu E true u)
 
 /-- Explicit circle coefficient forced by the two AdS-origin radial jets. -/
 def circleCoefficient (s a : ℂ) (E : Delay) : ℂ :=
-  -4*a^2*(E.val:ℂ)/((E.val:ℂ)^2-1)*
-    (sourceA s-6*sourceK s*((E.val:ℂ)^2+1)/((E.val:ℂ)^2-1))
+  -4*a^(2 : ℕ)*(E.val:ℂ)/((E.val:ℂ)^(2 : ℕ)-1)*
+    (sourceA s-6*sourceK s*((E.val:ℂ)^(2 : ℕ)+1)/((E.val:ℂ)^(2 : ℕ)-1))
 
 private theorem circleCoefficient_eq (s a : ℂ) (E : Delay) :
-    circleCoefficient s a E = a^2*(ratio E true*c0 s (ratio E true)-ratio E false*c0 s (ratio E false)) := by
+    circleCoefficient s a E = a^(2 : ℕ)*(ratio E true*c0 s (ratio E true)-ratio E false*c0 s (ratio E false)) := by
   have hp : (E.val:ℂ)+1 ≠ 0 := by exact_mod_cast (show E.val+1 ≠ 0 by linarith [E.property])
   have hm : (E.val:ℂ)-1 ≠ 0 := by exact_mod_cast (ne_of_gt (show 0 < E.val-1 by linarith [E.property]))
-  have hq : (E.val:ℂ)^2-1 ≠ 0 := by
-    rw [show (E.val:ℂ)^2-1=((E.val:ℂ)-1)*((E.val:ℂ)+1) by ring]
+  have hq : (E.val:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    rw [show (E.val:ℂ)^(2 : ℕ)-1=((E.val:ℂ)-1)*((E.val:ℂ)+1) by ring]
     exact mul_ne_zero hm hp
   simp only [circleCoefficient,ratio,other,slope,c0,Bool.false_eq_true,ite_false,ite_true]
   push_cast
@@ -436,11 +436,11 @@ private theorem circleCoefficient_eq (s a : ℂ) (E : Delay) :
 radial endpoint is fixed by the causal domain, with the nonzero circle term retained. -/
 theorem sourceKernel_action (s nu a : ℂ) (E : Delay) :
     (nu*(nu+1)-2)*sourceKernel s nu a E =
-      -a^2*(∫ u in (0:ℝ)..upper E false, actionDensity s nu E false u)+
-        a^2*(∫ u in (0:ℝ)..upper E true, actionDensity s nu E true u)+
+      -a^(2 : ℕ)*(∫ u in (0:ℝ)..upper E false, actionDensity s nu E false u)+
+        a^(2 : ℕ)*(∫ u in (0:ℝ)..upper E true, actionDensity s nu E true u)+
         circleCoefficient s a E*legendreKernel nu E.val := by
   simp only [sourceKernel,original_source_integral_eq_cubic,circleCoefficient_eq]
-  linear_combination -a^2*cubic_integral_action s nu E false+a^2*cubic_integral_action s nu E true
+  linear_combination -a^(2 : ℕ)*cubic_integral_action s nu E false+a^(2 : ℕ)*cubic_integral_action s nu E true
 
 
 /-- The kernel's source polynomial is the corpus's original mixed-source remainder, with its
@@ -448,7 +448,7 @@ full angular coefficient represented by the actual Legendre eigenvalue. -/
 theorem originalDensity_sourceRemainder (s nu : ℂ) (E : Delay) (image : Bool) {u : ℝ}
     (hu : 0 ≤ u) :
     originalDensity s nu E image u = (u:ℂ)*
-      sourceRemainder s 0 1 1 (nu*(nu+1)/2-(s+1)*(s+2)) 1 (1-u^2)*
+      sourceRemainder s 0 1 1 (nu*(nu+1)/2-(s+1)*(s+2)) 1 (1-u^(2 : ℕ))*
         branchKernel nu E image u := by
   simp only [originalDensity,sourceRemainder,sub_sub_cancel,Real.sqrt_sq hu,
     mul_one,one_pow,sub_zero]
@@ -588,8 +588,8 @@ The remainder is the first-jet-subtracted kernel inside both original causal int
 theorem sourceKernel_action_circle_cancel (s nu a : ℂ) (E : Delay) :
     (nu*(nu+1)-2)*sourceKernel s nu a E =
       2*sourceKernel s 0 a E*((E.val:ℂ)*legendreKernelFirst nu E.val-legendreKernel nu E.val)-
-      a^2*(∫ u in (0:ℝ)..upper E false, actionRemainderDensity s nu E false u)+
-      a^2*(∫ u in (0:ℝ)..upper E true, actionRemainderDensity s nu E true u) := by
+      a^(2 : ℕ)*(∫ u in (0:ℝ)..upper E false, actionRemainderDensity s nu E false u)+
+      a^(2 : ℕ)*(∫ u in (0:ℝ)..upper E true, actionRemainderDensity s nu E true u) := by
   have h0 := sourceKernel_action s 0 a E
   have h1 := sourceKernel_action s 1 a E
   have hn := sourceKernel_action s nu a E
@@ -615,7 +615,7 @@ def circleSecondRemainder (nu : ℂ) (E Z : ℝ) : ℂ :=
 
 /-- The cancelled circle remainder contains the square of the radial displacement exactly. -/
 theorem circleRemainder_eq_second (nu : ℂ) {E Z : ℝ} (hE : 0 < E) (hZ : 0 < Z) :
-    circleRemainder nu E Z=((Z:ℂ)-(E:ℂ))^2*circleSecondRemainder nu E Z := by
+    circleRemainder nu E Z=((Z:ℂ)-(E:ℂ))^(2 : ℕ)*circleSecondRemainder nu E Z := by
   have hp (t : ℝ) (ht : t ∈ Icc 0 1) : 0 < E+t*(Z-E) := by
     have h1 := mul_nonneg ht.1 hZ.le
     have h2 := mul_nonneg (sub_nonneg.mpr ht.2) hE.le
@@ -634,8 +634,8 @@ theorem circleRemainder_eq_second (nu : ℂ) {E Z : ℝ} (hE : 0 < E) (hZ : 0 < 
     Nat.cast_one,inv_one,pow_zero,pow_one,one_smul,zero_add,iteratedDeriv_zero,iteratedDeriv_one,
     smul_eq_mul,Nat.reduceAdd,add_sub_cancel] at ht
   rw [(legendreKernel_derivatives nu hE).1.deriv] at ht
-  have hi : (∫ t in (0:ℝ)..1, (1-t) • ((Z-E)^2 • iteratedDeriv 2 (legendreKernel nu) (E+t*(Z-E)))) =
-      ((Z:ℂ)-(E:ℂ))^2*circleSecondRemainder nu E Z := by
+  have hi : (∫ t in (0:ℝ)..1, (1-t) • ((Z-E)^(2 : ℕ) • iteratedDeriv 2 (legendreKernel nu) (E+t*(Z-E)))) =
+      ((Z:ℂ)-(E:ℂ))^(2 : ℕ)*circleSecondRemainder nu E Z := by
     rw [circleSecondRemainder,← intervalIntegral.integral_const_mul]
     apply intervalIntegral.integral_congr
     intro t ht
@@ -655,7 +655,7 @@ theorem circleRemainder_eq_second (nu : ℂ) {E Z : ℝ} (hE : 0 < E) (hZ : 0 < 
 theorem actionRemainderDensity_eq_second (s nu : ℂ) (E : Delay) (image : Bool) {u : ℝ}
     (hu : u ∈ Icc 0 (upper E image)) :
     actionRemainderDensity s nu E image u =
-      (u:ℂ)^2*((slope E image:ℂ)^2*actionDensity s 0 E image u)*
+      (u:ℂ)^(2 : ℕ)*((slope E image:ℂ)^(2 : ℕ)*actionDensity s 0 E image u)*
         circleSecondRemainder nu E.val (argument E image u) := by
   rw [actionRemainderDensity,circleRemainder_eq_second nu (by linarith [E.property])
     (lt_of_lt_of_le (by norm_num) (argument_ge_one E image hu))]
@@ -699,7 +699,7 @@ private theorem regularCubic_eq (s : ℂ) (c d u : ℝ) (hc : c ≠ 0) :
 /-- The apparent square pole of the radial adjoint density has an explicit regular numerator. -/
 theorem regularActionWeight_eq (s : ℂ) (E : Delay) (image : Bool) (u : ℝ) :
     regularActionWeight s (slope E image) (other E image) u=
-      (slope E image:ℂ)^2*actionDensity s 0 E image u := by
+      (slope E image:ℂ)^(2 : ℕ)*actionDensity s 0 E image u := by
   have hn : (slope E image:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt (slope_pos E image))
   obtain ⟨h0,h1,h2⟩ := regularCubic_eq s (slope E image) (other E image) u (ne_of_gt (slope_pos E image))
   unfold regularActionWeight
@@ -711,7 +711,7 @@ theorem regularActionWeight_eq (s : ℂ) (E : Delay) (image : Bool) (u : ℝ) :
 /-- Fully combined radial remainder; neither causal slope occurs in a denominator. -/
 theorem actionRemainderDensity_eq_regular (s nu : ℂ) (E : Delay) (image : Bool) {u : ℝ}
     (hu : u ∈ Icc 0 (upper E image)) :
-    actionRemainderDensity s nu E image u=(u:ℂ)^2*
+    actionRemainderDensity s nu E image u=(u:ℂ)^(2 : ℕ)*
       regularActionWeight s (slope E image) (other E image) u*
       circleSecondRemainder nu E.val (argument E image u) := by
   rw [actionRemainderDensity_eq_second s nu E image hu,regularActionWeight_eq]

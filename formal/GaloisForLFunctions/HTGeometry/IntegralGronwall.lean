@@ -177,14 +177,14 @@ theorem abs_le_envelope_mul_exp_of_two_wronskian
     (hV₁ : ∀ x ∈ Icc A B, |V₁ x| ≤ E x) (hV₂ : ∀ x ∈ Icc A B, |V₂ x| ≤ E x)
     (hκnn : ∀ x ∈ Icc A B, 0 ≤ κ x) (hEnn : ∀ x ∈ Icc A B, 0 ≤ E x)
     (hSbound : ∀ x ∈ Icc A B, |F₁ x| + |F₂ x|
-      ≤ (|F₁ A| + |F₂ A|) + ∫ t in A..x, 2 * κ t * E t ^ 2 / W * (|F₁ t| + |F₂ t|))
-    (hκc : ContinuousOn (fun t : ℝ => 2 * κ t * E t ^ 2 / W) (Icc A B))
+      ≤ (|F₁ A| + |F₂ A|) + ∫ t in A..x, 2 * κ t * E t ^ (2 : ℕ) / W * (|F₁ t| + |F₂ t|))
+    (hκc : ContinuousOn (fun t : ℝ => 2 * κ t * E t ^ (2 : ℕ) / W) (Icc A B))
     (hSc : ContinuousOn (fun t : ℝ => |F₁ t| + |F₂ t|) (Icc A B)) :
     ∀ x ∈ Icc A B, |U x|
-      ≤ E x / W * ((|F₁ A| + |F₂ A|) * Real.exp (∫ t in A..x, 2 * κ t * E t ^ 2 / W)) := by
-  have hknn : ∀ x ∈ Icc A B, 0 ≤ 2 * κ x * E x ^ 2 / W := by
+      ≤ E x / W * ((|F₁ A| + |F₂ A|) * Real.exp (∫ t in A..x, 2 * κ t * E t ^ (2 : ℕ) / W)) := by
+  have hknn : ∀ x ∈ Icc A B, 0 ≤ 2 * κ x * E x ^ (2 : ℕ) / W := by
     intro x hx
-    have h1 : 0 ≤ 2 * κ x * E x ^ 2 := by
+    have h1 : 0 ≤ 2 * κ x * E x ^ (2 : ℕ) := by
       have := hκnn x hx
       positivity
     positivity
@@ -205,7 +205,7 @@ theorem abs_le_envelope_mul_exp_of_two_wronskian
       _ = E x * (|F₁ x| + |F₂ x|) := by ring
   have hEx : 0 ≤ E x := hEnn x hx
   have hstep : E x * (|F₁ x| + |F₂ x|)
-      ≤ E x * ((|F₁ A| + |F₂ A|) * Real.exp (∫ t in A..x, 2 * κ t * E t ^ 2 / W)) :=
+      ≤ E x * ((|F₁ A| + |F₂ A|) * Real.exp (∫ t in A..x, 2 * κ t * E t ^ (2 : ℕ) / W)) :=
     mul_le_mul_of_nonneg_left hS hEx
   rw [div_mul_eq_mul_div, le_div_iff₀ hW]
   linarith [hU, hstep]

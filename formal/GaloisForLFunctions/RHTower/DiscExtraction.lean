@@ -29,7 +29,7 @@ theorem lineCtr_im (y : ℝ) : (lineCtr y).im = y := by simp [lineCtr]
 
 /-- Squared distance to a line center, in coordinates. -/
 theorem dist_lineCtr_sq (v : ℂ) (y : ℝ) :
-    dist v (lineCtr y) ^ 2 = (v.re - 1 / 2) ^ 2 + (v.im - y) ^ 2 := by
+    dist v (lineCtr y) ^ (2 : ℕ) = (v.re - 1 / 2) ^ (2 : ℕ) + (v.im - y) ^ (2 : ℕ) := by
   rw [Complex.dist_eq, Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
     lineCtr_re, lineCtr_im]
   ring
@@ -54,14 +54,14 @@ theorem exists_good_line_center {ρ : ℂ} (Z : Finset ℂ) :
       intro y₁ hy₁ y₂ hy₂
       obtain ⟨-, -, he₁⟩ := hy₁
       obtain ⟨-, -, he₂⟩ := hy₂
-      have hsq₁ : (w.re - 1 / 2) ^ 2 + (w.im - y₁) ^ 2
-          = (ρ.re - 1 / 2) ^ 2 + (ρ.im - y₁) ^ 2 := by
-        have h2 : dist w (lineCtr y₁) ^ 2 = dist ρ (lineCtr y₁) ^ 2 := by rw [he₁]
+      have hsq₁ : (w.re - 1 / 2) ^ (2 : ℕ) + (w.im - y₁) ^ (2 : ℕ)
+          = (ρ.re - 1 / 2) ^ (2 : ℕ) + (ρ.im - y₁) ^ (2 : ℕ) := by
+        have h2 : dist w (lineCtr y₁) ^ (2 : ℕ) = dist ρ (lineCtr y₁) ^ (2 : ℕ) := by rw [he₁]
         rw [dist_lineCtr_sq, dist_lineCtr_sq] at h2
         exact h2
-      have hsq₂ : (w.re - 1 / 2) ^ 2 + (w.im - y₂) ^ 2
-          = (ρ.re - 1 / 2) ^ 2 + (ρ.im - y₂) ^ 2 := by
-        have h2 : dist w (lineCtr y₂) ^ 2 = dist ρ (lineCtr y₂) ^ 2 := by rw [he₂]
+      have hsq₂ : (w.re - 1 / 2) ^ (2 : ℕ) + (w.im - y₂) ^ (2 : ℕ)
+          = (ρ.re - 1 / 2) ^ (2 : ℕ) + (ρ.im - y₂) ^ (2 : ℕ) := by
+        have h2 : dist w (lineCtr y₂) ^ (2 : ℕ) = dist ρ (lineCtr y₂) ^ (2 : ℕ) := by rw [he₂]
         rw [dist_lineCtr_sq, dist_lineCtr_sq] at h2
         exact h2
       rcases eq_or_ne w.im ρ.im with him | him
@@ -110,8 +110,8 @@ def LineHolography (k : ℕ) : Prop :=
     AnalyticOnNhd ℂ h (ball a R) → (∀ z ∈ ball a R, h z ≠ 0) →
     (∀ z ∈ ball a R, xi z = (∏ w ∈ t, (z - w) ^ m w) * h z) →
     AnalyticOnNhd ℂ G₁ (chartRA a r₀ R) → AnalyticOnNhd ℂ G₂ (chartLA a r₀ R) →
-    (∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 ^ (k + 1) = xi z) →
-    (∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 ^ (k + 1) = xi z) →
+    (∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) ^ (k + 1) = xi z) →
+    (∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) ^ (k + 1) = xi z) →
     deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)
       = Complex.exp (2 * (Real.pi : ℂ) * I *
           ((∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z : ℕ) : ℂ)
@@ -167,13 +167,13 @@ theorem rhLadder_of_lineHolography {k : ℕ} (H : LineHolography k) : RHLadder k
           rw [Complex.sub_re, hc_re, ← hd_def, abs_of_pos hd]
       _ ≤ ‖ρ - c‖ := Complex.abs_re_le_norm _
   have hD₀_pos : 0 < D₀ := lt_of_lt_of_le hd hD₀_ge
-  have hsqD₀ : D₀ ^ 2 = d ^ 2 + (ρ.im - y) ^ 2 := by
+  have hsqD₀ : D₀ ^ (2 : ℕ) = d ^ (2 : ℕ) + (ρ.im - y) ^ (2 : ℕ) := by
     rw [hD₀_def, hc_def, dist_lineCtr_sq, hd_def]
   have hD₀_lt : D₀ < d + 1 := by
     by_contra hge
     have hge' : d + 1 ≤ D₀ := not_lt.mp hge
-    have h1 : (d + 1) ^ 2 ≤ D₀ ^ 2 := by nlinarith
-    have him : (ρ.im - y) ^ 2 < 1 := by nlinarith
+    have h1 : (d + 1) ^ (2 : ℕ) ≤ D₀ ^ (2 : ℕ) := by nlinarith
+    have him : (ρ.im - y) ^ (2 : ℕ) < 1 := by nlinarith
     nlinarith
   -- every zero near the center is in the reference set
   have href : ∀ z : ℂ, dist z c < D₀ + 1 → xi z = 0 → z ∈ hZfin.toFinset := by

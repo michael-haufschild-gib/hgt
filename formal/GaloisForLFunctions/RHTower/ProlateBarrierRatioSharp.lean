@@ -44,8 +44,8 @@ theorem prolateBand_collar_le_exp_div (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 
     (hα : 1 / 2 < α) (hα1 : α < 1) (hcollar : 600 * (1 - α) ≤ 1 / 4)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (hode : ∀ x ∈ Ioo α 1,
-      (1 - x ^ 2) * deriv (deriv Φ) x - 2 * x * deriv Φ x
-        + (s * c ^ 2 - c ^ 2 * x ^ 2) * Φ x = 0)
+      (1 - x ^ (2 : ℕ)) * deriv (deriv Φ) x - 2 * x * deriv Φ x
+        + (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φ x = 0)
     (hΦ1 : Φ 1 = 1)
     (hz : 0 < c * bandEndpointPhase s α) :
     Φ α ≤ 3 * (Real.exp (c * bandEndpointPhase s α)
@@ -73,25 +73,25 @@ theorem prolateBand_collar_sq_le (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) (hc : 0 < c
     (hα : 1 / 2 < α) (hα1 : α < 1) (hcollar : 600 * (1 - α) ≤ 1 / 4)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (hode : ∀ x ∈ Ioo α 1,
-      (1 - x ^ 2) * deriv (deriv Φ) x - 2 * x * deriv Φ x
-        + (s * c ^ 2 - c ^ 2 * x ^ 2) * Φ x = 0)
+      (1 - x ^ (2 : ℕ)) * deriv (deriv Φ) x - 2 * x * deriv Φ x
+        + (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φ x = 0)
     (hΦ1 : Φ 1 = 1)
     (hz : 0 < c * bandEndpointPhase s α) (hΦα0 : 0 ≤ Φ α) :
-    Φ α ^ 2 ≤ 9 * Real.pi / 2 * Real.exp (2 * (c * bandEndpointPhase s α))
+    Φ α ^ (2 : ℕ) ≤ 9 * Real.pi / 2 * Real.exp (2 * (c * bandEndpointPhase s α))
         / (c * bandEndpointPhase s α) := by
   have hbase := prolateBand_collar_le_exp_div hs0 hs1 hc hα hα1 hcollar hsm hode hΦ1 hz
   set z : ℝ := c * bandEndpointPhase s α with hzdef
   have hsq := pow_le_pow_left₀ hΦα0 hbase 2
-  have hval : (3 * (Real.exp z * Real.sqrt (Real.pi / (2 * z)))) ^ 2
+  have hval : (3 * (Real.exp z * Real.sqrt (Real.pi / (2 * z)))) ^ (2 : ℕ)
       = 9 * Real.pi / 2 * Real.exp (2 * z) / z := by
     have harg : (0 : ℝ) ≤ Real.pi / (2 * z) := by
       have := Real.pi_pos
       positivity
-    have hs2 : Real.sqrt (Real.pi / (2 * z)) ^ 2 = Real.pi / (2 * z) := Real.sq_sqrt harg
-    have hexp : Real.exp z ^ 2 = Real.exp (2 * z) := by
+    have hs2 : Real.sqrt (Real.pi / (2 * z)) ^ (2 : ℕ) = Real.pi / (2 * z) := Real.sq_sqrt harg
+    have hexp : Real.exp z ^ (2 : ℕ) = Real.exp (2 * z) := by
       rw [two_mul, Real.exp_add, sq]
-    have hexpand : (3 * (Real.exp z * Real.sqrt (Real.pi / (2 * z)))) ^ 2
-        = 9 * (Real.exp z ^ 2 * Real.sqrt (Real.pi / (2 * z)) ^ 2) := by ring
+    have hexpand : (3 * (Real.exp z * Real.sqrt (Real.pi / (2 * z)))) ^ (2 : ℕ)
+        = 9 * (Real.exp z ^ (2 : ℕ) * Real.sqrt (Real.pi / (2 * z)) ^ (2 : ℕ)) := by ring
     rw [hexpand, hs2, hexp]
     field_simp
   rwa [hval] at hsq
@@ -104,29 +104,29 @@ comparison, which divides the bound by `c Xi_s(alpha)`. -/
 theorem prolateBand_sq_le_exp_bandPhase_sharp {c s y₀ α : ℝ} {Φ DΦ : ℝ → ℝ}
     (hc : 0 < c) (hs0 : 0 < s) (hs8 : s ≤ 1 / 8) (hcs : 4 ≤ c * s)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1)
-    (hsy0 : s < y₀ ^ 2) (hy00 : 0 < y₀) (hy0α : y₀ ≤ α)
+    (hsy0 : s < y₀ ^ (2 : ℕ)) (hy00 : 0 < y₀) (hy0α : y₀ ≤ α)
     (hα : 1 / 2 < α) (hα1 : α < 1) (hcollar : 600 * (1 - α) ≤ 1 / 4)
     (hz : 0 < c * bandEndpointPhase s α)
     (hposΦ : ∀ t ∈ Icc y₀ 1, 0 < Φ t)
     (hΦd : ∀ t, HasDerivAt Φ (DΦ t) t)
-    (hfluxd : ∀ t ∈ Icc y₀ α, HasDerivAt (fun u => (1 - u ^ 2) * DΦ u)
-      (-(c ^ 2 * (s - t ^ 2) * Φ t)) t) :
-    Φ y₀ ^ 2
-      ≤ (1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-            / (c ^ 2 * (α ^ 2 - s)))
+    (hfluxd : ∀ t ∈ Icc y₀ α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦ u)
+      (-(c ^ (2 : ℕ) * (s - t ^ (2 : ℕ)) * Φ t)) t) :
+    Φ y₀ ^ (2 : ℕ)
+      ≤ (1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+            / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s)))
         * (9 * Real.pi / 2 / (c * bandEndpointPhase s α))
         * Real.exp (2 * c * bandEndpointPhase s y₀ + prolateScaleLog s y₀ α) := by
   have hs1 : s < 1 := by linarith
   have hα0 : 0 < α := lt_trans (by norm_num) hα
-  have hsα : s < α ^ 2 := by nlinarith
+  have hsα : s < α ^ (2 : ℕ) := by nlinarith
   have hαpos : ∀ u ∈ Icc α 1, 0 < Φ u := fun u hu =>
     hposΦ u ⟨le_trans hy0α hu.1, hu.2⟩
   -- the ordinary differential equation on the collar, from the eigenvalue relation
   have hode : ∀ x ∈ Ioo α 1,
-      (1 - x ^ 2) * deriv (deriv Φ) x - 2 * x * deriv Φ x
-        + (s * c ^ 2 - c ^ 2 * x ^ 2) * Φ x = 0 := by
+      (1 - x ^ (2 : ℕ)) * deriv (deriv Φ) x - 2 * x * deriv Φ x
+        + (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φ x = 0 := by
     intro x hx
     have hmem : x ∈ Icc (-1 : ℝ) 1 := ⟨by linarith [hx.1, hα], hx.2.le⟩
     have h := heig x hmem
@@ -134,18 +134,18 @@ theorem prolateBand_sq_le_exp_bandPhase_sharp {c s y₀ α : ℝ} {Φ DΦ : ℝ 
     linarith [h]
   -- the anchor value, now at the sharp collar value
   have hΦα0 : 0 ≤ Φ α := (hαpos α ⟨le_rfl, hα1.le⟩).le
-  have hZ : Φ α ^ 2 ≤ 9 * Real.pi / 2 * Real.exp (2 * (c * bandEndpointPhase s α))
+  have hZ : Φ α ^ (2 : ℕ) ≤ 9 * Real.pi / 2 * Real.exp (2 * (c * bandEndpointPhase s α))
       / (c * bandEndpointPhase s α) :=
     prolateBand_collar_sq_le hs0.le hs8 hc hα hα1 hcollar hsm hode hΦ1 hz hΦα0
   have hB := abs_prolateLogDeriv_le_band hc hs0.le hs1 hcs hsm heig hΦ1 hα0 hα1 hsα hαpos
   have hGα := prolateBandAmplitude_anchor_le (c := c) (s := s) (α := α)
     (B := prolateRadialBarrier c s α + 6 / (1 - α)) hc hα0.le hα1 hsα
     (hαpos α ⟨le_rfl, hα1.le⟩) hΦd hB
-  set C : ℝ := 1 + (1 - α ^ 2) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ 2
-      / (c ^ 2 * (α ^ 2 - s)) with hCdef
+  set C : ℝ := 1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c s α + 6 / (1 - α)) ^ (2 : ℕ)
+      / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - s)) with hCdef
   have hCnn : 0 ≤ C := by
-    have h1 : (0 : ℝ) < α ^ 2 - s := by linarith
-    have h2 : (0 : ℝ) < 1 - α ^ 2 := by nlinarith
+    have h1 : (0 : ℝ) < α ^ (2 : ℕ) - s := by linarith
+    have h2 : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith
     rw [hCdef]
     positivity
   set K : ℝ := 9 * Real.pi / 2 * Real.exp (2 * (c * bandEndpointPhase s α))
@@ -159,7 +159,7 @@ theorem prolateBand_sq_le_exp_bandPhase_sharp {c s y₀ α : ℝ} {Φ DΦ : ℝ 
     (hposΦ t ⟨ht.1, le_trans ht.2 hα1.le⟩).ne'
   have hband := prolateBandAmplitude_le_uniform (c := c) (s := s) (y := y₀) hc hy00 hsy0
     le_rfl hy0α hα1 hΦd hfluxd hposband
-  have hsq : Φ y₀ ^ 2 ≤ prolateBandAmplitude c s Φ DΦ y₀ := by
+  have hsq : Φ y₀ ^ (2 : ℕ) ≤ prolateBandAmplitude c s Φ DΦ y₀ := by
     have hK : 0 < prolateBandScale c s y₀ :=
       prolateBandScale_pos hc hsy0 (by nlinarith [hy0α, hα1, hy00])
     exact sq_le_sturmAmplitudeVar hK
@@ -177,7 +177,7 @@ theorem prolateBand_sq_le_exp_bandPhase_sharp {c s y₀ α : ℝ} {Φ DΦ : ℝ 
         * Real.exp (2 * c * bandEndpointPhase s y₀ + prolateScaleLog s y₀ α) := by
     rw [hKdef, ← hexpsplit]
     field_simp
-  calc Φ y₀ ^ 2 ≤ prolateBandAmplitude c s Φ DΦ y₀ := hsq
+  calc Φ y₀ ^ (2 : ℕ) ≤ prolateBandAmplitude c s Φ DΦ y₀ := hsq
     _ ≤ prolateBandAmplitude c s Φ DΦ α * Real.exp X := hband
     _ ≤ (C * K) * Real.exp X := mul_le_mul_of_nonneg_right hGZ hexpX.le
     _ = C * (9 * Real.pi / 2 / (c * bandEndpointPhase s α))
@@ -194,17 +194,17 @@ theorem bandEndpointPhase_le_two_sqrt_two_mul {sm sn α : ℝ} (hsm0 : 0 ≤ sm)
   have hac : 0 ≤ Real.arccos α := Real.arccos_nonneg α
   have h1 : bandEndpointPhase sm α ≤ Real.sqrt (1 - sm) * Real.arccos α :=
     bandEndpointPhase_le_sqrt_mul_arccos hα0 hα1
-  have h2 : Real.sqrt (α ^ 2 - sn) * Real.arccos α ≤ bandEndpointPhase sn α :=
+  have h2 : Real.sqrt (α ^ (2 : ℕ) - sn) * Real.arccos α ≤ bandEndpointPhase sn α :=
     sqrt_mul_arccos_le_bandEndpointPhase hα0 hα1
   have hs1 : Real.sqrt (1 - sm) ≤ 1 := by
     have : Real.sqrt (1 - sm) ≤ Real.sqrt 1 := Real.sqrt_le_sqrt (by linarith)
     simpa using this
-  have hprod : (1 : ℝ) ≤ 2 * Real.sqrt 2 * Real.sqrt (α ^ 2 - sn) := by
-    have h2s : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
-    have harg : (1 : ℝ) / 8 < α ^ 2 - sn := by nlinarith
-    have hq : Real.sqrt (α ^ 2 - sn) ^ 2 = α ^ 2 - sn := Real.sq_sqrt (by linarith)
-    have hnn : (0 : ℝ) ≤ 2 * Real.sqrt 2 * Real.sqrt (α ^ 2 - sn) := by positivity
-    have hsq8 : (2 * Real.sqrt 2 * Real.sqrt (α ^ 2 - sn)) ^ 2 = 8 * (α ^ 2 - sn) := by
+  have hprod : (1 : ℝ) ≤ 2 * Real.sqrt 2 * Real.sqrt (α ^ (2 : ℕ) - sn) := by
+    have h2s : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
+    have harg : (1 : ℝ) / 8 < α ^ (2 : ℕ) - sn := by nlinarith
+    have hq : Real.sqrt (α ^ (2 : ℕ) - sn) ^ (2 : ℕ) = α ^ (2 : ℕ) - sn := Real.sq_sqrt (by linarith)
+    have hnn : (0 : ℝ) ≤ 2 * Real.sqrt 2 * Real.sqrt (α ^ (2 : ℕ) - sn) := by positivity
+    have hsq8 : (2 * Real.sqrt 2 * Real.sqrt (α ^ (2 : ℕ) - sn)) ^ (2 : ℕ) = 8 * (α ^ (2 : ℕ) - sn) := by
       rw [mul_pow, mul_pow, h2s, hq]
       ring
     by_contra hcon
@@ -213,9 +213,9 @@ theorem bandEndpointPhase_le_two_sqrt_two_mul {sm sn α : ℝ} (hsm0 : 0 ≤ sm)
   calc bandEndpointPhase sm α ≤ Real.sqrt (1 - sm) * Real.arccos α := h1
     _ ≤ 1 * Real.arccos α := by
         exact mul_le_mul_of_nonneg_right hs1 hac
-    _ ≤ (2 * Real.sqrt 2 * Real.sqrt (α ^ 2 - sn)) * Real.arccos α := by
+    _ ≤ (2 * Real.sqrt 2 * Real.sqrt (α ^ (2 : ℕ) - sn)) * Real.arccos α := by
         exact mul_le_mul_of_nonneg_right hprod hac
-    _ = 2 * Real.sqrt 2 * (Real.sqrt (α ^ 2 - sn) * Real.arccos α) := by ring
+    _ = 2 * Real.sqrt 2 * (Real.sqrt (α ^ (2 : ℕ) - sn) * Real.arccos α) := by ring
     _ ≤ 2 * Real.sqrt 2 * bandEndpointPhase sn α := by
         refine mul_le_mul_of_nonneg_left h2 ?_
         positivity
@@ -229,26 +229,26 @@ theorem prolateBand_sq_ratio_le {c sn sm y₀ α : ℝ} {Φn DΦn Φm : ℝ → 
     (hc : 0 < c) (hsn0 : 0 < sn) (hsn8 : sn ≤ 1 / 8) (hcsn : 4 ≤ c * sn)
     (hsmn0 : 0 ≤ sm) (hsm8 : sm ≤ 1 / 8)
     (hsmn : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φn)
-    (heign : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φn y = -(sn * c ^ 2) * Φn y)
+    (heign : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φn y = -(sn * c ^ (2 : ℕ)) * Φn y)
     (hΦn1 : Φn 1 = 1)
     (hsmm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φm)
-    (heigm : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φm y = -(sm * c ^ 2) * Φm y)
+    (heigm : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φm y = -(sm * c ^ (2 : ℕ)) * Φm y)
     (hΦm1 : Φm 1 = 1)
-    (hsy0n : sn < y₀ ^ 2) (hsy0m : sm < y₀ ^ 2) (hy00 : 0 < y₀) (hy0α : y₀ ≤ α)
+    (hsy0n : sn < y₀ ^ (2 : ℕ)) (hsy0m : sm < y₀ ^ (2 : ℕ)) (hy00 : 0 < y₀) (hy0α : y₀ ≤ α)
     (hα : 1 / 2 < α) (hα1 : α < 1) (hcollar : 600 * (1 - α) ≤ 1 / 4)
     (hzn : 0 < c * bandEndpointPhase sn α) (hzm : 1 ≤ c * bandEndpointPhase sm α)
     (hposn : ∀ t ∈ Icc y₀ 1, 0 < Φn t) (hposm : ∀ t ∈ Icc y₀ 1, 0 < Φm t)
     (hΦnd : ∀ t, HasDerivAt Φn (DΦn t) t)
-    (hfluxn : ∀ t ∈ Icc y₀ α, HasDerivAt (fun u => (1 - u ^ 2) * DΦn u)
-      (-(c ^ 2 * (sn - t ^ 2) * Φn t)) t) :
-    Φn y₀ ^ 2
-      ≤ 324 * Real.sqrt 2 * Real.pi ^ 3
-          * (1 + (1 - α ^ 2) * (prolateRadialBarrier c sn α + 6 / (1 - α)) ^ 2
-              / (c ^ 2 * (α ^ 2 - sn)))
+    (hfluxn : ∀ t ∈ Icc y₀ α, HasDerivAt (fun u => (1 - u ^ (2 : ℕ)) * DΦn u)
+      (-(c ^ (2 : ℕ) * (sn - t ^ (2 : ℕ)) * Φn t)) t) :
+    Φn y₀ ^ (2 : ℕ)
+      ≤ 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ)
+          * (1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c sn α + 6 / (1 - α)) ^ (2 : ℕ)
+              / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - sn)))
           * Real.exp (2 * c * (bandEndpointPhase sn y₀ - bandEndpointPhase sm y₀)
               + prolateScaleLog sn y₀ α
               - 12 * (Real.log (1 - α) - Real.log (1 - y₀)))
-          * Φm y₀ ^ 2 := by
+          * Φm y₀ ^ (2 : ℕ) := by
   have hup := prolateBand_sq_le_exp_bandPhase_sharp hc hsn0 hsn8 hcsn hsmn heign hΦn1 hsy0n hy00
     hy0α hα hα1 hcollar hzn hposn hΦnd hfluxn
   have hlow := prolateBand_barrier_ratio_lower (s := sm) (c := c) (α := α) (y₀ := y₀) (Φ := Φm)
@@ -265,22 +265,22 @@ theorem prolateBand_sq_ratio_le {c sn sm y₀ α : ℝ} {Φn DΦn Φm : ℝ → 
       + 6 * (Real.log (1 - α) - Real.log (1 - y₀))) with hEdef
   have hEpos : 0 < E := Real.exp_pos _
   -- the squared lower bound
-  have hlow2 : E ^ 2 / (36 * Real.pi ^ 2 * zm) ≤ Φm y₀ ^ 2 := by
+  have hlow2 : E ^ (2 : ℕ) / (36 * Real.pi ^ (2 : ℕ) * zm) ≤ Φm y₀ ^ (2 : ℕ) := by
     have hbase : E / (6 * Real.pi * Real.sqrt zm) ≤ Φm y₀ := hlow
     have hnn : 0 ≤ E / (6 * Real.pi * Real.sqrt zm) := by
       have h1 : (0 : ℝ) < Real.sqrt zm := Real.sqrt_pos.2 hzm0
       have := Real.pi_pos
       positivity
     have hsq := pow_le_pow_left₀ hnn hbase 2
-    have hval : (E / (6 * Real.pi * Real.sqrt zm)) ^ 2 = E ^ 2 / (36 * Real.pi ^ 2 * zm) := by
+    have hval : (E / (6 * Real.pi * Real.sqrt zm)) ^ (2 : ℕ) = E ^ (2 : ℕ) / (36 * Real.pi ^ (2 : ℕ) * zm) := by
       rw [div_pow, mul_pow, mul_pow, Real.sq_sqrt hzm0.le]
       norm_num
     rwa [hval] at hsq
-  set C : ℝ := 1 + (1 - α ^ 2) * (prolateRadialBarrier c sn α + 6 / (1 - α)) ^ 2
-      / (c ^ 2 * (α ^ 2 - sn)) with hCdef
+  set C : ℝ := 1 + (1 - α ^ (2 : ℕ)) * (prolateRadialBarrier c sn α + 6 / (1 - α)) ^ (2 : ℕ)
+      / (c ^ (2 : ℕ) * (α ^ (2 : ℕ) - sn)) with hCdef
   have hCnn : 0 ≤ C := by
-    have h1 : (0 : ℝ) < α ^ 2 - sn := by nlinarith [hy0α, hy00, hsy0n]
-    have h2 : (0 : ℝ) < 1 - α ^ 2 := by nlinarith
+    have h1 : (0 : ℝ) < α ^ (2 : ℕ) - sn := by nlinarith [hy0α, hy00, hsy0n]
+    have h2 : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith
     rw [hCdef]
     positivity
   set W : ℝ := Real.exp (2 * c * (bandEndpointPhase sn y₀ - bandEndpointPhase sm y₀)
@@ -288,7 +288,7 @@ theorem prolateBand_sq_ratio_le {c sn sm y₀ α : ℝ} {Φn DΦn Φm : ℝ → 
       - 12 * (Real.log (1 - α) - Real.log (1 - y₀))) with hWdef
   have hWpos : 0 < W := Real.exp_pos _
   have hsplit : Real.exp (2 * c * bandEndpointPhase sn y₀ + prolateScaleLog sn y₀ α)
-      = W * E ^ 2 := by
+      = W * E ^ (2 : ℕ) := by
     rw [hWdef, hEdef, ← Real.exp_nat_mul, ← Real.exp_add]
     congr 1
     push_cast
@@ -299,25 +299,25 @@ theorem prolateBand_sq_ratio_le {c sn sm y₀ α : ℝ} {Φn DΦn Φm : ℝ → 
     rw [div_le_div_iff₀ hzn hzm0]
     have hπ : 0 < Real.pi := Real.pi_pos
     nlinarith [hcmp, hπ, hzn, hzm0, Real.sqrt_nonneg 2]
-  have hstep1 : C * (9 * Real.pi / 2 / zn) * (W * E ^ 2)
-      ≤ C * (2 * Real.sqrt 2 * (9 * Real.pi / 2) / zm) * (W * E ^ 2) := by
-    have hWE : (0 : ℝ) ≤ W * E ^ 2 := by positivity
+  have hstep1 : C * (9 * Real.pi / 2 / zn) * (W * E ^ (2 : ℕ))
+      ≤ C * (2 * Real.sqrt 2 * (9 * Real.pi / 2) / zm) * (W * E ^ (2 : ℕ)) := by
+    have hWE : (0 : ℝ) ≤ W * E ^ (2 : ℕ) := by positivity
     exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hinv hCnn) hWE
-  have hkey : C * (2 * Real.sqrt 2 * (9 * Real.pi / 2) / zm) * (W * E ^ 2)
-      = 324 * Real.sqrt 2 * Real.pi ^ 3 * C * W * (E ^ 2 / (36 * Real.pi ^ 2 * zm)) := by
+  have hkey : C * (2 * Real.sqrt 2 * (9 * Real.pi / 2) / zm) * (W * E ^ (2 : ℕ))
+      = 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ) * C * W * (E ^ (2 : ℕ) / (36 * Real.pi ^ (2 : ℕ) * zm)) := by
     have hπ : Real.pi ≠ 0 := Real.pi_pos.ne'
     field_simp
     ring
-  have hstep2 : 324 * Real.sqrt 2 * Real.pi ^ 3 * C * W * (E ^ 2 / (36 * Real.pi ^ 2 * zm))
-      ≤ 324 * Real.sqrt 2 * Real.pi ^ 3 * C * W * Φm y₀ ^ 2 := by
+  have hstep2 : 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ) * C * W * (E ^ (2 : ℕ) / (36 * Real.pi ^ (2 : ℕ) * zm))
+      ≤ 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ) * C * W * Φm y₀ ^ (2 : ℕ) := by
     refine mul_le_mul_of_nonneg_left hlow2 ?_
     have := Real.pi_pos
     have := Real.sqrt_nonneg 2
     positivity
-  calc Φn y₀ ^ 2 ≤ C * (9 * Real.pi / 2 / zn) * (W * E ^ 2) := hup
-    _ ≤ C * (2 * Real.sqrt 2 * (9 * Real.pi / 2) / zm) * (W * E ^ 2) := hstep1
-    _ = 324 * Real.sqrt 2 * Real.pi ^ 3 * C * W * (E ^ 2 / (36 * Real.pi ^ 2 * zm)) := hkey
-    _ ≤ 324 * Real.sqrt 2 * Real.pi ^ 3 * C * W * Φm y₀ ^ 2 := hstep2
+  calc Φn y₀ ^ (2 : ℕ) ≤ C * (9 * Real.pi / 2 / zn) * (W * E ^ (2 : ℕ)) := hup
+    _ ≤ C * (2 * Real.sqrt 2 * (9 * Real.pi / 2) / zm) * (W * E ^ (2 : ℕ)) := hstep1
+    _ = 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ) * C * W * (E ^ (2 : ℕ) / (36 * Real.pi ^ (2 : ℕ) * zm)) := hkey
+    _ ≤ 324 * Real.sqrt 2 * Real.pi ^ (3 : ℕ) * C * W * Φm y₀ ^ (2 : ℕ) := hstep2
 
 end GaloisForLFunctions.RHTower
 

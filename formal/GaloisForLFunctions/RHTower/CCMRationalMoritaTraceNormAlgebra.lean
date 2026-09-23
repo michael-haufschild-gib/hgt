@@ -20,7 +20,7 @@ namespace RHTower
 
 private abbrev H := CCMRationalMoritaHilbert
 private abbrev Op := H →L[ℂ] H
-private abbrev Crossed := CCMRationalAdelicAlgebraicCrossedProduct
+private abbrev Crossed_cCMRationalAdelicMoritaRepresentation_cCMRationalMoritaTraceNormAlgebra := CCMRationalAdelicAlgebraicCrossedProduct
 private abbrev Source := CCMRationalAdelicCyclicSourceAlgebra
 
 /-- A separate copy of the actual trace-class ideal, equipped below with the Schatten `1` norm. -/
@@ -196,7 +196,7 @@ theorem ccmRationalMoritaTraceNormL1_norm
 /-- Fixed-base representation into the genuine trace-norm ideal. -/
 def ccmRationalAdelicMoritaTraceNormHom
     {bInf : ℝ} (hbInf : bInf ≠ 0) (b : CCMRationalFiniteAdeleˣ) :
-    Crossed →ₙₐ[ℂ] CCMRationalMoritaTraceNormOperator where
+    Crossed_cCMRationalAdelicMoritaRepresentation_cCMRationalMoritaTraceNormAlgebra →ₙₐ[ℂ] CCMRationalMoritaTraceNormOperator where
   toFun F := ⟨ccmRationalAdelicMoritaTraceClassHom hbInf b F⟩
   map_zero' := by ext; simp
   map_add' F G := by ext; simp

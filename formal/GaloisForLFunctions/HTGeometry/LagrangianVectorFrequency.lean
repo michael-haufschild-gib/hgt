@@ -201,7 +201,7 @@ theorem card_filter_mem_mul_succ {v : PauliSymp n} (hv : v ≠ 0) :
   have h2 : 1 ≤ 2 ^ n := Nat.one_le_two_pow
   have hpos : 0 < 2 ^ n - 1 := by
     have : 2 ≤ 2 ^ n := by
-      calc (2 : ℕ) = 2 ^ 1 := (pow_one 2).symm
+      calc (2 : ℕ) = 2 ^ (1 : ℕ) := (pow_one 2).symm
         _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hnpos
     omega
   have hcancel : c * (2 ^ n + 1) = (lagrangians n).card := by

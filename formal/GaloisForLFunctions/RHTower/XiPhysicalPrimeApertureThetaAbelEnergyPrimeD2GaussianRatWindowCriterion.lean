@@ -120,7 +120,7 @@ theorem continuousAt_xiPhysicalThetaAbelEnergyPrimeWeightedSource_of_XiC_ne_zero
   have hcoord : ContinuousAt (fun w : ℂ ↦ 1 / 2 + w * I) z := by
     fun_prop
   have hweight : ContinuousAt
-      (fun w : ℂ ↦ xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a w ^ 2) z :=
+      (fun w : ℂ ↦ xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a w ^ (2 : ℕ)) z :=
     (xiPhysicalThetaAbelEnergyTwoEdgeTransform_sq_analyticOnNhd
       L A c a z (mem_univ z)).continuousAt
   have hfluxCoord : ContinuousAt
@@ -128,7 +128,7 @@ theorem continuousAt_xiPhysicalThetaAbelEnergyPrimeWeightedSource_of_XiC_ne_zero
     exact ContinuousAt.comp (x := z)
       (f := fun w : ℂ ↦ 1 / 2 + w * I) (g := infinitePrimeFlux) hflux hcoord
   change ContinuousAt (fun w : ℂ ↦
-    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a w ^ 2 *
+    xiPhysicalThetaAbelEnergyTwoEdgeTransform L A c a w ^ (2 : ℕ) *
       (-I * infinitePrimeFlux (1 / 2 + w * I))) z
   exact hweight.mul (continuousAt_const.mul hfluxCoord)
 

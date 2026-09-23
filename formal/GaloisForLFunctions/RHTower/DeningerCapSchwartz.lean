@@ -35,9 +35,9 @@ theorem norm_deningerCapWeight_le_of_nonneg {s : ℤ} (hs : -1 ≤ s) (k : ℕ) 
   obtain ⟨he, h0, _⟩ := (deningerMeyerCap_mem_iff h).mp hh
   set M : ℝ := SchwartzMap.seminorm ℂ 0 0 (derivSCLM (derivSCLM h)) with hM
   have hMnn : 0 ≤ M := apply_nonneg _ _
-  have hx : ‖h (Real.exp (-u))‖ ≤ M * (Real.exp (-u)) ^ 2 :=
+  have hx : ‖h (Real.exp (-u))‖ ≤ M * (Real.exp (-u)) ^ (2 : ℕ) :=
     norm_le_seminorm_mul_sq he h0 _
-  have hsq : (Real.exp (-u)) ^ 2 = Real.exp (-(2 * u)) := by
+  have hsq : (Real.exp (-u)) ^ (2 : ℕ) = Real.exp (-(2 * u)) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring

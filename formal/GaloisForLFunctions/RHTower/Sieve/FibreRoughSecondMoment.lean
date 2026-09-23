@@ -22,7 +22,7 @@ noncomputable section
 
 /-- **The second moment of a set over the fibres is the double count against the kernel.** -/
 theorem sum_sq_card_fibre_inter_eq {x h : ℝ} (hx : 4 ≤ x) (T : Finset ℕ) :
-    ∑ a ∈ outerBlock x h, (((innerFibre x h a ∩ T).card : ℝ)) ^ 2
+    ∑ a ∈ outerBlock x h, (((innerFibre x h a ∩ T).card : ℝ)) ^ (2 : ℕ)
       = ∑ m ∈ T ∩ fibreDyadicIndex x h, ∑ n ∈ T ∩ fibreDyadicIndex x h,
           (((outerBlock x h).filter
             (fun a => m ∈ innerFibre x h a ∧ n ∈ innerFibre x h a)).card : ℝ) := by
@@ -45,7 +45,7 @@ theorem sum_sq_card_fibre_inter_eq {x h : ℝ} (hx : 4 ≤ x) (T : Finset ℕ) :
       exact ⟨p, Finset.mem_inter.2 ⟨hp.2, hp.1.1⟩, rfl⟩
   rw [Finset.sum_congr rfl fun a ha => by rw [hcard a ha]]
   have hexpand : ∀ a : ℕ,
-      (∑ m ∈ T ∩ D, (if m ∈ innerFibre x h a then (1 : ℝ) else 0)) ^ 2
+      (∑ m ∈ T ∩ D, (if m ∈ innerFibre x h a then (1 : ℝ) else 0)) ^ (2 : ℕ)
         = ∑ m ∈ T ∩ D, ∑ n ∈ T ∩ D,
             (if (m ∈ innerFibre x h a ∧ n ∈ innerFibre x h a) then (1 : ℝ) else 0) := by
     intro a
@@ -115,7 +115,7 @@ theorem fibreDyadicIndex_ge {x h : ℝ} (hx : 4 ≤ x) {b : ℕ} (hb : b ∈ fib
 /-- **The second moment of a set over the fibres is a banded shifted pair count.**  The whole cost
 of discarding a set is the number of its pairs at distance at most `h`, times `2h + 1`. -/
 theorem sum_sq_card_fibre_inter_le_band {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 ≤ h) (T : Finset ℕ) :
-    ∑ a ∈ outerBlock x h, (((innerFibre x h a ∩ T).card : ℝ)) ^ 2
+    ∑ a ∈ outerBlock x h, (((innerFibre x h a ∩ T).card : ℝ)) ^ (2 : ℕ)
       ≤ (2 * h + 1)
         * (((((T ∩ fibreDyadicIndex x h) ×ˢ (T ∩ fibreDyadicIndex x h)).filter
             (fun p => ((max p.1 p.2 : ℕ) : ℝ) - ((min p.1 p.2 : ℕ) : ℝ) ≤ h)).card : ℝ)) := by

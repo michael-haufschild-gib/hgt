@@ -699,7 +699,7 @@ def canonicalKrylovPathReturnProbability {r : ℕ} [NeZero r]
     (c : ℂ) (x : FiniteIndexClockSpace (Fin r)) : ℝ :=
   ‖inner ℂ (EuclideanSpace.basisFun (Fin r) ℂ 0)
       (canonicalKrylovPathState energy weight
-        henergy hweight c x)‖ ^ 2
+        henergy hweight c x)‖ ^ (2 : ℕ)
 
 /-- A common unit phase cancels from every survival amplitude after canonical
 transport. -/
@@ -758,7 +758,7 @@ theorem canonicalKrylovPathReturnProbability_eq
         c • x₀) :
     canonicalKrylovPathReturnProbability energy weight
         henergy hweight c x =
-      ‖inner ℂ x₀ x‖ ^ 2 := by
+      ‖inner ℂ x₀ x‖ ^ (2 : ℕ) := by
   rw [canonicalKrylovPathReturnProbability,
     canonicalKrylovPathState_survivalAmplitude
       energy weight henergy hweight c hc x₀ x hzero]

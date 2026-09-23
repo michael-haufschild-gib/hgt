@@ -89,27 +89,27 @@ private theorem abs_sub_lt_of_floor_div_eq {x y u δ : ℝ} (hδ : 0 < δ)
 /-- Chebyshev's inequality for a finite law: at most a quarter of the mass sits at distance
 `2σ` or more from the centre. -/
 private theorem finiteLaw_tail_le_quarter {a X : A → ℝ} (hnn : ∀ α, 0 ≤ a α)
-    {m V : ℝ} (hV : V = ∑ α, a α * (X α - m) ^ 2) (hVpos : 0 < V) :
+    {m V : ℝ} (hV : V = ∑ α, a α * (X α - m) ^ (2 : ℕ)) (hVpos : 0 < V) :
     ∑ α ∈ Finset.univ.filter (fun α => ¬ (|X α - m| < 2 * Real.sqrt V)), a α ≤ 1 / 4 := by
   classical
   set T : ℝ := 2 * Real.sqrt V with hTdef
   have hSpos : 0 < Real.sqrt V := Real.sqrt_pos.mpr hVpos
-  have hT2 : T ^ 2 = 4 * V := by
+  have hT2 : T ^ (2 : ℕ) = 4 * V := by
     rw [hTdef, mul_pow, Real.sq_sqrt hVpos.le]
     norm_num
   set F : Finset A := Finset.univ.filter (fun α => ¬ (|X α - m| < T)) with hF
-  have hkey : T ^ 2 * ∑ α ∈ F, a α ≤ V := by
-    calc T ^ 2 * ∑ α ∈ F, a α = ∑ α ∈ F, a α * T ^ 2 := by
+  have hkey : T ^ (2 : ℕ) * ∑ α ∈ F, a α ≤ V := by
+    calc T ^ (2 : ℕ) * ∑ α ∈ F, a α = ∑ α ∈ F, a α * T ^ (2 : ℕ) := by
           rw [Finset.mul_sum]
           exact Finset.sum_congr rfl fun α _ => by ring
-      _ ≤ ∑ α ∈ F, a α * (X α - m) ^ 2 := by
+      _ ≤ ∑ α ∈ F, a α * (X α - m) ^ (2 : ℕ) := by
           refine Finset.sum_le_sum fun α hα => ?_
           have hge : T ≤ |X α - m| := not_lt.mp (Finset.mem_filter.mp hα).2
-          have hsq : T ^ 2 ≤ (X α - m) ^ 2 := by
+          have hsq : T ^ (2 : ℕ) ≤ (X α - m) ^ (2 : ℕ) := by
             have habs : (0 : ℝ) ≤ T := le_of_lt (by positivity)
             nlinarith [sq_abs (X α - m), abs_nonneg (X α - m)]
           exact mul_le_mul_of_nonneg_left hsq (hnn α)
-      _ ≤ ∑ α, a α * (X α - m) ^ 2 :=
+      _ ≤ ∑ α, a α * (X α - m) ^ (2 : ℕ) :=
           Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
             (fun α _ _ => mul_nonneg (hnn α) (sq_nonneg _))
       _ = V := hV.symm
@@ -122,20 +122,20 @@ centre `m`, and any resolution `δ > 0`, the mass of strictly near distinct pair
 from `m`. -/
 theorem finiteLaw_crowding_floor_center {a X : A → ℝ} (hnn : ∀ α, 0 ≤ a α)
     (hsum : ∑ α, a α = 1) (m : ℝ) {δ : ℝ} (hδ : 0 < δ) :
-    9 * δ / (16 * (δ + 4 * Real.sqrt (∑ α, a α * (X α - m) ^ 2)))
+    9 * δ / (16 * (δ + 4 * Real.sqrt (∑ α, a α * (X α - m) ^ (2 : ℕ))))
         - finiteLawCollisionMass a X
       ≤ finiteLawNearMass a X δ := by
   classical
-  set V : ℝ := ∑ α, a α * (X α - m) ^ 2 with hV
+  set V : ℝ := ∑ α, a α * (X α - m) ^ (2 : ℕ) with hV
   have hVnn : 0 ≤ V := Finset.sum_nonneg fun α _ => mul_nonneg (hnn α) (sq_nonneg _)
   have hnear : 0 ≤ finiteLawNearMass a X δ := finiteLawNearMass_nonneg hnn δ
   rcases eq_or_lt_of_le hVnn with hV0 | hVpos
   · -- degenerate law: all mass sits at a single value, so the collision mass is one
     have hterm : ∀ α, a α = 0 ∨ X α = m := by
       intro α
-      have hzero : ∀ β ∈ (Finset.univ : Finset A), 0 ≤ a β * (X β - m) ^ 2 :=
+      have hzero : ∀ β ∈ (Finset.univ : Finset A), 0 ≤ a β * (X β - m) ^ (2 : ℕ) :=
         fun β _ => mul_nonneg (hnn β) (sq_nonneg _)
-      have hsum0 : ∑ β, a β * (X β - m) ^ 2 = 0 := by rw [← hV, ← hV0]
+      have hsum0 : ∑ β, a β * (X β - m) ^ (2 : ℕ) = 0 := by rw [← hV, ← hV0]
       have hz := (Finset.sum_eq_zero_iff_of_nonneg hzero).mp hsum0 α (Finset.mem_univ α)
       rcases mul_eq_zero.mp hz with h | h
       · exact Or.inl h
@@ -219,10 +219,10 @@ theorem finiteLaw_crowding_floor_center {a X : A → ℝ} (hnn : ∀ α, 0 ≤ a
         _ = ∑ j ∈ J, ∑ α ∈ G.filter (fun α => c α = j), a α := hfib.symm
         _ ≤ ∑ j ∈ J, b j := Finset.sum_le_sum hle
     -- Cauchy–Schwarz on the cell masses
-    have hcs : (9 : ℝ) / 16 ≤ (N : ℝ) * ∑ j ∈ J, b j ^ 2 := by
-      have h1 : ((3 : ℝ) / 4) ^ 2 ≤ (∑ j ∈ J, b j) ^ 2 :=
+    have hcs : (9 : ℝ) / 16 ≤ (N : ℝ) * ∑ j ∈ J, b j ^ (2 : ℕ) := by
+      have h1 : ((3 : ℝ) / 4) ^ (2 : ℕ) ≤ (∑ j ∈ J, b j) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (by norm_num) hsumb 2
-      have h2 : (∑ j ∈ J, b j) ^ 2 ≤ (J.card : ℝ) * ∑ j ∈ J, b j ^ 2 :=
+      have h2 : (∑ j ∈ J, b j) ^ (2 : ℕ) ≤ (J.card : ℝ) * ∑ j ∈ J, b j ^ (2 : ℕ) :=
         sq_sum_le_card_mul_sum_sq
       rw [hJcard] at h2
       norm_num at h1
@@ -234,8 +234,8 @@ theorem finiteLaw_crowding_floor_center {a X : A → ℝ} (hnn : ∀ α, 0 ≤ a
       split_ifs
       · exact mul_nonneg (hnn α) (hnn β)
       · exact le_rfl
-    have hcharge : ∑ j ∈ J, b j ^ 2 ≤ finiteLawWithinMass a X δ := by
-      have hexpand : ∀ j : ℤ, b j ^ 2
+    have hcharge : ∑ j ∈ J, b j ^ (2 : ℕ) ≤ finiteLawWithinMass a X δ := by
+      have hexpand : ∀ j : ℤ, b j ^ (2 : ℕ)
           = ∑ α ∈ Finset.univ.filter (fun α => c α = j),
               ∑ β ∈ Finset.univ.filter (fun α => c α = j), a α * a β := by
         intro j
@@ -282,7 +282,7 @@ theorem finiteLaw_crowding_floor_center {a X : A → ℝ} (hnn : ∀ α, 0 ≤ a
           exact h2
         · intro h2
           exact ⟨by rw [h2]; exact hj, h2⟩
-      calc ∑ j ∈ J, b j ^ 2
+      calc ∑ j ∈ J, b j ^ (2 : ℕ)
           = ∑ j ∈ J, ∑ α ∈ Finset.univ.filter (fun α => c α = j),
               ∑ β ∈ Finset.univ.filter (fun α => c α = j), a α * a β :=
             Finset.sum_congr rfl fun j _ => hexpand j
@@ -308,11 +308,11 @@ theorem finiteLaw_crowding_floor_center {a X : A → ℝ} (hnn : ∀ α, 0 ≤ a
       rw [heq, hTS] at hmul
       linarith
     have hNr : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hNpos
-    have hfinal : 9 * δ / (16 * (δ + 4 * S)) ≤ ∑ j ∈ J, b j ^ 2 := by
+    have hfinal : 9 * δ / (16 * (δ + 4 * S)) ≤ ∑ j ∈ J, b j ^ (2 : ℕ) := by
       have hstep1 : 9 * δ / (16 * (δ + 4 * S)) ≤ 9 / (16 * (N : ℝ)) := by
         rw [div_le_div_iff₀ (by positivity) (by positivity)]
         nlinarith [hNbound, hδ]
-      have hstep2 : 9 / (16 * (N : ℝ)) ≤ ∑ j ∈ J, b j ^ 2 := by
+      have hstep2 : 9 / (16 * (N : ℝ)) ≤ ∑ j ∈ J, b j ^ (2 : ℕ) := by
         rw [div_le_iff₀ (by positivity)]
         nlinarith [hcs]
       linarith
@@ -323,7 +323,7 @@ theorem finiteLaw_crowding_floor_center {a X : A → ℝ} (hnn : ∀ α, 0 ≤ a
 gives the sharpest form, since the root mean square deviation is minimized there. -/
 theorem finiteLaw_crowding_floor {a X : A → ℝ} (hnn : ∀ α, 0 ≤ a α)
     (hsum : ∑ α, a α = 1) {δ : ℝ} (hδ : 0 < δ) :
-    9 * δ / (16 * (δ + 4 * Real.sqrt (∑ α, a α * (X α - ∑ β, a β * X β) ^ 2)))
+    9 * δ / (16 * (δ + 4 * Real.sqrt (∑ α, a α * (X α - ∑ β, a β * X β) ^ (2 : ℕ))))
         - finiteLawCollisionMass a X
       ≤ finiteLawNearMass a X δ :=
   finiteLaw_crowding_floor_center hnn hsum _ hδ

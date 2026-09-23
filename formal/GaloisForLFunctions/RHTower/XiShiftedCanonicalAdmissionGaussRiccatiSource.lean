@@ -63,20 +63,20 @@ theorem two_mul_adaptiveOrthoJacobiEnergy_eq_cumulativeDissipation_add_riccatiDr
           xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n +
         2 * (n : ℝ) *
           HTGeometry.monicOrthoAlpha
-            (fun k => (xiShiftedReciprocalMoment y k).re) n ^ 2 := by
+            (fun k => (xiShiftedReciprocalMoment y k).re) n ^ (2 : ℕ) := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let alpha := HTGeometry.monicOrthoAlpha s n
   have htrace := xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_trace hn hH
   have hsquares :
       (∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2) =
-        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ)) =
+        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
           alpha * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-          (n : ℝ) * alpha ^ 2 / 4 := by
+          (n : ℝ) * alpha ^ (2 : ℕ) / 4 := by
     have hpoint (j : ℕ) :
-        (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2 =
-          HTGeometry.monicOrthoAlpha s j ^ 2 +
-            alpha * HTGeometry.monicOrthoAlpha s j + alpha ^ 2 / 4 := by ring
+        (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ) =
+          HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ) +
+            alpha * HTGeometry.monicOrthoAlpha s j + alpha ^ (2 : ℕ) / 4 := by ring
     simp_rw [hpoint]
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
     simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -86,8 +86,8 @@ theorem two_mul_adaptiveOrthoJacobiEnergy_eq_cumulativeDissipation_add_riccatiDr
     xiShiftedCanonicalAdmissionCumulativeJacobiDissipation]
   change 2 *
       ((∑ j ∈ Finset.range n,
-          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ 2) +
-        (3 * (n : ℝ) / 4 + 1) * alpha ^ 2 +
+          (HTGeometry.monicOrthoAlpha s j + alpha / 2) ^ (2 : ℕ)) +
+        (3 * (n : ℝ) / 4 + 1) * alpha ^ (2 : ℕ) +
         2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
         (n + 1 : ℝ) *
           (HTGeometry.monicOrthoBeta s n + HTGeometry.monicOrthoBeta s (n + 1))) = _
@@ -106,7 +106,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_sourceRicc
           xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n +
         2 * (n : ℝ) *
           HTGeometry.monicOrthoAlpha
-            (fun k => (xiShiftedReciprocalMoment y k).re) n ^ 2 -
+            (fun k => (xiShiftedReciprocalMoment y k).re) n ^ (2 : ℕ) -
         2 * HTGeometry.adaptiveOrthoJacobiEnergy
           (fun k => (xiShiftedReciprocalMoment y k).re) n) y := by
   have hderiv := hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux hy hn hH
@@ -126,7 +126,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_gaussRicca
           xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n +
         2 * (n : ℝ) *
           HTGeometry.monicOrthoAlpha
-            (fun k => (xiShiftedReciprocalMoment y k).re) n ^ 2 -
+            (fun k => (xiShiftedReciprocalMoment y k).re) n ^ (2 : ℕ) -
         2 * xiShiftedCanonicalAdmissionRelativeGaussBulk y n -
         2 * (n + 1 : ℝ) * HTGeometry.monicOrthoBeta
           (fun k => (xiShiftedReciprocalMoment y k).re) (n + 1)) y := by
@@ -144,25 +144,25 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_literalAri
     HasDerivAt
       (fun v => xiShiftedCanonicalAdmissionCumulativeJacobiFlux v n)
       (HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n *
-          xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n +
+          xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n +
         2 * (n : ℝ) *
-          HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n ^ 2 -
+          HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n ^ (2 : ℕ) -
         xiShiftedAdaptiveMixedCompletedArithmeticSource w
             (HTGeometry.monicMomentAdmissionPolynomial
               (xiShiftedRealMomentSequence w) n) /
-          HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n) (w ^ 2) := by
-  have hy : 0 < w ^ 2 := sq_pos_of_pos (lt_trans (by norm_num) hw)
+          HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n) (w ^ (2 : ℕ)) := by
+  have hy : 0 < w ^ (2 : ℕ) := sq_pos_of_pos (lt_trans (by norm_num) hw)
   have hderiv :=
     hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_sourceRiccati
       hy hn hH
   change HasDerivAt
       (fun v => xiShiftedCanonicalAdmissionCumulativeJacobiFlux v n)
       (HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n *
-          xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n +
+          xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n +
         2 * (n : ℝ) *
-          HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n ^ 2 -
+          HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n ^ (2 : ℕ) -
         2 * HTGeometry.adaptiveOrthoJacobiEnergy
-          (xiShiftedRealMomentSequence w) n) (w ^ 2) at hderiv
+          (xiShiftedRealMomentSequence w) n) (w ^ (2 : ℕ)) at hderiv
   have hsource :=
     xiShiftedAdaptiveMixedCompletedArithmeticSource_canonicalAdmission_eq_jacobiEnergy
       hw hn hH
@@ -176,31 +176,31 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_literalAri
 /-- Weighted Cauchy law for the trace multiplicities `2,…,2,1`. -/
 theorem cumulativeJacobiTrace_sq_le_mul_alphaEnergy
     (a : ℕ → ℝ) (b : ℝ) {n : ℕ} (hn : 0 < n) :
-    (2 * (∑ j ∈ Finset.range n, a j) + b) ^ 2 ≤
+    (2 * (∑ j ∈ Finset.range n, a j) + b) ^ (2 : ℕ) ≤
       (2 * n + 1 : ℝ) *
-        (2 * (∑ j ∈ Finset.range n, a j ^ 2) + b ^ 2) := by
+        (2 * (∑ j ∈ Finset.range n, a j ^ (2 : ℕ)) + b ^ (2 : ℕ)) := by
   let A : ℝ := ∑ j ∈ Finset.range n, a j
-  let Q : ℝ := ∑ j ∈ Finset.range n, a j ^ 2
+  let Q : ℝ := ∑ j ∈ Finset.range n, a j ^ (2 : ℕ)
   have hcs := sq_sum_le_card_mul_sum_sq
     (s := Finset.range n) (f := a)
   simp only [Finset.card_range] at hcs
-  change A ^ 2 ≤ (n : ℝ) * Q at hcs
+  change A ^ (2 : ℕ) ≤ (n : ℝ) * Q at hcs
   have hnR : 0 < (n : ℝ) := by exact_mod_cast hn
-  have hgap : 0 ≤ ((4 : ℝ) * n + 2) * ((n : ℝ) * Q - A ^ 2) :=
+  have hgap : 0 ≤ ((4 : ℝ) * n + 2) * ((n : ℝ) * Q - A ^ (2 : ℕ)) :=
     mul_nonneg (by positivity) (sub_nonneg.mpr hcs)
-  have hsquare : 0 ≤ 2 * (A - (n : ℝ) * b) ^ 2 :=
+  have hsquare : 0 ≤ 2 * (A - (n : ℝ) * b) ^ (2 : ℕ) :=
     mul_nonneg (by norm_num) (sq_nonneg _)
-  have hmul : (n : ℝ) * (2 * A + b) ^ 2 ≤
-      (n : ℝ) * ((2 * n + 1 : ℝ) * (2 * Q + b ^ 2)) := by
+  have hmul : (n : ℝ) * (2 * A + b) ^ (2 : ℕ) ≤
+      (n : ℝ) * ((2 * n + 1 : ℝ) * (2 * Q + b ^ (2 : ℕ))) := by
     nlinarith
-  change (2 * A + b) ^ 2 ≤ (2 * n + 1 : ℝ) * (2 * Q + b ^ 2)
+  change (2 * A + b) ^ (2 : ℕ) ≤ (2 * n + 1 : ℝ) * (2 * Q + b ^ (2 : ℕ))
   exact le_of_mul_le_mul_left hmul hnR
 
 theorem xiShiftedCanonicalAdmissionCumulativeJacobiFlux_sq_lt_mul_dissipation
     {y : ℝ} {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
-    xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n ^ 2 <
+    xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n ^ (2 : ℕ) <
       (2 * n + 1 : ℝ) *
         xiShiftedCanonicalAdmissionCumulativeJacobiDissipation y n := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
@@ -225,7 +225,7 @@ theorem xiShiftedCanonicalAdmissionCumulativeJacobiFlux_sq_lt_mul_dissipation
   rw [htrace]
   simp only [xiShiftedCanonicalAdmissionCumulativeJacobiDissipation]
   change (2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-      HTGeometry.monicOrthoAlpha s n) ^ 2 < _
+      HTGeometry.monicOrthoAlpha s n) ^ (2 : ℕ) < _
   have hweight : 0 < (2 * n + 1 : ℝ) := by positivity
   have hextra : 0 <
       4 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
@@ -234,10 +234,10 @@ theorem xiShiftedCanonicalAdmissionCumulativeJacobiFlux_sq_lt_mul_dissipation
     exact add_pos_of_nonneg_of_pos (mul_nonneg (by norm_num) hbetas)
       (mul_pos (mul_pos (by norm_num) (by positivity)) hboundary)
   have henergyLt :
-      2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-          HTGeometry.monicOrthoAlpha s n ^ 2 <
-        2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
-          HTGeometry.monicOrthoAlpha s n ^ 2 +
+      2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+          HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) <
+        2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ (2 : ℕ)) +
+          HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) +
           4 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
           2 * (n + 1 : ℝ) *
             (HTGeometry.monicOrthoBeta s n +
@@ -252,7 +252,7 @@ theorem deriv_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_mul_degreeWeight_l
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     (2 * n + 1 : ℝ) *
         deriv (fun v => xiShiftedCanonicalAdmissionCumulativeJacobiFlux v n) y <
-      -xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n ^ 2 := by
+      -xiShiftedCanonicalAdmissionCumulativeJacobiFlux y n ^ (2 : ℕ) := by
   rw [(hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux hy hn hH).deriv]
   have hstrict :=
     xiShiftedCanonicalAdmissionCumulativeJacobiFlux_sq_lt_mul_dissipation hn hH
@@ -270,14 +270,14 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionRenormalizedJacobiFlux_eq_literalA
     HasDerivAt
       (fun v => xiShiftedCanonicalAdmissionRenormalizedJacobiFlux v n)
       ((HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n *
-            xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ 2) n +
+            xiShiftedCanonicalAdmissionCumulativeJacobiFlux (w ^ (2 : ℕ)) n +
           2 * (n : ℝ) *
-            HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n ^ 2 -
+            HTGeometry.monicOrthoAlpha (xiShiftedRealMomentSequence w) n ^ (2 : ℕ) -
           xiShiftedAdaptiveMixedCompletedArithmeticSource w
               (HTGeometry.monicMomentAdmissionPolynomial
                 (xiShiftedRealMomentSequence w) n) /
             HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n) /
-        (2 * n + 1 : ℝ)) (w ^ 2) := by
+        (2 * n + 1 : ℝ)) (w ^ (2 : ℕ)) := by
   simpa only [xiShiftedCanonicalAdmissionRenormalizedJacobiFlux] using
     (hasDerivAt_xiShiftedCanonicalAdmissionCumulativeJacobiFlux_eq_literalArithmeticRiccati
       hw hn hH).div_const (2 * n + 1 : ℝ)
@@ -289,7 +289,7 @@ theorem deriv_xiShiftedCanonicalAdmissionRenormalizedJacobiFlux_lt_neg_sq
     (hH : (HTGeometry.momentHankelMatrix
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     deriv (fun v => xiShiftedCanonicalAdmissionRenormalizedJacobiFlux v n) y <
-      -xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ 2 := by
+      -xiShiftedCanonicalAdmissionRenormalizedJacobiFlux y n ^ (2 : ℕ) := by
   let c : ℝ := (2 * n + 1 : ℝ)
   have hc : 0 < c := by positivity
   have hderiv :=
@@ -317,7 +317,7 @@ This is a finite-time blow-down obstruction, proved without a limit assumption. 
 theorem pos_of_deriv_lt_neg_sq_on_Ioi
     {f : ℝ → ℝ} {A x : ℝ} (hx : A < x)
     (hf : ∀ t, A < t → DifferentiableAt ℝ f t)
-    (hR : ∀ t, A < t → deriv f t < -(f t) ^ 2) :
+    (hR : ∀ t, A < t → deriv f t < -(f t) ^ (2 : ℕ)) :
     0 < f x := by
   have hcont : ContinuousOn f (Set.Ioi A) := by
     intro t ht
@@ -362,12 +362,12 @@ theorem pos_of_deriv_lt_neg_sq_on_Ioi
     have htmem : t ∈ Set.Icc x₀ b := ⟨ht.1.le, ht.2.le⟩
     have hftneg := hneg t htmem
     have hftne : f t ≠ 0 := ne_of_lt hftneg
-    have hgd : HasDerivAt g (-deriv f t / (f t) ^ 2 - 1) t := by
+    have hgd : HasDerivAt g (-deriv f t / (f t) ^ (2 : ℕ) - 1) t := by
       dsimp only [g]
       exact (hft.hasDerivAt.inv hftne).sub (hasDerivAt_id t)
     rw [hgd.deriv]
-    have hsq : 0 < (f t) ^ 2 := sq_pos_of_ne_zero hftne
-    have hratio : 1 < -deriv f t / (f t) ^ 2 := by
+    have hsq : 0 < (f t) ^ (2 : ℕ) := sq_pos_of_ne_zero hftne
+    have hratio : 1 < -deriv f t / (f t) ^ (2 : ℕ) := by
       apply (lt_div_iff₀ hsq).2
       nlinarith [hR t htA]
     linarith
@@ -407,7 +407,7 @@ theorem exists_xiShiftedCanonicalAdmissionTerminalChamber (n : ℕ) :
     (xiShiftedMomentHankelMatrix_squareParam_posDef_eventually (n + 2)).and
       (Filter.eventually_gt_atTop (1 : ℝ))
   obtain ⟨W, hW⟩ := Filter.eventually_atTop.mp hevent
-  refine ⟨W ^ 2, sq_nonneg W, ?_⟩
+  refine ⟨W ^ (2 : ℕ), sq_nonneg W, ?_⟩
   intro v hv
   let r := Real.sqrt v
   have hWdata := hW r
@@ -415,7 +415,7 @@ theorem exists_xiShiftedCanonicalAdmissionTerminalChamber (n : ℕ) :
     have := (hW W le_rfl).2
     linarith
   have hvpos : 0 < v := lt_of_le_of_lt (sq_nonneg W) hv
-  have hrsq : r ^ 2 = v := Real.sq_sqrt hvpos.le
+  have hrsq : r ^ (2 : ℕ) = v := Real.sq_sqrt hvpos.le
   have hrnonneg : 0 ≤ r := Real.sqrt_nonneg v
   have hWr : W < r := by
     nlinarith

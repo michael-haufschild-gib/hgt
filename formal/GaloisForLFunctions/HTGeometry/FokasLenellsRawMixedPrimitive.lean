@@ -82,7 +82,7 @@ theorem integral_deriv_mul_rawMixedPrimitive (q f : SchwartzMap ℝ ℂ) :
 
 /-- The nested cubic integral reduces exactly to the local reflected cubic moment. -/
 theorem integral_q_deriv_mul_rawMixedPrimitive (q : SchwartzMap ℝ ℂ) :
-    (∫ x : ℝ, deriv q x*rawMixedPrimitive q x) = -∫ x : ℝ, q x^2*reflectedDerivative q x := by
+    (∫ x : ℝ, deriv q x*rawMixedPrimitive q x) = -∫ x : ℝ, q x^(2 : ℕ)*reflectedDerivative q x := by
   simpa only [pow_two] using integral_deriv_mul_rawMixedPrimitive q q
 
 end

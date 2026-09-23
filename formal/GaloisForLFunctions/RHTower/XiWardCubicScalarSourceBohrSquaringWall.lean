@@ -169,7 +169,7 @@ theorem xiWardCubicScalarEulerBohrEnergy_eq_sum_normSq
     exact (Prod.mk.inj hij).1
 
 /-- **W-H189 scalarization obstruction.**  Exact Bohr dephasing of a scalar primitive Euler
-trace produces `sum (Lambda(n)/n)^2`, rather than the coefficient-linear primitive codiagonal. -/
+trace produces `sum (Lambda(n)/n)^(2 : ℕ)`, rather than the coefficient-linear primitive codiagonal. -/
 theorem bohrMean_xiWardCubicScalarEulerTrace_eq_vonMangoldt_square
     {N : ℕ} (pe : Fin N → Nat.Primes × ℕ)
     (hpe : Function.Injective pe) :
@@ -177,7 +177,7 @@ theorem bohrMean_xiWardCubicScalarEulerTrace_eq_vonMangoldt_square
       star (xiWardCubicScalarEulerTrace pe t)) =
       ∑ i : Fin N,
         ((((ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (pe i)) /
-          xiGammaEulerValuationNat (pe i)) ^ 2 : ℝ)) : ℂ) := by
+          xiGammaEulerValuationNat (pe i)) ^ (2 : ℕ) : ℝ)) : ℂ) := by
   rw [bohrMean_xiWardCubicScalarEulerTrace_mul_star,
     xiWardCubicScalarEulerBohrEnergy_eq_sum_normSq pe hpe]
   apply Finset.sum_congr rfl

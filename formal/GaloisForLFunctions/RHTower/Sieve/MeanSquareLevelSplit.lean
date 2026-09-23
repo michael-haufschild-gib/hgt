@@ -25,18 +25,18 @@ noncomputable section
 /-- **The pointwise level split.** -/
 theorem sq_le_levelSplit {V₀ M x : ℝ} (hV₀ : 0 < V₀) (hx : 0 ≤ x) (hxM : x ≤ M)
     {J : ℕ} (hJ : M ≤ 2 ^ J * V₀) :
-    x ^ 2 ≤ V₀ ^ 2
+    x ^ (2 : ℕ) ≤ V₀ ^ (2 : ℕ)
       + ∑ j ∈ Finset.range J,
-          (2 ^ (j + 1) * V₀) ^ 2 * (if 2 ^ j * V₀ ≤ x then (1 : ℝ) else 0) := by
+          (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * (if 2 ^ j * V₀ ≤ x then (1 : ℝ) else 0) := by
   classical
   have hnn : ∀ j ∈ Finset.range J,
-      (0 : ℝ) ≤ (2 ^ (j + 1) * V₀) ^ 2 * (if 2 ^ j * V₀ ≤ x then (1 : ℝ) else 0) := by
+      (0 : ℝ) ≤ (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * (if 2 ^ j * V₀ ≤ x then (1 : ℝ) else 0) := by
     intro j _
     split_ifs <;> positivity
   by_cases hsmall : x ≤ V₀
-  · have h1 : x ^ 2 ≤ V₀ ^ 2 := by nlinarith [hx, hsmall]
+  · have h1 : x ^ (2 : ℕ) ≤ V₀ ^ (2 : ℕ) := by nlinarith [hx, hsmall]
     have h2 : (0 : ℝ) ≤ ∑ j ∈ Finset.range J,
-        (2 ^ (j + 1) * V₀) ^ 2 * (if 2 ^ j * V₀ ≤ x then (1 : ℝ) else 0) :=
+        (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * (if 2 ^ j * V₀ ≤ x then (1 : ℝ) else 0) :=
       Finset.sum_nonneg hnn
     linarith
   · push Not at hsmall
@@ -62,44 +62,44 @@ theorem sq_le_levelSplit {V₀ M x : ℝ} (hV₀ : 0 < V₀) (hx : 0 ≤ x) (hxM
       rw [show J - 1 + 1 = J from by omega] at hlast
       linarith [hlast, hxM, hJ]
     obtain ⟨j, hj, hlow, hhigh⟩ := hex
-    have hterm : x ^ 2 ≤ (2 ^ (j + 1) * V₀) ^ 2 := by
+    have hterm : x ^ (2 : ℕ) ≤ (2 ^ (j + 1) * V₀) ^ (2 : ℕ) := by
       have h0 : (0 : ℝ) ≤ 2 ^ (j + 1) * V₀ := by positivity
       nlinarith [hx, hhigh, h0]
-    have hpick : (2 ^ (j + 1) * V₀) ^ 2 * (if 2 ^ j * V₀ ≤ x then (1 : ℝ) else 0)
+    have hpick : (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * (if 2 ^ j * V₀ ≤ x then (1 : ℝ) else 0)
         ≤ ∑ i ∈ Finset.range J,
-            (2 ^ (i + 1) * V₀) ^ 2 * (if 2 ^ i * V₀ ≤ x then (1 : ℝ) else 0) :=
+            (2 ^ (i + 1) * V₀) ^ (2 : ℕ) * (if 2 ^ i * V₀ ≤ x then (1 : ℝ) else 0) :=
       Finset.single_le_sum hnn hj
     rw [if_pos hlow, mul_one] at hpick
-    have hV0sq : (0 : ℝ) ≤ V₀ ^ 2 := by positivity
+    have hV0sq : (0 : ℝ) ≤ V₀ ^ (2 : ℕ) := by positivity
     linarith [hterm, hpick, hV0sq]
 
 /-- **The mean square split by level sets.** -/
 theorem integral_sq_le_levelSplit {E : Set ℝ} {f : ℝ → ℝ}
     (hE : MeasurableSet E) (hmeas : Measurable f)
-    (hint : IntegrableOn (fun t => (f t) ^ 2) E)
+    (hint : IntegrableOn (fun t => (f t) ^ (2 : ℕ)) E)
     (hf0 : ∀ t, 0 ≤ f t) {V₀ M : ℝ} (hV₀ : 0 < V₀) (hM : ∀ t, f t ≤ M)
     {J : ℕ} (hJ : M ≤ 2 ^ J * V₀) (hvol : volume E ≠ ⊤) :
-    (∫ t in E, (f t) ^ 2)
-      ≤ V₀ ^ 2 * (volume E).toReal
+    (∫ t in E, (f t) ^ (2 : ℕ))
+      ≤ V₀ ^ (2 : ℕ) * (volume E).toReal
         + ∑ j ∈ Finset.range J,
-            (2 ^ (j + 1) * V₀) ^ 2 * (volume ({t | 2 ^ j * V₀ ≤ f t} ∩ E)).toReal := by
+            (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * (volume ({t | 2 ^ j * V₀ ≤ f t} ∩ E)).toReal := by
   classical
   have hmeasSet : ∀ j : ℕ, MeasurableSet {t : ℝ | 2 ^ j * V₀ ≤ f t} := fun j =>
     measurableSet_le measurable_const hmeas
-  set g : ℝ → ℝ := fun t => V₀ ^ 2
+  set g : ℝ → ℝ := fun t => V₀ ^ (2 : ℕ)
     + ∑ j ∈ Finset.range J,
-        (2 ^ (j + 1) * V₀) ^ 2 * Set.indicator {t | 2 ^ j * V₀ ≤ f t} (1 : ℝ → ℝ) t with hg
+        (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * Set.indicator {t | 2 ^ j * V₀ ≤ f t} (1 : ℝ → ℝ) t with hg
   have hindInt : ∀ j : ℕ,
       IntegrableOn (Set.indicator {t : ℝ | 2 ^ j * V₀ ≤ f t} (1 : ℝ → ℝ)) E := fun j =>
     ((integrableOn_const hvol : IntegrableOn (fun _ : ℝ => (1 : ℝ)) E)).indicator (hmeasSet j)
   have hsumInt : IntegrableOn (fun t => ∑ j ∈ Finset.range J,
-      (2 ^ (j + 1) * V₀) ^ 2
+      (2 ^ (j + 1) * V₀) ^ (2 : ℕ)
         * Set.indicator {t | 2 ^ j * V₀ ≤ f t} (1 : ℝ → ℝ) t) E := by
     refine integrable_finsetSum _ fun j _ => ?_
     exact (hindInt j).const_mul _
-  have hconstInt : IntegrableOn (fun _ : ℝ => V₀ ^ 2) E := integrableOn_const hvol
+  have hconstInt : IntegrableOn (fun _ : ℝ => V₀ ^ (2 : ℕ)) E := integrableOn_const hvol
   have hgint : IntegrableOn g E := hconstInt.add hsumInt
-  have hpt : ∀ t ∈ E, (f t) ^ 2 ≤ g t := by
+  have hpt : ∀ t ∈ E, (f t) ^ (2 : ℕ) ≤ g t := by
     intro t _
     refine le_trans (sq_le_levelSplit (V₀ := V₀) (M := M) (x := f t) hV₀ (hf0 t) (hM t) hJ)
       (le_of_eq ?_)
@@ -109,9 +109,9 @@ theorem integral_sq_le_levelSplit {E : Set ℝ} {f : ℝ → ℝ}
   rw [hg, integral_add hconstInt hsumInt, setIntegral_const, integral_finsetSum _
     (fun j _ => (hindInt j).const_mul _)]
   have hterm : ∀ j : ℕ,
-      (∫ t in E, (2 ^ (j + 1) * V₀) ^ 2
+      (∫ t in E, (2 ^ (j + 1) * V₀) ^ (2 : ℕ)
           * Set.indicator {t | 2 ^ j * V₀ ≤ f t} (1 : ℝ → ℝ) t)
-        = (2 ^ (j + 1) * V₀) ^ 2 * (volume ({t | 2 ^ j * V₀ ≤ f t} ∩ E)).toReal := by
+        = (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * (volume ({t | 2 ^ j * V₀ ≤ f t} ∩ E)).toReal := by
     intro j
     rw [integral_const_mul, integral_indicator_one (hmeasSet j)]
     congr 1
@@ -124,27 +124,27 @@ theorem integral_sq_le_levelSplit {E : Set ℝ} {f : ℝ → ℝ}
 square of the short factor is split against the mean square of the long one. -/
 theorem integral_sq_mul_le_levelSplit {E : Set ℝ} {f g : ℝ → ℝ}
     (hE : MeasurableSet E) (hmeas : Measurable f)
-    (hint : IntegrableOn (fun t => (f t) ^ 2 * g t) E) (hgint : IntegrableOn g E)
+    (hint : IntegrableOn (fun t => (f t) ^ (2 : ℕ) * g t) E) (hgint : IntegrableOn g E)
     (hf0 : ∀ t, 0 ≤ f t) (hg0 : ∀ t, 0 ≤ g t)
     {V₀ M : ℝ} (hV₀ : 0 < V₀) (hM : ∀ t, f t ≤ M) {J : ℕ} (hJ : M ≤ 2 ^ J * V₀) :
-    (∫ t in E, (f t) ^ 2 * g t)
-      ≤ V₀ ^ 2 * (∫ t in E, g t)
+    (∫ t in E, (f t) ^ (2 : ℕ) * g t)
+      ≤ V₀ ^ (2 : ℕ) * (∫ t in E, g t)
         + ∑ j ∈ Finset.range J,
-            (2 ^ (j + 1) * V₀) ^ 2 * (∫ t in E ∩ {t | 2 ^ j * V₀ ≤ f t}, g t) := by
+            (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * (∫ t in E ∩ {t | 2 ^ j * V₀ ≤ f t}, g t) := by
   classical
   have hmeasSet : ∀ j : ℕ, MeasurableSet {t : ℝ | 2 ^ j * V₀ ≤ f t} := fun j =>
     measurableSet_le measurable_const hmeas
   have hindInt : ∀ j : ℕ,
       IntegrableOn (Set.indicator {t : ℝ | 2 ^ j * V₀ ≤ f t} g) E := fun j =>
     hgint.indicator (hmeasSet j)
-  set G : ℝ → ℝ := fun t => V₀ ^ 2 * g t
+  set G : ℝ → ℝ := fun t => V₀ ^ (2 : ℕ) * g t
     + ∑ j ∈ Finset.range J,
-        (2 ^ (j + 1) * V₀) ^ 2 * Set.indicator {t | 2 ^ j * V₀ ≤ f t} g t with hG
+        (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * Set.indicator {t | 2 ^ j * V₀ ≤ f t} g t with hG
   have hsumInt : IntegrableOn (fun t => ∑ j ∈ Finset.range J,
-      (2 ^ (j + 1) * V₀) ^ 2 * Set.indicator {t | 2 ^ j * V₀ ≤ f t} g t) E :=
+      (2 ^ (j + 1) * V₀) ^ (2 : ℕ) * Set.indicator {t | 2 ^ j * V₀ ≤ f t} g t) E :=
     integrable_finsetSum _ fun j _ => (hindInt j).const_mul _
   have hGint : IntegrableOn G E := (hgint.const_mul _).add hsumInt
-  have hpt : ∀ t ∈ E, (f t) ^ 2 * g t ≤ G t := by
+  have hpt : ∀ t ∈ E, (f t) ^ (2 : ℕ) * g t ≤ G t := by
     intro t _
     have hbase := sq_le_levelSplit (V₀ := V₀) (M := M) (x := f t) hV₀ (hf0 t) (hM t) hJ
     have hmul := mul_le_mul_of_nonneg_right hbase (hg0 t)

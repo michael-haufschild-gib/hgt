@@ -54,7 +54,7 @@ theorem ewqPauliScaledX_isHermitian (z : ℝ) :
 theorem ewqPauli_anticommuting_crossing_re (z : ℝ) :
     (Matrix.trace
       (ewqPauliScaledX z * ewqPauliZ * ewqPauliScaledX z * ewqPauliZ)).re =
-      -2 * z ^ 2 := by
+      -2 * z ^ (2 : ℕ) := by
   simp [ewqPauliScaledX, ewqPauliX, ewqPauliZ, Matrix.trace,
     Fin.sum_univ_two]
   ring
@@ -80,7 +80,7 @@ theorem ewqPauliCrossingFamily_isHermitian (z : ℝ) (i : Fin 2) :
 ordered contractions. -/
 theorem ewqPauliCrossingMemory_re (z : ℝ) :
     (GaloisForLFunctions.HTGeometry.matrixFamilyCrossingMemory
-      (ewqPauliCrossingFamily z)).re = 2 * (z ^ 2 - 1) ^ 2 := by
+      (ewqPauliCrossingFamily z)).re = 2 * (z ^ (2 : ℕ) - 1) ^ (2 : ℕ) := by
   simp [GaloisForLFunctions.HTGeometry.matrixFamilyCrossingMemory,
     ewqPauliCrossingFamily, ewqPauliScaledX, ewqPauliX, ewqPauliZ,
     Matrix.trace, Matrix.mul_apply, Fin.sum_univ_two]

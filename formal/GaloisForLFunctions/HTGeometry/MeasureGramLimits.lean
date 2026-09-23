@@ -19,7 +19,7 @@ noncomputable section
 /-- **A vanishing squared norm gives a vanishing norm.**  The square-root step of the off-diagonal
 argument. -/
 theorem tendsto_norm_of_tendsto_sq {α E : Type*} [NormedAddCommGroup E]
-    {l : Filter α} {f : α → E} (h : Tendsto (fun i => ‖f i‖ ^ 2) l (𝓝 0)) :
+    {l : Filter α} {f : α → E} (h : Tendsto (fun i => ‖f i‖ ^ (2 : ℕ)) l (𝓝 0)) :
     Tendsto (fun i => ‖f i‖) l (𝓝 0) := by
   have hsqrt := (Real.continuous_sqrt.tendsto (0 : ℝ)).comp h
   rw [Real.sqrt_zero] at hsqrt
@@ -54,7 +54,7 @@ theorem tendsto_measureGram_diagonal {d : ℕ} (ν : Measure ℝ) (a : Fin d →
 of the two diagonal integrals, and the square-root step finishes. -/
 theorem tendsto_measureGram_offdiag {d : ℕ} (ν : Measure ℝ) (a : Fin d → ℝ) (l m : Fin d)
     (hbound : ∀ᶠ y : ℝ in 𝓝[≠] (0 : ℝ),
-      ‖measureGram ν a y l m‖ ^ 2 ≤
+      ‖measureGram ν a y l m‖ ^ (2 : ℕ) ≤
         (∫ t, atomKernel (a l) y t ∂ν) * (∫ t, atomKernel (a m) y t ∂ν))
     (hl : Tendsto (fun y : ℝ => ∫ t, atomKernel (a l) y t ∂ν) (𝓝[≠] 0) (𝓝 0))
     (hm : Tendsto (fun y : ℝ => ∫ t, atomKernel (a m) y t ∂ν) (𝓝[≠] 0) (𝓝 0)) :
@@ -62,7 +62,7 @@ theorem tendsto_measureGram_offdiag {d : ℕ} (ν : Measure ℝ) (a : Fin d → 
   have hprod : Tendsto (fun y : ℝ =>
       (∫ t, atomKernel (a l) y t ∂ν) * (∫ t, atomKernel (a m) y t ∂ν)) (𝓝[≠] 0) (𝓝 0) := by
     simpa using hl.mul hm
-  have hsq : Tendsto (fun y : ℝ => ‖measureGram ν a y l m‖ ^ 2) (𝓝[≠] 0) (𝓝 0) := by
+  have hsq : Tendsto (fun y : ℝ => ‖measureGram ν a y l m‖ ^ (2 : ℕ)) (𝓝[≠] 0) (𝓝 0) := by
     refine squeeze_zero' ?_ hbound hprod
     filter_upwards with y
     positivity

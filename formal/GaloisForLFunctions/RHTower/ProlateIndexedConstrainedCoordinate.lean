@@ -27,13 +27,13 @@ open _root_.RHTower
 /-- **The coordinate limit in the constrained-prolate normalization.** -/
 theorem tendsto_indexedRung_constrainedCoordinate (j : ℕ) :
     Tendsto (fun a : ProlatePositiveAperture => Real.sqrt (indexedOscillatorBandwidth a) *
-        ((∫ u in (-1 : ℝ)..1, (signedModeRadialData (a : ℝ) (2 * j)).R u) ^ 2
-          / ∫ u in (-1 : ℝ)..1, ((signedModeRadialData (a : ℝ) (2 * j)).R u) ^ 2))
-      atTop (𝓝 (Real.sqrt (2 * Real.pi) * constrainedProlateHermiteCoordinate j ^ 2)) := by
+        ((∫ u in (-1 : ℝ)..1, (signedModeRadialData (a : ℝ) (2 * j)).R u) ^ (2 : ℕ)
+          / ∫ u in (-1 : ℝ)..1, ((signedModeRadialData (a : ℝ) (2 * j)).R u) ^ (2 : ℕ)))
+      atTop (𝓝 (Real.sqrt (2 * Real.pi) * constrainedProlateHermiteCoordinate j ^ (2 : ℕ))) := by
   have hbase := tendsto_indexedRung_coordinateLimit (2 * j)
   have hidx : 2 * (2 * j) = 4 * j := by ring
-  have hval : (∫ x, hermiteFun (2 * (2 * j)) x) ^ 2 / ∫ x, hermiteFun (2 * (2 * j)) x ^ 2
-      = Real.sqrt (2 * Real.pi) * constrainedProlateHermiteCoordinate j ^ 2 := by
+  have hval : (∫ x, hermiteFun (2 * (2 * j)) x) ^ (2 : ℕ) / ∫ x, hermiteFun (2 * (2 * j)) x ^ (2 : ℕ)
+      = Real.sqrt (2 * Real.pi) * constrainedProlateHermiteCoordinate j ^ (2 : ℕ) := by
     rw [hidx]
     exact hermiteShapeRatio_four_mul_eq_coordinate_sq j
   rwa [hval] at hbase

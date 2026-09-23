@@ -55,7 +55,7 @@ def spectralEntries (f g h : SchwartzMap ℝ ℂ) (z : ℂ) :
   let V := g.toBoundedContinuousFunction
   let W := h.toBoundedContinuousFunction
   !![BoundedContinuousFunction.const ℝ (I*z) + (I/2) • (U*V), (-I/2) • V;
-    W + (I/2) • (U^2*V), BoundedContinuousFunction.const ℝ (-I*z) + (-I/2) • (U*V)]
+    W + (I/2) • (U^(2 : ℕ)*V), BoundedContinuousFunction.const ℝ (-I*z) + (-I/2) • (U*V)]
 
 theorem spectralEntries_apply (f g h : SchwartzMap ℝ ℂ) (z : ℂ) (x : ℝ) :
     (spectralEntries f g h z).map (fun e => e x) =

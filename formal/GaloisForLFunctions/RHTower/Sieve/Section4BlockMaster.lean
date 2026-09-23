@@ -29,41 +29,41 @@ theorem section4_block_master {B Q : Finset ℕ} {B₁ : ℕ} {RQ ηQ W w₀ VP 
       ‖primeBlockPoly (geomBlock Q RQ (1 + ηQ) k) w‖ ≤ Vk k)
     (hIdisc : ∀ k ∈ Finset.range LQ,
       (∫ w in Set.Icc (-w₀) w₀,
-          ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₁ RQ ηQ k) w‖ ^ 2) ≤ Idisc k)
+          ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₁ RQ ηQ k) w‖ ^ (2 : ℕ)) ≤ Idisc k)
     (hIann : ∀ k ∈ Finset.range LQ,
       (∫ w in shortExceptionalOn (windowAnnulus w₀ W) B VP,
-          ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₁ RQ ηQ k) w‖ ^ 2) ≤ Iann k)
+          ‖logPoly moebiusCoeff (geomCofactorBlockAt 1 B₁ RQ ηQ k) w‖ ^ (2 : ℕ)) ≤ Iann k)
     (hDdisc : (∫ w in Set.Icc (-w₀) w₀,
-        ‖ladderProductDefect Q 1 B₁ RQ ηQ LQ w‖ ^ 2) ≤ Dfct)
+        ‖ladderProductDefect Q 1 B₁ RQ ηQ LQ w‖ ^ (2 : ℕ)) ≤ Dfct)
     (hDann : (∫ w in shortExceptionalOn (windowAnnulus w₀ W) B VP,
-        ‖ladderProductDefect Q 1 B₁ RQ ηQ LQ w‖ ^ 2) ≤ Dfct)
+        ‖ladderProductDefect Q 1 B₁ RQ ηQ LQ w‖ ^ (2 : ℕ)) ≤ Dfct)
     (hnonexc : (∫ w in windowAnnulus w₀ W,
-        ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ 2) ≤ Enonexc) :
+        ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ (2 : ℕ)) ≤ Enonexc) :
     (∫ w in Set.Icc (-W) W,
-        ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ 2)
-      ≤ (B.card : ℝ) ^ 2
+        ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ (2 : ℕ))
+      ≤ (B.card : ℝ) ^ (2 : ℕ)
           * (2 * ((∑ k ∈ Finset.range LQ, 1 / v k)
                 * ∑ k ∈ Finset.range LQ, v k
-                    * (((geomBlock Q RQ (1 + ηQ) k).card : ℝ) ^ 2 * Idisc k))
+                    * (((geomBlock Q RQ (1 + ηQ) k).card : ℝ) ^ (2 : ℕ) * Idisc k))
             + 2 * Dfct)
-        + (VP ^ 2 * Enonexc
-          + (B.card : ℝ) ^ 2
+        + (VP ^ (2 : ℕ) * Enonexc
+          + (B.card : ℝ) ^ (2 : ℕ)
               * (2 * ((∑ k ∈ Finset.range LQ, 1 / v k)
-                    * ∑ k ∈ Finset.range LQ, v k * (Vk k ^ 2 * Iann k))
+                    * ∑ k ∈ Finset.range LQ, v k * (Vk k ^ (2 : ℕ) * Iann k))
                 + 2 * Dfct)) := by
   classical
   -- the disc
   have hdisc := section4_block_disc (B := B) (Q := Q) (A₁ := 1) (B₁ := B₁) (W := W)
     hRQ hηQ hLQ hwW hQprime hQrange v hv Idisc hIdisc
   have hdisc' : (∫ w in Set.Icc (-w₀) w₀,
-      ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ 2)
-      ≤ (B.card : ℝ) ^ 2
+      ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ (2 : ℕ))
+      ≤ (B.card : ℝ) ^ (2 : ℕ)
           * (2 * ((∑ k ∈ Finset.range LQ, 1 / v k)
                 * ∑ k ∈ Finset.range LQ, v k
-                    * (((geomBlock Q RQ (1 + ηQ) k).card : ℝ) ^ 2 * Idisc k))
+                    * (((geomBlock Q RQ (1 + ηQ) k).card : ℝ) ^ (2 : ℕ) * Idisc k))
             + 2 * Dfct) := by
     refine hdisc.trans ?_
-    have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ 2 := sq_nonneg _
+    have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ (2 : ℕ) := sq_nonneg _
     have := mul_le_mul_of_nonneg_left hDdisc (by norm_num : (0 : ℝ) ≤ 2)
     exact mul_le_mul_of_nonneg_left (by linarith) hB2
   -- the annulus
@@ -71,25 +71,25 @@ theorem section4_block_master {B Q : Finset ℕ} {B₁ : ℕ} {RQ ηQ W w₀ VP 
     (VP := VP) hRQ hηQ hLQ hQprime hQrange v hv Vk Iann
     (measurableSet_windowAnnulus w₀ W) (windowAnnulus_subset w₀ W) hVk hIann
   have hann' : (∫ w in windowAnnulus w₀ W,
-      ‖primeBlockPoly B w‖ ^ 2 * ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ 2)
-      ≤ VP ^ 2 * Enonexc
-        + (B.card : ℝ) ^ 2
+      ‖primeBlockPoly B w‖ ^ (2 : ℕ) * ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ (2 : ℕ))
+      ≤ VP ^ (2 : ℕ) * Enonexc
+        + (B.card : ℝ) ^ (2 : ℕ)
             * (2 * ((∑ k ∈ Finset.range LQ, 1 / v k)
-                  * ∑ k ∈ Finset.range LQ, v k * (Vk k ^ 2 * Iann k))
+                  * ∑ k ∈ Finset.range LQ, v k * (Vk k ^ (2 : ℕ) * Iann k))
               + 2 * Dfct) := by
     refine hann.trans ?_
-    have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ 2 := sq_nonneg _
-    have h1 : VP ^ 2 * (∫ w in windowAnnulus w₀ W,
-        ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ 2) ≤ VP ^ 2 * Enonexc :=
+    have hB2 : (0 : ℝ) ≤ (B.card : ℝ) ^ (2 : ℕ) := sq_nonneg _
+    have h1 : VP ^ (2 : ℕ) * (∫ w in windowAnnulus w₀ W,
+        ‖omegaWeightedMoebiusPoly Q (Finset.Icc 1 B₁) w‖ ^ (2 : ℕ)) ≤ VP ^ (2 : ℕ) * Enonexc :=
       mul_le_mul_of_nonneg_left hnonexc (sq_nonneg _)
     have h2 := mul_le_mul_of_nonneg_left
       (by linarith [mul_le_mul_of_nonneg_left hDann (by norm_num : (0 : ℝ) ≤ 2)] :
         2 * ((∑ k ∈ Finset.range LQ, 1 / v k)
-              * ∑ k ∈ Finset.range LQ, v k * (Vk k ^ 2 * Iann k))
+              * ∑ k ∈ Finset.range LQ, v k * (Vk k ^ (2 : ℕ) * Iann k))
             + 2 * ∫ w in shortExceptionalOn (windowAnnulus w₀ W) B VP,
-                ‖ladderProductDefect Q 1 B₁ RQ ηQ LQ w‖ ^ 2
+                ‖ladderProductDefect Q 1 B₁ RQ ηQ LQ w‖ ^ (2 : ℕ)
           ≤ 2 * ((∑ k ∈ Finset.range LQ, 1 / v k)
-                * ∑ k ∈ Finset.range LQ, v k * (Vk k ^ 2 * Iann k))
+                * ∑ k ∈ Finset.range LQ, v k * (Vk k ^ (2 : ℕ) * Iann k))
               + 2 * Dfct) hB2
     linarith [h1, h2]
   exact section4_block_disc_ann hwW hdisc' hann'

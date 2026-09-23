@@ -28,7 +28,7 @@ private theorem bernoulli_abs_eq (x : ℝ) :
     |RHTower.bernoulliPeriodic x|=Int.fract x*(1-Int.fract x)/2 := by
   have h0 := Int.fract_nonneg x
   have h1 := Int.fract_lt_one x
-  rw [RHTower.bernoulliPeriodic,abs_of_nonpos (by nlinarith : (Int.fract x^2-Int.fract x)/2≤0)]
+  rw [RHTower.bernoulliPeriodic,abs_of_nonpos (by nlinarith : (Int.fract x^(2 : ℕ)-Int.fract x)/2≤0)]
   ring
 
 /-- The periodic quadratic has Lipschitz constant one half, including across integer joins. -/
@@ -68,12 +68,12 @@ theorem bernoulliPeriodic_hasDerivWithinAt_right (x : ℝ) :
     HasDerivWithinAt RHTower.bernoulliPeriodic (Int.fract x-1/2) (Ici x) x := by
   have hf := tendsto_pure.mp (tendsto_floor_right_pure_floor x)
   have he : RHTower.bernoulliPeriodic =ᶠ[𝓝[≥] x]
-      (fun y : ℝ => ((y-(Int.floor x:ℝ))^2-(y-(Int.floor x:ℝ)))/2) := by
+      (fun y : ℝ => ((y-(Int.floor x:ℝ))^(2 : ℕ)-(y-(Int.floor x:ℝ)))/2) := by
     filter_upwards [hf] with y hy
     simp only [RHTower.bernoulliPeriodic,Int.fract,hy]
   have hi := (hasDerivAt_id x).sub_const (Int.floor x:ℝ)
   have hd : HasDerivAt
-      (fun y : ℝ => ((y-(Int.floor x:ℝ))^2-(y-(Int.floor x:ℝ)))/2)
+      (fun y : ℝ => ((y-(Int.floor x:ℝ))^(2 : ℕ)-(y-(Int.floor x:ℝ)))/2)
       (Int.fract x-1/2) x := by
     convert! ((hi.pow 2).sub hi).div_const 2 using 1
     simp only [Int.fract]
@@ -91,18 +91,18 @@ theorem expArithmeticClock_zero (v : ℝ) : expArithmeticClock 0 v=v := by
 
 /-- The exact clock derivative at zero acceleration is the quadratic displacement. -/
 theorem expArithmeticClock_hasDerivAt_zero (v : ℝ) :
-    HasDerivAt (fun h => expArithmeticClock h v) (v^2/2) 0 := by
+    HasDerivAt (fun h => expArithmeticClock h v) (v^(2 : ℕ)/2) 0 := by
   by_cases hv : v=0
   · subst v
     simpa [expArithmeticClock] using hasDerivAt_const (0:ℝ) (0:ℝ)
   have ho := (Real.exp_sub_sum_range_succ_isLittleO_pow 2).tendsto_div_nhds_zero
-  have ho' : Tendsto (fun z : ℝ => (Real.exp z-(1+z+z^2/2))/z^2) (𝓝 0) (𝓝 0) := by
+  have ho' : Tendsto (fun z : ℝ => (Real.exp z-(1+z+z^(2 : ℕ)/2))/z^(2 : ℕ)) (𝓝 0) (𝓝 0) := by
     simpa [Finset.sum_range_succ,Nat.factorial] using ho
   have hm : Tendsto (fun h : ℝ => h*v) (𝓝 0) (𝓝 0) := by
     simpa using (show Tendsto (fun h : ℝ => h) (𝓝 0) (𝓝 0) from tendsto_id).mul_const v
-  have ht := ((ho'.comp hm).mono_left (show 𝓝[≠] (0:ℝ) ≤ 𝓝 0 from nhdsWithin_le_nhds)).const_mul (v^2)
-  have ht' : Tendsto (fun h : ℝ => v^2/2+v^2*((Real.exp (h*v)-(1+h*v+(h*v)^2/2))/(h*v)^2))
-      (𝓝[≠] 0) (𝓝 (v^2/2)) := by
+  have ht := ((ho'.comp hm).mono_left (show 𝓝[≠] (0:ℝ) ≤ 𝓝 0 from nhdsWithin_le_nhds)).const_mul (v^(2 : ℕ))
+  have ht' : Tendsto (fun h : ℝ => v^(2 : ℕ)/2+v^(2 : ℕ)*((Real.exp (h*v)-(1+h*v+(h*v)^(2 : ℕ)/2))/(h*v)^(2 : ℕ)))
+      (𝓝[≠] 0) (𝓝 (v^(2 : ℕ)/2)) := by
     simpa using tendsto_const_nhds.add ht
   apply hasDerivAt_iff_tendsto_slope.mpr
   apply ht'.congr'
@@ -123,7 +123,7 @@ theorem expArithmeticClock_ge {h : ℝ} (hh : 0 < h) (v : ℝ) :
 /-- A symbolic local displacement bound for the exponential clock. -/
 theorem expArithmeticClock_displacement_le {h v : ℝ} (hh : 0 < h)
     (hv : 0 ≤ v) (hsmall : h*v ≤ 1) :
-    |expArithmeticClock h v-v| ≤ h*v^2 := by
+    |expArithmeticClock h v-v| ≤ h*v^(2 : ℕ) := by
   have he : expArithmeticClock h v-v=(Real.exp (h*v)-1-h*v)/h := by
     rw [expArithmeticClock,if_neg hh.ne']
     field_simp
@@ -140,7 +140,7 @@ def clockVariationIntegrand (sigma lam h v : ℝ) : ℝ :=
 
 /-- The exact right derivative of the clock integrand at zero acceleration. -/
 def clockVariationDensity (sigma lam v : ℝ) : ℝ :=
-  ((v^2/2)*(Int.fract v-1/2)-(sigma+1)*v*RHTower.bernoulliPeriodic v)*Real.sin (lam*v)
+  ((v^(2 : ℕ)/2)*(Int.fract v-1/2)-(sigma+1)*v*RHTower.bernoulliPeriodic v)*Real.sin (lam*v)
 
 /-- The right derivative of the literal integrand exists even at arithmetic slope jumps. -/
 theorem clockVariationIntegrand_hasDerivWithinAt_zero (sigma lam v : ℝ) :
@@ -178,7 +178,7 @@ theorem tendsto_clockVariationIntegrand_quotient (sigma lam v : ℝ) :
 theorem clockVariation_quotient_bound {sigma h v : ℝ} (hsigma : -1 ≤ sigma)
     (hh : 0 < h) (hv : 0 ≤ v) (hsmall : h*v ≤ 1) (lam : ℝ) :
     |(clockVariationIntegrand sigma lam h v-
-      RHTower.bernoulliPeriodic v*Real.sin (lam*v))/h| ≤ v^2/2+(sigma+1)*v := by
+      RHTower.bernoulliPeriodic v*Real.sin (lam*v))/h| ≤ v^(2 : ℕ)/2+(sigma+1)*v := by
   have ha : 0 ≤ sigma+1 := by linarith
   have hw : Real.exp (-(sigma+1)*v*h) ≤ 1 := by
     apply Real.exp_le_one_iff.mpr
@@ -187,7 +187,7 @@ theorem clockVariation_quotient_bound {sigma h v : ℝ} (hsigma : -1 ≤ sigma)
     rw [abs_of_nonpos (sub_nonpos.mpr hw)]
     linarith [Real.add_one_le_exp (-(sigma+1)*v*h)]
   have hb : |RHTower.bernoulliPeriodic (expArithmeticClock h v)-
-      RHTower.bernoulliPeriodic v| ≤ h*v^2/2 := by
+      RHTower.bernoulliPeriodic v| ≤ h*v^(2 : ℕ)/2 := by
     have hl := bernoulliPeriodic_lipschitz_bound (expArithmeticClock h v) v
     have hq := expArithmeticClock_displacement_le hh hv hsmall
     linarith
@@ -210,15 +210,15 @@ theorem clockVariation_quotient_bound {sigma h v : ℝ} (hsigma : -1 ≤ sigma)
   calc _ ≤ (|RHTower.bernoulliPeriodic (expArithmeticClock h v)-RHTower.bernoulliPeriodic v| *
       Real.exp (-(sigma+1)*v*h)+|RHTower.bernoulliPeriodic v| * |Real.exp (-(sigma+1)*v*h)-1|)*1 :=
         mul_le_mul habs (Real.abs_sin_le_one _) (abs_nonneg _) (by positivity)
-    _ ≤ (h*v^2/2)*1+1*((sigma+1)*v*h) := by
+    _ ≤ (h*v^(2 : ℕ)/2)*1+1*((sigma+1)*v*h) := by
       rw [mul_one]
       gcongr
       exact RHTower.abs_bernoulliPeriodic_le_one v
-    _ = (v^2/2+(sigma+1)*v)*h := by ring
+    _ = (v^(2 : ℕ)/2+(sigma+1)*v)*h := by ring
 
 
 private theorem deformation_bernoulli_continuous : Continuous RHTower.bernoulliPeriodic :=
-  (show Continuous (fun x : ℝ => (x^2-x)/2) by fun_prop).continuousOn.comp_fract'' (by norm_num)
+  (show Continuous (fun x : ℝ => (x^(2 : ℕ)-x)/2) by fun_prop).continuousOn.comp_fract'' (by norm_num)
 
 private theorem clockVariationIntegrand_continuous (sigma lam h : ℝ) :
     Continuous (clockVariationIntegrand sigma lam h) := by
@@ -251,7 +251,7 @@ theorem tendsto_clockVariationPrefix_quotient {sigma A : ℝ} (hsigma : -1 ≤ s
     (a:=0) (b:=A) (μ:=volume) (l:=𝓝[>] (0:ℝ))
     (F:=fun h v => (clockVariationIntegrand sigma lam h v-
       RHTower.bernoulliPeriodic v*Real.sin (lam*v))/h)
-    (f:=clockVariationDensity sigma lam) (bound:=fun v => v^2/2+(sigma+1)*v)
+    (f:=clockVariationDensity sigma lam) (bound:=fun v => v^(2 : ℕ)/2+(sigma+1)*v)
   have hc0 : Continuous (fun v : ℝ => RHTower.bernoulliPeriodic v*Real.sin (lam*v)) :=
     deformation_bernoulli_continuous.mul (by fun_prop)
   have hm : ∀ᶠ h in 𝓝[>] (0:ℝ), AEStronglyMeasurable
@@ -266,7 +266,7 @@ theorem tendsto_clockVariationPrefix_quotient {sigma A : ℝ} (hsigma : -1 ≤ s
     exact (ht.eventually (eventually_lt_nhds (by norm_num : (0:ℝ)<1))).mono (fun _ hh => hh.le)
   have hb : ∀ᶠ h in 𝓝[>] (0:ℝ), ∀ᵐ v : ℝ ∂volume, v ∈ uIoc 0 A →
       ‖(clockVariationIntegrand sigma lam h v-
-        RHTower.bernoulliPeriodic v*Real.sin (lam*v))/h‖ ≤ v^2/2+(sigma+1)*v := by
+        RHTower.bernoulliPeriodic v*Real.sin (lam*v))/h‖ ≤ v^(2 : ℕ)/2+(sigma+1)*v := by
     filter_upwards [self_mem_nhdsWithin,hsmall] with h hh hsmall'
     filter_upwards with v hv
     rw [uIoc_of_le hA] at hv
@@ -279,7 +279,7 @@ theorem tendsto_clockVariationPrefix_quotient {sigma A : ℝ} (hsigma : -1 ≤ s
         (𝓝 (clockVariationDensity sigma lam v)) := by
     filter_upwards with v _
     exact tendsto_clockVariationIntegrand_quotient sigma lam v
-  have hlim := h hm hb ((show Continuous (fun v : ℝ => v^2/2+(sigma+1)*v) by fun_prop).intervalIntegrable 0 A) hl
+  have hlim := h hm hb ((show Continuous (fun v : ℝ => v^(2 : ℕ)/2+(sigma+1)*v) by fun_prop).intervalIntegrable 0 A) hl
   apply hlim.congr'
   filter_upwards with h
   rw [intervalIntegral.integral_div,intervalIntegral.integral_sub
@@ -300,16 +300,16 @@ private theorem slope_intervalIntegrable (a b : ℝ) :
 theorem integral_clockVariationDensity (sigma lam : ℝ) (m : ℕ) :
     (∫ v in (0:ℝ)..(m:ℝ), clockVariationDensity sigma lam v)=
       resonantClockMomentCoefficient sigma lam m := by
-  let T : ℝ → ℝ := fun v => (v^2/2)*(Int.fract v-1/2)*Real.sin (lam*v)
+  let T : ℝ → ℝ := fun v => (v^(2 : ℕ)/2)*(Int.fract v-1/2)*Real.sin (lam*v)
   let U : ℝ → ℝ := fun v => v*RHTower.bernoulliPeriodic v*Real.sin (lam*v)
-  let V : ℝ → ℝ := fun v => v^2*RHTower.bernoulliPeriodic v*Real.cos (lam*v)
+  let V : ℝ → ℝ := fun v => v^(2 : ℕ)*RHTower.bernoulliPeriodic v*Real.cos (lam*v)
   have hT : IntervalIntegrable T volume 0 (m:ℝ) :=
     ((slope_intervalIntegrable 0 m).continuousOn_mul (by fun_prop)).mul_continuousOn (by fun_prop)
   have hU : IntervalIntegrable U volume 0 (m:ℝ) :=
     ((continuous_id.mul deformation_bernoulli_continuous).mul (by fun_prop)).intervalIntegrable 0 m
   have hV : IntervalIntegrable V volume 0 (m:ℝ) :=
     (((continuous_id.pow 2).mul deformation_bernoulli_continuous).mul (by fun_prop)).intervalIntegrable 0 m
-  let g : ℝ → ℝ := fun v => (v^2/2)*RHTower.bernoulliPeriodic v*Real.sin (lam*v)
+  let g : ℝ → ℝ := fun v => (v^(2 : ℕ)/2)*RHTower.bernoulliPeriodic v*Real.sin (lam*v)
   have hgcont : Continuous g :=
     (((continuous_id.pow 2).div_const 2).mul deformation_bernoulli_continuous).mul (by fun_prop)
   have hgd (v : ℝ) : HasDerivWithinAt g (T v+U v+(lam/2)*V v) (Ioi v) v := by

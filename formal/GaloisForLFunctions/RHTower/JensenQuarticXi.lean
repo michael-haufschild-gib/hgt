@@ -36,7 +36,7 @@ theorem xiJensenCoeff_pos (k : ℕ) : 0 < xiJensenCoeff k := by
 /-- The `k`-th theta dispersion `m(k) m(k+2)/m(k+1)² − 1`. -/
 def thetaDispersion (k : ℕ) : ℝ :=
   thetaCuspRawEvenMoment k * thetaCuspRawEvenMoment (k + 2) /
-    thetaCuspRawEvenMoment (k + 1) ^ 2 - 1
+    thetaCuspRawEvenMoment (k + 1) ^ (2 : ℕ) - 1
 
 /-- Dispersions are nonnegative: the even moments are log-convex. -/
 theorem thetaDispersion_nonneg (k : ℕ) : 0 ≤ thetaDispersion k := by
@@ -124,7 +124,7 @@ theorem hyperbolic_jensenPoly_xi_four (n : ℕ) (hn : 2000 ≤ (n : ℝ) + 1 / 2
     (hε₁ : |thetaDispersion n - thetaDispersion (n + 1)| *
       (((n : ℝ) + 1 / 2) * Real.sqrt ((n : ℝ) + 1 / 2)) ≤ 1 / 8)
     (hε₂ : |thetaDispersion n - 2 * thetaDispersion (n + 1) + thetaDispersion (n + 2)| *
-      ((n : ℝ) + 1 / 2) ^ 2 ≤ 1 / 5) :
+      ((n : ℝ) + 1 / 2) ^ (2 : ℕ) ≤ 1 / 5) :
     Hyperbolic (jensenPoly xiJensenCoeff 4 n) := by
   obtain ⟨hspos, hs_lt, hA, hB, hC, hD, hE⟩ :=
     quartic_signs hn (thetaDispersion_nonneg n) (thetaDispersion_nonneg (n + 1))

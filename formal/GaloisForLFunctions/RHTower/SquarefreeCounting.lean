@@ -19,10 +19,10 @@ noncomputable section
 `[1, n]`.  `GaloisForLFunctions.HTGeometry.sum_moebius_sq_dvd` is the same identity indexed by
 `n.divisors`. -/
 theorem sum_moebius_sq_dvd_Icc {n : ℕ} (hn : 1 ≤ n) :
-    ∑ d ∈ (Finset.Icc 1 n).filter (fun d => d * d ∣ n), (μ d : ℤ) = (μ n : ℤ) ^ 2 := by
+    ∑ d ∈ (Finset.Icc 1 n).filter (fun d => d * d ∣ n), (μ d : ℤ) = (μ n : ℤ) ^ (2 : ℕ) := by
   have hn0 : n ≠ 0 := by omega
   have hconv : (sqrtPart (μ : ArithmeticFunction ℤ) * (ζ : ArithmeticFunction ℤ)) n
-      = (μ n : ℤ) ^ 2 := by
+      = (μ n : ℤ) ^ (2 : ℕ) := by
     rw [sqrtPart_moebius_mul_zeta, pmul_apply]
     ring
   rw [← hconv, coe_mul_zeta_apply]
@@ -40,7 +40,7 @@ theorem sum_moebius_sq_dvd_Icc {n : ℕ} (hn : 1 ≤ n) :
     simp only [Finset.mem_filter, Finset.mem_Icc] at hd
     simp only [Finset.mem_filter, Nat.mem_divisors]
     refine ⟨⟨hd.2, hn0⟩, ?_⟩
-    rw [show d * d = d ^ 2 by ring, Nat.sqrt_eq']
+    rw [show d * d = d ^ (2 : ℕ) by ring, Nat.sqrt_eq']
     ring
   · intro e he
     simp only [Finset.mem_filter, Nat.mem_divisors] at he
@@ -63,20 +63,20 @@ theorem sum_moebius_sq_dvd_Icc {n : ℕ} (hn : 1 ≤ n) :
     · rw [he.2]
       exact hediv
   · intro d hd
-    rw [show d * d = d ^ 2 by ring]
+    rw [show d * d = d ^ (2 : ℕ) by ring]
     exact Nat.sqrt_eq' d
   · intro e he
     simp only [Finset.mem_filter] at he
     exact he.2
   · intro d hd
-    rw [show d * d = d ^ 2 by ring, sqrtPart_apply_sq]
+    rw [show d * d = d ^ (2 : ℕ) by ring, sqrtPart_apply_sq]
 
 /-- **The squarefree counting identity.**  `Σ_{n ≤ N} μ(n)² = Σ_{d ≤ N} μ(d) ⌊N/d²⌋`. -/
 theorem sum_moebius_sq_Icc (N : ℕ) :
-    ∑ n ∈ Finset.Icc 1 N, (μ n : ℤ) ^ 2
+    ∑ n ∈ Finset.Icc 1 N, (μ n : ℤ) ^ (2 : ℕ)
       = ∑ d ∈ Finset.Icc 1 N, (μ d : ℤ) * ((N / (d * d) : ℕ) : ℤ) := by
   classical
-  have hstep : ∀ n ∈ Finset.Icc 1 N, (μ n : ℤ) ^ 2
+  have hstep : ∀ n ∈ Finset.Icc 1 N, (μ n : ℤ) ^ (2 : ℕ)
       = ∑ d ∈ Finset.Icc 1 N, (if d * d ∣ n then (μ d : ℤ) else 0) := by
     intro n hn
     rw [Finset.mem_Icc] at hn

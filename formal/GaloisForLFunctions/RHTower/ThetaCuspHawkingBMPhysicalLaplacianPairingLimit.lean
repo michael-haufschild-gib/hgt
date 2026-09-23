@@ -37,11 +37,11 @@ theorem physicalCoreCutoff_laplacian_inner_tendsto (q : XiZeroCopy) (h : RadialS
     (hu : MemLp (fun p : ℝ × UpperHalfPlane => (p.2.im:ℂ)*u p)
       2 (radialMeasure.prod D4BMModularCore.measure)) :
     Tendsto (fun n : ℕ => inner ℂ (l2SeparatedProduct h (fieldVector (physicalCoreCutoff q n).laplacian)) u)
-      atTop (𝓝 ((physicalAngularParameter q^2-1/4)*inner ℂ h (physicalJointProjection q (hu.toLp _)))) := by
+      atTop (𝓝 ((physicalAngularParameter q^(2 : ℕ)-1/4)*inner ℂ h (physicalJointProjection q (hu.toLp _)))) := by
   rw [physicalJointProjection_height_integral q h u hu,← integral_const_mul]
   simp_rw [physicalCoreCutoff_laplacian_inner]
   obtain ⟨C,hC,hb⟩ := physicalCoreCutoff_laplacian_bound
-  let L := physicalAngularParameter q^2-1/4
+  let L := physicalAngularParameter q^(2 : ℕ)-1/4
   let P : ℝ × UpperHalfPlane → ℂ := fun p =>
     conj (h p.1)*scalar (physicalAngularParameter q) (coordinates p.2)*u p
   let Q : ℝ × UpperHalfPlane → ℂ := fun p =>

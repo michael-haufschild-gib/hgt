@@ -31,9 +31,9 @@ namespace P256DomainParameters
 def bitSize : Nat := 256
 
 /-- P-256 prime modulus
-`2^256 - 2^224 + 2^192 + 2^96 - 1`. -/
+`2^(256 : ℕ) - 2^(224 : ℕ) + 2^(192 : ℕ) + 2^(96 : ℕ) - 1`. -/
 def primeModulus : Nat :=
-  2 ^ 256 - 2 ^ 224 + 2 ^ 192 + 2 ^ 96 - 1
+  2 ^ (256 : ℕ) - 2 ^ (224 : ℕ) + 2 ^ (192 : ℕ) + 2 ^ (96 : ℕ) - 1
 
 /-- P-256 subgroup order. -/
 def subgroupOrder : Nat :=
@@ -81,8 +81,8 @@ structure CurveCertificate where
   three_lt : 3 < primeModulus
   /-- The standard P-256 short-Weierstrass equation is nonsingular. -/
   nonsingular :
-    (4 : ZMod primeModulus) * coefficientA ^ 3 +
-        (27 : ZMod primeModulus) * coefficientB ^ 2 ≠ 0
+    (4 : ZMod primeModulus) * coefficientA ^ (3 : ℕ) +
+        (27 : ZMod primeModulus) * coefficientB ^ (2 : ℕ) ≠ 0
 
 /-- The standard P-256 short-Weierstrass curve built from a certificate. -/
 def curve (cert : CurveCertificate) :
@@ -98,8 +98,8 @@ standard P-256 curve. -/
 structure BasePointCertificate where
   /-- The standard base point satisfies the P-256 affine equation. -/
   equation :
-    basePointY ^ 2 =
-      basePointX ^ 3 + coefficientA * basePointX + coefficientB
+    basePointY ^ (2 : ℕ) =
+      basePointX ^ (3 : ℕ) + coefficientA * basePointX + coefficientB
 
 /-- The standard P-256 base point as a finite affine curve point. -/
 def basePoint (cert : CurveCertificate) (baseCert : BasePointCertificate) :

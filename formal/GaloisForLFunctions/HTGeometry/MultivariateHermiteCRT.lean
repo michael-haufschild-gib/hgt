@@ -69,7 +69,7 @@ theorem mem_idealOfVars_iff_eval_zero_eq_zero
     P ∈ MvPolynomial.idealOfVars σ K ↔
       MvPolynomial.eval (fun _ => 0) P = 0 := by
   rw [show MvPolynomial.idealOfVars σ K =
-      MvPolynomial.idealOfVars σ K ^ 1 by simp,
+      MvPolynomial.idealOfVars σ K ^ (1 : ℕ) by simp,
     MvPolynomial.mem_pow_idealOfVars_iff']
   rw [MvPolynomial.eval_zero']
   change (∀ x, Finsupp.degree x < 1 → P.coeff x = 0) ↔ P.coeff 0 = 0

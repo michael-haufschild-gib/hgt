@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.ProjectiveHorizonLandauGinzburgDuality
 
 The coefficient-residue pairing on two copies of a truncated scalar jet space is the canonical
 symplectic pairing.  The tangent graph of inversion is isotropic because
-`dY = -Y^2 dX` and scalar multiplication is commutative.  Dimension counting and the logarithmic
+`dY = -Y^(2 : ℕ) dX` and scalar multiplication is commutative.  Dimension counting and the logarithmic
 primitive are retained at paper level; this file certifies the exact algebraic isotropy identity.
 -/
 

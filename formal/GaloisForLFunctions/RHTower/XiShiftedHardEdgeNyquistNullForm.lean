@@ -64,7 +64,7 @@ theorem RouteUNonnegativeUVSafeNyquistCurrent.classification
       ∀ even odd : ℝ,
         routeUNyquistChannelCurrent Q.reconstructionWeight Q.mixedWeight
             Q.detailWeight even odd =
-          Q.reconstructionWeight * (even + odd) ^ 2 := by
+          Q.reconstructionWeight * (even + odd) ^ (2 : ℕ) := by
   have hmixed := Q.mixedWeight_eq_zero
   have hweight : 0 ≤ Q.reconstructionWeight := by
     have h := Q.nonnegative (1 / 2) (1 / 2)
@@ -79,16 +79,16 @@ theorem RouteUNonnegativeUVSafeNyquistCurrent.classification
 def routeUNyquistComplexChannelCurrent
     (reconstructionWeight mixedWeight detailWeight : ℝ)
     (even odd : ℂ) : ℂ :=
-  (reconstructionWeight : ℂ) * (even + odd) ^ 2 +
+  (reconstructionWeight : ℂ) * (even + odd) ^ (2 : ℕ) +
     2 * (mixedWeight : ℂ) * (even + odd) * (even - odd) +
-    (detailWeight : ℂ) * (even - odd) ^ 2
+    (detailWeight : ℂ) * (even - odd) ^ (2 : ℕ)
 
 /-- The PSD ultraviolet-safe collapse remains exact after complexifying the channel values. -/
 theorem RouteUNonnegativeUVSafeNyquistCurrent.complex_classification
     (Q : RouteUNonnegativeUVSafeNyquistCurrent) (even odd : ℂ) :
     routeUNyquistComplexChannelCurrent Q.reconstructionWeight Q.mixedWeight
         Q.detailWeight even odd =
-      (Q.reconstructionWeight : ℂ) * (even + odd) ^ 2 := by
+      (Q.reconstructionWeight : ℂ) * (even + odd) ^ (2 : ℕ) := by
   rw [routeUNyquistComplexChannelCurrent, Q.mixedWeight_eq_zero, Q.uvSafe]
   norm_num
 
@@ -103,14 +103,14 @@ theorem RouteUNonnegativeUVSafeNyquistCurrent.parabolic_eq_full_sq
         (routeUDyadicParabolicEvenSample n f u k)
         (routeUDyadicParabolicOddSample n f u k) =
       (Q.reconstructionWeight : ℂ) *
-        routeUDyadicParabolicFullSample n f u k ^ 2 := by
+        routeUDyadicParabolicFullSample n f u k ^ (2 : ℕ) := by
   rw [Q.complex_classification, routeUDyadicParabolicOddSample]
   ring
 
 /-- General complex quadratic polyphase observable. -/
 def routeUNyquistComplexQuadraticForm
     (a b c even odd : ℂ) : ℂ :=
-  a * even ^ 2 + 2 * b * even * odd + c * odd ^ 2
+  a * even ^ (2 : ℕ) + 2 * b * even * odd + c * odd ^ (2 : ℕ)
 
 /-- Exact factorization criterion: a quadratic polyphase observable annihilates the anti-diagonal
 coefficient precisely when it contains the reconstructed factor `even + odd`. -/
@@ -152,7 +152,7 @@ theorem tendsto_routeUDyadicParabolicQuadraticForm
         (routeUDyadicParabolicOddSample n f u k)) atTop
       (nhds ((a - 2 * b + c) *
         ((1 / 2 : ℂ) * routeUComplexPositiveFourierExtension n f
-          ((-4 / (u : ℝ) : ℝ) : ℂ)) ^ 2)) := by
+          ((-4 / (u : ℝ) : ℝ) : ℂ)) ^ (2 : ℕ))) := by
   let h : ℂ := (1 / 2 : ℂ) * routeUComplexPositiveFourierExtension n f
     ((-4 / (u : ℝ) : ℝ) : ℂ)
   have heven : Tendsto (routeUDyadicParabolicEvenSample n f u) atTop (nhds h) := by
@@ -169,7 +169,7 @@ theorem tendsto_routeUDyadicParabolicQuadraticForm
       routeUNyquistComplexQuadraticForm a b c
         (routeUDyadicParabolicEvenSample n f u k)
         (routeUDyadicParabolicOddSample n f u k)) atTop
-    (nhds ((a - 2 * b + c) * h ^ 2))
+    (nhds ((a - 2 * b + c) * h ^ (2 : ℕ)))
   convert hlimit using 1
   · funext k
     rfl
@@ -202,8 +202,8 @@ theorem routeUDyadicParabolicNyquistCurrent_eq_sq_sub_sq
     (n : ℕ) (f : SchwartzMap ℝ ℂ)
     (u : RouteUPositiveParabolicScale) (k : ℕ) :
     routeUDyadicParabolicNyquistCurrent n f u k =
-      routeUDyadicParabolicEvenSample n f u k ^ 2 -
-        routeUDyadicParabolicOddSample n f u k ^ 2 := by
+      routeUDyadicParabolicEvenSample n f u k ^ (2 : ℕ) -
+        routeUDyadicParabolicOddSample n f u k ^ (2 : ℕ) := by
   rw [routeUDyadicParabolicNyquistCurrent,
     routeUDyadicParabolicOddSample]
   ring
@@ -230,8 +230,8 @@ def routeUDyadicXiNyquistCurrent
 theorem routeUDyadicXiNyquistCurrent_eq_sq_sub_sq
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) (q : XiZeroCopy) :
     routeUDyadicXiNyquistCurrent n f k q =
-      routeUDyadicEvenSample n f k q ^ 2 -
-        routeUDyadicOddSample n f k q ^ 2 := by
+      routeUDyadicEvenSample n f k q ^ (2 : ℕ) -
+        routeUDyadicOddSample n f k q ^ (2 : ℕ) := by
   rw [routeUDyadicXiNyquistCurrent, routeUDyadicOddSample]
   ring
 

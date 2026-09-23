@@ -43,7 +43,7 @@ theorem measurableSet_coe_image_fd : MeasurableSet (UpperHalfPlane.coe '' fd) :=
 /-- **The fundamental-domain integral in the chart:** `∫_𝒟 F dμ = ∫_{𝒟 ⊆ ℂ} y⁻² F(x+iy) dx dy`. -/
 theorem setIntegral_fd_eq_chart (F : ℍ → ℂ) :
     ∫ z in fd, F z ∂volume =
-      ∫ w in UpperHalfPlane.coe '' fd, ((w.im ^ 2)⁻¹ : ℝ) • F (ofComplex w) ∂volume := by
+      ∫ w in UpperHalfPlane.coe '' fd, ((w.im ^ (2 : ℕ))⁻¹ : ℝ) • F (ofComplex w) ∂volume := by
   rw [volume_eq_comap_withDensity,
     setIntegral_withDensity_eq_setIntegral_toReal_smul measurable_hyperbolicDensity
       (ae_of_all _ fun z => hyperbolicDensity_lt_top z) F isClosed_fd.measurableSet]
@@ -154,7 +154,7 @@ theorem setIntegral_fd_testWeight_chartDeriv {u : ℍ → ℂ} (hu : IsChartC1 u
       have : (0 : ℝ) < w.im := hw'
       exact_mod_cast this.ne'
     simp only [ofComplex_apply_of_im_pos hw']
-    show ((w.im ^ 2)⁻¹ : ℝ) • ((w.im : ℂ) * φ w * ((w.im : ℂ) * fderiv ℝ f w v)) =
+    show ((w.im ^ (2 : ℕ))⁻¹ : ℝ) • ((w.im : ℂ) * φ w * ((w.im : ℂ) * fderiv ℝ f w v)) =
       φ w * fderiv ℝ f w v
     rw [Complex.real_smul]
     push_cast
@@ -176,7 +176,7 @@ theorem setIntegral_fd_testWeight_chartDeriv {u : ℍ → ℂ} (hu : IsChartC1 u
       rw [hf]
       show u (ofComplex w) = u ⟨w, hw'⟩
       rw [ofComplex_apply_of_im_pos hw']
-    show ((w.im ^ 2)⁻¹ : ℝ) • ((w.im : ℂ) * ((w.im : ℂ) * fderiv ℝ φ w v) * u ⟨w, hw'⟩) =
+    show ((w.im ^ (2 : ℕ))⁻¹ : ℝ) • ((w.im : ℂ) * ((w.im : ℂ) * fderiv ℝ φ w v) * u ⟨w, hw'⟩) =
       fderiv ℝ φ w v * f w
     rw [hfw, Complex.real_smul]
     push_cast

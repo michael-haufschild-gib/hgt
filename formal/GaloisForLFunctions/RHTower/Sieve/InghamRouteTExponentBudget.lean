@@ -17,7 +17,7 @@ At Route T's target `σ = 7/10` and right edge `β = 1 + ε`, the resulting expo
 In particular, at the limiting right edge the available fourth-moment power-loss budget is `1/30`,
 and the concrete pair `ε = 1/1000`, `δ = 1/100` stays strictly inside the admissible region.  Thus
 formalising a `T^(101/100)` fourth-moment bound is sufficient for the fixed short-interval handoff;
-an asymptotic formula or a sharp `T log^4 T` estimate is unnecessary.
+an asymptotic formula or a sharp `T log^(4 : ℕ) T` estimate is unnecessary.
 -/
 
 namespace RHTower.Sieve

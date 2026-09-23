@@ -8,7 +8,7 @@ The endpoint four-orbit height law is needed only for off-line zeros.  On-line a
 transverse spectral coordinate and their conjugate-paired relative-resolvent contribution already
 has the anti-Herglotz sign at every frequency.  Combining the two cases proves the source sign on
 every central band satisfying
-`C * ((R + 1/2)^2 + 1) < 4`, where `C` is the completed endpoint curvature.  In particular this
+`C * ((R + 1/2)^(2 : ℕ) + 1) < 4`, where `C` is the completed endpoint curvature.  In particular this
 holds on `|Re z| ≤ 87/10`.
 
 Reflection removes negative frequencies and Gaussian-rational density removes irrational test
@@ -25,7 +25,7 @@ noncomputable section
 /-- Exact endpoint-source band selected by the fourfold charge of an off-critical orbit. -/
 def XiEndpointOffLineQuartetAccretiveBand (R : ℝ) : Prop :=
   0 ≤ R ∧
-    xiEndpointCompletedCurvature * ((R + 1 / 2) ^ 2 + 1) < 4
+    xiEndpointCompletedCurvature * ((R + 1 / 2) ^ (2 : ℕ) + 1) < 4
 
 /-- Upper-half centered Xi is zero-free throughout every band controlled by the off-line orbit
 budget. Possible on-line zeros live on the boundary `im z = 0`; off-line zeros are excluded by
@@ -56,15 +56,15 @@ theorem XiC_ne_zero_of_upperHalf_offLineOrbitBand
     dsimp only [q, rho]
     simp [mul_im]
   rw [him] at hheight
-  have hzSq : z.re ^ 2 ≤ R ^ 2 := by
+  have hzSq : z.re ^ (2 : ℕ) ≤ R ^ (2 : ℕ) := by
     nlinarith [sq_abs z.re, abs_nonneg z.re]
   have hCpos : 0 < xiEndpointCompletedCurvature :=
     xiEndpointCompletedCurvature_pos
-  have hzThreshold : z.re ^ 2 < (R + 1 / 2) ^ 2 := by
+  have hzThreshold : z.re ^ (2 : ℕ) < (R + 1 / 2) ^ (2 : ℕ) := by
     nlinarith [hband.1]
   have hscaled :
-      xiEndpointCompletedCurvature * (z.re ^ 2 + 1) <
-        xiEndpointCompletedCurvature * ((R + 1 / 2) ^ 2 + 1) :=
+      xiEndpointCompletedCurvature * (z.re ^ (2 : ℕ) + 1) <
+        xiEndpointCompletedCurvature * ((R + 1 / 2) ^ (2 : ℕ) + 1) :=
     mul_lt_mul_of_pos_left (by linarith) hCpos
   linarith [hband.2]
 
@@ -82,7 +82,7 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_offLineOrbit
   have haimAbs : |a.im| < 1 / 2 := by
     rw [abs_lt]
     constructor <;> linarith [haimMem.1, haimMem.2]
-  have hcore : 0 < (z.re - a.re) ^ 2 + z.im ^ 2 - a.im ^ 2 := by
+  have hcore : 0 < (z.re - a.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) - a.im ^ (2 : ℕ) := by
     by_cases hon : a.im = 0
     · rw [hon]
       norm_num
@@ -93,17 +93,17 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_offLineOrbit
         dsimp only [a]
         simp [xiSpectralPoint, mul_im, hhalf]
       have hheight :
-          4 ≤ xiEndpointCompletedCurvature * (a.re ^ 2 + 1) := by
+          4 ≤ xiEndpointCompletedCurvature * (a.re ^ (2 : ℕ) + 1) := by
         simpa [a, xiSpectralPoint, mul_re] using
           four_le_curvature_mul_one_add_im_sq_of_offLine q hoff
-      have hareSq : (R + 1 / 2) ^ 2 < a.re ^ 2 := by
+      have hareSq : (R + 1 / 2) ^ (2 : ℕ) < a.re ^ (2 : ℕ) := by
         have hCpos : 0 < xiEndpointCompletedCurvature :=
           xiEndpointCompletedCurvature_pos
         have hscaled :
-            xiEndpointCompletedCurvature * ((R + 1 / 2) ^ 2 + 1) <
-              xiEndpointCompletedCurvature * (a.re ^ 2 + 1) :=
+            xiEndpointCompletedCurvature * ((R + 1 / 2) ^ (2 : ℕ) + 1) <
+              xiEndpointCompletedCurvature * (a.re ^ (2 : ℕ) + 1) :=
           hband.2.trans_le hheight
-        have hinner : (R + 1 / 2) ^ 2 + 1 < a.re ^ 2 + 1 :=
+        have hinner : (R + 1 / 2) ^ (2 : ℕ) + 1 < a.re ^ (2 : ℕ) + 1 :=
           lt_of_mul_lt_mul_left hscaled hCpos.le
         linarith
       have hareAbs : R + 1 / 2 < |a.re| := by
@@ -113,7 +113,7 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_offLineOrbit
       have hdistAbs : |a.im| < |z.re - a.re| := by
         rw [abs_sub_comm]
         linarith
-      have hdistSq : a.im ^ 2 < (z.re - a.re) ^ 2 := by
+      have hdistSq : a.im ^ (2 : ℕ) < (z.re - a.re) ^ (2 : ℕ) := by
         nlinarith [sq_abs a.im, sq_abs (z.re - a.re),
           abs_nonneg a.im, abs_nonneg (z.re - a.re)]
       nlinarith [sq_nonneg z.im]

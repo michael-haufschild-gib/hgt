@@ -12,7 +12,7 @@ holomorphic, and the cohomology of a character stage is computed inside the holo
 complex.
 
 * `deningerLogBranch_analyticAt` : a branch of the logarithm is analytic on its domain.
-* `deningerDescendForm_holomorphic` : the descent of a periodic `C^1` form is holomorphic.
+* `deningerDescendForm_holomorphic` : the descent of a periodic `C^(1 : ℕ)` form is holomorphic.
 * `deningerStage_closed_form_decomposition_hol` : the decomposition with a holomorphic primitive.
 -/
 

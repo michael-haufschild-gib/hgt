@@ -307,7 +307,7 @@ theorem no_ritt_cocycle_unicritical [IsAlgClosed K] {p : ℕ} (hp : 2 ≤ p)
       have := (mem_unicriticalFiber hp0 hα β y₀ β).mp (by rw [hfibS]; exact hβmem)
       simpa using this
     rw [hpeq] at hfix hcrit2
-    have hsq : α * (y₀ ^ 2 - β ^ 2) = 0 := by linear_combination hfix - hcrit2
+    have hsq : α * (y₀ ^ (2 : ℕ) - β ^ (2 : ℕ)) = 0 := by linear_combination hfix - hcrit2
     have hdiff : (y₀ - β) * (y₀ + β) = 0 := by
       have := (mul_eq_zero.mp hsq).resolve_left hα
       linear_combination this

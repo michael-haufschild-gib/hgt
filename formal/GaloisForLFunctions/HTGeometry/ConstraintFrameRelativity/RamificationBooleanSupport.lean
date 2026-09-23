@@ -41,7 +41,7 @@ theorem one_lt_pow_of_one_lt {k m : ℕ} (hk : 1 < k) (hm : m ≠ 0) : 1 < k ^ m
 
 /-- **Exact squarefree pullback.**  `ã_m(k^m) = μ(k)²`. -/
 theorem unitalShellIndicator_pow_self {m k : ℕ} (hm : m ≠ 0) (hk : k ≠ 0) :
-    unitalShellIndicator m (k ^ m) = (μ k) ^ 2 := by
+    unitalShellIndicator m (k ^ m) = (μ k) ^ (2 : ℕ) := by
   rcases eq_or_lt_of_le (Nat.one_le_iff_ne_zero.mpr hk) with h1 | h1
   · have hk1 : k = 1 := h1.symm
     subst hk1
@@ -63,7 +63,7 @@ theorem unitalShellIndicator_pow_self {m k : ℕ} (hm : m ≠ 0) (hk : k ≠ 0) 
 
 /-- **Hard-core exclusion.**  Repeated occupancy leaves the level-`m` shell. -/
 theorem unitalShellIndicator_pow_self_eq_zero {m k p : ℕ} (hm : m ≠ 0) (hk : k ≠ 0)
-    (hp : p.Prime) (hdvd : p ^ 2 ∣ k) : unitalShellIndicator m (k ^ m) = 0 := by
+    (hp : p.Prime) (hdvd : p ^ (2 : ℕ) ∣ k) : unitalShellIndicator m (k ^ m) = 0 := by
   have hsq : ¬ Squarefree k := by
     intro h
     have hpp : p * p ∣ k := by

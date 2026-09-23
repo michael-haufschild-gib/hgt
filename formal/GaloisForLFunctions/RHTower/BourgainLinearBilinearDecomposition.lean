@@ -5,7 +5,7 @@ This is the finite rearrangement inequality behind Bourgain's
 bilinear-to-linear induction.  Either all terms except a largest one are
 smaller by a factor `K`, in which case the whole sum is controlled by one
 diagonal twelfth power, or a second large term supplies a bilinear
-sixth-power product.  The resulting coefficient `K^18` is the power appearing
+sixth-power product.  The resulting coefficient `K^(18 : ℕ)` is the power appearing
 in Bourgain's equation (2.25).
 
 The present theorem sums over all distinct pairs.  The interval-separation

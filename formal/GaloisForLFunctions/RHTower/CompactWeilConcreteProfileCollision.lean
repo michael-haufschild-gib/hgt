@@ -27,7 +27,7 @@ theorem ccmGuinandWeilPolarCompactLaplaceReal_samplingEnergy_split (x h : ℝ) :
     compactWeilClosePairSamplingEnergy ccmGuinandWeilPolarCompactLaplaceReal x h =
       (1 / 2 : ℝ) *
           ‖ccmGuinandWeilPolarCompactLaplaceReal x +
-            ccmGuinandWeilPolarCompactLaplaceReal (x + h)‖ ^ 2 +
+            ccmGuinandWeilPolarCompactLaplaceReal (x + h)‖ ^ (2 : ℕ) +
         (1 / 2 : ℝ) *
           compactWeilClosePairDifferenceEnergy ccmGuinandWeilPolarCompactLaplaceReal x h := by
   exact compactWeilClosePair_samplingEnergy_split _ _ _
@@ -35,7 +35,7 @@ theorem ccmGuinandWeilPolarCompactLaplaceReal_samplingEnergy_split (x h : ℝ) :
 /-- Exact reporter collision for the actual compact-Weil profile. -/
 theorem ccmGuinandWeilPolarCompactLaplaceReal_samplingEnergy_collision (x : ℝ) :
     compactWeilClosePairSamplingEnergy ccmGuinandWeilPolarCompactLaplaceReal x 0 =
-      2 * ‖ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ 2 := by
+      2 * ‖ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ (2 : ℕ) := by
   exact compactWeilClosePair_samplingEnergy_collision _ _
 
 /-- The actual compact-Weil profile is differentiable; no differentiability premise remains. -/
@@ -49,9 +49,9 @@ theorem differentiableAt_ccmGuinandWeilPolarCompactLaplaceReal (x : ℝ) :
 theorem tendsto_ccmGuinandWeilPolarCompactLaplaceReal_differenceEnergy_div_sq (x : ℝ) :
     Tendsto
       (fun h : ℝ =>
-        compactWeilClosePairDifferenceEnergy ccmGuinandWeilPolarCompactLaplaceReal x h / h ^ 2)
+        compactWeilClosePairDifferenceEnergy ccmGuinandWeilPolarCompactLaplaceReal x h / h ^ (2 : ℕ))
       (𝓝[≠] (0 : ℝ))
-      (𝓝 (‖deriv ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ 2)) := by
+      (𝓝 (‖deriv ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ (2 : ℕ))) := by
   exact tendsto_compactWeilClosePair_differenceEnergy_div_sq
     (differentiableAt_ccmGuinandWeilPolarCompactLaplaceReal x).hasDerivAt
 
@@ -62,18 +62,18 @@ theorem ccmGuinandWeilPolarCompactLaplaceReal_closePairCollision_closed (x h : �
     compactWeilClosePairSamplingEnergy ccmGuinandWeilPolarCompactLaplaceReal x h =
         (1 / 2 : ℝ) *
             ‖ccmGuinandWeilPolarCompactLaplaceReal x +
-              ccmGuinandWeilPolarCompactLaplaceReal (x + h)‖ ^ 2 +
+              ccmGuinandWeilPolarCompactLaplaceReal (x + h)‖ ^ (2 : ℕ) +
           (1 / 2 : ℝ) *
             compactWeilClosePairDifferenceEnergy ccmGuinandWeilPolarCompactLaplaceReal x h ∧
       compactWeilClosePairSamplingEnergy ccmGuinandWeilPolarCompactLaplaceReal x 0 =
-        2 * ‖ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ 2 ∧
+        2 * ‖ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ (2 : ℕ) ∧
       DifferentiableAt ℝ ccmGuinandWeilPolarCompactLaplaceReal x ∧
       Tendsto
         (fun r : ℝ =>
           compactWeilClosePairDifferenceEnergy
-              ccmGuinandWeilPolarCompactLaplaceReal x r / r ^ 2)
+              ccmGuinandWeilPolarCompactLaplaceReal x r / r ^ (2 : ℕ))
         (𝓝[≠] (0 : ℝ))
-        (𝓝 (‖deriv ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ 2)) := by
+        (𝓝 (‖deriv ccmGuinandWeilPolarCompactLaplaceReal x‖ ^ (2 : ℕ))) := by
   exact ⟨ccmGuinandWeilPolarCompactLaplaceReal_samplingEnergy_split x h,
     ccmGuinandWeilPolarCompactLaplaceReal_samplingEnergy_collision x,
     differentiableAt_ccmGuinandWeilPolarCompactLaplaceReal x,

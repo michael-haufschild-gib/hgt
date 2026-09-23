@@ -37,7 +37,7 @@ private theorem deningerKummerAugmentation_secondDerivation_basis
         (RouteRMultiplierKOne.kummerGroupRingDerivation
           (RouteRMultiplierKOne.kummerGroupRingDerivation
             (deningerSteinbergBasis k))) =
-      ccmRationalAdelicKummerLogWeight k ^ 2 := by
+      ccmRationalAdelicKummerLogWeight k ^ (2 : ℕ) := by
   have hD : RouteRMultiplierKOne.kummerGroupRingDerivation
       (deningerSteinbergBasis k) =
         ccmRationalAdelicKummerLogWeight k • deningerSteinbergBasis k :=

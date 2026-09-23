@@ -100,10 +100,10 @@ theorem hasDerivAt_duhamelPair (hCd : ∀ r, HasDerivAt C (dC r) r)
 source reappears, so a pair normalized to Wronskian one solves the driven equation. -/
 theorem hasDerivAt_duhamelPairDeriv (hCd2 : ∀ r, HasDerivAt dC (ddC r) r)
     (hSd2 : ∀ r, HasDerivAt dS (ddS r) r) (hC : Continuous C) (hS : Continuous S)
-    (hh : Continuous h) (heqC : ∀ r, ddC r = -(ω r ^ 2 * C r))
-    (heqS : ∀ r, ddS r = -(ω r ^ 2 * S r)) (hW : ∀ r, C r * dS r - S r * dC r = 1) (t : ℝ) :
+    (hh : Continuous h) (heqC : ∀ r, ddC r = -(ω r ^ (2 : ℕ) * C r))
+    (heqS : ∀ r, ddS r = -(ω r ^ (2 : ℕ) * S r)) (hW : ∀ r, C r * dS r - S r * dC r = 1) (t : ℝ) :
     HasDerivAt (duhamelPairDeriv C dC S dS α β h)
-      (-(((ω t ^ 2 : ℝ) : ℂ)) * duhamelPair C S α β h t + h t) t := by
+      (-(((ω t ^ (2 : ℕ) : ℝ) : ℂ)) * duhamelPair C S α β h t + h t) t := by
   have hP : HasDerivAt (fun r : ℝ => α - duhamelPairSecondPart S h r)
       (-(((S t : ℝ) : ℂ) * h t)) t := by
     simpa using (hasDerivAt_duhamelPairSecondPart hS hh t).const_sub α
@@ -118,11 +118,11 @@ theorem hasDerivAt_duhamelPairDeriv (hCd2 : ∀ r, HasDerivAt dC (ddC r) r)
     have hc : (((C t * dS t - S t * dC t : ℝ)) : ℂ) = ((1 : ℝ) : ℂ) := by rw [hW t]
     push_cast at hc
     exact hc
-  have hCeq : ((ddC t : ℝ) : ℂ) = -(((ω t ^ 2 : ℝ) : ℂ) * ((C t : ℝ) : ℂ)) := by
+  have hCeq : ((ddC t : ℝ) : ℂ) = -(((ω t ^ (2 : ℕ) : ℝ) : ℂ) * ((C t : ℝ) : ℂ)) := by
     rw [heqC t]
     push_cast
     ring
-  have hSeq : ((ddS t : ℝ) : ℂ) = -(((ω t ^ 2 : ℝ) : ℂ) * ((S t : ℝ) : ℂ)) := by
+  have hSeq : ((ddS t : ℝ) : ℂ) = -(((ω t ^ (2 : ℕ) : ℝ) : ℂ) * ((S t : ℝ) : ℂ)) := by
     rw [heqS t]
     push_cast
     ring

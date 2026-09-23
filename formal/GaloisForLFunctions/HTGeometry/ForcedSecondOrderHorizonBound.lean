@@ -16,7 +16,7 @@ def horizonDichotomyError (w : ℂ) (U p f : ℝ → ℂ) (t : ℝ) : ℂ :=
 
 /-- Actual free-mode channels of a forced second-order solution, with its original forcing retained. -/
 theorem horizonDichotomy_hasDerivAt (w : ℂ) (U V p f : ℝ → ℂ) (t : ℝ)
-    (hU : HasDerivAt U (V t) t) (hV : HasDerivAt V (w^2*U t+p t*U t-f t) t) :
+    (hU : HasDerivAt U (V t) t) (hV : HasDerivAt V (w^(2 : ℕ)*U t+p t*U t-f t) t) :
     HasDerivAt (horizonDichotomyPlus w U V)
       ((w-(w.re:ℂ))*horizonDichotomyPlus w U V t+horizonDichotomyError w U p f t) t ∧
     HasDerivAt (horizonDichotomyMinus w U V)
@@ -80,7 +80,7 @@ The statement uses actual derivatives and derived decay bounds, with no endpoint
 theorem forcedSecondOrder_horizon_bound (w : ℂ) (hw : w ≠ 0) (hwr : w.re ≤ 0)
     (U V p f : ℝ → ℂ) (A B : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ B)
     (hU : ∀ t < 0, HasDerivAt U (V t) t)
-    (hV : ∀ t < 0, HasDerivAt V (w^2*U t+p t*U t-f t) t)
+    (hV : ∀ t < 0, HasDerivAt V (w^(2 : ℕ)*U t+p t*U t-f t) t)
     (hp : ∀ t < 0, ‖p t‖ ≤ A*Real.exp (2*t))
     (hf : ∀ t < 0, ‖f t‖ ≤ B*Real.exp ((w.re+2)*t)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ t < 0, ‖U t‖ ≤ C*Real.exp (w.re*t) := by

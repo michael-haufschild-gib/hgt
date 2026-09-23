@@ -39,11 +39,11 @@ theorem adaptiveOrthoJacobiEnergy_gt_succ_mul_currentBeta
   have hsquares :
       0 ≤ ∑ j ∈ Finset.range n,
         (HTGeometry.monicOrthoAlpha s j +
-          HTGeometry.monicOrthoAlpha s n / 2) ^ 2 :=
+          HTGeometry.monicOrthoAlpha s n / 2) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hdiag :
       0 ≤ (3 * (n : ℝ) / 4 + 1) *
-        HTGeometry.monicOrthoAlpha s n ^ 2 := by
+        HTGeometry.monicOrthoAlpha s n ^ (2 : ℕ) := by
     positivity
   have hinterior :
       0 ≤ 2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) := by
@@ -716,20 +716,20 @@ theorem tendsto_xiShiftedCanonicalAdmissionChristoffelSourceWall_at_strict_front
 completed aggregate at square mass. -/
 theorem two_mul_xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_arithmeticSource_div_nextNorm
     {w : ℝ} (hw : 1 / 2 < w) (n : ℕ) :
-    2 * xiShiftedCanonicalAdmissionChristoffelSourceWall (w ^ 2) n =
+    2 * xiShiftedCanonicalAdmissionChristoffelSourceWall (w ^ (2 : ℕ)) n =
       xiShiftedAdaptiveMixedCompletedArithmeticSource w
           (HTGeometry.monicMomentAdmissionPolynomial
             (xiShiftedRealMomentSequence w) n) /
-        (16 * xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1)) := by
+        (16 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1)) := by
   have hsource := two_mul_xiShiftedAdaptiveShear_eq_arithmeticSource hw
     (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n)
   rw [xiShiftedCanonicalAdmissionChristoffelSourceWall]
   rw [← hsource]
   change 2 *
-      (xiShiftedCanonicalAdmissionAdaptiveShear (w ^ 2) n /
-        (16 * xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1))) =
-    (2 * xiShiftedCanonicalAdmissionAdaptiveShear (w ^ 2) n) /
-      (16 * xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1))
+      (xiShiftedCanonicalAdmissionAdaptiveShear (w ^ (2 : ℕ)) n /
+        (16 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1))) =
+    (2 * xiShiftedCanonicalAdmissionAdaptiveShear (w ^ (2 : ℕ)) n) /
+      (16 * xiShiftedCanonicalAdmissionNorm (w ^ (2 : ℕ)) (n + 1))
   ring
 
 /-- False-RH phase expressed entirely by cofinal actual-frontier source walls. -/

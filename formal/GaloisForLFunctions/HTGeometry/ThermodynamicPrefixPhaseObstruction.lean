@@ -79,7 +79,7 @@ theorem nestedInversePowerChain_no_separated_approximation
     rw [hUdiag]
     simp [φ]
   have hmatch :
-      t * (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2)) =
+      t * (∑ j ∈ S, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))) =
         ∑ j ∈ S, inverseSquarePhaseWeight t j := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl

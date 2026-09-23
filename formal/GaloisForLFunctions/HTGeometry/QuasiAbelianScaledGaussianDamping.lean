@@ -24,20 +24,20 @@ noncomputable section
 /-- A nonzero integer vector contributes at least one full width to the Gaussian exponent. -/
 theorem sum_width_sq_ge_of_ne_zero {d : ℕ} (σ : Fin d → ℝ) (hσ : ∀ i, 0 < σ i)
     {σ₀ : ℝ} (hσ₀le : ∀ i, σ₀ ≤ σ i) {k : Fin d → ℤ} (hk : k ≠ 0) :
-    σ₀ ≤ ∑ i, σ i * ((k i : ℝ)) ^ 2 := by
+    σ₀ ≤ ∑ i, σ i * ((k i : ℝ)) ^ (2 : ℕ) := by
   classical
   obtain ⟨i, hi⟩ : ∃ i, k i ≠ 0 := by
     by_contra hall
     push Not at hall
     exact hk (funext hall)
-  have hone : (1 : ℝ) ≤ ((k i : ℝ)) ^ 2 := by
+  have hone : (1 : ℝ) ≤ ((k i : ℝ)) ^ (2 : ℕ) := by
     have h1 : (1 : ℤ) ≤ |k i| := Int.one_le_abs (by omega)
     have h2 : (1 : ℝ) ≤ |(k i : ℝ)| := by exact_mod_cast h1
     nlinarith [abs_nonneg ((k i : ℝ)), sq_abs ((k i : ℝ))]
-  have hterm : σ₀ ≤ σ i * ((k i : ℝ)) ^ 2 := by
+  have hterm : σ₀ ≤ σ i * ((k i : ℝ)) ^ (2 : ℕ) := by
     have := hσ₀le i
     nlinarith [(hσ i).le]
-  refine le_trans hterm (Finset.single_le_sum (f := fun j => σ j * ((k j : ℝ)) ^ 2)
+  refine le_trans hterm (Finset.single_le_sum (f := fun j => σ j * ((k j : ℝ)) ^ (2 : ℕ))
     (fun j _ => mul_nonneg (hσ j).le (sq_nonneg _)) (Finset.mem_univ i))
 
 /-- **The scaled Gaussian is exponentially damped in the scale on every nonzero lattice
@@ -47,20 +47,20 @@ theorem norm_scaledGaussian_realTranslate_damped {d : ℕ} (σ : Fin d → ℝ) 
     (center : Fin d → ℂ) {ρ σ₀ : ℝ}
     {K : Set (Fin d → ℂ)}
     (hKb : ∀ x ∈ K, ∀ i, |(x i).re - (center i).re| ≤ ρ ∧ |(x i).im - (center i).im| ≤ ρ)
-    {B : ℝ} (hB : 1 ≤ B) {v : Fin d → ℝ} (hv : σ₀ ≤ ∑ i, σ i * (v i) ^ 2)
+    {B : ℝ} (hB : 1 ≤ B) {v : Fin d → ℝ} (hv : σ₀ ≤ ∑ i, σ i * (v i) ^ (2 : ℕ))
     {x : Fin d → ℂ} (hx : x ∈ K) :
     ‖(centeredComplexGaussian (fun i => B * σ i) center).1 (x + fun i => ((v i : ℝ) : ℂ))‖
-      ≤ Real.exp (-((σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ 2)) * B))
-        * Real.exp (-∑ i, σ i / 4 * (v i) ^ 2) := by
+      ≤ Real.exp (-((σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ (2 : ℕ))) * B))
+        * Real.exp (-∑ i, σ i / 4 * (v i) ^ (2 : ℕ)) := by
   classical
   have hB0 : (0 : ℝ) < B := by linarith
   rw [norm_centeredComplexGaussian_apply, ← Real.exp_add]
   refine Real.exp_le_exp.mpr ?_
   -- bound the exponent coordinatewise
   have hterm : ∀ i : Fin d,
-      -((B * σ i) * ((((x + fun i => ((v i : ℝ) : ℂ)) i - center i).re) ^ 2
-          - (((x + fun i => ((v i : ℝ) : ℂ)) i - center i).im) ^ 2))
-        ≤ B * (σ i * (2 * ρ ^ 2)) - B * (σ i * (v i) ^ 2) / 2 := by
+      -((B * σ i) * ((((x + fun i => ((v i : ℝ) : ℂ)) i - center i).re) ^ (2 : ℕ)
+          - (((x + fun i => ((v i : ℝ) : ℂ)) i - center i).im) ^ (2 : ℕ)))
+        ≤ B * (σ i * (2 * ρ ^ (2 : ℕ))) - B * (σ i * (v i) ^ (2 : ℕ)) / 2 := by
     intro i
     have hre : (((x + fun i => ((v i : ℝ) : ℂ)) i - center i)).re
         = (x i).re + v i - (center i).re := by
@@ -76,35 +76,35 @@ theorem norm_scaledGaussian_realTranslate_damped {d : ℕ} (σ : Fin d → ℝ) 
     rw [hsum]
     have habs_t : |t| ≤ ρ := ht
     have habs_u : |u| ≤ ρ := hu
-    have ht2 : t ^ 2 ≤ ρ ^ 2 := by
+    have ht2 : t ^ (2 : ℕ) ≤ ρ ^ (2 : ℕ) := by
       have h := pow_le_pow_left₀ (abs_nonneg t) habs_t 2
       rwa [sq_abs] at h
-    have hu2 : u ^ 2 ≤ ρ ^ 2 := by
+    have hu2 : u ^ (2 : ℕ) ≤ ρ ^ (2 : ℕ) := by
       have h := pow_le_pow_left₀ (abs_nonneg u) habs_u 2
       rwa [sq_abs] at h
-    have hkey : (v i) ^ 2 / 2 - t ^ 2 ≤ (v i + t) ^ 2 := by
+    have hkey : (v i) ^ (2 : ℕ) / 2 - t ^ (2 : ℕ) ≤ (v i + t) ^ (2 : ℕ) := by
       nlinarith [sq_nonneg (v i + 2 * t)]
     have hσi := (hσ i).le
     have hBσ : (0 : ℝ) ≤ B * σ i := mul_nonneg hB0.le hσi
     nlinarith [mul_le_mul_of_nonneg_left hkey hBσ,
       mul_le_mul_of_nonneg_left ht2 hBσ, mul_le_mul_of_nonneg_left hu2 hBσ]
-  have hsum_le : (-∑ i, (B * σ i) * ((((x + fun i => ((v i : ℝ) : ℂ)) i - center i).re) ^ 2
-        - (((x + fun i => ((v i : ℝ) : ℂ)) i - center i).im) ^ 2))
-      ≤ ∑ i, (B * (σ i * (2 * ρ ^ 2)) - B * (σ i * (v i) ^ 2) / 2) := by
+  have hsum_le : (-∑ i, (B * σ i) * ((((x + fun i => ((v i : ℝ) : ℂ)) i - center i).re) ^ (2 : ℕ)
+        - (((x + fun i => ((v i : ℝ) : ℂ)) i - center i).im) ^ (2 : ℕ)))
+      ≤ ∑ i, (B * (σ i * (2 * ρ ^ (2 : ℕ))) - B * (σ i * (v i) ^ (2 : ℕ)) / 2) := by
     rw [← Finset.sum_neg_distrib]
     exact Finset.sum_le_sum fun i _ => hterm i
   refine le_trans hsum_le ?_
   rw [Finset.sum_sub_distrib]
-  have hA : ∑ i, B * (σ i * (2 * ρ ^ 2)) = B * ((∑ i, σ i) * (2 * ρ ^ 2)) := by
+  have hA : ∑ i, B * (σ i * (2 * ρ ^ (2 : ℕ))) = B * ((∑ i, σ i) * (2 * ρ ^ (2 : ℕ))) := by
     rw [← Finset.mul_sum, ← Finset.sum_mul]
-  have hkpos : σ₀ ≤ ∑ i, σ i * (v i) ^ 2 := hv
-  have hBsum : ∑ i, B * (σ i * (v i) ^ 2) / 2 = B * (∑ i, σ i * (v i) ^ 2) / 2 := by
+  have hkpos : σ₀ ≤ ∑ i, σ i * (v i) ^ (2 : ℕ) := hv
+  have hBsum : ∑ i, B * (σ i * (v i) ^ (2 : ℕ)) / 2 = B * (∑ i, σ i * (v i) ^ (2 : ℕ)) / 2 := by
     rw [Finset.mul_sum, ← Finset.sum_div]
-  have hquarter : ∑ i, σ i / 4 * (v i) ^ 2 = (∑ i, σ i * (v i) ^ 2) / 4 := by
+  have hquarter : ∑ i, σ i / 4 * (v i) ^ (2 : ℕ) = (∑ i, σ i * (v i) ^ (2 : ℕ)) / 4 := by
     rw [Finset.sum_div]
     exact Finset.sum_congr rfl fun i _ => by ring
   rw [hA, hBsum, hquarter]
-  set T : ℝ := ∑ i, σ i * (v i) ^ 2 with hT
+  set T : ℝ := ∑ i, σ i * (v i) ^ (2 : ℕ) with hT
   have hT0 : 0 ≤ T := Finset.sum_nonneg fun i _ => mul_nonneg (hσ i).le (sq_nonneg _)
   nlinarith [hB0, hkpos, hT0]
 
@@ -115,9 +115,9 @@ theorem norm_scaledGaussian_lattice_damped {d : ℕ} (σ : Fin d → ℝ) (hσ :
     (hKb : ∀ x ∈ K, ∀ i, |(x i).re - (center i).re| ≤ ρ ∧ |(x i).im - (center i).im| ≤ ρ)
     {B : ℝ} (hB : 1 ≤ B) {k : Fin d → ℤ} (hk : k ≠ 0) {x : Fin d → ℂ} (hx : x ∈ K) :
     ‖(centeredComplexGaussian (fun i => B * σ i) center).1 (x + integerCastVector k)‖
-      ≤ Real.exp (-((σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ 2)) * B))
-        * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ 2) := by
-  have hv : σ₀ ≤ ∑ i, σ i * (((k i : ℤ) : ℝ)) ^ 2 := sum_width_sq_ge_of_ne_zero σ hσ hσ₀le hk
+      ≤ Real.exp (-((σ₀ / 4 - (∑ i, σ i) * (2 * ρ ^ (2 : ℕ))) * B))
+        * Real.exp (-∑ i, σ i / 4 * ((k i : ℝ)) ^ (2 : ℕ)) := by
+  have hv : σ₀ ≤ ∑ i, σ i * (((k i : ℤ) : ℝ)) ^ (2 : ℕ) := sum_width_sq_ge_of_ne_zero σ hσ hσ₀le hk
   have h := norm_scaledGaussian_realTranslate_damped σ hσ center hKb hB hv hx
   have hvec : (fun i => (((k i : ℤ) : ℝ) : ℂ)) = integerCastVector k := by
     funext i

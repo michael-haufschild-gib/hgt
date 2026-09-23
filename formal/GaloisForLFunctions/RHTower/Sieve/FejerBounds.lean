@@ -17,18 +17,18 @@ namespace RHTower.Sieve
 
 /-- **The Fejér transform is nonnegative.** -/
 theorem fejer_transform_nonneg (L : ℝ) {T : ℝ} (hT : 0 < T) :
-    (0 : ℝ) ≤ (2 - 2 * Real.cos (T * L)) / (T * L ^ 2) := by
+    (0 : ℝ) ≤ (2 - 2 * Real.cos (T * L)) / (T * L ^ (2 : ℕ)) := by
   have hnum : (0 : ℝ) ≤ 2 - 2 * Real.cos (T * L) := by
     have := Real.cos_le_one (T * L)
     linarith
-  have hden : (0 : ℝ) ≤ T * L ^ 2 := by positivity
+  have hden : (0 : ℝ) ≤ T * L ^ (2 : ℕ) := by positivity
   positivity
 
 /-- **The Fejér transform decays in the frequency.** -/
 theorem fejer_transform_le_inv (L : ℝ) (hL : L ≠ 0) {T : ℝ} (hT : 0 < T) :
-    (2 - 2 * Real.cos (T * L)) / (T * L ^ 2) ≤ 4 / (T * L ^ 2) := by
-  have hden : (0 : ℝ) < T * L ^ 2 := by
-    have hL2 : (0 : ℝ) < L ^ 2 := by positivity
+    (2 - 2 * Real.cos (T * L)) / (T * L ^ (2 : ℕ)) ≤ 4 / (T * L ^ (2 : ℕ)) := by
+  have hden : (0 : ℝ) < T * L ^ (2 : ℕ) := by
+    have hL2 : (0 : ℝ) < L ^ (2 : ℕ) := by positivity
     positivity
   have hnum : 2 - 2 * Real.cos (T * L) ≤ 4 := by
     have := Real.neg_one_le_cos (T * L)
@@ -37,12 +37,12 @@ theorem fejer_transform_le_inv (L : ℝ) (hL : L ≠ 0) {T : ℝ} (hT : 0 < T) :
 
 /-- **The Fejér transform is capped by the interval length.** -/
 theorem fejer_transform_le_len (L : ℝ) (hL : L ≠ 0) {T : ℝ} (hT : 0 < T) :
-    (2 - 2 * Real.cos (T * L)) / (T * L ^ 2) ≤ T := by
-  have hden : (0 : ℝ) < T * L ^ 2 := by
-    have hL2 : (0 : ℝ) < L ^ 2 := by positivity
+    (2 - 2 * Real.cos (T * L)) / (T * L ^ (2 : ℕ)) ≤ T := by
+  have hden : (0 : ℝ) < T * L ^ (2 : ℕ) := by
+    have hL2 : (0 : ℝ) < L ^ (2 : ℕ) := by positivity
     positivity
   rw [div_le_iff₀ hden]
-  have hquad : 1 - (T * L) ^ 2 / 2 ≤ Real.cos (T * L) :=
+  have hquad : 1 - (T * L) ^ (2 : ℕ) / 2 ≤ Real.cos (T * L) :=
     Real.one_sub_sq_div_two_le_cos
   nlinarith [hquad]
 

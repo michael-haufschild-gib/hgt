@@ -274,7 +274,7 @@ def routeTUpperHalfProductNat (Q : ℕ) (p : Fin Q × Fin Q) : ℕ :=
   (Q + p.1.val) * (Q + p.2.val)
 
 def routeTUpperHalfProductIndex
-    {K Q : ℕ} (hK : 4 * Q ^ 2 < K) (p : Fin Q × Fin Q) : Fin K :=
+    {K Q : ℕ} (hK : 4 * Q ^ (2 : ℕ) < K) (p : Fin Q × Fin Q) : Fin K :=
   ⟨routeTUpperHalfProductNat Q p, by
     unfold routeTUpperHalfProductNat
     have h₁ : Q + p.1.val < 2 * Q := by omega
@@ -282,7 +282,7 @@ def routeTUpperHalfProductIndex
     nlinarith⟩
 
 def routeTProductMultiplicity
-    {K Q : ℕ} (hK : 4 * Q ^ 2 < K) (n : Fin K) : ℂ :=
+    {K Q : ℕ} (hK : 4 * Q ^ (2 : ℕ) < K) (n : Fin K) : ℂ :=
   Fintype.card {p : Fin Q × Fin Q // routeTUpperHalfProductIndex hK p = n}
 
 /-- A rectangular family of products lying strictly inside the receiver block
@@ -294,8 +294,8 @@ def routeTProductLowerBox
 
 theorem routeTProductLowerBox_mem
     {Q : ℕ} (hQ : 8 ≤ Q) (p : Fin (Q / 4) × Fin (Q / 4)) :
-    Q ^ 2 < routeTUpperHalfProductNat Q (routeTProductLowerBox hQ p) ∧
-      routeTUpperHalfProductNat Q (routeTProductLowerBox hQ p) ≤ 2 * Q ^ 2 := by
+    Q ^ (2 : ℕ) < routeTUpperHalfProductNat Q (routeTProductLowerBox hQ p) ∧
+      routeTUpperHalfProductNat Q (routeTProductLowerBox hQ p) ≤ 2 * Q ^ (2 : ℕ) := by
   have ha := p.1.isLt
   have hb := p.2.isLt
   have ha4 : 4 * (p.1.val + 1) ≤ Q := by omega
@@ -319,7 +319,7 @@ theorem routeTProductLowerBox_injective
     exact congrArg (fun z : Fin Q × Fin Q => z.2.val) hpq
 
 theorem norm_routeTProductMultiplicity_le
-    {K Q : ℕ} (hQ : 1 ≤ Q) (hK : 4 * Q ^ 2 < K) (n : Fin K) :
+    {K Q : ℕ} (hQ : 1 ≤ Q) (hK : 4 * Q ^ (2 : ℕ) < K) (n : Fin K) :
     ‖routeTProductMultiplicity hK n‖ ≤ mvBalancedDivisorCount Q n.val := by
   classical
   let F := {p : Fin Q × Fin Q // routeTUpperHalfProductIndex hK p = n}
@@ -351,7 +351,7 @@ theorem norm_routeTProductMultiplicity_le
   exact_mod_cast hcard
 
 theorem mvTrigSum_routeTProductMultiplicity
-    {K Q : ℕ} (hK : 4 * Q ^ 2 < K) (w : Fin K → ℂ) :
+    {K Q : ℕ} (hK : 4 * Q ^ (2 : ℕ) < K) (w : Fin K → ℂ) :
     (∑ p : Fin Q × Fin Q, w (routeTUpperHalfProductIndex hK p)) =
       ∑ n : Fin K, routeTProductMultiplicity hK n * w n := by
   exact sum_comp_eq_sum_card_fiber_mul_complex
@@ -359,14 +359,14 @@ theorem mvTrigSum_routeTProductMultiplicity
 
 /-- Route T's product multiplicity has unconditional mass in the receiver block. -/
 theorem routeTProductMultiplicity_block_lower
-    {K Q : ℕ} (hQ : 8 ≤ Q) (hK : 4 * Q ^ 2 < K) :
-    ((Q : ℝ) ^ 2) / 64 ≤
-      ‖mvCoefficientBlockSum K (Q ^ 2) (routeTProductMultiplicity hK)‖ := by
+    {K Q : ℕ} (hQ : 8 ≤ Q) (hK : 4 * Q ^ (2 : ℕ) < K) :
+    ((Q : ℝ) ^ (2 : ℕ)) / 64 ≤
+      ‖mvCoefficientBlockSum K (Q ^ (2 : ℕ)) (routeTProductMultiplicity hK)‖ := by
   classical
   let good : Finset (Fin Q × Fin Q) :=
     Finset.univ.filter fun p =>
-      Q ^ 2 < routeTUpperHalfProductNat Q p ∧
-        routeTUpperHalfProductNat Q p ≤ 2 * Q ^ 2
+      Q ^ (2 : ℕ) < routeTUpperHalfProductNat Q p ∧
+        routeTUpperHalfProductNat Q p ≤ 2 * Q ^ (2 : ℕ)
   have hmaps : ∀ p ∈ (Finset.univ : Finset (Fin (Q / 4) × Fin (Q / 4))),
       routeTProductLowerBox hQ p ∈ good := by
     intro p _
@@ -375,33 +375,33 @@ theorem routeTProductMultiplicity_block_lower
   have hinj : Set.InjOn (routeTProductLowerBox hQ)
       (Finset.univ : Finset (Fin (Q / 4) × Fin (Q / 4))) :=
     (routeTProductLowerBox_injective hQ).injOn
-  have hcard : (Q / 4) ^ 2 ≤ good.card := by
+  have hcard : (Q / 4) ^ (2 : ℕ) ≤ good.card := by
     have h := Finset.card_le_card_of_injOn _ hmaps hinj
     simpa [Fintype.card_prod, Fintype.card_fin, pow_two] using h
-  have hblock : mvCoefficientBlockSum K (Q ^ 2) (routeTProductMultiplicity hK) =
+  have hblock : mvCoefficientBlockSum K (Q ^ (2 : ℕ)) (routeTProductMultiplicity hK) =
       (good.card : ℂ) := by
     unfold mvCoefficientBlockSum
     rw [← mvTrigSum_routeTProductMultiplicity hK]
     change (∑ p : Fin Q × Fin Q,
-        if Q ^ 2 < (routeTUpperHalfProductIndex hK p).val ∧
-            (routeTUpperHalfProductIndex hK p).val ≤ 2 * Q ^ 2 then 1 else 0) = _
+        if Q ^ (2 : ℕ) < (routeTUpperHalfProductIndex hK p).val ∧
+            (routeTUpperHalfProductIndex hK p).val ≤ 2 * Q ^ (2 : ℕ) then 1 else 0) = _
     rw [← Finset.sum_filter]
     simp only [good, routeTUpperHalfProductIndex, Finset.sum_const, nsmul_eq_mul,
       mul_one, Nat.cast_ofNat]
   rw [hblock, Complex.norm_natCast]
   have hdiv : Q ≤ 8 * (Q / 4) := by omega
-  have hrealCard : (((Q / 4) ^ 2 : ℕ) : ℝ) ≤ good.card := by
+  have hrealCard : (((Q / 4) ^ (2 : ℕ) : ℕ) : ℝ) ≤ good.card := by
     exact_mod_cast hcard
   have hq : (0 : ℝ) ≤ Q := by positivity
   have hdivReal : (Q : ℝ) ≤ 8 * (Q / 4 : ℕ) := by exact_mod_cast hdiv
   calc
-    ((Q : ℝ) ^ 2) / 64 ≤ (((Q / 4 : ℕ) : ℝ) ^ 2) := by nlinarith
-    _ = (((Q / 4) ^ 2 : ℕ) : ℝ) := by push_cast; rfl
+    ((Q : ℝ) ^ (2 : ℕ)) / 64 ≤ (((Q / 4 : ℕ) : ℝ) ^ (2 : ℕ)) := by nlinarith
+    _ = (((Q / 4) ^ (2 : ℕ) : ℕ) : ℝ) := by push_cast; rfl
     _ ≤ good.card := hrealCard
 
 theorem routeTProductMultiplicity_twistedLog_eq
-    {K Q : ℕ} (hK : 4 * Q ^ 2 < K) {t x β : ℝ}
-    (hx : (4 * Q ^ 2 : ℕ) < x) :
+    {K Q : ℕ} (hK : 4 * Q ^ (2 : ℕ) < K) {t x β : ℝ}
+    (hx : (4 * Q ^ (2 : ℕ) : ℕ) < x) :
     ∑ n : Fin K, routeTProductMultiplicity hK n *
         finitePhaseChar (t / (2 * Real.pi) * Real.log (x - n.val) + β * n.val) =
       routeTLogTwistedShiftBilinearSum t x β Q := by
@@ -417,8 +417,8 @@ theorem routeTProductMultiplicity_twistedLog_eq
   rfl
 
 theorem mvTrigSum_routeTLogConvolution_eq
-    {K Q r : ℕ} (hK : 4 * Q ^ 2 < K) {t β : ℝ}
-    (hr : 4 * Q ^ 2 < r) :
+    {K Q r : ℕ} (hK : 4 * Q ^ (2 : ℕ) < K) {t β : ℝ}
+    (hr : 4 * Q ^ (2 : ℕ) < r) :
     mvTrigSum K
         (mvConvolutionCoefficient K r
           (routeTProductMultiplicity hK)
@@ -441,7 +441,7 @@ theorem mvTrigSum_routeTLogConvolution_eq
   rw [← Finset.sum_product']
   apply Finset.sum_congr rfl
   intro p _
-  have hprod : routeTUpperHalfProductNat Q p < 4 * Q ^ 2 := by
+  have hprod : routeTUpperHalfProductNat Q p < 4 * Q ^ (2 : ℕ) := by
     unfold routeTUpperHalfProductNat
     have h₁ : Q + p.1.val < 2 * Q := by omega
     have h₂ : Q + p.2.val < 2 * Q := by omega

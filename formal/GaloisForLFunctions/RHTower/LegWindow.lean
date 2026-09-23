@@ -35,7 +35,7 @@ namespace RHTower
 open Finset Filter
 
 /-- `coth² = 1 + csch²`, from `cosh² − sinh² = 1`. -/
-theorem rcoth_sq_eq {x : ℝ} (hx : 0 < x) : (rcoth x) ^ 2 = 1 + (rcsch x) ^ 2 := by
+theorem rcoth_sq_eq {x : ℝ} (hx : 0 < x) : (rcoth x) ^ (2 : ℕ) = 1 + (rcsch x) ^ (2 : ℕ) := by
   have hs := (sinh_pos_of_pos hx).ne'
   simp only [rcoth, rcsch]
   field_simp
@@ -44,15 +44,15 @@ theorem rcoth_sq_eq {x : ℝ} (hx : 0 < x) : (rcoth x) ^ 2 = 1 + (rcsch x) ^ 2 :
 /-- `φ' = −(2csch² + 3csch⁴)` on `(0, ∞)`: product rule on `φ = csch²·coth`, then
 `coth² = 1 + csch²`. -/
 theorem rphi_hasDerivAt {x : ℝ} (hx : 0 < x) :
-    HasDerivAt rphi (-(2 * (rcsch x) ^ 2 + 3 * (rcsch x) ^ 4)) x := by
+    HasDerivAt rphi (-(2 * (rcsch x) ^ (2 : ℕ) + 3 * (rcsch x) ^ (4 : ℕ))) x := by
   have hc := rcoth_sq_eq hx
-  have h1 : HasDerivAt (fun t => (rcsch t) ^ 2 * rcoth t)
+  have h1 : HasDerivAt (fun t => (rcsch t) ^ (2 : ℕ) * rcoth t)
       (((2 : ℕ) : ℝ) * rcsch x ^ (2 - 1) * (-rcoth x * rcsch x) * rcoth x
-        + rcsch x ^ 2 * -(rcsch x) ^ 2) x :=
+        + rcsch x ^ (2 : ℕ) * -(rcsch x) ^ (2 : ℕ)) x :=
     ((rcsch_hasDerivAt hx.ne').pow 2).mul (rcoth_hasDerivAt hx.ne')
   have heq : ((2 : ℕ) : ℝ) * rcsch x ^ (2 - 1) * (-rcoth x * rcsch x) * rcoth x
-      + rcsch x ^ 2 * -(rcsch x) ^ 2
-      = -(2 * (rcsch x) ^ 2 + 3 * (rcsch x) ^ 4) := by
+      + rcsch x ^ (2 : ℕ) * -(rcsch x) ^ (2 : ℕ)
+      = -(2 * (rcsch x) ^ (2 : ℕ) + 3 * (rcsch x) ^ (4 : ℕ)) := by
     push_cast
     nlinarith [hc, sq_nonneg (rcsch x)]
   rw [heq] at h1
@@ -60,33 +60,33 @@ theorem rphi_hasDerivAt {x : ℝ} (hx : 0 < x) :
 
 /-- The energy density `2csch² + 3csch⁴` is antitone on `(0, ∞)`. -/
 theorem csch_energy_antitone {s t : ℝ} (hs : 0 < s) (hst : s ≤ t) :
-    2 * (rcsch t) ^ 2 + 3 * (rcsch t) ^ 4 ≤ 2 * (rcsch s) ^ 2 + 3 * (rcsch s) ^ 4 := by
+    2 * (rcsch t) ^ (2 : ℕ) + 3 * (rcsch t) ^ (4 : ℕ) ≤ 2 * (rcsch s) ^ (2 : ℕ) + 3 * (rcsch s) ^ (4 : ℕ) := by
   have ht : 0 < t := lt_of_lt_of_le hs hst
   have h1 : rcsch t ≤ rcsch s := by
     rcases eq_or_lt_of_le hst with h | h
     · rw [h]
     · exact (rcsch_strictAntiOn_pos (Set.mem_Ioi.mpr hs) (Set.mem_Ioi.mpr ht) h).le
   have h2 := rcsch_pos_of_pos ht
-  have h3 : (rcsch t) ^ 2 ≤ (rcsch s) ^ 2 := pow_le_pow_left₀ h2.le h1 2
-  have h4 : (rcsch t) ^ 4 ≤ (rcsch s) ^ 4 := pow_le_pow_left₀ h2.le h1 4
+  have h3 : (rcsch t) ^ (2 : ℕ) ≤ (rcsch s) ^ (2 : ℕ) := pow_le_pow_left₀ h2.le h1 2
+  have h4 : (rcsch t) ^ (4 : ℕ) ≤ (rcsch s) ^ (4 : ℕ) := pow_le_pow_left₀ h2.le h1 4
   linarith
 
 /-- **Pair gain**: for `0 < a < b`,
 `φ(a) − φ(b) ≥ (b − a)·(2csch²(b) + 3csch⁴(b))`. MVT for `φ` on `[a, b]` plus antitonicity
 of `−φ' = 2csch² + 3csch⁴`, evaluated at the right endpoint. -/
 theorem rphi_pair_gain {a b : ℝ} (ha : 0 < a) (hab : a < b) :
-    (b - a) * (2 * (rcsch b) ^ 2 + 3 * (rcsch b) ^ 4) ≤ rphi a - rphi b := by
+    (b - a) * (2 * (rcsch b) ^ (2 : ℕ) + 3 * (rcsch b) ^ (4 : ℕ)) ≤ rphi a - rphi b := by
   have hba : (0 : ℝ) < b - a := by linarith
   have hcont : ContinuousOn rphi (Set.Icc a b) := fun y hy =>
     (rphi_hasDerivAt (lt_of_lt_of_le ha hy.1)).continuousAt.continuousWithinAt
   have hderiv : ∀ y ∈ Set.Ioo a b,
-      HasDerivAt rphi (-(2 * (rcsch y) ^ 2 + 3 * (rcsch y) ^ 4)) y := fun y hy =>
+      HasDerivAt rphi (-(2 * (rcsch y) ^ (2 : ℕ) + 3 * (rcsch y) ^ (4 : ℕ))) y := fun y hy =>
     rphi_hasDerivAt (lt_trans ha hy.1)
   obtain ⟨c, hc, hslope⟩ := exists_hasDerivAt_eq_slope rphi
-    (fun y => -(2 * (rcsch y) ^ 2 + 3 * (rcsch y) ^ 4)) hab hcont hderiv
+    (fun y => -(2 * (rcsch y) ^ (2 : ℕ) + 3 * (rcsch y) ^ (4 : ℕ))) hab hcont hderiv
   have hc0 : 0 < c := lt_trans ha hc.1
   rw [eq_div_iff hba.ne'] at hslope
-  have hkey : rphi a - rphi b = (b - a) * (2 * (rcsch c) ^ 2 + 3 * (rcsch c) ^ 4) := by
+  have hkey : rphi a - rphi b = (b - a) * (2 * (rcsch c) ^ (2 : ℕ) + 3 * (rcsch c) ^ (4 : ℕ)) := by
     linear_combination hslope
   rw [hkey]
   exact mul_le_mul_of_nonneg_left (csch_energy_antitone hc0 hc.2.le) hba.le
@@ -94,20 +94,20 @@ theorem rphi_pair_gain {a b : ℝ} (ha : 0 < a) (hab : a < b) :
 /-- **Coth step**: for `0 < a < b`, `coth(a) − coth(b) ≤ (b − a)·csch²(a)`. MVT for `coth`
 plus antitonicity of `csch²`, evaluated at the left endpoint. -/
 theorem rcoth_pair_le {a b : ℝ} (ha : 0 < a) (hab : a < b) :
-    rcoth a - rcoth b ≤ (b - a) * (rcsch a) ^ 2 := by
+    rcoth a - rcoth b ≤ (b - a) * (rcsch a) ^ (2 : ℕ) := by
   have hba : (0 : ℝ) < b - a := by linarith
   have hcont : ContinuousOn rcoth (Set.Icc a b) := fun y hy =>
     (rcoth_hasDerivAt (lt_of_lt_of_le ha hy.1).ne').continuousAt.continuousWithinAt
-  have hderiv : ∀ y ∈ Set.Ioo a b, HasDerivAt rcoth (-(rcsch y) ^ 2) y := fun y hy =>
+  have hderiv : ∀ y ∈ Set.Ioo a b, HasDerivAt rcoth (-(rcsch y) ^ (2 : ℕ)) y := fun y hy =>
     rcoth_hasDerivAt (lt_trans ha hy.1).ne'
   obtain ⟨c, hc, hslope⟩ := exists_hasDerivAt_eq_slope rcoth
-    (fun y => -(rcsch y) ^ 2) hab hcont hderiv
+    (fun y => -(rcsch y) ^ (2 : ℕ)) hab hcont hderiv
   have hc0 : 0 < c := lt_trans ha hc.1
   rw [eq_div_iff hba.ne'] at hslope
-  have hkey : rcoth a - rcoth b = (b - a) * (rcsch c) ^ 2 := by
+  have hkey : rcoth a - rcoth b = (b - a) * (rcsch c) ^ (2 : ℕ) := by
     linear_combination hslope
   rw [hkey]
-  have hcsch : (rcsch c) ^ 2 ≤ (rcsch a) ^ 2 := by
+  have hcsch : (rcsch c) ^ (2 : ℕ) ≤ (rcsch a) ^ (2 : ℕ) := by
     have h1 : rcsch c ≤ rcsch a :=
       (rcsch_strictAntiOn_pos (Set.mem_Ioi.mpr ha) (Set.mem_Ioi.mpr hc0) hc.1).le
     exact pow_le_pow_left₀ (rcsch_pos_of_pos hc0).le h1 2
@@ -116,15 +116,15 @@ theorem rcoth_pair_le {a b : ℝ} (ha : 0 < a) (hab : a < b) :
 /-- **Tail step**: for `0 < a < b`, `2(b − a)·φ(b) ≤ csch²(a) − csch²(b)`. MVT for `csch²`
 (whose derivative is `−2φ`) plus antitonicity of `φ`, evaluated at the right endpoint. -/
 theorem rphi_pair_tail {a b : ℝ} (ha : 0 < a) (hab : a < b) :
-    2 * (b - a) * rphi b ≤ (rcsch a) ^ 2 - (rcsch b) ^ 2 := by
+    2 * (b - a) * rphi b ≤ (rcsch a) ^ (2 : ℕ) - (rcsch b) ^ (2 : ℕ) := by
   have hba : (0 : ℝ) < b - a := by linarith
-  have hcont : ContinuousOn (fun t => (rcsch t) ^ 2) (Set.Icc a b) := fun y hy =>
+  have hcont : ContinuousOn (fun t => (rcsch t) ^ (2 : ℕ)) (Set.Icc a b) := fun y hy =>
     (rcsch_sq_hasDerivAt (lt_of_lt_of_le ha hy.1).ne').continuousAt.continuousWithinAt
-  obtain ⟨c, hc, hslope⟩ := exists_hasDerivAt_eq_slope (fun t => (rcsch t) ^ 2)
+  obtain ⟨c, hc, hslope⟩ := exists_hasDerivAt_eq_slope (fun t => (rcsch t) ^ (2 : ℕ))
     (fun y => -2 * rphi y) hab hcont (fun y hy => rcsch_sq_hasDerivAt (lt_trans ha hy.1).ne')
   have hc0 : 0 < c := lt_trans ha hc.1
   rw [eq_div_iff hba.ne'] at hslope
-  have hkey : (rcsch a) ^ 2 - (rcsch b) ^ 2 = 2 * (b - a) * rphi c := by
+  have hkey : (rcsch a) ^ (2 : ℕ) - (rcsch b) ^ (2 : ℕ) = 2 * (b - a) * rphi c := by
     linear_combination hslope
   rw [hkey]
   have hphi : rphi b ≤ rphi c := by
@@ -136,9 +136,9 @@ theorem rphi_pair_tail {a b : ℝ} (ha : 0 < a) (hab : a < b) :
 /-- **The csch² sum telescopes against coth**: for `x, h > 0`,
 `coth(x·h) − coth((x+M)·h) ≤ h·Σ_{k<M} csch²((x+k)h)`. Each coth step is one `rcoth_pair_le`. -/
 theorem csch_sq_sum_ge {x h : ℝ} (hx : 0 < x) (hh : 0 < h) (M : ℕ) :
-    rcoth (x * h) - rcoth ((x + M) * h) ≤ h * ∑ k ∈ range M, (rcsch ((x + k) * h)) ^ 2 := by
+    rcoth (x * h) - rcoth ((x + M) * h) ≤ h * ∑ k ∈ range M, (rcsch ((x + k) * h)) ^ (2 : ℕ) := by
   have hstep : ∀ k ∈ range M,
-      rcoth ((x + k) * h) - rcoth ((x + (k + 1 : ℕ)) * h) ≤ h * (rcsch ((x + k) * h)) ^ 2 := by
+      rcoth ((x + k) * h) - rcoth ((x + (k + 1 : ℕ)) * h) ≤ h * (rcsch ((x + k) * h)) ^ (2 : ℕ) := by
     intro k _
     have ha : 0 < (x + (k : ℝ)) * h := by positivity
     have hab : (x + (k : ℝ)) * h < (x + ((k : ℝ) + 1)) * h := by nlinarith
@@ -152,16 +152,16 @@ theorem csch_sq_sum_ge {x h : ℝ} (hx : 0 < x) (hh : 0 < h) (M : ℕ) :
       = ∑ k ∈ range M, (rcoth ((x + k) * h) - rcoth ((x + (k + 1 : ℕ)) * h)) := by
         rw [Finset.sum_range_sub' (fun k => rcoth ((x + (k : ℝ)) * h)) M]
         norm_num
-    _ ≤ ∑ k ∈ range M, h * (rcsch ((x + k) * h)) ^ 2 := Finset.sum_le_sum hstep
-    _ = h * ∑ k ∈ range M, (rcsch ((x + k) * h)) ^ 2 := by rw [Finset.mul_sum]
+    _ ≤ ∑ k ∈ range M, h * (rcsch ((x + k) * h)) ^ (2 : ℕ) := Finset.sum_le_sum hstep
+    _ = h * ∑ k ∈ range M, (rcsch ((x + k) * h)) ^ (2 : ℕ) := by rw [Finset.mul_sum]
 
 /-- **The φ tail telescopes against csch²/2**: for `h > 0` and `x + M − 1 > 0`,
 `2h·Σ_{k∈[M,N)} φ((x+k)h) ≤ csch²((x+M−1)h)`. Each step is one `rphi_pair_tail`; the bound
 is uniform in `N`. -/
 theorem rphi_tail_le {x h : ℝ} (hh : 0 < h) {M N : ℕ}
     (hxM : 0 < x + (M : ℝ) - 1) :
-    2 * h * ∑ k ∈ Ico M N, rphi ((x + k) * h) ≤ (rcsch ((x + (M : ℝ) - 1) * h)) ^ 2 := by
-  set g : ℕ → ℝ := fun i => (rcsch ((x + (M : ℝ) - 1 + i) * h)) ^ 2 with hg
+    2 * h * ∑ k ∈ Ico M N, rphi ((x + k) * h) ≤ (rcsch ((x + (M : ℝ) - 1) * h)) ^ (2 : ℕ) := by
+  set g : ℕ → ℝ := fun i => (rcsch ((x + (M : ℝ) - 1 + i) * h)) ^ (2 : ℕ) with hg
   have hterm : ∀ i ∈ range (N - M),
       2 * h * rphi ((x + ((M + i : ℕ) : ℝ)) * h) ≤ g i - g (i + 1) := by
     intro i _
@@ -177,7 +177,7 @@ theorem rphi_tail_le {x h : ℝ} (hh : 0 < h) {M N : ℕ}
     have harg : (x + ((M + i : ℕ) : ℝ)) * h = (x + (M : ℝ) - 1 + ((i : ℝ) + 1)) * h := by
       push_cast; ring
     rw [harg]
-    have hgi : g (i + 1) = (rcsch ((x + (M : ℝ) - 1 + ((i : ℝ) + 1)) * h)) ^ 2 := by
+    have hgi : g (i + 1) = (rcsch ((x + (M : ℝ) - 1 + ((i : ℝ) + 1)) * h)) ^ (2 : ℕ) := by
       simp only [hg]
       push_cast
       ring_nf
@@ -187,14 +187,14 @@ theorem rphi_tail_le {x h : ℝ} (hh : 0 < h) {M N : ℕ}
   have hsum : ∑ i ∈ range (N - M), (g i - g (i + 1)) = g 0 - g (N - M) :=
     Finset.sum_range_sub' g (N - M)
   have hgN : 0 ≤ g (N - M) := by simp only [hg]; positivity
-  have hg0 : g 0 = (rcsch ((x + (M : ℝ) - 1) * h)) ^ 2 := by
+  have hg0 : g 0 = (rcsch ((x + (M : ℝ) - 1) * h)) ^ (2 : ℕ) := by
     simp only [hg, Nat.cast_zero, add_zero]
   calc 2 * h * ∑ k ∈ Ico M N, rphi ((x + k) * h)
       = ∑ i ∈ range (N - M), 2 * h * rphi ((x + ((M + i : ℕ) : ℝ)) * h) := by
         rw [Finset.sum_Ico_eq_sum_range, Finset.mul_sum]
     _ ≤ ∑ i ∈ range (N - M), (g i - g (i + 1)) := Finset.sum_le_sum hterm
     _ = g 0 - g (N - M) := hsum
-    _ ≤ (rcsch ((x + (M : ℝ) - 1) * h)) ^ 2 := by rw [← hg0]; linarith [hgN]
+    _ ≤ (rcsch ((x + (M : ℝ) - 1) * h)) ^ (2 : ℕ) := by rw [← hg0]; linarith [hgN]
 
 /-- **The ahead sum wins whenever `(1 − 2θ)·M·δ² > 1`** (any `N ≥ M`). Every pair
 contributes at least `(1−2θ)(δ/2)·2csch²(b_{M−1})` (pair gain + antitonicity), so the head
@@ -203,7 +203,7 @@ gain is at least `M(1−2θ)δ·csch²(b_{M−1})`; the unpaired tail is at most
 hypothesis is the surviving ratio. -/
 theorem dW_dtheta_neg_seam {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 ≤ M)
     (hθ0 : 0 < θ) (hθhalf : θ < 1 / 2) (hδ0 : 0 < δ)
-    (hB : 1 < (1 - 2 * θ) * M * δ ^ 2) :
+    (hB : 1 < (1 - 2 * θ) * M * δ ^ (2 : ℕ)) :
     (∑ k ∈ range N, rphi ((1 - θ + k) * (δ / 2)))
       < ∑ k ∈ range M, rphi ((θ + k) * (δ / 2)) := by
   have hM : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM1
@@ -211,12 +211,12 @@ theorem dW_dtheta_neg_seam {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 �
   set fb : ℕ → ℝ := fun k => rphi ((1 - θ + k) * (δ / 2)) with hfb
   have h2θ : (0 : ℝ) < 1 - 2 * θ := by linarith
   have hbM : (0 : ℝ) < ((M : ℝ) - θ) * (δ / 2) := by nlinarith
-  have hcsch2pos : 0 < (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2 := by
+  have hcsch2pos : 0 < (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ) := by
     have := rcsch_pos_of_pos hbM
     positivity
   -- per-pair gain, uniform over k < M
   have hterm : ∀ k ∈ range M,
-      (1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2 ≤ fa k - fb k := by
+      (1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ) ≤ fa k - fb k := by
     intro k hk
     rw [Finset.mem_range] at hk
     have hkM : (k : ℝ) + 1 ≤ (M : ℝ) := by exact_mod_cast hk
@@ -230,29 +230,29 @@ theorem dW_dtheta_neg_seam {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 �
       have : (0 : ℝ) ≤ (k : ℝ) := by positivity
       nlinarith
     have hle : (1 - θ + (k : ℝ)) * (δ / 2) ≤ ((M : ℝ) - θ) * (δ / 2) := by nlinarith
-    have hmono : (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2
-        ≤ (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2 := by
+    have hmono : (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ)
+        ≤ (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ) := by
       rcases eq_or_lt_of_le hle with h | h
       · rw [h]
       · have h1 : rcsch (((M : ℝ) - θ) * (δ / 2)) ≤ rcsch ((1 - θ + (k : ℝ)) * (δ / 2)) :=
           (rcsch_strictAntiOn_pos (Set.mem_Ioi.mpr hb0) (Set.mem_Ioi.mpr hbM) h).le
         exact pow_le_pow_left₀ (rcsch_pos_of_pos hbM).le h1 2
-    have hcsch4 : 0 ≤ (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 4 := by positivity
-    have hchain : (1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2
+    have hcsch4 : 0 ≤ (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (4 : ℕ) := by positivity
+    have hchain : (1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ)
         ≤ (1 - 2 * θ) * (δ / 2)
-          * (2 * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2
-             + 3 * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 4) := by
+          * (2 * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
+             + 3 * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (4 : ℕ)) := by
       nlinarith [mul_le_mul_of_nonneg_left hmono (mul_pos h2θ hδ0).le,
         mul_nonneg (mul_nonneg h2θ.le hδ0.le) hcsch4]
     simp only [hfa, hfb]
     linarith [hchain, hgain]
   -- head sum: M copies of the uniform bound
-  have hheadsum : (M : ℝ) * ((1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2)
+  have hheadsum : (M : ℝ) * ((1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ))
       ≤ ∑ k ∈ range M, (fa k - fb k) := by
     have h := Finset.sum_le_sum hterm
     rwa [Finset.sum_const, Finset.card_range, nsmul_eq_mul] at h
   -- tail, telescoped
-  have htail : (∑ k ∈ Ico M N, fb k) ≤ (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2 / δ := by
+  have htail : (∑ k ∈ Ico M N, fb k) ≤ (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ) / δ := by
     have h2 := rphi_tail_le (x := 1 - θ) (h := δ / 2) (N := N) (M := M) (by positivity)
       (by nlinarith : (0 : ℝ) < 1 - θ + (M : ℝ) - 1)
     rw [show (1 - θ + (M : ℝ) - 1) * (δ / 2) = ((M : ℝ) - θ) * (δ / 2) from by ring] at h2
@@ -260,13 +260,13 @@ theorem dW_dtheta_neg_seam {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 �
     rw [le_div_iff₀ hδ0]
     nlinarith [h2]
   refine l1_neg_of_head_gt_tail hMN fa fb ?_
-  have hbeat : (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2 / δ
-      < (M : ℝ) * ((1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2) := by
+  have hbeat : (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ) / δ
+      < (M : ℝ) * ((1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ)) := by
     rw [div_lt_iff₀ hδ0]
-    nlinarith [mul_pos hcsch2pos (by linarith : (0 : ℝ) < (1 - 2 * θ) * M * δ ^ 2 - 1)]
+    nlinarith [mul_pos hcsch2pos (by linarith : (0 : ℝ) < (1 - 2 * θ) * M * δ ^ (2 : ℕ) - 1)]
   calc (∑ k ∈ Ico M N, fb k)
-      ≤ (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2 / δ := htail
-    _ < (M : ℝ) * ((1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2) := hbeat
+      ≤ (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ) / δ := htail
+    _ < (M : ℝ) * ((1 - 2 * θ) * δ * (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ)) := hbeat
     _ ≤ ∑ k ∈ range M, (fa k - fb k) := hheadsum
 
 /-- **The ahead sum wins whenever
@@ -286,14 +286,14 @@ theorem dW_dtheta_neg_window {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 
   set fb : ℕ → ℝ := fun k => rphi ((1 - θ + k) * (δ / 2)) with hfb
   have h2θ : (0 : ℝ) < 1 - 2 * θ := by linarith
   have hbM : (0 : ℝ) < ((M : ℝ) - θ) * (δ / 2) := by nlinarith
-  set cM : ℝ := (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ 2 with hcM
+  set cM : ℝ := (rcsch (((M : ℝ) - θ) * (δ / 2))) ^ (2 : ℕ) with hcM
   have hcMpos : 0 < cM := by
     have := rcsch_pos_of_pos hbM
     simp only [hcM]
     positivity
   -- per-pair: fa k − fb k ≥ 3(1−2θ)(δ/2)·cM·csch²(b_k)
   have hterm : ∀ k ∈ range M,
-      3 * (1 - 2 * θ) * (δ / 2) * cM * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2
+      3 * (1 - 2 * θ) * (δ / 2) * cM * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
         ≤ fa k - fb k := by
     intro k hk
     rw [Finset.mem_range] at hk
@@ -308,28 +308,28 @@ theorem dW_dtheta_neg_window {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 
       have : (0 : ℝ) ≤ (k : ℝ) := by positivity
       nlinarith
     have hle : (1 - θ + (k : ℝ)) * (δ / 2) ≤ ((M : ℝ) - θ) * (δ / 2) := by nlinarith
-    have hmono : cM ≤ (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2 := by
+    have hmono : cM ≤ (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ) := by
       simp only [hcM]
       rcases eq_or_lt_of_le hle with h | h
       · rw [h]
       · have h1 : rcsch (((M : ℝ) - θ) * (δ / 2)) ≤ rcsch ((1 - θ + (k : ℝ)) * (δ / 2)) :=
           (rcsch_strictAntiOn_pos (Set.mem_Ioi.mpr hb0) (Set.mem_Ioi.mpr hbM) h).le
         exact pow_le_pow_left₀ (rcsch_pos_of_pos hbM).le h1 2
-    have hck : 0 ≤ (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2 := by positivity
+    have hck : 0 ≤ (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ) := by positivity
     -- csch⁴(b_k) = (csch²(b_k))² ≥ cM·csch²(b_k); the 2csch² part of the gain is dropped
-    have hchain : 3 * (1 - 2 * θ) * (δ / 2) * cM * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2
+    have hchain : 3 * (1 - 2 * θ) * (δ / 2) * cM * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
         ≤ (1 - 2 * θ) * (δ / 2)
-          * (2 * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2
-             + 3 * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 4) := by
+          * (2 * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
+             + 3 * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (4 : ℕ)) := by
       nlinarith [mul_le_mul_of_nonneg_right hmono hck, mul_pos h2θ hδ0,
         mul_nonneg (mul_pos h2θ hδ0).le hck]
     simp only [hfa, hfb]
     linarith [hchain, hgain]
   have hsum := Finset.sum_le_sum hterm
   have hfactor : ∑ k ∈ range M,
-      3 * (1 - 2 * θ) * (δ / 2) * cM * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2
+      3 * (1 - 2 * θ) * (δ / 2) * cM * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)
       = 3 * (1 - 2 * θ) * cM
-        * ((δ / 2) * ∑ k ∈ range M, (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2) := by
+        * ((δ / 2) * ∑ k ∈ range M, (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)) := by
     rw [Finset.mul_sum, Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro k _
@@ -343,10 +343,10 @@ theorem dW_dtheta_neg_window {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 
     calc 3 * (1 - 2 * θ) * cM
         * (rcoth ((1 - θ) * (δ / 2)) - rcoth ((1 - θ + M) * (δ / 2)))
         ≤ 3 * (1 - 2 * θ) * cM
-          * ((δ / 2) * ∑ k ∈ range M, (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2) :=
+          * ((δ / 2) * ∑ k ∈ range M, (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hcothtel hc3
       _ = ∑ k ∈ range M,
-          3 * (1 - 2 * θ) * (δ / 2) * cM * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ 2 := by
+          3 * (1 - 2 * θ) * (δ / 2) * cM * (rcsch ((1 - θ + (k : ℝ)) * (δ / 2))) ^ (2 : ℕ) := by
           rw [hfactor]
       _ ≤ ∑ k ∈ range M, (fa k - fb k) := hsum
   have htail : (∑ k ∈ Ico M N, fb k) ≤ cM / δ := by

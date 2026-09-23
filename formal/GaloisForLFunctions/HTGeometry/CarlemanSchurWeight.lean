@@ -29,17 +29,17 @@ theorem hasDerivAt_carlemanSchurPrimitive {s : ℝ} (hs : 0 < s) {t : ℝ} (ht :
     HasDerivAt (carlemanSchurPrimitive s) (1 / ((s + t) * Real.sqrt t)) t := by
   have hst : 0 < Real.sqrt s := Real.sqrt_pos.mpr hs
   have htt : 0 < Real.sqrt t := Real.sqrt_pos.mpr ht
-  have hs2 : Real.sqrt s ^ 2 = s := Real.sq_sqrt hs.le
-  have ht2 : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht.le
+  have hs2 : Real.sqrt s ^ (2 : ℕ) = s := Real.sq_sqrt hs.le
+  have ht2 : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht.le
   have h1 : HasDerivAt Real.sqrt (1 / (2 * Real.sqrt t)) t := Real.hasDerivAt_sqrt ht.ne'
   have h2 : HasDerivAt (fun u : ℝ => Real.sqrt u / Real.sqrt s)
       (1 / (2 * Real.sqrt t) / Real.sqrt s) t := h1.div_const _
   have h3 : HasDerivAt (fun u : ℝ => Real.arctan (Real.sqrt u / Real.sqrt s))
-      (1 / (1 + (Real.sqrt t / Real.sqrt s) ^ 2) * (1 / (2 * Real.sqrt t) / Real.sqrt s)) t :=
+      (1 / (1 + (Real.sqrt t / Real.sqrt s) ^ (2 : ℕ)) * (1 / (2 * Real.sqrt t) / Real.sqrt s)) t :=
     (Real.hasDerivAt_arctan _).comp t h2
   have h4 := h3.const_mul (2 / Real.sqrt s)
   refine h4.congr_deriv ?_
-  have hden : (1 : ℝ) + (Real.sqrt t / Real.sqrt s) ^ 2 = (s + t) / s := by
+  have hden : (1 : ℝ) + (Real.sqrt t / Real.sqrt s) ^ (2 : ℕ) = (s + t) / s := by
     rw [div_pow, ht2, hs2]
     field_simp
   rw [hden]

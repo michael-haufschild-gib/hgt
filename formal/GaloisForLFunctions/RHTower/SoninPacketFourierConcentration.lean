@@ -23,10 +23,10 @@ controlled by the profile's spectral tail beyond the gap plus the squared mean. 
 theorem norm_sq_sub_evenFourierCutoff_soninPacketEven_le
     (b c : ℝ) (hb : 0 < b) (hbc : b < c) (t a : ℝ) :
     ‖soninPacketEven b c hb hbc (2 * Real.pi * a) -
-        evenFourierCutoff t (soninPacketEven b c hb hbc (2 * Real.pi * a))‖ ^ 2 ≤
+        evenFourierCutoff t (soninPacketEven b c hb hbc (2 * Real.pi * a))‖ ^ (2 : ℕ) ≤
       3 * ((2 : ℝ)⁻¹ * (∫ η : ℝ, {η : ℝ | t - |a| ≤ |η|}.indicator
               (soninBumpSpectralDensity b c hbc) η) +
-        (soninPacketMean b c hbc (2 * Real.pi * a)) ^ 2 *
+        (soninPacketMean b c hbc (2 * Real.pi * a)) ^ (2 : ℕ) *
           ∫ η : ℝ, soninBumpSpectralDensity b c hbc η) := by
   set μ : ℝ := soninPacketMean b c hbc (2 * Real.pi * a) with hμ
   set D : ℝ → ℝ := soninBumpSpectralDensity b c hbc with hD
@@ -45,7 +45,7 @@ theorem norm_sq_sub_evenFourierCutoff_soninPacketEven_le
     · rw [Set.indicator_of_mem hmem]
     · rw [Set.indicator_of_notMem hmem]
       exact hDnn ξ
-  have hμsq : (0 : ℝ) ≤ μ ^ 2 := sq_nonneg μ
+  have hμsq : (0 : ℝ) ≤ μ ^ (2 : ℕ) := sq_nonneg μ
   refine hstart.trans (hband.trans ?_)
   nlinarith [hT1, hT2, hT3, hμsq, mul_le_mul_of_nonneg_left hT3 hμsq]
 
@@ -75,20 +75,20 @@ theorem tendsto_norm_sub_evenFourierCutoff_soninPacketEven_scaled
   have hmaj : Tendsto (fun n : ℕ =>
       3 * ((2 : ℝ)⁻¹ * (∫ η : ℝ, {η : ℝ | r n * (b₀ - q) ≤ |η|}.indicator
               (soninBumpSpectralDensity b c hbc) η) +
-        (soninPacketMean b c hbc (2 * Real.pi * (r n * q))) ^ 2 *
+        (soninPacketMean b c hbc (2 * Real.pi * (r n * q))) ^ (2 : ℕ) *
           ∫ η : ℝ, soninBumpSpectralDensity b c hbc η)) atTop (𝓝 0) := by
     have h1 : Tendsto (fun n : ℕ => (2 : ℝ)⁻¹ *
         ∫ η : ℝ, {η : ℝ | r n * (b₀ - q) ≤ |η|}.indicator
           (soninBumpSpectralDensity b c hbc) η) atTop (𝓝 0) := by
       simpa using hTail.const_mul ((2 : ℝ)⁻¹)
     have h2 : Tendsto (fun n : ℕ =>
-        (soninPacketMean b c hbc (2 * Real.pi * (r n * q))) ^ 2 *
+        (soninPacketMean b c hbc (2 * Real.pi * (r n * q))) ^ (2 : ℕ) *
           ∫ η : ℝ, soninBumpSpectralDensity b c hbc η) atTop (𝓝 0) := by
       simpa using (hMean.pow 2).mul_const (∫ η : ℝ, soninBumpSpectralDensity b c hbc η)
     simpa using (h1.add h2).const_mul (3 : ℝ)
   have hsq : Tendsto (fun n : ℕ => ‖soninPacketEven b c hb hbc (2 * Real.pi * (r n * q)) -
       evenFourierCutoff (r n * b₀)
-        (soninPacketEven b c hb hbc (2 * Real.pi * (r n * q)))‖ ^ 2) atTop (𝓝 0) := by
+        (soninPacketEven b c hb hbc (2 * Real.pi * (r n * q)))‖ ^ (2 : ℕ)) atTop (𝓝 0) := by
     refine squeeze_zero (fun n => sq_nonneg _) (fun n => ?_) hmaj
     have hbnd := norm_sq_sub_evenFourierCutoff_soninPacketEven_le b c hb hbc
       (r n * b₀) (r n * q)

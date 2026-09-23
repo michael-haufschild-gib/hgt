@@ -214,7 +214,7 @@ theorem tendsto_riemannZeta_movingPolePoint :
 which equals `2π²/ζ(3)`. -/
 theorem tendsto_succ_mul_movingPoleResidue :
     Tendsto (fun M : ℕ => ((M : ℂ) + 1) * movingPoleResidue M) atTop
-      (𝓝 (2 * (Real.pi : ℂ) ^ 2 / riemannZeta 3)) := by
+      (𝓝 (2 * (Real.pi : ℂ) ^ (2 : ℕ) / riemannZeta 3)) := by
   have hz3 : riemannZeta 3 ≠ 0 := riemannZeta_ne_zero_of_one_lt_re (by norm_num)
   have hpi : (Real.pi : ℂ) ≠ 0 := ofReal_pi_ne_zero
   have hk : ∀ M : ℕ, ((M : ℂ) + 1) * movingPoleResidue M
@@ -224,7 +224,7 @@ theorem tendsto_succ_mul_movingPoleResidue :
     field_simp
   simp only [hk]
   have hlim := tendsto_riemannZeta_movingPolePoint.div_const (deriv riemannZeta (-2))
-  have hvalue : 2 * (Real.pi : ℂ) ^ 2 / riemannZeta 3
+  have hvalue : 2 * (Real.pi : ℂ) ^ (2 : ℕ) / riemannZeta 3
       = (-1 / 2) / deriv riemannZeta (-2) := by
     rw [deriv_riemannZeta_neg_two]
     field_simp
@@ -236,7 +236,7 @@ theorem tendsto_succ_mul_movingPoleResidue :
 converges to `π²/ζ(3)`. -/
 theorem tendsto_movingPoleResidue_div_dist :
     Tendsto (fun M : ℕ => movingPoleResidue M / ((‖movingPolePoint M‖ : ℝ) : ℂ)) atTop
-      (𝓝 ((Real.pi : ℂ) ^ 2 / riemannZeta 3)) := by
+      (𝓝 ((Real.pi : ℂ) ^ (2 : ℕ) / riemannZeta 3)) := by
   have hz3 : riemannZeta 3 ≠ 0 := riemannZeta_ne_zero_of_one_lt_re (by norm_num)
   have hpi : (Real.pi : ℂ) ≠ 0 := ofReal_pi_ne_zero
   have hk : ∀ M : ℕ, movingPoleResidue M / ((‖movingPolePoint M‖ : ℝ) : ℂ)
@@ -248,7 +248,7 @@ theorem tendsto_movingPoleResidue_div_dist :
     field_simp
   simp only [hk]
   have hlim := tendsto_riemannZeta_movingPolePoint.div_const (2 * deriv riemannZeta (-2))
-  have hvalue : (Real.pi : ℂ) ^ 2 / riemannZeta 3
+  have hvalue : (Real.pi : ℂ) ^ (2 : ℕ) / riemannZeta 3
       = (-1 / 2) / (2 * deriv riemannZeta (-2)) := by
     rw [deriv_riemannZeta_neg_two]
     field_simp

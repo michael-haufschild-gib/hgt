@@ -39,9 +39,9 @@ theorem egbFixedChargeAGibbsFullCollisionHankelMatrix_gram (n d : ℕ) (β : ℝ
     pow_add (0 : ℝ) (i : ℕ) (j : ℕ), pow_add (4 / 9 : ℝ) (i : ℕ) (j : ℕ),
     pow_add (1 / 36 : ℝ) (i : ℕ) (j : ℕ)]
   calc
-    _ = Real.sqrt (egbFixedChargeAGibbsDiscardedModeEnergy n β E) ^ 2 * (0 : ℝ) ^ (i : ℕ) * (0 : ℝ) ^ (j : ℕ) +
-        Real.sqrt (egbFixedChargeAGibbsSlowModeEnergy n β E) ^ 2 * (4 / 9 : ℝ) ^ (i : ℕ) * (4 / 9 : ℝ) ^ (j : ℕ) +
-        Real.sqrt (egbFixedChargeAGibbsFastModeEnergy n β E) ^ 2 * (1 / 36 : ℝ) ^ (i : ℕ) * (1 / 36 : ℝ) ^ (j : ℕ) := by
+    _ = Real.sqrt (egbFixedChargeAGibbsDiscardedModeEnergy n β E) ^ (2 : ℕ) * (0 : ℝ) ^ (i : ℕ) * (0 : ℝ) ^ (j : ℕ) +
+        Real.sqrt (egbFixedChargeAGibbsSlowModeEnergy n β E) ^ (2 : ℕ) * (4 / 9 : ℝ) ^ (i : ℕ) * (4 / 9 : ℝ) ^ (j : ℕ) +
+        Real.sqrt (egbFixedChargeAGibbsFastModeEnergy n β E) ^ (2 : ℕ) * (1 / 36 : ℝ) ^ (i : ℕ) * (1 / 36 : ℝ) ^ (j : ℕ) := by
           rw [hR, hA, hB]
           ring
     _ = _ := by ring

@@ -66,11 +66,11 @@ theorem sub_hsTruncation_apply {ι : Type*} (b : HilbertBasis ι 𝕜 E) (T : E 
 expansion is estimated by the series Cauchy–Schwarz inequality against Parseval for `x`. -/
 theorem norm_sub_hsTruncation_le {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T)
     {ι : Type*} (b : HilbertBasis ι 𝕜 E) (s : Finset ι) :
-    ‖T - hsTruncation b T s‖ ≤ Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ 2) := by
+    ‖T - hsTruncation b T s‖ ≤ Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ (2 : ℕ)) := by
   refine opNorm_le_bound _ (Real.sqrt_nonneg _) fun x => ?_
   rw [sub_apply, sub_hsTruncation_apply]
-  have hbT : Summable (fun i : {i // i ∉ s} => ‖T (b i)‖ ^ 2) := (hT.summable b).subtype _
-  have hbx : Summable (fun i : {i // i ∉ s} => ‖inner 𝕜 (b i) x‖ ^ 2) :=
+  have hbT : Summable (fun i : {i // i ∉ s} => ‖T (b i)‖ ^ (2 : ℕ)) := (hT.summable b).subtype _
+  have hbx : Summable (fun i : {i // i ∉ s} => ‖inner 𝕜 (b i) x‖ ^ (2 : ℕ)) :=
     (b.summable_norm_inner_sq x).subtype _
   have hprod : Summable (fun i : {i // i ∉ s} => ‖inner 𝕜 (b i) x‖ * ‖T (b i)‖) := by
     refine Summable.of_nonneg_of_le (fun i => by positivity) (fun i => ?_)
@@ -83,29 +83,29 @@ theorem norm_sub_hsTruncation_le {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T)
       ≤ ∑' i : {i // i ∉ s}, ‖(inner 𝕜 (b i) x) • T (b i)‖ := norm_tsum_le_tsum_norm hnorm
     _ = ∑' i : {i // i ∉ s}, ‖inner 𝕜 (b i) x‖ * ‖T (b i)‖ :=
         tsum_congr fun i => norm_smul _ _
-    _ ≤ Real.sqrt (∑' i : {i // i ∉ s}, ‖inner 𝕜 (b i) x‖ ^ 2)
-          * Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ 2) :=
+    _ ≤ Real.sqrt (∑' i : {i // i ∉ s}, ‖inner 𝕜 (b i) x‖ ^ (2 : ℕ))
+          * Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ (2 : ℕ)) :=
         tsum_mul_le_sqrt_mul_sqrt hbx hbT
-    _ ≤ ‖x‖ * Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ 2) := by
-        have hle : ∑' i : {i // i ∉ s}, ‖inner 𝕜 (b i) x‖ ^ 2 ≤ ‖x‖ ^ 2 := by
+    _ ≤ ‖x‖ * Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ (2 : ℕ)) := by
+        have hle : ∑' i : {i // i ∉ s}, ‖inner 𝕜 (b i) x‖ ^ (2 : ℕ) ≤ ‖x‖ ^ (2 : ℕ) := by
           have h := (b.summable_norm_inner_sq x).sum_add_tsum_subtype_compl s
           rw [b.tsum_norm_inner_sq x] at h
-          have hpart : 0 ≤ ∑ i ∈ s, ‖inner 𝕜 (b i) x‖ ^ 2 :=
+          have hpart : 0 ≤ ∑ i ∈ s, ‖inner 𝕜 (b i) x‖ ^ (2 : ℕ) :=
             Finset.sum_nonneg fun i _ => by positivity
           linarith
         have hsqrt := Real.sqrt_le_sqrt hle
         rw [Real.sqrt_sq (norm_nonneg x)] at hsqrt
         exact mul_le_mul_of_nonneg_right hsqrt (Real.sqrt_nonneg _)
-    _ = Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ 2) * ‖x‖ := mul_comm _ _
+    _ = Real.sqrt (∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ (2 : ℕ)) * ‖x‖ := mul_comm _ _
 
 /-- **Tails of the Hilbert–Schmidt series are arbitrarily small.**  For every `ε > 0` there is a
 finite subfamily outside which `∑ ‖T (b i)‖² < ε`. -/
 theorem IsHilbertSchmidt.exists_tail_lt {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T)
     {ι : Type*} (b : HilbertBasis ι 𝕜 E) {ε : ℝ} (hε : 0 < ε) :
-    ∃ s : Finset ι, ∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ 2 < ε := by
+    ∃ s : Finset ι, ∑' i : {i // i ∉ s}, ‖T (b i)‖ ^ (2 : ℕ) < ε := by
   have hsum := hT.summable b
-  have htend : Filter.Tendsto (fun s : Finset ι => ∑ i ∈ s, ‖T (b i)‖ ^ 2)
-      Filter.atTop (nhds (∑' i, ‖T (b i)‖ ^ 2)) := hsum.hasSum
+  have htend : Filter.Tendsto (fun s : Finset ι => ∑ i ∈ s, ‖T (b i)‖ ^ (2 : ℕ))
+      Filter.atTop (nhds (∑' i, ‖T (b i)‖ ^ (2 : ℕ))) := hsum.hasSum
   obtain ⟨s, hs⟩ := (Metric.tendsto_nhds.mp htend ε hε).exists
   refine ⟨s, ?_⟩
   have h := hsum.sum_add_tsum_subtype_compl s
@@ -120,7 +120,7 @@ theorem opNorm_le_hsNorm {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T) : ‖T�
     rw [hsTruncation, Finset.sum_empty]
   rw [h0, sub_zero] at h
   refine h.trans (Real.sqrt_le_sqrt ?_)
-  have hsum : Summable (fun i => ‖T (hsBasis 𝕜 E i)‖ ^ 2) := hT
+  have hsum : Summable (fun i => ‖T (hsBasis 𝕜 E i)‖ ^ (2 : ℕ)) := hT
   have h2 := hsum.sum_add_tsum_subtype_compl (∅ : Finset _)
   simp only [Finset.sum_empty, zero_add] at h2
   rw [h2]
@@ -166,7 +166,7 @@ theorem IsHilbertSchmidt.isCompactOperator {T : E →L[𝕜] F} (hT : IsHilbertS
   have hcl : T ∈ closure {W : E →L[𝕜] F | IsCompactOperator W} := by
     rw [Metric.mem_closure_iff]
     intro δ hδ
-    obtain ⟨s, hs⟩ := hT.exists_tail_lt (hsBasis 𝕜 E) (show (0 : ℝ) < δ ^ 2 by positivity)
+    obtain ⟨s, hs⟩ := hT.exists_tail_lt (hsBasis 𝕜 E) (show (0 : ℝ) < δ ^ (2 : ℕ) by positivity)
     refine ⟨hsTruncation (hsBasis 𝕜 E) T s, isCompactOperator_hsTruncation _ _ _, ?_⟩
     rw [dist_eq_norm]
     exact (norm_sub_hsTruncation_le hT (hsBasis 𝕜 E) s).trans_lt ((Real.sqrt_lt' hδ).mpr hs)

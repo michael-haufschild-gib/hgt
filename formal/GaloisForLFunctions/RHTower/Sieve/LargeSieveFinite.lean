@@ -57,8 +57,8 @@ theorem gap_extendSeq {lam : ℕ → ℝ} {δ : ℝ} {R : ℕ}
 theorem largeSieve_gallagher_finite (N : ℕ) (hN : 0 < N) (c : Fin N → ℂ) {lam : ℕ → ℝ} {δ : ℝ}
     (hδ : 0 < δ) (R : ℕ) (hgap : ∀ i, i < R → lam i + δ ≤ lam (i + 1))
     (hlow : δ / 2 ≤ lam 0) (hhigh : lam R + δ / 2 ≤ 1) :
-    ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ 2
-      ≤ (1 / δ + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ 2 := by
+    ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ (2 : ℕ)
+      ≤ (1 / δ + 4 * Real.pi * (N : ℝ)) * ∑ n : Fin N, ‖c n‖ ^ (2 : ℕ) := by
   have hlow' : δ / 2 ≤ extendSeq lam R δ 0 := by
     rw [extendSeq_of_le (Nat.zero_le R)]
     exact hlow
@@ -66,8 +66,8 @@ theorem largeSieve_gallagher_finite (N : ℕ) (hN : 0 < N) (c : Fin N → ℂ) {
     rw [extendSeq_of_le le_rfl]
     exact hhigh
   have hbase := largeSieve_gallagher N hN c hδ (gap_extendSeq hgap) hlow' R hhigh'
-  have hsum : ∑ r ∈ Finset.range (R + 1), ‖expSum N c (extendSeq lam R δ r)‖ ^ 2
-      = ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ 2 := by
+  have hsum : ∑ r ∈ Finset.range (R + 1), ‖expSum N c (extendSeq lam R δ r)‖ ^ (2 : ℕ)
+      = ∑ r ∈ Finset.range (R + 1), ‖expSum N c (lam r)‖ ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun r hr => ?_
     have hrR : r ≤ R := by
       have := Finset.mem_range.mp hr

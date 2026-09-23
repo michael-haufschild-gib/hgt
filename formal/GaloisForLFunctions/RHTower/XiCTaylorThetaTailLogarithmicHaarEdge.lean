@@ -116,8 +116,8 @@ lemma phaseTranslation_ratio_one_le (R d : ℕ) (hR : 1 ≤ R) :
     push_cast
     field_simp
     ring_nf
-    rw [show (R : ℝ) ^ 2 * R ^ (d * 2) * (1 / 4) ^ d * 2 ^ (d * 2) * 4 =
-      R ^ 2 * R ^ (d * 2) * ((1 / 4) ^ d * 2 ^ (d * 2)) * 4 by ring,
+    rw [show (R : ℝ) ^ (2 : ℕ) * R ^ (d * 2) * (1 / 4) ^ d * 2 ^ (d * 2) * 4 =
+      R ^ (2 : ℕ) * R ^ (d * 2) * ((1 / 4) ^ d * 2 ^ (d * 2)) * 4 by ring,
       hpow]
     ring
   rw [hEq]
@@ -138,8 +138,8 @@ lemma phaseTranslation_ratio_two_le (R d : ℕ) (hR : 1 ≤ R) :
     push_cast
     field_simp
     ring_nf
-    rw [show (R : ℝ) ^ 3 * R ^ (d * 2) * (1 / 4) ^ d * 2 ^ (d * 2) * 8 =
-      R ^ 3 * R ^ (d * 2) * ((1 / 4) ^ d * 2 ^ (d * 2)) * 8 by ring,
+    rw [show (R : ℝ) ^ (3 : ℕ) * R ^ (d * 2) * (1 / 4) ^ d * 2 ^ (d * 2) * 8 =
+      R ^ (3 : ℕ) * R ^ (d * 2) * ((1 / 4) ^ d * 2 ^ (d * 2)) * 8 by ring,
       hpow]
     ring
   rw [hEq]
@@ -364,7 +364,7 @@ theorem tendsto_scheduled_thetaCuspTailPhaseTranslationEdgeIntegratedNorm_localO
 
 /-- **Anisotropic relative phase-edge theorem.**  The exact density-integrated finite
 cosine--sine translation edge, with its value and spectral derivative kept together, is
-`o(n) |P|^2` on every source-selected anisotropic Taylor mesh. -/
+`o(n) |P|^(2 : ℕ)` on every source-selected anisotropic Taylor mesh. -/
 theorem eventually_scheduled_thetaCuspTailPhaseTranslationEdgeIntegratedNorm_lt_scaled_normSq
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
     (A : ℕ) (sigma : ℂ) {epsilon : ℝ} (hepsilon : 0 < epsilon) :
@@ -408,12 +408,12 @@ lemma exp_neg_dyadic_shift_le_half_pow (R k : ℕ) :
       norm_num
 
 lemma norm_sq_add_quarter_le_nat (R : ℕ) (z : ℂ) (hz : ‖z‖ ≤ R) :
-    ‖z ^ 2 + 1 / 4‖ ≤ (R : ℝ) ^ 2 + 1 := by
+    ‖z ^ (2 : ℕ) + 1 / 4‖ ≤ (R : ℝ) ^ (2 : ℕ) + 1 := by
   calc
-    ‖z ^ 2 + 1 / 4‖ ≤ ‖z ^ 2‖ + ‖(1 / 4 : ℂ)‖ := norm_add_le _ _
-    _ = ‖z‖ ^ 2 + 1 / 4 := by norm_num
-    _ ≤ (R : ℝ) ^ 2 + 1 / 4 := by gcongr
-    _ ≤ (R : ℝ) ^ 2 + 1 := by norm_num
+    ‖z ^ (2 : ℕ) + 1 / 4‖ ≤ ‖z ^ (2 : ℕ)‖ + ‖(1 / 4 : ℂ)‖ := norm_add_le _ _
+    _ = ‖z‖ ^ (2 : ℕ) + 1 / 4 := by norm_num
+    _ ≤ (R : ℝ) ^ (2 : ℕ) + 1 / 4 := by gcongr
+    _ ≤ (R : ℝ) ^ (2 : ℕ) + 1 := by norm_num
 
 /-- A degree-uniform top-row bound in the simple geometric form needed for a logarithmic
 diagonal depth. -/
@@ -422,9 +422,9 @@ theorem abs_integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_le_half_pow
     |∫ p : ℝ × ℝ,
         xiCTaylorThetaTailCoreDyadicHaarRemainderKernel d z k p
           ∂((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0)))| ≤
-      ((4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) ^ 2 *
-        ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ 2 + 1) / 8) *
-        (1 / 2 + ((R : ℝ) ^ 2 + 1) / 4)) * (1 / 2 : ℝ) ^ k := by
+      ((4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) ^ (2 : ℕ) *
+        ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ (2 : ℕ) + 1) / 8) *
+        (1 / 2 + ((R : ℝ) ^ (2 : ℕ) + 1) / 4)) * (1 / 2 : ℝ) ^ k := by
   have hraw :=
     abs_integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_le d R k z hz
   have hq := norm_sq_add_quarter_le_nat R z hz
@@ -439,27 +439,27 @@ theorem abs_integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_le_half_pow
     _ ≤ (2 : ℝ) ^ k *
         ((4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) *
           Real.exp (-((R + 2 : ℕ) : ℝ) * ((k : ℝ) * Real.log 2)) *
-            (‖z‖ / 2 + 3 * ‖z ^ 2 + 1 / 4‖ / 8)) *
+            (‖z‖ / 2 + 3 * ‖z ^ (2 : ℕ) + 1 / 4‖ / 8)) *
         ((4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) *
           Real.exp (-((R + 2 : ℕ) : ℝ) * ((k : ℝ) * Real.log 2)) *
-            (1 / 2 + ‖z ^ 2 + 1 / 4‖ / 4)) := hraw
+            (1 / 2 + ‖z ^ (2 : ℕ) + 1 / 4‖ / 4)) := hraw
     _ ≤ (2 : ℝ) ^ k *
         ((4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) *
           (1 / 2 : ℝ) ^ k *
-            ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ 2 + 1) / 8)) *
+            ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ (2 : ℕ) + 1) / 8)) *
         ((4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) *
           (1 / 2 : ℝ) ^ k *
-            (1 / 2 + ((R : ℝ) ^ 2 + 1) / 4)) := by gcongr
-    _ = ((4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) ^ 2 *
-        ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ 2 + 1) / 8) *
-        (1 / 2 + ((R : ℝ) ^ 2 + 1) / 4)) * (1 / 2 : ℝ) ^ k := by
+            (1 / 2 + ((R : ℝ) ^ (2 : ℕ) + 1) / 4)) := by gcongr
+    _ = ((4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) ^ (2 : ℕ) *
+        ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ (2 : ℕ) + 1) / 8) *
+        (1 / 2 + ((R : ℝ) ^ (2 : ℕ) + 1) / 4)) * (1 / 2 : ℝ) ^ k := by
       have hcancel : (2 : ℝ) ^ k * (1 / 2 : ℝ) ^ k = 1 := by
         rw [← mul_pow]
         norm_num
       calc
-        _ = (4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) ^ 2 *
-              ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ 2 + 1) / 8) *
-              (1 / 2 + ((R : ℝ) ^ 2 + 1) / 4) *
+        _ = (4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) ^ (2 : ℕ) *
+              ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ (2 : ℕ) + 1) / 8) *
+              (1 / 2 + ((R : ℝ) ^ (2 : ℕ) + 1) / 4) *
               (((2 : ℝ) ^ k * (1 / 2 : ℝ) ^ k) * (1 / 2 : ℝ) ^ k) := by ring
         _ = _ := by rw [hcancel]; ring
 
@@ -514,9 +514,9 @@ theorem tendsto_scheduled_dyadicHaarRemainderKernel_mul_localOrder_zero
   obtain ⟨R, hR, hz⟩ :=
     exists_eventually_xiCTaylorAnisotropicCenteredPoint_norm_le_nat sigma
   let M : ℕ := 2 * (analyticOrderAt xi sigma).toNat
-  let C : ℝ := (4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) ^ 2 *
-    ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ 2 + 1) / 8) *
-    (1 / 2 + ((R : ℝ) ^ 2 + 1) / 4)
+  let C : ℝ := (4 * thetaCuspTailDerivativeNatExpConstant 2 (R + 2)) ^ (2 : ℕ) *
+    ((R : ℝ) / 2 + 3 * ((R : ℝ) ^ (2 : ℕ) + 1) / 8) *
+    (1 / 2 + ((R : ℝ) ^ (2 : ℕ) + 1) / 4)
   have hmajor : Tendsto (fun n : ℕ => C *
       ((1 / 2 : ℝ) ^ xiCTaylorLogarithmicHaarDepth (M + 1) n *
         (((n + 1 : ℕ) : ℝ) ^ M))) atTop (nhds 0) := by
@@ -609,7 +609,7 @@ edge envelope.  Keeping the sum intact avoids separating the cosine and sine cha
 theorem abs_thetaCuspTailPhaseTranslationEdgeIntegratedCurrent_le_sq
     (d : ℕ) (z : ℂ) (a : ℝ) :
     |thetaCuspTailPhaseTranslationEdgeIntegratedCurrent d z a| ≤
-      thetaCuspTailPhaseTranslationEdgeIntegratedNorm d z a ^ 2 := by
+      thetaCuspTailPhaseTranslationEdgeIntegratedNorm d z a ^ (2 : ℕ) := by
   let V : ℝ := ∫ x : ℝ in Ioi 0,
     |thetaCuspTailSecondDensity x| *
       ‖(finitePositivePhaseTranslationTopEdge d x a).eval z‖
@@ -632,8 +632,8 @@ theorem abs_thetaCuspTailPhaseTranslationEdgeIntegratedCurrent_le_sq
     _ = ‖thetaCuspTailPhaseTranslationEdgeDerivativeAverage d z a‖ *
         ‖thetaCuspTailPhaseTranslationEdgeAverage d z a‖ := by simp
     _ ≤ W * V := mul_le_mul hW hV (norm_nonneg _) hW0
-    _ ≤ (V + W) ^ 2 := by nlinarith
-    _ = thetaCuspTailPhaseTranslationEdgeIntegratedNorm d z a ^ 2 := by
+    _ ≤ (V + W) ^ (2 : ℕ) := by nlinarith
+    _ = thetaCuspTailPhaseTranslationEdgeIntegratedNorm d z a ^ (2 : ℕ) := by
       unfold thetaCuspTailPhaseTranslationEdgeIntegratedNorm
       dsimp [V, W]
 
@@ -686,13 +686,13 @@ theorem tendsto_scheduled_thetaCuspTailPhaseTranslationEdgeIntegratedCurrent_loc
           (xiCTaylorAnisotropicCenteredPoint sigma n)
           (xiCTaylorLogarithmicHaarDisplacement A n)| *
           ((n + 1 : ℕ) : ℝ) ^ M ≤
-        S n ^ 2 * ((n + 1 : ℕ) : ℝ) ^ M :=
+        S n ^ (2 : ℕ) * ((n + 1 : ℕ) : ℝ) ^ M :=
           mul_le_mul_of_nonneg_right hcurrent hq
       _ = S n * (S n * ((n + 1 : ℕ) : ℝ) ^ M) := by ring
   · simpa only [M] using hmajor
 
 /-- **Sublinear upper current of the finite translation edge.**  At logarithmic Haar depth the
-absolute exact integrated edge current is `o(n) |P|^2` on every anisotropic rational mesh. -/
+absolute exact integrated edge current is `o(n) |P|^(2 : ℕ)` on every anisotropic rational mesh. -/
 theorem eventually_abs_scheduled_thetaCuspTailPhaseTranslationEdgeIntegratedCurrent_lt_scaled_normSq
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
     (A : ℕ) (sigma : ℂ) {epsilon : ℝ} (hepsilon : 0 < epsilon) :
@@ -838,7 +838,7 @@ theorem thetaCuspTailNegativePhaseTranslationEdgeIntegratedCurrent_eq_neg_positi
 theorem abs_thetaCuspTailNegativePhaseTranslationEdgeIntegratedCurrent_le_sq
     (d : ℕ) (z : ℂ) (a : ℝ) :
     |thetaCuspTailNegativePhaseTranslationEdgeIntegratedCurrent d z a| ≤
-      thetaCuspTailPhaseTranslationEdgeIntegratedNorm d (-z) a ^ 2 := by
+      thetaCuspTailPhaseTranslationEdgeIntegratedNorm d (-z) a ^ (2 : ℕ) := by
   rw [thetaCuspTailNegativePhaseTranslationEdgeIntegratedCurrent_eq_neg_positive_neg, abs_neg]
   exact abs_thetaCuspTailPhaseTranslationEdgeIntegratedCurrent_le_sq d (-z) a
 
@@ -898,13 +898,13 @@ theorem tendsto_scheduled_thetaCuspTailNegativePhaseTranslationEdgeIntegratedCur
           (xiCTaylorAnisotropicCenteredPoint sigma n)
           (xiCTaylorLogarithmicHaarDisplacement A n)| *
           ((n + 1 : ℕ) : ℝ) ^ M ≤
-        S n ^ 2 * ((n + 1 : ℕ) : ℝ) ^ M :=
+        S n ^ (2 : ℕ) * ((n + 1 : ℕ) : ℝ) ^ M :=
           mul_le_mul_of_nonneg_right hcurrent hq
       _ = S n * (S n * ((n + 1 : ℕ) : ℝ) ^ M) := by ring
   · simpa only [M] using hmajor
 
 /-- **Sublinear reflected edge current.**  The negative diagonal finite translation edge is also
-`o(n) |P|^2` on every source-selected anisotropic rational mesh. -/
+`o(n) |P|^(2 : ℕ)` on every source-selected anisotropic rational mesh. -/
 theorem eventually_abs_scheduled_thetaCuspTailNegativePhaseTranslationEdgeIntegratedCurrent_lt_scaled_normSq
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
     (A : ℕ) (sigma : ℂ) {epsilon : ℝ} (hepsilon : 0 < epsilon) :

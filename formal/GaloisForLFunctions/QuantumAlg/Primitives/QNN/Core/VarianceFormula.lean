@@ -140,7 +140,7 @@ theorem casimir_hsInner_kron {H : Matrix (Fin N) (Fin N) ℂ} (hH : Hᴴ = H) :
 [RBS+23, Arxiv_Final.tex:657]. -/
 theorem gPurity_eq_trace {H : Matrix (Fin N) (Fin N) ℂ} (hH : Hᴴ = H) :
     b.gPurity H = (b.gProj H * b.gProj H).trace := by
-  have key : (b.gProj H * b.gProj H).trace = ∑ i, (hsInner (b.B i) H) ^ 2 := by
+  have key : (b.gProj H * b.gProj H).trace = ∑ i, (hsInner (b.B i) H) ^ (2 : ℕ) := by
     simp only [gProj, Matrix.sum_mul, Matrix.mul_sum, Matrix.smul_mul, Matrix.mul_smul,
       Matrix.trace_sum, Matrix.trace_smul, smul_eq_mul, b.trace_mul, mul_ite, mul_one, mul_zero]
     refine Finset.sum_congr rfl (fun i _ => ?_)

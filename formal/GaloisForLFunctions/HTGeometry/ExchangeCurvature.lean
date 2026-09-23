@@ -77,7 +77,7 @@ noncomputable def planeUnit (θ : ℝ) : EuclideanSpace ℝ (Fin 2) :=
 @[simp] theorem planeUnit_apply_one (θ : ℝ) : planeUnit θ 1 = Real.sin θ := rfl
 
 theorem norm_planeUnit (θ : ℝ) : ‖planeUnit θ‖ = 1 := by
-  have hsq : ‖planeUnit θ‖ ^ 2 = 1 := by
+  have hsq : ‖planeUnit θ‖ ^ (2 : ℕ) = 1 := by
     rw [PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two, planeUnit_apply_zero, planeUnit_apply_one,
       Real.norm_eq_abs, Real.norm_eq_abs, sq_abs, sq_abs, Real.cos_sq_add_sin_sq]
   have hnn : 0 ≤ ‖planeUnit θ‖ := norm_nonneg _
@@ -117,7 +117,7 @@ theorem exchangeCurvature_planeUnit_apply (θ : ℝ) (w : EuclideanSpace ℝ (Fi
 
 theorem norm_toLp_swap (w : EuclideanSpace ℝ (Fin 2)) :
     ‖(WithLp.toLp 2 ![w 1, -w 0] : EuclideanSpace ℝ (Fin 2))‖ = ‖w‖ := by
-  have hsq : ‖(WithLp.toLp 2 ![w 1, -w 0] : EuclideanSpace ℝ (Fin 2))‖ ^ 2 = ‖w‖ ^ 2 := by
+  have hsq : ‖(WithLp.toLp 2 ![w 1, -w 0] : EuclideanSpace ℝ (Fin 2))‖ ^ (2 : ℕ) = ‖w‖ ^ (2 : ℕ) := by
     rw [PiLp.norm_sq_eq_of_L2, PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two, Fin.sum_univ_two]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Real.norm_eq_abs, sq_abs, neg_sq]
     ring
@@ -219,7 +219,7 @@ noncomputable def spaceUnit (θ : ℝ) : EuclideanSpace ℝ (Fin 3) :=
 @[simp] theorem spaceUnit_apply_two (θ : ℝ) : spaceUnit θ 2 = 0 := rfl
 
 theorem norm_spaceUnit (θ : ℝ) : ‖spaceUnit θ‖ = 1 := by
-  have hsq : ‖spaceUnit θ‖ ^ 2 = 1 := by
+  have hsq : ‖spaceUnit θ‖ ^ (2 : ℕ) = 1 := by
     rw [PiLp.norm_sq_eq_of_L2, Fin.sum_univ_three, spaceUnit_apply_zero, spaceUnit_apply_one,
       spaceUnit_apply_two, Real.norm_eq_abs, Real.norm_eq_abs, Real.norm_eq_abs, sq_abs, sq_abs,
       sq_abs, Real.cos_sq_add_sin_sq]

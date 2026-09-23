@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.SuzukiJumpKernelLoewnerGap
 # Suzuki global-local compound Bezoutian weld
 
 The local marked Volterra response is a projective pair `(Q,P)`.  Suzuki's
-centered global multiplier is the projective pair `(XiC', z^2 XiC)`.  Their
+centered global multiplier is the projective pair `(XiC', z^(2 : ℕ) XiC)`.  Their
 affine difference has the division-free compound pair
 
 `N = Q*T - S*P`, `D = P*T`.
@@ -192,7 +192,7 @@ def suzukiXiDerivativePairNumerator (z : ℂ) : ℂ :=
 
 /-- Denominator member of the centered global Xi projective pair. -/
 def suzukiXiDerivativePairDenominator (z : ℂ) : ℂ :=
-  z ^ 2 * XiC z
+  z ^ (2 : ℕ) * XiC z
 
 /-- Compound numerator coupling any local pair to Suzuki's centered global
 Xi multiplier pair. -/
@@ -226,7 +226,7 @@ theorem suzukiXiGlobalLocalCompound_quotient
     suzukiXiDerivativePairNumerator,
     suzukiXiDerivativePairDenominator]
   exact suzukiGlobalLocalCompound_quotient
-    (Q z) (P z) (deriv XiC z) (z ^ 2 * XiC z) hP hXiDenominator
+    (Q z) (P z) (deriv XiC z) (z ^ (2 : ℕ) * XiC z) hP hXiDenominator
 
 /-- **Xi-deficit capstone.**  Exact division-free full-jump numerator for an
 arbitrary local projective pair. -/

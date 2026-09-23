@@ -116,13 +116,13 @@ private lemma even_card_of_fpf_involution {α : Type*}
 
 /-- XOR with `2^c` preserves `testBit` at positions other than `c`. -/
 private lemma testBit_xor_two_pow (m c i : ℕ) (hic : i ≠ c) :
-    (m ^^^ 2 ^ c).testBit i = m.testBit i := by
+    (m ^^^ (2 : ℕ) ^ c).testBit i = m.testBit i := by
   rw [Nat.testBit_xor, Nat.testBit_two_pow]
   simp [Ne.symm hic]
 
-/-- If `m < 2^r` and `c < r`, then `m ^^^ 2^c < 2^r`. -/
+/-- If `m < 2^r` and `c < r`, then `m ^^^ (2 : ℕ)^c < 2^r`. -/
 private lemma xor_pow_lt_pow {m c r : ℕ} (hm : m < 2 ^ r) (hc : c < r) :
-    m ^^^ 2 ^ c < 2 ^ r := by
+    m ^^^ (2 : ℕ) ^ c < 2 ^ r := by
   apply Nat.lt_pow_two_of_testBit
   intro i hi
   rw [Nat.testBit_xor, Nat.testBit_two_pow]
@@ -135,13 +135,13 @@ private lemma xor_pow_lt_pow {m c r : ℕ} (hm : m < 2 ^ r) (hc : c < r) :
     a valid element of `Fin (2^r - 1)`. -/
 private lemma xor_flip_val_lt {r c : ℕ} (hc : c < r) {k : Fin (2 ^ r - 1)}
     {a : ℕ} (hac : a ≠ c) (ha : (k.val + 1).testBit a = true) :
-    (k.val + 1 ^^^ 2 ^ c) - 1 < 2 ^ r - 1 := by
+    (k.val + 1 ^^^ (2 : ℕ) ^ c) - 1 < 2 ^ r - 1 := by
   have hk_lt : k.val + 1 < 2 ^ r := by omega
-  have hxor_lt : k.val + 1 ^^^ 2 ^ c < 2 ^ r := xor_pow_lt_pow hk_lt hc
-  have hxor_pos : 0 < k.val + 1 ^^^ 2 ^ c := by
+  have hxor_lt : k.val + 1 ^^^ (2 : ℕ) ^ c < 2 ^ r := xor_pow_lt_pow hk_lt hc
+  have hxor_pos : 0 < k.val + 1 ^^^ (2 : ℕ) ^ c := by
     rw [Nat.pos_iff_ne_zero]
     intro h
-    have hbad : (k.val + 1 ^^^ 2 ^ c).testBit a = (k.val + 1).testBit a :=
+    have hbad : (k.val + 1 ^^^ (2 : ℕ) ^ c).testBit a = (k.val + 1).testBit a :=
       testBit_xor_two_pow _ _ _ hac
     rw [h] at hbad
     simp only [Nat.zero_testBit] at hbad
@@ -152,11 +152,11 @@ private lemma xor_flip_val_lt {r c : ℕ} (hc : c < r) {k : Fin (2 ^ r - 1)}
 /-- The XOR-flip function on `Fin (2^r - 1)`, defined for elements where bit `a` is set. -/
 private def xorFlip (r c : ℕ) (hc : c < r) (a : ℕ) (hac : a ≠ c)
     (k : Fin (2 ^ r - 1)) (ha : (k.val + 1).testBit a = true) : Fin (2 ^ r - 1) :=
-  ⟨(k.val + 1 ^^^ 2 ^ c) - 1, xor_flip_val_lt hc hac ha⟩
+  ⟨(k.val + 1 ^^^ (2 : ℕ) ^ c) - 1, xor_flip_val_lt hc hac ha⟩
 
 /-- The XOR result is positive when bit `a ≠ c` is set. -/
 private lemma xor_pos_of_testBit {m c a : ℕ} (hac : a ≠ c)
-    (ha : m.testBit a = true) : 0 < m ^^^ 2 ^ c := by
+    (ha : m.testBit a = true) : 0 < m ^^^ (2 : ℕ) ^ c := by
   rw [Nat.pos_iff_ne_zero]
   intro h
   have := testBit_xor_two_pow m c a hac
@@ -205,10 +205,10 @@ theorem hammingRowDot_eq_zero (hr : 3 ≤ r) (a b : Fin r) :
     simp only [f, dif_pos hka, xorFlip]
     have hxor_pos := xor_pos_of_testBit hca.symm hka
     constructor
-    · show ((k.val + 1 ^^^ 2 ^ c) - 1 + 1).testBit a.val = true
+    · show ((k.val + 1 ^^^ (2 : ℕ) ^ c) - 1 + 1).testBit a.val = true
       rw [Nat.sub_one_add_one_eq_of_pos hxor_pos]
       rwa [testBit_xor_two_pow _ _ _ hca.symm]
-    · show ((k.val + 1 ^^^ 2 ^ c) - 1 + 1).testBit b.val = true
+    · show ((k.val + 1 ^^^ (2 : ℕ) ^ c) - 1 + 1).testBit b.val = true
       rw [Nat.sub_one_add_one_eq_of_pos hxor_pos]
       rwa [testBit_xor_two_pow _ _ _ hcb.symm]
   -- f is an involution on S
@@ -219,12 +219,12 @@ theorem hammingRowDot_eq_zero (hr : 3 ≤ r) (a b : Fin r) :
     rw [dif_pos hka]
     simp only [xorFlip]
     have hxor_pos := xor_pos_of_testBit hca.symm hka
-    have hbit_a : ((k.val + 1 ^^^ 2 ^ c) - 1 + 1).testBit a.val = true := by
+    have hbit_a : ((k.val + 1 ^^^ (2 : ℕ) ^ c) - 1 + 1).testBit a.val = true := by
       rw [Nat.sub_one_add_one_eq_of_pos hxor_pos]
       rwa [testBit_xor_two_pow _ _ _ hca.symm]
     rw [dif_pos hbit_a]
     ext
-    change ((k.val + 1 ^^^ 2 ^ c) - 1 + 1 ^^^ 2 ^ c) - 1 = k.val
+    change ((k.val + 1 ^^^ (2 : ℕ) ^ c) - 1 + 1 ^^^ (2 : ℕ) ^ c) - 1 = k.val
     rw [Nat.sub_one_add_one_eq_of_pos hxor_pos, Nat.xor_xor_cancel_right]; omega
   -- f has no fixed points on S
   · intro k hk
@@ -236,7 +236,7 @@ theorem hammingRowDot_eq_zero (hr : 3 ≤ r) (a b : Fin r) :
     have heq := congr_arg Fin.val h
     simp only [xorFlip] at heq
     have hxor_pos := xor_pos_of_testBit hca.symm hka
-    have h1 : k.val + 1 ^^^ 2 ^ c = k.val + 1 := by omega
+    have h1 : k.val + 1 ^^^ (2 : ℕ) ^ c = k.val + 1 := by omega
     have h2 := Nat.xor_xor_cancel_left (k.val + 1) (2 ^ c)
     rw [h1, Nat.xor_self] at h2
     exact absurd h2.symm (by positivity)
@@ -779,7 +779,7 @@ theorem logicalZ_mem_centralizer (hr : 3 ≤ r) :
 /-!
 ## Steane code as special case
 
-When `r = 3`, the quantum Hamming code has `2^3 − 1 = 7` qubits and `2 × 3 = 6`
+When `r = 3`, the quantum Hamming code has `2^(3 : ℕ) − 1 = 7` qubits and `2 × 3 = 6`
 generators, recovering the Steane [[7, 1, 3]] code.
 -/
 

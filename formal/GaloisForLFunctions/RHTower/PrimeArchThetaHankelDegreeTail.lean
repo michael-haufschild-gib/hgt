@@ -70,40 +70,40 @@ theorem det_primeArchSourceMomentHankelMatrix_two_pos_of_ratioSplit_of_one_stric
     (hupper : ThetaCuspUpperAdjacentRatioSeparation)
     (hrelaxed : ThetaCuspRelaxedFourthMomentConcentration)
     (hstrict :
-      14 * thetaCuspRawEvenMoment 2 ^ 2 <
+      14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ) <
           9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3 ∨
         16 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 <
-          45 * thetaCuspRawEvenMoment 1 ^ 2) :
+          45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ)) :
     0 < (primeArchSourceMomentHankelMatrix 2).det := by
   have hA : 0 ≤ 9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3 -
-      14 * thetaCuspRawEvenMoment 2 ^ 2 := by
+      14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ) := by
     exact sub_nonneg.mpr hupper
-  have hB : 0 ≤ 45 * thetaCuspRawEvenMoment 1 ^ 2 -
+  have hB : 0 ≤ 45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) -
       16 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 := by
     exact sub_nonneg.mpr hrelaxed
   have h0 := thetaCuspRawEvenMoment_pos 0
   have h2 := thetaCuspRawEvenMoment_pos 2
   have hAw : 0 ≤ thetaCuspRawEvenMoment 0 *
       (9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3 -
-        14 * thetaCuspRawEvenMoment 2 ^ 2) := mul_nonneg h0.le hA
+        14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ)) := mul_nonneg h0.le hA
   have hBw : 0 ≤ thetaCuspRawEvenMoment 2 *
-      (45 * thetaCuspRawEvenMoment 1 ^ 2 -
+      (45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) -
         16 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2) :=
     mul_nonneg h2.le hB
   have hsum : 0 < thetaCuspRawEvenMoment 0 *
         (9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3 -
-          14 * thetaCuspRawEvenMoment 2 ^ 2) +
+          14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ)) +
       thetaCuspRawEvenMoment 2 *
-        (45 * thetaCuspRawEvenMoment 1 ^ 2 -
+        (45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) -
           16 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2) := by
     rcases hstrict with hAstr | hBstr
     · have : 0 < thetaCuspRawEvenMoment 0 *
           (9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3 -
-            14 * thetaCuspRawEvenMoment 2 ^ 2) :=
+            14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ)) :=
         mul_pos h0 (sub_pos.mpr hAstr)
       linarith
     · have : 0 < thetaCuspRawEvenMoment 2 *
-          (45 * thetaCuspRawEvenMoment 1 ^ 2 -
+          (45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) -
             16 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2) :=
         mul_pos h2 (sub_pos.mpr hBstr)
       linarith
@@ -111,13 +111,13 @@ theorem det_primeArchSourceMomentHankelMatrix_two_pos_of_ratioSplit_of_one_stric
   have hraw : 0 <
       3 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 1 *
           thetaCuspRawEvenMoment 3 +
-        15 * thetaCuspRawEvenMoment 1 ^ 2 * thetaCuspRawEvenMoment 2 -
-        10 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 ^ 2 := by
+        15 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) * thetaCuspRawEvenMoment 2 -
+        10 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ) := by
     nlinarith [hid]
   have hnorm : 0 <
       3 * thetaCuspNormalizedEvenMoment 1 * thetaCuspNormalizedEvenMoment 3 +
-        15 * thetaCuspNormalizedEvenMoment 1 ^ 2 * thetaCuspNormalizedEvenMoment 2 -
-        10 * thetaCuspNormalizedEvenMoment 2 ^ 2 := by
+        15 * thetaCuspNormalizedEvenMoment 1 ^ (2 : ℕ) * thetaCuspNormalizedEvenMoment 2 -
+        10 * thetaCuspNormalizedEvenMoment 2 ^ (2 : ℕ) := by
     simp only [thetaCuspNormalizedEvenMoment]
     field_simp [h0.ne']
     nlinarith [hraw]
@@ -144,10 +144,10 @@ theorem riemannHypothesis_of_strictThetaCuspRatioSplit_of_primeArchDeterminantTa
     (hupper : ThetaCuspUpperAdjacentRatioSeparation)
     (hrelaxed : ThetaCuspRelaxedFourthMomentConcentration)
     (hstrict :
-      14 * thetaCuspRawEvenMoment 2 ^ 2 <
+      14 * thetaCuspRawEvenMoment 2 ^ (2 : ℕ) <
           9 * thetaCuspRawEvenMoment 1 * thetaCuspRawEvenMoment 3 ∨
         16 * thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 <
-          45 * thetaCuspRawEvenMoment 1 ^ 2)
+          45 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ))
     (htail : PrimeArchSourceMomentHankelDeterminantTailFromThreePositive) :
     RiemannHypothesis := by
   apply primeArchSourceMomentHankelDeterminantsPositive_iff_riemannHypothesis.mp
@@ -179,13 +179,13 @@ theorem primeArchSourceTraceHankel_smul_add_sub_re
     (c : ℝ) (p q : Polynomial ℝ) :
     (primeArchSourceTraceHankel (c • p + q)).re +
         (primeArchSourceTraceHankel (c • p - q)).re =
-      2 * c ^ 2 * (primeArchSourceTraceHankel p).re +
+      2 * c ^ (2 : ℕ) * (primeArchSourceTraceHankel p).re +
         2 * (primeArchSourceTraceHankel q).re := by
   simp_rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
   rw [← momentFunctional_add]
   have hpoly :
-      (c • p + q) ^ 2 + (c • p - q) ^ 2 =
-        (2 * c ^ 2) • (p ^ 2) + (2 : ℝ) • (q ^ 2) := by
+      (c • p + q) ^ (2 : ℕ) + (c • p - q) ^ (2 : ℕ) =
+        (2 * c ^ (2 : ℕ)) • (p ^ (2 : ℕ)) + (2 : ℝ) • (q ^ (2 : ℕ)) := by
     simp only [Polynomial.smul_eq_C_mul, map_mul, map_pow, map_ofNat]
     ring
   rw [hpoly, momentFunctional_add]
@@ -250,8 +250,8 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_degreeTail
   rw [primeArchSourceTraceHankel_smul_add_sub_re] at hsum
   have hAB : |A| < (N : ℝ) * B := (div_lt_iff₀ hB).mp hNgt
   have hNnonneg : 0 ≤ (N : ℝ) := by linarith
-  have hNN : (N : ℝ) ≤ (N : ℝ) ^ 2 := by nlinarith
-  have hmul : (N : ℝ) * B ≤ (N : ℝ) ^ 2 * B :=
+  have hNN : (N : ℝ) ≤ (N : ℝ) ^ (2 : ℕ) := by nlinarith
+  have hmul : (N : ℝ) * B ≤ (N : ℝ) ^ (2 : ℕ) * B :=
     mul_le_mul_of_nonneg_right hNN hB.le
   have hAle : A ≤ |A| := le_abs_self A
   dsimp only [A, B] at hsum hAB hmul hAle
@@ -355,8 +355,8 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_infiniteDegreeSet
   rw [primeArchSourceTraceHankel_smul_add_sub_re] at hsum
   have hAB : |A| < (N : ℝ) * B := (div_lt_iff₀ hB).mp hNgt
   have hNnonneg : 0 ≤ (N : ℝ) := by linarith
-  have hNN : (N : ℝ) ≤ (N : ℝ) ^ 2 := by nlinarith
-  have hmul : (N : ℝ) * B ≤ (N : ℝ) ^ 2 * B :=
+  have hNN : (N : ℝ) ≤ (N : ℝ) ^ (2 : ℕ) := by nlinarith
+  have hmul : (N : ℝ) * B ≤ (N : ℝ) ^ (2 : ℕ) * B :=
     mul_le_mul_of_nonneg_right hNN hB.le
   have hAle : A ≤ |A| := le_abs_self A
   dsimp only [A, B] at hsum hAB hmul hAle
@@ -395,13 +395,13 @@ theorem primeArchSourceTraceHankel_add_sub_smul_re
     (c : ℝ) (p q : Polynomial ℝ) :
     (primeArchSourceTraceHankel (q + c • p)).re +
         (primeArchSourceTraceHankel (q - c • p)).re =
-      2 * c ^ 2 * (primeArchSourceTraceHankel p).re +
+      2 * c ^ (2 : ℕ) * (primeArchSourceTraceHankel p).re +
         2 * (primeArchSourceTraceHankel q).re := by
   simp_rw [re_primeArchSourceTraceHankel_eq_momentFunctional_sq]
   rw [← momentFunctional_add]
   have hpoly :
-      (q + c • p) ^ 2 + (q - c • p) ^ 2 =
-        (2 * c ^ 2) • (p ^ 2) + (2 : ℝ) • (q ^ 2) := by
+      (q + c • p) ^ (2 : ℕ) + (q - c • p) ^ (2 : ℕ) =
+        (2 * c ^ (2 : ℕ)) • (p ^ (2 : ℕ)) + (2 : ℝ) • (q ^ (2 : ℕ)) := by
     simp only [Polynomial.smul_eq_C_mul, map_mul, map_pow, map_ofNat]
     ring
   rw [hpoly, momentFunctional_add]
@@ -477,8 +477,8 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_monicInfiniteDegreeSet
   rw [primeArchSourceTraceHankel_add_sub_smul_re] at hsum
   have hAB : |A| < (N : ℝ) * B := (div_lt_iff₀ hB).mp hNgt
   have hNnonneg : 0 ≤ (N : ℝ) := by linarith
-  have hNN : (N : ℝ) ≤ (N : ℝ) ^ 2 := by nlinarith
-  have hmul : (N : ℝ) * B ≤ (N : ℝ) ^ 2 * B :=
+  have hNN : (N : ℝ) ≤ (N : ℝ) ^ (2 : ℕ) := by nlinarith
+  have hmul : (N : ℝ) * B ≤ (N : ℝ) ^ (2 : ℕ) * B :=
     mul_le_mul_of_nonneg_right hNN hB.le
   have hAle : A ≤ |A| := le_abs_self A
   dsimp only [A, B] at hsum hAB hmul hAle
@@ -560,7 +560,7 @@ theorem primeArch_twoEisenstein_plus (p : Polynomial ℤ) (d N : ℕ)
     · rw [Polynomial.coeff_C, if_neg hn0, zero_add]
       exact ⟨2 * (N : ℤ) * p.coeff n, by ring⟩
   have hnotMem :
-      (Polynomial.X ^ d + lower).coeff 0 ∉ primeArchTwoEisensteinIdeal ^ 2 := by
+      (Polynomial.X ^ d + lower).coeff 0 ∉ primeArchTwoEisensteinIdeal ^ (2 : ℕ) := by
     dsimp only [primeArchTwoEisensteinIdeal]
     rw [Ideal.span_singleton_pow, Ideal.mem_span_singleton]
     simp only [pow_two]
@@ -702,8 +702,8 @@ theorem primeArchSourceTraceHankelIntNonnegative_of_twoEisensteinInfiniteDegreeS
   rw [primeArchSourceTraceHankel_add_sub_smul_re] at hsum
   have hAB : |A| < (N : ℝ) * B := (div_lt_iff₀ hB).mp hNgt
   have hNnonneg : 0 ≤ (N : ℝ) := by linarith
-  have hNN : (N : ℝ) ≤ (4 * (N : ℝ)) ^ 2 := by nlinarith
-  have hmul : (N : ℝ) * B ≤ (4 * (N : ℝ)) ^ 2 * B :=
+  have hNN : (N : ℝ) ≤ (4 * (N : ℝ)) ^ (2 : ℕ) := by nlinarith
+  have hmul : (N : ℝ) * B ≤ (4 * (N : ℝ)) ^ (2 : ℕ) * B :=
     mul_le_mul_of_nonneg_right hNN hB.le
   have hAle : A ≤ |A| := le_abs_self A
   dsimp only [A, B] at hsum hAB hmul hAle
@@ -792,8 +792,8 @@ theorem primeArchSourceTraceHankelAntipodalCofinalNonnegative_iff_full :
     rw [hmapPlus, hmapMinus,
       primeArchSourceTraceHankel_add_sub_smul_re] at hnonneg
     have hAB : |A| < (N : ℝ) * B := (div_lt_iff₀ hB).mp hNgt
-    have hNN : (N : ℝ) ≤ (N : ℝ) ^ 2 := by nlinarith
-    have hmul : (N : ℝ) * B ≤ (N : ℝ) ^ 2 * B :=
+    have hNN : (N : ℝ) ≤ (N : ℝ) ^ (2 : ℕ) := by nlinarith
+    have hmul : (N : ℝ) * B ≤ (N : ℝ) ^ (2 : ℕ) * B :=
       mul_le_mul_of_nonneg_right hNN hB.le
     have hAle : A ≤ |A| := le_abs_self A
     dsimp only [A, B] at hnonneg hAB hmul hAle
@@ -829,7 +829,7 @@ def PrimeArchSourceTraceHankelAntipodalPairNondivergent : Prop :=
 theorem primeArchSourceTraceHankelAntipodalPairSum_eq
     (p : Polynomial ℤ) (N : ℕ) :
     primeArchSourceTraceHankelAntipodalPairSum p N =
-      2 * (N : ℝ) ^ 2 *
+      2 * (N : ℝ) ^ (2 : ℕ) *
           (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re +
         2 * (primeArchSourceTraceHankel
           (Polynomial.X ^ (p.natDegree + 1) : Polynomial ℝ)).re := by
@@ -857,13 +857,13 @@ theorem primeArchSourceTraceHankelAntipodalPairNondivergent_iff_full :
     have hpneg :
         (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re < 0 :=
       lt_of_not_ge hp
-    have hsq : Tendsto (fun N : ℕ => (N : ℝ) ^ 2) atTop atTop :=
+    have hsq : Tendsto (fun N : ℕ => (N : ℝ) ^ (2 : ℕ)) atTop atTop :=
       (tendsto_pow_atTop (by norm_num)).comp tendsto_natCast_atTop_atTop
     have hscaled :
         Tendsto
           (fun N : ℕ =>
             (2 * (primeArchSourceTraceHankel
-              (p.map (Int.castRingHom ℝ))).re) * (N : ℝ) ^ 2)
+              (p.map (Int.castRingHom ℝ))).re) * (N : ℝ) ^ (2 : ℕ))
           atTop atBot :=
       hsq.const_mul_atTop_of_neg (by linarith)
     have hlim :
@@ -938,13 +938,13 @@ theorem primeArchSourceTraceHankelAntipodalGlobalNondivergent_iff_full :
     have hpneg :
         (primeArchSourceTraceHankel (p.map (Int.castRingHom ℝ))).re < 0 :=
       lt_of_not_ge hp
-    have hsq : Tendsto (fun N : ℕ => (N : ℝ) ^ 2) atTop atTop :=
+    have hsq : Tendsto (fun N : ℕ => (N : ℝ) ^ (2 : ℕ)) atTop atTop :=
       (tendsto_pow_atTop (by norm_num)).comp tendsto_natCast_atTop_atTop
     have hscaled :
         Tendsto
           (fun N : ℕ =>
             (2 * (primeArchSourceTraceHankel
-              (p.map (Int.castRingHom ℝ))).re) * (N : ℝ) ^ 2)
+              (p.map (Int.castRingHom ℝ))).re) * (N : ℝ) ^ (2 : ℕ))
           atTop atBot :=
       hsq.const_mul_atTop_of_neg (by linarith)
     have hpair :

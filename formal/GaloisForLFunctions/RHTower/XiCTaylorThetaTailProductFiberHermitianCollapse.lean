@@ -357,7 +357,7 @@ def thetaProductFiberCommonTailHermitianCurrent
 
 /-- Exact product-fibre collapse.  In the Hermitian convolution the strict centered-divisor phase
 current is replaced by a real trace multiplying the common-tail current and the explicit
-common-centre drift `-log(k)|F|^2/2`. -/
+common-centre drift `-log(k)|F|^(2 : ℕ)/2`. -/
 theorem thetaProductFiberCommonTailHermitianCurrent_eq
     (k : ℕ) (z F F' : ℂ) :
     thetaProductFiberCommonTailHermitianCurrent k z F F' =

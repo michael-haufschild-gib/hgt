@@ -24,16 +24,16 @@ theorem exists_reciprocal_grid_cuspidal_error_le_formNorm {N M K : ℕ} (hM : 0 
         deckGridStep (N := N) (M := M) (K := K)
           (-(1 : ℝ) / 2) (Real.sqrt 3 / 2) ((M : ℝ)⁻¹) ((M : ℝ)⁻¹) C‖ ≤
         Real.sqrt
-          ((((Real.sqrt 3 / 2) ^ 2)⁻¹ * (16 * ((M : ℝ)⁻¹) ^ 2)) *
-            ‖cuspidalFormEmbeddingMap N F‖ ^ 2) +
+          ((((Real.sqrt 3 / 2) ^ (2 : ℕ))⁻¹ * (16 * ((M : ℝ)⁻¹) ^ (2 : ℕ))) *
+            ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ)) +
         Real.sqrt
-          ((((N + 1 : ℝ) / (2 * Real.pi)) ^ 2) *
-            (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ 2 *
-              ‖cuspidalFormEmbeddingMap N F‖ ^ 2) := by
+          ((((N + 1 : ℝ) / (2 * Real.pi)) ^ (2 : ℕ)) *
+            (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ (2 : ℕ) *
+              ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ)) := by
   obtain ⟨C, hC⟩ := exists_reciprocal_grid_cuspidal_error_le hM hY F
-  let A : ℝ := ((Real.sqrt 3 / 2) ^ 2)⁻¹ * (16 * ((M : ℝ)⁻¹) ^ 2)
-  let B : ℝ := (((N + 1 : ℝ) / (2 * Real.pi)) ^ 2) *
-    (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ 2
+  let A : ℝ := ((Real.sqrt 3 / 2) ^ (2 : ℕ))⁻¹ * (16 * ((M : ℝ)⁻¹) ^ (2 : ℕ))
+  let B : ℝ := (((N + 1 : ℝ) / (2 * Real.pi)) ^ (2 : ℕ)) *
+    (Real.sqrt 3 / 2 + (K : ℝ) * (M : ℝ)⁻¹)⁻¹ ^ (2 : ℕ)
   have hA : 0 ≤ A := by
     dsimp [A]
     positivity
@@ -50,10 +50,10 @@ theorem exists_reciprocal_grid_cuspidal_error_le_formNorm {N M K : ℕ} (hM : 0 
         (cuspidalFormPreDomain.memLp_gradY F) := rfl
   have hgradSum :
       ‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-          (cuspidalFormPreDomain.memLp_gradX F)‖ ^ 2 +
+          (cuspidalFormPreDomain.memLp_gradX F)‖ ^ (2 : ℕ) +
         ‖toDeckL2 (hypGradY (F : ℍ → DeckSpace N))
-          (cuspidalFormPreDomain.memLp_gradY F)‖ ^ 2 ≤
-        ‖cuspidalFormEmbeddingMap N F‖ ^ 2 := by
+          (cuspidalFormPreDomain.memLp_gradY F)‖ ^ (2 : ℕ) ≤
+        ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ) := by
     rw [PiLp.norm_sq_eq_of_L2]
     simp only [Fin.sum_univ_three]
     rw [hcoord0, hcoord1, hcoord2]
@@ -66,45 +66,45 @@ theorem exists_reciprocal_grid_cuspidal_error_le_formNorm {N M K : ℕ} (hM : 0 
       (cuspidalFormPreDomain.memLp_gradX F)‖ ≤ _ at h
     exact h
   have hgradXSq : ‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-      (cuspidalFormPreDomain.memLp_gradX F)‖ ^ 2 ≤
-      ‖cuspidalFormEmbeddingMap N F‖ ^ 2 := by
+      (cuspidalFormPreDomain.memLp_gradX F)‖ ^ (2 : ℕ) ≤
+      ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
       (cuspidalFormPreDomain.memLp_gradX F)),
       norm_nonneg (cuspidalFormEmbeddingMap N F)]
   have hcore : A *
       (‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-          (cuspidalFormPreDomain.memLp_gradX F)‖ ^ 2 +
+          (cuspidalFormPreDomain.memLp_gradX F)‖ ^ (2 : ℕ) +
         ‖toDeckL2 (hypGradY (F : ℍ → DeckSpace N))
-          (cuspidalFormPreDomain.memLp_gradY F)‖ ^ 2) ≤
-      A * ‖cuspidalFormEmbeddingMap N F‖ ^ 2 :=
+          (cuspidalFormPreDomain.memLp_gradY F)‖ ^ (2 : ℕ)) ≤
+      A * ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hgradSum hA
   have htail : B * ‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-      (cuspidalFormPreDomain.memLp_gradX F)‖ ^ 2 ≤
-      B * ‖cuspidalFormEmbeddingMap N F‖ ^ 2 :=
+      (cuspidalFormPreDomain.memLp_gradX F)‖ ^ (2 : ℕ) ≤
+      B * ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hgradXSq hB
   have hcoreRoot : Real.sqrt (A *
       (‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-          (cuspidalFormPreDomain.memLp_gradX F)‖ ^ 2 +
+          (cuspidalFormPreDomain.memLp_gradX F)‖ ^ (2 : ℕ) +
         ‖toDeckL2 (hypGradY (F : ℍ → DeckSpace N))
-          (cuspidalFormPreDomain.memLp_gradY F)‖ ^ 2)) ≤
-      Real.sqrt (A * ‖cuspidalFormEmbeddingMap N F‖ ^ 2) :=
+          (cuspidalFormPreDomain.memLp_gradY F)‖ ^ (2 : ℕ))) ≤
+      Real.sqrt (A * ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ)) :=
     Real.sqrt_le_sqrt hcore
   have htailRoot : Real.sqrt (B * ‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-      (cuspidalFormPreDomain.memLp_gradX F)‖ ^ 2) ≤
-      Real.sqrt (B * ‖cuspidalFormEmbeddingMap N F‖ ^ 2) :=
+      (cuspidalFormPreDomain.memLp_gradX F)‖ ^ (2 : ℕ)) ≤
+      Real.sqrt (B * ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ)) :=
     Real.sqrt_le_sqrt htail
   refine ⟨C, ?_⟩
   calc
     _ ≤ Real.sqrt (A *
         (‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-            (cuspidalFormPreDomain.memLp_gradX F)‖ ^ 2 +
+            (cuspidalFormPreDomain.memLp_gradX F)‖ ^ (2 : ℕ) +
           ‖toDeckL2 (hypGradY (F : ℍ → DeckSpace N))
-            (cuspidalFormPreDomain.memLp_gradY F)‖ ^ 2)) +
+            (cuspidalFormPreDomain.memLp_gradY F)‖ ^ (2 : ℕ))) +
         Real.sqrt (B * ‖toDeckL2 (hypGradX (F : ℍ → DeckSpace N))
-          (cuspidalFormPreDomain.memLp_gradX F)‖ ^ 2) := by
+          (cuspidalFormPreDomain.memLp_gradX F)‖ ^ (2 : ℕ)) := by
       simpa [A, B, mul_assoc] using hC
-    _ ≤ Real.sqrt (A * ‖cuspidalFormEmbeddingMap N F‖ ^ 2) +
-        Real.sqrt (B * ‖cuspidalFormEmbeddingMap N F‖ ^ 2) :=
+    _ ≤ Real.sqrt (A * ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ)) +
+        Real.sqrt (B * ‖cuspidalFormEmbeddingMap N F‖ ^ (2 : ℕ)) :=
       add_le_add hcoreRoot htailRoot
     _ = _ := by rfl
 

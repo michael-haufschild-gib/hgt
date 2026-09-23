@@ -45,7 +45,7 @@ theorem twoMode_twoChannelKernel_realRay_energy_pos
   let C := xiSquaredEulerFullKernel x y
   have hy : 1 / 2 < y := hx.trans hxy
   have hA : 0 < A := xiSquaredEulerFullKernel_diag_pos (by linarith)
-  have hdet : 0 < A * B - C ^ 2 := by
+  have hdet : 0 < A * B - C ^ (2 : ℕ) := by
     exact xiSquaredEulerFullKernel_twoPoint_det_pos (by linarith) hxy
   have henergy :
       (kernelEnergy twoChannelKernel c nodes).re =
@@ -64,34 +64,34 @@ theorem twoMode_twoChannelKernel_realRay_energy_pos
     simp only [Complex.normSq_apply]
     ring
   have hsquares :
-      0 < (A * (c 0).re + C * (c 1).re) ^ 2 +
-          (A * (c 0).im + C * (c 1).im) ^ 2 +
-          (A * B - C ^ 2) * ((c 1).re ^ 2 + (c 1).im ^ 2) := by
+      0 < (A * (c 0).re + C * (c 1).re) ^ (2 : ℕ) +
+          (A * (c 0).im + C * (c 1).im) ^ (2 : ℕ) +
+          (A * B - C ^ (2 : ℕ)) * ((c 1).re ^ (2 : ℕ) + (c 1).im ^ (2 : ℕ)) := by
     by_cases h1 : c 1 = 0
     · have h0 : c 0 ≠ 0 := by
         intro h0
         apply hc
         funext j
         fin_cases j <;> assumption
-      have hnorm0 : 0 < (c 0).re ^ 2 + (c 0).im ^ 2 := by
+      have hnorm0 : 0 < (c 0).re ^ (2 : ℕ) + (c 0).im ^ (2 : ℕ) := by
         simpa only [Complex.normSq_apply, pow_two] using Complex.normSq_pos.mpr h0
-      have hA2 : 0 < A ^ 2 := sq_pos_of_pos hA
+      have hA2 : 0 < A ^ (2 : ℕ) := sq_pos_of_pos hA
       rw [h1]
       simp only [Complex.zero_re, Complex.zero_im, mul_zero, add_zero]
       nlinarith [mul_pos hA2 hnorm0]
-    · have hnorm1 : 0 < (c 1).re ^ 2 + (c 1).im ^ 2 := by
+    · have hnorm1 : 0 < (c 1).re ^ (2 : ℕ) + (c 1).im ^ (2 : ℕ) := by
         simpa only [Complex.normSq_apply, pow_two] using Complex.normSq_pos.mpr h1
       have hlast :
-          0 < (A * B - C ^ 2) * ((c 1).re ^ 2 + (c 1).im ^ 2) :=
+          0 < (A * B - C ^ (2 : ℕ)) * ((c 1).re ^ (2 : ℕ) + (c 1).im ^ (2 : ℕ)) :=
         mul_pos hdet hnorm1
       nlinarith [sq_nonneg (A * (c 0).re + C * (c 1).re),
         sq_nonneg (A * (c 0).im + C * (c 1).im)]
   have hscaled :
       A * (A * Complex.normSq (c 0) + B * Complex.normSq (c 1) +
           2 * C * (conj (c 0) * c 1).re) =
-        (A * (c 0).re + C * (c 1).re) ^ 2 +
-          (A * (c 0).im + C * (c 1).im) ^ 2 +
-          (A * B - C ^ 2) * ((c 1).re ^ 2 + (c 1).im ^ 2) := by
+        (A * (c 0).re + C * (c 1).re) ^ (2 : ℕ) +
+          (A * (c 0).im + C * (c 1).im) ^ (2 : ℕ) +
+          (A * B - C ^ (2 : ℕ)) * ((c 1).re ^ (2 : ℕ) + (c 1).im ^ (2 : ℕ)) := by
     simp only [Complex.normSq_apply, Complex.mul_re, Complex.conj_re,
       Complex.conj_im]
     ring

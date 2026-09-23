@@ -50,7 +50,7 @@ def mvDampedRem {ι : Type} (u : ι → ℝ) (d : ι → ℂ) (θ : ι → ℝ) 
         ((θ r + θ s : ℝ) : ℂ) /
           (mvPairExponent u θ r s * (2 * Real.pi * I * ((u r - u s : ℝ) : ℂ))))
 
-theorem two_pi_I_ne_zero : (2 * Real.pi * I : ℂ) ≠ 0 := by
+theorem two_pi_I_ne_zero_montgomeryVaughanDampedMeanSquare : (2 * Real.pi * I : ℂ) ≠ 0 := by
   apply mul_ne_zero (mul_ne_zero two_ne_zero ?_) Complex.I_ne_zero
   exact_mod_cast Real.pi_ne_zero
 
@@ -88,7 +88,7 @@ theorem mvEndCoeff_mul_conj {ι : Type} (u : ι → ℝ) (d : ι → ℂ) (θ : 
 /-- Pointwise expansion of the squared modulus of the band sum. -/
 theorem normSq_mvBandSum_eq_double_sum {ι : Type} [Fintype ι] (u : ι → ℝ) (d : ι → ℂ)
     (θ : ι → ℝ) (t : ℝ) :
-    ((‖mvBandSum u d θ t‖ ^ 2 : ℝ) : ℂ) =
+    ((‖mvBandSum u d θ t‖ ^ (2 : ℕ) : ℝ) : ℂ) =
       ∑ r, ∑ s, d r * conj (d s) * cexp (mvPairExponent u θ r s * (t : ℂ)) := by
   rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, mvBandSum_eq_sum_mvEndCoeff]
   simp only [map_sum, Finset.sum_mul_sum]
@@ -148,7 +148,7 @@ theorem offDiagonal_pair_decomposition {ι : Type} (u : ι → ℝ) (d : ι → 
   unfold mvDampedRem
   have hw : mvPairExponent u θ r s ≠ 0 := mvPairExponent_ne_zero u θ h
   have hΔ : ((u r - u s : ℝ) : ℂ) ≠ 0 := by exact_mod_cast sub_ne_zero.mpr h
-  have hP : (2 * Real.pi * I : ℂ) ≠ 0 := two_pi_I_ne_zero
+  have hP : (2 * Real.pi * I : ℂ) ≠ 0 := two_pi_I_ne_zero_montgomeryVaughanDampedMeanSquare
   have hwdef : mvPairExponent u θ r s =
       ((θ r + θ s : ℝ) : ℂ) + 2 * Real.pi * I * ((u r - u s : ℝ) : ℂ) := rfl
   set w := mvPairExponent u θ r s with hwset
@@ -173,7 +173,7 @@ theorem norm_mvDampedRem_le {ι : Type} (u : ι → ℝ) (d : ι → ℂ) (θ : 
     (hab : a ≤ b) (hθ : ∀ r, -K ≤ θ r ∧ θ r ≤ 0) {r s : ι} (h : u r ≠ u s) :
     ‖mvDampedRem u d θ a b r s‖ ≤
       (‖d r‖ * Real.exp (θ r * a)) * (‖d s‖ * Real.exp (θ s * a)) *
-        (K / (Real.pi ^ 2 * (u r - u s) ^ 2)) := by
+        (K / (Real.pi ^ (2 : ℕ) * (u r - u s) ^ (2 : ℕ))) := by
   have hK0 : 0 ≤ K := by linarith [(hθ r).1, (hθ r).2]
   unfold mvDampedRem
   rw [norm_neg, norm_div, norm_mul, norm_mul, norm_mul, norm_mul, Complex.norm_conj,
@@ -217,8 +217,8 @@ theorem norm_mvDampedRem_le {ι : Type} (u : ι → ℝ) (d : ι → ℂ) (θ : 
         mul_le_mul_of_nonneg_right h1 (abs_nonneg _)
       _ ≤ _ := mul_le_mul_of_nonneg_left hθsum (by positivity)
   have hsq : (2 * Real.pi * |u r - u s|) * (2 * Real.pi * |u r - u s|) =
-      4 * Real.pi ^ 2 * (u r - u s) ^ 2 := by
-    rw [show (u r - u s) ^ 2 = |u r - u s| ^ 2 from (sq_abs _).symm]; ring
+      4 * Real.pi ^ (2 : ℕ) * (u r - u s) ^ (2 : ℕ) := by
+    rw [show (u r - u s) ^ (2 : ℕ) = |u r - u s| ^ (2 : ℕ) from (sq_abs _).symm]; ring
   calc
     ‖d r‖ * ‖d s‖ *
         ‖cexp (mvPairExponent u θ r s * (b : ℂ)) - cexp (mvPairExponent u θ r s * (a : ℂ))‖ *
@@ -234,7 +234,7 @@ theorem norm_mvDampedRem_le {ι : Type} (u : ι → ℝ) (d : ι → ℂ) (θ : 
 /-- Montgomery–Vaughan bound for the Hilbert form of a coefficient vector. -/
 theorem norm_mvHilbertForm_le {ι : Type} [Fintype ι] [DecidableEq ι] (u : ι → ℝ) (x : ι → ℂ)
     {D : ℝ} (hD : 0 < D) (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) :
-    ‖mvHilbertForm u x‖ ≤ 26 * ((∑ r, ‖x r‖ ^ 2) / D) := by
+    ‖mvHilbertForm u x‖ ≤ 26 * ((∑ r, ‖x r‖ ^ (2 : ℕ)) / D) := by
   have hinj : Function.Injective u := by
     intro r s h
     by_contra hrs
@@ -243,14 +243,14 @@ theorem norm_mvHilbertForm_le {ι : Type} [Fintype ι] [DecidableEq ι] (u : ι 
     linarith
   have hmv := RiemannGaussian.MontgomeryVaughan.mvHilbert_twentySix ι u (fun _ => D)
     x x hinj (fun _ => hD) (fun r s hrs => hsep r s hrs)
-  have hsum : (∑ r, ‖x r‖ ^ 2 / D) = (∑ r, ‖x r‖ ^ 2) / D := (Finset.sum_div _ _ _).symm
+  have hsum : (∑ r, ‖x r‖ ^ (2 : ℕ) / D) = (∑ r, ‖x r‖ ^ (2 : ℕ)) / D := (Finset.sum_div _ _ _).symm
   rw [hsum] at hmv
-  have hS0 : 0 ≤ (∑ r, ‖x r‖ ^ 2) / D := by positivity
-  have hsq : Real.sqrt ((∑ r, ‖x r‖ ^ 2) / D) * Real.sqrt ((∑ r, ‖x r‖ ^ 2) / D) =
-      (∑ r, ‖x r‖ ^ 2) / D := Real.mul_self_sqrt hS0
+  have hS0 : 0 ≤ (∑ r, ‖x r‖ ^ (2 : ℕ)) / D := by positivity
+  have hsq : Real.sqrt ((∑ r, ‖x r‖ ^ (2 : ℕ)) / D) * Real.sqrt ((∑ r, ‖x r‖ ^ (2 : ℕ)) / D) =
+      (∑ r, ‖x r‖ ^ (2 : ℕ)) / D := Real.mul_self_sqrt hS0
   calc
-    ‖mvHilbertForm u x‖ ≤ 26 * Real.sqrt ((∑ r, ‖x r‖ ^ 2) / D) *
-        Real.sqrt ((∑ r, ‖x r‖ ^ 2) / D) := hmv
+    ‖mvHilbertForm u x‖ ≤ 26 * Real.sqrt ((∑ r, ‖x r‖ ^ (2 : ℕ)) / D) *
+        Real.sqrt ((∑ r, ‖x r‖ ^ (2 : ℕ)) / D) := hmv
     _ = _ := by rw [mul_assoc, hsq]
 
 /-- Energy of the endpoint coefficients: `‖mvEndCoeff t r‖ = ‖d r‖ e^{θ r t}`. -/
@@ -263,7 +263,7 @@ theorem norm_mvEndCoeff {ι : Type} (u : ι → ℝ) (d : ι → ℂ) (θ : ι �
 /-- Inverse-square spacing sum for `D`-separated frequencies: `Σ_{s≠r} 1/(u r − u s)² ≤ 9/D²`. -/
 theorem sum_inv_sq_sub_le {ι : Type} [Fintype ι] [DecidableEq ι] (u : ι → ℝ) {D : ℝ}
     (hD : 0 < D) (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) (r : ι) :
-    (∑ s, if r = s then (0 : ℝ) else 1 / (u r - u s) ^ 2) ≤ 9 / D ^ 2 := by
+    (∑ s, if r = s then (0 : ℝ) else 1 / (u r - u s) ^ (2 : ℕ)) ≤ 9 / D ^ (2 : ℕ) := by
   have hinj : Function.Injective u := by
     intro r s h
     by_contra hrs
@@ -273,23 +273,23 @@ theorem sum_inv_sq_sub_le {ι : Type} [Fintype ι] [DecidableEq ι] (u : ι → 
   have hadm : RiemannGaussian.MontgomeryVaughan.Adm u (fun _ => D) :=
     ⟨hinj, fun _ => hD, fun r s hrs => hsep r s hrs⟩
   have hsp := RiemannGaussian.MontgomeryVaughan.Adm.spacing_sq hadm r
-  have heq : (∑ s, if r = s then (0 : ℝ) else 1 / (u r - u s) ^ 2) =
-      ∑ s ∈ Finset.univ.erase r, 1 / (u r - u s) ^ 2 := by
+  have heq : (∑ s, if r = s then (0 : ℝ) else 1 / (u r - u s) ^ (2 : ℕ)) =
+      ∑ s ∈ Finset.univ.erase r, 1 / (u r - u s) ^ (2 : ℕ) := by
     rw [← Finset.sum_erase (Finset.univ) (a := r) (f := fun s => if r = s then (0 : ℝ)
-      else 1 / (u r - u s) ^ 2) (by simp)]
+      else 1 / (u r - u s) ^ (2 : ℕ)) (by simp)]
     refine Finset.sum_congr rfl fun s hs => ?_
     have : r ≠ s := fun h => (Finset.mem_erase.mp hs).1 h.symm
     simp [this]
   rw [heq]
-  have hmul : D * ∑ s ∈ Finset.univ.erase r, 1 / (u r - u s) ^ 2 ≤ 9 / D := by
+  have hmul : D * ∑ s ∈ Finset.univ.erase r, 1 / (u r - u s) ^ (2 : ℕ) ≤ 9 / D := by
     rw [Finset.mul_sum]
     calc
-      ∑ s ∈ Finset.univ.erase r, D * (1 / (u r - u s) ^ 2)
-          = ∑ s ∈ Finset.univ.erase r, D / (u r - u s) ^ 2 := by
+      ∑ s ∈ Finset.univ.erase r, D * (1 / (u r - u s) ^ (2 : ℕ))
+          = ∑ s ∈ Finset.univ.erase r, D / (u r - u s) ^ (2 : ℕ) := by
         refine Finset.sum_congr rfl fun s _ => ?_
         ring
       _ ≤ 9 / D := hsp
-  have h9 : 9 / D ^ 2 = (9 / D) / D := by field_simp
+  have h9 : 9 / D ^ (2 : ℕ) = (9 / D) / D := by field_simp
   rw [h9, le_div_iff₀ hD]
   linarith
 
@@ -298,22 +298,22 @@ when every row sum `Σ_{s≠r} k_{rs}` is at most `M`. -/
 theorem sum_offDiagonal_weighted_le {ι : Type} [Fintype ι] [DecidableEq ι] (w : ι → ℝ)
     (k : ι → ι → ℝ) (hk : ∀ r s, 0 ≤ k r s) (hsymm : ∀ r s, k r s = k s r) {M : ℝ}
     (hrow : ∀ r, (∑ s, if r = s then (0 : ℝ) else k r s) ≤ M) :
-    (∑ r, ∑ s, if r = s then (0 : ℝ) else w r * w s * k r s) ≤ M * ∑ r, w r ^ 2 := by
-  have hamgm : ∀ r s, w r * w s * k r s ≤ (w r ^ 2 * k r s + w s ^ 2 * k r s) / 2 := by
+    (∑ r, ∑ s, if r = s then (0 : ℝ) else w r * w s * k r s) ≤ M * ∑ r, w r ^ (2 : ℕ) := by
+  have hamgm : ∀ r s, w r * w s * k r s ≤ (w r ^ (2 : ℕ) * k r s + w s ^ (2 : ℕ) * k r s) / 2 := by
     intro r s
     have := two_mul_le_add_sq (w r) (w s)
     nlinarith [hk r s]
   have h1 : (∑ r, ∑ s, if r = s then (0 : ℝ) else w r * w s * k r s) ≤
-      ∑ r, ∑ s, if r = s then (0 : ℝ) else (w r ^ 2 * k r s + w s ^ 2 * k r s) / 2 := by
+      ∑ r, ∑ s, if r = s then (0 : ℝ) else (w r ^ (2 : ℕ) * k r s + w s ^ (2 : ℕ) * k r s) / 2 := by
     refine Finset.sum_le_sum fun r _ => Finset.sum_le_sum fun s _ => ?_
     split_ifs
     · exact le_rfl
     · exact hamgm r s
-  have h2 : (∑ r, ∑ s, if r = s then (0 : ℝ) else (w r ^ 2 * k r s + w s ^ 2 * k r s) / 2) =
-      ∑ r, ∑ s, if r = s then (0 : ℝ) else w r ^ 2 * k r s := by
-    have hsplit : (∑ r, ∑ s, if r = s then (0 : ℝ) else (w r ^ 2 * k r s + w s ^ 2 * k r s) / 2) =
-        (∑ r, ∑ s, if r = s then (0 : ℝ) else w r ^ 2 * k r s / 2) +
-          ∑ r, ∑ s, if r = s then (0 : ℝ) else w s ^ 2 * k r s / 2 := by
+  have h2 : (∑ r, ∑ s, if r = s then (0 : ℝ) else (w r ^ (2 : ℕ) * k r s + w s ^ (2 : ℕ) * k r s) / 2) =
+      ∑ r, ∑ s, if r = s then (0 : ℝ) else w r ^ (2 : ℕ) * k r s := by
+    have hsplit : (∑ r, ∑ s, if r = s then (0 : ℝ) else (w r ^ (2 : ℕ) * k r s + w s ^ (2 : ℕ) * k r s) / 2) =
+        (∑ r, ∑ s, if r = s then (0 : ℝ) else w r ^ (2 : ℕ) * k r s / 2) +
+          ∑ r, ∑ s, if r = s then (0 : ℝ) else w s ^ (2 : ℕ) * k r s / 2 := by
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun r _ => ?_
       rw [← Finset.sum_add_distrib]
@@ -321,8 +321,8 @@ theorem sum_offDiagonal_weighted_le {ι : Type} [Fintype ι] [DecidableEq ι] (w
       split_ifs
       · simp
       · ring
-    have hswap : (∑ r, ∑ s, if r = s then (0 : ℝ) else w s ^ 2 * k r s / 2) =
-        ∑ r, ∑ s, if r = s then (0 : ℝ) else w r ^ 2 * k r s / 2 := by
+    have hswap : (∑ r, ∑ s, if r = s then (0 : ℝ) else w s ^ (2 : ℕ) * k r s / 2) =
+        ∑ r, ∑ s, if r = s then (0 : ℝ) else w r ^ (2 : ℕ) * k r s / 2 := by
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun r _ => ?_
       rw [hsymm r s]
@@ -337,11 +337,11 @@ theorem sum_offDiagonal_weighted_le {ι : Type} [Fintype ι] [DecidableEq ι] (w
     split_ifs
     · simp
     · ring
-  have h3 : (∑ r, ∑ s, if r = s then (0 : ℝ) else w r ^ 2 * k r s) ≤ M * ∑ r, w r ^ 2 := by
+  have h3 : (∑ r, ∑ s, if r = s then (0 : ℝ) else w r ^ (2 : ℕ) * k r s) ≤ M * ∑ r, w r ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_le_sum fun r _ => ?_
-    have : (∑ s, if r = s then (0 : ℝ) else w r ^ 2 * k r s) =
-        w r ^ 2 * ∑ s, if r = s then (0 : ℝ) else k r s := by
+    have : (∑ s, if r = s then (0 : ℝ) else w r ^ (2 : ℕ) * k r s) =
+        w r ^ (2 : ℕ) * ∑ s, if r = s then (0 : ℝ) else k r s := by
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun s _ => ?_
       split_ifs <;> simp
@@ -354,14 +354,14 @@ theorem norm_sum_mvDampedRem_le {ι : Type} [Fintype ι] [DecidableEq ι] (u : �
     (θ : ι → ℝ) {D a b K : ℝ} (hD : 0 < D) (hab : a ≤ b) (hK0 : 0 ≤ K)
     (hθ : ∀ r, -K ≤ θ r ∧ θ r ≤ 0) (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) :
     ‖∑ r, ∑ s, if r = s then (0 : ℂ) else mvDampedRem u d θ a b r s‖ ≤
-      9 * K / (Real.pi ^ 2 * D ^ 2) * ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) := by
+      9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ)) * ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) := by
   have hne : ∀ r s, r ≠ s → u r ≠ u s := by
     intro r s hrs h
     have := hsep r s hrs
     rw [h, sub_self, abs_zero] at this
     linarith
   set wt : ι → ℝ := fun r => ‖d r‖ * Real.exp (θ r * a) with hwt
-  set kk : ι → ι → ℝ := fun r s => if r = s then 0 else K / (Real.pi ^ 2 * (u r - u s) ^ 2) with hkk
+  set kk : ι → ι → ℝ := fun r s => if r = s then 0 else K / (Real.pi ^ (2 : ℕ) * (u r - u s) ^ (2 : ℕ)) with hkk
   have hkk0 : ∀ r s, 0 ≤ kk r s := by
     intro r s; simp only [hkk]; split_ifs
     · exact le_rfl
@@ -372,11 +372,11 @@ theorem norm_sum_mvDampedRem_le {ι : Type} [Fintype ι] [DecidableEq ι] (u : �
     · subst h; simp
     · have h' : s ≠ r := fun e => h e.symm
       simp only [h, h', if_false]
-      rw [show (u r - u s) ^ 2 = (u s - u r) ^ 2 by ring]
-  have hrow : ∀ r, (∑ s, if r = s then (0 : ℝ) else kk r s) ≤ K / Real.pi ^ 2 * (9 / D ^ 2) := by
+      rw [show (u r - u s) ^ (2 : ℕ) = (u s - u r) ^ (2 : ℕ) by ring]
+  have hrow : ∀ r, (∑ s, if r = s then (0 : ℝ) else kk r s) ≤ K / Real.pi ^ (2 : ℕ) * (9 / D ^ (2 : ℕ)) := by
     intro r
     have h1 : (∑ s, if r = s then (0 : ℝ) else kk r s) =
-        K / Real.pi ^ 2 * ∑ s, if r = s then (0 : ℝ) else 1 / (u r - u s) ^ 2 := by
+        K / Real.pi ^ (2 : ℕ) * ∑ s, if r = s then (0 : ℝ) else 1 / (u r - u s) ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun s _ => ?_
       simp only [hkk]
@@ -399,10 +399,10 @@ theorem norm_sum_mvDampedRem_le {ι : Type} [Fintype ι] [DecidableEq ι] (u : �
         Finset.sum_le_sum fun r _ => norm_sum_le _ _
     _ ≤ ∑ r, ∑ s, if r = s then (0 : ℝ) else wt r * wt s * kk r s :=
         Finset.sum_le_sum fun r _ => Finset.sum_le_sum fun s _ => hterm r s
-    _ ≤ K / Real.pi ^ 2 * (9 / D ^ 2) * ∑ r, wt r ^ 2 :=
+    _ ≤ K / Real.pi ^ (2 : ℕ) * (9 / D ^ (2 : ℕ)) * ∑ r, wt r ^ (2 : ℕ) :=
         sum_offDiagonal_weighted_le wt kk hkk0 hkksymm hrow
-    _ = 9 * K / (Real.pi ^ 2 * D ^ 2) * ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) := by
-      have : ∀ r, wt r ^ 2 = ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) := by
+    _ = 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ)) * ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) := by
+      have : ∀ r, wt r ^ (2 : ℕ) = ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) := by
         intro r
         simp only [hwt]
         rw [mul_pow, ← Real.exp_nat_mul]
@@ -443,8 +443,8 @@ real part of the two endpoint Hilbert forms and the remainder sum. -/
 theorem integral_normSq_mvBandSum_eq {ι : Type} [Fintype ι] [DecidableEq ι] (u : ι → ℝ)
     (d : ι → ℂ) (θ : ι → ℝ) {D : ℝ} (hD : 0 < D) (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|)
     (a b : ℝ) :
-    (∫ α in a..b, ‖mvBandSum u d θ α‖ ^ 2) =
-      (∑ r, ‖d r‖ ^ 2 * ∫ α in a..b, Real.exp (2 * θ r * α)) +
+    (∫ α in a..b, ‖mvBandSum u d θ α‖ ^ (2 : ℕ)) =
+      (∑ r, ‖d r‖ ^ (2 : ℕ) * ∫ α in a..b, Real.exp (2 * θ r * α)) +
         ((1 / (2 * Real.pi * I)) *
             (mvHilbertForm u (mvEndCoeff u d θ b) - mvHilbertForm u (mvEndCoeff u d θ a)) +
           ∑ r, ∑ s, if r = s then (0 : ℂ) else mvDampedRem u d θ a b r s).re := by
@@ -459,12 +459,12 @@ theorem integral_normSq_mvBandSum_eq {ι : Type} [Fintype ι] [DecidableEq ι] (
     intro r s
     fun_prop
   -- the real integral as the real part of a complex double sum of pair integrals
-  have hint : (∫ α in a..b, ‖mvBandSum u d θ α‖ ^ 2) =
+  have hint : (∫ α in a..b, ‖mvBandSum u d θ α‖ ^ (2 : ℕ)) =
       (∑ r, ∑ s, d r * conj (d s) * ∫ α in a..b, cexp (mvPairExponent u θ r s * (α : ℂ))).re := by
-    have h1 : ((∫ α in a..b, ‖mvBandSum u d θ α‖ ^ 2 : ℝ) : ℂ) =
-        ∫ α in a..b, ((‖mvBandSum u d θ α‖ ^ 2 : ℝ) : ℂ) :=
+    have h1 : ((∫ α in a..b, ‖mvBandSum u d θ α‖ ^ (2 : ℕ) : ℝ) : ℂ) =
+        ∫ α in a..b, ((‖mvBandSum u d θ α‖ ^ (2 : ℕ) : ℝ) : ℂ) :=
       (intervalIntegral.integral_ofReal).symm
-    have h2 : (∫ α in a..b, ((‖mvBandSum u d θ α‖ ^ 2 : ℝ) : ℂ)) =
+    have h2 : (∫ α in a..b, ((‖mvBandSum u d θ α‖ ^ (2 : ℕ) : ℝ) : ℂ)) =
         ∑ r, ∑ s, d r * conj (d s) * ∫ α in a..b, cexp (mvPairExponent u θ r s * (α : ℂ)) := by
       simp_rw [normSq_mvBandSum_eq_double_sum]
       rw [intervalIntegral.integral_finsetSum]
@@ -481,7 +481,7 @@ theorem integral_normSq_mvBandSum_eq {ι : Type} [Fintype ι] [DecidableEq ι] (
     exact h3
   -- diagonal pair integrals are real
   have hdiag : ∀ r, d r * conj (d r) * ∫ α in a..b, cexp (mvPairExponent u θ r r * (α : ℂ)) =
-      ((‖d r‖ ^ 2 * ∫ α in a..b, Real.exp (2 * θ r * α) : ℝ) : ℂ) := by
+      ((‖d r‖ ^ (2 : ℕ) * ∫ α in a..b, Real.exp (2 * θ r * α) : ℝ) : ℂ) := by
     intro r
     simp_rw [cexp_mvPairExponent_diag]
     rw [intervalIntegral.integral_ofReal, Complex.mul_conj, Complex.normSq_eq_norm_sq]
@@ -499,7 +499,7 @@ theorem integral_normSq_mvBandSum_eq {ι : Type} [Fintype ι] [DecidableEq ι] (
     exact offDiagonal_pair_decomposition u d θ a b (hne r s hrs)
   rw [hint, double_sum_split]
   have hd : (∑ r, d r * conj (d r) * ∫ α in a..b, cexp (mvPairExponent u θ r r * (α : ℂ))) =
-      ((∑ r, ‖d r‖ ^ 2 * ∫ α in a..b, Real.exp (2 * θ r * α) : ℝ) : ℂ) := by
+      ((∑ r, ‖d r‖ ^ (2 : ℕ) * ∫ α in a..b, Real.exp (2 * θ r * α) : ℝ) : ℂ) := by
     rw [Complex.ofReal_sum]
     exact Finset.sum_congr rfl fun r _ => hdiag r
   have ho : (∑ r, ∑ s, if r = s then (0 : ℂ)
@@ -563,7 +563,7 @@ theorem integral_exp_two_mul_le {θ a ℓ : ℝ} (hℓ : 0 ≤ ℓ) (hθ0 : θ �
 /-- Bottom energy of the endpoint coefficients. -/
 theorem sum_normSq_mvEndCoeff {ι : Type} [Fintype ι] (u : ι → ℝ) (d : ι → ℂ) (θ : ι → ℝ)
     (t : ℝ) :
-    (∑ r, ‖mvEndCoeff u d θ t r‖ ^ 2) = ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * t) := by
+    (∑ r, ‖mvEndCoeff u d θ t r‖ ^ (2 : ℕ)) = ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * t) := by
   refine Finset.sum_congr rfl fun r _ => ?_
   rw [norm_mvEndCoeff, mul_pow, ← Real.exp_nat_mul]
   push_cast
@@ -576,11 +576,11 @@ theorem norm_offDiagonal_le {ι : Type} [Fintype ι] [DecidableEq ι] (u : ι �
     ‖(1 / (2 * Real.pi * I)) *
           (mvHilbertForm u (mvEndCoeff u d θ b) - mvHilbertForm u (mvEndCoeff u d θ a)) +
         ∑ r, ∑ s, if r = s then (0 : ℂ) else mvDampedRem u d θ a b r s‖ ≤
-      (26 / (Real.pi * D) + 9 * K / (Real.pi ^ 2 * D ^ 2)) *
-        ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) := by
-  set W : ℝ := ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) with hW
+      (26 / (Real.pi * D) + 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) *
+        ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) := by
+  set W : ℝ := ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) with hW
   have hW0 : 0 ≤ W := Finset.sum_nonneg fun r _ => by positivity
-  have hWb : (∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * b)) ≤ W := by
+  have hWb : (∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * b)) ≤ W := by
     refine Finset.sum_le_sum fun r _ => ?_
     apply mul_le_mul_of_nonneg_left _ (by positivity)
     rw [Real.exp_le_exp]
@@ -622,7 +622,7 @@ theorem norm_offDiagonal_le {ι : Type} [Fintype ι] [DecidableEq ι] (u : ι �
     _ ≤ ‖(1 / (2 * Real.pi * I : ℂ)) *
           (mvHilbertForm u (mvEndCoeff u d θ b) - mvHilbertForm u (mvEndCoeff u d θ a))‖ +
         ‖∑ r, ∑ s, if r = s then (0 : ℂ) else mvDampedRem u d θ a b r s‖ := norm_add_le _ _
-    _ ≤ 26 / (Real.pi * D) * W + 9 * K / (Real.pi ^ 2 * D ^ 2) * W := add_le_add hmain hrem
+    _ ≤ 26 / (Real.pi * D) * W + 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ)) * W := add_le_add hmain hrem
     _ = _ := by ring
 
 /-- **Damped Montgomery–Vaughan inequality, lower bound.**  For `D`-separated frequencies and
@@ -633,24 +633,24 @@ theorem interval_integral_normSq_mvBandSum_ge_damped {ι : Type} [Fintype ι] [D
     (u : ι → ℝ) (d : ι → ℂ) (θ : ι → ℝ) {D a ℓ ℓ₀ K : ℝ} (hD : 0 < D) (hℓ₀ : 0 ≤ ℓ₀)
     (hℓ : ℓ₀ ≤ ℓ) (hK0 : 0 ≤ K) (hθ : ∀ r, -K ≤ θ r ∧ θ r ≤ 0)
     (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) :
-    (ℓ₀ * Real.exp (-(2 * K * ℓ₀)) - 26 / (Real.pi * D) - 9 * K / (Real.pi ^ 2 * D ^ 2)) *
-        ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) ≤
-      ∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ 2 := by
+    (ℓ₀ * Real.exp (-(2 * K * ℓ₀)) - 26 / (Real.pi * D) - 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) *
+        ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) ≤
+      ∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ (2 : ℕ) := by
   rw [integral_normSq_mvBandSum_eq u d θ hD hsep]
-  set W : ℝ := ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) with hW
+  set W : ℝ := ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) with hW
   have hab : a ≤ a + ℓ := by linarith
   have hdiag : ℓ₀ * Real.exp (-(2 * K * ℓ₀)) * W ≤
-      ∑ r, ‖d r‖ ^ 2 * ∫ α in a..a + ℓ, Real.exp (2 * θ r * α) := by
+      ∑ r, ‖d r‖ ^ (2 : ℕ) * ∫ α in a..a + ℓ, Real.exp (2 * θ r * α) := by
     rw [hW, Finset.mul_sum]
     refine Finset.sum_le_sum fun r _ => ?_
     have := integral_exp_two_mul_ge (a := a) hℓ₀ hℓ (hθ r).1 (hθ r).2
     calc
-      ℓ₀ * Real.exp (-(2 * K * ℓ₀)) * (‖d r‖ ^ 2 * Real.exp (2 * θ r * a))
-          = ‖d r‖ ^ 2 * (ℓ₀ * Real.exp (-(2 * K * ℓ₀)) * Real.exp (2 * θ r * a)) := by ring
+      ℓ₀ * Real.exp (-(2 * K * ℓ₀)) * (‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a))
+          = ‖d r‖ ^ (2 : ℕ) * (ℓ₀ * Real.exp (-(2 * K * ℓ₀)) * Real.exp (2 * θ r * a)) := by ring
       _ ≤ _ := mul_le_mul_of_nonneg_left this (by positivity)
   have hoff := norm_offDiagonal_le u d θ hD hab hK0 hθ hsep
   rw [← hW] at hoff
-  have hre : -((26 / (Real.pi * D) + 9 * K / (Real.pi ^ 2 * D ^ 2)) * W) ≤
+  have hre : -((26 / (Real.pi * D) + 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) * W) ≤
       ((1 / (2 * Real.pi * I)) *
           (mvHilbertForm u (mvEndCoeff u d θ (a + ℓ)) - mvHilbertForm u (mvEndCoeff u d θ a)) +
         ∑ r, ∑ s, if r = s then (0 : ℂ) else mvDampedRem u d θ a (a + ℓ) r s).re := by
@@ -666,26 +666,26 @@ theorem interval_integral_normSq_mvBandSum_le_damped {ι : Type} [Fintype ι] [D
     (u : ι → ℝ) (d : ι → ℂ) (θ : ι → ℝ) {D a ℓ K : ℝ} (hD : 0 < D) (hℓ : 0 ≤ ℓ)
     (hK0 : 0 ≤ K) (hθ : ∀ r, -K ≤ θ r ∧ θ r ≤ 0)
     (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) :
-    (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ 2) ≤
-      (ℓ + 26 / (Real.pi * D) + 9 * K / (Real.pi ^ 2 * D ^ 2)) *
-        ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) := by
+    (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ (2 : ℕ)) ≤
+      (ℓ + 26 / (Real.pi * D) + 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) *
+        ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) := by
   rw [integral_normSq_mvBandSum_eq u d θ hD hsep]
-  set W : ℝ := ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) with hW
+  set W : ℝ := ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) with hW
   have hab : a ≤ a + ℓ := by linarith
-  have hdiag : (∑ r, ‖d r‖ ^ 2 * ∫ α in a..a + ℓ, Real.exp (2 * θ r * α)) ≤ ℓ * W := by
+  have hdiag : (∑ r, ‖d r‖ ^ (2 : ℕ) * ∫ α in a..a + ℓ, Real.exp (2 * θ r * α)) ≤ ℓ * W := by
     rw [hW, Finset.mul_sum]
     refine Finset.sum_le_sum fun r _ => ?_
     have := integral_exp_two_mul_le (a := a) hℓ (hθ r).2
     calc
-      ‖d r‖ ^ 2 * ∫ α in a..a + ℓ, Real.exp (2 * θ r * α)
-          ≤ ‖d r‖ ^ 2 * (ℓ * Real.exp (2 * θ r * a)) := mul_le_mul_of_nonneg_left this (by positivity)
+      ‖d r‖ ^ (2 : ℕ) * ∫ α in a..a + ℓ, Real.exp (2 * θ r * α)
+          ≤ ‖d r‖ ^ (2 : ℕ) * (ℓ * Real.exp (2 * θ r * a)) := mul_le_mul_of_nonneg_left this (by positivity)
       _ = _ := by ring
   have hoff := norm_offDiagonal_le u d θ hD hab hK0 hθ hsep
   rw [← hW] at hoff
   have hre : ((1 / (2 * Real.pi * I)) *
           (mvHilbertForm u (mvEndCoeff u d θ (a + ℓ)) - mvHilbertForm u (mvEndCoeff u d θ a)) +
         ∑ r, ∑ s, if r = s then (0 : ℂ) else mvDampedRem u d θ a (a + ℓ) r s).re ≤
-      (26 / (Real.pi * D) + 9 * K / (Real.pi ^ 2 * D ^ 2)) * W := by
+      (26 / (Real.pi * D) + 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) * W := by
     have h1 := Complex.re_le_norm ((1 / (2 * Real.pi * I)) *
       (mvHilbertForm u (mvEndCoeff u d θ (a + ℓ)) - mvHilbertForm u (mvEndCoeff u d θ a)) +
         ∑ r, ∑ s, if r = s then (0 : ℂ) else mvDampedRem u d θ a (a + ℓ) r s)
@@ -714,9 +714,9 @@ theorem interval_integral_normSq_mvBandSum_ge_band {ι : Type} [Fintype ι] [Dec
     (u : ι → ℝ) (d : ι → ℂ) (θ : ι → ℝ) {D a ℓ ℓ₀ K θtop : ℝ} (hD : 0 < D) (hℓ₀ : 0 ≤ ℓ₀)
     (hℓ : ℓ₀ ≤ ℓ) (hK0 : 0 ≤ K) (hθtop : 0 ≤ θtop) (hθ : ∀ r, θtop - K ≤ θ r ∧ θ r ≤ θtop)
     (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) :
-    (ℓ₀ * Real.exp (-(2 * K * ℓ₀)) - 26 / (Real.pi * D) - 9 * K / (Real.pi ^ 2 * D ^ 2)) *
-        ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) ≤
-      ∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ 2 := by
+    (ℓ₀ * Real.exp (-(2 * K * ℓ₀)) - 26 / (Real.pi * D) - 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) *
+        ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) ≤
+      ∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ (2 : ℕ) := by
   set θ' : ι → ℝ := fun r => θ r - θtop with hθ'
   have hθ'K : ∀ r, -K ≤ θ' r ∧ θ' r ≤ 0 := by
     intro r
@@ -726,7 +726,7 @@ theorem interval_integral_normSq_mvBandSum_ge_band {ι : Type} [Fintype ι] [Dec
   have hℓ0 : 0 ≤ ℓ := le_trans hℓ₀ hℓ
   -- pointwise comparison on the window
   have hpt : ∀ α ∈ Set.Icc a (a + ℓ),
-      Real.exp (2 * θtop * a) * ‖mvBandSum u d θ' α‖ ^ 2 ≤ ‖mvBandSum u d θ α‖ ^ 2 := by
+      Real.exp (2 * θtop * a) * ‖mvBandSum u d θ' α‖ ^ (2 : ℕ) ≤ ‖mvBandSum u d θ α‖ ^ (2 : ℕ) := by
     intro α hα
     rw [mvBandSum_eq_exp_mul_shift u d θ θtop α, norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos (Real.exp_pos _), mul_pow, ← Real.exp_nat_mul]
@@ -734,31 +734,31 @@ theorem interval_integral_normSq_mvBandSum_ge_band {ι : Type} [Fintype ι] [Dec
     apply mul_le_mul_of_nonneg_right _ (by positivity)
     rw [Real.exp_le_exp]
     nlinarith [hα.1]
-  have hint : Real.exp (2 * θtop * a) * (∫ α in a..a + ℓ, ‖mvBandSum u d θ' α‖ ^ 2) ≤
-      ∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ 2 := by
+  have hint : Real.exp (2 * θtop * a) * (∫ α in a..a + ℓ, ‖mvBandSum u d θ' α‖ ^ (2 : ℕ)) ≤
+      ∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ (2 : ℕ) := by
     rw [← intervalIntegral.integral_const_mul]
     apply intervalIntegral.integral_mono_on (by linarith)
     · exact (((continuous_mvBandSum' u d θ').norm.pow 2).const_mul _).intervalIntegrable _ _
     · exact ((continuous_mvBandSum' u d θ).norm.pow 2).intervalIntegrable _ _
     · exact hpt
-  have hweights : Real.exp (2 * θtop * a) * ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ' r * a) =
-      ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) := by
+  have hweights : Real.exp (2 * θtop * a) * ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ' r * a) =
+      ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
     simp only [hθ']
-    rw [show ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) =
-      ‖d r‖ ^ 2 * (Real.exp (2 * θtop * a) * Real.exp (2 * (θ r - θtop) * a)) by
+    rw [show ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) =
+      ‖d r‖ ^ (2 : ℕ) * (Real.exp (2 * θtop * a) * Real.exp (2 * (θ r - θtop) * a)) by
         rw [← Real.exp_add]; ring_nf]
     ring
   have hE : 0 < Real.exp (2 * θtop * a) := Real.exp_pos _
   calc
-    (ℓ₀ * Real.exp (-(2 * K * ℓ₀)) - 26 / (Real.pi * D) - 9 * K / (Real.pi ^ 2 * D ^ 2)) *
-        ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a)
+    (ℓ₀ * Real.exp (-(2 * K * ℓ₀)) - 26 / (Real.pi * D) - 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) *
+        ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a)
       = Real.exp (2 * θtop * a) *
-          ((ℓ₀ * Real.exp (-(2 * K * ℓ₀)) - 26 / (Real.pi * D) - 9 * K / (Real.pi ^ 2 * D ^ 2)) *
-            ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ' r * a)) := by
+          ((ℓ₀ * Real.exp (-(2 * K * ℓ₀)) - 26 / (Real.pi * D) - 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) *
+            ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ' r * a)) := by
         rw [← hweights]; ring
-    _ ≤ Real.exp (2 * θtop * a) * ∫ α in a..a + ℓ, ‖mvBandSum u d θ' α‖ ^ 2 :=
+    _ ≤ Real.exp (2 * θtop * a) * ∫ α in a..a + ℓ, ‖mvBandSum u d θ' α‖ ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hcore hE.le
     _ ≤ _ := hint
 
@@ -768,9 +768,9 @@ theorem interval_integral_normSq_mvBandSum_le_band {ι : Type} [Fintype ι] [Dec
     (u : ι → ℝ) (d : ι → ℂ) (θ : ι → ℝ) {D a ℓ K θtop : ℝ} (hD : 0 < D) (hℓ : 0 ≤ ℓ)
     (hK0 : 0 ≤ K) (hθtop : 0 ≤ θtop) (hθ : ∀ r, θtop - K ≤ θ r ∧ θ r ≤ θtop)
     (hsep : ∀ r s, r ≠ s → D ≤ |u r - u s|) :
-    (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ 2) ≤
-      Real.exp (2 * θtop * ℓ) * (ℓ + 26 / (Real.pi * D) + 9 * K / (Real.pi ^ 2 * D ^ 2)) *
-        ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) := by
+    (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ (2 : ℕ)) ≤
+      Real.exp (2 * θtop * ℓ) * (ℓ + 26 / (Real.pi * D) + 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) *
+        ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) := by
   set θ' : ι → ℝ := fun r => θ r - θtop with hθ'
   have hθ'K : ∀ r, -K ≤ θ' r ∧ θ' r ≤ 0 := by
     intro r
@@ -778,7 +778,7 @@ theorem interval_integral_normSq_mvBandSum_le_band {ι : Type} [Fintype ι] [Dec
     constructor <;> linarith [(hθ r).1, (hθ r).2]
   have hcore := interval_integral_normSq_mvBandSum_le_damped u d θ' (a := a) hD hℓ hK0 hθ'K hsep
   have hpt : ∀ α ∈ Set.Icc a (a + ℓ),
-      ‖mvBandSum u d θ α‖ ^ 2 ≤ Real.exp (2 * θtop * (a + ℓ)) * ‖mvBandSum u d θ' α‖ ^ 2 := by
+      ‖mvBandSum u d θ α‖ ^ (2 : ℕ) ≤ Real.exp (2 * θtop * (a + ℓ)) * ‖mvBandSum u d θ' α‖ ^ (2 : ℕ) := by
     intro α hα
     rw [mvBandSum_eq_exp_mul_shift u d θ θtop α, norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos (Real.exp_pos _), mul_pow, ← Real.exp_nat_mul]
@@ -786,30 +786,30 @@ theorem interval_integral_normSq_mvBandSum_le_band {ι : Type} [Fintype ι] [Dec
     apply mul_le_mul_of_nonneg_right _ (by positivity)
     rw [Real.exp_le_exp]
     nlinarith [hα.2]
-  have hint : (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ 2) ≤
-      Real.exp (2 * θtop * (a + ℓ)) * ∫ α in a..a + ℓ, ‖mvBandSum u d θ' α‖ ^ 2 := by
+  have hint : (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ (2 : ℕ)) ≤
+      Real.exp (2 * θtop * (a + ℓ)) * ∫ α in a..a + ℓ, ‖mvBandSum u d θ' α‖ ^ (2 : ℕ) := by
     rw [← intervalIntegral.integral_const_mul]
     apply intervalIntegral.integral_mono_on (by linarith)
     · exact ((continuous_mvBandSum' u d θ).norm.pow 2).intervalIntegrable _ _
     · exact (((continuous_mvBandSum' u d θ').norm.pow 2).const_mul _).intervalIntegrable _ _
     · exact hpt
-  have hweights : Real.exp (2 * θtop * a) * ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ' r * a) =
-      ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) := by
+  have hweights : Real.exp (2 * θtop * a) * ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ' r * a) =
+      ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
     simp only [hθ']
-    rw [show ‖d r‖ ^ 2 * Real.exp (2 * θ r * a) =
-      ‖d r‖ ^ 2 * (Real.exp (2 * θtop * a) * Real.exp (2 * (θ r - θtop) * a)) by
+    rw [show ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ r * a) =
+      ‖d r‖ ^ (2 : ℕ) * (Real.exp (2 * θtop * a) * Real.exp (2 * (θ r - θtop) * a)) by
         rw [← Real.exp_add]; ring_nf]
     ring
   have hsplit : Real.exp (2 * θtop * (a + ℓ)) = Real.exp (2 * θtop * ℓ) * Real.exp (2 * θtop * a) := by
     rw [← Real.exp_add]; ring_nf
   calc
-    (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ 2)
-        ≤ Real.exp (2 * θtop * (a + ℓ)) * ∫ α in a..a + ℓ, ‖mvBandSum u d θ' α‖ ^ 2 := hint
+    (∫ α in a..a + ℓ, ‖mvBandSum u d θ α‖ ^ (2 : ℕ))
+        ≤ Real.exp (2 * θtop * (a + ℓ)) * ∫ α in a..a + ℓ, ‖mvBandSum u d θ' α‖ ^ (2 : ℕ) := hint
     _ ≤ Real.exp (2 * θtop * (a + ℓ)) *
-          ((ℓ + 26 / (Real.pi * D) + 9 * K / (Real.pi ^ 2 * D ^ 2)) *
-            ∑ r, ‖d r‖ ^ 2 * Real.exp (2 * θ' r * a)) :=
+          ((ℓ + 26 / (Real.pi * D) + 9 * K / (Real.pi ^ (2 : ℕ) * D ^ (2 : ℕ))) *
+            ∑ r, ‖d r‖ ^ (2 : ℕ) * Real.exp (2 * θ' r * a)) :=
         mul_le_mul_of_nonneg_left hcore (Real.exp_pos _).le
     _ = _ := by
       rw [hsplit, ← hweights]; ring

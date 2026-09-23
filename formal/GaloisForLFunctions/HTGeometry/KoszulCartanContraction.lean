@@ -140,10 +140,10 @@ theorem physicalKoszulDifferential_exact (m : ℕ) (phi : V →ₗ[R] R) (e : V)
 
 /-- **Surjectivity in degree zero.** -/
 theorem physicalKoszulDifferential_surjective_zero (phi : V →ₗ[R] R) (e : V) {b : R}
-    (hb : b * phi e = 1) (x : ⋀[R]^0 V) :
-    ∃ y : ⋀[R]^1 V, physicalKoszulDifferential 0 phi y = x := by
+    (hb : b * phi e = 1) (x : ⋀[R]^(0 : ℕ) V) :
+    ∃ y : ⋀[R]^(1 : ℕ) V, physicalKoszulDifferential 0 phi y = x := by
   refine ⟨b • wedgeLeft 0 e x, ?_⟩
-  have h := congrArg (fun f : (⋀[R]^0 V) →ₗ[R] (⋀[R]^0 V) => f x) (koszul_cartan_zero_map phi e)
+  have h := congrArg (fun f : (⋀[R]^(0 : ℕ) V) →ₗ[R] (⋀[R]^(0 : ℕ) V) => f x) (koszul_cartan_zero_map phi e)
   simp only [LinearMap.comp_apply, LinearMap.smul_apply, LinearMap.id_apply] at h
   rw [map_smul, h, smul_smul, hb, one_smul]
 

@@ -99,8 +99,8 @@ theorem integrable_hillDrivenStartWeight (hN : (Module.finrank ℝ (EuclideanSpa
   have hfreqinv : (0 : ℝ) ≤ (kgFreq ξ ^ N)⁻¹ := inv_nonneg.mpr (pow_pos (kgFreq_pos ξ) N).le
   have hmass : (a.freq ξ 0)⁻¹ ≤ a.mass⁻¹ := by
     refine inv_anti₀ a.mass_pos ?_
-    have hsq : a.mass ^ 2 ≤ a.freq ξ 0 ^ 2 := by
-      show a.mass ^ 2 ≤ massiveFreq a.mass a.speed ‖ξ‖ 0 ^ 2
+    have hsq : a.mass ^ (2 : ℕ) ≤ a.freq ξ 0 ^ (2 : ℕ) := by
+      show a.mass ^ (2 : ℕ) ≤ massiveFreq a.mass a.speed ‖ξ‖ 0 ^ (2 : ℕ)
       rw [massiveFreq_sq a.mass_pos]
       nlinarith [sq_nonneg (a.speed 0 * ‖ξ‖)]
     nlinarith [a.freq_pos ξ 0, a.mass_pos]

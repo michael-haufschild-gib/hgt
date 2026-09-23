@@ -115,7 +115,7 @@ theorem thetaCoreCriticalLaguerre_endpointAtom_le_third
       _ = 8 := by norm_num
   have hprod : 24 ≤ (N : ℝ) * ((N : ℝ) - 1) * ((N : ℝ) - 2) := by
     have hfac : 0 ≤ ((N : ℝ) - 4) *
-        ((N : ℝ) ^ 2 + (N : ℝ) + 6) := by positivity
+        ((N : ℝ) ^ (2 : ℕ) + (N : ℝ) + 6) := by positivity
     nlinarith
   have hM3third : M 3 ≤ 1 / 3 := by
     have hmul := mul_le_mul_of_nonneg_right hprod hM3.le

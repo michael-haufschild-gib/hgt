@@ -238,10 +238,10 @@ theorem primeWindowSum_zero (a Y : ℝ) : primeWindowSum a 0 Y = primeRpowLogSum
   · rw [if_neg hp, if_neg hp]
 
 theorem windowWeight_mul_primeLogWeight {a Y : ℝ} (j : ℕ) (k : ℕ) :
-    ((k : ℝ) ^ (a - 1) * (Real.log Y - Real.log k) ^ j) * primeLogWeight k =
+    ((k : ℝ) ^ (a - 1) * (Real.log Y - Real.log k) ^ j) * primeLogWeight_primeRpowAbelSummation k =
       (if k.Prime then ((k : ℕ) : ℝ) ^ (a - 1) * (Real.log Y - Real.log k) ^ j * Real.log k
         else 0) := by
-  rw [primeLogWeight]
+  rw [primeLogWeight_primeRpowAbelSummation]
   by_cases hp : k.Prime
   · rw [if_pos hp, if_pos hp]
   · rw [if_neg hp, if_neg hp, mul_zero]
@@ -311,7 +311,7 @@ theorem primeWindowSum_succ_eq {a Y : ℝ} (j : ℕ) (hY : 2 ≤ Y) :
             ((a - 1) * t ^ (a - 2) * (Real.log Y - Real.log t) ^ (j + 1)
               - ((j : ℝ) + 1) * t ^ (a - 2) * (Real.log Y - Real.log t) ^ j) *
               Chebyshev.theta t := by
-  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight
+  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight_primeRpowAbelSummation
     (f := fun u : ℝ => u ^ (a - 1) * (Real.log Y - Real.log u) ^ (j + 1))
     (a := (2 : ℝ)) (b := Y) (by norm_num) hY
     (fun t ht => (hasDerivAt_windowWeight (a := a) (Y := Y) j (by
@@ -337,7 +337,7 @@ theorem primeWindowSum_succ_eq {a Y : ℝ} (j : ℕ) (hY : 2 ≤ Y) :
     rw [(hasDerivAt_windowWeight (a := a) (Y := Y) j ht0).deriv]
   have hlhs : primeWindowSum a (j + 1) Y
       = ∑ k ∈ Finset.Ioc 2 ⌊Y⌋₊,
-          ((k : ℝ) ^ (a - 1) * (Real.log Y - Real.log k) ^ (j + 1)) * primeLogWeight k := by
+          ((k : ℝ) ^ (a - 1) * (Real.log Y - Real.log k) ^ (j + 1)) * primeLogWeight_primeRpowAbelSummation k := by
     rw [primeWindowSum]
     exact Finset.sum_congr rfl fun k _ =>
       (windowWeight_mul_primeLogWeight (a := a) (Y := Y) (j + 1) k).symm

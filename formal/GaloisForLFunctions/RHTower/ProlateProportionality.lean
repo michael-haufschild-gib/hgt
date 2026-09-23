@@ -38,8 +38,8 @@ theorem prolateSLAction_const_mul {c χ k : ℝ} {ψ : ℝ → ℝ}
   have hx := he x
   simp only [prolateSLAction] at hx ⊢
   rw [hd2, deriv_const_mul_eq h1]
-  show (1 - x ^ 2) * (k * deriv (deriv ψ) x) - 2 * x * (k * deriv ψ x)
-      - c ^ 2 * x ^ 2 * (k * ψ x) = χ * (k * ψ x)
+  show (1 - x ^ (2 : ℕ)) * (k * deriv (deriv ψ) x) - 2 * x * (k * deriv ψ x)
+      - c ^ (2 : ℕ) * x ^ (2 : ℕ) * (k * ψ x) = χ * (k * ψ x)
   linear_combination k * hx
 
 /-- **The prolate eigenspace is one-dimensional.**  Two solutions of the same prolate eigenvalue

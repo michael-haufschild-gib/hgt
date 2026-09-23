@@ -39,7 +39,7 @@ theorem tendsto_prolateGround_profileIntegral :
       Tendsto (fun c => ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
         normalizedProlateProfile c (Psi c) xi) atTop (𝓝 (Real.sqrt (2 * Real.pi))) ∧
       Tendsto (fun c => ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-        (normalizedProlateProfile c (Psi c) xi) ^ 2) atTop (𝓝 (Real.sqrt Real.pi)) := by
+        (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)) atTop (𝓝 (Real.sqrt Real.pi)) := by
   obtain ⟨mu, Psi, hmu, hfam⟩ := exists_ground_family
   have hfam' : ∀ c : ℝ, 0 < c → ∃ lam chi : ℝ, lam ≠ 0 ∧
       ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Psi c) ∧ Psi c ≠ 0 ∧ Function.Even (Psi c) ∧
@@ -67,16 +67,16 @@ theorem tendsto_prolateGround_profileIntegral :
     exact hc.le
   have hsqrt : ∀ K : ℝ, 0 < K → ∀ᶠ c in atTop, K ≤ Real.sqrt c := by
     intro K hK
-    filter_upwards [eventually_ge_atTop (K ^ 2)] with c hc
-    calc K = Real.sqrt (K ^ 2) := (Real.sqrt_sq hK.le).symm
+    filter_upwards [eventually_ge_atTop (K ^ (2 : ℕ))] with c hc
+    calc K = Real.sqrt (K ^ (2 : ℕ)) := (Real.sqrt_sq hK.le).symm
       _ ≤ Real.sqrt c := Real.sqrt_le_sqrt hc
   -- the normalized total mass of the square converges to the Gaussian mass
   have htotalSq : Tendsto
       (fun c => ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-        (normalizedProlateProfile c (Psi c) xi) ^ 2) atTop (𝓝 (Real.sqrt Real.pi)) := by
+        (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)) atTop (𝓝 (Real.sqrt Real.pi)) := by
     refine tendsto_total_of_window (M := 2)
-      (W := fun K c => ∫ x in (-K)..K, (normalizedProlateProfile c (Psi c) x) ^ 2)
-      (G := fun K => ∫ x in (-K)..K, Real.exp (-(x ^ 2))) (by norm_num) ?_ ?_ ?_
+      (W := fun K c => ∫ x in (-K)..K, (normalizedProlateProfile c (Psi c) x) ^ (2 : ℕ))
+      (G := fun K => ∫ x in (-K)..K, Real.exp (-(x ^ (2 : ℕ)))) (by norm_num) ?_ ?_ ?_
       tendsto_gaussianWindow
     · intro K hK _
       filter_upwards [eventually_gt_atTop (0 : ℝ), hsqrt K hK] with c hc hKc
@@ -90,14 +90,14 @@ theorem tendsto_prolateGround_profileIntegral :
       have henv := tendsto_prolateWindowMassEnvelope (mu := mu) (c := fun x : ℝ => x) (K := K)
         hmu tendsto_id
       have hbnd : ∀ᶠ c in atTop,
-          ‖(∫ x in (-K)..K, (normalizedProlateProfile c (Psi c) x) ^ 2)
-            - ∫ x in (-K)..K, Real.exp (-(x ^ 2))‖ ≤ prolateWindowMassEnvelope c (mu c) K := by
-        filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_ge_atTop (2 * K ^ 2),
+          ‖(∫ x in (-K)..K, (normalizedProlateProfile c (Psi c) x) ^ (2 : ℕ))
+            - ∫ x in (-K)..K, Real.exp (-(x ^ (2 : ℕ)))‖ ≤ prolateWindowMassEnvelope c (mu c) K := by
+        filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_ge_atTop (2 * K ^ (2 : ℕ)),
           hepsP K, hepsQ K] with c hc hcK hP hQ
         obtain ⟨lam, chi, hlam, hsm, hne, heven, hband, hprolate, hval, _⟩ := hfam c hc
         exact prolateGround_windowMass_bound hK hcK hsm hne heven hlam hband hprolate hval hP hQ
       have hzero := squeeze_zero_norm' hbnd henv
-      have hadd := hzero.add_const (∫ x in (-K)..K, Real.exp (-(x ^ 2)))
+      have hadd := hzero.add_const (∫ x in (-K)..K, Real.exp (-(x ^ (2 : ℕ))))
       simpa using hadd
   -- a second moment bounded uniformly in the bandwidth
   set N₀ : ℝ := 2 * (Real.sqrt Real.pi + 1) with hN₀def
@@ -106,7 +106,7 @@ theorem tendsto_prolateGround_profileIntegral :
     rw [hN₀def]; linarith
   have hmomN : ∀ᶠ c in atTop,
       (∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-        xi ^ 2 * (normalizedProlateProfile c (Psi c) xi) ^ 2) ≤ N₀ := by
+        xi ^ (2 : ℕ) * (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)) ≤ N₀ := by
     filter_upwards [eventually_gt_atTop (0 : ℝ), hmu2, hmu0,
       htotalSq.eventually (eventually_lt_nhds (by linarith [Real.sqrt_nonneg Real.pi] :
         Real.sqrt Real.pi < Real.sqrt Real.pi + 1))] with c hc hm2 hm0 hlt
@@ -115,7 +115,7 @@ theorem tendsto_prolateGround_profileIntegral :
     rw [← hval] at h1
     have hsq : (0 : ℝ) ≤ Real.sqrt c := Real.sqrt_nonneg c
     have hM0 : (0 : ℝ) ≤ ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-        (normalizedProlateProfile c (Psi c) xi) ^ 2 :=
+        (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ) :=
       intervalIntegral.integral_nonneg (by linarith) fun xi _ => by positivity
     rw [hN₀def]
     nlinarith [h1, hm2, hm0, hlt, hM0]
@@ -131,7 +131,7 @@ theorem tendsto_prolateGround_profileIntegral :
     intro K hK
     refine tendsto_intervalIntegral_of_window_dist hK.le continuous_gaussianProfile ?_
       (tendsto_prolateWindowDistEnvelope (mu := mu) (c := fun x : ℝ => x) (K := K) hmu tendsto_id)
-    filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_ge_atTop (2 * K ^ 2),
+    filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_ge_atTop (2 * K ^ (2 : ℕ)),
       hepsP K, hepsQ K] with c hc hcK hP hQ
     obtain ⟨lam, chi, hlam, hsm, hne, heven, hband, hprolate, hval, _⟩ := hfam c hc
     exact ⟨continuous_normalizedProlateProfile hsm,
@@ -141,10 +141,10 @@ theorem tendsto_prolateGround_profileIntegral :
         |∫ x in K..(Real.sqrt c), normalizedProlateProfile c (Psi c) x| ≤ δ ∧
         |∫ x in (-(Real.sqrt c))..(-K), normalizedProlateProfile c (Psi c) x| ≤ δ := by
     intro δ hδ
-    refine ⟨N₀ / δ ^ 2 + 1, by positivity, ?_⟩
+    refine ⟨N₀ / δ ^ (2 : ℕ) + 1, by positivity, ?_⟩
     intro K hK0
     have hKpos : 0 < K := lt_of_lt_of_le (by positivity) hK0
-    have hcut : N₀ / δ ^ 2 < K := lt_of_lt_of_le (by linarith) hK0
+    have hcut : N₀ / δ ^ (2 : ℕ) < K := lt_of_lt_of_le (by linarith) hK0
     filter_upwards [eventually_gt_atTop (0 : ℝ), hsqrt K hKpos, hmomN] with c hc hKc hmom
     obtain ⟨lam, chi, hlam, hsm, hne, heven, hband, hprolate, hval, _⟩ := hfam c hc
     have hright := normalizedProlate_tail_lt hc hKpos hKc hN₀pos hδ hcut hsm hmom
@@ -167,16 +167,16 @@ theorem tendsto_prolateGround_shapeRatio :
         (∀ x : ℝ, bandTransform c (Psi c) x = lam * Psi c x) ∧
         (∀ x : ℝ, prolateSLAction c (Psi c) x = chi * Psi c x)) ∧
       Tendsto (fun c => (∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-            normalizedProlateProfile c (Psi c) xi) ^ 2
+            normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ)
           / ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
-            (normalizedProlateProfile c (Psi c) xi) ^ 2)
+            (normalizedProlateProfile c (Psi c) xi) ^ (2 : ℕ))
         atTop (𝓝 (2 * Real.sqrt Real.pi)) := by
   obtain ⟨Psi, hfam, h1, h2⟩ := tendsto_prolateGround_profileIntegral
   refine ⟨Psi, hfam, ?_⟩
   have hpi : (0 : ℝ) < Real.sqrt Real.pi := Real.sqrt_pos.2 Real.pi_pos
   have hlim := (h1.pow 2).div h2 hpi.ne'
-  have hval : Real.sqrt (2 * Real.pi) ^ 2 / Real.sqrt Real.pi = 2 * Real.sqrt Real.pi := by
-    have hsq : Real.sqrt (2 * Real.pi) ^ 2 = 2 * Real.pi :=
+  have hval : Real.sqrt (2 * Real.pi) ^ (2 : ℕ) / Real.sqrt Real.pi = 2 * Real.sqrt Real.pi := by
+    have hsq : Real.sqrt (2 * Real.pi) ^ (2 : ℕ) = 2 * Real.pi :=
       Real.sq_sqrt (by positivity)
     have hpp : Real.sqrt Real.pi * Real.sqrt Real.pi = Real.pi :=
       Real.mul_self_sqrt Real.pi_pos.le

@@ -21,7 +21,7 @@ private theorem sqrtKernel_remainder (z : ℝ) (hz : z ∈ Icc (0:ℝ) 1) :
   ring
 
 private theorem sqrtKernel_remainder_bound (z : ℝ) (hz : z ∈ Icc (0:ℝ) 1) :
-    ‖sqrtKernel z-1/2-(-1/4)*(z:ℂ)‖ ≤ (1/4)*z^2 := by
+    ‖sqrtKernel z-1/2-(-1/4)*(z:ℂ)‖ ≤ (1/4)*z^(2 : ℕ) := by
   rw [sqrtKernel_remainder z hz,norm_mul,norm_div,Complex.norm_real,Real.norm_eq_abs,
     abs_of_nonneg hz.1]
   rw [show ‖(2:ℂ)‖=(2:ℝ) by norm_num]
@@ -119,17 +119,17 @@ private theorem incomingNormFinitePart_fundamental (w chi : ℂ) (hw : w.im ≠ 
 theorem fundamentalNorm_join (w chi : ℂ) (hw : w.im ≠ 0) (hwr : -2 < w.re)
     (hf : w=-3/2-Complex.I*chi ∨ w=-3/2+Complex.I*chi) (T : ℝ) (hT : T < 0) :
     incomingNormFinitePart chi (horizonCoordinate T) w+
-      (∫ t in Ioo T 0, normalizable w chi (horizonCoordinate t)^2)=normFinitePart w := by
+      (∫ t in Ioo T 0, normalizable w chi (horizonCoordinate t)^(2 : ℕ))=normFinitePart w := by
   have hz := horizonCoordinate_interior T hT
   have hw0 : w ≠ 0 := by intro he; exact hw (by simp [he])
   have hw1 : w+1 ≠ 0 := by
     intro he
     apply hw
     simpa only [Complex.add_im,Complex.one_im,Complex.zero_im,add_zero] using congrArg Complex.im he
-  have hi : (∫ t in Ioo T 0, normalizable w chi (horizonCoordinate t)^2)=
+  have hi : (∫ t in Ioo T 0, normalizable w chi (horizonCoordinate t)^(2 : ℕ))=
       (1/2:ℂ)*(∫ z in horizonCoordinate T..1, (z:ℂ)^(w-1)*(Real.sqrt (1-z):ℂ)) := by
     simp_rw [normalizable_fundamental_value w chi hf]
-    change (∫ t in Ioo T 0, mode w t^2)=_
+    change (∫ t in Ioo T 0, mode w t^(2 : ℕ))=_
     rw [← integral_Ioc_eq_integral_Ioo,← intervalIntegral.integral_of_le hT.le]
     exact mode_square_integral w T hT
   rw [incomingNormFinitePart_fundamental w chi hw hf hz.2.le,hi]
@@ -140,7 +140,7 @@ theorem physicalFundamentalNorm_join (q : XiZeroCopy) (side : Bool) (T : ℝ) (h
     incomingNormFinitePart (physicalRadialFrequency q) (horizonCoordinate T)
       (physicalFundamentalFrequency q side)+
       (∫ t in Ioo T 0, normalizable (physicalFundamentalFrequency q side)
-        (physicalRadialFrequency q) (horizonCoordinate t)^2)=
+        (physicalRadialFrequency q) (horizonCoordinate t)^(2 : ℕ))=
       normFinitePart (physicalFundamentalFrequency q side) := by
   have hs := physicalFundamentalFrequency_strip q side
   apply fundamentalNorm_join _ _ hs.1 (abs_lt.mp hs.2).1 _ T hT

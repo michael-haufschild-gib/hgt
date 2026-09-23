@@ -32,7 +32,7 @@ theorem exists_schedule_card_sub_le_hsNormSq_soninApertureCoupling (N₀ : ℕ) 
           ∃ hr : 1 < soninShellCutScale b c N κ, 0 < N ∧
           ((N : ℝ) - ∑ k : Fin 3, hsNormSq (soninCouplingIdealErrors a b
               (soninShellCutScale b c N κ)⁻¹
-              (inv_pos.mpr (zero_lt_one.trans hr)) k) / (η / 6) ^ 2) * (1 - η) ^ 2 ≤
+              (inv_pos.mpr (zero_lt_one.trans hr)) k) / (η / 6) ^ (2 : ℕ)) * (1 - η) ^ (2 : ℕ) ≤
             hsNormSq (evenSoninApertureSuccessiveLayerTransition a b c
               (soninShellCutScale b c N κ) hr) := by
   obtain ⟨K, hK0, hK⟩ := exists_card_sub_le_hsNormSq_soninApertureCoupling_shellCut_sharp N₀ hN₀

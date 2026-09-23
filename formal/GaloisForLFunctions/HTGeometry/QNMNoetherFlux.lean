@@ -39,7 +39,7 @@ theorem qnmConstantMode_spatial_derivative (z : ℂ) (t x : ℝ) :
 /-- The current of an actual separated mode, before specializing its complex frequency. -/
 theorem qnmConstantMode_radialFlux (z : ℂ) (t x : ℝ) :
     complexRadialFlux (qnmComplexHyperboloidalWave z 1 t) x =
-      -z.im * Real.tanh x * ‖qnmComplexHyperboloidalWave z 1 t x‖ ^ 2 := by
+      -z.im * Real.tanh x * ‖qnmComplexHyperboloidalWave z 1 t x‖ ^ (2 : ℕ) := by
   rw [complexRadialFlux, (qnmConstantMode_spatial_derivative z t x).deriv]
   have he : (starRingEnd ℂ) (qnmComplexHyperboloidalWave z 1 t x) *
       (-z * (Real.tanh x : ℂ) * qnmComplexHyperboloidalWave z 1 t x) =
@@ -53,7 +53,7 @@ theorem qnmConstantMode_radialFlux (z : ℂ) (t x : ℝ) :
 /-- The temporal charge of the same mode is read from its actual time derivative. -/
 theorem qnmConstantMode_temporalCharge (z : ℂ) (t x : ℝ) :
     complexTemporalCharge (qnmComplexHyperboloidalWave z 1) t x =
-      -z.im * ‖qnmComplexHyperboloidalWave z 1 t x‖ ^ 2 := by
+      -z.im * ‖qnmComplexHyperboloidalWave z 1 t x‖ ^ (2 : ℕ) := by
   rw [complexTemporalCharge, qnmComplexHyperboloidalWave_time_deriv]
   have he : (starRingEnd ℂ) (qnmComplexHyperboloidalWave z 1 t x) *
       (z * qnmComplexHyperboloidalWave z 1 t x) =
@@ -64,7 +64,7 @@ theorem qnmConstantMode_temporalCharge (z : ℂ) (t x : ℝ) :
 
 /-- The existing height is `log (2 cosh x)`, fixing the exact density normalization. -/
 theorem qnmPoschlTeller_norm_square (s t x : ℝ) :
-    ‖qnmComplexHyperboloidalWave (qnmPoschlTellerExponent s) 1 t x‖ ^ 2 =
+    ‖qnmComplexHyperboloidalWave (qnmPoschlTellerExponent s) 1 t x‖ ^ (2 : ℕ) =
       2 * Real.cosh x * Real.exp (-t) := by
   rw [norm_qnmPoschlTeller_wave, ← Real.exp_nat_mul]
   norm_num only [Nat.cast_ofNat]

@@ -152,7 +152,7 @@ theorem fibreKernel_le_power {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {A : ℕ} (hA
     _ = 250 * (T * r) ^ (1 / 2 : ℝ) * (A : ℝ) ^ (-(1 / 2 : ℝ)) := by ring
 
 
-/-- **The mixed main coefficient is `≤ 10^5 · A^{1/3} X^{1/6}`.** -/
+/-- **The mixed main coefficient is `≤ 10^(5 : ℕ) · A^{1/3} X^{1/6}`.** -/
 theorem secondThirdMixedFibreMainCoefficient_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {A : ℕ} (hA : 1 ≤ A) :
     secondThirdMixedFibreMainCoefficient T r A

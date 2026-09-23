@@ -207,7 +207,7 @@ theorem exists_positive_periodic_mem_ball_of_displacement_newton_deriv_variation
     intro y _hy
     have hdiff : DifferentiableAt ℂ F y := by
       dsimp [F]
-      exact ((differentiable_quadratic_iterate c q).differentiableAt).sub differentiableAt_id
+      exact ((differentiable_quadratic_iterate_repellingFixedPoint c q).differentiableAt).sub differentiableAt_id
     exact hdiff.hasDerivAt
   obtain ⟨y, hy, hzero⟩ :=
     exists_zero_mem_ball_of_newton_deriv_variation
@@ -249,7 +249,7 @@ theorem exists_positive_periodic_mem_ball_of_scaled_displacement_newton_deriv_va
       (differentiableAt_const z).add (differentiableAt_id.const_mul scale)
     have hdiff : DifferentiableAt ℂ F t := by
       dsimp [F]
-      exact (((differentiable_quadratic_iterate c q).differentiableAt.comp t haff).sub haff)
+      exact (((differentiable_quadratic_iterate_repellingFixedPoint c q).differentiableAt.comp t haff).sub haff)
     exact hdiff.hasDerivAt
   obtain ⟨t, ht, hzero⟩ :=
     exists_zero_mem_closedBall_of_newton_deriv_variation

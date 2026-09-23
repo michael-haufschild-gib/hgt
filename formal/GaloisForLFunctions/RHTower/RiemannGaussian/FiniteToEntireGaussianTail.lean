@@ -47,15 +47,15 @@ theorem upperHalfPlaneHyperbolicHeatIntegrand_le_radialGaussian
     (z alpha : ℂ) {tau R : ℝ} (htau : 0 < tau)
     (hR : 0 ≤ R) (hdist : R ≤ dist z alpha) :
     upperHalfPlaneHyperbolicHeatIntegrand z alpha tau ≤
-      tau⁻¹ * Real.exp (-(R ^ 2 * tau)) := by
+      tau⁻¹ * Real.exp (-(R ^ (2 : ℕ) * tau)) := by
   have hnorm : R ≤ ‖z - alpha‖ := by
     simpa [dist_eq_norm] using hdist
-  have hsq : R ^ 2 ≤ Complex.normSq (z - alpha) := by
+  have hsq : R ^ (2 : ℕ) ≤ Complex.normSq (z - alpha) := by
     rw [Complex.normSq_eq_norm_sq]
     exact (sq_le_sq₀ hR (norm_nonneg _)).2 hnorm
   have hexp :
       Real.exp (-(Complex.normSq (z - alpha) * tau)) ≤
-        Real.exp (-(R ^ 2 * tau)) := by
+        Real.exp (-(R ^ (2 : ℕ) * tau)) := by
     apply Real.exp_le_exp.mpr
     nlinarith
   exact
@@ -71,10 +71,10 @@ theorem finiteUpperHyperbolicHeatSum_le_card_mul_radialGaussian
     (hdist : ∀ alpha ∈ upper, R ≤ dist z alpha) :
     finiteUpperHyperbolicHeatSum z upper tau ≤
       (upper.card : ℝ) *
-        (tau⁻¹ * Real.exp (-(R ^ 2 * tau))) := by
+        (tau⁻¹ * Real.exp (-(R ^ (2 : ℕ) * tau))) := by
   let W := fun alpha : ℂ ↦
     upperHalfPlaneHyperbolicHeatIntegrand z alpha tau
-  let C := tau⁻¹ * Real.exp (-(R ^ 2 * tau))
+  let C := tau⁻¹ * Real.exp (-(R ^ (2 : ℕ) * tau))
   have hle := (upper.map W).sum_le_card_nsmul C (by
     intro w hw
     obtain ⟨alpha, halpha, rfl⟩ := Multiset.mem_map.mp hw
@@ -141,9 +141,9 @@ theorem realPolynomialUpperHeatRemainderOutsideRootMultiset_le_degreeGaussian
     realPolynomialUpperHeatRemainderOutsideRootMultiset
         A selected z tau ≤
       (A.natDegree : ℝ) *
-        (tau⁻¹ * Real.exp (-(R ^ 2 * tau))) := by
+        (tau⁻¹ * Real.exp (-(R ^ (2 : ℕ) * tau))) := by
   let unused := realPolynomialUpperRootMultiset A - selected
-  let C := tau⁻¹ * Real.exp (-(R ^ 2 * tau))
+  let C := tau⁻¹ * Real.exp (-(R ^ (2 : ℕ) * tau))
   have hsum : finiteUpperHyperbolicHeatSum z unused tau ≤
       (unused.card : ℝ) * C :=
     finiteUpperHyperbolicHeatSum_le_card_mul_radialGaussian
@@ -173,7 +173,7 @@ theorem tendsto_realPolynomialUpperHeatRemainderOutsideRootMultiset_zero_of_degr
       R n ≤ dist z alpha)
     (henvelope : Tendsto
       (fun n ↦ ((A n).natDegree : ℝ) *
-        (tau⁻¹ * Real.exp (-((R n) ^ 2 * tau))))
+        (tau⁻¹ * Real.exp (-((R n) ^ (2 : ℕ) * tau))))
       phi (nhds 0)) :
     Tendsto
       (fun n ↦ realPolynomialUpperHeatRemainderOutsideRootMultiset
@@ -220,9 +220,9 @@ theorem realPolynomialUpperHeatTailOutsideClosedBall_le_degreeGaussian
     (hR : 0 ≤ R) (htau : 0 < tau) :
     realPolynomialUpperHeatTailOutsideClosedBall A z R tau ≤
       (A.natDegree : ℝ) *
-        (tau⁻¹ * Real.exp (-(R ^ 2 * tau))) := by
+        (tau⁻¹ * Real.exp (-(R ^ (2 : ℕ) * tau))) := by
   let tail := realPolynomialUpperRootMultisetOutsideClosedBall A z R
-  let C := tau⁻¹ * Real.exp (-(R ^ 2 * tau))
+  let C := tau⁻¹ * Real.exp (-(R ^ (2 : ℕ) * tau))
   have hsum : finiteUpperHyperbolicHeatSum z tail tau ≤
       (tail.card : ℝ) * C := by
     apply finiteUpperHyperbolicHeatSum_le_card_mul_radialGaussian
@@ -262,7 +262,7 @@ theorem tendsto_realPolynomialUpperHeatTailOutsideClosedBall_zero
     (hR : ∀ᶠ n in phi, 0 ≤ R n)
     (henvelope : Tendsto
       (fun n ↦ ((A n).natDegree : ℝ) *
-        (tau⁻¹ * Real.exp (-((R n) ^ 2 * tau))))
+        (tau⁻¹ * Real.exp (-((R n) ^ (2 : ℕ) * tau))))
       phi (nhds 0)) :
     Tendsto
       (fun n ↦ realPolynomialUpperHeatTailOutsideClosedBall
@@ -328,10 +328,10 @@ theorem realPolynomialUpperHeatRemainderOutsideBalls_le_degreeGaussian
       R ≤ dist z alpha) :
     realPolynomialUpperHeatRemainderOutsideBalls A a r z tau ≤
       (A.natDegree : ℝ) *
-        (tau⁻¹ * Real.exp (-(R ^ 2 * tau))) := by
+        (tau⁻¹ * Real.exp (-(R ^ (2 : ℕ) * tau))) := by
   let unused := realPolynomialUpperRootMultiset A -
     ∑ i : iota, realPolynomialRootMultisetInBall A (a i) (r i)
-  let C := tau⁻¹ * Real.exp (-(R ^ 2 * tau))
+  let C := tau⁻¹ * Real.exp (-(R ^ (2 : ℕ) * tau))
   have hsum : finiteUpperHyperbolicHeatSum z unused tau ≤
       (unused.card : ℝ) * C :=
     finiteUpperHyperbolicHeatSum_le_card_mul_radialGaussian
@@ -363,7 +363,7 @@ theorem tendsto_realPolynomialUpperHeatRemainderOutsideBalls_zero_of_degreeGauss
       R n ≤ dist z alpha)
     (henvelope : Tendsto
       (fun n ↦ ((A n).natDegree : ℝ) *
-        (tau⁻¹ * Real.exp (-((R n) ^ 2 * tau))))
+        (tau⁻¹ * Real.exp (-((R n) ^ (2 : ℕ) * tau))))
       phi (nhds 0)) :
     Tendsto
       (fun n ↦ realPolynomialUpperHeatRemainderOutsideBalls

@@ -36,7 +36,7 @@ theorem markedSupport_diagonalizes_quadratic_sum
     (S : Finset α) (w : α → ℤ) :
     (∑ i ∈ S, ∑ j ∈ S,
       w i * w j * markedPairSupportExponent i j) =
-      ∑ i ∈ S, (w i) ^ 2 := by
+      ∑ i ∈ S, (w i) ^ (2 : ℕ) := by
   simp only [markedPairSupportExponent_eq]
   calc
     (∑ i ∈ S, ∑ j ∈ S, w i * w j * if i = j then 1 else 0) =
@@ -48,7 +48,7 @@ theorem markedSupport_diagonalizes_quadratic_sum
       · intro j hj hji
         simp [Ne.symm hji]
       · exact fun hiNot => (hiNot hi).elim
-    _ = ∑ i ∈ S, (w i) ^ 2 := by
+    _ = ∑ i ∈ S, (w i) ^ (2 : ℕ) := by
       apply Finset.sum_congr rfl
       intro i hi
       ring

@@ -23,7 +23,7 @@ theorem finiteTiltCovariance_self_eq_sum_sq {w r : Fin n → ℝ}
     (hw : ∀ x, 0 ≤ w x) (hsum : ∑ x, w x = 1) (t : ℝ) :
     finiteTiltCovariance w r r t =
       ∑ x, finiteExponentialTilt w r t x *
-        (r x - finiteTiltScoreMean w r t) ^ 2 := by
+        (r x - finiteTiltScoreMean w r t) ^ (2 : ℕ) := by
   rw [finiteTiltCovariance_eq_centered (r := r) (f := r) hw hsum t]
   apply Finset.sum_congr rfl
   intro x _

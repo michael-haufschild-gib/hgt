@@ -53,8 +53,8 @@ private theorem sum_finiteFrequencyPhase_eq_normSq {ι : Type*} (c : ι → ℂ)
     (s : Finset ι) (x : ι → ℝ) (w : ℝ) :
     (∑ i ∈ s, ∑ j ∈ s, (c i * (starRingEnd ℂ) (c j))
         * Complex.exp (((2 * Real.pi * (w * (x i - x j)) : ℝ) : ℂ) * Complex.I))
-      = ((‖finiteFrequencyPoly c s x w‖ ^ 2 : ℝ) : ℂ) := by
-  have hzc : ((‖finiteFrequencyPoly c s x w‖ ^ 2 : ℝ) : ℂ)
+      = ((‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
+  have hzc : ((‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = finiteFrequencyPoly c s x w * (starRingEnd ℂ) (finiteFrequencyPoly c s x w) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [hzc, finiteFrequencyPoly, map_sum, Finset.sum_mul_sum]
@@ -65,7 +65,7 @@ private theorem sum_finiteFrequencyPhase_eq_normSq {ι : Type*} (c : ι → ℂ)
 private theorem sum_finiteFrequencyTerm {ι : Type*} (c : ι → ℂ) (s : Finset ι)
     (x : ι → ℝ) (δ : ℝ) (w : ℝ) :
     (∑ i ∈ s, ∑ j ∈ s, finiteFrequencyTerm c x δ i j w)
-      = 𝓕 (triC δ) w * ((‖finiteFrequencyPoly c s x w‖ ^ 2 : ℝ) : ℂ) := by
+      = 𝓕 (triC δ) w * ((‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [← sum_finiteFrequencyPhase_eq_normSq c s x w, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.mul_sum]
@@ -75,9 +75,9 @@ private theorem sum_finiteFrequencyTerm {ι : Type*} (c : ι → ℂ) (s : Finse
 
 private theorem integrable_finiteFrequencyWeight {ι : Type*} {δ : ℝ} (hδ : 0 < δ)
     (c : ι → ℂ) (s : Finset ι) (x : ι → ℝ) :
-    Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ 2 := by
+    Integrable fun w : ℝ => (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) := by
   have hcomplex : Integrable fun w : ℝ =>
-      𝓕 (triC δ) w * ((‖finiteFrequencyPoly c s x w‖ ^ 2 : ℝ) : ℂ) := by
+      𝓕 (triC δ) w * ((‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     have hsum : Integrable fun w : ℝ =>
         ∑ i ∈ s, ∑ j ∈ s, finiteFrequencyTerm c x δ i j w :=
       integrable_finsetSum _ fun i _ =>
@@ -88,11 +88,11 @@ private theorem integrable_finiteFrequencyWeight {ι : Type*} {δ : ℝ} (hδ : 
 /-- Exact triangular quadratic form for an arbitrary finite frequency family. -/
 theorem integral_finiteFrequencyWeight_eq {ι : Type*} {δ : ℝ} (hδ : 0 < δ)
     (c : ι → ℂ) (s : Finset ι) (x : ι → ℝ) :
-    (∫ w : ℝ, (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ 2)
+    (∫ w : ℝ, (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ))
       = ∑ i ∈ s, ∑ j ∈ s,
           (c i * (starRingEnd ℂ) (c j)).re * max (δ - |x i - x j|) 0 := by
   have hcomplex : Integrable fun w : ℝ =>
-      𝓕 (triC δ) w * ((‖finiteFrequencyPoly c s x w‖ ^ 2 : ℝ) : ℂ) := by
+      𝓕 (triC δ) w * ((‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     have hsum : Integrable fun w : ℝ =>
         ∑ i ∈ s, ∑ j ∈ s, finiteFrequencyTerm c x δ i j w :=
       integrable_finsetSum _ fun i _ =>
@@ -104,9 +104,9 @@ theorem integral_finiteFrequencyWeight_eq {ι : Type*} {δ : ℝ} (hδ : 0 < δ)
     intro i j
     rw [integral_finiteFrequencyTerm hδ, triC, tri, re_mul_ofReal]
   calc
-    (∫ w : ℝ, (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ 2)
+    (∫ w : ℝ, (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ))
         = (∫ w : ℝ,
-            𝓕 (triC δ) w * ((‖finiteFrequencyPoly c s x w‖ ^ 2 : ℝ) : ℂ)).re := by
+            𝓕 (triC δ) w * ((‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) : ℝ) : ℂ)).re := by
           have h := integral_re (μ := volume) hcomplex
           simp only [RCLike.re_to_complex] at h
           rw [← h]
@@ -166,15 +166,15 @@ the bound is the actual weighted near-collision sum. -/
 theorem integral_Icc_normSq_finiteFrequencyPoly_le_collisionWeight {ι : Type*}
     (c : ι → ℂ) (s : Finset ι) (x : ι → ℝ) {δ W : ℝ}
     (hδ : 0 < δ) (hWδ : 2 * Real.pi * δ * W ≤ 1) :
-    (∫ w in Set.Icc (-W) W, ‖finiteFrequencyPoly c s x w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ))
       ≤ (5 / (4 * δ)) * finiteFrequencyCollisionWeight c s x δ := by
   have hweight := integrable_finiteFrequencyWeight hδ c s x
-  have hcont : Continuous fun w : ℝ => ‖finiteFrequencyPoly c s x w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) :=
     ((continuous_finiteFrequencyPoly c s x).norm).pow 2
   have hstep : ∀ w ∈ Set.Icc (-W) W,
-      ‖finiteFrequencyPoly c s x w‖ ^ 2
-        ≤ (5 / (4 * δ ^ 2))
-            * ((𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ 2) := by
+      ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ)
+        ≤ (5 / (4 * δ ^ (2 : ℕ)))
+            * ((𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ)) := by
     intro w hw
     have hwabs : |w| ≤ W := by
       rw [abs_le]
@@ -184,23 +184,23 @@ theorem integral_Icc_normSq_finiteFrequencyPoly_le_collisionWeight {ι : Type*}
       rw [abs_mul, abs_of_pos hpos]
       exact (mul_le_mul_of_nonneg_left hwabs hpos.le).trans hWδ
     have hlow := le_fourier_triC_re hδ hbound
-    have hsq : (0 : ℝ) ≤ ‖finiteFrequencyPoly c s x w‖ ^ 2 := by positivity
-    have hmul : (4 / 5) * δ ^ 2 * ‖finiteFrequencyPoly c s x w‖ ^ 2
-        ≤ (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ 2 :=
+    have hsq : (0 : ℝ) ≤ ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) := by positivity
+    have hmul : (4 / 5) * δ ^ (2 : ℕ) * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ)
+        ≤ (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right hlow hsq
-    have hc : (0 : ℝ) < 5 / (4 * δ ^ 2) := by positivity
+    have hc : (0 : ℝ) < 5 / (4 * δ ^ (2 : ℕ)) := by positivity
     have hscaled := mul_le_mul_of_nonneg_left hmul hc.le
-    have hid : (5 / (4 * δ ^ 2))
-          * ((4 / 5) * δ ^ 2 * ‖finiteFrequencyPoly c s x w‖ ^ 2)
-        = ‖finiteFrequencyPoly c s x w‖ ^ 2 := by field_simp
+    have hid : (5 / (4 * δ ^ (2 : ℕ)))
+          * ((4 / 5) * δ ^ (2 : ℕ) * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ))
+        = ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) := by field_simp
     linarith [hscaled, hid.le, hid.ge]
-  have hcentral : (∫ w in Set.Icc (-W) W, ‖finiteFrequencyPoly c s x w‖ ^ 2)
-      ≤ (5 / (4 * δ ^ 2))
-          * ∫ w : ℝ, (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ 2 := by
-    have hlocal : (∫ w in Set.Icc (-W) W, ‖finiteFrequencyPoly c s x w‖ ^ 2)
+  have hcentral : (∫ w in Set.Icc (-W) W, ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ))
+      ≤ (5 / (4 * δ ^ (2 : ℕ)))
+          * ∫ w : ℝ, (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) := by
+    have hlocal : (∫ w in Set.Icc (-W) W, ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ))
         ≤ ∫ w in Set.Icc (-W) W,
-            (5 / (4 * δ ^ 2))
-              * ((𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ 2) := by
+            (5 / (4 * δ ^ (2 : ℕ)))
+              * ((𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ)) := by
       refine setIntegral_mono_on ?_ ?_ measurableSet_Icc hstep
       · exact hcont.continuousOn.integrableOn_compact isCompact_Icc
       · exact (hweight.const_mul _).integrableOn
@@ -210,13 +210,13 @@ theorem integral_Icc_normSq_finiteFrequencyPoly_le_collisionWeight {ι : Type*}
     exact setIntegral_le_integral hweight (Filter.Eventually.of_forall fun w =>
       mul_nonneg (fourier_triC_re_nonneg hδ w) (by positivity))
   calc
-    (∫ w in Set.Icc (-W) W, ‖finiteFrequencyPoly c s x w‖ ^ 2)
-        ≤ (5 / (4 * δ ^ 2))
-            * ∫ w : ℝ, (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ 2 := hcentral
-    _ = (5 / (4 * δ ^ 2)) * (∑ i ∈ s, ∑ j ∈ s,
+    (∫ w in Set.Icc (-W) W, ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ))
+        ≤ (5 / (4 * δ ^ (2 : ℕ)))
+            * ∫ w : ℝ, (𝓕 (triC δ) w).re * ‖finiteFrequencyPoly c s x w‖ ^ (2 : ℕ) := hcentral
+    _ = (5 / (4 * δ ^ (2 : ℕ))) * (∑ i ∈ s, ∑ j ∈ s,
           (c i * (starRingEnd ℂ) (c j)).re * max (δ - |x i - x j|) 0) := by
           rw [integral_finiteFrequencyWeight_eq hδ c s x]
-    _ ≤ (5 / (4 * δ ^ 2)) * (δ * finiteFrequencyCollisionWeight c s x δ) :=
+    _ ≤ (5 / (4 * δ ^ (2 : ℕ))) * (δ * finiteFrequencyCollisionWeight c s x δ) :=
           mul_le_mul_of_nonneg_left
             (finiteFrequencyQuadraticForm_le_collisionWeight c s x δ) (by positivity)
     _ = (5 / (4 * δ)) * finiteFrequencyCollisionWeight c s x δ := by field_simp
@@ -310,7 +310,7 @@ most `(5π/2) T` times the literal ordered near-product collision count. -/
 theorem integral_Icc_normSq_heathBrownSparseProductPoly_le_collision
     (A B : Finset ℕ) (ε : ℕ → Circle) (q : ℕ → Set.Icc (0 : ℝ) 1)
     (T : Set.Ioi (0 : ℝ)) :
-    (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ), ‖heathBrownSparseProductPoly A B ε q t‖ ^ 2)
+    (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ), ‖heathBrownSparseProductPoly A B ε q t‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2) * (T : ℝ) * (heathBrownProductCollision A B T : ℝ) := by
   have hδ : (0 : ℝ) < 1 / (2 * Real.pi * (T : ℝ)) := by
     exact one_div_pos.mpr (mul_pos (by positivity) T.property)
@@ -322,7 +322,7 @@ theorem integral_Icc_normSq_heathBrownSparseProductPoly_le_collision
     (fun p : ℕ × ℕ => (ε p.1 : ℂ) * (((q p.2 : ℝ) : ℂ)))
     (A.product B) heathBrownProductFrequency hδ hscale
   have hbase' :
-      (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ), ‖heathBrownSparseProductPoly A B ε q t‖ ^ 2)
+      (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ), ‖heathBrownSparseProductPoly A B ε q t‖ ^ (2 : ℕ))
         ≤ (5 / (4 * (1 / (2 * Real.pi * (T : ℝ)))))
             * finiteFrequencyCollisionWeight
                 (fun p : ℕ × ℕ => (ε p.1 : ℂ) * (((q p.2 : ℝ) : ℂ)))
@@ -480,7 +480,7 @@ theorem integral_Icc_normSq_heathBrown_factors_le_collision
     (A B : Finset PNat) (ε : ℕ → Circle) (q : ℕ → Set.Icc (0 : ℝ) 1)
     (T : Set.Ioi (0 : ℝ)) :
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A ε t * heathBrownDenseFactor B q t‖ ^ 2)
+        ‖heathBrownSparseFactor A ε t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ))
       ≤ (5 * Real.pi / 2) * (T : ℝ) * (heathBrownPositiveProductCollision A B T : ℝ) := by
   have hδ : (0 : ℝ) < 1 / (2 * Real.pi * (T : ℝ)) := by
     exact one_div_pos.mpr (mul_pos (by positivity) T.property)
@@ -492,14 +492,14 @@ theorem integral_Icc_normSq_heathBrown_factors_le_collision
     (heathBrownPositiveCoefficient ε q) (A.product B) heathBrownPositiveProductFrequency
     hδ hscale
   have hbase' :
-      (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ), ‖heathBrownPositiveProductPoly A B ε q t‖ ^ 2)
+      (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ), ‖heathBrownPositiveProductPoly A B ε q t‖ ^ (2 : ℕ))
         ≤ (5 / (4 * (1 / (2 * Real.pi * (T : ℝ)))))
             * finiteFrequencyCollisionWeight (heathBrownPositiveCoefficient ε q) (A.product B)
                 heathBrownPositiveProductFrequency (1 / (2 * Real.pi * (T : ℝ))) := by
     simpa only [heathBrownPositiveProductPoly] using hbase
   have hbase'' :
       (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-          ‖heathBrownSparseFactor A ε t * heathBrownDenseFactor B q t‖ ^ 2)
+          ‖heathBrownSparseFactor A ε t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ))
         ≤ (5 / (4 * (1 / (2 * Real.pi * (T : ℝ)))))
             * finiteFrequencyCollisionWeight (heathBrownPositiveCoefficient ε q) (A.product B)
                 heathBrownPositiveProductFrequency (1 / (2 * Real.pi * (T : ℝ))) := by

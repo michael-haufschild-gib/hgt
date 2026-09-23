@@ -33,7 +33,7 @@ theorem xiPrimeValuationGeometricNode_one_eq_inv
 
 theorem xiPrimeValuationGeometricNode_two_eq_inv_sq
     (p : Nat.Primes) :
-    xiPrimeValuationGeometricNode 2 p = ((p : ℝ))⁻¹ ^ 2 := by
+    xiPrimeValuationGeometricNode 2 p = ((p : ℝ))⁻¹ ^ (2 : ℕ) := by
   have hp : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
   rw [xiPrimeValuationGeometricNode]
   rw [show -(2 : ℝ) * Real.log (p : ℝ) =
@@ -61,16 +61,16 @@ theorem poissonPrimeValuationFusedHalfDensity_one_eq
 theorem poissonPrimeValuationFusedHalfDensity_two_eq
     (p : Nat.Primes) :
     poissonPrimeValuationFusedHalfDensity 2 p =
-      2 / ((p : ℝ) ^ 2 - 1) := by
+      2 / ((p : ℝ) ^ (2 : ℕ) - 1) := by
   let P : ℝ := p
   have hP1 : 1 < P := by
     dsimp [P]
     exact_mod_cast p.prop.one_lt
   have hP0 : P ≠ 0 := by positivity
-  have hPsq : P ^ 2 - 1 ≠ 0 := by nlinarith
+  have hPsq : P ^ (2 : ℕ) - 1 ≠ 0 := by nlinarith
   rw [poissonPrimeValuationFusedHalfDensity_eq_geometric (by norm_num),
     xiPrimeValuationGeometricNode_two_eq_inv_sq]
-  change 2 * (P⁻¹ ^ 2) * (1 - P⁻¹ ^ 2)⁻¹ = 2 / (P ^ 2 - 1)
+  change 2 * (P⁻¹ ^ (2 : ℕ)) * (1 - P⁻¹ ^ (2 : ℕ))⁻¹ = 2 / (P ^ (2 : ℕ) - 1)
   field_simp [hP0, hPsq]
 
 /-- **Unit--double fusion law.**  Complete valuation fusion between the distinguished apertures
@@ -85,11 +85,11 @@ theorem poissonPrimeValuationFusedScaleShuttle_one_two_eq
     exact_mod_cast p.prop.one_lt
   have hPm1 : P - 1 ≠ 0 := by linarith
   have hPp1 : P + 1 ≠ 0 := by linarith
-  have hPsq : P ^ 2 - 1 ≠ 0 := by nlinarith
+  have hPsq : P ^ (2 : ℕ) - 1 ≠ 0 := by nlinarith
   rw [poissonPrimeValuationFusedScaleShuttle,
     poissonPrimeValuationFusedHalfDensity_two_eq,
     poissonPrimeValuationFusedHalfDensity_one_eq]
-  change 2 / (P ^ 2 - 1) - 1 / (P - 1) = -1 / (P + 1)
+  change 2 / (P ^ (2 : ℕ) - 1) - 1 / (P - 1) = -1 / (P + 1)
   field_simp [hPm1, hPp1, hPsq]
   ring
 
@@ -127,7 +127,7 @@ response current. -/
 theorem xiMobiusPrimeContinuousApertureSzegoMetric_eq_fusedShuttle_sq
     (a b : ℝ) (p : Nat.Primes) :
     xiMobiusPrimeContinuousApertureSzegoMetric a b p =
-      poissonPrimeValuationFusedScaleShuttle 1 2 p ^ 2 *
+      poissonPrimeValuationFusedScaleShuttle 1 2 p ^ (2 : ℕ) *
         (1 - xiMobiusContinuousApertureDiskNode a p) *
         (1 - xiMobiusContinuousApertureDiskNode b p) /
         (1 - xiMobiusContinuousApertureDiskNode a p *
@@ -181,16 +181,16 @@ theorem xiPhysicalEndpointResponseWeightRemainder_pos
 theorem xiPhysicalEndpointResponseWeightRemainder_le_log_div_sq
     (p : Nat.Primes) :
     xiPhysicalEndpointResponseWeightRemainder p <=
-      Real.log (p : ℝ) / (p : ℝ) ^ 2 := by
+      Real.log (p : ℝ) / (p : ℝ) ^ (2 : ℕ) := by
   let P : ℝ := p
   have hP1 : 1 < P := by
     dsimp [P]
     exact_mod_cast p.prop.one_lt
   have hlog : 0 <= Real.log P := (Real.log_pos hP1).le
   have hleft : 0 < P * (P + 1) := by positivity
-  have hright : 0 < P ^ 2 := by positivity
+  have hright : 0 < P ^ (2 : ℕ) := by positivity
   rw [xiPhysicalEndpointResponseWeightRemainder]
-  change Real.log P / (P * (P + 1)) <= Real.log P / P ^ 2
+  change Real.log P / (P * (P + 1)) <= Real.log P / P ^ (2 : ℕ)
   rw [div_le_div_iff₀ hleft hright]
   nlinarith
 
@@ -199,7 +199,7 @@ class over all ordinary primes. -/
 theorem summable_xiPhysicalEndpointResponseWeightRemainder :
     Summable xiPhysicalEndpointResponseWeightRemainder := by
   have hprime : Summable (fun p : Nat.Primes =>
-      Real.log (p : ℝ) / (p : ℝ) ^ 2) :=
+      Real.log (p : ℝ) / (p : ℝ) ^ (2 : ℕ)) :=
     GaloisForLFunctions.summable_log_nat_div_sq.comp_injective Subtype.val_injective
   exact Summable.of_nonneg_of_le
     (fun p => (xiPhysicalEndpointResponseWeightRemainder_pos p).le)

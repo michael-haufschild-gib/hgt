@@ -49,26 +49,26 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 /-- **Similitude spectral locus.**  If `F` scales norms by `√q` and `λ` is an eigenvalue, then
 `‖λ‖² = q`: the whole spectrum lies on one circle. -/
 theorem similitude_eigenvalue_normSq {F : V → V} {q : ℝ} {lam : ℂ} {x : V}
-    (hx : x ≠ 0) (hsim : ‖F x‖ ^ 2 = q * ‖x‖ ^ 2) (heig : F x = lam • x) :
-    ‖lam‖ ^ 2 = q := by
+    (hx : x ≠ 0) (hsim : ‖F x‖ ^ (2 : ℕ) = q * ‖x‖ ^ (2 : ℕ)) (heig : F x = lam • x) :
+    ‖lam‖ ^ (2 : ℕ) = q := by
   have hxpos : 0 < ‖x‖ := norm_pos_iff.mpr hx
   have hFx : ‖F x‖ = ‖lam‖ * ‖x‖ := by rw [heig, norm_smul]
   rw [hFx] at hsim
-  have hsq : (0:ℝ) < ‖x‖ ^ 2 := by positivity
-  have hstep : ‖lam‖ ^ 2 * ‖x‖ ^ 2 = q * ‖x‖ ^ 2 := by rw [← hsim]; ring
+  have hsq : (0:ℝ) < ‖x‖ ^ (2 : ℕ) := by positivity
+  have hstep : ‖lam‖ ^ (2 : ℕ) * ‖x‖ ^ (2 : ℕ) = q * ‖x‖ ^ (2 : ℕ) := by rw [← hsim]; ring
   exact mul_right_cancel₀ (ne_of_gt hsq) hstep
 
 /-- **Approximate similitude.**  A pairing scaled to within `δ` confines eigenvalue moduli to within
 `δ` of `q` in square. -/
 theorem approx_similitude_eigenvalue_normSq {F : V → V} {q δ : ℝ} {lam : ℂ} {x : V}
-    (hx : x ≠ 0) (hsim : |‖F x‖ ^ 2 - q * ‖x‖ ^ 2| ≤ δ * ‖x‖ ^ 2)
+    (hx : x ≠ 0) (hsim : |‖F x‖ ^ (2 : ℕ) - q * ‖x‖ ^ (2 : ℕ)| ≤ δ * ‖x‖ ^ (2 : ℕ))
     (heig : F x = lam • x) :
-    |‖lam‖ ^ 2 - q| ≤ δ := by
+    |‖lam‖ ^ (2 : ℕ) - q| ≤ δ := by
   have hxpos : 0 < ‖x‖ := norm_pos_iff.mpr hx
-  have hsq : (0:ℝ) < ‖x‖ ^ 2 := by positivity
+  have hsq : (0:ℝ) < ‖x‖ ^ (2 : ℕ) := by positivity
   have hFx : ‖F x‖ = ‖lam‖ * ‖x‖ := by rw [heig, norm_smul]
   rw [hFx] at hsim
-  have hfac : (‖lam‖ * ‖x‖) ^ 2 - q * ‖x‖ ^ 2 = (‖lam‖ ^ 2 - q) * ‖x‖ ^ 2 := by ring
+  have hfac : (‖lam‖ * ‖x‖) ^ (2 : ℕ) - q * ‖x‖ ^ (2 : ℕ) = (‖lam‖ ^ (2 : ℕ) - q) * ‖x‖ ^ (2 : ℕ) := by ring
   rw [hfac, abs_mul, abs_of_pos hsq] at hsim
   exact le_of_mul_le_mul_right (by linarith) hsq
 
@@ -77,11 +77,11 @@ end Similitude
 /-- **Concentration on the circle.**  From `|‖λ‖² - q| ≤ δ` and `q > 0` one gets
 `|‖λ‖ - √q| ≤ δ/√q`: the spectrum concentrates on the circle of radius `√q` at rate `δ/√q`. -/
 theorem modulus_near_sqrt {m q δ : ℝ} (hm : 0 ≤ m) (hq : 0 < q)
-    (h : |m ^ 2 - q| ≤ δ) : |m - Real.sqrt q| ≤ δ / Real.sqrt q := by
+    (h : |m ^ (2 : ℕ) - q| ≤ δ) : |m - Real.sqrt q| ≤ δ / Real.sqrt q := by
   have hsq : Real.sqrt q > 0 := Real.sqrt_pos.mpr hq
-  have hsqsq : Real.sqrt q ^ 2 = q := Real.sq_sqrt (le_of_lt hq)
-  have hfac : m ^ 2 - q = (m - Real.sqrt q) * (m + Real.sqrt q) := by
-    have hexp : (m - Real.sqrt q) * (m + Real.sqrt q) = m ^ 2 - Real.sqrt q ^ 2 := by ring
+  have hsqsq : Real.sqrt q ^ (2 : ℕ) = q := Real.sq_sqrt (le_of_lt hq)
+  have hfac : m ^ (2 : ℕ) - q = (m - Real.sqrt q) * (m + Real.sqrt q) := by
+    have hexp : (m - Real.sqrt q) * (m + Real.sqrt q) = m ^ (2 : ℕ) - Real.sqrt q ^ (2 : ℕ) := by ring
     rw [hexp, hsqsq]
   rw [hfac, abs_mul] at h
   have hsum : Real.sqrt q ≤ |m + Real.sqrt q| := by
@@ -96,13 +96,13 @@ theorem modulus_near_sqrt {m q δ : ℝ} (hm : 0 ≤ m) (hq : 0 < q)
 /-- **The circle is a line in logarithmic coordinates.**  A modulus condition `‖λ‖ = √q` is the
 statement that `log λ` has fixed real part, so a similitude source feeds the same criteria as a
 self-adjoint one after the logarithmic change of variable. -/
-theorem similitude_locus_is_a_line {m q : ℝ} (_hq : 0 < q) (h : m ^ 2 = q) (hm : 0 ≤ m) :
+theorem similitude_locus_is_a_line {m q : ℝ} (_hq : 0 < q) (h : m ^ (2 : ℕ) = q) (hm : 0 ≤ m) :
     m = Real.sqrt q := by
   rw [← h]
   exact (Real.sqrt_sq hm).symm
 
 /-- **Exact similitude is the `δ = 0` case of the approximate one.** -/
-theorem exact_is_approx {m q : ℝ} (h : m ^ 2 = q) : |m ^ 2 - q| ≤ 0 := by
+theorem exact_is_approx {m q : ℝ} (h : m ^ (2 : ℕ) = q) : |m ^ (2 : ℕ) - q| ≤ 0 := by
   rw [h]; simp
 
 end RHTower

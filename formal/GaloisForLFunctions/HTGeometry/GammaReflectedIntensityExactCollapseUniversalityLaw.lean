@@ -196,7 +196,7 @@ private theorem hypertranscendentalOver_gammaOppositeShiftIntensityMero_of_expos
 theorem gammaOppositeShiftIntensityMero_one_sub_reflectionNormalForm (a : ℂ) :
     gammaOppositeShiftIntensityMero a (1 - a) =
       gammaOppositeShiftIntensityReflectionGaugeMero a (1 - a) *
-        reducedVenezianoAmplitudeMero a (1 - 2 * a) ^ 2 := by
+        reducedVenezianoAmplitudeMero a (1 - 2 * a) ^ (2 : ℕ) := by
   rw [gammaOppositeShiftIntensityMero_reflectionOrbitNormalForm]
   unfold gammaOppositeShiftIntensityOrbitProductMero gammaFintypeOrbitProductMero
     reducedVenezianoAmplitudeMero

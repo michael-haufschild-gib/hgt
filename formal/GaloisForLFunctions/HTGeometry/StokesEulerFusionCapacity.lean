@@ -39,7 +39,7 @@ def fusionQuadratic {m : ℕ} {n : Fin m → ℕ} (genus : ℕ)
     (datum : (a : Fin m) → CertifiedFissionDatum (n a))
     (x : (a : Fin m) → Fin (n a) → ℝ) (commonRank : ℝ) : ℝ :=
   localCartanSum datum x +
-    2 * (1 - (genus : ℝ) - (m : ℝ)) * commonRank ^ 2
+    2 * (1 - (genus : ℝ) - (m : ℝ)) * commonRank ^ (2 : ℕ)
 
 /-- Euler characteristic of the compact base curve. -/
 def baseEulerCharacteristic (genus : ℕ) : ℝ := 2 - 2 * (genus : ℝ)
@@ -92,21 +92,21 @@ theorem localCartanSum_eq_centered {m : ℕ} {n : Fin m → ℕ}
     (x : (a : Fin m) → Fin (n a) → ℝ) (commonRank : ℝ)
     (hmass : ∀ a, (datum a).totalRamification (x a) = commonRank) :
     localCartanSum datum x = centeredEnergy datum x +
-      commonRank ^ 2 * ∑ a, (datum a).capacityGap := by
+      commonRank ^ (2 : ℕ) * ∑ a, (datum a).capacityGap := by
   calc
     localCartanSum datum x =
         ∑ a, ((datum a).positiveQuadratic ((datum a).centeredVector (x a)) +
-          (datum a).totalRamification (x a) ^ 2 * (datum a).capacityGap) := by
+          (datum a).totalRamification (x a) ^ (2 : ℕ) * (datum a).capacityGap) := by
       apply Finset.sum_congr rfl
       intro a _
       exact @CertifiedFissionDatum.cartanQuadratic_eq_centered_capacity
         (n a) (hNonempty a) (datum a) (x a)
     _ = ∑ a, ((datum a).positiveQuadratic ((datum a).centeredVector (x a)) +
-          commonRank ^ 2 * (datum a).capacityGap) := by
+          commonRank ^ (2 : ℕ) * (datum a).capacityGap) := by
       apply Finset.sum_congr rfl
       intro a _
       rw [hmass a]
-    _ = centeredEnergy datum x + commonRank ^ 2 * ∑ a, (datum a).capacityGap := by
+    _ = centeredEnergy datum x + commonRank ^ (2 : ℕ) * ∑ a, (datum a).capacityGap := by
       rw [centeredEnergy, Finset.sum_add_distrib, Finset.mul_sum]
 
 /-- **Stokes Euler--capacity law.**  Every global compatible mode is the orthogonal sum of
@@ -117,7 +117,7 @@ theorem fusionQuadratic_eq_centered_eulerCapacity {m : ℕ} {n : Fin m → ℕ}
     (x : (a : Fin m) → Fin (n a) → ℝ) (commonRank : ℝ)
     (hmass : ∀ a, (datum a).totalRamification (x a) = commonRank) :
     fusionQuadratic genus datum x commonRank = centeredEnergy datum x +
-      commonRank ^ 2 * eulerCapacityGap genus datum := by
+      commonRank ^ (2 : ℕ) * eulerCapacityGap genus datum := by
   rw [fusionQuadratic, localCartanSum_eq_centered hNonempty datum x commonRank hmass,
     ← globalCapacityGap_eq_eulerCapacityGap genus datum]
   simp only [globalCapacityGap]
@@ -230,7 +230,7 @@ theorem fusionQuadratic_capacityRay {m : ℕ} {n : Fin m → ℕ}
     (hNonempty : ∀ a, Nonempty (Fin (n a))) (genus : ℕ)
     (datum : (a : Fin m) → CertifiedFissionDatum (n a)) (commonRank : ℝ) :
     fusionQuadratic genus datum (capacityRay datum commonRank) commonRank =
-      commonRank ^ 2 * eulerCapacityGap genus datum := by
+      commonRank ^ (2 : ℕ) * eulerCapacityGap genus datum := by
   rw [fusionQuadratic_eq_centered_eulerCapacity hNonempty genus datum
     (capacityRay datum commonRank) commonRank (capacityRay_mass hNonempty datum commonRank)]
   have henergy : centeredEnergy datum (capacityRay datum commonRank) = 0 := by
@@ -341,7 +341,7 @@ theorem fusionForm_eq_centered_eulerCapacity
     (datum : (a : Fin (m + 1)) → CertifiedFissionDatum (n a))
     (x : compatibleModes datum) :
     fusionForm genus datum x = centeredEnergy datum x.1 +
-      commonRankLinear datum x ^ 2 * eulerCapacityGap genus datum := by
+      commonRankLinear datum x ^ (2 : ℕ) * eulerCapacityGap genus datum := by
   rw [fusionForm_apply]
   exact fusionQuadratic_eq_centered_eulerCapacity hNonempty genus datum x.1
     (commonRankLinear datum x) (compatible_totalRamification datum x)
@@ -359,8 +359,8 @@ theorem fusionForm_sigNeg_le_one {m : ℕ} {n : Fin (m + 1) → ℕ}
   apply sigNeg_le_one_of_add_sq_nonneg (fusionForm genus datum) ell
   intro x
   rw [fusionForm_eq_centered_eulerCapacity hNonempty genus datum x]
-  change 0 ≤ centeredEnergy datum x.1 + commonRankLinear datum x ^ 2 * gap +
-    (Real.sqrt (max 0 (-gap)) * commonRankLinear datum x) ^ 2
+  change 0 ≤ centeredEnergy datum x.1 + commonRankLinear datum x ^ (2 : ℕ) * gap +
+    (Real.sqrt (max 0 (-gap)) * commonRankLinear datum x) ^ (2 : ℕ)
   rw [mul_pow, Real.sq_sqrt (le_max_left 0 (-gap))]
   by_cases hgap : 0 ≤ gap
   · rw [max_eq_left (neg_nonpos.mpr hgap)]

@@ -4,11 +4,11 @@ import GaloisForLFunctions.RHTower.XiResolventLowRungVacuity
 /-!
 # The archimedean--prime split of the resolvent ladder's first entry
 
-The resolvent ladder's entries are `R n X = sum_q (w q + X)^(-(n+1))`, and `R 0 (x^2)` is the
+The resolvent ladder's entries are `R n X = sum_q (w q + X)^(-(n+1))`, and `R 0 (x^(2 : ℕ))` is the
 Euler-ray response `logDeriv xi (1/2 + x) / x`.  On the convergence half-plane the completed
 logarithmic derivative splits into an archimedean part and the von Mangoldt series, so
 
-`R 0 (x^2) = (arch part) / x - (vonMangoldtWeightLogMoment 0 (1/2 + x)) / x`.
+`R 0 (x^(2 : ℕ)) = (arch part) / x - (vonMangoldtWeightLogMoment 0 (1/2 + x)) / x`.
 
 The subtracted term is the order-zero entry of the arithmetic moment array, which
 `VonMangoldtLogMomentHankel` proves positive semidefinite.  So the prime contribution to the ladder

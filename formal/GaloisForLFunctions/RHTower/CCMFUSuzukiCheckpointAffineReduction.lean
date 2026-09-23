@@ -11,7 +11,7 @@ Integer logarithmic event cells shrink quadratically faster than Suzuki's archim
 curvature grows. Consequently every within-cell reservoir Bregman remainder lies in `[0,1]`.
 After floor-selecting the actual arithmetic event, the positive marked CCM-FU Suzuki mixture splits
 exactly into a signed piecewise-affine checkpoint current and a positive curvature mixture bounded
-by `96 / b^4`, uniformly in the moving upper wall.
+by `96 / b^(4 : ℕ)`, uniformly in the moving upper wall.
 
 Thus smooth intra-cell curvature is not RH-bearing. The remaining source problem is discrete:
 uniform cancellation of the actual affine checkpoint current, retaining endpoint values and
@@ -39,7 +39,7 @@ theorem suzukiCheckpointBregman_nonneg_le_exp_max_mul_sq
     {N : ℕ} (hN : 2 ≤ N) {u v : ℝ}
     (hu : u ∈ suzukiCheckpointCell N) (hv : v ∈ suzukiCheckpointCell N) :
     0 ≤ suzukiCheckpointBregman u v ∧
-      suzukiCheckpointBregman u v ≤ Real.exp (max u v / 2) * (u - v) ^ 2 := by
+      suzukiCheckpointBregman u v ≤ Real.exp (max u v / 2) * (u - v) ^ (2 : ℕ) := by
   have hlog2u : Real.log 2 ≤ u := suzukiCheckpointCell_subset_Ici_log_two hN hu
   have hlog2v : Real.log 2 ≤ v := suzukiCheckpointCell_subset_Ici_log_two hN hv
   have hlog2pos : 0 < Real.log 2 := Real.log_pos (by norm_num)
@@ -103,7 +103,7 @@ theorem suzukiCheckpointBregman_nonneg_le_exp_max_mul_sq
               gcongr
         _ ≤ Real.exp (max u v / 2) * (u - v) * (u - v) := by
               gcongr
-        _ = Real.exp (max u v / 2) * (u - v) ^ 2 := by ring
+        _ = Real.exp (max u v / 2) * (u - v) ^ (2 : ℕ) := by ring
   · subst u
     simp [suzukiCheckpointBregman]
   · have hcontA : ContinuousOn suzukiCheckpointReservoir (Icc u v) := by
@@ -171,7 +171,7 @@ theorem suzukiCheckpointBregman_nonneg_le_exp_max_mul_sq
               gcongr
         _ ≤ Real.exp (max u v / 2) * (v - u) * (v - u) := by
               gcongr
-        _ = Real.exp (max u v / 2) * (u - v) ^ 2 := by ring
+        _ = Real.exp (max u v / 2) * (u - v) ^ (2 : ℕ) := by ring
 
 /-- Integer logarithmic cells compress the exponentially growing reservoir curvature strongly
 enough that every within-cell Bregman remainder is at most one. -/
@@ -202,8 +202,8 @@ theorem suzukiCheckpointBregman_mem_unitInterval
             have hlogNp1 : 0 ≤ Real.log ((N + 1 : ℕ) : ℝ) := by linarith
             nlinarith
       _ = (N + 1 : ℕ) := Real.exp_log hNp1pos
-  have hdiffsq : (u - v) ^ 2 ≤
-      (Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ)) ^ 2 := by
+  have hdiffsq : (u - v) ^ (2 : ℕ) ≤
+      (Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ)) ^ (2 : ℕ) := by
     have hlo : -(Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ)) ≤ u - v := by
       linarith [hu.1, hv.2]
     have hhi : u - v ≤ Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ) := by
@@ -219,19 +219,19 @@ theorem suzukiCheckpointBregman_mem_unitInterval
         field_simp [hNpos.ne']
         ring
   have hgapSq :
-      (Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ)) ^ 2 ≤ (1 / (N : ℝ)) ^ 2 := by
+      (Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ)) ^ (2 : ℕ) ≤ (1 / (N : ℝ)) ^ (2 : ℕ) := by
     nlinarith [hgaple]
-  have hcast : (N + 1 : ℕ) ≤ (N : ℝ) ^ 2 := by
-    exact_mod_cast (show N + 1 ≤ N ^ 2 by nlinarith)
+  have hcast : (N + 1 : ℕ) ≤ (N : ℝ) ^ (2 : ℕ) := by
+    exact_mod_cast (show N + 1 ≤ N ^ (2 : ℕ) by nlinarith)
   refine ⟨hbase.1, hbase.2.trans ?_⟩
   calc
-    Real.exp (max u v / 2) * (u - v) ^ 2
+    Real.exp (max u v / 2) * (u - v) ^ (2 : ℕ)
         ≤ (N + 1 : ℕ) *
-            (Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ)) ^ 2 := by
+            (Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ)) ^ (2 : ℕ) := by
           gcongr
-    _ ≤ (N + 1 : ℕ) * (1 / (N : ℝ)) ^ 2 := by
+    _ ≤ (N + 1 : ℕ) * (1 / (N : ℝ)) ^ (2 : ℕ) := by
           gcongr
-    _ ≤ (N : ℝ) ^ 2 * (1 / (N : ℝ)) ^ 2 := by
+    _ ≤ (N : ℝ) ^ (2 : ℕ) * (1 / (N : ℝ)) ^ (2 : ℕ) := by
           gcongr
     _ = 1 := by field_simp [hNpos.ne']
 
@@ -370,13 +370,13 @@ open _root_.RHTower
 def ccmFUSuzukiCheckpointAffineMixture (b H : ℝ) : ℝ :=
   (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
       suzukiCheckpointGlobalAffineCurrent t) +
-    (32 / H ^ 4) * suzukiCheckpointGlobalAffineCurrent H
+    (32 / H ^ (4 : ℕ)) * suzukiCheckpointGlobalAffineCurrent H
 
 /-- FU marked average of the discarded positive within-cell curvature. -/
 def ccmFUSuzukiCheckpointCurvatureMixture (b H : ℝ) : ℝ :=
   (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
       suzukiCheckpointCellCurvatureRemainder t) +
-    (32 / H ^ 4) * suzukiCheckpointCellCurvatureRemainder H
+    (32 / H ^ (4 : ℕ)) * suzukiCheckpointCellCurvatureRemainder H
 
 private theorem intervalIntegrable_rectangularMixDensity_mul_checkpointCurvature
     {b H : ℝ} (hlogb : Real.log 2 ≤ b) (hbH : b ≤ H) :
@@ -418,7 +418,7 @@ private theorem intervalIntegrable_rectangularMixDensity_mul_checkpointCurvature
 wall. Its entire contribution is bounded by the marked measure mass. -/
 theorem ccmFUSuzukiCheckpointCurvatureMixture_mem_Icc
     {b H : ℝ} (hlogb : Real.log 2 ≤ b) (hbH : b ≤ H) :
-    ccmFUSuzukiCheckpointCurvatureMixture b H ∈ Set.Icc 0 (96 / b ^ 4) := by
+    ccmFUSuzukiCheckpointCurvatureMixture b H ∈ Set.Icc 0 (96 / b ^ (4 : ℕ)) := by
   have hlog2pos : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hb : 0 < b := hlog2pos.trans_le hlogb
   have hH : 0 < H := hb.trans_le hbH
@@ -461,10 +461,10 @@ theorem ccmFUSuzukiCheckpointCurvatureMixture_mem_Icc
   have hremH :=
     (globalAffineCurrent_eq_leftJet_and_curvature_mem_unitInterval
       (hlogb.trans hbH)).2
-  have hendpoint0 : 0 ≤ (32 / H ^ 4) *
+  have hendpoint0 : 0 ≤ (32 / H ^ (4 : ℕ)) *
       suzukiCheckpointCellCurvatureRemainder H := mul_nonneg (by positivity) hremH.1
-  have hendpointLe : (32 / H ^ 4) * suzukiCheckpointCellCurvatureRemainder H ≤
-      32 / H ^ 4 := mul_le_of_le_one_right (by positivity) hremH.2
+  have hendpointLe : (32 / H ^ (4 : ℕ)) * suzukiCheckpointCellCurvatureRemainder H ≤
+      32 / H ^ (4 : ℕ) := mul_le_of_le_one_right (by positivity) hremH.2
   have hmass := integral_rectangularMixDensity_add_endpoint_eq_errorKernel hb hbH
   have hk := ccmGuinandWeilThirdGradeCesaroErrorKernel_bounds hb hbH
     (show b ∈ Set.Icc b H from ⟨le_rfl, hbH⟩)
@@ -473,9 +473,9 @@ theorem ccmFUSuzukiCheckpointCurvatureMixture_mem_Icc
   · exact add_nonneg hbulk0 hendpoint0
   · calc
       _ ≤ (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t) +
-          32 / H ^ 4 := add_le_add hbulkLe hendpointLe
+          32 / H ^ (4 : ℕ) := add_le_add hbulkLe hendpointLe
       _ = ccmGuinandWeilThirdGradeCesaroErrorKernel H b := hmass
-      _ ≤ 96 / b ^ 4 := hk.2
+      _ ≤ 96 / b ^ (4 : ℕ) := hk.2
 
 /-- Exact FU decomposition into a signed, piecewise-affine arithmetic checkpoint current and a
 positive uniformly bounded curvature contribution. -/
@@ -545,7 +545,7 @@ theorem ccmFUCentralXiScrewPositiveMixtureBound_iff_checkpointAffineMixtureBound
     CCMFUCentralXiScrewPositiveMixtureBound b ↔
       CCMFUSuzukiCheckpointAffineMixtureBound b := by
   have hb : 0 < b := (Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le hlogb
-  let K : ℝ := 96 / b ^ 4
+  let K : ℝ := 96 / b ^ (4 : ℕ)
   have hK0 : 0 ≤ K := by dsimp only [K]; positivity
   constructor
   · rintro ⟨C, hC0, hC⟩
@@ -605,7 +605,7 @@ theorem exists_nonnegative_uniform_bound_ccmFUSuzukiAnchoredCheckpointSum
     exists_nonnegative_uniform_bound_ccmFUCentralXiScrewAffineMemory hb
   obtain ⟨G, hG0, hG⟩ :=
     exists_nonnegative_uniform_bound_ccmFUCentralGammaLerchAffineMixture hb
-  let K : ℝ := 96 / b ^ 4
+  let K : ℝ := 96 / b ^ (4 : ℕ)
   refine ⟨K + A + G,
     add_nonneg (add_nonneg (by dsimp only [K]; positivity) hA0) hG0, ?_⟩
   intro H hbH

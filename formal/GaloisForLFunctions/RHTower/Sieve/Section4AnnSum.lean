@@ -25,11 +25,11 @@ theorem sum_annulus_terms_le {Vk Iann : ℕ → ℝ} {RQ ηQ ρ' B₁ Cw Ej Qtop
       ≤ (2 * Real.pi)⁻¹ * (2 * (B₁ / (RQ * (1 + ηQ) ^ k)) + Cw * Ej)
           * (B₁ / (RQ * (1 + ηQ) ^ k)))
     (hI0 : ∀ k ∈ Finset.range LQ, 0 ≤ Iann k) :
-    (∑ k ∈ Finset.range LQ, Vk k ^ 2 * Iann k)
-      ≤ (LQ : ℝ) * (ρ' ^ 2 * ((2 * Real.pi)⁻¹ * (2 * B₁ ^ 2 + Cw * Ej * B₁ * Qtop))) := by
+    (∑ k ∈ Finset.range LQ, Vk k ^ (2 : ℕ) * Iann k)
+      ≤ (LQ : ℝ) * (ρ' ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ * (2 * B₁ ^ (2 : ℕ) + Cw * Ej * B₁ * Qtop))) := by
   classical
-  have hstep : ∀ k ∈ Finset.range LQ, Vk k ^ 2 * Iann k
-      ≤ ρ' ^ 2 * ((2 * Real.pi)⁻¹ * (2 * B₁ ^ 2 + Cw * Ej * B₁ * Qtop)) := by
+  have hstep : ∀ k ∈ Finset.range LQ, Vk k ^ (2 : ℕ) * Iann k
+      ≤ ρ' ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ * (2 * B₁ ^ (2 : ℕ) + Cw * Ej * B₁ * Qtop)) := by
     intro k hk
     have hbase : (0 : ℝ) < RQ * (1 + ηQ) ^ k := by positivity
     have hterm := ann_term_le (Vk := Vk k) (Qk0 := RQ * (1 + ηQ) ^ k) (B₁ := B₁) (ρ' := ρ')
@@ -39,8 +39,8 @@ theorem sum_annulus_terms_le {Vk Iann : ℕ → ℝ} {RQ ηQ ρ' B₁ Cw Ej Qtop
       have hc : (0 : ℝ) ≤ Cw * Ej * B₁ := by positivity
       exact mul_le_mul_of_nonneg_left (hQtop k hk) hc
     have hpi : (0 : ℝ) ≤ (2 * Real.pi)⁻¹ := by positivity
-    have hinner : (2 * Real.pi)⁻¹ * (2 * B₁ ^ 2 + Cw * Ej * B₁ * (RQ * (1 + ηQ) ^ k))
-        ≤ (2 * Real.pi)⁻¹ * (2 * B₁ ^ 2 + Cw * Ej * B₁ * Qtop) :=
+    have hinner : (2 * Real.pi)⁻¹ * (2 * B₁ ^ (2 : ℕ) + Cw * Ej * B₁ * (RQ * (1 + ηQ) ^ k))
+        ≤ (2 * Real.pi)⁻¹ * (2 * B₁ ^ (2 : ℕ) + Cw * Ej * B₁ * Qtop) :=
       mul_le_mul_of_nonneg_left (by linarith) hpi
     exact mul_le_mul_of_nonneg_left hinner (sq_nonneg _)
   refine (Finset.sum_le_sum hstep).trans (le_of_eq ?_)

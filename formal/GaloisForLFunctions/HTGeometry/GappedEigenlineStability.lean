@@ -38,10 +38,10 @@ theorem exists_hasEigenvector_of_gap
     (H₀ V : E →L[ℂ] E) (hH₀ : IsSelfAdjoint H₀) (hV : IsSelfAdjoint V)
     (Φ : E) (hΦ : ‖Φ‖ = 1) (lam Δ δ : ℝ) (hΔ : 0 < Δ)
     (hΦeig : H₀ Φ = (lam : ℂ) • Φ)
-    (hgap : ∀ x : E, H₀.reApplyInnerSelf x ≤ lam * ‖x‖ ^ 2 - Δ * (‖x‖ ^ 2 - ‖⟪Φ, x⟫_ℂ‖ ^ 2))
+    (hgap : ∀ x : E, H₀.reApplyInnerSelf x ≤ lam * ‖x‖ ^ (2 : ℕ) - Δ * (‖x‖ ^ (2 : ℕ) - ‖⟪Φ, x⟫_ℂ‖ ^ (2 : ℕ)))
     (hVnorm : ‖V‖ ≤ δ) :
     ∃ ψ : E, ‖ψ‖ = 1 ∧ (∃ μ : ℝ, (H₀ + V) ψ = (μ : ℂ) • ψ) ∧
-      1 - ‖⟪Φ, ψ⟫_ℂ‖ ^ 2 ≤ 2 * δ / Δ := by
+      1 - ‖⟪Φ, ψ⟫_ℂ‖ ^ (2 : ℕ) ≤ 2 * δ / Δ := by
   classical
   set H : E →L[ℂ] E := H₀ + V with hHdef
   have hH : IsSelfAdjoint H := hH₀.add hV
@@ -76,16 +76,16 @@ theorem exists_hasEigenvector_of_gap
     have h := abs_reApplyInnerSelf_le V hψnorm
     have := abs_le.mp (h.trans hVnorm)
     exact this.2
-  have hgapψ : H₀.reApplyInnerSelf ψ ≤ lam - Δ * (1 - ‖⟪Φ, ψ⟫_ℂ‖ ^ 2) := by
+  have hgapψ : H₀.reApplyInnerSelf ψ ≤ lam - Δ * (1 - ‖⟪Φ, ψ⟫_ℂ‖ ^ (2 : ℕ)) := by
     have h := hgap ψ
     rwa [hψnorm, one_pow, mul_one] at h
-  have hchain : lam - δ ≤ lam - Δ * (1 - ‖⟪Φ, ψ⟫_ℂ‖ ^ 2) + δ := by
+  have hchain : lam - δ ≤ lam - Δ * (1 - ‖⟪Φ, ψ⟫_ℂ‖ ^ (2 : ℕ)) + δ := by
     calc lam - δ ≤ H₀.reApplyInnerSelf Φ + V.reApplyInnerSelf Φ := by
           rw [hΦ₀]; linarith
       _ = H.reApplyInnerSelf Φ := (hsplit Φ).symm
       _ ≤ H.reApplyInnerSelf ψ := hmax
       _ = H₀.reApplyInnerSelf ψ + V.reApplyInnerSelf ψ := hsplit ψ
-      _ ≤ lam - Δ * (1 - ‖⟪Φ, ψ⟫_ℂ‖ ^ 2) + δ := by linarith
+      _ ≤ lam - Δ * (1 - ‖⟪Φ, ψ⟫_ℂ‖ ^ (2 : ℕ)) + δ := by linarith
   rw [le_div_iff₀ hΔ]
   nlinarith [hchain]
 

@@ -31,13 +31,13 @@ variable (a : WienerFamily E N) (G₀ : E →ᵇ ℂ)
 theorem deriv_deriv_kgFlowField_dir_smul (hN : (Module.finrank ℝ E : ℝ) + 2 < N) (t : ℝ)
     (x v : E) (c : ℝ) :
     deriv (deriv fun s : ℝ => kgFlowField a G₀ t (x + s • (c • v))) 0
-      = ((c : ℂ)) ^ 2 * deriv (deriv fun s : ℝ => kgFlowField a G₀ t (x + s • v)) 0 := by
+      = ((c : ℂ)) ^ (2 : ℕ) * deriv (deriv fun s : ℝ => kgFlowField a G₀ t (x + s • v)) 0 := by
   rw [deriv_deriv_kgFlowField_dir a G₀ hN t x (c • v),
     deriv_deriv_kgFlowField_dir a G₀ hN t x v, ← integral_const_mul]
   refine integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
-  show (2 * Real.pi * Complex.I * ((⟪ξ, c • v⟫ : ℝ) : ℂ)) ^ 2 * kgChar x ξ
+  show (2 * Real.pi * Complex.I * ((⟪ξ, c • v⟫ : ℝ) : ℂ)) ^ (2 : ℕ) * kgChar x ξ
       * kgFlowDensity a G₀ t ξ
-    = (c : ℂ) ^ 2 * ((2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ 2 * kgChar x ξ
+    = (c : ℂ) ^ (2 : ℕ) * ((2 * Real.pi * Complex.I * ((⟪ξ, v⟫ : ℝ) : ℂ)) ^ (2 : ℕ) * kgChar x ξ
       * kgFlowDensity a G₀ t ξ)
   rw [real_inner_smul_right, Complex.ofReal_mul]
   ring
@@ -52,12 +52,12 @@ theorem kgFlowField_wave_equation_unit (hN : (Module.finrank ℝ E : ℝ) + 2 < 
   have hmain := kgFlowField_wave_equation a G₀ hN b t x
   have hscale : ∀ i : ι, deriv (deriv fun s : ℝ =>
       kgFlowField a G₀ t (x + s • ((2 * Real.pi)⁻¹ • b i))) 0
-      = (((2 * Real.pi)⁻¹ : ℝ) : ℂ) ^ 2
+      = (((2 * Real.pi)⁻¹ : ℝ) : ℂ) ^ (2 : ℕ)
         * deriv (deriv fun s : ℝ => kgFlowField a G₀ t (x + s • b i)) 0 := fun i =>
     deriv_deriv_kgFlowField_dir_smul a G₀ hN t x (b i) ((2 * Real.pi)⁻¹)
   have hsum : (∑ i, deriv (deriv fun s : ℝ =>
       kgFlowField a G₀ t (x + s • ((2 * Real.pi)⁻¹ • b i))) 0)
-      = (((2 * Real.pi) ^ 2 : ℝ) : ℂ)⁻¹
+      = (((2 * Real.pi) ^ (2 : ℕ) : ℝ) : ℂ)⁻¹
         * ∑ i, deriv (deriv fun s : ℝ => kgFlowField a G₀ t (x + s • b i)) 0 := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_

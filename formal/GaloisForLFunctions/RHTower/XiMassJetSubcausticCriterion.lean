@@ -42,7 +42,7 @@ height `κ_B u − L u^{1/10} − q log u`. -/
 theorem exists_riemannHypothesis_iff_jetSubcausticQuadratureBound {a c : ℝ}
     (ha : 1 / 2 < a) (hhalf : 1 / 2 < c) (hca : c < a) (N : ℕ) :
     ∃ Lc : ℝ, 0 < Lc ∧ ∀ L q : ℝ, 0 < L → L ≤ Lc → 0 ≤ q →
-      (2 * a ^ 2 - 1 / 2) * q ≤ (N : ℝ) + 1 / 2 →
+      (2 * a ^ (2 : ℕ) - 1 / 2) * q ≤ (N : ℝ) + 1 / 2 →
       (RiemannHypothesis ↔ ∃ σ C : ℝ, 0 < σ ∧
         ∀ᶠ u : ℝ in atTop, ‖xiMassJetSubcausticQuadrature a N L q σ u‖ ≤ C) := by
   obtain ⟨Lc, hLc0, hLc⟩ := exists_eventually_norm_jetLogSubcausticWindowDefect_le ha (2 * N)
@@ -50,7 +50,7 @@ theorem exists_riemannHypothesis_iff_jetSubcausticQuadratureBound {a c : ℝ}
   have hQle : (0 : ℝ) ≤ xiMassJetRetreatCoeff a (2 * N) := (xiMassJetRetreatCoeff_pos ha (2 * N)).le
   have hkap : 0 < xiMassSpacelikeSharpSlope a := sharpSlope_pos ha
   refine ⟨Lc, hLc0, fun L q hL hLle hq hqcap => ?_⟩
-  have hqcap' : (2 * a ^ 2 - 1 / 2) * q ≤ (((2 * N : ℕ) : ℝ) + 1) / 2 := by
+  have hqcap' : (2 * a ^ (2 : ℕ) - 1 / 2) * q ≤ (((2 * N : ℕ) : ℝ) + 1) / 2 := by
     push_cast
     linarith
   constructor

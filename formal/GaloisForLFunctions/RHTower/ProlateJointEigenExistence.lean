@@ -162,11 +162,11 @@ theorem contDiff_prolateSLAction {c : ℝ} {Φ : ℝ → ℝ}
   have h1 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (deriv Φ) := (contDiff_infty_iff_deriv.mp h).2
   have h2 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (deriv (deriv Φ)) :=
     (contDiff_infty_iff_deriv.mp h1).2
-  have hA : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun x : ℝ => (1 - x ^ 2) * deriv (deriv Φ) x :=
+  have hA : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun x : ℝ => (1 - x ^ (2 : ℕ)) * deriv (deriv Φ) x :=
     (contDiff_const.sub (contDiff_id.pow 2)).mul h2
   have hB : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun x : ℝ => 2 * x * deriv Φ x :=
     (contDiff_const.mul contDiff_id).mul h1
-  have hC : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun x : ℝ => c ^ 2 * x ^ 2 * Φ x :=
+  have hC : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun x : ℝ => c ^ (2 : ℕ) * x ^ (2 : ℕ) * Φ x :=
     (contDiff_const.mul (contDiff_id.pow 2)).mul h
   exact (hA.sub hB).sub hC
 
@@ -230,16 +230,16 @@ theorem eqOn_of_bandClass_eq {Φ Ψ : ℝ → ℝ} (hΦ : Continuous Φ) (hΨ : 
       exact hsub
     rw [this, hnegclass, h]
     simp
-  have henergy : (∫ x in (-1 : ℝ)..1, (Φ x - Ψ x) ^ 2) = 0 := by
+  have henergy : (∫ x in (-1 : ℝ)..1, (Φ x - Ψ x) ^ (2 : ℕ)) = 0 := by
     have h1 := norm_sq_bandClass (fun x => Φ x - Ψ x) hdiff
     rw [hclass, norm_zero] at h1
     simpa using h1.symm
   -- a nonnegative continuous integrand with vanishing integral vanishes on the open band
-  have hae : (fun x : ℝ => (Φ x - Ψ x) ^ 2) =ᵐ[volume.restrict (Ioc (-1 : ℝ) 1)] 0 := by
-    have hint : IntegrableOn (fun x : ℝ => (Φ x - Ψ x) ^ 2) (Ioc (-1 : ℝ) 1) volume :=
+  have hae : (fun x : ℝ => (Φ x - Ψ x) ^ (2 : ℕ)) =ᵐ[volume.restrict (Ioc (-1 : ℝ) 1)] 0 := by
+    have hint : IntegrableOn (fun x : ℝ => (Φ x - Ψ x) ^ (2 : ℕ)) (Ioc (-1 : ℝ) 1) volume :=
       ((hdiff.pow 2).continuousOn).integrableOn_compact isCompact_Icc |>.mono_set
         Ioc_subset_Icc_self
-    have h0 : (∫ x in Ioc (-1 : ℝ) 1, (Φ x - Ψ x) ^ 2) = 0 := by
+    have h0 : (∫ x in Ioc (-1 : ℝ) 1, (Φ x - Ψ x) ^ (2 : ℕ)) = 0 := by
       rw [← intervalIntegral.integral_of_le (by norm_num : (-1 : ℝ) ≤ 1)]
       exact henergy
     exact (integral_eq_zero_iff_of_nonneg (fun x => by positivity) hint).mp h0
@@ -247,28 +247,28 @@ theorem eqOn_of_bandClass_eq {Φ Ψ : ℝ → ℝ} (hΦ : Continuous Φ) (hΨ : 
   have hIoo : ∀ x ∈ Ioo (-1 : ℝ) 1, Φ x = Ψ x := by
     intro x hx
     by_contra hne
-    have hpos : 0 < (Φ x - Ψ x) ^ 2 := by
+    have hpos : 0 < (Φ x - Ψ x) ^ (2 : ℕ) := by
       have : Φ x - Ψ x ≠ 0 := sub_ne_zero.mpr hne
       positivity
     -- the set where the square is positive is open and null
-    have hopen : IsOpen {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ 2} := by
-      have hc : Continuous fun y : ℝ => (Φ y - Ψ y) ^ 2 := hdiff.pow 2
+    have hopen : IsOpen {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ (2 : ℕ)} := by
+      have hc : Continuous fun y : ℝ => (Φ y - Ψ y) ^ (2 : ℕ) := hdiff.pow 2
       exact isOpen_Ioo.inter (isOpen_lt continuous_const hc)
-    have hmem : x ∈ {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ 2} := ⟨hx, hpos⟩
-    have hnull : volume {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ 2} = 0 := by
-      have hsub : {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ 2}
-          ⊆ {y : ℝ | ¬ (fun x : ℝ => (Φ x - Ψ x) ^ 2) y = (0 : ℝ → ℝ) y} ∩ Ioc (-1 : ℝ) 1 := by
+    have hmem : x ∈ {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ (2 : ℕ)} := ⟨hx, hpos⟩
+    have hnull : volume {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ (2 : ℕ)} = 0 := by
+      have hsub : {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ (2 : ℕ)}
+          ⊆ {y : ℝ | ¬ (fun x : ℝ => (Φ x - Ψ x) ^ (2 : ℕ)) y = (0 : ℝ → ℝ) y} ∩ Ioc (-1 : ℝ) 1 := by
         intro y hy
         refine ⟨?_, Ioo_subset_Ioc_self hy.1⟩
         simp only [Set.mem_setOf_eq, Pi.zero_apply]
         exact ne_of_gt hy.2
-      have hnull0 : volume ({y : ℝ | ¬ (fun x : ℝ => (Φ x - Ψ x) ^ 2) y = (0 : ℝ → ℝ) y}
+      have hnull0 : volume ({y : ℝ | ¬ (fun x : ℝ => (Φ x - Ψ x) ^ (2 : ℕ)) y = (0 : ℝ → ℝ) y}
           ∩ Ioc (-1 : ℝ) 1) = 0 := by
         have := MeasureTheory.ae_iff.mp hae
         rwa [Measure.restrict_apply₀'] at this
         exact measurableSet_Ioc.nullMeasurableSet
       exact measure_mono_null hsub hnull0
-    have hpos' : 0 < volume {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ 2} :=
+    have hpos' : 0 < volume {y : ℝ | y ∈ Ioo (-1 : ℝ) 1 ∧ 0 < (Φ y - Ψ y) ^ (2 : ℕ)} :=
       hopen.measure_pos volume ⟨x, hmem⟩
     rw [hnull] at hpos'
     exact absurd hpos' (lt_irrefl 0)

@@ -21,8 +21,8 @@ abbrev riceMeleNormSq := HTGeometry.riceMeleNormSq
 
 theorem riceMeleNormSq_eq (J delta Delta k : ℝ) :
     riceMeleNormSq J delta Delta k =
-      Delta ^ 2 + 2 * J ^ 2 *
-        (1 + delta ^ 2 + (1 - delta ^ 2) * Real.cos k) := by
+      Delta ^ (2 : ℕ) + 2 * J ^ (2 : ℕ) *
+        (1 + delta ^ (2 : ℕ) + (1 - delta ^ (2 : ℕ)) * Real.cos k) := by
   exact HTGeometry.riceMeleNormSq_closedForm J delta Delta k
 
 theorem riceMeleNormSq_even (J delta Delta k : ℝ) :
@@ -79,8 +79,8 @@ abbrev normalizedPumpMass := HTGeometry.referenceRiceMeleDetuning
 
 theorem normalizedPump_normSq_decomposition (k tau : ℝ) :
     riceMeleNormSq 1 (normalizedPumpDelta tau) (normalizedPumpMass tau) k =
-      (1 / 4 : ℝ) + (3 / 4 : ℝ) * Real.cos tau ^ 2 +
-        2 * (1 - (1 / 4 : ℝ) * Real.cos tau ^ 2) * (1 + Real.cos k) := by
+      (1 / 4 : ℝ) + (3 / 4 : ℝ) * Real.cos tau ^ (2 : ℕ) +
+        2 * (1 - (1 / 4 : ℝ) * Real.cos tau ^ (2 : ℕ)) * (1 + Real.cos k) := by
   rw [riceMeleNormSq_eq]
   simp only [normalizedPumpDelta, normalizedPumpMass,
     HTGeometry.referenceRiceMeleDelta, HTGeometry.referenceRiceMeleDetuning]

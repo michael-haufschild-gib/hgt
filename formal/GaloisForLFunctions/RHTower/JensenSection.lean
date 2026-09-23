@@ -91,16 +91,16 @@ freezing correction:
 The first term is `aₘ σᵐ Heₘ(u)` for `m ≤ 3` (`cluster_hermite_scaling`); the second is the
 `O(σ)` freezing term. This is doc 25 §3.1 made exact. -/
 theorem heatMono_cluster (am xs σ u : ℝ) (k d : ℕ) (hd : 0 < d)
-    (hσ : σ ^ 2 * (d : ℝ) = xs ^ 2) :
+    (hσ : σ ^ (2 : ℕ) * (d : ℝ) = xs ^ (2 : ℕ)) :
     am * (σ * u) ^ (k + 2)
-      - (xs + σ * u) ^ 2 * (am * ((k + 2 : ℕ) : ℝ) * ((k + 1 : ℕ) : ℝ) * (σ * u) ^ k)
+      - (xs + σ * u) ^ (2 : ℕ) * (am * ((k + 2 : ℕ) : ℝ) * ((k + 1 : ℕ) : ℝ) * (σ * u) ^ k)
         / (2 * (d : ℝ))
       = am * σ ^ (k + 2) * (u ^ (k + 2) - ((k + 2).choose 2 : ℝ) * u ^ k)
         - am * ((k + 2 : ℕ) : ℝ) * ((k + 1 : ℕ) : ℝ) * σ ^ k * u ^ k
-          * (2 * xs * σ * u + σ ^ 2 * u ^ 2) / (2 * (d : ℝ)) := by
+          * (2 * xs * σ * u + σ ^ (2 : ℕ) * u ^ (2 : ℕ)) / (2 * (d : ℝ)) := by
   have hd0 : (d : ℝ) ≠ 0 := by positivity
-  have hexpand : (xs + σ * u) ^ 2 = σ ^ 2 * (d : ℝ) + (2 * xs * (σ * u) + (σ * u) ^ 2) := by
-    rw [show (xs + σ * u) ^ 2 = xs ^ 2 + (2 * xs * (σ * u) + (σ * u) ^ 2) from by ring, ← hσ]
+  have hexpand : (xs + σ * u) ^ (2 : ℕ) = σ ^ (2 : ℕ) * (d : ℝ) + (2 * xs * (σ * u) + (σ * u) ^ (2 : ℕ)) := by
+    rw [show (xs + σ * u) ^ (2 : ℕ) = xs ^ (2 : ℕ) + (2 * xs * (σ * u) + (σ * u) ^ (2 : ℕ)) from by ring, ← hσ]
   rw [hexpand, mul_pow, mul_pow, pow_add σ k 2, pow_add u k 2, Nat.cast_choose_two]
   push_cast
   field_simp
@@ -111,7 +111,7 @@ curvature `Σ c_j C(j,2) z^j` with the analytic `z²g″/2` (`C(j,2) = j(j−1)/
 terms vanish on both sides. -/
 theorem curvatureTerm_eq_deriv (c : ℕ → ℝ) (J : ℕ) (z : ℝ) :
     curvatureTerm c J z
-      = z ^ 2 * (∑ j ∈ range J, c j * (j : ℝ) * ((j - 1 : ℕ) : ℝ) * z ^ (j - 2)) / 2 := by
+      = z ^ (2 : ℕ) * (∑ j ∈ range J, c j * (j : ℝ) * ((j - 1 : ℕ) : ℝ) * z ^ (j - 2)) / 2 := by
   rw [curvatureTerm, Finset.mul_sum, Finset.sum_div]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   match j with
@@ -139,7 +139,7 @@ approximation by at most `C_ρ / d²`, `C_ρ = ½ Σ |c_j| C(j,2)² ρ^j`, on `|
 theorem rescaledSection_sub_heatApprox_abs_le (c : ℕ → ℝ) (J : ℕ) {d : ℕ} (hd : 1 ≤ d)
     {z ρ : ℝ} (hz : |z| ≤ ρ) :
     |rescaledSection c J d z - heatApprox c J d z|
-      ≤ (∑ j ∈ range J, |c j| * ((j.choose 2 : ℝ)) ^ 2 * ρ ^ j) / (2 * (d : ℝ) ^ 2) := by
+      ≤ (∑ j ∈ range J, |c j| * ((j.choose 2 : ℝ)) ^ (2 : ℕ) * ρ ^ j) / (2 * (d : ℝ) ^ (2 : ℕ)) := by
   have hρ : 0 ≤ ρ := le_trans (abs_nonneg z) hz
   have hd0 : (0 : ℝ) < d := by positivity
   rw [rescaledSection, heatApprox, ← Finset.sum_sub_distrib]
@@ -154,19 +154,19 @@ theorem rescaledSection_sub_heatApprox_abs_le (c : ℕ → ℝ) (J : ℕ) {d : �
   have he5 := phi_first_order j hd
   have hzj : |z ^ j| ≤ ρ ^ j := by
     rw [abs_pow]; exact pow_le_pow_left₀ (abs_nonneg z) hz j
-  have hCd : (((j.choose 2 : ℝ)) / d) ^ 2 / 2
-      = ((j.choose 2 : ℝ)) ^ 2 / (2 * (d : ℝ) ^ 2) := by
+  have hCd : (((j.choose 2 : ℝ)) / d) ^ (2 : ℕ) / 2
+      = ((j.choose 2 : ℝ)) ^ (2 : ℕ) / (2 * (d : ℝ) ^ (2 : ℕ)) := by
     rw [div_pow]; field_simp
   have hstep : |z ^ j| * |(∏ i ∈ range j, (1 - (i : ℝ) / d)) - (1 - (j.choose 2 : ℝ) / d)|
-      ≤ ρ ^ j * (((j.choose 2 : ℝ)) ^ 2 / (2 * (d : ℝ) ^ 2)) := by
+      ≤ ρ ^ j * (((j.choose 2 : ℝ)) ^ (2 : ℕ) / (2 * (d : ℝ) ^ (2 : ℕ))) := by
     rw [← hCd]
     exact mul_le_mul hzj he5 (abs_nonneg _) (pow_nonneg hρ j)
   calc |c j| * |z ^ j|
         * |(∏ i ∈ range j, (1 - (i : ℝ) / d)) - (1 - (j.choose 2 : ℝ) / d)|
       = |c j| * (|z ^ j|
           * |(∏ i ∈ range j, (1 - (i : ℝ) / d)) - (1 - (j.choose 2 : ℝ) / d)|) := by ring
-    _ ≤ |c j| * (ρ ^ j * (((j.choose 2 : ℝ)) ^ 2 / (2 * (d : ℝ) ^ 2))) :=
+    _ ≤ |c j| * (ρ ^ j * (((j.choose 2 : ℝ)) ^ (2 : ℕ) / (2 * (d : ℝ) ^ (2 : ℕ)))) :=
         mul_le_mul_of_nonneg_left hstep (abs_nonneg _)
-    _ = |c j| * ((j.choose 2 : ℝ)) ^ 2 * ρ ^ j / (2 * (d : ℝ) ^ 2) := by ring
+    _ = |c j| * ((j.choose 2 : ℝ)) ^ (2 : ℕ) * ρ ^ j / (2 * (d : ℝ) ^ (2 : ℕ)) := by ring
 
 end RHTower

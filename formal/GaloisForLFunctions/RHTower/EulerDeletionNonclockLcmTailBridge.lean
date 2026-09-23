@@ -40,9 +40,9 @@ theorem truncatedDivisorBlockKernel_sq_eq_source_cross_nonclockLcm
             ∑ s ∈ range (Q - 1),
               (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * C) C) *
                 x ^ (s * C)) n
-    truncatedDivisorBlockKernel N l u b x ^ 2 =
-      (x ^ (u + b * clock l) * H / G) ^ 2 *
-        (A ^ 2 + 2 * A * B * D + B ^ 2 * (1 - x ^ C) ^ 2 * R) := by
+    truncatedDivisorBlockKernel N l u b x ^ (2 : ℕ) =
+      (x ^ (u + b * clock l) * H / G) ^ (2 : ℕ) *
+        (A ^ (2 : ℕ) + 2 * A * B * D + B ^ (2 : ℕ) * (1 - x ^ C) ^ (2 : ℕ) * R) := by
   dsimp
   let t := u + b * clock l + 1
   let Q := canonicalClockRatio N (l + 1)
@@ -61,7 +61,7 @@ theorem truncatedDivisorBlockKernel_sq_eq_source_cross_nonclockLcm
           ∑ s ∈ range (Q - 1),
             (∑ i ∈ range (s + 1), divisorWindowDiscrepancy d (t + i * C) C) *
               x ^ (s * C)) n
-  have hD : D ^ 2 = (1 - x ^ C) ^ 2 * R := by
+  have hD : D ^ (2 : ℕ) = (1 - x ^ C) ^ (2 : ℕ) * R := by
     simpa [D, R, C, Q, t] using
       (selectedRefinementBlock_betaDeviation_sq_eq_childClockFactor_nonclockLcmFibres
         N l u b x hlN)
@@ -72,9 +72,9 @@ theorem truncatedDivisorBlockKernel_sq_eq_source_cross_nonclockLcm
     ring
   rw [hkernel]
   calc
-    (x ^ (u + b * clock l) * (A + B * D) * H / G) ^ 2 =
-        (x ^ (u + b * clock l) * H / G) ^ 2 *
-          (A ^ 2 + 2 * A * B * D + B ^ 2 * D ^ 2) := by ring
+    (x ^ (u + b * clock l) * (A + B * D) * H / G) ^ (2 : ℕ) =
+        (x ^ (u + b * clock l) * H / G) ^ (2 : ℕ) *
+          (A ^ (2 : ℕ) + 2 * A * B * D + B ^ (2 : ℕ) * D ^ (2 : ℕ)) := by ring
     _ = _ := by
       rw [hD]
       dsimp [A, B, H, G, D, R, C, Q, t]

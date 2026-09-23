@@ -151,7 +151,7 @@ other: the kernel and the positivity of the transverse gap are gauge invariants.
 theorem defectSumSq_le_of_closure (π : G →* (E ≃ₗᵢ[𝕜] E)) (S S' : Finset G)
     (hS' : ∀ s' ∈ S', s' ∈ Subgroup.closure (S : Set G)) :
     ∃ κ : ℝ, 0 < κ ∧ ∀ x : E,
-      ∑ s' ∈ S', unitaryDefect π s' x ^ 2 ≤ κ * ∑ s ∈ S, unitaryDefect π s x ^ 2 := by
+      ∑ s' ∈ S', unitaryDefect π s' x ^ (2 : ℕ) ≤ κ * ∑ s ∈ S, unitaryDefect π s x ^ (2 : ℕ) := by
   classical
   choose m hm using fun (s' : S') => exists_defect_bound π S (hS' s'.1 s'.2)
   set M : ℕ := ∑ s' ∈ S'.attach, m s' with hM
@@ -170,29 +170,29 @@ theorem defectSumSq_le_of_closure (π : G →* (E ≃ₗᵢ[𝕜] E)) (S S' : Fi
     calc unitaryDefect π s' x ≤ (m ⟨s', hs'⟩ : ℝ) * ∑ s ∈ S, unitaryDefect π s x := hle
       _ ≤ (M : ℝ) * ∑ s ∈ S, unitaryDefect π s x :=
         mul_le_mul_of_nonneg_right hmle hsumnn
-  refine ⟨(S'.card : ℝ) * (M : ℝ) ^ 2 * (S.card : ℝ) + 1, by positivity, fun x => ?_⟩
-  have hcs : (∑ s ∈ S, unitaryDefect π s x) ^ 2
-      ≤ (S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ 2 := sq_sum_le_card_mul_sum_sq
-  have hterm : ∀ s' ∈ S', unitaryDefect π s' x ^ 2
-      ≤ (M : ℝ) ^ 2 * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ 2) := by
+  refine ⟨(S'.card : ℝ) * (M : ℝ) ^ (2 : ℕ) * (S.card : ℝ) + 1, by positivity, fun x => ?_⟩
+  have hcs : (∑ s ∈ S, unitaryDefect π s x) ^ (2 : ℕ)
+      ≤ (S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ (2 : ℕ) := sq_sum_le_card_mul_sum_sq
+  have hterm : ∀ s' ∈ S', unitaryDefect π s' x ^ (2 : ℕ)
+      ≤ (M : ℝ) ^ (2 : ℕ) * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ (2 : ℕ)) := by
     intro s' hs'
     have h1 := hMbound s' hs' x
-    have h2 : unitaryDefect π s' x ^ 2
-        ≤ ((M : ℝ) * ∑ s ∈ S, unitaryDefect π s x) ^ 2 :=
+    have h2 : unitaryDefect π s' x ^ (2 : ℕ)
+        ≤ ((M : ℝ) * ∑ s ∈ S, unitaryDefect π s x) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) h1 2
-    calc unitaryDefect π s' x ^ 2
-        ≤ ((M : ℝ) * ∑ s ∈ S, unitaryDefect π s x) ^ 2 := h2
-      _ = (M : ℝ) ^ 2 * (∑ s ∈ S, unitaryDefect π s x) ^ 2 := by ring
-      _ ≤ (M : ℝ) ^ 2 * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ 2) :=
+    calc unitaryDefect π s' x ^ (2 : ℕ)
+        ≤ ((M : ℝ) * ∑ s ∈ S, unitaryDefect π s x) ^ (2 : ℕ) := h2
+      _ = (M : ℝ) ^ (2 : ℕ) * (∑ s ∈ S, unitaryDefect π s x) ^ (2 : ℕ) := by ring
+      _ ≤ (M : ℝ) ^ (2 : ℕ) * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_left hcs (by positivity)
-  have hsum : ∑ s' ∈ S', unitaryDefect π s' x ^ 2
-      ≤ (S'.card : ℝ) * ((M : ℝ) ^ 2 * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ 2)) := by
-    calc ∑ s' ∈ S', unitaryDefect π s' x ^ 2
-        ≤ ∑ _s' ∈ S', (M : ℝ) ^ 2 * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ 2) :=
+  have hsum : ∑ s' ∈ S', unitaryDefect π s' x ^ (2 : ℕ)
+      ≤ (S'.card : ℝ) * ((M : ℝ) ^ (2 : ℕ) * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ (2 : ℕ))) := by
+    calc ∑ s' ∈ S', unitaryDefect π s' x ^ (2 : ℕ)
+        ≤ ∑ _s' ∈ S', (M : ℝ) ^ (2 : ℕ) * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ (2 : ℕ)) :=
           Finset.sum_le_sum hterm
-      _ = (S'.card : ℝ) * ((M : ℝ) ^ 2 * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ 2)) := by
+      _ = (S'.card : ℝ) * ((M : ℝ) ^ (2 : ℕ) * ((S.card : ℝ) * ∑ s ∈ S, unitaryDefect π s x ^ (2 : ℕ))) := by
           rw [Finset.sum_const, nsmul_eq_mul]
-  have hnn : (0 : ℝ) ≤ ∑ s ∈ S, unitaryDefect π s x ^ 2 :=
+  have hnn : (0 : ℝ) ≤ ∑ s ∈ S, unitaryDefect π s x ^ (2 : ℕ) :=
     Finset.sum_nonneg fun s _ => sq_nonneg _
   nlinarith [hsum, hnn]
 

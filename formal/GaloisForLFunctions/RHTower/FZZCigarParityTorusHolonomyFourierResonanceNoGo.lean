@@ -133,16 +133,16 @@ def fzzTorusHolonomyFourierCoefficient (m : ℤ) (f : ℝ → ℂ) : ℂ :=
 
 /-- Square of the beta holonomy at the radial representative `s₂=0`. -/
 def fzzHigherGenusBetaRadialSquare (n : ℤ) (s₁ : ℝ) (τ : ℂ) : ℂ :=
-  higherGenusBetaTwistMultiplier n (torusJacobianTwist s₁ 0 τ) ^ 2
+  higherGenusBetaTwistMultiplier n (torusJacobianTwist s₁ 0 τ) ^ (2 : ℕ)
 
 /-- Square of the reciprocal gamma holonomy at the radial representative `s₂=0`. -/
 def fzzHigherGenusGammaRadialSquare (n : ℤ) (s₁ : ℝ) (τ : ℂ) : ℂ :=
-  higherGenusGammaTwistMultiplier n (torusJacobianTwist s₁ 0 τ) ^ 2
+  higherGenusGammaTwistMultiplier n (torusJacobianTwist s₁ 0 τ) ^ (2 : ℕ)
 
 /-- Beta holonomy separates into radial and compact-character factors after squaring. -/
 theorem higherGenusBetaTwistMultiplier_sq_torusJacobian
     (n : ℤ) (s₁ s₂ : ℝ) (τ : ℂ) :
-    higherGenusBetaTwistMultiplier n (torusJacobianTwist s₁ s₂ τ) ^ 2 =
+    higherGenusBetaTwistMultiplier n (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ) =
       fzzHigherGenusBetaRadialSquare n s₁ τ *
         fzzTorusHolonomyCharacter (2 * n) s₂ := by
   have hsplit :
@@ -157,7 +157,7 @@ theorem higherGenusBetaTwistMultiplier_sq_torusJacobian
     congr 1
     push_cast
     ring
-  have hchar : fzzTorusHolonomyCharacter n s₂ ^ 2 =
+  have hchar : fzzTorusHolonomyCharacter n s₂ ^ (2 : ℕ) =
       fzzTorusHolonomyCharacter (2 * n) s₂ := by
     rw [pow_two, fzzTorusHolonomyCharacter_mul]
     congr 2
@@ -167,7 +167,7 @@ theorem higherGenusBetaTwistMultiplier_sq_torusJacobian
 /-- Gamma holonomy separates into the opposite compact character after squaring. -/
 theorem higherGenusGammaTwistMultiplier_sq_torusJacobian
     (n : ℤ) (s₁ s₂ : ℝ) (τ : ℂ) :
-    higherGenusGammaTwistMultiplier n (torusJacobianTwist s₁ s₂ τ) ^ 2 =
+    higherGenusGammaTwistMultiplier n (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ) =
       fzzHigherGenusGammaRadialSquare n s₁ τ *
         fzzTorusHolonomyCharacter (-2 * n) s₂ := by
   have hsplit :
@@ -182,7 +182,7 @@ theorem higherGenusGammaTwistMultiplier_sq_torusJacobian
     congr 1
     push_cast
     ring
-  have hchar : fzzTorusHolonomyCharacter (-n) s₂ ^ 2 =
+  have hchar : fzzTorusHolonomyCharacter (-n) s₂ ^ (2 : ℕ) =
       fzzTorusHolonomyCharacter (-2 * n) s₂ := by
     rw [pow_two, fzzTorusHolonomyCharacter_mul]
     congr 2
@@ -191,15 +191,15 @@ theorem higherGenusGammaTwistMultiplier_sq_torusJacobian
 
 /-- Squared odd holonomy is the reciprocal pair minus its neutral cross term. -/
 theorem fzzHigherGenusOddHolonomy_sq (n : ℤ) (twist : ℂ) :
-    fzzHigherGenusOddHolonomy n twist ^ 2 =
-      (higherGenusBetaTwistMultiplier n twist ^ 2 +
-        higherGenusGammaTwistMultiplier n twist ^ 2 - 2) / 4 := by
+    fzzHigherGenusOddHolonomy n twist ^ (2 : ℕ) =
+      (higherGenusBetaTwistMultiplier n twist ^ (2 : ℕ) +
+        higherGenusGammaTwistMultiplier n twist ^ (2 : ℕ) - 2) / 4 := by
   rw [fzzHigherGenusOddHolonomy]
   have hrecip := higherGenusBetaTwist_mul_gammaTwist n twist
   rw [show ((higherGenusBetaTwistMultiplier n twist -
-      higherGenusGammaTwistMultiplier n twist) / 2) ^ 2 =
-      (higherGenusBetaTwistMultiplier n twist ^ 2 +
-        higherGenusGammaTwistMultiplier n twist ^ 2 -
+      higherGenusGammaTwistMultiplier n twist) / 2) ^ (2 : ℕ) =
+      (higherGenusBetaTwistMultiplier n twist ^ (2 : ℕ) +
+        higherGenusGammaTwistMultiplier n twist ^ (2 : ℕ) -
         2 * (higherGenusBetaTwistMultiplier n twist *
           higherGenusGammaTwistMultiplier n twist)) / 4 by ring]
   rw [hrecip]
@@ -208,7 +208,7 @@ theorem fzzHigherGenusOddHolonomy_sq (n : ℤ) (twist : ℂ) :
 /-- **Three-frequency law.** The squared odd holonomy has only charges `0, 2n, -2n`. -/
 theorem fzzHigherGenusOddHolonomy_sq_torusJacobian_threeFrequency
     (n : ℤ) (s₁ s₂ : ℝ) (τ : ℂ) :
-    fzzHigherGenusOddHolonomy n (torusJacobianTwist s₁ s₂ τ) ^ 2 =
+    fzzHigherGenusOddHolonomy n (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ) =
       (fzzHigherGenusBetaRadialSquare n s₁ τ *
           fzzTorusHolonomyCharacter (2 * n) s₂ +
         fzzHigherGenusGammaRadialSquare n s₁ τ *
@@ -279,14 +279,14 @@ theorem fzzHigherGenusOddHolonomy_sq_fourierCoefficient
     (n m : ℤ) (s₁ : ℝ) (τ : ℂ) :
     fzzTorusHolonomyFourierCoefficient m
         (fun s₂ => fzzHigherGenusOddHolonomy n
-          (torusJacobianTwist s₁ s₂ τ) ^ 2) =
+          (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) =
       fzzHigherGenusBetaRadialSquare n s₁ τ / 4 *
           (if 2 * n = m then 1 else 0) +
         fzzHigherGenusGammaRadialSquare n s₁ τ / 4 *
           (if -2 * n = m then 1 else 0) +
         (-1 / 2 : ℂ) * (if (0 : ℤ) = m then 1 else 0) := by
   rw [show (fun s₂ => fzzHigherGenusOddHolonomy n
-      (torusJacobianTwist s₁ s₂ τ) ^ 2) =
+      (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) =
       (fun s₂ =>
         fzzHigherGenusBetaRadialSquare n s₁ τ / 4 *
             fzzTorusHolonomyCharacter (2 * n) s₂ +
@@ -318,7 +318,7 @@ theorem fzzHigherGenusOddHolonomy_sq_fourierCoefficient_eq_zero_of_offResonance
     (hpos : m ≠ 2 * n) (hneg : m ≠ -2 * n) (hzero : m ≠ 0) :
     fzzTorusHolonomyFourierCoefficient m
         (fun s₂ => fzzHigherGenusOddHolonomy n
-          (torusJacobianTwist s₁ s₂ τ) ^ 2) = 0 := by
+          (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) = 0 := by
   rw [fzzHigherGenusOddHolonomy_sq_fourierCoefficient]
   have hpos' : 2 * n ≠ m := Ne.symm hpos
   have hneg' : -(2 * n) ≠ m := by
@@ -333,7 +333,7 @@ theorem fzzHigherGenusOddHolonomy_sq_zeroCoefficient
     (n : ℤ) (s₁ : ℝ) (τ : ℂ) :
     fzzTorusHolonomyFourierCoefficient 0
         (fun s₂ => fzzHigherGenusOddHolonomy n
-          (torusJacobianTwist s₁ s₂ τ) ^ 2) =
+          (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) =
       if n = 0 then 0 else (-1 / 2 : ℂ) := by
   rw [fzzHigherGenusOddHolonomy_sq_fourierCoefficient]
   by_cases hn : n = 0
@@ -349,7 +349,7 @@ theorem fzzHigherGenusOddHolonomy_sq_markedPositiveCoefficient
     {n : ℤ} (hn : n ≠ 0) (s₁ : ℝ) (τ : ℂ) :
     fzzTorusHolonomyFourierCoefficient (2 * n)
         (fun s₂ => fzzHigherGenusOddHolonomy n
-          (torusJacobianTwist s₁ s₂ τ) ^ 2) =
+          (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) =
       fzzHigherGenusBetaRadialSquare n s₁ τ / 4 := by
   rw [fzzHigherGenusOddHolonomy_sq_fourierCoefficient]
   have hopp : -(2 * n) ≠ 2 * n := by omega
@@ -361,7 +361,7 @@ theorem fzzHigherGenusOddHolonomy_sq_markedNegativeCoefficient
     {n : ℤ} (hn : n ≠ 0) (s₁ : ℝ) (τ : ℂ) :
     fzzTorusHolonomyFourierCoefficient (-2 * n)
         (fun s₂ => fzzHigherGenusOddHolonomy n
-          (torusJacobianTwist s₁ s₂ τ) ^ 2) =
+          (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) =
       fzzHigherGenusGammaRadialSquare n s₁ τ / 4 := by
   rw [fzzHigherGenusOddHolonomy_sq_fourierCoefficient]
   have hopp : 2 * n ≠ -(2 * n) := by omega
@@ -373,14 +373,14 @@ def fzzHigherGenusMarkedPositiveHolonomyCoefficient
     (n : ℤ) (s₁ : ℝ) (τ : ℂ) : ℂ :=
   4 * fzzTorusHolonomyFourierCoefficient (2 * n)
     (fun s₂ => fzzHigherGenusOddHolonomy n
-      (torusJacobianTwist s₁ s₂ τ) ^ 2)
+      (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ))
 
 /-- Normalized negative marked Fourier coefficient. -/
 def fzzHigherGenusMarkedNegativeHolonomyCoefficient
     (n : ℤ) (s₁ : ℝ) (τ : ℂ) : ℂ :=
   4 * fzzTorusHolonomyFourierCoefficient (-2 * n)
     (fun s₂ => fzzHigherGenusOddHolonomy n
-      (torusJacobianTwist s₁ s₂ τ) ^ 2)
+      (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ))
 
 theorem fzzHigherGenusMarkedPositiveHolonomyCoefficient_eq_betaSquare
     {n : ℤ} (hn : n ≠ 0) (s₁ : ℝ) (τ : ℂ) :
@@ -434,10 +434,10 @@ def FZZAveragedHigherGenusCyclePairKreinSign
     (n : ℤ) (s₁ : ℝ) (τ : ℂ) : Prop :=
   (fzzTorusHolonomyFourierCoefficient 0
       (fun s₂ => fzzHigherGenusOddHolonomy n
-        (torusJacobianTwist s₁ s₂ τ) ^ 2)).im = 0 ∧
+        (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ))).im = 0 ∧
     (fzzTorusHolonomyFourierCoefficient 0
       (fun s₂ => fzzHigherGenusOddHolonomy (2 * n)
-        (torusJacobianTwist s₁ s₂ τ) ^ 2)).re ≤ 0
+        (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ))).re ≤ 0
 
 /-- The averaged reality/passivity chamber is automatic at every twist and every cycle. -/
 theorem fzzAveragedHigherGenusCyclePairKreinSign_all
@@ -479,14 +479,14 @@ theorem fzzHigherGenusOddHolonomy_sq_weightedAverage_resonance
     (n : ℤ) (s₁ : ℝ) (τ : ℂ) (A : ℝ → ℂ) (hA : Continuous A) :
     (∫ s₂ in (0 : ℝ)..1,
       A s₂ * fzzHigherGenusOddHolonomy n
-        (torusJacobianTwist s₁ s₂ τ) ^ 2) =
+        (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) =
       fzzHigherGenusBetaRadialSquare n s₁ τ / 4 *
           fzzTorusHolonomyFourierCoefficient (-2 * n) A +
         fzzHigherGenusGammaRadialSquare n s₁ τ / 4 *
           fzzTorusHolonomyFourierCoefficient (2 * n) A +
         (-1 / 2 : ℂ) * fzzTorusHolonomyFourierCoefficient 0 A := by
   rw [show (fun s₂ => A s₂ * fzzHigherGenusOddHolonomy n
-      (torusJacobianTwist s₁ s₂ τ) ^ 2) =
+      (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) =
       (fun s₂ =>
         fzzHigherGenusBetaRadialSquare n s₁ τ / 4 *
             (fzzTorusHolonomyCharacter (2 * n) s₂ * A s₂) +
@@ -558,7 +558,7 @@ theorem fzzHigherGenusOddHolonomy_sq_weightedAverage_eq_zeroMode_of_resonanceGap
     (hpos : fzzTorusHolonomyFourierCoefficient (2 * n) A = 0) :
     (∫ s₂ in (0 : ℝ)..1,
       A s₂ * fzzHigherGenusOddHolonomy n
-        (torusJacobianTwist s₁ s₂ τ) ^ 2) =
+        (torusJacobianTwist s₁ s₂ τ) ^ (2 : ℕ)) =
       (-1 / 2 : ℂ) * fzzTorusHolonomyFourierCoefficient 0 A := by
   rw [fzzHigherGenusOddHolonomy_sq_weightedAverage_resonance
     n s₁ τ A hA, hneg, hpos]

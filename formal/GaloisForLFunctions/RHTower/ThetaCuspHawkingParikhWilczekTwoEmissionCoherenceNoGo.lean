@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekBorelPartnerEndp
 
 The exact normalized Schwarzschild two-emission factor is
 
-`C(M; E, F) = exp (-4*pi*(E-F)^2)`.
+`C(M; E, F) = exp (-4*pi*(E-F)^(2 : ℕ))`.
 
 It is positive, independent of the black-hole mass, and symmetric under exchange of the two
 emissions.  This leaf tests the literal scalar multi-event repair left by the one-endpoint no-go:

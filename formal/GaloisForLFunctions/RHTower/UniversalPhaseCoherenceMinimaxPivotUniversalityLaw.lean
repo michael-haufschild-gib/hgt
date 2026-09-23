@@ -24,7 +24,7 @@ def IsUniversalPhaseCoherencePivotDeadline
       1 - recurrencePhaseDefect Q ≤ ‖phaseClockAmplitude ω n‖ ∧
       ∑ j : Fin d,
           ‖Complex.exp (Complex.I * (((n : ℝ) * ω j : ℝ) : ℂ)) -
-            Complex.exp (Complex.I * (((n : ℝ) * ω k : ℝ) : ℂ))‖ ^ 2 ≤
+            Complex.exp (Complex.I * (((n : ℝ) * ω k : ℝ) : ℂ))‖ ^ (2 : ℕ) ≤
         4 * recurrencePhaseDefect Q * (d : ℝ)
 
 /-- Adding the centroid-pivot certificate does not change the class of universal deadlines. -/

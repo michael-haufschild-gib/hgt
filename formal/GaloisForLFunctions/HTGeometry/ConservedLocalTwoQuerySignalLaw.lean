@@ -28,7 +28,7 @@ dictionary.  Inputs are sampled uniformly; output Pauli coefficients receive
 the exact product-state twirl weight `3^{-weight}`. -/
 def twoQueryProductStabilizerSignal
     (weight : ι → ℕ) (C : Matrix ι ι ℝ) : ℝ :=
-  (∑ i, ∑ j, ((1 : ℝ) / 3) ^ weight j * (C j i) ^ 2) /
+  (∑ i, ∑ j, ((1 : ℝ) / 3) ^ weight j * (C j i) ^ (2 : ℕ)) /
     (Fintype.card ι : ℝ)
 
 /-- **Dimension-linear conserved-local signal.**  If every dictionary element
@@ -46,28 +46,28 @@ theorem twoQueryProductStabilizerSignal_ge
   rw [twoQueryProductStabilizerSignal,
     div_le_div_iff_of_pos_right hcard]
   have hF :
-      1 ≤ ∑ i, ∑ j, (C j i) ^ 2 := by
+      1 ≤ ∑ i, ∑ j, (C j i) ^ (2 : ℕ) := by
     have hswap :
-        (∑ i, ∑ j, (C i j) ^ 2) =
-          ∑ i, ∑ j, (C j i) ^ 2 := by
+        (∑ i, ∑ j, (C i j) ^ (2 : ℕ)) =
+          ∑ i, ∑ j, (C j i) ^ (2 : ℕ) := by
       have hs := Finset.sum_comm
         (s := (Finset.univ : Finset ι))
         (t := (Finset.univ : Finset ι))
-        (f := fun i j => (C i j) ^ 2)
+        (f := fun i j => (C i j) ^ (2 : ℕ))
       simpa using hs
     rw [← hswap]
     exact localCompression_frobenius_sq_ge_one C h hh hfix
   have hbase : 0 ≤ ((1 : ℝ) / 3) ^ q := by positivity
   calc
     ((1 : ℝ) / 3) ^ q ≤
-        ((1 : ℝ) / 3) ^ q * (∑ i, ∑ j, (C j i) ^ 2) := by
+        ((1 : ℝ) / 3) ^ q * (∑ i, ∑ j, (C j i) ^ (2 : ℕ)) := by
       simpa only [mul_one] using
         (mul_le_mul_of_nonneg_left hF hbase)
     _ = ∑ i, ∑ j,
-        ((1 : ℝ) / 3) ^ q * (C j i) ^ 2 := by
+        ((1 : ℝ) / 3) ^ q * (C j i) ^ (2 : ℕ) := by
       simp only [Finset.mul_sum]
     _ ≤ ∑ i, ∑ j,
-        ((1 : ℝ) / 3) ^ weight j * (C j i) ^ 2 := by
+        ((1 : ℝ) / 3) ^ weight j * (C j i) ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro i _hi
       apply Finset.sum_le_sum

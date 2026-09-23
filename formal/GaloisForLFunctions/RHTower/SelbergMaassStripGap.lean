@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.SelbergModularStripComparison
 
 Original source Fourier energy on the complete modular strip, its literal
 inversion cover, and the full-cell Stokes identity imply
-`3*pi^2 <= 2*lambda*(N+1)^2` for every exceptional source. All full-domain
+`3*pi^(2 : ℕ) <= 2*lambda*(N+1)^(2 : ℕ)` for every exceptional source. All full-domain
 integrability, hyperbolic coordinate changes, infinite-height Fubini, and
 positive-mass cancellation are derived. The exceptional-source type is
 therefore empty at each principal level one through seven.
@@ -35,7 +35,7 @@ theorem rectangle_height_pos {p : ℝ × ℝ} (hp : p ∈ rectangle) : 0 < p.2 :
 /-- Real and hyperbolic strip coordinates agree including the bottom boundary. -/
 theorem rectangle_iff_strip (z : ℍ) : (z.re, z.im) ∈ rectangle ↔ z ∈ strip := by
   change (z.re ∈ Icc (-(1 / 2 : ℝ)) (1 / 2) ∧ arcFloor ≤ z.im) ↔
-    (|z.re| ≤ (1 : ℝ) / 2 ∧ 3 ≤ 4 * z.im ^ 2)
+    (|z.re| ≤ (1 : ℝ) / 2 ∧ 3 ≤ 4 * z.im ^ (2 : ℕ))
   have hs := arcFloor_sq
   constructor
   · rintro ⟨hx, hy⟩
@@ -48,9 +48,9 @@ theorem rectangle_iff_strip (z : ℍ) : (z.re, z.im) ∈ rectangle ↔ z ∈ str
 
 /-- Exact change from hyperbolic strip area to ordinary rectangular area. -/
 theorem integral_height_sq_strip (F : ℝ × ℝ → ℝ) :
-    (∫ z : ℍ in strip, z.im ^ 2 * F (z.re, z.im)) = ∫ p in rectangle, F p := by
+    (∫ z : ℍ in strip, z.im ^ (2 : ℕ) * F (z.re, z.im)) = ∫ p in rectangle, F p := by
   let G : ℂ → ℝ := fun z => rectangle.indicator F (z.re, z.im)
-  have he : (∫ z : ℍ in strip, z.im ^ 2 * F (z.re, z.im)) = ∫ z : ℍ, z.im ^ 2 * G z := by
+  have he : (∫ z : ℍ in strip, z.im ^ (2 : ℕ) * F (z.re, z.im)) = ∫ z : ℍ, z.im ^ (2 : ℕ) * G z := by
     rw [← integral_indicator strip_measurable]
     apply integral_congr_ae
     filter_upwards with z
@@ -150,11 +150,11 @@ theorem rectangle_mass_integrable : IntegrableOn (massDensity N f) rectangle := 
 
 /-- Fourier energy at every actual strip height bounds the hyperbolic slice mass. -/
 theorem rectangle_slice_gap {y : ℝ} (hy : y ∈ Ici arcFloor) :
-    ((3 / 4 : ℝ) * (2 * Real.pi / (N + 1 : ℕ)) ^ 2) *
+    ((3 / 4 : ℝ) * (2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ)) *
         (∫ x in Icc (-(1 / 2 : ℝ)) (1 / 2), massDensity N f (x, y)) ≤
       ∫ x in Icc (-(1 / 2 : ℝ)) (1 / 2), planarGradient N f (x, y) := by
   have hp : 0 < y := arcFloor_pos.trans_le hy
-  have hs : 3 / 4 ≤ y ^ 2 := by
+  have hs : 3 / 4 ≤ y ^ (2 : ℕ) := by
     have hm := mul_nonneg (sub_nonneg.mpr hy)
       (show 0 ≤ y + arcFloor by linarith [arcFloor_pos])
     nlinarith [arcFloor_sq]
@@ -165,20 +165,20 @@ theorem rectangle_slice_gap {y : ℝ} (hy : y ∈ Ici arcFloor) :
   rw [integral_div]
   simp only [integral_Icc_eq_integral_Ioc,
     ← intervalIntegral.integral_of_le (by norm_num : (-(1 / 2 : ℝ)) ≤ 1 / 2)]
-  have hd : (3 / 4 : ℝ) / y ^ 2 ≤ 1 :=
+  have hd : (3 / 4 : ℝ) / y ^ (2 : ℕ) ≤ 1 :=
     (div_le_iff₀ (sq_pos_of_pos hp)).mpr (by linarith)
   calc
-    _ = ((2 * Real.pi / (N + 1 : ℕ)) ^ 2 *
+    _ = ((2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ) *
         (∫ x in (-(1 / 2 : ℝ))..(1 / 2), density N f (ofComplex (point x y)))) *
-        ((3 / 4 : ℝ) / y ^ 2) := by ring
-    _ ≤ ((2 * Real.pi / (N + 1 : ℕ)) ^ 2 *
+        ((3 / 4 : ℝ) / y ^ (2 : ℕ)) := by ring
+    _ ≤ ((2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ) *
         (∫ x in (-(1 / 2 : ℝ))..(1 / 2), density N f (ofComplex (point x y)))) * 1 :=
       mul_le_mul_of_nonneg_left hd (mul_nonneg (sq_nonneg _) hm)
     _ ≤ _ := by simpa only [mul_one] using hgap
 
 /-- The complete original-source strip has the integrated Fourier energy lower bound. -/
 theorem rectangle_energy_lower :
-    ((3 / 4 : ℝ) * (2 * Real.pi / (N + 1 : ℕ)) ^ 2) *
+    ((3 / 4 : ℝ) * (2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ)) *
         (∫ p in rectangle, massDensity N f p) ≤ ∫ p in rectangle, planarGradient N f p := by
   rw [rectangle_integral (rectangle_mass_integrable N lam f),
     rectangle_integral (rectangle_gradient_integrable N lam f), ← integral_const_mul]
@@ -191,7 +191,7 @@ theorem rectangle_energy_lower :
 include f in
 /-- The physical source mass cancels to give an explicit level-scaled eigenvalue bound. -/
 theorem level_scaled_eigenvalue_bound :
-    3 * Real.pi ^ 2 ≤ 2 * (lam : ℝ) * ((N + 1 : ℕ) : ℝ) ^ 2 := by
+    3 * Real.pi ^ (2 : ℕ) ≤ 2 * (lam : ℝ) * ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) := by
   have hupper := integral_strip_le_twice (cell_gradient_integrable N lam f)
     (hyperbolicGradient_nonneg N f) (hyperbolicGradient_invariant N f S)
   rw [strip_gradient_identity, cell_gradient_identity] at hupper
@@ -201,21 +201,21 @@ theorem level_scaled_eigenvalue_bound :
   change (∫ z : ℍ in fd, density N f z) ≤ ∫ z in strip, density N f z at hmass
   rw [cell_mass_identity, strip_mass_identity] at hmass
   have hlow := (mul_le_mul_of_nonneg_left hmass
-    (show 0 ≤ (3 / 4 : ℝ) * (2 * Real.pi / (N + 1 : ℕ)) ^ 2 by positivity)).trans
+    (show 0 ≤ (3 / 4 : ℝ) * (2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ) by positivity)).trans
       (rectangle_energy_lower N lam f)
-  have hcancel : ((3 / 4 : ℝ) * (2 * Real.pi / (N + 1 : ℕ)) ^ 2) ≤ 2 * (lam : ℝ) := by
+  have hcancel : ((3 / 4 : ℝ) * (2 * Real.pi / (N + 1 : ℕ)) ^ (2 : ℕ)) ≤ 2 * (lam : ℝ) := by
     apply le_of_mul_le_mul_right (a := ∫ p in fullDomain, massDensity N f p) ?_ (full_mass_pos N lam f)
     simpa only [mul_assoc] using hlow.trans hupper
-  have hdiv : (3 * Real.pi ^ 2) / ((N + 1 : ℕ) : ℝ) ^ 2 ≤ 2 * (lam : ℝ) := by
+  have hdiv : (3 * Real.pi ^ (2 : ℕ)) / ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ) ≤ 2 * (lam : ℝ) := by
     convert hcancel using 1
     ring
-  exact (div_le_iff₀ (by positivity : 0 < ((N + 1 : ℕ) : ℝ) ^ 2)).mp hdiv
+  exact (div_le_iff₀ (by positivity : 0 < ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ))).mp hdiv
 
 include f in
 /-- An unconditional quantitative lower bound for the original congruence Maass source. -/
 theorem eigenvalue_lower_bound :
-    (3 * Real.pi ^ 2) / (2 * ((N + 1 : ℕ) : ℝ) ^ 2) ≤ (lam : ℝ) := by
-  apply (div_le_iff₀ (by positivity : 0 < 2 * ((N + 1 : ℕ) : ℝ) ^ 2)).mpr
+    (3 * Real.pi ^ (2 : ℕ)) / (2 * ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ)) ≤ (lam : ℝ) := by
+  apply (div_le_iff₀ (by positivity : 0 < 2 * ((N + 1 : ℕ) : ℝ) ^ (2 : ℕ))).mpr
   nlinarith [level_scaled_eigenvalue_bound N lam f]
 
 /-- The original exceptional-source type is empty at every principal level one through seven. -/
@@ -226,7 +226,7 @@ theorem small_level_no_exceptional (n : Fin 7) (l : Ioo (0 : ℝ) (1 / 4)) :
   have hb := level_scaled_eigenvalue_bound n.val l g
   have hn : ((n.val + 1 : ℕ) : ℝ) ≤ 7 := by exact_mod_cast (show n.val + 1 ≤ 7 from n.isLt)
   have hp : 0 ≤ ((n.val + 1 : ℕ) : ℝ) := by positivity
-  have hsq : ((n.val + 1 : ℕ) : ℝ) ^ 2 ≤ 49 := by nlinarith
+  have hsq : ((n.val + 1 : ℕ) : ℝ) ^ (2 : ℕ) ≤ 49 := by nlinarith
   have hpi := Real.pi_gt_three
   have hl := l.2.2
   nlinarith [sq_nonneg (Real.pi - 3), mul_nonneg (sub_nonneg.mpr hsq) l.2.1.le]

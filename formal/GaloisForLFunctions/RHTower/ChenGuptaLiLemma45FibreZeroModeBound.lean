@@ -44,7 +44,7 @@ theorem cglLemma45ZeroModeRowTerm_eq_totient_cube_mul
     (rows : Fin R → CGLCharacterDyadicRowData Q.value)
     (u : CGLLemma45EqualCharacterRowTriple Q R rows) :
     cglLemma45ZeroModeRowTerm w N Q R rows u.1 =
-      (Q.value.totient : ℂ) ^ 3 *
+      (Q.value.totient : ℂ) ^ (3 : ℕ) *
         cglLemma45ZeroModeTripleAnalyticAmplitude w N Q
           ((rows u.1.1).time - (rows u.1.2.1).time)
           ((rows u.1.2.1).time - (rows u.1.2.2).time)
@@ -90,7 +90,7 @@ theorem cglLemma45FibreEqualCharacterRowTerm_eq
     (u : CGLLemma45FibreEqualCharacterOffDiagonalTriple P) :
     cglLemma45ZeroModeRowTerm w N (cglLemma45FibreModulus q) R
       (cglLemma45FibreRows P) u.1 =
-      ((cglLemma45FibreModulus q).value.totient : ℂ) ^ 3 *
+      ((cglLemma45FibreModulus q).value.totient : ℂ) ^ (3 : ℕ) *
         cglLemma45ZeroModeTripleAnalyticAmplitude w N (cglLemma45FibreModulus q)
           (P.ordinate u.1.1 - P.ordinate u.1.2.1)
           (P.ordinate u.1.2.1 - P.ordinate u.1.2.2)
@@ -122,21 +122,21 @@ noncomputable def cglLemma45FibreOffDiagonalTripleCard (R : ℕ) : ℕ :=
 
 /-- The non-all-equal cubic-row carrier injects into all `R³` row triples. -/
 theorem cglLemma45FibreOffDiagonalTriple_card_le (R : ℕ) :
-    cglLemma45FibreOffDiagonalTripleCard R ≤ R ^ 3 := by
+    cglLemma45FibreOffDiagonalTripleCard R ≤ R ^ (3 : ℕ) := by
   letI : Fintype (CGLLemma45FibreOffDiagonalTriple R) :=
     cglLemma45FibreOffDiagonalTripleFintype R
-  change Fintype.card (CGLLemma45FibreOffDiagonalTriple R) ≤ R ^ 3
+  change Fintype.card (CGLLemma45FibreOffDiagonalTriple R) ≤ R ^ (3 : ℕ)
   calc
     Fintype.card (CGLLemma45FibreOffDiagonalTriple R) ≤
         Fintype.card (Fin R × Fin R × Fin R) :=
       Fintype.card_le_of_injective Subtype.val Subtype.val_injective
-    _ = R ^ 3 := by simp [pow_three]
+    _ = R ^ (3 : ℕ) := by simp [pow_three]
 
 /-- Explicit bound for one zero-frequency row term after three complete
 character sums. -/
 def cglLemma45FibreZeroModeRowBound {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
     (w : CGLRealSmoothBump) (N : CGLPositiveLength) (n : ℕ) : ℝ :=
-  ((cglLemma45FibreModulus q).value.totient : ℝ) ^ 3 *
+  ((cglLemma45FibreModulus q).value.totient : ℝ) ^ (3 : ℕ) *
     cglLemma45FibreTripleDecayBudget P w N n
 
 /-- The explicit zero-mode row budget is nonnegative. -/

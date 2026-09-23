@@ -66,7 +66,7 @@ theorem exists_conj_toral_of_det_ne_zero [IsAlgClosed U] (htwo : (2 : U) ≠ 0)
       have : b * (-μ - a) - b * (μ - a) = -(2 * (b * μ)) := by ring
       rw [this]
       simpa using mul_ne_zero htwo (mul_ne_zero hbz hμz)
-    · have hbc : c * b = μ ^ 2 - a ^ 2 := by linear_combination -hμ2
+    · have hbc : c * b = μ ^ (2 : ℕ) - a ^ (2 : ℕ) := by linear_combination -hμ2
       rw [hX]
       ext i j
       fin_cases i <;> fin_cases j <;>

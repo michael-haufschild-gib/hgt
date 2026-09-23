@@ -79,10 +79,10 @@ theorem sourceCayleyAbelGreenMultiplier_eq_rational (R x : ℝ) :
 /-- At the Abel resonance `R = (1-x²)/(1+x²)`, the multiplier denominator is explicit.
 This is an equality, so it is valid also at the degenerate point `x = 0`. -/
 theorem sourceCayleyAbelGreen_resonant_denominator (x : ℝ) :
-    let R : ℝ := (1 - x ^ 2) / (1 + x ^ 2)
-    (1 + R) ^ 2 * x ^ 2 + (1 - R) ^ 2 = 4 * x ^ 2 / (1 + x ^ 2) := by
+    let R : ℝ := (1 - x ^ (2 : ℕ)) / (1 + x ^ (2 : ℕ))
+    (1 + R) ^ (2 : ℕ) * x ^ (2 : ℕ) + (1 - R) ^ (2 : ℕ) = 4 * x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) := by
   dsimp
-  have hx : 0 < 1 + x ^ 2 := by positivity
+  have hx : 0 < 1 + x ^ (2 : ℕ) := by positivity
   field_simp
   ring
 

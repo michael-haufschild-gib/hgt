@@ -37,18 +37,18 @@ def withCStarComplexEuclideanEquiv
     intro x
     apply (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
     rw [WithCStarModule.pi_norm_sq, EuclideanSpace.norm_sq_eq]
-    change (∑ i, ‖x i‖ ^ 2) = ‖∑ i, inner ℂ (x i) (x i)‖
+    change (∑ i, ‖x i‖ ^ (2 : ℕ)) = ‖∑ i, inner ℂ (x i) (x i)‖
     simp only [RCLike.inner_apply]
     simp_rw [RCLike.mul_conj]
     have hcast :
-        (∑ i, ((‖x i‖ : ℝ) : ℂ) ^ 2) =
-          ((∑ i, ‖x i‖ ^ 2 : ℝ) : ℂ) := by norm_cast
+        (∑ i, ((‖x i‖ : ℝ) : ℂ) ^ (2 : ℕ)) =
+          ((∑ i, ‖x i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by norm_cast
     calc
-      (∑ i, ‖x i‖ ^ 2) =
-          ‖((∑ i, ‖x i‖ ^ 2 : ℝ) : ℂ)‖ := by
+      (∑ i, ‖x i‖ ^ (2 : ℕ)) =
+          ‖((∑ i, ‖x i‖ ^ (2 : ℕ) : ℝ) : ℂ)‖ := by
         rw [Complex.norm_real, Real.norm_eq_abs,
           abs_of_nonneg (Finset.sum_nonneg fun i _ => sq_nonneg ‖x i‖)]
-      _ = ‖∑ i, ((‖x i‖ : ℝ) : ℂ) ^ 2‖ := congrArg norm hcast.symm
+      _ = ‖∑ i, ((‖x i‖ : ℝ) : ℂ) ^ (2 : ℕ)‖ := congrArg norm hcast.symm
 
 theorem withCStarComplexEuclideanEquiv_apply_ofLp
     {ι : Type*} [Fintype ι]
@@ -115,24 +115,24 @@ theorem norm_matrixRealCoordinates
     {ι : Type*} [Fintype ι] [DecidableEq ι] (M : Matrix ι ι ℂ) :
     ‖matrixRealCoordinates M‖ = hsNorm M := by
   refine (sq_eq_sq₀ (norm_nonneg _) (hsNorm_nonneg M)).mp ?_
-  change ‖matrixRealCoordinates M‖ ^ 2 = ‖matVec M‖ ^ 2
+  change ‖matrixRealCoordinates M‖ ^ (2 : ℕ) = ‖matVec M‖ ^ (2 : ℕ)
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity),
     EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
   calc
     ∑ p : MatrixRealCoordinateIndex ι,
-        ‖(matrixRealCoordinates M).ofLp p‖ ^ 2 =
-        ∑ ij : ι × ι, ((M ij.1 ij.2).re ^ 2 + (M ij.1 ij.2).im ^ 2) := by
+        ‖(matrixRealCoordinates M).ofLp p‖ ^ (2 : ℕ) =
+        ∑ ij : ι × ι, ((M ij.1 ij.2).re ^ (2 : ℕ) + (M ij.1 ij.2).im ^ (2 : ℕ)) := by
       rw [Fintype.sum_prod_type]
       refine Finset.sum_congr rfl fun ij _ => ?_
       rw [Fintype.sum_bool]
       simp [Real.norm_eq_abs, sq_abs, add_comm]
-    _ = ∑ ij : ι × ι, ‖M ij.1 ij.2‖ ^ 2 := by
+    _ = ∑ ij : ι × ι, ‖M ij.1 ij.2‖ ^ (2 : ℕ) := by
       refine Finset.sum_congr rfl fun ij _ => ?_
       rw [Complex.sq_norm, Complex.normSq_apply]
       ring
     _ = ∑ p : ι × ι,
         ‖((EuclideanSpace.equiv (ι × ι) ℂ).symm
-          (fun p => M p.1 p.2)).ofLp p‖ ^ 2 := by rfl
+          (fun p => M p.1 p.2)).ofLp p‖ ^ (2 : ℕ) := by rfl
 
 /-- Both time slices flattened into one Euclidean real coordinate vector. -/
 def twoTimeCStarMatrixRealCoordinates
@@ -148,22 +148,22 @@ def twoTimeCStarMatrixRealCoordinates
 theorem norm_twoTimeCStarMatrixRealCoordinates_sq
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (M N : CStarMatrix ι ι ℂ) :
-    ‖twoTimeCStarMatrixRealCoordinates (M, N)‖ ^ 2 =
-      hsNorm (CStarMatrix.ofMatrix.symm M) ^ 2 +
-        hsNorm (CStarMatrix.ofMatrix.symm N) ^ 2 := by
+    ‖twoTimeCStarMatrixRealCoordinates (M, N)‖ ^ (2 : ℕ) =
+      hsNorm (CStarMatrix.ofMatrix.symm M) ^ (2 : ℕ) +
+        hsNorm (CStarMatrix.ofMatrix.symm N) ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_sq_eq]
   change (∑ q : Bool × MatrixRealCoordinateIndex ι,
     ‖if q.1 then
       (matrixRealCoordinates (CStarMatrix.ofMatrix.symm N)).ofLp q.2
     else
-      (matrixRealCoordinates (CStarMatrix.ofMatrix.symm M)).ofLp q.2‖ ^ 2) = _
+      (matrixRealCoordinates (CStarMatrix.ofMatrix.symm M)).ofLp q.2‖ ^ (2 : ℕ)) = _
   rw [Fintype.sum_prod_type, Fintype.sum_bool]
   simp only [if_true, Bool.false_eq_true, if_false]
   change
     (∑ q : MatrixRealCoordinateIndex ι,
-        ‖(matrixRealCoordinates (CStarMatrix.ofMatrix.symm N)).ofLp q‖ ^ 2) +
+        ‖(matrixRealCoordinates (CStarMatrix.ofMatrix.symm N)).ofLp q‖ ^ (2 : ℕ)) +
       (∑ q : MatrixRealCoordinateIndex ι,
-        ‖(matrixRealCoordinates (CStarMatrix.ofMatrix.symm M)).ofLp q‖ ^ 2) = _
+        ‖(matrixRealCoordinates (CStarMatrix.ofMatrix.symm M)).ofLp q‖ ^ (2 : ℕ)) = _
   rw [← EuclideanSpace.norm_sq_eq, ← EuclideanSpace.norm_sq_eq,
     norm_matrixRealCoordinates, norm_matrixRealCoordinates]
   ring

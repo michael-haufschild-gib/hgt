@@ -43,7 +43,7 @@ def IsMaynardSelectedMontgomeryBound
 
 /-- All constants and logarithms in the two-term Montgomery fibre count cost less than
 `T^(1/400)`.  Uniformity includes every raised energy exponent and every raised length below
-`T^2`; this is the quantitative budget later shared with label entropy. -/
+`T^(2 : ℕ)`; this is the quantitative budget later shared with label entropy. -/
 theorem eventually_maynardMontgomery_fibre_cost_absorbed :
     ∀ᶠ T : ℝ in atTop,
       ∀ N e : ℕ, 1 ≤ N → (N : ℝ) ≤ T ^ (2 : ℕ) →

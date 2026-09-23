@@ -79,7 +79,7 @@ theorem XiC_order :
       apply Real.log_le_log (by linarith)
       rw [hs] at hsnorm ⊢; linarith
     have hsq : Real.log (3 + a) ≤ 2 * Real.log (2 + a) := by
-      have hpow : Real.log ((2 + a) ^ 2) = 2 * Real.log (2 + a) := by
+      have hpow : Real.log ((2 + a) ^ (2 : ℕ)) = 2 * Real.log (2 + a) := by
         rw [Real.log_pow]; push_cast; ring
       rw [← hpow]
       apply Real.log_le_log (by linarith)

@@ -68,37 +68,37 @@ theorem kgFreqInvOp_sq_kgShiftedFreqSqLowOp (hp : Measurable p) (hb0 : 0 ≤ b) 
       kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ :=
     (measurable_kgShiftedFreqSqLow hp.neg R).mul (measurable_kgLowPass R)
   have hs1b : ∀ ξ : E, ‖kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ‖
-      ≤ 1 + R ^ 2 + b := by
+      ≤ 1 + R ^ (2 : ℕ) + b := by
     intro ξ
     rw [norm_mul]
     calc ‖kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ‖ * ‖kgLowPass R ξ‖
-        ≤ (1 + R ^ 2 + b) * 1 :=
+        ≤ (1 + R ^ (2 : ℕ) + b) * 1 :=
           mul_le_mul (norm_kgShiftedFreqSqLow_le hb0 hb1 (abs_neg_pot_le hpb) R ξ)
             (norm_kgLowPass_le R ξ) (norm_nonneg _) hband
-      _ = 1 + R ^ 2 + b := mul_one _
+      _ = 1 + R ^ (2 : ℕ) + b := mul_one _
   have hs2 : Measurable fun ξ : E => kgFreqInv ξ
       * (kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ) :=
     (measurable_kgFreqInv (E := E)).mul hs1
   have hs2b : ∀ ξ : E, ‖kgFreqInv ξ
-      * (kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ)‖ ≤ 1 + R ^ 2 + b := by
+      * (kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ)‖ ≤ 1 + R ^ (2 : ℕ) + b := by
     intro ξ
     rw [norm_mul]
     calc ‖kgFreqInv ξ‖ * ‖kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ‖
-        ≤ 1 * (1 + R ^ 2 + b) :=
+        ≤ 1 * (1 + R ^ (2 : ℕ) + b) :=
           mul_le_mul (norm_kgFreqInv_le ξ) (hs1b ξ) (norm_nonneg _) zero_le_one
-      _ = 1 + R ^ 2 + b := one_mul _
+      _ = 1 + R ^ (2 : ℕ) + b := one_mul _
   have hs3 : Measurable fun ξ : E => kgFreqInv ξ * (kgFreqInv ξ
       * (kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ)) :=
     (measurable_kgFreqInv (E := E)).mul hs2
   have hs3b : ∀ ξ : E, ‖kgFreqInv ξ * (kgFreqInv ξ
-      * (kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ))‖ ≤ 1 + R ^ 2 + b := by
+      * (kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ))‖ ≤ 1 + R ^ (2 : ℕ) + b := by
     intro ξ
     rw [norm_mul]
     calc ‖kgFreqInv ξ‖ * ‖kgFreqInv ξ
           * (kgShiftedFreqSqLow (fun ζ : E => -(p ζ)) R ξ * kgLowPass R ξ)‖
-        ≤ 1 * (1 + R ^ 2 + b) :=
+        ≤ 1 * (1 + R ^ (2 : ℕ) + b) :=
           mul_le_mul (norm_kgFreqInv_le ξ) (hs2b ξ) (norm_nonneg _) zero_le_one
-      _ = 1 + R ^ 2 + b := one_mul _
+      _ = 1 + R ^ (2 : ℕ) + b := one_mul _
   -- symbols of the right-hand chain
   have hq1 : Measurable fun ξ : E => kgRealPotSymbol p ξ * kgLowPass R ξ :=
     (measurable_kgRealPotSymbol hp).mul (measurable_kgLowPass R)

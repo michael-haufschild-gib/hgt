@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.DirichletIntegralMeanValue
 # Critical detector mollified cutoff error
 
 The Gaussian cutoff error in the direct critical detector head remains an exact Dirichlet
-convolution after multiplication by the linear Levinson mollifier.  Its `ell^1` norm is controlled
+convolution after multiplication by the linear Levinson mollifier.  Its `ell^(1 : ℕ)` norm is controlled
 by the one-head cutoff error and the explicit `2 * sqrt M` mollifier mass.
 -/
 
@@ -45,7 +45,7 @@ theorem smoothAFEZetaCriticalDirectMollifiedCutoffErrorCoeff_eq_dirConv
     levinsonCriticalDetectorMollifiedFinCoeff]
   exact (Sieve.dirConv_sub_left L M _ _ _ r).symm
 
-/-- The zero-based finite mollifier has the same `ell^1` mass as its positive-natural form. -/
+/-- The zero-based finite mollifier has the same `ell^(1 : ℕ)` mass as its positive-natural form. -/
 theorem sum_norm_levinsonLinearMollifierFinCoeff_le
     {M : ℕ} (hM : 1 < M) :
     ∑ m : Fin M, ‖levinsonLinearMollifierFinCoeff M m‖ ≤
@@ -60,7 +60,7 @@ theorem sum_norm_levinsonLinearMollifierFinCoeff_le
     _ ≤ _ := Sieve.sum_norm_levinsonLinearMollifierCoeff_le hM
 
 /-- Multiplication by the linear mollifier amplifies the direct-head cutoff error by at most
-its explicit `ell^1` mass. -/
+its explicit `ell^(1 : ℕ)` mass. -/
 theorem sum_norm_smoothAFEZetaCriticalDirectMollifiedCutoffErrorCoeff_le
     (lam x : ℝ) (L : ℕ) {M : ℕ} (hM : 1 < M) :
     ∑ r : Fin (L * M),

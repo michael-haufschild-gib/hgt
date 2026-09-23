@@ -48,7 +48,7 @@ theorem fredholmExp_summable {K : ι × ι → ℂ} (hK : IsHS K) (z : ℂ) (hz 
     Summable (fun n : ℕ => z ^ (n + 2) / ((n + 2 : ℕ) : ℂ) * (∑' i, hsPow K (n + 1) (i, i))) := by
   apply Summable.of_norm_bounded (g := fun n => (‖z‖ * hsNorm K) ^ (n + 2))
   · have h0 : 0 ≤ ‖z‖ * hsNorm K := mul_nonneg (norm_nonneg z) (hsNorm_nonneg K)
-    exact ((summable_geometric_of_lt_one h0 hz).mul_left ((‖z‖ * hsNorm K) ^ 2)).congr
+    exact ((summable_geometric_of_lt_one h0 hz).mul_left ((‖z‖ * hsNorm K) ^ (2 : ℕ))).congr
       (fun n => by rw [pow_add]; ring)
   · intro n
     rw [norm_mul, norm_div, norm_pow]

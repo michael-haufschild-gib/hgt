@@ -51,8 +51,8 @@ theorem norm_moebius_le_one (n : ℕ) : ‖((ArithmeticFunction.moebius n : ℤ)
 theorem norm_deningerMoebiusPair_le (f : 𝓢(ℝ, ℂ)) (h0 : f 0 = 0) {x : ℝ} (hx : 0 < x)
     (p : ℕ × ℕ) :
     ‖deningerMoebiusPair f x p‖
-      ≤ (SchwartzMap.seminorm ℂ 2 0 f / x ^ 2)
-        * ((1 / ((p.1 : ℝ) ^ 2)) * (1 / ((p.2 : ℝ) ^ 2))) := by
+      ≤ (SchwartzMap.seminorm ℂ 2 0 f / x ^ (2 : ℕ))
+        * ((1 / ((p.1 : ℝ) ^ (2 : ℕ))) * (1 / ((p.2 : ℝ) ^ (2 : ℕ)))) := by
   set S : ℝ := SchwartzMap.seminorm ℂ 2 0 f with hS
   have hSnn : 0 ≤ S := apply_nonneg _ _
   rcases Nat.eq_zero_or_pos p.1 with h1 | h1
@@ -80,23 +80,23 @@ theorem norm_deningerMoebiusPair_le (f : 𝓢(ℝ, ℂ)) (h0 : f 0 = 0) {x : ℝ
     _ ≤ 1 * ‖f ((p.1 : ℝ) * (p.2 : ℝ) * x)‖ :=
         mul_le_mul_of_nonneg_right (norm_moebius_le_one p.1) (norm_nonneg _)
     _ = ‖f ((p.1 : ℝ) * (p.2 : ℝ) * x)‖ := one_mul _
-    _ ≤ S / ((p.1 : ℝ) * (p.2 : ℝ) * x) ^ 2 := by
+    _ ≤ S / ((p.1 : ℝ) * (p.2 : ℝ) * x) ^ (2 : ℕ) := by
         rw [le_div_iff₀ (by positivity)]
-        calc ‖f ((p.1 : ℝ) * (p.2 : ℝ) * x)‖ * ((p.1 : ℝ) * (p.2 : ℝ) * x) ^ 2
-            = ((p.1 : ℝ) * (p.2 : ℝ) * x) ^ 2 * ‖f ((p.1 : ℝ) * (p.2 : ℝ) * x)‖ := by ring
+        calc ‖f ((p.1 : ℝ) * (p.2 : ℝ) * x)‖ * ((p.1 : ℝ) * (p.2 : ℝ) * x) ^ (2 : ℕ)
+            = ((p.1 : ℝ) * (p.2 : ℝ) * x) ^ (2 : ℕ) * ‖f ((p.1 : ℝ) * (p.2 : ℝ) * x)‖ := by ring
           _ ≤ S := hsem
-    _ = (S / x ^ 2) * ((1 / ((p.1 : ℝ) ^ 2)) * (1 / ((p.2 : ℝ) ^ 2))) := by
+    _ = (S / x ^ (2 : ℕ)) * ((1 / ((p.1 : ℝ) ^ (2 : ℕ))) * (1 / ((p.2 : ℝ) ^ (2 : ℕ)))) := by
         field_simp
 
 theorem summable_deningerMoebiusPair (f : 𝓢(ℝ, ℂ)) (h0 : f 0 = 0) {x : ℝ} (hx : 0 < x) :
     Summable (deningerMoebiusPair f x) := by
-  have hbase : Summable fun n : ℕ => 1 / ((n : ℝ) ^ 2) :=
+  have hbase : Summable fun n : ℕ => 1 / ((n : ℝ) ^ (2 : ℕ)) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
-  have hprod : Summable fun p : ℕ × ℕ => (1 / ((p.1 : ℝ) ^ 2)) * (1 / ((p.2 : ℝ) ^ 2)) :=
+  have hprod : Summable fun p : ℕ × ℕ => (1 / ((p.1 : ℝ) ^ (2 : ℕ))) * (1 / ((p.2 : ℝ) ^ (2 : ℕ))) :=
     hbase.mul_of_nonneg hbase (fun n => by positivity) (fun n => by positivity)
   refine Summable.of_norm_bounded
-    (g := fun p : ℕ × ℕ => (SchwartzMap.seminorm ℂ 2 0 f / x ^ 2)
-      * ((1 / ((p.1 : ℝ) ^ 2)) * (1 / ((p.2 : ℝ) ^ 2))))
+    (g := fun p : ℕ × ℕ => (SchwartzMap.seminorm ℂ 2 0 f / x ^ (2 : ℕ))
+      * ((1 / ((p.1 : ℝ) ^ (2 : ℕ))) * (1 / ((p.2 : ℝ) ^ (2 : ℕ)))))
     (hprod.mul_left _) fun p => norm_deningerMoebiusPair_le f h0 hx p
 
 /-! ## Summing first over the second index -/

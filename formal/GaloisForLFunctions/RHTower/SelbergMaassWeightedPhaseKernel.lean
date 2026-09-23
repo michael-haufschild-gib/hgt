@@ -101,7 +101,7 @@ theorem phaseProductPartial_eq_kernel (M : ℕ) :
         ∑ m ∈ Finset.Icc (-(M : ℤ)) (M : ℤ),
           (starRingEnd ℂ) (((signedFrequency (N + 1 : ℕ) n : ℝ) : ℂ) * Complex.I) *
             unitCoordFourierKernel n m * coefficientMixedLoss N r s f n m 1 := by
-  let c : ℝ := ((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2
+  let c : ℝ := ((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2
   let S : Finset ℤ := Finset.Icc (-(M : ℤ)) (M : ℤ)
   let H : PhaseIndex N → ℝ → ℂ := fun i =>
     unitRescaledHorizontalReadout N f (phaseReadout N r s i) 1
@@ -402,8 +402,8 @@ theorem weightedKernel_exceptional_pair_scaled_tail
         (starRingEnd ℂ) (((signedFrequency (N + 1 : ℕ) m : ℝ) : ℂ) * Complex.I) *
           unitCoordFourierKernel m n * coefficientMixedLoss N r s g m n y).re =
       ((m - n : ℤ) : ℝ) * (deriv (coefficientLoss N r s g n m) y).re +
-        (2 * Real.pi / ((N + 1 : ℕ) : ℝ)) ^ 2 * ((m - n : ℤ) : ℝ) *
-          ((m + n : ℤ) : ℝ) ^ 2 * (tailLoss N r s g n m y).re := by
+        (2 * Real.pi / ((N + 1 : ℕ) : ℝ)) ^ (2 : ℕ) * ((m - n : ℤ) : ℝ) *
+          ((m + n : ℤ) : ℝ) ^ (2 : ℕ) * (tailLoss N r s g n m y).re := by
   rw [weightedKernel_pair_scaled N g r s n m hnm hy]
   rw [coefficientWronskian_eq_tail N r s e g n m hy]
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]

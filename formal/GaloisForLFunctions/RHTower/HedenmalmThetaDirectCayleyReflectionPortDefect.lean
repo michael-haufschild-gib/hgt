@@ -17,9 +17,9 @@ noncomputable section
 
 open HedenmalmQuantile
 
-private abbrev ThetaH := Lp ℂ 2 unitIntervalMeasure
+private abbrev ThetaH_hedenmalmThetaGreenSquareBoundaryLaw_hedenmalmThetaDirectCayleyReflectionPortDefect := Lp ℂ 2 unitIntervalMeasure
 
-def thetaBoundaryDirectCayleyResolvent : ThetaH →L[ℂ] ThetaH :=
+def thetaBoundaryDirectCayleyResolvent : ThetaH_hedenmalmThetaGreenSquareBoundaryLaw_hedenmalmThetaDirectCayleyReflectionPortDefect →L[ℂ] ThetaH_hedenmalmThetaGreenSquareBoundaryLaw_hedenmalmThetaDirectCayleyReflectionPortDefect :=
   Ring.inverse (1 - thetaBoundaryDirectScaledGenerator)
 
 def thetaXiBoundaryDirectCayleyResolvedCoefficient
@@ -28,7 +28,7 @@ def thetaXiBoundaryDirectCayleyResolvedCoefficient
     (1 - thetaXiBoundaryDirectScaledEigenvalue q)
 
 def thetaXiBoundaryDirectCayleyResolvedMode
-    (q : XiZeroCopy) (n : ℕ) : ThetaH :=
+    (q : XiZeroCopy) (n : ℕ) : ThetaH_hedenmalmThetaGreenSquareBoundaryLaw_hedenmalmThetaDirectCayleyReflectionPortDefect :=
   thetaBoundaryDirectCayleyResolvent
     ((thetaBoundaryDirectCayleyClock ^ n) (thetaXiDivisorEigenvector q))
 
@@ -101,7 +101,7 @@ theorem thetaXiBoundaryDirectCayleyResolvedCoefficient_ne_zero
 theorem thetaXiBoundaryDirectCayleyPortDefect_eq
     (q : XiZeroCopy) (n : ℕ) :
     thetaXiBoundaryDirectCayleyPortDefect q n =
-      ‖thetaXiBoundaryDirectCayleyResolvedCoefficient q n‖ ^ 2 *
+      ‖thetaXiBoundaryDirectCayleyResolvedCoefficient q n‖ ^ (2 : ℕ) *
         thetaXiRankTwoBoundaryFlux q := by
   rw [thetaXiBoundaryDirectCayleyPortDefect,
     thetaXiBoundaryDirectCayleyResolvedMode_eq,
@@ -111,7 +111,7 @@ theorem thetaXiBoundaryDirectCayleyPortDefect_eq
   let a := inner ℂ (pinnedBoundaryCLM (thetaXiDivisorEigenvector q))
     (thetaXiDivisorEigenvector q)
   rw [← mul_assoc]
-  change (star c * c * a).re = ‖c‖ ^ 2 * a.re
+  change (star c * c * a).re = ‖c‖ ^ (2 : ℕ) * a.re
   rw [show star c = (starRingEnd ℂ) c by rfl]
   rw [← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq]
   rw [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
@@ -121,7 +121,7 @@ theorem thetaXiBoundaryDirectCayleyPortDefect_eq
 theorem thetaXiBoundaryDirectCayleyPortDefect_eq_oriented_source_flux
     (q : XiZeroCopy) (n : ℕ) :
     thetaXiBoundaryDirectCayleyPortDefect q n =
-      ‖thetaXiBoundaryDirectCayleyResolvedCoefficient q n‖ ^ 2 *
+      ‖thetaXiBoundaryDirectCayleyResolvedCoefficient q n‖ ^ (2 : ℕ) *
         (2 * thetaSource.mass * (xiSpectralPoint q).im * thetaXiRootEnergy q) := by
   rw [thetaXiBoundaryDirectCayleyPortDefect_eq,
     thetaXiRankTwoBoundaryFlux_eq]
@@ -170,8 +170,8 @@ theorem thetaXiBoundaryDirectCayleyResolvedCoefficient_reflection_weight
     (q : XiZeroCopy) (n : ℕ) :
     ‖thetaXiBoundaryDirectCayleyMultiplier q‖ ^ (4 * n + 2) *
         ‖thetaXiBoundaryDirectCayleyResolvedCoefficient
-          (xiZeroCopyReflectEquiv q) n‖ ^ 2 =
-      ‖thetaXiBoundaryDirectCayleyResolvedCoefficient q n‖ ^ 2 := by
+          (xiZeroCopyReflectEquiv q) n‖ ^ (2 : ℕ) =
+      ‖thetaXiBoundaryDirectCayleyResolvedCoefficient q n‖ ^ (2 : ℕ) := by
   have h := congrArg norm
     (thetaXiBoundaryDirectCayleyResolvedCoefficient_reflect_mul q n)
   simp only [norm_mul, norm_pow] at h

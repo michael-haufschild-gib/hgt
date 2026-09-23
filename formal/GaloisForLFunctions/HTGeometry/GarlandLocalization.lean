@@ -71,20 +71,20 @@ omit [LinearOrder V] [Fintype V] in
 /-- **The pair expansion.**  Summing `(A u + A u')²` over all ordered pairs of distinct elements of
 a finite set splits into the sum of squares and the square of the sum. -/
 theorem sum_pairs_sq (ρ : Finset V) (A : V → ℝ) :
-    ∑ u ∈ ρ, ∑ u' ∈ ρ.erase u, (A u + A u') ^ 2
-      = 2 * ((ρ.card : ℝ) - 2) * (∑ u ∈ ρ, (A u) ^ 2) + 2 * (∑ u ∈ ρ, A u) ^ 2 := by
+    ∑ u ∈ ρ, ∑ u' ∈ ρ.erase u, (A u + A u') ^ (2 : ℕ)
+      = 2 * ((ρ.card : ℝ) - 2) * (∑ u ∈ ρ, (A u) ^ (2 : ℕ)) + 2 * (∑ u ∈ ρ, A u) ^ (2 : ℕ) := by
   classical
   set S : ℝ := ∑ u ∈ ρ, A u with hS
-  set Q : ℝ := ∑ u ∈ ρ, (A u) ^ 2 with hQ
-  have hrow : ∀ u : V, (∑ u' ∈ ρ, (A u + A u') ^ 2)
-      = (ρ.card : ℝ) * (A u) ^ 2 + 2 * A u * S + Q := by
+  set Q : ℝ := ∑ u ∈ ρ, (A u) ^ (2 : ℕ) with hQ
+  have hrow : ∀ u : V, (∑ u' ∈ ρ, (A u + A u') ^ (2 : ℕ))
+      = (ρ.card : ℝ) * (A u) ^ (2 : ℕ) + 2 * A u * S + Q := by
     intro u
     rw [Finset.sum_congr rfl (fun u' (_ : u' ∈ ρ) =>
-      show (A u + A u') ^ 2 = (A u) ^ 2 + 2 * A u * A u' + (A u') ^ 2 from by ring),
+      show (A u + A u') ^ (2 : ℕ) = (A u) ^ (2 : ℕ) + 2 * A u * A u' + (A u') ^ (2 : ℕ) from by ring),
       Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul,
       ← Finset.mul_sum, hS, hQ]
-  have hstep : ∀ u ∈ ρ, (∑ u' ∈ ρ.erase u, (A u + A u') ^ 2)
-      = (ρ.card : ℝ) * (A u) ^ 2 + 2 * A u * S + Q - 4 * (A u) ^ 2 := by
+  have hstep : ∀ u ∈ ρ, (∑ u' ∈ ρ.erase u, (A u + A u') ^ (2 : ℕ))
+      = (ρ.card : ℝ) * (A u) ^ (2 : ℕ) + 2 * A u * S + Q - 4 * (A u) ^ (2 : ℕ) := by
     intro u hu
     rw [Finset.sum_erase_eq_sub hu, hrow u]
     ring
@@ -102,7 +102,7 @@ noncomputable def coTerm (f : Finset V → ℝ) (ρ : Finset V) (w : V) : ℝ :=
 
 omit [Fintype V] in
 theorem coTerm_sq (f : Finset V → ℝ) (ρ : Finset V) (w : V) :
-    (coTerm f ρ w) ^ 2 = (f (ρ.erase w)) ^ 2 := by
+    (coTerm f ρ w) ^ (2 : ℕ) = (f (ρ.erase w)) ^ (2 : ℕ) := by
   rw [coTerm, mul_pow, pow_two, faceSign_mul_self, one_mul]
 
 omit [Fintype V] in
@@ -240,7 +240,7 @@ theorem dirTerm_eq {f : Finset V → ℝ} {σ : Finset V} {v u : V}
     (hv : v ∉ σ) (hu : u ∉ σ) (hvu : v ≠ u) :
     X.dirTerm f σ v u
       = X.m (insert v (insert u σ)) *
-        (coTerm f (insert v (insert u σ)) v + coTerm f (insert v (insert u σ)) u) ^ 2 := by
+        (coTerm f (insert v (insert u σ)) v + coTerm f (insert v (insert u σ)) u) ^ (2 : ℕ) := by
   have hw : (X.linkGraph σ).w v u = X.m (insert v (insert u σ)) := by
     rw [linkGraph_w_eq, if_neg (by tauto)]
   have hpair := coboundary_link_pair (σ := σ) hv hu hvu f
@@ -249,10 +249,10 @@ theorem dirTerm_eq {f : Finset V → ℝ} {σ : Finset V} {v u : V}
         * (linkRestrict f σ v - linkRestrict f σ u) := by
     rw [coTerm, coTerm, erase_insert_insert_left hv hvu, erase_insert_insert_right hu hvu]
     exact hpair
-  have hcsq : (faceSign ℝ (insert v (insert u σ)) u * faceSign ℝ (insert v σ) v) ^ 2 = 1 := by
+  have hcsq : (faceSign ℝ (insert v (insert u σ)) u * faceSign ℝ (insert v σ) v) ^ (2 : ℕ) = 1 := by
     have h1 := faceSign_mul_self (F := ℝ) (insert v (insert u σ)) u
     have h2 := faceSign_mul_self (F := ℝ) (insert v σ) v
-    calc (faceSign ℝ (insert v (insert u σ)) u * faceSign ℝ (insert v σ) v) ^ 2
+    calc (faceSign ℝ (insert v (insert u σ)) u * faceSign ℝ (insert v σ) v) ^ (2 : ℕ)
         = (faceSign ℝ (insert v (insert u σ)) u * faceSign ℝ (insert v (insert u σ)) u)
           * (faceSign ℝ (insert v σ) v * faceSign ℝ (insert v σ) v) := by ring
       _ = 1 := by rw [h1, h2, one_mul]
@@ -289,7 +289,7 @@ theorem sum_two_dirichlet_link (f : Finset V → ℝ) (k : ℕ) :
     ∑ σ ∈ (univ : Finset V).powersetCard k,
         2 * (X.linkGraph σ).dirichlet (linkRestrict f σ) (linkRestrict f σ)
       = ∑ ρ ∈ (univ : Finset V).powersetCard (k + 2),
-          X.m ρ * ∑ u ∈ ρ, ∑ v ∈ ρ.erase u, (coTerm f ρ u + coTerm f ρ v) ^ 2 := by
+          X.m ρ * ∑ u ∈ ρ, ∑ v ∈ ρ.erase u, (coTerm f ρ u + coTerm f ρ v) ^ (2 : ℕ) := by
   classical
   have h1 : ∑ σ ∈ (univ : Finset V).powersetCard k,
       2 * (X.linkGraph σ).dirichlet (linkRestrict f σ) (linkRestrict f σ)
@@ -321,18 +321,18 @@ theorem sum_two_dirichlet_link (f : Finset V → ℝ) (k : ℕ) :
 omit [LinearOrder V] in
 /-- **The total weight of a cochain over the faces two dimensions up.** -/
 theorem sum_m_face_erase {n k : ℕ} (hpure : ∀ s ∈ X.top, s.card = n + 1) (f : Finset V → ℝ) :
-    ∑ ρ ∈ (univ : Finset V).powersetCard (k + 2), X.m ρ * ∑ u ∈ ρ, (f (ρ.erase u)) ^ 2
+    ∑ ρ ∈ (univ : Finset V).powersetCard (k + 2), X.m ρ * ∑ u ∈ ρ, (f (ρ.erase u)) ^ (2 : ℕ)
       = ((n - k : ℕ) : ℝ) * X.cochainNormSq k f := by
   classical
-  have h := sum_powersetCard_insert (V := V) (k + 1) (fun τ u => X.m (insert u τ) * (f τ) ^ 2)
+  have h := sum_powersetCard_insert (V := V) (k + 1) (fun τ u => X.m (insert u τ) * (f τ) ^ (2 : ℕ))
   have hR : ∑ ρ ∈ (univ : Finset V).powersetCard (k + 2),
-        ∑ u ∈ ρ, X.m (insert u (ρ.erase u)) * (f (ρ.erase u)) ^ 2
-      = ∑ ρ ∈ (univ : Finset V).powersetCard (k + 2), X.m ρ * ∑ u ∈ ρ, (f (ρ.erase u)) ^ 2 := by
+        ∑ u ∈ ρ, X.m (insert u (ρ.erase u)) * (f (ρ.erase u)) ^ (2 : ℕ)
+      = ∑ ρ ∈ (univ : Finset V).powersetCard (k + 2), X.m ρ * ∑ u ∈ ρ, (f (ρ.erase u)) ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun ρ _ => ?_
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun u hu => by rw [Finset.insert_erase hu]
   have hL : ∑ τ ∈ (univ : Finset V).powersetCard (k + 1),
-        ∑ u ∈ univ \ τ, X.m (insert u τ) * (f τ) ^ 2
+        ∑ u ∈ univ \ τ, X.m (insert u τ) * (f τ) ^ (2 : ℕ)
       = ((n - k : ℕ) : ℝ) * X.cochainNormSq k f := by
     rw [cochainNormSq, Finset.mul_sum]
     refine Finset.sum_congr rfl fun τ hτ => ?_
@@ -358,8 +358,8 @@ theorem sum_link_dirichlet {n k : ℕ} (hpure : ∀ s ∈ X.top, s.card = n + 1)
         (X.linkGraph σ).dirichlet (linkRestrict f σ) (linkRestrict f σ) :=
     (Finset.mul_sum _ _ _).symm
   have hinner : ∀ ρ ∈ (univ : Finset V).powersetCard (k + 2),
-      X.m ρ * ∑ u ∈ ρ, ∑ v ∈ ρ.erase u, (coTerm f ρ u + coTerm f ρ v) ^ 2
-        = 2 * (k : ℝ) * (X.m ρ * ∑ u ∈ ρ, (f (ρ.erase u)) ^ 2)
+      X.m ρ * ∑ u ∈ ρ, ∑ v ∈ ρ.erase u, (coTerm f ρ u + coTerm f ρ v) ^ (2 : ℕ)
+        = 2 * (k : ℝ) * (X.m ρ * ∑ u ∈ ρ, (f (ρ.erase u)) ^ (2 : ℕ))
           + 2 * (X.m ρ * (simplicialCoboundary ℝ f ρ * simplicialCoboundary ℝ f ρ)) := by
     intro ρ hρ
     rw [Finset.mem_powersetCard] at hρ

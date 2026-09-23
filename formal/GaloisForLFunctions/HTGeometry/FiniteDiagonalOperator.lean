@@ -43,7 +43,7 @@ omit [DecidableEq ι] in
 
 omit [DecidableEq ι] in
 theorem norm_sq_diagOp (g : ι → ℂ) (x : EuclideanSpace ℂ ι) :
-    ‖euclideanDiagOp g x‖ ^ 2 = ∑ i : ι, (‖g i‖ * ‖x i‖) ^ 2 := by
+    ‖euclideanDiagOp g x‖ ^ (2 : ℕ) = ∑ i : ι, (‖g i‖ * ‖x i‖) ^ (2 : ℕ) := by
   rw [PiLp.norm_sq_eq_of_L2]
   exact Finset.sum_congr rfl fun i _ => by rw [diagOp_apply, norm_mul]
 
@@ -99,15 +99,15 @@ theorem diagMin_nonneg (g : ι → ℂ) : 0 ≤ diagMin g := by
 omit [DecidableEq ι] in
 theorem diagMin_mul_norm_le (g : ι → ℂ) (x : EuclideanSpace ℂ ι) :
     diagMin g * ‖x‖ ≤ ‖euclideanDiagOp g x‖ := by
-  have hsq : (diagMin g * ‖x‖) ^ 2 ≤ ‖euclideanDiagOp g x‖ ^ 2 := by
+  have hsq : (diagMin g * ‖x‖) ^ (2 : ℕ) ≤ ‖euclideanDiagOp g x‖ ^ (2 : ℕ) := by
     rw [norm_sq_diagOp, mul_pow, PiLp.norm_sq_eq_of_L2, Finset.mul_sum]
     refine Finset.sum_le_sum fun i _ => ?_
     have hle : diagMin g ≤ ‖g i‖ := diagMin_le g i
     have h1 : (0 : ℝ) ≤ diagMin g := diagMin_nonneg g
-    have hsq : diagMin g ^ 2 ≤ ‖g i‖ ^ 2 := by nlinarith
-    calc diagMin g ^ 2 * ‖x i‖ ^ 2 ≤ ‖g i‖ ^ 2 * ‖x i‖ ^ 2 :=
+    have hsq : diagMin g ^ (2 : ℕ) ≤ ‖g i‖ ^ (2 : ℕ) := by nlinarith
+    calc diagMin g ^ (2 : ℕ) * ‖x i‖ ^ (2 : ℕ) ≤ ‖g i‖ ^ (2 : ℕ) * ‖x i‖ ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
-      _ = (‖g i‖ * ‖x i‖) ^ 2 := by ring
+      _ = (‖g i‖ * ‖x i‖) ^ (2 : ℕ) := by ring
   have h1 : (0 : ℝ) ≤ diagMin g * ‖x‖ := mul_nonneg (diagMin_nonneg g) (norm_nonneg _)
   nlinarith [norm_nonneg (euclideanDiagOp g x)]
 
@@ -117,13 +117,13 @@ theorem norm_diagOp_le (g : ι → ℂ) (x : EuclideanSpace ℂ ι) :
   have hmaxnn : (0 : ℝ) ≤ diagMax g := by
     obtain ⟨i, hi⟩ := exists_diagMax_eq g
     rw [hi]; exact norm_nonneg _
-  have hsq : ‖euclideanDiagOp g x‖ ^ 2 ≤ (diagMax g * ‖x‖) ^ 2 := by
+  have hsq : ‖euclideanDiagOp g x‖ ^ (2 : ℕ) ≤ (diagMax g * ‖x‖) ^ (2 : ℕ) := by
     rw [norm_sq_diagOp, mul_pow, PiLp.norm_sq_eq_of_L2, Finset.mul_sum]
     refine Finset.sum_le_sum fun i _ => ?_
     have hle : ‖g i‖ ≤ diagMax g := le_diagMax g i
-    have hsq : ‖g i‖ ^ 2 ≤ diagMax g ^ 2 := by nlinarith [norm_nonneg (g i)]
-    calc (‖g i‖ * ‖x i‖) ^ 2 = ‖g i‖ ^ 2 * ‖x i‖ ^ 2 := by ring
-      _ ≤ diagMax g ^ 2 * ‖x i‖ ^ 2 := mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
+    have hsq : ‖g i‖ ^ (2 : ℕ) ≤ diagMax g ^ (2 : ℕ) := by nlinarith [norm_nonneg (g i)]
+    calc (‖g i‖ * ‖x i‖) ^ (2 : ℕ) = ‖g i‖ ^ (2 : ℕ) * ‖x i‖ ^ (2 : ℕ) := by ring
+      _ ≤ diagMax g ^ (2 : ℕ) * ‖x i‖ ^ (2 : ℕ) := mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
   have h1 : (0 : ℝ) ≤ diagMax g * ‖x‖ := mul_nonneg hmaxnn (norm_nonneg _)
   nlinarith [norm_nonneg (euclideanDiagOp g x)]
 
@@ -153,7 +153,7 @@ omit [DecidableEq ι] [Nonempty ι] in
 /-- The normal operator of a finite diagonal multiplier. -/
 theorem inner_normalDiagOp_self (g : ι → ℂ) (x : EuclideanSpace ℂ ι) :
     RCLike.re (⟪(ContinuousLinearMap.adjoint (euclideanDiagOp g)) (euclideanDiagOp g x), x⟫_ℂ)
-      = ∑ i : ι, (‖g i‖ * ‖x i‖) ^ 2 := by
+      = ∑ i : ι, (‖g i‖ * ‖x i‖) ^ (2 : ℕ) := by
   rw [ContinuousLinearMap.adjoint_inner_left (euclideanDiagOp g) x (euclideanDiagOp g x), inner_self_eq_norm_sq,
     norm_sq_diagOp]
 
@@ -161,7 +161,7 @@ omit [Nonempty ι] in
 /-- The normal operator is diagonalized by the coordinate vectors, with eigenvalue `‖g i‖²`. -/
 theorem normalDiagOp_single (g : ι → ℂ) (i : ι) (c : ℂ) :
     (ContinuousLinearMap.adjoint (euclideanDiagOp g)) (euclideanDiagOp g (EuclideanSpace.single i c))
-      = ((‖g i‖ ^ 2 : ℝ) : ℂ) • EuclideanSpace.single i c := by
+      = ((‖g i‖ ^ (2 : ℕ) : ℝ) : ℂ) • EuclideanSpace.single i c := by
   have hadj : ContinuousLinearMap.adjoint (euclideanDiagOp g) = euclideanDiagOp (fun i => (starRingEnd ℂ) (g i)) := by
     symm
     rw [ContinuousLinearMap.eq_adjoint_iff]
@@ -171,7 +171,7 @@ theorem normalDiagOp_single (g : ι → ℂ) (i : ι) (c : ℂ) :
     simp only [diagOp_apply, RCLike.inner_apply, map_mul, Complex.conj_conj]
     ring
   rw [hadj, diagOp_single, diagOp_single]
-  have hconj : (starRingEnd ℂ) (g i) * g i = ((‖g i‖ ^ 2 : ℝ) : ℂ) := by
+  have hconj : (starRingEnd ℂ) (g i) * g i = ((‖g i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [RCLike.conj_mul]
     norm_cast
   ext j
@@ -179,15 +179,15 @@ theorem normalDiagOp_single (g : ι → ℂ) (i : ι) (c : ℂ) :
   · subst hj
     have hlhs : (EuclideanSpace.single j ((starRingEnd ℂ) (g j) * (g j * c))
         : EuclideanSpace ℂ ι) j = (starRingEnd ℂ) (g j) * (g j * c) := by simp
-    have hrhs : (((‖g j‖ ^ 2 : ℝ) : ℂ) • (EuclideanSpace.single j c : EuclideanSpace ℂ ι)) j
-        = ((‖g j‖ ^ 2 : ℝ) : ℂ) * c := by simp
+    have hrhs : (((‖g j‖ ^ (2 : ℕ) : ℝ) : ℂ) • (EuclideanSpace.single j c : EuclideanSpace ℂ ι)) j
+        = ((‖g j‖ ^ (2 : ℕ) : ℝ) : ℂ) * c := by simp
     rw [hlhs, hrhs, ← mul_assoc, hconj]
   · simp [hj]
 
 omit [DecidableEq ι] in
 /-- The least eigenvalue of the normal operator is the square of the least singular value. -/
 theorem inner_normalDiagOp_self_ge (g : ι → ℂ) (x : EuclideanSpace ℂ ι) (hx : ‖x‖ = 1) :
-    diagMin g ^ 2 ≤ RCLike.re (⟪(ContinuousLinearMap.adjoint (euclideanDiagOp g)) (euclideanDiagOp g x), x⟫_ℂ) := by
+    diagMin g ^ (2 : ℕ) ≤ RCLike.re (⟪(ContinuousLinearMap.adjoint (euclideanDiagOp g)) (euclideanDiagOp g x), x⟫_ℂ) := by
   rw [ContinuousLinearMap.adjoint_inner_left (euclideanDiagOp g) x (euclideanDiagOp g x), inner_self_eq_norm_sq]
   have hle := diagMin_mul_norm_le g x
   rw [hx, mul_one] at hle

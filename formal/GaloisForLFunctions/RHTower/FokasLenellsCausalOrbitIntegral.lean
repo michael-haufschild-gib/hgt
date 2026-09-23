@@ -18,7 +18,7 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalOrbitIntegralInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
 
 private theorem continuous_clipped_orbit (u : hardyL2ᗮ) :
     Continuous (fun s : ℝ => causalLowerCauchyEvolution s.toNNReal u) :=

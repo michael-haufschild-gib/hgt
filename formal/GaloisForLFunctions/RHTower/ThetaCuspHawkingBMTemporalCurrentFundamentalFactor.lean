@@ -14,7 +14,7 @@ set_option autoImplicit false
 def physicalTemporalFundamentalAmplitude (q : XiZeroCopy) (branch side : Bool) (a : ℂ)
     (zang : D4BMHorizon.Point) : ℂ :=
   modeAngularSquare (physicalModeAngularJet q zang) *
-    (-2 * physicalFundamentalFrequency q side * (physicalAngularParameter q ^ 2 - 1 / 4 - 2)) *
+    (-2 * physicalFundamentalFrequency q side * (physicalAngularParameter q ^ (2 : ℕ) - 1 / 4 - 2)) *
     physicalSelfSourceCoefficient q *
     fundamentalSourceMoment (physicalFundamentalFrequency q side) (physicalRate q branch) a *
     clearedOnset (physicalRate q branch) (physicalFundamentalFrequency q side)
@@ -60,7 +60,7 @@ theorem clearedDensityProfile_fundamental_jet_coefficients (q : XiZeroCopy) (bra
     (a : ℂ) (zang : D4BMHorizon.Point) (c₀ c₁ : ℂ) {b C : ℝ} (hb : 0 < b) (hbh : b ≤ 1/2)
     (hj : ∀ z ∈ Ioc (0:ℝ) b,
       ‖clearedDensityProfile q branch a zang (physicalFundamentalFrequency q side) z - c₀ -
-        c₁ * z‖ ≤ C * z ^ 2) :
+        c₁ * z‖ ≤ C * z ^ (2 : ℕ)) :
     c₀ = physicalTemporalFundamentalAmplitude q branch side a zang * (1/2) ∧
     c₁ = physicalTemporalFundamentalAmplitude q branch side a zang *
       (horizonGaussFirstCoefficient (physicalFundamentalFrequency q side) (physicalRadialFrequency q)
@@ -73,7 +73,7 @@ theorem clearedDensityProfile_fundamental_jet_coefficients (q : XiZeroCopy) (bra
     (physicalFundamentalFrequency_strip q side).1
   have hjet (z : ℝ) (hz : z ∈ Ioc (0:ℝ) b) :
       ‖clearedDensityProfile q branch a zang (physicalFundamentalFrequency q side) z - K*(1/2) -
-        (K*L)*(z:ℂ)‖ ≤ (‖K‖*D)*z^2 := by
+        (K*L)*(z:ℂ)‖ ≤ (‖K‖*D)*z^(2 : ℕ) := by
     rw [clearedDensityProfile_fundamental_factor q branch side a zang
       ⟨hz.1, by linarith [hz.2]⟩]
     calc
@@ -83,7 +83,7 @@ theorem clearedDensityProfile_fundamental_jet_coefficients (q : XiZeroCopy) (bra
           congr 1
           dsimp only [K]
           ring
-      _ ≤ ‖K‖ * (D*z^2) := mul_le_mul_of_nonneg_left
+      _ ≤ ‖K‖ * (D*z^(2 : ℕ)) := mul_le_mul_of_nonneg_left
         ((hN _ (mem_ball_self hR)).2 z ⟨hz.1.le, hz.2.trans hbh⟩) (norm_nonneg K)
       _ = _ := by ring
   have hcoeff := eq_zero_of_norm_add_mul_le_mul_sq (α := c₀-K*(1/2)) (β := c₁-K*L)
@@ -97,7 +97,7 @@ theorem clearedDensityProfile_fundamental_jet_coefficients (q : XiZeroCopy) (bra
             K*(1/2) - (K*L)*(z:ℂ)‖ +
           ‖clearedDensityProfile q branch a zang (physicalFundamentalFrequency q side) z -
             c₀ - c₁*(z:ℂ)‖ := norm_sub_le _ _
-        _ ≤ (‖K‖*D)*z^2 + C*z^2 := add_le_add (hjet z hz) (hj z hz)
+        _ ≤ (‖K‖*D)*z^(2 : ℕ) + C*z^(2 : ℕ) := add_le_add (hjet z hz) (hj z hz)
         _ = _ := by ring)
   exact ⟨sub_eq_zero.mp hcoeff.1, sub_eq_zero.mp hcoeff.2⟩
 
@@ -107,7 +107,7 @@ theorem clearedDensityProfile_fundamental_finitePart (q : XiZeroCopy) (branch si
     (hj : ∀ z ∈ Ioc (0:ℝ) b,
       ‖clearedDensityProfile q branch a zang (physicalFundamentalFrequency q side) z -
         c₀ (physicalFundamentalFrequency q side) -
-        c₁ (physicalFundamentalFrequency q side) * z‖ ≤ C * z ^ 2) :
+        c₁ (physicalFundamentalFrequency q side) * z‖ ≤ C * z ^ (2 : ℕ)) :
     QuadraticEndpointMellin.finitePart (clearedDensityProfile q branch a zang) c₀ c₁ b
       (physicalFundamentalFrequency q side) =
       physicalTemporalFundamentalAmplitude q branch side a zang *

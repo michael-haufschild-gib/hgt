@@ -28,13 +28,13 @@ section Series
 
 /-- Substituting the square of the shell variable for the inner variable. -/
 def shellEval (x : ℝ) : Polynomial (Polynomial ℂ) →+* Polynomial ℂ :=
-  Polynomial.mapRingHom (Polynomial.evalRingHom (((x : ℝ) : ℂ) ^ 2))
+  Polynomial.mapRingHom (Polynomial.evalRingHom (((x : ℝ) : ℂ) ^ (2 : ℕ)))
 
 theorem shellEval_apply (x : ℝ) (F : Polynomial (Polynomial ℂ)) :
-    shellEval x F = F.map (Polynomial.evalRingHom (((x : ℝ) : ℂ) ^ 2)) := rfl
+    shellEval x F = F.map (Polynomial.evalRingHom (((x : ℝ) : ℂ) ^ (2 : ℕ))) := rfl
 
 theorem coeff_shellEval (x : ℝ) (F : Polynomial (Polynomial ℂ)) (j : ℕ) :
-    (shellEval x F).coeff j = (F.coeff j).eval (((x : ℝ) : ℂ) ^ 2) := by
+    (shellEval x F).coeff j = (F.coeff j).eval (((x : ℝ) : ℂ) ^ (2 : ℕ)) := by
   rw [shellEval_apply, Polynomial.coeff_map]
   rfl
 

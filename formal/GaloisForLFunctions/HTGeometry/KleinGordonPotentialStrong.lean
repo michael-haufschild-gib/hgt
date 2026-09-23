@@ -99,7 +99,7 @@ theorem abs_deriv_kgStrongEnergy_le
     exact mul_le_mul hinv hWb (norm_nonneg _) (norm_nonneg _)
   refine hstep.trans ?_
   have hsq : 2 * (‖kgFreqInvOp (E := E) (v t)‖ * ‖u t‖)
-      ≤ ‖kgFreqInvOp (E := E) (v t)‖ ^ 2 + ‖u t‖ ^ 2 := by
+      ≤ ‖kgFreqInvOp (E := E) (v t)‖ ^ (2 : ℕ) + ‖u t‖ ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (‖kgFreqInvOp (E := E) (v t)‖ - ‖u t‖)]
   rw [kgStrongEnergy]
   nlinarith [hsq, norm_nonneg (kgFreqInvOp (E := E) (v t)), norm_nonneg (u t)]
@@ -164,8 +164,8 @@ theorem eq_zero_of_solvesKGSource
     intro u' v' a' h' hz s hs
     have hle := kgStrongEnergy_le_exp hb0 hW h' hs
     rw [hz, zero_mul] at hle
-    have h1 : (0 : ℝ) ≤ ‖kgFreqInvOp (E := E) (v' s)‖ ^ 2 := sq_nonneg _
-    have h2 : ‖u' s‖ ^ 2 ≤ 0 := by
+    have h1 : (0 : ℝ) ≤ ‖kgFreqInvOp (E := E) (v' s)‖ ^ (2 : ℕ) := sq_nonneg _
+    have h2 : ‖u' s‖ ^ (2 : ℕ) ≤ 0 := by
       rw [kgStrongEnergy] at hle
       linarith
     have h3 : ‖u' s‖ = 0 := by

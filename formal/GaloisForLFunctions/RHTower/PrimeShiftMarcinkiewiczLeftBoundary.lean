@@ -19,9 +19,9 @@ open Finset Filter Topology
 /-- On prime coordinates, the absolute normalized shift is the real prime
 power with exponent `1 / 2 - Re z`. -/
 theorem primeLogMass_absField_primeShiftCharacter_eq_rpow (z : ℂ) (X : ℕ) :
-    primeLogMass (absField (primeShiftCharacter z)) X =
-      primeLogMass (fun n => (n : ℝ) ^ ((1 : ℝ) / 2 - z.re)) X := by
-  unfold primeLogMass
+    primeLogMass_weightedEulerCoefficientSpaces (absField (primeShiftCharacter z)) X =
+      primeLogMass_weightedEulerCoefficientSpaces (fun n => (n : ℝ) ^ ((1 : ℝ) / 2 - z.re)) X := by
+  unfold primeLogMass_weightedEulerCoefficientSpaces
   refine Finset.sum_congr rfl fun n hn => ?_
   rw [Finset.mem_filter] at hn
   have hnorm : absField (primeShiftCharacter z) n =

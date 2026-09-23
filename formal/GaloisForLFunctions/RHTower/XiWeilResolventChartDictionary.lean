@@ -37,7 +37,7 @@ resolvent coordinate at the squared shift. -/
 theorem xiWeilCauchyTest_pair_term_eq_resolventPoint (t : ℝ) (q : XiZeroCopy) :
     xiWeilCauchyTest (-(t : ℂ) * Complex.I) (xiSpectralPoint q) *
       xiWeilSharp (xiWeilCauchyTest (-(t : ℂ) * Complex.I)) (xiSpectralPoint q) =
-    xiResolventPoint (t ^ 2) q := by
+    xiResolventPoint (t ^ (2 : ℕ)) q := by
   rw [xiWeilSharp_cauchy]
   have hconj : (starRingEnd ℂ) (-(t : ℂ) * Complex.I) = (t : ℂ) * Complex.I := by
     rw [map_mul, map_neg, Complex.conj_ofReal, Complex.conj_I]
@@ -45,14 +45,14 @@ theorem xiWeilCauchyTest_pair_term_eq_resolventPoint (t : ℝ) (q : XiZeroCopy) 
   rw [hconj, xiWeilCauchyTest, xiWeilCauchyTest, xiResolventPoint, ← mul_inv]
   congr 1
   push_cast
-  linear_combination (-(t : ℂ) ^ 2) * Complex.I_sq
+  linear_combination (-(t : ℂ) ^ (2 : ℕ)) * Complex.I_sq
 
 /-- **The diagonal dictionary**: the Weil diagonal of the imaginary-parameter Cauchy test is
 the zeroth resolvent moment at the squared shift. -/
 theorem xiWeilPolarization_cauchyTest_eq_resolventMoment (t : ℝ) :
     xiWeilPolarization (xiWeilCauchyTest (-(t : ℂ) * Complex.I))
         (xiWeilCauchyTest (-(t : ℂ) * Complex.I)) =
-      xiResolventMoment 0 (t ^ 2) := by
+      xiResolventMoment 0 (t ^ (2 : ℕ)) := by
   rw [xiWeilPolarization, xiResolventMoment]
   exact tsum_congr fun q => by
     rw [pow_one, xiWeilCauchyTest_pair_term_eq_resolventPoint]
@@ -71,22 +71,22 @@ theorem xiWeilPolarization_cauchyTest_re_pos (t : ℝ) :
     0 < (xiWeilPolarization (xiWeilCauchyTest (-(t : ℂ) * Complex.I))
         (xiWeilCauchyTest (-(t : ℂ) * Complex.I))).re := by
   rw [xiWeilPolarization_cauchyTest_eq_resolventMoment, xiResolventMoment]
-  have hX : (0 : ℝ) ≤ t ^ 2 := sq_nonneg t
-  have hsum : Summable (fun q : XiZeroCopy => xiResolventPoint (t ^ 2) q ^ (0 + 1)) := by
+  have hX : (0 : ℝ) ≤ t ^ (2 : ℕ) := sq_nonneg t
+  have hsum : Summable (fun q : XiZeroCopy => xiResolventPoint (t ^ (2 : ℕ)) q ^ (0 + 1)) := by
     refine (summable_xiResolventPoint hX).congr fun q => ?_
     rw [pow_one]
   rw [Complex.re_tsum hsum]
-  have hre : ∀ q : XiZeroCopy, 0 < (xiResolventPoint (t ^ 2) q ^ (0 + 1)).re := by
+  have hre : ∀ q : XiZeroCopy, 0 < (xiResolventPoint (t ^ (2 : ℕ)) q ^ (0 + 1)).re := by
     intro q
     rw [pow_one]
     exact xiResolventPoint_re_pos hX q
   have hsumre : Summable (fun q : XiZeroCopy =>
-      (xiResolventPoint (t ^ 2) q ^ (0 + 1)).re) := by
+      (xiResolventPoint (t ^ (2 : ℕ)) q ^ (0 + 1)).re) := by
     simpa only [Function.comp_apply] using!
       hsum.map Complex.reCLM Complex.reCLM.continuous
   obtain ⟨q₀⟩ := nonempty_xiZeroCopy
-  calc (0 : ℝ) < (xiResolventPoint (t ^ 2) q₀ ^ (0 + 1)).re := hre q₀
-    _ ≤ ∑' q : XiZeroCopy, (xiResolventPoint (t ^ 2) q ^ (0 + 1)).re :=
+  calc (0 : ℝ) < (xiResolventPoint (t ^ (2 : ℕ)) q₀ ^ (0 + 1)).re := hre q₀
+    _ ≤ ∑' q : XiZeroCopy, (xiResolventPoint (t ^ (2 : ℕ)) q ^ (0 + 1)).re :=
         hsumre.le_tsum q₀ fun q _ => (hre q).le
 
 /-- The Weil diagonal of the imaginary-parameter Cauchy test is the Euler-ray response of the

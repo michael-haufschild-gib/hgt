@@ -58,7 +58,7 @@ curvature is `u·(log Φ)'(u) + u²·(log Φ)''(u)` at `u = exp L`. -/
 theorem hasDerivAt_logTiltSlope
     (hq : ∀ u : ℝ, 0 < u → HasDerivAt p (q u) u) (n : ℕ) (L : ℝ) :
     HasDerivAt (logTiltSlope p n)
-      (Real.exp L * p (Real.exp L) + (Real.exp L) ^ 2 * q (Real.exp L)) L := by
+      (Real.exp L * p (Real.exp L) + (Real.exp L) ^ (2 : ℕ) * q (Real.exp L)) L := by
   have hexp : HasDerivAt Real.exp (Real.exp L) L := Real.hasDerivAt_exp L
   have hpc : HasDerivAt (fun L => p (Real.exp L)) (q (Real.exp L) * Real.exp L) L :=
     (hq _ (Real.exp_pos L)).comp L hexp
@@ -77,10 +77,10 @@ every tilt `u^{2n}Φ(u) du` has nonpositive second derivative — and the bound 
 because the tilt is linear in `L`. -/
 theorem logTilt_curvature_nonpos
     (hpneg : ∀ u : ℝ, 0 < u → p u ≤ 0) (hqneg : ∀ u : ℝ, 0 < u → q u ≤ 0) (L : ℝ) :
-    Real.exp L * p (Real.exp L) + (Real.exp L) ^ 2 * q (Real.exp L) ≤ 0 := by
+    Real.exp L * p (Real.exp L) + (Real.exp L) ^ (2 : ℕ) * q (Real.exp L) ≤ 0 := by
   have hu : (0 : ℝ) < Real.exp L := Real.exp_pos L
   have h1 : Real.exp L * p (Real.exp L) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hu.le (hpneg _ hu)
-  have h2 : (Real.exp L) ^ 2 * q (Real.exp L) ≤ 0 :=
+  have h2 : (Real.exp L) ^ (2 : ℕ) * q (Real.exp L) ≤ 0 :=
     mul_nonpos_of_nonneg_of_nonpos (by positivity) (hqneg _ hu)
   linarith
 
@@ -89,8 +89,8 @@ are nonnegative under the hypotheses, and they are the two independent sources o
 monotonicity of the kernel and its log-concavity. -/
 theorem logTilt_curvature_eq
     (hpneg : ∀ u : ℝ, 0 < u → p u ≤ 0) (hqneg : ∀ u : ℝ, 0 < u → q u ≤ 0) (L : ℝ) :
-    -(Real.exp L * p (Real.exp L) + (Real.exp L) ^ 2 * q (Real.exp L))
-      = Real.exp L * |p (Real.exp L)| + (Real.exp L) ^ 2 * |q (Real.exp L)| := by
+    -(Real.exp L * p (Real.exp L) + (Real.exp L) ^ (2 : ℕ) * q (Real.exp L))
+      = Real.exp L * |p (Real.exp L)| + (Real.exp L) ^ (2 : ℕ) * |q (Real.exp L)| := by
   have hu : (0 : ℝ) < Real.exp L := Real.exp_pos L
   rw [abs_of_nonpos (hpneg _ hu), abs_of_nonpos (hqneg _ hu)]
   ring
@@ -101,16 +101,16 @@ both is needed. -/
 theorem logTilt_curvature_neg
     (hpneg : ∀ u : ℝ, 0 < u → p u ≤ 0) (hqneg : ∀ u : ℝ, 0 < u → q u ≤ 0) (L : ℝ)
     (hstrict : p (Real.exp L) < 0 ∨ q (Real.exp L) < 0) :
-    Real.exp L * p (Real.exp L) + (Real.exp L) ^ 2 * q (Real.exp L) < 0 := by
+    Real.exp L * p (Real.exp L) + (Real.exp L) ^ (2 : ℕ) * q (Real.exp L) < 0 := by
   have hu : (0 : ℝ) < Real.exp L := Real.exp_pos L
-  have hu2 : (0 : ℝ) < (Real.exp L) ^ 2 := by positivity
+  have hu2 : (0 : ℝ) < (Real.exp L) ^ (2 : ℕ) := by positivity
   rcases hstrict with h | h
   · have h1 : Real.exp L * p (Real.exp L) < 0 := mul_neg_of_pos_of_neg hu h
-    have h2 : (Real.exp L) ^ 2 * q (Real.exp L) ≤ 0 :=
+    have h2 : (Real.exp L) ^ (2 : ℕ) * q (Real.exp L) ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos hu2.le (hqneg _ hu)
     linarith
   · have h1 : Real.exp L * p (Real.exp L) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hu.le (hpneg _ hu)
-    have h2 : (Real.exp L) ^ 2 * q (Real.exp L) < 0 := mul_neg_of_pos_of_neg hu2 h
+    have h2 : (Real.exp L) ^ (2 : ℕ) * q (Real.exp L) < 0 := mul_neg_of_pos_of_neg hu2 h
     linarith
 
 end LogTilt

@@ -23,13 +23,13 @@ infidelity equal to invariant observed mass times hidden-clock QFI.  The observa
 self-adjoint or nonzero. -/
 theorem finiteInvolutiveClock_homogeneousFidelityDeficit_eq_invariantWeight_mul_erasedQFI
     (U X : E →L[ℂ] E) (hadjoint_mul : U.adjoint * U = 1)
-    (hsq : U ^ 2 = 1)
+    (hsq : U ^ (2 : ℕ) = 1)
     {ψ : E} (hψnorm : ‖ψ‖ = 1) (hψ : U ψ = ψ) :
-    ‖X ψ‖ ^ 4 - ‖inner ℂ (X ψ) (U (X ψ))‖ ^ 2 =
-      ‖finiteCyclicGaugeAverage U 2 (X ψ)‖ ^ 2 *
-        pureStateQuantumFisherValue (‖ψ‖ ^ 2)
+    ‖X ψ‖ ^ (4 : ℕ) - ‖inner ℂ (X ψ) (U (X ψ))‖ ^ (2 : ℕ) =
+      ‖finiteCyclicGaugeAverage U 2 (X ψ)‖ ^ (2 : ℕ) *
+        pureStateQuantumFisherValue (‖ψ‖ ^ (2 : ℕ))
           (‖inner ℂ ψ ((1 - finiteCyclicGaugeAverage U 2) (X ψ))‖)
-          (‖(1 - finiteCyclicGaugeAverage U 2) (X ψ)‖ ^ 2) := by
+          (‖(1 - finiteCyclicGaugeAverage U 2) (X ψ)‖ ^ (2 : ℕ)) := by
   have hcomm :
       ((X * U - U * X) : E →L[ℂ] E) ψ =
         (2 : ℂ) • ((1 - finiteCyclicGaugeAverage U 2) (X ψ)) := by

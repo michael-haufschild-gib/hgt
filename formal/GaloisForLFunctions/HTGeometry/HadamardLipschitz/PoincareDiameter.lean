@@ -40,11 +40,11 @@ diameter. -/
 theorem artanh_sub {a b : ℝ} (ha1 : -1 < a) (ha2 : a < 1) (hb1 : -1 < b) (hb2 : b < 1) :
     artanh a - artanh b = artanh ((a - b) / (1 - a * b)) := by
   have hab : 0 < 1 - a * b := by nlinarith
-  have ha' : (0:ℝ) < 1 - a ^ 2 := by nlinarith
-  have hb' : (0:ℝ) < 1 - b ^ 2 := by nlinarith
-  have hpos : 0 < (1 - a ^ 2) * (1 - b ^ 2) := mul_pos ha' hb'
+  have ha' : (0:ℝ) < 1 - a ^ (2 : ℕ) := by nlinarith
+  have hb' : (0:ℝ) < 1 - b ^ (2 : ℕ) := by nlinarith
+  have hpos : 0 < (1 - a ^ (2 : ℕ)) * (1 - b ^ (2 : ℕ)) := mul_pos ha' hb'
   have habs : |a - b| < 1 - a * b := by
-    have hsq : (a - b) ^ 2 < (1 - a * b) ^ 2 := by nlinarith
+    have hsq : (a - b) ^ (2 : ℕ) < (1 - a * b) ^ (2 : ℕ) := by nlinarith
     nlinarith [abs_nonneg (a - b), sq_abs (a - b)]
   obtain ⟨hlo, hhi⟩ := abs_lt.mp habs
   have ht1 : -1 < (a - b) / (1 - a * b) := by
@@ -77,15 +77,15 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 `-2 artanh ρ`. -/
 theorem poincareBusemann_diameter (P : E) (hP : ‖P‖ = 1) {ρ : ℝ} (h1 : -1 < ρ) (h2 : ρ < 1) :
     poincareBusemann P (ρ • P) = -2 * artanh ρ := by
-  have hnum : ‖P - ρ • P‖ ^ 2 = (1 - ρ) ^ 2 := by
+  have hnum : ‖P - ρ • P‖ ^ (2 : ℕ) = (1 - ρ) ^ (2 : ℕ) := by
     rw [show P - ρ • P = (1 - ρ) • P by module, norm_smul, Real.norm_eq_abs, hP, mul_one, sq_abs]
-  have hden : ‖ρ • P‖ ^ 2 = ρ ^ 2 := by
+  have hden : ‖ρ • P‖ ^ (2 : ℕ) = ρ ^ (2 : ℕ) := by
     rw [norm_smul, Real.norm_eq_abs, hP, mul_one, sq_abs]
   rw [poincareBusemann, hnum, hden]
-  have hq : (1 - ρ) ^ 2 / (1 - ρ ^ 2) = (1 - ρ) / (1 + ρ) := by
+  have hq : (1 - ρ) ^ (2 : ℕ) / (1 - ρ ^ (2 : ℕ)) = (1 - ρ) / (1 + ρ) := by
     have h3 : 1 + ρ ≠ 0 := by linarith
     have h4 : 1 - ρ ≠ 0 := by linarith
-    have h5 : 1 - ρ ^ 2 ≠ 0 := by nlinarith
+    have h5 : 1 - ρ ^ (2 : ℕ) ≠ 0 := by nlinarith
     field_simp
     ring
   rw [hq, Real.log_div (by linarith) (by linarith), artanh_eq_log_sub h1 h2]

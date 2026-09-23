@@ -35,7 +35,7 @@ theorem skEuler_cell (A B : k) :
 
 theorem skEuler_cell_two (A B : k) :
     skEuler A B (skEuler A B skCell) =
-      (C A + C B) ^ 2 * skCell +
+      (C A + C B) ^ (2 : ℕ) * skCell +
         C A * (C A + 2 * C B) * (skY - 1) +
         C B * (2 * C A + C B) * (skX - 1) + 2 * C A * C B := by
   rw [skEuler_cell]
@@ -64,16 +64,16 @@ theorem skJetIdeal_eq_top (A B : k) (hA : A ≠ 0) (hB : B ≠ 0)
     rw [map_add]
     dsimp [U, V]
     ring
-  have hBU2 : C B * U ^ 2 ∈ I := by
+  have hBU2 : C B * U ^ (2 : ℕ) ∈ I := by
     have hm := I.sub_mem (I.mul_mem_left U hg) (I.mul_mem_left (C A) hc)
     rw [hg_eq] at hm
-    have heq : U * (C A * V + C B * U) - C A * skCell = C B * U ^ 2 := by
+    have heq : U * (C A * V + C B * U) - C A * skCell = C B * U ^ (2 : ℕ) := by
       simp [U, V, skCell]
       ring
     rw [heq] at hm
     exact hm
   let h : SKPoly k :=
-    skEuler A B (skEuler A B skCell) - (C A + C B) ^ 2 * skCell -
+    skEuler A B (skEuler A B skCell) - (C A + C B) ^ (2 : ℕ) * skCell -
       (C A + 2 * C B) * (skEuler A B skCell - (C A + C B) * skCell)
   have hh : h ∈ I := by
     exact I.sub_mem (I.sub_mem hd2c (I.mul_mem_left _ hc)) (I.mul_mem_left _ hg)
@@ -84,23 +84,23 @@ theorem skJetIdeal_eq_top (A B : k) (hA : A ≠ 0) (hB : B ≠ 0)
     simp [U, V, skCell]
     ring
   let h' : SKPoly k := 2 * C A * C B - C B * (C A - C B) * U
-  have hconst : C ((2 * A * B) ^ 2) ∈ I := by
+  have hconst : C ((2 * A * B) ^ (2 : ℕ)) ∈ I := by
     have hm := I.add_mem (I.mul_mem_right h' hh)
-      (I.mul_mem_left (C B * (C A - C B) ^ 2) hBU2)
+      (I.mul_mem_left (C B * (C A - C B) ^ (2 : ℕ)) hBU2)
     rw [hh_eq] at hm
     have heq :
         (2 * C A * C B + C B * (C A - C B) * U) * h' +
-            C B * (C A - C B) ^ 2 * (C B * U ^ 2) =
-          C ((2 * A * B) ^ 2) := by
+            C B * (C A - C B) ^ (2 : ℕ) * (C B * U ^ (2 : ℕ)) =
+          C ((2 * A * B) ^ (2 : ℕ)) := by
       simp only [map_pow, map_mul, map_ofNat]
       dsimp [h']
       ring
     rw [heq] at hm
     exact hm
   apply (Ideal.eq_top_iff_one I).2
-  have hs : (2 * A * B) ^ 2 ≠ 0 := pow_ne_zero 2 (mul_ne_zero (mul_ne_zero h2 hA) hB)
-  have hm := I.mul_mem_left (C (((2 * A * B) ^ 2)⁻¹)) hconst
-  have hone : C (((2 * A * B) ^ 2)⁻¹) * C ((2 * A * B) ^ 2) = (1 : SKPoly k) := by
+  have hs : (2 * A * B) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 (mul_ne_zero (mul_ne_zero h2 hA) hB)
+  have hm := I.mul_mem_left (C (((2 * A * B) ^ (2 : ℕ))⁻¹)) hconst
+  have hone : C (((2 * A * B) ^ (2 : ℕ))⁻¹) * C ((2 * A * B) ^ (2 : ℕ)) = (1 : SKPoly k) := by
     rw [← map_mul]
     simp [hs]
   rw [hone] at hm

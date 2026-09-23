@@ -14,21 +14,21 @@ noncomputable section
 theorem egbFixedChargeAGibbsSlow_hellinger_cubic_remainder (n m : ℕ) :
     |finitePacketHellinger
         (egbFixedChargeAGibbsMarkovPopulation n m 1 (egbFixedChargeAGibbsSlowEnergy n))
-        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 -
+        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) -
       ((2 : ℝ) ^ (n + 3) / 4) *
         egbFixedChargeAGibbsCollisionExcess n m 1 (egbFixedChargeAGibbsSlowEnergy n)| ≤
-      (∑ i : Fin (2 ^ (n + 3)), |egbFixedChargeAGibbsSlowDisplacement n m i| ^ 3) /
+      (∑ i : Fin (2 ^ (n + 3)), |egbFixedChargeAGibbsSlowDisplacement n m i| ^ (3 : ℕ)) /
         (2 : ℝ) ^ (n + 3) := by
   have hn : (0 : ℝ) < 2 ^ (n + 3) := by positivity
   have he :
       finitePacketHellinger
           (egbFixedChargeAGibbsMarkovPopulation n m 1 (egbFixedChargeAGibbsSlowEnergy n))
-          (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 -
+          (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) -
         ((2 : ℝ) ^ (n + 3) / 4) *
           egbFixedChargeAGibbsCollisionExcess n m 1 (egbFixedChargeAGibbsSlowEnergy n) =
       (∑ i : Fin (2 ^ (n + 3)),
-        ((Real.sqrt (1 + egbFixedChargeAGibbsSlowDisplacement n m i) - 1) ^ 2 -
-          egbFixedChargeAGibbsSlowDisplacement n m i ^ 2 / 4)) /
+        ((Real.sqrt (1 + egbFixedChargeAGibbsSlowDisplacement n m i) - 1) ^ (2 : ℕ) -
+          egbFixedChargeAGibbsSlowDisplacement n m i ^ (2 : ℕ) / 4)) /
         (2 : ℝ) ^ (n + 3) := by
     rw [egbFixedChargeAGibbsSlow_hellinger_displacement_formula,
       egbFixedChargeAGibbsSlow_collision_displacement_formula]
@@ -38,8 +38,8 @@ theorem egbFixedChargeAGibbsSlow_hellinger_cubic_remainder (n m : ℕ) :
   rw [he, abs_div, abs_of_pos hn]
   have hsum := Finset.abs_sum_le_sum_abs
     (fun i : Fin (2 ^ (n + 3)) =>
-      (Real.sqrt (1 + egbFixedChargeAGibbsSlowDisplacement n m i) - 1) ^ 2 -
-        egbFixedChargeAGibbsSlowDisplacement n m i ^ 2 / 4) Finset.univ
+      (Real.sqrt (1 + egbFixedChargeAGibbsSlowDisplacement n m i) - 1) ^ (2 : ℕ) -
+        egbFixedChargeAGibbsSlowDisplacement n m i ^ (2 : ℕ) / 4) Finset.univ
   have hb := Finset.sum_le_sum (fun i (_ : i ∈ (Finset.univ : Finset (Fin (2 ^ (n + 3))))) =>
     egbFixedChargeAGibbsSlow_hellinger_coordinate_remainder n m i)
   exact div_le_div_of_nonneg_right (hsum.trans hb) hn.le
@@ -48,16 +48,16 @@ theorem egbFixedChargeAGibbsSlow_hellinger_cubic_remainder (n m : ℕ) :
 theorem egbFixedChargeAGibbsSlow_hellinger_quadratic_remainder (n m : ℕ) :
     |finitePacketHellinger
         (egbFixedChargeAGibbsMarkovPopulation n m 1 (egbFixedChargeAGibbsSlowEnergy n))
-        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 -
+        (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) -
       ((2 : ℝ) ^ (n + 3) / 4) *
         egbFixedChargeAGibbsCollisionExcess n m 1 (egbFixedChargeAGibbsSlowEnergy n)| ≤
       ((2 : ℝ) ^ (n + 3) / 2) * (2 / 3 : ℝ) ^ m *
         egbFixedChargeAGibbsCollisionExcess n m 1 (egbFixedChargeAGibbsSlowEnergy n) := by
   have hn : (0 : ℝ) < 2 ^ (n + 3) := by positivity
   calc
-    _ ≤ (∑ i, |egbFixedChargeAGibbsSlowDisplacement n m i| ^ 3) /
+    _ ≤ (∑ i, |egbFixedChargeAGibbsSlowDisplacement n m i| ^ (3 : ℕ)) /
         (2 : ℝ) ^ (n + 3) := egbFixedChargeAGibbsSlow_hellinger_cubic_remainder n m
-    _ ≤ (((2 / 3 : ℝ) ^ m / 2) * ∑ i, egbFixedChargeAGibbsSlowDisplacement n m i ^ 2) /
+    _ ≤ (((2 / 3 : ℝ) ^ m / 2) * ∑ i, egbFixedChargeAGibbsSlowDisplacement n m i ^ (2 : ℕ)) /
         (2 : ℝ) ^ (n + 3) :=
       div_le_div_of_nonneg_right (egbFixedChargeAGibbsSlow_displacement_cubic_bound n m) hn.le
     _ = _ := by

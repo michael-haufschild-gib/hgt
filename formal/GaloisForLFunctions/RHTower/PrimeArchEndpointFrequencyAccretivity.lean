@@ -7,7 +7,7 @@ The completed endpoint curvature controls not only a zero-height gap but the exa
 frequency range on which every conjugate-paired Xi resolvent atom has the anti-Herglotz sign.
 The admissible radius `R` is characterized by the source inequality
 
-`C * ((R + 1 / 2)^2 + 1) < 1`,
+`C * ((R + 1 / 2)^(2 : ℕ) + 1) < 1`,
 
 where `C = xiEndpointCompletedCurvature`.  A rational corollary enlarges the previously discharged
 band from radius `4` to radius `161 / 40`.  Consequently the remaining RH-bearing response
@@ -23,7 +23,7 @@ noncomputable section
 /-- Exact endpoint-source band condition for paired-resolvent accretivity. -/
 def XiEndpointAccretiveBand (R : ℝ) : Prop :=
   0 ≤ R ∧ R ≤ 9 / 2 ∧
-    xiEndpointCompletedCurvature * ((R + 1 / 2) ^ 2 + 1) < 1
+    xiEndpointCompletedCurvature * ((R + 1 / 2) ^ (2 : ℕ) + 1) < 1
 
 /-- The exact endpoint source-height law makes every conjugate-paired relative-resolvent atom
 nonpositive throughout any admissible endpoint band. -/
@@ -37,14 +37,14 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_endpointBand
   have hCpos : 0 < xiEndpointCompletedCurvature :=
     xiEndpointCompletedCurvature_pos
   have hareSqLower :
-      1 / xiEndpointCompletedCurvature - 1 ≤ a.re ^ 2 := by
+      1 / xiEndpointCompletedCurvature - 1 ≤ a.re ^ (2 : ℕ) := by
     simpa [a, xiSpectralPoint, mul_re] using
       xiZeroCopy_im_sq_ge_endpoint_source_inverse_gap q
   have hradiusInv :
-      (R + 1 / 2) ^ 2 + 1 < 1 / xiEndpointCompletedCurvature := by
+      (R + 1 / 2) ^ (2 : ℕ) + 1 < 1 / xiEndpointCompletedCurvature := by
     rw [lt_div_iff₀ hCpos]
     simpa [mul_comm] using hband.2.2
-  have hareSq : (R + 1 / 2) ^ 2 < a.re ^ 2 := by
+  have hareSq : (R + 1 / 2) ^ (2 : ℕ) < a.re ^ (2 : ℕ) := by
     linarith
   have hareAbs : R + 1 / 2 < |a.re| := by
     nlinarith [sq_abs a.re, abs_nonneg a.re, hband.1]
@@ -57,10 +57,10 @@ lemma xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_endpointBand
   have hdistAbs : 1 / 2 < |z.re - a.re| := by
     rw [abs_sub_comm]
     linarith
-  have hdistSq : a.im ^ 2 < (z.re - a.re) ^ 2 := by
+  have hdistSq : a.im ^ (2 : ℕ) < (z.re - a.re) ^ (2 : ℕ) := by
     nlinarith [sq_abs a.im, sq_abs (z.re - a.re),
       abs_nonneg a.im, abs_nonneg (z.re - a.re)]
-  have hcore : 0 < (z.re - a.re) ^ 2 + z.im ^ 2 - a.im ^ 2 := by
+  have hcore : 0 < (z.re - a.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) - a.im ^ (2 : ℕ) := by
     nlinarith [sq_nonneg z.im]
   exact xiRelativeResolventTerm_lineConj_pair_im_nonpos_of_core z hzIm q hcore
 

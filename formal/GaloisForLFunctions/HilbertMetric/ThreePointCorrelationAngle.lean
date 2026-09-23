@@ -68,7 +68,7 @@ theorem threePointCorrelationMatrix_posSemidef_of_arccos_subadditive
       _ = p * q + Real.sin α * Real.sin β := by
         rw [Real.cos_sub, hcosα, hcosβ]
   have hsq :
-      (r - p * q) ^ 2 ≤ (Real.sin α * Real.sin β) ^ 2 := by
+      (r - p * q) ^ (2 : ℕ) ≤ (Real.sin α * Real.sin β) ^ (2 : ℕ) := by
     have hleft :
         -(Real.sin α * Real.sin β) ≤ r - p * q := by linarith
     have hprod :
@@ -76,17 +76,17 @@ theorem threePointCorrelationMatrix_posSemidef_of_arccos_subadditive
           (Real.sin α * Real.sin β + (r - p * q)) :=
       mul_nonneg (by linarith) (by linarith)
     nlinarith
-  have hsinαsq : Real.sin α ^ 2 = 1 - p ^ 2 := by
+  have hsinαsq : Real.sin α ^ (2 : ℕ) = 1 - p ^ (2 : ℕ) := by
     nlinarith [Real.sin_sq_add_cos_sq α]
-  have hsinβsq : Real.sin β ^ 2 = 1 - q ^ 2 := by
+  have hsinβsq : Real.sin β ^ (2 : ℕ) = 1 - q ^ (2 : ℕ) := by
     nlinarith [Real.sin_sq_add_cos_sq β]
   have hsinProdSq :
-      (Real.sin α * Real.sin β) ^ 2 =
-        (1 - p ^ 2) * (1 - q ^ 2) := by
+      (Real.sin α * Real.sin β) ^ (2 : ℕ) =
+        (1 - p ^ (2 : ℕ)) * (1 - q ^ (2 : ℕ)) := by
     rw [mul_pow, hsinαsq, hsinβsq]
   have hdet : 0 ≤ threePointCorrelationDeterminant 1 p q r := by
     rw [show threePointCorrelationDeterminant 1 p q r =
-      (1 - p ^ 2) * (1 - q ^ 2) - (r - p * q) ^ 2 by
+      (1 - p ^ (2 : ℕ)) * (1 - q ^ (2 : ℕ)) - (r - p * q) ^ (2 : ℕ) by
         unfold threePointCorrelationDeterminant
         ring]
     rw [← hsinProdSq]
@@ -107,8 +107,8 @@ theorem threePointCorrelationMatrix_posSemidef_left_seam
   · intro v
     have hform :
         star v ⬝ᵥ (threePointCorrelationMatrix 1 1 q q).mulVec v =
-          ((1 + q) / 2) * (v 0 + v 1 + v 2) ^ 2 +
-            ((1 - q) / 2) * (v 0 + v 1 - v 2) ^ 2 := by
+          ((1 + q) / 2) * (v 0 + v 1 + v 2) ^ (2 : ℕ) +
+            ((1 - q) / 2) * (v 0 + v 1 - v 2) ^ (2 : ℕ) := by
       simp [threePointCorrelationMatrix, dotProduct, Matrix.mulVec,
         Fin.sum_univ_three]
       ring

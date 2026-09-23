@@ -45,8 +45,8 @@ theorem norm_staticSpectralChoiVector_time_sub_le
   have hrow (i : Fin d) :
       (∑ j : Fin d,
         ‖(staticSpectralChoiVector d t energy -
-            staticSpectralChoiVector d u energy).ofLp (i, j)‖ ^ 2) ≤
-        (S * |t - u|) ^ 2 / d := by
+            staticSpectralChoiVector d u energy).ofLp (i, j)‖ ^ (2 : ℕ)) ≤
+        (S * |t - u|) ^ (2 : ℕ) / d := by
     rw [Finset.sum_eq_single i]
     · simp only [PiLp.sub_apply, staticSpectralChoiVector,
         fullUniformPhaseChoiVector_apply, if_pos]
@@ -65,10 +65,10 @@ theorem norm_staticSpectralChoiVector_time_sub_le
   calc
     (∑ i : Fin d, ∑ j : Fin d,
       ‖(staticSpectralChoiVector d t energy -
-          staticSpectralChoiVector d u energy).ofLp (i, j)‖ ^ 2)
-      ≤ ∑ _i : Fin d, (S * |t - u|) ^ 2 / d :=
+          staticSpectralChoiVector d u energy).ofLp (i, j)‖ ^ (2 : ℕ))
+      ≤ ∑ _i : Fin d, (S * |t - u|) ^ (2 : ℕ) / d :=
         Finset.sum_le_sum fun i _ => hrow i
-    _ = (S * |t - u|) ^ 2 := by
+    _ = (S * |t - u|) ^ (2 : ℕ) := by
       rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
       field_simp
 
@@ -102,7 +102,7 @@ theorem exists_forward_pureChoiCircuitHardBlock_of_spectralDimensionBudget
             (((2 * n + 1) ^ replicaNearActionRank energy n δ : ℕ) : ℝ) *
               ((n.factorial : ℝ) * (d : ℝ)⁻¹ ^ n) +
             min 1 (T * δ)⁻¹) <
-        (1 - epsw ^ 2) ^ n) :
+        (1 - epsw ^ (2 : ℕ)) ^ n) :
     ∃ u ∈ Set.Ioc 0 (2 * T),
       ∀ t ∈ Set.Icc u (u + (epsw - epsn) / staticChoiSpeed energy),
         ∀ w, epsn < pureStateTraceDistance

@@ -33,23 +33,23 @@ def xiSquareDescentResolvent (w : ℂ) : ℂ :=
     xiZeroCopyReciprocalSquare q / (1 - w * xiZeroCopyReciprocalSquare q)
 
 theorem xiSquareDescentResolvent_sq (z : ℂ) :
-    xiSquareDescentResolvent (z ^ 2) =
+    xiSquareDescentResolvent (z ^ (2 : ℕ)) =
       ∑' q : XiZeroCopy, xiReciprocalSquareResolventTerm z q := by
   rfl
 
 /-- Chain rule through the square cover. -/
 theorem logDeriv_XiC_eq_two_mul_logDeriv_xiSquareDescent
     {z : ℂ} (hXi : XiC z ≠ 0) :
-    logDeriv XiC z = 2 * z * logDeriv xiSquareDescent (z ^ 2) := by
-  have hinner : HasDerivAt (fun w : ℂ => w ^ 2) (2 * z) z := by
+    logDeriv XiC z = 2 * z * logDeriv xiSquareDescent (z ^ (2 : ℕ)) := by
+  have hinner : HasDerivAt (fun w : ℂ => w ^ (2 : ℕ)) (2 * z) z := by
     simpa using (hasDerivAt_pow 2 z)
   have houter :=
     differentiable_xiSquaredSeamEntireQuotient.differentiableAt.hasDerivAt.comp z hinner
-  have hcomp : xiSquareDescent ∘ (fun w : ℂ => w ^ 2) = XiC := by
+  have hcomp : xiSquareDescent ∘ (fun w : ℂ => w ^ (2 : ℕ)) = XiC := by
     funext w
     exact xiSquaredSeamEntireQuotient_sq w
   rw [hcomp] at houter
-  have hval : xiSquareDescent (z ^ 2) = XiC z := xiSquaredSeamEntireQuotient_sq z
+  have hval : xiSquareDescent (z ^ (2 : ℕ)) = XiC z := xiSquaredSeamEntireQuotient_sq z
   rw [logDeriv_apply, logDeriv_apply, houter.deriv, hval]
   field_simp [hXi]
 
@@ -57,7 +57,7 @@ theorem logDeriv_XiC_eq_two_mul_logDeriv_xiSquareDescent
 logarithmic derivative of the square descent is the halved reciprocal-square resolvent. -/
 theorem logDeriv_xiSquareDescent_eq_resolvent
     {z : ℂ} (hz : z ≠ 0) (hXi : XiC z ≠ 0) :
-    logDeriv xiSquareDescent (z ^ 2) = -(1 / 2) * xiSquareDescentResolvent (z ^ 2) := by
+    logDeriv xiSquareDescent (z ^ (2 : ℕ)) = -(1 / 2) * xiSquareDescentResolvent (z ^ (2 : ℕ)) := by
   have hlog := logDeriv_XiC_eq_relativeResolventTrace hXi
   rw [xiRelativeResolventTrace_eq_reciprocalSquareResolvent hXi,
     logDeriv_XiC_eq_two_mul_logDeriv_xiSquareDescent hXi] at hlog
@@ -70,16 +70,16 @@ theorem logDeriv_xiSquareDescent_eq_resolvent
 theorem xiSquareDescent_ofReal_im (x : ℝ) : (xiSquareDescent (x : ℂ)).im = 0 := by
   show (xiSquaredSeamEntireQuotient ((x : ℝ) : ℂ)).im = 0
   rcases le_or_gt 0 x with hx | hx
-  · have hsq : ((Real.sqrt x : ℝ) : ℂ) ^ 2 = (x : ℂ) := by
+  · have hsq : ((Real.sqrt x : ℝ) : ℂ) ^ (2 : ℕ) = (x : ℂ) := by
       rw [← Complex.ofReal_pow, Real.sq_sqrt hx]
     have := xiSquaredSeamEntireQuotient_sq ((Real.sqrt x : ℝ) : ℂ)
     rw [hsq] at this
     rw [this, XiC_ofReal]
     simp
   · set s : ℝ := Real.sqrt (-x) with hs
-    have hsq : (((s : ℝ) : ℂ) * Complex.I) ^ 2 = (x : ℂ) := by
+    have hsq : (((s : ℝ) : ℂ) * Complex.I) ^ (2 : ℕ) = (x : ℂ) := by
       have hpos : (0 : ℝ) ≤ -x := by linarith
-      have : (s : ℝ) ^ 2 = -x := Real.sq_sqrt hpos
+      have : (s : ℝ) ^ (2 : ℕ) = -x := Real.sq_sqrt hpos
       rw [mul_pow, Complex.I_sq, ← Complex.ofReal_pow, this]
       push_cast
       ring
@@ -129,7 +129,7 @@ theorem exists_pos_xiZeroCopyReciprocalSquare_of_rh
   have ht0 : (t : ℝ) ≠ 0 := by
     intro h; exact hne (by rw [h]; simp)
   have hinv : (t : ℝ)⁻¹ ≠ 0 := inv_ne_zero ht0
-  refine ⟨((t : ℝ)⁻¹) ^ 2, by positivity, ?_⟩
+  refine ⟨((t : ℝ)⁻¹) ^ (2 : ℕ), by positivity, ?_⟩
   rw [xiZeroCopyReciprocalSquare, ht]
   push_cast
   ring
@@ -148,7 +148,7 @@ theorem xiSquareDescent_ne_zero_of_im_ne_zero_of_rh
   obtain ⟨q, hq⟩ := (XiC_eq_zero_iff_exists_xiZeroCopy _).mp hzero
   obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
   rw [ht] at hq
-  have hwval : w = ((t : ℝ) : ℂ) ^ 2 := by
+  have hwval : w = ((t : ℝ) : ℂ) ^ (2 : ℕ) := by
     rw [hq, GaloisForLFunctions.HTGeometry.complex_sqrt_sq]
   apply hw
   rw [hwval]
@@ -171,7 +171,7 @@ theorem im_xiSquareDescentResolvent_nonneg_of_rh
     (hF : xiSquareDescent w ≠ 0) :
     0 ≤ (xiSquareDescentResolvent w).im := by
   set z : ℂ := Complex.sqrt w with hz
-  have hzsq : z ^ 2 = w := GaloisForLFunctions.HTGeometry.complex_sqrt_sq w
+  have hzsq : z ^ (2 : ℕ) = w := GaloisForLFunctions.HTGeometry.complex_sqrt_sq w
   have hXi : XiC z ≠ 0 := by
     rw [← xiSquaredSeamEntireQuotient_sq z, hzsq]
     exact hF
@@ -196,7 +196,7 @@ theorem im_logDeriv_xiSquareDescent_nonpos_of_rh
     (hF : xiSquareDescent w ≠ 0) :
     (logDeriv xiSquareDescent w).im ≤ 0 := by
   set z : ℂ := Complex.sqrt w with hz
-  have hzsq : z ^ 2 = w := GaloisForLFunctions.HTGeometry.complex_sqrt_sq w
+  have hzsq : z ^ (2 : ℕ) = w := GaloisForLFunctions.HTGeometry.complex_sqrt_sq w
   have hzne : z ≠ 0 := sqrt_ne_zero_of_ne_zero hw0
   have hXi : XiC z ≠ 0 := by
     rw [← xiSquaredSeamEntireQuotient_sq z, hzsq]

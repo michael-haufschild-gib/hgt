@@ -280,7 +280,7 @@ theorem hasDerivAt_besselV {x : ℝ} (hx : 0 < x) : HasDerivAt besselV (besselVD
 /-- **The normalised equation.**  `v'' = -(1 + 1/(4x²)) v`: the first-order term of Bessel's equation
 is absorbed, leaving a harmonic oscillator with an integrable perturbation. -/
 theorem hasDerivAt_besselVDeriv {x : ℝ} (hx : 0 < x) :
-    HasDerivAt besselVDeriv (-(1 + 1 / (4 * x ^ 2)) * besselV x) x := by
+    HasDerivAt besselVDeriv (-(1 + 1 / (4 * x ^ (2 : ℕ))) * besselV x) x := by
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx
   have hsq : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx.le
   have hsqrt : HasDerivAt (fun t : ℝ => Real.sqrt t) (1 / (2 * Real.sqrt x)) x :=
@@ -290,11 +290,11 @@ theorem hasDerivAt_besselVDeriv {x : ℝ} (hx : 0 < x) :
   have hinv : HasDerivAt (fun t : ℝ => 1 / (2 * Real.sqrt t))
       (-(1 / (4 * x * Real.sqrt x))) x := by
     have h := (hasDerivAt_const x (1 : ℝ)).fun_div hden (by positivity)
-    have h4 : (2 * Real.sqrt x) ^ 2 = 4 * x := by
+    have h4 : (2 * Real.sqrt x) ^ (2 : ℕ) = 4 * x := by
       rw [mul_pow, Real.sq_sqrt hx.le]
       ring
     have hval : ((0 : ℝ) * (2 * Real.sqrt x) - 1 * (2 * (1 / (2 * Real.sqrt x))))
-          / (2 * Real.sqrt x) ^ 2
+          / (2 * Real.sqrt x) ^ (2 : ℕ)
         = -(1 / (4 * x * Real.sqrt x)) := by
       rw [h4]
       field_simp
@@ -313,7 +313,7 @@ theorem hasDerivAt_besselVDeriv {x : ℝ} (hx : 0 < x) :
   have h2 : besselJ0SecondDeriv x = -(besselJ0Deriv x / x) - besselJ0 x := by linarith [hode]
   have hval : -(1 / (4 * x * Real.sqrt x)) * besselJ0 x + 1 / (2 * Real.sqrt x) * besselJ0Deriv x
       + (1 / (2 * Real.sqrt x) * besselJ0Deriv x + Real.sqrt x * besselJ0SecondDeriv x)
-      = -(1 + 1 / (4 * x ^ 2)) * besselV x := by
+      = -(1 + 1 / (4 * x ^ (2 : ℕ))) * besselV x := by
     obtain ⟨S, hS0, hSx, hSeq⟩ : ∃ S : ℝ, 0 < S ∧ S * S = x ∧ Real.sqrt x = S :=
       ⟨Real.sqrt x, hsx, hsq, rfl⟩
     rw [h2, besselV, hSeq, ← hSx]
@@ -367,7 +367,7 @@ theorem abs_besselVDeriv_le {x : ℝ} (hx : 1 ≤ x) : |besselVDeriv x| ≤ 180 
 /-! ## The integrable perturbation weight -/
 
 /-- The weight `x^{-2}`, with antiderivative `-x^{-1}`. -/
-def invSq (x : ℝ) : ℝ := (x ^ 2)⁻¹
+def invSq (x : ℝ) : ℝ := (x ^ (2 : ℕ))⁻¹
 
 theorem invSq_nonneg (x : ℝ) : 0 ≤ invSq x := by
   rw [invSq]
@@ -376,7 +376,7 @@ theorem invSq_nonneg (x : ℝ) : 0 ≤ invSq x := by
 theorem hasDerivAt_negInv {x : ℝ} (hx : x ≠ 0) :
     HasDerivAt (fun t : ℝ => -t⁻¹) (invSq x) x := by
   have h := (hasDerivAt_inv hx).neg
-  rw [show -(-(x ^ 2)⁻¹) = invSq x from by rw [invSq]; ring] at h
+  rw [show -(-(x ^ (2 : ℕ))⁻¹) = invSq x from by rw [invSq]; ring] at h
   exact h
 
 theorem continuousWithinAt_negInv {a : ℝ} (ha : 0 < a) :
@@ -408,7 +408,7 @@ def besselW (x : ℝ) : ℂ :=
 
 /-- The exact speed of the rotating frame. -/
 def besselWDeriv (x : ℝ) : ℂ :=
-  -(Complex.I * ((1 / (4 * x ^ 2) : ℝ) : ℂ) * (besselV x : ℂ)
+  -(Complex.I * ((1 / (4 * x ^ (2 : ℕ)) : ℝ) : ℂ) * (besselV x : ℂ)
     * Complex.exp (Complex.I * (x : ℂ)))
 
 theorem continuous_besselJ0 : Continuous besselJ0 :=
@@ -427,7 +427,7 @@ theorem hasDerivAt_besselW {x : ℝ} (hx : 0 < x) : HasDerivAt besselW (besselWD
   have hV : HasDerivAt (fun t : ℝ => (besselV t : ℂ)) ((besselVDeriv x : ℝ) : ℂ) x :=
     (hasDerivAt_besselV hx).ofReal_comp
   have hD : HasDerivAt (fun t : ℝ => (besselVDeriv t : ℂ))
-      (((-(1 + 1 / (4 * x ^ 2)) * besselV x : ℝ) : ℂ)) x :=
+      (((-(1 + 1 / (4 * x ^ (2 : ℕ))) * besselV x : ℝ) : ℂ)) x :=
     (hasDerivAt_besselVDeriv hx).ofReal_comp
   have hid : HasDerivAt (fun t : ℝ => ((t : ℝ) : ℂ)) (1 : ℂ) x := by
     simpa using (hasDerivAt_id x).ofReal_comp
@@ -438,7 +438,7 @@ theorem hasDerivAt_besselW {x : ℝ} (hx : 0 < x) : HasDerivAt besselW (besselWD
   have hsum := hV.fun_add (hD.const_mul Complex.I)
   have h := hsum.fun_mul hexp
   have hval : (((besselVDeriv x : ℝ) : ℂ)
-        + Complex.I * ((-(1 + 1 / (4 * x ^ 2)) * besselV x : ℝ) : ℂ))
+        + Complex.I * ((-(1 + 1 / (4 * x ^ (2 : ℕ))) * besselV x : ℝ) : ℂ))
         * Complex.exp (Complex.I * (x : ℂ))
       + (((besselV x : ℝ) : ℂ) + Complex.I * ((besselVDeriv x : ℝ) : ℂ))
         * (Complex.exp (Complex.I * (x : ℂ)) * Complex.I)
@@ -459,11 +459,11 @@ theorem norm_besselWDeriv_le {x : ℝ} (hx : 1 ≤ x) :
   have hV := abs_besselV_le hx
   rw [besselWDeriv, norm_neg, norm_mul, norm_mul, norm_mul, hexp, Complex.norm_I,
     Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
-    abs_of_nonneg (by positivity : (0 : ℝ) ≤ 1 / (4 * x ^ 2))]
+    abs_of_nonneg (by positivity : (0 : ℝ) ≤ 1 / (4 * x ^ (2 : ℕ)))]
   rw [one_mul, mul_one, invSq]
-  calc 1 / (4 * x ^ 2) * |besselV x| ≤ 1 / (4 * x ^ 2) * (72 * Real.sqrt 2) := by
+  calc 1 / (4 * x ^ (2 : ℕ)) * |besselV x| ≤ 1 / (4 * x ^ (2 : ℕ)) * (72 * Real.sqrt 2) := by
         exact mul_le_mul_of_nonneg_left hV (by positivity)
-    _ = 18 * Real.sqrt 2 * (x ^ 2)⁻¹ := by ring
+    _ = 18 * Real.sqrt 2 * (x ^ (2 : ℕ))⁻¹ := by ring
 
 theorem continuousOn_besselWDeriv : ContinuousOn besselWDeriv (Ioi 1) := by
   intro x hx
@@ -471,7 +471,7 @@ theorem continuousOn_besselWDeriv : ContinuousOn besselWDeriv (Ioi 1) := by
   have hx0 : x ≠ 0 := by
     have : (0 : ℝ) < x := lt_trans zero_lt_one hx1
     exact this.ne'
-  have hw : ContinuousWithinAt (fun t : ℝ => ((1 / (4 * t ^ 2) : ℝ) : ℂ)) (Ioi 1) x := by
+  have hw : ContinuousWithinAt (fun t : ℝ => ((1 / (4 * t ^ (2 : ℕ)) : ℝ) : ℂ)) (Ioi 1) x := by
     refine (Complex.continuous_ofReal.continuousAt.comp ?_).continuousWithinAt
     exact ContinuousAt.div continuousAt_const (by fun_prop) (by positivity)
   have hVc : ContinuousWithinAt (fun t : ℝ => (besselV t : ℂ)) (Ioi 1) x :=

@@ -61,7 +61,7 @@ theorem goursatResponse_hasDerivAt (K : BoundedContinuousFunction (ℝ × ℝ) �
 theorem goursat_slice_energy_le (K : BoundedContinuousFunction (ℝ × ℝ) ℝ)
     (b ξ d t : ℝ) (U : BoundedContinuousFunction ℝ ℝ) :
     energy d t (fun η => volterraFun (fun r => K (ξ, r)) 0 |b| U η) ≤
-      (‖K‖ * |b| * ‖U‖) ^ 2 / (2 * Real.exp d) := by
+      (‖K‖ * |b| * ‖U‖) ^ (2 : ℕ) / (2 * Real.exp d) := by
   let p : C(ℝ, ℝ × ℝ) := ⟨fun η => (ξ, η), continuous_const.prodMk continuous_id⟩
   have hb : ‖(goursatResponse K b U).compContinuous p‖ ≤ ‖K‖ * |b| * ‖U‖ :=
     ((goursatResponse K b U).norm_compContinuous_le p).trans (norm_goursatResponse_le K b U)
@@ -72,7 +72,7 @@ theorem goursat_slice_energy_le (K : BoundedContinuousFunction (ℝ × ℝ) ℝ)
 theorem goursat_rectangle_energy_le (K : BoundedContinuousFunction (ℝ × ℝ) ℝ)
     (b d u v : ℝ) (U : BoundedContinuousFunction ℝ ℝ) :
     rectangleEnergy d u v (fun p => volterraFun (fun r => K (p.1, r)) 0 |b| U p.2) ≤
-      (‖K‖ * |b| * ‖U‖) ^ 2 / (2 * Real.exp d) ^ 2 := by
+      (‖K‖ * |b| * ‖U‖) ^ (2 : ℕ) / (2 * Real.exp d) ^ (2 : ℕ) := by
   exact (rectangleEnergy_le d u v (goursatResponse K b U)).trans
     (div_le_div_of_nonneg_right
       ((sq_le_sq₀ (norm_nonneg _) (by positivity)).mpr (norm_goursatResponse_le K b U))
@@ -99,7 +99,7 @@ theorem goursatResponse_sub (K : BoundedContinuousFunction (ℝ × ℝ) ℝ) (b 
 theorem goursat_difference_energy_le (K : BoundedContinuousFunction (ℝ × ℝ) ℝ)
     (b d u v : ℝ) (U V : BoundedContinuousFunction ℝ ℝ) :
     rectangleEnergy d u v (fun p => goursatResponse K b U p - goursatResponse K b V p) ≤
-      (‖K‖ * |b| * ‖U - V‖) ^ 2 / (2 * Real.exp d) ^ 2 := by
+      (‖K‖ * |b| * ‖U - V‖) ^ (2 : ℕ) / (2 * Real.exp d) ^ (2 : ℕ) := by
   change rectangleEnergy d u v (goursatResponse K b U - goursatResponse K b V) ≤ _
   rw [goursatResponse_sub]
   exact goursat_rectangle_energy_le K b d u v (U - V)

@@ -34,34 +34,34 @@ set_option linter.unusedVariables false
 namespace RHTower.D4BMScalarStream
 
 /-- The imaginary part of the numerator of `skewFinitePart` on the critical line, an odd polynomial. -/
-noncomputable def skewFPLineNumerator (t : ℝ) : ℝ := (90069061 / 4194304 : ℝ) * t + (6532169 / 1048576 : ℝ) * t ^ 3 + (-310919 / 131072 : ℝ) * t ^ 5 + (-63255 / 32768 : ℝ) * t ^ 7 + (-7527 / 16384 : ℝ) * t ^ 9 + (-75 / 4096 : ℝ) * t ^ 11
+noncomputable def skewFPLineNumerator (t : ℝ) : ℝ := (90069061 / 4194304 : ℝ) * t + (6532169 / 1048576 : ℝ) * t ^ (3 : ℕ) + (-310919 / 131072 : ℝ) * t ^ (5 : ℕ) + (-63255 / 32768 : ℝ) * t ^ (7 : ℕ) + (-7527 / 16384 : ℝ) * t ^ (9 : ℕ) + (-75 / 4096 : ℝ) * t ^ (11 : ℕ)
 
 /-- The same polynomial in `u = t²`, without the factor `t`. -/
-noncomputable def skewFPLineEven (u : ℝ) : ℝ := (90069061 / 4194304 : ℝ) + (6532169 / 1048576 : ℝ) * u + (-310919 / 131072 : ℝ) * u ^ 2 + (-63255 / 32768 : ℝ) * u ^ 3 + (-7527 / 16384 : ℝ) * u ^ 4 + (-75 / 4096 : ℝ) * u ^ 5
+noncomputable def skewFPLineEven (u : ℝ) : ℝ := (90069061 / 4194304 : ℝ) + (6532169 / 1048576 : ℝ) * u + (-310919 / 131072 : ℝ) * u ^ (2 : ℕ) + (-63255 / 32768 : ℝ) * u ^ (3 : ℕ) + (-7527 / 16384 : ℝ) * u ^ (4 : ℕ) + (-75 / 4096 : ℝ) * u ^ (5 : ℕ)
 
-theorem skewFPLineNumerator_eq (t : ℝ) : skewFPLineNumerator t = t * skewFPLineEven (t ^ 2) := by
+theorem skewFPLineNumerator_eq (t : ℝ) : skewFPLineNumerator t = t * skewFPLineEven (t ^ (2 : ℕ)) := by
   unfold skewFPLineNumerator skewFPLineEven
   ring
 
 /-- On the critical line the finite part is purely imaginary. -/
 theorem skewFinitePart_line (t : ℝ) :
-    skewFinitePart ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) * (-(9 / 4 + (t : ℂ) ^ 2)) =
+    skewFinitePart ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) * (-(9 / 4 + (t : ℂ) ^ (2 : ℕ))) =
       Complex.I * (skewFPLineNumerator t : ℂ) := by
   have hne : ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) * (((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) + 3) ≠ 0 := by
     rw [line_denominator]
     intro h
-    rw [show (-(9 / 4 + (t : ℂ) ^ 2)) = ((-(9 / 4 + t ^ 2) : ℝ) : ℂ) by push_cast; ring] at h
-    have h' : -(9 / 4 + t ^ 2) = (0 : ℝ) := by exact_mod_cast h
+    rw [show (-(9 / 4 + (t : ℂ) ^ (2 : ℕ))) = ((-(9 / 4 + t ^ (2 : ℕ)) : ℝ) : ℂ) by push_cast; ring] at h
+    have h' : -(9 / 4 + t ^ (2 : ℕ)) = (0 : ℝ) := by exact_mod_cast h
     nlinarith [sq_nonneg t]
   have hs : ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := left_ne_zero_of_mul hne
   have hs3 : ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I) + 3 ≠ 0 := right_ne_zero_of_mul hne
   rw [← line_denominator, skewFinitePart_eq _ hs hs3, div_mul_cancel₀ _ hne]
   unfold skewFPLineNumerator
   push_cast
-  linear_combination ((-6532169 / 1048576 : ℂ) * (t : ℂ) ^ 3 * Complex.I + (310919 / 131072 : ℂ) * (t : ℂ) ^ 5 * Complex.I + (-310919 / 131072 : ℂ) * (t : ℂ) ^ 5 * Complex.I ^ 3 + (63255 / 32768 : ℂ) * (t : ℂ) ^ 7 * Complex.I + (-63255 / 32768 : ℂ) * (t : ℂ) ^ 7 * Complex.I ^ 3 + (63255 / 32768 : ℂ) * (t : ℂ) ^ 7 * Complex.I ^ 5 + (7527 / 16384 : ℂ) * (t : ℂ) ^ 9 * Complex.I + (-7527 / 16384 : ℂ) * (t : ℂ) ^ 9 * Complex.I ^ 3 + (7527 / 16384 : ℂ) * (t : ℂ) ^ 9 * Complex.I ^ 5 + (-7527 / 16384 : ℂ) * (t : ℂ) ^ 9 * Complex.I ^ 7 + (75 / 4096 : ℂ) * (t : ℂ) ^ 11 * Complex.I + (-75 / 4096 : ℂ) * (t : ℂ) ^ 11 * Complex.I ^ 3 + (75 / 4096 : ℂ) * (t : ℂ) ^ 11 * Complex.I ^ 5 + (-75 / 4096 : ℂ) * (t : ℂ) ^ 11 * Complex.I ^ 7 + (75 / 4096 : ℂ) * (t : ℂ) ^ 11 * Complex.I ^ 9) * Complex.I_sq
+  linear_combination ((-6532169 / 1048576 : ℂ) * (t : ℂ) ^ (3 : ℕ) * Complex.I + (310919 / 131072 : ℂ) * (t : ℂ) ^ (5 : ℕ) * Complex.I + (-310919 / 131072 : ℂ) * (t : ℂ) ^ (5 : ℕ) * Complex.I ^ (3 : ℕ) + (63255 / 32768 : ℂ) * (t : ℂ) ^ (7 : ℕ) * Complex.I + (-63255 / 32768 : ℂ) * (t : ℂ) ^ (7 : ℕ) * Complex.I ^ (3 : ℕ) + (63255 / 32768 : ℂ) * (t : ℂ) ^ (7 : ℕ) * Complex.I ^ (5 : ℕ) + (7527 / 16384 : ℂ) * (t : ℂ) ^ (9 : ℕ) * Complex.I + (-7527 / 16384 : ℂ) * (t : ℂ) ^ (9 : ℕ) * Complex.I ^ (3 : ℕ) + (7527 / 16384 : ℂ) * (t : ℂ) ^ (9 : ℕ) * Complex.I ^ (5 : ℕ) + (-7527 / 16384 : ℂ) * (t : ℂ) ^ (9 : ℕ) * Complex.I ^ (7 : ℕ) + (75 / 4096 : ℂ) * (t : ℂ) ^ (11 : ℕ) * Complex.I + (-75 / 4096 : ℂ) * (t : ℂ) ^ (11 : ℕ) * Complex.I ^ (3 : ℕ) + (75 / 4096 : ℂ) * (t : ℂ) ^ (11 : ℕ) * Complex.I ^ (5 : ℕ) + (-75 / 4096 : ℂ) * (t : ℂ) ^ (11 : ℕ) * Complex.I ^ (7 : ℕ) + (75 / 4096 : ℂ) * (t : ℂ) ^ (11 : ℕ) * Complex.I ^ (9 : ℕ)) * Complex.I_sq
 
 /-- The even factor of the sum of the two line numerators. -/
-noncomputable def skewLineSumEven (u : ℝ) : ℝ := (23492155 / 4194304 : ℝ) + (2182583 / 1048576 : ℝ) * u + (-38393 / 131072 : ℝ) * u ^ 2 + (-35817 / 32768 : ℝ) * u ^ 3 + (-5145 / 16384 : ℝ) * u ^ 4 + (75 / 4096 : ℝ) * u ^ 5
+noncomputable def skewLineSumEven (u : ℝ) : ℝ := (23492155 / 4194304 : ℝ) + (2182583 / 1048576 : ℝ) * u + (-38393 / 131072 : ℝ) * u ^ (2 : ℕ) + (-35817 / 32768 : ℝ) * u ^ (3 : ℕ) + (-5145 / 16384 : ℝ) * u ^ (4 : ℕ) + (75 / 4096 : ℝ) * u ^ (5 : ℕ)
 
 theorem skewLineSumEven_eq (u : ℝ) : skewLineSumEven u = skewFPLineEven u + skewLogLineEven u := by
   unfold skewLineSumEven skewFPLineEven skewLogLineEven
@@ -70,43 +70,43 @@ theorem skewLineSumEven_eq (u : ℝ) : skewLineSumEven u = skewFPLineEven u + sk
 /-- For `u ≥ 25` the even factor of the sum is positive. -/
 theorem skewLineSumEven_pos (u : ℝ) (hu : 25 ≤ u) : 0 < skewLineSumEven u := by
   unfold skewLineSumEven
-  have h2 : 25 * u ≤ u ^ 2 := by nlinarith
-  have h3 : 25 * u ^ 2 ≤ u ^ 3 := by nlinarith
-  have h4 : 25 * u ^ 3 ≤ u ^ 4 := by nlinarith
-  have h5 : 25 * u ^ 4 ≤ u ^ 5 := by nlinarith
+  have h2 : 25 * u ≤ u ^ (2 : ℕ) := by nlinarith
+  have h3 : 25 * u ^ (2 : ℕ) ≤ u ^ (3 : ℕ) := by nlinarith
+  have h4 : 25 * u ^ (3 : ℕ) ≤ u ^ (4 : ℕ) := by nlinarith
+  have h5 : 25 * u ^ (4 : ℕ) ≤ u ^ (5 : ℕ) := by nlinarith
   nlinarith
 
 /-- For `u ≥ 25` the even factor of the finite part's line numerator is negative. -/
 theorem skewFPLineEven_neg (u : ℝ) (hu : 25 ≤ u) : skewFPLineEven u < 0 := by
   unfold skewFPLineEven
-  have h2 : 25 * u ≤ u ^ 2 := by nlinarith
-  have h3 : 25 * u ^ 2 ≤ u ^ 3 := by nlinarith
-  have h4 : 25 * u ^ 3 ≤ u ^ 4 := by nlinarith
-  have h5 : 25 * u ^ 4 ≤ u ^ 5 := by nlinarith
+  have h2 : 25 * u ≤ u ^ (2 : ℕ) := by nlinarith
+  have h3 : 25 * u ^ (2 : ℕ) ≤ u ^ (3 : ℕ) := by nlinarith
+  have h4 : 25 * u ^ (3 : ℕ) ≤ u ^ (4 : ℕ) := by nlinarith
+  have h5 : 25 * u ^ (4 : ℕ) ≤ u ^ (5 : ℕ) := by nlinarith
   nlinarith
 
 /-- For `t ≥ 5` the finite part has positive imaginary part on the line. -/
 theorem skewFinitePart_line_im_pos (t : ℝ) (ht : 5 ≤ t) :
     0 < (skewFinitePart ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I)).im := by
   have h := congrArg Complex.im (skewFinitePart_line t)
-  have hd : (0 : ℝ) < 9 / 4 + t ^ 2 := by positivity
-  have h' : (skewFinitePart ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I)).im * (-(9 / 4 + t ^ 2)) = skewFPLineNumerator t := by
-    have e1 : (-(9 / 4 + (t : ℂ) ^ 2)) = ((-(9 / 4 + t ^ 2) : ℝ) : ℂ) := by push_cast; ring
+  have hd : (0 : ℝ) < 9 / 4 + t ^ (2 : ℕ) := by positivity
+  have h' : (skewFinitePart ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I)).im * (-(9 / 4 + t ^ (2 : ℕ))) = skewFPLineNumerator t := by
+    have e1 : (-(9 / 4 + (t : ℂ) ^ (2 : ℕ))) = ((-(9 / 4 + t ^ (2 : ℕ)) : ℝ) : ℂ) := by push_cast; ring
     rw [e1] at h
     simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_add, one_mul] at h
     exact h
-  have hu : 25 ≤ t ^ 2 := by nlinarith
+  have hu : 25 ≤ t ^ (2 : ℕ) := by nlinarith
   have hN : skewFPLineNumerator t < 0 := by
     rw [skewFPLineNumerator_eq]
-    have := skewFPLineEven_neg (t ^ 2) hu
+    have := skewFPLineEven_neg (t ^ (2 : ℕ)) hu
     nlinarith
   nlinarith
 
 /-- On the critical line the finite part has zero real part. -/
 theorem skewFinitePart_line_re (t : ℝ) : (skewFinitePart ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I)).re = 0 := by
   have h := congrArg Complex.re (skewFinitePart_line t)
-  have hd : (9 / 4 + t ^ 2) ≠ (0 : ℝ) := by positivity
-  have e1 : (-(9 / 4 + (t : ℂ) ^ 2)) = ((-(9 / 4 + t ^ 2) : ℝ) : ℂ) := by push_cast; ring
+  have hd : (9 / 4 + t ^ (2 : ℕ)) ≠ (0 : ℝ) := by positivity
+  have e1 : (-(9 / 4 + (t : ℂ) ^ (2 : ℕ))) = ((-(9 / 4 + t ^ (2 : ℕ)) : ℝ) : ℂ) := by push_cast; ring
   rw [e1, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero] at h
   simp at h
   rcases h with h | h
@@ -133,10 +133,10 @@ theorem skewCut_line_im_neg (t ε : ℝ) (ht : 5 ≤ t) (hε : 1 ≤ Real.log (4
   unfold skewCut
   simp only [Complex.add_im, Complex.mul_im, skewLogCoeff_line_re, Complex.ofReal_re, Complex.ofReal_im,
     mul_zero, zero_add]
-  have hd : (0 : ℝ) < 9 / 4 + t ^ 2 := by positivity
+  have hd : (0 : ℝ) < 9 / 4 + t ^ (2 : ℕ) := by positivity
   have hF := congrArg Complex.im (skewFinitePart_line t)
   have hL := congrArg Complex.im (skewLogCoeff_line t)
-  have e1 : (-(9 / 4 + (t : ℂ) ^ 2)) = ((-(9 / 4 + t ^ 2) : ℝ) : ℂ) := by push_cast; ring
+  have e1 : (-(9 / 4 + (t : ℂ) ^ (2 : ℕ))) = ((-(9 / 4 + t ^ (2 : ℕ)) : ℝ) : ℂ) := by push_cast; ring
   rw [e1] at hF hL
   simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero,
     zero_add, one_mul] at hF hL
@@ -149,7 +149,7 @@ theorem skewCut_line_im_neg (t ε : ℝ) (ht : 5 ≤ t) (hε : 1 ≤ Real.log (4
   have hkey : (skewFinitePart ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I)).im +
       (skewLogCoeff ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I)).im < 0 := by
     have : ((skewFinitePart ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I)).im +
-        (skewLogCoeff ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I)).im) * (-(9 / 4 + t ^ 2)) =
+        (skewLogCoeff ((-3 / 2 : ℂ) + (t : ℂ) * Complex.I)).im) * (-(9 / 4 + t ^ (2 : ℕ))) =
         skewFPLineNumerator t + skewLogLineNumerator t := by rw [add_mul, hF, hL]
     nlinarith
   linarith
@@ -168,19 +168,19 @@ theorem log_cutoff_eq_tortoise (ε : ℝ) (hε : 0 < ε) (hε1 : ε < 1) :
   have hq : 0 < Real.sqrt (1 - ε) := Real.sqrt_pos.mpr h1
   have hq1 : Real.sqrt (1 - ε) < 1 := by
     rw [Real.sqrt_lt' one_pos]; linarith
-  have hsq : Real.sqrt (1 - ε) ^ 2 = 1 - ε := Real.sq_sqrt h1.le
+  have hsq : Real.sqrt (1 - ε) ^ (2 : ℕ) = 1 - ε := Real.sq_sqrt h1.le
   set q := Real.sqrt (1 - ε) with hqdef
   have hm : 0 < 1 / q - 1 := by rw [one_div]; have := one_lt_inv_iff₀.mpr ⟨hq, hq1⟩; linarith
   have hp : 0 < 1 / q + 1 := by positivity
   have hA : 1 / q - 1 = (1 - q) / q := by field_simp
   have hB : 1 / q + 1 = (1 + q) / q := by field_simp
-  have hC : 4 / ε = 4 / (1 - q ^ 2) := by rw [hsq]; ring
+  have hC : 4 / ε = 4 / (1 - q ^ (2 : ℕ)) := by rw [hsq]; ring
   have h1q : 0 < 1 - q := by linarith
   have h1q' : 0 < 1 + q := by linarith
   rw [hA, hB, hC, Real.log_div (by positivity) hq.ne', Real.log_div (by positivity) hq.ne',
-    show (1 - q ^ 2) = (1 - q) * (1 + q) by ring, Real.log_div (by norm_num) (by positivity),
+    show (1 - q ^ (2 : ℕ)) = (1 - q) * (1 + q) by ring, Real.log_div (by norm_num) (by positivity),
     Real.log_mul h1q.ne' h1q'.ne', Real.log_div (by norm_num) h1q'.ne',
-    show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+    show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.log_pow]
   push_cast
   ring
 

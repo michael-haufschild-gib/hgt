@@ -142,7 +142,7 @@ theorem tendsto_suzukiHyperbolicPrimitive_atTop :
           Real.exp (h * (1 / 2)) * Real.exp (h * (-1 / 2)) = 1 := by
         convert heprod using 1 <;> ring
       have habb :
-          Real.exp (h * (1 / 2)) * Real.exp (h * (-1 / 2)) ^ 2 =
+          Real.exp (h * (1 / 2)) * Real.exp (h * (-1 / 2)) ^ (2 : ℕ) =
             Real.exp (h * (-1 / 2)) := by
         calc
           _ = (Real.exp (h * (1 / 2)) * Real.exp (h * (-1 / 2))) *

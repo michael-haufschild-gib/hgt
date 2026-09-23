@@ -39,7 +39,7 @@ def quadRoot (s ρ : ι → L) (p : ι × Bool) : L :=
 
 theorem prod_quadratic_eq_prod_quadRoot [Fintype ι] (h2 : (2 : L) ≠ 0)
     (s q ρ : ι → L) (hρ : ∀ z, ρ z * ρ z = s z * s z - 4 * q z) :
-    (∏ z, (X ^ 2 - C (s z) * X + C (q z)))
+    (∏ z, (X ^ (2 : ℕ) - C (s z) * X + C (q z)))
       = ∏ p : ι × Bool, (X - C (quadRoot s ρ p)) := by
   classical
   rw [Fintype.prod_prod_type]

@@ -190,19 +190,19 @@ theorem riemannHypothesis_iff_xiWeilPolarization_nonneg_entire :
     · exfalso
       obtain ⟨F, hdiff, hOdd, hsq, hF1⟩ := exists_entire_divisorOdd_unit_test q hreal
       have hsumC : Summable (fun r : XiZeroCopy =>
-          ((‖F (xiSpectralPoint r)‖ ^ 2 : ℝ) : ℂ)) := by
+          ((‖F (xiSpectralPoint r)‖ ^ (2 : ℕ) : ℝ) : ℂ)) := by
         simpa only [Function.comp_apply] using!
           hsq.map Complex.ofRealCLM Complex.ofRealCLM.continuous
-      have hcongr : (∑' a : XiZeroCopy, (((‖F (xiSpectralPoint a)‖ ^ 2 : ℝ) : ℂ)).re) =
-          ∑' a : XiZeroCopy, ‖F (xiSpectralPoint a)‖ ^ 2 :=
+      have hcongr : (∑' a : XiZeroCopy, (((‖F (xiSpectralPoint a)‖ ^ (2 : ℕ) : ℝ) : ℂ)).re) =
+          ∑' a : XiZeroCopy, ‖F (xiSpectralPoint a)‖ ^ (2 : ℕ) :=
         tsum_congr fun a => Complex.ofReal_re _
       have hre : (xiWeilPolarization F F).re =
-          -∑' r : XiZeroCopy, ‖F (xiSpectralPoint r)‖ ^ 2 := by
+          -∑' r : XiZeroCopy, ‖F (xiSpectralPoint r)‖ ^ (2 : ℕ) := by
         rw [xiWeilPolarization_diagonal_of_divisorOdd hOdd, Complex.neg_re,
           Complex.re_tsum hsumC, hcongr]
-      have hFsum : Summable (fun r : XiZeroCopy => ‖F (xiSpectralPoint r)‖ ^ 2) := hsq
-      have hle : ‖F (xiSpectralPoint q)‖ ^ 2 ≤
-          ∑' r : XiZeroCopy, ‖F (xiSpectralPoint r)‖ ^ 2 :=
+      have hFsum : Summable (fun r : XiZeroCopy => ‖F (xiSpectralPoint r)‖ ^ (2 : ℕ)) := hsq
+      have hle : ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
+          ∑' r : XiZeroCopy, ‖F (xiSpectralPoint r)‖ ^ (2 : ℕ) :=
         hFsum.le_tsum q fun r _ => sq_nonneg _
       rw [hF1] at hle
       have h0 := hpos F hdiff hsq
@@ -230,19 +230,19 @@ theorem riemannHypothesis_iff_polarization_parityFlip_invariant_entire :
       rw [xiWeilPolarization_diagonal_of_divisorOdd hOdd,
         xiWeilPolarization_parityFlip_diagonal F] at heq
       have hsumC : Summable (fun r : XiZeroCopy =>
-          ((‖F (xiSpectralPoint r)‖ ^ 2 : ℝ) : ℂ)) := by
+          ((‖F (xiSpectralPoint r)‖ ^ (2 : ℕ) : ℝ) : ℂ)) := by
         simpa only [Function.comp_apply] using!
           hsq.map Complex.ofRealCLM Complex.ofRealCLM.continuous
-      have hcongr : (∑' a : XiZeroCopy, (((‖F (xiSpectralPoint a)‖ ^ 2 : ℝ) : ℂ)).re) =
-          ∑' a : XiZeroCopy, ‖F (xiSpectralPoint a)‖ ^ 2 :=
+      have hcongr : (∑' a : XiZeroCopy, (((‖F (xiSpectralPoint a)‖ ^ (2 : ℕ) : ℝ) : ℂ)).re) =
+          ∑' a : XiZeroCopy, ‖F (xiSpectralPoint a)‖ ^ (2 : ℕ) :=
         tsum_congr fun a => Complex.ofReal_re _
       have hres := congrArg Complex.re heq
       rw [Complex.neg_re, Complex.re_tsum hsumC, hcongr] at hres
-      have hS : (∑' r : XiZeroCopy, ‖F (xiSpectralPoint r)‖ ^ 2) = 0 := by
+      have hS : (∑' r : XiZeroCopy, ‖F (xiSpectralPoint r)‖ ^ (2 : ℕ)) = 0 := by
         linarith
-      have hFsum : Summable (fun r : XiZeroCopy => ‖F (xiSpectralPoint r)‖ ^ 2) := hsq
-      have hle : ‖F (xiSpectralPoint q)‖ ^ 2 ≤
-          ∑' r : XiZeroCopy, ‖F (xiSpectralPoint r)‖ ^ 2 :=
+      have hFsum : Summable (fun r : XiZeroCopy => ‖F (xiSpectralPoint r)‖ ^ (2 : ℕ)) := hsq
+      have hle : ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) ≤
+          ∑' r : XiZeroCopy, ‖F (xiSpectralPoint r)‖ ^ (2 : ℕ) :=
         hFsum.le_tsum q fun r _ => sq_nonneg _
       rw [hF1, hS] at hle
       simp only [norm_one, one_pow] at hle

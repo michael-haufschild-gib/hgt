@@ -123,7 +123,7 @@ theorem deningerBigWittFrobeniusTwo_completedXiThetaFiberReporter
     (p : ℕ) (alpha : ℂ) (x : CompletedXiThetaSpectralFiber alpha) :
     deningerBigWittFrobeniusTwoRingHom
         (completedXiThetaFiberBigWittReporter p alpha x) =
-      completedXiThetaFiberBigWittReporter (p ^ 2) alpha x := by
+      completedXiThetaFiberBigWittReporter (p ^ (2 : ℕ)) alpha x := by
   simp [completedXiThetaFiberBigWittReporter, completedXiBigWittPrimeMark,
     completedXiCenteredPrimeMark, centeredPrimeMark_primePower]
 
@@ -176,7 +176,7 @@ theorem deningerBigWitt_centeredPrimeMark_completedXiSpectralFiberComparison :
     (∀ p : ℕ, ∀ alpha : ℂ, ∀ x : CompletedXiThetaSpectralFiber alpha,
       deningerBigWittFrobeniusTwoRingHom
           (completedXiThetaFiberBigWittReporter p alpha x) =
-        completedXiThetaFiberBigWittReporter (p ^ 2) alpha x) ∧
+        completedXiThetaFiberBigWittReporter (p ^ (2 : ℕ)) alpha x) ∧
     (∀ p : ℕ, ∀ alpha : ℂ, ∀ k : ℕ,
       deningerBigWittFrobeniusTwoRingHom
           (completedXiBigWittPrimeMarkOrbit p alpha k) =

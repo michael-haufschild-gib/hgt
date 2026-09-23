@@ -22,11 +22,11 @@ structure SEMDyadicWeylQuadraticIrreducibilityUniversalCertificate
   dimensionDivisibility : 2 ^ k ∣ n + 1
   dimensionLowerBound : 2 ^ k ≤ n + 1
   jetQuadraticDivisibility :
-    ((2 : ℤ) ^ k) ^ 2 ∣
+    ((2 : ℤ) ^ k) ^ (2 : ℕ) ∣
       integralJetQuadraticIndex m hm
         (completedSEMContourBoundaryZ rho r0 R N m)
   xiQuadraticDivisibility :
-    ((2 : ℤ) ^ k) ^ 2 ∣ (((analyticOrderAt xi rho).toNat : ℤ) ^ 2)
+    ((2 : ℤ) ^ k) ^ (2 : ℕ) ∣ (((analyticOrderAt xi rho).toNat : ℤ) ^ (2 : ℕ))
   noCommonCharacterLine :
     ¬ ∃ (x : Fin (n + 1) → ℂ) (a b : ℂ),
       x ≠ 0 ∧ a ≠ 0 ∧ b ≠ 0 ∧
@@ -35,7 +35,7 @@ structure SEMDyadicWeylQuadraticIrreducibilityUniversalCertificate
 
 /-- **SEM dyadic Weyl quadratic-irreducibility law.**  At positive depth and nonzero wrap, every
 completed SEM boundary Weyl realization has dimension divisible by `2^k`, both its jet quadratic
-index and local Xi-order square divisible by `(2^k)^2`, and no common nonzero character line for
+index and local Xi-order square divisible by `(2^k)^(2 : ℕ)`, and no common nonzero character line for
 its clock and shift generators. -/
 theorem semDyadicWeyl_quadraticIrreducibilityUniversalCertificate
     {rho : ℂ} {r0 R : ℝ} {N n : ℕ} {zs : List ℂ} {u : ℂ → ℂ}

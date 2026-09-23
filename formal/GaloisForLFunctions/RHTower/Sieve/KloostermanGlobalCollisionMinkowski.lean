@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.DirichletYoung
 /-!
 # Pair-local Minkowski receiver for global Kloosterman collisions
 
-Finite `ell^2` Minkowski is applied to the exact erased-diagonal response Gram before any
+Finite `ell^(2 : ℕ)` Minkowski is applied to the exact erased-diagonal response Gram before any
 modulus-pair Cauchy--Schwarz.  Each weight pair therefore stays beside its own normalized response
 pair average.  The resulting elementary receiver is proved no larger than the earlier global
 weight-pair-energy product, and exact interval residue multiplicities are retained pair by pair.
@@ -17,19 +17,19 @@ namespace RHTower.Sieve
 
 noncomputable section
 
-/-- Finite complex `ell^2` Minkowski for a nested erased-diagonal sum. -/
+/-- Finite complex `ell^(2 : ℕ)` Minkowski for a nested erased-diagonal sum. -/
 theorem sqrt_sum_norm_sq_finset_sum_erase_le
     {ι κ : Type*} [DecidableEq ι] [Fintype κ]
     (S : Finset ι) (f : ι → ι → κ → ℂ) :
-    Real.sqrt (∑ k : κ, ‖∑ i ∈ S, ∑ j ∈ S.erase i, f i j k‖ ^ 2) ≤
+    Real.sqrt (∑ k : κ, ‖∑ i ∈ S, ∑ j ∈ S.erase i, f i j k‖ ^ (2 : ℕ)) ≤
       ∑ i ∈ S, ∑ j ∈ S.erase i,
-        Real.sqrt (∑ k : κ, ‖f i j k‖ ^ 2) := by
+        Real.sqrt (∑ k : κ, ‖f i j k‖ ^ (2 : ℕ)) := by
   calc
-    Real.sqrt (∑ k : κ, ‖∑ i ∈ S, ∑ j ∈ S.erase i, f i j k‖ ^ 2) ≤
-        ∑ i ∈ S, Real.sqrt (∑ k : κ, ‖∑ j ∈ S.erase i, f i j k‖ ^ 2) :=
+    Real.sqrt (∑ k : κ, ‖∑ i ∈ S, ∑ j ∈ S.erase i, f i j k‖ ^ (2 : ℕ)) ≤
+        ∑ i ∈ S, Real.sqrt (∑ k : κ, ‖∑ j ∈ S.erase i, f i j k‖ ^ (2 : ℕ)) :=
       sqrt_sum_norm_sq_finset_sum_le S (fun i k => ∑ j ∈ S.erase i, f i j k)
     _ ≤ ∑ i ∈ S, ∑ j ∈ S.erase i,
-        Real.sqrt (∑ k : κ, ‖f i j k‖ ^ 2) := by
+        Real.sqrt (∑ k : κ, ‖f i j k‖ ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro i hi
       exact sqrt_sum_norm_sq_finset_sum_le (S.erase i) (fun j k => f i j k)
@@ -43,7 +43,7 @@ def kloostermanGlobalCollisionMinkowskiBudget
           ((kloostermanGlobalPeriod Q : ℝ)⁻¹ *
             ∑ k : ZMod (kloostermanGlobalPeriod Q),
               Complex.normSq (kloostermanGlobalModulusTimeResponse q B b k.val) *
-                Complex.normSq (kloostermanGlobalModulusTimeResponse r B b k.val))) ^ 2
+                Complex.normSq (kloostermanGlobalModulusTimeResponse r B b k.val))) ^ (2 : ℕ)
 
 /-- Global collision energy is bounded by the exact pair-local Minkowski receiver. -/
 theorem kloostermanGlobalFrequencyCollisionEnergy_le_minkowski
@@ -63,15 +63,15 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_minkowski
     dsimp only [f, R]
     exact (kloostermanGlobalCollisionTimeTransform_eq_modulusResponseGram Q w B b k).symm
   have hpair : ∀ q r,
-      (∑ k : ZMod (kloostermanGlobalPeriod Q), ‖f q r k‖ ^ 2) =
-        (‖w q‖ * ‖w r‖) ^ 2 *
+      (∑ k : ZMod (kloostermanGlobalPeriod Q), ‖f q r k‖ ^ (2 : ℕ)) =
+        (‖w q‖ * ‖w r‖) ^ (2 : ℕ) *
           ∑ k : ZMod (kloostermanGlobalPeriod Q),
             Complex.normSq (R q k.val) * Complex.normSq (R r k.val) := by
     intro q r
     calc
-      (∑ k : ZMod (kloostermanGlobalPeriod Q), ‖f q r k‖ ^ 2) =
+      (∑ k : ZMod (kloostermanGlobalPeriod Q), ‖f q r k‖ ^ (2 : ℕ)) =
           ∑ k : ZMod (kloostermanGlobalPeriod Q),
-            (‖w q‖ * ‖w r‖) ^ 2 *
+            (‖w q‖ * ‖w r‖) ^ (2 : ℕ) *
               (Complex.normSq (R q k.val) * Complex.normSq (R r k.val)) := by
         apply Fintype.sum_congr
         intro k
@@ -86,7 +86,7 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_minkowski
   have hM' :
       Real.sqrt
           (∑ k : ZMod (kloostermanGlobalPeriod Q),
-            ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ 2) ≤
+            ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ (2 : ℕ)) ≤
         ∑ q ∈ Q, ∑ r ∈ Q.erase q,
           ‖w q‖ * ‖w r‖ *
             Real.sqrt
@@ -108,28 +108,28 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_minkowski
     positivity
   have htime_nonneg :
       0 ≤ ∑ k : ZMod (kloostermanGlobalPeriod Q),
-        ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ 2 := by
+        ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ (2 : ℕ) := by
     positivity
   have hsq :
       (∑ k : ZMod (kloostermanGlobalPeriod Q),
-        ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ 2) ≤
+        ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ (2 : ℕ)) ≤
         (∑ q ∈ Q, ∑ r ∈ Q.erase q,
           ‖w q‖ * ‖w r‖ *
             Real.sqrt
               (∑ k : ZMod (kloostermanGlobalPeriod Q),
-                Complex.normSq (R q k.val) * Complex.normSq (R r k.val))) ^ 2 := by
+                Complex.normSq (R q k.val) * Complex.normSq (R r k.val))) ^ (2 : ℕ) := by
     calc
       (∑ k : ZMod (kloostermanGlobalPeriod Q),
-          ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ 2) =
+          ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ (2 : ℕ)) =
         Real.sqrt
             (∑ k : ZMod (kloostermanGlobalPeriod Q),
-              ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ 2) ^ 2 :=
+              ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ (2 : ℕ)) ^ (2 : ℕ) :=
           (Real.sq_sqrt htime_nonneg).symm
       _ ≤ (∑ q ∈ Q, ∑ r ∈ Q.erase q,
           ‖w q‖ * ‖w r‖ *
             Real.sqrt
               (∑ k : ZMod (kloostermanGlobalPeriod Q),
-                Complex.normSq (R q k.val) * Complex.normSq (R r k.val))) ^ 2 :=
+                Complex.normSq (R q k.val) * Complex.normSq (R r k.val))) ^ (2 : ℕ) :=
         (sq_le_sq₀ (Real.sqrt_nonneg _) hsum_nonneg).2 hM'
   have hPinv : 0 ≤ P⁻¹ := by
     dsimp only [P]
@@ -139,20 +139,20 @@ theorem kloostermanGlobalFrequencyCollisionEnergy_le_minkowski
   calc
     (kloostermanGlobalPeriod Q : ℝ)⁻¹ *
         (∑ k : ZMod (kloostermanGlobalPeriod Q),
-          ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ 2) ≤
+          ‖kloostermanGlobalCollisionTimeTransform Q w B b k‖ ^ (2 : ℕ)) ≤
       P⁻¹ *
         (∑ q ∈ Q, ∑ r ∈ Q.erase q,
           ‖w q‖ * ‖w r‖ *
             Real.sqrt
               (∑ k : ZMod (kloostermanGlobalPeriod Q),
-                Complex.normSq (R q k.val) * Complex.normSq (R r k.val))) ^ 2 :=
+                Complex.normSq (R q k.val) * Complex.normSq (R r k.val))) ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_left hsq hPinv
     _ = (∑ q ∈ Q, ∑ r ∈ Q.erase q,
         ‖w q‖ * ‖w r‖ *
           Real.sqrt
             (P⁻¹ *
               ∑ k : ZMod (kloostermanGlobalPeriod Q),
-                Complex.normSq (R q k.val) * Complex.normSq (R r k.val))) ^ 2 := by
+                Complex.normSq (R q k.val) * Complex.normSq (R r k.val))) ^ (2 : ℕ) := by
       have hsumscale :
           (∑ q ∈ Q, ∑ r ∈ Q.erase q,
               ‖w q‖ * ‖w r‖ *
@@ -182,7 +182,7 @@ def kloostermanGlobalCollisionMinkowskiElementaryBudget
     (Q : Finset ℕ) (w : ℕ → ℂ) (B : Finset ℕ) (b : ℕ → ℂ) : ℝ :=
   (∑ q ∈ Q, ∑ r ∈ Q.erase q,
       ‖w q‖ * ‖w r‖ *
-        Real.sqrt (kloostermanGlobalResponsePairElementaryBudget q r B b)) ^ 2
+        Real.sqrt (kloostermanGlobalResponsePairElementaryBudget q r B b)) ^ (2 : ℕ)
 
 /-- Symmetric elementary collision bound with weights retained pair locally. -/
 theorem kloostermanGlobalFrequencyCollisionEnergy_le_minkowski_elementary
@@ -236,7 +236,7 @@ theorem kloostermanGlobalCollisionMinkowskiElementaryBudget_le_weightPair
       (fun q r => ‖w q‖ * ‖w r‖ *
         Real.sqrt (kloostermanGlobalResponsePairElementaryBudget q r B b))]
   rw [Finset.sum_sigma' Q (fun q => Q.erase q)
-      (fun q r => ‖w q‖ ^ 2 * ‖w r‖ ^ 2)]
+      (fun q r => ‖w q‖ ^ (2 : ℕ) * ‖w r‖ ^ (2 : ℕ))]
   rw [Finset.sum_sigma' Q (fun q => Q.erase q)
       (fun q r => kloostermanGlobalResponsePairElementaryBudget q r B b)]
   have h := Finset.sum_mul_sq_le_sq_mul_sq
@@ -251,7 +251,7 @@ def kloostermanGlobalCollisionMinkowskiIntervalElementaryBudget
     (Q : Finset ℕ) (w : ℕ → ℂ) (N : ℕ) (b : ℕ → ℂ) : ℝ :=
   (∑ q ∈ Q, ∑ r ∈ Q.erase q,
       ‖w q‖ * ‖w r‖ *
-        Real.sqrt (kloostermanGlobalIntervalResponsePairElementaryBudget q r N b)) ^ 2
+        Real.sqrt (kloostermanGlobalIntervalResponsePairElementaryBudget q r N b)) ^ (2 : ℕ)
 
 /-- Literal-source symmetric elementary collision bound with pair-local weights. -/
 theorem kloostermanGlobalFrequencyCollisionEnergy_Icc_le_minkowski_elementary

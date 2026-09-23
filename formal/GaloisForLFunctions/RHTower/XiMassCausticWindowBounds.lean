@@ -22,7 +22,7 @@ noncomputable section
 
 /-- The propagation rate constant of the balance window. -/
 def xiMassWindowRate (a : ℝ) : ℝ :=
-  Real.sqrt ((xiMassSpacelikeSharpSlope a ^ 2 - 1) / 2)
+  Real.sqrt ((xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) / 2)
 
 theorem xiMassWindowRate_pos {a : ℝ} (ha : 1 / 2 < a) : 0 < xiMassWindowRate a := by
   have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
@@ -30,37 +30,37 @@ theorem xiMassWindowRate_pos {a : ℝ} (ha : 1 / 2 < a) : 0 < xiMassWindowRate a
   exact Real.sqrt_pos.2 (by nlinarith)
 
 theorem xiMassWindowRate_sq {a : ℝ} (ha : 1 / 2 < a) :
-    xiMassWindowRate a ^ 2 = (xiMassSpacelikeSharpSlope a ^ 2 - 1) / 2 := by
+    xiMassWindowRate a ^ (2 : ℕ) = (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) / 2 := by
   have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
   rw [xiMassWindowRate]
   exact Real.sq_sqrt (by nlinarith)
 
 theorem sqrt_le_self_of_one_le {u : ℝ} (hu : 1 ≤ u) : Real.sqrt u ≤ u := by
-  have h : Real.sqrt u ≤ Real.sqrt (u ^ 2) := Real.sqrt_le_sqrt (by nlinarith)
+  have h : Real.sqrt u ≤ Real.sqrt (u ^ (2 : ℕ)) := Real.sqrt_le_sqrt (by nlinarith)
   rwa [Real.sqrt_sq (by linarith)] at h
 
 /-- **The propagation rate on the balance window.** -/
 theorem xiMassWindowRate_mul_le_csqrtRe {a sigma u : ℝ} (ha : 1 / 2 < a)
     (hu : xiMassWindowThreshold a ≤ u) {s : ℂ} (hs : ‖s‖ ≤ Real.sqrt u) :
     xiMassWindowRate a * u
-      ≤ HTGeometry.csqrtRe (((sigma : ℂ) + (u : ℂ) * Complex.I) ^ 2
-          + ((((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + s) ^ 2) := by
+      ≤ HTGeometry.csqrtRe (((sigma : ℂ) + (u : ℂ) * Complex.I) ^ (2 : ℕ)
+          + ((((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + s) ^ (2 : ℕ)) := by
   have hu1 : (1 : ℝ) ≤ u := le_trans (one_le_xiMassWindowThreshold a) hu
   have hu0 : (0 : ℝ) < u := by linarith
   have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
-  have hq0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ 2 - 1 := by nlinarith
-  set z : ℂ := ((sigma : ℂ) + (u : ℂ) * Complex.I) ^ 2
-    + ((((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + s) ^ 2 with hzdef
-  have hlow : (xiMassSpacelikeSharpSlope a ^ 2 - 1) * u ^ 2 / 2 ≤ z.re :=
+  have hq0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1 := by nlinarith
+  set z : ℂ := ((sigma : ℂ) + (u : ℂ) * Complex.I) ^ (2 : ℕ)
+    + ((((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + s) ^ (2 : ℕ) with hzdef
+  have hlow : (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) / 2 ≤ z.re :=
     re_propagation_ge_of_window (sigma := sigma) ha hu hs
   have hzre : (0 : ℝ) < z.re := lt_of_lt_of_le (by positivity) hlow
   have hsq := HTGeometry.re_le_sq_csqrtRe hzre
   have hrate := xiMassWindowRate_sq ha
   have hrpos : (0 : ℝ) < xiMassWindowRate a := xiMassWindowRate_pos ha
   have hcpos : (0 : ℝ) < HTGeometry.csqrtRe z := HTGeometry.csqrtRe_pos hzre
-  have hkey : (xiMassWindowRate a * u) ^ 2 ≤ HTGeometry.csqrtRe z ^ 2 := by
-    have hexp : (xiMassWindowRate a * u) ^ 2
-        = (xiMassSpacelikeSharpSlope a ^ 2 - 1) * u ^ 2 / 2 := by
+  have hkey : (xiMassWindowRate a * u) ^ (2 : ℕ) ≤ HTGeometry.csqrtRe z ^ (2 : ℕ) := by
+    have hexp : (xiMassWindowRate a * u) ^ (2 : ℕ)
+        = (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) / 2 := by
       rw [mul_pow, hrate]
       ring
     rw [hexp]
@@ -81,21 +81,21 @@ theorem norm_xiCausticCoeffOne_le_window {a sigma u : ℝ} (ha : 1 / 2 < a)
   have hrpos : (0 : ℝ) < xiMassWindowRate a := xiMassWindowRate_pos ha
   set τ : ℂ := (sigma : ℂ) + (u : ℂ) * Complex.I with hτdef
   set w : ℂ := (((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + s with hwdef
-  have hzre : (0 : ℝ) < (τ ^ 2 + w ^ 2).re := by
-    have hlow : (xiMassSpacelikeSharpSlope a ^ 2 - 1) * u ^ 2 / 2 ≤ (τ ^ 2 + w ^ 2).re :=
+  have hzre : (0 : ℝ) < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re := by
+    have hlow : (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) / 2 ≤ (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re :=
       re_propagation_ge_of_window (sigma := sigma) ha hu hs
-    have hq0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ 2 - 1 := by nlinarith
-    have : (0 : ℝ) < (xiMassSpacelikeSharpSlope a ^ 2 - 1) * u ^ 2 / 2 := by positivity
+    have hq0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1 := by nlinarith
+    have : (0 : ℝ) < (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) / 2 := by positivity
     linarith
-  have hZre : (xiMassHeightRadius τ w).re = HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) := by
+  have hZre : (xiMassHeightRadius τ w).re = HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) := by
     rw [xiMassHeightRadius, HTGeometry.csqrt_re]
   have hrate := xiMassWindowRate_mul_le_csqrtRe (sigma := sigma) ha hu hs
   have hZnorm : xiMassWindowRate a * u ≤ ‖xiMassHeightRadius τ w‖ := by
     refine le_trans hrate ?_
     have h := Complex.abs_re_le_norm (xiMassHeightRadius τ w)
     rw [hZre] at h
-    have hc0 : (0 : ℝ) < HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) := HTGeometry.csqrtRe_pos hzre
-    calc HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) ≤ |HTGeometry.csqrtRe (τ ^ 2 + w ^ 2)| :=
+    have hc0 : (0 : ℝ) < HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) := HTGeometry.csqrtRe_pos hzre
+    calc HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) ≤ |HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ))| :=
           le_abs_self _
       _ ≤ ‖xiMassHeightRadius τ w‖ := h
   have hwnorm : ‖w‖ ≤ (xiMassSpacelikeSharpSlope a + 1) * u := by
@@ -147,7 +147,7 @@ theorem exists_norm_xiCausticCoeffZero_le_window {a sigma : ℝ} (ha : 1 / 2 < a
   have hκ0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a := by linarith
   set c : ℝ := xiMassWindowRate a with hcdef
   have hc0 : (0 : ℝ) < c := xiMassWindowRate_pos ha
-  refine ⟨Cs + a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ 2 / c ^ 3),
+  refine ⟨Cs + a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ (2 : ℕ) / c ^ (3 : ℕ)),
     max us (xiMassWindowThreshold a), by positivity, le_max_right _ _, ?_⟩
   intro u hu s hs
   have hus' : us ≤ u := le_trans (le_max_left _ _) hu
@@ -158,14 +158,14 @@ theorem exists_norm_xiCausticCoeffZero_le_window {a sigma : ℝ} (ha : 1 / 2 < a
   have hru : Real.sqrt u ≤ u := sqrt_le_self_of_one_le hu1
   set τ : ℂ := (sigma : ℂ) + (u : ℂ) * Complex.I with hτdef
   set w : ℂ := (((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + s with hwdef
-  have hlow : (xiMassSpacelikeSharpSlope a ^ 2 - 1) * u ^ 2 / 2 ≤ (τ ^ 2 + w ^ 2).re :=
+  have hlow : (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) / 2 ≤ (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re :=
     re_propagation_ge_of_window (sigma := sigma) ha huw hs
-  have hq0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ 2 - 1 := by nlinarith
-  have hzre : (0 : ℝ) < (τ ^ 2 + w ^ 2).re := by
-    have : (0 : ℝ) < (xiMassSpacelikeSharpSlope a ^ 2 - 1) * u ^ 2 / 2 := by positivity
+  have hq0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1 := by nlinarith
+  have hzre : (0 : ℝ) < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re := by
+    have : (0 : ℝ) < (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) / 2 := by positivity
     linarith
   have hrate := xiMassWindowRate_mul_le_csqrtRe (sigma := sigma) ha huw hs
-  have hZre : (xiMassHeightRadius τ w).re = HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) := by
+  have hZre : (xiMassHeightRadius τ w).re = HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) := by
     rw [xiMassHeightRadius, HTGeometry.csqrt_re]
   have hZnorm : c * u ≤ ‖xiMassHeightRadius τ w‖ := by
     refine le_trans hrate ?_
@@ -182,51 +182,51 @@ theorem exists_norm_xiCausticCoeffZero_le_window {a sigma : ℝ} (ha : 1 / 2 < a
     rw [h2] at h1
     nlinarith [h1, hs, hru]
   -- the curvature term
-  have hcurv : ‖(a : ℂ) * (1 / xiMassHeightRadius τ w - w ^ 2 / xiMassHeightRadius τ w ^ 3)‖
-      ≤ a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ 2 / c ^ 3) / u := by
+  have hcurv : ‖(a : ℂ) * (1 / xiMassHeightRadius τ w - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ))‖
+      ≤ a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ (2 : ℕ) / c ^ (3 : ℕ)) / u := by
     have hanorm : ‖(a : ℂ)‖ = a := by
       rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos ha0]
     have h1 : ‖1 / xiMassHeightRadius τ w‖ ≤ 1 / (c * u) := by
       rw [norm_div, norm_one]
       exact div_le_div_of_nonneg_left zero_le_one (by positivity) hZnorm
-    have h2 : ‖w ^ 2 / xiMassHeightRadius τ w ^ 3‖
-        ≤ ((xiMassSpacelikeSharpSlope a + 1) * u) ^ 2 / (c * u) ^ 3 := by
+    have h2 : ‖w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ)‖
+        ≤ ((xiMassSpacelikeSharpSlope a + 1) * u) ^ (2 : ℕ) / (c * u) ^ (3 : ℕ) := by
       rw [norm_div, norm_pow, norm_pow]
-      have hnum : ‖w‖ ^ 2 ≤ ((xiMassSpacelikeSharpSlope a + 1) * u) ^ 2 :=
+      have hnum : ‖w‖ ^ (2 : ℕ) ≤ ((xiMassSpacelikeSharpSlope a + 1) * u) ^ (2 : ℕ) :=
         pow_le_pow_left₀ (norm_nonneg w) hwnorm 2
-      have hden : (c * u) ^ 3 ≤ ‖xiMassHeightRadius τ w‖ ^ 3 :=
+      have hden : (c * u) ^ (3 : ℕ) ≤ ‖xiMassHeightRadius τ w‖ ^ (3 : ℕ) :=
         pow_le_pow_left₀ (by positivity) hZnorm 3
-      have hstep1 : ‖w‖ ^ 2 / ‖xiMassHeightRadius τ w‖ ^ 3
-          ≤ ((xiMassSpacelikeSharpSlope a + 1) * u) ^ 2 / ‖xiMassHeightRadius τ w‖ ^ 3 :=
+      have hstep1 : ‖w‖ ^ (2 : ℕ) / ‖xiMassHeightRadius τ w‖ ^ (3 : ℕ)
+          ≤ ((xiMassSpacelikeSharpSlope a + 1) * u) ^ (2 : ℕ) / ‖xiMassHeightRadius τ w‖ ^ (3 : ℕ) :=
         div_le_div_of_nonneg_right hnum (by positivity)
-      have hstep2 : ((xiMassSpacelikeSharpSlope a + 1) * u) ^ 2 / ‖xiMassHeightRadius τ w‖ ^ 3
-          ≤ ((xiMassSpacelikeSharpSlope a + 1) * u) ^ 2 / (c * u) ^ 3 :=
+      have hstep2 : ((xiMassSpacelikeSharpSlope a + 1) * u) ^ (2 : ℕ) / ‖xiMassHeightRadius τ w‖ ^ (3 : ℕ)
+          ≤ ((xiMassSpacelikeSharpSlope a + 1) * u) ^ (2 : ℕ) / (c * u) ^ (3 : ℕ) :=
         div_le_div_of_nonneg_left (by positivity) (by positivity) hden
       linarith
-    have hsub : ‖1 / xiMassHeightRadius τ w - w ^ 2 / xiMassHeightRadius τ w ^ 3‖
-        ≤ 1 / (c * u) + ((xiMassSpacelikeSharpSlope a + 1) * u) ^ 2 / (c * u) ^ 3 := by
+    have hsub : ‖1 / xiMassHeightRadius τ w - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ)‖
+        ≤ 1 / (c * u) + ((xiMassSpacelikeSharpSlope a + 1) * u) ^ (2 : ℕ) / (c * u) ^ (3 : ℕ) := by
       refine le_trans (norm_sub_le _ _) ?_
       linarith
-    have hval : 1 / (c * u) + ((xiMassSpacelikeSharpSlope a + 1) * u) ^ 2 / (c * u) ^ 3
-        = (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ 2 / c ^ 3) / u := by
+    have hval : 1 / (c * u) + ((xiMassSpacelikeSharpSlope a + 1) * u) ^ (2 : ℕ) / (c * u) ^ (3 : ℕ)
+        = (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ (2 : ℕ) / c ^ (3 : ℕ)) / u := by
       field_simp
     rw [norm_mul, hanorm]
     have hstep := mul_le_mul_of_nonneg_left hsub ha0.le
-    calc a * ‖1 / xiMassHeightRadius τ w - w ^ 2 / xiMassHeightRadius τ w ^ 3‖
-        ≤ a * (1 / (c * u) + ((xiMassSpacelikeSharpSlope a + 1) * u) ^ 2 / (c * u) ^ 3) := hstep
-      _ = a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ 2 / c ^ 3) / u := by
+    calc a * ‖1 / xiMassHeightRadius τ w - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ)‖
+        ≤ a * (1 / (c * u) + ((xiMassSpacelikeSharpSlope a + 1) * u) ^ (2 : ℕ) / (c * u) ^ (3 : ℕ)) := hstep
+      _ = a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ (2 : ℕ) / c ^ (3 : ℕ)) / u := by
           rw [hval]; ring
   have hsymb := hsym u hus' s hs
   rw [← hτdef] at hsymb
-  have hcurv' : a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ 2 / c ^ 3) / u
-      ≤ a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ 2 / c ^ 3) / Real.sqrt u :=
+  have hcurv' : a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ (2 : ℕ) / c ^ (3 : ℕ)) / u
+      ≤ a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ (2 : ℕ) / c ^ (3 : ℕ)) / Real.sqrt u :=
     div_le_div_of_nonneg_left (by positivity) hr0 hru
   rw [xiCausticCoeffZero]
   have htri := norm_add_le (xiMassCausticSymbolC a τ w)
-    ((a : ℂ) * (1 / xiMassHeightRadius τ w - w ^ 2 / xiMassHeightRadius τ w ^ 3))
-  have hsplit : (Cs + a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ 2 / c ^ 3)) / Real.sqrt u
+    ((a : ℂ) * (1 / xiMassHeightRadius τ w - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ)))
+  have hsplit : (Cs + a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ (2 : ℕ) / c ^ (3 : ℕ))) / Real.sqrt u
       = Cs / Real.sqrt u
-        + a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ 2 / c ^ 3) / Real.sqrt u := by
+        + a * (1 / c + (xiMassSpacelikeSharpSlope a + 1) ^ (2 : ℕ) / c ^ (3 : ℕ)) / Real.sqrt u := by
     field_simp
   rw [hsplit]
   linarith [htri, hsymb, hcurv, hcurv']
@@ -249,16 +249,16 @@ theorem exists_norm_conjugatedCarrier_le_window {a sigma : ℝ} (ha : 1 / 2 < a)
   have hu1 : (1 : ℝ) ≤ u := le_trans (one_le_xiMassWindowThreshold a) hu
   have hu0 : (0 : ℝ) < u := by linarith
   have hr0 : (0 : ℝ) < Real.sqrt u := Real.sqrt_pos.2 hu0
-  have hrsq : Real.sqrt u ^ 2 = u := Real.sq_sqrt hu0.le
+  have hrsq : Real.sqrt u ^ (2 : ℕ) = u := Real.sq_sqrt hu0.le
   set τ : ℂ := (sigma : ℂ) + (u : ℂ) * Complex.I with hτdef
   set w : ℂ := (((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + s with hwdef
-  have hlow : (xiMassSpacelikeSharpSlope a ^ 2 - 1) * u ^ 2 / 2 ≤ (τ ^ 2 + w ^ 2).re :=
+  have hlow : (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) / 2 ≤ (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re :=
     re_propagation_ge_of_window (sigma := sigma) ha hu hs
-  have hq0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ 2 - 1 := by nlinarith
-  have hzre : (0 : ℝ) < (τ ^ 2 + w ^ 2).re := by
-    have : (0 : ℝ) < (xiMassSpacelikeSharpSlope a ^ 2 - 1) * u ^ 2 / 2 := by positivity
+  have hq0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1 := by nlinarith
+  have hzre : (0 : ℝ) < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re := by
+    have : (0 : ℝ) < (xiMassSpacelikeSharpSlope a ^ (2 : ℕ) - 1) * u ^ (2 : ℕ) / 2 := by positivity
     linarith
-  set R : ℝ := HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) with hRdef
+  set R : ℝ := HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) with hRdef
   have hR0 : (0 : ℝ) < R := HTGeometry.csqrtRe_pos hzre
   have hRge : c * u ≤ R := xiMassWindowRate_mul_le_csqrtRe (sigma := sigma) ha hu hs
   have hcu0 : (0 : ℝ) < c * u := by positivity

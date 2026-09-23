@@ -61,17 +61,17 @@ theorem egbFixedChargeAGibbsHellinger_zero_limit
 theorem egbFixedChargeAGibbsHellinger_two_step_square
     (n m : ℕ) (β γ : ℝ) (E F : Fin (2 ^ (n + 3)) → ℝ) :
     finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n (m + 2) β E)
-      (egbFixedChargeAGibbsMarkovPopulation n (m + 2) γ F) ^ 2 ≤
+      (egbFixedChargeAGibbsMarkovPopulation n (m + 2) γ F) ^ (2 : ℕ) ≤
         (5 / 6 : ℝ) * finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n m β E)
-          (egbFixedChargeAGibbsMarkovPopulation n m γ F) ^ 2 := by
+          (egbFixedChargeAGibbsMarkovPopulation n m γ F) ^ (2 : ℕ) := by
   let R := (egbFixedChargeACriticalMarkovRefreshKernel n).toFinitePositiveKernel
   let u := egbFixedChargeAGibbsMarkovPopulation n m β E
   let v := egbFixedChargeAGibbsMarkovPopulation n m γ F
   have hu : ∀ i, 0 ≤ u i := egbFixedChargeAGibbsMarkovPopulation_nonneg n m β E
   have hv : ∀ i, 0 ≤ v i := egbFixedChargeAGibbsMarkovPopulation_nonneg n m γ F
-  have hRu (i : Fin (2 ^ (n + 3))) : Real.sqrt (R.applyReal u i) ^ 2 = R.applyReal u i :=
+  have hRu (i : Fin (2 ^ (n + 3))) : Real.sqrt (R.applyReal u i) ^ (2 : ℕ) = R.applyReal u i :=
     Real.sq_sqrt (R.applyReal_nonneg hu i)
-  have hRv (i : Fin (2 ^ (n + 3))) : Real.sqrt (R.applyReal v i) ^ 2 = R.applyReal v i :=
+  have hRv (i : Fin (2 ^ (n + 3))) : Real.sqrt (R.applyReal v i) ^ (2 : ℕ) = R.applyReal v i :=
     Real.sq_sqrt (R.applyReal_nonneg hv i)
   have h := egbFixedChargeAHellinger_common_refresh (2 ^ (n + 3)) (Real.sqrt (5 / 6))
     (fun _ => Real.sqrt (1 / (6 * (2 : ℝ) ^ (n + 3))))
@@ -81,8 +81,8 @@ theorem egbFixedChargeAGibbsHellinger_two_step_square
   have hd := finitePacketHellinger_markovDataProcessing (egbFixedChargeACriticalMarkovRefreshKernel n)
     hu hv (egbFixedChargeAGibbsMarkovPopulation_mass n m β E)
       (egbFixedChargeAGibbsMarkovPopulation_mass n m γ F)
-  have hs : finitePacketHellinger (R.applyReal u) (R.applyReal v) ^ 2 ≤
-      finitePacketHellinger u v ^ 2 :=
+  have hs : finitePacketHellinger (R.applyReal u) (R.applyReal v) ^ (2 : ℕ) ≤
+      finitePacketHellinger u v ^ (2 : ℕ) :=
     (sq_le_sq₀ (finitePacketHellinger_nonneg _ _) (finitePacketHellinger_nonneg _ _)).mpr hd
   rw [egbFixedChargeAGibbsMarkovPopulation_refresh, egbFixedChargeAGibbsMarkovPopulation_refresh]
   exact h.trans (mul_le_mul_of_nonneg_left hs (by norm_num))

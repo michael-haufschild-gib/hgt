@@ -32,10 +32,10 @@ point lies on `r` lines, then the squared length of the transported function is
 theorem sum_incidence_sq (N : P → L → ℝ) (r lam : ℝ)
     (hdesign : ∀ p p' : P, (∑ l, N p l * N p' l) = if p = p' then r else lam)
     (f : P → ℝ) :
-    (∑ l, (∑ p, N p l * f p) ^ 2)
-      = (r - lam) * (∑ p, (f p) ^ 2) + lam * (∑ p, f p) ^ 2 := by
+    (∑ l, (∑ p, N p l * f p) ^ (2 : ℕ))
+      = (r - lam) * (∑ p, (f p) ^ (2 : ℕ)) + lam * (∑ p, f p) ^ (2 : ℕ) := by
   classical
-  have hexpand : ∀ l : L, (∑ p, N p l * f p) ^ 2
+  have hexpand : ∀ l : L, (∑ p, N p l * f p) ^ (2 : ℕ)
       = ∑ p, ∑ p', (N p l * f p) * (N p' l * f p') := by
     intro l
     rw [pow_two, Finset.sum_mul_sum]
@@ -59,11 +59,11 @@ theorem sum_incidence_sq (N : P → L → ℝ) (r lam : ℝ)
     Finset.sum_congr rfl (fun p' (_ : p' ∈ univ) => hval p p'))]
   rw [Finset.sum_congr rfl (fun p (_ : p ∈ univ) => Finset.sum_add_distrib)]
   rw [Finset.sum_add_distrib]
-  have h1 : ∑ p : P, ∑ p' : P, lam * (f p * f p') = lam * (∑ p, f p) ^ 2 := by
+  have h1 : ∑ p : P, ∑ p' : P, lam * (f p * f p') = lam * (∑ p, f p) ^ (2 : ℕ) := by
     rw [pow_two, Finset.sum_mul_sum, Finset.mul_sum]
     exact Finset.sum_congr rfl fun p _ => by rw [Finset.mul_sum]
   have h2 : ∑ p : P, ∑ p' : P, (if p = p' then (r - lam) * (f p * f p') else 0)
-      = (r - lam) * ∑ p, (f p) ^ 2 := by
+      = (r - lam) * ∑ p, (f p) ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun p _ => ?_
     rw [Finset.sum_ite_eq _ p (fun p' => (r - lam) * (f p * f p')), if_pos (Finset.mem_univ p),
@@ -76,7 +76,7 @@ has squared length exactly `r - lam` times the original. -/
 theorem sum_incidence_sq_of_sum_eq_zero (N : P → L → ℝ) (r lam : ℝ)
     (hdesign : ∀ p p' : P, (∑ l, N p l * N p' l) = if p = p' then r else lam)
     (f : P → ℝ) (hf : (∑ p, f p) = 0) :
-    (∑ l, (∑ p, N p l * f p) ^ 2) = (r - lam) * (∑ p, (f p) ^ 2) := by
+    (∑ l, (∑ p, N p l * f p) ^ (2 : ℕ)) = (r - lam) * (∑ p, (f p) ^ (2 : ℕ)) := by
   rw [sum_incidence_sq N r lam hdesign f, hf]
   ring
 
@@ -85,7 +85,7 @@ on `q + 1` lines, so a function of sum zero is transported with squared length m
 theorem sum_incidence_sq_projectivePlane (N : P → L → ℝ) (q : ℝ)
     (hdesign : ∀ p p' : P, (∑ l, N p l * N p' l) = if p = p' then q + 1 else 1)
     (f : P → ℝ) (hf : (∑ p, f p) = 0) :
-    (∑ l, (∑ p, N p l * f p) ^ 2) = q * (∑ p, (f p) ^ 2) := by
+    (∑ l, (∑ p, N p l * f p) ^ (2 : ℕ)) = q * (∑ p, (f p) ^ (2 : ℕ)) := by
   rw [sum_incidence_sq_of_sum_eq_zero N (q + 1) 1 hdesign f hf]
   ring
 
@@ -98,7 +98,7 @@ theorem two_mul_incidence_le (N : P → L → ℝ) (r lam : ℝ) (hrl : 0 ≤ r 
     (hdesign : ∀ p p' : P, (∑ l, N p l * N p' l) = if p = p' then r else lam)
     (a : P → ℝ) (b : L → ℝ) (ha : (∑ p, a p) = 0) :
     2 * (∑ p, ∑ l, N p l * (a p * b l))
-      ≤ Real.sqrt (r - lam) * ((∑ p, (a p) ^ 2) + (∑ l, (b l) ^ 2)) := by
+      ≤ Real.sqrt (r - lam) * ((∑ p, (a p) ^ (2 : ℕ)) + (∑ l, (b l) ^ (2 : ℕ))) := by
   classical
   have hT : (∑ p, ∑ l, N p l * (a p * b l)) = ∑ l, (∑ p, N p l * a p) * b l := by
     rw [Finset.sum_comm]
@@ -107,18 +107,18 @@ theorem two_mul_incidence_le (N : P → L → ℝ) (r lam : ℝ) (hrl : 0 ≤ r 
     exact Finset.sum_congr rfl fun p _ => by ring
   have hCS := Finset.sum_mul_sq_le_sq_mul_sq (univ : Finset L) (fun l => ∑ p, N p l * a p) b
   rw [sum_incidence_sq_of_sum_eq_zero N r lam hdesign a ha] at hCS
-  set A : ℝ := ∑ p, (a p) ^ 2 with hAdef
-  set B : ℝ := ∑ l, (b l) ^ 2 with hBdef
+  set A : ℝ := ∑ p, (a p) ^ (2 : ℕ) with hAdef
+  set B : ℝ := ∑ l, (b l) ^ (2 : ℕ) with hBdef
   set T : ℝ := ∑ l, (∑ p, N p l * a p) * b l with hTdef
   have hA : 0 ≤ A := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hB : 0 ≤ B := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hAB : 0 ≤ A + B := by linarith
-  have h4 : (2 * T) ^ 2 ≤ (r - lam) * (A + B) ^ 2 := by
+  have h4 : (2 * T) ^ (2 : ℕ) ≤ (r - lam) * (A + B) ^ (2 : ℕ) := by
     nlinarith [hCS, mul_nonneg hrl (sq_nonneg (A - B))]
-  have hfin : 2 * T ≤ Real.sqrt ((r - lam) * (A + B) ^ 2) :=
+  have hfin : 2 * T ≤ Real.sqrt ((r - lam) * (A + B) ^ (2 : ℕ)) :=
     calc 2 * T ≤ |2 * T| := le_abs_self _
-      _ = Real.sqrt ((2 * T) ^ 2) := (Real.sqrt_sq_eq_abs _).symm
-      _ ≤ Real.sqrt ((r - lam) * (A + B) ^ 2) := Real.sqrt_le_sqrt h4
+      _ = Real.sqrt ((2 * T) ^ (2 : ℕ)) := (Real.sqrt_sq_eq_abs _).symm
+      _ ≤ Real.sqrt ((r - lam) * (A + B) ^ (2 : ℕ)) := Real.sqrt_le_sqrt h4
   rw [Real.sqrt_mul hrl, Real.sqrt_sq hAB] at hfin
   rw [hT]
   exact hfin
@@ -203,13 +203,13 @@ omit [DecidableEq P] in
 theorem incidenceGraph_massInner (N : P → L → ℝ) (hN : ∀ p l, 0 ≤ N p l) (r : ℝ)
     (hdegP : ∀ p, (∑ l, N p l) = r) (hdegL : ∀ l, (∑ p, N p l) = r) (f : P ⊕ L → ℝ) :
     (incidenceGraph N hN).massInner f f
-      = r * ((∑ p, f (Sum.inl p) ^ 2) + ∑ l, f (Sum.inr l) ^ 2) := by
+      = r * ((∑ p, f (Sum.inl p) ^ (2 : ℕ)) + ∑ l, f (Sum.inr l) ^ (2 : ℕ)) := by
   rw [WeightedGraph.massInner, Fintype.sum_sum_type]
   have h1 : ∀ p : P, (incidenceGraph N hN).mass (Sum.inl p) * (f (Sum.inl p) * f (Sum.inl p))
-      = r * f (Sum.inl p) ^ 2 := fun p => by
+      = r * f (Sum.inl p) ^ (2 : ℕ) := fun p => by
     rw [incidenceGraph_mass_inl, hdegP p, pow_two]
   have h2 : ∀ l : L, (incidenceGraph N hN).mass (Sum.inr l) * (f (Sum.inr l) * f (Sum.inr l))
-      = r * f (Sum.inr l) ^ 2 := fun l => by
+      = r * f (Sum.inr l) ^ (2 : ℕ) := fun l => by
     rw [incidenceGraph_mass_inr, hdegL l, pow_two]
   rw [Finset.sum_congr rfl (fun p (_ : p ∈ univ) => h1 p),
     Finset.sum_congr rfl (fun l (_ : l ∈ univ) => h2 l), ← Finset.mul_sum, ← Finset.mul_sum]
@@ -264,8 +264,8 @@ theorem incidence_pairing_shift (N : P → L → ℝ) (r : ℝ)
 
 theorem sum_sq_sub_const {ι : Type*} [Fintype ι] (g : ι → ℝ) (c : ℝ)
     (hc : (∑ i, g i) = c * (Fintype.card ι : ℝ)) :
-    (∑ i, (g i) ^ 2) = (∑ i, (g i - c) ^ 2) + c ^ 2 * (Fintype.card ι : ℝ) := by
-  have hexp : ∀ i : ι, (g i - c) ^ 2 = (g i) ^ 2 - 2 * c * (g i) + c ^ 2 := fun i => by ring
+    (∑ i, (g i) ^ (2 : ℕ)) = (∑ i, (g i - c) ^ (2 : ℕ)) + c ^ (2 : ℕ) * (Fintype.card ι : ℝ) := by
+  have hexp : ∀ i : ι, (g i - c) ^ (2 : ℕ) = (g i) ^ (2 : ℕ) - 2 * c * (g i) + c ^ (2 : ℕ) := fun i => by ring
   rw [Finset.sum_congr rfl (fun i (_ : i ∈ univ) => hexp i), Finset.sum_add_distrib,
     Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, hc]
   ring
@@ -314,7 +314,7 @@ theorem incidenceGraph_hasSpectralGap [Nonempty P] (N : P → L → ℝ)
     field_simp
   rw [hdiv]
   have hsq : (0:ℝ) ≤ Real.sqrt (r - lam) := Real.sqrt_nonneg _
-  have hcorner : (0:ℝ) ≤ al ^ 2 * (Fintype.card P : ℝ) := mul_nonneg (sq_nonneg _) hvpos.le
+  have hcorner : (0:ℝ) ≤ al ^ (2 : ℕ) * (Fintype.card P : ℝ) := mul_nonneg (sq_nonneg _) hvpos.le
   nlinarith [hCS, mul_nonneg hsq hcorner, mul_nonneg hcorner hr.le]
 
 

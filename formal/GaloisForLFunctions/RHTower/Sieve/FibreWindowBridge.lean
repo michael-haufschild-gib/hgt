@@ -51,7 +51,7 @@ theorem innerFibre_subset_fibreIndex {x h : ℝ} (hx : 4 ≤ x) {a : ℕ}
   exact Nat.le_floor hble
 
 /-- At most one integer has a prescribed logarithm. -/
-theorem card_filter_log_eq_le_one (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n) (u : ℝ) :
+theorem card_filter_log_eq_le_one_fibreWindowBridge (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n) (u : ℝ) :
     (s.filter (fun b : ℕ => Real.log (b : ℝ) = u)).card ≤ 1 := by
   classical
   refine Finset.card_le_one.2 fun b hb c hc => ?_
@@ -147,7 +147,7 @@ theorem norm_fibreSum_sub_logWindowSum_le {f : ℕ → ℝ} {M : ℝ} (hM : ∀ 
   rw [Finset.sum_const, nsmul_eq_mul]
   have hcard : (((s.filter (fun b : ℕ => u ≤ Real.log (b : ℝ) ∧ Real.log (b : ℝ) ≤ u + δ))
       \ (s.filter (fun b : ℕ => u < Real.log (b : ℝ) ∧ Real.log (b : ℝ) ≤ u + δ))).card : ℝ) ≤ 1 := by
-    have := le_trans (Finset.card_le_card hdiff) (card_filter_log_eq_le_one s hs1 u)
+    have := le_trans (Finset.card_le_card hdiff) (card_filter_log_eq_le_one_fibreWindowBridge s hs1 u)
     exact_mod_cast this
   nlinarith [hcard, hM0]
 
@@ -235,7 +235,7 @@ theorem norm_logWindowSum_osc_le {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {x 
   have hsx2 : (2 : ℝ) ≤ Real.sqrt x := by
     have hle : Real.sqrt 4 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
     rwa [show Real.sqrt 4 = 2 by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at hle
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]] at hle
   set u : ℝ := fibreLogStart x a with hudef
   set lam : ℝ := 1 / (2 * Real.sqrt x) with hlamdef
   have hlam0 : 0 < lam := by rw [hlamdef]; positivity
@@ -303,9 +303,9 @@ window sums at `1/(2√x)`-separated sample points, so the discrete average is a
 continuous `L²` norm of the window sum, plus a term of size `√x`. -/
 theorem sum_fibreSum_sq_le_integral {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {x h : ℝ} (hx : 4 ≤ x)
     (hh0 : 0 ≤ h) (hhx : h ≤ Real.sqrt x) :
-    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
+    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
       ≤ 8 * Real.sqrt x * (∫ u : ℝ, ‖logWindowSum (fun n => ((f n : ℝ) : ℂ))
-            (fibreIndex x h) (fibreWidth x h) u‖ ^ 2)
+            (fibreIndex x h) (fibreWidth x h) u‖ ^ (2 : ℕ))
         + 102 * (Real.sqrt x + 1) := by
   classical
   have hx0 : (0 : ℝ) < x := by linarith
@@ -316,7 +316,7 @@ theorem sum_fibreSum_sq_le_integral {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) 
     with hSdef
   -- pointwise comparison
   have hpoint : ∀ a ∈ outerBlock x h,
-      (∑ b ∈ innerFibre x h a, f b) ^ 2 ≤ 2 * ‖S (fibreLogStart x a)‖ ^ 2 + 2 := by
+      (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ) ≤ 2 * ‖S (fibreLogStart x a)‖ ^ (2 : ℕ) + 2 := by
     intro a ha
     have hcmp := norm_fibreSum_sub_logWindowSum_le (f := f) (M := 1)
       (fun n => hf n) (by norm_num) hx hh0 ha
@@ -331,11 +331,11 @@ theorem sum_fibreSum_sq_le_integral {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) 
         rw [hSdef, fibreLogStart]
         exact hcmp
       linarith [htri, hcmp']
-    have hsq : (∑ b ∈ innerFibre x h a, f b) ^ 2
-        = |∑ b ∈ innerFibre x h a, f b| ^ 2 := (sq_abs _).symm
+    have hsq : (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
+        = |∑ b ∈ innerFibre x h a, f b| ^ (2 : ℕ) := (sq_abs _).symm
     rw [hsq]
     have h0 : (0 : ℝ) ≤ |∑ b ∈ innerFibre x h a, f b| := abs_nonneg _
-    have hsq2 : |∑ b ∈ innerFibre x h a, f b| ^ 2 ≤ (‖S (fibreLogStart x a)‖ + 1) ^ 2 :=
+    have hsq2 : |∑ b ∈ innerFibre x h a, f b| ^ (2 : ℕ) ≤ (‖S (fibreLogStart x a)‖ + 1) ^ (2 : ℕ) :=
       pow_le_pow_left₀ h0 habs 2
     nlinarith [hsq2, sq_nonneg (‖S (fibreLogStart x a)‖ - 1)]
   -- the separation
@@ -364,22 +364,22 @@ theorem sum_fibreSum_sq_le_integral {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) 
   rw [← hSdef] at htransfer
   -- assemble
   have hcard := card_outerBlock_le hx hh0
-  have hsum1 : ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
-      ≤ ∑ a ∈ outerBlock x h, (2 * ‖S (fibreLogStart x a)‖ ^ 2 + 2) :=
+  have hsum1 : ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
+      ≤ ∑ a ∈ outerBlock x h, (2 * ‖S (fibreLogStart x a)‖ ^ (2 : ℕ) + 2) :=
     Finset.sum_le_sum hpoint
-  have hsplit : ∑ a ∈ outerBlock x h, (2 * ‖S (fibreLogStart x a)‖ ^ 2 + 2)
-      = 2 * (∑ a ∈ outerBlock x h, ‖S (fibreLogStart x a)‖ ^ 2)
+  have hsplit : ∑ a ∈ outerBlock x h, (2 * ‖S (fibreLogStart x a)‖ ^ (2 : ℕ) + 2)
+      = 2 * (∑ a ∈ outerBlock x h, ‖S (fibreLogStart x a)‖ ^ (2 : ℕ))
         + 2 * ((outerBlock x h).card : ℝ) := by
     rw [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const, nsmul_eq_mul]
     ring
   have hlamval : lam * (2 * Real.sqrt x) = 1 := by
     rw [hlamdef]
     field_simp
-  have hkey : ∑ a ∈ outerBlock x h, ‖S (fibreLogStart x a)‖ ^ 2
-      ≤ 4 * Real.sqrt x * (∫ u : ℝ, ‖S u‖ ^ 2) + 50 * ((outerBlock x h).card : ℝ) := by
+  have hkey : ∑ a ∈ outerBlock x h, ‖S (fibreLogStart x a)‖ ^ (2 : ℕ)
+      ≤ 4 * Real.sqrt x * (∫ u : ℝ, ‖S u‖ ^ (2 : ℕ)) + 50 * ((outerBlock x h).card : ℝ) := by
     have hmul := mul_le_mul_of_nonneg_left htransfer (le_of_lt (by positivity : (0:ℝ) < 2 * Real.sqrt x))
-    have hlhs : (2 * Real.sqrt x) * (lam * ∑ a ∈ outerBlock x h, ‖S (fibreLogStart x a)‖ ^ 2)
-        = ∑ a ∈ outerBlock x h, ‖S (fibreLogStart x a)‖ ^ 2 := by
+    have hlhs : (2 * Real.sqrt x) * (lam * ∑ a ∈ outerBlock x h, ‖S (fibreLogStart x a)‖ ^ (2 : ℕ))
+        = ∑ a ∈ outerBlock x h, ‖S (fibreLogStart x a)‖ ^ (2 : ℕ) := by
       rw [← mul_assoc, mul_comm (2 * Real.sqrt x) lam, hlamval, one_mul]
     rw [hlhs] at hmul
     refine hmul.trans (le_of_eq ?_)
@@ -387,7 +387,7 @@ theorem sum_fibreSum_sq_le_integral {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) 
     field_simp
     ring
   have hcard0 : (0 : ℝ) ≤ ((outerBlock x h).card : ℝ) := Nat.cast_nonneg _
-  have hint0 : (0 : ℝ) ≤ ∫ u : ℝ, ‖S u‖ ^ 2 := by
+  have hint0 : (0 : ℝ) ≤ ∫ u : ℝ, ‖S u‖ ^ (2 : ℕ) := by
     refine MeasureTheory.integral_nonneg fun u => ?_
     positivity
   linarith [hsum1, hsplit.le, hsplit.ge, hkey, hcard, hcard0]
@@ -399,11 +399,11 @@ theorem averagedMeanSquare_of_spectral {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 
     (hgrow : Filter.Tendsto hh Filter.atTop Filter.atTop)
     (hhx : ∀ᶠ x : ℝ in Filter.atTop, hh x ≤ Real.sqrt x)
     (hspec : Filter.Tendsto (fun x : ℝ => (∫ u : ℝ, ‖logWindowSum (fun n => ((f n : ℝ) : ℂ))
-          (fibreIndex x (hh x)) (fibreWidth x (hh x)) u‖ ^ 2) / hh x ^ 2)
+          (fibreIndex x (hh x)) (fibreWidth x (hh x)) u‖ ^ (2 : ℕ)) / hh x ^ (2 : ℕ))
       Filter.atTop (nhds 0)) :
     AveragedMeanSquare f hh := by
-  have hsqinv : Filter.Tendsto (fun x : ℝ => 1 / hh x ^ 2) Filter.atTop (nhds 0) := by
-    have hsq : Filter.Tendsto (fun x : ℝ => hh x ^ 2) Filter.atTop Filter.atTop := by
+  have hsqinv : Filter.Tendsto (fun x : ℝ => 1 / hh x ^ (2 : ℕ)) Filter.atTop (nhds 0) := by
+    have hsq : Filter.Tendsto (fun x : ℝ => hh x ^ (2 : ℕ)) Filter.atTop Filter.atTop := by
       have := hgrow.atTop_mul_atTop₀ hgrow
       refine this.congr fun x => ?_
       ring
@@ -411,8 +411,8 @@ theorem averagedMeanSquare_of_spectral {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 
     simp [one_div]
   have hmaj : Filter.Tendsto (fun x : ℝ =>
       8 * ((∫ u : ℝ, ‖logWindowSum (fun n => ((f n : ℝ) : ℂ))
-          (fibreIndex x (hh x)) (fibreWidth x (hh x)) u‖ ^ 2) / hh x ^ 2)
-        + 204 * (1 / hh x ^ 2)) Filter.atTop (nhds 0) := by
+          (fibreIndex x (hh x)) (fibreWidth x (hh x)) u‖ ^ (2 : ℕ)) / hh x ^ (2 : ℕ))
+        + 204 * (1 / hh x ^ (2 : ℕ))) Filter.atTop (nhds 0) := by
     have h1 := hspec.const_mul (8 : ℝ)
     have h2 := hsqinv.const_mul (204 : ℝ)
     have := h1.add h2
@@ -429,17 +429,17 @@ theorem averagedMeanSquare_of_spectral {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 
   have hh0 : (0 : ℝ) ≤ hh x := by linarith
   have hbridge := sum_fibreSum_sq_le_integral hf hx hh0 hhxx
   set I : ℝ := ∫ u : ℝ, ‖logWindowSum (fun n => ((f n : ℝ) : ℂ))
-      (fibreIndex x (hh x)) (fibreWidth x (hh x)) u‖ ^ 2 with hIdef
+      (fibreIndex x (hh x)) (fibreWidth x (hh x)) u‖ ^ (2 : ℕ) with hIdef
   have hI0 : (0 : ℝ) ≤ I := by
     rw [hIdef]
     refine MeasureTheory.integral_nonneg fun u => ?_
     positivity
-  have hnum0 : (0 : ℝ) ≤ ∑ a ∈ outerBlock x (hh x), (∑ b ∈ innerFibre x (hh x) a, f b) ^ 2 :=
+  have hnum0 : (0 : ℝ) ≤ ∑ a ∈ outerBlock x (hh x), (∑ b ∈ innerFibre x (hh x) a, f b) ^ (2 : ℕ) :=
     Finset.sum_nonneg fun a _ => sq_nonneg _
-  have hden : (0 : ℝ) < hh x ^ 2 * Real.sqrt x := by positivity
+  have hden : (0 : ℝ) < hh x ^ (2 : ℕ) * Real.sqrt x := by positivity
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   rw [div_le_iff₀ hden]
-  have hexpand : (8 * (I / hh x ^ 2) + 204 * (1 / hh x ^ 2)) * (hh x ^ 2 * Real.sqrt x)
+  have hexpand : (8 * (I / hh x ^ (2 : ℕ)) + 204 * (1 / hh x ^ (2 : ℕ))) * (hh x ^ (2 : ℕ) * Real.sqrt x)
       = 8 * Real.sqrt x * I + 204 * Real.sqrt x := by
     field_simp
   rw [hexpand]
@@ -460,8 +460,8 @@ theorem averagedMeanSquare_of_spectralPoly {f : ℕ → ℝ} (hf : ∀ n, |f n| 
     (hgrow : Filter.Tendsto hh Filter.atTop Filter.atTop)
     (hhx : ∀ᶠ x : ℝ in Filter.atTop, hh x ≤ Real.sqrt x)
     (hspec : Filter.Tendsto (fun x : ℝ =>
-        (∫ w : ℝ, ‖logWindowKernel (fibreWidth x (hh x)) w‖ ^ 2
-            * ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (fibreIndex x (hh x)) w‖ ^ 2) / hh x ^ 2)
+        (∫ w : ℝ, ‖logWindowKernel (fibreWidth x (hh x)) w‖ ^ (2 : ℕ)
+            * ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (fibreIndex x (hh x)) w‖ ^ (2 : ℕ)) / hh x ^ (2 : ℕ))
       Filter.atTop (nhds 0)) :
     AveragedMeanSquare f hh := by
   refine averagedMeanSquare_of_spectral hf hgrow hhx ?_
@@ -481,11 +481,11 @@ theorem averagedMeanSquare_of_gallagherBudget {f : ℕ → ℝ} (hf : ∀ n, |f 
     (hWpos : ∀ᶠ x : ℝ in Filter.atTop, 0 < W x)
     (hmaj : ∀ᶠ x : ℝ in Filter.atTop, ∀ T : ℝ, W x ≤ T →
       (∫ w in Set.Icc (-T) T,
-          ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (fibreIndex x (hh x)) w‖ ^ 2)
+          ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (fibreIndex x (hh x)) w‖ ^ (2 : ℕ))
         ≤ α x * T + β x)
     (hlim : Filter.Tendsto (fun x : ℝ =>
-        (2 * fibreWidth x (hh x) ^ 2 * (α x * W x + β x)
-          + (4 * α x / (Real.pi ^ 2 * W x) + 4 * β x / (3 * Real.pi ^ 2 * W x ^ 2))) / hh x ^ 2)
+        (2 * fibreWidth x (hh x) ^ (2 : ℕ) * (α x * W x + β x)
+          + (4 * α x / (Real.pi ^ (2 : ℕ) * W x) + 4 * β x / (3 * Real.pi ^ (2 : ℕ) * W x ^ (2 : ℕ)))) / hh x ^ (2 : ℕ))
       Filter.atTop (nhds 0)) :
     AveragedMeanSquare f hh := by
   refine averagedMeanSquare_of_spectral hf hgrow hhx ?_
@@ -496,7 +496,7 @@ theorem averagedMeanSquare_of_gallagherBudget {f : ℕ → ℝ} (hf : ∀ n, |f 
   have hbud := gallagher_split_integral_dyadic (fun n => ((f n : ℝ) : ℂ))
     (fibreIndex x (hh x)) hδ hWx hmjx
   have hint0 : (0 : ℝ) ≤ ∫ u : ℝ, ‖logWindowSum (fun n => ((f n : ℝ) : ℂ))
-      (fibreIndex x (hh x)) (fibreWidth x (hh x)) u‖ ^ 2 := by
+      (fibreIndex x (hh x)) (fibreWidth x (hh x)) u‖ ^ (2 : ℕ) := by
     refine MeasureTheory.integral_nonneg fun u => ?_
     positivity
   have hh0 : (0 : ℝ) < hh x := by linarith
@@ -512,11 +512,11 @@ theorem averagedShortInterval_moebius_of_gallagherBudget {hh W α β : ℝ → �
     (hWpos : ∀ᶠ x : ℝ in Filter.atTop, 0 < W x)
     (hmaj : ∀ᶠ x : ℝ in Filter.atTop, ∀ T : ℝ, W x ≤ T →
       (∫ w in Set.Icc (-T) T,
-          ‖logPoly (fun n => (((ArithmeticFunction.moebius n : ℤ) : ℝ) : ℂ)) (fibreIndex x (hh x)) w‖ ^ 2)
+          ‖logPoly (fun n => (((ArithmeticFunction.moebius n : ℤ) : ℝ) : ℂ)) (fibreIndex x (hh x)) w‖ ^ (2 : ℕ))
         ≤ α x * T + β x)
     (hlim : Filter.Tendsto (fun x : ℝ =>
-        (2 * fibreWidth x (hh x) ^ 2 * (α x * W x + β x)
-          + (4 * α x / (Real.pi ^ 2 * W x) + 4 * β x / (3 * Real.pi ^ 2 * W x ^ 2))) / hh x ^ 2)
+        (2 * fibreWidth x (hh x) ^ (2 : ℕ) * (α x * W x + β x)
+          + (4 * α x / (Real.pi ^ (2 : ℕ) * W x) + 4 * β x / (3 * Real.pi ^ (2 : ℕ) * W x ^ (2 : ℕ)))) / hh x ^ (2 : ℕ))
       Filter.atTop (nhds 0)) :
     AveragedShortInterval (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) hh :=
   averagedShortInterval_of_meanSquare hgrow
@@ -539,21 +539,21 @@ theorem averagedShortInterval_moebius_of_affineMajorant {hh W α β : ℝ → �
     (hmaj : ∀ᶠ x : ℝ in Filter.atTop, ∀ T : ℝ, W x ≤ T →
       (∫ w in Set.Icc (-T) T,
           ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ))
-            (fibreIndex x (hh x)) w‖ ^ 2)
+            (fibreIndex x (hh x)) w‖ ^ (2 : ℕ))
         ≤ α x * T + β x)
     (hlim : Filter.Tendsto (fun x : ℝ =>
-        (2 * fibreWidth x (hh x) ^ 2 * (α x * W x + β x)
-          + (4 * α x / (Real.pi ^ 2 * W x) + 4 * β x / (3 * Real.pi ^ 2 * W x ^ 2))) / hh x ^ 2)
+        (2 * fibreWidth x (hh x) ^ (2 : ℕ) * (α x * W x + β x)
+          + (4 * α x / (Real.pi ^ (2 : ℕ) * W x) + 4 * β x / (3 * Real.pi ^ (2 : ℕ) * W x ^ (2 : ℕ)))) / hh x ^ (2 : ℕ))
       Filter.atTop (nhds 0)) :
     AveragedShortInterval (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) hh := by
   refine averagedShortInterval_moebius_of_gallagherBudget hgrow hhx hWpos ?_ hlim
   filter_upwards [hmaj] with x hx T hT
   have hcongr : (∫ w in Set.Icc (-T) T,
       ‖logPoly (fun n => (((ArithmeticFunction.moebius n : ℤ) : ℝ) : ℂ))
-        (fibreIndex x (hh x)) w‖ ^ 2)
+        (fibreIndex x (hh x)) w‖ ^ (2 : ℕ))
       = ∫ w in Set.Icc (-T) T,
           ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ))
-            (fibreIndex x (hh x)) w‖ ^ 2 := by
+            (fibreIndex x (hh x)) w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [logPoly_moebius_congr]
   rw [hcongr]

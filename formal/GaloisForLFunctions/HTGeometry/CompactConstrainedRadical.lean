@@ -51,7 +51,7 @@ theorem finiteDimensional_compactConstrainedRadical [CompleteSpace W] (S : Submo
   · simp [hz]
   obtain ⟨huS, hu⟩ := (mem_compactConstrainedRadical S K u).mp hu
   have hd := congrArg Complex.re (hu u huS)
-  have hself : (inner ℂ u u).re = ‖u‖ ^ 2 :=
+  have hself : (inner ℂ u u).re = ‖u‖ ^ (2 : ℕ) :=
     (InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ) u).symm
   rw [inner_sub_right, Complex.sub_re, hself, Complex.zero_re] at hd
   have hc : (inner ℂ u (K u)).re ≤ ‖u‖ * ‖K u‖ :=

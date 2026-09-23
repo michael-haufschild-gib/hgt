@@ -32,14 +32,14 @@ theorem xiBesselWeight_le_two {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (h
   have hx1 : (1 : ℝ) < xiInverse s r := xiInverse_mem_Ioi hs0 hs1 hr
   have hxi : xiEndpointPhase s (xiInverse s r) = r := xiEndpointPhase_xiInverse hs0 hs1 hr
   set x : ℝ := xiInverse s r with hxdef
-  have hu : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hv : (1 : ℝ) / 2 ≤ x ^ 2 - s := by nlinarith
-  have hvpos : (0 : ℝ) < x ^ 2 - s := by linarith
-  have hlow : Real.sqrt (1 - s) * Real.sqrt (x ^ 2 - 1) ≤ r := by
+  have hu : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hv : (1 : ℝ) / 2 ≤ x ^ (2 : ℕ) - s := by nlinarith
+  have hvpos : (0 : ℝ) < x ^ (2 : ℕ) - s := by linarith
+  have hlow : Real.sqrt (1 - s) * Real.sqrt (x ^ (2 : ℕ) - 1) ≤ r := by
     have h := (xiEndpointPhase_bounds hs0 (by linarith) (le_of_lt hx1)).1
     rwa [hxi] at h
   -- the quarter root of the bracket
-  have hq : Real.sqrt (Real.sqrt (1 - s)) * Real.sqrt (Real.sqrt (x ^ 2 - 1))
+  have hq : Real.sqrt (Real.sqrt (1 - s)) * Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1))
       ≤ Real.sqrt r := by
     rw [← Real.sqrt_mul (Real.sqrt_nonneg _)]
     exact Real.sqrt_le_sqrt hlow
@@ -48,22 +48,22 @@ theorem xiBesselWeight_le_two {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (h
   have hww : w * w = Real.sqrt (1 / 2) := Real.mul_self_sqrt (Real.sqrt_nonneg _)
   have hws : w ≤ Real.sqrt (Real.sqrt (1 - s)) :=
     Real.sqrt_le_sqrt (Real.sqrt_le_sqrt (by linarith))
-  have hwv : w ≤ Real.sqrt (Real.sqrt (x ^ 2 - s)) :=
+  have hwv : w ≤ Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - s)) :=
     Real.sqrt_le_sqrt (Real.sqrt_le_sqrt hv)
-  have hsv : Real.sqrt (1 / 2) ≤ Real.sqrt (x ^ 2 - s) := Real.sqrt_le_sqrt hv
-  have hupos : (0 : ℝ) < Real.sqrt (Real.sqrt (x ^ 2 - 1)) :=
+  have hsv : Real.sqrt (1 / 2) ≤ Real.sqrt (x ^ (2 : ℕ) - s) := Real.sqrt_le_sqrt hv
+  have hupos : (0 : ℝ) < Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) :=
     Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hu)
   -- the denominator is at least the quarter root of the numerator times one half
-  have hden : Real.sqrt (Real.sqrt (x ^ 2 - 1)) * (1 / 2)
-      ≤ Real.sqrt r * Real.sqrt (x ^ 2 - s) * Real.sqrt (Real.sqrt (x ^ 2 - s)) := by
-    have hstep : Real.sqrt (Real.sqrt (x ^ 2 - 1)) * (w * Real.sqrt (1 / 2) * w)
-        ≤ Real.sqrt r * Real.sqrt (x ^ 2 - s) * Real.sqrt (Real.sqrt (x ^ 2 - s)) := by
-      have h1 : Real.sqrt (Real.sqrt (x ^ 2 - 1)) * w ≤ Real.sqrt r := by
+  have hden : Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) * (1 / 2)
+      ≤ Real.sqrt r * Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - s)) := by
+    have hstep : Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) * (w * Real.sqrt (1 / 2) * w)
+        ≤ Real.sqrt r * Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - s)) := by
+      have h1 : Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) * w ≤ Real.sqrt r := by
         rw [mul_comm]
         exact le_trans (mul_le_mul_of_nonneg_right hws (le_of_lt hupos)) hq
-      calc Real.sqrt (Real.sqrt (x ^ 2 - 1)) * (w * Real.sqrt (1 / 2) * w)
-          = (Real.sqrt (Real.sqrt (x ^ 2 - 1)) * w) * Real.sqrt (1 / 2) * w := by ring
-        _ ≤ Real.sqrt r * Real.sqrt (x ^ 2 - s) * Real.sqrt (Real.sqrt (x ^ 2 - s)) := by
+      calc Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) * (w * Real.sqrt (1 / 2) * w)
+          = (Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) * w) * Real.sqrt (1 / 2) * w := by ring
+        _ ≤ Real.sqrt r * Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - s)) := by
             gcongr
     have hval : w * Real.sqrt (1 / 2) * w = 1 / 2 := by
       calc w * Real.sqrt (1 / 2) * w = (w * w) * Real.sqrt (1 / 2) := by ring
@@ -81,28 +81,28 @@ theorem inv_le_xiBesselWeight {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (h
   have hx1 : (1 : ℝ) < xiInverse s r := xiInverse_mem_Ioi hs0 hs1 hr
   have hxi : xiEndpointPhase s (xiInverse s r) = r := xiEndpointPhase_xiInverse hs0 hs1 hr
   set x : ℝ := xiInverse s r with hxdef
-  have hu : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
-  have hvpos : (0 : ℝ) < x ^ 2 - s := by nlinarith
-  have hv4 : x ^ 2 - s ≤ 4 := by nlinarith
-  have hhigh : r ≤ Real.sqrt (x ^ 2 - 1) := by
+  have hu : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
+  have hvpos : (0 : ℝ) < x ^ (2 : ℕ) - s := by nlinarith
+  have hv4 : x ^ (2 : ℕ) - s ≤ 4 := by nlinarith
+  have hhigh : r ≤ Real.sqrt (x ^ (2 : ℕ) - 1) := by
     have h := (xiEndpointPhase_bounds hs0 (by linarith) (le_of_lt hx1)).2
     rwa [hxi] at h
-  have hq : Real.sqrt r ≤ Real.sqrt (Real.sqrt (x ^ 2 - 1)) := Real.sqrt_le_sqrt hhigh
-  have hupos : (0 : ℝ) < Real.sqrt (Real.sqrt (x ^ 2 - 1)) :=
+  have hq : Real.sqrt r ≤ Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) := Real.sqrt_le_sqrt hhigh
+  have hupos : (0 : ℝ) < Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) :=
     Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hu)
-  have hsv : Real.sqrt (x ^ 2 - s) ≤ 2 := by
+  have hsv : Real.sqrt (x ^ (2 : ℕ) - s) ≤ 2 := by
     rw [show (2 : ℝ) = Real.sqrt 4 by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+      rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]]
     exact Real.sqrt_le_sqrt hv4
-  have hssv : Real.sqrt (Real.sqrt (x ^ 2 - s)) ≤ Real.sqrt 2 := Real.sqrt_le_sqrt hsv
+  have hssv : Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - s)) ≤ Real.sqrt 2 := Real.sqrt_le_sqrt hsv
   have hs2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
-  have hden : Real.sqrt r * Real.sqrt (x ^ 2 - s) * Real.sqrt (Real.sqrt (x ^ 2 - s))
-      ≤ Real.sqrt (Real.sqrt (x ^ 2 - 1)) * (2 * Real.sqrt 2) := by
-    calc Real.sqrt r * Real.sqrt (x ^ 2 - s) * Real.sqrt (Real.sqrt (x ^ 2 - s))
-        ≤ Real.sqrt (Real.sqrt (x ^ 2 - 1)) * 2 * Real.sqrt 2 := by
+  have hden : Real.sqrt r * Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - s))
+      ≤ Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) * (2 * Real.sqrt 2) := by
+    calc Real.sqrt r * Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - s))
+        ≤ Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) * 2 * Real.sqrt 2 := by
           gcongr
-      _ = Real.sqrt (Real.sqrt (x ^ 2 - 1)) * (2 * Real.sqrt 2) := by ring
-  have hdpos : (0 : ℝ) < Real.sqrt r * Real.sqrt (x ^ 2 - s) * Real.sqrt (Real.sqrt (x ^ 2 - s)) :=
+      _ = Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - 1)) * (2 * Real.sqrt 2) := by ring
+  have hdpos : (0 : ℝ) < Real.sqrt r * Real.sqrt (x ^ (2 : ℕ) - s) * Real.sqrt (Real.sqrt (x ^ (2 : ℕ) - s)) :=
     by positivity
   rw [xiBesselWeight, ← hxdef, le_div_iff₀ hdpos, div_mul_eq_mul_div, one_mul,
     div_le_iff₀ (by positivity : (0 : ℝ) < 2 * Real.sqrt 2)]

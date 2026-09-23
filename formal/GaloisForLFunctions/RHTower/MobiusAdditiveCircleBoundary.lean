@@ -106,7 +106,7 @@ theorem circleAverage_flatCirclePolynomial_norm_sq (N : ℕ) :
     _ = N := by simp
 
 /-- Positive `L²` energy of the damped Möbius circle series.  Parseval identifies this with
-`sum mu(n)^2 exp(-2nx)`. -/
+`sum mu(n)^(2 : ℕ) exp(-2nx)`. -/
 def mobiusAdditiveCircleEnergy (x : ℝ) : ℝ :=
   mobiusSquarefreeExponentialPartition (2 * x)
 
@@ -182,7 +182,7 @@ theorem riemannHypothesis_of_mobiusAdditiveLatticeSubpowerEvaluation
 
 /-- If the coprime quotient directions `a,b` and the residual direction `r` have disjoint prime
 support, the two Möbius coefficients in a dilation resonance factor into the orientation
-`mu(ab)` times the positive squarefree coefficient `mu(r)^2`. -/
+`mu(ab)` times the positive squarefree coefficient `mu(r)^(2 : ℕ)`. -/
 theorem mobius_coprime_dilation_pair_product
     {a b r : ℕ} (hab : a.Coprime b) (hqr : (a * b).Coprime r) :
     ArithmeticFunction.moebius (b * r) * ArithmeticFunction.moebius (a * r) =

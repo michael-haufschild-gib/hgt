@@ -21,7 +21,7 @@ noncomputable section
 variable {ι : Type*}
 
 /-- Symmetric nonnegative transport weights from unrestricted raw coefficients. -/
-def entropyConductance (a : ι → ι → ℝ) (i j : ι) : ℝ := a i j ^ 2 + a j i ^ 2
+def entropyConductance (a : ι → ι → ℝ) (i j : ι) : ℝ := a i j ^ (2 : ℕ) + a j i ^ (2 : ℕ)
 
 theorem entropyConductance_symm (a : ι → ι → ℝ) (i j : ι) :
     entropyConductance a i j = entropyConductance a j i := by

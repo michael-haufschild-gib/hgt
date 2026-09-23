@@ -31,7 +31,7 @@ open GaloisForLFunctions.HTGeometry
 
 theorem continuous_wallScalarD2 {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) :
     Continuous (wallScalarD2 σ) := by
-  have hbranch : Continuous (fun s : ℝ => Complex.I / ((s : ℂ) + (σ : ℂ) * Complex.I) ^ 3) := by
+  have hbranch : Continuous (fun s : ℝ => Complex.I / ((s : ℂ) + (σ : ℂ) * Complex.I) ^ (3 : ℕ)) := by
     refine Continuous.div continuous_const ?_ ?_
     · fun_prop
     · intro s
@@ -58,7 +58,7 @@ def wallGeneratorD2 (X : Type*) [NormedAddCommGroup X] [InnerProductSpace ℂ X]
 
 /-- The constant of the surviving amplitude of the two-fold expansion. -/
 def wallAmplitudeConst (μ₀ : ℝ) : ℝ :=
-  3 * (μ₀⁻¹) ^ 4 * (3 + Real.pi) ^ 2 + (μ₀⁻¹) ^ 3 * (4 * (3 + Real.pi))
+  3 * (μ₀⁻¹) ^ (4 : ℕ) * (3 + Real.pi) ^ (2 : ℕ) + (μ₀⁻¹) ^ (3 : ℕ) * (4 * (3 + Real.pi))
 
 theorem norm_invFamily_wallGeneratorShift_le' {T : X →L[ℂ] X} {σ L μ₀ : ℝ}
     (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀) {t : ℝ} (hfloor : μ₀ ≤ wallFloor T σ t + L) :
@@ -71,7 +71,7 @@ theorem norm_invFamilyProduct_wallGeneratorShift_le {T : X →L[ℂ] X} {σ L μ
     (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀) {t : ℝ} (ht : 1 ≤ t)
     (hfloor : μ₀ ≤ wallFloor T σ t + L) :
     ‖invFamilyProduct (wallGeneratorShift T σ L) (wallGeneratorD1 X σ) t‖
-      ≤ ((μ₀⁻¹) ^ 3 * (3 + Real.pi)) * (1 + t)⁻¹ :=
+      ≤ ((μ₀⁻¹) ^ (3 : ℕ) * (3 + Real.pi)) * (1 + t)⁻¹ :=
   norm_invFamilyProduct_le_of_symbolDecay (by linarith)
     (norm_invFamily_wallGeneratorShift_le' hσ0 hσ1 hμ hfloor)
     (norm_wallGeneratorShiftD1_le hσ0 hσ1 ht)
@@ -82,7 +82,7 @@ theorem norm_invFamilyProductDeriv_wallGeneratorShift_le {T : X →L[ℂ] X} {σ
     (hfloor : μ₀ ≤ wallFloor T σ t + L) :
     ‖invFamilyProductDeriv (wallGeneratorShift T σ L) (wallGeneratorD1 X σ)
         (wallGeneratorD2 X σ) t‖
-      ≤ wallAmplitudeConst μ₀ * ((1 + t)⁻¹) ^ 2 :=
+      ≤ wallAmplitudeConst μ₀ * ((1 + t)⁻¹) ^ (2 : ℕ) :=
   norm_invFamilyProductDeriv_le_of_symbolDecay (by linarith)
     (norm_invFamily_wallGeneratorShift_le' hσ0 hσ1 hμ hfloor)
     (norm_wallGeneratorShiftD1_le hσ0 hσ1 ht)
@@ -95,7 +95,7 @@ phase-weighted inverse propagator integrates by parts twice, leaving two boundar
 remainder whose amplitude is `O((1+t)^{-2})`. -/
 theorem wall_phase_ibp_twice {E : ℂ → ℂ} {T : X →L[ℂ] X} {σ L : ℝ}
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
-    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     (hσ0 : 0 < σ) (hσ1 : σ < 1) {a b : ℝ}
     (hgap : ∀ t ∈ uIcc a b, 0 < wallFloor T σ t + L) :

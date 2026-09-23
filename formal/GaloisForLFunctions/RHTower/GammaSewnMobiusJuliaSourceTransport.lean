@@ -22,7 +22,7 @@ noncomputable section
 
 /-- Canonical Julia defect of the scalar Gamma-sewn Möbius compression. -/
 def gammaSewnMobiusJuliaDefect (x : ℝ) (p : Nat.Primes) : ℝ :=
-  Real.sqrt (1 - gammaSewnMobiusValuationContractionMultiplier x p ^ 2)
+  Real.sqrt (1 - gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ))
 
 /-- The source-defined non-diagonal transport.  Its first coordinate is the old scalar
 compression; its second coordinate is the Julia environment retained before recombination. -/
@@ -44,7 +44,7 @@ theorem gammaSewnMobiusJuliaDefect_pos
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
     0 < gammaSewnMobiusJuliaDefect x p := by
   change 0 < Real.sqrt
-    (1 - gammaSewnMobiusValuationContractionMultiplier x p ^ 2)
+    (1 - gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ))
   apply Real.sqrt_pos.2
   have hc0 := gammaSewnMobiusValuationContractionMultiplier_pos x p
   have hc1 := gammaSewnMobiusValuationContractionMultiplier_lt_one hx p
@@ -52,8 +52,8 @@ theorem gammaSewnMobiusJuliaDefect_pos
 
 theorem gammaSewnMobiusJuliaDefect_sq
     {x : ℝ} (hx : 0 ≤ x) (p : Nat.Primes) :
-    gammaSewnMobiusJuliaDefect x p ^ 2 =
-      1 - gammaSewnMobiusValuationContractionMultiplier x p ^ 2 := by
+    gammaSewnMobiusJuliaDefect x p ^ (2 : ℕ) =
+      1 - gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ) := by
   rw [gammaSewnMobiusJuliaDefect, Real.sq_sqrt]
   have hc0 := gammaSewnMobiusValuationContractionMultiplier_pos x p
   have hc1 := gammaSewnMobiusValuationContractionMultiplier_le_one hx p
@@ -62,20 +62,20 @@ theorem gammaSewnMobiusJuliaDefect_sq
 /-- Exact Julia/defect identity: the doubled source transport is an isometry. -/
 theorem gammaSewnMobiusJuliaSourceTransportV_normSq
     {x : ℝ} (hx : 0 ≤ x) (p : Nat.Primes) (v : ℝ × ℝ) :
-    (gammaSewnMobiusJuliaSourceTransportV x p v).1 ^ 2 +
-        (gammaSewnMobiusJuliaSourceTransportV x p v).2 ^ 2 =
-      v.1 ^ 2 + v.2 ^ 2 := by
+    (gammaSewnMobiusJuliaSourceTransportV x p v).1 ^ (2 : ℕ) +
+        (gammaSewnMobiusJuliaSourceTransportV x p v).2 ^ (2 : ℕ) =
+      v.1 ^ (2 : ℕ) + v.2 ^ (2 : ℕ) := by
   rw [gammaSewnMobiusJuliaSourceTransportV]
   dsimp only
   calc
     (gammaSewnMobiusValuationContractionMultiplier x p * v.1 -
-          gammaSewnMobiusJuliaDefect x p * v.2) ^ 2 +
+          gammaSewnMobiusJuliaDefect x p * v.2) ^ (2 : ℕ) +
         (gammaSewnMobiusJuliaDefect x p * v.1 +
-          gammaSewnMobiusValuationContractionMultiplier x p * v.2) ^ 2 =
-      (gammaSewnMobiusValuationContractionMultiplier x p ^ 2 +
-        gammaSewnMobiusJuliaDefect x p ^ 2) *
-          (v.1 ^ 2 + v.2 ^ 2) := by ring
-    _ = v.1 ^ 2 + v.2 ^ 2 := by
+          gammaSewnMobiusValuationContractionMultiplier x p * v.2) ^ (2 : ℕ) =
+      (gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ) +
+        gammaSewnMobiusJuliaDefect x p ^ (2 : ℕ)) *
+          (v.1 ^ (2 : ℕ) + v.2 ^ (2 : ℕ)) := by ring
+    _ = v.1 ^ (2 : ℕ) + v.2 ^ (2 : ℕ) := by
       rw [gammaSewnMobiusJuliaDefect_sq hx]
       ring
 
@@ -83,25 +83,25 @@ theorem gammaSewnMobiusJuliaSourceTransportV_normSq
 orthonormal column is fixed. -/
 theorem orientedPlaneIsometry_secondColumn_unique
     {c d a b : ℝ}
-    (hfirst : c ^ 2 + d ^ 2 = 1)
-    (hsecond : a ^ 2 + b ^ 2 = 1)
+    (hfirst : c ^ (2 : ℕ) + d ^ (2 : ℕ) = 1)
+    (hsecond : a ^ (2 : ℕ) + b ^ (2 : ℕ) = 1)
     (horth : c * a + d * b = 0)
     (horient : 0 < c * b - d * a) :
     a = -d ∧ b = c := by
-  have hdetSq : (c * b - d * a) ^ 2 = 1 := by
+  have hdetSq : (c * b - d * a) ^ (2 : ℕ) = 1 := by
     calc
-      (c * b - d * a) ^ 2 =
-          (c ^ 2 + d ^ 2) * (a ^ 2 + b ^ 2) -
-            (c * a + d * b) ^ 2 := by ring
+      (c * b - d * a) ^ (2 : ℕ) =
+          (c ^ (2 : ℕ) + d ^ (2 : ℕ)) * (a ^ (2 : ℕ) + b ^ (2 : ℕ)) -
+            (c * a + d * b) ^ (2 : ℕ) := by ring
       _ = 1 := by rw [hfirst, hsecond, horth]; norm_num
   have hdet : c * b - d * a = 1 := by nlinarith
   constructor
   · calc
-      a = (c ^ 2 + d ^ 2) * a := by rw [hfirst]; ring
+      a = (c ^ (2 : ℕ) + d ^ (2 : ℕ)) * a := by rw [hfirst]; ring
       _ = -d * (c * b - d * a) + c * (c * a + d * b) := by ring
       _ = -d := by rw [hdet, horth]; ring
   · calc
-      b = (c ^ 2 + d ^ 2) * b := by rw [hfirst]; ring
+      b = (c ^ (2 : ℕ) + d ^ (2 : ℕ)) * b := by rw [hfirst]; ring
       _ = c * (c * b - d * a) + d * (c * a + d * b) := by ring
       _ = c := by rw [hdet, horth]; ring
 
@@ -111,9 +111,9 @@ dimension. -/
 theorem gammaSewnMobiusValuationContractionMultiplier_not_scalar_isometry
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
     ¬ ∀ u : ℝ,
-      (gammaSewnMobiusValuationContractionMultiplier x p * u) ^ 2 = u ^ 2 := by
+      (gammaSewnMobiusValuationContractionMultiplier x p * u) ^ (2 : ℕ) = u ^ (2 : ℕ) := by
   intro h
-  have h1 : gammaSewnMobiusValuationContractionMultiplier x p ^ 2 = 1 := by
+  have h1 : gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ) = 1 := by
     simpa using h 1
   have hc0 := gammaSewnMobiusValuationContractionMultiplier_pos x p
   have hc1 := gammaSewnMobiusValuationContractionMultiplier_lt_one hx p
@@ -125,7 +125,7 @@ compression together with its positive defect coordinate.  Combined with the pre
 no-go, one extra real channel is minimal. -/
 theorem gammaSewnMobiusJuliaSourceTransportV_unique_minimal_positive_lift
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) {a b : ℝ}
-    (hsecond : a ^ 2 + b ^ 2 = 1)
+    (hsecond : a ^ (2 : ℕ) + b ^ (2 : ℕ) = 1)
     (horth :
       gammaSewnMobiusValuationContractionMultiplier x p * a +
         gammaSewnMobiusJuliaDefect x p * b = 0)
@@ -161,20 +161,20 @@ theorem gammaSewnMobiusJuliaSourceTransportV_sourceAxis_second_ne_zero
 /-- Exact scalar-compression/Julia-environment Pythagoras law. -/
 theorem gammaSewnMobiusJuliaSourceTransportV_sourceAxis_defectIdentity
     {x : ℝ} (hx : 0 ≤ x) (p : Nat.Primes) (u : ℝ) :
-    (gammaSewnMobiusValuationContractionMultiplier x p * u) ^ 2 +
-        (gammaSewnMobiusJuliaDefect x p * u) ^ 2 = u ^ 2 := by
+    (gammaSewnMobiusValuationContractionMultiplier x p * u) ^ (2 : ℕ) +
+        (gammaSewnMobiusJuliaDefect x p * u) ^ (2 : ℕ) = u ^ (2 : ℕ) := by
   simpa [gammaSewnMobiusJuliaSourceTransportV_sourceAxis] using
     gammaSewnMobiusJuliaSourceTransportV_normSq hx p (u, 0)
 
 /-- Exact aperture-factor form of the Julia defect. -/
 theorem gammaSewnMobiusJuliaDefect_sq_eq_aperture_sq_mul_gain
     {x : ℝ} (hx : 0 ≤ x) (p : Nat.Primes) :
-    gammaSewnMobiusJuliaDefect x p ^ 2 =
-      (1 - xiMobiusContinuousApertureDiskNode x p) ^ 2 *
+    gammaSewnMobiusJuliaDefect x p ^ (2 : ℕ) =
+      (1 - xiMobiusContinuousApertureDiskNode x p) ^ (2 : ℕ) *
         (gammaSewnMobiusValuationQuadraticDefectGain x p *
           (1 + gammaSewnMobiusValuationContractionMultiplier x p)) := by
   rw [gammaSewnMobiusJuliaDefect_sq hx,
-    show 1 - gammaSewnMobiusValuationContractionMultiplier x p ^ 2 =
+    show 1 - gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ) =
       (1 - gammaSewnMobiusValuationContractionMultiplier x p) *
         (1 + gammaSewnMobiusValuationContractionMultiplier x p) by ring,
     one_sub_gammaSewnMobiusValuationContractionMultiplier_eq_sq_mul_gain]
@@ -216,7 +216,7 @@ theorem gammaSewnMobiusJuliaDefect_eq_aperture_mul_sqrt_gain
   have hsqrt := Real.sq_sqrt hfactor
   have hsq := gammaSewnMobiusJuliaDefect_sq_eq_aperture_sq_mul_gain hx p
   have hd := Real.sqrt_nonneg
-    (1 - gammaSewnMobiusValuationContractionMultiplier x p ^ 2)
+    (1 - gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ))
   change 0 ≤ gammaSewnMobiusJuliaDefect x p at hd
   have hrhs :
       0 ≤ (1 - xiMobiusContinuousApertureDiskNode x p) *
@@ -228,8 +228,8 @@ theorem gammaSewnMobiusJuliaDefect_eq_aperture_mul_sqrt_gain
       ((1 - xiMobiusContinuousApertureDiskNode x p) *
         Real.sqrt
           (gammaSewnMobiusValuationQuadraticDefectGain x p *
-            (1 + gammaSewnMobiusValuationContractionMultiplier x p))) ^ 2 =
-        (1 - xiMobiusContinuousApertureDiskNode x p) ^ 2 *
+            (1 + gammaSewnMobiusValuationContractionMultiplier x p))) ^ (2 : ℕ) =
+        (1 - xiMobiusContinuousApertureDiskNode x p) ^ (2 : ℕ) *
           (gammaSewnMobiusValuationQuadraticDefectGain x p *
             (1 + gammaSewnMobiusValuationContractionMultiplier x p)) := by
     rw [mul_pow, hsqrt]
@@ -340,9 +340,9 @@ theorem gammaSewnMobiusJuliaSourceTransportV_sourceAxis_eq_compression_primeLog
 /-- Exact Julia/defect identity after exposing the normalized prime-log environment coordinate. -/
 theorem gammaSewnMobiusJulia_compression_primeLog_defectIdentity
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
-    gammaSewnMobiusValuationContractionMultiplier x p ^ 2 +
+    gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ) +
         (x * Real.sqrt (3 / 4 : ℝ) *
-          gammaSewnMobiusJuliaNormalizedPrimeLog x p) ^ 2 = 1 := by
+          gammaSewnMobiusJuliaNormalizedPrimeLog x p) ^ (2 : ℕ) = 1 := by
   have hcoordinate :
       gammaSewnMobiusJuliaDefect x p =
         x * Real.sqrt (3 / 4 : ℝ) *
@@ -491,7 +491,7 @@ theorem gammaSewnMobiusJuliaSoftHalfWeightSource_pos
 
 theorem gammaSewnMobiusJuliaSoftHalfWeightSource_sq
     (u : ℝ) (pe : Nat.Primes × ℕ) :
-    gammaSewnMobiusJuliaSoftHalfWeightSource u pe ^ 2 =
+    gammaSewnMobiusJuliaSoftHalfWeightSource u pe ^ (2 : ℕ) =
       Real.exp (-u * Real.log (xiGammaEulerValuationNat pe)) /
         ((xiGammaEulerValuationNat pe : ℝ) * Real.log (pe.1 : ℝ)) := by
   unfold gammaSewnMobiusJuliaSoftHalfWeightSource
@@ -500,7 +500,7 @@ theorem gammaSewnMobiusJuliaSoftHalfWeightSource_sq
 
 theorem xiGammaEulerBoundaryRealAmplitude_sq
     (u : ℝ) (pe : Nat.Primes × ℕ) :
-    xiGammaEulerBoundaryRealAmplitude u pe ^ 2 =
+    xiGammaEulerBoundaryRealAmplitude u pe ^ (2 : ℕ) =
       Real.log (pe.1 : ℝ) / (xiGammaEulerValuationNat pe : ℝ) *
         Real.exp (-u * Real.log (xiGammaEulerValuationNat pe)) := by
   unfold xiGammaEulerBoundaryRealAmplitude
@@ -525,8 +525,8 @@ theorem primeLog_mul_gammaSewnMobiusJuliaSoftHalfWeightSource
   have hhard := xiGammaEulerBoundaryRealAmplitude_pos u pe
   have hsquare :
       (Real.log (pe.1 : ℝ) *
-          gammaSewnMobiusJuliaSoftHalfWeightSource u pe) ^ 2 =
-        xiGammaEulerBoundaryRealAmplitude u pe ^ 2 := by
+          gammaSewnMobiusJuliaSoftHalfWeightSource u pe) ^ (2 : ℕ) =
+        xiGammaEulerBoundaryRealAmplitude u pe ^ (2 : ℕ) := by
     rw [mul_pow, gammaSewnMobiusJuliaSoftHalfWeightSource_sq,
       xiGammaEulerBoundaryRealAmplitude_sq]
     field_simp [hpLog.ne', hn.ne']
@@ -562,24 +562,24 @@ theorem gammaSewnMobiusJuliaHardHalfWeightTransport_eq_normalized_second
 theorem gammaSewnMobiusJuliaSoftHard_defectIdentity
     {x : ℝ} (hx : 0 < x) (u : ℝ) (pe : Nat.Primes × ℕ) :
     (gammaSewnMobiusValuationContractionMultiplier x pe.1 *
-        gammaSewnMobiusJuliaSoftHalfWeightSource u pe) ^ 2 +
+        gammaSewnMobiusJuliaSoftHalfWeightSource u pe) ^ (2 : ℕ) +
       (x * Real.sqrt (3 / 4 : ℝ) *
-        gammaSewnMobiusJuliaHardHalfWeightTransport x u pe) ^ 2 =
-      gammaSewnMobiusJuliaSoftHalfWeightSource u pe ^ 2 := by
+        gammaSewnMobiusJuliaHardHalfWeightTransport x u pe) ^ (2 : ℕ) =
+      gammaSewnMobiusJuliaSoftHalfWeightSource u pe ^ (2 : ℕ) := by
   have h :=
     gammaSewnMobiusJulia_compression_primeLog_defectIdentity hx pe.1
   unfold gammaSewnMobiusJuliaHardHalfWeightTransport
   calc
     (gammaSewnMobiusValuationContractionMultiplier x pe.1 *
-          gammaSewnMobiusJuliaSoftHalfWeightSource u pe) ^ 2 +
+          gammaSewnMobiusJuliaSoftHalfWeightSource u pe) ^ (2 : ℕ) +
         (x * Real.sqrt (3 / 4 : ℝ) *
           (gammaSewnMobiusJuliaNormalizedPrimeLog x pe.1 *
-            gammaSewnMobiusJuliaSoftHalfWeightSource u pe)) ^ 2 =
-      (gammaSewnMobiusValuationContractionMultiplier x pe.1 ^ 2 +
+            gammaSewnMobiusJuliaSoftHalfWeightSource u pe)) ^ (2 : ℕ) =
+      (gammaSewnMobiusValuationContractionMultiplier x pe.1 ^ (2 : ℕ) +
         (x * Real.sqrt (3 / 4 : ℝ) *
-          gammaSewnMobiusJuliaNormalizedPrimeLog x pe.1) ^ 2) *
-        gammaSewnMobiusJuliaSoftHalfWeightSource u pe ^ 2 := by ring
-    _ = gammaSewnMobiusJuliaSoftHalfWeightSource u pe ^ 2 := by
+          gammaSewnMobiusJuliaNormalizedPrimeLog x pe.1) ^ (2 : ℕ)) *
+        gammaSewnMobiusJuliaSoftHalfWeightSource u pe ^ (2 : ℕ) := by ring
+    _ = gammaSewnMobiusJuliaSoftHalfWeightSource u pe ^ (2 : ℕ) := by
       rw [h]
       ring
 
@@ -607,7 +607,7 @@ def gammaSewnMobiusJuliaHardMassCoefficient
     (x u : ℝ) (n : ℕ) : ℝ :=
   if hpow : IsPrimePow n then
     gammaSewnMobiusJuliaHardHalfWeightTransport x u
-      (Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩) ^ 2
+      (Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩) ^ (2 : ℕ)
   else 0
 
 /-- The exact von Mangoldt Mellin orbit reached at the Julia boundary. -/
@@ -678,7 +678,7 @@ theorem tendsto_gammaSewnMobiusJuliaHardMassCoefficient_nhdsGT_zero
     have hcoefficient :
         (fun x : ℝ => gammaSewnMobiusJuliaHardMassCoefficient x u n) =
           (fun x : ℝ =>
-            gammaSewnMobiusJuliaHardHalfWeightTransport x u pe ^ 2) := by
+            gammaSewnMobiusJuliaHardHalfWeightTransport x u pe ^ (2 : ℕ)) := by
       funext x
       unfold gammaSewnMobiusJuliaHardMassCoefficient
       rw [dif_pos hpow]
@@ -708,21 +708,21 @@ theorem gammaSewn_scalarPickNoGo_JuliaEulerEscapeUniversality
             gammaSewnMobiusValuationContractionMultiplier x (prime i)) ∧
         (∀ x y, 0 < x → 0 < y → ∀ u v,
           HTGeometry.operatorPickCross (T x) (T y)
-                (Real.exp (-x)) (Real.exp (-y)) u v ^ 2 ≤
+                (Real.exp (-x)) (Real.exp (-y)) u v ^ (2 : ℕ) ≤
             HTGeometry.operatorPickDiagonal (T x) (Real.exp (-x)) u *
               HTGeometry.operatorPickDiagonal (T y) (Real.exp (-y)) v)) ∧
     (∀ (x : ℝ), 0 < x → ∀ p : Nat.Primes,
       (∀ v : ℝ × ℝ,
-        (gammaSewnMobiusJuliaSourceTransportV x p v).1 ^ 2 +
-            (gammaSewnMobiusJuliaSourceTransportV x p v).2 ^ 2 =
-          v.1 ^ 2 + v.2 ^ 2) ∧
+        (gammaSewnMobiusJuliaSourceTransportV x p v).1 ^ (2 : ℕ) +
+            (gammaSewnMobiusJuliaSourceTransportV x p v).2 ^ (2 : ℕ) =
+          v.1 ^ (2 : ℕ) + v.2 ^ (2 : ℕ)) ∧
       gammaSewnMobiusJuliaSourceTransportV x p (1, 0) =
         (gammaSewnMobiusValuationContractionMultiplier x p,
           gammaSewnMobiusJuliaDefect x p) ∧
       (gammaSewnMobiusJuliaSourceTransportV x p (1, 0)).2 ≠ 0 ∧
-      gammaSewnMobiusValuationContractionMultiplier x p ^ 2 +
+      gammaSewnMobiusValuationContractionMultiplier x p ^ (2 : ℕ) +
           (x * Real.sqrt (3 / 4 : ℝ) *
-            gammaSewnMobiusJuliaNormalizedPrimeLog x p) ^ 2 = 1) ∧
+            gammaSewnMobiusJuliaNormalizedPrimeLog x p) ^ (2 : ℕ) = 1) ∧
     (∀ p : Nat.Primes,
       Tendsto
         (fun x : ℝ => gammaSewnMobiusJuliaNormalizedPrimeLog x p)

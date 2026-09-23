@@ -26,7 +26,7 @@ variable (N : ℕ) {lam : ℝ}
 /-- The full two-direction sum of actual pair-current and total phase-current squares. -/
 def currentEnergy (z : ℂ) : ℝ :=
   pairEnergy N f 1 z + pairEnergy N f Complex.I z +
-    phaseCurrent N f 1 z ^ 2 + phaseCurrent N f Complex.I z ^ 2
+    phaseCurrent N f 1 z ^ (2 : ℕ) + phaseCurrent N f Complex.I z ^ (2 : ℕ)
 
 /-- The current-square numerator is nonnegative at every actual chart point. -/
 theorem currentEnergy_nonneg (z : ℂ) : 0 ≤ currentEnergy N f z :=
@@ -40,8 +40,8 @@ theorem currentEnergy_eq (z : ℍ) :
 
 /-- The full regulated remainder contains both the conserved-current numerator and the regulator gradient term. -/
 theorem radius_sq_mul_remainder (e : Ioi (0 : ℝ)) (z : ℍ) :
-    radius N f e (z : ℂ) ^ 2 * remainder N f e z =
-      currentEnergy N f (z : ℂ) + (e : ℝ) ^ 2 * gradientDensity N f (z : ℂ) := by
+    radius N f e (z : ℂ) ^ (2 : ℕ) * remainder N f e z =
+      currentEnergy N f (z : ℂ) + (e : ℝ) ^ (2 : ℕ) * gradientDensity N f (z : ℂ) := by
   have hg : gradientDensity N f (z : ℂ) =
       directionalEnergy N f 1 z + directionalEnergy N f Complex.I z := Finset.sum_add_distrib
   rw [radius_sq, ofComplex_apply, remainder, mul_add, regularized_pair_phase_identity,
@@ -50,22 +50,22 @@ theorem radius_sq_mul_remainder (e : Ioi (0 : ℝ)) (z : ℍ) :
 
 /-- The original regularized curvature has the exact cubic-denominator current and regulator decomposition. -/
 theorem radius_cube_mul_curvatureWeight (e : Ioi (0 : ℝ)) (z : ℍ) :
-    radius N f e (z : ℂ) ^ 3 * curvatureWeight N f e (z : ℂ) =
-      currentEnergy N f (z : ℂ) + (e : ℝ) ^ 2 * gradientDensity N f (z : ℂ) := by
+    radius N f e (z : ℂ) ^ (3 : ℕ) * curvatureWeight N f e (z : ℂ) =
+      currentEnergy N f (z : ℂ) + (e : ℝ) ^ (2 : ℕ) * gradientDensity N f (z : ℂ) := by
   have hr := (radius_pos N f e (z : ℂ)).ne'
   calc
-    _ = radius N f e (z : ℂ) ^ 2 * remainder N f e z := by
+    _ = radius N f e (z : ℂ) ^ (2 : ℕ) * remainder N f e z := by
       rw [curvatureWeight, ofComplex_apply]
       field_simp
     _ = _ := radius_sq_mul_remainder N f e z
 
 /-- The actual current-square contribution at a positive regulator. -/
 def currentWeight (e : Ioi (0 : ℝ)) (z : ℂ) : ℝ :=
-  currentEnergy N f z / radius N f e z ^ 3
+  currentEnergy N f z / radius N f e z ^ (3 : ℕ)
 
 /-- The actual regulator-gradient contribution, retained before any nodal limit. -/
 def regulatorGradientWeight (e : Ioi (0 : ℝ)) (z : ℂ) : ℝ :=
-  (e : ℝ) ^ 2 * gradientDensity N f z / radius N f e z ^ 3
+  (e : ℝ) ^ (2 : ℕ) * gradientDensity N f z / radius N f e z ^ (3 : ℕ)
 
 /-- Exact positive splitting of the original curvature; no limit interchange is used. -/
 theorem curvatureWeight_split (e : Ioi (0 : ℝ)) (z : ℍ) :

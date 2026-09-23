@@ -35,7 +35,7 @@ theorem channelPeeling_affine
 theorem deriv_channelPeeling
     {K : Type*} [Field K] [CharZero K] [Differential K]
     (x : K) (hx : x′ ≠ 0) :
-    (channelPeeling x)′ = -(x′′′ / x′) + (x′′ / x′) ^ 2 := by
+    (channelPeeling x)′ = -(x′′′ / x′) + (x′′ / x′) ^ (2 : ℕ) := by
   rw [channelPeeling, (Differential.deriv : Derivation ℤ K K).leibniz_div, map_neg]
   simp only [smul_eq_mul]
   field_simp
@@ -45,7 +45,7 @@ theorem deriv_channelPeeling
 theorem schwarzian_eq_neg_deriv_channelPeeling_sub_half_sq
     {K : Type*} [Field K] [CharZero K] [Differential K]
     (x : K) (hx : x′ ≠ 0) :
-    schwarzian x = -(channelPeeling x)′ - (1 / 2 : K) * channelPeeling x ^ 2 := by
+    schwarzian x = -(channelPeeling x)′ - (1 / 2 : K) * channelPeeling x ^ (2 : ℕ) := by
   rw [deriv_channelPeeling x hx, schwarzian, channelPeeling]
   field_simp
   ring
@@ -57,14 +57,14 @@ def channelConformalFlux {K : Type*} [Field K] [Differential K] (C x : K) : K :=
 /-- Quadratic reference flux, with `C = cCFT/(24*pi)`, equation `(20)`. -/
 def channelQuadraticReferenceFlux {K : Type*} [Field K] [Differential K]
     (C x : K) : K :=
-  C * (1 / 2 : K) * channelPeeling x ^ 2
+  C * (1 / 2 : K) * channelPeeling x ^ (2 : ℕ)
 
 /-- Equation `(19)`: exact conformal flux in peeling variables. -/
 theorem channelConformalFlux_eq
     {K : Type*} [Field K] [CharZero K] [Differential K]
     (C x : K) (hx : x′ ≠ 0) :
     channelConformalFlux C x =
-      C * ((channelPeeling x)′ + (1 / 2 : K) * channelPeeling x ^ 2) := by
+      C * ((channelPeeling x)′ + (1 / 2 : K) * channelPeeling x ^ (2 : ℕ)) := by
   rw [channelConformalFlux, schwarzian_eq_neg_deriv_channelPeeling_sub_half_sq x hx]
   ring
 

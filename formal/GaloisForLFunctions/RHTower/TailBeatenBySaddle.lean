@@ -50,17 +50,17 @@ theorem saddle_contribution_ne_zero {r c : ℝ} (_hr : 0 < r) (hc : 0 < c) :
 
 /-- **The tail decays like a Gaussian in the deviation.**  Larger deviation gives a smaller bound. -/
 theorem gaussian_tail_antitone {c d₁ d₂ : ℝ} (hc : 0 < c) (h : d₁ ≤ d₂) (hd : 0 ≤ d₁) :
-    Real.exp (-(c * d₂ ^ 2)) ≤ Real.exp (-(c * d₁ ^ 2)) := by
+    Real.exp (-(c * d₂ ^ (2 : ℕ))) ≤ Real.exp (-(c * d₁ ^ (2 : ℕ))) := by
   apply Real.exp_le_exp.mpr
-  have hsq : d₁ ^ 2 ≤ d₂ ^ 2 := by nlinarith
+  have hsq : d₁ ^ (2 : ℕ) ≤ d₂ ^ (2 : ℕ) := by nlinarith
   nlinarith [hsq, hc]
 
 /-- **The tail beats the saddle once the deviation is large enough.**  Any positive main term exceeds a
 Gaussian tail beyond some deviation. -/
 theorem tail_below_main {c M : ℝ} (hc : 0 < c) (hM : 0 < M) :
-    ∃ d : ℝ, 0 < d ∧ Real.exp (-(c * d ^ 2)) < M := by
-  have hlim : Filter.Tendsto (fun d : ℝ => Real.exp (-(c * d ^ 2))) Filter.atTop (nhds 0) := by
-    have hgrow : Filter.Tendsto (fun d : ℝ => -(c * d ^ 2)) Filter.atTop Filter.atBot := by
+    ∃ d : ℝ, 0 < d ∧ Real.exp (-(c * d ^ (2 : ℕ))) < M := by
+  have hlim : Filter.Tendsto (fun d : ℝ => Real.exp (-(c * d ^ (2 : ℕ)))) Filter.atTop (nhds 0) := by
+    have hgrow : Filter.Tendsto (fun d : ℝ => -(c * d ^ (2 : ℕ))) Filter.atTop Filter.atBot := by
       apply Filter.tendsto_neg_atTop_atBot.comp
       exact Filter.Tendsto.const_mul_atTop hc (Filter.tendsto_pow_atTop (by norm_num))
     exact Real.tendsto_exp_atBot.comp hgrow

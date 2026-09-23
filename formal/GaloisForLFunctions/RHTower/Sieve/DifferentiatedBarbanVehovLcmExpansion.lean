@@ -121,7 +121,7 @@ theorem levinsonCriticalDetectorFullLongBaseMoment_eq_lcm
     hML.trans (Nat.le_mul_of_pos_right L (Nat.zero_lt_of_lt hM))
   rw [RHTower.levinsonCriticalDetectorFullLongBaseMoment]
   have hexpand : ∀ k ∈ Finset.Ioc L (L * M),
-      barbanVehovCoeff M k ^ 2 / (k : ℝ) =
+      barbanVehovCoeff M k ^ (2 : ℕ) / (k : ℝ) =
         ∑ p ∈ k.divisors ×ˢ k.divisors,
           barbanVehovWeight M p.1 * barbanVehovWeight M p.2 / (k : ℝ) := by
     intro k hk
@@ -208,7 +208,7 @@ theorem levinsonCriticalDetectorFullLongDerivativeMoment_eq_lcm
     hML.trans (Nat.le_mul_of_pos_right L (Nat.zero_lt_of_lt hM))
   rw [RHTower.levinsonCriticalDetectorFullLongDerivativeMoment]
   have hexpand : ∀ k ∈ Finset.Ioc L (L * M),
-      barbanVehovDifferentiatedCoeff M k ^ 2 / (k : ℝ) =
+      barbanVehovDifferentiatedCoeff M k ^ (2 : ℕ) / (k : ℝ) =
         ∑ p ∈ k.divisors ×ˢ k.divisors,
           barbanVehovWeight M p.1 * barbanVehovWeight M p.2 *
             (Real.log (((k / p.1 : ℕ) : ℝ)) *

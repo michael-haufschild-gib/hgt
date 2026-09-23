@@ -256,12 +256,12 @@ theorem finrank_map_qLocalDictionary_productState (hU : ∀ i, (U i)ᴴ * U i = 
     finrank_map_qLocalDictionary]
 
 /-- Every unit vector is the ground column of a unitary matrix. -/
-theorem exists_unitary_col_zero {φ : Fin D → ℂ} (hφ : ∑ i, ‖φ i‖ ^ 2 = 1) :
+theorem exists_unitary_col_zero {φ : Fin D → ℂ} (hφ : ∑ i, ‖φ i‖ ^ (2 : ℕ) = 1) :
     ∃ U : Matrix (Fin D) (Fin D) ℂ, Uᴴ * U = 1 ∧ U * Uᴴ = 1 ∧ ∀ r, U r 0 = φ r := by
   classical
   set w : EuclideanSpace ℂ (Fin D) := (EuclideanSpace.equiv (Fin D) ℂ).symm φ with hw
   have hnorm : ‖w‖ = 1 := by
-    rw [EuclideanSpace.norm_eq, show ∑ i, ‖w i‖ ^ 2 = ∑ i, ‖φ i‖ ^ 2 from rfl, hφ]
+    rw [EuclideanSpace.norm_eq, show ∑ i, ‖w i‖ ^ (2 : ℕ) = ∑ i, ‖φ i‖ ^ (2 : ℕ) from rfl, hφ]
     simp
   have hcard : Module.finrank ℂ (EuclideanSpace ℂ (Fin D)) = Fintype.card (Fin D) := by
     simp
@@ -294,7 +294,7 @@ theorem exists_unitary_col_zero {φ : Fin D → ℂ} (hφ : ∑ i, ‖φ i‖ ^ 
 local unit vectors, the `q`-local dictionary acts on the corresponding product
 state with the same visible rank as at the product ground state. -/
 theorem finrank_map_qLocalDictionary_productVector
-    (φ : σ → (Fin D → ℂ)) (hφ : ∀ i, ∑ x, ‖φ i x‖ ^ 2 = 1) (q : ℕ) :
+    (φ : σ → (Fin D → ℂ)) (hφ : ∀ i, ∑ x, ‖φ i x‖ ^ (2 : ℕ) = 1) (q : ℕ) :
     Module.finrank ℝ ↥((qLocalDictionary σ D q).map
         (observerActionR (fun r : σ → Fin D => ∏ i, φ i (r i))))
       = 2 * ∑ k ∈ Finset.Icc 1 q, (Fintype.card σ).choose k * (D - 1) ^ k := by

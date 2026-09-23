@@ -63,7 +63,7 @@ construction. -/
 theorem norm_inner_invisiblePart_eq_defect_sq
     (S : H →L[𝕜] Y) (h : H) :
     ‖inner 𝕜 (hilbertSamplingInvisiblePart S h) h‖ =
-      hilbertSamplingDefect S h ^ 2 := by
+      hilbertSamplingDefect S h ^ (2 : ℕ) := by
   let u : S.ker := S.ker.orthogonalProjectionOnto h
   have hinner : inner 𝕜 u (S.ker.orthogonalProjectionOnto h) =
       inner 𝕜 (hilbertSamplingInvisiblePart S h) h := by
@@ -72,8 +72,8 @@ theorem norm_inner_invisiblePart_eq_defect_sq
     ‖inner 𝕜 (hilbertSamplingInvisiblePart S h) h‖ =
         ‖inner 𝕜 u (S.ker.orthogonalProjectionOnto h)‖ := congrArg norm hinner.symm
     _ = ‖inner 𝕜 u u‖ := by rfl
-    _ = ‖u‖ ^ 2 := by rw [inner_self_eq_norm_sq_to_K]; simp
-    _ = hilbertSamplingDefect S h ^ 2 := by rfl
+    _ = ‖u‖ ^ (2 : ℕ) := by rw [inner_self_eq_norm_sq_to_K]; simp
+    _ = hilbertSamplingDefect S h ^ (2 : ℕ) := by rfl
 
 /-- Injective sampling has no invisible Hilbert component.  This does not assert closed range or a
 bounded inverse. -/

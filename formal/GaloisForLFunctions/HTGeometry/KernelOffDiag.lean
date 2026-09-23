@@ -81,7 +81,7 @@ theorem eventually_kernelInf_pos (h : PositiveMomentForm s) (h0b : BoundedKernel
         ≤ ballBoundQ s S P ‖((ξ : ℝ) : ℂ)‖ := fun N => kernelRoot_le_ballBoundQ h hS hP le_rfl N
     have hpos := kernelSum_pos h hbnd
     rw [kernelSum_ofReal] at hpos
-    have heq : kernelInf s ξ ξ = ∑' k, ((monicOrtho s k).eval ξ) ^ 2 /
+    have heq : kernelInf s ξ ξ = ∑' k, ((monicOrtho s k).eval ξ) ^ (2 : ℕ) /
         momentInner s (monicOrtho s k) (monicOrtho s k) := by
       rw [kernelInf]
       exact tsum_congr fun k => by rw [sq]
@@ -104,7 +104,7 @@ theorem nevDenominator_opposite_signs (h : PositiveMomentForm s) (h0b : BoundedK
         (nevBrealInf s (ξ + δ) * t - nevDrealInf s (ξ + δ)) < 0 := by
   obtain ⟨η, hη, hpos⟩ := eventually_kernelInf_pos h h0b ξ
   have hB : nevBrealInf s ξ ≠ 0 := nevBrealInf_ne_zero_of_mem_fiber h h0b hξ
-  have hB2 : 0 < nevBrealInf s ξ ^ 2 := by positivity
+  have hB2 : 0 < nevBrealInf s ξ ^ (2 : ℕ) := by positivity
   have h0v : 0 < momentInner s (monicOrtho s 0) (monicOrtho s 0) := monicOrtho_inner_self_pos h 0
   refine ⟨η, hη, fun δ hδ hδη => ?_⟩
   have hplus := nevDenominator_factor_at_fiber h h0b hξ (ξ + δ)

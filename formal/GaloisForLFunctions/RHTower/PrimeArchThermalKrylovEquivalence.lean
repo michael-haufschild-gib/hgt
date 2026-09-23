@@ -89,16 +89,16 @@ theorem xiThermalNode_pos (q : XiZeroCopy) : 0 < xiThermalNode q := by
     rw [lt_div_iff₀ hCpos]
     nlinarith [xiEndpointCompletedCurvature_lt_one_half]
   have hheight := xiZeroCopy_im_sq_ge_endpoint_source_inverse_gap q
-  have hgamma : 1 < (q.1 : ℂ).im ^ 2 := by linarith
-  have hdelta : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 :=
+  have hgamma : 1 < (q.1 : ℂ).im ^ (2 : ℕ) := by linarith
+  have hdelta : ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) < 1 / 4 :=
     xi_divisor_support_centered_re_sq_lt_quarter q.1
-  have hnum : 0 < (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
+  have hnum : 0 < (q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) := by
     linarith
-  have hden : 0 < Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ 2 := by
+  have hden : 0 < Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ (2 : ℕ) := by
     exact pow_pos (Complex.normSq_pos.mpr
       (sub_ne_zero.mpr (xi_divisor_support_ne_half q.1))) _
   have hhalf : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by norm_num
-  have hden' : 0 < Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ)) ^ 2 := by
+  have hden' : 0 < Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) := by
     simpa only [← hhalf] using hden
   rw [xiThermalNode, xiZeroCopyReciprocalSquare_eq, xiCentralReciprocalSquare]
   rw [hhalf]
@@ -110,8 +110,8 @@ theorem xiThermalNode_pos (q : XiZeroCopy) : 0 < xiThermalNode q := by
             Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ))) -
         (-(q.1 : ℂ).im / Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ))) *
           (-(q.1 : ℂ).im / Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ)))) =
-      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) /
-        Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ)) ^ 2 by ring]
+      ((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) /
+        Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ)) ^ (2 : ℕ) by ring]
   exact div_pos hnum hden'
 
 /-- Under RH the real thermal node recovers the full complex reciprocal-square coordinate. -/
@@ -138,12 +138,12 @@ theorem summable_xiThermalNode_pow (n : ℕ) :
 
 /-- The squared real parts of the reciprocal-square Xi coordinates are summable. -/
 theorem summable_xiThermalNode_sq :
-    Summable (fun q : XiZeroCopy => xiThermalNode q ^ 2) := by
+    Summable (fun q : XiZeroCopy => xiThermalNode q ^ (2 : ℕ)) := by
   simpa using summable_xiThermalNode_pow 1
 
 /-- The squared imaginary parts of the reciprocal-square Xi coordinates are summable. -/
 theorem summable_xiThermalOrientationTerm :
-    Summable (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ 2) := by
+    Summable (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ)) := by
   apply Summable.of_norm_bounded
     (summable_xiZeroCopyReciprocalSquare_pow 1).norm
   intro q
@@ -160,7 +160,7 @@ def xiThermalPositiveMoment (n : ℕ) : ℝ :=
 
 /-- The canonical thermodynamic second moment of the unconditional positive Xi nodes. -/
 def xiThermalSecondMoment : ℝ :=
-  ∑' q : XiZeroCopy, xiThermalNode q ^ 2
+  ∑' q : XiZeroCopy, xiThermalNode q ^ (2 : ℕ)
 
 theorem xiThermalPositiveMoment_one_eq_secondMoment :
     xiThermalPositiveMoment 1 = xiThermalSecondMoment := by
@@ -169,15 +169,15 @@ theorem xiThermalPositiveMoment_one_eq_secondMoment :
 /-- The transverse orientation energy lost when the complex reciprocal-square second moment is
 replaced by the positive thermal second moment. -/
 def xiThermalOrientationEnergy : ℝ :=
-  ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q).im ^ 2
+  ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ)
 
 /-- The Hermitian square mass of the reciprocal-square Xi spectrum.  Operator-theoretically this
 is the squared Hilbert--Schmidt mass of the squared reciprocal diagonal. -/
 def xiReciprocalSquareHermitianMass : ℝ :=
-  ∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ^ 2
+  ∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ)
 
 theorem summable_xiReciprocalSquareHermitianMass :
-    Summable (fun q : XiZeroCopy => ‖xiZeroCopyReciprocalSquare q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖xiZeroCopyReciprocalSquare q‖ ^ (2 : ℕ)) := by
   simpa only [norm_pow] using (summable_xiZeroCopyReciprocalSquare_pow 1).norm
 
 /-- The Hermitian square mass is the kernel Hilbert--Schmidt norm of the squared reciprocal
@@ -224,7 +224,7 @@ theorem normalizedPrimeArchMoment_one_eq_re_trace_xiReciprocalKernel_four :
   have htrace :
       (∑' q : XiZeroCopy,
         HilbertSchmidt.hsPow xiReciprocalDiagonalKernel 3 (q, q)) =
-      ∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q ^ 2 := by
+      ∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q ^ (2 : ℕ) := by
     rw [xiReciprocalDiagonalKernel, HilbertSchmidt.hsPow_diagMul]
     apply tsum_congr
     intro q
@@ -236,7 +236,7 @@ theorem normalizedPrimeArchMoment_one_eq_re_trace_xiReciprocalKernel_four :
     normalizedPrimeArchMoment 1 = (xiCentralReciprocalMoment 1).re := by
       simpa [normalizedPrimeArchMoment, normalizedPrimeArchMomentGerm] using
         congrArg Complex.re hsource
-    _ = (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q ^ 2).re := by
+    _ = (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
       rw [tsum_xiZeroCopyReciprocalSquare_pow]
     _ = (∑' q : XiZeroCopy,
         HilbertSchmidt.hsPow xiReciprocalDiagonalKernel 3 (q, q)).re := by
@@ -258,10 +258,10 @@ theorem xiReciprocalSquareHermitianMass_eq_secondMoment_add_orientation :
 /-- The pointwise smoothing weight relating the thermal orientation energy to the global
 reciprocal reflection defect. -/
 def xiThermalReflectionWeight (q : XiZeroCopy) : ℝ :=
-  (xiReciprocalCoordinate q).re ^ 2
+  (xiReciprocalCoordinate q).re ^ (2 : ℕ)
 
 private lemma xiReciprocal_norm_sub_conj_sq_eq_four_im_sq (z : ℂ) :
-    ‖z - (starRingEnd ℂ) z‖ ^ 2 = 4 * z.im ^ 2 := by
+    ‖z - (starRingEnd ℂ) z‖ ^ (2 : ℕ) = 4 * z.im ^ (2 : ℕ) := by
   rw [norm_sub_conj_sq, Complex.sq_norm, Complex.normSq_apply]
   simp only [pow_two, Complex.mul_re]
   ring
@@ -269,12 +269,12 @@ private lemma xiReciprocal_norm_sub_conj_sq_eq_four_im_sq (z : ℂ) :
 /-- The thermal orientation term is exactly the global reflection-defect term multiplied by the
 square of the real reciprocal coordinate. -/
 theorem xiThermalOrientationTerm_eq_weighted_globalDefect (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 =
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) =
       xiThermalReflectionWeight q *
         ‖xiReciprocalCoordinate q -
-          (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2 := by
+          (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ (2 : ℕ) := by
   rw [xiThermalReflectionWeight, xiReciprocal_norm_sub_conj_sq_eq_four_im_sq]
-  change (((xiReciprocalCoordinate q) ^ 2).im) ^ 2 = _
+  change (((xiReciprocalCoordinate q) ^ (2 : ℕ)).im) ^ (2 : ℕ) = _
   simp only [pow_two, Complex.mul_im]
   ring
 
@@ -298,17 +298,17 @@ theorem xiThermalReflectionWeight_lt_one (q : XiZeroCopy) :
     rw [lt_div_iff₀ hCpos]
     nlinarith [xiEndpointCompletedCurvature_lt_one_half]
   have hheight := xiZeroCopy_im_sq_ge_endpoint_source_inverse_gap q
-  have hgamma : 1 < (q.1 : ℂ).im ^ 2 := by linarith
+  have hgamma : 1 < (q.1 : ℂ).im ^ (2 : ℕ) := by linarith
   have hspectralNormSq : 1 < Complex.normSq (xiSpectralPoint q) := by
     rw [← Complex.sq_norm, norm_xiSpectralPoint, Complex.sq_norm,
       Complex.normSq_apply]
     norm_num
     nlinarith [sq_nonneg ((q.1 : ℂ).re - 1 / 2)]
-  have hinvNormSq : ‖xiReciprocalCoordinate q‖ ^ 2 < 1 := by
+  have hinvNormSq : ‖xiReciprocalCoordinate q‖ ^ (2 : ℕ) < 1 := by
     rw [xiReciprocalCoordinate, Complex.sq_norm, Complex.normSq_inv]
     exact inv_lt_one_of_one_lt₀ hspectralNormSq
   have hreSqLeNormSq :
-      (xiReciprocalCoordinate q).re ^ 2 ≤ ‖xiReciprocalCoordinate q‖ ^ 2 := by
+      (xiReciprocalCoordinate q).re ^ (2 : ℕ) ≤ ‖xiReciprocalCoordinate q‖ ^ (2 : ℕ) := by
     nlinarith [Complex.sq_norm_sub_sq_re (xiReciprocalCoordinate q),
       sq_nonneg (xiReciprocalCoordinate q).im]
   exact lt_of_le_of_lt hreSqLeNormSq hinvNormSq
@@ -319,7 +319,7 @@ theorem xiThermalOrientationEnergy_eq_weightedGlobalDefect :
     xiThermalOrientationEnergy =
       ∑' q : XiZeroCopy, xiThermalReflectionWeight q *
         ‖xiReciprocalCoordinate q -
-          (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2 := by
+          (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ (2 : ℕ) := by
   rw [xiThermalOrientationEnergy]
   apply tsum_congr
   exact xiThermalOrientationTerm_eq_weighted_globalDefect
@@ -333,10 +333,10 @@ theorem xiThermalSecondMoment_sub_orientationEnergy_eq_source :
   calc
     xiThermalSecondMoment - xiThermalOrientationEnergy =
         ∑' q : XiZeroCopy,
-          (xiThermalNode q ^ 2 - (xiZeroCopyReciprocalSquare q).im ^ 2) := by
+          (xiThermalNode q ^ (2 : ℕ) - (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ)) := by
       rw [xiThermalSecondMoment, xiThermalOrientationEnergy,
         summable_xiThermalNode_sq.tsum_sub summable_xiThermalOrientationTerm]
-    _ = ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ 2).re := by
+    _ = ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re := by
       apply tsum_congr
       intro q
       simp only [xiThermalNode, pow_two, Complex.mul_re]
@@ -415,7 +415,7 @@ theorem xiThermalOrientationEnergy_eq_zero_iff_rh :
     · simp [xiSpectralPoint, hre]
   · intro hRH
     rw [xiThermalOrientationEnergy]
-    rw [show (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ 2) =
+    rw [show (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ)) =
         fun _ => 0 by
       funext q
       obtain ⟨x, _, hcoord⟩ :=
@@ -522,11 +522,11 @@ theorem xiThermalOrientationEnergy_lt_globalReflectionDefectEnergy_of_not_rh
     apply hnot
     exact xiThermalOrientationEnergy_eq_zero_iff_rh.mp hzero.symm
   have hex : ∃ q : XiZeroCopy,
-      0 < (xiZeroCopyReciprocalSquare q).im ^ 2 := by
+      0 < (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) := by
     by_contra hnone
     push Not at hnone
     have hallzero : ∀ q : XiZeroCopy,
-        (xiZeroCopyReciprocalSquare q).im ^ 2 = 0 := by
+        (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) = 0 := by
       intro q
       exact le_antisymm (hnone q) (sq_nonneg _)
     rw [xiThermalOrientationEnergy] at henergyPos
@@ -534,24 +534,24 @@ theorem xiThermalOrientationEnergy_lt_globalReflectionDefectEnergy_of_not_rh
     exact (lt_irrefl 0 henergyPos)
   obtain ⟨q, hq⟩ := hex
   have hle : ∀ j : XiZeroCopy,
-      (xiZeroCopyReciprocalSquare j).im ^ 2 ≤
+      (xiZeroCopyReciprocalSquare j).im ^ (2 : ℕ) ≤
         ‖xiReciprocalCoordinate j -
-          (starRingEnd ℂ) (xiReciprocalCoordinate j)‖ ^ 2 := by
+          (starRingEnd ℂ) (xiReciprocalCoordinate j)‖ ^ (2 : ℕ) := by
     intro j
     rw [xiThermalOrientationTerm_eq_weighted_globalDefect]
     exact mul_le_of_le_one_left (sq_nonneg _)
       (xiThermalReflectionWeight_lt_one j).le
   have hdefectPos : 0 < ‖xiReciprocalCoordinate q -
-      (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2 := by
+      (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ (2 : ℕ) := by
     by_contra hnonpos
     have hzero : ‖xiReciprocalCoordinate q -
-        (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2 = 0 :=
+        (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ (2 : ℕ) = 0 :=
       le_antisymm (le_of_not_gt hnonpos) (sq_nonneg _)
     rw [xiThermalOrientationTerm_eq_weighted_globalDefect, hzero, mul_zero] at hq
     exact (lt_irrefl 0 hq)
-  have hlt : (xiZeroCopyReciprocalSquare q).im ^ 2 <
+  have hlt : (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) <
       ‖xiReciprocalCoordinate q -
-        (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ 2 := by
+        (starRingEnd ℂ) (xiReciprocalCoordinate q)‖ ^ (2 : ℕ) := by
     rw [xiThermalOrientationTerm_eq_weighted_globalDefect]
     exact mul_lt_of_lt_one_left hdefectPos (xiThermalReflectionWeight_lt_one q)
   rw [xiThermalOrientationEnergy, xiGlobalReflectionDefectEnergy]
@@ -630,7 +630,7 @@ theorem tendsto_xiThermalTruncation_positiveMoment :
 
 /-- The enumerated thermal second moments sum to the canonical thermodynamic value. -/
 theorem hasSum_xiThermalEnumeration_sq :
-    HasSum (fun j : ℕ => xiThermalNode (xiThermalEnumeration j) ^ 2)
+    HasSum (fun j : ℕ => xiThermalNode (xiThermalEnumeration j) ^ (2 : ℕ))
       xiThermalSecondMoment := by
   simpa only [xiThermalPositiveMoment_one_eq_secondMoment] using
     hasSum_xiThermalEnumeration_positiveMoment 1

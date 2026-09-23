@@ -29,10 +29,10 @@ theorem realWindow_const {k : ℕ} {x : ℝ} (h : (k : ℝ) ≤ x) (h2 : x < k +
 
 /-- **The unit-interval integral of the window mean square.** -/
 theorem integral_unit_window (a : ℕ → ℂ) (k L M : ℕ) (hM : k + L < M) :
-    ∫ x in (k : ℝ)..((k : ℝ) + 1), ‖∑ n ∈ realWindow x L M, a n‖ ^ 2
-      = ‖∑ n ∈ Finset.Ioc k (k + L), a n‖ ^ 2 := by
-  have hcongr : ∫ x in (k : ℝ)..((k : ℝ) + 1), ‖∑ n ∈ realWindow x L M, a n‖ ^ 2
-      = ∫ _ in (k : ℝ)..((k : ℝ) + 1), ‖∑ n ∈ Finset.Ioc k (k + L), a n‖ ^ 2 := by
+    ∫ x in (k : ℝ)..((k : ℝ) + 1), ‖∑ n ∈ realWindow x L M, a n‖ ^ (2 : ℕ)
+      = ‖∑ n ∈ Finset.Ioc k (k + L), a n‖ ^ (2 : ℕ) := by
+  have hcongr : ∫ x in (k : ℝ)..((k : ℝ) + 1), ‖∑ n ∈ realWindow x L M, a n‖ ^ (2 : ℕ)
+      = ∫ _ in (k : ℝ)..((k : ℝ) + 1), ‖∑ n ∈ Finset.Ioc k (k + L), a n‖ ^ (2 : ℕ) := by
     refine intervalIntegral.integral_congr_ae ?_
     have hnull : (volume : Measure ℝ) {(k : ℝ) + 1} = 0 := measure_singleton _
     rw [MeasureTheory.ae_iff]

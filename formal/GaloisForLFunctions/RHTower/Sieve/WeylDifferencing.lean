@@ -195,7 +195,7 @@ theorem sum_norm_weylCorr_row_le (g : ℕ → ℝ) (hg : ∀ d, 0 ≤ g d) (H r 
 /-- **The windowed Weyl–van der Corput inequality.** -/
 theorem weyl_vdc (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) (N H : ℕ)
     (hH : 1 ≤ H) (hHN : H ≤ N) :
-    (H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖ ^ 2
+    (H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖ ^ (2 : ℕ)
       ≤ 4 * (N : ℝ)
         * ((N : ℝ) + ∑ h ∈ Finset.Icc 1 (H - 1), ‖weylCorr a N h‖) := by
   classical
@@ -211,25 +211,25 @@ theorem weyl_vdc (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) (N H : ℕ)
       sum_weylShift a N H r (Finset.mem_range.mp hr)
     rw [Finset.sum_congr rfl this, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
   -- Cauchy–Schwarz over the enlarged window
-  have hCS : ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖) ^ 2
-      ≤ ((N : ℝ) + H) * ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ 2 := by
+  have hCS : ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖) ^ (2 : ℕ)
+      ≤ ((N : ℝ) + H) * ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ (2 : ℕ) := by
     have h1 : (H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖
         = ‖∑ m ∈ Finset.range (N + H), T m‖ := by
       rw [hHS, norm_mul, Complex.norm_natCast]
     rw [h1]
     have h2 : ‖∑ m ∈ Finset.range (N + H), T m‖
         ≤ ∑ m ∈ Finset.range (N + H), ‖T m‖ := norm_sum_le _ _
-    have h3 : (∑ m ∈ Finset.range (N + H), ‖T m‖) ^ 2
+    have h3 : (∑ m ∈ Finset.range (N + H), ‖T m‖) ^ (2 : ℕ)
         ≤ ((Finset.range (N + H)).card : ℝ)
-          * ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ 2 := sq_sum_le_card_mul_sum_sq
+          * ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ (2 : ℕ) := sq_sum_le_card_mul_sum_sq
     rw [Finset.card_range] at h3
-    have h4 : ‖∑ m ∈ Finset.range (N + H), T m‖ ^ 2
-        ≤ (∑ m ∈ Finset.range (N + H), ‖T m‖) ^ 2 :=
+    have h4 : ‖∑ m ∈ Finset.range (N + H), T m‖ ^ (2 : ℕ)
+        ≤ (∑ m ∈ Finset.range (N + H), ‖T m‖) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) h2 2
     push_cast at h3 ⊢
     nlinarith [h3, h4]
   -- expansion of the energy into shifted correlations
-  have henergy : ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ 2
+  have henergy : ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ (2 : ℕ)
       ≤ ∑ r ∈ Finset.range H, ∑ r' ∈ Finset.range H,
           ‖weylCorr a N (max r r' - min r r')‖ := by
     have hexp : ∑ m ∈ Finset.range (N + H), T m * (starRingEnd ℂ) (T m)
@@ -245,7 +245,7 @@ theorem weyl_vdc (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) (N H : ℕ)
       rw [Finset.sum_congr rfl fun m _ => hpt m]
       rw [Finset.sum_comm]
       exact Finset.sum_congr rfl fun r _ => Finset.sum_comm
-    have hre : ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ 2
+    have hre : ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ (2 : ℕ)
         = (∑ m ∈ Finset.range (N + H), T m * (starRingEnd ℂ) (T m)).re := by
       rw [Complex.re_sum]
       refine Finset.sum_congr rfl fun m _ => ?_
@@ -300,26 +300,26 @@ theorem weyl_vdc (a : ℕ → ℂ) (ha : ∀ n, ‖a n‖ ≤ 1) (N H : ℕ)
     have : (H : ℝ) ≤ N := by exact_mod_cast hHN
     linarith
   have hHpos : (0 : ℝ) < H := by exact_mod_cast hH
-  have hsum0 : (0 : ℝ) ≤ ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ 2 :=
+  have hsum0 : (0 : ℝ) ≤ ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun m _ => sq_nonneg _
-  have hchain : ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖) ^ 2
+  have hchain : ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖) ^ (2 : ℕ)
       ≤ 2 * (N : ℝ) * ((H : ℝ) * (2 * ((N : ℝ)
           + ∑ h ∈ Finset.Icc 1 (H - 1), ‖weylCorr a N h‖))) := by
-    have hstep2 : ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ 2
+    have hstep2 : ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ (2 : ℕ)
         ≤ (H : ℝ) * (2 * ((N : ℝ)
             + ∑ h ∈ Finset.Icc 1 (H - 1), ‖weylCorr a N h‖)) := by
       refine le_trans henergy (le_trans hrows ?_)
       have hH0 : (0 : ℝ) ≤ H := by positivity
       nlinarith [hzero]
-    calc ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖) ^ 2
-        ≤ ((N : ℝ) + H) * ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ 2 := hCS
-      _ ≤ 2 * (N : ℝ) * ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ 2 :=
+    calc ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖) ^ (2 : ℕ)
+        ≤ ((N : ℝ) + H) * ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ (2 : ℕ) := hCS
+      _ ≤ 2 * (N : ℝ) * ∑ m ∈ Finset.range (N + H), ‖T m‖ ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right hNH hsum0
       _ ≤ 2 * (N : ℝ) * ((H : ℝ) * (2 * ((N : ℝ)
             + ∑ h ∈ Finset.Icc 1 (H - 1), ‖weylCorr a N h‖))) := by
           refine mul_le_mul_of_nonneg_left hstep2 (by positivity)
-  have hexpand : ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖) ^ 2
-      = (H : ℝ) * ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖ ^ 2) := by ring
+  have hexpand : ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖) ^ (2 : ℕ)
+      = (H : ℝ) * ((H : ℝ) * ‖∑ n ∈ Finset.range N, a n‖ ^ (2 : ℕ)) := by ring
   have hrhs : 2 * (N : ℝ) * ((H : ℝ) * (2 * ((N : ℝ)
       + ∑ h ∈ Finset.Icc 1 (H - 1), ‖weylCorr a N h‖)))
       = (H : ℝ) * (4 * (N : ℝ) * ((N : ℝ)

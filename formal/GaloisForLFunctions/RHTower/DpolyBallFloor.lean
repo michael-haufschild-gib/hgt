@@ -1060,7 +1060,7 @@ theorem point_mem_line_center_ball_of_quadratic {ρ : ℂ} {τ R' : ℝ}
   exact lt_of_pow_lt_pow_left₀ 2 hR'0.le hsq
 
 /-- **RH gate with scalar target containment.**  This replaces the raw target-zero ball membership
-by the coordinate inequality `(ρ.re-1/2)^2 + (ρ.im-τ)^2 < R'^2` for every admissible selected center. -/
+by the coordinate inequality `(ρ.re-1/2)^(2 : ℕ) + (ρ.im-τ)^(2 : ℕ) < R'^(2 : ℕ)` for every admissible selected center. -/
 theorem riemannHypothesis_of_secondMoment_line_floor_cross_slope_windows_of_radius_strip_interval_bracket_quadratic_target
     (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
       ∃ (N M : ℕ) (ε₁ δ : ℝ)
@@ -1496,7 +1496,7 @@ theorem exists_hardy_floor_in_window_of_l2
 
 /-- **Window-selected Hardy-`L²` RH gate with endpoint scalar geometry.**  The center-selection
 hypothesis is now the interval inequality
-`m_J² U < ∫_T^{T+U} H_N(τ)^2 dτ`; the point anchor consumed by the existing finite
+`m_J² U < ∫_T^{T+U} H_N(τ)^(2 : ℕ) dτ`; the point anchor consumed by the existing finite
 certificate is produced by `exists_hardy_floor_in_window_of_l2`. -/
 theorem riemannHypothesis_of_window_hardy_l2_cross_slope_endpoint_target
     (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
@@ -1560,7 +1560,7 @@ end RHTower
 
 namespace RHTower
 
-/-- **Hardy floor from a phase-free `gN` line `L²` budget.**  Since `H_N(τ)^2` is the
+/-- **Hardy floor from a phase-free `gN` line `L²` budget.**  Since `H_N(τ)^(2 : ℕ)` is the
 squared norm of `gN` on the critical line, a strict line-norm second-moment budget supplies the
 same Hardy point anchor as the Hardy-amplitude budget. -/
 theorem exists_hardy_floor_in_window_of_gN_line_l2
@@ -1665,7 +1665,7 @@ theorem exists_hardy_floor_in_window_of_gN_line_l2_split
 
 /-- **Window-selected explicit split-line-`L²` RH gate with endpoint scalar geometry.**  The
 remaining every-window input is the exact scalar inequality obtained from the finite functional
-equation expansion of `‖gN N (1/2+iτ)‖^2`. -/
+equation expansion of `‖gN N (1/2+iτ)‖^(2 : ℕ)`. -/
 theorem riemannHypothesis_of_window_gN_line_l2_split_cross_slope_endpoint_target
     (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
       ∃ (N M : ℕ) (ε₁ δ : ℝ)
@@ -2286,7 +2286,7 @@ namespace RHTower
 
 /-- Full RH endpoint gate from the banked second moment plus a Hardy-phase quadrature saving below
 `4 * (U * diagonal + offdiag)`.  The center witness is produced internally once the saving beats the
-explicit finite budget `m_J^2 * U + 8 * offdiag`; all remaining certificate data stay on known endpoint,
+explicit finite budget `m_J^(2 : ℕ) * U + 8 * offdiag`; all remaining certificate data stay on known endpoint,
 segment, and circle surfaces. -/
 theorem riemannHypothesis_of_secondMoment_orthogonal_saving_cross_slope_endpoint_target
     (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
@@ -2572,7 +2572,7 @@ theorem windowLinePackage_of_secondMoment_orthogonal_saving_outer_power_endpoint
 
 /-- Full RH endpoint gate from the banked second moment, the exact averaged quadrature-energy
 budget, and one outer-radius power floor.  The Hardy anchor face is the additive scalar inequality
-`m_J^2 U + orthogonalEnergy < 4 * (U * diagonal - offdiag)`. -/
+`m_J^(2 : ℕ) U + orthogonalEnergy < 4 * (U * diagonal - offdiag)`. -/
 theorem riemannHypothesis_of_secondMoment_orthogonal_saving_outer_power_endpoint_target
     (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
       ∃ (N M : ℕ) (δ : ℝ)

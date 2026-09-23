@@ -18,7 +18,7 @@ theorem mtGeometricInitialEndpoint_band
     (hz₀ : 1 ≤ z₀)
     (hprogress : 1 ≤ delta * ((z₀ - 1 : ℕ) : ℝ))
     (hQ : mtGeometricLevel delta start 0 ≤ (z₀ : ℝ) * (1 + delta))
-    (hwidth : (1 + delta) ^ 2 ≤ 1 + width) :
+    (hwidth : (1 + delta) ^ (2 : ℕ) ≤ 1 + width) :
     ((mtMinimalGeometricEndpoint delta start 0 - 1 : ℕ) : ℝ) ≤
       (1 + width) * ((z₀ - 1 : ℕ) : ℝ) := by
   have hzCast : (z₀ : ℝ) = ((z₀ - 1 : ℕ) : ℝ) + 1 := by
@@ -40,7 +40,7 @@ theorem mtGeometricInitialEndpoint_band
     _ ≤ (z₀ : ℝ) * (1 + delta) := hQ
     _ ≤ ((1 + delta) * ((z₀ - 1 : ℕ) : ℝ)) * (1 + delta) :=
       mul_le_mul_of_nonneg_right hzStep hdeltaOne
-    _ = (1 + delta) ^ 2 * ((z₀ - 1 : ℕ) : ℝ) := by ring
+    _ = (1 + delta) ^ (2 : ℕ) * ((z₀ - 1 : ℕ) : ℝ) := by ring
     _ ≤ (1 + width) * ((z₀ - 1 : ℕ) : ℝ) :=
       mul_le_mul_of_nonneg_right hwidth (Nat.cast_nonneg _)
 
@@ -49,7 +49,7 @@ theorem mtGeometricTerminalEndpoint_band
     (hz₀ : 1 ≤ z₀) (hz₀z₁ : z₀ ≤ z₁)
     (hroot : mtGeometricLevel delta start 0 < (z₁ : ℝ))
     (hprogress : 1 ≤ delta * ((z₀ - 1 : ℕ) : ℝ))
-    (hwidth : (1 + delta) ^ 2 ≤ 1 + width) :
+    (hwidth : (1 + delta) ^ (2 : ℕ) ≤ 1 + width) :
     let t := mtMinimalGeometricDepth delta start (z₁ : ℝ) hdelta
     ((mtMinimalGeometricEndpoint delta start t - 1 : ℕ) : ℝ) ≤
       (1 + width) * ((z₁ - 1 : ℕ) : ℝ) := by
@@ -83,7 +83,7 @@ theorem mtGeometricTerminalEndpoint_band
     _ ≤ (z₁ : ℝ) * (1 + delta) := hlevel.le
     _ ≤ ((1 + delta) * ((z₁ - 1 : ℕ) : ℝ)) * (1 + delta) :=
       mul_le_mul_of_nonneg_right hz₁Step (by linarith)
-    _ = (1 + delta) ^ 2 * ((z₁ - 1 : ℕ) : ℝ) := by ring
+    _ = (1 + delta) ^ (2 : ℕ) * ((z₁ - 1 : ℕ) : ℝ) := by ring
     _ ≤ (1 + width) * ((z₁ - 1 : ℕ) : ℝ) :=
       mul_le_mul_of_nonneg_right hwidth (Nat.cast_nonneg _)
 
@@ -105,7 +105,7 @@ theorem mtMinimalGeometricBlock_band
     (hz₀ : 1 ≤ z₀)
     (hz₀Endpoint : z₀ ≤ mtMinimalGeometricEndpoint delta start 0)
     (hprogress : 1 ≤ delta * ((z₀ - 1 : ℕ) : ℝ))
-    (hwidth : (1 + delta) ^ 2 ≤ 1 + width)
+    (hwidth : (1 + delta) ^ (2 : ℕ) ≤ 1 + width)
     {t : ℕ} (i : Fin t) {q : ℕ}
     (hq : q ∈ mtAdjacentPrimeBlock (mtMinimalGeometricEndpoint delta start) i) :
     ((q - 1 : ℕ) : ℝ) ≤
@@ -147,7 +147,7 @@ theorem mtMinimalGeometricBlock_band
       mul_le_mul_of_nonneg_right hQiEndpoint.le (by linarith)
     _ ≤ ((1 + delta) * ((endpoint i.1 - 1 : ℕ) : ℝ)) * (1 + delta) :=
       mul_le_mul_of_nonneg_right hiStep (by linarith)
-    _ = (1 + delta) ^ 2 * ((endpoint i.1 - 1 : ℕ) : ℝ) := by ring
+    _ = (1 + delta) ^ (2 : ℕ) * ((endpoint i.1 - 1 : ℕ) : ℝ) := by ring
     _ ≤ (1 + width) * ((endpoint i.1 - 1 : ℕ) : ℝ) :=
       mul_le_mul_of_nonneg_right hwidth (Nat.cast_nonneg _)
 

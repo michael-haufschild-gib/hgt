@@ -14,18 +14,18 @@ namespace RHTower
 
 /-- Minimum peak energy over both complete two-coordinate orders. -/
 def twoCoordinateMergePeak (h a b c : ℝ) : ℝ :=
-  min (max (max (h^2+a^2+b^2+c^2) ((h+a+b+c)^2)) ((h+a)^2+(b+c)^2))
-      (max (max (h^2+a^2+b^2+c^2) ((h+a+b+c)^2)) ((h+b)^2+(a+c)^2))
+  min (max (max (h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)) ((h+a+b+c)^(2 : ℕ))) ((h+a)^(2 : ℕ)+(b+c)^(2 : ℕ)))
+      (max (max (h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)) ((h+a+b+c)^(2 : ℕ))) ((h+b)^(2 : ℕ)+(a+c)^(2 : ℕ)))
 
 /-- The antisymmetric product selects the lower-energy first coordinate. -/
 theorem twoCoordinateMerge_left_le_right_iff (h a b c : ℝ) :
-    (h+a)^2+(b+c)^2 ≤ (h+b)^2+(a+c)^2 ↔ (h-c)*(a-b) ≤ 0 := by
+    (h+a)^(2 : ℕ)+(b+c)^(2 : ℕ) ≤ (h+b)^(2 : ℕ)+(a+c)^(2 : ℕ) ↔ (h-c)*(a-b) ≤ 0 := by
   constructor <;> intro H <;> nlinarith only [H]
 
 /-- Exact minimum next energy, including the nonzero joint-coordinate fibre. -/
 theorem min_twoCoordinateMergeEnergy (h a b c : ℝ) :
-    min ((h+a)^2+(b+c)^2) ((h+b)^2+(a+c)^2) =
-      h^2+a^2+b^2+c^2+(h+c)*(a+b)-|(h-c)*(a-b)| := by
+    min ((h+a)^(2 : ℕ)+(b+c)^(2 : ℕ)) ((h+b)^(2 : ℕ)+(a+c)^(2 : ℕ)) =
+      h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+(h+c)*(a+b)-|(h-c)*(a-b)| := by
   by_cases hs : 0 ≤ (h-c)*(a-b)
   · rw [abs_of_nonneg hs,min_eq_right (by nlinarith only [hs])]
     ring
@@ -36,8 +36,8 @@ theorem min_twoCoordinateMergeEnergy (h a b c : ℝ) :
 /-- The complete two-coordinate minimax value is the larger endpoint or the unavoidable first-step floor. -/
 theorem twoCoordinateMergePeak_eq (h a b c : ℝ) :
     twoCoordinateMergePeak h a b c =
-      max (max (h^2+a^2+b^2+c^2) ((h+a+b+c)^2))
-        (h^2+a^2+b^2+c^2+(h+c)*(a+b)-|(h-c)*(a-b)|) := by
+      max (max (h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)) ((h+a+b+c)^(2 : ℕ)))
+        (h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+(h+c)*(a+b)-|(h-c)*(a-b)|) := by
   have hm (B L R : ℝ) : min (max B L) (max B R)=max B (min L R) := by
     rcases le_total L R with h|h
     · rw [min_eq_left h,min_eq_left (max_le_max_left B h)]
@@ -47,15 +47,15 @@ theorem twoCoordinateMergePeak_eq (h a b c : ℝ) :
 /-- Exact feasibility of a prescribed two-coordinate ceiling. -/
 theorem twoCoordinateMergePeak_le_iff (h a b c B : ℝ) :
     twoCoordinateMergePeak h a b c ≤ B ↔
-      h^2+a^2+b^2+c^2 ≤ B ∧ (h+a+b+c)^2 ≤ B ∧
-        h^2+a^2+b^2+c^2+(h+c)*(a+b)-|(h-c)*(a-b)| ≤ B := by
+      h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) ≤ B ∧ (h+a+b+c)^(2 : ℕ) ≤ B ∧
+        h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ)+(h+c)*(a+b)-|(h-c)*(a-b)| ≤ B := by
   rw [twoCoordinateMergePeak_eq]
   simp only [max_le_iff,and_assoc]
 
 /-- Both first steps increase energy exactly when the symmetric term exceeds the antisymmetric reserve. -/
 theorem twoCoordinateMerge_both_increase_iff (h a b c : ℝ) :
-    (h^2+a^2+b^2+c^2 < (h+a)^2+(b+c)^2 ∧
-      h^2+a^2+b^2+c^2 < (h+b)^2+(a+c)^2) ↔
+    (h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) < (h+a)^(2 : ℕ)+(b+c)^(2 : ℕ) ∧
+      h^(2 : ℕ)+a^(2 : ℕ)+b^(2 : ℕ)+c^(2 : ℕ) < (h+b)^(2 : ℕ)+(a+c)^(2 : ℕ)) ↔
         |(h-c)*(a-b)| < (h+c)*(a+b) := by
   rw [← lt_min_iff,min_twoCoordinateMergeEnergy]
   constructor <;> intro H <;> linarith only [H]
@@ -65,7 +65,7 @@ variable {α ι : Type*} [DecidableEq α]
 /-- Removing processed labels from the ambient cube does not change retained source energy. -/
 theorem subsetLabelEnergy_remaining (U : Finset α) (I : Finset ι) (a : ι → Finset α)
     (c : ι → ℝ) (P : Finset α) :
-    subsetLabelEnergy U I a c P = ∑ R ∈ (U \ P).powerset,(subsetLabelFibre I a c P R)^2 := by
+    subsetLabelEnergy U I a c P = ∑ R ∈ (U \ P).powerset,(subsetLabelFibre I a c P R)^(2 : ℕ) := by
   unfold subsetLabelEnergy
   symm
   apply sum_subset (powerset_mono.mpr sdiff_subset)
@@ -91,9 +91,9 @@ private theorem sum_singleton_powerset (q : α) (f : Finset α → ℝ) :
 /-- Two remaining coordinates give exactly four signed fibre squares. -/
 theorem subsetLabelEnergy_two_remaining (U : Finset α) (I : Finset ι) (a : ι → Finset α)
     (c : ι → ℝ) (P : Finset α) (p q : α) (hpq : p≠q) (hrem : U \ P={p,q}) :
-    subsetLabelEnergy U I a c P = (subsetLabelFibre I a c P ∅)^2+
-      (subsetLabelFibre I a c P {p})^2+(subsetLabelFibre I a c P {q})^2+
-      (subsetLabelFibre I a c P {p,q})^2 := by
+    subsetLabelEnergy U I a c P = (subsetLabelFibre I a c P ∅)^(2 : ℕ)+
+      (subsetLabelFibre I a c P {p})^(2 : ℕ)+(subsetLabelFibre I a c P {q})^(2 : ℕ)+
+      (subsetLabelFibre I a c P {p,q})^(2 : ℕ) := by
   rw [subsetLabelEnergy_remaining,hrem,sum_powerset_insert (by simpa using hpq)]
   rw [sum_singleton_powerset,sum_singleton_powerset]
   simp only [insert_empty_eq]
@@ -103,8 +103,8 @@ theorem subsetLabelEnergy_two_remaining (U : Finset α) (I : Finset ι) (a : ι 
 theorem subsetLabelEnergy_insert_two_remaining (U : Finset α) (I : Finset ι) (a : ι → Finset α)
     (c : ι → ℝ) (P : Finset α) (p q : α) (hpq : p≠q) (hrem : U \ P={p,q}) :
     subsetLabelEnergy U I a c (insert p P) =
-      (subsetLabelFibre I a c P ∅+subsetLabelFibre I a c P {p})^2+
-      (subsetLabelFibre I a c P {q}+subsetLabelFibre I a c P {p,q})^2 := by
+      (subsetLabelFibre I a c P ∅+subsetLabelFibre I a c P {p})^(2 : ℕ)+
+      (subsetLabelFibre I a c P {q}+subsetLabelFibre I a c P {p,q})^(2 : ℕ) := by
   rw [subsetLabelEnergy_remaining,sdiff_insert,hrem]
   have he : ({p,q} : Finset α).erase p={q} := by ext x; simp [hpq]
   rw [he,sum_singleton_powerset,subsetLabelFibre_insert,subsetLabelFibre_insert]
@@ -116,7 +116,7 @@ theorem subsetLabelEnergy_insert_insert_two_remaining (U : Finset α) (I : Finse
     (hpq : p≠q) (hrem : U \ P={p,q}) :
     subsetLabelEnergy U I a c (insert q (insert p P)) =
       (subsetLabelFibre I a c P ∅+subsetLabelFibre I a c P {p}+
-        subsetLabelFibre I a c P {q}+subsetLabelFibre I a c P {p,q})^2 := by
+        subsetLabelFibre I a c P {q}+subsetLabelFibre I a c P {p,q})^(2 : ℕ) := by
   rw [subsetLabelEnergy_remaining,sdiff_insert,sdiff_insert,hrem]
   have he : (({p,q} : Finset α).erase p).erase q=∅ := by ext x; simp; tauto
   rw [he,powerset_empty,sum_singleton,subsetLabelFibre_insert]

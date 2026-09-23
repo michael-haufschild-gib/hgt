@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspCompletedCurvatureProjectiveFarTail
 
 This file integrates the cofinal projective law for completed theta curvature twice.  If
 `A = -(log Theta)''`, the strict decrease of `A'' / A` forces strict increase of
-`3(A')^2 - 2AA''`.  These two endpoint comparisons make the second reflected derivative
+`3(A')^(2 : ℕ) - 2AA''`.  These two endpoint comparisons make the second reflected derivative
 ratio strictly decreasing.  Two monotone-l'Hospital descents then prove the completed
 fixed-action center numerator is strictly negative.
 
@@ -397,7 +397,7 @@ private theorem hasDerivAt_completedTransportScaleDenominator (u t : ℝ) :
 /-- Auxiliary projective potential whose increase supplies the second endpoint
 comparison after the decrease of `A'' / A`. -/
 private def completedCurvatureProjectivePotential (x : ℝ) : ℝ :=
-  3 * thetaCuspLogCurvatureJet x ^ 2 -
+  3 * thetaCuspLogCurvatureJet x ^ (2 : ℕ) -
     2 * thetaCuspLogCurvature x * thetaCuspLogCurvatureJetTwo x
 
 private theorem hasDerivAt_completedCurvatureProjectivePotential (x : ℝ) :

@@ -73,7 +73,7 @@ theorem einastoQuadraticCorrection_integral (d l σ r : ℝ) :
 /-- Identification with equation (15), using the actual curvature source. -/
 theorem einastoQuadraticCorrection_actual_integral (d l σ t : ℝ) :
     einastoQuadraticCorrection d l σ (exp t) =
-      (∫ s in 0..exp t, 8 * Real.pi * s ^ 2 * quadraticRadialSource σ (einastoMetric d l 0) s) / exp t := by
+      (∫ s in 0..exp t, 8 * Real.pi * s ^ (2 : ℕ) * quadraticRadialSource σ (einastoMetric d l 0) s) / exp t := by
   rw [einastoQuadraticCorrection_integral]
   congr 1
   apply intervalIntegral.integral_congr_Ioo_of_le (exp_pos t).le
@@ -87,7 +87,7 @@ theorem einastoQuadraticCorrection_actual_integral (d l σ t : ℝ) :
 /-- The printed appendix yields the very same regular integral in a whole central neighborhood. -/
 theorem einastoQuadraticCorrection_appendix_integral (d l : ℝ) :
     (fun t => einastoQuadraticCorrection d l (-1) (exp t)) =ᶠ[atBot]
-      (fun t => (∫ s in 0..exp t, 8 * Real.pi * s ^ 2 * quadraticAppendixSource (einastoMetric d l 0) s) / exp t) := by
+      (fun t => (∫ s in 0..exp t, 8 * Real.pi * s ^ (2 : ℕ) * quadraticAppendixSource (einastoMetric d l 0) s) / exp t) := by
   obtain ⟨T, hT⟩ := eventually_atBot.mp (quadraticAppendixSource_einasto_eventually d l)
   filter_upwards [eventually_le_atBot T] with t ht
   rw [einastoQuadraticCorrection_actual_integral]
@@ -119,7 +119,7 @@ theorem einastoQuadraticCorrection_primitive_hasDerivAt (d l σ r : ℝ) :
 
 theorem einastoQuadraticCorrection_source_ode (d l σ t : ℝ) :
     HasDerivAt (fun r => r * einastoQuadraticCorrection d l σ r)
-      (8 * Real.pi * exp t ^ 2 * quadraticRadialSource σ (einastoMetric d l 0) (exp t)) (exp t) := by
+      (8 * Real.pi * exp t ^ (2 : ℕ) * quadraticRadialSource σ (einastoMetric d l 0) (exp t)) (exp t) := by
   apply (einastoQuadraticCorrection_primitive_hasDerivAt d l σ (exp t)).congr_deriv
   rw [← einastoQuadraticPoleWeight_source]
   ring

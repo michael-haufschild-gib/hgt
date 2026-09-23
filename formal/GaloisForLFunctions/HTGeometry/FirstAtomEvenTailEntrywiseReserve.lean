@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.HankelFourPerturbation
 
 The product telescope retains the error at each of the seven entries.
 Ceilings `[2, 1/3, 1/4, 1/3, 1, 2, 5]` give determinant error at most
-`3*10^12*epsilon` when entry `k` has error at most `120^k*epsilon`.
+`3*10^(12 : ℕ)*epsilon` when entry `k` has error at most `120^k*epsilon`.
 The exact first-atom profiles leave room for these errors at scale fifteen.
 -/
 namespace GaloisForLFunctions.HTGeometry
@@ -173,7 +173,7 @@ theorem firstAtomEvenTailProfile_six_abs_le_of_fifteen {u : ℝ} (hu0 : 0 ≤ u)
 
 /-- Each balanced first-atom entry leaves room for its order-specific complete-source error. -/
 theorem firstAtomEvenTailBalanced_with_error_le_of_fifteen {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1/15) (k : Fin 7) :
-    |firstAtomEvenTailBalanced k u|+(120 : ℝ)^k.val*(2/(10 : ℝ)^17) ≤
+    |firstAtomEvenTailBalanced k u|+(120 : ℝ)^k.val*(2/(10 : ℝ)^(17 : ℕ)) ≤
       GaloisForLFunctions.HTGeometry.hankelFourTailEntryCeiling k := by
   have hu7 : u ≤ 1/7 := by linarith
   have h1 := firstAtomOddScaleSeven_profile1_bounds hu0 hu7
@@ -182,8 +182,8 @@ theorem firstAtomEvenTailBalanced_with_error_le_of_fifteen {u : ℝ} (hu0 : 0 �
   have h4 := firstAtomOddScaleSeven_profile4_bounds hu0 hu7
   have h5 := firstAtomOddScaleSeven_profile5_bounds hu0 hu7
   have h6 := firstAtomEvenTailProfile_six_abs_le_of_fifteen hu0 hu1
-  have h6' : |firstAtomEvenTailProfile 6 u / (32 : ℝ)^6-100000000/(32 : ℝ)^6| ≤ 4 := by
-    have ht := abs_sub (firstAtomEvenTailProfile 6 u / (32 : ℝ)^6) (100000000/(32 : ℝ)^6)
+  have h6' : |firstAtomEvenTailProfile 6 u / (32 : ℝ)^(6 : ℕ)-100000000/(32 : ℝ)^(6 : ℕ)| ≤ 4 := by
+    have ht := abs_sub (firstAtomEvenTailProfile 6 u / (32 : ℝ)^(6 : ℕ)) (100000000/(32 : ℝ)^(6 : ℕ))
     norm_num [abs_div] at ht
     linarith
   fin_cases k
@@ -198,8 +198,8 @@ theorem firstAtomEvenTailBalanced_with_error_le_of_fifteen {u : ℝ} (hu0 : 0 �
     linarith [h4.2]
   · norm_num [GaloisForLFunctions.HTGeometry.hankelFourTailEntryCeiling, firstAtomEvenTailBalanced, firstAtomEvenTailProfile, abs_div, abs_of_nonneg h5.1]
     linarith [h5.2]
-  · change |firstAtomEvenTailProfile 6 u/(32 : ℝ)^6-100000000/(32 : ℝ)^6|+
-        (120 : ℝ)^6*(2/(10 : ℝ)^17) ≤ 5
+  · change |firstAtomEvenTailProfile 6 u/(32 : ℝ)^(6 : ℕ)-100000000/(32 : ℝ)^(6 : ℕ)|+
+        (120 : ℝ)^(6 : ℕ)*(2/(10 : ℝ)^(17 : ℕ)) ≤ 5
     norm_num at h6' ⊢
     linarith only [h6']
 

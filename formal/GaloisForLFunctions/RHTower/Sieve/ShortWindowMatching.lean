@@ -234,7 +234,7 @@ theorem eventually_card_markerBlockTargets_ge :
     push_cast
     ring
   rw [hexact, hcast]
-  have hmulrecip := mul_le_mul_of_nonneg_left hrecip (show (0:ℝ) ≤ (N:ℝ)^3 by positivity)
+  have hmulrecip := mul_le_mul_of_nonneg_left hrecip (show (0:ℝ) ≤ (N:ℝ)^(3 : ℕ) by positivity)
   have hEnn : (0:ℝ) ≤ Real.exp (4 * mertensSecondUpperConst) := (Real.exp_pos _).le
   have hPnn : (0:ℝ) ≤ (Real.log N) ^ (4 : ℝ) := Real.rpow_nonneg hL.le _
   have hgap2 : (N : ℝ) ^ 3 * (4 + 5 * (2 * mertensFirstConst + 1 / 2) / 6) * (1 / Real.log N)

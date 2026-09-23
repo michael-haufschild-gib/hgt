@@ -19,7 +19,7 @@ theorem cosineDividedDrop_antitone_of_angleScaling
     (hx0 : 0 ≤ x) (hy0 : 0 ≤ y)
     (hxpi : x ≤ Real.pi / 2) (hypi : y ≤ Real.pi / 2)
     (hscale : (s / t) * y ≤ x) :
-    (1 - Real.cos y) / t ^ 2 ≤ (1 - Real.cos x) / s ^ 2 := by
+    (1 - Real.cos y) / t ^ (2 : ℕ) ≤ (1 - Real.cos x) / s ^ (2 : ℕ) := by
   have ht : 0 < t := hs.trans_le hst
   let r : ℝ := s / t
   have hr0 : 0 ≤ r := div_nonneg hs.le ht.le
@@ -49,21 +49,21 @@ theorem cosineDividedDrop_antitone_of_angleScaling
   have hleft0 : 0 ≤ s * Real.sin (y / 2) := by
     exact mul_nonneg hs.le (Real.sin_nonneg_of_nonneg_of_le_pi hyhalf0 hyhalfpi)
   have hsquare := pow_le_pow_left₀ hleft0 hstsin 2
-  rw [show 1 - Real.cos y = 2 * Real.sin (y / 2) ^ 2 by
+  rw [show 1 - Real.cos y = 2 * Real.sin (y / 2) ^ (2 : ℕ) by
       rw [Real.sin_sq_eq_half_sub]; ring,
-    show 1 - Real.cos x = 2 * Real.sin (x / 2) ^ 2 by
+    show 1 - Real.cos x = 2 * Real.sin (x / 2) ^ (2 : ℕ) by
       rw [Real.sin_sq_eq_half_sub]; ring,
     div_le_div_iff₀ (sq_pos_of_pos ht) (sq_pos_of_pos hs)]
   nlinarith
 
 /-- Positive factorization behind the fifth-root divided-drop wall. -/
 theorem weighted_fifth_power_wall {y : ℝ} (hy0 : 0 ≤ y) (hy1 : y ≤ 1) :
-    (5 + 3 * y ^ 2) ^ 5 ≤ 8192 * (1 + 3 * y ^ 5) := by
+    (5 + 3 * y ^ (2 : ℕ)) ^ (5 : ℕ) ≤ 8192 * (1 + 3 * y ^ (5 : ℕ)) := by
   have hid :
-      8192 * (1 + 3 * y ^ 5) - (5 + 3 * y ^ 2) ^ 5 =
-        (1 - y) ^ 3 *
-          (243 * y ^ 7 + 729 * y ^ 6 + 3483 * y ^ 5 +
-            8505 * y ^ 4 + 22545 * y ^ 3 + 21027 * y ^ 2 +
+      8192 * (1 + 3 * y ^ (5 : ℕ)) - (5 + 3 * y ^ (2 : ℕ)) ^ (5 : ℕ) =
+        (1 - y) ^ (3 : ℕ) *
+          (243 * y ^ (7 : ℕ) + 729 * y ^ (6 : ℕ) + 3483 * y ^ (5 : ℕ) +
+            8505 * y ^ (4 : ℕ) + 22545 * y ^ (3 : ℕ) + 21027 * y ^ (2 : ℕ) +
             15201 * y + 5067) := by
     ring
   rw [← sub_nonneg, hid]
@@ -76,52 +76,52 @@ theorem fifthRootConvexChord_forces_wall
     {a b c : ℝ}
     (ha : 0 < a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hca : c ≤ a)
     (hconv : 8 * b ≤ 5 * a + 3 * c)
-    (hdrop : a ^ 5 ≤ 4 * b ^ 5) :
-    (4 * b ^ 5 - a ^ 5) ^ 2 ≤ 9 * a ^ 5 * c ^ 5 := by
+    (hdrop : a ^ (5 : ℕ) ≤ 4 * b ^ (5 : ℕ)) :
+    (4 * b ^ (5 : ℕ) - a ^ (5 : ℕ)) ^ (2 : ℕ) ≤ 9 * a ^ (5 : ℕ) * c ^ (5 : ℕ) := by
   let y : ℝ := Real.sqrt (c / a)
   have hquot : 0 ≤ c / a := div_nonneg hc ha.le
   have hy0 : 0 ≤ y := Real.sqrt_nonneg _
-  have hy2 : y ^ 2 = c / a := by
+  have hy2 : y ^ (2 : ℕ) = c / a := by
     simpa only [y] using Real.sq_sqrt hquot
-  have hay : a * y ^ 2 = c := by
+  have hay : a * y ^ (2 : ℕ) = c := by
     rw [hy2]
     field_simp
   have hy1 : y ≤ 1 := by
     rw [← sq_le_sq₀ hy0 (by norm_num : (0 : ℝ) ≤ 1), hy2]
     simpa using (div_le_one ha).2 hca
-  have hconv' : 8 * b ≤ a * (5 + 3 * y ^ 2) := by
+  have hconv' : 8 * b ≤ a * (5 + 3 * y ^ (2 : ℕ)) := by
     nlinarith
-  have hM : 0 ≤ 5 + 3 * y ^ 2 := by positivity
+  have hM : 0 ≤ 5 + 3 * y ^ (2 : ℕ) := by positivity
   have hleft : 0 ≤ 8 * b := by positivity
   have hpow := pow_le_pow_left₀ hleft hconv' 5
   have hscalar := weighted_fifth_power_wall hy0 hy1
-  have ha5 : 0 ≤ a ^ 5 := by positivity
-  have hscaled : 32768 * b ^ 5 ≤
-      8192 * (a ^ 5 * (1 + 3 * y ^ 5)) := by
+  have ha5 : 0 ≤ a ^ (5 : ℕ) := by positivity
+  have hscaled : 32768 * b ^ (5 : ℕ) ≤
+      8192 * (a ^ (5 : ℕ) * (1 + 3 * y ^ (5 : ℕ))) := by
     calc
-      32768 * b ^ 5 = (8 * b) ^ 5 := by ring
-      _ ≤ (a * (5 + 3 * y ^ 2)) ^ 5 := hpow
-      _ = a ^ 5 * (5 + 3 * y ^ 2) ^ 5 := by ring
-      _ ≤ a ^ 5 * (8192 * (1 + 3 * y ^ 5)) :=
+      32768 * b ^ (5 : ℕ) = (8 * b) ^ (5 : ℕ) := by ring
+      _ ≤ (a * (5 + 3 * y ^ (2 : ℕ))) ^ (5 : ℕ) := hpow
+      _ = a ^ (5 : ℕ) * (5 + 3 * y ^ (2 : ℕ)) ^ (5 : ℕ) := by ring
+      _ ≤ a ^ (5 : ℕ) * (8192 * (1 + 3 * y ^ (5 : ℕ))) :=
         mul_le_mul_of_nonneg_left hscalar ha5
-      _ = 8192 * (a ^ 5 * (1 + 3 * y ^ 5)) := by ring
-  have hupper : 4 * b ^ 5 ≤ a ^ 5 * (1 + 3 * y ^ 5) := by
+      _ = 8192 * (a ^ (5 : ℕ) * (1 + 3 * y ^ (5 : ℕ))) := by ring
+  have hupper : 4 * b ^ (5 : ℕ) ≤ a ^ (5 : ℕ) * (1 + 3 * y ^ (5 : ℕ)) := by
     nlinarith
-  have hgap0 : 0 ≤ 4 * b ^ 5 - a ^ 5 := sub_nonneg.mpr hdrop
-  have hgap : 4 * b ^ 5 - a ^ 5 ≤ 3 * a ^ 5 * y ^ 5 := by
+  have hgap0 : 0 ≤ 4 * b ^ (5 : ℕ) - a ^ (5 : ℕ) := sub_nonneg.mpr hdrop
+  have hgap : 4 * b ^ (5 : ℕ) - a ^ (5 : ℕ) ≤ 3 * a ^ (5 : ℕ) * y ^ (5 : ℕ) := by
     nlinarith
   have hsquare := pow_le_pow_left₀ hgap0 hgap 2
   calc
-    (4 * b ^ 5 - a ^ 5) ^ 2 ≤ 9 * a ^ 10 * y ^ 10 := by
+    (4 * b ^ (5 : ℕ) - a ^ (5 : ℕ)) ^ (2 : ℕ) ≤ 9 * a ^ (10 : ℕ) * y ^ (10 : ℕ) := by
       nlinarith
-    _ = 9 * a ^ 5 * c ^ 5 := by rw [← hay]; ring
+    _ = 9 * a ^ (5 : ℕ) * c ^ (5 : ℕ) := by rw [← hay]; ring
 
 /-- A decreasing nonnegative log-convex triple lies below the same weighted chord used by the
 fifth-root wall.  The exact square remainder is
-`(5a + 3c)^2 - 64ac = (a-c)(25a-9c)`; hence no differentiability is involved. -/
+`(5a + 3c)^(2 : ℕ) - 64ac = (a-c)(25a-9c)`; hence no differentiability is involved. -/
 theorem logConvexTriple_forces_weightedChord
     {a b c : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c)
-    (hca : c ≤ a) (hlog : b ^ 2 ≤ a * c) :
+    (hca : c ≤ a) (hlog : b ^ (2 : ℕ) ≤ a * c) :
     8 * b ≤ 5 * a + 3 * c := by
   have hleft : 0 ≤ 8 * b := by positivity
   have hright : 0 ≤ 5 * a + 3 * c := by positivity
@@ -129,11 +129,11 @@ theorem logConvexTriple_forces_weightedChord
     have hfirst : 0 ≤ a - c := sub_nonneg.mpr hca
     have hsecond : 0 ≤ 25 * a - 9 * c := by nlinarith
     exact mul_nonneg hfirst hsecond
-  have hsquare : (8 * b) ^ 2 ≤ (5 * a + 3 * c) ^ 2 := by
+  have hsquare : (8 * b) ^ (2 : ℕ) ≤ (5 * a + 3 * c) ^ (2 : ℕ) := by
     calc
-      (8 * b) ^ 2 = 64 * b ^ 2 := by ring
+      (8 * b) ^ (2 : ℕ) = 64 * b ^ (2 : ℕ) := by ring
       _ ≤ 64 * (a * c) := by nlinarith
-      _ ≤ (5 * a + 3 * c) ^ 2 := by
+      _ ≤ (5 * a + 3 * c) ^ (2 : ℕ) := by
         nlinarith [hfactor]
   exact (sq_le_sq₀ hleft hright).mp hsquare
 
@@ -142,9 +142,9 @@ the rank-four odd wall. -/
 theorem fifthRootLogConvex_forces_wall
     {a b c : ℝ}
     (ha : 0 < a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hca : c ≤ a)
-    (hlog : b ^ 2 ≤ a * c)
-    (hdrop : a ^ 5 ≤ 4 * b ^ 5) :
-    (4 * b ^ 5 - a ^ 5) ^ 2 ≤ 9 * a ^ 5 * c ^ 5 := by
+    (hlog : b ^ (2 : ℕ) ≤ a * c)
+    (hdrop : a ^ (5 : ℕ) ≤ 4 * b ^ (5 : ℕ)) :
+    (4 * b ^ (5 : ℕ) - a ^ (5 : ℕ)) ^ (2 : ℕ) ≤ 9 * a ^ (5 : ℕ) * c ^ (5 : ℕ) := by
   apply fifthRootConvexChord_forces_wall ha hb hc hca
   · exact logConvexTriple_forces_weightedChord ha.le hb hc hca hlog
   · exact hdrop

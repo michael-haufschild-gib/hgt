@@ -23,24 +23,24 @@ namespace RHTower
 
 /-- Centered label energy of the pure-bad sixth-power prime block. -/
 def ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy (m : ℕ) : ℝ :=
-  let block := suzukiMangoldtFivePrimeBlock (m ^ 4)
+  let block := suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))
   let bad :=
     ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m)
   let mean := (∑ p ∈ block, bad p) / (block.card : ℝ)
-  ∑ p ∈ block, (bad p - mean) ^ 2
+  ∑ p ∈ block, (bad p - mean) ^ (2 : ℕ)
 
 /-- Centering removes exactly the squared fused mass divided by label count. -/
 theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_eq
-    {m : ℕ} (hcard : (suzukiMangoldtFivePrimeBlock (m ^ 4)).Nonempty) :
+    {m : ℕ} (hcard : (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))).Nonempty) :
     ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy m =
-      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           ccmFirstClockReducedBadNatTerm
-            (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2) -
-        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+            (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ)) -
+        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           ccmFirstClockReducedBadNatTerm
-            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 /
-          ((suzukiMangoldtFivePrimeBlock (m ^ 4)).card : ℝ) := by
-  let block := suzukiMangoldtFivePrimeBlock (m ^ 4)
+            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) /
+          ((suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))).card : ℝ) := by
+  let block := suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))
   let bad :=
     ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m)
   let total := ∑ p ∈ block, bad p
@@ -53,8 +53,8 @@ theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_eq
     field_simp
   unfold ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy
   dsimp only
-  change (∑ p ∈ block, (bad p - mean) ^ 2) =
-    (∑ p ∈ block, bad p ^ 2) - total ^ 2 / (block.card : ℝ)
+  change (∑ p ∈ block, (bad p - mean) ^ (2 : ℕ)) =
+    (∑ p ∈ block, bad p ^ (2 : ℕ)) - total ^ (2 : ℕ) / (block.card : ℝ)
   have hcross :
       (∑ p ∈ block, 2 * bad p * mean) = 2 * mean * total := by
     calc
@@ -68,9 +68,9 @@ theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_eq
       _ = 2 * mean * total := by
             dsimp only [total]
             ring
-  rw [show (∑ p ∈ block, (bad p - mean) ^ 2) =
-      (∑ p ∈ block, bad p ^ 2) -
-        2 * mean * total + (block.card : ℝ) * mean ^ 2 by
+  rw [show (∑ p ∈ block, (bad p - mean) ^ (2 : ℕ)) =
+      (∑ p ∈ block, bad p ^ (2 : ℕ)) -
+        2 * mean * total + (block.card : ℝ) * mean ^ (2 : ℕ) by
       simp only [sub_sq, Finset.sum_sub_distrib, Finset.sum_add_distrib,
         Finset.sum_const, nsmul_eq_mul]
       rw [hcross]]
@@ -87,8 +87,8 @@ theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_nonneg (m : ℕ) :
 /-- Any arithmetic block with the proved positive bad-mass floor is nonempty. -/
 theorem suzukiMangoldtFivePrimeBlock_fourthPower_nonempty
     {m : ℕ} (hm : 25 ≤ m)
-    (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) :
-    (suzukiMangoldtFivePrimeBlock (m ^ 4)).Nonempty := by
+    (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) :
+    (suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))).Nonempty := by
   by_contra hempty
   rw [Finset.not_nonempty_iff_eq_empty] at hempty
   have hmass :=
@@ -102,34 +102,34 @@ theorem suzukiMangoldtFivePrimeBlock_fourthPower_nonempty
 uncentered diagonal. -/
 theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_le_diagonal
     {m : ℕ} (hm : 25 ≤ m)
-    (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) :
+    (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) :
     ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy m ≤
-      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      ∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p ^ 2 := by
+          (ccmFirstClockJuliaSixthPowerAperture m) p ^ (2 : ℕ) := by
   rw [ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_eq
     (suzukiMangoldtFivePrimeBlock_fourthPower_nonempty hm hmCheb)]
   have hcard :
       (0 : ℝ) <
-        ((suzukiMangoldtFivePrimeBlock (m ^ 4)).card : ℝ) := by
+        ((suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))).card : ℝ) := by
     exact_mod_cast
       (Finset.card_pos.mpr
         (suzukiMangoldtFivePrimeBlock_fourthPower_nonempty hm hmCheb))
   have hquot :
       0 ≤
-        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           ccmFirstClockReducedBadNatTerm
-            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 /
-          ((suzukiMangoldtFivePrimeBlock (m ^ 4)).card : ℝ) :=
+            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) /
+          ((suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))).card : ℝ) :=
     div_nonneg (sq_nonneg _) hcard.le
   linarith
 
 /-- Plain centered fusion is only logarithmic-square on the arithmetic pure-bad block. -/
 theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_upper
     {m : ℕ} (hm : 25 ≤ m)
-    (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) :
+    (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) :
     ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy m ≤
-      65 * Real.log (m : ℝ) ^ 2 :=
+      65 * Real.log (m : ℝ) ^ (2 : ℕ) :=
   (ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_le_diagonal hm hmCheb).trans
     (ccmFirstClockJuliaSixthPower_block_badDiagonal_upper hm)
 
@@ -137,17 +137,17 @@ theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_upper
 smaller than the squared pure-bad excursion mass. -/
 theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_lt_badMass_sq
     {m : ℕ} (hm : 300 ≤ m)
-    (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) :
+    (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) :
     ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy m <
-      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+      (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
         ccmFirstClockReducedBadNatTerm
-          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 := by
+          (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) := by
   have hm25 : 25 ≤ m := hm.trans' (by norm_num)
   have henergy :=
     ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_upper hm25 hmCheb
   have hmass :=
     ccmFirstClockJuliaSixthPower_block_badMass_lower hm25 hmCheb
-  let block := suzukiMangoldtFivePrimeBlock (m ^ 4)
+  let block := suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ))
   let bad :=
     ccmFirstClockReducedBadNatTerm (ccmFirstClockJuliaSixthPowerAperture m)
   have hmass0 : 0 ≤ ∑ p ∈ block, bad p := by
@@ -157,9 +157,9 @@ theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_lt_badMass_sq
     dsimp only [bad]
     rw [ccmFirstClockReducedBadNatTerm_of_prime _ hpPrime]
     exact (ccmFirstClockJuliaSixthPower_block_badTerm_pos hm25 hp).le
-  have hlower0 : 0 ≤ (m : ℝ) ^ 2 / 24 := by positivity
+  have hlower0 : 0 ≤ (m : ℝ) ^ (2 : ℕ) / 24 := by positivity
   have hmassSq :
-      ((m : ℝ) ^ 2 / 24) ^ 2 ≤ (∑ p ∈ block, bad p) ^ 2 :=
+      ((m : ℝ) ^ (2 : ℕ) / 24) ^ (2 : ℕ) ≤ (∑ p ∈ block, bad p) ^ (2 : ℕ) :=
     (sq_le_sq₀ hlower0 hmass0).2 (by simpa only [block, bad] using hmass)
   have hmR : (0 : ℝ) < m := by positivity
   have hlog0 : 0 ≤ Real.log (m : ℝ) :=
@@ -167,15 +167,15 @@ theorem ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_lt_badMass_sq
   have hlogLe : Real.log (m : ℝ) ≤ (m : ℝ) := by
     have h := Real.log_le_sub_one_of_pos hmR
     linarith
-  have hlogSq : Real.log (m : ℝ) ^ 2 ≤ (m : ℝ) ^ 2 := by
+  have hlogSq : Real.log (m : ℝ) ^ (2 : ℕ) ≤ (m : ℝ) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg ((m : ℝ) - Real.log (m : ℝ))]
-  have hmSq : (74880 : ℝ) ≤ (m : ℝ) ^ 2 := by
+  have hmSq : (74880 : ℝ) ≤ (m : ℝ) ^ (2 : ℕ) := by
     have hmReal : (300 : ℝ) ≤ m := by exact_mod_cast hm
     nlinarith
-  have hquartic : 74880 * (m : ℝ) ^ 2 ≤ (m : ℝ) ^ 4 := by
+  have hquartic : 74880 * (m : ℝ) ^ (2 : ℕ) ≤ (m : ℝ) ^ (4 : ℕ) := by
     have h := mul_le_mul_of_nonneg_right hmSq (sq_nonneg (m : ℝ))
     nlinarith
-  have hlogQuartic : 74880 * Real.log (m : ℝ) ^ 2 ≤ (m : ℝ) ^ 4 :=
+  have hlogQuartic : 74880 * Real.log (m : ℝ) ^ (2 : ℕ) ≤ (m : ℝ) ^ (4 : ℕ) :=
     (mul_le_mul_of_nonneg_left hlogSq (by norm_num)).trans hquartic
   dsimp only [block, bad] at hmassSq
   nlinarith [pow_pos hmR 4]
@@ -188,11 +188,11 @@ theorem ccmFirstClock_sourceFusion_regularHilbert_noGo
     (u : ℕ → E) (B : ℝ)
     (hB : GaloisForLFunctions.HasBesselBound u B)
     {m : ℕ} (hm : 300 ≤ m)
-    (hmCheb : Real.exp 20 ≤ ((m ^ 4 : ℕ) : ℝ)) :
+    (hmCheb : Real.exp 20 ≤ ((m ^ (4 : ℕ) : ℕ) : ℝ)) :
     ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy m <
-        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ 4),
+        (∑ p ∈ suzukiMangoldtFivePrimeBlock (m ^ (4 : ℕ)),
           ccmFirstClockReducedBadNatTerm
-            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ 2 ∧
+            (ccmFirstClockJuliaSixthPowerAperture m) p) ^ (2 : ℕ) ∧
       (¬ ∃ y : E, ∀ i, inner ℂ (u i) y = 1) ∧
       ¬ IsSequentiallyClosableBetween shellCodiagonal shellLabelEmbedding := by
   exact ⟨ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_lt_badMass_sq hm hmCheb,

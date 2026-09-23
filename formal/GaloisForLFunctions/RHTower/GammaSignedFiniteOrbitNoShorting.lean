@@ -166,7 +166,7 @@ def xiGammaEulerCanonicalCrossPrimeCoorientedAmplitude
   xiGammaEulerPrimitiveBoundaryAmplitude 0 ij.1.1 *
       xiGammaEulerPrimitiveBoundaryAmplitude 0 ij.1.2 *
       (xiGammaEulerBoundaryHalfHeight ij.1.1.1 ij.1.1.2 -
-        xiGammaEulerBoundaryHalfHeight ij.1.2.1 ij.1.2.2) ^ 2
+        xiGammaEulerBoundaryHalfHeight ij.1.2.1 ij.1.2.2) ^ (2 : ℕ)
 
 theorem xiGammaEulerCanonicalCrossPrimeCoorientedAmplitude_pos
     (ij : XiGammaEulerCanonicalCrossPrimeDepthPair) :
@@ -200,7 +200,7 @@ theorem xiGammaEulerCanonicalCrossPrimeComplexifiedCoorientedOrbit_ofReal
       xiGammaEulerPrimitiveBoundaryAmplitude 0 ij.1.1 *
           xiGammaEulerPrimitiveBoundaryAmplitude 0 ij.1.2 *
           (xiGammaEulerBoundaryHalfHeight ij.1.1.1 ij.1.1.2 -
-            xiGammaEulerBoundaryHalfHeight ij.1.2.1 ij.1.2.2) ^ 2 *
+            xiGammaEulerBoundaryHalfHeight ij.1.2.1 ij.1.2.2) ^ (2 : ℕ) *
           Real.sinh (xiGammaEulerCanonicalCrossPrimeFrequency ij * a) =
         xiGammaEulerPrimitiveCoorientedReflectionOddExterior
           a ij.1.1 ij.1.2 := by
@@ -221,7 +221,7 @@ theorem xiGammaEulerCanonicalCrossPrimeComplexifiedCoorientedOrbit_ofReal
       (xiGammaEulerPrimitiveBoundaryAmplitude 0 ij.1.1 *
           xiGammaEulerPrimitiveBoundaryAmplitude 0 ij.1.2 *
           (xiGammaEulerBoundaryHalfHeight ij.1.1.1 ij.1.1.2 -
-            xiGammaEulerBoundaryHalfHeight ij.1.2.1 ij.1.2.2) ^ 2 *
+            xiGammaEulerBoundaryHalfHeight ij.1.2.1 ij.1.2.2) ^ (2 : ℕ) *
           Real.sinh (xiGammaEulerCanonicalCrossPrimeFrequency ij * a) : ℝ) := by
             rw [xiGammaEulerCanonicalCrossPrimeCoorientedAmplitude]
             conv_lhs => rhs

@@ -49,7 +49,7 @@ in every top sum, with matching totals, has its Euclidean norm dominated by the 
 theorem sqrt_sum_sq_le_smul_of_topSum_le {a b : Fin n → ℝ} {lam : ℝ} (hlam : 0 ≤ lam)
     (h : ∀ m ≤ n, topSum m a ≤ lam * topSum m b)
     (htot : ∑ i, a i = lam * ∑ i, b i) :
-    Real.sqrt (∑ i, a i ^ 2) ≤ lam * Real.sqrt (∑ i, b i ^ 2) := by
+    Real.sqrt (∑ i, a i ^ (2 : ℕ)) ≤ lam * Real.sqrt (∑ i, b i ^ (2 : ℕ)) := by
   have htop : ∀ m ≤ n, topSum m a
       ≤ topSum m (fun i => lam * b i) + topSum m (fun _ : Fin n => (0 : ℝ)) := by
     intro m hm
@@ -59,10 +59,10 @@ theorem sqrt_sum_sq_le_smul_of_topSum_le {a b : Fin n → ℝ} {lam : ℝ} (hlam
     rw [← Finset.mul_sum, Finset.sum_const, smul_zero, add_zero]
     exact htot
   have hkey := sqrt_sum_sq_le_of_topSum_le htop htotal
-  have hzero : Real.sqrt (∑ _i : Fin n, (0 : ℝ) ^ 2) = 0 := by
+  have hzero : Real.sqrt (∑ _i : Fin n, (0 : ℝ) ^ (2 : ℕ)) = 0 := by
     simp
-  have hscale : Real.sqrt (∑ i, (lam * b i) ^ 2) = lam * Real.sqrt (∑ i, b i ^ 2) := by
-    have hexp : ∑ i, (lam * b i) ^ 2 = lam ^ 2 * ∑ i, b i ^ 2 := by
+  have hscale : Real.sqrt (∑ i, (lam * b i) ^ (2 : ℕ)) = lam * Real.sqrt (∑ i, b i ^ (2 : ℕ)) := by
+    have hexp : ∑ i, (lam * b i) ^ (2 : ℕ) = lam ^ (2 : ℕ) * ∑ i, b i ^ (2 : ℕ) := by
       rw [Finset.mul_sum]
       exact Finset.sum_congr rfl fun i _ => by ring
     rw [hexp, Real.sqrt_mul (sq_nonneg lam), Real.sqrt_sq hlam]

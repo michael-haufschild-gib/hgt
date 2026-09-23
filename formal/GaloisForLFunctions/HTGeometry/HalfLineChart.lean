@@ -64,7 +64,7 @@ theorem halfLineChart_injOn : InjOn halfLineChart (Ioo (0 : ℝ) 1) := by
 
 /-- **The derivative of the chart.** -/
 theorem hasDerivAt_halfLineChart {x : ℝ} (hx : x ≠ 1) :
-    HasDerivAt halfLineChart ((1 - x) ^ 2)⁻¹ x := by
+    HasDerivAt halfLineChart ((1 - x) ^ (2 : ℕ))⁻¹ x := by
   have hne : (1 : ℝ) - x ≠ 0 := by
     intro h
     exact hx (by linarith)
@@ -72,21 +72,21 @@ theorem hasDerivAt_halfLineChart {x : ℝ} (hx : x ≠ 1) :
   have hden : HasDerivAt (fun t : ℝ => 1 - t) (-1) x :=
     HasDerivAt.const_sub (1 : ℝ) (hasDerivAt_id x)
   have h := hnum.div hden hne
-  have hval : (1 * (1 - x) - x * -1) / (1 - x) ^ 2 = ((1 - x) ^ 2)⁻¹ := by
+  have hval : (1 * (1 - x) - x * -1) / (1 - x) ^ (2 : ℕ) = ((1 - x) ^ (2 : ℕ))⁻¹ := by
     field_simp
     ring
   rw [hval] at h
   exact h
 
 theorem hasDerivWithinAt_halfLineChart {x : ℝ} (hx : x ∈ Ioo (0 : ℝ) 1) :
-    HasDerivWithinAt halfLineChart ((1 - x) ^ 2)⁻¹ (Ioo (0 : ℝ) 1) x := by
+    HasDerivWithinAt halfLineChart ((1 - x) ^ (2 : ℕ))⁻¹ (Ioo (0 : ℝ) 1) x := by
   refine (hasDerivAt_halfLineChart ?_).hasDerivWithinAt
   intro h
   exact absurd hx.2 (by rw [h]; exact lt_irrefl 1)
 
 /-- The chart turns the Beta weight into the Mellin weight, pointwise. -/
 theorem halfLineChart_weight {x : ℝ} (hx : x ∈ Ioo (0 : ℝ) 1) :
-    ((1 - x) ^ 2)⁻¹ * (1 + halfLineChart x)⁻¹ = (1 - x)⁻¹ := by
+    ((1 - x) ^ (2 : ℕ))⁻¹ * (1 + halfLineChart x)⁻¹ = (1 - x)⁻¹ := by
   obtain ⟨hx0, hx1⟩ := hx
   have hne : (1 : ℝ) - x ≠ 0 := by linarith
   rw [halfLineChart]

@@ -104,7 +104,7 @@ three-term pair combination `u·A − v·X·B₁ + X²·B₂` (polar-chain compa
 theorem reflect_pair_operator (u v : R) (A : R[X]) {d : ℕ}
     (hd : 2 ≤ d) (hA : A.natDegree ≤ d) :
     reflect d (C u * A - C v * (X * polarStep d A)
-        + X ^ 2 * polarStep (d - 1) (polarStep d A))
+        + X ^ (2 : ℕ) * polarStep (d - 1) (polarStep d A))
       = derivative (derivative (reflect d A)) - C v * derivative (reflect d A)
         + C u * reflect d A := by
   set B₁ := polarStep d A with hB₁
@@ -126,7 +126,7 @@ theorem reflect_pair_operator (u v : R) (A : R[X]) {d : ℕ}
   have hXB₁ : reflect d (X * B₁) = derivative (reflect d A) := by
     have h := reflect_mul (X : R[X]) B₁ (F := 1) (G := d - 1) natDegree_X_le hB₁deg
     rw [show 1 + (d - 1) = d by omega] at h
-    rw [h, show (X : R[X]) = X ^ 1 by rw [pow_one], reflect_X_pow_self, one_mul,
+    rw [h, show (X : R[X]) = X ^ (1 : ℕ) by rw [pow_one], reflect_X_pow_self, one_mul,
       reflect_polarStep A (by omega) hA]
   have h2 : reflect d (C v * (X * B₁)) = C v * derivative (reflect d A) := by
     have hdeg : (X * B₁).natDegree ≤ d := by
@@ -137,12 +137,12 @@ theorem reflect_pair_operator (u v : R) (A : R[X]) {d : ℕ}
         _ = d := by omega
     rw [reflect_C_mul' v (X * B₁) d hdeg, hXB₁]
   -- piece 3: `X² * B₂` reflects to `Â″`
-  have h3 : reflect d (X ^ 2 * B₂) = derivative (derivative (reflect d A)) := by
-    have hX2 : ((X : R[X]) ^ 2).natDegree ≤ 2 := by
+  have h3 : reflect d (X ^ (2 : ℕ) * B₂) = derivative (derivative (reflect d A)) := by
+    have hX2 : ((X : R[X]) ^ (2 : ℕ)).natDegree ≤ 2 := by
       have h1 := natDegree_X_le (R := R)
-      have h2 : ((X : R[X]) ^ 2).natDegree ≤ 2 * (X : R[X]).natDegree := natDegree_pow_le
+      have h2 : ((X : R[X]) ^ (2 : ℕ)).natDegree ≤ 2 * (X : R[X]).natDegree := natDegree_pow_le
       omega
-    have h := reflect_mul ((X : R[X]) ^ 2) B₂ (F := 2) (G := d - 2) hX2 hB₂deg
+    have h := reflect_mul ((X : R[X]) ^ (2 : ℕ)) B₂ (F := 2) (G := d - 2) hX2 hB₂deg
     rw [show 2 + (d - 2) = d by omega] at h
     have hstep : reflect (d - 2) B₂ = derivative (derivative (reflect d A)) := by
       have hk := reflect_polarStep B₁ (n := d - 1) (by omega) hB₁deg
@@ -158,7 +158,7 @@ theorem reflect_pair_operator (u v : R) (A : R[X]) {d : ℕ}
 theorem reflect_pair_operator_complex (τ : ℂ) (A : ℂ[X]) {d : ℕ}
     (hd : 2 ≤ d) (hA : A.natDegree ≤ d) :
     reflect d (C (τ * (starRingEnd ℂ) τ) * A - C (τ + (starRingEnd ℂ) τ) * (X * polarStep d A)
-        + X ^ 2 * polarStep (d - 1) (polarStep d A))
+        + X ^ (2 : ℕ) * polarStep (d - 1) (polarStep d A))
       = derivative (derivative (reflect d A) - C ((starRingEnd ℂ) τ) * reflect d A)
         - C τ * (derivative (reflect d A) - C ((starRingEnd ℂ) τ) * reflect d A) := by
   rw [reflect_pair_operator (τ * (starRingEnd ℂ) τ) (τ + (starRingEnd ℂ) τ) A hd hA,

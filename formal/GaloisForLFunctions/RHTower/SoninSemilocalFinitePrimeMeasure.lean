@@ -27,7 +27,7 @@ def semilocalFinitePrimeEulerDensity {n : ℕ}
 
 def semilocalFinitePrimePoissonPrefactor {n : ℕ}
     (p : Fin n → ℕ) : ℝ :=
-  ∏ i, (1 - semilocalPrimePoissonRatio (p i) ^ 2)⁻¹
+  ∏ i, (1 - semilocalPrimePoissonRatio (p i) ^ (2 : ℕ))⁻¹
 
 theorem semilocalFinitePrimeEulerDensity_eq_poissonSeries_complex
     {n : ℕ} (p : Fin n → ℕ) (hprime : ∀ i, (p i).Prime) (s : ℝ) :

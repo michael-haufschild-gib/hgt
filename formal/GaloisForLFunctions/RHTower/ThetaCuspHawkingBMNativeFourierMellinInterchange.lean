@@ -8,7 +8,7 @@ noncomputable section
 
 /-- One original complex diagonal Fourier mode with its actual Mellin weight. -/
 def nativeFourierMellinTerm (q : XiZeroCopy) (s : ℂ) (N : ℕ) (y : ℝ) : ℂ :=
-  (y:ℂ)^(s-2)*amplitude (center q) y N^2
+  (y:ℂ)^(s-2)*amplitude (center q) y N^(2 : ℕ)
 
 /-- Every original weighted mode is continuous throughout the positive height domain. -/
 theorem nativeFourierMellinTerm_continuousOn (q : XiZeroCopy) (s : ℂ) (N : ℕ) :
@@ -20,7 +20,7 @@ theorem nativeFourierMellinTerm_continuousOn (q : XiZeroCopy) (s : ℂ) (N : ℕ
 
 /-- Norms preserve the literal Mellin weight and the full coefficient norm square. -/
 theorem nativeFourierMellinTerm_norm (q : XiZeroCopy) (s : ℂ) (N : ℕ) {y : ℝ} (hy : 0 < y) :
-    ‖nativeFourierMellinTerm q s N y‖ = y^(s.re-2)*‖amplitude (center q) y N‖^2 := by
+    ‖nativeFourierMellinTerm q s N y‖ = y^(s.re-2)*‖amplitude (center q) y N‖^(2 : ℕ) := by
   rw [nativeFourierMellinTerm,norm_mul,norm_pow,Complex.norm_cpow_eq_rpow_re_of_pos hy]
   norm_num
 
@@ -66,8 +66,8 @@ theorem nativeFourierMellin_integral_norm_summable (q : XiZeroCopy) (s : ℂ) (h
 
 /-- The full complex diagonal sum itself is absolutely admitted without discarding phase. -/
 theorem nativeFourierMellin_integrable (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.re) :
-    IntegrableOn (fun y : ℝ => (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^2)) (Ioi (0:ℝ)) := by
-  have he : (fun y : ℝ => (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^2)) =
+    IntegrableOn (fun y : ℝ => (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^(2 : ℕ))) (Ioi (0:ℝ)) := by
+  have he : (fun y : ℝ => (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^(2 : ℕ))) =
       fun y => ∑' N, nativeFourierMellinTerm q s N y := by
     funext y
     exact (tsum_mul_left).symm
@@ -79,12 +79,12 @@ theorem nativeFourierMellin_integrable (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.re
 
 /-- The entire original Fourier--Bessel source commutes with its Mellin integral. -/
 theorem nativeFourierMellin_integral_eq_tsum (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.re) :
-    (∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^2)) =
-      ∑' N, ∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*amplitude (center q) y N^2 := by
+    (∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^(2 : ℕ))) =
+      ∑' N, ∫ y in Ioi (0:ℝ), (y:ℂ)^(s-2)*amplitude (center q) y N^(2 : ℕ) := by
   have h := integral_tsum_of_summable_integral_norm (nativeFourierMellinTerm_integrable q s hs)
     (nativeFourierMellin_integral_norm_summable q s hs)
   have he (y : ℝ) : (∑' N, nativeFourierMellinTerm q s N y) =
-      (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^2) := tsum_mul_left
+      (y:ℂ)^(s-2)*(∑' N, amplitude (center q) y N^(2 : ℕ)) := tsum_mul_left
   simp_rw [he] at h
   exact h.symm
 

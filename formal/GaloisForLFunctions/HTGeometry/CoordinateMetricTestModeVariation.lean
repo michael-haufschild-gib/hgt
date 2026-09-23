@@ -27,7 +27,7 @@ theorem testWeightSlope_path_hasDerivAt (G A B C D M : Mat) (i j : Fin d) :
       (testWeightSlope G B M i j) 0 := by
   have he : (fun z => testWeightSlope G (path A B C D z) M i j) =
       fun z : ℂ => testWeightSlope G A M i j + z * testWeightSlope G B M i j +
-        z^2 * testWeightSlope G C M i j + z^3 * testWeightSlope G D M i j := by
+        z^(2 : ℕ) * testWeightSlope G C M i j + z^(3 : ℕ) * testWeightSlope G D M i j := by
     funext z
     simp only [path, testWeightSlope_add_smul, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
   rw [he]

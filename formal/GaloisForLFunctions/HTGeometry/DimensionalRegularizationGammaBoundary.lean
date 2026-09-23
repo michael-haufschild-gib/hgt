@@ -7,11 +7,11 @@ import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 In `D = 4 - 2*epsilon`, the massless one-loop bubble and one-mass triangle have Gamma kernels
 
-`Gamma(epsilon) * Gamma(1-epsilon)^2 / Gamma(2-2*epsilon)`
+`Gamma(epsilon) * Gamma(1-epsilon)^(2 : ℕ) / Gamma(2-2*epsilon)`
 
 and
 
-`Gamma(1+epsilon) * Gamma(-epsilon)^2 / Gamma(1-2*epsilon)`.
+`Gamma(1+epsilon) * Gamma(-epsilon)^(2 : ℕ) / Gamma(1-2*epsilon)`.
 
 These are equations (C.1) and (C.2) of M. Wilhelm, *Amplitudes, Form Factors and the
 Dilatation Operator in N=4 SYM Theory*, arXiv:1410.6309.  The general dimensional-regularization
@@ -42,7 +42,7 @@ open scoped UnivMeroFieldInstances
 
 /-- Gamma-dependent part of the dimensionally regulated massless scalar bubble. -/
 def masslessBubbleGammaMero : meroField Set.univ :=
-  gammaNatScaleMero 1 0 * gammaNegativeNatScaleMero 1 1 ^ 2 /
+  gammaNatScaleMero 1 0 * gammaNegativeNatScaleMero 1 1 ^ (2 : ℕ) /
     gammaNegativeNatScaleMero 2 2
 
 /-- Nonzero DA gauge left by Gauss/reflection reduction of the bubble kernel. -/
@@ -110,13 +110,13 @@ theorem hypertranscendentalOver_masslessBubbleGammaMero :
 
 /-- Gamma-dependent part of the dimensionally regulated one-mass scalar triangle. -/
 def masslessTriangleGammaMero : meroField Set.univ :=
-  gammaNatScaleMero 1 1 * gammaNegativeNatScaleMero 1 0 ^ 2 /
+  gammaNatScaleMero 1 1 * gammaNegativeNatScaleMero 1 0 ^ (2 : ℕ) /
     gammaNegativeNatScaleMero 2 1
 
 /-- Nonzero DA gauge left by Gauss/reflection reduction of the triangle kernel. -/
 def masslessTriangleGammaGaugeMero : meroField Set.univ :=
   (gammaNegativeNatScaleGaussGaugeMero 2 1)⁻¹ *
-    gammaReflectionGaugeMero 0 ^ 2 *
+    gammaReflectionGaugeMero 0 ^ (2 : ℕ) *
       (gammaReflectionGaugeMero (1 / 2))⁻¹ *
         (gammaReflectionGaugeMero 1)⁻¹ *
           reducedVenezianoAmplitudeMero 0 1

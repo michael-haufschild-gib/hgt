@@ -47,21 +47,21 @@ theorem intervalIntegrable_log_norm_vertical_of_entire
 exceptional set. -/
 theorem two_mul_integral_log_norm_le_ae {a b : ℝ} (hab : a < b) {f : ℝ → ℂ}
     (hne : ∀ᵐ t ∂(volume.restrict (Set.Icc a b)), f t ≠ 0)
-    (hint : IntervalIntegrable (fun t => ‖f t‖ ^ 2) volume a b)
+    (hint : IntervalIntegrable (fun t => ‖f t‖ ^ (2 : ℕ)) volume a b)
     (hlogint : IntervalIntegrable (fun t => Real.log ‖f t‖) volume a b)
-    (hpos : 0 < ∫ t in a..b, ‖f t‖ ^ 2) :
+    (hpos : 0 < ∫ t in a..b, ‖f t‖ ^ (2 : ℕ)) :
     2 * (∫ t in a..b, Real.log ‖f t‖)
-      ≤ (b - a) * Real.log ((∫ t in a..b, ‖f t‖ ^ 2) / (b - a)) := by
+      ≤ (b - a) * Real.log ((∫ t in a..b, ‖f t‖ ^ (2 : ℕ)) / (b - a)) := by
   have hlen : (0 : ℝ) < b - a := by linarith
-  set C : ℝ := (∫ t in a..b, ‖f t‖ ^ 2) / (b - a) with hC
+  set C : ℝ := (∫ t in a..b, ‖f t‖ ^ (2 : ℕ)) / (b - a) with hC
   have hC0 : 0 < C := div_pos hpos hlen
   have hmono : (∫ t in a..b, 2 * Real.log ‖f t‖)
-      ≤ ∫ t in a..b, (‖f t‖ ^ 2 / C + Real.log C - 1) := by
+      ≤ ∫ t in a..b, (‖f t‖ ^ (2 : ℕ) / C + Real.log C - 1) := by
     refine intervalIntegral.integral_mono_ae_restrict hab.le (hlogint.const_mul 2)
       (((hint.div_const C).add intervalIntegrable_const).sub intervalIntegrable_const) ?_
     filter_upwards [hne] with t ht
     have hn : 0 < ‖f t‖ := norm_pos_iff.mpr ht
-    have hu : 0 < ‖f t‖ ^ 2 := by positivity
+    have hu : 0 < ‖f t‖ ^ (2 : ℕ) := by positivity
     have h := log_le_div_add_log_sub_one hu hC0
     rw [Real.log_pow] at h
     push_cast at h
@@ -71,7 +71,7 @@ theorem two_mul_integral_log_norm_le_ae {a b : ℝ} (hab : a < b) {f : ℝ → �
       intervalIntegrable_const, intervalIntegral.integral_add (hint.div_const C)
       intervalIntegrable_const, intervalIntegral.integral_div] at hmono
   simp only [intervalIntegral.integral_const, smul_eq_mul] at hmono
-  have hcancel : (∫ t in a..b, ‖f t‖ ^ 2) / C = b - a := by
+  have hcancel : (∫ t in a..b, ‖f t‖ ^ (2 : ℕ)) / C = b - a := by
     rw [hC]; field_simp
   rw [hcancel] at hmono
   linarith
@@ -108,7 +108,7 @@ theorem exists_entire_zeroCount_le_of_meanSquare
     (htop : ∀ x ∈ uIcc c d, f ((x : ℂ) + T₂ * I) ≠ 0)
     (hrightne : ∀ t ∈ uIcc T₁ T₂, f ((d : ℂ) + t * I) ≠ 0)
     (hA : 0 < A) (hAle : ∀ t ∈ uIcc T₁ T₂, A ≤ ‖f ((d : ℂ) + t * I)‖)
-    (hMsq : (∫ t in T₁..T₂, ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq) :
+    (hMsq : (∫ t in T₁..T₂, ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ Msq) :
     ∃ Z : Finset ℂ,
       (∀ z : ℂ, z ∈ Z ↔ z ∈ (uIcc c d ×ℂ uIcc T₁ T₂) ∧ f z = 0) ∧
       2 * Real.pi * ((σ - c) *
@@ -163,7 +163,7 @@ theorem exists_entire_zeroCount_le_of_meanSquare
       rw [continuous_iff_continuousAt]
       exact fun z => (hf z (Set.mem_univ z)).continuousAt
     exact h2.comp h1
-  have hsqint : IntervalIntegrable (fun t : ℝ => ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) volume T₁ T₂ :=
+  have hsqint : IntervalIntegrable (fun t : ℝ => ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) volume T₁ T₂ :=
     ((hcont.norm.pow 2)).intervalIntegrable T₁ T₂
   have hlogint := intervalIntegrable_log_norm_vertical_of_entire hf c T₁ T₂
   have hSfin : {t : ℝ | t ∈ Set.Icc T₁ T₂ ∧ f ((c : ℂ) + (t : ℂ) * I) = 0}.Finite := by
@@ -187,7 +187,7 @@ theorem exists_entire_zeroCount_le_of_meanSquare
       intro t ht
       exact ⟨Set.Ioo_subset_Icc_self ht, hcon t ht⟩
     exact (Set.Ioo_infinite hT) (hSfin.subset hsub)
-  have hIpos : 0 < ∫ t in T₁..T₂, ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+  have hIpos : 0 < ∫ t in T₁..T₂, ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ) := by
     refine intervalIntegral_pos_of_continuous_global_nonneg (hcont.norm.pow 2)
       (fun t => by positivity) ?_
     obtain ⟨t, ht, hnz⟩ := hexists
@@ -206,12 +206,12 @@ theorem exists_entire_zeroCount_le_of_meanSquare
   have hleft : 2 * (∫ t in T₁..T₂, Real.log ‖f ((c : ℂ) + (t : ℂ) * I)‖)
       ≤ (T₂ - T₁) * Real.log (Msq / (T₂ - T₁)) := by
     have hJ := two_mul_integral_log_norm_le_ae hT haeleft hsqint hlogint hIpos
-    have hdiv : (∫ t in T₁..T₂, ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) / (T₂ - T₁)
+    have hdiv : (∫ t in T₁..T₂, ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) / (T₂ - T₁)
         ≤ Msq / (T₂ - T₁) := by gcongr
     have hlogmono := Real.log_le_log (div_pos hIpos hlen) hdiv
     calc 2 * (∫ t in T₁..T₂, Real.log ‖f ((c : ℂ) + (t : ℂ) * I)‖)
         ≤ (T₂ - T₁) *
-            Real.log ((∫ t in T₁..T₂, ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ 2) / (T₂ - T₁)) := hJ
+            Real.log ((∫ t in T₁..T₂, ‖f ((c : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) / (T₂ - T₁)) := hJ
       _ ≤ (T₂ - T₁) * Real.log (Msq / (T₂ - T₁)) :=
           mul_le_mul_of_nonneg_left hlogmono hlen.le
   -- the right edge: a pointwise lower bound

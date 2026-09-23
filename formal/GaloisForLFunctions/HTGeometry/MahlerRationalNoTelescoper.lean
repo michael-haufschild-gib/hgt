@@ -132,9 +132,9 @@ theorem poly_mahler_coeff_low (hp : 1 < p) {lam a b : k} {n : ℕ} {P : Polynomi
   induction i with
   | zero =>
       intro hn
-      have h : (Polynomial.C lam * polyPow p P - P).coeff (p ^ 0)
+      have h : (Polynomial.C lam * polyPow p P - P).coeff (p ^ (0 : ℕ))
           = (Polynomial.C a * X ^ (p ^ n)
-            + Polynomial.C b * X ^ (p ^ (n + 1))).coeff (p ^ 0) := by rw [heq]
+            + Polynomial.C b * X ^ (p ^ (n + 1))).coeff (p ^ (0 : ℕ)) := by rw [heq]
       rw [coeff_mahlerOp p (by omega), coeff_twoTerm, if_neg (not_dvd_pow_zero hp),
         if_neg (pow_ne_pow_of_ne hp (show (0 : ℕ) ≠ n by omega)),
         if_neg (pow_ne_pow_of_ne hp (show (0 : ℕ) ≠ n + 1 by omega))] at h

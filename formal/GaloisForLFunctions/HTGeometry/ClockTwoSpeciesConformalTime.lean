@@ -92,7 +92,7 @@ theorem gradPair_timeLift_flat (eps : Fin (d + 1) → ℝ) (heps : ∀ i, eps i 
 noncomputable def conformalTimePotential (invEps a massSq : ℝ) (σ₀ : ℝ → ℝ) : ℝ → ℝ :=
   fun t => massSq * Real.exp (2 * σ₀ t)
     - (a * (invEps * deriv (deriv σ₀) t)
-        + a ^ 2 * (invEps * (deriv σ₀ t * deriv σ₀ t)))
+        + a ^ (2 : ℕ) * (invEps * (deriv σ₀ t * deriv σ₀ t)))
 
 theorem conformalPotential_timeLift (eps : Fin (d + 1) → ℝ) (heps : ∀ i, eps i ≠ 0)
     {σ₀ : ℝ → ℝ} (hσ : ContDiff ℝ ∞ σ₀) (a massSq : ℝ) (x : Fin (d + 1) → ℝ) :
@@ -114,7 +114,7 @@ theorem contDiff_conformalTimePotential (invEps a massSq : ℝ) {σ₀ : ℝ →
       ((Real.contDiff_exp.comp (contDiff_const.mul hσ)).of_le (by simp))
   have hterm1 : ContDiff ℝ 1 fun t => a * (invEps * deriv (deriv σ₀) t) :=
     contDiff_const.mul (contDiff_const.mul (h2.of_le (by simp)))
-  have hterm2 : ContDiff ℝ 1 fun t => a ^ 2 * (invEps * (deriv σ₀ t * deriv σ₀ t)) :=
+  have hterm2 : ContDiff ℝ 1 fun t => a ^ (2 : ℕ) * (invEps * (deriv σ₀ t * deriv σ₀ t)) :=
     contDiff_const.mul
       (contDiff_const.mul ((h1.of_le (by simp)).mul (h1.of_le (by simp))))
   exact hexp.sub (hterm1.add hterm2)

@@ -247,7 +247,7 @@ theorem dalembert_expSmul (c : ℝ) {sigma : (Fin d → ℝ) → ℝ} (hsigma : 
     (x : Fin d → ℝ) :
     M.dalembert (fun y => Real.exp (c * sigma y)) x =
       Real.exp (c * sigma x) *
-        (c * M.dalembert sigma x + c ^ 2 * M.gradPair sigma sigma x) := by
+        (c * M.dalembert sigma x + c ^ (2 : ℕ) * M.gradPair sigma sigma x) := by
   have hcsigma : DifferentiableAt ℝ (fun y => c * sigma y) x :=
     (differentiableAt_of_contDiff_infty hsigma x).const_mul c
   have hexpd : DifferentiableAt ℝ (fun y => Real.exp (c * sigma y)) x := hcsigma.exp
@@ -265,7 +265,7 @@ theorem dalembert_expSmul (c : ℝ) {sigma : (Fin d → ℝ) → ℝ} (hsigma : 
       coordPartial_const_mul (differentiableAt_of_contDiff_infty hsigma x) c i]
   have hsplit : ∑ i, coordPartial i (M.flux (fun y => Real.exp (c * sigma y)) i) x =
       c * Real.exp (c * sigma x) * (∑ i, coordPartial i (M.flux sigma i) x) +
-        c ^ 2 * Real.exp (c * sigma x) * (∑ i, coordPartial i sigma x * M.flux sigma i x) := by
+        c ^ (2 : ℕ) * Real.exp (c * sigma x) * (∑ i, coordPartial i sigma x * M.flux sigma i x) := by
     rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
     exact Finset.sum_congr rfl fun i _ => by rw [hd i]; ring
   have h1 := M.inv_density_mul_sum_flux sigma sigma x
@@ -273,10 +273,10 @@ theorem dalembert_expSmul (c : ℝ) {sigma : (Fin d → ℝ) → ℝ} (hsigma : 
   rw [hsplit]
   have hring : (M.density x)⁻¹ *
       (c * Real.exp (c * sigma x) * (∑ i, coordPartial i (M.flux sigma i) x) +
-        c ^ 2 * Real.exp (c * sigma x) * (∑ i, coordPartial i sigma x * M.flux sigma i x)) =
+        c ^ (2 : ℕ) * Real.exp (c * sigma x) * (∑ i, coordPartial i sigma x * M.flux sigma i x)) =
       c * Real.exp (c * sigma x) *
           ((M.density x)⁻¹ * ∑ i, coordPartial i (M.flux sigma i) x) +
-        c ^ 2 * Real.exp (c * sigma x) *
+        c ^ (2 : ℕ) * Real.exp (c * sigma x) *
           ((M.density x)⁻¹ * ∑ i, coordPartial i sigma x * M.flux sigma i x) := by ring
   rw [hring, h1]
   ring

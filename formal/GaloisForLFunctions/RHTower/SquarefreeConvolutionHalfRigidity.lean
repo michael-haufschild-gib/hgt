@@ -153,7 +153,7 @@ theorem squarefreeIndicator_apply_prime {p : ℕ} (hp : p.Prime) :
   simp [squarefreeIndicator, pmul_apply, ArithmeticFunction.moebius_apply_prime hp]
 
 theorem squarefreeIndicator_apply_prime_sq {p : ℕ} (hp : p.Prime) :
-    squarefreeIndicator (p ^ 2) = 0 := by
+    squarefreeIndicator (p ^ (2 : ℕ)) = 0 := by
   simp [squarefreeIndicator, pmul_apply,
     ArithmeticFunction.moebius_apply_prime_pow (k := 2) hp (by norm_num)]
 
@@ -179,8 +179,8 @@ theorem squarefreeConvolutionHalf_apply_prime {p : ℕ} (hp : p.Prime) :
   linear_combination h / 2
 
 theorem squarefreeConvolutionHalf_apply_prime_sq {p : ℕ} (hp : p.Prime) :
-    squarefreeConvolutionHalf (p ^ 2) = -1 / 8 := by
-  have h := congrArg (fun a : ArithmeticFunction ℂ => a (p ^ 2))
+    squarefreeConvolutionHalf (p ^ (2 : ℕ)) = -1 / 8 := by
+  have h := congrArg (fun a : ArithmeticFunction ℂ => a (p ^ (2 : ℕ)))
     squarefreeConvolutionHalf_mul_self
   rw [arithmeticFunction_mul_apply_prime_sq squarefreeConvolutionHalf
     squarefreeConvolutionHalf hp] at h

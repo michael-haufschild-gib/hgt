@@ -38,7 +38,7 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_partition_mass
       harmonicPrimeMass (geomBlock (menonFinalRangePrimes x) Q (1 + eta) j)
         ≤ 2 ^ (J j) * V₀ j) :
     (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2)
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
       ≤ 2 * (harmonicPrimeMass (menonFinalRangePrimes x) * ∑ j ∈ Finset.range L,
               min (menonHarmonicAllSmallBlockCost (menonFinalRangePrimes x) ⌈x⌉₊
                     (menonFinalRangeTopNat x) Q eta W (V j)
@@ -72,12 +72,12 @@ theorem integral_Icc_normSq_menonFinalRangeShell_le_partition_mass
     (continuous_harmonicRamareBilinear _ _)
     (continuous_logPoly _ _) measurableSet_Icc (le_refl _)
   have hsum : (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ 2)
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
       ≤ 2 * (∫ w in Set.Icc (-W) W,
           ‖harmonicRamareBilinear (menonFinalRangePrimes x)
-            (menonFinalRangeShell x) w‖ ^ 2)
+            (menonFinalRangeShell x) w‖ ^ (2 : ℕ))
         + 2 * ∫ w in Set.Icc (-W) W,
-            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ 2 := by
+            ‖logPoly harmonicMoebiusC (menonFinalRangeHarmonicRoughSet x) w‖ ^ (2 : ℕ) := by
     simpa only [logPoly_harmonicMoebius_eq_menonFinalRange_ramare_add_rough,
       menonFinalRangeHarmonicRoughSet] using hsplit
   have hrough := integral_Icc_normSq_menonFinalRangeHarmonicRough_le_energy

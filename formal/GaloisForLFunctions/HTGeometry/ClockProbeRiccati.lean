@@ -44,7 +44,7 @@ theorem deriv_expProbe {w : ℝ → ℝ} (hw : ContDiff ℝ ∞ w) :
 /-- **The exponential probe turns the equation into the Riccati relation.** -/
 theorem secondDeriv_expProbe {w : ℝ → ℝ} (hw : ContDiff ℝ ∞ w) (x : ℝ) :
     secondDeriv (expProbe w) x =
-      (deriv (deriv w) x + (deriv w x) ^ 2) * expProbe w x := by
+      (deriv (deriv w) x + (deriv w x) ^ (2 : ℕ)) * expProbe w x := by
   have hderiv : HasDerivAt (deriv w) (deriv (deriv w) x) x :=
     (differentiable_deriv_of_contDiff hw x).hasDerivAt
   have hprod : HasDerivAt (fun t => Real.exp (w t) * deriv w t)
@@ -55,7 +55,7 @@ theorem secondDeriv_expProbe {w : ℝ → ℝ} (hw : ContDiff ℝ ∞ w) (x : �
 
 /-- The potential carried by an exponential probe. -/
 noncomputable def riccatiPotential (w : ℝ → ℝ) : ℝ → ℝ :=
-  fun x => -(deriv (deriv w) x + (deriv w x) ^ 2)
+  fun x => -(deriv (deriv w) x + (deriv w x) ^ (2 : ℕ))
 
 /-- **Every smooth exponent yields a solved variable potential.** -/
 theorem solvesPotentialWave_expProbe {w : ℝ → ℝ} (hw : ContDiff ℝ ∞ w) :
@@ -78,15 +78,15 @@ theorem potential_eq_riccatiPotential {w : ℝ → ℝ} (hw : ContDiff ℝ ∞ w
 
 /-! ### The class contains genuinely variable potentials -/
 
-theorem contDiff_sq : ContDiff ℝ ∞ fun x : ℝ => x ^ 2 := by
+theorem contDiff_sq : ContDiff ℝ ∞ fun x : ℝ => x ^ (2 : ℕ) := by
   exact contDiff_id.pow 2
 
-theorem deriv_sq_fun : deriv (fun x : ℝ => x ^ 2) = fun x => 2 * x := by
+theorem deriv_sq_fun : deriv (fun x : ℝ => x ^ (2 : ℕ)) = fun x => 2 * x := by
   funext x
   simp
 
-theorem riccatiPotential_sq : riccatiPotential (fun x : ℝ => x ^ 2) =
-    fun x => -(2 + (2 * x) ^ 2) := by
+theorem riccatiPotential_sq : riccatiPotential (fun x : ℝ => x ^ (2 : ℕ)) =
+    fun x => -(2 + (2 * x) ^ (2 : ℕ)) := by
   funext x
   rw [riccatiPotential, deriv_sq_fun]
   congr 1
@@ -95,7 +95,7 @@ theorem riccatiPotential_sq : riccatiPotential (fun x : ℝ => x ^ 2) =
 
 /-- **A nonconstant determined potential.** -/
 theorem noCommonZero_quadraticRiccati :
-    NoCommonZero secondDeriv (fun x : ℝ => -(2 + (2 * x) ^ 2)) := by
+    NoCommonZero secondDeriv (fun x : ℝ => -(2 + (2 * x) ^ (2 : ℕ))) := by
   rw [← riccatiPotential_sq]
   exact noCommonZero_riccatiPotential contDiff_sq
 

@@ -119,9 +119,9 @@ def realHurwitzPhase (x : ℝ) : Circle :=
 
 /-- `s = 3/2` has an exact phase period of order two. -/
 theorem restrictedHistoryExponentZero_phase_periodic :
-    realHurwitzPhase (3 / 2) ^ 2 = 1 := by
+    realHurwitzPhase (3 / 2) ^ (2 : ℕ) = 1 := by
   apply Subtype.ext
-  change monoScalar ((3 / 2 : ℝ) : ℂ) ^ 2 = 1
+  change monoScalar ((3 / 2 : ℝ) : ℂ) ^ (2 : ℕ) = 1
   rw [monoScalar_pow_eq_one_iff_nat]
   refine ⟨3, ?_⟩
   norm_num

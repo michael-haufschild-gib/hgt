@@ -122,7 +122,7 @@ private theorem xiShiftedReciprocalHankelAtom_sum_eq
         c i * c j *
           (xiShiftedReciprocalSquare y q ^ ((i : ℕ) + (j : ℕ) + 1)).re) =
       (xiShiftedReciprocalSquare y q).re *
-        (∑ i : Fin N, c i * (xiShiftedReciprocalSquare y q).re ^ (i : ℕ)) ^ 2 := by
+        (∑ i : Fin N, c i * (xiShiftedReciprocalSquare y q).re ^ (i : ℕ)) ^ (2 : ℕ) := by
   obtain ⟨x, hx, hcoord⟩ :=
     xiShiftedReciprocalSquare_pos_real_of_riemannHypothesis hRH hy q
   rw [hcoord]
@@ -138,7 +138,7 @@ private theorem xiShiftedReciprocalHankelAtom_sum_eq
           intro j _
           rw [pow_succ, pow_add]
           ring
-    _ = x * (∑ i : Fin N, c i * x ^ (i : ℕ)) ^ 2 := by
+    _ = x * (∑ i : Fin N, c i * x ^ (i : ℕ)) ^ (2 : ℕ) := by
       rw [pow_two, Finset.sum_mul]
       simp_rw [Finset.mul_sum]
       apply Finset.sum_congr rfl

@@ -21,7 +21,7 @@ open GaloisForLFunctions.RHTower
 theorem iteratedDeriv_two_comp_suzukiUpperCayleyInv_zero
     {theta : ℂ → ℂ} (htheta : ContDiffAt ℂ 2 theta I) :
     iteratedDeriv 2 (fun w => theta (suzukiUpperCayleyInv w)) 0 =
-      iteratedDeriv 2 theta I * (2 * I) ^ 2 + deriv theta I * (4 * I) := by
+      iteratedDeriv 2 theta I * (2 * I) ^ (2 : ℕ) + deriv theta I * (4 * I) := by
   have hinv : ContDiffAt ℂ 2 suzukiUpperCayleyInv 0 := by
     change ContDiffAt ℂ 2 (fun w : ℂ => I * ((1 + w) / (1 - w))) 0
     fun_prop (disch := norm_num)
@@ -39,7 +39,7 @@ upper-half-plane jets. -/
 theorem suzukiTaV2EndpointSecondTorque_eq_upperHalfPlaneJets
     (a : SuzukiPositiveAperture) :
     suzukiTaV2EndpointSecondTorque a =
-      iteratedDeriv 2 (suzukiTaV2Livsic a) I * (2 * I) ^ 2 +
+      iteratedDeriv 2 (suzukiTaV2Livsic a) I * (2 * I) ^ (2 : ℕ) +
         deriv (suzukiTaV2Livsic a) I * (4 * I) := by
   let U : Set ℂ := {z : ℂ | 0 < z.im}
   have hdiffOn : DifferentiableOn ℂ (suzukiTaV2Livsic a) U :=
@@ -77,7 +77,7 @@ theorem exists_suzukiTaV2CanonicalCofinalActualFirstSecondDefectJetLimit :
         (fun k => suzukiTaV2EndpointSecondTorque
           (suzukiTaV2CanonicalAperture (phi k)))
         atTop (nhds
-          (iteratedDeriv 2 theta I * (2 * I) ^ 2 + deriv theta I * (4 * I))) := by
+          (iteratedDeriv 2 theta I * (2 * I) ^ (2 : ℕ) + deriv theta I * (4 * I))) := by
   obtain ⟨phi, theta, hphi, hcofinal, hconv, htheta, hbound, hanchor, hjets⟩ :=
     exists_suzukiTaV2CanonicalCofinalLivsicLimit_on_upperHalfPlane
   have hjetOne := (hjets 1).tendsto_at (show 0 < (I : ℂ).im by norm_num)
@@ -103,17 +103,17 @@ theorem exists_suzukiTaV2CanonicalCofinalActualFirstSecondDefectJetLimit :
       (fun k =>
         iteratedDeriv 2
             (suzukiTaV2Livsic (suzukiTaV2CanonicalAperture (phi k))) I *
-            (2 * I) ^ 2 +
+            (2 * I) ^ (2 : ℕ) +
           deriv (suzukiTaV2Livsic (suzukiTaV2CanonicalAperture (phi k))) I *
             (4 * I))
       atTop (nhds
-        (iteratedDeriv 2 theta I * (2 * I) ^ 2 + deriv theta I * (4 * I))) :=
+        (iteratedDeriv 2 theta I * (2 * I) ^ (2 : ℕ) + deriv theta I * (4 * I))) :=
     (hjetTwo.mul tendsto_const_nhds).add (hderiv.mul tendsto_const_nhds)
   have htorque : Tendsto
       (fun k => suzukiTaV2EndpointSecondTorque
         (suzukiTaV2CanonicalAperture (phi k)))
       atTop (nhds
-        (iteratedDeriv 2 theta I * (2 * I) ^ 2 + deriv theta I * (4 * I))) := by
+        (iteratedDeriv 2 theta I * (2 * I) ^ (2 : ℕ) + deriv theta I * (4 * I))) := by
     simpa only [suzukiTaV2EndpointSecondTorque_eq_upperHalfPlaneJets] using htorqueJets
   exact ⟨phi, theta, hphi, hcofinal, hconv, htheta, hbound, hanchor, hangle, htorque⟩
 

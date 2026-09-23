@@ -45,7 +45,7 @@ private theorem physicalMode_C2 (r : XiZeroCopy) (w : ℂ) (hw : 1/2 < w.re) (ou
 private theorem physicalMode_second (r : XiZeroCopy) (w : ℂ) (hw : 1/2 < w.re)
     (outer : Bool) (t : ℝ) (ht : t < 0) :
     deriv (deriv (tortoiseMode outer w (physicalRadialFrequency r))) t =
-      (w^2-(physicalAngularParameter r^2-1/4)*angularWeight t^2)*
+      (w^(2 : ℕ)-(physicalAngularParameter r^(2 : ℕ)-1/4)*angularWeight t^(2 : ℕ))*
         tortoiseMode outer w (physicalRadialFrequency r) t := by
   have he : deriv (tortoiseMode outer w (physicalRadialFrequency r)) =ᶠ[𝓝 t]
       tortoiseModeFirst outer w (physicalRadialFrequency r) := by
@@ -71,7 +71,7 @@ def physicalModeAngularJet (r : XiZeroCopy) (z : D4BMHorizon.Point) (j : Fin 2) 
 theorem physicalModeAngularJet_operator (r : XiZeroCopy) (z : D4BMHorizon.Point)
     (hz : 0 < z 1) (j : Fin 2) :
     angularJetOperator (z 1) (physicalModeAngularJet r z) j =
-      (physicalAngularParameter r^2-1/4)*(physicalModeAngularJet r z j).value := by
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*(physicalModeAngularJet r z j).value := by
   have h := D4BMLiteralCusp.vector_equation (physicalAngularParameter r) z hz j
   have he : angularJetOperator (z 1) (physicalModeAngularJet r z) j-
       (physicalModeAngularJet r z j).value =
@@ -82,7 +82,7 @@ theorem physicalModeAngularJet_operator (r : XiZeroCopy) (z : D4BMHorizon.Point)
   rw [← he] at h
   change angularJetOperator (z 1) (physicalModeAngularJet r z) j-
       (physicalModeAngularJet r z j).value =
-      -(1/4-physicalAngularParameter r^2+1)*(physicalModeAngularJet r z j).value at h
+      -(1/4-physicalAngularParameter r^(2 : ℕ)+1)*(physicalModeAngularJet r z j).value at h
   linear_combination h
 
 /-- Separated stream field reconstructed from the actual complete physical projection. -/
@@ -124,7 +124,7 @@ theorem physicalLeftModeStream_jet (r : XiZeroCopy) (w : ℂ) (hw : 1/2 < w.re) 
     ofField (physicalLeftModeStream r w outer j) (modePoint t z hz).val =
       radialStreamJet (tortoiseRadius t) (-w) (tortoiseMode outer w (physicalRadialFrequency r) t)
         (tortoiseModeFirst outer w (physicalRadialFrequency r) t)
-        ((w^2-(physicalAngularParameter r^2-1/4)*angularWeight t^2)*
+        ((w^(2 : ℕ)-(physicalAngularParameter r^(2 : ℕ)-1/4)*angularWeight t^(2 : ℕ))*
           tortoiseMode outer w (physicalRadialFrequency r) t) (physicalModeAngularJet r z j) := by
   have hf := (physicalMode_C2 r w hw outer).contDiffAt (isOpen_Iio.mem_nhds t.property)
   have h := radialStreamJet_actual (-w) (tortoiseMode outer w (physicalRadialFrequency r))
@@ -142,8 +142,8 @@ private theorem physicalSecond_original_radius (q r : XiZeroCopy) (branch : Bool
     (hw : 0 < w.re) (hd : 3/2 < w.re) (hwi : w.im ≠ 0) (hwr : |w.re| < 2)
     (t : Iio (0:ℝ)) :
     physicalCuspSecond q r branch w a hw hd hwi hwr t =
-      (w^2-(physicalAngularParameter r^2-1/4)*
-        ((tortoiseRadius t:ℂ)^2-1)/(tortoiseRadius t:ℂ)^2)*
+      (w^(2 : ℕ)-(physicalAngularParameter r^(2 : ℕ)-1/4)*
+        ((tortoiseRadius t:ℂ)^(2 : ℕ)-1)/(tortoiseRadius t:ℂ)^(2 : ℕ))*
           physicalCuspProfile q r branch w a hw hd hwi hwr t-
             continuedAngularSourceProjection q branch (physicalAngularParameter r) a w t := by
   rw [physicalCuspSecond,angularWeight_original_coefficient t t.property]
@@ -154,7 +154,7 @@ def physicalProjectedModeAction (q r : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (hw : 0 < w.re) (hd : 3/2 < w.re) (hwi : w.im ≠ 0) (hwr : |w.re| < 2)
     (outer : Bool) (t : Iio (0:ℝ)) (z : D4BMHorizon.Point) (hz : 0 < z 1) : Fin 4 → ℂ :=
   let p := modePoint t z hz
-  fun j => (tortoiseRadius t:ℂ)^2/(z 1:ℂ)^2*
+  fun j => (tortoiseRadius t:ℂ)^(2 : ℕ)/(z 1:ℂ)^(2 : ℕ)*
     actionSymplectic (D4BMBackground.jet (tortoiseRadius t) (z 1))
       (streamMetricJet (tortoiseRadius t)
         (fun k => ofField (physicalProjectedStream q r branch w a hw hd hwi hwr k) p.val))
@@ -166,22 +166,22 @@ theorem physicalProjectedModeAction_value (q r : XiZeroCopy) (branch : Bool) (w 
     (hw : 0 < w.re) (hd : 3/2 < w.re) (hwi : w.im ≠ 0) (hwr : |w.re| < 2)
     (outer : Bool) (t : Iio (0:ℝ)) (z : D4BMHorizon.Point) (hz : 0 < z 1) :
     let R : ℂ := tortoiseRadius t
-    let lam := physicalAngularParameter r^2-1/4
+    let lam := physicalAngularParameter r^(2 : ℕ)-1/4
     let f := physicalCuspProfile q r branch w a hw hd hwi hwr t
     let g := tortoiseMode outer w (physicalRadialFrequency r) t
     let dg := tortoiseModeFirst outer w (physicalRadialFrequency r) t
     let F := continuedAngularSourceProjection q branch (physicalAngularParameter r) a w t
     let N := modeAngularSquare (physicalModeAngularJet r z)
     physicalProjectedModeAction q r branch w a hw hd hwi hwr outer t z hz =
-      ![(-2*w*(lam-2)*f*g/(R^2-1)-w*R^2*g*F/(R^2-1)^2)*N,
+      ![(-2*w*(lam-2)*f*g/(R^(2 : ℕ)-1)-w*R^(2 : ℕ)*g*F/(R^(2 : ℕ)-1)^(2 : ℕ))*N,
         (-(lam-2)*physicalCuspModeCurrent q r branch w a hw hd hwi hwr outer t-
-          (R*g+R^2*dg/(R^2-1))*F)*N,0,0] := by
+          (R*g+R^(2 : ℕ)*dg/(R^(2 : ℕ)-1))*F)*N,0,0] := by
   have hmode : 1/2 < w.re := by linarith
   unfold physicalProjectedModeAction
   simp_rw [physicalProjectedStream_jet,physicalLeftModeStream_jet r w hmode,
     physicalSecond_original_radius,angularWeight_original_coefficient t t.property,
     ← mul_div_assoc]
-  have h := radial_mode_action (modePoint t z hz) w (physicalAngularParameter r^2-1/4)
+  have h := radial_mode_action (modePoint t z hz) w (physicalAngularParameter r^(2 : ℕ)-1/4)
     (physicalCuspProfile q r branch w a hw hd hwi hwr t)
     (deriv (physicalCuspProfile q r branch w a hw hd hwi hwr) t)
     (tortoiseMode outer w (physicalRadialFrequency r) t)
@@ -197,15 +197,15 @@ theorem physicalProjectedStream_master (q r : XiZeroCopy) (branch : Bool) (w a :
     streamMasterValue (tortoiseRadius t) (z 1)
       (fun k => ofField (physicalProjectedStream q r branch w a hw hd hwi hwr k)
         (modePoint t z hz).val) j =
-      -(tortoiseRadius t:ℂ)^3/((tortoiseRadius t:ℂ)^2-1)*
+      -(tortoiseRadius t:ℂ)^(3 : ℕ)/((tortoiseRadius t:ℂ)^(2 : ℕ)-1)*
         continuedAngularSourceProjection q branch (physicalAngularParameter r) a w t*
         (physicalModeAngularJet r z j).value := by
   have hr : (tortoiseRadius t:ℂ) ≠ 0 := by
     exact_mod_cast (show tortoiseRadius t ≠ 0 by linarith [tortoiseRadius_exterior t t.property])
-  have hR : (tortoiseRadius t:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (tortoiseRadius t)^2-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t t.property])
+  have hR : (tortoiseRadius t:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (tortoiseRadius t)^(2 : ℕ)-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t t.property])
   simp_rw [physicalProjectedStream_jet,physicalSecond_original_radius]
-  have h := radial_stream_master (tortoiseRadius t) (z 1) w (physicalAngularParameter r^2-1/4)
+  have h := radial_stream_master (tortoiseRadius t) (z 1) w (physicalAngularParameter r^(2 : ℕ)-1/4)
     (physicalCuspProfile q r branch w a hw hd hwi hwr t)
     (deriv (physicalCuspProfile q r branch w a hw hd hwi hwr) t)
     (continuedAngularSourceProjection q branch (physicalAngularParameter r) a w t)
@@ -220,11 +220,11 @@ theorem physicalLeftModeStream_master (r : XiZeroCopy) (w : ℂ) (hw : 1/2 < w.r
       (fun k => ofField (physicalLeftModeStream r w outer k) (modePoint t z hz).val) j = 0 := by
   have hr : (tortoiseRadius t:ℂ) ≠ 0 := by
     exact_mod_cast (show tortoiseRadius t ≠ 0 by linarith [tortoiseRadius_exterior t t.property])
-  have hR : (tortoiseRadius t:ℂ)^2-1 ≠ 0 := by
-    exact_mod_cast (show (tortoiseRadius t)^2-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t t.property])
+  have hR : (tortoiseRadius t:ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    exact_mod_cast (show (tortoiseRadius t)^(2 : ℕ)-1 ≠ 0 by nlinarith [tortoiseRadius_exterior t t.property])
   simp_rw [physicalLeftModeStream_jet r w hw,
     angularWeight_original_coefficient t t.property,← mul_div_assoc]
-  have h := radial_stream_master (tortoiseRadius t) (z 1) (-w) (physicalAngularParameter r^2-1/4)
+  have h := radial_stream_master (tortoiseRadius t) (z 1) (-w) (physicalAngularParameter r^(2 : ℕ)-1/4)
     (tortoiseMode outer w (physicalRadialFrequency r) t)
     (tortoiseModeFirst outer w (physicalRadialFrequency r) t) 0 hr hR (physicalModeAngularJet r z) j
   rw [physicalModeAngularJet_operator r z hz j,sub_self,mul_zero,mul_zero,zero_mul,sub_zero] at h
@@ -260,8 +260,8 @@ theorem physicalProjectedStream_causal_origin (q r : XiZeroCopy) (branch : Bool)
 def physicalModeSourceContact (q r : XiZeroCopy) (branch : Bool) (w a : ℂ)
     (outer : Bool) (t : ℝ) : ℂ :=
   ((tortoiseRadius t:ℂ)*tortoiseMode outer w (physicalRadialFrequency r) t+
-    (tortoiseRadius t:ℂ)^2*tortoiseModeFirst outer w (physicalRadialFrequency r) t/
-      ((tortoiseRadius t:ℂ)^2-1))*
+    (tortoiseRadius t:ℂ)^(2 : ℕ)*tortoiseModeFirst outer w (physicalRadialFrequency r) t/
+      ((tortoiseRadius t:ℂ)^(2 : ℕ)-1))*
     continuedAngularSourceProjection q branch (physicalAngularParameter r) a w t
 
 /-- The actual finite-interval Einstein flux equals the full mode/source integral and both fixed endpoint contacts. -/
@@ -271,7 +271,7 @@ theorem physicalProjectedModeAction_transport (q r : XiZeroCopy) (branch : Bool)
     (z : D4BMHorizon.Point) (hz : 0 < z 1) :
     physicalProjectedModeAction q r branch w a hw hd hwi hwr outer t z hz 1-
       physicalProjectedModeAction q r branch w a hw hd hwi hwr outer s z hz 1 =
-      (-(physicalAngularParameter r^2-1/4-2)*
+      (-(physicalAngularParameter r^(2 : ℕ)-1/4-2)*
         (∫ x in (s:ℝ)..(t:ℝ), tortoiseMode outer w (physicalRadialFrequency r) x*
           continuedAngularSourceProjection q branch (physicalAngularParameter r) a w x)-
         (physicalModeSourceContact q r branch w a outer t-
@@ -279,7 +279,7 @@ theorem physicalProjectedModeAction_transport (q r : XiZeroCopy) (branch : Bool)
         modeAngularSquare (physicalModeAngularJet r z) := by
   have hv (x : Iio (0:ℝ)) :
       physicalProjectedModeAction q r branch w a hw hd hwi hwr outer x z hz 1 =
-        (-(physicalAngularParameter r^2-1/4-2)*
+        (-(physicalAngularParameter r^(2 : ℕ)-1/4-2)*
           physicalCuspModeCurrent q r branch w a hw hd hwi hwr outer x-
             physicalModeSourceContact q r branch w a outer x)*
           modeAngularSquare (physicalModeAngularJet r z) :=

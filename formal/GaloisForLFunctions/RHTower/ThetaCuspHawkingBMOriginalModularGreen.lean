@@ -74,7 +74,7 @@ private theorem differential_components (F : Point → ℂ) (z : UpperHalfPlane)
 private theorem differential_modular (F : Point → ℂ)
     (hF : ∀ z, 0 < z 1 → ContDiffAt ℝ ∞ F z) (A : SL(2,ℤ))
     (hi : ∀ z, F (coordinates (A • z))=F (coordinates z)) (z : UpperHalfPlane) (v : ℂ) :
-    differential F z v=differential F (A • z) ((1/(denom A z)^2)*v) := by
+    differential F z v=differential F (A • z) ((1/(denom A z)^(2 : ℕ))*v) := by
   have he : (fun w : UpperHalfPlane => F (coordinates (A • w))) =
       (fun w => F (coordinates w)) := funext hi
   have h := chart_fderiv_modular_pullback A (fun w => F (coordinates w))
@@ -105,7 +105,7 @@ private theorem current_differential (q r : XiZeroCopy) (branch : Bool) (amp : �
     current q r branch amp p v z a =
       lap (D4BMOriginalAngularGreen.source q branch amp p v) (coordinates z)*
         differential (D4BMLiteralCusp.scalar (physicalAngularParameter r)) z a -
-      (physicalAngularParameter r^2-1/4)*D4BMLiteralCusp.scalar (physicalAngularParameter r) (coordinates z)*
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar (physicalAngularParameter r) (coordinates z)*
         differential (D4BMOriginalAngularGreen.source q branch amp p v) z a := by
   rw [differential_components,differential_components]
   unfold current flux
@@ -115,7 +115,7 @@ private theorem current_differential (q r : XiZeroCopy) (branch : Bool) (amp : �
 theorem current_modular (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ)
     (A : SL(2,ℤ)) (z : UpperHalfPlane) (a : ℂ) :
     current q r branch amp p v z a =
-      current q r branch amp p v (A • z) ((1/(denom A z)^2)*a) := by
+      current q r branch amp p v (A • z) ((1/(denom A z)^(2 : ℕ))*a) := by
   rw [current_differential,current_differential,
     lap_modular _ (source_smooth q branch amp p v) A (source_modular q branch amp p v A),
     show D4BMLiteralCusp.scalar (physicalAngularParameter r) (coordinates (A • z)) =
@@ -129,7 +129,7 @@ theorem current_radial_inversion (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) 
     current q r branch amp p v z (z:ℂ)+
       current q r branch amp p v (S • z) ((S • z:UpperHalfPlane):ℂ)=0 := by
   have h := current_modular q r branch amp p v S z (z:ℂ)
-  have hv : (1/(denom S z)^2)*(z:ℂ) = -((S • z:UpperHalfPlane):ℂ) := by
+  have hv : (1/(denom S z)^(2 : ℕ))*(z:ℂ) = -((S • z:UpperHalfPlane):ℂ) := by
     simp only [UpperHalfPlane.modular_S_smul]
     simp [denom,ModularGroup.S,inv_neg]
     field_simp
@@ -161,7 +161,7 @@ theorem original_side_cancellation (q r : XiZeroCopy) (branch : Bool) (amp : ℂ
 
 /-- Literal oriented unit-circle fluxes cancel for the complete original source and reader. -/
 theorem original_arc_cancellation (q r : XiZeroCopy) (branch : Bool) (amp : ℂ) (p v : ℝ)
-    {x y : ℝ} (hy : 0 < y) (hxy : x^2+y^2=1) :
+    {x y : ℝ} (hy : 0 < y) (hxy : x^(2 : ℕ)+y^(2 : ℕ)=1) :
     ((x/y:ℝ):ℂ)*(flux (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) 0 ![-x,y]-
       flux (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) 0 ![x,y])-
       flux (D4BMOriginalAngularGreen.source q branch amp p v) (physicalAngularParameter r) 1 ![-x,y]-

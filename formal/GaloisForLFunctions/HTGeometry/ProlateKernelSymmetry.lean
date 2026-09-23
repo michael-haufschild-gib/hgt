@@ -3,15 +3,15 @@ import GaloisForLFunctions.HTGeometry.SturmSelfAdjoint
 /-!
 # The prolate kernel is symmetric under the prolate operator
 
-Applying `L_y g = (d/dy) ((1 - y^2) g') - c^2 y^2 g` to the finite Fourier kernel
+Applying `L_y g = (d/dy) ((1 - y^(2 : ℕ)) g') - c^(2 : ℕ) y^(2 : ℕ) g` to the finite Fourier kernel
 `K (x, t) = exp (i c x t)` multiplies it by
 
-`-2 i c x t - c^2 x^2 - c^2 t^2 + c^2 x^2 t^2`,
+`-2 i c x t - c^(2 : ℕ) x^(2 : ℕ) - c^(2 : ℕ) t^(2 : ℕ) + c^(2 : ℕ) x^(2 : ℕ) t^(2 : ℕ)`,
 
 which is symmetric in `x` and `t`.  So `L_t K = L_x K`.
 
 Together with `integral_mul_sturm_symm` -- which moves the Sturm operator across an integral when
-the weight vanishes at both endpoints, as `1 - t^2` does at the ends of the band -- this is the
+the weight vanishes at both endpoints, as `1 - t^(2 : ℕ)` does at the ends of the band -- this is the
 commuting-operator step: an eigenfunction of the finite Fourier transform satisfies the prolate
 differential equation.
 -/
@@ -25,8 +25,8 @@ noncomputable def prolateKernel (c x t : ℝ) : ℂ := Complex.exp (Complex.I * 
 
 /-- The symbol produced by the prolate operator on the kernel. -/
 noncomputable def prolateSymbol (c x t : ℝ) : ℂ :=
-  -2 * Complex.I * c * x * t - (c : ℂ) ^ 2 * (x : ℂ) ^ 2 - (c : ℂ) ^ 2 * (t : ℂ) ^ 2
-    + (c : ℂ) ^ 2 * (x : ℂ) ^ 2 * (t : ℂ) ^ 2
+  -2 * Complex.I * c * x * t - (c : ℂ) ^ (2 : ℕ) * (x : ℂ) ^ (2 : ℕ) - (c : ℂ) ^ (2 : ℕ) * (t : ℂ) ^ (2 : ℕ)
+    + (c : ℂ) ^ (2 : ℕ) * (x : ℂ) ^ (2 : ℕ) * (t : ℂ) ^ (2 : ℕ)
 
 /-- **The symbol is symmetric.** -/
 theorem prolateSymbol_symm (c x t : ℝ) : prolateSymbol c x t = prolateSymbol c t x := by
@@ -50,31 +50,31 @@ theorem hasDerivAt_prolateKernel (c x t : ℝ) :
   · filter_upwards with s
     rw [prolateKernel]
 
-/-- **The prolate flux derivative of the kernel.**  Differentiating `(1 - t^2)` times the kernel's
-derivative produces the symbol plus the `c^2 t^2` term that the operator subtracts. -/
+/-- **The prolate flux derivative of the kernel.**  Differentiating `(1 - t^(2 : ℕ))` times the kernel's
+derivative produces the symbol plus the `c^(2 : ℕ) t^(2 : ℕ)` term that the operator subtracts. -/
 theorem hasDerivAt_prolateFlux (c x t : ℝ) :
     HasDerivAt
-      (fun s : ℝ => ((1 - s ^ 2 : ℝ) : ℂ) * (Complex.I * c * x * prolateKernel c x s))
-      ((prolateSymbol c x t + (c : ℂ) ^ 2 * (t : ℂ) ^ 2) * prolateKernel c x t) t := by
-  have hw : HasDerivAt (fun s : ℝ => ((1 - s ^ 2 : ℝ) : ℂ)) (((-2 * t : ℝ) : ℂ)) t := by
-    have : HasDerivAt (fun s : ℝ => (1 - s ^ 2 : ℝ)) (-2 * t) t := by
+      (fun s : ℝ => ((1 - s ^ (2 : ℕ) : ℝ) : ℂ) * (Complex.I * c * x * prolateKernel c x s))
+      ((prolateSymbol c x t + (c : ℂ) ^ (2 : ℕ) * (t : ℂ) ^ (2 : ℕ)) * prolateKernel c x t) t := by
+  have hw : HasDerivAt (fun s : ℝ => ((1 - s ^ (2 : ℕ) : ℝ) : ℂ)) (((-2 * t : ℝ) : ℂ)) t := by
+    have : HasDerivAt (fun s : ℝ => (1 - s ^ (2 : ℕ) : ℝ)) (-2 * t) t := by
       simpa using ((hasDerivAt_pow 2 t).const_sub 1)
     exact this.ofReal_comp
   have hk := (hasDerivAt_prolateKernel c x t).const_mul (Complex.I * c * x)
   have h := hw.mul hk
   refine h.congr_deriv ?_
   rw [prolateSymbol]
-  have hI : Complex.I ^ 2 = -1 := Complex.I_sq
+  have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
   push_cast
   ring_nf
   rw [hI]
   ring
 
-/-- The prolate operator applied to the kernel: the flux derivative minus the `c^2 t^2` term is the
+/-- The prolate operator applied to the kernel: the flux derivative minus the `c^(2 : ℕ) t^(2 : ℕ)` term is the
 symbol times the kernel. -/
 theorem prolateOperator_kernel (c x t : ℝ) :
-    (prolateSymbol c x t + (c : ℂ) ^ 2 * (t : ℂ) ^ 2) * prolateKernel c x t
-        - (c : ℂ) ^ 2 * (t : ℂ) ^ 2 * prolateKernel c x t
+    (prolateSymbol c x t + (c : ℂ) ^ (2 : ℕ) * (t : ℂ) ^ (2 : ℕ)) * prolateKernel c x t
+        - (c : ℂ) ^ (2 : ℕ) * (t : ℂ) ^ (2 : ℕ) * prolateKernel c x t
       = prolateSymbol c x t * prolateKernel c x t := by
   ring
 

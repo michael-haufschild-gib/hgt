@@ -61,7 +61,7 @@ open HedenmalmThetaSource
 
 /-- Positive quadratic derivative-energy density entering the spherical EKG memory kernel. -/
 def thetaCuspEKGDerivativeEnergyDensity (u : ℝ) : ℝ :=
-  sourceDeriv u ^ 2
+  sourceDeriv u ^ (2 : ℕ)
 
 /-- BCR ordered memory `I₁⁰(s) = ∫_s^∞ a'(u)² du` for the completed theta source. -/
 def thetaCuspEKGCumulativeDerivativeEnergy (s : ℝ) : ℝ :=
@@ -99,10 +99,10 @@ theorem integrable_thetaCuspEKGDerivativeEnergyDensity :
     rw [Real.norm_eq_abs, Real.norm_eq_abs]
     have hC := thetaCuspDerivativeExpConstant_nonneg 1
     have hdx := abs_thetaCuspEKGSourceDeriv_le x
-    change abs (sourceDeriv x ^ 2) ≤
+    change abs (sourceDeriv x ^ (2 : ℕ)) ≤
       abs (thetaCuspDerivativeExpConstant 1 * abs (sourceDeriv x))
     calc
-      |sourceDeriv x ^ 2| = |sourceDeriv x| * |sourceDeriv x| := by
+      |sourceDeriv x ^ (2 : ℕ)| = |sourceDeriv x| * |sourceDeriv x| := by
         rw [abs_pow]
         ring
       _ ≤ thetaCuspDerivativeExpConstant 1 * |sourceDeriv x| :=
@@ -175,7 +175,7 @@ theorem exists_thetaCuspEKGCumulativeDerivativeEnergy_pos :
     continuous_thetaCuspEKGDerivativeEnergyDensity.isOpen_support.inter isOpen_Ioi
   apply hopen.measure_pos (volume : Measure ℝ)
   refine ⟨c, ?_, ?_⟩
-  · change sourceDeriv c ^ 2 ≠ 0
+  · change sourceDeriv c ^ (2 : ℕ) ≠ 0
     exact pow_ne_zero 2 hdc
   · norm_num [s]
 

@@ -14,20 +14,20 @@ namespace GaloisForLFunctions.HTGeometry.FokasLenells
 noncomputable section
 
 def rawDividedOperator (q : SchwartzMap ℝ ℂ) (k x : ℝ) : RawOperator :=
-  ((I*FDNLS.staggerPhase (2*k^2) x*reflectedDerivative q x) • ContinuousLinearMap.snd ℂ ℂ ℂ).prod
-    ((I*FDNLS.staggerPhase (-(2*k^2)) x*SchwartzMap.derivCLM ℂ ℂ q x) • ContinuousLinearMap.fst ℂ ℂ ℂ)
+  ((I*FDNLS.staggerPhase (2*k^(2 : ℕ)) x*reflectedDerivative q x) • ContinuousLinearMap.snd ℂ ℂ ℂ).prod
+    ((I*FDNLS.staggerPhase (-(2*k^(2 : ℕ))) x*SchwartzMap.derivCLM ℂ ℂ q x) • ContinuousLinearMap.fst ℂ ℂ ℂ)
 
 theorem rawDividedOperator_apply (q : SchwartzMap ℝ ℂ) (k x : ℝ) (v : SpectralVector) :
     rawDividedOperator q k x v =
-      (I*FDNLS.staggerPhase (2*k^2) x*reflectedDerivative q x*v.2,
-       I*FDNLS.staggerPhase (-(2*k^2)) x*SchwartzMap.derivCLM ℂ ℂ q x*v.1) := rfl
+      (I*FDNLS.staggerPhase (2*k^(2 : ℕ)) x*reflectedDerivative q x*v.2,
+       I*FDNLS.staggerPhase (-(2*k^(2 : ℕ))) x*SchwartzMap.derivCLM ℂ ℂ q x*v.1) := rfl
 
 theorem continuous_rawDividedOperator_parameters (q : SchwartzMap ℝ ℂ) :
     Continuous (fun p : ℝ × ℝ => rawDividedOperator q p.1 p.2) := by
   let U : ℝ × ℝ → SpectralVector →L[ℂ] ℂ := fun p =>
-    (I*FDNLS.staggerPhase (2*p.1^2) p.2*reflectedDerivative q p.2) • ContinuousLinearMap.snd ℂ ℂ ℂ
+    (I*FDNLS.staggerPhase (2*p.1^(2 : ℕ)) p.2*reflectedDerivative q p.2) • ContinuousLinearMap.snd ℂ ℂ ℂ
   let V : ℝ × ℝ → SpectralVector →L[ℂ] ℂ := fun p =>
-    (I*FDNLS.staggerPhase (-(2*p.1^2)) p.2*SchwartzMap.derivCLM ℂ ℂ q p.2) • ContinuousLinearMap.fst ℂ ℂ ℂ
+    (I*FDNLS.staggerPhase (-(2*p.1^(2 : ℕ))) p.2*SchwartzMap.derivCLM ℂ ℂ q p.2) • ContinuousLinearMap.fst ℂ ℂ ℂ
   have hU : Continuous U := by unfold U FDNLS.staggerPhase; fun_prop
   have hV : Continuous V := by unfold V FDNLS.staggerPhase; fun_prop
   exact (ContinuousLinearMap.prodₗᵢ (𝕜 := ℂ) (E := SpectralVector) (F := ℂ) (G := ℂ) ℂ).continuous.comp (hU.prodMk hV)

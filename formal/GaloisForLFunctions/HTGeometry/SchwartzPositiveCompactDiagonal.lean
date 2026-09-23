@@ -70,23 +70,23 @@ theorem pointwiseMulConj_nonnegativeSquareRootRegularization_self
       apply compactIntervalCutoff_apply_of_abs_le
       simpa [abs_of_nonneg hR] using hh ht
     rw [hχ]
-    have hsqrt : Real.sqrt (h t + ε) ^ 2 = h t + ε :=
+    have hsqrt : Real.sqrt (h t + ε) ^ (2 : ℕ) = h t + ε :=
       Real.sq_sqrt (by linarith [hnonneg t])
     simp only [one_mul, Complex.conj_ofReal, map_one]
     norm_cast
     simpa [pow_two] using hsqrt
   · have hzero : h t = 0 := image_eq_zero_of_notMem_tsupport ht
     rw [hzero]
-    have hsqrt : Real.sqrt (0 + ε) ^ 2 = 0 + ε :=
+    have hsqrt : Real.sqrt (0 + ε) ^ (2 : ℕ) = 0 + ε :=
       Real.sq_sqrt (by linarith)
     simp only [zero_add] at hsqrt ⊢
     simp only [map_mul, Complex.conj_ofReal, ofReal_zero]
-    have hsqrtC : (Real.sqrt ε : ℂ) ^ 2 = (ε : ℂ) := by
+    have hsqrtC : (Real.sqrt ε : ℂ) ^ (2 : ℕ) = (ε : ℂ) := by
       exact_mod_cast (by simpa using hsqrt)
     calc
       compactIntervalCutoff R t * (Real.sqrt ε : ℂ) *
           ((starRingEnd ℂ) (compactIntervalCutoff R t) * (Real.sqrt ε : ℂ)) =
-          (Real.sqrt ε : ℂ) ^ 2 *
+          (Real.sqrt ε : ℂ) ^ (2 : ℕ) *
             (compactIntervalCutoff R t *
               (starRingEnd ℂ) (compactIntervalCutoff R t)) := by ring
       _ = _ := by rw [hsqrtC]; simp

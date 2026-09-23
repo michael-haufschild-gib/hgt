@@ -24,7 +24,7 @@ theorem exists_norm_sum_moebiusTwist_rate :
       5 + 4 * |τ| ≤ ((contourParam (N + smoothWidth N) : ℕ) : ℝ) →
       ‖∑ n ∈ Finset.range (⌊N⌋₊ + 1), moebiusTwist τ n‖
         ≤ 3 * N
-            * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ 2 / 2))
+            * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ (2 : ℕ) / 2))
             / Real.pi
           + (smoothWidth N + 1) := by
   obtain ⟨K₀, hev⟩ := exists_norm_tsum_moebiusTwist_smoothWeight_rate
@@ -48,7 +48,7 @@ theorem exists_norm_sum_moebiusTwist_rate :
   -- the smoothed sum, with the rate
   have hS : ‖S‖
       ≤ (N + smoothWidth N + 1)
-        * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ 2 / 2))
+        * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ (2 : ℕ) / 2))
         / Real.pi := by
     rw [le_div_iff₀ hpi]
     linarith [hbase]
@@ -65,13 +65,13 @@ theorem exists_norm_sum_moebiusTwist_rate :
   -- the trivial size
   have hsize : N + smoothWidth N + 1 ≤ 3 * N := by linarith
   have hexp0 : (0 : ℝ)
-      < Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ 2 / 2)) :=
+      < Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ (2 : ℕ) / 2)) :=
     Real.exp_pos _
   have hmono : (N + smoothWidth N + 1)
-        * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ 2 / 2))
+        * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ (2 : ℕ) / 2))
         / Real.pi
       ≤ 3 * N
-        * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ 2 / 2))
+        * Real.exp (-(zeroFreeConst / 8192 * ((Real.log N) ^ ((1 : ℝ) / 20)) ^ (2 : ℕ) / 2))
         / Real.pi := by
     refine div_le_div_of_nonneg_right ?_ hpi.le
     exact mul_le_mul_of_nonneg_right hsize hexp0.le

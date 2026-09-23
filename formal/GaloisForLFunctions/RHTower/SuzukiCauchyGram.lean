@@ -63,9 +63,9 @@ theorem suzukiCauchyKernel_conj (ρ : XiDivisorSupport) (x : ℝ) :
   rw [suzukiCauchyKernel, map_inv₀, map_sub, Complex.conj_ofReal, Complex.conj_ofReal]
 
 theorem halfInnerEnergy_kernel_mul (ρ σ : XiDivisorSupport) (x : ℝ) :
-    ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ) *
+    ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ) *
         ((starRingEnd ℂ) (suzukiCauchyKernel ρ x)) * (suzukiCauchyKernel σ x)
-      = (((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2
+      = (((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ)
             / ((x - xiRealSpectralPointSupport ρ) * (x - xiRealSpectralPointSupport σ)) : ℝ)) : ℂ) := by
   rw [suzukiCauchyKernel_conj, suzukiCauchyKernel, suzukiCauchyKernel]
   push_cast
@@ -74,7 +74,7 @@ theorem halfInnerEnergy_kernel_mul (ρ σ : XiDivisorSupport) (x : ℝ) :
 
 theorem integrable_halfInnerEnergy_kernel_pair (hRH : RiemannHypothesis)
     (ρ σ : XiDivisorSupport) :
-    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2
+    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ)
       / ((x - xiRealSpectralPointSupport ρ) * (x - xiRealSpectralPointSupport σ))) := by
   rcases eq_or_ne ρ σ with rfl | hne
   · have h := integrable_normSq_suzukiHalfInner_div_sq hRH (xiSupportMult_pos ρ)
@@ -89,7 +89,7 @@ theorem integrable_halfInnerEnergy_kernel_pair (hRH : RiemannHypothesis)
 /-- **The Gram matrix of the boundary Cauchy kernels.**  The energy `|A/E|²` makes the kernels
 `1/(x-γ_ρ)` orthogonal, with diagonal `π/m_ρ`. -/
 theorem integral_halfInnerEnergy_kernel_pair (hRH : RiemannHypothesis) (ρ σ : XiDivisorSupport) :
-    (∫ x : ℝ, ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ) *
+    (∫ x : ℝ, ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ) *
         ((starRingEnd ℂ) (suzukiCauchyKernel ρ x)) * (suzukiCauchyKernel σ x))
       = if ρ = σ then ((Real.pi / (xiSupportMult ρ : ℝ) : ℝ) : ℂ) else 0 := by
   rw [MeasureTheory.integral_congr_ae

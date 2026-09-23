@@ -24,11 +24,11 @@ noncomputable section
 namespace RHTower
 
 def finiteJetOddFlatPolynomial (s : Finset ℝ) (N : ℕ) : Polynomial ℝ :=
-  X * ∏ a ∈ s, (X ^ 2 - C (a ^ 2)) ^ (N + 1)
+  X * ∏ a ∈ s, (X ^ (2 : ℕ) - C (a ^ (2 : ℕ))) ^ (N + 1)
 
 theorem evalRealPolynomial_finiteJetOddFlatPolynomial (s : Finset ℝ) (N : ℕ) (z : ℂ) :
     evalRealPolynomial (finiteJetOddFlatPolynomial s N) z =
-      z * ∏ a ∈ s, (z ^ 2 - (a : ℂ) ^ 2) ^ (N + 1) := by
+      z * ∏ a ∈ s, (z ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ)) ^ (N + 1) := by
   simp [finiteJetOddFlatPolynomial, evalRealPolynomial]
 
 theorem evalRealPolynomial_finiteJetOddFlatPolynomial_neg
@@ -62,7 +62,7 @@ theorem evalRealPolynomial_derivative_finiteJetOddFlatPolynomial_neg
   exact neg_injective (hleft'.unique hright')
 
 def finiteJetClockBasePolynomial (s : Finset ℝ) (N : ℕ) : Polynomial ℝ :=
-  1 + derivative (finiteJetOddFlatPolynomial s N) ^ 2
+  1 + derivative (finiteJetOddFlatPolynomial s N) ^ (2 : ℕ)
 
 def finiteJetClockPrimitivePolynomial (s : Finset ℝ) (N : ℕ) : Polynomial ℝ :=
   Polynomial.realAntiderivative (finiteJetClockBasePolynomial s N)
@@ -249,7 +249,7 @@ def finiteJetPositiveClockAllPassMinusClock (s : Finset ℝ) (N : ℕ) (x : ℝ)
 
 theorem finiteJetPositiveClockAllPassPlusClock_eq (s : Finset ℝ) (N : ℕ) (x : ℝ) :
     finiteJetPositiveClockAllPassPlusClock s N x =
-      1 + (derivative (finiteJetOddFlatPolynomial s N)).eval x ^ 2 +
+      1 + (derivative (finiteJetOddFlatPolynomial s N)).eval x ^ (2 : ℕ) +
         (derivative (finiteJetOddFlatPolynomial s N)).eval x := by
   let d : ℂ := evalRealPolynomial (finiteJetClockBasePolynomial s N) (x : ℂ) +
     evalRealPolynomial (derivative (finiteJetOddFlatPolynomial s N)) (x : ℂ)
@@ -272,7 +272,7 @@ theorem finiteJetPositiveClockAllPassPlusClock_eq (s : Finset ℝ) (N : ℕ) (x 
 
 theorem finiteJetPositiveClockAllPassMinusClock_eq (s : Finset ℝ) (N : ℕ) (x : ℝ) :
     finiteJetPositiveClockAllPassMinusClock s N x =
-      1 + (derivative (finiteJetOddFlatPolynomial s N)).eval x ^ 2 -
+      1 + (derivative (finiteJetOddFlatPolynomial s N)).eval x ^ (2 : ℕ) -
         (derivative (finiteJetOddFlatPolynomial s N)).eval x := by
   let d : ℂ := evalRealPolynomial (finiteJetClockBasePolynomial s N) (x : ℂ) -
     evalRealPolynomial (derivative (finiteJetOddFlatPolynomial s N)) (x : ℂ)
@@ -305,7 +305,7 @@ theorem finiteJetPositiveClockAllPassMinusClock_pos (s : Finset ℝ) (N : ℕ) (
 
 def finiteJetOddFlatUnit (s : Finset ℝ) (N : ℕ) (a : ℝ) (z : ℂ) : ℂ :=
   ((a : ℂ) + z) * (2 * (a : ℂ) + z) ^ (N + 1) *
-    ∏ b ∈ s.erase a, (((a : ℂ) + z) ^ 2 - (b : ℂ) ^ 2) ^ (N + 1)
+    ∏ b ∈ s.erase a, (((a : ℂ) + z) ^ (2 : ℕ) - (b : ℂ) ^ (2 : ℕ)) ^ (N + 1)
 
 theorem evalRealPolynomial_finiteJetOddFlatPolynomial_shift_factorization
     (s : Finset ℝ) (N : ℕ) {a : ℝ} (ha : a ∈ s) (z : ℂ) :
@@ -314,9 +314,9 @@ theorem evalRealPolynomial_finiteJetOddFlatPolynomial_shift_factorization
   rw [evalRealPolynomial_finiteJetOddFlatPolynomial]
   rw [← Finset.prod_erase_mul _ _ ha]
   unfold finiteJetOddFlatUnit
-  have hfactor : (((a : ℂ) + z) ^ 2 - (a : ℂ) ^ 2) ^ (N + 1) =
+  have hfactor : (((a : ℂ) + z) ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ)) ^ (N + 1) =
       z ^ (N + 1) * (2 * (a : ℂ) + z) ^ (N + 1) := by
-    rw [show ((a : ℂ) + z) ^ 2 - (a : ℂ) ^ 2 = z * (2 * (a : ℂ) + z) by ring,
+    rw [show ((a : ℂ) + z) ^ (2 : ℕ) - (a : ℂ) ^ (2 : ℕ) = z * (2 * (a : ℂ) + z) by ring,
       mul_pow]
   rw [hfactor]
   ring
@@ -391,7 +391,7 @@ theorem monic_finiteJetOddFlatPolynomial (s : Finset ℝ) (N : ℕ) :
   | empty => simp
   | @insert a s ha ih =>
       rw [Finset.prod_insert ha]
-      exact ((monic_X_pow_sub_C (a ^ 2) (by omega)).pow (N + 1)).mul ih
+      exact ((monic_X_pow_sub_C (a ^ (2 : ℕ)) (by omega)).pow (N + 1)).mul ih
 
 theorem finiteJetOddFlatPolynomial_ne_one (s : Finset ℝ) (N : ℕ) :
     finiteJetOddFlatPolynomial s N ≠ 1 := by

@@ -42,21 +42,21 @@ theorem sum_normSq_moebius_window_le (L Y K M J : ℕ) (hM : Y + K + L < M)
     {ε M₁ W : ℝ} (hL : 0 < (L : ℝ)) (hY : 0 < (Y : ℝ)) (hε : 0 ≤ ε) (hW : 0 < W)
     (hM₁ : 0 ≤ M₁)
     (h₁ : ∀ w : ℝ, |w| ≤ W →
-      ‖∑ n ∈ (Finset.range M).erase 0, moebiusTwist (-(2 * Real.pi * w)) n‖ ^ 2 ≤ M₁)
+      ‖∑ n ∈ (Finset.range M).erase 0, moebiusTwist (-(2 * Real.pi * w)) n‖ ^ (2 : ℕ) ≤ M₁)
     (hJ : (Y : ℝ) + K = (Y : ℝ) * (1 + ε) ^ J) :
-    (∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), moebiusC n‖ ^ 2)
+    (∑ k ∈ Finset.range K, ‖∑ n ∈ Finset.Ioc (Y + k) (Y + k + L), moebiusC n‖ ^ (2 : ℕ))
       ≤ ((Y : ℝ) * (1 + ε) ^ J)
           * ((J : ℝ) * blockCost (L : ℝ) (Y : ℝ) ε M₁
-              ((((Finset.range M).erase 0).card : ℝ) ^ 2) W) := by
+              ((((Finset.range M).erase 0).card : ℝ) ^ (2 : ℕ)) W) := by
   classical
   have hs : ∀ n ∈ (Finset.range M).erase 0, 0 < n := by
     intro n hn
     exact Nat.pos_of_ne_zero (Finset.mem_erase.1 hn).1
   rw [sum_normSq_Ioc_eq_setIntegral moebiusC L Y K M hM]
   have hcongr : (∫ x in Set.Ioc ((Y : ℝ)) ((Y : ℝ) + K),
-        ‖linSum moebiusC (Finset.range M) ((L : ℕ) : ℝ) x‖ ^ 2)
+        ‖linSum moebiusC (Finset.range M) ((L : ℕ) : ℝ) x‖ ^ (2 : ℕ))
       = ∫ x in Set.Ioc ((Y : ℝ)) ((Y : ℝ) + K),
-          ‖linSum moebiusC ((Finset.range M).erase 0) ((L : ℕ) : ℝ) x‖ ^ 2 := by
+          ‖linSum moebiusC ((Finset.range M).erase 0) ((L : ℕ) : ℝ) x‖ ^ (2 : ℕ) := by
     refine setIntegral_congr_fun measurableSet_Ioc fun x hx => ?_
     have hx0 : (0 : ℝ) ≤ x := le_of_lt (lt_trans hY hx.1)
     rw [linSum_erase_eq_realWindow moebiusC L M hx0, ← linSum_eq_realWindow moebiusC L M x]

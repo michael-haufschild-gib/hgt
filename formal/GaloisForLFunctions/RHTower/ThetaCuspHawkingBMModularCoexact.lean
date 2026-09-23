@@ -21,7 +21,7 @@ def covectorAction (V : Covector) (z : Point) (v : ℂ) : ℂ :=
 theorem chartCoexact_modular_pullback (A : SL(2,ℤ)) (f : UpperHalfPlane → ℂ)
     (hf : ChartSmooth f) (z : UpperHalfPlane) (v : ℂ) :
     chartCoexact (fun w => f (A • w)) z v =
-      chartCoexact f (A • z) ((1/(denom A z)^2)*v) := by
+      chartCoexact f (A • z) ((1/(denom A z)^(2 : ℕ))*v) := by
   unfold chartCoexact
   rw [chart_fderiv_modular_pullback A f hf z,ContinuousLinearMap.comp_apply,
     modular_chart_jacobian]
@@ -31,7 +31,7 @@ theorem chartCoexact_modular_pullback (A : SL(2,ℤ)) (f : UpperHalfPlane → �
 /-- Scalar invariance gives covector pullback invariance with the full Jacobian. -/
 theorem chartCoexact_invariant (A : SL(2,ℤ)) (f : UpperHalfPlane → ℂ)
     (hf : ChartSmooth f) (hi : ∀ w, f (A • w) = f w) (z : UpperHalfPlane) (v : ℂ) :
-    chartCoexact f (A • z) ((1/(denom A z)^2)*v) = chartCoexact f z v := by
+    chartCoexact f (A • z) ((1/(denom A z)^(2 : ℕ))*v) = chartCoexact f z v := by
   rw [← chartCoexact_modular_pullback A f hf z]
   congr 1
   exact funext hi
@@ -73,7 +73,7 @@ theorem coexact_modular_action (A : SL(2,ℤ)) (F : Point → ℂ)
     (hF : ∀ z, 0 < z 1 → ContDiffAt ℝ ∞ F z)
     (hi : ∀ z : UpperHalfPlane, F (coordinates (A • z)) = F (coordinates z))
     (z : UpperHalfPlane) (v : ℂ) :
-    covectorAction (coexact F) (coordinates (A • z)) ((1/(denom A z)^2)*v) =
+    covectorAction (coexact F) (coordinates (A • z)) ((1/(denom A z)^(2 : ℕ))*v) =
       covectorAction (coexact F) (coordinates z) v := by
   rw [coexact_chartAction,coexact_chartAction]
   exact chartCoexact_invariant A _ (chartSmooth_coordinates F hF) hi z v

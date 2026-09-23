@@ -65,12 +65,12 @@ theorem exp_lt_thetaCuspThirtySecondExpUpper :
   by_contra h
   have hle : (4127 / 4000 : ℝ) ≤ Real.exp (1 / 32 : ℝ) := le_of_not_gt h
   have hp := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 4127 / 4000) hle 32
-  have heq : Real.exp (1 / 32 : ℝ) ^ 32 = Real.exp 1 := by
+  have heq : Real.exp (1 / 32 : ℝ) ^ (32 : ℕ) = Real.exp 1 := by
     rw [← Real.exp_nat_mul]
     congr 1
     norm_num
   rw [heq] at hp
-  have hu : Real.exp 1 < (4127 / 4000 : ℝ) ^ 32 :=
+  have hu : Real.exp 1 < (4127 / 4000 : ℝ) ^ (32 : ℕ) :=
     Real.exp_one_lt_d9.trans (by norm_num)
   linarith
 

@@ -210,7 +210,7 @@ coefficients over multiplicity histograms. -/
 theorem replicaHistogramCollision_eq_sum_sq (r : ℕ) :
     replicaHistogramCollision I r =
       ∑ p ∈ (Finset.univ : Finset I).piAntidiag r,
-        (Nat.multinomial (Finset.univ : Finset I) p) ^ 2 := by
+        (Nat.multinomial (Finset.univ : Finset I) p) ^ (2 : ℕ) := by
   classical
   rw [replicaHistogramCollision,
     Finset.card_eq_sum_card_fiberwise

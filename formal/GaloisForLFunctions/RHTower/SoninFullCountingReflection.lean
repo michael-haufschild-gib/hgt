@@ -227,20 +227,20 @@ theorem opTrace_centralSoninAlternatingBlock_eq_exteriorCompression
           (centralFourierForbidden a).starProjection) = _
     rw [ContinuousLinearMap.adjoint_comp, hFourierAdj, hPhysicalAdj] ;
       ext x ; rfl
-  have hSnorm : hsNormSq S = 4 * a ^ 2 := by
+  have hSnorm : hsNormSq S = 4 * a ^ (2 : ℕ) := by
     calc
       hsNormSq S = hsNormSq (ContinuousLinearMap.adjoint S) :=
         hS.hsNormSq_adjoint.symm
       _ = hsNormSq
           ((centralFourierForbidden a).starProjection *
             (centralPhysicalForbidden a).starProjection) := by rw [hSadj]
-      _ = 4 * a ^ 2 := hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha
-  have hDnorm : hsNormSq D = 4 * a ^ 2 := by
+      _ = 4 * a ^ (2 : ℕ) := hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha
+  have hDnorm : hsNormSq D = 4 * a ^ (2 : ℕ) := by
     calc
       hsNormSq D = hsNormSq (centralSoninExteriorOverlap a) := by
         simpa only [D] using
           (centralSoninExteriorOverlap_isHilbertSchmidt a ha).hsNormSq_adjoint
-      _ = 4 * a ^ 2 := hsNormSq_centralSoninExteriorOverlap_eq_four_mul_sq a ha
+      _ = 4 * a ^ (2 : ℕ) := hsNormSq_centralSoninExteriorOverlap_eq_four_mul_sq a ha
   have hSenergy :
       ContinuousLinearMap.adjoint S ∘L S =
         soninAlternatingBlock (centralPhysicalForbidden a)
@@ -275,8 +275,8 @@ theorem opTrace_centralSoninAlternatingBlock_sq_eq_exteriorCompression_sq
     (a : ℝ) (ha : 0 < a) :
     opTrace
         (soninAlternatingBlock (centralPhysicalForbidden a)
-          (centralFourierForbidden a) ^ 2) =
-      opTrace (centralSoninExteriorCompression a ^ 2) := by
+          (centralFourierForbidden a) ^ (2 : ℕ)) =
+      opTrace (centralSoninExteriorCompression a ^ (2 : ℕ)) := by
   let A : SoninL2 →L[ℂ] SoninL2 :=
     soninAlternatingBlock (centralPhysicalForbidden a) (centralFourierForbidden a)
   let E : SoninL2 →L[ℂ] SoninL2 := centralSoninExteriorCompression a
@@ -288,7 +288,7 @@ theorem opTrace_centralSoninAlternatingBlock_sq_eq_exteriorCompression_sq
     simpa only [A] using adjoint_centralSoninAlternatingBlock a
   have hEadj : ContinuousLinearMap.adjoint E = E := by
     simpa only [E] using adjoint_centralSoninExteriorCompression a
-  change opTrace (A ^ 2) = opTrace (E ^ 2)
+  change opTrace (A ^ (2 : ℕ)) = opTrace (E ^ (2 : ℕ))
   rw [HTGeometry.opTrace_sq_eq_ofReal_hsNormSq hA hAadj,
     HTGeometry.opTrace_sq_eq_ofReal_hsNormSq hE hEadj]
   exact congrArg (fun x : ℝ => (x : ℂ))

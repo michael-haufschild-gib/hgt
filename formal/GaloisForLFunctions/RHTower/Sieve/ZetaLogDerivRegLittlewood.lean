@@ -26,7 +26,7 @@ open Complex
 
 /-- `x ↦ x²/log x` is increasing past `e`. -/
 theorem sq_div_log_mono {x y : ℝ} (hx : 1 ≤ Real.log x) (hx0 : 0 < x) (hxy : x ≤ y) :
-    x ^ 2 / Real.log x ≤ y ^ 2 / Real.log y := by
+    x ^ (2 : ℕ) / Real.log x ≤ y ^ (2 : ℕ) / Real.log y := by
   have hy0 : (0 : ℝ) < y := by linarith
   have hlogy : Real.log x ≤ Real.log y := Real.log_le_log hx0 hxy
   have hly1 : (1 : ℝ) ≤ Real.log y := by linarith
@@ -36,10 +36,10 @@ theorem sq_div_log_mono {x y : ℝ} (hx : 1 ≤ Real.log x) (hx0 : 0 < x) (hxy :
     linarith
   rw [div_le_div_iff₀ (by linarith) (by linarith)]
   -- `log y ≤ log x + (y² - x²)/x²`
-  have hratio : Real.log (y / x) ≤ (y ^ 2 - x ^ 2) / x ^ 2 := by
+  have hratio : Real.log (y / x) ≤ (y ^ (2 : ℕ) - x ^ (2 : ℕ)) / x ^ (2 : ℕ) := by
     have h1 : Real.log (y / x) ≤ y / x - 1 := Real.log_le_sub_one_of_pos (by positivity)
-    have h2 : y / x - 1 ≤ (y ^ 2 - x ^ 2) / x ^ 2 := by
-      rw [le_div_iff₀ (by positivity : (0 : ℝ) < x ^ 2)]
+    have h2 : y / x - 1 ≤ (y ^ (2 : ℕ) - x ^ (2 : ℕ)) / x ^ (2 : ℕ) := by
+      rw [le_div_iff₀ (by positivity : (0 : ℝ) < x ^ (2 : ℕ))]
       have hxne : x ≠ 0 := ne_of_gt hx0
       field_simp
       nlinarith [hx0, hxy]
@@ -47,13 +47,13 @@ theorem sq_div_log_mono {x y : ℝ} (hx : 1 ≤ Real.log x) (hx0 : 0 < x) (hxy :
   have hsplit : Real.log (y / x) = Real.log y - Real.log x :=
     Real.log_div (ne_of_gt hy0) (ne_of_gt hx0)
   rw [hsplit] at hratio
-  have hkey : Real.log y ≤ Real.log x + (y ^ 2 - x ^ 2) / x ^ 2 := by linarith
-  have hmul : x ^ 2 * Real.log y ≤ x ^ 2 * Real.log x + (y ^ 2 - x ^ 2) := by
-    have hstep := mul_le_mul_of_nonneg_left hkey (by positivity : (0 : ℝ) ≤ x ^ 2)
-    have hcancel : x ^ 2 * ((y ^ 2 - x ^ 2) / x ^ 2) = y ^ 2 - x ^ 2 := by
+  have hkey : Real.log y ≤ Real.log x + (y ^ (2 : ℕ) - x ^ (2 : ℕ)) / x ^ (2 : ℕ) := by linarith
+  have hmul : x ^ (2 : ℕ) * Real.log y ≤ x ^ (2 : ℕ) * Real.log x + (y ^ (2 : ℕ) - x ^ (2 : ℕ)) := by
+    have hstep := mul_le_mul_of_nonneg_left hkey (by positivity : (0 : ℝ) ≤ x ^ (2 : ℕ))
+    have hcancel : x ^ (2 : ℕ) * ((y ^ (2 : ℕ) - x ^ (2 : ℕ)) / x ^ (2 : ℕ)) = y ^ (2 : ℕ) - x ^ (2 : ℕ) := by
       field_simp
     nlinarith [hstep, hcancel]
-  have hsq : (0 : ℝ) ≤ y ^ 2 - x ^ 2 := by nlinarith [hx1, hxy]
+  have hsq : (0 : ℝ) ≤ y ^ (2 : ℕ) - x ^ (2 : ℕ) := by nlinarith [hx1, hxy]
   have hlx : (0 : ℝ) ≤ Real.log x - 1 := by linarith
   nlinarith [hmul, mul_nonneg hsq hlx]
 
@@ -95,7 +95,7 @@ set_option maxHeartbeats 1000000 in
 theorem exists_bound_zetaLogDerivReg_uniform_littlewood (A : ℝ) (hA : 0 < A) :
     ∃ C L₀ : ℝ, 0 < C ∧ 1 ≤ L₀ ∧ ∀ (s : ℂ) (K : ℝ), L₀ ≤ Real.log K → |s.im| ≤ K →
       1 - A / Real.log K ≤ s.re → s.re ≤ 9 / 8 →
-      ‖zetaLogDerivReg s‖ ≤ C * Real.log K ^ 2 / Real.log (Real.log K) := by
+      ‖zetaLogDerivReg s‖ ≤ C * Real.log K ^ (2 : ℕ) / Real.log (Real.log K) := by
   obtain ⟨C₁, T₁, hC₁0, hT₁0, hbound⟩ := exists_logDeriv_zeta_bound_arbitrary_constant A
   obtain ⟨δ, hδ0, M₀, hM₀0, hbox⟩ :=
     exists_bound_zetaLogDerivReg_box 2 (max T₁ 16) (by norm_num) (by positivity)
@@ -114,7 +114,7 @@ theorem exists_bound_zetaLogDerivReg_uniform_littlewood (A : ℝ) (hA : 0 < A) :
     have h := Real.log_le_log (Real.exp_pos 1) hLe
     rwa [Real.log_exp] at h
   have hLL0 : (0 : ℝ) < Real.log (Real.log K) := by linarith
-  have hLsq : (1 : ℝ) ≤ Real.log K ^ 2 / Real.log (Real.log K) := by
+  have hLsq : (1 : ℝ) ≤ Real.log K ^ (2 : ℕ) / Real.log (Real.log K) := by
     rw [le_div_iff₀ hLL0]
     nlinarith [hL1, hLL1, Real.log_le_sub_one_of_pos (show (0:ℝ) < Real.log K by linarith)]
   rcases le_or_gt (max T₁ 16) |s.im| with hbig | hsmall
@@ -142,7 +142,7 @@ theorem exists_bound_zetaLogDerivReg_uniform_littlewood (A : ℝ) (hA : 0 < A) :
     have hsplit : s = ((s.re : ℝ) : ℂ) + ((s.im : ℝ) : ℂ) * Complex.I :=
       (Complex.re_add_im s).symm
     have hres : ‖logDeriv riemannZeta s‖
-        ≤ C₁ * Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|) := by
+        ≤ C₁ * Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|) := by
       have h := hbound s.re s.im hT₁im hwide hhi
       rwa [← hsplit] at h
     have hs1 : s ≠ 1 := by
@@ -169,21 +169,21 @@ theorem exists_bound_zetaLogDerivReg_uniform_littlewood (A : ℝ) (hA : 0 < A) :
       calc ‖-(logDeriv riemannZeta s) - (s - 1)⁻¹‖
           ≤ ‖-(logDeriv riemannZeta s)‖ + ‖(s - 1)⁻¹‖ := norm_sub_le _ _
         _ = ‖logDeriv riemannZeta s‖ + ‖(s - 1)⁻¹‖ := by rw [norm_neg]
-    have hmono : Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|)
-        ≤ Real.log K ^ 2 / Real.log (Real.log K) :=
+    have hmono : Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|)
+        ≤ Real.log K ^ (2 : ℕ) / Real.log (Real.log K) :=
       sq_div_log_mono hloglog1 (by linarith) hlt
-    have hCmono : C₁ * Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|)
-        ≤ C₁ * (Real.log K ^ 2 / Real.log (Real.log K)) := by
+    have hCmono : C₁ * Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|)
+        ≤ C₁ * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K)) := by
       have hstep := mul_le_mul_of_nonneg_left hmono hC₁0.le
-      have heq : C₁ * Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|)
-          = C₁ * (Real.log |s.im| ^ 2 / Real.log (Real.log |s.im|)) := by ring
+      have heq : C₁ * Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|)
+          = C₁ * (Real.log |s.im| ^ (2 : ℕ) / Real.log (Real.log |s.im|)) := by ring
       linarith [hstep, heq.le, heq.ge]
     have hfinal : ‖zetaLogDerivReg s‖
-        ≤ C₁ * (Real.log K ^ 2 / Real.log (Real.log K)) + 1 / 4 := by
+        ≤ C₁ * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K)) + 1 / 4 := by
       linarith [hreg, hres, hpole, hCmono]
-    have hexp : (C₁ + M₀ + 1) * Real.log K ^ 2 / Real.log (Real.log K)
-        = C₁ * (Real.log K ^ 2 / Real.log (Real.log K))
-          + (M₀ + 1) * (Real.log K ^ 2 / Real.log (Real.log K)) := by
+    have hexp : (C₁ + M₀ + 1) * Real.log K ^ (2 : ℕ) / Real.log (Real.log K)
+        = C₁ * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K))
+          + (M₀ + 1) * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K)) := by
       field_simp
       ring
     nlinarith [hfinal, hexp.le, hexp.ge, hLsq, hM₀0]
@@ -192,8 +192,8 @@ theorem exists_bound_zetaLogDerivReg_uniform_littlewood (A : ℝ) (hA : 0 < A) :
       rw [div_le_iff₀ hδ0] at hLδ
       nlinarith [hLδ]
     have hres := hbox s (by linarith) (by linarith) (le_of_lt hsmall)
-    have hexp : (C₁ + M₀ + 1) * Real.log K ^ 2 / Real.log (Real.log K)
-        = (C₁ + M₀ + 1) * (Real.log K ^ 2 / Real.log (Real.log K)) := by ring
+    have hexp : (C₁ + M₀ + 1) * Real.log K ^ (2 : ℕ) / Real.log (Real.log K)
+        = (C₁ + M₀ + 1) * (Real.log K ^ (2 : ℕ) / Real.log (Real.log K)) := by ring
     nlinarith [hres, hLsq, hC₁0, hM₀0, hexp.le, hexp.ge]
 
 end RHTower.Sieve

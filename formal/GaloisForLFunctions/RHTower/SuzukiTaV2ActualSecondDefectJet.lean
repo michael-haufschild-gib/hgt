@@ -20,7 +20,7 @@ open GaloisForLFunctions.RHTower
 /-- Literal endpoint torque of Suzuki's completed finite-aperture source. -/
 def suzukiTaV2EndpointSecondTorque (a : SuzukiPositiveAperture) : ℂ :=
   let F := suzukiTaPhysicalFourier a (suzukiTaPlusDeficiency a)
-  4 * I * (deriv F I * F (-I) + F I * deriv F (-I)) / F (-I) ^ 2
+  4 * I * (deriv F I * F (-I) + F I * deriv F (-I)) / F (-I) ^ (2 : ℕ)
 
 /-- Exact second disk jet of the actual Suzuki v2 Livšic characteristic. -/
 theorem iteratedDeriv_two_suzukiTaV2Livsic_disk_zero_eq_endpointSecondTorque

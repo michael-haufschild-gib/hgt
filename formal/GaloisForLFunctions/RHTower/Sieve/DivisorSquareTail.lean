@@ -309,7 +309,7 @@ private theorem tsum_shift_divisorSquare_inverseSquare_le (N : ℕ) (hN : 1 ≤ 
     _ = 32 * (1 + Real.log (N : ℝ)) ^ 3 / (N : ℝ) := by ring
 
 /-- **Sharp divisor-square tail.**  Uniformly for `N ≥ 1`, the inverse-square tail is at most
-`32 (1 + log N)^3 / N`. -/
+`32 (1 + log N)^(3 : ℕ) / N`. -/
 theorem tsum_shift_divisorSquare_div_sq_le (N : ℕ) (hN : 1 ≤ N) :
     ∑' k : ℕ,
         (((N + 1 + k).divisors.card : ℝ) ^ 2 /

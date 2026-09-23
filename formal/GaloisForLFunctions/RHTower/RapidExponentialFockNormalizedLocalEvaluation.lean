@@ -20,7 +20,7 @@ noncomputable section
 def rapidExponentialFockLocalEvaluationFactor (a x : ℝ) : ℝ :=
   Real.exp 2 /
     ((2 * rapidExponentialFockTangentCurvature a x) *
-      rapidExponentialFockLocalRadius a x ^ 2)
+      rapidExponentialFockLocalRadius a x ^ (2 : ℕ))
 
 theorem rapidExponentialFockLocalEvaluationFactor_pos
     {a x : ℝ} (ha : 0 < a) (hx : 0 ≤ x) :
@@ -34,17 +34,17 @@ theorem rapidExponentialFockLocalEvaluationFactor_pos
 theorem normSq_inner_normalizedRapidExponentialMomentFockKernel_le_localIntegral
     {a x : ℝ} (ha : 0 < a) (hx : 1 / 2 ≤ x) (f : MomentFock) :
     ‖inner ℂ (normalizedMomentFockKernel
-        (rapidExponentialMomentFockData a ha) (x : ℂ)) f‖ ^ 2 ≤
+        (rapidExponentialMomentFockData a ha) (x : ℂ)) f‖ ^ (2 : ℕ) ≤
       rapidExponentialFockLocalEvaluationFactor a x *
         ∫ z in Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x),
           rapidExponentialMomentFockWeightedNormSq a ha f z := by
   let d : MomentFockData := rapidExponentialMomentFockData a ha
-  let A : ℝ := ‖inner ℂ (normalizedMomentFockKernel d (x : ℂ)) f‖ ^ 2
-  let K : ℝ := ‖momentFockKernel d (x : ℂ)‖ ^ 2
+  let A : ℝ := ‖inner ℂ (normalizedMomentFockKernel d (x : ℂ)) f‖ ^ (2 : ℕ)
+  let K : ℝ := ‖momentFockKernel d (x : ℂ)‖ ^ (2 : ℕ)
   let E : ℝ := Real.exp (2 * rapidExponentialFockPotential a x)
   let C : ℝ := Real.exp 2
   let q : ℝ := 2 * rapidExponentialFockTangentCurvature a x
-  let R : ℝ := rapidExponentialFockLocalRadius a x ^ 2
+  let R : ℝ := rapidExponentialFockLocalRadius a x ^ (2 : ℕ)
   let I : ℝ := ∫ z in Metric.ball (x : ℂ) (rapidExponentialFockLocalRadius a x),
     rapidExponentialMomentFockWeightedNormSq a ha f z
   have hA : 0 ≤ A := by dsimp [A]; positivity
@@ -63,18 +63,18 @@ theorem normSq_inner_normalizedRapidExponentialMomentFockKernel_le_localIntegral
     intro z
     exact rapidExponentialMomentFockWeightedNormSq_nonneg a ha f z
   have hid : A * K =
-      ‖rapidExponentialMomentFockEvaluation a ha (x : ℂ) f‖ ^ 2 := by
+      ‖rapidExponentialMomentFockEvaluation a ha (x : ℂ) f‖ ^ (2 : ℕ) := by
     dsimp [A, K, d]
     exact normSq_inner_normalizedMomentFockKernel_mul_kernelNormSq _ _ _
   have hmean := rapidExponentialFock_local_weighted_mean ha hx
     (rapidExponentialMomentFockFunction a ha f)
     (differentiable_rapidExponentialMomentFockFunction a ha f)
   have hmean' :
-      Real.pi * R * ‖rapidExponentialMomentFockEvaluation a ha (x : ℂ) f‖ ^ 2 ≤
+      Real.pi * R * ‖rapidExponentialMomentFockEvaluation a ha (x : ℂ) f‖ ^ (2 : ℕ) ≤
         E * C * I := by
     rw [rapidExponentialMomentFockFunction_eq_evaluation] at hmean
     have hdensity : (fun z =>
-        ‖rapidExponentialMomentFockFunction a ha f z‖ ^ 2 *
+        ‖rapidExponentialMomentFockFunction a ha f z‖ ^ (2 : ℕ) *
           Real.exp (-2 * rapidExponentialFockPotential a ‖z‖)) =
         rapidExponentialMomentFockWeightedNormSq a ha f := by
       funext z
@@ -95,7 +95,7 @@ theorem normSq_inner_normalizedRapidExponentialMomentFockKernel_le_localIntegral
       Real.pi * R * K * A =
           Real.pi * R * (A * K) := by ring
       _ = Real.pi * R *
-          ‖rapidExponentialMomentFockEvaluation a ha (x : ℂ) f‖ ^ 2 := by rw [hid]
+          ‖rapidExponentialMomentFockEvaluation a ha (x : ℂ) f‖ ^ (2 : ℕ) := by rw [hid]
       _ ≤ E * C * I := hmean'
   have hcancelE : E * (q * R * A) ≤ E * (C * I) := by
     calc

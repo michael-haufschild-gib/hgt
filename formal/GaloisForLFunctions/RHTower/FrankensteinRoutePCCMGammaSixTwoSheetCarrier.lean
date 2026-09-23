@@ -10,7 +10,7 @@ module keeps two reflected copies of that exact source graph and separates their
 orientation traces.
 
 Antisymmetric actual-Gamma averages have mass trace zero and orientation trace one at every
-finite stage.  Their ambient cofinal `ell^2` coordinates disappear, while the graph vectors
+finite stage.  Their ambient cofinal `ell^(2 : ℕ)` coordinates disappear, while the graph vectors
 converge to a nonzero vertical orientation class.  Scaling this class by one P-G189 primitive
 tail-flux coefficient preserves its prime/depth label.  The same class has two exact readouts:
 

@@ -21,15 +21,15 @@ preimage SPLITS into two separated components (the disconnected two-lobe structu
 theorem quadratic_preimage_norm_lower_bound {c z : ℂ} {R : ℝ}
     (hz : ‖quadratic c z‖ ≤ R) :
     Real.sqrt (‖c‖ - R) ≤ ‖z‖ := by
-  have hquad : ‖z ^ 2 + c‖ ≤ R := hz
-  have h2 : ‖c‖ - ‖z ^ 2 + c‖ ≤ ‖z ^ 2‖ := by
-    have h := norm_sub_norm_le c (z ^ 2 + c)
-    have heq : ‖c - (z ^ 2 + c)‖ = ‖z ^ 2‖ := by
-      rw [show c - (z ^ 2 + c) = -z ^ 2 by ring, norm_neg]
+  have hquad : ‖z ^ (2 : ℕ) + c‖ ≤ R := hz
+  have h2 : ‖c‖ - ‖z ^ (2 : ℕ) + c‖ ≤ ‖z ^ (2 : ℕ)‖ := by
+    have h := norm_sub_norm_le c (z ^ (2 : ℕ) + c)
+    have heq : ‖c - (z ^ (2 : ℕ) + c)‖ = ‖z ^ (2 : ℕ)‖ := by
+      rw [show c - (z ^ (2 : ℕ) + c) = -z ^ (2 : ℕ) by ring, norm_neg]
     rw [heq] at h; exact h
-  have hge : ‖c‖ - R ≤ ‖z‖ ^ 2 := by
-    rw [show ‖z‖ ^ 2 = ‖z ^ 2‖ from (norm_pow z 2).symm]; linarith
-  calc Real.sqrt (‖c‖ - R) ≤ Real.sqrt (‖z‖ ^ 2) := Real.sqrt_le_sqrt hge
+  have hge : ‖c‖ - R ≤ ‖z‖ ^ (2 : ℕ) := by
+    rw [show ‖z‖ ^ (2 : ℕ) = ‖z ^ (2 : ℕ)‖ from (norm_pow z 2).symm]; linarith
+  calc Real.sqrt (‖c‖ - R) ≤ Real.sqrt (‖z‖ ^ (2 : ℕ)) := Real.sqrt_le_sqrt hge
     _ = ‖z‖ := Real.sqrt_sq (norm_nonneg z)
 
 /-- **`f_c` is injective on any open half-plane through `0`.**  The fibre `{z, -z}` is antipodal, and `z`
@@ -57,31 +57,31 @@ on the line `Re(v̄·z) = 0` one computes `Re(c̄·z²) = (Im(v̄·z))² ≥ 0` 
 of `±√(−c)`, on each of which `f_c` is injective (`quadratic_injOn_halfplane`).  The disconnected
 two-component split, made precise. -/
 theorem quadratic_preimage_avoids_perp {c v z : ℂ} {R : ℝ}
-    (hv : v ^ 2 = -c) (hR : R < ‖c‖) (hz : ‖quadratic c z‖ ≤ R) :
+    (hv : v ^ (2 : ℕ) = -c) (hR : R < ‖c‖) (hz : ‖quadratic c z‖ ≤ R) :
     (starRingEnd ℂ v * z).re ≠ 0 := by
   intro h0
   set w : ℂ := starRingEnd ℂ v * z with hw
-  have hc : c = -v ^ 2 := by linear_combination hv
+  have hc : c = -v ^ (2 : ℕ) := by linear_combination hv
   -- c̄ = -(v̄)²
-  have hconjc : starRingEnd ℂ c = -(starRingEnd ℂ v) ^ 2 := by
+  have hconjc : starRingEnd ℂ c = -(starRingEnd ℂ v) ^ (2 : ℕ) := by
     rw [hc, map_neg, map_pow]
   -- Re(c̄·z²) = (Im w)² ≥ 0
-  have hkey : (starRingEnd ℂ c * z ^ 2).re = w.im ^ 2 := by
-    have hcz : starRingEnd ℂ c * z ^ 2 = -(w ^ 2) := by rw [hconjc, hw]; ring
+  have hkey : (starRingEnd ℂ c * z ^ (2 : ℕ)).re = w.im ^ (2 : ℕ) := by
+    have hcz : starRingEnd ℂ c * z ^ (2 : ℕ) = -(w ^ (2 : ℕ)) := by rw [hconjc, hw]; ring
     rw [hcz]
     simp only [Complex.neg_re, pow_two, Complex.mul_re, h0]
     ring
-  have hkeynn : 0 ≤ (starRingEnd ℂ c * z ^ 2).re := by rw [hkey]; positivity
+  have hkeynn : 0 ≤ (starRingEnd ℂ c * z ^ (2 : ℕ)).re := by rw [hkey]; positivity
   -- ‖z²+c‖² ≥ ‖c‖²
-  have hnormsq : Complex.normSq c ≤ Complex.normSq (z ^ 2 + c) := by
+  have hnormsq : Complex.normSq c ≤ Complex.normSq (z ^ (2 : ℕ) + c) := by
     rw [Complex.normSq_add]
-    have hre : (z ^ 2 * starRingEnd ℂ c).re = (starRingEnd ℂ c * z ^ 2).re := by rw [mul_comm]
+    have hre : (z ^ (2 : ℕ) * starRingEnd ℂ c).re = (starRingEnd ℂ c * z ^ (2 : ℕ)).re := by rw [mul_comm]
     rw [hre]
-    nlinarith [Complex.normSq_nonneg (z ^ 2), hkeynn]
-  have hge : ‖c‖ ≤ ‖z ^ 2 + c‖ := by
-    have h1 : ‖c‖ ^ 2 ≤ ‖z ^ 2 + c‖ ^ 2 := by rw [Complex.sq_norm, Complex.sq_norm]; exact hnormsq
-    nlinarith [norm_nonneg (z ^ 2 + c), norm_nonneg c, h1]
-  have hqle : ‖z ^ 2 + c‖ ≤ R := hz
+    nlinarith [Complex.normSq_nonneg (z ^ (2 : ℕ)), hkeynn]
+  have hge : ‖c‖ ≤ ‖z ^ (2 : ℕ) + c‖ := by
+    have h1 : ‖c‖ ^ (2 : ℕ) ≤ ‖z ^ (2 : ℕ) + c‖ ^ (2 : ℕ) := by rw [Complex.sq_norm, Complex.sq_norm]; exact hnormsq
+    nlinarith [norm_nonneg (z ^ (2 : ℕ) + c), norm_nonneg c, h1]
+  have hqle : ‖z ^ (2 : ℕ) + c‖ ≤ R := hz
   linarith
 
 /-- **`f_c` maps each half-plane piece ONTO the disk.**  For `R < ‖c‖`, `v² = −c`, and any `w` with
@@ -91,17 +91,17 @@ lies in the half-plane, and `f_c(±s) = w`.  Combined with `quadratic_injOn_half
 **bijection** from the half-plane piece `{Re(v̄·z) > 0} ∩ f^{-1}(disk R)` onto `disk R` — the degree-1
 component (a topological disk) carrying the single-valued inverse branch.  This is the disconnected
 two-component split with each component a univalent sheet. -/
-theorem quadratic_surjOn_halfplane {c v : ℂ} {R : ℝ} (hv : v ^ 2 = -c) (hR : R < ‖c‖)
+theorem quadratic_surjOn_halfplane {c v : ℂ} {R : ℝ} (hv : v ^ (2 : ℕ) = -c) (hR : R < ‖c‖)
     {w : ℂ} (hw : ‖w‖ ≤ R) :
     ∃ z, 0 < (starRingEnd ℂ v * z).re ∧ quadratic c z = w := by
-  obtain ⟨s, hs⟩ : ∃ s : ℂ, s ^ 2 = w - c := IsSepClosed.exists_pow_nat_eq (w - c) 2
+  obtain ⟨s, hs⟩ : ∃ s : ℂ, s ^ (2 : ℕ) = w - c := IsSepClosed.exists_pow_nat_eq (w - c) 2
   have hfs : quadratic c s = w := by simp only [quadratic_apply]; rw [hs]; ring
   have hsne : (starRingEnd ℂ v * s).re ≠ 0 :=
     quadratic_preimage_avoids_perp hv hR (by rw [hfs]; exact hw)
   rcases lt_or_gt_of_ne hsne with h | h
   · refine ⟨-s, ?_, ?_⟩
     · rw [mul_neg, Complex.neg_re]; linarith
-    · simp only [quadratic_apply]; rw [show (-s) ^ 2 = s ^ 2 by ring, hs]; ring
+    · simp only [quadratic_apply]; rw [show (-s) ^ (2 : ℕ) = s ^ (2 : ℕ) by ring, hs]; ring
   · exact ⟨s, h, hfs⟩
 
 /-- **`f_c` is a bijection from each half-plane piece onto the disk — the degree-1 univalent sheet.**
@@ -111,7 +111,7 @@ Combining `quadratic_injOn_halfplane` (injective) and `quadratic_surjOn_halfplan
 `quadratic_preimage_avoids_perp` giving disjointness), each carrying a single-valued inverse branch —
 the disconnected two-component split.  Iterating (`f^[n] = f∘⋯∘f`) gives the degree-1 deep components
 whose boundary loops have `f^[n]`-image winding `1` (odd), the core of the cylinder loop. -/
-theorem quadratic_bijOn_halfplane_disk {c v : ℂ} {R : ℝ} (hv : v ^ 2 = -c) (hR : R < ‖c‖) :
+theorem quadratic_bijOn_halfplane_disk {c v : ℂ} {R : ℝ} (hv : v ^ (2 : ℕ) = -c) (hR : R < ‖c‖) :
     Set.BijOn (quadratic c)
       ({z | 0 < (starRingEnd ℂ v * z).re} ∩ {z | ‖quadratic c z‖ ≤ R})
       {w | ‖w‖ ≤ R} := by
@@ -127,7 +127,7 @@ theorem quadratic_bijOn_halfplane_disk {c v : ℂ} {R : ℝ} (hv : v ^ 2 = -c) (
 set containing the smaller circle `C(0,R)`.  This is the open-sheet version of
 `quadratic_bijOn_halfplane_disk` needed by the zero-circle branch route. -/
 theorem quadratic_open_halfplane_sheet_circle {c v : ℂ} {R ρ : ℝ}
-    (hv : v ^ 2 = -c) (hRpos : 0 < R) (hRρ : R < ρ) (hρc : ρ < ‖c‖) :
+    (hv : v ^ (2 : ℕ) = -c) (hRpos : 0 < R) (hRρ : R < ρ) (hρc : ρ < ‖c‖) :
     ∃ A : Set ℂ,
       IsOpen A ∧
       Set.InjOn (quadratic c) A ∧
@@ -163,7 +163,7 @@ theorem quadratic_open_halfplane_sheet_circle {c v : ℂ} {R ρ : ℝ}
 radius `R ∈ (a,b)` have an open half-plane sheet as soon as
 `0 < a < b < ρ < ‖c‖`. -/
 theorem quadratic_uniform_open_halfplane_sheet_circle {c v : ℂ} {a b ρ : ℝ}
-    (hv : v ^ 2 = -c) (ha : 0 < a) (hbρ : b < ρ) (hρc : ρ < ‖c‖) :
+    (hv : v ^ (2 : ℕ) = -c) (ha : 0 < a) (hbρ : b < ρ) (hρc : ρ < ‖c‖) :
     ∀ R ∈ Set.Ioo a b, ∃ A : Set ℂ,
       IsOpen A ∧
       Set.InjOn (quadratic c) A ∧
@@ -218,13 +218,13 @@ theorem quadratic_surjOn_halfplane_of_boundary_avoid {c v w : ℂ}
     (hboundary :
       ∀ z : ℂ, quadratic c z = w → (starRingEnd ℂ v * z).re ≠ 0) :
     ∃ z, 0 < (starRingEnd ℂ v * z).re ∧ quadratic c z = w := by
-  obtain ⟨s, hs⟩ : ∃ s : ℂ, s ^ 2 = w - c := IsSepClosed.exists_pow_nat_eq (w - c) 2
+  obtain ⟨s, hs⟩ : ∃ s : ℂ, s ^ (2 : ℕ) = w - c := IsSepClosed.exists_pow_nat_eq (w - c) 2
   have hfs : quadratic c s = w := by simp only [quadratic_apply]; rw [hs]; ring
   have hsne : (starRingEnd ℂ v * s).re ≠ 0 := hboundary s hfs
   rcases lt_or_gt_of_ne hsne with h | h
   · refine ⟨-s, ?_, ?_⟩
     · rw [mul_neg, Complex.neg_re]; linarith
-    · simp only [quadratic_apply]; rw [show (-s) ^ 2 = s ^ 2 by ring, hs]; ring
+    · simp only [quadratic_apply]; rw [show (-s) ^ (2 : ℕ) = s ^ (2 : ℕ) by ring, hs]; ring
   · exact ⟨s, h, hfs⟩
 
 /-- Boundary-avoidance form of the slit half-plane pullback sheet.  If all preimages of points of
@@ -371,11 +371,11 @@ theorem quadratic_boundaryLine_param_mem (v : ℂ) (t : ℝ) :
 /-- The quadratic image of the boundary-line parametrization is the ray
 `t ↦ c - t² v²`. -/
 theorem quadratic_boundaryLine_param_apply (c v : ℂ) (t : ℝ) :
-    quadratic c ((t : ℂ) * Complex.I * v) = c - (t : ℂ)^2 * v^2 := by
+    quadratic c ((t : ℂ) * Complex.I * v) = c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ) := by
   simp only [quadratic_apply]
-  rw [show ((t : ℂ) * Complex.I * v) ^ 2 = - (t : ℂ)^2 * v^2 by
-    rw [show ((t : ℂ) * Complex.I * v) ^ 2 =
-        (t : ℂ)^2 * Complex.I^2 * v^2 by ring]
+  rw [show ((t : ℂ) * Complex.I * v) ^ (2 : ℕ) = - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ) by
+    rw [show ((t : ℂ) * Complex.I * v) ^ (2 : ℕ) =
+        (t : ℂ)^(2 : ℕ) * Complex.I^(2 : ℕ) * v^(2 : ℕ) by ring]
     rw [Complex.I_sq]
     ring]
   ring
@@ -383,7 +383,7 @@ theorem quadratic_boundaryLine_param_apply (c v : ℂ) (t : ℝ) :
 /-- The quadratic image of the boundary line is exactly the ray/slit from `c` in direction `-v²`. -/
 theorem quadratic_boundaryLine_image_eq_ray {c v : ℂ} (hv : v ≠ 0) :
     quadratic c '' {z : ℂ | ((starRingEnd ℂ v) * z).re = 0}
-      = {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^2 * v^2} := by
+      = {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)} := by
   ext w
   constructor
   · rintro ⟨z, hzline, rfl⟩
@@ -397,7 +397,7 @@ theorem quadratic_boundaryLine_image_eq_ray {c v : ℂ} (hv : v ≠ 0) :
 for `A` to miss the explicit ray `c - t² v²`. -/
 theorem quadratic_boundary_avoid_of_disjoint_boundary_ray {c v : ℂ} {A : Set ℂ}
     (hv : v ≠ 0)
-    (hray : Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^2 * v^2}) :
+    (hray : Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)}) :
     ∀ w ∈ A, ∀ z : ℂ, quadratic c z = w → (starRingEnd ℂ v * z).re ≠ 0 := by
   apply quadratic_boundary_avoid_of_disjoint_boundary_image (c := c) (v := v) (A := A)
   rwa [quadratic_boundaryLine_image_eq_ray (c := c) (v := v) hv]
@@ -407,7 +407,7 @@ theorem quadratic_open_halfplane_preimage_sheet_of_disjoint_boundary_ray {c v : 
     {A : Set ℂ}
     (hv : v ≠ 0)
     (hAo : IsOpen A)
-    (hray : Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^2 * v^2}) :
+    (hray : Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)}) :
     ∃ B : Set ℂ,
       IsOpen B ∧
       B ⊆ {z : ℂ | 0 < (starRingEnd ℂ v * z).re} ∧
@@ -423,10 +423,10 @@ theorem quadratic_open_halfplane_preimage_sheet_of_disjoint_boundary_ray {c v : 
 /-- Along the boundary ray `c - t² v²`, the centered coordinate in direction `v²` is exactly
 `-t²`. -/
 theorem quadratic_boundaryRay_centeredCoord_eq_neg_sq {c v : ℂ} (hv : v ≠ 0) (t : ℝ) :
-    (((v ^ 2)⁻¹) * ((c - (t : ℂ)^2 * v^2) - c)).re = -t^2 := by
-  have hv2 : v ^ 2 ≠ 0 := pow_ne_zero 2 hv
-  have hcomplex : ((v ^ 2)⁻¹) * ((c - (t : ℂ)^2 * v^2) - c)
-      = - (t : ℂ)^2 := by
+    (((v ^ (2 : ℕ))⁻¹) * ((c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)) - c)).re = -t^(2 : ℕ) := by
+  have hv2 : v ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hv
+  have hcomplex : ((v ^ (2 : ℕ))⁻¹) * ((c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)) - c)
+      = - (t : ℂ)^(2 : ℕ) := by
     field_simp [hv2]
     ring
   rw [hcomplex]
@@ -437,12 +437,12 @@ theorem quadratic_boundaryRay_centeredCoord_eq_neg_sq {c v : ℂ} (hv : v ≠ 0)
 `c - t² v²`. -/
 theorem quadratic_disjoint_boundary_ray_of_centered_halfplane {c v : ℂ} {A : Set ℂ}
     (hv : v ≠ 0)
-    (hAhalf : ∀ w ∈ A, 0 < (((v ^ 2)⁻¹) * (w - c)).re) :
-    Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^2 * v^2} := by
+    (hAhalf : ∀ w ∈ A, 0 < (((v ^ (2 : ℕ))⁻¹) * (w - c)).re) :
+    Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)} := by
   rw [Set.disjoint_left]
   intro w hwA hwRay
   obtain ⟨t, rfl⟩ := hwRay
-  have hpos := hAhalf (c - (t : ℂ)^2 * v^2) hwA
+  have hpos := hAhalf (c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)) hwA
   rw [quadratic_boundaryRay_centeredCoord_eq_neg_sq (c := c) (v := v) hv t] at hpos
   nlinarith [sq_nonneg t]
 
@@ -453,7 +453,7 @@ theorem quadratic_open_halfplane_preimage_sheet_of_centered_halfplane {c v : ℂ
     {A : Set ℂ}
     (hv : v ≠ 0)
     (hAo : IsOpen A)
-    (hAhalf : ∀ w ∈ A, 0 < (((v ^ 2)⁻¹) * (w - c)).re) :
+    (hAhalf : ∀ w ∈ A, 0 < (((v ^ (2 : ℕ))⁻¹) * (w - c)).re) :
     ∃ B : Set ℂ,
       IsOpen B ∧
       B ⊆ {z : ℂ | 0 < (starRingEnd ℂ v * z).re} ∧
@@ -494,20 +494,20 @@ theorem centered_halfplane_pos_of_norm_sub_lt_norm {b w : ℂ}
 less than `‖v²‖`, then `A` lies in the centered half-plane opposite the boundary ray. -/
 theorem quadratic_disjoint_boundary_ray_of_centered_ball {c v : ℂ} {A : Set ℂ}
     (hv : v ≠ 0)
-    (hball : ∀ w ∈ A, ‖(w - c) - v^2‖ < ‖v^2‖) :
-    Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^2 * v^2} := by
+    (hball : ∀ w ∈ A, ‖(w - c) - v^(2 : ℕ)‖ < ‖v^(2 : ℕ)‖) :
+    Disjoint A {w : ℂ | ∃ t : ℝ, w = c - (t : ℂ)^(2 : ℕ) * v^(2 : ℕ)} := by
   refine quadratic_disjoint_boundary_ray_of_centered_halfplane
     (c := c) (v := v) (A := A) hv ?_
   intro w hw
   exact centered_halfplane_pos_of_norm_sub_lt_norm
-    (b := v^2) (w := w - c) (pow_ne_zero 2 hv) (hball w hw)
+    (b := v^(2 : ℕ)) (w := w - c) (pow_ne_zero 2 hv) (hball w hw)
 
 /-- Ball-separated form of the half-plane pullback sheet. -/
 theorem quadratic_open_halfplane_preimage_sheet_of_centered_ball {c v : ℂ}
     {A : Set ℂ}
     (hv : v ≠ 0)
     (hAo : IsOpen A)
-    (hball : ∀ w ∈ A, ‖(w - c) - v^2‖ < ‖v^2‖) :
+    (hball : ∀ w ∈ A, ‖(w - c) - v^(2 : ℕ)‖ < ‖v^(2 : ℕ)‖) :
     ∃ B : Set ℂ,
       IsOpen B ∧
       B ⊆ {z : ℂ | 0 < (starRingEnd ℂ v * z).re} ∧
@@ -527,8 +527,8 @@ theorem exists_centered_ball_vector_of_ball_away_from_critical_value {c q : ℂ}
     (hball : ∀ w ∈ A, ‖w - q‖ < ‖q - c‖) :
     ∃ v : ℂ,
       v ≠ 0 ∧
-      (∀ w ∈ A, ‖(w - c) - v^2‖ < ‖v^2‖) := by
-  obtain ⟨v, hv⟩ : ∃ v : ℂ, v ^ 2 = q - c :=
+      (∀ w ∈ A, ‖(w - c) - v^(2 : ℕ)‖ < ‖v^(2 : ℕ)‖) := by
+  obtain ⟨v, hv⟩ : ∃ v : ℂ, v ^ (2 : ℕ) = q - c :=
     IsSepClosed.exists_pow_nat_eq (q - c) 2
   have hvne : v ≠ 0 := by
     intro hv0
@@ -538,10 +538,10 @@ theorem exists_centered_ball_vector_of_ball_away_from_critical_value {c q : ℂ}
     exact hq (sub_eq_zero.mp hqc0)
   refine ⟨v, hvne, ?_⟩
   intro w hw
-  have hleft : (w - c) - v^2 = w - q := by
+  have hleft : (w - c) - v^(2 : ℕ) = w - q := by
     rw [hv]
     ring
-  have hright : ‖v^2‖ = ‖q - c‖ := by
+  have hright : ‖v^(2 : ℕ)‖ = ‖q - c‖ := by
     rw [hv]
   rw [hleft, hright]
   exact hball w hw
@@ -576,7 +576,7 @@ theorem exists_centered_ball_vector_of_subset_ball_away_from_critical_value {c q
     (hAq : A ⊆ Metric.ball q r) :
     ∃ v : ℂ,
       v ≠ 0 ∧
-      (∀ w ∈ A, ‖(w - c) - v^2‖ < ‖v^2‖) := by
+      (∀ w ∈ A, ‖(w - c) - v^(2 : ℕ)‖ < ‖v^(2 : ℕ)‖) := by
   refine exists_centered_ball_vector_of_ball_away_from_critical_value
     (c := c) (q := q) (A := A) hq ?_
   intro w hw
@@ -613,7 +613,7 @@ than `v`.  This is the elementary denominator lower bound for the inverse-branch
 theorem norm_le_norm_add_of_pos_conj_mul {v z : ℂ}
     (hhalf : 0 < (starRingEnd ℂ v * z).re) :
     ‖v‖ ≤ ‖z + v‖ := by
-  have hsq : ‖v‖ ^ 2 ≤ ‖z + v‖ ^ 2 := by
+  have hsq : ‖v‖ ^ (2 : ℕ) ≤ ‖z + v‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_add]
     have hre : (z * starRingEnd ℂ v).re = (starRingEnd ℂ v * z).re := by
       rw [mul_comm]
@@ -626,7 +626,7 @@ positive half-plane branch over `A`, then `B ⊆ ball(v, r / ‖v‖)`.  Algebra
 `(z-v)(z+v)=f_c(z)-q`, while the half-plane condition gives `‖v‖ ≤ ‖z+v‖`. -/
 theorem quadratic_halfplane_preimage_subset_ball_of_image_subset_ball {c v q : ℂ}
     {A B : Set ℂ} {r : ℝ}
-    (hv : v ^ 2 = q - c)
+    (hv : v ^ (2 : ℕ) = q - c)
     (hvne : v ≠ 0)
     (hBhalf : B ⊆ {z : ℂ | 0 < (starRingEnd ℂ v * z).re})
     (hBtoA : ∀ z ∈ B, quadratic c z ∈ A)
@@ -638,7 +638,7 @@ theorem quadratic_halfplane_preimage_subset_ball_of_image_subset_ball {c v q : �
     have hzball := hAq (hBtoA z hzB)
     simpa [Metric.mem_ball, dist_eq_norm] using hzball
   have hfac : quadratic c z - q = (z - v) * (z + v) := by
-    have hq : q = v ^ 2 + c := by
+    have hq : q = v ^ (2 : ℕ) + c := by
       rw [hv]
       ring
     simp only [quadratic_apply]
@@ -665,7 +665,7 @@ theorem quadratic_open_halfplane_preimage_sheet_of_subset_ball_with_preimage_bal
     (hr : r ≤ ‖q - c‖)
     (hAq : A ⊆ Metric.ball q r) :
     ∃ (v : ℂ) (B : Set ℂ),
-      v ^ 2 = q - c ∧
+      v ^ (2 : ℕ) = q - c ∧
       v ≠ 0 ∧
       IsOpen B ∧
       B ⊆ Metric.ball v (r / ‖v‖) ∧
@@ -673,7 +673,7 @@ theorem quadratic_open_halfplane_preimage_sheet_of_subset_ball_with_preimage_bal
       A ⊆ quadratic c '' B ∧
       Set.InjOn (quadratic c) B ∧
       (∀ z ∈ B, z ≠ 0) := by
-  obtain ⟨v, hv⟩ : ∃ v : ℂ, v ^ 2 = q - c :=
+  obtain ⟨v, hv⟩ : ∃ v : ℂ, v ^ (2 : ℕ) = q - c :=
     IsSepClosed.exists_pow_nat_eq (q - c) 2
   have hvne : v ≠ 0 := by
     intro hv0
@@ -681,17 +681,17 @@ theorem quadratic_open_halfplane_preimage_sheet_of_subset_ball_with_preimage_bal
       rw [← hv, hv0]
       norm_num
     exact hq (sub_eq_zero.mp hqc0)
-  have hcentered : ∀ w ∈ A, ‖(w - c) - v^2‖ < ‖v^2‖ := by
+  have hcentered : ∀ w ∈ A, ‖(w - c) - v^(2 : ℕ)‖ < ‖v^(2 : ℕ)‖ := by
     intro w hw
     have hwball := hAq hw
     have hdist : dist w q < r := by
       simpa [Metric.mem_ball] using hwball
     have hnorm : ‖w - q‖ < r := by
       simpa [dist_eq_norm] using hdist
-    have hleft : (w - c) - v^2 = w - q := by
+    have hleft : (w - c) - v^(2 : ℕ) = w - q := by
       rw [hv]
       ring
-    have hright : ‖v^2‖ = ‖q - c‖ := by
+    have hright : ‖v^(2 : ℕ)‖ = ‖q - c‖ := by
       rw [hv]
     rw [hleft, hright]
     exact lt_of_lt_of_le hnorm hr
@@ -708,11 +708,11 @@ theorem quadratic_open_halfplane_preimage_sheet_of_subset_ball_with_preimage_bal
 spends at most the budget `‖q-c‖` after reserving `R‖v‖`, then the next radius satisfies
 `r/‖v‖ + R ≤ ‖v‖`. -/
 theorem branch_radius_add_le_norm_of_budget {c v q : ℂ} {r R : ℝ}
-    (hv : v ^ 2 = q - c) (hvne : v ≠ 0)
+    (hv : v ^ (2 : ℕ) = q - c) (hvne : v ≠ 0)
     (hbudget : r + R * ‖v‖ ≤ ‖q - c‖) :
     r / ‖v‖ + R ≤ ‖v‖ := by
   have hvpos : 0 < ‖v‖ := norm_pos_iff.mpr hvne
-  have hvnorm : ‖q - c‖ = ‖v‖ ^ 2 := by
+  have hvnorm : ‖q - c‖ = ‖v‖ ^ (2 : ℕ) := by
     rw [← hv, norm_pow]
   have hmul : (r / ‖v‖ + R) * ‖v‖ ≤ ‖v‖ * ‖v‖ := by
     rw [add_mul, div_mul_cancel₀ _ (ne_of_gt hvpos)]
@@ -723,7 +723,7 @@ theorem branch_radius_add_le_norm_of_budget {c v q : ℂ} {r R : ℝ}
 /-- The radial budget with `R = ‖c‖` implies the branch-ball separation condition used by the
 moving-slit induction. -/
 theorem branch_radius_le_norm_sub_of_budget {c v q : ℂ} {r : ℝ}
-    (hv : v ^ 2 = q - c) (hvne : v ≠ 0)
+    (hv : v ^ (2 : ℕ) = q - c) (hvne : v ≠ 0)
     (hbudget : r + ‖c‖ * ‖v‖ ≤ ‖q - c‖) :
     r / ‖v‖ ≤ ‖v - c‖ := by
   have hrad :
@@ -761,7 +761,7 @@ theorem ball_subset_norm_gt_of_radius_add_le_norm {p : ℂ} {s R : ℝ}
 /-- Exterior consequence of the radial budget: the selected branch ball `ball(v,r/‖v‖)` lies outside
 the radius-`R` disk. -/
 theorem branch_ball_subset_norm_gt_of_budget {c v q : ℂ} {r R : ℝ}
-    (hv : v ^ 2 = q - c) (hvne : v ≠ 0)
+    (hv : v ^ (2 : ℕ) = q - c) (hvne : v ≠ 0)
     (hbudget : r + R * ‖v‖ ≤ ‖q - c‖) :
     Metric.ball v (r / ‖v‖) ⊆ {z : ℂ | R < ‖z‖} := by
   exact ball_subset_norm_gt_of_radius_add_le_norm
@@ -815,7 +815,7 @@ theorem quadratic_image_subset_ball_of_subset_ball {c p : ℂ} {A : Set ℂ} {s 
 `ball(0,ρ)` with `ρ < ‖c‖`, the half-plane through a square root of `-c` covers `A`, so the slit-sheet
 lemma applies. -/
 theorem quadratic_open_halfplane_preimage_sheet_of_subset_ball {c v : ℂ} {A : Set ℂ} {ρ : ℝ}
-    (hv : v ^ 2 = -c) (hAo : IsOpen A) (hρc : ρ < ‖c‖)
+    (hv : v ^ (2 : ℕ) = -c) (hAo : IsOpen A) (hρc : ρ < ‖c‖)
     (hAρ : ∀ w ∈ A, ‖w‖ < ρ) :
     ∃ B : Set ℂ,
       IsOpen B ∧
@@ -846,7 +846,7 @@ Every preimage avoids the perpendicular line (`quadratic_preimage_avoids_perp`),
 one open half-plane; with `quadratic_bijOn_halfplane_disk` (each piece maps bijectively onto `disk R`)
 and `quadratic_preimage_pieces_disjoint`, this exhibits `f^{-1}(disk R)` as exactly two disjoint
 degree-1 sheets — the disconnected two-lobe structure, the base case of the depth-`n` split. -/
-theorem quadratic_preimage_eq_union {c v : ℂ} {R : ℝ} (hv : v ^ 2 = -c) (hR : R < ‖c‖) :
+theorem quadratic_preimage_eq_union {c v : ℂ} {R : ℝ} (hv : v ^ (2 : ℕ) = -c) (hR : R < ‖c‖) :
     {z : ℂ | ‖quadratic c z‖ ≤ R}
       = ({z : ℂ | 0 < (starRingEnd ℂ v * z).re} ∩ {z | ‖quadratic c z‖ ≤ R})
         ∪ ({z : ℂ | (starRingEnd ℂ v * z).re < 0} ∩ {z | ‖quadratic c z‖ ≤ R}) := by

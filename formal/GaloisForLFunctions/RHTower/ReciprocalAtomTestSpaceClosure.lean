@@ -72,22 +72,22 @@ theorem summable_norm_xiZeroCopyReciprocalSquare :
 
 /-- The quadratic reciprocal form `Q₀[f] = ∑ y f(y)²` over the multiplicity-exact divisor. -/
 def xiQZero (f : ℂ → ℂ) : ℂ :=
-  ∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ 2
+  ∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ)
 
 theorem summable_xiQZeroTerm {f : ℂ → ℂ} {M : ℝ}
     (hM : ∀ a ∈ xiReciprocalAtomSet, ‖f a‖ ≤ M) :
     Summable fun q : XiZeroCopy =>
-      xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ 2 := by
+      xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ) := by
   refine Summable.of_norm_bounded
-    (summable_norm_xiZeroCopyReciprocalSquare.mul_left (M ^ 2)) (fun q => ?_)
+    (summable_norm_xiZeroCopyReciprocalSquare.mul_left (M ^ (2 : ℕ))) (fun q => ?_)
   have hle := hM _ ⟨q, rfl⟩
   rw [norm_mul, norm_pow]
-  have hsq : ‖f (xiZeroCopyReciprocalSquare q)‖ ^ 2 ≤ M ^ 2 :=
+  have hsq : ‖f (xiZeroCopyReciprocalSquare q)‖ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) :=
     pow_le_pow_left₀ (norm_nonneg _) hle 2
-  calc ‖xiZeroCopyReciprocalSquare q‖ * ‖f (xiZeroCopyReciprocalSquare q)‖ ^ 2
-      ≤ ‖xiZeroCopyReciprocalSquare q‖ * M ^ 2 :=
+  calc ‖xiZeroCopyReciprocalSquare q‖ * ‖f (xiZeroCopyReciprocalSquare q)‖ ^ (2 : ℕ)
+      ≤ ‖xiZeroCopyReciprocalSquare q‖ * M ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_left hsq (norm_nonneg _)
-    _ = M ^ 2 * ‖xiZeroCopyReciprocalSquare q‖ := by ring
+    _ = M ^ (2 : ℕ) * ‖xiZeroCopyReciprocalSquare q‖ := by ring
 
 /-- The conjugation-symmetric atom isolator supported on `{a, conj a}`. -/
 def xiAtomIsolator (a ζ : ℂ) : ℂ → ℂ :=
@@ -123,10 +123,10 @@ theorem xiAtomIsolator_conjSymm {a ζ : ℂ} (h : a = (starRingEnd ℂ) a → ζ
 
 /-- The value of the isolator term at each divisor copy. -/
 theorem xiQZeroTerm_atomIsolator (a ζ : ℂ) (q : XiZeroCopy) :
-    xiZeroCopyReciprocalSquare q * xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ 2 =
-      if xiZeroCopyReciprocalSquare q = a then a * ζ ^ 2
+    xiZeroCopyReciprocalSquare q * xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ) =
+      if xiZeroCopyReciprocalSquare q = a then a * ζ ^ (2 : ℕ)
       else if xiZeroCopyReciprocalSquare q = (starRingEnd ℂ) a then
-        (starRingEnd ℂ) (a * ζ ^ 2) else 0 := by
+        (starRingEnd ℂ) (a * ζ ^ (2 : ℕ)) else 0 := by
   unfold xiAtomIsolator
   split_ifs with h1 h2
   · rw [h1]
@@ -136,22 +136,22 @@ theorem xiQZeroTerm_atomIsolator (a ζ : ℂ) (q : XiZeroCopy) :
 /-- **The isolator detects a bad atom.**  If the isolator weight makes the atom value strictly
 negative, the whole reciprocal form is strictly negative. -/
 theorem xiQZero_atomIsolator_re_neg (q₀ : XiZeroCopy) (ζ : ℂ)
-    (hneg : (xiZeroCopyReciprocalSquare q₀ * ζ ^ 2).re < 0) :
+    (hneg : (xiZeroCopyReciprocalSquare q₀ * ζ ^ (2 : ℕ)).re < 0) :
     (xiQZero (xiAtomIsolator (xiZeroCopyReciprocalSquare q₀) ζ)).re < 0 := by
   set a := xiZeroCopyReciprocalSquare q₀ with ha
-  set w := a * ζ ^ 2 with hw
+  set w := a * ζ ^ (2 : ℕ) with hw
   have hsum : Summable fun q : XiZeroCopy =>
-      xiZeroCopyReciprocalSquare q * xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ 2 :=
+      xiZeroCopyReciprocalSquare q * xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ) :=
     summable_xiQZeroTerm (M := ‖ζ‖) (fun b _ => xiAtomIsolator_norm_le a ζ b)
   have hre : (xiQZero (xiAtomIsolator a ζ)).re =
       ∑' q : XiZeroCopy,
         (xiZeroCopyReciprocalSquare q *
-          xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ 2).re :=
+          xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ)).re :=
     Complex.re_tsum hsum
   rw [hre]
   have hterm : ∀ q : XiZeroCopy,
       (xiZeroCopyReciprocalSquare q *
-        xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ 2).re ≤ 0 := by
+        xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ)).re ≤ 0 := by
     intro q
     rw [xiQZeroTerm_atomIsolator]
     split_ifs
@@ -160,12 +160,12 @@ theorem xiQZero_atomIsolator_re_neg (q₀ : XiZeroCopy) (ζ : ℂ)
       exact hneg.le
     · rw [Complex.zero_re]
   have hq0 : (xiZeroCopyReciprocalSquare q₀ *
-      xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q₀) ^ 2).re < 0 := by
+      xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q₀) ^ (2 : ℕ)).re < 0 := by
     rw [xiQZeroTerm_atomIsolator, if_pos rfl]
     exact hneg
   have hsumre : Summable fun q : XiZeroCopy =>
       (xiZeroCopyReciprocalSquare q *
-        xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ 2).re :=
+        xiAtomIsolator a ζ (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ)).re :=
     hsum.map Complex.reAddGroupHom Complex.continuous_re
   have := Summable.tsum_lt_tsum (i := q₀) hterm hq0 hsumre summable_zero
   simpa using this
@@ -184,7 +184,7 @@ theorem xiQZero_re_nonneg_of_riemannHypothesis (hRH : RiemannHypothesis) {f : �
     (hM : ∀ a ∈ xiReciprocalAtomSet, ‖f a‖ ≤ M)
     (hsymm : IsConjSymmOn f xiReciprocalAtomSet) : 0 ≤ (xiQZero f).re := by
   have hsum : Summable fun q : XiZeroCopy =>
-      xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ 2 :=
+      xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ) :=
     summable_xiQZeroTerm hM
   rw [xiQZero, Complex.re_tsum hsum]
   refine tsum_nonneg (fun q => ?_)
@@ -200,13 +200,13 @@ theorem xiQZero_re_nonneg_of_riemannHypothesis (hRH : RiemannHypothesis) {f : �
     rwa [hconj] at this
   have hfim : (f (xiZeroCopyReciprocalSquare q)).im = 0 :=
     Complex.conj_eq_iff_im.mp hfsymm.symm
-  have hsqre : ((f (xiZeroCopyReciprocalSquare q)) ^ 2).re =
-      (f (xiZeroCopyReciprocalSquare q)).re ^ 2 := by
+  have hsqre : ((f (xiZeroCopyReciprocalSquare q)) ^ (2 : ℕ)).re =
+      (f (xiZeroCopyReciprocalSquare q)).re ^ (2 : ℕ) := by
     rw [pow_two, Complex.mul_re, hfim]; ring
-  have hsqim : ((f (xiZeroCopyReciprocalSquare q)) ^ 2).im = 0 := by
+  have hsqim : ((f (xiZeroCopyReciprocalSquare q)) ^ (2 : ℕ)).im = 0 := by
     rw [pow_two, Complex.mul_im, hfim]; ring
-  have hmulre : (xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ 2).re =
-      (xiZeroCopyReciprocalSquare q).re * (f (xiZeroCopyReciprocalSquare q)).re ^ 2 := by
+  have hmulre : (xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ)).re =
+      (xiZeroCopyReciprocalSquare q).re * (f (xiZeroCopyReciprocalSquare q)).re ^ (2 : ℕ) := by
     rw [Complex.mul_re, hsqre, hsqim, ← him]
     ring
   rw [hmulre]
@@ -228,16 +228,16 @@ theorem xiReciprocalAtom_nonneg_of_isolator (q₀ : XiZeroCopy)
     have hrelt : a.re < 0 := by
       by_contra hre
       exact hcon (Complex.nonneg_iff.mpr ⟨not_lt.mp hre, him.symm⟩)
-    have hneg : (a * (1 : ℂ) ^ 2).re < 0 := by simpa using hrelt
+    have hneg : (a * (1 : ℂ) ^ (2 : ℕ)).re < 0 := by simpa using hrelt
     exact absurd (h 1 (fun _ => by simp)) (not_le.mpr (xiQZero_atomIsolator_re_neg q₀ 1 hneg))
   · have hnotreal : ¬ (a = (starRingEnd ℂ) a) := by
       intro hc
       exact him (Complex.conj_eq_iff_im.mp hc.symm)
-    obtain ⟨ζ, hζ⟩ : ∃ ζ : ℂ, ζ ^ 2 = -(starRingEnd ℂ) a :=
+    obtain ⟨ζ, hζ⟩ : ∃ ζ : ℂ, ζ ^ (2 : ℕ) = -(starRingEnd ℂ) a :=
       IsAlgClosed.exists_pow_nat_eq _ (by norm_num)
-    have hval : a * ζ ^ 2 = -((Complex.normSq a : ℝ) : ℂ) := by
+    have hval : a * ζ ^ (2 : ℕ) = -((Complex.normSq a : ℝ) : ℂ) := by
       rw [hζ, mul_neg, Complex.mul_conj]
-    have hneg : (a * ζ ^ 2).re < 0 := by
+    have hneg : (a * ζ ^ (2 : ℕ)).re < 0 := by
       rw [hval]
       simp only [Complex.neg_re, Complex.ofReal_re, neg_lt_zero]
       exact Complex.normSq_pos.mpr hane
@@ -389,8 +389,8 @@ theorem norm_xiQZero_sub_le {f g : ℂ → ℂ} {Mf Mg ε : ℝ} (hε : 0 ≤ ε
     (g := fun q : XiZeroCopy => (Mf + Mg) * ε * ‖xiZeroCopyReciprocalSquare q‖)
     (hasSum_xiReciprocalMass.mul_left ((Mf + Mg) * ε)) (fun q => ?_)
   · have hmem : xiZeroCopyReciprocalSquare q ∈ xiReciprocalAtomSet := ⟨q, rfl⟩
-    have hdiff : xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ 2 -
-        xiZeroCopyReciprocalSquare q * g (xiZeroCopyReciprocalSquare q) ^ 2 =
+    have hdiff : xiZeroCopyReciprocalSquare q * f (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ) -
+        xiZeroCopyReciprocalSquare q * g (xiZeroCopyReciprocalSquare q) ^ (2 : ℕ) =
         xiZeroCopyReciprocalSquare q *
           ((f (xiZeroCopyReciprocalSquare q) - g (xiZeroCopyReciprocalSquare q)) *
             (f (xiZeroCopyReciprocalSquare q) + g (xiZeroCopyReciprocalSquare q))) := by

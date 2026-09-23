@@ -42,7 +42,7 @@ def deningerQ8RootNumberNegOneJThenI {R : Type*} [Field R] (x y z : R) : R :=
 
 theorem deningerQ8RootNumberNegOne_r_ne_zero
     {R : Type*} [Field R] [CharZero R] {x : R}
-    (hx : x ^ 2 = 5) : deningerQ8RootNumberNegOneR x ≠ 0 := by
+    (hx : x ^ (2 : ℕ) = 5) : deningerQ8RootNumberNegOneR x ≠ 0 := by
   intro hr
   have hxv : x = -5 := by
     dsimp [deningerQ8RootNumberNegOneR] at hr
@@ -52,19 +52,19 @@ theorem deningerQ8RootNumberNegOne_r_ne_zero
 
 theorem deningerQ8RootNumberNegOne_s_ne_zero
     {R : Type*} [Field R] [CharZero R] {y : R}
-    (hy : y ^ 2 = 41) : deningerQ8RootNumberNegOneS y ≠ 0 := by
+    (hy : y ^ (2 : ℕ) = 41) : deningerQ8RootNumberNegOneS y ≠ 0 := by
   intro hs
   have hrel : 6 * y = -41 := by
     dsimp [deningerQ8RootNumberNegOneS] at hs
     linear_combination hs
-  have hsq : (6 * y) ^ 2 = (-41 : R) ^ 2 := by rw [hrel]
+  have hsq : (6 * y) ^ (2 : ℕ) = (-41 : R) ^ (2 : ℕ) := by rw [hrel]
   rw [mul_pow, hy] at hsq
   norm_num at hsq
 
 theorem deningerQ8RootNumberNegOne_z_ne_zero
     {R : Type*} [Field R] [CharZero R] {x y z : R}
-    (hx : x ^ 2 = 5) (hy : y ^ 2 = 41)
-    (hz : z ^ 2 = deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneS y) :
+    (hx : x ^ (2 : ℕ) = 5) (hy : y ^ (2 : ℕ) = 41)
+    (hz : z ^ (2 : ℕ) = deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneS y) :
     z ≠ 0 := by
   intro hz0
   rw [hz0] at hz
@@ -76,47 +76,47 @@ theorem deningerQ8RootNumberNegOne_z_ne_zero
 
 theorem deningerQ8RootNumberNegOne_y_ne_zero
     {R : Type*} [Field R] [CharZero R] {y : R}
-    (hy : y ^ 2 = 41) : y ≠ 0 := by
+    (hy : y ^ (2 : ℕ) = 41) : y ≠ 0 := by
   intro hy0
   rw [hy0] at hy
   norm_num at hy
 
 theorem deningerQ8RootNumberNegOne_r_mul_rConj
     {R : Type*} [Field R] [CharZero R] {x : R}
-    (hx : x ^ 2 = 5) :
+    (hx : x ^ (2 : ℕ) = 5) :
     deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneRConj x = 20 := by
   dsimp [deningerQ8RootNumberNegOneR, deningerQ8RootNumberNegOneRConj]
   calc
-    (5 + x) * (5 - x) = 25 - x ^ 2 := by ring
+    (5 + x) * (5 - x) = 25 - x ^ (2 : ℕ) := by ring
     _ = 20 := by rw [hx]; norm_num
 
 theorem deningerQ8RootNumberNegOne_s_mul_sConj
     {R : Type*} [Field R] [CharZero R] {y : R}
-    (hy : y ^ 2 = 41) :
+    (hy : y ^ (2 : ℕ) = 41) :
     deningerQ8RootNumberNegOneS y * deningerQ8RootNumberNegOneSConj y = 205 := by
   dsimp [deningerQ8RootNumberNegOneS, deningerQ8RootNumberNegOneSConj]
   calc
-    (41 + 6 * y) * (41 - 6 * y) = 1681 - 36 * y ^ 2 := by ring
+    (41 + 6 * y) * (41 - 6 * y) = 1681 - 36 * y ^ (2 : ℕ) := by ring
     _ = 205 := by rw [hy]; norm_num
 
 /-- The lifted `√5` conjugation lands on its exact conjugate radicand. -/
 theorem deningerQ8RootNumberNegOne_iLift_sq
     {R : Type*} [Field R] [CharZero R] {x y z : R}
-    (hx : x ^ 2 = 5) (hy : y ^ 2 = 41)
-    (hz : z ^ 2 = deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneS y) :
-    (deningerQ8RootNumberNegOneILift x y z) ^ 2 =
+    (hx : x ^ (2 : ℕ) = 5) (hy : y ^ (2 : ℕ) = 41)
+    (hz : z ^ (2 : ℕ) = deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneS y) :
+    (deningerQ8RootNumberNegOneILift x y z) ^ (2 : ℕ) =
       deningerQ8RootNumberNegOneRConj x * deningerQ8RootNumberNegOneS y := by
   have hz0 := deningerQ8RootNumberNegOne_z_ne_zero hx hy hz
   unfold deningerQ8RootNumberNegOneILift
   dsimp [deningerQ8RootNumberNegOneR, deningerQ8RootNumberNegOneS,
     deningerQ8RootNumberNegOneRConj] at hz ⊢
   rw [div_pow, hz]
-  rw [show (2 * x * (41 + 6 * y)) ^ 2 =
-    4 * x ^ 2 * (41 + 6 * y) ^ 2 by ring, hx]
+  rw [show (2 * x * (41 + 6 * y)) ^ (2 : ℕ) =
+    4 * x ^ (2 : ℕ) * (41 + 6 * y) ^ (2 : ℕ) by ring, hx]
   have hr : (5 + x) ≠ 0 := deningerQ8RootNumberNegOne_r_ne_zero hx
   have hs : (41 + 6 * y) ≠ 0 := deningerQ8RootNumberNegOne_s_ne_zero hy
   have hcancel :
-      (20 * (41 + 6 * y) ^ 2) / ((5 + x) * (41 + 6 * y)) =
+      (20 * (41 + 6 * y) ^ (2 : ℕ)) / ((5 + x) * (41 + 6 * y)) =
         (20 * (41 + 6 * y)) / (5 + x) := by
     field_simp [hr, hs]
   have hfourfive : (4 : R) * 5 = 20 := by norm_num
@@ -125,7 +125,7 @@ theorem deningerQ8RootNumberNegOne_iLift_sq
   apply (div_eq_iff hr).2
   have hrr : (5 - x) * (5 + x) = 20 := by
     calc
-      (5 - x) * (5 + x) = 25 - x ^ 2 := by ring
+      (5 - x) * (5 + x) = 25 - x ^ (2 : ℕ) := by ring
       _ = 20 := by rw [hx]; norm_num
   calc
     20 * (41 + 6 * y) = ((5 - x) * (5 + x)) * (41 + 6 * y) := by rw [hrr]
@@ -134,9 +134,9 @@ theorem deningerQ8RootNumberNegOne_iLift_sq
 /-- The lifted `√41` conjugation lands on its exact conjugate radicand. -/
 theorem deningerQ8RootNumberNegOne_jLift_sq
     {R : Type*} [Field R] [CharZero R] {x y z : R}
-    (hx : x ^ 2 = 5) (hy : y ^ 2 = 41)
-    (hz : z ^ 2 = deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneS y) :
-    (deningerQ8RootNumberNegOneJLift x y z) ^ 2 =
+    (hx : x ^ (2 : ℕ) = 5) (hy : y ^ (2 : ℕ) = 41)
+    (hz : z ^ (2 : ℕ) = deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneS y) :
+    (deningerQ8RootNumberNegOneJLift x y z) ^ (2 : ℕ) =
       deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneSConj y := by
   have hr : (5 + x) ≠ 0 := deningerQ8RootNumberNegOne_r_ne_zero hx
   have hs : (41 + 6 * y) ≠ 0 := deningerQ8RootNumberNegOne_s_ne_zero hy
@@ -144,9 +144,9 @@ theorem deningerQ8RootNumberNegOne_jLift_sq
   dsimp [deningerQ8RootNumberNegOneR, deningerQ8RootNumberNegOneS,
     deningerQ8RootNumberNegOneSConj] at hz ⊢
   rw [div_pow, hz]
-  rw [show (x * y * (5 + x)) ^ 2 = x ^ 2 * y ^ 2 * (5 + x) ^ 2 by ring, hx, hy]
+  rw [show (x * y * (5 + x)) ^ (2 : ℕ) = x ^ (2 : ℕ) * y ^ (2 : ℕ) * (5 + x) ^ (2 : ℕ) by ring, hx, hy]
   have hcancel :
-      (205 * (5 + x) ^ 2) / ((5 + x) * (41 + 6 * y)) =
+      (205 * (5 + x) ^ (2 : ℕ)) / ((5 + x) * (41 + 6 * y)) =
         (205 * (5 + x)) / (41 + 6 * y) := by
     field_simp [hr, hs]
   norm_num
@@ -161,8 +161,8 @@ theorem deningerQ8RootNumberNegOne_jLift_sq
 /-- The two lifted conjugation composites anti-commute on the top radical. -/
 theorem deningerQ8RootNumberNegOne_lifted_composites_anticommute
     {R : Type*} [Field R] [CharZero R] {x y z : R}
-    (hx : x ^ 2 = 5) (hy : y ^ 2 = 41)
-    (_hz : z ^ 2 = deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneS y) :
+    (hx : x ^ (2 : ℕ) = 5) (hy : y ^ (2 : ℕ) = 41)
+    (_hz : z ^ (2 : ℕ) = deningerQ8RootNumberNegOneR x * deningerQ8RootNumberNegOneS y) :
     deningerQ8RootNumberNegOneIThenJ x y z =
       -deningerQ8RootNumberNegOneJThenI x y z := by
   have hy0 : y ≠ 0 := deningerQ8RootNumberNegOne_y_ne_zero hy
@@ -184,11 +184,11 @@ theorem deningerQ8RootNumberNegOne_lifted_composites_anticommute
       ring
     _ = -(z * 41 * 20) := by rw [hrr']
     _ = -(z * 4 * 205) := by norm_num; ring
-    _ = -(z * 2 ^ 2 *
+    _ = -(z * 2 ^ (2 : ℕ) *
         (deningerQ8RootNumberNegOneS y * deningerQ8RootNumberNegOneSConj y)) := by
       rw [hss]
       norm_num
-    _ = -(z * 2 ^ 2 * deningerQ8RootNumberNegOneS y *
+    _ = -(z * 2 ^ (2 : ℕ) * deningerQ8RootNumberNegOneS y *
         deningerQ8RootNumberNegOneSConj y) := by ring
 
 end

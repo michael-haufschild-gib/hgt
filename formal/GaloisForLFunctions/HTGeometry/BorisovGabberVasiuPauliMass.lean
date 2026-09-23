@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 theorem bgv_pauli_anisotropic_det (r a : Fin 3 → ℝ) :
     (diagonal a + gomesPauliAdjointMass r).det =
       (∏ i, (a i + (r ⬝ᵥ r))) -
-        ∑ i, r i ^ 2 * ∏ j ∈ Finset.univ.erase i, (a j + (r ⬝ᵥ r)) := by
+        ∑ i, r i ^ (2 : ℕ) * ∏ j ∈ Finset.univ.erase i, (a j + (r ⬝ᵥ r)) := by
   have hmatrix : diagonal a + gomesPauliAdjointMass r =
       diagonal (fun i => a i + r ⬝ᵥ r) + vecMulVec (-r) r := by
     ext i j
@@ -41,7 +41,7 @@ theorem bgv_pauli_adjugate (r : Fin 3 → ℝ) :
 /-- A rank-one observation repairs the Pauli zero mode exactly through its carrier overlap. -/
 theorem bgv_pauli_observation_det (r v : Fin 3 → ℝ) (t : ℝ) :
     (gomesPauliAdjointMass r + t • vecMulVec v v).det =
-      t * (r ⬝ᵥ r) * (r ⬝ᵥ v) ^ 2 := by
+      t * (r ⬝ᵥ r) * (r ⬝ᵥ v) ^ (2 : ℕ) := by
   have hdet : (gomesPauliAdjointMass r).det = 0 := by
     have h := gomesPauliAdjointMass_characteristic r 0
     simpa [Matrix.det_neg] using h

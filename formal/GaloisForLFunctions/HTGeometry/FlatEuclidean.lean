@@ -21,7 +21,7 @@ variable {n : ℕ} {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [
 /-- **The tangent norm of a diagonal direction is the Euclidean norm of its weights.** -/
 theorem hsNorm_diagOp (b : OrthonormalBasis (Fin n) ℂ E) (w : Fin n → ℝ) :
     ContinuousLinearMap.hsNorm (LinearMap.toContinuousLinearMap (diagOp b w))
-      = Real.sqrt (∑ i, w i ^ 2) := by
+      = Real.sqrt (∑ i, w i ^ (2 : ℕ)) := by
   rw [hsNorm_toCLM_diagonal b (diagOp_apply_basis b w)]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -37,7 +37,7 @@ theorem diagOp_sub (b : OrthonormalBasis (Fin n) ℂ E) (w w' : Fin n → ℝ) :
 weights.** -/
 theorem hsNorm_diagOp_sub (b : OrthonormalBasis (Fin n) ℂ E) (w w' : Fin n → ℝ) :
     ContinuousLinearMap.hsNorm (LinearMap.toContinuousLinearMap (diagOp b w - diagOp b w'))
-      = Real.sqrt (∑ i, (w i - w' i) ^ 2) := by
+      = Real.sqrt (∑ i, (w i - w' i) ^ (2 : ℕ)) := by
   rw [diagOp_sub b w w', hsNorm_diagOp b (w - w')]
   congr 1
 
@@ -58,7 +58,7 @@ theorem flat_dist_eq (b : OrthonormalBasis (Fin n) ℂ E) (hn : finrank ℂ E = 
     ContinuousLinearMap.hsNorm (LinearMap.toContinuousLinearMap
         (logOp (isSymmetric_metricRay (isSymmetric_diagOp b w) hn 1) hn
           - logOp (isSymmetric_metricRay (isSymmetric_diagOp b w') hn 1) hn))
-      = Real.sqrt (∑ i, (w i - w' i) ^ 2) := by
+      = Real.sqrt (∑ i, (w i - w' i) ^ (2 : ℕ)) := by
   rw [logOp_metricRay_diagOp b hn w, logOp_metricRay_diagOp b hn w', hsNorm_diagOp_sub b w w']
 
 /-- **Distinct weights give distinct points of the flat.**  The exponential parametrizes a flat by
@@ -81,8 +81,8 @@ theorem flat_dist_eq_zero_iff (b : OrthonormalBasis (Fin n) ℂ E) (hn : finrank
   rw [flat_dist_eq b hn w w']
   constructor
   · intro h
-    have hnn : 0 ≤ ∑ i, (w i - w' i) ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
-    have hsum : ∑ i, (w i - w' i) ^ 2 = 0 := (Real.sqrt_eq_zero hnn).1 h
+    have hnn : 0 ≤ ∑ i, (w i - w' i) ^ (2 : ℕ) := Finset.sum_nonneg fun i _ => sq_nonneg _
+    have hsum : ∑ i, (w i - w' i) ^ (2 : ℕ) = 0 := (Real.sqrt_eq_zero hnn).1 h
     funext i
     have hi := (Finset.sum_eq_zero_iff_of_nonneg fun i _ => sq_nonneg (w i - w' i)).1 hsum i
       (Finset.mem_univ i)

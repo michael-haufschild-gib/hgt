@@ -9,8 +9,8 @@ set_option autoImplicit false
 def horizonLogThirdCore (z : ℝ) : ℝ :=
   horizonLogHeightThirdCore z / literalSourceHorizonHeight z -
     3 * literalSourceHorizonHeightSecond z * literalSourceHorizonHeightFirst z /
-      literalSourceHorizonHeight z ^ 2 +
-    2 * literalSourceHorizonHeightFirst z ^ 3 / literalSourceHorizonHeight z ^ 3
+      literalSourceHorizonHeight z ^ (2 : ℕ) +
+    2 * literalSourceHorizonHeightFirst z ^ (3 : ℕ) / literalSourceHorizonHeight z ^ (3 : ℕ)
 
 theorem literalSourceHorizonLogSecond_hasDerivAt (z : ℝ) (hz : z < 1) :
     HasDerivAt literalSourceHorizonLogSecond (horizonLogThirdCore z) z := by
@@ -25,7 +25,7 @@ theorem literalSourceHorizonLogSecond_hasDerivAt (z : ℝ) (hz : z < 1) :
   change HasDerivAt
     (fun x : ℝ => (literalSourceHorizonHeightSecond x * literalSourceHorizonHeight x -
       literalSourceHorizonHeightFirst x * literalSourceHorizonHeightFirst x) /
-        literalSourceHorizonHeight x ^ 2) (horizonLogThirdCore z) z
+        literalSourceHorizonHeight x ^ (2 : ℕ)) (horizonLogThirdCore z) z
   apply hquot.congr_deriv
   dsimp [horizonLogThirdCore]
   field_simp [hh]

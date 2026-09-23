@@ -23,9 +23,9 @@ noncomputable section
 
 /-- The energy of a prime block's coefficient family is its cardinality. -/
 theorem sum_normSq_finCoeff_le_card {B : Finset ℕ} {NA : ℕ} :
-    (∑ n : Fin NA, ‖finCoeff B moebiusCoeff NA n‖ ^ 2) ≤ (B.card : ℝ) := by
+    (∑ n : Fin NA, ‖finCoeff B moebiusCoeff NA n‖ ^ (2 : ℕ)) ≤ (B.card : ℝ) := by
   classical
-  have hterm : ∀ n : Fin NA, ‖finCoeff B moebiusCoeff NA n‖ ^ 2
+  have hterm : ∀ n : Fin NA, ‖finCoeff B moebiusCoeff NA n‖ ^ (2 : ℕ)
       ≤ (if ((n : ℕ) + 1) ∈ B then (1 : ℝ) else 0) := by
     intro n
     rw [finCoeff, restrictCoeff]
@@ -75,11 +75,11 @@ theorem volume_blockExceptional_le {B : Finset ℕ} (hB : ∀ p ∈ B, p.Prime) 
     have hlog : (0 : ℝ) ≤ Real.log ((NA ^ k : ℕ) : ℝ) := Real.log_natCast_nonneg _
     have hc : (0 : ℝ) ≤ ((NA ^ k : ℕ) : ℝ) := Nat.cast_nonneg _
     nlinarith [hT, hlog, hc]
-  have henergy : (∑ n : Fin NA, ‖finCoeff B moebiusCoeff NA n‖ ^ 2) ^ k ≤ (B.card : ℝ) ^ k := by
+  have henergy : (∑ n : Fin NA, ‖finCoeff B moebiusCoeff NA n‖ ^ (2 : ℕ)) ^ k ≤ (B.card : ℝ) ^ k := by
     refine pow_le_pow_left₀ (Finset.sum_nonneg fun n _ => by positivity)
       sum_normSq_finCoeff_le_card k
   have hkk : (0 : ℝ) ≤ (k : ℝ) ^ k := by positivity
-  have hstep : (k : ℝ) ^ k * (∑ n : Fin NA, ‖finCoeff B moebiusCoeff NA n‖ ^ 2) ^ k
+  have hstep : (k : ℝ) ^ k * (∑ n : Fin NA, ‖finCoeff B moebiusCoeff NA n‖ ^ (2 : ℕ)) ^ k
       ≤ (k : ℝ) ^ k * (B.card : ℝ) ^ k := mul_le_mul_of_nonneg_left henergy hkk
   nlinarith [hstep, hfac]
 

@@ -264,10 +264,10 @@ theorem cassidy_matrixAlgebra [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
       rw [← hCH Z hZtr]
       exact hmul Z hZA Z hZA
     obtain ⟨d₀, hd₀⟩ := hline _ hsq1
-    have hdetcz : (c • Z).det = c ^ 2 * Z.det := by
+    have hdetcz : (c • Z).det = c ^ (2 : ℕ) * Z.det := by
       simp only [Matrix.det_fin_two, Matrix.smul_apply, smul_eq_mul]
       ring
-    have hsq2 : (-(c ^ 2 * Z.det)) • (1 : Matrix (Fin 2) (Fin 2) U) ∈ A := by
+    have hsq2 : (-(c ^ (2 : ℕ) * Z.det)) • (1 : Matrix (Fin 2) (Fin 2) U) ∈ A := by
       rw [← hdetcz, ← hCH _ hcZtr]
       exact hmul _ hcZA _ hcZA
     obtain ⟨e₀, he₀⟩ := hline _ hsq2
@@ -278,10 +278,10 @@ theorem cassidy_matrixAlgebra [IsAlgClosed C] [IsAlgClosed U] [CharZero U]
       linear_combination -hd₀
     have hd₀U : algebraMap C U d₀ ≠ 0 := by
       simpa using (map_ne_zero_iff (algebraMap C U) (algebraMap C U).injective).mpr hd₀ne
-    have hc2 : c ^ 2 * algebraMap C U d₀ = algebraMap C U e₀ := by
-      linear_combination he₀ - c ^ 2 * hd₀
+    have hc2 : c ^ (2 : ℕ) * algebraMap C U d₀ = algebraMap C U e₀ := by
+      linear_combination he₀ - c ^ (2 : ℕ) * hd₀
     obtain ⟨r, hr⟩ := IsAlgClosed.exists_pow_nat_eq (e₀ / d₀) (n := 2) (by norm_num)
-    have hsq : (algebraMap C U r) ^ 2 = c ^ 2 := by
+    have hsq : (algebraMap C U r) ^ (2 : ℕ) = c ^ (2 : ℕ) := by
       rw [← map_pow, hr, map_div₀, div_eq_iff hd₀U]
       exact hc2.symm
     have hfac : (c - algebraMap C U r) * (c + algebraMap C U r) = 0 := by

@@ -28,11 +28,11 @@ def xiSquaredSeamCassiniSource (u : ℂ) : ℂ :=
 
 /-- Image of one multiplicity copy of an Xi zero in the translated squared coordinate. -/
 def xiSquaredSeamCassiniZero (q : XiZeroCopy) : ℂ :=
-  1 + xiSpectralPoint q ^ 2
+  1 + xiSpectralPoint q ^ (2 : ℕ)
 
 /-- Cassini coordinate attached to one Xi divisor support point, before multiplicity copies. -/
 def xiSquaredSeamCassiniZeroSupport (rho : XiDivisorSupport) : ℂ :=
-  1 + xiSpectralPointSupport rho ^ 2
+  1 + xiSpectralPointSupport rho ^ (2 : ℕ)
 
 theorem differentiable_xiSquaredSeamEntireQuotient :
     Differentiable ℂ xiSquaredSeamEntireQuotient := by
@@ -41,7 +41,7 @@ theorem differentiable_xiSquaredSeamEntireQuotient :
 
 /-- Exact square-factor identity for the centered Xi function. -/
 theorem xiSquaredSeamEntireQuotient_sq (z : ℂ) :
-    xiSquaredSeamEntireQuotient (z ^ 2) = XiC z := by
+    xiSquaredSeamEntireQuotient (z ^ (2 : ℕ)) = XiC z := by
   exact GaloisForLFunctions.HTGeometry.evenEntireSquareFactor_sq
     XiC_differentiable (fun w => XiC_even w) z
 
@@ -53,7 +53,7 @@ theorem differentiable_xiSquaredSeamCassiniSource :
 theorem xiSquaredSeamCassiniSource_zero_eq_xi_threeHalves :
     xiSquaredSeamCassiniSource 0 = xi (3 / 2) := by
   calc
-    xiSquaredSeamCassiniSource 0 = xiSquaredSeamEntireQuotient ((-I) ^ 2) := by
+    xiSquaredSeamCassiniSource 0 = xiSquaredSeamEntireQuotient ((-I) ^ (2 : ℕ)) := by
       rw [xiSquaredSeamCassiniSource]
       congr 1
       simp [pow_two, Complex.I_mul_I]
@@ -100,7 +100,7 @@ theorem xiSquaredSeamCassiniSource_zero (q : XiZeroCopy) :
     xiSquaredSeamCassiniSource (xiSquaredSeamCassiniZero q) = 0 := by
   calc
     xiSquaredSeamCassiniSource (xiSquaredSeamCassiniZero q) =
-        xiSquaredSeamEntireQuotient (xiSpectralPoint q ^ 2) := by
+        xiSquaredSeamEntireQuotient (xiSpectralPoint q ^ (2 : ℕ)) := by
       simp only [xiSquaredSeamCassiniSource, xiSquaredSeamCassiniZero]
       congr 1
       ring
@@ -147,12 +147,12 @@ theorem analyticOrderAt_xiSquaredSeamCassiniSource_cassiniZero
     rfl
   have hsourceOrder :
       analyticOrderAt xiSquaredSeamCassiniSource u =
-        analyticOrderAt xiSquaredSeamEntireQuotient (a ^ 2) := by
+        analyticOrderAt xiSquaredSeamEntireQuotient (a ^ (2 : ℕ)) := by
     rw [hsourceComp, hshift]
     congr 1
     simp only [shift, u, a, xiSquaredSeamCassiniZero]
     ring
-  let sq : ℂ → ℂ := fun w => w ^ 2
+  let sq : ℂ → ℂ := fun w => w ^ (2 : ℕ)
   have hsqDeriv : HasDerivAt sq (2 * a) a := by
     dsimp only [sq]
     convert hasDerivAt_pow 2 a using 1
@@ -212,7 +212,7 @@ theorem xiSquaredSeamCassiniSource_eq_zero_iff_exists_zeroCopy (u : ℂ) :
   constructor
   · intro hu
     let a := Complex.sqrt (u - 1)
-    have ha : a ^ 2 = u - 1 := by
+    have ha : a ^ (2 : ℕ) = u - 1 := by
       exact GaloisForLFunctions.HTGeometry.complex_sqrt_sq (u - 1)
     have hXi : XiC a = 0 := by
       rw [← xiSquaredSeamEntireQuotient_sq a, ha]
@@ -233,7 +233,7 @@ theorem xiSquaredSeamCassiniZero_eq_iff_spectral_eq_or_neg
         xiSpectralPoint p = -xiSpectralPoint q := by
   constructor
   · intro h
-    have hsq : xiSpectralPoint p ^ 2 = xiSpectralPoint q ^ 2 := by
+    have hsq : xiSpectralPoint p ^ (2 : ℕ) = xiSpectralPoint q ^ (2 : ℕ) := by
       simpa only [xiSquaredSeamCassiniZero] using add_left_cancel h
     exact sq_eq_sq_iff_eq_or_eq_neg.mp hsq
   · intro h

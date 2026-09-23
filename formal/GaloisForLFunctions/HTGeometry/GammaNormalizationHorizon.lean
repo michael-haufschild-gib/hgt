@@ -120,12 +120,12 @@ theorem tendsto_realTrigamma_add_nat (x : ℝ) :
 
 /-- The first positive summand gives the elementary lower bound `1/x² ≤ ψ'(x)`. -/
 theorem one_div_sq_le_realTrigamma {x : ℝ} (hx : 0 < x) :
-    1 / x ^ 2 ≤ realTrigamma x := by
+    1 / x ^ (2 : ℕ) ≤ realTrigamma x := by
   simpa [realTrigamma] using RHTower.one_div_sq_le_re_deriv_digamma_of_pos hx
 
 /-- An explicit pointed analytic periodic gauge small enough to survive up to horizon `B`. -/
 def gammaLocalGauge (B : ℝ) (x : ℝ) : ℝ :=
-  (1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2)) * (1 - Real.cos (2 * Real.pi * x))
+  (1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ))) * (1 - Real.cos (2 * Real.pi * x))
 
 theorem gammaLocalGauge_periodic (B : ℝ) :
     Periodic (gammaLocalGauge B) 1 := by
@@ -146,15 +146,15 @@ theorem gammaLocalGauge_ne_zero {B : ℝ} (hB : 0 < B) :
   rw [Pi.zero_apply] at hvalue
   have hpi : 2 * Real.pi * (1 / 2 : ℝ) = Real.pi := by ring
   rw [gammaLocalGauge, hpi, Real.cos_pi] at hvalue
-  have hcoeff : 0 < 1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2) := by positivity
+  have hcoeff : 0 < 1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ)) := by positivity
   nlinarith
 
 theorem gammaLocalGauge_hasDerivAt (B x : ℝ) :
     HasDerivAt (gammaLocalGauge B)
-      ((1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2)) *
+      ((1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ))) *
         ((2 * Real.pi) * Real.sin (2 * Real.pi * x))) x := by
   let a : ℝ := 2 * Real.pi
-  let c : ℝ := 1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2)
+  let c : ℝ := 1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ))
   have hinner : HasDerivAt (fun y : ℝ => a * y) a x :=
     by simpa only [id_eq, mul_one] using (hasDerivAt_id x).const_mul a
   have hcore := (hasDerivAt_const x 1).sub
@@ -166,16 +166,16 @@ theorem gammaLocalGauge_hasDerivAt (B x : ℝ) :
 
 theorem gammaLocalGauge_hasDerivAt_deriv (B x : ℝ) :
     HasDerivAt (deriv (gammaLocalGauge B))
-      ((1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2)) *
-        ((2 * Real.pi) ^ 2 * Real.cos (2 * Real.pi * x))) x := by
+      ((1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ))) *
+        ((2 * Real.pi) ^ (2 : ℕ) * Real.cos (2 * Real.pi * x))) x := by
   have hfun : deriv (gammaLocalGauge B) = fun y =>
-      (1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2)) *
+      (1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ))) *
         ((2 * Real.pi) * Real.sin (2 * Real.pi * y)) := by
     funext y
     exact (gammaLocalGauge_hasDerivAt B y).deriv
   rw [hfun]
   let a : ℝ := 2 * Real.pi
-  let c : ℝ := 1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2)
+  let c : ℝ := 1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ))
   have hinner : HasDerivAt (fun y : ℝ => a * y) a x :=
     by simpa only [id_eq, mul_one] using (hasDerivAt_id x).const_mul a
   have h := ((Real.hasDerivAt_sin (a * x)).comp x hinner).const_mul (c * a)
@@ -184,8 +184,8 @@ theorem gammaLocalGauge_hasDerivAt_deriv (B x : ℝ) :
 
 theorem gammaLocalGauge_deriv2 (B x : ℝ) :
     deriv (deriv (gammaLocalGauge B)) x =
-      (1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2)) *
-        ((2 * Real.pi) ^ 2 * Real.cos (2 * Real.pi * x)) :=
+      (1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ))) *
+        ((2 * Real.pi) ^ (2 : ℕ) * Real.cos (2 * Real.pi * x)) :=
   (gammaLocalGauge_hasDerivAt_deriv B x).deriv
 
 theorem differentiable_gammaLocalGauge (B : ℝ) :
@@ -201,24 +201,24 @@ theorem gammaLocalGauge_strictly_admissible {B x : ℝ}
     (hB : 0 < B) (hx : 0 < x) (hxB : x ≤ B) :
     0 < realTrigamma x + deriv (deriv (gammaLocalGauge B)) x := by
   have htri := one_div_sq_le_realTrigamma hx
-  have hx2 : x ^ 2 ≤ B ^ 2 := by nlinarith
-  have hrecip : 1 / B ^ 2 ≤ 1 / x ^ 2 := one_div_le_one_div_of_le (sq_pos_of_pos hx) hx2
+  have hx2 : x ^ (2 : ℕ) ≤ B ^ (2 : ℕ) := by nlinarith
+  have hrecip : 1 / B ^ (2 : ℕ) ≤ 1 / x ^ (2 : ℕ) := one_div_le_one_div_of_le (sq_pos_of_pos hx) hx2
   have hcos : -1 ≤ Real.cos (2 * Real.pi * x) := Real.neg_one_le_cos _
   rw [gammaLocalGauge_deriv2]
   have hcoeff :
-      (1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2)) * (2 * Real.pi) ^ 2 =
-        1 / (2 * B ^ 2) := by
+      (1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ))) * (2 * Real.pi) ^ (2 : ℕ) =
+        1 / (2 * B ^ (2 : ℕ)) := by
     field_simp
   have hcurvature :
-      -(1 / (2 * B ^ 2)) ≤
-        (1 / (2 * B ^ 2 * (2 * Real.pi) ^ 2)) *
-          ((2 * Real.pi) ^ 2 * Real.cos (2 * Real.pi * x)) := by
+      -(1 / (2 * B ^ (2 : ℕ))) ≤
+        (1 / (2 * B ^ (2 : ℕ) * (2 * Real.pi) ^ (2 : ℕ))) *
+          ((2 * Real.pi) ^ (2 : ℕ) * Real.cos (2 * Real.pi * x)) := by
     rw [← mul_assoc, hcoeff]
-    have hnonneg : 0 ≤ 1 / (2 * B ^ 2) := by positivity
+    have hnonneg : 0 ≤ 1 / (2 * B ^ (2 : ℕ)) := by positivity
     nlinarith [mul_le_mul_of_nonneg_left hcos hnonneg]
-  have hbase : 1 / B ^ 2 ≤ realTrigamma x := hrecip.trans htri
-  have hpositive : 0 < 1 / B ^ 2 := by positivity
-  have hhalf : 1 / (2 * B ^ 2) = (1 / B ^ 2) / 2 := by ring
+  have hbase : 1 / B ^ (2 : ℕ) ≤ realTrigamma x := hrecip.trans htri
+  have hpositive : 0 < 1 / B ^ (2 : ℕ) := by positivity
+  have hhalf : 1 / (2 * B ^ (2 : ℕ)) = (1 / B ^ (2 : ℕ)) / 2 := by ring
   rw [hhalf] at hcurvature
   nlinarith
 
@@ -266,7 +266,7 @@ theorem zero_mem_gammaCurvatureHorizon (B : ℝ) :
   · simp
   · intro x hx _
     have htri := one_div_sq_le_realTrigamma hx
-    have hnonneg : 0 ≤ 1 / x ^ 2 := by positivity
+    have hnonneg : 0 ≤ 1 / x ^ (2 : ℕ) := by positivity
     simpa using hnonneg.trans htri
 
 /-- Every positive finite normalization horizon has a nonzero pointed periodic gauge. -/
@@ -289,7 +289,7 @@ theorem gammaCurvatureHorizon_absorbs_bounded_direction
     (hpoint : f 0 = 0)
     (hbound : ∀ x : ℝ, 0 < x → x ≤ B → |deriv (deriv f) x| ≤ M) :
     ∃ ε : ℝ, 0 < ε ∧ (fun x => ε * f x) ∈ gammaCurvatureHorizon B := by
-  let ε : ℝ := 1 / (2 * B ^ 2 * (M + 1))
+  let ε : ℝ := 1 / (2 * B ^ (2 : ℕ) * (M + 1))
   have hM1 : 0 < M + 1 := by linarith
   have hε : 0 < ε := by
     dsimp [ε]
@@ -304,23 +304,23 @@ theorem gammaCurvatureHorizon_absorbs_bounded_direction
     exact hf''.const_mul ε
   · intro x hx hxB
     have htri := one_div_sq_le_realTrigamma hx
-    have hx2 : x ^ 2 ≤ B ^ 2 := by nlinarith
-    have hrecip : 1 / B ^ 2 ≤ 1 / x ^ 2 :=
+    have hx2 : x ^ (2 : ℕ) ≤ B ^ (2 : ℕ) := by nlinarith
+    have hrecip : 1 / B ^ (2 : ℕ) ≤ 1 / x ^ (2 : ℕ) :=
       one_div_le_one_div_of_le (sq_pos_of_pos hx) hx2
-    have hbase : 1 / B ^ 2 ≤ realTrigamma x := hrecip.trans htri
+    have hbase : 1 / B ^ (2 : ℕ) ≤ realTrigamma x := hrecip.trans htri
     have hbelow : -M ≤ deriv (deriv f) x := neg_le_of_abs_le (hbound x hx hxB)
     have hscaled :
         deriv (deriv (fun y => ε * f y)) x = ε * deriv (deriv f) x := by
       simp only [deriv_const_mul_field']
     rw [hscaled]
-    have hεM : ε * M ≤ 1 / (2 * B ^ 2) := by
+    have hεM : ε * M ≤ 1 / (2 * B ^ (2 : ℕ)) := by
       dsimp [ε]
       field_simp
       nlinarith
-    have hcurv : -(1 / (2 * B ^ 2)) ≤ ε * deriv (deriv f) x := by
+    have hcurv : -(1 / (2 * B ^ (2 : ℕ))) ≤ ε * deriv (deriv f) x := by
       nlinarith [mul_le_mul_of_nonneg_left hbelow hε.le]
-    have hpositive : 0 < 1 / B ^ 2 := by positivity
-    have hhalf : 1 / (2 * B ^ 2) = (1 / B ^ 2) / 2 := by ring
+    have hpositive : 0 < 1 / B ^ (2 : ℕ) := by positivity
+    have hhalf : 1 / (2 * B ^ (2 : ℕ)) = (1 / B ^ (2 : ℕ)) / 2 := by ring
     rw [hhalf] at hcurv
     nlinarith
 

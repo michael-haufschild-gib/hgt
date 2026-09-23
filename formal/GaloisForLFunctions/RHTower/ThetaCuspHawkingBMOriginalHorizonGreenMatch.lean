@@ -285,7 +285,7 @@ theorem continuedCornerAmplitude_laurent (q : XiZeroCopy) (br side : Bool) (amp 
 
 /-- The first temporal moment differentiates this same source-derived meromorphic amplitude. -/
 theorem continuedCornerAmplitude_derivative_leading (q : XiZeroCopy) (br side : Bool) (amp : ℂ) :
-    Tendsto (fun w => (w-physicalFundamentalFrequency q side)^2 *
+    Tendsto (fun w => (w-physicalFundamentalFrequency q side)^(2 : ℕ) *
       deriv (continuedCornerAmplitude q br amp) w)
       (𝓝[≠] physicalFundamentalFrequency q side) (𝓝 (-cornerResidue q br side amp)) := by
   let w₀ := physicalFundamentalFrequency q side
@@ -294,7 +294,7 @@ theorem continuedCornerAmplitude_derivative_leading (q : XiZeroCopy) (br side : 
   change AnalyticAt ℂ g w₀ at hg
   change continuedCornerAmplitude q br amp =ᶠ[𝓝[≠] w₀] (fun w => R/(w-w₀)+g w) at he
   have hd := he.nhdsNE_deriv
-  have hlim : Tendsto (fun w => -R+(w-w₀)^2*deriv g w) (𝓝 w₀) (𝓝 (-R)) := by
+  have hlim : Tendsto (fun w => -R+(w-w₀)^(2 : ℕ)*deriv g w) (𝓝 w₀) (𝓝 (-R)) := by
     simpa using (tendsto_const_nhds.add
       (((tendsto_id.sub_const w₀).pow 2).mul hg.deriv.continuousAt.tendsto))
   apply (hlim.mono_left nhdsWithin_le_nhds).congr'
@@ -302,7 +302,7 @@ theorem continuedCornerAmplitude_derivative_leading (q : XiZeroCopy) (br side : 
     self_mem_nhdsWithin] with w hw hgw hn
   have hn' : w-w₀ ≠ 0 := sub_ne_zero.mpr hn
   have hp := (hasDerivAt_const w R).div ((hasDerivAt_id w).sub_const w₀) hn'
-  have hder : deriv (fun u : ℂ => R/(u-w₀)+g u) w = -R/(w-w₀)^2+deriv g w := by
+  have hder : deriv (fun u : ℂ => R/(u-w₀)+g u) w = -R/(w-w₀)^(2 : ℕ)+deriv g w := by
     simpa only [Pi.add_def,Pi.div_def,id_eq,zero_mul,zero_sub,mul_one] using
       (hp.add hgw.differentiableAt.hasDerivAt).deriv
   rw [hw,hder]
@@ -324,7 +324,7 @@ theorem original_corner_derivative_residue (q : XiZeroCopy) (br side : Bool) (am
   have hn : w-w₀ ≠ 0 := sub_ne_zero.mpr hw
   simp only [slope_def_field,physicalFundamentalFrequency_connection_zero,zero_div,sub_zero]
   change (connection w (physicalRadialFrequency q)/(2*w)/(w-w₀))*
-    ((w-w₀)^2*deriv (continuedCornerAmplitude q br amp) w) = _
+    ((w-w₀)^(2 : ℕ)*deriv (continuedCornerAmplitude q br amp) w) = _
   dsimp only [w₀] at hn ⊢
   field_simp [hn]
 

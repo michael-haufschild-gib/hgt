@@ -16,7 +16,7 @@ namespace RHTower
 
 /-- Squared Hermitian radius on the real coordinate plane of a complex line. -/
 def deningerHermitianLineRadius (z : ℝ × ℝ) : ℝ :=
-  z.1 ^ 2 + z.2 ^ 2
+  z.1 ^ (2 : ℕ) + z.2 ^ (2 : ℕ)
 
 /-- Scalar half-density action on the Hermitian line. -/
 def deningerHermitianLineScale (s : ℝ) (z : ℝ × ℝ) : ℝ × ℝ :=
@@ -33,7 +33,7 @@ def deningerHermitianLineHodge (z : ℝ × ℝ) : ℝ × ℝ :=
 /-- Squared radius scales by the square of the half-density. -/
 theorem deningerHermitianLineRadius_scale (s : ℝ) (z : ℝ × ℝ) :
     deningerHermitianLineRadius (deningerHermitianLineScale s z) =
-      s ^ 2 * deningerHermitianLineRadius z := by
+      s ^ (2 : ℕ) * deningerHermitianLineRadius z := by
   simp only [deningerHermitianLineRadius, deningerHermitianLineScale]
   ring
 
@@ -43,7 +43,7 @@ theorem deningerHermitianLineArea_scale
     deningerHermitianLineArea
         (deningerHermitianLineScale s z)
         (deningerHermitianLineScale s w) =
-      s ^ 2 * deningerHermitianLineArea z w := by
+      s ^ (2 : ℕ) * deningerHermitianLineArea z w := by
   simp only [deningerHermitianLineArea, deningerHermitianLineScale]
   ring
 
@@ -72,9 +72,9 @@ theorem deningerHermitianLineHodge_positive
   · have hy : y ≠ 0 := by
       intro hy
       exact hz (by simp [hx, hy])
-    have hysq : 0 < y ^ 2 := sq_pos_of_ne_zero hy
+    have hysq : 0 < y ^ (2 : ℕ) := sq_pos_of_ne_zero hy
     nlinarith [sq_nonneg x]
-  · have hxsq : 0 < x ^ 2 := sq_pos_of_ne_zero hx
+  · have hxsq : 0 < x ^ (2 : ℕ) := sq_pos_of_ne_zero hx
     nlinarith [sq_nonneg y]
 
 /-- Hodge star commutes with every scalar half-density map. -/
@@ -89,7 +89,7 @@ If `s² = q`, pullback by half-density `s` is dilation by `q` on every
 radial test function.
 -/
 theorem deningerHermitianLineRadialPullback_eq_dilation
-    (f : ℝ → ℂ) (s q : ℝ) (hsq : s ^ 2 = q) (z : ℝ × ℝ) :
+    (f : ℝ → ℂ) (s q : ℝ) (hsq : s ^ (2 : ℕ) = q) (z : ℝ × ℝ) :
     f (deningerHermitianLineRadius (deningerHermitianLineScale s z)) =
       f (q * deningerHermitianLineRadius z) := by
   rw [deningerHermitianLineRadius_scale, hsq]

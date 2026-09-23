@@ -182,7 +182,7 @@ theorem edPoly_linearMollifierLineCoeff (M : ℕ) :
 /-- The mollifier's torus Jensen mass (truncated at `ε`):
 `J_M(ε) = ½ E_χ log max(‖∑_{h≤M} μ(h)P(h)χ(h)h^{-1/2}‖², ε²)`. -/
 def linearMollifierTorusLogMean (M : ℕ) (ε : ℝ) : ℝ :=
-  ∫ ω, logMaxHalf ε (‖steinhausAmp (linearMollifierLineCoeff M) (Finset.Icc 1 M) ω‖ ^ 2)
+  ∫ ω, logMaxHalf ε (‖steinhausAmp (linearMollifierLineCoeff M) (Finset.Icc 1 M) ω‖ ^ (2 : ℕ))
     ∂steinhausMeasure
 
 /-- **Receiver direction of the outer law (linear mollifier).**  Eventually

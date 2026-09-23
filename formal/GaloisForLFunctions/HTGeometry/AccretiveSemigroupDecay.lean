@@ -74,11 +74,11 @@ theorem hasDerivAt_accretiveSemigroup_apply (B : X →L[ℂ] X) (u₀ : X) (s : 
 /-- **The exponential contraction bound.**  A numerical floor `μ` gives the semigroup the uniform
 decay rate `e^{-μs}` for `s ≥ 0`. -/
 theorem norm_accretiveSemigroup_apply_le {B : X →L[ℂ] X} {μ : ℝ}
-    (hB : ∀ u : X, μ * ‖u‖ ^ 2 ≤ (inner ℂ (B u) u).re) (u₀ : X) {s : ℝ} (hs : 0 ≤ s) :
+    (hB : ∀ u : X, μ * ‖u‖ ^ (2 : ℕ) ≤ (inner ℂ (B u) u).re) (u₀ : X) {s : ℝ} (hs : 0 ≤ s) :
     ‖accretiveSemigroup B s u₀‖ ≤ Real.exp (-(μ * s)) * ‖u₀‖ := by
   set u : ℝ → X := fun t => accretiveSemigroup B t u₀ with hu
   -- the energy and its derivative
-  have hψderiv : ∀ t : ℝ, HasDerivAt (fun r : ℝ => ‖u r‖ ^ 2)
+  have hψderiv : ∀ t : ℝ, HasDerivAt (fun r : ℝ => ‖u r‖ ^ (2 : ℕ))
       (-(2 * (inner ℂ (B (u t)) (u t)).re)) t := by
     intro t
     have hd : HasDerivAt u (-(B (u t))) t := hasDerivAt_accretiveSemigroup_apply B u₀ t
@@ -87,7 +87,7 @@ theorem norm_accretiveSemigroup_apply_le {B : X →L[ℂ] X} {μ : ℝ}
       HasDerivAt.inner ℂ hd hd
     have hcomp := (Complex.reCLM.hasFDerivAt).comp_hasDerivAt t hin
     have hfun : (⇑Complex.reCLM ∘ fun r : ℝ => (inner ℂ (u r) (u r) : ℂ))
-        = fun r : ℝ => ‖u r‖ ^ 2 := by
+        = fun r : ℝ => ‖u r‖ ^ (2 : ℕ) := by
       funext r
       exact inner_self_eq_norm_sq (𝕜 := ℂ) (u r)
     rw [hfun] at hcomp
@@ -100,10 +100,10 @@ theorem norm_accretiveSemigroup_apply_le {B : X →L[ℂ] X} {μ : ℝ}
     rw [hsym]
     ring
   -- the exponentially weighted energy is antitone
-  set φ : ℝ → ℝ := fun t => Real.exp (2 * μ * t) * ‖u t‖ ^ 2 with hφ
+  set φ : ℝ → ℝ := fun t => Real.exp (2 * μ * t) * ‖u t‖ ^ (2 : ℕ) with hφ
   have hφderiv : ∀ t : ℝ, HasDerivAt φ
       (Real.exp (2 * μ * t) *
-        (2 * μ * ‖u t‖ ^ 2 - 2 * (inner ℂ (B (u t)) (u t)).re)) t := by
+        (2 * μ * ‖u t‖ ^ (2 : ℕ) - 2 * (inner ℂ (B (u t)) (u t)).re)) t := by
     intro t
     have hexp : HasDerivAt (fun r : ℝ => Real.exp (2 * μ * r))
         (Real.exp (2 * μ * t) * (2 * μ)) t := by
@@ -114,7 +114,7 @@ theorem norm_accretiveSemigroup_apply_le {B : X →L[ℂ] X} {μ : ℝ}
     refine hprod.congr_deriv ?_
     ring
   have hnonpos : ∀ t : ℝ,
-      Real.exp (2 * μ * t) * (2 * μ * ‖u t‖ ^ 2 - 2 * (inner ℂ (B (u t)) (u t)).re) ≤ 0 := by
+      Real.exp (2 * μ * t) * (2 * μ * ‖u t‖ ^ (2 : ℕ) - 2 * (inner ℂ (B (u t)) (u t)).re) ≤ 0 := by
     intro t
     have hb := hB (u t)
     have hexp : (0 : ℝ) < Real.exp (2 * μ * t) := Real.exp_pos _
@@ -127,25 +127,25 @@ theorem norm_accretiveSemigroup_apply_le {B : X →L[ℂ] X} {μ : ℝ}
   have hanti : Antitone φ := antitone_of_deriv_nonpos hdiff hderiv
   have hkey : φ s ≤ φ 0 := hanti hs
   -- unwind
-  have hφ0 : φ 0 = ‖u₀‖ ^ 2 := by
+  have hφ0 : φ 0 = ‖u₀‖ ^ (2 : ℕ) := by
     rw [hφ]
     simp [hu]
-  have hsq : ‖u s‖ ^ 2 ≤ (Real.exp (-(μ * s)) * ‖u₀‖) ^ 2 := by
+  have hsq : ‖u s‖ ^ (2 : ℕ) ≤ (Real.exp (-(μ * s)) * ‖u₀‖) ^ (2 : ℕ) := by
     have hexp : (0 : ℝ) < Real.exp (2 * μ * s) := Real.exp_pos _
-    have hstep : Real.exp (2 * μ * s) * ‖u s‖ ^ 2 ≤ ‖u₀‖ ^ 2 := by
+    have hstep : Real.exp (2 * μ * s) * ‖u s‖ ^ (2 : ℕ) ≤ ‖u₀‖ ^ (2 : ℕ) := by
       rw [← hφ0]
       exact hkey
-    have h2 : (Real.exp (-(μ * s))) ^ 2 = (Real.exp (2 * μ * s))⁻¹ := by
+    have h2 : (Real.exp (-(μ * s))) ^ (2 : ℕ) = (Real.exp (2 * μ * s))⁻¹ := by
       rw [← Real.exp_neg, sq, ← Real.exp_add]
       congr 1
       ring
-    have hval : (Real.exp (-(μ * s)) * ‖u₀‖) ^ 2
-        = (Real.exp (2 * μ * s))⁻¹ * ‖u₀‖ ^ 2 := by
+    have hval : (Real.exp (-(μ * s)) * ‖u₀‖) ^ (2 : ℕ)
+        = (Real.exp (2 * μ * s))⁻¹ * ‖u₀‖ ^ (2 : ℕ) := by
       rw [mul_pow, h2]
     rw [hval]
     rw [← le_div_iff₀' hexp] at hstep
-    calc ‖u s‖ ^ 2 ≤ ‖u₀‖ ^ 2 / Real.exp (2 * μ * s) := hstep
-      _ = (Real.exp (2 * μ * s))⁻¹ * ‖u₀‖ ^ 2 := by ring
+    calc ‖u s‖ ^ (2 : ℕ) ≤ ‖u₀‖ ^ (2 : ℕ) / Real.exp (2 * μ * s) := hstep
+      _ = (Real.exp (2 * μ * s))⁻¹ * ‖u₀‖ ^ (2 : ℕ) := by ring
   have hnn : (0 : ℝ) ≤ Real.exp (-(μ * s)) * ‖u₀‖ := by positivity
   nlinarith [hsq, norm_nonneg (u s), hnn]
 

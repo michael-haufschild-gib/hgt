@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.PolylogRpowDomination
 # Degree deficit for the Heath--Brown Type-I prime amplifier
 
 The paper exponent interval begins at `1.0999`.  Consequently the canonical raising degree is at
-most `P^0.91`, while a fixed multiple of `P^0.91` is eventually below `P`.  This supplies the exact
+most `P^(0 : ℕ).91`, while a fixed multiple of `P^(0 : ℕ).91` is eventually below `P`.  This supplies the exact
 linear reserve needed to absorb the factorial-weighted Brun--Titchmarsh numerator.
 -/
 
@@ -15,7 +15,7 @@ open Filter Topology
 
 noncomputable section
 
-/-- The paper exponent interval leaves a uniform `P^0.09` reserve over the raising degree. -/
+/-- The paper exponent interval leaves a uniform `P^(0 : ℕ).09` reserve over the raising degree. -/
 theorem eventually_mtTypeIPrimeDegree_linear_deficit :
     ∀ᶠ X : ℝ in atTop, ∀ a T : ℝ,
       (10999 / 10000 : ℝ) ≤ a → 1 < T → T ≤ X →

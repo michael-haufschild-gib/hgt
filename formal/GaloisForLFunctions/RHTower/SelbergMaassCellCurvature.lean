@@ -42,9 +42,9 @@ theorem fullDomain_iff_fd (z : ℍ) : (z.re, z.im) ∈ fullDomain ↔ z ∈ fd :
 
 /-- Exact cell change of coordinates, including the entire closed boundary and the hyperbolic density. -/
 theorem integral_height_sq_cell (F : ℝ × ℝ → ℝ) :
-    (∫ z : ℍ in fd, z.im ^ 2 * F (z.re, z.im)) = ∫ p in fullDomain, F p := by
+    (∫ z : ℍ in fd, z.im ^ (2 : ℕ) * F (z.re, z.im)) = ∫ p in fullDomain, F p := by
   let G : ℂ → ℝ := fun z => fullDomain.indicator F (z.re, z.im)
-  have he : (∫ z : ℍ in fd, z.im ^ 2 * F (z.re, z.im)) = ∫ z : ℍ, z.im ^ 2 * G z := by
+  have he : (∫ z : ℍ in fd, z.im ^ (2 : ℕ) * F (z.re, z.im)) = ∫ z : ℍ, z.im ^ (2 : ℕ) * G z := by
     rw [← integral_indicator isClosed_fd.measurableSet]
     apply integral_congr_ae
     filter_upwards with z
@@ -104,7 +104,7 @@ theorem cell_curvature_eq_planar (e : Ioi (0 : ℝ)) :
     (∫ z : ℍ in fd, hyperbolicCurvature N f e z) =
       ∫ p in fullDomain, weightedRemainder N f e p := by
   have he (z : ℍ) : hyperbolicCurvature N f e z =
-      z.im ^ 2 * weightedRemainder N f e (z.re, z.im) := by
+      z.im ^ (2 : ℕ) * weightedRemainder N f e (z.re, z.im) := by
     have hz : point z.re z.im = (z : ℂ) := by apply Complex.ext <;> simp [SelbergMaassMean.point]
     simp only [hyperbolicCurvature, curvatureWeight, weightedRemainder, hz]
   simp only [he, integral_height_sq_cell]

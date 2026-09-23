@@ -154,7 +154,7 @@ theorem hasDerivAt_smoothConvexRapidExponentialFockSlope (a r : ℝ) :
       ((fun x => 2 * a * smoothConvexRapidFockStep x) *
         smoothConvexRapidExponentialFockPotential a)
       ((2 * a * deriv smoothConvexRapidFockStep r +
-          4 * a ^ 2 * smoothConvexRapidFockStep r ^ 2) *
+          4 * a ^ (2 : ℕ) * smoothConvexRapidFockStep r ^ (2 : ℕ)) *
         smoothConvexRapidExponentialFockPotential a r) r := by
   have hstep := (hasDerivAt_smoothConvexRapidFockStep r).const_mul (2 * a)
   have hpot := hasDerivAt_smoothConvexRapidExponentialFockPotential a r
@@ -163,7 +163,7 @@ theorem hasDerivAt_smoothConvexRapidExponentialFockSlope (a r : ℝ) :
 /-- Exact radial Laplacian density of the smooth convex rapid potential away from zero. -/
 def smoothConvexRapidExponentialFockLaplacianDensity (a r : ℝ) : ℝ :=
   ((2 * a * deriv smoothConvexRapidFockStep r +
-      4 * a ^ 2 * smoothConvexRapidFockStep r ^ 2) +
+      4 * a ^ (2 : ℕ) * smoothConvexRapidFockStep r ^ (2 : ℕ)) +
     (2 * a * smoothConvexRapidFockStep r) / r) *
       smoothConvexRapidExponentialFockPotential a r
 
@@ -174,7 +174,7 @@ theorem smoothConvexRapidExponentialFockLaplacianDensity_nonneg
   have hs := smoothConvexRapidFockStep_nonneg r
   have hds := deriv_smoothConvexRapidFockStep_nonneg r
   have h₁ : 0 ≤ 2 * a * deriv smoothConvexRapidFockStep r := by positivity
-  have h₂ : 0 ≤ 4 * a ^ 2 * smoothConvexRapidFockStep r ^ 2 := by positivity
+  have h₂ : 0 ≤ 4 * a ^ (2 : ℕ) * smoothConvexRapidFockStep r ^ (2 : ℕ) := by positivity
   have h₃ : 0 ≤ 2 * a * smoothConvexRapidFockStep r / r := by positivity
   have hp : 0 ≤ smoothConvexRapidExponentialFockPotential a r := by
     unfold smoothConvexRapidExponentialFockPotential

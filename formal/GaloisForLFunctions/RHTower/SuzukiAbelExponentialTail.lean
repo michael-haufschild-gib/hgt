@@ -64,7 +64,7 @@ theorem tendsto_log_mul_exp_neg_atTop :
     simpa only [id_eq] using Real.isLittleO_log_id_atTop.tendsto_div_nhds_zero
   have hlinexp := Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 1
   have hprod := hlogdiv.mul hlinexp
-  have heq : (fun T : ℝ => Real.log T / T * (T ^ 1 * Real.exp (-T))) =ᶠ[atTop]
+  have heq : (fun T : ℝ => Real.log T / T * (T ^ (1 : ℕ) * Real.exp (-T))) =ᶠ[atTop]
       fun T => Real.log T * Real.exp (-T) := by
     filter_upwards [eventually_ne_atTop (0 : ℝ)] with T hT
     simp only [pow_one]

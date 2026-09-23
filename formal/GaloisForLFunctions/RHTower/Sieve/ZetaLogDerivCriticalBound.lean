@@ -36,7 +36,7 @@ theorem crit_re_inv_ge {γ : ℝ} {ρ : ℂ} (hd : ‖ρ - critCentre γ‖ ≤ 
   have hnorm : ‖critCentre γ - ρ‖ ≤ 5 / 2 := by
     rw [← norm_neg]
     simpa using hd
-  have hnormsq : Complex.normSq (critCentre γ - ρ) = ‖critCentre γ - ρ‖ ^ 2 :=
+  have hnormsq : Complex.normSq (critCentre γ - ρ) = ‖critCentre γ - ρ‖ ^ (2 : ℕ) :=
     Complex.normSq_eq_norm_sq _
   have hnormpos : (0 : ℝ) < ‖critCentre γ - ρ‖ := norm_pos_iff.mpr hw0
   have hsq : Complex.normSq (critCentre γ - ρ) ≤ 25 / 4 := by

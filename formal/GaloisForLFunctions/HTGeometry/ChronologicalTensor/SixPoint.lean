@@ -17,7 +17,7 @@ noncomputable section
 def peakPosition : ℝ := (50 - Real.sqrt 313) / 81
 
 def sixCapacity : ℝ :=
-  (27 / 4 : ℝ) * peakPosition * (1 - peakPosition)^2 + peakPosition^2
+  (27 / 4 : ℝ) * peakPosition * (1 - peakPosition)^(2 : ℕ) + peakPosition^(2 : ℕ)
 
 def sixCost (a b c d e : ℝ) : ℝ := |a| + |b| + |c| + |d| + |e|
 
@@ -36,7 +36,7 @@ theorem peakPosition_bounds : 0 ≤ peakPosition ∧ peakPosition ≤ 5/12 := by
   constructor <;> nlinarith
 
 theorem peakPosition_stationary :
-    81 * peakPosition^2 - 100 * peakPosition + 27 = 0 := by
+    81 * peakPosition^(2 : ℕ) - 100 * peakPosition + 27 = 0 := by
   have hs := Real.sq_sqrt (show (0 : ℝ) ≤ 313 by positivity)
   unfold peakPosition
   nlinarith
@@ -47,22 +47,22 @@ theorem sixCapacity_nonneg : 0 ≤ sixCapacity := by
   positivity
 
 theorem cubic_gap_identity (x y : ℝ) :
-    sixCapacity * (|x| + |y|)^3 -
-        ((27/4 : ℝ) * |x| * |y|^2 + (|x|+|y|) * |x|^2) =
-      (|x| - peakPosition * (|x|+|y|))^2 *
+    sixCapacity * (|x| + |y|)^(3 : ℕ) -
+        ((27/4 : ℝ) * |x| * |y|^(2 : ℕ) + (|x|+|y|) * |x|^(2 : ℕ)) =
+      (|x| - peakPosition * (|x|+|y|))^(2 : ℕ) *
         ((25/2 - 27/2 * peakPosition) * (|x|+|y|) - 27/4 * |x|) := by
   calc
-    _ = (|x| - peakPosition * (|x|+|y|))^2 *
+    _ = (|x| - peakPosition * (|x|+|y|))^(2 : ℕ) *
         ((25/2 - 27/2 * peakPosition) * (|x|+|y|) - 27/4 * |x|) -
-      (|x| - peakPosition * (|x|+|y|)) * (|x|+|y|)^2 *
-        (81 * peakPosition^2 - 100 * peakPosition + 27) / 4 := by
+      (|x| - peakPosition * (|x|+|y|)) * (|x|+|y|)^(2 : ℕ) *
+        (81 * peakPosition^(2 : ℕ) - 100 * peakPosition + 27) / 4 := by
       unfold sixCapacity
       ring
     _ = _ := by rw [peakPosition_stationary]; ring
 
 theorem cubic_sharp_bound (x y : ℝ) :
-    (27/4 : ℝ) * |x| * |y|^2 + (|x|+|y|) * |x|^2 ≤
-      sixCapacity * (|x|+|y|)^3 := by
+    (27/4 : ℝ) * |x| * |y|^(2 : ℕ) + (|x|+|y|) * |x|^(2 : ℕ) ≤
+      sixCapacity * (|x|+|y|)^(3 : ℕ) := by
   have hc := peakPosition_bounds.2
   have h1 : 0 ≤ (23/4 : ℝ) - 27/2 * peakPosition := by linarith
   have h2 : 0 ≤ (25/2 : ℝ) - 27/2 * peakPosition := by linarith
@@ -73,7 +73,7 @@ theorem cubic_sharp_bound (x y : ℝ) :
   linarith
 
 theorem six_sharp_bound (a b c d e : ℝ) :
-    |sixResponse a b c d e| ≤ sixCapacity * sixCost a b c d e ^ 3 := by
+    |sixResponse a b c d e| ≤ sixCapacity * sixCost a b c d e ^ (3 : ℕ) := by
   let t := sixCost a b c d e
   let x := |b| + |c| + |d|
   let p := |a| + |e|
@@ -91,7 +91,7 @@ theorem six_sharp_bound (a b c d e : ℝ) :
       _ ≤ ((|a+b| + |c|) + |d|) + |e| :=
         add_le_add (add_le_add (abs_add_le _ _) le_rfl) le_rfl
       _ ≤ _ := add_le_add (add_le_add (add_le_add (abs_add_le _ _) le_rfl) le_rfl) le_rfl
-  have hac : |a| * |e| ≤ p^2 / 4 := by
+  have hac : |a| * |e| ≤ p^(2 : ℕ) / 4 := by
     dsimp [p]
     nlinarith [sq_nonneg (|a|-|e|)]
   have hcx : |c| ≤ x := by dsimp [x]; linarith [abs_nonneg b, abs_nonneg d]
@@ -105,17 +105,17 @@ theorem six_sharp_bound (a b c d e : ℝ) :
             abs_of_nonneg (show (0 : ℝ) ≤ 27 by positivity)]
           ring
         _ ≤ _ := by gcongr
-    _ ≤ (27/4 : ℝ) * |c| * p^2 + t * x * |c| := by
+    _ ≤ (27/4 : ℝ) * |c| * p^(2 : ℕ) + t * x * |c| := by
       have hh := mul_le_mul_of_nonneg_left hac (show 0 ≤ 27 * |c| by positivity)
       nlinarith
-    _ ≤ (27/4 : ℝ) * x * p^2 + t * x^2 := by
-      have hfirst := mul_le_mul_of_nonneg_right hcx (show 0 ≤ (27/4 : ℝ)*p^2 by positivity)
+    _ ≤ (27/4 : ℝ) * x * p^(2 : ℕ) + t * x^(2 : ℕ) := by
+      have hfirst := mul_le_mul_of_nonneg_right hcx (show 0 ≤ (27/4 : ℝ)*p^(2 : ℕ) by positivity)
       have hsecond := mul_le_mul_of_nonneg_left hcx (mul_nonneg ht hx)
       nlinarith
-    _ = (27/4 : ℝ) * |x| * |p|^2 + (|x|+|p|) * |x|^2 := by
+    _ = (27/4 : ℝ) * |x| * |p|^(2 : ℕ) + (|x|+|p|) * |x|^(2 : ℕ) := by
       rw [abs_of_nonneg hx, abs_of_nonneg hp, htotal]
-    _ ≤ sixCapacity * (|x|+|p|)^3 := cubic_sharp_bound x p
-    _ = sixCapacity * sixCost a b c d e ^ 3 := by
+    _ ≤ sixCapacity * (|x|+|p|)^(3 : ℕ) := cubic_sharp_bound x p
+    _ = sixCapacity * sixCost a b c d e ^ (3 : ℕ) := by
       rw [abs_of_nonneg hx, abs_of_nonneg hp, ← htotal]
 
 theorem six_attained :

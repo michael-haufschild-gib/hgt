@@ -27,15 +27,15 @@ theorem norm_integral_archimedeanCross_le
     (e f : ℕ → ℂ) (S T : Finset ℕ)
     (hS : ∀ m ∈ S, 1 ≤ m ∧ (m : ℝ) ≤ x) (hT : ∀ n ∈ T, 1 ≤ n)
     (hgap : 2 * Real.pi * x * K ≤ a)
-    (hlam : 0 < Real.log K - (33 / (8 * a ^ 2) + Real.pi / a)) :
+    (hlam : 0 < Real.log K - (33 / (8 * a ^ (2 : ℕ)) + Real.pi / a)) :
     ‖∫ τ in a..b,
         (∑ m ∈ S, e m * Complex.exp (((-(Real.log m) * τ : ℝ) : ℂ) * I))
           * (starRingEnd ℂ) (∑ n ∈ T, f n * Complex.exp (((-(Real.log n) * τ : ℝ) : ℂ) * I))
           * Complex.exp ((((2 * gammaHardyTheta τ : ℝ)) : ℂ) * I)‖
       ≤ (∑ m ∈ S, ‖e m‖) * (∑ n ∈ T, ‖f n‖) *
-          (2 / (Real.log K - (33 / (8 * a ^ 2) + Real.pi / a))) := by
+          (2 / (Real.log K - (33 / (8 * a ^ (2 : ℕ)) + Real.pi / a))) := by
   classical
-  set lam : ℝ := Real.log K - (33 / (8 * a ^ 2) + Real.pi / a) with hlamdef
+  set lam : ℝ := Real.log K - (33 / (8 * a ^ (2 : ℕ)) + Real.pi / a) with hlamdef
   have huIcc : Set.uIcc a b = Set.Icc a b := uIcc_of_le hab
   have hmemA : ∀ τ ∈ Set.uIcc a b, a ≤ τ := by
     intro τ hτ
@@ -71,16 +71,16 @@ theorem norm_integral_archimedeanCross_le
       linarith [hgap, hmemA τ hτ]
     have hrate := gammaHardyPhaseRate_sub_log_conductor_bound hτ0
     have habs := abs_le.mp hrate
-    have hmono1 : (33 : ℝ) / (16 * τ ^ 2) ≤ 33 / (16 * a ^ 2) := by
+    have hmono1 : (33 : ℝ) / (16 * τ ^ (2 : ℕ)) ≤ 33 / (16 * a ^ (2 : ℕ)) := by
       apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
       nlinarith [ha, hmemA τ hτ]
     have hmono2 : Real.pi / (2 * τ) ≤ Real.pi / (2 * a) := by
       apply div_le_div_of_nonneg_left Real.pi_pos.le (by positivity)
       linarith [hmemA τ hτ]
-    have hstep : Real.log (τ / (2 * Real.pi)) - (33 / (8 * a ^ 2) + Real.pi / a)
+    have hstep : Real.log (τ / (2 * Real.pi)) - (33 / (8 * a ^ (2 : ℕ)) + Real.pi / a)
         ≤ 2 * gammaHardyPhaseRate τ := by
-      have h2 : (2 : ℝ) * (33 / (16 * a ^ 2) + Real.pi / (2 * a))
-          = 33 / (8 * a ^ 2) + Real.pi / a := by
+      have h2 : (2 : ℝ) * (33 / (16 * a ^ (2 : ℕ)) + Real.pi / (2 * a))
+          = 33 / (8 * a ^ (2 : ℕ)) + Real.pi / a := by
         field_simp
         ring
       linarith [habs.1, hmono1, hmono2, h2]

@@ -61,17 +61,17 @@ theorem sum_one_sub_cos_le_of_close {f : ℕ → ℂ} {P : Finset ℕ} (hf : ∀
     (hP : ∀ p ∈ P, 0 < p) {t u δ : ℝ}
     (ht : Real.sqrt (mulDistSqPair f (charFn t) P) ≤ δ)
     (hu : Real.sqrt (mulDistSqPair f (charFn u) P) ≤ δ) :
-    ∑ p ∈ P, (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ) ≤ 4 * δ ^ 2 := by
+    ∑ p ∈ P, (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ) ≤ 4 * δ ^ (2 : ℕ) := by
   have hsep := char_separation_of_close hf hP ht hu
   have hnonneg : 0 ≤ ∑ p ∈ P, (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ) := by
     refine Finset.sum_nonneg fun p hp => ?_
     have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hP p hp
     have hcos := Real.cos_le_one ((t - u) * Real.log (p : ℝ))
     positivity
-  have hsq : (Real.sqrt (∑ p ∈ P, (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ))) ^ 2
+  have hsq : (Real.sqrt (∑ p ∈ P, (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ))) ^ (2 : ℕ)
       = ∑ p ∈ P, (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ) := Real.sq_sqrt hnonneg
-  have h2 : (Real.sqrt (∑ p ∈ P, (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ))) ^ 2
-      ≤ (2 * δ) ^ 2 := pow_le_pow_left₀ (Real.sqrt_nonneg _) hsep 2
+  have h2 : (Real.sqrt (∑ p ∈ P, (1 - Real.cos ((t - u) * Real.log (p : ℝ))) / (p : ℝ))) ^ (2 : ℕ)
+      ≤ (2 * δ) ^ (2 : ℕ) := pow_le_pow_left₀ (Real.sqrt_nonneg _) hsep 2
   rw [hsq] at h2
   nlinarith [h2]
 

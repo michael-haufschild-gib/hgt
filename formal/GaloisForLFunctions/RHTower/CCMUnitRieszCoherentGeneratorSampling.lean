@@ -28,7 +28,7 @@ coherent packet is the packet's weak-generator graph energy times the explicit s
 `(exp(h/2) - exp(-h/2)) / (8 (1 + exp(h/2) + exp(-h/2)))`. -/
 theorem unitExponentialThirdDifference_fixedSample_eq_generatorEnergy
     {h : ℝ} (hh : 0 < h) :
-    unitExponentialThirdDifferenceResponse (1 - h) h 1 ^ 2 =
+    unitExponentialThirdDifferenceResponse (1 - h) h 1 ^ (2 : ℕ) =
       ((Real.exp (h / 2) - Real.exp (-h / 2)) /
           (8 * unitExponentialThirdDifferenceCoefficient h)) *
         unitExponentialThirdDifferenceGeneratorEnergy (1 - h) h := by

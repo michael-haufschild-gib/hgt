@@ -89,7 +89,7 @@ lemma two_thirds_mul_le_one_sub_exp_neg_two_mul
 /-- The normalized-integral kernel whose integral is the missing-curvature
 energy (without its common Gaussian normalization). -/
 def gaussianSuzukiMissingCurvatureIntegrand (ε t u : ℝ) : ℝ :=
-  Real.exp (-u ^ 2 / (4 * ε)) *
+  Real.exp (-u ^ (2 : ℕ) / (4 * ε)) *
     suzukiMissingCurvature u * (1 - Real.cos (t * u))
 
 theorem continuousOn_gaussianSuzukiMissingCurvatureIntegrand
@@ -114,7 +114,7 @@ lemma norm_gaussianSuzukiMissingCurvatureIntegrand_le_near_zero
     simpa only [neg_mul] using
       GaloisForLFunctions.RHTower.one_sub_exp_neg_two_mul_pos hu
   have hden := two_thirds_mul_le_one_sub_exp_neg_two_mul hu hu1
-  have hgaussian : Real.exp (-u ^ 2 / (4 * ε)) ≤ 1 := by
+  have hgaussian : Real.exp (-u ^ (2 : ℕ) / (4 * ε)) ≤ 1 := by
     rw [Real.exp_le_one_iff]
     exact div_nonpos_of_nonpos_of_nonneg
       (neg_nonpos.mpr (sq_nonneg u)) (mul_nonneg (by norm_num) hε.le)
@@ -136,7 +136,7 @@ lemma norm_gaussianSuzukiMissingCurvatureIntegrand_le_near_zero
     (mul_nonneg (Real.exp_pos _).le
       (div_nonneg (Real.exp_pos _).le hdenpos.le)) hoscNonneg)]
   calc
-    Real.exp (-u ^ 2 / (4 * ε)) *
+    Real.exp (-u ^ (2 : ℕ) / (4 * ε)) *
           (Real.exp (-(5 * u) / 2) / (1 - Real.exp (-2 * u))) *
         (1 - Real.cos (t * u)) ≤
       1 * (1 / ((2 / 3 : ℝ) * u)) * (|t| * u) := by
@@ -172,7 +172,7 @@ lemma norm_gaussianSuzukiMissingCurvatureIntegrand_le_tail
     apply sub_le_sub_left
     apply Real.exp_le_exp.mpr
     nlinarith
-  have hgaussian : Real.exp (-u ^ 2 / (4 * ε)) ≤ 1 := by
+  have hgaussian : Real.exp (-u ^ (2 : ℕ) / (4 * ε)) ≤ 1 := by
     rw [Real.exp_le_one_iff]
     exact div_nonpos_of_nonpos_of_nonneg
       (neg_nonpos.mpr (sq_nonneg u)) (mul_nonneg (by norm_num) hε.le)
@@ -185,7 +185,7 @@ lemma norm_gaussianSuzukiMissingCurvatureIntegrand_le_tail
     (mul_nonneg (Real.exp_pos _).le
       (div_nonneg (Real.exp_pos _).le hdenpos.le)) hoscNonneg)]
   calc
-    Real.exp (-u ^ 2 / (4 * ε)) *
+    Real.exp (-u ^ (2 : ℕ) / (4 * ε)) *
           (Real.exp (-(5 * u) / 2) / (1 - Real.exp (-2 * u))) *
         (1 - Real.cos (t * u)) ≤
       1 * (Real.exp (-(5 * u) / 2) /
@@ -263,7 +263,7 @@ theorem gaussianSuzukiMissingCurvatureEnergy_nonnegative (ε t : ℝ) :
 /-- The Gaussian oscillation kernel applied to Suzuki's exact smooth
 curvature. -/
 def gaussianSuzukiSmoothCurvatureIntegrand (ε t u : ℝ) : ℝ :=
-  Real.exp (-u ^ 2 / (4 * ε)) *
+  Real.exp (-u ^ (2 : ℕ) / (4 * ε)) *
     suzukiSmoothCurvature u * (1 - Real.cos (t * u))
 
 theorem integral_gaussianSuzukiSmoothCurvatureIntegrand_eq_forward_sub_missing
@@ -271,12 +271,12 @@ theorem integral_gaussianSuzukiSmoothCurvatureIntegrand_eq_forward_sub_missing
     (∫ u in Set.Ioi (0 : ℝ),
         gaussianSuzukiSmoothCurvatureIntegrand ε t u) =
       (∫ u in Set.Ioi (0 : ℝ),
-        Real.exp (u / 2 - u ^ 2 / (4 * ε)) *
+        Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) *
           (1 - Real.cos (t * u))) -
       ∫ u in Set.Ioi (0 : ℝ),
         gaussianSuzukiMissingCurvatureIntegrand ε t u := by
   let forward : ℝ → ℝ := fun u =>
-    Real.exp (u / 2 - u ^ 2 / (4 * ε)) *
+    Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) *
       (1 - Real.cos (t * u))
   have hforward : IntegrableOn forward (Set.Ioi (0 : ℝ)) :=
     (gaussianContinuousPrimeOscillationIntegrable hε t).integrableOn
@@ -286,8 +286,8 @@ theorem integral_gaussianSuzukiSmoothCurvatureIntegrand_eq_forward_sub_missing
   apply integral_congr_ae
   filter_upwards with u
   have hfactor :
-      Real.exp (-u ^ 2 / (4 * ε)) * Real.exp (u / 2) =
-        Real.exp (u / 2 - u ^ 2 / (4 * ε)) := by
+      Real.exp (-u ^ (2 : ℕ) / (4 * ε)) * Real.exp (u / 2) =
+        Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) := by
     rw [← Real.exp_add]
     congr 1
     ring
@@ -295,12 +295,12 @@ theorem integral_gaussianSuzukiSmoothCurvatureIntegrand_eq_forward_sub_missing
     gaussianSuzukiMissingCurvatureIntegrand forward
   unfold suzukiSmoothCurvature
   calc
-    Real.exp (-u ^ 2 / (4 * ε)) *
+    Real.exp (-u ^ (2 : ℕ) / (4 * ε)) *
           (Real.exp (u / 2) - suzukiMissingCurvature u) *
           (1 - Real.cos (t * u)) =
-        (Real.exp (-u ^ 2 / (4 * ε)) * Real.exp (u / 2)) *
+        (Real.exp (-u ^ (2 : ℕ) / (4 * ε)) * Real.exp (u / 2)) *
             (1 - Real.cos (t * u)) -
-          Real.exp (-u ^ 2 / (4 * ε)) * suzukiMissingCurvature u *
+          Real.exp (-u ^ (2 : ℕ) / (4 * ε)) * suzukiMissingCurvature u *
             (1 - Real.cos (t * u)) := by ring
     _ = _ := by rw [hfactor]
 
@@ -321,13 +321,13 @@ theorem gaussianSuzukiSmoothCurvatureEnergy_eq_forward_sub_missing
   change
     2 / Real.sqrt (Real.pi * ε) *
           ((∫ u in Set.Ioi (0 : ℝ),
-              Real.exp (u / 2 - u ^ 2 / (4 * ε)) *
+              Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) *
                 (1 - Real.cos (t * u))) -
             ∫ u in Set.Ioi (0 : ℝ),
               gaussianSuzukiMissingCurvatureIntegrand ε t u) =
       2 / Real.sqrt (Real.pi * ε) *
           (∫ u in Set.Ioi (0 : ℝ),
-            Real.exp (u / 2 - u ^ 2 / (4 * ε)) *
+            Real.exp (u / 2 - u ^ (2 : ℕ) / (4 * ε)) *
               (1 - Real.cos (t * u))) -
         2 / Real.sqrt (Real.pi * ε) *
           ∫ u in Set.Ioi (0 : ℝ),

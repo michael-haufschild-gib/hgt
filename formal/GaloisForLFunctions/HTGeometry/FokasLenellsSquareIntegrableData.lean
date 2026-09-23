@@ -28,11 +28,11 @@ theorem reciprocalEnvelope_memLp (C : ℝ) :
   apply (memLp_two_iff_integrable_sq hc.aestronglyMeasurable).mpr
   have hi : Integrable (fun z : ℝ => (1+‖z‖)^(-(2:ℝ))) volume :=
     integrable_one_add_norm (by simp)
-  have he : (fun z : ℝ => (C/(1+|z|))^2) = fun z : ℝ => C^2*(1+‖z‖)^(-(2:ℝ)) := by
+  have he : (fun z : ℝ => (C/(1+|z|))^(2 : ℕ)) = fun z : ℝ => C^(2 : ℕ)*(1+‖z‖)^(-(2:ℝ)) := by
     funext z
     simp [Real.norm_eq_abs, Real.rpow_neg (by positivity : 0 ≤ 1+|z|), mul_pow, inv_pow, div_eq_mul_inv]
   rw [he]
-  exact hi.const_mul (C^2)
+  exact hi.const_mul (C^(2 : ℕ))
 
 /-- Both actual regularized reflection coefficients are square integrable for every explicitly normalized Schwartz potential. -/
 theorem globalSmall_regularReflection_memLp (q : SchwartzMap ℝ ℂ) :

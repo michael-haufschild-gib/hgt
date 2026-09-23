@@ -48,7 +48,7 @@ theorem finiteOrderEnvelope_of_deriv {W : ℂ → ℂ} (hW : Differentiable ℂ 
   have hpow1 : (1 : ℝ) ≤ (1 + ‖z‖) ^ (d + 1) := one_le_pow₀ (by linarith)
   have hpowz : ‖z‖ ≤ (1 + ‖z‖) ^ (d + 1) := by
     have h5 : (1 : ℝ) + ‖z‖ ≤ (1 + ‖z‖) ^ (d + 1) := by
-      calc (1 : ℝ) + ‖z‖ = (1 + ‖z‖) ^ 1 := (pow_one _).symm
+      calc (1 : ℝ) + ‖z‖ = (1 + ‖z‖) ^ (1 : ℕ) := (pow_one _).symm
         _ ≤ (1 + ‖z‖) ^ (d + 1) := pow_le_pow_right₀ (by linarith) (by omega)
     linarith
   have hpowd : (1 + ‖z‖) ^ d ≤ (1 + ‖z‖) ^ (d + 1) :=

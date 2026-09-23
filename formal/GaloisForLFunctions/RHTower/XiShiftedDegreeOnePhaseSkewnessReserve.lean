@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.XiShiftedHankelCassiniFourthCumulantCapNoGo
 The fourth shifted reciprocal response has an exact longitudinal/transverse splitting.  Besides
 the existing transverse charge, it contains a new secondary phase tax
 
-`κ_q = (Im(λ_q)^2 / Re(λ_q)) χ_q`.
+`κ_q = (Im(λ_q)^(2 : ℕ) / Re(λ_q)) χ_q`.
 
 After centering at the response mean slope, degree-one terminal flux is exactly longitudinal
 third response minus slope/charge covariance, twice the secondary tax, and the first-minor energy
@@ -24,7 +24,7 @@ noncomputable section
 
 /-- Fourth-order phase tax carried by one shifted reciprocal Xi atom. -/
 def xiShiftedSecondaryPhaseTaxDensity (y : ℝ) (q : XiZeroCopy) : ℝ :=
-  (xiShiftedReciprocalSquare y q).im ^ 2 /
+  (xiShiftedReciprocalSquare y q).im ^ (2 : ℕ) /
       xiShiftedResponseMass y q *
     xiShiftedTransverseChargeDensity y q
 
@@ -39,8 +39,8 @@ theorem xiShiftedSecondaryPhaseTaxDensity_nonneg
 and the secondary phase tax. -/
 theorem xiShiftedReciprocalSquare_fourth_re_eq_phaseSkewness
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
-    (xiShiftedReciprocalSquare y q ^ 4).re =
-      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 3 -
+    (xiShiftedReciprocalSquare y q ^ (4 : ℕ)).re =
+      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (3 : ℕ) -
         3 * xiShiftedResponseSlope y q *
           xiShiftedTransverseChargeDensity y q -
         2 * xiShiftedSecondaryPhaseTaxDensity y q := by
@@ -48,14 +48,14 @@ theorem xiShiftedReciprocalSquare_fourth_re_eq_phaseSkewness
   have ha : z.re ≠ 0 := (xiShiftedResponseMass_pos hy q).ne'
   unfold xiShiftedResponseMass xiShiftedResponseSlope
     xiShiftedTransverseChargeDensity xiShiftedSecondaryPhaseTaxDensity
-  change (z ^ 4).re =
-    z.re * ((z ^ 2).re / z.re) ^ 3 -
-      3 * ((z ^ 2).re / z.re) *
-        (z.im ^ 2 * Complex.normSq z / z.re) -
-      2 * (z.im ^ 2 / z.re *
-        (z.im ^ 2 * Complex.normSq z / z.re))
-  rw [show z ^ 4 = z * z * z * z by ring,
-    show z ^ 2 = z * z by ring]
+  change (z ^ (4 : ℕ)).re =
+    z.re * ((z ^ (2 : ℕ)).re / z.re) ^ (3 : ℕ) -
+      3 * ((z ^ (2 : ℕ)).re / z.re) *
+        (z.im ^ (2 : ℕ) * Complex.normSq z / z.re) -
+      2 * (z.im ^ (2 : ℕ) / z.re *
+        (z.im ^ (2 : ℕ) * Complex.normSq z / z.re))
+  rw [show z ^ (4 : ℕ) = z * z * z * z by ring,
+    show z ^ (2 : ℕ) = z * z by ring]
   simp only [Complex.mul_re, Complex.mul_im, Complex.normSq_apply]
   field_simp [ha]
   ring
@@ -64,37 +64,37 @@ theorem xiShiftedReciprocalSquare_fourth_re_eq_phaseSkewness
 theorem xiShiftedTransverseChargeDensity_le_two_mul_norm_cube
     {y : ℝ} (hy : 0 < y) (q : XiZeroCopy) :
     xiShiftedTransverseChargeDensity y q ≤
-      2 * ‖xiShiftedReciprocalSquare y q‖ ^ 3 := by
+      2 * ‖xiShiftedReciprocalSquare y q‖ ^ (3 : ℕ) := by
   let z := xiShiftedReciprocalSquare y q
   have ha : 0 < z.re := xiShiftedResponseMass_pos hy q
-  have hb : z.im ^ 2 ≤ z.re ^ 2 :=
+  have hb : z.im ^ (2 : ℕ) ≤ z.re ^ (2 : ℕ) :=
     (xiShiftedReciprocalSquare_im_sq_lt_re_sq hy q).le
-  have hnormSq : Complex.normSq z ≤ 2 * z.re ^ 2 := by
+  have hnormSq : Complex.normSq z ≤ 2 * z.re ^ (2 : ℕ) := by
     rw [Complex.normSq_apply]
     nlinarith
   have hprod :
-      z.im ^ 2 * Complex.normSq z ≤ z.re ^ 2 * (2 * z.re ^ 2) :=
+      z.im ^ (2 : ℕ) * Complex.normSq z ≤ z.re ^ (2 : ℕ) * (2 * z.re ^ (2 : ℕ)) :=
     mul_le_mul hb hnormSq (Complex.normSq_nonneg z) (sq_nonneg _)
   have hdiv :
-      z.im ^ 2 * Complex.normSq z / z.re ≤ 2 * z.re ^ 3 := by
+      z.im ^ (2 : ℕ) * Complex.normSq z / z.re ≤ 2 * z.re ^ (3 : ℕ) := by
     apply (div_le_iff₀ ha).2
     nlinarith
-  have hrele : 2 * z.re ^ 3 ≤ 2 * ‖z‖ ^ 3 :=
+  have hrele : 2 * z.re ^ (3 : ℕ) ≤ 2 * ‖z‖ ^ (3 : ℕ) :=
     mul_le_mul_of_nonneg_left
       (pow_le_pow_left₀ ha.le (Complex.re_le_norm z) 3) (by positivity)
-  change z.im ^ 2 * Complex.normSq z / z.re ≤ 2 * ‖z‖ ^ 3
+  change z.im ^ (2 : ℕ) * Complex.normSq z / z.re ≤ 2 * ‖z‖ ^ (3 : ℕ)
   exact hdiv.trans hrele
 
 private theorem summable_norm_xiShiftedReciprocalSquare_fourth
     {y : ℝ} (hy : 0 ≤ y) :
-    Summable (fun q : XiZeroCopy => ‖xiShiftedReciprocalSquare y q‖ ^ 4) := by
+    Summable (fun q : XiZeroCopy => ‖xiShiftedReciprocalSquare y q‖ ^ (4 : ℕ)) := by
   simpa only [norm_pow] using
     (summable_xiShiftedReciprocalSquare_pow hy 3).norm
 
 theorem summable_xiShiftedResponseMass_mul_slope_cube
     {y : ℝ} (hy : 0 < y) :
     Summable (fun q : XiZeroCopy =>
-      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 3) := by
+      xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (3 : ℕ)) := by
   apply Summable.of_norm_bounded
     (summable_norm_xiShiftedReciprocalSquare_fourth hy.le)
   intro q
@@ -122,14 +122,14 @@ theorem summable_xiShiftedResponseSlope_mul_transverseChargeDensity
     xiShiftedTransverseChargeDensity_nonneg hy q
   have hhle : xiShiftedResponseSlope y q ≤ ‖z‖ :=
     xiShiftedResponseSlope_le_norm hy q
-  have hcle : xiShiftedTransverseChargeDensity y q ≤ 2 * ‖z‖ ^ 3 :=
+  have hcle : xiShiftedTransverseChargeDensity y q ≤ 2 * ‖z‖ ^ (3 : ℕ) :=
     xiShiftedTransverseChargeDensity_le_two_mul_norm_cube hy q
   rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hh.le hc)]
   have hmul := mul_le_mul hhle hcle hc (norm_nonneg z)
   calc
     xiShiftedResponseSlope y q * xiShiftedTransverseChargeDensity y q
-        ≤ ‖z‖ * (2 * ‖z‖ ^ 3) := hmul
-    _ = 2 * ‖z‖ ^ 4 := by ring
+        ≤ ‖z‖ * (2 * ‖z‖ ^ (3 : ℕ)) := hmul
+    _ = 2 * ‖z‖ ^ (4 : ℕ) := by ring
 
 theorem summable_xiShiftedSecondaryPhaseTaxDensity
     {y : ℝ} (hy : 0 < y) :
@@ -139,34 +139,34 @@ theorem summable_xiShiftedSecondaryPhaseTaxDensity
   intro q
   let z := xiShiftedReciprocalSquare y q
   have ha : 0 < xiShiftedResponseMass y q := xiShiftedResponseMass_pos hy q
-  have hb : z.im ^ 2 < z.re ^ 2 :=
+  have hb : z.im ^ (2 : ℕ) < z.re ^ (2 : ℕ) :=
     xiShiftedReciprocalSquare_im_sq_lt_re_sq hy q
-  have hphase : z.im ^ 2 / xiShiftedResponseMass y q ≤ ‖z‖ := by
+  have hphase : z.im ^ (2 : ℕ) / xiShiftedResponseMass y q ≤ ‖z‖ := by
     have ha' : 0 < z.re := by
       simpa only [z, xiShiftedResponseMass] using ha
-    have hlt : z.im ^ 2 / z.re < z.re := by
+    have hlt : z.im ^ (2 : ℕ) / z.re < z.re := by
       rw [div_lt_iff₀ ha']
       simpa only [pow_two] using hb
     exact hlt.le.trans (Complex.re_le_norm z)
   have hc : 0 ≤ xiShiftedTransverseChargeDensity y q :=
     xiShiftedTransverseChargeDensity_nonneg hy q
-  have hcle : xiShiftedTransverseChargeDensity y q ≤ 2 * ‖z‖ ^ 3 :=
+  have hcle : xiShiftedTransverseChargeDensity y q ≤ 2 * ‖z‖ ^ (3 : ℕ) :=
     xiShiftedTransverseChargeDensity_le_two_mul_norm_cube hy q
   rw [Real.norm_eq_abs,
     abs_of_nonneg (xiShiftedSecondaryPhaseTaxDensity_nonneg hy q)]
   unfold xiShiftedSecondaryPhaseTaxDensity
   have hmul := mul_le_mul hphase hcle hc (norm_nonneg z)
   calc
-    z.im ^ 2 / xiShiftedResponseMass y q *
+    z.im ^ (2 : ℕ) / xiShiftedResponseMass y q *
           xiShiftedTransverseChargeDensity y q
-        ≤ ‖z‖ * (2 * ‖z‖ ^ 3) := hmul
-    _ = 2 * ‖z‖ ^ 4 := by ring
+        ≤ ‖z‖ * (2 * ‖z‖ ^ (3 : ℕ)) := hmul
+    _ = 2 * ‖z‖ ^ (4 : ℕ) := by ring
 
 /-- Complete centered longitudinal third response. -/
 def xiShiftedResponseCenteredThird (y : ℝ) : ℝ :=
   ∑' q : XiZeroCopy,
     xiShiftedResponseMass y q *
-      (xiShiftedResponseSlope y q - xiShiftedResponseMeanSlope y) ^ 3
+      (xiShiftedResponseSlope y q - xiShiftedResponseMeanSlope y) ^ (3 : ℕ)
 
 /-- Complete covariance between centered response slope and transverse charge. -/
 def xiShiftedSlopeChargeCovariance (y : ℝ) : ℝ :=
@@ -182,14 +182,14 @@ def xiShiftedSecondaryPhaseTax (y : ℝ) : ℝ :=
 def xiShiftedResponseEnergyGap (y : ℝ) : ℝ :=
   (∑' q : XiZeroCopy,
       xiShiftedResponseMass y q *
-        (xiShiftedResponseSlope y q - xiShiftedResponseMeanSlope y) ^ 2) -
+        (xiShiftedResponseSlope y q - xiShiftedResponseMeanSlope y) ^ (2 : ℕ)) -
     ∑' q : XiZeroCopy, xiShiftedTransverseChargeDensity y q
 
 theorem summable_xiShiftedResponseCenteredThird
     {y : ℝ} (hy : 0 < y) :
     Summable (fun q : XiZeroCopy =>
       xiShiftedResponseMass y q *
-        (xiShiftedResponseSlope y q - xiShiftedResponseMeanSlope y) ^ 3) := by
+        (xiShiftedResponseSlope y q - xiShiftedResponseMeanSlope y) ^ (3 : ℕ)) := by
   let r := xiShiftedResponseMeanSlope y
   have h0 := summable_xiShiftedResponseMass hy.le
   have h1 := summable_xiShiftedResponseMass_mul_slope hy
@@ -197,15 +197,15 @@ theorem summable_xiShiftedResponseCenteredThird
   have h3 := summable_xiShiftedResponseMass_mul_slope_cube hy
   have hlinear : Summable (fun q : XiZeroCopy =>
       (-3 * r) *
-        (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2)) :=
+        (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ))) :=
     h2.mul_left (-3 * r)
   have hquadratic : Summable (fun q : XiZeroCopy =>
-      (3 * r ^ 2) *
+      (3 * r ^ (2 : ℕ)) *
         (xiShiftedResponseMass y q * xiShiftedResponseSlope y q)) :=
-    h1.mul_left (3 * r ^ 2)
+    h1.mul_left (3 * r ^ (2 : ℕ))
   have hconstant : Summable (fun q : XiZeroCopy =>
-      (-r ^ 3) * xiShiftedResponseMass y q) :=
-    h0.mul_left (-r ^ 3)
+      (-r ^ (3 : ℕ)) * xiShiftedResponseMass y q) :=
+    h0.mul_left (-r ^ (3 : ℕ))
   have hsum := ((h3.add hlinear).add hquadratic).add hconstant
   apply hsum.congr
   intro q
@@ -230,7 +230,7 @@ theorem summable_xiShiftedResponseMass_mul_centeredSlope_sq
     {y : ℝ} (hy : 0 < y) :
     Summable (fun q : XiZeroCopy =>
       xiShiftedResponseMass y q *
-        (xiShiftedResponseSlope y q - xiShiftedResponseMeanSlope y) ^ 2) := by
+        (xiShiftedResponseSlope y q - xiShiftedResponseMeanSlope y) ^ (2 : ℕ)) := by
   let r := xiShiftedResponseMeanSlope y
   have h0 := summable_xiShiftedResponseMass hy.le
   have h1 := summable_xiShiftedResponseMass_mul_slope hy
@@ -240,8 +240,8 @@ theorem summable_xiShiftedResponseMass_mul_centeredSlope_sq
         (xiShiftedResponseMass y q * xiShiftedResponseSlope y q)) :=
     h1.mul_left (-2 * r)
   have hconstant : Summable (fun q : XiZeroCopy =>
-      r ^ 2 * xiShiftedResponseMass y q) :=
-    h0.mul_left (r ^ 2)
+      r ^ (2 : ℕ) * xiShiftedResponseMass y q) :=
+    h0.mul_left (r ^ (2 : ℕ))
   have hsum := (h2.add hlinear).add hconstant
   apply hsum.congr
   intro q
@@ -252,14 +252,14 @@ theorem xiShiftedResponseCenteredThird_eq_raw
     {y : ℝ} (hy : 0 < y) :
     xiShiftedResponseCenteredThird y =
       (∑' q : XiZeroCopy,
-        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 3) -
+        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (3 : ℕ)) -
       3 * xiShiftedResponseMeanSlope y *
         (∑' q : XiZeroCopy,
-          xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2) +
-      3 * xiShiftedResponseMeanSlope y ^ 2 *
+          xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ)) +
+      3 * xiShiftedResponseMeanSlope y ^ (2 : ℕ) *
         (∑' q : XiZeroCopy,
           xiShiftedResponseMass y q * xiShiftedResponseSlope y q) -
-      xiShiftedResponseMeanSlope y ^ 3 *
+      xiShiftedResponseMeanSlope y ^ (3 : ℕ) *
         (∑' q : XiZeroCopy, xiShiftedResponseMass y q) := by
   let r := xiShiftedResponseMeanSlope y
   have h0 := summable_xiShiftedResponseMass hy.le
@@ -268,27 +268,27 @@ theorem xiShiftedResponseCenteredThird_eq_raw
   have h3 := summable_xiShiftedResponseMass_mul_slope_cube hy
   have hlinear : Summable (fun q : XiZeroCopy =>
       (-3 * r) *
-        (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2)) :=
+        (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ))) :=
     h2.mul_left (-3 * r)
   have hquadratic : Summable (fun q : XiZeroCopy =>
-      (3 * r ^ 2) *
+      (3 * r ^ (2 : ℕ)) *
         (xiShiftedResponseMass y q * xiShiftedResponseSlope y q)) :=
-    h1.mul_left (3 * r ^ 2)
+    h1.mul_left (3 * r ^ (2 : ℕ))
   have hconstant : Summable (fun q : XiZeroCopy =>
-      (-r ^ 3) * xiShiftedResponseMass y q) :=
-    h0.mul_left (-r ^ 3)
+      (-r ^ (3 : ℕ)) * xiShiftedResponseMass y q) :=
+    h0.mul_left (-r ^ (3 : ℕ))
   rw [xiShiftedResponseCenteredThird]
   calc
     (∑' q : XiZeroCopy,
         xiShiftedResponseMass y q *
-          (xiShiftedResponseSlope y q - r) ^ 3) =
+          (xiShiftedResponseSlope y q - r) ^ (3 : ℕ)) =
         ∑' q : XiZeroCopy,
-          (((xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 3 +
+          (((xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (3 : ℕ) +
               (-3 * r) * (xiShiftedResponseMass y q *
-                xiShiftedResponseSlope y q ^ 2)) +
-            (3 * r ^ 2) * (xiShiftedResponseMass y q *
+                xiShiftedResponseSlope y q ^ (2 : ℕ))) +
+            (3 * r ^ (2 : ℕ)) * (xiShiftedResponseMass y q *
               xiShiftedResponseSlope y q)) +
-            (-r ^ 3) * xiShiftedResponseMass y q) := by
+            (-r ^ (3 : ℕ)) * xiShiftedResponseMass y q) := by
           apply tsum_congr
           intro q
           ring
@@ -328,11 +328,11 @@ theorem xiShiftedResponseEnergyGap_eq_raw
     {y : ℝ} (hy : 0 < y) :
     xiShiftedResponseEnergyGap y =
       (∑' q : XiZeroCopy,
-        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2) -
+        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ)) -
       2 * xiShiftedResponseMeanSlope y *
         (∑' q : XiZeroCopy,
           xiShiftedResponseMass y q * xiShiftedResponseSlope y q) +
-      xiShiftedResponseMeanSlope y ^ 2 *
+      xiShiftedResponseMeanSlope y ^ (2 : ℕ) *
         (∑' q : XiZeroCopy, xiShiftedResponseMass y q) -
       ∑' q : XiZeroCopy, xiShiftedTransverseChargeDensity y q := by
   let r := xiShiftedResponseMeanSlope y
@@ -344,19 +344,19 @@ theorem xiShiftedResponseEnergyGap_eq_raw
         (xiShiftedResponseMass y q * xiShiftedResponseSlope y q)) :=
     h1.mul_left (-2 * r)
   have hconstant : Summable (fun q : XiZeroCopy =>
-      r ^ 2 * xiShiftedResponseMass y q) :=
-    h0.mul_left (r ^ 2)
+      r ^ (2 : ℕ) * xiShiftedResponseMass y q) :=
+    h0.mul_left (r ^ (2 : ℕ))
   rw [xiShiftedResponseEnergyGap]
   congr 1
   calc
     (∑' q : XiZeroCopy,
         xiShiftedResponseMass y q *
-          (xiShiftedResponseSlope y q - r) ^ 2) =
+          (xiShiftedResponseSlope y q - r) ^ (2 : ℕ)) =
         ∑' q : XiZeroCopy,
-          ((xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 2 +
+          ((xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (2 : ℕ) +
             (-2 * r) * (xiShiftedResponseMass y q *
               xiShiftedResponseSlope y q)) +
-            r ^ 2 * xiShiftedResponseMass y q) := by
+            r ^ (2 : ℕ) * xiShiftedResponseMass y q) := by
           apply tsum_congr
           intro q
           ring
@@ -371,7 +371,7 @@ theorem xiShiftedReciprocalMoment_three_re_eq_phaseSkewness
     {y : ℝ} (hy : 0 < y) :
     (xiShiftedReciprocalMoment y 3).re =
       (∑' q : XiZeroCopy,
-        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 3) -
+        xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (3 : ℕ)) -
       3 * (∑' q : XiZeroCopy,
         xiShiftedResponseSlope y q * xiShiftedTransverseChargeDensity y q) -
       2 * xiShiftedSecondaryPhaseTax y := by
@@ -384,7 +384,7 @@ theorem xiShiftedReciprocalMoment_three_re_eq_phaseSkewness
   calc
     (∑' q : XiZeroCopy, (xiShiftedReciprocalSquare y q ^ (3 + 1)).re) =
         ∑' q : XiZeroCopy,
-          (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ 3 -
+          (xiShiftedResponseMass y q * xiShiftedResponseSlope y q ^ (3 : ℕ) -
             3 * (xiShiftedResponseSlope y q *
               xiShiftedTransverseChargeDensity y q) -
             2 * xiShiftedSecondaryPhaseTaxDensity y q) := by
@@ -478,7 +478,7 @@ theorem xiShiftedSecondaryPhaseTaxDensity_eq_zero_iff
   constructor
   · intro hzero
     rcases mul_eq_zero.mp hzero with hphase | hcharge
-    · have himsq : (xiShiftedReciprocalSquare y q).im ^ 2 = 0 :=
+    · have himsq : (xiShiftedReciprocalSquare y q).im ^ (2 : ℕ) = 0 :=
         (div_eq_zero_iff.mp hphase).resolve_right hm
       exact (xiShiftedReciprocalSquare_im_eq_zero_iff_criticalLine hy q).mp
         (sq_eq_zero_iff.mp himsq)

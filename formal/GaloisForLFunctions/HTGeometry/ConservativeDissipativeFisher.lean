@@ -24,7 +24,7 @@ theorem damping_pointedFisherConnection (psi chi : E) :
 /-- Fisher damping resolves a precise coherent combination of source and tangent overlaps. -/
 theorem fisher_generator_power (A : E →L[ℂ] E) (psi chi x : E) :
     RCLike.re ⟪x, generator A (pointedFisherConnection psi chi) x⟫_ℂ =
-      -(1 / 2 : ℝ) * ‖⟪psi, x⟫_ℂ • chi + ⟪chi, x⟫_ℂ • psi‖ ^ 2 := by
+      -(1 / 2 : ℝ) * ‖⟪psi, x⟫_ℂ • chi + ⟪chi, x⟫_ℂ • psi‖ ^ (2 : ℕ) := by
   rw [generator_power, pointedFisherConnection]
   simp only [smul_apply, add_apply, InnerProductSpace.rankOne_apply]
   rw [norm_smul, mul_pow, invSqrtTwo_norm_sq]

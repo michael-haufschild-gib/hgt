@@ -337,7 +337,7 @@ theorem xiSpectralNegativeLogDerivative_eq_I_mul_logDeriv (z : ℂ) :
   calc
     -deriv riemannXi (completedSpectralCoordinate z) *
           (riemannXi (completedSpectralCoordinate z))⁻¹ =
-        Complex.I ^ 2 * deriv riemannXi (completedSpectralCoordinate z) *
+        Complex.I ^ (2 : ℕ) * deriv riemannXi (completedSpectralCoordinate z) *
           (riemannXi (completedSpectralCoordinate z))⁻¹ := by
       rw [Complex.I_sq]
       ring
@@ -998,7 +998,7 @@ lemma unitPrincipalKernel_horizontal
     A / ((x : ℂ) - Complex.I) -
         A / ((x : ℂ) + Complex.I) =
       (2 * Complex.I * A) *
-        (((1 / (1 + x ^ 2) : ℝ) : ℂ)) := by
+        (((1 / (1 + x ^ (2 : ℕ)) : ℝ) : ℂ)) := by
   have hminus : (x : ℂ) - Complex.I ≠ 0 := by
     intro h
     have him := congrArg Complex.im h
@@ -1007,10 +1007,10 @@ lemma unitPrincipalKernel_horizontal
     intro h
     have him := congrArg Complex.im h
     norm_num at him
-  have hreal : (1 + x ^ 2 : ℝ) ≠ 0 := by positivity
-  have hrealC : (((1 + x ^ 2 : ℝ) : ℂ)) ≠ 0 := by
+  have hreal : (1 + x ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
+  have hrealC : (((1 + x ^ (2 : ℕ) : ℝ) : ℂ)) ≠ 0 := by
     exact_mod_cast hreal
-  have hdenom : (1 + (x : ℂ) ^ 2) ≠ 0 := by
+  have hdenom : (1 + (x : ℂ) ^ (2 : ℕ)) ≠ 0 := by
     exact_mod_cast hreal
   push_cast
   field_simp [hminus, hplus, hrealC]
@@ -1023,7 +1023,7 @@ lemma unitPrincipalKernel_vertical
     Complex.I * (A / (1 + (y : ℂ) * Complex.I)) -
         Complex.I * (A / (-1 + (y : ℂ) * Complex.I)) =
       (2 * Complex.I * A) *
-        (((1 / (1 + y ^ 2) : ℝ) : ℂ)) := by
+        (((1 / (1 + y ^ (2 : ℕ)) : ℝ) : ℂ)) := by
   have hright : (1 : ℂ) + (y : ℂ) * Complex.I ≠ 0 := by
     intro h
     have hre := congrArg Complex.re h
@@ -1032,10 +1032,10 @@ lemma unitPrincipalKernel_vertical
     intro h
     have hre := congrArg Complex.re h
     norm_num at hre
-  have hreal : (1 + y ^ 2 : ℝ) ≠ 0 := by positivity
-  have hrealC : (((1 + y ^ 2 : ℝ) : ℂ)) ≠ 0 := by
+  have hreal : (1 + y ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
+  have hrealC : (((1 + y ^ (2 : ℕ) : ℝ) : ℂ)) ≠ 0 := by
     exact_mod_cast hreal
-  have hdenom : (1 + (y : ℂ) ^ 2) ≠ 0 := by
+  have hdenom : (1 + (y : ℂ) ^ (2 : ℕ)) ≠ 0 := by
     exact_mod_cast hreal
   have hright' : (1 : ℂ) + Complex.I * (y : ℂ) ≠ 0 := by
     simpa [mul_comm] using hright
@@ -1049,7 +1049,7 @@ lemma unitPrincipalKernel_vertical
   ring
 
 lemma integral_inv_one_add_sq_neg_one_one :
-    (∫ x : ℝ in (-1 : ℝ)..1, (1 + x ^ 2)⁻¹) =
+    (∫ x : ℝ in (-1 : ℝ)..1, (1 + x ^ (2 : ℕ))⁻¹) =
       Real.pi / 2 := by
   rw [integral_inv_one_add_sq, Real.arctan_neg, Real.arctan_one]
   ring
@@ -2122,7 +2122,7 @@ lemma norm_complexSymmetricGaussian_spectral_vertical_le
     ‖complexSymmetricGaussian ε t
         ((T : ℂ) + (y : ℂ) * Complex.I)‖ ≤
       archimedeanVerticalGaussianBound ε t T := by
-  have hysq : y ^ 2 ≤ 1 := by nlinarith
+  have hysq : y ^ (2 : ℕ) ≤ 1 := by nlinarith
   unfold complexSymmetricGaussian archimedeanVerticalGaussianBound
   calc
     ‖complexTranslatedGaussian ε t
@@ -2133,13 +2133,13 @@ lemma norm_complexSymmetricGaussian_spectral_vertical_le
           ((T : ℂ) + (y : ℂ) * Complex.I)‖ +
         ‖complexTranslatedGaussian ε (-t)
           ((T : ℂ) + (y : ℂ) * Complex.I)‖ := norm_add_le _ _
-    _ = Real.exp (ε * y ^ 2 - ε * (T - t) ^ 2) +
-        Real.exp (ε * y ^ 2 - ε * (T + t) ^ 2) := by
+    _ = Real.exp (ε * y ^ (2 : ℕ) - ε * (T - t) ^ (2 : ℕ)) +
+        Real.exp (ε * y ^ (2 : ℕ) - ε * (T + t) ^ (2 : ℕ)) := by
       rw [norm_complexTranslatedGaussian,
         norm_complexTranslatedGaussian]
       congr 1 <;> simp
-    _ ≤ Real.exp (ε - ε * (T - t) ^ 2) +
-        Real.exp (ε - ε * (T + t) ^ 2) := by
+    _ ≤ Real.exp (ε - ε * (T - t) ^ (2 : ℕ)) +
+        Real.exp (ε - ε * (T + t) ^ (2 : ℕ)) := by
       gcongr <;>
         simpa using mul_le_mul_of_nonneg_left hysq hε.le
 
@@ -2151,8 +2151,8 @@ theorem tendsto_archimedeanVerticalGaussianBound_mul_exp
       (fun T : ℝ => archimedeanVerticalGaussianBound ε t T *
         (C * Real.exp (A * T)) * 2)
       atTop (𝓝 0) := by
-  let E₁ : ℝ → ℝ := fun T => Real.exp (ε - ε * (T - t) ^ 2)
-  let E₂ : ℝ → ℝ := fun T => Real.exp (ε - ε * (T + t) ^ 2)
+  let E₁ : ℝ → ℝ := fun T => Real.exp (ε - ε * (T - t) ^ (2 : ℕ))
+  let E₂ : ℝ → ℝ := fun T => Real.exp (ε - ε * (T + t) ^ (2 : ℕ))
   have hE₁ : Tendsto (fun T => E₁ T * Real.exp (A * T))
       atTop (𝓝 0) := by
     refine (tendsto_exp_neg_quadratic_add_linear_atTop

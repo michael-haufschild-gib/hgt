@@ -164,11 +164,11 @@ def smallHeightCopies : Set XiZeroCopy := {q | |(q.1 : ℂ).im| ≤ 6}
 
 theorem smallHeightCopies_finite : smallHeightCopies.Finite := by
   classical
-  have hZ : (xiZeroSet ∩ closedBall (0 : ℂ) 7).Finite :=
+  have hZ : (xiZeroSet_weilLagFunctionCriterion ∩ closedBall (0 : ℂ) 7).Finite :=
     finite_xiZeroSet_inter (isCompact_closedBall _ _)
   -- every small-height copy sits over a zero in the ball
   have hsub : smallHeightCopies ⊆
-      ⋃ ρ ∈ xiZeroSet ∩ closedBall (0 : ℂ) 7, {q : XiZeroCopy | (q.1 : ℂ) = ρ} := by
+      ⋃ ρ ∈ xiZeroSet_weilLagFunctionCriterion ∩ closedBall (0 : ℂ) 7, {q : XiZeroCopy | (q.1 : ℂ) = ρ} := by
     intro q hq
     simp only [Set.mem_iUnion, Set.mem_setOf_eq, exists_prop]
     refine ⟨(q.1 : ℂ), ⟨xi_xiZeroCopy_eq_zero q, ?_⟩, rfl⟩

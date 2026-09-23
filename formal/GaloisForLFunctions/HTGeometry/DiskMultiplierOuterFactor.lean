@@ -90,7 +90,7 @@ theorem integrable_log_norm_diskMultiplierBoundarySafe
 
 /-- Positive periodic squared boundary modulus defining the canonical Szegő outer factor. -/
 def diskMultiplierOuterWeight (phi : DiskMultiplier) (theta : ℝ) : ℝ :=
-  ‖diskMultiplierBoundarySafe phi (angularCircle theta)‖ ^ 2
+  ‖diskMultiplierBoundarySafe phi (angularCircle theta)‖ ^ (2 : ℕ)
 
 theorem diskMultiplierOuterWeight_pos (phi : DiskMultiplier) (theta : ℝ) :
     0 < diskMultiplierOuterWeight phi theta := by
@@ -98,7 +98,7 @@ theorem diskMultiplierOuterWeight_pos (phi : DiskMultiplier) (theta : ℝ) :
   exact sq_pos_of_pos (norm_pos_iff.mpr (diskMultiplierBoundarySafe_ne_zero phi _))
 
 theorem diskMultiplierOuterWeight_le (phi : DiskMultiplier) (theta : ℝ) :
-    diskMultiplierOuterWeight phi theta ≤ (max 1 phi.bd) ^ 2 := by
+    diskMultiplierOuterWeight phi theta ≤ (max 1 phi.bd) ^ (2 : ℕ) := by
   rw [diskMultiplierOuterWeight]
   nlinarith [norm_nonneg (diskMultiplierBoundarySafe phi (angularCircle theta)),
     norm_diskMultiplierBoundarySafe_le phi (angularCircle theta)]
@@ -258,7 +258,7 @@ theorem normSq_szegoOuter_le_from_weight_bound {w : ℝ → ℝ} {C : ℝ}
     (hwpos : ∀ theta, 0 < w theta)
     (hwC : ∀ theta, w theta ≤ C)
     {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (varphi : ℝ) :
-    ‖szegoOuter w (circleMap 0 r varphi)‖ ^ 2 ≤ C := by
+    ‖szegoOuter w (circleMap 0 r varphi)‖ ^ (2 : ℕ) ≤ C := by
   rw [normSq_szegoOuter_circleMap hlog hr0 hr1 varphi,
     show C = Real.exp (Real.log C) from (Real.exp_log hC).symm]
   apply Real.exp_le_exp.mpr
@@ -271,7 +271,7 @@ theorem weight_lower_le_normSq_szegoOuter {w : ℝ → ℝ} {c : ℝ}
       0 (2 * Real.pi))
     (hwc : ∀ theta, c ≤ w theta)
     {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (varphi : ℝ) :
-    c ≤ ‖szegoOuter w (circleMap 0 r varphi)‖ ^ 2 := by
+    c ≤ ‖szegoOuter w (circleMap 0 r varphi)‖ ^ (2 : ℕ) := by
   rw [normSq_szegoOuter_circleMap hlog hr0 hr1 varphi,
     show c = Real.exp (Real.log c) from (Real.exp_log hc).symm]
   apply Real.exp_le_exp.mpr
@@ -284,7 +284,7 @@ theorem normSq_inv_szegoOuter_le_from_weight_lower {w : ℝ → ℝ} {c : ℝ}
       0 (2 * Real.pi))
     (hwc : ∀ theta, c ≤ w theta)
     {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (varphi : ℝ) :
-    ‖(szegoOuter w (circleMap 0 r varphi))⁻¹‖ ^ 2 ≤ c⁻¹ := by
+    ‖(szegoOuter w (circleMap 0 r varphi))⁻¹‖ ^ (2 : ℕ) ≤ c⁻¹ := by
   have hlower := weight_lower_le_normSq_szegoOuter hc hlog hwc hr0 hr1 varphi
   rw [norm_inv, inv_pow]
   exact (inv_le_inv₀ (sq_pos_of_pos (norm_pos_iff.mpr
@@ -311,7 +311,7 @@ noncomputable def diskMultiplierOuterFactor
     have hz1 : ‖z‖ < 1 := by
       simpa [Metric.mem_ball, dist_zero_right] using hz
     have hsq := normSq_szegoOuter_le_from_weight_bound
-      (show 0 < (max 1 phi.bd) ^ 2 by positivity)
+      (show 0 < (max 1 phi.bd) ^ (2 : ℕ) by positivity)
       (intervalIntegrable_log_diskMultiplierOuterWeight phi hphi)
       (diskMultiplierOuterWeight_pos phi)
       (diskMultiplierOuterWeight_le phi)
@@ -336,8 +336,8 @@ theorem ae_norm_sq_diskMultiplierOuterFactor_boundary
     (phi : DiskMultiplier)
     (hphi : ∃ z ∈ Metric.ball (0 : ℂ) 1, phi.fn z ≠ 0) :
     ∀ᵐ z ∂circleLebesgue,
-      ‖diskMultiplierBoundaryFun (diskMultiplierOuterFactor phi hphi) z‖ ^ 2 =
-        ‖diskMultiplierBoundarySafe phi z‖ ^ 2 := by
+      ‖diskMultiplierBoundaryFun (diskMultiplierOuterFactor phi hphi) z‖ ^ (2 : ℕ) =
+        ‖diskMultiplierBoundarySafe phi z‖ ^ (2 : ℕ) := by
   let outer := diskMultiplierOuterFactor phi hphi
   obtain ⟨ns, hns, hboundary⟩ := exists_diskMultiplierRadialBoundary_subseq_ae outer
   have hszego := tendsto_normSq_szegoOuter_ae
@@ -352,7 +352,7 @@ theorem ae_norm_sq_diskMultiplierOuterFactor_boundary
   have hszegoScaled : ∀ᵐ a ∂volume,
       Tendsto
         (fun r => ‖szegoOuter (diskMultiplierOuterWeight phi)
-          (circleMap 0 r ((2 * Real.pi) • a))‖ ^ 2)
+          (circleMap 0 r ((2 * Real.pi) • a))‖ ^ (2 : ℕ))
         (𝓝[<] 1)
         (𝓝 (diskMultiplierOuterWeight phi ((2 * Real.pi) • a))) :=
     hscale.ae hszego
@@ -385,30 +385,30 @@ theorem ae_norm_sq_diskMultiplierOuterFactor_boundary
   have hszegoPull : ∀ᵐ a ∂volume.restrict (Set.Ioc (0 : ℝ) (0 + 1)),
       Tendsto
         (fun r => ‖szegoOuter (diskMultiplierOuterWeight phi)
-          (circleMap 0 r ((2 * Real.pi) • a))‖ ^ 2)
+          (circleMap 0 r ((2 * Real.pi) • a))‖ ^ (2 : ℕ))
         (𝓝[<] 1)
         (𝓝 (diskMultiplierOuterWeight phi ((2 * Real.pi) • a))) :=
     hszegoScaled.filter_mono (ae_mono Measure.restrict_le_self)
   have hsource : ∀ᵐ a ∂volume.restrict (Set.Ioc (0 : ℝ) (0 + 1)),
       ‖diskMultiplierBoundaryMeasurableRep outer
-          (circleHomeo (QuotientAddGroup.mk a))‖ ^ 2 =
+          (circleHomeo (QuotientAddGroup.mk a))‖ ^ (2 : ℕ) =
         ‖diskMultiplierBoundarySafe phi
-          (circleHomeo (QuotientAddGroup.mk a))‖ ^ 2 := by
+          (circleHomeo (QuotientAddGroup.mk a))‖ ^ (2 : ℕ) := by
     filter_upwards [hboundaryPull, hrepPull, hszegoPull] with a hba hrep hsa
     have hradius : Tendsto (fun i => hardyDiskAbelRadius (ns i)) atTop (𝓝[<] (1 : ℝ)) :=
       tendsto_hardyDiskAbelRadius.comp hns.tendsto_atTop
     have hsseq := hsa.comp hradius
     have hbnorm : Tendsto
         (fun i => ‖diskMultiplierRadialBoundaryFun (ns i) outer
-          (circleHomeo (QuotientAddGroup.mk a))‖ ^ 2)
+          (circleHomeo (QuotientAddGroup.mk a))‖ ^ (2 : ℕ))
         atTop
         (𝓝 (‖diskMultiplierBoundaryFun outer
-          (circleHomeo (QuotientAddGroup.mk a))‖ ^ 2)) :=
+          (circleHomeo (QuotientAddGroup.mk a))‖ ^ (2 : ℕ))) :=
       ((continuous_norm.pow 2).tendsto _).comp hba
     have hsame : (fun i => ‖szegoOuter (diskMultiplierOuterWeight phi)
-          (circleMap 0 (hardyDiskAbelRadius (ns i)) ((2 * Real.pi) • a))‖ ^ 2) =
+          (circleMap 0 (hardyDiskAbelRadius (ns i)) ((2 * Real.pi) • a))‖ ^ (2 : ℕ)) =
         fun i => ‖diskMultiplierRadialBoundaryFun (ns i) outer
-          (circleHomeo (QuotientAddGroup.mk a))‖ ^ 2 := by
+          (circleHomeo (QuotientAddGroup.mk a))‖ ^ (2 : ℕ) := by
       funext i
       congr 3
       have hang : angularCircle ((2 * Real.pi) • a) =
@@ -418,7 +418,7 @@ theorem ae_norm_sq_diskMultiplierOuterFactor_boundary
       rw [circleMap_eq_radius_mul_angularCircle, hang]
     change Tendsto
       (fun i => ‖szegoOuter (diskMultiplierOuterWeight phi)
-        (circleMap 0 (hardyDiskAbelRadius (ns i)) ((2 * Real.pi) • a))‖ ^ 2)
+        (circleMap 0 (hardyDiskAbelRadius (ns i)) ((2 * Real.pi) • a))‖ ^ (2 : ℕ))
       atTop (𝓝 (diskMultiplierOuterWeight phi ((2 * Real.pi) • a))) at hsseq
     rw [hsame] at hsseq
     have hlimit := tendsto_nhds_unique hbnorm hsseq
@@ -426,8 +426,8 @@ theorem ae_norm_sq_diskMultiplierOuterFactor_boundary
     simpa only [diskMultiplierOuterWeight, smul_eq_mul, circleHomeo,
       angularCircle_two_pi_mul, AddCircle.homeomorphCircle_apply] using hlimit
   have hmeasSet : MeasurableSet {z : Circle |
-      ‖diskMultiplierBoundaryMeasurableRep outer z‖ ^ 2 =
-        ‖diskMultiplierBoundarySafe phi z‖ ^ 2} :=
+      ‖diskMultiplierBoundaryMeasurableRep outer z‖ ^ (2 : ℕ) =
+        ‖diskMultiplierBoundarySafe phi z‖ ^ (2 : ℕ)} :=
     measurableSet_eq_fun
       ((measurable_diskMultiplierBoundaryMeasurableRep outer).norm.pow_const 2)
       ((measurable_diskMultiplierBoundarySafe phi).norm.pow_const 2)
@@ -435,8 +435,8 @@ theorem ae_norm_sq_diskMultiplierOuterFactor_boundary
       (volume.restrict (Set.Ioc (0 : ℝ) (0 + 1))) :=
     hcircle.measurable.aemeasurable
   have hrepTarget : ∀ᵐ z ∂circleLebesgue,
-      ‖diskMultiplierBoundaryMeasurableRep outer z‖ ^ 2 =
-        ‖diskMultiplierBoundarySafe phi z‖ ^ 2 := by
+      ‖diskMultiplierBoundaryMeasurableRep outer z‖ ^ (2 : ℕ) =
+        ‖diskMultiplierBoundarySafe phi z‖ ^ (2 : ℕ) := by
     rw [← hcircle.map_eq]
     exact (ae_map_iff hmeasMap hmeasSet).2 hsource
   filter_upwards [hrepTarget, diskMultiplierBoundaryMeasurableRep_ae outer] with z hz hrep

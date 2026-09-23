@@ -849,7 +849,7 @@ def finiteScore (j : PositiveProbabilityTwoJet X) (x : X) : ℝ :=
 
 /-- Score connection, i.e. the derivative of the score. -/
 def finiteScoreConnection (j : PositiveProbabilityTwoJet X) (x : X) : ℝ :=
-  j.ddp x / j.p x - (finiteScore j x) ^ 2
+  j.ddp x / j.p x - (finiteScore j x) ^ (2 : ℕ)
 
 /-- Expectation under the base probability of a finite two-jet. -/
 def finiteJetExpectation (j : PositiveProbabilityTwoJet X) (f : X → ℝ) : ℝ :=
@@ -857,7 +857,7 @@ def finiteJetExpectation (j : PositiveProbabilityTwoJet X) (f : X → ℝ) : ℝ
 
 /-- Fisher mass of a finite probability two-jet. -/
 def finiteFisherMass (j : PositiveProbabilityTwoJet X) : ℝ :=
-  finiteJetExpectation j (fun x => (finiteScore j x) ^ 2)
+  finiteJetExpectation j (fun x => (finiteScore j x) ^ (2 : ℕ))
 
 /-- Mean Ward connection. -/
 def finiteMeanScoreConnection (j : PositiveProbabilityTwoJet X) : ℝ :=
@@ -865,7 +865,7 @@ def finiteMeanScoreConnection (j : PositiveProbabilityTwoJet X) : ℝ :=
 
 /-- Pointwise inverse-response Riccati identity. -/
 theorem finiteScoreConnection_add_sq (j : PositiveProbabilityTwoJet X) (x : X) :
-    finiteScoreConnection j x + (finiteScore j x) ^ 2 = j.ddp x / j.p x := by
+    finiteScoreConnection j x + (finiteScore j x) ^ (2 : ℕ) = j.ddp x / j.p x := by
   unfold finiteScoreConnection
   ring
 
@@ -884,14 +884,14 @@ theorem finiteJetExpectation_score_eq_zero (j : PositiveProbabilityTwoJet X) :
 theorem finiteJetExpectation_connection_add_score_sq_eq_zero
     (j : PositiveProbabilityTwoJet X) :
     finiteJetExpectation j
-      (fun x => finiteScoreConnection j x + (finiteScore j x) ^ 2) = 0 := by
+      (fun x => finiteScoreConnection j x + (finiteScore j x) ^ (2 : ℕ)) = 0 := by
   calc
     finiteJetExpectation j
-        (fun x => finiteScoreConnection j x + (finiteScore j x) ^ 2) =
+        (fun x => finiteScoreConnection j x + (finiteScore j x) ^ (2 : ℕ)) =
         ∑ x, j.ddp x := by
       apply Finset.sum_congr rfl
       intro x _
-      change j.p x * (finiteScoreConnection j x + (finiteScore j x) ^ 2) = j.ddp x
+      change j.p x * (finiteScoreConnection j x + (finiteScore j x) ^ (2 : ℕ)) = j.ddp x
       rw [finiteScoreConnection_add_sq]
       field_simp [ne_of_gt (j.p_pos x)]
     _ = 0 := j.sum_ddp
@@ -904,7 +904,7 @@ theorem finiteFisherMass_eq_neg_meanScoreConnection (j : PositiveProbabilityTwoJ
     calc
       finiteMeanScoreConnection j + finiteFisherMass j =
           finiteJetExpectation j
-            (fun x => finiteScoreConnection j x + (finiteScore j x) ^ 2) := by
+            (fun x => finiteScoreConnection j x + (finiteScore j x) ^ (2 : ℕ)) := by
         unfold finiteMeanScoreConnection finiteFisherMass finiteJetExpectation
         rw [← Finset.sum_add_distrib]
         apply Finset.sum_congr rfl
@@ -1106,7 +1106,7 @@ def jointScoreDefect
     (K : FiniteMarkovKernel X Y) (j : PositiveProbabilityTwoJet X)
     (hactive : ∀ y, 0 < observedJetP K j y) : ℝ :=
   ∑ x, ∑ y, j.p x * K.weight y x *
-    (finiteScore j x - finiteScore (observedProbabilityTwoJet K j hactive) y) ^ 2
+    (finiteScore j x - finiteScore (observedProbabilityTwoJet K j hactive) y) ^ (2 : ℕ)
 
 theorem jointScoreDefect_nonneg
     (K : FiniteMarkovKernel X Y) (j : PositiveProbabilityTwoJet X)
@@ -1127,19 +1127,19 @@ theorem finiteFisherMass_sub_observed_eq_jointScoreDefect
       jointScoreDefect K j hactive := by
   let q := observedProbabilityTwoJet K j hactive
   have hsource :
-      (∑ x, ∑ y, j.p x * K.weight y x * (finiteScore j x) ^ 2) =
+      (∑ x, ∑ y, j.p x * K.weight y x * (finiteScore j x) ^ (2 : ℕ)) =
         finiteFisherMass j := by
     unfold finiteFisherMass finiteJetExpectation
     apply Finset.sum_congr rfl
     intro x _
     calc
-      (∑ y, j.p x * K.weight y x * (finiteScore j x) ^ 2) =
-          j.p x * (finiteScore j x) ^ 2 * ∑ y, K.weight y x := by
+      (∑ y, j.p x * K.weight y x * (finiteScore j x) ^ (2 : ℕ)) =
+          j.p x * (finiteScore j x) ^ (2 : ℕ) * ∑ y, K.weight y x := by
         rw [Finset.mul_sum]
         apply Finset.sum_congr rfl
         intro y _
         ring
-      _ = j.p x * (finiteScore j x) ^ 2 := by rw [K.column_sum]; ring
+      _ = j.p x * (finiteScore j x) ^ (2 : ℕ) := by rw [K.column_sum]; ring
   have hcross :
       (∑ x, ∑ y, j.p x * K.weight y x * finiteScore j x * finiteScore q y) =
         finiteFisherMass q := by
@@ -1157,46 +1157,46 @@ theorem finiteFisherMass_sub_observed_eq_jointScoreDefect
         ring
       _ = finiteScore q y * (observedJetP K j y * finiteScore q y) := by
         rw [observed_score_conditional_identity]
-      _ = q.p y * (finiteScore q y) ^ 2 := by
+      _ = q.p y * (finiteScore q y) ^ (2 : ℕ) := by
         change finiteScore q y * (q.p y * finiteScore q y) =
-          q.p y * (finiteScore q y) ^ 2
+          q.p y * (finiteScore q y) ^ (2 : ℕ)
         ring
   have hobserved :
-      (∑ x, ∑ y, j.p x * K.weight y x * (finiteScore q y) ^ 2) =
+      (∑ x, ∑ y, j.p x * K.weight y x * (finiteScore q y) ^ (2 : ℕ)) =
         finiteFisherMass q := by
     rw [Finset.sum_comm]
     unfold finiteFisherMass finiteJetExpectation
     apply Finset.sum_congr rfl
     intro y _
     calc
-      (∑ x, j.p x * K.weight y x * (finiteScore q y) ^ 2) =
-          (finiteScore q y) ^ 2 * ∑ x, K.weight y x * j.p x := by
+      (∑ x, j.p x * K.weight y x * (finiteScore q y) ^ (2 : ℕ)) =
+          (finiteScore q y) ^ (2 : ℕ) * ∑ x, K.weight y x * j.p x := by
         rw [Finset.mul_sum]
         apply Finset.sum_congr rfl
         intro x _
         ring
-      _ = q.p y * (finiteScore q y) ^ 2 := by
-        change (finiteScore q y) ^ 2 * q.p y = q.p y * (finiteScore q y) ^ 2
+      _ = q.p y * (finiteScore q y) ^ (2 : ℕ) := by
+        change (finiteScore q y) ^ (2 : ℕ) * q.p y = q.p y * (finiteScore q y) ^ (2 : ℕ)
         ring
   unfold jointScoreDefect
   change finiteFisherMass j - finiteFisherMass q =
     ∑ x, ∑ y, j.p x * K.weight y x *
-      (finiteScore j x - finiteScore q y) ^ 2
+      (finiteScore j x - finiteScore q y) ^ (2 : ℕ)
   calc
     finiteFisherMass j - finiteFisherMass q =
-        (∑ x, ∑ y, j.p x * K.weight y x * (finiteScore j x) ^ 2) -
+        (∑ x, ∑ y, j.p x * K.weight y x * (finiteScore j x) ^ (2 : ℕ)) -
           2 * (∑ x, ∑ y,
             j.p x * K.weight y x * finiteScore j x * finiteScore q y) +
-          (∑ x, ∑ y, j.p x * K.weight y x * (finiteScore q y) ^ 2) := by
+          (∑ x, ∑ y, j.p x * K.weight y x * (finiteScore q y) ^ (2 : ℕ)) := by
       rw [hsource, hcross, hobserved]
       ring
     _ = ∑ x, ∑ y,
-          (j.p x * K.weight y x * (finiteScore j x) ^ 2 -
+          (j.p x * K.weight y x * (finiteScore j x) ^ (2 : ℕ) -
             2 * (j.p x * K.weight y x * finiteScore j x * finiteScore q y) +
-            j.p x * K.weight y x * (finiteScore q y) ^ 2) := by
+            j.p x * K.weight y x * (finiteScore q y) ^ (2 : ℕ)) := by
       simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum]
     _ = ∑ x, ∑ y, j.p x * K.weight y x *
-          (finiteScore j x - finiteScore q y) ^ 2 := by
+          (finiteScore j x - finiteScore q y) ^ (2 : ℕ) := by
       apply Finset.sum_congr rfl
       intro x _
       apply Finset.sum_congr rfl
@@ -1253,7 +1253,7 @@ theorem finiteFisherLoss_eq_zero_iff_score_observed
           hall y (Finset.mem_univ y)
     have hpK : 0 < j.p x * K.weight y x := mul_pos (j.p_pos x) hKxy
     have hsquare :
-        (finiteScore j x - finiteScore (observedProbabilityTwoJet K j hactive) y) ^ 2 = 0 := by
+        (finiteScore j x - finiteScore (observedProbabilityTwoJet K j hactive) y) ^ (2 : ℕ) = 0 := by
       exact (mul_eq_zero.mp hterm).resolve_left (ne_of_gt hpK)
     exact sub_eq_zero.mp (sq_eq_zero_iff.mp hsquare)
   · intro hscore
@@ -1343,11 +1343,11 @@ theorem affineBernoulliTwoJet_bartlett_countermodel :
       finiteMeanScoreConnection affineBernoulliTwoJet = -1 ∧
       finiteJetExpectation affineBernoulliTwoJet
         (fun b => finiteScoreConnection affineBernoulliTwoJet b +
-          (finiteScore affineBernoulliTwoJet b) ^ 2) = 0 := by
+          (finiteScore affineBernoulliTwoJet b) ^ (2 : ℕ)) = 0 := by
   constructor
   · rw [finiteFisherMass, finiteJetExpectation, Fintype.sum_bool]
-    change (1 / 2) * (finiteScore affineBernoulliTwoJet true) ^ 2 +
-      (1 / 2) * (finiteScore affineBernoulliTwoJet false) ^ 2 = 1
+    change (1 / 2) * (finiteScore affineBernoulliTwoJet true) ^ (2 : ℕ) +
+      (1 / 2) * (finiteScore affineBernoulliTwoJet false) ^ (2 : ℕ) = 1
     rw [affineBernoulliTwoJet_score_true, affineBernoulliTwoJet_score_false]
     ring
   constructor

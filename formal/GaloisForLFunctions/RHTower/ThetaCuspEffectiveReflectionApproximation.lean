@@ -28,8 +28,8 @@ theorem abs_thetaCuspNativeReflectionJet_sub_first_le_effective
     (hq : (n : ℝ)+6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |thetaCuspNativeReflectionJet n x-thetaCuspFirstAtomReflectionJet n x| ≤
       (18*(16*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x +
-        9*(24*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x^2) *
-          thetaCuspSourceTerm x 1^2 := by
+        9*(24*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x^(2 : ℕ)) *
+          thetaCuspSourceTerm x 1^(2 : ℕ) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let φ := thetaCuspSourceTerm x 1
   let ε := regimeOneLikelihoodScale x
@@ -45,8 +45,8 @@ theorem abs_thetaCuspNativeReflectionJet_sub_first_le_effective
     have hkr : (k : ℝ) ≤ (n : ℝ) := by exact_mod_cast hk
     exact abs_thetaCuspFullSource_derivative_sub_first_le_effective k hx (by linarith)
   have hprod (i j : ℕ) (hi : i ≤ n) (hj : j ≤ n) :
-      |F i*F j-f i*f j| ≤ 9*φ^2 *
-        ((4*q)^i*(12*q)^j*ε + (12*q)^i*(4*q)^j*ε + (12*q)^i*(12*q)^j*ε^2) := by
+      |F i*F j-f i*f j| ≤ 9*φ^(2 : ℕ) *
+        ((4*q)^i*(12*q)^j*ε + (12*q)^i*(4*q)^j*ε + (12*q)^i*(12*q)^j*ε^(2 : ℕ)) := by
     calc
       |F i*F j-f i*f j| ≤ |f i| * |F j-f j| + |F i-f i| * |f j| + |F i-f i| * |F j-f j| :=
         product_error_bound _ _ _ _
@@ -57,8 +57,8 @@ theorem abs_thetaCuspNativeReflectionJet_sub_first_le_effective
           (mul_le_mul (hf i hi) (he j hj) (abs_nonneg _) (by positivity))
           (mul_le_mul (he i hi) (hf j hj) (abs_nonneg _) (by positivity)))
           (mul_le_mul (he i hi) (he j hj) (abs_nonneg _) (by positivity))
-      _ = 9*φ^2 *
-          ((4*q)^i*(12*q)^j*ε + (12*q)^i*(4*q)^j*ε + (12*q)^i*(12*q)^j*ε^2) := by ring
+      _ = 9*φ^(2 : ℕ) *
+          ((4*q)^i*(12*q)^j*ε + (12*q)^i*(4*q)^j*ε + (12*q)^i*(12*q)^j*ε^(2 : ℕ)) := by ring
   have hid : thetaCuspNativeReflectionJet n x-thetaCuspFirstAtomReflectionJet n x =
       ∑ i ∈ Finset.range (n+1), (n.choose i : ℝ)*(-1 : ℝ)^(n-i)*
         (F i*F (n-i)-f i*f (n-i)) := by
@@ -74,24 +74,24 @@ theorem abs_thetaCuspNativeReflectionJet_sub_first_le_effective
         (F i*F (n-i)-f i*f (n-i))| ≤
         ∑ i ∈ Finset.range (n+1), |(n.choose i : ℝ)*(-1 : ℝ)^(n-i)*
           (F i*F (n-i)-f i*f (n-i))| := Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ i ∈ Finset.range (n+1), (n.choose i : ℝ)*(9*φ^2 *
+    _ ≤ ∑ i ∈ Finset.range (n+1), (n.choose i : ℝ)*(9*φ^(2 : ℕ) *
         ((4*q)^i*(12*q)^(n-i)*ε + (12*q)^i*(4*q)^(n-i)*ε +
-          (12*q)^i*(12*q)^(n-i)*ε^2)) := by
+          (12*q)^i*(12*q)^(n-i)*ε^(2 : ℕ))) := by
       apply Finset.sum_le_sum
       intro i hi
       have hin : i ≤ n := by have := Finset.mem_range.mp hi; omega
       have hc : (0 : ℝ) ≤ (n.choose i : ℝ) := Nat.cast_nonneg _
       simp only [abs_mul, abs_pow, abs_neg, abs_one, one_pow, mul_one, abs_of_nonneg hc]
       exact mul_le_mul_of_nonneg_left (hprod i (n-i) hin (Nat.sub_le _ _)) hc
-    _ = 9*((4*q+12*q)^n*ε+(12*q+4*q)^n*ε+(12*q+12*q)^n*ε^2)*φ^2 := by
+    _ = 9*((4*q+12*q)^n*ε+(12*q+4*q)^n*ε+(12*q+12*q)^n*ε^(2 : ℕ))*φ^(2 : ℕ) := by
       rw [add_pow, add_pow, add_pow]
       simp only [mul_add, add_mul, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_add_distrib]
       apply Finset.sum_congr rfl
       intro i hi
       ring
     _ = (18*(16*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x +
-        9*(24*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x^2) *
-          thetaCuspSourceTerm x 1^2 := by
+        9*(24*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x^(2 : ℕ)) *
+          thetaCuspSourceTerm x 1^(2 : ℕ) := by
       rw [show 4*q+12*q = 16*q by ring, show 12*q+4*q = 16*q by ring,
         show 12*q+12*q = 24*q by ring]
       dsimp [q, φ, ε]
@@ -102,9 +102,9 @@ theorem abs_thetaCuspNativeReflectionJet_relative_error_le_effective
     (n : ℕ) {x : ℝ} (hx : 0 < x)
     (hq : (n : ℝ)+6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |(thetaCuspNativeReflectionJet n x-thetaCuspFirstAtomReflectionJet n x) /
-      thetaCuspSourceTerm x 1^2| ≤
+      thetaCuspSourceTerm x 1^(2 : ℕ)| ≤
       18*(16*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x +
-        9*(24*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x^2 := by
+        9*(24*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x^(2 : ℕ) := by
   have hf := pow_pos (thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))) 2
   rw [abs_div, abs_of_pos hf]
   exact (div_le_iff₀ hf).mpr (abs_thetaCuspNativeReflectionJet_sub_first_le_effective n hx hq)
@@ -114,7 +114,7 @@ theorem abs_thetaCuspNativeReflectionJet_relative_error_le_singleScale
     (n : ℕ) {x : ℝ} (hx : 0 < x)
     (hq : (n : ℝ)+6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |(thetaCuspNativeReflectionJet n x-thetaCuspFirstAtomReflectionJet n x) /
-      thetaCuspSourceTerm x 1^2| ≤
+      thetaCuspSourceTerm x 1^(2 : ℕ)| ≤
       27*(24*thetaCuspSingleAtomReflectionScale 1 x)^n*regimeOneLikelihoodScale x := by
   have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   have hq0 : 0 ≤ thetaCuspSingleAtomReflectionScale 1 x := by linarith
@@ -122,7 +122,7 @@ theorem abs_thetaCuspNativeReflectionJet_relative_error_le_singleScale
   have he1 : regimeOneLikelihoodScale x ≤ 1 := by
     have h := regimeOneLikelihoodScale_le_of_six_le (x := x) (by linarith)
     linarith
-  have hs : regimeOneLikelihoodScale x^2 ≤ regimeOneLikelihoodScale x := by nlinarith
+  have hs : regimeOneLikelihoodScale x^(2 : ℕ) ≤ regimeOneLikelihoodScale x := by nlinarith
   have hp : (16*thetaCuspSingleAtomReflectionScale 1 x)^n ≤
       (24*thetaCuspSingleAtomReflectionScale 1 x)^n :=
     pow_le_pow_left₀ (by positivity) (by linarith) n

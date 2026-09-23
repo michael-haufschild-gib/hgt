@@ -863,7 +863,7 @@ open Polynomial
 `X − (s ± r)/2`. -/
 theorem quadratic_eq_prod_linear (h2 : (2 : L) ≠ 0) (s p r : L)
     (hr : r * r = s * s - 4 * p) :
-    (X ^ 2 - C s * X + C p : L[X]) = (X - C ((s + r) / 2)) * (X - C ((s - r) / 2)) := by
+    (X ^ (2 : ℕ) - C s * X + C p : L[X]) = (X - C ((s + r) / 2)) * (X - C ((s - r) / 2)) := by
   have hsum : ((s + r) / 2) + ((s - r) / 2) = s := by
     field_simp
     ring
@@ -871,7 +871,7 @@ theorem quadratic_eq_prod_linear (h2 : (2 : L) ≠ 0) (s p r : L)
     field_simp
     linear_combination -hr
   have hexpand : (X - C ((s + r) / 2)) * (X - C ((s - r) / 2))
-      = X ^ 2 - C (((s + r) / 2) + ((s - r) / 2)) * X + C (((s + r) / 2) * ((s - r) / 2)) := by
+      = X ^ (2 : ℕ) - C (((s + r) / 2) + ((s - r) / 2)) * X + C (((s + r) / 2) * ((s - r) / 2)) := by
     rw [map_add, map_mul]
     ring
   rw [hexpand, hsum, hprod]

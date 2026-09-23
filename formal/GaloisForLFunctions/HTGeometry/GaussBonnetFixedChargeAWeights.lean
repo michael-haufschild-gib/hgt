@@ -13,19 +13,19 @@ open Real
 namespace GaloisForLFunctions.HTGeometry
 open CPV
 
-def egbFixedChargeAFraction (φ : ℝ) : ℝ := sin φ ^ 2
+def egbFixedChargeAFraction (φ : ℝ) : ℝ := sin φ ^ (2 : ℕ)
 
-def egbFixedChargeABase (τ : ℝ) : ℝ := egbCoexistenceShape τ * (thermalRatio τ ^ 2 + 1)
+def egbFixedChargeABase (τ : ℝ) : ℝ := egbCoexistenceShape τ * (thermalRatio τ ^ (2 : ℕ) + 1)
 
 def egbFixedChargeALinearCorrection (τ : ℝ) : ℝ :=
-  4 * thermalRatio τ ^ 2 * egbCoexistenceALogKernel τ -
-    8 * thermalRatio τ * (thermalRatio τ ^ 2 + thermalRatio τ + 1)
+  4 * thermalRatio τ ^ (2 : ℕ) * egbCoexistenceALogKernel τ -
+    8 * thermalRatio τ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1)
 
 def egbFixedChargeAQuadraticB (τ φ : ℝ) : ℝ :=
   egbFixedChargeABase τ - egbFixedChargeAFraction φ * egbFixedChargeALinearCorrection τ
 
 def egbFixedChargeADiscriminant (τ φ : ℝ) : ℝ :=
-  egbFixedChargeAQuadraticB τ φ ^ 2 +
+  egbFixedChargeAQuadraticB τ φ ^ (2 : ℕ) +
     4 * egbCoexistenceAQuadraticA τ * egbFixedChargeAFraction φ * egbCoexistenceAQuadraticC τ
 
 def egbFixedChargeAWeight (τ φ : ℝ) : ℝ :=
@@ -48,7 +48,7 @@ theorem egbFixedChargeABase_pos (τ : ℝ) : 0 < egbFixedChargeABase τ := by
 theorem egbFixedChargeALinearCorrection_neg (τ : ℝ) : egbFixedChargeALinearCorrection τ < 0 := by
   have hz := thermalRatio_pos τ
   have hH := (le_div_iff₀ hz).1 (egbCoexistenceALogKernel_upper_bound τ)
-  have hp : 0 < thermalRatio τ * (thermalRatio τ ^ 2 + thermalRatio τ + 1) := by positivity
+  have hp : 0 < thermalRatio τ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) := by positivity
   have hm := mul_nonneg (le_of_lt hz) (sub_nonneg.mpr hH)
   unfold egbFixedChargeALinearCorrection
   nlinarith
@@ -81,11 +81,11 @@ theorem egbFixedChargeAWeight_pos (τ φ : ℝ) : 0 < egbFixedChargeAWeight τ �
 
 /-- The rationalized root solves the balance equation even at zero coupling fraction. -/
 theorem egbFixedChargeAWeight_quadratic (τ φ : ℝ) :
-    egbCoexistenceAQuadraticA τ * egbFixedChargeAFraction φ * egbFixedChargeAWeight τ φ ^ 2 +
+    egbCoexistenceAQuadraticA τ * egbFixedChargeAFraction φ * egbFixedChargeAWeight τ φ ^ (2 : ℕ) +
       egbFixedChargeAQuadraticB τ φ * egbFixedChargeAWeight τ φ - egbCoexistenceAQuadraticC τ = 0 := by
   have hB := egbFixedChargeAQuadraticB_pos τ φ
-  have hs : sqrt (egbFixedChargeADiscriminant τ φ) ^ 2 =
-      egbFixedChargeAQuadraticB τ φ ^ 2 +
+  have hs : sqrt (egbFixedChargeADiscriminant τ φ) ^ (2 : ℕ) =
+      egbFixedChargeAQuadraticB τ φ ^ (2 : ℕ) +
         4 * egbCoexistenceAQuadraticA τ * egbFixedChargeAFraction φ * egbCoexistenceAQuadraticC τ :=
     sq_sqrt (le_of_lt (egbFixedChargeADiscriminant_pos τ φ))
   unfold egbFixedChargeAWeight
@@ -110,13 +110,13 @@ theorem egbFixedChargeAWeight_charge_balance (τ φ : ℝ) :
   linear_combination h
 
 theorem egbFixedChargeACouplingWeight_boundary_polynomial (τ φ : ℝ) :
-    egbCoexistenceAQuadraticA τ * egbFixedChargeACouplingWeight τ φ ^ 2 +
+    egbCoexistenceAQuadraticA τ * egbFixedChargeACouplingWeight τ φ ^ (2 : ℕ) +
       egbCoexistenceAQuadraticB τ * egbFixedChargeACouplingWeight τ φ - egbCoexistenceAQuadraticC τ ≤ 0 := by
   have hbalance := egbFixedChargeAWeight_charge_balance τ φ
   have hbounds := egbFixedChargeACouplingWeight_bounds τ φ
   have hA := egbCoexistenceAQuadraticA_pos τ
   have hE := egbFixedChargeABase_pos τ
-  have he : egbCoexistenceAQuadraticA τ * egbFixedChargeACouplingWeight τ φ ^ 2 +
+  have he : egbCoexistenceAQuadraticA τ * egbFixedChargeACouplingWeight τ φ ^ (2 : ℕ) +
       egbCoexistenceAQuadraticB τ * egbFixedChargeACouplingWeight τ φ - egbCoexistenceAQuadraticC τ =
     (egbFixedChargeACouplingWeight τ φ - egbFixedChargeAWeight τ φ) *
       (egbFixedChargeABase τ + egbCoexistenceAQuadraticA τ * egbFixedChargeACouplingWeight τ φ) := by

@@ -30,7 +30,7 @@ noncomputable section
 single archimedean orientation presentation of the same retained top source class. -/
 def deningerCalderonWittPrimeArchOrientationGreenBoundaryWitness
     (p : Nat.Primes) :
-    ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne :=
+    ⋀[ℂ]^(2 : ℕ) DeningerCalderonWittAlgebraicGlobalDegreeOne :=
   deningerCalderonWittGlobalOrientedTopGreenLift
     (deningerCalderonWittGlobalPrimeOrientationCochain p -
       deningerCalderonWittGlobalOrientationInclusion 1)

@@ -51,7 +51,7 @@ theorem re_trace_frankensteinCancellationGram :
 for a two-column positive Gram.  This is the exact no-go behind scalar Boundary Passivity. -/
 theorem no_universal_gramTrace_le_coherentNormSq :
     ¬ ∀ v : Fin 2 → ℂ,
-      (Matrix.gram ℂ v).trace.re ≤ ‖∑ i : Fin 2, v i‖ ^ 2 := by
+      (Matrix.gram ℂ v).trace.re ≤ ‖∑ i : Fin 2, v i‖ ^ (2 : ℕ) := by
   intro h
   have hbad := h frankensteinCancellationPair
   rw [show Matrix.gram ℂ frankensteinCancellationPair =

@@ -22,7 +22,7 @@ obligations for the actual left-QNM pairing.
 
 namespace RHTower.D4BMLiteralCyclicPeierlsCorrectedFutureCap
 
-open D4BMJointSource D4BMModularCore D4BMFuturePulseAdmission
+open D4BMJointSource D4BMModularCore D4BMFuturePulseAdmission D4BMGlobalAngularResponse
 open D4BMFutureSeedHorizon D4BMFutureHorizon
 open D4BMCompleteOriginalWeakSource D4BMCorrectedFutureFixedArmDecomposition
 
@@ -70,6 +70,7 @@ theorem cyclicBulkContact_horizon_vertex (q : XiZeroCopy) (branch : Bool)
       parameter q branch * cyclicPeierlsBulkVertex q branch X k := by
   unfold sourceSeedPolynomial cyclicPeierlsBulkVertex
   rw [parameter_physicalRate q branch]
+  simp only [D4BMQuadraticMixedSource.resolventParameter]
   ring
 
 /-- Corrected future after removing only its forced physical bulk contact. -/
@@ -100,7 +101,11 @@ theorem correctedFutureCapResidual_ingoing_eq (q : XiZeroCopy) (branch : Bool)
           parameter q branch * capBoundaryField q branch amp (v - x) x X k) := by
   let depth : NNReal := ⟨-x, neg_nonneg.mpr hx⟩
   have h := correctedFutureCapResidual_eq q branch amp (v - x) depth X k
-  simpa only [depth, NNReal.coe_mk, neg_neg] using h
+  have hcoe : -(depth : ℝ) = x := by
+    show -(-x) = x
+    ring
+  rw [hcoe] at h
+  exact h
 
 end
 

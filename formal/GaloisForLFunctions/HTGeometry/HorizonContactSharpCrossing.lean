@@ -25,7 +25,7 @@ variable {K : Type*} [Field K] [CharZero K]
 omit [CharZero K] in
 /-- The second exterior power of a two-dimensional law space is a line. -/
 theorem finrank_exteriorPower_two_pi :
-    Module.finrank K (⋀[K]^2 (Fin 2 → K)) = 1 := by
+    Module.finrank K (⋀[K]^(2 : ℕ) (Fin 2 → K)) = 1 := by
   rw [exteriorPower.finrank_eq]
   simp
 

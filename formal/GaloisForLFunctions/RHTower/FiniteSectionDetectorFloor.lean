@@ -132,12 +132,12 @@ theorem norm_bdDetector_of_re {ρ : ℂ} (hρ : 1 / 2 < ρ.re) :
     ‖bdDetector (one_sub_re_lt hρ)‖ = 1 / Real.sqrt (2 * ρ.re - 1) := by
   have h := norm_sq_bdDetector (one_sub_re_lt hρ)
   rw [Complex.sub_re, Complex.one_re] at h
-  have h2 : ‖bdDetector (one_sub_re_lt hρ)‖ ^ 2 = 1 / (2 * ρ.re - 1) := by
+  have h2 : ‖bdDetector (one_sub_re_lt hρ)‖ ^ (2 : ℕ) = 1 / (2 * ρ.re - 1) := by
     rw [h]
     ring_nf
   have hnn : 0 ≤ ‖bdDetector (one_sub_re_lt hρ)‖ := norm_nonneg _
   calc ‖bdDetector (one_sub_re_lt hρ)‖
-      = Real.sqrt (‖bdDetector (one_sub_re_lt hρ)‖ ^ 2) := (Real.sqrt_sq hnn).symm
+      = Real.sqrt (‖bdDetector (one_sub_re_lt hρ)‖ ^ (2 : ℕ)) := (Real.sqrt_sq hnn).symm
     _ = Real.sqrt (1 / (2 * ρ.re - 1)) := by rw [h2]
     _ = 1 / Real.sqrt (2 * ρ.re - 1) := by
         rw [one_div, Real.sqrt_inv, one_div]
@@ -153,7 +153,7 @@ theorem norm_detectorCombination_le {M : ℕ} (ρ : Fin M → ℂ) (hρ : ∀ j,
 points. -/
 theorem norm_sq_detectorCombination {M : ℕ} (ρ : Fin M → ℂ) (hρ : ∀ j, 1 / 2 < (ρ j).re)
     (a : Fin M → ℂ) :
-    ‖detectorCombination ρ hρ a‖ ^ 2
+    ‖detectorCombination ρ hρ a‖ ^ (2 : ℕ)
       = (∑ j, ∑ k, (starRingEnd ℂ) (a j) * a k *
           (1 / ((ρ j - 1 / 2) + (starRingEnd ℂ) (ρ k - 1 / 2)))).re := by
   rw [← inner_detectorCombination_self ρ hρ a, inner_self_eq_norm_sq_to_K]

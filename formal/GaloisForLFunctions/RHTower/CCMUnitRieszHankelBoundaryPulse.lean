@@ -83,7 +83,7 @@ theorem hankelGapProfile_of_leakDensity_exp
     {ℓ : ℝ → ℂ} {c a u : ℝ}
     (hdens : ∀ t, leakDensity ℓ t = c * Real.exp (-(a * t)))
     (ha : 0 < a) (hu : 0 ≤ u) :
-    hankelGapProfile ℓ u = c / a ^ 2 * Real.exp (-(a * u)) := by
+    hankelGapProfile ℓ u = c / a ^ (2 : ℕ) * Real.exp (-(a * u)) := by
   have hb : (0 : ℝ) < ((a : ℂ)).re := by simpa
   have hcomplex := integral_Ioi_sub_mul_cexp_neg_mul (b := (a : ℂ)) hb hu
   have hpt : ∀ t : ℝ,
@@ -101,7 +101,7 @@ theorem hankelGapProfile_of_leakDensity_exp
     push_cast
     ring
   have hcast : ((hankelGapProfile ℓ u : ℝ) : ℂ) =
-      ((c / a ^ 2 * Real.exp (-(a * u)) : ℝ) : ℂ) := by
+      ((c / a ^ (2 : ℕ) * Real.exp (-(a * u)) : ℝ) : ℂ) := by
     unfold hankelGapProfile
     calc
       ((∫ t in Ioi u, (t - u) * leakDensity ℓ t : ℝ) : ℂ) =
@@ -115,9 +115,9 @@ theorem hankelGapProfile_of_leakDensity_exp
           ((t : ℂ) - (u : ℂ)) *
             Complex.exp (-((a : ℂ) * (t : ℂ))) := integral_const_mul _ _
       _ = (c : ℂ) *
-          (Complex.exp (-((a : ℂ) * (u : ℂ))) * (a : ℂ)⁻¹ ^ 2) := by
+          (Complex.exp (-((a : ℂ) * (u : ℂ))) * (a : ℂ)⁻¹ ^ (2 : ℕ)) := by
         rw [hcomplex]
-      _ = ((c / a ^ 2 * Real.exp (-(a * u)) : ℝ) : ℂ) := by
+      _ = ((c / a ^ (2 : ℕ) * Real.exp (-(a * u)) : ℝ) : ℂ) := by
         have hE : Complex.exp (-((a : ℂ) * (u : ℂ))) =
             ((Real.exp (-(a * u)) : ℝ) : ℂ) := by
           rw [Complex.ofReal_exp]
@@ -180,8 +180,8 @@ theorem unitRieszBoundaryPulse_le (u : ℝ) :
     unitRieszBoundaryPulse u ≤ 3 / 128 := by
   by_cases hu : 0 < u
   · rw [unitRieszBoundaryPulse_eq hu]
-    have hs : 0 ≤ (Real.exp (-u / 2) - 1 / 2) ^ 2 := sq_nonneg _
-    have he : Real.exp (-u) = Real.exp (-u / 2) ^ 2 := by
+    have hs : 0 ≤ (Real.exp (-u / 2) - 1 / 2) ^ (2 : ℕ) := sq_nonneg _
+    have he : Real.exp (-u) = Real.exp (-u / 2) ^ (2 : ℕ) := by
       rw [← Real.exp_nat_mul]
       congr 1
       ring
@@ -247,10 +247,10 @@ theorem poleBoundaryTrace_sub_unitRieszFourUnitBoundaryPulse
     {u : ℝ} (hu : 0 < u) :
     boundaryRelativeTrace polePacketProfile u -
         unitRieszFourUnitBoundaryPulse u =
-      4 * (1 - Real.exp (-u / 2)) ^ 2 := by
+      4 * (1 - Real.exp (-u / 2)) ^ (2 : ℕ) := by
   rw [boundaryRelativeTrace_polePacket hu,
     unitRieszFourUnitBoundaryPulse_eq hu]
-  have he : Real.exp (-u) = Real.exp (-u / 2) ^ 2 := by
+  have he : Real.exp (-u) = Real.exp (-u / 2) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
@@ -288,13 +288,13 @@ theorem unitRieszBoundaryCovarianceCore_twoPoint_det (u L : ℝ) :
         unitRieszBoundaryCovarianceCore u L 0 =
     -(unitRieszFastBoundaryCoefficient u *
         unitRieszSlowBoundaryCoefficient u *
-          (Real.exp (-L / 2) - Real.exp (-L / 4)) ^ 2) := by
+          (Real.exp (-L / 2) - Real.exp (-L / 4)) ^ (2 : ℕ)) := by
   unfold unitRieszBoundaryCovarianceCore
-  have hsum : Real.exp (-(L + L) / 2) = Real.exp (-L / 2) ^ 2 := by
+  have hsum : Real.exp (-(L + L) / 2) = Real.exp (-L / 2) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
-  have hsumSlow : Real.exp (-(L + L) / 4) = Real.exp (-L / 4) ^ 2 := by
+  have hsumSlow : Real.exp (-(L + L) / 4) = Real.exp (-L / 4) ^ (2 : ℕ) := by
     rw [← Real.exp_nat_mul]
     congr 1
     ring
@@ -343,7 +343,7 @@ theorem unitRieszBoundaryCovarianceMatrix_det (u L : ℝ) :
     (unitRieszBoundaryCovarianceMatrix u L).det =
       -(unitRieszFastBoundaryCoefficient u *
         unitRieszSlowBoundaryCoefficient u *
-          (Real.exp (-L / 2) - Real.exp (-L / 4)) ^ 2) := by
+          (Real.exp (-L / 2) - Real.exp (-L / 4)) ^ (2 : ℕ)) := by
   rw [unitRieszBoundaryCovarianceMatrix, Matrix.det_fin_two_of,
     unitRieszBoundaryCovarianceCore_twoPoint_det]
 

@@ -86,12 +86,12 @@ private theorem complex_tan_eq_I_mul_one_sub_exp_two_I_div_one_add {w : ℂ}
                       Complex.exp (w * I) := by rw [hprod]; ring
                 _ = _ := by ring
       _ = 0 := hzero
-  have hquad' : 1 + Complex.exp (w * I) ^ 2 ≠ 0 := by
+  have hquad' : 1 + Complex.exp (w * I) ^ (2 : ℕ) ≠ 0 := by
     simpa [pow_two] using hquad
   have hfrac :
       (Complex.exp (-(w * I)) - Complex.exp (w * I)) /
           (Complex.exp (w * I) + Complex.exp (-(w * I))) =
-        (1 - Complex.exp (w * I) ^ 2) / (1 + Complex.exp (w * I) ^ 2) := by
+        (1 - Complex.exp (w * I) ^ (2 : ℕ)) / (1 + Complex.exp (w * I) ^ (2 : ℕ)) := by
     field_simp [hsum, hquad']
     linear_combination 2 * Complex.exp (w * I) * hprod
   rw [Complex.tan_eq_sin_div_cos, Complex.sin, Complex.cos,
@@ -102,8 +102,8 @@ private theorem complex_tan_eq_I_mul_one_sub_exp_two_I_div_one_add {w : ℂ}
           (Complex.exp (w * I) + Complex.exp (-(w * I))) =
         I * ((Complex.exp (-(w * I)) - Complex.exp (w * I)) /
           (Complex.exp (w * I) + Complex.exp (-(w * I)))) := by ring
-    _ = I * ((1 - Complex.exp (w * I) ^ 2) /
-          (1 + Complex.exp (w * I) ^ 2)) := by rw [hfrac]
+    _ = I * ((1 - Complex.exp (w * I) ^ (2 : ℕ)) /
+          (1 + Complex.exp (w * I) ^ (2 : ℕ))) := by rw [hfrac]
     _ = I * ((1 - Complex.exp (w * I) * Complex.exp (w * I)) /
           (1 + Complex.exp (w * I) * Complex.exp (w * I))) := by rw [pow_two]
 

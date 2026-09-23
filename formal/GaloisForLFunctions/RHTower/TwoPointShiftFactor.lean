@@ -103,7 +103,7 @@ theorem exists_bound_twoPointShift (ρ₁ ρ₂ : ℂ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℂ, 1 ≤ ‖s‖ → 1 ≤ ‖s - 1‖ → ‖twoPointShift ρ₁ ρ₂ s‖ ≤ C := by
   set r : ℝ := max ‖ρ₁‖ ‖ρ₂‖ with hrdef
   have hr0 : 0 ≤ r := le_trans (norm_nonneg ρ₁) (le_max_left _ _)
-  refine ⟨(3 + r) ^ 2 + 2 * (1 + r) ^ 2, by positivity, ?_⟩
+  refine ⟨(3 + r) ^ (2 : ℕ) + 2 * (1 + r) ^ (2 : ℕ), by positivity, ?_⟩
   intro s hs hs1
   have hs0 : (0 : ℝ) < ‖s‖ := by linarith
   have hs1' : (0 : ℝ) < ‖s - 1‖ := by linarith
@@ -114,27 +114,27 @@ theorem exists_bound_twoPointShift (ρ₁ ρ₂ : ℂ) :
   have hnorm : ‖twoPointShift ρ₁ ρ₂ s‖ = ‖s - ρ₁‖ * ‖s - ρ₂‖ / (‖s‖ * ‖s - 1‖) := by
     rw [twoPointShift, norm_div, norm_mul, norm_mul]
   rw [hnorm, div_le_iff₀ (by positivity)]
-  have hprod : ‖s - ρ₁‖ * ‖s - ρ₂‖ ≤ (‖s‖ + r) ^ 2 := by
+  have hprod : ‖s - ρ₁‖ * ‖s - ρ₂‖ ≤ (‖s‖ + r) ^ (2 : ℕ) := by
     have := mul_le_mul h1 h2 (norm_nonneg _) (by positivity)
     nlinarith [this]
   rcases le_or_gt ‖s‖ 3 with hle | hgt
-  · have hb : (‖s‖ + r) ^ 2 ≤ (3 + r) ^ 2 := by nlinarith
+  · have hb : (‖s‖ + r) ^ (2 : ℕ) ≤ (3 + r) ^ (2 : ℕ) := by nlinarith
     nlinarith [mul_le_mul_of_nonneg_left hs1 (le_of_lt hs0), sq_nonneg (1 + r)]
   · have hsub : ‖s‖ - 1 ≤ ‖s - 1‖ := by
       have := norm_sub_norm_le s 1
       simpa using this
     have hbig : (2 / 3 : ℝ) * ‖s‖ ≤ ‖s - 1‖ := by linarith
     have hlin : ‖s‖ + r ≤ ‖s‖ * (1 + r) := by nlinarith
-    have hnum : (‖s‖ + r) ^ 2 ≤ ‖s‖ ^ 2 * (1 + r) ^ 2 := by
+    have hnum : (‖s‖ + r) ^ (2 : ℕ) ≤ ‖s‖ ^ (2 : ℕ) * (1 + r) ^ (2 : ℕ) := by
       have h := pow_le_pow_left₀ (by positivity : (0:ℝ) ≤ ‖s‖ + r) hlin 2
       rw [mul_pow] at h
       exact h
-    have hden : (2 / 3 : ℝ) * ‖s‖ ^ 2 ≤ ‖s‖ * ‖s - 1‖ := by nlinarith
-    have hC : (0:ℝ) ≤ (3 + r) ^ 2 := by positivity
-    calc ‖s - ρ₁‖ * ‖s - ρ₂‖ ≤ ‖s‖ ^ 2 * (1 + r) ^ 2 := le_trans hprod hnum
-      _ ≤ ((3 + r) ^ 2 + 2 * (1 + r) ^ 2) * ((2 / 3 : ℝ) * ‖s‖ ^ 2) := by
+    have hden : (2 / 3 : ℝ) * ‖s‖ ^ (2 : ℕ) ≤ ‖s‖ * ‖s - 1‖ := by nlinarith
+    have hC : (0:ℝ) ≤ (3 + r) ^ (2 : ℕ) := by positivity
+    calc ‖s - ρ₁‖ * ‖s - ρ₂‖ ≤ ‖s‖ ^ (2 : ℕ) * (1 + r) ^ (2 : ℕ) := le_trans hprod hnum
+      _ ≤ ((3 + r) ^ (2 : ℕ) + 2 * (1 + r) ^ (2 : ℕ)) * ((2 / 3 : ℝ) * ‖s‖ ^ (2 : ℕ)) := by
           nlinarith [sq_nonneg ‖s‖, sq_nonneg (1 + r), mul_nonneg hC (sq_nonneg ‖s‖)]
-      _ ≤ ((3 + r) ^ 2 + 2 * (1 + r) ^ 2) * (‖s‖ * ‖s - 1‖) :=
+      _ ≤ ((3 + r) ^ (2 : ℕ) + 2 * (1 + r) ^ (2 : ℕ)) * (‖s‖ * ‖s - 1‖) :=
           mul_le_mul_of_nonneg_left hden (by positivity)
 
 end

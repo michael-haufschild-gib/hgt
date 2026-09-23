@@ -23,17 +23,17 @@ namespace RHTower
 
 theorem vertical_inv_pointwise {σ : ℝ} (hσ : σ ≠ 0) (t : ℝ) :
     (((σ : ℂ) + (t : ℂ) * I)⁻¹)
-      = (σ / (σ ^ 2 + t ^ 2) : ℝ)
-        - (t / (σ ^ 2 + t ^ 2) : ℝ) * I := by
-  have hden : σ ^ 2 + t ^ 2 ≠ 0 := by
+      = (σ / (σ ^ (2 : ℕ) + t ^ (2 : ℕ)) : ℝ)
+        - (t / (σ ^ (2 : ℕ) + t ^ (2 : ℕ)) : ℝ) * I := by
+  have hden : σ ^ (2 : ℕ) + t ^ (2 : ℕ) ≠ 0 := by
     nlinarith [sq_pos_of_ne_zero hσ, sq_nonneg t]
   rw [Complex.inv_def]
   simp [Complex.normSq_apply, div_eq_mul_inv]
   ring
 
 theorem integral_odd_div_sq_add_sq {σ T : ℝ} :
-    (∫ t : ℝ in (-T)..T, t / (σ ^ 2 + t ^ 2)) = 0 := by
-  let f : ℝ → ℝ := fun t => t / (σ ^ 2 + t ^ 2)
+    (∫ t : ℝ in (-T)..T, t / (σ ^ (2 : ℕ) + t ^ (2 : ℕ))) = 0 := by
+  let f : ℝ → ℝ := fun t => t / (σ ^ (2 : ℕ) + t ^ (2 : ℕ))
   have hodd : ∀ t : ℝ, f (-t) = -f t := by
     intro t
     dsimp [f]
@@ -50,17 +50,17 @@ theorem integral_odd_div_sq_add_sq {σ T : ℝ} :
 theorem integral_vertical_inv {σ T : ℝ} (hσ : σ ≠ 0) :
     (∫ t : ℝ in (-T)..T, (((σ : ℂ) + (t : ℂ) * I)⁻¹))
       = (Real.arctan (T / σ) - Real.arctan (-T / σ) : ℝ) := by
-  have hden : ∀ t : ℝ, σ ^ 2 + t ^ 2 ≠ 0 := fun t => by
+  have hden : ∀ t : ℝ, σ ^ (2 : ℕ) + t ^ (2 : ℕ) ≠ 0 := fun t => by
     nlinarith [sq_pos_of_ne_zero hσ, sq_nonneg t]
-  have hc1 : Continuous (fun t : ℝ => σ / (σ ^ 2 + t ^ 2)) :=
+  have hc1 : Continuous (fun t : ℝ => σ / (σ ^ (2 : ℕ) + t ^ (2 : ℕ))) :=
     continuous_const.div (by fun_prop) hden
-  have hc2 : Continuous (fun t : ℝ => t / (σ ^ 2 + t ^ 2)) :=
+  have hc2 : Continuous (fun t : ℝ => t / (σ ^ (2 : ℕ) + t ^ (2 : ℕ))) :=
     continuous_id.div (by fun_prop) hden
   have hi1 : IntervalIntegrable
-      (fun t : ℝ => ((σ / (σ ^ 2 + t ^ 2) : ℝ) : ℂ)) volume (-T) T := by
+      (fun t : ℝ => ((σ / (σ ^ (2 : ℕ) + t ^ (2 : ℕ)) : ℝ) : ℂ)) volume (-T) T := by
     exact (Complex.continuous_ofReal.comp hc1).intervalIntegrable _ _
   have hi2 : IntervalIntegrable
-      (fun t : ℝ => ((t / (σ ^ 2 + t ^ 2) : ℝ) : ℂ) * I) volume (-T) T :=
+      (fun t : ℝ => ((t / (σ ^ (2 : ℕ) + t ^ (2 : ℕ)) : ℝ) : ℂ) * I) volume (-T) T :=
     ((Complex.continuous_ofReal.comp hc2).mul
       (continuous_const : Continuous (fun _ : ℝ => I))).intervalIntegrable _ _
   simp_rw [vertical_inv_pointwise hσ]

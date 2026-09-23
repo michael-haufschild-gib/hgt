@@ -11,7 +11,7 @@ orientation define an antiunitary odd Hodge operator
 `(J a)_q = -epsilon_q * conjugate(a_{R q})`.
 
 The bilinear cup-trace form is `omega(a,b) = inner (J a) b`.  It is alternating and
-nondegenerate, `J^2 = -1`, and `omega(a, J a)` is the Hilbert norm square.  The maximal diagonal
+nondegenerate, `J^(2 : ℕ) = -1`, and `omega(a, J a)` is the Hilbert norm square.  The maximal diagonal
 Frobenius generator has a closed dense domain preserved by `J`, and the weight-one cup derivation
 law holds there without any zero-location assumption.
 
@@ -81,7 +81,7 @@ def deningerArithmeticOrientedHodgeLpSigma :
     rw [map_mul]
     ring
 
-/-- Genuine odd Real structure on the Hilbert completion: `J^2 = -1`. -/
+/-- Genuine odd Real structure on the Hilbert completion: `J^(2 : ℕ) = -1`. -/
 def deningerArithmeticOrientedHilbertHodge :
     KRealStructure true XiDivisorL2 where
   sigma := deningerArithmeticOrientedHodgeLpSigma
@@ -109,16 +109,16 @@ def deningerArithmeticOrientedHilbertHodge :
 theorem norm_deningerArithmeticOrientedHodgeLp (a : XiDivisorL2) :
     ‖deningerArithmeticOrientedHodgeLp a‖ = ‖a‖ := by
   have hsq :
-      ‖deningerArithmeticOrientedHodgeLp a‖ ^ 2 = ‖a‖ ^ 2 := by
+      ‖deningerArithmeticOrientedHodgeLp a‖ ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) := by
     rw [HilbertSchmidt.lp_norm_sq_eq, HilbertSchmidt.lp_norm_sq_eq]
     calc
-      (∑' q : XiZeroCopy, ‖deningerArithmeticOrientedHodgeLp a q‖ ^ 2) =
-          ∑' q : XiZeroCopy, ‖a (xiZeroCopyReflectEquiv q)‖ ^ 2 := by
+      (∑' q : XiZeroCopy, ‖deningerArithmeticOrientedHodgeLp a q‖ ^ (2 : ℕ)) =
+          ∑' q : XiZeroCopy, ‖a (xiZeroCopyReflectEquiv q)‖ ^ (2 : ℕ) := by
         apply tsum_congr
         intro q
         simp
-      _ = ∑' q : XiZeroCopy, ‖a q‖ ^ 2 :=
-        xiZeroCopyReflectEquiv.tsum_eq (fun q => ‖a q‖ ^ 2)
+      _ = ∑' q : XiZeroCopy, ‖a q‖ ^ (2 : ℕ) :=
+        xiZeroCopyReflectEquiv.tsum_eq (fun q => ‖a q‖ ^ (2 : ℕ))
   nlinarith [norm_nonneg (deningerArithmeticOrientedHodgeLp a), norm_nonneg a]
 
 /-- Antiunitary identity for the completed odd Hodge operator. -/
@@ -317,7 +317,7 @@ theorem deningerArithmeticOrientedHilbertHodge_positive
   have hnorm :
       (inner ℂ (deningerArithmeticOrientedHodgeLp a)
         (deningerArithmeticOrientedHodgeLp a)).re =
-        ‖deningerArithmeticOrientedHodgeLp a‖ ^ 2 := by
+        ‖deningerArithmeticOrientedHodgeLp a‖ ^ (2 : ℕ) := by
     simpa using
       (InnerProductSpace.norm_sq_eq_re_inner
         (𝕜 := ℂ) (deningerArithmeticOrientedHodgeLp a)).symm

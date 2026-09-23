@@ -73,9 +73,9 @@ theorem sum_abs_barbanVehovWeight_le {X N : ℕ} (hX : 1 ≤ X) (hXN : X ≤ N) 
 
 /-- **Graham's mean square, upper half.** -/
 theorem sum_sq_barbanVehovCoeff_le {X N : ℕ} (hX : 1 ≤ X) (hXN : X ≤ N) :
-    ∑ k ∈ Finset.Icc 1 N, (barbanVehovCoeff X k) ^ 2
-      ≤ (N : ℝ) * (4 * coprimeLogMoebiusConst ^ 2 * (1 + Real.log X))
-        + ((X : ℝ) * Real.log X) ^ 2 := by
+    ∑ k ∈ Finset.Icc 1 N, (barbanVehovCoeff X k) ^ (2 : ℕ)
+      ≤ (N : ℝ) * (4 * coprimeLogMoebiusConst ^ (2 : ℕ) * (1 + Real.log X))
+        + ((X : ℝ) * Real.log X) ^ (2 : ℕ) := by
   classical
   have hNpos : ∀ m ∈ Finset.Icc 1 N, 0 < m := by
     intro m hm
@@ -95,12 +95,12 @@ theorem sum_sq_barbanVehovCoeff_le {X N : ℕ} (hX : 1 ≤ X) (hXN : X ≤ N) :
   have hnn : ∀ e ∈ Finset.Icc 1 N, e ∉ (Finset.Icc 1 N).biUnion Nat.divisors →
       (0 : ℝ) ≤ (Nat.totient e : ℝ) *
         (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m),
-          barbanVehovWeight X m / (m : ℝ)) ^ 2 := by
+          barbanVehovWeight X m / (m : ℝ)) ^ (2 : ℕ) := by
     intro e _ _
     positivity
   have hform : ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
       barbanVehovWeight X p.1 * barbanVehovWeight X p.2 / (Nat.lcm p.1 p.2 : ℝ)
-      ≤ 4 * coprimeLogMoebiusConst ^ 2 * (1 + Real.log X) := by
+      ≤ 4 * coprimeLogMoebiusConst ^ (2 : ℕ) * (1 + Real.log X) := by
     rw [hdiag]
     refine le_trans (Finset.sum_le_sum_of_subset_of_nonneg hbiUnion hnn) ?_
     exact barbanVehov_totient_diagonal_le hXN
@@ -115,26 +115,26 @@ theorem sum_sq_barbanVehovCoeff_le {X N : ℕ} (hX : 1 ≤ X) (hXN : X ≤ N) :
     ring
   have herr : ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
       |barbanVehovWeight X p.1| * |barbanVehovWeight X p.2|
-      = (∑ m ∈ Finset.Icc 1 N, |barbanVehovWeight X m|) ^ 2 := by
+      = (∑ m ∈ Finset.Icc 1 N, |barbanVehovWeight X m|) ^ (2 : ℕ) := by
     rw [sq, Finset.sum_mul_sum, Finset.sum_product]
   have hl1 := sum_abs_barbanVehovWeight_le hX hXN
   have hl1nn : (0 : ℝ) ≤ ∑ m ∈ Finset.Icc 1 N, |barbanVehovWeight X m| :=
     Finset.sum_nonneg fun m _ => abs_nonneg _
-  have herrle : (∑ m ∈ Finset.Icc 1 N, |barbanVehovWeight X m|) ^ 2
-      ≤ ((X : ℝ) * Real.log X) ^ 2 := by
+  have herrle : (∑ m ∈ Finset.Icc 1 N, |barbanVehovWeight X m|) ^ (2 : ℕ)
+      ≤ ((X : ℝ) * Real.log X) ^ (2 : ℕ) := by
     have hXR : (1 : ℝ) ≤ (X : ℝ) := by exact_mod_cast hX
     have hlogX : (0 : ℝ) ≤ Real.log (X : ℝ) := Real.log_nonneg hXR
     nlinarith [hl1, hl1nn]
   have hsub := abs_sub_le_iff.mp hfloor
   have hcoeff : ∀ k ∈ Finset.Icc 1 N,
-      (∑ m ∈ k.divisors, barbanVehovWeight X m) ^ 2 = (barbanVehovCoeff X k) ^ 2 := by
+      (∑ m ∈ k.divisors, barbanVehovWeight X m) ^ (2 : ℕ) = (barbanVehovCoeff X k) ^ (2 : ℕ) := by
     intro k _
     rw [barbanVehovCoeff]
   rw [← Finset.sum_congr rfl hcoeff]
   rw [herr] at hsub
   have hmainle : (N : ℝ) * ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
       barbanVehovWeight X p.1 * barbanVehovWeight X p.2 / (Nat.lcm p.1 p.2 : ℝ)
-      ≤ (N : ℝ) * (4 * coprimeLogMoebiusConst ^ 2 * (1 + Real.log X)) :=
+      ≤ (N : ℝ) * (4 * coprimeLogMoebiusConst ^ (2 : ℕ) * (1 + Real.log X)) :=
     mul_le_mul_of_nonneg_left hform hNR
   rw [hmain] at hsub
   linarith [hsub.1, hmainle, herrle]

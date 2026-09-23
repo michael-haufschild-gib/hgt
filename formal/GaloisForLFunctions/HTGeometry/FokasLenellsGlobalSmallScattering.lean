@@ -51,7 +51,7 @@ theorem effectiveControlMass_nonneg (f g h : SchwartzMap ℝ ℂ) : 0 ≤ effect
 /-- Simultaneous rescaling has exactly linear, quadratic and cubic contributions. -/
 theorem effectiveControlDensity_smul (f g h : SchwartzMap ℝ ℂ) (c : ℂ) (x : ℝ) :
     effectiveControlDensity (c • f) (c • g) (c • h) x =
-      ‖c‖^2*‖mulS f g x‖+‖c‖*‖g x‖+‖c‖*‖h x‖+‖c‖^3*‖mulS (mulS f f) g x‖ := by
+      ‖c‖^(2 : ℕ)*‖mulS f g x‖+‖c‖*‖g x‖+‖c‖*‖h x‖+‖c‖^(3 : ℕ)*‖mulS (mulS f f) g x‖ := by
   simp [effectiveControlDensity]
   ring
 
@@ -88,10 +88,10 @@ theorem effectiveControlDensity_scaled_bound (q f g h : SchwartzMap ℝ ℂ) (x 
   let c := globalScatteringScale q
   have hc0 : 0 ≤ c := (globalScatteringScale_pos q).le
   have hc1 : c ≤ 1 := globalScatteringScale_le_one q
-  have hc2 : c^2 ≤ c := by nlinarith
-  have hc3 : c^3 ≤ c := by
+  have hc2 : c^(2 : ℕ) ≤ c := by nlinarith
+  have hc3 : c^(3 : ℕ) ≤ c := by
     calc
-      c^3 = c*c^2 := by ring
+      c^(3 : ℕ) = c*c^(2 : ℕ) := by ring
       _ ≤ c*c := mul_le_mul_of_nonneg_left hc2 hc0
       _ ≤ c := by nlinarith
   rw [effectiveControlDensity_smul, Complex.norm_real, Real.norm_eq_abs,

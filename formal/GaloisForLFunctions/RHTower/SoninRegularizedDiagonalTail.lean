@@ -12,7 +12,7 @@ open ContinuousLinearMap
 open scoped BigOperators
 namespace RHTower
 noncomputable section
-local instance : DecidableEq SoninAllPrimeIndex := Classical.decEq _
+local instance soninRegularizedDiagonalTailInst1 : DecidableEq SoninAllPrimeIndex := Classical.decEq _
 
 theorem soninPrimeRowInclusion_adjoint_single (pk qk : Nat.Primes × ℕ)
     (j : SoninHilbertIndex) :
@@ -154,7 +154,7 @@ theorem hsNormSq_soninAllPrimeDiagonalTail_eq_blockTail
   let T := soninAllPrimeResidualOperator a ha - soninAllPrimeDiagonalFiniteHead a s
   let b := HilbertSchmidt.lpBasis SoninAllPrimeIndex
   have hT := soninAllPrimeDiagonalTail_isHilbertSchmidt a ha s
-  have hs : Summable (fun z : SoninAllPrimeIndex => ‖T (b z)‖ ^ 2) := hT.summable b
+  have hs : Summable (fun z : SoninAllPrimeIndex => ‖T (b z)‖ ^ (2 : ℕ)) := hT.summable b
   rw [hsNormSq_eq hT b, hs.tsum_prod]
   apply tsum_congr
   intro pk
@@ -179,8 +179,8 @@ theorem hsNormSq_soninAllPrimeDiagonalTail_eq_columnTail
 theorem hsNormSq_soninAllPrimeDiagonalTail_le_coefficientTail
     (a : ℝ) (ha : 0 < a) (s : Finset (Nat.Primes × ℕ)) :
     hsNormSq (soninAllPrimeResidualOperator a ha - soninAllPrimeDiagonalFiniteHead a s) ≤
-      (128 * a ^ 2) * ∑' pk : Nat.Primes × ℕ,
-        if pk ∈ s then 0 else ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+      (128 * a ^ (2 : ℕ)) * ∑' pk : Nat.Primes × ℕ,
+        if pk ∈ s then 0 else ‖soninLogPrimePowerCoefficient pk‖ ^ (2 : ℕ) := by
   rw [hsNormSq_soninAllPrimeDiagonalTail_eq_columnTail]
   exact hsNormSq_soninAllPrimeColumnTail_le_coefficientTail a ha s
 

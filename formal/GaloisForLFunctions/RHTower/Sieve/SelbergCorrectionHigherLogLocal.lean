@@ -6,10 +6,10 @@ import GaloisForLFunctions.RHTower.EulerFisherCurvature
 
 For every positive derivative order `k`, the local correction factor has numerator
 
-`(log p)^k / p^2 * XY * (X + Y - 2^k XY)`.
+`(log p)^k / p^(2 : ℕ) * XY * (X + Y - 2^k XY)`.
 
-The same geometric tails used for the first derivative therefore give an `ell^1` mass bounded by
-`(8 + 4 * 2^k) * (log p)^k / p^2`.  In particular the square and cube jets required by the
+The same geometric tails used for the first derivative therefore give an `ell^(1 : ℕ)` mass bounded by
+`(8 + 4 * 2^k) * (log p)^k / p^(2 : ℕ)`.  In particular the square and cube jets required by the
 origin-based Barban--Vehov energy are absolutely summable over primes.
 -/
 
@@ -188,7 +188,7 @@ theorem summable_selbergCorrectionLogPowerMajorant
       (Real.log (p : ℝ) ^ k / (p : ℝ) ^ 2)
   exact h.congr (fun ab => by rw [selbergCorrectionLogPowerMajorant])
 
-/-- The `ell^1` mass of the `k`-th local jet. -/
+/-- The `ell^(1 : ℕ)` mass of the `k`-th local jet. -/
 theorem tsum_selbergCorrectionLogPowerMajorant_le
     (k : ℕ) {p : ℕ} (hp : 2 ≤ p) :
     (∑' ab : ℕ × ℕ, selbergCorrectionLogPowerMajorant k p ab.1 ab.2) ≤

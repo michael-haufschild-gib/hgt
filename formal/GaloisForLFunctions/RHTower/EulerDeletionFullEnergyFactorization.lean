@@ -21,19 +21,19 @@ namespace RHTower.DeletionFullEnergy
 def fullCoefficient (p q n : ℕ) : ℝ :=
   let a : ℝ := blockDeletionCoefficient p n
   let b : ℝ := blockDeletionCoefficient q n
-  a * b + (a * b) ^ 2 / 2 - a ^ 2 * b - a * b ^ 2
+  a * b + (a * b) ^ (2 : ℕ) / 2 - a ^ (2 : ℕ) * b - a * b ^ (2 : ℕ)
 
 /-- The actual square terms left out when selecting only the `a * b²` channel. -/
 def omittedCoefficient (p q n : ℕ) : ℝ :=
   let a : ℝ := blockDeletionCoefficient p n
   let b : ℝ := blockDeletionCoefficient q n
-  a * b + (a * b) ^ 2 / 2 - a ^ 2 * b
+  a * b + (a * b) ^ (2 : ℕ) / 2 - a ^ (2 : ℕ) * b
 
 theorem fullCoefficient_eq {p q : ℕ} (hpq : Nat.Coprime p q) (n : ℕ) :
     fullCoefficient p q n =
-      ((blockDeletionCoefficient (p * q) n : ℝ) ^ 2 -
-        (blockDeletionCoefficient p n : ℝ) ^ 2 -
-        (blockDeletionCoefficient q n : ℝ) ^ 2) / 2 := by
+      ((blockDeletionCoefficient (p * q) n : ℝ) ^ (2 : ℕ) -
+        (blockDeletionCoefficient p n : ℝ) ^ (2 : ℕ) -
+        (blockDeletionCoefficient q n : ℝ) ^ (2 : ℕ)) / 2 := by
   have h : (blockDeletionCoefficient (p * q) n : ℝ) =
       (blockDeletionCoefficient p n : ℝ) + (blockDeletionCoefficient q n : ℝ) -
         (blockDeletionCoefficient p n : ℝ) * (blockDeletionCoefficient q n : ℝ) := by
@@ -71,7 +71,7 @@ def omittedEnergy (α : ℝ) (p q : ℕ) : ℝ :=
   ∑' n, omittedCoefficient p q n * deletionDirichletWeight α n
 
 private theorem summable_square {α : ℝ} (hα : 1 < α) (p : ℕ) :
-    Summable (fun n => (blockDeletionCoefficient p n : ℝ) ^ 2 *
+    Summable (fun n => (blockDeletionCoefficient p n : ℝ) ^ (2 : ℕ) *
       deletionDirichletWeight α n) := by
   simpa only [pow_two] using summable_deletionDirichlet_gram hα p p
 
@@ -92,9 +92,9 @@ theorem fullEnergy_eq {α : ℝ} (hα : 1 < α)
         deletionSourceEnergy α q) / 2 := by
   have hterm (n : ℕ) : fullCoefficient p q n * deletionDirichletWeight α n =
       (1 / 2 : ℝ) *
-        ((blockDeletionCoefficient (p * q) n : ℝ) ^ 2 * deletionDirichletWeight α n -
-          (blockDeletionCoefficient p n : ℝ) ^ 2 * deletionDirichletWeight α n -
-          (blockDeletionCoefficient q n : ℝ) ^ 2 * deletionDirichletWeight α n) := by
+        ((blockDeletionCoefficient (p * q) n : ℝ) ^ (2 : ℕ) * deletionDirichletWeight α n -
+          (blockDeletionCoefficient p n : ℝ) ^ (2 : ℕ) * deletionDirichletWeight α n -
+          (blockDeletionCoefficient q n : ℝ) ^ (2 : ℕ) * deletionDirichletWeight α n) := by
     rw [fullCoefficient_eq hpq]
     ring
   simp_rw [fullEnergy, hterm]
@@ -127,11 +127,11 @@ theorem fullEnergy_curvature_zero {α : ℝ} (hα : 1 < α) {p q r : ℕ}
 
 theorem summable_selectedCoefficient {α : ℝ} (hα : 1 < α) (p q : ℕ) :
     Summable (fun n => (blockDeletionCoefficient p n : ℝ) *
-      (blockDeletionCoefficient q n : ℝ) ^ 2 * deletionDirichletWeight α n) := by
+      (blockDeletionCoefficient q n : ℝ) ^ (2 : ℕ) * deletionDirichletWeight α n) := by
   apply (((summable_deletionDirichlet_first hα p).mul_left ((q : ℝ) - 1)).add
     ((summable_deletionDirichlet_gram hα p q).mul_left (2 - (q : ℝ)))).congr
   intro n
-  have hsquare : (blockDeletionCoefficient q n : ℝ) ^ 2 =
+  have hsquare : (blockDeletionCoefficient q n : ℝ) ^ (2 : ℕ) =
       (q : ℝ) - 1 + (2 - (q : ℝ)) * (blockDeletionCoefficient q n : ℝ) := by
     exact_mod_cast blockDeletionCoefficient_sq_eq q n
   rw [hsquare]
@@ -139,7 +139,7 @@ theorem summable_selectedCoefficient {α : ℝ} (hα : 1 < α) (p q : ℕ) :
 
 theorem omittedCoefficient_eq (p q n : ℕ) :
     omittedCoefficient p q n = fullCoefficient p q n +
-      (blockDeletionCoefficient p n : ℝ) * (blockDeletionCoefficient q n : ℝ) ^ 2 := by
+      (blockDeletionCoefficient p n : ℝ) * (blockDeletionCoefficient q n : ℝ) ^ (2 : ℕ) := by
   dsimp [omittedCoefficient, fullCoefficient]
   ring
 

@@ -32,9 +32,9 @@ system at step `N` is the Blaschke ratio of the earlier rates against `λ_N`. -/
 theorem inner_gramSchmidt_expSystem {lam : ℕ → ℝ} (hpos : ∀ k, 0 < lam k)
     (hinj : Function.Injective lam) (N : ℕ) :
     inner ℂ (gramSchmidt ℂ (expSystem lam hpos) N) (gramSchmidt ℂ (expSystem lam hpos) N) *
-        ((∏ i : Fin N, (((lam i : ℝ) : ℂ) + ((lam N : ℝ) : ℂ))) ^ 2 *
+        ((∏ i : Fin N, (((lam i : ℝ) : ℂ) + ((lam N : ℝ) : ℂ))) ^ (2 : ℕ) *
           (((lam N : ℝ) : ℂ) + ((lam N : ℝ) : ℂ)))
-      = (∏ i : Fin N, (((lam i : ℝ) : ℂ) - ((lam N : ℝ) : ℂ))) ^ 2 := by
+      = (∏ i : Fin N, (((lam i : ℝ) : ℂ) - ((lam N : ℝ) : ℂ))) ^ (2 : ℕ) := by
   classical
   set mu : Fin (N + 1) → ℝ := fun i => lam (i : ℕ) with hmu
   have hmupos : ∀ i, 0 < mu i := fun i => hpos _
@@ -64,25 +64,25 @@ theorem inner_gramSchmidt_expSystem {lam : ℕ → ℝ} (hpos : ∀ k, 0 < lam k
   rw [hgramrec] at hkey
   have hcancel :
       inner ℂ (gramSchmidt ℂ (expSystem lam hpos) N) (gramSchmidt ℂ (expSystem lam hpos) N) *
-          ((∏ i : Fin N, (x i.castSucc + x (Fin.last N))) ^ 2 *
+          ((∏ i : Fin N, (x i.castSucc + x (Fin.last N))) ^ (2 : ℕ) *
             (x (Fin.last N) + x (Fin.last N))) =
-        (∏ i : Fin N, (x i.castSucc - x (Fin.last N))) ^ 2 := by
+        (∏ i : Fin N, (x i.castSucc - x (Fin.last N))) ^ (2 : ℕ) := by
     refine mul_left_cancel₀ hsmallne ?_
     calc (cauchyMatrix (fun i : Fin N => x i.castSucc)
             (fun j : Fin N => x j.castSucc)).det *
           (inner ℂ (gramSchmidt ℂ (expSystem lam hpos) N)
               (gramSchmidt ℂ (expSystem lam hpos) N) *
-            ((∏ i : Fin N, (x i.castSucc + x (Fin.last N))) ^ 2 *
+            ((∏ i : Fin N, (x i.castSucc + x (Fin.last N))) ^ (2 : ℕ) *
               (x (Fin.last N) + x (Fin.last N))))
         = (cauchyMatrix (fun i : Fin N => x i.castSucc)
               (fun j : Fin N => x j.castSucc)).det *
             inner ℂ (gramSchmidt ℂ (expSystem lam hpos) N)
               (gramSchmidt ℂ (expSystem lam hpos) N) *
-            ((∏ i : Fin N, (x i.castSucc + x (Fin.last N))) ^ 2 *
+            ((∏ i : Fin N, (x i.castSucc + x (Fin.last N))) ^ (2 : ℕ) *
               (x (Fin.last N) + x (Fin.last N))) := by ring
       _ = (cauchyMatrix (fun i : Fin N => x i.castSucc)
               (fun j : Fin N => x j.castSucc)).det *
-            (∏ i : Fin N, (x i.castSucc - x (Fin.last N))) ^ 2 := hkey
+            (∏ i : Fin N, (x i.castSucc - x (Fin.last N))) ^ (2 : ℕ) := hkey
   have hcast : ∀ i : Fin N, x i.castSucc = ((lam (i : ℕ) : ℝ) : ℂ) := by
     intro i
     rw [hx, hmu]

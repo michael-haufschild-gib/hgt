@@ -151,12 +151,12 @@ theorem mtPaperAlignedSeparatedTripleBox_isProposition22Piece
   have hU1 : 0 ≤ mtAdjacentBlockUpperScale endpoint i1.1 := Nat.cast_nonneg _
   have hL2 : 0 ≤ mtAdjacentBlockLowerScale endpoint i2.1 := Nat.cast_nonneg _
   have hgeometry : mtAdjacentBlockLowerScale endpoint i1.1 *
-      mtAdjacentBlockLowerScale endpoint i2.1 ^ 4 ≤ X ^ (1 - 2 * epsilon) := by
+      mtAdjacentBlockLowerScale endpoint i2.1 ^ (4 : ℕ) ≤ X ^ (1 - 2 * epsilon) := by
     calc
       mtAdjacentBlockLowerScale endpoint i1.1 *
-          mtAdjacentBlockLowerScale endpoint i2.1 ^ 4 ≤
+          mtAdjacentBlockLowerScale endpoint i2.1 ^ (4 : ℕ) ≤
         mtAdjacentBlockUpperScale endpoint i1.1 *
-          mtAdjacentBlockUpperScale endpoint i2.1 ^ 4 := by
+          mtAdjacentBlockUpperScale endpoint i2.1 ^ (4 : ℕ) := by
         exact mul_le_mul hL1U1
           (pow_le_pow_left₀ hL2 hL2U2 4) (pow_nonneg (Nat.cast_nonneg _) _ ) hU1
       _ ≤ E := hcellData.2.2.le

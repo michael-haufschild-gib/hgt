@@ -37,15 +37,15 @@ theorem dyadicMeanSquare_harmonic_le_menonFinalRange_boundedDyadicHead_two
     (hK : 1 ≤ K) (hW : 0 < W) (hI0 : 0 ≤ I)
     (hM : B + 1 + l < menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ) + 1)
     (hHead : (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ 2) ≤ I) :
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ (2 : ℕ)) ≤ I) :
     dyadicMeanSquare harmonicMoebiusR l A B ≤
       ((A : ℝ) * (1 + 1 / (K : ℝ)) ^ K) *
         ((K : ℝ) * blockCostGC (l : ℝ) (1 / (K : ℝ))
           (1 / ((A + 1 : ℕ) : ℝ))
-          (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ 2 * I
-            + (4 * menonHarmonicAffineRate A / (Real.pi ^ 2 * W)
+          (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+            + (4 * menonHarmonicAffineRate A / (Real.pi ^ (2 : ℕ) * W)
               + 4 * menonHarmonicAffineConst A /
-                (3 * Real.pi ^ 2 * W ^ 2)))) := by
+                (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))))) := by
   have hcover :
       (A : ℝ) + ((B + 1 - A : ℕ) : ℝ) ≤
         (A : ℝ) * (1 + 1 / (K : ℝ)) ^ K := by
@@ -69,18 +69,18 @@ theorem dyadicMeanSquare_moebius_le_menonFinalRange_boundedDyadicHead_two
     (hK : 1 ≤ K) (hW : 0 < W) (hI0 : 0 ≤ I)
     (hM : B + 1 + l < menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ) + 1)
     (hHead : (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ 2) ≤ I) :
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ (2 : ℕ)) ≤ I) :
     dyadicMeanSquare (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℝ)) l A B ≤
-      2 * (B : ℝ) ^ 2 *
+      2 * (B : ℝ) ^ (2 : ℕ) *
           (((A : ℝ) * (1 + 1 / (K : ℝ)) ^ K) *
             ((K : ℝ) * blockCostGC (l : ℝ) (1 / (K : ℝ))
               (1 / ((A + 1 : ℕ) : ℝ))
-              (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ 2 * I
-                + (4 * menonHarmonicAffineRate A / (Real.pi ^ 2 * W)
+              (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+                + (4 * menonHarmonicAffineRate A / (Real.pi ^ (2 : ℕ) * W)
                   + 4 * menonHarmonicAffineConst A /
-                    (3 * Real.pi ^ 2 * W ^ 2))))) +
+                    (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)))))) +
         2 * ((Finset.Icc A B).card : ℝ) *
-          ((l : ℝ) ^ 2 / ((A + 1 : ℕ) : ℝ)) ^ 2 := by
+          ((l : ℝ) ^ (2 : ℕ) / ((A + 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
   have hharmonic :=
     dyadicMeanSquare_harmonic_le_menonFinalRange_boundedDyadicHead_two
       hl hA hAB hB hK hW hI0 hM hHead

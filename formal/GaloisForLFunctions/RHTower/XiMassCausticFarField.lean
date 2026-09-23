@@ -22,10 +22,10 @@ noncomputable section
 
 /-- The far-field propagation rate constant. -/
 def xiMassFarRate (a : ℝ) : ℝ :=
-  Real.sqrt ((1 - 1 / xiMassSpacelikeSharpSlope a ^ 2) / 2)
+  Real.sqrt ((1 - 1 / xiMassSpacelikeSharpSlope a ^ (2 : ℕ)) / 2)
 
 /-- The far-field gap fraction. -/
-def xiMassFarGap (a : ℝ) : ℝ := 1 - 1 / xiMassSpacelikeSharpSlope a ^ 2
+def xiMassFarGap (a : ℝ) : ℝ := 1 - 1 / xiMassSpacelikeSharpSlope a ^ (2 : ℕ)
 
 theorem xiMassFarGap_pos {a : ℝ} (ha : 1 / 2 < a) : 0 < xiMassFarGap a := by
   have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
@@ -37,7 +37,7 @@ theorem xiMassFarGap_le_one {a : ℝ} (ha : 1 / 2 < a) : xiMassFarGap a ≤ 1 :=
   have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
   have hκ0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a := by linarith
   rw [xiMassFarGap]
-  have : (0 : ℝ) < 1 / xiMassSpacelikeSharpSlope a ^ 2 := by positivity
+  have : (0 : ℝ) < 1 / xiMassSpacelikeSharpSlope a ^ (2 : ℕ) := by positivity
   linarith
 
 theorem xiMassFarRate_pos {a : ℝ} (ha : 1 / 2 < a) : 0 < xiMassFarRate a := by
@@ -47,7 +47,7 @@ theorem xiMassFarRate_pos {a : ℝ} (ha : 1 / 2 < a) : 0 < xiMassFarRate a := by
   exact Real.sqrt_pos.2 (by linarith)
 
 theorem xiMassFarRate_sq {a : ℝ} (ha : 1 / 2 < a) :
-    xiMassFarRate a ^ 2 = xiMassFarGap a / 2 := by
+    xiMassFarRate a ^ (2 : ℕ) = xiMassFarGap a / 2 := by
   have hg := xiMassFarGap_pos ha
   rw [xiMassFarRate, xiMassFarGap] at *
   exact Real.sq_sqrt (by linarith)
@@ -61,50 +61,50 @@ theorem one_le_xiMassFarThreshold (a : ℝ) : 1 ≤ xiMassFarThreshold a := le_m
 theorem re_propagation_ge_far {a sigma u h : ℝ} (ha : 1 / 2 < a) (hu : 0 < u)
     (hcone : xiMassSpacelikeSharpSlope a * u ≤ h) (hh : xiMassFarThreshold a ≤ h)
     {s : ℂ} (hs : ‖s‖ ≤ 1) :
-    xiMassFarGap a / 2 * h ^ 2
-      ≤ (((sigma : ℂ) + (u : ℂ) * Complex.I) ^ 2 + (((h : ℝ) : ℂ) + s) ^ 2).re := by
+    xiMassFarGap a / 2 * h ^ (2 : ℕ)
+      ≤ (((sigma : ℂ) + (u : ℂ) * Complex.I) ^ (2 : ℕ) + (((h : ℝ) : ℂ) + s) ^ (2 : ℕ)).re := by
   have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
   have hκ0 : (0 : ℝ) < xiMassSpacelikeSharpSlope a := by linarith
   have hg0 : (0 : ℝ) < xiMassFarGap a := xiMassFarGap_pos ha
   have hh1 : (1 : ℝ) ≤ h := le_trans (one_le_xiMassFarThreshold a) hh
   have hh0 : (0 : ℝ) < h := by linarith
   have hh6 : 6 / xiMassFarGap a ≤ h := le_trans (le_max_right _ _) hh
-  have hgap : xiMassFarGap a * h ^ 2 ≤ h ^ 2 - u ^ 2 := by
+  have hgap : xiMassFarGap a * h ^ (2 : ℕ) ≤ h ^ (2 : ℕ) - u ^ (2 : ℕ) := by
     have hul : u ≤ h / xiMassSpacelikeSharpSlope a := by
       rw [le_div_iff₀ hκ0]
       nlinarith [hcone]
-    have husq : u ^ 2 ≤ h ^ 2 / xiMassSpacelikeSharpSlope a ^ 2 := by
-      have h1 : u ^ 2 ≤ (h / xiMassSpacelikeSharpSlope a) ^ 2 := by nlinarith [hu.le, hul]
-      calc u ^ 2 ≤ (h / xiMassSpacelikeSharpSlope a) ^ 2 := h1
-        _ = h ^ 2 / xiMassSpacelikeSharpSlope a ^ 2 := by rw [div_pow]
+    have husq : u ^ (2 : ℕ) ≤ h ^ (2 : ℕ) / xiMassSpacelikeSharpSlope a ^ (2 : ℕ) := by
+      have h1 : u ^ (2 : ℕ) ≤ (h / xiMassSpacelikeSharpSlope a) ^ (2 : ℕ) := by nlinarith [hu.le, hul]
+      calc u ^ (2 : ℕ) ≤ (h / xiMassSpacelikeSharpSlope a) ^ (2 : ℕ) := h1
+        _ = h ^ (2 : ℕ) / xiMassSpacelikeSharpSlope a ^ (2 : ℕ) := by rw [div_pow]
     rw [xiMassFarGap]
-    have hdiv : h ^ 2 / xiMassSpacelikeSharpSlope a ^ 2
-        = 1 / xiMassSpacelikeSharpSlope a ^ 2 * h ^ 2 := by ring
+    have hdiv : h ^ (2 : ℕ) / xiMassSpacelikeSharpSlope a ^ (2 : ℕ)
+        = 1 / xiMassSpacelikeSharpSlope a ^ (2 : ℕ) * h ^ (2 : ℕ) := by ring
     rw [hdiv] at husq
     nlinarith [husq]
-  have hre : (((sigma : ℂ) + (u : ℂ) * Complex.I) ^ 2 + (((h : ℝ) : ℂ) + s) ^ 2).re
-      = sigma ^ 2 + (h ^ 2 - u ^ 2) + 2 * h * s.re + (s ^ 2).re := by
-    have hexp : ((sigma : ℂ) + (u : ℂ) * Complex.I) ^ 2 + (((h : ℝ) : ℂ) + s) ^ 2
-        = (((sigma ^ 2 + (h ^ 2 - u ^ 2) : ℝ)) : ℂ) + ((2 * h : ℝ) : ℂ) * s + s ^ 2
+  have hre : (((sigma : ℂ) + (u : ℂ) * Complex.I) ^ (2 : ℕ) + (((h : ℝ) : ℂ) + s) ^ (2 : ℕ)).re
+      = sigma ^ (2 : ℕ) + (h ^ (2 : ℕ) - u ^ (2 : ℕ)) + 2 * h * s.re + (s ^ (2 : ℕ)).re := by
+    have hexp : ((sigma : ℂ) + (u : ℂ) * Complex.I) ^ (2 : ℕ) + (((h : ℝ) : ℂ) + s) ^ (2 : ℕ)
+        = (((sigma ^ (2 : ℕ) + (h ^ (2 : ℕ) - u ^ (2 : ℕ)) : ℝ)) : ℂ) + ((2 * h : ℝ) : ℂ) * s + s ^ (2 : ℕ)
           + (((2 * sigma * u : ℝ)) : ℂ) * Complex.I := by
       push_cast
-      linear_combination Complex.I_sq * ((u : ℂ) ^ 2)
+      linear_combination Complex.I_sq * ((u : ℂ) ^ (2 : ℕ))
     rw [hexp]
     simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
       Complex.I_re, Complex.I_im]
     ring
   have hsre : |s.re| ≤ 1 := le_trans (Complex.abs_re_le_norm s) hs
-  have hs2 : |(s ^ 2).re| ≤ 1 := by
-    have h1 : |(s ^ 2).re| ≤ ‖s ^ 2‖ := Complex.abs_re_le_norm _
-    have h2 : ‖s ^ 2‖ ≤ 1 := by
+  have hs2 : |(s ^ (2 : ℕ)).re| ≤ 1 := by
+    have h1 : |(s ^ (2 : ℕ)).re| ≤ ‖s ^ (2 : ℕ)‖ := Complex.abs_re_le_norm _
+    have h2 : ‖s ^ (2 : ℕ)‖ ≤ 1 := by
       rw [norm_pow]
       nlinarith [norm_nonneg s, hs]
     linarith
   have hmid : -(2 * h) ≤ 2 * h * s.re := by
     have hlow := (abs_le.mp hsre).1
     nlinarith [hh0]
-  have hlow2 : -1 ≤ (s ^ 2).re := (abs_le.mp hs2).1
-  have hslack : 2 * h + 1 ≤ xiMassFarGap a / 2 * h ^ 2 := by
+  have hlow2 : -1 ≤ (s ^ (2 : ℕ)).re := (abs_le.mp hs2).1
+  have hslack : 2 * h + 1 ≤ xiMassFarGap a / 2 * h ^ (2 : ℕ) := by
     have hkey : 6 ≤ xiMassFarGap a * h := by
       rw [div_le_iff₀ hg0] at hh6
       linarith
@@ -117,18 +117,18 @@ theorem xiMassFarRate_mul_le_csqrtRe {a sigma u h : ℝ} (ha : 1 / 2 < a) (hu : 
     (hcone : xiMassSpacelikeSharpSlope a * u ≤ h) (hh : xiMassFarThreshold a ≤ h)
     {s : ℂ} (hs : ‖s‖ ≤ 1) :
     xiMassFarRate a * h
-      ≤ HTGeometry.csqrtRe (((sigma : ℂ) + (u : ℂ) * Complex.I) ^ 2 + (((h : ℝ) : ℂ) + s) ^ 2) := by
+      ≤ HTGeometry.csqrtRe (((sigma : ℂ) + (u : ℂ) * Complex.I) ^ (2 : ℕ) + (((h : ℝ) : ℂ) + s) ^ (2 : ℕ)) := by
   have hg0 : (0 : ℝ) < xiMassFarGap a := xiMassFarGap_pos ha
   have hh1 : (1 : ℝ) ≤ h := le_trans (one_le_xiMassFarThreshold a) hh
   have hh0 : (0 : ℝ) < h := by linarith
   have hrate0 : (0 : ℝ) < xiMassFarRate a := xiMassFarRate_pos ha
-  set z : ℂ := ((sigma : ℂ) + (u : ℂ) * Complex.I) ^ 2 + (((h : ℝ) : ℂ) + s) ^ 2 with hzdef
-  have hlow : xiMassFarGap a / 2 * h ^ 2 ≤ z.re := re_propagation_ge_far ha hu hcone hh hs
+  set z : ℂ := ((sigma : ℂ) + (u : ℂ) * Complex.I) ^ (2 : ℕ) + (((h : ℝ) : ℂ) + s) ^ (2 : ℕ) with hzdef
+  have hlow : xiMassFarGap a / 2 * h ^ (2 : ℕ) ≤ z.re := re_propagation_ge_far ha hu hcone hh hs
   have hzre : (0 : ℝ) < z.re := lt_of_lt_of_le (by positivity) hlow
   have hsq := HTGeometry.re_le_sq_csqrtRe hzre
   have hcpos : (0 : ℝ) < HTGeometry.csqrtRe z := HTGeometry.csqrtRe_pos hzre
-  have hkey : (xiMassFarRate a * h) ^ 2 ≤ HTGeometry.csqrtRe z ^ 2 := by
-    have hexp : (xiMassFarRate a * h) ^ 2 = xiMassFarGap a / 2 * h ^ 2 := by
+  have hkey : (xiMassFarRate a * h) ^ (2 : ℕ) ≤ HTGeometry.csqrtRe z ^ (2 : ℕ) := by
+    have hexp : (xiMassFarRate a * h) ^ (2 : ℕ) = xiMassFarGap a / 2 * h ^ (2 : ℕ) := by
       rw [mul_pow, xiMassFarRate_sq ha]
     rw [hexp]
     linarith
@@ -143,7 +143,7 @@ theorem far_mem_xiMassHeightRegion {a sigma u h : ℝ} (ha : 1 / 2 < a) (hu : 0 
   have hh1 : (1 : ℝ) ≤ h := le_trans (one_le_xiMassFarThreshold a) hh
   have hlow := re_propagation_ge_far (sigma := sigma) ha hu hcone hh hs
   rw [mem_xiMassHeightRegion]
-  have : (0 : ℝ) < xiMassFarGap a / 2 * h ^ 2 := by positivity
+  have : (0 : ℝ) < xiMassFarGap a / 2 * h ^ (2 : ℕ) := by positivity
   linarith
 
 set_option maxHeartbeats 2000000 in
@@ -154,7 +154,7 @@ theorem exists_norm_xiMassJetIterate_far_le {a sigma : ℝ} (ha : 1 / 2 < a) (hs
     ∃ C u₀ : ℝ, 0 < C ∧ 1 ≤ u₀ ∧ ∀ u : ℝ, u₀ ≤ u → ∀ h : ℝ,
       xiMassSpacelikeSharpSlope a * u ≤ h → xiMassFarThreshold a ≤ h →
       ‖xiMassJetIterate a ((sigma : ℂ) + (u : ℂ) * Complex.I) n ((h : ℝ) : ℂ)‖
-        ≤ C * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by
+        ≤ C * Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))) := by
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
   have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
   have hg0 : (0 : ℝ) < xiMassFarGap a := xiMassFarGap_pos ha
@@ -162,12 +162,12 @@ theorem exists_norm_xiMassJetIterate_far_le {a sigma : ℝ} (ha : 1 / 2 < a) (hs
   have hρ0 : (0 : ℝ) < ρ := xiMassFarRate_pos ha
   set γ₂ : ℝ := 4 * a / ρ with hγdef
   have hγ0 : (0 : ℝ) < γ₂ := by rw [hγdef]; positivity
-  set Cz : ℝ := 4 * a ^ 4 + 8 * a ^ 2 / xiMassFarGap a + a * (1 / ρ + 4 / ρ ^ 3) with hCzdef
+  set Cz : ℝ := 4 * a ^ (4 : ℕ) + 8 * a ^ (2 : ℕ) / xiMassFarGap a + a * (1 / ρ + 4 / ρ ^ (3 : ℕ)) with hCzdef
   have hCz0 : (0 : ℝ) < Cz := by rw [hCzdef]; positivity
   set Cg : ℝ := 2 * a * (sigma + 1) / ρ
     * (Real.exp (1 / (2 * (a * ρ))) * Real.sqrt (2 * Real.pi / (a * ρ))) with hCgdef
   have hCg0 : (0 : ℝ) < Cg := by rw [hCgdef]; positivity
-  refine ⟨Cg * (Cz + γ₂ * ((n : ℝ) + 1) + 2 * ((n : ℝ) + 1) ^ 2) ^ n, 1, by positivity, le_rfl, ?_⟩
+  refine ⟨Cg * (Cz + γ₂ * ((n : ℝ) + 1) + 2 * ((n : ℝ) + 1) ^ (2 : ℕ)) ^ n, 1, by positivity, le_rfl, ?_⟩
   intro u hu h hcone hh
   have hu0 : (0 : ℝ) < u := by linarith
   have hh1 : (1 : ℝ) ≤ h := le_trans (one_le_xiMassFarThreshold a) hh
@@ -187,15 +187,15 @@ theorem exists_norm_xiMassJetIterate_far_le {a sigma : ℝ} (ha : 1 / 2 < a) (hs
       ∧ ‖xiMassConjugatedCarrier a τ (((h : ℝ) : ℂ) + s)‖ ≤ Cg := by
     intro s hs
     set w : ℂ := ((h : ℝ) : ℂ) + s with hwdef
-    have hzre : (0 : ℝ) < (τ ^ 2 + w ^ 2).re := by
+    have hzre : (0 : ℝ) < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re := by
       have hlow := re_propagation_ge_far (sigma := sigma) ha hu0 hcone hh hs
-      have : (0 : ℝ) < xiMassFarGap a / 2 * h ^ 2 := by positivity
+      have : (0 : ℝ) < xiMassFarGap a / 2 * h ^ (2 : ℕ) := by positivity
       rw [hτdef, hwdef]
       linarith [hlow]
-    have hR : ρ * h ≤ HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) := by
+    have hR : ρ * h ≤ HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) := by
       rw [hτdef, hwdef, hρdef]
       exact xiMassFarRate_mul_le_csqrtRe ha hu0 hcone hh hs
-    have hZre : (xiMassHeightRadius τ w).re = HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) := by
+    have hZre : (xiMassHeightRadius τ w).re = HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) := by
       rw [xiMassHeightRadius, HTGeometry.csqrt_re]
     have hZnorm : ρ * h ≤ ‖xiMassHeightRadius τ w‖ := by
       refine le_trans hR ?_
@@ -213,74 +213,74 @@ theorem exists_norm_xiMassJetIterate_far_le {a sigma : ℝ} (ha : 1 / 2 < a) (hs
       rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos ha0]
     refine ⟨?_, ?_, ?_⟩
     · -- the zeroth-order coefficient
-      have hznorm : xiMassFarGap a / 2 * h ^ 2 ≤ ‖τ ^ 2 + w ^ 2‖ := by
+      have hznorm : xiMassFarGap a / 2 * h ^ (2 : ℕ) ≤ ‖τ ^ (2 : ℕ) + w ^ (2 : ℕ)‖ := by
         have hlow := re_propagation_ge_far (sigma := sigma) ha hu0 hcone hh hs
-        have hb := Complex.abs_re_le_norm (τ ^ 2 + w ^ 2)
+        have hb := Complex.abs_re_le_norm (τ ^ (2 : ℕ) + w ^ (2 : ℕ))
         rw [hτdef, hwdef] at *
         exact le_trans hlow (le_trans (le_abs_self _) hb)
-      have hsym : ‖xiMassCausticSymbolC a τ w‖ ≤ 4 * a ^ 4 + 8 * a ^ 2 / xiMassFarGap a := by
-        have hquot : ‖(a : ℂ) ^ 2 * w ^ 2 / (τ ^ 2 + w ^ 2)‖ ≤ 8 * a ^ 2 / xiMassFarGap a := by
+      have hsym : ‖xiMassCausticSymbolC a τ w‖ ≤ 4 * a ^ (4 : ℕ) + 8 * a ^ (2 : ℕ) / xiMassFarGap a := by
+        have hquot : ‖(a : ℂ) ^ (2 : ℕ) * w ^ (2 : ℕ) / (τ ^ (2 : ℕ) + w ^ (2 : ℕ))‖ ≤ 8 * a ^ (2 : ℕ) / xiMassFarGap a := by
           rw [norm_div, norm_mul, norm_pow, norm_pow, hanorm]
-          have hnum : a ^ 2 * ‖w‖ ^ 2 ≤ a ^ 2 * (2 * h) ^ 2 :=
+          have hnum : a ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) ≤ a ^ (2 : ℕ) * (2 * h) ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg w) hwnorm 2) (by positivity)
-          have hs1 : a ^ 2 * ‖w‖ ^ 2 / ‖τ ^ 2 + w ^ 2‖
-              ≤ a ^ 2 * (2 * h) ^ 2 / ‖τ ^ 2 + w ^ 2‖ :=
+          have hs1 : a ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) / ‖τ ^ (2 : ℕ) + w ^ (2 : ℕ)‖
+              ≤ a ^ (2 : ℕ) * (2 * h) ^ (2 : ℕ) / ‖τ ^ (2 : ℕ) + w ^ (2 : ℕ)‖ :=
             div_le_div_of_nonneg_right hnum (norm_nonneg _)
-          have hs2 : a ^ 2 * (2 * h) ^ 2 / ‖τ ^ 2 + w ^ 2‖
-              ≤ a ^ 2 * (2 * h) ^ 2 / (xiMassFarGap a / 2 * h ^ 2) :=
+          have hs2 : a ^ (2 : ℕ) * (2 * h) ^ (2 : ℕ) / ‖τ ^ (2 : ℕ) + w ^ (2 : ℕ)‖
+              ≤ a ^ (2 : ℕ) * (2 * h) ^ (2 : ℕ) / (xiMassFarGap a / 2 * h ^ (2 : ℕ)) :=
             div_le_div_of_nonneg_left (by positivity) (by positivity) hznorm
-          have hval : a ^ 2 * (2 * h) ^ 2 / (xiMassFarGap a / 2 * h ^ 2)
-              = 8 * a ^ 2 / xiMassFarGap a := by
+          have hval : a ^ (2 : ℕ) * (2 * h) ^ (2 : ℕ) / (xiMassFarGap a / 2 * h ^ (2 : ℕ))
+              = 8 * a ^ (2 : ℕ) / xiMassFarGap a := by
             field_simp
             ring
           linarith [hs1, hs2, hval.le, hval.ge]
-        have hbase : ‖4 * (a : ℂ) ^ 4‖ = 4 * a ^ 4 := by
-          rw [show (4 : ℂ) * (a : ℂ) ^ 4 = ((4 * a ^ 4 : ℝ) : ℂ) by push_cast; ring,
+        have hbase : ‖4 * (a : ℂ) ^ (4 : ℕ)‖ = 4 * a ^ (4 : ℕ) := by
+          rw [show (4 : ℂ) * (a : ℂ) ^ (4 : ℕ) = ((4 * a ^ (4 : ℕ) : ℝ) : ℂ) by push_cast; ring,
             Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
         rw [xiMassCausticSymbolC]
-        calc ‖4 * (a : ℂ) ^ 4 - (a : ℂ) ^ 2 * w ^ 2 / (τ ^ 2 + w ^ 2)‖
-            ≤ ‖4 * (a : ℂ) ^ 4‖ + ‖(a : ℂ) ^ 2 * w ^ 2 / (τ ^ 2 + w ^ 2)‖ := norm_sub_le _ _
-          _ ≤ 4 * a ^ 4 + 8 * a ^ 2 / xiMassFarGap a := by rw [hbase]; linarith
+        calc ‖4 * (a : ℂ) ^ (4 : ℕ) - (a : ℂ) ^ (2 : ℕ) * w ^ (2 : ℕ) / (τ ^ (2 : ℕ) + w ^ (2 : ℕ))‖
+            ≤ ‖4 * (a : ℂ) ^ (4 : ℕ)‖ + ‖(a : ℂ) ^ (2 : ℕ) * w ^ (2 : ℕ) / (τ ^ (2 : ℕ) + w ^ (2 : ℕ))‖ := norm_sub_le _ _
+          _ ≤ 4 * a ^ (4 : ℕ) + 8 * a ^ (2 : ℕ) / xiMassFarGap a := by rw [hbase]; linarith
       have hcurv : ‖(a : ℂ) * (1 / xiMassHeightRadius τ w
-            - w ^ 2 / xiMassHeightRadius τ w ^ 3)‖ ≤ a * (1 / ρ + 4 / ρ ^ 3) := by
+            - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ))‖ ≤ a * (1 / ρ + 4 / ρ ^ (3 : ℕ)) := by
         have h1 : ‖1 / xiMassHeightRadius τ w‖ ≤ 1 / (ρ * h) := by
           rw [norm_div, norm_one]
           exact div_le_div_of_nonneg_left zero_le_one (by positivity) hZnorm
-        have h2 : ‖w ^ 2 / xiMassHeightRadius τ w ^ 3‖ ≤ (2 * h) ^ 2 / (ρ * h) ^ 3 := by
+        have h2 : ‖w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ)‖ ≤ (2 * h) ^ (2 : ℕ) / (ρ * h) ^ (3 : ℕ) := by
           rw [norm_div, norm_pow, norm_pow]
-          have hnum : ‖w‖ ^ 2 ≤ (2 * h) ^ 2 := pow_le_pow_left₀ (norm_nonneg w) hwnorm 2
-          have hden : (ρ * h) ^ 3 ≤ ‖xiMassHeightRadius τ w‖ ^ 3 :=
+          have hnum : ‖w‖ ^ (2 : ℕ) ≤ (2 * h) ^ (2 : ℕ) := pow_le_pow_left₀ (norm_nonneg w) hwnorm 2
+          have hden : (ρ * h) ^ (3 : ℕ) ≤ ‖xiMassHeightRadius τ w‖ ^ (3 : ℕ) :=
             pow_le_pow_left₀ (by positivity) hZnorm 3
-          have hs1 : ‖w‖ ^ 2 / ‖xiMassHeightRadius τ w‖ ^ 3
-              ≤ (2 * h) ^ 2 / ‖xiMassHeightRadius τ w‖ ^ 3 :=
+          have hs1 : ‖w‖ ^ (2 : ℕ) / ‖xiMassHeightRadius τ w‖ ^ (3 : ℕ)
+              ≤ (2 * h) ^ (2 : ℕ) / ‖xiMassHeightRadius τ w‖ ^ (3 : ℕ) :=
             div_le_div_of_nonneg_right hnum (by positivity)
-          have hs2 : (2 * h) ^ 2 / ‖xiMassHeightRadius τ w‖ ^ 3 ≤ (2 * h) ^ 2 / (ρ * h) ^ 3 :=
+          have hs2 : (2 * h) ^ (2 : ℕ) / ‖xiMassHeightRadius τ w‖ ^ (3 : ℕ) ≤ (2 * h) ^ (2 : ℕ) / (ρ * h) ^ (3 : ℕ) :=
             div_le_div_of_nonneg_left (by positivity) (by positivity) hden
           linarith
-        have hsum : ‖1 / xiMassHeightRadius τ w - w ^ 2 / xiMassHeightRadius τ w ^ 3‖
-            ≤ 1 / (ρ * h) + (2 * h) ^ 2 / (ρ * h) ^ 3 := by
+        have hsum : ‖1 / xiMassHeightRadius τ w - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ)‖
+            ≤ 1 / (ρ * h) + (2 * h) ^ (2 : ℕ) / (ρ * h) ^ (3 : ℕ) := by
           refine le_trans (norm_sub_le _ _) ?_
           linarith
-        have hval : 1 / (ρ * h) + (2 * h) ^ 2 / (ρ * h) ^ 3 = (1 / ρ + 4 / ρ ^ 3) / h := by
+        have hval : 1 / (ρ * h) + (2 * h) ^ (2 : ℕ) / (ρ * h) ^ (3 : ℕ) = (1 / ρ + 4 / ρ ^ (3 : ℕ)) / h := by
           field_simp
           ring
         rw [norm_mul, hanorm]
         have hstep := mul_le_mul_of_nonneg_left hsum ha0.le
-        have hdiv : (1 / ρ + 4 / ρ ^ 3) / h ≤ (1 / ρ + 4 / ρ ^ 3) := by
+        have hdiv : (1 / ρ + 4 / ρ ^ (3 : ℕ)) / h ≤ (1 / ρ + 4 / ρ ^ (3 : ℕ)) := by
           rw [div_le_iff₀ hh0]
-          have hpos : (0 : ℝ) < 1 / ρ + 4 / ρ ^ 3 := by positivity
+          have hpos : (0 : ℝ) < 1 / ρ + 4 / ρ ^ (3 : ℕ) := by positivity
           nlinarith [hh1, hpos]
-        calc a * ‖1 / xiMassHeightRadius τ w - w ^ 2 / xiMassHeightRadius τ w ^ 3‖
-            ≤ a * (1 / (ρ * h) + (2 * h) ^ 2 / (ρ * h) ^ 3) := hstep
-          _ = a * ((1 / ρ + 4 / ρ ^ 3) / h) := by rw [hval]
-          _ ≤ a * (1 / ρ + 4 / ρ ^ 3) := mul_le_mul_of_nonneg_left hdiv ha0.le
+        calc a * ‖1 / xiMassHeightRadius τ w - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ)‖
+            ≤ a * (1 / (ρ * h) + (2 * h) ^ (2 : ℕ) / (ρ * h) ^ (3 : ℕ)) := hstep
+          _ = a * ((1 / ρ + 4 / ρ ^ (3 : ℕ)) / h) := by rw [hval]
+          _ ≤ a * (1 / ρ + 4 / ρ ^ (3 : ℕ)) := mul_le_mul_of_nonneg_left hdiv ha0.le
       rw [xiCausticCoeffZero, hCzdef]
       calc ‖xiMassCausticSymbolC a τ w
-              + (a : ℂ) * (1 / xiMassHeightRadius τ w - w ^ 2 / xiMassHeightRadius τ w ^ 3)‖
+              + (a : ℂ) * (1 / xiMassHeightRadius τ w - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ))‖
           ≤ ‖xiMassCausticSymbolC a τ w‖
             + ‖(a : ℂ) * (1 / xiMassHeightRadius τ w
-                - w ^ 2 / xiMassHeightRadius τ w ^ 3)‖ := norm_add_le _ _
-        _ ≤ 4 * a ^ 4 + 8 * a ^ 2 / xiMassFarGap a + a * (1 / ρ + 4 / ρ ^ 3) := by linarith
+                - w ^ (2 : ℕ) / xiMassHeightRadius τ w ^ (3 : ℕ))‖ := norm_add_le _ _
+        _ ≤ 4 * a ^ (4 : ℕ) + 8 * a ^ (2 : ℕ) / xiMassFarGap a + a * (1 / ρ + 4 / ρ ^ (3 : ℕ)) := by linarith
     · -- the transport coefficient
       rw [xiCausticCoeffOne, xiMassRadiusRate, norm_mul, norm_div, hγdef]
       have hcoef : ‖2 * (a : ℂ)‖ = 2 * a := by
@@ -298,7 +298,7 @@ theorem exists_norm_xiMassJetIterate_far_le {a sigma : ℝ} (ha : 1 / 2 < a) (hs
         _ = 4 * a / ρ := by ring
     · -- the conjugated carrier
       have hmain := norm_xiMassConjugatedCarrier_le (a := a) (τ := τ) (w := w) ha0 hzre
-      set R : ℝ := HTGeometry.csqrtRe (τ ^ 2 + w ^ 2) with hRdef
+      set R : ℝ := HTGeometry.csqrtRe (τ ^ (2 : ℕ) + w ^ (2 : ℕ)) with hRdef
       have hR0 : (0 : ℝ) < R := HTGeometry.csqrtRe_pos hzre
       have hRh : ρ * h ≤ R := hR
       have hRu : ρ * u ≤ R := le_trans (by nlinarith [hρ0, huh]) hRh
@@ -357,8 +357,8 @@ theorem exists_norm_xiMassJetIterate_far_le {a sigma : ℝ} (ha : 1 / 2 < a) (hs
     (fun ζ hζ => by
       have h := (hpt (ζ - ((h : ℝ) : ℂ)) (hnear ζ (by linarith [hδ0.le]))).2.2
       rwa [← hshift ζ] at h)
-  have hstepval : Cz + γ₂ / δ + 2 / δ ^ 2
-      = Cz + γ₂ * ((n : ℝ) + 1) + 2 * ((n : ℝ) + 1) ^ 2 := by
+  have hstepval : Cz + γ₂ / δ + 2 / δ ^ (2 : ℕ)
+      = Cz + γ₂ * ((n : ℝ) + 1) + 2 * ((n : ℝ) + 1) ^ (2 : ℕ) := by
     rw [hδdef]
     field_simp
   rw [hstepval] at hiter
@@ -369,35 +369,35 @@ theorem exists_norm_xiMassJetIterate_far_le {a sigma : ℝ} (ha : 1 / 2 < a) (hs
     simpa using this
   have hgauge := xiMassJetIterate_eqOn ha0 τ n hmem
   rw [hgauge]
-  have hpropeq : τ ^ 2 + ((h : ℝ) : ℂ) ^ 2 = xiMassSpacelikePropagationArgument sigma u h := by
+  have hpropeq : τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ) = xiMassSpacelikePropagationArgument sigma u h := by
     rw [xiMassSpacelikePropagationArgument_eq, hτdef]
   have hexpnorm : ‖Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))‖
-      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2))) := by
+      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ)))) := by
     rw [Complex.norm_exp]
     congr 1
     have hre := re_mul_xiMassHeightRadius a τ ((h : ℝ) : ℂ)
     have hneg : (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))
         = -((a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ)) := by ring
     rw [hneg, Complex.neg_re, hre]
-  have hgap : Real.sqrt (h ^ 2 - u ^ 2)
-      ≤ HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2) := by
+  have hgap : Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))
+      ≤ HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ)) := by
     rw [hpropeq]
-    have hmono : Real.sqrt (h ^ 2 - u ^ 2) ≤ Real.sqrt (h ^ 2 - u ^ 2 + sigma ^ 2) :=
+    have hmono : Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)) ≤ Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ) + sigma ^ (2 : ℕ)) :=
       Real.sqrt_le_sqrt (by nlinarith [sq_nonneg sigma])
     exact le_trans hmono (sqrt_fullGap_le_csqrtRe_propagationArgument hsigma hu0.le huh)
-  have hexple : Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2)))
-      ≤ Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by
+  have hexple : Real.exp (-(a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ))))
+      ≤ Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))) := by
     refine Real.exp_le_exp.2 ?_
     nlinarith [hgap, ha0]
   calc ‖Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))
           * xiCausticIterate a τ n ((h : ℝ) : ℂ)‖
-      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2)))
+      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ))))
         * ‖xiCausticIterate a τ n ((h : ℝ) : ℂ)‖ := by rw [norm_mul, hexpnorm]
-    _ ≤ Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2)))
-        * (Cg * (Cz + γ₂ * ((n : ℝ) + 1) + 2 * ((n : ℝ) + 1) ^ 2) ^ n) :=
+    _ ≤ Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ))))
+        * (Cg * (Cz + γ₂ * ((n : ℝ) + 1) + 2 * ((n : ℝ) + 1) ^ (2 : ℕ)) ^ n) :=
         mul_le_mul hexple hiter (norm_nonneg _) (Real.exp_pos _).le
-    _ = Cg * (Cz + γ₂ * ((n : ℝ) + 1) + 2 * ((n : ℝ) + 1) ^ 2) ^ n
-        * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by ring
+    _ = Cg * (Cz + γ₂ * ((n : ℝ) + 1) + 2 * ((n : ℝ) + 1) ^ (2 : ℕ)) ^ n
+        * Real.exp (-(a * Real.sqrt (h ^ (2 : ℕ) - u ^ (2 : ℕ)))) := by ring
 
 end
 

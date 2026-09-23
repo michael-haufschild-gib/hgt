@@ -39,7 +39,7 @@ theorem tateThetaGauge_eq_surviving_ratio (r : TateQuarterNome) (x : ℂ) (hx : 
   simp only [u]
   field_simp [r.root_complex_ne_zero]
 
-/-- The nome `r^4` tends to zero with its positive fourth root. -/
+/-- The nome `r^(4 : ℕ)` tends to zero with its positive fourth root. -/
 theorem tendsto_tateQuarterNome_nome_zero
     {ι : Type*} {l : Filter ι} (r : ι → TateQuarterNome)
     (hr : Tendsto (fun i => (r i).root) l (nhds 0)) :

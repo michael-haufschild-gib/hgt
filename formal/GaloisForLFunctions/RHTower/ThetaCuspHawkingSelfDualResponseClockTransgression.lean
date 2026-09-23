@@ -7,18 +7,18 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskySingleSectorFrequenc
 The normalized self-dual Einstein--AdS4 quadratic source derived from the horizon Mellin mode has
 unit-amplitude coefficient
 
-`C(rho) = (1 + rho / 2) (rho / 2)^2 = rho^2 (rho + 2) / 8`.
+`C(rho) = (1 + rho / 2) (rho / 2)^(2 : ℕ) = rho^(2 : ℕ) (rho + 2) / 8`.
 
-Its intensity `I(rho)=|C(rho)|^2` is not reflection invariant.  Writing
+Its intensity `I(rho)=|C(rho)|^(2 : ℕ)` is not reflection invariant.  Writing
 `x = Re rho - 1/2`, its exact theta-reflection variation is
 
 `I(rho) - I(1-rho) = x S(rho) / 32`,
 
 where
 
-`S = 5 A^2 + 2 A B + 5 x^2`,
-`A = x^2 + (Im rho)^2 + 1/4`, and
-`B = x^2 + (Im rho)^2 + 25/4`.
+`S = 5 A^(2 : ℕ) + 2 A B + 5 x^(2 : ℕ)`,
+`A = x^(2 : ℕ) + (Im rho)^(2 : ℕ) + 1/4`, and
+`B = x^(2 : ℕ) + (Im rho)^(2 : ℕ) + 25/4`.
 
 The susceptibility `S` is strictly positive.  Thus intensity equality occurs exactly on the
 critical line, with no phase convention and no critical-strip restriction.
@@ -41,7 +41,7 @@ def d4ThetaHawkingSelfDualUnitResponse (rho : ℂ) : ℂ :=
 
 theorem d4ThetaHawkingSelfDualUnitResponse_eq (rho : ℂ) :
     d4ThetaHawkingSelfDualUnitResponse rho =
-      (1 + rho / 2) * (rho / 2) ^ 2 := by
+      (1 + rho / 2) * (rho / 2) ^ (2 : ℕ) := by
   rw [d4ThetaHawkingSelfDualUnitResponse]
   ring
 
@@ -52,14 +52,14 @@ def d4ThetaHawkingSelfDualUnitResponseIntensity (rho : ℂ) : ℝ :=
 /-- Positive multiplier relating horizontal divisor displacement to response-intensity change. -/
 def d4ThetaHawkingSelfDualResponseSusceptibility (rho : ℂ) : ℝ :=
   let x := rho.re - 1 / 2
-  let a := x ^ 2 + rho.im ^ 2 + 1 / 4
-  let b := x ^ 2 + rho.im ^ 2 + 25 / 4
-  5 * a ^ 2 + 2 * a * b + 5 * x ^ 2
+  let a := x ^ (2 : ℕ) + rho.im ^ (2 : ℕ) + 1 / 4
+  let b := x ^ (2 : ℕ) + rho.im ^ (2 : ℕ) + 25 / 4
+  5 * a ^ (2 : ℕ) + 2 * a * b + 5 * x ^ (2 : ℕ)
 
 theorem d4ThetaHawkingSelfDualUnitResponseIntensity_eq (rho : ℂ) :
     d4ThetaHawkingSelfDualUnitResponseIntensity rho =
-      ((rho.re ^ 2 + rho.im ^ 2) ^ 2 *
-        ((rho.re + 2) ^ 2 + rho.im ^ 2)) / 64 := by
+      ((rho.re ^ (2 : ℕ) + rho.im ^ (2 : ℕ)) ^ (2 : ℕ) *
+        ((rho.re + 2) ^ (2 : ℕ) + rho.im ^ (2 : ℕ))) / 64 := by
   rw [d4ThetaHawkingSelfDualUnitResponseIntensity,
     d4ThetaHawkingSelfDualUnitResponse]
   simp [Complex.normSq_apply]

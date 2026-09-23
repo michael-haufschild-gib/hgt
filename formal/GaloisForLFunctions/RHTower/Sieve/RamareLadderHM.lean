@@ -36,13 +36,13 @@ def ladderHMBound (M : ℕ) (Q η W volE : ℝ) (j : ℕ) : ℝ :=
                 * (214 * Real.sqrt (2 * (2 * Real.pi * W)))
               + 3072 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
             * (2 * Real.pi * volE))
-        * ((1 : ℝ) ^ 2 * ((geomCofactorBlock M Q η j).card : ℝ)))
+        * ((1 : ℝ) ^ (2 : ℕ) * ((geomCofactorBlock M Q η j).card : ℝ)))
 
 /-- **The cofactor mean square over a frequency set, by Halász–Montgomery.** -/
 theorem setIntegral_normSq_cofactorBlock_le_HM (P : Finset ℕ) (M : ℕ) {Q η W : ℝ}
     (hQ : 0 < Q) (hη : 0 ≤ η) {j : ℕ} (hNj : 1 ≤ ⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ 2)
+    (∫ w in E, ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ^ (2 : ℕ))
       ≤ ladderHMBound M Q η W (volume.real E) j := by
   have hsub := geomCofactorBlock_subset_Icc M hQ hη j
   have hbase := setIntegral_normSq_logPoly_le_HM_window (ramareCofactorCoeff P) hNj hsub hEm hEs
@@ -61,10 +61,10 @@ theorem setIntegral_normSq_ramareBilinear_le_ladder_HM {P : Finset ℕ} (M : ℕ
     (hNj : ∀ j ∈ Finset.range L, 1 ≤ ⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊)
     (hbound : ∀ j ∈ Finset.range L, ∀ w ∈ E,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ V j) :
-    (∫ w in E, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in E, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       ≤ 2 * (L : ℝ) * ∑ j ∈ Finset.range L,
-          V j ^ 2 * ladderHMBound M Q η W (volume.real E) j
-        + 2 * ∫ w in E, ‖ramareLadderError P M Q η L w‖ ^ 2 := by
+          V j ^ (2 : ℕ) * ladderHMBound M Q η W (volume.real E) j
+        + 2 * ∫ w in E, ‖ramareLadderError P M Q η L w‖ ^ (2 : ℕ) := by
   refine setIntegral_normSq_ramareBilinear_le_ladder_supMeanSquare (P := P) M hQ hη hL hP
     hEm hEs V (fun j => ladderHMBound M Q η W (volume.real E) j) hbound ?_
   intro j hj

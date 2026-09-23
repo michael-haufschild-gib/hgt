@@ -45,7 +45,7 @@ def routePPrimitiveFourthDepthModularGain (pe : Nat.Primes × ℕ) : ℝ :=
 theorem routePPrimitiveFourthDepth_cubicWeight_modularGain_sq
     (pe : Nat.Primes × ℕ) :
     xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveFourthDepth pe) *
-        routePPrimitiveFourthDepthModularGain pe ^ 2 =
+        routePPrimitiveFourthDepthModularGain pe ^ (2 : ℕ) =
       xiGammaEulerPrimitiveCubicLogMomentWeight pe / 64 := by
   rw [routePPrimitiveFourthDepth, routePPrimitiveFourthDepthModularGain, mul_pow]
   rw [← mul_assoc,
@@ -53,9 +53,9 @@ theorem routePPrimitiveFourthDepth_cubicWeight_modularGain_sq
       (routePPrimitiveDepthSquare pe)]
   calc
     xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveDepthSquare pe) / 8 *
-          routePPrimitiveDepthSquareModularGain pe ^ 2 =
+          routePPrimitiveDepthSquareModularGain pe ^ (2 : ℕ) =
         (xiGammaEulerPrimitiveCubicLogMomentWeight (routePPrimitiveDepthSquare pe) *
-          routePPrimitiveDepthSquareModularGain pe ^ 2) / 8 := by ring
+          routePPrimitiveDepthSquareModularGain pe ^ (2 : ℕ)) / 8 := by ring
     _ = (xiGammaEulerPrimitiveCubicLogMomentWeight pe / 8) / 8 := by
       rw [routePPrimitiveDepthSquare_cubicWeight_modularGain_sq]
     _ = xiGammaEulerPrimitiveCubicLogMomentWeight pe / 64 := by ring
@@ -64,18 +64,18 @@ theorem routePPrimitiveFourthDepth_cubicWeight_modularGain_sq
 theorem routePPrimitiveFourthDepth_baseCauchyWeight_modularGain_sq
     (pe : Nat.Primes × ℕ) :
     routePPrimitiveBaseCauchyCubicWeight (routePPrimitiveFourthDepth pe) *
-        routePPrimitiveFourthDepthModularGain pe ^ 2 =
+        routePPrimitiveFourthDepthModularGain pe ^ (2 : ℕ) =
       routePPrimitiveBaseCauchyCubicWeight pe / 64 := by
   rw [routePPrimitiveBaseCauchyCubicWeight,
     routePPrimitiveBaseCauchyCubicWeight]
   calc
     216 / 115 * xiGammaEulerPrimitiveCubicLogMomentWeight
           (routePPrimitiveFourthDepth pe) *
-          routePPrimitiveFourthDepthModularGain pe ^ 2 =
+          routePPrimitiveFourthDepthModularGain pe ^ (2 : ℕ) =
         216 / 115 *
           (xiGammaEulerPrimitiveCubicLogMomentWeight
             (routePPrimitiveFourthDepth pe) *
-              routePPrimitiveFourthDepthModularGain pe ^ 2) := by ring
+              routePPrimitiveFourthDepthModularGain pe ^ (2 : ℕ)) := by ring
     _ = 216 / 115 *
           (xiGammaEulerPrimitiveCubicLogMomentWeight pe / 64) := by
       rw [routePPrimitiveFourthDepth_cubicWeight_modularGain_sq]
@@ -95,7 +95,7 @@ theorem routePPrimitiveFourthDepth_cubicPluckerDefect
 /-- Scale-free degree-two ratio of a two-column Gram with prescribed diagonal weights and
 normalized Pluecker defect. -/
 def routeEPCubicWeightedPairGramRatio (left right defect : ℝ) : ℝ :=
-  left * right * defect / (left + right) ^ 2
+  left * right * defect / (left + right) ^ (2 : ℕ)
 
 /-- Actual degree-two ratio after coefficient-faithful transport to the fourth-depth partner. -/
 def routeEPCubicSourceFaithfulFourthDepthPairGramRatio
@@ -103,7 +103,7 @@ def routeEPCubicSourceFaithfulFourthDepthPairGramRatio
   routeEPCubicWeightedPairGramRatio
     (routePPrimitiveBaseCauchyCubicWeight pe)
     (routePPrimitiveBaseCauchyCubicWeight (routePPrimitiveFourthDepth pe) *
-      routePPrimitiveFourthDepthModularGain pe ^ 2)
+      routePPrimitiveFourthDepthModularGain pe ^ (2 : ℕ))
     (1 - routePBaseCauchyCubicNormalizedCoherenceSq
       (xiGammaEulerPrimitiveLogFrequency pe)
       (xiGammaEulerPrimitiveLogFrequency (routePPrimitiveFourthDepth pe)) 0)
@@ -138,7 +138,7 @@ theorem routeEPCubicSourceFaithfulFourthDepthPairGramRatio_lt_one_div_six
 /-- Abstract balance law: a `1/64` energy carrier is restored exactly by squared gain `64`. -/
 theorem routeEPCubic_fourthDepth_rebalance_iff
     {w c : ℝ} (hw : 0 < w) :
-    w / 64 * c ^ 2 = w ↔ c ^ 2 = 64 := by
+    w / 64 * c ^ (2 : ℕ) = w ↔ c ^ (2 : ℕ) = 64 := by
   constructor
   · intro h
     apply (mul_left_cancel₀ hw.ne')
@@ -150,9 +150,9 @@ theorem routeEPCubic_fourthDepth_rebalance_iff
 /-- Among nonnegative amplitudes, the unique fourth-depth rebalancing factor is `8`. -/
 theorem routeEPCubic_fourthDepth_rebalance_eq_eight
     {w c : ℝ} (hw : 0 < w) (hc : 0 ≤ c)
-    (hbalance : w / 64 * c ^ 2 = w) :
+    (hbalance : w / 64 * c ^ (2 : ℕ) = w) :
     c = 8 := by
-  have hc2 : c ^ 2 = 64 :=
+  have hc2 : c ^ (2 : ℕ) = 64 :=
     (routeEPCubic_fourthDepth_rebalance_iff hw).mp hbalance
   nlinarith
 
@@ -161,9 +161,9 @@ equivalent to multiplying its amplitude by a square root of `64`. -/
 theorem routePPrimitiveFourthDepth_baseCauchy_rebalance_iff
     (pe : Nat.Primes × ℕ) (c : ℝ) :
     routePPrimitiveBaseCauchyCubicWeight (routePPrimitiveFourthDepth pe) *
-          (routePPrimitiveFourthDepthModularGain pe * c) ^ 2 =
+          (routePPrimitiveFourthDepthModularGain pe * c) ^ (2 : ℕ) =
         routePPrimitiveBaseCauchyCubicWeight pe ↔
-      c ^ 2 = 64 := by
+      c ^ (2 : ℕ) = 64 := by
   rw [mul_pow, ← mul_assoc,
     routePPrimitiveFourthDepth_baseCauchyWeight_modularGain_sq]
   exact routeEPCubic_fourthDepth_rebalance_iff
@@ -174,7 +174,7 @@ theorem routePPrimitiveFourthDepth_baseCauchy_rebalance_eq_eight
     (pe : Nat.Primes × ℕ) {c : ℝ} (hc : 0 ≤ c)
     (hbalance :
       routePPrimitiveBaseCauchyCubicWeight (routePPrimitiveFourthDepth pe) *
-          (routePPrimitiveFourthDepthModularGain pe * c) ^ 2 =
+          (routePPrimitiveFourthDepthModularGain pe * c) ^ (2 : ℕ) =
         routePPrimitiveBaseCauchyCubicWeight pe) :
     c = 8 := by
   have hc2 :=
@@ -186,7 +186,7 @@ theorem routePPrimitiveFourthDepth_sourceFaithful_pairTrace
     (pe : Nat.Primes × ℕ) :
     routePPrimitiveBaseCauchyCubicWeight pe +
         routePPrimitiveBaseCauchyCubicWeight (routePPrimitiveFourthDepth pe) *
-          routePPrimitiveFourthDepthModularGain pe ^ 2 =
+          routePPrimitiveFourthDepthModularGain pe ^ (2 : ℕ) =
       65 / 64 * routePPrimitiveBaseCauchyCubicWeight pe := by
   rw [routePPrimitiveFourthDepth_baseCauchyWeight_modularGain_sq]
   ring

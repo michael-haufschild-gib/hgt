@@ -12,7 +12,7 @@ theorem hypergeometricCoefficient_tail_bound {a b c : ℂ} {B δ : ℝ} (hB : 0 
     (hδ : 0 < δ) (ha : ‖a‖ ≤ B) (hb : ‖b‖ ≤ B) (hc : ‖c‖ ≤ B)
     (hsep : ∀ j : ℕ, δ ≤ ‖c+j‖) (N : ℕ) (hN : B+1 ≤ N) (m : ℕ) :
     ‖ordinaryHypergeometricCoefficient a b c (N+m)‖ ≤
-      ((ascPochhammer ℝ N).eval B)^2/δ^N * positiveGaussCoefficient (B+N) m := by
+      ((ascPochhammer ℝ N).eval B)^(2 : ℕ)/δ^N * positiveGaussCoefficient (B+N) m := by
   have hcN : 1 ≤ (c+(N : ℂ)).re := by
     have hh := (neg_le_of_abs_le ((Complex.abs_re_le_norm c).trans hc))
     simp only [Complex.add_re,Complex.natCast_re]
@@ -23,29 +23,29 @@ theorem hypergeometricCoefficient_tail_bound {a b c : ℂ} {B δ : ℝ} (hB : 0 
       (Nat.cast_nonneg _) (norm_nonneg _)
   have hf : (m.factorial : ℝ) ≤ ((N+m).factorial : ℝ) := by
     exact_mod_cast Nat.factorial_le (show m ≤ N+m by omega)
-  have hd : δ^N*(m.factorial : ℝ)^2 ≤
+  have hd : δ^N*(m.factorial : ℝ)^(2 : ℕ) ≤
       ((N+m).factorial : ℝ)*‖(ascPochhammer ℂ (N+m)).eval c‖ := by
     have hh := mul_le_mul hf hl (by positivity : (0 : ℝ) ≤ δ^N*(m.factorial : ℝ)) (Nat.cast_nonneg _)
     nlinarith
   have hu : ‖(ascPochhammer ℂ (N+m)).eval a‖*‖(ascPochhammer ℂ (N+m)).eval b‖ ≤
-      ((ascPochhammer ℝ N).eval B)^2*((ascPochhammer ℝ m).eval (B+N))^2 := by
+      ((ascPochhammer ℝ N).eval B)^(2 : ℕ)*((ascPochhammer ℝ m).eval (B+N))^(2 : ℕ) := by
     have hh := mul_le_mul (pochhammer_norm_le hB ha (N+m)) (pochhammer_norm_le hB hb (N+m))
       (norm_nonneg _) (ascPochhammer_pos (N+m) B hB).le
     rw [pochhammer_eval_add (K := ℝ) B N m] at hh
     nlinarith
   rw [hypergeometricCoefficient_norm]
   calc
-    _ ≤ (((ascPochhammer ℝ N).eval B)^2*((ascPochhammer ℝ m).eval (B+N))^2)/
+    _ ≤ (((ascPochhammer ℝ N).eval B)^(2 : ℕ)*((ascPochhammer ℝ m).eval (B+N))^(2 : ℕ))/
         (((N+m).factorial : ℝ)*‖(ascPochhammer ℂ (N+m)).eval c‖) :=
       div_le_div_of_nonneg_right hu (mul_nonneg (Nat.cast_nonneg _) (norm_nonneg _))
-    _ ≤ (((ascPochhammer ℝ N).eval B)^2*((ascPochhammer ℝ m).eval (B+N))^2)/
-        (δ^N*(m.factorial : ℝ)^2) :=
+    _ ≤ (((ascPochhammer ℝ N).eval B)^(2 : ℕ)*((ascPochhammer ℝ m).eval (B+N))^(2 : ℕ))/
+        (δ^N*(m.factorial : ℝ)^(2 : ℕ)) :=
       div_le_div_of_nonneg_left (by positivity) (by positivity) hd
     _ = _ := by rw [positiveGaussCoefficient_eq]; ring
 
 def gaussParameterMajorant (B δ : ℝ) (N n : ℕ) : ℝ :=
-  if n < N then ((ascPochhammer ℝ n).eval B)^2/((n.factorial : ℝ)*δ^n)
-  else ((ascPochhammer ℝ N).eval B)^2/δ^N * positiveGaussCoefficient (B+N) (n-N)
+  if n < N then ((ascPochhammer ℝ n).eval B)^(2 : ℕ)/((n.factorial : ℝ)*δ^n)
+  else ((ascPochhammer ℝ N).eval B)^(2 : ℕ)/δ^N * positiveGaussCoefficient (B+N) (n-N)
 
 theorem gaussParameterMajorant_bound {a b c : ℂ} {B δ : ℝ} (hB : 0 < B)
     (hδ : 0 < δ) (ha : ‖a‖ ≤ B) (hb : ‖b‖ ≤ B) (hc : ‖c‖ ≤ B)
@@ -54,7 +54,7 @@ theorem gaussParameterMajorant_bound {a b c : ℂ} {B δ : ℝ} (hB : 0 < B)
   by_cases hn : n < N
   · rw [gaussParameterMajorant,if_pos hn,hypergeometricCoefficient_norm]
     have hu : ‖(ascPochhammer ℂ n).eval a‖*‖(ascPochhammer ℂ n).eval b‖ ≤
-        ((ascPochhammer ℝ n).eval B)^2 := by
+        ((ascPochhammer ℝ n).eval B)^(2 : ℕ) := by
       simpa only [pow_two] using mul_le_mul (pochhammer_norm_le hB ha n) (pochhammer_norm_le hB hb n)
         (norm_nonneg _) (ascPochhammer_pos n B hB).le
     have hd := mul_le_mul_of_nonneg_left (pochhammer_norm_lower hδ hsep n) (Nat.cast_nonneg n.factorial : (0 : ℝ) ≤ n.factorial)
@@ -69,7 +69,7 @@ theorem gaussParameterMajorant_summable {B δ r : ℝ} (hB : 0 < B) (hr : 0 ≤ 
     (N : ℕ) : Summable (fun n => gaussParameterMajorant B δ N n*r^n) := by
   apply (summable_nat_add_iff N).mp
   have hs := (positiveGaussCoefficient_summable (by positivity : 0 < B+N) hr hr1).mul_left
-    ((((ascPochhammer ℝ N).eval B)^2/δ^N)*r^N)
+    ((((ascPochhammer ℝ N).eval B)^(2 : ℕ)/δ^N)*r^N)
   apply hs.congr
   intro n
   simp only [gaussParameterMajorant,show ¬ n+N < N by omega,if_false,Nat.add_sub_cancel,pow_add]

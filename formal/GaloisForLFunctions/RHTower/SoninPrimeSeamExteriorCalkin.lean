@@ -118,12 +118,12 @@ theorem primePairDifferenceEnergy_div_mass_le_sq_calkinDistance_div_sqrt_mass
     primePairDifferenceEnergy
         (fun p : Nat.Primes => orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s /
         primeReciprocalMass s ≤
-      (xiSeamExteriorCalkinDistance t rho s / Real.sqrt (primeReciprocalMass s)) ^ 2 := by
+      (xiSeamExteriorCalkinDistance t rho s / Real.sqrt (primeReciprocalMass s)) ^ (2 : ℕ) := by
   set u : Nat.Primes → ℂ := fun p => orbitwiseNatPrimeSeamCharge (p : ℕ) rho with hu
   have hM : 0 ≤ primeReciprocalMass s := primeReciprocalMass_nonneg s
   have hE0 : 0 ≤ primePairDifferenceEnergy u s := primePairDifferenceEnergy_nonneg u s
   have hsqrt := sqrt_primePairDifferenceEnergy_le_essentialNorm_soninPrimePairSection t ht u s
-  have hEsq : primePairDifferenceEnergy u s ≤ xiSeamExteriorCalkinDistance t rho s ^ 2 := by
+  have hEsq : primePairDifferenceEnergy u s ≤ xiSeamExteriorCalkinDistance t rho s ^ (2 : ℕ) := by
     have hid := Real.sq_sqrt hE0
     have hnn := Real.sqrt_nonneg (primePairDifferenceEnergy u s)
     have : Real.sqrt (primePairDifferenceEnergy u s) ≤ xiSeamExteriorCalkinDistance t rho s :=
@@ -145,7 +145,7 @@ theorem re_eq_half_of_xiSeamExteriorCalkinDistance_submass (t : ℝ) (ht : 0 < t
   refine re_eq_half_of_orbitwisePrimeSeamPairEnergySubmass hstrip ?_
   have hsq : Filter.Tendsto
       (fun s : Finset Nat.Primes =>
-        (xiSeamExteriorCalkinDistance t rho s / Real.sqrt (primeReciprocalMass s)) ^ 2)
+        (xiSeamExteriorCalkinDistance t rho s / Real.sqrt (primeReciprocalMass s)) ^ (2 : ℕ))
       Filter.atTop (nhds 0) := by
     have := hsub.pow 2
     simpa using this

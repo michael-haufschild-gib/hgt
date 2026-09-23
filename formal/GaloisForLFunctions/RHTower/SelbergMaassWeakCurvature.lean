@@ -25,10 +25,10 @@ variable (N : ℕ) {lam : ℝ}
 /-- The square root of the original finite congruence trace density. -/
 def amplitude (z : ℂ) : ℝ := Real.sqrt (density N f (ofComplex z))
 /-- The original amplitude with its hyperbolic area weight. -/
-def amplitudeWeight (z : ℂ) : ℝ := amplitude N f z / z.im ^ 2
+def amplitudeWeight (z : ℂ) : ℝ := amplitude N f z / z.im ^ (2 : ℕ)
 /-- The regularized spectral density in planar coordinates. -/
 def massWeight (e : Ioi (0 : ℝ)) (z : ℂ) : ℝ :=
-  density N f (ofComplex z) / (z.im ^ 2 * radius N f e z)
+  density N f (ofComplex z) / (z.im ^ (2 : ℕ) * radius N f e z)
 /-- The full retained regularized curvature, including its nodal correction. -/
 def curvatureWeight (e : Ioi (0 : ℝ)) (z : ℂ) : ℝ :=
   remainder N f e (ofComplex z) / radius N f e z
@@ -116,38 +116,38 @@ theorem radius_sub_amplitude_nonneg (e : Ioi (0 : ℝ)) (z : ℂ) :
 theorem radius_sub_amplitude_le (e : Ioi (0 : ℝ)) (z : ℂ) :
     radius N f e z - amplitude N f z ≤ (e : ℝ) := by
   have h := regularized_le_sqrt_add (density_nonneg N f (ofComplex z)) e.2.le
-  change Real.sqrt (density N f (ofComplex z) + (e : ℝ) ^ 2) - Real.sqrt (density N f (ofComplex z)) ≤ (e : ℝ)
+  change Real.sqrt (density N f (ofComplex z) + (e : ℝ) ^ (2 : ℕ)) - Real.sqrt (density N f (ofComplex z)) ≤ (e : ℝ)
   linarith
 
 /-- The regularized spectral density is bounded by the actual amplitude density. -/
 theorem massWeight_le_amplitudeWeight (e : Ioi (0 : ℝ)) (z : ℂ) :
     massWeight N f e z ≤ amplitudeWeight N f z := by
   unfold massWeight amplitudeWeight amplitude radius
-  rw [mul_comm (z.im ^ 2), ← div_div]
+  rw [mul_comm (z.im ^ (2 : ℕ)), ← div_div]
   exact div_le_div_of_nonneg_right (weighted_sqrt_le (density_nonneg N f _) e.2) (sq_nonneg z.im)
 
 /-- The spectral-density error is at most half the regulator times inverse squared height. -/
 theorem amplitudeWeight_sub_mass_le (e : Ioi (0 : ℝ)) (z : ℂ) :
-    amplitudeWeight N f z - massWeight N f e z ≤ (e : ℝ) / 2 * (1 / z.im ^ 2) := by
+    amplitudeWeight N f z - massWeight N f e z ≤ (e : ℝ) / 2 * (1 / z.im ^ (2 : ℕ)) := by
   have h := div_le_div_of_nonneg_right
     (weighted_sqrt_error_le_half (density_nonneg N f (ofComplex z)) e.2) (sq_nonneg z.im)
   unfold amplitudeWeight amplitude massWeight radius
   calc
     _ = (Real.sqrt (density N f (ofComplex z)) - density N f (ofComplex z) /
-        Real.sqrt (density N f (ofComplex z) + (e : ℝ) ^ 2)) / z.im ^ 2 := by ring
-    _ ≤ (e : ℝ) / 2 / z.im ^ 2 := h
+        Real.sqrt (density N f (ofComplex z) + (e : ℝ) ^ (2 : ℕ))) / z.im ^ (2 : ℕ) := by ring
+    _ ≤ (e : ℝ) / 2 / z.im ^ (2 : ℕ) := h
     _ = _ := by ring
 
 /-- Inverse squared height is continuous on the open upper half-plane. -/
 theorem inverse_height_continuousOn :
-    ContinuousOn (fun z : ℂ => 1 / z.im ^ 2) {z : ℂ | 0 < z.im} :=
+    ContinuousOn (fun z : ℂ => 1 / z.im ^ (2 : ℕ)) {z : ℂ | 0 < z.im} :=
   continuousOn_const.div (Complex.continuous_im.pow 2).continuousOn
     (fun _ hz => pow_ne_zero 2 (ne_of_gt hz))
 
 /-- Every absolute compact test has integrable inverse-square height weight. -/
 theorem norm_test_height_integrable {phi : ℂ → ℝ} (hp : Continuous phi)
     (hc : HasCompactSupport phi) (hs : tsupport phi ⊆ {z : ℂ | 0 < z.im}) :
-    Integrable (fun z => ‖phi z‖ / z.im ^ 2) := by
+    Integrable (fun z => ‖phi z‖ / z.im ^ (2 : ℕ)) := by
   simpa only [mul_one_div] using integrable_norm_test_mul hp hc inverse_height_continuousOn hs
 
 /-- Both literal integrals defining the source weak curvature are genuinely integrable on admissible tests. -/
@@ -176,7 +176,7 @@ theorem laplacian_radius_pairing_error {phi : ℂ → ℝ} (hp : ContDiff ℝ 2 
 theorem mass_pairing_error {phi : ℂ → ℝ} (hp : Continuous phi)
     (hc : HasCompactSupport phi) (hs : tsupport phi ⊆ {z : ℂ | 0 < z.im}) (e : Ioi (0 : ℝ)) :
     ‖(∫ z, phi z * massWeight N f e z) - ∫ z, phi z * amplitudeWeight N f z‖ ≤
-      (e : ℝ) / 2 * ∫ z, ‖phi z‖ / z.im ^ 2 := by
+      (e : ℝ) / 2 * ∫ z, ‖phi z‖ / z.im ^ (2 : ℕ) := by
   have h := norm_pairing_sub_le hp hc hs (amplitudeWeight_continuousOn N f)
     (massWeight_continuousOn N f e) inverse_height_continuousOn (c := (e : ℝ) / 2)
     (fun z _ => by
@@ -186,7 +186,7 @@ theorem mass_pairing_error {phi : ℂ → ℝ} (hp : Continuous phi)
 
 /-- The finite test-dependent constant in the quantitative weak-curvature error. -/
 def testBudget (lam : ℝ) (phi : ℂ → ℝ) : ℝ :=
-  (∫ z, ‖realLaplacian phi z‖) + |lam| / 2 * ∫ z, ‖phi z‖ / z.im ^ 2
+  (∫ z, ‖realLaplacian phi z‖) + |lam| / 2 * ∫ z, ‖phi z‖ / z.im ^ (2 : ℕ)
 
 /-- The quantitative test budget is nonnegative for every real spectral parameter. -/
 theorem testBudget_nonneg (lam : ℝ) (phi : ℂ → ℝ) : 0 ≤ testBudget lam phi :=

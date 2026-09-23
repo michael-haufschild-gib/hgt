@@ -57,13 +57,13 @@ theorem hermite_oscillator_ode (n : ℕ) :
 
 /-- Probabilists' Hermite function `He_n(x)·e^(−x²/4)`. -/
 noncomputable def probHermiteFun (n : ℕ) (x : ℝ) : ℝ :=
-  Polynomial.aeval x (hermite n) * Real.exp (-(x ^ 2 / 4))
+  Polynomial.aeval x (hermite n) * Real.exp (-(x ^ (2 : ℕ) / 4))
 
 /-- Derivative of the Gaussian weight `e^(−x²/4)`. -/
 theorem hasDerivAt_quarterGauss (x : ℝ) :
-    HasDerivAt (fun y : ℝ => Real.exp (-(y ^ 2 / 4)))
-      (-(x / 2) * Real.exp (-(x ^ 2 / 4))) x := by
-  have h : HasDerivAt (fun y : ℝ => -(y ^ 2 / 4)) (-(x / 2)) x := by
+    HasDerivAt (fun y : ℝ => Real.exp (-(y ^ (2 : ℕ) / 4)))
+      (-(x / 2) * Real.exp (-(x ^ (2 : ℕ) / 4))) x := by
+  have h : HasDerivAt (fun y : ℝ => -(y ^ (2 : ℕ) / 4)) (-(x / 2)) x := by
     have h0 := ((hasDerivAt_pow 2 x).div_const 4).neg
     have e2 : -(((2 : ℕ) : ℝ) * x ^ (2 - 1) / 4) = -(x / 2) := by push_cast; ring
     rw [e2] at h0
@@ -76,21 +76,21 @@ theorem hasDerivAt_quarterGauss (x : ℝ) :
 `ψ_n' = He_n'·e^(−x²/4) − (x/2)·ψ_n`. -/
 theorem hasDerivAt_probHermiteFun (n : ℕ) (x : ℝ) :
     HasDerivAt (probHermiteFun n)
-      (Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ 2 / 4))
+      (Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ (2 : ℕ) / 4))
         - x / 2 * probHermiteFun n x) x := by
   have h := (Polynomial.hasDerivAt_aeval (𝕜 := ℝ) (hermite n) x).mul
     (hasDerivAt_quarterGauss x)
-  have hval : Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ 2 / 4))
+  have hval : Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ (2 : ℕ) / 4))
         - x / 2 * probHermiteFun n x
-      = Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ 2 / 4))
-        + Polynomial.aeval x (hermite n) * (-(x / 2) * Real.exp (-(x ^ 2 / 4))) := by
+      = Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ (2 : ℕ) / 4))
+        + Polynomial.aeval x (hermite n) * (-(x / 2) * Real.exp (-(x ^ (2 : ℕ) / 4))) := by
     unfold probHermiteFun; ring
   rw [hval]
   exact h
 
 theorem deriv_probHermiteFun (n : ℕ) :
     deriv (probHermiteFun n) = fun x =>
-      Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ 2 / 4))
+      Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ (2 : ℕ) / 4))
         - x / 2 * probHermiteFun n x :=
   funext fun x => (hasDerivAt_probHermiteFun n x).deriv
 
@@ -98,27 +98,27 @@ theorem deriv_probHermiteFun (n : ℕ) :
 `ψ_n'' = (x²/4 − n − 1/2)·ψ_n`. -/
 theorem deriv2_probHermiteFun (n : ℕ) (x : ℝ) :
     deriv (deriv (probHermiteFun n)) x
-      = (x ^ 2 / 4 - n - 1 / 2) * probHermiteFun n x := by
+      = (x ^ (2 : ℕ) / 4 - n - 1 / 2) * probHermiteFun n x := by
   rw [deriv_probHermiteFun n]
   have h1 : HasDerivAt
-      (fun y : ℝ => Polynomial.aeval y (derivative (hermite n)) * Real.exp (-(y ^ 2 / 4)))
-      (Polynomial.aeval x (derivative (derivative (hermite n))) * Real.exp (-(x ^ 2 / 4))
+      (fun y : ℝ => Polynomial.aeval y (derivative (hermite n)) * Real.exp (-(y ^ (2 : ℕ) / 4)))
+      (Polynomial.aeval x (derivative (derivative (hermite n))) * Real.exp (-(x ^ (2 : ℕ) / 4))
         + Polynomial.aeval x (derivative (hermite n))
-          * (-(x / 2) * Real.exp (-(x ^ 2 / 4)))) x :=
+          * (-(x / 2) * Real.exp (-(x ^ (2 : ℕ) / 4)))) x :=
     (Polynomial.hasDerivAt_aeval (𝕜 := ℝ) (derivative (hermite n)) x).mul
       (hasDerivAt_quarterGauss x)
   have h2 : HasDerivAt (fun y : ℝ => y / 2 * probHermiteFun n y)
       ((1 : ℝ) / 2 * probHermiteFun n x
-        + x / 2 * (Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ 2 / 4))
+        + x / 2 * (Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ (2 : ℕ) / 4))
           - x / 2 * probHermiteFun n x)) x :=
     ((hasDerivAt_id x).div_const 2).mul (hasDerivAt_probHermiteFun n x)
   have h : HasDerivAt
-      (fun y : ℝ => Polynomial.aeval y (derivative (hermite n)) * Real.exp (-(y ^ 2 / 4))
+      (fun y : ℝ => Polynomial.aeval y (derivative (hermite n)) * Real.exp (-(y ^ (2 : ℕ) / 4))
         - y / 2 * probHermiteFun n y)
-      ((Polynomial.aeval x (derivative (derivative (hermite n))) * Real.exp (-(x ^ 2 / 4))
-        + Polynomial.aeval x (derivative (hermite n)) * (-(x / 2) * Real.exp (-(x ^ 2 / 4))))
+      ((Polynomial.aeval x (derivative (derivative (hermite n))) * Real.exp (-(x ^ (2 : ℕ) / 4))
+        + Polynomial.aeval x (derivative (hermite n)) * (-(x / 2) * Real.exp (-(x ^ (2 : ℕ) / 4))))
         - ((1 : ℝ) / 2 * probHermiteFun n x
-          + x / 2 * (Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ 2 / 4))
+          + x / 2 * (Polynomial.aeval x (derivative (hermite n)) * Real.exp (-(x ^ (2 : ℕ) / 4))
             - x / 2 * probHermiteFun n x))) x := h1.sub h2
   rw [h.deriv]
   have heval : Polynomial.aeval x (derivative (derivative (hermite n)))
@@ -137,12 +137,12 @@ noncomputable def hermiteFun (n : ℕ) (x : ℝ) : ℝ := probHermiteFun n (Real
 /-- Second derivative of the physicists' Hermite function:
 `φ_n'' = (x² − 2n − 1)·φ_n`. -/
 theorem deriv2_hermiteFun (n : ℕ) (x : ℝ) :
-    deriv (deriv (hermiteFun n)) x = (x ^ 2 - 2 * n - 1) * hermiteFun n x := by
+    deriv (deriv (hermiteFun n)) x = (x ^ (2 : ℕ) - 2 * n - 1) * hermiteFun n x := by
   have hL : deriv (deriv (hermiteFun n)) x
       = 2 * deriv (deriv (probHermiteFun n)) (Real.sqrt 2 * x) :=
     deriv2_sqrtScale (by norm_num : (0 : ℝ) ≤ 2) (probHermiteFun n) x
   rw [hL, deriv2_probHermiteFun]
-  have h2 : (Real.sqrt 2 * x) ^ 2 = 2 * x ^ 2 := by
+  have h2 : (Real.sqrt 2 * x) ^ (2 : ℕ) = 2 * x ^ (2 : ℕ) := by
     rw [mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
   rw [h2]
   have hval : probHermiteFun n (Real.sqrt 2 * x) = hermiteFun n x := rfl
@@ -165,7 +165,7 @@ along the ladder `−(2n+1)·c` with relative corrections `O(1/c)`. -/
 theorem prolateSLAction_hermiteFun {c : ℝ} (hc : 0 < c) (n : ℕ) (ξ : ℝ) :
     prolateSLAction c (fun y => hermiteFun n (Real.sqrt c * y)) (ξ / Real.sqrt c)
       = -(2 * n + 1) * c * hermiteFun n ξ
-        - ξ ^ 2 * (ξ ^ 2 - 2 * n - 1) * hermiteFun n ξ
+        - ξ ^ (2 : ℕ) * (ξ ^ (2 : ℕ) - 2 * n - 1) * hermiteFun n ξ
         - 2 * ξ * deriv (hermiteFun n) ξ := by
   rw [prolateSLAction_sqrtScale hc (hermiteFun n) ξ]
   rw [hermiteSLAction_hermiteFun, deriv2_hermiteFun]

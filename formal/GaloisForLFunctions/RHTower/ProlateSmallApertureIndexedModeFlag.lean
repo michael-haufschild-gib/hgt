@@ -34,10 +34,10 @@ theorem complexUnitBandEvenValue_pos_of_pos
   have hden : 0 < 2 * Real.pi := by positivity
   have hquot : 0 < c / (2 * Real.pi) := div_pos hc hden
   have ha : 0 < a := Real.sqrt_pos.2 hquot
-  have haSq : a ^ 2 = c / (2 * Real.pi) := by
+  have haSq : a ^ (2 : ℕ) = c / (2 * Real.pi) := by
     dsimp only [a]
     exact Real.sq_sqrt hquot.le
-  have hband : 2 * Real.pi * a ^ 2 = c := by
+  have hband : 2 * Real.pi * a ^ (2 : ℕ) = c := by
     rw [haSq]
     field_simp
   simpa only [hband] using complexUnitBandEvenValue_pos ha n
@@ -90,8 +90,8 @@ noncomputable def indexedEvenSlepianOutputMode (c : ℝ) (n : ℕ) :
 
 theorem norm_complexEvenApertureMomentSynthesis_inputMode_sq
     {c : ℝ} (hc : 0 < c) (n : ℕ) :
-    ‖complexEvenApertureMomentSynthesis c (indexedEvenSlepianInputMode c n)‖ ^ 2 =
-      indexedEvenSlepianSingularValue c n ^ 2 := by
+    ‖complexEvenApertureMomentSynthesis c (indexedEvenSlepianInputMode c n)‖ ^ (2 : ℕ) =
+      indexedEvenSlepianSingularValue c n ^ (2 : ℕ) := by
   let T := complexEvenApertureMomentSynthesis c
   let x := indexedEvenSlepianInputMode c n
   rw [ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right]

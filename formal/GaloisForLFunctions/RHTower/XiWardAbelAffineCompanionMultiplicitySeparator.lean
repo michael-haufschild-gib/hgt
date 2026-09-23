@@ -6,12 +6,12 @@ import GaloisForLFunctions.RHTower.XiHolomorphicAffineCompanionFibreDeterminant
 
 The complement of the source-only Ward Abel projector is
 
-`n y^2 / (1 + n y^2)`.
+`n y^(2 : ℕ) / (1 + n y^(2 : ℕ))`.
 
 It is zero on the critical line and tends to one at every nonzero transverse displacement.  Using
 its square root as the transverse coordinate in the phase-safe affine-companion determinant makes
 one reflection-complete equal-ordinate fibre of multiplicity `M` converge exactly to determinant
-`-4 M^2`.  This is uniform in displacement and counts divisor copies, hence analytic
+`-4 M^(2 : ℕ)`.  This is uniform in displacement and counts divisor copies, hence analytic
 multiplicity, without inserting `1/y` or selecting a zero-dependent scale.
 
 The theorem is a source/zero connector.  A prime--Gamma upper bound for its height-dephased
@@ -34,11 +34,11 @@ def thetaXiWardKernelAbelOffLineWeight (n : ℕ) (q : XiZeroCopy) : ℝ :=
 /-- Exact saturating transverse normal form. -/
 theorem thetaXiWardKernelAbelOffLineWeight_eq (n : ℕ) (q : XiZeroCopy) :
     thetaXiWardKernelAbelOffLineWeight n q =
-      (n : ℝ) * (xiSpectralPoint q).im ^ 2 /
-        (1 + (n : ℝ) * (xiSpectralPoint q).im ^ 2) := by
+      (n : ℝ) * (xiSpectralPoint q).im ^ (2 : ℕ) /
+        (1 + (n : ℝ) * (xiSpectralPoint q).im ^ (2 : ℕ)) := by
   rw [thetaXiWardKernelAbelOffLineWeight,
     thetaXiWardKernelAbelWeight_eq]
-  have hden : 0 < 1 + (n : ℝ) * (xiSpectralPoint q).im ^ 2 := by
+  have hden : 0 < 1 + (n : ℝ) * (xiSpectralPoint q).im ^ (2 : ℕ) := by
     positivity
   field_simp [hden.ne']
   ring
@@ -71,7 +71,7 @@ def thetaXiWardAbelTransverseCoordinate (n : ℕ) (q : XiZeroCopy) : ℝ :=
   Real.sqrt (thetaXiWardKernelAbelOffLineWeight n q)
 
 theorem thetaXiWardAbelTransverseCoordinate_sq (n : ℕ) (q : XiZeroCopy) :
-    thetaXiWardAbelTransverseCoordinate n q ^ 2 =
+    thetaXiWardAbelTransverseCoordinate n q ^ (2 : ℕ) =
       thetaXiWardKernelAbelOffLineWeight n q := by
   rw [thetaXiWardAbelTransverseCoordinate,
     Real.sq_sqrt (thetaXiWardKernelAbelOffLineWeight_nonneg n q)]
@@ -132,12 +132,12 @@ theorem finiteThetaXiWardAbelAffineFibreDet_eq
   ring
 
 /-- **Submicroscopic multiplicity separator.**  On every finite off-line equal-height packet, the
-regular source determinants converge to `-4 M^2`, with `M` the exact divisor-copy multiplicity. -/
+regular source determinants converge to `-4 M^(2 : ℕ)`, with `M` the exact divisor-copy multiplicity. -/
 theorem tendsto_finiteThetaXiWardAbelAffineFibreDet
     (s : Finset XiZeroCopy) (x : ℝ)
     (hoff : ∀ q ∈ s, (q.1 : ℂ).re ≠ 1 / 2) :
     Tendsto (finiteThetaXiWardAbelAffineFibreDet s x) atTop
-      (nhds (-4 * (s.card : ℝ) ^ 2)) := by
+      (nhds (-4 * (s.card : ℝ) ^ (2 : ℕ))) := by
   have h := (tendsto_finiteThetaXiWardAbelOffLineMass s hoff).const_mul
     (-4 * (s.card : ℝ))
   have hfun : finiteThetaXiWardAbelAffineFibreDet s x =

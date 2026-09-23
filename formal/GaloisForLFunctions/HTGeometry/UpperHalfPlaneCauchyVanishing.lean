@@ -6,7 +6,7 @@ import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 # Cauchy vanishing on the upper half-plane
 
 If `u` is holomorphic at every point of the closed upper half-plane and satisfies the decay
-bound `‖u z‖ ≤ C / (1 + ‖z‖ ^ 2)` there, then `∫_ℝ u = 0`.
+bound `‖u z‖ ≤ C / (1 + ‖z‖ ^ (2 : ℕ))` there, then `∫_ℝ u = 0`.
 
 The proof integrates `u` over the boundary of the square `[-R, R] × [0, R]`.  Cauchy's theorem
 for a rectangle makes that boundary integral vanish, while the quadratic decay bounds the top
@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-theorem norm_sq_ofReal_add_mul_I (x y : ℝ) : ‖(x : ℂ) + (y : ℂ) * I‖ ^ 2 = x ^ 2 + y ^ 2 := by
+theorem norm_sq_ofReal_add_mul_I (x y : ℝ) : ‖(x : ℂ) + (y : ℂ) * I‖ ^ (2 : ℕ) = x ^ (2 : ℕ) + y ^ (2 : ℕ) := by
   have hre : ((x : ℂ) + (y : ℂ) * I).re = x := by simp
   have him : ((x : ℂ) + (y : ℂ) * I).im = y := by simp
   rw [Complex.sq_norm, Complex.normSq_apply, hre, him]
@@ -29,16 +29,16 @@ theorem norm_sq_ofReal_add_mul_I (x y : ℝ) : ‖(x : ℂ) + (y : ℂ) * I‖ ^
 /-- Quadratic decay on the real axis makes the boundary restriction integrable. -/
 theorem integrable_ofReal_of_decay {u : ℂ → ℂ} {C : ℝ}
     (hdiff : ∀ z : ℂ, 0 ≤ z.im → DifferentiableAt ℂ u z)
-    (hbd : ∀ z : ℂ, 0 ≤ z.im → ‖u z‖ ≤ C / (1 + ‖z‖ ^ 2)) :
+    (hbd : ∀ z : ℂ, 0 ≤ z.im → ‖u z‖ ≤ C / (1 + ‖z‖ ^ (2 : ℕ))) :
     Integrable (fun x : ℝ => u ((x : ℝ) : ℂ)) := by
-  have hbdline : ∀ x : ℝ, ‖u ((x : ℝ) : ℂ)‖ ≤ C * (1 + x ^ 2)⁻¹ := by
+  have hbdline : ∀ x : ℝ, ‖u ((x : ℝ) : ℂ)‖ ≤ C * (1 + x ^ (2 : ℕ))⁻¹ := by
     intro x
     have h := hbd ((x : ℝ) : ℂ) (by simp)
-    have hx : ‖((x : ℝ) : ℂ)‖ ^ 2 = x ^ 2 := by
+    have hx : ‖((x : ℝ) : ℂ)‖ ^ (2 : ℕ) = x ^ (2 : ℕ) := by
       rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
     rw [hx] at h
-    calc ‖u ((x : ℝ) : ℂ)‖ ≤ C / (1 + x ^ 2) := h
-      _ = C * (1 + x ^ 2)⁻¹ := by rw [div_eq_mul_inv]
+    calc ‖u ((x : ℝ) : ℂ)‖ ≤ C / (1 + x ^ (2 : ℕ)) := h
+      _ = C * (1 + x ^ (2 : ℕ))⁻¹ := by rw [div_eq_mul_inv]
   have hcont : Continuous fun x : ℝ => u ((x : ℝ) : ℂ) := by
     refine continuous_iff_continuousAt.mpr fun x => ?_
     have hd : DifferentiableAt ℂ u ((x : ℝ) : ℂ) := hdiff _ (by simp)
@@ -50,17 +50,17 @@ theorem integrable_ofReal_of_decay {u : ℂ → ℂ} {C : ℝ}
 half-plane and decaying like `‖z‖^{-2}` there integrates to zero over the real line. -/
 theorem integral_eq_zero_of_upperHalfPlane_decay {u : ℂ → ℂ} {C : ℝ}
     (hdiff : ∀ z : ℂ, 0 ≤ z.im → DifferentiableAt ℂ u z)
-    (hbd : ∀ z : ℂ, 0 ≤ z.im → ‖u z‖ ≤ C / (1 + ‖z‖ ^ 2)) :
+    (hbd : ∀ z : ℂ, 0 ≤ z.im → ‖u z‖ ≤ C / (1 + ‖z‖ ^ (2 : ℕ))) :
     (∫ x : ℝ, u (x : ℂ)) = 0 := by
   have hC : 0 ≤ C := by
     have h := hbd I (by simp)
-    have h2 : (0 : ℝ) ≤ C / (1 + ‖(I : ℂ)‖ ^ 2) := le_trans (norm_nonneg _) h
+    have h2 : (0 : ℝ) ≤ C / (1 + ‖(I : ℂ)‖ ^ (2 : ℕ)) := le_trans (norm_nonneg _) h
     rw [Complex.norm_I] at h2
     norm_num at h2
     linarith
   have hint : Integrable (fun x : ℝ => u ((x : ℝ) : ℂ)) :=
     integrable_ofReal_of_decay hdiff hbd
-  have hsq : ∀ (a b : ℝ), 0 ≤ b → ‖u ((a : ℂ) + (b : ℂ) * I)‖ ≤ C / (1 + a ^ 2 + b ^ 2) := by
+  have hsq : ∀ (a b : ℝ), 0 ≤ b → ‖u ((a : ℂ) + (b : ℂ) * I)‖ ≤ C / (1 + a ^ (2 : ℕ) + b ^ (2 : ℕ)) := by
     intro a b hb
     have him : ((a : ℂ) + (b : ℂ) * I).im = b := by simp
     have h := hbd _ (by rw [him]; exact hb)
@@ -88,7 +88,7 @@ theorem integral_eq_zero_of_upperHalfPlane_decay {u : ℂ → ℂ} {C : ℝ}
       exact this.1
   -- the three vanishing sides
   have hdecay : ∀ (a b R : ℝ), 0 < R → R ≤ |a| ∨ R ≤ |b| → 0 ≤ b →
-      ‖u ((a : ℂ) + (b : ℂ) * I)‖ ≤ C / R ^ 2 := by
+      ‖u ((a : ℂ) + (b : ℂ) * I)‖ ≤ C / R ^ (2 : ℕ) := by
     intro a b R hR hor hb
     refine le_trans (hsq a b hb) ?_
     refine div_le_div_of_nonneg_left hC (by positivity) ?_
@@ -97,11 +97,11 @@ theorem integral_eq_zero_of_upperHalfPlane_decay {u : ℂ → ℂ} {C : ℝ}
     · nlinarith [sq_abs b, sq_nonneg a, abs_nonneg b]
   have hmain : ∀ R : ℝ, 0 < R → ‖∫ x in (-R)..R, u ((x : ℝ) : ℂ)‖ ≤ 4 * C / R := by
     intro R hR
-    have htop : ‖∫ x in (-R)..R, u ((x : ℂ) + ((R : ℝ) : ℂ) * I)‖ ≤ (C / R ^ 2) * |R - -R| := by
+    have htop : ‖∫ x in (-R)..R, u ((x : ℂ) + ((R : ℝ) : ℂ) * I)‖ ≤ (C / R ^ (2 : ℕ)) * |R - -R| := by
       refine intervalIntegral.norm_integral_le_of_norm_le_const fun x _ => ?_
       exact hdecay x R R hR (Or.inr (by rw [abs_of_pos hR])) hR.le
     have hright : ‖∫ y in (0:ℝ)..R, u (((R : ℝ) : ℂ) + (y : ℂ) * I)‖
-        ≤ (C / R ^ 2) * |R - 0| := by
+        ≤ (C / R ^ (2 : ℕ)) * |R - 0| := by
       refine intervalIntegral.norm_integral_le_of_norm_le_const fun y hy => ?_
       have hy0 : 0 ≤ y := by
         rcases le_or_gt 0 y with h | h
@@ -111,7 +111,7 @@ theorem integral_eq_zero_of_upperHalfPlane_decay {u : ℂ → ℂ} {C : ℝ}
           exact absurd hy.1 (by linarith)
       exact hdecay R y R hR (Or.inl (by rw [abs_of_pos hR])) hy0
     have hleft : ‖∫ y in (0:ℝ)..R, u (((-R : ℝ) : ℂ) + (y : ℂ) * I)‖
-        ≤ (C / R ^ 2) * |R - 0| := by
+        ≤ (C / R ^ (2 : ℕ)) * |R - 0| := by
       refine intervalIntegral.norm_integral_le_of_norm_le_const fun y hy => ?_
       have hy0 : 0 ≤ y := by
         rcases le_or_gt 0 y with h | h
@@ -143,7 +143,7 @@ theorem integral_eq_zero_of_upperHalfPlane_decay {u : ℂ → ℂ} {C : ℝ}
           exact le_trans (norm_add_le _ _) (by
             gcongr
             exact norm_sub_le _ _)
-      _ ≤ (C / R ^ 2) * (2 * R) + (C / R ^ 2) * R + (C / R ^ 2) * R := by
+      _ ≤ (C / R ^ (2 : ℕ)) * (2 * R) + (C / R ^ (2 : ℕ)) * R + (C / R ^ (2 : ℕ)) * R := by
           rw [norm_smul, norm_smul, hnI, one_mul, one_mul]
           gcongr
       _ = 4 * C / R := by field_simp; ring
@@ -166,16 +166,16 @@ theorem integral_eq_zero_of_upperHalfPlane_decay {u : ℂ → ℂ} {C : ℝ}
 closed half-plane bounds `u` there, and the two bounds combine into a single `‖z‖^{-2}` law. -/
 theorem exists_global_decay_bound_of_farDecay {u : ℂ → ℂ} {M R : ℝ}
     (hdiff : ∀ z : ℂ, 0 ≤ z.im → DifferentiableAt ℂ u z) (hR : 0 < R)
-    (hfar : ∀ z : ℂ, 0 ≤ z.im → R ≤ ‖z‖ → ‖u z‖ ≤ M / ‖z‖ ^ 2) :
-    ∃ C : ℝ, ∀ z : ℂ, 0 ≤ z.im → ‖u z‖ ≤ C / (1 + ‖z‖ ^ 2) := by
-  have hR2 : (0 : ℝ) < R ^ 2 := by positivity
+    (hfar : ∀ z : ℂ, 0 ≤ z.im → R ≤ ‖z‖ → ‖u z‖ ≤ M / ‖z‖ ^ (2 : ℕ)) :
+    ∃ C : ℝ, ∀ z : ℂ, 0 ≤ z.im → ‖u z‖ ≤ C / (1 + ‖z‖ ^ (2 : ℕ)) := by
+  have hR2 : (0 : ℝ) < R ^ (2 : ℕ) := by positivity
   have hM : 0 ≤ M := by
     have hz : ((R : ℂ) * I).im = R := by simp
     have hn : ‖(R : ℂ) * I‖ = R := by
       rw [norm_mul, Complex.norm_I, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hR, mul_one]
     have h := hfar ((R : ℂ) * I) (by rw [hz]; exact hR.le) (by rw [hn])
     rw [hn] at h
-    have h0 : (0 : ℝ) ≤ M / R ^ 2 := le_trans (norm_nonneg _) h
+    have h0 : (0 : ℝ) ≤ M / R ^ (2 : ℕ) := le_trans (norm_nonneg _) h
     rcases div_nonneg_iff.mp h0 with ⟨hm, _⟩ | ⟨_, hbad⟩
     · exact hm
     · linarith
@@ -188,31 +188,31 @@ theorem exists_global_decay_bound_of_farDecay {u : ℂ → ℂ} {M R : ℝ}
   obtain ⟨M₀, hM₀⟩ := hKcomp.exists_bound_of_continuousOn hcont
   have hM₀nonneg : 0 ≤ M₀ :=
     le_trans (norm_nonneg (u 0)) (hM₀ 0 ⟨by simp, by simp [hR.le]⟩)
-  refine ⟨max (M * (1 + 1 / R ^ 2)) (M₀ * (1 + R ^ 2)), fun z hz => ?_⟩
+  refine ⟨max (M * (1 + 1 / R ^ (2 : ℕ))) (M₀ * (1 + R ^ (2 : ℕ))), fun z hz => ?_⟩
   rcases le_or_gt ‖z‖ R with hle | hgt
   · have hmem : z ∈ K := ⟨hz, by simpa [Metric.mem_closedBall] using hle⟩
     refine le_trans (hM₀ z hmem) ?_
     rw [le_div_iff₀ (by positivity)]
-    have hC : M₀ * (1 + R ^ 2) ≤ max (M * (1 + 1 / R ^ 2)) (M₀ * (1 + R ^ 2)) := le_max_right _ _
-    have hsq : ‖z‖ ^ 2 ≤ R ^ 2 := by nlinarith [norm_nonneg z, hle]
+    have hC : M₀ * (1 + R ^ (2 : ℕ)) ≤ max (M * (1 + 1 / R ^ (2 : ℕ))) (M₀ * (1 + R ^ (2 : ℕ))) := le_max_right _ _
+    have hsq : ‖z‖ ^ (2 : ℕ) ≤ R ^ (2 : ℕ) := by nlinarith [norm_nonneg z, hle]
     nlinarith [hC, mul_nonneg hM₀nonneg (sub_nonneg.mpr hsq)]
   · have hzpos : (0 : ℝ) < ‖z‖ := lt_of_lt_of_le hR hgt.le
     refine le_trans (hfar z hz hgt.le) ?_
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    have hRz : R ^ 2 ≤ ‖z‖ ^ 2 := by nlinarith [hR.le, hgt.le]
-    have hratio : (1 : ℝ) ≤ ‖z‖ ^ 2 / R ^ 2 := (one_le_div hR2).mpr hRz
-    have key : M ≤ M * (1 / R ^ 2) * ‖z‖ ^ 2 := by
-      have hrw : M * (1 / R ^ 2) * ‖z‖ ^ 2 = M * (‖z‖ ^ 2 / R ^ 2) := by ring
+    have hRz : R ^ (2 : ℕ) ≤ ‖z‖ ^ (2 : ℕ) := by nlinarith [hR.le, hgt.le]
+    have hratio : (1 : ℝ) ≤ ‖z‖ ^ (2 : ℕ) / R ^ (2 : ℕ) := (one_le_div hR2).mpr hRz
+    have key : M ≤ M * (1 / R ^ (2 : ℕ)) * ‖z‖ ^ (2 : ℕ) := by
+      have hrw : M * (1 / R ^ (2 : ℕ)) * ‖z‖ ^ (2 : ℕ) = M * (‖z‖ ^ (2 : ℕ) / R ^ (2 : ℕ)) := by ring
       rw [hrw]
       nlinarith [hM, hratio]
-    have hCle : M * (1 + 1 / R ^ 2) ≤ max (M * (1 + 1 / R ^ 2)) (M₀ * (1 + R ^ 2)) :=
+    have hCle : M * (1 + 1 / R ^ (2 : ℕ)) ≤ max (M * (1 + 1 / R ^ (2 : ℕ))) (M₀ * (1 + R ^ (2 : ℕ))) :=
       le_max_left _ _
     nlinarith [key, mul_nonneg (sub_nonneg.mpr hCle) (sq_nonneg ‖z‖)]
 
 /-- **Cauchy vanishing from far-field decay alone.** -/
 theorem integral_eq_zero_of_upperHalfPlane_farDecay {u : ℂ → ℂ} {M R : ℝ}
     (hdiff : ∀ z : ℂ, 0 ≤ z.im → DifferentiableAt ℂ u z) (hR : 0 < R)
-    (hfar : ∀ z : ℂ, 0 ≤ z.im → R ≤ ‖z‖ → ‖u z‖ ≤ M / ‖z‖ ^ 2) :
+    (hfar : ∀ z : ℂ, 0 ≤ z.im → R ≤ ‖z‖ → ‖u z‖ ≤ M / ‖z‖ ^ (2 : ℕ)) :
     (∫ x : ℝ, u ((x : ℝ) : ℂ)) = 0 := by
   obtain ⟨C, hC⟩ := exists_global_decay_bound_of_farDecay hdiff hR hfar
   exact integral_eq_zero_of_upperHalfPlane_decay hdiff hC
@@ -220,7 +220,7 @@ theorem integral_eq_zero_of_upperHalfPlane_farDecay {u : ℂ → ℂ} {M R : ℝ
 /-- The boundary restriction is integrable under far-field quadratic decay. -/
 theorem integrable_ofReal_of_farDecay {u : ℂ → ℂ} {M R : ℝ}
     (hdiff : ∀ z : ℂ, 0 ≤ z.im → DifferentiableAt ℂ u z) (hR : 0 < R)
-    (hfar : ∀ z : ℂ, 0 ≤ z.im → R ≤ ‖z‖ → ‖u z‖ ≤ M / ‖z‖ ^ 2) :
+    (hfar : ∀ z : ℂ, 0 ≤ z.im → R ≤ ‖z‖ → ‖u z‖ ≤ M / ‖z‖ ^ (2 : ℕ)) :
     Integrable (fun x : ℝ => u ((x : ℝ) : ℂ)) := by
   obtain ⟨C, hC⟩ := exists_global_decay_bound_of_farDecay hdiff hR hfar
   exact integrable_ofReal_of_decay hdiff hC

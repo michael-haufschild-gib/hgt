@@ -98,7 +98,7 @@ theorem xiMass_marginBudget_phase_defect_of_re_le
     let K := ((xiMassFamily haHalf).pt q).im
     let d := xiWardZeroFreeMargin (3 * A)
     M * (-σ * M + u * K) ≤
-      -σ * ((A - R) ^ 2 + A) - |u| * R * (1 - θ) * d := by
+      -σ * ((A - R) ^ (2 : ℕ) + A) - |u| * R * (1 - θ) * d := by
   dsimp only
   let haHalf : 1 / 2 ≤ a := by linarith
   let A : ℝ := a - 1 / 2
@@ -116,7 +116,7 @@ theorem xiMass_marginBudget_phase_defect_of_re_le
         HTGeometry.AbstractSpectralFamily.mass_pt, HTGeometry.csqrt_re] using
         xiPoissonAbstract.re_lt_csqrtRe_massArg haHalf q
     linarith
-  have hsq : A ^ 2 + R ^ 2 + A ≤ M ^ 2 := by
+  have hsq : A ^ (2 : ℕ) + R ^ (2 : ℕ) + A ≤ M ^ (2 : ℕ) := by
     dsimp only [A, R, M]
     simpa only [xiPoissonAbstract_pt, xiMassFamily_pt_eq_mass_pt] using
       xiPoissonAbstract.sq_sub_half_add_sq_re_add_sub_half_le_sq_mass_re ha q
@@ -158,10 +158,10 @@ theorem xiMass_marginBudget_phase_defect_of_re_le
     dsimp only [A, d] at hlayerR ⊢
     nlinarith
   have hphase : M * (-σ * M + u * K) ≤
-      -σ * M ^ 2 + 2 * σ * A * R - |u| * R * (1 - θ) * d := by
+      -σ * M ^ (2 : ℕ) + 2 * σ * A * R - |u| * R * (1 - θ) * d := by
     nlinarith
   change M * (-σ * M + u * K) ≤
-    -σ * ((A - R) ^ 2 + A) - |u| * R * (1 - θ) * d
+    -σ * ((A - R) ^ (2 : ℕ) + A) - |u| * R * (1 - θ) * d
   nlinarith
 
 theorem xiMass_marginBudget_phase_defect
@@ -177,7 +177,7 @@ theorem xiMass_marginBudget_phase_defect
     let K := ((xiMassFamily haHalf).pt q).im
     let d := xiWardZeroFreeMargin (3 * A)
     M * (-σ * M + u * K) ≤
-      -σ * ((A - R) ^ 2 + A) - |u| * R * (1 - θ) * d := by
+      -σ * ((A - R) ^ (2 : ℕ) + A) - |u| * R * (1 - θ) * d := by
   have hmem := mem_xiMassMarginBudgetCorona.mp hq
   exact xiMass_marginBudget_phase_defect_of_re_le ha hσ hlayer q hmem.2
 
@@ -239,8 +239,8 @@ theorem norm_xiMassFamily_term_le_marginBudget
       M * (-(3 * σ / 13) * A * (1 - θ) * d) := by
     dsimp only at hdefect
     change M * (-σ * M + u * K) ≤
-      -σ * ((A - R) ^ 2 + A) - |u| * R * (1 - θ) * d at hdefect
-    have hbase : 0 ≤ σ * ((A - R) ^ 2 + A) := by positivity
+      -σ * ((A - R) ^ (2 : ℕ) + A) - |u| * R * (1 - θ) * d at hdefect
+    have hbase : 0 ≤ σ * ((A - R) ^ (2 : ℕ) + A) := by positivity
     nlinarith
   have hphase : -σ * M + u * K ≤ -(3 * σ / 13) * A * (1 - θ) * d :=
     le_of_mul_le_mul_left hphaseMul hM
@@ -317,24 +317,24 @@ theorem xiMass_marginBudget_phase_le_outside_corona
     have hdefect := xiMass_marginBudget_phase_defect_of_re_le
       ha hσ hlayer q (by simpa only [A, R] using hRhi)
     have hres : 0 ≤ |u| * R * (1 - θ) * d := by positivity
-    have hphase : M * (-σ * M + u * K) ≤ -σ * ((A - R) ^ 2 + A) := by
+    have hphase : M * (-σ * M + u * K) ≤ -σ * ((A - R) ^ (2 : ℕ) + A) := by
       dsimp only at hdefect
       change M * (-σ * M + u * K) ≤
-        -σ * ((A - R) ^ 2 + A) - |u| * R * (1 - θ) * d at hdefect
+        -σ * ((A - R) ^ (2 : ℕ) + A) - |u| * R * (1 - θ) * d at hdefect
       linarith
     have hlin : A + R ≤ 3 * (A - R) := by linarith
-    have hsqgap : (A + R) ^ 2 ≤ 9 * (A - R) ^ 2 := by
+    have hsqgap : (A + R) ^ (2 : ℕ) ≤ 9 * (A - R) ^ (2 : ℕ) := by
       nlinarith [mul_self_le_mul_self (by positivity : 0 ≤ A + R) hlin]
-    have hratio : (A + R) * M ≤ 12 * (A - R) ^ 2 := by
+    have hratio : (A + R) * M ≤ 12 * (A - R) ^ (2 : ℕ) := by
       have hmul := mul_le_mul_of_nonneg_left hMup' (by positivity : 0 ≤ A + R)
       nlinarith
-    have hscaled : -σ * ((A - R) ^ 2 + A) ≤
+    have hscaled : -σ * ((A - R) ^ (2 : ℕ) + A) ≤
         M * (-(σ / 12) * (A + R)) := by
       have hσratio := mul_le_mul_of_nonneg_left hratio
         (show 0 ≤ σ / 12 by positivity)
       nlinarith
     exact le_of_mul_le_mul_left (hphase.trans hscaled) hM
-  · have hsq : A ^ 2 + R ^ 2 + A ≤ M ^ 2 := by
+  · have hsq : A ^ (2 : ℕ) + R ^ (2 : ℕ) + A ≤ M ^ (2 : ℕ) := by
       dsimp only [A, R, M]
       simpa only [xiPoissonAbstract_pt, xiMassFamily_pt_eq_mass_pt] using
         xiPoissonAbstract.sq_sub_half_add_sq_re_add_sub_half_le_sq_mass_re ha q
@@ -360,39 +360,39 @@ theorem xiMass_marginBudget_phase_le_outside_corona
     have hucrit : |u| * (R / 2) ≤ (8 / 3 : ℝ) * σ * A * R := by
       nlinarith
     have hsqσ := mul_le_mul_of_nonneg_left hsq hσ.le
-    have hsqNeg : -σ * M ^ 2 ≤ -σ * (A ^ 2 + R ^ 2 + A) := by
+    have hsqNeg : -σ * M ^ (2 : ℕ) ≤ -σ * (A ^ (2 : ℕ) + R ^ (2 : ℕ) + A) := by
       nlinarith only [hsqσ]
     have hphase : M * (-σ * M + u * K) ≤
-        -σ * (A ^ 2 + R ^ 2 - (8 / 3 : ℝ) * A * R) := by
+        -σ * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (8 / 3 : ℝ) * A * R) := by
       calc
-        M * (-σ * M + u * K) = -σ * M ^ 2 + M * (u * K) := by ring
-        _ ≤ -σ * (A ^ 2 + R ^ 2 + A) + |u| * (R / 2) :=
+        M * (-σ * M + u * K) = -σ * M ^ (2 : ℕ) + M * (u * K) := by ring
+        _ ≤ -σ * (A ^ (2 : ℕ) + R ^ (2 : ℕ) + A) + |u| * (R / 2) :=
           add_le_add hsqNeg huK
-        _ ≤ -σ * (A ^ 2 + R ^ 2 + A) +
+        _ ≤ -σ * (A ^ (2 : ℕ) + R ^ (2 : ℕ) + A) +
             (8 / 3 : ℝ) * σ * A * R := by
           nlinarith only [hucrit]
-        _ ≤ -σ * (A ^ 2 + R ^ 2 - (8 / 3 : ℝ) * A * R) := by
+        _ ≤ -σ * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (8 / 3 : ℝ) * A * R) := by
           nlinarith only [hσ, hA]
     have hfac1 : 0 ≤ R - 3 * A := by linarith only [hhi]
     have hfac2 : 0 ≤ 3 * R - A := by linarith only [hhi, hA]
     have hprodFac := mul_nonneg hfac1 hfac2
-    have hquad : (A + R) ^ 2 ≤
-        8 * (A ^ 2 + R ^ 2 - (8 / 3 : ℝ) * A * R) := by
+    have hquad : (A + R) ^ (2 : ℕ) ≤
+        8 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (8 / 3 : ℝ) * A * R) := by
       nlinarith only [hprodFac]
     have hratio : (A + R) * M ≤
-        12 * (A ^ 2 + R ^ 2 - (8 / 3 : ℝ) * A * R) := by
+        12 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (8 / 3 : ℝ) * A * R) := by
       have hmul := mul_le_mul_of_nonneg_left hMup' (by positivity : 0 ≤ A + R)
-      have hQ : 0 ≤ A ^ 2 + R ^ 2 - (8 / 3 : ℝ) * A * R := by
+      have hQ : 0 ≤ A ^ (2 : ℕ) + R ^ (2 : ℕ) - (8 / 3 : ℝ) * A * R := by
         nlinarith only [hquad]
       calc
         (A + R) * M ≤ (A + R) * ((4 / 3 : ℝ) * (A + R)) := hmul
-        _ = (4 / 3 : ℝ) * (A + R) ^ 2 := by ring
+        _ = (4 / 3 : ℝ) * (A + R) ^ (2 : ℕ) := by ring
         _ ≤ (4 / 3 : ℝ) *
-            (8 * (A ^ 2 + R ^ 2 - (8 / 3 : ℝ) * A * R)) :=
+            (8 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (8 / 3 : ℝ) * A * R)) :=
           mul_le_mul_of_nonneg_left hquad (by norm_num)
-        _ ≤ 12 * (A ^ 2 + R ^ 2 - (8 / 3 : ℝ) * A * R) := by
+        _ ≤ 12 * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (8 / 3 : ℝ) * A * R) := by
           nlinarith only [hQ]
-    have hscaled : -σ * (A ^ 2 + R ^ 2 - (8 / 3 : ℝ) * A * R) ≤
+    have hscaled : -σ * (A ^ (2 : ℕ) + R ^ (2 : ℕ) - (8 / 3 : ℝ) * A * R) ≤
         M * (-(σ / 12) * (A + R)) := by
       have hσratio := mul_le_mul_of_nonneg_left hratio
         (show 0 ≤ σ / 12 by positivity)

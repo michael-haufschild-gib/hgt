@@ -45,19 +45,19 @@ theorem egbFixedChargeAGibbsTunable_probability_pos (n k m : ℕ) (t : ℝ) (i :
 /-- The complete collision history is an exact two-rate expression with a common positive amplitude. -/
 theorem egbFixedChargeAGibbsTunable_collision (n k m l : ℕ) (t : ℝ) :
     egbFixedChargeAGibbsCollisionExcess n l 1 (egbFixedChargeAGibbsTunableEnergy n k m t) =
-      egbFixedChargeAGibbsTunableAmplitude n k m t ^ 2 *
-        ((4 / 9 : ℝ) ^ l + (1 / 36 : ℝ) ^ l * (16 : ℝ) ^ (m + 1) * t ^ 2) := by
+      egbFixedChargeAGibbsTunableAmplitude n k m t ^ (2 : ℕ) *
+        ((4 / 9 : ℝ) ^ l + (1 / 36 : ℝ) ^ l * (16 : ℝ) ^ (m + 1) * t ^ (2 : ℕ)) := by
   unfold egbFixedChargeAGibbsTunableEnergy
   rw [egbFixedChargeAGibbsPerturbation_collision_identity]
   unfold egbFixedChargeAGibbsTunableProfile
   rw [egbFixedChargeACriticalMixedProfile_evolved_energy]
-  have hp : ((4 : ℝ) ^ (m + 1)) ^ 2 = (16 : ℝ) ^ (m + 1) := by
+  have hp : ((4 : ℝ) ^ (m + 1)) ^ (2 : ℕ) = (16 : ℝ) ^ (m + 1) := by
     rw [pow_two, ← mul_pow]
     norm_num
   change _ = (egbFixedChargeAGibbsPerturbationScale n
     (egbFixedChargeACriticalMixedProfile n (egbFixedChargeAGibbsTunableAttenuation k)
       (egbFixedChargeAGibbsTunableAttenuation k * (4 : ℝ) ^ (m + 1) * t)) /
-      (2 : ℝ) ^ (n + 3) * egbFixedChargeAGibbsTunableAttenuation k) ^ 2 * _
+      (2 : ℝ) ^ (n + 3) * egbFixedChargeAGibbsTunableAttenuation k) ^ (2 : ℕ) * _
   rw [mul_pow (egbFixedChargeAGibbsTunableAttenuation k * (4 : ℝ) ^ (m + 1)) t 2,
     mul_pow (egbFixedChargeAGibbsTunableAttenuation k) ((4 : ℝ) ^ (m + 1)) 2, hp]
   ring

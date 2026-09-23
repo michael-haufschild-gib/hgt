@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.RouteTZetaAsymptotics
 # Route T zero-free edge absorbs every fixed polylogarithm
 
 The explicit Route-T displacement has size approximately
-`log(T)^(-9/10) / log(log(T))^2`.  Consequently its exponential gain has logarithm
+`log(T)^(-9/10) / log(log(T))^(2 : ℕ)`.  Consequently its exponential gain has logarithm
 `delta(T) * log T`, which diverges like a positive tenth power modulo iterated logarithms.
 This file proves the exact corpus-level statement needed by the zero-density layer cake:
 `T ^ (-c * delta(T))` beats every fixed power of `1 + log T`.

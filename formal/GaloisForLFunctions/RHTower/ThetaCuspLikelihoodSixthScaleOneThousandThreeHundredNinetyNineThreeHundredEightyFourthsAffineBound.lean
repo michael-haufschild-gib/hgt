@@ -25,14 +25,14 @@ def thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial (d : ℝ) : ℝ :
 /-- Cleared degree-fifteen certificate for the dominant affine budget. -/
 theorem thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial_lt
     {d : ℝ} (hd : 0 ≤ d) (hdhi : d ≤ 1 / 384) :
-    (1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2) *
+    (1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2) *
         thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial d <
       2187 / 8 - 528 * d := by
   have hB : 0 < 823 / 384 + d := by linarith
-  have hmul : (823 / 384 + d) ^ 7 *
-      ((1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2) *
+  have hmul : (823 / 384 + d) ^ (7 : ℕ) *
+      ((1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2) *
         thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial d) <
-      (823 / 384 + d) ^ 7 * (2187 / 8 - 528 * d) := by
+      (823 / 384 + d) ^ (7 : ℕ) * (2187 / 8 - 528 * d) := by
     dsimp [thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial,
       thetaLikelihoodSixthScoreRayTransformPolynomial,
       thetaLikelihoodSixthScoreShift, thetaLikelihoodSixthScoreShiftDerivOne,
@@ -45,20 +45,20 @@ theorem thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial_lt
     ring_nf
     rw [← sub_pos]
     ring_nf
-    have hd2 : d ^ 2 ≤ (1 / 384 : ℝ) ^ 2 := pow_le_pow_left₀ hd hdhi 2
-    have hd3 : d ^ 3 ≤ (1 / 384 : ℝ) ^ 3 := pow_le_pow_left₀ hd hdhi 3
-    have hd4 : d ^ 4 ≤ (1 / 384 : ℝ) ^ 4 := pow_le_pow_left₀ hd hdhi 4
-    have hd5 : d ^ 5 ≤ (1 / 384 : ℝ) ^ 5 := pow_le_pow_left₀ hd hdhi 5
-    have hd6 : d ^ 6 ≤ (1 / 384 : ℝ) ^ 6 := pow_le_pow_left₀ hd hdhi 6
-    have hd7 : d ^ 7 ≤ (1 / 384 : ℝ) ^ 7 := pow_le_pow_left₀ hd hdhi 7
-    have hd8 : d ^ 8 ≤ (1 / 384 : ℝ) ^ 8 := pow_le_pow_left₀ hd hdhi 8
-    have hd9 : d ^ 9 ≤ (1 / 384 : ℝ) ^ 9 := pow_le_pow_left₀ hd hdhi 9
-    have hd10 : d ^ 10 ≤ (1 / 384 : ℝ) ^ 10 := pow_le_pow_left₀ hd hdhi 10
-    have hd11 : d ^ 11 ≤ (1 / 384 : ℝ) ^ 11 := pow_le_pow_left₀ hd hdhi 11
-    have hd12 : d ^ 12 ≤ (1 / 384 : ℝ) ^ 12 := pow_le_pow_left₀ hd hdhi 12
-    have hd13 : d ^ 13 ≤ (1 / 384 : ℝ) ^ 13 := pow_le_pow_left₀ hd hdhi 13
-    have hd14 : d ^ 14 ≤ (1 / 384 : ℝ) ^ 14 := pow_le_pow_left₀ hd hdhi 14
-    have hd15 : d ^ 15 ≤ (1 / 384 : ℝ) ^ 15 := pow_le_pow_left₀ hd hdhi 15
+    have hd2 : d ^ (2 : ℕ) ≤ (1 / 384 : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ hd hdhi 2
+    have hd3 : d ^ (3 : ℕ) ≤ (1 / 384 : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ hd hdhi 3
+    have hd4 : d ^ (4 : ℕ) ≤ (1 / 384 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ hd hdhi 4
+    have hd5 : d ^ (5 : ℕ) ≤ (1 / 384 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hd hdhi 5
+    have hd6 : d ^ (6 : ℕ) ≤ (1 / 384 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hd hdhi 6
+    have hd7 : d ^ (7 : ℕ) ≤ (1 / 384 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hd hdhi 7
+    have hd8 : d ^ (8 : ℕ) ≤ (1 / 384 : ℝ) ^ (8 : ℕ) := pow_le_pow_left₀ hd hdhi 8
+    have hd9 : d ^ (9 : ℕ) ≤ (1 / 384 : ℝ) ^ (9 : ℕ) := pow_le_pow_left₀ hd hdhi 9
+    have hd10 : d ^ (10 : ℕ) ≤ (1 / 384 : ℝ) ^ (10 : ℕ) := pow_le_pow_left₀ hd hdhi 10
+    have hd11 : d ^ (11 : ℕ) ≤ (1 / 384 : ℝ) ^ (11 : ℕ) := pow_le_pow_left₀ hd hdhi 11
+    have hd12 : d ^ (12 : ℕ) ≤ (1 / 384 : ℝ) ^ (12 : ℕ) := pow_le_pow_left₀ hd hdhi 12
+    have hd13 : d ^ (13 : ℕ) ≤ (1 / 384 : ℝ) ^ (13 : ℕ) := pow_le_pow_left₀ hd hdhi 13
+    have hd14 : d ^ (14 : ℕ) ≤ (1 / 384 : ℝ) ^ (14 : ℕ) := pow_le_pow_left₀ hd hdhi 14
+    have hd15 : d ^ (15 : ℕ) ≤ (1 / 384 : ℝ) ^ (15 : ℕ) := pow_le_pow_left₀ hd hdhi 15
     norm_num at hd2 hd3 hd4 hd5 hd6 hd7 hd8 hd9 hd10 hd11 hd12 hd13 hd14 hd15 ⊢
     nlinarith
   nlinarith [pow_pos hB 7]
@@ -66,11 +66,11 @@ theorem thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial_lt
 /-- Sharp rational upper enclosure for `exp (-1399/128)`. -/
 theorem exp_neg_oneThousandThreeHundredNinetyNineOneHundredTwentyEighths_lt_oneOverFiftyFiveThousandFiveHundred :
     Real.exp (-(1399 / 128 : ℝ)) < (1 / 55500 : ℝ) := by
-  have hpow11 : (2.7182818283 : ℝ) ^ 11 < Real.exp 1 ^ 11 :=
+  have hpow11 : (2.7182818283 : ℝ) ^ (11 : ℕ) < Real.exp 1 ^ (11 : ℕ) :=
     pow_lt_pow_left₀ Real.exp_one_gt_d9 (by norm_num) (by norm_num)
   have h11 : (598741 / 10 : ℝ) < Real.exp 11 := by
     rw [show (11 : ℝ) = (11 : ℕ) * (1 : ℝ) by norm_num, Real.exp_nat_mul]
-    exact (by norm_num : (598741 / 10 : ℝ) < (2.7182818283 : ℝ) ^ 11).trans hpow11
+    exact (by norm_num : (598741 / 10 : ℝ) < (2.7182818283 : ℝ) ^ (11 : ℕ)).trans hpow11
   have hsmall : (119 / 128 : ℝ) ≤ Real.exp (-(9 / 128 : ℝ)) := by
     simpa only [show (1 : ℝ) - 9 / 128 = 119 / 128 by norm_num] using
       Real.one_sub_le_exp_neg (9 / 128 : ℝ)
@@ -118,10 +118,10 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_lt_scale1399Over384_affine
                 (A / B) (247 / 128 + 3 * d)) by ring]
     rw [hextract, hAeq, hBeq]
     rfl
-  have hexpd : Real.exp (-(3 * d)) ≤ 1 - 3 * d + (3 * d) ^ 2 / 2 :=
+  have hexpd : Real.exp (-(3 * d)) ≤ 1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2 :=
     exp_neg_le_quadratic (by positivity)
   have hExp : Real.exp (-3 * A) <
-      (1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2) := by
+      (1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2) := by
     calc
       Real.exp (-3 * A) = Real.exp (-(1399 / 128 : ℝ)) * Real.exp (-(3 * d)) := by
         rw [← Real.exp_add, hAeq]
@@ -130,7 +130,7 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_lt_scale1399Over384_affine
       _ < (1 / 55500 : ℝ) * Real.exp (-(3 * d)) := by
         gcongr
         exact exp_neg_oneThousandThreeHundredNinetyNineOneHundredTwentyEighths_lt_oneOverFiftyFiveThousandFiveHundred
-      _ ≤ (1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2) := by gcongr
+      _ ≤ (1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2) := by gcongr
   have hpolypos : 0 < thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial d := by
     have hBd : 0 < 823 / 384 + d := by linarith
     dsimp [thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial,
@@ -146,7 +146,7 @@ theorem thetaCuspLikelihoodDominantAtomSixthScoreMass_lt_scale1399Over384_affine
     positivity
   rw [hmassEq]
   calc
-    _ < ((1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ 2 / 2)) *
+    _ < ((1 / 55500 : ℝ) * (1 - 3 * d + (3 * d) ^ (2 : ℕ) / 2)) *
         thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial d := by gcongr
     _ < 2187 / 8 - 528 * d := by
       simpa only [mul_assoc] using thetaCuspLikelihoodSixthScale1399Over384DominantPolynomial_lt hd hdhi
@@ -233,7 +233,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_scale1399Over384_affine_w
     dsimp only [thetaCuspSingleAtomReflectionScale]
     rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
     norm_num
-    rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+    rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have h := thetaCuspLikelihoodSourceLogPartitionJetSix_lt_scale1399Over384_affine

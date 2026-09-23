@@ -85,16 +85,16 @@ theorem rawFourthEndpoint_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : 
 /-- The actual local flow has five exact spectral orders and a constructed remainder. -/
 theorem rawInteractionSolution_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) (x : ℝ) :
     rawInteractionSolution q k v x = v+(k : ℂ) • rawLinearCoefficient q v x+
-      (k : ℂ)^2 • rawSecondSlope q 0 v x+(k : ℂ)^3 • rawThirdSlope q 0 v x+
-      (k : ℂ)^4 • rawFourthSlope q 0 v x+(k : ℂ)^5 • rawFifthSlope q k v x := by
+      (k : ℂ)^(2 : ℕ) • rawSecondSlope q 0 v x+(k : ℂ)^(3 : ℕ) • rawThirdSlope q 0 v x+
+      (k : ℂ)^(4 : ℕ) • rawFourthSlope q 0 v x+(k : ℂ)^(5 : ℕ) • rawFifthSlope q k v x := by
   rw [rawInteractionSolution_third_factor,rawThirdSlope_fourth_factor,rawFourthSlope_fifth_factor]
   module
 
 /-- The true infinite Jost endpoints have the same five exact spectral orders. -/
 theorem rawAsymptoticVector_fifth_factor (q : SchwartzMap ℝ ℂ) (k : ℝ) (v : SpectralVector) (left : Bool) :
     rawAsymptoticVector q k v left = v+(k : ℂ) • rawFirstCoefficient q v+
-      (k : ℂ)^2 • rawSecondEndpoint q 0 v left+(k : ℂ)^3 • rawThirdEndpoint q 0 v left+
-      (k : ℂ)^4 • rawFourthEndpoint q 0 v left+(k : ℂ)^5 • rawFifthEndpoint q k v left := by
+      (k : ℂ)^(2 : ℕ) • rawSecondEndpoint q 0 v left+(k : ℂ)^(3 : ℕ) • rawThirdEndpoint q 0 v left+
+      (k : ℂ)^(4 : ℕ) • rawFourthEndpoint q 0 v left+(k : ℂ)^(5 : ℕ) • rawFifthEndpoint q k v left := by
   rw [rawAsymptoticVector_third_factor,rawThirdEndpoint_fourth_factor,rawFourthEndpoint_fifth_factor]
   module
 

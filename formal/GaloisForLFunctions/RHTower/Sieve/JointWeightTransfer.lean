@@ -15,9 +15,9 @@ open Finset
 /-- **The transfer on one window.**  A unit-bounded sequence may be weighted by any function `ω` at
 the cost of twice the window length times the variance of `ω` about `W`. -/
 theorem sq_window_sum_le_weighted {f ω : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (W : ℝ) (t h : ℕ) :
-    W ^ 2 * (∑ n ∈ Finset.Ioc t (t + h), f n) ^ 2
-      ≤ 2 * (∑ n ∈ Finset.Ioc t (t + h), f n * ω n) ^ 2
-        + 2 * (h : ℝ) * ∑ n ∈ Finset.Ioc t (t + h), (ω n - W) ^ 2 := by
+    W ^ (2 : ℕ) * (∑ n ∈ Finset.Ioc t (t + h), f n) ^ (2 : ℕ)
+      ≤ 2 * (∑ n ∈ Finset.Ioc t (t + h), f n * ω n) ^ (2 : ℕ)
+        + 2 * (h : ℝ) * ∑ n ∈ Finset.Ioc t (t + h), (ω n - W) ^ (2 : ℕ) := by
   classical
   set I : Finset ℕ := Finset.Ioc t (t + h) with hI
   have hcard : I.card = h := by rw [hI, Nat.card_Ioc]; omega
@@ -28,28 +28,28 @@ theorem sq_window_sum_le_weighted {f ω : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1)
     refine Finset.sum_congr rfl fun n _ => ?_
     ring
   -- Cauchy–Schwarz on the defect
-  have hdefect : (∑ n ∈ I, f n * (ω n - W)) ^ 2 ≤ (h : ℝ) * ∑ n ∈ I, (ω n - W) ^ 2 := by
-    have hbase : (∑ n ∈ I, f n * (ω n - W)) ^ 2
-        ≤ (I.card : ℝ) * ∑ n ∈ I, (f n * (ω n - W)) ^ 2 :=
+  have hdefect : (∑ n ∈ I, f n * (ω n - W)) ^ (2 : ℕ) ≤ (h : ℝ) * ∑ n ∈ I, (ω n - W) ^ (2 : ℕ) := by
+    have hbase : (∑ n ∈ I, f n * (ω n - W)) ^ (2 : ℕ)
+        ≤ (I.card : ℝ) * ∑ n ∈ I, (f n * (ω n - W)) ^ (2 : ℕ) :=
       sq_sum_le_card_mul_sum_sq
     refine hbase.trans ?_
     rw [hcard]
     refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun n _ => ?_) (Nat.cast_nonneg _)
     have h1 : |f n| ≤ 1 := hf n
-    have h2 : (f n * (ω n - W)) ^ 2 = (f n) ^ 2 * (ω n - W) ^ 2 := by ring
-    have h3 : (f n) ^ 2 ≤ 1 := by
+    have h2 : (f n * (ω n - W)) ^ (2 : ℕ) = (f n) ^ (2 : ℕ) * (ω n - W) ^ (2 : ℕ) := by ring
+    have h3 : (f n) ^ (2 : ℕ) ≤ 1 := by
       have := abs_le.1 h1
       nlinarith [this.1, this.2]
     rw [h2]
     nlinarith [h3, sq_nonneg (ω n - W)]
-  have hsq : (W * ∑ n ∈ I, f n) ^ 2
-      ≤ 2 * (∑ n ∈ I, f n * ω n) ^ 2 + 2 * (∑ n ∈ I, f n * (ω n - W)) ^ 2 := by
+  have hsq : (W * ∑ n ∈ I, f n) ^ (2 : ℕ)
+      ≤ 2 * (∑ n ∈ I, f n * ω n) ^ (2 : ℕ) + 2 * (∑ n ∈ I, f n * (ω n - W)) ^ (2 : ℕ) := by
     rw [hsplit]
     nlinarith [sq_nonneg ((∑ n ∈ I, f n * ω n) + ∑ n ∈ I, f n * (ω n - W))]
-  have hval : (W * ∑ n ∈ I, f n) ^ 2 = W ^ 2 * (∑ n ∈ I, f n) ^ 2 := by ring
+  have hval : (W * ∑ n ∈ I, f n) ^ (2 : ℕ) = W ^ (2 : ℕ) * (∑ n ∈ I, f n) ^ (2 : ℕ) := by ring
   rw [hval] at hsq
-  have hmul : 2 * (∑ n ∈ I, f n * (ω n - W)) ^ 2
-      ≤ 2 * ((h : ℝ) * ∑ n ∈ I, (ω n - W) ^ 2) := by linarith [hdefect]
+  have hmul : 2 * (∑ n ∈ I, f n * (ω n - W)) ^ (2 : ℕ)
+      ≤ 2 * ((h : ℝ) * ∑ n ∈ I, (ω n - W) ^ (2 : ℕ)) := by linarith [hdefect]
   linarith [hsq, hmul]
 
 /-- The `j`-th window of a dyadic family of disjoint windows. -/
@@ -79,24 +79,24 @@ Turán–Kubilius variance is paid once. -/
 theorem sum_sq_windows_le_weighted {f ω : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (W : ℝ) (A h K M : ℕ)
     (hin : ∀ j < K, ∀ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h),
       n ∈ Finset.Icc 1 M) :
-    W ^ 2 * ∑ j ∈ Finset.range K,
-        (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n) ^ 2
+    W ^ (2 : ℕ) * ∑ j ∈ Finset.range K,
+        (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n) ^ (2 : ℕ)
       ≤ 2 * ∑ j ∈ Finset.range K,
-          (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n * ω n) ^ 2
-        + 2 * (h : ℝ) * ∑ n ∈ Finset.Icc 1 M, (ω n - W) ^ 2 := by
+          (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n * ω n) ^ (2 : ℕ)
+        + 2 * (h : ℝ) * ∑ n ∈ Finset.Icc 1 M, (ω n - W) ^ (2 : ℕ) := by
   classical
   have hterm : ∀ j ∈ Finset.range K,
-      W ^ 2 * (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n) ^ 2
-        ≤ 2 * (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n * ω n) ^ 2
+      W ^ (2 : ℕ) * (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n) ^ (2 : ℕ)
+        ≤ 2 * (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n * ω n) ^ (2 : ℕ)
           + 2 * (h : ℝ)
-            * ∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), (ω n - W) ^ 2 :=
+            * ∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), (ω n - W) ^ (2 : ℕ) :=
     fun j _ => sq_window_sum_le_weighted hf W _ _
   have hsum := Finset.sum_le_sum hterm
   rw [← Finset.mul_sum] at hsum
   -- the disjoint windows fit inside `[1, M]`
   have hvar : ∑ j ∈ Finset.range K,
-        ∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), (ω n - W) ^ 2
-      ≤ ∑ n ∈ Finset.Icc 1 M, (ω n - W) ^ 2 := by
+        ∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), (ω n - W) ^ (2 : ℕ)
+      ≤ ∑ n ∈ Finset.Icc 1 M, (ω n - W) ^ (2 : ℕ) := by
     rw [← Finset.sum_biUnion]
     · refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun n _ _ => sq_nonneg _)
       intro n hn
@@ -106,13 +106,13 @@ theorem sum_sq_windows_le_weighted {f ω : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1
     · intro j hj k hk hjk
       exact windows_pairwise_disjoint A h hjk
   have hsplit : ∑ j ∈ Finset.range K,
-        (2 * (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n * ω n) ^ 2
+        (2 * (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n * ω n) ^ (2 : ℕ)
           + 2 * (h : ℝ)
-            * ∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), (ω n - W) ^ 2)
+            * ∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), (ω n - W) ^ (2 : ℕ))
       = 2 * ∑ j ∈ Finset.range K,
-          (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n * ω n) ^ 2
+          (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n * ω n) ^ (2 : ℕ)
         + 2 * (h : ℝ) * ∑ j ∈ Finset.range K,
-            ∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), (ω n - W) ^ 2 := by
+            ∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), (ω n - W) ^ (2 : ℕ) := by
     rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
   rw [hsplit] at hsum
   have hh0 : (0 : ℝ) ≤ 2 * (h : ℝ) := by positivity
@@ -126,12 +126,12 @@ theorem sum_sq_windows_le_joint {P Q : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
     (A h K M : ℕ)
     (hin : ∀ j < K, ∀ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h),
       n ∈ Finset.Icc 1 M) :
-    ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ 2
+    ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ))) ^ (2 : ℕ)
         * ∑ j ∈ Finset.range K,
-          (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n) ^ 2
+          (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h), f n) ^ (2 : ℕ)
       ≤ 2 * ∑ j ∈ Finset.range K,
           (∑ n ∈ Finset.Ioc (windowStart A h j) (windowStart A h j + h),
-            f n * (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ))) ^ 2
+            f n * (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ))) ^ (2 : ℕ)
         + 2 * (h : ℝ)
           * ((M : ℝ) * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) * (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)))
               * ((∑ p ∈ P, (1 : ℝ) / (p : ℝ)) + (∑ q ∈ Q, (1 : ℝ) / (q : ℝ)) + 1)

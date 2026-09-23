@@ -42,9 +42,9 @@ def suzukiRescaledCore (a : SuzukiPrimeFreeSmallAperture)
 
 theorem suzukiRescaledCore_intervalEnergy (a : SuzukiPrimeFreeSmallAperture)
     (u : SuzukiRestrictedWeilCore 1) :
-    (∫ x in (-a.val)..a.val, (suzukiRescaledCore a u x) ^ 2) =
-      a.val * ∫ x in (-1 : ℝ)..1, u x ^ 2 := by
-  have h := intervalIntegral.integral_comp_div (fun x => u x ^ 2) a.pos.ne'
+    (∫ x in (-a.val)..a.val, (suzukiRescaledCore a u x) ^ (2 : ℕ)) =
+      a.val * ∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ) := by
+  have h := intervalIntegral.integral_comp_div (fun x => u x ^ (2 : ℕ)) a.pos.ne'
     (a := -a.val) (b := a.val)
   simpa [suzukiRescaledCore, smul_eq_mul, a.pos.ne'] using h
 
@@ -52,7 +52,7 @@ private theorem iterated_interval_scale (a : SuzukiPrimeFreeSmallAperture)
     (F : ℝ → ℝ → ℝ) :
     (∫ x in (-a.val)..a.val,
       ∫ y in (-a.val)..a.val, F (x / a.val) (y / a.val)) =
-      a.val ^ 2 * ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, F x y := by
+      a.val ^ (2 : ℕ) * ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, F x y := by
   have hinner : ∀ x : ℝ,
       (∫ y in (-a.val)..a.val, F (x / a.val) (y / a.val)) =
         a.val * ∫ y in (-1 : ℝ)..1, F (x / a.val) y := by
@@ -74,9 +74,9 @@ theorem suzukiRescaledDifferenceEnergy (a : SuzukiPrimeFreeSmallAperture)
     (u : SuzukiRestrictedWeilCore 1) :
     suzukiFinitePartDifferenceEnergy a.val (suzukiRescaledCore a u) =
       a.val * suzukiFinitePartDifferenceEnergy 1 u := by
-  let F : ℝ → ℝ → ℝ := fun x y => (u x - u y) ^ 2 * |x - y|⁻¹
+  let F : ℝ → ℝ → ℝ := fun x y => (u x - u y) ^ (2 : ℕ) * |x - y|⁻¹
   have hpoint : ∀ x y : ℝ,
-      (suzukiRescaledCore a u x - suzukiRescaledCore a u y) ^ 2 * |x - y|⁻¹ =
+      (suzukiRescaledCore a u x - suzukiRescaledCore a u y) ^ (2 : ℕ) * |x - y|⁻¹ =
         (1 / a.val) * F (x / a.val) (y / a.val) := by
     intro x y
     rcases eq_or_ne x y with rfl | hxy
@@ -89,7 +89,7 @@ theorem suzukiRescaledDifferenceEnergy (a : SuzukiPrimeFreeSmallAperture)
   unfold suzukiFinitePartDifferenceEnergy
   calc
     (∫ x in (-a.val)..a.val, ∫ y in (-a.val)..a.val,
-        (suzukiRescaledCore a u x - suzukiRescaledCore a u y) ^ 2 * |x - y|⁻¹) =
+        (suzukiRescaledCore a u x - suzukiRescaledCore a u y) ^ (2 : ℕ) * |x - y|⁻¹) =
         ∫ x in (-a.val)..a.val, ∫ y in (-a.val)..a.val,
           (1 / a.val) * F (x / a.val) (y / a.val) := by
             refine intervalIntegral.integral_congr fun x _ => ?_
@@ -106,14 +106,14 @@ theorem suzukiRescaledDifferenceEnergy (a : SuzukiPrimeFreeSmallAperture)
 theorem suzukiRescaledLogPotential (a : SuzukiPrimeFreeSmallAperture)
     (u : SuzukiRestrictedWeilCore 1) :
     suzukiFinitePartLogPotential a.val (suzukiRescaledCore a u) =
-      a.val * (2 * Real.log a.val * (∫ x in (-1 : ℝ)..1, u x ^ 2) +
+      a.val * (2 * Real.log a.val * (∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ)) +
         suzukiFinitePartLogPotential 1 u) := by
   let f : ℝ → ℝ := fun x =>
-    Real.log (a.val ^ 2 - (a.val * x) ^ 2) * u x ^ 2
+    Real.log (a.val ^ (2 : ℕ) - (a.val * x) ^ (2 : ℕ)) * u x ^ (2 : ℕ)
   have hscale := intervalIntegral.integral_comp_div f a.pos.ne'
     (a := -a.val) (b := a.val)
   have hleft : (∫ x in (-a.val)..a.val,
-      Real.log (a.val ^ 2 - x ^ 2) * (suzukiRescaledCore a u x) ^ 2) =
+      Real.log (a.val ^ (2 : ℕ) - x ^ (2 : ℕ)) * (suzukiRescaledCore a u x) ^ (2 : ℕ)) =
       a.val * ∫ x in (-1 : ℝ)..1, f x := by
     convert hscale using 1
     · apply intervalIntegral.integral_congr
@@ -122,18 +122,18 @@ theorem suzukiRescaledLogPotential (a : SuzukiPrimeFreeSmallAperture)
       rw [mul_div_cancel₀ x a.pos.ne']
     · simp [smul_eq_mul, a.pos.ne']
   have hpoint : ∀ x : ℝ,
-      f x = 2 * Real.log a.val * u x ^ 2 +
-        Real.log (1 - x ^ 2) * u x ^ 2 := by
+      f x = 2 * Real.log a.val * u x ^ (2 : ℕ) +
+        Real.log (1 - x ^ (2 : ℕ)) * u x ^ (2 : ℕ) := by
     intro x
     by_cases hux : u x = 0
     · simp [f, hux]
     · have hxap := u.support_subset_aperture hux
-      have harg : 0 < 1 - x ^ 2 := by
+      have harg : 0 < 1 - x ^ (2 : ℕ) := by
         have hp : 0 < (1 - x) * (1 + x) :=
           mul_pos (by linarith [hxap.2]) (by linarith [hxap.1])
         nlinarith
-      have hfactor : a.val ^ 2 - (a.val * x) ^ 2 =
-          a.val ^ 2 * (1 - x ^ 2) := by ring
+      have hfactor : a.val ^ (2 : ℕ) - (a.val * x) ^ (2 : ℕ) =
+          a.val ^ (2 : ℕ) * (1 - x ^ (2 : ℕ)) := by ring
       dsimp [f]
       rw [hfactor, Real.log_mul (pow_ne_zero 2 a.pos.ne') harg.ne', Real.log_pow]
       ring
@@ -143,18 +143,18 @@ theorem suzukiRescaledLogPotential (a : SuzukiPrimeFreeSmallAperture)
   calc
     (∫ x in (-1 : ℝ)..1, f x) =
         ∫ x in (-1 : ℝ)..1,
-          2 * Real.log a.val * u x ^ 2 + Real.log (1 - x ^ 2) * u x ^ 2 := by
+          2 * Real.log a.val * u x ^ (2 : ℕ) + Real.log (1 - x ^ (2 : ℕ)) * u x ^ (2 : ℕ) := by
             exact intervalIntegral.integral_congr fun x _ => hpoint x
-    _ = 2 * Real.log a.val * (∫ x in (-1 : ℝ)..1, u x ^ 2) +
-        ∫ x in (-1 : ℝ)..1, Real.log (1 - x ^ 2) * u x ^ 2 := by
+    _ = 2 * Real.log a.val * (∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ)) +
+        ∫ x in (-1 : ℝ)..1, Real.log (1 - x ^ (2 : ℕ)) * u x ^ (2 : ℕ) := by
           have hlog := suzukiFinitePartLogPotential_integrable_upper
             (a := (1 : ℝ)) one_pos u.supportRadius_nonneg u.supportRadius_lt_aperture
               u.continuous u.support_subset
           have hlogI : IntervalIntegrable
-              (fun x => Real.log (1 - x ^ 2) * u x ^ 2) volume (-1 : ℝ) 1 := by
+              (fun x => Real.log (1 - x ^ (2 : ℕ)) * u x ^ (2 : ℕ)) volume (-1 : ℝ) 1 := by
             simpa using hlog.1
           have hfirstI : IntervalIntegrable
-              (fun x => 2 * Real.log a.val * u x ^ 2) volume (-1 : ℝ) 1 :=
+              (fun x => 2 * Real.log a.val * u x ^ (2 : ℕ)) volume (-1 : ℝ) 1 :=
             (continuous_const.mul (u.continuous.pow 2)).intervalIntegrable _ _
           rw [intervalIntegral.integral_add hfirstI hlogI,
             intervalIntegral.integral_const_mul]
@@ -163,7 +163,7 @@ theorem suzukiRescaledLogPotential (a : SuzukiPrimeFreeSmallAperture)
 theorem suzukiRescaledFinitePartEnergy (a : SuzukiPrimeFreeSmallAperture)
     (u : SuzukiRestrictedWeilCore 1) :
     suzukiFinitePartEnergy a.val (suzukiRescaledCore a u) =
-      a.val * (-Real.log a.val * (∫ x in (-1 : ℝ)..1, u x ^ 2) +
+      a.val * (-Real.log a.val * (∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ)) +
         suzukiFinitePartEnergy 1 u) := by
   rw [suzukiFinitePartEnergy, suzukiRescaledDifferenceEnergy, suzukiRescaledLogPotential]
   unfold suzukiFinitePartEnergy
@@ -192,7 +192,7 @@ theorem suzukiRescaledSmoothBlock (a : SuzukiPrimeFreeSmallAperture)
         (∫ y in (-a.val)..a.val,
           suzukiOriginRemainderCurvature (x - y) * suzukiRescaledCore a u y) *
             suzukiRescaledCore a u x) =
-        a.val ^ 2 * suzukiScaledRemainderQuadraticReal a u := by
+        a.val ^ (2 : ℕ) * suzukiScaledRemainderQuadraticReal a u := by
     calc
       _ = ∫ x in (-a.val)..a.val, ∫ y in (-a.val)..a.val,
           suzukiOriginRemainderCurvature (x - y) *
@@ -203,9 +203,9 @@ theorem suzukiRescaledSmoothBlock (a : SuzukiPrimeFreeSmallAperture)
           ∫ y in (-a.val)..a.val, F (x / a.val) (y / a.val) := by
           refine intervalIntegral.integral_congr fun x _ => ?_
           exact intervalIntegral.integral_congr fun y _ => hpoint x y
-      _ = a.val ^ 2 * ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, F x y := hscale
-      _ = a.val ^ 2 * suzukiScaledRemainderQuadraticReal a u := by
-        apply congrArg (fun z : ℝ => a.val ^ 2 * z)
+      _ = a.val ^ (2 : ℕ) * ∫ x in (-1 : ℝ)..1, ∫ y in (-1 : ℝ)..1, F x y := hscale
+      _ = a.val ^ (2 : ℕ) * suzukiScaledRemainderQuadraticReal a u := by
+        apply congrArg (fun z : ℝ => a.val ^ (2 : ℕ) * z)
         unfold suzukiScaledRemainderQuadraticReal
         refine intervalIntegral.integral_congr fun x _ => ?_
         rw [intervalIntegral.integral_mul_const]
@@ -217,12 +217,12 @@ theorem suzukiRescaledScalarBlock (a : SuzukiPrimeFreeSmallAperture)
     (1 / a.val) * weilScalarBlock a.val suzukiWeilArchimedeanConstant
         (suzukiRescaledCore a u) (suzukiRescaledCore a u) =
       -(2 * suzukiWeilArchimedeanConstant + 1) *
-        ∫ x in (-1 : ℝ)..1, u x ^ 2 := by
+        ∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ) := by
   rw [weilScalarBlock]
   have henergy := suzukiRescaledCore_intervalEnergy a u
   have henergy' : (∫ x in (-a.val)..a.val,
       suzukiRescaledCore a u x * suzukiRescaledCore a u x) =
-      a.val * ∫ x in (-1 : ℝ)..1, u x ^ 2 := by
+      a.val * ∫ x in (-1 : ℝ)..1, u x ^ (2 : ℕ) := by
     simpa [pow_two] using henergy
   rw [henergy']
   field_simp [a.pos.ne']

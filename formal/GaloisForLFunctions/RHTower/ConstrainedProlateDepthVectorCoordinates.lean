@@ -40,7 +40,7 @@ theorem constrainedProlateHermiteContrast_top_div_zero (k : ℕ) :
   have hthetaEq : constrainedProlateHermiteTheta k =
       constrainedProlateHermiteSquareSum k /
         (constrainedProlateHermiteSquareSum k +
-          constrainedProlateHermiteCoordinate (k + 1) ^ 2) := by
+          constrainedProlateHermiteCoordinate (k + 1) ^ (2 : ℕ)) := by
     rw [← constrainedProlateHermiteTheta_eq_square_ratio,
       Real.sq_sqrt hS.le]
   rw [constrainedProlateHermiteContrast_succ,
@@ -52,8 +52,8 @@ theorem constrainedProlateHermiteContrast_top_div_zero (k : ℕ) :
 theorem LadderEnvelope.ccm_depth_secularVector_lower_coordinate_ratio_tendsto
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j)))
     {m : ℕ} (hmk : m ≤ k) :
@@ -109,8 +109,8 @@ theorem LadderEnvelope.ccm_depth_secularVector_lower_coordinate_ratio_tendsto
 theorem LadderEnvelope.ccm_depth_secularVector_top_coordinate_ratio_tendsto
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j))) :
     Tendsto (fun lam =>
@@ -174,8 +174,8 @@ ratio. -/
 theorem LadderEnvelope.ccm_depth_secularVector_coordinate_ratio_tendsto
     {D : ℝ → ℕ → ℝ}
     (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
-    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
-    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ (2 : ℕ))
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ (2 : ℕ)) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
       (nhds (constrainedProlateHermiteCoordinate j)))
     {m : ℕ} (hm : m < k + 2) :

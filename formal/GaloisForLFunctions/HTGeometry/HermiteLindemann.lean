@@ -221,7 +221,7 @@ theorem exp_ne_intCast_of_isAlgebraic {α : ℂ} (hα : IsAlgebraic ℤ α) {Q :
     push_cast
     ring
   have hQd : 2 ≤ Q ^ d := by
-    calc (2 : ℤ) = 2 ^ 1 := by norm_num
+    calc (2 : ℤ) = 2 ^ (1 : ℕ) := by norm_num
       _ ≤ Q ^ d := by
           refine le_trans (pow_le_pow_right₀ (by norm_num) hd1) ?_
           exact pow_le_pow_left₀ (by norm_num) hQ d

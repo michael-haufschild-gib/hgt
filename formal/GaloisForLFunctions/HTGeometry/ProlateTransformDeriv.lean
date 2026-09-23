@@ -99,17 +99,17 @@ theorem intervalIntegrable_kernel_mul {c y : ℝ} {f : ℝ → ℂ}
   hint.continuousOn_mul (continuous_prolateKernel_snd c y).continuousOn
 
 set_option maxHeartbeats 1000000 in
-/-- **The prolate flux of the transform.**  Differentiating `(1 - x^2)` times the transform's
+/-- **The prolate flux of the transform.**  Differentiating `(1 - x^(2 : ℕ))` times the transform's
 derivative pushes the whole prolate operator inside the integral, where it becomes the symbol. -/
 theorem hasDerivAt_prolateTransformFlux {c : ℝ} {f : ℝ → ℂ}
     (hint : IntervalIntegrable f volume (-1) 1) (x : ℝ) :
     HasDerivAt
-      (fun y : ℝ => ((1 - y ^ 2 : ℝ) : ℂ) *
+      (fun y : ℝ => ((1 - y ^ (2 : ℕ) : ℝ) : ℂ) *
         ∫ t in (-1 : ℝ)..1, Complex.I * (c : ℂ) * (t : ℂ) * prolateKernel c y t * f t)
       (∫ t in (-1 : ℝ)..1,
-        (prolateSymbol c x t + (c : ℂ) ^ 2 * (x : ℂ) ^ 2) * prolateKernel c x t * f t) x := by
-  have hw : HasDerivAt (fun y : ℝ => ((1 - y ^ 2 : ℝ) : ℂ)) (((-2 * x : ℝ) : ℂ)) x := by
-    have h : HasDerivAt (fun y : ℝ => (1 - y ^ 2 : ℝ)) (-2 * x) x := by
+        (prolateSymbol c x t + (c : ℂ) ^ (2 : ℕ) * (x : ℂ) ^ (2 : ℕ)) * prolateKernel c x t * f t) x := by
+  have hw : HasDerivAt (fun y : ℝ => ((1 - y ^ (2 : ℕ) : ℝ) : ℂ)) (((-2 * x : ℝ) : ℂ)) x := by
+    have h : HasDerivAt (fun y : ℝ => (1 - y ^ (2 : ℕ) : ℝ)) (-2 * x) x := by
       simpa using ((hasDerivAt_pow 2 x).const_sub 1)
     exact h.ofReal_comp
   have hG := hasDerivAt_prolateTransform_deriv (c := c) hint x
@@ -141,7 +141,7 @@ theorem hasDerivAt_prolateTransformFlux {c : ℝ} {f : ℝ → ℂ}
     ← intervalIntegral.integral_add (hint1.const_mul _) (hint2.const_mul _)]
   refine intervalIntegral.integral_congr fun t _ => ?_
   rw [prolateSymbol]
-  have hI : Complex.I ^ 2 = -1 := Complex.I_sq
+  have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
   push_cast
   ring_nf
   rw [hI]
@@ -150,29 +150,29 @@ theorem hasDerivAt_prolateTransformFlux {c : ℝ} {f : ℝ → ℂ}
 set_option maxHeartbeats 1000000 in
 /-- **The prolate operator commutes with the finite Fourier transform.**  Moving the operator inside
 the integral turns it into the symbol; the symbol is symmetric, so it may be read as acting in the
-integration variable; and Sturm symmetry with the vanishing weight `1 - t^2` transfers it onto the
+integration variable; and Sturm symmetry with the vanishing weight `1 - t^(2 : ℕ)` transfers it onto the
 function. -/
 theorem prolateSymbol_integral_eq {c : ℝ} {f f' wf' : ℝ → ℂ} (x : ℝ)
     (hf : ∀ t ∈ Set.uIcc (-1 : ℝ) 1, HasDerivAt f (f' t) t)
     (hwf : ∀ t ∈ Set.uIcc (-1 : ℝ) 1,
-      HasDerivAt (fun s : ℝ => ((1 - s ^ 2 : ℝ) : ℂ) * f' s) (wf' t) t)
+      HasDerivAt (fun s : ℝ => ((1 - s ^ (2 : ℕ) : ℝ) : ℂ) * f' s) (wf' t) t)
     (hf'int : IntervalIntegrable f' volume (-1) 1)
     (hwf'int : IntervalIntegrable wf' volume (-1) 1)
     (hKint : IntervalIntegrable (fun t : ℝ => Complex.I * (c : ℂ) * (x : ℂ) * prolateKernel c x t)
       volume (-1) 1)
     (hKfluxint : IntervalIntegrable
-      (fun t : ℝ => (prolateSymbol c x t + (c : ℂ) ^ 2 * (t : ℂ) ^ 2) * prolateKernel c x t)
+      (fun t : ℝ => (prolateSymbol c x t + (c : ℂ) ^ (2 : ℕ) * (t : ℂ) ^ (2 : ℕ)) * prolateKernel c x t)
       volume (-1) 1) :
     ∫ t in (-1 : ℝ)..1,
-        f t * ((prolateSymbol c x t + (c : ℂ) ^ 2 * (t : ℂ) ^ 2) * prolateKernel c x t)
+        f t * ((prolateSymbol c x t + (c : ℂ) ^ (2 : ℕ) * (t : ℂ) ^ (2 : ℕ)) * prolateKernel c x t)
       = ∫ t in (-1 : ℝ)..1, wf' t * prolateKernel c x t := by
-  have hwvanish : ((1 - (1 : ℝ) ^ 2 : ℝ) : ℂ) = 0 := by norm_num
-  have hwvanish' : ((1 - (-1 : ℝ) ^ 2 : ℝ) : ℂ) = 0 := by norm_num
-  refine integral_mul_sturm_symm (w := fun s : ℝ => ((1 - s ^ 2 : ℝ) : ℂ))
+  have hwvanish : ((1 - (1 : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) = 0 := by norm_num
+  have hwvanish' : ((1 - (-1 : ℝ) ^ (2 : ℕ) : ℝ) : ℂ) = 0 := by norm_num
+  refine integral_mul_sturm_symm (w := fun s : ℝ => ((1 - s ^ (2 : ℕ) : ℝ) : ℂ))
     (u := f) (v := fun t : ℝ => prolateKernel c x t)
     (u' := f') (v' := fun t : ℝ => Complex.I * (c : ℂ) * (x : ℂ) * prolateKernel c x t)
     (wu' := wf')
-    (wv' := fun t : ℝ => (prolateSymbol c x t + (c : ℂ) ^ 2 * (t : ℂ) ^ 2) * prolateKernel c x t)
+    (wv' := fun t : ℝ => (prolateSymbol c x t + (c : ℂ) ^ (2 : ℕ) * (t : ℂ) ^ (2 : ℕ)) * prolateKernel c x t)
     ?_ ?_ ?_ ?_ hf ?_ hwf ?_ hf'int hKint hwf'int hKfluxint
   · rw [hwvanish']; ring
   · rw [hwvanish]; ring

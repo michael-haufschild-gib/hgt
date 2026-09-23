@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.SelbergGcdLogPowerAsymptotic
 
 The short Barban--Vehov energy contains one mixed moment not covered by the origin-based family:
 
-`Σ μ(m)μ(n)(m,n)/(mn) · log(m,n)^2 · log(N/m)^2 · log(N/n)`.
+`Σ μ(m)μ(n)(m,n)/(mn) · log(m,n)^(2 : ℕ) · log(N/m)^(2 : ℕ) · log(N/n)`.
 
 The all-order Euler-jet identity splits it into three correction orders.  Absolute summability and
 the exact principal `(2,1)` asymptotic show that only correction order zero survives, with leading
@@ -22,14 +22,14 @@ noncomputable section
 /-- Literal square-gcd-log Selberg monomial with complementary-log powers `(2,1)`. -/
 def selbergOriginalGcdLogSquareTwoOneMonomial (N : ℕ) : ℝ :=
   ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
-    selbergOriginalCoeff m n * Real.log ((Nat.gcd m n : ℕ) : ℝ) ^ 2 *
-      (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 * Real.log ((N : ℝ) / (n : ℝ)))
+    selbergOriginalCoeff m n * Real.log ((Nat.gcd m n : ℕ) : ℝ) ^ (2 : ℕ) *
+      (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) * Real.log ((N : ℝ) / (n : ℝ)))
 
 /-- The symmetric `(1,2)` orientation of the mixed square-gcd-log monomial. -/
 def selbergOriginalGcdLogSquareOneTwoMonomial (N : ℕ) : ℝ :=
   ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
-    selbergOriginalCoeff m n * Real.log ((Nat.gcd m n : ℕ) : ℝ) ^ 2 *
-      (Real.log ((N : ℝ) / (m : ℝ)) * Real.log ((N : ℝ) / (n : ℝ)) ^ 2)
+    selbergOriginalCoeff m n * Real.log ((Nat.gcd m n : ℕ) : ℝ) ^ (2 : ℕ) *
+      (Real.log ((N : ℝ) / (m : ℝ)) * Real.log ((N : ℝ) / (n : ℝ)) ^ (2 : ℕ))
 
 theorem selbergOriginalGcdLogSquareOneTwoMonomial_eq_twoOne (N : ℕ) :
     selbergOriginalGcdLogSquareOneTwoMonomial N =
@@ -53,8 +53,8 @@ theorem selbergOriginalGcdLogSquareTwoOneMonomial_eq_correction_sum (N : ℕ) :
   rw [selbergOriginalGcdLogSquareTwoOneMonomial]
   calc
     (∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
-        selbergOriginalCoeff m n * Real.log ((Nat.gcd m n : ℕ) : ℝ) ^ 2 *
-          (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
+        selbergOriginalCoeff m n * Real.log ((Nat.gcd m n : ℕ) : ℝ) ^ (2 : ℕ) *
+          (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
             Real.log ((N : ℝ) / (n : ℝ)))) =
       ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
         ∑ l ∈ Finset.range 3,
@@ -62,7 +62,7 @@ theorem selbergOriginalGcdLogSquareTwoOneMonomial_eq_correction_sum (N : ℕ) :
             bivariateDirichletConvolution
               (selbergEulerCorrectionLogPowerCoeff l)
               (selbergGcdLogPowerPrincipalCoeff (2 - l)) m n *
-            (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
+            (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
               Real.log ((N : ℝ) / (n : ℝ))) := by
       apply Finset.sum_congr rfl
       intro m _
@@ -76,7 +76,7 @@ theorem selbergOriginalGcdLogSquareTwoOneMonomial_eq_correction_sum (N : ℕ) :
             bivariateDirichletConvolution
               (selbergEulerCorrectionLogPowerCoeff l)
               (selbergGcdLogPowerPrincipalCoeff (2 - l)) m n *
-            (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
+            (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
               Real.log ((N : ℝ) / (n : ℝ))) := by
       apply Finset.sum_congr rfl
       intro m _
@@ -87,7 +87,7 @@ theorem selbergOriginalGcdLogSquareTwoOneMonomial_eq_correction_sum (N : ℕ) :
             bivariateDirichletConvolution
               (selbergEulerCorrectionLogPowerCoeff l)
               (selbergGcdLogPowerPrincipalCoeff (2 - l)) m n *
-            (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
+            (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
               Real.log ((N : ℝ) / (n : ℝ))) := by
       rw [Finset.sum_comm]
     _ = _ := by
@@ -99,14 +99,14 @@ theorem selbergOriginalGcdLogSquareTwoOneMonomial_eq_correction_sum (N : ℕ) :
               bivariateDirichletConvolution
                 (selbergEulerCorrectionLogPowerCoeff l)
                 (selbergGcdLogPowerPrincipalCoeff (2 - l)) m n *
-              (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
+              (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
                 Real.log ((N : ℝ) / (n : ℝ)))) =
           ((2 : ℕ).choose l : ℝ) *
             (∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
               bivariateDirichletConvolution
                 (selbergEulerCorrectionLogPowerCoeff l)
                 (selbergGcdLogPowerPrincipalCoeff (2 - l)) m n *
-              (Real.log ((N : ℝ) / (m : ℝ)) ^ 2 *
+              (Real.log ((N : ℝ) / (m : ℝ)) ^ (2 : ℕ) *
                 Real.log ((N : ℝ) / (n : ℝ)))) := by
           rw [Finset.mul_sum]
           apply Finset.sum_congr rfl
@@ -135,7 +135,7 @@ def selbergGcdLogSquareTwoOneCorrectionScaledTerm
   if mn.1 ∈ Finset.Icc 1 N ∧ mn.2 ∈ Finset.Icc 1 N then
     selbergEulerCorrectionLogPowerCoeff l mn.1 mn.2 *
       (selbergGcdLogPowerPrincipalScaledModel (2 - l) 2 1 mn.1 mn.2 N /
-        Real.log N ^ 4)
+        Real.log N ^ (4 : ℕ))
   else 0
 
 theorem tsum_selbergGcdLogSquareTwoOneCorrectionScaledTerm (l N : ℕ) :
@@ -143,7 +143,7 @@ theorem tsum_selbergGcdLogSquareTwoOneCorrectionScaledTerm (l N : ℕ) :
       ∑ d ∈ Finset.Icc 1 N, ∑ e ∈ Finset.Icc 1 N,
         selbergEulerCorrectionLogPowerCoeff l d e *
           (selbergGcdLogPowerPrincipalScaledModel (2 - l) 2 1 d e N /
-            Real.log N ^ 4) := by
+            Real.log N ^ (4 : ℕ)) := by
   rw [tsum_eq_sum (s := (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N))]
   · rw [Finset.sum_product]
     apply Finset.sum_congr rfl
@@ -209,11 +209,11 @@ theorem exists_eventually_norm_selbergGcdLogSquareTwoOneCorrectionScaledTerm_le
     have hexp : 4 = (4 - l) + l := by omega
     have hratio :
         |selbergGcdLogPowerPrincipalScaledModel (2 - l) 2 1 mn.1 mn.2 N| /
-            Real.log N ^ 4 ≤ M / Real.log (2 : ℝ) ^ l := by
+            Real.log N ^ (4 : ℕ) ≤ M / Real.log (2 : ℝ) ^ l := by
       calc
         |selbergGcdLogPowerPrincipalScaledModel (2 - l) 2 1 mn.1 mn.2 N| /
-              Real.log N ^ 4 ≤
-            (M * Real.log N ^ (4 - l)) / Real.log N ^ 4 :=
+              Real.log N ^ (4 : ℕ) ≤
+            (M * Real.log N ^ (4 - l)) / Real.log N ^ (4 : ℕ) :=
           div_le_div_of_nonneg_right hmodel (pow_nonneg hlogpos.le _)
         _ = M / Real.log N ^ l := by
           rw [hexp, pow_add]
@@ -226,7 +226,7 @@ theorem exists_eventually_norm_selbergGcdLogSquareTwoOneCorrectionScaledTerm_le
     calc
       |selbergEulerCorrectionLogPowerCoeff l mn.1 mn.2| *
           (|selbergGcdLogPowerPrincipalScaledModel (2 - l) 2 1 mn.1 mn.2 N| /
-            Real.log N ^ 4) ≤
+            Real.log N ^ (4 : ℕ)) ≤
         |selbergEulerCorrectionLogPowerCoeff l mn.1 mn.2| *
           (M / Real.log (2 : ℝ) ^ l) :=
         mul_le_mul_of_nonneg_left hratio (abs_nonneg _)
@@ -287,9 +287,9 @@ theorem tendsto_selbergGcdLogSquareTwoOneCorrectionScaledTerm
     calc
       |selbergEulerCorrectionLogPowerCoeff l d e| *
           (|selbergGcdLogPowerPrincipalScaledModel (2 - l) 2 1 d e N| /
-            Real.log N ^ 4) ≤
+            Real.log N ^ (4 : ℕ)) ≤
         |selbergEulerCorrectionLogPowerCoeff l d e| *
-          ((M * Real.log N ^ (4 - l)) / Real.log N ^ 4) :=
+          ((M * Real.log N ^ (4 - l)) / Real.log N ^ (4 : ℕ)) :=
         mul_le_mul_of_nonneg_left
           (div_le_div_of_nonneg_right hmodel (pow_nonneg hlogpos.le _)) (abs_nonneg _)
       _ = (|selbergEulerCorrectionLogPowerCoeff l d e| * M) /
@@ -322,7 +322,7 @@ theorem tendsto_tsum_selbergGcdLogSquareTwoOneCorrectionScaledTerm
 /-- **The mixed square-gcd-log Selberg moment has leading coefficient `1/6`.** -/
 theorem tendsto_selbergOriginalGcdLogSquareTwoOneMonomial_div_log_four :
     Tendsto (fun N : ℕ =>
-      selbergOriginalGcdLogSquareTwoOneMonomial N / Real.log N ^ 4)
+      selbergOriginalGcdLogSquareTwoOneMonomial N / Real.log N ^ (4 : ℕ))
       atTop (nhds (1 / 6 : ℝ)) := by
   have hterms : ∀ l ∈ Finset.range 3,
       Tendsto (fun N : ℕ => ((2 : ℕ).choose l : ℝ) *
@@ -354,12 +354,12 @@ theorem tendsto_selbergOriginalGcdLogSquareTwoOneMonomial_div_log_four :
         (∑ d ∈ Finset.Icc 1 N, ∑ e ∈ Finset.Icc 1 N,
           selbergEulerCorrectionLogPowerCoeff l d e *
             (selbergGcdLogPowerPrincipalScaledModel (2 - l) 2 1 d e N /
-              Real.log N ^ 4)) =
+              Real.log N ^ (4 : ℕ))) =
       ((2 : ℕ).choose l : ℝ) *
         ((∑ d ∈ Finset.Icc 1 N, ∑ e ∈ Finset.Icc 1 N,
           selbergEulerCorrectionLogPowerCoeff l d e *
             selbergGcdLogPowerPrincipalScaledModel (2 - l) 2 1 d e N) /
-          Real.log N ^ 4) := by
+          Real.log N ^ (4 : ℕ)) := by
       apply congrArg (fun x : ℝ => ((2 : ℕ).choose l : ℝ) * x)
       rw [Finset.sum_div]
       apply Finset.sum_congr rfl
@@ -372,12 +372,12 @@ theorem tendsto_selbergOriginalGcdLogSquareTwoOneMonomial_div_log_four :
         ∑ d ∈ Finset.Icc 1 N, ∑ e ∈ Finset.Icc 1 N,
           selbergEulerCorrectionLogPowerCoeff l d e *
             selbergGcdLogPowerPrincipalScaledModel (2 - l) 2 1 d e N) /
-        Real.log N ^ 4 := by ring
+        Real.log N ^ (4 : ℕ) := by ring
 
 /-- The symmetric mixed square-gcd-log moment has the same leading coefficient. -/
 theorem tendsto_selbergOriginalGcdLogSquareOneTwoMonomial_div_log_four :
     Tendsto (fun N : ℕ =>
-      selbergOriginalGcdLogSquareOneTwoMonomial N / Real.log N ^ 4)
+      selbergOriginalGcdLogSquareOneTwoMonomial N / Real.log N ^ (4 : ℕ))
       atTop (nhds (1 / 6 : ℝ)) := by
   simpa only [selbergOriginalGcdLogSquareOneTwoMonomial_eq_twoOne] using
     tendsto_selbergOriginalGcdLogSquareTwoOneMonomial_div_log_four

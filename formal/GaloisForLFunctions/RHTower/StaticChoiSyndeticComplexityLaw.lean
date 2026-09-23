@@ -182,7 +182,7 @@ theorem maximallyProjective_paddedCircuitHardTimes_syndetic
     (hentropy :
       (Fintype.card gate : ℝ) ^ (s + 1) *
           (((d + 1 : ℕ) : ℝ) * Real.exp (((d + 1 : ℕ) : ℝ) / 2) *
-            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^
+            Real.sqrt (Real.pi * (2 * δ ^ (2 : ℕ)) / 2) ^
               ((d + 1 : ℕ) - 1)) < 1) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ a : ℝ, ∃ t ∈ Set.Icc a (a + L),
       ∀ w : PaddedCircuitWord gate s,

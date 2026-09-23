@@ -44,7 +44,7 @@ theorem selbergOriginalLogCutoffMonomial_comm
   ring
 
 theorem mul_max_eq_sq_add (x c : ℝ) :
-    (x + c) * max x 0 = (max x 0) ^ 2 + c * max x 0 := by
+    (x + c) * max x 0 = (max x 0) ^ (2 : ℕ) + c * max x 0 := by
   rcases le_total x 0 with hx | hx
   · rw [max_eq_right hx]
     ring
@@ -89,8 +89,8 @@ theorem selbergOriginalTunedMinLogRemainder_eq_integral_pairFeature
       selbergOriginalCoeff p.1 p.2 *
           (A p.1 * A p.2 *
             (min (A p.1) (A p.2) * A p.1 * A p.2 -
-              min (A p.1) (A p.2) ^ 2 / 2 * (A p.1 + A p.2) +
-                min (A p.1) (A p.2) ^ 3 / 3)) =
+              min (A p.1) (A p.2) ^ (2 : ℕ) / 2 * (A p.1 + A p.2) +
+                min (A p.1) (A p.2) ^ (3 : ℕ) / 3)) =
         ∫ t in (0 : ℝ)..H,
           selbergOriginalCoeff p.1 p.2 *
             (linearCutoffFeature (A p.1) t * linearCutoffFeature (A p.2) t) := by
@@ -103,8 +103,8 @@ theorem selbergOriginalTunedMinLogRemainder_eq_integral_pairFeature
       selbergOriginalCoeff p.1 p.2 *
         (A p.1 * A p.2 *
           (min (A p.1) (A p.2) * A p.1 * A p.2 -
-            min (A p.1) (A p.2) ^ 2 / 2 * (A p.1 + A p.2) +
-              min (A p.1) (A p.2) ^ 3 / 3))) = _
+            min (A p.1) (A p.2) ^ (2 : ℕ) / 2 * (A p.1 + A p.2) +
+              min (A p.1) (A p.2) ^ (3 : ℕ) / 3))) = _
   rw [Finset.sum_congr rfl hterm]
   have hintegrable : ∀ p ∈ S ×ˢ S, IntervalIntegrable
       (fun t : ℝ => selbergOriginalCoeff p.1 p.2 *
@@ -119,7 +119,7 @@ theorem linearCutoffFeature_log_sub
     {M m : ℕ} (hM : 0 < M) (hm : 0 < m) (u : ℝ) :
     linearCutoffFeature (Real.log ((M : ℝ) / (m : ℝ)))
         (Real.log M - u) =
-      (max (u - Real.log m) 0) ^ 2 +
+      (max (u - Real.log m) 0) ^ (2 : ℕ) +
         (Real.log M - u) * max (u - Real.log m) 0 := by
   have hMR : (M : ℝ) ≠ 0 := by exact_mod_cast hM.ne'
   have hmR : (m : ℝ) ≠ 0 := by exact_mod_cast hm.ne'
@@ -135,7 +135,7 @@ theorem selbergOriginalTunedMinLogRemainder_eq_ordinaryAbel
       ∫ u in (0 : ℝ)..Real.log M,
         selbergOriginalLogCutoffMonomial 2 2 M u +
           2 * (Real.log M - u) * selbergOriginalLogCutoffMonomial 1 2 M u +
-            (Real.log M - u) ^ 2 * selbergOriginalLogCutoffMonomial 1 1 M u := by
+            (Real.log M - u) ^ (2 : ℕ) * selbergOriginalLogCutoffMonomial 1 1 M u := by
   rw [selbergOriginalTunedMinLogRemainder_eq_integral_pairFeature hM]
   let H : ℝ := Real.log M
   let F : ℝ → ℝ := fun t =>
@@ -153,10 +153,10 @@ theorem selbergOriginalTunedMinLogRemainder_eq_ordinaryAbel
   simp only [F]
   have hp : ∀ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
       linearCutoffFeature (Real.log ((M : ℝ) / (p.1 : ℝ))) (H - u) =
-          (max (u - Real.log p.1) 0) ^ 2 +
+          (max (u - Real.log p.1) 0) ^ (2 : ℕ) +
             (H - u) * max (u - Real.log p.1) 0 ∧
       linearCutoffFeature (Real.log ((M : ℝ) / (p.2 : ℝ))) (H - u) =
-          (max (u - Real.log p.2) 0) ^ 2 +
+          (max (u - Real.log p.2) 0) ^ (2 : ℕ) +
             (H - u) * max (u - Real.log p.2) 0 := by
     intro p hp
     obtain ⟨hp1, hp2⟩ := Finset.mem_product.mp hp
@@ -166,14 +166,14 @@ theorem selbergOriginalTunedMinLogRemainder_eq_ordinaryAbel
   calc
     (∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         selbergOriginalCoeff p.1 p.2 *
-          (((max (u - Real.log p.1) 0) ^ 2 +
+          (((max (u - Real.log p.1) 0) ^ (2 : ℕ) +
               (H - u) * max (u - Real.log p.1) 0) *
-            ((max (u - Real.log p.2) 0) ^ 2 +
+            ((max (u - Real.log p.2) 0) ^ (2 : ℕ) +
               (H - u) * max (u - Real.log p.2) 0))) =
         selbergOriginalLogCutoffMonomial 2 2 M u +
           (H - u) * selbergOriginalLogCutoffMonomial 2 1 M u +
           (H - u) * selbergOriginalLogCutoffMonomial 1 2 M u +
-          (H - u) ^ 2 * selbergOriginalLogCutoffMonomial 1 1 M u := by
+          (H - u) ^ (2 : ℕ) * selbergOriginalLogCutoffMonomial 1 1 M u := by
       simp only [selbergOriginalLogCutoffMonomial, pow_one]
       rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum,
         ← Finset.sum_add_distrib, ← Finset.sum_add_distrib,
@@ -183,12 +183,12 @@ theorem selbergOriginalTunedMinLogRemainder_eq_ordinaryAbel
       ring
     _ = selbergOriginalLogCutoffMonomial 2 2 M u +
           2 * (Real.log M - u) * selbergOriginalLogCutoffMonomial 1 2 M u +
-            (Real.log M - u) ^ 2 * selbergOriginalLogCutoffMonomial 1 1 M u := by
+            (Real.log M - u) ^ (2 : ℕ) * selbergOriginalLogCutoffMonomial 1 1 M u := by
       rw [selbergOriginalLogCutoffMonomial_comm 2 1 M u]
       dsimp [H]
       ring
 
-/-- Absolute mass of the original gcd coefficient on the square `[1,N]^2`. -/
+/-- Absolute mass of the original gcd coefficient on the square `[1,N]^(2 : ℕ)`. -/
 def selbergOriginalCoeffAbsMass (N : ℕ) : ℝ :=
   ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
     |selbergOriginalCoeff p.1 p.2|
@@ -281,7 +281,7 @@ private theorem abs_selbergOriginalCoeff_le_reciprocalGcd
 harmonic number.  This is the rate needed to transfer the ordinary Selberg asymptotics from
 integer cutoffs to real cutoffs. -/
 theorem selbergOriginalCoeffAbsMass_le_harmonic_cube (N : ℕ) :
-    selbergOriginalCoeffAbsMass N ≤ (harmonic N : ℝ) ^ 3 := by
+    selbergOriginalCoeffAbsMass N ≤ (harmonic N : ℝ) ^ (3 : ℕ) := by
   classical
   let S : Finset ℕ := Finset.Icc 1 N
   let f : ℕ → ℝ := fun n => (n : ℝ)⁻¹
@@ -297,8 +297,8 @@ theorem selbergOriginalCoeffAbsMass_le_harmonic_cube (N : ℕ) :
       exact abs_selbergOriginalCoeff_le_reciprocalGcd
         (Finset.mem_Icc.mp hp1).1 (Finset.mem_Icc.mp hp2).1
     _ = ∑ g ∈ Finset.Icc 1 N, (Nat.totient g : ℝ) *
-          (∑ d ∈ S.filter (fun d => g ∣ d), f d) ^ 2 := hgauss
-    _ ≤ ∑ g ∈ Finset.Icc 1 N, (g : ℝ)⁻¹ * (harmonic N : ℝ) ^ 2 := by
+          (∑ d ∈ S.filter (fun d => g ∣ d), f d) ^ (2 : ℕ) := hgauss
+    _ ≤ ∑ g ∈ Finset.Icc 1 N, (g : ℝ)⁻¹ * (harmonic N : ℝ) ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro g hg
       have hg1 : 1 ≤ g := (Finset.mem_Icc.mp hg).1
@@ -318,16 +318,16 @@ theorem selbergOriginalCoeffAbsMass_le_harmonic_cube (N : ℕ) :
         rw [RHTower.RegularizedDivisorHarmonic.harmonic_cast_eq_sum]
         positivity
       calc
-        (Nat.totient g : ℝ) * ((g : ℝ)⁻¹ * (harmonic (N / g) : ℝ)) ^ 2 ≤
-            (g : ℝ) * ((g : ℝ)⁻¹ * (harmonic N : ℝ)) ^ 2 := by
+        (Nat.totient g : ℝ) * ((g : ℝ)⁻¹ * (harmonic (N / g) : ℝ)) ^ (2 : ℕ) ≤
+            (g : ℝ) * ((g : ℝ)⁻¹ * (harmonic N : ℝ)) ^ (2 : ℕ) := by
           gcongr
           · exact_mod_cast Nat.totient_le g
-        _ = (g : ℝ)⁻¹ * (harmonic N : ℝ) ^ 2 := by
+        _ = (g : ℝ)⁻¹ * (harmonic N : ℝ) ^ (2 : ℕ) := by
           field_simp [hgR.ne']
           <;> ring
-    _ = (harmonic N : ℝ) ^ 3 := by
+    _ = (harmonic N : ℝ) ^ (3 : ℕ) := by
       rw [← Finset.sum_mul]
-      change (∑ g ∈ Finset.Icc 1 N, (g : ℝ)⁻¹) * (harmonic N : ℝ) ^ 2 = _
+      change (∑ g ∈ Finset.Icc 1 N, (g : ℝ)⁻¹) * (harmonic N : ℝ) ^ (2 : ℕ) = _
       rw [← RHTower.RegularizedDivisorHarmonic.harmonic_cast_eq_sum]
       ring
 
@@ -455,7 +455,7 @@ theorem tendsto_selbergOriginalLogMonomialReal_sub_floor_div_log_pow_zero
   have hgap2 := tendsto_log_div_natFloor_mul_log_pow_zero 2
   have hgap3 := tendsto_log_div_natFloor_mul_log_pow_zero 3
   have hpoly : Tendsto (fun Y : ℝ =>
-      C * Real.log (Y / (⌊Y⌋₊ : ℝ)) * (1 + Real.log Y) ^ 3)
+      C * Real.log (Y / (⌊Y⌋₊ : ℝ)) * (1 + Real.log Y) ^ (3 : ℕ))
       atTop (𝓝 0) := by
     have hsum := hgap0.add ((hgap1.const_mul 3).add
       ((hgap2.const_mul 3).add hgap3))
@@ -485,7 +485,7 @@ theorem tendsto_selbergOriginalLogMonomialReal_sub_floor_div_log_pow_zero
     rw [RHTower.RegularizedDivisorHarmonic.harmonic_cast_eq_sum]
     positivity
   have hlogOne : 0 ≤ 1 + Real.log Y := by linarith
-  have hmass' : selbergOriginalCoeffAbsMass N ≤ (1 + Real.log Y) ^ 3 :=
+  have hmass' : selbergOriginalCoeffAbsMass N ≤ (1 + Real.log Y) ^ (3 : ℕ) :=
     hmass.trans (by gcongr)
   have hbound := abs_selbergOriginalLogMonomialReal_sub_floor_le hi hj hY
   rw [Real.norm_eq_abs, abs_div, abs_of_pos (pow_pos hlog (i + j - 1))]
@@ -500,9 +500,9 @@ theorem tendsto_selbergOriginalLogMonomialReal_sub_floor_div_log_pow_zero
           (pow_pos hlog (i + j - 1)).le
     _ = C * Real.log (Y / (N : ℝ)) * selbergOriginalCoeffAbsMass N := by
       field_simp [hlog.ne']
-    _ ≤ C * Real.log (Y / (N : ℝ)) * (1 + Real.log Y) ^ 3 := by
+    _ ≤ C * Real.log (Y / (N : ℝ)) * (1 + Real.log Y) ^ (3 : ℕ) := by
       exact mul_le_mul_of_nonneg_left hmass' (by positivity)
-    _ ≤ ‖C * Real.log (Y / (⌊Y⌋₊ : ℝ)) * (1 + Real.log Y) ^ 3‖ := by
+    _ ≤ ‖C * Real.log (Y / (⌊Y⌋₊ : ℝ)) * (1 + Real.log Y) ^ (3 : ℕ)‖ := by
       rw [show N = ⌊Y⌋₊ from rfl]
       rw [Real.norm_eq_abs]
       exact le_abs_self _
@@ -668,7 +668,7 @@ theorem abs_selbergOriginalLogMonomialReal_exp_le
   have hharm0 : (0 : ℝ) ≤ (harmonic N : ℝ) := by
     rw [RHTower.RegularizedDivisorHarmonic.harmonic_cast_eq_sum]
     positivity
-  have hmass : selbergOriginalCoeffAbsMass N ≤ (1 + u) ^ 3 :=
+  have hmass : selbergOriginalCoeffAbsMass N ≤ (1 + u) ^ (3 : ℕ) :=
     (selbergOriginalCoeffAbsMass_le_harmonic_cube N).trans (by gcongr)
   have hterm : ∀ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
       |selbergOriginalCoeff p.1 p.2 *
@@ -730,7 +730,7 @@ theorem abs_selbergOriginalLogMonomialReal_exp_le
     _ = selbergOriginalCoeffAbsMass N * u ^ (i + j) := by
       rw [← Finset.sum_mul]
       rfl
-    _ ≤ (1 + u) ^ 3 * (1 + u) ^ (i + j) := by
+    _ ≤ (1 + u) ^ (3 : ℕ) * (1 + u) ^ (i + j) := by
       exact mul_le_mul hmass (by gcongr; linarith)
         (pow_nonneg hu (i + j)) (pow_nonneg huOne 3)
     _ = (1 + u) ^ (i + j + 3) := by
@@ -908,22 +908,22 @@ theorem tendsto_integral_selbergOriginalLogMonomialReal_exp_scaled
   simpa only [G, g, F, p, c] using hDCT
 
 private theorem integral_beta_three_zero_four_thirds :
-    (∫ x in (0 : ℝ)..1, (1 - x) ^ 0 * ((4 / 3 : ℝ) * x ^ 3)) = 1 / 3 := by
+    (∫ x in (0 : ℝ)..1, (1 - x) ^ (0 : ℕ) * ((4 / 3 : ℝ) * x ^ (3 : ℕ))) = 1 / 3 := by
   norm_num [integral_pow]
 
 private theorem integral_beta_two_one_one :
-    (∫ x in (0 : ℝ)..1, (1 - x) ^ 1 * ((1 : ℝ) * x ^ 2)) = 1 / 12 := by
-  have hfun : (fun x : ℝ => (1 - x) ^ 1 * ((1 : ℝ) * x ^ 2)) =
-      fun x => x ^ 2 - x ^ 3 := by funext x; ring
+    (∫ x in (0 : ℝ)..1, (1 - x) ^ (1 : ℕ) * ((1 : ℝ) * x ^ (2 : ℕ))) = 1 / 12 := by
+  have hfun : (fun x : ℝ => (1 - x) ^ (1 : ℕ) * ((1 : ℝ) * x ^ (2 : ℕ))) =
+      fun x => x ^ (2 : ℕ) - x ^ (3 : ℕ) := by funext x; ring
   rw [hfun, intervalIntegral.integral_sub]
   · norm_num [integral_pow]
-  · exact (by fun_prop : Continuous (fun x : ℝ => x ^ 2)).intervalIntegrable 0 1
-  · exact (by fun_prop : Continuous (fun x : ℝ => x ^ 3)).intervalIntegrable 0 1
+  · exact (by fun_prop : Continuous (fun x : ℝ => x ^ (2 : ℕ))).intervalIntegrable 0 1
+  · exact (by fun_prop : Continuous (fun x : ℝ => x ^ (3 : ℕ))).intervalIntegrable 0 1
 
 private theorem integral_beta_one_two_one :
-    (∫ x in (0 : ℝ)..1, (1 - x) ^ 2 * ((1 : ℝ) * x ^ 1)) = 1 / 12 := by
-  have hfun : (fun x : ℝ => (1 - x) ^ 2 * ((1 : ℝ) * x ^ 1)) =
-      fun x => x - 2 * x ^ 2 + x ^ 3 := by funext x; ring
+    (∫ x in (0 : ℝ)..1, (1 - x) ^ (2 : ℕ) * ((1 : ℝ) * x ^ (1 : ℕ))) = 1 / 12 := by
+  have hfun : (fun x : ℝ => (1 - x) ^ (2 : ℕ) * ((1 : ℝ) * x ^ (1 : ℕ))) =
+      fun x => x - 2 * x ^ (2 : ℕ) + x ^ (3 : ℕ) := by funext x; ring
   rw [hfun, intervalIntegral.integral_add, intervalIntegral.integral_sub]
   · rw [intervalIntegral.integral_const_mul]
     norm_num [integral_pow]
@@ -934,8 +934,8 @@ private theorem integral_beta_one_two_one :
 theorem tendsto_integral_selbergOriginalLogMonomialReal_exp_two_two_scaled :
     Tendsto (fun H : ℝ =>
       ∫ x in (0 : ℝ)..1,
-        (1 - x) ^ 0 *
-          (selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ 3))
+        (1 - x) ^ (0 : ℕ) *
+          (selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ (3 : ℕ)))
       atTop (𝓝 (1 / 3 : ℝ)) := by
   have h := tendsto_integral_selbergOriginalLogMonomialReal_exp_scaled
     (i := 2) (j := 2) (by norm_num) (by norm_num) 0
@@ -945,13 +945,13 @@ theorem tendsto_integral_selbergOriginalLogMonomialReal_exp_two_two_scaled :
 theorem tendsto_integral_selbergOriginalLogMonomialReal_exp_one_two_scaled :
     Tendsto (fun H : ℝ =>
       ∫ x in (0 : ℝ)..1,
-        (1 - x) ^ 1 *
-          (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ 2))
+        (1 - x) ^ (1 : ℕ) *
+          (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ (2 : ℕ)))
       atTop (𝓝 (1 / 12 : ℝ)) := by
   have h := tendsto_integral_selbergOriginalLogMonomialReal_exp_scaled
     (i := 1) (j := 2) (by norm_num) (by norm_num) 1
   norm_num at h
-  have hval : (∫ x in (0 : ℝ)..1, (1 - x) * x ^ 2) = 1 / 12 := by
+  have hval : (∫ x in (0 : ℝ)..1, (1 - x) * x ^ (2 : ℕ)) = 1 / 12 := by
     simpa using integral_beta_two_one_one
   rw [hval] at h
   simpa using h
@@ -959,13 +959,13 @@ theorem tendsto_integral_selbergOriginalLogMonomialReal_exp_one_two_scaled :
 theorem tendsto_integral_selbergOriginalLogMonomialReal_exp_one_one_scaled :
     Tendsto (fun H : ℝ =>
       ∫ x in (0 : ℝ)..1,
-        (1 - x) ^ 2 *
-          (selbergOriginalLogMonomialReal 1 1 (Real.exp (H * x)) / H ^ 1))
+        (1 - x) ^ (2 : ℕ) *
+          (selbergOriginalLogMonomialReal 1 1 (Real.exp (H * x)) / H ^ (1 : ℕ)))
       atTop (𝓝 (1 / 12 : ℝ)) := by
   have h := tendsto_integral_selbergOriginalLogMonomialReal_exp_scaled
     (i := 1) (j := 1) (by norm_num) (by norm_num) 2
   norm_num at h
-  have hval : (∫ x in (0 : ℝ)..1, (1 - x) ^ 2 * x) = 1 / 12 := by
+  have hval : (∫ x in (0 : ℝ)..1, (1 - x) ^ (2 : ℕ) * x) = 1 / 12 := by
     simpa using integral_beta_one_two_one
   rw [hval] at h
   simpa using h
@@ -974,12 +974,12 @@ theorem tendsto_integral_selbergOriginalLogMonomialReal_exp_one_one_scaled :
 theorem tendsto_selbergOriginalTunedMinLogAbelScaled :
     Tendsto (fun H : ℝ =>
       (∫ x in (0 : ℝ)..1,
-        selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ 3) +
+        selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ (3 : ℕ)) +
       2 * (∫ x in (0 : ℝ)..1,
         (1 - x) *
-          (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ 2)) +
+          (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ (2 : ℕ))) +
       (∫ x in (0 : ℝ)..1,
-        (1 - x) ^ 2 *
+        (1 - x) ^ (2 : ℕ) *
           (selbergOriginalLogMonomialReal 1 1 (Real.exp (H * x)) / H)))
       atTop (𝓝 (7 / 12 : ℝ)) := by
   have h22 := tendsto_integral_selbergOriginalLogMonomialReal_exp_two_two_scaled
@@ -993,10 +993,10 @@ theorem tendsto_selbergOriginalTunedMinLogAbelScaled :
 theorem tendsto_integral_selbergOriginalTunedMinLogAbelScaled :
     Tendsto (fun H : ℝ =>
       ∫ x in (0 : ℝ)..1,
-        selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ 3 +
+        selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ (3 : ℕ) +
           2 * (1 - x) *
-            (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ 2) +
-          (1 - x) ^ 2 *
+            (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ (2 : ℕ)) +
+          (1 - x) ^ (2 : ℕ) *
             (selbergOriginalLogMonomialReal 1 1 (Real.exp (H * x)) / H))
       atTop (𝓝 (7 / 12 : ℝ)) := by
   refine tendsto_selbergOriginalTunedMinLogAbelScaled.congr' ?_
@@ -1020,51 +1020,51 @@ theorem tendsto_integral_selbergOriginalTunedMinLogAbelScaled :
     funext x
     simp only [Pi.mul_apply, div_eq_mul_inv]
   have hc22 : ContinuousOn (fun x : ℝ =>
-      selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ 3)
+      selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ (3 : ℕ))
       (Set.Icc 0 1) := hquot 2 2 3 (by norm_num) (by norm_num)
   have hc12 : ContinuousOn (fun x : ℝ =>
       (1 - x) *
-        (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ 2))
+        (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ (2 : ℕ)))
       (Set.Icc 0 1) := by
     exact (continuous_const.sub continuous_id).continuousOn.mul
       (hquot 1 2 2 (by norm_num) (by norm_num))
   have hc11 : ContinuousOn (fun x : ℝ =>
-      (1 - x) ^ 2 *
+      (1 - x) ^ (2 : ℕ) *
         (selbergOriginalLogMonomialReal 1 1 (Real.exp (H * x)) / H))
       (Set.Icc 0 1) := by
-    have hbase : Continuous (fun x : ℝ => (1 - x) ^ 2) := by fun_prop
+    have hbase : Continuous (fun x : ℝ => (1 - x) ^ (2 : ℕ)) := by fun_prop
     convert hbase.continuousOn.mul (hquot 1 1 1 (by norm_num) (by norm_num)) using 1
     funext x
     simp only [Pi.mul_apply, pow_one]
   have hi22 : IntervalIntegrable (fun x : ℝ =>
-      selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ 3)
+      selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ (3 : ℕ))
       volume 0 1 := by
     apply ContinuousOn.intervalIntegrable
     simpa [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using hc22
   have hi12 : IntervalIntegrable (fun x : ℝ =>
       (1 - x) *
-        (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ 2))
+        (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ (2 : ℕ)))
       volume 0 1 := by
     apply ContinuousOn.intervalIntegrable
     simpa [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using hc12
   have hi11 : IntervalIntegrable (fun x : ℝ =>
-      (1 - x) ^ 2 *
+      (1 - x) ^ (2 : ℕ) *
         (selbergOriginalLogMonomialReal 1 1 (Real.exp (H * x)) / H))
       volume 0 1 := by
     apply ContinuousOn.intervalIntegrable
     simpa [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using hc11
   symm
   have hfun : (fun x : ℝ =>
-      selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ 3 +
+      selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ (3 : ℕ) +
         2 * (1 - x) *
-          (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ 2) +
-        (1 - x) ^ 2 *
+          (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ (2 : ℕ)) +
+        (1 - x) ^ (2 : ℕ) *
           (selbergOriginalLogMonomialReal 1 1 (Real.exp (H * x)) / H)) =
       fun x =>
-        selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ 3 +
+        selbergOriginalLogMonomialReal 2 2 (Real.exp (H * x)) / H ^ (3 : ℕ) +
           2 * ((1 - x) *
-            (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ 2)) +
-          (1 - x) ^ 2 *
+            (selbergOriginalLogMonomialReal 1 2 (Real.exp (H * x)) / H ^ (2 : ℕ))) +
+          (1 - x) ^ (2 : ℕ) *
             (selbergOriginalLogMonomialReal 1 1 (Real.exp (H * x)) / H) := by
     funext x
     ring
@@ -1076,21 +1076,21 @@ theorem tendsto_integral_selbergOriginalTunedMinLogAbelScaled :
 /-- Exact dimensionless rescaling of the literal tuned minimum-log remainder. -/
 theorem selbergOriginalTunedMinLogRemainder_div_log_four_eq_AbelScaled
     {M : ℕ} (hM : 2 ≤ M) :
-    selbergOriginalTunedMinLogRemainder M / Real.log M ^ 4 =
+    selbergOriginalTunedMinLogRemainder M / Real.log M ^ (4 : ℕ) =
       ∫ x in (0 : ℝ)..1,
         selbergOriginalLogMonomialReal 2 2
-            (Real.exp (Real.log M * x)) / Real.log M ^ 3 +
+            (Real.exp (Real.log M * x)) / Real.log M ^ (3 : ℕ) +
           2 * (1 - x) *
             (selbergOriginalLogMonomialReal 1 2
-              (Real.exp (Real.log M * x)) / Real.log M ^ 2) +
-          (1 - x) ^ 2 *
+              (Real.exp (Real.log M * x)) / Real.log M ^ (2 : ℕ)) +
+          (1 - x) ^ (2 : ℕ) *
             (selbergOriginalLogMonomialReal 1 1
               (Real.exp (Real.log M * x)) / Real.log M) := by
   let H : ℝ := Real.log M
   let A : ℝ → ℝ := fun u =>
     selbergOriginalLogCutoffMonomial 2 2 M u +
       2 * (H - u) * selbergOriginalLogCutoffMonomial 1 2 M u +
-        (H - u) ^ 2 * selbergOriginalLogCutoffMonomial 1 1 M u
+        (H - u) ^ (2 : ℕ) * selbergOriginalLogCutoffMonomial 1 1 M u
   have hMpos : 0 < M := by omega
   have hH : 0 < H := Real.log_pos (by exact_mod_cast hM)
   have hcutoff (i j : ℕ) : Continuous (fun u : ℝ =>
@@ -1104,7 +1104,7 @@ theorem selbergOriginalTunedMinLogRemainder_div_log_four_eq_AbelScaled
         2 * (H - u) * selbergOriginalLogCutoffMonomial 1 2 M u) :=
       (hlin.const_mul 2).mul (hcutoff 1 2)
     have h3 : Continuous (fun u : ℝ =>
-        (H - u) ^ 2 * selbergOriginalLogCutoffMonomial 1 1 M u) :=
+        (H - u) ^ (2 : ℕ) * selbergOriginalLogCutoffMonomial 1 1 M u) :=
       (hlin.pow 2).mul (hcutoff 1 1)
     exact ((hcutoff 2 2).add h2).add h3
   have hsub := intervalIntegral.integral_comp_mul_deriv
@@ -1116,7 +1116,7 @@ theorem selbergOriginalTunedMinLogRemainder_div_log_four_eq_AbelScaled
       ∫ u in (0 : ℝ)..H, A u := by
     simpa only [Function.comp_apply, mul_zero, mul_one] using hsub
   rw [selbergOriginalTunedMinLogRemainder_eq_ordinaryAbel hMpos]
-  change (∫ u in (0 : ℝ)..H, A u) / H ^ 4 = _
+  change (∫ u in (0 : ℝ)..H, A u) / H ^ (4 : ℕ) = _
   rw [← hsub']
   rw [div_eq_mul_inv, ← intervalIntegral.integral_mul_const]
   apply intervalIntegral.integral_congr
@@ -1140,7 +1140,7 @@ theorem selbergOriginalTunedMinLogRemainder_div_log_four_eq_AbelScaled
 /-- **Exact leading law of the tuned minimum-log remainder.** -/
 theorem tendsto_selbergOriginalTunedMinLogRemainder_div_log_four_seven_twelfths :
     Tendsto (fun M : ℕ =>
-      selbergOriginalTunedMinLogRemainder M / Real.log M ^ 4)
+      selbergOriginalTunedMinLogRemainder M / Real.log M ^ (4 : ℕ))
       atTop (𝓝 (7 / 12 : ℝ)) := by
   have hlog : Tendsto (fun M : ℕ => Real.log (M : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
@@ -1154,15 +1154,15 @@ Graham monomials with a common factor `ρ²`. -/
 theorem selbergOriginalIncludedOrdinaryEnergy_normalized_eq
     {rho : ℝ} (hrho : rho ≠ 0) {M : ℕ} (hM : 2 ≤ M) :
     selbergOriginalIncludedOrdinaryEnergy
-        (rho / Real.log M) (Real.log M / rho) M / Real.log M ^ 2 =
-      rho ^ 2 *
+        (rho / Real.log M) (Real.log M / rho) M / Real.log M ^ (2 : ℕ) =
+      rho ^ (2 : ℕ) *
         ((1 / 3 : ℝ) *
             (selbergOriginalLogMonomial 1 1 M / Real.log M) -
-          selbergOriginalLogMonomial 1 2 M / Real.log M ^ 2 +
+          selbergOriginalLogMonomial 1 2 M / Real.log M ^ (2 : ℕ) +
           (1 / 3 : ℝ) *
-            (selbergOriginalLogMonomial 1 4 M / Real.log M ^ 4) -
-          selbergOriginalLogMonomial 2 3 M / Real.log M ^ 4 +
-          selbergOriginalLogMonomial 2 2 M / Real.log M ^ 3) := by
+            (selbergOriginalLogMonomial 1 4 M / Real.log M ^ (4 : ℕ)) -
+          selbergOriginalLogMonomial 2 3 M / Real.log M ^ (4 : ℕ) +
+          selbergOriginalLogMonomial 2 2 M / Real.log M ^ (3 : ℕ)) := by
   have hlog : Real.log M ≠ 0 := (Real.log_pos (by exact_mod_cast hM)).ne'
   unfold selbergOriginalIncludedOrdinaryEnergy
   field_simp [hlog, hrho]
@@ -1173,8 +1173,8 @@ theorem tendsto_selbergOriginalIncludedOrdinaryEnergy_normalized_of_rho
     (rho : ℝ) (hrho : rho ≠ 0) :
     Tendsto (fun M : ℕ =>
       selbergOriginalIncludedOrdinaryEnergy
-        (rho / Real.log M) (Real.log M / rho) M / Real.log M ^ 2)
-      atTop (𝓝 (-(rho ^ 2) / 2)) := by
+        (rho / Real.log M) (Real.log M / rho) M / Real.log M ^ (2 : ℕ))
+      atTop (𝓝 (-(rho ^ (2 : ℕ)) / 2)) := by
   have h11 := tendsto_selbergOriginalLogMonomial_div_log_pow
     (i := 1) (j := 1) (by norm_num) (by norm_num)
   have h12 := tendsto_selbergOriginalLogMonomial_div_log_pow
@@ -1189,16 +1189,16 @@ theorem tendsto_selbergOriginalIncludedOrdinaryEnergy_normalized_of_rho
   have hcomb0 := (((h11.const_mul (1 / 3 : ℝ)).sub h12).add
     (h14.const_mul (1 / 3 : ℝ))).sub h23
   have hcomb := hcomb0.add h22
-  have hscaled := hcomb.const_mul (rho ^ 2)
+  have hscaled := hcomb.const_mul (rho ^ (2 : ℕ))
   norm_num at hscaled
   have hscaled' : Tendsto (fun M : ℕ =>
-      rho ^ 2 *
+      rho ^ (2 : ℕ) *
         ((1 / 3 : ℝ) * (selbergOriginalLogMonomial 1 1 M / Real.log M) -
-          selbergOriginalLogMonomial 1 2 M / Real.log M ^ 2 +
-          (1 / 3 : ℝ) * (selbergOriginalLogMonomial 1 4 M / Real.log M ^ 4) -
-          selbergOriginalLogMonomial 2 3 M / Real.log M ^ 4 +
-          selbergOriginalLogMonomial 2 2 M / Real.log M ^ 3))
-      atTop (𝓝 (-(rho ^ 2) / 2)) := by
+          selbergOriginalLogMonomial 1 2 M / Real.log M ^ (2 : ℕ) +
+          (1 / 3 : ℝ) * (selbergOriginalLogMonomial 1 4 M / Real.log M ^ (4 : ℕ)) -
+          selbergOriginalLogMonomial 2 3 M / Real.log M ^ (4 : ℕ) +
+          selbergOriginalLogMonomial 2 2 M / Real.log M ^ (3 : ℕ)))
+      atTop (𝓝 (-(rho ^ (2 : ℕ)) / 2)) := by
     convert hscaled using 1 <;> ring
   refine hscaled'.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with M hM
@@ -1211,17 +1211,17 @@ theorem tendsto_barbanVehovIncludedLongEnergyPolynomialMain_tuned_rho
     Tendsto (fun M : ℕ =>
       barbanVehovIncludedLongEnergyPolynomialMain
         (rho / Real.log M) (Real.log M / rho) M)
-      atTop (𝓝 (rho ^ 2 / 12)) := by
+      atTop (𝓝 (rho ^ (2 : ℕ) / 12)) := by
   have hord := tendsto_selbergOriginalIncludedOrdinaryEnergy_normalized_of_rho rho hrho
   have hrem :=
     tendsto_selbergOriginalTunedMinLogRemainder_div_log_four_seven_twelfths
-  have hsum := hord.add (hrem.const_mul (rho ^ 2))
+  have hsum := hord.add (hrem.const_mul (rho ^ (2 : ℕ)))
   have hsum' : Tendsto (fun M : ℕ =>
       selbergOriginalIncludedOrdinaryEnergy
-          (rho / Real.log M) (Real.log M / rho) M / Real.log M ^ 2 +
-        rho ^ 2 *
-          (selbergOriginalTunedMinLogRemainder M / Real.log M ^ 4))
-      atTop (𝓝 (rho ^ 2 / 12)) := by
+          (rho / Real.log M) (Real.log M / rho) M / Real.log M ^ (2 : ℕ) +
+        rho ^ (2 : ℕ) *
+          (selbergOriginalTunedMinLogRemainder M / Real.log M ^ (4 : ℕ)))
+      atTop (𝓝 (rho ^ (2 : ℕ) / 12)) := by
     convert hsum using 1 <;> ring
   refine hsum'.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with M hM
@@ -1233,7 +1233,7 @@ theorem tendsto_barbanVehovIncludedLongEnergyPolynomialMain_tuned_rho
   field_simp [hlog]
 
 private theorem tendsto_nat_pow_fortyNine_atTop_t1 :
-    Tendsto (fun N : ℕ => N ^ 49) atTop atTop := by
+    Tendsto (fun N : ℕ => N ^ (49 : ℕ)) atTop atTop := by
   rw [tendsto_atTop]
   intro B
   filter_upwards [eventually_ge_atTop (max B 1)] with N hN
@@ -1241,30 +1241,30 @@ private theorem tendsto_nat_pow_fortyNine_atTop_t1 :
   have hN1 : 1 ≤ N := (Nat.le_max_right B 1).trans hN
   exact hBN.trans (by
     calc
-      N ≤ N * N ^ 48 := Nat.le_mul_of_pos_right N (pow_pos hN1 48)
-      _ = N ^ 49 := by ring)
+      N ≤ N * N ^ (48 : ℕ) := Nat.le_mul_of_pos_right N (pow_pos hN1 48)
+      _ = N ^ (49 : ℕ) := by ring)
 
 /-- Schedule specialization of the included polynomial main at reciprocal tuning. -/
 theorem tendsto_barbanVehovIncludedLongEnergyPolynomialMain_fortyNine_reciprocal :
     Tendsto (fun N : ℕ =>
       barbanVehovIncludedLongEnergyPolynomialMain
         ((49 / 100 : ℝ) / (49 * Real.log N))
-        (100 * Real.log N) (N ^ 49))
-      atTop (𝓝 ((49 / 100 : ℝ) ^ 2 / 12)) := by
+        (100 * Real.log N) (N ^ (49 : ℕ)))
+      atTop (𝓝 ((49 / 100 : ℝ) ^ (2 : ℕ) / 12)) := by
   have hbase := tendsto_barbanVehovIncludedLongEnergyPolynomialMain_tuned_rho
     (49 / 100 : ℝ) (by norm_num)
   have hcomp := hbase.comp tendsto_nat_pow_fortyNine_atTop_t1
   refine hcomp.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with N hN
   simp only [Function.comp_apply]
-  rw [show (((N ^ 49 : ℕ) : ℝ)) = (N : ℝ) ^ 49 by norm_num,
+  rw [show (((N ^ (49 : ℕ) : ℕ) : ℝ)) = (N : ℝ) ^ (49 : ℕ) by norm_num,
     Real.log_pow]
   congr 2
   norm_num
   ring
 
 private theorem tendsto_const_div_nat_sq_t1 (c : ℝ) :
-    Tendsto (fun N : ℕ => c / (N : ℝ) ^ 2) atTop (𝓝 0) := by
+    Tendsto (fun N : ℕ => c / (N : ℝ) ^ (2 : ℕ)) atTop (𝓝 0) := by
   have hc : Tendsto (fun N : ℕ => c / (N : ℝ)) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
   have hone : Tendsto (fun N : ℕ => (1 : ℝ) / (N : ℝ)) atTop (𝓝 0) :=
@@ -1281,19 +1281,19 @@ of the full long-energy limit. -/
 theorem tendsto_levinsonCriticalDetectorLongEnergy_fortyNine_reciprocal :
     Tendsto (fun N : ℕ =>
       levinsonCriticalDetectorLongEnergy
-        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49))
-      atTop (𝓝 ((1 / 12 : ℝ) * (49 / 100 : ℝ) ^ 2)) := by
+        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)))
+      atTop (𝓝 ((1 / 12 : ℝ) * (49 / 100 : ℝ) ^ (2 : ℕ))) := by
   let rho : ℝ := 49 / 100
   let P : ℕ → ℝ := fun N =>
     barbanVehovIncludedLongEnergyPolynomialMain
-      (rho / (49 * Real.log N)) (100 * Real.log N) (N ^ 49)
-  have hP : Tendsto P atTop (𝓝 ((1 / 12 : ℝ) * rho ^ 2)) := by
+      (rho / (49 * Real.log N)) (100 * Real.log N) (N ^ (49 : ℕ))
+  have hP : Tendsto P atTop (𝓝 ((1 / 12 : ℝ) * rho ^ (2 : ℕ))) := by
     convert
       tendsto_barbanVehovIncludedLongEnergyPolynomialMain_fortyNine_reciprocal using 1 <;>
       simp only [P, rho] <;> ring
   have habs : Tendsto (fun N : ℕ =>
       |levinsonCriticalDetectorLongEnergy
-          (rho / (49 * Real.log N)) (N ^ 100) (N ^ 49) - P N|)
+          (rho / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)) - P N|)
       atTop (𝓝 0) := by
     refine squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _) ?_
       (tendsto_const_div_nat_sq_t1 (barbanVehovIncludedFortyNineErrorConstant rho))
@@ -1302,7 +1302,7 @@ theorem tendsto_levinsonCriticalDetectorLongEnergy_fortyNine_reciprocal :
       abs_levinsonCriticalDetectorLongEnergy_fortyNine_sub_polynomialMain_le rho hN
   have herr : Tendsto (fun N : ℕ =>
       levinsonCriticalDetectorLongEnergy
-          (rho / (49 * Real.log N)) (N ^ 100) (N ^ 49) - P N)
+          (rho / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)) - P N)
       atTop (𝓝 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
     simpa only [Real.norm_eq_abs, norm_zero] using habs
@@ -1315,8 +1315,8 @@ comparison value needed to measure how much of the product range survives the de
 theorem tendsto_levinsonCriticalDetectorFullLongEnergy_fortyNine_reciprocal :
     Tendsto (fun N : ℕ =>
       levinsonCriticalDetectorFullLongEnergy
-        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49))
-      atTop (𝓝 ((2 / 3 : ℝ) * (49 / 100 : ℝ) ^ 2)) := by
+        ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)))
+      atTop (𝓝 ((2 / 3 : ℝ) * (49 / 100 : ℝ) ^ (2 : ℕ))) := by
   convert tendsto_levinsonCriticalDetectorFullLongEnergy_fortyNine
     (49 / 100 : ℝ) using 1 <;> ring
 
@@ -1327,9 +1327,9 @@ be discarded as a lower-order tail. -/
 theorem tendsto_levinsonCriticalDetectorLongEnergy_sub_oneEighth_full_fortyNine :
     Tendsto (fun N : ℕ =>
       levinsonCriticalDetectorLongEnergy
-          ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49) -
+          ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)) -
         (1 / 8 : ℝ) * levinsonCriticalDetectorFullLongEnergy
-          ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ 100) (N ^ 49))
+          ((49 / 100 : ℝ) / (49 * Real.log N)) (N ^ (100 : ℕ)) (N ^ (49 : ℕ)))
       atTop (𝓝 0) := by
   have h :=
     tendsto_levinsonCriticalDetectorLongEnergy_fortyNine_reciprocal.sub

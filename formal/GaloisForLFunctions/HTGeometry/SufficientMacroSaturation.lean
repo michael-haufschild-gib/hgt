@@ -324,7 +324,7 @@ theorem sum_tensorPower_mul_pair (p : X → ℝ) (d : ℕ) {j k : Fin d} (hjk : 
 
 /-- `(FCAP.35)`  Fisher information of a finite packet against an observable. -/
 def fisherInfo {Y : Type*} [Fintype Y] (q : Y → ℝ) (f : Y → ℝ) : ℝ :=
-  ∑ y, q y * (f y - ∑ z, q z * f z) ^ 2
+  ∑ y, q y * (f y - ∑ z, q z * f z) ^ (2 : ℕ)
 
 omit [DecidableEq X] in
 theorem sum_macroPacket_mul (hb : ∀ x, 0 < b x) [Nonempty X] (d : ℕ) (θ : ℝ) (g : ℝ → ℝ) :
@@ -377,11 +377,11 @@ theorem fisherInfo_macroPacket (hb : ∀ x, 0 < b x) [Nonempty X] (d : ℕ) (θ 
     rw [Finset.sum_congr rfl fun j _ => sum_tensorPower_mul_single p d j T hp1]
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, ← hμ]
   rw [fisherInfo, Finset.sum_congr rfl fun t _ => (by rw [hmean] :
-    macroPacket b T d θ t * (t.1 - ∑ z, macroPacket b T d θ z * z.1) ^ 2
-      = macroPacket b T d θ t * (t.1 - (d : ℝ) * μ) ^ 2)]
-  rw [sum_macroPacket_mul b T hb d θ (fun t => (t - (d : ℝ) * μ) ^ 2)]
+    macroPacket b T d θ t * (t.1 - ∑ z, macroPacket b T d θ z * z.1) ^ (2 : ℕ)
+      = macroPacket b T d θ t * (t.1 - (d : ℝ) * μ) ^ (2 : ℕ))]
+  rw [sum_macroPacket_mul b T hb d θ (fun t => (t - (d : ℝ) * μ) ^ (2 : ℕ))]
   have hexpand : ∀ x : Fin d → X,
-      tensorPower d p x * (sumStat T d x - (d : ℝ) * μ) ^ 2
+      tensorPower d p x * (sumStat T d x - (d : ℝ) * μ) ^ (2 : ℕ)
         = ∑ j, ∑ k, tensorPower d p x * ((T (x j) - μ) * (T (x k) - μ)) := by
     intro x
     have hs : sumStat T d x - (d : ℝ) * μ = ∑ j, (T (x j) - μ) := by

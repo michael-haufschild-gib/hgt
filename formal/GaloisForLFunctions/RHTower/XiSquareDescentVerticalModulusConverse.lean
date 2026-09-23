@@ -41,13 +41,13 @@ theorem continuousAt_complex_sqrt {w : ℂ} (hw : w ∈ Complex.slitPlane) :
   rw [h]
   exact continuousAt_cpow_const hw
 
-theorem complex_sqrt_sq_of_re_pos {z : ℂ} (hz : 0 < z.re) : Complex.sqrt (z ^ 2) = z := by
-  have hsq : Complex.sqrt (z ^ 2) ^ 2 = z ^ 2 :=
-    GaloisForLFunctions.HTGeometry.complex_sqrt_sq (z ^ 2)
+theorem complex_sqrt_sq_of_re_pos {z : ℂ} (hz : 0 < z.re) : Complex.sqrt (z ^ (2 : ℕ)) = z := by
+  have hsq : Complex.sqrt (z ^ (2 : ℕ)) ^ (2 : ℕ) = z ^ (2 : ℕ) :=
+    GaloisForLFunctions.HTGeometry.complex_sqrt_sq (z ^ (2 : ℕ))
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with h | h
   · exact h
   · exfalso
-    have hre := GaloisForLFunctions.HTGeometry.sqrt_re_nonneg (z ^ 2)
+    have hre := GaloisForLFunctions.HTGeometry.sqrt_re_nonneg (z ^ (2 : ℕ))
     rw [h] at hre
     simp only [Complex.neg_re] at hre
     linarith
@@ -136,7 +136,7 @@ theorem riemannHypothesis_of_xiSquareDescentVerticalModulusOn {R : ℝ}
   by_contra hnot
   obtain ⟨z, hz0, hzR, hzim, hzhalf⟩ := exists_XiC_zero_upperRight_of_not_rh hband hnot
   have hzre : 0 < z.re := lt_of_le_of_lt hband.1 hzR
-  set w0 : ℂ := z ^ 2 with hw0
+  set w0 : ℂ := z ^ (2 : ℕ) with hw0
   have hsqrt : Complex.sqrt w0 = z := complex_sqrt_sq_of_re_pos hzre
   have hw0im : 0 < w0.im := by
     rw [hw0, pow_two]

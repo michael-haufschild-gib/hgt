@@ -92,13 +92,13 @@ theorem ofReal_delayedHawkingCayleyTransitionReal
 /-- Quadratic Hawking transition has a vanishing first coupling jet. -/
 theorem hasDerivAt_delayedHawkingCayleyTransitionReal_two_zero :
     HasDerivAt (delayedHawkingCayleyTransitionReal 2) 0 0 := by
-  have hnum : HasDerivAt (fun lambda : ℝ => lambda ^ 2) 0 0 := by
+  have hnum : HasDerivAt (fun lambda : ℝ => lambda ^ (2 : ℕ)) 0 0 := by
     exact (hasDerivAt_pow 2 (0 : ℝ)).congr_deriv (by norm_num)
-  have hpow4 : HasDerivAt (fun lambda : ℝ => lambda ^ 4) 0 0 := by
+  have hpow4 : HasDerivAt (fun lambda : ℝ => lambda ^ (4 : ℕ)) 0 0 := by
     exact (hasDerivAt_pow 4 (0 : ℝ)).congr_deriv (by norm_num)
-  have hden : HasDerivAt (fun lambda : ℝ => 1 + lambda ^ 4 / 4) 0 0 := by
+  have hden : HasDerivAt (fun lambda : ℝ => 1 + lambda ^ (4 : ℕ) / 4) 0 0 := by
     exact ((hpow4.div_const 4).const_add 1).congr_deriv (by norm_num)
-  change HasDerivAt (fun lambda : ℝ => lambda ^ 2 / (1 + lambda ^ 4 / 4)) 0 0
+  change HasDerivAt (fun lambda : ℝ => lambda ^ (2 : ℕ) / (1 + lambda ^ (4 : ℕ) / 4)) 0 0
   simpa only [Pi.div_apply] using!
     (hnum.div hden (by norm_num)).congr_deriv (by norm_num)
 
@@ -108,7 +108,7 @@ first-order coupling channel.  The quadratic block has all those properties, zer
 winding two. -/
 theorem quantumStratonovich_KMS_Markov_relaxation_not_force_firstCouplingOrder :
     (∀ lambda x h,
-      QuantumStratonovichTwoPortBoundary (((lambda ^ 2 : ℝ) : ℂ)) x h
+      QuantumStratonovichTwoPortBoundary (((lambda ^ (2 : ℕ) : ℝ) : ℂ)) x h
         (delayedHawkingCayleyExteriorOutput 2 lambda x h)
         (delayedHawkingCayleyHorizonOutput 2 lambda x h)) ∧
     (∀ lambda x h,
@@ -131,7 +131,7 @@ theorem quantumStratonovich_KMS_Markov_relaxation_not_force_firstCouplingOrder :
     (∀ r : ℝ, 0 < r →
       windingNumber
           (fun theta : ℝ =>
-            (((r : ℂ) * Complex.exp (Complex.I * (theta : ℂ))) ^ 2))
+            (((r : ℂ) * Complex.exp (Complex.I * (theta : ℂ))) ^ (2 : ℕ)))
           0 (2 * Real.pi) = 2) := by
   rcases quantumStratonovich_lossless_KMS_every_nonzero_mix_not_force_unitCouplingWinding with
     ⟨hboundary, hlossless, _hcollisionMixing, hKMS, hwinding⟩

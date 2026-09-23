@@ -63,12 +63,12 @@ def xiHorizontalCollisionPairs (T : ℝ) : Finset (ℂ × ℂ) :=
 window. -/
 def xiStripWindowHorizontalSquareSum (T : ℝ) : ℕ :=
   ∑ gamma ∈ (stripZeros_finite T).toFinset.image Complex.im,
-    (xiHorizontalMultiplicity gamma) ^ 2
+    (xiHorizontalMultiplicity gamma) ^ (2 : ℕ)
 
 /-- Sum of squared local Xi multiplicities over a strip window. -/
 def xiStripWindowLocalSquareSum (T : ℝ) : ℕ :=
   ∑ rho ∈ (stripZeros_finite T).toFinset,
-    ((analyticOrderAt xi rho).toNat) ^ 2
+    ((analyticOrderAt xi rho).toNat) ^ (2 : ℕ)
 
 /-- Strip-zero finsets grow with the height cutoff. -/
 theorem stripZeros_toFinset_mono {T U : ℝ} (hTU : T ≤ U) :
@@ -204,7 +204,7 @@ theorem xiHorizontalCollisionCharge_mono : Monotone xiHorizontalCollisionCharge 
 
 /-- **Quadratic census identity.** The horizontal square census is the local square census plus
 collision charge.  Equivalently, collision charge is
-`sum_gamma H_gamma^2 - sum_rho m_rho^2`. -/
+`sum_gamma H_gamma^(2 : ℕ) - sum_rho m_rho^(2 : ℕ)`. -/
 theorem xiStripWindowHorizontalSquareSum_eq_localSquare_add_collisionCharge
     (T : ℝ) :
     xiStripWindowHorizontalSquareSum T =
@@ -215,9 +215,9 @@ theorem xiStripWindowHorizontalSquareSum_eq_localSquare_add_collisionCharge
   let m : ℂ → ℕ := fun rho => (analyticOrderAt xi rho).toNat
   let H : ℝ → ℕ := xiHorizontalMultiplicity
   have hgroup :
-      (∑ gamma ∈ G, H gamma ^ 2) = ∑ rho ∈ S, m rho * H rho.im := by
+      (∑ gamma ∈ G, H gamma ^ (2 : ℕ)) = ∑ rho ∈ S, m rho * H rho.im := by
     calc
-      (∑ gamma ∈ G, H gamma ^ 2) =
+      (∑ gamma ∈ G, H gamma ^ (2 : ℕ)) =
           ∑ gamma ∈ G,
             ∑ rho ∈ S.filter (fun z => z.im = gamma), m rho * H gamma := by
         apply Finset.sum_congr rfl
@@ -240,18 +240,18 @@ theorem xiStripWindowHorizontalSquareSum_eq_localSquare_add_collisionCharge
           (fun rho hrho => Finset.mem_image.mpr ⟨rho, hrho, rfl⟩)
           (fun rho => m rho * H rho.im)
   have hpoint : ∀ rho ∈ S,
-      m rho * H rho.im = m rho ^ 2 + m rho * (H rho.im - m rho) := by
+      m rho * H rho.im = m rho ^ (2 : ℕ) + m rho * (H rho.im - m rho) := by
     intro rho hrho
     have hle : m rho ≤ H rho.im :=
       xi_order_le_horizontalMultiplicity_of_mem_stripZeros hrho
     calc
       m rho * H rho.im = m rho * (m rho + (H rho.im - m rho)) := by
         rw [Nat.add_sub_of_le hle]
-      _ = m rho ^ 2 + m rho * (H rho.im - m rho) := by ring
+      _ = m rho ^ (2 : ℕ) + m rho * (H rho.im - m rho) := by ring
   rw [xiStripWindowHorizontalSquareSum, xiStripWindowLocalSquareSum,
     xiHorizontalCollisionCharge]
-  change (∑ gamma ∈ G, H gamma ^ 2) =
-    (∑ rho ∈ S, m rho ^ 2) + ∑ rho ∈ S, m rho * (H rho.im - m rho)
+  change (∑ gamma ∈ G, H gamma ^ (2 : ℕ)) =
+    (∑ rho ∈ S, m rho ^ (2 : ℕ)) + ∑ rho ∈ S, m rho * (H rho.im - m rho)
   rw [hgroup, ← Finset.sum_add_distrib]
   exact Finset.sum_congr rfl hpoint
 

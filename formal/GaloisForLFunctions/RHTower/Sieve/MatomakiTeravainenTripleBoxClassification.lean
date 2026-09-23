@@ -30,7 +30,7 @@ theorem mtMinimalGeometricTripleBox_isProposition22Piece
     (hQ3Q2 : mtGeometricLevel delta start i3.1 ≤
       mtGeometricLevel delta start i2.1)
     (hgeometry : mtGeometricLevel delta start i1.1 *
-        mtGeometricLevel delta start i2.1 ^ 4 ≤ X ^ (1 - 2 * epsilon))
+        mtGeometricLevel delta start i2.1 ^ (4 : ℕ) ≤ X ^ (1 - 2 * epsilon))
     (hz0RealPos : 0 < z0Real)
     (hz0RealLevel : z0Real ≤ mtGeometricLevel delta start 0)
     (hchainCard : chain.toFinset.card ≤ Nat.floor (Real.log z / Real.log z0Real))
@@ -71,13 +71,13 @@ theorem mtMinimalGeometricTripleBox_isProposition22Piece
       (mtGeometricLevel_pos hdelta start i3.1).le
       hE hQ1 hQ3Q2 hgeometry hQone hQcap with htypeI_II | htypeII
   · have hsquare : mtMinimalGeometricTripleBoxTypeI_II_M1
-          delta start i2 i3 eIndex ^ 2 *
+          delta start i2 i3 eIndex ^ (2 : ℕ) *
         mtMinimalGeometricTripleBoxTypeI_II_M2 delta start i1 chain ≤
           X ^ (1 - epsilon) := by
       calc
-        mtMinimalGeometricTripleBoxTypeI_II_M1 delta start i2 i3 eIndex ^ 2 *
+        mtMinimalGeometricTripleBoxTypeI_II_M1 delta start i2 i3 eIndex ^ (2 : ℕ) *
             mtMinimalGeometricTripleBoxTypeI_II_M2 delta start i1 chain =
-          (mtUpperAdicScale delta eIndex * Q i2 * Q i3) ^ 2 *
+          (mtUpperAdicScale delta eIndex * Q i2 * Q i3) ^ (2 : ℕ) *
             (Q i1 * ∏ i ∈ chain.toFinset, Q i) := by
               rw [mtMinimalGeometricTripleBoxTypeI_II_M1,
                 mtMinimalGeometricTripleBoxTypeI_II_M2]
@@ -106,7 +106,7 @@ theorem mtMinimalGeometricTripleBox_isProposition22Piece
               mtUpperAdicScale delta kIndex ≤ 4 * Y := by
       rw [hproductEq]
       exact hproduct
-    have hfirstDilation : (1 + delta) ^ 3 ≤ 2 := hdilation _ (by omega)
+    have hfirstDilation : (1 + delta) ^ (3 : ℕ) ≤ 2 := hdilation _ (by omega)
     have hsecondDilation : (1 + delta) ^ (chain.length + 1) ≤ 2 :=
       hdilation _ (by omega)
     let data := mtMinimalGeometricTripleBoxTypeI_II_Data

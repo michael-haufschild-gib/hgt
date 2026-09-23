@@ -14,7 +14,7 @@ def xiCentralTraceHankelTerm (p : Polynomial ℝ)
     (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) : ℂ :=
   (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) : ℂ) *
     xiCentralReciprocalSquare (ρ : ℂ) *
-      evalRealPolynomial p (xiCentralReciprocalSquare (ρ : ℂ)) ^ 2
+      evalRealPolynomial p (xiCentralReciprocalSquare (ρ : ℂ)) ^ (2 : ℕ)
 
 /-- The target-free trace-Hankel quadratic value of the actual centered xi divisor. -/
 def xiCentralTraceHankel (p : Polynomial ℝ) : ℂ :=
@@ -28,7 +28,7 @@ theorem xi_central_traceHankel_summable (p : Polynomial ℝ) :
   classical
   let D := MeromorphicOn.divisor xi Set.univ
   let lam : ↥D.support → ℂ := fun ρ => xiCentralReciprocalSquare (ρ : ℂ)
-  let q : Polynomial ℂ := (p.map (algebraMap ℝ ℂ)) ^ 2
+  let q : Polynomial ℂ := (p.map (algebraMap ℝ ℂ)) ^ (2 : ℕ)
   let moment : ℕ → ↥D.support → ℂ := fun k ρ =>
     ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ ^ (k + 1)
   have hmoment (k : ℕ) : Summable (moment k) := by
@@ -48,9 +48,9 @@ theorem xi_central_traceHankel_summable (p : Polynomial ℝ) :
   intro ρ
   symm
   rw [xiCentralTraceHankelTerm]
-  change ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ 2 = _
+  change ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ (2 : ℕ) = _
   calc
-    ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ 2 =
+    ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ (2 : ℕ) =
         ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * q.eval (lam ρ) := by
           simp [q, evalRealPolynomial]
     _ = ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ *
@@ -79,11 +79,11 @@ theorem xiCentralTraceHankel_monomial (n : ℕ) :
 square paired against the actual reciprocal-square zero-divisor moments. -/
 theorem xiCentralTraceHankel_eq_moment_sum (p : Polynomial ℝ) :
     xiCentralTraceHankel p =
-      ∑ k ∈ Finset.range (((p.map (algebraMap ℝ ℂ)) ^ 2).natDegree + 1),
-        ((p.map (algebraMap ℝ ℂ)) ^ 2).coeff k * xiCentralReciprocalMoment k := by
+      ∑ k ∈ Finset.range (((p.map (algebraMap ℝ ℂ)) ^ (2 : ℕ)).natDegree + 1),
+        ((p.map (algebraMap ℝ ℂ)) ^ (2 : ℕ)).coeff k * xiCentralReciprocalMoment k := by
   let D := MeromorphicOn.divisor xi Set.univ
   let lam : ↥D.support → ℂ := fun ρ => xiCentralReciprocalSquare (ρ : ℂ)
-  let q : Polynomial ℂ := (p.map (algebraMap ℝ ℂ)) ^ 2
+  let q : Polynomial ℂ := (p.map (algebraMap ℝ ℂ)) ^ (2 : ℕ)
   let momentTerm : ℕ → ↥D.support → ℂ := fun k ρ =>
     ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ ^ (k + 1)
   have hmoment (k : ℕ) : Summable (momentTerm k) := by
@@ -96,9 +96,9 @@ theorem xiCentralTraceHankel_eq_moment_sum (p : Polynomial ℝ) :
       apply tsum_congr
       intro ρ
       rw [xiCentralTraceHankelTerm]
-      change ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ 2 = _
+      change ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ (2 : ℕ) = _
       calc
-        ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ 2 =
+        ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ (2 : ℕ) =
             ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * q.eval (lam ρ) := by
               simp [q, evalRealPolynomial]
         _ = ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ *
@@ -117,8 +117,8 @@ theorem xiCentralTraceHankel_eq_moment_sum (p : Polynomial ℝ) :
       apply Finset.sum_congr rfl
       intro k hk
       rw [tsum_mul_left]
-    _ = ∑ k ∈ Finset.range (((p.map (algebraMap ℝ ℂ)) ^ 2).natDegree + 1),
-        ((p.map (algebraMap ℝ ℂ)) ^ 2).coeff k * xiCentralReciprocalMoment k := by
+    _ = ∑ k ∈ Finset.range (((p.map (algebraMap ℝ ℂ)) ^ (2 : ℕ)).natDegree + 1),
+        ((p.map (algebraMap ℝ ℂ)) ^ (2 : ℕ)).coeff k * xiCentralReciprocalMoment k := by
       simp only [q, xiCentralReciprocalMoment, D, lam, momentTerm]
 
 /-- Conjugation of the xi divisor conjugates each real-polynomial trace-Hankel summand. -/
@@ -131,7 +131,7 @@ theorem xiCentralTraceHankelTerm_conj (p : Polynomial ℝ)
       ((starRingEnd ℂ) (ρ : ℂ)) : ℝ) : ℂ) *
         xiCentralReciprocalSquare ((starRingEnd ℂ) (ρ : ℂ)) *
           evalRealPolynomial p
-            (xiCentralReciprocalSquare ((starRingEnd ℂ) (ρ : ℂ))) ^ 2 = _
+            (xiCentralReciprocalSquare ((starRingEnd ℂ) (ρ : ℂ))) ^ (2 : ℕ) = _
   rw [xi_divisor_conj, xiCentralReciprocalSquare_conj,
     evalRealPolynomial_conj]
   simp only [map_mul, map_pow, Complex.conj_ofReal]
@@ -223,9 +223,9 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative
     phaseCorrectedSeparatorPolynomial F α c n
   let f : ℕ → I → ℂ := fun n ρ => xiCentralTraceHankelTerm (p n) ρ
   let g : I → ℂ := fun ρ =>
-    if lam ρ = α then ((weight ρ : ℝ) : ℂ) * α * c ^ 2
+    if lam ρ = α then ((weight ρ : ℝ) : ℂ) * α * c ^ (2 : ℕ)
     else if lam ρ = (starRingEnd ℂ) α then
-      ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2
+      ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ (2 : ℕ)
     else 0
   have hpointwise (ρ : I) : Tendsto (fun n => f n ρ) atTop (nhds (g ρ)) := by
     by_cases hρα : lam ρ = α
@@ -233,12 +233,12 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative
         rw [hρα]
         exact eval_phaseCorrectedSeparatorPolynomial_target hα0 him n
       have hfconst : (fun n => f n ρ) =
-          fun _ => ((weight ρ : ℝ) : ℂ) * α * c ^ 2 := by
+          fun _ => ((weight ρ : ℝ) : ℂ) * α * c ^ (2 : ℕ) := by
         funext n
         change (((weight ρ : ℝ) : ℂ) * lam ρ *
-          evalRealPolynomial (p n) (lam ρ) ^ 2) = _
+          evalRealPolynomial (p n) (lam ρ) ^ (2 : ℕ)) = _
         rw [hρα, eval_phaseCorrectedSeparatorPolynomial_target hα0 him n]
-      have hgconst : g ρ = ((weight ρ : ℝ) : ℂ) * α * c ^ 2 := by
+      have hgconst : g ρ = ((weight ρ : ℝ) : ℂ) * α * c ^ (2 : ℕ) := by
         simp only [g, hρα, if_pos]
       rw [hfconst, hgconst]
       exact tendsto_const_nhds
@@ -249,13 +249,13 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative
           exact eval_phaseCorrectedSeparatorPolynomial_conj_target hα0 him n
         have hfconst : (fun n => f n ρ) = fun _ =>
             ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α *
-              ((starRingEnd ℂ) c) ^ 2 := by
+              ((starRingEnd ℂ) c) ^ (2 : ℕ) := by
           funext n
           change (((weight ρ : ℝ) : ℂ) * lam ρ *
-            evalRealPolynomial (p n) (lam ρ) ^ 2) = _
+            evalRealPolynomial (p n) (lam ρ) ^ (2 : ℕ)) = _
           rw [hρc, eval_phaseCorrectedSeparatorPolynomial_conj_target hα0 him n]
         have hgconst : g ρ = ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α *
-            ((starRingEnd ℂ) c) ^ 2 := by
+            ((starRingEnd ℂ) c) ^ (2 : ℕ) := by
           have hconjne : (starRingEnd ℂ) α ≠ α :=
             Complex.conj_eq_iff_im.not.mpr him
           simp only [g, hρc, hconjne, if_false, if_pos]
@@ -271,7 +271,7 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative
           have hfzero : (fun n => f n ρ) = fun _ => (0 : ℂ) := by
             funext n
             change (((weight ρ : ℝ) : ℂ) * lam ρ *
-              evalRealPolynomial (p n) (lam ρ) ^ 2) = 0
+              evalRealPolynomial (p n) (lam ρ) ^ (2 : ℕ)) = 0
             rw [heval n]
             ring
           have hgzero : g ρ = 0 := by
@@ -291,9 +291,9 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative
   let base : I → ℂ := fun ρ => ((weight ρ : ℝ) : ℂ) * lam ρ
   have hbase : Summable base := by
     simpa only [base, weight, lam] using xi_central_reciprocal_square_summable
-  let bound : I → ℝ := fun ρ => C ^ 2 * ‖base ρ‖
+  let bound : I → ℝ := fun ρ => C ^ (2 : ℕ) * ‖base ρ‖
   have hboundSum : Summable bound := by
-    exact hbase.norm.mul_left (C ^ 2)
+    exact hbase.norm.mul_left (C ^ (2 : ℕ))
   have hevalBound (n : ℕ) (ρ : I) :
       ‖evalRealPolynomial (p n) (lam ρ)‖ ≤ C := by
     by_cases hle : ‖lam ρ‖ ≤ ‖α‖
@@ -317,10 +317,10 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative
   have hdom : ∀ n ρ, ‖f n ρ‖ ≤ bound ρ := by
     intro n ρ
     have hev := hevalBound n ρ
-    have hevSq : ‖evalRealPolynomial (p n) (lam ρ)‖ ^ 2 ≤ C ^ 2 := by
+    have hevSq : ‖evalRealPolynomial (p n) (lam ρ)‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (evalRealPolynomial (p n) (lam ρ))]
-    change ‖base ρ * evalRealPolynomial (p n) (lam ρ) ^ 2‖ ≤
-      C ^ 2 * ‖base ρ‖
+    change ‖base ρ * evalRealPolynomial (p n) (lam ρ) ^ (2 : ℕ)‖ ≤
+      C ^ (2 : ℕ) * ‖base ρ‖
     rw [norm_mul, norm_pow]
     nlinarith [norm_nonneg (base ρ)]
   have htsum : Tendsto (fun n => ∑' ρ, f n ρ) atTop (nhds (∑' ρ, g ρ)) :=
@@ -374,7 +374,7 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative
         have hcfix : (starRingEnd ℂ) α = α := by rw [← hρc, h]
         exact him (Complex.conj_eq_iff_im.mp hcfix)
       have hgval : g ρ = ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α *
-          ((starRingEnd ℂ) c) ^ 2 := by
+          ((starRingEnd ℂ) c) ^ (2 : ℕ) := by
         have hconjne : (starRingEnd ℂ) α ≠ α :=
           Complex.conj_eq_iff_im.not.mpr him
         simp only [g, hρc, hconjne, if_false, if_pos]
@@ -412,9 +412,9 @@ theorem xiCentralTraceHankelNonnegative_of_riemannHypothesis
   have hw : 0 ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by
     exact_mod_cast xi_divisor_nonneg Set.univ (ρ : ℂ)
   rw [show ((((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) : ℂ) *
-      (x : ℂ) * (((Polynomial.eval x p : ℝ) : ℂ)) ^ 2) =
+      (x : ℂ) * (((Polynomial.eval x p : ℝ) : ℂ)) ^ (2 : ℕ)) =
       ((((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * x *
-        (Polynomial.eval x p) ^ 2 : ℝ) : ℂ) by push_cast; ring]
+        (Polynomial.eval x p) ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; ring]
   simp only [Complex.ofReal_re]
   positivity
 

@@ -39,7 +39,7 @@ theorem riemannZeta_eq_poleFree_add {s : ℂ} (hs : s ≠ 1) :
 theorem hasDerivAt_riemannZeta_laurent {s : ℂ} (hs : s ≠ 1) :
     HasDerivAt riemannZeta
       (deriv zetaPoleFree s +
-        (deriv gammaRInv s * (s - 1) - gammaRInv s * 1) / (s - 1) ^ 2) s := by
+        (deriv gammaRInv s * (s - 1) - gammaRInv s * 1) / (s - 1) ^ (2 : ℕ)) s := by
   have hsub : s - 1 ≠ 0 := sub_ne_zero.mpr hs
   have hA : HasDerivAt zetaPoleFree (deriv zetaPoleFree s) s :=
     (differentiable_zetaPoleFree s).hasDerivAt
@@ -55,7 +55,7 @@ theorem hasDerivAt_riemannZeta_laurent {s : ℂ} (hs : s ≠ 1) :
 
 /-- **The derivative residue.**  `(s-1)² ζ'(s) → -1` as `s → 1`. -/
 theorem tendsto_sub_one_sq_mul_deriv_riemannZeta :
-    Tendsto (fun s : ℂ => (s - 1) ^ 2 * deriv riemannZeta s) (nhdsWithin 1 {(1 : ℂ)}ᶜ)
+    Tendsto (fun s : ℂ => (s - 1) ^ (2 : ℕ) * deriv riemannZeta s) (nhdsWithin 1 {(1 : ℂ)}ᶜ)
       (nhds (-1)) := by
   have hA : ContinuousAt (deriv zetaPoleFree) 1 :=
     ((differentiable_zetaPoleFree.differentiableOn.analyticOnNhd isOpen_univ) 1
@@ -66,7 +66,7 @@ theorem tendsto_sub_one_sq_mul_deriv_riemannZeta :
   have hG0 : ContinuousAt gammaRInv 1 := differentiable_gammaRInv.continuous.continuousAt
   have hsub : Tendsto (fun s : ℂ => s - 1) (nhds (1 : ℂ)) (nhds 0) := by
     simpa using (continuous_sub_right (1 : ℂ)).tendsto (1 : ℂ)
-  have h1 : Tendsto (fun s : ℂ => (s - 1) ^ 2 * deriv zetaPoleFree s) (nhds (1 : ℂ)) (nhds 0) := by
+  have h1 : Tendsto (fun s : ℂ => (s - 1) ^ (2 : ℕ) * deriv zetaPoleFree s) (nhds (1 : ℂ)) (nhds 0) := by
     have := (hsub.pow 2).mul hA.tendsto
     simpa using this
   have h2 : Tendsto (fun s : ℂ => deriv gammaRInv s * (s - 1) - gammaRInv s * 1)

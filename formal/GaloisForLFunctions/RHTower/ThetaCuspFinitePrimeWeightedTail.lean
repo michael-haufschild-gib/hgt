@@ -27,7 +27,7 @@ theorem exp_natSucc_mul_abs_thetaCuspPolynomialAtom_le
     Real.exp (((q + 1 : ℕ) : ℝ) * x) *
         abs (thetaCuspPolynomialAtom P n x) ≤
       thetaCuspGaussianConstant (thetaCuspWeightedPolynomial P q) *
-        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2) := by
+        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ)) := by
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hnPow : (1 : ℝ) ≤ (n : ℝ) ^ q := one_le_pow₀ hnR
   have hnonneg : 0 ≤ Real.exp (((q + 1 : ℕ) : ℝ) * x) *
@@ -55,15 +55,15 @@ theorem exp_natSucc_mul_abs_thetaCuspPolynomialAtom_le
       Real.exp x *
           (Real.exp (x / 2) *
               ((n : ℝ) ^ q * Real.exp ((q : ℝ) * x) * |eval ((n : ℝ) * Real.exp x) P|) *
-            Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2)) =
+            Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ))) =
         (n : ℝ) ^ q *
           ((Real.exp x * Real.exp ((q : ℝ) * x)) *
             (Real.exp (x / 2) * |eval ((n : ℝ) * Real.exp x) P| *
-              Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2))) := by ring
+              Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)))) := by ring
       _ = (n : ℝ) ^ q *
           (Real.exp (((q + 1 : ℕ) : ℝ) * x) *
             (Real.exp (x / 2) * |eval ((n : ℝ) * Real.exp x) P| *
-              Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ 2))) := by rw [hexp]
+              Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ)))) := by rw [hexp]
   calc
     Real.exp (((q + 1 : ℕ) : ℝ) * x) *
         |thetaCuspPolynomialAtom P n x| ≤
@@ -75,7 +75,7 @@ theorem exp_natSucc_mul_abs_thetaCuspPolynomialAtom_le
         |thetaCuspPolynomialAtom (thetaCuspWeightedPolynomial P q) n x| :=
       hrewrite.symm
     _ ≤ thetaCuspGaussianConstant (thetaCuspWeightedPolynomial P q) *
-        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2) :=
+        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ)) :=
       exp_mul_abs_thetaCuspPolynomialAtom_le_of_pos _ hx hn
 
 /-- Uniform constant for the `(q+1)`-exponentially weighted `m`-th derivative of every
@@ -83,7 +83,7 @@ finite-prime theta-cusp source. -/
 def finitePrimeThetaCuspWeightedDerivativeConstant (m q : ℕ) : ℝ :=
   thetaCuspGaussianConstant
       (thetaCuspWeightedPolynomial (thetaCuspLogDerivativePolynomial m) q) *
-    ∑' n : ℕ, Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)
+    ∑' n : ℕ, Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))
 
 theorem finitePrimeThetaCuspWeightedDerivativeConstant_nonneg (m q : ℕ) :
     0 ≤ finitePrimeThetaCuspWeightedDerivativeConstant m q := by
@@ -102,7 +102,7 @@ theorem exp_natSucc_mul_abs_finitePrimeThetaCuspDerivative_le
   let a : S → ℝ := fun n ↦
     thetaCuspPolynomialAtom (thetaCuspLogDerivativePolynomial m) n x
   let g : ℕ → ℝ := fun n ↦
-    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)
+    Real.exp (-(Real.pi / 2) * (n : ℝ) ^ (2 : ℕ))
   let C : ℝ := thetaCuspGaussianConstant
     (thetaCuspWeightedPolynomial (thetaCuspLogDerivativePolynomial m) q)
   have ha : Summable a := by

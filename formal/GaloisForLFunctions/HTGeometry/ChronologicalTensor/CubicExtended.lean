@@ -14,7 +14,7 @@ noncomputable section
 open Set
 
 def cubicExtendedReadout (A B C D E F : ℝ) (g : Fin 5 → ℝ) : ℝ :=
-  cubicReadout A B C D E g+F*(g 2)^3
+  cubicReadout A B C D E g+F*(g 2)^(3 : ℕ)
 
 def cubicDecayWitness : Fin 3 → (Fin 5 → ℝ) :=
   ![![1/4,0,1/2,0,1/4],![1/2,0,1/2,0,0],![0,0,1,0,0]]
@@ -88,8 +88,8 @@ theorem cubicExtendedReadout_kernel (A B C D E F : ℝ) :
 
 theorem cubicExtendedReadout_flow (q : Icc (0:ℝ) 1) (A B C D E F : ℝ) :
     EqOn (fun g => cubicExtendedReadout A B C D E F (cubicFlow q g))
-      (cubicExtendedReadout (q.val*A) B C D (q.val^2*E+q.val*(1-q.val)*A/2)
-        (q.val^3*F-q.val*(1-q.val^2)*A/4)) cubicProbeSection := by
+      (cubicExtendedReadout (q.val*A) B C D (q.val^(2 : ℕ)*E+q.val*(1-q.val)*A/2)
+        (q.val^(3 : ℕ)*F-q.val*(1-q.val^(2 : ℕ))*A/4)) cubicProbeSection := by
   intro g hg
   dsimp only
   rw [cubicExtendedReadout_split A B C D E F (cubicFlow_preserves q q.property hg)]
@@ -107,7 +107,7 @@ theorem cubicDecayMode_not_pairing :
   have hz : EqOn (cubicExtendedReadout A B C D E (-1)) (fun _ => 0) cubicProbeSection := by
     intro g hg
     have he := h hg
-    change (g 2)^3=cubicReadout A B C D E g at he
+    change (g 2)^(3 : ℕ)=cubicReadout A B C D E g at he
     simp [cubicExtendedReadout,← he]
   have hfalse := ((cubicExtendedReadout_kernel A B C D E (-1)).mp hz).2.2.2.2.2
   linarith

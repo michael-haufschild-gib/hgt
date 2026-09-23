@@ -59,28 +59,28 @@ theorem thetaCompactSourceInverse_thetaXi_eigen (q : XiZeroCopy) :
 theorem thetaCompactSourceInverse_sq_thetaXi_eigen (q : XiZeroCopy) :
     thetaCompactSourceInverse
         (thetaCompactSourceInverse (thetaXiDivisorEigenvector q)) =
-      thetaXiReciprocalEigenvalue q ^ 2 • thetaXiDivisorEigenvector q := by
+      thetaXiReciprocalEigenvalue q ^ (2 : ℕ) • thetaXiDivisorEigenvector q := by
   rw [thetaCompactSourceInverse_thetaXi_eigen, map_smul,
     thetaCompactSourceInverse_thetaXi_eigen, smul_smul]
   simp only [pow_two]
 
 /-- The squared reciprocal eigenvalue is exactly the unshifted reciprocal-square Xi atom. -/
 theorem thetaXiReciprocalEigenvalue_sq_eq_reciprocalSquare (q : XiZeroCopy) :
-    thetaXiReciprocalEigenvalue q ^ 2 = xiZeroCopyReciprocalSquare q := by
+    thetaXiReciprocalEigenvalue q ^ (2 : ℕ) = xiZeroCopyReciprocalSquare q := by
   simp only [thetaXiReciprocalEigenvalue, xiZeroCopyReciprocalSquare]
   ring
 
 /-- The squared-seam atom is the shift-one rational transform of the theta eigenvalue square. -/
 theorem xiSquaredSeamOneCoordinate_eq_thetaXi_pencilRatio (q : XiZeroCopy) :
     xiSquaredSeamOneCoordinate q =
-      thetaXiReciprocalEigenvalue q ^ 2 /
-        (1 + thetaXiReciprocalEigenvalue q ^ 2) := by
+      thetaXiReciprocalEigenvalue q ^ (2 : ℕ) /
+        (1 + thetaXiReciprocalEigenvalue q ^ (2 : ℕ)) := by
   rw [← xiShiftedReciprocalSquare_one_eq_xiSquaredSeamOneCoordinate,
     xiShiftedReciprocalSquare, thetaXiReciprocalEigenvalue_sq_eq_reciprocalSquare]
   simp only [Complex.ofReal_one, one_mul]
 
 theorem one_add_thetaXiReciprocalEigenvalue_sq_ne_zero (q : XiZeroCopy) :
-    1 + thetaXiReciprocalEigenvalue q ^ 2 ≠ 0 := by
+    1 + thetaXiReciprocalEigenvalue q ^ (2 : ℕ) ≠ 0 := by
   rw [thetaXiReciprocalEigenvalue_sq_eq_reciprocalSquare]
   simpa using one_add_mul_xiZeroCopyReciprocalSquare_ne_zero
     (y := 1) (by norm_num) q
@@ -92,8 +92,8 @@ theorem thetaXiDivisorEigenvector_add_sq_ne_zero (q : XiZeroCopy) :
       (thetaCompactSourceInverse (thetaXiDivisorEigenvector q)) ≠ 0 := by
   rw [thetaCompactSourceInverse_sq_thetaXi_eigen]
   have hsum : thetaXiDivisorEigenvector q +
-      thetaXiReciprocalEigenvalue q ^ 2 • thetaXiDivisorEigenvector q =
-        (1 + thetaXiReciprocalEigenvalue q ^ 2) • thetaXiDivisorEigenvector q := by
+      thetaXiReciprocalEigenvalue q ^ (2 : ℕ) • thetaXiDivisorEigenvector q =
+        (1 + thetaXiReciprocalEigenvalue q ^ (2 : ℕ)) • thetaXiDivisorEigenvector q := by
     rw [add_smul, one_smul]
   rw [hsum]
   exact smul_ne_zero (one_add_thetaXiReciprocalEigenvalue_sq_ne_zero q)
@@ -110,8 +110,8 @@ theorem thetaCompactSourceInverse_sq_pencil (q : XiZeroCopy) :
             (thetaCompactSourceInverse (thetaXiDivisorEigenvector q))) := by
   rw [thetaCompactSourceInverse_sq_thetaXi_eigen]
   have hsum : thetaXiDivisorEigenvector q +
-      thetaXiReciprocalEigenvalue q ^ 2 • thetaXiDivisorEigenvector q =
-        (1 + thetaXiReciprocalEigenvalue q ^ 2) • thetaXiDivisorEigenvector q := by
+      thetaXiReciprocalEigenvalue q ^ (2 : ℕ) • thetaXiDivisorEigenvector q =
+        (1 + thetaXiReciprocalEigenvalue q ^ (2 : ℕ)) • thetaXiDivisorEigenvector q := by
     rw [add_smul, one_smul]
   rw [hsum, smul_smul,
     xiSquaredSeamOneCoordinate_eq_thetaXi_pencilRatio]

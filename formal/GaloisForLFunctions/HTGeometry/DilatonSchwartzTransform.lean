@@ -24,7 +24,7 @@ def dilatonGauge (H : ℝ[X]) (x : ℝ) : ℂ := (Real.exp (-H.eval x / 2) : ℝ
 def dilatonUndressed (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (x : ℝ) : ℂ := dilatonGauge H x * ψ x
 
 def dilatonPotential (H : ℝ[X]) (x : ℝ) : ℝ :=
-  H.derivative.derivative.eval x / 2 + (H.derivative.eval x) ^ 2 / 4
+  H.derivative.derivative.eval x / 2 + (H.derivative.eval x) ^ (2 : ℕ) / 4
 
 def dilatonRadialOperator (H : ℝ[X]) (R : ℝ → ℂ) (x : ℝ) : ℂ :=
   deriv (deriv R) x + ((H.derivative.eval x : ℝ) : ℂ) * deriv R x
@@ -56,7 +56,7 @@ theorem dilatonUndressed_derivative (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (x : ℝ)
 theorem dilatonUndressed_second_derivative (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (x : ℝ) :
     HasDerivAt (deriv (dilatonUndressed H ψ))
       (dilatonGauge H x * (deriv (deriv ψ) x - ((H.derivative.eval x : ℝ) : ℂ) * deriv ψ x +
-        (((H.derivative.eval x : ℝ) : ℂ) ^ 2 / 4 - ((H.derivative.derivative.eval x : ℝ) : ℂ) / 2) * ψ x)) x := by
+        (((H.derivative.eval x : ℝ) : ℂ) ^ (2 : ℕ) / 4 - ((H.derivative.derivative.eval x : ℝ) : ℂ) / 2) * ψ x)) x := by
   have hd : HasDerivAt (deriv ψ) (deriv (deriv ψ) x) x :=
     (SchwartzMap.derivCLM ℂ ℂ ψ).hasDerivAt x
   have h := (dilatonGauge_derivative H x).mul
@@ -78,7 +78,7 @@ theorem dilatonRadialOperator_conjugation (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (x 
 
 /-- The weighted norm density is exactly the original Schwartz norm density. -/
 theorem dilatonUndressed_weighted_norm (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (x : ℝ) :
-    dilatonWeight H x * ‖dilatonUndressed H ψ x‖ ^ 2 = ‖ψ x‖ ^ 2 := by
+    dilatonWeight H x * ‖dilatonUndressed H ψ x‖ ^ (2 : ℕ) = ‖ψ x‖ ^ (2 : ℕ) := by
   rw [dilatonUndressed, norm_mul, mul_pow]
   simp only [dilatonGauge, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.exp_pos _), dilatonWeight]
@@ -87,12 +87,12 @@ theorem dilatonUndressed_weighted_norm (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (x : �
     Real.exp_zero, one_mul]
 
 theorem dilatonUndressed_weighted_integral (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) :
-    (∫ x : ℝ, dilatonWeight H x * ‖dilatonUndressed H ψ x‖ ^ 2) =
-      ∫ x : ℝ, ‖ψ x‖ ^ 2 := by
+    (∫ x : ℝ, dilatonWeight H x * ‖dilatonUndressed H ψ x‖ ^ (2 : ℕ)) =
+      ∫ x : ℝ, ‖ψ x‖ ^ (2 : ℕ) := by
   simp only [dilatonUndressed_weighted_norm]
 
 theorem dilatonUndressed_weighted_integrable (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) :
-    Integrable (fun x => dilatonWeight H x * ‖dilatonUndressed H ψ x‖ ^ 2) := by
+    Integrable (fun x => dilatonWeight H x * ‖dilatonUndressed H ψ x‖ ^ (2 : ℕ)) := by
   simp only [dilatonUndressed_weighted_norm]
   have h : Integrable (fun x : ℝ => ‖mulS (SchwartzMap.conjSLM ψ) ψ x‖) :=
     (mulS (SchwartzMap.conjSLM ψ) ψ).integrable.norm
@@ -103,10 +103,10 @@ theorem dilatonUndressed_weighted_integrable (H : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) 
 /-- The full charged wave residual is conjugated, not assumed to vanish. -/
 theorem dilaton_charged_wave_residual (H A U : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (ω : ℂ) (e x : ℝ) :
     dilatonRadialOperator H (dilatonUndressed H ψ) x +
-      ((ω - (e : ℂ) * ((A.eval x : ℝ) : ℂ)) ^ 2 - ((U.eval x : ℝ) : ℂ)) *
+      ((ω - (e : ℂ) * ((A.eval x : ℝ) : ℂ)) ^ (2 : ℕ) - ((U.eval x : ℝ) : ℂ)) *
         dilatonUndressed H ψ x =
       dilatonGauge H x * (deriv (deriv ψ) x +
-        ((ω - (e : ℂ) * ((A.eval x : ℝ) : ℂ)) ^ 2 -
+        ((ω - (e : ℂ) * ((A.eval x : ℝ) : ℂ)) ^ (2 : ℕ) -
           ((U.eval x + dilatonPotential H x : ℝ) : ℂ)) * ψ x) := by
   rw [dilatonRadialOperator_conjugation, dilatonUndressed, Complex.ofReal_add]
   ring
@@ -114,9 +114,9 @@ theorem dilaton_charged_wave_residual (H A U : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (ω
 /-- Vanishing of the original radial equation is exactly vanishing of its normal form. -/
 theorem dilaton_charged_wave_equivalence (H A U : ℝ[X]) (ψ : 𝓢(ℝ, ℂ)) (ω : ℂ) (e x : ℝ) :
     dilatonRadialOperator H (dilatonUndressed H ψ) x +
-      ((ω - (e : ℂ) * ((A.eval x : ℝ) : ℂ)) ^ 2 - ((U.eval x : ℝ) : ℂ)) *
+      ((ω - (e : ℂ) * ((A.eval x : ℝ) : ℂ)) ^ (2 : ℕ) - ((U.eval x : ℝ) : ℂ)) *
         dilatonUndressed H ψ x = 0 ↔
-      deriv (deriv ψ) x + ((ω - (e : ℂ) * ((A.eval x : ℝ) : ℂ)) ^ 2 -
+      deriv (deriv ψ) x + ((ω - (e : ℂ) * ((A.eval x : ℝ) : ℂ)) ^ (2 : ℕ) -
         ((U.eval x + dilatonPotential H x : ℝ) : ℂ)) * ψ x = 0 := by
   rw [dilaton_charged_wave_residual, mul_eq_zero]
   exact or_iff_right (dilatonGauge_ne_zero H x)

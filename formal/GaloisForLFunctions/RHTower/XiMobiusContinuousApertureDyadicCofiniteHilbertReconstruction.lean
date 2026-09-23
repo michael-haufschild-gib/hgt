@@ -24,12 +24,12 @@ def xiMobiusPrimeContinuousApertureDyadicInnovationDepthWeight
     (h a : ℝ) (p : Nat.Primes) : ℂ :=
   ((xiTransversePrimeApertureDiskNode 1 p /
       (1 + xiTransversePrimeApertureDiskNode 1 p)) *
-    (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ 2 : ℝ)
+    (1 - xiMobiusContinuousApertureDiskNode ((h / 2) * a) p) ^ (2 : ℕ) : ℝ)
 
 /-- Complex geometric node of one prime's dyadic innovation depth feature. -/
 def xiMobiusPrimeContinuousApertureDyadicInnovationDepthNode
     (h a : ℝ) (p : Nat.Primes) : ℂ :=
-  (xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ 2 : ℝ)
+  (xiMobiusContinuousApertureDiskNode ((h / 2) * a) p ^ (2 : ℕ) : ℝ)
 
 /-- Complexification of one prime's real dyadic innovation feature packet. -/
 def xiMobiusPrimeContinuousApertureDyadicInnovationComplexFeature
@@ -115,8 +115,8 @@ theorem
   · intro hscaled i j hij
     apply hscaled
     have hsquare :
-        xiMobiusContinuousApertureDiskNode ((h / 2) * aperture i) p ^ 2 =
-          xiMobiusContinuousApertureDiskNode ((h / 2) * aperture j) p ^ 2 := by
+        xiMobiusContinuousApertureDiskNode ((h / 2) * aperture i) p ^ (2 : ℕ) =
+          xiMobiusContinuousApertureDiskNode ((h / 2) * aperture j) p ^ (2 : ℕ) := by
       apply Complex.ofReal_injective
       simpa [xiMobiusPrimeContinuousApertureDyadicInnovationDepthNode] using hij
     have hi := xiMobiusContinuousApertureDiskNode_pos

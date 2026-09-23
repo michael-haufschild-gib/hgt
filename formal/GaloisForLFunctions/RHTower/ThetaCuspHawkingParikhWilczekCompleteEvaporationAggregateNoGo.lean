@@ -37,9 +37,9 @@ theorem tsum_schwarzschildEvaporationDyadicShellDuration
         schwarzschildEvaporationDyadicMass]
       congr 1
       calc
-        ((1 / 2 : ℝ) ^ n) ^ 3 = (1 / 2 : ℝ) ^ (n * 3) := (pow_mul _ _ _).symm
+        ((1 / 2 : ℝ) ^ n) ^ (3 : ℕ) = (1 / 2 : ℝ) ^ (n * 3) := (pow_mul _ _ _).symm
         _ = (1 / 2 : ℝ) ^ (3 * n) := by rw [Nat.mul_comm]
-        _ = ((1 / 2 : ℝ) ^ 3) ^ n := pow_mul _ _ _
+        _ = ((1 / 2 : ℝ) ^ (3 : ℕ)) ^ n := pow_mul _ _ _
         _ = (1 / 8 : ℝ) ^ n := by norm_num
     _ = (7 / (24 * alpha)) * ∑' n : ℕ, (1 / 8 : ℝ) ^ n := by
       rw [tsum_mul_left]
@@ -58,9 +58,9 @@ theorem summable_schwarzschildEvaporationDyadicShellDuration
       schwarzschildEvaporationDyadicMass]
     congr 1
     calc
-      ((1 / 2 : ℝ) ^ n) ^ 3 = (1 / 2 : ℝ) ^ (n * 3) := (pow_mul _ _ _).symm
+      ((1 / 2 : ℝ) ^ n) ^ (3 : ℕ) = (1 / 2 : ℝ) ^ (n * 3) := (pow_mul _ _ _).symm
       _ = (1 / 2 : ℝ) ^ (3 * n) := by rw [Nat.mul_comm]
-      _ = ((1 / 2 : ℝ) ^ 3) ^ n := pow_mul _ _ _
+      _ = ((1 / 2 : ℝ) ^ (3 : ℕ)) ^ n := pow_mul _ _ _
       _ = (1 / 8 : ℝ) ^ n := by norm_num]
   exact (summable_geometric_of_norm_lt_one
     (by norm_num : ‖(1 / 8 : ℝ)‖ < 1)).mul_left _

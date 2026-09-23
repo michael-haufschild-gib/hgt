@@ -205,10 +205,10 @@ converges to `α ∫_α^∞ sgn (sin x)/x² dx`. -/
 theorem tendsto_dilated_vonMangoldt_sign_sum_integral {α : ℝ} (hα1 : 1 ≤ α) (hαπ : α ≤ π) :
     Tendsto (fun T : ℝ => (∑ m ∈ Finset.Ioc 0 ⌊T⌋₊,
         (vonMangoldt m : ℝ) * Real.sign (Real.sin (α * T / m))) / T) atTop
-      (𝓝 (α * ∫ x in Set.Ici α, Real.sign (Real.sin x) * (x ^ 2)⁻¹)) := by
+      (𝓝 (α * ∫ x in Set.Ici α, Real.sign (Real.sin x) * (x ^ (2 : ℕ))⁻¹)) := by
   have hα0 : (0 : ℝ) < α := lt_of_lt_of_le zero_lt_one hα1
   have hπ : (0 : ℝ) < π := Real.pi_pos
-  have hval : α * (∫ x in Set.Ici α, Real.sign (Real.sin x) * (x ^ 2)⁻¹)
+  have hval : α * (∫ x in Set.Ici α, Real.sign (Real.sin x) * (x ^ (2 : ℕ))⁻¹)
       = 1 - 2 * α * Real.log 2 / π := by
     rw [GaloisForLFunctions.HTGeometry.integral_sign_sin_mul_inv_sq_Ici hα1 hαπ]
     field_simp

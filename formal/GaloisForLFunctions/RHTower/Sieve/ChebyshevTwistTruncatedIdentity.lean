@@ -158,8 +158,8 @@ theorem tsum_vonMangoldtTwist_truncated_identity (τ : ℝ) {N H : ℝ} (hN : 0 
         + mellin (fun x : ℝ => ((smoothWeight N H x : ℝ) : ℂ)) (twistPole τ)
             * ((((Real.arctan ((T + τ) / (d - 1))
                   - Real.arctan ((-T + τ) / (d - 1)) : ℝ)) : ℂ)
-              - ((((Real.log ((d - 1) ^ 2 + (T + τ) ^ 2)
-                    - Real.log ((d - 1) ^ 2 + (-T + τ) ^ 2)) / 2 : ℝ)) : ℂ) * Complex.I)
+              - ((((Real.log ((d - 1) ^ (2 : ℕ) + (T + τ) ^ (2 : ℕ))
+                    - Real.log ((d - 1) ^ (2 : ℕ) + (-T + τ) ^ (2 : ℕ))) / 2 : ℝ)) : ℂ) * Complex.I)
         + (∫ y : ℝ in (-T)..T,
             zetaLogDerivReg ((d : ℂ) + (y : ℝ) * Complex.I + (τ : ℂ) * Complex.I)
               * mellin (fun x : ℝ => ((smoothWeight N H x : ℝ) : ℂ))

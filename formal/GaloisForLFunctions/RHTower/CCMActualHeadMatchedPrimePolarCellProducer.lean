@@ -156,7 +156,7 @@ theorem ccmActualHeadMatchedPrimePolarRadius_nonneg (n : ℕ) :
   unfold ccmActualHeadMatchedPrimePolarRadius
   apply mul_nonneg (by norm_num)
   rw [Real.arsinh_nonneg_iff]
-  exact div_nonneg (criticalMellinAtomWeight_nonneg n)
+  exact div_nonneg (criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer n)
     (mul_nonneg (by norm_num) (Real.exp_pos _).le)
 
 theorem integral_ccmActualHeadMatchedPrimePolar_anchor

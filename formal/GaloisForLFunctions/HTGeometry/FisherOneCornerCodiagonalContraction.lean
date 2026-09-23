@@ -52,7 +52,7 @@ def finiteFisherOneCornerJoinedCodiagonal
 /-- The source-vector norm is exactly the one-corner coarea density. -/
 theorem finiteFisherOneCornerSourceVector_norm_sq
     (p h : ι → ℝ) (m u : ℝ) (hp : ∀ i, 0 ≤ p i) :
-    ‖finiteFisherOneCornerSourceVector p h m u‖ ^ 2 =
+    ‖finiteFisherOneCornerSourceVector p h m u‖ ^ (2 : ℕ) =
       finiteFisherOneCornerCoareaDensity p h m u := by
   rw [EuclideanSpace.norm_sq_eq]
   simp only [finiteFisherOneCornerSourceVector]
@@ -138,13 +138,13 @@ theorem finiteFisherOneCornerJoinedReporter_norm_sq_le_half
     (p h : ι → ℝ) (d : ι → ℂ) (u : ℝ)
     (hp : ∀ i, 0 ≤ p i) (hpone : ∑ i, p i = 1)
     (hd : ∀ i, ‖d i‖ ≤ 1) :
-    ‖finiteFisherOneCornerJoinedReporter p h d u‖ ^ 2 ≤ 1 / 2 := by
+    ‖finiteFisherOneCornerJoinedReporter p h d u‖ ^ (2 : ℕ) ≤ 1 / 2 := by
   rw [EuclideanSpace.norm_sq_eq]
   simp only [finiteFisherOneCornerJoinedReporter]
   rw [Fintype.sum_prod_type]
   calc
     (∑ i, ∑ j, ‖if h j < u ∧ u ≤ h i then
-        (Real.sqrt (p i * p j / 2) : ℂ) * (d i + d j) else 0‖ ^ 2) ≤
+        (Real.sqrt (p i * p j / 2) : ℂ) * (d i + d j) else 0‖ ^ (2 : ℕ)) ≤
       ∑ i, ∑ j, if h j < u ∧ u ≤ h i then 2 * p i * p j else 0 := by
         apply Finset.sum_le_sum
         intro i _
@@ -158,7 +158,7 @@ theorem finiteFisherOneCornerJoinedReporter_norm_sq_le_half
               ‖d i + d j‖ ≤ ‖d i‖ + ‖d j‖ := norm_add_le _ _
               _ ≤ 1 + 1 := add_le_add (hd i) (hd j)
               _ = 2 := by norm_num
-          have haddsq : ‖d i + d j‖ ^ 2 ≤ 4 := by
+          have haddsq : ‖d i + d j‖ ^ (2 : ℕ) ≤ 4 := by
             nlinarith [norm_nonneg (d i + d j)]
           rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
             abs_of_nonneg (Real.sqrt_nonneg _), mul_pow,
@@ -188,9 +188,9 @@ theorem inner_finiteFisherOneCornerSourceVector_joinedReporter
   intro j _
   split_ifs
   · have hpij : 0 ≤ p i * p j := mul_nonneg (hp i) (hp j)
-    have hs1 : Real.sqrt (p i * p j / 2) ^ 2 = p i * p j / 2 :=
+    have hs1 : Real.sqrt (p i * p j / 2) ^ (2 : ℕ) = p i * p j / 2 :=
       Real.sq_sqrt (div_nonneg hpij (by norm_num))
-    have hs2 : Real.sqrt (2 * p i * p j) ^ 2 = 2 * p i * p j :=
+    have hs2 : Real.sqrt (2 * p i * p j) ^ (2 : ℕ) = 2 * p i * p j :=
       Real.sq_sqrt (by nlinarith)
     have hsqrt : Real.sqrt (p i * p j / 2) *
         Real.sqrt (2 * p i * p j) = p i * p j := by
@@ -233,7 +233,7 @@ theorem norm_sq_finiteFisherOneCornerJoinedCodiagonal_le_half_density
     (p h : ι → ℝ) (m : ℝ) (d : ι → ℂ) (u : ℝ)
     (hp : ∀ i, 0 ≤ p i) (hpone : ∑ i, p i = 1)
     (hd : ∀ i, ‖d i‖ ≤ 1) :
-    ‖finiteFisherOneCornerJoinedCodiagonal p h m d u‖ ^ 2 ≤
+    ‖finiteFisherOneCornerJoinedCodiagonal p h m d u‖ ^ (2 : ℕ) ≤
       (1 / 2 : ℝ) * finiteFisherOneCornerCoareaDensity p h m u := by
   rw [← inner_finiteFisherOneCornerSourceVector_joinedReporter
       p h m d u hp,
@@ -243,9 +243,9 @@ theorem norm_sq_finiteFisherOneCornerJoinedCodiagonal_le_half_density
     (finiteFisherOneCornerJoinedReporter p h d u)
   have hsq :
       ‖inner ℂ (finiteFisherOneCornerSourceVector p h m u)
-        (finiteFisherOneCornerJoinedReporter p h d u)‖ ^ 2 ≤
+        (finiteFisherOneCornerJoinedReporter p h d u)‖ ^ (2 : ℕ) ≤
       (‖finiteFisherOneCornerSourceVector p h m u‖ *
-        ‖finiteFisherOneCornerJoinedReporter p h d u‖) ^ 2 :=
+        ‖finiteFisherOneCornerJoinedReporter p h d u‖) ^ (2 : ℕ) :=
     (sq_le_sq₀ (norm_nonneg _)
       (mul_nonneg (norm_nonneg _) (norm_nonneg _))).2 hinner
   have hrep :=
@@ -253,16 +253,16 @@ theorem norm_sq_finiteFisherOneCornerJoinedCodiagonal_le_half_density
       p h d u hp hpone hd
   rw [show
       (‖finiteFisherOneCornerSourceVector p h m u‖ *
-        ‖finiteFisherOneCornerJoinedReporter p h d u‖) ^ 2 =
-      ‖finiteFisherOneCornerSourceVector p h m u‖ ^ 2 *
-        ‖finiteFisherOneCornerJoinedReporter p h d u‖ ^ 2 by ring] at hsq
+        ‖finiteFisherOneCornerJoinedReporter p h d u‖) ^ (2 : ℕ) =
+      ‖finiteFisherOneCornerSourceVector p h m u‖ ^ (2 : ℕ) *
+        ‖finiteFisherOneCornerJoinedReporter p h d u‖ ^ (2 : ℕ) by ring] at hsq
   calc
     ‖inner ℂ (finiteFisherOneCornerSourceVector p h m u)
-        (finiteFisherOneCornerJoinedReporter p h d u)‖ ^ 2 ≤
-        ‖finiteFisherOneCornerSourceVector p h m u‖ ^ 2 *
-          ‖finiteFisherOneCornerJoinedReporter p h d u‖ ^ 2 := hsq
-    _ ≤ ‖finiteFisherOneCornerSourceVector p h m u‖ ^ 2 * (1 / 2) :=
+        (finiteFisherOneCornerJoinedReporter p h d u)‖ ^ (2 : ℕ) ≤
+        ‖finiteFisherOneCornerSourceVector p h m u‖ ^ (2 : ℕ) *
+          ‖finiteFisherOneCornerJoinedReporter p h d u‖ ^ (2 : ℕ) := hsq
+    _ ≤ ‖finiteFisherOneCornerSourceVector p h m u‖ ^ (2 : ℕ) * (1 / 2) :=
       mul_le_mul_of_nonneg_left hrep (sq_nonneg _)
-    _ = (1 / 2) * ‖finiteFisherOneCornerSourceVector p h m u‖ ^ 2 := by ring
+    _ = (1 / 2) * ‖finiteFisherOneCornerSourceVector p h m u‖ ^ (2 : ℕ) := by ring
 
 end GaloisForLFunctions.HTGeometry

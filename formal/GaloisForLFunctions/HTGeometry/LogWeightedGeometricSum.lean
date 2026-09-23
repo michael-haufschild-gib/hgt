@@ -42,15 +42,15 @@ theorem sum_Ico_geom_le {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x < 1) (K n : ℕ) :
 
 /-- **A logarithm squared is below four times its argument.**  Halving the logarithm puts it under
 the square root, whose own square is the argument. -/
-theorem sq_log_le_four_mul {t : ℝ} (ht : 1 ≤ t) : Real.log t ^ 2 ≤ 4 * t := by
+theorem sq_log_le_four_mul {t : ℝ} (ht : 1 ≤ t) : Real.log t ^ (2 : ℕ) ≤ 4 * t := by
   have ht0 : (0 : ℝ) < t := lt_of_lt_of_le one_pos ht
   have hlog : Real.log t ≤ 2 * Real.sqrt t := log_le_two_mul_sqrt ht0
   have hlognn : (0 : ℝ) ≤ Real.log t := Real.log_nonneg ht
-  have hsq : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht0.le
+  have hsq : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht0.le
   nlinarith [hlog, hlognn, hsq, Real.sqrt_nonneg t]
 
 /-- The same bound for the absolute value of the logarithm. -/
-theorem sq_abs_log_le_four_mul {t : ℝ} (ht : 1 ≤ t) : |Real.log t| ^ 2 ≤ 4 * t := by
+theorem sq_abs_log_le_four_mul {t : ℝ} (ht : 1 ≤ t) : |Real.log t| ^ (2 : ℕ) ≤ 4 * t := by
   rw [abs_of_nonneg (Real.log_nonneg ht)]
   exact sq_log_le_four_mul ht
 

@@ -63,7 +63,7 @@ theorem sectorCrossingMomentTangentFlow_zero (k : ℕ) :
 /-- First Hankel minor along the exact mass-transport tangent. -/
 def sectorCrossingMinorFlow (t : ℝ) : ℝ :=
   sectorCrossingMomentTangentFlow t 0 * sectorCrossingMomentTangentFlow t 2 -
-    sectorCrossingMomentTangentFlow t 1 ^ 2
+    sectorCrossingMomentTangentFlow t 1 ^ (2 : ℕ)
 
 theorem hasDerivAt_sectorCrossingMinorFlow :
     HasDerivAt sectorCrossingMinorFlow
@@ -101,7 +101,7 @@ theorem sectorCrossingAtom_re : sectorCrossingAtom.re = 1 := by
   norm_num [sectorCrossingAtom]
 
 theorem sectorCrossingAtom_in_safeSector :
-    sectorCrossingAtom.im ^ 2 ≤ (1 / 84 : ℝ) * sectorCrossingAtom.re ^ 2 := by
+    sectorCrossingAtom.im ^ (2 : ℕ) ≤ (1 / 84 : ℝ) * sectorCrossingAtom.re ^ (2 : ℕ) := by
   norm_num [sectorCrossingAtom]
 
 theorem sectorCrossingRealAtom_pos : 0 < sectorCrossingRealAtom := by
@@ -124,7 +124,7 @@ theorem sectorCrossingMoment_two_value : sectorCrossingMoment 2 = 361 / 184 := b
 
 theorem sectorCrossingFirstMinor_eq_zero :
     sectorCrossingMoment 0 * sectorCrossingMoment 2 -
-      sectorCrossingMoment 1 ^ 2 = 0 := by
+      sectorCrossingMoment 1 ^ (2 : ℕ) = 0 := by
   norm_num [sectorCrossingMoment, sectorCrossingAtom,
     sectorCrossingRealWeight, sectorCrossingRealAtom, pow_two, pow_succ]
 
@@ -154,7 +154,7 @@ theorem finiteHankelMatrix_sectorCrossing_two_posSemidef :
   simp only [star_trivial, dotProduct, Matrix.mulVec, Fin.sum_univ_two]
   norm_num [finiteHankelMatrix, sectorCrossingMoment, sectorCrossingAtom,
     sectorCrossingRealWeight, sectorCrossingRealAtom, pow_two, pow_succ]
-  have hsq : 0 ≤ (c 0 + (95 / 98 : ℝ) * c 1) ^ 2 := sq_nonneg _
+  have hsq : 0 ≤ (c 0 + (95 / 98 : ℝ) * c 1) ^ (2 : ℕ) := sq_nonneg _
   nlinarith
 
 theorem sectorCrossingFirstOmittedCoupling_neg :

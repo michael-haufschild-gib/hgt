@@ -39,7 +39,7 @@ coordinate sum of modulus at least `ε`. -/
 theorem card_le_of_forall_norm_toCircle_sum_ge [NeZero k] (hk : 1 < k)
     (S : Finset (Fin D → ZMod k)) {ε : ℝ} (hε : 0 ≤ ε)
     (hS : ∀ u ∈ S, ε ≤ ‖∑ a, (ZMod.toCircle (u a) : ℂ)‖) :
-    (S.card : ℝ) ≤ 4 * Real.exp (-ε ^ 2 / (4 * (D : ℝ))) * (k : ℝ) ^ D := by
+    (S.card : ℝ) ≤ 4 * Real.exp (-ε ^ (2 : ℕ) / (4 * (D : ℝ))) * (k : ℝ) ^ D := by
   classical
   have hζ : IsPrimitiveRoot (Complex.exp (2 * π * Complex.I / (k : ℂ))) k :=
     Complex.isPrimitiveRoot_exp k (NeZero.ne k)
@@ -67,7 +67,7 @@ small; translating the set to one of its members reduces this to the absolute ca
 theorem card_le_of_forall_norm_relative_toCircle_sum_ge [NeZero k] (hk : 1 < k)
     (S : Finset (Fin D → ZMod k)) {ε : ℝ} (hε : 0 ≤ ε)
     (hS : ∀ u ∈ S, ∀ v ∈ S, ε ≤ ‖∑ a, (ZMod.toCircle (v a - u a) : ℂ)‖) :
-    (S.card : ℝ) ≤ 4 * Real.exp (-ε ^ 2 / (4 * (D : ℝ))) * (k : ℝ) ^ D := by
+    (S.card : ℝ) ≤ 4 * Real.exp (-ε ^ (2 : ℕ) / (4 * (D : ℝ))) * (k : ℝ) ^ D := by
   classical
   rcases S.eq_empty_or_nonempty with rfl | ⟨u₀, hu₀⟩
   · simp only [Finset.card_empty, Nat.cast_zero]
@@ -98,14 +98,14 @@ theorem mem_capturedPhases [NeZero k] {y : EuclideanSpace ℂ (Fin D)} {δ : ℝ
 /-- A trace-distance bound is a fidelity bound. -/
 theorem one_sub_sq_le_norm_inner_sq {ι : Type*} [Fintype ι] {u y : EuclideanSpace ℂ ι} {δ : ℝ}
     (h : pureStateTraceDistance u y ≤ δ) :
-    1 - δ ^ 2 ≤ ‖(inner ℂ y u : ℂ)‖ ^ 2 := by
+    1 - δ ^ (2 : ℕ) ≤ ‖(inner ℂ y u : ℂ)‖ ^ (2 : ℕ) := by
   have hnn : (0 : ℝ) ≤ δ := le_trans (pureStateTraceDistance_nonneg u y) h
   rw [pureStateTraceDistance] at h
-  have h2 : 1 - ‖(inner ℂ u y : ℂ)‖ ^ 2 ≤ δ ^ 2 := by
-    rcases le_or_gt (1 - ‖(inner ℂ u y : ℂ)‖ ^ 2) 0 with hle | hlt
+  have h2 : 1 - ‖(inner ℂ u y : ℂ)‖ ^ (2 : ℕ) ≤ δ ^ (2 : ℕ) := by
+    rcases le_or_gt (1 - ‖(inner ℂ u y : ℂ)‖ ^ (2 : ℕ)) 0 with hle | hlt
     · nlinarith
     · have hs := Real.sq_sqrt hlt.le
-      nlinarith [Real.sqrt_nonneg (1 - ‖(inner ℂ u y : ℂ)‖ ^ 2)]
+      nlinarith [Real.sqrt_nonneg (1 - ‖(inner ℂ u y : ℂ)‖ ^ (2 : ℕ))]
   have hconj : ‖(inner ℂ y u : ℂ)‖ = ‖(inner ℂ u y : ℂ)‖ := by
     rw [show (inner ℂ y u : ℂ) = starRingEnd ℂ (inner ℂ u y) from (inner_conj_symm y u).symm,
       RCLike.norm_conj]
@@ -115,9 +115,9 @@ theorem one_sub_sq_le_norm_inner_sq {ι : Type*} [Fintype ι] {u y : EuclideanSp
 /-- **The single-target cap.**  A normalized target captures at most `4 e^{-(1-2δ²)²D/4} k^D`
 torsion phase vectors. -/
 theorem card_capturedPhases_le [NeZero k] (hk : 1 < k) (hD : 0 < D)
-    {y : EuclideanSpace ℂ (Fin D)} (hy : ‖y‖ = 1) {δ : ℝ} (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ 2 ≤ 1) :
+    {y : EuclideanSpace ℂ (Fin D)} (hy : ‖y‖ = 1) {δ : ℝ} (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ (2 : ℕ) ≤ 1) :
     ((capturedPhases k y δ).card : ℝ)
-      ≤ 4 * Real.exp (-((1 - 2 * δ ^ 2) * (D : ℝ)) ^ 2 / (4 * (D : ℝ))) * (k : ℝ) ^ D := by
+      ≤ 4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) * (D : ℝ)) ^ (2 : ℕ) / (4 * (D : ℝ))) * (k : ℝ) ^ D := by
   classical
   have hDR : (0 : ℝ) < (D : ℝ) := by exact_mod_cast hD
   refine card_le_of_forall_norm_relative_toCircle_sum_ge hk _ (by nlinarith) ?_
@@ -186,10 +186,10 @@ theorem card_fibre_anchorPhaseHom [NeZero k] (n : Fin d → ZMod k) :
 normalized targets number at most `4 N e^{-(1-2δ²)²D/4} k^{D-1}`. -/
 theorem card_easyAnchored_le [NeZero k] (hk : 1 < k)
     (Y : Finset (EuclideanSpace ℂ (Fin (d + 1)))) (hY : ∀ y ∈ Y, ‖y‖ = 1) {δ : ℝ}
-    (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ 2 ≤ 1) :
+    (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ (2 : ℕ) ≤ 1) :
     (k : ℝ) * ((easyAnchored k Y δ).card : ℝ)
       ≤ (Y.card : ℝ)
-        * (4 * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1)) * (k : ℝ) ^ (d + 1)) := by
+        * (4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1)) * (k : ℝ) ^ (d + 1)) := by
   classical
   have hDR : (0 : ℝ) < (d : ℝ) + 1 := by positivity
   have hcount : (Finset.univ.filter
@@ -206,12 +206,12 @@ theorem card_easyAnchored_le [NeZero k] (hk : 1 < k)
     refine Finset.mem_biUnion.mpr ⟨y, hy, mem_capturedPhases.mpr ?_⟩
     rw [pureStateTraceDistance_torsionRay_eq_anchored]
     exact hle
-  have hexp : -((1 - 2 * δ ^ 2) * (((d + 1 : ℕ) : ℝ))) ^ 2 / (4 * ((d + 1 : ℕ) : ℝ))
-      = -((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1) := by
+  have hexp : -((1 - 2 * δ ^ (2 : ℕ)) * (((d + 1 : ℕ) : ℝ))) ^ (2 : ℕ) / (4 * ((d + 1 : ℕ) : ℝ))
+      = -((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1) := by
     push_cast
     field_simp
   have hterm : ∀ y ∈ Y, ((capturedPhases k y δ).card : ℝ)
-      ≤ 4 * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1)) * (k : ℝ) ^ (d + 1) := by
+      ≤ 4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1)) * (k : ℝ) ^ (d + 1) := by
     intro y hy
     have h := card_capturedPhases_le (D := d + 1) hk (Nat.succ_pos d) (hY y hy) hδ hδ2
     rwa [hexp] at h
@@ -222,12 +222,12 @@ theorem card_easyAnchored_le [NeZero k] (hk : 1 < k)
     exact_mod_cast hle
   have hfin : ∑ y ∈ Y, ((capturedPhases k y δ).card : ℝ)
       ≤ (Y.card : ℝ)
-        * (4 * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1)) * (k : ℝ) ^ (d + 1)) := by
+        * (4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1)) * (k : ℝ) ^ (d + 1)) := by
     calc ∑ y ∈ Y, ((capturedPhases k y δ).card : ℝ)
-        ≤ ∑ _y ∈ Y, 4 * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1))
+        ≤ ∑ _y ∈ Y, 4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1))
             * (k : ℝ) ^ (d + 1) := Finset.sum_le_sum hterm
       _ = (Y.card : ℝ)
-            * (4 * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1))
+            * (4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1))
               * (k : ℝ) ^ (d + 1)) := by rw [Finset.sum_const, nsmul_eq_mul]
   rw [hcount] at hsum
   push_cast at hsum
@@ -237,55 +237,55 @@ theorem card_easyAnchored_le [NeZero k] (hk : 1 < k)
 subset of the projective torsion group after removing all `k-1` power preimages. -/
 theorem card_easyAnchored_lt_of_cap [NeZero k] (hk : 1 < k)
     (Y : Finset (EuclideanSpace ℂ (Fin (d + 1)))) (hY : ∀ y ∈ Y, ‖y‖ = 1) {δ : ℝ}
-    (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ 2 ≤ 1)
+    (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ (2 : ℕ) ≤ 1)
     (h13 : 4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-      * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) < 1) :
+      * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) < 1) :
     (k - 1) * (easyAnchored k Y δ).card < k ^ d := by
   have hkR : (1 : ℝ) < (k : ℝ) := by exact_mod_cast hk
   have hDR : (0 : ℝ) < (d : ℝ) + 1 := by positivity
   have hcap := card_easyAnchored_le hk Y hY hδ hδ2
-  have hmono : Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1))
-      ≤ Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) := by
+  have hmono : Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1))
+      ≤ Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) := by
     refine Real.exp_le_exp.mpr ?_
-    nlinarith [sq_nonneg (δ ^ 2), hDR]
-  have hexppos : (0 : ℝ) < Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1)) := Real.exp_pos _
+    nlinarith [sq_nonneg (δ ^ (2 : ℕ)), hDR]
+  have hexppos : (0 : ℝ) < Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1)) := Real.exp_pos _
   have hNnn : (0 : ℝ) ≤ (Y.card : ℝ) := Nat.cast_nonneg _
   have hpow : (k : ℝ) ^ (d + 1) = (k : ℝ) * (k : ℝ) ^ d := by ring
   have hpowpos : (0 : ℝ) < (k : ℝ) ^ d := by positivity
   have hXnn : (0 : ℝ) ≤ ((easyAnchored k Y δ).card : ℝ) := Nat.cast_nonneg _
   -- divide the cap by `k`
   have hX : ((easyAnchored k Y δ).card : ℝ)
-      ≤ (Y.card : ℝ) * (4 * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1)))
+      ≤ (Y.card : ℝ) * (4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1)))
         * (k : ℝ) ^ d := by
     rw [hpow] at hcap
     nlinarith [hcap, hkR]
   have hreal : ((k : ℝ) - 1) * ((easyAnchored k Y δ).card : ℝ) < (k : ℝ) ^ d := by
     have hstep : ((k : ℝ) - 1) * ((easyAnchored k Y δ).card : ℝ)
         ≤ (4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-            * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d := by
+            * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d := by
       have hk1 : (0 : ℝ) ≤ (k : ℝ) - 1 := by linarith
       have h1 : ((k : ℝ) - 1) * ((easyAnchored k Y δ).card : ℝ)
           ≤ ((k : ℝ) - 1) * ((Y.card : ℝ)
-              * (4 * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d) :=
+              * (4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d) :=
         mul_le_mul_of_nonneg_left hX hk1
       have hc : (0 : ℝ) ≤ 4 * ((k : ℝ) - 1) * (Y.card : ℝ) * (k : ℝ) ^ d :=
         mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hk1) hNnn) hpowpos.le
       have h2 : ((k : ℝ) - 1) * ((Y.card : ℝ)
-            * (4 * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d)
+            * (4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d)
           ≤ (4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-              * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d := by
+              * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d := by
         calc ((k : ℝ) - 1) * ((Y.card : ℝ)
-              * (4 * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d)
+              * (4 * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d)
             = (4 * ((k : ℝ) - 1) * (Y.card : ℝ) * (k : ℝ) ^ d)
-                * Real.exp (-((1 - 2 * δ ^ 2) ^ 2 / 4) * ((d : ℝ) + 1)) := by ring
+                * Real.exp (-((1 - 2 * δ ^ (2 : ℕ)) ^ (2 : ℕ) / 4) * ((d : ℝ) + 1)) := by ring
           _ ≤ (4 * ((k : ℝ) - 1) * (Y.card : ℝ) * (k : ℝ) ^ d)
-                * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) :=
+                * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) :=
               mul_le_mul_of_nonneg_left hmono hc
           _ = (4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-                * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d := by ring
+                * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d := by ring
       linarith
     have hlast : (4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-        * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d < 1 * (k : ℝ) ^ d :=
+        * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1))) * (k : ℝ) ^ d < 1 * (k : ℝ) ^ d :=
       mul_lt_mul_of_pos_right h13 hpowpos
     linarith
   have hcast : (((k - 1) * (easyAnchored k Y δ).card : ℕ) : ℝ)
@@ -301,9 +301,9 @@ dictionary size, the accuracy and the Hilbert dimension alone decide it. -/
 theorem exists_late_recurrence_hard_polygon_of_cap [NeZero k] (hk : k.Prime)
     (E : Fin (d + 1) → ℝ) (hind : LinearIndependent ℚ (projectiveGapPacket E))
     (Y : Finset (EuclideanSpace ℂ (Fin (d + 1)))) (hY : ∀ y ∈ Y, ‖y‖ = 1) {δ : ℝ}
-    (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ 2 ≤ 1)
+    (hδ : 0 ≤ δ) (hδ2 : 2 * δ ^ (2 : ℕ) ≤ 1)
     (h13 : 4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-      * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) < 1)
+      * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) < 1)
     {ρ : ℝ} (hρ : 0 < ρ) (A : ℝ) :
     ∃ R : ℝ, A < R ∧
       pureStateTraceDistance (flowRay E R) (flowRay E 0) < ρ ∧

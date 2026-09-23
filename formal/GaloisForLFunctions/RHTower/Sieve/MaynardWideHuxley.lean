@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardMontgomeryFixedPolylogEnergy
 
 Near amplitude `3/4`, optimizer crossing may require up to 90 powers.  Degree 60 still makes
 width and coefficient energy fixed, so Huxley's finite-set inequality extends with constants
-`10801` and `2^10800`.  This is analytic infrastructure forced by the middle Route-T strip.
+`10801` and `2^(10800 : ℕ)`.  This is analytic infrastructure forced by the middle Route-T strip.
 -/
 
 set_option maxRecDepth 10000

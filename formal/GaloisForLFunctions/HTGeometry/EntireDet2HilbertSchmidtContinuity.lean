@@ -59,8 +59,8 @@ theorem tendsto_detCoeff_of_hsNorm_sub_tendsto_zero
   set ρ : ℝ := r / 2 with hρdef
   have hρ0 : 0 < ρ := by rw [hρdef]; positivity
   have hρr : ρ < r := by rw [hρdef]; linarith
-  set C : ℝ := 2 * Real.exp ((r * M) ^ 2 / (1 - r * M)) with hCdef
-  set L : ℝ := r ^ 2 * M / (1 - r * M) with hLdef
+  set C : ℝ := 2 * Real.exp ((r * M) ^ (2 : ℕ) / (1 - r * M)) with hCdef
+  set L : ℝ := r ^ (2 : ℕ) * M / (1 - r * M) with hLdef
   have hL0 : 0 ≤ L := by rw [hLdef, hrM]; positivity
   have hK₀diff : DifferentiableOn ℂ (fun z => fredholmDet K₀ z) (ball (0 : ℂ) r) :=
     fredholmDet_differentiableOn hK₀ r
@@ -139,7 +139,7 @@ theorem tendsto_entireDet2_of_hsNorm_sub_tendsto_zero
     have hz0 : 0 < ‖z‖ := norm_pos_iff.mpr hz
     set R : ℝ := 2 * ‖z‖ with hRdef
     have hR : 0 < R := by rw [hRdef]; positivity
-    set E : ℝ := Real.exp (R ^ 2 * M ^ 2 / 2) with hEdef
+    set E : ℝ := Real.exp (R ^ (2 : ℕ) * M ^ (2 : ℕ) / 2) with hEdef
     set bnd : ℕ → ℝ := fun k => E * (1 / 2) ^ k with hbnd
     have hsumbnd : Summable bnd := by
       rw [hbnd]
@@ -147,8 +147,8 @@ theorem tendsto_entireDet2_of_hsNorm_sub_tendsto_zero
     have hterm_bound : ∀ (A : ι × ι → ℂ), IsHS A → hsNorm A ≤ M → ∀ k,
         ‖detCoeff A k * z ^ k‖ ≤ bnd k := by
       intro A hA hAM k
-      have hAsq : hsNormSq A ≤ M ^ 2 := by
-        have heq : hsNormSq A = hsNorm A ^ 2 := by
+      have hAsq : hsNormSq A ≤ M ^ (2 : ℕ) := by
+        have heq : hsNormSq A = hsNorm A ^ (2 : ℕ) := by
           rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg A)]
         rw [heq]
         exact pow_le_pow_left₀ (hsNorm_nonneg A) hAM 2

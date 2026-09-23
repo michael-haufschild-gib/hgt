@@ -14,13 +14,13 @@ namespace IrregularStokes
 
 /-- Complementary diagonal contact of a characteristic. -/
 def Characteristic.complementaryContact {R beta : ℕ} (c : Characteristic R beta) : ℚ :=
-  (c.weightedIrregularity : ℚ) / (R : ℚ) ^ 2
+  (c.weightedIrregularity : ℚ) / (R : ℚ) ^ (2 : ℕ)
 
 /-- Exact loop/contact identity. -/
 theorem Characteristic.complementaryContact_eq_loop {R beta : ℕ}
     (c : Characteristic R beta) :
     c.complementaryContact =
-      1 + (((c.diagonalLoop - 1 : ℤ) : ℚ) / (R : ℚ) ^ 2) := by
+      1 + (((c.diagonalLoop - 1 : ℤ) : ℚ) / (R : ℚ) ^ (2 : ℕ)) := by
   have hR : (R : ℚ) ≠ 0 := by
     exact_mod_cast (Nat.ne_of_gt (Nat.zero_lt_one.trans c.ramification_gt_one))
   simp only [Characteristic.complementaryContact, Characteristic.diagonalLoop]
@@ -31,7 +31,7 @@ theorem Characteristic.complementaryContact_eq_loop {R beta : ℕ}
 /-- Zero loop is exactly the critical contact value `1-r⁻²`. -/
 theorem Characteristic.complementaryContact_eq_critical_of_loop_zero {R beta : ℕ}
     (c : Characteristic R beta) (hloop : c.diagonalLoop = 0) :
-    c.complementaryContact = 1 - 1 / (R : ℚ) ^ 2 := by
+    c.complementaryContact = 1 - 1 / (R : ℚ) ^ (2 : ℕ) := by
   rw [c.complementaryContact_eq_loop, hloop]
   norm_num
   ring
@@ -39,7 +39,7 @@ theorem Characteristic.complementaryContact_eq_critical_of_loop_zero {R beta : �
 /-- Every Airy tower has critical complementary contact. -/
 theorem Characteristic.complementaryContact_eq_critical_of_isAiryTower {R beta : ℕ}
     (c : Characteristic R beta) (hairy : c.IsAiryTower) :
-    c.complementaryContact = 1 - 1 / (R : ℚ) ^ 2 := by
+    c.complementaryContact = 1 - 1 / (R : ℚ) ^ (2 : ℕ) := by
   apply c.complementaryContact_eq_critical_of_loop_zero
   exact (c.diagonalLoop_eq_zero_iff_isAiryTower).2 hairy
 

@@ -21,10 +21,10 @@ def doublePolePrimitive (a : ℂ) : ℂ → ℂ := -(fun z => z - a)⁻¹
 
 /-- Derivative of primitive is squared Cauchy kernel away from pole. -/
 lemma hasDerivAt_doublePolePrimitive {a z : ℂ} (hza : z ≠ a) :
-    HasDerivAt (doublePolePrimitive a) ((z - a)⁻¹ ^ 2) z := by
+    HasDerivAt (doublePolePrimitive a) ((z - a)⁻¹ ^ (2 : ℕ)) z := by
   unfold doublePolePrimitive
   have h := (((hasDerivAt_id z).sub_const a).inv (sub_ne_zero.mpr hza)).neg
-  have hcoef : -(-1 / (z - a) ^ 2) = (z - a)⁻¹ ^ 2 := by
+  have hcoef : -(-1 / (z - a) ^ (2 : ℕ)) = (z - a)⁻¹ ^ (2 : ℕ) := by
     field_simp [sub_ne_zero.mpr hza]
   simp only [id_eq] at h
   rw [hcoef] at h
@@ -33,12 +33,12 @@ lemma hasDerivAt_doublePolePrimitive {a z : ℂ} (hza : z ≠ a) :
 /-- Horizontal edge integral of squared Cauchy kernel is primitive difference. -/
 lemma integral_horizontal_doublePole {a : ℂ} {h l r : ℝ}
     (hne : ∀ x ∈ uIcc l r, (x : ℂ) + h * I ≠ a) :
-    (∫ x in l..r, (((x : ℂ) + h * I) - a)⁻¹ ^ 2) =
+    (∫ x in l..r, (((x : ℂ) + h * I) - a)⁻¹ ^ (2 : ℕ)) =
       doublePolePrimitive a ((r : ℂ) + h * I) -
         doublePolePrimitive a ((l : ℂ) + h * I) := by
   have hHD : ∀ x ∈ uIcc l r,
       HasDerivAt (fun x : ℝ => doublePolePrimitive a ((x : ℂ) + h * I))
-        ((((x : ℂ) + h * I) - a)⁻¹ ^ 2) x := by
+        ((((x : ℂ) + h * I) - a)⁻¹ ^ (2 : ℕ)) x := by
     intro x hx
     have hin : HasDerivAt (fun x : ℝ => (x : ℂ) + (h : ℂ) * I) 1 x := by
       simpa using ((Complex.ofRealCLM.hasDerivAt (x := x)).add_const ((h : ℂ) * I))
@@ -46,7 +46,7 @@ lemma integral_horizontal_doublePole {a : ℂ} {h l r : ℝ}
     have hcomp := hout.scomp x hin
     change HasDerivAt (fun y : ℝ => doublePolePrimitive a ((y : ℂ) + h * I)) _ x at hcomp
     simpa only [one_smul] using hcomp
-  have hcont : ContinuousOn (fun x : ℝ => ((((x : ℂ) + h * I) - a)⁻¹ ^ 2))
+  have hcont : ContinuousOn (fun x : ℝ => ((((x : ℂ) + h * I) - a)⁻¹ ^ (2 : ℕ)))
       (uIcc l r) := by
     exact (((Complex.continuous_ofReal.comp continuous_id).add continuous_const).sub
       continuous_const).continuousOn.inv₀
@@ -56,12 +56,12 @@ lemma integral_horizontal_doublePole {a : ℂ} {h l r : ℝ}
 /-- Oriented vertical edge integral of squared Cauchy kernel is primitive difference. -/
 lemma integral_vertical_doublePole {a : ℂ} {v l r : ℝ}
     (hne : ∀ y ∈ uIcc l r, (v : ℂ) + y * I ≠ a) :
-    I • (∫ y in l..r, (((v : ℂ) + y * I) - a)⁻¹ ^ 2) =
+    I • (∫ y in l..r, (((v : ℂ) + y * I) - a)⁻¹ ^ (2 : ℕ)) =
       doublePolePrimitive a ((v : ℂ) + r * I) -
         doublePolePrimitive a ((v : ℂ) + l * I) := by
   have hHD : ∀ y ∈ uIcc l r,
       HasDerivAt (fun y : ℝ => doublePolePrimitive a ((v : ℂ) + y * I))
-        (I * ((((v : ℂ) + y * I) - a)⁻¹ ^ 2)) y := by
+        (I * ((((v : ℂ) + y * I) - a)⁻¹ ^ (2 : ℕ))) y := by
     intro y hy
     have hin : HasDerivAt (fun y : ℝ => (v : ℂ) + (y : ℂ) * I) I y := by
       simpa using ((Complex.ofRealCLM.hasDerivAt (x := y)).mul_const I).const_add (v : ℂ)
@@ -70,7 +70,7 @@ lemma integral_vertical_doublePole {a : ℂ} {v l r : ℝ}
     change HasDerivAt (fun w : ℝ => doublePolePrimitive a ((v : ℂ) + w * I)) _ y at hcomp
     simpa only [smul_eq_mul] using hcomp
   have hcont : ContinuousOn
-      (fun y : ℝ => I * ((((v : ℂ) + y * I) - a)⁻¹ ^ 2)) (uIcc l r) := by
+      (fun y : ℝ => I * ((((v : ℂ) + y * I) - a)⁻¹ ^ (2 : ℕ))) (uIcc l r) := by
     apply continuousOn_const.mul
     exact (((continuous_const.add
       ((Complex.continuous_ofReal.comp continuous_id).mul continuous_const)).sub
@@ -84,7 +84,7 @@ lemma integral_vertical_doublePole {a : ℂ} {v l r : ℝ}
 theorem rectIntegral_doublePoleKernel {a z₁ z₂ : ℂ}
     (hre1 : z₁.re < a.re) (hre2 : a.re < z₂.re)
     (him1 : z₁.im < a.im) (him2 : a.im < z₂.im) :
-    rectIntegral (fun z => (z - a)⁻¹ ^ 2) z₁ z₂ = 0 := by
+    rectIntegral (fun z => (z - a)⁻¹ ^ (2 : ℕ)) z₁ z₂ = 0 := by
   have hbot : ∀ x ∈ uIcc z₁.re z₂.re, (x : ℂ) + z₁.im * I ≠ a := by
     intro x hx heq
     have him := congrArg Complex.im heq
@@ -123,7 +123,7 @@ theorem rectIntegral_eq_confluent_two_pole_residues
     (hq3 : z₁.im < q.im) (hq4 : q.im < z₂.im)
     (hR : Differentiable ℂ R)
     (hdecomp : ∀ z, z ≠ p → z ≠ q →
-      F z = dq * (z - q)⁻¹ ^ 2 +
+      F z = dq * (z - q)⁻¹ ^ (2 : ℕ) +
         (rp * (z - p)⁻¹ + (rq * (z - q)⁻¹ + R z))) :
     rectIntegral F z₁ z₂ = 2 * Real.pi * I * (rp + rq) := by
   let S : Set ℂ := {z | z ≠ p ∧ z ≠ q}
@@ -165,7 +165,7 @@ theorem rectIntegral_eq_confluent_two_pole_residues
     · linarith
   have hdouble : ∀ {a b : ℝ} (pt : ℝ → ℂ), Continuous pt →
       ∀ (c pole : ℂ), (∀ t ∈ uIcc a b, pt t ≠ pole) →
-        IntervalIntegrable (fun t => c * (pt t - pole)⁻¹ ^ 2)
+        IntervalIntegrable (fun t => c * (pt t - pole)⁻¹ ^ (2 : ℕ))
           MeasureTheory.volume a b := by
     intro a b pt hpt c pole hne
     exact (continuousOn_const.mul
@@ -221,7 +221,7 @@ theorem rectIntegral_eq_confluent_two_pole_residues_of_analyticOnNhd
     (hsub : (uIcc z₁.re z₂.re ×ℂ uIcc z₁.im z₂.im) ⊆ U)
     (hR : AnalyticOnNhd ℂ R U)
     (hdecomp : ∀ z, z ≠ p → z ≠ q →
-      F z = dq * (z - q)⁻¹ ^ 2 +
+      F z = dq * (z - q)⁻¹ ^ (2 : ℕ) +
         (rp * (z - p)⁻¹ + (rq * (z - q)⁻¹ + R z))) :
     rectIntegral F z₁ z₂ = 2 * Real.pi * I * (rp + rq) := by
   let S : Set ℂ := {z | z ≠ p ∧ z ≠ q}
@@ -263,7 +263,7 @@ theorem rectIntegral_eq_confluent_two_pole_residues_of_analyticOnNhd
     · linarith
   have hdouble : ∀ {a b : ℝ} (pt : ℝ → ℂ), Continuous pt →
       ∀ (c pole : ℂ), (∀ t ∈ uIcc a b, pt t ≠ pole) →
-        IntervalIntegrable (fun t => c * (pt t - pole)⁻¹ ^ 2)
+        IntervalIntegrable (fun t => c * (pt t - pole)⁻¹ ^ (2 : ℕ))
           MeasureTheory.volume a b := by
     intro a b pt hpt c pole hne
     exact (continuousOn_const.mul

@@ -50,9 +50,9 @@ theorem cofactorReciprocalCardFactor_le
     {A₀ B₀ : ℕ} (hA : 0 < A₀) {Q eta : ℝ}
     (hQ : 0 < Q) (heta : 0 ≤ eta) (j : ℕ) :
     (1 / (⌈(A₀ : ℝ) /
-        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2 *
+        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ) *
         ((geomCofactorBlockAt A₀ B₀ Q eta j).card : ℝ) ≤
-      (((Q * (1 + eta) ^ j) * (1 + eta)) / (A₀ : ℝ)) ^ 2 *
+      (((Q * (1 + eta) ^ j) * (1 + eta)) / (A₀ : ℝ)) ^ (2 : ℕ) *
         ((B₀ : ℝ) / (Q * (1 + eta) ^ j) + 1) := by
   let D : ℝ := (Q * (1 + eta) ^ j) * (1 + eta)
   have hD : 0 < D := by
@@ -71,17 +71,17 @@ theorem cofactorReciprocalCardFactor_le
   have hcard := card_geomCofactorBlockAt_le (A₀ := A₀) (B₀ := B₀) hQ heta j
   calc
     (1 / (⌈(A₀ : ℝ) /
-        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2 *
+        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ) *
         ((geomCofactorBlockAt A₀ B₀ Q eta j).card : ℝ) =
-      (1 / (⌈(A₀ : ℝ) / D⌉₊ : ℝ)) ^ 2 *
+      (1 / (⌈(A₀ : ℝ) / D⌉₊ : ℝ)) ^ (2 : ℕ) *
         ((geomCofactorBlockAt A₀ B₀ Q eta j).card : ℝ) := by rfl
-    _ ≤ (D / (A₀ : ℝ)) ^ 2 *
+    _ ≤ (D / (A₀ : ℝ)) ^ (2 : ℕ) *
         ((geomCofactorBlockAt A₀ B₀ Q eta j).card : ℝ) := by
       gcongr
-    _ ≤ (D / (A₀ : ℝ)) ^ 2 *
+    _ ≤ (D / (A₀ : ℝ)) ^ (2 : ℕ) *
         ((B₀ : ℝ) / (Q * (1 + eta) ^ j) + 1) := by
       exact mul_le_mul_of_nonneg_left hcard (sq_nonneg _)
-    _ = (((Q * (1 + eta) ^ j) * (1 + eta)) / (A₀ : ℝ)) ^ 2 *
+    _ = (((Q * (1 + eta) ^ j) * (1 + eta)) / (A₀ : ℝ)) ^ (2 : ℕ) *
         ((B₀ : ℝ) / (Q * (1 + eta) ^ j) + 1) := by rfl
 
 /-- Nonnegativity of the reciprocal Halász--Montgomery mass, with its genuine measure parameter. -/
@@ -188,10 +188,10 @@ theorem menonHarmonicProductCostVolume_le
     (P : Finset ℕ) {A₀ B₀ : ℕ} (hA : 0 < A₀) {Q eta W V volE : ℝ}
     (hQ : 0 < Q) (heta : 0 ≤ eta) (hW : 1 ≤ W) (hvolE : 0 ≤ volE) (j : ℕ) :
     menonHarmonicProductCostVolume P A₀ B₀ Q eta W V volE j ≤
-      V ^ 2 * ((2 * Real.pi)⁻¹ *
+      V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (hmMassRecip ⌊(B₀ : ℝ) / (Q * (1 + eta) ^ j)⌋₊
           (2 * Real.pi * W) (2 * Real.pi * volE) *
-            ((((Q * (1 + eta) ^ j) * (1 + eta)) / (A₀ : ℝ)) ^ 2 *
+            ((((Q * (1 + eta) ^ j) * (1 + eta)) / (A₀ : ℝ)) ^ (2 : ℕ) *
               ((B₀ : ℝ) / (Q * (1 + eta) ^ j) + 1)))) := by
   have hT : 1 ≤ 2 * Real.pi * W := by
     nlinarith [Real.pi_gt_three]
@@ -211,7 +211,7 @@ theorem finalRangeCofactorReciprocalCardFactor_le
     {x Q eta : ℝ} (hx : 1 ≤ x) (hQ : 0 < Q) (heta : 0 ≤ eta) (heta1 : eta ≤ 1)
     (j : ℕ) (hQjTop : Q * (1 + eta) ^ j ≤ 3 * x) :
     (1 / (⌈(⌈x⌉₊ : ℝ) /
-        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2 *
+        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ) *
         ((geomCofactorBlockAt ⌈x⌉₊ (menonFinalRangeTopNat x) Q eta j).card : ℝ) ≤
       24 * (Q * (1 + eta) ^ j) / x := by
   let q : ℝ := Q * (1 + eta) ^ j
@@ -238,12 +238,12 @@ theorem finalRangeCofactorReciprocalCardFactor_le
   have hcardFactorUpper0 : 0 ≤ 3 * x / q + 1 := by positivity
   calc
     (1 / (⌈(⌈x⌉₊ : ℝ) /
-        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ 2 *
+        ((Q * (1 + eta) ^ j) * (1 + eta))⌉₊ : ℝ)) ^ (2 : ℕ) *
         ((geomCofactorBlockAt ⌈x⌉₊ (menonFinalRangeTopNat x) Q eta j).card : ℝ) ≤
-      (q * (1 + eta) / (⌈x⌉₊ : ℝ)) ^ 2 *
+      (q * (1 + eta) / (⌈x⌉₊ : ℝ)) ^ (2 : ℕ) *
         (((menonFinalRangeTopNat x : ℕ) : ℝ) / q + 1) := by
           simpa only [q] using hbase
-    _ ≤ (2 * q / x) ^ 2 * (3 * x / q + 1) := by gcongr
+    _ ≤ (2 * q / x) ^ (2 : ℕ) * (3 * x / q + 1) := by gcongr
     _ ≤ 24 * q / x := by
       field_simp
       nlinarith
@@ -257,7 +257,7 @@ theorem menonFinalRangeProductCostVolume_le
     (hQjTop : Q * (1 + eta) ^ j ≤ 3 * x) :
     menonHarmonicProductCostVolume P ⌈x⌉₊
         (menonFinalRangeTopNat x) Q eta W V volE j ≤
-      V ^ 2 * ((2 * Real.pi)⁻¹ *
+      V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (hmMassRecip ⌊(menonFinalRangeTopNat x : ℝ) / (Q * (1 + eta) ^ j)⌋₊
           (2 * Real.pi * W) (2 * Real.pi * volE) *
             (24 * (Q * (1 + eta) ^ j) / x))) := by
@@ -368,7 +368,7 @@ theorem menonFinalShellProductCostVolume_le_explicit
     (hN : 1 ≤ ⌊(menonFinalRangeTopNat x : ℝ) / (Q * (1 + eta) ^ j)⌋₊) :
     menonHarmonicProductCostVolume P ⌈x⌉₊ (menonFinalRangeTopNat x)
         Q eta x V volE j ≤
-      V ^ 2 * ((2 * Real.pi)⁻¹ *
+      V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (24 * (6 +
           80000 * Real.sqrt x * Real.log x * (2 * Real.pi * volE) *
             (Q * (1 + eta) ^ j) / x +
@@ -388,19 +388,19 @@ theorem menonFinalShellProductCostVolume_le_explicit
   calc
     menonHarmonicProductCostVolume P ⌈x⌉₊ (menonFinalRangeTopNat x)
         Q eta x V volE j ≤
-      V ^ 2 * ((2 * Real.pi)⁻¹ *
+      V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (hmMassRecip ⌊(menonFinalRangeTopNat x : ℝ) / q⌋₊
           (2 * Real.pi * x) (2 * Real.pi * volE) * (24 * q / x))) := by
             simpa only [q] using hbase
-    _ = V ^ 2 * ((2 * Real.pi)⁻¹ *
+    _ = V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (24 * (hmMassRecip ⌊(menonFinalRangeTopNat x : ℝ) / q⌋₊
           (2 * Real.pi * x) (2 * Real.pi * volE) * q / x))) := by ring
-    _ ≤ V ^ 2 * ((2 * Real.pi)⁻¹ *
+    _ ≤ V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (24 * (6 +
           80000 * Real.sqrt x * Real.log x * (2 * Real.pi * volE) * q / x +
           144 * Real.pi * Real.log (2 + 2 * (2 * Real.pi * x))))) := by
       gcongr
-    _ = V ^ 2 * ((2 * Real.pi)⁻¹ *
+    _ = V ^ (2 : ℕ) * ((2 * Real.pi)⁻¹ *
         (24 * (6 +
           80000 * Real.sqrt x * Real.log x * (2 * Real.pi * volE) *
             (Q * (1 + eta) ^ j) / x +

@@ -15,9 +15,9 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def einastoGaussianCorrectionFactor (d l σ r : ℝ) : ℝ :=
-  8 * Real.pi * ∫ u in (0 : ℝ)..1, u ^ 2 * einastoGaussianSource d l σ (r * u)
+  8 * Real.pi * ∫ u in (0 : ℝ)..1, u ^ (2 : ℕ) * einastoGaussianSource d l σ (r * u)
 
-def einastoGaussianCorrection (d l σ r : ℝ) : ℝ := r ^ 2 * einastoGaussianCorrectionFactor d l σ r
+def einastoGaussianCorrection (d l σ r : ℝ) : ℝ := r ^ (2 : ℕ) * einastoGaussianCorrectionFactor d l σ r
 
 def einastoGaussianCorrectionCoefficient (d l σ : ℝ) : ℝ := 8 * Real.pi * einastoGaussianSource d l σ 0 / 3
 
@@ -38,7 +38,7 @@ theorem einastoGaussianCorrectionFactor_core (d l σ : ℝ) :
 /-- The finite quadratic coefficient is extracted from the actual source. -/
 theorem einastoGaussianCorrectionCoefficient_eq (d l σ : ℝ) :
     einastoGaussianCorrectionCoefficient d l σ =
-      -192 * Real.pi * exp d / exp l ^ 2 + (512 / 3 : ℝ) * Real.pi ^ 2 * (σ - 1) * exp d ^ 2 := by
+      -192 * Real.pi * exp d / exp l ^ (2 : ℕ) + (512 / 3 : ℝ) * Real.pi ^ (2 : ℕ) * (σ - 1) * exp d ^ (2 : ℕ) := by
   rw [einastoGaussianCorrectionCoefficient, einastoGaussianSource_core]
   ring
 
@@ -50,21 +50,21 @@ theorem einastoGaussianCorrection_center (d l σ : ℝ) : einastoGaussianCorrect
   ring
 
 theorem einastoGaussianCorrection_primitive (d l σ r : ℝ) :
-    r * einastoGaussianCorrection d l σ r = ∫ s in 0..r, 8 * Real.pi * s ^ 2 * einastoGaussianSource d l σ s := by
+    r * einastoGaussianCorrection d l σ r = ∫ s in 0..r, 8 * Real.pi * s ^ (2 : ℕ) * einastoGaussianSource d l σ s := by
   have h := intervalIntegral.smul_integral_comp_mul_left
-    (fun s : ℝ => s ^ 2 * einastoGaussianSource d l σ s) r (a := 0) (b := 1)
+    (fun s : ℝ => s ^ (2 : ℕ) * einastoGaussianSource d l σ s) r (a := 0) (b := 1)
   simp only [smul_eq_mul, mul_zero, mul_one, mul_pow] at h
-  rw [show (fun u : ℝ => r ^ 2 * u ^ 2 * einastoGaussianSource d l σ (r * u)) =
-    (fun u : ℝ => r ^ 2 * (u ^ 2 * einastoGaussianSource d l σ (r * u))) by funext u; ring,
+  rw [show (fun u : ℝ => r ^ (2 : ℕ) * u ^ (2 : ℕ) * einastoGaussianSource d l σ (r * u)) =
+    (fun u : ℝ => r ^ (2 : ℕ) * (u ^ (2 : ℕ) * einastoGaussianSource d l σ (r * u))) by funext u; ring,
     intervalIntegral.integral_const_mul] at h
-  rw [show (fun s : ℝ => 8 * Real.pi * s ^ 2 * einastoGaussianSource d l σ s) =
-    (fun s : ℝ => (8 * Real.pi) * (s ^ 2 * einastoGaussianSource d l σ s)) by funext s; ring,
+  rw [show (fun s : ℝ => 8 * Real.pi * s ^ (2 : ℕ) * einastoGaussianSource d l σ s) =
+    (fun s : ℝ => (8 * Real.pi) * (s ^ (2 : ℕ) * einastoGaussianSource d l σ s)) by funext s; ring,
     intervalIntegral.integral_const_mul, ← h]
   unfold einastoGaussianCorrection einastoGaussianCorrectionFactor
   ring
 
 theorem einastoGaussianCorrection_integral (d l σ r : ℝ) :
-    einastoGaussianCorrection d l σ r = (∫ s in 0..r, 8 * Real.pi * s ^ 2 * einastoGaussianSource d l σ s) / r := by
+    einastoGaussianCorrection d l σ r = (∫ s in 0..r, 8 * Real.pi * s ^ (2 : ℕ) * einastoGaussianSource d l σ s) / r := by
   by_cases hr : r = 0
   · subst r
     simp only [einastoGaussianCorrection_center, intervalIntegral.integral_same, zero_div]
@@ -74,7 +74,7 @@ theorem einastoGaussianCorrection_integral (d l σ r : ℝ) :
 /-- The constructed correction is equation (15) with the actual curvature source. -/
 theorem einastoGaussianCorrection_actual_integral (d l σ t : ℝ) :
     einastoGaussianCorrection d l σ (exp t) =
-      (∫ s in 0..exp t, 8 * Real.pi * s ^ 2 * quadraticRadialSource σ (einastoMetric d l einastoGaussianShape) s) / exp t := by
+      (∫ s in 0..exp t, 8 * Real.pi * s ^ (2 : ℕ) * quadraticRadialSource σ (einastoMetric d l einastoGaussianShape) s) / exp t := by
   rw [einastoGaussianCorrection_integral]
   congr 1
   apply intervalIntegral.integral_congr_Ioo_of_le (exp_pos t).le
@@ -87,7 +87,7 @@ theorem einastoGaussianCorrection_actual_integral (d l σ t : ℝ) :
 /-- The literal printed appendix also gives this regular inverse near zero. -/
 theorem einastoGaussianCorrection_appendix_integral (d l : ℝ) :
     (fun t => einastoGaussianCorrection d l (-1) (exp t)) =ᶠ[atBot]
-      (fun t => (∫ s in 0..exp t, 8 * Real.pi * s ^ 2 * quadraticAppendixSource (einastoMetric d l einastoGaussianShape) s) / exp t) := by
+      (fun t => (∫ s in 0..exp t, 8 * Real.pi * s ^ (2 : ℕ) * quadraticAppendixSource (einastoMetric d l einastoGaussianShape) s) / exp t) := by
   obtain ⟨T, hT⟩ := eventually_atBot.mp (einastoGaussianSource_appendix_eventually d l)
   filter_upwards [eventually_le_atBot T] with t ht
   rw [einastoGaussianCorrection_integral]
@@ -105,11 +105,11 @@ theorem einastoGaussianCorrection_appendix_integral (d l : ℝ) :
 
 theorem einastoGaussianCorrection_primitive_hasDerivAt (d l σ r : ℝ) :
     HasDerivAt (fun s => s * einastoGaussianCorrection d l σ s)
-      (8 * Real.pi * r ^ 2 * einastoGaussianSource d l σ r) r := by
-  have hc : Continuous (fun s : ℝ => 8 * Real.pi * s ^ 2 * einastoGaussianSource d l σ s) :=
+      (8 * Real.pi * r ^ (2 : ℕ) * einastoGaussianSource d l σ r) r := by
+  have hc : Continuous (fun s : ℝ => 8 * Real.pi * s ^ (2 : ℕ) * einastoGaussianSource d l σ s) :=
     (continuous_const.mul (continuous_id.pow 2)).mul (einastoGaussianSource_continuous d l σ)
   have he : (fun s => s * einastoGaussianCorrection d l σ s) =
-      (fun s => ∫ u in 0..s, 8 * Real.pi * u ^ 2 * einastoGaussianSource d l σ u) := by
+      (fun s => ∫ u in 0..s, 8 * Real.pi * u ^ (2 : ℕ) * einastoGaussianSource d l σ u) := by
     funext s
     exact einastoGaussianCorrection_primitive d l σ s
   rw [he]
@@ -118,7 +118,7 @@ theorem einastoGaussianCorrection_primitive_hasDerivAt (d l σ r : ℝ) :
 
 theorem einastoGaussianCorrection_source_ode (d l σ t : ℝ) :
     HasDerivAt (fun r => r * einastoGaussianCorrection d l σ r)
-      (8 * Real.pi * exp t ^ 2 * quadraticRadialSource σ (einastoMetric d l einastoGaussianShape) (exp t)) (exp t) := by
+      (8 * Real.pi * exp t ^ (2 : ℕ) * quadraticRadialSource σ (einastoMetric d l einastoGaussianShape) (exp t)) (exp t) := by
   rw [einastoGaussianSource_actual]
   exact einastoGaussianCorrection_primitive_hasDerivAt d l σ (exp t)
 
@@ -145,7 +145,7 @@ theorem einastoGaussianCorrectionFactor_hasDerivAt (d l σ t : ℝ) :
   have h := (einastoGaussianCorrection_hasDerivAt d l σ t).div
     ((hasDerivAt_id (exp t)).pow 2) (pow_ne_zero 2 (exp_ne_zero t))
   simp only [Pi.div_def, Pi.pow_apply, id_eq] at h
-  have hd : HasDerivAt (fun r => einastoGaussianCorrection d l σ r / r ^ 2)
+  have hd : HasDerivAt (fun r => einastoGaussianCorrection d l σ r / r ^ (2 : ℕ))
       ((8 * Real.pi * einastoGaussianSource d l σ (exp t) - 3 * einastoGaussianCorrectionFactor d l σ (exp t)) / exp t) (exp t) := by
     apply h.congr_deriv
     unfold einastoGaussianCorrection
@@ -178,9 +178,9 @@ theorem einastoGaussianCorrection_second_hasDerivAt (d l σ t : ℝ) :
 
 /-- Quadratic, not linear, leading behavior of the actual metric correction. -/
 theorem einastoGaussianCorrection_quadratic_limit (d l σ : ℝ) :
-    Tendsto (fun t => einastoGaussianCorrection d l σ (exp t) / exp t ^ 2) atBot
+    Tendsto (fun t => einastoGaussianCorrection d l σ (exp t) / exp t ^ (2 : ℕ)) atBot
       (𝓝 (einastoGaussianCorrectionCoefficient d l σ)) := by
-  have he : (fun t => einastoGaussianCorrection d l σ (exp t) / exp t ^ 2) =
+  have he : (fun t => einastoGaussianCorrection d l σ (exp t) / exp t ^ (2 : ℕ)) =
       (fun t => einastoGaussianCorrectionFactor d l σ (exp t)) := by
     funext t
     unfold einastoGaussianCorrection

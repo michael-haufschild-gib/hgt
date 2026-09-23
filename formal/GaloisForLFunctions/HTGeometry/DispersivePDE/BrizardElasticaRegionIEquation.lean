@@ -15,8 +15,8 @@ structure RegionICenteredElastica
     (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V] where
   parameter : RegionIParameters
   normalization : CenteredElasticaNormalization V
-  gammaSq_match : normalization.gamma ^ 2 = gammaSq parameter.val
-  nuSq_match : normalization.nu ^ 2 = nuSq parameter.val
+  gammaSq_match : normalization.gamma ^ (2 : ℕ) = gammaSq parameter.val
+  nuSq_match : normalization.nu ^ (2 : ℕ) = nuSq parameter.val
 
 noncomputable def regionICurvatureProfile
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
@@ -65,7 +65,7 @@ theorem regionICurvatureProfileVelocity_zero
 theorem regionICurvatureProfile_equation
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     (R : RegionICenteredElastica V) (v : ℝ) :
-    regionICurvatureProfileVelocity R v ^ 2 =
+    regionICurvatureProfileVelocity R v ^ (2 : ℕ) =
       dimensionlessCurvatureRHS (R.parameter.val.q₀ : ℝ)
         R.normalization.gamma R.normalization.nu (regionICurvatureProfile R v) := by
   let σ := regionIDimensionlessJacobian R.parameter R.normalization.curvatureUnit
@@ -75,14 +75,14 @@ theorem regionICurvatureProfile_equation
   have hσ := regionIDimensionlessJacobian_sq R.parameter R.normalization.curvatureUnit
   have hσpos := regionIDimensionlessJacobian_pos R.parameter R.normalization.curvatureUnit
   change (dimensionlessSquaredCurvatureVelocity R.normalization R.parameter.val.q₀ s *
-      (1 / σ)) ^ 2 =
+      (1 / σ)) ^ (2 : ℕ) =
     dimensionlessCurvatureRHS (R.parameter.val.q₀ : ℝ)
       R.normalization.gamma R.normalization.nu
         (dimensionlessSquaredCurvature R.normalization R.parameter.val.q₀ s)
-  change σ ^ 2 = dimensionlessArclengthFactor R.normalization.curvatureUnit
+  change σ ^ (2 : ℕ) = dimensionlessArclengthFactor R.normalization.curvatureUnit
     R.parameter.val.q₀ at hσ
   rw [dimensionlessArclengthFactor] at hσ
-  change σ ^ 2 = R.normalization.frame.geometry.curvature 0 ^ 2 /
+  change σ ^ (2 : ℕ) = R.normalization.frame.geometry.curvature 0 ^ (2 : ℕ) /
     (4 * (R.parameter.val.q₀ : ℝ)) at hσ
   rw [← hσ] at harc
   change 0 < σ at hσpos
@@ -95,12 +95,12 @@ theorem regionICurvatureProfile_equation
 theorem regionICurvatureProfile_parameter_equation
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     (R : RegionICenteredElastica V) (v : ℝ) :
-    regionICurvatureProfileVelocity R v ^ 2 =
+    regionICurvatureProfileVelocity R v ^ (2 : ℕ) =
       4 * ((R.parameter.val.q₀ : ℝ) - regionICurvatureProfile R v) *
-        (regionICurvatureProfile R v ^ 2 +
+        (regionICurvatureProfile R v ^ (2 : ℕ) +
           (1 + gammaSq R.parameter.val) * (R.parameter.val.q₀ : ℝ) *
             regionICurvatureProfile R v -
-          (R.parameter.val.q₀ : ℝ) ^ 2 * nuSq R.parameter.val) := by
+          (R.parameter.val.q₀ : ℝ) ^ (2 : ℕ) * nuSq R.parameter.val) := by
   rw [regionICurvatureProfile_equation, dimensionlessCurvatureRHS,
     R.gammaSq_match, R.nuSq_match]
 

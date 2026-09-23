@@ -30,14 +30,14 @@ theorem integral_Icc_normSq_chiRatio_freezingError_criticalDivisor_le
             (-(((1 : ℝ) : ℂ) + (v : ℂ) * I)) -
           smoothAFEZetaChiShiftRatio (linePt u)
             (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))) *
-        criticalDivisorPolynomial N t‖ ^ 2) ≤
-      ((((1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ 2 / T) * H) ^ 2) *
-        (5 * Real.pi * Real.exp 1 * ((N : ℝ) * (1 + Real.log N) ^ 3) +
-          (5 * Real.pi / 2) * (1 + Real.log N) ^ 4 * (2 * T)) := by
+        criticalDivisorPolynomial N t‖ ^ (2 : ℕ)) ≤
+      ((((1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ (2 : ℕ) / T) * H) ^ (2 : ℕ)) *
+        (5 * Real.pi * Real.exp 1 * ((N : ℝ) * (1 + Real.log N) ^ (3 : ℕ)) +
+          (5 * Real.pi / 2) * (1 + Real.log N) ^ (4 : ℕ) * (2 * T)) := by
   let r : ℝ → ℂ := fun t => smoothAFEZetaChiShiftRatio (linePt t)
     (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))
   let P : ℝ → ℂ := criticalDivisorPolynomial N
-  let L : ℝ := (1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ 2 / T
+  let L : ℝ := (1 + 2 * T) * (6 + 2 * Real.pi) * (1 + |v|) ^ (2 : ℕ) / T
   have hT0 : 0 < T := by linarith
   have hL0 : 0 ≤ L := by dsimp only [L]; positivity
   have hcontR : Continuous r := by
@@ -49,7 +49,7 @@ theorem integral_Icc_normSq_chiRatio_freezingError_criticalDivisor_le
     exact RHTower.Sieve.continuous_LSeries_line_of_support (by simp)
       (fun _n hn => criticalDivisorSeq_support hn) 0
   have hpoint : ∀ t ∈ Set.Icc a b,
-      ‖(r t - r u) * P t‖ ^ 2 ≤ (L * H) ^ 2 * ‖P t‖ ^ 2 := by
+      ‖(r t - r u) * P t‖ ^ (2 : ℕ) ≤ (L * H) ^ (2 : ℕ) * ‖P t‖ ^ (2 : ℕ) := by
     intro t ht
     have htDy : t ∈ Set.Icc T (2 * T) := ⟨ha.1.trans ht.1, ht.2.trans hb.2⟩
     have huDy : u ∈ Set.Icc T (2 * T) :=
@@ -64,8 +64,8 @@ theorem integral_Icc_normSq_chiRatio_freezingError_criticalDivisor_le
     exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hvarH 2)
       (sq_nonneg _)
   have hmonoPoint :
-      (∫ t in Set.Icc a b, ‖(r t - r u) * P t‖ ^ 2) ≤
-        ∫ t in Set.Icc a b, (L * H) ^ 2 * ‖P t‖ ^ 2 := by
+      (∫ t in Set.Icc a b, ‖(r t - r u) * P t‖ ^ (2 : ℕ)) ≤
+        ∫ t in Set.Icc a b, (L * H) ^ (2 : ℕ) * ‖P t‖ ^ (2 : ℕ) := by
     apply MeasureTheory.setIntegral_mono_on
     · exact (((hcontR.sub continuous_const).mul hcontP).norm.pow 2).integrableOn_Icc
     · exact (continuous_const.mul (hcontP.norm.pow 2)).integrableOn_Icc
@@ -77,28 +77,28 @@ theorem integral_Icc_normSq_chiRatio_freezingError_criticalDivisor_le
     · linarith [hT0, ha.1, ht.1]
     · exact ht.2.trans hb.2
   have hPmono :
-      (∫ t in Set.Icc a b, ‖P t‖ ^ 2) ≤
-        ∫ t in Set.Icc (-(2 * T)) (2 * T), ‖P t‖ ^ 2 := by
+      (∫ t in Set.Icc a b, ‖P t‖ ^ (2 : ℕ)) ≤
+        ∫ t in Set.Icc (-(2 * T)) (2 * T), ‖P t‖ ^ (2 : ℕ) := by
     exact MeasureTheory.setIntegral_mono_set (hcontP.norm.pow 2).integrableOn_Icc
       (Filter.Eventually.of_forall fun _ => sq_nonneg _)
       (Filter.Eventually.of_forall hsubset)
   have hMS := integral_Icc_normSq_criticalDivisorPolynomial_le N hN
     (T := 2 * T) (by linarith)
   have hMS' :
-      (∫ t in Set.Icc (-(2 * T)) (2 * T), ‖P t‖ ^ 2) ≤
-        5 * Real.pi * Real.exp 1 * ((N : ℝ) * (1 + Real.log N) ^ 3) +
-          (5 * Real.pi / 2) * (1 + Real.log N) ^ 4 * (2 * T) := by
+      (∫ t in Set.Icc (-(2 * T)) (2 * T), ‖P t‖ ^ (2 : ℕ)) ≤
+        5 * Real.pi * Real.exp 1 * ((N : ℝ) * (1 + Real.log N) ^ (3 : ℕ)) +
+          (5 * Real.pi / 2) * (1 + Real.log N) ^ (4 : ℕ) * (2 * T) := by
     simpa only [P] using hMS
-  change (∫ t in Set.Icc a b, ‖(r t - r u) * P t‖ ^ 2) ≤ _
+  change (∫ t in Set.Icc a b, ‖(r t - r u) * P t‖ ^ (2 : ℕ)) ≤ _
   refine hmonoPoint.trans ?_
   rw [MeasureTheory.integral_const_mul]
   calc
-    (L * H) ^ 2 * (∫ t in Set.Icc a b, ‖P t‖ ^ 2)
-        ≤ (L * H) ^ 2 * (∫ t in Set.Icc (-(2 * T)) (2 * T), ‖P t‖ ^ 2) := by
+    (L * H) ^ (2 : ℕ) * (∫ t in Set.Icc a b, ‖P t‖ ^ (2 : ℕ))
+        ≤ (L * H) ^ (2 : ℕ) * (∫ t in Set.Icc (-(2 * T)) (2 * T), ‖P t‖ ^ (2 : ℕ)) := by
           exact mul_le_mul_of_nonneg_left hPmono (sq_nonneg _)
-    _ ≤ (L * H) ^ 2 *
-        (5 * Real.pi * Real.exp 1 * ((N : ℝ) * (1 + Real.log N) ^ 3) +
-          (5 * Real.pi / 2) * (1 + Real.log N) ^ 4 * (2 * T)) := by
+    _ ≤ (L * H) ^ (2 : ℕ) *
+        (5 * Real.pi * Real.exp 1 * ((N : ℝ) * (1 + Real.log N) ^ (3 : ℕ)) +
+          (5 * Real.pi / 2) * (1 + Real.log N) ^ (4 : ℕ) * (2 * T)) := by
           exact mul_le_mul_of_nonneg_left hMS' (sq_nonneg _)
     _ = _ := by rfl
 

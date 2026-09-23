@@ -18,14 +18,14 @@ theorem eventually_realQuad_neg_of_entrywise_tendsto
     (hconv : ∀ j l, Tendsto (fun n => G n j l) atTop (𝓝 (A j l))) :
     ∀ᶠ n in atTop, ∀ x : Fin k → ℝ, x ≠ 0 → realQuad (G n) x < 0 := by
   obtain ⟨δ, hδ, hmargin⟩ := exists_margin_of_negDef A hA
-  let ε : ℝ := δ / (2 * ((k : ℝ) ^ 2 + 1))
+  let ε : ℝ := δ / (2 * ((k : ℝ) ^ (2 : ℕ) + 1))
   have hε : 0 < ε := by
     dsimp [ε]
     positivity
-  have hsmall : ε * (k : ℝ) ^ 2 < δ := by
+  have hsmall : ε * (k : ℝ) ^ (2 : ℕ) < δ := by
     dsimp [ε]
     rw [div_mul_eq_mul_div]
-    rw [div_lt_iff₀ (by positivity : 0 < 2 * ((k : ℝ) ^ 2 + 1))]
+    rw [div_lt_iff₀ (by positivity : 0 < 2 * ((k : ℝ) ^ (2 : ℕ) + 1))]
     nlinarith [sq_nonneg (k : ℝ), hδ]
   have hall' : ∀ᶠ n in atTop, ∀ j ∈ (Finset.univ : Finset (Fin k)),
       ∀ l ∈ (Finset.univ : Finset (Fin k)), |G n j l - A j l| ≤ ε := by
@@ -61,7 +61,7 @@ theorem realQuad_diagonal_neg {k : ℕ} (d : Fin k → ℝ) (hd : ∀ j, d j < 0
     intro j
     nlinarith [hd j, sq_nonneg (x j)]
   have hjterm : d j₀ * x j₀ * x j₀ < 0 := by
-    have hxpos : 0 < x j₀ ^ 2 := sq_pos_of_ne_zero hj₀
+    have hxpos : 0 < x j₀ ^ (2 : ℕ) := sq_pos_of_ne_zero hj₀
     nlinarith [hd j₀]
   have hsplit := Finset.add_sum_erase Finset.univ (fun j => d j * x j * x j)
     (Finset.mem_univ j₀)
@@ -94,7 +94,7 @@ theorem exists_foldedTraceHankelGram_negativePacket
   classical
   let α : Fin k → ℂ := fun j => lam (s j)
   let c : Fin k → ℂ := fun j => Classical.choose (exists_phase_sq_re_neg (him j))
-  have hc (j : Fin k) : (α j * c j ^ 2).re < 0 := by
+  have hc (j : Fin k) : (α j * c j ^ (2 : ℕ)).re < 0 := by
     exact Classical.choose_spec (exists_phase_sq_re_neg (him j))
   have hcne (j : Fin k) : c j ≠ 0 := by
     intro hz
@@ -161,7 +161,7 @@ theorem exists_foldedTraceHankelGram_negativePacket
       exact hC j
   let G : ℕ → Matrix (Fin k) (Fin k) ℝ := fun n j l =>
     foldedTraceHankelGram lam (qn n j) (qn n l)
-  let d : Fin k → ℝ := fun j => 2 * (α j * c j ^ 2).re
+  let d : Fin k → ℝ := fun j => 2 * (α j * c j ^ (2 : ℕ)).re
   let D : Matrix (Fin k) (Fin k) ℝ := Matrix.diagonal d
   have hconv (j l : Fin k) : Tendsto (fun n => G n j l) atTop (𝓝 (D j l)) := by
     let f : ℕ → ι → ℂ := fun n i =>
@@ -198,7 +198,7 @@ theorem exists_foldedTraceHankelGram_negativePacket
     have htsum : Tendsto (fun n => ∑' i, f n i) atTop (𝓝 (∑' i, g i)) :=
       tendsto_tsum_of_dominated_convergence hboundSum hpointwise
         (Eventually.of_forall hdom)
-    have hgsum : (∑' i, g i) = if j = l then α j * c j ^ 2 else 0 := by
+    have hgsum : (∑' i, g i) = if j = l then α j * c j ^ (2 : ℕ) else 0 := by
       by_cases hjl : j = l
       · subst l
         rw [tsum_eq_single (s j)]
@@ -277,7 +277,7 @@ theorem exists_foldedTraceHankelGram_negativePacket_of_upper
   classical
   let α : Fin k → ℂ := fun j => lam (s j)
   let c : Fin k → ℂ := fun j => Classical.choose (exists_phase_sq_re_neg (him j))
-  have hc (j : Fin k) : (α j * c j ^ 2).re < 0 := by
+  have hc (j : Fin k) : (α j * c j ^ (2 : ℕ)).re < 0 := by
     exact Classical.choose_spec (exists_phase_sq_re_neg (him j))
   have hcne (j : Fin k) : c j ≠ 0 := by
     intro hz
@@ -349,7 +349,7 @@ theorem exists_foldedTraceHankelGram_negativePacket_of_upper
   let G : ℕ → Matrix (Fin k) (Fin k) ℝ := fun n j l =>
     foldedTraceHankelGram lam (qn n j) (qn n l)
   let orbitPhase : Fin k → ι → ℂ := fun j i =>
-    if lam i = α j then α j * c j ^ 2 else 0
+    if lam i = α j then α j * c j ^ (2 : ℕ) else 0
   let d : Fin k → ℝ := fun j => 2 * (∑' i, orbitPhase j i).re
   let D : Matrix (Fin k) (Fin k) ℝ := Matrix.diagonal d
   have hconv (j l : Fin k) : Tendsto (fun n => G n j l) atTop (𝓝 (D j l)) := by

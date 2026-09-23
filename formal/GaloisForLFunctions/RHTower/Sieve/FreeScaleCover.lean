@@ -53,17 +53,17 @@ theorem tileBase_succ_le {K₀ u : ℕ} (hu : 8 ≤ u) (hT : 8 ≤ tileLog K₀ 
   set T' : ℕ := tileLog K₀ (u + 1) with hT'def
   have hTT : T' ≤ T + 1 := by rw [hT'def, hTdef]; exact tileLog_succ_le (by omega)
   -- the scale-free core of the estimate
-  have h1 : 64 * (u + 1) ^ 2 ≤ 81 * u ^ 2 := by nlinarith [hu]
+  have h1 : 64 * (u + 1) ^ (2 : ℕ) ≤ 81 * u ^ (2 : ℕ) := by nlinarith [hu]
   have h2 : 8 * (T + 1) ≤ 9 * T := by omega
-  have hprod : (64 * (u + 1) ^ 2) * (8 * (T + 1)) ≤ (81 * u ^ 2) * (9 * T) :=
+  have hprod : (64 * (u + 1) ^ (2 : ℕ)) * (8 * (T + 1)) ≤ (81 * u ^ (2 : ℕ)) * (9 * T) :=
     Nat.mul_le_mul h1 h2
-  have hcore : 2 * (u + 1) ^ 2 * (T + 1) ≤ 3 * u ^ 2 * T := by
-    have hexp : (64 * (u + 1) ^ 2) * (8 * (T + 1)) = 512 * ((u + 1) ^ 2 * (T + 1)) := by ring
-    have hexp2 : (81 * u ^ 2) * (9 * T) = 729 * (u ^ 2 * T) := by ring
+  have hcore : 2 * (u + 1) ^ (2 : ℕ) * (T + 1) ≤ 3 * u ^ (2 : ℕ) * T := by
+    have hexp : (64 * (u + 1) ^ (2 : ℕ)) * (8 * (T + 1)) = 512 * ((u + 1) ^ (2 : ℕ) * (T + 1)) := by ring
+    have hexp2 : (81 * u ^ (2 : ℕ)) * (9 * T) = 729 * (u ^ (2 : ℕ) * T) := by ring
     rw [hexp, hexp2] at hprod
-    have hgoal : 512 * (2 * (u + 1) ^ 2 * (T + 1)) ≤ 512 * (3 * u ^ 2 * T) := by
-      have hL : 512 * (2 * (u + 1) ^ 2 * (T + 1)) = 2 * (512 * ((u + 1) ^ 2 * (T + 1))) := by ring
-      have hR : 512 * (3 * u ^ 2 * T) = 1536 * (u ^ 2 * T) := by ring
+    have hgoal : 512 * (2 * (u + 1) ^ (2 : ℕ) * (T + 1)) ≤ 512 * (3 * u ^ (2 : ℕ) * T) := by
+      have hL : 512 * (2 * (u + 1) ^ (2 : ℕ) * (T + 1)) = 2 * (512 * ((u + 1) ^ (2 : ℕ) * (T + 1))) := by ring
+      have hR : 512 * (3 * u ^ (2 : ℕ) * T) = 1536 * (u ^ (2 : ℕ) * T) := by ring
       rw [hL, hR]
       omega
     exact Nat.le_of_mul_le_mul_left hgoal (by norm_num)
@@ -80,8 +80,8 @@ theorem tileBase_succ_le {K₀ u : ℕ} (hu : 8 ≤ u) (hT : 8 ≤ tileLog K₀ 
     have hA : 2 * ((u + 1) * (u + 1) * T') ≤ 2 * ((u + 1) * (u + 1) * (T + 1)) :=
       Nat.mul_le_mul_left 2 hmono
     have hB : 2 * ((u + 1) * (u + 1) * (T + 1)) ≤ 3 * (u * u * T) := by
-      have hEq1 : 2 * ((u + 1) * (u + 1) * (T + 1)) = 2 * (u + 1) ^ 2 * (T + 1) := by ring
-      have hEq2 : 3 * u ^ 2 * T = 3 * (u * u * T) := by ring
+      have hEq1 : 2 * ((u + 1) * (u + 1) * (T + 1)) = 2 * (u + 1) ^ (2 : ℕ) * (T + 1) := by ring
+      have hEq2 : 3 * u ^ (2 : ℕ) * T = 3 * (u * u * T) := by ring
       rw [hEq1, ← hEq2]
       exact hcore
     exact le_trans hA hB
@@ -95,7 +95,7 @@ theorem lt_tileBase {K₀ u : ℕ} (hu : 0 < u) (hT : 1 ≤ tileLog K₀ u) : u 
   have hm : u < tileM K₀ u := by
     rw [tileM]
     have : (2 : ℕ) ^ (K₀ + 1) * u ≥ 2 * u := Nat.mul_le_mul_right u (by
-      calc (2 : ℕ) = 2 ^ 1 := by norm_num
+      calc (2 : ℕ) = 2 ^ (1 : ℕ) := by norm_num
         _ ≤ 2 ^ (K₀ + 1) := Nat.pow_le_pow_right (by norm_num) (by omega))
     omega
   have hm0 : 0 < tileM K₀ u := tileM_pos hu

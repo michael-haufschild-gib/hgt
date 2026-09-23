@@ -18,7 +18,7 @@ def cubicNormFormula (A B C D E : ℝ) : ℝ :=
   max (max (cubicArcCapacity A E) (4*|B|/27)) (max (4*|C|/27) (|D|/4))
 
 theorem cubicEdge_sharp_bound (B x y : ℝ) :
-    |B*x*y^2| ≤ (4*|B|/27)*(|x|+|y|)^3 := by
+    |B*x*y^(2 : ℕ)| ≤ (4*|B|/27)*(|x|+|y|)^(3 : ℕ) := by
   have h := mul_nonneg (sq_nonneg (|x|-|y|/2))
     (show 0 ≤ |x|+4*|y| by positivity)
   rw [← separated_cubic_gap] at h
@@ -27,7 +27,7 @@ theorem cubicEdge_sharp_bound (B x y : ℝ) :
   nlinarith only [hh]
 
 theorem cubicEdge_quadratic_bound (D x y : ℝ) :
-    |D*x*y| ≤ (|D|/4)*(|x|+|y|)^2 := by
+    |D*x*y| ≤ (|D|/4)*(|x|+|y|)^(2 : ℕ) := by
   have h := mul_nonneg (abs_nonneg D) (sq_nonneg (|x|-|y|))
   simp only [abs_mul]
   nlinarith only [h]
@@ -77,7 +77,7 @@ theorem cubicNormFormula_bounds (A B C D E : ℝ) :
   · have hs : g 0+g 3=1 := by simpa [hb,hc,he] using hsum
     have hh := cubicEdge_sharp_bound B (g 0) (g 3)
     rw [abs_of_nonneg (hnn 0),abs_of_nonneg (hnn 3),hs,one_pow,mul_one] at hh
-    have hv : cubicReadout A B C D E g=B*g 0*(g 3)^2 := by
+    have hv : cubicReadout A B C D E g=B*g 0*(g 3)^(2 : ℕ) := by
       simp [cubicReadout,hb,hc,he]
       ring
     rw [hv]
@@ -96,7 +96,7 @@ theorem cubicNormFormula_bounds (A B C D E : ℝ) :
       linarith
     have hh := cubicEdge_sharp_bound C (g 4) (g 1)
     rw [abs_of_nonneg (hnn 4),abs_of_nonneg (hnn 1),hs,one_pow,mul_one] at hh
-    have hv : cubicReadout A B C D E g=C*g 4*(g 1)^2 := by
+    have hv : cubicReadout A B C D E g=C*g 4*(g 1)^(2 : ℕ) := by
       simp [cubicReadout,ha,hc,hd]
       ring
     rw [hv]

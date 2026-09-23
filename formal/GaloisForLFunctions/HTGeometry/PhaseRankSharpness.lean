@@ -68,7 +68,7 @@ private def linearRelationPoly (omega : d → ℝ) :
     + Polynomial.X
 
 omit [DecidableEq d] in
-theorem linearRelationPoly_ne_zero (omega : d → ℝ) : linearRelationPoly omega ≠ 0 := by
+theorem linearRelationPoly_ne_zero_phaseRankSharpness (omega : d → ℝ) : linearRelationPoly omega ≠ 0 := by
   intro h
   have hcoeff : (linearRelationPoly omega).coeff 1 = 1 := by
     rw [linearRelationPoly, Polynomial.coeff_add, Polynomial.coeff_C,
@@ -145,7 +145,7 @@ theorem sharpness_linearObservable {ρ omega : d → ℝ} (hρ : ∀ j, 0 < ρ j
         RealAutonomousAnnihilator (phaseFunction omega (linearObservable a))
           (Fintype.card d) P :=
   ⟨rank_bohrFrequencyModule_linearObservable hρ hindep ha,
-    linearRelationPoly omega, linearRelationPoly_ne_zero omega,
+    linearRelationPoly omega, linearRelationPoly_ne_zero_phaseRankSharpness omega,
     realAutonomousAnnihilator_linearObservable hρ a⟩
 
 /-- **No autonomous equation of lower order.** -/

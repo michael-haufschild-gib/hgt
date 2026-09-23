@@ -150,7 +150,7 @@ theorem cast_heathBrownPositiveProductLogCollisionAggregate_le_halfHeightIntegra
         ∫ t in Set.Icc (-(heathBrownHalfHeight T : ℝ)) (heathBrownHalfHeight T : ℝ),
           ‖heathBrownSparseFactor A (fun _ => 1) t *
             heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-              heathBrownDenseUnitWeight t‖ ^ 2 := by
+              heathBrownDenseUnitWeight t‖ ^ (2 : ℕ) := by
   calc
     (heathBrownPositiveProductLogCollisionAggregate A N ((T : ℝ)⁻¹) : ℝ) ≤
         heathBrownPositiveWeightedCollision A (heathBrownPositiveInterval N hN)
@@ -160,7 +160,7 @@ theorem cast_heathBrownPositiveProductLogCollisionAggregate_le_halfHeightIntegra
         ∫ t in Set.Icc (-(heathBrownHalfHeight T : ℝ)) (heathBrownHalfHeight T : ℝ),
           ‖heathBrownSparseFactor A (fun _ => 1) t *
             heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-              heathBrownDenseUnitWeight t‖ ^ 2 :=
+              heathBrownDenseUnitWeight t‖ ^ (2 : ℕ) :=
       heathBrownPositiveWeightedCollision_le_integral_Icc_factors
         A (heathBrownPositiveInterval N hN) heathBrownDenseUnitWeight
           (heathBrownHalfHeight T)
@@ -168,7 +168,7 @@ theorem cast_heathBrownPositiveProductLogCollisionAggregate_le_halfHeightIntegra
         ∫ t in Set.Icc (-(heathBrownHalfHeight T : ℝ)) (heathBrownHalfHeight T : ℝ),
           ‖heathBrownSparseFactor A (fun _ => 1) t *
             heathBrownDenseFactor (heathBrownPositiveInterval N hN)
-              heathBrownDenseUnitWeight t‖ ^ 2 := by
+              heathBrownDenseUnitWeight t‖ ^ (2 : ℕ) := by
       have hcoef : 5 / (4 * ((T : ℝ) / 2)) = 5 / (2 * (T : ℝ)) := by
         have hTpos : (0 : ℝ) < (T : ℝ) := T.property
         field_simp [ne_of_gt hTpos]
@@ -182,37 +182,37 @@ theorem integral_Icc_normSq_heathBrown_factors_le_twoScaleIntegral
     {N N0 : ℕ} (hB : ∀ n ∈ B, (n : ℕ) ≤ N)
     (hN0 : 1 ≤ N0) (hN0N : N0 ≤ N) :
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A ε t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownSparseFactor A ε t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (5 * Real.pi / 2) * (T : ℝ) *
-        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           ((N / N0 + 1 : ℕ) : ℝ) *
             ((5 / (2 * (T : ℝ))) *
               ∫ t in Set.Icc (-(heathBrownHalfHeight T : ℝ))
                   (heathBrownHalfHeight T : ℝ),
                 ‖heathBrownSparseFactor A (fun _ => 1) t *
                   heathBrownDenseFactor (heathBrownPositiveInterval N0 hN0)
-                    heathBrownDenseUnitWeight t‖ ^ 2) +
-          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2) := by
+                    heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)) +
+          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ)) := by
   calc
     (∫ t in Set.Icc (-(T : ℝ)) (T : ℝ),
-        ‖heathBrownSparseFactor A ε t * heathBrownDenseFactor B q t‖ ^ 2) ≤
+        ‖heathBrownSparseFactor A ε t * heathBrownDenseFactor B q t‖ ^ (2 : ℕ)) ≤
       (5 * Real.pi / 2) * (T : ℝ) *
-        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           ((N / N0 + 1 : ℕ) : ℝ) *
             (heathBrownPositiveProductLogCollisionAggregate A N0 ((T : ℝ)⁻¹) : ℝ) +
-          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2) :=
+          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ)) :=
       integral_Icc_normSq_heathBrown_factors_le_twoScaleAggregate
         A B ε q T hT hB hN0 hN0N
     _ ≤ (5 * Real.pi / 2) * (T : ℝ) *
-        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ 2 * (A.card : ℝ) ^ 2 +
+        (15 * (T : ℝ)⁻¹ * (N : ℝ) ^ (2 : ℕ) * (A.card : ℝ) ^ (2 : ℕ) +
           ((N / N0 + 1 : ℕ) : ℝ) *
             ((5 / (2 * (T : ℝ))) *
               ∫ t in Set.Icc (-(heathBrownHalfHeight T : ℝ))
                   (heathBrownHalfHeight T : ℝ),
                 ‖heathBrownSparseFactor A (fun _ => 1) t *
                   heathBrownDenseFactor (heathBrownPositiveInterval N0 hN0)
-                    heathBrownDenseUnitWeight t‖ ^ 2) +
-          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ 2) := by
+                    heathBrownDenseUnitWeight t‖ ^ (2 : ℕ)) +
+          ((2 * (N / N0) + 1 : ℕ) : ℝ) * (A.card : ℝ) ^ (2 : ℕ)) := by
       gcongr
       exact cast_heathBrownPositiveProductLogCollisionAggregate_le_halfHeightIntegral
         A T hN0

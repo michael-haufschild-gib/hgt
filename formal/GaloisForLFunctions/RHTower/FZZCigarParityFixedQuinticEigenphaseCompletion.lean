@@ -66,7 +66,7 @@ theorem fzzCigarParityUpperLeftFifthRoot_im_pos (z : ℂ) :
 
 theorem fzzCigarParityUpperLeftFifthRoot_pow_five
     {z : ℂ} (hnorm : ‖z‖ = 1) :
-    fzzCigarParityUpperLeftFifthRoot z ^ 5 = z := by
+    fzzCigarParityUpperLeftFifthRoot z ^ (5 : ℕ) = z := by
   have hzexp : Complex.exp ((z.arg : ℂ) * Complex.I) = z := by
     simpa [hnorm] using Complex.norm_mul_exp_arg_mul_I z
   by_cases harg : z.arg = Real.pi
@@ -96,7 +96,7 @@ theorem fzzCigarParityUpperLeftFifthRoot_pow_five
 
 /-- One fixed quintic interaction of the literal positive-imaginary source eigenline. -/
 def fzzCigarParityFixedQuinticEigenphase (beta : ℝ) : ℂ :=
-  fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ 5
+  fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ (5 : ℕ)
 
 theorem norm_fzzCigarParityFixedQuinticEigenphase
     {beta : ℝ} (hbeta : 0 < beta) :
@@ -118,7 +118,7 @@ theorem exists_pos_fzzCigarParityFixedQuinticEigenphase_eq_of_norm_one
 
 theorem fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_sq_im_neg
     {beta : ℝ} (hbeta : 0 < beta) :
-    (fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ 2).im < 0 := by
+    (fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ (2 : ℕ)).im < 0 := by
   rw [pow_two, Complex.mul_im]
   have hre := fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_re_neg hbeta
   have him := fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_im_pos hbeta
@@ -130,7 +130,7 @@ theorem fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_sq_im_neg
 
 theorem fzzCigarParityFixedMonomialDegreeOne_ne_one
     {beta : ℝ} (hbeta : 0 < beta) :
-    fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ 1 ≠ 1 := by
+    fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ (1 : ℕ) ≠ 1 := by
   intro h
   have hre := congrArg Complex.re h
   have hneg := fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_re_neg hbeta
@@ -139,7 +139,7 @@ theorem fzzCigarParityFixedMonomialDegreeOne_ne_one
 
 theorem fzzCigarParityFixedMonomialDegreeTwo_ne_one
     {beta : ℝ} (hbeta : 0 < beta) :
-    fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ 2 ≠ 1 := by
+    fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ (2 : ℕ) ≠ 1 := by
   intro h
   have him := congrArg Complex.im h
   have hneg :=
@@ -149,16 +149,16 @@ theorem fzzCigarParityFixedMonomialDegreeTwo_ne_one
 
 theorem fzzCigarParityFixedMonomialDegreeThree_ne_neg_one
     {beta : ℝ} (hbeta : 0 < beta) :
-    fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ 3 ≠ -1 := by
+    fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ (3 : ℕ) ≠ -1 := by
   let y := fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta
   have hre : y.re < 0 :=
     fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_re_neg hbeta
   have him : 0 < y.im :=
     fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_im_pos hbeta
   intro h
-  have hfactor : (y + 1) * (y ^ 2 - y + 1) = 0 := by
+  have hfactor : (y + 1) * (y ^ (2 : ℕ) - y + 1) = 0 := by
     calc
-      (y + 1) * (y ^ 2 - y + 1) = y ^ 3 + 1 := by ring
+      (y + 1) * (y ^ (2 : ℕ) - y + 1) = y ^ (3 : ℕ) + 1 := by ring
       _ = 0 := by rw [h]; ring
   rcases mul_eq_zero.mp hfactor with hlinear | hquadratic
   · have himzero := congrArg Complex.im hlinear
@@ -175,14 +175,14 @@ theorem fzzCigarParityFixedMonomialDegreeThree_ne_neg_one
 
 theorem fzzCigarParityFixedMonomialDegreeFour_ne_one
     {beta : ℝ} (hbeta : 0 < beta) :
-    fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ 4 ≠ 1 := by
+    fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta ^ (4 : ℕ) ≠ 1 := by
   let y := fzzCigarParityDilatedKreinEigenlineBalancedCoordinate beta
-  have hsqneg : (y ^ 2).im < 0 :=
+  have hsqneg : (y ^ (2 : ℕ)).im < 0 :=
     fzzCigarParityDilatedKreinEigenlineBalancedCoordinate_sq_im_neg hbeta
   intro h
-  have hfactor : (y ^ 2 - 1) * (y ^ 2 + 1) = 0 := by
+  have hfactor : (y ^ (2 : ℕ) - 1) * (y ^ (2 : ℕ) + 1) = 0 := by
     calc
-      (y ^ 2 - 1) * (y ^ 2 + 1) = y ^ 4 - 1 := by ring
+      (y ^ (2 : ℕ) - 1) * (y ^ (2 : ℕ) + 1) = y ^ (4 : ℕ) - 1 := by ring
       _ = 0 := by rw [h]; ring
   rcases mul_eq_zero.mp hfactor with hminus | hplus
   · have himzero := congrArg Complex.im hminus

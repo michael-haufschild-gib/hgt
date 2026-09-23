@@ -37,7 +37,7 @@ private def U (q : XiZeroCopy) (x : ℝ) : ℂ := weightedMode q (-c q) x
 
 private theorem f_eq (q : XiZeroCopy) (x : ℝ) : f q x = tiltedSource (-c q) x := rfl
 
-private theorem w_eq (q : XiZeroCopy) (x : ℝ) : w q x = f q x*‖sourceRatio q x‖^2 := rfl
+private theorem w_eq (q : XiZeroCopy) (x : ℝ) : w q x = f q x*‖sourceRatio q x‖^(2 : ℕ) := rfl
 
 private theorem U_eq (q : XiZeroCopy) (x : ℝ) : U q x = (f q x:ℂ)*sourceRatio q x :=
   weightedMode_eq q (-c q) x
@@ -55,9 +55,9 @@ private theorem ratio_mul_integrable (q : XiZeroCopy) (g : SchwartzMap ℝ ℝ) 
     (Eventually.of_forall hC)
 
 private theorem ratio_sq_integrable (q : XiZeroCopy) (g : SchwartzMap ℝ ℝ) :
-    Integrable (fun x => g x*‖sourceRatio q x‖^2) := by
+    Integrable (fun x => g x*‖sourceRatio q x‖^(2 : ℕ)) := by
   obtain ⟨C, _, hC⟩ := sourceRatio_bounded q
-  have hb : ∀ x, ‖‖sourceRatio q x‖^2‖ ≤ C^2 := by
+  have hb : ∀ x, ‖‖sourceRatio q x‖^(2 : ℕ)‖ ≤ C^(2 : ℕ) := by
     intro x
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
     exact pow_le_pow_left₀ (norm_nonneg _) (hC x) 2
@@ -74,14 +74,14 @@ private theorem ratio_mul_tendsto (q : XiZeroCopy) (g : SchwartzMap ℝ ℝ) :
   · simpa using g.tendsto_cocompact.norm.const_mul C
 
 private theorem ratio_sq_tendsto (q : XiZeroCopy) (g : SchwartzMap ℝ ℝ) :
-    Tendsto (fun x => g x*‖sourceRatio q x‖^2) (cocompact ℝ) (𝓝 0) := by
+    Tendsto (fun x => g x*‖sourceRatio q x‖^(2 : ℕ)) (cocompact ℝ) (𝓝 0) := by
   obtain ⟨C, _, hC⟩ := sourceRatio_bounded q
-  apply squeeze_zero_norm (a := fun x => C^2*‖g x‖)
+  apply squeeze_zero_norm (a := fun x => C^(2 : ℕ)*‖g x‖)
   · intro x
-    rw [norm_mul, Real.norm_eq_abs (‖sourceRatio q x‖^2), abs_of_nonneg (sq_nonneg _)]
+    rw [norm_mul, Real.norm_eq_abs (‖sourceRatio q x‖^(2 : ℕ)), abs_of_nonneg (sq_nonneg _)]
     have hb := pow_le_pow_left₀ (norm_nonneg _) (hC x) 2
     nlinarith [norm_nonneg (g x)]
-  · simpa using g.tendsto_cocompact.norm.const_mul (C^2)
+  · simpa using g.tendsto_cocompact.norm.const_mul (C^(2 : ℕ))
 
 private theorem U_integrable (q : XiZeroCopy) : Integrable (U q) := by
   simpa only [← U_eq] using ratio_mul_integrable q (f q)
@@ -137,9 +137,9 @@ private theorem xQw_integrable (q : XiZeroCopy) : Integrable (fun x => x*(Q x*w 
     ((xw_integrable q).const_mul (c q))
   apply h.congr
   filter_upwards with x
-  change X (SchwartzMap.derivCLM ℝ ℝ (f q)) x*‖sourceRatio q x‖^2+c q*(x*w q x) = _
+  change X (SchwartzMap.derivCLM ℝ ℝ (f q)) x*‖sourceRatio q x‖^(2 : ℕ)+c q*(x*w q x) = _
   rw [X_apply]
-  change x*deriv (f q) x*‖sourceRatio q x‖^2+c q*(x*w q x) = _
+  change x*deriv (f q) x*‖sourceRatio q x‖^(2 : ℕ)+c q*(x*w q x) = _
   rw [f_deriv, w_eq]
   ring
 
@@ -172,7 +172,7 @@ private theorem xw_deriv (q : XiZeroCopy) (x : ℝ) :
   ring
 
 private theorem first_mode_moment (q : XiZeroCopy) :
-    (∫ x : ℝ, (x:ℂ)*U q x).im = (∫ x, f q x)/(b q)^2 := by
+    (∫ x : ℝ, (x:ℂ)*U q x).im = (∫ x, f q x)/(b q)^(2 : ℕ) := by
   have hu := U_integrable q
   have hxu := xU_integrable q
   have h0raw := integral_of_hasDerivAt_of_tendsto (U_deriv q)
@@ -221,7 +221,7 @@ private theorem D_integrable (q : XiZeroCopy) : Integrable (D q) := by
   ring
 
 private theorem moment_identity (q : XiZeroCopy) :
-    (∫ x, D q x) = (∫ x, w q x)-2*(∫ x, f q x)/(b q)^2 := by
+    (∫ x, D q x) = (∫ x, w q x)-2*(∫ x, f q x)/(b q)^(2 : ℕ) := by
   have hw := w_integrable q
   have hD := D_integrable q
   have hi := (xU_integrable q).im
@@ -334,12 +334,12 @@ private theorem integral_covariance (q : XiZeroCopy) :
 /-- Exact first imaginary moment of the actual mode in the spectral gauge. -/
 theorem gauge_first_mode_moment (q : XiZeroCopy) :
     (∫ x : ℝ, (x:ℂ)*weightedMode q (-(xiSpectralPoint q).im) x).im =
-      (∫ x, tiltedSource (-(xiSpectralPoint q).im) x)/(xiSpectralPoint q).re^2 :=
+      (∫ x, tiltedSource (-(xiSpectralPoint q).im) x)/(xiSpectralPoint q).re^(2 : ℕ) :=
   first_mode_moment q
 
 /-- The gauge energy lies strictly above source mass divided by the squared ordinate. -/
 theorem gauge_energy_lower (q : XiZeroCopy) :
-    (∫ x, tiltedSource (-(xiSpectralPoint q).im) x)/(xiSpectralPoint q).re^2 <
+    (∫ x, tiltedSource (-(xiSpectralPoint q).im) x)/(xiSpectralPoint q).re^(2 : ℕ) <
       ∫ x, weightedEnergy q (-(xiSpectralPoint q).im) x := by
   let a : Ioo (-1:ℝ) 1 := ⟨-c q, by have h := abs_lt.mp (c_strip q); constructor <;> linarith⟩
   have h := tilted_energy_strict_floor q a
@@ -351,10 +351,10 @@ theorem gauge_energy_lower (q : XiZeroCopy) :
 /-- Strict theta curvature bounds actual gauge energy by twice the source mass scale. -/
 theorem gauge_energy_upper (q : XiZeroCopy) :
     (∫ x, weightedEnergy q (-(xiSpectralPoint q).im) x) <
-      2*(∫ x, tiltedSource (-(xiSpectralPoint q).im) x)/(xiSpectralPoint q).re^2 := by
+      2*(∫ x, tiltedSource (-(xiSpectralPoint q).im) x)/(xiSpectralPoint q).re^(2 : ℕ) := by
   have hp := covariance_pos q
   rw [integral_covariance, moment_identity] at hp
-  change (∫ x, w q x) < 2*(∫ x, f q x)/(b q)^2
+  change (∫ x, w q x) < 2*(∫ x, f q x)/(b q)^(2 : ℕ)
   linarith
 
 private def H (q : XiZeroCopy) (x : ℝ) : ℝ := w q x+(2/b q)*(U q x).re
@@ -405,18 +405,18 @@ private theorem H_neg (q : XiZeroCopy) (x : ℝ) : H q x < 0 := by
     exact lt_of_lt_of_le (hm (mem_Ici.mpr le_rfl) (by change x ≤ x+1; linarith) (by linarith)) hn
 
 private theorem ratio_disk_quadratic (q : XiZeroCopy) (x : ℝ) :
-    (b q)^2*‖sourceRatio q x‖^2+2*b q*(sourceRatio q x).re < 0 := by
+    (b q)^(2 : ℕ)*‖sourceRatio q x‖^(2 : ℕ)+2*b q*(sourceRatio q x).re < 0 := by
   have hn := H_neg q x
   rw [H, w_eq, U_eq] at hn
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hn
   have hf : 0 < f q x := mul_pos (Real.exp_pos _) (thetaCuspFullSource_pos_all x)
-  have he : f q x*‖sourceRatio q x‖^2+(2/b q)*(f q x*(sourceRatio q x).re) =
-      f q x*(‖sourceRatio q x‖^2+(2/b q)*(sourceRatio q x).re) := by ring
+  have he : f q x*‖sourceRatio q x‖^(2 : ℕ)+(2/b q)*(f q x*(sourceRatio q x).re) =
+      f q x*(‖sourceRatio q x‖^(2 : ℕ)+(2/b q)*(sourceRatio q x).re) := by ring
   rw [he] at hn
-  have hh : ‖sourceRatio q x‖^2+(2/b q)*(sourceRatio q x).re < 0 := by nlinarith
+  have hh : ‖sourceRatio q x‖^(2 : ℕ)+(2/b q)*(sourceRatio q x).re < 0 := by nlinarith
   have hp := mul_neg_of_pos_of_neg (sq_pos_of_ne_zero (b_ne_zero q)) hh
-  have hb : (b q)^2*(‖sourceRatio q x‖^2+(2/b q)*(sourceRatio q x).re) =
-      (b q)^2*‖sourceRatio q x‖^2+2*b q*(sourceRatio q x).re := by
+  have hb : (b q)^(2 : ℕ)*(‖sourceRatio q x‖^(2 : ℕ)+(2/b q)*(sourceRatio q x).re) =
+      (b q)^(2 : ℕ)*‖sourceRatio q x‖^(2 : ℕ)+2*b q*(sourceRatio q x).re := by
     field_simp [b_ne_zero q]
   rwa [hb] at hp
 
@@ -424,20 +424,20 @@ private theorem ratio_disk_quadratic (q : XiZeroCopy) (x : ℝ) :
 theorem source_ratio_strict_disk (q : XiZeroCopy) (x : ℝ) :
     ‖1+((xiSpectralPoint q).re:ℂ)*sourceRatio q x‖ < 1 := by
   have hn := ratio_disk_quadratic q x
-  have he : ‖1+(b q:ℂ)*sourceRatio q x‖^2 =
-      1+(b q)^2*‖sourceRatio q x‖^2+2*b q*(sourceRatio q x).re := by
+  have he : ‖1+(b q:ℂ)*sourceRatio q x‖^(2 : ℕ) =
+      1+(b q)^(2 : ℕ)*‖sourceRatio q x‖^(2 : ℕ)+2*b q*(sourceRatio q x).re := by
     simp [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
     ring
   change ‖1+(b q:ℂ)*sourceRatio q x‖ < 1
   nlinarith [norm_nonneg (1+(b q:ℂ)*sourceRatio q x)]
 
 private theorem mode_energy_pointwise (q : XiZeroCopy) (x : ℝ) :
-    (b q)^2*‖mode q x‖^2 < -2*b q*thetaCuspFullSource x*(mode q x).re := by
-  have hp : 0 < (b q)^2*thetaCuspFullSource x/Real.exp (-c q*x) :=
+    (b q)^(2 : ℕ)*‖mode q x‖^(2 : ℕ) < -2*b q*thetaCuspFullSource x*(mode q x).re := by
+  have hp : 0 < (b q)^(2 : ℕ)*thetaCuspFullSource x/Real.exp (-c q*x) :=
     div_pos (mul_pos (sq_pos_of_ne_zero (b_ne_zero q)) (thetaCuspFullSource_pos_all x)) (Real.exp_pos _)
   have hn := mul_neg_of_neg_of_pos (H_neg q x) hp
-  have he : H q x*((b q)^2*thetaCuspFullSource x/Real.exp (-c q*x)) =
-      (b q)^2*‖mode q x‖^2+2*b q*thetaCuspFullSource x*(mode q x).re := by
+  have he : H q x*((b q)^(2 : ℕ)*thetaCuspFullSource x/Real.exp (-c q*x)) =
+      (b q)^(2 : ℕ)*‖mode q x‖^(2 : ℕ)+2*b q*thetaCuspFullSource x*(mode q x).re := by
     rw [H, w, weightedEnergy_eq]
     dsimp [U, weightedMode]
     simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
@@ -454,7 +454,7 @@ theorem gauge_phase_current_pos (q : XiZeroCopy) (x : ℝ) :
   have he : (positiveMode q x).re = -b q*(mode q x).re := by
     simp [positiveMode, b, Complex.mul_re]
   rw [he] at hc
-  have hb : (b q)^2/2 < (-b q*(mode q x).re)*thetaCuspFullSource x/Complex.normSq (mode q x) := by
+  have hb : (b q)^(2 : ℕ)/2 < (-b q*(mode q x).re)*thetaCuspFullSource x/Complex.normSq (mode q x) := by
     apply (lt_div_iff₀ hm).2
     rw [Complex.normSq_eq_norm_sq]
     nlinarith

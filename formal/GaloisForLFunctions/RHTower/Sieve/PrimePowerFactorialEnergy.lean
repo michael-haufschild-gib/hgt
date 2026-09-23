@@ -174,9 +174,9 @@ theorem norm_convPow_le_factorial_of_prime_support
 theorem primePowerSupportSum_normSq_convPow_le_factorial
     (N ell : ℕ) (a : Fin N → ℂ)
     (hsupp : ∀ n : Fin N, a n ≠ 0 → Nat.Prime ((n : ℕ) + 1)) :
-    ∑ j : Fin (N ^ ell), ‖convPow N ell a j‖ ^ 2 ≤
-      (ell.factorial : ℝ) * (∑ n : Fin N, ‖a n‖ ^ 2) ^ ell :=
-  sum_normSq_convPow_le_of_support N ell a (primeSupport N)
+    ∑ j : Fin (N ^ ell), ‖convPow N ell a j‖ ^ (2 : ℕ) ≤
+      (ell.factorial : ℝ) * (∑ n : Fin N, ‖a n‖ ^ (2 : ℕ)) ^ ell :=
+  sum_normSq_convPow_le_of_support_primePowerSupport N ell a (primeSupport N)
     (fun n hn => by
       rw [primeSupport, Finset.mem_filter]
       exact ⟨Finset.mem_univ _, hsupp n hn⟩)

@@ -41,7 +41,7 @@ theorem norm_exp_sub_exp_lower_of_skewAdjoint
         δ / 4 * ‖p‖ := by
     refine herr.trans ?_
     calc
-      δ ^ 2 * ‖p‖ ^ 2 = (δ * ‖p‖) * (δ * ‖p‖) := by ring
+      δ ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) = (δ * ‖p‖) * (δ * ‖p‖) := by ring
       _ ≤ (1 / 4) * (δ * ‖p‖) := by
         gcongr
       _ = δ / 4 * ‖p‖ := by ring

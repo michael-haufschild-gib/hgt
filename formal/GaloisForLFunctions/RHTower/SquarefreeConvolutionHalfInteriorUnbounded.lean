@@ -89,7 +89,7 @@ theorem not_exists_bound_squarefreeHalfDirichletPartialSum_of_half_lt_real_lt_on
       hright0.comp (tendsto_add_atTop_nat 1)
     exact tendsto_nhds_unique hleft' hright
   let H : ℂ → ℂ := fun s =>
-    (s - 1) * F s ^ 2 * riemannZeta (2 * s) - zetaResidueUnit s
+    (s - 1) * F s ^ (2 : ℕ) * riemannZeta (2 * s) - zetaResidueUnit s
   have hHana : AnalyticOnNhd ℂ H U := by
     intro s hs
     have htwo : 2 * s ≠ 1 := by
@@ -194,7 +194,7 @@ theorem counterterm_not_eventually_bounded_at_cayleyExteriorPoint_of_cofinal_loc
     (show 3 ≤ kappa N by omega)
   have hpow : (20 : ℝ) ≤ (5 / 4 : ℝ) ^ (kappa N - 1) := by
     calc
-      (20 : ℝ) ≤ (5 / 4 : ℝ) ^ 23 := by norm_num
+      (20 : ℝ) ≤ (5 / 4 : ℝ) ^ (23 : ℕ) := by norm_num
       _ ≤ (5 / 4 : ℝ) ^ (kappa N - 1) :=
         pow_le_pow_right₀ (by norm_num) (by omega)
   have honeGeom : (1 : ℝ) ≤ (5 / 4 : ℝ) ^ (kappa N - 1) / 20 := by

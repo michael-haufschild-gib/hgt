@@ -117,9 +117,9 @@ theorem ratShiftEquiv_pow_apply (n : ℕ) (r : RatFunc F) :
   induction n with
   | zero =>
       simpa only [Nat.cast_zero] using
-        (show (ratShiftEquiv ^ 0) r = ratShiftOf (0 : F) r from by
+        (show (ratShiftEquiv ^ (0 : ℕ)) r = ratShiftOf (0 : F) r from by
           calc
-            (ratShiftEquiv ^ 0) r = r := by rw [pow_zero]; rfl
+            (ratShiftEquiv ^ (0 : ℕ)) r = r := by rw [pow_zero]; rfl
             _ = ratShiftOf (0 : F) r := (ratShiftOf_zero r).symm)
   | succ n ih =>
       rw [pow_succ']

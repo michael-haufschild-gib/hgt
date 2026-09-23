@@ -29,7 +29,7 @@ theorem eventually_thetaCuspCenterMixedGramFiveEquispaced_posDef
   have h2 : iteratedDeriv 2 f 0 < 0 := by
     rw [iteratedDeriv_two_thetaCuspCenterMixedDensity ha0.le ha]
     exact thetaCuspCenterMixedDensitySecondJet_zero_neg ha0 ha
-  have h4 : 0 < f 0*iteratedDeriv 4 f 0-(iteratedDeriv 2 f 0)^2 := by
+  have h4 : 0 < f 0*iteratedDeriv 4 f 0-(iteratedDeriv 2 f 0)^(2 : ℕ) := by
     rw [iteratedDeriv_four_thetaCuspCenterMixedDensity ha0.le ha,
       iteratedDeriv_two_thetaCuspCenterMixedDensity ha0.le ha]
     exact thetaCuspCenterMixedDensity_fourthHankel_pos ha0 ha

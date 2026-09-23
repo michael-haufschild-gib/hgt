@@ -74,7 +74,7 @@ theorem rcsch_strictAntiOn_pos : StrictAntiOn rcsch (Ioi 0) := by
 
 /-- The lattice spectator weight `φ = csch² · coth`, positive and strictly decreasing
 on `(0,∞)` (product of positive strictly-decreasing functions). -/
-noncomputable def rphi (x : ℝ) : ℝ := (rcsch x)^2 * rcoth x
+noncomputable def rphi (x : ℝ) : ℝ := (rcsch x)^(2 : ℕ) * rcoth x
 
 theorem rphi_pos_of_pos {x : ℝ} (hx : 0 < x) : 0 < rphi x := by
   rw [rphi]
@@ -105,20 +105,20 @@ theorem rphi_le_exp {u : ℝ} (hu : 1 ≤ u) : rphi u ≤ 64 * Real.exp (-2 * u)
   have hs : 0 < Real.sinh u := sinh_pos_of_pos (by linarith)
   have hsq : Real.exp u / 4 ≤ Real.sinh u := sinh_ge_quarter_exp hu
   have hcosh : Real.cosh u ≤ Real.exp u := cosh_le_exp (by linarith)
-  have hrphi : rphi u = Real.cosh u / (Real.sinh u) ^ 3 := by
+  have hrphi : rphi u = Real.cosh u / (Real.sinh u) ^ (3 : ℕ) := by
     simp only [rphi, rcsch, rcoth]; field_simp
-  have hcube : (Real.exp u / 4) ^ 3 ≤ (Real.sinh u) ^ 3 :=
+  have hcube : (Real.exp u / 4) ^ (3 : ℕ) ≤ (Real.sinh u) ^ (3 : ℕ) :=
     pow_le_pow_left₀ (by positivity) hsq 3
-  have hexp3 : (Real.exp u / 4) ^ 3 = Real.exp (3 * u) / 64 := by
+  have hexp3 : (Real.exp u / 4) ^ (3 : ℕ) = Real.exp (3 * u) / 64 := by
     rw [div_pow, ← Real.exp_nat_mul]
     norm_num
-  have hden : Real.exp (3 * u) / 64 ≤ (Real.sinh u) ^ 3 := hexp3 ▸ hcube
+  have hden : Real.exp (3 * u) / 64 ≤ (Real.sinh u) ^ (3 : ℕ) := hexp3 ▸ hcube
   have hfinal : Real.exp u / (Real.exp (3 * u) / 64) = 64 * Real.exp (-2 * u) := by
     rw [div_div_eq_mul_div, mul_comm, mul_div_assoc]
     congr 1
     rw [← Real.exp_sub]; congr 1; ring
   rw [hrphi]
-  calc Real.cosh u / (Real.sinh u) ^ 3
+  calc Real.cosh u / (Real.sinh u) ^ (3 : ℕ)
       ≤ Real.exp u / (Real.exp (3 * u) / 64) := by gcongr
     _ = 64 * Real.exp (-2 * u) := hfinal
 
@@ -202,33 +202,33 @@ theorem sinh_le_mul_cosh {x : ℝ} (hx : 0 ≤ x) : Real.sinh x ≤ x * Real.cos
 /-- **`φ` near-cubic lower bound**: `φ(x) = cosh x/sinh³x ≥ 1/(4x³)` for `0 < x ≤ 1`
 (from `sinh x ≤ x cosh x` and `cosh x ≤ cosh 1 < 2`). The cubic near term that dominates the
 exponential far-behind overhang in the outer-range lattice (S-mono). -/
-theorem rphi_ge_cubic {x : ℝ} (hx0 : 0 < x) (hx1 : x ≤ 1) : 1 / (4 * x ^ 3) ≤ rphi x := by
+theorem rphi_ge_cubic {x : ℝ} (hx0 : 0 < x) (hx1 : x ≤ 1) : 1 / (4 * x ^ (3 : ℕ)) ≤ rphi x := by
   have hs : 0 < Real.sinh x := sinh_pos_of_pos hx0
   have hc : 0 < Real.cosh x := Real.cosh_pos x
   have hsx : Real.sinh x ≤ x * Real.cosh x := sinh_le_mul_cosh hx0.le
   have hcosh1 : Real.cosh x ≤ Real.cosh 1 := by
     rw [Real.cosh_le_cosh]; rw [abs_of_pos hx0, abs_of_pos]; exact hx1; norm_num
   have hcosh2 : Real.cosh x < 2 := lt_of_le_of_lt hcosh1 cosh_one_lt_two
-  have hrphi : rphi x = Real.cosh x / (Real.sinh x) ^ 3 := by
+  have hrphi : rphi x = Real.cosh x / (Real.sinh x) ^ (3 : ℕ) := by
     simp only [rphi, rcsch, rcoth]; field_simp
-  have hcube : (Real.sinh x) ^ 3 ≤ (x * Real.cosh x) ^ 3 := pow_le_pow_left₀ hs.le hsx 3
+  have hcube : (Real.sinh x) ^ (3 : ℕ) ≤ (x * Real.cosh x) ^ (3 : ℕ) := pow_le_pow_left₀ hs.le hsx 3
   rw [hrphi]
-  have hc4 : Real.cosh x ^ 2 < 4 := by nlinarith [hcosh2, hc]
-  calc (1 : ℝ) / (4 * x ^ 3) ≤ Real.cosh x / (x * Real.cosh x) ^ 3 := by
+  have hc4 : Real.cosh x ^ (2 : ℕ) < 4 := by nlinarith [hcosh2, hc]
+  calc (1 : ℝ) / (4 * x ^ (3 : ℕ)) ≤ Real.cosh x / (x * Real.cosh x) ^ (3 : ℕ) := by
         rw [div_le_div_iff₀ (by positivity) (by positivity)]
         nlinarith [mul_pos (pow_pos hx0 3) hc, hc4]
-    _ ≤ Real.cosh x / (Real.sinh x) ^ 3 := by gcongr
+    _ ≤ Real.cosh x / (Real.sinh x) ^ (3 : ℕ) := by gcongr
 
 theorem rphi_strictAntiOn_pos : StrictAntiOn rphi (Ioi 0) := by
   intro x hx y hy hxy
   simp only [mem_Ioi] at hx hy
-  have hcs : (rcsch y)^2 < (rcsch x)^2 := by
+  have hcs : (rcsch y)^(2 : ℕ) < (rcsch x)^(2 : ℕ) := by
     have h1 : 0 < rcsch y := rcsch_pos_of_pos hy
     have h2 : rcsch y < rcsch x := rcsch_strictAntiOn_pos (mem_Ioi.mpr hx) (mem_Ioi.mpr hy) hxy
     nlinarith [h1, h2]
   have hco : rcoth y < rcoth x := rcoth_strictAntiOn_pos (mem_Ioi.mpr hx) (mem_Ioi.mpr hy) hxy
   have hcoy : 0 < rcoth y := rcoth_pos_of_pos hy
-  have hcsy : 0 < (rcsch y)^2 := pow_pos (rcsch_pos_of_pos hy) 2
+  have hcsy : 0 < (rcsch y)^(2 : ℕ) := pow_pos (rcsch_pos_of_pos hy) 2
   rw [rphi, rphi]
   nlinarith [hcs, hco, hcoy, hcsy]
 
@@ -242,7 +242,7 @@ open Real Set
 
 /-- `coth' = −csch²` at every nonzero point (quotient rule + `cosh²−sinh²=1`). -/
 theorem rcoth_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
-    HasDerivAt rcoth (-(rcsch u) ^ 2) u := by
+    HasDerivAt rcoth (-(rcsch u) ^ (2 : ℕ)) u := by
   have hs : Real.sinh u ≠ 0 := Real.sinh_ne_zero.mpr hu
   have h := (Real.hasDerivAt_cosh u).div (Real.hasDerivAt_sinh u) hs
   have hfun :
@@ -252,7 +252,7 @@ theorem rcoth_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
   rw [hfun] at h
   apply h.congr_deriv
   rw [rcsch]
-  have hid : Real.cosh u ^ 2 - Real.sinh u ^ 2 = 1 := Real.cosh_sq_sub_sinh_sq u
+  have hid : Real.cosh u ^ (2 : ℕ) - Real.sinh u ^ (2 : ℕ) = 1 := Real.cosh_sq_sub_sinh_sq u
   field_simp
   nlinarith [hid]
 
@@ -260,21 +260,21 @@ theorem rcoth_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
 theorem rcsch_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
     HasDerivAt rcsch (-rcoth u * rcsch u) u := by
   have hs : Real.sinh u ≠ 0 := Real.sinh_ne_zero.mpr hu
-  have h : HasDerivAt (fun x => (Real.sinh x)⁻¹) (-Real.cosh u / Real.sinh u ^ 2) u :=
+  have h : HasDerivAt (fun x => (Real.sinh x)⁻¹) (-Real.cosh u / Real.sinh u ^ (2 : ℕ)) u :=
     (Real.hasDerivAt_sinh u).inv hs
   have hfun : (fun x => (Real.sinh x)⁻¹) = rcsch := by funext x; rw [rcsch, one_div]
   rw [hfun] at h
-  have hval : -Real.cosh u / Real.sinh u ^ 2 = -rcoth u * rcsch u := by
+  have hval : -Real.cosh u / Real.sinh u ^ (2 : ℕ) = -rcoth u * rcsch u := by
     unfold rcoth rcsch; field_simp
   rw [hval] at h
   exact h
 
 /-- `(csch²)' = −2φ` where `φ = csch²·coth` (`rphi`). -/
 theorem rcsch_sq_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
-    HasDerivAt (fun u => (rcsch u) ^ 2) (-2 * rphi u) u := by
+    HasDerivAt (fun u => (rcsch u) ^ (2 : ℕ)) (-2 * rphi u) u := by
   have h := (rcsch_hasDerivAt hu).pow 2
   have hfun :
-      (fun x : ℝ => rcsch x) ^ 2 = (fun x : ℝ => (rcsch x) ^ 2) := by
+      (fun x : ℝ => rcsch x) ^ (2 : ℕ) = (fun x : ℝ => (rcsch x) ^ (2 : ℕ)) := by
     funext x
     rfl
   rw [hfun] at h

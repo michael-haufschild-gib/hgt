@@ -13,7 +13,7 @@ def finiteSourceGibbsGramEnergy
     {J P : Type*} [Fintype J] [Fintype P]
     (c : J → P → ℂ) (base energy : P → ℝ) (k : ℕ) (q : J → ℂ) : ℝ :=
   ∑ p, base p * Real.exp ((k : ℝ) * energy p) *
-    ‖∑ j, q j * c j p‖ ^ 2
+    ‖∑ j, q j * c j p‖ ^ (2 : ℕ)
 
 /-- Tropical normalization of a finite Gibbs Gram form at a proposed support radius. -/
 def finiteSourceGibbsGramEnergyNormalized
@@ -21,7 +21,7 @@ def finiteSourceGibbsGramEnergyNormalized
     (c : J → P → ℂ) (base energy : P → ℝ) (radius : ℝ)
     (k : ℕ) (q : J → ℂ) : ℝ :=
   ∑ p, base p * Real.exp ((k : ℝ) * (energy p - radius)) *
-    ‖∑ j, q j * c j p‖ ^ 2
+    ‖∑ j, q j * c j p‖ ^ (2 : ℕ)
 
 /-- Gram energy carried by one exposed energy level. -/
 def finiteSourceEnergyLevelGramEnergy
@@ -29,7 +29,7 @@ def finiteSourceEnergyLevelGramEnergy
     (c : J → P → ℂ) (base energy : P → ℝ) (level : ℝ)
     (q : J → ℂ) : ℝ :=
   ∑ p, if energy p = level then
-    base p * ‖∑ j, q j * c j p‖ ^ 2 else 0
+    base p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ) else 0
 
 /-- Gram energy on a cumulative upper energy face. -/
 def finiteSourceSuperlevelGramEnergy
@@ -37,7 +37,7 @@ def finiteSourceSuperlevelGramEnergy
     (c : J → P → ℂ) (base energy : P → ℝ) (level : ℝ)
     (q : J → ℂ) : ℝ :=
   ∑ p, if level ≤ energy p then
-    base p * ‖∑ j, q j * c j p‖ ^ 2 else 0
+    base p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ) else 0
 
 /-- The tropical normalization is exactly multiplication by the inverse leading exponential. -/
 theorem finiteSourceGibbsGramEnergyNormalized_eq
@@ -85,14 +85,14 @@ theorem tendsto_finiteSourceGibbsGramEnergyNormalized_exposedFace
   by_cases hlevel : energy p = radius
   · simp only [hlevel, if_pos]
     convert hfactor.const_mul
-        (base p * ‖∑ j, q j * c j p‖ ^ 2) using 1
+        (base p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)) using 1
     · funext k
       rw [hlevel]
       ring_nf
     · simp [hlevel]
   · simp only [hlevel]
     convert hfactor.const_mul
-      (base p * ‖∑ j, q j * c j p‖ ^ 2) using 1
+      (base p * ‖∑ j, q j * c j p‖ ^ (2 : ℕ)) using 1
     · funext k
       ring_nf
     · simp [hlevel]
@@ -111,7 +111,7 @@ theorem finiteSourceEnergyLevelGramEnergy_eq_zero_iff
   · intro hzero p hp
     have hterms : ∀ r ∈ (Finset.univ : Finset P),
         0 ≤ if energy r = level then
-          base r * ‖∑ j, q j * c j r‖ ^ 2 else 0 := by
+          base r * ‖∑ j, q j * c j r‖ ^ (2 : ℕ) else 0 := by
       intro r hr
       split_ifs
       · exact mul_nonneg (hbase r).le (sq_nonneg _)
@@ -119,7 +119,7 @@ theorem finiteSourceEnergyLevelGramEnergy_eq_zero_iff
     have hpzero := (Finset.sum_eq_zero_iff_of_nonneg hterms).mp hzero p
       (Finset.mem_univ p)
     simp only [hp, if_pos] at hpzero
-    have hnorm : ‖∑ j, q j * c j p‖ ^ 2 = 0 :=
+    have hnorm : ‖∑ j, q j * c j p‖ ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hpzero).resolve_left (hbase p).ne'
     exact norm_eq_zero.mp (sq_eq_zero_iff.mp hnorm)
   · intro h
@@ -143,7 +143,7 @@ theorem finiteSourceSuperlevelGramEnergy_eq_zero_iff
   · intro hzero p hp
     have hterms : ∀ r ∈ (Finset.univ : Finset P),
         0 ≤ if level ≤ energy r then
-          base r * ‖∑ j, q j * c j r‖ ^ 2 else 0 := by
+          base r * ‖∑ j, q j * c j r‖ ^ (2 : ℕ) else 0 := by
       intro r hr
       split_ifs
       · exact mul_nonneg (hbase r).le (sq_nonneg _)
@@ -151,7 +151,7 @@ theorem finiteSourceSuperlevelGramEnergy_eq_zero_iff
     have hpzero := (Finset.sum_eq_zero_iff_of_nonneg hterms).mp hzero p
       (Finset.mem_univ p)
     simp only [hp, if_pos] at hpzero
-    have hnorm : ‖∑ j, q j * c j p‖ ^ 2 = 0 :=
+    have hnorm : ‖∑ j, q j * c j p‖ ^ (2 : ℕ) = 0 :=
       (mul_eq_zero.mp hpzero).resolve_left (hbase p).ne'
     exact norm_eq_zero.mp (sq_eq_zero_iff.mp hnorm)
   · intro h
@@ -285,7 +285,7 @@ theorem finiteGibbsPurity_neg_energy_eq_normalizedPartitionRatio
     (energy : P → ℝ) (radius : ℝ) (k : ℕ) :
     finiteGibbsPurity (k : ℝ) (fun p => -energy p) =
       finiteSourceGibbsPartitionNormalized energy radius (2 * k) /
-        finiteSourceGibbsPartitionNormalized energy radius k ^ 2 := by
+        finiteSourceGibbsPartitionNormalized energy radius k ^ (2 : ℕ) := by
   rw [finiteGibbsPurity_eq_partitionRatio]
   have hk := finiteSourceGibbsPartitionNormalized_eq energy radius k
   have h2k := finiteSourceGibbsPartitionNormalized_eq energy radius (2 * k)
@@ -298,7 +298,7 @@ theorem finiteGibbsPurity_neg_energy_eq_normalizedPartitionRatio
   rw [show (2 : ℝ) * (k : ℝ) = ((2 * k : ℕ) : ℝ) by norm_num] at hZ2kpos ⊢
   rw [show ((2 * k : ℕ) : ℝ) = 2 * (k : ℝ) by norm_num] at h2k
   have hexp : Real.exp (-(2 * (k : ℝ)) * radius) =
-      Real.exp (-(k : ℝ) * radius) ^ 2 := by
+      Real.exp (-(k : ℝ) * radius) ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring_nf
@@ -352,7 +352,7 @@ theorem tendsto_offDiagonal_sq_finiteKMSWightmanWeight_neg_energy_exposedFaceCar
     Tendsto
       (fun k : ℕ =>
         ∑ a, ∑ b ∈ Finset.univ.erase a,
-          finiteKMSWightmanWeight (k : ℝ) (fun p => -energy p) a b ^ 2)
+          finiteKMSWightmanWeight (k : ℝ) (fun p => -energy p) a b ^ (2 : ℕ))
       atTop
       (nhds (1 - (finiteSourceExposedFaceCard energy radius : ℝ)⁻¹)) := by
   classical
@@ -494,12 +494,12 @@ theorem finiteSourceGibbsGramEnergyNormalized_tensor
           Real.exp ((k : ℝ) *
             (finiteTensorEnergy energyP energyQ (p, q) - (radiusP + radiusQ))) *
         ‖∑ ij, finiteTensorCoefficientVector u v ij *
-          finiteTensorCoefficient cP cQ ij (p, q)‖ ^ 2) =
+          finiteTensorCoefficient cP cQ ij (p, q)‖ ^ (2 : ℕ)) =
       ∑ p, ∑ q,
         (baseP p * Real.exp ((k : ℝ) * (energyP p - radiusP)) *
-          ‖∑ i, u i * cP i p‖ ^ 2) *
+          ‖∑ i, u i * cP i p‖ ^ (2 : ℕ)) *
         (baseQ q * Real.exp ((k : ℝ) * (energyQ q - radiusQ)) *
-          ‖∑ j, v j * cQ j q‖ ^ 2) := by
+          ‖∑ j, v j * cQ j q‖ ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro p hp
       apply Finset.sum_congr rfl
@@ -518,9 +518,9 @@ theorem finiteSourceGibbsGramEnergyNormalized_tensor
       rw [hexp]
       ring
     _ = (∑ p, baseP p * Real.exp ((k : ℝ) * (energyP p - radiusP)) *
-          ‖∑ i, u i * cP i p‖ ^ 2) *
+          ‖∑ i, u i * cP i p‖ ^ (2 : ℕ)) *
         ∑ q, baseQ q * Real.exp ((k : ℝ) * (energyQ q - radiusQ)) *
-          ‖∑ j, v j * cQ j q‖ ^ 2 := by
+          ‖∑ j, v j * cQ j q‖ ^ (2 : ℕ) := by
       rw [Finset.sum_mul]
       apply Finset.sum_congr rfl
       intro p hp
@@ -550,12 +550,12 @@ theorem finiteSourceEnergyLevelGramEnergy_tensor
     (∑ p, ∑ q, if finiteTensorEnergy energyP energyQ (p, q) = radiusP + radiusQ
       then (baseP p * baseQ q) *
         ‖∑ ij, finiteTensorCoefficientVector u v ij *
-          finiteTensorCoefficient cP cQ ij (p, q)‖ ^ 2 else 0) =
+          finiteTensorCoefficient cP cQ ij (p, q)‖ ^ (2 : ℕ) else 0) =
       ∑ p, ∑ q,
         (if energyP p = radiusP then
-          baseP p * ‖∑ i, u i * cP i p‖ ^ 2 else 0) *
+          baseP p * ‖∑ i, u i * cP i p‖ ^ (2 : ℕ) else 0) *
         (if energyQ q = radiusQ then
-          baseQ q * ‖∑ j, v j * cQ j q‖ ^ 2 else 0) := by
+          baseQ q * ‖∑ j, v j * cQ j q‖ ^ (2 : ℕ) else 0) := by
       apply Finset.sum_congr rfl
       intro p hp
       apply Finset.sum_congr rfl
@@ -570,9 +570,9 @@ theorem finiteSourceEnergyLevelGramEnergy_tensor
         · simp [hpface, hqface]
       · simp [hpface]
     _ = (∑ p, if energyP p = radiusP then
-          baseP p * ‖∑ i, u i * cP i p‖ ^ 2 else 0) *
+          baseP p * ‖∑ i, u i * cP i p‖ ^ (2 : ℕ) else 0) *
         ∑ q, if energyQ q = radiusQ then
-          baseQ q * ‖∑ j, v j * cQ j q‖ ^ 2 else 0 := by
+          baseQ q * ‖∑ j, v j * cQ j q‖ ^ (2 : ℕ) else 0 := by
       rw [Finset.sum_mul]
       apply Finset.sum_congr rfl
       intro p hp

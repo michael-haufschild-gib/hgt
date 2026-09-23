@@ -92,7 +92,7 @@ remains superpolynomially small along the selected Wiman sequence. -/
 theorem exists_nonzero_strelitzBaseCoefficient_of_order_two_entireHeat_isMaximumOnCircle
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
@@ -107,7 +107,7 @@ theorem exists_nonzero_strelitzBaseCoefficient_of_order_two_entireHeat_isMaximum
             (centralIndex a (Real.exp (x n)) : ℂ)‖
           ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
         (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ)) ∧
         (∀ j : ℕ, Tendsto (fun n : ℕ =>
           ‖(strelitzBaseSpecialization P
             ![eulerLogDeriv (coeffFun a) (z n),
@@ -129,7 +129,7 @@ remains superpolynomially small along the selected Wiman sequence. -/
 theorem exists_nonzero_strelitzBaseCoefficient_of_order_two_entireHeat
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     (hDA : DifferentiallyAlgebraicOfOrder (coeffFun a) 2) :
@@ -144,7 +144,7 @@ theorem exists_nonzero_strelitzBaseCoefficient_of_order_two_entireHeat
             (centralIndex a (Real.exp (x n)) : ℂ)‖
           ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ)) ∧
         (∀ n : ℕ, ‖eulerLogDerivSecond (coeffFun a) (z n)‖
-          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ 2) ∧
+          ≤ (1 / ((n : ℝ) + 1)) * (centralIndex a (Real.exp (x n)) : ℝ) ^ (2 : ℕ)) ∧
         ∀ j : ℕ, Tendsto (fun n : ℕ =>
           ‖(strelitzBaseSpecialization P
             ![eulerLogDeriv (coeffFun a) (z n),

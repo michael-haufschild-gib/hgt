@@ -32,9 +32,9 @@ private def angularKernel (q : XiZeroCopy) (branch : Bool) (z X k : ℝ) : ℂ :
 private def argumentFirst (q : XiZeroCopy) (branch : Bool) (z X k : ℝ) : ℂ :=
   deriv (fun r => mean q branch r X k) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)
 private def argumentSecond (q : XiZeroCopy) (branch : Bool) (z X k : ℝ) : ℂ :=
-  deriv (deriv (fun r => mean q branch r X k)) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)^2-
+  deriv (deriv (fun r => mean q branch r X k)) (Real.arcosh z)/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)-
     (Real.cosh (Real.arcosh z):ℂ)*deriv (fun r => mean q branch r X k) (Real.arcosh z)/
-      (Real.sinh (Real.arcosh z):ℂ)^3
+      (Real.sinh (Real.arcosh z):ℂ)^(3 : ℕ)
 private def laplaceMean (q : XiZeroCopy) (branch : Bool) (d X k : ℝ) : ℂ :=
   parameter q branch*(mean q branch d X k+D4BMNativeCircle.mean q d X k)
 
@@ -47,14 +47,14 @@ private theorem laplaceMean_continuous (q : XiZeroCopy) (branch : Bool) (X k : �
     (D4BMNativeCircle.mean_radial_smooth q X k).continuous)
 
 private theorem mean_equation (q : XiZeroCopy) (branch : Bool) (X k d : ℝ) :
-    (Real.sinh d:ℂ)^2*deriv (deriv (fun r => mean q branch r X k)) d+
+    (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv (fun r => mean q branch r X k)) d+
       (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv (fun r => mean q branch r X k) d=
-      (Real.sinh d:ℂ)^2*laplaceMean q branch d X k := by
+      (Real.sinh d:ℂ)^(2 : ℕ)*laplaceMean q branch d X k := by
   simpa only [laplaceMean,mean,mul_assoc] using angularMean_forced q branch d X k
 
 private theorem regular_equation {f g : ℝ → ℂ}
-    (he : ∀ d, (Real.sinh d:ℂ)^2*deriv (deriv f) d+
-      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^2*g d)
+    (he : ∀ d, (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv f) d+
+      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^(2 : ℕ)*g d)
     {d : ℝ} (hd : d ≠ 0) :
     (Real.sinh d:ℂ)*deriv (deriv f) d+(Real.cosh d:ℂ)*deriv f d-(Real.sinh d:ℂ)*g d=0 := by
   have hn : (Real.sinh d:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by simpa using hd)
@@ -62,8 +62,8 @@ private theorem regular_equation {f g : ℝ → ℂ}
   linear_combination he d
 
 private theorem radial_first_zero {f g : ℝ → ℂ} (hf : ContDiff ℝ ∞ f) (hg : Continuous g)
-    (he : ∀ d, (Real.sinh d:ℂ)^2*deriv (deriv f) d+
-      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^2*g d) : deriv f 0=0 := by
+    (he : ∀ d, (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv f) d+
+      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^(2 : ℕ)*g d) : deriv f 0=0 := by
   have h1 := (contDiff_infty_iff_deriv.mp hf).2
   have h2 := (contDiff_infty_iff_deriv.mp h1).2
   have hS : Continuous (fun d : ℝ => (Real.sinh d:ℂ)) := by fun_prop
@@ -95,8 +95,8 @@ private theorem sinh_ratio_limit {f : ℝ → ℂ} {a : ℂ} (hf : HasDerivAt f 
   field_simp [hn]
 
 private theorem radial_second_zero {f g : ℝ → ℂ} (hf : ContDiff ℝ ∞ f) (hg : Continuous g)
-    (he : ∀ d, (Real.sinh d:ℂ)^2*deriv (deriv f) d+
-      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^2*g d) :
+    (he : ∀ d, (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv f) d+
+      (Real.sinh d:ℂ)*(Real.cosh d:ℂ)*deriv f d=(Real.sinh d:ℂ)^(2 : ℕ)*g d) :
     deriv (deriv f) 0=g 0/2 := by
   have hs1 := (contDiff_infty_iff_deriv.mp hf).2
   have hs2 := (contDiff_infty_iff_deriv.mp hs1).2
@@ -231,7 +231,7 @@ private theorem invariantTimeFirst_comp_derivative {h x : ℝ → ℝ} (y t dh d
   field_simp [hc,hy]
 
 private theorem tanh_derivative_local (x : ℝ) :
-    HasDerivAt Real.tanh (1-Real.tanh x^2) x := by
+    HasDerivAt Real.tanh (1-Real.tanh x^(2 : ℕ)) x := by
   have hc := (Real.cosh_pos x).ne'
   have hd := (Real.hasDerivAt_sinh x).div (Real.hasDerivAt_cosh x) hc
   rw [show Real.tanh = Real.sinh / Real.cosh by
@@ -282,20 +282,20 @@ private theorem nullInvariant_mixed (y u v : ℝ) :
   ring
 
 private theorem angular_equation (q : XiZeroCopy) (branch : Bool) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    ((z:ℂ)^2-1)*argumentSecond q branch z X k+2*(z:ℂ)*argumentFirst q branch z X k=angularAction q branch z X k := by
+    ((z:ℂ)^(2 : ℕ)-1)*argumentSecond q branch z X k+2*(z:ℂ)*argumentFirst q branch z X k=angularAction q branch z X k := by
   have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have he : (z:ℂ)^2-1=(Real.sinh (Real.arcosh z):ℂ)^2 := by
+  have he : (z:ℂ)^(2 : ℕ)-1=(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ) := by
     have h := Real.cosh_sq_sub_sinh_sq (Real.arcosh z)
     rw [Real.cosh_arcosh hz.le] at h
-    exact_mod_cast (by linarith : z^2-1=Real.sinh (Real.arcosh z)^2)
+    exact_mod_cast (by linarith : z^(2 : ℕ)-1=Real.sinh (Real.arcosh z)^(2 : ℕ))
   have h := mean_equation q branch X k (Real.arcosh z)
-  change _ = (Real.sinh (Real.arcosh z):ℂ)^2*angularAction q branch z X k at h
+  change _ = (Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)*angularAction q branch z X k at h
   rw [Real.cosh_arcosh hz.le] at h
   rw [he]
   dsimp [argumentSecond,argumentFirst]
   rw [Real.cosh_arcosh hz.le]
-  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^2
+  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)
 
 private def closedRadius (z : ℝ) : ℝ := Real.arcosh (max 1 z)
 
@@ -371,7 +371,7 @@ private def nativeFirst (q : XiZeroCopy) (branch : Bool) (y X k u v : ℝ) : ℂ
   argumentFirst q branch (nullZ y u v) X k*(nullInvariantFirst y u v:ℂ)
 
 private def nativeIntegrand (q : XiZeroCopy) (branch : Bool) (y X k u v : ℝ) : ℂ :=
-  closedAction q branch (nullZ y u v) X k/(4*(Real.cosh (y+(u-v)/2):ℂ)^2)
+  closedAction q branch (nullZ y u v) X k/(4*(Real.cosh (y+(u-v)/2):ℂ)^(2 : ℕ))
 
 private theorem nativeCharacteristic_continuous (q : XiZeroCopy) (branch : Bool) (y X k : ℝ) :
     Continuous (fun z : ℝ × ℝ => nativeCharacteristic q branch y X k z.1 z.2) :=
@@ -409,17 +409,17 @@ private theorem nativeFirst_mixed (q : XiZeroCopy) (branch : Bool) (y X k : ℝ)
   have hz := nullZ_gt y hu hv
   let h := (u+v)/2
   let x := y+(u-v)/2
-  have hg1 : (invariantTimeFirst h x y:ℂ)^2-(invariantSpaceFirst h x y:ℂ)^2 =
-      ((invariant h x y:ℂ)^2-1)/(Real.cosh x:ℂ)^2 := by
+  have hg1 : (invariantTimeFirst h x y:ℂ)^(2 : ℕ)-(invariantSpaceFirst h x y:ℂ)^(2 : ℕ) =
+      ((invariant h x y:ℂ)^(2 : ℕ)-1)/(Real.cosh x:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry h x y).1
   have hg2 : (invariantTimeSecond h x y:ℂ)-(invariantSpaceSecond h x y:ℂ) =
-      2*(invariant h x y:ℂ)/(Real.cosh x:ℂ)^2 := by
+      2*(invariant h x y:ℂ)/(Real.cosh x:ℂ)^(2 : ℕ) := by
     exact_mod_cast (invariant_wave_geometry h x y).2
   have hd := ((angular_derivatives q branch X k hz).2.scomp v (nullInvariant_second y u v)).mul
     (nullInvariant_mixed y u v).ofReal_comp
   apply hd.congr_deriv
   simp only [nativeIntegrand,closedAction_eq q branch X k hz.le,Complex.real_smul,Function.comp_apply]
-  change _ = angularAction q branch (invariant h x y) X k/(4*(Real.cosh x:ℂ)^2)
+  change _ = angularAction q branch (invariant h x y) X k/(4*(Real.cosh x:ℂ)^(2 : ℕ))
   dsimp only [nullInvariantFirst]
   push_cast
   change ((invariantTimeFirst h x y-invariantSpaceFirst h x y:ℂ)/2*
@@ -430,7 +430,7 @@ private theorem nativeFirst_mixed (q : XiZeroCopy) (branch : Bool) (y X k : ℝ)
   have he := angular_equation q branch X k hz
   simp only [← Complex.ofReal_cosh]
   linear_combination argumentSecond q branch (invariant h x y) X k/4*hg1+
-    argumentFirst q branch (invariant h x y) X k/4*hg2+he/(4*(Real.cosh x:ℂ)^2)
+    argumentFirst q branch (invariant h x y) X k/4*hg2+he/(4*(Real.cosh x:ℂ)^(2 : ℕ))
 
 private theorem nullFirst_axis (y u : ℝ) : nullInvariantFirst y u 0 = 0 := by
   have hd := nullInvariant_first y u 0
@@ -499,7 +499,7 @@ private theorem kernel_goursat (q : XiZeroCopy) (branch : Bool) (p : CausalPoint
     fullAngularRiemannKernel q branch p.time p.target p.source X k = fullAngularField q branch ![X,Real.exp k]+
       ∫ a in (0:ℝ)..(p.time+p.target-p.source), ∫ b in (0:ℝ)..(p.time-p.target+p.source),
         angularAction q branch (invariant ((a+b)/2) (p.source+(a-b)/2) p.source) X k/
-          (4*(Real.cosh (p.source+(a-b)/2):ℂ)^2) := by
+          (4*(Real.cosh (p.source+(a-b)/2):ℂ)^(2 : ℕ)) := by
   have hu : 0 ≤ p.time+p.target-p.source := by have := (abs_le.mp p.inside).1; linarith
   have hv : 0 ≤ p.time-p.target+p.source := by have := (abs_le.mp p.inside).2; linarith
   have h := nativeCharacteristic_integral q branch p.source X k hu hv
@@ -532,7 +532,7 @@ theorem fullAngularRiemannKernel_goursat (q : XiZeroCopy) (branch : Bool)
         parameter q branch*(
           fullAngularRiemannKernel q branch ((a+b)/2) (p.source+(a-b)/2) p.source X k+
           D4BMNativeCircle.nativeRiemannKernel q ((a+b)/2) (p.source+(a-b)/2) p.source X k)/
-          (4*(Real.cosh (p.source+(a-b)/2):ℂ)^2) :=
+          (4*(Real.cosh (p.source+(a-b)/2):ℂ)^(2 : ℕ)) :=
   kernel_goursat q branch p X k
 
 /-- Definitional realization of the literal full Riemann kernel by the
@@ -583,7 +583,7 @@ def fullAngularCorrection (q : XiZeroCopy) (branch : Bool) (h x y X k : ℝ) : �
       parameter q branch*(
         fullAngularRiemannKernel q branch ((a+b)/2) (y+(a-b)/2) y X k+
         D4BMNativeCircle.nativeRiemannKernel q ((a+b)/2) (y+(a-b)/2) y X k)/
-        (4*(Real.cosh (y+(a-b)/2):ℂ)^2)
+        (4*(Real.cosh (y+(a-b)/2):ℂ)^(2 : ℕ))
   else 0
 
 private theorem fullAngularCausal_split (q : XiZeroCopy) (branch : Bool) (h x y X k : ℝ) :

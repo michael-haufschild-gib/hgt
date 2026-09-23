@@ -106,8 +106,8 @@ theorem windowCertificate_iff_deck_trivial (k : ℕ) (T : ℝ) :
     WindowCertificate k T ↔
       ∀ ρ ∈ boxZeros T, ∃ R₀ > 0, ∀ R : ℝ, 0 < R → R ≤ R₀ →
         ∃ G₁ G₂, AnalyticOnNhd ℂ G₁ (chartR ρ R) ∧ AnalyticOnNhd ℂ G₂ (chartL ρ R) ∧
-          (∀ z ∈ chartR ρ R, G₁ z ^ 2 ^ k = xi z) ∧
-          (∀ z ∈ chartL ρ R, G₂ z ^ 2 ^ k = xi z) ∧
+          (∀ z ∈ chartR ρ R, G₁ z ^ (2 : ℕ) ^ k = xi z) ∧
+          (∀ z ∈ chartL ρ R, G₂ z ^ (2 : ℕ) ^ k = xi z) ∧
           deckClass G₁ G₂ (ρ + ((R / 2 : ℝ) : ℂ) * I) (ρ - ((R / 2 : ℝ) : ℂ) * I) = 1 := by
   constructor
   · intro hc ρ hρ
@@ -134,8 +134,8 @@ the total window DISC sum cannot see. -/
 theorem windowDeckTrivial_iff_subWindow_congruences (k : ℕ) (T : ℝ) :
     (∀ ρ ∈ boxZeros T, ∃ R₀ > 0, ∀ R : ℝ, 0 < R → R ≤ R₀ →
         ∃ G₁ G₂, AnalyticOnNhd ℂ G₁ (chartR ρ R) ∧ AnalyticOnNhd ℂ G₂ (chartL ρ R) ∧
-          (∀ z ∈ chartR ρ R, G₁ z ^ 2 ^ k = xi z) ∧
-          (∀ z ∈ chartL ρ R, G₂ z ^ 2 ^ k = xi z) ∧
+          (∀ z ∈ chartR ρ R, G₁ z ^ (2 : ℕ) ^ k = xi z) ∧
+          (∀ z ∈ chartL ρ R, G₂ z ^ (2 : ℕ) ^ k = xi z) ∧
           deckClass G₁ G₂ (ρ + ((R / 2 : ℝ) : ℂ) * I)
             (ρ - ((R / 2 : ℝ) : ℂ) * I) = 1) ↔
       ∀ t : Finset ℂ, ↑t ⊆ stripZeros T → (∀ z ∈ t, lineReflect z ∈ t) →
@@ -149,8 +149,8 @@ theorem rhLadder_iff_forall_deck_trivial (k : ℕ) :
     RHLadder k ↔
       ∀ T : ℝ, ∀ ρ ∈ boxZeros T, ∃ R₀ > 0, ∀ R : ℝ, 0 < R → R ≤ R₀ →
         ∃ G₁ G₂, AnalyticOnNhd ℂ G₁ (chartR ρ R) ∧ AnalyticOnNhd ℂ G₂ (chartL ρ R) ∧
-          (∀ z ∈ chartR ρ R, G₁ z ^ 2 ^ k = xi z) ∧
-          (∀ z ∈ chartL ρ R, G₂ z ^ 2 ^ k = xi z) ∧
+          (∀ z ∈ chartR ρ R, G₁ z ^ (2 : ℕ) ^ k = xi z) ∧
+          (∀ z ∈ chartL ρ R, G₂ z ^ (2 : ℕ) ^ k = xi z) ∧
           deckClass G₁ G₂ (ρ + ((R / 2 : ℝ) : ℂ) * I) (ρ - ((R / 2 : ℝ) : ℂ) * I) = 1 := by
   rw [rhLadder_iff_forall_windowCertificate]
   exact forall_congr' fun T => windowCertificate_iff_deck_trivial k T
@@ -160,8 +160,8 @@ theorem rh_iff_forall_deck_trivial :
     RiemannHypothesis ↔
       ∀ (k : ℕ) (T : ℝ), ∀ ρ ∈ boxZeros T, ∃ R₀ > 0, ∀ R : ℝ, 0 < R → R ≤ R₀ →
         ∃ G₁ G₂, AnalyticOnNhd ℂ G₁ (chartR ρ R) ∧ AnalyticOnNhd ℂ G₂ (chartL ρ R) ∧
-          (∀ z ∈ chartR ρ R, G₁ z ^ 2 ^ k = xi z) ∧
-          (∀ z ∈ chartL ρ R, G₂ z ^ 2 ^ k = xi z) ∧
+          (∀ z ∈ chartR ρ R, G₁ z ^ (2 : ℕ) ^ k = xi z) ∧
+          (∀ z ∈ chartL ρ R, G₂ z ^ (2 : ℕ) ^ k = xi z) ∧
           deckClass G₁ G₂ (ρ + ((R / 2 : ℝ) : ℂ) * I) (ρ - ((R / 2 : ℝ) : ℂ) * I) = 1 := by
   rw [rh_iff_forall_windowCertificate]
   exact forall₂_congr fun k T => windowCertificate_iff_deck_trivial k T
@@ -184,8 +184,8 @@ theorem xi_deckClass_line_holography {k : ℕ} {T : ℝ} (hc : WindowCertificate
     (hfact : ∀ z ∈ ball a R, xi z = (∏ w ∈ t, (z - w) ^ m w) * h z)
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R))
     (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
-    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 ^ (k + 1) = xi z)
-    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 ^ (k + 1) = xi z) :
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ (2 : ℕ) ^ (k + 1) = xi z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ (2 : ℕ) ^ (k + 1) = xi z) :
     deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)
       = exp (2 * (Real.pi : ℂ) * I *
           ((∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z : ℕ) : ℂ) / ((2 ^ (k + 1) : ℕ) : ℂ)) := by

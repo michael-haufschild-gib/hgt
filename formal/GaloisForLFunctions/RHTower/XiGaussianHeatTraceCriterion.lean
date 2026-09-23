@@ -5,19 +5,19 @@ import GaloisForLFunctions.RHTower.XiGaussianHeatTraceDisproof
 
 `XiGaussianHeatTraceDisproof` builds the multiplicity-exact trace
 
-`T(P,t) = sum_q (evalRealPolynomial P (w q))^2 * exp (-t * w q)`,  `w q = xiSpectralPoint q ^ 2`,
+`T(P,t) = sum_q (evalRealPolynomial P (w q))^(2 : ℕ) * exp (-t * w q)`,  `w q = xiSpectralPoint q ^ (2 : ℕ)`,
 
 proves it real unconditionally and nonnegative under RH.  This file supplies the converse, so the
 family becomes a characterisation rather than a falsification device.
 
 The squared coordinate is the right carrier.  With `rho = 1/2 + b + i g` one has
-`Re (w q) = g^2 - b^2 > 0` and `Im (w q) = -2 g b`, and the height gap `2 < g^2` makes `w q` real
+`Re (w q) = g^(2 : ℕ) - b^(2 : ℕ) > 0` and `Im (w q) = -2 g b`, and the height gap `2 < g^(2 : ℕ)` makes `w q` real
 exactly when the copy lies on the critical line.  Moreover `Re w` is a genuine shell coordinate:
 `normSq (xiSpectralPoint q) < 2 * Re (w q)` together with reciprocal-square summability makes every
 shell `Re w <= R` finite.
 
 Given an off-critical copy `q0`, take `R = Re (w q0) + 1`, let `P` be the real orbit separator of
-the finite shell relative to `w q0`, and put `c = P (w q0) ^ 2 <> 0`.  Every shell copy outside the
+the finite shell relative to `w q0`, and put `c = P (w q0) ^ (2 : ℕ) <> 0`.  Every shell copy outside the
 conjugate pair `{w q0, conj (w q0)}` is annihilated, both members of that pair contribute the same
 real part `‖c‖ * exp (-t * Re w0) * cos (arg c - t * Im w0)`, and the copies outside the shell are
 bounded by `exp (-(t-1) * R)` times a fixed total.  Since `Im w0 <> 0` the cosine equals `-1` on an
@@ -37,7 +37,7 @@ noncomputable section
 /-- The squared centered spectral coordinate has strictly positive real part: the open critical
 strip together with the height gap keeps every squared copy in a right half-plane. -/
 theorem xiSpectralSq_re_pos (q : XiZeroCopy) :
-    0 < (xiSpectralPoint q ^ 2).re := by
+    0 < (xiSpectralPoint q ^ (2 : ℕ)).re := by
   have h := xiSpectralPoint_normSq_lt_two_mul_sq_re q
   have hpos : 0 < Complex.normSq (xiSpectralPoint q) :=
     Complex.normSq_pos.mpr (xiSpectralPoint_ne_zero q)
@@ -52,14 +52,14 @@ theorem xiSpectralPoint_re_eq (q : XiZeroCopy) :
 coordinate is, because the height never vanishes. -/
 theorem xiSpectralSq_im_ne_zero_of_im_ne_zero {q : XiZeroCopy}
     (h : (xiSpectralPoint q).im ≠ 0) :
-    (xiSpectralPoint q ^ 2).im ≠ 0 := by
+    (xiSpectralPoint q ^ (2 : ℕ)).im ≠ 0 := by
   have hre : (xiSpectralPoint q).re ≠ 0 := by
     rw [xiSpectralPoint_re_eq]
     intro hzero
     have h2 := xiZeroCopy_two_lt_im_sq q
     rw [hzero] at h2
     norm_num at h2
-  have hexp : (xiSpectralPoint q ^ 2).im =
+  have hexp : (xiSpectralPoint q ^ (2 : ℕ)).im =
       2 * ((xiSpectralPoint q).re * (xiSpectralPoint q).im) := by
     rw [pow_two, Complex.mul_im]
     ring
@@ -67,10 +67,10 @@ theorem xiSpectralSq_im_ne_zero_of_im_ne_zero {q : XiZeroCopy}
   exact mul_ne_zero two_ne_zero (mul_ne_zero hre h)
 
 /-- **Shells of the squared divisor are finite.**  A copy with `Re (w q) <= R` satisfies
-`‖xiSpectralPoint q‖ ^ 2 < 2 R`, so its reciprocal-square weight stays above a fixed positive
+`‖xiSpectralPoint q‖ ^ (2 : ℕ) < 2 R`, so its reciprocal-square weight stays above a fixed positive
 level, and a summable nonnegative family exceeds a positive level only finitely often. -/
 theorem finite_xiHeatShell (R : ℝ) :
-    {q : XiZeroCopy | (xiSpectralPoint q ^ 2).re ≤ R}.Finite := by
+    {q : XiZeroCopy | (xiSpectralPoint q ^ (2 : ℕ)).re ≤ R}.Finite := by
   rcases le_or_gt R 0 with hR | hR
   · apply Set.Finite.subset Set.finite_empty
     intro q hq
@@ -87,7 +87,7 @@ theorem finite_xiHeatShell (R : ℝ) :
       linarith
     have hpos : 0 < Complex.normSq (xiSpectralPoint q) :=
       Complex.normSq_pos.mpr (xiSpectralPoint_ne_zero q)
-    have hge : 1 / (2 * R) ≤ 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+    have hge : 1 / (2 * R) ≤ 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       rw [Complex.sq_norm]
       exact one_div_le_one_div_of_le hpos hnormSq.le
     intro hlt
@@ -112,9 +112,9 @@ theorem re_mul_exp_neg_mul (c z : ℂ) (t : ℝ) :
 /-- Both members of a conjugate pair contribute the same real part, because a real polynomial and
 the Gaussian multiplier both commute with conjugation. -/
 theorem re_heatSummand_conj (P : Polynomial ℝ) (t : ℝ) (z : ℂ) :
-    (evalRealPolynomial P ((starRingEnd ℂ) z) ^ 2 *
+    (evalRealPolynomial P ((starRingEnd ℂ) z) ^ (2 : ℕ) *
         Complex.exp (-(t : ℂ) * (starRingEnd ℂ) z)).re =
-      (evalRealPolynomial P z ^ 2 * Complex.exp (-(t : ℂ) * z)).re := by
+      (evalRealPolynomial P z ^ (2 : ℕ) * Complex.exp (-(t : ℂ) * z)).re := by
   have hconj : (-(t : ℂ) * (starRingEnd ℂ) z) = (starRingEnd ℂ) (-(t : ℂ) * z) := by
     simp [Complex.conj_ofReal]
   rw [evalRealPolynomial_conj, hconj, Complex.exp_conj, ← map_pow, ← map_mul,
@@ -123,8 +123,8 @@ theorem re_heatSummand_conj (P : Polynomial ℝ) (t : ℝ) (z : ℂ) :
 /-- The norm of one polynomial-square Gaussian summand. -/
 theorem norm_xiPolynomialGaussianHeatTerm (P : Polynomial ℝ) (t : ℝ) (q : XiZeroCopy) :
     ‖xiPolynomialGaussianHeatTerm P t q‖ =
-      ‖evalRealPolynomial P (xiSpectralPoint q ^ 2)‖ ^ 2 *
-        Real.exp (-(t * (xiSpectralPoint q ^ 2).re)) := by
+      ‖evalRealPolynomial P (xiSpectralPoint q ^ (2 : ℕ))‖ ^ (2 : ℕ) *
+        Real.exp (-(t * (xiSpectralPoint q ^ (2 : ℕ)).re)) := by
   rw [xiPolynomialGaussianHeatTerm, xiGaussianHeatTerm, norm_mul, norm_pow,
     Complex.norm_exp]
   congr 1
@@ -142,33 +142,33 @@ theorem summable_norm_xiPolynomialGaussianHeatTerm {t : ℝ} (ht : 0 < t)
 of the finite shell annihilates every competing copy inside the shell, the isolated conjugate pair
 rotates with the heat time, and outside the shell the Gaussian damping is strictly stronger. -/
 theorem exists_neg_xiPolynomialGaussianHeatTraceReal_of_spectralSq_im_pos
-    {q₀ : XiZeroCopy} (h0 : 0 < (xiSpectralPoint q₀ ^ 2).im) :
+    {q₀ : XiZeroCopy} (h0 : 0 < (xiSpectralPoint q₀ ^ (2 : ℕ)).im) :
     ∃ (P : Polynomial ℝ) (t : ℝ), 0 < t ∧
       xiPolynomialGaussianHeatTraceReal P t < 0 := by
   classical
-  set z₀ : ℂ := xiSpectralPoint q₀ ^ 2 with hz₀
+  set z₀ : ℂ := xiSpectralPoint q₀ ^ (2 : ℕ) with hz₀
   have hA : 0 < z₀.re := by rw [hz₀]; exact xiSpectralSq_re_pos q₀
   have hB : 0 < z₀.im := h0
   set R : ℝ := z₀.re + 1 with hRdef
   have hfin := finite_xiHeatShell R
   set S : Finset XiZeroCopy := hfin.toFinset with hSdef
-  have hmemS : ∀ q : XiZeroCopy, q ∈ S ↔ (xiSpectralPoint q ^ 2).re ≤ R := by
+  have hmemS : ∀ q : XiZeroCopy, q ∈ S ↔ (xiSpectralPoint q ^ (2 : ℕ)).re ≤ R := by
     intro q
     rw [hSdef, Set.Finite.mem_toFinset]
     exact Iff.rfl
   have hq₀S : q₀ ∈ S := by
     rw [hmemS, ← hz₀, hRdef]
     linarith
-  set FS : Finset ℂ := S.image (fun q => xiSpectralPoint q ^ 2) with hFSdef
+  set FS : Finset ℂ := S.image (fun q => xiSpectralPoint q ^ (2 : ℕ)) with hFSdef
   set P : Polynomial ℝ := realOrbitSeparator FS z₀ with hPdef
-  set c : ℂ := evalRealPolynomial P z₀ ^ 2 with hcdef
+  set c : ℂ := evalRealPolynomial P z₀ ^ (2 : ℕ) with hcdef
   have hc : c ≠ 0 := by
     rw [hcdef]
     exact pow_ne_zero _ evalRealOrbitSeparator_ne_zero
   have hcn : 0 < ‖c‖ := norm_pos_iff.mpr hc
   set S₁ : Finset XiZeroCopy :=
-    S.filter (fun q => xiSpectralPoint q ^ 2 = z₀ ∨
-      xiSpectralPoint q ^ 2 = (starRingEnd ℂ) z₀) with hS₁def
+    S.filter (fun q => xiSpectralPoint q ^ (2 : ℕ) = z₀ ∨
+      xiSpectralPoint q ^ (2 : ℕ) = (starRingEnd ℂ) z₀) with hS₁def
   have hq₀S₁ : q₀ ∈ S₁ := by
     rw [hS₁def, Finset.mem_filter]
     exact ⟨hq₀S, Or.inl hz₀.symm⟩
@@ -234,16 +234,16 @@ theorem exists_neg_xiPolynomialGaussianHeatTraceReal_of_spectralSq_im_pos
     · rw [xiPolynomialGaussianHeatTerm, xiGaussianHeatTerm, heq,
         re_heatSummand_conj, ← hcdef, hbase]
   -- every other shell copy is annihilated by the separator
-  have hvanish : ∀ q ∈ S.filter (fun q => ¬ (xiSpectralPoint q ^ 2 = z₀ ∨
-      xiSpectralPoint q ^ 2 = (starRingEnd ℂ) z₀)),
+  have hvanish : ∀ q ∈ S.filter (fun q => ¬ (xiSpectralPoint q ^ (2 : ℕ) = z₀ ∨
+      xiSpectralPoint q ^ (2 : ℕ) = (starRingEnd ℂ) z₀)),
       (xiPolynomialGaussianHeatTerm P t q).re = 0 := by
     intro q hq
     obtain ⟨hqS, hqne⟩ := Finset.mem_filter.mp hq
     push Not at hqne
-    have hmemFS : xiSpectralPoint q ^ 2 ∈ FS := by
+    have hmemFS : xiSpectralPoint q ^ (2 : ℕ) ∈ FS := by
       rw [hFSdef]
       exact Finset.mem_image_of_mem _ hqS
-    have hPzero : evalRealPolynomial P (xiSpectralPoint q ^ 2) = 0 := by
+    have hPzero : evalRealPolynomial P (xiSpectralPoint q ^ (2 : ℕ)) = 0 := by
       rw [hPdef]
       exact evalRealOrbitSeparator_eq_zero hmemFS hqne.1 hqne.2
     rw [xiPolynomialGaussianHeatTerm, hPzero]
@@ -252,8 +252,8 @@ theorem exists_neg_xiPolynomialGaussianHeatTraceReal_of_spectralSq_im_pos
   have hSsum : ∑ q ∈ S, (xiPolynomialGaussianHeatTerm P t q).re =
       (S₁.card : ℝ) * (-‖c‖ * Real.exp (-(t * z₀.re))) := by
     rw [← Finset.sum_filter_add_sum_filter_not S
-      (fun q => xiSpectralPoint q ^ 2 = z₀ ∨
-        xiSpectralPoint q ^ 2 = (starRingEnd ℂ) z₀)
+      (fun q => xiSpectralPoint q ^ (2 : ℕ) = z₀ ∨
+        xiSpectralPoint q ^ (2 : ℕ) = (starRingEnd ℂ) z₀)
       (fun q => (xiPolynomialGaussianHeatTerm P t q).re)]
     rw [Finset.sum_eq_zero hvanish, add_zero, ← hS₁def]
     rw [Finset.sum_congr rfl hpairRe, Finset.sum_const, nsmul_eq_mul]
@@ -274,28 +274,28 @@ theorem exists_neg_xiPolynomialGaussianHeatTraceReal_of_spectralSq_im_pos
           Real.exp R * Real.exp (-(t * R)) *
             ‖xiPolynomialGaussianHeatTerm P 1 (q : XiZeroCopy)‖ := by
       rintro ⟨q, hq⟩
-      have hqR : R < (xiSpectralPoint q ^ 2).re := by
+      have hqR : R < (xiSpectralPoint q ^ (2 : ℕ)).re := by
         have : q ∉ S := by simpa using hq
         rw [hmemS] at this
         exact not_le.mp this
       rw [norm_xiPolynomialGaussianHeatTerm, norm_xiPolynomialGaussianHeatTerm]
-      have hexp : Real.exp (-(t * (xiSpectralPoint q ^ 2).re)) ≤
+      have hexp : Real.exp (-(t * (xiSpectralPoint q ^ (2 : ℕ)).re)) ≤
           Real.exp R * Real.exp (-(t * R)) *
-            Real.exp (-(1 * (xiSpectralPoint q ^ 2).re)) := by
+            Real.exp (-(1 * (xiSpectralPoint q ^ (2 : ℕ)).re)) := by
         rw [← Real.exp_add, ← Real.exp_add, Real.exp_le_exp]
         nlinarith [hqR, ht1]
-      have hsq : (0 : ℝ) ≤ ‖evalRealPolynomial P (xiSpectralPoint q ^ 2)‖ ^ 2 := by
+      have hsq : (0 : ℝ) ≤ ‖evalRealPolynomial P (xiSpectralPoint q ^ (2 : ℕ))‖ ^ (2 : ℕ) := by
         positivity
       calc
-        ‖evalRealPolynomial P (xiSpectralPoint q ^ 2)‖ ^ 2 *
-            Real.exp (-(t * (xiSpectralPoint q ^ 2).re))
-            ≤ ‖evalRealPolynomial P (xiSpectralPoint q ^ 2)‖ ^ 2 *
+        ‖evalRealPolynomial P (xiSpectralPoint q ^ (2 : ℕ))‖ ^ (2 : ℕ) *
+            Real.exp (-(t * (xiSpectralPoint q ^ (2 : ℕ)).re))
+            ≤ ‖evalRealPolynomial P (xiSpectralPoint q ^ (2 : ℕ))‖ ^ (2 : ℕ) *
               (Real.exp R * Real.exp (-(t * R)) *
-                Real.exp (-(1 * (xiSpectralPoint q ^ 2).re))) :=
+                Real.exp (-(1 * (xiSpectralPoint q ^ (2 : ℕ)).re))) :=
               mul_le_mul_of_nonneg_left hexp hsq
         _ = Real.exp R * Real.exp (-(t * R)) *
-              (‖evalRealPolynomial P (xiSpectralPoint q ^ 2)‖ ^ 2 *
-                Real.exp (-(1 * (xiSpectralPoint q ^ 2).re))) := by ring
+              (‖evalRealPolynomial P (xiSpectralPoint q ^ (2 : ℕ))‖ ^ (2 : ℕ) *
+                Real.exp (-(1 * (xiSpectralPoint q ^ (2 : ℕ)).re))) := by ring
     calc
       ‖∑' q : ↑((S : Set XiZeroCopy))ᶜ, xiPolynomialGaussianHeatTerm P t q‖
           ≤ ∑' q : ↑((S : Set XiZeroCopy))ᶜ,
@@ -352,7 +352,7 @@ theorem exists_neg_xiPolynomialGaussianHeatTraceReal_of_spectralSq_im_pos
 /-- Failure of RH produces an off-critical copy with strictly positive squared imaginary part. -/
 theorem exists_spectralSq_im_pos_of_not_riemannHypothesis
     (h : ¬ RiemannHypothesis) :
-    ∃ q : XiZeroCopy, 0 < (xiSpectralPoint q ^ 2).im := by
+    ∃ q : XiZeroCopy, 0 < (xiSpectralPoint q ^ (2 : ℕ)).im := by
   rw [rh_iff_xi_ne_zero_right] at h
   push Not at h
   obtain ⟨s, hs, hzero⟩ := h

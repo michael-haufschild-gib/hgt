@@ -21,16 +21,16 @@ noncomputable section
 
 /-- The constant part of the affine majorant. -/
 def fs7Const (R h P₁ : ℕ) (z : ℝ) : ℝ :=
-  60 * Real.exp 1 / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+  60 * Real.exp 1 / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
     + 15 * (∑ e ∈ (rangePrimorial P₁ h).divisors,
         (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)) / (R : ℝ)
 
 /-- The slope of the affine majorant. -/
 def fs7Slope (R h P₁ : ℕ) (z : ℝ) : ℝ :=
-  5 * Real.pi / 2 * (((bigPrimeSet R (2 * R)).card : ℝ) / (R : ℝ) ^ 2)
-    + 20 * Real.pi * Real.exp 1 / ((R : ℝ) * (Real.exp (mertensS h - mertensS P₁)) ^ 2)
+  5 * Real.pi / 2 * (((bigPrimeSet R (2 * R)).card : ℝ) / (R : ℝ) ^ (2 : ℕ))
+    + 20 * Real.pi * Real.exp 1 / ((R : ℝ) * (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ))
     + 5 * Real.pi * (∑ e ∈ (rangePrimorial P₁ h).divisors,
-        (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)) / (R : ℝ) ^ 2
+        (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)) / (R : ℝ) ^ (2 : ℕ)
 
 /-- **`(FS7)`, affine in the height.** -/
 theorem integral_normSq_dyadicPrimePoly_affine {R h k P₁ : ℕ} {W z : ℝ}
@@ -39,7 +39,7 @@ theorem integral_normSq_dyadicPrimePoly_affine {R h k P₁ : ℕ} {W z : ℝ}
     (hlev : ((h : ℝ)) ^ (2 * k) ≤ z)
     (hk : Real.exp 1 * (∑ p ∈ rangePrimes P₁ h, 2 / ((p : ℝ) - 2)) + Real.log 2 ≤ (k : ℝ)) :
     (∫ w in Set.Icc (-W) W,
-        ‖logPoly (fun n => ((1 : ℂ) / (n : ℂ))) (bigPrimeSet R (2 * R)) w‖ ^ 2)
+        ‖logPoly (fun n => ((1 : ℂ) / (n : ℂ))) (bigPrimeSet R (2 * R)) w‖ ^ (2 : ℕ))
       ≤ fs7Const R h P₁ z + fs7Slope R h P₁ z * W := by
   classical
   set δ : ℝ := 1 / (2 * Real.pi * W) with hδdef
@@ -90,34 +90,34 @@ theorem integral_normSq_dyadicPrimePoly_affine {R h k P₁ : ℕ} {W z : ℝ}
   have hK0 : (0 : ℝ) ≤ (K : ℝ) := Nat.cast_nonneg _
   have hexp1 : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
   -- expand and compare termwise
-  have hexpand : 5 * Real.pi * W / 2 * (1 / (R : ℝ) ^ 2)
+  have hexpand : 5 * Real.pi * W / 2 * (1 / (R : ℝ) ^ (2 : ℕ))
         * (((bigPrimeSet R (2 * R)).card : ℝ)
-          + 2 * (2 * Real.exp 1 * (K : ℝ) * (2 * (R : ℝ)) / E ^ 2 + (K : ℝ) * Rem))
-      = 5 * Real.pi / 2 * (((bigPrimeSet R (2 * R)).card : ℝ) / (R : ℝ) ^ 2) * W
-        + 20 * Real.pi * Real.exp 1 * ((K : ℝ) * W) / ((R : ℝ) * E ^ 2)
-        + 5 * Real.pi * Rem * ((K : ℝ) * W) / (R : ℝ) ^ 2 := by
+          + 2 * (2 * Real.exp 1 * (K : ℝ) * (2 * (R : ℝ)) / E ^ (2 : ℕ) + (K : ℝ) * Rem))
+      = 5 * Real.pi / 2 * (((bigPrimeSet R (2 * R)).card : ℝ) / (R : ℝ) ^ (2 : ℕ)) * W
+        + 20 * Real.pi * Real.exp 1 * ((K : ℝ) * W) / ((R : ℝ) * E ^ (2 : ℕ))
+        + 5 * Real.pi * Rem * ((K : ℝ) * W) / (R : ℝ) ^ (2 : ℕ) := by
     field_simp
     ring
   rw [hexpand]
-  have hA : 20 * Real.pi * Real.exp 1 * ((K : ℝ) * W) / ((R : ℝ) * E ^ 2)
-      ≤ 60 * Real.exp 1 / E ^ 2
-        + 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ 2) * W := by
-    have hc : (0 : ℝ) < 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ 2) := by positivity
+  have hA : 20 * Real.pi * Real.exp 1 * ((K : ℝ) * W) / ((R : ℝ) * E ^ (2 : ℕ))
+      ≤ 60 * Real.exp 1 / E ^ (2 : ℕ)
+        + 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ (2 : ℕ)) * W := by
+    have hc : (0 : ℝ) < 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ (2 : ℕ)) := by positivity
     have := mul_le_mul_of_nonneg_left hKW hc.le
-    calc 20 * Real.pi * Real.exp 1 * ((K : ℝ) * W) / ((R : ℝ) * E ^ 2)
-        = 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ 2) * ((K : ℝ) * W) := by ring
-      _ ≤ 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ 2) * (3 * (R : ℝ) / Real.pi + W) := this
-      _ = 60 * Real.exp 1 / E ^ 2 + 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ 2) * W := by
+    calc 20 * Real.pi * Real.exp 1 * ((K : ℝ) * W) / ((R : ℝ) * E ^ (2 : ℕ))
+        = 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ (2 : ℕ)) * ((K : ℝ) * W) := by ring
+      _ ≤ 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ (2 : ℕ)) * (3 * (R : ℝ) / Real.pi + W) := this
+      _ = 60 * Real.exp 1 / E ^ (2 : ℕ) + 20 * Real.pi * Real.exp 1 / ((R : ℝ) * E ^ (2 : ℕ)) * W := by
           field_simp
           ring
-  have hB : 5 * Real.pi * Rem * ((K : ℝ) * W) / (R : ℝ) ^ 2
-      ≤ 15 * Rem / (R : ℝ) + 5 * Real.pi * Rem / (R : ℝ) ^ 2 * W := by
-    have hc : (0 : ℝ) ≤ 5 * Real.pi * Rem / (R : ℝ) ^ 2 := by positivity
+  have hB : 5 * Real.pi * Rem * ((K : ℝ) * W) / (R : ℝ) ^ (2 : ℕ)
+      ≤ 15 * Rem / (R : ℝ) + 5 * Real.pi * Rem / (R : ℝ) ^ (2 : ℕ) * W := by
+    have hc : (0 : ℝ) ≤ 5 * Real.pi * Rem / (R : ℝ) ^ (2 : ℕ) := by positivity
     have := mul_le_mul_of_nonneg_left hKW hc
-    calc 5 * Real.pi * Rem * ((K : ℝ) * W) / (R : ℝ) ^ 2
-        = 5 * Real.pi * Rem / (R : ℝ) ^ 2 * ((K : ℝ) * W) := by ring
-      _ ≤ 5 * Real.pi * Rem / (R : ℝ) ^ 2 * (3 * (R : ℝ) / Real.pi + W) := this
-      _ = 15 * Rem / (R : ℝ) + 5 * Real.pi * Rem / (R : ℝ) ^ 2 * W := by
+    calc 5 * Real.pi * Rem * ((K : ℝ) * W) / (R : ℝ) ^ (2 : ℕ)
+        = 5 * Real.pi * Rem / (R : ℝ) ^ (2 : ℕ) * ((K : ℝ) * W) := by ring
+      _ ≤ 5 * Real.pi * Rem / (R : ℝ) ^ (2 : ℕ) * (3 * (R : ℝ) / Real.pi + W) := this
+      _ = 15 * Rem / (R : ℝ) + 5 * Real.pi * Rem / (R : ℝ) ^ (2 : ℕ) * W := by
           field_simp
           ring
   linarith [hA, hB]

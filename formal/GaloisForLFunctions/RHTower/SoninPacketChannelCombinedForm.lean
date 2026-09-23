@@ -26,13 +26,13 @@ open scoped InnerProduct InnerProductSpace
 combine into one product. -/
 theorem soninChannelOuterTerm_eq {a r δ : ℝ} (ha : 0 < a) (hr : 1 < r) (hδ : 0 < δ)
     {N : ℕ} (hN : 2 ≤ N) (Kc : ℕ) (K : ℝ) :
-    4 * (2 * (K * δ ^ 2 / δ ^ (2 * N)) / ((2 * N : ℝ) - 1)) / a ^ (2 * N - 2) *
+    4 * (2 * (K * δ ^ (2 : ℕ) / δ ^ (2 * N)) / ((2 * N : ℝ) - 1)) / a ^ (2 * N - 2) *
         ((r ^ (2 * N - 2))⁻¹ ^ Kc * (1 - (r ^ (2 * N - 2))⁻¹)⁻¹) =
       8 * K / (((2 * N : ℝ) - 1) * (1 - (r ^ (2 * N - 2))⁻¹)) *
         ((δ * logShellRadius a r Kc) ^ (2 * N - 2))⁻¹ := by
   have hp2 : 2 * N - 2 + 2 = 2 * N := by omega
   have hδ0 : δ ≠ 0 := ne_of_gt hδ
-  have hδp : δ ^ (2 * N) = δ ^ (2 * N - 2) * δ ^ 2 := by rw [← pow_add, hp2]
+  have hδp : δ ^ (2 * N) = δ ^ (2 * N - 2) * δ ^ (2 : ℕ) := by rw [← pow_add, hp2]
   have hcomb : (δ * logShellRadius a r Kc) ^ (2 * N - 2) =
       δ ^ (2 * N - 2) * (a ^ (2 * N - 2) * (r ^ (2 * N - 2)) ^ Kc) := by
     rw [mul_pow, logShellRadius_pow]
@@ -62,7 +62,7 @@ theorem exists_norm_evenFourierLogShellChannel_soninScaledPacketEven_le_combined
       (∀ k, k < Kc → |Real.log (logShellRadius a r k)| ≤ M) →
         ‖evenFourierLogShellChannel a r n
             (soninScaledPacketEven m δ (2 * Real.pi * w) hδ)‖ ≤
-          Real.sqrt (M ^ 2 * ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ 2 +
+          Real.sqrt (M ^ (2 : ℕ) * ‖soninScaledPacketEven m δ (2 * Real.pi * w) hδ‖ ^ (2 : ℕ) +
             8 * K / (((2 * N : ℝ) - 1) * (1 - (r ^ (2 * N - 2))⁻¹)) *
               ((δ * logShellRadius a r Kc) ^ (2 * N - 2))⁻¹) := by
   obtain ⟨K, hK0, hK⟩ := exists_norm_evenFourierLogShellChannel_soninScaledPacketEven_le N hN

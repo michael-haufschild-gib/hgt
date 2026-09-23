@@ -7,7 +7,7 @@ import Mathlib.RingTheory.UniqueFactorizationDomain.Basic
 
 The polynomial `X ^ n - q` with `q` prime satisfies the Eisenstein criterion at the ideal generated
 by `q`: the leading coefficient is a unit, every lower coefficient is a multiple of `q`, and the
-constant one is not a multiple of `q ^ 2`.  So it is irreducible over the domain, and being monic it
+constant one is not a multiple of `q ^ (2 : ℕ)`.  So it is irreducible over the domain, and being monic it
 stays irreducible over the fraction field.
 
 This covers every exponent, in particular the even ones that the general criterion for radical

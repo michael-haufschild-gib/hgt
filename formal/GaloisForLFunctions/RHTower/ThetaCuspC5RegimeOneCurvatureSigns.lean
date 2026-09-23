@@ -162,40 +162,40 @@ theorem exp_three_pi_lt_12704 : Real.exp (3 * Real.pi) < 12704 := by
     simp
   have hpi : Real.exp Real.pi < 70 / 3 := by
     nlinarith [Real.exp_pos (-Real.pi), Real.exp_pos Real.pi]
-  have h3 : Real.exp (3 * Real.pi) = Real.exp Real.pi ^ 3 := by
+  have h3 : Real.exp (3 * Real.pi) = Real.exp Real.pi ^ (3 : ℕ) := by
     rw [← Real.exp_nat_mul]
     norm_num
   rw [h3]
-  calc Real.exp Real.pi ^ 3 < (70 / 3) ^ 3 :=
+  calc Real.exp Real.pi ^ (3 : ℕ) < (70 / 3) ^ (3 : ℕ) :=
         pow_lt_pow_left₀ hpi (Real.exp_pos _).le (by norm_num)
     _ < 12704 := by norm_num
 
 theorem exp_eighteen_gt : (65000000 : ℝ) < Real.exp 18 := by
   have h := Real.exp_one_gt_d9
-  have h18 : Real.exp 18 = Real.exp 1 ^ 18 := by
+  have h18 : Real.exp 18 = Real.exp 1 ^ (18 : ℕ) := by
     rw [← Real.exp_nat_mul]
     norm_num
   rw [h18]
-  calc (65000000 : ℝ) < 2.7182818283 ^ 18 := by norm_num
-    _ < Real.exp 1 ^ 18 := pow_lt_pow_left₀ h (by norm_num) (by norm_num)
+  calc (65000000 : ℝ) < 2.7182818283 ^ (18 : ℕ) := by norm_num
+    _ < Real.exp 1 ^ (18 : ℕ) := pow_lt_pow_left₀ h (by norm_num) (by norm_num)
 
 theorem exp_twentyOne_gt : (1300000000 : ℝ) < Real.exp 21 := by
   have h := Real.exp_one_gt_d9
-  have h21 : Real.exp 21 = Real.exp 1 ^ 21 := by
+  have h21 : Real.exp 21 = Real.exp 1 ^ (21 : ℕ) := by
     rw [← Real.exp_nat_mul]
     norm_num
   rw [h21]
-  calc (1300000000 : ℝ) < 2.7182818283 ^ 21 := by norm_num
-    _ < Real.exp 1 ^ 21 := pow_lt_pow_left₀ h (by norm_num) (by norm_num)
+  calc (1300000000 : ℝ) < 2.7182818283 ^ (21 : ℕ) := by norm_num
+    _ < Real.exp 1 ^ (21 : ℕ) := pow_lt_pow_left₀ h (by norm_num) (by norm_num)
 
 theorem exp_thirty_gt : (10680000000000 : ℝ) < Real.exp 30 := by
   have h := Real.exp_one_gt_d9
-  have h30 : Real.exp 30 = Real.exp 1 ^ 30 := by
+  have h30 : Real.exp 30 = Real.exp 1 ^ (30 : ℕ) := by
     rw [← Real.exp_nat_mul]
     norm_num
   rw [h30]
-  calc (10680000000000 : ℝ) < 2.7182818283 ^ 30 := by norm_num
-    _ < Real.exp 1 ^ 30 := pow_lt_pow_left₀ h (by norm_num) (by norm_num)
+  calc (10680000000000 : ℝ) < 2.7182818283 ^ (30 : ℕ) := by norm_num
+    _ < Real.exp 1 ^ (30 : ℕ) := pow_lt_pow_left₀ h (by norm_num) (by norm_num)
 
 /-- `ε` as a function of the scale: `ε = e^{3π} e^{-3A} / 399`. -/
 theorem regimeOneLikelihoodScale_eq (x : ℝ) :
@@ -282,21 +282,21 @@ theorem regimeOneLikelihoodScale_le_of_six_le {x : ℝ}
 
 theorem abs_variance_form_le {m2 μ ε : ℝ} (hε : ε ≤ 1 / 1000000) (hε0 : 0 ≤ ε)
     (hμ0 : 0 ≤ μ) (hμ : μ ≤ 3 * ε) (h20 : 0 ≤ m2) (h2 : m2 ≤ 9 * ε) :
-    |m2 - μ ^ 2| ≤ 9 * ε := by
-  have hμ2 : μ ^ 2 ≤ 9 * ε * ε := by nlinarith
+    |m2 - μ ^ (2 : ℕ)| ≤ 9 * ε := by
+  have hμ2 : μ ^ (2 : ℕ) ≤ 9 * ε * ε := by nlinarith
   rw [abs_le]
   constructor <;> nlinarith
 
 theorem abs_third_cumulant_form_le {m2 m3 μ ε : ℝ} (hε : ε ≤ 1 / 1000000) (hε0 : 0 ≤ ε)
     (hμ0 : 0 ≤ μ) (hμ : μ ≤ 3 * ε) (h20 : 0 ≤ m2) (h2 : m2 ≤ 9 * ε)
     (h30 : 0 ≤ m3) (h3 : m3 ≤ 27 * ε) :
-    |m3 - 3 * μ * m2 + 2 * μ ^ 3| ≤ 28 * ε := by
+    |m3 - 3 * μ * m2 + 2 * μ ^ (3 : ℕ)| ≤ 28 * ε := by
   have hμm2 : μ * m2 ≤ 27 * (ε * ε) := by nlinarith
   have hμm2' : 0 ≤ μ * m2 := mul_nonneg hμ0 h20
-  have hμ3 : μ ^ 3 ≤ 27 * (ε * ε * ε) := by
+  have hμ3 : μ ^ (3 : ℕ) ≤ 27 * (ε * ε * ε) := by
     have := pow_le_pow_left₀ hμ0 hμ 3
     nlinarith
-  have hμ3' : 0 ≤ μ ^ 3 := by positivity
+  have hμ3' : 0 ≤ μ ^ (3 : ℕ) := by positivity
   have hεε : ε * ε ≤ ε / 1000000 := by nlinarith
   have hεεε : ε * ε * ε ≤ ε / 1000000 := by nlinarith
   rw [abs_le]
@@ -305,21 +305,21 @@ theorem abs_third_cumulant_form_le {m2 m3 μ ε : ℝ} (hε : ε ≤ 1 / 1000000
 theorem abs_fourth_cumulant_form_le {m2 m3 m4 μ ε : ℝ} (hε : ε ≤ 1 / 1000000) (hε0 : 0 ≤ ε)
     (hμ0 : 0 ≤ μ) (hμ : μ ≤ 3 * ε) (h20 : 0 ≤ m2) (h2 : m2 ≤ 9 * ε)
     (h30 : 0 ≤ m3) (h3 : m3 ≤ 27 * ε) (h40 : 0 ≤ m4) (h4 : m4 ≤ 81 * ε) :
-    |m4 - 4 * μ * m3 - 3 * m2 ^ 2 + 12 * μ ^ 2 * m2 - 6 * μ ^ 4| ≤ 82 * ε := by
+    |m4 - 4 * μ * m3 - 3 * m2 ^ (2 : ℕ) + 12 * μ ^ (2 : ℕ) * m2 - 6 * μ ^ (4 : ℕ)| ≤ 82 * ε := by
   have hεε : ε * ε ≤ ε / 1000000 := by nlinarith
   have hμm3 : μ * m3 ≤ 81 * (ε * ε) := by nlinarith
   have hμm3' : 0 ≤ μ * m3 := mul_nonneg hμ0 h30
-  have hm22 : m2 ^ 2 ≤ 81 * (ε * ε) := by nlinarith
-  have hm22' : 0 ≤ m2 ^ 2 := by positivity
-  have hμ2 : μ ^ 2 ≤ 9 * (ε * ε) := by nlinarith
-  have hμ2m2 : μ ^ 2 * m2 ≤ 81 * (ε * ε) * ε := by
+  have hm22 : m2 ^ (2 : ℕ) ≤ 81 * (ε * ε) := by nlinarith
+  have hm22' : 0 ≤ m2 ^ (2 : ℕ) := by positivity
+  have hμ2 : μ ^ (2 : ℕ) ≤ 9 * (ε * ε) := by nlinarith
+  have hμ2m2 : μ ^ (2 : ℕ) * m2 ≤ 81 * (ε * ε) * ε := by
     have := mul_le_mul hμ2 h2 h20 (by positivity)
     nlinarith
-  have hμ2m2' : 0 ≤ μ ^ 2 * m2 := by positivity
-  have hμ4 : μ ^ 4 ≤ 81 * (ε * ε) * (ε * ε) := by
+  have hμ2m2' : 0 ≤ μ ^ (2 : ℕ) * m2 := by positivity
+  have hμ4 : μ ^ (4 : ℕ) ≤ 81 * (ε * ε) * (ε * ε) := by
     have := pow_le_pow_left₀ hμ0 hμ 4
     nlinarith
-  have hμ4' : 0 ≤ μ ^ 4 := by positivity
+  have hμ4' : 0 ≤ μ ^ (4 : ℕ) := by positivity
   have hεεε : ε * ε * ε ≤ ε / 1000000 := by nlinarith
   have hε4 : ε * ε * (ε * ε) ≤ ε / 1000000 := by nlinarith
   rw [abs_le]
@@ -329,8 +329,8 @@ theorem abs_fifth_cumulant_form_le {m2 m3 m4 m5 μ ε : ℝ} (hε : ε ≤ 1 / 1
     (hμ0 : 0 ≤ μ) (hμ : μ ≤ 3 * ε) (h20 : 0 ≤ m2) (h2 : m2 ≤ 9 * ε)
     (h30 : 0 ≤ m3) (h3 : m3 ≤ 27 * ε) (h40 : 0 ≤ m4) (h4 : m4 ≤ 81 * ε)
     (h50 : 0 ≤ m5) (h5 : m5 ≤ 243 * ε) :
-    |m5 - 5 * μ * m4 - 10 * m2 * m3 + 20 * μ ^ 2 * m3 + 30 * μ * m2 ^ 2 -
-      60 * μ ^ 3 * m2 + 24 * μ ^ 5| ≤ 244 * ε := by
+    |m5 - 5 * μ * m4 - 10 * m2 * m3 + 20 * μ ^ (2 : ℕ) * m3 + 30 * μ * m2 ^ (2 : ℕ) -
+      60 * μ ^ (3 : ℕ) * m2 + 24 * μ ^ (5 : ℕ)| ≤ 244 * ε := by
   have hεε : ε * ε ≤ ε / 1000000 := by nlinarith
   have hεεε : ε * ε * ε ≤ ε / 1000000 := by nlinarith
   have hε4 : ε * ε * (ε * ε) ≤ ε / 1000000 := by nlinarith
@@ -339,27 +339,27 @@ theorem abs_fifth_cumulant_form_le {m2 m3 m4 m5 μ ε : ℝ} (hε : ε ≤ 1 / 1
   have hμm4' : 0 ≤ μ * m4 := mul_nonneg hμ0 h40
   have hm2m3 : m2 * m3 ≤ 243 * (ε * ε) := by nlinarith
   have hm2m3' : 0 ≤ m2 * m3 := mul_nonneg h20 h30
-  have hμ2 : μ ^ 2 ≤ 9 * (ε * ε) := by nlinarith
-  have hμ2m3 : μ ^ 2 * m3 ≤ 243 * (ε * ε * ε) := by
+  have hμ2 : μ ^ (2 : ℕ) ≤ 9 * (ε * ε) := by nlinarith
+  have hμ2m3 : μ ^ (2 : ℕ) * m3 ≤ 243 * (ε * ε * ε) := by
     have := mul_le_mul hμ2 h3 h30 (by positivity)
     nlinarith
-  have hμ2m3' : 0 ≤ μ ^ 2 * m3 := by positivity
-  have hm22 : m2 ^ 2 ≤ 81 * (ε * ε) := by nlinarith
-  have hμm22 : μ * m2 ^ 2 ≤ 243 * (ε * ε * ε) := by
+  have hμ2m3' : 0 ≤ μ ^ (2 : ℕ) * m3 := by positivity
+  have hm22 : m2 ^ (2 : ℕ) ≤ 81 * (ε * ε) := by nlinarith
+  have hμm22 : μ * m2 ^ (2 : ℕ) ≤ 243 * (ε * ε * ε) := by
     have := mul_le_mul hμ hm22 (by positivity) (by positivity)
     nlinarith
-  have hμm22' : 0 ≤ μ * m2 ^ 2 := by positivity
-  have hμ3 : μ ^ 3 ≤ 27 * (ε * ε * ε) := by
+  have hμm22' : 0 ≤ μ * m2 ^ (2 : ℕ) := by positivity
+  have hμ3 : μ ^ (3 : ℕ) ≤ 27 * (ε * ε * ε) := by
     have := pow_le_pow_left₀ hμ0 hμ 3
     nlinarith
-  have hμ3m2 : μ ^ 3 * m2 ≤ 243 * (ε * ε * (ε * ε)) := by
+  have hμ3m2 : μ ^ (3 : ℕ) * m2 ≤ 243 * (ε * ε * (ε * ε)) := by
     have := mul_le_mul hμ3 h2 h20 (by positivity)
     nlinarith
-  have hμ3m2' : 0 ≤ μ ^ 3 * m2 := by positivity
-  have hμ5 : μ ^ 5 ≤ 243 * (ε * ε * (ε * ε) * ε) := by
+  have hμ3m2' : 0 ≤ μ ^ (3 : ℕ) * m2 := by positivity
+  have hμ5 : μ ^ (5 : ℕ) ≤ 243 * (ε * ε * (ε * ε) * ε) := by
     have := pow_le_pow_left₀ hμ0 hμ 5
     nlinarith
-  have hμ5' : 0 ≤ μ ^ 5 := by positivity
+  have hμ5' : 0 ≤ μ ^ (5 : ℕ) := by positivity
   rw [abs_le]
   constructor <;> nlinarith
 
@@ -422,25 +422,25 @@ theorem regimeOne_cumulant_bounds {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomRefle
   set ε := regimeOneLikelihoodScale x with hεdef
   have hmean : thetaCuspLikelihoodMean B = thetaCuspLikelihoodNormalizedMoment B 1 := rfl
   have hvar : thetaCuspLikelihoodVariance B =
-      thetaCuspLikelihoodNormalizedMoment B 2 - thetaCuspLikelihoodMean B ^ 2 := rfl
+      thetaCuspLikelihoodNormalizedMoment B 2 - thetaCuspLikelihoodMean B ^ (2 : ℕ) := rfl
   have hk3 : thetaCuspLikelihoodThirdCumulant B =
       thetaCuspLikelihoodNormalizedMoment B 3 -
         3 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 2 +
-        2 * thetaCuspLikelihoodMean B ^ 3 := rfl
+        2 * thetaCuspLikelihoodMean B ^ (3 : ℕ) := rfl
   have hk4 : thetaCuspLikelihoodFourthCumulant B =
       thetaCuspLikelihoodNormalizedMoment B 4 -
         4 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 3 -
-        3 * thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 +
-        12 * thetaCuspLikelihoodMean B ^ 2 * thetaCuspLikelihoodNormalizedMoment B 2 -
-        6 * thetaCuspLikelihoodMean B ^ 4 := rfl
+        3 * thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) +
+        12 * thetaCuspLikelihoodMean B ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 -
+        6 * thetaCuspLikelihoodMean B ^ (4 : ℕ) := rfl
   have hk5 : thetaCuspLikelihoodFifthCumulant B =
       thetaCuspLikelihoodNormalizedMoment B 5 -
         5 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 4 -
         10 * thetaCuspLikelihoodNormalizedMoment B 2 * thetaCuspLikelihoodNormalizedMoment B 3 +
-        20 * thetaCuspLikelihoodMean B ^ 2 * thetaCuspLikelihoodNormalizedMoment B 3 +
-        30 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 2 ^ 2 -
-        60 * thetaCuspLikelihoodMean B ^ 3 * thetaCuspLikelihoodNormalizedMoment B 2 +
-        24 * thetaCuspLikelihoodMean B ^ 5 := rfl
+        20 * thetaCuspLikelihoodMean B ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 3 +
+        30 * thetaCuspLikelihoodMean B * thetaCuspLikelihoodNormalizedMoment B 2 ^ (2 : ℕ) -
+        60 * thetaCuspLikelihoodMean B ^ (3 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 +
+        24 * thetaCuspLikelihoodMean B ^ (5 : ℕ) := rfl
   have hμ0 : 0 ≤ thetaCuspLikelihoodMean B := by rw [hmean]; exact hnn 1
   have hμ : thetaCuspLikelihoodMean B ≤ 3 * ε := by rw [hmean]; exact h1
   refine ⟨hμ0, hμ, ?_, ?_, ?_, ?_⟩
@@ -465,7 +465,7 @@ theorem scaled_bounds_of_abs_le {k b c : ℝ} (h : |k| ≤ b) (hc : 0 ≤ c) :
 /-- Regime-I majorant of `J₂`. -/
 theorem regimeOne_jetTwo_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |thetaCuspLikelihoodSourceLogPartitionJetTwo x| ≤
-      38 * thetaCuspSingleAtomReflectionScale 1 x ^ 2 * regimeOneLikelihoodScale x := by
+      38 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) * regimeOneLikelihoodScale x := by
   obtain ⟨hμ0, hμ, hv, -, -, -⟩ := regimeOne_cumulant_bounds hA
   have hε0 : 0 ≤ regimeOneLikelihoodScale x := (regimeOneLikelihoodScale_pos x).le
   unfold thetaCuspLikelihoodSourceLogPartitionJetTwo
@@ -474,10 +474,10 @@ theorem regimeOne_jetTwo_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflecti
   set μ := thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate x)
   set v := thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate x)
   have hA0 : 0 ≤ A := by linarith
-  have e1 := scaled_bounds_of_abs_le hv (show 0 ≤ 4 * A ^ 2 by positivity)
+  have e1 := scaled_bounds_of_abs_le hv (show 0 ≤ 4 * A ^ (2 : ℕ) by positivity)
   have e2 := mul_le_mul_of_nonneg_left hμ (show 0 ≤ 4 * A by positivity)
   have e2' := mul_le_mul_of_nonneg_left hμ0 (show 0 ≤ 4 * A by positivity)
-  have p12 : 6 * A ≤ A ^ 2 := by nlinarith
+  have p12 : 6 * A ≤ A ^ (2 : ℕ) := by nlinarith
   have hAε := mul_le_mul_of_nonneg_right p12 hε0
   rw [abs_le]
   constructor <;> nlinarith [e1.1, e1.2, e2, e2', hAε]
@@ -485,7 +485,7 @@ theorem regimeOne_jetTwo_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflecti
 /-- Regime-I majorant of `J₃`. -/
 theorem regimeOne_jetThree_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |thetaCuspLikelihoodSourceLogPartitionJetThree x| ≤
-      261 * thetaCuspSingleAtomReflectionScale 1 x ^ 3 * regimeOneLikelihoodScale x := by
+      261 * thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) * regimeOneLikelihoodScale x := by
   obtain ⟨hμ0, hμ, hv, hk3, -, -⟩ := regimeOne_cumulant_bounds hA
   have hε0 : 0 ≤ regimeOneLikelihoodScale x := (regimeOneLikelihoodScale_pos x).le
   unfold thetaCuspLikelihoodSourceLogPartitionJetThree
@@ -495,12 +495,12 @@ theorem regimeOne_jetThree_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflec
   set v := thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate x)
   set k3 := thetaCuspLikelihoodThirdCumulant (thetaCuspLikelihoodCoordinate x)
   have hA0 : 0 ≤ A := by linarith
-  have e1 := scaled_bounds_of_abs_le hk3 (show 0 ≤ 8 * A ^ 3 by positivity)
-  have e2 := scaled_bounds_of_abs_le hv (show 0 ≤ 24 * A ^ 2 by positivity)
+  have e1 := scaled_bounds_of_abs_le hk3 (show 0 ≤ 8 * A ^ (3 : ℕ) by positivity)
+  have e2 := scaled_bounds_of_abs_le hv (show 0 ≤ 24 * A ^ (2 : ℕ) by positivity)
   have e3 := mul_le_mul_of_nonneg_left hμ (show 0 ≤ 8 * A by positivity)
   have e3' := mul_le_mul_of_nonneg_left hμ0 (show 0 ≤ 8 * A by positivity)
-  have p12 : 6 * A ≤ A ^ 2 := by nlinarith
-  have p23 : 6 * A ^ 2 ≤ A ^ 3 := by nlinarith
+  have p12 : 6 * A ≤ A ^ (2 : ℕ) := by nlinarith
+  have p23 : 6 * A ^ (2 : ℕ) ≤ A ^ (3 : ℕ) := by nlinarith
   have hAε := mul_le_mul_of_nonneg_right p12 hε0
   have hA2ε := mul_le_mul_of_nonneg_right p23 hε0
   rw [abs_le]
@@ -509,7 +509,7 @@ theorem regimeOne_jetThree_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflec
 /-- Regime-I majorant of `J₄`. -/
 theorem regimeOne_jetFour_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |thetaCuspLikelihoodSourceLogPartitionJetFour x| ≤
-      1800 * thetaCuspSingleAtomReflectionScale 1 x ^ 4 * regimeOneLikelihoodScale x := by
+      1800 * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) * regimeOneLikelihoodScale x := by
   obtain ⟨hμ0, hμ, hv, hk3, hk4, -⟩ := regimeOne_cumulant_bounds hA
   have hε0 : 0 ≤ regimeOneLikelihoodScale x := (regimeOneLikelihoodScale_pos x).le
   unfold thetaCuspLikelihoodSourceLogPartitionJetFour
@@ -520,14 +520,14 @@ theorem regimeOne_jetFour_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflect
   set k3 := thetaCuspLikelihoodThirdCumulant (thetaCuspLikelihoodCoordinate x)
   set k4 := thetaCuspLikelihoodFourthCumulant (thetaCuspLikelihoodCoordinate x)
   have hA0 : 0 ≤ A := by linarith
-  have e1 := scaled_bounds_of_abs_le hk4 (show 0 ≤ 16 * A ^ 4 by positivity)
-  have e2 := scaled_bounds_of_abs_le hk3 (show 0 ≤ 96 * A ^ 3 by positivity)
-  have e3 := scaled_bounds_of_abs_le hv (show 0 ≤ 112 * A ^ 2 by positivity)
+  have e1 := scaled_bounds_of_abs_le hk4 (show 0 ≤ 16 * A ^ (4 : ℕ) by positivity)
+  have e2 := scaled_bounds_of_abs_le hk3 (show 0 ≤ 96 * A ^ (3 : ℕ) by positivity)
+  have e3 := scaled_bounds_of_abs_le hv (show 0 ≤ 112 * A ^ (2 : ℕ) by positivity)
   have e4 := mul_le_mul_of_nonneg_left hμ (show 0 ≤ 16 * A by positivity)
   have e4' := mul_le_mul_of_nonneg_left hμ0 (show 0 ≤ 16 * A by positivity)
-  have p12 : 6 * A ≤ A ^ 2 := by nlinarith
-  have p23 : 6 * A ^ 2 ≤ A ^ 3 := by nlinarith
-  have p34 : 6 * A ^ 3 ≤ A ^ 4 := by nlinarith
+  have p12 : 6 * A ≤ A ^ (2 : ℕ) := by nlinarith
+  have p23 : 6 * A ^ (2 : ℕ) ≤ A ^ (3 : ℕ) := by nlinarith
+  have p34 : 6 * A ^ (3 : ℕ) ≤ A ^ (4 : ℕ) := by nlinarith
   have hAε := mul_le_mul_of_nonneg_right p12 hε0
   have hA2ε := mul_le_mul_of_nonneg_right p23 hε0
   have hA3ε := mul_le_mul_of_nonneg_right p34 hε0
@@ -537,7 +537,7 @@ theorem regimeOne_jetFour_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflect
 /-- Regime-I majorant of `J₅`. -/
 theorem regimeOne_jetFive_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     |thetaCuspLikelihoodSourceLogPartitionJetFive x| ≤
-      12900 * thetaCuspSingleAtomReflectionScale 1 x ^ 5 * regimeOneLikelihoodScale x := by
+      12900 * thetaCuspSingleAtomReflectionScale 1 x ^ (5 : ℕ) * regimeOneLikelihoodScale x := by
   obtain ⟨hμ0, hμ, hv, hk3, hk4, hk5⟩ := regimeOne_cumulant_bounds hA
   have hε0 : 0 ≤ regimeOneLikelihoodScale x := (regimeOneLikelihoodScale_pos x).le
   unfold thetaCuspLikelihoodSourceLogPartitionJetFive
@@ -549,16 +549,16 @@ theorem regimeOne_jetFive_bound {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflect
   set k4 := thetaCuspLikelihoodFourthCumulant (thetaCuspLikelihoodCoordinate x)
   set k5 := thetaCuspLikelihoodFifthCumulant (thetaCuspLikelihoodCoordinate x)
   have hA0 : 0 ≤ A := by linarith
-  have e1 := scaled_bounds_of_abs_le hk5 (show 0 ≤ 32 * A ^ 5 by positivity)
-  have e2 := scaled_bounds_of_abs_le hk4 (show 0 ≤ 320 * A ^ 4 by positivity)
-  have e3 := scaled_bounds_of_abs_le hk3 (show 0 ≤ 800 * A ^ 3 by positivity)
-  have e4 := scaled_bounds_of_abs_le hv (show 0 ≤ 480 * A ^ 2 by positivity)
+  have e1 := scaled_bounds_of_abs_le hk5 (show 0 ≤ 32 * A ^ (5 : ℕ) by positivity)
+  have e2 := scaled_bounds_of_abs_le hk4 (show 0 ≤ 320 * A ^ (4 : ℕ) by positivity)
+  have e3 := scaled_bounds_of_abs_le hk3 (show 0 ≤ 800 * A ^ (3 : ℕ) by positivity)
+  have e4 := scaled_bounds_of_abs_le hv (show 0 ≤ 480 * A ^ (2 : ℕ) by positivity)
   have e5 := mul_le_mul_of_nonneg_left hμ (show 0 ≤ 32 * A by positivity)
   have e5' := mul_le_mul_of_nonneg_left hμ0 (show 0 ≤ 32 * A by positivity)
-  have p12 : 6 * A ≤ A ^ 2 := by nlinarith
-  have p23 : 6 * A ^ 2 ≤ A ^ 3 := by nlinarith
-  have p34 : 6 * A ^ 3 ≤ A ^ 4 := by nlinarith
-  have p45 : 6 * A ^ 4 ≤ A ^ 5 := by nlinarith
+  have p12 : 6 * A ≤ A ^ (2 : ℕ) := by nlinarith
+  have p23 : 6 * A ^ (2 : ℕ) ≤ A ^ (3 : ℕ) := by nlinarith
+  have p34 : 6 * A ^ (3 : ℕ) ≤ A ^ (4 : ℕ) := by nlinarith
+  have p45 : 6 * A ^ (4 : ℕ) ≤ A ^ (5 : ℕ) := by nlinarith
   have hAε := mul_le_mul_of_nonneg_right p12 hε0
   have hA2ε := mul_le_mul_of_nonneg_right p23 hε0
   have hA3ε := mul_le_mul_of_nonneg_right p34 hε0
@@ -617,12 +617,12 @@ theorem thetaCuspMorseScale_one_eq_weight_add (x : ℝ) :
 /-- Closed forms of `BW₂ … BW₅` in `q` (with `2q + 3 = 2A`). -/
 theorem bornWitten_jets_eq (x : ℝ) :
     let q := thetaCuspBornWittenWeight 1 x
-    thetaCuspBornWittenLogCurvature 1 x = (2 * q + 3) * (2 + 3 / q ^ 2) ∧
-    thetaCuspBornWittenLogThirdDerivative 1 x = (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) ∧
+    thetaCuspBornWittenLogCurvature 1 x = (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) ∧
+    thetaCuspBornWittenLogThirdDerivative 1 x = (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) ∧
     thetaCuspBornWittenLogFourthDerivative 1 x =
-      (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4) ∧
+      (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)) ∧
     thetaCuspBornWittenLogFifthDerivative 1 x =
-      (2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5) := by
+      (2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ)) := by
   intro q
   refine ⟨?_, rfl, rfl, rfl⟩
   unfold thetaCuspBornWittenLogCurvature thetaCuspBornWittenCurvature
@@ -631,53 +631,53 @@ theorem bornWitten_jets_eq (x : ℝ) :
 
 /-- The exact Born–Witten difference `BW₂ BW₅ − BW₃ BW₄`. -/
 theorem bornWitten_difference_eq {q : ℝ} (hq : q ≠ 0) :
-    (2 * q + 3) * (2 + 3 / q ^ 2) *
-        ((2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5)) -
-      (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) *
-        ((2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4)) =
-      -((2 * q + 3) ^ 2 * (1296 * q ^ 4 + 4536 * q ^ 3 + 4536 * q ^ 2 + 2916 * q + 2916) / q ^ 7) := by
+    (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) *
+        ((2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ))) -
+      (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) *
+        ((2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ))) =
+      -((2 * q + 3) ^ (2 : ℕ) * (1296 * q ^ (4 : ℕ) + 4536 * q ^ (3 : ℕ) + 4536 * q ^ (2 : ℕ) + 2916 * q + 2916) / q ^ (7 : ℕ)) := by
   field_simp
   ring
 
 /-- Bracket bounds for `q ≥ 9/2`. -/
 theorem bornWitten_bracket_bounds {q : ℝ} (hq : 9 / 2 ≤ q) :
-    2 ≤ 2 + 3 / q ^ 2 ∧ 2 + 3 / q ^ 2 ≤ 43 / 20 ∧
-    7 / 2 ≤ 4 - 6 / q ^ 2 - 18 / q ^ 3 ∧ 4 - 6 / q ^ 2 - 18 / q ^ 3 ≤ 4 ∧
-    8 ≤ 8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4 ∧
-      8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4 ≤ 51 / 5 ∧
-    17 / 5 ≤ 16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5 ∧
-      16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5 ≤ 16 := by
+    2 ≤ 2 + 3 / q ^ (2 : ℕ) ∧ 2 + 3 / q ^ (2 : ℕ) ≤ 43 / 20 ∧
+    7 / 2 ≤ 4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ) ∧ 4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ) ≤ 4 ∧
+    8 ≤ 8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ) ∧
+      8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ) ≤ 51 / 5 ∧
+    17 / 5 ≤ 16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ) ∧
+      16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ) ≤ 16 := by
   have hq0 : 0 < q := by linarith
-  have h2 : 3 / q ^ 2 ≤ 3 / (9 / 2) ^ 2 :=
+  have h2 : 3 / q ^ (2 : ℕ) ≤ 3 / (9 / 2) ^ (2 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 2)
-  have h2' : 6 / q ^ 2 ≤ 6 / (9 / 2) ^ 2 :=
+  have h2' : 6 / q ^ (2 : ℕ) ≤ 6 / (9 / 2) ^ (2 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 2)
-  have h3 : 18 / q ^ 3 ≤ 18 / (9 / 2) ^ 3 :=
+  have h3 : 18 / q ^ (3 : ℕ) ≤ 18 / (9 / 2) ^ (3 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 3)
-  have h12 : 12 / q ^ 2 ≤ 12 / (9 / 2) ^ 2 :=
+  have h12 : 12 / q ^ (2 : ℕ) ≤ 12 / (9 / 2) ^ (2 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 2)
-  have h108 : 108 / q ^ 3 ≤ 108 / (9 / 2) ^ 3 :=
+  have h108 : 108 / q ^ (3 : ℕ) ≤ 108 / (9 / 2) ^ (3 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 3)
-  have h162 : 162 / q ^ 4 ≤ 162 / (9 / 2) ^ 4 :=
+  have h162 : 162 / q ^ (4 : ℕ) ≤ 162 / (9 / 2) ^ (4 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 4)
-  have h24 : 24 / q ^ 2 ≤ 24 / (9 / 2) ^ 2 :=
+  have h24 : 24 / q ^ (2 : ℕ) ≤ 24 / (9 / 2) ^ (2 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 2)
-  have h504 : 504 / q ^ 3 ≤ 504 / (9 / 2) ^ 3 :=
+  have h504 : 504 / q ^ (3 : ℕ) ≤ 504 / (9 / 2) ^ (3 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 3)
-  have h1944 : 1944 / q ^ 4 ≤ 1944 / (9 / 2) ^ 4 :=
+  have h1944 : 1944 / q ^ (4 : ℕ) ≤ 1944 / (9 / 2) ^ (4 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 4)
-  have h1944' : 1944 / q ^ 5 ≤ 1944 / (9 / 2) ^ 5 :=
+  have h1944' : 1944 / q ^ (5 : ℕ) ≤ 1944 / (9 / 2) ^ (5 : ℕ) :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) (pow_le_pow_left₀ (by norm_num) hq 5)
-  have p2 : 0 ≤ 3 / q ^ 2 := by positivity
-  have p2' : 0 ≤ 6 / q ^ 2 := by positivity
-  have p3 : 0 ≤ 18 / q ^ 3 := by positivity
-  have p12 : 0 ≤ 12 / q ^ 2 := by positivity
-  have p108 : 0 ≤ 108 / q ^ 3 := by positivity
-  have p162 : 0 ≤ 162 / q ^ 4 := by positivity
-  have p24 : 0 ≤ 24 / q ^ 2 := by positivity
-  have p504 : 0 ≤ 504 / q ^ 3 := by positivity
-  have p1944 : 0 ≤ 1944 / q ^ 4 := by positivity
-  have p1944' : 0 ≤ 1944 / q ^ 5 := by positivity
+  have p2 : 0 ≤ 3 / q ^ (2 : ℕ) := by positivity
+  have p2' : 0 ≤ 6 / q ^ (2 : ℕ) := by positivity
+  have p3 : 0 ≤ 18 / q ^ (3 : ℕ) := by positivity
+  have p12 : 0 ≤ 12 / q ^ (2 : ℕ) := by positivity
+  have p108 : 0 ≤ 108 / q ^ (3 : ℕ) := by positivity
+  have p162 : 0 ≤ 162 / q ^ (4 : ℕ) := by positivity
+  have p24 : 0 ≤ 24 / q ^ (2 : ℕ) := by positivity
+  have p504 : 0 ≤ 504 / q ^ (3 : ℕ) := by positivity
+  have p1944 : 0 ≤ 1944 / q ^ (4 : ℕ) := by positivity
+  have p1944' : 0 ≤ 1944 / q ^ (5 : ℕ) := by positivity
   norm_num at h2 h2' h3 h12 h108 h162 h24 h504 h1944 h1944'
   refine ⟨by linarith, by linarith, by linarith, by linarith, by linarith, by linarith,
     by linarith, by linarith⟩
@@ -688,11 +688,11 @@ theorem bornWitten_bracket_bounds {q : ℝ} (hq : 9 / 2 ≤ q) :
 theorem regimeOne_data {x : ℝ} (hA : 6 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     thetaCuspBornWittenWeight 1 x = thetaCuspSingleAtomReflectionScale 1 x - 3 / 2 ∧
     9 / 2 ≤ thetaCuspBornWittenWeight 1 x ∧ 0 < x ∧ 0 ≤ regimeOneLikelihoodScale x ∧
-    thetaCuspSingleAtomReflectionScale 1 x ^ 2 * regimeOneLikelihoodScale x ≤
+    thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) * regimeOneLikelihoodScale x ≤
       36 * (49 / 100000000) ∧
-    thetaCuspSingleAtomReflectionScale 1 x ^ 3 * regimeOneLikelihoodScale x ≤
+    thetaCuspSingleAtomReflectionScale 1 x ^ (3 : ℕ) * regimeOneLikelihoodScale x ≤
       216 * (49 / 100000000) ∧
-    thetaCuspSingleAtomReflectionScale 1 x ^ 6 * regimeOneLikelihoodScale x ≤
+    thetaCuspSingleAtomReflectionScale 1 x ^ (6 : ℕ) * regimeOneLikelihoodScale x ≤
       46656 * (49 / 100000000) ∧
     thetaCuspSingleAtomReflectionScale 1 x * regimeOneLikelihoodScale x ≤ 6 * (49 / 100000000) := by
   have hq : thetaCuspBornWittenWeight 1 x = thetaCuspSingleAtomReflectionScale 1 x - 3 / 2 :=
@@ -725,12 +725,12 @@ theorem thetaCuspLogCurvatureJet_pos_of_six_le {x : ℝ}
   set ε := regimeOneLikelihoodScale x with hεdef
   have hA6 : 6 ≤ A := hA
   have hJ' := (abs_le.mp hJ).2
-  have hlow : 7 * A ≤ (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) := by
+  have hlow : 7 * A ≤ (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) := by
     have : 2 * q + 3 = 2 * A := by rw [hq]; ring
     rw [this]
     nlinarith
-  have hA3ε : 261 * A ^ 3 * ε ≤ 261 * A * (36 * (49 / 100000000)) := by
-    have : A ^ 3 * ε = A * (A ^ 2 * ε) := by ring
+  have hA3ε : 261 * A ^ (3 : ℕ) * ε ≤ 261 * A * (36 * (49 / 100000000)) := by
+    have : A ^ (3 : ℕ) * ε = A * (A ^ (2 : ℕ) * ε) := by ring
     rw [mul_assoc, this]
     have := mul_le_mul_of_nonneg_left hA2ε (show 0 ≤ A by linarith)
     nlinarith
@@ -750,12 +750,12 @@ theorem thetaCuspLogCurvatureJetTwo_pos_of_six_le {x : ℝ}
   set ε := regimeOneLikelihoodScale x with hεdef
   have hA6 : 6 ≤ A := hA
   have hJ' := (abs_le.mp hJ).2
-  have hlow : 16 * A ≤ (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4) := by
+  have hlow : 16 * A ≤ (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)) := by
     have : 2 * q + 3 = 2 * A := by rw [hq]; ring
     rw [this]
     nlinarith
-  have hA4ε : 1800 * A ^ 4 * ε ≤ 1800 * A * (216 * (49 / 100000000)) := by
-    have : A ^ 4 * ε = A * (A ^ 3 * ε) := by ring
+  have hA4ε : 1800 * A ^ (4 : ℕ) * ε ≤ 1800 * A * (216 * (49 / 100000000)) := by
+    have : A ^ (4 : ℕ) * ε = A * (A ^ (3 : ℕ) * ε) := by ring
     rw [mul_assoc, this]
     have := mul_le_mul_of_nonneg_left hA3ε (show 0 ≤ A by linarith)
     nlinarith
@@ -763,10 +763,10 @@ theorem thetaCuspLogCurvatureJetTwo_pos_of_six_le {x : ℝ}
 
 /-- Lower bound on the difference through its two leading terms. -/
 theorem bornWitten_difference_le {q : ℝ} (hq : 0 < q) :
-    -((2 * q + 3) ^ 2 * (1296 * q ^ 4 + 4536 * q ^ 3 + 4536 * q ^ 2 + 2916 * q + 2916) / q ^ 7) ≤
-      -((2 * q + 3) ^ 2 * (1296 / q ^ 3 + 4536 / q ^ 4)) := by
+    -((2 * q + 3) ^ (2 : ℕ) * (1296 * q ^ (4 : ℕ) + 4536 * q ^ (3 : ℕ) + 4536 * q ^ (2 : ℕ) + 2916 * q + 2916) / q ^ (7 : ℕ)) ≤
+      -((2 * q + 3) ^ (2 : ℕ) * (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ))) := by
   rw [neg_le_neg_iff]
-  have hrew : 1296 / q ^ 3 + 4536 / q ^ 4 = (1296 * q ^ 4 + 4536 * q ^ 3) / q ^ 7 := by
+  have hrew : 1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ) = (1296 * q ^ (4 : ℕ) + 4536 * q ^ (3 : ℕ)) / q ^ (7 : ℕ) := by
     field_simp
     try ring
   rw [hrew, ← mul_div_assoc]
@@ -808,56 +808,56 @@ theorem thetaCuspLogCurvature_mul_jetThree_le_of_six_le {x : ℝ}
   have h2A : 2 * q + 3 = 2 * A := by rw [hq]; ring
   have h2A0 : 0 ≤ 2 * A := by positivity
   -- Born–Witten bounds in `A`
-  have hc0b : 4 * A ≤ (2 * q + 3) * (2 + 3 / q ^ 2) ∧
-      (2 * q + 3) * (2 + 3 / q ^ 2) ≤ 43 / 10 * A := by
+  have hc0b : 4 * A ≤ (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) ∧
+      (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) ≤ 43 / 10 * A := by
     rw [h2A]
     have u1 := mul_le_mul_of_nonneg_left hb2l h2A0
     have u2 := mul_le_mul_of_nonneg_left hb2u h2A0
     constructor <;> linarith only [u1, u2]
-  have hc1b : 7 * A ≤ (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) ∧
-      (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) ≤ 8 * A := by
+  have hc1b : 7 * A ≤ (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) ∧
+      (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) ≤ 8 * A := by
     rw [h2A]
     have u1 := mul_le_mul_of_nonneg_left hb3l h2A0
     have u2 := mul_le_mul_of_nonneg_left hb3u h2A0
     constructor <;> linarith only [u1, u2]
-  have hc2b : 16 * A ≤ (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4) ∧
-      (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4) ≤ 102 / 5 * A := by
+  have hc2b : 16 * A ≤ (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)) ∧
+      (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)) ≤ 102 / 5 * A := by
     rw [h2A]
     have u1 := mul_le_mul_of_nonneg_left hb4l h2A0
     have u2 := mul_le_mul_of_nonneg_left hb4u h2A0
     constructor <;> linarith only [u1, u2]
-  have hc3b : 34 / 5 * A ≤ (2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5) ∧
-      (2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5) ≤ 32 * A := by
+  have hc3b : 34 / 5 * A ≤ (2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ)) ∧
+      (2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ)) ≤ 32 * A := by
     rw [h2A]
     have u1 := mul_le_mul_of_nonneg_left hb5l h2A0
     have u2 := mul_le_mul_of_nonneg_left hb5u h2A0
     constructor <;> linarith only [u1, u2]
   -- the exact difference and its lower bound
-  have hDle : (2 * q + 3) * (2 + 3 / q ^ 2) *
-      ((2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5)) -
-      (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) *
-      ((2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4)) ≤
-      -(4 * A ^ 2 * (1296 / q ^ 3 + 4536 / q ^ 4)) := by
+  have hDle : (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) *
+      ((2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ))) -
+      (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) *
+      ((2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ))) ≤
+      -(4 * A ^ (2 : ℕ) * (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ))) := by
     rw [bornWitten_difference_eq hq0.ne', h2A]
     have := bornWitten_difference_le hq0
     rw [h2A] at this
-    have e : ((2 : ℝ) * A) ^ 2 = 4 * A ^ 2 := by ring
+    have e : ((2 : ℝ) * A) ^ (2 : ℕ) = 4 * A ^ (2 : ℕ) := by ring
     rw [e] at this ⊢
     exact this
-  generalize hc0 : (2 * q + 3) * (2 + 3 / q ^ 2) = c0 at hc0b hDle ⊢
-  generalize hc1 : (2 * q + 3) * (4 - 6 / q ^ 2 - 18 / q ^ 3) = c1 at hc1b hDle ⊢
-  generalize hc2 : (2 * q + 3) * (8 + 12 / q ^ 2 + 108 / q ^ 3 + 162 / q ^ 4) = c2 at hc2b hDle ⊢
-  generalize hc3 : (2 * q + 3) * (16 - 24 / q ^ 2 - 504 / q ^ 3 - 1944 / q ^ 4 - 1944 / q ^ 5) = c3
+  generalize hc0 : (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) = c0 at hc0b hDle ⊢
+  generalize hc1 : (2 * q + 3) * (4 - 6 / q ^ (2 : ℕ) - 18 / q ^ (3 : ℕ)) = c1 at hc1b hDle ⊢
+  generalize hc2 : (2 * q + 3) * (8 + 12 / q ^ (2 : ℕ) + 108 / q ^ (3 : ℕ) + 162 / q ^ (4 : ℕ)) = c2 at hc2b hDle ⊢
+  generalize hc3 : (2 * q + 3) * (16 - 24 / q ^ (2 : ℕ) - 504 / q ^ (3 : ℕ) - 1944 / q ^ (4 : ℕ) - 1944 / q ^ (5 : ℕ)) = c3
     at hc3b hDle ⊢
   have hc0p : 0 ≤ c0 := by linarith only [hc0b.1, hA0]
   have hc1p : 0 ≤ c1 := by linarith only [hc1b.1, hA0]
   have hc2p : 0 ≤ c2 := by linarith only [hc2b.1, hA0]
   have hc3p : 0 ≤ c3 := by linarith only [hc3b.1, hA0]
   -- absolute bounds of the jets
-  generalize hb2 : 38 * A ^ 2 * ε = b2 at hJ2
-  generalize hb3 : 261 * A ^ 3 * ε = b3 at hJ3
-  generalize hb4 : 1800 * A ^ 4 * ε = b4 at hJ4
-  generalize hb5 : 12900 * A ^ 5 * ε = b5 at hJ5
+  generalize hb2 : 38 * A ^ (2 : ℕ) * ε = b2 at hJ2
+  generalize hb3 : 261 * A ^ (3 : ℕ) * ε = b3 at hJ3
+  generalize hb4 : 1800 * A ^ (4 : ℕ) * ε = b4 at hJ4
+  generalize hb5 : 12900 * A ^ (5 : ℕ) * ε = b5 at hJ5
   have hb2p : 0 ≤ b2 := by rw [← hb2]; positivity
   have hb3p : 0 ≤ b3 := by rw [← hb3]; positivity
   have hb4p : 0 ≤ b4 := by rw [← hb4]; positivity
@@ -876,47 +876,47 @@ theorem thetaCuspLogCurvature_mul_jetThree_le_of_six_le {x : ℝ}
   have hc2j3 := scaled_bounds_of_abs_le hJ3 hc2p
   -- the error budget
   have herr : c0 * b5 + c3 * b2 + b2 * b5 + c1 * b4 + c2 * b3 + b3 * b4 ≤
-      58100 * (A ^ 6 * ε) := by
-    have h216 : (216 : ℝ) ≤ A ^ 3 := by
+      58100 * (A ^ (6 : ℕ) * ε) := by
+    have h216 : (216 : ℝ) ≤ A ^ (3 : ℕ) := by
       have := pow_le_pow_left₀ (by norm_num) hA6 3
       norm_num at this
       exact this
-    have h36 : (36 : ℝ) ≤ A ^ 2 := by
+    have h36 : (36 : ℝ) ≤ A ^ (2 : ℕ) := by
       have := pow_le_pow_left₀ (by norm_num) hA6 2
       norm_num at this
       exact this
-    have hA3ε : 216 * (A ^ 3 * ε) ≤ A ^ 6 * ε := by
+    have hA3ε : 216 * (A ^ (3 : ℕ) * ε) ≤ A ^ (6 : ℕ) * ε := by
       have u := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h216 (pow_nonneg hA0.le 3)) hε0
-      have e : A ^ 3 * A ^ 3 * ε = A ^ 6 * ε := by ring
-      have e' : A ^ 3 * 216 * ε = 216 * (A ^ 3 * ε) := by ring
+      have e : A ^ (3 : ℕ) * A ^ (3 : ℕ) * ε = A ^ (6 : ℕ) * ε := by ring
+      have e' : A ^ (3 : ℕ) * 216 * ε = 216 * (A ^ (3 : ℕ) * ε) := by ring
       linarith only [u, e, e']
-    have hA4ε : 36 * (A ^ 4 * ε) ≤ A ^ 6 * ε := by
+    have hA4ε : 36 * (A ^ (4 : ℕ) * ε) ≤ A ^ (6 : ℕ) * ε := by
       have u := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h36 (pow_nonneg hA0.le 4)) hε0
-      have e : A ^ 4 * A ^ 2 * ε = A ^ 6 * ε := by ring
-      have e' : A ^ 4 * 36 * ε = 36 * (A ^ 4 * ε) := by ring
+      have e : A ^ (4 : ℕ) * A ^ (2 : ℕ) * ε = A ^ (6 : ℕ) * ε := by ring
+      have e' : A ^ (4 : ℕ) * 36 * ε = 36 * (A ^ (4 : ℕ) * ε) := by ring
       linarith only [u, e, e']
-    have hA5ε : 6 * (A ^ 5 * ε) ≤ A ^ 6 * ε := by
+    have hA5ε : 6 * (A ^ (5 : ℕ) * ε) ≤ A ^ (6 : ℕ) * ε := by
       have u := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hA6 (pow_nonneg hA0.le 5)) hε0
-      have e : A ^ 5 * A * ε = A ^ 6 * ε := by ring
-      have e' : A ^ 5 * 6 * ε = 6 * (A ^ 5 * ε) := by ring
+      have e : A ^ (5 : ℕ) * A * ε = A ^ (6 : ℕ) * ε := by ring
+      have e' : A ^ (5 : ℕ) * 6 * ε = 6 * (A ^ (5 : ℕ) * ε) := by ring
       linarith only [u, e, e']
-    have t1 : c0 * b5 ≤ 55470 * (A ^ 6 * ε) := by
+    have t1 : c0 * b5 ≤ 55470 * (A ^ (6 : ℕ) * ε) := by
       calc c0 * b5 ≤ 43 / 10 * A * b5 := mul_le_mul_of_nonneg_right hc0b.2 hb5p
-        _ = 55470 * (A ^ 6 * ε) := by rw [← hb5]; ring
-    have t2 : c3 * b2 ≤ 1216 * (A ^ 3 * ε) := by
+        _ = 55470 * (A ^ (6 : ℕ) * ε) := by rw [← hb5]; ring
+    have t2 : c3 * b2 ≤ 1216 * (A ^ (3 : ℕ) * ε) := by
       calc c3 * b2 ≤ 32 * A * b2 := mul_le_mul_of_nonneg_right hc3b.2 hb2p
-        _ = 1216 * (A ^ 3 * ε) := by rw [← hb2]; ring
-    have t3 : c1 * b4 ≤ 14400 * (A ^ 5 * ε) := by
+        _ = 1216 * (A ^ (3 : ℕ) * ε) := by rw [← hb2]; ring
+    have t3 : c1 * b4 ≤ 14400 * (A ^ (5 : ℕ) * ε) := by
       calc c1 * b4 ≤ 8 * A * b4 := mul_le_mul_of_nonneg_right hc1b.2 hb4p
-        _ = 14400 * (A ^ 5 * ε) := by rw [← hb4]; ring
-    have t4 : c2 * b3 ≤ 26622 / 5 * (A ^ 4 * ε) := by
+        _ = 14400 * (A ^ (5 : ℕ) * ε) := by rw [← hb4]; ring
+    have t4 : c2 * b3 ≤ 26622 / 5 * (A ^ (4 : ℕ) * ε) := by
       calc c2 * b3 ≤ 102 / 5 * A * b3 := mul_le_mul_of_nonneg_right hc2b.2 hb3p
-        _ = 26622 / 5 * (A ^ 4 * ε) := by rw [← hb3]; ring
-    have t5 : b2 * b5 + b3 * b4 = 960000 * (A ^ 6 * ε) * (A * ε) := by
+        _ = 26622 / 5 * (A ^ (4 : ℕ) * ε) := by rw [← hb3]; ring
+    have t5 : b2 * b5 + b3 * b4 = 960000 * (A ^ (6 : ℕ) * ε) * (A * ε) := by
       rw [← hb2, ← hb3, ← hb4, ← hb5]; ring
-    have t6 : 960000 * (A ^ 6 * ε) * (A * ε) ≤ 960000 * (A ^ 6 * ε) * (6 * (49 / 100000000)) :=
+    have t6 : 960000 * (A ^ (6 : ℕ) * ε) * (A * ε) ≤ 960000 * (A ^ (6 : ℕ) * ε) * (6 * (49 / 100000000)) :=
       mul_le_mul_of_nonneg_left hAε (by positivity)
-    have hM : 0 ≤ A ^ 6 * ε := mul_nonneg (pow_nonneg hA0.le 6) hε0
+    have hM : 0 ≤ A ^ (6 : ℕ) * ε := mul_nonneg (pow_nonneg hA0.le 6) hε0
     linarith only [t1, t2, t3, t4, t5, t6, hA3ε, hA4ε, hA5ε, hM]
   -- reduce to `D + err ≤ 0`
   suffices hkey : c0 * c3 - c1 * c2 +
@@ -926,78 +926,78 @@ theorem thetaCuspLogCurvature_mul_jetThree_le_of_six_le {x : ℝ}
   rcases le_or_gt A 7 with hA7 | hA7
   · -- `6 ≤ A ≤ 7`: `q ≤ 11/2`
     have hq11 : q ≤ 11 / 2 := by rw [hq]; linarith only [hA7]
-    have d3 : 1296 / (11 / 2 : ℝ) ^ 3 ≤ 1296 / q ^ 3 :=
+    have d3 : 1296 / (11 / 2 : ℝ) ^ (3 : ℕ) ≤ 1296 / q ^ (3 : ℕ) :=
       div_le_div_of_nonneg_left (by norm_num) (by positivity) (pow_le_pow_left₀ hq0.le hq11 3)
-    have d4 : 4536 / (11 / 2 : ℝ) ^ 4 ≤ 4536 / q ^ 4 :=
+    have d4 : 4536 / (11 / 2 : ℝ) ^ (4 : ℕ) ≤ 4536 / q ^ (4 : ℕ) :=
       div_le_div_of_nonneg_left (by norm_num) (by positivity) (pow_le_pow_left₀ hq0.le hq11 4)
-    have hA2 : (36 : ℝ) ≤ A ^ 2 := by
+    have hA2 : (36 : ℝ) ≤ A ^ (2 : ℕ) := by
       have := pow_le_pow_left₀ (by norm_num) hA6 2
       norm_num at this
       exact this
-    have hDnum : 4 * 36 * (1296 / (11 / 2 : ℝ) ^ 3 + 4536 / (11 / 2 : ℝ) ^ 4) ≤
-        4 * A ^ 2 * (1296 / q ^ 3 + 4536 / q ^ 4) := by
-      have hs : 0 ≤ 1296 / (11 / 2 : ℝ) ^ 3 + 4536 / (11 / 2 : ℝ) ^ 4 := by positivity
+    have hDnum : 4 * 36 * (1296 / (11 / 2 : ℝ) ^ (3 : ℕ) + 4536 / (11 / 2 : ℝ) ^ (4 : ℕ)) ≤
+        4 * A ^ (2 : ℕ) * (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ)) := by
+      have hs : 0 ≤ 1296 / (11 / 2 : ℝ) ^ (3 : ℕ) + 4536 / (11 / 2 : ℝ) ^ (4 : ℕ) := by positivity
       have u := mul_le_mul hA2 (add_le_add d3 d4) hs (by positivity)
       linarith only [u]
-    have hnum : (1835 : ℝ) ≤ 4 * 36 * (1296 / (11 / 2 : ℝ) ^ 3 + 4536 / (11 / 2 : ℝ) ^ 4) := by
+    have hnum : (1835 : ℝ) ≤ 4 * 36 * (1296 / (11 / 2 : ℝ) ^ (3 : ℕ) + 4536 / (11 / 2 : ℝ) ^ (4 : ℕ)) := by
       norm_num
     linarith only [hDle, herr, hA6ε, hDnum, hnum]
   · rcases le_or_gt A 10 with hA10 | hA10
     · -- `7 ≤ A ≤ 10`: `q ≤ 17/2`
       have hq17 : q ≤ 17 / 2 := by rw [hq]; linarith only [hA10]
-      have d3 : 1296 / (17 / 2 : ℝ) ^ 3 ≤ 1296 / q ^ 3 :=
+      have d3 : 1296 / (17 / 2 : ℝ) ^ (3 : ℕ) ≤ 1296 / q ^ (3 : ℕ) :=
         div_le_div_of_nonneg_left (by norm_num) (by positivity) (pow_le_pow_left₀ hq0.le hq17 3)
-      have d4 : 4536 / (17 / 2 : ℝ) ^ 4 ≤ 4536 / q ^ 4 :=
+      have d4 : 4536 / (17 / 2 : ℝ) ^ (4 : ℕ) ≤ 4536 / q ^ (4 : ℕ) :=
         div_le_div_of_nonneg_left (by norm_num) (by positivity) (pow_le_pow_left₀ hq0.le hq17 4)
-      have hA2 : (49 : ℝ) ≤ A ^ 2 := by
+      have hA2 : (49 : ℝ) ≤ A ^ (2 : ℕ) := by
         have := pow_le_pow_left₀ (by norm_num) hA7.le 2
         norm_num at this
         exact this
-      have hDnum : 4 * 49 * (1296 / (17 / 2 : ℝ) ^ 3 + 4536 / (17 / 2 : ℝ) ^ 4) ≤
-          4 * A ^ 2 * (1296 / q ^ 3 + 4536 / q ^ 4) := by
-        have hs : 0 ≤ 1296 / (17 / 2 : ℝ) ^ 3 + 4536 / (17 / 2 : ℝ) ^ 4 := by positivity
+      have hDnum : 4 * 49 * (1296 / (17 / 2 : ℝ) ^ (3 : ℕ) + 4536 / (17 / 2 : ℝ) ^ (4 : ℕ)) ≤
+          4 * A ^ (2 : ℕ) * (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ)) := by
+        have hs : 0 ≤ 1296 / (17 / 2 : ℝ) ^ (3 : ℕ) + 4536 / (17 / 2 : ℝ) ^ (4 : ℕ) := by positivity
         have u := mul_le_mul hA2 (add_le_add d3 d4) hs (by positivity)
         linarith only [u]
-      have hnum : (583 : ℝ) ≤ 4 * 49 * (1296 / (17 / 2 : ℝ) ^ 3 + 4536 / (17 / 2 : ℝ) ^ 4) := by
+      have hnum : (583 : ℝ) ≤ 4 * 49 * (1296 / (17 / 2 : ℝ) ^ (3 : ℕ) + 4536 / (17 / 2 : ℝ) ^ (4 : ℕ)) := by
         norm_num
-      have hA6ε' : A ^ 6 * ε ≤ 117649 * (245 / 10000000000) := by
+      have hA6ε' : A ^ (6 : ℕ) * ε ≤ 117649 * (245 / 10000000000) := by
         refine (h6 hA7.le).trans ?_
-        have u := mul_le_mul_of_nonneg_left hb7.le (show (0 : ℝ) ≤ 7 ^ 6 by norm_num)
+        have u := mul_le_mul_of_nonneg_left hb7.le (show (0 : ℝ) ≤ 7 ^ (6 : ℕ) by norm_num)
         norm_num at u ⊢
         linarith only [u]
       linarith only [hDle, herr, hA6ε', hDnum, hnum]
     · -- `A ≥ 10`: `|D| ≥ 5184 / A`
       have hqA : q ≤ A := by rw [hq]; linarith only []
-      have d3 : 1296 / A ^ 3 ≤ 1296 / q ^ 3 :=
+      have d3 : 1296 / A ^ (3 : ℕ) ≤ 1296 / q ^ (3 : ℕ) :=
         div_le_div_of_nonneg_left (by norm_num) (by positivity) (pow_le_pow_left₀ hq0.le hqA 3)
-      have hd4 : 0 ≤ 4 * A ^ 2 * (4536 / q ^ 4) * A := by positivity
+      have hd4 : 0 ≤ 4 * A ^ (2 : ℕ) * (4536 / q ^ (4 : ℕ)) * A := by positivity
       have hA0' : A ≠ 0 := hA0.ne'
-      have hid : 4 * A ^ 2 * (1296 / A ^ 3) * A = 5184 := by
+      have hid : 4 * A ^ (2 : ℕ) * (1296 / A ^ (3 : ℕ)) * A = 5184 := by
         field_simp
         ring
-      have hDA : 5184 ≤ 4 * A ^ 2 * (1296 / q ^ 3 + 4536 / q ^ 4) * A := by
+      have hDA : 5184 ≤ 4 * A ^ (2 : ℕ) * (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ)) * A := by
         have hm := mul_le_mul_of_nonneg_right
-          (mul_le_mul_of_nonneg_left d3 (show 0 ≤ 4 * A ^ 2 by positivity)) hA0.le
-        have hsplit : 4 * A ^ 2 * (1296 / q ^ 3 + 4536 / q ^ 4) * A =
-            4 * A ^ 2 * (1296 / q ^ 3) * A + 4 * A ^ 2 * (4536 / q ^ 4) * A := by ring
+          (mul_le_mul_of_nonneg_left d3 (show 0 ≤ 4 * A ^ (2 : ℕ) by positivity)) hA0.le
+        have hsplit : 4 * A ^ (2 : ℕ) * (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ)) * A =
+            4 * A ^ (2 : ℕ) * (1296 / q ^ (3 : ℕ)) * A + 4 * A ^ (2 : ℕ) * (4536 / q ^ (4 : ℕ)) * A := by ring
         rw [hsplit]
         linarith only [hm, hd4, hid]
-      have hA7ε : A ^ 7 * ε ≤ 10000000 * (31 / 10000000000000) := by
+      have hA7ε : A ^ (7 : ℕ) * ε ≤ 10000000 * (31 / 10000000000000) := by
         refine (h7 hA10.le).trans ?_
-        have u := mul_le_mul_of_nonneg_left hb10.le (show (0 : ℝ) ≤ 10 ^ 7 by norm_num)
+        have u := mul_le_mul_of_nonneg_left hb10.le (show (0 : ℝ) ≤ 10 ^ (7 : ℕ) by norm_num)
         norm_num at u ⊢
         linarith only [u]
       have hmul : (c0 * c3 - c1 * c2 +
           (c0 * b5 + c3 * b2 + b2 * b5 + c1 * b4 + c2 * b3 + b3 * b4)) * A ≤ 0 := by
-        have e1 : (c0 * c3 - c1 * c2) * A ≤ -(4 * A ^ 2 * (1296 / q ^ 3 + 4536 / q ^ 4)) * A :=
+        have e1 : (c0 * c3 - c1 * c2) * A ≤ -(4 * A ^ (2 : ℕ) * (1296 / q ^ (3 : ℕ) + 4536 / q ^ (4 : ℕ))) * A :=
           mul_le_mul_of_nonneg_right hDle hA0.le
         have e2 : (c0 * b5 + c3 * b2 + b2 * b5 + c1 * b4 + c2 * b3 + b3 * b4) * A ≤
-            58100 * (A ^ 6 * ε) * A := mul_le_mul_of_nonneg_right herr hA0.le
+            58100 * (A ^ (6 : ℕ) * ε) * A := mul_le_mul_of_nonneg_right herr hA0.le
         have hsum : (c0 * c3 - c1 * c2 +
             (c0 * b5 + c3 * b2 + b2 * b5 + c1 * b4 + c2 * b3 + b3 * b4)) * A =
             (c0 * c3 - c1 * c2) * A +
               (c0 * b5 + c3 * b2 + b2 * b5 + c1 * b4 + c2 * b3 + b3 * b4) * A := by ring
-        have e3 : 58100 * (A ^ 6 * ε) * A = 58100 * (A ^ 7 * ε) := by ring
+        have e3 : 58100 * (A ^ (6 : ℕ) * ε) * A = 58100 * (A ^ (7 : ℕ) * ε) := by ring
         rw [hsum]
         linarith only [e1, e2, hDA, hA7ε, e3]
       exact nonpos_of_mul_nonpos_left hmul hA0

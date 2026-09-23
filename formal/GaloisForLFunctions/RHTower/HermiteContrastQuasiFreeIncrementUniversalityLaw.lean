@@ -43,11 +43,11 @@ accumulated mass. -/
 theorem constrainedProlateHermiteWeight_eq_accumulatedMass_mul_one_sub_energy (k : ℕ) :
     constrainedProlateHermiteWeight (k + 1) =
       constrainedProlateHermiteWeightSum (k + 1) *
-        (1 - (‖hermiteContrastLp k‖ ^ 2 * constrainedProlateHermiteWeight (k + 1)) /
-          (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ 2)) := by
+        (1 - (‖hermiteContrastLp k‖ ^ (2 : ℕ) * constrainedProlateHermiteWeight (k + 1)) /
+          (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ (2 : ℕ))) := by
   have hE :
-      (‖hermiteContrastLp k‖ ^ 2 * constrainedProlateHermiteWeight (k + 1)) /
-          (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ 2) =
+      (‖hermiteContrastLp k‖ ^ (2 : ℕ) * constrainedProlateHermiteWeight (k + 1)) /
+          (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ (2 : ℕ)) =
         constrainedProlateHermiteTheta k := by
     have hsqrt : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.2 (by norm_num)).ne'
     have hweight : constrainedProlateHermiteWeight (k + 1) ≠ 0 :=
@@ -81,7 +81,7 @@ theorem constrainedProlateHermiteQuasiFreeVariance_succ_sub (m : ℕ) :
     constrainedProlateHermiteQuasiFreeVariance (m + 1) -
         constrainedProlateHermiteQuasiFreeVariance m =
       constrainedProlateHermiteWeight m *
-        (1 - constrainedProlateHermiteWeight m) * (4 * m : ℝ) ^ 2 := by
+        (1 - constrainedProlateHermiteWeight m) * (4 * m : ℝ) ^ (2 : ℕ) := by
   rw [constrainedProlateHermiteQuasiFreeVariance,
     constrainedProlateHermiteQuasiFreeVariance,
     quasiFreeSpectralVariance_hermiteEvenRealGramCoordinates,
@@ -94,7 +94,7 @@ theorem constrainedProlateHermiteQuasiFreeFanoMargin_succ_sub (m : ℕ) :
     constrainedProlateHermiteQuasiFreeFanoMargin (m + 1) -
         constrainedProlateHermiteQuasiFreeFanoMargin m =
       constrainedProlateHermiteWeight m *
-        ((4 * m : ℝ) - (1 - constrainedProlateHermiteWeight m) * (4 * m : ℝ) ^ 2) := by
+        ((4 * m : ℝ) - (1 - constrainedProlateHermiteWeight m) * (4 * m : ℝ) ^ (2 : ℕ)) := by
   rw [constrainedProlateHermiteQuasiFreeFanoMargin,
     constrainedProlateHermiteQuasiFreeFanoMargin,
     quasiFreeSpectralFanoMargin_hermiteEvenRealGramCoordinates,
@@ -106,20 +106,20 @@ theorem constrainedProlateHermiteQuasiFreeFanoMargin_succ_sub (m : ℕ) :
 accumulated mass determine all three next-rank quasi-free increments. -/
 theorem hermiteContrastSecularEnergy_quasiFreeIncrementUniversality (k : ℕ) :
     let Q := constrainedProlateHermiteWeightSum (k + 1)
-    let E := (‖hermiteContrastLp k‖ ^ 2 * constrainedProlateHermiteWeight (k + 1)) /
-      (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ 2)
+    let E := (‖hermiteContrastLp k‖ ^ (2 : ℕ) * constrainedProlateHermiteWeight (k + 1)) /
+      (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ (2 : ℕ))
     let d : ℝ := 4 * (k + 1)
     constrainedProlateHermiteQuasiFreeMean (k + 2) -
           constrainedProlateHermiteQuasiFreeMean (k + 1) = Q * (1 - E) * d ∧
       constrainedProlateHermiteQuasiFreeVariance (k + 2) -
           constrainedProlateHermiteQuasiFreeVariance (k + 1) =
-        Q * (1 - E) * (1 - Q * (1 - E)) * d ^ 2 ∧
+        Q * (1 - E) * (1 - Q * (1 - E)) * d ^ (2 : ℕ) ∧
       constrainedProlateHermiteQuasiFreeFanoMargin (k + 2) -
           constrainedProlateHermiteQuasiFreeFanoMargin (k + 1) =
-        Q * (1 - E) * (d - (1 - Q * (1 - E)) * d ^ 2) := by
+        Q * (1 - E) * (d - (1 - Q * (1 - E)) * d ^ (2 : ℕ)) := by
   dsimp only
-  set E : ℝ := (‖hermiteContrastLp k‖ ^ 2 * constrainedProlateHermiteWeight (k + 1)) /
-    (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ 2) with hE
+  set E : ℝ := (‖hermiteContrastLp k‖ ^ (2 : ℕ) * constrainedProlateHermiteWeight (k + 1)) /
+    (Real.sqrt 2 * constrainedProlateHermiteWeightSum (k + 1) ^ (2 : ℕ)) with hE
   have hw : constrainedProlateHermiteWeight (k + 1) =
       constrainedProlateHermiteWeightSum (k + 1) * (1 - E) := by
     simpa [hE] using

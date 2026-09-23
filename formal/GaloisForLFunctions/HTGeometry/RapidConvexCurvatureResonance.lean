@@ -100,10 +100,10 @@ theorem atomPattern_defect_eq_polynomialShiftOperator
   exact (sum_range_atomPatternDifferencePolynomial hM p₀ p₁ b q).symm
 
 theorem polynomialShiftOperator_sub_one_sq_apply (b : ℕ → ℝ) :
-    polynomialShiftOperator (((Polynomial.X : Polynomial ℤ) - 1) ^ 2) b =
+    polynomialShiftOperator (((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ)) b =
       rapidCurvature b := by
   funext n
-  rw [show ((Polynomial.X : Polynomial ℤ) - 1) ^ 2 =
+  rw [show ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ) =
       (Polynomial.X - 1) * (Polynomial.X - 1) by ring]
   rw [polynomialShiftOperator, Polynomial.eval₂_mul_noncomm]
   · simp [rapidCurvature, sequenceShift]
@@ -131,21 +131,21 @@ theorem polynomialShiftOperator_mul_sub_one
 
 theorem polynomialShiftOperator_mul_sub_one_sq
     (R : Polynomial ℤ) (b : ℕ → ℝ) :
-    polynomialShiftOperator (R * ((Polynomial.X : Polynomial ℤ) - 1) ^ 2) b =
+    polynomialShiftOperator (R * ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ)) b =
       polynomialShiftOperator R (rapidCurvature b) := by
   rw [polynomialShiftOperator, Polynomial.eval₂_mul_noncomm]
   · rw [show Polynomial.eval₂ (Int.castRingHom (Module.End ℝ (ℕ → ℝ)))
-        sequenceShift ((Polynomial.X - 1) ^ 2) =
-      polynomialShiftOperator (((Polynomial.X : Polynomial ℤ) - 1) ^ 2) by rfl]
+        sequenceShift ((Polynomial.X - 1) ^ (2 : ℕ)) =
+      polynomialShiftOperator (((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ)) by rfl]
     change polynomialShiftOperator R
-      (polynomialShiftOperator (((Polynomial.X : Polynomial ℤ) - 1) ^ 2) b) =
+      (polynomialShiftOperator (((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ)) b) =
         polynomialShiftOperator R (rapidCurvature b)
     rw [polynomialShiftOperator_sub_one_sq_apply]
   · intro k
     exact intCastEnd_commute_sequenceShift _
 
 theorem rapidCurvature_natSquare :
-    rapidCurvature (fun n : ℕ => (n : ℝ) ^ 2) = fun _ => (2 : ℝ) := by
+    rapidCurvature (fun n : ℕ => (n : ℝ) ^ (2 : ℕ)) = fun _ => (2 : ℝ) := by
   funext n
   simp only [rapidCurvature, Nat.cast_add, Nat.cast_ofNat]
   ring
@@ -181,7 +181,7 @@ theorem polynomialShiftOperator_const_two (R : Polynomial ℤ) (n : ℕ) :
   ring
 
 theorem polynomialShiftOperator_natSquare_zero (Q : Polynomial ℤ) :
-    polynomialShiftOperator Q (fun n : ℕ => (n : ℝ) ^ 2) 0 =
+    polynomialShiftOperator Q (fun n : ℕ => (n : ℝ) ^ (2 : ℕ)) 0 =
       stretchedMoment (polynomialRealCoeffFinsupp Q) 2 := by
   rw [polynomialShiftOperator_apply,
     stretchedMoment_polynomialRealCoeffFinsupp_eq_sum_range]
@@ -217,21 +217,21 @@ theorem eval_one_eq_stretchedMoment_one_of_factor
 
 theorem eval_one_eq_half_stretchedMoment_two_of_factor
     {Q R : Polynomial ℤ}
-    (hfactor : Q = R * ((Polynomial.X : Polynomial ℤ) - 1) ^ 2) :
+    (hfactor : Q = R * ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ)) :
     ((R.eval 1 : ℤ) : ℝ) =
       stretchedMoment (polynomialRealCoeffFinsupp Q) 2 / 2 := by
   have haction := congrArg
-    (fun T : Module.End ℝ (ℕ → ℝ) => T (fun n : ℕ => (n : ℝ) ^ 2) 0)
+    (fun T : Module.End ℝ (ℕ → ℝ) => T (fun n : ℕ => (n : ℝ) ^ (2 : ℕ)) 0)
     (congrArg polynomialShiftOperator hfactor)
-  change polynomialShiftOperator Q (fun n : ℕ => (n : ℝ) ^ 2) 0 =
-    polynomialShiftOperator (R * ((Polynomial.X : Polynomial ℤ) - 1) ^ 2)
-      (fun n : ℕ => (n : ℝ) ^ 2) 0 at haction
+  change polynomialShiftOperator Q (fun n : ℕ => (n : ℝ) ^ (2 : ℕ)) 0 =
+    polynomialShiftOperator (R * ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ))
+      (fun n : ℕ => (n : ℝ) ^ (2 : ℕ)) 0 at haction
   rw [polynomialShiftOperator_natSquare_zero] at haction
   rw [show polynomialShiftOperator
-      (R * ((Polynomial.X : Polynomial ℤ) - 1) ^ 2)
-      (fun n : ℕ => (n : ℝ) ^ 2) =
+      (R * ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ))
+      (fun n : ℕ => (n : ℝ) ^ (2 : ℕ)) =
         polynomialShiftOperator R
-          (rapidCurvature (fun n : ℕ => (n : ℝ) ^ 2)) from
+          (rapidCurvature (fun n : ℕ => (n : ℝ) ^ (2 : ℕ))) from
     polynomialShiftOperator_mul_sub_one_sq R _] at haction
   rw [rapidCurvature_natSquare, polynomialShiftOperator_const_two] at haction
   linarith
@@ -303,18 +303,18 @@ theorem exists_curvaturePolynomial_of_double_momentPolynomial
     (hmoment0 : stretchedMoment (polynomialRealCoeffFinsupp Q) 0 = 0)
     (hmoment1 : stretchedMoment (polynomialRealCoeffFinsupp Q) 1 = 0) :
     ∃ R : Polynomial ℤ, R ≠ 0 ∧
-      Q = R * ((Polynomial.X : Polynomial ℤ) - 1) ^ 2 ∧
+      Q = R * ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ) ∧
       ∀ b : ℕ → ℝ,
         polynomialShiftOperator Q b =
           polynomialShiftOperator R (rapidCurvature b) := by
-  have hdiv : ((Polynomial.X : Polynomial ℤ) - 1) ^ 2 ∣ Q := by
+  have hdiv : ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ) ∣ Q := by
     apply sub_one_pow_dvd_of_polynomialRealCoeff_moments
     intro k hk
     interval_cases k
     · exact hmoment0
     · exact hmoment1
   obtain ⟨R, hR⟩ := hdiv
-  have hfactor : Q = R * ((Polynomial.X : Polynomial ℤ) - 1) ^ 2 := by
+  have hfactor : Q = R * ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ) := by
     simpa [mul_comm] using hR
   have hRne : R ≠ 0 := by
     intro hz
@@ -382,12 +382,12 @@ theorem eventually_half_curvature_le_tupleDifference
       stretchedMoment (tupleDifference u v) 2 / 2 := by
     have hmomentOne : (1 : ℝ) ≤ stretchedMoment (tupleDifference u v) 2 := by
       rw [stretchedMoment_tupleDifference] at hmoment2 ⊢
-      have hreal : (∑ i, ((v i : ℕ) : ℝ) ^ 2) <
-          ∑ i, ((u i : ℕ) : ℝ) ^ 2 := sub_pos.mp hmoment2
-      have hnat : (∑ i, (v i) ^ 2) < ∑ i, (u i) ^ 2 := by
+      have hreal : (∑ i, ((v i : ℕ) : ℝ) ^ (2 : ℕ)) <
+          ∑ i, ((u i : ℕ) : ℝ) ^ (2 : ℕ) := sub_pos.mp hmoment2
+      have hnat : (∑ i, (v i) ^ (2 : ℕ)) < ∑ i, (u i) ^ (2 : ℕ) := by
         exact_mod_cast hreal
-      have hcast : ((∑ i, (v i) ^ 2 : ℕ) : ℝ) + 1 ≤
-          (∑ i, (u i) ^ 2 : ℕ) := by
+      have hcast : ((∑ i, (v i) ^ (2 : ℕ) : ℕ) : ℝ) + 1 ≤
+          (∑ i, (u i) ^ (2 : ℕ) : ℕ) := by
         exact_mod_cast (Nat.succ_le_iff.mpr hnat)
       push_cast at hcast
       linarith
@@ -399,7 +399,7 @@ theorem eventually_half_curvature_le_tupleDifference
 
 theorem boundaryOffsetCandidate_eventually_half_curvature_gap
     {b : ℕ → ℝ} {D L : ℕ} (δ : Fin D → ℕ)
-    (hLsq : (∑ i, (δ i : ℝ) ^ 2) < (L : ℝ) ^ 2)
+    (hLsq : (∑ i, (δ i : ℝ) ^ (2 : ℕ)) < (L : ℝ) ^ (2 : ℕ))
     (u : Fin D → Fin (2 * L + 1))
     (hu : boundaryOffsetCandidate δ u)
     (hmoment1 : stretchedMoment
@@ -424,7 +424,7 @@ theorem boundaryOffsetCandidate_eventually_half_curvature_gap
 
 theorem boundaryOffsetCandidate_eventually_all_half_curvature_gap
     {b : ℕ → ℝ} {D L : ℕ} (δ : Fin D → ℕ)
-    (hLsq : (∑ i, (δ i : ℝ) ^ 2) < (L : ℝ) ^ 2)
+    (hLsq : (∑ i, (δ i : ℝ) ^ (2 : ℕ)) < (L : ℝ) ^ (2 : ℕ))
     (hκpos : ∀ᶠ n : ℕ in atTop, 0 < rapidCurvature b n)
     (hshift : ∀ r : ℕ, Tendsto
       (fun n => rapidCurvature b (n + r) / rapidCurvature b n)
@@ -520,15 +520,15 @@ theorem exists_eventually_bounded_rapidSameSumNearMinimizer
   classical
   obtain ⟨Q, hQ⟩ := hrecord
   let Aδ := ∑ i, δ i
-  let Sδ := ∑ i, (δ i) ^ 2
+  let Sδ := ∑ i, (δ i) ^ (2 : ℕ)
   let K := Aδ + Sδ + 1
   let L := K + 1
   have hAδK : Aδ < K := by dsimp [K]; omega
   have hLpos : 0 < L := by dsimp [L, K]; omega
   have hSltL : Sδ < L := by dsimp [L, K]; omega
-  have hSltLsq : Sδ < L ^ 2 := hSltL.trans_le (by nlinarith : L ≤ L ^ 2)
-  have hLsq : (∑ i, (δ i : ℝ) ^ 2) < (L : ℝ) ^ 2 := by
-    have hcast : (Sδ : ℝ) < (L : ℝ) ^ 2 := by exact_mod_cast hSltLsq
+  have hSltLsq : Sδ < L ^ (2 : ℕ) := hSltL.trans_le (by nlinarith : L ≤ L ^ (2 : ℕ))
+  have hLsq : (∑ i, (δ i : ℝ) ^ (2 : ℕ)) < (L : ℝ) ^ (2 : ℕ) := by
+    have hcast : (Sδ : ℝ) < (L : ℝ) ^ (2 : ℕ) := by exact_mod_cast hSltLsq
     simpa [Sδ] using hcast
   have hgapBase :=
     boundaryOffsetCandidate_eventually_all_half_curvature_gap
@@ -731,7 +731,7 @@ theorem atomPatternDifference_sub_one_sq_dvd
     (hcount₁ : (∑ j, (p₁ j : ℕ)) = D)
     (hweight : (∑ j : Fin M, (j : ℕ) * (p₀ j : ℕ)) =
       ∑ j : Fin M, (j : ℕ) * (p₁ j : ℕ)) :
-    ((Polynomial.X : Polynomial ℤ) - 1) ^ 2 ∣
+    ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ) ∣
       atomPatternDifferencePolynomial p₀ p₁ := by
   apply sub_one_pow_dvd_of_polynomialRealCoeff_moments
   intro k hk
@@ -758,7 +758,7 @@ theorem exists_curvaturePolynomial_of_atomPattern_pair
       ∑ j : Fin M, (j : ℕ) * (p₁ j : ℕ)) :
     ∃ R : Polynomial ℤ, R ≠ 0 ∧
       atomPatternDifferencePolynomial p₀ p₁ =
-        R * ((Polynomial.X : Polynomial ℤ) - 1) ^ 2 ∧
+        R * ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ) ∧
       ∀ b : ℕ → ℝ,
         polynomialShiftOperator (atomPatternDifferencePolynomial p₀ p₁) b =
           polynomialShiftOperator R (rapidCurvature b) := by
@@ -767,7 +767,7 @@ theorem exists_curvaturePolynomial_of_atomPattern_pair
   obtain ⟨R, hR⟩ := atomPatternDifference_sub_one_sq_dvd
     p₀ p₁ hcount₀ hcount₁ hweight
   have hfactor : atomPatternDifferencePolynomial p₀ p₁ =
-      R * ((Polynomial.X : Polynomial ℤ) - 1) ^ 2 := by
+      R * ((Polynomial.X : Polynomial ℤ) - 1) ^ (2 : ℕ) := by
     simpa [mul_comm] using hR
   have hRne : R ≠ 0 := by
     intro hz
@@ -954,7 +954,7 @@ theorem exists_incrementPolynomial_of_zero_momentPolynomial
       ∀ b : ℕ → ℝ,
         polynomialShiftOperator Q b =
           polynomialShiftOperator R (rapidIncrement b) := by
-  have hdiv : ((Polynomial.X : Polynomial ℤ) - 1) ^ 1 ∣ Q := by
+  have hdiv : ((Polynomial.X : Polynomial ℤ) - 1) ^ (1 : ℕ) ∣ Q := by
     apply sub_one_pow_dvd_of_polynomialRealCoeff_moments
     intro k hk
     interval_cases k
@@ -1054,7 +1054,7 @@ theorem eventually_curvature_le_increment
 
 theorem boundaryOffsetCandidate_eventually_first_or_second_gap
     {b : ℕ → ℝ} {D L : ℕ} (δ : Fin D → ℕ)
-    (hLsq : (∑ i, (δ i : ℝ) ^ 2) < (L : ℝ) ^ 2)
+    (hLsq : (∑ i, (δ i : ℝ) ^ (2 : ℕ)) < (L : ℝ) ^ (2 : ℕ))
     (hinc : ∀ᶠ n : ℕ in atTop, b n < b (n + 1))
     (hκpos : ∀ᶠ n : ℕ in atTop, 0 < rapidCurvature b n)
     (hκshift : ∀ r : ℕ, Tendsto

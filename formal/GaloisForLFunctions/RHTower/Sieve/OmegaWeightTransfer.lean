@@ -34,9 +34,9 @@ theorem fibreDyadicIndex_eq_Ioc {x h : ℝ} (hx : 4 ≤ x) :
 theorem sum_variance_fibreDyadicIndex_le {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 ≤ h) {z₀ z : ℕ}
     (hz : z₀ ≤ z) :
     (∑ b ∈ fibreDyadicIndex x h,
-        (((primeFactorsIn (primesRange z₀ z) b).card : ℝ) - (mertensS z - mertensS z₀)) ^ 2)
+        (((primeFactorsIn (primesRange z₀ z) b).card : ℝ) - (mertensS z - mertensS z₀)) ^ (2 : ℕ))
       ≤ 4 * (Real.sqrt x / 2 + h + 1) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-        + 8 * ((Nat.primesLE z).card : ℝ) ^ 2 := by
+        + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ) := by
   have hx0 : (0 : ℝ) < x := by linarith
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
   set a₀ : ℕ := ⌈Real.sqrt x / 2⌉₊ - 1 with ha₀
@@ -73,14 +73,14 @@ theorem sum_variance_fibreDyadicIndex_le {x h : ℝ} (hx : 4 ≤ x) (hh0 : 0 ≤
 twice that of its designated-prime-count multiple, plus the variance of that count over the block. -/
 theorem sum_sq_fibreSum_le_omegaWeighted {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {x h : ℝ}
     (hx : 4 ≤ x) (hh0 : 0 ≤ h) {z₀ z : ℕ} (hz : z₀ ≤ z) :
-    (mertensS z - mertensS z₀) ^ 2
-        * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ 2
+    (mertensS z - mertensS z₀) ^ (2 : ℕ)
+        * ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, f b) ^ (2 : ℕ)
       ≤ 2 * ∑ a ∈ outerBlock x h,
             (∑ b ∈ innerFibre x h a,
-              f b * ((primeFactorsIn (primesRange z₀ z) b).card : ℝ)) ^ 2
+              f b * ((primeFactorsIn (primesRange z₀ z) b).card : ℝ)) ^ (2 : ℕ)
         + 2 * (h + 1) * (2 * h + 1)
             * (4 * (Real.sqrt x / 2 + h + 1) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-              + 8 * ((Nat.primesLE z).card : ℝ) ^ 2) := by
+              + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ)) := by
   classical
   have hbase := sum_sq_fibreSum_le_weighted (f := f)
     (g := fun b => ((primeFactorsIn (primesRange z₀ z) b).card : ℝ)) hf hx hh0

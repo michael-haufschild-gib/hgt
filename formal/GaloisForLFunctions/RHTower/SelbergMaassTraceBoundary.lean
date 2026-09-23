@@ -27,7 +27,7 @@ def current (N : ℕ) {lam : ℝ}
 theorem current_modular (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
     (A : SL2Z) (z : ℍ) (v : ℂ) :
-    current N f v z = current N f ((1 / (denom A z) ^ 2) * v) (A • z) := by
+    current N f v z = current N f ((1 / (denom A z) ^ (2 : ℕ)) * v) (A • z) := by
   let G : ℂ → ℂ := fun w => ((A • ofComplex w : ℍ) : ℂ)
   have hG : HasFDerivAt G (UpperHalfPlane.smulFDeriv (A : GL (Fin 2) ℝ) (z : ℂ)) (z : ℂ) :=
     (UpperHalfPlane.hasStrictFDerivAt_smul (A : GL (Fin 2) ℝ) z).hasFDerivAt
@@ -42,7 +42,7 @@ theorem current_modular (N : ℕ) {lam : ℝ}
   rw [he] at hc
   have h := congrArg (fun L => L v) hc.fderiv
   have hj : UpperHalfPlane.smulFDeriv (A : GL (Fin 2) ℝ) (z : ℂ) v =
-      (1 / (denom A z) ^ 2) * v := by
+      (1 / (denom A z) ^ (2 : ℕ)) * v := by
     simp [UpperHalfPlane.smulFDeriv, UpperHalfPlane.σ, mul_comm]
   simpa only [ContinuousLinearMap.comp_apply, G, ofComplex_apply, hj, current] using h
 
@@ -67,7 +67,7 @@ theorem radial_inversion (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam) (z : ℍ) :
     radial N f z + radial N f (ModularGroup.S • z) = 0 := by
   have h := current_modular N f ModularGroup.S z (z : ℂ)
-  have hv : (1 / (denom ModularGroup.S z) ^ 2) * (z : ℂ) = -((ModularGroup.S • z : ℍ) : ℂ) := by
+  have hv : (1 / (denom ModularGroup.S z) ^ (2 : ℕ)) * (z : ℂ) = -((ModularGroup.S • z : ℍ) : ℂ) := by
     simp only [UpperHalfPlane.modular_S_smul]
     simp [denom, ModularGroup.S, inv_neg]
     field_simp
@@ -86,7 +86,7 @@ theorem current_translation (N : ℕ) {lam : ℝ}
   simpa [denom, ModularGroup.T] using h.symm
 
 /-- Integral inversion pairs the opposite horizontal points on the upper unit circle. -/
-theorem inversion_on_unit_circle {x y : ℝ} (hy : 0 < y) (hxy : x ^ 2 + y ^ 2 = 1) :
+theorem inversion_on_unit_circle {x y : ℝ} (hy : 0 < y) (hxy : x ^ (2 : ℕ) + y ^ (2 : ℕ) = 1) :
     ModularGroup.S • ofComplex (point x y) = ofComplex (point (-x) y) := by
   have hp : 0 < (point x y).im := by simpa [point] using hy
   have hn : 0 < (point (-x) y).im := by simpa [point] using hy
@@ -103,7 +103,7 @@ theorem inversion_on_unit_circle {x y : ℝ} (hy : 0 < y) (hxy : x ^ 2 + y ^ 2 =
 /-- The two literal oriented unit-circle boundary currents cancel with their actual Jacobian factor. -/
 theorem arc_current_cancellation (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
-    {x y : ℝ} (hy : 0 < y) (hxy : x ^ 2 + y ^ 2 = 1) :
+    {x y : ℝ} (hy : 0 < y) (hxy : x ^ (2 : ℕ) + y ^ (2 : ℕ) = 1) :
     (x / y) * (current N f 1 (ofComplex (point (-x) y)) - current N f 1 (ofComplex (point x y))) -
       current N f Complex.I (ofComplex (point (-x) y)) - current N f Complex.I (ofComplex (point x y)) = 0 := by
   have h := radial_inversion N f (ofComplex (point x y))
@@ -175,7 +175,7 @@ theorem currentAt_periodic (N : ℕ) {lam : ℝ}
 /-- The exact paired unit-circle current cancellation in the coordinates used for integration. -/
 theorem currentAt_arc_cancellation (N : ℕ) {lam : ℝ}
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
-    {x y : ℝ} (hy : 0 < y) (hxy : x ^ 2 + y ^ 2 = 1) :
+    {x y : ℝ} (hy : 0 < y) (hxy : x ^ (2 : ℕ) + y ^ (2 : ℕ) = 1) :
     (x / y) * (currentAt N f 1 (-x) y - currentAt N f 1 x y) -
       currentAt N f Complex.I (-x) y - currentAt N f Complex.I x y = 0 := by
   simp only [currentAt_eq_current N f _ _ hy]

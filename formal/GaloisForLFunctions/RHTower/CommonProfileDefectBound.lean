@@ -22,10 +22,10 @@ namespace RHTower
 /-! ## The frequency tail mass -/
 
 /-- The mass of the reciprocal squares over the nonzero integers. -/
-def intInverseSquareSum : ℝ := ∑' m : ℤ, (if m = 0 then 0 else 1 / ((m : ℝ) ^ 2))
+def intInverseSquareSum : ℝ := ∑' m : ℤ, (if m = 0 then 0 else 1 / ((m : ℝ) ^ (2 : ℕ)))
 
 theorem summable_intInverseSquare :
-    Summable fun m : ℤ => (if m = 0 then 0 else 1 / ((m : ℝ) ^ 2)) := by
+    Summable fun m : ℤ => (if m = 0 then 0 else 1 / ((m : ℝ) ^ (2 : ℕ))) := by
   refine ((Real.summable_one_div_int_pow (p := 2)).2 one_lt_two).congr_cofinite ?_
   filter_upwards [Filter.eventually_cofinite_ne (0 : ℤ)] with m hm
   rw [if_neg hm]
@@ -51,31 +51,31 @@ theorem profileConstant_nonneg (W : 𝓢(ℝ, ℂ)) : 0 ≤ profileConstant W :=
 /-- **The tail mass of a Schwartz profile grows at most like the square of the modulus.** -/
 theorem fourierTailMass_le (W : 𝓢(ℝ, ℂ)) {l : ℕ} (hl : l ≠ 0) :
     fourierTailMass W l ≤ ‖𝓕 (W : ℝ → ℂ) 0‖ +
-      (SchwartzMap.seminorm ℂ 2 0 (𝓕 W)) * (l : ℝ) ^ 2 * intInverseSquareSum := by
+      (SchwartzMap.seminorm ℂ 2 0 (𝓕 W)) * (l : ℝ) ^ (2 : ℕ) * intInverseSquareSum := by
   classical
   have hlR : ((l : ℕ) : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hl
   have hsum : Summable fun m : ℤ => ‖𝓕 (W : ℝ → ℂ) ((m : ℝ) / l)‖ :=
     summable_schwartzFrequencyWeight W hl
   have hbound : ∀ m : ℤ, (if m = 0 then 0 else ‖𝓕 (W : ℝ → ℂ) ((m : ℝ) / l)‖) ≤
-      (SchwartzMap.seminorm ℂ 2 0 (𝓕 W)) * (l : ℝ) ^ 2 *
-        (if m = 0 then 0 else 1 / ((m : ℝ) ^ 2)) := by
+      (SchwartzMap.seminorm ℂ 2 0 (𝓕 W)) * (l : ℝ) ^ (2 : ℕ) *
+        (if m = 0 then 0 else 1 / ((m : ℝ) ^ (2 : ℕ))) := by
     intro m
     by_cases hm : m = 0
     · rw [if_pos hm, if_pos hm, mul_zero]
     · rw [if_neg hm, if_neg hm]
       have hmR : ((m : ℤ) : ℝ) ≠ 0 := Int.cast_ne_zero.mpr hm
-      have hx : ‖(m : ℝ) / l‖ ^ 2 * ‖(𝓕 W) ((m : ℝ) / l)‖ ≤
+      have hx : ‖(m : ℝ) / l‖ ^ (2 : ℕ) * ‖(𝓕 W) ((m : ℝ) / l)‖ ≤
           (SchwartzMap.seminorm ℂ 2 0 (𝓕 W)) :=
         SchwartzMap.norm_pow_mul_le_seminorm ℂ (𝓕 W) 2 ((m : ℝ) / l)
-      have hnorm : ‖(m : ℝ) / l‖ ^ 2 = (m : ℝ) ^ 2 / (l : ℝ) ^ 2 := by
+      have hnorm : ‖(m : ℝ) / l‖ ^ (2 : ℕ) = (m : ℝ) ^ (2 : ℕ) / (l : ℝ) ^ (2 : ℕ) := by
         rw [Real.norm_eq_abs, abs_div, div_pow, sq_abs, sq_abs]
-      have hpos : 0 < (m : ℝ) ^ 2 / (l : ℝ) ^ 2 := by positivity
+      have hpos : 0 < (m : ℝ) ^ (2 : ℕ) / (l : ℝ) ^ (2 : ℕ) := by positivity
       have hcoe : ((𝓕 W : 𝓢(ℝ, ℂ)) : ℝ → ℂ) = 𝓕 (W : ℝ → ℂ) := SchwartzMap.fourier_coe W
       rw [hcoe, hnorm, ← le_div_iff₀' hpos] at hx
       refine le_trans hx (le_of_eq ?_)
       field_simp
   have htail : (∑' m : ℤ, (if m = 0 then 0 else ‖𝓕 (W : ℝ → ℂ) ((m : ℝ) / l)‖)) ≤
-      (SchwartzMap.seminorm ℂ 2 0 (𝓕 W)) * (l : ℝ) ^ 2 * intInverseSquareSum := by
+      (SchwartzMap.seminorm ℂ 2 0 (𝓕 W)) * (l : ℝ) ^ (2 : ℕ) * intInverseSquareSum := by
     rw [intInverseSquareSum, ← tsum_mul_left]
     refine Summable.tsum_mono ?_ ?_ hbound
     · refine hsum.congr_cofinite ?_
@@ -197,7 +197,7 @@ theorem sum_crossing_norm_occupancyDefect_le (W : ℤ → 𝓢(ℝ, ℂ)) (gaps 
     (hblock : ∀ p ∈ block, p.Prime ∧ p < 2 * P ∧ p.Coprime q)
     (hcard : block.card ≤ P) :
     ∑ h ∈ gaps, ∑ p ∈ block, ‖occupancyDefect (W h) (p * q) h‖ ≤
-      ∑ h ∈ gaps, 4 * (quadraticCongruenceRootCountTotal q h : ℝ) * (q : ℝ) * (P : ℝ) ^ 2 *
+      ∑ h ∈ gaps, 4 * (quadraticCongruenceRootCountTotal q h : ℝ) * (q : ℝ) * (P : ℝ) ^ (2 : ℕ) *
         profileConstant (W h) := by
   refine Finset.sum_le_sum fun h _ => ?_
   have hbound : ∀ p ∈ block, ‖occupancyDefect (W h) (p * q) h‖ ≤

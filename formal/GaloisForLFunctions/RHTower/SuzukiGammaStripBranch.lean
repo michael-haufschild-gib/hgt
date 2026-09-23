@@ -97,7 +97,7 @@ theorem gammaRatio_zero : gammaRatio 0 = 1 := by
 origin.** -/
 theorem exists_gammaRatioSqrt :
     ∃ E : ℂ → ℂ, DifferentiableOn ℂ E (imStrip (-1) 1) ∧
-      (∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) ∧ E 0 = 1 ∧
+      (∀ z ∈ imStrip (-1) 1, E z ^ (2 : ℕ) = gammaRatio z) ∧ E 0 = 1 ∧
       ∀ z ∈ imStrip (-1) 1, E z ≠ 0 :=
   exists_differentiableOn_sq_eq (isOpen_imStrip (-1) 1)
     (isSimplyConnected_imStrip (-1) 1 (by norm_num)) differentiableOn_gammaRatio

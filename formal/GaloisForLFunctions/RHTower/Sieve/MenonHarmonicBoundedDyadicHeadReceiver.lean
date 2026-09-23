@@ -24,20 +24,20 @@ theorem dyadicMeanSquare_le_dyadicHead_bound
     (hM : B + 1 + ℓ < M + 1)
     (hcover : (A : ℝ) + ((B + 1 - A : ℕ) : ℝ) ≤ (A : ℝ) * (1 + ε) ^ K')
     (hHead : (∫ w in Set.Icc (-W) W,
-      ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2) ≤ I)
+      ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)) ≤ I)
     (hAffine : ∀ T : ℝ, W ≤ T →
       (∫ w in Set.Icc (-T) T,
-        ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2) ≤ α * T + β) :
+        ‖logPoly (fun n => ((f n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ (2 : ℕ)) ≤ α * T + β) :
     dyadicMeanSquare f ℓ A B
       ≤ ((A : ℝ) * (1 + ε) ^ K')
           * ((K' : ℝ) * blockCostGC (ℓ : ℝ) ε C
-              (2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 * I
-                + (4 * α / (Real.pi ^ 2 * W)
-                  + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)))) := by
+              (2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+                + (4 * α / (Real.pi ^ (2 : ℕ) * W)
+                  + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))))) := by
   have hA0 : (0 : ℝ) < (A : ℝ) := by exact_mod_cast hA
   have hℓ0 : (0 : ℝ) < (ℓ : ℝ) := by exact_mod_cast hℓ
-  set G : ℝ := 2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 * I
-      + (4 * α / (Real.pi ^ 2 * W) + 4 * β / (3 * Real.pi ^ 2 * W ^ 2)) with hGdef
+  set G : ℝ := 2 * Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+      + (4 * α / (Real.pi ^ (2 : ℕ) * W) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))) with hGdef
   have hG0 : 0 ≤ G := by
     rw [hGdef]
     positivity
@@ -52,9 +52,9 @@ theorem dyadicMeanSquare_le_dyadicHead_bound
   have hwhole := gallagher_split_integral_dyadic_head a (Finset.Icc 1 M)
     hδ0 hW hHead hAffine
   have hset : (∫ u in E,
-        ‖logWindowSum a (Finset.Icc 1 M) (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ 2)
+        ‖logWindowSum a (Finset.Icc 1 M) (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ (2 : ℕ))
       ≤ ∫ u : ℝ,
-        ‖logWindowSum a (Finset.Icc 1 M) (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ 2 := by
+        ‖logWindowSum a (Finset.Icc 1 M) (Real.log (1 + (ℓ : ℝ) / Y')) u‖ ^ (2 : ℕ) := by
     exact MeasureTheory.setIntegral_le_integral
       (integrable_normSq_logWindowSum a (Finset.Icc 1 M) _)
       (Filter.Eventually.of_forall fun _ : ℝ => by positivity)
@@ -65,8 +65,8 @@ theorem dyadicMeanSquare_le_dyadicHead_bound
     have : (ℓ : ℝ) / Y' ≤ (ℓ : ℝ) / (A : ℝ) := by
       exact div_le_div_of_nonneg_left hℓ0.le hA0 hY'
     linarith
-  have hsq : Real.log (1 + (ℓ : ℝ) / Y') ^ 2
-      ≤ Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ 2 :=
+  have hsq : Real.log (1 + (ℓ : ℝ) / Y') ^ (2 : ℕ)
+      ≤ Real.log (1 + (ℓ : ℝ) / (A : ℝ)) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hδ0.le hmono 2
   rw [hGdef]
   nlinarith [hsq]
@@ -93,14 +93,14 @@ theorem dyadicMeanSquare_harmonic_le_menonFinalRange_boundedDyadicHead
     (hM : B + 1 + l < menonFinalRangeTopNat ((A + 1 : ℕ) : ℝ) + 1)
     (hcover : (A : ℝ) + ((B + 1 - A : ℕ) : ℝ) ≤ (A : ℝ) * (1 + ε) ^ K')
     (hHead : (∫ w in Set.Icc (-W) W,
-      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ 2) ≤ I) :
+      ‖logPoly harmonicMoebiusC (menonFinalRangeShell ((A + 1 : ℕ) : ℝ)) w‖ ^ (2 : ℕ)) ≤ I) :
     dyadicMeanSquare harmonicMoebiusR l A B ≤
       ((A : ℝ) * (1 + ε) ^ K') *
         ((K' : ℝ) * blockCostGC (l : ℝ) ε (1 / ((A + 1 : ℕ) : ℝ))
-          (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ 2 * I
-            + (4 * menonHarmonicAffineRate A / (Real.pi ^ 2 * W)
+          (2 * Real.log (1 + (l : ℝ) / (A : ℝ)) ^ (2 : ℕ) * I
+            + (4 * menonHarmonicAffineRate A / (Real.pi ^ (2 : ℕ) * W)
               + 4 * menonHarmonicAffineConst A /
-                (3 * Real.pi ^ 2 * W ^ 2)))) := by
+                (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ))))) := by
   rw [← dyadicMeanSquare_localizedHarmonic_eq A B l hl]
   refine dyadicMeanSquare_le_dyadicHead_bound (localizedHarmonicMoebiusR A)
     (by positivity) (abs_localizedHarmonicMoebiusR_le_start A) hl hA hAB hε hW hI0

@@ -244,23 +244,23 @@ theorem sub_le_sqrt_card_mul_of_grid {f : ℝ → ℝ} {a H : ℝ} {N : ℕ} {L 
     (hB : ∑ j ∈ Finset.range N,
         |∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), f t| ≤ Bsum)
     (hQ : ∑ j ∈ Finset.range N,
-        (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2 ≤ Q) :
+        (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ (2 : ℕ) ≤ Q) :
     ∃ Zs : Finset ℝ, (∀ x ∈ Zs, x ∈ Ioo a (a + (N : ℝ) * H) ∧ f x = 0) ∧
       L - Bsum ≤ Real.sqrt ((Zs.card : ℝ) * Q) := by
   obtain ⟨S, hSsub, Zs, hcard, hmem, hineq⟩ := exists_grid_zero_cells hH hf
   refine ⟨Zs, hmem, ?_⟩
   have hnonneg : ∀ j : ℕ,
-      (0 : ℝ) ≤ (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2 :=
+      (0 : ℝ) ≤ (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ (2 : ℕ) :=
     fun j => sq_nonneg _
   have hQS : (∑ j ∈ S,
-      (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2) ≤ Q :=
+      (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ (2 : ℕ)) ≤ Q :=
     le_trans (Finset.sum_le_sum_of_subset_of_nonneg hSsub fun j _ _ => hnonneg j) hQ
   have hcard0 : (0 : ℝ) ≤ (S.card : ℝ) := Nat.cast_nonneg _
-  have hcs : (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2
+  have hcs : (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ (2 : ℕ)
       ≤ (S.card : ℝ) *
-        ∑ j ∈ S, (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2 :=
+        ∑ j ∈ S, (∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ (2 : ℕ) :=
     sq_sum_le_card_mul_sum_sq
-  have h1 : (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ 2
+  have h1 : (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|) ^ (2 : ℕ)
       ≤ (S.card : ℝ) * Q :=
     le_trans hcs (mul_le_mul_of_nonneg_left hQS hcard0)
   have h2 : (∑ j ∈ S, ∫ t in (a + (j : ℝ) * H)..(a + ((j : ℝ) + 1) * H), |f t|)

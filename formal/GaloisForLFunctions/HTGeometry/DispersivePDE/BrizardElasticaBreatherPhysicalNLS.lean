@@ -15,18 +15,18 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 
 noncomputable def physicalizeFocusingJet (D α : ℝ) (J : ComplexEvolutionJet2) :
     ComplexEvolutionJet2 where
-  u := fun t x => ((2 * α : ℝ) : ℂ) * J.u (D * α ^ 2 * t) (α * x)
-  ut := fun t x => ((2 * α : ℝ) : ℂ) * (((D * α ^ 2 : ℝ) : ℂ) *
-    J.ut (D * α ^ 2 * t) (α * x))
+  u := fun t x => ((2 * α : ℝ) : ℂ) * J.u (D * α ^ (2 : ℕ) * t) (α * x)
+  ut := fun t x => ((2 * α : ℝ) : ℂ) * (((D * α ^ (2 : ℕ) : ℝ) : ℂ) *
+    J.ut (D * α ^ (2 : ℕ) * t) (α * x))
   ux := fun t x => ((2 * α : ℝ) : ℂ) * ((α : ℂ) *
-    J.ux (D * α ^ 2 * t) (α * x))
-  uxx := fun t x => ((2 * α : ℝ) : ℂ) * (((α ^ 2 : ℝ) : ℂ) *
-    J.uxx (D * α ^ 2 * t) (α * x))
+    J.ux (D * α ^ (2 : ℕ) * t) (α * x))
+  uxx := fun t x => ((2 * α : ℝ) : ℂ) * (((α ^ (2 : ℕ) : ℝ) : ℂ) *
+    J.uxx (D * α ^ (2 : ℕ) * t) (α * x))
   hasDerivAt_time := by
     intro t x
-    have hinner : HasDerivAt (fun r : ℝ => D * α ^ 2 * r) (D * α ^ 2) t := by
-      simpa using (hasDerivAt_id t).const_mul (D * α ^ 2)
-    have h := (J.hasDerivAt_time (D * α ^ 2 * t) (α * x)).scomp t hinner
+    have hinner : HasDerivAt (fun r : ℝ => D * α ^ (2 : ℕ) * r) (D * α ^ (2 : ℕ)) t := by
+      simpa using (hasDerivAt_id t).const_mul (D * α ^ (2 : ℕ))
+    have h := (J.hasDerivAt_time (D * α ^ (2 : ℕ) * t) (α * x)).scomp t hinner
       |>.const_mul (((2 * α : ℝ) : ℂ))
     apply h.congr_deriv
     simp only [Complex.real_smul]
@@ -34,7 +34,7 @@ noncomputable def physicalizeFocusingJet (D α : ℝ) (J : ComplexEvolutionJet2)
     intro t x
     have hinner : HasDerivAt (fun y : ℝ => α * y) α x := by
       simpa using (hasDerivAt_id x).const_mul α
-    have h := (J.hasDerivAt_space (D * α ^ 2 * t) (α * x)).scomp x hinner
+    have h := (J.hasDerivAt_space (D * α ^ (2 : ℕ) * t) (α * x)).scomp x hinner
       |>.const_mul (((2 * α : ℝ) : ℂ))
     apply h.congr_deriv
     simp only [Complex.real_smul]
@@ -42,7 +42,7 @@ noncomputable def physicalizeFocusingJet (D α : ℝ) (J : ComplexEvolutionJet2)
     intro t x
     have hinner : HasDerivAt (fun y : ℝ => α * y) α x := by
       simpa using (hasDerivAt_id x).const_mul α
-    have h := (J.hasDerivAt_space_one (D * α ^ 2 * t) (α * x)).scomp x hinner
+    have h := (J.hasDerivAt_space_one (D * α ^ (2 : ℕ) * t) (α * x)).scomp x hinner
     have hscaled := h.const_mul (((2 * α : ℝ) : ℂ) * (α : ℂ))
     apply (hscaled.congr_deriv ?_).congr_of_eventuallyEq
     · filter_upwards with y
@@ -53,8 +53,8 @@ noncomputable def physicalizeFocusingJet (D α : ℝ) (J : ComplexEvolutionJet2)
       ring_nf
 
 theorem norm_physicalizeFocusingJet_sq (D α : ℝ) (J : ComplexEvolutionJet2) (t x : ℝ) :
-    ‖(physicalizeFocusingJet D α J).u t x‖ ^ 2 =
-      (2 * α) ^ 2 * ‖J.u (D * α ^ 2 * t) (α * x)‖ ^ 2 := by
+    ‖(physicalizeFocusingJet D α J).u t x‖ ^ (2 : ℕ) =
+      (2 * α) ^ (2 : ℕ) * ‖J.u (D * α ^ (2 : ℕ) * t) (α * x)‖ ^ (2 : ℕ) := by
   simp only [physicalizeFocusingJet, norm_mul, Complex.norm_real, Real.norm_eq_abs,
     mul_pow, sq_abs]
 
@@ -63,16 +63,16 @@ noncomputable def physicalizeFocusingSolution (D α : ℝ) (S : FocusingSolution
     BrizardSolutionJet D :=
   ⟨physicalizeFocusingJet D α S.val, by
     intro t x
-    have h := S.property (D * α ^ 2 * t) (α * x)
+    have h := S.property (D * α ^ (2 : ℕ) * t) (α * x)
     rw [norm_physicalizeFocusingJet_sq]
     simp only [physicalizeFocusingJet]
     push_cast at h ⊢
     calc
-      _ = ((2 : ℂ) * (D : ℂ) * (α : ℂ) ^ 3) *
-          (Complex.I * S.val.ut (D * α ^ 2 * t) (α * x) +
-            S.val.uxx (D * α ^ 2 * t) (α * x) +
-            (2 : ℂ) * (‖S.val.u (D * α ^ 2 * t) (α * x)‖ : ℂ) ^ 2 *
-              S.val.u (D * α ^ 2 * t) (α * x)) := by ring
+      _ = ((2 : ℂ) * (D : ℂ) * (α : ℂ) ^ (3 : ℕ)) *
+          (Complex.I * S.val.ut (D * α ^ (2 : ℕ) * t) (α * x) +
+            S.val.uxx (D * α ^ (2 : ℕ) * t) (α * x) +
+            (2 : ℂ) * (‖S.val.u (D * α ^ (2 : ℕ) * t) (α * x)‖ : ℂ) ^ (2 : ℕ) *
+              S.val.u (D * α ^ (2 : ℕ) * t) (α * x)) := by ring
       _ = 0 := by
         apply mul_eq_zero_of_right
         exact h⟩

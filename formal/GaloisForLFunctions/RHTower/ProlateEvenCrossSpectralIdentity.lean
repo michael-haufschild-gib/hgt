@@ -142,11 +142,11 @@ theorem even_bandEigenvalue_sub_mul_secondDerivPairing
 /-- Exact cross-spectral identity for every pair of actual indexed even prolate modes. -/
 theorem signedModeRadialData_crossSpectral_identity
     {a : ℝ} (ha : 0 < a) (m n : ℕ) :
-    (evenProlateSignedValue a m ^ 2 - evenProlateSignedValue a n ^ 2) *
+    (evenProlateSignedValue a m ^ (2 : ℕ) - evenProlateSignedValue a n ^ (2 : ℕ)) *
         (∫ x in (-1 : ℝ)..1,
           deriv (deriv (signedModeRadialData a m).R) x *
             (signedModeRadialData a n).R x) =
-      evenProlateSignedValue a n ^ 2 * signedModeRadialBandwidth a ^ 2 *
+      evenProlateSignedValue a n ^ (2 : ℕ) * signedModeRadialBandwidth a ^ (2 : ℕ) *
         ((signedModeRadialData a n).s - (signedModeRadialData a m).s) := by
   have hm := signedModeRadialData_isExact_of_pos ha m
   have hn := signedModeRadialData_isExact_of_pos ha n
@@ -156,12 +156,12 @@ theorem signedModeRadialData_crossSpectral_identity
     _, _, _, hnEnd, _⟩
   have hmRBand : ∀ x : ℝ,
       bandTransform (signedModeRadialBandwidth a) (signedModeRadialData a m).R x =
-        evenProlateSignedValue a m ^ 2 * (signedModeRadialData a m).R x := by
+        evenProlateSignedValue a m ^ (2 : ℕ) * (signedModeRadialData a m).R x := by
     rw [hmRdef]
     exact GaloisForLFunctions.RHTower.bandTransform_endpointNormalize_eigen hmBand
   have hnRBand : ∀ x : ℝ,
       bandTransform (signedModeRadialBandwidth a) (signedModeRadialData a n).R x =
-        evenProlateSignedValue a n ^ 2 * (signedModeRadialData a n).R x := by
+        evenProlateSignedValue a n ^ (2 : ℕ) * (signedModeRadialData a n).R x := by
     rw [hnRdef]
     exact GaloisForLFunctions.RHTower.bandTransform_endpointNormalize_eigen hnBand
   have hmD : Differentiable ℝ (signedModeRadialData a m).R :=
@@ -182,19 +182,19 @@ theorem signedModeRadialData_crossSpectral_identity
   have hend : 2 * (deriv (signedModeRadialData a n).R 1 -
       deriv (signedModeRadialData a m).R 1) =
       ((signedModeRadialData a n).s - (signedModeRadialData a m).s) *
-        signedModeRadialBandwidth a ^ 2 := by
+        signedModeRadialBandwidth a ^ (2 : ℕ) := by
     linarith
   calc
-    _ = 2 * evenProlateSignedValue a n ^ 2 *
+    _ = 2 * evenProlateSignedValue a n ^ (2 : ℕ) *
         (deriv (signedModeRadialData a n).R 1 -
           deriv (signedModeRadialData a m).R 1) := by
       simpa [mul_sub, sub_mul] using hcross
-    _ = evenProlateSignedValue a n ^ 2 *
+    _ = evenProlateSignedValue a n ^ (2 : ℕ) *
         (2 * (deriv (signedModeRadialData a n).R 1 -
           deriv (signedModeRadialData a m).R 1)) := by ring
-    _ = evenProlateSignedValue a n ^ 2 *
+    _ = evenProlateSignedValue a n ^ (2 : ℕ) *
         (((signedModeRadialData a n).s - (signedModeRadialData a m).s) *
-          signedModeRadialBandwidth a ^ 2) := by rw [hend]
+          signedModeRadialBandwidth a ^ (2 : ℕ)) := by rw [hend]
     _ = _ := by ring
 
 /-- Distinct actual indexed modes have a nonzero oriented second-derivative pairing. -/
@@ -207,12 +207,12 @@ theorem signedModeRadialData_secondDerivPairing_ne_zero
     rw [sub_ne_zero]
     intro h
     exact hmn ((signedModeRadialData_s_injective ha h.symm))
-  have hval : evenProlateSignedValue a n ^ 2 ≠ 0 :=
+  have hval : evenProlateSignedValue a n ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (evenProlateSignedValue_ne_zero ha n)
-  have hc : signedModeRadialBandwidth a ^ 2 ≠ 0 := by
+  have hc : signedModeRadialBandwidth a ^ (2 : ℕ) ≠ 0 := by
     dsimp [signedModeRadialBandwidth]
     positivity
-  have hrhs : evenProlateSignedValue a n ^ 2 * signedModeRadialBandwidth a ^ 2 *
+  have hrhs : evenProlateSignedValue a n ^ (2 : ℕ) * signedModeRadialBandwidth a ^ (2 : ℕ) *
       ((signedModeRadialData a n).s - (signedModeRadialData a m).s) ≠ 0 :=
     mul_ne_zero (mul_ne_zero hval hc) hsne
   intro hzero
@@ -228,11 +228,11 @@ theorem signedModeRadialData_secondDerivPairing_pos_iff_s_lt
       deriv (deriv (signedModeRadialData a m).R) x *
         (signedModeRadialData a n).R x) ↔
       (signedModeRadialData a m).s < (signedModeRadialData a n).s := by
-  have hgap : 0 < evenProlateSignedValue a m ^ 2 -
-      evenProlateSignedValue a n ^ 2 := by
+  have hgap : 0 < evenProlateSignedValue a m ^ (2 : ℕ) -
+      evenProlateSignedValue a n ^ (2 : ℕ) := by
     exact sub_pos.mpr (evenProlateSignedValue_sq_strictAnti ha hmn)
-  have hcoef : 0 < evenProlateSignedValue a n ^ 2 *
-      signedModeRadialBandwidth a ^ 2 := by
+  have hcoef : 0 < evenProlateSignedValue a n ^ (2 : ℕ) *
+      signedModeRadialBandwidth a ^ (2 : ℕ) := by
     exact mul_pos (sq_pos_of_ne_zero (evenProlateSignedValue_ne_zero ha n)) (by
       dsimp [signedModeRadialBandwidth]
       positivity)
@@ -241,12 +241,12 @@ theorem signedModeRadialData_secondDerivPairing_pos_iff_s_lt
     0 < (∫ x in (-1 : ℝ)..1,
         deriv (deriv (signedModeRadialData a m).R) x *
           (signedModeRadialData a n).R x) ↔
-        0 < (evenProlateSignedValue a m ^ 2 - evenProlateSignedValue a n ^ 2) *
+        0 < (evenProlateSignedValue a m ^ (2 : ℕ) - evenProlateSignedValue a n ^ (2 : ℕ)) *
           (∫ x in (-1 : ℝ)..1,
             deriv (deriv (signedModeRadialData a m).R) x *
               (signedModeRadialData a n).R x) :=
       (mul_pos_iff_of_pos_left hgap).symm
-    _ ↔ 0 < evenProlateSignedValue a n ^ 2 * signedModeRadialBandwidth a ^ 2 *
+    _ ↔ 0 < evenProlateSignedValue a n ^ (2 : ℕ) * signedModeRadialBandwidth a ^ (2 : ℕ) *
           ((signedModeRadialData a n).s - (signedModeRadialData a m).s) := by rw [hident]
     _ ↔ 0 < (signedModeRadialData a n).s - (signedModeRadialData a m).s :=
       mul_pos_iff_of_pos_left hcoef

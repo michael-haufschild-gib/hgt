@@ -105,9 +105,9 @@ theorem screw_decay_constant_lt {L : ℝ} (hL : 0 ≤ L) :
   have hlow : (0.8646:ℝ) ≤ 1 - Real.exp (-2) := by
     have h1 : Real.exp (-2) ≤ 0.1354 := by
       have h := Real.exp_one_gt_d9
-      have hsq : (2.7182818283:ℝ) ^ 2 ≤ Real.exp 1 ^ 2 :=
+      have hsq : (2.7182818283:ℝ) ^ (2 : ℕ) ≤ Real.exp 1 ^ (2 : ℕ) :=
         pow_le_pow_left₀ (by norm_num) (le_of_lt h) 2
-      have he2 : Real.exp 2 = Real.exp 1 ^ 2 := by
+      have he2 : Real.exp 2 = Real.exp 1 ^ (2 : ℕ) := by
         rw [← Real.exp_nat_mul]; norm_num
       have hinv : Real.exp (-2) = 1 / Real.exp 2 := by
         rw [Real.exp_neg]; ring

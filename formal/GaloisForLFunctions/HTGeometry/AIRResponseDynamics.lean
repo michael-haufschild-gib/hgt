@@ -104,10 +104,10 @@ theorem reducedBloc_mean_drift (eta lam q qhat gap : ℝ) :
   ring
 
 /-- A strictly positive repulsion gain and its exact neutral mediation weight. -/
-def responseNeutralGain (r : ℝ) : ℝ := (r ^ 2 + 1) / (r ^ 2 + 2)
+def responseNeutralGain (r : ℝ) : ℝ := (r ^ (2 : ℕ) + 1) / (r ^ (2 : ℕ) + 2)
 
 theorem responseNeutralGain_range (r : ℝ) : 0 < responseNeutralGain r ∧ responseNeutralGain r < 1 := by
-  have hd : 0 < r ^ 2 + 2 := by positivity
+  have hd : 0 < r ^ (2 : ℕ) + 2 := by positivity
   unfold responseNeutralGain
   constructor
   · positivity
@@ -116,11 +116,11 @@ theorem responseNeutralGain_range (r : ℝ) : 0 < responseNeutralGain r ∧ resp
 
 /-- At the constructed critical gain, both blocs translate at the same exact velocity. -/
 theorem reducedBloc_neutral_velocity (r q qhat gap : ℝ) :
-    reducedBlocPlus (r ^ 2 + 1) (responseNeutralGain r) q qhat gap =
+    reducedBlocPlus (r ^ (2 : ℕ) + 1) (responseNeutralGain r) q qhat gap =
       responseNeutralGain r * (qhat - q) * gap ∧
-    reducedBlocMinus (r ^ 2 + 1) (responseNeutralGain r) q qhat gap =
+    reducedBlocMinus (r ^ (2 : ℕ) + 1) (responseNeutralGain r) q qhat gap =
       responseNeutralGain r * (qhat - q) * gap := by
-  have hd : r ^ 2 + 2 ≠ 0 := by positivity
+  have hd : r ^ (2 : ℕ) + 2 ≠ 0 := by positivity
   unfold reducedBlocPlus reducedBlocMinus responseNeutralGain
   constructor <;> field_simp <;> ring
 
@@ -146,7 +146,7 @@ theorem responseNeutral_mean (r q qhat gap m₀ t : ℝ) :
 /-- The positive component solves the neutral reduced ODE at every time. -/
 theorem responseNeutralPlus_solves (r q qhat gap m₀ t : ℝ) :
     HasDerivAt (responseNeutralPlus r q qhat gap m₀)
-      (reducedBlocPlus (r ^ 2 + 1) (responseNeutralGain r) q qhat gap) t := by
+      (reducedBlocPlus (r ^ (2 : ℕ) + 1) (responseNeutralGain r) q qhat gap) t := by
   rw [(reducedBloc_neutral_velocity r q qhat gap).1]
   unfold responseNeutralPlus
   simpa only [id_eq, mul_one] using
@@ -155,7 +155,7 @@ theorem responseNeutralPlus_solves (r q qhat gap m₀ t : ℝ) :
 /-- The negative component solves the same neutral reduced ODE. -/
 theorem responseNeutralMinus_solves (r q qhat gap m₀ t : ℝ) :
     HasDerivAt (responseNeutralMinus r q qhat gap m₀)
-      (reducedBlocMinus (r ^ 2 + 1) (responseNeutralGain r) q qhat gap) t := by
+      (reducedBlocMinus (r ^ (2 : ℕ) + 1) (responseNeutralGain r) q qhat gap) t := by
   rw [(reducedBloc_neutral_velocity r q qhat gap).2]
   unfold responseNeutralMinus
   simpa only [id_eq, mul_one] using

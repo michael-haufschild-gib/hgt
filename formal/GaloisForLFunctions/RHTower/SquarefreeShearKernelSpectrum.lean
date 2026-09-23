@@ -336,7 +336,7 @@ def localRawShearBlock (k : ℕ) : Matrix (Fin (k + 2)) (Fin (k + 2)) ℂ :=
 
 theorem localRawShearBlock_eq_smul_density (k : ℕ) :
     localRawShearBlock k =
-      (((realScale k) ^ 2 : ℝ) : ℂ) • localDensityBlock k := by
+      (((realScale k) ^ (2 : ℕ) : ℝ) : ℂ) • localDensityBlock k := by
   ext a b
   rw [localRawShearBlock, Matrix.smul_apply, smul_eq_mul, localDensityBlock_apply,
     localShearKernel, localScale_eq]
@@ -345,7 +345,7 @@ theorem localRawShearBlock_eq_smul_density (k : ℕ) :
   push_cast
   field_simp [hPc]
 
-theorem realScale_sq_pos (k : ℕ) : 0 < realScale k ^ 2 := sq_pos_of_pos (realScale_pos k)
+theorem realScale_sq_pos (k : ℕ) : 0 < realScale k ^ (2 : ℕ) := sq_pos_of_pos (realScale_pos k)
 
 theorem isHermitian_localRawShearBlock (k : ℕ) : (localRawShearBlock k).IsHermitian := by
   rw [localRawShearBlock_eq_smul_density]
@@ -378,18 +378,18 @@ theorem localShearRadicand_nonneg (k : ℕ) : 0 ≤ 4 * realScale k - 3 := by
   linarith
 
 theorem localShearSqrt_sq (k : ℕ) :
-    Real.sqrt (4 * realScale k - 3) ^ 2 = 4 * realScale k - 3 :=
+    Real.sqrt (4 * realScale k - 3) ^ (2 : ℕ) = 4 * realScale k - 3 :=
   Real.sq_sqrt (localShearRadicand_nonneg k)
 
 theorem localShearEigenPlus_quadratic (k : ℕ) :
-    localShearEigenPlus k ^ 2 - realScale k * localShearEigenPlus k -
-      realScale k ^ 2 * (realScale k - 1) = 0 := by
+    localShearEigenPlus k ^ (2 : ℕ) - realScale k * localShearEigenPlus k -
+      realScale k ^ (2 : ℕ) * (realScale k - 1) = 0 := by
   rw [localShearEigenPlus]
   nlinarith [localShearSqrt_sq k]
 
 theorem localShearEigenMinus_quadratic (k : ℕ) :
-    localShearEigenMinus k ^ 2 - realScale k * localShearEigenMinus k -
-      realScale k ^ 2 * (realScale k - 1) = 0 := by
+    localShearEigenMinus k ^ (2 : ℕ) - realScale k * localShearEigenMinus k -
+      realScale k ^ (2 : ℕ) * (realScale k - 1) = 0 := by
   rw [localShearEigenMinus]
   nlinarith [localShearSqrt_sq k]
 
@@ -445,8 +445,8 @@ theorem sum_localShearEigenvector (k : ℕ) (lambda : ℝ) :
 
 theorem localRawShearBlock_mulVec_eigenvector
     (k : ℕ) (lambda : ℝ)
-    (hquad : lambda ^ 2 - realScale k * lambda -
-      realScale k ^ 2 * (realScale k - 1) = 0) :
+    (hquad : lambda ^ (2 : ℕ) - realScale k * lambda -
+      realScale k ^ (2 : ℕ) * (realScale k - 1) = 0) :
     localRawShearBlock k *ᵥ localShearEigenvector k lambda =
       (lambda : ℂ) • localShearEigenvector k lambda := by
   classical
@@ -549,7 +549,7 @@ theorem localRawShearBlock_rank (k : ℕ) : (localRawShearBlock k).rank = 2 := b
 
 theorem l2_opNorm_vecMulVec_star
     {n : Type*} [Fintype n] [DecidableEq n] (x : EuclideanSpace ℂ n) :
-    ‖(Matrix.vecMulVec x (star x) : Matrix n n ℂ)‖ = ‖x‖ ^ 2 := by
+    ‖(Matrix.vecMulVec x (star x) : Matrix n n ℂ)‖ = ‖x‖ ^ (2 : ℕ) := by
   rw [← InnerProductSpace.symm_toEuclideanLin_rankOne x x]
   rw [Matrix.l2_opNorm_def, LinearEquiv.trans_apply, LinearEquiv.apply_symm_apply]
   have hclm : LinearMap.toContinuousLinearMap
@@ -563,7 +563,7 @@ theorem l2_opNorm_vecMulVec_star
 
 theorem l2_opNorm_vecMulVec_self_of_star
     {n : Type*} [Fintype n] [DecidableEq n] (x : n → ℂ) (hx : star x = x) :
-    ‖(Matrix.vecMulVec x x : Matrix n n ℂ)‖ = ‖WithLp.toLp 2 x‖ ^ 2 := by
+    ‖(Matrix.vecMulVec x x : Matrix n n ℂ)‖ = ‖WithLp.toLp 2 x‖ ^ (2 : ℕ) := by
   have hmatrix : Matrix.vecMulVec x x =
       Matrix.vecMulVec (WithLp.toLp 2 x) (star (WithLp.toLp 2 x)) := by
     ext i j
@@ -693,25 +693,25 @@ theorem localFrame_one (k : ℕ) (a : Fin (k + 2)) :
   simp [localFrame]
 
 theorem norm_sq_localComplementVector (k : ℕ) :
-    ‖WithLp.toLp 2 (fun a : Fin (k + 2) => localFrame k a 1)‖ ^ 2 =
+    ‖WithLp.toLp 2 (fun a : Fin (k + 2) => localFrame k a 1)‖ ^ (2 : ℕ) =
       (realScale k - 1) / realScale k := by
   rw [EuclideanSpace.norm_sq_eq]
   simp_rw [localFrame_one]
   rw [← Finset.add_sum_erase _ _ (Finset.mem_univ (0 : Fin (k + 2)))]
   have hrest :
       (∑ a ∈ Finset.univ.erase (0 : Fin (k + 2)),
-        ‖(localScale k)⁻¹ - if a = 0 then 1 else 0‖ ^ 2) =
-        ((k : ℝ) + 1) * (realScale k)⁻¹ ^ 2 := by
+        ‖(localScale k)⁻¹ - if a = 0 then 1 else 0‖ ^ (2 : ℕ)) =
+        ((k : ℝ) + 1) * (realScale k)⁻¹ ^ (2 : ℕ) := by
     calc
       (∑ a ∈ Finset.univ.erase (0 : Fin (k + 2)),
-          ‖(localScale k)⁻¹ - if a = 0 then 1 else 0‖ ^ 2) =
-          ∑ _a ∈ Finset.univ.erase (0 : Fin (k + 2)), (realScale k)⁻¹ ^ 2 := by
+          ‖(localScale k)⁻¹ - if a = 0 then 1 else 0‖ ^ (2 : ℕ)) =
+          ∑ _a ∈ Finset.univ.erase (0 : Fin (k + 2)), (realScale k)⁻¹ ^ (2 : ℕ) := by
         apply Finset.sum_congr rfl
         intro a ha
         have ha0 := Finset.ne_of_mem_erase ha
         rw [if_neg ha0, sub_zero, localScale_eq, norm_inv, Complex.norm_real,
           Real.norm_eq_abs, abs_of_pos (realScale_pos k)]
-      _ = ((k : ℝ) + 1) * (realScale k)⁻¹ ^ 2 := by
+      _ = ((k : ℝ) + 1) * (realScale k)⁻¹ ^ (2 : ℕ) := by
         rw [Finset.sum_const, Finset.card_erase_of_mem (Finset.mem_univ _),
           Finset.card_univ, Fintype.card_fin]
         simp only [nsmul_eq_mul]
@@ -749,7 +749,7 @@ def localShearEta (k : ℕ) : ℝ :=
 theorem localDensityBlock_l2_opNorm (k : ℕ) :
     ‖localDensityBlock k‖ = localShearEta k := by
   rw [localDensityBlock_eq_smul_shearKernel]
-  change ‖(localScale k ^ 2)⁻¹ • localRawShearBlock k‖ = localShearEta k
+  change ‖(localScale k ^ (2 : ℕ))⁻¹ • localRawShearBlock k‖ = localShearEta k
   rw [norm_smul, localRawShearBlock_l2_opNorm, localScale_eq, norm_inv,
     norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (realScale_pos k)]
   rw [localShearEigenPlus, localShearEta]
@@ -766,7 +766,7 @@ theorem localDensityBlock_plus_eigenvector (k : ℕ) :
     localDensityBlock k *ᵥ localShearEigenvector k (localShearEigenPlus k) =
       (localShearEta k : ℂ) • localShearEigenvector k (localShearEigenPlus k) := by
   rw [localDensityBlock_eq_smul_shearKernel]
-  change ((localScale k ^ 2)⁻¹ • localRawShearBlock k) *ᵥ
+  change ((localScale k ^ (2 : ℕ))⁻¹ • localRawShearBlock k) *ᵥ
       localShearEigenvector k (localShearEigenPlus k) = _
   rw [Matrix.smul_mulVec, localRawShearBlock_plus_eigenvector, smul_smul]
   congr 1
@@ -798,16 +798,16 @@ theorem dotProduct_localComplementVector (k : ℕ) :
   have hrest :
       (∑ a ∈ Finset.univ.erase (0 : Fin (k + 2)),
         localFrame k a 1 * localFrame k a 1) =
-      ((k : ℂ) + 1) * (localScale k)⁻¹ ^ 2 := by
+      ((k : ℂ) + 1) * (localScale k)⁻¹ ^ (2 : ℕ) := by
     calc
       (∑ a ∈ Finset.univ.erase (0 : Fin (k + 2)),
           localFrame k a 1 * localFrame k a 1) =
-          ∑ _a ∈ Finset.univ.erase (0 : Fin (k + 2)), (localScale k)⁻¹ ^ 2 := by
+          ∑ _a ∈ Finset.univ.erase (0 : Fin (k + 2)), (localScale k)⁻¹ ^ (2 : ℕ) := by
         apply Finset.sum_congr rfl
         intro a ha
         have ha0 := Finset.ne_of_mem_erase ha
         rw [localFrame_one, if_neg ha0, sub_zero, pow_two]
-      _ = ((k : ℂ) + 1) * (localScale k)⁻¹ ^ 2 := sum_erase_const k _
+      _ = ((k : ℂ) + 1) * (localScale k)⁻¹ ^ (2 : ℕ) := sum_erase_const k _
   rw [hrest, localFrame_one, if_pos, localScale_eq]
   push_cast
   have hp : ((realScale k : ℝ) : ℂ) ≠ 0 :=
@@ -1048,8 +1048,8 @@ theorem localComplementNorm_div_eta (k : ℕ) :
   rw [localShearEta]
   field_simp
   calc
-    (realScale k - 1) * 2 ^ 2 = 4 * (realScale k - 1) := by ring
-    _ = Real.sqrt (4 * realScale k - 3) ^ 2 - 1 := by
+    (realScale k - 1) * 2 ^ (2 : ℕ) = 4 * (realScale k - 1) := by ring
+    _ = Real.sqrt (4 * realScale k - 3) ^ (2 : ℕ) - 1 := by
       rw [localShearSqrt_sq]
       ring
     _ = (1 + Real.sqrt (4 * realScale k - 3)) *
@@ -1067,7 +1067,7 @@ theorem firstCrossingConditionedTensor_norm_ratio_eq_sqrt
 theorem matrixQuadraticForm_norm_le_l2_opNorm
     {n : Type*} [Fintype n] [DecidableEq n]
     (A : Matrix n n ℂ) (z : n → ℂ) :
-    ‖star z ⬝ᵥ (A *ᵥ z)‖ ≤ ‖A‖ * ‖WithLp.toLp 2 z‖ ^ 2 := by
+    ‖star z ⬝ᵥ (A *ᵥ z)‖ ≤ ‖A‖ * ‖WithLp.toLp 2 z‖ ^ (2 : ℕ) := by
   have hpair : star z ⬝ᵥ (A *ᵥ z) =
       inner ℂ (WithLp.toLp 2 z) (WithLp.toLp 2 (A *ᵥ z)) := by
     rw [EuclideanSpace.inner_eq_star_dotProduct]
@@ -1079,13 +1079,13 @@ theorem matrixQuadraticForm_norm_le_l2_opNorm
     _ ≤ ‖WithLp.toLp 2 z‖ * (‖A‖ * ‖WithLp.toLp 2 z‖) := by
       gcongr
       simpa using Matrix.l2_opNorm_mulVec A (WithLp.toLp 2 z)
-    _ = ‖A‖ * ‖WithLp.toLp 2 z‖ ^ 2 := by ring
+    _ = ‖A‖ * ‖WithLp.toLp 2 z‖ ^ (2 : ℕ) := by ring
 
 theorem matrixQuadraticForm_norm_eq_of_eigenvector
     {n : Type*} [Fintype n] [DecidableEq n]
     {A : Matrix n n ℂ} (z : n → ℂ) (c : ℝ) (hc : 0 ≤ c)
     (hz : A *ᵥ z = (c : ℂ) • z) :
-    ‖star z ⬝ᵥ (A *ᵥ z)‖ = c * ‖WithLp.toLp 2 z‖ ^ 2 := by
+    ‖star z ⬝ᵥ (A *ᵥ z)‖ = c * ‖WithLp.toLp 2 z‖ ^ (2 : ℕ) := by
   rw [hz]
   have hpair : star z ⬝ᵥ ((c : ℂ) • z) =
       inner ℂ (WithLp.toLp 2 z) ((c : ℂ) • WithLp.toLp 2 z) := by
@@ -1100,7 +1100,7 @@ theorem firstCrossingConditionedTensor_quadratic_bound
     (z : (∀ s, Fin (firstCrossingSize k m s + 2)) → ℂ) :
     ‖star z ⬝ᵥ (firstCrossingConditionedTensor k m *ᵥ z)‖ ≤
       ((realScale k - 1) / realScale k) * squarefreeShearEta m *
-        ‖WithLp.toLp 2 z‖ ^ 2 := by
+        ‖WithLp.toLp 2 z‖ ^ (2 : ℕ) := by
   simpa [firstCrossingConditionedTensor_l2_opNorm] using
     matrixQuadraticForm_norm_le_l2_opNorm (firstCrossingConditionedTensor k m) z
 
@@ -1155,7 +1155,7 @@ theorem firstCrossingConditionedTensor_quadratic_bound_sharp
     ‖star (firstCrossingTopVector k m) ⬝ᵥ
         (firstCrossingConditionedTensor k m *ᵥ firstCrossingTopVector k m)‖ =
       ((realScale k - 1) / realScale k) * squarefreeShearEta m *
-        ‖WithLp.toLp 2 (firstCrossingTopVector k m)‖ ^ 2 := by
+        ‖WithLp.toLp 2 (firstCrossingTopVector k m)‖ ^ (2 : ℕ) := by
   apply matrixQuadraticForm_norm_eq_of_eigenvector
   · exact mul_nonneg (localComplementNorm_nonneg k) (squarefreeShearEta_pos m).le
   · exact firstCrossingConditionedTensor_top_eigenvector k m
@@ -1202,7 +1202,7 @@ theorem squarefreeShearOffDiagonal_add_diagonal
   · simp [squarefreeShearOffDiagonal, hxy]
 
 def squarefreeShearTensorScale {ι : Type*} [Fintype ι] (m : ι → ℕ) : ℝ :=
-  ∏ i, realScale (m i) ^ 2
+  ∏ i, realScale (m i) ^ (2 : ℕ)
 
 def squarefreeShearEigenvalue
     {ι : Type*} [Fintype ι] (m : ι → ℕ) (s : ∀ _i : ι, Fin 2) : ℂ :=
@@ -1261,7 +1261,7 @@ theorem squarefreeShearTensor_eq_smul_crossingDensity
       (((squarefreeShearTensorScale m : ℝ) : ℂ)) • crossingDensity m := by
   rw [squarefreeShearTensor, crossingDensity]
   have hfamily : (fun i => localRawShearBlock (m i)) =
-      fun i => ((((realScale (m i)) ^ 2 : ℝ) : ℂ)) • localDensityBlock (m i) := by
+      fun i => ((((realScale (m i)) ^ (2 : ℕ) : ℝ) : ℂ)) • localDensityBlock (m i) := by
     funext i
     exact localRawShearBlock_eq_smul_density (m i)
   rw [hfamily, tensorFamily_smul]

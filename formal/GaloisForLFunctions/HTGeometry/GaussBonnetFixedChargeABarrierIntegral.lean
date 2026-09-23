@@ -24,13 +24,13 @@ theorem egbFixedChargeABarrierPath_displacement (w φ τ : ℝ) :
 private theorem barrier_path_normalized_hasDerivAt (w φ τ l : ℝ) :
     ∀ u ∈ Icc (0 : ℝ) 1,
     HasDerivAt (fun x => egbOffShellGibbsA (egbFixedChargeAPressure w φ τ) (egbFixedChargeATemperature w φ τ)
-      (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeABarrierPathRadius w φ τ x) / egbCoexistenceASymmetricRatio τ ^ 4)
+      (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeABarrierPathRadius w φ τ x) / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ))
       (egbFixedChargeABarrierIntegrand w φ τ u) u := by
   intro u hu
   have hd := egbCoexistenceASymmetricRatio_bounds τ
   have hm := egbFixedChargeAMeanRadius_pos w φ τ
   have hD := egbFixedChargeAMeanDenominator_pos τ φ
-  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ 2 := by positivity
+  have hx : 0 < 1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ) := by positivity
   have hscale := (egbFixedChargeABarrierPathScale_mapsTo τ φ hu).1
   have hv : 0 < 1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeABarrierPathCoordinate τ φ u := by linarith [hd.2]
   have hg := egbFixedChargeA_mean_gibbs_derivative w φ τ l
@@ -42,16 +42,16 @@ private theorem barrier_path_normalized_hasDerivAt (w φ τ l : ℝ) :
     simpa only [mul_one, id_eq] using
       ((hasDerivAt_id u).const_mul (egbFixedChargeAMiddleRadius w φ τ - egbFixedChargeALargeRadius w φ τ)).const_add
         (egbFixedChargeALargeRadius w φ τ)
-  have h := (hg.comp u hpath).div_const (egbCoexistenceASymmetricRatio τ ^ 4)
+  have h := (hg.comp u hpath).div_const (egbCoexistenceASymmetricRatio τ ^ (4 : ℕ))
   apply h.congr_deriv
   rw [egbFixedChargeABarrierPath_displacement]
   have hdpos := hd.1
   calc
     _ = egbFixedChargeAMeanRadius w φ τ * (egbFixedChargeAMiddleGapCoordinate τ φ - 1) *
       (egbFixedChargeAMeanStationaryPolynomial τ φ
-        (1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeABarrierPathCoordinate τ φ u) / egbCoexistenceASymmetricRatio τ ^ 3) /
-      (2 * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ 2) *
-        (1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeABarrierPathCoordinate τ φ u) ^ 2) := by
+        (1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeABarrierPathCoordinate τ φ u) / egbCoexistenceASymmetricRatio τ ^ (3 : ℕ)) /
+      (2 * egbFixedChargeAMeanDenominator τ φ * (1 + egbCoexistenceASymmetricRatio τ ^ (2 : ℕ)) *
+        (1 + egbCoexistenceASymmetricRatio τ * egbFixedChargeABarrierPathCoordinate τ φ u) ^ (2 : ℕ)) := by
       field_simp <;> ring
     _ = _ := by
       rw [egbFixedChargeAMeanStationaryPolynomial_scaled]
@@ -59,11 +59,11 @@ private theorem barrier_path_normalized_hasDerivAt (w φ τ l : ℝ) :
       ring
 
 theorem egbFixedChargeAGibbsBarrier_integral (w φ τ l : ℝ) :
-    egbFixedChargeAGibbsBarrier w φ τ l / egbCoexistenceASymmetricRatio τ ^ 4 =
+    egbFixedChargeAGibbsBarrier w φ τ l / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) =
       ∫ u in (0 : ℝ)..1, egbFixedChargeABarrierIntegrand w φ τ u := by
   have hderiv : ∀ u ∈ uIcc (0 : ℝ) 1,
       HasDerivAt (fun x => egbOffShellGibbsA (egbFixedChargeAPressure w φ τ) (egbFixedChargeATemperature w φ τ)
-        (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeABarrierPathRadius w φ τ x) / egbCoexistenceASymmetricRatio τ ^ 4)
+        (exp w * cos φ) (exp w * sin φ) l (egbFixedChargeABarrierPathRadius w φ τ x) / egbCoexistenceASymmetricRatio τ ^ (4 : ℕ))
         (egbFixedChargeABarrierIntegrand w φ τ u) u := by
     intro u hu
     apply barrier_path_normalized_hasDerivAt w φ τ l u
@@ -77,21 +77,21 @@ theorem egbFixedChargeAGibbsBarrier_integral (w φ τ l : ℝ) :
 theorem egbFixedChargeAGibbsBarrier_reference_independent (w φ τ l₁ l₂ : ℝ) :
     egbFixedChargeAGibbsBarrier w φ τ l₁ = egbFixedChargeAGibbsBarrier w φ τ l₂ := by
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hd4 : egbCoexistenceASymmetricRatio τ ^ 4 ≠ 0 := by positivity
+  have hd4 : egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) ≠ 0 := by positivity
   calc
-    _ = (∫ u in (0 : ℝ)..1, egbFixedChargeABarrierIntegrand w φ τ u) * egbCoexistenceASymmetricRatio τ ^ 4 :=
+    _ = (∫ u in (0 : ℝ)..1, egbFixedChargeABarrierIntegrand w φ τ u) * egbCoexistenceASymmetricRatio τ ^ (4 : ℕ) :=
       (div_eq_iff hd4).1 (egbFixedChargeAGibbsBarrier_integral w φ τ l₁)
     _ = _ := ((div_eq_iff hd4).1 (egbFixedChargeAGibbsBarrier_integral w φ τ l₂)).symm
 
 theorem egbFixedChargeABarrierLimitIntegrand_integral (w φ : ℝ) :
     (∫ u in (0 : ℝ)..1, egbFixedChargeABarrierLimitIntegrand w φ u) = egbFixedChargeAGibbsBarrierCoefficient w φ := by
-  have hderiv (u : ℝ) : HasDerivAt (fun x : ℝ => x ^ 2 - x ^ 3 + x ^ 4 / 4) (2 * u - 3 * u ^ 2 + u ^ 3) u := by
+  have hderiv (u : ℝ) : HasDerivAt (fun x : ℝ => x ^ (2 : ℕ) - x ^ (3 : ℕ) + x ^ (4 : ℕ) / 4) (2 * u - 3 * u ^ (2 : ℕ) + u ^ (3 : ℕ)) u := by
     have h := (((hasDerivAt_id u).pow 2).sub ((hasDerivAt_id u).pow 3)).add (((hasDerivAt_id u).pow 4).div_const 4)
     apply h.congr_deriv
     simp only [id_eq]
     ring
-  have hint : IntervalIntegrable (fun u : ℝ => 2 * u - 3 * u ^ 2 + u ^ 3) volume 0 1 := by
-    have hc : Continuous (fun u : ℝ => 2 * u - 3 * u ^ 2 + u ^ 3) := by fun_prop
+  have hint : IntervalIntegrable (fun u : ℝ => 2 * u - 3 * u ^ (2 : ℕ) + u ^ (3 : ℕ)) volume 0 1 := by
+    have hc : Continuous (fun u : ℝ => 2 * u - 3 * u ^ (2 : ℕ) + u ^ (3 : ℕ)) := by fun_prop
     exact hc.intervalIntegrable 0 1
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun u _ => hderiv u) hint
   norm_num at h

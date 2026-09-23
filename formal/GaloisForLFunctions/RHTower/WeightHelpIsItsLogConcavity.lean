@@ -51,7 +51,7 @@ namespace RHTower
 /-- **The weighted threshold law.**  A weighted quadratic with positive outer weights is hyperbolic
 exactly when the middle coefficient squared clears `4w₀w₂/w₁²` times the outer product. -/
 theorem weighted_threshold (a b c w₀ w₁ w₂ : ℝ) :
-    0 ≤ (w₁ * b) ^ 2 - 4 * (w₀ * a) * (w₂ * c) ↔ 4 * w₀ * w₂ * (a * c) ≤ w₁ ^ 2 * b ^ 2 := by
+    0 ≤ (w₁ * b) ^ (2 : ℕ) - 4 * (w₀ * a) * (w₂ * c) ↔ 4 * w₀ * w₂ * (a * c) ≤ w₁ ^ (2 : ℕ) * b ^ (2 : ℕ) := by
   constructor <;> intro h <;> nlinarith [h]
 
 /-- The relaxation factor of a weight at a place: its log-concavity ratio. -/

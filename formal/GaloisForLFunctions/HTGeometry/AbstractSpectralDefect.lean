@@ -129,26 +129,26 @@ theorem im_eq_zero_iff_defect_eq_zero {σ : ℝ} (hσ : 0 < σ) (hle : σ ≤ 4 
 /-- Jordan's inequality in quadratic form: on `[-π, π]` the cosine defect is bounded below by a
 multiple of the square. -/
 theorem two_div_pi_sq_mul_sq_le_one_sub_cos {x : ℝ} (hx : |x| ≤ Real.pi) :
-    2 / Real.pi ^ 2 * x ^ 2 ≤ 1 - Real.cos x := by
+    2 / Real.pi ^ (2 : ℕ) * x ^ (2 : ℕ) ≤ 1 - Real.cos x := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   set t : ℝ := |x| / 2 with ht
   have ht0 : 0 ≤ t := by positivity
   have ht2 : t ≤ Real.pi / 2 := by rw [ht]; linarith
-  have hcos : Real.cos x = 1 - 2 * Real.sin t ^ 2 := by
+  have hcos : Real.cos x = 1 - 2 * Real.sin t ^ (2 : ℕ) := by
     rw [← Real.cos_abs, show |x| = 2 * t from by rw [ht]; ring, Real.cos_two_mul_eq_one_sub]
   have hjor : 2 / Real.pi * t ≤ Real.sin t := Real.mul_le_sin ht0 ht2
   have hnn : 0 ≤ 2 / Real.pi * t := by positivity
-  have hsq : (2 / Real.pi * t) ^ 2 ≤ Real.sin t ^ 2 := by
+  have hsq : (2 / Real.pi * t) ^ (2 : ℕ) ≤ Real.sin t ^ (2 : ℕ) := by
     exact pow_le_pow_left₀ hnn hjor 2
-  have hxt : x ^ 2 = 4 * t ^ 2 := by
+  have hxt : x ^ (2 : ℕ) = 4 * t ^ (2 : ℕ) := by
     rw [ht, div_pow, sq_abs]
     ring
   rw [hcos, hxt]
-  have hexp : (2 / Real.pi * t) ^ 2 = 4 / Real.pi ^ 2 * t ^ 2 := by
+  have hexp : (2 / Real.pi * t) ^ (2 : ℕ) = 4 / Real.pi ^ (2 : ℕ) * t ^ (2 : ℕ) := by
     rw [mul_pow, div_pow]
     ring
   rw [hexp] at hsq
-  have heq : 2 / Real.pi ^ 2 * (4 * t ^ 2) = 2 * (4 / Real.pi ^ 2 * t ^ 2) := by ring
+  have heq : 2 / Real.pi ^ (2 : ℕ) * (4 * t ^ (2 : ℕ)) = 2 * (4 / Real.pi ^ (2 : ℕ) * t ^ (2 : ℕ)) := by ring
   rw [heq]
   linarith [hsq]
 
@@ -160,7 +160,7 @@ theorem defectTerm_le_defect {σ : ℝ} (hσ : 0 < σ) (i : ι) :
 /-- **Quantitative rigidity.**  On the admissible range `σ ≤ 2π` the defect dominates a positive
 multiple of every single weighted squared displacement. -/
 theorem sq_im_mul_weight_le_defect {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi) (i : ι) :
-    2 * σ ^ 2 / Real.pi ^ 2 * ((F.pt i).im ^ 2 * F.weight σ i) ≤ F.defect σ := by
+    2 * σ ^ (2 : ℕ) / Real.pi ^ (2 : ℕ) * ((F.pt i).im ^ (2 : ℕ) * F.weight σ i) ≤ F.defect σ := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have habs : |σ * (F.pt i).im| ≤ Real.pi := by
     rw [abs_mul, abs_of_pos hσ]
@@ -169,7 +169,7 @@ theorem sq_im_mul_weight_le_defect {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * 
       _ ≤ (2 * Real.pi) * (1 / 2) := by nlinarith
       _ = Real.pi := by ring
   have hlow := two_div_pi_sq_mul_sq_le_one_sub_cos habs
-  have hmul : F.weight σ i * (2 / Real.pi ^ 2 * (σ * (F.pt i).im) ^ 2) ≤
+  have hmul : F.weight σ i * (2 / Real.pi ^ (2 : ℕ) * (σ * (F.pt i).im) ^ (2 : ℕ)) ≤
       F.weight σ i * (1 - Real.cos (σ * (F.pt i).im)) :=
     mul_le_mul_of_nonneg_left hlow (F.weight_pos σ i).le
   refine le_trans (le_of_eq ?_) (le_trans hmul (F.defectTerm_le_defect hσ i))
@@ -179,7 +179,7 @@ theorem sq_im_mul_weight_le_defect {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * 
 real time bounds every displacement explicitly, with a loss growing only like `exp(σ Re α / 2)`. -/
 theorem sq_im_le_of_defect_le {σ M : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi)
     (h : F.defect σ ≤ M) (i : ι) :
-    (F.pt i).im ^ 2 ≤ Real.pi ^ 2 / (2 * σ ^ 2) * M * Real.exp (σ * (F.pt i).re) := by
+    (F.pt i).im ^ (2 : ℕ) ≤ Real.pi ^ (2 : ℕ) / (2 * σ ^ (2 : ℕ)) * M * Real.exp (σ * (F.pt i).re) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hkey := le_trans (F.sq_im_mul_weight_le_defect hσ hσ' i) h
   have hw : F.weight σ i = Real.exp (-(σ * (F.pt i).re)) := rfl
@@ -187,28 +187,28 @@ theorem sq_im_le_of_defect_le {σ M : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Rea
   have hinv : F.weight σ i * Real.exp (σ * (F.pt i).re) = 1 := by
     rw [hw, ← Real.exp_add]
     simp
-  have hσ2 : 0 < 2 * σ ^ 2 / Real.pi ^ 2 := by positivity
-  have hstep : (F.pt i).im ^ 2 * F.weight σ i ≤ Real.pi ^ 2 / (2 * σ ^ 2) * M := by
+  have hσ2 : 0 < 2 * σ ^ (2 : ℕ) / Real.pi ^ (2 : ℕ) := by positivity
+  have hstep : (F.pt i).im ^ (2 : ℕ) * F.weight σ i ≤ Real.pi ^ (2 : ℕ) / (2 * σ ^ (2 : ℕ)) * M := by
     rw [← le_div_iff₀' hσ2] at hkey
     refine le_trans hkey (le_of_eq ?_)
     field_simp
-  calc (F.pt i).im ^ 2
-      = ((F.pt i).im ^ 2 * F.weight σ i) * Real.exp (σ * (F.pt i).re) := by
+  calc (F.pt i).im ^ (2 : ℕ)
+      = ((F.pt i).im ^ (2 : ℕ) * F.weight σ i) * Real.exp (σ * (F.pt i).re) := by
         rw [mul_assoc, hinv, mul_one]
-    _ ≤ (Real.pi ^ 2 / (2 * σ ^ 2) * M) * Real.exp (σ * (F.pt i).re) :=
+    _ ≤ (Real.pi ^ (2 : ℕ) / (2 * σ ^ (2 : ℕ)) * M) * Real.exp (σ * (F.pt i).re) :=
         mul_le_mul_of_nonneg_right hstep (Real.exp_pos _).le
 
 /-- The weighted displacement energy. -/
-def energy (σ : ℝ) : ℝ := ∑' i : ι, F.weight σ i * (F.pt i).im ^ 2
+def energy (σ : ℝ) : ℝ := ∑' i : ι, F.weight σ i * (F.pt i).im ^ (2 : ℕ)
 
 theorem summable_energyTerm {σ : ℝ} (hσ : 0 < σ) :
-    Summable fun i => F.weight σ i * (F.pt i).im ^ 2 := by
+    Summable fun i => F.weight σ i * (F.pt i).im ^ (2 : ℕ) := by
   refine Summable.of_norm_bounded ((F.summable_weight hσ).mul_left (1 / 4)) fun i => ?_
-  have hb : (F.pt i).im ^ 2 ≤ 1 / 4 := by
+  have hb : (F.pt i).im ^ (2 : ℕ) ≤ 1 / 4 := by
     have h := F.abs_im_lt i
     nlinarith [abs_nonneg ((F.pt i).im), sq_abs ((F.pt i).im)]
   rw [Real.norm_eq_abs, abs_mul, abs_of_pos (F.weight_pos σ i), abs_of_nonneg (sq_nonneg _)]
-  calc F.weight σ i * (F.pt i).im ^ 2 ≤ F.weight σ i * (1 / 4) :=
+  calc F.weight σ i * (F.pt i).im ^ (2 : ℕ) ≤ F.weight σ i * (1 / 4) :=
         mul_le_mul_of_nonneg_left hb (F.weight_pos σ i).le
     _ = 1 / 4 * F.weight σ i := by ring
 
@@ -217,22 +217,22 @@ theorem energy_nonneg (σ : ℝ) : 0 ≤ F.energy σ :=
 
 /-- **The defect is bounded above by the energy.**  This is the second-order expansion of the cosine,
 valid at every real time. -/
-theorem defect_le_energy {σ : ℝ} (hσ : 0 < σ) : F.defect σ ≤ σ ^ 2 / 2 * F.energy σ := by
+theorem defect_le_energy {σ : ℝ} (hσ : 0 < σ) : F.defect σ ≤ σ ^ (2 : ℕ) / 2 * F.energy σ := by
   rw [F.defect_eq_tsum hσ, energy, ← tsum_mul_left]
   refine Summable.tsum_le_tsum (fun i => ?_) (F.summable_defectTerm hσ)
     ((F.summable_energyTerm hσ).mul_left _)
-  have hcos : 1 - Real.cos (σ * (F.pt i).im) ≤ (σ * (F.pt i).im) ^ 2 / 2 := by
+  have hcos : 1 - Real.cos (σ * (F.pt i).im) ≤ (σ * (F.pt i).im) ^ (2 : ℕ) / 2 := by
     have h := Real.one_sub_sq_div_two_le_cos (x := σ * (F.pt i).im)
     linarith
   calc F.weight σ i * (1 - Real.cos (σ * (F.pt i).im))
-      ≤ F.weight σ i * ((σ * (F.pt i).im) ^ 2 / 2) :=
+      ≤ F.weight σ i * ((σ * (F.pt i).im) ^ (2 : ℕ) / 2) :=
         mul_le_mul_of_nonneg_left hcos (F.weight_pos σ i).le
-    _ = σ ^ 2 / 2 * (F.weight σ i * (F.pt i).im ^ 2) := by ring
+    _ = σ ^ (2 : ℕ) / 2 * (F.weight σ i * (F.pt i).im ^ (2 : ℕ)) := by ring
 
 /-- **The defect is bounded below by the energy on the admissible range.**  Together with
 `defect_le_energy` the two are comparable: `defect σ ≍ σ² · energy σ`. -/
 theorem energy_le_defect {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi) :
-    2 * σ ^ 2 / Real.pi ^ 2 * F.energy σ ≤ F.defect σ := by
+    2 * σ ^ (2 : ℕ) / Real.pi ^ (2 : ℕ) * F.energy σ ≤ F.defect σ := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   rw [F.defect_eq_tsum hσ, energy, ← tsum_mul_left]
   refine Summable.tsum_le_tsum (fun i => ?_) ((F.summable_energyTerm hσ).mul_left _)
@@ -244,8 +244,8 @@ theorem energy_le_defect {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2 * Real.pi) :
       _ ≤ (2 * Real.pi) * (1 / 2) := by nlinarith
       _ = Real.pi := by ring
   have hlow := two_div_pi_sq_mul_sq_le_one_sub_cos habs
-  calc 2 * σ ^ 2 / Real.pi ^ 2 * (F.weight σ i * (F.pt i).im ^ 2)
-      = F.weight σ i * (2 / Real.pi ^ 2 * (σ * (F.pt i).im) ^ 2) := by ring
+  calc 2 * σ ^ (2 : ℕ) / Real.pi ^ (2 : ℕ) * (F.weight σ i * (F.pt i).im ^ (2 : ℕ))
+      = F.weight σ i * (2 / Real.pi ^ (2 : ℕ) * (σ * (F.pt i).im) ^ (2 : ℕ)) := by ring
     _ ≤ F.weight σ i * (1 - Real.cos (σ * (F.pt i).im)) :=
         mul_le_mul_of_nonneg_left hlow (F.weight_pos σ i).le
 
@@ -256,7 +256,7 @@ theorem im_eq_zero_iff_energy_eq_zero {σ : ℝ} (hσ : 0 < σ) (hσ' : σ ≤ 2
   constructor
   · intro him
     rw [energy]
-    have hz : ∀ i : ι, F.weight σ i * (F.pt i).im ^ 2 = 0 := by
+    have hz : ∀ i : ι, F.weight σ i * (F.pt i).im ^ (2 : ℕ) = 0 := by
       intro i; rw [him i]; ring
     rw [tsum_congr hz, tsum_zero]
   · intro h
@@ -293,10 +293,10 @@ theorem energy_le_exp_mul_energy {σ σ' : ℝ} (hσ : 0 < σ) (h : σ ≤ σ') 
     rw [weight, weight, ← Real.exp_add]
     refine Real.exp_le_exp.mpr ?_
     nlinarith [F.base_le i, F.base_pos, sub_nonneg.mpr h]
-  calc F.weight σ' i * (F.pt i).im ^ 2
-      ≤ (Real.exp (-((σ' - σ) * F.base)) * F.weight σ i) * (F.pt i).im ^ 2 :=
+  calc F.weight σ' i * (F.pt i).im ^ (2 : ℕ)
+      ≤ (Real.exp (-((σ' - σ) * F.base)) * F.weight σ i) * (F.pt i).im ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hw (sq_nonneg _)
-    _ = Real.exp (-((σ' - σ) * F.base)) * (F.weight σ i * (F.pt i).im ^ 2) := by ring
+    _ = Real.exp (-((σ' - σ) * F.base)) * (F.weight σ i * (F.pt i).im ^ (2 : ℕ)) := by ring
 
 /-- **A zero-density bound from an energy bound.**  If the energy at time `σ` is at most `M`, then
 any finite set of points of height at most `T` whose displacements all exceed `η` has at most
@@ -304,30 +304,30 @@ any finite set of points of height at most `T` whose displacements all exceed `�
 theorem card_le_of_energy_le {σ M T η : ℝ} (hσ : 0 < σ) (hη : 0 < η)
     (h : F.energy σ ≤ M) (s : Finset ι)
     (hs : ∀ i ∈ s, (F.pt i).re ≤ T ∧ η ≤ |(F.pt i).im|) :
-    (s.card : ℝ) * (η ^ 2 * Real.exp (-(σ * T))) ≤ M := by
-  have hsub : ∑ i ∈ s, F.weight σ i * (F.pt i).im ^ 2 ≤ F.energy σ :=
+    (s.card : ℝ) * (η ^ (2 : ℕ) * Real.exp (-(σ * T))) ≤ M := by
+  have hsub : ∑ i ∈ s, F.weight σ i * (F.pt i).im ^ (2 : ℕ) ≤ F.energy σ :=
     (F.summable_energyTerm hσ).sum_le_tsum s
       (fun i _ => mul_nonneg (F.weight_pos σ i).le (sq_nonneg _))
-  have hterm : ∀ i ∈ s, η ^ 2 * Real.exp (-(σ * T)) ≤ F.weight σ i * (F.pt i).im ^ 2 := by
+  have hterm : ∀ i ∈ s, η ^ (2 : ℕ) * Real.exp (-(σ * T)) ≤ F.weight σ i * (F.pt i).im ^ (2 : ℕ) := by
     intro i hi
     obtain ⟨hT, hη'⟩ := hs i hi
     have hw : Real.exp (-(σ * T)) ≤ F.weight σ i := by
       rw [weight]
       exact Real.exp_le_exp.mpr (by nlinarith)
-    have hj : η ^ 2 ≤ (F.pt i).im ^ 2 := by
+    have hj : η ^ (2 : ℕ) ≤ (F.pt i).im ^ (2 : ℕ) := by
       rw [← sq_abs ((F.pt i).im)]
       exact pow_le_pow_left₀ hη.le hη' 2
-    calc η ^ 2 * Real.exp (-(σ * T)) ≤ η ^ 2 * F.weight σ i :=
+    calc η ^ (2 : ℕ) * Real.exp (-(σ * T)) ≤ η ^ (2 : ℕ) * F.weight σ i :=
           mul_le_mul_of_nonneg_left hw (sq_nonneg _)
-      _ ≤ (F.pt i).im ^ 2 * F.weight σ i :=
+      _ ≤ (F.pt i).im ^ (2 : ℕ) * F.weight σ i :=
           mul_le_mul_of_nonneg_right hj (F.weight_pos σ i).le
-      _ = F.weight σ i * (F.pt i).im ^ 2 := by ring
-  have hcard : (s.card : ℝ) * (η ^ 2 * Real.exp (-(σ * T))) ≤
-      ∑ i ∈ s, F.weight σ i * (F.pt i).im ^ 2 := by
-    calc (s.card : ℝ) * (η ^ 2 * Real.exp (-(σ * T)))
-        = ∑ _i ∈ s, η ^ 2 * Real.exp (-(σ * T)) := by
+      _ = F.weight σ i * (F.pt i).im ^ (2 : ℕ) := by ring
+  have hcard : (s.card : ℝ) * (η ^ (2 : ℕ) * Real.exp (-(σ * T))) ≤
+      ∑ i ∈ s, F.weight σ i * (F.pt i).im ^ (2 : ℕ) := by
+    calc (s.card : ℝ) * (η ^ (2 : ℕ) * Real.exp (-(σ * T)))
+        = ∑ _i ∈ s, η ^ (2 : ℕ) * Real.exp (-(σ * T)) := by
           rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ ∑ i ∈ s, F.weight σ i * (F.pt i).im ^ 2 := Finset.sum_le_sum hterm
+      _ ≤ ∑ i ∈ s, F.weight σ i * (F.pt i).im ^ (2 : ℕ) := Finset.sum_le_sum hterm
   linarith [hcard, hsub, h]
 
 /-- The energy never exceeds a quarter of the majorant: the displacement bound `|Im α| < 1/2` caps
@@ -337,29 +337,29 @@ theorem energy_le_quarter_traceReal {σ : ℝ} (hσ : 0 < σ) :
   have hw : Summable fun i : ι => F.weight σ i := F.summable_weight hσ
   rw [energy, traceReal, ← tsum_mul_left]
   refine Summable.tsum_le_tsum (fun i => ?_) (F.summable_energyTerm hσ) (hw.mul_left _)
-  have hb : (F.pt i).im ^ 2 ≤ 1 / 4 := by
+  have hb : (F.pt i).im ^ (2 : ℕ) ≤ 1 / 4 := by
     have h := F.abs_im_lt i
     nlinarith [abs_nonneg ((F.pt i).im), sq_abs ((F.pt i).im)]
-  calc F.weight σ i * (F.pt i).im ^ 2 ≤ F.weight σ i * (1 / 4) :=
+  calc F.weight σ i * (F.pt i).im ^ (2 : ℕ) ≤ F.weight σ i * (1 / 4) :=
         mul_le_mul_of_nonneg_left hb (F.weight_pos σ i).le
     _ = 1 / 4 * F.weight σ i := by ring
 
 /-- **The defect is a relative-`σ²` quantity.**  Unconditionally the gap between the trace and its
 majorant is at most `σ²/8` of the majorant. -/
 theorem defect_le_traceReal {σ : ℝ} (hσ : 0 < σ) :
-    F.defect σ ≤ σ ^ 2 / 8 * F.traceReal σ := by
+    F.defect σ ≤ σ ^ (2 : ℕ) / 8 * F.traceReal σ := by
   refine le_trans (F.defect_le_energy hσ) ?_
   have h := F.energy_le_quarter_traceReal hσ
-  have hpos : (0 : ℝ) ≤ σ ^ 2 / 2 := by positivity
-  calc σ ^ 2 / 2 * F.energy σ ≤ σ ^ 2 / 2 * (1 / 4 * F.traceReal σ) :=
+  have hpos : (0 : ℝ) ≤ σ ^ (2 : ℕ) / 2 := by positivity
+  calc σ ^ (2 : ℕ) / 2 * F.energy σ ≤ σ ^ (2 : ℕ) / 2 * (1 / 4 * F.traceReal σ) :=
         mul_le_mul_of_nonneg_left h hpos
-    _ = σ ^ 2 / 8 * F.traceReal σ := by ring
+    _ = σ ^ (2 : ℕ) / 8 * F.traceReal σ := by ring
 
 /-- **The unconditional window.**  The real part of the trace at real time is within a relative
 `σ²/8` of the majorant, with no hypothesis on the family beyond admissibility; reality of the family
 is exactly the assertion that the factor can be taken to be `1`. -/
 theorem traceReal_mul_le_re_traceC {σ : ℝ} (hσ : 0 < σ) :
-    (1 - σ ^ 2 / 8) * F.traceReal σ ≤ (F.traceC (σ : ℂ)).re := by
+    (1 - σ ^ (2 : ℕ) / 8) * F.traceReal σ ≤ (F.traceC (σ : ℂ)).re := by
   have h := F.defect_le_traceReal hσ
   rw [defect] at h
   nlinarith [h]

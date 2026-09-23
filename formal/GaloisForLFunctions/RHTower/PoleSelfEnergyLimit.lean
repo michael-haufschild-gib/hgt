@@ -88,7 +88,7 @@ theorem eulerMascheroniConstant_gt : (0.545 : ℝ) < Real.eulerMascheroniConstan
   have hh : ((harmonic 15 : ℚ) : ℝ) = 1195757 / 360360 := by
     norm_num [harmonic_succ, harmonic_zero]
   have hlog : Real.log ((15 : ℕ) + 1 : ℝ) = 4 * Real.log 2 := by
-    rw [show ((15 : ℕ) + 1 : ℝ) = 2 ^ 4 by norm_num, Real.log_pow]
+    rw [show ((15 : ℕ) + 1 : ℝ) = 2 ^ (4 : ℕ) by norm_num, Real.log_pow]
     push_cast
     ring
   rw [hh, hlog] at h
@@ -121,7 +121,7 @@ theorem log_four_pi_lt : Real.log (4 * Real.pi) < (2.534 : ℝ) := by
       ring
     linarith
   have h4 : Real.log (4 * Real.pi) = 2 * Real.log 2 + Real.log Real.pi := by
-    rw [Real.log_mul (by norm_num) hpi0.ne', show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+    rw [Real.log_mul (by norm_num) hpi0.ne', show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.log_pow]
     push_cast
     ring
   rw [h4]

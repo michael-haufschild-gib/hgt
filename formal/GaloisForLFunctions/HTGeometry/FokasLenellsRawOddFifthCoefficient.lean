@@ -31,8 +31,8 @@ theorem integral_rawFifthIntegrand_oddInitialPart_lower (q : SchwartzMap ℝ ℂ
   have hs := integral_add hi hi.comp_neg
   have he : (fun x : ℝ => (rawFifthIntegrand (oddInitialPart q) 0 (1,0) x).2+
       (rawFifthIntegrand (oddInitialPart q) 0 (1,0) (-x)).2) =
-      fun x : ℝ => (I/12)*((oddInitialPart q x)^4*deriv (oddInitialPart q) x)-
-        (4*I)*((x : ℂ)^2*deriv (oddInitialPart q) x) := by
+      fun x : ℝ => (I/12)*((oddInitialPart q x)^(4 : ℕ)*deriv (oddInitialPart q) x)-
+        (4*I)*((x : ℂ)^(2 : ℕ)*deriv (oddInitialPart q) x) := by
     funext x
     rw [rawFifthIntegrand_oddInitialPart_symmetrization]
     ring

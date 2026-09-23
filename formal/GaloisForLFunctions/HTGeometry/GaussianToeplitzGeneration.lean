@@ -139,18 +139,18 @@ theorem inner_stdBasis_fwdShift_pow (j m n : ℕ) :
   split <;> simp
 
 /-- The Gaussian band coefficients `exp (-π x j ^ 2)`. -/
-noncomputable def gaussKernel (x : ℝ) (j : ℕ) : ℂ :=
+noncomputable def gaussKernelToeplitz (x : ℝ) (j : ℕ) : ℂ :=
   ((Real.exp (-(Real.pi * x * (j : ℝ) ^ 2)) : ℝ) : ℂ)
 
-theorem gaussKernel_ne_zero (x : ℝ) (j : ℕ) : gaussKernel x j ≠ 0 := by
-  simp [gaussKernel]
+theorem gaussKernelToeplitz_ne_zero (x : ℝ) (j : ℕ) : gaussKernelToeplitz x j ≠ 0 := by
+  simp [gaussKernelToeplitz]
 
-theorem norm_gaussKernel (x : ℝ) (j : ℕ) :
-    ‖gaussKernel x j‖ = Real.exp (-(Real.pi * x * (j : ℝ) ^ 2)) := by
-  rw [gaussKernel, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+theorem norm_gaussKernelToeplitz (x : ℝ) (j : ℕ) :
+    ‖gaussKernelToeplitz x j‖ = Real.exp (-(Real.pi * x * (j : ℝ) ^ 2)) := by
+  rw [gaussKernelToeplitz, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
 
-theorem summable_norm_gaussKernel {x : ℝ} (hx : 0 < x) :
-    Summable (fun j : ℕ => ‖gaussKernel x j‖) := by
+theorem summable_norm_gaussKernelToeplitz {x : ℝ} (hx : 0 < x) :
+    Summable (fun j : ℕ => ‖gaussKernelToeplitz x j‖) := by
   have hr : Real.exp (-(Real.pi * x)) < 1 := by
     rw [Real.exp_lt_one_iff]
     have : 0 < Real.pi * x := mul_pos Real.pi_pos hx
@@ -158,7 +158,7 @@ theorem summable_norm_gaussKernel {x : ℝ} (hx : 0 < x) :
   have hgeo : Summable (fun j : ℕ => Real.exp (-(Real.pi * x)) ^ j) :=
     summable_geometric_of_lt_one (le_of_lt (Real.exp_pos _)) hr
   refine hgeo.of_nonneg_of_le (fun j => norm_nonneg _) (fun j => ?_)
-  rw [norm_gaussKernel, ← Real.exp_nat_mul]
+  rw [norm_gaussKernelToeplitz, ← Real.exp_nat_mul]
   refine Real.exp_le_exp.mpr ?_
   have hj : (j : ℝ) ≤ (j : ℝ) ^ 2 := by
     rcases Nat.eq_zero_or_pos j with h | h
@@ -171,26 +171,26 @@ theorem summable_norm_gaussKernel {x : ℝ} (hx : 0 < x) :
 
 
 theorem summable_gaussFwd {x : ℝ} (hx : 0 < x) :
-    Summable (fun j : ℕ => gaussKernel x j • (fwdShift ^ j)) := by
-  refine Summable.of_norm_bounded (summable_norm_gaussKernel hx) (fun j => ?_)
+    Summable (fun j : ℕ => gaussKernelToeplitz x j • (fwdShift ^ j)) := by
+  refine Summable.of_norm_bounded (summable_norm_gaussKernelToeplitz hx) (fun j => ?_)
   rw [norm_smul]
-  calc ‖gaussKernel x j‖ * ‖fwdShift ^ j‖ ≤ ‖gaussKernel x j‖ * 1 :=
+  calc ‖gaussKernelToeplitz x j‖ * ‖fwdShift ^ j‖ ≤ ‖gaussKernelToeplitz x j‖ * 1 :=
         mul_le_mul_of_nonneg_left (norm_pow_le_one norm_fwdShift_le j) (norm_nonneg _)
-    _ = ‖gaussKernel x j‖ := mul_one _
+    _ = ‖gaussKernelToeplitz x j‖ := mul_one _
 
 theorem summable_gaussBack {x : ℝ} (hx : 0 < x) :
-    Summable (fun j : ℕ => gaussKernel x (j + 1) • (backShift ^ (j + 1))) := by
+    Summable (fun j : ℕ => gaussKernelToeplitz x (j + 1) • (backShift ^ (j + 1))) := by
   refine Summable.of_norm_bounded
-    ((summable_nat_add_iff 1).mpr (summable_norm_gaussKernel hx)) (fun j => ?_)
+    ((summable_nat_add_iff 1).mpr (summable_norm_gaussKernelToeplitz hx)) (fun j => ?_)
   rw [norm_smul]
-  calc ‖gaussKernel x (j + 1)‖ * ‖backShift ^ (j + 1)‖ ≤ ‖gaussKernel x (j + 1)‖ * 1 :=
+  calc ‖gaussKernelToeplitz x (j + 1)‖ * ‖backShift ^ (j + 1)‖ ≤ ‖gaussKernelToeplitz x (j + 1)‖ * 1 :=
         mul_le_mul_of_nonneg_left (norm_pow_le_one norm_backShift_le (j + 1)) (norm_nonneg _)
-    _ = ‖gaussKernel x (j + 1)‖ := mul_one _
+    _ = ‖gaussKernelToeplitz x (j + 1)‖ := mul_one _
 
 /-- The Gaussian Toeplitz operator with matrix entries `exp (-π x (m - n) ^ 2)`. -/
 noncomputable def gaussToeplitz (x : ℝ) : L2N →L[ℂ] L2N :=
-  (∑' j : ℕ, gaussKernel x j • (fwdShift ^ j))
-    + (∑' j : ℕ, gaussKernel x (j + 1) • (backShift ^ (j + 1)))
+  (∑' j : ℕ, gaussKernelToeplitz x j • (fwdShift ^ j))
+    + (∑' j : ℕ, gaussKernelToeplitz x (j + 1) • (backShift ^ (j + 1)))
 
 theorem tsum_inner_apply {T : ℕ → L2N →L[ℂ] L2N} (hT : Summable T) (m n : ℕ) :
     ⟪stdBasis m, (∑' j, T j) (stdBasis n)⟫_ℂ
@@ -200,10 +200,10 @@ theorem tsum_inner_apply {T : ℕ → L2N →L[ℂ] L2N} (hT : Summable T) (m n 
   exact (h1.mapL (innerSL ℂ (stdBasis m))).tsum_eq.symm
 
 theorem tsum_entry_fwd (x : ℝ) (m n : ℕ) :
-    ∑' j : ℕ, ⟪stdBasis m, (gaussKernel x j • (fwdShift ^ j)) (stdBasis n)⟫_ℂ
-      = if n ≤ m then gaussKernel x (m - n) else 0 := by
-  have hterm : ∀ j : ℕ, ⟪stdBasis m, (gaussKernel x j • (fwdShift ^ j)) (stdBasis n)⟫_ℂ
-      = gaussKernel x j * (if m = n + j then 1 else 0) := by
+    ∑' j : ℕ, ⟪stdBasis m, (gaussKernelToeplitz x j • (fwdShift ^ j)) (stdBasis n)⟫_ℂ
+      = if n ≤ m then gaussKernelToeplitz x (m - n) else 0 := by
+  have hterm : ∀ j : ℕ, ⟪stdBasis m, (gaussKernelToeplitz x j • (fwdShift ^ j)) (stdBasis n)⟫_ℂ
+      = gaussKernelToeplitz x j * (if m = n + j then 1 else 0) := by
     intro j
     rw [smul_apply, inner_smul_right, inner_stdBasis_fwdShift_pow]
   simp only [hterm]
@@ -215,7 +215,7 @@ theorem tsum_entry_fwd (x : ℝ) (m n : ℕ) :
       rw [if_neg this, mul_zero]
     · rw [if_pos (by omega), mul_one]
   · rw [if_neg h]
-    have hz : ∀ j : ℕ, gaussKernel x j * (if m = n + j then 1 else 0) = 0 := by
+    have hz : ∀ j : ℕ, gaussKernelToeplitz x j * (if m = n + j then 1 else 0) = 0 := by
       intro j
       rw [if_neg (by omega : ¬ (m = n + j)), mul_zero]
     simp [hz]
@@ -223,11 +223,11 @@ theorem tsum_entry_fwd (x : ℝ) (m n : ℕ) :
 
 
 theorem tsum_entry_back (x : ℝ) (m n : ℕ) :
-    ∑' j : ℕ, ⟪stdBasis m, (gaussKernel x (j + 1) • (backShift ^ (j + 1))) (stdBasis n)⟫_ℂ
-      = if m < n then gaussKernel x (n - m) else 0 := by
+    ∑' j : ℕ, ⟪stdBasis m, (gaussKernelToeplitz x (j + 1) • (backShift ^ (j + 1))) (stdBasis n)⟫_ℂ
+      = if m < n then gaussKernelToeplitz x (n - m) else 0 := by
   have hterm : ∀ j : ℕ,
-      ⟪stdBasis m, (gaussKernel x (j + 1) • (backShift ^ (j + 1))) (stdBasis n)⟫_ℂ
-        = gaussKernel x (j + 1) * (if n = m + (j + 1) then 1 else 0) := by
+      ⟪stdBasis m, (gaussKernelToeplitz x (j + 1) • (backShift ^ (j + 1))) (stdBasis n)⟫_ℂ
+        = gaussKernelToeplitz x (j + 1) * (if n = m + (j + 1) then 1 else 0) := by
     intro j
     rw [smul_apply, inner_smul_right, inner_stdBasis_backShift_pow]
   simp only [hterm]
@@ -241,7 +241,7 @@ theorem tsum_entry_back (x : ℝ) (m n : ℕ) :
       congr 1
       omega
   · rw [if_neg h]
-    have hz : ∀ j : ℕ, gaussKernel x (j + 1) * (if n = m + (j + 1) then 1 else 0) = 0 := by
+    have hz : ∀ j : ℕ, gaussKernelToeplitz x (j + 1) * (if n = m + (j + 1) then 1 else 0) = 0 := by
       intro j
       rw [if_neg (by omega : ¬ (n = m + (j + 1))), mul_zero]
     simp [hz]
@@ -253,12 +253,12 @@ theorem inner_stdBasis_gaussToeplitz {x : ℝ} (hx : 0 < x) (m n : ℕ) :
     tsum_inner_apply (summable_gaussFwd hx), tsum_inner_apply (summable_gaussBack hx),
     tsum_entry_fwd, tsum_entry_back]
   by_cases h : n ≤ m
-  · rw [if_pos h, if_neg (by omega : ¬ (m < n)), add_zero, gaussKernel]
+  · rw [if_pos h, if_neg (by omega : ¬ (m < n)), add_zero, gaussKernelToeplitz]
     have hc : ((m - n : ℕ) : ℝ) = (m : ℝ) - (n : ℝ) := by
       have := Nat.cast_sub (R := ℝ) h
       exact this
     rw [hc]
-  · rw [if_neg h, if_pos (by omega : m < n), zero_add, gaussKernel]
+  · rw [if_neg h, if_pos (by omega : m < n), zero_add, gaussKernelToeplitz]
     have hc : ((n - m : ℕ) : ℝ) = (n : ℝ) - (m : ℝ) := by
       have := Nat.cast_sub (R := ℝ) (le_of_lt (by omega : m < n))
       exact this

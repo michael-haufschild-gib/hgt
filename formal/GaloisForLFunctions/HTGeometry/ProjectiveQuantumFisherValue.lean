@@ -14,19 +14,19 @@ speedSq   = <dpsi,dpsi>.
 Removing an arbitrary scalar-phase tangent replaces `speedSq` by
 
 ```text
-speedSq - 2*c*overlap + c^2*mass.
+speedSq - 2*c*overlap + c^(2 : ℕ)*mass.
 ```
 
 The exact quotient-free square completion is
 
 ```text
 mass * shiftedSpeedSq(c)
-  = (mass*speedSq-overlap^2) + (mass*c-overlap)^2.
+  = (mass*speedSq-overlap^(2 : ℕ)) + (mass*c-overlap)^(2 : ℕ).
 ```
 
-Thus the projective tangent value `mass*speedSq-overlap^2` is invariant under scalar-phase
+Thus the projective tangent value `mass*speedSq-overlap^(2 : ℕ)` is invariant under scalar-phase
 gauge, is the minimum after normalization, and is the two-vector Gram determinant.  Dividing it
-by `mass^2` gives the pure-state Fubini--Study value; four times that value is the conventional
+by `mass^(2 : ℕ)` gives the pure-state Fubini--Study value; four times that value is the conventional
 pure-state quantum Fisher information.
 
 This file records only static value identities.  No Hamiltonian evolution or flow premise is
@@ -49,13 +49,13 @@ noncomputable section
 /-- Quotient-free projective tangent value.  It is the determinant of the real two-channel Gram
 value with vacuum mass `mass`, mixed value `overlap`, and tangent energy `speedSq`. -/
 def projectiveQuantumTangentValue (mass overlap speedSq : ℝ) : ℝ :=
-  mass * speedSq - overlap ^ 2
+  mass * speedSq - overlap ^ (2 : ℕ)
 
 /-- A two-channel Robertson/Cauchy--Schwarz bound is exactly nonnegativity of the projective
 tangent value. -/
 theorem projectiveQuantumTangentValue_nonneg
     {mass overlap speedSq : ℝ}
-    (h : overlap ^ 2 ≤ mass * speedSq) :
+    (h : overlap ^ (2 : ℕ) ≤ mass * speedSq) :
     0 ≤ projectiveQuantumTangentValue mass overlap speedSq := by
   unfold projectiveQuantumTangentValue
   linarith
@@ -63,7 +63,7 @@ theorem projectiveQuantumTangentValue_nonneg
 /-- Squared tangent value after subtracting the scalar-phase direction `c`. -/
 def scalarShiftedQuantumTangentValue
     (mass overlap speedSq c : ℝ) : ℝ :=
-  speedSq - 2 * c * overlap + c ^ 2 * mass
+  speedSq - 2 * c * overlap + c ^ (2 : ℕ) * mass
 
 /-- **Projective/Fubini--Study square completion.**  The shifted tangent splits into the
 gauge-invariant projective value and one positive scalar-phase square. -/
@@ -71,7 +71,7 @@ theorem mass_mul_scalarShiftedQuantumTangentValue
     (mass overlap speedSq c : ℝ) :
     mass * scalarShiftedQuantumTangentValue mass overlap speedSq c =
       projectiveQuantumTangentValue mass overlap speedSq +
-        (mass * c - overlap) ^ 2 := by
+        (mass * c - overlap) ^ (2 : ℕ) := by
   unfold scalarShiftedQuantumTangentValue projectiveQuantumTangentValue
   ring
 
@@ -112,9 +112,9 @@ theorem scalarShiftedQuantumTangentValue_canonical
   field_simp [hmass]
   ring
 
-/-- Pure-state quantum Fisher value in the conventional normalization `4 ds_FS^2`. -/
+/-- Pure-state quantum Fisher value in the conventional normalization `4 ds_FS^(2 : ℕ)`. -/
 def pureStateQuantumFisherValue (mass overlap speedSq : ℝ) : ℝ :=
-  4 * projectiveQuantumTangentValue mass overlap speedSq / mass ^ 2
+  4 * projectiveQuantumTangentValue mass overlap speedSq / mass ^ (2 : ℕ)
 
 /-- Nonnegative projective tangent value gives nonnegative pure-state quantum Fisher value. -/
 theorem pureStateQuantumFisherValue_nonneg
@@ -138,7 +138,7 @@ variable [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
 /-- The intrinsic two-vector projective tangent energy.  This is the unnormalised Fubini--Study
 metric numerator and the determinant of the two-vector Gram matrix. -/
 def projectiveGramTangentEnergy (v w : E) : ℝ :=
-  ‖v‖ ^ 2 * ‖w‖ ^ 2 - ‖inner 𝕜 v w‖ ^ 2
+  ‖v‖ ^ (2 : ℕ) * ‖w‖ ^ (2 : ℕ) - ‖inner 𝕜 v w‖ ^ (2 : ℕ)
 
 /-- Every projective Gram tangent energy is nonnegative by Cauchy--Schwarz. -/
 theorem projectiveGramTangentEnergy_nonneg (v w : E) :
@@ -153,14 +153,14 @@ theorem projectiveGramTangentEnergy_nonneg (v w : E) :
 /-- Vector projective energy is the scalar projective value of its three Gram coordinates. -/
 theorem projectiveGramTangentEnergy_eq_value (v w : E) :
     projectiveGramTangentEnergy (𝕜 := 𝕜) v w =
-      projectiveQuantumTangentValue (‖v‖ ^ 2) (‖inner 𝕜 v w‖) (‖w‖ ^ 2) := by
+      projectiveQuantumTangentValue (‖v‖ ^ (2 : ℕ)) (‖inner 𝕜 v w‖) (‖w‖ ^ (2 : ℕ)) := by
   rfl
 
 /-- For unit vectors, projective Gram energy is exactly the squared projective-angle defect used
 by Rayleigh-gap estimates.  This is the normalization-free value specialized to unit mass. -/
 theorem projectiveGramTangentEnergy_eq_unit_projectiveDefect
     {v w : E} (hv : ‖v‖ = 1) (hw : ‖w‖ = 1) :
-    projectiveGramTangentEnergy (𝕜 := 𝕜) v w = 1 - ‖inner 𝕜 v w‖ ^ 2 := by
+    projectiveGramTangentEnergy (𝕜 := 𝕜) v w = 1 - ‖inner 𝕜 v w‖ ^ (2 : ℕ) := by
   simp [projectiveGramTangentEnergy, hv, hw]
 
 variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℂ F]
@@ -172,16 +172,16 @@ theorem projectiveGramTangentEnergy_eq_firstKrylovDeterminant
     (m : ℕ → ℝ) (v : ℕ → F)
     (hgram : ∀ i j, inner ℂ (v i) (v j) = (m (i + j) : ℂ)) :
     projectiveGramTangentEnergy (𝕜 := ℂ) (v 0) (v 1) =
-      m 0 * m 2 - m 1 ^ 2 := by
+      m 0 * m 2 - m 1 ^ (2 : ℕ) := by
   have h00 := hgram 0 0
   have h11 := hgram 1 1
   have h01 : inner ℂ (v 0) (v 1) = (m 1 : ℂ) := by
     simpa using hgram 0 1
   rw [inner_self_eq_norm_sq_to_K] at h00 h11
-  have hv0 : ‖v 0‖ ^ 2 = m 0 := by
+  have hv0 : ‖v 0‖ ^ (2 : ℕ) = m 0 := by
     apply Complex.ofReal_injective
     simpa only [Complex.ofReal_pow, zero_add] using! h00
-  have hv1 : ‖v 1‖ ^ 2 = m 2 := by
+  have hv1 : ‖v 1‖ ^ (2 : ℕ) = m 2 := by
     apply Complex.ofReal_injective
     norm_num at h11 ⊢
     exact h11

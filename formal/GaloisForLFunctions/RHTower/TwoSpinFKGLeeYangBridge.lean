@@ -8,13 +8,13 @@ import GaloisForLFunctions.RHTower.EulerReciprocalLeeYangNoGo
 
 `W_c = [[1, c], [c, 1]]`,
 
-the FKG/log-supermodular cross-product defect is `det W_c = 1 - c^2`.  The existing normalized
-Lee--Yang block is `1 + 2 c z + z^2`, while its Ihara coordinates are `q = 1` and
+the FKG/log-supermodular cross-product defect is `det W_c = 1 - c^(2 : ℕ)`.  The existing normalized
+Lee--Yang block is `1 + 2 c z + z^(2 : ℕ)`, while its Ihara coordinates are `q = 1` and
 `lambda = -2c`.  Hence the following three constraints are literally the same scalar inequality:
 
 * nonnegative two-site FKG defect;
 * every zero of the Lee--Yang block lies on the unit circle;
-* the Ihara spectral bound `lambda^2 <= 4q`.
+* the Ihara spectral bound `lambda^(2 : ℕ) <= 4q`.
 
 This gives the inverse-Ising route a source-facing low-face test: a proposed two-site source packet
 can discharge the finite zero-location hypothesis by proving one determinant inequality.  The
@@ -33,12 +33,12 @@ open GaloisForLFunctions
 /-- The determinant of the normalized zero-field two-spin weight table
 `[[1,c],[c,1]]`.  Nonnegativity is its two-site FKG/log-supermodular condition. -/
 def twoSpinFKGDefect (c : ℝ) : ℝ :=
-  1 - c ^ 2
+  1 - c ^ (2 : ℕ)
 
 /-- An unnormalized symmetric two-spin source block.  `aligned` is the weight of either aligned
 configuration and `disagreement` is the weight of either disagreement configuration. -/
 def symmetricTwoSpinBlock (aligned disagreement : ℝ) (z : ℂ) : ℂ :=
-  aligned + (2 * disagreement : ℝ) * z + aligned * z ^ 2
+  aligned + (2 * disagreement : ℝ) * z + aligned * z ^ (2 : ℕ)
 
 /-- Circle localization for an unnormalized symmetric two-spin source block. -/
 def symmetricTwoSpinCircle (aligned disagreement : ℝ) : Prop :=
@@ -47,7 +47,7 @@ def symmetricTwoSpinCircle (aligned disagreement : ℝ) : Prop :=
 /-- The raw FKG/log-supermodular determinant of the symmetric weight table
 `[[aligned, disagreement], [disagreement, aligned]]`. -/
 def symmetricTwoSpinFKGDefect (aligned disagreement : ℝ) : ℝ :=
-  aligned ^ 2 - disagreement ^ 2
+  aligned ^ (2 : ℕ) - disagreement ^ (2 : ℕ)
 
 /-- A nonzero aligned weight normalizes the raw source block to the existing Lee--Yang block. -/
 theorem symmetricTwoSpinBlock_eq_aligned_mul_leeYangPairBlock
@@ -82,7 +82,7 @@ theorem symmetricTwoSpinCircle_iff_fkgDefect_nonneg
   rw [symmetricTwoSpinCircle_iff_leeYangPairCircle haligned.ne', leeYangPairCircle_iff]
   unfold symmetricTwoSpinFKGDefect
   rw [div_pow]
-  have haligned2 : 0 < aligned ^ 2 := sq_pos_of_pos haligned
+  have haligned2 : 0 < aligned ^ (2 : ℕ) := sq_pos_of_pos haligned
   constructor
   · intro h
     have h' := (div_le_iff₀ haligned2).mp h
@@ -99,7 +99,7 @@ theorem twoSpinFKGDefect_eq_crossProduct (c : ℝ) :
 
 /-- The source-facing FKG determinant inequality is the normalized coefficient chamber. -/
 theorem twoSpinFKGDefect_nonneg_iff (c : ℝ) :
-    0 ≤ twoSpinFKGDefect c ↔ c ^ 2 ≤ 1 := by
+    0 ≤ twoSpinFKGDefect c ↔ c ^ (2 : ℕ) ≤ 1 := by
   unfold twoSpinFKGDefect
   constructor <;> intro h <;> linarith
 
@@ -172,7 +172,7 @@ namespace GaloisForLFunctions.RHTower
 weight, so the earlier Lee--Yang no-go is also a positive-association obstruction. -/
 theorem reciprocalEulerPair_twoSpinFKGDefect_eq {a : ℝ} (ha : a ≠ 0) :
     twoSpinFKGDefect (reciprocalEulerPairCoefficient a) =
-      -((a ^ 2 - 1) ^ 2) / (4 * a ^ 2) := by
+      -((a ^ (2 : ℕ) - 1) ^ (2 : ℕ)) / (4 * a ^ (2 : ℕ)) := by
   unfold twoSpinFKGDefect reciprocalEulerPairCoefficient
   field_simp [ha]
   ring
@@ -184,11 +184,11 @@ theorem reciprocalEulerPair_twoSpinFKGDefect_neg {a : ℝ}
   rw [reciprocalEulerPair_twoSpinFKGDefect_eq ha.ne']
   have hminus : 0 < 1 - a := sub_pos.mpr ha1
   have hplus : 0 < 1 + a := by linarith
-  have hsquare_lt : a ^ 2 < 1 := by
+  have hsquare_lt : a ^ (2 : ℕ) < 1 := by
     nlinarith [mul_pos hminus hplus]
-  have hnum : 0 < (a ^ 2 - 1) ^ 2 := by
+  have hnum : 0 < (a ^ (2 : ℕ) - 1) ^ (2 : ℕ) := by
     exact sq_pos_of_ne_zero (by nlinarith)
-  have hden : 0 < 4 * a ^ 2 := by
+  have hden : 0 < 4 * a ^ (2 : ℕ) := by
     positivity
   exact div_neg_of_neg_of_pos (neg_neg_of_pos hnum) hden
 

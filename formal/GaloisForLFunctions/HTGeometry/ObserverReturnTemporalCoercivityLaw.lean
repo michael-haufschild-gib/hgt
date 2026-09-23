@@ -92,7 +92,7 @@ theorem observerTemporalMetricEnergy_lower_bound
     (hnondegenerate : ObserverTemporalMetricNondegenerate gap) :
     ∃ m : ℝ, 0 < m ∧
       ∀ theta : EuclideanSpace ℝ (Fin τ),
-        m * ‖theta‖ ^ 2 ≤
+        m * ‖theta‖ ^ (2 : ℕ) ≤
           observerTemporalMetricEnergy weight gap (fun k => theta k) := by
   obtain ⟨m, hm, hbound⟩ :=
     posDef_coercive
@@ -101,7 +101,7 @@ theorem observerTemporalMetricEnergy_lower_bound
   refine ⟨m, hm, fun theta => ?_⟩
   rw [observerTemporalMetricEnergy_eq_gramQuadratic]
   have hnorm :
-      (fun k => theta k) ⬝ᵥ (fun k => theta k) = ‖theta‖ ^ 2 := by
+      (fun k => theta k) ⬝ᵥ (fun k => theta k) = ‖theta‖ ^ (2 : ℕ) := by
     rw [← real_inner_self_eq_norm_sq]
     rfl
   rw [← hnorm]
@@ -114,7 +114,7 @@ theorem observerTemporalMetricEnergy_upper_bound
     ∃ M : ℝ, 0 < M ∧
       ∀ theta : EuclideanSpace ℝ (Fin τ),
         observerTemporalMetricEnergy weight gap (fun k => theta k) ≤
-          M * ‖theta‖ ^ 2 := by
+          M * ‖theta‖ ^ (2 : ℕ) := by
   let G := observerTemporalGramMatrix weight gap
   let ε : ℝ := ∑ p : Fin τ, ∑ q : Fin τ, |G p q|
   have hε : 0 ≤ ε := by
@@ -141,17 +141,17 @@ theorem observerTemporalMetricEnergy_upper_bound
   have habs :=
     abs_dotProduct_mulVec_le G hε hentry (fun k => theta k)
   have hnorm :
-      (fun k => theta k) ⬝ᵥ (fun k => theta k) = ‖theta‖ ^ 2 := by
+      (fun k => theta k) ⬝ᵥ (fun k => theta k) = ‖theta‖ ^ (2 : ℕ) := by
     rw [← real_inner_self_eq_norm_sq]
     rfl
   rw [hnorm] at habs
-  have hnormSq : 0 ≤ ‖theta‖ ^ 2 := sq_nonneg _
+  have hnormSq : 0 ≤ ‖theta‖ ^ (2 : ℕ) := sq_nonneg _
   calc
     (fun k => theta k) ⬝ᵥ G *ᵥ (fun k => theta k) ≤
         |(fun k => theta k) ⬝ᵥ G *ᵥ (fun k => theta k)| :=
       le_abs_self _
-    _ ≤ (τ : ℝ) * ε * ‖theta‖ ^ 2 := habs
-    _ ≤ ((τ : ℝ) * ε + 1) * ‖theta‖ ^ 2 := by
+    _ ≤ (τ : ℝ) * ε * ‖theta‖ ^ (2 : ℕ) := habs
+    _ ≤ ((τ : ℝ) * ε + 1) * ‖theta‖ ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_right
         (le_add_of_nonneg_right zero_le_one) hnormSq
 
@@ -164,10 +164,10 @@ theorem observerTemporalMetricEnergy_two_sided_bounds
     (hnondegenerate : ObserverTemporalMetricNondegenerate gap) :
     ∃ m M : ℝ, 0 < m ∧ 0 < M ∧
       ∀ theta : EuclideanSpace ℝ (Fin τ),
-        m * ‖theta‖ ^ 2 ≤
+        m * ‖theta‖ ^ (2 : ℕ) ≤
             observerTemporalMetricEnergy weight gap (fun k => theta k) ∧
           observerTemporalMetricEnergy weight gap (fun k => theta k) ≤
-            M * ‖theta‖ ^ 2 := by
+            M * ‖theta‖ ^ (2 : ℕ) := by
   obtain ⟨m, hm, hlower⟩ :=
     observerTemporalMetricEnergy_lower_bound
       weight gap hweight hnondegenerate
@@ -185,8 +185,8 @@ theorem exists_observerTemporalPrincipalPhaseRadius
         ‖theta‖ < r →
           ∀ j, |observerTemporalCoordinateAction gap
             (fun k => theta k) j| ≤ Real.pi := by
-  let B : ℝ := (∑ j : J, ∑ k : Fin τ, gap j k ^ 2) + 1
-  have hsum : 0 ≤ ∑ j : J, ∑ k : Fin τ, gap j k ^ 2 :=
+  let B : ℝ := (∑ j : J, ∑ k : Fin τ, gap j k ^ (2 : ℕ)) + 1
+  have hsum : 0 ≤ ∑ j : J, ∑ k : Fin τ, gap j k ^ (2 : ℕ) :=
     Finset.sum_nonneg fun j _ =>
       Finset.sum_nonneg fun k _ => sq_nonneg _
   have hB : 0 < B := by
@@ -196,10 +196,10 @@ theorem exists_observerTemporalPrincipalPhaseRadius
   refine ⟨Real.pi / Real.sqrt B, div_pos Real.pi_pos hsqrtB,
     fun theta htheta j => ?_⟩
   have hgap :
-      (∑ k : Fin τ, gap j k ^ 2) ≤ B := by
+      (∑ k : Fin τ, gap j k ^ (2 : ℕ)) ≤ B := by
     have hsingle :
-        (∑ k : Fin τ, gap j k ^ 2) ≤
-          ∑ j' : J, ∑ k : Fin τ, gap j' k ^ 2 :=
+        (∑ k : Fin τ, gap j k ^ (2 : ℕ)) ≤
+          ∑ j' : J, ∑ k : Fin τ, gap j' k ^ (2 : ℕ) :=
       Finset.single_le_sum
         (fun j' _hj' => Finset.sum_nonneg fun k _hk =>
           sq_nonneg (gap j' k))
@@ -207,21 +207,21 @@ theorem exists_observerTemporalPrincipalPhaseRadius
     dsimp [B]
     linarith
   have hnorm :
-      (∑ k : Fin τ, theta k ^ 2) = ‖theta‖ ^ 2 := by
+      (∑ k : Fin τ, theta k ^ (2 : ℕ)) = ‖theta‖ ^ (2 : ℕ) := by
     rw [← real_inner_self_eq_norm_sq]
     rw [EuclideanSpace.inner_eq_star_dotProduct]
     simp [dotProduct, pow_two]
   have hcauchy :
-      observerTemporalCoordinateAction gap (fun k => theta k) j ^ 2 ≤
-        (∑ k : Fin τ, gap j k ^ 2) *
-          ∑ k : Fin τ, theta k ^ 2 := by
+      observerTemporalCoordinateAction gap (fun k => theta k) j ^ (2 : ℕ) ≤
+        (∑ k : Fin τ, gap j k ^ (2 : ℕ)) *
+          ∑ k : Fin τ, theta k ^ (2 : ℕ) := by
     exact Finset.sum_mul_sq_le_sq_mul_sq
       (Finset.univ : Finset (Fin τ))
       (fun k => gap j k) (fun k => theta k)
   rw [hnorm] at hcauchy
   have hmetric :
-      observerTemporalCoordinateAction gap (fun k => theta k) j ^ 2 ≤
-        B * ‖theta‖ ^ 2 := by
+      observerTemporalCoordinateAction gap (fun k => theta k) j ^ (2 : ℕ) ≤
+        B * ‖theta‖ ^ (2 : ℕ) := by
     exact hcauchy.trans
       (mul_le_mul_of_nonneg_right hgap (sq_nonneg ‖theta‖))
   have hmul :
@@ -231,20 +231,20 @@ theorem exists_observerTemporalPrincipalPhaseRadius
       0 ≤ ‖theta‖ * Real.sqrt B :=
     mul_nonneg (norm_nonneg theta) hsqrtB.le
   have hsq :
-      (‖theta‖ * Real.sqrt B) ^ 2 < Real.pi ^ 2 :=
+      (‖theta‖ * Real.sqrt B) ^ (2 : ℕ) < Real.pi ^ (2 : ℕ) :=
     (sq_lt_sq₀ hmulNonneg Real.pi_pos.le).2 hmul
-  have hsqrtSq : (Real.sqrt B) ^ 2 = B :=
+  have hsqrtSq : (Real.sqrt B) ^ (2 : ℕ) = B :=
     Real.sq_sqrt hB.le
   have hactionSq :
-      observerTemporalCoordinateAction gap (fun k => theta k) j ^ 2 <
-        Real.pi ^ 2 := by
+      observerTemporalCoordinateAction gap (fun k => theta k) j ^ (2 : ℕ) <
+        Real.pi ^ (2 : ℕ) := by
     calc
-      observerTemporalCoordinateAction gap (fun k => theta k) j ^ 2 ≤
-          B * ‖theta‖ ^ 2 := hmetric
-      _ = (‖theta‖ * Real.sqrt B) ^ 2 := by
+      observerTemporalCoordinateAction gap (fun k => theta k) j ^ (2 : ℕ) ≤
+          B * ‖theta‖ ^ (2 : ℕ) := hmetric
+      _ = (‖theta‖ * Real.sqrt B) ^ (2 : ℕ) := by
         rw [mul_pow, hsqrtSq]
         ring
-      _ < Real.pi ^ 2 := hsq
+      _ < Real.pi ^ (2 : ℕ) := hsq
   exact ((sq_lt_sq₀ (abs_nonneg _) Real.pi_pos.le).mp
     (by simpa [sq_abs] using hactionSq)).le
 

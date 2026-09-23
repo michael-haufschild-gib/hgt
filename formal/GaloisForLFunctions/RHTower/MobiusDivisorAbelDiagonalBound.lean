@@ -4,13 +4,13 @@ import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorDilationChannels
 # Harmonic bound for the literal Möbius–divisor Abel diagonal
 
 Every actual dilation channel obeys `sqrt d * |C_d(M)| <= 12 M`. Squaring and
-summing gives the unconditional bound `sum C_d(M)^2 <= 144 M^2 sum_(d<=M) 1/d`.
+summing gives the unconditional bound `sum C_d(M)^(2 : ℕ) <= 144 M^(2 : ℕ) sum_(d<=M) 1/d`.
 The proof uses the existing analytic divisor-defect envelope, square-root algebra,
 and finite sums. Exact channel and diagonal successor laws retain the signed mixed
 term responsible for changes of the diagonal. No numerical certificate enters the proof.
 
 This bounds only the diagonal. It does not prove source diagonal dominance
-`(sum C_d(M))^2 <= sum C_d(M)^2`, or any RH-bearing cross-term estimate.
+`(sum C_d(M))^(2 : ℕ) <= sum C_d(M)^(2 : ℕ)`, or any RH-bearing cross-term estimate.
 -/
 
 noncomputable section
@@ -81,22 +81,22 @@ theorem sqrt_mul_abs_mobiusDivisorDilationChannel_le (M d : ℕ) (hd : 1 ≤ d) 
 /-- Unconditional harmonic ceiling for the complete arithmetic diagonal. This does not
 control the signed off-diagonal sum required by source diagonal dominance. -/
 theorem sum_mobiusDivisorDilationChannel_sq_le_harmonic (M : ℕ) :
-    (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d ^ 2) ≤
-      144 * (M : ℝ) ^ 2 * ∑ d ∈ Icc 1 M, (1 : ℝ) / d := by
+    (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d ^ (2 : ℕ)) ≤
+      144 * (M : ℝ) ^ (2 : ℕ) * ∑ d ∈ Icc 1 M, (1 : ℝ) / d := by
   have hpoint (d : ℕ) (hd : d ∈ Icc 1 M) :
-      mobiusDivisorDilationChannel M d ^ 2 ≤ 144 * (M : ℝ) ^ 2 / d := by
+      mobiusDivisorDilationChannel M d ^ (2 : ℕ) ≤ 144 * (M : ℝ) ^ (2 : ℕ) / d := by
     have hd1 := (Finset.mem_Icc.mp hd).1
     have hdpos : (0 : ℝ) < d := by exact_mod_cast (show 0 < d by omega)
     have h := sqrt_mul_abs_mobiusDivisorDilationChannel_le M d hd1
-    have hsq : (d : ℝ) * mobiusDivisorDilationChannel M d ^ 2 ≤ 144 * (M : ℝ) ^ 2 := by
+    have hsq : (d : ℝ) * mobiusDivisorDilationChannel M d ^ (2 : ℕ) ≤ 144 * (M : ℝ) ^ (2 : ℕ) := by
       calc
-        _ = (Real.sqrt d * |mobiusDivisorDilationChannel M d|) ^ 2 := by
+        _ = (Real.sqrt d * |mobiusDivisorDilationChannel M d|) ^ (2 : ℕ) := by
           rw [mul_pow, Real.sq_sqrt (Nat.cast_nonneg d), sq_abs]
-        _ ≤ (12 * (M : ℝ)) ^ 2 := by gcongr
+        _ ≤ (12 * (M : ℝ)) ^ (2 : ℕ) := by gcongr
         _ = _ := by ring
     exact (le_div_iff₀ hdpos).mpr (by simpa [mul_comm] using hsq)
   calc
-    _ ≤ ∑ d ∈ Icc 1 M, 144 * (M : ℝ) ^ 2 / d := Finset.sum_le_sum hpoint
+    _ ≤ ∑ d ∈ Icc 1 M, 144 * (M : ℝ) ^ (2 : ℕ) / d := Finset.sum_le_sum hpoint
     _ = _ := by simp only [div_eq_mul_inv, one_mul, Finset.mul_sum]
 
 
@@ -120,14 +120,14 @@ theorem mobiusDivisorDilationChannel_succ_of_le {M d : ℕ} (hd : 1 ≤ d) (hdM 
 /-- Exact change of the complete arithmetic diagonal. Its signed mixed term is retained;
 nonnegativity of the pointwise squares does not determine the sign of this change. -/
 theorem sum_mobiusDivisorDilationChannel_sq_succ_sub (M : ℕ) :
-    (∑ d ∈ Icc 1 (M + 1), mobiusDivisorDilationChannel (M + 1) d ^ 2) -
-      (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d ^ 2) =
+    (∑ d ∈ Icc 1 (M + 1), mobiusDivisorDilationChannel (M + 1) d ^ (2 : ℕ)) -
+      (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d ^ (2 : ℕ)) =
     2 * (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) *
       (∑ d ∈ Icc 1 M, mobiusDivisorDilationChannel M d *
         (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d))) +
-    (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ 2 *
+    (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ (2 : ℕ) *
       ∑ d ∈ Icc 1 M,
-        (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ 2 := by
+        (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ (2 : ℕ) := by
   have hzero : mobiusDivisorDilationChannel (M + 1) (M + 1) = 0 := by
     simp [mobiusDivisorDilationChannel]
   rw [Finset.sum_Icc_succ_top (show 1 ≤ M + 1 by omega), hzero]
@@ -138,8 +138,8 @@ theorem sum_mobiusDivisorDilationChannel_sq_succ_sub (M : ℕ) :
         (2 * (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) *
           (mobiusDivisorDilationChannel M d *
             (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d))) +
-        (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ 2 *
-          (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ 2) := by
+        (Real.sqrt (M + 1 : ℕ) - Real.sqrt M) ^ (2 : ℕ) *
+          (((ArithmeticFunction.moebius d : ℤ) : ℝ) * primeFreeDivisorDefect (M / d)) ^ (2 : ℕ)) := by
       apply Finset.sum_congr rfl
       intro d hd
       rw [mobiusDivisorDilationChannel_succ_of_le (Finset.mem_Icc.mp hd).1 (Finset.mem_Icc.mp hd).2]

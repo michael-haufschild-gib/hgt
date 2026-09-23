@@ -13,7 +13,7 @@ rigidity theorem.
 
 The coefficient must be used as energy rather than Hilbert amplitude.  Its
 positive square root has nonsummable squared norm, so no vector in the
-cross-prime `ell^2` packet can realize all physical atoms as coordinate
+cross-prime `ell^(2 : ℕ)` packet can realize all physical atoms as coordinate
 energies.  The source-pure `1/(p*q)` packet remains square summable only
 because its Hilbert energy is the square of the physical weight.  Thus the
 remaining source estimate belongs to a singular/cofinal Dirichlet-form

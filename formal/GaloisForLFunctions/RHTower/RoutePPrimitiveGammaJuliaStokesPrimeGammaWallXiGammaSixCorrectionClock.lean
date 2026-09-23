@@ -24,7 +24,7 @@ noncomputable section
 def routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionGap
     (d : ℝ) : ℝ :=
   (routePPrimitiveGammaJuliaStokesPrimeGammaWallProjectiveTwoJet d).re -
-    normalizedPrimeArchMoment 1 / normalizedPrimeArchMoment 0 ^ 2
+    normalizedPrimeArchMoment 1 / normalizedPrimeArchMoment 0 ^ (2 : ℕ)
 
 /-- Positive source clock landing the unit opposite-character Gamma-six curvature on the
 wall--Xi quadratic anomaly. -/
@@ -77,7 +77,7 @@ private theorem sourceHorizontalGammaSixPrimeClockPairedBoundaryEnergy_secondJet
     (lambda : ℝ) :
     deriv (fun t : ℝ =>
       deriv (sourceHorizontalGammaSixPrimeClockPairedBoundaryEnergy lambda) t) 0 =
-        2 * lambda ^ 2 := by
+        2 * lambda ^ (2 : ℕ) := by
   have hderiv :
       (fun t : ℝ =>
         deriv (sourceHorizontalGammaSixPrimeClockPairedBoundaryEnergy lambda) t) =
@@ -108,15 +108,15 @@ theorem iteratedDeriv_routePPrimitiveGammaJuliaStokesPrimeGammaWallXiMalgrangeCo
   have hgap_eq :
       routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionGap d =
         routePPrimitiveGammaJuliaStokesPrimeGammaWallCoherenceExpectation d / 2 -
-          normalizedPrimeArchMoment 1 / normalizedPrimeArchMoment 0 ^ 2 := by
+          normalizedPrimeArchMoment 1 / normalizedPrimeArchMoment 0 ^ (2 : ℕ) := by
     rw [routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionGap,
       routePPrimitiveGammaJuliaStokesPrimeGammaWallProjectiveTwoJet_eq_half_coherence hd0]
     simp
   have hclock_sq :
-      routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionClock d ^ 2 =
-        (normalizedPrimeArchMoment 0 / 2) ^ 2 *
+      routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionClock d ^ (2 : ℕ) =
+        (normalizedPrimeArchMoment 0 / 2) ^ (2 : ℕ) *
           (routePPrimitiveGammaJuliaStokesPrimeGammaWallCoherenceExpectation d / 2 -
-            normalizedPrimeArchMoment 1 / normalizedPrimeArchMoment 0 ^ 2) := by
+            normalizedPrimeArchMoment 1 / normalizedPrimeArchMoment 0 ^ (2 : ℕ)) := by
     rw [routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionClock,
       mul_pow, hsqrt, hgap_eq]
   rw [sourceHorizontalGammaSixPrimeClockPairedBoundaryEnergy_secondJet,
@@ -140,8 +140,8 @@ theorem routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionClock_e
     iteratedDeriv_routePPrimitiveGammaJuliaStokesPrimeGammaWallXiMalgrangeCorrectionLog_two_eq_gammaSixCorrectionEnergy_secondJet
       hd,
     sourceHorizontalGammaSixPrimeClockPairedBoundaryEnergy_secondJet] at hmatch
-  have hsquares : 2 * lambda ^ 2 =
-      2 * routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionClock d ^ 2 :=
+  have hsquares : 2 * lambda ^ (2 : ℕ) =
+      2 * routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionClock d ^ (2 : ℕ) :=
     Complex.ofReal_injective hmatch
   have hclock :=
     routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionClock_pos hd
@@ -228,7 +228,7 @@ theorem iteratedDeriv_routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCor
     (d : ℝ) :
     iteratedDeriv 2
         (routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionLog d) 0 =
-      2 * (routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionClock d : ℂ) ^ 2 := by
+      2 * (routePPrimitiveGammaJuliaStokesPrimeGammaWallXiGammaSixCorrectionClock d : ℂ) ^ (2 : ℕ) := by
   rw [show (2 : ℕ) = 1 + 1 by norm_num, iteratedDeriv_succ', iteratedDeriv_one]
   have hderiv :
       (fun z : ℂ =>

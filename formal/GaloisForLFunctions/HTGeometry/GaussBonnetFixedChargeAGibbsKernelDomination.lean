@@ -51,14 +51,14 @@ theorem egbFixedChargeAGibbsKernel_dominated (w φ : ℝ) :
   have hLabs : |L| ≤ 5 := abs_le.mpr ⟨hLlo.le, hLhi.le⟩
   have hRabs : |R| ≤ 1 := abs_le.mpr ⟨hRlo.le, hRhi.le⟩
   have hcabs : |c| ≤ 1 := abs_le.mpr hc
-  have hcsq : c ^ 2 ≤ 1 := by
+  have hcsq : c ^ (2 : ℕ) ≤ 1 := by
     nlinarith [mul_nonneg (show 0 ≤ 1 - c by linarith [hc.2]) (show 0 ≤ c + 1 by linarith [hc.1])]
-  have hcpoly : |c ^ 2 - 1| ≤ 1 := by
+  have hcpoly : |c ^ (2 : ℕ) - 1| ≤ 1 := by
     apply abs_le.mpr
     constructor <;> nlinarith [sq_nonneg c]
-  have hterm1 : |N * d * c ^ 2| ≤ 4 := by
+  have hterm1 : |N * d * c ^ (2 : ℕ)| ≤ 4 := by
     calc
-      _ = (|N| * |d|) * c ^ 2 := by rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg c)]
+      _ = (|N| * |d|) * c ^ (2 : ℕ) := by rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg c)]
       _ ≤ (4 * 1) * 1 := mul_le_mul (mul_le_mul hNabs hdabs (abs_nonneg d) (by norm_num)) hcsq (sq_nonneg c) (by norm_num)
       _ = _ := by norm_num
   have hterm2 : |L * c| ≤ 5 := by
@@ -67,16 +67,16 @@ theorem egbFixedChargeAGibbsKernel_dominated (w φ : ℝ) :
       _ ≤ 5 * 1 := mul_le_mul hLabs hcabs (abs_nonneg c) (by norm_num)
       _ = _ := by norm_num
   have hpoly : |egbFixedChargeABarrierPolynomial τ φ c| ≤ 10 := by
-    change |N * d * c ^ 2 + L * c + R| ≤ 10
+    change |N * d * c ^ (2 : ℕ) + L * c + R| ≤ 10
     calc
-      _ ≤ |N * d * c ^ 2 + L * c| + |R| := abs_add_le _ _
-      _ ≤ (|N * d * c ^ 2| + |L * c|) + |R| := add_le_add (abs_add_le _ _) le_rfl
+      _ ≤ |N * d * c ^ (2 : ℕ) + L * c| + |R| := abs_add_le _ _
+      _ ≤ (|N * d * c ^ (2 : ℕ)| + |L * c|) + |R| := add_le_add (abs_add_le _ _) le_rfl
       _ ≤ (4 + 5) + 1 := add_le_add (add_le_add hterm1 hterm2) hRabs
       _ = _ := by norm_num
-  have hnum : |m * (c ^ 2 - 1) * egbFixedChargeABarrierPolynomial τ φ c| ≤
+  have hnum : |m * (c ^ (2 : ℕ) - 1) * egbFixedChargeABarrierPolynomial τ φ c| ≤
       10 * (egbFixedChargeACriticalRadius w φ + 1) := by
     calc
-      _ = (|m| * |c ^ 2 - 1|) * |egbFixedChargeABarrierPolynomial τ φ c| := by simp only [abs_mul]
+      _ = (|m| * |c ^ (2 : ℕ) - 1|) * |egbFixedChargeABarrierPolynomial τ φ c| := by simp only [abs_mul]
       _ ≤ ((egbFixedChargeACriticalRadius w φ + 1) * 1) * 10 :=
         mul_le_mul (mul_le_mul hmabs hcpoly (abs_nonneg _) (by positivity))
           hpoly (abs_nonneg _) (by positivity)
@@ -85,24 +85,24 @@ theorem egbFixedChargeAGibbsKernel_dominated (w φ : ℝ) :
     have hscale := (egbFixedChargeAInteriorScale_mapsTo τ hu).1
     change 1 - d ≤ 1 + d * c at hscale
     linarith
-  have hs2 : 1 / 4 ≤ (1 + d * c) ^ 2 := by nlinarith [sq_nonneg (1 + d * c - 1 / 2)]
-  have hbase : 8 ≤ 2 * D * (1 + d ^ 2) := by
+  have hs2 : 1 / 4 ≤ (1 + d * c) ^ (2 : ℕ) := by nlinarith [sq_nonneg (1 + d * c - 1 / 2)]
+  have hbase : 8 ≤ 2 * D * (1 + d ^ (2 : ℕ)) := by
     calc
       _ = 8 * 1 := by ring
-      _ ≤ (2 * D) * (1 + d ^ 2) := mul_le_mul (by linarith) (by nlinarith [sq_nonneg d]) (by norm_num) (by linarith)
-  have hden2 : 2 ≤ 2 * D * (1 + d ^ 2) * (1 + d * c) ^ 2 := by
+      _ ≤ (2 * D) * (1 + d ^ (2 : ℕ)) := mul_le_mul (by linarith) (by nlinarith [sq_nonneg d]) (by norm_num) (by linarith)
+  have hden2 : 2 ≤ 2 * D * (1 + d ^ (2 : ℕ)) * (1 + d * c) ^ (2 : ℕ) := by
     calc
       _ = 8 * (1 / 4) := by norm_num
       _ ≤ _ := mul_le_mul hbase hs2 (by norm_num) (by nlinarith)
-  have hdenpos : 0 < 2 * D * (1 + d ^ 2) * (1 + d * c) ^ 2 := by linarith
-  change |(m * (c ^ 2 - 1) * egbFixedChargeABarrierPolynomial τ φ c) /
-      (2 * D * (1 + d ^ 2) * (1 + d * c) ^ 2)| ≤ _
+  have hdenpos : 0 < 2 * D * (1 + d ^ (2 : ℕ)) * (1 + d * c) ^ (2 : ℕ) := by linarith
+  change |(m * (c ^ (2 : ℕ) - 1) * egbFixedChargeABarrierPolynomial τ φ c) /
+      (2 * D * (1 + d ^ (2 : ℕ)) * (1 + d * c) ^ (2 : ℕ))| ≤ _
   rw [abs_div, abs_of_pos hdenpos]
   apply (div_le_iff₀ hdenpos).2
   calc
     _ ≤ 10 * (egbFixedChargeACriticalRadius w φ + 1) := hnum
     _ ≤ _ := by
-      have hp := mul_le_mul_of_nonneg_left (show 1 ≤ 2 * D * (1 + d ^ 2) * (1 + d * c) ^ 2 by linarith)
+      have hp := mul_le_mul_of_nonneg_left (show 1 ≤ 2 * D * (1 + d ^ (2 : ℕ)) * (1 + d * c) ^ (2 : ℕ) by linarith)
         (show 0 ≤ 10 * (egbFixedChargeACriticalRadius w φ + 1) by positivity)
       simpa only [mul_one] using hp
 

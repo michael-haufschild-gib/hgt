@@ -154,13 +154,13 @@ theorem deriv_etaPair_auxiliary_ne_zero : deriv etaPair pairedEtaAuxiliaryPoint 
 /-- The actual paired eta series has no global analytic square root on `rightHalf`. -/
 theorem not_exists_analytic_etaPair_squareRoot_rightHalf :
     ¬ ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g rightHalf ∧
-      ∀ s ∈ rightHalf, g s ^ 2 = etaPair s := by
+      ∀ s ∈ rightHalf, g s ^ (2 : ℕ) = etaPair s := by
   rintro ⟨g, hg, hsq⟩
   have hp : pairedEtaAuxiliaryPoint ∈ rightHalf := by
     rw [mem_rightHalf, pairedEtaAuxiliaryPoint_re]; norm_num
   have hg0 : g pairedEtaAuxiliaryPoint = 0 :=
     (pow_eq_zero_iff (by norm_num : 2 ≠ 0)).mp (by rw [hsq _ hp, etaPair_auxiliary_zero])
-  have heq : (fun s => g s ^ 2) =ᶠ[𝓝 pairedEtaAuxiliaryPoint] etaPair := by
+  have heq : (fun s => g s ^ (2 : ℕ)) =ᶠ[𝓝 pairedEtaAuxiliaryPoint] etaPair := by
     filter_upwards [isOpen_rightHalf.mem_nhds hp] with s hs
     exact hsq s hs
   have h := (hg _ hp).differentiableAt.hasDerivAt.pow 2

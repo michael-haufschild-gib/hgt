@@ -53,14 +53,14 @@ theorem compactPulseContact_profile (q : XiZeroCopy) (a b : ℂ) (u : ℝ) (z : 
       responseProfileFirst (physicalRate q branch) (amp branch) r*fullAngularCovector q branch j z+
         profileFirst (physicalRate q branch) (amp branch) r*fullSquareCovector q j z
     let P := fun branch j =>
-      2*power (2*physicalRate q branch) (1+u)*(amp branch)^2/((u:ℂ)*(1+(u:ℂ)))*
+      2*power (2*physicalRate q branch) (1+u)*(amp branch)^(2 : ℕ)/((u:ℂ)*(1+(u:ℂ)))*
         (((2*physicalRate q branch+1)*(u:ℂ)+1)*fullAngularCovector q branch j z-
-          physicalRate q branch*(physicalRate q branch-1)/4*(u:ℂ)^2*
+          physicalRate q branch*(physicalRate q branch-1)/4*(u:ℂ)^(2 : ℕ)*
             ((2*physicalRate q branch+3)*(u:ℂ)+3)*fullSquareCovector q j z)
     let B := (∑ j : Fin 2,
-      ((((r:ℂ)^2-1)*D true j+2*physicalRate q true*A true j)*P false j-
-        (((r:ℂ)^2-1)*D false j+2*physicalRate q false*A false j)*P true j))/(r:ℂ)^2
-    let C := (∑ j : Fin 2, (A true j*P false j-A false j*P true j))/(r:ℂ)^2
+      ((((r:ℂ)^(2 : ℕ)-1)*D true j+2*physicalRate q true*A true j)*P false j-
+        (((r:ℂ)^(2 : ℕ)-1)*D false j+2*physicalRate q false*A false j)*P true j))/(r:ℂ)^(2 : ℕ)
+    let C := (∑ j : Fin 2, (A true j*P false j-A false j*P true j))/(r:ℂ)^(2 : ℕ)
     ∀ v, compactPulseContact q a b v u z =
       horizonProfile 0 B C v*Complex.exp (-6*(v:ℂ)) := by
   intro r amp A D P B C v
@@ -71,7 +71,7 @@ theorem compactPulseContact_profile (q : XiZeroCopy) (a b : ℂ) (u : ℝ) (z : 
     simp only [physicalRate,Bool.false_eq_true,↓reduceIte]
     ring
   simp only [compactPulseContact,incoming_time_coefficient,incoming_radial_coefficient]
-  let f : ℂ := (r:ℂ)^2-1
+  let f : ℂ := (r:ℂ)^(2 : ℕ)-1
   let dχ : ℂ := ((deriv Real.smoothTransition v:ℝ):ℂ)
   change (∑ j : Fin 2,
     ((f*(D true j*timeOnset (2*physicalRate q true) v)+
@@ -79,7 +79,7 @@ theorem compactPulseContact_profile (q : XiZeroCopy) (a b : ℂ) (u : ℝ) (z : 
       (P false j*dχ*Complex.exp (2*physicalRate q false*(v:ℂ))) -
     (f*(D false j*timeOnset (2*physicalRate q false) v)+
         A false j*timeOnsetFirst (2*physicalRate q false) v)*
-      (P true j*dχ*Complex.exp (2*physicalRate q true*(v:ℂ))))) / (r:ℂ)^2 =
+      (P true j*dχ*Complex.exp (2*physicalRate q true*(v:ℂ))))) / (r:ℂ)^(2 : ℕ) =
     horizonProfile 0 B C v*Complex.exp (-6*(v:ℂ))
   dsimp only [B,C,f,dχ]
   simp only [timeOnset,timeOnsetFirst,horizonProfile,Fin.sum_univ_two]

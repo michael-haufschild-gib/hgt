@@ -55,12 +55,12 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 
 /-- The quadratic form of a bounded operator is controlled by its norm. -/
 theorem quadratic_form_le_norm_mul_sq (T : E →L[ℂ] E) (x : E) :
-    ‖(inner ℂ (T x) x : ℂ)‖ ≤ ‖T‖ * ‖x‖ ^ 2 := by
+    ‖(inner ℂ (T x) x : ℂ)‖ ≤ ‖T‖ * ‖x‖ ^ (2 : ℕ) := by
   calc ‖(inner ℂ (T x) x : ℂ)‖ ≤ ‖T x‖ * ‖x‖ := norm_inner_le_norm _ _
     _ ≤ (‖T‖ * ‖x‖) * ‖x‖ := by
         have := T.le_opNorm x
         nlinarith [norm_nonneg x, norm_nonneg (T x)]
-    _ = ‖T‖ * ‖x‖ ^ 2 := by ring
+    _ = ‖T‖ * ‖x‖ ^ (2 : ℕ) := by ring
 
 end Form
 

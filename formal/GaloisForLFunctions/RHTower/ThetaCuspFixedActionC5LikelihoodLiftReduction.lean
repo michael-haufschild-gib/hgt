@@ -19,7 +19,7 @@ The exact atom-plus-likelihood action is differentiated in the centre and identi
 intrinsic completed-source transport.  More importantly, the complete third likelihood channel is
 proved quantitatively favorable: it adds
 
-  t^2 * (completed first jet * positive centre jet
+  t^(2 : ℕ) * (completed first jet * positive centre jet
     - negative third likelihood jet * positive centre-action jet)
 
 to velocity-slope transport.  The support gap forces its mixed second-centre jet to exceed six
@@ -80,10 +80,10 @@ theorem two_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jet
   have hk : 2 * v < k := by
     simpa only [v, k] using
       two_mul_thetaCuspLikelihoodVariance_lt_thirdCumulant_coordinate hx
-  have hk' : A ^ 2 * (2 * v) < A ^ 2 * k :=
+  have hk' : A ^ (2 : ℕ) * (2 * v) < A ^ (2 : ℕ) * k :=
     mul_lt_mul_of_pos_left hk (sq_pos_of_pos hA0)
   have hbracket :
-      0 < A ^ 2 * (k - v) - 3 * A * v + A * m + m := by
+      0 < A ^ (2 : ℕ) * (k - v) - 3 * A * v + A * m + m := by
     have hgap : 0 < A * v * (A - 3) := by positivity
     nlinarith
   unfold thetaCuspLikelihoodSourceLogPartitionJetTwo
@@ -115,9 +115,9 @@ theorem three_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_j
   have hk : 2 * v < k := by
     simpa only [v, k] using
       two_mul_thetaCuspLikelihoodVariance_lt_thirdCumulant_coordinate hx
-  have hk' : A ^ 3 * (2 * v) < A ^ 3 * k :=
+  have hk' : A ^ (3 : ℕ) * (2 * v) < A ^ (3 : ℕ) * k :=
     mul_lt_mul_of_pos_left hk (pow_pos hA0 3)
-  have hgap : 0 ≤ A ^ 2 * v * (A - 6) := by positivity
+  have hgap : 0 ≤ A ^ (2 : ℕ) * v * (A - 6) := by positivity
   unfold thetaCuspLikelihoodSourceLogPartitionJetTwo
     thetaCuspLikelihoodSourceLogPartitionJetThree
   dsimp only [A, m, v, k] at hscale hA0 hm hv hk hk' hgap ⊢
@@ -580,7 +580,7 @@ theorem thetaCuspReflectedLikelihoodCumulantActionJetHierarchy
     -thetaCuspReflectedLikelihoodCumulantAction u t <
         t * (-thetaCuspReflectedLikelihoodCumulantJetOne u t) ∧
       t * (-thetaCuspReflectedLikelihoodCumulantJetOne u t) ≤
-        t ^ 2 * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) := by
+        t ^ (2 : ℕ) * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) := by
   refine ⟨neg_thetaCuspReflectedLikelihoodCumulantAction_lt_mul_neg_jetOne ht htu, ?_⟩
   have hjet := neg_thetaCuspReflectedLikelihoodCumulantJetOne_le_mul_neg_jetTwo ht htu
   have hmul := mul_le_mul_of_nonneg_left hjet ht.le
@@ -594,7 +594,7 @@ theorem c5LikelihoodLowerJetSingleMasterReduction
     {u t : ℝ} (ht : 0 < t) (htu : t ≤ u) :
     0 < -thetaCuspReflectedLikelihoodCumulantJetTwo u t ∧
       -thetaCuspReflectedLikelihoodCumulantAction u t <
-        t ^ 2 * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) ∧
+        t ^ (2 : ℕ) * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) ∧
       -thetaCuspReflectedLikelihoodCumulantJetOne u t ≤
         t * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) ∧
       0 < c5LikelihoodScaleActionJetOne u t ∧
@@ -607,7 +607,7 @@ theorem c5LikelihoodLowerJetSingleMasterReduction
   have hhier := thetaCuspReflectedLikelihoodCumulantActionJetHierarchy ht htu
   have hjet := neg_thetaCuspReflectedLikelihoodCumulantJetOne_le_mul_neg_jetTwo ht htu
   have haction : -thetaCuspReflectedLikelihoodCumulantAction u t <
-      t ^ 2 * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) :=
+      t ^ (2 : ℕ) * (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) :=
     lt_of_lt_of_le hhier.1 hhier.2
   have hspos := c5LikelihoodScaleActionJetOne_pos ht htu
   have hmpos := c5LikelihoodScaleMixedJetOne_pos ht htu
@@ -658,7 +658,7 @@ def c5CompletedVelocitySlopeCenterNumerator (u t : ℝ) : ℝ :=
   let s := c5CompletedScaleActionJetOne u t
   let m := c5CompletedScaleMixedJetOne u t
   let n := c5CompletedScaleMixedJetTwo u t
-  a * (t * m + t ^ 2 * n) - (a + 3 * t * b + t ^ 2 * c) * s
+  a * (t * m + t ^ (2 : ℕ) * n) - (a + 3 * t * b + t ^ (2 : ℕ) * c) * s
 
 /-- Completed transport with only third likelihood channel removed. -/
 def c5CompletedVelocitySlopeLowerJetNumerator (u t : ℝ) : ℝ :=
@@ -670,7 +670,7 @@ def c5CompletedVelocitySlopeLowerJetNumerator (u t : ℝ) : ℝ :=
   let s := c5CompletedScaleActionJetOne u t
   let m := c5CompletedScaleMixedJetOne u t
   let n₀ := c5SingleAtomScaleMixedJetTwo A z
-  a * (t * m + t ^ 2 * n₀) - (a + 3 * t * b + t ^ 2 * c₀) * s
+  a * (t * m + t ^ (2 : ℕ) * n₀) - (a + 3 * t * b + t ^ (2 : ℕ) * c₀) * s
 
 /-- Completed first action jet stays positive in open same-half-line chamber. -/
 theorem c5CompletedActionJetOne_pos
@@ -724,7 +724,7 @@ theorem c5CompletedVelocitySlopeLowerJetNumerator_lt
   have haν : 0 < a * ν := mul_pos ha hν
   have hγs : γ * s < 0 := mul_neg_of_neg_of_pos hγ hs
   have hinner : 0 < a * ν - γ * s := by linarith
-  have hgain : 0 < t ^ 2 * (a * ν - γ * s) :=
+  have hgain : 0 < t ^ (2 : ℕ) * (a * ν - γ * s) :=
     mul_pos (sq_pos_of_pos ht) hinner
   unfold c5CompletedVelocitySlopeCenterNumerator
     c5CompletedVelocitySlopeLowerJetNumerator
@@ -737,7 +737,7 @@ curvature units inside completed velocity-slope transport. -/
 theorem six_mul_masterCurvature_lt_completedVelocitySlopeGain
     {u t : ℝ} (ht : 0 < t) (htu : t < u)
     (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u) :
-    6 * t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t *
+    6 * t ^ (2 : ℕ) * thetaCuspCompletedReflectedCumulantJetOne u t *
         (-thetaCuspReflectedLikelihoodCumulantJetTwo u t) <
       c5CompletedVelocitySlopeCenterNumerator u t -
         c5CompletedVelocitySlopeLowerJetNumerator u t := by
@@ -771,7 +771,7 @@ theorem six_mul_masterCurvature_lt_completedVelocitySlopeGain
 theorem adaptiveMasterCurvature_lt_completedVelocitySlopeGain
     {u t : ℝ} (ht : 0 < t) (htu : t < u)
     (hscale : 6 ≤ thetaCuspSingleAtomReflectionScale 1 u) :
-    t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t *
+    t ^ (2 : ℕ) * thetaCuspCompletedReflectedCumulantJetOne u t *
         c5LikelihoodAdaptiveMasterCurvature u t <
       c5CompletedVelocitySlopeCenterNumerator u t -
         c5CompletedVelocitySlopeLowerJetNumerator u t := by
@@ -819,13 +819,13 @@ def c5CompletedLowerJetCompensationMargin (u t : ℝ) : ℝ :=
 back.  Positivity of this sharper margin is sufficient for literal direct-J orientation. -/
 def c5CompletedMasterReservedCompensationMargin (u t : ℝ) : ℝ :=
   c5CompletedLowerJetCompensationMargin u t +
-    30 * t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t *
+    30 * t ^ (2 : ℕ) * thetaCuspCompletedReflectedCumulantJetOne u t *
       (-thetaCuspReflectedLikelihoodCumulantJetTwo u t)
 
 /-- Sharp adaptive support-gap reserve put back into the lower-jet compensation margin. -/
 def c5CompletedAdaptiveReservedCompensationMargin (u t : ℝ) : ℝ :=
   c5CompletedLowerJetCompensationMargin u t +
-    5 * t ^ 2 * thetaCuspCompletedReflectedCumulantJetOne u t *
+    5 * t ^ (2 : ℕ) * thetaCuspCompletedReflectedCumulantJetOne u t *
       c5LikelihoodAdaptiveMasterCurvature u t
 
 /-- Lower-jet margin is strict lower bound for literal completed compensation. -/

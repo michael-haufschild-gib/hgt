@@ -40,11 +40,11 @@ theorem adjacentCriticalFeatureEvaluationDet_eq
     (t : ℝ) (z : ℂ) (hz : |z.im| < 1 / 2) :
     adjacentCriticalFeatureEvaluationDet t z hz =
       (-16 : ℂ) * I * z.im *
-        (1 - z.im ^ 2 - (z.re - t) * (z.re - (t + 1))) /
-        ((1 + (z - (t : ℂ)) ^ 2) *
-          (1 + ((starRingEnd ℂ) z - (t : ℂ)) ^ 2) *
-          (1 + (z - ((t + 1 : ℝ) : ℂ)) ^ 2) *
-          (1 + ((starRingEnd ℂ) z - ((t + 1 : ℝ) : ℂ)) ^ 2)) := by
+        (1 - z.im ^ (2 : ℕ) - (z.re - t) * (z.re - (t + 1))) /
+        ((1 + (z - (t : ℂ)) ^ (2 : ℕ)) *
+          (1 + ((starRingEnd ℂ) z - (t : ℂ)) ^ (2 : ℕ)) *
+          (1 + (z - ((t + 1 : ℝ) : ℂ)) ^ (2 : ℕ)) *
+          (1 + ((starRingEnd ℂ) z - ((t + 1 : ℝ) : ℂ)) ^ (2 : ℕ))) := by
   let hzc : |((starRingEnd ℂ) z).im| < 1 / 2 := by simpa using hz
   have htz := criticalFeatureKernelDenominator_ne_zero
     (w := (t : ℂ)) (z := z) (by norm_num) hz
@@ -61,12 +61,12 @@ theorem adjacentCriticalFeatureEvaluationDet_eq
     criticalEvaluation_criticalFeature_eq (by norm_num) hz]
   simp only [Complex.conj_ofReal]
   have hnum :
-      (1 + ((starRingEnd ℂ) z - (t : ℂ)) ^ 2) *
-          (1 + (z - ((t + 1 : ℝ) : ℂ)) ^ 2) -
-        (1 + (z - (t : ℂ)) ^ 2) *
-          (1 + ((starRingEnd ℂ) z - ((t + 1 : ℝ) : ℂ)) ^ 2) =
+      (1 + ((starRingEnd ℂ) z - (t : ℂ)) ^ (2 : ℕ)) *
+          (1 + (z - ((t + 1 : ℝ) : ℂ)) ^ (2 : ℕ)) -
+        (1 + (z - (t : ℂ)) ^ (2 : ℕ)) *
+          (1 + ((starRingEnd ℂ) z - ((t + 1 : ℝ) : ℂ)) ^ (2 : ℕ)) =
         (-4 : ℂ) * I * z.im *
-          (1 - z.im ^ 2 - (z.re - t) * (z.re - (t + 1))) := by
+          (1 - z.im ^ (2 : ℕ) - (z.re - t) * (z.re - (t + 1))) := by
     apply Complex.ext <;>
       simp [Complex.mul_re, Complex.mul_im, pow_two] <;>
       ring
@@ -79,8 +79,8 @@ theorem adjacentCriticalFeatureEvaluationDet_eq
 theorem adjacentCriticalFeatureNumerator_pos_of_abs_sub_le_half
     (t : ℝ) {z : ℂ} (hz : |z.im| < 1 / 2)
     (ht : |z.re - t| ≤ 1 / 2) :
-    0 < 1 - z.im ^ 2 - (z.re - t) * (z.re - (t + 1)) := by
-  have him2 : z.im ^ 2 < 1 / 4 := by
+    0 < 1 - z.im ^ (2 : ℕ) - (z.re - t) * (z.re - (t + 1)) := by
+  have him2 : z.im ^ (2 : ℕ) < 1 / 4 := by
     have hsq := (sq_lt_sq₀ (abs_nonneg z.im)
       (by norm_num : (0 : ℝ) ≤ 1 / 2)).2 hz
     rw [sq_abs] at hsq
@@ -130,8 +130,8 @@ def reflectedPairBlockDet (a b : ℂ) : ℝ :=
   let x1 := b.re
   let y0 := a.im
   let y1 := b.im
-  (2 * (x0 ^ 2 - y0 ^ 2)) * (2 * (x1 ^ 2 - y1 ^ 2)) -
-    (2 * (x0 * x1 - y0 * y1)) ^ 2
+  (2 * (x0 ^ (2 : ℕ) - y0 ^ (2 : ℕ))) * (2 * (x1 ^ (2 : ℕ) - y1 ^ (2 : ℕ))) -
+    (2 * (x0 * x1 - y0 * y1)) ^ (2 : ℕ)
 
 /-- Oriented real area of two complex coordinates. -/
 def complexPairArea (a b : ℂ) : ℝ :=
@@ -139,7 +139,7 @@ def complexPairArea (a b : ℂ) : ℝ :=
 
 /-- Reflected pair-block determinant is minus four times squared coordinate area. -/
 theorem reflectedPairBlockDet_eq (a b : ℂ) :
-    reflectedPairBlockDet a b = -4 * complexPairArea a b ^ 2 := by
+    reflectedPairBlockDet a b = -4 * complexPairArea a b ^ (2 : ℕ) := by
   rw [reflectedPairBlockDet, complexPairArea]
   ring
 
@@ -207,19 +207,19 @@ theorem reflectedPairBlockDet_adjacentCriticalFeature_neg
 
 /-- Quadratic form of the real symmetric reflected pair block. -/
 def reflectedPairBlockQuadratic (a b : ℂ) (u v : ℝ) : ℝ :=
-  2 * ((a.re * u + b.re * v) ^ 2 - (a.im * u + b.im * v) ^ 2)
+  2 * ((a.re * u + b.re * v) ^ (2 : ℕ) - (a.im * u + b.im * v) ^ (2 : ℕ))
 
 /-- Vector perpendicular to the imaginary part has positive reflected-pair value. -/
 theorem reflectedPairBlockQuadratic_positiveWitness (a b : ℂ) :
     reflectedPairBlockQuadratic a b b.im (-a.im) =
-      2 * complexPairArea a b ^ 2 := by
+      2 * complexPairArea a b ^ (2 : ℕ) := by
   rw [reflectedPairBlockQuadratic, complexPairArea]
   ring
 
 /-- Vector perpendicular to the real part has negative reflected-pair value. -/
 theorem reflectedPairBlockQuadratic_negativeWitness (a b : ℂ) :
     reflectedPairBlockQuadratic a b b.re (-a.re) =
-      -2 * complexPairArea a b ^ 2 := by
+      -2 * complexPairArea a b ^ (2 : ℕ) := by
   rw [reflectedPairBlockQuadratic, complexPairArea]
   ring
 
@@ -246,7 +246,7 @@ theorem criticalEvaluation_realCriticalFeature_im_eq_zero_of_im_eq_zero
     (criticalEvaluation z hz
       (criticalFeature (t : ℂ) (by norm_num))).im = 0 := by
   rw [criticalEvaluation_criticalFeature_eq (by norm_num) hz]
-  have hdenIm : (1 + (z - (t : ℂ)) ^ 2).im = 0 := by
+  have hdenIm : (1 + (z - (t : ℂ)) ^ (2 : ℕ)).im = 0 := by
     simp [pow_two, Complex.mul_im, hzim]
   rw [div_eq_mul_inv, Complex.mul_im, Complex.inv_im]
   simp [hdenIm]

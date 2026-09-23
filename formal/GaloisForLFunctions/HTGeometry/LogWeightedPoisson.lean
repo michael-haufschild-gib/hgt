@@ -16,7 +16,7 @@ open MeasureTheory
 namespace GaloisForLFunctions.HTGeometry
 
 /-- The logarithm is dominated by twice the square root. -/
-theorem log_le_two_mul_sqrt {u : ℝ} (hu : 0 < u) : Real.log u ≤ 2 * Real.sqrt u := by
+theorem log_le_two_mul_sqrt_logWeightedPoisson {u : ℝ} (hu : 0 < u) : Real.log u ≤ 2 * Real.sqrt u := by
   have h1 : Real.log (Real.sqrt u) ≤ Real.sqrt u - 1 :=
     Real.log_le_sub_one_of_pos (Real.sqrt_pos.mpr hu)
   rw [Real.log_sqrt hu.le] at h1
@@ -58,7 +58,7 @@ theorem integrable_log_mul_inv_sq_add_sq {a : ℝ} (ha : 0 < a) :
     rw [← Real.sqrt_mul (by norm_num)]
     exact Real.sqrt_le_sqrt (by linarith)
   have hlog : Real.log (2 + |x|) ≤ 2 * (Real.sqrt 2 * Real.sqrt (1 + |x|)) := by
-    have := log_le_two_mul_sqrt hu
+    have := log_le_two_mul_sqrt_logWeightedPoisson hu
     nlinarith [Real.sqrt_nonneg (2 + |x|), Real.sqrt_nonneg (1 + |x|)]
   -- `(a²+x²)⁻¹ ≤ 2 / (m (1+|x|)²)`
   have hxsq : x ^ 2 = |x| ^ 2 := (sq_abs x).symm

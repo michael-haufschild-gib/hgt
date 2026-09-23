@@ -45,7 +45,7 @@ def constraintNormal : EuclideanSpace ℝ (Fin 2) := !₂[ℓ 0, ℓ 1]
 def twoModeSeed : EuclideanSpace ℝ (Fin 2) := !₂[-(ℓ 1), ℓ 0]
 
 /-- The squared length of a plane vector in coordinates. -/
-theorem norm_sq_euclid (a b : ℝ) : ‖(!₂[a, b] : EuclideanSpace ℝ (Fin 2))‖ ^ 2 = a ^ 2 + b ^ 2 := by
+theorem norm_sq_euclid (a b : ℝ) : ‖(!₂[a, b] : EuclideanSpace ℝ (Fin 2))‖ ^ (2 : ℕ) = a ^ (2 : ℕ) + b ^ (2 : ℕ) := by
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity)]
   simp [Fin.sum_univ_two, sq_abs]
 
@@ -56,13 +56,13 @@ theorem inner_euclid (a b c e : ℝ) :
   ring
 
 theorem norm_sq_secularHead :
-    ‖secularHead d ℓ μ‖ ^ 2 = secularVector d ℓ μ 0 ^ 2 + secularVector d ℓ μ 1 ^ 2 :=
+    ‖secularHead d ℓ μ‖ ^ (2 : ℕ) = secularVector d ℓ μ 0 ^ (2 : ℕ) + secularVector d ℓ μ 1 ^ (2 : ℕ) :=
   norm_sq_euclid _ _
 
-theorem norm_sq_constraintNormal : ‖constraintNormal ℓ‖ ^ 2 = ℓ 0 ^ 2 + ℓ 1 ^ 2 :=
+theorem norm_sq_constraintNormal : ‖constraintNormal ℓ‖ ^ (2 : ℕ) = ℓ 0 ^ (2 : ℕ) + ℓ 1 ^ (2 : ℕ) :=
   norm_sq_euclid _ _
 
-theorem norm_sq_twoModeSeed : ‖twoModeSeed ℓ‖ ^ 2 = ℓ 0 ^ 2 + ℓ 1 ^ 2 := by
+theorem norm_sq_twoModeSeed : ‖twoModeSeed ℓ‖ ^ (2 : ℕ) = ℓ 0 ^ (2 : ℕ) + ℓ 1 ^ (2 : ℕ) := by
   rw [twoModeSeed, norm_sq_euclid]
   ring
 
@@ -89,9 +89,9 @@ theorem inner_secularHead_twoModeSeed :
 /-- **The two components exhaust the length.**  In the head plane the squared components along the
 constraint and along the seed sum to the product of the squared lengths. -/
 theorem inner_sq_add_inner_sq_secularHead :
-    inner ℝ (secularHead d ℓ μ) (constraintNormal ℓ) ^ 2
-        + inner ℝ (secularHead d ℓ μ) (twoModeSeed ℓ) ^ 2
-      = ‖secularHead d ℓ μ‖ ^ 2 * ‖constraintNormal ℓ‖ ^ 2 := by
+    inner ℝ (secularHead d ℓ μ) (constraintNormal ℓ) ^ (2 : ℕ)
+        + inner ℝ (secularHead d ℓ μ) (twoModeSeed ℓ) ^ (2 : ℕ)
+      = ‖secularHead d ℓ μ‖ ^ (2 : ℕ) * ‖constraintNormal ℓ‖ ^ (2 : ℕ) := by
   rw [inner_secularHead_constraintNormal, inner_secularHead_twoModeSeed, norm_sq_secularHead,
     norm_sq_constraintNormal]
   ring
@@ -99,27 +99,27 @@ theorem inner_sq_add_inner_sq_secularHead :
 /-- The head is nonzero as soon as its first coordinate is. -/
 theorem secularHead_ne_zero (h : secularVector d ℓ μ 0 ≠ 0) : secularHead d ℓ μ ≠ 0 := by
   intro hz
-  have hn : ‖secularHead d ℓ μ‖ ^ 2 = 0 := by rw [hz]; simp
+  have hn : ‖secularHead d ℓ μ‖ ^ (2 : ℕ) = 0 := by rw [hz]; simp
   rw [norm_sq_secularHead] at hn
   have h1 := sq_nonneg (secularVector d ℓ μ 1)
-  have h0 : secularVector d ℓ μ 0 ^ 2 = 0 := by nlinarith [sq_nonneg (secularVector d ℓ μ 0)]
+  have h0 : secularVector d ℓ μ 0 ^ (2 : ℕ) = 0 := by nlinarith [sq_nonneg (secularVector d ℓ μ 0)]
   exact h ((pow_eq_zero_iff two_ne_zero).mp h0)
 
 /-- The constraint direction is nonzero as soon as its first coordinate is. -/
 theorem constraintNormal_ne_zero (h : ℓ 0 ≠ 0) : constraintNormal ℓ ≠ 0 := by
   intro hz
-  have hn : ‖constraintNormal ℓ‖ ^ 2 = 0 := by rw [hz]; simp
+  have hn : ‖constraintNormal ℓ‖ ^ (2 : ℕ) = 0 := by rw [hz]; simp
   rw [norm_sq_constraintNormal] at hn
   have h1 := sq_nonneg (ℓ 1)
-  have h0 : ℓ 0 ^ 2 = 0 := by nlinarith [sq_nonneg (ℓ 0)]
+  have h0 : ℓ 0 ^ (2 : ℕ) = 0 := by nlinarith [sq_nonneg (ℓ 0)]
   exact h ((pow_eq_zero_iff two_ne_zero).mp h0)
 
 theorem twoModeSeed_ne_zero (h : ℓ 0 ≠ 0) : twoModeSeed ℓ ≠ 0 := by
   intro hz
-  have hn : ‖twoModeSeed ℓ‖ ^ 2 = 0 := by rw [hz]; simp
+  have hn : ‖twoModeSeed ℓ‖ ^ (2 : ℕ) = 0 := by rw [hz]; simp
   rw [norm_sq_twoModeSeed] at hn
   have h1 := sq_nonneg (ℓ 1)
-  have h0 : ℓ 0 ^ 2 = 0 := by nlinarith [sq_nonneg (ℓ 0)]
+  have h0 : ℓ 0 ^ (2 : ℕ) = 0 := by nlinarith [sq_nonneg (ℓ 0)]
   exact h ((pow_eq_zero_iff two_ne_zero).mp h0)
 
 /-! ## Alignment -/
@@ -127,18 +127,18 @@ theorem twoModeSeed_ne_zero (h : ℓ 0 ≠ 0) : twoModeSeed ℓ ≠ 0 := by
 /-- **A vanishing constraint component is a full seed component.**  The normalized squared
 alignment of the head with the seed is one minus the normalized squared head–constraint defect. -/
 theorem align_eq_one_sub_defect (hx : secularVector d ℓ μ 0 ≠ 0) (hn : ℓ 0 ≠ 0) :
-    inner ℝ (secularHead d ℓ μ) (twoModeSeed ℓ) ^ 2
-        / (‖secularHead d ℓ μ‖ ^ 2 * ‖twoModeSeed ℓ‖ ^ 2)
-      = 1 - inner ℝ (secularHead d ℓ μ) (constraintNormal ℓ) ^ 2
-          / (‖secularHead d ℓ μ‖ ^ 2 * ‖constraintNormal ℓ‖ ^ 2) := by
-  have hxn : ‖secularHead d ℓ μ‖ ^ 2 ≠ 0 :=
+    inner ℝ (secularHead d ℓ μ) (twoModeSeed ℓ) ^ (2 : ℕ)
+        / (‖secularHead d ℓ μ‖ ^ (2 : ℕ) * ‖twoModeSeed ℓ‖ ^ (2 : ℕ))
+      = 1 - inner ℝ (secularHead d ℓ μ) (constraintNormal ℓ) ^ (2 : ℕ)
+          / (‖secularHead d ℓ μ‖ ^ (2 : ℕ) * ‖constraintNormal ℓ‖ ^ (2 : ℕ)) := by
+  have hxn : ‖secularHead d ℓ μ‖ ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (norm_ne_zero_iff.mpr (secularHead_ne_zero d ℓ μ hx))
-  have hnn : ‖constraintNormal ℓ‖ ^ 2 ≠ 0 :=
+  have hnn : ‖constraintNormal ℓ‖ ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (norm_ne_zero_iff.mpr (constraintNormal_ne_zero ℓ hn))
-  have hseed : ‖twoModeSeed ℓ‖ ^ 2 = ‖constraintNormal ℓ‖ ^ 2 := by
+  have hseed : ‖twoModeSeed ℓ‖ ^ (2 : ℕ) = ‖constraintNormal ℓ‖ ^ (2 : ℕ) := by
     rw [norm_sq_twoModeSeed, norm_sq_constraintNormal]
   have hlag := inner_sq_add_inner_sq_secularHead d ℓ μ
-  have hNM : ‖secularHead d ℓ μ‖ ^ 2 * ‖constraintNormal ℓ‖ ^ 2 ≠ 0 := mul_ne_zero hxn hnn
+  have hNM : ‖secularHead d ℓ μ‖ ^ (2 : ℕ) * ‖constraintNormal ℓ‖ ^ (2 : ℕ) ≠ 0 := mul_ne_zero hxn hnn
   rw [hseed, eq_sub_iff_add_eq, ← add_div, div_eq_one_iff_eq hNM]
   linarith [hlag]
 
@@ -147,10 +147,10 @@ theorem align_eq_one_sub_defect (hx : secularVector d ℓ μ 0 ≠ 0) (hn : ℓ 
 /-- The head–constraint defect in coordinates is the normalized squared component along the
 constraint. -/
 theorem defect_eq_inner_sq_div :
-    (ℓ 0 * secularVector d ℓ μ 0 + ℓ 1 * secularVector d ℓ μ 1) ^ 2
-        / ((secularVector d ℓ μ 0 ^ 2 + secularVector d ℓ μ 1 ^ 2) * (ℓ 0 ^ 2 + ℓ 1 ^ 2))
-      = inner ℝ (secularHead d ℓ μ) (constraintNormal ℓ) ^ 2
-          / (‖secularHead d ℓ μ‖ ^ 2 * ‖constraintNormal ℓ‖ ^ 2) := by
+    (ℓ 0 * secularVector d ℓ μ 0 + ℓ 1 * secularVector d ℓ μ 1) ^ (2 : ℕ)
+        / ((secularVector d ℓ μ 0 ^ (2 : ℕ) + secularVector d ℓ μ 1 ^ (2 : ℕ)) * (ℓ 0 ^ (2 : ℕ) + ℓ 1 ^ (2 : ℕ)))
+      = inner ℝ (secularHead d ℓ μ) (constraintNormal ℓ) ^ (2 : ℕ)
+          / (‖secularHead d ℓ μ‖ ^ (2 : ℕ) * ‖constraintNormal ℓ‖ ^ (2 : ℕ)) := by
   rw [inner_secularHead_constraintNormal, norm_sq_secularHead, norm_sq_constraintNormal]
   ring_nf
 
@@ -166,25 +166,25 @@ theorem tendsto_min_norm_secularHead_normalize_sub_twoModeSeed
     (hL0 : ∀ᶠ lam in atTop, L lam 0 ≠ 0)
     (hdefect : Tendsto (fun lam =>
       (L lam 0 * secularVector (D lam) (L lam) (M lam) 0
-          + L lam 1 * secularVector (D lam) (L lam) (M lam) 1) ^ 2
-        / ((secularVector (D lam) (L lam) (M lam) 0 ^ 2
-              + secularVector (D lam) (L lam) (M lam) 1 ^ 2)
-            * (L lam 0 ^ 2 + L lam 1 ^ 2))) atTop (nhds 0)) :
+          + L lam 1 * secularVector (D lam) (L lam) (M lam) 1) ^ (2 : ℕ)
+        / ((secularVector (D lam) (L lam) (M lam) 0 ^ (2 : ℕ)
+              + secularVector (D lam) (L lam) (M lam) 1 ^ (2 : ℕ))
+            * (L lam 0 ^ (2 : ℕ) + L lam 1 ^ (2 : ℕ)))) atTop (nhds 0)) :
     Tendsto (fun lam => min
         (‖(‖secularHead (D lam) (L lam) (M lam)‖)⁻¹ • secularHead (D lam) (L lam) (M lam)
-          - (‖twoModeSeed (L lam)‖)⁻¹ • twoModeSeed (L lam)‖ ^ 2)
+          - (‖twoModeSeed (L lam)‖)⁻¹ • twoModeSeed (L lam)‖ ^ (2 : ℕ))
         (‖(‖secularHead (D lam) (L lam) (M lam)‖)⁻¹ • secularHead (D lam) (L lam) (M lam)
-          + (‖twoModeSeed (L lam)‖)⁻¹ • twoModeSeed (L lam)‖ ^ 2))
+          + (‖twoModeSeed (L lam)‖)⁻¹ • twoModeSeed (L lam)‖ ^ (2 : ℕ)))
       atTop (nhds 0) := by
   refine tendsto_min_norm_sub_sq_normalize_of_inner_sq
     (hv0.mono fun lam h => secularHead_ne_zero _ _ _ h)
     (hL0.mono fun lam h => twoModeSeed_ne_zero _ h) ?_
   have halign : Tendsto (fun lam =>
       1 - (L lam 0 * secularVector (D lam) (L lam) (M lam) 0
-            + L lam 1 * secularVector (D lam) (L lam) (M lam) 1) ^ 2
-          / ((secularVector (D lam) (L lam) (M lam) 0 ^ 2
-                + secularVector (D lam) (L lam) (M lam) 1 ^ 2)
-              * (L lam 0 ^ 2 + L lam 1 ^ 2))) atTop (nhds (1 - 0)) :=
+            + L lam 1 * secularVector (D lam) (L lam) (M lam) 1) ^ (2 : ℕ)
+          / ((secularVector (D lam) (L lam) (M lam) 0 ^ (2 : ℕ)
+                + secularVector (D lam) (L lam) (M lam) 1 ^ (2 : ℕ))
+              * (L lam 0 ^ (2 : ℕ) + L lam 1 ^ (2 : ℕ)))) atTop (nhds (1 - 0)) :=
     Filter.Tendsto.sub tendsto_const_nhds hdefect
   rw [sub_zero] at halign
   refine halign.congr' ?_

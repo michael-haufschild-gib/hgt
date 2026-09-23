@@ -61,19 +61,19 @@ theorem orbitParam_injective (H : Subgroup G) (x : G) :
 along the orbit through every point at which the vector does not vanish. -/
 theorem summable_weight_orbit_of_invariant
     (H : Subgroup G) (w : G → ℝ) (f : G → E)
-    (hsum : Summable fun g => w g * ‖f g‖ ^ 2)
+    (hsum : Summable fun g => w g * ‖f g‖ ^ (2 : ℕ))
     (hinv : ∀ h : H, ∀ y, f (h.1 * y) = f y)
     {x : G} (hx : f x ≠ 0) :
     Summable fun h : H => w (h.1 * x) := by
-  have hcomp : Summable fun h : H => w (h.1 * x) * ‖f (h.1 * x)‖ ^ 2 :=
+  have hcomp : Summable fun h : H => w (h.1 * x) * ‖f (h.1 * x)‖ ^ (2 : ℕ) :=
     hsum.comp_injective (orbitParam_injective H x)
-  have hrw : (fun h : H => w (h.1 * x) * ‖f (h.1 * x)‖ ^ 2)
-      = fun h : H => w (h.1 * x) * ‖f x‖ ^ 2 := by
+  have hrw : (fun h : H => w (h.1 * x) * ‖f (h.1 * x)‖ ^ (2 : ℕ))
+      = fun h : H => w (h.1 * x) * ‖f x‖ ^ (2 : ℕ) := by
     funext h
     rw [hinv h x]
   rw [hrw] at hcomp
-  have hpos : (0 : ℝ) < ‖f x‖ ^ 2 := by positivity
-  have := hcomp.div_const (‖f x‖ ^ 2)
+  have hpos : (0 : ℝ) < ‖f x‖ ^ (2 : ℕ) := by positivity
+  have := hcomp.div_const (‖f x‖ ^ (2 : ℕ))
   simpa [mul_div_assoc, div_self hpos.ne'] using this
 
 /-- **Sufficiency.**  Summability of the weight along a single orbit produces a nonzero invariant
@@ -82,7 +82,7 @@ theorem exists_nonzero_invariant_of_summable_weight_orbit
     (H : Subgroup G) (w : G → ℝ) (x : G) (v : E)
     (horb : Summable fun h : H => w (h.1 * x)) :
     ∃ f : G → E, f x = v ∧ (∀ h : H, ∀ y, f (h.1 * y) = f y)
-      ∧ Summable fun g => w g * ‖f g‖ ^ 2 := by
+      ∧ Summable fun g => w g * ‖f g‖ ^ (2 : ℕ) := by
   classical
   set S : Set G := subgroupOrbit H x with hS
   refine ⟨Set.indicator S (fun _ => v), ?_, ?_, ?_⟩
@@ -92,8 +92,8 @@ theorem exists_nonzero_invariant_of_summable_weight_orbit
     · rw [Set.indicator_of_mem hy, Set.indicator_of_mem (subgroupOrbit_smul_mem h hy)]
     · have hny : h.1 * y ∉ S := fun hmem => hy (subgroupOrbit_of_smul_mem h hmem)
       rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hny]
-  · have hfun : (fun g => w g * ‖Set.indicator S (fun _ => v) g‖ ^ 2)
-        = Set.indicator S (fun g => w g * ‖v‖ ^ 2) := by
+  · have hfun : (fun g => w g * ‖Set.indicator S (fun _ => v) g‖ ^ (2 : ℕ))
+        = Set.indicator S (fun g => w g * ‖v‖ ^ (2 : ℕ)) := by
       funext g
       by_cases hg : g ∈ S
       · rw [Set.indicator_of_mem hg, Set.indicator_of_mem hg]
@@ -106,19 +106,19 @@ theorem exists_nonzero_invariant_of_summable_weight_orbit
         exact orbitParam_injective H x (congrArg Subtype.val hEq)
       · rintro ⟨g, h, rfl⟩
         exact ⟨h, rfl⟩
-    have hHsum : Summable fun h : H => w (h.1 * x) * ‖v‖ ^ 2 := horb.mul_right _
+    have hHsum : Summable fun h : H => w (h.1 * x) * ‖v‖ ^ (2 : ℕ) := horb.mul_right _
     exact ((Equiv.ofBijective _ hbij).summable_iff).mp hHsum
 
 /-- The unweighted no-go is the case `w ≡ 1`: an infinite orbit cannot carry a summable constant
 weight, so the invariants of the unweighted completion vanish. -/
 theorem eq_zero_of_infinite_subgroup_invariant_unweighted
     (H : Subgroup G) [Infinite H] (f : G → E)
-    (hsum : Summable fun g => ‖f g‖ ^ 2)
+    (hsum : Summable fun g => ‖f g‖ ^ (2 : ℕ))
     (hinv : ∀ h : H, ∀ y, f (h.1 * y) = f y) :
     f = 0 := by
   funext x
   by_contra hx
-  have hsum' : Summable fun g => (1 : ℝ) * ‖f g‖ ^ 2 := by simpa using hsum
+  have hsum' : Summable fun g => (1 : ℝ) * ‖f g‖ ^ (2 : ℕ) := by simpa using hsum
   have hone : Summable fun _ : H => (1 : ℝ) :=
     summable_weight_orbit_of_invariant H (fun _ => (1 : ℝ)) f hsum' hinv hx
   have htend := hone.tendsto_cofinite_zero
@@ -170,7 +170,7 @@ period group outside of which every finite block satisfies `card · (least weigh
 weight on blocks of unbounded size is therefore impossible. -/
 theorem exists_finset_card_mul_inf_le_of_invariant
     (H : Subgroup G) (w : G → ℝ) (hw : ∀ g, 0 ≤ w g) (f : G → E)
-    (hsum : Summable fun g => w g * ‖f g‖ ^ 2)
+    (hsum : Summable fun g => w g * ‖f g‖ ^ (2 : ℕ))
     (hinv : ∀ h : H, ∀ y, f (h.1 * y) = f y)
     {x : G} (hx : f x ≠ 0) {ε : ℝ} (hε : 0 < ε) :
     ∃ F₀ : Finset H, ∀ F : Finset H, ∀ hF : F.Nonempty, Disjoint F F₀ →
@@ -248,7 +248,7 @@ theorem exists_nonzero_invariant_iff_summable_multiplier
     {x : G} (hwx : w x ≠ 0) {v : E} (hv : v ≠ 0) :
     Summable chi ↔
       ∃ f : G → E, f x = v ∧ (∀ h : H, ∀ y, f (h.1 * y) = f y)
-        ∧ Summable fun g => w g * ‖f g‖ ^ 2 := by
+        ∧ Summable fun g => w g * ‖f g‖ ^ (2 : ℕ) := by
   constructor
   · intro hchi
     exact exists_nonzero_invariant_of_summable_weight_orbit H w x v

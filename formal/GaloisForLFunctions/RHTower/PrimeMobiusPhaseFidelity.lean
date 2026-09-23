@@ -66,7 +66,7 @@ the time-one fidelity deficit. -/
 theorem finitePrimeSquarefreePhaseDispersion_eq_two_mul_fidelityDeficit
     (S : Finset Nat.Primes) (sigma : ℝ) :
     finitePrimeSquarefreePhaseDispersion S sigma =
-      2 * (1 - ‖finitePrimeSquarefreePhaseOverlap S sigma‖ ^ 2) := by
+      2 * (1 - ‖finitePrimeSquarefreePhaseOverlap S sigma‖ ^ (2 : ℕ)) := by
   exact HTGeometry.finitePhasePairwiseDispersion_eq_two_mul_fidelityDeficit
     (finitePrimeSquarefreePhaseWeight S sigma)
     (fun T : ↥S.powerset => finitePrimeSquarefreeLoschmidtMode T.1)
@@ -77,8 +77,8 @@ theorem finitePrimeSquarefreePhaseDispersion_eq_two_mul_fidelityDeficit
 for the empty prime aperture. -/
 theorem finitePrimeSquarefreePhase_fidelityDeficit_eq_zero_iff_empty
     (S : Finset Nat.Primes) (sigma : ℝ) :
-    1 - ‖finitePrimeSquarefreePhaseOverlap S sigma‖ ^ 2 = 0 ↔ S = ∅ := by
-  rw [show (1 - ‖finitePrimeSquarefreePhaseOverlap S sigma‖ ^ 2 = 0 ↔
+    1 - ‖finitePrimeSquarefreePhaseOverlap S sigma‖ ^ (2 : ℕ) = 0 ↔ S = ∅ := by
+  rw [show (1 - ‖finitePrimeSquarefreePhaseOverlap S sigma‖ ^ (2 : ℕ) = 0 ↔
       ∀ T U : ↥S.powerset,
         finitePrimeSquarefreeLoschmidtMode T.1 =
           finitePrimeSquarefreeLoschmidtMode U.1) from

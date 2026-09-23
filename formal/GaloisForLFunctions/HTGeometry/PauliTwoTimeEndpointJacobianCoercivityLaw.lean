@@ -22,20 +22,20 @@ theorem cstarMatrix_toCLM_single_norm_sq
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (M : CStarMatrix ι ι ℂ) (i : ι) :
     ‖CStarMatrix.toCLM M
-        ((WithCStarModule.equiv ℂ (ι → ℂ)).symm (Pi.single i 1))‖ ^ 2 =
-      ∑ j, ‖M i j‖ ^ 2 := by
+        ((WithCStarModule.equiv ℂ (ι → ℂ)).symm (Pi.single i 1))‖ ^ (2 : ℕ) =
+      ∑ j, ‖M i j‖ ^ (2 : ℕ) := by
   rw [WithCStarModule.pi_norm_sq]
   simp only [CStarMatrix.toCLM_apply_single_apply, one_mul,
     RCLike.inner_apply]
   simp_rw [RCLike.mul_conj]
   have hcast :
-      (∑ j, ((‖M i j‖ : ℝ) : ℂ) ^ 2) =
-        ((∑ j, ‖M i j‖ ^ 2 : ℝ) : ℂ) := by
+      (∑ j, ((‖M i j‖ : ℝ) : ℂ) ^ (2 : ℕ)) =
+        ((∑ j, ‖M i j‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     norm_cast
   calc
-    ‖∑ j, ((‖M i j‖ : ℝ) : ℂ) ^ 2‖ =
-        ‖((∑ j, ‖M i j‖ ^ 2 : ℝ) : ℂ)‖ := congrArg norm hcast
-    _ = ∑ j, ‖M i j‖ ^ 2 := by
+    ‖∑ j, ((‖M i j‖ : ℝ) : ℂ) ^ (2 : ℕ)‖ =
+        ‖((∑ j, ‖M i j‖ ^ (2 : ℕ) : ℝ) : ℂ)‖ := congrArg norm hcast
+    _ = ∑ j, ‖M i j‖ ^ (2 : ℕ) := by
       rw [Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (Finset.sum_nonneg fun j _ => sq_nonneg ‖M i j‖)]
 
@@ -46,8 +46,8 @@ theorem cstarMatrix_frobSq_le_card_mul_norm_sq
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (M : CStarMatrix ι ι ℂ) :
     frobSq (CStarMatrix.ofMatrix.symm M) ≤
-      (Fintype.card ι : ℝ) * ‖M‖ ^ 2 := by
-  have hrow (i : ι) : (∑ j, ‖M i j‖ ^ 2) ≤ ‖M‖ ^ 2 := by
+      (Fintype.card ι : ℝ) * ‖M‖ ^ (2 : ℕ) := by
+  have hrow (i : ι) : (∑ j, ‖M i j‖ ^ (2 : ℕ)) ≤ ‖M‖ ^ (2 : ℕ) := by
     let e : WithCStarModule ℂ (ι → ℂ) :=
       (WithCStarModule.equiv ℂ (ι → ℂ)).symm (Pi.single i 1)
     have he : ‖e‖ = 1 := by
@@ -55,17 +55,17 @@ theorem cstarMatrix_frobSq_le_card_mul_norm_sq
     have happly := (CStarMatrix.toCLM M).le_opNorm e
     rw [he, mul_one, ← CStarMatrix.norm_def] at happly
     have hsquare := (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 happly
-    have heq : ‖CStarMatrix.toCLM M e‖ ^ 2 = ∑ j, ‖M i j‖ ^ 2 := by
+    have heq : ‖CStarMatrix.toCLM M e‖ ^ (2 : ℕ) = ∑ j, ‖M i j‖ ^ (2 : ℕ) := by
       dsimp only [e]
       exact cstarMatrix_toCLM_single_norm_sq M i
     rw [heq] at hsquare
     exact hsquare
   unfold frobSq
   calc
-    (∑ i, ∑ j, ‖(CStarMatrix.ofMatrix.symm M) i j‖ ^ 2) ≤
-        ∑ _i : ι, ‖M‖ ^ 2 :=
+    (∑ i, ∑ j, ‖(CStarMatrix.ofMatrix.symm M) i j‖ ^ (2 : ℕ)) ≤
+        ∑ _i : ι, ‖M‖ ^ (2 : ℕ) :=
       Finset.sum_le_sum fun i _ => by simpa using hrow i
-    _ = (Fintype.card ι : ℝ) * ‖M‖ ^ 2 := by
+    _ = (Fintype.card ι : ℝ) * ‖M‖ ^ (2 : ℕ) := by
       rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
 /-- The ordinary two-local Pauli Hamiltonian, represented in its C*-algebra. -/
@@ -145,10 +145,10 @@ theorem norm_le_realTwoLocalPauliCStarHamiltonian
     (realTwoLocalPauliCStarHamiltonian x)
   change frobSq (realActivePauliHamiltonian x) ≤
     (Fintype.card (FiniteQubitConfiguration (Fin n)) : ℝ) *
-      ‖realTwoLocalPauliCStarHamiltonian x‖ ^ 2 at hsq
+      ‖realTwoLocalPauliCStarHamiltonian x‖ ^ (2 : ℕ) at hsq
   rw [frobSq_realActivePauliHamiltonian, hdim] at hsq
   have hpos : (0 : ℝ) < (2 : ℝ) ^ n := by positivity
-  have hsq' : ‖x‖ ^ 2 ≤ ‖realTwoLocalPauliCStarHamiltonian x‖ ^ 2 :=
+  have hsq' : ‖x‖ ^ (2 : ℕ) ≤ ‖realTwoLocalPauliCStarHamiltonian x‖ ^ (2 : ℕ) :=
     le_of_mul_le_mul_left hsq hpos
   exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq'
 
@@ -191,8 +191,8 @@ theorem norm_realTwoLocalPauliCStarHamiltonian_le_sum
 theorem norm_realTwoLocalPauliCStarHamiltonian_le_eighteen_mul_cube_of_mem_box
     {n : ℕ} (hn : 1 ≤ n) {x : TwoLocalPauliCoefficientSpace n}
     (hx : x ∈ twoLocalPauliCoefficientBox n) :
-    ‖realTwoLocalPauliCStarHamiltonian x‖ ≤ 18 * (n : ℝ) ^ 3 := by
-  have hcard : Fintype.card (PauliTracelessLabel n 2) ≤ 18 * n ^ 2 := by
+    ‖realTwoLocalPauliCStarHamiltonian x‖ ≤ 18 * (n : ℝ) ^ (3 : ℕ) := by
+  have hcard : Fintype.card (PauliTracelessLabel n 2) ≤ 18 * n ^ (2 : ℕ) := by
     rw [card_pauliTracelessLabel]
     simpa using Quantum.nonidentityPauliWeightCount_le n 2 hn
   calc
@@ -203,8 +203,8 @@ theorem norm_realTwoLocalPauliCStarHamiltonian_le_eighteen_mul_cube_of_mem_box
       Finset.sum_le_sum fun Q _ => hx Q
     _ = (Fintype.card (PauliTracelessLabel n 2) : ℝ) * (n : ℝ) := by
       rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-    _ ≤ ((18 * n ^ 2 : ℕ) : ℝ) * (n : ℝ) := by gcongr
-    _ = 18 * (n : ℝ) ^ 3 := by
+    _ ≤ ((18 * n ^ (2 : ℕ) : ℕ) : ℝ) * (n : ℝ) := by gcongr
+    _ = 18 * (n : ℝ) ^ (3 : ℕ) := by
       push_cast
       ring
 
@@ -260,20 +260,20 @@ theorem realTwoLocalPauli_twoTimeEndpointJacobian_lower_of_mem_box
     {n : ℕ} (hn : 1 ≤ n) {z : TwoLocalPauliCoefficientSpace n}
     (hz : z ∈ twoLocalPauliCoefficientBox n) (t : ℝ)
     (v : TwoLocalPauliCoefficientSpace n) :
-    (1 / (72 * (n : ℝ) ^ 3)) / 4 * ‖v‖ ≤
+    (1 / (72 * (n : ℝ) ^ (3 : ℕ))) / 4 * ‖v‖ ≤
       ‖twoTimeAutonomousLinearGeneratorEndpointJacobian
         (realTwoLocalPauliCStarGeneratorCLM n z)
         (realTwoLocalPauliCStarGeneratorCLM n) t
-        (1 / (72 * (n : ℝ) ^ 3)) v‖ := by
+        (1 / (72 * (n : ℝ) ^ (3 : ℕ))) v‖ := by
   apply realTwoLocalPauli_twoTimeEndpointJacobian_lower z t
   · positivity
   · have hnorm :=
       norm_realTwoLocalPauliCStarHamiltonian_le_eighteen_mul_cube_of_mem_box hn hz
     have hnpos : (0 : ℝ) < n := by exact_mod_cast hn
     calc
-      4 * (1 / (72 * (n : ℝ) ^ 3)) *
+      4 * (1 / (72 * (n : ℝ) ^ (3 : ℕ))) *
           ‖realTwoLocalPauliCStarHamiltonian z‖ ≤
-        4 * (1 / (72 * (n : ℝ) ^ 3)) * (18 * (n : ℝ) ^ 3) := by
+        4 * (1 / (72 * (n : ℝ) ^ (3 : ℕ))) * (18 * (n : ℝ) ^ (3 : ℕ)) := by
           gcongr
       _ = 1 := by
         field_simp
@@ -299,16 +299,16 @@ theorem realTwoLocalPauliTwoTimeEndpointRealJacobian_lower_of_mem_box
     {n : ℕ} (hn : 1 ≤ n) {z : TwoLocalPauliCoefficientSpace n}
     (hz : z ∈ twoLocalPauliCoefficientBox n) (t : ℝ)
     (v : TwoLocalPauliCoefficientSpace n) :
-    (1 / (72 * (n : ℝ) ^ 3)) / 4 * ‖v‖ ≤
+    (1 / (72 * (n : ℝ) ^ (3 : ℕ))) / 4 * ‖v‖ ≤
       ‖realTwoLocalPauliTwoTimeEndpointRealJacobian z t
-        (1 / (72 * (n : ℝ) ^ 3)) v‖ := by
+        (1 / (72 * (n : ℝ) ^ (3 : ℕ))) v‖ := by
   refine (realTwoLocalPauli_twoTimeEndpointJacobian_lower_of_mem_box
     hn hz t v).trans ?_
   exact norm_le_twoTimeCStarMatrixRealCoordinates
     (twoTimeAutonomousLinearGeneratorEndpointJacobian
       (realTwoLocalPauliCStarGeneratorCLM n z)
       (realTwoLocalPauliCStarGeneratorCLM n) t
-      (1 / (72 * (n : ℝ) ^ 3)) v)
+      (1 / (72 * (n : ℝ) ^ (3 : ℕ))) v)
 
 /-- Coarea-ready growing-dimensional Jacobian floor.  For every draw in the
 ordinary coefficient box and every laboratory base time, the exact volume
@@ -317,10 +317,10 @@ raised to the full number of active Pauli coefficients. -/
 theorem realTwoLocalPauliTwoTimeEndpointRealJacobian_normDet_lower_of_mem_box
     {n : ℕ} (hn : 1 ≤ n) {z : TwoLocalPauliCoefficientSpace n}
     (hz : z ∈ twoLocalPauliCoefficientBox n) (t : ℝ) :
-    ((1 / (72 * (n : ℝ) ^ 3)) / 4) ^
+    ((1 / (72 * (n : ℝ) ^ (3 : ℕ))) / 4) ^
         Fintype.card (PauliTracelessLabel n 2) ≤
       (realTwoLocalPauliTwoTimeEndpointRealJacobian z t
-        (1 / (72 * (n : ℝ) ^ 3))).toLinearMap.normDet := by
+        (1 / (72 * (n : ℝ) ^ (3 : ℕ)))).toLinearMap.normDet := by
   apply linearMap_normDet_lower_of_norm_lower
       (m := Fintype.card (PauliTracelessLabel n 2))
   · simp [TwoLocalPauliCoefficientSpace]
@@ -343,41 +343,41 @@ theorem realTwoLocalPauliTwoTimeEndpoint_lower_of_mem_box
     {x y : TwoLocalPauliCoefficientSpace n}
     (hx : x ∈ twoLocalPauliCoefficientBox n)
     (hy : y ∈ twoLocalPauliCoefficientBox n) (t : ℝ) :
-    (1 / (144 * (n : ℝ) ^ 3)) / 8 * ‖y - x‖ ≤
+    (1 / (144 * (n : ℝ) ^ (3 : ℕ))) / 8 * ‖y - x‖ ≤
       ‖realTwoLocalPauliTwoTimeEndpoint y t
-          (1 / (144 * (n : ℝ) ^ 3)) -
+          (1 / (144 * (n : ℝ) ^ (3 : ℕ))) -
         realTwoLocalPauliTwoTimeEndpoint x t
-          (1 / (144 * (n : ℝ) ^ 3))‖ := by
-  let δ : ℝ := 1 / (144 * (n : ℝ) ^ 3)
+          (1 / (144 * (n : ℝ) ^ (3 : ℕ)))‖ := by
+  let δ : ℝ := 1 / (144 * (n : ℝ) ^ (3 : ℕ))
   let G := realTwoLocalPauliCStarGeneratorCLM n
   have hnpos : (0 : ℝ) < n := by exact_mod_cast hn
   have hδ : 0 ≤ δ := by positivity
-  have hGx : ‖G x‖ ≤ 18 * (n : ℝ) ^ 3 := by
+  have hGx : ‖G x‖ ≤ 18 * (n : ℝ) ^ (3 : ℕ) := by
     change ‖realTwoLocalPauliCStarGeneratorCLM n x‖ ≤ _
     rw [norm_realTwoLocalPauliCStarGeneratorCLM_apply]
     exact norm_realTwoLocalPauliCStarHamiltonian_le_eighteen_mul_cube_of_mem_box
       hn hx
-  have hGy : ‖G y‖ ≤ 18 * (n : ℝ) ^ 3 := by
+  have hGy : ‖G y‖ ≤ 18 * (n : ℝ) ^ (3 : ℕ) := by
     change ‖realTwoLocalPauliCStarGeneratorCLM n y‖ ≤ _
     rw [norm_realTwoLocalPauliCStarGeneratorCLM_apply]
     exact norm_realTwoLocalPauliCStarHamiltonian_le_eighteen_mul_cube_of_mem_box
       hn hy
   have hsmallx : 4 * δ * ‖G x‖ ≤ 1 := by
     calc
-      4 * δ * ‖G x‖ ≤ 4 * δ * (18 * (n : ℝ) ^ 3) := by gcongr
+      4 * δ * ‖G x‖ ≤ 4 * δ * (18 * (n : ℝ) ^ (3 : ℕ)) := by gcongr
       _ ≤ 1 := by
         dsimp only [δ]
         field_simp
         norm_num
-  have hdiff : ‖G y - G x‖ ≤ 36 * (n : ℝ) ^ 3 := by
+  have hdiff : ‖G y - G x‖ ≤ 36 * (n : ℝ) ^ (3 : ℕ) := by
     calc
       ‖G y - G x‖ ≤ ‖G y‖ + ‖G x‖ := norm_sub_le _ _
-      _ ≤ 18 * (n : ℝ) ^ 3 + 18 * (n : ℝ) ^ 3 :=
+      _ ≤ 18 * (n : ℝ) ^ (3 : ℕ) + 18 * (n : ℝ) ^ (3 : ℕ) :=
         add_le_add hGy hGx
-      _ = 36 * (n : ℝ) ^ 3 := by ring
+      _ = 36 * (n : ℝ) ^ (3 : ℕ) := by ring
   have hsmallxy : δ * ‖G y - G x‖ ≤ 1 / 4 := by
     calc
-      δ * ‖G y - G x‖ ≤ δ * (36 * (n : ℝ) ^ 3) := by gcongr
+      δ * ‖G y - G x‖ ≤ δ * (36 * (n : ℝ) ^ (3 : ℕ)) := by gcongr
       _ = 1 / 4 := by
         dsimp only [δ]
         field_simp
@@ -403,19 +403,19 @@ theorem realTwoLocalPauliTwoTimeEndpoint_injOn_box
     Set.InjOn
       (fun z : TwoLocalPauliCoefficientSpace n =>
         realTwoLocalPauliTwoTimeEndpoint z t
-          (1 / (144 * (n : ℝ) ^ 3)))
+          (1 / (144 * (n : ℝ) ^ (3 : ℕ))))
       (twoLocalPauliCoefficientBox n) := by
   intro x hx y hy hxy
   have h := realTwoLocalPauliTwoTimeEndpoint_lower_of_mem_box
     hn hx hy t
   change realTwoLocalPauliTwoTimeEndpoint x t
-      (1 / (144 * (n : ℝ) ^ 3)) =
+      (1 / (144 * (n : ℝ) ^ (3 : ℕ))) =
     realTwoLocalPauliTwoTimeEndpoint y t
-      (1 / (144 * (n : ℝ) ^ 3)) at hxy
+      (1 / (144 * (n : ℝ) ^ (3 : ℕ))) at hxy
   rw [← hxy, sub_self, norm_zero] at h
   have hnpos : (0 : ℝ) < n := by exact_mod_cast hn
-  have hscale : 0 < (1 / (144 * (n : ℝ) ^ 3)) / 8 := by positivity
-  have hproduct : (1 / (144 * (n : ℝ) ^ 3)) / 8 * ‖y - x‖ = 0 :=
+  have hscale : 0 < (1 / (144 * (n : ℝ) ^ (3 : ℕ))) / 8 := by positivity
+  have hproduct : (1 / (144 * (n : ℝ) ^ (3 : ℕ))) / 8 * ‖y - x‖ = 0 :=
     le_antisymm h (mul_nonneg hscale.le (norm_nonneg _))
   have hnorm : ‖y - x‖ = 0 := by
     rcases mul_eq_zero.mp hproduct with hscalezero | hnorm

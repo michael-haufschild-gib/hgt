@@ -22,7 +22,7 @@ theorem HasUniformJet2.canonical_coefficients {S : Set ℂ} {b C : ℝ}
   have hz : Tendsto (fun z : ℝ => z) (𝓝[>] (0:ℝ)) (𝓝 0) := nhdsWithin_le_nhds
   have hv : Tendsto (F w) (𝓝[>] (0:ℝ)) (𝓝 (c₀ w)) := by
     apply tendsto_iff_norm_sub_tendsto_zero.mpr
-    have ht : Tendsto (fun z : ℝ => C*z^2+‖c₁ w‖*z) (𝓝[>] (0:ℝ)) (𝓝 0) := by
+    have ht : Tendsto (fun z : ℝ => C*z^(2 : ℕ)+‖c₁ w‖*z) (𝓝[>] (0:ℝ)) (𝓝 0) := by
       simpa only [zero_pow (by norm_num : 2≠0),mul_zero,add_zero] using
         ((hz.pow 2).const_mul C).add (hz.const_mul ‖c₁ w‖)
     apply squeeze_zero' (Eventually.of_forall (fun z => norm_nonneg _)) _ ht
@@ -31,7 +31,7 @@ theorem HasUniformJet2.canonical_coefficients {S : Set ℂ} {b C : ℝ}
     calc
       ‖F w z-c₀ w‖=‖(F w z-c₀ w-c₁ w*z)+c₁ w*z‖ := by congr 1;ring
       _ ≤ ‖F w z-c₀ w-c₁ w*z‖+‖c₁ w*z‖ := norm_add_le _ _
-      _ ≤ C*z^2+‖c₁ w‖*z := by rw [norm_mul,hzn];exact add_le_add (h w hw z hzi) le_rfl
+      _ ≤ C*z^(2 : ℕ)+‖c₁ w‖*z := by rw [norm_mul,hzn];exact add_le_add (h w hw z hzi) le_rfl
   have h0 : endpointJetValue F w=c₀ w := hv.limUnder_eq
   refine ⟨h0,?_⟩
   unfold endpointJetSlope
@@ -47,7 +47,7 @@ theorem HasUniformJet2.canonical_coefficients {S : Set ℂ} {b C : ℝ}
   have he : (F w z-c₀ w)/(z:ℂ)-c₁ w=(F w z-c₀ w-c₁ w*z)/(z:ℂ) := by field_simp
   rw [he,norm_div,hzn]
   calc
-    _ ≤ C*z^2/z := div_le_div_of_nonneg_right (h w hw z hzi) hzi.1.le
+    _ ≤ C*z^(2 : ℕ)/z := div_le_div_of_nonneg_right (h w hw z hzi) hzi.1.le
     _ = C*z := by field_simp
 
 /-- Local analytic endpoint jets agree with one canonical coefficient family

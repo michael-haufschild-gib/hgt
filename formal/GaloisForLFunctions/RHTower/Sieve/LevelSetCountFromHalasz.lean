@@ -31,22 +31,22 @@ theorem card_le_levelSet_blockPoly (N : ℕ) (hN : 1 ≤ N) (c : ℕ → ℂ) (s
     (hlamT : logDyadicLambda N T ≤ 1)
     (hKmax : ((S.card : ℕ) : ℝ) ≤ Kmax) (hKmax1 : 1 ≤ Kmax)
     (hlevel : ∀ t ∈ S, V ≤ ‖blockPoly N c sigma t‖) :
-    ((S.card : ℕ) : ℝ) * (V ^ 2 - (1 + 214 * Real.sqrt T
-          + 1536 * ((N : ℝ) / Real.sqrt U)) * ‖blockCoeff N c sigma‖ ^ 2)
+    ((S.card : ℕ) : ℝ) * (V ^ (2 : ℕ) - (1 + 214 * Real.sqrt T
+          + 1536 * ((N : ℝ) / Real.sqrt U)) * ‖blockCoeff N c sigma‖ ^ (2 : ℕ))
       ≤ ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log Kmax))
-          * ‖blockCoeff N c sigma‖ ^ 2 := by
+          * ‖blockCoeff N c sigma‖ ^ (2 : ℕ) := by
   set D : ℝ := 1 + 214 * Real.sqrt T + 1536 * ((N : ℝ) / Real.sqrt U) with hD
-  set A : ℝ := ‖blockCoeff N c sigma‖ ^ 2 with hA
+  set A : ℝ := ‖blockCoeff N c sigma‖ ^ (2 : ℕ) with hA
   have hA0 : 0 ≤ A := by rw [hA]; positivity
   have hHM := halaszMontgomery_blockPoly_real_finset_sigma N hN c sigma hdelta hU hT hsep
     hspread hnear hlamT
-  have hlow : ((S.card : ℕ) : ℝ) * V ^ 2 ≤ ∑ t ∈ S, ‖blockPoly N c sigma t‖ ^ 2 := by
-    have hterm : ∀ t ∈ S, V ^ 2 ≤ ‖blockPoly N c sigma t‖ ^ 2 := by
+  have hlow : ((S.card : ℕ) : ℝ) * V ^ (2 : ℕ) ≤ ∑ t ∈ S, ‖blockPoly N c sigma t‖ ^ (2 : ℕ) := by
+    have hterm : ∀ t ∈ S, V ^ (2 : ℕ) ≤ ‖blockPoly N c sigma t‖ ^ (2 : ℕ) := by
       intro t ht
       exact pow_le_pow_left₀ hV (hlevel t ht) 2
-    calc ((S.card : ℕ) : ℝ) * V ^ 2 = ∑ _t ∈ S, V ^ 2 := by
+    calc ((S.card : ℕ) : ℝ) * V ^ (2 : ℕ) = ∑ _t ∈ S, V ^ (2 : ℕ) := by
           rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ ∑ t ∈ S, ‖blockPoly N c sigma t‖ ^ 2 := Finset.sum_le_sum hterm
+      _ ≤ ∑ t ∈ S, ‖blockPoly N c sigma t‖ ^ (2 : ℕ) := Finset.sum_le_sum hterm
   have hlogle : Real.log ((S.card : ℕ) : ℝ) ≤ Real.log Kmax := by
     rcases Nat.eq_zero_or_pos S.card with h0 | hpos
     · rw [h0]
@@ -54,7 +54,7 @@ theorem card_le_levelSet_blockPoly (N : ℕ) (hN : 1 ≤ N) (c : ℕ → ℂ) (s
       exact Real.log_nonneg hKmax1
     · exact Real.log_le_log (by exact_mod_cast hpos) hKmax
   have hcard0 : (0 : ℝ) ≤ ((S.card : ℕ) : ℝ) := Nat.cast_nonneg _
-  have hchain : ((S.card : ℕ) : ℝ) * V ^ 2
+  have hchain : ((S.card : ℕ) : ℝ) * V ^ (2 : ℕ)
       ≤ ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log Kmax)
           + ((S.card : ℕ) : ℝ) * D) * A := by
     refine le_trans hlow (le_trans hHM ?_)
@@ -80,20 +80,20 @@ theorem card_le_levelSet_blockPoly_of_threshold (N : ℕ) (hN : 1 ≤ N) (c : �
     (hKmax : ((S.card : ℕ) : ℝ) ≤ Kmax) (hKmax1 : 1 ≤ Kmax)
     (hlevel : ∀ t ∈ S, V ≤ ‖blockPoly N c sigma t‖)
     (hthresh : 2 * ((1 + 214 * Real.sqrt T + 1536 * ((N : ℝ) / Real.sqrt U))
-        * ‖blockCoeff N c sigma‖ ^ 2) ≤ V ^ 2) :
+        * ‖blockCoeff N c sigma‖ ^ (2 : ℕ)) ≤ V ^ (2 : ℕ)) :
     ((S.card : ℕ) : ℝ)
       ≤ 2 * (((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log Kmax))
-          * ‖blockCoeff N c sigma‖ ^ 2) / V ^ 2 := by
+          * ‖blockCoeff N c sigma‖ ^ (2 : ℕ)) / V ^ (2 : ℕ) := by
   have hmain := card_le_levelSet_blockPoly N hN c sigma hdelta hU hT hV.le hsep hspread hnear
     hlamT hKmax hKmax1 hlevel
-  have hhalf : V ^ 2 / 2 ≤ V ^ 2 - (1 + 214 * Real.sqrt T
-      + 1536 * ((N : ℝ) / Real.sqrt U)) * ‖blockCoeff N c sigma‖ ^ 2 := by linarith
+  have hhalf : V ^ (2 : ℕ) / 2 ≤ V ^ (2 : ℕ) - (1 + 214 * Real.sqrt T
+      + 1536 * ((N : ℝ) / Real.sqrt U)) * ‖blockCoeff N c sigma‖ ^ (2 : ℕ) := by linarith
   have hcard0 : (0 : ℝ) ≤ ((S.card : ℕ) : ℝ) := Nat.cast_nonneg _
-  have hstep : ((S.card : ℕ) : ℝ) * (V ^ 2 / 2)
+  have hstep : ((S.card : ℕ) : ℝ) * (V ^ (2 : ℕ) / 2)
       ≤ ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) * (1 + Real.log Kmax))
-          * ‖blockCoeff N c sigma‖ ^ 2 :=
+          * ‖blockCoeff N c sigma‖ ^ (2 : ℕ) :=
     le_trans (mul_le_mul_of_nonneg_left hhalf hcard0) hmain
-  have hV2 : (0 : ℝ) < V ^ 2 := by positivity
+  have hV2 : (0 : ℝ) < V ^ (2 : ℕ) := by positivity
   rw [le_div_iff₀ hV2]
   linarith
 

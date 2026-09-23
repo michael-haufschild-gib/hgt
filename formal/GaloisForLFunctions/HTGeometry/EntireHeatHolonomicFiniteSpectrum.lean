@@ -106,7 +106,7 @@ theorem eventually_eq_zero_of_recurrence_of_superGaussian
     (hq0 : q 0 ≠ 0)
     (hrec : ∀ N : ℕ, N₀ ≤ N →
       ∑ j ∈ Finset.range (r + 1), (q j).eval (N : ℂ) * b (N + j) = 0)
-    (hdecay : ∀ A : ℝ, 0 < A → ∃ M : ℝ, ∀ n : ℕ, ‖b n‖ ≤ M * Real.exp (-A * (n : ℝ) ^ 2)) :
+    (hdecay : ∀ A : ℝ, 0 < A → ∃ M : ℝ, ∀ n : ℕ, ‖b n‖ ≤ M * Real.exp (-A * (n : ℝ) ^ (2 : ℕ))) :
     ∃ N₁ : ℕ, ∀ n : ℕ, N₁ ≤ n → b n = 0 := by
   classical
   obtain ⟨c, Nc, hc, hcle⟩ := exists_lower_bound_polyEval hq0
@@ -273,20 +273,20 @@ theorem eventually_eq_zero_of_recurrence_of_superGaussian
   have hM0 : (0 : ℝ) ≤ M := by
     have h0 := hM 0
     simp only [Nat.cast_zero] at h0
-    have : Real.exp (-((D : ℝ) * r + 2) * (0 : ℝ) ^ 2) = 1 := by norm_num
+    have : Real.exp (-((D : ℝ) * r + 2) * (0 : ℝ) ^ (2 : ℕ)) = 1 := by norm_num
     rw [this, mul_one] at h0
     exact le_trans (norm_nonneg _) h0
-  have hchain : ∀ k : ℕ, ‖b n₀‖ ≤ M * Real.exp ((k : ℝ) * (Real.log E + (D : ℝ) * n₀) - 2 * k ^ 2) := by
+  have hchain : ∀ k : ℕ, ‖b n₀‖ ≤ M * Real.exp ((k : ℝ) * (Real.log E + (D : ℝ) * n₀) - 2 * k ^ (2 : ℕ)) := by
     intro k
     obtain ⟨h1, h2, h3, h4, h5⟩ := hinv k
-    have hbk : ‖b (path k)‖ ≤ M * Real.exp (-((D : ℝ) * r + 2) * (k : ℝ) ^ 2) := by
+    have hbk : ‖b (path k)‖ ≤ M * Real.exp (-((D : ℝ) * r + 2) * (k : ℝ) ^ (2 : ℕ)) := by
       refine le_trans (hM (path k)) ?_
       refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hM0
       have hk : (k : ℝ) ≤ (path k : ℝ) := by
         have : (k : ℝ) ≤ ((n₀ + k : ℕ) : ℝ) := by push_cast; linarith [Nat.cast_nonneg (α := ℝ) n₀]
         have h2' : ((n₀ + k : ℕ) : ℝ) ≤ (path k : ℝ) := by exact_mod_cast h3
         linarith
-      have hsq : (k : ℝ) ^ 2 ≤ (path k : ℝ) ^ 2 := by
+      have hsq : (k : ℝ) ^ (2 : ℕ) ≤ (path k : ℝ) ^ (2 : ℕ) := by
         have hk0 : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
         nlinarith
       have hA : (0 : ℝ) < (D : ℝ) * r + 2 := by positivity
@@ -295,14 +295,14 @@ theorem eventually_eq_zero_of_recurrence_of_superGaussian
       rw [← Real.exp_log hE0, ← Real.exp_nat_mul, Real.log_exp]
     calc ‖b n₀‖ ≤ (∏ i ∈ Finset.range k, (E * Real.exp ((D : ℝ) * path i))) * ‖b (path k)‖ := h5
       _ ≤ (E ^ k * Real.exp ((D : ℝ) * k * ((n₀ : ℝ) + r * k)))
-            * (M * Real.exp (-((D : ℝ) * r + 2) * (k : ℝ) ^ 2)) := by
+            * (M * Real.exp (-((D : ℝ) * r + 2) * (k : ℝ) ^ (2 : ℕ))) := by
           refine mul_le_mul (hprodle k) hbk (norm_nonneg _) ?_
           positivity
       _ = M * (Real.exp ((k : ℝ) * Real.log E + (D : ℝ) * k * ((n₀ : ℝ) + (r : ℝ) * k))
-            * Real.exp (-((D : ℝ) * r + 2) * (k : ℝ) ^ 2)) := by
+            * Real.exp (-((D : ℝ) * r + 2) * (k : ℝ) ^ (2 : ℕ))) := by
           rw [hEk, ← Real.exp_add]
           ring
-      _ = M * Real.exp ((k : ℝ) * (Real.log E + (D : ℝ) * n₀) - 2 * (k : ℝ) ^ 2) := by
+      _ = M * Real.exp ((k : ℝ) * (Real.log E + (D : ℝ) * n₀) - 2 * (k : ℝ) ^ (2 : ℕ)) := by
           rw [← Real.exp_add]
           congr 2
           ring
@@ -559,18 +559,18 @@ theorem exists_lowest_shift {b : ℕ → ℂ} {r : ℕ} {q : ℕ → Polynomial 
 
 theorem exists_superGaussian_bound {a : ℕ → ℂ}
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (A : ℝ) (hA : 0 < A) :
-    ∃ M : ℝ, ∀ n : ℕ, ‖a n‖ ≤ M * Real.exp (-A * (n : ℝ) ^ 2) := by
+    ∃ M : ℝ, ∀ n : ℕ, ‖a n‖ ≤ M * Real.exp (-A * (n : ℝ) ^ (2 : ℕ)) := by
   have hpiC : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
-  have hpi : (4 * (Real.pi : ℂ) ^ 2) ≠ 0 :=
+  have hpi : (4 * (Real.pi : ℂ) ^ (2 : ℕ)) ≠ 0 :=
     mul_ne_zero (by norm_num) (pow_ne_zero 2 hpiC)
-  set t₀ : ℂ := ((-(A / (4 * Real.pi ^ 2)) : ℝ) : ℂ) with ht₀
+  set t₀ : ℂ := ((-(A / (4 * Real.pi ^ (2 : ℕ))) : ℝ) : ℂ) with ht₀
   have hterm : ∀ n : ℕ,
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t₀)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t₀)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * 0)
-      = a n * Complex.exp (((A * (n : ℝ) ^ 2 : ℝ) : ℂ)) := by
+      = a n * Complex.exp (((A * (n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ)) := by
     intro n
     rw [mul_zero, Complex.exp_zero, mul_one]
     congr 1
@@ -582,18 +582,18 @@ theorem exists_superGaussian_bound {a : ℕ → ℂ}
   have htend := hsum.tendsto_atTop_zero
   obtain ⟨M, hM⟩ := htend.norm.bddAbove_range
   refine ⟨max M 0, fun n => ?_⟩
-  have hMn : ‖a n * Complex.exp (((A * (n : ℝ) ^ 2 : ℝ) : ℂ))‖ ≤ M :=
+  have hMn : ‖a n * Complex.exp (((A * (n : ℝ) ^ (2 : ℕ) : ℝ) : ℂ))‖ ≤ M :=
     hM (Set.mem_range_self n)
   rw [norm_mul, Complex.norm_exp_ofReal] at hMn
-  have hpos : (0 : ℝ) < Real.exp (A * (n : ℝ) ^ 2) := Real.exp_pos _
-  have hMn' : ‖a n‖ ≤ M / Real.exp (A * (n : ℝ) ^ 2) := (le_div_iff₀ hpos).mpr hMn
-  have hexpn : Real.exp (-A * (n : ℝ) ^ 2) = (Real.exp (A * (n : ℝ) ^ 2))⁻¹ := by
+  have hpos : (0 : ℝ) < Real.exp (A * (n : ℝ) ^ (2 : ℕ)) := Real.exp_pos _
+  have hMn' : ‖a n‖ ≤ M / Real.exp (A * (n : ℝ) ^ (2 : ℕ)) := (le_div_iff₀ hpos).mpr hMn
+  have hexpn : Real.exp (-A * (n : ℝ) ^ (2 : ℕ)) = (Real.exp (A * (n : ℝ) ^ (2 : ℕ)))⁻¹ := by
     rw [← Real.exp_neg]
     congr 1
     ring
-  calc ‖a n‖ ≤ M / Real.exp (A * (n : ℝ) ^ 2) := hMn'
-    _ ≤ max M 0 / Real.exp (A * (n : ℝ) ^ 2) := by gcongr; exact le_max_left _ _
-    _ = max M 0 * Real.exp (-A * (n : ℝ) ^ 2) := by rw [hexpn, div_eq_mul_inv]
+  calc ‖a n‖ ≤ M / Real.exp (A * (n : ℝ) ^ (2 : ℕ)) := hMn'
+    _ ≤ max M 0 / Real.exp (A * (n : ℝ) ^ (2 : ℕ)) := by gcongr; exact le_max_left _ _
+    _ = max M 0 * Real.exp (-A * (n : ℝ) ^ (2 : ℕ)) := by rw [hexpn, div_eq_mul_inv]
 
 
 /-- **Entire-heat holonomic anchors have finite spectrum.**  If the one-sided periodic heat orbit
@@ -601,7 +601,7 @@ theorem exists_superGaussian_bound {a : ℕ → ℂ}
 generating function `h(w) = ∑ a_n w^n` is D-finite, then `a_n = 0` for all large `n`. -/
 theorem entireHeat_dFinite_finite_spectrum {a : ℕ → ℂ} {m : ℕ} {p : ℕ → Polynomial ℂ}
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (hne : ∃ i ∈ Finset.range (m + 1), p i ≠ 0)
     (hdfin : ∑ i ∈ Finset.range (m + 1), (p i : PowerSeries ℂ)
@@ -628,24 +628,24 @@ theorem entireHeat_dFinite_finite_spectrum {a : ℕ → ℂ} {m : ℕ} {p : ℕ 
     have hidx : N + t + j₀ = N + j₀ + t := by omega
     simp only [hidx]
   have hdecayb : ∀ A : ℝ, 0 < A →
-      ∃ M : ℝ, ∀ n : ℕ, ‖(fun n => a (n + j₀)) n‖ ≤ M * Real.exp (-A * (n : ℝ) ^ 2) := by
+      ∃ M : ℝ, ∀ n : ℕ, ‖(fun n => a (n + j₀)) n‖ ≤ M * Real.exp (-A * (n : ℝ) ^ (2 : ℕ)) := by
     intro A hA
     obtain ⟨M, hM⟩ := exists_superGaussian_bound hheat A hA
     refine ⟨max M 0, fun n => ?_⟩
-    have h1 : ‖a (n + j₀)‖ ≤ M * Real.exp (-A * ((n + j₀ : ℕ) : ℝ) ^ 2) := hM (n + j₀)
+    have h1 : ‖a (n + j₀)‖ ≤ M * Real.exp (-A * ((n + j₀ : ℕ) : ℝ) ^ (2 : ℕ)) := hM (n + j₀)
     have hMle : M ≤ max M 0 := le_max_left _ _
     have hM0 : (0 : ℝ) ≤ max M 0 := le_max_right _ _
-    have hsq : ((n : ℝ)) ^ 2 ≤ ((n + j₀ : ℕ) : ℝ) ^ 2 := by
+    have hsq : ((n : ℝ)) ^ (2 : ℕ) ≤ ((n + j₀ : ℕ) : ℝ) ^ (2 : ℕ) := by
       have hle : (n : ℝ) ≤ ((n + j₀ : ℕ) : ℝ) := by push_cast; linarith [Nat.cast_nonneg (α := ℝ) j₀]
       have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
       nlinarith
-    have hexp : Real.exp (-A * ((n + j₀ : ℕ) : ℝ) ^ 2) ≤ Real.exp (-A * (n : ℝ) ^ 2) := by
+    have hexp : Real.exp (-A * ((n + j₀ : ℕ) : ℝ) ^ (2 : ℕ)) ≤ Real.exp (-A * (n : ℝ) ^ (2 : ℕ)) := by
       refine Real.exp_le_exp.mpr ?_
       nlinarith
-    calc ‖a (n + j₀)‖ ≤ M * Real.exp (-A * ((n + j₀ : ℕ) : ℝ) ^ 2) := h1
-      _ ≤ max M 0 * Real.exp (-A * ((n + j₀ : ℕ) : ℝ) ^ 2) :=
+    calc ‖a (n + j₀)‖ ≤ M * Real.exp (-A * ((n + j₀ : ℕ) : ℝ) ^ (2 : ℕ)) := h1
+      _ ≤ max M 0 * Real.exp (-A * ((n + j₀ : ℕ) : ℝ) ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_right hMle (Real.exp_pos _).le
-      _ ≤ max M 0 * Real.exp (-A * (n : ℝ) ^ 2) := mul_le_mul_of_nonneg_left hexp hM0
+      _ ≤ max M 0 * Real.exp (-A * (n : ℝ) ^ (2 : ℕ)) := mul_le_mul_of_nonneg_left hexp hM0
   obtain ⟨N₁, hN₁⟩ := eventually_eq_zero_of_recurrence_of_superGaussian
     (b := fun n => a (n + j₀)) (N₀ := 0) hq'0 (fun N _ => hrecb N) hdecayb
   refine ⟨N₁ + j₀, fun n hn => ?_⟩
@@ -677,7 +677,7 @@ theorem exists_polynomial_of_eventually_zero {a : ℕ → ℂ} {N : ℕ} (h : �
 multiplicative Fourier anchor is D-finite has finite spectrum: the anchor is a polynomial. -/
 theorem entireHeat_dFinite_isPolynomial {a : ℕ → ℂ} {m : ℕ} {p : ℕ → Polynomial ℂ}
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (hne : ∃ i ∈ Finset.range (m + 1), p i ≠ 0)
     (hdfin : ∑ i ∈ Finset.range (m + 1), (p i : PowerSeries ℂ)

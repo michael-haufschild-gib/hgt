@@ -48,23 +48,23 @@ theorem exists_omegaBudget_master :
         5 + 8 * Real.pi * w₀ ≤ ((contourParam Nmin : ℕ) : ℝ) →
         omegaBudget x h z₀ z
           ≤ 16 * Real.sqrt x
-              * (2 * (fibreWidth x h) ^ 2
+              * (2 * (fibreWidth x h) ^ (2 : ℕ)
                   * (ladderAffineSlope L B₀ Q η (ladderRho Ctot D Lx Hmaj μ q w₀ xmin Q η) * G
                     + ladderAffineConst z₀ z L B₀ Q η
                         (ladderRho Ctot D Lx Hmaj μ q w₀ xmin Q η) (relMoebiusSharp Nmin) w₀)
                 + (4 * (ladderAffineSlope L B₀ Q η (ladderRho Ctot D Lx Hmaj μ q w₀ xmin Q η)
                       + 5 * Real.pi / 2
-                        * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2)
+                        * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ))
                       + 5 * Real.exp 1 / 2 * (B₀ : ℝ)
-                        * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2) / T₀)
-                    / (Real.pi ^ 2 * G)
+                        * (∑ n ∈ Finset.Icc 1 B₀, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ)) / T₀)
+                    / (Real.pi ^ (2 : ℕ) * G)
                   + 4 * ladderAffineConst z₀ z L B₀ Q η
                         (ladderRho Ctot D Lx Hmaj μ q w₀ xmin Q η) (relMoebiusSharp Nmin) w₀
-                    / (3 * Real.pi ^ 2 * G ^ 2)))
-            + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ 2 * (Real.sqrt x + 1)
+                    / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ))))
+            + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ (2 : ℕ) * (Real.sqrt x + 1)
             + 2 * (h + 1) * (2 * h + 1)
                 * (4 * (Real.sqrt x / 2 + h + 1) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-                  + 8 * ((Nat.primesLE z).card : ℝ) ^ 2) := by
+                  + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ)) := by
   obtain ⟨A, delta, Ctot, τ₀, hdelta, hCtot, hτ₀, hann⟩ := exists_annulus_bound_uniform
   obtain ⟨K₀, N₁, hdisc⟩ := exists_disc_bound_uniform
   refine ⟨A, delta, Ctot, τ₀, K₀, N₁, hdelta, hCtot, hτ₀, ?_⟩

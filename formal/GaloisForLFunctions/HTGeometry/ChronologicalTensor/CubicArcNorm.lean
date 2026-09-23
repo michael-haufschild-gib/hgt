@@ -16,7 +16,7 @@ open Set
 
 def cubicArcProbe (t : ℝ) : Fin 5 → ℝ := ![(1-t)/2,0,t,0,(1-t)/2]
 
-def cubicArcReadout (A E t : ℝ) : ℝ := (A/4)*t*(1-t)^2+E*t^2
+def cubicArcReadout (A E t : ℝ) : ℝ := (A/4)*t*(1-t)^(2 : ℕ)+E*t^(2 : ℕ)
 
 def cubicArcValues (A E : ℝ) : Set ℝ := (fun t => |cubicArcReadout A E t|) '' Icc 0 1
 
@@ -74,10 +74,10 @@ theorem cubicArcCapacity_lost_bound (A E : ℝ) :
   have he0 := hnn 4
   have hsum' : g 0+g 2+g 4=1 := by simpa [hb,hd] using hsum
   have hc1 : g 2 ≤ 1 := by linarith
-  have hprod : g 0*g 4 ≤ (1-g 2)^2/4 := by nlinarith [sq_nonneg (g 0-g 4)]
+  have hprod : g 0*g 4 ≤ (1-g 2)^(2 : ℕ)/4 := by nlinarith [sq_nonneg (g 0-g 4)]
   let x := g 0*g 2*g 4
-  let R := g 2*(1-g 2)^2/4
-  let v := E*(g 2)^2
+  let R := g 2*(1-g 2)^(2 : ℕ)/4
+  let v := E*(g 2)^(2 : ℕ)
   let J := cubicArcCapacity A E
   have hx0 : 0 ≤ x := mul_nonneg (mul_nonneg ha0 hc0) he0
   have hxR : x ≤ R := by
@@ -85,9 +85,9 @@ theorem cubicArcCapacity_lost_bound (A E : ℝ) :
     dsimp [x,R]
     nlinarith only [h]
   have hv : |v| ≤ J := by
-    have hc2 : (g 2)^2 ≤ 1 := by nlinarith
+    have hc2 : (g 2)^(2 : ℕ) ≤ 1 := by nlinarith
     calc
-      |v|=|E| * (g 2)^2 := by simp [v,abs_mul,abs_of_nonneg hc0]
+      |v|=|E| * (g 2)^(2 : ℕ) := by simp [v,abs_mul,abs_of_nonneg hc0]
       _ ≤ |E| := by nlinarith [abs_nonneg E]
       _ ≤ J := cubicArcCapacity_endpoint A E
   have hR : |A*R+v| ≤ J := by

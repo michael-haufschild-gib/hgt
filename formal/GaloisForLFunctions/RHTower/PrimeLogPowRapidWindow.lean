@@ -73,20 +73,20 @@ theorem tendsto_primeLogPowWindowMass_four_rapidExponentialFockAdaptedRadius_zer
     Real.tendsto_exp_atTop.comp hminusArg
   have hM := tendsto_primeLogPowSum_sub 3
   have hplusRem : Tendsto (fun x : ℝ =>
-      primeLogPowSum 4 (Real.exp (x + r x)) - (x + r x) ^ 4 / 4)
+      primeLogPowSum 4 (Real.exp (x + r x)) - (x + r x) ^ (4 : ℕ) / 4)
       atTop (nhds (mertensLogPowConstantFull 3)) := by
     convert hM.comp hplusExp using 1 <;> norm_num [Function.comp_def]
   have hminusRem : Tendsto (fun x : ℝ =>
-      primeLogPowSum 4 (Real.exp (x - r x)) - (x - r x) ^ 4 / 4)
+      primeLogPowSum 4 (Real.exp (x - r x)) - (x - r x) ^ (4 : ℕ) / 4)
       atTop (nhds (mertensLogPowConstantFull 3)) := by
     convert hM.comp hminusExp using 1 <;> norm_num [Function.comp_def]
   have herr : Tendsto (fun x : ℝ =>
       primeLogPowWindowMass 4 x (r x) -
-        ((x + r x) ^ 4 - (x - r x) ^ 4) / 4) atTop (nhds 0) := by
+        ((x + r x) ^ (4 : ℕ) - (x - r x) ^ (4 : ℕ)) / 4) atTop (nhds 0) := by
     have hsub := hplusRem.sub hminusRem
     have hsub' : Tendsto (fun x : ℝ =>
-        (primeLogPowSum 4 (Real.exp (x + r x)) - (x + r x) ^ 4 / 4) -
-          (primeLogPowSum 4 (Real.exp (x - r x)) - (x - r x) ^ 4 / 4))
+        (primeLogPowSum 4 (Real.exp (x + r x)) - (x + r x) ^ (4 : ℕ) / 4) -
+          (primeLogPowSum 4 (Real.exp (x - r x)) - (x - r x) ^ (4 : ℕ) / 4))
         atTop (nhds 0) := by simpa using hsub
     refine hsub'.congr' (Filter.Eventually.of_forall fun x => ?_)
     simp only [primeLogPowWindowMass]
@@ -99,7 +99,7 @@ theorem tendsto_primeLogPowWindowMass_four_rapidExponentialFockAdaptedRadius_zer
     dsimp [r, K]
     simpa [mul_assoc] using mul_le_mul_of_nonneg_left
       (rapidExponentialFockAdaptedRadius_upper ha hx) hc.le
-  have hfirst : Tendsto (fun x : ℝ => 2 * x ^ 3 * r x) atTop (nhds 0) := by
+  have hfirst : Tendsto (fun x : ℝ => 2 * x ^ (3 : ℕ) * r x) atTop (nhds 0) := by
     have hmodel :=
       (GaloisForLFunctions.HTGeometry.tendsto_pow_mul_exp_neg_mul_atTop ha 3).const_mul
         (2 * K)
@@ -108,26 +108,26 @@ theorem tendsto_primeLogPowWindowMass_four_rapidExponentialFockAdaptedRadius_zer
       positivity
     · filter_upwards [eventually_ge_atTop (0 : ℝ), hrupper] with x hx hrx
       calc
-        2 * x ^ 3 * r x ≤ 2 * x ^ 3 * (K * Real.exp (-a * x)) := by gcongr
-        _ = (2 * K) * (x ^ 3 * Real.exp (-(a * x))) := by ring
+        2 * x ^ (3 : ℕ) * r x ≤ 2 * x ^ (3 : ℕ) * (K * Real.exp (-a * x)) := by gcongr
+        _ = (2 * K) * (x ^ (3 : ℕ) * Real.exp (-(a * x))) := by ring
     · simpa only [mul_zero] using hmodel
-  have hsecond : Tendsto (fun x : ℝ => 2 * x * (r x) ^ 3) atTop (nhds 0) := by
+  have hsecond : Tendsto (fun x : ℝ => 2 * x * (r x) ^ (3 : ℕ)) atTop (nhds 0) := by
     have h3a : 0 < 3 * a := by positivity
     have hmodel :=
       (GaloisForLFunctions.HTGeometry.tendsto_pow_mul_exp_neg_mul_atTop h3a 1).const_mul
-        (2 * K ^ 3)
+        (2 * K ^ (3 : ℕ))
     apply squeeze_zero'
     · filter_upwards [eventually_ge_atTop (0 : ℝ), hrpos] with x hx hrx
       positivity
     · filter_upwards [eventually_ge_atTop (0 : ℝ), hrpos, hrupper] with x hx hrposx hrx
       calc
-        2 * x * (r x) ^ 3 ≤ 2 * x * (K * Real.exp (-a * x)) ^ 3 := by gcongr
-        _ = (2 * K ^ 3) * (x ^ 1 * Real.exp (-((3 * a) * x))) := by
+        2 * x * (r x) ^ (3 : ℕ) ≤ 2 * x * (K * Real.exp (-a * x)) ^ (3 : ℕ) := by gcongr
+        _ = (2 * K ^ (3 : ℕ)) * (x ^ (1 : ℕ) * Real.exp (-((3 * a) * x))) := by
           rw [mul_pow, ← Real.exp_nat_mul]
           ring
     · simpa only [mul_zero] using hmodel
   have hmain : Tendsto (fun x : ℝ =>
-      ((x + r x) ^ 4 - (x - r x) ^ 4) / 4) atTop (nhds 0) := by
+      ((x + r x) ^ (4 : ℕ) - (x - r x) ^ (4 : ℕ)) / 4) atTop (nhds 0) := by
     have hsum := hfirst.add hsecond
     simpa only [zero_add] using hsum.congr'
       (Filter.Eventually.of_forall fun x => by ring)

@@ -38,7 +38,7 @@ namespace GaloisForLFunctions.RHTower
 
 /-- Unit-normalized free-electron dispersion in arbitrary finite momentum dimension. -/
 def freeElectronDispersion (d : ℕ) (k : EuclideanSpace ℝ (Fin d)) : ℝ :=
-  ‖k‖ ^ 2
+  ‖k‖ ^ (2 : ℕ)
 
 /-- Unit-chemical-potential free-electron Fermi surface in arbitrary finite dimension. -/
 def freeElectronFermiSurface (d : ℕ) : Set (EuclideanSpace ℝ (Fin d)) :=
@@ -72,7 +72,7 @@ theorem freeElectronFermiSurface_neg_invariant :
   simpa [freeElectronFermiSurface, freeElectronDispersion] using hk
 
 /-- Unit-normalized free-electron dispersion in one momentum dimension. -/
-def oneDimensionalFreeElectronDispersion (k : ℝ) : ℝ := k ^ 2
+def oneDimensionalFreeElectronDispersion (k : ℝ) : ℝ := k ^ (2 : ℕ)
 
 /-- Fermi surface at unit chemical potential in one momentum dimension. -/
 def oneDimensionalFreeElectronFermiSurface : Set ℝ :=
@@ -96,7 +96,7 @@ theorem oneDimensionalFreeElectronFermiSurface_eq :
 theorem oneDimensionalFreeElectronFermiSurface_regular :
     HTGeometry.IsLocalRegularLevelSetOfCodimAtLeast
       oneDimensionalFreeElectronFermiSurface 1 := by
-  let g : ℝ → ℝ := fun k => k ^ 2 - 1
+  let g : ℝ → ℝ := fun k => k ^ (2 : ℕ) - 1
   have hg : ContDiff ℝ ⊤ g := by
     fun_prop
   have hsurj : ∀ k, g k = 0 → Function.Surjective (fderiv ℝ g k) := by
@@ -120,7 +120,7 @@ theorem oneDimensionalFreeElectronFermiSurface_regular :
 
 /-- One-dimensional free-electron Fermi surface at arbitrary chemical potential. -/
 def oneDimensionalFreeElectronFermiSurfaceAt (chemicalPotential : ℝ) : Set ℝ :=
-  {momentum | momentum ^ 2 = chemicalPotential}
+  {momentum | momentum ^ (2 : ℕ) = chemicalPotential}
 
 /-- Below the band edge, the one-dimensional Fermi surface is empty. -/
 theorem oneDimensionalFreeElectronFermiSurfaceAt_negative :
@@ -184,7 +184,7 @@ theorem oneDimensionalFreeElectronFermiSurfaceAt_ncard :
 
 /-- Unit-normalized free-electron dispersion in two momentum dimensions. -/
 def twoDimensionalFreeElectronDispersion
-    (k : EuclideanSpace ℝ (Fin 2)) : ℝ := ‖k‖ ^ 2
+    (k : EuclideanSpace ℝ (Fin 2)) : ℝ := ‖k‖ ^ (2 : ℕ)
 
 /-- Fermi surface at unit chemical potential in two momentum dimensions. -/
 def twoDimensionalFreeElectronFermiSurface : Set (EuclideanSpace ℝ (Fin 2)) :=
@@ -270,7 +270,7 @@ theorem unitOnsagerOscillation_unitLandauCrossing :
 theorem ccmDiagonalOscillation_eq_unitOnsager_sq :
     ∀ inverseField : ℝ,
       _root_.RHTower.ccmArchimedeanGeometricCompositeDiagonalOscillation inverseField =
-        unitOnsagerOscillation inverseField ^ 2 := by
+        unitOnsagerOscillation inverseField ^ (2 : ℕ) := by
   intro inverseField
   rfl
 
@@ -465,8 +465,8 @@ def lifshitzKosevichSpinFactor (spinPhase : ℝ) : ℝ :=
 /-- The LK spin factor is exactly the real factor measured by a two-level survival probability. -/
 theorem lifshitzKosevichSpinFactor_twoLevel_realization :
     ∀ spinPhase : ℝ,
-      ‖_root_.RHTower.FiniteWindow.returningAmplitude 1 spinPhase‖ ^ 2 =
-        lifshitzKosevichSpinFactor spinPhase ^ 2 := by
+      ‖_root_.RHTower.FiniteWindow.returningAmplitude 1 spinPhase‖ ^ (2 : ℕ) =
+        lifshitzKosevichSpinFactor spinPhase ^ (2 : ℕ) := by
   intro spinPhase
   simpa [lifshitzKosevichSpinFactor] using
     _root_.RHTower.FiniteWindow.returningAmplitude_norm_sq 1 spinPhase
@@ -594,7 +594,7 @@ def filledUnitLandauFermiSeaEnergy (N : ℕ) : ℝ :=
 
 /-- A filled unit Landau sea has exact ground-state energy `N²/2`. -/
 theorem filledUnitLandauFermiSeaEnergy_eq :
-    ∀ N : ℕ, filledUnitLandauFermiSeaEnergy N = (N : ℝ) ^ 2 / 2 := by
+    ∀ N : ℕ, filledUnitLandauFermiSeaEnergy N = (N : ℝ) ^ (2 : ℕ) / 2 := by
   intro N
   rcases N with _ | N
   · simp [filledUnitLandauFermiSeaEnergy]

@@ -87,7 +87,7 @@ theorem kgShiftedSin_sq_add_cos_sq (t : ℝ) (ξ : E) :
   have h := Real.sin_sq_add_cos_sq (t * kgShiftedFreq v ξ)
   rw [show Real.sin (t * kgShiftedFreq v ξ) * Real.sin (t * kgShiftedFreq v ξ)
       + Real.cos (t * kgShiftedFreq v ξ) * Real.cos (t * kgShiftedFreq v ξ)
-      = Real.sin (t * kgShiftedFreq v ξ) ^ 2 + Real.cos (t * kgShiftedFreq v ξ) ^ 2 by ring, h,
+      = Real.sin (t * kgShiftedFreq v ξ) ^ (2 : ℕ) + Real.cos (t * kgShiftedFreq v ξ) ^ (2 : ℕ) by ring, h,
     Complex.ofReal_one]
 
 end Symbols

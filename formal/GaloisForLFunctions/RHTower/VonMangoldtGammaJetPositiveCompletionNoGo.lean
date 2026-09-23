@@ -25,8 +25,8 @@ noncomputable section
 point. -/
 theorem depthOneOrderGrowingFeature_two_normSq_eq :
     ‖finiteVonMangoldtAllDepthJetBalancedCauchyFeature
-        1 (0 : Fin 1) 1 0 2‖ ^ 2 =
-      1 / (128 * Real.log 2 * (Real.log 2 ^ 2 - 1 / 4) ^ 2) := by
+        1 (0 : Fin 1) 1 0 2‖ ^ (2 : ℕ) =
+      1 / (128 * Real.log 2 * (Real.log 2 ^ (2 : ℕ) - 1 / 4) ^ (2 : ℕ)) := by
   rw [finiteVonMangoldtAllDepthJetBalancedCauchyFeature,
     finiteExponentialAllDepthJetBalancedCauchyFeature,
     finiteVonMangoldtRealWeight, twoBoundaryCauchyJetResidual,
@@ -42,17 +42,17 @@ theorem depthOneOrderGrowingFeature_two_normSq_eq :
   norm_num [norm_mul, norm_div, Complex.norm_real,
     Real.norm_eq_abs, expNegTruncPoly]
   have hlog : Real.log 2 ≠ 0 := (Real.log_pos (by norm_num)).ne'
-  have hquad : Real.log 2 ^ 2 - 1 / 4 ≠ 0 := by
+  have hquad : Real.log 2 ^ (2 : ℕ) - 1 / 4 ≠ 0 := by
     have hlo : (1 / 2 : ℝ) < Real.log 2 := by
       nlinarith [Real.log_two_gt_d9]
     nlinarith
   have hnormlog : ‖((Real.log 2 : ℝ) : ℂ)‖ = |Real.log 2| := by
     rw [Complex.norm_real, Real.norm_eq_abs]
   have hnormquad :
-      ‖((Real.log 2 : ℂ) ^ 2 - 1 / 4)‖ =
-        |Real.log 2 ^ 2 - 1 / 4| := by
-    have hcast : ((Real.log 2 : ℂ) ^ 2 - 1 / 4) =
-        ((Real.log 2 ^ 2 - 1 / 4 : ℝ) : ℂ) := by
+      ‖((Real.log 2 : ℂ) ^ (2 : ℕ) - 1 / 4)‖ =
+        |Real.log 2 ^ (2 : ℕ) - 1 / 4| := by
+    have hcast : ((Real.log 2 : ℂ) ^ (2 : ℕ) - 1 / 4) =
+        ((Real.log 2 ^ (2 : ℕ) - 1 / 4 : ℝ) : ℂ) := by
       push_cast
       ring
     rw [hcast, Complex.norm_real, Real.norm_eq_abs]
@@ -65,7 +65,7 @@ theorem depthOneOrderGrowingFeature_two_normSq_eq :
   rw [abs_of_pos (by
     have hlo : (1 / 2 : ℝ) < Real.log 2 := by
       nlinarith [Real.log_two_gt_d9]
-    nlinarith : 0 < Real.log 2 ^ 2 - 1 / 4)]
+    nlinarith : 0 < Real.log 2 ^ (2 : ℕ) - 1 / 4)]
   rw [pow_two]
   field_simp [hlog, hquad]
   rw [Real.sq_sqrt (Real.log_nonneg (by norm_num)), Real.sq_sqrt (by norm_num)]
@@ -75,12 +75,12 @@ theorem depthOneOrderGrowingFeature_two_normSq_eq :
 theorem one_fifth_lt_depthOneOrderGrowingFeature_two_normSq :
     (1 / 5 : ℝ) <
       ‖finiteVonMangoldtAllDepthJetBalancedCauchyFeature
-        1 (0 : Fin 1) 1 0 2‖ ^ 2 := by
+        1 (0 : Fin 1) 1 0 2‖ ^ (2 : ℕ) := by
   rw [depthOneOrderGrowingFeature_two_normSq_eq]
   let x : ℝ := Real.log 2
   let q : ℝ := 347 / 500
-  let y : ℝ := x ^ 2 - 1 / 4
-  let r : ℝ := q ^ 2 - 1 / 4
+  let y : ℝ := x ^ (2 : ℕ) - 1 / 4
+  let r : ℝ := q ^ (2 : ℕ) - 1 / 4
   have hxpos : 0 < x := Real.log_pos (by norm_num)
   have hxlt : x < q := by
     dsimp only [x, q]
@@ -93,27 +93,27 @@ theorem one_fifth_lt_depthOneOrderGrowingFeature_two_normSq :
   have hrpos : 0 < r := by
     dsimp only [r, q]
     norm_num
-  have hxSq : x ^ 2 < q ^ 2 :=
+  have hxSq : x ^ (2 : ℕ) < q ^ (2 : ℕ) :=
     (sq_lt_sq₀ hxpos.le (le_of_lt (hxpos.trans hxlt))).2 hxlt
   have hyr : y < r := by
     exact sub_lt_sub_right hxSq (1 / 4)
-  have hySq : y ^ 2 < r ^ 2 :=
+  have hySq : y ^ (2 : ℕ) < r ^ (2 : ℕ) :=
     (sq_lt_sq₀ hypos.le hrpos.le).2 hyr
-  have hxy : x * y ^ 2 < q * r ^ 2 := by
+  have hxy : x * y ^ (2 : ℕ) < q * r ^ (2 : ℕ) := by
     calc
-      x * y ^ 2 ≤ q * y ^ 2 :=
+      x * y ^ (2 : ℕ) ≤ q * y ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hxlt.le (sq_nonneg y)
-      _ < q * r ^ 2 := mul_lt_mul_of_pos_left hySq (by
+      _ < q * r ^ (2 : ℕ) := mul_lt_mul_of_pos_left hySq (by
         dsimp only [q]
         norm_num)
-  have hdenlt : 128 * x * y ^ 2 < 5 := by
+  have hdenlt : 128 * x * y ^ (2 : ℕ) < 5 := by
     calc
-      128 * x * y ^ 2 = 128 * (x * y ^ 2) := by ring
-      _ < 128 * (q * r ^ 2) := mul_lt_mul_of_pos_left hxy (by norm_num)
+      128 * x * y ^ (2 : ℕ) = 128 * (x * y ^ (2 : ℕ)) := by ring
+      _ < 128 * (q * r ^ (2 : ℕ)) := mul_lt_mul_of_pos_left hxy (by norm_num)
       _ < 5 := by
         dsimp only [q, r]
         norm_num
-  have hdenpos : 0 < 128 * x * y ^ 2 := by positivity
+  have hdenpos : 0 < 128 * x * y ^ (2 : ℕ) := by positivity
   have hinv := one_div_lt_one_div_of_lt hdenpos hdenlt
   simpa only [x, y] using hinv
 
@@ -122,7 +122,7 @@ feature. -/
 theorem depthOneOrderGrowingKernelTerm_zero_zero_eq_normSq (n : ℕ) :
     vonMangoldtAllDepthOrderGrowingCauchyKernelTerm 1 0 0 n =
       (‖finiteVonMangoldtAllDepthJetBalancedCauchyFeature
-          1 (0 : Fin 1) 1 0 (n + 2)‖ ^ 2 : ℝ) := by
+          1 (0 : Fin 1) 1 0 (n + 2)‖ ^ (2 : ℕ) : ℝ) := by
   simp [vonMangoldtAllDepthOrderGrowingCauchyKernelTerm, Complex.mul_conj']
 
 /-- Exact positive-series formula for the depth-one central diagonal. -/
@@ -130,7 +130,7 @@ theorem depthOneOrderGrowingKernel_zero_zero_eq_normSq_tsum :
     infiniteVonMangoldtAllDepthOrderGrowingCauchyKernel 1 0 0 =
       ((∑' n : ℕ,
         ‖finiteVonMangoldtAllDepthJetBalancedCauchyFeature
-          1 (0 : Fin 1) 1 0 (n + 2)‖ ^ 2 : ℝ) : ℂ) := by
+          1 (0 : Fin 1) 1 0 (n + 2)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [infiniteVonMangoldtAllDepthOrderGrowingCauchyKernel,
     Complex.ofReal_tsum]
   apply tsum_congr
@@ -145,7 +145,7 @@ theorem one_fifth_lt_depthOneOrderGrowingKernel_zero_zero_re :
   simp only [Complex.ofReal_re]
   have hsum : Summable (fun n : ℕ =>
       ‖finiteVonMangoldtAllDepthJetBalancedCauchyFeature
-        1 (0 : Fin 1) 1 0 (n + 2)‖ ^ 2) :=
+        1 (0 : Fin 1) 1 0 (n + 2)‖ ^ (2 : ℕ)) :=
     (summable_nat_add_iff 2).mpr
       (summable_normSq_finiteVonMangoldtAllDepthOrderGrowingCauchyFeature
         1 (0 : Fin 1) 0)

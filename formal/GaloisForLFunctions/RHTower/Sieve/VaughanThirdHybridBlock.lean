@@ -35,7 +35,7 @@ theorem exists_norm_sum_vonMangoldt_ndPhaseExp_le_third_hybrid :
       0 < T → 0 < r → 1 ≤ A → A ≤ B → B ≤ 2 * A → B - 1 ≤ L →
       1 ≤ L → 1 ≤ U → 1 ≤ V → U < A → U * V ≤ A → U * V ≤ L → V ≤ L →
       8 * r ≤ (A : ℝ) →
-      T * r * ((U * V : ℕ) : ℝ) ^ 3 ≤ 72 * Real.pi * (A : ℝ) ^ 4 →
+      T * r * ((U * V : ℕ) : ℝ) ^ (3 : ℕ) ≤ 72 * Real.pi * (A : ℝ) ^ (4 : ℕ) →
       ‖∑ n ∈ Finset.Ico A B, ((vonMangoldt n : ℝ) : ℂ) * ndPhaseExp T r n‖
         ≤ vaughanThirdHybridBlockEnvelope C T r A B L U V := by
   obtain ⟨C, hC0, hII⟩ := exists_norm_typeII_piece_le_hybrid_vaughan
@@ -48,10 +48,10 @@ theorem exists_norm_sum_vonMangoldt_ndPhaseExp_le_third_hybrid :
     simpa [mul_comm] using Nat.mul_le_mul_left V hU
   have hVA : V ≤ A := le_trans hVUV hUVA
   have hcondUV := thirdDerivative_fibre_conditions hT hr hA hAB hBA hUVA h8 hcurv
-  have hVpow : (V : ℝ) ^ 3 ≤ ((U * V : ℕ) : ℝ) ^ 3 := by
+  have hVpow : (V : ℝ) ^ (3 : ℕ) ≤ ((U * V : ℕ) : ℝ) ^ (3 : ℕ) := by
     have : (V : ℝ) ≤ ((U * V : ℕ) : ℝ) := by exact_mod_cast hVUV
     gcongr
-  have hcurvV : T * r * (V : ℝ) ^ 3 ≤ 72 * Real.pi * (A : ℝ) ^ 4 :=
+  have hcurvV : T * r * (V : ℝ) ^ (3 : ℕ) ≤ 72 * Real.pi * (A : ℝ) ^ (4 : ℕ) :=
     le_trans (mul_le_mul_of_nonneg_left hVpow (by positivity)) hcurv
   have hcondV := thirdDerivative_fibre_conditions hT hr hA hAB hBA hVA h8 hcurvV
   have hraw := norm_sum_vonMangoldt_ndPhaseExp_third_le' hT hr hUA hA hB hBL

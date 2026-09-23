@@ -28,16 +28,16 @@ def complexWeightedAffineMoment {ι : Type*}
 def complexWeightedAffineCentralDet {ι : Type*}
     (s : Finset ι) (c z : ι → ℂ) : ℂ :=
   complexWeightedAffineMoment s c z 0 * complexWeightedAffineMoment s c z 2 -
-    complexWeightedAffineMoment s c z 1 ^ 2
+    complexWeightedAffineMoment s c z 1 ^ (2 : ℕ)
 
 /-- Complex-weight Cauchy--Binet identity.  Positivity is not asserted. -/
 theorem two_mul_complexWeightedAffineCentralDet_eq_pair_sum
     {ι : Type*} (s : Finset ι) (c z : ι → ℂ) :
     2 * complexWeightedAffineCentralDet s c z =
-      ∑ i ∈ s, ∑ j ∈ s, c i * c j * (z i - z j) ^ 2 := by
+      ∑ i ∈ s, ∑ j ∈ s, c i * c j * (z i - z j) ^ (2 : ℕ) := by
   have hexpand : ∀ i ∈ s,
-      ∑ j ∈ s, c i * c j * (z i - z j) ^ 2 =
-        c i * z i ^ 2 * complexWeightedAffineMoment s c z 0 -
+      ∑ j ∈ s, c i * c j * (z i - z j) ^ (2 : ℕ) =
+        c i * z i ^ (2 : ℕ) * complexWeightedAffineMoment s c z 0 -
           2 * (c i * z i) * complexWeightedAffineMoment s c z 1 +
           c i * complexWeightedAffineMoment s c z 2 := by
     intro i _hi
@@ -56,7 +56,7 @@ theorem two_mul_complexWeightedAffineCentralDet_eq_pair_sum
       2 * complexWeightedAffineMoment s c z 1 := by
     rw [complexWeightedAffineMoment, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _hi => by ring
-  have h2 : ∑ i ∈ s, c i * z i ^ 2 =
+  have h2 : ∑ i ∈ s, c i * z i ^ (2 : ℕ) =
       complexWeightedAffineMoment s c z 2 := rfl
   rw [h0, h1, h2, complexWeightedAffineCentralDet]
   ring
@@ -64,7 +64,7 @@ theorem two_mul_complexWeightedAffineCentralDet_eq_pair_sum
 /-- One ordered affine-companion exterior coefficient. -/
 def complexWeightedAffinePairCoefficient {ι : Type*}
     (c z : ι → ℂ) (p : ι × ι) : ℂ :=
-  (1 / 2 : ℂ) * c p.1 * c p.2 * (z p.1 - z p.2) ^ 2
+  (1 / 2 : ℂ) * c p.1 * c p.2 * (z p.1 - z p.2) ^ (2 : ℕ)
 
 /-- Finite second-compound trace with source-native integer-harmonic ordinate dephasing. -/
 def finiteAffineCompanionIntegerHarmonicTrace {ι : Type*}

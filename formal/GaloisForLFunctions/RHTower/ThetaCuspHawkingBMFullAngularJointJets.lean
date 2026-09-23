@@ -114,9 +114,9 @@ private theorem jointIntegrand_smooth (q : XiZeroCopy) (branch : Bool) :
 private theorem jointMean_smooth (q : XiZeroCopy) (branch : Bool) :
     ContDiff ℝ ∞ (jointMean q branch) := by
   unfold jointMean
-  exact (compactIntegralInfty (E := Fin 3 → ℝ) (P := ℝ) (K := ℝ)
+  exact contDiff_const.mul (compactIntegralInfty (E := Fin 3 → ℝ) (P := ℝ) (K := ℝ)
     (μ := volume) (Icc 0 (2 * Real.pi)) isCompact_Icc id continuous_id
-    (jointIntegrand_smooth q branch)).const_mul (1 / (2 * Real.pi : ℂ))
+    (jointIntegrand_smooth q branch))
 
 private theorem jointMean_eq_angularMean (q : XiZeroCopy) (branch : Bool)
     (p : Fin 3 → ℝ) :
@@ -154,8 +154,8 @@ theorem physicalMean_contDiffAt (q : XiZeroCopy) (branch : Bool) (d : ℝ)
     · exact contDiffAt_const
     · simpa using (contDiff_apply ℝ ℝ 0).contDiffAt
     · simpa using hlog
-  simpa only [physicalMean, Function.comp_def] using
-    (angularMean_joint_smooth q branch).contDiffAt.comp z hmap
+  show ContDiffAt ℝ ∞ (fun w : Point => angularMean q branch d (w 0) (Real.log (w 1))) z
+  simpa [Function.comp_def] using (angularMean_joint_smooth q branch).contDiffAt.comp z hmap
 
 end
 end RHTower.D4BMFullAngularCircleJointJets

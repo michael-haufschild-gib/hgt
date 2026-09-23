@@ -129,7 +129,7 @@ theorem tendsto_truncatedExpSeries (z : ℝ) :
 theorem orderedTensorFockGram_apply {n d : ℕ} (y : Fin n → Fin d → ℝ) (m : ℕ)
     (r : ℝ) (i j : Fin n) :
     orderedTensorFockGram y m r i j =
-      truncatedExpSeries (2 * r ^ 2 * coordinateDot y i j) m := by
+      truncatedExpSeries (2 * r ^ (2 : ℕ) * coordinateDot y i j) m := by
   unfold orderedTensorFockGram standardFeatureGram
   change (∑ q : orderedTensorFeature d m,
       orderedTensorFockRow y r i q * orderedTensorFockRow y r j q) = _
@@ -149,7 +149,7 @@ theorem orderedTensorFockGram_apply {n d : ℕ} (y : Fin n → Fin d → ℝ) (m
         (Real.sqrt ((2 : ℝ) ^ k.1 / Nat.factorial k.1) * r ^ k.1 *
           orderedTensorMonomial y j (toLex ⟨k, toLex q⟩)) = _
     calc
-      _ = Real.sqrt ((2 : ℝ) ^ k.1 / Nat.factorial k.1) ^ 2 *
+      _ = Real.sqrt ((2 : ℝ) ^ k.1 / Nat.factorial k.1) ^ (2 : ℕ) *
           r ^ (2 * k.1) *
           (orderedTensorMonomial y i (toLex ⟨k, toLex q⟩) *
             orderedTensorMonomial y j (toLex ⟨k, toLex q⟩)) := by ring
@@ -189,15 +189,15 @@ theorem det_truncatedExponentialInnerMatrix_eq_canonicalFeatureVolume
 theorem det_truncatedExponentialInnerMatrix_mul_sq_le
     {n d : ℕ} (y : Fin n → Fin d → ℝ) (m : ℕ)
     (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    (truncatedExponentialInnerMatrix y m (a * b)).det ^ 2 ≤
-      (truncatedExponentialInnerMatrix y m (a ^ 2)).det *
-        (truncatedExponentialInnerMatrix y m (b ^ 2)).det := by
+    (truncatedExponentialInnerMatrix y m (a * b)).det ^ (2 : ℕ) ≤
+      (truncatedExponentialInnerMatrix y m (a ^ (2 : ℕ))).det *
+        (truncatedExponentialInnerMatrix y m (b ^ (2 : ℕ))).det := by
   rw [det_truncatedExponentialInnerMatrix_eq_canonicalFeatureVolume
     y m (a * b) (mul_nonneg ha hb)]
   rw [det_truncatedExponentialInnerMatrix_eq_canonicalFeatureVolume
-    y m (a ^ 2) (sq_nonneg a)]
+    y m (a ^ (2 : ℕ)) (sq_nonneg a)]
   rw [det_truncatedExponentialInnerMatrix_eq_canonicalFeatureVolume
-    y m (b ^ 2) (sq_nonneg b)]
+    y m (b ^ (2 : ℕ)) (sq_nonneg b)]
   exact canonicalFeatureVolume_mul_sq_le
     (orderedTensorMonomial y) orderedTensorWeight orderedTensorDegree
       orderedTensorWeight_nonneg a b
@@ -227,13 +227,13 @@ Pluecker partitions. -/
 theorem coordinateExponentialInnerMatrix_det_mul_sq_le
     {n d : ℕ} (y : Fin n → Fin d → ℝ)
     (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    (coordinateExponentialInnerMatrix y (a * b)).det ^ 2 ≤
-      (coordinateExponentialInnerMatrix y (a ^ 2)).det *
-        (coordinateExponentialInnerMatrix y (b ^ 2)).det := by
+    (coordinateExponentialInnerMatrix y (a * b)).det ^ (2 : ℕ) ≤
+      (coordinateExponentialInnerMatrix y (a ^ (2 : ℕ))).det *
+        (coordinateExponentialInnerMatrix y (b ^ (2 : ℕ))).det := by
   apply le_of_tendsto_of_tendsto
     ((tendsto_det_truncatedExponentialInnerMatrix y (a * b)).pow 2)
-    ((tendsto_det_truncatedExponentialInnerMatrix y (a ^ 2)).mul
-      (tendsto_det_truncatedExponentialInnerMatrix y (b ^ 2)))
+    ((tendsto_det_truncatedExponentialInnerMatrix y (a ^ (2 : ℕ))).mul
+      (tendsto_det_truncatedExponentialInnerMatrix y (b ^ (2 : ℕ))))
   exact Filter.Eventually.of_forall fun m =>
     det_truncatedExponentialInnerMatrix_mul_sq_le y m a b ha hb
 
@@ -272,9 +272,9 @@ theorem hilbertExponentialInnerMatrix_fin_det_mul_sq_le_of_finiteDimensional
     {n : ℕ} {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] (x : Fin n → E)
     (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    (hilbertExponentialInnerMatrix x (a * b)).det ^ 2 ≤
-      (hilbertExponentialInnerMatrix x (a ^ 2)).det *
-        (hilbertExponentialInnerMatrix x (b ^ 2)).det := by
+    (hilbertExponentialInnerMatrix x (a * b)).det ^ (2 : ℕ) ≤
+      (hilbertExponentialInnerMatrix x (a ^ (2 : ℕ))).det *
+        (hilbertExponentialInnerMatrix x (b ^ (2 : ℕ))).det := by
   simpa only [coordinateExponentialInnerMatrix_orthonormalCoordinates] using
     coordinateExponentialInnerMatrix_det_mul_sq_le
       (orthonormalCoordinates x) a b ha hb
@@ -284,9 +284,9 @@ needed: the finite family is reduced to its own finite-dimensional linear span. 
 theorem hilbertExponentialInnerMatrix_fin_det_mul_sq_le
     {n : ℕ} {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     (x : Fin n → E) (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    (hilbertExponentialInnerMatrix x (a * b)).det ^ 2 ≤
-      (hilbertExponentialInnerMatrix x (a ^ 2)).det *
-        (hilbertExponentialInnerMatrix x (b ^ 2)).det := by
+    (hilbertExponentialInnerMatrix x (a * b)).det ^ (2 : ℕ) ≤
+      (hilbertExponentialInnerMatrix x (a ^ (2 : ℕ))).det *
+        (hilbertExponentialInnerMatrix x (b ^ (2 : ℕ))).det := by
   let S : Submodule ℝ E := Submodule.span ℝ (Set.range x)
   letI : FiniteDimensional ℝ S :=
     FiniteDimensional.span_of_finite ℝ (Set.finite_range x)
@@ -303,9 +303,9 @@ theorem hilbertExponentialInnerMatrix_det_mul_sq_le
     {ι E : Type*} [Fintype ι] [DecidableEq ι]
     [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     (x : ι → E) (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    (hilbertExponentialInnerMatrix x (a * b)).det ^ 2 ≤
-      (hilbertExponentialInnerMatrix x (a ^ 2)).det *
-        (hilbertExponentialInnerMatrix x (b ^ 2)).det := by
+    (hilbertExponentialInnerMatrix x (a * b)).det ^ (2 : ℕ) ≤
+      (hilbertExponentialInnerMatrix x (a ^ (2 : ℕ))).det *
+        (hilbertExponentialInnerMatrix x (b ^ (2 : ℕ))).det := by
   classical
   let e : ι ≃ Fin (Fintype.card ι) := Fintype.equivFin ι
   let xf : Fin (Fintype.card ι) → E := fun k => x (e.symm k)

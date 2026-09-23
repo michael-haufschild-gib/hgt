@@ -38,7 +38,7 @@ theorem exists_finiteQuantumObserver_graphRank_recurrence_within_window
       (n : ℝ) * tickTime ≤ coherentWindow ∧
       finiteQuantumObserverDistanceSq lam
           (finiteObserverHamiltonianVertexPhase (n : ℝ) energy) block ≤
-        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ 2 *
+        4 * (2 * Real.pi / (Q + 1 : ℝ)) ^ (2 : ℕ) *
           ∑ i, ∑ j, finiteObserverUnionWeight lam block i j := by
   obtain ⟨n, hn0, hnQ, hdist⟩ :=
     exists_finiteQuantumObserver_graphRank_distance_recurrence

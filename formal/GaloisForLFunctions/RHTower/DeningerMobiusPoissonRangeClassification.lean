@@ -38,10 +38,10 @@ noncomputable section
 /-! ## The double series -/
 
 private theorem deningerShiftSq_summable :
-    Summable fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 2 := by
-  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ 2 :=
+    Summable fun n : ℕ => 1 / ((n : ℝ) + 1) ^ (2 : ℕ) := by
+  have hsq : Summable fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ) :=
     Real.summable_one_div_nat_pow.mpr one_lt_two
-  have hshift : Summable fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ) ^ 2 :=
+  have hshift : Summable fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) :=
     (summable_nat_add_iff 1).mpr hsq
   refine hshift.congr fun n => ?_
   push_cast
@@ -60,12 +60,12 @@ theorem deningerLogPull_double_summable {h : 𝓢(ℝ, ℂ)} (hh : h ∈ Deninge
     Summable fun q : ℕ × ℕ =>
       ‖deningerLogPull h ((((q.1 + 1) * (q.2 + 1) : ℕ) : ℝ) * x)‖ := by
   obtain ⟨C, hCnn, hC⟩ := deningerLogPull_norm_le_inv_sq hh
-  have hxsq : (0 : ℝ) < x ^ 2 := by positivity
+  have hxsq : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
   have hpair : Summable fun q : ℕ × ℕ =>
-      (C / x ^ 2) * ((1 / ((q.1 : ℝ) + 1) ^ 2) * (1 / ((q.2 : ℝ) + 1) ^ 2)) := by
+      (C / x ^ (2 : ℕ)) * ((1 / ((q.1 : ℝ) + 1) ^ (2 : ℕ)) * (1 / ((q.2 : ℝ) + 1) ^ (2 : ℕ))) := by
     refine Summable.mul_left _ ?_
-    exact Summable.mul_of_nonneg (f := fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 2)
-      (g := fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 2) deningerShiftSq_summable deningerShiftSq_summable
+    exact Summable.mul_of_nonneg (f := fun n : ℕ => 1 / ((n : ℝ) + 1) ^ (2 : ℕ))
+      (g := fun n : ℕ => 1 / ((n : ℝ) + 1) ^ (2 : ℕ)) deningerShiftSq_summable deningerShiftSq_summable
       (fun n => by positivity) (fun n => by positivity)
   refine Summable.of_norm_bounded hpair fun q => ?_
   have h1 : (0 : ℝ) < (q.1 : ℝ) + 1 := by positivity

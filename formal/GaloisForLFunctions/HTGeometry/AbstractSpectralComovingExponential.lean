@@ -54,21 +54,21 @@ theorem two_mul_mass_add_re_le_three_mul_mass_re
       3 * ((F.mass (show 1 / 2 ≤ a by linarith)).pt i).re := by
   let haHalf : 1 / 2 ≤ a := by linarith
   have hJ := F.abs_im_lt i
-  have hJ2 : (F.pt i).im ^ 2 < 1 / 4 := by
+  have hJ2 : (F.pt i).im ^ (2 : ℕ) < 1 / 4 := by
     nlinarith [sq_abs (F.pt i).im, abs_nonneg ((F.pt i).im)]
   have hM2raw := re_le_sq_csqrtRe (F.massArg_re_pos haHalf i)
   rw [F.massArg_re] at hM2raw
   have hM2 :
-      (F.pt i).re ^ 2 - (F.pt i).im ^ 2 + a ^ 2 ≤
-        ((F.mass haHalf).pt i).re ^ 2 := by
+      (F.pt i).re ^ (2 : ℕ) - (F.pt i).im ^ (2 : ℕ) + a ^ (2 : ℕ) ≤
+        ((F.mass haHalf).pt i).re ^ (2 : ℕ) := by
     simpa only [F.mass_pt, csqrt_re] using hM2raw
   have hM0 : 0 ≤ ((F.mass haHalf).pt i).re := by
     rw [F.mass_pt, csqrt_re]
     exact csqrtRe_nonneg (F.massArg a i)
   have hR := F.re_pos i
   have hquad :
-      (2 * (a + (F.pt i).re)) ^ 2 <
-        (3 * ((F.mass haHalf).pt i).re) ^ 2 := by
+      (2 * (a + (F.pt i).re)) ^ (2 : ℕ) <
+        (3 * ((F.mass haHalf).pt i).re) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (5 * (F.pt i).re - 4 * a)]
   have hfinal :
       2 * (a + (F.pt i).re) ≤ 3 * ((F.mass haHalf).pt i).re := by
@@ -107,7 +107,7 @@ theorem sixteen_mul_mass_mul_abs_im_le_three_mul_add_re
   have hK : 4 * (a + R) * |K| ≤ 3 * R := by
     have hscale := mul_le_mul_of_nonneg_right hroot (abs_nonneg K)
     nlinarith
-  have hamgm : 4 * a * R ≤ (a + R) ^ 2 := by
+  have hamgm : 4 * a * R ≤ (a + R) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (a - R)]
   have hscale :
       (4 * a) * (4 * (a + R) * |K|) ≤ (4 * a) * (3 * R) :=

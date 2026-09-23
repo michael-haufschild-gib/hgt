@@ -218,12 +218,12 @@ private theorem card_fin_difference_fibre
 theorem integral_finiteFejerKernel {R : ℕ} (hR : 0 < R) :
     (∫ β in (0 : ℝ)..1, finiteFejerKernel R β) = 2 := by
   have hparseval := integral_normSq_expSum R (fun _ => (1 : ℂ))
-  have hsum : (∑ _n : Fin R, ‖(1 : ℂ)‖ ^ 2) = (R : ℝ) := by simp
+  have hsum : (∑ _n : Fin R, ‖(1 : ℂ)‖ ^ (2 : ℕ)) = (R : ℝ) := by simp
   rw [hsum] at hparseval
   unfold finiteFejerKernel
   rw [intervalIntegral.integral_const_mul]
   have hfun : (fun x : ℝ => Complex.normSq (finitePhaseProgression R x)) =
-      fun x : ℝ => ‖expSum R (fun _ => (1 : ℂ)) x‖ ^ 2 := by
+      fun x : ℝ => ‖expSum R (fun _ => (1 : ℂ)) x‖ ^ (2 : ℕ) := by
     funext x
     rw [finitePhaseProgression_eq_expSum_one, Complex.normSq_eq_norm_sq]
   rw [hfun, hparseval]
@@ -867,7 +867,7 @@ theorem norm_mvIntervalCoefficientSum_le_sqrt
     hQ hYZ hYK hwidthLower hL hLY hZLK c hc hS hfull
   have hhalfA : (Z - Y) / 2 ≤ A := (Nat.div_le_self _ _).trans hwidthUpper
   have hLr : (0 : ℝ) < L := by exact_mod_cast hL
-  have hrsq : r ^ 2 = (A : ℝ) * S := by
+  have hrsq : r ^ (2 : ℕ) = (A : ℝ) * S := by
     dsimp [r]
     exact Real.sq_sqrt hAS
   have hquot : (A : ℝ) * S / L ≤ r := by

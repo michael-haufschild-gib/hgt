@@ -34,7 +34,7 @@ def GammaIntegerShiftIntensityBlindnessCertificate (a : ℂ) (n : ℕ) : Prop :=
     (gammaOppositeShiftWignerSmithLogMero a (a + (n : ℂ))) ∧
   gammaOppositeShiftPhaseMero a (a + (n : ℂ)) *
       gammaOppositeShiftIntensityMero a (a + (n : ℂ)) =
-    (gammaOppositeShiftQuotientMero a (a + (n : ℂ))) ^ 2 ∧
+    (gammaOppositeShiftQuotientMero a (a + (n : ℂ))) ^ (2 : ℕ) ∧
   (¬ HTGeometry.FiniteDifferentialCircuit
     (HTGeometry.BaseScalarOrAtom (RatFunc ℂ) (meroField Set.univ)
       (fun x ↦ x = gammaOppositeShiftIntensityMero a (a + (n : ℂ))))

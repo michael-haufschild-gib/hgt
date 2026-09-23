@@ -61,9 +61,9 @@ def ccmWeilThreeAtomCross (u v w s : ℝ) : ℝ :=
 /-- The logarithmic value separation along the fixed-mass positive family. -/
 def ccmWeilThreeAtomLogSeparation : ℝ := 13*Real.log 2-8*Real.log 3
 
-/-- The separation is strictly positive by the exact integer inequality 3^8 < 2^13. -/
+/-- The separation is strictly positive by the exact integer inequality 3^(8 : ℕ) < 2^(13 : ℕ). -/
 theorem ccmWeilThreeAtomLogSeparation_pos : 0 < ccmWeilThreeAtomLogSeparation := by
-  have h := Real.log_lt_log (by norm_num : (0:ℝ)<3^8) (by norm_num : (3:ℝ)^8<2^13)
+  have h := Real.log_lt_log (by norm_num : (0:ℝ)<3^(8 : ℕ)) (by norm_num : (3:ℝ)^(8 : ℕ)<2^(13 : ℕ))
   rw [Real.log_pow,Real.log_pow] at h
   unfold ccmWeilThreeAtomLogSeparation
   norm_num at h
@@ -96,7 +96,7 @@ theorem ccmWeilThreeAtomCross_family (t s : ℝ) :
     ccmWeilThreeAtomCross (2*t) (6*(1-t)) (4*t) s =
       16*s-8*Real.log 3-t*ccmWeilThreeAtomLogSeparation := by
   have h4 : Real.log 4 = 2*Real.log 2 := by
-    simpa only [show (2:ℝ)^2=4 by norm_num,Nat.cast_ofNat] using Real.log_pow (2:ℝ) 2
+    simpa only [show (2:ℝ)^(2 : ℕ)=4 by norm_num,Nat.cast_ofNat] using Real.log_pow (2:ℝ) 2
   unfold ccmWeilThreeAtomCross ccmWeilThreeAtomLogSeparation
   rw [h4]
   ring

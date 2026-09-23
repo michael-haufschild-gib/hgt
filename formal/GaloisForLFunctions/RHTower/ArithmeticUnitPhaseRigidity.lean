@@ -239,7 +239,7 @@ theorem unitPhaseBoundary_im_eq_zero_iff {ρ : ℂ} (hρ : ρ ∈ minimumStrip)
 
 /-- The exact complex derivative of the rational boundary. -/
 theorem hasDerivAt_unitPhaseBoundary {s : ℂ} (hs : s ∈ minimumStrip) :
-    HasDerivAt unitPhaseBoundary ((1 - 2 * s) / (2 * (s * (1 - s)) ^ 2)) s := by
+    HasDerivAt unitPhaseBoundary ((1 - 2 * s) / (2 * (s * (1 - s)) ^ (2 : ℕ))) s := by
   have hd := unitPhaseStrip_denominators hs
   have hp := (hasDerivAt_id s).mul ((hasDerivAt_const s (1 : ℂ)).sub (hasDerivAt_id s))
   have hi := ((hp.inv (mul_ne_zero hd.1 (sub_ne_zero.mpr hd.2.1.symm))).neg).div_const 2
@@ -254,7 +254,7 @@ theorem unitPhaseGerm_tangent {ρ : ℂ} {H : ℂ → ℂ}
     (hi : ∀ᶠ s in 𝓝 ρ,
       (normalizedWeightedRemainder s 1).im = (riemannZeta s * H s).im) :
     deriv riemannZeta ρ * (H ρ - 1 / (ρ * (ρ + 1))) =
-      -(1 - 2 * ρ) / (2 * (ρ * (1 - ρ)) ^ 2) := by
+      -(1 - 2 * ρ) / (2 * (ρ * (1 - ρ)) ^ (2 : ℕ)) := by
   obtain ⟨c, hc⟩ := unitPhaseGerm_real_constant hρ hH hi
   have hd := unitPhaseStrip_denominators hρ
   have hz' : HasDerivAt riemannZeta (deriv riemannZeta ρ) ρ :=
@@ -270,7 +270,7 @@ theorem unitPhaseGerm_tangent {ρ : ℂ} {H : ℂ → ℂ}
     simpa only [hz, zero_mul, add_zero] using hz'.fun_mul hH.differentiableAt.hasDerivAt
   have hf := ((hasDerivAt_unitPhaseBoundary hρ).sub hq).add hp
   have he := hf.unique ((hasDerivAt_const ρ (c : ℂ)).congr_of_eventuallyEq hc)
-  change (1 - 2 * ρ) / (2 * (ρ * (1 - ρ)) ^ 2) -
+  change (1 - 2 * ρ) / (2 * (ρ * (1 - ρ)) ^ (2 : ℕ)) -
       deriv riemannZeta ρ / (ρ * (ρ + 1)) + deriv riemannZeta ρ * H ρ = 0 at he
   linear_combination he
 
@@ -291,7 +291,7 @@ theorem unitPhaseGerm_necessary {ρ : ℂ} (hρ : ρ ∈ minimumStrip)
     have hh := congrArg Complex.im h
     simp at hh
     linarith
-  have hn' : -(1 - 2 * ρ) / (2 * (ρ * (1 - ρ)) ^ 2) ≠ 0 :=
+  have hn' : -(1 - 2 * ρ) / (2 * (ρ * (1 - ρ)) ^ (2 : ℕ)) ≠ 0 :=
     div_ne_zero (neg_ne_zero.mpr hn) (mul_ne_zero (by norm_num)
       (pow_ne_zero _ (mul_ne_zero hd.1 (sub_ne_zero.mpr hd.2.1.symm))))
   intro h

@@ -27,7 +27,7 @@ theorem integrable_expFourier_kernel {g : ℝ → ℂ} (hmeas : AEStronglyMeasur
     {w : ℂ} (hw : |w.im| < ε) :
     Integrable fun x : ℝ => g x * Complex.exp (-(I * w * x)) := by
   have hc : 0 < ε - |w.im| := by linarith
-  refine Integrable.mono' ((integrable_exp_neg_mul_abs hc).const_mul K) ?_ ?_
+  refine Integrable.mono' ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hc).const_mul K) ?_ ?_
   · exact hmeas.mul (Complex.continuous_exp.comp (by fun_prop)).aestronglyMeasurable
   · refine ae_of_all _ fun x => ?_
     rw [norm_mul, Complex.norm_exp, re_neg_I_mul_mul_ofReal]
@@ -94,7 +94,7 @@ theorem hasDerivAt_expFourier {g : ℝ → ℂ} (hmeas : AEStronglyMeasurable g 
           refine Real.exp_le_exp.2 ?_
           have hεsplit : ε = |w₀.im| + 2 * r := by rw [hr]; ring
           nlinarith [abs_nonneg x]
-  · exact (integrable_abs_mul_exp_neg_mul_abs hr0).const_mul K
+  · exact (integrable_abs_mul_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hr0).const_mul K
   · refine ae_of_all _ fun x w _ => ?_
     have h1 : HasDerivAt (fun w : ℂ => -(I * (x : ℂ)) * w) (-(I * (x : ℂ))) w := by
       simpa using (hasDerivAt_id w).const_mul (-(I * (x : ℂ)))
@@ -159,7 +159,7 @@ theorem integrable_expDecay_mul_pow {g : ℝ → ℂ} (hmeas : AEStronglyMeasura
   have hhalf : 0 < ε / 2 := by linarith
   have hmaj : Integrable
       (fun x : ℝ => K * ((2 / ε) ^ n * (n.factorial : ℝ)) * Real.exp (-(ε / 2 * |x|))) := by
-    exact (integrable_exp_neg_mul_abs hhalf).const_mul
+    exact (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hhalf).const_mul
       (K * ((2 / ε) ^ n * (n.factorial : ℝ)))
   refine Integrable.mono' hmaj (hmeas.mul (by fun_prop)) ?_
   refine Filter.Eventually.of_forall fun x => ?_
@@ -234,7 +234,7 @@ theorem integral_norm_expFourierSeriesTerm_le {g : ℝ → ℂ}
   have hhalf : 0 < ε / 2 := by linarith
   have hmaj : Integrable (fun x : ℝ => K * ((2 / ε) ^ n * (n.factorial : ℝ)) *
       Real.exp (-(ε / 2 * |x|))) :=
-    (integrable_exp_neg_mul_abs hhalf).const_mul _
+    (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hhalf).const_mul _
   have hfacpos : (0 : ℝ) < (n.factorial : ℝ) := by exact_mod_cast n.factorial_pos
   have hpt : ∀ x : ℝ, ‖expFourierSeriesTerm g w n x‖ ≤
       (‖w‖ ^ n / (n.factorial : ℝ)) *
@@ -310,7 +310,7 @@ theorem expFourier_eq_zero_of_moments {g : ℝ → ℂ} (hmeas : AEStronglyMeasu
 theorem integrable_of_expDecay {g : ℝ → ℂ} (hmeas : AEStronglyMeasurable g volume)
     {K ε : ℝ} (hε : 0 < ε) (hbound : ∀ x : ℝ, ‖g x‖ ≤ K * Real.exp (-(ε * |x|))) :
     Integrable g :=
-  Integrable.mono' ((integrable_exp_neg_mul_abs hε).const_mul K) hmeas
+  Integrable.mono' ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hε).const_mul K) hmeas
     (Filter.Eventually.of_forall hbound)
 
 theorem convex_imStrip (ε : ℝ) : Convex ℝ {w : ℂ | |w.im| < ε} := by
@@ -368,7 +368,7 @@ theorem expWeightIntegrable_of_bound {g : ℝ → ℂ} (hmeas : AEStronglyMeasur
     ExpWeightIntegrable g ε := by
   intro a ha
   have hc : 0 < ε - |a| := by linarith
-  refine Integrable.mono' ((integrable_exp_neg_mul_abs hc).const_mul K)
+  refine Integrable.mono' ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic hc).const_mul K)
     (hmeas.norm.mul (by fun_prop)) (Filter.Eventually.of_forall fun x => ?_)
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   calc ‖g x‖ * Real.exp (a * |x|)

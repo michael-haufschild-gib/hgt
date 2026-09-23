@@ -174,7 +174,7 @@ by squared analytic multiplicity. -/
 def xiWeylTropicalReflectionCharge
     (T : ℝ) (p q : Nat.Primes) (n : ℕ) : ℝ :=
   ∑ rho ∈ (stripZeros_finite T).toFinset,
-    (((analyticOrderAt xi rho).toNat : ℝ) ^ 2) *
+    (((analyticOrderAt xi rho).toNat : ℝ) ^ (2 : ℕ)) *
       deningerCalderonWittGammaWeylTropicalPacketCharge 1
         (xiNearbyPoleDualityAdjunctionFracture rho).re p q n
 

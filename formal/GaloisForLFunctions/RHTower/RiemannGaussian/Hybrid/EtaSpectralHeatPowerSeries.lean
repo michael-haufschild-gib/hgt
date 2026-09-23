@@ -53,15 +53,15 @@ theorem hasSum_heatMomentPowerSeries (x u : ℝ) (order : ℕ) :
     HasSum
       (fun m : ℕ ↦ ((-u) ^ m / (m.factorial : ℝ)) *
         x ^ (order + 2 * m))
-      (x ^ order * Real.exp (-u * x ^ 2)) := by
-  have h := NormedSpace.expSeries_div_hasSum_exp (-u * x ^ 2)
+      (x ^ order * Real.exp (-u * x ^ (2 : ℕ))) := by
+  have h := NormedSpace.expSeries_div_hasSum_exp (-u * x ^ (2 : ℕ))
   rw [← Real.exp_eq_exp_ℝ] at h
   have hm := h.mul_left (x ^ order)
   have hterm (m : ℕ) :
-      x ^ order * ((-u * x ^ 2) ^ m / (m.factorial : ℝ)) =
+      x ^ order * ((-u * x ^ (2 : ℕ)) ^ m / (m.factorial : ℝ)) =
         ((-u) ^ m / (m.factorial : ℝ)) * x ^ (order + 2 * m) := by
     rw [mul_pow]
-    rw [show (x ^ 2) ^ m = x ^ (2 * m) by rw [pow_mul]]
+    rw [show (x ^ (2 : ℕ)) ^ m = x ^ (2 * m) by rw [pow_mul]]
     rw [pow_add]
     ring
   simpa only [hterm] using hm
@@ -74,7 +74,7 @@ private theorem hasSum_finset_heatMomentPowerSeries
         ((-u) ^ m / (m.factorial : ℝ)) *
           hA.eigenvalues i ^ (order + 2 * m))
       (∑ i ∈ s, hA.eigenvalues i ^ order *
-        Real.exp (-u * hA.eigenvalues i ^ 2)) := by
+        Real.exp (-u * hA.eigenvalues i ^ (2 : ℕ))) := by
   classical
   induction s using Finset.induction_on with
   | empty => simp

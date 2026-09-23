@@ -35,7 +35,7 @@ theorem fullAngularField_smooth (q : XiZeroCopy) (branch : Bool) (z : Fin 2 → 
 theorem fullAngularField_equation (q : XiZeroCopy) (branch : Bool) (z : Fin 2 → ℝ) (hz : 0 < z 1) :
     scalarLaplacian (fullAngularField q branch) z =
       parameter q branch*fullAngularField q branch z +
-        (parameter q branch/2)*scalar (center q) z^2 := by
+        (parameter q branch/2)*scalar (center q) z^(2 : ℕ) := by
   let w : UpperHalfPlane := ⟨angularCoordinates.symm z,by change 0 < ((z 0 : ℂ)+(z 1 : ℂ)*Complex.I).im; simpa using hz⟩
   have hw : coordinates w = z := by
     change angularCoordinates (angularCoordinates.symm z) = z
@@ -81,7 +81,7 @@ theorem fullAngularCovector_forced (q : XiZeroCopy) (branch : Bool) (z : Fin 2 �
   let H := fullAngularField q branch
   let S := scalar (center q)
   let L := parameter q branch
-  have he : scalarLaplacian H =ᶠ[𝓝 z] (fun w => L*H w+(L/2)*S w^2) := by
+  have he : scalarLaplacian H =ᶠ[𝓝 z] (fun w => L*H w+(L/2)*S w^(2 : ℕ)) := by
     filter_upwards [(isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hz] with w hw
     exact fullAngularField_equation q branch w hw
   have hH := ((fullAngularField_smooth q branch z hz).differentiableAt (by simp)).hasFDerivAt

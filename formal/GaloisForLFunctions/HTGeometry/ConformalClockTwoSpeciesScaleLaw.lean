@@ -29,7 +29,7 @@ variable {d : ℕ} (M : SmoothMetricChart d)
 
 /-- Species-independent geometric defect `D_σ = a □σ + a² Γ(σ,σ)` of a conformal factor. -/
 noncomputable def conformalDefect (a : ℝ) (sigma : (Fin d → ℝ) → ℝ) (x : Fin d → ℝ) : ℝ :=
-  a * M.dalembert sigma x + a ^ 2 * M.gradPair sigma sigma x
+  a * M.dalembert sigma x + a ^ (2 : ℕ) * M.gradPair sigma sigma x
 
 /-- Effective zeroth-order potential `V_μ^σ = μ e^{2σ} - D_σ` of a clock species. -/
 noncomputable def conformalPotential (a massSq : ℝ) (sigma : (Fin d → ℝ) → ℝ)
@@ -71,7 +71,7 @@ theorem conformalKleinGordon_conjugation
         (massSq * Real.exp (2 * sigma x) +
             -ExponentialSecondOrderClockCalculus.conformalDimensionWeight d *
               M.dalembert sigma x -
-          ExponentialSecondOrderClockCalculus.conformalDimensionWeight d ^ 2 *
+          ExponentialSecondOrderClockCalculus.conformalDimensionWeight d ^ (2 : ℕ) *
             M.gradPair sigma sigma x) * u x := by
     simp only [conformalPotential, conformalDefect]
     ring

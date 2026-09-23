@@ -24,7 +24,7 @@ def restrictedProjectionDisplacement (R P : H →L[ℂ] H) : H →L[ℂ] H :=
 
 /-- First odd nuclear polynomial at the Hilbert--Schmidt boundary. -/
 def restrictedProjectionCubicDefect (R P : H →L[ℂ] H) : H →L[ℂ] H :=
-  restrictedProjectionDisplacement R P ^ 3
+  restrictedProjectionDisplacement R P ^ (3 : ℕ)
 
 /-- Positive channel in which `R` exits the `P` polarization. -/
 def restrictedProjectionPositiveChannel (R P : H →L[ℂ] H) : H →L[ℂ] H :=
@@ -64,7 +64,7 @@ theorem adjoint_restrictedProjectionCubicDefect
     (hP : ContinuousLinearMap.adjoint P = P) :
     ContinuousLinearMap.adjoint (restrictedProjectionCubicDefect R P) =
       restrictedProjectionCubicDefect R P := by
-  rw [restrictedProjectionCubicDefect, show (restrictedProjectionDisplacement R P) ^ 3 =
+  rw [restrictedProjectionCubicDefect, show (restrictedProjectionDisplacement R P) ^ (3 : ℕ) =
       ((restrictedProjectionDisplacement R P) ∘L
           restrictedProjectionDisplacement R P) ∘L
         restrictedProjectionDisplacement R P by
@@ -75,7 +75,7 @@ theorem adjoint_restrictedProjectionCubicDefect
   rfl
 
 omit [CompleteSpace H] in
-/-- Exact positive-channel decomposition `(R-P)^3 = R(1-P)R - P(1-R)P`. -/
+/-- Exact positive-channel decomposition `(R-P)^(3 : ℕ) = R(1-P)R - P(1-R)P`. -/
 theorem restrictedProjectionCubicDefect_eq_channels
     (R P : H →L[ℂ] H)
     (hR : IsIdempotentElem R)
@@ -83,7 +83,7 @@ theorem restrictedProjectionCubicDefect_eq_channels
     restrictedProjectionCubicDefect R P =
       restrictedProjectionPositiveChannel R P -
         restrictedProjectionPositiveChannel P R := by
-  change (R - P) ^ 3 = R * (1 - P) * R - P * (1 - R) * P
+  change (R - P) ^ (3 : ℕ) = R * (1 - P) * R - P * (1 - R) * P
   have hRR : R * R = R := hR
   have hPP : P * P = P := hP
   noncomm_ring [hRR, hPP]

@@ -10,7 +10,7 @@ escape left by that theorem was covariance asserted only at isolated finite sour
 This module kills that escape at its strongest source-universal form. For every centered BM clock,
 it constructs one finite-support-preserving coordinatewise polynomial evolution
 
-`E(x)_q = m_q x_q + x_q^2 (x_q - 1) K_q`
+`E(x)_q = m_q x_q + x_q^(2 : ℕ) (x_q - 1) K_q`
 
 whose vacuum first variation is the original clock and which is source-FE covariant on the unit
 basis packet of every Xi copy. The correction is mixed quadratic--cubic: it vanishes to second
@@ -48,7 +48,7 @@ def hbXiPeierlsIsolatedUnitClockInterpolant
   Finsupp.onFinset x.support
     (fun q =>
       hbXiPeierlsCenteredQNMPhysicalClockMultiplier n t q * x q +
-        x q ^ 2 * (x q - 1) *
+        x q ^ (2 : ℕ) * (x q - 1) *
           hbXiPeierlsIsolatedUnitClockCorrectionCoefficient n t q)
     (by
       intro q hq
@@ -63,7 +63,7 @@ theorem hbXiPeierlsIsolatedUnitClockInterpolant_apply
     (n : ℕ) (t : ℝ) (x : HBXiPeierlsPacket) (q : XiZeroCopy) :
     hbXiPeierlsIsolatedUnitClockInterpolant n t x q =
       hbXiPeierlsCenteredQNMPhysicalClockMultiplier n t q * x q +
-        x q ^ 2 * (x q - 1) *
+        x q ^ (2 : ℕ) * (x q - 1) *
           hbXiPeierlsIsolatedUnitClockCorrectionCoefficient n t q := by
   rw [hbXiPeierlsIsolatedUnitClockInterpolant, Finsupp.onFinset_apply]
 
@@ -102,7 +102,7 @@ theorem hbXiPeierlsCenteredQNMPhysicalClockMultiplier_reflect_eq_conj_of_re_eq_h
 
 theorem hbXiPeierlsIsolatedUnitClockCorrection_reflect_eval
     (n : ℕ) (t : ℝ) (q : XiZeroCopy) :
-    hbXiPeierlsUnitSourceFECocycle q ^ 2 *
+    hbXiPeierlsUnitSourceFECocycle q ^ (2 : ℕ) *
           (hbXiPeierlsUnitSourceFECocycle q - 1) *
           hbXiPeierlsIsolatedUnitClockCorrectionCoefficient n t
             (xiZeroCopyReflectEquiv q) =
@@ -185,8 +185,8 @@ theorem hbXiPeierlsIsolatedUnitClockInterpolant_vacuumFirstVariation
       (𝓝[≠] 0) (𝓝 0) :=
     (Complex.continuous_ofReal.tendsto 0).mono_left inf_le_left
   have hax2 : Tendsto
-      (fun amplitude : ℝ => (amplitude : ℂ) * x r ^ 2)
-      (𝓝[≠] 0) (𝓝 (0 * x r ^ 2)) :=
+      (fun amplitude : ℝ => (amplitude : ℂ) * x r ^ (2 : ℕ))
+      (𝓝[≠] 0) (𝓝 (0 * x r ^ (2 : ℕ))) :=
     ha.mul tendsto_const_nhds
   have haxsub : Tendsto
       (fun amplitude : ℝ => (amplitude : ℂ) * x r - 1)
@@ -194,14 +194,14 @@ theorem hbXiPeierlsIsolatedUnitClockInterpolant_vacuumFirstVariation
     (ha.mul tendsto_const_nhds).sub tendsto_const_nhds
   have hcorr : Tendsto
       (fun amplitude : ℝ =>
-        (amplitude : ℂ) * x r ^ 2 * ((amplitude : ℂ) * x r - 1) *
+        (amplitude : ℂ) * x r ^ (2 : ℕ) * ((amplitude : ℂ) * x r - 1) *
           hbXiPeierlsIsolatedUnitClockCorrectionCoefficient n t r)
       (𝓝[≠] 0) (𝓝 0) := by
     simpa using (hax2.mul haxsub).mul tendsto_const_nhds
   have hsum : Tendsto
       (fun amplitude : ℝ =>
         Complex.exp (-I * (t : ℂ) * hbXiPeierlsCenteredQNMFrequency n r) * x r +
-          (amplitude : ℂ) * x r ^ 2 * ((amplitude : ℂ) * x r - 1) *
+          (amplitude : ℂ) * x r ^ (2 : ℕ) * ((amplitude : ℂ) * x r - 1) *
             hbXiPeierlsIsolatedUnitClockCorrectionCoefficient n t r)
       (𝓝[≠] 0)
       (𝓝 (Complex.exp (-I * (t : ℂ) * hbXiPeierlsCenteredQNMFrequency n r) * x r)) := by

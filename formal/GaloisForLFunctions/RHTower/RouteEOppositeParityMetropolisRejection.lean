@@ -235,7 +235,7 @@ theorem totalRejection_eq_totalWeight_of_reverse_disjoint
 
 private lemma routeEPairEntropy_sq_le
     (a b : ℝ) (ha : 0 < a) (hb : 0 < b) :
-    2 * (a - b) ^ 2 ≤ (a + b) * ((a - b) * Real.log (a / b)) := by
+    2 * (a - b) ^ (2 : ℕ) ≤ (a + b) * ((a - b) * Real.log (a / b)) := by
   wlog hab : b ≤ a generalizing a b
   · have hswap := this b a hb ha (le_of_not_ge hab)
     have hlog : Real.log (b / a) = -Real.log (a / b) := by
@@ -258,14 +258,14 @@ private lemma routeEPairEntropy_sq_le
     have hadd : 0 ≤ a + b := (add_pos ha hb).le
     have hmul' := mul_le_mul_of_nonneg_left hmul hadd
     calc
-      2 * (a - b) ^ 2 =
+      2 * (a - b) ^ (2 : ℕ) =
           (a + b) * ((a - b) * (2 * (a - b) / (a + b))) := by
             field_simp [(add_pos ha hb).ne']
       _ ≤ (a + b) * ((a - b) * Real.log (a / b)) := hmul'
 
 private lemma routeEPairEntropy_sq_le_of_zero_iff
     (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hz : a = 0 ↔ b = 0) :
-    2 * (a - b) ^ 2 ≤ (a + b) * ((a - b) * Real.log (a / b)) := by
+    2 * (a - b) ^ (2 : ℕ) ≤ (a + b) * ((a - b) * Real.log (a / b)) := by
   by_cases ha0 : a = 0
   · rw [ha0, hz.mp ha0]
     norm_num
@@ -360,7 +360,7 @@ theorem edgeRelativeEntropy_eq_normalizedEdgeLawSum
 
 private theorem edgeVariationMass_sq_le
     (K : RouteEOppositeParityKernel ι) (hac : K.ReverseAbsolutelyContinuous) :
-    K.edgeVariationMass ^ 2 ≤
+    K.edgeVariationMass ^ (2 : ℕ) ≤
       2 * K.totalWeight *
         (∑ i, ∑ j,
           K.edgeMass i j * Real.log (K.edgeMass i j / K.edgeMass j i)) := by
@@ -407,7 +407,7 @@ private theorem edgeVariationMass_sq_le
     rw [K.pairEntropy_sum_eq_two_mul_forward hac]
     ring
   rw [Fintype.sum_prod_type] at hcs
-  change K.edgeVariationMass ^ 2 ≤ _ at hcs
+  change K.edgeVariationMass ^ (2 : ℕ) ≤ _ at hcs
   rw [hfirst, hsecond] at hcs
   simpa [mul_assoc] using hcs
 

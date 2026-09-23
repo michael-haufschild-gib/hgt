@@ -55,7 +55,7 @@ theorem gramMatrix_posDef_of_linearIndependent {n : ℕ} {v : Fin n → E}
     exact Fintype.linearIndependent_iff.mp h c hzero i
   have hnorm : (0 : ℝ) < ‖(∑ i, c i • v i)‖ := norm_pos_iff.mpr hw
   have hre : (inner ℂ (∑ i, c i • v i) (∑ i, c i • v i) : ℂ)
-      = ((‖(∑ i, c i • v i)‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖(∑ i, c i • v i)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     rw [inner_self_eq_norm_sq_to_K]
     norm_cast
   rw [dotProduct_gramMatrix_mulVec, hre]

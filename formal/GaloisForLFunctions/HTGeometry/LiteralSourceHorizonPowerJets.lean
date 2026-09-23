@@ -24,7 +24,7 @@ def literalSourceHorizonPowerFirst (α : ℂ) (z : ℝ) : ℂ :=
 
 def literalSourceHorizonPowerSecond (α : ℂ) (z : ℝ) : ℂ :=
   ((literalSourceHorizonLogSecond z : ℂ) * α +
-    ((literalSourceHorizonLogFirst z : ℂ) * α) ^ 2) * literalSourceHorizonPower α z
+    ((literalSourceHorizonLogFirst z : ℂ) * α) ^ (2 : ℕ)) * literalSourceHorizonPower α z
 
 /-- The literal power has its actual first and second radial derivatives. -/
 theorem literalSourceHorizonPower_derivatives (α : ℂ) {z : ℝ} (hz : z < 1) :

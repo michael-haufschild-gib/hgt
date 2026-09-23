@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.CentralReciprocalMoments
 /-!
 # Functional-equation folding in the reciprocal-square coordinate
 
-The centered reciprocal coordinate `-((rho - 1/2)⁻¹)^2` identifies the functional-equation
+The centered reciprocal coordinate `-((rho - 1/2)⁻¹)^(2 : ℕ)` identifies the functional-equation
 pair `rho` and `1-rho`.  The completed xi divisor has equal analytic order at those two points,
 so the folded atom carries twice the original multiplicity.  Conjugation gives the second atom
 of an off-axis quartet, again with doubled multiplicity, while a critical-line pair folds to the
@@ -61,7 +61,7 @@ theorem xiReciprocalFold_quartet_weights (rho : ℂ) :
 /-- A point `1/2 + i*gamma` maps to the positive real reciprocal atom `gamma⁻²`. -/
 theorem xiCentralReciprocalSquare_criticalLine (gamma : ℝ) :
     xiCentralReciprocalSquare (1 / 2 + (gamma : ℂ) * I) =
-      ((gamma⁻¹ ^ 2 : ℝ) : ℂ) := by
+      ((gamma⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) := by
   simp only [xiCentralReciprocalSquare]
   rw [show (1 / 2 + (gamma : ℂ) * I) - 1 / 2 = (gamma : ℂ) * I by ring]
   rw [mul_inv_rev, inv_I]
@@ -74,7 +74,7 @@ theorem xiCentralReciprocalSquare_criticalLine (gamma : ℝ) :
 multiplicity. -/
 theorem xiReciprocalFold_criticalLine_pair (gamma : ℝ) :
     xiCentralReciprocalSquare (1 - (1 / 2 + (gamma : ℂ) * I)) =
-        ((gamma⁻¹ ^ 2 : ℝ) : ℂ) ∧
+        ((gamma⁻¹ ^ (2 : ℕ) : ℝ) : ℂ) ∧
       analyticOrderAt xi (1 - (1 / 2 + (gamma : ℂ) * I)) =
         analyticOrderAt xi (1 / 2 + (gamma : ℂ) * I) ∧
       (analyticOrderAt xi (1 / 2 + (gamma : ℂ) * I)).toNat +

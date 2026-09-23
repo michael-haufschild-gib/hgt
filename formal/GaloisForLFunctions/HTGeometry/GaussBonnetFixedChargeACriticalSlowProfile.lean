@@ -69,7 +69,7 @@ theorem egbFixedChargeACriticalSlowProfile_energy_exact (n m : ℕ) :
         (egbFixedChargeACriticalSlowProfile n)) =
           (4 / 9 : ℝ) ^ m * egbFixedChargeACriticalCenteredEnergy n (egbFixedChargeACriticalSlowProfile n) := by
   rw [egbFixedChargeACriticalSlowProfile_evolution, egbFixedChargeACriticalCenteredEnergy_scale]
-  have hp : ((2 / 3 : ℝ) ^ m) ^ 2 = (4 / 9 : ℝ) ^ m := by
+  have hp : ((2 / 3 : ℝ) ^ m) ^ (2 : ℕ) = (4 / 9 : ℝ) ^ m := by
     rw [pow_two, ← mul_pow]
     norm_num
   rw [hp]

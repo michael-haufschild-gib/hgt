@@ -223,8 +223,8 @@ theorem finiteGaussianOddHeatTransposeBilinearAt_swap
       apply Finset.sum_congr rfl
       intro i _hi
       unfold finiteGaussianProperTimeKernelMatrix
-      rw [show (frequency j - frequency i) ^ 2 =
-          (frequency i - frequency j) ^ 2 by ring]
+      rw [show (frequency j - frequency i) ^ (2 : ℕ) =
+          (frequency i - frequency j) ^ (2 : ℕ) by ring]
       rw [show frequency j - frequency i =
           -(frequency i - frequency j) by ring]
       push_cast

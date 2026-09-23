@@ -21,13 +21,13 @@ namespace GaloisForLFunctions
 factor. -/
 theorem hasDerivAt_mobiusTangentGerm
     {a z : ℂ} (hden : 1 - a * z ≠ 0) :
-    HasDerivAt (mobiusTangentGerm a) ((1 - a * z)⁻¹ ^ 2) z := by
+    HasDerivAt (mobiusTangentGerm a) ((1 - a * z)⁻¹ ^ (2 : ℕ)) z := by
   have hnum : HasDerivAt (fun w : ℂ => w) 1 z := hasDerivAt_id z
   have hden' : HasDerivAt (fun w : ℂ => 1 - a * w) (-a) z := by
     simpa using!
       (hasDerivAt_const z (1 : ℂ)).sub
         ((hasDerivAt_const z a).mul (hasDerivAt_id z))
-  change HasDerivAt (fun w : ℂ => w / (1 - a * w)) ((1 - a * z)⁻¹ ^ 2) z
+  change HasDerivAt (fun w : ℂ => w / (1 - a * w)) ((1 - a * z)⁻¹ ^ (2 : ℕ)) z
   convert! hnum.div hden' hden using 1
   field_simp [hden]
   ring
@@ -38,14 +38,14 @@ theorem hasDerivAt_gammaMovingBaseTransition_of_branch
     (hbranch : HasDerivAt (gammaCommonInverseCollar.branch n) v t)
     (hden : 1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t ≠ 0) :
     HasDerivAt (gammaMovingBaseTransition n)
-      ((1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ 2 * v) t := by
+      ((1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ (2 : ℕ) * v) t := by
   have hmobius := hasDerivAt_mobiusTangentGerm hden
   simpa [gammaMovingBaseTransition, mobiusTangentGerm] using! hmobius.comp t hbranch
 
 /-- Exact conformal change of the squared tangent metric under a Möbius comparison chart. -/
 theorem norm_sq_mobiusTangentDifferential
     (u v : ℂ) :
-    ‖(1 - u)⁻¹ ^ 2 * v‖ ^ 2 = ‖v‖ ^ 2 / ‖1 - u‖ ^ 4 := by
+    ‖(1 - u)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) = ‖v‖ ^ (2 : ℕ) / ‖1 - u‖ ^ (4 : ℕ) := by
   rw [norm_mul, norm_pow, norm_inv, mul_pow]
   field_simp
 
@@ -53,8 +53,8 @@ theorem norm_sq_mobiusTangentDifferential
 the normalized-branch metric.  The constants are absolute and independent of the pole depth. -/
 theorem mobiusTangentDifferential_capacity_congruent
     {u v : ℂ} (hu : ‖u‖ < (1 / 2 : ℝ)) :
-    (16 / 81 : ℝ) * ‖v‖ ^ 2 ≤ ‖(1 - u)⁻¹ ^ 2 * v‖ ^ 2 ∧
-      ‖(1 - u)⁻¹ ^ 2 * v‖ ^ 2 ≤ 16 * ‖v‖ ^ 2 := by
+    (16 / 81 : ℝ) * ‖v‖ ^ (2 : ℕ) ≤ ‖(1 - u)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ∧
+      ‖(1 - u)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ≤ 16 * ‖v‖ ^ (2 : ℕ) := by
   have hlower : (1 / 2 : ℝ) < ‖1 - u‖ := by
     have htri : ‖(1 : ℂ)‖ ≤ ‖1 - u‖ + ‖u‖ := by
       simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using
@@ -68,27 +68,27 @@ theorem mobiusTangentDifferential_capacity_congruent
   have hpos : 0 < ‖1 - u‖ := lt_trans (by norm_num) hlower
   rw [norm_sq_mobiusTangentDifferential]
   constructor
-  · have hfour : ‖1 - u‖ ^ 4 < (81 / 16 : ℝ) := by
+  · have hfour : ‖1 - u‖ ^ (4 : ℕ) < (81 / 16 : ℝ) := by
       calc
-        ‖1 - u‖ ^ 4 < (3 / 2 : ℝ) ^ 4 := by gcongr
+        ‖1 - u‖ ^ (4 : ℕ) < (3 / 2 : ℝ) ^ (4 : ℕ) := by gcongr
         _ = 81 / 16 := by norm_num
-    have hinv : (16 / 81 : ℝ) ≤ 1 / ‖1 - u‖ ^ 4 := by
+    have hinv : (16 / 81 : ℝ) ≤ 1 / ‖1 - u‖ ^ (4 : ℕ) := by
       apply (le_div_iff₀ (pow_pos hpos 4)).2
       nlinarith [hfour.le]
     calc
-      (16 / 81 : ℝ) * ‖v‖ ^ 2 ≤ (1 / ‖1 - u‖ ^ 4) * ‖v‖ ^ 2 :=
+      (16 / 81 : ℝ) * ‖v‖ ^ (2 : ℕ) ≤ (1 / ‖1 - u‖ ^ (4 : ℕ)) * ‖v‖ ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hinv (sq_nonneg ‖v‖)
-      _ = ‖v‖ ^ 2 / ‖1 - u‖ ^ 4 := by ring
-  · have hfour : (1 / 16 : ℝ) < ‖1 - u‖ ^ 4 := by
+      _ = ‖v‖ ^ (2 : ℕ) / ‖1 - u‖ ^ (4 : ℕ) := by ring
+  · have hfour : (1 / 16 : ℝ) < ‖1 - u‖ ^ (4 : ℕ) := by
       calc
-        (1 / 16 : ℝ) = (1 / 2 : ℝ) ^ 4 := by norm_num
-        _ < ‖1 - u‖ ^ 4 := by gcongr
-    have hinv : 1 / ‖1 - u‖ ^ 4 ≤ (16 : ℝ) := by
+        (1 / 16 : ℝ) = (1 / 2 : ℝ) ^ (4 : ℕ) := by norm_num
+        _ < ‖1 - u‖ ^ (4 : ℕ) := by gcongr
+    have hinv : 1 / ‖1 - u‖ ^ (4 : ℕ) ≤ (16 : ℝ) := by
       apply (div_le_iff₀ (pow_pos hpos 4)).2
       nlinarith [hfour.le]
     calc
-      ‖v‖ ^ 2 / ‖1 - u‖ ^ 4 = (1 / ‖1 - u‖ ^ 4) * ‖v‖ ^ 2 := by ring
-      _ ≤ 16 * ‖v‖ ^ 2 := mul_le_mul_of_nonneg_right hinv (sq_nonneg ‖v‖)
+      ‖v‖ ^ (2 : ℕ) / ‖1 - u‖ ^ (4 : ℕ) = (1 / ‖1 - u‖ ^ (4 : ℕ)) * ‖v‖ ^ (2 : ℕ) := by ring
+      _ ≤ 16 * ‖v‖ ^ (2 : ℕ) := mul_le_mul_of_nonneg_right hinv (sq_nonneg ‖v‖)
 
 /-- Gamma specialization of the absolute capacity-congruence law on the selected common inverse
 collar. -/
@@ -96,10 +96,10 @@ theorem gammaMovingBaseTransition_capacity_congruent
     {n : ℕ} (hn : gammaCommonInverseCollar.threshold ≤ n)
     {t v : ℂ} (ht : t ∈ Metric.closedBall (0 : ℂ) (1 / 4))
     (hshell : ‖gammaMovingBaseShell n‖ < (1 / 2 : ℝ)) :
-    (16 / 81 : ℝ) * ‖v‖ ^ 2 ≤
-        ‖(1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ 2 * v‖ ^ 2 ∧
-      ‖(1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ 2 * v‖ ^ 2 ≤
-        16 * ‖v‖ ^ 2 := by
+    (16 / 81 : ℝ) * ‖v‖ ^ (2 : ℕ) ≤
+        ‖(1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ∧
+      ‖(1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ≤
+        16 * ‖v‖ ^ (2 : ℕ) := by
   have hbranch := gammaCommonInverseCollar_branch_mem hn ht
   have hbranchNorm : ‖gammaCommonInverseCollar.branch n t‖ < 1 := by
     simpa [Metric.mem_ball, dist_zero_left] using hbranch
@@ -118,7 +118,7 @@ theorem tendsto_gammaMovingBaseTangentFactor_one
     {t : ℂ} (ht : t ∈ Metric.closedBall (0 : ℂ) (1 / 4)) :
     Tendsto
       (fun n : ℕ =>
-        (1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ 2)
+        (1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ (2 : ℕ))
       atTop (nhds 1) := by
   have hbranch : Tendsto (fun n : ℕ => gammaCommonInverseCollar.branch n t)
       atTop (nhds t) :=

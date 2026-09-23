@@ -131,7 +131,7 @@ theorem one_sub_poleChannel_le {T : ℝ} (hT : 0 ≤ T) {W : ℝ → ℝ}
     (hcont : ContinuousOn (fun u : ℝ => u * Real.exp (-u) * W (Real.exp (T - u)))
       (Set.uIcc 0 T)) :
     1 - (∫ u in (0 : ℝ)..T, u * Real.exp (-u) * W (Real.exp (T - u)))
-      ≤ (3 * T ^ 2 / 2 + T + 1) * Real.exp (-T) := by
+      ≤ (3 * T ^ (2 : ℕ) / 2 + T + 1) * Real.exp (-T) := by
   have hcont0 : ContinuousOn (fun u : ℝ => u * Real.exp (-u)) (Set.uIcc 0 T) := by fun_prop
   have hcontd : ContinuousOn
       (fun u : ℝ => u * Real.exp (-u) * (1 - W (Real.exp (T - u)))) (Set.uIcc 0 T) := by
@@ -148,7 +148,7 @@ theorem one_sub_poleChannel_le {T : ℝ} (hT : 0 ≤ T) {W : ℝ → ℝ}
       hcontr.intervalIntegrable ?_
     intro u hu
     exact hWtail u hu.1 hu.2
-  have hright : (∫ u in (0 : ℝ)..T, 3 * u * Real.exp (-T)) = 3 * Real.exp (-T) * (T ^ 2 / 2) := by
+  have hright : (∫ u in (0 : ℝ)..T, 3 * u * Real.exp (-T)) = 3 * Real.exp (-T) * (T ^ (2 : ℕ) / 2) := by
     have hrw : (fun u : ℝ => 3 * u * Real.exp (-T))
         = fun u : ℝ => (3 * Real.exp (-T)) * u := by
       funext u

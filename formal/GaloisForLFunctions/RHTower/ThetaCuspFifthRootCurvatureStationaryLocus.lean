@@ -25,7 +25,7 @@ def thetaCuspReflectedSourceDecayFluxThirdJet (u t : ℝ) : ℝ :=
   thetaCuspReflectedSourceProduct u t *
     (thetaCuspReflectedLogJetThree u t -
       3 * thetaCuspReflectedLogJetOne u t * thetaCuspReflectedLogJetTwo u t +
-      thetaCuspReflectedLogJetOne u t ^ 3)
+      thetaCuspReflectedLogJetOne u t ^ (3 : ℕ))
 
 theorem hasDerivAt_thetaCuspReflectedSourceDecayFluxCurvature
     (u t : ℝ) :
@@ -50,8 +50,8 @@ def thetaCuspReflectedSourceFifthRootCurvatureVelocity (u t : ℝ) : ℝ :=
   let D := thetaCuspReflectedSourceDecayFlux u t
   let J := thetaCuspReflectedSourceDecayFluxCurvature u t
   let K := thetaCuspReflectedSourceDecayFluxThirdJet u t
-  39 * A * D + t * A * J - 17 * t * D ^ 2 +
-    t ^ 2 * (5 * A * K - 3 * D * J)
+  39 * A * D + t * A * J - 17 * t * D ^ (2 : ℕ) +
+    t ^ (2 : ℕ) * (5 * A * K - 3 * D * J)
 
 theorem hasDerivAt_thetaCuspReflectedSourceFifthRootCurvatureNumerator
     (u t : ℝ) :
@@ -73,12 +73,12 @@ theorem hasDerivAt_thetaCuspReflectedSourceFifthRootCurvatureNumerator
   have hthird := ((hasDerivAt_id t).pow 2).mul hinner
   have hraw := hfirst.sub hsecond |>.add hthird
   have hraw' : HasDerivAt
-      (((fun y => 24 * (A ^ 2) y) -
+      (((fun y => 24 * (A ^ (2 : ℕ)) y) -
           fun y => 9 * ((id : ℝ → ℝ) * A * D) y) +
-        (id : ℝ → ℝ) ^ 2 * ((fun y => 5 * (A * J) y) -
-          fun y => 4 * (D ^ 2) y))
-      (39 * A t * D t + t * A t * J t - 17 * t * D t ^ 2 +
-        t ^ 2 * (5 * A t * K t - 3 * D t * J t)) t := by
+        (id : ℝ → ℝ) ^ (2 : ℕ) * ((fun y => 5 * (A * J) y) -
+          fun y => 4 * (D ^ (2 : ℕ)) y))
+      (39 * A t * D t + t * A t * J t - 17 * t * D t ^ (2 : ℕ) +
+        t ^ (2 : ℕ) * (5 * A t * K t - 3 * D t * J t)) t := by
     refine hraw.congr_deriv ?_
     simp only [Pi.pow_apply, Pi.mul_apply, Pi.sub_apply, id_eq,
       Nat.cast_ofNat, Nat.reduceSub, pow_one, one_mul]

@@ -60,7 +60,7 @@ theorem FESchwarz.pow {f : ℂ → ℂ} (hf : FESchwarz f) (n : ℕ) :
     FESchwarz (fun s => (f s) ^ n) := by
   induction n with
   | zero =>
-    have heq : (fun s => (f s) ^ 0) = (fun _ => (1 : ℂ)) := by funext s; rw [pow_zero]
+    have heq : (fun s => (f s) ^ (0 : ℕ)) = (fun _ => (1 : ℂ)) := by funext s; rw [pow_zero]
     rw [heq]; exact fESchwarz_one
   | succ k ih =>
     have heq : (fun s => (f s) ^ (k + 1)) = (fun s => (f s) ^ k * f s) := by
@@ -169,10 +169,10 @@ def linePair (τ : ℝ) : ℂ → ℂ :=
 
 /-- The crease pair in real-coefficient normal form: `linePair τ s = s² − s + (¼ + τ²)`. -/
 theorem linePair_eq (τ : ℝ) (s : ℂ) :
-    linePair τ s = s ^ 2 - s + ((1 / 4 + τ ^ 2 : ℝ) : ℂ) := by
+    linePair τ s = s ^ (2 : ℕ) - s + ((1 / 4 + τ ^ (2 : ℕ) : ℝ) : ℂ) := by
   simp only [linePair]
   push_cast
-  linear_combination (-(τ : ℂ) ^ 2) * Complex.I_sq
+  linear_combination (-(τ : ℂ) ^ (2 : ℕ)) * Complex.I_sq
 
 /-- The crease pair is FE- and Schwarz-symmetric: its roots are an `s ↦ 1−s` orbit and its
 coefficients are real. -/
@@ -211,7 +211,7 @@ def realPair (r : ℝ) : ℂ → ℂ :=
 
 /-- The real pair in real-coefficient normal form: `realPair r s = s² − s + r(1−r)`. -/
 theorem realPair_eq (r : ℝ) (s : ℂ) :
-    realPair r s = s ^ 2 - s + ((r * (1 - r) : ℝ) : ℂ) := by
+    realPair r s = s ^ (2 : ℕ) - s + ((r * (1 - r) : ℝ) : ℂ) := by
   simp only [realPair]; push_cast; ring
 
 /-- The real pair is FE- and Schwarz-symmetric: its roots are an `s ↦ 1−s` orbit and its

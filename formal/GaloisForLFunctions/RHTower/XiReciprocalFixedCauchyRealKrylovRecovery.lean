@@ -9,7 +9,7 @@ coefficients to real numbers changes the situation sharply. Every finite real-po
 has exactly zero holomorphic source contrast, because its mixed Cauchy polarization is symmetric.
 Therefore norm recovery by real polynomials forces fixed orientation defect to vanish. Conversely,
 under RH critical-line reflection is trivial on spectral coordinates and constant polynomial
-sequence X^2 recovers response exactly.
+sequence X^(2 : ℕ) recovers response exactly.
 
 This extracts a strict real-form predecessor to fixed source-contrast saturation. No estimate,
 simplicity hypothesis, or zero computation is used.
@@ -121,7 +121,7 @@ theorem xiReciprocalSquareFixedCauchyRealKrylov_X_sq_eq_adjointResponse_of_riema
     (hRH : RiemannHypothesis) :
     xiReciprocalCauchyKrylovPolynomialVector
         xiReciprocalSquareFixedCauchyPole
-        (xiRealPolynomialToComplex (Polynomial.X ^ 2)) =
+        (xiRealPolynomialToComplex (Polynomial.X ^ (2 : ℕ))) =
       xiWeilEvaluationLp
         (xiReciprocalSquareCauchyAdjointResponseTest
           (xiReciprocalSquareFixedCauchyPole : ℂ))
@@ -166,7 +166,7 @@ theorem xiReciprocalSquareFixedCauchyRealKrylovResponseRecovery_iff_riemannHypot
       tendsto_nhds_unique hdefect hcontrastZero
     exact xiReciprocalSquareFixedCauchyOrientationDefectZero_iff_riemannHypothesis.mp hD
   · intro hRH
-    refine ⟨fun _ => Polynomial.X ^ 2, ?_⟩
+    refine ⟨fun _ => Polynomial.X ^ (2 : ℕ), ?_⟩
     simpa only [xiReciprocalSquareFixedCauchyRealKrylov_X_sq_eq_adjointResponse_of_riemannHypothesis hRH] using
       (tendsto_const_nhds : Tendsto (fun _ : ℕ =>
         xiWeilEvaluationLp

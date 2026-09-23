@@ -23,17 +23,17 @@ namespace Bottcher
 
 theorem norm_stereo_eq_one (z : ℂ) : ‖stereo z‖ = 1 := by
   rw [stereo, norm_euclidean3, Real.sqrt_eq_one]
-  have hzn : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by rw [Complex.sq_norm, Complex.normSq_apply]; ring
+  have hzn : ‖z‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by rw [Complex.sq_norm, Complex.normSq_apply]; ring
   rw [hzn]
-  have hd : (1:ℝ) + (z.re^2 + z.im^2) ≠ 0 :=
-    (show (0:ℝ) < 1 + (z.re^2+z.im^2) by nlinarith [mul_self_nonneg z.re, mul_self_nonneg z.im]).ne'
+  have hd : (1:ℝ) + (z.re^(2 : ℕ) + z.im^(2 : ℕ)) ≠ 0 :=
+    (show (0:ℝ) < 1 + (z.re^(2 : ℕ)+z.im^(2 : ℕ)) by nlinarith [mul_self_nonneg z.re, mul_self_nonneg z.im]).ne'
   field_simp; ring
 
 theorem continuous_stereo : Continuous stereo := by
-  have hden : ∀ z : ℂ, (1 : ℝ) + ‖z‖ ^ 2 ≠ 0 := fun z => (by positivity : (0:ℝ) < 1 + ‖z‖^2).ne'
-  have hc : Continuous (fun z : ℂ => (1 : ℝ) + ‖z‖ ^ 2) := by fun_prop
+  have hden : ∀ z : ℂ, (1 : ℝ) + ‖z‖ ^ (2 : ℕ) ≠ 0 := fun z => (by positivity : (0:ℝ) < 1 + ‖z‖^(2 : ℕ)).ne'
+  have hc : Continuous (fun z : ℂ => (1 : ℝ) + ‖z‖ ^ (2 : ℕ)) := by fun_prop
   have hpi : Continuous (fun z : ℂ =>
-      (![2*z.re/(1+‖z‖^2), 2*z.im/(1+‖z‖^2), (‖z‖^2-1)/(1+‖z‖^2)] : Fin 3 → ℝ)) := by
+      (![2*z.re/(1+‖z‖^(2 : ℕ)), 2*z.im/(1+‖z‖^(2 : ℕ)), (‖z‖^(2 : ℕ)-1)/(1+‖z‖^(2 : ℕ))] : Fin 3 → ℝ)) := by
     apply continuous_pi; intro i; fin_cases i
     · exact Continuous.div (by fun_prop) hc hden
     · exact Continuous.div (by fun_prop) hc hden

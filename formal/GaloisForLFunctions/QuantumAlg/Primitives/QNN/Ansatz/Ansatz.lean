@@ -122,8 +122,8 @@ theorem rotGen_conjTranspose_eq {H : Matrix m m ℂ} (hH : H * H = 1) (hHerm : H
 `R_H(θ)† O R_H(θ) = cos²(θ/2)·O + sin²(θ/2)·(H O H) + i·cos(θ/2)·sin(θ/2)·(H O − O H)`. -/
 theorem rotGen_sandwich_expand {O H : Matrix m m ℂ} (hH : H * H = 1) (hHerm : Hᴴ = H) (θ : ℝ) :
     (rotGen H θ)ᴴ * O * rotGen H θ
-      = ((Real.cos (θ / 2) : ℂ) ^ 2) • O
-        + ((Real.sin (θ / 2) : ℂ) ^ 2) • (H * O * H)
+      = ((Real.cos (θ / 2) : ℂ) ^ (2 : ℕ)) • O
+        + ((Real.sin (θ / 2) : ℂ) ^ (2 : ℕ)) • (H * O * H)
         + (Complex.I * (Real.cos (θ / 2) : ℂ) * (Real.sin (θ / 2) : ℂ)) • (H * O - O * H) := by
   rw [rotGen_conjTranspose_eq hH hHerm, rotGen_eq hH]
   set c : ℂ := (Real.cos (θ / 2) : ℂ)
@@ -132,8 +132,8 @@ theorem rotGen_sandwich_expand {O H : Matrix m m ℂ} (hH : H * H = 1) (hHerm : 
   simp only [add_mul, mul_add, smul_mul_assoc, mul_smul_comm, Matrix.one_mul, Matrix.mul_one]
   -- The four terms: c²·O ; (c·(-(I·s)))·(O*H) ; (I·s·c)·(H*O) ; (I·s·(-(I·s)))·(H*O*H).
   -- Collect them into the claimed three terms via the ℂ-module structure (`I² = -1`).
-  have hI : Complex.I ^ 2 = -1 := Complex.I_sq
-  match_scalars <;> first | linear_combination (-(s ^ 2) : ℂ) * hI | ring
+  have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
+  match_scalars <;> first | linear_combination (-(s ^ (2 : ℕ)) : ℂ) * hI | ring
 
 /-- **Task B: the single-gate sandwich cost is a frequency-1 trigonometric polynomial.** For a
 Hermitian involution generator `H` and a Hermitian observable `O`,
@@ -154,13 +154,13 @@ theorem sandwichCost_trig {ψ : m → ℂ} {O H : Matrix m m ℂ} (hH : H * H = 
   rw [sandwichCost, rotGen_sandwich_expand hH hHerm, expval_add, expval_add, expval_smul,
     expval_smul, expval_smul, smul_eq_mul, smul_eq_mul, smul_eq_mul, Complex.add_re, Complex.add_re]
   -- Real-coefficient `smul`s contribute `coeff * (·).re` to the real part.
-  have hsplit : ∀ (r : ℝ) (z : ℂ), ((r : ℂ) ^ 2 * z).re = r ^ 2 * z.re := by
+  have hsplit : ∀ (r : ℝ) (z : ℂ), ((r : ℂ) ^ (2 : ℕ) * z).re = r ^ (2 : ℕ) * z.re := by
     intro r z
     simp [Complex.mul_re, pow_two]
-  rw [show ((Real.cos (θ / 2) : ℂ) ^ 2 * expval ψ O).re = Real.cos (θ / 2) ^ 2 * rO from by
+  rw [show ((Real.cos (θ / 2) : ℂ) ^ (2 : ℕ) * expval ψ O).re = Real.cos (θ / 2) ^ (2 : ℕ) * rO from by
         rw [hsplit],
-    show ((Real.sin (θ / 2) : ℂ) ^ 2 * expval ψ (H * O * H)).re
-        = Real.sin (θ / 2) ^ 2 * rHOH from by rw [hsplit]]
+    show ((Real.sin (θ / 2) : ℂ) ^ (2 : ℕ) * expval ψ (H * O * H)).re
+        = Real.sin (θ / 2) ^ (2 : ℕ) * rHOH from by rw [hsplit]]
   -- The commutator term: `I · cos · sin · ⟨HO−OH⟩`, whose real part is `cos·sin·Re(I·⟨HO−OH⟩)`.
   have hcomm : ((Complex.I * (Real.cos (θ / 2) : ℂ) * (Real.sin (θ / 2) : ℂ))
       * expval ψ (H * O - O * H)).re
@@ -174,9 +174,9 @@ theorem sandwichCost_trig {ψ : m → ℂ} {O H : Matrix m m ℂ} (hH : H * H = 
   rw [hcomm]
   -- Double-angle: with `α = θ/2` and `θ = 2α`, rewrite
   -- `cos²α, sin²α, cosα·sinα` via `cos θ, sin θ`.
-  have hcos2 : Real.cos (θ / 2) ^ 2 = 1 / 2 + Real.cos θ / 2 := by
+  have hcos2 : Real.cos (θ / 2) ^ (2 : ℕ) = 1 / 2 + Real.cos θ / 2 := by
     rw [Real.cos_sq]; rw [show 2 * (θ / 2) = θ from by ring]
-  have hsin2 : Real.sin (θ / 2) ^ 2 = 1 / 2 - Real.cos θ / 2 := by
+  have hsin2 : Real.sin (θ / 2) ^ (2 : ℕ) = 1 / 2 - Real.cos θ / 2 := by
     rw [Real.sin_sq, hcos2]; ring
   have hcossin : Real.cos (θ / 2) * Real.sin (θ / 2) = Real.sin θ / 2 := by
     have h := Real.sin_two_mul (θ / 2)

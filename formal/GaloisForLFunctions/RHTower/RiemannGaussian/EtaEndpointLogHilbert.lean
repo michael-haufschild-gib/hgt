@@ -118,19 +118,19 @@ theorem pairedEtaFiniteLog_mvHilbert_twentySix {K : ℕ} (hK : 0 < K)
     ‖∑ r, ∑ s, if r = s then (0 : ℂ)
         else x r * conj (z s) /
           ((pairedEtaLogFrequency r.val - pairedEtaLogFrequency s.val : ℝ) : ℂ)‖
-      ≤ 26 * Real.sqrt ((K : ℝ) * ∑ r, ‖x r‖ ^ 2) *
-          Real.sqrt ((K : ℝ) * ∑ r, ‖z r‖ ^ 2) := by
+      ≤ 26 * Real.sqrt ((K : ℝ) * ∑ r, ‖x r‖ ^ (2 : ℕ)) *
+          Real.sqrt ((K : ℝ) * ∑ r, ‖z r‖ ^ (2 : ℕ)) := by
   have hadm := pairedEtaFiniteLog_admissible hK
   have hmv := MontgomeryVaughan.mvHilbert_twentySix (Fin K)
     (fun r : Fin K => pairedEtaLogFrequency r.val)
     (pairedEtaFiniteLogGap K) x z hadm.inj hadm.pos hadm.le
-  have hx : (∑ r, ‖x r‖ ^ 2 / pairedEtaFiniteLogGap K r) =
-      (K : ℝ) * ∑ r, ‖x r‖ ^ 2 := by
+  have hx : (∑ r, ‖x r‖ ^ (2 : ℕ) / pairedEtaFiniteLogGap K r) =
+      (K : ℝ) * ∑ r, ‖x r‖ ^ (2 : ℕ) := by
     simp only [pairedEtaFiniteLogGap, div_eq_mul_inv, inv_inv]
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun r _ => by ring
-  have hz : (∑ r, ‖z r‖ ^ 2 / pairedEtaFiniteLogGap K r) =
-      (K : ℝ) * ∑ r, ‖z r‖ ^ 2 := by
+  have hz : (∑ r, ‖z r‖ ^ (2 : ℕ) / pairedEtaFiniteLogGap K r) =
+      (K : ℝ) * ∑ r, ‖z r‖ ^ (2 : ℕ) := by
     simp only [pairedEtaFiniteLogGap, div_eq_mul_inv, inv_inv]
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun r _ => by ring

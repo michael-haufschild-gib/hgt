@@ -44,7 +44,7 @@ theorem pow_eq_pow_of_bezout {p q u v n m t : ℕ} (hm : m ≠ 0)
 
 /-- In the equal-degree case `p = q = 1` the matching is the identity: the overlap is the full
 diagonal. -/
-theorem pow_eq_pow_of_bezout_diag {n m : ℕ} (h : n ^ 1 = m ^ 1) : n = m := by
+theorem pow_eq_pow_of_bezout_diag {n m : ℕ} (h : n ^ (1 : ℕ) = m ^ (1 : ℕ)) : n = m := by
   simpa using h
 
 end HTGeometry

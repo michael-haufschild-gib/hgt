@@ -21,12 +21,12 @@ noncomputable section
 /-- **The order-two mass of a weighted sum of inverse squares.** -/
 theorem laurentCoeff_weightedSumInvSq {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (c p : ι → ℂ) (q : ℂ) :
-    laurentCoeff (fun z => ∑ i ∈ s, c i * ((z - p i) ^ 2)⁻¹) q (-2)
+    laurentCoeff (fun z => ∑ i ∈ s, c i * ((z - p i) ^ (2 : ℕ))⁻¹) q (-2)
       = ∑ i ∈ s.filter (fun i => p i = q), c i := by
   classical
-  rw [laurentCoeff_sum s (fun i z => ((z - p i) ^ 2)⁻¹) c q (-2)
+  rw [laurentCoeff_sum s (fun i z => ((z - p i) ^ (2 : ℕ))⁻¹) c q (-2)
     (fun i _ => meromorphicAt_invSq (p i) q)]
-  have hterm : ∀ i ∈ s, c i * laurentCoeff (fun z => ((z - p i) ^ 2)⁻¹) q (-2)
+  have hterm : ∀ i ∈ s, c i * laurentCoeff (fun z => ((z - p i) ^ (2 : ℕ))⁻¹) q (-2)
       = if p i = q then c i else 0 := by
     intro i _
     rcases eq_or_ne (p i) q with hpi | hpi
@@ -46,7 +46,7 @@ theorem not_shiftDifference_weightedSumInvSq_orbit {H a : ℂ} (hH : H ≠ 0) {�
     {y : ℂ → ℂ} (hy : MeromorphicOn y Set.univ)
     (hpoles : {z : ℂ | ¬ AnalyticAt ℂ y z}.Finite) :
     ¬ ((fun z => y (z + H) - y z)
-        =ᶠ[Filter.cofinite] fun z => ∑ i ∈ s, c i * ((z - p i) ^ 2)⁻¹) := by
+        =ᶠ[Filter.cofinite] fun z => ∑ i ∈ s, c i * ((z - p i) ^ (2 : ℕ))⁻¹) := by
   classical
   intro heq
   have hinj : Function.Injective fun n : ℤ => a + (n : ℂ) * H := by

@@ -32,7 +32,7 @@ variable {b c R : ℝ}
 set_option maxHeartbeats 1000000 in
 /-- The field of the tuned clock in field coordinates. -/
 theorem kgFieldMildT_kgTunedPot_field (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b))
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b))
     {w h : Lp ℂ 2 (volume : Measure E)} (hw : kgLowPassOp R w = w)
     (hh : kgLowPassOp R h = h) (t : ℝ) :
     kgFieldMildT (kgBandOpT (fun _ : ℝ => fourierMulCLM
@@ -49,7 +49,7 @@ theorem kgFieldMildT_kgTunedPot_field (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c
 set_option maxHeartbeats 1000000 in
 /-- The velocity of the tuned clock in field coordinates. -/
 theorem kgFieldVelT_kgTunedPot_field (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b))
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b))
     {w h : Lp ℂ 2 (volume : Measure E)} (hw : kgLowPassOp R w = w)
     (hh : kgLowPassOp R h = h) (t : ℝ) :
     kgFieldVelT (kgBandOpT (fun _ : ℝ => fourierMulCLM
@@ -67,7 +67,7 @@ theorem kgFieldVelT_kgTunedPot_field (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
 set_option maxHeartbeats 1000000 in
 /-- **A quarter period exchanges field and velocity**, with the rate as the exchange factor. -/
 theorem kgFieldMildT_kgTunedPot_quarter (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b))
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b))
     {w h : Lp ℂ 2 (volume : Measure E)} (hw : kgLowPassOp R w = w)
     (hh : kgLowPassOp R h = h) :
     kgFieldMildT (kgBandOpT (fun _ : ℝ => fourierMulCLM
@@ -83,7 +83,7 @@ theorem kgFieldMildT_kgTunedPot_quarter (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 <
 
 set_option maxHeartbeats 1000000 in
 theorem kgFieldVelT_kgTunedPot_quarter (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b))
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b))
     {w h : Lp ℂ 2 (volume : Measure E)} (hw : kgLowPassOp R w = w)
     (hh : kgLowPassOp R h = h) :
     kgFieldVelT (kgBandOpT (fun _ : ℝ => fourierMulCLM
@@ -106,10 +106,10 @@ variable {b c₁ c₂ R : ℝ}
 set_option maxHeartbeats 1000000 in
 /-- **One switching cycle**: a quarter period at rate `c₁` exchanges field and velocity, and a
 quarter period at rate `c₂` returns them contracted by `c₁/c₂` and dilated by `c₂/c₁`. -/
-theorem kgSwitchedClock_step (hb0 : 0 ≤ b) (hb1 : b < 1) (hc10 : 0 < c₁) (hc11 : 1 ≤ c₁ ^ 2)
-    (hc1b : c₁ ^ 2 ≤ 1 + b) (hR1 : R ≤ Real.sqrt (c₁ ^ 2 - 1 + b))
-    (hc20 : 0 < c₂) (hc21 : 1 ≤ c₂ ^ 2) (hc2b : c₂ ^ 2 ≤ 1 + b)
-    (hR2 : R ≤ Real.sqrt (c₂ ^ 2 - 1 + b))
+theorem kgSwitchedClock_step (hb0 : 0 ≤ b) (hb1 : b < 1) (hc10 : 0 < c₁) (hc11 : 1 ≤ c₁ ^ (2 : ℕ))
+    (hc1b : c₁ ^ (2 : ℕ) ≤ 1 + b) (hR1 : R ≤ Real.sqrt (c₁ ^ (2 : ℕ) - 1 + b))
+    (hc20 : 0 < c₂) (hc21 : 1 ≤ c₂ ^ (2 : ℕ)) (hc2b : c₂ ^ (2 : ℕ) ≤ 1 + b)
+    (hR2 : R ≤ Real.sqrt (c₂ ^ (2 : ℕ) - 1 + b))
     {w h : Lp ℂ 2 (volume : Measure E)} (hw : kgLowPassOp R w = w)
     (hh : kgLowPassOp R h = h) :
     kgFieldMildT (kgBandOpT (fun _ : ℝ => fourierMulCLM

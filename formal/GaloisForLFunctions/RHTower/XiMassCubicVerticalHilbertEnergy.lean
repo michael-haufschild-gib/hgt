@@ -36,14 +36,14 @@ theorem tendsto_xiMassCubicAperture_atTop :
   exact h
 
 /-- Cubic vertical clock. -/
-def xiMassCubicTime (n : ℕ) : ℝ := xiMassCubicAperture n ^ 3
+def xiMassCubicTime (n : ℕ) : ℝ := xiMassCubicAperture n ^ (3 : ℕ)
 
 theorem xiMassCubicTime_nonneg (n : ℕ) : 0 ≤ xiMassCubicTime n := by
   rw [xiMassCubicTime]
   exact pow_nonneg (xiMassCubicAperture_pos n).le 3
 
 /-- The real part of the square of a real point is the square of its real part. -/
-theorem sq_re_of_im_eq_zero {z : ℂ} (h : z.im = 0) : (z ^ 2).re = z.re ^ 2 := by
+theorem sq_re_of_im_eq_zero {z : ℂ} (h : z.im = 0) : (z ^ (2 : ℕ)).re = z.re ^ (2 : ℕ) := by
   rw [pow_two, Complex.mul_re, h]; ring
 
 /-- One reflection-diagonal squared half-wave term. -/
@@ -58,7 +58,7 @@ def xiMassCubicVerticalHilbertEnergy (n : ℕ) : ℝ :=
 theorem xiMassCubicVerticalHilbertTerm_eq_norm_sq (n : ℕ) (q : XiZeroCopy) :
     xiMassCubicVerticalHilbertTerm n q =
       ‖(xiPoissonAbstract.mass (xiMassCubicAperture_half_le n)).term
-          ((1 : ℂ) + xiMassCubicTime n * I) q‖ ^ 2 := by
+          ((1 : ℂ) + xiMassCubicTime n * I) q‖ ^ (2 : ℕ) := by
   let F := xiPoissonAbstract.mass (xiMassCubicAperture_half_le n)
   rw [xiMassCubicVerticalHilbertTerm, F.norm_term, ← Real.exp_nat_mul]
   simp only [add_re, one_re, mul_re, ofReal_re, I_re, ofReal_im, I_im, add_zero,
@@ -118,7 +118,7 @@ theorem xiMassCubicVerticalHilbertEnergy_le_of_riemannHypothesis
     have hK0 : (xiPoissonAbstract.pt q).im = 0 := by
       simpa only [xiPoissonAbstract_pt] using
         xiPoissonPoint_im_eq_zero_of_riemannHypothesis hRH q
-    have hMsq : (F.pt q).re ^ 2 = (xiPoissonAbstract.pt q).re ^ 2 + a ^ 2 := by
+    have hMsq : (F.pt q).re ^ (2 : ℕ) = (xiPoissonAbstract.pt q).re ^ (2 : ℕ) + a ^ (2 : ℕ) := by
       have hre := congrArg Complex.re (xiPoissonAbstract.mass_pt_sq ha q)
       rwa [sq_re_of_im_eq_zero hK, Complex.add_re, sq_re_of_im_eq_zero hK0,
         Complex.ofReal_re] at hre
@@ -186,7 +186,7 @@ theorem tendsto_xiMassCubicVerticalHilbertTerm_atTop_of_im_pos
   have hR : 0 < R := by dsimp only [R]; linarith [three_lt_xiPoissonPoint_re q]
   have hc : 0 < c := mul_pos hR hJ
   have hminor : ∀ᶠ n : ℕ in atTop,
-      c * xiMassCubicAperture n ^ 2 - 2 * xiMassCubicAperture n - 2 * R ≤
+      c * xiMassCubicAperture n ^ (2 : ℕ) - 2 * xiMassCubicAperture n - 2 * R ≤
         -2 * (((xiPoissonAbstract.mass (xiMassCubicAperture_half_le n)).pt q).re -
           xiMassCubicTime n *
             ((xiPoissonAbstract.mass (xiMassCubicAperture_half_le n)).pt q).im) := by
@@ -210,7 +210,7 @@ theorem tendsto_xiMassCubicVerticalHilbertTerm_atTop_of_im_pos
         xiPoissonAbstract.csqrtRe_massArg_le_add ha q
     have hMtwo : M ≤ 2 * a := by
       linarith
-    have hboost : c * a ^ 2 ≤ 2 * a ^ 3 * K := by
+    have hboost : c * a ^ (2 : ℕ) ≤ 2 * a ^ (3 : ℕ) * K := by
       have hmul := mul_le_mul_of_nonneg_right hMtwo hK0.le
       rw [hcharge] at hmul
       nlinarith [sq_nonneg a]
@@ -218,7 +218,7 @@ theorem tendsto_xiMassCubicVerticalHilbertTerm_atTop_of_im_pos
     dsimp only [M, K, F, a] at hMup hboost ⊢
     nlinarith
   have hquad : Tendsto
-      (fun n : ℕ => c * xiMassCubicAperture n ^ 2 -
+      (fun n : ℕ => c * xiMassCubicAperture n ^ (2 : ℕ) -
         2 * xiMassCubicAperture n - 2 * R) atTop atTop := by
     have hgap := tendsto_sq_gap_atTop tendsto_xiMassCubicAperture_atTop
       (q := (2 : ℝ)) (t := c) (by norm_num) hc

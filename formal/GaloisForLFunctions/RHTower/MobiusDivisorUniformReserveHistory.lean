@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.MobiusDivisorEvenCorePrimeReserve
 # An actual changing-core reserve history with one all-cutoff budget
 
 Fresh actual prime pairs can be selected indefinitely. Every even and odd
-prefix stays below the original diagonal plus `M^2` at every integer cutoff.
+prefix stays below the original diagonal plus `M^(2 : ℕ)` at every integer cutoff.
 After the initial pair each pair produces a positive quadratic reserve at
 all sufficiently large cutoffs for that pair. The budget itself has no
 cutoff threshold. This constructs a sparse history, not an exhaustive order
@@ -29,7 +29,7 @@ private lemma sample_vanish (P : Finset ℕ) {M r : ℕ} (hr : 0<r) (hMr : M≤r
 private lemma history_prime_cost (P : Finset ℕ) (hP : ∀ q ∈ P,q.Prime)
     {p : ℕ} (hp : p.Prime) (hpP : p ∉ P) (M : ℕ) :
     mobiusDivisorSelectionEnergy M (insert p P) ≤ mobiusDivisorSelectionEnergy M P+
-      (2*((3/5:ℝ)*2^(P.card-1))^2/(p:ℝ))*(M:ℝ)^2 := by
+      (2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)/(p:ℝ))*(M:ℝ)^(2 : ℕ) := by
   let S := fixedCoreSquarefreeIndices (insert p P) M
   have he : mobiusDivisorSelectionEnergy M P-mobiusDivisorSelectionEnergy M (insert p P)=
       ∑ r ∈ S,mobiusDivisorPrimeCorrelationTerm P p M r := by
@@ -49,7 +49,7 @@ private lemma history_prime_cost (P : Finset ℕ) (hP : ∀ q ∈ P,q.Prime)
       sample_vanish P (Nat.mul_pos hp.pos hr0) hlt.le,mul_zero,abs_zero]
   have hb := mobiusDivisorPrimeCorrelation_absolute_tail_le P hP hp hpP M hp.pos
   have ha : |mobiusDivisorSelectionEnergy M P-mobiusDivisorSelectionEnergy M (insert p P)| ≤
-      (2*((3/5:ℝ)*2^(P.card-1))^2/(p:ℝ))*(M:ℝ)^2 := by
+      (2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ)/(p:ℝ))*(M:ℝ)^(2 : ℕ) := by
     rw [he]
     exact (abs_sum_le_sum_abs _ _).trans (by rw [hfilter]; exact hb)
   have hn := neg_le_abs (mobiusDivisorSelectionEnergy M P-mobiusDivisorSelectionEnergy M (insert p P))
@@ -60,19 +60,19 @@ private lemma history_pair (P : Finset ℕ) (hP : ∀ r ∈ P,r.Prime)
     ∃ p q : ℕ, P.sup id < p ∧ p < q ∧ p.Prime ∧ q.Prime ∧
       p ∉ P ∧ q ∉ insert p P ∧ Even (insert q (insert p P)).card ∧
       (∀ M,mobiusDivisorSelectionEnergy M (insert p P) ≤
-        mobiusDivisorSelectionEnergy M P+(δ/2)*(M:ℝ)^2) ∧
+        mobiusDivisorSelectionEnergy M P+(δ/2)*(M:ℝ)^(2 : ℕ)) ∧
       (∀ M,mobiusDivisorSelectionEnergy M (insert q (insert p P)) ≤
-        mobiusDivisorSelectionEnergy M P+δ*(M:ℝ)^2) ∧
+        mobiusDivisorSelectionEnergy M P+δ*(M:ℝ)^(2 : ℕ)) ∧
       (P.Nonempty → ∃ c : ℝ,0 < c ∧ ∀ᶠ M : ℕ in atTop,
-        c*(M:ℝ)^2 ≤ mobiusDivisorSelectionEnergy M P-
+        c*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy M P-
           mobiusDivisorSelectionEnergy M (insert q (insert p P))) := by
-  let K : ℝ := 2*((3/5:ℝ)*2^P.card)^2
+  let K : ℝ := 2*((3/5:ℝ)*2^P.card)^(2 : ℕ)
   obtain ⟨N,hN⟩ := exists_nat_gt (2*K/δ)
   let T := max N (P.sup id+1)
   have pairs : ∃ p q : ℕ,T ≤ p ∧ p < q ∧ p.Prime ∧ q.Prime ∧ p ∉ P ∧ q ∉ P ∧
       Even (insert q (insert p P)).card ∧
       (P.Nonempty → ∃ c : ℝ,0 < c ∧ ∀ᶠ M : ℕ in atTop,
-        c*(M:ℝ)^2 ≤ mobiusDivisorSelectionEnergy M P-
+        c*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy M P-
           mobiusDivisorSelectionEnergy M (insert q (insert p P))) := by
     by_cases hn : P.Nonempty
     · obtain ⟨c,hc,hpairs⟩ := exists_arbitrarily_large_mobiusDivisorEvenCore_pair_energy_reserve P hn hP hEven
@@ -98,7 +98,7 @@ private lemma history_pair (P : Finset ℕ) (hP : ∀ r ∈ P,r.Prime)
     have hh := (div_lt_iff₀ hδ).mp hqbound
     apply (div_le_iff₀ (by exact_mod_cast hq.pos : (0:ℝ)<q)).mpr
     linarith only [hh]
-  have hcoeff : 2*((3/5:ℝ)*2^(P.card-1))^2 ≤ K := by
+  have hcoeff : 2*((3/5:ℝ)*2^(P.card-1))^(2 : ℕ) ≤ K := by
     dsimp [K]
     gcongr
     · norm_num
@@ -106,17 +106,17 @@ private lemma history_pair (P : Finset ℕ) (hP : ∀ r ∈ P,r.Prime)
   have hqi : q ∉ insert p P := by simp [hpq.ne',hqP]
   have hPi : ∀ r ∈ insert p P,r.Prime := by simpa using And.intro hp hP
   have hfirst (M : ℕ) : mobiusDivisorSelectionEnergy M (insert p P) ≤
-      mobiusDivisorSelectionEnergy M P+(δ/2)*(M:ℝ)^2 := by
+      mobiusDivisorSelectionEnergy M P+(δ/2)*(M:ℝ)^(2 : ℕ) := by
     apply (history_prime_cost P hP hp hpP M).trans
     have hc := (div_le_div_of_nonneg_right hcoeff (Nat.cast_nonneg p)).trans hKp
     have hm := mul_le_mul_of_nonneg_right hc (sq_nonneg (M:ℝ))
     linarith only [hm]
   have hsecond (M : ℕ) : mobiusDivisorSelectionEnergy M (insert q (insert p P)) ≤
-      mobiusDivisorSelectionEnergy M (insert p P)+(δ/2)*(M:ℝ)^2 := by
+      mobiusDivisorSelectionEnergy M (insert p P)+(δ/2)*(M:ℝ)^(2 : ℕ) := by
     have hh := history_prime_cost (insert p P) hPi hq hqi M
     rw [card_insert_of_notMem hpP,Nat.add_sub_cancel] at hh
     change mobiusDivisorSelectionEnergy M (insert q (insert p P)) ≤
-      mobiusDivisorSelectionEnergy M (insert p P)+K/(q:ℝ)*(M:ℝ)^2 at hh
+      mobiusDivisorSelectionEnergy M (insert p P)+K/(q:ℝ)*(M:ℝ)^(2 : ℕ) at hh
     have hm := mul_le_mul_of_nonneg_right hKq (sq_nonneg (M:ℝ))
     linarith only [hh,hm]
   refine ⟨p,q,?_,hpq,hp,hq,hpP,hqi,heven,hfirst,?_,hreserve⟩
@@ -135,11 +135,11 @@ theorem exists_mobiusDivisorUniformReserveHistory :
       P 0=∅ ∧ (∀ n,P (n+1)=insert (q n) (insert (p n) (P n))) ∧
       (∀ n,(p n).Prime ∧ (q n).Prime ∧ p n < q n ∧ q n < p (n+1)) ∧
       (∀ n,(P n).card=2*n) ∧
-      (∀ n M,mobiusDivisorSelectionEnergy M (P n) ≤ mobiusDivisorSelectionEnergy M ∅+(M:ℝ)^2) ∧
+      (∀ n M,mobiusDivisorSelectionEnergy M (P n) ≤ mobiusDivisorSelectionEnergy M ∅+(M:ℝ)^(2 : ℕ)) ∧
       (∀ n M,mobiusDivisorSelectionEnergy M (insert (p n) (P n)) ≤
-        mobiusDivisorSelectionEnergy M ∅+(M:ℝ)^2) ∧
+        mobiusDivisorSelectionEnergy M ∅+(M:ℝ)^(2 : ℕ)) ∧
       ∀ n,∃ c : ℝ,0 < c ∧ ∀ᶠ M : ℕ in atTop,
-        c*(M:ℝ)^2 ≤ mobiusDivisorSelectionEnergy M (P (n+1))-
+        c*(M:ℝ)^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy M (P (n+1))-
           mobiusDivisorSelectionEnergy M (P (n+2)) := by
   let Core := {P : Finset ℕ // (∀ p ∈ P,p.Prime) ∧ Even P.card}
   let w := fun n : ℕ => (1:ℝ)/(n+1:ℕ)
@@ -174,7 +174,7 @@ theorem exists_mobiusDivisorUniformReserveHistory :
       rw [hstep,card_insert_of_notMem (hbf (state n) n),card_insert_of_notMem (haf (state n) n),ih]
       omega
   have hbudget : ∀ n M,mobiusDivisorSelectionEnergy M (P n) ≤
-      mobiusDivisorSelectionEnergy M ∅+(1-w n)*(M:ℝ)^2 := by
+      mobiusDivisorSelectionEnergy M ∅+(1-w n)*(M:ℝ)^(2 : ℕ) := by
     intro n
     induction n with
     | zero => intro M; simp [hzero,w]
@@ -182,7 +182,7 @@ theorem exists_mobiusDivisorUniformReserveHistory :
       intro M
       have hh := hboth (state n) n M
       change mobiusDivisorSelectionEnergy M (P (n+1)) ≤
-        mobiusDivisorSelectionEnergy M (P n)+(w n-w (n+1))*(M:ℝ)^2 at hh
+        mobiusDivisorSelectionEnergy M (P n)+(w n-w (n+1))*(M:ℝ)^(2 : ℕ) at hh
       have hi := ih M
       linarith only [hh,hi]
   refine ⟨P,p,q,hzero,hstep,?_,hcard,?_,?_,?_⟩
@@ -197,7 +197,7 @@ theorem exists_mobiusDivisorUniformReserveHistory :
   · intro n M
     have hh := hfirst (state n) n M
     change mobiusDivisorSelectionEnergy M (insert (p n) (P n)) ≤
-      mobiusDivisorSelectionEnergy M (P n)+((w n-w (n+1))/2)*(M:ℝ)^2 at hh
+      mobiusDivisorSelectionEnergy M (P n)+((w n-w (n+1))/2)*(M:ℝ)^(2 : ℕ) at hh
     have hi := hbudget n M
     have hn := mul_nonneg (hw n).le (sq_nonneg (M:ℝ))
     have hn' := mul_nonneg (hw (n+1)).le (sq_nonneg (M:ℝ))

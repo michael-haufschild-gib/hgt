@@ -43,7 +43,7 @@ theorem tendsto_norm_finiteModelResidualCore_repeatSingle_zero_of_norm_value_one
   apply tendsto_norm_finiteModelResidualCore_repeatSingle_zero
     F hF q hq (fun i => phaseNormalize 1 ((F i).fn (q i)))
   · intro i
-    exact norm_phaseNormalize (by norm_num)
+    exact norm_phaseNormalize_finiteSpectralPhaseActionLaw (by norm_num)
   · exact tendsto_norm_sub_phaseNormalize_one_zero
       (fun i => (F i).fn (q i)) hvalue
 

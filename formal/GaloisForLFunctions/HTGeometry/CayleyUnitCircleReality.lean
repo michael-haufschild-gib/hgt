@@ -28,8 +28,8 @@ theorem norm_lineCayley_eq_one_iff_im_eq_zero (z : ℂ) :
     have heq : ‖z - I‖ = ‖z + I‖ := by
       rw [lineCayley, norm_div, div_eq_one_iff_eq (norm_ne_zero_iff.mpr hden)] at hnorm
       exact hnorm
-    have hsq : ‖z - I‖ ^ 2 = ‖z + I‖ ^ 2 :=
-      congrArg (fun x : ℝ => x ^ 2) heq
+    have hsq : ‖z - I‖ ^ (2 : ℕ) = ‖z + I‖ ^ (2 : ℕ) :=
+      congrArg (fun x : ℝ => x ^ (2 : ℕ)) heq
     rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
       Complex.normSq_apply] at hsq
     simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
@@ -41,7 +41,7 @@ theorem norm_lineCayley_eq_one_iff_im_eq_zero (z : ℂ) :
       have hzeroim := congrArg Complex.im hzero
       simp only [Complex.add_im, Complex.I_im, Complex.zero_im, him] at hzeroim
       norm_num at hzeroim
-    have hsq : ‖z - I‖ ^ 2 = ‖z + I‖ ^ 2 := by
+    have hsq : ‖z - I‖ ^ (2 : ℕ) = ‖z + I‖ ^ (2 : ℕ) := by
       rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
         Complex.normSq_apply]
       simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,

@@ -29,7 +29,7 @@ open Real
 theorem dist_sqrt_int_lower {m : ℕ} (hm : 0 < m) (hns : ∀ j : ℤ, j * j ≠ (m : ℤ)) (k : ℤ) :
     1 / (2 * Real.sqrt m + 1) ≤ |Real.sqrt m - (k : ℝ)| := by
   have hm0 : (0 : ℝ) ≤ (m : ℝ) := by positivity
-  have hsq : Real.sqrt m ^ 2 = (m : ℝ) := Real.sq_sqrt hm0
+  have hsq : Real.sqrt m ^ (2 : ℕ) = (m : ℝ) := Real.sq_sqrt hm0
   have hm1 : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
   have hs1 : (1 : ℝ) ≤ Real.sqrt m := by
     rw [show (1 : ℝ) = Real.sqrt 1 by simp]
@@ -94,19 +94,19 @@ theorem sqrt_nonsquare_not_near_integer {m : ℕ} (hm : 0 < m)
 
 /-- The bound is sharp in order: for `m = k² + 1` the distance is `≍ 1/(2√m)`. -/
 theorem dist_bound_order (k : ℕ) (hk : 0 < k) :
-    Real.sqrt ((k : ℝ) ^ 2 + 1) - (k : ℝ) ≤ 1 / (2 * (k : ℝ)) := by
+    Real.sqrt ((k : ℝ) ^ (2 : ℕ) + 1) - (k : ℝ) ≤ 1 / (2 * (k : ℝ)) := by
   have hk0 : (0 : ℝ) < (k : ℝ) := by exact_mod_cast hk
-  have hnn : (0 : ℝ) ≤ (k : ℝ) ^ 2 + 1 := by positivity
-  have hle : Real.sqrt ((k : ℝ) ^ 2 + 1) ≤ (k : ℝ) + 1 / (2 * (k : ℝ)) := by
-    rw [show (k : ℝ) + 1 / (2 * (k : ℝ)) = Real.sqrt (((k : ℝ) + 1 / (2 * (k : ℝ))) ^ 2) by
+  have hnn : (0 : ℝ) ≤ (k : ℝ) ^ (2 : ℕ) + 1 := by positivity
+  have hle : Real.sqrt ((k : ℝ) ^ (2 : ℕ) + 1) ≤ (k : ℝ) + 1 / (2 * (k : ℝ)) := by
+    rw [show (k : ℝ) + 1 / (2 * (k : ℝ)) = Real.sqrt (((k : ℝ) + 1 / (2 * (k : ℝ))) ^ (2 : ℕ)) by
       rw [Real.sqrt_sq (by positivity)]]
     apply Real.sqrt_le_sqrt
-    have : ((k : ℝ) + 1 / (2 * (k : ℝ))) ^ 2
-        = (k : ℝ) ^ 2 + 1 + 1 / (4 * (k : ℝ) ^ 2) := by
+    have : ((k : ℝ) + 1 / (2 * (k : ℝ))) ^ (2 : ℕ)
+        = (k : ℝ) ^ (2 : ℕ) + 1 + 1 / (4 * (k : ℝ) ^ (2 : ℕ)) := by
       field_simp
       ring
     rw [this]
-    have : (0 : ℝ) < 1 / (4 * (k : ℝ) ^ 2) := by positivity
+    have : (0 : ℝ) < 1 / (4 * (k : ℝ) ^ (2 : ℕ)) := by positivity
     linarith
   linarith
 

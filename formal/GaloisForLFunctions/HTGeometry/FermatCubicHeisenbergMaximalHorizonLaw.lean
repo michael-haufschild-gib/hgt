@@ -20,7 +20,7 @@ variable {K : Type*} [Field K] [CharZero K]
 explicit Weyl differential field are dependent exactly on the Fermat cubic, while their law
 commutator map remains injective on every bivector. -/
 theorem fermatCubicWeyl_heisenbergMaximalHorizon
-    (ω : K) (hω : ω ^ 2 + ω + 1 = 0) :
+    (ω : K) (hω : ω ^ (2 : ℕ) + ω + 1 = 0) :
     let ρ := generalizedCliffordShiftFieldDerivationLaw
       (fermatCubicSymbol (fermatCubicClock ω) fermatCubicShift
         (fermatCubicThird ω))

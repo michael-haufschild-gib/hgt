@@ -66,7 +66,7 @@ theorem integral_cos_mul_cos_nat_mul (k : ℕ) :
     · simp [integral_cos]
     · rw [if_pos rfl]
       have hsq : ∫ θ in (0:ℝ)..(2 * π), Real.cos θ * Real.cos ((1 : ℕ) * θ)
-          = ∫ θ in (0:ℝ)..(2 * π), Real.cos θ ^ 2 := by
+          = ∫ θ in (0:ℝ)..(2 * π), Real.cos θ ^ (2 : ℕ) := by
         congr 1
         funext θ
         simp [pow_two]
@@ -153,12 +153,12 @@ theorem cosinePolynomial_purchase_ratio_le_two {a : ℕ → ℝ} {K : ℕ} (hK :
 
 /-- The scalar inequality behind the cap: `u − u² ≤ (3 − 2√2)(1 + u)` for every real `u`, with
 equality at `u = √2 − 1`. -/
-theorem purchase_key_inequality (u : ℝ) : u - u ^ 2 ≤ (3 - 2 * Real.sqrt 2) * (1 + u) := by
-  have h2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+theorem purchase_key_inequality (u : ℝ) : u - u ^ (2 : ℕ) ≤ (3 - 2 * Real.sqrt 2) * (1 + u) := by
+  have h2 : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   nlinarith [sq_nonneg (u - (Real.sqrt 2 - 1)), h2]
 
 theorem three_sub_two_sqrt_two_nonneg : 0 ≤ 3 - 2 * Real.sqrt 2 := by
-  have h2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have h2 : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   nlinarith [Real.sqrt_nonneg 2, h2, sq_nonneg (Real.sqrt 2 - 3 / 2)]
 
 /-- **Width cap of the pole-purchase method.**  With pole coefficient `a₀ > 0`, aligned share
@@ -176,10 +176,10 @@ theorem purchase_width_cap {L a0 a1 S η δ : ℝ} (hL : 0 < L) (ha0 : 0 < a0)
     have := (div_le_iff₀ (by positivity : (0:ℝ) < 2 * L)).mp hη
     linarith
   have hkey := purchase_key_inequality (2 * L * δ)
-  have hstep : 2 * L * δ - (2 * L * δ) ^ 2 ≤ 2 * L * η * (1 + 2 * L * δ) := by
+  have hstep : 2 * L * δ - (2 * L * δ) ^ (2 : ℕ) ≤ 2 * L * η * (1 + 2 * L * δ) := by
     nlinarith [hkey, mul_le_mul_of_nonneg_right h2L (by positivity : (0:ℝ) ≤ 1 + 2 * L * δ)]
   have hmain : 2 * δ ≤ (δ + η) * (1 + 2 * L * δ) := by
-    have h' : 2 * L * (δ - 2 * L * δ ^ 2) ≤ 2 * L * (η * (1 + 2 * L * δ)) := by
+    have h' : 2 * L * (δ - 2 * L * δ ^ (2 : ℕ)) ≤ 2 * L * (η * (1 + 2 * L * δ)) := by
       nlinarith [hstep]
     have h'' := le_of_mul_le_mul_left h' (by positivity : (0:ℝ) < 2 * L)
     nlinarith [h'']

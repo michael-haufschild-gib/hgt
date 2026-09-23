@@ -80,9 +80,9 @@ theorem fusionBoseDefect_dyadic (t : ℝ) :
   · have h2t : 0 < 2*t := mul_pos (by positivity) ht
     have he : 1 < Real.exp t := Real.one_lt_exp_iff.mpr ht
     have hd : Real.exp t-1 ≠ 0 := ne_of_gt (sub_pos.mpr he)
-    have hd2 : (Real.exp t)^2-1 ≠ 0 := by nlinarith only [he]
+    have hd2 : (Real.exp t)^(2 : ℕ)-1 ≠ 0 := by nlinarith only [he]
     have hp : Real.exp t+1 ≠ 0 := by positivity
-    have hex : Real.exp (2*t)=(Real.exp t)^2 := by
+    have hex : Real.exp (2*t)=(Real.exp t)^(2 : ℕ) := by
       rw [show 2*t=t+t by ring,Real.exp_add,pow_two]
     simp only [fusionBoseDefect,if_pos ht,if_pos h2t,hex]
     field_simp

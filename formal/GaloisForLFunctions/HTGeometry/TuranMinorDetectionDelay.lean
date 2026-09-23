@@ -28,14 +28,14 @@ theorem pair_minor_re_neg_at_index {w W : ℂ} (hw : w ≠ 0) (him : w.im ≠ 0)
     (n : ℕ) :
     ((w ^ (n + 1) * W + ((starRingEnd ℂ) w) ^ (n + 1) * (starRingEnd ℂ) W) *
       (w ^ (n + 3) * W + ((starRingEnd ℂ) w) ^ (n + 3) * (starRingEnd ℂ) W) -
-      (w ^ (n + 2) * W + ((starRingEnd ℂ) w) ^ (n + 2) * (starRingEnd ℂ) W) ^ 2).re < 0 := by
+      (w ^ (n + 2) * W + ((starRingEnd ℂ) w) ^ (n + 2) * (starRingEnd ℂ) W) ^ (2 : ℕ)).re < 0 := by
   have key := pair_minor_re_neg hw him (mul_ne_zero (pow_ne_zero n hw) hW)
   have hshape : (w ^ (n + 1) * W + ((starRingEnd ℂ) w) ^ (n + 1) * (starRingEnd ℂ) W) *
       (w ^ (n + 3) * W + ((starRingEnd ℂ) w) ^ (n + 3) * (starRingEnd ℂ) W) -
-      (w ^ (n + 2) * W + ((starRingEnd ℂ) w) ^ (n + 2) * (starRingEnd ℂ) W) ^ 2 =
+      (w ^ (n + 2) * W + ((starRingEnd ℂ) w) ^ (n + 2) * (starRingEnd ℂ) W) ^ (2 : ℕ) =
       (w * (w ^ n * W) + (starRingEnd ℂ) w * (starRingEnd ℂ) (w ^ n * W)) *
-        (w ^ 3 * (w ^ n * W) + ((starRingEnd ℂ) w) ^ 3 * (starRingEnd ℂ) (w ^ n * W)) -
-        (w ^ 2 * (w ^ n * W) + ((starRingEnd ℂ) w) ^ 2 * (starRingEnd ℂ) (w ^ n * W)) ^ 2 := by
+        (w ^ (3 : ℕ) * (w ^ n * W) + ((starRingEnd ℂ) w) ^ (3 : ℕ) * (starRingEnd ℂ) (w ^ n * W)) -
+        (w ^ (2 : ℕ) * (w ^ n * W) + ((starRingEnd ℂ) w) ^ (2 : ℕ) * (starRingEnd ℂ) (w ^ n * W)) ^ (2 : ℕ) := by
     rw [map_mul, map_pow]
     ring
   rw [hshape]
@@ -52,7 +52,7 @@ theorem exists_offline_config_minors_nonneg_below_seven :
       (∀ i, ∃ j, v j = (starRingEnd ℂ) (v i) ∧ Wf j = (starRingEnd ℂ) (Wf i)) ∧
       (∃ i, (v i).im ≠ 0 ∧ Wf i ≠ 0) ∧
       ∀ n : ℕ, n < 7 → 0 ≤ ((∑ i, Wf i * v i ^ (n + 1)) * (∑ i, Wf i * v i ^ (n + 3)) -
-        (∑ i, Wf i * v i ^ (n + 2)) ^ 2).re := by
+        (∑ i, Wf i * v i ^ (n + 2)) ^ (2 : ℕ)).re := by
   classical
   set vv : ℂ := ((12 / 13 : ℝ) : ℂ) + ((5 / 13 : ℝ) : ℂ) * I with hvv
   set vb : ℂ := ((12 / 13 : ℝ) : ℂ) - ((5 / 13 : ℝ) : ℂ) * I with hvb
@@ -62,11 +62,11 @@ theorem exists_offline_config_minors_nonneg_below_seven :
   have hW2' : (![((14 : ℝ) : ℂ), Wp, Wm] : Fin 3 → ℂ) 2 = Wm := rfl
   refine ⟨![((1 : ℝ) : ℂ), vv, vb], ![((14 : ℝ) : ℂ), Wp, Wm], ?_, ?_, ?_, ?_, ?_⟩
   · intro i
-    have hvvn : ‖vv‖ ^ 2 = 1 := by
+    have hvvn : ‖vv‖ ^ (2 : ℕ) = 1 := by
       rw [Complex.sq_norm, hvv]
       norm_num [Complex.normSq_apply, Complex.add_re, Complex.add_im, Complex.mul_re,
         Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
-    have hvbn : ‖vb‖ ^ 2 = 1 := by
+    have hvbn : ‖vb‖ ^ (2 : ℕ) = 1 := by
       rw [Complex.sq_norm, hvb]
       norm_num [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.mul_re,
         Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
@@ -134,46 +134,46 @@ theorem exists_offline_config_minors_nonneg_below_seven :
       norm_num [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
         Complex.I_im, Complex.ofReal_re, Complex.zero_im] at him
   · -- the weighted moment chain `Wp · vv^k` as explicit Gaussian-rational values
-    have hy1 : Wp * vv ^ 1 = ((2 / 13 : ℝ) : ℂ) + ((29 / 13 : ℝ) : ℂ) * I := by
+    have hy1 : Wp * vv ^ (1 : ℕ) = ((2 / 13 : ℝ) : ℂ) + ((29 / 13 : ℝ) : ℂ) * I := by
       rw [hWp, hvv, pow_one]
       push_cast
       linear_combination (10 / 13 : ℂ) * Complex.I_sq
-    have hy2 : Wp * vv ^ 2 = ((-121 / 169 : ℝ) : ℂ) + ((358 / 169 : ℝ) : ℂ) * I := by
-      rw [show Wp * vv ^ 2 = Wp * vv ^ 1 * vv by ring, hy1, hvv]
+    have hy2 : Wp * vv ^ (2 : ℕ) = ((-121 / 169 : ℝ) : ℂ) + ((358 / 169 : ℝ) : ℂ) * I := by
+      rw [show Wp * vv ^ (2 : ℕ) = Wp * vv ^ (1 : ℕ) * vv by ring, hy1, hvv]
       push_cast
       linear_combination (145 / 169 : ℂ) * Complex.I_sq
-    have hy3 : Wp * vv ^ 3 = ((-3242 / 2197 : ℝ) : ℂ) + ((3691 / 2197 : ℝ) : ℂ) * I := by
-      rw [show Wp * vv ^ 3 = Wp * vv ^ 2 * vv by ring, hy2, hvv]
+    have hy3 : Wp * vv ^ (3 : ℕ) = ((-3242 / 2197 : ℝ) : ℂ) + ((3691 / 2197 : ℝ) : ℂ) * I := by
+      rw [show Wp * vv ^ (3 : ℕ) = Wp * vv ^ (2 : ℕ) * vv by ring, hy2, hvv]
       push_cast
       linear_combination (1790 / 2197 : ℂ) * Complex.I_sq
-    have hy4 : Wp * vv ^ 4 = ((-57359 / 28561 : ℝ) : ℂ) +
+    have hy4 : Wp * vv ^ (4 : ℕ) = ((-57359 / 28561 : ℝ) : ℂ) +
         ((28082 / 28561 : ℝ) : ℂ) * I := by
-      rw [show Wp * vv ^ 4 = Wp * vv ^ 3 * vv by ring, hy3, hvv]
+      rw [show Wp * vv ^ (4 : ℕ) = Wp * vv ^ (3 : ℕ) * vv by ring, hy3, hvv]
       push_cast
       linear_combination (18455 / 28561 : ℂ) * Complex.I_sq
-    have hy5 : Wp * vv ^ 5 = ((-828718 / 371293 : ℝ) : ℂ) +
+    have hy5 : Wp * vv ^ (5 : ℕ) = ((-828718 / 371293 : ℝ) : ℂ) +
         ((50189 / 371293 : ℝ) : ℂ) * I := by
-      rw [show Wp * vv ^ 5 = Wp * vv ^ 4 * vv by ring, hy4, hvv]
+      rw [show Wp * vv ^ (5 : ℕ) = Wp * vv ^ (4 : ℕ) * vv by ring, hy4, hvv]
       push_cast
       linear_combination (140410 / 371293 : ℂ) * Complex.I_sq
-    have hy6 : Wp * vv ^ 6 = ((-10195561 / 4826809 : ℝ) : ℂ) +
+    have hy6 : Wp * vv ^ (6 : ℕ) = ((-10195561 / 4826809 : ℝ) : ℂ) +
         ((-3541322 / 4826809 : ℝ) : ℂ) * I := by
-      rw [show Wp * vv ^ 6 = Wp * vv ^ 5 * vv by ring, hy5, hvv]
+      rw [show Wp * vv ^ (6 : ℕ) = Wp * vv ^ (5 : ℕ) * vv by ring, hy5, hvv]
       push_cast
       linear_combination (250945 / 4826809 : ℂ) * Complex.I_sq
-    have hy7 : Wp * vv ^ 7 = ((-104640122 / 62748517 : ℝ) : ℂ) +
+    have hy7 : Wp * vv ^ (7 : ℕ) = ((-104640122 / 62748517 : ℝ) : ℂ) +
         ((-93473669 / 62748517 : ℝ) : ℂ) * I := by
-      rw [show Wp * vv ^ 7 = Wp * vv ^ 6 * vv by ring, hy6, hvv]
+      rw [show Wp * vv ^ (7 : ℕ) = Wp * vv ^ (6 : ℕ) * vv by ring, hy6, hvv]
       push_cast
       linear_combination (-17706610 / 62748517 : ℂ) * Complex.I_sq
-    have hy8 : Wp * vv ^ 8 = ((-788313119 / 815730721 : ℝ) : ℂ) +
+    have hy8 : Wp * vv ^ (8 : ℕ) = ((-788313119 / 815730721 : ℝ) : ℂ) +
         ((-1644884638 / 815730721 : ℝ) : ℂ) * I := by
-      rw [show Wp * vv ^ 8 = Wp * vv ^ 7 * vv by ring, hy7, hvv]
+      rw [show Wp * vv ^ (8 : ℕ) = Wp * vv ^ (7 : ℕ) * vv by ring, hy7, hvv]
       push_cast
       linear_combination (-467368345 / 815730721 : ℂ) * Complex.I_sq
-    have hy9 : Wp * vv ^ 9 = ((-1235334238 / 10604499373 : ℝ) : ℂ) +
+    have hy9 : Wp * vv ^ (9 : ℕ) = ((-1235334238 / 10604499373 : ℝ) : ℂ) +
         ((-23680181251 / 10604499373 : ℝ) : ℂ) * I := by
-      rw [show Wp * vv ^ 9 = Wp * vv ^ 8 * vv by ring, hy8, hvv]
+      rw [show Wp * vv ^ (9 : ℕ) = Wp * vv ^ (8 : ℕ) * vv by ring, hy8, hvv]
       push_cast
       linear_combination (-8224423190 / 10604499373 : ℂ) * Complex.I_sq
     -- conjugate side and the real moment values

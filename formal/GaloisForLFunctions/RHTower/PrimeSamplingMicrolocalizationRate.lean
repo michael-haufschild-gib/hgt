@@ -18,7 +18,7 @@ noncomputable section
 
 /-- Second-order prime Mertens remainder at logarithmic coordinate `y`. -/
 def primeLogSquareRemainder (y : ℝ) : ℝ :=
-  primeLogPowSum 2 (Real.exp y) - y ^ 2 / 2 - mertensLogPowConstantFull 1
+  primeLogPowSum 2 (Real.exp y) - y ^ (2 : ℕ) / 2 - mertensLogPowConstantFull 1
 
 /-- Exact decomposition of a logarithmic prime window into `2 x r` and its two endpoint
 remainders. -/

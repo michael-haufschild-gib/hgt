@@ -108,7 +108,7 @@ theorem eulerMascheroniConstant_lt_three_fifths :
   refine (Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' 25).trans ?_
   rw [Real.eulerMascheroniSeq']
   norm_num only [if_false, Nat.reduceEqDiff, Nat.cast_ofNat]
-  rw [show (25 : ℝ) = 5 ^ 2 by norm_num, Real.log_pow]
+  rw [show (25 : ℝ) = 5 ^ (2 : ℕ) by norm_num, Real.log_pow]
   norm_num [harmonic] at *
   nlinarith [Real.log_five_gt_d9]
 

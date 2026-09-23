@@ -45,7 +45,7 @@ theorem exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_
   intro j hj w hwLower hwUpper
   let a : ℕ := menonFinalRangeBlockLowerNat x j
   let d : ℝ := (Real.log (a : ℝ)) ^ (20 : ℕ)
-  have haLarge : (64 : ℕ) ^ 8 ≤ a := by
+  have haLarge : (64 : ℕ) ^ (8 : ℕ) ≤ a := by
     simpa only [a] using (hendpoints j hj).1
   have haOne : 1 < a := by omega
   have hloga : 0 < Real.log (a : ℝ) := Real.log_pos (by exact_mod_cast haOne)

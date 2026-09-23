@@ -231,13 +231,13 @@ permutations. -/
 theorem integral_finiteUnitaryEntryWeight_sq_equiv
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (e : ι ≃ ι) (i j : ι) :
-    (∫ U, (finiteUnitaryEntryWeight U (e i) j) ^ 2
+    (∫ U, (finiteUnitaryEntryWeight U (e i) j) ^ (2 : ℕ)
         ∂finiteUnitaryHaar ι) =
-      ∫ U, (finiteUnitaryEntryWeight U i j) ^ 2
+      ∫ U, (finiteUnitaryEntryWeight U i j) ^ (2 : ℕ)
         ∂finiteUnitaryHaar ι := by
   have h := integral_finiteUnitaryHaar_mul_left
     (fun U : Matrix.unitaryGroup ι ℂ =>
-      (finiteUnitaryEntryWeight U (e i) j) ^ 2)
+      (finiteUnitaryEntryWeight U (e i) j) ^ (2 : ℕ))
     (finiteUnitaryPermutation e)
   simpa only [finiteUnitaryEntryWeight_permutation_mul] using h.symm
 
@@ -345,11 +345,11 @@ def finiteUnitaryDistinguishedPhase
 /-- Four quarter-turn phases cancel every interference term in the fourth
 power of a two-coordinate superposition. -/
 theorem complex_normSq_four_phase_sum (x y : ℂ) :
-    Complex.normSq (x + y) ^ 2 +
-      Complex.normSq (x - y) ^ 2 +
-      Complex.normSq (x + Complex.I * y) ^ 2 +
-      Complex.normSq (x - Complex.I * y) ^ 2 =
-    4 * (Complex.normSq x ^ 2 + Complex.normSq y ^ 2 +
+    Complex.normSq (x + y) ^ (2 : ℕ) +
+      Complex.normSq (x - y) ^ (2 : ℕ) +
+      Complex.normSq (x + Complex.I * y) ^ (2 : ℕ) +
+      Complex.normSq (x - Complex.I * y) ^ (2 : ℕ) =
+    4 * (Complex.normSq x ^ (2 : ℕ) + Complex.normSq y ^ (2 : ℕ) +
       4 * Complex.normSq x * Complex.normSq y) := by
   simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im,
     Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im,
@@ -390,7 +390,7 @@ theorem finiteUnitaryEntryWeight_hadamard_phase_mul
 /-- Haar fourth moment of one distinguished entry. -/
 def finiteUnitaryHaarFourthMoment
     (d : ℕ) (j : Fin 2 ⊕ Fin d) : ℝ :=
-  ∫ U, (finiteUnitaryEntryWeight U (Sum.inl 0) j) ^ 2
+  ∫ U, (finiteUnitaryEntryWeight U (Sum.inl 0) j) ^ (2 : ℕ)
     ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)
 
 /-- Haar mixed second moment of the two distinguished entry weights. -/
@@ -407,7 +407,7 @@ def finiteUnitaryMixedFourth
     (U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)
     (j : Fin 2 ⊕ Fin d) : ℝ :=
   (Complex.normSq
-      (U (Sum.inl 0) j + z * U (Sum.inl 1) j) / 2) ^ 2
+      (U (Sum.inl 0) j + z * U (Sum.inl 1) j) / 2) ^ (2 : ℕ)
 
 /-- Every continuous real observable is integrable against normalized Haar
 measure on a finite unitary group. -/
@@ -436,7 +436,7 @@ theorem integrable_finiteUnitaryEntryWeight_sq
     (i j : ι) :
     Integrable
       (fun U : Matrix.unitaryGroup ι ℂ =>
-        (finiteUnitaryEntryWeight U i j) ^ 2)
+        (finiteUnitaryEntryWeight U i j) ^ (2 : ℕ))
       (finiteUnitaryHaar ι) := by
   apply integrable_finiteUnitaryHaar_of_continuous
   exact (continuous_finiteUnitaryEntryWeight i j).pow 2
@@ -523,7 +523,7 @@ theorem integral_finiteUnitaryMixedFourth_eq
       finiteUnitaryHaarFourthMoment d j := by
   have h := integral_finiteUnitaryHaar_mul_left
     (f := fun U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ =>
-      (finiteUnitaryEntryWeight U (Sum.inl 0) j) ^ 2)
+      (finiteUnitaryEntryWeight U (Sum.inl 0) j) ^ (2 : ℕ))
     ((finiteUnitaryExtendedHadamard d *
       finiteUnitaryDistinguishedPhase d z hz))
   simpa only [finiteUnitaryMixedFourth,
@@ -539,8 +539,8 @@ theorem finiteUnitaryMixedFourth_four_phase_sum
         finiteUnitaryMixedFourth (-1) U j +
         finiteUnitaryMixedFourth Complex.I U j +
         finiteUnitaryMixedFourth (-Complex.I) U j =
-      (finiteUnitaryEntryWeight U (Sum.inl 0) j) ^ 2 +
-        (finiteUnitaryEntryWeight U (Sum.inl 1) j) ^ 2 +
+      (finiteUnitaryEntryWeight U (Sum.inl 0) j) ^ (2 : ℕ) +
+        (finiteUnitaryEntryWeight U (Sum.inl 1) j) ^ (2 : ℕ) +
         4 * finiteUnitaryEntryWeight U (Sum.inl 0) j *
           finiteUnitaryEntryWeight U (Sum.inl 1) j := by
   have h := complex_normSq_four_phase_sum
@@ -565,9 +565,9 @@ theorem finiteUnitaryHaarFourthMoment_eq_two_mul_cross
     finiteUnitaryMixedFourth z U j
   have hm (z : ℂ) : Integrable (m z) μ := by
     exact integrable_finiteUnitaryMixedFourth d z j
-  have hw₀ : Integrable (fun U => (w₀ U) ^ 2) μ := by
+  have hw₀ : Integrable (fun U => (w₀ U) ^ (2 : ℕ)) μ := by
     exact integrable_finiteUnitaryEntryWeight_sq (Sum.inl 0) j
-  have hw₁ : Integrable (fun U => (w₁ U) ^ 2) μ := by
+  have hw₁ : Integrable (fun U => (w₁ U) ^ (2 : ℕ)) μ := by
     exact integrable_finiteUnitaryEntryWeight_sq (Sum.inl 1) j
   have hcross : Integrable (fun U => w₀ U * w₁ U) μ := by
     exact integrable_finiteUnitaryEntryWeight_mul
@@ -575,7 +575,7 @@ theorem finiteUnitaryHaarFourthMoment_eq_two_mul_cross
   have hpoint :
       (∫ U, m 1 U + m (-1) U + m Complex.I U +
           m (-Complex.I) U ∂μ) =
-        ∫ U, (w₀ U) ^ 2 + (w₁ U) ^ 2 +
+        ∫ U, (w₀ U) ^ (2 : ℕ) + (w₁ U) ^ (2 : ℕ) +
           4 * w₀ U * w₁ U ∂μ := by
     apply integral_congr_ae
     filter_upwards [] with U
@@ -611,20 +611,20 @@ theorem finiteUnitaryHaarFourthMoment_eq_two_mul_cross
     funext U
     ring
   have hright :
-      (∫ U, (w₀ U) ^ 2 + (w₁ U) ^ 2 +
+      (∫ U, (w₀ U) ^ (2 : ℕ) + (w₁ U) ^ (2 : ℕ) +
           4 * w₀ U * w₁ U ∂μ) =
-        ((∫ U, (w₀ U) ^ 2 ∂μ) +
-          ∫ U, (w₁ U) ^ 2 ∂μ) +
+        ((∫ U, (w₀ U) ^ (2 : ℕ) ∂μ) +
+          ∫ U, (w₁ U) ^ (2 : ℕ) ∂μ) +
             ∫ U, 4 * w₀ U * w₁ U ∂μ := by
     calc
-      _ = (∫ U, (w₀ U) ^ 2 + (w₁ U) ^ 2 ∂μ) +
+      _ = (∫ U, (w₀ U) ^ (2 : ℕ) + (w₁ U) ^ (2 : ℕ) ∂μ) +
           ∫ U, 4 * w₀ U * w₁ U ∂μ := by
         simpa only [Pi.add_apply] using
           integral_add (hw₀.add hw₁) hscaled
       _ = _ := by
-        rw [show (∫ U, (w₀ U) ^ 2 + (w₁ U) ^ 2 ∂μ) =
-            (∫ U, (w₀ U) ^ 2 ∂μ) +
-              ∫ U, (w₁ U) ^ 2 ∂μ by
+        rw [show (∫ U, (w₀ U) ^ (2 : ℕ) + (w₁ U) ^ (2 : ℕ) ∂μ) =
+            (∫ U, (w₀ U) ^ (2 : ℕ) ∂μ) +
+              ∫ U, (w₁ U) ^ (2 : ℕ) ∂μ by
           simpa only [Pi.add_apply] using integral_add hw₀ hw₁]
   rw [hleft, hright] at hpoint
   have hm1 :
@@ -648,7 +648,7 @@ theorem finiteUnitaryHaarFourthMoment_eq_two_mul_cross
     exact integral_finiteUnitaryMixedFourth_eq d (-Complex.I)
       (by norm_num [Complex.normSq_apply]) j
   have hrow :
-      (∫ U, (w₁ U) ^ 2 ∂μ) =
+      (∫ U, (w₁ U) ^ (2 : ℕ) ∂μ) =
         finiteUnitaryHaarFourthMoment d j := by
     have h := integral_finiteUnitaryEntryWeight_sq_equiv
       (e := Equiv.swap
@@ -669,7 +669,7 @@ theorem finiteUnitaryHaarFourthMoment_eq_two_mul_cross
       _ = 4 * finiteUnitaryHaarCrossMoment d j := by
         rfl
   have hw₀value :
-      (∫ U, (w₀ U) ^ 2 ∂μ) =
+      (∫ U, (w₀ U) ^ (2 : ℕ) ∂μ) =
         finiteUnitaryHaarFourthMoment d j := by
     rfl
   rw [hm1, hmneg1, hmI, hmnegI, hw₀value, hrow, hscale] at hpoint
@@ -853,7 +853,7 @@ column. -/
 def finiteUnitaryDiagonalProbeHaarSignal
     (d : ℕ) (s : (Fin 2 ⊕ Fin d) → ℝ)
     (j : Fin 2 ⊕ Fin d) : ℝ :=
-  ∫ U, (∑ i, s i * finiteUnitaryEntryWeight U i j) ^ 2
+  ∫ U, (∑ i, s i * finiteUnitaryEntryWeight U i j) ^ (2 : ℕ)
     ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)
 
 /-- Exact moment expansion for a diagonal probe. -/
@@ -875,7 +875,7 @@ theorem finiteUnitaryDiagonalProbeHaarSignal_eq_sum
     exact (integrable_finiteUnitaryEntryWeight_mul i k j).const_mul
       (s i * s k)
   have hexpand (U : Matrix.unitaryGroup ι ℂ) :
-      (∑ i, s i * finiteUnitaryEntryWeight U i j) ^ 2 =
+      (∑ i, s i * finiteUnitaryEntryWeight U i j) ^ (2 : ℕ) =
         ∑ i, ∑ k, term i k U := by
     rw [pow_two, Finset.sum_mul_sum]
     apply Finset.sum_congr rfl
@@ -886,7 +886,7 @@ theorem finiteUnitaryDiagonalProbeHaarSignal_eq_sum
     ring
   rw [finiteUnitaryDiagonalProbeHaarSignal]
   calc
-    (∫ U, (∑ i, s i * finiteUnitaryEntryWeight U i j) ^ 2
+    (∫ U, (∑ i, s i * finiteUnitaryEntryWeight U i j) ^ (2 : ℕ)
         ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)) =
       ∫ U, ∑ i, ∑ k, term i k U ∂μ := by
         apply integral_congr_ae
@@ -920,7 +920,7 @@ theorem balanced_exchangeable_second_moment_sum
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : ι → ℝ) (A B : ℝ)
     (hsum : ∑ i, s i = 0)
-    (hsq : ∀ i, (s i) ^ 2 = 1) :
+    (hsq : ∀ i, (s i) ^ (2 : ℕ) = 1) :
     (∑ i, ∑ k, s i * s k * (if i = k then A else B)) =
       (Fintype.card ι : ℝ) * (A - B) := by
   let diag := fun i k : ι =>
@@ -943,7 +943,7 @@ theorem balanced_exchangeable_second_moment_sum
       _ = _ := Finset.sum_add_distrib
   have htotal :
       (∑ i, ∑ k, B * s i * s k) =
-        B * (∑ i, s i) ^ 2 := by
+        B * (∑ i, s i) ^ (2 : ℕ) := by
     calc
       _ = B * ∑ i, ∑ k, s i * s k := by
         symm
@@ -954,10 +954,10 @@ theorem balanced_exchangeable_second_moment_sum
         apply Finset.sum_congr rfl
         intro k _hk
         ring
-      _ = B * (∑ i, s i) ^ 2 := by
+      _ = B * (∑ i, s i) ^ (2 : ℕ) := by
         rw [pow_two, Finset.sum_mul_sum]
   have hdiag :
-      (∑ i, ∑ k, diag i k) = ∑ i, (s i) ^ 2 := by
+      (∑ i, ∑ k, diag i k) = ∑ i, (s i) ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro i _hi
     rw [Finset.sum_eq_single i]
@@ -985,7 +985,7 @@ theorem balanced_exchangeable_second_moment_sum
           exact hterm i k
     _ = (∑ i, ∑ k, B * s i * s k) +
         ∑ i, ∑ k, (A - B) * diag i k := hsplit
-    _ = B * (∑ i, s i) ^ 2 +
+    _ = B * (∑ i, s i) ^ (2 : ℕ) +
         (A - B) * ∑ i, ∑ k, diag i k := by
           rw [htotal, hscaled]
     _ = (Fintype.card ι : ℝ) * (A - B) := by
@@ -1001,7 +1001,7 @@ theorem finiteUnitaryDiagonalProbeHaarSignal_eq_dimension_succ_inv
     (d : ℕ) (s : (Fin 2 ⊕ Fin d) → ℝ)
     (j : Fin 2 ⊕ Fin d)
     (hsum : ∑ i, s i = 0)
-    (hsq : ∀ i, (s i) ^ 2 = 1) :
+    (hsq : ∀ i, (s i) ^ (2 : ℕ) = 1) :
     finiteUnitaryDiagonalProbeHaarSignal d s j =
       (d + 3 : ℝ)⁻¹ := by
   rw [finiteUnitaryDiagonalProbeHaarSignal_eq_sum,
@@ -1028,7 +1028,7 @@ def finiteUnitaryBalancedDiagonalSign
 /-- Every entry of the explicit balanced probe is a sign. -/
 theorem finiteUnitaryBalancedDiagonalSign_sq
     (n : ℕ) (i : Fin 2 ⊕ Fin (n + n)) :
-    (finiteUnitaryBalancedDiagonalSign n i) ^ 2 = 1 := by
+    (finiteUnitaryBalancedDiagonalSign n i) ^ (2 : ℕ) = 1 := by
   rcases i with i | i
   · fin_cases i <;>
       norm_num [finiteUnitaryBalancedDiagonalSign]
@@ -1127,7 +1127,7 @@ def finiteUnitaryProbeCoordinateSignal
   ∫ U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ,
     (Complex.re
       ((star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
-        A * (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2
+        A * (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ (2 : ℕ)
     ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)
 
 /-- A real diagonal probe is the weighted sum of the squared coordinate
@@ -1195,7 +1195,7 @@ theorem finiteUnitaryProbeCoordinateSignal_conjugate
     (f := fun U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ =>
       (Complex.re
         ((star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
-          A * (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2)
+          A * (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ (2 : ℕ))
     (star K)
   rw [finiteUnitaryProbeCoordinateSignal,
     finiteUnitaryProbeCoordinateSignal]
@@ -1205,14 +1205,14 @@ theorem finiteUnitaryProbeCoordinateSignal_conjugate
           ((star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
             ((K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
               A * star (K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) *
-            (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2
+            (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ (2 : ℕ)
         ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)) =
       ∫ U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ,
         (Complex.re
           ((star (((star K * U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)) :
               Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) * A *
             (((star K * U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)) :
-              Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2
+              Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ (2 : ℕ)
         ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d) := by
           apply integral_congr_ae
           filter_upwards [] with U
@@ -1242,7 +1242,7 @@ def finiteUnitaryPreparedProbeHaarSignal
       ((star ((U * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
           Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) * A *
         ((U * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
-          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2
+          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ (2 : ℕ)
     ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)
 
 /-- A fixed preparation unitary cannot alter the Haar benchmark. -/
@@ -1259,7 +1259,7 @@ theorem finiteUnitaryPreparedProbeHaarSignal_eq
     (fun U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ =>
       (Complex.re
         ((star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
-          A * (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2)
+          A * (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ (2 : ℕ))
     W
 
 /-- Exact Haar benchmark for every traceless Hermitian involution, expressed
@@ -1271,7 +1271,7 @@ theorem finiteUnitaryPreparedHermitianSignProbeHaarSignal_eq
     (W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)
     (j : Fin 2 ⊕ Fin d)
     (hsum : ∑ i, hA.eigenvalues i = 0)
-    (hsq : ∀ i, (hA.eigenvalues i) ^ 2 = 1) :
+    (hsq : ∀ i, (hA.eigenvalues i) ^ (2 : ℕ) = 1) :
     finiteUnitaryPreparedProbeHaarSignal d A W j =
       (d + 3 : ℝ)⁻¹ := by
   rw [finiteUnitaryPreparedProbeHaarSignal_eq]
@@ -1309,7 +1309,7 @@ theorem hermitianEigenvalues_sq_eq_one_of_mul_self_eq_one
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     {A : Matrix ι ι ℂ} (hA : A.IsHermitian)
     (hmul : A * A = 1) (i : ι) :
-    (hA.eigenvalues i) ^ 2 = 1 := by
+    (hA.eigenvalues i) ^ (2 : ℕ) = 1 := by
   let K := hA.eigenvectorUnitary
   have hdiag := congrArg
     (fun X : Matrix ι ι ℂ =>

@@ -147,21 +147,21 @@ theorem gibbsDiagC_sub_truncated_le (S : Finset ℕ) (x : ℝ) (hx : 0 ≤ x)
 
 /-- `6!` times the sixth Taylor section of the exponential. -/
 noncomputable def expSection6 (w : ℂ) : ℂ :=
-  w ^ 6 + 6 * w ^ 5 + 30 * w ^ 4 + 120 * w ^ 3 + 360 * w ^ 2 + 720 * w + 720
+  w ^ (6 : ℕ) + 6 * w ^ (5 : ℕ) + 30 * w ^ (4 : ℕ) + 120 * w ^ (3 : ℕ) + 360 * w ^ (2 : ℕ) + 720 * w + 720
 
 theorem expSection6_axis (y : ℝ) :
     expSection6 ((y : ℂ) * Complex.I)
-      = (((-(y ^ 6) + 30 * y ^ 4 - 360 * y ^ 2 + 720 : ℝ)) : ℂ)
-        + (((6 * y ^ 5 - 120 * y ^ 3 + 720 * y : ℝ)) : ℂ) * Complex.I := by
-  have h2 : ((y : ℂ) * Complex.I) ^ 2 = -((y : ℂ) ^ 2) := by
+      = (((-(y ^ (6 : ℕ)) + 30 * y ^ (4 : ℕ) - 360 * y ^ (2 : ℕ) + 720 : ℝ)) : ℂ)
+        + (((6 * y ^ (5 : ℕ) - 120 * y ^ (3 : ℕ) + 720 * y : ℝ)) : ℂ) * Complex.I := by
+  have h2 : ((y : ℂ) * Complex.I) ^ (2 : ℕ) = -((y : ℂ) ^ (2 : ℕ)) := by
     rw [mul_pow, Complex.I_sq]; ring
-  have h3 : ((y : ℂ) * Complex.I) ^ 3 = -((y : ℂ) ^ 3) * Complex.I := by
+  have h3 : ((y : ℂ) * Complex.I) ^ (3 : ℕ) = -((y : ℂ) ^ (3 : ℕ)) * Complex.I := by
     rw [pow_succ, h2]; ring
-  have h4 : ((y : ℂ) * Complex.I) ^ 4 = (y : ℂ) ^ 4 := by
+  have h4 : ((y : ℂ) * Complex.I) ^ (4 : ℕ) = (y : ℂ) ^ (4 : ℕ) := by
     rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, h2]; ring
-  have h5 : ((y : ℂ) * Complex.I) ^ 5 = (y : ℂ) ^ 5 * Complex.I := by
+  have h5 : ((y : ℂ) * Complex.I) ^ (5 : ℕ) = (y : ℂ) ^ (5 : ℕ) * Complex.I := by
     rw [pow_succ, h4]; ring
-  have h6 : ((y : ℂ) * Complex.I) ^ 6 = -((y : ℂ) ^ 6) := by
+  have h6 : ((y : ℂ) * Complex.I) ^ (6 : ℕ) = -((y : ℂ) ^ (6 : ℕ)) := by
     rw [show (6 : ℕ) = 2 * 3 from rfl, pow_mul, h2]; ring
   rw [expSection6, h2, h3, h4, h5, h6]
   push_cast
@@ -173,21 +173,21 @@ theorem expSection6_ne_zero_on_axis (y : ℝ) :
     expSection6 ((y : ℂ) * Complex.I) ≠ 0 := by
   intro h
   rw [expSection6_axis] at h
-  have him : 6 * y ^ 5 - 120 * y ^ 3 + 720 * y = 0 := by
+  have him : 6 * y ^ (5 : ℕ) - 120 * y ^ (3 : ℕ) + 720 * y = 0 := by
     have hh := congrArg Complex.im h
     simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
       Complex.I_im, Complex.I_re, mul_one, mul_zero, zero_add, add_zero,
       Complex.zero_im] at hh
     linarith
-  have hre : -(y ^ 6) + 30 * y ^ 4 - 360 * y ^ 2 + 720 = 0 := by
+  have hre : -(y ^ (6 : ℕ)) + 30 * y ^ (4 : ℕ) - 360 * y ^ (2 : ℕ) + 720 = 0 := by
     have hh := congrArg Complex.re h
     simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
       Complex.I_im, Complex.I_re, mul_one, mul_zero, sub_zero, add_zero,
       Complex.zero_re] at hh
     linarith
-  have hfac : 6 * y ^ 5 - 120 * y ^ 3 + 720 * y
-      = 6 * y * ((y ^ 2 - 10) ^ 2 + 20) := by ring
-  have hpos : (0 : ℝ) < (y ^ 2 - 10) ^ 2 + 20 := by positivity
+  have hfac : 6 * y ^ (5 : ℕ) - 120 * y ^ (3 : ℕ) + 720 * y
+      = 6 * y * ((y ^ (2 : ℕ) - 10) ^ (2 : ℕ) + 20) := by ring
+  have hpos : (0 : ℝ) < (y ^ (2 : ℕ) - 10) ^ (2 : ℕ) + 20 := by positivity
   have hy : y = 0 := by
     rw [hfac] at him
     rcases mul_eq_zero.mp him with h1 | h2

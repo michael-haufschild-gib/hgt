@@ -11,7 +11,7 @@ noncomputable section
 theorem scalar_heightDecayConstant_uniform (R l : ℝ) (hR : 0 < R) (hl : 0 < l) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ u : ℂ, ‖u‖ ≤ R → heightDecayConstant u u 0 l ≤ C := by
   let r := 3*R+1
-  let D := Real.exp (R^2/(2*l))*Real.sqrt (2*Real.pi/l)
+  let D := Real.exp (R^(2 : ℕ)/(2*l))*Real.sqrt (2*Real.pi/l)
   let M := fun N : ℕ => ((N:ℝ)+1)^r * Real.exp (-((N:ℝ)*(l/2)))
   have hr : 0 ≤ r := by dsimp [r]; positivity
   have hD : 0 ≤ D := by dsimp [D]; positivity

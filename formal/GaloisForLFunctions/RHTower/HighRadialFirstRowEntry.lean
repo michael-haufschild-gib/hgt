@@ -29,7 +29,7 @@ def firstRowWeight (s c : ℝ) (A : ℝ → ℝ) (x : ℝ) : ℝ := firstRowMode
 /-- Its derivative. -/
 def firstRowWeightDeriv (s c : ℝ) (A A' : ℝ → ℝ) (x : ℝ) : ℝ :=
   (firstRowModelDeriv s c x * A x + firstRowModel s c x * A' x) / x
-    - firstRowModel s c x * A x / x ^ 2
+    - firstRowModel s c x * A x / x ^ (2 : ℕ)
 
 theorem hasDerivAt_firstRowWeight {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
     {A A' : ℝ → ℝ} (hA : HasDerivAt A (A' x) x) :
@@ -112,7 +112,7 @@ theorem abs_integral_highRadial_firstRowEntry_le {s c r a b R R' φ : ℝ}
     (hR' : ∀ x ∈ Icc a b, |A' x| ≤ R' / (x * Real.sqrt x)) :
     |∫ x in a..b, firstRowWeight s c A x * Real.cos (c * dilatedRadialPhase s r x + φ)|
       ≤ ((2 * (2 * R) + ((4 + 16 * c / (3 * Real.pi)) * R + 2 * R' + 2 * R)) / r
-          + 16 * (2 * (2 * R)) / (9 * r ^ 3)) / c := by
+          + 16 * (2 * (2 * R)) / (9 * r ^ (3 : ℕ))) / c := by
   obtain ⟨hbv, hmass⟩ :=
     bvWeight_firstRowWeight hs0 hs1 hc.le ha hab hA hAc hA'c hR hR'
   exact abs_integral_highRadial_firstRow_le hs0 hs1 hr hc (by linarith : (1 : ℝ) ≤ a) hab hbv hmass

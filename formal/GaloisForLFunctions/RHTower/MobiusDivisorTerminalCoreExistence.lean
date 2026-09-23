@@ -128,7 +128,7 @@ theorem exists_mobiusDivisorSmallTerminalCore :
         mobiusDivisorSelectionPrimes M \ (A ∪ B) ⊆ P ∧
         mobiusDivisorSmallSelectionPrimes M ⊆ P ∧
         |mobiusDivisorSelectionFibre M P ∅| ≤ 5*Real.sqrt M ∧
-        mobiusDivisorSuccessorEnvelope M P ≤ ε*(M:ℝ)^2 := by
+        mobiusDivisorSuccessorEnvelope M P ≤ ε*(M:ℝ)^(2 : ℕ) := by
   obtain ⟨b,hb,c,hc,hfloor⟩ := exists_mobiusDivisorPositivePrimeWindow
   refine ⟨b,hb,fun ε hε => ?_⟩
   have hfour : Tendsto (fun N : ℕ => 4*N) atTop atTop :=

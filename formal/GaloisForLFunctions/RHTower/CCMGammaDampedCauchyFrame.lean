@@ -59,14 +59,14 @@ theorem rankOneProj_compression (ξ : H) (U : H →L[ℂ] H) (x : H) :
 `|a|² d²`. -/
 theorem norm_sq_synthesis_column {ξ : H} (hξ : ‖ξ‖ = 1) {U : H →L[ℂ] H}
     (hU : ∀ x, ‖U x‖ = ‖x‖) (a : ℂ) (d : ℝ) :
-    ‖a • (d : ℂ) • U ξ‖ ^ 2 = ‖a‖ ^ 2 * d ^ 2 := by
+    ‖a • (d : ℂ) • U ξ‖ ^ (2 : ℕ) = ‖a‖ ^ (2 : ℕ) * d ^ (2 : ℕ) := by
   rw [norm_smul, norm_smul, hU, hξ, mul_one, Complex.norm_real, Real.norm_eq_abs, mul_pow,
     sq_abs]
 
 /-- **Equation (9).**  The frame energy is the diagonal sum: no cross-channel terms appear. -/
 theorem sum_norm_sq_synthesis {ι : Type*} (s : Finset ι) {ξ : H} (hξ : ‖ξ‖ = 1)
     {U : H →L[ℂ] H} (hU : ∀ x, ‖U x‖ = ‖x‖) (a : ι → ℂ) (d : ι → ℝ) :
-    (∑ i ∈ s, ‖a i • ((d i : ℝ) : ℂ) • U ξ‖ ^ 2) = ∑ i ∈ s, ‖a i‖ ^ 2 * (d i) ^ 2 :=
+    (∑ i ∈ s, ‖a i • ((d i : ℝ) : ℂ) • U ξ‖ ^ (2 : ℕ)) = ∑ i ∈ s, ‖a i‖ ^ (2 : ℕ) * (d i) ^ (2 : ℕ) :=
   Finset.sum_congr rfl fun i _ => norm_sq_synthesis_column hξ hU (a i) (d i)
 
 /-! ## The Gram entry retains full covariance -/
@@ -89,7 +89,7 @@ end PointedSystem
 
 /-- **Equation (10).**  The Gamma diagonal at a prime is `√2 p / √(p⁴+1)`. -/
 theorem gammaDiagSq_prime {p : ℕ} (hp : 2 ≤ p) :
-    gammaDiagSq p 1 = Real.sqrt 2 * (p : ℝ) / Real.sqrt ((p : ℝ) ^ 4 + 1) := by
+    gammaDiagSq p 1 = Real.sqrt 2 * (p : ℝ) / Real.sqrt ((p : ℝ) ^ (4 : ℕ) + 1) := by
   have h := gammaDiagSq_eq hp 1
   simpa using h
 
@@ -102,7 +102,7 @@ theorem gammaDampingProfile_pos (t : ℝ) : 0 < gammaDampingProfile t := by
   positivity
 
 /-- **Equations (2)–(3).**  The half-density squares back to the overlap. -/
-theorem halfDensity_sq (t : ℝ) : halfDensity t ^ 2 = gammaDampingProfile (2 * t) := by
+theorem halfDensity_sq (t : ℝ) : halfDensity t ^ (2 : ℕ) = gammaDampingProfile (2 * t) := by
   rw [halfDensity, Real.sq_sqrt (le_of_lt (gammaDampingProfile_pos _))]
 
 theorem halfDensity_pos (t : ℝ) : 0 < halfDensity t :=
@@ -111,8 +111,8 @@ theorem halfDensity_pos (t : ℝ) : 0 < halfDensity t :=
 /-- **Equation (5).**  The channel energy of the Gamma-damped Cauchy packet is the diagonal sum of
 `φ(2 t_i) |a_i|²`. -/
 theorem sum_channel_energy {ι : Type*} (s : Finset ι) (a : ι → ℂ) (t : ι → ℝ) :
-    (∑ i ∈ s, ‖a i‖ ^ 2 * (halfDensity (t i)) ^ 2)
-      = ∑ i ∈ s, ‖a i‖ ^ 2 * gammaDampingProfile (2 * t i) :=
+    (∑ i ∈ s, ‖a i‖ ^ (2 : ℕ) * (halfDensity (t i)) ^ (2 : ℕ))
+      = ∑ i ∈ s, ‖a i‖ ^ (2 : ℕ) * gammaDampingProfile (2 * t i) :=
   Finset.sum_congr rfl fun i _ => by rw [halfDensity_sq]
 
 end GaloisForLFunctions.RHTower

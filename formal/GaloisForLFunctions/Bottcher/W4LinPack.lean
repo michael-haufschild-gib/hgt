@@ -40,11 +40,11 @@ def ChainOverlapsConnected (c : ℂ) {rlo R₀ : ℝ} (S : TowerSection c rlo R�
     (∀ j : ℕ, ScaffoldProps c S.T
       (arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8)) j (σ j)) →
     (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
-      σ (j + 1) v ^ 2 = σ j v - c) →
+      σ (j + 1) v ^ (2 : ℕ) = σ j v - c) →
     (∀ j : ℕ, ScaffoldProps c S.T (annulusSet ra rb) j (SL j)) →
     (∀ j : ℕ, ∀ v ∈ arcAnnulus ra rb (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
       SL j v = σ j v) →
-    (∀ j : ℕ, ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, σ (j + 1) (w ^ 2) = σ j w) →
+    (∀ j : ℕ, ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, σ (j + 1) (w ^ (2 : ℕ)) = σ j w) →
     (∀ j : ℕ, 1 ≤ j → j + 1 ≤ k → IsPreconnected
       ((σ j '' arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8)) ∩
        (σ (j + 1) '' arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8)))) ∧
@@ -69,13 +69,13 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     {ra rb RW : ℝ} (hra : rlo < ra) (hrb : ra < rb) (hrbRW : rb < RW) (hRWR : RW < R₀)
     (hra54 : 5 * greenFunctionDyn c 0 / 4 ≤ Real.log ra)
     (hrb14 : Real.log rb ≤ 2 * greenFunctionDyn c 0 - 1/4)
-    (hraRW : ra ^ 2 < RW)
+    (hraRW : ra ^ (2 : ℕ) < RW)
     (hRW12 : Real.log RW ≤ 4 * greenFunctionDyn c 0 - 1/2)
     (hRW72 : Real.log RW ≤ 7 * greenFunctionDyn c 0 / 2)
-    {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ 2 ≤ ‖c‖ / 40)
+    {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ (2 : ℕ) ≤ ‖c‖ / 40)
     {θs : ℝ} (hθs1 : -Real.pi ≤ θs) (hθs2 : θs ≤ 2 * Real.pi)
     (havoid : ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
-      S.T v ∉ Metric.closedBall c (s ^ 2))
+      S.T v ∉ Metric.closedBall c (s ^ (2 : ℕ)))
     {c₂ : ℂ} (hc₂2 : (2:ℝ) ≤ ‖c₂‖) (hsc₂ : Real.sqrt (2 * ‖c₂‖) + 1 ≤ s)
     (hsurj : ∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
       greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀)
@@ -95,7 +95,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
       (∀ v ∈ annulusSet ra rb, SL v ∈ Ext) ∧
       ∃ (m : ℕ) (Φ : ℂ → ℂ),
         AnalyticOnNhd ℂ Φ Ext ∧
-        (∀ z ∈ Ext, Φ z ^ 2 ^ m = bottcherCoord c₂ ((quadratic c₂)^[m] z)) ∧
+        (∀ z ∈ Ext, Φ z ^ (2 : ℕ) ^ m = bottcherCoord c₂ ((quadratic c₂)^[m] z)) ∧
         (∀ z ∈ Ext, Φ z ≠ 0) := by
   classical
   have hh0 : 0 < greenFunctionDyn c 0 := by linarith
@@ -111,7 +111,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
   obtain ⟨α, β, J₁, J₂, hαeq, hβeq, hαβ, hβα, hαJ₁, hJ₁J₂, hJ₂β, hJ₁dbl, hJ₂dbl, σ, hσ0, hσP,
     hσsq, hσdbl, hσne⟩ :=
     exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1 hθs2 hslitne
-  have havoidA : ∀ v ∈ arcAnnulus ra RW α β, S.T v ∉ Metric.closedBall c (s ^ 2) := by
+  have havoidA : ∀ v ∈ arcAnnulus ra RW α β, S.T v ∉ Metric.closedBall c (s ^ (2 : ℕ)) := by
     rw [hαeq, hβeq]
     exact havoid
   obtain ⟨SL, hSL0, hSLP, hSLsq, hSLmatch, hSLne⟩ :=
@@ -142,7 +142,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
   have hPLconn : IsConnected PLk := hBconn.image _ ((hSLP k).1.continuousOn)
   -- overlap witnesses
   have hrasqrt : ra < Real.sqrt RW := by
-    have h1 : Real.sqrt (ra ^ 2) < Real.sqrt RW :=
+    have h1 : Real.sqrt (ra ^ (2 : ℕ)) < Real.sqrt RW :=
       Real.sqrt_lt_sqrt (by positivity) hraRW
     rwa [Real.sqrt_sq (le_of_lt hrapos)] at h1
   have hWne : (arcAnnulus ra (Real.sqrt RW) J₁ J₂).Nonempty :=
@@ -151,12 +151,12 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     intro w hw
     have h1 : arcAnnulus ra (Real.sqrt RW) J₁ J₂ ⊆ arcAnnulus ra RW J₁ J₂ :=
       arcAnnulus_mono_radius (Real.sqrt_pos.mpr (by linarith)) (by
-        have h2 : Real.sqrt RW < Real.sqrt (RW ^ 2) :=
+        have h2 : Real.sqrt RW < Real.sqrt (RW ^ (2 : ℕ)) :=
           Real.sqrt_lt_sqrt (by linarith) (by nlinarith)
         rw [Real.sqrt_sq (by linarith : (0:ℝ) ≤ RW)] at h2
         linarith)
     exact arcAnnulus_mono hαJ₁ hJ₂β (h1 hw)
-  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ 2 ∈ A := by
+  have hWsq : ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, w ^ (2 : ℕ) ∈ A := by
     intro w hw
     apply sq_mem_arcAnnulus (r' := ra) (R' := Real.sqrt RW) _ _ hJ₁dbl hJ₂dbl hw
     · linarith [Real.log_pos (show (1:ℝ) < ra from by nlinarith)]
@@ -168,19 +168,19 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     exact ⟨lt_trans hra h1.1, lt_trans h1.2 hRWR⟩
   have hover0 : (P0 ∩ Pσ 1).Nonempty := by
     obtain ⟨w, hw⟩ := hWne
-    refine ⟨σ 1 (w ^ 2), ?_, ?_⟩
+    refine ⟨σ 1 (w ^ (2 : ℕ)), ?_, ?_⟩
     · have h1 := hσdbl 0 w hw
       rw [h1, hσ0]
       exact ⟨w, hAsubS w (hWsubA hw), rfl⟩
-    · exact ⟨w ^ 2, hWsq w hw, rfl⟩
+    · exact ⟨w ^ (2 : ℕ), hWsq w hw, rfl⟩
   have hoverσ : ∀ j : ℕ, (Pσ j ∩ Pσ (j+1)).Nonempty := by
     intro j
     obtain ⟨w, hw⟩ := hWne
-    refine ⟨σ (j+1) (w ^ 2), ?_, ?_⟩
+    refine ⟨σ (j+1) (w ^ (2 : ℕ)), ?_, ?_⟩
     · have h1 := hσdbl j w hw
       rw [h1]
       exact ⟨w, hWsubA hw, rfl⟩
-    · exact ⟨w ^ 2, hWsq w hw, rfl⟩
+    · exact ⟨w ^ (2 : ℕ), hWsq w hw, rfl⟩
   have hCne : (arcAnnulus ra rb α β).Nonempty :=
     (isConnected_arcAnnulus hrapos hrb hαβ).nonempty
   have hCsubB : arcAnnulus ra rb α β ⊆ B := arcAnnulus_subset _ _ hrapos hrb
@@ -227,12 +227,12 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     linarith
   have hnorm_Pσ1 : ∀ z ∈ Pσ 1, s < ‖z‖ := by
     rintro z ⟨v, hv, rfl⟩
-    have hsq1 : σ 1 v ^ 2 = σ 0 v - c := hσsq 0 v hv
+    have hsq1 : σ 1 v ^ (2 : ℕ) = σ 0 v - c := hσsq 0 v hv
     rw [hσ0] at hsq1
     have h5 := havoidA v hv
     rw [Metric.mem_closedBall, dist_eq_norm] at h5
-    have h4 : s ^ 2 < ‖S.T v - c‖ := not_le.mp h5
-    have hn2 : ‖σ 1 v‖ ^ 2 = ‖S.T v - c‖ := by
+    have h4 : s ^ (2 : ℕ) < ‖S.T v - c‖ := not_le.mp h5
+    have hn2 : ‖σ 1 v‖ ^ (2 : ℕ) = ‖S.T v - c‖ := by
       rw [← norm_pow, hsq1]
     nlinarith [norm_nonneg (σ 1 v), hs2]
   have hnorm_Pσdeep : ∀ j : ℕ, 2 ≤ j → ∀ z ∈ Pσ j, s < ‖z‖ := by
@@ -240,7 +240,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     apply lt_norm_of_greenFunctionDyn_lt_s hc100 hs40
     have h1 := (hlev_Pσ j z hz).2
     have h3 : (4:ℝ) ≤ 2 ^ j := by
-      calc (4:ℝ) = 2 ^ 2 := by norm_num
+      calc (4:ℝ) = 2 ^ (2 : ℕ) := by norm_num
         _ ≤ 2 ^ j := by
           apply pow_le_pow_right₀ (by norm_num)
           omega
@@ -260,7 +260,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     apply lt_norm_of_greenFunctionDyn_lt_s hc100 hs40
     have h1 := (hlev_PL z hz).2
     have h3 : (2:ℝ) ≤ 2 ^ k := by
-      calc (2:ℝ) = 2 ^ 1 := by norm_num
+      calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
         _ ≤ 2 ^ k := by
           apply pow_le_pow_right₀ (by norm_num)
           omega
@@ -309,7 +309,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
   -- (j) the scaffold roots
   have hσroot : ∀ j : ℕ, ∃ Φj : ℂ → ℂ, 1 ≤ j →
       AnalyticOnNhd ℂ Φj (Pσ j) ∧
-      (∀ z ∈ Pσ j, Φj z ^ 2 ^ m = g z) ∧ (∀ z ∈ Pσ j, Φj z ≠ 0) := by
+      (∀ z ∈ Pσ j, Φj z ^ (2 : ℕ) ^ m = g z) ∧ (∀ z ∈ Pσ j, Φj z ≠ 0) := by
     intro j
     rcases Nat.eq_zero_or_pos j with h0 | h0
     · exact ⟨fun _ => 1, fun h => absurd h (by omega)⟩
@@ -362,7 +362,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
           (Real.log_le_log (by linarith) (by rw [hρLdef]; linarith))
       · show Real.log rb / 2 ^ k < greenFunctionDyn c 0
         have h3 : (2:ℝ) ≤ 2 ^ k := by
-          calc (2:ℝ) = 2 ^ 1 := by norm_num
+          calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
             _ ≤ 2 ^ k := by
               apply pow_le_pow_right₀ (by norm_num)
               omega
@@ -422,7 +422,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     rw [← hαeq, ← hβeq]
     exact hσP j
   have hσsq' : ∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8)
-      (θs + 2 * Real.pi - Real.pi / 8), σ (j + 1) v ^ 2 = σ j v - c := by
+      (θs + 2 * Real.pi - Real.pi / 8), σ (j + 1) v ^ (2 : ℕ) = σ j v - c := by
     intro j v hv
     apply hσsq j v
     rw [hAdef, hαeq, hβeq]
@@ -568,7 +568,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     · right
       have h1 := (hlev_Pσ j z hzσ).2
       have h3 : (2:ℝ) ≤ 2 ^ j := by
-        calc (2:ℝ) = 2 ^ 1 := by norm_num
+        calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
           _ ≤ 2 ^ j := by
             apply pow_le_pow_right₀ (by norm_num)
             omega
@@ -580,7 +580,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     · right
       have h1 := (hlev_PL z hzL).2
       have h3 : (2:ℝ) ≤ 2 ^ k := by
-        calc (2:ℝ) = 2 ^ 1 := by norm_num
+        calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
           _ ≤ 2 ^ k := by
             apply pow_le_pow_right₀ (by norm_num)
             omega
@@ -623,7 +623,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
           exact (hΦσ i h0).1
         · rw [hβshi i h1, hVhi i h1]
           exact hΦLan
-    have hVpow : ∀ i : ℕ, i ≤ k + 1 → ∀ z ∈ V i, βs i z ^ 2 ^ m = g z := by
+    have hVpow : ∀ i : ℕ, i ≤ k + 1 → ∀ z ∈ V i, βs i z ^ (2 : ℕ) ^ m = g z := by
       intro i _
       rcases Nat.eq_zero_or_pos i with h0 | h0
       · rw [h0, hβs0, hV0]
@@ -652,7 +652,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     have hkill_P0_L : P0 ∩ PLk = ∅ := by
       apply disjoint_of_green_bands (hlev_P0) (hlev_PL)
       have h3 : (2:ℝ) ≤ 2 ^ k := by
-        calc (2:ℝ) = 2 ^ 1 := by norm_num
+        calc (2:ℝ) = 2 ^ (1 : ℕ) := by norm_num
           _ ≤ 2 ^ k := by
             apply pow_le_pow_right₀ (by norm_num)
             omega
@@ -751,10 +751,10 @@ theorem escapeOpen_mem_quadratic {c z : ℂ} (hz : z ∈ escapeOpen c) :
   have h1 : max 2 ‖c‖ < ‖z‖ := hz
   have h2 : (2:ℝ) < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) h1
   have h3 : ‖c‖ < ‖z‖ := lt_of_le_of_lt (le_max_right _ _) h1
-  have h4 : ‖z ^ 2‖ ≤ ‖quadratic c z‖ + ‖c‖ := by
-    have h5 : quadratic c z = z ^ 2 + c := rfl
-    calc ‖z ^ 2‖ = ‖(z ^ 2 + c) + (-c)‖ := by ring_nf
-      _ ≤ ‖z ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+  have h4 : ‖z ^ (2 : ℕ)‖ ≤ ‖quadratic c z‖ + ‖c‖ := by
+    have h5 : quadratic c z = z ^ (2 : ℕ) + c := rfl
+    calc ‖z ^ (2 : ℕ)‖ = ‖(z ^ (2 : ℕ) + c) + (-c)‖ := by ring_nf
+      _ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
       _ = ‖quadratic c z‖ + ‖c‖ := by rw [← h5, norm_neg]
   show max 2 ‖c‖ < ‖quadratic c z‖
   rw [norm_pow] at h4
@@ -775,7 +775,7 @@ by the `+2π` renormalization at the call site. -/
 theorem chainOverlapsConnected_of_normalized {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
     {ra rb RW θs : ℝ}
     (hrlo : 1 < rlo) (hra : rlo < ra) (hrab : ra < rb) (hrbRW : rb < RW)
-    (hraRW : ra ^ 2 < RW) (hRWR : RW < R₀)
+    (hraRW : ra ^ (2 : ℕ) < RW) (hRWR : RW < R₀)
     (hh0 : 0 < greenFunctionDyn c 0)
     (hra54 : 5 * greenFunctionDyn c 0 / 4 ≤ Real.log ra)
     (hRW72 : Real.log RW ≤ 7 * greenFunctionDyn c 0 / 2)
@@ -802,7 +802,7 @@ the `φ_{c₂}` germ — UNCONDITIONAL: the chain-overlap connectivity is a theo
 when it falls below `−3π/8`. -/
 theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
     (hc1000 : (1000:ℝ) ≤ ‖c‖) (hc₂2 : (2:ℝ) ≤ ‖c₂‖)
-    (hsgap : (Real.sqrt (2 * ‖c₂‖) + 1) ^ 2 ≤ ‖c‖ / 300) :
+    (hsgap : (Real.sqrt (2 * ‖c₂‖) + 1) ^ (2 : ℕ) ≤ ‖c‖ / 300) :
     ∃ Bmin : ℝ, 1 < Bmin ∧
     ∀ (U : Set ℂ), IsOpen U → IsPreconnected U → U.Nonempty → U.Infinite →
       (∀ z ∈ U, Bmin < ‖z‖) →
@@ -830,19 +830,19 @@ theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJu
   have hsqrt2 : (2:ℝ) ≤ Real.sqrt (2 * ‖c₂‖) := by
     have h1 : Real.sqrt 4 ≤ Real.sqrt (2 * ‖c₂‖) := Real.sqrt_le_sqrt (by linarith)
     have h2 : Real.sqrt 4 = 2 := by
-      rw [show (4:ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
+      rw [show (4:ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
     linarith
   have hs2 : (2:ℝ) ≤ s := by rw [hsdef]; linarith
   have hsc₂ : Real.sqrt (2 * ‖c₂‖) + 1 ≤ s := le_of_eq hsdef.symm
-  have hs300 : s ^ 2 ≤ ‖c‖ / 300 := by rw [hsdef]; exact hsgap
-  have hs40 : s ^ 2 ≤ ‖c‖ / 40 := by linarith
-  have hc₂c : 2 * ‖c₂‖ ≤ s ^ 2 := by
-    have h1 : Real.sqrt (2 * ‖c₂‖) ^ 2 = 2 * ‖c₂‖ := Real.sq_sqrt (by positivity)
+  have hs300 : s ^ (2 : ℕ) ≤ ‖c‖ / 300 := by rw [hsdef]; exact hsgap
+  have hs40 : s ^ (2 : ℕ) ≤ ‖c‖ / 40 := by linarith
+  have hc₂c : 2 * ‖c₂‖ ≤ s ^ (2 : ℕ) := by
+    have h1 : Real.sqrt (2 * ‖c₂‖) ^ (2 : ℕ) = 2 * ‖c₂‖ := Real.sq_sqrt (by positivity)
     rw [hsdef]
     nlinarith [Real.sqrt_nonneg (2 * ‖c₂‖)]
-  have hsmall : 2 * s ^ 2 * ‖c‖ + s ^ 4 + 1 ≤ 1/100 * (‖c‖ ^ 2 - ‖c‖) := by
-    have h1 : 2 * s ^ 2 * ‖c‖ ≤ 2 / 300 * ‖c‖ ^ 2 := by nlinarith
-    have h2 : s ^ 4 ≤ ‖c‖ ^ 2 / 90000 := by nlinarith [sq_nonneg (s ^ 2)]
+  have hsmall : 2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ) + 1 ≤ 1/100 * (‖c‖ ^ (2 : ℕ) - ‖c‖) := by
+    have h1 : 2 * s ^ (2 : ℕ) * ‖c‖ ≤ 2 / 300 * ‖c‖ ^ (2 : ℕ) := by nlinarith
+    have h2 : s ^ (4 : ℕ) ≤ ‖c‖ ^ (2 : ℕ) / 90000 := by nlinarith [sq_nonneg (s ^ (2 : ℕ))]
     nlinarith [sq_nonneg ‖c‖]
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hc100 : (100:ℝ) ≤ ‖c‖ := by linarith
@@ -854,11 +854,11 @@ theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJu
   rw [← hhdef] at h2h
   have hexp1 : Real.exp 1 ≤ 2.7182818286 := le_of_lt Real.exp_one_lt_d9
   have hexp6 : Real.exp 6 ≤ 1000 := by
-    have h1 : Real.exp 6 = Real.exp 1 ^ 6 := by
+    have h1 : Real.exp 6 = Real.exp 1 ^ (6 : ℕ) := by
       rw [← Real.exp_nat_mul]
       norm_num
     rw [h1]
-    calc Real.exp 1 ^ 6 ≤ 2.7182818286 ^ 6 :=
+    calc Real.exp 1 ^ (6 : ℕ) ≤ 2.7182818286 ^ (6 : ℕ) :=
           pow_le_pow_left₀ (Real.exp_pos 1).le hexp1 6
       _ ≤ 1000 := by norm_num
   have hlogc6 : (6:ℝ) ≤ Real.log ‖c‖ := by
@@ -974,8 +974,8 @@ theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJu
     calc rlo' = Real.exp (Real.log rlo') := (Real.exp_log hrlo'pos).symm
       _ < Real.exp (Real.log ‖v‖) := Real.exp_lt_exp.mpr h6
       _ = ‖v‖ := Real.exp_log hvpos
-  have hrlo_ceiling : Real.log rlo' ≤ (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 := by
-    have h1 : Real.log (‖c‖ ^ 2) ≤ Real.log (‖c‖ ^ 2 + ‖c‖) :=
+  have hrlo_ceiling : Real.log rlo' ≤ (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 := by
+    have h1 : Real.log (‖c‖ ^ (2 : ℕ)) ≤ Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) :=
       Real.log_le_log (by positivity) (by nlinarith)
     rw [Real.log_pow] at h1
     push_cast at h1
@@ -1060,7 +1060,7 @@ theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJu
   have hrb14 : Real.log rb ≤ 2 * h - 1/4 := by
     rw [hrbdef, Real.log_exp]
     linarith
-  have hraRW : ra ^ 2 < RW := by
+  have hraRW : ra ^ (2 : ℕ) < RW := by
     rw [hradef, hRWdef, ← Real.exp_nat_mul]
     apply Real.exp_lt_exp.mpr
     push_cast
@@ -1080,7 +1080,7 @@ theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJu
   set k : ℕ := d + 1 with hkdef
   have havoid0 := hθwin ra RW hra (lt_trans hrb hrbRW) hRWR
   have havoid : ∀ v ∈ arcAnnulus ra RW (θsN + Real.pi / 8)
-      (θsN + 2 * Real.pi - Real.pi / 8), S'.T v ∉ Metric.closedBall c (s ^ 2) := by
+      (θsN + 2 * Real.pi - Real.pi / 8), S'.T v ∉ Metric.closedBall c (s ^ (2 : ℕ)) := by
     rw [hshiftN]
     exact havoid0
   have hconnN : ChainOverlapsConnected c S' ra rb RW θsN :=
@@ -1236,7 +1236,7 @@ theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJu
         _ < ‖z‖ := h2
   have hφ₂anE : AnalyticOnNhd ℂ (bottcherCoord c₂) Efar :=
     (analyticOnNhd_bottcherCoord_full c₂).mono hEfarEsc₂
-  have hφ₂rootE : ∀ z ∈ Efar, bottcherCoord c₂ z ^ 2 ^ m
+  have hφ₂rootE : ∀ z ∈ Efar, bottcherCoord c₂ z ^ (2 : ℕ) ^ m
       = bottcherCoord c₂ ((quadratic c₂)^[m] z) :=
     fun z hz => (bottcherCoord_iterate_escape (hEfarEsc₂ hz) m).symm
   have hoverΦeq : Efar ∩ Ext = S'.T '' annulusSet (max rlo' (Real.exp tE)) R₀ := by

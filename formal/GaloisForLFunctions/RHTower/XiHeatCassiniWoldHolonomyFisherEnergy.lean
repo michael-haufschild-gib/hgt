@@ -22,7 +22,7 @@ noncomputable section
 theorem summable_log_harmonic_exp_neg_sqrt_prime
     {c : ℝ} (hc : 0 < c) :
     Summable (fun p : Nat.Primes =>
-      (1 + Real.log (p : ℝ) ^ 2) *
+      (1 + Real.log (p : ℝ) ^ (2 : ℕ)) *
         Real.exp (-(2 * c * Real.sqrt (Real.log (p : ℝ)))) / (p : ℝ)) := by
   have hzero := burnolSummable_poissonWeight_logPow hc 0
   have hone := burnolSummable_poissonWeight_logPow hc 1
@@ -41,12 +41,12 @@ theorem summable_log_harmonic_exp_neg_sqrt_prime
 theorem summable_xiHeatCassiniOrderedWoldResidual_harmonicEnergy :
     Summable (fun N : ℕ =>
       xiMassPrimeHarmonicRealCoefficient (nthPrimeSubtype N) *
-        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2) := by
+        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ)) := by
   obtain ⟨B, c, hc, hB, hrate⟩ :=
     exists_xiHeatCassiniOrderedWoldResidualLogDiscrepancy_exp_rate
-  have hprime := (summable_log_harmonic_exp_neg_sqrt_prime hc).mul_left (B ^ 2)
+  have hprime := (summable_log_harmonic_exp_neg_sqrt_prime hc).mul_left (B ^ (2 : ℕ))
   have hmajor : Summable (fun N : ℕ =>
-      B ^ 2 * ((1 + Real.log (nthPrimeSubtype N : ℝ) ^ 2) *
+      B ^ (2 : ℕ) * ((1 + Real.log (nthPrimeSubtype N : ℝ) ^ (2 : ℕ)) *
         Real.exp (-(2 * c * Real.sqrt
           (Real.log (nthPrimeSubtype N : ℝ)))) /
             (nthPrimeSubtype N : ℝ))) := by
@@ -57,7 +57,7 @@ theorem summable_xiHeatCassiniOrderedWoldResidual_harmonicEnergy :
         B * Real.exp (-c * Real.sqrt
           (Real.log (nthPrimeSubtype N : ℝ))) then
       xiMassPrimeHarmonicRealCoefficient (nthPrimeSubtype N) *
-        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2
+        xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ)
     else 0
   have hclipped : Summable clipped := by
     refine Summable.of_nonneg_of_le (fun N => ?_) (fun N => ?_) hmajor
@@ -78,22 +78,22 @@ theorem summable_xiHeatCassiniOrderedWoldResidual_harmonicEnergy :
         have hE0 : 0 ≤ E := (Real.exp_pos _).le
         have hBE0 : 0 ≤ B * E := mul_nonneg hB hE0
         have hrateSq :
-            xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2 ≤
-              B ^ 2 * Real.exp (-(2 * c * Real.sqrt L)) := by
+            xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ) ≤
+              B ^ (2 : ℕ) * Real.exp (-(2 * c * Real.sqrt L)) := by
           have hsquare := pow_le_pow_left₀
             (abs_nonneg (xiHeatCassiniOrderedWoldResidualLogDiscrepancy N))
             (by simpa only [p, L, E] using hN) 2
           calc
-            xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2 =
-                |xiHeatCassiniOrderedWoldResidualLogDiscrepancy N| ^ 2 := by
+            xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ) =
+                |xiHeatCassiniOrderedWoldResidualLogDiscrepancy N| ^ (2 : ℕ) := by
               rw [sq_abs]
-            _ ≤ (B * E) ^ 2 := hsquare
-            _ = B ^ 2 * Real.exp (-(2 * c * Real.sqrt L)) := by
+            _ ≤ (B * E) ^ (2 : ℕ) := hsquare
+            _ = B ^ (2 : ℕ) * Real.exp (-(2 * c * Real.sqrt L)) := by
               dsimp only [E]
               rw [mul_pow, ← Real.exp_nat_mul]
               congr 2
               ring
-        have hLle : L ≤ 1 + L ^ 2 := by
+        have hLle : L ≤ 1 + L ^ (2 : ℕ) := by
           nlinarith [sq_nonneg (L - 1 / 2)]
         have hp0 : 0 < (p : ℝ) := by exact_mod_cast p.2.pos
         have hharmonic0 :
@@ -102,17 +102,17 @@ theorem summable_xiHeatCassiniOrderedWoldResidual_harmonicEnergy :
           exact div_nonneg hL0 hp0.le
         calc
           xiMassPrimeHarmonicRealCoefficient (nthPrimeSubtype N) *
-              xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ 2 ≤
+              xiHeatCassiniOrderedWoldResidualLogDiscrepancy N ^ (2 : ℕ) ≤
             xiMassPrimeHarmonicRealCoefficient p *
-              (B ^ 2 * Real.exp (-(2 * c * Real.sqrt L))) := by
+              (B ^ (2 : ℕ) * Real.exp (-(2 * c * Real.sqrt L))) := by
                 exact mul_le_mul_of_nonneg_left hrateSq hharmonic0
-          _ = L * (B ^ 2 * Real.exp (-(2 * c * Real.sqrt L)) / (p : ℝ)) := by
+          _ = L * (B ^ (2 : ℕ) * Real.exp (-(2 * c * Real.sqrt L)) / (p : ℝ)) := by
                 rw [xiMassPrimeHarmonicRealCoefficient]
                 ring
-          _ ≤ (1 + L ^ 2) *
-              (B ^ 2 * Real.exp (-(2 * c * Real.sqrt L)) / (p : ℝ)) :=
+          _ ≤ (1 + L ^ (2 : ℕ)) *
+              (B ^ (2 : ℕ) * Real.exp (-(2 * c * Real.sqrt L)) / (p : ℝ)) :=
                 mul_le_mul_of_nonneg_right hLle (by positivity)
-          _ = B ^ 2 * ((1 + Real.log (nthPrimeSubtype N : ℝ) ^ 2) *
+          _ = B ^ (2 : ℕ) * ((1 + Real.log (nthPrimeSubtype N : ℝ) ^ (2 : ℕ)) *
               Real.exp (-(2 * c * Real.sqrt
                 (Real.log (nthPrimeSubtype N : ℝ)))) /
                 (nthPrimeSubtype N : ℝ)) := by

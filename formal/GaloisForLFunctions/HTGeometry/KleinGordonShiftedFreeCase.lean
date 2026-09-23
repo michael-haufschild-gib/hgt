@@ -75,16 +75,16 @@ assumption: self-adjointness is a property of the symbol. -/
 theorem kgFieldEnergy_conserved_diagonal (hp : Measurable p) (hb0 : 0 ≤ b)
     (hpb : ∀ ξ : E, |p ξ| ≤ b) (g h : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     ‖kgFieldGrad (fourierMulCLM (measurable_kgRealPotSymbol hp) hb0
-          (norm_kgRealPotSymbol_le hpb)) g h t‖ ^ 2
+          (norm_kgRealPotSymbol_le hpb)) g h t‖ ^ (2 : ℕ)
         + ‖kgFieldVel (fourierMulCLM (measurable_kgRealPotSymbol hp) hb0
-          (norm_kgRealPotSymbol_le hpb)) g h t‖ ^ 2
+          (norm_kgRealPotSymbol_le hpb)) g h t‖ ^ (2 : ℕ)
         - RCLike.re (inner ℂ (fourierMulCLM (measurable_kgRealPotSymbol hp) hb0
             (norm_kgRealPotSymbol_le hpb)
               (kgFieldMild (fourierMulCLM (measurable_kgRealPotSymbol hp) hb0
                 (norm_kgRealPotSymbol_le hpb)) (kgFreqInvOp g) h t))
             (kgFieldMild (fourierMulCLM (measurable_kgRealPotSymbol hp) hb0
               (norm_kgRealPotSymbol_le hpb)) (kgFreqInvOp g) h t))
-      = ‖g‖ ^ 2 + ‖h‖ ^ 2
+      = ‖g‖ ^ (2 : ℕ) + ‖h‖ ^ (2 : ℕ)
         - RCLike.re (inner ℂ (fourierMulCLM (measurable_kgRealPotSymbol hp) hb0
             (norm_kgRealPotSymbol_le hpb) (kgFreqInvOp g)) (kgFreqInvOp g)) :=
   kgFieldEnergy_conserved hb0 (norm_fourierMulCLM_le _ _ _)

@@ -27,7 +27,7 @@ noncomputable section
 `V = ℝⁿ`, `F = ℝ` (i.e. `⋀²(ℝⁿ⁺¹)`) has dimension `n + C(n,2)` — the `n` one-mode (Neumann) plus
 `C(n,2)` two-mode (spectral-pair) tomography coordinates. -/
 theorem suzukiHomogeneousBlade_finrank (n : ℕ) :
-    Module.finrank ℝ (⋀[ℝ]^2 (Fin (n + 1) → ℝ)) = n + Nat.choose n 2 := by
+    Module.finrank ℝ (⋀[ℝ]^(2 : ℕ) (Fin (n + 1) → ℝ)) = n + Nat.choose n 2 := by
   rw [exteriorPower.finrank_eq ℝ 2, Module.finrank_pi, Fintype.card_fin,
     Nat.choose_succ_succ, Nat.choose_one_right]
 

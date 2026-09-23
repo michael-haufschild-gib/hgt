@@ -27,17 +27,17 @@ noncomputable def oscProduct (v v' : ℝ → ℝ) (xi : ℝ) : ℝ := v xi * v' 
 /-- **Product derivative.**  `(v v′)′ = v′² + (ξ² − μ)v²`. -/
 theorem hasDerivAt_oscProduct {mu : ℝ} {v v' : ℝ → ℝ}
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) (xi : ℝ) :
-    HasDerivAt (oscProduct v v') (v' xi ^ 2 + (xi ^ 2 - mu) * v xi ^ 2) xi := by
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x) (xi : ℝ) :
+    HasDerivAt (oscProduct v v') (v' xi ^ (2 : ℕ) + (xi ^ (2 : ℕ) - mu) * v xi ^ (2 : ℕ)) xi := by
   refine ((hv xi).mul (hv' xi)).congr_deriv ?_
   ring
 
 /-- Past the turning point the product is nondecreasing. -/
-theorem monotoneOn_oscProduct {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ} (ha : 0 < a) (hmu : mu ≤ a ^ 2)
+theorem monotoneOn_oscProduct {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ} (ha : 0 < a) (hmu : mu ≤ a ^ (2 : ℕ))
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) :
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x) :
     MonotoneOn (oscProduct v v') (Ici a) := by
-  have hsq : ∀ x ∈ Ici a, mu ≤ x ^ 2 := by
+  have hsq : ∀ x ∈ Ici a, mu ≤ x ^ (2 : ℕ) := by
     intro x hx
     have hax : a ≤ x := hx
     nlinarith
@@ -70,9 +70,9 @@ theorem not_integrableOn_Ici_of_le {f : ℝ → ℝ} {a delta : ℝ} (hd : 0 < d
 /-- **Reflection.**  The potential is even, so the reflected function solves the same equation. -/
 theorem hasDerivAt_oscillatorReflect {mu : ℝ} {v v' : ℝ → ℝ}
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) :
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x) :
     (∀ x, HasDerivAt (fun t => v (-t)) ((fun t => -v' (-t)) x) x) ∧
-      (∀ x, HasDerivAt (fun t => -v' (-t)) ((x ^ 2 - mu) * (fun t => v (-t)) x) x) := by
+      (∀ x, HasDerivAt (fun t => -v' (-t)) ((x ^ (2 : ℕ) - mu) * (fun t => v (-t)) x) x) := by
   constructor
   · intro x
     have hneg : HasDerivAt (fun t : ℝ => -t) (-1) x := (hasDerivAt_id x).neg
@@ -84,7 +84,7 @@ theorem hasDerivAt_oscillatorReflect {mu : ℝ} {v v' : ℝ → ℝ}
     have h1 := (hv' (-x)).comp x hneg
     have h2 := h1.neg
     refine h2.congr_deriv ?_
-    have hsq : (-x) ^ 2 = x ^ 2 := by ring
+    have hsq : (-x) ^ (2 : ℕ) = x ^ (2 : ℕ) := by ring
     rw [hsq]
     ring
 
@@ -122,17 +122,17 @@ theorem exists_ne_zero_Ici {v v' : ℝ → ℝ} {x0 : ℝ}
 /-- **Square integrability forces the product to be negative.**  A nontrivial solution that is
 square integrable on a half line past the turning point has `v v′ < 0` there. -/
 theorem oscProduct_neg_of_integrableOn {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
-    (ha : 0 < a) (hmu : mu ≤ a ^ 2)
+    (ha : 0 < a) (hmu : mu ≤ a ^ (2 : ℕ))
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
     (hnt : ∀ y, v y ≠ 0 ∨ v' y ≠ 0)
-    (hint : IntegrableOn (fun x => v x ^ 2) (Ici a) volume) :
+    (hint : IntegrableOn (fun x => v x ^ (2 : ℕ)) (Ici a) volume) :
     ∀ x ∈ Ici a, oscProduct v v' x < 0 := by
   intro b hb
   by_contra hcon
   have hnn : (0 : ℝ) ≤ oscProduct v v' b := le_of_not_gt hcon
   -- from `b` on, `v²` is nondecreasing
-  have hmono : MonotoneOn (fun x => v x ^ 2) (Ici b) := by
+  have hmono : MonotoneOn (fun x => v x ^ (2 : ℕ)) (Ici b) := by
     have hab : Ici b ⊆ Ici a := Ici_subset_Ici.2 hb
     refine monotoneOn_of_deriv_nonneg (convex_Ici b) ?_ ?_ ?_
     · intro x _
@@ -142,7 +142,7 @@ theorem oscProduct_neg_of_integrableOn {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
     · intro x hx
       rw [interior_Ici] at hx
       have hxm : x ∈ Ici b := le_of_lt (Set.mem_Ioi.1 hx)
-      have hderiv : HasDerivAt (fun y => v y ^ 2) (2 * (oscProduct v v' x)) x := by
+      have hderiv : HasDerivAt (fun y => v y ^ (2 : ℕ)) (2 * (oscProduct v v' x)) x := by
         refine ((hv x).pow 2).congr_deriv ?_
         rw [oscProduct]
         push_cast
@@ -152,13 +152,13 @@ theorem oscProduct_neg_of_integrableOn {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
       linarith
   -- pick a point past `b` where the solution does not vanish
   obtain ⟨c, hc, hcne⟩ := exists_ne_zero_Ici (v := v) (v' := v') (x0 := b) hv (hnt b)
-  have hpos : 0 < v c ^ 2 := by positivity
-  have hlow : ∀ x ∈ Ici c, v c ^ 2 ≤ v x ^ 2 := by
+  have hpos : 0 < v c ^ (2 : ℕ) := by positivity
+  have hlow : ∀ x ∈ Ici c, v c ^ (2 : ℕ) ≤ v x ^ (2 : ℕ) := by
     intro x hx
     have hcx : c ≤ x := Set.mem_Ici.1 hx
     have hbc : b ≤ c := Set.mem_Ici.1 hc
     exact hmono hc (Set.mem_Ici.2 (le_trans hbc hcx)) hcx
-  have hintc : IntegrableOn (fun x => v x ^ 2) (Ici c) volume :=
+  have hintc : IntegrableOn (fun x => v x ^ (2 : ℕ)) (Ici c) volume :=
     hint.mono_set (Ici_subset_Ici.2 (le_trans hb hc))
   exact not_integrableOn_Ici_of_le hpos hlow hintc
 
@@ -166,27 +166,27 @@ theorem oscProduct_neg_of_integrableOn {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
 past the turning point, the monotone normalized deficit would keep `v²` above a positive constant
 from there on. -/
 theorem oscillatorMonotoneEnergy_nonneg_of_integrableOn {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
-    (ha : 0 < a) (hmu : mu < a ^ 2)
+    (ha : 0 < a) (hmu : mu < a ^ (2 : ℕ))
     (hv : ∀ x, HasDerivAt v (v' x) x)
-    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
-    (hint : IntegrableOn (fun x => v x ^ 2) (Ici a) volume) :
+    (hv' : ∀ x, HasDerivAt v' ((x ^ (2 : ℕ) - mu) * v x) x)
+    (hint : IntegrableOn (fun x => v x ^ (2 : ℕ)) (Ici a) volume) :
     ∀ x ∈ Ici a, 0 ≤ oscillatorMonotoneEnergy mu v v' x := by
   intro b hb
   by_contra hcon
   have hab : a ≤ b := Set.mem_Ici.1 hb
   have hneg : oscillatorMonotoneEnergy mu v v' b < 0 := lt_of_not_ge hcon
   have hbpos : 0 < b := lt_of_lt_of_le ha hab
-  have hbmu : mu < b ^ 2 := by nlinarith
+  have hbmu : mu < b ^ (2 : ℕ) := by nlinarith
   have hdpos : 0 < oscRatio mu v v' b := by
     rw [oscRatio]
     exact div_pos (by linarith) (by linarith)
-  have hlow : ∀ x ∈ Ici b, oscRatio mu v v' b ≤ v x ^ 2 := by
+  have hlow : ∀ x ∈ Ici b, oscRatio mu v v' b ≤ v x ^ (2 : ℕ) := by
     intro x hx
     have hbx : b ≤ x := Set.mem_Ici.1 hx
     have h1 := monotoneOn_oscRatio hbpos hbmu hv hv' (Set.mem_Ici.2 le_rfl) hx hbx
-    have hxpos : 0 < x ^ 2 - mu := by nlinarith
+    have hxpos : 0 < x ^ (2 : ℕ) - mu := by nlinarith
     exact le_trans h1 (oscRatio_le_sq hxpos)
-  have hintb : IntegrableOn (fun x => v x ^ 2) (Ici b) volume :=
+  have hintb : IntegrableOn (fun x => v x ^ (2 : ℕ)) (Ici b) volume :=
     hint.mono_set (Ici_subset_Ici.2 hab)
   exact not_integrableOn_Ici_of_le hdpos hlow hintb
 

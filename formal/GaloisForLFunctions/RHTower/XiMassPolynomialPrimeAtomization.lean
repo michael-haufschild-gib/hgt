@@ -63,7 +63,7 @@ theorem norm_bottomPoint_le {c : ℝ} (hc : 0 ≤ c) (x : ℝ) :
 
 /-- One filtered von-Mangoldt atom on the mass bottom edge. -/
 def xiMassPolyBottomPrimeAtomIntegrand (P : Polynomial ℝ) (a c : ℝ) (τ : ℂ) (n : ℕ) (x : ℝ) : ℂ :=
-  evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2 *
+  evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ) *
     xiMassBottomPrimeAtomIntegrand a c τ n x
 
 /-- Depth-free filtered Fourier atom at the logarithmic frequency of `n`. -/
@@ -86,12 +86,12 @@ theorem integral_xiMassPolyBottomPrimeAtom_eq_centered (P : Polynomial ℝ)
     set G : ℝ := xiMassPolyWeightConstant P c with hG
     have hG0 : 0 ≤ G := by rw [hG]; exact xiMassPolyWeightConstant_nonneg P hc0
     let F : ℂ → ℂ := fun z =>
-      evalRealPolynomial P (z ^ 2) ^ 2 *
+      evalRealPolynomial P (z ^ (2 : ℕ)) ^ (2 : ℕ) *
         (xiMassAnalyticTest a τ z * Complex.exp (-(I * (Real.log n : ℂ) * z)))
     have hdiff : ∀ z : ℂ, |z.im| ≤ c → DifferentiableAt ℂ F z := by
       intro z hz
       have hmem : z ∈ xiMassStrip a := lt_of_le_of_lt hz hca
-      have hW : DifferentiableAt ℂ (fun w : ℂ => evalRealPolynomial P (w ^ 2) ^ 2) z := by
+      have hW : DifferentiableAt ℂ (fun w : ℂ => evalRealPolynomial P (w ^ (2 : ℕ)) ^ (2 : ℕ)) z := by
         have hQ : DifferentiableAt ℂ (evalRealPolynomial (xiMassPolySquare P)) z :=
           (hasDerivAt_evalRealPolynomial (xiMassPolySquare P) z).differentiableAt
         exact hQ.congr_of_eventuallyEq
@@ -113,10 +113,10 @@ theorem integral_xiMassPolyBottomPrimeAtom_eq_centered (P : Polynomial ℝ)
       have hk := norm_xiMassFourierKernel_le hca hτ (Real.log n) hz
       have habs : (0 : ℝ) ≤ |z.re| := abs_nonneg _
       have hcol := one_add_pow_mul_exp_le D hτ habs
-      rw [show F z = evalRealPolynomial P (z ^ 2) ^ 2 *
+      rw [show F z = evalRealPolynomial P (z ^ (2 : ℕ)) ^ (2 : ℕ) *
           (xiMassAnalyticTest a τ z * Complex.exp (-(I * (Real.log n : ℂ) * z))) from rfl,
         norm_mul]
-      calc ‖evalRealPolynomial P (z ^ 2) ^ 2‖ *
+      calc ‖evalRealPolynomial P (z ^ (2 : ℕ)) ^ (2 : ℕ)‖ *
             ‖xiMassAnalyticTest a τ z * Complex.exp (-(I * (Real.log n : ℂ) * z))‖
           ≤ (G * (1 + |z.re| ^ D)) *
               (Real.exp ((|τ.im| + |Real.log n|) * c) * Real.exp (-(τ.re * |z.re|))) := by
@@ -179,7 +179,7 @@ theorem norm_xiMassPolyBottomPrimeAtomIntegrand_le (P : Polynomial ℝ)
   have hbase := norm_xiMassBottomPrimeAtomIntegrand_le hhalf hca hτ.le (x := x) n
   have hcol := one_add_pow_mul_exp_le D hτ (abs_nonneg x)
   rw [xiMassPolyBottomPrimeAtomIntegrand, norm_mul]
-  calc ‖evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2‖ *
+  calc ‖evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ)‖ *
         ‖xiMassBottomPrimeAtomIntegrand a c τ n x‖
       ≤ (G * (1 + |x| ^ D)) * ((E * W) * Real.exp (-(τ.re * |x|))) := by
         refine mul_le_mul hw hbase (norm_nonneg _) ?_
@@ -196,7 +196,7 @@ theorem integrable_xiMassPolyBottomPrimeAtomIntegrand (P : Polynomial ℝ)
     {a c : ℝ} (hhalf : 1 / 2 < c) (hca : c < a) {τ : ℂ} (hτ : 0 < τ.re) (n : ℕ) :
     Integrable (xiMassPolyBottomPrimeAtomIntegrand P a c τ n) :=
   Integrable.mono'
-    ((integrable_exp_neg_mul_abs (half_pos hτ)).const_mul
+    ((integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (half_pos hτ)).const_mul
       (xiMassPolyWeightConstant P c * polyShiftConst (xiMassPolySquare P).natDegree τ.re *
         (Real.exp (|τ.im| * c) * xiMassBottomPrimeAtomWeight c n)))
     (continuous_xiMassPolyBottomPrimeAtomIntegrand P hhalf hca τ n).aestronglyMeasurable
@@ -220,7 +220,7 @@ theorem summable_integral_norm_xiMassPolyBottomPrimeAtomIntegrand (P : Polynomia
     have hmajor : Integrable (fun x : ℝ =>
         (G * polyShiftConst D τ.re * (E * xiMassBottomPrimeAtomWeight c n)) *
           Real.exp (-(τ.re / 2 * |x|))) :=
-      (integrable_exp_neg_mul_abs (half_pos hτ)).const_mul _
+      (integrable_exp_neg_mul_abs_weightedEulerStripFourierAnalytic (half_pos hτ)).const_mul _
     calc (∫ x : ℝ, ‖xiMassPolyBottomPrimeAtomIntegrand P a c τ n x‖)
         ≤ ∫ x : ℝ, (G * polyShiftConst D τ.re *
             (E * xiMassBottomPrimeAtomWeight c n)) * Real.exp (-(τ.re / 2 * |x|)) :=

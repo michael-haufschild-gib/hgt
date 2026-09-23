@@ -174,7 +174,7 @@ theorem ccmFirstClockJuliaBadCoherentEnergy_le_totalBadMass_sq
     {N : ℕ} {x L : ℝ} (hL : 0 < L) (p : Fin N → Nat.Primes)
     (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) :
     ccmFirstClockJuliaBadCoherentEnergy x L p ≤
-      (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ 2 := by
+      (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ (2 : ℕ) := by
   rw [ccmFirstClockJuliaBadCoherentEnergy]
   calc
     (∑ i, ∑ j,
@@ -194,7 +194,7 @@ theorem ccmFirstClockJuliaBadCoherentEnergy_le_totalBadMass_sq
           (HTGeometry.juliaDefectAttenuationKernel_le_one _)
           (ccmFirstClockReducedBadPrimeTerm_nonneg hL (p i) (hpCut i)))
         (ccmFirstClockReducedBadPrimeTerm_nonneg hL (p j) (hpCut j))
-    _ = (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ 2 := by
+    _ = (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ (2 : ℕ) := by
       simp only [mul_one]
       calc
         (∑ i, ∑ j,
@@ -211,7 +211,7 @@ theorem ccmFirstClockJuliaBadCoherentEnergy_le_totalBadMass_sq
 cross-prime equilibrium Gram energy in square. -/
 theorem ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy
     {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes) :
-    ccmFirstClockJuliaBadOriginCorrelation x L p ^ 2 ≤
+    ccmFirstClockJuliaBadOriginCorrelation x L p ^ (2 : ℕ) ≤
       ccmFirstClockJuliaBadCoherentEnergy x L p := by
   simpa only [ccmFirstClockJuliaBadOriginCorrelation,
     ccmFirstClockJuliaBadCoherentEnergy, mul_comm] using
@@ -224,10 +224,10 @@ and total bad mass form one unconditional hierarchy on every admitted finite pac
 theorem ccmFirstClockJulia_badChannel_energySandwich
     {N : ℕ} {x L : ℝ} (hL : 0 < L) (p : Fin N → Nat.Primes)
     (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) :
-    ccmFirstClockJuliaBadOriginCorrelation x L p ^ 2 ≤
+    ccmFirstClockJuliaBadOriginCorrelation x L p ^ (2 : ℕ) ≤
         ccmFirstClockJuliaBadCoherentEnergy x L p ∧
       ccmFirstClockJuliaBadCoherentEnergy x L p ≤
-        (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ 2 :=
+        (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ (2 : ℕ) :=
   ⟨ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy x L p,
     ccmFirstClockJuliaBadCoherentEnergy_le_totalBadMass_sq hL p hpCut⟩
 
@@ -256,7 +256,7 @@ theorem ccmFirstClockJulia_negative_completedSource_forces_badCoherentEnergy
     {N : ℕ} {x L : ℝ} (hL : 0 < L) (p : Fin N → Nat.Primes)
     (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊)
     (hneg : ccmFirstClockJuliaCompletedOriginCorrelation x L p < 0) :
-    ccmFirstClockJuliaCompletedOriginCorrelation x L p ^ 2 ≤
+    ccmFirstClockJuliaCompletedOriginCorrelation x L p ^ (2 : ℕ) ≤
       ccmFirstClockJuliaBadCoherentEnergy x L p := by
   have hperiod : (2 * Real.pi / L) * L = 2 * Real.pi := by
     field_simp
@@ -275,8 +275,8 @@ theorem ccmFirstClockJulia_negative_completedSource_forces_badCoherentEnergy
     rw [ccmFirstClockJuliaCompletedOriginCorrelation]
     linarith
   have hsquare :
-      ccmFirstClockJuliaCompletedOriginCorrelation x L p ^ 2 ≤
-        ccmFirstClockJuliaBadOriginCorrelation x L p ^ 2 := by
+      ccmFirstClockJuliaCompletedOriginCorrelation x L p ^ (2 : ℕ) ≤
+        ccmFirstClockJuliaBadOriginCorrelation x L p ^ (2 : ℕ) := by
     nlinarith
   exact hsquare.trans
     (ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy
@@ -290,7 +290,7 @@ theorem ccmFirstClockJulia_negative_attenuatedCompletedPacket_forces_badCoherent
     (p : Fin N → Nat.Primes)
     (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊)
     (hneg : ccmFirstClockJuliaAttenuatedCompletedPacket x L p < 0) :
-    ccmFirstClockJuliaAttenuatedCompletedPacket x L p ^ 2 ≤
+    ccmFirstClockJuliaAttenuatedCompletedPacket x L p ^ (2 : ℕ) ≤
       ccmFirstClockJuliaBadCoherentEnergy x L p := by
   rw [ccmFirstClockJuliaAttenuatedCompletedPacket_eq_originCorrelation hx p hpCut]
   exact ccmFirstClockJulia_negative_completedSource_forces_badCoherentEnergy
@@ -305,8 +305,8 @@ theorem ccmFirstClockJulia_negative_attenuatedCompletedPacket_sq_le_totalBadMass
     (p : Fin N → Nat.Primes)
     (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊)
     (hneg : ccmFirstClockJuliaAttenuatedCompletedPacket x L p < 0) :
-    ccmFirstClockJuliaAttenuatedCompletedPacket x L p ^ 2 ≤
-      (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ 2 :=
+    ccmFirstClockJuliaAttenuatedCompletedPacket x L p ^ (2 : ℕ) ≤
+      (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ (2 : ℕ) :=
   (ccmFirstClockJulia_negative_attenuatedCompletedPacket_forces_badCoherentEnergy
       hx hL p hpCut hneg).trans
     (ccmFirstClockJuliaBadCoherentEnergy_le_totalBadMass_sq hL p hpCut)

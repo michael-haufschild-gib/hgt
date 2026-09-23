@@ -65,7 +65,7 @@ theorem kgPotentialFlow_apply_eq_duhamel (a : WienerFamily E N) (G₀ : E →ᵇ
 theorem hasDerivAt_deriv_kgPotentialFlow_apply (a : WienerFamily E N) (G₀ : E →ᵇ ℂ) (ξ : E)
     (t : ℝ) :
     HasDerivAt (deriv fun r : ℝ => kgPotentialFlow a G₀ r ξ)
-      (-(((kgFreq ξ : ℝ) : ℂ) ^ 2 * kgPotentialFlow a G₀ t ξ) + kgFlowSource a G₀ ξ t) t := by
+      (-(((kgFreq ξ : ℝ) : ℂ) ^ (2 : ℕ) * kgPotentialFlow a G₀ t ξ) + kgFlowSource a G₀ ξ t) t := by
   have hfun : (fun r : ℝ => kgPotentialFlow a G₀ r ξ)
       = duhamelScalar (kgFreq ξ) (G₀ ξ) (kgFlowSource a G₀ ξ) := by
     funext r

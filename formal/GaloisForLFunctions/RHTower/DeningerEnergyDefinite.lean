@@ -25,30 +25,30 @@ variable {u v : ℝ → ℂ} {m : ℝ}
 
 /-- **The energy is nonnegative.** -/
 theorem deningerEnergy_nonneg :
-    0 ≤ ∫ r in Ioi (0 : ℝ), (‖v r‖ ^ 2 + m ^ 2 * ‖u r‖ ^ 2) :=
+    0 ≤ ∫ r in Ioi (0 : ℝ), (‖v r‖ ^ (2 : ℕ) + m ^ (2 : ℕ) * ‖u r‖ ^ (2 : ℕ)) :=
   integral_nonneg fun r => by positivity
 
 /-- **A filling of zero energy vanishes.**  The integrand is nonnegative, so it vanishes almost
 everywhere; continuity then forces the filling to vanish on the whole half line. -/
 theorem deningerEnergy_eq_zero (hm : m ≠ 0) (hcont : ContinuousOn u (Ioi (0 : ℝ)))
-    (hint : IntegrableOn (fun r => ‖v r‖ ^ 2 + m ^ 2 * ‖u r‖ ^ 2) (Ioi (0 : ℝ)))
-    (hzero : (∫ r in Ioi (0 : ℝ), (‖v r‖ ^ 2 + m ^ 2 * ‖u r‖ ^ 2)) = 0) :
+    (hint : IntegrableOn (fun r => ‖v r‖ ^ (2 : ℕ) + m ^ (2 : ℕ) * ‖u r‖ ^ (2 : ℕ)) (Ioi (0 : ℝ)))
+    (hzero : (∫ r in Ioi (0 : ℝ), (‖v r‖ ^ (2 : ℕ) + m ^ (2 : ℕ) * ‖u r‖ ^ (2 : ℕ))) = 0) :
     ∀ r ∈ Ioi (0 : ℝ), u r = 0 := by
   have hnonneg : 0 ≤ᵐ[volume.restrict (Ioi (0 : ℝ))]
-      fun r => ‖v r‖ ^ 2 + m ^ 2 * ‖u r‖ ^ 2 :=
+      fun r => ‖v r‖ ^ (2 : ℕ) + m ^ (2 : ℕ) * ‖u r‖ ^ (2 : ℕ) :=
     Filter.Eventually.of_forall fun r => by positivity
-  have hae : (fun r => ‖v r‖ ^ 2 + m ^ 2 * ‖u r‖ ^ 2)
+  have hae : (fun r => ‖v r‖ ^ (2 : ℕ) + m ^ (2 : ℕ) * ‖u r‖ ^ (2 : ℕ))
       =ᵐ[volume.restrict (Ioi (0 : ℝ))] 0 :=
     (integral_eq_zero_iff_of_nonneg_ae hnonneg hint).mp hzero
   -- the vanishing locus of `u` is almost all of the half line
   have hu_ae : ∀ᵐ r ∂(volume.restrict (Ioi (0 : ℝ))), u r = 0 := by
     filter_upwards [hae] with r hr
-    have hr' : ‖v r‖ ^ 2 + m ^ 2 * ‖u r‖ ^ 2 = 0 := hr
-    have h1 : (0 : ℝ) ≤ ‖v r‖ ^ 2 := by positivity
-    have h2 : (0 : ℝ) ≤ m ^ 2 * ‖u r‖ ^ 2 := by positivity
-    have h3 : m ^ 2 * ‖u r‖ ^ 2 = 0 := by linarith
-    have hm2 : m ^ 2 ≠ 0 := pow_ne_zero 2 hm
-    have h4 : ‖u r‖ ^ 2 = 0 := by
+    have hr' : ‖v r‖ ^ (2 : ℕ) + m ^ (2 : ℕ) * ‖u r‖ ^ (2 : ℕ) = 0 := hr
+    have h1 : (0 : ℝ) ≤ ‖v r‖ ^ (2 : ℕ) := by positivity
+    have h2 : (0 : ℝ) ≤ m ^ (2 : ℕ) * ‖u r‖ ^ (2 : ℕ) := by positivity
+    have h3 : m ^ (2 : ℕ) * ‖u r‖ ^ (2 : ℕ) = 0 := by linarith
+    have hm2 : m ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hm
+    have h4 : ‖u r‖ ^ (2 : ℕ) = 0 := by
       rcases mul_eq_zero.mp h3 with h | h
       · exact absurd h hm2
       · exact h

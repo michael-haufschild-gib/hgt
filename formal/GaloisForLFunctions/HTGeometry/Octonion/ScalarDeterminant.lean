@@ -20,7 +20,7 @@ theorem sylvesterDifferenceLinear_scalarEmbed (r t : ℝ) :
 
 /-- The exact determinant specialization of Lemma 8.5 for two real octonions. -/
 theorem sylvesterDifferenceLinear_det_scalarEmbed (r t : ℝ) :
-    LinearMap.det (sylvesterDifferenceLinear (scalarEmbed r) (scalarEmbed t)) = (r - t) ^ 8 := by
+    LinearMap.det (sylvesterDifferenceLinear (scalarEmbed r) (scalarEmbed t)) = (r - t) ^ (8 : ℕ) := by
   rw [sylvesterDifferenceLinear_scalarEmbed, LinearMap.det_smul,
     finrank_realOctonion, LinearMap.det_id]
   simp

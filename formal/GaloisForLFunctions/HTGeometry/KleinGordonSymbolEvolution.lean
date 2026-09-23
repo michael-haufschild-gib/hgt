@@ -60,7 +60,7 @@ omit [InnerProductSpace ℝ E] in
 /-- **The cosine symbol solves the oscillator equation.** -/
 theorem hasDerivAt_deriv_cosFreq (ξ : E) (t : ℝ) :
     HasDerivAt (fun r : ℝ => -(kgFreq ξ * Real.sin (r * kgFreq ξ)))
-      (-(kgFreq ξ ^ 2) * Real.cos (t * kgFreq ξ)) t := by
+      (-(kgFreq ξ ^ (2 : ℕ)) * Real.cos (t * kgFreq ξ)) t := by
   have h := ((hasDerivAt_sinFreq ξ t).const_mul (kgFreq ξ)).neg
   refine h.congr_deriv ?_
   ring
@@ -69,7 +69,7 @@ omit [InnerProductSpace ℝ E] in
 /-- **The sine symbol solves the oscillator equation.** -/
 theorem hasDerivAt_deriv_sincFreq (ξ : E) (t : ℝ) :
     HasDerivAt (fun r : ℝ => Real.cos (r * kgFreq ξ))
-      (-(kgFreq ξ ^ 2) * (Real.sin (t * kgFreq ξ) / kgFreq ξ)) t := by
+      (-(kgFreq ξ ^ (2 : ℕ)) * (Real.sin (t * kgFreq ξ) / kgFreq ξ)) t := by
   have hne : kgFreq ξ ≠ 0 := ne_of_gt (kgFreq_pos ξ)
   have h := hasDerivAt_cosFreq ξ t
   refine h.congr_deriv ?_
@@ -90,14 +90,14 @@ theorem hasDerivAt_kgSinSymbol (ξ : E) (t : ℝ) :
 
 omit [InnerProductSpace ℝ E] in
 theorem ofReal_kgCos_second (ξ : E) (t : ℝ) :
-    ((-(kgFreq ξ ^ 2) * Real.cos (t * kgFreq ξ) : ℝ) : ℂ)
-      = -((kgFreq ξ ^ 2 : ℝ) : ℂ) * kgCosSymbol t ξ := by
+    ((-(kgFreq ξ ^ (2 : ℕ)) * Real.cos (t * kgFreq ξ) : ℝ) : ℂ)
+      = -((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) * kgCosSymbol t ξ := by
   rw [kgCosSymbol, Complex.ofReal_mul, Complex.ofReal_neg]
 
 omit [InnerProductSpace ℝ E] in
 theorem ofReal_kgSin_second (ξ : E) (t : ℝ) :
-    ((-(kgFreq ξ ^ 2) * (Real.sin (t * kgFreq ξ) / kgFreq ξ) : ℝ) : ℂ)
-      = -((kgFreq ξ ^ 2 : ℝ) : ℂ) * kgSinSymbol t ξ := by
+    ((-(kgFreq ξ ^ (2 : ℕ)) * (Real.sin (t * kgFreq ξ) / kgFreq ξ) : ℝ) : ℂ)
+      = -((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) * kgSinSymbol t ξ := by
   rw [kgSinSymbol, Complex.ofReal_mul, Complex.ofReal_neg]
 
 omit [InnerProductSpace ℝ E] in
@@ -105,7 +105,7 @@ omit [InnerProductSpace ℝ E] in
 Fourier multiplier calculus uses. -/
 theorem hasDerivAt_deriv_kgCosSymbol (ξ : E) (t : ℝ) :
     HasDerivAt (fun r : ℝ => ((-(kgFreq ξ * Real.sin (r * kgFreq ξ)) : ℝ) : ℂ))
-      (-((kgFreq ξ ^ 2 : ℝ) : ℂ) * kgCosSymbol t ξ) t := by
+      (-((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) * kgCosSymbol t ξ) t := by
   have h := Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt t (hasDerivAt_deriv_cosFreq ξ t)
   rw [← ofReal_kgCos_second]
   exact h
@@ -114,7 +114,7 @@ omit [InnerProductSpace ℝ E] in
 /-- **The sine symbol solves the Klein–Gordon oscillator equation.** -/
 theorem hasDerivAt_deriv_kgSinSymbol (ξ : E) (t : ℝ) :
     HasDerivAt (fun r : ℝ => ((Real.cos (r * kgFreq ξ) : ℝ) : ℂ))
-      (-((kgFreq ξ ^ 2 : ℝ) : ℂ) * kgSinSymbol t ξ) t := by
+      (-((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) * kgSinSymbol t ξ) t := by
   have h := Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt t (hasDerivAt_deriv_sincFreq ξ t)
   rw [← ofReal_kgSin_second]
   exact h

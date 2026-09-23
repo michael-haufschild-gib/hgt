@@ -144,7 +144,7 @@ private theorem mass_le_of_polynomial_power_bound {A C : ℝ} (hC : 0 ≤ C) (r 
       norm_num at h1
       nlinarith [sq_pos_of_pos hAp]
     · exact hc
-  let R : ℝ := (A/C)^2
+  let R : ℝ := (A/C)^(2 : ℕ)
   have hR : 1 < R := by
     have hq : 1 < A/C := (one_lt_div hCp).mpr hCA
     dsimp [R]
@@ -161,7 +161,7 @@ private theorem mass_le_of_polynomial_power_bound {A C : ℝ} (hC : 0 ≤ C) (r 
   have hl (k : ℕ) : 1 ≤ ((k+1 : ℕ) : ℝ)^r / R^k := by
     apply (le_div_iff₀ (pow_pos hRp k)).mpr
     rw [one_mul]
-    change ((A/C)^2)^k ≤ _
+    change ((A/C)^(2 : ℕ))^k ≤ _
     rw [← pow_mul, div_pow]
     exact (div_le_iff₀ (pow_pos hCp (2*k))).mpr (h k)
   obtain ⟨k,hk⟩ := (ht.eventually (gt_mem_nhds (show (0:ℝ)<1 by norm_num))).exists
@@ -213,9 +213,9 @@ private theorem not_summable_oddWeight {σ : ℝ} (hσ : σ ≤ 1) :
       push_cast
       nlinarith
     exact hrat.trans (by simpa [div_eq_mul_inv] using mul_le_mul_of_nonneg_left hpow (by norm_num : (0:ℝ)≤3))
-  have hh' : Summable (fun j : ℕ => (((j+1 : ℕ):ℝ)^1)⁻¹) := by
+  have hh' : Summable (fun j : ℕ => (((j+1 : ℕ):ℝ)^(1 : ℕ))⁻¹) := by
     simpa [one_div] using hh
-  have hh'' : Summable (fun n : ℕ => ((n:ℝ)^1)⁻¹) := (summable_nat_add_iff 1).mp hh'
+  have hh'' : Summable (fun n : ℕ => ((n:ℝ)^(1 : ℕ))⁻¹) := (summable_nat_add_iff 1).mp hh'
   have := (Real.summable_nat_pow_inv (p := 1)).mp hh''
   norm_num at this
 
@@ -253,14 +253,14 @@ def wordCoefficient {r : ℕ} (m : Fin r → ℕ) (w : Fin r → ℝ) (k n : ℕ
 /-- The collision definition agrees with the sum of squared Dirichlet coefficients. -/
 theorem wordEnergy_eq_coefficient_squares {r : ℕ} (m : Fin r → ℕ)
     (w : Fin r → ℝ) (k : ℕ) :
-    wordEnergy m w k = ∑ n ∈ wordProducts m k, (wordCoefficient m w k n)^2 := by
+    wordEnergy m w k = ∑ n ∈ wordProducts m k, (wordCoefficient m w k n)^(2 : ℕ) := by
   classical
   let f := fun u : Fin k → Fin r => ∏ i, m (u i)
   let W := fun u : Fin k → Fin r => ∏ i, w (u i)
   let F := fun n : ℕ => ∑ u ∈ univ.filter (fun u => f u = n), W u
   have hF (n : ℕ) : F n = wordCoefficient m w k n := by
     simp only [F, wordCoefficient, sum_filter, f, W]
-  have hf : (∑ n ∈ wordProducts m k, F n^2) = ∑ u, W u * F (f u) := by
+  have hf : (∑ n ∈ wordProducts m k, F n^(2 : ℕ)) = ∑ u, W u * F (f u) := by
     calc
       _ = ∑ n ∈ wordProducts m k,
           ∑ u ∈ univ.filter (fun u => f u = n), W u * F (f u) := by

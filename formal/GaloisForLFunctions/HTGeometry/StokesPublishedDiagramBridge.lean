@@ -43,7 +43,7 @@ theorem publishedCoreAdjacency_symm (d : OrbitCoareaDatum n m e) (i j : Fin n) :
     simp [hij, hji, mul_comm]
 
 private theorem diagonal_double_sum (x : Fin n → ℝ) :
-    (∑ i, ∑ j, x i * x j * (if i = j then 1 else 0)) = ∑ i, x i ^ 2 := by
+    (∑ i, ∑ j, x i * x j * (if i = j then 1 else 0)) = ∑ i, x i ^ (2 : ℕ) := by
   apply Finset.sum_congr rfl
   intro i _
   simp
@@ -51,7 +51,7 @@ private theorem diagonal_double_sum (x : Fin n → ℝ) :
 
 private theorem ramification_double_sum (d : OrbitCoareaDatum n m e) (x : Fin n → ℝ) :
     (∑ i, ∑ j, x i * x j * (d.ramification i * d.ramification j)) =
-      (∑ i, x i * d.ramification i) ^ 2 := by
+      (∑ i, x i * d.ramification i) ^ (2 : ℕ) := by
   calc
     (∑ i, ∑ j, x i * x j * (d.ramification i * d.ramification j)) =
         ∑ i, ∑ j, (x i * d.ramification i) * (x j * d.ramification j) := by
@@ -62,7 +62,7 @@ private theorem ramification_double_sum (d : OrbitCoareaDatum n m e) (x : Fin n 
           ring
     _ = (∑ i, x i * d.ramification i) *
         (∑ j, x j * d.ramification j) := by rw [double_sum_mul]
-    _ = (∑ i, x i * d.ramification i) ^ 2 := by ring
+    _ = (∑ i, x i * d.ramification i) ^ (2 : ℕ) := by ring
 
 /-- Exact interface theorem: the generalized Cartan quadratic form from the published diagram
 formula is definitionally the coefficient/contact Stokes polarization. -/
@@ -95,7 +95,7 @@ theorem publishedCoreCartanQuadratic_eq_cartanQuadratic
           simp_rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
   rw [diagonal_double_sum, ramification_double_sum]
   rw [← d.physicalRank_eq_ramification_sum]
-  change d.terminalEnergy x + d.physicalRank x ^ 2 - d.orbitContactPairing x =
+  change d.terminalEnergy x + d.physicalRank x ^ (2 : ℕ) - d.orbitContactPairing x =
     d.cartanQuadratic x
   rw [d.orbitContactPairing_eq_contactPairing]
   rfl

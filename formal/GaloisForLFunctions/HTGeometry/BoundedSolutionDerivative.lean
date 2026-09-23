@@ -69,10 +69,10 @@ theorem abs_deriv_le_of_bounded {w Dw DDw : ℝ → ℝ} {u C M : ℝ}
         nlinarith [hMt, abs_nonneg (DDw t), (by linarith [ht.2] : (0:ℝ) ≤ u + 1 - t)]
     have hval : (∫ t in u..(u + 1), M * (u + 1 - t)) = M / 2 := by
       have hprim : ∀ t ∈ uIcc u (u + 1),
-          HasDerivAt (fun z : ℝ => M * (-(u + 1 - z) ^ 2 / 2)) (M * (u + 1 - t)) t := by
+          HasDerivAt (fun z : ℝ => M * (-(u + 1 - z) ^ (2 : ℕ) / 2)) (M * (u + 1 - t)) t := by
         intro t _
         have h2 : HasDerivAt (fun z : ℝ => u + 1 - z) (-1) t := (hasDerivAt_id t).const_sub (u + 1)
-        have h3 : HasDerivAt (fun z : ℝ => -(u + 1 - z) ^ 2 / 2) (u + 1 - t) t := by
+        have h3 : HasDerivAt (fun z : ℝ => -(u + 1 - z) ^ (2 : ℕ) / 2) (u + 1 - t) t := by
           have := (h2.pow 2).neg.div_const 2
           refine this.congr_deriv ?_
           ring

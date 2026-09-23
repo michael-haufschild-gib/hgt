@@ -8,15 +8,15 @@ namespace RHTower
 noncomputable section
 
 def evenMagnitudeLift (B : Polynomial ℝ) : Polynomial ℂ :=
-  (B.map (algebraMap ℝ ℂ)).comp (-(X ^ 2))
+  (B.map (algebraMap ℝ ℂ)).comp (-(X ^ (2 : ℕ)))
 
 theorem evenMagnitudeLift_eval (B : Polynomial ℝ) (z : ℂ) :
-    (evenMagnitudeLift B).eval z = B.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) := by
+    (evenMagnitudeLift B).eval z = B.eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)) := by
   simp [evenMagnitudeLift, Polynomial.aeval_def]
 
 theorem evenMagnitudeLift_derivative_eval (B : Polynomial ℝ) (z : ℂ) :
     (evenMagnitudeLift B).derivative.eval z =
-      -2 * z * B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) := by
+      -2 * z * B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)) := by
   simp [evenMagnitudeLift, Polynomial.derivative_comp, Polynomial.aeval_def]
   left
   left
@@ -24,9 +24,9 @@ theorem evenMagnitudeLift_derivative_eval (B : Polynomial ℝ) (z : ℂ) :
 
 theorem evenMagnitudeLift_secondDerivative_eval (B : Polynomial ℝ) (z : ℂ) :
     (evenMagnitudeLift B).derivative.derivative.eval z =
-      -2 * B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) +
-        4 * z ^ 2 * B.derivative.derivative.eval₂
-          (algebraMap ℝ ℂ) (-z ^ 2) := by
+      -2 * B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)) +
+        4 * z ^ (2 : ℕ) * B.derivative.derivative.eval₂
+          (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)) := by
   simp [evenMagnitudeLift, Polynomial.derivative_comp,
     Polynomial.derivative_mul, Polynomial.aeval_def]
   ring
@@ -36,19 +36,19 @@ derivative product of its magnitude polynomial. -/
 theorem orientedPolynomialCurrent_evenMagnitudeLift_mul_I
     (B : Polynomial ℝ) (y : ℝ) :
     orientedPolynomialCurrent (evenMagnitudeLift B) ((y : ℂ) * I) =
-      -2 * y * B.derivative.eval (y ^ 2) * B.eval (y ^ 2) := by
+      -2 * y * B.derivative.eval (y ^ (2 : ℕ)) * B.eval (y ^ (2 : ℕ)) := by
   unfold orientedPolynomialCurrent
   rw [evenMagnitudeLift_eval, evenMagnitudeLift_derivative_eval]
-  rw [show -(((y : ℂ) * I) ^ 2) = ((y ^ 2 : ℝ) : ℂ) by
+  rw [show -(((y : ℂ) * I) ^ (2 : ℕ)) = ((y ^ (2 : ℕ) : ℝ) : ℂ) by
     rw [mul_pow, I_sq]
     push_cast
     ring]
-  have hB : B.eval₂ (algebraMap ℝ ℂ) ((y ^ 2 : ℝ) : ℂ) =
-      ((Polynomial.eval (y ^ 2) B : ℝ) : ℂ) :=
-    Polynomial.eval₂_at_apply (p := B) (algebraMap ℝ ℂ) (y ^ 2)
-  have hBd : B.derivative.eval₂ (algebraMap ℝ ℂ) ((y ^ 2 : ℝ) : ℂ) =
-      ((Polynomial.eval (y ^ 2) B.derivative : ℝ) : ℂ) :=
-    Polynomial.eval₂_at_apply (p := B.derivative) (algebraMap ℝ ℂ) (y ^ 2)
+  have hB : B.eval₂ (algebraMap ℝ ℂ) ((y ^ (2 : ℕ) : ℝ) : ℂ) =
+      ((Polynomial.eval (y ^ (2 : ℕ)) B : ℝ) : ℂ) :=
+    Polynomial.eval₂_at_apply (p := B) (algebraMap ℝ ℂ) (y ^ (2 : ℕ))
+  have hBd : B.derivative.eval₂ (algebraMap ℝ ℂ) ((y ^ (2 : ℕ) : ℝ) : ℂ) =
+      ((Polynomial.eval (y ^ (2 : ℕ)) B.derivative : ℝ) : ℂ) :=
+    Polynomial.eval₂_at_apply (p := B.derivative) (algebraMap ℝ ℂ) (y ^ (2 : ℕ))
   rw [hB, hBd]
   simp only [Complex.conj_ofReal, Complex.mul_im, Complex.mul_re,
     Complex.ofReal_re, Complex.ofReal_im, I_re, I_im]
@@ -62,17 +62,17 @@ theorem evenMagnitudeLift_verticalLaguerreDefect_eq_raw
           (starRingEnd ℂ) ((evenMagnitudeLift B).eval z)).re -
         Complex.normSq ((evenMagnitudeLift B).derivative.eval z)) =
       -2 *
-          (B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) *
+          (B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)) *
             (starRingEnd ℂ)
-              (B.eval₂ (algebraMap ℝ ℂ) (-z ^ 2))).re +
+              (B.eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)))).re +
         4 *
-          (z ^ 2 *
-            B.derivative.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2) *
+          (z ^ (2 : ℕ) *
+            B.derivative.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)) *
               (starRingEnd ℂ)
-                (B.eval₂ (algebraMap ℝ ℂ) (-z ^ 2))).re -
+                (B.eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ)))).re -
         4 * Complex.normSq z *
           Complex.normSq
-            (B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ 2)) := by
+            (B.derivative.eval₂ (algebraMap ℝ ℂ) (-z ^ (2 : ℕ))) := by
   rw [evenMagnitudeLift_eval, evenMagnitudeLift_derivative_eval,
     evenMagnitudeLift_secondDerivative_eval]
   rw [Complex.normSq_mul, Complex.normSq_mul]
@@ -85,11 +85,11 @@ theorem orientedPolynomialCurrent_evenMagnitudeLift_real_eq_zero
     (B : Polynomial ℝ) (x : ℝ) :
     orientedPolynomialCurrent (evenMagnitudeLift B) (x : ℂ) = 0 := by
   have hlift : evenMagnitudeLift B =
-      (B.comp (-(X ^ 2))).map (algebraMap ℝ ℂ) := by
+      (B.comp (-(X ^ (2 : ℕ)))).map (algebraMap ℝ ℂ) := by
     rw [evenMagnitudeLift, Polynomial.map_comp]
     simp
   rw [hlift]
-  exact orientedPolynomialCurrent_map_real_eq_zero (B.comp (-(X ^ 2))) x
+  exact orientedPolynomialCurrent_map_real_eq_zero (B.comp (-(X ^ (2 : ℕ)))) x
 
 /-- Schwarz reflection reverses the oriented current of a real-coefficient polynomial. -/
 theorem orientedPolynomialCurrent_map_real_conj
@@ -126,7 +126,7 @@ theorem orientedPolynomialCurrent_evenMagnitudeLift_neg_conj
       orientedPolynomialCurrent (evenMagnitudeLift B) z := by
   rw [orientedPolynomialCurrent_evenMagnitudeLift_neg]
   have hlift : evenMagnitudeLift B =
-      (B.comp (-(X ^ 2))).map (algebraMap ℝ ℂ) := by
+      (B.comp (-(X ^ (2 : ℕ)))).map (algebraMap ℝ ℂ) := by
     rw [evenMagnitudeLift, Polynomial.map_comp]
     simp
   rw [hlift, orientedPolynomialCurrent_map_real_conj]
@@ -148,12 +148,12 @@ theorem orientedPolynomialCurrent_evenMagnitudeLift_eq_integral_verticalLaguerre
             ((evenMagnitudeLift B).derivative.eval
               ((x : ℂ) + (t : ℂ) * I))) := by
   have hlift : evenMagnitudeLift B =
-      (B.comp (-(X ^ 2))).map (algebraMap ℝ ℂ) := by
+      (B.comp (-(X ^ (2 : ℕ)))).map (algebraMap ℝ ℂ) := by
     rw [evenMagnitudeLift, Polynomial.map_comp]
     simp
   rw [hlift]
   exact orientedPolynomialCurrent_map_real_eq_integral_verticalLaguerreDefect
-    (B.comp (-(X ^ 2))) x y
+    (B.comp (-(X ^ (2 : ℕ)))) x y
 
 /-- Raw-coordinate form of the exact boundary-to-interior identity.  It isolates the favorable
 norm square and leaves precisely two value correlations to be controlled after vertical
@@ -165,21 +165,21 @@ theorem orientedPolynomialCurrent_evenMagnitudeLift_eq_integral_rawDefect
       ∫ t : ℝ in 0..y,
         (-2 *
             (B.derivative.eval₂ (algebraMap ℝ ℂ)
-                (-((x : ℂ) + (t : ℂ) * I) ^ 2) *
+                (-((x : ℂ) + (t : ℂ) * I) ^ (2 : ℕ)) *
               (starRingEnd ℂ)
                 (B.eval₂ (algebraMap ℝ ℂ)
-                  (-((x : ℂ) + (t : ℂ) * I) ^ 2))).re +
+                  (-((x : ℂ) + (t : ℂ) * I) ^ (2 : ℕ)))).re +
           4 *
-            (((x : ℂ) + (t : ℂ) * I) ^ 2 *
+            (((x : ℂ) + (t : ℂ) * I) ^ (2 : ℕ) *
               B.derivative.derivative.eval₂ (algebraMap ℝ ℂ)
-                (-((x : ℂ) + (t : ℂ) * I) ^ 2) *
+                (-((x : ℂ) + (t : ℂ) * I) ^ (2 : ℕ)) *
                 (starRingEnd ℂ)
                   (B.eval₂ (algebraMap ℝ ℂ)
-                    (-((x : ℂ) + (t : ℂ) * I) ^ 2))).re -
+                    (-((x : ℂ) + (t : ℂ) * I) ^ (2 : ℕ)))).re -
           4 * Complex.normSq ((x : ℂ) + (t : ℂ) * I) *
             Complex.normSq
               (B.derivative.eval₂ (algebraMap ℝ ℂ)
-                (-((x : ℂ) + (t : ℂ) * I) ^ 2))) := by
+                (-((x : ℂ) + (t : ℂ) * I) ^ (2 : ℕ)))) := by
   rw [orientedPolynomialCurrent_evenMagnitudeLift_eq_integral_verticalLaguerreDefect]
   apply intervalIntegral.integral_congr
   intro t _ht
@@ -197,7 +197,7 @@ theorem xiCTaylorPolynomial_oddCutoff_eq_evenMagnitudeLift (d : ℕ) :
 theorem orientedPolynomialCurrent_monomial
     (a : ℝ) (m : ℕ) (z : ℂ) :
     orientedPolynomialCurrent (C (a : ℂ) * X ^ m) z =
-      -(m : ℝ) * a ^ 2 * Complex.normSq z ^ (m - 1) * z.im := by
+      -(m : ℝ) * a ^ (2 : ℕ) * Complex.normSq z ^ (m - 1) * z.im := by
   cases m with
   | zero => simp [orientedPolynomialCurrent]
   | succ k =>
@@ -211,7 +211,7 @@ theorem orientedPolynomialCurrent_monomial
       rw [Complex.conj_ofReal]
       rw [show (↑a * ((↑k + 1) * z ^ k)) *
           (↑a * ((starRingEnd ℂ) z ^ k * (starRingEnd ℂ) z)) =
-          (((((k : ℝ) + 1) * a ^ 2 * Complex.normSq z ^ k : ℝ) : ℂ) *
+          (((((k : ℝ) + 1) * a ^ (2 : ℕ) * Complex.normSq z ^ k : ℝ) : ℂ) *
             (starRingEnd ℂ z)) by
         rw [show (↑a * ((↑k + 1) * z ^ k)) *
             (↑a * ((starRingEnd ℂ) z ^ k * (starRingEnd ℂ) z)) =
@@ -228,7 +228,7 @@ theorem orientedPolynomialCurrent_monomial_nonpos
     (a : ℝ) (m : ℕ) {z : ℂ} (hz : 0 ≤ z.im) :
     orientedPolynomialCurrent (C (a : ℂ) * X ^ m) z ≤ 0 := by
   rw [orientedPolynomialCurrent_monomial]
-  have hprod : 0 ≤ (m : ℝ) * a ^ 2 * Complex.normSq z ^ (m - 1) * z.im := by
+  have hprod : 0 ≤ (m : ℝ) * a ^ (2 : ℕ) * Complex.normSq z ^ (m - 1) * z.im := by
     exact mul_nonneg (mul_nonneg (mul_nonneg (Nat.cast_nonneg m) (sq_nonneg a))
       (pow_nonneg (Complex.normSq_nonneg z) _)) hz
   linarith

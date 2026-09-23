@@ -59,13 +59,13 @@ theorem no_finitePole_solution_digammaShiftDerivative
     (g : ℂ → ℂ)
     (hg : ∀ n : ℤ, MeromorphicAt g (additiveOrbitPoint 0 1 n))
     (hfinite : (poleIndexSet g 0 1).Finite)
-    (hshift : ∀ z : ℂ, -(z ^ 2)⁻¹ = g (z + 1) - g z) : False := by
-  apply shiftCoboundary_not_singleton_poleOrbit g (fun z : ℂ => -(z ^ 2)⁻¹) 0 1 hg hshift
+    (hshift : ∀ z : ℂ, -(z ^ (2 : ℕ))⁻¹ = g (z + 1) - g z) : False := by
+  apply shiftCoboundary_not_singleton_poleOrbit g (fun z : ℂ => -(z ^ (2 : ℕ))⁻¹) 0 1 hg hshift
     hfinite
-  · rw [← meromorphicOrderAt_fun_neg (f := (fun z : ℂ => (z ^ 2)⁻¹))]
-    change meromorphicOrderAt ((fun z : ℂ => z ^ 2)⁻¹) 0 < 0
+  · rw [← meromorphicOrderAt_fun_neg (f := (fun z : ℂ => (z ^ (2 : ℕ))⁻¹))]
+    change meromorphicOrderAt ((fun z : ℂ => z ^ (2 : ℕ))⁻¹) 0 < 0
     rw [meromorphicOrderAt_inv]
-    have hpow : meromorphicOrderAt (fun z : ℂ => z ^ 2) 0 = 2 := by
+    have hpow : meromorphicOrderAt (fun z : ℂ => z ^ (2 : ℕ)) 0 = 2 := by
       simpa only [sub_zero] using!
         (meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := 0) (n := 2))
     rw [hpow]
@@ -76,11 +76,11 @@ theorem no_finitePole_solution_digammaShiftDerivative
   · intro n hn
     by_contra hn0
     have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast hn0
-    have hana : AnalyticAt ℂ (fun z : ℂ => -(z ^ 2)⁻¹) (n : ℂ) := by
+    have hana : AnalyticAt ℂ (fun z : ℂ => -(z ^ (2 : ℕ))⁻¹) (n : ℂ) := by
       exact ((analyticAt_id.pow 2).inv (pow_ne_zero 2 hnC)).neg
-    have hval : -(((n : ℂ) ^ 2)⁻¹) ≠ 0 := by
+    have hval : -(((n : ℂ) ^ (2 : ℕ))⁻¹) ≠ 0 := by
       simp [hnC]
-    have horder : meromorphicOrderAt (fun z : ℂ => -(z ^ 2)⁻¹) (n : ℂ) = 0 := by
+    have horder : meromorphicOrderAt (fun z : ℂ => -(z ^ (2 : ℕ))⁻¹) (n : ℂ) = 0 := by
       rw [hana.meromorphicOrderAt_eq]
       rw [hana.analyticOrderAt_eq_zero.mpr hval]
       simp
@@ -92,7 +92,7 @@ half-plane.  This is the first asymptotic boundary coordinate of the Gamma field
 theorem re_digamma_vertical_tendsto_atTop {σ : ℝ} (hσ : 0 ≤ σ) :
     Tendsto (fun t : ℝ =>
       (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re) atTop atTop := by
-  have h1 : Tendsto (fun t : ℝ => 1 / t ^ 2) atTop (nhds 0) := by
+  have h1 : Tendsto (fun t : ℝ => 1 / t ^ (2 : ℕ)) atTop (nhds 0) := by
     have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
     simpa [one_div, inv_pow] using hinv.pow 2
   have h2 : Tendsto (fun t : ℝ => Real.pi / (2 * t)) atTop (nhds 0) := by
@@ -101,10 +101,10 @@ theorem re_digamma_vertical_tendsto_atTop {σ : ℝ} (hσ : 0 ≤ σ) :
     · funext t
       ring
     · simp
-  have herr : Tendsto (fun t : ℝ => 1 / t ^ 2 + Real.pi / (2 * t))
+  have herr : Tendsto (fun t : ℝ => 1 / t ^ (2 : ℕ) + Real.pi / (2 * t))
       atTop (nhds 0) := by simpa using h1.add h2
   have hlower : Tendsto
-      (fun t : ℝ => Real.log t - (1 / t ^ 2 + Real.pi / (2 * t))) atTop atTop := by
+      (fun t : ℝ => Real.log t - (1 / t ^ (2 : ℕ) + Real.pi / (2 * t))) atTop atTop := by
     convert herr.neg.add_atTop Real.tendsto_log_atTop using 1
     funext t
     ring
@@ -136,28 +136,28 @@ theorem norm_digamma_vertical_le_log {σ t : ℝ}
       Real.log t + digammaVerticalLogConstant := by
   have ht : 0 < t := zero_lt_one.trans_le ht1
   let ψ := Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
-  let L : ℝ := (1 / 2) * Real.log (σ ^ 2 + t ^ 2)
-  let E : ℝ := 1 / t ^ 2 + Real.pi / (2 * t)
+  let L : ℝ := (1 / 2) * Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ))
+  let E : ℝ := 1 / t ^ (2 : ℕ) + Real.pi / (2 * t)
   have hre := RHTower.re_digamma_vertical_bound_uncond hσ.le ht
   have him := RHTower.im_digamma_vertical_bound hσ.le ht
   have ht_inv : 1 / t ≤ 1 := by
     exact (div_le_one ht).2 ht1
-  have ht_sq : 1 ≤ t ^ 2 := one_le_pow₀ ht1
+  have ht_sq : 1 ≤ t ^ (2 : ℕ) := one_le_pow₀ ht1
   have hE : E ≤ 1 + Real.pi := by
     dsimp [E]
-    have h1 : 1 / t ^ 2 ≤ 1 := (div_le_one (sq_pos_of_pos ht)).2 ht_sq
+    have h1 : 1 / t ^ (2 : ℕ) ≤ 1 := (div_le_one (sq_pos_of_pos ht)).2 ht_sq
     have h2 : Real.pi / (2 * t) ≤ Real.pi := by
       apply (div_le_iff₀ (mul_pos (by norm_num) ht)).2
       nlinarith [Real.pi_pos]
     linarith
-  have hbase : 1 ≤ σ ^ 2 + t ^ 2 := by nlinarith [sq_nonneg σ, ht_sq]
+  have hbase : 1 ≤ σ ^ (2 : ℕ) + t ^ (2 : ℕ) := by nlinarith [sq_nonneg σ, ht_sq]
   have hL0 : 0 ≤ L := by
     dsimp [L]
     exact mul_nonneg (by norm_num) (Real.log_nonneg hbase)
-  have hquad : σ ^ 2 + t ^ 2 ≤ 2 * t ^ 2 := by nlinarith
-  have hlogquad : Real.log (σ ^ 2 + t ^ 2) ≤ Real.log 2 + 2 * Real.log t := by
+  have hquad : σ ^ (2 : ℕ) + t ^ (2 : ℕ) ≤ 2 * t ^ (2 : ℕ) := by nlinarith
+  have hlogquad : Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ)) ≤ Real.log 2 + 2 * Real.log t := by
     calc
-      Real.log (σ ^ 2 + t ^ 2) ≤ Real.log (2 * t ^ 2) :=
+      Real.log (σ ^ (2 : ℕ) + t ^ (2 : ℕ)) ≤ Real.log (2 * t ^ (2 : ℕ)) :=
         Real.log_le_log (by positivity) hquad
       _ = Real.log 2 + 2 * Real.log t := by
         rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (pow_ne_zero 2 ht.ne'), Real.log_pow]
@@ -212,7 +212,7 @@ theorem tendsto_log_add_const_pow_div (C : ℝ) (k : ℕ) :
 /-- Every fixed logarithmic power kills the universal vertical polygamma error. -/
 theorem tendsto_log_add_const_pow_mul_verticalError (C : ℝ) (k : ℕ) :
     Tendsto (fun t : ℝ => (Real.log t + C) ^ k *
-      (1 / t ^ 2 + Real.pi / (2 * t))) atTop (nhds 0) := by
+      (1 / t ^ (2 : ℕ) + Real.pi / (2 * t))) atTop (nhds 0) := by
   have h := tendsto_log_add_const_pow_div C k
   have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
   have h1 := h.mul hinv
@@ -260,7 +260,7 @@ theorem deriv_digamma_vertical_tendsto_zero {σ : ℝ} (hσ : 0 < σ) :
   · filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
     exact RHTower.norm_deriv_digamma_vertical_le hσ ht
   · have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
-    have h1 : Tendsto (fun t : ℝ => 1 / t ^ 2) atTop (nhds 0) := by
+    have h1 : Tendsto (fun t : ℝ => 1 / t ^ (2 : ℕ)) atTop (nhds 0) := by
       simpa [one_div, inv_pow] using hinv.pow 2
     have h2 : Tendsto (fun t : ℝ => Real.pi / (2 * t)) atTop (nhds 0) := by
       convert hinv.const_mul (Real.pi / 2) using 1
@@ -378,7 +378,7 @@ theorem norm_polygammaKernel_sum_le (m N : ℕ) {σ t : ℝ}
     (hσ : 0 < σ) (ht1 : 1 ≤ t) :
     ‖∑ n ∈ Finset.range N,
         ((((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ (m + 2))⁻¹)‖ ≤
-      1 / t ^ 2 + Real.pi / (2 * t) := by
+      1 / t ^ (2 : ℕ) + Real.pi / (2 * t) := by
   have ht : 0 < t := lt_of_lt_of_le zero_lt_one ht1
   calc
     ‖∑ n ∈ Finset.range N,
@@ -386,7 +386,7 @@ theorem norm_polygammaKernel_sum_le (m N : ℕ) {σ t : ℝ}
         ≤ ∑ n ∈ Finset.range N,
           ‖((((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ (m + 2))⁻¹)‖ :=
             norm_sum_le _ _
-    _ ≤ ∑ n ∈ Finset.range N, 1 / ((σ + n) ^ 2 + t ^ 2) := by
+    _ ≤ ∑ n ∈ Finset.range N, 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro n hn
       let w : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)
@@ -399,18 +399,18 @@ theorem norm_polygammaKernel_sum_le (m N : ℕ) {σ t : ℝ}
         have := Complex.abs_im_le_norm w
         simpa [him, abs_of_pos ht] using this
       have hq : 1 ≤ ‖w‖ := ht1.trans htq
-      have hpow : ‖w‖ ^ 2 ≤ ‖w‖ ^ (m + 2) := by
+      have hpow : ‖w‖ ^ (2 : ℕ) ≤ ‖w‖ ^ (m + 2) := by
         rw [show m + 2 = 2 + m by omega, pow_add]
         exact le_mul_of_one_le_right (sq_nonneg ‖w‖) (one_le_pow₀ hq)
-      have hnormsq : ‖w‖ ^ 2 = (σ + n) ^ 2 + t ^ 2 := by
+      have hnormsq : ‖w‖ ^ (2 : ℕ) = (σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
         rw [← Complex.normSq_eq_norm_sq, hw, Complex.normSq_add_mul_I]
       change ‖(w ^ (m + 2))⁻¹‖ ≤ _
       rw [norm_inv, norm_pow, inv_eq_one_div]
       calc
-        1 / ‖w‖ ^ (m + 2) ≤ 1 / ‖w‖ ^ 2 :=
+        1 / ‖w‖ ^ (m + 2) ≤ 1 / ‖w‖ ^ (2 : ℕ) :=
           one_div_le_one_div_of_le (by positivity) hpow
-        _ = 1 / ((σ + n) ^ 2 + t ^ 2) := by rw [hnormsq]
-    _ ≤ 1 / t ^ 2 + Real.pi / (2 * t) :=
+        _ = 1 / ((σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ)) := by rw [hnormsq]
+    _ ≤ 1 / t ^ (2 : ℕ) + Real.pi / (2 * t) :=
       RHTower.sum_inv_sq_add_le hσ.le ht N
 
 /-- Explicit all-orders vertical polygamma bound. -/
@@ -418,11 +418,11 @@ theorem norm_iteratedDeriv_digamma_vertical_le (m : ℕ) {σ t : ℝ}
     (hσ : 0 < σ) (ht1 : 1 ≤ t) :
     ‖iteratedDeriv (m + 1) Complex.digamma
         ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤
-      (m + 1).factorial * (1 / t ^ 2 + Real.pi / (2 * t)) := by
+      (m + 1).factorial * (1 / t ^ (2 : ℕ) + Real.pi / (2 * t)) := by
   let z : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I
   have hz : 0 < z.re := by simp [z]; exact hσ
   let C : ℂ := (-1 : ℂ) ^ (m + 1) * (m + 1).factorial
-  let E : ℝ := 1 / t ^ 2 + Real.pi / (2 * t)
+  let E : ℝ := 1 / t ^ (2 : ℕ) + Real.pi / (2 * t)
   have hCnorm : ‖C‖ = (m + 1).factorial := by simp [C]
   have hineq : ∀ N : ℕ,
       ‖iteratedDeriv (m + 1) Complex.digamma z‖ ≤
@@ -471,7 +471,7 @@ theorem iteratedDeriv_digamma_vertical_tendsto_zero (m : ℕ) {σ : ℝ}
   · filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
     exact norm_iteratedDeriv_digamma_vertical_le m hσ ht
   · have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
-    have h1 : Tendsto (fun t : ℝ => 1 / t ^ 2) atTop (nhds 0) := by
+    have h1 : Tendsto (fun t : ℝ => 1 / t ^ (2 : ℕ)) atTop (nhds 0) := by
       simpa [one_div, inv_pow] using hinv.pow 2
     have h2 : Tendsto (fun t : ℝ => Real.pi / (2 * t)) atTop (nhds 0) := by
       convert hinv.const_mul (Real.pi / 2) using 1
@@ -562,11 +562,11 @@ theorem deriv_Gamma_div_second_vertical_tendsto_zero {σ : ℝ} (hσ : 0 < σ) :
     simpa [ψ, z] using inv_digamma_vertical_tendsto_zero hσ.le
   have hderiv : Tendsto ψ' atTop (nhds 0) := by
     simpa [ψ', z] using deriv_digamma_vertical_tendsto_zero hσ
-  have hcorr : Tendsto (fun t => ψ' t * (ψ t)⁻¹ ^ 2) atTop (nhds 0) := by
+  have hcorr : Tendsto (fun t => ψ' t * (ψ t)⁻¹ ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa using hderiv.mul (hinv.pow 2)
-  have hden : Tendsto (fun t => 1 + ψ' t * (ψ t)⁻¹ ^ 2) atTop (nhds 1) := by
+  have hden : Tendsto (fun t => 1 + ψ' t * (ψ t)⁻¹ ^ (2 : ℕ)) atTop (nhds 1) := by
     simpa using tendsto_const_nhds.add hcorr
-  have hmodel : Tendsto (fun t => (ψ t)⁻¹ / (1 + ψ' t * (ψ t)⁻¹ ^ 2))
+  have hmodel : Tendsto (fun t => (ψ t)⁻¹ / (1 + ψ' t * (ψ t)⁻¹ ^ (2 : ℕ)))
       atTop (nhds 0) := by
     simpa using! hinv.div hden (by norm_num : (1 : ℂ) ≠ 0)
   apply hmodel.congr'
@@ -595,7 +595,7 @@ theorem deriv_Gamma_div_second_vertical_tendsto_zero {σ : ℝ} (hσ : 0 < σ) :
   rw [hlog, hlog'] at hBell
   have hderivG : deriv Complex.Gamma (z t) = ψ t * Complex.Gamma (z t) :=
     (div_eq_iff hG).mp hlog
-  change (ψ t)⁻¹ / (1 + ψ' t * (ψ t)⁻¹ ^ 2) =
+  change (ψ t)⁻¹ / (1 + ψ' t * (ψ t)⁻¹ ^ (2 : ℕ)) =
     deriv Complex.Gamma (z t) / iteratedDeriv 2 Complex.Gamma (z t)
   rw [hBell, hderivG]
   field_simp [hG, hpsi, hdenne]

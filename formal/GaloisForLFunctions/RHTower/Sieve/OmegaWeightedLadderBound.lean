@@ -36,19 +36,19 @@ theorem continuous_ladderProductDefect (P : Finset ℕ) (A₀ B₀ : ℕ) (Q η 
 theorem integral_normSq_omegaWeighted_le_split {P : Finset ℕ} (A₀ B₀ : ℕ) {Q η : ℝ}
     (hQ : 0 < Q) (hη : 0 ≤ η) {L : ℕ} (hL : 1 ≤ L) (hPprime : ∀ q ∈ P, q.Prime)
     (hP : ∀ p ∈ P, Q < (p : ℝ) ∧ (p : ℝ) ≤ Q * (1 + η) ^ L) (W : ℝ) :
-    (∫ w in Set.Icc (-W) W, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2)
-      ≤ 2 * (∫ w in Set.Icc (-W) W, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2)
-        + 2 * ∫ w in Set.Icc (-W) W, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2 := by
+    (∫ w in Set.Icc (-W) W, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
+      ≤ 2 * (∫ w in Set.Icc (-W) W, ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
+        + 2 * ∫ w in Set.Icc (-W) W, ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ) := by
   classical
-  have hcontA : Continuous fun w : ℝ => ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2 :=
+  have hcontA : Continuous fun w : ℝ => ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ) :=
     ((continuous_omegaWeightedMoebiusPoly _ _).norm).pow 2
-  have hcontProd : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2 :=
+  have hcontProd : Continuous fun w : ℝ => ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ) :=
     ((continuous_ladderProductPoly _ _ _ _ _ _).norm).pow 2
-  have hcontE : Continuous fun w : ℝ => ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2 :=
+  have hcontE : Continuous fun w : ℝ => ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ) :=
     ((continuous_ladderProductDefect _ _ _ _ _ _).norm).pow 2
-  have hpt : ∀ w : ℝ, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2
-      ≤ 2 * ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2
-        + 2 * ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2 := by
+  have hpt : ∀ w : ℝ, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)
+      ≤ 2 * ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ)
+        + 2 * ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ) := by
     intro w
     have heq := ladderProductPoly_sub_omegaWeighted_eq A₀ B₀ hQ hη hL hPprime hP w
     have hA : omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w
@@ -60,11 +60,11 @@ theorem integral_normSq_omegaWeighted_le_split {P : Finset ℕ} (A₀ B₀ : ℕ
     have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
     nlinarith [hsq, sq_nonneg (‖ladderProductPoly P A₀ B₀ Q η L w‖
       - ‖ladderProductDefect P A₀ B₀ Q η L w‖)]
-  have hint1 : IntegrableOn (fun w : ℝ => ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2)
+  have hint1 : IntegrableOn (fun w : ℝ => ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := hcontA.integrableOn_Icc
   have hint2 : IntegrableOn (fun w : ℝ =>
-      2 * ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ 2
-        + 2 * ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ 2)
+      2 * ‖ladderProductPoly P A₀ B₀ Q η L w‖ ^ (2 : ℕ)
+        + 2 * ‖ladderProductDefect P A₀ B₀ Q η L w‖ ^ (2 : ℕ))
       (Set.Icc (-W) W) volume := ((hcontProd.const_mul 2).add (hcontE.const_mul 2)).integrableOn_Icc
   have hmono := setIntegral_mono_on hint1 hint2 measurableSet_Icc (fun w _ => hpt w)
   refine hmono.trans (le_of_eq ?_)
@@ -81,9 +81,9 @@ theorem integral_normSq_omegaWeighted_le {P : Finset ℕ} {A₀ B₀ : ℕ} (hA 
     (v V : ℕ → ℝ) (hv : ∀ j ∈ Finset.range L, 0 < v j) (hV : ∀ j, 0 ≤ V j)
     (hbound : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-W) W,
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ V j) :
-    (∫ w in Set.Icc (-W) W, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖omegaWeightedMoebiusPoly P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ 2 * ((∑ j ∈ Finset.range L, 1 / v j)
-            * ∑ j ∈ Finset.range L, v j * (V j ^ 2
+            * ∑ j ∈ Finset.range L, v j * (V j ^ (2 : ℕ)
                 * ((5 * Real.pi / 2 * W
                     + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
                   * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))))
@@ -91,7 +91,7 @@ theorem integral_normSq_omegaWeighted_le {P : Finset ℕ} {A₀ B₀ : ℕ} (hA 
             * (Real.log ((⌊(B₀ : ℝ) * (1 + η)⌋₊ : ℕ) : ℝ) / Real.log Q
               * ∑ j ∈ Finset.range L, (Q * (1 + η) ^ j * η + 1)
                   * (((A₀ : ℝ) + (B₀ : ℝ)) * η / (Q * (1 + η) ^ j) + 5
-                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ 2))) := by
+                    + (B₀ : ℝ) / (Q * (1 + η) ^ j) ^ (2 : ℕ)))) := by
   classical
   have hQ0 : (0 : ℝ) < Q := lt_trans zero_lt_one hQ
   have hsplit := integral_normSq_omegaWeighted_le_split A₀ B₀ hQ0 hη hL hPprime hP W
@@ -100,9 +100,9 @@ theorem integral_normSq_omegaWeighted_le {P : Finset ℕ} {A₀ B₀ : ℕ} (hA 
   have hharm := integral_normSq_ladderProductPoly_le (P := P) A₀ B₀ Q η v hv W
   have hsteps : ∀ j ∈ Finset.range L,
       v j * (∫ w in Set.Icc (-W) W,
-          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ 2
-            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ 2)
-        ≤ v j * (V j ^ 2
+          ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ^ (2 : ℕ)
+            * ‖logPoly moebiusCoeff (geomCofactorBlockAt A₀ B₀ Q η j) w‖ ^ (2 : ℕ))
+        ≤ v j * (V j ^ (2 : ℕ)
             * ((5 * Real.pi / 2 * W
                 + 5 * Real.exp 1 / 2 * ((⌊(B₀ : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
               * ((B₀ : ℝ) / (Q * (1 + η) ^ j) + 1))) := by

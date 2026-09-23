@@ -62,9 +62,9 @@ theorem hasDerivAt_halfShiftWeierstrass (L : PeriodPair) (x : ℝ) :
 
 /-- Paper equation (72) along the pole-free trace, including the chain-rule scale `omega₁²`. -/
 theorem halfShiftWeierstrass_equation (L : PeriodPair) (x : ℝ) :
-    halfShiftWeierstrassPrime L x ^ 2 =
-      L.ω₁ ^ 2 *
-        (4 * halfShiftWeierstrass L x ^ 3 -
+    halfShiftWeierstrassPrime L x ^ (2 : ℕ) =
+      L.ω₁ ^ (2 : ℕ) *
+        (4 * halfShiftWeierstrass L x ^ (3 : ℕ) -
           L.g₂ * halfShiftWeierstrass L x - L.g₃) := by
   have h := L.derivWeierstrassP_sq (halfShiftArgument L x)
     (halfShiftArgument_not_mem_lattice L x)

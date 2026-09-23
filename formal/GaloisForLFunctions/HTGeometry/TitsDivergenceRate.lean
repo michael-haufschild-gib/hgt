@@ -178,7 +178,7 @@ theorem tendsto_rayDist_div {T S : E →ₗ[ℂ] E} (hT : T.IsSymmetric) (hS : S
 /-- **Inside an apartment the Tits distance is the chordal distance of the unit directions.**  So
 the rate defined for arbitrary directions extends the metric already computed on a flat. -/
 theorem titsRate_diagOp (b : OrthonormalBasis (Fin n) ℂ E) (hn : finrank ℂ E = n)
-    (w w' : Fin n → ℝ) (hw : ∑ i, w i ^ 2 = 1) (hw' : ∑ i, w' i ^ 2 = 1) :
+    (w w' : Fin n → ℝ) (hw : ∑ i, w i ^ (2 : ℕ) = 1) (hw' : ∑ i, w' i ^ (2 : ℕ) = 1) :
     titsRate (isSymmetric_diagOp b w) (isSymmetric_diagOp b w') hn
       = Real.sqrt (2 - 2 * ∑ i, w i * w' i) := by
   have hconst : Tendsto (fun t => rayDist (isSymmetric_diagOp b w) (isSymmetric_diagOp b w') hn t

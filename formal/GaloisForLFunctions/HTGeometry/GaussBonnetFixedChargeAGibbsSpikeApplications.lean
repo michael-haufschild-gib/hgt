@@ -38,7 +38,7 @@ theorem egbFixedChargeAGibbsSpike_hankel_rank_drop (n o k : ℕ) :
 /-- The first three-dimensional Gram volume has a closed positive formula for the explicit spike state. -/
 theorem egbFixedChargeAGibbsSpike_hankel_three_det (n : ℕ) :
     (egbFixedChargeAGibbsFullCollisionHankelMatrix n 3 1 (egbFixedChargeAGibbsSpikeEnergy n)).det =
-      25 * ((2 : ℝ) ^ (n + 3) - 5) / (15116544 * ((2 : ℝ) ^ (n + 3)) ^ 3) := by
+      25 * ((2 : ℝ) ^ (n + 3) - 5) / (15116544 * ((2 : ℝ) ^ (n + 3)) ^ (3 : ℕ)) := by
   have hn : (2 : ℝ) ^ (n + 3) ≠ 0 := pow_ne_zero _ (by norm_num)
   rw [egbFixedChargeAGibbsFullCollisionHankelMatrix_three_det,
     egbFixedChargeAGibbsSpike_discarded_energy, egbFixedChargeAGibbsSpike_slow_energy,

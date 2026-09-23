@@ -157,7 +157,7 @@ theorem exists_retainedPrimeField_pool_orders (Q : Finset Nat.Primes) :
 /-- The complete preparation history of a finite core has an explicit quadratic budget. -/
 theorem mobiusDivisorSelectionEnergy_subcore_le (M : ℕ) (P T : Finset ℕ)
     (hP : ∀ p ∈ P, p.Prime ∧ p < M) (hT : T ⊆ P) :
-    mobiusDivisorSelectionEnergy M T ≤ (2:ℝ)^P.card * 722 * (M:ℝ)^2 := by
+    mobiusDivisorSelectionEnergy M T ≤ (2:ℝ)^P.card * 722 * (M:ℝ)^(2 : ℕ) := by
   have he := mobiusDivisorSelectionEnergy_le_pow_card M T (fun p hp => hP p (hT hp))
   rw [mobiusDivisorSelectionEnergy_empty] at he
   have hd := sum_mobiusDivisorDilationChannel_sq_le_quadratic M
@@ -165,8 +165,8 @@ theorem mobiusDivisorSelectionEnergy_subcore_le (M : ℕ) (P T : Finset ℕ)
     gcongr
     norm_num
   calc
-    _ ≤ 2^T.card * (722 * (M:ℝ)^2) := he.trans (mul_le_mul_of_nonneg_left hd (by positivity))
-    _ ≤ 2^P.card * (722 * (M:ℝ)^2) := mul_le_mul_of_nonneg_right hpow (by positivity)
+    _ ≤ 2^T.card * (722 * (M:ℝ)^(2 : ℕ)) := he.trans (mul_le_mul_of_nonneg_left hd (by positivity))
+    _ ≤ 2^P.card * (722 * (M:ℝ)^(2 : ℕ)) := mul_le_mul_of_nonneg_right hpow (by positivity)
     _ = _ := by ring
 
 end RHTower

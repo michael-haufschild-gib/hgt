@@ -94,14 +94,14 @@ theorem finiteKMSWightmanWeight_self {α : Type*} [Fintype α]
 probabilities, expressed without square roots. -/
 theorem finiteKMSWightmanWeight_sq {α : Type*} [Fintype α]
     (β : ℝ) (energy : α → ℝ) (a b : α) :
-    finiteKMSWightmanWeight β energy a b ^ 2 =
+    finiteKMSWightmanWeight β energy a b ^ (2 : ℕ) =
       finiteGibbsStateWeight β energy a *
         finiteGibbsStateWeight β energy b := by
   simp only [finiteKMSWightmanWeight, finiteGibbsStateWeight]
-  have hexp : Real.exp (-β * ((energy a + energy b) / 2)) ^ 2 =
+  have hexp : Real.exp (-β * ((energy a + energy b) / 2)) ^ (2 : ℕ) =
       Real.exp (-β * energy a) * Real.exp (-β * energy b) := by
     calc
-      Real.exp (-β * ((energy a + energy b) / 2)) ^ 2 =
+      Real.exp (-β * ((energy a + energy b) / 2)) ^ (2 : ℕ) =
           Real.exp
             ((-β * ((energy a + energy b) / 2)) +
               (-β * ((energy a + energy b) / 2))) := by
@@ -160,10 +160,10 @@ half-density kernel is exactly the Gibbs probability of that energy state. -/
 theorem sum_sq_finiteKMSWightmanWeight_eq_stateWeight
     {α : Type*} [Fintype α] [Nonempty α]
     (β : ℝ) (energy : α → ℝ) (a : α) :
-    ∑ b, finiteKMSWightmanWeight β energy a b ^ 2 =
+    ∑ b, finiteKMSWightmanWeight β energy a b ^ (2 : ℕ) =
       finiteGibbsStateWeight β energy a := by
   calc
-    (∑ b, finiteKMSWightmanWeight β energy a b ^ 2) =
+    (∑ b, finiteKMSWightmanWeight β energy a b ^ (2 : ℕ)) =
         ∑ b, finiteGibbsStateWeight β energy a *
           finiteGibbsStateWeight β energy b := by
       apply Finset.sum_congr rfl
@@ -218,7 +218,7 @@ theorem momentFunctional_finiteKMSWightmanEvenGapMoment_sq_nonneg
     (p : Polynomial ℝ) :
     0 ≤ momentFunctional
       (thermalEvenGapMoment
-        (finiteKMSWightmanTransitionIntensity β energy amplitude) energy) (p ^ 2) := by
+        (finiteKMSWightmanTransitionIntensity β energy amplitude) energy) (p ^ (2 : ℕ)) := by
   exact momentFunctional_thermalEvenGapMoment_sq_nonneg _ energy
     (finiteKMSWightmanTransitionIntensity_nonneg β energy amplitude) p
 
@@ -230,7 +230,7 @@ theorem momentFunctional_X_mul_sq_finiteKMSWightmanEvenGapMoment_nonneg
     0 ≤ momentFunctional
       (thermalEvenGapMoment
         (finiteKMSWightmanTransitionIntensity β energy amplitude) energy)
-        (Polynomial.X * p ^ 2) := by
+        (Polynomial.X * p ^ (2 : ℕ)) := by
   exact momentFunctional_X_mul_sq_thermalEvenGapMoment_nonneg _ energy
     (finiteKMSWightmanTransitionIntensity_nonneg β energy amplitude) p
 

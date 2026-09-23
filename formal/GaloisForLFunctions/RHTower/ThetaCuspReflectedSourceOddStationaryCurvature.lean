@@ -22,7 +22,7 @@ private theorem second_iteratedDeriv_nonneg_of_isLocalMin
   have hpoly : ∀ y : ℝ,
       taylorWithinEval f 2 univ x y =
         f x + (y - x) * iteratedDeriv 1 f x +
-          ((y - x) ^ 2 / 2) * iteratedDeriv 2 f x := by
+          ((y - x) ^ (2 : ℕ) / 2) * iteratedDeriv 2 f x := by
     intro y
     rw [show 2 = 1 + 1 by norm_num, taylorWithinEval_succ,
       taylorWithinEval_succ, taylor_within_zero_eval]
@@ -32,20 +32,20 @@ private theorem second_iteratedDeriv_nonneg_of_isLocalMin
   have hevent : ∀ᶠ y in 𝓝 x,
       f x ≤ f y ∧
         ‖f y - taylorWithinEval f 2 univ x y‖ ≤
-          (-(iteratedDeriv 2 f x) / 4) * ‖(y - x) ^ 2‖ :=
+          (-(iteratedDeriv 2 f x) / 4) * ‖(y - x) ^ (2 : ℕ)‖ :=
     hmin.and hbound
   obtain ⟨y, hy, hymin, hybound⟩ := hevent.exists_gt
   rw [hpoly y, hfirst] at hybound
-  have hsquare : 0 < (y - x) ^ 2 := sq_pos_of_pos (sub_pos.mpr hy)
-  have hnorm : ‖(y - x) ^ 2‖ = (y - x) ^ 2 := by
+  have hsquare : 0 < (y - x) ^ (2 : ℕ) := sq_pos_of_pos (sub_pos.mpr hy)
+  have hnorm : ‖(y - x) ^ (2 : ℕ)‖ = (y - x) ^ (2 : ℕ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg (y - x))]
   rw [hnorm] at hybound
   have hremainder :
-      f y - (f x + (y - x) ^ 2 / 2 * iteratedDeriv 2 f x) ≤
-        -(iteratedDeriv 2 f x) / 4 * (y - x) ^ 2 := by
+      f y - (f x + (y - x) ^ (2 : ℕ) / 2 * iteratedDeriv 2 f x) ≤
+        -(iteratedDeriv 2 f x) / 4 * (y - x) ^ (2 : ℕ) := by
     calc
-      _ ≤ |f y - (f x + (y - x) ^ 2 / 2 * iteratedDeriv 2 f x)| := le_abs_self _
-      _ = ‖f y - (f x + (y - x) ^ 2 / 2 * iteratedDeriv 2 f x)‖ :=
+      _ ≤ |f y - (f x + (y - x) ^ (2 : ℕ) / 2 * iteratedDeriv 2 f x)| := le_abs_self _
+      _ = ‖f y - (f x + (y - x) ^ (2 : ℕ) / 2 * iteratedDeriv 2 f x)‖ :=
         (Real.norm_eq_abs _).symm
       _ ≤ _ := by simpa only [mul_zero, add_zero] using hybound
   nlinarith
@@ -53,12 +53,12 @@ private theorem second_iteratedDeriv_nonneg_of_isLocalMin
 /-- Schrödinger potential of a reflected source fibre: normalized ordinary second derivative
 of the product. -/
 def thetaCuspReflectedSourceSchrodingerPotential (u t : ℝ) : ℝ :=
-  thetaCuspReflectedLogJetOne u t ^ 2 - thetaCuspReflectedLogJetTwo u t
+  thetaCuspReflectedLogJetOne u t ^ (2 : ℕ) - thetaCuspReflectedLogJetTwo u t
 
 /-- First ordinary jet of the positive source decay flux. -/
 def thetaCuspReflectedSourceDecayFluxCurvature (u t : ℝ) : ℝ :=
   thetaCuspReflectedSourceProduct u t *
-    (thetaCuspReflectedLogJetTwo u t - thetaCuspReflectedLogJetOne u t ^ 2)
+    (thetaCuspReflectedLogJetTwo u t - thetaCuspReflectedLogJetOne u t ^ (2 : ℕ))
 
 /-- Riccati margin is exactly derivative of reflected Schrödinger potential. -/
 theorem hasDerivAt_thetaCuspReflectedSourceSchrodingerPotential (u t : ℝ) :
@@ -175,7 +175,7 @@ def thetaCuspReflectedSourceOddParityWallCurvature (u t : ℝ) : ℝ :=
     6 * thetaCuspReflectedSourceDecayFlux u t *
       thetaCuspReflectedSourceDecayFlux u (3 * t) -
     2 * (-thetaCuspReflectedSourceDecayFlux u t +
-      2 * thetaCuspReflectedSourceDecayFlux u (2 * t)) ^ 2
+      2 * thetaCuspReflectedSourceDecayFlux u (2 * t)) ^ (2 : ℕ)
 
 theorem hasDerivAt_thetaCuspReflectedSourceOddParityWall_slope (u t : ℝ) :
     HasDerivAt (thetaCuspReflectedSourceOddParityWall u)
@@ -247,7 +247,7 @@ theorem contDiff_two_thetaCuspReflectedSourceOddParityWall (u : ℝ) :
     (contDiff_thetaCuspReflectedSourceProduct u).of_le
       (WithTop.coe_le_coe.mpr le_top)
   change ContDiff ℝ 2 (fun t : ℝ =>
-    (f 0 - f (3 * t)) * (f 0 - f t) - (f t - f (2 * t)) ^ 2)
+    (f 0 - f (3 * t)) * (f 0 - f t) - (f t - f (2 * t)) ^ (2 : ℕ))
   fun_prop
 
 theorem iteratedDeriv_two_thetaCuspReflectedSourceOddParityWall (u t : ℝ) :
@@ -276,7 +276,7 @@ theorem exists_thetaCuspReflectedSourceOddParityWall_stationary_curvature_of_neg
           3 * thetaCuspReflectedSourceFirstDrop u t *
             thetaCuspReflectedSourceDecayFlux u (3 * t) ∧
       0 ≤ thetaCuspReflectedSourceOddParityWallCurvature u t := by
-  have hcenter : 0 < thetaCuspReflectedSourceProduct u 0 ^ 2 := by
+  have hcenter : 0 < thetaCuspReflectedSourceProduct u 0 ^ (2 : ℕ) := by
     simp only [thetaCuspReflectedSourceProduct, add_zero, sub_zero]
     exact pow_pos (mul_pos (thetaCuspFullSource_pos_all u)
       (thetaCuspFullSource_pos_all u)) 2

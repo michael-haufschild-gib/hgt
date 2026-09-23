@@ -149,7 +149,7 @@ theorem addTranslationMeroEquiv_rayDigammaMero (p : ℕ) {ω : ℂ} (hω : ω �
 
 /-- The operator `∏_{k=1}^{p-1} (T_{ω^{-k}} − 1)` applied to the digamma carrier, expanded as an
 alternating subset sum.  The index `k = 0` is deliberately omitted: no step of this family is
-integral for the scale `ω^0 = 1`. -/
+integral for the scale `ω^(0 : ℕ) = 1`. -/
 def rayDifference (p : ℕ) (ω : ℂ) (hω : ω ≠ 0) : meroField (Set.univ : Set ℂ) :=
   ∑ S ∈ (Finset.Ico 1 p).powerset,
     (-1 : meroField (Set.univ : Set ℂ)) ^ S.card

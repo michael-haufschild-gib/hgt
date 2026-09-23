@@ -364,7 +364,7 @@ private theorem atMostQuarterCircuitEntropyBound_polynomial_majorant
     (q n : ℕ) (hn : 1 ≤ n) :
     atMostQuarterCircuitEntropyBound n (n ^ q) ≤
       (2 : ℝ) ^
-        (6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ 2) := by
+        (6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ (2 : ℕ)) := by
   let s : ℕ := n ^ q
   let P : ℕ := 64 * (q + 1) * (n + 1) ^ (q + 1)
   have hs1 : 1 ≤ s := by
@@ -390,7 +390,7 @@ private theorem atMostQuarterCircuitEntropyBound_polynomial_majorant
     have hnPow : n ≤ (n + 1) ^ (q + 1) := by
       calc
         n ≤ n + 1 := by omega
-        _ = (n + 1) ^ 1 := by simp
+        _ = (n + 1) ^ (1 : ℕ) := by simp
         _ ≤ (n + 1) ^ (q + 1) :=
           Nat.pow_le_pow_right (by omega) (by omega)
     dsimp [P]
@@ -421,67 +421,67 @@ private theorem atMostQuarterCircuitEntropyBound_polynomial_majorant
   have hterm {R : ℕ} (hR : R ∈ Finset.range (s + 1)) :
       1 + ((n * n : ℕ) : ℝ) ^ R *
           (1 + 16 * (R : ℝ)) ^ (32 * R) ≤
-        (2 : ℝ) ^ (4 * P ^ 2 + 1) := by
+        (2 : ℝ) ^ (4 * P ^ (2 : ℕ) + 1) := by
     have hRle : R ≤ s := by simpa using Finset.mem_range.mp hR
     have hRleP : R ≤ P := hRle.trans (by omega)
     have h32RleP : 32 * R ≤ P := by omega
     have hfirst :
-        ((n * n : ℕ) : ℝ) ^ R ≤ (2 : ℝ) ^ (2 * P ^ 2) := by
+        ((n * n : ℕ) : ℝ) ^ R ≤ (2 : ℝ) ^ (2 * P ^ (2 : ℕ)) := by
       calc
         ((n * n : ℕ) : ℝ) ^ R ≤ ((2 : ℝ) ^ (2 * P)) ^ R :=
           pow_le_pow_left₀ (by positivity) hbaseN R
         _ ≤ ((2 : ℝ) ^ (2 * P)) ^ P :=
           pow_le_pow_right₀ (one_le_pow₀ (by norm_num)) hRleP
-        _ = (2 : ℝ) ^ (2 * P ^ 2) := by
+        _ = (2 : ℝ) ^ (2 * P ^ (2 : ℕ)) := by
           rw [← pow_mul]
           congr 1
           ring
     have hsecond :
         (1 + 16 * (R : ℝ)) ^ (32 * R) ≤
-          (2 : ℝ) ^ (2 * P ^ 2) := by
+          (2 : ℝ) ^ (2 * P ^ (2 : ℕ)) := by
       calc
         (1 + 16 * (R : ℝ)) ^ (32 * R) ≤
             ((2 : ℝ) ^ (2 * P)) ^ (32 * R) :=
           pow_le_pow_left₀ (by positivity) (hbaseR hRle) (32 * R)
         _ ≤ ((2 : ℝ) ^ (2 * P)) ^ P :=
           pow_le_pow_right₀ (one_le_pow₀ (by norm_num)) h32RleP
-        _ = (2 : ℝ) ^ (2 * P ^ 2) := by
+        _ = (2 : ℝ) ^ (2 * P ^ (2 : ℕ)) := by
           rw [← pow_mul]
           congr 1
           ring
     have hproduct :
         ((n * n : ℕ) : ℝ) ^ R *
             (1 + 16 * (R : ℝ)) ^ (32 * R) ≤
-          (2 : ℝ) ^ (4 * P ^ 2) := by
+          (2 : ℝ) ^ (4 * P ^ (2 : ℕ)) := by
       calc
         ((n * n : ℕ) : ℝ) ^ R *
               (1 + 16 * (R : ℝ)) ^ (32 * R) ≤
-            (2 : ℝ) ^ (2 * P ^ 2) * 2 ^ (2 * P ^ 2) :=
+            (2 : ℝ) ^ (2 * P ^ (2 : ℕ)) * 2 ^ (2 * P ^ (2 : ℕ)) :=
           mul_le_mul hfirst hsecond (by positivity) (by positivity)
-        _ = (2 : ℝ) ^ (4 * P ^ 2) := by
+        _ = (2 : ℝ) ^ (4 * P ^ (2 : ℕ)) := by
           rw [← pow_add]
           congr 1
           ring
     calc
       1 + ((n * n : ℕ) : ℝ) ^ R *
             (1 + 16 * (R : ℝ)) ^ (32 * R) ≤
-          (2 : ℝ) ^ (4 * P ^ 2) + 2 ^ (4 * P ^ 2) := by
+          (2 : ℝ) ^ (4 * P ^ (2 : ℕ)) + 2 ^ (4 * P ^ (2 : ℕ)) := by
         exact add_le_add (one_le_pow₀ (by norm_num)) hproduct
-      _ = (2 : ℝ) ^ (4 * P ^ 2 + 1) := by
+      _ = (2 : ℝ) ^ (4 * P ^ (2 : ℕ) + 1) := by
         rw [pow_succ]
         ring
   have hsum :
       atMostQuarterCircuitEntropyBound n s ≤
-        ((s + 1 : ℕ) : ℝ) * (2 : ℝ) ^ (4 * P ^ 2 + 1) := by
+        ((s + 1 : ℕ) : ℝ) * (2 : ℝ) ^ (4 * P ^ (2 : ℕ) + 1) := by
     rw [atMostQuarterCircuitEntropyBound]
     calc
       ∑ R ∈ Finset.range (s + 1),
           (1 + ((n * n : ℕ) : ℝ) ^ R *
             (1 + 16 * (R : ℝ)) ^ (32 * R)) ≤
           ∑ R ∈ Finset.range (s + 1),
-            (2 : ℝ) ^ (4 * P ^ 2 + 1) := by
+            (2 : ℝ) ^ (4 * P ^ (2 : ℕ) + 1) := by
         exact Finset.sum_le_sum fun R hR ↦ hterm hR
-      _ = ((s + 1 : ℕ) : ℝ) * (2 : ℝ) ^ (4 * P ^ 2 + 1) := by
+      _ = ((s + 1 : ℕ) : ℝ) * (2 : ℝ) ^ (4 * P ^ (2 : ℕ) + 1) := by
         simp
   have hsPtwo : ((s + 1 : ℕ) : ℝ) ≤ (2 : ℝ) ^ P := by
     have hsP : ((s + 1 : ℕ) : ℝ) ≤ P := by exact_mod_cast hsSuccP
@@ -489,21 +489,21 @@ private theorem atMostQuarterCircuitEntropyBound_polynomial_majorant
   calc
     atMostQuarterCircuitEntropyBound n (n ^ q) =
         atMostQuarterCircuitEntropyBound n s := by rfl
-    _ ≤ ((s + 1 : ℕ) : ℝ) * (2 : ℝ) ^ (4 * P ^ 2 + 1) := hsum
-    _ ≤ (2 : ℝ) ^ P * 2 ^ (4 * P ^ 2 + 1) :=
+    _ ≤ ((s + 1 : ℕ) : ℝ) * (2 : ℝ) ^ (4 * P ^ (2 : ℕ) + 1) := hsum
+    _ ≤ (2 : ℝ) ^ P * 2 ^ (4 * P ^ (2 : ℕ) + 1) :=
       mul_le_mul_of_nonneg_right hsPtwo (by positivity)
-    _ = (2 : ℝ) ^ (P + (4 * P ^ 2 + 1)) := by rw [← pow_add]
-    _ ≤ (2 : ℝ) ^ (6 * P ^ 2) := by
+    _ = (2 : ℝ) ^ (P + (4 * P ^ (2 : ℕ) + 1)) := by rw [← pow_add]
+    _ ≤ (2 : ℝ) ^ (6 * P ^ (2 : ℕ)) := by
       exact pow_le_pow_right₀ (by norm_num) (by nlinarith)
     _ = (2 : ℝ) ^
-        (6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ 2) := by rfl
+        (6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ (2 : ℕ)) := by rfl
 
 theorem eventually_atMostQuarterCircuitEntropyBound_lt_booleanCarrier
     (q : ℕ) :
     ∀ᶠ n : ℕ in Filter.atTop,
       atMostQuarterCircuitEntropyBound n (n ^ q) <
         ((2 ^ (2 ^ n) : ℕ) : ℝ) := by
-  let A : ℝ := ((6 * (64 * (q + 1)) ^ 2 : ℕ) : ℝ)
+  let A : ℝ := ((6 * (64 * (q + 1)) ^ (2 : ℕ) : ℕ) : ℝ)
   let E : ℕ := 2 * (q + 1)
   have hlower : ∀ m : ℕ, m ≥ 0 →
       (2 : ℝ) * (2 : ℝ) ^ m ≤ (2 : ℝ) ^ (m + 1) := by
@@ -522,7 +522,7 @@ theorem eventually_atMostQuarterCircuitEntropyBound_lt_booleanCarrier
   have hnN : N ≤ n := (le_max_left N 1).trans hn
   have hpoly := hN n hnN
   have hEcast :
-      (((6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ 2 : ℕ) : ℝ)) =
+      (((6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ (2 : ℕ) : ℕ) : ℝ)) =
         A * (((1 * (n + 1)) ^ E : ℕ) : ℝ) := by
     dsimp [A, E]
     push_cast
@@ -530,7 +530,7 @@ theorem eventually_atMostQuarterCircuitEntropyBound_lt_booleanCarrier
     rw [show 2 * (q + 1) = (q + 1) * 2 by omega]
     have hpow :
         ((n : ℝ) + 1) ^ ((q + 1) * 2) =
-          (((n : ℝ) + 1) ^ (q + 1)) ^ 2 := by
+          (((n : ℝ) + 1) ^ (q + 1)) ^ (2 : ℕ) := by
       rw [pow_mul]
     rw [hpow]
     ring
@@ -538,12 +538,12 @@ theorem eventually_atMostQuarterCircuitEntropyBound_lt_booleanCarrier
   have htwoCast : (((2 ^ n : ℕ) : ℝ)) = (2 : ℝ) ^ n := by norm_num
   rw [← htwoCast] at hpoly
   have hExpNat :
-      6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ 2 < 2 ^ n := by
+      6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ (2 : ℕ) < 2 ^ n := by
     exact_mod_cast hpoly
   calc
     atMostQuarterCircuitEntropyBound n (n ^ q) ≤
         (2 : ℝ) ^
-          (6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ 2) :=
+          (6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ (2 : ℕ)) :=
       atMostQuarterCircuitEntropyBound_polynomial_majorant q n hn1
     _ < (2 : ℝ) ^ (2 ^ n) :=
       pow_lt_pow_right₀ (by norm_num) hExpNat
@@ -574,7 +574,7 @@ theorem eventually_atMostQuarterCircuitEntropyBound_lt_projectiveBooleanCarrier
     ∀ᶠ n : ℕ in Filter.atTop,
       atMostQuarterCircuitEntropyBound n (n ^ q) <
         ((2 ^ (2 ^ n - 1) : ℕ) : ℝ) := by
-  let A : ℝ := ((2 * (6 * (64 * (q + 1)) ^ 2) : ℕ) : ℝ)
+  let A : ℝ := ((2 * (6 * (64 * (q + 1)) ^ (2 : ℕ)) : ℕ) : ℝ)
   let E : ℕ := 2 * (q + 1)
   have hlower : ∀ m : ℕ, m ≥ 0 →
       (2 : ℝ) * (2 : ℝ) ^ m ≤ (2 : ℝ) ^ (m + 1) := by
@@ -592,7 +592,7 @@ theorem eventually_atMostQuarterCircuitEntropyBound_lt_projectiveBooleanCarrier
   have hn1 : 1 ≤ n := (le_max_right N 1).trans hn
   have hnN : N ≤ n := (le_max_left N 1).trans hn
   have hpoly := hN n hnN
-  let M : ℕ := 6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ 2
+  let M : ℕ := 6 * (64 * (q + 1) * (n + 1) ^ (q + 1)) ^ (2 : ℕ)
   have hEcast :
       (((2 * M : ℕ) : ℝ)) =
         A * (((1 * (n + 1)) ^ E : ℕ) : ℝ) := by
@@ -602,7 +602,7 @@ theorem eventually_atMostQuarterCircuitEntropyBound_lt_projectiveBooleanCarrier
     rw [show 2 * (q + 1) = (q + 1) * 2 by omega]
     have hpow :
         ((n : ℝ) + 1) ^ ((q + 1) * 2) =
-          (((n : ℝ) + 1) ^ (q + 1)) ^ 2 := by
+          (((n : ℝ) + 1) ^ (q + 1)) ^ (2 : ℕ) := by
       rw [pow_mul]
     rw [hpow]
     ring

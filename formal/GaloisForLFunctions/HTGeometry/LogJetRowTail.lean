@@ -27,13 +27,13 @@ variable (Q v : ℕ → Polynomial ℂ)
 /-! ## The derivation of a logarithmic factor -/
 
 @[simp] theorem scaledLogWronskian_one_right (p : Polynomial ℂ) :
-    scaledLogWronskian p 1 = p.derivative.derivative * p - p.derivative ^ 2 := by
+    scaledLogWronskian p 1 = p.derivative.derivative * p - p.derivative ^ (2 : ℕ) := by
   simp [scaledLogWronskian]
 
 /-- **The product law differentiates a logarithmic factor into a Wronskian.** -/
 theorem prodDerivation_logFactor (p : Polynomial ℂ) (k : ℕ) :
     prodDerivation Q v (logFactor p k)
-      = fact (scaledLogWronskian p 1) k * prodJet Q v k / fact p k ^ 2 := by
+      = fact (scaledLogWronskian p 1) k * prodJet Q v k / fact p k ^ (2 : ℕ) := by
   rcases eq_or_ne p 0 with rfl | hp
   · have h0 : fact (0 : Polynomial ℂ) k = 0 := by
       rw [fact, univFactor]
@@ -52,7 +52,7 @@ theorem prodDerivation_logSum {Q : ℕ → Polynomial ℂ} (v : ℕ → Polynomi
     (hQ : ∀ j, Q j ≠ 0) (N : ℕ) :
     prodDerivation Q v (logSum Q v N)
       = ∑ k ∈ Finset.range N,
-          (fact (scaledLogWronskian (Q k) 1) k * prodJet Q v k ^ 2 / fact (Q k) k ^ 2
+          (fact (scaledLogWronskian (Q k) 1) k * prodJet Q v k ^ (2 : ℕ) / fact (Q k) k ^ (2 : ℕ)
             + logFactor (Q k) k * prodJet Q v k
                 * (logSum Q v k + logFactor (v k) k * prodJet Q v k)) := by
   rw [logSum, map_sum]

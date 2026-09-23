@@ -5,7 +5,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 private theorem sqrt_entropy_gap (x y : ℝ) (hx : 0 < x) (hy : 0 < y) :
-    (Real.sqrt x - Real.sqrt y) ^ 2 ≤ x * Real.log (x / y) - x + y := by
+    (Real.sqrt x - Real.sqrt y) ^ (2 : ℕ) ≤ x * Real.log (x / y) - x + y := by
   have hsx := Real.sq_sqrt hx.le
   have hsy := Real.sq_sqrt hy.le
   have hsxp : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
@@ -33,7 +33,7 @@ private theorem sqrt_entropy_gap (x y : ℝ) (hx : 0 < x) (hy : 0 < y) :
 theorem egbFixedChargeAGibbsEntropyDeficit_hellinger_lower (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     finitePacketHellinger (egbFixedChargeAGibbsMarkovPopulation n m β E)
-      (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ 2 ≤ egbFixedChargeAGibbsEntropyDeficit n m β E := by
+      (fun _ => ((2 : ℝ) ^ (n + 3))⁻¹) ^ (2 : ℕ) ≤ egbFixedChargeAGibbsEntropyDeficit n m β E := by
   have hn : (2 : ℝ) ^ (n + 3) ≠ 0 := pow_ne_zero _ (by norm_num)
   have hu : ∑ _ : Fin (2 ^ (n + 3)), ((2 : ℝ) ^ (n + 3))⁻¹ = 1 := by
     simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
@@ -62,13 +62,13 @@ theorem egbFixedChargeAGibbsEntropyDeficit_collision_upper (n m : ℕ) (β : ℝ
   change (∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i *
     Real.log (egbFixedChargeAGibbsMarkovPopulation n m β E i / ((2 : ℝ) ^ (n + 3))⁻¹)) ≤ _ at h
   have hpoint (x : ℝ) : x * (x / ((2 : ℝ) ^ (n + 3))⁻¹ - 1) =
-      (2 : ℝ) ^ (n + 3) * x ^ 2 - x := by rw [div_inv_eq_mul]; ring
+      (2 : ℝ) ^ (n + 3) * x ^ (2 : ℕ) - x := by rw [div_inv_eq_mul]; ring
   simp only [hpoint, Finset.sum_sub_distrib, ← Finset.mul_sum,
     egbFixedChargeAGibbsMarkovPopulation_mass] at h
   rw [egbFixedChargeAGibbsEntropyDeficit, relEntropy, tsum_fintype]
   rw [egbFixedChargeAGibbsCollisionExcess_identity]
   calc
-    _ ≤ (2 : ℝ) ^ (n + 3) * (∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i ^ 2) - 1 := h
+    _ ≤ (2 : ℝ) ^ (n + 3) * (∑ i, egbFixedChargeAGibbsMarkovPopulation n m β E i ^ (2 : ℕ)) - 1 := h
     _ = _ := by field_simp
 
 /-- Vanishing information deficit exactly identifies the uniform law. -/

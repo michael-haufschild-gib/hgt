@@ -45,8 +45,8 @@ private theorem jordanEscape_sqrt_endpoint_data {k : ℕ} (hk : 4 ≤ k) :
     exact_mod_cast (Nat.sub_le k 1)
   have hab := Real.sqrt_le_sqrt hpredle
   have hpoly : (729 : ℝ) ≤ 200 * (k : ℝ) := by nlinarith
-  have hratioSq : (23 * Real.sqrt (k : ℝ)) ^ 2 ≤
-      (27 * Real.sqrt ((k - 1 : ℕ) : ℝ)) ^ 2 := by
+  have hratioSq : (23 * Real.sqrt (k : ℝ)) ^ (2 : ℕ) ≤
+      (27 * Real.sqrt ((k - 1 : ℕ) : ℝ)) ^ (2 : ℕ) := by
     rw [mul_pow, mul_pow, ha2, hb2, hcast]
     norm_num
     nlinarith
@@ -81,8 +81,8 @@ private theorem jordanEscape_integral_checkpoint_lower {k : ℕ} (hk : 4 ≤ k) 
   let b := Real.sqrt (k : ℝ)
   obtain ⟨ha, hb, hab, hgap, _⟩ := jordanEscape_sqrt_endpoint_data hk
   have hkR : (4 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
-  have ha2 : a ^ 2 = ((k - 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
-  have hb2 : b ^ 2 = (k : ℝ) := Real.sq_sqrt (by positivity)
+  have ha2 : a ^ (2 : ℕ) = ((k - 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
+  have hb2 : b ^ (2 : ℕ) = (k : ℝ) := Real.sq_sqrt (by positivity)
   have hcast : (((k - 1 : ℕ) : ℝ)) = (k : ℝ) - 1 := by
     rw [Nat.cast_sub (by omega : 1 ≤ k)]
     norm_num
@@ -90,14 +90,14 @@ private theorem jordanEscape_integral_checkpoint_lower {k : ℕ} (hk : 4 ≤ k) 
   have hexpLower : 1 / b ≤ 2 * (b - a) := by
     rw [div_le_iff₀ hb]
     nlinarith
-  have hprodSq : (b * a) ^ 2 = (k : ℝ) * ((k - 1 : ℕ) : ℝ) := by
+  have hprodSq : (b * a) ^ (2 : ℕ) = (k : ℝ) * ((k - 1 : ℕ) : ℝ) := by
     rw [mul_pow, hb2, ha2]
   have hpoly : (100 : ℝ) ≤ 9 * (k : ℝ) * ((k - 1 : ℕ) : ℝ) := by
     rw [hcast]
     nlinarith [mul_nonneg (sub_nonneg.mpr hkR) (by linarith : 0 ≤ (k : ℝ) + 3)]
   have hprod : 10 ≤ 3 * b * a := by
-    have hsq : (100 : ℝ) ≤ (3 * b * a) ^ 2 := by
-      rw [show (3 * b * a) ^ 2 = 9 * (b * a) ^ 2 by ring, hprodSq]
+    have hsq : (100 : ℝ) ≤ (3 * b * a) ^ (2 : ℕ) := by
+      rw [show (3 * b * a) ^ (2 : ℕ) = 9 * (b * a) ^ (2 : ℕ) by ring, hprodSq]
       simpa only [mul_assoc] using hpoly
     nlinarith [mul_nonneg hb.le ha.le]
   have hbBudget : b ≤ (3 / 10 : ℝ) * (k : ℝ) * a := by
@@ -162,7 +162,7 @@ theorem suzukiCheckpointSignedCurvaturePositiveMass_ge_sixthHarmonic (m : ℕ) :
   have hk : 4 ≤ k := by dsimp [k]; omega
   have hkpos : (0 : ℝ) < (k : ℝ) := by positivity
   have hsqrt : 0 < Real.sqrt (k : ℝ) := Real.sqrt_pos.mpr hkpos
-  have hsqrtSq : (Real.sqrt (k : ℝ)) ^ 2 = (k : ℝ) := Real.sq_sqrt hkpos.le
+  have hsqrtSq : (Real.sqrt (k : ℝ)) ^ (2 : ℕ) = (k : ℝ) := Real.sq_sqrt hkpos.le
   have hsqrtTwo : (2 : ℝ) ≤ Real.sqrt (k : ℝ) := by
     have hkFour : (4 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
     nlinarith [Real.sqrt_nonneg (k : ℝ)]
@@ -192,7 +192,7 @@ theorem suzukiCheckpointSignedCurvatureNegativeMass_ge_primeHarmonic
   have hk : 4 ≤ k := by dsimp [k]; omega
   have hkpos : (0 : ℝ) < (k : ℝ) := by positivity
   have hsqrt : 0 < Real.sqrt (k : ℝ) := Real.sqrt_pos.mpr hkpos
-  have hsqrtSq : (Real.sqrt (k : ℝ)) ^ 2 = (k : ℝ) := Real.sq_sqrt hkpos.le
+  have hsqrtSq : (Real.sqrt (k : ℝ)) ^ (2 : ℕ) = (k : ℝ) := Real.sq_sqrt hkpos.le
   have hsqrtTwo : (2 : ℝ) ≤ Real.sqrt (k : ℝ) := by
     have hkFour : (4 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
     nlinarith [Real.sqrt_nonneg (k : ℝ)]
@@ -203,7 +203,7 @@ theorem suzukiCheckpointSignedCurvatureNegativeMass_ge_primeHarmonic
           screwRegularKernel t) * Real.sqrt k ≤ 27 / 25 := by
     exact (mul_le_mul_of_nonneg_right hupper hsqrt.le).trans hscale
   have hlogNine : (9 / 5 : ℝ) < Real.log 9 := by
-    rw [show (9 : ℝ) = 3 ^ 2 by norm_num, Real.log_pow]
+    rw [show (9 : ℝ) = 3 ^ (2 : ℕ) by norm_num, Real.log_pow]
     norm_num
     linarith [Real.log_three_gt_d9]
   have hlogMono : Real.log 9 ≤ Real.log (k : ℝ) := by

@@ -109,7 +109,7 @@ section IndependentSignsModel
 /-- The moment-error exponent predicted by the **independent-signs model**: modelling the
 `k`-ary divisor-correlation errors `Δ_k(M,h)` at their conjectured size `M^{1-1/k}` with signs
 uncorrelated across the shift `h`, the off-diagonal error of the `2k`-th moment is
-`(1/M)(∑_h K(h)^2)^{1/2} M^{1-1/k} ≍ T^{k/4}` at `M = T^{k/2}`. -/
+`(1/M)(∑_h K(h)^(2 : ℕ))^{1/2} M^{1-1/k} ≍ T^{k/4}` at `M = T^{k/2}`. -/
 noncomputable def modelErrorExponent (k : ℝ) : ℝ := k/4
 
 /-- **The unification.**  The model exponent `k/4` and the conjectured true exponent

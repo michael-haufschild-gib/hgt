@@ -273,10 +273,10 @@ configuration is a sign pair containing a critical value, and the three sign exc
 all out. -/
 theorem cnf_no_pole_of_regular_data_two [IsAlgClosed K] [DecidableEq K]
     {A B lam : K} (hlam : lam ≠ 0) (hA0 : A ≠ 0) (hB0 : B ≠ 0) (hAB : A ≠ B)
-    (hpow : A ^ 2 ≠ B ^ 2)
-    (hnegA : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ -A)
-    (hnegA' : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) ≠ -B)
-    (hnegB : (A - B * lam * B ^ 2) / (1 - lam * B ^ 2) ≠ -B)
+    (hpow : A ^ (2 : ℕ) ≠ B ^ (2 : ℕ))
+    (hnegA : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) ≠ -A)
+    (hnegA' : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) ≠ -B)
+    (hnegB : (A - B * lam * B ^ (2 : ℕ)) / (1 - lam * B ^ (2 : ℕ)) ≠ -B)
     {hP : ¬ ∃ c : K, cnf 2 A B lam = RatFunc.C c}
     {k : ℤ} {b c a : RatFunc K} (ha : a ≠ 0) (hb : b ≠ 0)
     (heq : IsRatAffineTransport (cnf 2 A B lam) hP k b c a)
@@ -307,7 +307,7 @@ theorem cnf_no_pole_of_regular_data_two [IsAlgClosed K] [DecidableEq K]
     intro y hy w hw
     obtain ⟨hyB, hyA, hyord⟩ := (hmemT y).mp hy
     have hc : (B - y) * lam ≠ 0 := mul_ne_zero (sub_ne_zero.mpr (Ne.symm hyB)) hlam
-    have hwden : 1 - lam * w ^ 2 ≠ 0 := cnfFiber_den_ne_zero hp0 hAB hc hw
+    have hwden : 1 - lam * w ^ (2 : ℕ) ≠ 0 := cnfFiber_den_ne_zero hp0 hAB hc hw
     have hw0 : w ≠ 0 := by
       intro h
       rw [h, mem_cnfFiber_iff hp0 hc, zero_pow (by norm_num : (2:ℕ) ≠ 0), mul_zero] at hw
@@ -444,7 +444,7 @@ theorem cnf_no_pole_of_regular_data_two [IsAlgClosed K] [DecidableEq K]
     obtain ⟨y, hy, hAf⟩ := Finset.mem_biUnion.mp hAu
     obtain ⟨hyB, hyA, hyord⟩ := (hmemT y).mp hy
     have hc : (B - y) * lam ≠ 0 := mul_ne_zero (sub_ne_zero.mpr (Ne.symm hyB)) hlam
-    have hyval : (A - B * lam * A ^ 2) / (1 - lam * A ^ 2) = y :=
+    have hyval : (A - B * lam * A ^ (2 : ℕ)) / (1 - lam * A ^ (2 : ℕ)) = y :=
       cnfFiber_value hp0 hAB hc hAf
     have hfibeq : cnfFiber 2 A B lam y = {A, -A} := cnfFiber_two_eq_pair hlam hyA hyB hAf
     have hBu : B ∈ T.biUnion (cnfFiber 2 A B lam) := by rw [← hunion]; exact hBP
@@ -520,10 +520,10 @@ theorem ratOrder_ratFuncDeriv_nonneg {f : RatFunc K} (hf : f ≠ 0) {z : K}
   have hder : ratFuncDeriv f
       = algebraMap K[X] (RatFunc K)
           (derivative f.num * f.denom - f.num * derivative f.denom)
-        / algebraMap K[X] (RatFunc K) (f.denom ^ 2) := by
+        / algebraMap K[X] (RatFunc K) (f.denom ^ (2 : ℕ)) := by
     conv_lhs => rw [hfeq]
     exact ratFuncDeriv_div hden
-  have hd2 : rootMultiplicity z (f.denom ^ 2) = 0 := by
+  have hd2 : rootMultiplicity z (f.denom ^ (2 : ℕ)) = 0 := by
     rw [rootMultiplicity_pow hden,
       Polynomial.rootMultiplicity_eq_zero (by simpa [Polynomial.IsRoot] using hdz)]
   rcases eq_or_ne (derivative f.num * f.denom - f.num * derivative f.denom) 0 with h0 | h0

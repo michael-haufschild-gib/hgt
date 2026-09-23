@@ -98,9 +98,9 @@ theorem formalLaurentDeriv_eq (w : LaurentSeries ℂ) :
 
 theorem coeff_laurentSDeriv (w : LaurentSeries ℂ) (n : ℤ) :
     (w′).coeff n = -((n : ℂ) - 1) * w.coeff (n - 1) := by
-  have key : -(laurentX ^ 2) * (HahnSeries.single (-1 : ℤ) (1 : ℂ) * innerEuler w)
+  have key : -(laurentX ^ (2 : ℕ)) * (HahnSeries.single (-1 : ℤ) (1 : ℂ) * innerEuler w)
       = -(HahnSeries.single (1 : ℤ) (1 : ℂ) * innerEuler w) := by
-    have hX2 : (laurentX : LaurentSeries ℂ) ^ 2 = HahnSeries.single (2 : ℤ) (1 : ℂ) := by
+    have hX2 : (laurentX : LaurentSeries ℂ) ^ (2 : ℕ) = HahnSeries.single (2 : ℤ) (1 : ℂ) := by
       rw [laurentX_eq_single, pow_two, HahnSeries.single_mul_single, mul_one]
       norm_num
     have hprod : (HahnSeries.single (2 : ℤ) (1 : ℂ)) * (HahnSeries.single (-1 : ℤ) (1 : ℂ))

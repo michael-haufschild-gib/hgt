@@ -7,15 +7,15 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskySexticJostDealiasing
 Let `G(Q,x,u)` be the exact Birmingham--Mokhtari scalar-minus-vector potential bracket.  Its
 second mass curvature at `x = 0` is
 
-`G''(0) = 36 (Q+u-1)/(Q+2)^2`.
+`G''(0) = 36 (Q+u-1)/(Q+2)^(2 : ℕ)`.
 
-A negative-charge quadratic carrier has amplitude `conj(A)^2`.  Two insertions of a quadratic
+A negative-charge quadratic carrier has amplitude `conj(A)^(2 : ℕ)`.  Two insertions of a quadratic
 horizon mass response `h A conj(A)` therefore produce the sextic carrier
 
-`(h^2/2) A^2 conj(A)^4 G''(0)`.
+`(h^(2 : ℕ)/2) A^(2 : ℕ) conj(A)^(4 : ℕ) G''(0)`.
 
 The charge-minus-two carrier lies in the quadratic de-aliased angular channel
-`Q_H = 1/4+z^2`, not the raw half-weight cusp channel.  At an Xi divisor, `re(z) != 0`.
+`Q_H = 1/4+z^(2 : ℕ)`, not the raw half-weight cusp channel.  At an Xi divisor, `re(z) != 0`.
 Consequently `Q_H+2` never vanishes, and `Q_H+u-1` is nonzero throughout the physical exterior
 `u >= 1`: away from the critical line its imaginary part is nonzero, while on the line its real
 part is positive.  The curvature is also affine and nonconstant in `u`.  Consequently no
@@ -41,7 +41,7 @@ noncomputable section
 
 /-- Complexification of the exact second mass curvature of the `d=4` parity gap. -/
 def d4ComplexSecondMassParityCurvature (Q : ℂ) (u : ℝ) : ℂ :=
-  36 * (Q + (u : ℂ) - 1) / (Q + 2) ^ 2
+  36 * (Q + (u : ℂ) - 1) / (Q + 2) ^ (2 : ℕ)
 
 theorem d4ComplexSecondMassParityCurvature_ofReal (Q u : ℝ) :
     d4ComplexSecondMassParityCurvature (Q : ℂ) u =
@@ -102,7 +102,7 @@ theorem d4ComplexSecondMassParityCurvature_sub
     (Q : ℂ) (u v : ℝ) (hQ2 : Q + 2 ≠ 0) :
     d4ComplexSecondMassParityCurvature Q u -
         d4ComplexSecondMassParityCurvature Q v =
-      36 * ((u - v : ℝ) : ℂ) / (Q + 2) ^ 2 := by
+      36 * ((u - v : ℝ) : ℂ) / (Q + 2) ^ (2 : ℕ) := by
   unfold d4ComplexSecondMassParityCurvature
   field_simp [hQ2]
   push_cast
@@ -142,8 +142,8 @@ theorem d4ComplexSecondMassParityCurvature_add_const_not_both_zero
 charge-minus-two carrier. -/
 def d4ThetaHawkingSexticMassJetCoefficient
     (horizonMassResponse amplitude : ℂ) (u : ℝ) (z : ℂ) : ℂ :=
-  (1 / 2 : ℂ) * horizonMassResponse ^ 2 * amplitude ^ 2 *
-    (starRingEnd ℂ amplitude) ^ 4 *
+  (1 / 2 : ℂ) * horizonMassResponse ^ (2 : ℕ) * amplitude ^ (2 : ℕ) *
+    (starRingEnd ℂ amplitude) ^ (4 : ℕ) *
       d4ComplexSecondMassParityCurvature
         (d4ThetaTeukolskyAngularQ (d4ThetaCuspHawkingQuadraticDealiasedLift z)) u
 
@@ -174,8 +174,8 @@ theorem d4ThetaHawkingSexticMassJetCoefficient_ne_const
       d4ThetaHawkingSexticMassJetCoefficient horizonMassResponse amplitude v
         (xiSpectralPoint q) := by
   let prefactor : ℂ :=
-    (1 / 2 : ℂ) * horizonMassResponse ^ 2 * amplitude ^ 2 *
-      (starRingEnd ℂ amplitude) ^ 4
+    (1 / 2 : ℂ) * horizonMassResponse ^ (2 : ℕ) * amplitude ^ (2 : ℕ) *
+      (starRingEnd ℂ amplitude) ^ (4 : ℕ)
   have hprefactor : prefactor ≠ 0 := by
     exact mul_ne_zero
       (mul_ne_zero

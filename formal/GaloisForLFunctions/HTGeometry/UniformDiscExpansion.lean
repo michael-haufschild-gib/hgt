@@ -95,7 +95,7 @@ theorem bddExpS_cexp {r S K : ℝ} {n : ℕ} {f : ℂ → ℂ} {P : Polynomial �
     (hr1 : r ≤ 1) (hf : BddExpS r n S f P) (hK : 0 ≤ K)
     (hsmall : ∀ w : ℂ, ‖w‖ ≤ r → ‖f w‖ ≤ K * ‖w‖)
     (htiny : ∀ w : ℂ, ‖w‖ ≤ r → ‖f w‖ / ((n : ℝ) + 1) ≤ 1 / 2) :
-    BddExpS r n (2 * K ^ n + (n : ℝ) ^ 2 * 2 ^ n * S ^ (n + 1) + Real.exp (2 * S) + 1)
+    BddExpS r n (2 * K ^ n + (n : ℝ) ^ (2 : ℕ) * 2 ^ n * S ^ (n + 1) + Real.exp (2 * S) + 1)
       (fun w => Complex.exp (f w))
       (∑ j ∈ Finset.range n, Polynomial.C (((Nat.factorial j : ℕ) : ℂ)⁻¹) * P ^ j) := by
   have hS1 := hf.1
@@ -131,13 +131,13 @@ theorem bddExpS_cexp {r S K : ℝ} {n : ℕ} {f : ℂ → ℂ} {P : Polynomial �
       _ ≤ S * (n : ℝ) * (2 * S) ^ n := by
           nlinarith [mul_nonneg (mul_nonneg hS0 hn0) (sub_nonneg.mpr hpj)]
   have hsum : ∑ j ∈ Finset.range n, S * (j : ℝ) * (2 * S) ^ j / (Nat.factorial j : ℝ)
-      ≤ (n : ℝ) ^ 2 * 2 ^ n * S ^ (n + 1) := by
+      ≤ (n : ℝ) ^ (2 : ℕ) * 2 ^ n * S ^ (n + 1) := by
     refine le_trans (Finset.sum_le_sum hterm) ?_
     rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_pow]
     exact le_of_eq (by ring)
   have hexpb : (0 : ℝ) < Real.exp (2 * S) := Real.exp_pos _
   have hA : (0 : ℝ) ≤ 2 * K ^ n := by linarith
-  have hB : (0 : ℝ) ≤ (n : ℝ) ^ 2 * 2 ^ n * S ^ (n + 1) :=
+  have hB : (0 : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) * 2 ^ n * S ^ (n + 1) :=
     mul_nonneg (mul_nonneg (sq_nonneg _) (pow_nonneg (by norm_num) n)) (pow_nonneg hS0 (n + 1))
   refine ⟨by linarith, fun w hw => ?_, hexp.weaken (by linarith)⟩
   rw [Complex.norm_exp]

@@ -30,7 +30,7 @@ theorem sigNeg_le_of_finiteOnePortSumPullback
     (Q : Fin k → QuadraticForm ℝ M)
     (f : Fin k → V →ₗ[ℝ] M)
     (ell : Fin k → M →ₗ[ℝ] ℝ)
-    (hQ : ∀ i y, 0 ≤ Q i y + (ell i y) ^ 2)
+    (hQ : ∀ i y, 0 ≤ Q i y + (ell i y) ^ (2 : ℕ))
     (hpull : ∀ x, S x = ∑ i, Q i (f i x)) :
     sigNeg S ≤ k := by
   apply GaloisForLFunctions.sigNeg_le_of_add_sum_sq_nonneg S
@@ -50,7 +50,7 @@ theorem not_finiteOnePortSumPullback_of_sourceZeroHorizontal_right
     (Q : Fin k → QuadraticForm ℝ M)
     (f : Fin k → (Fin m → ℝ) →ₗ[ℝ] M)
     (ell : Fin k → M →ₗ[ℝ] ℝ)
-    (hQ : ∀ i y, 0 ≤ Q i y + (ell i y) ^ 2) :
+    (hQ : ∀ i y, 0 ≤ Q i y + (ell i y) ^ (2 : ℕ)) :
     ¬ ∀ x, (sourceZeroHorizontalSharedReservoirMatrix q p).toQuadraticForm' x =
       ∑ i, Q i (f i x) := by
   intro hpull
@@ -77,8 +77,8 @@ theorem sourceZeroHorizontalSharedReservoir_twoOrientation_finitePort_obstructio
     (f₂ : Fin k → (Fin m → ℝ) →ₗ[ℝ] M₂)
     (ell₁ : Fin k → M₁ →ₗ[ℝ] ℝ)
     (ell₂ : Fin k → M₂ →ₗ[ℝ] ℝ)
-    (hQ₁ : ∀ i y, 0 ≤ Q₁ i y + (ell₁ i y) ^ 2)
-    (hQ₂ : ∀ i y, 0 ≤ Q₂ i y + (ell₂ i y) ^ 2) :
+    (hQ₁ : ∀ i y, 0 ≤ Q₁ i y + (ell₁ i y) ^ (2 : ℕ))
+    (hQ₂ : ∀ i y, 0 ≤ Q₂ i y + (ell₂ i y) ^ (2 : ℕ)) :
     ¬ ((∀ x, (sourceZeroHorizontalSharedReservoirMatrix q p).toQuadraticForm' x =
           ∑ i, Q₁ i (f₁ i x)) ∧
         (∀ x, (sourceZeroHorizontalSharedReservoirMatrix

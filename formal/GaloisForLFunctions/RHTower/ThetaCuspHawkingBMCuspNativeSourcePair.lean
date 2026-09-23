@@ -19,7 +19,7 @@ noncomputable section
 cusp test is its derived horizontal mean with the original hyperbolic density. -/
 theorem forcingVector_cusp_inner (q : XiZeroCopy) (branch : Bool) (h : CuspHeightTest) :
     inner ℂ (h.operatorVector : Space) (forcingVector q branch) =
-      ∫ y in Ioi 2, conj (h.field y)*mean (fun x => forcing q branch ![x,y])/(y:ℂ)^2 := by
+      ∫ y in Ioi 2, conj (h.field y)*mean (fun x => forcing q branch ![x,y])/(y:ℂ)^(2 : ℕ) := by
   have he : (fun z : UpperHalfPlane =>
       inner ℂ ((h.operatorVector : Space) z) (forcingVector q branch z)) =ᵐ[measure]
       (fun z => conj (h.field z.im)*forcing q branch ![z.re,z.im]) := by
@@ -44,10 +44,10 @@ all cutoff derivatives and every opposite Fourier pair. -/
 theorem forcingVector_cusp_inner_explicit (q : XiZeroCopy) (branch : Bool) (h : CuspHeightTest) :
     inner ℂ (h.operatorVector : Space) (forcingVector q branch) =
       ∫ y in Ioi 2, conj (h.field y)*
-        ((parameter q branch/2)*(principal (center q) ![0,y] ^2+
-          8*∑' N, amplitude (center q) y N^2)-
-          ((y:ℂ)^2*deriv (deriv (cutoffHeight q branch)) y-
-            parameter q branch*cutoffHeight q branch y))/(y:ℂ)^2 := by
+        ((parameter q branch/2)*(principal (center q) ![0,y] ^(2 : ℕ)+
+          8*∑' N, amplitude (center q) y N^(2 : ℕ))-
+          ((y:ℂ)^(2 : ℕ)*deriv (deriv (cutoffHeight q branch)) y-
+            parameter q branch*cutoffHeight q branch y))/(y:ℂ)^(2 : ℕ) := by
   rw [forcingVector_cusp_inner]
   apply setIntegral_congr_fun measurableSet_Ioi
   intro y hy

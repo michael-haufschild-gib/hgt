@@ -154,7 +154,7 @@ theorem routeT_HB4_exponent_first_or_third
       exact hbase.trans (by linarith)
 
 /-- The stronger count formulation: the upper global count exponent either is already the first
-alternative, or its universal cube `R* ≤ R^3` is the third alternative. -/
+alternative, or its universal cube `R* ≤ R^(3 : ℕ)` is the third alternative. -/
 theorem routeT_HB2_exponent_first_or_cube_third
     {mu sigma : ℝ}
     (hmuLo : 4 / 3 ≤ mu)
@@ -268,7 +268,7 @@ theorem routeT_second_alternative_of_height_exponent
   exact hR.trans (Real.rpow_le_rpow_of_exponent_le hT hexp)
 
 /-- Convert an additive-energy height exponent to the first alternative using only the diagonal
-`R^2 ≤ R*`. -/
+`R^(2 : ℕ) ≤ R*`. -/
 theorem routeT_first_alternative_of_rstar_height_exponent
     {R Rstar T x mu sigma e : ℝ}
     (hT : 1 ≤ T) (hx : x = T ^ mu) (hx1 : 1 ≤ x)
@@ -306,7 +306,7 @@ theorem routeT_first_alternative_of_count_height_exponent
       Real.rpow_le_rpow_of_exponent_le hT hexp
     _ = x ^ (1 - sigma) := by rw [hx, Real.rpow_mul hT0]
 
-/-- Cubing a count estimate and using `R* ≤ R^3` produces the third alternative. -/
+/-- Cubing a count estimate and using `R* ≤ R^(3 : ℕ)` produces the third alternative. -/
 theorem routeT_third_alternative_of_count_cube
     {R Rstar T x mu sigma e : ℝ}
     (hR0 : 0 ≤ R) (hT : 1 ≤ T) (hx : x = T ^ mu)
@@ -395,7 +395,7 @@ theorem routeT_triple_alternative_of_global_count
       linarith [lt_of_not_ge hsigmaOne]))
 
 /-- **Minimal count-only coverage.**  Global Montgomery below `3/4`, global Heath--Brown count
-above `3/4`, universal `R* ≤ R^3`, and Route-T endpoint exclusion imply the complete receiver
+above `3/4`, universal `R* ≤ R^(3 : ℕ)`, and Route-T endpoint exclusion imply the complete receiver
 alternative.  No nontrivial upper estimate for `R*` remains. -/
 theorem routeT_triple_alternative_of_global_count_only
     {R Rstar T x mu sigma : ℝ}

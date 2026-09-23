@@ -148,7 +148,7 @@ theorem cascadeExpr_pow {g : ℂ → ℂ} (hg : CascadeExpr f n g) (k : ℕ) :
     CascadeExpr f n (fun z => (g z) ^ k) := by
   induction k with
   | zero =>
-      have hfun : (fun z : ℂ => (g z) ^ 0) = fun _ : ℂ => (1 : ℂ) := by
+      have hfun : (fun z : ℂ => (g z) ^ (0 : ℕ)) = fun _ : ℂ => (1 : ℂ) := by
         funext z
         simp
       rw [hfun]

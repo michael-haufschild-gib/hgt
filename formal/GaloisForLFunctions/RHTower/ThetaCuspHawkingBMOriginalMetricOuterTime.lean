@@ -122,7 +122,7 @@ private theorem interval_bound {f : ℝ→ℂ} {B k a b : ℝ}
 
 /-- The original angular-restored temporal metric with the physical radial Jacobian. -/
 def outerTimeDensity (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (a b x : ℝ) : ℂ :=
-  ((tortoiseRadius x:ℂ)^2-1)*restoredMetricTime q br true amp w a b (tortoiseRadius x)
+  ((tortoiseRadius x:ℂ)^(2 : ℕ)-1)*restoredMetricTime q br true amp w a b (tortoiseRadius x)
 
 def outerTimeIntegral (q : XiZeroCopy) (br : Bool) (amp w : ℂ) (T a b : ℝ) : ℂ :=
   ∫ x in Ioo T (0:ℝ),outerTimeDensity q br amp w a b x
@@ -139,9 +139,9 @@ theorem outerTimeDensity_eq (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
   have hr : (tortoiseRadius x:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by
     have h := tortoiseRadius_exterior x hx
     linarith)
-  have hf : (tortoiseRadius x:ℂ)^2-1≠0 := by
-    exact_mod_cast (show tortoiseRadius x^2-1≠0 by nlinarith [tortoiseRadius_exterior x hx])
-  have hz : (horizonCoordinate x:ℂ)=((tortoiseRadius x:ℂ)^2-1)/(tortoiseRadius x:ℂ)^2 := by
+  have hf : (tortoiseRadius x:ℂ)^(2 : ℕ)-1≠0 := by
+    exact_mod_cast (show tortoiseRadius x^(2 : ℕ)-1≠0 by nlinarith [tortoiseRadius_exterior x hx])
+  have hz : (horizonCoordinate x:ℂ)=((tortoiseRadius x:ℂ)^(2 : ℕ)-1)/(tortoiseRadius x:ℂ)^(2 : ℕ) := by
     apply (eq_div_iff (pow_ne_zero 2 hr)).mpr
     simpa only [mul_comm] using radius_sq_mul_horizonCoordinate x hx
   have hperiod (p r : ℝ) : D4BMOriginalCausalPeriod.originalRadialPeriod q br amp p r=
@@ -279,7 +279,7 @@ theorem original_outer_time_limit (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
   · exact integrable_const B
   · filter_upwards [ae_restrict_mem measurableSet_Ioo] with x hx
     have h := (original_metric_time_limit q br true amp w hw hwi (tortoiseRadius_exterior x hx.2)).const_mul
-      ((tortoiseRadius x:ℂ)^2-1)
+      ((tortoiseRadius x:ℂ)^(2 : ℕ)-1)
     exact h.mono_left (Filter.prod_mono nhdsWithin_le_nhds le_rfl)
 
 private theorem shifted_kernel_measurable (q : XiZeroCopy) (br : Bool) (amp w : ℂ)
@@ -325,7 +325,7 @@ theorem original_outer_static_time_limit (q : XiZeroCopy) (br : Bool) (amp w : �
   · exact integrable_const B
   · filter_upwards [ae_restrict_mem measurableSet_Ioo] with x hx
     have h := (original_metric_time_limit q br true amp w hw hwi (tortoiseRadius_exterior x hx.2)).const_mul
-      ((tortoiseRadius x:ℂ)^2-1)
+      ((tortoiseRadius x:ℂ)^(2 : ℕ)-1)
     have hc : Tendsto (fun b : ℝ => ((0:ℝ),b+x)) atTop ((𝓝 (0:ℝ))×ˢatTop) :=
       tendsto_const_nhds.prodMk (tendsto_atTop_add_const_right atTop x tendsto_id)
     have ht := h.comp hc

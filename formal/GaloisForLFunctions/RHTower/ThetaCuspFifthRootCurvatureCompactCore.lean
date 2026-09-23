@@ -8,7 +8,7 @@ The completed source and all of its ordinary derivatives decay faster than
 the polynomial weights appearing in the fifth-root numerator.  This gives the
 exact cofinal limit
 
-`C5(0,t) -> 24 * P(0,0)^2 > 0`.
+`C5(0,t) -> 24 * P(0,0)^(2 : ℕ) > 0`.
 
 Together with the already-proved strict coalesced C5 chamber, the global
 modular-center problem is therefore equivalent to positivity on one compact
@@ -48,7 +48,7 @@ theorem tendsto_pow_mul_iteratedDeriv_thetaCuspFullSource_atTop_zero
   exact squeeze_zero' (Eventually.of_forall fun x => norm_nonneg _) hbound hmajor
 
 theorem thetaCuspReflectedSourceProduct_zero_eq_fullSource_sq (t : ℝ) :
-    thetaCuspReflectedSourceProduct 0 t = thetaCuspFullSource t ^ 2 := by
+    thetaCuspReflectedSourceProduct 0 t = thetaCuspFullSource t ^ (2 : ℕ) := by
   unfold thetaCuspReflectedSourceProduct
   simp only [zero_add, zero_sub]
   rw [thetaCuspFullSource_neg]
@@ -79,7 +79,7 @@ theorem thetaCuspReflectedSourceDecayFlux_zero_eq_fullSource_jets
   have hsquare := hsource.pow 2
   have hlocal :
       thetaCuspReflectedSourceProduct 0 =ᶠ[nhds t]
-        thetaCuspFullSource ^ 2 := by
+        thetaCuspFullSource ^ (2 : ℕ) := by
     exact Filter.Eventually.of_forall fun s => by
       rw [thetaCuspReflectedSourceProduct_zero_eq_fullSource_sq]
       rfl
@@ -92,12 +92,12 @@ theorem thetaCuspReflectedSourceDecayFlux_zero_eq_fullSource_jets
 theorem thetaCuspReflectedSourceDecayFluxCurvature_zero_eq_fullSource_jets
     (t : ℝ) :
     thetaCuspReflectedSourceDecayFluxCurvature 0 t =
-      -2 * (iteratedDeriv 1 thetaCuspFullSource t ^ 2 +
+      -2 * (iteratedDeriv 1 thetaCuspFullSource t ^ (2 : ℕ) +
         thetaCuspFullSource t * iteratedDeriv 2 thetaCuspFullSource t) := by
   let Q : ℝ → ℝ := fun s =>
     -2 * thetaCuspFullSource s * iteratedDeriv 1 thetaCuspFullSource s
   have hQ : HasDerivAt Q
-      (-2 * (iteratedDeriv 1 thetaCuspFullSource t ^ 2 +
+      (-2 * (iteratedDeriv 1 thetaCuspFullSource t ^ (2 : ℕ) +
         thetaCuspFullSource t * iteratedDeriv 2 thetaCuspFullSource t)) t := by
     have hraw :=
       (hasDerivAt_thetaCuspFullSource_iterated_one t).mul
@@ -105,13 +105,13 @@ theorem thetaCuspReflectedSourceDecayFluxCurvature_zero_eq_fullSource_jets
     have hraw' : HasDerivAt
         (fun y => -2 *
           (thetaCuspFullSource * iteratedDeriv 1 thetaCuspFullSource) y)
-        (-2 * (iteratedDeriv 1 thetaCuspFullSource t ^ 2 +
+        (-2 * (iteratedDeriv 1 thetaCuspFullSource t ^ (2 : ℕ) +
           thetaCuspFullSource t * iteratedDeriv 2 thetaCuspFullSource t)) t :=
       hraw.congr_deriv (by ring)
     change HasDerivAt
       (fun s : ℝ => -2 * thetaCuspFullSource s *
         iteratedDeriv 1 thetaCuspFullSource s)
-      (-2 * (iteratedDeriv 1 thetaCuspFullSource t ^ 2 +
+      (-2 * (iteratedDeriv 1 thetaCuspFullSource t ^ (2 : ℕ) +
         thetaCuspFullSource t * iteratedDeriv 2 thetaCuspFullSource t)) t
     exact hraw'.congr_of_eventuallyEq
       (Filter.Eventually.of_forall fun s => by
@@ -143,8 +143,8 @@ theorem tendsto_id_mul_thetaCuspReflectedSourceDecayFlux_zero_atTop_zero :
   have hprod := (hzero.mul hone).const_mul (-2)
   have hfun : (fun t : ℝ => t * thetaCuspReflectedSourceDecayFlux 0 t) =
       fun t : ℝ => -2 *
-        ((t ^ 0 * iteratedDeriv 0 thetaCuspFullSource t) *
-          (t ^ 1 * iteratedDeriv 1 thetaCuspFullSource t)) := by
+        ((t ^ (0 : ℕ) * iteratedDeriv 0 thetaCuspFullSource t) *
+          (t ^ (1 : ℕ) * iteratedDeriv 1 thetaCuspFullSource t)) := by
     funext t
     rw [thetaCuspReflectedSourceDecayFlux_zero_eq_fullSource_jets]
     simp only [pow_zero, one_mul, pow_one, iteratedDeriv_zero]
@@ -153,7 +153,7 @@ theorem tendsto_id_mul_thetaCuspReflectedSourceDecayFlux_zero_atTop_zero :
   simpa using hprod
 
 theorem tendsto_sq_mul_thetaCuspReflectedSourceDecayFluxCurvature_zero_atTop_zero :
-    Tendsto (fun t : ℝ => t ^ 2 *
+    Tendsto (fun t : ℝ => t ^ (2 : ℕ) *
       thetaCuspReflectedSourceDecayFluxCurvature 0 t) atTop (𝓝 0) := by
   have hone :=
     tendsto_pow_mul_iteratedDeriv_thetaCuspFullSource_atTop_zero 1 1
@@ -162,12 +162,12 @@ theorem tendsto_sq_mul_thetaCuspReflectedSourceDecayFluxCurvature_zero_atTop_zer
   have htwo :=
     tendsto_pow_mul_iteratedDeriv_thetaCuspFullSource_atTop_zero 2 2
   have hsum := ((hone.pow 2).add (hzero.mul htwo)).const_mul (-2)
-  have hfun : (fun t : ℝ => t ^ 2 *
+  have hfun : (fun t : ℝ => t ^ (2 : ℕ) *
       thetaCuspReflectedSourceDecayFluxCurvature 0 t) =
       fun t : ℝ => -2 *
-        ((t ^ 1 * iteratedDeriv 1 thetaCuspFullSource t) ^ 2 +
-          (t ^ 0 * iteratedDeriv 0 thetaCuspFullSource t) *
-            (t ^ 2 * iteratedDeriv 2 thetaCuspFullSource t)) := by
+        ((t ^ (1 : ℕ) * iteratedDeriv 1 thetaCuspFullSource t) ^ (2 : ℕ) +
+          (t ^ (0 : ℕ) * iteratedDeriv 0 thetaCuspFullSource t) *
+            (t ^ (2 : ℕ) * iteratedDeriv 2 thetaCuspFullSource t)) := by
     funext t
     rw [thetaCuspReflectedSourceDecayFluxCurvature_zero_eq_fullSource_jets]
     simp only [pow_zero, one_mul, pow_one, iteratedDeriv_zero]
@@ -177,7 +177,7 @@ theorem tendsto_sq_mul_thetaCuspReflectedSourceDecayFluxCurvature_zero_atTop_zer
 
 theorem tendsto_thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_atTop :
     Tendsto (thetaCuspReflectedSourceFifthRootCurvatureNumerator 0) atTop
-      (𝓝 (24 * thetaCuspReflectedSourceProduct 0 0 ^ 2)) := by
+      (𝓝 (24 * thetaCuspReflectedSourceProduct 0 0 ^ (2 : ℕ))) := by
   have hA := tendsto_thetaCuspReflectedSourceFirstDrop_zero_atTop
   have hD :=
     tendsto_id_mul_thetaCuspReflectedSourceDecayFlux_zero_atTop_zero
@@ -189,12 +189,12 @@ theorem tendsto_thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_atTop :
       ((hA.mul hJ).const_mul 5 |>.sub (hDsq.const_mul 4))
   have hfun : thetaCuspReflectedSourceFifthRootCurvatureNumerator 0 =
       fun t : ℝ =>
-        24 * thetaCuspReflectedSourceFirstDrop 0 t ^ 2 -
+        24 * thetaCuspReflectedSourceFirstDrop 0 t ^ (2 : ℕ) -
           9 * (thetaCuspReflectedSourceFirstDrop 0 t *
             (t * thetaCuspReflectedSourceDecayFlux 0 t)) +
           (5 * (thetaCuspReflectedSourceFirstDrop 0 t *
-              (t ^ 2 * thetaCuspReflectedSourceDecayFluxCurvature 0 t)) -
-            4 * (t * thetaCuspReflectedSourceDecayFlux 0 t) ^ 2) := by
+              (t ^ (2 : ℕ) * thetaCuspReflectedSourceDecayFluxCurvature 0 t)) -
+            4 * (t * thetaCuspReflectedSourceDecayFlux 0 t) ^ (2 : ℕ)) := by
     funext t
     unfold thetaCuspReflectedSourceFifthRootCurvatureNumerator
     ring
@@ -207,7 +207,7 @@ theorem eventually_thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_pos 
   have hP : 0 < thetaCuspReflectedSourceProduct 0 0 := by
     unfold thetaCuspReflectedSourceProduct
     exact mul_pos (thetaCuspFullSource_pos_all _) (thetaCuspFullSource_pos_all _)
-  have hlimit : 0 < 24 * thetaCuspReflectedSourceProduct 0 0 ^ 2 := by
+  have hlimit : 0 < 24 * thetaCuspReflectedSourceProduct 0 0 ^ (2 : ℕ) := by
     positivity
   exact
     tendsto_thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_atTop.eventually

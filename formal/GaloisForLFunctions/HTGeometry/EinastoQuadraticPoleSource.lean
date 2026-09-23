@@ -18,14 +18,14 @@ namespace GaloisForLFunctions.HTGeometry
 /-- Radial source with the algebraic curvature sign exposed and derivative terms unfactored. -/
 def quadraticRadialSource (σ : ℝ) (f : ℝ → ℝ) (r : ℝ) : ℝ :=
   (2 * radialRicciScalar f r * (8 * Real.pi * radialEinsteinDensity f r) +
-      σ * radialRicciScalar f r ^ 2 / 2 -
+      σ * radialRicciScalar f r ^ (2 : ℕ) / 2 -
       2 * f r * deriv (deriv (radialRicciScalar f)) r -
       (4 * f r / r + deriv f r) * deriv (radialRicciScalar f) r) / (8 * Real.pi)
 
 /-- The regular extension of r times the curvature source. -/
 def einastoQuadraticPoleWeight (d l σ r : ℝ) : ℝ :=
   (r * (2 * einastoExponentialRicci d l r * (8 * Real.pi * einastoDensity d l 0 r) +
-      σ * einastoExponentialRicci d l r ^ 2 / 2 -
+      σ * einastoExponentialRicci d l r ^ (2 : ℕ) / 2 -
       2 * einastoMetric d l 0 r * einastoExponentialRicciSecond d l r -
       einastoExponentialMetricSlope d l r * einastoExponentialRicciSlope d l r) -
       4 * einastoMetric d l 0 r * einastoExponentialRicciSlope d l r) / (8 * Real.pi)
@@ -78,16 +78,16 @@ def quadraticAppendixSource (f : ℝ → ℝ) (r : ℝ) : ℝ :=
 
 theorem quadraticAppendixSource_eq (f : ℝ → ℝ) (r : ℝ) :
     quadraticAppendixSource f r =
-      (deriv (fun s => s * (1 - f s)) r / r ^ 2 * (2 * radialRicciScalar f r) -
+      (deriv (fun s => s * (1 - f s)) r / r ^ (2 : ℕ) * (2 * radialRicciScalar f r) -
         2 * f r * ((2 / r + deriv f r / (2 * f r)) * deriv (radialRicciScalar f) r +
-          deriv (deriv (radialRicciScalar f)) r) - radialRicciScalar f r ^ 2 / 2) / (8 * Real.pi) := by
+          deriv (deriv (radialRicciScalar f)) r) - radialRicciScalar f r ^ (2 : ℕ) / 2) / (8 * Real.pi) := by
   unfold quadraticAppendixSource quadraticAppendixTT
   have h := (((((hasDerivAt_id (0 : ℝ)).const_mul 2).mul_const (radialRicciScalar f r)).const_add 1).const_mul
-    (deriv (fun s => s * (1 - f s)) r / r ^ 2)).sub
+    (deriv (fun s => s * (1 - f s)) r / r ^ (2 : ℕ))).sub
     ((((hasDerivAt_id (0 : ℝ)).const_mul 2).mul_const (f r)).mul_const
       ((2 / r + deriv f r / (2 * f r)) * deriv (radialRicciScalar f) r +
         deriv (deriv (radialRicciScalar f)) r))
-  have h' := (h.sub (((hasDerivAt_id (0 : ℝ)).mul_const (radialRicciScalar f r ^ 2)).div_const 2)).div_const (8 * Real.pi)
+  have h' := (h.sub (((hasDerivAt_id (0 : ℝ)).mul_const (radialRicciScalar f r ^ (2 : ℕ))).div_const 2)).div_const (8 * Real.pi)
   simp only [Pi.sub_def, id_eq] at h'
   rw [h'.deriv]
   ring
@@ -123,10 +123,10 @@ theorem quadraticAppendixSource_einasto_pole_limit (d l : ℝ) :
 theorem einastoCore_differentiableAt (d l a t : ℝ) :
     DifferentiableAt ℝ (einastoCore d l a) (Real.exp t) := by
   have h := (einastoMass_derivative d l a (Real.exp t)).differentiableAt.div
-    (differentiableAt_id.pow 3) (by positivity : Real.exp t ^ 3 ≠ 0)
+    (differentiableAt_id.pow 3) (by positivity : Real.exp t ^ (3 : ℕ) ≠ 0)
   apply h.congr_of_eventuallyEq
   filter_upwards [eventually_gt_nhds (Real.exp_pos t)] with r hr
-  change einastoCore d l a r = einastoMass d l a r / r ^ 3
+  change einastoCore d l a r = einastoMass d l a r / r ^ (3 : ℕ)
   rw [einastoMass_core]
   field_simp [hr.ne']
 

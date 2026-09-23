@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.SuzukiCriticalApertureQuarterShiftCurrent
 /-!
 # Absolute prime summability of the critical aperture quarter-shift current
 
-The critical Gamma--Euler boundary is not an `ell^2` vector, but its pairing with the cubically
+The critical Gamma--Euler boundary is not an `ell^(2 : ℕ)` vector, but its pairing with the cubically
 normalized true-aperture innovation closes in valuation depth to the geometric resolvent
 
 `atom(p,0) / (1 - ratio(p))`.

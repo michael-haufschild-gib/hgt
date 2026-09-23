@@ -19,7 +19,7 @@ def thetaCuspCenterCompensationSign (x : ℝ) : ℝ :=
 /-- Removing the positive source square preserves exactly the correction sign. -/
 theorem thetaCuspCenterCompensationSource_eq_sign (x : ℝ) :
     thetaCuspCenterCompensationSource x =
-      thetaCuspFullSource x^2 * thetaCuspCenterCompensationSign x := by
+      thetaCuspFullSource x^(2 : ℕ) * thetaCuspCenterCompensationSign x := by
   rw [thetaCuspCenterCompensationSign, (hasDerivAt_thetaCuspLogSource x).deriv]
   simp only [iteratedDeriv_one]
   unfold thetaCuspCenterCompensationSource
@@ -123,7 +123,7 @@ theorem exists_thetaCuspCenterCompensationSource_transition :
         (thetaCuspCenterCompensationSource x < 0 ↔ τ < x)) := by
   obtain ⟨τ, hτ, _, hs⟩ := exists_thetaCuspCenterCompensationSign_transition
   refine ⟨τ, hτ, fun x hx => ?_⟩
-  have hp : 0 < thetaCuspFullSource x^2 := sq_pos_of_pos (thetaCuspFullSource_pos_all x)
+  have hp : 0 < thetaCuspFullSource x^(2 : ℕ) := sq_pos_of_pos (thetaCuspFullSource_pos_all x)
   rw [thetaCuspCenterCompensationSource_eq_sign]
   simpa only [mul_pos_iff_of_pos_left hp, mul_eq_zero, hp.ne', false_or,
     mul_neg_iff, not_lt.mpr hp.le, false_and, or_false, hp, true_and] using hs x hx

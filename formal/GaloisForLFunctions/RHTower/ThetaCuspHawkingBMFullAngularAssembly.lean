@@ -31,7 +31,7 @@ private theorem chartLaplacian_add (f g : UpperHalfPlane → ℂ)
     have hG : DifferentiableAt ℝ (fun w => fderiv ℝ G w (direction i)) (z:ℂ) := (((hg z).fderiv_right (m := ∞) (by simp)).clm_apply contDiffAt_const).differentiableAt
       (by simp)
     rw [he.fderiv_eq,fderiv_fun_add hF hG,add_apply]
-  change (z.im : ℂ)^2*(∑ i : Fin 2,
+  change (z.im : ℂ)^(2 : ℕ)*(∑ i : Fin 2,
     fderiv ℝ (fun w => fderiv ℝ (fun w => F w+G w) w (direction i)) (z:ℂ) (direction i)) = _
   rw [Finset.sum_congr rfl (fun i _ => hd i),Finset.sum_add_distrib,mul_add]
   rfl
@@ -39,7 +39,7 @@ private theorem chartLaplacian_add (f g : UpperHalfPlane → ℂ)
 private theorem globalCuspCutoff_forcing_on_fd (q : XiZeroCopy) (branch : Bool)
     (z : UpperHalfPlane) (hz : z ∈ fd) :
     chartLaplacian (globalCuspCutoff q branch) z - parameter q branch*globalCuspCutoff q branch z +
-      globalForcing q branch z = (parameter q branch/2)*scalar (center q) (coordinates z)^2 := by
+      globalForcing q branch z = (parameter q branch/2)*scalar (center q) (coordinates z)^(2 : ℕ) := by
   rw [chartLaplacian_congr (globalCuspCutoff_germ q branch z hz),chartLaplacian_coordinates,
     globalCuspCutoff_eq_on_fd q branch z hz,globalForcing_eq_on_fd q branch z hz]
   unfold forcing
@@ -48,7 +48,7 @@ private theorem globalCuspCutoff_forcing_on_fd (q : XiZeroCopy) (branch : Bool)
 /-- The global cusp extension retains the entire original differential forcing at every point. -/
 theorem globalCuspCutoff_forcing_equation (q : XiZeroCopy) (branch : Bool) (z : UpperHalfPlane) :
     chartLaplacian (globalCuspCutoff q branch) z - parameter q branch*globalCuspCutoff q branch z +
-      globalForcing q branch z = (parameter q branch/2)*scalar (center q) (coordinates z)^2 := by
+      globalForcing q branch z = (parameter q branch/2)*scalar (center q) (coordinates z)^(2 : ℕ) := by
   obtain ⟨A,hA⟩ := exists_smul_mem_fd z
   have he := globalCuspCutoff_forcing_on_fd q branch (A • z) hA
   have hD := chartLaplacian_invariant _ (globalCuspCutoff_smooth q branch)
@@ -76,7 +76,7 @@ theorem fullAngular_invariant (q : XiZeroCopy) (branch : Bool) (γ : PSL2Z) (z :
 /-- The assembled actual field solves the original full squared-source angular equation everywhere. -/
 theorem fullAngular_classical_equation (q : XiZeroCopy) (branch : Bool) (z : UpperHalfPlane) :
     chartLaplacian (fullAngular q branch) z - parameter q branch*fullAngular q branch z =
-      (parameter q branch/2)*scalar (center q) (coordinates z)^2 := by
+      (parameter q branch/2)*scalar (center q) (coordinates z)^(2 : ℕ) := by
   have hK := globalCuspCutoff_forcing_equation q branch z
   have hR := globalResponse_classical_equation q branch z
   change chartLaplacian (fun w => globalCuspCutoff q branch w+globalResponse q branch w) z -

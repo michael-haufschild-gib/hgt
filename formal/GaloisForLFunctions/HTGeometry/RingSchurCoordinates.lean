@@ -46,7 +46,7 @@ noncomputable def ringReciprocalPositive (u : Fin L → R) : Fin L → R :=
 
 /-- The positive square coordinates, over any commutative ring. -/
 noncomputable def ringUnitSquarePositive (z : Fin L → R) : Fin L → R :=
-  fun i => ((ringUnitPolynomial z) ^ 2).coeff ((i : ℕ) + 1)
+  fun i => ((ringUnitPolynomial z) ^ (2 : ℕ)).coeff ((i : ℕ) + 1)
 
 /-- The Schur reciprocal-square coordinates, over any commutative ring. -/
 noncomputable def ringReciprocalSquarePositive (u : Fin L → R) : Fin L → R :=

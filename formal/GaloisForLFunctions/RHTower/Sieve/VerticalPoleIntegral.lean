@@ -15,16 +15,16 @@ namespace RHTower.Sieve
 
 /-- **The real part of the vertical pole integral.** -/
 theorem integral_re_pole_line {α T : ℝ} (hα : α ≠ 0) :
-    (∫ y : ℝ in (-T)..T, α / (α ^ 2 + y ^ 2)) = 2 * Real.arctan (T / α) := by
+    (∫ y : ℝ in (-T)..T, α / (α ^ (2 : ℕ) + y ^ (2 : ℕ))) = 2 * Real.arctan (T / α) := by
   have hα0 : α ≠ 0 := hα
-  have hpt : ∀ y : ℝ, α / (α ^ 2 + y ^ 2) = α⁻¹ * (1 + (y / α) ^ 2)⁻¹ := by
+  have hpt : ∀ y : ℝ, α / (α ^ (2 : ℕ) + y ^ (2 : ℕ)) = α⁻¹ * (1 + (y / α) ^ (2 : ℕ))⁻¹ := by
     intro y
-    have hsq : (0 : ℝ) < α ^ 2 + y ^ 2 := by positivity
+    have hsq : (0 : ℝ) < α ^ (2 : ℕ) + y ^ (2 : ℕ) := by positivity
     field_simp
-  rw [intervalIntegral.integral_congr (g := fun y => α⁻¹ * (1 + (y / α) ^ 2)⁻¹)
+  rw [intervalIntegral.integral_congr (g := fun y => α⁻¹ * (1 + (y / α) ^ (2 : ℕ))⁻¹)
     (fun y _ => hpt y)]
   rw [intervalIntegral.integral_const_mul,
-    intervalIntegral.integral_comp_div (fun x : ℝ => (1 + x ^ 2)⁻¹) hα0,
+    intervalIntegral.integral_comp_div (fun x : ℝ => (1 + x ^ (2 : ℕ))⁻¹) hα0,
     integral_inv_one_add_sq, smul_eq_mul,
     show (-T) / α = -(T / α) by ring, Real.arctan_neg]
   field_simp
@@ -32,16 +32,16 @@ theorem integral_re_pole_line {α T : ℝ} (hα : α ≠ 0) :
 
 /-- **The imaginary part of the vertical pole integral vanishes.**  The integrand is odd. -/
 theorem integral_im_pole_line {α T : ℝ} :
-    (∫ y : ℝ in (-T)..T, -y / (α ^ 2 + y ^ 2)) = 0 := by
-  have hodd : ∀ y : ℝ, -(-y) / (α ^ 2 + (-y) ^ 2) = -(-y / (α ^ 2 + y ^ 2)) := by
+    (∫ y : ℝ in (-T)..T, -y / (α ^ (2 : ℕ) + y ^ (2 : ℕ))) = 0 := by
+  have hodd : ∀ y : ℝ, -(-y) / (α ^ (2 : ℕ) + (-y) ^ (2 : ℕ)) = -(-y / (α ^ (2 : ℕ) + y ^ (2 : ℕ))) := by
     intro y
     rw [neg_neg, neg_sq, neg_div, neg_neg]
   have hcomp := intervalIntegral.integral_comp_neg
-    (a := -T) (b := T) (f := fun y : ℝ => -y / (α ^ 2 + y ^ 2))
-  have hcongr : (∫ y : ℝ in (-T)..T, -(-y) / (α ^ 2 + (-y) ^ 2))
-      = -∫ y : ℝ in (-T)..T, -y / (α ^ 2 + y ^ 2) := by
+    (a := -T) (b := T) (f := fun y : ℝ => -y / (α ^ (2 : ℕ) + y ^ (2 : ℕ)))
+  have hcongr : (∫ y : ℝ in (-T)..T, -(-y) / (α ^ (2 : ℕ) + (-y) ^ (2 : ℕ)))
+      = -∫ y : ℝ in (-T)..T, -y / (α ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
     rw [intervalIntegral.integral_congr
-      (g := fun y => -(-y / (α ^ 2 + y ^ 2))) (fun y _ => hodd y)]
+      (g := fun y => -(-y / (α ^ (2 : ℕ) + y ^ (2 : ℕ)))) (fun y _ => hodd y)]
     exact intervalIntegral.integral_neg
   rw [hcongr] at hcomp
   simp only [neg_neg] at hcomp
@@ -49,7 +49,7 @@ theorem integral_im_pole_line {α T : ℝ} :
 
 /-- **The limit of the vertical pole integral.**  Half the residue, from each side. -/
 theorem tendsto_integral_re_pole_line {α : ℝ} (hα : 0 < α) :
-    Filter.Tendsto (fun T : ℝ => ∫ y : ℝ in (-T)..T, α / (α ^ 2 + y ^ 2))
+    Filter.Tendsto (fun T : ℝ => ∫ y : ℝ in (-T)..T, α / (α ^ (2 : ℕ) + y ^ (2 : ℕ)))
       Filter.atTop (nhds Real.pi) := by
   have hαne : α ≠ 0 := ne_of_gt hα
   have hdiv : Filter.Tendsto (fun T : ℝ => T / α) Filter.atTop Filter.atTop := by
@@ -69,8 +69,8 @@ theorem tendsto_integral_re_pole_line {α : ℝ} (hα : 0 < α) :
 /-- **The pole term on a vertical line, in closed form.**  Real and imaginary parts separated. -/
 theorem inv_add_mul_I_eq {α y : ℝ} (hα : α ≠ 0) :
     ((α : ℂ) + (y : ℝ) * Complex.I)⁻¹
-      = ((α / (α ^ 2 + y ^ 2) : ℝ) : ℂ) - ((y / (α ^ 2 + y ^ 2) : ℝ) : ℂ) * Complex.I := by
-  have hsq : (α ^ 2 + y ^ 2 : ℝ) ≠ 0 := by positivity
+      = ((α / (α ^ (2 : ℕ) + y ^ (2 : ℕ)) : ℝ) : ℂ) - ((y / (α ^ (2 : ℕ) + y ^ (2 : ℕ)) : ℝ) : ℂ) * Complex.I := by
+  have hsq : (α ^ (2 : ℕ) + y ^ (2 : ℕ) : ℝ) ≠ 0 := by positivity
   refine inv_eq_of_mul_eq_one_right ?_
   apply Complex.ext
   · simp only [Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.add_im, Complex.sub_re,
@@ -89,29 +89,29 @@ real number `2·arctan(T/α)`. -/
 theorem integral_vertical_pole {α T : ℝ} (hα : α ≠ 0) :
     (∫ y : ℝ in (-T)..T, ((α : ℂ) + (y : ℝ) * Complex.I)⁻¹)
       = ((2 * Real.arctan (T / α) : ℝ) : ℂ) := by
-  have hcontA : Continuous fun y : ℝ => ((α / (α ^ 2 + y ^ 2) : ℝ) : ℂ) := by
+  have hcontA : Continuous fun y : ℝ => ((α / (α ^ (2 : ℕ) + y ^ (2 : ℕ)) : ℝ) : ℂ) := by
     refine Complex.continuous_ofReal.comp (Continuous.div continuous_const ?_ ?_)
     · fun_prop
     · intro y
       positivity
-  have hcontB : Continuous fun y : ℝ => ((y / (α ^ 2 + y ^ 2) : ℝ) : ℂ) * Complex.I := by
+  have hcontB : Continuous fun y : ℝ => ((y / (α ^ (2 : ℕ) + y ^ (2 : ℕ)) : ℝ) : ℂ) * Complex.I := by
     refine Continuous.mul (Complex.continuous_ofReal.comp (Continuous.div continuous_id ?_ ?_))
       continuous_const
     · fun_prop
     · intro y
       positivity
   rw [intervalIntegral.integral_congr
-    (g := fun y => ((α / (α ^ 2 + y ^ 2) : ℝ) : ℂ) - ((y / (α ^ 2 + y ^ 2) : ℝ) : ℂ) * Complex.I)
+    (g := fun y => ((α / (α ^ (2 : ℕ) + y ^ (2 : ℕ)) : ℝ) : ℂ) - ((y / (α ^ (2 : ℕ) + y ^ (2 : ℕ)) : ℝ) : ℂ) * Complex.I)
     (fun y _ => inv_add_mul_I_eq hα)]
   rw [intervalIntegral.integral_sub (hcontA.intervalIntegrable _ _)
     (hcontB.intervalIntegrable _ _), intervalIntegral.integral_mul_const,
     intervalIntegral.integral_ofReal, intervalIntegral.integral_ofReal]
-  have hzero : (∫ y : ℝ in (-T)..T, y / (α ^ 2 + y ^ 2)) = 0 := by
+  have hzero : (∫ y : ℝ in (-T)..T, y / (α ^ (2 : ℕ) + y ^ (2 : ℕ))) = 0 := by
     have h := integral_im_pole_line (α := α) (T := T)
-    have hcongr : (∫ y : ℝ in (-T)..T, -y / (α ^ 2 + y ^ 2))
-        = -∫ y : ℝ in (-T)..T, y / (α ^ 2 + y ^ 2) := by
+    have hcongr : (∫ y : ℝ in (-T)..T, -y / (α ^ (2 : ℕ) + y ^ (2 : ℕ)))
+        = -∫ y : ℝ in (-T)..T, y / (α ^ (2 : ℕ) + y ^ (2 : ℕ)) := by
       rw [intervalIntegral.integral_congr
-        (g := fun y => -(y / (α ^ 2 + y ^ 2))) (fun y _ => neg_div _ _)]
+        (g := fun y => -(y / (α ^ (2 : ℕ) + y ^ (2 : ℕ)))) (fun y _ => neg_div _ _)]
       exact intervalIntegral.integral_neg
     rw [hcongr] at h
     linarith
@@ -122,8 +122,8 @@ theorem integral_vertical_pole {α T : ℝ} (hα : α ≠ 0) :
 line to the right of the pole and `π` from the line to its left. -/
 theorem tendsto_pole_difference {α β : ℝ} (hα : 0 < α) (hβ : 0 < β) :
     Filter.Tendsto (fun T : ℝ =>
-        (∫ y : ℝ in (-T)..T, α / (α ^ 2 + y ^ 2))
-          + (∫ y : ℝ in (-T)..T, β / (β ^ 2 + y ^ 2)))
+        (∫ y : ℝ in (-T)..T, α / (α ^ (2 : ℕ) + y ^ (2 : ℕ)))
+          + (∫ y : ℝ in (-T)..T, β / (β ^ (2 : ℕ) + y ^ (2 : ℕ))))
       Filter.atTop (nhds (2 * Real.pi)) := by
   have h := (tendsto_integral_re_pole_line hα).add (tendsto_integral_re_pole_line hβ)
   rw [show Real.pi + Real.pi = 2 * Real.pi by ring] at h

@@ -93,9 +93,8 @@ theorem exists_horizonGauss_uniformJet3 (w chi : ℂ) (hw : w.im ≠ 0) :
       show (1 : ℕ) = 0 + 1 by norm_num, Finset.sum_range_succ,
       Finset.sum_range_zero]
     norm_num
-    ring
   rw [hsum] at htail
-  exact htail
+  simpa only [sub_add_eq_sub_sub] using htail
 
 end
 end RHTower.D4BMLaplaceRadial

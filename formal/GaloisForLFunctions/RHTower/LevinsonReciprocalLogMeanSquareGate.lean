@@ -38,7 +38,7 @@ def LevinsonReciprocalLogMeanSquareGate (R c : ℝ) : Prop :=
       edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) ∧
     (∫ t in T₁..T₂,
       ‖levinsonMollifiedDetector ((((1 : ℝ) / Real.log U : ℝ)) : ℂ)
-        b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤
+        b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤
       (c + ε) * (T₂ - T₁)
 
 /-- Reciprocal-log windows satisfy the sign-correct gate consumed by the density theorem. -/

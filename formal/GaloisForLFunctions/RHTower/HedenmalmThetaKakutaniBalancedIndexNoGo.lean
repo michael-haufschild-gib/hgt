@@ -80,9 +80,9 @@ theorem tendsto_reflectionPairKakutaniFluxPolarization_div_primeReciprocalMass_e
     Tendsto
       (fun s : Finset Nat.Primes =>
         (∑ p ∈ s,
-          (thetaKakutaniFluxPositiveUnit p q * thetaXiRankTwoBoundaryFlux q ^ 2 +
+          (thetaKakutaniFluxPositiveUnit p q * thetaXiRankTwoBoundaryFlux q ^ (2 : ℕ) +
             thetaKakutaniFluxPositiveUnit p (xiZeroCopyReflectEquiv q) *
-              thetaXiRankTwoBoundaryFlux (xiZeroCopyReflectEquiv q) ^ 2)) /
+              thetaXiRankTwoBoundaryFlux (xiZeroCopyReflectEquiv q) ^ (2 : ℕ))) /
             primeReciprocalMass s)
       Filter.atTop
       (nhds (defectEnergy (thetaKakutaniEscapeMultiplicity q) : ℝ)) := by

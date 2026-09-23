@@ -87,7 +87,7 @@ theorem fundamentalJacobiMoment_second (w s : ℂ) (hw : -2 < w.re) (hw1 : w+1 �
     let d := 2*s-w
     let e := w+2*s+2
     e*(e+1)*fundamentalJacobiMoment 2 w s =
-      (e+d^2)*fundamentalJacobiMoment 0 w s+d := by
+      (e+d^(2 : ℕ))*fundamentalJacobiMoment 0 w s+d := by
   have h0 := fundamentalJacobiMoment_recurrence 0 w s hw hw1
   have h1 := fundamentalJacobiMoment_recurrence 1 w s hw hw1
   norm_num only at h0 h1
@@ -98,7 +98,7 @@ private theorem fundamentalJacobiMoment_third (w s : ℂ) (hw : -2 < w.re) (hw1 
     let d := 2*s-w
     let e := w+2*s+2
     e*(e+1)*(e+2)*fundamentalJacobiMoment 3 w s =
-      d*(d^2+3*e+2)*fundamentalJacobiMoment 0 w s+(d^2+2*e+2) := by
+      d*(d^(2 : ℕ)+3*e+2)*fundamentalJacobiMoment 0 w s+(d^(2 : ℕ)+2*e+2) := by
   have h0 := fundamentalJacobiMoment_recurrence 0 w s hw hw1
   have h2 := fundamentalJacobiMoment_recurrence 2 w s hw hw1
   have hs := fundamentalJacobiMoment_second w s hw hw1
@@ -111,7 +111,7 @@ theorem fundamentalJacobiMoment_fourth (w s : ℂ) (hw : -2 < w.re) (hw1 : w+1 �
     let d := 2*s-w
     let e := w+2*s+2
     e*(e+1)*(e+2)*(e+3)*fundamentalJacobiMoment 4 w s =
-      (d^4+(6*e+8)*d^2+3*e*(e+2))*fundamentalJacobiMoment 0 w s+d*(d^2+5*e+8) := by
+      (d^(4 : ℕ)+(6*e+8)*d^(2 : ℕ)+3*e*(e+2))*fundamentalJacobiMoment 0 w s+d*(d^(2 : ℕ)+5*e+8) := by
   have h3 := fundamentalJacobiMoment_recurrence 3 w s hw hw1
   have hs := fundamentalJacobiMoment_second w s hw hw1
   have ht := fundamentalJacobiMoment_third w s hw hw1

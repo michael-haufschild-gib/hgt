@@ -19,7 +19,7 @@ Its in-band energy, on the other hand, grows exponentially: the mean of the tria
 `2 sinh(c)/c`, and the squared-mean inequality turns that into
 
 ```text
-∫_(-1)^1 K_c² >= (2 sinh(c)/c)²/2.
+∫_(-1)^(1 : ℕ) K_c² >= (2 sinh(c)/c)²/2.
 ```
 
 Feeding both into the variational bound gives the leakage envelope

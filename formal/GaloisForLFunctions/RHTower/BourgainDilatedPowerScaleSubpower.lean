@@ -4,13 +4,13 @@
 The quantitative Taylor estimate forces the bootstrap scale to be
 `A * R^(2/3)` rather than literally `R^(2/3)`.  This module proves that
 the fixed dilation is harmless.  Conjugating the scale map by
-`R = A^3 * S` turns
+`R = A^(3 : ℕ) * S` turns
 
 `A * R^(2/3)`
 
 exactly into
 
-`A^3 * S^(2/3)`.
+`A^(3 : ℕ) * S^(2/3)`.
 
 Thus the already formalized two-thirds bootstrap applies without hiding
 the large absolute constant forced by the Taylor remainder.

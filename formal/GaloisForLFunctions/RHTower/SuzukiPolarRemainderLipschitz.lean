@@ -35,7 +35,7 @@ theorem suzukiPolarCore_zero : suzukiPolarCore 0 = 1 / 4 := by
   norm_num [suzukiPolarCore, expDivOne_zero, expDivTwo_zero]
 
 private theorem polarCore_algebra {a s : ℝ} (ha : 0 < a) (ha1 : a < 1) (hs : 0 < s) :
-    ((a * a * (a * a) - 1 - (-(2 * s))) / (-(2 * s)) ^ 2
+    ((a * a * (a * a) - 1 - (-(2 * s))) / (-(2 * s)) ^ (2 : ℕ)
         - ((a - 1) / (-(s / 2))) / 4) / ((a * a * (a * a) - 1) / (-(2 * s)))
       = a⁻¹ / (2 * (((a * a)⁻¹ - a * a) / 2)) - 1 / (2 * s) := by
   have hane : a ≠ 0 := ne_of_gt ha
@@ -58,14 +58,14 @@ private theorem polarCore_algebra {a s : ℝ} (ha : 0 < a) (ha1 : a < 1) (hs : 0
     intro h
     have := sub_eq_zero.mp h
     linarith
-  have hpow4 : a ^ 4 = a * a * (a * a) := by ring
-  have hne4 : (1 : ℝ) - a ^ 4 ≠ 0 := by
+  have hpow4 : a ^ (4 : ℕ) = a * a * (a * a) := by ring
+  have hne4 : (1 : ℝ) - a ^ (4 : ℕ) ≠ 0 := by
     rw [hpow4]
     exact hne1'
-  have hne4' : a ^ 4 - 1 ≠ 0 := by
+  have hne4' : a ^ (4 : ℕ) - 1 ≠ 0 := by
     rw [hpow4]
     exact hne1
-  have hne5 : (-1 : ℝ) + a ^ 4 ≠ 0 := by
+  have hne5 : (-1 : ℝ) + a ^ (4 : ℕ) ≠ 0 := by
     intro h
     exact hne4' (by linarith)
   field_simp

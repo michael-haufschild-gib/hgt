@@ -28,7 +28,7 @@ theorem fiveHalves_mul_thetaCuspLikelihoodEighthDominantPairCore_lt_taylor_mul_s
   change
     (5 / 2 : ℝ) * (256 * thetaCuspLikelihoodEighthSourceScore (6 * A) +
         576 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (6 * A) +
-        324 / B ^ 2 *
+        324 / B ^ (2 : ℕ) *
           thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (6 * A)) <
       thetaCuspLikelihoodEighthDominantTaylorTwenty A *
         (16 * thetaCuspLikelihoodEighthSourceScore (3 * A) +
@@ -37,13 +37,13 @@ theorem fiveHalves_mul_thetaCuspLikelihoodEighthDominantPairCore_lt_taylor_mul_s
   have hs : 0 ≤ s := by
     dsimp only [s]
     linarith
-  have hmul : 0 < B ^ 10 *
+  have hmul : 0 < B ^ (10 : ℕ) *
       (thetaCuspLikelihoodEighthDominantTaylorTwenty A *
           (16 * thetaCuspLikelihoodEighthSourceScore (3 * A) +
             18 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (3 * A)) -
         (5 / 2 : ℝ) * (256 * thetaCuspLikelihoodEighthSourceScore (6 * A) +
           576 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (6 * A) +
-          324 / B ^ 2 *
+          324 / B ^ (2 : ℕ) *
             thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (6 * A))) := by
     unfold thetaCuspLikelihoodEighthDominantTaylorTwenty
       thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform
@@ -69,7 +69,7 @@ theorem fiveHalves_mul_thetaCuspLikelihoodEighthDominantPairCore_lt_taylor_mul_s
             18 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (3 * A)) -
         (5 / 2 : ℝ) * (256 * thetaCuspLikelihoodEighthSourceScore (6 * A) +
           576 / B * thetaCuspLikelihoodEighthSourceScoreRayTransform (A / B) (6 * A) +
-          324 / B ^ 2 *
+          324 / B ^ (2 : ℕ) *
             thetaCuspLikelihoodEighthSourceScoreDoubleRayTransform (A / B) (6 * A)) :=
     pos_of_mul_pos_right hmul (pow_nonneg hB.le 10)
   linarith
@@ -129,7 +129,7 @@ theorem fiveHalves_mul_thetaCuspLikelihoodEighthDominantPairMass_lt_singleMass_o
 theorem oneThousandFourHundredSeventySeven_mul_pow_eight_exp_lt_thetaCuspLikelihoodEighthFockOddWeight_of_sevenHalves_le
     {x : ℝ} (hx : 0 ≤ x)
     (hA : (7 / 2 : ℝ) ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    1477 * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+    1477 * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
         Real.exp (-(3 * thetaCuspSingleAtomReflectionScale 1 x)) <
       thetaCuspLikelihoodEighthFockOddWeight x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
@@ -140,7 +140,7 @@ theorem oneThousandFourHundredSeventySeven_mul_pow_eight_exp_lt_thetaCuspLikelih
   have hBA : B = A - 3 / 2 := by
     dsimp only [A, B, thetaCuspSingleAtomReflectionScale, thetaCuspLikelihoodCoordinate]
     norm_num
-    rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+    rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have hdominant := fiveHalves_mul_thetaCuspLikelihoodEighthDominantPairMass_lt_singleMass_of_sevenHalves_le
@@ -151,9 +151,9 @@ theorem oneThousandFourHundredSeventySeven_mul_pow_eight_exp_lt_thetaCuspLikelih
   have hsingle :=
     seventeenThousandFourHundredNinetySixFifths_mul_pow_eight_exp_lt_dominantSingleMass
       hApi hBA
-  have hscale : 0 < A ^ 8 * Real.exp (-(3 * A)) := by positivity
+  have hscale : 0 < A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by positivity
   have hhigher' : thetaCuspLikelihoodEighthHigherEvenFockLoss x ≤
-      (1300 / 3 : ℝ) * A ^ 8 * Real.exp (-(3 * A)) := by
+      (1300 / 3 : ℝ) * A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by
     simpa only [A] using hhigher
   unfold thetaCuspLikelihoodEighthFockOddWeight
   dsimp only [A, B]
@@ -167,7 +167,7 @@ theorem oneThousandFourHundredSeventySeven_mul_pow_eight_exp_lt_thetaCuspLikelih
 theorem oneNineHundredth_mul_leadingEighthMoment_lt_fockWeight_of_sevenHalves_le
     {x : ℝ} (hx : 0 ≤ x)
     (hA : (7 / 2 : ℝ) ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    (1 / 900 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+    (1 / 900 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
         thetaCuspHigherLikelihoodSpectralMoment (thetaCuspLikelihoodCoordinate x) 8 <
       thetaCuspLikelihoodEighthFockOddWeight x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
@@ -178,7 +178,7 @@ theorem oneNineHundredth_mul_leadingEighthMoment_lt_fockWeight_of_sevenHalves_le
   have hBA : B = A - 3 / 2 := by
     dsimp only [A, B, thetaCuspSingleAtomReflectionScale, thetaCuspLikelihoodCoordinate]
     norm_num
-    rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+    rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have hmass := tsum_thetaCuspLikelihoodAtomEighthMonomialMass_eq_spectralMoment A hB
@@ -186,7 +186,7 @@ theorem oneNineHundredth_mul_leadingEighthMoment_lt_fockWeight_of_sevenHalves_le
   rw [hmass] at hupper
   have hlower :=
     oneThousandFourHundredSeventySeven_mul_pow_eight_exp_lt_thetaCuspLikelihoodEighthFockOddWeight_of_sevenHalves_le hx hA
-  have hscale : 0 < A ^ 8 * Real.exp (-(3 * A)) := by positivity
+  have hscale : 0 < A ^ (8 : ℕ) * Real.exp (-(3 * A)) := by positivity
   have hscaled := mul_le_mul_of_nonneg_left hupper
     (by norm_num : (0 : ℝ) ≤ 1 / 900)
   dsimp only [A, B] at hscaled hlower hscale ⊢
@@ -196,7 +196,7 @@ theorem oneNineHundredth_mul_leadingEighthMoment_lt_fockWeight_of_sevenHalves_le
 theorem sixtyFourTwoHundredTwentyFifths_mul_leadingEighthMoment_lt_logJetEight_of_sevenHalves_le
     {x : ℝ} (hx : 0 ≤ x)
     (hA : (7 / 2 : ℝ) ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    (64 / 225 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+    (64 / 225 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 8 <
       thetaCuspLikelihoodSourceLogPartitionJetEight x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
@@ -209,9 +209,9 @@ theorem sixtyFourTwoHundredTwentyFifths_mul_leadingEighthMoment_lt_logJetEight_o
   have hscaled := mul_lt_mul_of_pos_left hlead hfactor
   have hlanding := scaled_thetaCuspLikelihoodEighthFockOddWeight_le_sourceLogPartitionJetEight hx
   calc
-    (64 / 225 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 8 *
+    (64 / 225 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (8 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 8 =
-      (256 / P) * ((1 / 900 : ℝ) * A ^ 8 *
+      (256 / P) * ((1 / 900 : ℝ) * A ^ (8 : ℕ) *
         thetaCuspHigherLikelihoodSpectralMoment B 8) := by
       dsimp only [A, B]
       unfold thetaCuspLikelihoodNormalizedMoment
@@ -227,7 +227,7 @@ theorem sixtyFourTwoHundredTwentyFifths_mul_leadingEighthMoment_lt_logJetEight_o
 theorem oneTwentySixth_mul_scale_sq_logJetSix_lt_logJetEight_of_sevenHalves_le
     {x : ℝ} (hx : 0 ≤ x)
     (hA : (7 / 2 : ℝ) ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    (1 / 26 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+    (1 / 26 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
         thetaCuspLikelihoodSourceLogPartitionJetSix x <
       thetaCuspLikelihoodSourceLogPartitionJetEight x := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
@@ -240,14 +240,14 @@ theorem oneTwentySixth_mul_scale_sq_logJetSix_lt_logJetEight_of_sevenHalves_le
   have hlog :=
     thetaCuspLikelihoodSourceLogPartitionJetSix_lt_twoHundredSevenTwoHundredths_ordinary hx
   have hlog6Upper : thetaCuspLikelihoodSourceLogPartitionJetSix x <
-      (1656 / 25 : ℝ) * A ^ 6 * m6 := by
+      (1656 / 25 : ℝ) * A ^ (6 : ℕ) * m6 := by
     calc
       thetaCuspLikelihoodSourceLogPartitionJetSix x <
           (207 / 200 : ℝ) * thetaCuspLikelihoodSourceOrdinaryJetSix x := hlog
-      _ ≤ (207 / 200 : ℝ) * (64 * A ^ 6 * m6) := by
+      _ ≤ (207 / 200 : ℝ) * (64 * A ^ (6 : ℕ) * m6) := by
         exact mul_le_mul_of_nonneg_left
           (by simpa only [A, B, m6] using hordinary) (by norm_num)
-      _ = (1656 / 25 : ℝ) * A ^ 6 * m6 := by ring
+      _ = (1656 / 25 : ℝ) * A ^ (6 : ℕ) * m6 := by ring
   have h67 : 3 * m6 ≤ m7 := by
     simpa only [B, m6, m7] using
       three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 6
@@ -257,16 +257,16 @@ theorem oneTwentySixth_mul_scale_sq_logJetSix_lt_logJetEight_of_sevenHalves_le
   have h68 : 9 * m6 ≤ m8 := by nlinarith
   have hlead8 :=
     sixtyFourTwoHundredTwentyFifths_mul_leadingEighthMoment_lt_logJetEight_of_sevenHalves_le hx hA
-  have hmult : 0 < (1 / 26 : ℝ) * A ^ 2 := by positivity
+  have hmult : 0 < (1 / 26 : ℝ) * A ^ (2 : ℕ) := by positivity
   calc
-    (1 / 26 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 2 *
+    (1 / 26 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (2 : ℕ) *
         thetaCuspLikelihoodSourceLogPartitionJetSix x =
-      ((1 / 26 : ℝ) * A ^ 2) *
+      ((1 / 26 : ℝ) * A ^ (2 : ℕ)) *
         thetaCuspLikelihoodSourceLogPartitionJetSix x := by rfl
-    _ < ((1 / 26 : ℝ) * A ^ 2) *
-        ((1656 / 25 : ℝ) * A ^ 6 * m6) :=
+    _ < ((1 / 26 : ℝ) * A ^ (2 : ℕ)) *
+        ((1656 / 25 : ℝ) * A ^ (6 : ℕ) * m6) :=
       mul_lt_mul_of_pos_left hlog6Upper hmult
-    _ < (64 / 225 : ℝ) * A ^ 8 * (9 * m6) := by
+    _ < (64 / 225 : ℝ) * A ^ (8 : ℕ) * (9 * m6) := by
       have hm4 := thetaCuspLikelihoodNormalizedMoment_four_pos hB
       have h45 := three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 4
       have h56 := three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 5
@@ -274,7 +274,7 @@ theorem oneTwentySixth_mul_scale_sq_logJetSix_lt_logJetEight_of_sevenHalves_le
         dsimp only [m6]
         nlinarith
       nlinarith [pow_pos (by positivity : 0 < A) 8]
-    _ ≤ (64 / 225 : ℝ) * A ^ 8 * m8 := by
+    _ ≤ (64 / 225 : ℝ) * A ^ (8 : ℕ) * m8 := by
       exact mul_le_mul_of_nonneg_left h68 (by positivity)
     _ < thetaCuspLikelihoodSourceLogPartitionJetEight x := by
       simpa only [A, B, m8] using hlead8

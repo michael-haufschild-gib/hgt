@@ -21,9 +21,9 @@ def logHarmonicWeight (n : ℕ) : ℝ :=
 private theorem intervalIntegral_log_div_id {a b : ℝ}
     (ha : 0 < a) (hab : a ≤ b) :
     (∫ x in a..b, Real.log x / x) =
-      Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2 := by
+      Real.log b ^ (2 : ℕ) / 2 - Real.log a ^ (2 : ℕ) / 2 := by
   have hderiv : ∀ x ∈ Set.uIcc a b,
-      HasDerivAt (fun y : ℝ => Real.log y ^ 2 / 2)
+      HasDerivAt (fun y : ℝ => Real.log y ^ (2 : ℕ) / 2)
         (Real.log x / x) x := by
     intro x hx
     rw [Set.uIcc_of_le hab] at hx
@@ -61,7 +61,7 @@ private theorem tendsto_log_three_add_nat_atTop :
   exact Filter.tendsto_atTop_add_const_left atTop 3 tendsto_natCast_atTop_atTop
 
 private theorem tendsto_log_three_add_nat_sq_atTop :
-    Tendsto (fun N : ℕ => Real.log (3 + (N : ℝ)) ^ 2) atTop atTop := by
+    Tendsto (fun N : ℕ => Real.log (3 + (N : ℝ)) ^ (2 : ℕ)) atTop atTop := by
   apply tendsto_atTop.2
   intro B
   filter_upwards [tendsto_log_three_add_nat_atTop.eventually
@@ -73,16 +73,16 @@ private theorem tendsto_log_three_add_nat_sq_atTop :
 theorem tendsto_logHarmonicTail_div_logSq :
     Tendsto (fun N : ℕ =>
       (∑ i ∈ Finset.range N, Real.log (3 + (i : ℝ)) / (3 + (i : ℝ))) /
-        (Real.log (3 + (N : ℝ)) ^ 2)) atTop (nhds (1 / 2 : ℝ)) := by
+        (Real.log (3 + (N : ℝ)) ^ (2 : ℕ))) atTop (nhds (1 / 2 : ℝ)) := by
   let I : ℕ → ℝ := fun N =>
-    Real.log (3 + (N : ℝ)) ^ 2 / 2 - Real.log 3 ^ 2 / 2
+    Real.log (3 + (N : ℝ)) ^ (2 : ℕ) / 2 - Real.log 3 ^ (2 : ℕ) / 2
   have hmain : Tendsto (fun N : ℕ => I N /
-      Real.log (3 + (N : ℝ)) ^ 2) atTop (nhds (1 / 2 : ℝ)) := by
+      Real.log (3 + (N : ℝ)) ^ (2 : ℕ)) atTop (nhds (1 / 2 : ℝ)) := by
     have hsmall := tendsto_log_three_add_nat_sq_atTop.const_div_atTop
-      (Real.log 3 ^ 2 / 2)
+      (Real.log 3 ^ (2 : ℕ) / 2)
     have h := (tendsto_const_nhds (x := (1 / 2 : ℝ))).sub hsmall
     have hfinal : Tendsto (fun N : ℕ => I N /
-        Real.log (3 + (N : ℝ)) ^ 2) atTop
+        Real.log (3 + (N : ℝ)) ^ (2 : ℕ)) atTop
         (nhds ((1 / 2 : ℝ) - 0)) := by
       apply h.congr'
       filter_upwards [] with N
@@ -95,11 +95,11 @@ theorem tendsto_logHarmonicTail_div_logSq :
     simpa using hfinal
   have herr : Tendsto (fun N : ℕ =>
       ((∑ i ∈ Finset.range N, Real.log (3 + (i : ℝ)) / (3 + (i : ℝ))) - I N) /
-        (Real.log (3 + (N : ℝ)) ^ 2)) atTop (nhds 0) := by
+        (Real.log (3 + (N : ℝ)) ^ (2 : ℕ))) atTop (nhds 0) := by
     have hmajor := tendsto_log_three_add_nat_sq_atTop.const_div_atTop (Real.log 3 / 3)
     refine squeeze_zero_norm' ?_ hmajor
     filter_upwards [] with N
-    have hden : 0 < Real.log (3 + (N : ℝ)) ^ 2 :=
+    have hden : 0 < Real.log (3 + (N : ℝ)) ^ (2 : ℕ) :=
       pow_pos (Real.log_pos (by
         have hN : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg N
         linarith)) 2
@@ -111,11 +111,11 @@ theorem tendsto_logHarmonicTail_div_logSq :
   have h := hmain.add herr
   have hfinal : Tendsto (fun N : ℕ =>
       (∑ i ∈ Finset.range N, Real.log (3 + (i : ℝ)) / (3 + (i : ℝ))) /
-        Real.log (3 + (N : ℝ)) ^ 2) atTop
+        Real.log (3 + (N : ℝ)) ^ (2 : ℕ)) atTop
         (nhds ((1 / 2 : ℝ) + 0)) := by
     apply h.congr'
     filter_upwards [] with N
-    have hden : Real.log (3 + (N : ℝ)) ^ 2 ≠ 0 :=
+    have hden : Real.log (3 + (N : ℝ)) ^ (2 : ℕ) ≠ 0 :=
       (pow_pos (Real.log_pos (by
         have hN : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg N
         linarith)) 2).ne'
@@ -125,22 +125,22 @@ theorem tendsto_logHarmonicTail_div_logSq :
 theorem tendsto_logHarmonicWeight_partialSum_div_logSq :
     Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range N, logHarmonicWeight n) /
-        (Real.log ((N : ℝ) + 1) ^ 2)) atTop (nhds (1 / 2 : ℝ)) := by
+        (Real.log ((N : ℝ) + 1) ^ (2 : ℕ))) atTop (nhds (1 / 2 : ℝ)) := by
   apply (Filter.tendsto_add_atTop_iff_nat 2).mp
   have htail : Tendsto (fun N : ℕ =>
       (∑ i ∈ Finset.range N, Real.log (3 + (i : ℝ)) / (3 + (i : ℝ))) /
-        Real.log (((N + 2 : ℕ) : ℝ) + 1) ^ 2) atTop (nhds (1 / 2 : ℝ)) := by
+        Real.log (((N + 2 : ℕ) : ℝ) + 1) ^ (2 : ℕ)) atTop (nhds (1 / 2 : ℝ)) := by
     convert tendsto_logHarmonicTail_div_logSq using 1 <;>
       norm_num [Nat.cast_add] <;> ring
   have hdenTop : Tendsto (fun N : ℕ =>
-      Real.log (((N + 2 : ℕ) : ℝ) + 1) ^ 2) atTop atTop := by
+      Real.log (((N + 2 : ℕ) : ℝ) + 1) ^ (2 : ℕ)) atTop atTop := by
     convert tendsto_log_three_add_nat_sq_atTop using 1 <;>
       norm_num [Nat.cast_add] <;> ring
   have hfinite := hdenTop.const_div_atTop (Real.log 2 / 2)
   have htotal := hfinite.add htail
   have hfinal : Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range (N + 2), logHarmonicWeight n) /
-        Real.log (((N + 2 : ℕ) : ℝ) + 1) ^ 2) atTop
+        Real.log (((N + 2 : ℕ) : ℝ) + 1) ^ (2 : ℕ)) atTop
         (nhds (0 + (1 / 2 : ℝ))) := by
     apply htotal.congr'
     filter_upwards [] with N
@@ -172,7 +172,7 @@ theorem logHarmonicWeight_nonneg (n : ℕ) : 0 ≤ logHarmonicWeight n := by
   · positivity
 
 theorem tendsto_log_natCast_succ_sq_atTop :
-    Tendsto (fun N : ℕ => Real.log ((N : ℝ) + 1) ^ 2) atTop atTop := by
+    Tendsto (fun N : ℕ => Real.log ((N : ℝ) + 1) ^ (2 : ℕ)) atTop atTop := by
   apply tendsto_atTop.2
   intro B
   have hlog : Tendsto (fun N : ℕ => Real.log ((N : ℝ) + 1)) atTop atTop := by
@@ -202,7 +202,7 @@ theorem tendsto_logSquaredResidue_of_div_logHarmonicWeight_tendsto
     (ha : Tendsto (fun n : ℕ => a n / logHarmonicWeight n)
       atTop (nhds R)) :
     Tendsto (fun N : ℕ => (∑ n ∈ Finset.range N, a n) /
-      (Real.log ((N : ℝ) + 1) ^ 2)) atTop (nhds (R / 2)) := by
+      (Real.log ((N : ℝ) + 1) ^ (2 : ℕ))) atTop (nhds (R / 2)) := by
   let d : ℕ → ℝ := fun n => if n = 0 then 0 else
     a n - R * logHarmonicWeight n
   have hdo : d =o[atTop] logHarmonicWeight := by
@@ -235,7 +235,7 @@ theorem tendsto_logSquaredResidue_of_div_logHarmonicWeight_tendsto
     tendsto_logHarmonicWeight_partialSum_div_logSq
   have herr : Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range N, d n) /
-        Real.log ((N : ℝ) + 1) ^ 2) atTop (nhds 0) := by
+        Real.log ((N : ℝ) + 1) ^ (2 : ℕ)) atTop (nhds 0) := by
     simpa only [zero_mul] using herrProduct.congr' (by
       filter_upwards [eventually_gt_atTop 1] with N hN
       have hlog : Real.log ((N : ℝ) + 1) ≠ 0 := by
@@ -255,7 +255,7 @@ theorem tendsto_logSquaredResidue_of_div_logHarmonicWeight_tendsto
   have htotal := (hmain.add herr).add hprefix
   have hfinal : Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.range N, a n) /
-        Real.log ((N : ℝ) + 1) ^ 2) atTop
+        Real.log ((N : ℝ) + 1) ^ (2 : ℕ)) atTop
         (nhds ((R * (1 / 2) + 0) + 0)) := by
     apply htotal.congr'
     filter_upwards [eventually_gt_atTop 0] with N hN

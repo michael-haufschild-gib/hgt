@@ -30,7 +30,7 @@ variable (W : WarpProfile) (hpos : ∀ r, 0 < W.f r)
 /-- A positive warping profile as an orthogonal coordinate patch: `E = 1`, `G = f(u)²`. -/
 noncomputable def toPatch : OrthogonalPatch where
   E := fun _ => 1
-  G := fun p => W.f p.1 ^ 2
+  G := fun p => W.f p.1 ^ (2 : ℕ)
   smoothE := contDiff_const
   smoothG := (W.smooth.comp contDiff_fst).pow 2
   posE := fun _ => one_pos
@@ -40,7 +40,7 @@ variable {W}
 
 @[simp] theorem toPatch_E (p : ℝ × ℝ) : (W.toPatch hpos).E p = 1 := rfl
 
-@[simp] theorem toPatch_G (p : ℝ × ℝ) : (W.toPatch hpos).G p = W.f p.1 ^ 2 := rfl
+@[simp] theorem toPatch_G (p : ℝ × ℝ) : (W.toPatch hpos).G p = W.f p.1 ^ (2 : ℕ) := rfl
 
 theorem toPatch_uSpeed (p : ℝ × ℝ) : (W.toPatch hpos).uSpeed p = 1 := by
   simp [OrthogonalPatch.uSpeed]
@@ -67,7 +67,7 @@ theorem toPatch_px_G (u v : ℝ) :
     px (W.toPatch hpos).G (u, v) = 2 * W.f u * W.d1 u := by
   have h1 : HasDerivAt (fun t : ℝ => (W.toPatch hpos).G (t, v)) (px (W.toPatch hpos).G (u, v)) u :=
     hasDerivAt_px (W.toPatch hpos).smoothG u v
-  have h2 : HasDerivAt (fun t : ℝ => W.f t ^ 2) (2 * W.f u * W.d1 u) u := by
+  have h2 : HasDerivAt (fun t : ℝ => W.f t ^ (2 : ℕ)) (2 * W.f u * W.d1 u) u := by
     refine ((W.hasDerivAt_f u).pow 2).congr_deriv ?_
     push_cast
     ring

@@ -148,10 +148,10 @@ theorem setIntegral_Ioi_comp_add_right {E : Type*} [NormedAddCommGroup E] [Norme
 squared norm by exactly `e^h`.  The critical weight is the operator norm forced by the weighted
 boundary, not a normalisation inserted after the fact. -/
 theorem integral_normSq_weightedLaplaceShift (h : ℝ) (g : ℝ → ℂ) :
-    (∫ x in Ioi h, ‖weightedLaplaceShift h g x‖ ^ 2 * Real.exp (-x))
-      = Real.exp h * ∫ x in Ioi (0 : ℝ), ‖g x‖ ^ 2 * Real.exp (-x) := by
+    (∫ x in Ioi h, ‖weightedLaplaceShift h g x‖ ^ (2 : ℕ) * Real.exp (-x))
+      = Real.exp h * ∫ x in Ioi (0 : ℝ), ‖g x‖ ^ (2 : ℕ) * Real.exp (-x) := by
   have htrans := setIntegral_Ioi_comp_add_right
-    (fun x : ℝ => ‖weightedLaplaceShift h g x‖ ^ 2 * Real.exp (-x)) h h
+    (fun x : ℝ => ‖weightedLaplaceShift h g x‖ ^ (2 : ℕ) * Real.exp (-x)) h h
   rw [sub_self] at htrans
   rw [← htrans, ← integral_const_mul]
   refine setIntegral_congr_fun measurableSet_Ioi fun y hy => ?_
@@ -168,22 +168,22 @@ theorem integral_normSq_weightedLaplaceShift (h : ℝ) (g : ℝ → ℂ) :
     rw [mul_assoc, ← Real.exp_add]
     norm_num
   rw [add_sub_cancel_right, hexp, mul_pow]
-  calc Real.exp h ^ 2 * ‖g y‖ ^ 2 * (Real.exp (-y) * Real.exp (-h))
-      = (Real.exp h * Real.exp h * Real.exp (-h)) * (‖g y‖ ^ 2 * Real.exp (-y)) := by ring
-    _ = Real.exp h * (‖g y‖ ^ 2 * Real.exp (-y)) := by rw [hcancel]
+  calc Real.exp h ^ (2 : ℕ) * ‖g y‖ ^ (2 : ℕ) * (Real.exp (-y) * Real.exp (-h))
+      = (Real.exp h * Real.exp h * Real.exp (-h)) * (‖g y‖ ^ (2 : ℕ) * Real.exp (-y)) := by ring
+    _ = Real.exp h * (‖g y‖ ^ (2 : ℕ) * Real.exp (-y)) := by rw [hcancel]
 
 /-- **The critical prime weight.**  `‖n^{-1} S_{log n} g‖² = n^{-1} ‖g‖²`, so the operator norm of
 the `n`-th Euler monomial is exactly `n^{-1/2}`. -/
 theorem integral_normSq_primeWeightedShift {n : ℕ} (hn : 1 ≤ n) (g : ℝ → ℂ) :
     (∫ x in Ioi (Real.log n),
-        ‖((((n : ℝ)⁻¹ : ℝ) : ℂ)) * weightedLaplaceShift (Real.log n) g x‖ ^ 2 * Real.exp (-x))
-      = ((n : ℝ))⁻¹ * ∫ x in Ioi (0 : ℝ), ‖g x‖ ^ 2 * Real.exp (-x) := by
+        ‖((((n : ℝ)⁻¹ : ℝ) : ℂ)) * weightedLaplaceShift (Real.log n) g x‖ ^ (2 : ℕ) * Real.exp (-x))
+      = ((n : ℝ))⁻¹ * ∫ x in Ioi (0 : ℝ), ‖g x‖ ^ (2 : ℕ) * Real.exp (-x) := by
   have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
   have hlog : Real.exp (Real.log n) = (n : ℝ) := Real.exp_log hn0
   have hpull : (∫ x in Ioi (Real.log n),
-        ‖((((n : ℝ)⁻¹ : ℝ) : ℂ)) * weightedLaplaceShift (Real.log n) g x‖ ^ 2 * Real.exp (-x))
-      = ((n : ℝ))⁻¹ ^ 2 * ∫ x in Ioi (Real.log n),
-        ‖weightedLaplaceShift (Real.log n) g x‖ ^ 2 * Real.exp (-x) := by
+        ‖((((n : ℝ)⁻¹ : ℝ) : ℂ)) * weightedLaplaceShift (Real.log n) g x‖ ^ (2 : ℕ) * Real.exp (-x))
+      = ((n : ℝ))⁻¹ ^ (2 : ℕ) * ∫ x in Ioi (Real.log n),
+        ‖weightedLaplaceShift (Real.log n) g x‖ ^ (2 : ℕ) * Real.exp (-x) := by
     rw [← integral_const_mul]
     refine setIntegral_congr_fun measurableSet_Ioi fun y _ => ?_
     rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (by positivity), mul_pow]

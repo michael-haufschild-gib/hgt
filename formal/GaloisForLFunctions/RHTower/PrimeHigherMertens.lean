@@ -89,7 +89,7 @@ theorem integrableOn_logPow_pntErrorWeight {c : ℝ} (hc : 0 < c) (m : ℕ) :
   rw [Real.norm_eq_abs, Real.norm_eq_abs,
     abs_of_nonneg (by positivity : (0:ℝ) ≤ (Real.log x) ^ m *
       Real.exp (-c * Real.sqrt (Real.log x)) / x),
-    abs_of_nonneg (by positivity : (0:ℝ) ≤ K * (x * Real.log x ^ 2)⁻¹)]
+    abs_of_nonneg (by positivity : (0:ℝ) ≤ K * (x * Real.log x ^ (2 : ℕ))⁻¹)]
   have hstep : (Real.log x) ^ m * Real.exp (-c * Real.sqrt (Real.log x)) / x
       ≤ (Real.log x) ^ m * (K / (Real.log x) ^ (m + 2)) / x := by
     gcongr
@@ -104,14 +104,14 @@ def logPowDivId (m : ℕ) (t : ℝ) : ℝ := (Real.log t) ^ m / t
 
 /-- Its derivative. -/
 def derivLogPowDivId (m : ℕ) (t : ℝ) : ℝ :=
-  ((m : ℝ) * (Real.log t) ^ (m - 1) - (Real.log t) ^ m) / t ^ 2
+  ((m : ℝ) * (Real.log t) ^ (m - 1) - (Real.log t) ^ m) / t ^ (2 : ℕ)
 
 theorem hasDerivAt_logPowDivId (m : ℕ) {t : ℝ} (ht : 0 < t) :
     HasDerivAt (logPowDivId m) (derivLogPowDivId m t) t := by
   have hlog : HasDerivAt Real.log t⁻¹ t := Real.hasDerivAt_log ht.ne'
   have hpow : HasDerivAt (fun s : ℝ => (Real.log s) ^ m)
       ((m : ℝ) * (Real.log t) ^ (m - 1) * t⁻¹) t := hlog.pow m
-  have hinv : HasDerivAt (fun s : ℝ => s⁻¹) (-(t ^ 2)⁻¹) t := hasDerivAt_inv ht.ne'
+  have hinv : HasDerivAt (fun s : ℝ => s⁻¹) (-(t ^ (2 : ℕ))⁻¹) t := hasDerivAt_inv ht.ne'
   have hmul := hpow.mul hinv
   have hfun : ((fun s : ℝ => (Real.log s) ^ m) * fun s : ℝ => s⁻¹) = logPowDivId m := by
     funext s
@@ -183,8 +183,8 @@ def primeLogPowSumIoc (k : ℕ) (x : ℝ) : ℝ := ∑ n ∈ Finset.Ioc 2 ⌊x�
 def primeLogPowSum (k : ℕ) (x : ℝ) : ℝ := ∑ n ∈ Finset.Icc 0 ⌊x⌋₊, primeLogPowWeight k n
 
 theorem logPowDivId_mul_primeLogWeight (m n : ℕ) :
-    logPowDivId m n * primeLogWeight n = primeLogPowWeight (m + 1) n := by
-  rw [logPowDivId, primeLogWeight, primeLogPowWeight]
+    logPowDivId m n * primeLogWeight_primeRpowAbelSummation n = primeLogPowWeight (m + 1) n := by
+  rw [logPowDivId, primeLogWeight_primeRpowAbelSummation, primeLogPowWeight]
   by_cases hp : n.Prime
   · rw [if_pos hp, if_pos hp, pow_succ]
     ring
@@ -194,7 +194,7 @@ theorem primeLogPowSumIoc_eq (m : ℕ) {x : ℝ} (hx : 2 ≤ x) :
     primeLogPowSumIoc (m + 1) x
       = logPowDivId m x * Chebyshev.theta x - logPowDivId m 2 * Chebyshev.theta 2
         - ∫ t in Ioc (2 : ℝ) x, derivLogPowDivId m t * Chebyshev.theta t := by
-  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight
+  have habel := sum_mul_eq_sub_sub_integral_mul (𝕜 := ℝ) primeLogWeight_primeRpowAbelSummation
     (f := logPowDivId m) (a := (2 : ℝ)) (b := x) (by norm_num) hx
     (fun t ht => (hasDerivAt_logPowDivId m (by have := ht.1; linarith)).differentiableAt)
     (integrableOn_deriv_logPowDivId m)

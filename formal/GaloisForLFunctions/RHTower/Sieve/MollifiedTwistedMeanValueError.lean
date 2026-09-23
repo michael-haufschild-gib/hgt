@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.TwistedMeanValueError
 
 This file sums the existing twisted mean-value theorem over two finite mollifier indices.  It
 retains the exact arithmetic diagonal `n * k = m * h` and bounds the accumulated error by the
-product of the two mollifier `ell^1` masses.  An exact expansion identifies this weighted family
+product of the two mollifier `ell^(1 : ℕ)` masses.  An exact expansion identifies this weighted family
 with a literal four-Dirichlet-polynomial correlation.
 -/
 
@@ -107,7 +107,7 @@ theorem integral_mollified_cdpoly_eq_mollifiedTwistedMoment
     fun_prop
 
 /-- Summing the twisted mean-value theorem over both mollifier indices preserves
-the exact diagonal and costs the product of the two mollifier `ell^1` masses. -/
+the exact diagonal and costs the product of the two mollifier `ell^(1 : ℕ)` masses. -/
 theorem mollifiedTwistedMeanValue_error
     (a b u v : ℕ → ℂ) (s q : Finset ℕ) (sigma : ℝ)
     (hs : ∀ n ∈ s, 1 ≤ n) (hq : ∀ h ∈ q, 1 ≤ h)

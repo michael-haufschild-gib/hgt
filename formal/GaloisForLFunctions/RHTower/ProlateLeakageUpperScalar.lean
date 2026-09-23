@@ -34,24 +34,24 @@ namespace GaloisForLFunctions.RHTower
 bound for the exterior mass and a lower bound for the interior one. -/
 theorem leakage_upper_of_mass_bounds {inside outside value leakage U L : ℝ}
     (hL : 0 < L) (hin : L ≤ inside) (hout : outside ≤ U)
-    (hvalue : value ^ 2 ≤ 1) (hv : value ≠ 0) (hU : 0 ≤ U)
+    (hvalue : value ^ (2 : ℕ) ≤ 1) (hv : value ≠ 0) (hU : 0 ≤ U)
     (hleak : 0 ≤ leakage)
-    (hmass : outside = inside * leakage / value ^ 2) :
+    (hmass : outside = inside * leakage / value ^ (2 : ℕ)) :
     leakage ≤ U / L := by
-  have hv2 : 0 < value ^ 2 := by positivity
-  have heq : outside * value ^ 2 = inside * leakage := by
+  have hv2 : 0 < value ^ (2 : ℕ) := by positivity
+  have heq : outside * value ^ (2 : ℕ) = inside * leakage := by
     rw [hmass]
     field_simp
   have hstep : L * leakage ≤ inside * leakage := mul_le_mul_of_nonneg_right hin hleak
-  have hup : outside * value ^ 2 ≤ U := by
-    have h1 : outside * value ^ 2 ≤ U * value ^ 2 :=
+  have hup : outside * value ^ (2 : ℕ) ≤ U := by
+    have h1 : outside * value ^ (2 : ℕ) ≤ U * value ^ (2 : ℕ) :=
       mul_le_mul_of_nonneg_right hout hv2.le
-    have h2 : U * value ^ 2 ≤ U * 1 := mul_le_mul_of_nonneg_left hvalue hU
+    have h2 : U * value ^ (2 : ℕ) ≤ U * 1 := mul_le_mul_of_nonneg_left hvalue hU
     linarith
   rw [le_div_iff₀ hL]
   calc leakage * L = L * leakage := by ring
     _ ≤ inside * leakage := hstep
-    _ = outside * value ^ 2 := heq.symm
+    _ = outside * value ^ (2 : ℕ) := heq.symm
     _ ≤ U := hup
 
 /-- **The leakage of a fixed mode, from above.**  With the exterior mass capped by the Dunster
@@ -63,11 +63,11 @@ theorem leakage_upper_of_prolate_masses {s c : ℝ} {R DR DDR : ℝ → ℝ}
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
-    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
-      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hode : ∀ t : ℝ, (t ^ (2 : ℕ) - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * t ^ (2 : ℕ)) * R t = 0)
     (hLpos : 0 < L) (hin : L ≤ inside)
-    (hvalue : value ^ 2 ≤ 1) (hv : value ≠ 0) (hleak : 0 ≤ leakage)
-    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ 2) = inside * leakage / value ^ 2) :
+    (hvalue : value ^ (2 : ℕ) ≤ 1) (hv : value ≠ 0) (hleak : 0 ≤ leakage)
+    (hmass : (∫ x in Ioi (1 : ℝ), R x ^ (2 : ℕ)) = inside * leakage / value ^ (2 : ℕ)) :
     leakage ≤ radialProlateExteriorMassConstant / c / L := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le (by norm_num) hc
   have hout := integral_Ioi_one_radialProlate_sq_le hs0 hs1 hc hR1 hR hDR hode

@@ -111,13 +111,13 @@ theorem norm_bdGen_lower_strict_of_lt_one {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ 
   refine lt_of_le_of_ne (norm_bdGen_lower hθ0 hθ1.le) ?_
   intro heq
   obtain ⟨c, hc⟩ := exists_norm_sq_sub_smul_bdGen hθ0 hθ1
-  have hsq : (θ * Real.log θ) ^ 2 = ‖bdGen θ‖ ^ 2 := by
+  have hsq : (θ * Real.log θ) ^ (2 : ℕ) = ‖bdGen θ‖ ^ (2 : ℕ) := by
     calc
-      (θ * Real.log θ) ^ 2 = (θ * |Real.log θ|) ^ 2 := by
+      (θ * Real.log θ) ^ (2 : ℕ) = (θ * |Real.log θ|) ^ (2 : ℕ) := by
         rw [mul_pow, mul_pow, sq_abs]
-      _ = ‖bdGen θ‖ ^ 2 := congrArg (fun x : ℝ => x ^ 2) heq
+      _ = ‖bdGen θ‖ ^ (2 : ℕ) := congrArg (fun x : ℝ => x ^ (2 : ℕ)) heq
   have hnpos : (0 : ℝ) < ‖bdGen θ‖ := norm_pos_iff.mpr (bdGen_ne_zero hθ0 hθ1)
-  rw [hsq, div_self (by positivity : ‖bdGen θ‖ ^ 2 ≠ 0), sub_self] at hc
+  rw [hsq, div_self (by positivity : ‖bdGen θ‖ ^ (2 : ℕ) ≠ 0), sub_self] at hc
   have hzero : bdTarget - c • bdGen θ = 0 := by
     apply norm_eq_zero.mp
     nlinarith [norm_nonneg (bdTarget - c • bdGen θ), hc]
@@ -134,7 +134,7 @@ theorem norm_bdGen_lower_strict_of_lt_one {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ 
 
 /-- Strict Gram-diagonal form of `norm_bdGen_lower_strict_of_lt_one`. -/
 theorem sq_lt_bdGram_self_of_lt_one {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1) :
-    (θ * Real.log θ) ^ 2 < bdGram θ θ := by
+    (θ * Real.log θ) ^ (2 : ℕ) < bdGram θ θ := by
   rw [bdGram_self]
   have h := norm_bdGen_lower_strict_of_lt_one hθ0 hθ1
   have hnonneg : 0 ≤ θ * |Real.log θ| := by positivity

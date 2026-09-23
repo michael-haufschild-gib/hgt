@@ -187,7 +187,7 @@ theorem card_booleanPrimeCutoff (N : ℕ) :
 def booleanPrimeIndependentExpectation (N : ℕ)
     (F : (BooleanPrimeCutoff N → ZMod 2) →
       (BooleanPrimeCutoff N → ZMod 2) → ℝ) : ℝ :=
-  ((2 : ℝ) ^ Nat.primeCounting N)⁻¹ ^ 2 * ∑ u, ∑ v, F u v
+  ((2 : ℝ) ^ Nat.primeCounting N)⁻¹ ^ (2 : ℕ) * ∑ u, ∑ v, F u v
 
 /-- Diagonal Haar expectation on the literal Boolean prime cube below `N`. -/
 def booleanPrimeDiagonalExpectation (N : ℕ)

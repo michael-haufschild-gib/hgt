@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.DirectedLiteralSourceFormationRecoveryProp
 /-!
 # Bilateral Wiener--Hopf envelope properness
 
-The coefficient `ell^1` source size on finite Laurent packets admits bounded evaluation exactly at
+The coefficient `ell^(1 : ℕ)` source size on finite Laurent packets admits bounded evaluation exactly at
 unitary characters.  Actual marked formation and exact rank recovery are one Laurent identity.
 -/
 
@@ -19,7 +19,7 @@ open _root_.RHTower
 /-- Finite coefficient-native packets in the reversible rank Hopf envelope. -/
 abbrev BilateralWienerPacket := LaurentPolynomial ℂ
 
-/-- Coefficient `ell^1` size of a finite bilateral source packet. -/
+/-- Coefficient `ell^(1 : ℕ)` size of a finite bilateral source packet. -/
 def bilateralWienerPacketNorm (f : BilateralWienerPacket) : ℝ :=
   f.coeff.sum fun _ a => ‖a‖
 
@@ -55,7 +55,7 @@ theorem bilateralWienerEval_eq_sum
   change (Finsupp.single e (1 : ℂ)).sum (fun _ a => ‖a‖) = 1
   simp
 
-/-- A unitary evaluation character is contractive for coefficient `ell^1`. -/
+/-- A unitary evaluation character is contractive for coefficient `ell^(1 : ℕ)`. -/
 theorem norm_bilateralWienerEval_le
     {z : ℂ} (hz : z ≠ 0) (hunit : ‖z‖ = 1) (f : BilateralWienerPacket) :
     ‖bilateralWienerEval z hz f‖ ≤ bilateralWienerPacketNorm f := by

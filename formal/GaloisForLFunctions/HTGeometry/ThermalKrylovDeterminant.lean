@@ -49,9 +49,9 @@ initial norm times the product of the first `k` squared off-diagonal coefficient
 theorem krylovResidualNormSq_eq_initial_mul_lanczosProduct
     (μ0 : ℝ) (b residualSq : ℕ → ℝ)
     (hzero : residualSq 0 = μ0)
-    (hrec : ∀ k, residualSq (k + 1) = residualSq k * b (k + 1) ^ 2)
+    (hrec : ∀ k, residualSq (k + 1) = residualSq k * b (k + 1) ^ (2 : ℕ))
     (k : ℕ) :
-    residualSq k = μ0 * ∏ j ∈ Finset.Ico 1 (k + 1), b j ^ 2 := by
+    residualSq k = μ0 * ∏ j ∈ Finset.Ico 1 (k + 1), b j ^ (2 : ℕ) := by
   induction k with
   | zero => simp [hzero]
   | succ k ih =>
@@ -69,7 +69,7 @@ coefficient occurs only once has the wrong scaling. -/
 theorem lanczosDeterminantScaling
     (μ0 : ℝ) (b residualSq : ℕ → ℝ)
     (hzero : residualSq 0 = μ0)
-    (hrec : ∀ k, residualSq (k + 1) = residualSq k * b (k + 1) ^ 2)
+    (hrec : ∀ k, residualSq (k + 1) = residualSq k * b (k + 1) ^ (2 : ℕ))
     (N : ℕ) :
     (∏ k ∈ Finset.range N, residualSq k) =
       μ0 ^ N * ∏ j ∈ Finset.Ico 1 N, b j ^ (2 * (N - j)) := by
@@ -86,7 +86,7 @@ theorem lanczosDeterminantScaling
         rw [Finset.prod_Ico_succ_top h1N]
         have hprod :
             (∏ j ∈ Finset.Ico 1 N, b j ^ (2 * (N - j))) *
-                (∏ j ∈ Finset.Ico 1 N, b j ^ 2) =
+                (∏ j ∈ Finset.Ico 1 N, b j ^ (2 : ℕ)) =
               ∏ j ∈ Finset.Ico 1 N, b j ^ (2 * (N + 1 - j)) := by
           rw [← Finset.prod_mul_distrib]
           apply Finset.prod_congr rfl
@@ -111,7 +111,7 @@ theorem det_momentHankelMatrix_eq_prod_complexKrylovResidualNormSq
     (n : ℕ) (hli : LinearIndependent ℂ (fun i : Fin n => v (i : ℕ))) :
     (momentHankelMatrix m n).det =
       ∏ k : Fin n, ‖InnerProductSpace.gramSchmidt ℂ
-        (fun i : Fin n => v (i : ℕ)) k‖ ^ 2 := by
+        (fun i : Fin n => v (i : ℕ)) k‖ ^ (2 : ℕ) := by
   apply Complex.ofReal_injective
   rw [Complex.ofReal_prod]
   change (algebraMap ℝ ℂ) (momentHankelMatrix m n).det = _
@@ -133,7 +133,7 @@ def thermalKrylovVector {α : Type*}
     EuclideanSpace ℂ (α × α) :=
   WithLp.toLp 2 fun ab =>
     (Real.sqrt (intensity ab.1 ab.2) : ℂ) *
-      (((energy ab.1 - energy ab.2) ^ 2 : ℝ) : ℂ) ^ n
+      (((energy ab.1 - energy ab.2) ^ (2 : ℕ) : ℝ) : ℂ) ^ n
 
 /-- Exact Wightman/Krylov value relation: the inner product of squared-gap Krylov vectors is the
 corresponding even Liouvillian moment. -/
@@ -153,7 +153,7 @@ theorem inner_thermalKrylovVector {α : Type*} [Fintype α]
   simp only [thermalKrylovVector, WithLp.ofLp_toLp, RCLike.inner_apply,
     map_mul, Complex.conj_ofReal, map_pow]
   push_cast
-  have hsqrt : (Real.sqrt (intensity a b) : ℂ) ^ 2 = (intensity a b : ℂ) := by
+  have hsqrt : (Real.sqrt (intensity a b) : ℂ) ^ (2 : ℕ) = (intensity a b : ℂ) := by
     norm_cast
     exact Real.sq_sqrt (hintensity a b)
   rw [← hsqrt, pow_add]
@@ -175,7 +175,7 @@ theorem momentHankelMatrix_map_eq_thermalKrylovGram {α : Type*} [Fintype α]
   exact (inner_thermalKrylovVector intensity energy hintensity _ _).symm
 
 /-- **Finite thermal Krylov rank bound.**  A transition space on `α × α` has complex dimension
-`card α ^ 2`.  Therefore every larger squared-gap Krylov packet is linearly dependent and its
+`card α ^ (2 : ℕ)`.  Therefore every larger squared-gap Krylov packet is linearly dependent and its
 moment Gram determinant vanishes.  This is the exact finite-size termination law behind the
 finite Krylov/Lanczos chain. -/
 theorem det_thermalEvenGapMoment_eq_zero_of_card_sq_lt
@@ -206,7 +206,7 @@ theorem det_thermalEvenGapMoment_eq_prod_krylovResidualNormSq_complex
       (fun i : Fin n => thermalKrylovVector intensity energy (i : ℕ))) :
     ((momentHankelMatrix (thermalEvenGapMoment intensity energy) n).det : ℂ) =
       ∏ k : Fin n, (‖InnerProductSpace.gramSchmidt ℂ
-        (fun i : Fin n => thermalKrylovVector intensity energy (i : ℕ)) k‖ ^ 2 : ℂ) := by
+        (fun i : Fin n => thermalKrylovVector intensity energy (i : ℕ)) k‖ ^ (2 : ℕ) : ℂ) := by
   change (algebraMap ℝ ℂ)
     (momentHankelMatrix (thermalEvenGapMoment intensity energy) n).det = _
   rw [RingHom.map_det, momentHankelMatrix_map_eq_thermalKrylovGram
@@ -226,7 +226,7 @@ theorem det_thermalEvenGapMoment_eq_prod_krylovResidualNormSq
       (fun i : Fin n => thermalKrylovVector intensity energy (i : ℕ))) :
     (momentHankelMatrix (thermalEvenGapMoment intensity energy) n).det =
       ∏ k : Fin n, ‖InnerProductSpace.gramSchmidt ℂ
-        (fun i : Fin n => thermalKrylovVector intensity energy (i : ℕ)) k‖ ^ 2 := by
+        (fun i : Fin n => thermalKrylovVector intensity energy (i : ℕ)) k‖ ^ (2 : ℕ) := by
   apply Complex.ofReal_injective
   rw [Complex.ofReal_prod]
   simpa only [Complex.ofReal_pow] using

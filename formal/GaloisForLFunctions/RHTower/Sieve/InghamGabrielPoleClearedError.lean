@@ -10,27 +10,27 @@ noncomputable section
 /-- Gaussian-regularized, pole-cleared mollified zeta error. The residue-unit numerator removes the
 zeta pole at `1`; division by `z` is harmless on Route T's strip `Re z >= 1/2`. -/
 def inghamGabrielPoleClearedError (X : ℕ) (kappa T : ℝ) (z : ℂ) : ℂ :=
-  Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2) *
+  Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ)) *
     ((zetaResidueUnit z * inghamMollifier X z - (z - 1)) / z)
 
 theorem analyticAt_inghamGabrielPoleClearedError
     (X : ℕ) (kappa T : ℝ) {z : ℂ} (hz : z ≠ 0) :
     AnalyticAt ℂ (inghamGabrielPoleClearedError X kappa T) z := by
   have hgauss : AnalyticAt ℂ
-      (fun w : ℂ => Complex.exp ((kappa : ℂ) * (w / (T : ℂ)) ^ 2)) z :=
+      (fun w : ℂ => Complex.exp ((kappa : ℂ) * (w / (T : ℂ)) ^ (2 : ℕ))) z :=
     (analyticAt_const.mul ((analyticAt_id.div_const).pow 2)).cexp
   have hnum : AnalyticAt ℂ
       (fun w : ℂ => zetaResidueUnit w * inghamMollifier X w - (w - 1)) z :=
     ((analyticAt_zetaResidueUnit z).mul (analyticAt_inghamMollifier X z)).sub
       (analyticAt_id.sub analyticAt_const)
   change AnalyticAt ℂ (fun w : ℂ =>
-    Complex.exp ((kappa : ℂ) * (w / (T : ℂ)) ^ 2) *
+    Complex.exp ((kappa : ℂ) * (w / (T : ℂ)) ^ (2 : ℕ)) *
       ((zetaResidueUnit w * inghamMollifier X w - (w - 1)) / w)) z
   have heq :
       (fun w : ℂ =>
-        Complex.exp ((kappa : ℂ) * (w / (T : ℂ)) ^ 2) *
+        Complex.exp ((kappa : ℂ) * (w / (T : ℂ)) ^ (2 : ℕ)) *
           ((zetaResidueUnit w * inghamMollifier X w - (w - 1)) / w)) =
-        (fun w : ℂ => Complex.exp ((kappa : ℂ) * (w / (T : ℂ)) ^ 2)) *
+        (fun w : ℂ => Complex.exp ((kappa : ℂ) * (w / (T : ℂ)) ^ (2 : ℕ))) *
           ((fun w : ℂ => zetaResidueUnit w * inghamMollifier X w - (w - 1)) / id) := by
     funext w
     rfl
@@ -42,7 +42,7 @@ theorem analyticAt_inghamGabrielPoleClearedError
 theorem inghamGabrielPoleClearedError_eq_raw
     (X : ℕ) (kappa T : ℝ) {z : ℂ} (hz1 : z ≠ 1) :
     inghamGabrielPoleClearedError X kappa T z =
-      Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2) *
+      Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ)) *
         ((z - 1) / z) *
           (riemannZeta z * inghamMollifier X z - 1) := by
   have hG : zetaResidueUnit z = (z - 1) * riemannZeta z := by
@@ -85,8 +85,8 @@ theorem diffContOnCl_inghamGabrielPoleClearedError_fixedStrip
 
 /-- Exact Gaussian modulus in Cartesian coordinates. -/
 theorem norm_inghamGabrielGaussian (kappa T : ℝ) {z : ℂ} (hT : T ≠ 0) :
-    ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2)‖ =
-      Real.exp (kappa * (z.re ^ 2 - z.im ^ 2) / T ^ 2) := by
+    ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ))‖ =
+      Real.exp (kappa * (z.re ^ (2 : ℕ) - z.im ^ (2 : ℕ)) / T ^ (2 : ℕ)) := by
   rw [Complex.norm_exp]
   congr 1
   simp [div_eq_mul_inv, pow_two, Complex.mul_re]
@@ -97,9 +97,9 @@ Gaussian decay in height. -/
 theorem norm_inghamGabrielGaussian_vertical
     (kappa T sigma t : ℝ) (hT : T ≠ 0) :
     ‖Complex.exp ((kappa : ℂ) *
-      ((((sigma : ℂ) + (t : ℂ) * I) / (T : ℂ)) ^ 2))‖ =
-      Real.exp (kappa * sigma ^ 2 / T ^ 2) *
-        Real.exp (-kappa * t ^ 2 / T ^ 2) := by
+      ((((sigma : ℂ) + (t : ℂ) * I) / (T : ℂ)) ^ (2 : ℕ)))‖ =
+      Real.exp (kappa * sigma ^ (2 : ℕ) / T ^ (2 : ℕ)) *
+        Real.exp (-kappa * t ^ (2 : ℕ) / T ^ (2 : ℕ)) := by
   rw [norm_inghamGabrielGaussian kappa T hT, ← Real.exp_add]
   congr 1
   simp
@@ -109,7 +109,7 @@ theorem norm_inghamGabrielGaussian_vertical
 /-- Pole-clearing factor `(z-1)/z` is contractive precisely on the half-plane used by Gabriel. -/
 theorem norm_sub_one_le_norm_of_half_le_re {z : ℂ} (hz : 1 / 2 ≤ z.re) :
     ‖z - 1‖ ≤ ‖z‖ := by
-  have hsq : ‖z - 1‖ ^ 2 ≤ ‖z‖ ^ 2 := by
+  have hsq : ‖z - 1‖ ^ (2 : ℕ) ≤ ‖z‖ ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.sq_norm]
     simp [Complex.normSq_apply]
     nlinarith
@@ -120,7 +120,7 @@ theorem norm_inghamGabrielPoleClearedError_le_raw
     (X : ℕ) (kappa T : ℝ) {z : ℂ}
     (hzhalf : 1 / 2 ≤ z.re) (hz1 : z ≠ 1) :
     ‖inghamGabrielPoleClearedError X kappa T z‖ ≤
-      ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2)‖ *
+      ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ))‖ *
         ‖riemannZeta z * inghamMollifier X z - 1‖ := by
   have hz0 : z ≠ 0 := by
     intro hz
@@ -130,23 +130,23 @@ theorem norm_inghamGabrielPoleClearedError_le_raw
     norm_mul, norm_mul, norm_div]
   have hratio : ‖z - 1‖ / ‖z‖ ≤ 1 := (div_le_one (norm_pos_iff.mpr hz0)).mpr
     (norm_sub_one_le_norm_of_half_le_re hzhalf)
-  have hgauss : 0 ≤ ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2)‖ := norm_nonneg _
+  have hgauss : 0 ≤ ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ))‖ := norm_nonneg _
   have hraw : 0 ≤ ‖riemannZeta z * inghamMollifier X z - 1‖ := norm_nonneg _
   calc
-    ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2)‖ *
+    ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ))‖ *
           (‖z - 1‖ / ‖z‖) * ‖riemannZeta z * inghamMollifier X z - 1‖ ≤
-        ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2)‖ * 1 *
+        ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ))‖ * 1 *
           ‖riemannZeta z * inghamMollifier X z - 1‖ :=
       mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hratio hgauss) hraw
-    _ = ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2)‖ *
+    _ = ‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ))‖ *
         ‖riemannZeta z * inghamMollifier X z - 1‖ := by ring
 
 /-- On the interpolation center line, reversing pole clearing costs exactly at most `7/3`. -/
 theorem norm_fixedGabrielCenter_le_seven_thirds_mul_sub_one (t : ℝ) :
     ‖(inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I‖ ≤
       (7 / 3 : ℝ) * ‖(inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I - 1‖ := by
-  have hsq : ‖(inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I‖ ^ 2 ≤
-      ((7 / 3 : ℝ) * ‖(inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I - 1‖) ^ 2 := by
+  have hsq : ‖(inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I‖ ^ (2 : ℕ) ≤
+      ((7 / 3 : ℝ) * ‖(inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I - 1‖) ^ (2 : ℕ) := by
     rw [mul_pow, Complex.sq_norm, Complex.sq_norm]
     norm_num [Complex.normSq_apply, inghamFixedGabrielSigma]
     nlinarith [sq_nonneg t]
@@ -158,22 +158,22 @@ theorem norm_fixedGabrielCenter_le_seven_thirds_mul_sub_one (t : ℝ) :
 theorem inv_norm_inghamGabrielGaussian_center_le_exp
     {kappa T t : ℝ} (hkappa : 0 ≤ kappa) (hT : 0 < T) (ht : |t| ≤ T) :
     (‖Complex.exp ((kappa : ℂ) *
-      ((((inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I) / (T : ℂ)) ^ 2))‖)⁻¹ ≤
+      ((((inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I) / (T : ℂ)) ^ (2 : ℕ)))‖)⁻¹ ≤
       Real.exp kappa := by
   rw [norm_inghamGabrielGaussian_vertical kappa T inghamFixedGabrielSigma t hT.ne',
     mul_inv, ← Real.exp_neg, ← Real.exp_neg, ← Real.exp_add]
   apply Real.exp_le_exp.mpr
-  have htSq : t ^ 2 ≤ T ^ 2 := sq_le_sq.mpr (by
+  have htSq : t ^ (2 : ℕ) ≤ T ^ (2 : ℕ) := sq_le_sq.mpr (by
     rw [abs_of_pos hT]
     exact ht)
-  have hT2 : 0 < T ^ 2 := sq_pos_of_pos hT
+  have hT2 : 0 < T ^ (2 : ℕ) := sq_pos_of_pos hT
   norm_num [inghamFixedGabrielSigma]
-  have hquot : kappa * t ^ 2 / T ^ 2 ≤ kappa := by
+  have hquot : kappa * t ^ (2 : ℕ) / T ^ (2 : ℕ) ≤ kappa := by
     apply (div_le_iff₀ hT2).mpr
     exact mul_le_mul_of_nonneg_left htSq hkappa
-  have hleft : -(kappa * (488601 / 1000000 : ℝ) / T ^ 2) ≤ 0 :=
+  have hleft : -(kappa * (488601 / 1000000 : ℝ) / T ^ (2 : ℕ)) ≤ 0 :=
     neg_nonpos.mpr (div_nonneg (mul_nonneg hkappa (by norm_num)) hT2.le)
-  have hright : 0 ≤ kappa - kappa * t ^ 2 / T ^ 2 := sub_nonneg.mpr hquot
+  have hright : 0 ≤ kappa - kappa * t ^ (2 : ℕ) / T ^ (2 : ℕ) := sub_nonneg.mpr hquot
   simpa only [sub_eq_add_neg, neg_div] using hleft.trans hright
 
 /-- Raw center-line error is quantitatively recovered from the Gaussian pole-cleared field on the
@@ -199,7 +199,7 @@ theorem norm_inghamRawError_center_le_regularized
     apply (div_le_iff₀ (norm_pos_iff.mpr hzm1)).mpr
     simpa only [z] using norm_fixedGabrielCenter_le_seven_thirds_mul_sub_one t
   have hginv :
-      (‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2)‖)⁻¹ ≤ Real.exp kappa := by
+      (‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ))‖)⁻¹ ≤ Real.exp kappa := by
     simpa only [z] using
       inv_norm_inghamGabrielGaussian_center_le_exp hkappa hT ht
   have heq := congrArg norm
@@ -208,7 +208,7 @@ theorem norm_inghamRawError_center_le_regularized
   have hsolve :
       ‖riemannZeta z * inghamMollifier X z - 1‖ =
         (‖z‖ / ‖z - 1‖) *
-          (‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ 2)‖)⁻¹ *
+          (‖Complex.exp ((kappa : ℂ) * (z / (T : ℂ)) ^ (2 : ℕ))‖)⁻¹ *
             ‖inghamGabrielPoleClearedError X kappa T z‖ := by
     rw [heq]
     field_simp [norm_ne_zero_iff.mpr hz0, norm_ne_zero_iff.mpr hzm1,

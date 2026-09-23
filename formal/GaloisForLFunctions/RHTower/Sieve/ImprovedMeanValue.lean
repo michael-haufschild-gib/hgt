@@ -145,16 +145,16 @@ the shifted supports at shifts up to `3Nδ`, where `δ` is the reciprocal of the
 theorem integral_Icc_normSq_logPoly_le_shift (a : ℕ → ℂ) (s : Finset ℕ) {N K : ℕ}
     (hsN : ∀ n ∈ s, 1 ≤ n ∧ n ≤ N) {δ W : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
     (hWδ : 2 * Real.pi * δ * W ≤ 1) (hK : 3 * (N : ℝ) * δ ≤ (K : ℝ)) :
-    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
-      ≤ (5 / (4 * δ)) * (∑ n ∈ s, ‖a n‖ ^ 2
+    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ (2 : ℕ))
+      ≤ (5 / (4 * δ)) * (∑ n ∈ s, ‖a n‖ ^ (2 : ℕ)
           + ∑ k ∈ Finset.Icc 1 K, ∑ n ∈ s.filter (fun n => n + k ∈ s),
-              (‖a n‖ ^ 2 + ‖a (n + k)‖ ^ 2)) := by
+              (‖a n‖ ^ (2 : ℕ) + ‖a (n + k)‖ ^ (2 : ℕ))) := by
   classical
   refine le_trans (integral_Icc_normSq_logPoly_le_count a s hδ0 hWδ) ?_
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
   have hstep := sum_weighted_neighbour_le s K
     (fun n m => |Real.log (n : ℝ) - Real.log (m : ℝ)| < δ)
-    (fun n => ‖a n‖ ^ 2) (fun n => by positivity)
+    (fun n => ‖a n‖ ^ (2 : ℕ)) (fun n => by positivity)
     (fun n hn m hm hnm => le_add_of_log_close_range hδ0 hδ1 hK (hsN n hn) (hsN m hm) hnm)
   refine le_trans (le_of_eq ?_) hstep
   exact Finset.sum_congr rfl fun n _ => rfl

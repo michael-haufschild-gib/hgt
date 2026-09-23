@@ -160,43 +160,43 @@ theorem sum_norm_sq_dirConv_le (N M : ℕ) (a : Fin N → ℂ) (b : Fin M → �
     (hD : ∀ r : Fin (N * M),
       ((((Finset.univ : Finset (Fin N × Fin M)).filter
         (fun q => prodIdx q = r)).card : ℕ) : ℝ) ≤ D) :
-    ∑ r : Fin (N * M), ‖dirConv N M a b r‖ ^ 2
-      ≤ D * ((∑ j : Fin N, ‖a j‖ ^ 2) * (∑ k : Fin M, ‖b k‖ ^ 2)) := by
+    ∑ r : Fin (N * M), ‖dirConv N M a b r‖ ^ (2 : ℕ)
+      ≤ D * ((∑ j : Fin N, ‖a j‖ ^ (2 : ℕ)) * (∑ k : Fin M, ‖b k‖ ^ (2 : ℕ))) := by
   classical
   have hmaps : ∀ q ∈ (Finset.univ : Finset (Fin N × Fin M)),
       prodIdx q ∈ (Finset.univ : Finset (Fin (N * M))) := fun q _ => Finset.mem_univ _
   have hterm : ∀ r : Fin (N * M),
-      ‖dirConv N M a b r‖ ^ 2
+      ‖dirConv N M a b r‖ ^ (2 : ℕ)
         ≤ D * ∑ q ∈ (Finset.univ : Finset (Fin N × Fin M)).filter (fun q => prodIdx q = r),
-            ‖a q.1‖ ^ 2 * ‖b q.2‖ ^ 2 := by
+            ‖a q.1‖ ^ (2 : ℕ) * ‖b q.2‖ ^ (2 : ℕ) := by
     intro r
     have hnn : (0 : ℝ) ≤ ∑ q ∈ (Finset.univ : Finset (Fin N × Fin M)).filter
         (fun q => prodIdx q = r), ‖a q.1‖ * ‖b q.2‖ := by positivity
-    have h1 : ‖dirConv N M a b r‖ ^ 2
+    have h1 : ‖dirConv N M a b r‖ ^ (2 : ℕ)
         ≤ (∑ q ∈ (Finset.univ : Finset (Fin N × Fin M)).filter (fun q => prodIdx q = r),
-            ‖a q.1‖ * ‖b q.2‖) ^ 2 :=
+            ‖a q.1‖ * ‖b q.2‖) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (norm_nonneg _) (norm_dirConv_le N M a b r) 2
     have h2 := sq_sum_le_card_mul_sum_sq
       (s := (Finset.univ : Finset (Fin N × Fin M)).filter (fun q => prodIdx q = r))
       (f := fun q : Fin N × Fin M => ‖a q.1‖ * ‖b q.2‖)
     have h3 : ∑ q ∈ (Finset.univ : Finset (Fin N × Fin M)).filter (fun q => prodIdx q = r),
-        (‖a q.1‖ * ‖b q.2‖) ^ 2
+        (‖a q.1‖ * ‖b q.2‖) ^ (2 : ℕ)
         = ∑ q ∈ (Finset.univ : Finset (Fin N × Fin M)).filter (fun q => prodIdx q = r),
-            ‖a q.1‖ ^ 2 * ‖b q.2‖ ^ 2 := by
+            ‖a q.1‖ ^ (2 : ℕ) * ‖b q.2‖ ^ (2 : ℕ) := by
       refine Finset.sum_congr rfl fun q _ => ?_
       ring
     have hsq : (0 : ℝ) ≤ ∑ q ∈ (Finset.univ : Finset (Fin N × Fin M)).filter
-        (fun q => prodIdx q = r), ‖a q.1‖ ^ 2 * ‖b q.2‖ ^ 2 := by positivity
+        (fun q => prodIdx q = r), ‖a q.1‖ ^ (2 : ℕ) * ‖b q.2‖ ^ (2 : ℕ) := by positivity
     rw [h3] at h2
     have h4 := mul_le_mul_of_nonneg_right (hD r) hsq
     linarith [h1, h2, h4]
   refine le_trans (Finset.sum_le_sum fun r _ => hterm r) ?_
   rw [← Finset.mul_sum]
   have hfibre := Finset.sum_fiberwise_of_maps_to hmaps
-    (fun q : Fin N × Fin M => ‖a q.1‖ ^ 2 * ‖b q.2‖ ^ 2)
+    (fun q : Fin N × Fin M => ‖a q.1‖ ^ (2 : ℕ) * ‖b q.2‖ ^ (2 : ℕ))
   rw [hfibre]
-  have hprod : ∑ q : Fin N × Fin M, ‖a q.1‖ ^ 2 * ‖b q.2‖ ^ 2
-      = (∑ j : Fin N, ‖a j‖ ^ 2) * (∑ k : Fin M, ‖b k‖ ^ 2) := by
+  have hprod : ∑ q : Fin N × Fin M, ‖a q.1‖ ^ (2 : ℕ) * ‖b q.2‖ ^ (2 : ℕ)
+      = (∑ j : Fin N, ‖a j‖ ^ (2 : ℕ)) * (∑ k : Fin M, ‖b k‖ ^ (2 : ℕ)) := by
     rw [Finset.sum_mul_sum, ← Finset.sum_product', Finset.univ_product_univ]
   rw [hprod]
 

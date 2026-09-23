@@ -23,11 +23,11 @@ noncomputable section
 /-- Local quartic charge is controlled by the square of the node's squared norm. -/
 theorem sourcePairPositiveQuarticCharge_le_normSq_sq (z : ℂ) :
     sourcePairPositiveQuarticCharge z.re z.im ≤
-      2300 * Complex.normSq z ^ 2 := by
+      2300 * Complex.normSq z ^ (2 : ℕ) := by
   have hdiff :
-      2300 * Complex.normSq z ^ 2 -
+      2300 * Complex.normSq z ^ (2 : ℕ) -
           sourcePairPositiveQuarticCharge z.re z.im =
-        2300 * (z.re ^ 2) ^ 2 + 4000 * z.re ^ 2 * z.im ^ 2 := by
+        2300 * (z.re ^ (2 : ℕ)) ^ (2 : ℕ) + 4000 * z.re ^ (2 : ℕ) * z.im ^ (2 : ℕ) := by
     rw [sourcePairPositiveQuarticCharge, Complex.normSq_apply]
     ring
   rw [← sub_nonneg]
@@ -37,11 +37,11 @@ theorem sourcePairPositiveQuarticCharge_le_normSq_sq (z : ℂ) :
 /-- Local quartic charge is controlled by squared norm times squared imaginary part. -/
 theorem sourcePairPositiveQuarticCharge_le_normSq_mul_im_sq (z : ℂ) :
     sourcePairPositiveQuarticCharge z.re z.im ≤
-      2300 * Complex.normSq z * z.im ^ 2 := by
+      2300 * Complex.normSq z * z.im ^ (2 : ℕ) := by
   have hdiff :
-      2300 * Complex.normSq z * z.im ^ 2 -
+      2300 * Complex.normSq z * z.im ^ (2 : ℕ) -
           sourcePairPositiveQuarticCharge z.re z.im =
-        1700 * z.re ^ 2 * z.im ^ 2 := by
+        1700 * z.re ^ (2 : ℕ) * z.im ^ (2 : ℕ) := by
     rw [sourcePairPositiveQuarticCharge, Complex.normSq_apply]
     ring
   rw [← sub_nonneg]
@@ -72,7 +72,7 @@ theorem finiteMatrixSchurPositiveQuarticSmallSpectrumCharge_le
     have hiδ : Complex.normSq (S.T i i) ≤ δ := (Finset.mem_filter.mp hi).2
     calc
       sourcePairPositiveQuarticCharge (S.T i i).re (S.T i i).im ≤
-          2300 * Complex.normSq (S.T i i) ^ 2 :=
+          2300 * Complex.normSq (S.T i i) ^ (2 : ℕ) :=
         sourcePairPositiveQuarticCharge_le_normSq_sq _
       _ ≤ 2300 * δ * Complex.normSq (S.T i i) := by
         have hn := Complex.normSq_nonneg (S.T i i)
@@ -109,7 +109,7 @@ theorem finiteMatrixSchurPositiveQuarticCharge_le_of_large_im_sq_le
     {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ}
     (δ η : ℝ) (hδ : 0 ≤ δ) (hη : 0 ≤ η)
     (S : FiniteMatrixSchurPacket M)
-    (hlarge : ∀ i, δ < Complex.normSq (S.T i i) → (S.T i i).im ^ 2 ≤ η) :
+    (hlarge : ∀ i, δ < Complex.normSq (S.T i i) → (S.T i i).im ^ (2 : ℕ) ≤ η) :
     finiteMatrixSchurPositiveQuarticCharge S ≤
       2300 * (δ + η) * matHSNormSq M := by
   have hpoint : ∀ i,
@@ -120,14 +120,14 @@ theorem finiteMatrixSchurPositiveQuarticCharge_le_of_large_im_sq_le
     by_cases hsmall : Complex.normSq (S.T i i) ≤ δ
     · calc
         sourcePairPositiveQuarticCharge (S.T i i).re (S.T i i).im ≤
-            2300 * Complex.normSq (S.T i i) ^ 2 :=
+            2300 * Complex.normSq (S.T i i) ^ (2 : ℕ) :=
           sourcePairPositiveQuarticCharge_le_normSq_sq _
         _ ≤ 2300 * δ * Complex.normSq (S.T i i) := by nlinarith
         _ ≤ 2300 * (δ + η) * Complex.normSq (S.T i i) := by nlinarith
-    · have him : (S.T i i).im ^ 2 ≤ η := hlarge i (lt_of_not_ge hsmall)
+    · have him : (S.T i i).im ^ (2 : ℕ) ≤ η := hlarge i (lt_of_not_ge hsmall)
       calc
         sourcePairPositiveQuarticCharge (S.T i i).re (S.T i i).im ≤
-            2300 * Complex.normSq (S.T i i) * (S.T i i).im ^ 2 :=
+            2300 * Complex.normSq (S.T i i) * (S.T i i).im ^ (2 : ℕ) :=
           sourcePairPositiveQuarticCharge_le_normSq_mul_im_sq _
         _ ≤ 2300 * Complex.normSq (S.T i i) * η := by nlinarith
         _ ≤ 2300 * (δ + η) * Complex.normSq (S.T i i) := by nlinarith

@@ -52,7 +52,7 @@ theorem routePPrimitiveJointDepth_source_eq_log_mul_coSource
   rw [xiGammaEulerPrimitiveBoundaryAmplitude,
     xiGammaEulerPrimitiveDescentTestAmplitude]
   rw [xiGammaEulerPrimitivePromotion]
-  have hsqrt : Real.sqrt (Real.log (pe.1 : ℝ)) ^ 2 =
+  have hsqrt : Real.sqrt (Real.log (pe.1 : ℝ)) ^ (2 : ℕ) =
       Real.log (pe.1 : ℝ) := Real.sq_sqrt hlog.le
   field_simp [hpromotion]
   rw [hsqrt]

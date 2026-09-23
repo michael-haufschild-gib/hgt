@@ -41,7 +41,7 @@ def constrainedProlateGroundHermiteXiScale : ℝ :=
 /-- The normalized `h₀-h₄` Hermite-limit seed in physical coordinates. -/
 def constrainedProlateGroundHermiteSeed (x : ℝ) : ℝ :=
   (Real.sqrt (Real.sqrt 2) * 8 * Real.pi / Real.sqrt 33) *
-    x ^ 2 * (3 - 2 * Real.pi * x ^ 2) * Real.exp (-Real.pi * x ^ 2)
+    x ^ (2 : ℕ) * (3 - 2 * Real.pi * x ^ (2 : ℕ)) * Real.exp (-Real.pi * x ^ (2 : ℕ))
 
 /-- The constrained ground Hermite seed is exactly the theta-cusp seed, with the source
 normalization forced by the `8/11` contrast. -/
@@ -140,15 +140,15 @@ def constrainedProlateXiApertureMetric11 (M0 M1 M2 : ℝ) : ℝ :=
 def constrainedProlateXiApertureMetricDet (M0 M1 M2 : ℝ) : ℝ :=
   constrainedProlateXiApertureMetric00 M0 *
       constrainedProlateXiApertureMetric11 M0 M1 M2 -
-    constrainedProlateXiApertureMetric01 M0 M1 ^ 2
+    constrainedProlateXiApertureMetric01 M0 M1 ^ (2 : ℕ)
 
 /-- Exact source-specific determinant reduction to the strict Xi-square Hankel variance. -/
 theorem constrainedProlateXiApertureMetricDet_eq (M0 M1 M2 : ℝ) :
     constrainedProlateXiApertureMetricDet M0 M1 M2 =
-      (512 / 199395 : ℝ) * (M0 * M2 - M1 ^ 2) := by
+      (512 / 199395 : ℝ) * (M0 * M2 - M1 ^ (2 : ℕ)) := by
   have hsqrt :
       Real.sqrt
-          (constrainedProlateXiApertureR0Sq * constrainedProlateXiApertureR1Sq) ^ 2 =
+          (constrainedProlateXiApertureR0Sq * constrainedProlateXiApertureR1Sq) ^ (2 : ℕ) =
         constrainedProlateXiApertureR0Sq * constrainedProlateXiApertureR1Sq := by
     rw [Real.sq_sqrt]
     unfold constrainedProlateXiApertureR0Sq constrainedProlateXiApertureR1Sq
@@ -164,7 +164,7 @@ theorem constrainedProlateXiApertureMetricDet_eq (M0 M1 M2 : ℝ) :
 /-- A strict moment-variance hypothesis makes the symbolic first two target channels
 nondegenerate. -/
 theorem constrainedProlateXiApertureMetricDet_pos
-    {M0 M1 M2 : ℝ} (hvariance : M1 ^ 2 < M0 * M2) :
+    {M0 M1 M2 : ℝ} (hvariance : M1 ^ (2 : ℕ) < M0 * M2) :
     0 < constrainedProlateXiApertureMetricDet M0 M1 M2 := by
   rw [constrainedProlateXiApertureMetricDet_eq]
   exact mul_pos (by norm_num) (sub_pos.mpr hvariance)
@@ -182,7 +182,7 @@ fixed-Hermite target normalization `Gamma₀₀=(16/33)M₀`. -/
 def constrainedProlateTrueApertureRegularSchurCoefficient (M0 : ℝ) : ℝ :=
   ((8 : ℝ) / 11) *
       (constrainedProlateWeilToeplitzD0 -
-        constrainedProlateWeilToeplitzD1 ^ 2 / constrainedProlateWeilToeplitzD0) /
+        constrainedProlateWeilToeplitzD1 ^ (2 : ℕ) / constrainedProlateWeilToeplitzD0) /
     constrainedProlateXiApertureMetric00 M0
 
 theorem constrainedProlateTrueApertureRegularSchurCoefficient_eq
@@ -190,7 +190,7 @@ theorem constrainedProlateTrueApertureRegularSchurCoefficient_eq
     constrainedProlateTrueApertureRegularSchurCoefficient M0 =
       (3 / (2 * M0)) *
         (constrainedProlateWeilToeplitzD0 -
-          constrainedProlateWeilToeplitzD1 ^ 2 /
+          constrainedProlateWeilToeplitzD1 ^ (2 : ℕ) /
             constrainedProlateWeilToeplitzD0) := by
   unfold constrainedProlateTrueApertureRegularSchurCoefficient
     constrainedProlateXiApertureMetric00 constrainedProlateXiApertureR0Sq
@@ -208,7 +208,7 @@ theorem constrainedProlateTrueApertureRegularSchurCoefficient_gt
       ring
     _ < (3 / (2 * M0)) *
         (constrainedProlateWeilToeplitzD0 -
-          constrainedProlateWeilToeplitzD1 ^ 2 /
+          constrainedProlateWeilToeplitzD1 ^ (2 : ℕ) /
             constrainedProlateWeilToeplitzD0) :=
       mul_lt_mul_of_pos_left
         constrainedProlateWeilToeplitzSchurCoefficient_gt_half (by positivity)
@@ -216,13 +216,13 @@ theorem constrainedProlateTrueApertureRegularSchurCoefficient_gt
 /-- Source-specific formal capstone: exact theta/Xi normalization, the symbolic two-channel
 determinant under strict variance, and the positive target-normalized Schur coefficient. -/
 theorem constrainedProlateApertureXiMetric_capstone
-    {M0 M1 M2 : ℝ} (hM0 : 0 < M0) (hvariance : M1 ^ 2 < M0 * M2) :
+    {M0 M1 M2 : ℝ} (hM0 : 0 < M0) (hvariance : M1 ^ (2 : ℕ) < M0 * M2) :
     (∀ x : ℝ, constrainedProlateGroundHermiteSeed x =
       constrainedProlateGroundHermiteXiScale * thetaCuspSeed x) ∧
     (∀ t : ℝ, (𝓕 constrainedProlateGroundHermiteSchwartz) (t / (2 * Real.pi)) =
       (constrainedProlateGroundHermiteXiScale : ℂ) * XiC (t : ℂ)) ∧
     constrainedProlateXiApertureMetricDet M0 M1 M2 =
-      (512 / 199395 : ℝ) * (M0 * M2 - M1 ^ 2) ∧
+      (512 / 199395 : ℝ) * (M0 * M2 - M1 ^ (2 : ℕ)) ∧
     0 < constrainedProlateXiApertureMetricDet M0 M1 M2 ∧
     3 / (4 * M0) < constrainedProlateTrueApertureRegularSchurCoefficient M0 := by
   exact ⟨constrainedProlateGroundHermiteSeed_eq_thetaCuspSeed,

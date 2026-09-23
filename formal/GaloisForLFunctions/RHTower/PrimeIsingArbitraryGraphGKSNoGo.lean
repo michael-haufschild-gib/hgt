@@ -37,7 +37,7 @@ noncomputable section
 /-- Boolean spin encoded as `+1` or `-1`. -/
 def boolSpin (b : Bool) : ℝ := if b then 1 else -1
 
-@[simp] theorem boolSpin_sq (b : Bool) : boolSpin b ^ 2 = 1 := by
+@[simp] theorem boolSpin_sq (b : Bool) : boolSpin b ^ (2 : ℕ) = 1 := by
   cases b <;> simp [boolSpin]
 
 /-- Finite prime-mass spin weight table carrying the first Griffiths/GKS inequality. Ordinary
@@ -74,7 +74,7 @@ def FiniteGKSPrimeSpinModel.pairNumerator {n : ℕ}
 
 theorem FiniteGKSPrimeSpinModel.magnetization_sq {n : ℕ}
     (M : FiniteGKSPrimeSpinModel n) (σ : Fin n → Bool) :
-    M.magnetization σ ^ 2 =
+    M.magnetization σ ^ (2 : ℕ) =
       ∑ i, ∑ j,
         (M.mass i * M.mass j / 4) *
           (boolSpin (σ i) * boolSpin (σ j)) := by
@@ -100,12 +100,12 @@ theorem FiniteGKSPrimeSpinModel.pairNumerator_diag {n : ℕ}
   intro σ hσ
   calc
     M.weight σ * boolSpin (σ i) * boolSpin (σ i) =
-        M.weight σ * boolSpin (σ i) ^ 2 := by ring
+        M.weight σ * boolSpin (σ i) ^ (2 : ℕ) := by ring
     _ = M.weight σ := by rw [boolSpin_sq]; ring
 
 theorem FiniteGKSPrimeSpinModel.weighted_magnetization_sq_eq_pair_sum {n : ℕ}
     (M : FiniteGKSPrimeSpinModel n) :
-    ∑ σ, M.weight σ * M.magnetization σ ^ 2 =
+    ∑ σ, M.weight σ * M.magnetization σ ^ (2 : ℕ) =
       ∑ i, ∑ j, (M.mass i * M.mass j / 4) * M.pairNumerator i j := by
   simp_rw [M.magnetization_sq]
   simp_rw [Finset.mul_sum]
@@ -123,8 +123,8 @@ theorem FiniteGKSPrimeSpinModel.weighted_magnetization_sq_eq_pair_sum {n : ℕ}
 
 theorem FiniteGKSPrimeSpinModel.sum_mass_sq_div_four_mul_totalWeight_le_weighted_magnetization_sq
     {n : ℕ} (M : FiniteGKSPrimeSpinModel n) :
-    ((∑ i, M.mass i ^ 2) / 4) * M.totalWeight ≤
-      ∑ σ, M.weight σ * M.magnetization σ ^ 2 := by
+    ((∑ i, M.mass i ^ (2 : ℕ)) / 4) * M.totalWeight ≤
+      ∑ σ, M.weight σ * M.magnetization σ ^ (2 : ℕ) := by
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hmass : ∀ i, 0 ≤ M.mass i := fun i =>
     le_trans hlog.le (M.mass_floor i)
@@ -138,7 +138,7 @@ theorem FiniteGKSPrimeSpinModel.sum_mass_sq_div_four_mul_totalWeight_le_weighted
       (hpair i j)
   rw [M.weighted_magnetization_sq_eq_pair_sum]
   calc
-    ((∑ i, M.mass i ^ 2) / 4) * M.totalWeight =
+    ((∑ i, M.mass i ^ (2 : ℕ)) / 4) * M.totalWeight =
         ∑ i, (M.mass i * M.mass i / 4) * M.totalWeight := by
       rw [div_eq_mul_inv, Finset.sum_mul, Finset.sum_mul]
       apply Finset.sum_congr rfl
@@ -155,16 +155,16 @@ theorem FiniteGKSPrimeSpinModel.sum_mass_sq_div_four_mul_totalWeight_le_weighted
 
 theorem FiniteGKSPrimeSpinModel.vertex_floor_le_normalized_second_moment
     {n : ℕ} (M : FiniteGKSPrimeSpinModel n) :
-    (n : ℝ) * Real.log 2 ^ 2 / 4 ≤
-      (∑ σ, M.weight σ * M.magnetization σ ^ 2) / M.totalWeight := by
+    (n : ℝ) * Real.log 2 ^ (2 : ℕ) / 4 ≤
+      (∑ σ, M.weight σ * M.magnetization σ ^ (2 : ℕ)) / M.totalWeight := by
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  have hsquare : ∀ i, Real.log 2 ^ 2 ≤ M.mass i ^ 2 := by
+  have hsquare : ∀ i, Real.log 2 ^ (2 : ℕ) ≤ M.mass i ^ (2 : ℕ) := by
     intro i
     nlinarith [M.mass_floor i]
-  have hsum : (n : ℝ) * Real.log 2 ^ 2 ≤ ∑ i, M.mass i ^ 2 := by
+  have hsum : (n : ℝ) * Real.log 2 ^ (2 : ℕ) ≤ ∑ i, M.mass i ^ (2 : ℕ) := by
     calc
-      (n : ℝ) * Real.log 2 ^ 2 = ∑ _i : Fin n, Real.log 2 ^ 2 := by simp
-      _ ≤ ∑ i, M.mass i ^ 2 := Finset.sum_le_sum fun i _ => hsquare i
+      (n : ℝ) * Real.log 2 ^ (2 : ℕ) = ∑ _i : Fin n, Real.log 2 ^ (2 : ℕ) := by simp
+      _ ≤ ∑ i, M.mass i ^ (2 : ℕ) := Finset.sum_le_sum fun i _ => hsquare i
   have hweighted :=
     M.sum_mass_sq_div_four_mul_totalWeight_le_weighted_magnetization_sq
   apply (le_div_iff₀ M.totalWeight_pos).2
@@ -172,11 +172,11 @@ theorem FiniteGKSPrimeSpinModel.vertex_floor_le_normalized_second_moment
   have hscaled := mul_le_mul_of_nonneg_right hsum
     (div_nonneg htotal (by norm_num : (0 : ℝ) ≤ 4))
   calc
-    (n : ℝ) * Real.log 2 ^ 2 / 4 * M.totalWeight =
-        ((n : ℝ) * Real.log 2 ^ 2) * (M.totalWeight / 4) := by ring
-    _ ≤ (∑ i, M.mass i ^ 2) * (M.totalWeight / 4) := hscaled
-    _ = ((∑ i, M.mass i ^ 2) / 4) * M.totalWeight := by ring
-    _ ≤ ∑ σ, M.weight σ * M.magnetization σ ^ 2 := hweighted
+    (n : ℝ) * Real.log 2 ^ (2 : ℕ) / 4 * M.totalWeight =
+        ((n : ℝ) * Real.log 2 ^ (2 : ℕ)) * (M.totalWeight / 4) := by ring
+    _ ≤ (∑ i, M.mass i ^ (2 : ℕ)) * (M.totalWeight / 4) := hscaled
+    _ = ((∑ i, M.mass i ^ (2 : ℕ)) / 4) * M.totalWeight := by ring
+    _ ≤ ∑ σ, M.weight σ * M.magnetization σ ^ (2 : ℕ) := hweighted
 
 theorem FiniteGKSPrimeSpinModel.iteratedDeriv_partition {n : ℕ}
     (M : FiniteGKSPrimeSpinModel n) (k : ℕ) (z : ℂ) :
@@ -191,20 +191,20 @@ theorem FiniteGKSPrimeSpinModel.iteratedDeriv_partition {n : ℕ}
 theorem FiniteGKSPrimeSpinModel.neg_re_iteratedDeriv_two_partition_zero {n : ℕ}
     (M : FiniteGKSPrimeSpinModel n) :
     -(iteratedDeriv 2 M.partition 0).re =
-      (∑ σ, M.weight σ * (M.magnetization σ) ^ 2) / M.totalWeight := by
+      (∑ σ, M.weight σ * (M.magnetization σ) ^ (2 : ℕ)) / M.totalWeight := by
   rw [M.iteratedDeriv_partition]
   simp only [mul_zero, Complex.exp_zero, mul_one]
   change -Complex.reCLM (∑ σ, ((M.weight σ / M.totalWeight : ℝ) : ℂ) *
-    (Complex.I * M.magnetization σ) ^ 2) = _
+    (Complex.I * M.magnetization σ) ^ (2 : ℕ)) = _
   rw [map_sum Complex.reCLM]
   simp only [Complex.ofReal_div, Complex.reCLM_apply,
     Complex.mul_re, Complex.div_ofReal_re, Complex.ofReal_re,
     Complex.div_ofReal_im, Complex.ofReal_im, zero_div, zero_mul, sub_zero]
   have hterm (x : Fin n → Bool) :
-      ((Complex.I * (M.magnetization x : ℂ)) ^ 2).re =
-        -(M.magnetization x) ^ 2 := by
+      ((Complex.I * (M.magnetization x : ℂ)) ^ (2 : ℕ)).re =
+        -(M.magnetization x) ^ (2 : ℕ) := by
     rw [mul_pow]
-    have hI : (Complex.I : ℂ) ^ 2 = -1 := by norm_num
+    have hI : (Complex.I : ℂ) ^ (2 : ℕ) = -1 := by norm_num
     rw [hI]
     norm_cast
     norm_num
@@ -215,7 +215,7 @@ theorem FiniteGKSPrimeSpinModel.neg_re_iteratedDeriv_two_partition_zero {n : ℕ
 
 theorem FiniteGKSPrimeSpinModel.vertex_curvature_floor {n : ℕ}
     (M : FiniteGKSPrimeSpinModel n) :
-    (n : ℝ) * Real.log 2 ^ 2 / 4 ≤
+    (n : ℝ) * Real.log 2 ^ (2 : ℕ) / 4 ≤
       -(iteratedDeriv 2 M.partition 0).re := by
   rw [M.neg_re_iteratedDeriv_two_partition_zero]
   exact M.vertex_floor_le_normalized_second_moment
@@ -281,9 +281,9 @@ theorem eventually_vertexCount_real_bounded_of_gksPrimeSpin_tendstoLocallyUnifor
   have hevent : ∀ᶠ k in atTop,
       -(iteratedDeriv 2 (M k).partition 0).re < K :=
     hcurv.eventually (Iio_mem_nhds (by dsimp [K]; linarith))
-  have hlogSq : 0 < Real.log 2 ^ 2 :=
+  have hlogSq : 0 < Real.log 2 ^ (2 : ℕ) :=
     sq_pos_of_pos (Real.log_pos (by norm_num))
-  refine ⟨4 * K / Real.log 2 ^ 2, ?_⟩
+  refine ⟨4 * K / Real.log 2 ^ (2 : ℕ), ?_⟩
   filter_upwards [hevent] with k hk
   apply (le_div_iff₀ hlogSq).2
   have hfloor := (M k).vertex_curvature_floor
@@ -341,19 +341,19 @@ theorem FiniteGKSPrimeSpinModel.iteratedDeriv_rescaledPartition {n : ℕ}
 
 theorem FiniteGKSPrimeSpinModel.rescaled_vertex_curvature_floor {n : ℕ}
     (M : FiniteGKSPrimeSpinModel n) (a : ℝ) :
-    a ^ 2 * ((n : ℝ) * Real.log 2 ^ 2 / 4) ≤
+    a ^ (2 : ℕ) * ((n : ℝ) * Real.log 2 ^ (2 : ℕ) / 4) ≤
       -(iteratedDeriv 2 (M.rescaledPartition a) 0).re := by
   rw [M.iteratedDeriv_rescaledPartition, mul_zero]
   have hbase := M.vertex_curvature_floor
   have hscaled := mul_le_mul_of_nonneg_left hbase (sq_nonneg a)
-  have hreal (D : ℂ) : -(((a : ℂ) ^ 2 * D).re) = a ^ 2 * (-D.re) := by
-    have ha2 : (a : ℂ) ^ 2 = ((a ^ 2 : ℝ) : ℂ) := by norm_num
-    have hmul : (a : ℂ) ^ 2 * D = ((a ^ 2 : ℝ) : ℂ) * D :=
+  have hreal (D : ℂ) : -(((a : ℂ) ^ (2 : ℕ) * D).re) = a ^ (2 : ℕ) * (-D.re) := by
+    have ha2 : (a : ℂ) ^ (2 : ℕ) = ((a ^ (2 : ℕ) : ℝ) : ℂ) := by norm_num
+    have hmul : (a : ℂ) ^ (2 : ℕ) * D = ((a ^ (2 : ℕ) : ℝ) : ℂ) * D :=
       congrArg (fun z : ℂ => z * D) ha2
     calc
-      -(((a : ℂ) ^ 2 * D).re) = -(((((a ^ 2 : ℝ) : ℂ) * D)).re) :=
+      -(((a : ℂ) ^ (2 : ℕ) * D).re) = -(((((a ^ (2 : ℕ) : ℝ) : ℂ) * D)).re) :=
         congrArg (fun z : ℂ => -z.re) hmul
-      _ = a ^ 2 * (-D.re) := by
+      _ = a ^ (2 : ℕ) * (-D.re) := by
         simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
           zero_mul, sub_zero]
         ring
@@ -361,14 +361,14 @@ theorem FiniteGKSPrimeSpinModel.rescaled_vertex_curvature_floor {n : ℕ}
   exact hscaled
 
 /-- Any Xi-convergent critically rescaled GKS sequence has bounded variance scale
-`a_k^2 * vertexCount_k`. -/
+`a_k^(2 : ℕ) * vertexCount_k`. -/
 theorem eventually_scale_sq_mul_vertexCount_bounded_of_rescaled_gksPrimeSpin_tendstoLocallyUniformly
     (vertexCount : ℕ → ℕ)
     (M : ∀ k, FiniteGKSPrimeSpinModel (vertexCount k))
     (a : ℕ → ℝ)
     (hconv : TendstoLocallyUniformly
       (fun k => (M k).rescaledPartition (a k)) unitCentralXiC atTop) :
-    ∃ C : ℝ, ∀ᶠ k in atTop, a k ^ 2 * (vertexCount k : ℝ) ≤ C := by
+    ∃ C : ℝ, ∀ᶠ k in atTop, a k ^ (2 : ℕ) * (vertexCount k : ℝ) ≤ C := by
   have hdiff : ∀ k, Differentiable ℂ ((M k).rescaledPartition (a k)) := by
     intro k
     unfold FiniteGKSPrimeSpinModel.rescaledPartition
@@ -387,9 +387,9 @@ theorem eventually_scale_sq_mul_vertexCount_bounded_of_rescaled_gksPrimeSpin_ten
   have hevent : ∀ᶠ k in atTop,
       -(iteratedDeriv 2 ((M k).rescaledPartition (a k)) 0).re < K :=
     hcurv.eventually (Iio_mem_nhds (by dsimp [K]; linarith))
-  have hlogSq : 0 < Real.log 2 ^ 2 :=
+  have hlogSq : 0 < Real.log 2 ^ (2 : ℕ) :=
     sq_pos_of_pos (Real.log_pos (by norm_num))
-  refine ⟨4 * K / Real.log 2 ^ 2, ?_⟩
+  refine ⟨4 * K / Real.log 2 ^ (2 : ℕ), ?_⟩
   filter_upwards [hevent] with k hk
   apply (le_div_iff₀ hlogSq).2
   have hfloor := (M k).rescaled_vertex_curvature_floor (a k)
@@ -410,28 +410,28 @@ theorem tendsto_scale_zero_of_vertexCount_tendsto_atTop_of_rescaled_gksPrimeSpin
       vertexCount M a hconv
   rw [Metric.tendsto_atTop]
   intro ε hε
-  have hεsq : 0 < ε ^ 2 := sq_pos_of_pos hε
+  have hεsq : 0 < ε ^ (2 : ℕ) := sq_pos_of_pos hε
   let B : ℝ := max C 0 + 1
   have hB : 0 < B := by
     dsimp [B]
     linarith [le_max_right C 0]
   have hlarge : ∀ᶠ k in atTop,
-      B / ε ^ 2 < (vertexCount k : ℝ) :=
-    hvertices (Filter.eventually_gt_atTop (B / ε ^ 2))
+      B / ε ^ (2 : ℕ) < (vertexCount k : ℝ) :=
+    hvertices (Filter.eventually_gt_atTop (B / ε ^ (2 : ℕ)))
   obtain ⟨N, hN⟩ := Filter.eventually_atTop.1 (hC.and hlarge)
   refine ⟨N, fun k hk => ?_⟩
   obtain ⟨hbound, hklarge⟩ := hN k hk
   rw [Real.dist_eq, sub_zero]
   by_contra hnot
   have habs : ε ≤ |a k| := le_of_not_gt hnot
-  have hsquare : ε ^ 2 ≤ a k ^ 2 := by
+  have hsquare : ε ^ (2 : ℕ) ≤ a k ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (|a k| - ε), sq_abs (a k)]
   have hvertexPos : 0 < (vertexCount k : ℝ) :=
     lt_trans (div_pos hB hεsq) hklarge
-  have hmul : B < ε ^ 2 * (vertexCount k : ℝ) := by
+  have hmul : B < ε ^ (2 : ℕ) * (vertexCount k : ℝ) := by
     simpa [mul_comm] using (div_lt_iff₀ hεsq).mp hklarge
-  have hprod : ε ^ 2 * (vertexCount k : ℝ) ≤
-      a k ^ 2 * (vertexCount k : ℝ) :=
+  have hprod : ε ^ (2 : ℕ) * (vertexCount k : ℝ) ≤
+      a k ^ (2 : ℕ) * (vertexCount k : ℝ) :=
     mul_le_mul_of_nonneg_right hsquare hvertexPos.le
   have hCle : C ≤ max C 0 := le_max_left C 0
   dsimp [B] at hmul
@@ -439,7 +439,7 @@ theorem tendsto_scale_zero_of_vertexCount_tendsto_atTop_of_rescaled_gksPrimeSpin
 
 /-- A function satisfying the quartic Landau fixed-point equation `F''' = c z F` is
 differentially algebraic. The equation is the integration-by-parts ODE for the Fourier transform
-of a density proportional to `exp (-a x^4)`. -/
+of a density proportional to `exp (-a x^(4 : ℕ))`. -/
 theorem differentiallyAlgebraic_of_iteratedDeriv_three_eq_landau
     {f : ℂ → ℂ} {c : ℂ}
     (hode : ∀ z, iteratedDeriv 3 f z = c * z * f z) :

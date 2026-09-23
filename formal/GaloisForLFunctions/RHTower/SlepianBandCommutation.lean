@@ -129,13 +129,13 @@ theorem prolateSLAction_bandTransform (c : ℝ) {f : ℝ → ℝ} (hf : Continuo
   have hK2 : Continuous (fun y => deriv (deriv (sincSmooth c)) (x - y) * f y) :=
     (((continuous_deriv2_sincSmooth c).comp (continuous_const.sub continuous_id)).mul hf)
   have hIA : IntervalIntegrable
-      (fun y => (1 - x ^ 2) * (deriv (deriv (sincSmooth c)) (x - y) * f y)) volume (-1) 1 :=
+      (fun y => (1 - x ^ (2 : ℕ)) * (deriv (deriv (sincSmooth c)) (x - y) * f y)) volume (-1) 1 :=
     (hK2.intervalIntegrable _ _).const_mul _
   have hIB : IntervalIntegrable
       (fun y => 2 * x * (deriv (sincSmooth c) (x - y) * f y)) volume (-1) 1 :=
     (hK1.intervalIntegrable _ _).const_mul _
   have hIC : IntervalIntegrable
-      (fun y => c ^ 2 * x ^ 2 * (sincKernelSmooth c x y * f y)) volume (-1) 1 :=
+      (fun y => c ^ (2 : ℕ) * x ^ (2 : ℕ) * (sincKernelSmooth c x y * f y)) volume (-1) 1 :=
     (hK.intervalIntegrable _ _).const_mul _
   simp only [prolateSLAction]
   rw [deriv2_bandTransform c hf, deriv_bandTransform c hf]

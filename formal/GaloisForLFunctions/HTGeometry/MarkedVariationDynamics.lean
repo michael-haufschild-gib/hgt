@@ -435,11 +435,11 @@ theorem observerLoss_zero_before_exactReturn (mass : ℕ → ℝ) (hmono : Antit
 
 /-- A complex number whose real part equals its modulus is that nonnegative real. -/
 theorem eq_ofReal_norm_of_re_eq_norm' {z : ℂ} (h : z.re = ‖z‖) : z = (‖z‖ : ℂ) := by
-  have hsq : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+  have hsq : ‖z‖ ^ (2 : ℕ) = z.re ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
     simp [Complex.norm_def, Complex.normSq_apply, Real.sq_sqrt, add_nonneg, mul_self_nonneg]
     ring
   have him : z.im = 0 := by
-    have hz : z.im ^ 2 = 0 := by
+    have hz : z.im ^ (2 : ℕ) = 0 := by
       rw [h] at hsq
       linarith
     exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hz
@@ -482,7 +482,7 @@ theorem weighted_norm_sum_eq_iff {J : Type*} [Fintype J] (w : J → ℝ) (hw : �
         rw [hp, map_div₀, Complex.conj_ofReal, div_mul_eq_mul_div, mul_comm,
           Complex.mul_conj]
         have hnorm : (Complex.normSq (∑ j, (w j : ℂ) * c j) : ℂ)
-            = ((‖∑ j, (w j : ℂ) * c j‖ : ℝ) : ℂ) ^ 2 := by
+            = ((‖∑ j, (w j : ℂ) * c j‖ : ℝ) : ℂ) ^ (2 : ℕ) := by
           rw [Complex.normSq_eq_norm_sq]
           push_cast
           ring

@@ -265,7 +265,7 @@ theorem xiUnit_ne_zero {z : ℂ} (h0 : z ≠ 0) (h1 : z ≠ 1) (hre : 0 < z.re) 
   exact mul_ne_zero (div_ne_zero (mul_ne_zero h0 (sub_ne_zero.mpr h1)) two_ne_zero)
     (Complex.Gammaℝ_ne_zero_of_re_pos hre)
 
-theorem analyticAt_riemannZeta_of_ne_one {z : ℂ} (h1 : z ≠ 1) : AnalyticAt ℂ riemannZeta z := by
+theorem analyticAt_riemannZeta_of_ne_one_zetaLocalZeroCount {z : ℂ} (h1 : z ≠ 1) : AnalyticAt ℂ riemannZeta z := by
   have hd : DifferentiableOn ℂ riemannZeta {w : ℂ | w ≠ 1} := fun w hw =>
     (differentiableAt_riemannZeta hw).differentiableWithinAt
   exact hd.analyticAt (isOpen_ne.mem_nhds h1)
@@ -284,7 +284,7 @@ theorem meromorphicOrderAt_xi_eq_zeta {z : ℂ} (hre : 0 < z.re) (h1 : z ≠ 1) 
     exact xi_eq_xiUnit_mul_zeta hw0 hw.2 hw.1
   rw [meromorphicOrderAt_congr heq,
     meromorphicOrderAt_mul (analyticAt_xiUnit hre).meromorphicAt
-      (analyticAt_riemannZeta_of_ne_one h1).meromorphicAt,
+      (analyticAt_riemannZeta_of_ne_one_zetaLocalZeroCount h1).meromorphicAt,
     (analyticAt_xiUnit hre).meromorphicOrderAt_eq,
     ((analyticAt_xiUnit hre).analyticOrderAt_eq_zero).mpr (xiUnit_ne_zero h0 h1 hre)]
   simp

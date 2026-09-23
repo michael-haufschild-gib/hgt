@@ -30,7 +30,7 @@ theorem sum_normSq_window_moebius_le_of_correlation {X L : ℕ} {ε : ℝ} (hε 
     (hcorr : ∀ h ∈ Finset.Ico 1 L,
       |∑ n ∈ (Finset.range (X + L + 1 - h)).filter (fun n => L ≤ n ∧ n + h ≤ X),
         ((moebius n : ℤ) : ℝ) * ((moebius (n + h) : ℤ) : ℝ)| ≤ ε) :
-    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), moebiusC n‖ ^ 2
+    ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), moebiusC n‖ ^ (2 : ℕ)
       ≤ (L : ℝ) * (((Finset.range (X + L + 1)).filter (fun n => Squarefree n)).card : ℝ)
         + 2 * (L : ℝ) * ((L : ℝ) * ε + ((2 * L + 1 : ℕ) : ℝ) * (L : ℝ)) := by
   classical
@@ -51,8 +51,8 @@ theorem sum_normSq_window_moebius_le_of_correlation {X L : ℕ} {ε : ℝ} (hε 
 
 /-- The complex window sum of `μ` has the real window sum as its modulus. -/
 theorem normSq_sum_moebiusC_eq (t L : ℕ) :
-    ‖∑ n ∈ Finset.Ioc t (t + L), moebiusC n‖ ^ 2
-      = (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ 2 := by
+    ‖∑ n ∈ Finset.Ioc t (t + L), moebiusC n‖ ^ (2 : ℕ)
+      = (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ (2 : ℕ) := by
   have hre : ∑ n ∈ Finset.Ioc t (t + L), moebiusC n
       = (((∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) : ℝ) : ℂ) := by
     rw [Complex.ofReal_sum]
@@ -64,12 +64,12 @@ theorem sum_sq_moebius_le_of_correlation {X L : ℕ} {ε : ℝ} (hε : 0 ≤ ε)
     (hcorr : ∀ h ∈ Finset.Ico 1 L,
       |∑ n ∈ (Finset.range (X + L + 1 - h)).filter (fun n => L ≤ n ∧ n + h ≤ X),
         ((moebius n : ℤ) : ℝ) * ((moebius (n + h) : ℤ) : ℝ)| ≤ ε) :
-    ∑ t ∈ Finset.range X, (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ 2
+    ∑ t ∈ Finset.range X, (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ (2 : ℕ)
       ≤ (L : ℝ) * (((Finset.range (X + L + 1)).filter (fun n => Squarefree n)).card : ℝ)
         + 2 * (L : ℝ) * ((L : ℝ) * ε + ((2 * L + 1 : ℕ) : ℝ) * (L : ℝ)) := by
   have hbase := sum_normSq_window_moebius_le_of_correlation hε hcorr
-  have hrw : ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), moebiusC n‖ ^ 2
-      = ∑ t ∈ Finset.range X, (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ 2 :=
+  have hrw : ∑ x ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc x (x + L), moebiusC n‖ ^ (2 : ℕ)
+      = ∑ t ∈ Finset.range X, (∑ n ∈ Finset.Ioc t (t + L), ((moebius n : ℤ) : ℝ)) ^ (2 : ℕ) :=
     Finset.sum_congr rfl fun t _ => normSq_sum_moebiusC_eq t L
   rwa [hrw] at hbase
 

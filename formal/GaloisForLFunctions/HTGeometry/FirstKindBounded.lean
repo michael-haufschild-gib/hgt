@@ -18,7 +18,7 @@ variable {s : ℕ → ℝ}
 
 /-- At a real point the first-kind kernel root squares to the Christoffel--Darboux diagonal. -/
 theorem kernelRoot_sq_ofReal (h : PositiveMomentForm s) (x : ℝ) (n : ℕ) :
-    kernelRoot s (fun j => monicOrthoC s j (x : ℂ)) n ^ 2 = (cdKernel s n x).eval x := by
+    kernelRoot s (fun j => monicOrthoC s j (x : ℂ)) n ^ (2 : ℕ) = (cdKernel s n x).eval x := by
   rw [kernelRoot_sq_eq_normSq_sum h, cdKernel_eval_self]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [normSq_monicOrthoC_ofReal]
@@ -39,9 +39,9 @@ theorem firstKindBounded_iff_christoffelLimit_pos (h : PositiveMomentForm s) (x 
   constructor
   · rintro ⟨S, hS0, hS⟩
     rw [christoffelLimit_pos_iff_bddAbove h x]
-    refine ⟨S ^ 2, ?_⟩
+    refine ⟨S ^ (2 : ℕ), ?_⟩
     rintro y ⟨n, rfl⟩
-    show (cdKernel s n x).eval x ≤ S ^ 2
+    show (cdKernel s n x).eval x ≤ S ^ (2 : ℕ)
     rw [← kernelRoot_sq_ofReal h x n]
     exact pow_le_pow_left₀ (kernelRoot_nonneg _ _ _) (hS n) 2
   · intro hpos
@@ -56,12 +56,12 @@ theorem firstKindBounded_iff_christoffelLimit_pos (h : PositiveMomentForm s) (x 
     have hbd : (cdKernel s N x).eval x ≤ (christoffelLimit s x)⁻¹ := by
       rw [inv_eq_one_div, le_div_iff₀ hpos]
       exact h1
-    have h3 : kernelRoot s (fun j => monicOrthoC s j (x : ℂ)) N ^ 2
+    have h3 : kernelRoot s (fun j => monicOrthoC s j (x : ℂ)) N ^ (2 : ℕ)
         ≤ (christoffelLimit s x)⁻¹ := by
       rw [kernelRoot_sq_ofReal h x N]
       exact hbd
     calc kernelRoot s (fun j => monicOrthoC s j (x : ℂ)) N
-        = Real.sqrt (kernelRoot s (fun j => monicOrthoC s j (x : ℂ)) N ^ 2) :=
+        = Real.sqrt (kernelRoot s (fun j => monicOrthoC s j (x : ℂ)) N ^ (2 : ℕ)) :=
           (Real.sqrt_sq (kernelRoot_nonneg _ _ _)).symm
       _ ≤ Real.sqrt (christoffelLimit s x)⁻¹ := Real.sqrt_le_sqrt h3
 

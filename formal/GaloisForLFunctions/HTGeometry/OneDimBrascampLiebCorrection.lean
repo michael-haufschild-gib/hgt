@@ -26,20 +26,20 @@ noncomputable section
 the point values of `V'`, `V''`, `E`, `E'`, and `E''`, respectively. -/
 def oneDimBrascampLiebCorrectionA
     (V₁ V₂ E E₁ E₂ : ℝ) : ℝ :=
-  (2 * E₂ + 2 * V₁ * E₁ - E₁ ^ 2 / E + 4 * E * V₂) / 4
+  (2 * E₂ + 2 * V₁ * E₁ - E₁ ^ (2 : ℕ) / E + 4 * E * V₂) / 4
 
 /-- First derivative jet of the inverse curvature `1 / V''`. -/
 def inverseCurvatureFirstJet (V₂ V₃ : ℝ) : ℝ :=
-  -V₃ / V₂ ^ 2
+  -V₃ / V₂ ^ (2 : ℕ)
 
 /-- Second derivative jet of the inverse curvature `1 / V''`. -/
 def inverseCurvatureSecondJet (V₂ V₃ V₄ : ℝ) : ℝ :=
-  2 * V₃ ^ 2 / V₂ ^ 3 - V₄ / V₂ ^ 2
+  2 * V₃ ^ (2 : ℕ) / V₂ ^ (3 : ℕ) - V₄ / V₂ ^ (2 : ℕ)
 
 /-- Denominator-free positivity value controlling the first corrected Brascamp--Lieb weight. -/
 def oneDimBrascampLiebFirstCorrectionNumerator
     (V₁ V₂ V₃ V₄ : ℝ) : ℝ :=
-  3 * V₃ ^ 2 + 8 * V₂ ^ 3 - 2 * V₄ * V₂ - 2 * V₃ * V₂ * V₁
+  3 * V₃ ^ (2 : ℕ) + 8 * V₂ ^ (3 : ℕ) - 2 * V₄ * V₂ - 2 * V₃ * V₂ * V₁
 
 /-- The inverse-curvature substitution turns `1 + A((V'')⁻¹)` into one rational value with the
 Popescu numerator. -/
@@ -49,7 +49,7 @@ theorem one_add_oneDimBrascampLiebCorrectionA_inverseCurvature
         (inverseCurvatureFirstJet V₂ V₃)
         (inverseCurvatureSecondJet V₂ V₃ V₄) =
       oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄ /
-        (4 * V₂ ^ 3) := by
+        (4 * V₂ ^ (3 : ℕ)) := by
   unfold oneDimBrascampLiebCorrectionA inverseCurvatureFirstJet
     inverseCurvatureSecondJet oneDimBrascampLiebFirstCorrectionNumerator
   field_simp [hV₂]
@@ -68,7 +68,7 @@ theorem oneDimBrascampLiebSecondWeight_eq
     {V₁ V₂ V₃ V₄ : ℝ} (hV₂ : V₂ ≠ 0) :
     oneDimBrascampLiebSecondWeight V₁ V₂ V₃ V₄ =
       oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄ /
-        (4 * V₂ ^ 2) := by
+        (4 * V₂ ^ (2 : ℕ)) := by
   rw [oneDimBrascampLiebSecondWeight,
     one_add_oneDimBrascampLiebCorrectionA_inverseCurvature hV₂]
   field_simp [hV₂]
@@ -82,12 +82,12 @@ theorem one_add_oneDimBrascampLiebCorrectionA_inverseCurvature_pos_iff
         (inverseCurvatureSecondJet V₂ V₃ V₄) ↔
       0 < oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄ := by
   rw [one_add_oneDimBrascampLiebCorrectionA_inverseCurvature hV₂.ne']
-  have hden : 0 < 4 * V₂ ^ 3 := by positivity
+  have hden : 0 < 4 * V₂ ^ (3 : ℕ) := by positivity
   constructor
   · intro h
     have heq : oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄ =
         (oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄ /
-          (4 * V₂ ^ 3)) * (4 * V₂ ^ 3) := by
+          (4 * V₂ ^ (3 : ℕ))) * (4 * V₂ ^ (3 : ℕ)) := by
       field_simp [hden.ne']
     rw [heq]
     positivity
@@ -101,12 +101,12 @@ theorem oneDimBrascampLiebSecondWeight_pos_iff
     0 < oneDimBrascampLiebSecondWeight V₁ V₂ V₃ V₄ ↔
       0 < oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄ := by
   rw [oneDimBrascampLiebSecondWeight_eq hV₂.ne']
-  have hden : 0 < 4 * V₂ ^ 2 := by positivity
+  have hden : 0 < 4 * V₂ ^ (2 : ℕ) := by positivity
   constructor
   · intro h
     have heq : oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄ =
         (oneDimBrascampLiebFirstCorrectionNumerator V₁ V₂ V₃ V₄ /
-          (4 * V₂ ^ 2)) * (4 * V₂ ^ 2) := by
+          (4 * V₂ ^ (2 : ℕ))) * (4 * V₂ ^ (2 : ℕ)) := by
       field_simp [hden.ne']
     rw [heq]
     positivity
@@ -118,7 +118,7 @@ ordinary Brascamp--Lieb bound is nonnegative. -/
 theorem oneDimBrascampLiebCorrectionValue_nonneg
     (derivativeValue correctionDenominator : ℝ)
     (hden : 0 ≤ correctionDenominator) :
-    0 ≤ derivativeValue ^ 2 / correctionDenominator := by
+    0 ≤ derivativeValue ^ (2 : ℕ) / correctionDenominator := by
   exact div_nonneg (sq_nonneg _) hden
 
 /-! ### Exact transfer to a quadratic-moment certificate -/
@@ -128,12 +128,12 @@ This is the algebraic consumer of the positive Popescu remainder: no uniform cur
 needed once the variable-curvature value `J` and correction value `C` are retained. -/
 theorem correctedQuadraticBrascampLiebCertificate
     {a₀ a₁ a₂ J C c : ℝ}
-    (hvariance : a₀ * a₂ - a₁ ^ 2 ≤ 4 * a₀ * J - a₀ * C)
+    (hvariance : a₀ * a₂ - a₁ ^ (2 : ℕ) ≤ 4 * a₀ * J - a₀ * C)
     (hcertificate :
-      64 * c ^ 2 * a₀ * J - 16 * c ^ 2 * a₀ * C ≤
-        (45 - 16 * c ^ 2) * a₁ ^ 2) :
-    16 * c ^ 2 * a₀ * a₂ ≤ 45 * a₁ ^ 2 := by
-  have hscale : 0 ≤ 16 * c ^ 2 := by positivity
+      64 * c ^ (2 : ℕ) * a₀ * J - 16 * c ^ (2 : ℕ) * a₀ * C ≤
+        (45 - 16 * c ^ (2 : ℕ)) * a₁ ^ (2 : ℕ)) :
+    16 * c ^ (2 : ℕ) * a₀ * a₂ ≤ 45 * a₁ ^ (2 : ℕ) := by
+  have hscale : 0 ≤ 16 * c ^ (2 : ℕ) := by positivity
   have hscaled := mul_le_mul_of_nonneg_left hvariance hscale
   nlinarith
 
@@ -143,19 +143,19 @@ theorem correctedQuadraticCertificate_of_uncorrected
     {a₀ a₁ J C c : ℝ}
     (ha₀ : 0 ≤ a₀) (hC : 0 ≤ C)
     (huncorrected :
-      64 * c ^ 2 * a₀ * J ≤ (45 - 16 * c ^ 2) * a₁ ^ 2) :
-    64 * c ^ 2 * a₀ * J - 16 * c ^ 2 * a₀ * C ≤
-      (45 - 16 * c ^ 2) * a₁ ^ 2 := by
-  have hcorrection : 0 ≤ 16 * c ^ 2 * a₀ * C := by positivity
+      64 * c ^ (2 : ℕ) * a₀ * J ≤ (45 - 16 * c ^ (2 : ℕ)) * a₁ ^ (2 : ℕ)) :
+    64 * c ^ (2 : ℕ) * a₀ * J - 16 * c ^ (2 : ℕ) * a₀ * C ≤
+      (45 - 16 * c ^ (2 : ℕ)) * a₁ ^ (2 : ℕ) := by
+  have hcorrection : 0 ≤ 16 * c ^ (2 : ℕ) * a₀ * C := by positivity
   linarith
 
 /-- For positive mass and a nonzero scale, a strictly positive Popescu value gives a strict
 improvement over the uncorrected left-hand side. -/
 theorem correctedQuadraticCertificate_strictlyImproves
     {a₀ J C c : ℝ} (ha₀ : 0 < a₀) (hC : 0 < C) (hc : c ≠ 0) :
-    64 * c ^ 2 * a₀ * J - 16 * c ^ 2 * a₀ * C <
-      64 * c ^ 2 * a₀ * J := by
-  have hcorrection : 0 < 16 * c ^ 2 * a₀ * C := by positivity
+    64 * c ^ (2 : ℕ) * a₀ * J - 16 * c ^ (2 : ℕ) * a₀ * C <
+      64 * c ^ (2 : ℕ) * a₀ * J := by
+  have hcorrection : 0 < 16 * c ^ (2 : ℕ) * a₀ * C := by positivity
   linarith
 
 /-! ### Orientation of the first Popescu remainder -/
@@ -205,9 +205,9 @@ remainder nonnegativity are available. -/
 theorem correctedQuadraticVarianceUpper_iff_popescuRemainder_eq_zero
     {a₀ a₁ a₂ J C remainder : ℝ}
     (hexpansion :
-      a₀ * a₂ - a₁ ^ 2 = 4 * a₀ * J - a₀ * C + remainder)
+      a₀ * a₂ - a₁ ^ (2 : ℕ) = 4 * a₀ * J - a₀ * C + remainder)
     (hremainder : 0 ≤ remainder) :
-    (a₀ * a₂ - a₁ ^ 2 ≤ 4 * a₀ * J - a₀ * C) ↔
+    (a₀ * a₂ - a₁ ^ (2 : ℕ) ≤ 4 * a₀ * J - a₀ * C) ↔
       remainder = 0 :=
   variance_le_firstPopescuTruncation_iff_remainder_eq_zero
     hexpansion hremainder

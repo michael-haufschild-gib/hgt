@@ -18,7 +18,7 @@ def d4BMXiGaugeFixedPartnerPoleSeparation
 def d4BMXiGaugeFixedPartnerPoleDiscriminant
     (reflectedPole conjugatePole : ℂ → ℂ) (coupling : ℂ) : ℂ :=
   d4BMXiGaugeFixedPartnerPoleSeparation
-      reflectedPole conjugatePole coupling ^ 2
+      reflectedPole conjugatePole coupling ^ (2 : ℕ)
 
 /-- An injective full radiation record cannot collapse an off-line FE--Schwarz partner pair. -/
 theorem d4BMXiOffLinePartnerRadiation_ne_of_injective
@@ -98,8 +98,8 @@ theorem d4BMXiGaugeFixedPartnerPoleDiscriminant_div_sq_tendsto
     Tendsto
       (fun coupling =>
         d4BMXiGaugeFixedPartnerPoleDiscriminant
-          reflectedPole conjugatePole coupling / coupling ^ 2)
-      (𝓝[≠] 0) (𝓝 ((reflectedVelocity - conjugateVelocity) ^ 2)) := by
+          reflectedPole conjugatePole coupling / coupling ^ (2 : ℕ))
+      (𝓝[≠] 0) (𝓝 ((reflectedVelocity - conjugateVelocity) ^ (2 : ℕ))) := by
   have hseparation : HasDerivAt
       (fun coupling => reflectedPole coupling - conjugatePole coupling)
       (reflectedVelocity - conjugateVelocity) 0 :=
@@ -152,8 +152,8 @@ theorem d4BMXiGaugeFixedPartnerPoleDiscriminant_div_sq_tendsto_of_re_eq_half
     Tendsto
       (fun coupling =>
         d4BMXiGaugeFixedPartnerPoleDiscriminant
-          reflectedPole conjugatePole coupling / coupling ^ 2)
-      (𝓝[≠] 0) (𝓝 ((reflectedVelocity - conjugateVelocity) ^ 2)) := by
+          reflectedPole conjugatePole coupling / coupling ^ (2 : ℕ))
+      (𝓝[≠] 0) (𝓝 ((reflectedVelocity - conjugateVelocity) ^ (2 : ℕ))) := by
   apply d4BMXiGaugeFixedPartnerPoleDiscriminant_div_sq_tendsto
     hreflected hconjugate
   rw [hreflected0, hconjugate0]

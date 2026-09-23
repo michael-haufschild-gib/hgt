@@ -25,7 +25,7 @@ def suzukiTestDeriv (ψ : SuzukiTest) : ℝ → ℂ := deriv (ψ : ℝ → ℂ)
 Weil norm, so the completion `H_0` is `H_W`. -/
 theorem normSq_suzukiPHat_deriv_eq_pi_mul_suzukiWeilInner (hRH : RiemannHypothesis)
     (ψ : SuzukiTest) :
-    (∫ x : ℝ, ‖suzukiPHat (suzukiTestDeriv ψ) ((x : ℝ) : ℂ)‖ ^ 2)
+    (∫ x : ℝ, ‖suzukiPHat (suzukiTestDeriv ψ) ((x : ℝ) : ℂ)‖ ^ (2 : ℕ))
       = Real.pi * (suzukiWeilInner ψ ψ).re := by
   obtain ⟨a, ha, hsupp⟩ := ψ.exists_aperture
   set Ψ : SuzukiSmoothCompactTest a := ψ.toCompactTest hsupp with hΨ
@@ -55,7 +55,7 @@ the Weil mass on `V°(0) = {𝖥⁻¹ 𝒫̂_{Dψ} : ψ ∈ C_c^∞}`, parametri
 `‖𝒫̂_{Dψ}‖² = π ⟨ψ,ψ⟩_W`.) -/
 theorem riemannHypothesis_iff_normSq_suzukiPHat_suzukiTest :
     RiemannHypothesis ↔ ∀ ψ : SuzukiTest,
-      (∫ x : ℝ, ‖suzukiPHat (suzukiTestDeriv ψ) ((x : ℝ) : ℂ)‖ ^ 2)
+      (∫ x : ℝ, ‖suzukiPHat (suzukiTestDeriv ψ) ((x : ℝ) : ℂ)‖ ^ (2 : ℕ))
         = Real.pi * (suzukiWeilInner ψ ψ).re := by
   constructor
   · intro hRH ψ

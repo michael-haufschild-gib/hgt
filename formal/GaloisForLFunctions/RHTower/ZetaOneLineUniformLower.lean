@@ -64,7 +64,7 @@ theorem exists_pos_lower_bound_riemannZeta_band {t₀ : ℝ} (ht₀ : 1 ≤ t₀
 /-- **A power-of-log lower bound for `ζ` at every frequency**, on `1 < σ ≤ 5/4`. -/
 theorem exists_uniform_lower_bound_riemannZeta :
     ∃ c : ℝ, 0 < c ∧ ∀ σ t : ℝ, 1 < σ → σ ≤ 5 / 4 →
-      c / (Real.log (|t| + Real.exp 1)) ^ 11
+      c / (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ)
         ≤ ‖riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by
   obtain ⟨cT, t₀, hcT0, ht₀9, hT⟩ := exists_lower_bound_riemannZeta_near_one_line
   obtain ⟨clow, hclow0, hlow⟩ := exists_pos_le_norm_riemannZeta_low_freq
@@ -79,9 +79,9 @@ theorem exists_uniform_lower_bound_riemannZeta :
       have := abs_nonneg t; linarith
     have := Real.log_le_log (Real.exp_pos 1) h1
     rwa [Real.log_exp] at this
-  have hpow1 : (1 : ℝ) ≤ (Real.log (|t| + Real.exp 1)) ^ 11 :=
+  have hpow1 : (1 : ℝ) ≤ (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ) :=
     one_le_pow₀ hlog1
-  have hdiv : c / (Real.log (|t| + Real.exp 1)) ^ 11 ≤ c := by
+  have hdiv : c / (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ) ≤ c := by
     rw [div_le_iff₀ (by linarith)]
     nlinarith [hc0.le, hpow1]
   rcases lt_or_ge |t| t₀ with hsmall | hbig
@@ -117,11 +117,11 @@ theorem exists_uniform_lower_bound_riemannZeta :
       have h8 : (8 : ℝ) ≤ |t| := by linarith
       have := two_le_log_of_eight_le h8
       linarith
-    have hpowle : (Real.log |t|) ^ 11 ≤ (Real.log (|t| + Real.exp 1)) ^ 11 :=
+    have hpowle : (Real.log |t|) ^ (11 : ℕ) ≤ (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ) :=
       pow_le_pow_left₀ (by linarith) hlt 11
-    have hpos : (0 : ℝ) < (Real.log |t|) ^ 11 := by positivity
+    have hpos : (0 : ℝ) < (Real.log |t|) ^ (11 : ℕ) := by positivity
     have hcle : c ≤ cT := min_le_left _ _
-    have hA : (0 : ℝ) < (Real.log (|t| + Real.exp 1)) ^ 11 := by positivity
+    have hA : (0 : ℝ) < (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ) := by positivity
     rw [div_le_iff₀ hA, div_mul_eq_mul_div, le_div_iff₀ hpos]
     nlinarith [hcle, hpowle, hpos, hA, hc0.le, hcT0.le]
 
@@ -129,7 +129,7 @@ theorem exists_uniform_lower_bound_riemannZeta :
 theorem exists_uniform_upper_bound_inv_riemannZeta :
     ∃ K : ℝ, 0 < K ∧ ∀ σ t : ℝ, 1 < σ → σ ≤ 5 / 4 →
       ‖(riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I))⁻¹‖
-        ≤ K * (Real.log (|t| + Real.exp 1)) ^ 11 := by
+        ≤ K * (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ) := by
   obtain ⟨c, hc0, hc⟩ := exists_uniform_lower_bound_riemannZeta
   refine ⟨c⁻¹, by positivity, ?_⟩
   intro σ t hσ1 hσ2
@@ -139,17 +139,17 @@ theorem exists_uniform_upper_bound_inv_riemannZeta :
       have := abs_nonneg t; linarith
     have := Real.log_le_log (Real.exp_pos 1) h1
     rwa [Real.log_exp] at this
-  have hpow0 : (0 : ℝ) < (Real.log (|t| + Real.exp 1)) ^ 11 := by positivity
+  have hpow0 : (0 : ℝ) < (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ) := by positivity
   have hzpos : (0 : ℝ) < ‖riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)‖ :=
     lt_of_lt_of_le (by positivity) hlow
   rw [norm_inv]
   rw [inv_le_iff_one_le_mul₀ hzpos]
   have hmul := mul_le_mul_of_nonneg_left hlow (by positivity :
-    (0 : ℝ) ≤ c⁻¹ * (Real.log (|t| + Real.exp 1)) ^ 11)
-  calc (1 : ℝ) = c⁻¹ * (Real.log (|t| + Real.exp 1)) ^ 11
-        * (c / (Real.log (|t| + Real.exp 1)) ^ 11) := by
+    (0 : ℝ) ≤ c⁻¹ * (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ))
+  calc (1 : ℝ) = c⁻¹ * (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ)
+        * (c / (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ)) := by
         field_simp
-    _ ≤ c⁻¹ * (Real.log (|t| + Real.exp 1)) ^ 11
+    _ ≤ c⁻¹ * (Real.log (|t| + Real.exp 1)) ^ (11 : ℕ)
         * ‖riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := hmul
 
 end

@@ -26,13 +26,13 @@ theorem integral_dilate_mul (p : ℕ) (hp : 0 < p) (f g : ℝ → ℝ) :
         ((1 / (p : ℝ)) * g (u / (p : ℝ)))) =
       (1 / (p : ℝ)) * ∫ v in Ioi (1 / (p : ℝ)), f v * g v
   calc
-    _ = (1 / (p : ℝ)) ^ 2 *
+    _ = (1 / (p : ℝ)) ^ (2 : ℕ) *
         (∫ u in Ioi (1 : ℝ), f (u / (p : ℝ)) * g (u / (p : ℝ))) := by
       rw [← integral_const_mul]
       apply setIntegral_congr_fun measurableSet_Ioi
       intro u hu
       ring
-    _ = (1 / (p : ℝ)) ^ 2 *
+    _ = (1 / (p : ℝ)) ^ (2 : ℕ) *
         (∫ u in Ioi (1 : ℝ), f ((p : ℝ)⁻¹ * u) * g ((p : ℝ)⁻¹ * u)) := by
       congr 1
       apply setIntegral_congr_fun measurableSet_Ioi
@@ -96,8 +96,8 @@ theorem integral_dilate_mul_unequal (p q : ℕ) (hp : 0 < p) (hq : 0 < q)
 
 /-- Diagonal form of `integral_dilate_mul`. -/
 theorem integral_dilate_sq (p : ℕ) (hp : 0 < p) (f : ℝ → ℝ) :
-    (∫ u in Ioi (1 : ℝ), dilate p f u ^ 2) =
-      (1 / (p : ℝ)) * ∫ v in Ioi (1 / (p : ℝ)), f v ^ 2 := by
+    (∫ u in Ioi (1 : ℝ), dilate p f u ^ (2 : ℕ)) =
+      (1 / (p : ℝ)) * ∫ v in Ioi (1 / (p : ℝ)), f v ^ (2 : ℕ) := by
   simpa [pow_two] using integral_dilate_mul p hp f f
 
 /-- Every generator with parameter in `[0, 1]` vanishes below the physical

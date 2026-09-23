@@ -186,7 +186,7 @@ theorem kloostermanNaturalCrossIntervalCorrelation_eq_lcmRemainder_of_ne
 theorem sum_range_lcmPeriod_normSq_kloostermanSum
     (q r : ℕ) [NeZero q] [NeZero r] (n : ZMod q) :
     (∑ m ∈ Finset.range (Nat.lcm q r),
-      ‖kloostermanSum q (m : ZMod q) n‖ ^ 2) =
+      ‖kloostermanSum q (m : ZMod q) n‖ ^ (2 : ℕ)) =
       (Nat.lcm q r : ℝ) * Nat.totient q := by
   have hlpos : 0 < Nat.lcm q r := Nat.lcm_pos
     (Nat.pos_of_ne_zero (NeZero.ne q)) (Nat.pos_of_ne_zero (NeZero.ne r))
@@ -202,7 +202,7 @@ theorem sum_range_lcmPeriod_normSq_kloostermanSum
   rw [hmul] at henergy
   calc
     (∑ m ∈ Finset.range (Nat.lcm q r),
-        ‖kloostermanSum q (m : ZMod q) n‖ ^ 2) =
+        ‖kloostermanSum q (m : ZMod q) n‖ ^ (2 : ℕ)) =
         ((Nat.lcm q r / q : ℕ) : ℝ) *
           ((q : ℝ) * Nat.totient q) := henergy
     _ = (Nat.lcm q r : ℝ) * Nat.totient q := by
@@ -240,8 +240,8 @@ theorem norm_kloostermanNaturalCrossIntervalLcmRemainder_le_secondMoment
         (abs_kloostermanResidueDeviation_le_one M (Nat.lcm q r) s hp
           (Finset.mem_range.mp hs))
     _ ≤ ∑ s ∈ Finset.range (Nat.lcm q r),
-        (‖kloostermanSum q (s : ZMod q) n‖ ^ 2 +
-          ‖kloostermanSum r (s : ZMod r) k‖ ^ 2) / 2 := by
+        (‖kloostermanSum q (s : ZMod q) n‖ ^ (2 : ℕ) +
+          ‖kloostermanSum r (s : ZMod r) k‖ ^ (2 : ℕ)) / 2 := by
       apply Finset.sum_le_sum
       intro s hs
       nlinarith [sq_nonneg
@@ -251,7 +251,7 @@ theorem norm_kloostermanNaturalCrossIntervalLcmRemainder_le_secondMoment
         ((Nat.totient q : ℝ) + Nat.totient r) / 2 := by
       have hrenergy :
           (∑ s ∈ Finset.range (Nat.lcm q r),
-            ‖kloostermanSum r (s : ZMod r) k‖ ^ 2) =
+            ‖kloostermanSum r (s : ZMod r) k‖ ^ (2 : ℕ)) =
             (Nat.lcm q r : ℝ) * Nat.totient r := by
         simpa [Nat.lcm_comm] using
           sum_range_lcmPeriod_normSq_kloostermanSum r q k

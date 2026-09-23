@@ -23,19 +23,19 @@ open MeasureTheory Set
 /-- **The tail of a vertical integral against a decaying kernel.**  Beyond height `T` the integrand is bounded
 by its trivial size times the kernel's decay, whose integral is `π − 2 arctan T`. -/
 theorem norm_integral_compl_Icc_le {g W : ℝ → ℂ} {T Mg C : ℝ} (hT : 0 ≤ T) (hMg : 0 ≤ Mg)
-    (hC : 0 ≤ C) (hg : ∀ y : ℝ, ‖g y‖ ≤ Mg) (hdecay : ∀ y : ℝ, ‖W y‖ ≤ C * (1 + y ^ 2)⁻¹) :
+    (hC : 0 ≤ C) (hg : ∀ y : ℝ, ‖g y‖ ≤ Mg) (hdecay : ∀ y : ℝ, ‖W y‖ ≤ C * (1 + y ^ (2 : ℕ))⁻¹) :
     ‖∫ y in (Set.Icc (-T) T)ᶜ, g y * W y‖ ≤ Mg * C * (Real.pi - 2 * Real.arctan T) := by
-  have hbound : ∀ y : ℝ, ‖g y * W y‖ ≤ (Mg * C) * (1 + y ^ 2)⁻¹ := by
+  have hbound : ∀ y : ℝ, ‖g y * W y‖ ≤ (Mg * C) * (1 + y ^ (2 : ℕ))⁻¹ := by
     intro y
     rw [norm_mul]
-    calc ‖g y‖ * ‖W y‖ ≤ Mg * (C * (1 + y ^ 2)⁻¹) :=
+    calc ‖g y‖ * ‖W y‖ ≤ Mg * (C * (1 + y ^ (2 : ℕ))⁻¹) :=
           mul_le_mul (hg y) (hdecay y) (norm_nonneg _) hMg
-      _ = (Mg * C) * (1 + y ^ 2)⁻¹ := by ring
-  have hint2 : IntegrableOn (fun y : ℝ => (Mg * C) * (1 + y ^ 2)⁻¹) (Set.Icc (-T) T)ᶜ :=
+      _ = (Mg * C) * (1 + y ^ (2 : ℕ))⁻¹ := by ring
+  have hint2 : IntegrableOn (fun y : ℝ => (Mg * C) * (1 + y ^ (2 : ℕ))⁻¹) (Set.Icc (-T) T)ᶜ :=
     (integrable_inv_one_add_sq.const_mul (Mg * C)).integrableOn
   refine le_trans (norm_integral_le_integral_norm _) ?_
   have hmono : (∫ y in (Set.Icc (-T) T)ᶜ, ‖g y * W y‖)
-      ≤ ∫ y in (Set.Icc (-T) T)ᶜ, (Mg * C) * (1 + y ^ 2)⁻¹ := by
+      ≤ ∫ y in (Set.Icc (-T) T)ᶜ, (Mg * C) * (1 + y ^ (2 : ℕ))⁻¹ := by
     refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun y => norm_nonneg _) hint2 ?_
     filter_upwards with y using hbound y
   refine hmono.trans ?_
@@ -44,7 +44,7 @@ theorem norm_integral_compl_Icc_le {g W : ℝ → ℂ} {T Mg C : ℝ} (hT : 0 �
 
 /-- **The vertical integral split at a height.**  The part beyond `T` is charged to the kernel's decay. -/
 theorem norm_integral_le_truncated_add_tail {g W : ℝ → ℂ} {T Mg C : ℝ} (hT : 0 ≤ T) (hMg : 0 ≤ Mg)
-    (hC : 0 ≤ C) (hg : ∀ y : ℝ, ‖g y‖ ≤ Mg) (hdecay : ∀ y : ℝ, ‖W y‖ ≤ C * (1 + y ^ 2)⁻¹)
+    (hC : 0 ≤ C) (hg : ∀ y : ℝ, ‖g y‖ ≤ Mg) (hdecay : ∀ y : ℝ, ‖W y‖ ≤ C * (1 + y ^ (2 : ℕ))⁻¹)
     (hint : Integrable fun y => g y * W y) :
     ‖∫ y : ℝ, g y * W y‖
       ≤ ‖∫ y in Set.Icc (-T) T, g y * W y‖ + Mg * C * (Real.pi - 2 * Real.arctan T) := by
@@ -68,13 +68,13 @@ theorem norm_integral_mul_three_le_truncated_add_tail {g₁ g₂ g₃ W : ℝ �
     (hm2 : AEStronglyMeasurable g₂ (volume.restrict (Set.Icc (-T) T)))
     (hM : ∀ y : ℝ, ‖g₃ y‖ ≤ M) (hW : ∀ y : ℝ, ‖W y‖ ≤ Wsup)
     (hg : ∀ y : ℝ, ‖g₁ y * g₂ y * g₃ y‖ ≤ Mg)
-    (hdecay : ∀ y : ℝ, ‖W y‖ ≤ C * (1 + y ^ 2)⁻¹)
+    (hdecay : ∀ y : ℝ, ‖W y‖ ≤ C * (1 + y ^ (2 : ℕ))⁻¹)
     (hint : Integrable fun y => g₁ y * g₂ y * g₃ y * W y)
-    (h1 : IntegrableOn (fun y => ‖g₁ y‖ ^ 2) (Set.Icc (-T) T))
-    (h2 : IntegrableOn (fun y => ‖g₂ y‖ ^ 2) (Set.Icc (-T) T)) :
+    (h1 : IntegrableOn (fun y => ‖g₁ y‖ ^ (2 : ℕ)) (Set.Icc (-T) T))
+    (h2 : IntegrableOn (fun y => ‖g₂ y‖ ^ (2 : ℕ)) (Set.Icc (-T) T)) :
     ‖∫ y : ℝ, g₁ y * g₂ y * g₃ y * W y‖
-      ≤ M * Wsup * (Real.sqrt (∫ y in Set.Icc (-T) T, ‖g₁ y‖ ^ 2)
-            * Real.sqrt (∫ y in Set.Icc (-T) T, ‖g₂ y‖ ^ 2))
+      ≤ M * Wsup * (Real.sqrt (∫ y in Set.Icc (-T) T, ‖g₁ y‖ ^ (2 : ℕ))
+            * Real.sqrt (∫ y in Set.Icc (-T) T, ‖g₂ y‖ ^ (2 : ℕ)))
         + Mg * C * (Real.pi - 2 * Real.arctan T) := by
   have hsplit := norm_integral_le_truncated_add_tail (g := fun y => g₁ y * g₂ y * g₃ y) (W := W)
     hT hMg0 hC0 hg hdecay hint

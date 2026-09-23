@@ -14,17 +14,17 @@ namespace RHTower
 
 /-- A decreasing positively weighted scalar merger cannot cross this sharp head amplitude. -/
 theorem abs_weightedScalarMerge_le {α h a : ℝ} (hα : 0<α)
-    (hstep : α*(h+a)^2 ≤ α*h^2+a^2) :
+    (hstep : α*(h+a)^(2 : ℕ) ≤ α*h^(2 : ℕ)+a^(2 : ℕ)) :
     |h+a| ≤ max |h| (((1+α)/(2*α))*|a|) := by
   by_cases hh : |h+a| ≤ |h|
   · exact hh.trans (le_max_left _ _)
-  have hsq : h^2 < (h+a)^2 := by
+  have hsq : h^(2 : ℕ) < (h+a)^(2 : ℕ) := by
     have ht := (sq_lt_sq₀ (abs_nonneg h) (abs_nonneg (h+a))).mpr (lt_of_not_ge hh)
     simpa only [sq_abs] using ht
   have hprod : 0<(h+a)*a := by nlinarith only [hsq,sq_nonneg a]
   have hab : |h+a| * |a| = (h+a)*a := by rw [← abs_mul,abs_of_pos hprod]
   have ha : 0< |a| := abs_pos.mpr (by intro he; subst a; simp at hprod)
-  have hineq : 2*α*(|h+a| * |a|) ≤ (1+α)*|a|^2 := by
+  have hineq : 2*α*(|h+a| * |a|) ≤ (1+α)*|a|^(2 : ℕ) := by
     rw [hab,sq_abs]
     nlinarith only [hstep]
   have hcancel : 2*α*|h+a| ≤ (1+α)*|a| := by
@@ -38,7 +38,7 @@ theorem abs_weightedScalarMerge_le {α h a : ℝ} (hα : 0<α)
 
 /-- The head coefficient cannot be lowered: a unit leaf attains it with exact energy equality. -/
 theorem weightedScalarMerge_amplitude_sharp {α : ℝ} (hα : 0<α) :
-    ∃ h : ℝ, α*(h+1)^2=α*h^2+1 ∧
+    ∃ h : ℝ, α*(h+1)^(2 : ℕ)=α*h^(2 : ℕ)+1 ∧
       |h| < |h+1| ∧ |h+1| = (1+α)/(2*α) := by
   let κ : ℝ := (1+α)/(2*α)
   have hκ : 1/2<κ := by
@@ -59,7 +59,7 @@ theorem abs_weightedScalarMerge_path_le {α A : ℝ} (hα : 0<α)
     (h : ℕ → ℝ) (a : ℕ → ℝ) (N : ℕ)
     (hrec : ∀ k<N,h (k+1)=h k+a k)
     (hleaf : ∀ k<N,|a k| ≤ A)
-    (hstep : ∀ k<N,α*(h (k+1))^2≤α*(h k)^2+(a k)^2) :
+    (hstep : ∀ k<N,α*(h (k+1))^(2 : ℕ)≤α*(h k)^(2 : ℕ)+(a k)^(2 : ℕ)) :
     ∀ k≤N,|h k| ≤ max |h 0| (((1+α)/(2*α))*A) := by
   intro k hk
   induction k with

@@ -19,7 +19,7 @@ open Finset
 
 /-- **The local factor dominates the square of the classical one.** -/
 theorem pairFactor_ge (d : ℕ) {p : ℕ} (hp : 3 ≤ p) :
-    ((p : ℝ) / ((p : ℝ) - 1)) ^ 2 * (if p ∣ d then ((p : ℝ) - 1) / (p : ℝ) else 1)
+    ((p : ℝ) / ((p : ℝ) - 1)) ^ (2 : ℕ) * (if p ∣ d then ((p : ℝ) - 1) / (p : ℝ) else 1)
       ≤ pairClassCount d p / ((p : ℝ) - pairClassCount d p) + 1 := by
   have hp3 : (3 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
   have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
@@ -27,7 +27,7 @@ theorem pairFactor_ge (d : ℕ) {p : ℕ} (hp : 3 ≤ p) :
   have hp2 : (0 : ℝ) < (p : ℝ) - 2 := by linarith
   rw [pairClassCount]
   split_ifs with hd
-  · have hval : ((p : ℝ) / ((p : ℝ) - 1)) ^ 2 * (((p : ℝ) - 1) / (p : ℝ))
+  · have hval : ((p : ℝ) / ((p : ℝ) - 1)) ^ (2 : ℕ) * (((p : ℝ) - 1) / (p : ℝ))
         = 1 / ((p : ℝ) - 1) + 1 := by
       field_simp
       ring
@@ -41,13 +41,13 @@ theorem pairFactor_ge (d : ℕ) {p : ℕ} (hp : 3 ≤ p) :
 
 /-- **The Euler product of the pair sieve dominates the square of the Mertens product.** -/
 theorem prod_pairFactor_ge (d : ℕ) {s : Finset ℕ} (hs : ∀ p ∈ s, 3 ≤ p) :
-    (∏ p ∈ s, ((p : ℝ) / ((p : ℝ) - 1))) ^ 2
+    (∏ p ∈ s, ((p : ℝ) / ((p : ℝ) - 1))) ^ (2 : ℕ)
         * ∏ p ∈ s.filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))
       ≤ ∏ p ∈ s, (pairClassCount d p / ((p : ℝ) - pairClassCount d p) + 1) := by
   classical
-  have hsplit : (∏ p ∈ s, ((p : ℝ) / ((p : ℝ) - 1))) ^ 2
+  have hsplit : (∏ p ∈ s, ((p : ℝ) / ((p : ℝ) - 1))) ^ (2 : ℕ)
       * ∏ p ∈ s.filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))
-      = ∏ p ∈ s, (((p : ℝ) / ((p : ℝ) - 1)) ^ 2
+      = ∏ p ∈ s, (((p : ℝ) / ((p : ℝ) - 1)) ^ (2 : ℕ)
           * (if p ∣ d then ((p : ℝ) - 1) / (p : ℝ) else 1)) := by
     rw [Finset.prod_mul_distrib, ← Finset.prod_pow]
     congr 1

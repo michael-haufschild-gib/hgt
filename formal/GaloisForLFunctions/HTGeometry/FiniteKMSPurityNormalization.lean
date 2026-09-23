@@ -33,7 +33,7 @@ noncomputable section
 /-- Order-two purity of a canonical finite Gibbs state. -/
 def finiteGibbsPurity {α : Type*} [Fintype α]
     (β : ℝ) (energy : α → ℝ) : ℝ :=
-  ∑ a, finiteGibbsStateWeight β energy a ^ 2
+  ∑ a, finiteGibbsStateWeight β energy a ^ (2 : ℕ)
 
 /-- **Finite thermal replica value.**  Gibbs purity is the partition ratio `Z(2β) / Z(β)²`. -/
 theorem finiteGibbsPurity_eq_partitionRatio
@@ -41,7 +41,7 @@ theorem finiteGibbsPurity_eq_partitionRatio
     (β : ℝ) (energy : α → ℝ) :
     finiteGibbsPurity β energy =
       finiteGibbsPartition (2 * β) energy /
-        finiteGibbsPartition β energy ^ 2 := by
+        finiteGibbsPartition β energy ^ (2 : ℕ) := by
   rw [finiteGibbsPurity]
   simp_rw [finiteGibbsStateWeight, div_pow]
   rw [← Finset.sum_div]
@@ -70,7 +70,7 @@ theorem finiteGibbsPurity_le_one
   classical
   rw [finiteGibbsPurity]
   calc
-    (∑ a, finiteGibbsStateWeight β energy a ^ 2) ≤
+    (∑ a, finiteGibbsStateWeight β energy a ^ (2 : ℕ)) ≤
         ∑ a, finiteGibbsStateWeight β energy a := by
       apply Finset.sum_le_sum
       intro a ha
@@ -100,9 +100,9 @@ theorem one_div_card_le_finiteGibbsPurity
 theorem sum_sq_finiteKMSWightmanWeight_eq_one
     {α : Type*} [Fintype α] [Nonempty α]
     (β : ℝ) (energy : α → ℝ) :
-    ∑ a, ∑ b, finiteKMSWightmanWeight β energy a b ^ 2 = 1 := by
+    ∑ a, ∑ b, finiteKMSWightmanWeight β energy a b ^ (2 : ℕ) = 1 := by
   calc
-    (∑ a, ∑ b, finiteKMSWightmanWeight β energy a b ^ 2) =
+    (∑ a, ∑ b, finiteKMSWightmanWeight β energy a b ^ (2 : ℕ)) =
         ∑ a, finiteGibbsStateWeight β energy a := by
       apply Finset.sum_congr rfl
       intro a ha
@@ -113,7 +113,7 @@ theorem sum_sq_finiteKMSWightmanWeight_eq_one
 theorem sum_sq_diag_finiteKMSWightmanWeight_eq_purity
     {α : Type*} [Fintype α] [Nonempty α]
     (β : ℝ) (energy : α → ℝ) :
-    ∑ a, finiteKMSWightmanWeight β energy a a ^ 2 =
+    ∑ a, finiteKMSWightmanWeight β energy a a ^ (2 : ℕ) =
       finiteGibbsPurity β energy := by
   simp_rw [finiteKMSWightmanWeight_self]
   rfl
@@ -122,9 +122,9 @@ theorem sum_sq_diag_finiteKMSWightmanWeight_eq_purity
 theorem sum_sq_diag_finiteKMSWightmanWeight_eq_partitionRatio
     {α : Type*} [Fintype α] [Nonempty α]
     (β : ℝ) (energy : α → ℝ) :
-    ∑ a, finiteKMSWightmanWeight β energy a a ^ 2 =
+    ∑ a, finiteKMSWightmanWeight β energy a a ^ (2 : ℕ) =
       finiteGibbsPartition (2 * β) energy /
-        finiteGibbsPartition β energy ^ 2 := by
+        finiteGibbsPartition β energy ^ (2 : ℕ) := by
   rw [sum_sq_diag_finiteKMSWightmanWeight_eq_purity,
     finiteGibbsPurity_eq_partitionRatio]
 
@@ -132,30 +132,30 @@ theorem sum_sq_diag_finiteKMSWightmanWeight_eq_partitionRatio
 thermofield transitions is exactly the order-two linear entropy of the Gibbs state.
 
 This is the coefficient form of the canonical-purification identity
-`1 - Tr (rho^2)`: the full thermofield projector has unit Frobenius mass, while its diagonal
+`1 - Tr (rho^(2 : ℕ))`: the full thermofield projector has unit Frobenius mass, while its diagonal
 mass is the Gibbs purity. -/
 theorem sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity
     {α : Type*} [Fintype α] [Nonempty α] [DecidableEq α]
     (β : ℝ) (energy : α → ℝ) :
     (∑ a, ∑ b ∈ Finset.univ.erase a,
-        finiteKMSWightmanWeight β energy a b ^ 2) =
+        finiteKMSWightmanWeight β energy a b ^ (2 : ℕ)) =
       1 - finiteGibbsPurity β energy := by
   classical
   have hrow : ∀ a : α,
       (∑ b ∈ Finset.univ.erase a,
-          finiteKMSWightmanWeight β energy a b ^ 2) =
+          finiteKMSWightmanWeight β energy a b ^ (2 : ℕ)) =
         finiteGibbsStateWeight β energy a -
-          finiteGibbsStateWeight β energy a ^ 2 := by
+          finiteGibbsStateWeight β energy a ^ (2 : ℕ) := by
     intro a
     have hsplit := Finset.add_sum_erase Finset.univ
-      (fun b => finiteKMSWightmanWeight β energy a b ^ 2)
+      (fun b => finiteKMSWightmanWeight β energy a b ^ (2 : ℕ))
       (Finset.mem_univ a)
     have htotal := sum_sq_finiteKMSWightmanWeight_eq_stateWeight
       β energy a
-    change finiteKMSWightmanWeight β energy a a ^ 2 +
+    change finiteKMSWightmanWeight β energy a a ^ (2 : ℕ) +
       (∑ b ∈ Finset.univ.erase a,
-        finiteKMSWightmanWeight β energy a b ^ 2) =
-      ∑ b, finiteKMSWightmanWeight β energy a b ^ 2 at hsplit
+        finiteKMSWightmanWeight β energy a b ^ (2 : ℕ)) =
+      ∑ b, finiteKMSWightmanWeight β energy a b ^ (2 : ℕ) at hsplit
     rw [finiteKMSWightmanWeight_self] at hsplit
     linarith
   simp_rw [hrow]
@@ -382,15 +382,15 @@ theorem sum_offDiagonal_sq_finiteKMSWightmanWeight_tensor
     [DecidableEq α] [DecidableEq γ]
     (β : ℝ) (energyA : α → ℝ) (energyB : γ → ℝ) :
     (∑ x, ∑ y ∈ Finset.univ.erase x,
-        finiteKMSWightmanWeight β (finiteTensorEnergy energyA energyB) x y ^ 2) =
+        finiteKMSWightmanWeight β (finiteTensorEnergy energyA energyB) x y ^ (2 : ℕ)) =
       (∑ a, ∑ b ∈ Finset.univ.erase a,
-          finiteKMSWightmanWeight β energyA a b ^ 2) +
+          finiteKMSWightmanWeight β energyA a b ^ (2 : ℕ)) +
         (∑ c, ∑ d ∈ Finset.univ.erase c,
-          finiteKMSWightmanWeight β energyB c d ^ 2) -
+          finiteKMSWightmanWeight β energyB c d ^ (2 : ℕ)) -
         (∑ a, ∑ b ∈ Finset.univ.erase a,
-          finiteKMSWightmanWeight β energyA a b ^ 2) *
+          finiteKMSWightmanWeight β energyA a b ^ (2 : ℕ)) *
         (∑ c, ∑ d ∈ Finset.univ.erase c,
-          finiteKMSWightmanWeight β energyB c d ^ 2) := by
+          finiteKMSWightmanWeight β energyB c d ^ (2 : ℕ)) := by
   simp_rw [sum_offDiagonal_sq_finiteKMSWightmanWeight_eq_one_sub_purity,
     finiteGibbsPurity_tensor]
   ring

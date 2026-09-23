@@ -57,7 +57,7 @@ variable {X : Type*} [TopologicalSpace X]
 /-- The capture tube in the relative-phase bundle over a parameter space. -/
 def projectiveBundleTube (i₀ : I) (w : X → C → I → ℂ) (a : ℝ) :
     Set (X × UnitAddTorus {i : I // i ≠ i₀}) :=
-  {q | ∃ κ : C, a ≤ ‖bundlePairing (w q.1 κ) (torusSection i₀ q.2)‖ ^ 2}
+  {q | ∃ κ : C, a ≤ ‖bundlePairing (w q.1 κ) (torusSection i₀ q.2)‖ ^ (2 : ℕ)}
 
 /-- **The fibres of the tube are the parent card's relative-phase capture events.** -/
 theorem preimage_projectiveBundleTube (i₀ : I) (a : ℝ) (c : X → I → ℂ) (z : X → C → I → ℂ)
@@ -115,7 +115,7 @@ theorem isCompact_projectiveBundleTube_inter {K : Set X} (hK : IsCompact K)
   have hunion : projectiveBundleTube i₀ w a ∩ (K ×ˢ (Set.univ : Set _))
       = ⋃ κ : C, ((K ×ˢ (Set.univ : Set (UnitAddTorus {i : I // i ≠ i₀}))) ∩
           (fun q : X × UnitAddTorus {i : I // i ≠ i₀} =>
-            ‖bundlePairing (w q.1 κ) (torusSection i₀ q.2)‖ ^ 2) ⁻¹' (Set.Ici a)) := by
+            ‖bundlePairing (w q.1 κ) (torusSection i₀ q.2)‖ ^ (2 : ℕ)) ⁻¹' (Set.Ici a)) := by
     ext q
     simp only [projectiveBundleTube, Set.mem_inter_iff, Set.mem_setOf_eq, Set.mem_iUnion,
       Set.mem_preimage, Set.mem_Ici]

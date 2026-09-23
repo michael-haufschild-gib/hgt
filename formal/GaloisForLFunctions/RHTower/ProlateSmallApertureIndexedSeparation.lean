@@ -88,7 +88,7 @@ theorem inner_apertureMomentFourierSynthesis_ofReal_bandClass
 
 def prolatePolynomialAction (c : ℝ) (p : Polynomial ℂ) : Polynomial ℂ :=
   zeroBandPolynomialAction p -
-    ((c ^ 2 : ℝ) : ℂ) • (Polynomial.X ^ 2 * p)
+    ((c ^ (2 : ℕ) : ℝ) : ℂ) • (Polynomial.X ^ (2 : ℕ) * p)
 
 theorem prolatePolynomialAction_eval (c : ℝ) (p : Polynomial ℂ) (x : ℝ) :
     Polynomial.eval (x : ℂ) (prolatePolynomialAction c p) =
@@ -106,10 +106,10 @@ theorem coefficientConjugatePolynomial_prolatePolynomialAction
   unfold prolatePolynomialAction
   change Polynomial.map (starRingEnd ℂ)
       (zeroBandPolynomialAction p -
-        ((c ^ 2 : ℝ) : ℂ) • (Polynomial.X ^ 2 * p)) =
+        ((c ^ (2 : ℕ) : ℝ) : ℂ) • (Polynomial.X ^ (2 : ℕ) * p)) =
     zeroBandPolynomialAction (coefficientConjugatePolynomial p) -
-      ((c ^ 2 : ℝ) : ℂ) •
-        (Polynomial.X ^ 2 * coefficientConjugatePolynomial p)
+      ((c ^ (2 : ℕ) : ℝ) : ℂ) •
+        (Polynomial.X ^ (2 : ℕ) * coefficientConjugatePolynomial p)
   rw [Polynomial.map_sub, ← coefficientConjugatePolynomial,
     coefficientConjugatePolynomial_zeroBandPolynomialAction]
   congr 1
@@ -173,7 +173,7 @@ theorem deriv2_fourierBandTransform_complex
     (hf : IntervalIntegrable f volume (-1) 1) :
     deriv (deriv (fourierBandTransform c f)) = fun x : ℝ =>
       ∫ t in (-1 : ℝ)..1,
-        bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t := by
+        bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t := by
   rw [deriv_fourierBandTransform_complex c f hf]
   funext x
   exact (hasDerivAt_bandTransformDeriv hf x).deriv
@@ -196,19 +196,19 @@ theorem continuous_deriv2_fourierBandTransform_complex
     (hf : IntervalIntegrable f volume (-1) 1) :
     Continuous (deriv (deriv (fourierBandTransform c f))) := by
   rw [deriv2_fourierBandTransform_complex c f hf]
-  let g : ℝ → ℂ := fun t => -(((c * t : ℝ) : ℂ)) ^ 2 * f t
+  let g : ℝ → ℂ := fun t => -(((c * t : ℝ) : ℂ)) ^ (2 : ℕ) * f t
   have hg : IntervalIntegrable g volume (-1) 1 := by
     have hpow := intervalIntegrable_kernelPow_mul (c := c) hf 2
     refine hpow.congr ?_
     intro t _
     dsimp only [g]
-    have hI : Complex.I ^ 2 = -1 := by
+    have hI : Complex.I ^ (2 : ℕ) = -1 := by
       rw [pow_two, Complex.I_mul_I]
     rw [mul_pow, hI]
     ring
   have hfun :
       (fun x : ℝ => ∫ t in (-1 : ℝ)..1,
-        bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ 2) * f t) =
+        bandKernel c x t * (-(((c * t : ℝ) : ℂ)) ^ (2 : ℕ)) * f t) =
       fun x : ℝ => ∫ t in (-1 : ℝ)..1, bandKernel c x t * g t := by
     funext x
     apply intervalIntegral.integral_congr
@@ -250,7 +250,7 @@ theorem complexProlateSLAction_fourierBandTransform_polynomial
           (fun s => bandKernel (-c) x s *
             (Complex.I * (((-c) * x : ℝ) : ℂ)))
           (fun s => bandKernel (-c) x s *
-            (-((((-c) * x : ℝ) : ℂ)) ^ 2)) t * f t)
+            (-((((-c) * x : ℝ) : ℂ)) ^ (2 : ℕ))) t * f t)
       volume (-1) 1 := by
     apply Continuous.intervalIntegrable
     dsimp only [f]
@@ -454,14 +454,14 @@ theorem indexedEvenSlepianOutputMode_weak_prolate_eigen
     intro hzero
     have h := congrFun hzero 1
     exact one_ne_zero (hROne.symm.trans h)
-  have hvalueNe : evenProlateSignedValue a n ^ 2 ≠ 0 :=
+  have hvalueNe : evenProlateSignedValue a n ^ (2 : ℕ) ≠ 0 :=
     pow_ne_zero 2 (evenProlateSignedValue_ne_zero ha n)
   have hRBand : ∀ x : ℝ,
-      bandTransform c D.R x = evenProlateSignedValue a n ^ 2 * D.R x := by
+      bandTransform c D.R x = evenProlateSignedValue a n ^ (2 : ℕ) * D.R x := by
     intro x
     change bandTransform (signedModeRadialBandwidth a)
       (signedModeRadialData a n).R x =
-        evenProlateSignedValue a n ^ 2 * (signedModeRadialData a n).R x
+        evenProlateSignedValue a n ^ (2 : ℕ) * (signedModeRadialData a n).R x
     rw [hRdef]
     exact GaloisForLFunctions.RHTower.bandTransform_endpointNormalize_eigen hBand x
   let fr : RealIntervalL2 (-1 : ℝ) 1 := bandClass D.R hRSmooth.continuous
@@ -469,7 +469,7 @@ theorem indexedEvenSlepianOutputMode_weak_prolate_eigen
     bandClass_ne_zero_of_global_band_eigen hRSmooth.continuous
       hvalueNe hRNe hRBand
   have hfrEig : bandOperatorL2 c fr =
-      (evenProlateSignedValue a n ^ 2) • fr :=
+      (evenProlateSignedValue a n ^ (2 : ℕ)) • fr :=
     bandOperatorL2_bandClass_eq_smul_of_global_band_eigen
       hRSmooth.continuous hRBand
   let q : ComplexUnitIntervalL2 :=
@@ -480,7 +480,7 @@ theorem indexedEvenSlepianOutputMode_weak_prolate_eigen
     rw [GaloisForLFunctions.HTGeometry.norm_ofRealLp, norm_zero] at hnorm
     exact hfrNe (norm_eq_zero.mp hnorm)
   have hqEig : complexBandOperatorL2 c q =
-      ((evenProlateSignedValue a n ^ 2 : ℝ) : ℂ) • q := by
+      ((evenProlateSignedValue a n ^ (2 : ℕ) : ℝ) : ℂ) • q := by
     rw [complexBandOperatorL2_ofRealLp, hfrEig,
       ofRealLp_real_smul]
   let xe : ComplexUnitIntervalL2 :=
@@ -497,11 +497,11 @@ theorem indexedEvenSlepianOutputMode_weak_prolate_eigen
     apply Subtype.ext
     exact hzero
   have hvalue : complexUnitBandEvenValue c n =
-      evenProlateSignedValue a n ^ 2 := by
+      evenProlateSignedValue a n ^ (2 : ℕ) := by
     dsimp only [c, signedModeRadialBandwidth]
     exact complexUnitBandEvenValue_eq_evenProlateSignedValue_sq ha n
   have hxeEig : complexBandOperatorL2 c xe =
-      ((evenProlateSignedValue a n ^ 2 : ℝ) : ℂ) • xe := by
+      ((evenProlateSignedValue a n ^ (2 : ℕ) : ℝ) : ℂ) • xe := by
     have hblock := indexedEvenSlepianInputMode_eigen hc n
     have h := congrArg
       (fun w : complexUnitBandEvenSubspace => (w : ComplexUnitIntervalL2)) hblock
@@ -543,20 +543,20 @@ theorem indexedEvenSlepianOutputMode_separation_defect_identity
     let y := indexedEvenSlepianOutputMode c n
     ((D.chi : ℂ) + (K : ℂ)) *
         inner ℂ (apertureCpolyToL2 1 p) y =
-      -((c ^ 2 : ℝ) : ℂ) *
-        inner ℂ (apertureCpolyToL2 1 (Polynomial.X ^ 2 * p)) y := by
+      -((c ^ (2 : ℕ) : ℝ) : ℂ) *
+        inner ℂ (apertureCpolyToL2 1 (Polynomial.X ^ (2 : ℕ) * p)) y := by
   dsimp only
   let c : ℝ := signedModeRadialBandwidth a
   let D := signedModeRadialData a n
   let y := indexedEvenSlepianOutputMode c n
   have haction : prolatePolynomialAction c p =
       -(K : ℂ) • p -
-        ((c ^ 2 : ℝ) : ℂ) • (Polynomial.X ^ 2 * p) := by
+        ((c ^ (2 : ℕ) : ℝ) : ℂ) • (Polynomial.X ^ (2 : ℕ) * p) := by
     rw [prolatePolynomialAction, hp]
   have hA : apertureCpolyToL2 1 (prolatePolynomialAction c p) =
       -(K : ℂ) • apertureCpolyToL2 1 p -
-        ((c ^ 2 : ℝ) : ℂ) •
-          apertureCpolyToL2 1 (Polynomial.X ^ 2 * p) := by
+        ((c ^ (2 : ℕ) : ℝ) : ℂ) •
+          apertureCpolyToL2 1 (Polynomial.X ^ (2 : ℕ) * p) := by
     rw [haction, map_sub, map_smul, map_smul]
   have hweak := indexedEvenSlepianOutputMode_weak_prolate_eigen
     ha n p
@@ -595,16 +595,16 @@ theorem tendsto_norm_inner_apertureMomentFlagVector_indexedEvenOutput
     exact tendsto_norm_indexedEvenMomentAlignmentCoeff n
   have happroxNorm : Tendsto (fun c : ℝ => ‖inner ℂ v (z c • v)‖)
       L (nhds ‖v‖) := by
-    have hmul := hzNorm.mul_const (‖v‖ ^ 2)
-    have hlimit : ‖v‖⁻¹ * ‖v‖ ^ 2 = ‖v‖ := by
+    have hmul := hzNorm.mul_const (‖v‖ ^ (2 : ℕ))
+    have hlimit : ‖v‖⁻¹ * ‖v‖ ^ (2 : ℕ) = ‖v‖ := by
       field_simp
     rw [hlimit] at hmul
     exact hmul.congr' (Filter.Eventually.of_forall fun c => by
-      have hself : ‖inner ℂ v v‖ = ‖v‖ ^ 2 := by
+      have hself : ‖inner ℂ v v‖ = ‖v‖ ^ (2 : ℕ) := by
         rw [inner_self_eq_norm_sq_to_K, norm_pow]
-        exact congrArg (fun r : ℝ => r ^ 2)
+        exact congrArg (fun r : ℝ => r ^ (2 : ℕ))
           (Complex.norm_of_nonneg (norm_nonneg v))
-      change ‖z c‖ * ‖v‖ ^ 2 = ‖inner ℂ v (z c • v)‖
+      change ‖z c‖ * ‖v‖ ^ (2 : ℕ) = ‖inner ℂ v (z c • v)‖
       rw [inner_smul_right, norm_mul, hself])
   have hlow : ∀ c : ℝ,
       ‖inner ℂ v (z c • v)‖ - ‖inner ℂ v (y c - z c • v)‖ ≤
@@ -645,7 +645,7 @@ theorem tendsto_signedModeRadialBandwidth_zero :
   refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
   · have hzero : Tendsto signedModeRadialBandwidth
         (𝓝 (0 : ℝ)) (𝓝 0) := by
-      change Tendsto (fun a : ℝ => 2 * Real.pi * a ^ 2)
+      change Tendsto (fun a : ℝ => 2 * Real.pi * a ^ (2 : ℕ))
         (𝓝 (0 : ℝ)) (𝓝 0)
       have hconst : Tendsto (fun _ : ℝ => (2 * Real.pi : ℝ))
           (𝓝 (0 : ℝ)) (𝓝 (2 * Real.pi)) := tendsto_const_nhds
@@ -673,7 +673,7 @@ theorem tendsto_signedModeRadialData_chi_smallAperture (n : ℕ) :
     norm_num [K]
   let v : UnitApertureL2 := apertureMomentFlagVector k
   let w : UnitApertureL2 :=
-    apertureCpolyToL2 1 (Polynomial.X ^ 2 * p)
+    apertureCpolyToL2 1 (Polynomial.X ^ (2 : ℕ) * p)
   have hvNe : v ≠ 0 := apertureMomentFlagVector_ne_zero k
   have hvNorm : 0 < ‖v‖ := norm_pos_iff.mpr hvNe
   have hbw : Tendsto signedModeRadialBandwidth L L :=
@@ -701,7 +701,7 @@ theorem tendsto_signedModeRadialData_chi_smallAperture (n : ℕ) :
     field_simp
   have hbound : ∀ᶠ a : ℝ in L,
       ‖(((signedModeRadialData a n).chi : ℂ) + (K : ℂ))‖ ≤
-        C * signedModeRadialBandwidth a ^ 2 := by
+        C * signedModeRadialBandwidth a ^ (2 : ℕ) := by
     filter_upwards [self_mem_nhdsWithin, hdenPos] with a ha hdenLower
     have haPos : 0 < a := ha
     let c : ℝ := signedModeRadialBandwidth a
@@ -714,10 +714,10 @@ theorem tendsto_signedModeRadialData_chi_smallAperture (n : ℕ) :
       haPos n p K hpEig'
     change (((signedModeRadialData a n).chi : ℂ) + (K : ℂ)) *
         inner ℂ (apertureCpolyToL2 1 p) y =
-      -((c ^ 2 : ℝ) : ℂ) * inner ℂ w y at hident
+      -((c ^ (2 : ℕ) : ℝ) : ℂ) * inner ℂ w y at hident
     rw [hpFlag] at hident
     have hidentNorm := congrArg norm hident
-    have hcNorm : ‖((c ^ 2 : ℝ) : ℂ)‖ = c ^ 2 :=
+    have hcNorm : ‖((c ^ (2 : ℕ) : ℝ) : ℂ)‖ = c ^ (2 : ℕ) :=
       Complex.norm_of_nonneg (sq_nonneg c)
     rw [norm_mul, norm_mul, norm_neg, hcNorm] at hidentNorm
     have hinnerLe : ‖inner ℂ w y‖ ≤ ‖w‖ := by
@@ -726,23 +726,23 @@ theorem tendsto_signedModeRadialData_chi_smallAperture (n : ℕ) :
         _ = ‖w‖ := by rw [hyNorm, mul_one]
     have hprod :
         ‖(((signedModeRadialData a n).chi : ℂ) + (K : ℂ))‖ *
-            (‖v‖ / 2) ≤ c ^ 2 * ‖w‖ := by
+            (‖v‖ / 2) ≤ c ^ (2 : ℕ) * ‖w‖ := by
       calc
         ‖(((signedModeRadialData a n).chi : ℂ) + (K : ℂ))‖ *
             (‖v‖ / 2) ≤
           ‖(((signedModeRadialData a n).chi : ℂ) + (K : ℂ))‖ *
             ‖inner ℂ v y‖ :=
           mul_le_mul_of_nonneg_left hdenLower.le (norm_nonneg _)
-        _ = c ^ 2 * ‖inner ℂ w y‖ := hidentNorm
-        _ ≤ c ^ 2 * ‖w‖ :=
+        _ = c ^ (2 : ℕ) * ‖inner ℂ w y‖ := hidentNorm
+        _ ≤ c ^ (2 : ℕ) * ‖w‖ :=
           mul_le_mul_of_nonneg_left hinnerLe (sq_nonneg c)
-    change ‖(((signedModeRadialData a n).chi : ℂ) + (K : ℂ))‖ ≤ C * c ^ 2
+    change ‖(((signedModeRadialData a n).chi : ℂ) + (K : ℂ))‖ ≤ C * c ^ (2 : ℕ)
     have hdelta : 0 < ‖v‖ / 2 := by positivity
     nlinarith [sq_nonneg c,
       norm_nonneg (((signedModeRadialData a n).chi : ℂ) + (K : ℂ))]
   have hbw0 : Tendsto signedModeRadialBandwidth L (nhds 0) :=
     hbw.mono_right nhdsWithin_le_nhds
-  have hmajor : Tendsto (fun a : ℝ => C * signedModeRadialBandwidth a ^ 2)
+  have hmajor : Tendsto (fun a : ℝ => C * signedModeRadialBandwidth a ^ (2 : ℕ))
       L (nhds 0) := by
     simpa using tendsto_const_nhds.mul (hbw0.pow 2)
   have hchiNorm : Tendsto (fun a : ℝ =>

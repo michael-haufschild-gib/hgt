@@ -115,7 +115,7 @@ theorem ladderGapPairsIco_mapsTo_endpointWindows
     {P : Finset ℕ} {A₀ B₀ : ℕ} {Q eta U : ℝ} {J L : ℕ}
     (hA : 0 < A₀) (hQ : 0 < Q) (heta : 0 ≤ eta) (hPprime : ∀ p ∈ P, p.Prime)
     (hJU : U ≤ Q * (1 + eta) ^ J) (hU : 0 < U)
-    (hU2 : (B₀ : ℝ) < U ^ 2) :
+    (hU2 : (B₀ : ℝ) < U ^ (2 : ℕ)) :
     ∀ z : ((_ : ((_ : ℕ) × ℕ)) × ℕ),
       z ∈ ladderGapPairsIco P A₀ B₀ Q eta J L →
       z.2 ∈ Finset.Icc 1 ⌊(B₀ : ℝ) / U⌋₊ ∧
@@ -255,7 +255,7 @@ theorem ladderGapPairsIco_product_injective
     {P : Finset ℕ} {A₀ B₀ : ℕ} {Q eta U : ℝ} {J L : ℕ}
     (hA : 0 < A₀) (hQ : 0 < Q) (heta : 0 ≤ eta) (hPprime : ∀ p ∈ P, p.Prime)
     (hJU : U ≤ Q * (1 + eta) ^ J) (hU : 0 < U)
-    (hU2 : (B₀ : ℝ) < U ^ 2) :
+    (hU2 : (B₀ : ℝ) < U ^ (2 : ℕ)) :
     Set.InjOn (fun z : ((_ : ((_ : ℕ) × ℕ)) × ℕ) => z.1.2 * z.2)
       (ladderGapPairsIco P A₀ B₀ Q eta J L : Set _) := by
   classical
@@ -303,7 +303,7 @@ theorem card_ladderGapPairsIco_le_endpointWindows
     {P : Finset ℕ} {A₀ B₀ : ℕ} {Q eta U : ℝ} {J L : ℕ}
     (hA : 0 < A₀) (hQ : 0 < Q) (heta : 0 ≤ eta) (hPprime : ∀ p ∈ P, p.Prime)
     (hJU : U ≤ Q * (1 + eta) ^ J) (hU : 0 < U)
-    (hU2 : (B₀ : ℝ) < U ^ 2) :
+    (hU2 : (B₀ : ℝ) < U ^ (2 : ℕ)) :
     ((ladderGapPairsIco P A₀ B₀ Q eta J L).card : ℝ) ≤
       ∑ m ∈ Finset.Icc 1 ⌊(B₀ : ℝ) / U⌋₊,
         (((A₀ : ℝ) + (B₀ : ℝ)) * eta / (m : ℝ) + 6) := by
@@ -335,7 +335,7 @@ theorem card_ladderGapPairsIco_le_harmonic
     {P : Finset ℕ} {A₀ B₀ : ℕ} {Q eta U : ℝ} {J L : ℕ}
     (hA : 0 < A₀) (hQ : 0 < Q) (heta : 0 ≤ eta) (hPprime : ∀ p ∈ P, p.Prime)
     (hJU : U ≤ Q * (1 + eta) ^ J) (hU : 0 < U)
-    (hU2 : (B₀ : ℝ) < U ^ 2) :
+    (hU2 : (B₀ : ℝ) < U ^ (2 : ℕ)) :
     ((ladderGapPairsIco P A₀ B₀ Q eta J L).card : ℝ) ≤
       ((A₀ : ℝ) + (B₀ : ℝ)) * eta *
           (1 + Real.log ⌊(B₀ : ℝ) / U⌋₊) +

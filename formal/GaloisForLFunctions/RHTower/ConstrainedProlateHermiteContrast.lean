@@ -8,7 +8,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 This module formalizes the exact limiting algebra in the constrained-prolate fixed-mode card.  It
 defines the squared normalized Hermite values
 
-`a_j^2 = sqrt(2) * choose(4j,2j) / 16^j`,
+`a_j^(2 : ℕ) = sqrt(2) * choose(4j,2j) / 16^j`,
 
 their partial sums and secular weights, and the finite-support contrast vectors selected by the
 rank-one vanishing-integral constraint.  The vectors satisfy the constraint, are pairwise
@@ -45,7 +45,7 @@ theorem constrainedProlateHermiteWeight_le_half_of_pos {j : ℕ} (hj : 0 < j) :
     exact_mod_cast hchoose
   have hden : (16 : ℝ) ^ j = 2 * (2 : ℝ) ^ (4 * j - 1) := by
     calc
-      (16 : ℝ) ^ j = (2 ^ 4 : ℝ) ^ j := by norm_num
+      (16 : ℝ) ^ j = (2 ^ (4 : ℕ) : ℝ) ^ j := by norm_num
       _ = (2 : ℝ) ^ (4 * j) := by rw [← pow_mul]
       _ = (2 : ℝ) ^ ((4 * j - 1) + 1) := by rw [← hfour]
       _ = 2 * (2 : ℝ) ^ (4 * j - 1) := by rw [pow_succ]; ring
@@ -89,7 +89,7 @@ theorem constrainedProlateHermiteCoordinate_ne_zero (j : ℕ) :
 
 /-- Exact square of the normalized Hermite coordinate. -/
 theorem constrainedProlateHermiteCoordinate_sq (j : ℕ) :
-    constrainedProlateHermiteCoordinate j ^ 2 =
+    constrainedProlateHermiteCoordinate j ^ (2 : ℕ) =
       Real.sqrt 2 * constrainedProlateHermiteWeight j := by
   rw [constrainedProlateHermiteCoordinate, Real.sq_sqrt]
   exact (mul_nonneg (Real.sqrt_nonneg _) (constrainedProlateHermiteWeight_pos j).le)
@@ -104,9 +104,9 @@ theorem constrainedProlateHermiteWeightSum_pos (k : ℕ) :
   exact Finset.sum_pos' (fun j _ => (constrainedProlateHermiteWeight_pos j).le)
     ⟨0, by simp, constrainedProlateHermiteWeight_pos 0⟩
 
-/-- `S_k = sum_{j=0}^k a_j^2 = sqrt(2) Q_k`. -/
+/-- `S_k = sum_{j=0}^k a_j^(2 : ℕ) = sqrt(2) Q_k`. -/
 def constrainedProlateHermiteSquareSum (k : ℕ) : ℝ :=
-  ∑ j ∈ Finset.range (k + 1), constrainedProlateHermiteCoordinate j ^ 2
+  ∑ j ∈ Finset.range (k + 1), constrainedProlateHermiteCoordinate j ^ (2 : ℕ)
 
 theorem constrainedProlateHermiteSquareSum_eq (k : ℕ) :
     constrainedProlateHermiteSquareSum k =
@@ -173,7 +173,7 @@ theorem constrainedProlateHermiteContrast_constraint (k : ℕ) :
     calc
       (∑ j ∈ Finset.range (k + 1),
           constrainedProlateHermiteContrast k j * constrainedProlateHermiteCoordinate j) =
-          ∑ j ∈ Finset.range (k + 1), -(constrainedProlateHermiteCoordinate j ^ 2) := by
+          ∑ j ∈ Finset.range (k + 1), -(constrainedProlateHermiteCoordinate j ^ (2 : ℕ)) := by
         apply Finset.sum_congr rfl
         intro j hj
         have hjk : j ≤ k := by
@@ -182,7 +182,7 @@ theorem constrainedProlateHermiteContrast_constraint (k : ℕ) :
         rw [constrainedProlateHermiteContrast_of_le hjk]
         ring
       _ = -(∑ j ∈ Finset.range (k + 1),
-          constrainedProlateHermiteCoordinate j ^ 2) := by
+          constrainedProlateHermiteCoordinate j ^ (2 : ℕ)) := by
         rw [Finset.sum_neg_distrib]
   rw [hhead, constrainedProlateHermiteContrast_succ]
   rw [div_mul_cancel₀ _ (constrainedProlateHermiteCoordinate_ne_zero (k + 1))]
@@ -304,9 +304,9 @@ theorem constrainedProlateHermiteTheta_one :
   norm_num [constrainedProlateHermiteTheta]
 
 /-- The first adjacent constrained-ladder coefficient
-`Q_1^2/(Q_0 Q_2) = 242/211`. -/
+`Q_1^(2 : ℕ)/(Q_0 Q_2) = 242/211`. -/
 theorem constrainedProlateHermiteFirstAdjacentCoefficient :
-    constrainedProlateHermiteWeightSum 1 ^ 2 /
+    constrainedProlateHermiteWeightSum 1 ^ (2 : ℕ) /
       (constrainedProlateHermiteWeightSum 0 * constrainedProlateHermiteWeightSum 2) =
       242 / 211 := by
   norm_num

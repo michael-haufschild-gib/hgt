@@ -89,7 +89,7 @@ theorem patternRegion_subset_obstructed : PatternRegion ⊆ Obstructed := by
 
 /-- The `s`-parameterized Cassini (P1) region is obstructed. -/
 theorem cassini_subset_obstructed :
-    {b : ℂ | ∃ s : ℂ, b = (1 - s ^ 2) / 4 ∧ ‖s - 3‖ * ‖s + 1‖ ≤ 4} ⊆ Obstructed := by
+    {b : ℂ | ∃ s : ℂ, b = (1 - s ^ (2 : ℕ)) / 4 ∧ ‖s - 3‖ * ‖s + 1‖ ≤ 4} ⊆ Obstructed := by
   rintro b ⟨s, rfl, hcond⟩
   exact U0CurveSectors.obstructed_of_s hcond
 
@@ -191,7 +191,7 @@ theorem exists_frontier_obstructed_on_ray :
     show (⟨-66/25, 88/25⟩ : ℂ) ∈ Viable
     rw [mem_viable_iff]
     refine U0CurveSectors.viable_of_gt_sharp ?_
-    have hsq : ‖(⟨-66/25, 88/25⟩ : ℂ)‖ ^ 2 = 484 / 25 := by
+    have hsq : ‖(⟨-66/25, 88/25⟩ : ℂ)‖ ^ (2 : ℕ) = 484 / 25 := by
       rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; norm_num
     have hs2 : Real.sqrt 2 < 3 / 2 := by
       nlinarith [Real.sq_sqrt (show (0:ℝ) ≤ 2 by norm_num), Real.sqrt_nonneg 2]
@@ -209,7 +209,7 @@ theorem exists_frontier_obstructed_on_ray :
 theorem sharpPoint_mem_viable : (⟨4, 0⟩ : ℂ) ∈ Viable := by
   rw [mem_viable_iff]
   refine U0CurveSectors.viable_of_gt_sharp ?_
-  have hsq : ‖(⟨4, 0⟩ : ℂ)‖ ^ 2 = 16 := by
+  have hsq : ‖(⟨4, 0⟩ : ℂ)‖ ^ (2 : ℕ) = 16 := by
     rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; norm_num
   have hs2 : Real.sqrt 2 < 3 / 2 := by
     nlinarith [Real.sq_sqrt (show (0:ℝ) ≤ 2 by norm_num), Real.sqrt_nonneg 2]

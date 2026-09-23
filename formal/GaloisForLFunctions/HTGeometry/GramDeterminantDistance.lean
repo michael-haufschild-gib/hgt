@@ -53,17 +53,17 @@ theorem inner_gramSchmidt_left_eq_zero_of_lt {n : ℕ} (v : Fin n → E) {i j : 
 `vᵢ = ∑ⱼ (⟪gsⱼ, vᵢ⟫/‖gsⱼ‖²) • gsⱼ`.  The coefficient matrix is lower-triangular with unit diagonal,
 so its determinant is `1`; this is the transition making `det(gram v) = ∏‖gsⱼ‖²`. -/
 theorem eq_sum_gramSchmidt {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ v) (i : Fin n) :
-    v i = ∑ j, (⟪gramSchmidt ℂ v j, v i⟫_ℂ / (‖gramSchmidt ℂ v j‖ : ℂ) ^ 2) • gramSchmidt ℂ v j := by
+    v i = ∑ j, (⟪gramSchmidt ℂ v j, v i⟫_ℂ / (‖gramSchmidt ℂ v j‖ : ℂ) ^ (2 : ℕ)) • gramSchmidt ℂ v j := by
   have hzero : ∀ j ∈ Finset.univ, j ∉ Finset.Iic i →
-      (⟪gramSchmidt ℂ v j, v i⟫_ℂ / (‖gramSchmidt ℂ v j‖ : ℂ) ^ 2) • gramSchmidt ℂ v j = 0 := by
+      (⟪gramSchmidt ℂ v j, v i⟫_ℂ / (‖gramSchmidt ℂ v j‖ : ℂ) ^ (2 : ℕ)) • gramSchmidt ℂ v j = 0 := by
     intro j _ hj
     have hij : i < j := by simpa [Finset.mem_Iic] using hj
     rw [inner_gramSchmidt_left_eq_zero_of_lt v hij, zero_div, zero_smul]
   rw [← Finset.sum_subset (Finset.subset_univ (Finset.Iic i)) hzero,
     ← Finset.add_sum_Iio_eq_sum_Iic i]
-  have hcoef : ⟪gramSchmidt ℂ v i, v i⟫_ℂ / (‖gramSchmidt ℂ v i‖ : ℂ) ^ 2 = 1 := by
+  have hcoef : ⟪gramSchmidt ℂ v i, v i⟫_ℂ / (‖gramSchmidt ℂ v i‖ : ℂ) ^ (2 : ℕ) = 1 := by
     rw [gramSchmidt_inner_left_self]
-    have h : ⟪gramSchmidt ℂ v i, gramSchmidt ℂ v i⟫_ℂ = ((‖gramSchmidt ℂ v i‖ ^ 2 : ℝ) : ℂ) := by
+    have h : ⟪gramSchmidt ℂ v i, gramSchmidt ℂ v i⟫_ℂ = ((‖gramSchmidt ℂ v i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       apply Complex.ext <;> simp
     rw [h, ← Complex.ofReal_pow, div_self]
     exact Complex.ofReal_ne_zero.mpr
@@ -77,8 +77,8 @@ orthogonal Gram–Schmidt vectors as `∑ₖ conj(Bᵢₖ) Bⱼₖ ‖gsₖ‖²
 This is the entrywise form of the factorization `gram v = (conj B) · diag ‖gs‖² · Bᵀ`, whose
 determinant (with `det B = 1`, since `B` is lower-triangular with unit diagonal) is `∏ₖ ‖gsₖ‖²`. -/
 theorem gram_entry_eq {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ v) (i j : Fin n) :
-    ⟪v i, v j⟫_ℂ = ∑ k, (starRingEnd ℂ) (⟪gramSchmidt ℂ v k, v i⟫_ℂ / (‖gramSchmidt ℂ v k‖ : ℂ) ^ 2)
-      * (⟪gramSchmidt ℂ v k, v j⟫_ℂ / (‖gramSchmidt ℂ v k‖ : ℂ) ^ 2)
+    ⟪v i, v j⟫_ℂ = ∑ k, (starRingEnd ℂ) (⟪gramSchmidt ℂ v k, v i⟫_ℂ / (‖gramSchmidt ℂ v k‖ : ℂ) ^ (2 : ℕ))
+      * (⟪gramSchmidt ℂ v k, v j⟫_ℂ / (‖gramSchmidt ℂ v k‖ : ℂ) ^ (2 : ℕ))
       * ⟪gramSchmidt ℂ v k, gramSchmidt ℂ v k⟫_ℂ := by
   conv_lhs => rw [eq_sum_gramSchmidt v hv i, eq_sum_gramSchmidt v hv j]
   rw [sum_inner]
@@ -99,7 +99,7 @@ diagonal (`det B = 1`). -/
 theorem det_gram_eq_prod {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ v) :
     (Matrix.gram ℂ v).det = ∏ k, ⟪gramSchmidt ℂ v k, gramSchmidt ℂ v k⟫_ℂ := by
   set B : Matrix (Fin n) (Fin n) ℂ :=
-    Matrix.of (fun i k => ⟪gramSchmidt ℂ v k, v i⟫_ℂ / (‖gramSchmidt ℂ v k‖ : ℂ) ^ 2) with hB
+    Matrix.of (fun i k => ⟪gramSchmidt ℂ v k, v i⟫_ℂ / (‖gramSchmidt ℂ v k‖ : ℂ) ^ (2 : ℕ)) with hB
   set D : Fin n → ℂ := fun k => ⟪gramSchmidt ℂ v k, gramSchmidt ℂ v k⟫_ℂ with hD
   have hgram : Matrix.gram ℂ v = B.map (starRingEnd ℂ) * Matrix.diagonal D * Bᵀ := by
     ext i j
@@ -110,15 +110,15 @@ theorem det_gram_eq_prod {n : ℕ} (v : Fin n → E) (hv : LinearIndependent ℂ
     ring
   have hlow : ∀ i j, i < j → B i j = 0 := by
     intro i j hij
-    show ⟪gramSchmidt ℂ v j, v i⟫_ℂ / (‖gramSchmidt ℂ v j‖ : ℂ) ^ 2 = 0
+    show ⟪gramSchmidt ℂ v j, v i⟫_ℂ / (‖gramSchmidt ℂ v j‖ : ℂ) ^ (2 : ℕ) = 0
     rw [inner_gramSchmidt_left_eq_zero_of_lt v hij, zero_div]
   have hdetB : B.det = 1 := by
     rw [Matrix.det_of_lowerTriangular B hlow]
     apply Finset.prod_eq_one
     intro i _
-    show ⟪gramSchmidt ℂ v i, v i⟫_ℂ / (‖gramSchmidt ℂ v i‖ : ℂ) ^ 2 = 1
+    show ⟪gramSchmidt ℂ v i, v i⟫_ℂ / (‖gramSchmidt ℂ v i‖ : ℂ) ^ (2 : ℕ) = 1
     rw [gramSchmidt_inner_left_self]
-    have h : ⟪gramSchmidt ℂ v i, gramSchmidt ℂ v i⟫_ℂ = ((‖gramSchmidt ℂ v i‖ ^ 2 : ℝ) : ℂ) := by
+    have h : ⟪gramSchmidt ℂ v i, gramSchmidt ℂ v i⟫_ℂ = ((‖gramSchmidt ℂ v i‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       apply Complex.ext <;> simp
     rw [h, ← Complex.ofReal_pow, div_self]
     exact Complex.ofReal_ne_zero.mpr
@@ -175,10 +175,10 @@ theorem norm_gramSchmidt_le_of_mem_span (v : ℕ → E) (k : ℕ) {w : E}
     horth _ hmem2
   have hsplit : v k - w = gramSchmidt ℂ v k + ((v k - gramSchmidt ℂ v k) - w) := by abel
   rw [hsplit]
-  have hpy : ‖gramSchmidt ℂ v k + ((v k - gramSchmidt ℂ v k) - w)‖ ^ 2
-      = ‖gramSchmidt ℂ v k‖ ^ 2
+  have hpy : ‖gramSchmidt ℂ v k + ((v k - gramSchmidt ℂ v k) - w)‖ ^ (2 : ℕ)
+      = ‖gramSchmidt ℂ v k‖ ^ (2 : ℕ)
         + 2 * RCLike.re (inner ℂ (gramSchmidt ℂ v k) ((v k - gramSchmidt ℂ v k) - w))
-        + ‖(v k - gramSchmidt ℂ v k) - w‖ ^ 2 :=
+        + ‖(v k - gramSchmidt ℂ v k) - w‖ ^ (2 : ℕ) :=
     norm_add_sq (𝕜 := ℂ) _ _
   rw [hip] at hpy
   simp only [map_zero, mul_zero, add_zero] at hpy

@@ -19,7 +19,7 @@ theorem exists_norm_smoothAFEZetaSquareMellinIntegrand_right_one_le
     ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ,
       ‖smoothAFEZetaSquareMellinIntegrand (linePt tau) x
           ((1 : ℂ) + (v : ℂ) * I)‖ ≤
-        C * Real.exp (-(v ^ 2)) := by
+        C * Real.exp (-(v ^ (2 : ℕ))) := by
   let M : ℝ := smoothAFEZetaMajorant (3 / 2)
   let C : ℝ := (M * x * Real.exp 1) * M
   have hM : 0 ≤ M := by
@@ -40,7 +40,7 @@ theorem exists_norm_smoothAFEZetaSquareMellinIntegrand_right_one_le
   have hsingle' :
       ‖smoothAFEZetaMellinIntegrand (linePt tau) x
           ((1 : ℂ) + (v : ℂ) * I)‖ ≤
-        (M * x * Real.exp 1) * Real.exp (-(v ^ 2)) := by
+        (M * x * Real.exp 1) * Real.exp (-(v ^ (2 : ℕ))) := by
     simpa [M] using hsingle
   have hzeta' :
       ‖riemannZeta (linePt tau + ((1 : ℂ) + (v : ℂ) * I))‖ ≤ M := by
@@ -50,8 +50,8 @@ theorem exists_norm_smoothAFEZetaSquareMellinIntegrand_right_one_le
     ‖smoothAFEZetaMellinIntegrand (linePt tau) x
           (1 + ↑v * I)‖ *
         ‖riemannZeta (linePt tau + (1 + ↑v * I))‖
-      ≤ ((M * x * Real.exp 1) * Real.exp (-(v ^ 2))) * M := by gcongr
-    _ = C * Real.exp (-(v ^ 2)) := by dsimp only [C]; ring
+      ≤ ((M * x * Real.exp 1) * Real.exp (-(v ^ (2 : ℕ)))) * M := by gcongr
+    _ = C * Real.exp (-(v ^ (2 : ℕ))) := by dsimp only [C]; ring
 
 theorem smoothAFEZetaSquareMellinIntegrand_right_one_verticalIntegrable
     {x : ℝ} (hx : 0 < x) (tau : ℝ) :
@@ -63,7 +63,7 @@ theorem smoothAFEZetaSquareMellinIntegrand_right_one_verticalIntegrable
       ((1 : ℂ) + (v : ℂ) * I))
   obtain ⟨C, hC, hbound⟩ :=
     exists_norm_smoothAFEZetaSquareMellinIntegrand_right_one_le hx tau
-  have hmajor : Integrable (fun v : ℝ => C * Real.exp (-(v ^ 2))) := by
+  have hmajor : Integrable (fun v : ℝ => C * Real.exp (-(v ^ (2 : ℕ)))) := by
     simpa only [neg_one_mul] using
       (integrable_exp_neg_mul_sq (by norm_num : (0 : ℝ) < 1)).const_mul C
   apply Integrable.mono' hmajor
@@ -105,7 +105,7 @@ theorem exists_norm_smoothAFEZetaSquareMellinIntegrand_left_one_le
     ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ,
       ‖smoothAFEZetaSquareMellinIntegrand (linePt tau) x
           ((-1 : ℂ) + (v : ℂ) * I)‖ ≤
-        C * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2))) := by
+        C * ((1 + |v|) ^ (4 : ℕ) * Real.exp (-(v ^ (2 : ℕ)))) := by
   let D : ℝ := 6 * (1 + |tau|) * (4 + |tau|)
   let C : ℝ := (x⁻¹ * Real.exp 1 * D) * D
   have hD : 0 ≤ D := by dsimp only [D]; positivity
@@ -116,7 +116,7 @@ theorem exists_norm_smoothAFEZetaSquareMellinIntegrand_left_one_le
       ‖smoothAFEZetaMellinIntegrand (linePt tau) x
           ((-1 : ℂ) + (v : ℂ) * I)‖ ≤
         (x⁻¹ * Real.exp 1 * D) *
-          ((1 + |v|) ^ 2 * Real.exp (-(v ^ 2))) := by
+          ((1 + |v|) ^ (2 : ℕ) * Real.exp (-(v ^ (2 : ℕ)))) := by
     simpa [D] using hsingle
   have hzeta0 :=
     norm_riemannZeta_smoothAFEZetaLeftLinePt_le_quadratic (tau + v)
@@ -127,7 +127,7 @@ theorem exists_norm_smoothAFEZetaSquareMellinIntegrand_left_one_le
   have habs : |tau + v| ≤ |tau| + |v| := abs_add_le tau v
   have hzeta :
       ‖riemannZeta (linePt tau + ((-1 : ℂ) + (v : ℂ) * I))‖ ≤
-        D * (1 + |v|) ^ 2 := by
+        D * (1 + |v|) ^ (2 : ℕ) := by
     rw [harg]
     refine hzeta0.trans ?_
     have hfirst : 1 + |tau + v| ≤ (1 + |tau|) * (1 + |v|) := by
@@ -142,16 +142,16 @@ theorem exists_norm_smoothAFEZetaSquareMellinIntegrand_left_one_le
       6 * (1 + |tau + v|) * (4 + |tau + v|)
         ≤ 6 * ((1 + |tau|) * (1 + |v|)) *
             ((4 + |tau|) * (1 + |v|)) := by gcongr
-      _ = D * (1 + |v|) ^ 2 := by dsimp only [D]; ring
+      _ = D * (1 + |v|) ^ (2 : ℕ) := by dsimp only [D]; ring
   rw [smoothAFEZetaSquareMellinIntegrand_eq_single_mul_zeta, norm_mul]
   calc
     ‖smoothAFEZetaMellinIntegrand (linePt tau) x
           (-1 + ↑v * I)‖ *
         ‖riemannZeta (linePt tau + (-1 + ↑v * I))‖
       ≤ ((x⁻¹ * Real.exp 1 * D) *
-          ((1 + |v|) ^ 2 * Real.exp (-(v ^ 2)))) *
-        (D * (1 + |v|) ^ 2) := by gcongr
-    _ = C * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2))) := by
+          ((1 + |v|) ^ (2 : ℕ) * Real.exp (-(v ^ (2 : ℕ))))) *
+        (D * (1 + |v|) ^ (2 : ℕ)) := by gcongr
+    _ = C * ((1 + |v|) ^ (4 : ℕ) * Real.exp (-(v ^ (2 : ℕ)))) := by
       dsimp only [C]
       ring
 
@@ -163,7 +163,7 @@ theorem smoothAFEZetaSquareMellinIntegrand_left_one_verticalIntegrable
   obtain ⟨C, hC, hbound⟩ :=
     exists_norm_smoothAFEZetaSquareMellinIntegrand_left_one_le hx tau
   have hmajor : Integrable (fun v : ℝ =>
-      C * ((1 + |v|) ^ 4 * Real.exp (-(v ^ 2)))) :=
+      C * ((1 + |v|) ^ (4 : ℕ) * Real.exp (-(v ^ (2 : ℕ))))) :=
     RHTower.integrable_one_add_abs_pow_four_mul_exp_neg_sq.const_mul C
   apply Integrable.mono' hmajor
   · have hzeta : Continuous (fun v : ℝ =>

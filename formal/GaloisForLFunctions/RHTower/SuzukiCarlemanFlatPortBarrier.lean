@@ -116,7 +116,7 @@ theorem tendsto_carlemanLogResponseDeriv_div :
 /-- **`(8)`: no positive exponential weight makes the response derivative square integrable.** -/
 theorem not_integrableOn_weighted_carlemanLogResponseDeriv {σ : ℝ} (hσ : 0 < σ) (c : ℝ) :
     ¬ IntegrableOn
-      (fun L => (Real.exp (σ * L) * carlemanLogResponseDeriv L) ^ 2) (Ioi c) volume := by
+      (fun L => (Real.exp (σ * L) * carlemanLogResponseDeriv L) ^ (2 : ℕ)) (Ioi c) volume := by
   have hhalf : ∀ᶠ L in atTop, flatPortProfile L / 2 ≤ carlemanLogResponseDeriv L := by
     have hlim := tendsto_carlemanLogResponseDeriv_div
     have hev : ∀ᶠ L in atTop, 1 / 2 ≤ carlemanLogResponseDeriv L / flatPortProfile L := by
@@ -130,11 +130,11 @@ theorem not_integrableOn_weighted_carlemanLogResponseDeriv {σ : ℝ} (hσ : 0 <
       (fun L => Real.exp (2 * σ * L - 2 * Real.sqrt L) / 4) atTop atTop := by
     have hinner : Tendsto (fun L : ℝ => 2 * σ * L - 2 * Real.sqrt L) atTop atTop := by
       have hev : ∀ᶠ L : ℝ in atTop, σ * L ≤ 2 * σ * L - 2 * Real.sqrt L := by
-        filter_upwards [eventually_ge_atTop (0:ℝ), eventually_ge_atTop ((2 / σ) ^ 2)] with L h0 hL
+        filter_upwards [eventually_ge_atTop (0:ℝ), eventually_ge_atTop ((2 / σ) ^ (2 : ℕ))] with L h0 hL
         have hs : Real.sqrt L ≤ σ * L / 2 := by
           have hsq : Real.sqrt L * Real.sqrt L = L := Real.mul_self_sqrt h0
           have h2 : (2 / σ) ≤ Real.sqrt L := by
-            have hmono : Real.sqrt ((2 / σ) ^ 2) ≤ Real.sqrt L := Real.sqrt_le_sqrt hL
+            have hmono : Real.sqrt ((2 / σ) ^ (2 : ℕ)) ≤ Real.sqrt L := Real.sqrt_le_sqrt hL
             rwa [Real.sqrt_sq (by positivity)] at hmono
           have hmul : (2 / σ) * Real.sqrt L ≤ L := by
             nlinarith [mul_le_mul_of_nonneg_right h2 (Real.sqrt_nonneg L)]
@@ -148,21 +148,21 @@ theorem not_integrableOn_weighted_carlemanLogResponseDeriv {σ : ℝ} (hσ : 0 <
     exact (this.atTop_div_const (by norm_num : (0:ℝ) < 4)).congr fun L => rfl
   have hev : ∀ᶠ L in atTop,
       Real.exp (2 * σ * L - 2 * Real.sqrt L) / 4
-        ≤ (Real.exp (σ * L) * carlemanLogResponseDeriv L) ^ 2 := by
+        ≤ (Real.exp (σ * L) * carlemanLogResponseDeriv L) ^ (2 : ℕ) := by
     filter_upwards [hhalf] with L hL
     have hFpos := flatPortProfile_pos L
-    have h1 : Real.exp (σ * L) ^ 2 = Real.exp (2 * σ * L) := by
+    have h1 : Real.exp (σ * L) ^ (2 : ℕ) = Real.exp (2 * σ * L) := by
       rw [sq, ← Real.exp_add]
       congr 1
       ring
-    have h2 : flatPortProfile L ^ 2 = Real.exp (-(2 * Real.sqrt L)) := by
+    have h2 : flatPortProfile L ^ (2 : ℕ) = Real.exp (-(2 * Real.sqrt L)) := by
       rw [flatPortProfile, sq, ← Real.exp_add]
       congr 1
       ring
-    have hsq : (Real.exp (σ * L) * (flatPortProfile L / 2)) ^ 2
+    have hsq : (Real.exp (σ * L) * (flatPortProfile L / 2)) ^ (2 : ℕ)
         = Real.exp (2 * σ * L - 2 * Real.sqrt L) / 4 := by
-      calc (Real.exp (σ * L) * (flatPortProfile L / 2)) ^ 2
-          = Real.exp (σ * L) ^ 2 * flatPortProfile L ^ 2 / 4 := by ring
+      calc (Real.exp (σ * L) * (flatPortProfile L / 2)) ^ (2 : ℕ)
+          = Real.exp (σ * L) ^ (2 : ℕ) * flatPortProfile L ^ (2 : ℕ) / 4 := by ring
         _ = Real.exp (2 * σ * L) * Real.exp (-(2 * Real.sqrt L)) / 4 := by rw [h1, h2]
         _ = Real.exp (2 * σ * L - 2 * Real.sqrt L) / 4 := by
             rw [← Real.exp_add,

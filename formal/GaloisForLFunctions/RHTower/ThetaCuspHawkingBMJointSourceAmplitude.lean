@@ -11,7 +11,7 @@ attribute [-instance] RCLike.toInnerProductSpaceReal
 attribute [-instance] NormedSpace.complexToReal
 
 def sourceAmplitude (s w a T : ℂ) (t : ℝ) : ℂ :=
-  Complex.exp (w*(t:ℂ))*power (2*s) (1+radialUnit t)*a^2*T
+  Complex.exp (w*(t:ℂ))*power (2*s) (1+radialUnit t)*a^(2 : ℕ)*T
 
 def amplitudeRate (s w u : ℂ) : ℂ := w+2*s*(u-1)
 
@@ -22,7 +22,7 @@ theorem sourceAmplitude_hasDerivAt (s w a T : ℂ) (t : ℝ) :
   have hu := radialUnit_hasDerivAt t
   have hp := (power_derivatives (2*s) (radialUnit_add_one_pos t)).1.scomp t (hu.const_add 1)
   have he := ((hasDerivAt_id t).ofReal_comp.const_mul w).cexp
-  have hd := ((he.mul hp).mul_const (a^2)).mul_const T
+  have hd := ((he.mul hp).mul_const (a^(2 : ℕ))).mul_const T
   apply hd.congr_deriv
   dsimp only [sourceAmplitude,amplitudeRate,powerFirst,Function.comp_apply,id_eq]
   simp only [Complex.real_smul]
@@ -34,10 +34,10 @@ theorem sourceAmplitude_hasDerivAt (s w a T : ℂ) (t : ℝ) :
 /-- This is the literal ingoing envelope squared, including the fixed onset transform factor. -/
 theorem sourceAmplitude_original (s w a T : ℂ) (t : ℝ) :
     sourceAmplitude s w a T t =
-      Complex.exp (w*(t:ℂ))*(compactEnvelope s a 0 (radialUnit t))^2*T := by
+      Complex.exp (w*(t:ℂ))*(compactEnvelope s a 0 (radialUnit t))^(2 : ℕ)*T := by
   have hn : ((1+radialUnit t : ℝ):ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt (radialUnit_add_one_pos t))
   have hp : power (2*s) (1+radialUnit t) =
-      (Complex.exp (s*Complex.log (1+(radialUnit t:ℂ))))^2 := by
+      (Complex.exp (s*Complex.log (1+(radialUnit t:ℂ))))^(2 : ℕ) := by
     rw [power,Complex.cpow_def_of_ne_zero hn,pow_two,← Complex.exp_add]
     congr 1
     push_cast
@@ -48,13 +48,13 @@ theorem sourceAmplitude_original (s w a T : ℂ) (t : ℝ) :
 
 /-- Exact normalized current coefficient, retaining both full angular covectors. -/
 def originalForcing (s w a T J K : ℂ) (t : ℝ) : ℂ :=
-  -2*(1-(radialUnit t:ℂ)^2)*(radialUnit t:ℂ)*sourceAmplitude s w a T t*
-    (((5*s^2+15*s+4)/4)*J+s*(s-1)*(radialUnit t:ℂ)^2/4*((s+2)^2*J-K))
+  -2*(1-(radialUnit t:ℂ)^(2 : ℕ))*(radialUnit t:ℂ)*sourceAmplitude s w a T t*
+    (((5*s^(2 : ℕ)+15*s+4)/4)*J+s*(s-1)*(radialUnit t:ℂ)^(2 : ℕ)/4*((s+2)^(2 : ℕ)*J-K))
 
 /-- The displayed forcing is exactly the original source-normalized mixed current. -/
 theorem originalForcing_current (s w a T J K : ℂ) (t : ℝ) (ht : t < 0) :
     originalForcing s w a T J K t =
-      -2*((D4BMJointWave.tortoiseRadius t : ℂ)^2-1)/(D4BMJointWave.tortoiseRadius t:ℂ)^3*
+      -2*((D4BMJointWave.tortoiseRadius t : ℂ)^(2 : ℕ)-1)/(D4BMJointWave.tortoiseRadius t:ℂ)^(3 : ℕ)*
       (Complex.exp (w*(t:ℂ))*D4BMQuadraticMixedSource.current s (D4BMJointWave.tortoiseRadius t)
         (compactEnvelope s a 0 (D4BMJointWave.tortoiseRadius t:ℂ)⁻¹) J K*T) := by
   have hr : (D4BMJointWave.tortoiseRadius t : ℂ) ≠ 0 := by

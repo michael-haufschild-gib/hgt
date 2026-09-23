@@ -18,7 +18,7 @@ noncomputable section
 /-- The depth-one Gauss-channel residue in its literal one-prime form. -/
 theorem gaussChannelResidue_one (p : Nat.Primes) :
     gaussChannelResidue 1 p =
-      2 * ((p : ℝ) - 1) ^ 4 / ((p : ℝ) ^ 2 * Real.log (p : ℝ)) := by
+      2 * ((p : ℝ) - 1) ^ (4 : ℕ) / ((p : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ)) := by
   norm_num [gaussChannelResidue]
   ring
 
@@ -30,7 +30,7 @@ theorem memWeakSchattenClass_gaussOnePrimeCriticalPowerOperator (p : Nat.Primes)
 /-- The explicit one-prime critical realization has the literal arithmetic logarithmic residue. -/
 theorem hasSchattenLogResidue_gaussOnePrimeCriticalPowerOperator (p : Nat.Primes) :
     HasSchattenLogResidue 1 (gaussComponentCriticalPowerOperator (le_refl 1) p)
-      (2 * ((p : ℝ) - 1) ^ 4 / ((p : ℝ) ^ 2 * Real.log (p : ℝ))) := by
+      (2 * ((p : ℝ) - 1) ^ (4 : ℕ) / ((p : ℝ) ^ (2 : ℕ) * Real.log (p : ℝ))) := by
   rw [← gaussChannelResidue_one]
   exact hasSchattenLogResidue_gaussComponentCriticalPowerOperator (le_refl 1) p
 

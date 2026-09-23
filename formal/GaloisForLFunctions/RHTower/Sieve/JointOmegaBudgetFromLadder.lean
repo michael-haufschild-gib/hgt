@@ -32,9 +32,9 @@ theorem logPoly_jointOmegaCoeff_eq (P Q S : Finset ℕ) (w : ℝ) :
 /-- The coefficient energy of the joint polynomial. -/
 theorem energy_jointOmegaCoeff_le (P Q S : Finset ℕ) {Ω : ℝ} (hΩ : 0 ≤ Ω)
     (hbd : ∀ n ∈ S, ((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ) ≤ Ω) :
-    ∑ n ∈ S, ‖jointOmegaCoeff P Q n‖ ^ 2 ≤ (S.card : ℝ) * Ω ^ 2 := by
+    ∑ n ∈ S, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ) ≤ (S.card : ℝ) * Ω ^ (2 : ℕ) := by
   classical
-  have hterm : ∀ n ∈ S, ‖jointOmegaCoeff P Q n‖ ^ 2 ≤ Ω ^ 2 := by
+  have hterm : ∀ n ∈ S, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ) ≤ Ω ^ (2 : ℕ) := by
     intro n hn
     have hnorm : ‖jointOmegaCoeff P Q n‖ = |jointOmegaWeight P Q n| := by
       rw [jointOmegaCoeff, Complex.norm_real, Real.norm_eq_abs]
@@ -61,17 +61,17 @@ height.** -/
 theorem integral_kernel_normSq_jointOmega_le {P Q : Finset ℕ} {A₀ B₀ : ℕ} (hA : 0 < A₀)
     {δ W T₀ β₀ : ℝ} (hδ : 0 < δ) (hW : 1 ≤ W)
     (hbound : (∫ w in Set.Icc (-T₀) T₀,
-        ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ 2) ≤ β₀) :
-    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ 2
-        * ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ 2)
-      ≤ 2 * δ ^ 2
-          * ((5 * Real.pi / 2 * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ 2) * W
+        ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤ β₀) :
+    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ (2 : ℕ)
+        * ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ)
+          * ((5 * Real.pi / 2 * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ)) * W
             + (β₀ + 5 * Real.exp 1 / 2 * (B₀ : ℝ)
-                * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ 2))
-        + (4 * (5 * Real.pi / 2 * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ 2)
-              / (Real.pi ^ 2 * W)
+                * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ)))
+        + (4 * (5 * Real.pi / 2 * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ))
+              / (Real.pi ^ (2 : ℕ) * W)
             + 4 * (β₀ + 5 * Real.exp 1 / 2 * (B₀ : ℝ)
-                * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ 2) / (3 * Real.pi ^ 2 * W ^ 2))
+                * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ)) / (3 * Real.pi ^ (2 : ℕ) * W ^ (2 : ℕ)))
       := by
   classical
   set S : Finset ℕ := Finset.Icc A₀ B₀ with hS
@@ -82,7 +82,7 @@ theorem integral_kernel_normSq_jointOmega_le {P Q : Finset ℕ} {A₀ B₀ : ℕ
     intro n hn
     rw [hS, Finset.mem_Icc] at hn
     exact hn.2
-  have hbound' : (∫ w in Set.Icc (-T₀) T₀, ‖logPoly (jointOmegaCoeff P Q) S w‖ ^ 2) ≤ β₀ := by
+  have hbound' : (∫ w in Set.Icc (-T₀) T₀, ‖logPoly (jointOmegaCoeff P Q) S w‖ ^ (2 : ℕ)) ≤ β₀ := by
     refine le_trans (le_of_eq ?_) hbound
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [logPoly_jointOmegaCoeff_eq]
@@ -100,19 +100,19 @@ theorem integral_kernel_normSq_jointOmega_le {P Q : Finset ℕ} {A₀ B₀ : ℕ
 the joint Turán–Kubilius variance supplies. -/
 theorem energy_jointOmegaCoeff_le_variance {P Q : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
     (hQ : ∀ q ∈ Q, q.Prime) (hPQ : Disjoint P Q) (M : ℕ) :
-    (∑ n ∈ Finset.Icc 1 M, ‖jointOmegaCoeff P Q n‖ ^ 2)
+    (∑ n ∈ Finset.Icc 1 M, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ))
       ≤ 2 * ((M : ℝ) * (Joint.mass P * Joint.mass Q)
               * (Joint.mass P + Joint.mass Q + 1)
             + 2 * (Joint.mass P * Joint.mass Q) * (P.card : ℝ) * (Q.card : ℝ))
-        + 2 * (M : ℝ) * (Joint.mass P * Joint.mass Q) ^ 2 := by
+        + 2 * (M : ℝ) * (Joint.mass P * Joint.mass Q) ^ (2 : ℕ) := by
   classical
   have hvar := sum_sq_joint_deviation_le hP hQ hPQ M
   simp only [Joint.mass]
   set WP : ℝ := ∑ p ∈ P, (1 : ℝ) / (p : ℝ) with hWP
   set WQ : ℝ := ∑ q ∈ Q, (1 : ℝ) / (q : ℝ) with hWQ
-  have hterm : ∀ n ∈ Finset.Icc 1 M, ‖jointOmegaCoeff P Q n‖ ^ 2
-      ≤ 2 * (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ) - WP * WQ) ^ 2
-        + 2 * (WP * WQ) ^ 2 := by
+  have hterm : ∀ n ∈ Finset.Icc 1 M, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ)
+      ≤ 2 * (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ) - WP * WQ) ^ (2 : ℕ)
+        + 2 * (WP * WQ) ^ (2 : ℕ) := by
     intro n _
     have hP0 : (0 : ℝ) ≤ ((primeFactorsIn P n).card : ℝ) := Nat.cast_nonneg _
     have hQ0 : (0 : ℝ) ≤ ((primeFactorsIn Q n).card : ℝ) := Nat.cast_nonneg _
@@ -125,8 +125,8 @@ theorem energy_jointOmegaCoeff_le_variance {P Q : Finset ℕ} (hP : ∀ p ∈ P,
         mul_nonneg hP0 hQ0
       nlinarith [h1, hprod0, abs_nonneg ((ArithmeticFunction.moebius n : ℤ) : ℝ)]
     have h0 : (0 : ℝ) ≤ ‖jointOmegaCoeff P Q n‖ := norm_nonneg _
-    have hsq : ‖jointOmegaCoeff P Q n‖ ^ 2
-        ≤ (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ)) ^ 2 := by
+    have hsq : ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ)
+        ≤ (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ)) ^ (2 : ℕ) := by
       nlinarith [hnorm, h0]
     nlinarith [hsq,
       sq_nonneg (((primeFactorsIn P n).card : ℝ) * ((primeFactorsIn Q n).card : ℝ)
@@ -145,12 +145,12 @@ majorant's slope over the cut and its constant over the cut squared. -/
 theorem integral_kernel_normSq_jointOmega_le' {P Q : Finset ℕ} {A₀ B₀ : ℕ} (hA : 0 < A₀)
     {δ Wc T₀ β₀ : ℝ} (hδ : 0 < δ) (hWc : 1 ≤ Wc) (hT₀ : 0 < T₀) (hδWc : δ * Wc ≤ 1)
     (hbound : (∫ w in Set.Icc (-T₀) T₀,
-        ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ 2) ≤ β₀) :
-    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ 2
-        * ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ 2)
+        ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ)) ≤ β₀) :
+    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ (2 : ℕ)
+        * ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ 3 * ((5 * Real.pi / 2 + 5 * Real.exp 1 / 2 * ((B₀ : ℝ) / T₀))
-            * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ 2) / Wc
-        + 3 * β₀ / Wc ^ 2 := by
+            * ∑ n ∈ Finset.Icc A₀ B₀, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ)) / Wc
+        + 3 * β₀ / Wc ^ (2 : ℕ) := by
   classical
   set S : Finset ℕ := Finset.Icc A₀ B₀ with hS
   have hs0 : (0 : ℕ) ∉ S := by
@@ -160,7 +160,7 @@ theorem integral_kernel_normSq_jointOmega_le' {P Q : Finset ℕ} {A₀ B₀ : �
     intro n hn
     rw [hS, Finset.mem_Icc] at hn
     exact hn.2
-  have hbound' : (∫ w in Set.Icc (-T₀) T₀, ‖logPoly (jointOmegaCoeff P Q) S w‖ ^ 2) ≤ β₀ := by
+  have hbound' : (∫ w in Set.Icc (-T₀) T₀, ‖logPoly (jointOmegaCoeff P Q) S w‖ ^ (2 : ℕ)) ≤ β₀ := by
     refine le_trans (le_of_eq ?_) hbound
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [logPoly_jointOmegaCoeff_eq]
@@ -174,7 +174,7 @@ theorem integral_kernel_normSq_jointOmega_le' {P Q : Finset ℕ} {A₀ B₀ : �
   have hgal := gallagher_split_integral_dyadic (jointOmegaCoeff P Q) S hδ hWc0 hmaj
   rw [integral_normSq_logWindowSum_eq _ _ hδ.le] at hgal
   set α : ℝ := (5 * Real.pi / 2 + 5 * Real.exp 1 / 2 * ((B₀ : ℝ) / T₀))
-      * ∑ n ∈ S, ‖jointOmegaCoeff P Q n‖ ^ 2 with hαdef
+      * ∑ n ∈ S, ‖jointOmegaCoeff P Q n‖ ^ (2 : ℕ) with hαdef
   have hα0 : (0 : ℝ) ≤ α := by
     rw [hαdef]
     have h1 : (0 : ℝ) ≤ 5 * Real.pi / 2 + 5 * Real.exp 1 / 2 * ((B₀ : ℝ) / T₀) := by
@@ -185,9 +185,9 @@ theorem integral_kernel_normSq_jointOmega_le' {P Q : Finset ℕ} {A₀ B₀ : �
     exact mul_nonneg h1 (Finset.sum_nonneg fun n _ => by positivity)
   have harith := joint_spectral_terms_le (Wc := Wc) (α := α) (β₀ := β₀) (δ := δ) hWc0 hδ.le
     hδWc hα0 hβ0
-  have hrw : (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ 2
-      * ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ 2)
-      = ∫ w : ℝ, ‖logWindowKernel δ w‖ ^ 2 * ‖logPoly (jointOmegaCoeff P Q) S w‖ ^ 2 := by
+  have hrw : (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ (2 : ℕ)
+      * ‖jointOmegaPoly P Q (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
+      = ∫ w : ℝ, ‖logWindowKernel δ w‖ ^ (2 : ℕ) * ‖logPoly (jointOmegaCoeff P Q) S w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
     simp only [logPoly_jointOmegaCoeff_eq, hS]
   rw [hrw]

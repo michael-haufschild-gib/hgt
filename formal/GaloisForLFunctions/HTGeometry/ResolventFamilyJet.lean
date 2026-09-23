@@ -81,22 +81,22 @@ theorem norm_pow_le_of_small (hS : IsResolventFamilyOn S s) {u : ℝ} (hu : u �
     _ ≤ (2 * ‖S v‖) ^ (n + 1) := by
         exact pow_le_pow_left₀ (norm_nonneg _) h _
 
-/-- **Local uniform bound on the derivative amplitude.**  Since `partial_u S u = -(S u)^2`, the
+/-- **Local uniform bound on the derivative amplitude.**  Since `partial_u S u = -(S u)^(2 : ℕ)`, the
 square is what a domination hypothesis must bound; near a reference shift it stays below four times
 the reference square. -/
 theorem norm_sq_le_four_mul (hS : IsResolventFamilyOn S s) {u : ℝ} (hu : u ∈ s) (hv : v ∈ s)
     (hsmall : |u - v| * ‖S v‖ ≤ 1 / 2) :
-    ‖S u ^ 2‖ ≤ 4 * ‖S v‖ ^ 2 := by
+    ‖S u ^ (2 : ℕ)‖ ≤ 4 * ‖S v‖ ^ (2 : ℕ) := by
   have h := hS.norm_le_two_mul hu hv hsmall
-  have hsq : ‖S u ^ 2‖ ≤ ‖S u‖ ^ 2 := by
+  have hsq : ‖S u ^ (2 : ℕ)‖ ≤ ‖S u‖ ^ (2 : ℕ) := by
     rw [sq, sq]
     exact norm_mul_le _ _
-  have hmono : ‖S u‖ ^ 2 ≤ (2 * ‖S v‖) ^ 2 := by
+  have hmono : ‖S u‖ ^ (2 : ℕ) ≤ (2 * ‖S v‖) ^ (2 : ℕ) := by
     have h0 : 0 ≤ ‖S u‖ := norm_nonneg _
     nlinarith
-  calc ‖S u ^ 2‖ ≤ ‖S u‖ ^ 2 := hsq
-    _ ≤ (2 * ‖S v‖) ^ 2 := hmono
-    _ = 4 * ‖S v‖ ^ 2 := by ring
+  calc ‖S u ^ (2 : ℕ)‖ ≤ ‖S u‖ ^ (2 : ℕ) := hsq
+    _ ≤ (2 * ‖S v‖) ^ (2 : ℕ) := hmono
+    _ = 4 * ‖S v‖ ^ (2 : ℕ) := by ring
 
 /-- **Continuity of a resolvent family.**  The identity alone forces it. -/
 theorem continuousAt (hS : IsResolventFamilyOn S s) (hs : IsOpen s) (hv : v ∈ s) :
@@ -106,12 +106,12 @@ theorem continuousAt (hS : IsResolventFamilyOn S s) (hs : IsOpen s) (hv : v ∈ 
   obtain ⟨δ₀, hδ₀, hball⟩ := Metric.isOpen_iff.mp hs v hv
   set M := ‖S v‖ with hM
   have hMnn : 0 ≤ M := norm_nonneg _
-  refine ⟨min δ₀ (min (1 / (2 * (M + 1))) (ε / (2 * M ^ 2 + 1))), ?_, ?_⟩
+  refine ⟨min δ₀ (min (1 / (2 * (M + 1))) (ε / (2 * M ^ (2 : ℕ) + 1))), ?_, ?_⟩
   · have h1 : (0:ℝ) < 1 / (2 * (M + 1)) := by positivity
-    have h2 : (0:ℝ) < ε / (2 * M ^ 2 + 1) := by positivity
+    have h2 : (0:ℝ) < ε / (2 * M ^ (2 : ℕ) + 1) := by positivity
     exact lt_min hδ₀ (lt_min h1 h2)
   · intro u hu
-    have hdist : |u - v| < min δ₀ (min (1 / (2 * (M + 1))) (ε / (2 * M ^ 2 + 1))) := by
+    have hdist : |u - v| < min δ₀ (min (1 / (2 * (M + 1))) (ε / (2 * M ^ (2 : ℕ) + 1))) := by
       rwa [Real.dist_eq] at hu
     have hus : u ∈ s := by
       apply hball
@@ -119,7 +119,7 @@ theorem continuousAt (hS : IsResolventFamilyOn S s) (hs : IsOpen s) (hv : v ∈ 
       exact lt_of_lt_of_le hdist (min_le_left _ _)
     have hd1 : |u - v| < 1 / (2 * (M + 1)) :=
       lt_of_lt_of_le hdist (le_trans (min_le_right _ _) (min_le_left _ _))
-    have hd2 : |u - v| < ε / (2 * M ^ 2 + 1) :=
+    have hd2 : |u - v| < ε / (2 * M ^ (2 : ℕ) + 1) :=
       lt_of_lt_of_le hdist (le_trans (min_le_right _ _) (min_le_right _ _))
     have hsmall : |u - v| * M ≤ 1 / 2 := by
       have hpos : (0:ℝ) < 2 * (M + 1) := by positivity
@@ -130,16 +130,16 @@ theorem continuousAt (hS : IsResolventFamilyOn S s) (hs : IsOpen s) (hv : v ∈ 
             nlinarith
     have hnorm : ‖S u‖ ≤ 2 * M := hS.norm_le_two_mul hus hv hsmall
     have hbound := hS.norm_sub_le hus hv
-    have hchain : ‖S u - S v‖ ≤ |u - v| * (2 * M ^ 2) := by
+    have hchain : ‖S u - S v‖ ≤ |u - v| * (2 * M ^ (2 : ℕ)) := by
       refine le_trans hbound ?_
       have : ‖S u‖ * ‖S v‖ ≤ (2 * M) * M := by
         exact mul_le_mul_of_nonneg_right hnorm hMnn
-      have h2 : (2 * M) * M = 2 * M ^ 2 := by ring
+      have h2 : (2 * M) * M = 2 * M ^ (2 : ℕ) := by ring
       rw [h2] at this
       exact mul_le_mul_of_nonneg_left this (abs_nonneg _)
-    have hfinal : |u - v| * (2 * M ^ 2) < ε := by
-      have hden : (0:ℝ) < 2 * M ^ 2 + 1 := by positivity
-      have := mul_lt_mul_of_pos_right hd2 (by positivity : (0:ℝ) < 2 * M ^ 2 + 1)
+    have hfinal : |u - v| * (2 * M ^ (2 : ℕ)) < ε := by
+      have hden : (0:ℝ) < 2 * M ^ (2 : ℕ) + 1 := by positivity
+      have := mul_lt_mul_of_pos_right hd2 (by positivity : (0:ℝ) < 2 * M ^ (2 : ℕ) + 1)
       rw [div_mul_cancel₀ _ (ne_of_gt hden)] at this
       nlinarith [abs_nonneg (u - v)]
     rw [dist_eq_norm]
@@ -231,7 +231,7 @@ theorem aeval_eq_resolventShiftJet_sum (S : ℝ → A) (v : ℝ) (q : Polynomial
       = ∑ i ∈ Finset.range (q.natDegree + 1), q.coeff i • S v ^ i :=
     Polynomial.aeval_eq_sum_range (S v)
   rw [hsum, Finset.sum_range_succ']
-  have hzero : q.coeff 0 • S v ^ 0 = 0 := by rw [hq]; simp
+  have hzero : q.coeff 0 • S v ^ (0 : ℕ) = 0 := by rw [hq]; simp
   rw [hzero, add_zero]
   refine Finset.sum_congr rfl fun n _ => ?_
   have hfac : ((n ! : ℝ)) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n)

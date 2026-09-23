@@ -44,7 +44,7 @@ def xiWeilPairDif (F : ℂ → ℂ) (q : XiZeroCopy) : ℂ :=
 square: four times its real part is the pair-sum square minus the pair-difference square. -/
 theorem xiWeilPairTerm_re (F : ℂ → ℂ) (q : XiZeroCopy) :
     (xiWeilPairTerm F q).re =
-      (‖xiWeilPairSum F q‖ ^ 2 - ‖xiWeilPairDif F q‖ ^ 2) / 4 := by
+      (‖xiWeilPairSum F q‖ ^ (2 : ℕ) - ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) / 4 := by
   have hpt : xiSpectralPoint (xiZeroCopyLineConjEquiv q) =
       (starRingEnd ℂ) (xiSpectralPoint q) := xiSpectralPoint_lineConj q
   rw [xiWeilPairTerm, xiWeilSharp, xiWeilPairSum, xiWeilPairDif, hpt]
@@ -57,13 +57,13 @@ theorem xiWeilPairTerm_re (F : ℂ → ℂ) (q : XiZeroCopy) :
 /-- Square-summability transports across the reflection pairing. -/
 theorem xiWeil_squareSummable_lineConj {F : ℂ → ℂ} (hF : XiWeilSquareSummable F) :
     Summable (fun q : XiZeroCopy =>
-      ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ 2) :=
+      ‖F (xiSpectralPoint (xiZeroCopyLineConjEquiv q))‖ ^ (2 : ℕ)) :=
   (xiZeroCopyLineConjEquiv.summable_iff
-    (f := fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ 2)).mpr hF
+    (f := fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ))).mpr hF
 
 /-- The pair-sum sector of a square-summable test has convergent energy. -/
 theorem xiWeilPairSum_squareSummable {F : ℂ → ℂ} (hF : XiWeilSquareSummable F) :
-    Summable (fun q : XiZeroCopy => ‖xiWeilPairSum F q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖xiWeilPairSum F q‖ ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_)
     ((hF.add (xiWeil_squareSummable_lineConj hF)).mul_left 2)
   rw [xiWeilPairSum]
@@ -75,7 +75,7 @@ theorem xiWeilPairSum_squareSummable {F : ℂ → ℂ} (hF : XiWeilSquareSummabl
 
 /-- The pair-difference sector of a square-summable test has convergent energy. -/
 theorem xiWeilPairDif_squareSummable {F : ℂ → ℂ} (hF : XiWeilSquareSummable F) :
-    Summable (fun q : XiZeroCopy => ‖xiWeilPairDif F q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) := by
   refine Summable.of_nonneg_of_le (fun q => sq_nonneg _) (fun q => ?_)
     ((hF.add (xiWeil_squareSummable_lineConj hF)).mul_left 2)
   rw [xiWeilPairDif]
@@ -108,23 +108,23 @@ square-realization construction actually produces — the form is Pontryagin, an
 sector is the reflection-difference sector. -/
 theorem xiWeilPolarization_re_eq_krein {F : ℂ → ℂ} (hF : XiWeilSquareSummable F) :
     (xiWeilPolarization F F).re =
-      ((∑' q : XiZeroCopy, ‖xiWeilPairSum F q‖ ^ 2) -
-        (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2)) / 4 := by
+      ((∑' q : XiZeroCopy, ‖xiWeilPairSum F q‖ ^ (2 : ℕ)) -
+        (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ))) / 4 := by
   rw [xiWeilPolarization_eq_tsum_pairTerm, Complex.re_tsum (xiWeilPairTerm_summable hF)]
   calc (∑' q : XiZeroCopy, (xiWeilPairTerm F q).re) =
       ∑' q : XiZeroCopy,
-        (‖xiWeilPairSum F q‖ ^ 2 - ‖xiWeilPairDif F q‖ ^ 2) / 4 :=
+        (‖xiWeilPairSum F q‖ ^ (2 : ℕ) - ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) / 4 :=
         tsum_congr fun q => xiWeilPairTerm_re F q
-    _ = (∑' q : XiZeroCopy, (‖xiWeilPairSum F q‖ ^ 2 - ‖xiWeilPairDif F q‖ ^ 2)) / 4 := by
+    _ = (∑' q : XiZeroCopy, (‖xiWeilPairSum F q‖ ^ (2 : ℕ) - ‖xiWeilPairDif F q‖ ^ (2 : ℕ))) / 4 := by
         rw [tsum_div_const]
-    _ = ((∑' q : XiZeroCopy, ‖xiWeilPairSum F q‖ ^ 2) -
-        (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2)) / 4 := by
+    _ = ((∑' q : XiZeroCopy, ‖xiWeilPairSum F q‖ ^ (2 : ℕ)) -
+        (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ))) / 4 := by
         rw [(xiWeilPairSum_squareSummable hF).tsum_sub (xiWeilPairDif_squareSummable hF)]
 
 /-- At the prime exponential test the negative-sector energy density is exactly the centered
 cosh defect: the negative Krein sector of the Weil form is the Hodge mass sector. -/
 theorem norm_sq_pairDif_primeTest {p : ℝ} (hp : 1 < p) (q : XiZeroCopy) :
-    ‖xiWeilPairDif (xiWeilPrimeTest p) q‖ ^ 2 =
+    ‖xiWeilPairDif (xiWeilPrimeTest p) q‖ ^ (2 : ℕ) =
       (p : ℝ) ^ (2 * ((q.1 : ℂ)).re - 1) + (p : ℝ) ^ (1 - 2 * ((q.1 : ℂ)).re) - 2 :=
   norm_sq_primeTest_sub_lineConj hp q
 
@@ -135,7 +135,7 @@ converse uses an elementary indicator witness at an off-line spectral point. -/
 theorem riemannHypothesis_iff_forall_pairDifEnergy_eq_zero :
     RiemannHypothesis ↔
       ∀ F : ℂ → ℂ, XiWeilSquareSummable F →
-        (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2) = 0 := by
+        (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) = 0 := by
   constructor
   · intro hRH F _
     have hzero : ∀ q : XiZeroCopy, xiWeilPairDif F q = 0 := by
@@ -144,7 +144,7 @@ theorem riemannHypothesis_iff_forall_pairDifEnergy_eq_zero :
       rw [xiWeilPairDif, xiSpectralPoint_lineConj, ht,
         show (starRingEnd ℂ) ((t : ℝ) : ℂ) = ((t : ℝ) : ℂ) from Complex.conj_ofReal t,
         sub_self]
-    calc (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2) =
+    calc (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) =
         ∑' _q : XiZeroCopy, (0 : ℝ) :=
           tsum_congr fun q => by rw [hzero q, norm_zero]; norm_num
       _ = 0 := tsum_zero
@@ -203,10 +203,10 @@ theorem riemannHypothesis_iff_forall_pairDifEnergy_eq_zero :
       show (if alpha = alpha then (1 : ℂ) else 0) -
         (if (starRingEnd ℂ) alpha = alpha then (1 : ℂ) else 0) = 1
       rw [if_pos rfl, if_neg hconjne, sub_zero]
-    have hdifsum : Summable (fun q : XiZeroCopy => ‖xiWeilPairDif F q‖ ^ 2) :=
+    have hdifsum : Summable (fun q : XiZeroCopy => ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) :=
       xiWeilPairDif_squareSummable hFsq
-    have hle : ‖xiWeilPairDif F q0‖ ^ 2 ≤
-        ∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2 :=
+    have hle : ‖xiWeilPairDif F q0‖ ^ (2 : ℕ) ≤
+        ∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ) :=
       hdifsum.le_tsum q0 fun q _ => sq_nonneg _
     rw [hdif0] at hle
     rw [hodd F hFsq] at hle
@@ -218,7 +218,7 @@ pair-difference sector, whose energy density at the prime test is the Hodge mass
 theorem xiWeilSquareRealization_iff_forall_pairDifEnergy_eq_zero :
     XiWeilSquareRealization ↔
       ∀ F : ℂ → ℂ, XiWeilSquareSummable F →
-        (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ 2) = 0 :=
+        (∑' q : XiZeroCopy, ‖xiWeilPairDif F q‖ ^ (2 : ℕ)) = 0 :=
   riemannHypothesis_iff_xiWeilSquareRealization.symm.trans
     riemannHypothesis_iff_forall_pairDifEnergy_eq_zero
 

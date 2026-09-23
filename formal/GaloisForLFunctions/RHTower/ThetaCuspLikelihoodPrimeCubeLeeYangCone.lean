@@ -26,15 +26,15 @@ noncomputable section
 open GaloisForLFunctions GaloisForLFunctions.HTGeometry
 
 theorem thetaPositiveFactorPairs_prime_cube {p : ℕ} (hp : p.Prime) :
-    thetaPositiveFactorPairs (p ^ 3) =
-      {(0, p ^ 3 - 1), (p - 1, p ^ 2 - 1),
-        (p ^ 2 - 1, p - 1), (p ^ 3 - 1, 0)} := by
+    thetaPositiveFactorPairs (p ^ (3 : ℕ)) =
+      {(0, p ^ (3 : ℕ) - 1), (p - 1, p ^ (2 : ℕ) - 1),
+        (p ^ (2 : ℕ) - 1, p - 1), (p ^ (3 : ℕ) - 1, 0)} := by
   ext q
   constructor
   · intro hq
-    have hprod : (q.1 + 1) * (q.2 + 1) = p ^ 3 :=
+    have hprod : (q.1 + 1) * (q.2 + 1) = p ^ (3 : ℕ) :=
       (Finset.mem_filter.mp hq).2
-    have hdvd : q.1 + 1 ∣ p ^ 3 := ⟨q.2 + 1, hprod.symm⟩
+    have hdvd : q.1 + 1 ∣ p ^ (3 : ℕ) := ⟨q.2 + 1, hprod.symm⟩
     obtain ⟨i, hi, hqi⟩ := (Nat.dvd_prime_pow hp).mp hdvd
     rcases q with ⟨m, n⟩
     simp only at hprod hqi
@@ -42,17 +42,17 @@ theorem thetaPositiveFactorPairs_prime_cube {p : ℕ} (hp : p.Prime) :
     · simp only [Finset.mem_insert, Finset.mem_singleton]
       simp only [pow_zero] at hqi
       left
-      have hn : n + 1 = p ^ 3 := by simpa [hqi] using hprod
+      have hn : n + 1 = p ^ (3 : ℕ) := by simpa [hqi] using hprod
       apply Prod.ext <;> omega
     · simp only [Finset.mem_insert, Finset.mem_singleton]
       simp only [pow_one] at hqi
       right
       left
-      have hn : n + 1 = p ^ 2 := by
+      have hn : n + 1 = p ^ (2 : ℕ) := by
         apply Nat.eq_of_mul_eq_mul_left hp.pos
         calc
-          p * (n + 1) = p ^ 3 := by simpa [hqi] using hprod
-          _ = p * p ^ 2 := by ring
+          p * (n + 1) = p ^ (3 : ℕ) := by simpa [hqi] using hprod
+          _ = p * p ^ (2 : ℕ) := by ring
       apply Prod.ext <;> omega
     · simp only [Finset.mem_insert, Finset.mem_singleton]
       right
@@ -61,8 +61,8 @@ theorem thetaPositiveFactorPairs_prime_cube {p : ℕ} (hp : p.Prime) :
       have hn : n + 1 = p := by
         apply Nat.eq_of_mul_eq_mul_left (pow_pos hp.pos 2)
         calc
-          p ^ 2 * (n + 1) = p ^ 3 := by simpa [hqi] using hprod
-          _ = p ^ 2 * p := by ring
+          p ^ (2 : ℕ) * (n + 1) = p ^ (3 : ℕ) := by simpa [hqi] using hprod
+          _ = p ^ (2 : ℕ) * p := by ring
       apply Prod.ext <;> omega
     · simp only [Finset.mem_insert, Finset.mem_singleton]
       right
@@ -75,22 +75,22 @@ theorem thetaPositiveFactorPairs_prime_cube {p : ℕ} (hp : p.Prime) :
   · intro hq
     simp only [Finset.mem_insert, Finset.mem_singleton] at hq
     rcases hq with rfl | rfl | rfl | rfl
-    · have hp0 : 0 < p ^ 3 := pow_pos hp.pos 3
+    · have hp0 : 0 < p ^ (3 : ℕ) := pow_pos hp.pos 3
       apply Finset.mem_filter.mpr
       constructor
       · apply Finset.mem_product.mpr
         constructor <;> apply Finset.mem_range.mpr <;> omega
       · omega
 
-    · have hpp : p < p ^ 2 := by
+    · have hpp : p < p ^ (2 : ℕ) := by
         calc
           p < p * p := lt_mul_of_one_lt_right hp.pos hp.one_lt
-          _ = p ^ 2 := by ring
-      have hp2p3 : p ^ 2 < p ^ 3 := by
+          _ = p ^ (2 : ℕ) := by ring
+      have hp2p3 : p ^ (2 : ℕ) < p ^ (3 : ℕ) := by
         calc
-          p ^ 2 < p ^ 2 * p :=
+          p ^ (2 : ℕ) < p ^ (2 : ℕ) * p :=
             lt_mul_of_one_lt_right (pow_pos hp.pos 2) hp.one_lt
-          _ = p ^ 3 := by ring
+          _ = p ^ (3 : ℕ) := by ring
       apply Finset.mem_filter.mpr
       constructor
       · apply Finset.mem_product.mpr
@@ -98,15 +98,15 @@ theorem thetaPositiveFactorPairs_prime_cube {p : ℕ} (hp : p.Prime) :
       · rw [Nat.sub_add_cancel hp.pos,
           Nat.sub_add_cancel (pow_pos hp.pos 2)]
         ring
-    · have hpp : p < p ^ 2 := by
+    · have hpp : p < p ^ (2 : ℕ) := by
         calc
           p < p * p := lt_mul_of_one_lt_right hp.pos hp.one_lt
-          _ = p ^ 2 := by ring
-      have hp2p3 : p ^ 2 < p ^ 3 := by
+          _ = p ^ (2 : ℕ) := by ring
+      have hp2p3 : p ^ (2 : ℕ) < p ^ (3 : ℕ) := by
         calc
-          p ^ 2 < p ^ 2 * p :=
+          p ^ (2 : ℕ) < p ^ (2 : ℕ) * p :=
             lt_mul_of_one_lt_right (pow_pos hp.pos 2) hp.one_lt
-          _ = p ^ 3 := by ring
+          _ = p ^ (3 : ℕ) := by ring
       apply Finset.mem_filter.mpr
       constructor
       · apply Finset.mem_product.mpr
@@ -114,7 +114,7 @@ theorem thetaPositiveFactorPairs_prime_cube {p : ℕ} (hp : p.Prime) :
       · rw [Nat.sub_add_cancel (pow_pos hp.pos 2),
           Nat.sub_add_cancel hp.pos]
         ring
-    · have hp0 : 0 < p ^ 3 := pow_pos hp.pos 3
+    · have hp0 : 0 < p ^ (3 : ℕ) := pow_pos hp.pos 3
       apply Finset.mem_filter.mpr
       constructor
       · apply Finset.mem_product.mpr
@@ -122,7 +122,7 @@ theorem thetaPositiveFactorPairs_prime_cube {p : ℕ} (hp : p.Prime) :
       · omega
 
 theorem thetaFactorPairLogDisplacement_primeCube_left {p : ℕ} (hp : p.Prime) :
-    thetaFactorPairLogDisplacement (0, p ^ 3 - 1) = -3 * Real.log p / 2 := by
+    thetaFactorPairLogDisplacement (0, p ^ (3 : ℕ) - 1) = -3 * Real.log p / 2 := by
   unfold thetaFactorPairLogDisplacement
   simp only [Nat.zero_add, Nat.cast_one, Real.log_one, zero_sub, neg_div]
   rw [Nat.sub_add_cancel (pow_pos hp.pos 3), Nat.cast_pow, Real.log_pow]
@@ -130,7 +130,7 @@ theorem thetaFactorPairLogDisplacement_primeCube_left {p : ℕ} (hp : p.Prime) :
   ring
 
 theorem thetaFactorPairLogDisplacement_primeCube_innerLeft {p : ℕ} (hp : p.Prime) :
-    thetaFactorPairLogDisplacement (p - 1, p ^ 2 - 1) = -Real.log p / 2 := by
+    thetaFactorPairLogDisplacement (p - 1, p ^ (2 : ℕ) - 1) = -Real.log p / 2 := by
   unfold thetaFactorPairLogDisplacement
   rw [Nat.sub_add_cancel hp.pos, Nat.sub_add_cancel (pow_pos hp.pos 2),
     Nat.cast_pow, Real.log_pow]
@@ -138,7 +138,7 @@ theorem thetaFactorPairLogDisplacement_primeCube_innerLeft {p : ℕ} (hp : p.Pri
   ring
 
 theorem thetaFactorPairLogDisplacement_primeCube_innerRight {p : ℕ} (hp : p.Prime) :
-    thetaFactorPairLogDisplacement (p ^ 2 - 1, p - 1) = Real.log p / 2 := by
+    thetaFactorPairLogDisplacement (p ^ (2 : ℕ) - 1, p - 1) = Real.log p / 2 := by
   unfold thetaFactorPairLogDisplacement
   rw [Nat.sub_add_cancel (pow_pos hp.pos 2), Nat.sub_add_cancel hp.pos,
     Nat.cast_pow, Real.log_pow]
@@ -146,14 +146,14 @@ theorem thetaFactorPairLogDisplacement_primeCube_innerRight {p : ℕ} (hp : p.Pr
   ring
 
 theorem thetaFactorPairLogDisplacement_primeCube_right {p : ℕ} (hp : p.Prime) :
-    thetaFactorPairLogDisplacement (p ^ 3 - 1, 0) = 3 * Real.log p / 2 := by
+    thetaFactorPairLogDisplacement (p ^ (3 : ℕ) - 1, 0) = 3 * Real.log p / 2 := by
   unfold thetaFactorPairLogDisplacement
   simp only [Nat.zero_add, Nat.cast_one, Real.log_one, sub_zero]
   rw [Nat.sub_add_cancel (pow_pos hp.pos 3), Nat.cast_pow, Real.log_pow]
   norm_num
 
 def primeCubeCoefficientPolynomial (r : ℝ) : Polynomial ℂ :=
-  C 1 * X ^ 3 + C (r : ℂ) * X ^ 2 + C (r : ℂ) * X + C 1
+  C 1 * X ^ (3 : ℕ) + C (r : ℂ) * X ^ (2 : ℕ) + C (r : ℂ) * X + C 1
 
 theorem primeCubeCoefficientPolynomial_natDegree (r : ℝ) :
     (primeCubeCoefficientPolynomial r).natDegree = 3 := by
@@ -170,7 +170,7 @@ theorem primeCubeCoefficientPolynomial_ne_zero (r : ℝ) :
 
 theorem primeCubeCoefficientPolynomial_eval_factor (r : ℝ) (z : ℂ) :
     (primeCubeCoefficientPolynomial r).eval z =
-      (z + 1) * (z ^ 2 + ((r - 1 : ℝ) : ℂ) * z + 1) := by
+      (z + 1) * (z ^ (2 : ℕ) + ((r - 1 : ℝ) : ℂ) * z + 1) := by
   simp [primeCubeCoefficientPolynomial]
   ring
 
@@ -257,7 +257,7 @@ theorem centeredUnitCirclePolynomialPhase_primeCubeCoefficientPolynomial
   let q : ℂ := Complex.exp (Complex.I * (L : ℂ) * z)
   let c : ℂ := Complex.exp
     (-Complex.I * (((3 : ℝ) * L / 2 : ℝ) : ℂ) * z)
-  change c * (q ^ 3 + (r : ℂ) * q ^ 2 + (r : ℂ) * q + 1) = _
+  change c * (q ^ (3 : ℕ) + (r : ℂ) * q ^ (2 : ℕ) + (r : ℂ) * q + 1) = _
   have hterm (j : ℕ) :
       c * q ^ j =
         Complex.exp
@@ -268,9 +268,9 @@ theorem centeredUnitCirclePolynomialPhase_primeCubeCoefficientPolynomial
     push_cast
     ring
   rw [mul_add, mul_add, mul_add, hterm 3,
-    show c * 1 = c * q ^ 0 by simp, hterm 0]
-  rw [show c * ((r : ℂ) * q ^ 2) = (r : ℂ) * (c * q ^ 2) by ring,
-    show c * ((r : ℂ) * q) = (r : ℂ) * (c * q ^ 1) by ring,
+    show c * 1 = c * q ^ (0 : ℕ) by simp, hterm 0]
+  rw [show c * ((r : ℂ) * q ^ (2 : ℕ)) = (r : ℂ) * (c * q ^ (2 : ℕ)) by ring,
+    show c * ((r : ℂ) * q) = (r : ℂ) * (c * q ^ (1 : ℕ)) by ring,
     hterm 2, hterm 1]
   have hm3 :
       Complex.exp (Complex.I * (((0 : ℝ) - 3 / 2) * L : ℂ) * z) =
@@ -344,7 +344,7 @@ theorem primeCubeCoefficientPhaseDerivative_eq_scale_centeredPolynomial
 theorem primeCubeCoefficientCurrent_eq_sq_mul_centeredPolynomial
     {a : ℝ} (ha : a ≠ 0) (b L : ℝ) (z : ℂ) :
     primeCubeCoefficientCurrent L a b z =
-      a ^ 2 *
+      a ^ (2 : ℕ) *
         (centeredUnitCirclePolynomialPhaseDerivative
             (primeCubeCoefficientPolynomial (b / a)) L z *
           (starRingEnd ℂ) (centeredUnitCirclePolynomialPhase
@@ -522,12 +522,12 @@ theorem primeCubeCoefficientCurrent_wall (L a b y : ℝ) (hL : L ≠ 0) :
   have hsinh3 :
       Real.sinh (3 * (L * y / 2)) =
         Real.sinh (L * y / 2) *
-          (4 * Real.cosh (L * y / 2) ^ 2 - 1) := by
+          (4 * Real.cosh (L * y / 2) ^ (2 : ℕ) - 1) := by
     rw [Real.sinh_three_mul, Real.cosh_sq]
     ring
   have hcosh2 :
       Real.cosh (2 * (L * y / 2)) =
-        2 * Real.cosh (L * y / 2) ^ 2 - 1 := by
+        2 * Real.cosh (L * y / 2) ^ (2 : ℕ) - 1 := by
     rw [Real.cosh_two_mul, Real.cosh_sq]
     ring
   rw [h3, hsinh3, Real.cosh_three_mul, h2,
@@ -606,17 +606,17 @@ theorem hasDerivAt_thetaCuspLikelihoodSwapMassShellPhase
   simpa only [A, primeCubeExponentialMode, mul_assoc] using hscaled
 
 def thetaCuspLikelihoodPrimeCubeEndpointScale (p : ℕ) (B : ℝ) : ℝ :=
-  B * thetaCuspLikelihoodRayWeight (p ^ 3)
+  B * thetaCuspLikelihoodRayWeight (p ^ (3 : ℕ))
 
 def thetaCuspLikelihoodPrimeCubeInnerScale (p : ℕ) (B : ℝ) : ℝ :=
   thetaCuspLikelihoodScaledBoundaryTerm p B *
-      thetaCuspLikelihoodRayWeight (p ^ 2) +
+      thetaCuspLikelihoodRayWeight (p ^ (2 : ℕ)) +
     thetaCuspLikelihoodRayWeight p *
-      thetaCuspLikelihoodScaledBoundaryTerm (p ^ 2) B
+      thetaCuspLikelihoodScaledBoundaryTerm (p ^ (2 : ℕ)) B
 
 theorem thetaCuspLikelihoodSwapMassShellPhase_eq_prime_cube_boundary
     {p : ℕ} (hp : p.Prime) (B : ℝ) (z : ℂ) :
-    thetaCuspLikelihoodSwapMassShellPhase (p ^ 3) B 0 z =
+    thetaCuspLikelihoodSwapMassShellPhase (p ^ (3 : ℕ)) B 0 z =
       primeCubeCoefficientPhase (Real.log p)
         (thetaCuspLikelihoodPrimeCubeEndpointScale p B)
         (thetaCuspLikelihoodPrimeCubeInnerScale p B) z := by
@@ -624,9 +624,9 @@ theorem thetaCuspLikelihoodSwapMassShellPhase_eq_prime_cube_boundary
   rw [thetaPositiveFactorPairs_prime_cube hp]
   have hp2 := hp.two_le
   obtain ⟨hpp, hp2p3⟩ := prime_lt_sq_and_sq_lt_cube hp
-  have hleft : (0, p ^ 3 - 1) ∉
-      ({(p - 1, p ^ 2 - 1), (p ^ 2 - 1, p - 1),
-        (p ^ 3 - 1, 0)} : Finset (ℕ × ℕ)) := by
+  have hleft : (0, p ^ (3 : ℕ) - 1) ∉
+      ({(p - 1, p ^ (2 : ℕ) - 1), (p ^ (2 : ℕ) - 1, p - 1),
+        (p ^ (3 : ℕ) - 1, 0)} : Finset (ℕ × ℕ)) := by
     simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
     constructor
     · intro h
@@ -639,16 +639,16 @@ theorem thetaCuspLikelihoodSwapMassShellPhase_eq_prime_cube_boundary
     · intro h
       have hfst := congrArg Prod.fst h
       omega
-  have hinnerLeft : (p - 1, p ^ 2 - 1) ∉
-      ({(p ^ 2 - 1, p - 1), (p ^ 3 - 1, 0)} : Finset (ℕ × ℕ)) := by
+  have hinnerLeft : (p - 1, p ^ (2 : ℕ) - 1) ∉
+      ({(p ^ (2 : ℕ) - 1, p - 1), (p ^ (3 : ℕ) - 1, 0)} : Finset (ℕ × ℕ)) := by
     simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
     constructor <;> intro h
     · have hfst := congrArg Prod.fst h
       omega
     · have hfst := congrArg Prod.fst h
       omega
-  have hinnerRight : (p ^ 2 - 1, p - 1) ∉
-      ({(p ^ 3 - 1, 0)} : Finset (ℕ × ℕ)) := by
+  have hinnerRight : (p ^ (2 : ℕ) - 1, p - 1) ∉
+      ({(p ^ (3 : ℕ) - 1, 0)} : Finset (ℕ × ℕ)) := by
     simp only [Finset.mem_singleton]
     intro h
     have hsnd := congrArg Prod.snd h
@@ -656,8 +656,8 @@ theorem thetaCuspLikelihoodSwapMassShellPhase_eq_prime_cube_boundary
   rw [Finset.sum_insert hleft, Finset.sum_insert hinnerLeft,
     Finset.sum_insert hinnerRight, Finset.sum_singleton]
   have hpSub : p - 1 + 1 = p := by omega
-  have hpSqSub : p ^ 2 - 1 + 1 = p ^ 2 := by omega
-  have hpCubeSub : p ^ 3 - 1 + 1 = p ^ 3 := by omega
+  have hpSqSub : p ^ (2 : ℕ) - 1 + 1 = p ^ (2 : ℕ) := by omega
+  have hpCubeSub : p ^ (3 : ℕ) - 1 + 1 = p ^ (3 : ℕ) := by omega
   rw [hpSub, hpSqSub, hpCubeSub]
   simp only [Nat.zero_add]
   rw [thetaCuspLikelihoodScaledBoundaryTerm_one B]
@@ -678,16 +678,16 @@ theorem thetaCuspLikelihoodSwapMassShellPhase_eq_prime_cube_boundary
 
 theorem thetaCuspLikelihoodSwapMassShellPhaseDerivative_eq_prime_cube_boundary
     {p : ℕ} (hp : p.Prime) (B : ℝ) (z : ℂ) :
-    thetaCuspLikelihoodSwapMassShellPhaseDerivative (p ^ 3) B 0 z =
+    thetaCuspLikelihoodSwapMassShellPhaseDerivative (p ^ (3 : ℕ)) B 0 z =
       primeCubeCoefficientPhaseDerivative (Real.log p)
         (thetaCuspLikelihoodPrimeCubeEndpointScale p B)
         (thetaCuspLikelihoodPrimeCubeInnerScale p B) z := by
   have hleft :=
-    hasDerivAt_thetaCuspLikelihoodSwapMassShellPhase (p ^ 3) B 0 z
+    hasDerivAt_thetaCuspLikelihoodSwapMassShellPhase (p ^ (3 : ℕ)) B 0 z
   have hright := hasDerivAt_primeCubeCoefficientPhase (Real.log p)
     (thetaCuspLikelihoodPrimeCubeEndpointScale p B)
     (thetaCuspLikelihoodPrimeCubeInnerScale p B) z
-  have hfun : thetaCuspLikelihoodSwapMassShellPhase (p ^ 3) B 0 =
+  have hfun : thetaCuspLikelihoodSwapMassShellPhase (p ^ (3 : ℕ)) B 0 =
       primeCubeCoefficientPhase (Real.log p)
         (thetaCuspLikelihoodPrimeCubeEndpointScale p B)
         (thetaCuspLikelihoodPrimeCubeInnerScale p B) := by
@@ -698,7 +698,7 @@ theorem thetaCuspLikelihoodSwapMassShellPhaseDerivative_eq_prime_cube_boundary
 
 theorem thetaCuspLikelihoodSwapMassShellCurrent_eq_prime_cube_boundary
     {p : ℕ} (hp : p.Prime) (B : ℝ) (z : ℂ) :
-    thetaCuspLikelihoodSwapMassShellCurrent (p ^ 3) B 0 z =
+    thetaCuspLikelihoodSwapMassShellCurrent (p ^ (3 : ℕ)) B 0 z =
       primeCubeCoefficientCurrent (Real.log p)
         (thetaCuspLikelihoodPrimeCubeEndpointScale p B)
         (thetaCuspLikelihoodPrimeCubeInnerScale p B) z := by
@@ -708,7 +708,7 @@ theorem thetaCuspLikelihoodSwapMassShellCurrent_eq_prime_cube_boundary
 
 theorem thetaFactorPairLogDisplacement_ne_zero_prime_cube
     {p : ℕ} (hp : p.Prime) {q : ℕ × ℕ}
-    (hq : q ∈ thetaPositiveFactorPairs (p ^ 3)) :
+    (hq : q ∈ thetaPositiveFactorPairs (p ^ (3 : ℕ))) :
     thetaFactorPairLogDisplacement q ≠ 0 := by
   rw [thetaPositiveFactorPairs_prime_cube hp] at hq
   simp only [Finset.mem_insert, Finset.mem_singleton] at hq
@@ -731,10 +731,10 @@ theorem eventually_thetaCuspLikelihoodPrimeCube_antiCone
   let F : ℝ → ℝ := fun B =>
     thetaCuspLikelihoodPrimeCubeInnerScale p B -
       3 * thetaCuspLikelihoodPrimeCubeEndpointScale p B
-  have hpSq : 2 ≤ p ^ 2 := by nlinarith [hp.two_le]
+  have hpSq : 2 ≤ p ^ (2 : ℕ) := by nlinarith [hp.two_le]
   have hRp : 0 < thetaCuspLikelihoodRayWeight p :=
     thetaCuspLikelihoodRayWeight_pos hp.two_le
-  have hRpSq : 0 < thetaCuspLikelihoodRayWeight (p ^ 2) :=
+  have hRpSq : 0 < thetaCuspLikelihoodRayWeight (p ^ (2 : ℕ)) :=
     thetaCuspLikelihoodRayWeight_pos hpSq
   have hF0 : 0 < F 0 := by
     dsimp [F, thetaCuspLikelihoodPrimeCubeInnerScale,
@@ -761,12 +761,12 @@ theorem eventually_exists_thetaCuspLikelihoodSwapPrimeCubeCurrent_pos
     {p : ℕ} (hp : p.Prime) :
     ∀ᶠ B : ℝ in 𝓝[>] 0,
       ∃ z : ℂ, 0 < z.im ∧
-        0 < thetaCuspLikelihoodSwapMassShellCurrent (p ^ 3) B 0 z := by
+        0 < thetaCuspLikelihoodSwapMassShellCurrent (p ^ (3 : ℕ)) B 0 z := by
   have hlog : 0 < Real.log p :=
     Real.log_pos (by exact_mod_cast hp.one_lt)
   obtain ⟨hpp, hp2p3⟩ := prime_lt_sq_and_sq_lt_cube hp
-  have hpCube : 2 ≤ p ^ 3 := hp.two_le.trans (hpp.le.trans hp2p3.le)
-  have hpSq : 2 ≤ p ^ 2 := by nlinarith [hp.two_le]
+  have hpCube : 2 ≤ p ^ (3 : ℕ) := hp.two_le.trans (hpp.le.trans hp2p3.le)
+  have hpSq : 2 ≤ p ^ (2 : ℕ) := by nlinarith [hp.two_le]
   filter_upwards [self_mem_nhdsWithin,
     eventually_thetaCuspLikelihoodPrimeCube_antiCone hp] with B hB hanti
   change 0 < B at hB

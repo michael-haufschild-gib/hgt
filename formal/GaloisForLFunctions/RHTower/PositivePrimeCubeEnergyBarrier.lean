@@ -7,7 +7,7 @@ This source-shape countermodel uses the literal unsigned prime difference on a
 four-coordinate Boolean cube. Every source coefficient is strictly positive,
 every first step contracts, and the complete signed source vanishes. Nevertheless
 every order passes above the initial diagonal. The full background-parameter
-family has the sharp threshold `e^2+e ≥ 1/8`.
+family has the sharp threshold `e^(2 : ℕ)+e ≥ 1/8`.
 
 This cube is not the actual arithmetic divisor source. It rules out a generic
 positivity/endpoint argument, not the source-specific PE4 or SD1 statements.
@@ -23,7 +23,7 @@ abbrev FourPrimeCubeVertex := Finset (Fin 4)
 def fourPrimeCubeAxes : Finset (Fin 4) := insert 0 (insert 1 (insert 2 (insert 3 ∅)))
 
 def fourPrimeCubeEnergy (f : FourPrimeCubeVertex → ℝ) : ℝ :=
-  ∑ S ∈ fourPrimeCubeAxes.powerset, (f S)^2
+  ∑ S ∈ fourPrimeCubeAxes.powerset, (f S)^(2 : ℕ)
 
 /-- The literal unsigned prime difference, discarding the coordinate containing that prime. -/
 def fourPrimeCubeMerge (i : Fin 4) (f : FourPrimeCubeVertex → ℝ) (S : FourPrimeCubeVertex) : ℝ :=
@@ -51,9 +51,9 @@ theorem positivePrimeCubeSource_pos {e : ℝ} (he : 0<e) (S : FourPrimeCubeVerte
 
 private theorem cube_energy_explicit (f : FourPrimeCubeVertex → ℝ) :
     fourPrimeCubeEnergy f =
-      f ∅^2+f {0}^2+f {1}^2+f {2}^2+f {3}^2+f {0,1}^2+f {0,2}^2+f {0,3}^2+
-      f {1,2}^2+f {1,3}^2+f {2,3}^2+f {0,1,2}^2+f {0,1,3}^2+f {0,2,3}^2+
-      f {1,2,3}^2+f {0,1,2,3}^2 := by
+      f ∅^(2 : ℕ)+f {0}^(2 : ℕ)+f {1}^(2 : ℕ)+f {2}^(2 : ℕ)+f {3}^(2 : ℕ)+f {0,1}^(2 : ℕ)+f {0,2}^(2 : ℕ)+f {0,3}^(2 : ℕ)+
+      f {1,2}^(2 : ℕ)+f {1,3}^(2 : ℕ)+f {2,3}^(2 : ℕ)+f {0,1,2}^(2 : ℕ)+f {0,1,3}^(2 : ℕ)+f {0,2,3}^(2 : ℕ)+
+      f {1,2,3}^(2 : ℕ)+f {0,1,2,3}^(2 : ℕ) := by
   simp only [fourPrimeCubeEnergy,fourPrimeCubeAxes,
     sum_powerset_insert (by decide : (0:Fin 4) ∉ insert (1:Fin 4) (insert (2:Fin 4) (insert (3:Fin 4) ∅))),
     sum_powerset_insert (by decide : (1:Fin 4) ∉ insert (2:Fin 4) (insert (3:Fin 4) ∅)),
@@ -65,7 +65,7 @@ private theorem cube_energy_explicit (f : FourPrimeCubeVertex → ℝ) :
 
 /-- Exact initial diagonal of the complete positive source. -/
 theorem positivePrimeCube_initial_energy (e : ℝ) :
-    fourPrimeCubeEnergy (positivePrimeCubeSource e) = 20+16*e+16*e^2 := by
+    fourPrimeCubeEnergy (positivePrimeCubeSource e) = 20+16*e+16*e^(2 : ℕ) := by
   rw [cube_energy_explicit]
   norm_num [positivePrimeCubeSource,positivePrimeCubeBase,Fin.ext_iff]
   ring
@@ -126,7 +126,7 @@ def positivePrimeCubeOrderWithin (e : ℝ) (i j k l : Fin 4) : Prop :=
 /-- Exact parameter classification: every valid order has the same ceiling threshold. -/
 theorem positivePrimeCube_order_ceiling_iff (e : ℝ) (i j k l : Fin 4)
     (hij : i≠j) (hik : i≠k) (hil : i≠l) (hjk : j≠k) (hjl : j≠l) (hkl : k≠l) :
-    positivePrimeCubeOrderWithin e i j k l ↔ (1:ℝ)/8 ≤ e^2+e := by
+    positivePrimeCubeOrderWithin e i j k l ↔ (1:ℝ)/8 ≤ e^(2 : ℕ)+e := by
   rw [positivePrimeCubeOrderWithin,positivePrimeCube_initial_energy,
     positivePrimeCube_first_energy,positivePrimeCube_second_energy e i j hij,
     positivePrimeCube_third_energy e i j k hij hik hjk,

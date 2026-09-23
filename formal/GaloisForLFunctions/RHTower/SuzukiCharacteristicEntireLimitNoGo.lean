@@ -49,7 +49,7 @@ theorem not_analyticAt_suzukiXiCharacteristicTarget_of_deriv_eq_zero
     (hderiv : deriv XiC c = 0) :
     ¬ AnalyticAt ℂ suzukiXiCharacteristicTarget c := by
   intro htarget
-  let numerator : ℂ → ℂ := fun z => z ^ 2 * XiC z
+  let numerator : ℂ → ℂ := fun z => z ^ (2 : ℕ) * XiC z
   have hnum : AnalyticAt ℂ numerator c := by
     dsimp only [numerator]
     exact (analyticAt_id.pow 2).mul

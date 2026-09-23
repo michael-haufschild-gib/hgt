@@ -294,15 +294,15 @@ theorem phi_product_multiplierTruncPoly_abs_bound_explicit (P n : ℕ) {j d : �
 
 /-- Coarse live-range bound for the finite cumulant evaluated at `T = 1/d`.
 
-This is deliberately lossy: it packages all lower cumulants under the single scale `j^2/d`,
+This is deliberately lossy: it packages all lower cumulants under the single scale `j^(2 : ℕ)/d`,
 which is the scale needed by the final R1 polynomial envelope. -/
 theorem cumulantLogPoly_eval_inv_le_linear (n : ℕ) {j d : ℕ} (hd : 0 < d) (hjd : j ≤ d) :
-    (cumulantLogPoly n j).eval ((d : ℝ)⁻¹) ≤ (n : ℝ) * ((j : ℝ) ^ 2 / d) := by
+    (cumulantLogPoly n j).eval ((d : ℝ)⁻¹) ≤ (n : ℝ) * ((j : ℝ) ^ (2 : ℕ) / d) := by
   rw [eval_cumulantLogPoly_inv_nat hd]
   calc
     (∑ l ∈ Finset.range n,
         rescalePowerSum (l + 1) j / ((l + 1 : ℝ) * (d : ℝ) ^ (l + 1)))
-        ≤ ∑ _l ∈ Finset.range n, ((j : ℝ) ^ 2 / d) := by
+        ≤ ∑ _l ∈ Finset.range n, ((j : ℝ) ^ (2 : ℕ) / d) := by
           apply Finset.sum_le_sum
           intro l _hl
           have hpow_sum := sum_range_pow_cast_le_pow_succ (l + 1) j
@@ -329,17 +329,17 @@ theorem cumulantLogPoly_eval_inv_le_linear (n : ℕ) {j d : ℕ} (hd : 0 < d) (h
             rw [div_le_one (by positivity : (0 : ℝ) < (d : ℝ) ^ l)]
             exact hpow_le
           have hterm3 : (j : ℝ) ^ (l + 2) / ((d : ℝ) ^ (l + 1)) ≤
-              (j : ℝ) ^ 2 / d := by
+              (j : ℝ) ^ (2 : ℕ) / d := by
             calc
               (j : ℝ) ^ (l + 2) / ((d : ℝ) ^ (l + 1))
-                  = (j : ℝ) ^ 2 / d * ((j : ℝ) ^ l / (d : ℝ) ^ l) := by
+                  = (j : ℝ) ^ (2 : ℕ) / d * ((j : ℝ) ^ l / (d : ℝ) ^ l) := by
                     field_simp [hd0, hdl0]
                     ring
-              _ ≤ (j : ℝ) ^ 2 / d * 1 := by
+              _ ≤ (j : ℝ) ^ (2 : ℕ) / d * 1 := by
                     exact mul_le_mul_of_nonneg_left hratio_le (by positivity)
-              _ = (j : ℝ) ^ 2 / d := by ring
+              _ = (j : ℝ) ^ (2 : ℕ) / d := by ring
           exact le_trans hterm1 (le_trans hterm2 hterm3)
-    _ = (n : ℝ) * ((j : ℝ) ^ 2 / d) := by
+    _ = (n : ℝ) * ((j : ℝ) ^ (2 : ℕ) / d) := by
       rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
 
 /-- Half-range version of the logarithmic cumulant tail bound.
@@ -394,7 +394,7 @@ theorem phi_product_multiplierTruncPoly_abs_bound_half_envelope (P n : ℕ) {j d
     |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
         (multiplierTruncPoly P n j).eval ((d : ℝ)⁻¹)| ≤
       2 * (j : ℝ) ^ (n + 2) / (d : ℝ) ^ (n + 1) +
-        ((n : ℝ) * ((j : ℝ) ^ 2 / d)) ^ P / (P.factorial : ℝ) := by
+        ((n : ℝ) * ((j : ℝ) ^ (2 : ℕ) / d)) ^ P / (P.factorial : ℝ) := by
   have hjd : j ≤ d := by omega
   have hbase := phi_product_multiplierTruncPoly_abs_bound_explicit P n hd hjd
   have htail := logCumulantTail_half_power n hd hhalf
@@ -402,10 +402,10 @@ theorem phi_product_multiplierTruncPoly_abs_bound_half_envelope (P n : ℕ) {j d
     exact cumulantLogPoly_eval_nonneg n j (by positivity)
   have hc_le := cumulantLogPoly_eval_inv_le_linear n hd hjd
   have hpow : ((cumulantLogPoly n j).eval ((d : ℝ)⁻¹)) ^ P ≤
-      ((n : ℝ) * ((j : ℝ) ^ 2 / d)) ^ P := by
+      ((n : ℝ) * ((j : ℝ) ^ (2 : ℕ) / d)) ^ P := by
     exact pow_le_pow_left₀ hc_nonneg hc_le P
   have hfac : ((cumulantLogPoly n j).eval ((d : ℝ)⁻¹)) ^ P / (P.factorial : ℝ) ≤
-      ((n : ℝ) * ((j : ℝ) ^ 2 / d)) ^ P / (P.factorial : ℝ) := by
+      ((n : ℝ) * ((j : ℝ) ^ (2 : ℕ) / d)) ^ P / (P.factorial : ℝ) := by
     exact div_le_div_of_nonneg_right hpow (by positivity)
   linarith
 

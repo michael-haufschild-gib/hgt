@@ -41,7 +41,7 @@ theorem exists_levinson_mollified_budget_le_wide :
             ((σ₀ : ℂ) + (t : ℂ) * I) ≠ 0) →
         (∫ t in T₁..T₂,
           ‖levinsonMollifiedDetector ((lam : ℝ) : ℂ) b (Finset.Icc 1 N)
-            ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq →
+            ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ Msq →
         weightedLittlewoodBoundary
             (levinsonMollifiedDetector ((lam : ℝ) : ℂ) b (Finset.Icc 1 N)) σ₀ (15 / 2) T₁ T₂
           ≤ (T₂ - T₁) / 2 * Real.log (Msq / (T₂ - T₁))

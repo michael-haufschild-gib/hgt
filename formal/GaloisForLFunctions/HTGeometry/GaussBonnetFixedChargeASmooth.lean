@@ -23,8 +23,8 @@ theorem egbCoexistenceALogKernel_differentiable : Differentiable ℝ egbCoexiste
   have hn : ∀ τ, thermalRatio τ - 1 ≠ 0 := fun τ => sub_ne_zero.mpr (ne_of_lt (thermalRatio_lt_one τ))
   have hlog := hz.log (fun τ => (thermalRatio_pos τ).ne')
   have hformula : egbCoexistenceALogKernel = fun τ =>
-      (3 * (thermalRatio τ + 1) * (thermalRatio τ ^ 2 + 1) * (log (thermalRatio τ) / (thermalRatio τ - 1)) -
-        4 * (thermalRatio τ ^ 2 + thermalRatio τ + 1)) / (thermalRatio τ - 1) ^ 2 :=
+      (3 * (thermalRatio τ + 1) * (thermalRatio τ ^ (2 : ℕ) + 1) * (log (thermalRatio τ) / (thermalRatio τ - 1)) -
+        4 * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1)) / (thermalRatio τ - 1) ^ (2 : ℕ) :=
     funext egbCoexistenceALogKernel_logarithmic_formula
   rw [hformula]
   exact (((((hz.add_const 1).const_mul 3).mul ((hz.pow 2).add_const 1)).mul

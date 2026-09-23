@@ -112,8 +112,8 @@ theorem norm_kgMonodromy_sub_le (hb0 : 0 ≤ b) (hW₁b : ∀ r : ℝ, ‖W₁ r
     (hW₂s : ∀ x : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W₂ r x)
     {δ T : ℝ} (hδ0 : 0 ≤ δ) (hδ : ∀ r : ℝ, ‖W₁ r - W₂ r‖ ≤ δ) (hT : 0 ≤ T) :
     ‖kgMonodromy W₁ b hb0 hW₁b hW₁s T - kgMonodromy W₂ b hb0 hW₂b hW₂s T‖
-      ≤ 2 * T * δ * Real.exp (b * T) ^ 2 := by
-  have hC0 : (0 : ℝ) ≤ 2 * T * δ * Real.exp (b * T) ^ 2 := by positivity
+      ≤ 2 * T * δ * Real.exp (b * T) ^ (2 : ℕ) := by
+  have hC0 : (0 : ℝ) ≤ 2 * T * δ * Real.exp (b * T) ^ (2 : ℕ) := by positivity
   refine ContinuousLinearMap.opNorm_le_bound _ hC0 fun v => ?_
   have hval : (kgMonodromy W₁ b hb0 hW₁b hW₁s T - kgMonodromy W₂ b hb0 hW₂b hW₂s T) v
       = kgFieldStateT W₁ v.fst v.snd T - kgFieldStateT W₂ v.fst v.snd T := rfl
@@ -157,7 +157,7 @@ theorem tendsto_kgFieldStateT_zero_of_perturbed (hb0 : 0 ≤ b) (hW₁b : ∀ r 
     (hW₂s : ∀ x : Lp ℂ 2 (volume : Measure E), Continuous fun r : ℝ => W₂ r x)
     {δ T : ℝ} (hδ0 : 0 ≤ δ) (hδ : ∀ r : ℝ, ‖W₁ r - W₂ r‖ ≤ δ) (hT : 0 < T)
     (hper : ∀ r : ℝ, W₁ (r + T) = W₁ r)
-    (hM : ‖kgMonodromy W₂ b hb0 hW₂b hW₂s T‖ + 2 * T * δ * Real.exp (b * T) ^ 2 < 1)
+    (hM : ‖kgMonodromy W₂ b hb0 hW₂b hW₂s T‖ + 2 * T * δ * Real.exp (b * T) ^ (2 : ℕ) < 1)
     (g h : Lp ℂ 2 (volume : Measure E)) :
     Tendsto (fun t : ℝ => kgFieldStateT W₁ g h t) atTop (𝓝 0) := by
   have hlip := norm_kgMonodromy_sub_le hb0 hW₁b hW₁s hW₂b hW₂s hδ0 hδ hT.le

@@ -51,9 +51,9 @@ theorem intrinsicVerticalPosition_hasDerivAt_closedFormula
     (P : PositionedCenteredElastica V) (s : ℝ) :
     HasDerivAt (intrinsicVerticalPosition P)
       (normalizedForceScale P.normalization *
-        (P.normalization.frame.geometry.curvature s ^ 2 +
-          P.normalization.gamma ^ 2 *
-            P.normalization.frame.geometry.curvature 0 ^ 2 / 2) / 2) s := by
+        (P.normalization.frame.geometry.curvature s ^ (2 : ℕ) +
+          P.normalization.gamma ^ (2 : ℕ) *
+            P.normalization.frame.geometry.curvature 0 ^ (2 : ℕ) / 2) / 2) s := by
   convert intrinsicVerticalPosition_hasDerivAt P s using 1
   exact (verticalTangentCoefficient_eq P.normalization s).symm
 

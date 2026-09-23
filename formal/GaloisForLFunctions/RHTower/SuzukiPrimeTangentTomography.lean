@@ -277,7 +277,7 @@ theorem suzukiPrimeTangentScale_eq_reflected {m : ℕ} (hm : 2 ≤ m) :
       ((m : ℝ) + 1 / (m : ℝ)) / Real.sqrt m := by
   have hmpos : (0 : ℝ) < m := by exact_mod_cast (lt_of_lt_of_le (by norm_num : 0 < 2) hm)
   have hsqrt : Real.sqrt (m : ℝ) ≠ 0 := (Real.sqrt_pos.2 hmpos).ne'
-  have hsquare : Real.sqrt (m : ℝ) ^ 2 = m := Real.sq_sqrt hmpos.le
+  have hsquare : Real.sqrt (m : ℝ) ^ (2 : ℕ) = m := Real.sq_sqrt hmpos.le
   simp only [suzukiPrimeTangentScale]
   field_simp
   nlinarith

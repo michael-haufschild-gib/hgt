@@ -59,7 +59,7 @@ private theorem PlanarChartTest.local_integral_halfplane (g : PlanarChartTest) (
 
 /-- Squared height converts an actual full hyperbolic moment to its planar localization. -/
 theorem PlanarChartTest.height_sq_planar (g : PlanarChartTest) (u : Space) :
-    (∫ z : UpperHalfPlane, (z.im : ℂ)^2*g.field z*globalLift u z) =
+    (∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*g.field z*globalLift u z) =
       ∫ z : ℂ, g.localValue u z := by
   rw [← g.local_integral_halfplane,← integral_volume_height_sq_chart]
   apply integral_congr_ae

@@ -117,6 +117,6 @@ thresholds. Bounded critical action and RH remain open.
   modules `ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`, and
-  `XiHeatCassiniWoldJointDepthMöbiusSourceTransport`.
+  `XiHeatCassiniWoldJointDepthMobiusSourceTransport`.
 - All owned Lean and search processes exited. Audit logs remain under
   `/tmp/hgt-deep-payment-*.log`.

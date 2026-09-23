@@ -27,7 +27,7 @@ theorem criticalPrimeFockExactToeplitzCellAverage_nonneg
     (div_nonneg (polynomialFockExactToeplitzAtomScale_pos hm _).le (sq_nonneg _))
 
 /-- Fixed lower comparison constant between the exact diagonal-normalized Toeplitz atom and the
-model `rho_m^2` atom. -/
+model `rho_m^(2 : ℕ)` atom. -/
 def polynomialFockExactToeplitzLowerConstant (m : ℝ) : ℝ :=
   Real.pi * Real.exp (-2 * (polynomialFockLocalBregmanConstant m / m)) *
     polynomialFockInnerWindowFactor m ^ 2

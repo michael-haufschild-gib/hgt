@@ -102,7 +102,7 @@ def archNegativeMoment {n : ℕ}
 theorem hasSum_archNegativeMoment_sq
     {n : ℕ} {x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
     (c : Fin n → ℝ) :
-    HasSum (fun k : ℕ => (archNegativeMoment k x c) ^ 2)
+    HasSum (fun k : ℕ => (archNegativeMoment k x c) ^ (2 : ℕ))
       (∑ i, ∑ j, c i * c j *
         (Real.exp (-5 * (x i + x j) / 2) /
           (1 - Real.exp (-2 * (x i + x j))))) := by
@@ -151,8 +151,8 @@ theorem archKernelGramQuadratic_eq_moments
     {n : ℕ} {x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
     (c : Fin n → ℝ) :
     archKernelGramQuadratic x c =
-      (archPositiveMoment x c) ^ 2 -
-        ∑' k : ℕ, (archNegativeMoment k x c) ^ 2 := by
+      (archPositiveMoment x c) ^ (2 : ℕ) -
+        ∑' k : ℕ, (archNegativeMoment k x c) ^ (2 : ℕ) := by
   rw [(hasSum_archNegativeMoment_sq hx c).tsum_eq]
   unfold archKernelGramQuadratic archPositiveMoment
   simp_rw [realArchHankelProfile, mul_sub]
@@ -314,11 +314,11 @@ theorem realArchHankelProfile_hasAtLeastNegativeSquaresOn
       exists_archNegativeMoment_ne_zero hxInj hcNe
     have hsum := hasSum_archNegativeMoment_sq hxPos c
     have hle :
-        (archNegativeMoment (k : ℕ) x c) ^ 2 ≤
-          ∑' l : ℕ, (archNegativeMoment l x c) ^ 2 :=
+        (archNegativeMoment (k : ℕ) x c) ^ (2 : ℕ) ≤
+          ∑' l : ℕ, (archNegativeMoment l x c) ^ (2 : ℕ) :=
       hsum.summable.le_tsum (k : ℕ) (fun l hl => sq_nonneg _)
     have hsumPos :
-        0 < ∑' l : ℕ, (archNegativeMoment l x c) ^ 2 :=
+        0 < ∑' l : ℕ, (archNegativeMoment l x c) ^ (2 : ℕ) :=
       lt_of_lt_of_le (sq_pos_of_ne_zero hk) hle
     rw [archKernelGramQuadratic_eq_moments hxPos c, hcPos]
     norm_num

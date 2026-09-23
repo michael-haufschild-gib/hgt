@@ -5,13 +5,13 @@ import GaloisForLFunctions.RHTower.PrimeGammaCauchyCubicSignedEulerianCurvature
 # Route-P cubic Cauchy jet of the actual Calderón/co-Poisson boundary
 
 Route P's retained four-label incidence is the Cauchy-cubic kernel
-`2 / (u + b)^3`; the actual oriented Calderón--Witt Gamma/co-Poisson
+`2 / (u + b)^(3 : ℕ)`; the actual oriented Calderón--Witt Gamma/co-Poisson
 boundary has an unshifted Cauchy pairing.  This file proves their exact
 relation, without replacing either source or target:
 
 ```text
 d²/du² pairing(actualGammaCoPoissonTransport(u), commonTest(b))
-  = actualUndeformedSourceCoefficient * 2/(u+b)^3.
+  = actualUndeformedSourceCoefficient * 2/(u+b)^(3 : ℕ).
 ```
 
 Thus P's cubic kernel is the second positive-action jet of the actual
@@ -63,16 +63,16 @@ theorem routePActualGammaCoPoissonCauchyResponse_eq
 theorem hasDerivAt_routePCoPoissonCauchyResponse
     (c : ℂ) (b u : ℝ) (hden : (u : ℂ) + (b : ℂ) ≠ 0) :
     HasDerivAt (routePCoPoissonCauchyResponse c b)
-      (-c / (((u : ℂ) + (b : ℂ)) ^ 2)) u := by
+      (-c / (((u : ℂ) + (b : ℂ)) ^ (2 : ℕ))) u := by
   let g : ℝ → ℂ := fun v => (v : ℂ) + (b : ℂ)
   have hg : HasDerivAt g 1 u := by
     simpa only [g, ContinuousLinearMap.coe_comp, Function.comp_apply,
       Complex.ofRealCLM_apply, map_one, zero_add, add_comm] using!
       (Complex.ofRealCLM.hasDerivAt (x := u)).const_add (b : ℂ)
   have hinv : HasDerivAt (fun v => (g v)⁻¹)
-      (-(1 : ℂ) / g u ^ 2) u := hg.inv (by simpa [g] using hden)
+      (-(1 : ℂ) / g u ^ (2 : ℕ)) u := hg.inv (by simpa [g] using hden)
   have hraw : HasDerivAt (fun v : ℝ => c * (g v)⁻¹)
-      (c * (-(1 : ℂ) / g u ^ 2)) u := hinv.const_mul c
+      (c * (-(1 : ℂ) / g u ^ (2 : ℕ))) u := hinv.const_mul c
   convert hraw using 1
   · funext v
     simp [routePCoPoissonCauchyResponse, g, div_eq_mul_inv]
@@ -83,7 +83,7 @@ theorem hasDerivAt_routePCoPoissonCauchyResponse
 theorem hasDerivAt_deriv_routePCoPoissonCauchyResponse
     (c : ℂ) (b u : ℝ) (hu : 0 < u) (hb : 0 < b) :
     HasDerivAt (fun v => deriv (routePCoPoissonCauchyResponse c b) v)
-      (2 * c / (((u : ℂ) + (b : ℂ)) ^ 3)) u := by
+      (2 * c / (((u : ℂ) + (b : ℂ)) ^ (3 : ℕ))) u := by
   let g : ℝ → ℂ := fun v => (v : ℂ) + (b : ℂ)
   have hg : HasDerivAt g 1 u := by
     simpa only [g, ContinuousLinearMap.coe_comp, Function.comp_apply,
@@ -94,13 +94,13 @@ theorem hasDerivAt_deriv_routePCoPoissonCauchyResponse
     rw [← Complex.ofReal_add]
     exact Complex.ofReal_ne_zero.mpr (ne_of_gt (add_pos hu hb))
   have hinv : HasDerivAt (fun v => (g v)⁻¹)
-      (-(1 : ℂ) / g u ^ 2) u := hg.inv hden
-  have hraw : HasDerivAt (fun v : ℝ => (-c) * ((g v)⁻¹) ^ 2)
-      ((-c) * ((2 : ℂ) * (g u)⁻¹ * (-(1 : ℂ) / g u ^ 2))) u :=
+      (-(1 : ℂ) / g u ^ (2 : ℕ)) u := hg.inv hden
+  have hraw : HasDerivAt (fun v : ℝ => (-c) * ((g v)⁻¹) ^ (2 : ℕ))
+      ((-c) * ((2 : ℂ) * (g u)⁻¹ * (-(1 : ℂ) / g u ^ (2 : ℕ)))) u :=
     by simpa only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSub, pow_one] using
       (hinv.pow 2).const_mul (-c)
   have heq : (fun v => deriv (routePCoPoissonCauchyResponse c b) v) =ᶠ[nhds u]
-      (fun v : ℝ => (-c) * ((g v)⁻¹) ^ 2) := by
+      (fun v : ℝ => (-c) * ((g v)⁻¹) ^ (2 : ℕ)) := by
     filter_upwards [eventually_gt_nhds hu] with v hv
     have hdenv : (v : ℂ) + (b : ℂ) ≠ 0 := by
       rw [← Complex.ofReal_add, Complex.ofReal_ne_zero]
@@ -108,15 +108,15 @@ theorem hasDerivAt_deriv_routePCoPoissonCauchyResponse
     rw [(hasDerivAt_routePCoPoissonCauchyResponse c b v hdenv).deriv]
     simp [g, div_eq_mul_inv]
   have htrans := hraw.congr_of_eventuallyEq heq
-  suffices hscalar : 2 * c / (((u : ℂ) + (b : ℂ)) ^ 3) =
-      (-c) * ((2 : ℂ) * (g u)⁻¹ * (-(1 : ℂ) / g u ^ 2)) by
+  suffices hscalar : 2 * c / (((u : ℂ) + (b : ℂ)) ^ (3 : ℕ)) =
+      (-c) * ((2 : ℂ) * (g u)⁻¹ * (-(1 : ℂ) / g u ^ (2 : ℕ))) by
     rw [hscalar]
     exact htrans
   let z : ℂ := (u : ℂ) + (b : ℂ)
   have hz : z ≠ 0 := by
     simpa only [z, g] using hden
-  change 2 * c / z ^ 3 = (-c) * ((2 : ℂ) * z⁻¹ * (-(1 : ℂ) / z ^ 2))
-  rw [show z ^ 3 = z * z ^ 2 by ring]
+  change 2 * c / z ^ (3 : ℕ) = (-c) * ((2 : ℂ) * z⁻¹ * (-(1 : ℂ) / z ^ (2 : ℕ)))
+  rw [show z ^ (3 : ℕ) = z * z ^ (2 : ℕ) by ring]
   field_simp [hz]
 
 /-- The first positive-action derivative of the actual oriented boundary pairing is the
@@ -127,7 +127,7 @@ theorem hasDerivAt_routePActualGammaCoPoissonCauchyResponse
     (hu : 0 < u) (hb : 0 < b) :
     HasDerivAt (routePActualGammaCoPoissonCauchyResponse s p q e f b)
       (-deningerCalderonWittGammaUndeformedScalarCoefficient s p q e f /
-        (((u : ℂ) + (b : ℂ)) ^ 2)) u := by
+        (((u : ℂ) + (b : ℂ)) ^ (2 : ℕ))) u := by
   have hden : (u : ℂ) + (b : ℂ) ≠ 0 := by
     rw [← Complex.ofReal_add, Complex.ofReal_ne_zero]
     exact ne_of_gt (add_pos hu hb)
@@ -145,7 +145,7 @@ theorem hasDerivAt_deriv_routePActualGammaCoPoissonCauchyResponse
     HasDerivAt (fun v =>
       deriv (routePActualGammaCoPoissonCauchyResponse s p q e f b) v)
       (2 * deningerCalderonWittGammaUndeformedScalarCoefficient s p q e f /
-        (((u : ℂ) + (b : ℂ)) ^ 3)) u := by
+        (((u : ℂ) + (b : ℂ)) ^ (3 : ℕ))) u := by
   apply (hasDerivAt_deriv_routePCoPoissonCauchyResponse
     (deningerCalderonWittGammaUndeformedScalarCoefficient s p q e f) b u hu hb).congr_of_eventuallyEq
   filter_upwards [eventually_gt_nhds hu] with v hv
@@ -167,7 +167,7 @@ theorem hasDerivAt_deriv_routePActualGammaCoPoissonCauchyResponse_eq_primeGammaC
       (deningerCalderonWittGammaUndeformedScalarCoefficient s p q e f *
         (primeGammaCauchyCubicEdge u b : ℂ)) u := by
   have hedge : (primeGammaCauchyCubicEdge u b : ℂ) =
-      2 / (((u : ℂ) + (b : ℂ)) ^ 3) := by
+      2 / (((u : ℂ) + (b : ℂ)) ^ (3 : ℕ)) := by
     unfold primeGammaCauchyCubicEdge
     push_cast
     rw [← Complex.ofReal_add]

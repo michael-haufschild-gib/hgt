@@ -28,13 +28,13 @@ theorem continuous_expSum (N : ℕ) (c : Fin N → ℂ) : Continuous (expSum N c
 
 /-- **The derivative of the squared modulus.** -/
 theorem hasDerivAt_normSq_expSum (N : ℕ) (c : Fin N → ℂ) (t : ℝ) :
-    HasDerivAt (fun s : ℝ => ‖expSum N c s‖ ^ 2)
+    HasDerivAt (fun s : ℝ => ‖expSum N c s‖ ^ (2 : ℕ))
       ((inner ℝ (expSum N c t) (expSum N (derivCoeff N c) t) : ℝ)
         + (inner ℝ (expSum N (derivCoeff N c) t) (expSum N c t) : ℝ)) t := by
   have hd := hasDerivAt_expSum N c t
   have h := HasDerivAt.inner ℝ hd hd
   have hfun : (fun s : ℝ => (inner ℝ (expSum N c s) (expSum N c s) : ℝ))
-      = fun s : ℝ => ‖expSum N c s‖ ^ 2 := by
+      = fun s : ℝ => ‖expSum N c s‖ ^ (2 : ℕ) := by
     funext s
     exact real_inner_self_eq_norm_sq _
   rw [hfun] at h

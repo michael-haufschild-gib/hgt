@@ -48,7 +48,7 @@ private theorem sourceDerivativeProduct_error_scaled_tendsto_zero (k i j : ℕ) 
     Tendsto (fun x : ℝ => thetaCuspSingleAtomReflectionScale 1 x^k *
       ((iteratedDeriv i thetaCuspFullSource x*iteratedDeriv j thetaCuspFullSource x -
         iteratedDeriv i (fun y : ℝ => thetaCuspSourceTerm y 1) x *
-          iteratedDeriv j (fun y : ℝ => thetaCuspSourceTerm y 1) x) / thetaCuspSourceTerm x 1^2))
+          iteratedDeriv j (fun y : ℝ => thetaCuspSourceTerm y 1) x) / thetaCuspSourceTerm x 1^(2 : ℕ)))
       atTop (𝓝 0) := by
   have he (n k : ℕ) : Tendsto (fun x => thetaCuspSingleAtomReflectionScale 1 x^k *
       sourceDerivativeRelativeError n x) atTop (𝓝 0) :=
@@ -70,7 +70,7 @@ jet is smaller than any fixed inverse power of the scale, relative to first-atom
 theorem thetaCuspNativeReflectionJet_firstAtom_error_scaled_tendsto_zero (k n : ℕ) :
     Tendsto (fun x : ℝ => thetaCuspSingleAtomReflectionScale 1 x^k *
       ((thetaCuspNativeReflectionJet n x - thetaCuspFirstAtomReflectionJet n x) /
-        thetaCuspSourceTerm x 1^2)) atTop (𝓝 0) := by
+        thetaCuspSourceTerm x 1^(2 : ℕ))) atTop (𝓝 0) := by
   have hsum := tendsto_finsetSum (Finset.range (n+1)) (fun i _ =>
     (sourceDerivativeProduct_error_scaled_tendsto_zero k i (n-i)).const_mul
       ((n.choose i : ℝ)*(-1)^(n-i)))

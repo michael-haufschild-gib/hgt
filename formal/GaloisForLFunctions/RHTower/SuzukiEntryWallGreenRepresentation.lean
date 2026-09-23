@@ -9,7 +9,7 @@ twice-vanishing kernel `exp (-I z x) - 1 + I z x`. Because that kernel splits as
 three primitives of the trace, so all three delay jets are ordinary calculus.
 
 The representation solves the third-order causal Green equation
-`(d/ds + I z) Φ'' = -z ^ 2 * u` with vanishing value, slope and curvature at the wall, and those
+`(d/ds + I z) Φ'' = -z ^ (2 : ℕ) * u` with vanishing value, slope and curvature at the wall, and those
 three initial conditions determine it uniquely.
 -/
 
@@ -110,12 +110,12 @@ def entryGreenJet1 (z : ℂ) (u : ℝ → ℂ) (s : ℝ) : ℂ :=
 
 /-- Second delay jet of the Green representation. -/
 def entryGreenJet2 (z : ℂ) (u : ℝ → ℂ) (s : ℝ) : ℂ :=
-  -(z ^ 2) * Complex.exp (-(Complex.I * z * s)) * entryTraceExpMoment z u s
+  -(z ^ (2 : ℕ)) * Complex.exp (-(Complex.I * z * s)) * entryTraceExpMoment z u s
 
 /-- Third delay jet of the Green representation. -/
 def entryGreenJet3 (z : ℂ) (u : ℝ → ℂ) (s : ℝ) : ℂ :=
-  Complex.I * z ^ 3 * Complex.exp (-(Complex.I * z * s)) * entryTraceExpMoment z u s -
-    z ^ 2 * u s
+  Complex.I * z ^ (3 : ℕ) * Complex.exp (-(Complex.I * z * s)) * entryTraceExpMoment z u s -
+    z ^ (2 : ℕ) * u s
 
 private theorem hasDerivAt_negExp (z : ℂ) (s : ℝ) :
     HasDerivAt (fun σ : ℝ => Complex.exp (-(Complex.I * z * (σ : ℂ))))
@@ -179,9 +179,9 @@ theorem hasDerivAt_entryGreenJet1 (z : ℂ) {u : ℝ → ℂ} (hu : Continuous u
         (Complex.exp (Complex.I * z * (s : ℂ)) * u s) = u s := by
       rw [← mul_assoc, exp_cancel z s, one_mul]
     rw [hrw]
-    have hI : Complex.I ^ 2 = -1 := Complex.I_sq
+    have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
     linear_combination (Complex.exp (-(Complex.I * z * (s : ℂ))) *
-      entryTraceExpMoment z u s * z ^ 2) * hI
+      entryTraceExpMoment z u s * z ^ (2 : ℕ)) * hI
   have hfun : entryGreenJet1 z u = fun σ : ℝ =>
       -(Complex.I * z) *
         (Complex.exp (-(Complex.I * z * (σ : ℂ))) * entryTraceExpMoment z u σ) +
@@ -195,9 +195,9 @@ theorem hasDerivAt_entryGreenJet1 (z : ℂ) {u : ℝ → ℂ} (hu : Continuous u
 theorem hasDerivAt_entryGreenJet2 (z : ℂ) {u : ℝ → ℂ} (hu : Continuous u) (s : ℝ) :
     HasDerivAt (entryGreenJet2 z u) (entryGreenJet3 z u s) s := by
   have hmain :=
-    (((hasDerivAt_negExp z s).mul (hasDerivAt_entryTraceExpMoment z hu s)).const_mul (-(z ^ 2)))
+    (((hasDerivAt_negExp z s).mul (hasDerivAt_entryTraceExpMoment z hu s)).const_mul (-(z ^ (2 : ℕ))))
   have hval :
-      -(z ^ 2) *
+      -(z ^ (2 : ℕ)) *
         (Complex.exp (-(Complex.I * z * (s : ℂ))) * -(Complex.I * z) *
             entryTraceExpMoment z u s +
           Complex.exp (-(Complex.I * z * (s : ℂ))) *
@@ -209,7 +209,7 @@ theorem hasDerivAt_entryGreenJet2 (z : ℂ) {u : ℝ → ℂ} (hu : Continuous u
     rw [hrw]
     ring
   have hfun : entryGreenJet2 z u = fun σ : ℝ =>
-      -(z ^ 2) * (Complex.exp (-(Complex.I * z * (σ : ℂ))) * entryTraceExpMoment z u σ) := by
+      -(z ^ (2 : ℕ)) * (Complex.exp (-(Complex.I * z * (σ : ℂ))) * entryTraceExpMoment z u σ) := by
     funext σ
     rw [entryGreenJet2]
     ring
@@ -219,9 +219,9 @@ theorem hasDerivAt_entryGreenJet2 (z : ℂ) {u : ℝ → ℂ} (hu : Continuous u
 /-! ## The causal Green equation and its initial data -/
 
 /-- **Exact third-order causal Green equation.**  The Green representation satisfies
-`(d/ds + I z) Φ'' = -z ^ 2 * u` at every entry depth. -/
+`(d/ds + I z) Φ'' = -z ^ (2 : ℕ) * u` at every entry depth. -/
 theorem entryGreen_causal_equation (z : ℂ) (u : ℝ → ℂ) (s : ℝ) :
-    entryGreenJet3 z u s + Complex.I * z * entryGreenJet2 z u s = -(z ^ 2) * u s := by
+    entryGreenJet3 z u s + Complex.I * z * entryGreenJet2 z u s = -(z ^ (2 : ℕ)) * u s := by
   rw [entryGreenJet3, entryGreenJet2]
   ring
 
@@ -265,7 +265,7 @@ theorem entryGreenIntegral_unique (z : ℂ) {u : ℝ → ℂ} (hu : Continuous u
     (hd0 : ∀ s : ℝ, HasDerivAt Psi (Psi1 s) s)
     (hd1 : ∀ s : ℝ, HasDerivAt Psi1 (Psi2 s) s)
     (hd2 : ∀ s : ℝ, HasDerivAt Psi2 (Psi3 s) s)
-    (heq : ∀ s : ℝ, Psi3 s + Complex.I * z * Psi2 s = -(z ^ 2) * u s)
+    (heq : ∀ s : ℝ, Psi3 s + Complex.I * z * Psi2 s = -(z ^ (2 : ℕ)) * u s)
     (h0 : Psi 0 = 0) (h1 : Psi1 0 = 0) (h2 : Psi2 0 = 0) :
     Psi = entryGreenIntegral z u := by
   -- second jet

@@ -48,7 +48,7 @@ def LocalCarreParabolicClosure (A B C D : ℝ) : Prop :=
   ∃ kappa tau : ℝ, ∀ x y z w : ℝ,
     x - 2 * y + z = 0 →
       localRatioSecondCurvatureVelocity A B C D x y z w =
-        kappa * (x - y) ^ 2 + tau * z * (y - 2 * z + w)
+        kappa * (x - y) ^ (2 : ℕ) + tau * z * (y - 2 * z + w)
 
 /-- Any local carré-parabolic law forces both consecutive second differences of the weights to
 vanish, and forces its production and transport coefficients. -/
@@ -57,7 +57,7 @@ theorem localCarreParabolicClosure_forces_affine_and_coefficients
     (hclosure : ∀ x y z w : ℝ,
       x - 2 * y + z = 0 →
         localRatioSecondCurvatureVelocity A B C D x y z w =
-          kappa * (x - y) ^ 2 + tau * z * (y - 2 * z + w)) :
+          kappa * (x - y) ^ (2 : ℕ) + tau * z * (y - 2 * z + w)) :
     A - 2 * B + C = 0 ∧
       B - 2 * C + D = 0 ∧
       kappa = 4 * (B - A) ∧
@@ -100,7 +100,7 @@ theorem localCarreParabolicClosure_coefficients_unique
     (hclosure : ∀ x y z w : ℝ,
       x - 2 * y + z = 0 →
         localRatioSecondCurvatureVelocity A B C D x y z w =
-          kappa * (x - y) ^ 2 + tau * z * (y - 2 * z + w)) :
+          kappa * (x - y) ^ (2 : ℕ) + tau * z * (y - 2 * z + w)) :
     kappa = 4 * (B - A) ∧ tau = D :=
   (localCarreParabolicClosure_forces_affine_and_coefficients hclosure).2.2
 
@@ -111,7 +111,7 @@ theorem affineGamma_ratioSecondCurvatureVelocity_eq
     (A h x y z w : ℝ) :
     localRatioSecondCurvatureVelocity
         A (A + h) (A + 2 * h) (A + 3 * h) x y z w =
-      4 * h * (x - y) ^ 2 +
+      4 * h * (x - y) ^ (2 : ℕ) +
         (A + 3 * h) * z * (y - 2 * z + w) +
         (x - 2 * y + z) *
           (-(A + 4 * h) * x + (h - A) * y + (A + 4 * h) * z) := by
@@ -142,7 +142,7 @@ theorem affineGamma_ratioSecondCurvatureVelocity_pos_of_boundary_of_gap
     0 < localRatioSecondCurvatureVelocity
       A (A + h) (A + 2 * h) (A + 3 * h) x y z w := by
   rw [affineGamma_ratioSecondCurvatureVelocity_eq, hcurrent, zero_mul, add_zero]
-  have hproduction : 0 < 4 * h * (x - y) ^ 2 := by
+  have hproduction : 0 < 4 * h * (x - y) ^ (2 : ℕ) := by
     exact mul_pos (mul_pos (by norm_num) hh) (sq_pos_of_ne_zero (sub_ne_zero.mpr hgap))
   exact add_pos_of_pos_of_nonneg hproduction
     (mul_nonneg (mul_nonneg htransport hz) hnext)
@@ -250,7 +250,7 @@ theorem hasDerivAt_normalizedMomentRatioCurvature_of_affineWeights
     (ha3 : a (j + 3) = A + 3 * h) :
     HasDerivAt (fun eta => normalizedMomentRatioCurvature M a eta j)
       (let q := fun k => normalizedMomentRatio M a lambda k
-       4 * h * (q j - q (j + 1)) ^ 2 +
+       4 * h * (q j - q (j + 1)) ^ (2 : ℕ) +
          (A + 3 * h) * q (j + 2) * ratioSecondCurvature q (j + 1) +
          ratioSecondCurvature q j *
            (-(A + 4 * h) * q j + (h - A) * q (j + 1) +
@@ -273,7 +273,7 @@ theorem hasDerivAt_normalizedMomentRatioCurvature_of_affineWeights
       ratioSecondCurvatureVelocity, q, Pi.add_apply] using! HasDerivAt.add hsub h2
   have hid :
       ratioSecondCurvatureVelocity a q j =
-        4 * h * (q j - q (j + 1)) ^ 2 +
+        4 * h * (q j - q (j + 1)) ^ (2 : ℕ) +
           (A + 3 * h) * q (j + 2) * ratioSecondCurvature q (j + 1) +
           ratioSecondCurvature q j *
             (-(A + 4 * h) * q j + (h - A) * q (j + 1) +

@@ -20,11 +20,11 @@ namespace GaloisForLFunctions.HTGeometry.SchafferExl
 noncomputable section
 
 /-- Real coherence multiplier when the explicit two-outcome instrument is not conditioned. -/
-def spinFilterCoherence (k : ℂ) : ℝ := 2 * spinChartScale k ^ 2 * k.re
+def spinFilterCoherence (k : ℂ) : ℝ := 2 * spinChartScale k ^ (2 : ℕ) * k.re
 
 /-- Rational form of the complete channel's exact coherence multiplier. -/
 theorem spinFilterCoherence_eq (k : ℂ) :
-    spinFilterCoherence k = 2 * k.re / (1 + ‖k‖ ^ 2) := by
+    spinFilterCoherence k = 2 * k.re / (1 + ‖k‖ ^ (2 : ℕ)) := by
   rw [spinFilterCoherence, spinChartScale_sq]
   ring
 
@@ -43,8 +43,8 @@ theorem spinFilterChannel_entries (k : ℂ) (ρ : Matrix (Fin 2) (Fin 2) ℂ) :
       spinFilterSelected, spinFilterComplement, Matrix.mul_apply, Matrix.vecMul, dotProduct,
       spinFilterCoherence]
   · linear_combination ρ 0 0 * hc
-  · linear_combination -(spinChartScale k : ℂ) ^ 2 * ρ 0 1 * hr
-  · linear_combination -(spinChartScale k : ℂ) ^ 2 * ρ 1 0 * hr
+  · linear_combination -(spinChartScale k : ℂ) ^ (2 : ℕ) * ρ 0 1 * hr
+  · linear_combination -(spinChartScale k : ℂ) ^ (2 : ℕ) * ρ 1 0 * hr
   · linear_combination ρ 1 1 * hc
 
 /-- The complete channel is an exact affine interpolation of identity and the corpus's pinching. -/
@@ -58,8 +58,8 @@ theorem spinFilterChannel_dephasing (k : ℂ) (ρ : Matrix (Fin 2) (Fin 2) ℂ) 
 /-- Complete positivity has an explicit scalar boundary: the coherence lies in the unit interval in absolute value. -/
 theorem spinFilterCoherence_abs_le_one (k : ℂ) : |spinFilterCoherence k| ≤ 1 := by
   rw [spinFilterCoherence_eq, abs_le]
-  have hd : 0 < 1 + ‖k‖ ^ 2 := by positivity
-  have hn : k.re ^ 2 + k.im ^ 2 = ‖k‖ ^ 2 := by
+  have hd : 0 < 1 + ‖k‖ ^ (2 : ℕ) := by positivity
+  have hn : k.re ^ (2 : ℕ) + k.im ^ (2 : ℕ) = ‖k‖ ^ (2 : ℕ) := by
     simpa only [Complex.normSq_apply, pow_two] using Complex.normSq_eq_norm_sq k
   constructor
   · apply (le_div_iff₀ hd).mpr
@@ -112,7 +112,7 @@ theorem spinFilterCoherence_flow_tendsto_zero (s : ℝ) :
     simpa only [mul_one] using h
   have hr := Complex.continuous_re.continuousAt.tendsto.comp he
   have hd : Tendsto (fun t : ℝ => 1 +
-      ‖Complex.exp (spinPlaneRate (Real.exp s) * (t : ℂ))‖ ^ 2) atTop (nhds 1) := by
+      ‖Complex.exp (spinPlaneRate (Real.exp s) * (t : ℂ))‖ ^ (2 : ℕ)) atTop (nhds 1) := by
     simpa using (he.norm.pow 2).const_add 1
   have h := (hr.const_mul 2).div hd one_ne_zero
   convert h using 1

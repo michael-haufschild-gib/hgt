@@ -102,9 +102,9 @@ theorem xiCentralTraceHankel_re_pos_of_riemannHypothesis
     have hw : 0 ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by
       exact_mod_cast xi_divisor_nonneg Set.univ (ρ : ℂ)
     rw [show ((((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) : ℂ) *
-        (x : ℂ) * (((Polynomial.eval x p : ℝ) : ℂ)) ^ 2) =
+        (x : ℂ) * (((Polynomial.eval x p : ℝ) : ℂ)) ^ (2 : ℕ)) =
         ((((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * x *
-          (Polynomial.eval x p) ^ 2 : ℝ) : ℂ) by push_cast; ring]
+          (Polynomial.eval x p) ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; ring]
     simp only [Complex.ofReal_re]
     positivity
   · rw [xiCentralTraceHankelTerm]
@@ -113,9 +113,9 @@ theorem xiCentralTraceHankel_re_pos_of_riemannHypothesis
     have hw : 0 < ((MeromorphicOn.divisor xi Set.univ) (ρ₀ : ℂ) : ℝ) := by
       exact_mod_cast xi_divisor_pos_on_support ρ₀
     rw [show ((((MeromorphicOn.divisor xi Set.univ) (ρ₀ : ℂ) : ℝ) : ℂ) *
-        (x : ℂ) * (((Polynomial.eval x p : ℝ) : ℂ)) ^ 2) =
+        (x : ℂ) * (((Polynomial.eval x p : ℝ) : ℂ)) ^ (2 : ℕ)) =
         ((((MeromorphicOn.divisor xi Set.univ) (ρ₀ : ℂ) : ℝ) * x *
-          (Polynomial.eval x p) ^ 2 : ℝ) : ℂ) by push_cast; ring]
+          (Polynomial.eval x p) ^ (2 : ℕ) : ℝ) : ℂ) by push_cast; ring]
     simp only [Complex.ofReal_re]
     exact mul_pos (mul_pos hw hx) (sq_pos_of_ne_zero (by exact_mod_cast hpρ₀))
 
@@ -209,7 +209,7 @@ private theorem posDef_fin_one_of_det_pos
       exact hx0
     rw [Matrix.det_fin_one] at hdet
     simp only [star_trivial, dotProduct, Matrix.mulVec, Fin.sum_univ_one]
-    rw [show x 0 * (M 0 0 * x 0) = (x 0) ^ 2 * M 0 0 by ring]
+    rw [show x 0 * (M 0 0 * x 0) = (x 0) ^ (2 : ℕ) * M 0 0 by ring]
     exact mul_pos (sq_pos_of_ne_zero hx0) hdet
 
 private theorem xiCentralMomentHankelMatrix_succ_reindex_toBlocks₁₁ (n : ℕ) :

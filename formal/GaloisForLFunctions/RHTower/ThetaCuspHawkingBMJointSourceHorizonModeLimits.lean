@@ -10,7 +10,7 @@ set_option autoImplicit false
 
 /-- The original compact radius tends to the true horizon along the negative tortoise ray. -/
 theorem horizonCoordinate_tendsto_horizon : Tendsto horizonCoordinate atBot (𝓝 (0:ℝ)) := by
-  have he : Tendsto (fun t : ℝ => 4*(Real.exp t)^2) atBot (𝓝 0) := by
+  have he : Tendsto (fun t : ℝ => 4*(Real.exp t)^(2 : ℕ)) atBot (𝓝 0) := by
     simpa only [zero_pow (by norm_num : (2:ℕ) ≠ 0),mul_zero] using (Real.tendsto_exp_atBot.pow 2).const_mul 4
   apply squeeze_zero' ?_ ?_ he
   · filter_upwards [eventually_lt_atBot (0:ℝ)] with t ht
@@ -20,7 +20,7 @@ theorem horizonCoordinate_tendsto_horizon : Tendsto horizonCoordinate atBot (�
     have hu := radialUnit_bounds t ht
     have hx := Real.exp_pos t
     nlinarith [sq_nonneg (Real.exp t),sq_nonneg (1+radialUnit t),
-      mul_nonneg (sq_nonneg (Real.exp t)) (show 0 ≤ 4-(1+radialUnit t)^2 by nlinarith)]
+      mul_nonneg (sq_nonneg (Real.exp t)) (show 0 ≤ 4-(1+radialUnit t)^(2 : ℕ) by nlinarith)]
 
 /-- The actual horizon mode decays in the original spatial coordinate. -/
 theorem tortoiseHorizon_tendsto_horizon {w chi : ℂ} (h : Chamber w chi) :

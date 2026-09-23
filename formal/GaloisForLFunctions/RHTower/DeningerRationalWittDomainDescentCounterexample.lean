@@ -97,13 +97,13 @@ def deningerCuspSubring (k : Type*) [Field k] : Subring (Polynomial k) where
 abbrev DeningerCuspRing := deningerCuspSubring ℚ
 
 def deningerCuspX2 : DeningerCuspRing :=
-  ⟨Polynomial.X ^ 2, by
-    change (Polynomial.X ^ 2 : Polynomial ℚ).coeff 1 = 0
+  ⟨Polynomial.X ^ (2 : ℕ), by
+    change (Polynomial.X ^ (2 : ℕ) : Polynomial ℚ).coeff 1 = 0
     simp [Polynomial.coeff_X_pow]⟩
 
 def deningerCuspX3 : DeningerCuspRing :=
-  ⟨Polynomial.X ^ 3, by
-    change (Polynomial.X ^ 3 : Polynomial ℚ).coeff 1 = 0
+  ⟨Polynomial.X ^ (3 : ℕ), by
+    change (Polynomial.X ^ (3 : ℕ) : Polynomial ℚ).coeff 1 = 0
     simp [Polynomial.coeff_X_pow]⟩
 
 theorem deningerCuspX2_ne_zero : deningerCuspX2 ≠ 0 := by
@@ -115,12 +115,12 @@ noncomputable def deningerCuspT : FractionRing DeningerCuspRing :=
   algebraMap DeningerCuspRing (FractionRing DeningerCuspRing) deningerCuspX3 /
     algebraMap DeningerCuspRing (FractionRing DeningerCuspRing) deningerCuspX2
 
-theorem deningerCuspX3_sq_eq_X2_cubed : deningerCuspX3 ^ 2 = deningerCuspX2 ^ 3 := by
+theorem deningerCuspX3_sq_eq_X2_cubed : deningerCuspX3 ^ (2 : ℕ) = deningerCuspX2 ^ (3 : ℕ) := by
   apply Subtype.ext
   simp [deningerCuspX2, deningerCuspX3]
   ring
 
-theorem deningerCuspT_sq : deningerCuspT ^ 2 =
+theorem deningerCuspT_sq : deningerCuspT ^ (2 : ℕ) =
     algebraMap DeningerCuspRing (FractionRing DeningerCuspRing) deningerCuspX2 := by
   have hx2 : algebraMap DeningerCuspRing (FractionRing DeningerCuspRing) deningerCuspX2 ≠ 0 :=
     (map_ne_zero_iff _ (IsFractionRing.injective _ _)).mpr deningerCuspX2_ne_zero
@@ -131,7 +131,7 @@ theorem deningerCuspT_sq : deningerCuspT ^ 2 =
 
 theorem deningerCuspT_isIntegral : IsIntegral DeningerCuspRing deningerCuspT := by
   let P : Polynomial DeningerCuspRing :=
-    Polynomial.X ^ 2 - Polynomial.C deningerCuspX2
+    Polynomial.X ^ (2 : ℕ) - Polynomial.C deningerCuspX2
   refine ⟨P, ?_, ?_⟩
   · exact Polynomial.monic_X_pow_sub_C deningerCuspX2 two_ne_zero
   · simp [P, deningerCuspT_sq]
@@ -147,8 +147,8 @@ theorem deningerCuspT_not_in_base :
     rw [map_mul, ha, deningerCuspT]
     exact div_mul_cancel₀ _ hx2
   have hc := congrArg (fun z : DeningerCuspRing => z.1.coeff 3) hmul
-  change (a.1 * Polynomial.X ^ 2).coeff 3 =
-    (Polynomial.X ^ 3 : Polynomial ℚ).coeff 3 at hc
+  change (a.1 * Polynomial.X ^ (2 : ℕ)).coeff 3 =
+    (Polynomial.X ^ (3 : ℕ) : Polynomial ℚ).coeff 3 at hc
   rw [Polynomial.coeff_mul_X_pow] at hc
   simp [Polynomial.coeff_X_pow] at hc
   exact one_ne_zero (hc.symm.trans a.2)

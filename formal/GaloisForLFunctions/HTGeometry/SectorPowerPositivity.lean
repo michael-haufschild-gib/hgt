@@ -65,7 +65,7 @@ theorem re_pow_pos_of_abs_im_le_fifth {z : ℂ} (hz : 0 < z.re)
     (him : |z.im| ≤ z.re / 5) {m : ℕ} (hm : 1 ≤ m) (hm7 : m ≤ 7) :
     0 < (z ^ m).re := by
   have hc : |z.im| ≤ (1 / 5 : ℝ) * z.re := by linarith [him]
-  have h1 : 0 < (z ^ 1).re ∧ |(z ^ 1).im| ≤ (1 / 5 : ℝ) * (z ^ 1).re := by
+  have h1 : 0 < (z ^ (1 : ℕ)).re ∧ |(z ^ (1 : ℕ)).im| ≤ (1 / 5 : ℝ) * (z ^ (1 : ℕ)).re := by
     rw [pow_one]
     exact ⟨hz, hc⟩
   have h2 := re_mul_pos_and_abs_im_le hz hc h1.1 h1.2 (by norm_num) (by norm_num)
@@ -152,13 +152,13 @@ theorem abs_arg_inv_sub_mul_I_lt {A B t : ℝ} (hA : 0 < A) (hB : |B| < t * A) :
     |Complex.arg (((A : ℂ) - B * I)⁻¹)| < t := by
   let mu : ℂ := ((A : ℂ) - B * I)⁻¹
   show |Complex.arg mu| < t
-  have hden : 0 < A ^ 2 + B ^ 2 := by nlinarith [sq_nonneg B]
-  have hmure : mu.re = A / (A ^ 2 + B ^ 2) := by
+  have hden : 0 < A ^ (2 : ℕ) + B ^ (2 : ℕ) := by nlinarith [sq_nonneg B]
+  have hmure : mu.re = A / (A ^ (2 : ℕ) + B ^ (2 : ℕ)) := by
     dsimp only [mu]
     rw [Complex.inv_re, Complex.normSq_apply]
     simp
     ring
-  have hmuim : mu.im = B / (A ^ 2 + B ^ 2) := by
+  have hmuim : mu.im = B / (A ^ (2 : ℕ) + B ^ (2 : ℕ)) := by
     dsimp only [mu]
     rw [Complex.inv_im, Complex.normSq_apply]
     simp
@@ -220,10 +220,10 @@ theorem re_inv_sub_mul_I_pow_pos {A B t : ℝ} (hA : 0 < A) (hB : |B| < t * A) {
 `B² ≤ N t² B² < t² A²`.  With the angle budget `n t ≤ π/2` this is the tangent-sector form of
 `re_inv_sub_mul_I_pow_pos` in which the sector is presented by a rational square ratio. -/
 theorem re_inv_sub_mul_I_pow_pos_of_sq_lt {A B N t : ℝ} {n : ℕ}
-    (hA : 0 < A) (ht : 0 < t) (hNt : 1 ≤ N * t ^ 2)
-    (hsector : N * B ^ 2 < A ^ 2) (hangle : (n : ℝ) * t ≤ Real.pi / 2) :
+    (hA : 0 < A) (ht : 0 < t) (hNt : 1 ≤ N * t ^ (2 : ℕ))
+    (hsector : N * B ^ (2 : ℕ) < A ^ (2 : ℕ)) (hangle : (n : ℝ) * t ≤ Real.pi / 2) :
     0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re := by
-  have hsq : B ^ 2 < (t * A) ^ 2 := by
+  have hsq : B ^ (2 : ℕ) < (t * A) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg B, sq_nonneg t, sq_pos_of_pos ht, sq_pos_of_pos hA]
   exact re_inv_sub_mul_I_pow_pos hA
     (abs_lt_of_sq_lt_sq hsq (by positivity)) hangle
@@ -231,61 +231,61 @@ theorem re_inv_sub_mul_I_pow_pos_of_sq_lt {A B N t : ℝ} {n : ℕ}
 /-- **A nonpositive reciprocal power refutes the sector ratio.**  Contrapositive of a positivity
 criterion: if `N B² < A²` would force a positive real part, a nonpositive one forces `A² ≤ N B²`. -/
 theorem sq_le_of_re_inv_sub_mul_I_pow_nonpos {A B N : ℝ} {n : ℕ}
-    (hpos : N * B ^ 2 < A ^ 2 → 0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
+    (hpos : N * B ^ (2 : ℕ) < A ^ (2 : ℕ) → 0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
     (hnonpos : ((((A : ℂ) - B * I)⁻¹) ^ n).re ≤ 0) :
-    A ^ 2 ≤ N * B ^ 2 := by
+    A ^ (2 : ℕ) ≤ N * B ^ (2 : ℕ) := by
   by_contra h
   exact absurd (hpos (not_le.mp h)) (not_lt.mpr hnonpos)
 
-/-- **Sector ratio from a single corner check.**  Write `u = a ^ 2` for a horizontal square and
-`v = b ^ 2` for a vertical square.  The gap `(v - u + y) ^ 2 - N (2 a b) ^ 2` decreases in `u` and,
+/-- **Sector ratio from a single corner check.**  Write `u = a ^ (2 : ℕ)` for a horizontal square and
+`v = b ^ (2 : ℕ)` for a vertical square.  The gap `(v - u + y) ^ (2 : ℕ) - N (2 a b) ^ (2 : ℕ)` decreases in `u` and,
 as soon as `(2 N + 1) u₀ ≤ v₀ + y₀`, increases in `v` and in `y`.  A strict inequality at the
 corner `(u₀, v₀, y₀)` therefore propagates over the whole region `u ≤ u₀`, `v₀ ≤ v`, `y₀ ≤ y`.
 The chain is `4 N a² b² ≤ 4 N u₀ b² = 4 N u₀ v₀ + 4 N u₀ t ≤ D² + 2 D t ≤ (v - u + y)²`, writing
 `D = v₀ - u₀ + y₀` and `t = b² - v₀`. -/
 theorem sector_ratio_of_corner {a b y u₀ v₀ y₀ N : ℝ}
-    (hN : 0 ≤ N) (hy : y₀ ≤ y) (hu : a ^ 2 ≤ u₀) (hv : v₀ ≤ b ^ 2)
+    (hN : 0 ≤ N) (hy : y₀ ≤ y) (hu : a ^ (2 : ℕ) ≤ u₀) (hv : v₀ ≤ b ^ (2 : ℕ))
     (hmono : (2 * N + 1) * u₀ ≤ v₀ + y₀)
-    (hcorner : 4 * N * u₀ * v₀ < (v₀ - u₀ + y₀) ^ 2) :
-    N * (2 * a * b) ^ 2 < (b ^ 2 - a ^ 2 + y) ^ 2 := by
-  have hasq : (0 : ℝ) ≤ a ^ 2 := sq_nonneg a
-  have hbsq : (0 : ℝ) ≤ b ^ 2 := sq_nonneg b
+    (hcorner : 4 * N * u₀ * v₀ < (v₀ - u₀ + y₀) ^ (2 : ℕ)) :
+    N * (2 * a * b) ^ (2 : ℕ) < (b ^ (2 : ℕ) - a ^ (2 : ℕ) + y) ^ (2 : ℕ) := by
+  have hasq : (0 : ℝ) ≤ a ^ (2 : ℕ) := sq_nonneg a
+  have hbsq : (0 : ℝ) ≤ b ^ (2 : ℕ) := sq_nonneg b
   have hu₀ : (0 : ℝ) ≤ u₀ := hasq.trans hu
   have hDlow : 2 * N * u₀ ≤ v₀ - u₀ + y₀ := by nlinarith
   have hD0 : (0 : ℝ) ≤ v₀ - u₀ + y₀ :=
     (mul_nonneg (by linarith) hu₀).trans hDlow
-  have ht : (0 : ℝ) ≤ b ^ 2 - v₀ := by linarith
-  have hXD : (v₀ - u₀ + y₀) + (b ^ 2 - v₀) ≤ b ^ 2 - a ^ 2 + y := by linarith
-  calc N * (2 * a * b) ^ 2 = 4 * N * a ^ 2 * b ^ 2 := by ring
-    _ ≤ 4 * N * u₀ * v₀ + 4 * N * u₀ * (b ^ 2 - v₀) := by
+  have ht : (0 : ℝ) ≤ b ^ (2 : ℕ) - v₀ := by linarith
+  have hXD : (v₀ - u₀ + y₀) + (b ^ (2 : ℕ) - v₀) ≤ b ^ (2 : ℕ) - a ^ (2 : ℕ) + y := by linarith
+  calc N * (2 * a * b) ^ (2 : ℕ) = 4 * N * a ^ (2 : ℕ) * b ^ (2 : ℕ) := by ring
+    _ ≤ 4 * N * u₀ * v₀ + 4 * N * u₀ * (b ^ (2 : ℕ) - v₀) := by
         nlinarith [mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * N)
-          (by linarith : (0 : ℝ) ≤ u₀ - a ^ 2)) hbsq]
-    _ < (v₀ - u₀ + y₀) ^ 2 + 2 * (v₀ - u₀ + y₀) * (b ^ 2 - v₀) := by
+          (by linarith : (0 : ℝ) ≤ u₀ - a ^ (2 : ℕ))) hbsq]
+    _ < (v₀ - u₀ + y₀) ^ (2 : ℕ) + 2 * (v₀ - u₀ + y₀) * (b ^ (2 : ℕ) - v₀) := by
         nlinarith [mul_le_mul_of_nonneg_right hDlow ht]
-    _ ≤ (b ^ 2 - a ^ 2 + y) ^ 2 := by
+    _ ≤ (b ^ (2 : ℕ) - a ^ (2 : ℕ) + y) ^ (2 : ℕ) := by
         nlinarith [hXD, hD0, ht, mul_nonneg hD0 ht]
 
 /-- **Sector ratio when the corner check is only an equality.**  A strict width bound
-`a ^ 2 < u₀` at a positive corner offset supplies the strictness that
+`a ^ (2 : ℕ) < u₀` at a positive corner offset supplies the strictness that
 `sector_ratio_of_corner` takes from the corner inequality. -/
 theorem sector_ratio_of_corner_of_lt_width {a b y u₀ v₀ y₀ N : ℝ}
-    (hN : 0 ≤ N) (hy : y₀ ≤ y) (hu : a ^ 2 < u₀) (hv : v₀ ≤ b ^ 2)
+    (hN : 0 ≤ N) (hy : y₀ ≤ y) (hu : a ^ (2 : ℕ) < u₀) (hv : v₀ ≤ b ^ (2 : ℕ))
     (hmono : (2 * N + 1) * u₀ ≤ v₀ + y₀) (hD0 : 0 < v₀ - u₀ + y₀)
-    (hcorner : 4 * N * u₀ * v₀ ≤ (v₀ - u₀ + y₀) ^ 2) :
-    N * (2 * a * b) ^ 2 < (b ^ 2 - a ^ 2 + y) ^ 2 := by
-  have hasq : (0 : ℝ) ≤ a ^ 2 := sq_nonneg a
-  have hbsq : (0 : ℝ) ≤ b ^ 2 := sq_nonneg b
+    (hcorner : 4 * N * u₀ * v₀ ≤ (v₀ - u₀ + y₀) ^ (2 : ℕ)) :
+    N * (2 * a * b) ^ (2 : ℕ) < (b ^ (2 : ℕ) - a ^ (2 : ℕ) + y) ^ (2 : ℕ) := by
+  have hasq : (0 : ℝ) ≤ a ^ (2 : ℕ) := sq_nonneg a
+  have hbsq : (0 : ℝ) ≤ b ^ (2 : ℕ) := sq_nonneg b
   have hu₀ : (0 : ℝ) ≤ u₀ := hasq.trans hu.le
   have hDlow : 2 * N * u₀ ≤ v₀ - u₀ + y₀ := by nlinarith
-  have ht : (0 : ℝ) ≤ b ^ 2 - v₀ := by linarith
-  have hXD : (v₀ - u₀ + y₀) + (b ^ 2 - v₀) < b ^ 2 - a ^ 2 + y := by linarith
-  calc N * (2 * a * b) ^ 2 = 4 * N * a ^ 2 * b ^ 2 := by ring
-    _ ≤ 4 * N * u₀ * v₀ + 4 * N * u₀ * (b ^ 2 - v₀) := by
+  have ht : (0 : ℝ) ≤ b ^ (2 : ℕ) - v₀ := by linarith
+  have hXD : (v₀ - u₀ + y₀) + (b ^ (2 : ℕ) - v₀) < b ^ (2 : ℕ) - a ^ (2 : ℕ) + y := by linarith
+  calc N * (2 * a * b) ^ (2 : ℕ) = 4 * N * a ^ (2 : ℕ) * b ^ (2 : ℕ) := by ring
+    _ ≤ 4 * N * u₀ * v₀ + 4 * N * u₀ * (b ^ (2 : ℕ) - v₀) := by
         nlinarith [mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * N)
-          (by linarith : (0 : ℝ) ≤ u₀ - a ^ 2)) hbsq]
-    _ ≤ ((v₀ - u₀ + y₀) + (b ^ 2 - v₀)) ^ 2 := by
+          (by linarith : (0 : ℝ) ≤ u₀ - a ^ (2 : ℕ))) hbsq]
+    _ ≤ ((v₀ - u₀ + y₀) + (b ^ (2 : ℕ) - v₀)) ^ (2 : ℕ) := by
         nlinarith [mul_le_mul_of_nonneg_right hDlow ht]
-    _ < (b ^ 2 - a ^ 2 + y) ^ 2 := by
+    _ < (b ^ (2 : ℕ) - a ^ (2 : ℕ) + y) ^ (2 : ℕ) := by
         nlinarith [hXD, hD0, ht]
 
 end GaloisForLFunctions.HTGeometry

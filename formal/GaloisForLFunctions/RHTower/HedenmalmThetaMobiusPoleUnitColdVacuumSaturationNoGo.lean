@@ -12,7 +12,7 @@ Along every positive affine aperture ray, each squarefree partition tends to the
 `1`.  Hence the literal normalized finite Gram tends to `1` even when the apertures are distinct.
 Equivalently, the pole-unit correction tends to the exact reciprocal of the universal boost Gram:
 
-`Q_infinity = y^2 / (x z) = K_universal^{-2}`.
+`Q_infinity = y^(2 : ℕ) / (x z) = K_universal^{-2}`.
 
 Thus the arithmetic correction spends the entire universal rapidity defect at the cold endpoint.
 Cold saturation is universal vacuum collapse, not rigidity and not an RH mechanism.  Any successful
@@ -66,7 +66,7 @@ theorem tendsto_squarefreeMobiusFiniteUnitHardyGramSq_natCast_atTop
   have hquot := (hmid.pow 2).div hden (by norm_num : (1 : ℂ) * 1 ≠ 0)
   change Tendsto
     ((fun n : ℕ => _root_.GaloisForLFunctions.squarefreePartition
-      (1 + (((x : ℂ) + (z : ℂ)) / 2) * (n : ℂ)) ^ 2) /
+      (1 + (((x : ℂ) + (z : ℂ)) / 2) * (n : ℂ)) ^ (2 : ℕ)) /
       (fun n : ℕ =>
         _root_.GaloisForLFunctions.squarefreePartition
           (1 + (x : ℂ) * (n : ℂ)) *
@@ -80,7 +80,7 @@ theorem tendsto_squarefreeMobiusPoleUnitCorrection_natCast_atTop
     {x z : ℝ} (hx : 0 < x) (hz : 0 < z) :
     Tendsto (fun n : ℕ =>
       squarefreeMobiusPoleUnitCorrection (n : ℂ) (x : ℂ) (z : ℂ))
-      atTop (nhds (((((x + z) / 2) ^ 2) / (x * z) : ℝ) : ℂ)) := by
+      atTop (nhds (((((x + z) / 2) ^ (2 : ℕ)) / (x * z) : ℝ) : ℂ)) := by
   let y : ℝ := (x + z) / 2
   have hy : 0 < y := by dsimp [y]; linarith
   have hx0 : (x : ℂ) ≠ 0 := ofReal_ne_zero.mpr hx.ne'
@@ -93,7 +93,7 @@ theorem tendsto_squarefreeMobiusPoleUnitCorrection_natCast_atTop
   have heq : (fun n : ℕ =>
       squarefreeMobiusPoleUnitCorrection (n : ℂ) (x : ℂ) (z : ℂ)) =ᶠ[atTop]
       fun n : ℕ =>
-        (((((x : ℂ) + (z : ℂ)) / 2) ^ 2) / ((x : ℂ) * (z : ℂ))) *
+        (((((x : ℂ) + (z : ℂ)) / 2) ^ (2 : ℕ)) / ((x : ℂ) * (z : ℂ))) *
           squarefreeMobiusFiniteUnitHardyGramSq (n : ℂ) (x : ℂ) (z : ℂ) := by
     filter_upwards [eventually_atTop.2 ⟨1, fun n hn => Nat.one_le_iff_ne_zero.mp hn⟩] with n hn
     have hfactor :=
@@ -102,14 +102,14 @@ theorem tendsto_squarefreeMobiusPoleUnitCorrection_natCast_atTop
     rw [hfactor]
     field_simp [hx0, hz0, hy0, hsum0]
   have hconst : Tendsto (fun _ : ℕ =>
-      (((((x : ℂ) + (z : ℂ)) / 2) ^ 2) / ((x : ℂ) * (z : ℂ))))
-      atTop (nhds (((((x : ℂ) + (z : ℂ)) / 2) ^ 2) / ((x : ℂ) * (z : ℂ)))) :=
+      (((((x : ℂ) + (z : ℂ)) / 2) ^ (2 : ℕ)) / ((x : ℂ) * (z : ℂ))))
+      atTop (nhds (((((x : ℂ) + (z : ℂ)) / 2) ^ (2 : ℕ)) / ((x : ℂ) * (z : ℂ)))) :=
     tendsto_const_nhds
   have hscaled := hconst.mul hgram
   have hscaled' : Tendsto (fun n : ℕ =>
-      (((((x : ℂ) + (z : ℂ)) / 2) ^ 2) / ((x : ℂ) * (z : ℂ))) *
+      (((((x : ℂ) + (z : ℂ)) / 2) ^ (2 : ℕ)) / ((x : ℂ) * (z : ℂ))) *
         squarefreeMobiusFiniteUnitHardyGramSq (n : ℂ) (x : ℂ) (z : ℂ))
-      atTop (nhds (((((x + z) / 2) ^ 2) / (x * z) : ℝ) : ℂ)) := by
+      atTop (nhds (((((x + z) / 2) ^ (2 : ℕ)) / (x * z) : ℝ) : ℂ)) := by
     simpa using hscaled
   exact hscaled'.congr' heq.symm
 

@@ -43,7 +43,7 @@ theorem tendsto_blockMean_moebius :
 
 /-- **The squarefree block mean tends to the squarefree density.** -/
 theorem tendsto_blockMean_moebius_sq :
-    Tendsto (blockMean (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)) atTop (𝓝 squarefreeDensity) := by
+    Tendsto (blockMean (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ (2 : ℕ))) atTop (𝓝 squarefreeDensity) := by
   have hbase := tendsto_window_squarefree_density
   have hcomp := hbase.comp Real.tendsto_sqrt_atTop
   refine hcomp.congr fun x => ?_

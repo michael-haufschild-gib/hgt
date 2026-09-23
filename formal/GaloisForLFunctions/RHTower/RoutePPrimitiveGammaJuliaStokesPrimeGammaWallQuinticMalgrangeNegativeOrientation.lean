@@ -20,11 +20,11 @@ theorem normalizedPrimeArchMoment_four_eq_thetaCuspNormalizedEvenMoment :
     normalizedPrimeArchMoment 4 =
       thetaCuspNormalizedEvenMoment 5 / 362880 -
         thetaCuspNormalizedEvenMoment 1 * thetaCuspNormalizedEvenMoment 4 / 8064 +
-        thetaCuspNormalizedEvenMoment 1 ^ 2 * thetaCuspNormalizedEvenMoment 3 / 288 -
+        thetaCuspNormalizedEvenMoment 1 ^ (2 : ℕ) * thetaCuspNormalizedEvenMoment 3 / 288 -
         thetaCuspNormalizedEvenMoment 2 * thetaCuspNormalizedEvenMoment 3 / 1728 +
-        5 * thetaCuspNormalizedEvenMoment 1 * thetaCuspNormalizedEvenMoment 2 ^ 2 / 576 -
-        5 * thetaCuspNormalizedEvenMoment 1 ^ 3 * thetaCuspNormalizedEvenMoment 2 / 96 +
-        thetaCuspNormalizedEvenMoment 1 ^ 5 / 16 := by
+        5 * thetaCuspNormalizedEvenMoment 1 * thetaCuspNormalizedEvenMoment 2 ^ (2 : ℕ) / 576 -
+        5 * thetaCuspNormalizedEvenMoment 1 ^ (3 : ℕ) * thetaCuspNormalizedEvenMoment 2 / 96 +
+        thetaCuspNormalizedEvenMoment 1 ^ (5 : ℕ) / 16 := by
   have h := normalizedPrimeArchMoment_recursive 4
   norm_num [Finset.sum_range_succ, thetaCuspXiJet,
     thetaCuspPrimeArchProductJet, Nat.choose] at h
@@ -49,7 +49,7 @@ theorem normalizedPrimeArchMoment_four_eq_thetaCuspNormalizedEvenMoment :
 
 /-- The fifth cold residual after forced first-jet scaling is strictly negative. -/
 theorem normalizedPrimeArchMoment_four_sub_zero_pow_five_div_sixteen_neg :
-    normalizedPrimeArchMoment 4 - normalizedPrimeArchMoment 0 ^ 5 / 16 < 0 := by
+    normalizedPrimeArchMoment 4 - normalizedPrimeArchMoment 0 ^ (5 : ℕ) / 16 < 0 := by
   let A := thetaCuspNormalizedEvenMoment 1
   let B := thetaCuspNormalizedEvenMoment 2
   let C := thetaCuspNormalizedEvenMoment 3
@@ -57,7 +57,7 @@ theorem normalizedPrimeArchMoment_four_sub_zero_pow_five_div_sixteen_neg :
   let E := thetaCuspNormalizedEvenMoment 5
   have h0 := thetaCuspRawEvenMoment_zero_pos
   have hrawBA := thetaCuspRawEvenMoment_two_mul_zero_lt_six_mul_one_sq
-  have hBA : B < 6 * A ^ 2 := by
+  have hBA : B < 6 * A ^ (2 : ℕ) := by
     dsimp only [A, B, thetaCuspNormalizedEvenMoment]
     field_simp [h0.ne']
     nlinarith
@@ -72,13 +72,13 @@ theorem normalizedPrimeArchMoment_four_sub_zero_pow_five_div_sixteen_neg :
     dsimp only [A, D, E, thetaCuspNormalizedEvenMoment]
     field_simp [h0.ne']
     nlinarith
-  have hleft : 0 < 6 * A ^ 2 - B := by linarith
+  have hleft : 0 < 6 * A ^ (2 : ℕ) - B := by linarith
   have hright : C - 15 * A * B < 0 := by linarith
-  have hproduct : (6 * A ^ 2 - B) * (C - 15 * A * B) < 0 :=
+  have hproduct : (6 * A ^ (2 : ℕ) - B) * (C - 15 * A * B) < 0 :=
     mul_neg_of_pos_of_neg hleft hright
   have hQ :
-      E - 45 * A * D + 1260 * A ^ 2 * C - 210 * B * C +
-          3150 * A * B ^ 2 - 18900 * A ^ 3 * B < 0 := by
+      E - 45 * A * D + 1260 * A ^ (2 : ℕ) * C - 210 * B * C +
+          3150 * A * B ^ (2 : ℕ) - 18900 * A ^ (3 : ℕ) * B < 0 := by
     nlinarith
   rw [normalizedPrimeArchMoment_four_eq_thetaCuspNormalizedEvenMoment,
     normalizedPrimeArchMoment_zero_eq_thetaCuspNormalizedEvenMoment]
@@ -88,7 +88,7 @@ theorem normalizedPrimeArchMoment_four_sub_zero_pow_five_div_sixteen_neg :
 /-- Exact negative scalar orientation of the canonical cold fifth Malgrange target. -/
 theorem routePPrimitiveGammaJuliaStokesPrimeGammaWallColdFifthMalgrangeTarget_neg :
     12 * (normalizedPrimeArchMoment 4 -
-      normalizedPrimeArchMoment 0 ^ 5 / 16) < 0 := by
+      normalizedPrimeArchMoment 0 ^ (5 : ℕ) / 16) < 0 := by
   nlinarith [normalizedPrimeArchMoment_four_sub_zero_pow_five_div_sixteen_neg]
 
 end

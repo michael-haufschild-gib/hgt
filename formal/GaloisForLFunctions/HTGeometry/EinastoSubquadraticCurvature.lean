@@ -16,8 +16,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 def einastoSubquadraticKretschmannCoefficient (d k β : ℝ) : ℝ :=
   let q := exp (-einastoSubquadraticShape k)
-  β ^ 2 * einastoPowerCorrectionCoefficient d (einastoSubquadraticShape k) ^ 2 *
-    ((q * (q - 1)) ^ 2 + 4 * q ^ 2 + 4)
+  β ^ (2 : ℕ) * einastoPowerCorrectionCoefficient d (einastoSubquadraticShape k) ^ (2 : ℕ) *
+    ((q * (q - 1)) ^ (2 : ℕ) + 4 * q ^ (2 : ℕ) + 4)
 
 def einastoSubquadraticRicciCoefficient (d k β : ℝ) : ℝ :=
   let q := exp (-einastoSubquadraticShape k)
@@ -31,33 +31,33 @@ theorem einastoSubquadraticKretschmannCoefficient_pos_iff (d k β : ℝ) :
     simp [einastoSubquadraticKretschmannCoefficient]
   · have hF : einastoPowerCorrectionCoefficient d (einastoSubquadraticShape k) ≠ 0 :=
       ne_of_lt (einastoPowerCorrectionCoefficient_neg d (einastoSubquadraticShape k))
-    have hpoly : 0 < (exp (-einastoSubquadraticShape k) * (exp (-einastoSubquadraticShape k) - 1)) ^ 2 +
-        4 * exp (-einastoSubquadraticShape k) ^ 2 + 4 := by positivity
+    have hpoly : 0 < (exp (-einastoSubquadraticShape k) * (exp (-einastoSubquadraticShape k) - 1)) ^ (2 : ℕ) +
+        4 * exp (-einastoSubquadraticShape k) ^ (2 : ℕ) + 4 := by positivity
     exact iff_of_true (mul_pos (mul_pos (sq_pos_of_ne_zero hb) (sq_pos_of_ne_zero hF)) hpoly) hb
 
 /-- Exact leading coefficient of the actual Kretschmann scalar for all couplings and signs. -/
 theorem einastoSubquadraticMetric_scaled_Kretschmann_limit (d l k σ β : ℝ) :
-    Tendsto (fun t => (exp t ^ 4 / einastoProfilePower l (einastoSubquadraticShape k) (exp t) ^ 2) *
+    Tendsto (fun t => (exp t ^ (4 : ℕ) / einastoProfilePower l (einastoSubquadraticShape k) (exp t) ^ (2 : ℕ)) *
       radialKretschmannScalar (einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ β) (exp t)) atBot
       (𝓝 (einastoSubquadraticKretschmannCoefficient d k β)) := by
   let a := einastoSubquadraticShape k
-  have he : (fun t => (exp t ^ 4 / einastoProfilePower l a (exp t) ^ 2) *
+  have he : (fun t => (exp t ^ (4 : ℕ) / einastoProfilePower l a (exp t) ^ (2 : ℕ)) *
       radialKretschmannScalar (einastoShapePerturbedMetric d l a σ β) (exp t)) =
-      (fun t => (exp t ^ 2 * deriv (deriv (einastoShapePerturbedMetric d l a σ β)) (exp t) / einastoProfilePower l a (exp t)) ^ 2 +
-        4 * (exp t * deriv (einastoShapePerturbedMetric d l a σ β) (exp t) / einastoProfilePower l a (exp t)) ^ 2 +
-        4 * ((1 - einastoShapePerturbedMetric d l a σ β (exp t)) / einastoProfilePower l a (exp t)) ^ 2) := by
+      (fun t => (exp t ^ (2 : ℕ) * deriv (deriv (einastoShapePerturbedMetric d l a σ β)) (exp t) / einastoProfilePower l a (exp t)) ^ (2 : ℕ) +
+        4 * (exp t * deriv (einastoShapePerturbedMetric d l a σ β) (exp t) / einastoProfilePower l a (exp t)) ^ (2 : ℕ) +
+        4 * ((1 - einastoShapePerturbedMetric d l a σ β (exp t)) / einastoProfilePower l a (exp t)) ^ (2 : ℕ)) := by
     funext t
     unfold radialKretschmannScalar
     field_simp [(einastoProfilePower_pos l a t).ne']
-  change Tendsto (fun t => (exp t ^ 4 / einastoProfilePower l a (exp t) ^ 2) *
+  change Tendsto (fun t => (exp t ^ (4 : ℕ) / einastoProfilePower l a (exp t) ^ (2 : ℕ)) *
     radialKretschmannScalar (einastoShapePerturbedMetric d l a σ β) (exp t)) atBot _
   rw [he]
   have h := (((einastoSubquadraticMetric_scaled_second_derivative_limit d l k σ β).pow 2).add
     (((einastoSubquadraticMetric_scaled_derivative_limit d l k σ β).pow 2).const_mul 4)).add
     (((einastoSubquadraticMetric_normalized_limit d l k σ β).pow 2).const_mul 4)
-  have hc : (β * (exp (-a) * (exp (-a) - 1) * einastoPowerCorrectionCoefficient d a)) ^ 2 +
-      4 * (β * (exp (-a) * einastoPowerCorrectionCoefficient d a)) ^ 2 +
-      4 * (-β * einastoPowerCorrectionCoefficient d a) ^ 2 = einastoSubquadraticKretschmannCoefficient d k β := by
+  have hc : (β * (exp (-a) * (exp (-a) - 1) * einastoPowerCorrectionCoefficient d a)) ^ (2 : ℕ) +
+      4 * (β * (exp (-a) * einastoPowerCorrectionCoefficient d a)) ^ (2 : ℕ) +
+      4 * (-β * einastoPowerCorrectionCoefficient d a) ^ (2 : ℕ) = einastoSubquadraticKretschmannCoefficient d k β := by
     unfold einastoSubquadraticKretschmannCoefficient a
     ring
   rwa [hc] at h
@@ -82,9 +82,9 @@ theorem einastoSubquadraticMetric_Kretschmann_diverges_iff (d l k σ β : ℝ) :
   · have hL := einastoSubquadraticMetric_scaled_Kretschmann_limit d l k σ β
     have hW := (tendsto_pow_atTop (by norm_num : (2 : ℕ) ≠ 0)).comp (einastoSubquadraticWeight_tendsto_atTop l k)
     have h := hL.pos_mul_atTop ((einastoSubquadraticKretschmannCoefficient_pos_iff d k β).mpr hb) hW
-    have he : (fun t => ((exp t ^ 4 / einastoProfilePower l (einastoSubquadraticShape k) (exp t) ^ 2) *
+    have he : (fun t => ((exp t ^ (4 : ℕ) / einastoProfilePower l (einastoSubquadraticShape k) (exp t) ^ (2 : ℕ)) *
         radialKretschmannScalar (einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ β) (exp t)) *
-        (einastoProfilePower l (einastoSubquadraticShape k) (exp t) / exp t ^ 2) ^ 2) =
+        (einastoProfilePower l (einastoSubquadraticShape k) (exp t) / exp t ^ (2 : ℕ)) ^ (2 : ℕ)) =
         (fun t => radialKretschmannScalar (einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ β) (exp t)) := by
       funext t
       field_simp [(einastoProfilePower_pos l (einastoSubquadraticShape k) t).ne']
@@ -95,7 +95,7 @@ theorem einastoSubquadraticMetric_Kretschmann_diverges_iff (d l k σ β : ℝ) :
 /-- Complete finite-limit classification on the singular side of the shape threshold. -/
 theorem einastoSubquadraticMetric_Kretschmann_finite_limit_iff (d l k σ β K : ℝ) :
     Tendsto (fun t => radialKretschmannScalar (einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ β) (exp t)) atBot (𝓝 K) ↔
-      β = 0 ∧ K = 512 * Real.pi ^ 2 * exp d ^ 2 / 3 := by
+      β = 0 ∧ K = 512 * Real.pi ^ (2 : ℕ) * exp d ^ (2 : ℕ) / 3 := by
   by_cases hb : β = 0
   · subst β
     have he : einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ 0 = einastoMetric d l (einastoSubquadraticShape k) := by
@@ -122,19 +122,19 @@ theorem einastoSubquadraticMetric_regular_iff (d l k σ β : ℝ) :
 
 /-- The Ricci scalar has its own exact nonzero leading coefficient. -/
 theorem einastoSubquadraticMetric_scaled_Ricci_limit (d l k σ β : ℝ) :
-    Tendsto (fun t => (exp t ^ 2 / einastoProfilePower l (einastoSubquadraticShape k) (exp t)) *
+    Tendsto (fun t => (exp t ^ (2 : ℕ) / einastoProfilePower l (einastoSubquadraticShape k) (exp t)) *
       radialRicciScalar (einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ β) (exp t)) atBot
       (𝓝 (einastoSubquadraticRicciCoefficient d k β)) := by
   let a := einastoSubquadraticShape k
-  have he : (fun t => (exp t ^ 2 / einastoProfilePower l a (exp t)) * radialRicciScalar (einastoShapePerturbedMetric d l a σ β) (exp t)) =
-      (fun t => exp t ^ 2 * deriv (deriv (einastoShapePerturbedMetric d l a σ β)) (exp t) / einastoProfilePower l a (exp t) +
+  have he : (fun t => (exp t ^ (2 : ℕ) / einastoProfilePower l a (exp t)) * radialRicciScalar (einastoShapePerturbedMetric d l a σ β) (exp t)) =
+      (fun t => exp t ^ (2 : ℕ) * deriv (deriv (einastoShapePerturbedMetric d l a σ β)) (exp t) / einastoProfilePower l a (exp t) +
         4 * (exp t * deriv (einastoShapePerturbedMetric d l a σ β) (exp t) / einastoProfilePower l a (exp t)) -
         2 * ((1 - einastoShapePerturbedMetric d l a σ β (exp t)) / einastoProfilePower l a (exp t))) := by
     funext t
     unfold radialRicciScalar
     field_simp [(einastoProfilePower_pos l a t).ne']
     ring
-  change Tendsto (fun t => (exp t ^ 2 / einastoProfilePower l a (exp t)) * radialRicciScalar (einastoShapePerturbedMetric d l a σ β) (exp t)) atBot _
+  change Tendsto (fun t => (exp t ^ (2 : ℕ) / einastoProfilePower l a (exp t)) * radialRicciScalar (einastoShapePerturbedMetric d l a σ β) (exp t)) atBot _
   rw [he]
   have h := ((einastoSubquadraticMetric_scaled_second_derivative_limit d l k σ β).add
     ((einastoSubquadraticMetric_scaled_derivative_limit d l k σ β).const_mul 4)).sub
@@ -152,9 +152,9 @@ theorem einastoSubquadraticMetric_Ricci_complete_limit (d l k σ β : ℝ) :
       (if 0 < β then atBot else if β < 0 then atTop else 𝓝 (-32 * Real.pi * exp d)) := by
   have hL := einastoSubquadraticMetric_scaled_Ricci_limit d l k σ β
   have hW := einastoSubquadraticWeight_tendsto_atTop l k
-  have he : (fun t => ((exp t ^ 2 / einastoProfilePower l (einastoSubquadraticShape k) (exp t)) *
+  have he : (fun t => ((exp t ^ (2 : ℕ) / einastoProfilePower l (einastoSubquadraticShape k) (exp t)) *
       radialRicciScalar (einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ β) (exp t)) *
-      (einastoProfilePower l (einastoSubquadraticShape k) (exp t) / exp t ^ 2)) =
+      (einastoProfilePower l (einastoSubquadraticShape k) (exp t) / exp t ^ (2 : ℕ))) =
       (fun t => radialRicciScalar (einastoShapePerturbedMetric d l (einastoSubquadraticShape k) σ β) (exp t)) := by
     funext t
     field_simp [(einastoProfilePower_pos l (einastoSubquadraticShape k) t).ne']

@@ -24,7 +24,7 @@ theorem approxNumber_gammaRadialReporter_le_factorialTail
     (rho : ℝ) (s : Finset ℕ) :
     approxNumber (gammaRadialReporter rho) s.card ≤
       Real.sqrt
-        (∑' i : {i // i ∉ s}, ‖gammaRadialReporterCoefficient rho i‖ ^ 2) := by
+        (∑' i : {i // i ∉ s}, ‖gammaRadialReporterCoefficient rho i‖ ^ (2 : ℕ)) := by
   have hHS : IsHilbertSchmidt (gammaRadialReporter rho) :=
     HilbertSchmidt.isHilbertSchmidt_toOperator
       (gammaRadialReporterKernel_isHS rho)
@@ -51,7 +51,7 @@ theorem gammaRadialReporter_completeApproximationSpectrumUniversality
     (∀ s : Finset ℕ,
       approxNumber (gammaRadialReporter rho) s.card ≤
         Real.sqrt
-          (∑' i : {i // i ∉ s}, ‖gammaRadialReporterCoefficient rho i‖ ^ 2)) ∧
+          (∑' i : {i // i ∉ s}, ‖gammaRadialReporterCoefficient rho i‖ ^ (2 : ℕ))) ∧
       Tendsto (approxNumber (gammaRadialReporter rho)) atTop (nhds 0) ∧
       IsCompactOperator (gammaRadialReporter rho) ∧
       Function.Injective (gammaRadialReporter rho) ∧

@@ -32,9 +32,9 @@ open _root_.HTGeometry (deningerAnnulus polarCoord_symm_eq_circleMap)
 
 /-- **The conformal area of an annulus.**  `∫_{a<|z|<b} |z|^{-2} = 2π log(b/a)`. -/
 theorem setIntegral_annulus_inv_normSq {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
-    (∫ w in deningerAnnulus a b, (‖w‖ ^ 2)⁻¹) = 2 * π * Real.log (b / a) := by
+    (∫ w in deningerAnnulus a b, (‖w‖ ^ (2 : ℕ))⁻¹) = 2 * π * Real.log (b / a) := by
   set A : Set ℂ := deningerAnnulus a b with hA
-  set f : ℂ → ℝ := fun w => (‖w‖ ^ 2)⁻¹ with hf
+  set f : ℂ → ℝ := fun w => (‖w‖ ^ (2 : ℕ))⁻¹ with hf
   have hAopen : IsOpen A := by
     have hpre : A = (fun w : ℂ => ‖w‖) ⁻¹' (Set.Ioo a b) := by
       ext w; simp [hA, deningerAnnulus, Set.mem_Ioo]
@@ -64,7 +64,7 @@ theorem setIntegral_annulus_inv_normSq {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) 
         exact hmem
       have h2 : ((r, θ) : ℝ × ℝ) ∈ Set.Ioo a b ×ˢ Set.Ioo (-π) π := ⟨hmem, hθ⟩
       rw [hsymm, Set.indicator_of_mem h1, Set.indicator_of_mem h2, hf]
-      show r • (‖circleMap 0 r θ‖ ^ 2)⁻¹ = 1 / r * (1 : ℝ)
+      show r • (‖circleMap 0 r θ‖ ^ (2 : ℕ))⁻¹ = 1 / r * (1 : ℝ)
       rw [hnorm, smul_eq_mul]
       field_simp
     · have h1 : circleMap 0 r θ ∉ A := by
@@ -99,18 +99,18 @@ theorem setIntegral_annulus_inv_normSq {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) 
 The normalized logarithmic cutoff on the annulus `ε < |z| < √ε` has Dirichlet energy exactly
 `4π / log ε⁻¹`, hence tends to zero as `ε → 0`. -/
 theorem setIntegral_logCutoff_energy {eps : ℝ} (heps : 0 < eps) (heps1 : eps < 1) :
-    (∫ w in deningerAnnulus eps (Real.sqrt eps), ((2 / Real.log eps⁻¹) * ‖w‖⁻¹) ^ 2)
+    (∫ w in deningerAnnulus eps (Real.sqrt eps), ((2 / Real.log eps⁻¹) * ‖w‖⁻¹) ^ (2 : ℕ))
       = 4 * π / Real.log eps⁻¹ := by
   have hlogneg : Real.log eps < 0 := Real.log_neg heps heps1
   have hL : 0 < Real.log eps⁻¹ := by
     rw [Real.log_inv]
     linarith
   have hle : eps ≤ Real.sqrt eps := by
-    have hsq : eps ^ 2 ≤ eps := by nlinarith
+    have hsq : eps ^ (2 : ℕ) ≤ eps := by nlinarith
     have h2 := Real.sqrt_le_sqrt hsq
     rwa [Real.sqrt_sq heps.le] at h2
   have hconst : ∀ w : ℂ,
-      ((2 / Real.log eps⁻¹) * ‖w‖⁻¹) ^ 2 = (2 / Real.log eps⁻¹) ^ 2 * (‖w‖ ^ 2)⁻¹ := by
+      ((2 / Real.log eps⁻¹) * ‖w‖⁻¹) ^ (2 : ℕ) = (2 / Real.log eps⁻¹) ^ (2 : ℕ) * (‖w‖ ^ (2 : ℕ))⁻¹ := by
     intro w
     rw [mul_pow, ← inv_pow]
   simp only [hconst]

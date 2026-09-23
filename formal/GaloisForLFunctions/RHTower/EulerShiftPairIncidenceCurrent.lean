@@ -490,7 +490,7 @@ theorem xiStripWindowLocalSquareSum_eq_total_add_diagonalReduced (T : ℝ) :
   apply Finset.sum_congr rfl
   intro rho _
   let n := (analyticOrderAt xi rho).toNat
-  change n ^ 2 = n + n * (n - 1)
+  change n ^ (2 : ℕ) = n + n * (n - 1)
   cases n with
   | zero => simp
   | succ n => simp [pow_two, Nat.succ_mul, Nat.mul_succ]; ring

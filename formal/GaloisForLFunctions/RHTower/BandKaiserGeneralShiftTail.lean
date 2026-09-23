@@ -39,11 +39,11 @@ theorem kaiserEdgeTransformBoundAt_eq_sinh {D : ℝ} (hD : 0 < D) :
     kaiserEdgeTransformBoundAt D =
       2 * Real.sinh (Real.sqrt D) / Real.sqrt D := by
   have hsqrt : 0 < Real.sqrt D := Real.sqrt_pos.mpr hD
-  have hsq : Real.sqrt D ^ 2 = D := Real.sq_sqrt hD.le
+  have hsq : Real.sqrt D ^ (2 : ℕ) = D := Real.sq_sqrt hD.le
   rw [kaiserEdgeTransformBoundAt]
   have hterm : ∀ m : ℕ,
       2 * D ^ m / (Nat.factorial (2 * m + 1) : ℝ) =
-        2 * (Real.sqrt D ^ 2) ^ m / (Nat.factorial (2 * m + 1) : ℝ) := by
+        2 * (Real.sqrt D ^ (2 : ℕ)) ^ m / (Nat.factorial (2 * m + 1) : ℝ) := by
     intro m
     rw [hsq]
   rw [tsum_congr hterm, tsum_oddFactorial_sinh hsqrt.ne']
@@ -116,11 +116,11 @@ theorem measurableSet_kaiserGeneralShiftedEdgeWindow (c w : ℝ) :
 theorem norm_sq_fourier_bandTrunc_kaiser_general_shift_le_envelope
     {c w ξ : ℝ} (hc : 0 < c) (hw : |2 * Real.pi * w| ≤ c)
     (hξ : ξ ∈ (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ) :
-    ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ 2 ≤
+    ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ (2 : ℕ) ≤
       cauchyPair c (ξ - w) +
         (kaiserGeneralShiftedEdgeWindow c w).indicator
           (fun _ => kaiserEdgeTransformBoundAt
-            (2 * c * |2 * Real.pi * w|) ^ 2) ξ := by
+            (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ)) ξ := by
   have hpi : 0 < 2 * Real.pi := by positivity
   have hCpos : 0 < kaiserBandRadius c := by
     rw [kaiserBandRadius]
@@ -145,7 +145,7 @@ theorem norm_sq_fourier_bandTrunc_kaiser_general_shift_le_envelope
   · have hbase := norm_sq_fourier_bandTrunc_kaiser_le hc.le houter
     have hpair := folded_cauchy_le_pair c (ξ - w)
     have hedge : 0 ≤ (kaiserGeneralShiftedEdgeWindow c w).indicator
-        (fun _ => kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2) ξ := by
+        (fun _ => kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ)) ξ := by
       by_cases hmem : ξ ∈ kaiserGeneralShiftedEdgeWindow c w <;> simp [hmem]
       exact sq_nonneg _
     exact hbase.trans (hpair.trans (le_add_of_nonneg_right hedge))
@@ -158,17 +158,17 @@ theorem norm_sq_fourier_bandTrunc_kaiser_general_shift_le_envelope
     have hlow : c - |2 * Real.pi * w| < |2 * Real.pi * (ξ - w)| := by
       linarith
     have hlow0 : 0 ≤ c - |2 * Real.pi * w| := sub_nonneg.mpr hw
-    have hsquare : (c - |2 * Real.pi * w|) ^ 2 ≤
-        |2 * Real.pi * (ξ - w)| ^ 2 :=
+    have hsquare : (c - |2 * Real.pi * w|) ^ (2 : ℕ) ≤
+        |2 * Real.pi * (ξ - w)| ^ (2 : ℕ) :=
       pow_le_pow_left₀ hlow0 hlow.le 2
-    have hedge : c ^ 2 - (2 * Real.pi * (ξ - w)) ^ 2 ≤
+    have hedge : c ^ (2 : ℕ) - (2 * Real.pi * (ξ - w)) ^ (2 : ℕ) ≤
         2 * c * |2 * Real.pi * w| := by
       rw [← sq_abs (2 * Real.pi * (ξ - w))]
       calc
-        c ^ 2 - |2 * Real.pi * (ξ - w)| ^ 2
-            ≤ c ^ 2 - (c - |2 * Real.pi * w|) ^ 2 := by linarith
+        c ^ (2 : ℕ) - |2 * Real.pi * (ξ - w)| ^ (2 : ℕ)
+            ≤ c ^ (2 : ℕ) - (c - |2 * Real.pi * w|) ^ (2 : ℕ) := by linarith
         _ ≤ 2 * c * |2 * Real.pi * w| := by nlinarith [sq_nonneg |2 * Real.pi * w|]
-    have hinner : 0 ≤ c ^ 2 - (2 * Real.pi * (ξ - w)) ^ 2 := by
+    have hinner : 0 ≤ c ^ (2 : ℕ) - (2 * Real.pi * (ξ - w)) ^ (2 : ℕ) := by
       have hsquare' := pow_le_pow_left₀ (abs_nonneg _) hangular 2
       rw [sq_abs] at hsquare'
       linarith
@@ -189,12 +189,12 @@ theorem norm_sq_fourier_bandTrunc_kaiser_general_shift_le_envelope
     rw [Set.indicator_of_mem hmem]
     have hdepth := tsum_oddFactorial_mono hinner hedge
     change
-      (∑' m : ℕ, 2 * (c ^ 2 - (2 * Real.pi * (ξ - w)) ^ 2) ^ m /
+      (∑' m : ℕ, 2 * (c ^ (2 : ℕ) - (2 * Real.pi * (ξ - w)) ^ (2 : ℕ)) ^ m /
         (Nat.factorial (2 * m + 1) : ℝ)) ≤
           kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) at hdepth
     have htransform :
-        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ 2 ≤
-          kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2 := by
+        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ (2 : ℕ) ≤
+          kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ) := by
       rw [norm_sq_fourier_bandTrunc_of_even
         (continuous_kaiserTrial c) (kaiserTrial_even c) (ξ - w)]
       rw [integral_kaiserTrial_cos]
@@ -210,18 +210,18 @@ the depth-dependent constant over the exact enlarged edge window. -/
 theorem integral_compl_band_norm_sq_fourier_kaiser_general_shift_le
     {c w : ℝ} (hc : 0 < c) (hw : |2 * Real.pi * w| ≤ c) :
     (∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ 2) ≤
+        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ (2 : ℕ)) ≤
       8 + 2 * (kaiserBandRadius c + |w|) *
-        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2 := by
-  let density : ℝ → ℝ := fun ξ => ‖𝓕 (bandTrunc (kaiserTrial c)) ξ‖ ^ 2
+        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ) := by
+  let density : ℝ → ℝ := fun ξ => ‖𝓕 (bandTrunc (kaiserTrial c)) ξ‖ ^ (2 : ℕ)
   let edge : ℝ → ℝ := (kaiserGeneralShiftedEdgeWindow c w).indicator
-    (fun _ => kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2)
+    (fun _ => kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ))
   have hdensity : Integrable density :=
     integrable_norm_sq_fourier_bandTrunc (continuous_kaiserTrial c)
   have hshift : Integrable (fun ξ => density (ξ - w)) := hdensity.comp_sub_right w
   have hedge : Integrable edge := by
     exact (integrableOn_const (C :=
-      kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2) (by
+      kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ)) (by
         simp [kaiserGeneralShiftedEdgeWindow])).integrable_indicator
           (measurableSet_kaiserGeneralShiftedEdgeWindow c w)
   have hcauchy : Integrable (fun ξ => cauchyPair c (ξ - w)) :=
@@ -252,7 +252,7 @@ theorem integral_compl_band_norm_sq_fourier_kaiser_general_shift_le
     integral_mono_measure Measure.restrict_le_self
       (Filter.Eventually.of_forall fun ξ => by
         change 0 ≤ (kaiserGeneralShiftedEdgeWindow c w).indicator
-          (fun _ => kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2) ξ
+          (fun _ => kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ)) ξ
         by_cases hmem : ξ ∈ kaiserGeneralShiftedEdgeWindow c w <;> simp [hmem]
         exact sq_nonneg _) hedge
   have hcauchyIntegral : (∫ ξ : ℝ, cauchyPair c (ξ - w)) = 8 := by
@@ -262,9 +262,9 @@ theorem integral_compl_band_norm_sq_fourier_kaiser_general_shift_le
     positivity
   have hedgeIntegral : (∫ ξ : ℝ, edge ξ) =
       2 * (kaiserBandRadius c + |w|) *
-        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2 := by
+        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ) := by
     change (∫ ξ : ℝ, (kaiserGeneralShiftedEdgeWindow c w).indicator
-      (fun _ => kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2) ξ) = _
+      (fun _ => kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ)) ξ) = _
     rw [MeasureTheory.integral_indicator (measurableSet_kaiserGeneralShiftedEdgeWindow c w),
       MeasureTheory.setIntegral_const]
     rw [kaiserGeneralShiftedEdgeWindow, Real.volume_real_Icc_of_le (by linarith)]
@@ -272,7 +272,7 @@ theorem integral_compl_band_norm_sq_fourier_kaiser_general_shift_le
     ring
   calc
     (∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ 2)
+        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ (2 : ℕ))
       = ∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
           density (ξ - w) := rfl
     _ ≤ ∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
@@ -284,18 +284,18 @@ theorem integral_compl_band_norm_sq_fourier_kaiser_general_shift_le
     _ ≤ (∫ ξ : ℝ, cauchyPair c (ξ - w)) + ∫ ξ : ℝ, edge ξ :=
       add_le_add hcauchyRestrict hedgeRestrict
     _ = 8 + 2 * (kaiserBandRadius c + |w|) *
-        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2 := by
+        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ) := by
       rw [hcauchyIntegral, hedgeIntegral]
 
 /-- General cosine-packet tail bound obtained by averaging the two translated components. -/
 theorem integral_compl_band_norm_sq_fourier_kaiserCosTrial_general_shift_le
     {c w : ℝ} (hc : 0 < c) (hw : |2 * Real.pi * w| ≤ c) :
     (∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserCosTrial c w)) ξ‖ ^ 2) ≤
+        ‖𝓕 (bandTrunc (kaiserCosTrial c w)) ξ‖ ^ (2 : ℕ)) ≤
       8 + 2 * (kaiserBandRadius c + |w|) *
-        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2 := by
-  let baseDensity : ℝ → ℝ := fun ξ => ‖𝓕 (bandTrunc (kaiserTrial c)) ξ‖ ^ 2
-  let packetDensity : ℝ → ℝ := fun ξ => ‖𝓕 (bandTrunc (kaiserCosTrial c w)) ξ‖ ^ 2
+        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ) := by
+  let baseDensity : ℝ → ℝ := fun ξ => ‖𝓕 (bandTrunc (kaiserTrial c)) ξ‖ ^ (2 : ℕ)
+  let packetDensity : ℝ → ℝ := fun ξ => ‖𝓕 (bandTrunc (kaiserCosTrial c w)) ξ‖ ^ (2 : ℕ)
   have hbase : Integrable baseDensity :=
     integrable_norm_sq_fourier_bandTrunc (continuous_kaiserTrial c)
   have hminus : Integrable (fun ξ => baseDensity (ξ - w)) := hbase.comp_sub_right w
@@ -331,15 +331,15 @@ theorem integral_compl_band_norm_sq_fourier_kaiserCosTrial_general_shift_le
   refine hmono.trans ?_
   have hplusBound' :
       (∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ + w)‖ ^ 2) ≤
+        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ + w)‖ ^ (2 : ℕ)) ≤
       8 + 2 * (kaiserBandRadius c + |w|) *
-        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ 2 := by
+        kaiserEdgeTransformBoundAt (2 * c * |2 * Real.pi * w|) ^ (2 : ℕ) := by
     simpa only [sub_neg_eq_add, abs_neg, mul_neg] using hplusBound
   change
     ((∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ 2) +
+        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ - w)‖ ^ (2 : ℕ)) +
       ∫ ξ in (Icc (-(kaiserBandRadius c)) (kaiserBandRadius c))ᶜ,
-        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ + w)‖ ^ 2) / 2 ≤ _
+        ‖𝓕 (bandTrunc (kaiserTrial c)) (ξ + w)‖ ^ (2 : ℕ)) / 2 ≤ _
   linarith
 
 end GaloisForLFunctions.RHTower

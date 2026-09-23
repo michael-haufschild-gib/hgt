@@ -103,7 +103,7 @@ theorem tendsto_harmonic_two_mul_sub_harmonic :
   simpa [hsplit] using hcomb.congr fun n => (hsplit n).symm
 
 theorem summable_alternatingHarmonicPair : Summable alternatingHarmonicPair := by
-  have hmaj : Summable (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ 2) := by
+  have hmaj : Summable (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ (2 : ℕ)) := by
     have h := (Real.summable_one_div_nat_pow (p := 2)).mpr one_lt_two
     refine ((summable_nat_add_iff 1).2 h).congr fun k => ?_
     push_cast

@@ -125,7 +125,7 @@ density change, not an independent positive reserve added to the source.
   `ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`, and
-  `XiHeatCassiniWoldJointDepthMöbiusSourceTransport`.
+  `XiHeatCassiniWoldJointDepthMobiusSourceTransport`.
   It reported no error against this module; the whole repository is not certified.
 
 ## Next hard attack

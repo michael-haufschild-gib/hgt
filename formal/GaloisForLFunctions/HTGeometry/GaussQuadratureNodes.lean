@@ -22,9 +22,9 @@ variable {s : ℕ → ℝ}
 /-- **No repeated roots.**  A square factor would produce a quotient orthogonal to `Q` whose pairing
 with `Q` is nevertheless a positive moment square. -/
 theorem monicOrtho_not_sq_dvd (h : PositiveMomentForm s) (n : ℕ) (r : ℝ) :
-    ¬ (((X - C r) ^ 2 : Polynomial ℝ) ∣ monicOrtho s (n + 1)) := by
+    ¬ (((X - C r) ^ (2 : ℕ) : Polynomial ℝ) ∣ monicOrtho s (n + 1)) := by
   rintro ⟨g, hg⟩
-  have hsqne : ((X - C r) ^ 2 : Polynomial ℝ) ≠ 0 := pow_ne_zero 2 (X_sub_C_ne_zero r)
+  have hsqne : ((X - C r) ^ (2 : ℕ) : Polynomial ℝ) ≠ 0 := pow_ne_zero 2 (X_sub_C_ne_zero r)
   have hgne : g ≠ 0 := by
     intro h0
     rw [h0, mul_zero] at hg
@@ -39,7 +39,7 @@ theorem monicOrtho_not_sq_dvd (h : PositiveMomentForm s) (n : ℕ) (r : ℝ) :
     exact_mod_cast hglt
   have hzero : momentInner s (monicOrtho s (n + 1)) g = 0 :=
     monicOrtho_inner_eq_zero_of_degree_lt h (n + 1) (n + 1) le_rfl g hgdeg
-  have hpoly : ((X - C r) ^ 2 : Polynomial ℝ) * g * g
+  have hpoly : ((X - C r) ^ (2 : ℕ) : Polynomial ℝ) * g * g
       = ((X - C r) * g) * ((X - C r) * g) := by ring
   have hexp : momentInner s (monicOrtho s (n + 1)) g
       = momentInner s ((X - C r) * g) ((X - C r) * g) := by

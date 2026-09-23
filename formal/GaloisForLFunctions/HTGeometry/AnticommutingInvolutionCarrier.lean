@@ -31,7 +31,7 @@ theorem anticommutingCombination_mul_self (S : Finset ι) (P : ι → R) (a : ι
     (hsq : ∀ p ∈ S, P p * P p = 1)
     (hanti : ∀ p ∈ S, ∀ r ∈ S, p ≠ r → P p * P r + P r * P p = 0) :
     anticommutingCombination S P a * anticommutingCombination S P a
-      = (((∑ p ∈ S, a p ^ 2 : ℝ) : ℂ)) • (1 : R) := by
+      = (((∑ p ∈ S, a p ^ (2 : ℕ) : ℝ) : ℂ)) • (1 : R) := by
   classical
   set f : ι → ι → R := fun p r => (((a p : ℝ) : ℂ) * ((a r : ℝ) : ℂ)) • (P p * P r) with hf
   have hexpand : anticommutingCombination S P a * anticommutingCombination S P a
@@ -92,14 +92,14 @@ theorem exp_neg_I_smul_anticommutingCombination (S : Finset ι) (P : ι → A) (
     (hsq : ∀ p ∈ S, P p * P p = 1)
     (hanti : ∀ p ∈ S, ∀ r ∈ S, p ≠ r → P p * P r + P r * P p = 0) :
     NormedSpace.exp ((-Complex.I) • anticommutingCombination S P a)
-      = ((Real.cos (Real.sqrt (∑ p ∈ S, a p ^ 2)) : ℝ) : ℂ) • (1 : A)
-        - (Complex.I * ((Real.sinc (Real.sqrt (∑ p ∈ S, a p ^ 2)) : ℝ) : ℂ))
+      = ((Real.cos (Real.sqrt (∑ p ∈ S, a p ^ (2 : ℕ))) : ℝ) : ℂ) • (1 : A)
+        - (Complex.I * ((Real.sinc (Real.sqrt (∑ p ∈ S, a p ^ (2 : ℕ))) : ℝ) : ℂ))
             • anticommutingCombination S P a := by
   set K : A := anticommutingCombination S P a with hK
-  set r : ℝ := Real.sqrt (∑ p ∈ S, a p ^ 2) with hr
-  have hnn : (0 : ℝ) ≤ ∑ p ∈ S, a p ^ 2 := Finset.sum_nonneg fun p _ => sq_nonneg _
-  have hrsq : (r : ℝ) ^ 2 = ∑ p ∈ S, a p ^ 2 := Real.sq_sqrt hnn
-  have hMsq : ((-Complex.I) • K) * ((-Complex.I) • K) = (-((r : ℂ) ^ 2)) • (1 : A) := by
+  set r : ℝ := Real.sqrt (∑ p ∈ S, a p ^ (2 : ℕ)) with hr
+  have hnn : (0 : ℝ) ≤ ∑ p ∈ S, a p ^ (2 : ℕ) := Finset.sum_nonneg fun p _ => sq_nonneg _
+  have hrsq : (r : ℝ) ^ (2 : ℕ) = ∑ p ∈ S, a p ^ (2 : ℕ) := Real.sq_sqrt hnn
+  have hMsq : ((-Complex.I) • K) * ((-Complex.I) • K) = (-((r : ℂ) ^ (2 : ℕ))) • (1 : A) := by
     rw [smul_mul_smul_comm, hK, anticommutingCombination_mul_self S P a hsq hanti, smul_smul]
     congr 1
     rw [← hrsq]

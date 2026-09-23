@@ -233,7 +233,7 @@ private theorem orbit_phase_scaled (γ : SL2R) (z : UpperHalfPlane) :
       (Real.sqrt (γ • z).im : ℂ)*matrixDenom γ z := by
   have hy : (Real.sqrt z.im : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.sqrt_ne_zero'.mpr z.im_pos)
-  have hsq : (Real.sqrt z.im : ℂ)^2 = (z.im : ℂ) := by
+  have hsq : (Real.sqrt z.im : ℂ)^(2 : ℕ) = (z.im : ℂ) := by
     rw [← Complex.ofReal_pow,Real.sq_sqrt z.im_pos.le]
   rw [realIwasawaK_phase]
   have hb : (((realIwasawaB (γ*z.toSL2R) : realUpperBorel) : SL2R) 0 0 : ℂ) =
@@ -252,13 +252,13 @@ private theorem orbit_phase_scaled (γ : SL2R) (z : UpperHalfPlane) :
 
 /-- Fourth powers of the actual compact phase retain the exact height ratio. -/
 theorem orbit_phase_four (γ : SL2R) (z : UpperHalfPlane) :
-    realSphericalKPhase (realIwasawaK (γ*z.toSL2R))^4*(z.im : ℂ)^2 =
-      ((γ • z).im : ℂ)^2*matrixDenom γ z^4 := by
-  have hy : (Real.sqrt z.im : ℂ)^2 = (z.im : ℂ) := by
+    realSphericalKPhase (realIwasawaK (γ*z.toSL2R))^(4 : ℕ)*(z.im : ℂ)^(2 : ℕ) =
+      ((γ • z).im : ℂ)^(2 : ℕ)*matrixDenom γ z^(4 : ℕ) := by
+  have hy : (Real.sqrt z.im : ℂ)^(2 : ℕ) = (z.im : ℂ) := by
     rw [← Complex.ofReal_pow,Real.sq_sqrt z.im_pos.le]
-  have ht : (Real.sqrt (γ • z).im : ℂ)^2 = ((γ • z).im : ℂ) := by
+  have ht : (Real.sqrt (γ • z).im : ℂ)^(2 : ℕ) = ((γ • z).im : ℂ) := by
     rw [← Complex.ofReal_pow,Real.sq_sqrt (γ • z).im_pos.le]
-  have he := congrArg (fun c : ℂ => c^4) (orbit_phase_scaled γ z)
+  have he := congrArg (fun c : ℂ => c^(4 : ℕ)) (orbit_phase_scaled γ z)
   simp only [mul_pow,show (4:ℕ)=2*2 from rfl,pow_mul,hy,ht] at he
   simpa only [← pow_mul] using he
 
@@ -266,7 +266,7 @@ private theorem lower_tensor_value (f u : FunctionSpace) (F U : (Fin 2 → ℝ) 
     (hF : ∀ z : UpperHalfPlane, f z = F (coordinates z))
     (hU : ∀ z : UpperHalfPlane, u z = U (coordinates z)) (μ : ℂ) (z : UpperHalfPlane) :
     (productFunction (lower 0 f) (lower 0 f) + μ • lower (-1) (lower 0 u)) z =
-      -2*(z.im : ℂ)^2*(D4BMAngularTwoTensor.componentA F U μ (coordinates z)-
+      -2*(z.im : ℂ)^(2 : ℕ)*(D4BMAngularTwoTensor.componentA F U μ (coordinates z)-
         Complex.I*D4BMAngularTwoTensor.componentB F U μ (coordinates z)) := by
   have hsx := first_jet f F hF 0 z
   have hsy := first_jet f F hF 1 z
@@ -293,7 +293,7 @@ private theorem lower_tensor_value (f u : FunctionSpace) (F U : (Fin 2 → ℝ) 
   rw [hsx,hsy,hux,huy,hxx,hyy,hxy]
   simp only [D4BMAngularTwoTensor.componentA,D4BMAngularTwoTensor.componentB]
   have hy : (z.im:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr z.im_pos.ne'
-  change _ = -2*(z.im:ℂ)^2*((_ - _)/2+μ*((_ - _)/2-(z.im:ℂ)⁻¹*_)-
+  change _ = -2*(z.im:ℂ)^(2 : ℕ)*((_ - _)/2+μ*((_ - _)/2-(z.im:ℂ)⁻¹*_)-
     Complex.I*(_+μ*(_+(z.im:ℂ)⁻¹*_)))
   field_simp
   ring_nf
@@ -302,7 +302,7 @@ private theorem lower_tensor_value (f u : FunctionSpace) (F U : (Fin 2 → ℝ) 
 
 /-- The negative compact weight is the original holomorphic tensor component. -/
 theorem lowerTensorFunction_eq (q : XiZeroCopy) (z : UpperHalfPlane) :
-    lowerTensorFunction q z = -2*(z.im:ℂ)^2*
+    lowerTensorFunction q z = -2*(z.im:ℂ)^(2 : ℕ)*
       D4BMAngularTwoTensor.holomorphicPolarization q (z:ℂ) := by
   exact lower_tensor_value (sourceFunction q) (responseFunction q)
     (D4BMAngularTwoTensor.source q) (coordinateResponse q) (fun _ => rfl)
@@ -311,7 +311,7 @@ private theorem raise_tensor_value (f u : FunctionSpace) (F U : (Fin 2 → ℝ) 
     (hF : ∀ z : UpperHalfPlane, f z = F (coordinates z))
     (hU : ∀ z : UpperHalfPlane, u z = U (coordinates z)) (μ : ℂ) (z : UpperHalfPlane) :
     (productFunction (raise 0 f) (raise 0 f) + μ • raise 1 (raise 0 u)) z =
-      -2*(z.im : ℂ)^2*(D4BMAngularTwoTensor.componentA F U μ (coordinates z)+
+      -2*(z.im : ℂ)^(2 : ℕ)*(D4BMAngularTwoTensor.componentA F U μ (coordinates z)+
         Complex.I*D4BMAngularTwoTensor.componentB F U μ (coordinates z)) := by
   have hsx := first_jet f F hF 0 z
   have hsy := first_jet f F hF 1 z
@@ -338,7 +338,7 @@ private theorem raise_tensor_value (f u : FunctionSpace) (F U : (Fin 2 → ℝ) 
   rw [hsx,hsy,hux,huy,hxx,hyy,hxy]
   simp only [D4BMAngularTwoTensor.componentA,D4BMAngularTwoTensor.componentB]
   have hy : (z.im:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr z.im_pos.ne'
-  change _ = -2*(z.im:ℂ)^2*((_ - _)/2+μ*((_ - _)/2-(z.im:ℂ)⁻¹*_)+
+  change _ = -2*(z.im:ℂ)^(2 : ℕ)*((_ - _)/2+μ*((_ - _)/2-(z.im:ℂ)⁻¹*_)+
     Complex.I*(_+μ*(_+(z.im:ℂ)⁻¹*_)))
   field_simp
   ring_nf
@@ -348,7 +348,7 @@ private theorem raise_tensor_value (f u : FunctionSpace) (F U : (Fin 2 → ℝ) 
 
 /-- The positive compact weight is the independent antiholomorphic tensor component. -/
 theorem raiseTensorFunction_eq (q : XiZeroCopy) (z : UpperHalfPlane) :
-    raiseTensorFunction q z = -2*(z.im:ℂ)^2*
+    raiseTensorFunction q z = -2*(z.im:ℂ)^(2 : ℕ)*
       (D4BMAngularTwoTensor.defectA q (coordinates z)+
         Complex.I*D4BMAngularTwoTensor.defectB q (coordinates z)) := by
   exact raise_tensor_value (sourceFunction q) (responseFunction q)
@@ -358,7 +358,7 @@ theorem raiseTensorFunction_eq (q : XiZeroCopy) (z : UpperHalfPlane) :
 private theorem negative_two_orbit (f : FunctionSpace)
     (hf : weightLift (-2) f ∈ automorphicFunctionSpace modularRealGroup)
     (A : SL(2, ℤ)) (z : UpperHalfPlane) :
-    f (realMatrix A • z) = f z*realSphericalKPhase (realIwasawaK (realMatrix A*z.toSL2R))^4 := by
+    f (realMatrix A • z) = f z*realSphericalKPhase (realIwasawaK (realMatrix A*z.toSL2R))^(4 : ℕ) := by
   have hA : realMatrix A ∈ modularRealGroup := ⟨A,rfl⟩
   have he := hf ⟨realMatrix A,hA⟩ z.toSL2R
   rw [weightLift_section] at he
@@ -369,36 +369,36 @@ private theorem negative_two_orbit (f : FunctionSpace)
   norm_num only [show (2:ℤ)*(-2) = -(4:ℤ) from rfl,zpow_neg,zpow_natCast] at he
   calc
     f (realMatrix A • z) =
-        (f (realMatrix A • z)*(realSphericalKPhase (realIwasawaK (realMatrix A*z.toSL2R))^4)⁻¹)*
-          realSphericalKPhase (realIwasawaK (realMatrix A*z.toSL2R))^4 := by field_simp
-    _ = _ := congrArg (fun c : ℂ => c*realSphericalKPhase (realIwasawaK (realMatrix A*z.toSL2R))^4) he
+        (f (realMatrix A • z)*(realSphericalKPhase (realIwasawaK (realMatrix A*z.toSL2R))^(4 : ℕ))⁻¹)*
+          realSphericalKPhase (realIwasawaK (realMatrix A*z.toSL2R))^(4 : ℕ) := by field_simp
+    _ = _ := congrArg (fun c : ℂ => c*realSphericalKPhase (realIwasawaK (realMatrix A*z.toSL2R))^(4 : ℕ)) he
 
 private theorem weight_four_of_negative_two (f : FunctionSpace) (H : ℂ → ℂ)
     (hf : weightLift (-2) f ∈ automorphicFunctionSpace modularRealGroup)
-    (hH : ∀ z : UpperHalfPlane, f z = -2*(z.im:ℂ)^2*H (z:ℂ))
+    (hH : ∀ z : UpperHalfPlane, f z = -2*(z.im:ℂ)^(2 : ℕ)*H (z:ℂ))
     (A : SL(2, ℤ)) (z : UpperHalfPlane) :
-    H ((realMatrix A • z : UpperHalfPlane):ℂ) = matrixDenom (realMatrix A) z^4*H (z:ℂ) := by
+    H ((realMatrix A • z : UpperHalfPlane):ℂ) = matrixDenom (realMatrix A) z^(4 : ℕ)*H (z:ℂ) := by
   have he := negative_two_orbit f hf A z
   rw [hH,hH] at he
   have hp := orbit_phase_four (realMatrix A) z
   have hy : (z.im:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr z.im_pos.ne'
   have ht : ((realMatrix A • z).im:ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (realMatrix A • z).im_pos.ne'
-  apply mul_left_cancel₀ (show (-2:ℂ)*((realMatrix A • z).im:ℂ)^2*(z.im:ℂ)^2 ≠ 0 by
+  apply mul_left_cancel₀ (show (-2:ℂ)*((realMatrix A • z).im:ℂ)^(2 : ℕ)*(z.im:ℂ)^(2 : ℕ) ≠ 0 by
     exact mul_ne_zero (mul_ne_zero (by norm_num) (pow_ne_zero 2 ht)) (pow_ne_zero 2 hy))
   calc
-    -2*((realMatrix A • z).im:ℂ)^2*(z.im:ℂ)^2*H ((realMatrix A • z : UpperHalfPlane):ℂ) =
-        (-2*((realMatrix A • z).im:ℂ)^2*H ((realMatrix A • z : UpperHalfPlane):ℂ))*(z.im:ℂ)^2 := by ring
-    _ = (-2*(z.im:ℂ)^2*H (z:ℂ)*realSphericalKPhase
-        (realIwasawaK (realMatrix A*z.toSL2R))^4)*(z.im:ℂ)^2 := by rw [he]
-    _ = (-2*(z.im:ℂ)^2*H (z:ℂ))*(realSphericalKPhase
-        (realIwasawaK (realMatrix A*z.toSL2R))^4*(z.im:ℂ)^2) := by ring
+    -2*((realMatrix A • z).im:ℂ)^(2 : ℕ)*(z.im:ℂ)^(2 : ℕ)*H ((realMatrix A • z : UpperHalfPlane):ℂ) =
+        (-2*((realMatrix A • z).im:ℂ)^(2 : ℕ)*H ((realMatrix A • z : UpperHalfPlane):ℂ))*(z.im:ℂ)^(2 : ℕ) := by ring
+    _ = (-2*(z.im:ℂ)^(2 : ℕ)*H (z:ℂ)*realSphericalKPhase
+        (realIwasawaK (realMatrix A*z.toSL2R))^(4 : ℕ))*(z.im:ℂ)^(2 : ℕ) := by rw [he]
+    _ = (-2*(z.im:ℂ)^(2 : ℕ)*H (z:ℂ))*(realSphericalKPhase
+        (realIwasawaK (realMatrix A*z.toSL2R))^(4 : ℕ)*(z.im:ℂ)^(2 : ℕ)) := by ring
     _ = _ := by rw [hp]; ring
 
 /-- The actual holomorphic remainder transforms with the original weight-four denominator. -/
 theorem holomorphicPolarization_weight_four (q : XiZeroCopy) (A : SL(2, ℤ)) (z : UpperHalfPlane) :
     D4BMAngularTwoTensor.holomorphicPolarization q ((A • z : UpperHalfPlane):ℂ) =
-      ((A 1 0:ℂ)*(z:ℂ)+(A 1 1:ℂ))^4*
+      ((A 1 0:ℂ)*(z:ℂ)+(A 1 1:ℂ))^(4 : ℕ)*
         D4BMAngularTwoTensor.holomorphicPolarization q (z:ℂ) := by
   have hd : matrixDenom (realMatrix A) z = ((A 1 0:ℂ)*(z:ℂ)+(A 1 1:ℂ)) := rfl
   simpa only [realMatrix_smul,hd] using
@@ -429,7 +429,7 @@ private theorem conjugate_raise_automorphic (q : XiZeroCopy) :
 
 /-- Conjugating the positive compact weight gives the second holomorphic polarization. -/
 theorem conjugate_raise_eq (q : XiZeroCopy) (z : UpperHalfPlane) :
-    conjugateFunction (raiseTensorFunction q) z = -2*(z.im:ℂ)^2*
+    conjugateFunction (raiseTensorFunction q) z = -2*(z.im:ℂ)^(2 : ℕ)*
       D4BMAngularTwoTensor.conjugatePolarization q (z:ℂ) := by
   change conj (raiseTensorFunction q z) = _
   rw [raiseTensorFunction_eq]
@@ -440,7 +440,7 @@ theorem conjugate_raise_eq (q : XiZeroCopy) (z : UpperHalfPlane) :
 /-- Both original complex polarizations have the same holomorphic weight four. -/
 theorem conjugatePolarization_weight_four (q : XiZeroCopy) (A : SL(2, ℤ)) (z : UpperHalfPlane) :
     D4BMAngularTwoTensor.conjugatePolarization q ((A • z : UpperHalfPlane):ℂ) =
-      ((A 1 0:ℂ)*(z:ℂ)+(A 1 1:ℂ))^4*
+      ((A 1 0:ℂ)*(z:ℂ)+(A 1 1:ℂ))^(4 : ℕ)*
         D4BMAngularTwoTensor.conjugatePolarization q (z:ℂ) := by
   have hd : matrixDenom (realMatrix A) z = ((A 1 0:ℂ)*(z:ℂ)+(A 1 1:ℂ)) := rfl
   simpa only [realMatrix_smul,hd] using

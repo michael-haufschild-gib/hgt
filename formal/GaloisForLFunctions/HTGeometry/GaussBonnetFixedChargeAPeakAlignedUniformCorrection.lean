@@ -15,20 +15,20 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
 def egbFixedChargeAPeakAlignedCorrectionFamily (s : ℝ × ℝ) (t : ℝ) : ℝ :=
-  s.1 * (1 - t ^ 2) ^ 2 *
-    (4 * t - s.2 * (2 + 6 * t ^ 2) + 4 * s.2 ^ 2 * t ^ 3 + s.2 ^ 3 * (1 - t ^ 4)) /
-      (1 - s.2 * t) ^ 4
+  s.1 * (1 - t ^ (2 : ℕ)) ^ (2 : ℕ) *
+    (4 * t - s.2 * (2 + 6 * t ^ (2 : ℕ)) + 4 * s.2 ^ (2 : ℕ) * t ^ (3 : ℕ) + s.2 ^ (3 : ℕ) * (1 - t ^ (4 : ℕ))) /
+      (1 - s.2 * t) ^ (4 : ℕ)
 
 theorem egbFixedChargeAPeakAlignedProfile_rational_correction (τ φ ψ : ℝ) :
-    (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ =
+    (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ =
       egbFixedChargeAPeakAlignedCorrectionFamily
         (egbFixedChargeAMiddleGapCoordinate τ φ / egbCoexistenceASymmetricRatio τ, egbFixedChargeAMiddleGapCoordinate τ φ)
         (sin ψ) := by
   have hd := egbFixedChargeAPeakAlignedCoordinate_denominator_pos τ φ ψ
   have hd' : 1 - sin ψ * egbFixedChargeAMiddleGapCoordinate τ φ ≠ 0 := by simpa only [mul_comm] using hd.ne'
   have hz := (egbCoexistenceASymmetricRatio_bounds τ).1
-  have hs : cos ψ ^ 4 = (1 - sin ψ ^ 2) ^ 2 := by
-    have h : 1 - sin ψ ^ 2 = cos ψ ^ 2 := by linarith [sin_sq_add_cos_sq ψ]
+  have hs : cos ψ ^ (4 : ℕ) = (1 - sin ψ ^ (2 : ℕ)) ^ (2 : ℕ) := by
+    have h : 1 - sin ψ ^ (2 : ℕ) = cos ψ ^ (2 : ℕ) := by linarith [sin_sq_add_cos_sq ψ]
     rw [h]
     ring
   unfold egbFixedChargeAPeakAlignedProfile egbFixedChargeAPeakAlignedCoordinate egbFixedChargeAPeakAlignedCorrectionFamily
@@ -62,8 +62,8 @@ theorem egbFixedChargeAPeakAlignedCorrectionFamily_uniform_limit (φ : ℝ) :
   exact egbFixedChargeAPeakAlignedCorrectionFamily_continuousOn.tendstoUniformly hU
 
 theorem egbFixedChargeAPeakAlignedProfile_uniform_first_limit (φ : ℝ) :
-    TendstoUniformly (fun τ ψ => (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ 4) / egbCoexistenceASymmetricRatio τ)
-      (fun ψ => 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4) atBot := by
+    TendstoUniformly (fun τ ψ => (egbFixedChargeAPeakAlignedProfile τ φ ψ - cos ψ ^ (4 : ℕ)) / egbCoexistenceASymmetricRatio τ)
+      (fun ψ => 4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ)) atBot := by
   have hp := (egbFixedChargeAMiddleGapCoordinate_linear_limit φ).prodMk_nhds
     (egbFixedChargeAMiddleGapCoordinate_critical_limit φ)
   apply Metric.tendstoUniformly_iff.mpr
@@ -72,12 +72,12 @@ theorem egbFixedChargeAPeakAlignedProfile_uniform_first_limit (φ : ℝ) :
   filter_upwards [hp.eventually he] with τ hτ
   intro ψ
   let t : Icc (-1 : ℝ) 1 := ⟨sin ψ, neg_one_le_sin ψ, sin_le_one ψ⟩
-  have hs : (1 - sin ψ ^ 2) ^ 2 = cos ψ ^ 4 := by
-    have h : 1 - sin ψ ^ 2 = cos ψ ^ 2 := by linarith [sin_sq_add_cos_sq ψ]
+  have hs : (1 - sin ψ ^ (2 : ℕ)) ^ (2 : ℕ) = cos ψ ^ (4 : ℕ) := by
+    have h : 1 - sin ψ ^ (2 : ℕ) = cos ψ ^ (2 : ℕ) := by linarith [sin_sq_add_cos_sq ψ]
     rw [h]
     ring
   have hc : egbFixedChargeAPeakAlignedCorrectionFamily (egbFixedChargeAMiddleMeanCorrection φ, 0) t =
-      4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ 4 := by
+      4 * egbFixedChargeAMiddleMeanCorrection φ * sin ψ * cos ψ ^ (4 : ℕ) := by
     dsimp [egbFixedChargeAPeakAlignedCorrectionFamily, t]
     rw [hs]
     ring

@@ -38,10 +38,10 @@ theorem seam_transport_ladder {f g F₁ F₂ G₁ G₂ : ℂ → ℂ} {a : ℂ} 
     (hf : AnalyticOnNhd ℂ f (chartR a R ∪ chartL a R))
     (hF₁ : AnalyticOnNhd ℂ F₁ (chartR a R)) (hF₂ : AnalyticOnNhd ℂ F₂ (chartL a R))
     (hG₁ : AnalyticOnNhd ℂ G₁ (chartR a R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartL a R))
-    (hpF₁ : ∀ z ∈ chartR a R, F₁ z ^ 2 ^ k = f z)
-    (hpF₂ : ∀ z ∈ chartL a R, F₂ z ^ 2 ^ k = f z)
-    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ 2 ^ k = g z)
-    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ 2 ^ k = g z)
+    (hpF₁ : ∀ z ∈ chartR a R, F₁ z ^ (2 : ℕ) ^ k = f z)
+    (hpF₂ : ∀ z ∈ chartL a R, F₂ z ^ (2 : ℕ) ^ k = f z)
+    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ (2 : ℕ) ^ k = g z)
+    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ (2 : ℕ) ^ k = g z)
     (hdom : ∀ z ∈ chartR a R ∪ chartL a R, ‖f z - g z‖ < ‖g z‖) :
     deckClass F₁ F₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) =
       deckClass G₁ G₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) :=

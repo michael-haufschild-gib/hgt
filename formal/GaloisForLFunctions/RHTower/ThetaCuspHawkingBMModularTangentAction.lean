@@ -11,8 +11,8 @@ noncomputable section
 /-- The actual modular coordinate differential acts by the original complex angular derivative. -/
 theorem modularSpacetimeDifferential_apply (A : SL(2,ℤ)) (z : UpperHalfPlane) (v : Fin 4 → ℝ) :
     modularSpacetimeDifferential A z v =
-      ![v 0,v 1,((1/(denom A z)^2)*((v 2:ℂ)+(v 3:ℂ)*Complex.I)).re,
-        ((1/(denom A z)^2)*((v 2:ℂ)+(v 3:ℂ)*Complex.I)).im] := by
+      ![v 0,v 1,((1/(denom A z)^(2 : ℕ))*((v 2:ℂ)+(v 3:ℂ)*Complex.I)).re,
+        ((1/(denom A z)^(2 : ℕ))*((v 2:ℂ)+(v 3:ℂ)*Complex.I)).im] := by
   have hv : spacetimeAngular v = (v 2:ℂ)+(v 3:ℂ)*Complex.I := rfl
   funext i
   fin_cases i <;> simp [modularSpacetimeDifferential,modular_chart_jacobian,hv]

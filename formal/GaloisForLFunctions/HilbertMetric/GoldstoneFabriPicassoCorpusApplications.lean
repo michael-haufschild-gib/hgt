@@ -24,7 +24,7 @@ theorem norm_oneModeFockUnit (n : ℕ) : ‖oneModeFockUnit n‖ = 1 := by
 /-- The squared lowering charge of the canonical one-mode state is exactly `n+1`. -/
 theorem fabriPicasso_oneModeLoweringCharge (n : ℕ) :
     ∑ i : Unit,
-        ‖(symmetricFockAnnihilation n i) (oneModeFockUnit (n + 1))‖ ^ 2 =
+        ‖(symmetricFockAnnihilation n i) (oneModeFockUnit (n + 1))‖ ^ (2 : ℕ) =
       (n : ℝ) + 1 := by
   rw [symmetricFockAnnihilation_energy]
   simp
@@ -33,7 +33,7 @@ theorem fabriPicasso_oneModeLoweringCharge (n : ℕ) :
 theorem fabriPicasso_oneModeLoweringCharge_unbounded :
     ∀ B : ℝ, ∃ n : ℕ,
       B < ∑ i : Unit,
-        ‖(symmetricFockAnnihilation n i) (oneModeFockUnit (n + 1))‖ ^ 2 := by
+        ‖(symmetricFockAnnihilation n i) (oneModeFockUnit (n + 1))‖ ^ (2 : ℕ) := by
   intro B
   obtain ⟨n, hn⟩ := exists_nat_gt B
   refine ⟨n, ?_⟩
@@ -43,7 +43,7 @@ theorem fabriPicasso_oneModeLoweringCharge_unbounded :
 /-- The squared adjoint-raising charge of the canonical one-mode state is also `n+1`. -/
 theorem fabriPicasso_oneModeRaisingCharge (n : ℕ) :
     ∑ i : Unit,
-        ‖(symmetricFockAnnihilation n i).adjoint (oneModeFockUnit n)‖ ^ 2 =
+        ‖(symmetricFockAnnihilation n i).adjoint (oneModeFockUnit n)‖ ^ (2 : ℕ) =
       (n : ℝ) + 1 := by
   rw [symmetricFockAnnihilation_adjoint_energy]
   simp
@@ -52,7 +52,7 @@ theorem fabriPicasso_oneModeRaisingCharge (n : ℕ) :
 theorem fabriPicasso_oneModeRaisingCharge_unbounded :
     ∀ B : ℝ, ∃ n : ℕ,
       B < ∑ i : Unit,
-        ‖(symmetricFockAnnihilation n i).adjoint (oneModeFockUnit n)‖ ^ 2 := by
+        ‖(symmetricFockAnnihilation n i).adjoint (oneModeFockUnit n)‖ ^ (2 : ℕ) := by
   intro B
   obtain ⟨n, hn⟩ := exists_nat_gt B
   refine ⟨n, ?_⟩

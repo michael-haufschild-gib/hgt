@@ -64,8 +64,8 @@ def ccmLambertEntrySummand (ell i j : ℕ) (z : ℂ) : ℂ :=
 
 private theorem ccmSqrtTwo_isIntegral : IsIntegral ℤ (Real.sqrt 2 : ℂ) := by
   apply IsIntegral.of_pow (by norm_num : 0 < 2)
-  have hsqrt : (Real.sqrt 2 : ℝ) ^ 2 = 2 := Real.sq_sqrt (by norm_num)
-  have hsqrtC : (Real.sqrt 2 : ℂ) ^ 2 = 2 := by
+  have hsqrt : (Real.sqrt 2 : ℝ) ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
+  have hsqrtC : (Real.sqrt 2 : ℂ) ^ (2 : ℕ) = 2 := by
     rw [← Complex.ofReal_pow, hsqrt]
     norm_num
   rw [hsqrtC]
@@ -75,7 +75,7 @@ private theorem ccmSqrtTwo_isIntegral : IsIntegral ℤ (Real.sqrt 2 : ℂ) := by
 /-- Every individual equation-(53) Lambert summand becomes an algebraic
 integer after its literal dyadic denominator is cleared. -/
 theorem ccmLambertEntrySummand_dyadicIntegral (ell i j : ℕ) (z : ℂ)
-    (hz : z ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
+    (hz : z ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ)) :
     CCMDyadicIntegral (ccmLambertEntrySummand ell i j z) := by
   refine ⟨2 * ell + i + j, ?_⟩
   rw [ccmLambertEntrySummand, mul_div_cancel₀]
@@ -102,7 +102,7 @@ algebraic integer after multiplication by a power of `2`.  This proves the
 dyadic algebraic-integrality part of the paper's coefficient argument, but
 not its stronger cyclotomic-containment assertion. -/
 theorem ccmLambertEntryCoefficient_dyadicIntegral (i j n : ℕ) (rad : ℕ → ℂ)
-    (hrad : ∀ ell, (rad ell) ^ 2 = (ccmLambertRadicand ell i j : ℂ)) :
+    (hrad : ∀ ell, (rad ell) ^ (2 : ℕ) = (ccmLambertRadicand ell i j : ℂ)) :
     CCMDyadicIntegral (ccmLambertEntryCoefficient i j n rad) := by
   unfold ccmLambertEntryCoefficient
   split_ifs with hn

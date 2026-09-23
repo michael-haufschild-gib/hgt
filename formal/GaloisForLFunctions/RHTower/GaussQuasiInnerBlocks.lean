@@ -32,7 +32,7 @@ theorem gaussPrimeScaleInvSq_pos (p x : ℝ) : 0 < gaussPrimeScaleInvSq p x := R
 
 /-- The reciprocal square really is the reciprocal of the square. -/
 theorem gaussPrimeScaleInvSq_mul_sq (p x : ℝ) :
-    gaussPrimeScaleInvSq p x * gaussPrimeScale p x ^ 2 = 1 := by
+    gaussPrimeScaleInvSq p x * gaussPrimeScale p x ^ (2 : ℕ) = 1 := by
   rw [gaussPrimeScaleInvSq, gaussPrimeScale, ← Real.exp_nat_mul, ← Real.exp_add]
   norm_num
   ring

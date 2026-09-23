@@ -115,7 +115,7 @@ theorem multipliable_xiShiftCoreReflectionPairFactor (omega : ℝ) (z : ℂ) :
 theorem tprod_xiShiftCoreReflectionPairFactor (omega : ℝ) (z : ℂ) :
     (∏' q : XiShiftCoreZeroCopy omega,
       xiShiftCoreReflectionPairFactor omega z q) =
-        xiShiftCoreCanonicalProduct omega z ^ 2 := by
+        xiShiftCoreCanonicalProduct omega z ^ (2 : ℕ) := by
   have h := xiShiftCoreCanonicalProduct_multipliable omega z
   let e := xiShiftCoreReflectEquiv omega
   have hreflect : Multipliable (fun q : XiShiftCoreZeroCopy omega =>
@@ -326,24 +326,24 @@ theorem norm_xiShiftCoreCanonicalProduct_vertical_shift_le
       norm_pos_iff.mpr
         (xiShiftCoreReflectionPairFactor_ne_zero_of_product_ne_zero hPminus q)⟩
   let plusLimit : {x : ℝ // 0 < x} :=
-    ⟨‖xiShiftCoreCanonicalProduct omega zplus ^ 2‖,
+    ⟨‖xiShiftCoreCanonicalProduct omega zplus ^ (2 : ℕ)‖,
       norm_pos_iff.mpr (pow_ne_zero 2 hPplus)⟩
   let minusLimit : {x : ℝ // 0 < x} :=
-    ⟨‖xiShiftCoreCanonicalProduct omega zminus ^ 2‖,
+    ⟨‖xiShiftCoreCanonicalProduct omega zminus ^ (2 : ℕ)‖,
       norm_pos_iff.mpr (pow_ne_zero 2 hPminus)⟩
   have hplusComplex : HasProd
       (fun q : XiShiftCoreZeroCopy omega =>
         xiShiftCoreReflectionPairFactor omega zplus
           (xiShiftCoreLineConjEquiv omega q))
-      (xiShiftCoreCanonicalProduct omega zplus ^ 2) := by
+      (xiShiftCoreCanonicalProduct omega zplus ^ (2 : ℕ)) := by
     have hbase : HasProd (xiShiftCoreReflectionPairFactor omega zplus)
-        (xiShiftCoreCanonicalProduct omega zplus ^ 2) := by
+        (xiShiftCoreCanonicalProduct omega zplus ^ (2 : ℕ)) := by
       rw [← tprod_xiShiftCoreReflectionPairFactor omega zplus]
       exact (multipliable_xiShiftCoreReflectionPairFactor omega zplus).hasProd
     exact (xiShiftCoreLineConjEquiv omega).hasProd_iff.mpr hbase
   have hminusComplex : HasProd
       (xiShiftCoreReflectionPairFactor omega zminus)
-      (xiShiftCoreCanonicalProduct omega zminus ^ 2) := by
+      (xiShiftCoreCanonicalProduct omega zminus ^ (2 : ℕ)) := by
     rw [← tprod_xiShiftCoreReflectionPairFactor omega zminus]
     exact (multipliable_xiShiftCoreReflectionPairFactor omega zminus).hasProd
   have hplusPos : HasProd plusFactor plusLimit := by
@@ -354,7 +354,7 @@ theorem norm_xiShiftCoreCanonicalProduct_vertical_shift_le
     change Tendsto (fun s : Finset (XiShiftCoreZeroCopy omega) =>
       ∏ q ∈ s, ‖xiShiftCoreReflectionPairFactor omega zplus
         (xiShiftCoreLineConjEquiv omega q)‖) _
-      (𝓝 ‖xiShiftCoreCanonicalProduct omega zplus ^ 2‖) at hr
+      (𝓝 ‖xiShiftCoreCanonicalProduct omega zplus ^ (2 : ℕ)‖) at hr
     convert hr using 1
     funext s
     exact coe_positiveReal_finsetProd s plusFactor
@@ -365,7 +365,7 @@ theorem norm_xiShiftCoreCanonicalProduct_vertical_shift_le
     have hr := hminusComplex.norm
     change Tendsto (fun s : Finset (XiShiftCoreZeroCopy omega) =>
       ∏ q ∈ s, ‖xiShiftCoreReflectionPairFactor omega zminus q‖) _
-      (𝓝 ‖xiShiftCoreCanonicalProduct omega zminus ^ 2‖) at hr
+      (𝓝 ‖xiShiftCoreCanonicalProduct omega zminus ^ (2 : ℕ)‖) at hr
     convert hr using 1
     funext s
     exact coe_positiveReal_finsetProd s minusFactor
@@ -379,10 +379,10 @@ theorem norm_xiShiftCoreCanonicalProduct_vertical_shift_le
     Multipliable.tprod_le_tprod hfactor hplusPos.multipliable
       hminusPos.multipliable
   rw [hplusPos.tprod_eq, hminusPos.tprod_eq] at hprod
-  have hsq : ‖xiShiftCoreCanonicalProduct omega zplus‖ ^ 2 ≤
-      ‖xiShiftCoreCanonicalProduct omega zminus‖ ^ 2 := by
-    have hprodReal : ‖xiShiftCoreCanonicalProduct omega zplus ^ 2‖ ≤
-        ‖xiShiftCoreCanonicalProduct omega zminus ^ 2‖ := by
+  have hsq : ‖xiShiftCoreCanonicalProduct omega zplus‖ ^ (2 : ℕ) ≤
+      ‖xiShiftCoreCanonicalProduct omega zminus‖ ^ (2 : ℕ) := by
+    have hprodReal : ‖xiShiftCoreCanonicalProduct omega zplus ^ (2 : ℕ)‖ ≤
+        ‖xiShiftCoreCanonicalProduct omega zminus ^ (2 : ℕ)‖ := by
       change (plusLimit : ℝ) ≤ (minusLimit : ℝ)
       exact hprod
     simpa only [norm_pow] using hprodReal

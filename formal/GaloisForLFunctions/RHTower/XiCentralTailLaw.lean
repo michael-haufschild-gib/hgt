@@ -116,21 +116,21 @@ theorem sum_multiplicity_le_xiRegionOrderSum {S : Set ℂ} (hS : IsCompact S)
 theorem abs_im_le_norm_centered (ρ : ℂ) : |ρ.im| ≤ ‖ρ - 1 / 2‖ := by
   have hre : (ρ - 1 / 2).re = ρ.re - 1 / 2 := by simp
   have him : (ρ - 1 / 2).im = ρ.im := by simp
-  have hsq : ‖ρ - 1 / 2‖ ^ 2 = (ρ.re - 1 / 2) ^ 2 + ρ.im ^ 2 := by
+  have hsq : ‖ρ - 1 / 2‖ ^ (2 : ℕ) = (ρ.re - 1 / 2) ^ (2 : ℕ) + ρ.im ^ (2 : ℕ) := by
     rw [Complex.sq_norm, Complex.normSq_apply, hre, him]
     ring
   have hnn : (0 : ℝ) ≤ ‖ρ - 1 / 2‖ := norm_nonneg _
   nlinarith [sq_nonneg (ρ.re - 1 / 2), sq_abs ρ.im]
 
 theorem norm_xiCentralReciprocalSquare_le {ρ : ℂ} (him : 0 < |ρ.im|) :
-    ‖xiCentralReciprocalSquare ρ‖ ≤ 1 / |ρ.im| ^ 2 := by
+    ‖xiCentralReciprocalSquare ρ‖ ≤ 1 / |ρ.im| ^ (2 : ℕ) := by
   have hle := abs_im_le_norm_centered ρ
   have hpos : (0 : ℝ) < ‖ρ - 1 / 2‖ := lt_of_lt_of_le him hle
   rw [xiCentralReciprocalSquare, norm_neg, norm_pow, norm_inv]
   rw [inv_pow, div_eq_mul_inv, one_mul]
-  have hsq : |ρ.im| ^ 2 ≤ ‖ρ - 1 / 2‖ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) hle 2
-  have hres := (inv_le_inv₀ (by positivity : (0:ℝ) < ‖ρ - 1 / 2‖ ^ 2)
-    (by positivity : (0:ℝ) < |ρ.im| ^ 2)).mpr hsq
+  have hsq : |ρ.im| ^ (2 : ℕ) ≤ ‖ρ - 1 / 2‖ ^ (2 : ℕ) := pow_le_pow_left₀ (abs_nonneg _) hle 2
+  have hres := (inv_le_inv₀ (by positivity : (0:ℝ) < ‖ρ - 1 / 2‖ ^ (2 : ℕ))
+    (by positivity : (0:ℝ) < |ρ.im| ^ (2 : ℕ))).mpr hsq
   simpa [one_div] using hres
 
 /-- A polynomial is bounded on the closed unit disc by its coefficient mass. -/
@@ -245,13 +245,13 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
         (∀ ρ ∈ s, G < |(ρ : ℂ).im|) →
         (∑ ρ ∈ s, ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
           (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-           ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2))
+           ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ)))
           ≤ C * Real.log G / G ^ (2 * r + 4 * j - 1) := by
   classical
   obtain ⟨c, hc, hball⟩ := exists_xiRegionOrderSum_closedBall_upper_bound
   set M : ℝ := polyCoeffMass q with hM
   have hM0 : 0 ≤ M := polyCoeffMass_nonneg q
-  set A : ℝ := M ^ 2 + 1 with hA
+  set A : ℝ := M ^ (2 : ℕ) + 1 with hA
   have hApos : (0 : ℝ) < A := by positivity
   refine ⟨32 * A * c, by positivity, ?_⟩
   intro G hG s hs
@@ -270,7 +270,7 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
       (∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
         ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
           (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-           ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2))
+           ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ)))
         ≤ 4 * A * c * ((1 / 2 : ℝ) ^ k *
             (((k : ℝ) + 2) * Real.log 2 + Real.log G)) / G ^ (α - 1) := by
     intro k _
@@ -284,7 +284,7 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
     have hpt : ∀ ρ ∈ s.filter (fun ρ => dyadicLevelSupport G ρ = k),
         ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
           (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-           ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2)
+           ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ))
           ≤ (A / (2 ^ k * G) ^ α) *
             ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by
       intro ρ hρ
@@ -294,7 +294,7 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
       have him := hs ρ hρs
       have him1 : (1 : ℝ) ≤ |(ρ : ℂ).im| := by linarith
       have himpos : (0 : ℝ) < |(ρ : ℂ).im| := by linarith
-      have hy : ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ≤ 1 / |(ρ : ℂ).im| ^ 2 :=
+      have hy : ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ≤ 1 / |(ρ : ℂ).im| ^ (2 : ℕ) :=
         norm_xiCentralReciprocalSquare_le himpos
       have hy1 : ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ≤ 1 := by
         refine le_trans hy ?_
@@ -305,23 +305,23 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
         norm_eval_shifted_le j q hy1
       have hy0 : (0 : ℝ) ≤ ‖xiCentralReciprocalSquare (ρ : ℂ)‖ := norm_nonneg _
       have hΦ : ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-          ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2
-          ≤ M ^ 2 * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ (r + 2 * j) := by
-        have hsq : ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2
-            ≤ (M * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ j) ^ 2 :=
+          ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ)
+          ≤ M ^ (2 : ℕ) * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ (r + 2 * j) := by
+        have hsq : ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ)
+            ≤ (M * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ j) ^ (2 : ℕ) :=
           pow_le_pow_left₀ (norm_nonneg _) hp 2
         calc ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-              ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2
+              ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ)
             ≤ ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-                (M * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ j) ^ 2 :=
+                (M * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ j) ^ (2 : ℕ) :=
               mul_le_mul_of_nonneg_left hsq (by positivity)
-          _ = M ^ 2 * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ (r + 2 * j) := by
+          _ = M ^ (2 : ℕ) * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ (r + 2 * j) := by
               rw [mul_pow, ← pow_mul, pow_add]
               ring
       have hpow : ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ (r + 2 * j)
-          ≤ (1 / |(ρ : ℂ).im| ^ 2) ^ (r + 2 * j) :=
+          ≤ (1 / |(ρ : ℂ).im| ^ (2 : ℕ)) ^ (r + 2 * j) :=
         pow_le_pow_left₀ hy0 hy _
-      have hval : (1 / |(ρ : ℂ).im| ^ 2) ^ (r + 2 * j) = 1 / |(ρ : ℂ).im| ^ α := by
+      have hval : (1 / |(ρ : ℂ).im| ^ (2 : ℕ)) ^ (r + 2 * j) = 1 / |(ρ : ℂ).im| ^ α := by
         rw [div_pow, one_pow, ← pow_mul, hαdef]
         congr 2
         ring
@@ -333,17 +333,17 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
       have hpowmono : (2 ^ k * G) ^ α ≤ |(ρ : ℂ).im| ^ α :=
         pow_le_pow_left₀ hlowpos.le hlow α
       have hfinal : ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-          ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2
+          ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ)
           ≤ A / (2 ^ k * G) ^ α := by
-        have h1 : M ^ 2 * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ (r + 2 * j)
-            ≤ M ^ 2 * (1 / |(ρ : ℂ).im| ^ α) := by
+        have h1 : M ^ (2 : ℕ) * ‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ (r + 2 * j)
+            ≤ M ^ (2 : ℕ) * (1 / |(ρ : ℂ).im| ^ α) := by
           rw [← hval]
           exact mul_le_mul_of_nonneg_left hpow (by positivity)
-        have h2 : M ^ 2 * (1 / |(ρ : ℂ).im| ^ α) ≤ M ^ 2 * (1 / (2 ^ k * G) ^ α) := by
+        have h2 : M ^ (2 : ℕ) * (1 / |(ρ : ℂ).im| ^ α) ≤ M ^ (2 : ℕ) * (1 / (2 ^ k * G) ^ α) := by
           refine mul_le_mul_of_nonneg_left ?_ (by positivity)
           rw [div_le_div_iff₀ (by positivity) (by positivity)]
           linarith [hpowmono]
-        have h3 : M ^ 2 * (1 / (2 ^ k * G) ^ α) ≤ A / (2 ^ k * G) ^ α := by
+        have h3 : M ^ (2 : ℕ) * (1 / (2 ^ k * G) ^ α) ≤ A / (2 ^ k * G) ^ α := by
           rw [hA, mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
           nlinarith [pow_pos hlowpos α]
         linarith [hΦ, h1, h2, h3]
@@ -351,7 +351,7 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
         exact_mod_cast xi_divisor_nonneg Set.univ (ρ : ℂ)
       calc ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
             (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-             ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2)
+             ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ))
           ≤ ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) * (A / (2 ^ k * G) ^ α) :=
             mul_le_mul_of_nonneg_left hfinal hm0
         _ = (A / (2 ^ k * G) ^ α) * ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by ring
@@ -385,12 +385,12 @@ theorem xi_central_tail_law (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ) :
     have hstep : (∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
         ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
           (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-           ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2))
+           ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ)))
         ≤ (A / (2 ^ k * G) ^ α) * (xiRegionOrderSum (closedBall (0 : ℂ) R) : ℝ) := by
       calc (∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
             ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
               (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-               ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2))
+               ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ)))
           ≤ ∑ ρ ∈ s with dyadicLevelSupport G ρ = k,
               (A / (2 ^ k * G) ^ α) *
                 ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) :=
@@ -505,7 +505,7 @@ def tailTestTerm (j r : ℕ) (q : Polynomial ℂ) (G : ℝ)
   if AboveHeight G ρ then
     ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
       (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-       ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2)
+       ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ))
   else 0
 
 theorem tailTestTerm_nonneg (j r : ℕ) (q : Polynomial ℂ) (G : ℝ)
@@ -534,7 +534,7 @@ theorem xi_central_tail_law_tsum (j r : ℕ) (hr : 1 ≤ r) (q : Polynomial ℂ)
         = ∑ ρ ∈ s with AboveHeight G ρ,
             ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
               (‖xiCentralReciprocalSquare (ρ : ℂ)‖ ^ r *
-               ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ 2) := by
+               ‖(Polynomial.X ^ j * q).eval (xiCentralReciprocalSquare (ρ : ℂ))‖ ^ (2 : ℕ)) := by
       rw [Finset.sum_filter]
       exact Finset.sum_congr rfl fun ρ _ => rfl
     rw [hfilter]
@@ -552,7 +552,7 @@ theorem xi_central_tail_law_Q0_hardEdge (q : Polynomial ℂ) :
     ∃ C : ℝ, 0 < C ∧ ∀ G : ℝ, 2 ≤ G →
       Summable (tailTestTerm 0 1 q G) ∧
       ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support, tailTestTerm 0 1 q G ρ
-        ≤ C * Real.log G / G ^ 1 := by
+        ≤ C * Real.log G / G ^ (1 : ℕ) := by
   simpa using xi_central_tail_law_tsum 0 1 le_rfl q
 
 /-- `Q₁` with a nonvanishing hard-edge value: tail `O(G^{-3} log G)`. -/
@@ -560,7 +560,7 @@ theorem xi_central_tail_law_Q1_hardEdge (q : Polynomial ℂ) :
     ∃ C : ℝ, 0 < C ∧ ∀ G : ℝ, 2 ≤ G →
       Summable (tailTestTerm 0 2 q G) ∧
       ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support, tailTestTerm 0 2 q G ρ
-        ≤ C * Real.log G / G ^ 3 := by
+        ≤ C * Real.log G / G ^ (3 : ℕ) := by
   simpa using xi_central_tail_law_tsum 0 2 (by norm_num) q
 
 /-- `Q₀` with a simple zero at the hard edge: tail `O(G^{-5} log G)`. -/
@@ -568,7 +568,7 @@ theorem xi_central_tail_law_Q0_simpleZero (q : Polynomial ℂ) :
     ∃ C : ℝ, 0 < C ∧ ∀ G : ℝ, 2 ≤ G →
       Summable (tailTestTerm 1 1 q G) ∧
       ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support, tailTestTerm 1 1 q G ρ
-        ≤ C * Real.log G / G ^ 5 := by
+        ≤ C * Real.log G / G ^ (5 : ℕ) := by
   simpa using xi_central_tail_law_tsum 1 1 le_rfl q
 
 /-- `Q₁` with a simple zero at the hard edge: tail `O(G^{-7} log G)`. -/
@@ -576,7 +576,7 @@ theorem xi_central_tail_law_Q1_simpleZero (q : Polynomial ℂ) :
     ∃ C : ℝ, 0 < C ∧ ∀ G : ℝ, 2 ≤ G →
       Summable (tailTestTerm 1 2 q G) ∧
       ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support, tailTestTerm 1 2 q G ρ
-        ≤ C * Real.log G / G ^ 7 := by
+        ≤ C * Real.log G / G ^ (7 : ℕ) := by
   simpa using xi_central_tail_law_tsum 1 2 (by norm_num) q
 
 /-- Each hard-edge zero of the test polynomial improves the tail by four powers of `G`. -/

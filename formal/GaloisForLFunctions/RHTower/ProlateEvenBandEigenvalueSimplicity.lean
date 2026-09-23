@@ -15,7 +15,7 @@ f'(1) g(1) - f(1) g'(1) = 0.
 ```
 
 For joint band/prolate modes, the regular-singular endpoint equation fixes
-`2 f'(1) = -(chi + c^2) f(1)`, while endpoint nonvanishing makes both endpoint values nonzero.
+`2 f'(1) = -(chi + c^(2 : ℕ)) f(1)`, while endpoint nonvanishing makes both endpoint values nonzero.
 The Wronskian identity therefore forces the two separation constants to agree.  Existing regular
 ODE simplicity then shows that every nonzero even band eigenspace has dimension at most one.
 
@@ -257,8 +257,8 @@ theorem separation_eq_of_same_live_even_band
   have hgap : (chi_g - chi_f) * (f 1 * g 1) = 0 := by
     calc
       (chi_g - chi_f) * (f 1 * g 1) =
-          (-(chi_f + c ^ 2) * f 1) * g 1 -
-            f 1 * (-(chi_g + c ^ 2) * g 1) := by ring
+          (-(chi_f + c ^ (2 : ℕ)) * f 1) * g 1 -
+            f 1 * (-(chi_g + c ^ (2 : ℕ)) * g 1) := by ring
       _ = (2 * deriv f 1) * g 1 - f 1 * (2 * deriv g 1) := by
         rw [hfend, hgend]
       _ = 2 * (deriv f 1 * g 1 - f 1 * deriv g 1) := by ring
@@ -271,7 +271,7 @@ theorem finrank_evenBandEigenspace_le_one
     {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0) :
     Module.finrank ℝ (evenBandEigenspace c lam) ≤ 1 := by
   letI : FiniteDimensional ℝ (evenBandEigenspace c lam) :=
-    finiteDimensional_evenBandEigenspace hlam
+    finiteDimensional_evenBandEigenspace_prolateBandJointSpectrum hlam
   rw [← Fin.subsingleton_iff_le_one]
   constructor
   intro i j

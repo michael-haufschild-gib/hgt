@@ -313,7 +313,7 @@ private theorem one_marked_source (α β : ℝ) (hb : -3 < β) :
 
 /-- Derivative of a retained local power counterterm with respect to its exponent. -/
 def fzzScreeningPowerCountertermMark (r α : ℝ) : ℝ :=
-  2*Real.pi*r^(α+2)*(Real.log r/(α+2)-1/(α+2)^2)
+  2*Real.pi*r^(α+2)*(Real.log r/(α+2)-1/(α+2)^(2 : ℕ))
 
 private theorem power_counterterm_hasDerivAt (r α : ℝ) (hr : 0 < r) (ha : α+2 ≠ 0) :
     HasDerivAt (fun a => 2*Real.pi*r^(a+2)/(a+2))

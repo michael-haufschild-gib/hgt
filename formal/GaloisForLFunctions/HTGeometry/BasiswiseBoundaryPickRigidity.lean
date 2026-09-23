@@ -23,7 +23,7 @@ variable {E ι α : Type*}
 
 /-- Diagonal normalized loss for an operator at scalar Pick node `q`. -/
 def operatorPickDiagonal (T : E →L[ℝ] E) (q : ℝ) (u : E) : ℝ :=
-  (‖u‖ ^ 2 - ‖T u‖ ^ 2) / (1 - q ^ 2)
+  (‖u‖ ^ (2 : ℕ) - ‖T u‖ ^ (2 : ℕ)) / (1 - q ^ (2 : ℕ))
 
 /-- Cross normalized loss for two operators at scalar Pick nodes `q,r`. -/
 def operatorPickCross
@@ -46,7 +46,7 @@ theorem continuousLinearMap_eq_id_of_basiswise_boundaryPick
     (hdiag : ∀ i,
       Tendsto (fun a => operatorPickDiagonal (T a) (q a) (b i)) l (𝓝 0))
     (hpick : ∀ᶠ a in l, ∀ u v,
-      operatorPickCross S (T a) q₀ (q a) u v ^ 2 ≤
+      operatorPickCross S (T a) q₀ (q a) u v ^ (2 : ℕ) ≤
         operatorPickDiagonal S q₀ u * operatorPickDiagonal (T a) (q a) v) :
     S = ContinuousLinearMap.id ℝ E := by
   have hfix : ∀ i, S.adjoint (b i) = b i := by
@@ -54,7 +54,7 @@ theorem continuousLinearMap_eq_id_of_basiswise_boundaryPick
     let h : E := b i - S.adjoint (b i)
     have hnum : Tendsto
         (fun a => inner ℝ h (b i) - inner ℝ (S h) (T a (b i))) l
-        (𝓝 (‖h‖ ^ 2)) := by
+        (𝓝 (‖h‖ ^ (2 : ℕ))) := by
       have htinner : Tendsto (fun a => inner ℝ (S h) (T a (b i))) l
           (𝓝 (inner ℝ (S h) (b i))) :=
         tendsto_const_nhds.inner (hT i)
@@ -62,9 +62,9 @@ theorem continuousLinearMap_eq_id_of_basiswise_boundaryPick
           (fun a : α => inner ℝ h (b i) - inner ℝ (S h) (T a (b i))) l
           (𝓝 (inner ℝ h (b i) - inner ℝ (S h) (b i))) :=
         tendsto_const_nhds.sub htinner
-      have hval : inner ℝ h (b i) - inner ℝ (S h) (b i) = ‖h‖ ^ 2 := by
+      have hval : inner ℝ h (b i) - inner ℝ (S h) (b i) = ‖h‖ ^ (2 : ℕ) := by
         rw [← ContinuousLinearMap.adjoint_inner_right, ← inner_sub_right]
-        change inner ℝ h h = ‖h‖ ^ 2
+        change inner ℝ h h = ‖h‖ ^ (2 : ℕ)
         exact real_inner_self_eq_norm_sq h
       simpa only [hval] using hsub
     have hden : Tendsto (fun a => 1 - q₀ * q a) l (𝓝 (1 - q₀)) := by
@@ -72,7 +72,7 @@ theorem continuousLinearMap_eq_id_of_basiswise_boundaryPick
     have hden_ne : 1 - q₀ ≠ 0 := sub_ne_zero.mpr (Ne.symm hq₀)
     have hcross : Tendsto
         (fun a => operatorPickCross S (T a) q₀ (q a) h (b i)) l
-        (𝓝 (‖h‖ ^ 2 / (1 - q₀))) := by
+        (𝓝 (‖h‖ ^ (2 : ℕ) / (1 - q₀))) := by
       rw [show (fun a => operatorPickCross S (T a) q₀ (q a) h (b i)) =
           (fun a => inner ℝ h (b i) - inner ℝ (S h) (T a (b i))) /
             (fun a => 1 - q₀ * q a) by
@@ -84,17 +84,17 @@ theorem continuousLinearMap_eq_id_of_basiswise_boundaryPick
           operatorPickDiagonal (T a) (q a) (b i)) l (𝓝 0) := by
       simpa using tendsto_const_nhds.mul (hdiag i)
     have hsqzero : Tendsto
-        (fun a => operatorPickCross S (T a) q₀ (q a) h (b i) ^ 2) l (𝓝 0) := by
+        (fun a => operatorPickCross S (T a) q₀ (q a) h (b i) ^ (2 : ℕ)) l (𝓝 0) := by
       apply squeeze_zero' (Filter.Eventually.of_forall fun _ => sq_nonneg _)
         (hpick.mono fun _ ha => ha h (b i)) hrhs
     have hsqlim : Tendsto
-        (fun a => operatorPickCross S (T a) q₀ (q a) h (b i) ^ 2) l
-        (𝓝 ((‖h‖ ^ 2 / (1 - q₀)) ^ 2)) := hcross.pow 2
-    have heq : (‖h‖ ^ 2 / (1 - q₀)) ^ 2 = 0 :=
+        (fun a => operatorPickCross S (T a) q₀ (q a) h (b i) ^ (2 : ℕ)) l
+        (𝓝 ((‖h‖ ^ (2 : ℕ) / (1 - q₀)) ^ (2 : ℕ))) := hcross.pow 2
+    have heq : (‖h‖ ^ (2 : ℕ) / (1 - q₀)) ^ (2 : ℕ) = 0 :=
       tendsto_nhds_unique hsqlim hsqzero
-    have hquot : ‖h‖ ^ 2 / (1 - q₀) = 0 := sq_eq_zero_iff.mp heq
+    have hquot : ‖h‖ ^ (2 : ℕ) / (1 - q₀) = 0 := sq_eq_zero_iff.mp heq
     have hh : h = 0 := by
-      have : ‖h‖ ^ 2 = 0 := (div_eq_zero_iff).mp hquot |>.resolve_right hden_ne
+      have : ‖h‖ ^ (2 : ℕ) = 0 := (div_eq_zero_iff).mp hquot |>.resolve_right hden_ne
       exact norm_eq_zero.mp (sq_eq_zero_iff.mp this)
     exact (sub_eq_zero.mp hh).symm
   have hadj : S.adjoint = ContinuousLinearMap.id ℝ E := by

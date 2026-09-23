@@ -59,7 +59,7 @@ theorem deriv_logDeriv_eventuallyEq_of_factor {f g : ℂ → ℂ} {ρ : ℂ} {n 
     (hg : AnalyticAt ℂ g ρ) (hgne : g ρ ≠ 0)
     (hfac : ∀ᶠ z in 𝓝 ρ, f z = (z - ρ) ^ (n + 1) * g z) :
     ∀ᶠ z in 𝓝[≠] ρ,
-      deriv (logDeriv f) z = -(((n : ℂ) + 1) / (z - ρ) ^ 2) + deriv (logDeriv g) z := by
+      deriv (logDeriv f) z = -(((n : ℂ) + 1) / (z - ρ) ^ (2 : ℕ)) + deriv (logDeriv g) z := by
   have hbase := logDeriv_eventuallyEq_of_factor hg hgne hfac
   rw [eventually_nhdsWithin_iff] at hbase
   obtain ⟨U, hUsub, hUopen, hUmem⟩ := mem_nhds_iff.mp hbase
@@ -78,13 +78,13 @@ theorem deriv_logDeriv_eventuallyEq_of_factor {f g : ℂ → ℂ} {ρ : ℂ} {n 
   have hzsub : z - ρ ≠ 0 := sub_ne_zero.mpr hzne
   have hlogd : DifferentiableAt ℂ (logDeriv g) z := hzA.differentiableAt
   have hinv : HasDerivAt (fun w : ℂ => ((n : ℂ) + 1) / (w - ρ))
-      (-(((n : ℂ) + 1) / (z - ρ) ^ 2)) z := by
+      (-(((n : ℂ) + 1) / (z - ρ) ^ (2 : ℕ))) z := by
     have h1 : HasDerivAt (fun w : ℂ => w - ρ) 1 z := (hasDerivAt_id z).sub_const ρ
     have h2 := (h1.inv hzsub).const_mul ((n : ℂ) + 1)
     refine h2.congr_deriv ?_
     field_simp
   have hsum : HasDerivAt (fun w : ℂ => ((n : ℂ) + 1) / (w - ρ) + logDeriv g w)
-      (-(((n : ℂ) + 1) / (z - ρ) ^ 2) + deriv (logDeriv g) z) z :=
+      (-(((n : ℂ) + 1) / (z - ρ) ^ (2 : ℕ)) + deriv (logDeriv g) z) z :=
     hinv.add hlogd.hasDerivAt
   exact hsum.deriv
 
@@ -106,34 +106,34 @@ theorem not_bounded_deriv_logDeriv_of_factor {f g : ℂ → ℂ} {ρ : ℂ} {n :
   have hBw : ∀ᶠ z in 𝓝[≠] ρ, ‖deriv (logDeriv g) z‖ < ‖deriv (logDeriv g) ρ‖ + 1 :=
     nhdsWithin_le_nhds hB
   have hkey : ∀ᶠ z in 𝓝[≠] ρ,
-      ((n : ℝ) + 1) ≤ (C + (‖deriv (logDeriv g) ρ‖ + 1)) * ‖z - ρ‖ ^ 2 := by
+      ((n : ℝ) + 1) ≤ (C + (‖deriv (logDeriv g) ρ‖ + 1)) * ‖z - ρ‖ ^ (2 : ℕ) := by
     filter_upwards [deriv_logDeriv_eventuallyEq_of_factor hg hgne hfac, hC, hBw,
       self_mem_nhdsWithin] with z hz hz1 hz2 hzne
     have hzsub : z - ρ ≠ 0 := sub_ne_zero.mpr hzne
-    have hnorm : ‖-(((n : ℂ) + 1) / (z - ρ) ^ 2)‖ = ((n : ℝ) + 1) / ‖z - ρ‖ ^ 2 := by
+    have hnorm : ‖-(((n : ℂ) + 1) / (z - ρ) ^ (2 : ℕ))‖ = ((n : ℝ) + 1) / ‖z - ρ‖ ^ (2 : ℕ) := by
       rw [norm_neg, norm_div, norm_pow]
       congr 1
       rw [show ((n : ℂ) + 1) = ((((n : ℝ) + 1 : ℝ)) : ℂ) by push_cast; ring,
         Complex.norm_real, Real.norm_of_nonneg (by positivity)]
-    have hsplit : -(((n : ℂ) + 1) / (z - ρ) ^ 2)
+    have hsplit : -(((n : ℂ) + 1) / (z - ρ) ^ (2 : ℕ))
         = deriv (logDeriv f) z - deriv (logDeriv g) z := by
       rw [hz]
       ring
-    have hle : ((n : ℝ) + 1) / ‖z - ρ‖ ^ 2 ≤ C + (‖deriv (logDeriv g) ρ‖ + 1) := by
+    have hle : ((n : ℝ) + 1) / ‖z - ρ‖ ^ (2 : ℕ) ≤ C + (‖deriv (logDeriv g) ρ‖ + 1) := by
       rw [← hnorm, hsplit]
       exact (norm_sub_le _ _).trans (add_le_add hz1 hz2.le)
-    have hpos : (0 : ℝ) < ‖z - ρ‖ ^ 2 := by
+    have hpos : (0 : ℝ) < ‖z - ρ‖ ^ (2 : ℕ) := by
       have : (0 : ℝ) < ‖z - ρ‖ := norm_pos_iff.mpr hzsub
       positivity
     rw [div_le_iff₀ hpos] at hle
     exact hle
   have htend : Filter.Tendsto
-      (fun z : ℂ => (C + (‖deriv (logDeriv g) ρ‖ + 1)) * ‖z - ρ‖ ^ 2) (𝓝[≠] ρ) (nhds 0) := by
-    have h0 : Filter.Tendsto (fun z : ℂ => ‖z - ρ‖ ^ 2) (𝓝 ρ) (nhds 0) := by
-      have hc : ContinuousAt (fun z : ℂ => ‖z - ρ‖ ^ 2) ρ := by fun_prop
+      (fun z : ℂ => (C + (‖deriv (logDeriv g) ρ‖ + 1)) * ‖z - ρ‖ ^ (2 : ℕ)) (𝓝[≠] ρ) (nhds 0) := by
+    have h0 : Filter.Tendsto (fun z : ℂ => ‖z - ρ‖ ^ (2 : ℕ)) (𝓝 ρ) (nhds 0) := by
+      have hc : ContinuousAt (fun z : ℂ => ‖z - ρ‖ ^ (2 : ℕ)) ρ := by fun_prop
       have ht := hc.tendsto
       simpa using ht
-    have h1 : Filter.Tendsto (fun z : ℂ => ‖z - ρ‖ ^ 2) (𝓝[≠] ρ) (nhds 0) :=
+    have h1 : Filter.Tendsto (fun z : ℂ => ‖z - ρ‖ ^ (2 : ℕ)) (𝓝[≠] ρ) (nhds 0) :=
       h0.mono_left nhdsWithin_le_nhds
     simpa using h1.const_mul (C + (‖deriv (logDeriv g) ρ‖ + 1))
   have hfinal : ((n : ℝ) + 1) ≤ 0 := ge_of_tendsto htend hkey

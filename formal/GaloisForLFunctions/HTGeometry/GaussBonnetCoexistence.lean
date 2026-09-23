@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CPV
 
-def egbCoexistenceShape (tau : ℝ) : ℝ := thermalRatio tau ^ 2 + 4 * thermalRatio tau + 1
+def egbCoexistenceShape (tau : ℝ) : ℝ := thermalRatio tau ^ (2 : ℕ) + 4 * thermalRatio tau + 1
 
 def egbCoexistenceScale (k tau : ℝ) : ℝ :=
   Real.exp k * thermalRatio tau / Real.sqrt (egbCoexistenceShape tau)
@@ -30,7 +30,7 @@ def egbCoexistenceSmallRadius (k tau : ℝ) : ℝ := thermalRatio tau * Real.exp
 def egbCoexistenceLargeRadius (k : ℝ) : ℝ := Real.exp k
 
 def egbCoexistencePressure (k tau : ℝ) : ℝ :=
-  3 / (8 * Real.pi * Real.exp k ^ 2 * egbCoexistenceShape tau)
+  3 / (8 * Real.pi * Real.exp k ^ (2 : ℕ) * egbCoexistenceShape tau)
 
 def egbCoexistenceTemperature (k tau : ℝ) : ℝ :=
   (1 + thermalRatio tau) / (Real.pi * Real.exp k * egbCoexistenceShape tau)
@@ -50,11 +50,11 @@ theorem egbCoexistenceScale_pos (k tau : ℝ) : 0 < egbCoexistenceScale k tau :=
     (Real.sqrt_pos.mpr (egbCoexistenceShape_pos tau))
 
 theorem egbCoexistence_effective_charge (k tau theta : ℝ) :
-    egbCoexistenceCharge k tau theta ^ 2 + egbCoexistenceCouplingRoot k tau theta ^ 2 =
-      Real.exp k ^ 2 * thermalRatio tau ^ 2 / egbCoexistenceShape tau := by
+    egbCoexistenceCharge k tau theta ^ (2 : ℕ) + egbCoexistenceCouplingRoot k tau theta ^ (2 : ℕ) =
+      Real.exp k ^ (2 : ℕ) * thermalRatio tau ^ (2 : ℕ) / egbCoexistenceShape tau := by
   unfold egbCoexistenceCharge egbCoexistenceCouplingRoot
-  have h : (egbCoexistenceScale k tau * Real.cos theta)^2 +
-      (egbCoexistenceScale k tau * Real.sin theta)^2 = egbCoexistenceScale k tau ^ 2 := by
+  have h : (egbCoexistenceScale k tau * Real.cos theta)^(2 : ℕ) +
+      (egbCoexistenceScale k tau * Real.sin theta)^(2 : ℕ) = egbCoexistenceScale k tau ^ (2 : ℕ) := by
     nlinarith [Real.sin_sq_add_cos_sq theta]
   rw [h, egbCoexistenceScale, div_pow, mul_pow, Real.sq_sqrt (egbCoexistenceShape_pos tau).le]
 
@@ -104,9 +104,9 @@ theorem egbCoexistence_gibbs_gap_factorization (k tau theta u : ℝ) :
     egbOffShellGibbs (egbCoexistencePressure k tau) (egbCoexistenceTemperature k tau)
       (egbCoexistenceCharge k tau theta) (egbCoexistenceCouplingRoot k tau theta) (Real.exp u) -
         egbCoexistenceGibbs k tau =
-      (Real.exp u - egbCoexistenceSmallRadius k tau)^2 *
-        (Real.exp u - egbCoexistenceLargeRadius k)^2 /
-          (2 * Real.exp u * Real.exp k ^ 2 * egbCoexistenceShape tau) := by
+      (Real.exp u - egbCoexistenceSmallRadius k tau)^(2 : ℕ) *
+        (Real.exp u - egbCoexistenceLargeRadius k)^(2 : ℕ) /
+          (2 * Real.exp u * Real.exp k ^ (2 : ℕ) * egbCoexistenceShape tau) := by
   unfold egbOffShellGibbs egbMass egbEntropyB
   rw [egbCoexistence_effective_charge]
   unfold egbCoexistencePressure egbCoexistenceTemperature egbCoexistenceGibbs
@@ -120,7 +120,7 @@ theorem egbCoexistence_gibbs_global_lower_bound (k tau theta u : ℝ) :
       egbOffShellGibbs (egbCoexistencePressure k tau) (egbCoexistenceTemperature k tau)
         (egbCoexistenceCharge k tau theta) (egbCoexistenceCouplingRoot k tau theta) (Real.exp u) := by
   have h := egbCoexistence_gibbs_gap_factorization k tau theta u
-  have hd : 0 < 2 * Real.exp u * Real.exp k ^ 2 * egbCoexistenceShape tau := by
+  have hd : 0 < 2 * Real.exp u * Real.exp k ^ (2 : ℕ) * egbCoexistenceShape tau := by
     exact mul_pos (mul_pos (mul_pos (by norm_num) (Real.exp_pos u))
       (sq_pos_of_pos (Real.exp_pos k))) (egbCoexistenceShape_pos tau)
   have hn := div_nonneg (mul_nonneg (sq_nonneg (Real.exp u - egbCoexistenceSmallRadius k tau))
@@ -134,7 +134,7 @@ theorem egbCoexistence_gibbs_minimizers (k tau theta u : ℝ) :
         egbCoexistenceGibbs k tau ↔
       Real.exp u = egbCoexistenceSmallRadius k tau ∨ Real.exp u = egbCoexistenceLargeRadius k := by
   rw [← sub_eq_zero, egbCoexistence_gibbs_gap_factorization]
-  have hd : 2 * Real.exp u * Real.exp k ^ 2 * egbCoexistenceShape tau ≠ 0 := by
+  have hd : 2 * Real.exp u * Real.exp k ^ (2 : ℕ) * egbCoexistenceShape tau ≠ 0 := by
     exact ne_of_gt (mul_pos (mul_pos (mul_pos (by norm_num) (Real.exp_pos u))
       (sq_pos_of_pos (Real.exp_pos k))) (egbCoexistenceShape_pos tau))
   simp only [div_eq_zero_iff, hd, or_false, mul_eq_zero, pow_eq_zero_iff (by norm_num : 2 ≠ 0), sub_eq_zero]
@@ -160,7 +160,7 @@ theorem egbCoexistence_large_gibbs (k tau theta : ℝ) :
 /-- The discontinuity in area entropy is explicit. -/
 theorem egbCoexistence_entropy_jump (k tau : ℝ) :
     egbEntropyB (egbCoexistenceLargeRadius k) - egbEntropyB (egbCoexistenceSmallRadius k tau) =
-      Real.pi * Real.exp k ^ 2 * (1 - thermalRatio tau ^ 2) := by
+      Real.pi * Real.exp k ^ (2 : ℕ) * (1 - thermalRatio tau ^ (2 : ℕ)) := by
   unfold egbEntropyB egbCoexistenceLargeRadius egbCoexistenceSmallRadius
   ring
 
@@ -195,15 +195,15 @@ theorem egbCoexistence_latent_heat_pos (k tau theta : ℝ) :
 
 /-- Every coexistence state lies below the critical pressure for its effective charge. -/
 theorem egbCoexistence_normalized_pressure (k tau theta : ℝ) :
-    96 * Real.pi * (egbCoexistenceCharge k tau theta ^ 2 + egbCoexistenceCouplingRoot k tau theta ^ 2) *
-      egbCoexistencePressure k tau = 36 * thermalRatio tau ^ 2 / egbCoexistenceShape tau ^ 2 := by
+    96 * Real.pi * (egbCoexistenceCharge k tau theta ^ (2 : ℕ) + egbCoexistenceCouplingRoot k tau theta ^ (2 : ℕ)) *
+      egbCoexistencePressure k tau = 36 * thermalRatio tau ^ (2 : ℕ) / egbCoexistenceShape tau ^ (2 : ℕ) := by
   rw [egbCoexistence_effective_charge]
   unfold egbCoexistencePressure
   field_simp
   ring
 
 theorem egbCoexistence_subcritical (k tau theta : ℝ) :
-    96 * Real.pi * (egbCoexistenceCharge k tau theta ^ 2 + egbCoexistenceCouplingRoot k tau theta ^ 2) *
+    96 * Real.pi * (egbCoexistenceCharge k tau theta ^ (2 : ℕ) + egbCoexistenceCouplingRoot k tau theta ^ (2 : ℕ)) *
       egbCoexistencePressure k tau < 1 := by
   rw [egbCoexistence_normalized_pressure]
   apply (div_lt_one (sq_pos_of_pos (egbCoexistenceShape_pos tau))).mpr
@@ -220,7 +220,7 @@ theorem egbCoexistence_midpoint_gap (k tau theta : ℝ) :
       (egbCoexistenceCharge k tau theta) (egbCoexistenceCouplingRoot k tau theta)
         ((egbCoexistenceSmallRadius k tau + egbCoexistenceLargeRadius k) / 2) -
       egbCoexistenceGibbs k tau =
-        Real.exp k * (1 - thermalRatio tau)^4 / (16 * (1 + thermalRatio tau) * egbCoexistenceShape tau) := by
+        Real.exp k * (1 - thermalRatio tau)^(4 : ℕ) / (16 * (1 + thermalRatio tau) * egbCoexistenceShape tau) := by
   have hp : 0 < (egbCoexistenceSmallRadius k tau + egbCoexistenceLargeRadius k) / 2 := by
     have h := egbCoexistence_radii_order k tau
     linarith

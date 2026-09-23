@@ -69,14 +69,14 @@ theorem hermiteFunctional_eq_zero_of_monomials {t a b : Fin r → K} {n : ℕ}
 /-! ### The Hermite nodes -/
 
 theorem eval_derivative_eq_zero_of_sq_dvd {p : K[X]} {c : K}
-    (h : (X - C c) ^ 2 ∣ p) : (derivative p).eval c = 0 := by
+    (h : (X - C c) ^ (2 : ℕ) ∣ p) : (derivative p).eval c = 0 := by
   obtain ⟨u, rfl⟩ := h
   rw [derivative_mul, derivative_pow]
   simp
 
 /-- The double-node polynomial at every node except `j`. -/
 noncomputable def hermiteNodePoly (t : Fin r → K) (j : Fin r) : K[X] :=
-  ∏ i ∈ Finset.univ.erase j, (X - C (t i)) ^ 2
+  ∏ i ∈ Finset.univ.erase j, (X - C (t i)) ^ (2 : ℕ)
 
 theorem natDegree_hermiteNodePoly_le (t : Fin r → K) (j : Fin r) :
     (hermiteNodePoly t j).natDegree ≤ 2 * r - 2 := by
@@ -84,7 +84,7 @@ theorem natDegree_hermiteNodePoly_le (t : Fin r → K) (j : Fin r) :
   refine le_trans (natDegree_prod_le _ _) ?_
   have hcard : (Finset.univ.erase j).card = r - 1 := by
     rw [Finset.card_erase_of_mem (Finset.mem_univ j), Finset.card_univ, Fintype.card_fin]
-  calc ∑ i ∈ Finset.univ.erase j, ((X - C (t i)) ^ 2).natDegree
+  calc ∑ i ∈ Finset.univ.erase j, ((X - C (t i)) ^ (2 : ℕ)).natDegree
       ≤ ∑ _i ∈ Finset.univ.erase j, 2 := by
         refine Finset.sum_le_sum fun i _ => ?_
         refine le_trans (natDegree_pow_le) ?_

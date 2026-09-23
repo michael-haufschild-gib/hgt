@@ -23,7 +23,7 @@ open GaloisForLFunctions.HTGeometry
 namespace RHTower
 noncomputable section
 
-/-- The comparison term that cancels the simple pole of `(A/E)/(z-γ)^2` at `γ`.  Its own pole
+/-- The comparison term that cancels the simple pole of `(A/E)/(z-γ)^(2 : ℕ)` at `γ`.  Its own pole
 sits at `γ - i`, strictly below the axis. -/
 def suzukiDiagComparison (γ : ℂ) (m : ℕ) (z : ℂ) : ℂ :=
   dslope suzukiHalfInner γ z - (1 / (m : ℂ)) / (z - γ + I)
@@ -81,7 +81,7 @@ theorem dslope_suzukiDiagComparison_apply {γ : ℂ} {m : ℕ} (hm : 0 < m)
     (hord : analyticOrderAt XiC γ = (m : ℕ∞)) (hγ : XiC γ = 0) {z : ℂ} (hzγ : z ≠ γ)
     (hden : z - γ + I ≠ 0) :
     dslope (suzukiDiagComparison γ m) γ z
-      = suzukiHalfInner z / (z - γ) ^ 2 - (1 / (m : ℂ)) / ((z - γ) * (z - γ + I)) := by
+      = suzukiHalfInner z / (z - γ) ^ (2 : ℕ) - (1 / (m : ℂ)) / ((z - γ) * (z - γ + I)) := by
   have hsub : z - γ ≠ 0 := sub_ne_zero.mpr hzγ
   rw [dslope_of_ne _ hzγ, slope_def_field, suzukiDiagComparison_self hm hord, sub_zero,
     suzukiDiagComparison, dslope_suzukiHalfInner_apply hγ hzγ]
@@ -90,7 +90,7 @@ theorem dslope_suzukiDiagComparison_apply {γ : ℂ} {m : ℕ} (hm : 0 < m)
 theorem norm_dslope_suzukiDiagComparison_le (hRH : RiemannHypothesis) {γ : ℂ} {m : ℕ}
     (hm : 0 < m) (hord : analyticOrderAt XiC γ = (m : ℕ∞)) (hγ : XiC γ = 0) (hγim : γ.im = 0)
     {z : ℂ} (hz : 0 ≤ z.im) (hR : 2 * (‖γ‖ + 2) ≤ ‖z‖) :
-    ‖dslope (suzukiDiagComparison γ m) γ z‖ ≤ 8 / ‖z‖ ^ 2 := by
+    ‖dslope (suzukiDiagComparison γ m) γ z‖ ≤ 8 / ‖z‖ ^ (2 : ℕ) := by
   have hzpos : 0 < ‖z‖ := by
     have h : (0 : ℝ) < 2 * (‖γ‖ + 2) := by positivity
     linarith
@@ -133,7 +133,7 @@ theorem norm_dslope_suzukiDiagComparison_le (hRH : RiemannHypothesis) {γ : ℂ}
     rw [dslope_of_ne _ hzγ, slope_def_field, suzukiDiagComparison_self hm hord, sub_zero]
   rw [hval, norm_div]
   calc ‖suzukiDiagComparison γ m z‖ / ‖z - γ‖ ≤ (4 / ‖z‖) / (‖z‖ / 2) := by gcongr
-    _ = 8 / ‖z‖ ^ 2 := by field_simp; ring
+    _ = 8 / ‖z‖ ^ (2 : ℕ) := by field_simp; ring
 
 theorem integral_dslope_suzukiDiagComparison_eq_zero (hRH : RiemannHypothesis) {γ : ℂ} {m : ℕ}
     (hm : 0 < m) (hord : analyticOrderAt XiC γ = (m : ℕ∞)) (hγ : XiC γ = 0) (hγim : γ.im = 0) :
@@ -154,18 +154,18 @@ theorem integrable_dslope_suzukiDiagComparison (hRH : RiemannHypothesis) {γ : �
 /-- The real part of the comparison term on the real axis: the pole contribution is a Cauchy
 kernel. -/
 theorem re_ofReal_div_mul_add_I (c : ℝ) {s : ℝ} (hs : s ≠ 0) :
-    (((c : ℝ) : ℂ) / (((s : ℝ) : ℂ) * (((s : ℝ) : ℂ) + I))).re = c / (s ^ 2 + 1) := by
-  have hw : (((s : ℝ) : ℂ) * (((s : ℝ) : ℂ) + I)).re = s ^ 2 := by
+    (((c : ℝ) : ℂ) / (((s : ℝ) : ℂ) * (((s : ℝ) : ℂ) + I))).re = c / (s ^ (2 : ℕ) + 1) := by
+  have hw : (((s : ℝ) : ℂ) * (((s : ℝ) : ℂ) + I)).re = s ^ (2 : ℕ) := by
     simp [Complex.mul_re]
     ring
   have hw2 : (((s : ℝ) : ℂ) * (((s : ℝ) : ℂ) + I)).im = s := by
     simp [Complex.mul_im]
-  have hns : Complex.normSq (((s : ℝ) : ℂ) * (((s : ℝ) : ℂ) + I)) = s ^ 2 * (s ^ 2 + 1) := by
+  have hns : Complex.normSq (((s : ℝ) : ℂ) * (((s : ℝ) : ℂ) + I)) = s ^ (2 : ℕ) * (s ^ (2 : ℕ) + 1) := by
     rw [Complex.normSq_apply, hw, hw2]
     ring
   rw [Complex.div_re, hw, hw2, hns, Complex.ofReal_re, Complex.ofReal_im]
-  have hs2 : (s : ℝ) ^ 2 ≠ 0 := pow_ne_zero 2 hs
-  have hs3 : (s : ℝ) ^ 2 + 1 ≠ 0 := by positivity
+  have hs2 : (s : ℝ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hs
+  have hs3 : (s : ℝ) ^ (2 : ℕ) + 1 ≠ 0 := by positivity
   field_simp
   ring
 
@@ -173,8 +173,8 @@ theorem re_dslope_suzukiDiagComparison_ofReal {γ : ℝ} {m : ℕ} (hm : 0 < m)
     (hord : analyticOrderAt XiC ((γ : ℝ) : ℂ) = (m : ℕ∞)) (hγ : XiC ((γ : ℝ) : ℂ) = 0)
     {x : ℝ} (hx : x ≠ γ) :
     (dslope (suzukiDiagComparison ((γ : ℝ) : ℂ) m) ((γ : ℝ) : ℂ) ((x : ℝ) : ℂ)).re
-      = ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / (x - γ) ^ 2
-        - (1 / (m : ℝ)) / ((x - γ) ^ 2 + 1) := by
+      = ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / (x - γ) ^ (2 : ℕ)
+        - (1 / (m : ℝ)) / ((x - γ) ^ (2 : ℕ) + 1) := by
   have hxγ : ((x : ℝ) : ℂ) ≠ ((γ : ℝ) : ℂ) := by
     simpa using hx
   have hden : ((x : ℝ) : ℂ) - ((γ : ℝ) : ℂ) + I ≠ 0 :=
@@ -182,7 +182,7 @@ theorem re_dslope_suzukiDiagComparison_ofReal {γ : ℝ} {m : ℕ} (hm : 0 < m)
   have hsne : (x - γ) ≠ 0 := sub_ne_zero.mpr hx
   rw [dslope_suzukiDiagComparison_apply hm hord hγ hxγ hden, Complex.sub_re]
   congr 1
-  · have hc : (((x : ℝ) : ℂ) - ((γ : ℝ) : ℂ)) ^ 2 = (((x - γ) ^ 2 : ℝ) : ℂ) := by
+  · have hc : (((x : ℝ) : ℂ) - ((γ : ℝ) : ℂ)) ^ (2 : ℕ) = (((x - γ) ^ (2 : ℕ) : ℝ) : ℂ) := by
       push_cast; ring
     rw [hc, div_ofReal_re, ← norm_sq_suzukiHalfInner_ofReal x]
   · have hs : ((x : ℝ) : ℂ) - ((γ : ℝ) : ℂ) = (((x - γ : ℝ)) : ℂ) := by push_cast; ring
@@ -195,8 +195,8 @@ theorem re_dslope_suzukiDiagComparison_ofReal {γ : ℝ} {m : ℕ} (hm : 0 < m)
 theorem integrable_and_integral_normSq_suzukiHalfInner_div_sq (hRH : RiemannHypothesis)
     {γ : ℝ} {m : ℕ} (hm : 0 < m) (hord : analyticOrderAt XiC ((γ : ℝ) : ℂ) = (m : ℕ∞))
     (hγ : XiC ((γ : ℝ) : ℂ) = 0) :
-    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / (x - γ) ^ 2) ∧
-      (∫ x : ℝ, ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / (x - γ) ^ 2) = Real.pi / (m : ℝ) := by
+    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / (x - γ) ^ (2 : ℕ)) ∧
+      (∫ x : ℝ, ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / (x - γ) ^ (2 : ℕ)) = Real.pi / (m : ℝ) := by
   have hmR : (m : ℝ) ≠ 0 := by
     simp only [ne_eq, Nat.cast_eq_zero]
     omega
@@ -205,10 +205,10 @@ theorem integrable_and_integral_normSq_suzukiHalfInner_div_sq (hRH : RiemannHypo
   have hUzero := integral_dslope_suzukiDiagComparison_eq_zero hRH hm hord hγ hγim
   set F : ℝ → ℝ := fun x =>
     (dslope (suzukiDiagComparison ((γ : ℝ) : ℂ) m) ((γ : ℝ) : ℂ) ((x : ℝ) : ℂ)).re with hF
-  set G : ℝ → ℝ := fun x => (1 / (m : ℝ)) / ((x - γ) ^ 2 + 1) with hG
+  set G : ℝ → ℝ := fun x => (1 / (m : ℝ)) / ((x - γ) ^ (2 : ℕ) + 1) with hG
   have hFint : Integrable F := hUint.re
   have hGint : Integrable G := by
-    have hbase : Integrable (fun x : ℝ => (1 + (x - γ) ^ 2)⁻¹) :=
+    have hbase : Integrable (fun x : ℝ => (1 + (x - γ) ^ (2 : ℕ))⁻¹) :=
       integrable_inv_one_add_sq.comp_sub_right γ
     refine (hbase.const_mul (1 / (m : ℝ))).congr ?_
     filter_upwards with x
@@ -220,7 +220,7 @@ theorem integrable_and_integral_normSq_suzukiHalfInner_div_sq (hRH : RiemannHypo
     rw [hUzero] at hcomm
     simpa [hF] using hcomm
   have hnull : volume ({γ} : Set ℝ) = 0 := by simp
-  have hae : (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / (x - γ) ^ 2)
+  have hae : (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / (x - γ) ^ (2 : ℕ))
       =ᵐ[volume] fun x => F x + G x := by
     filter_upwards [MeasureTheory.compl_mem_ae_iff.mpr hnull] with x hx
     have hxne : x ≠ γ := fun h => hx (by simp [h])
@@ -233,14 +233,14 @@ theorem integrable_and_integral_normSq_suzukiHalfInner_div_sq (hRH : RiemannHypo
   rw [MeasureTheory.integral_congr_ae hae, MeasureTheory.integral_add hFint hGint, hFzero,
     zero_add]
   have hGval : (∫ x : ℝ, G x) = Real.pi / (m : ℝ) := by
-    have h1 : (fun x : ℝ => G x) = fun x : ℝ => (1 / (m : ℝ)) * (1 + (x - γ) ^ 2)⁻¹ := by
+    have h1 : (fun x : ℝ => G x) = fun x : ℝ => (1 / (m : ℝ)) * (1 + (x - γ) ^ (2 : ℕ))⁻¹ := by
       funext x
       simp only [hG]
       rw [div_eq_mul_inv]
       ring_nf
     rw [h1, MeasureTheory.integral_const_mul]
-    have h2 : (∫ x : ℝ, (1 + (x - γ) ^ 2)⁻¹) = Real.pi := by
-      rw [MeasureTheory.integral_sub_right_eq_self (fun x : ℝ => (1 + x ^ 2)⁻¹) γ]
+    have h2 : (∫ x : ℝ, (1 + (x - γ) ^ (2 : ℕ))⁻¹) = Real.pi := by
+      rw [MeasureTheory.integral_sub_right_eq_self (fun x : ℝ => (1 + x ^ (2 : ℕ))⁻¹) γ]
       exact integral_univ_inv_one_add_sq
     rw [h2]
     field_simp
@@ -250,7 +250,7 @@ theorem integrable_and_integral_normSq_suzukiHalfInner_div_sq (hRH : RiemannHypo
 theorem integrable_normSq_suzukiHalfInner_div_sq (hRH : RiemannHypothesis) {γ : ℝ} {m : ℕ}
     (hm : 0 < m) (hord : analyticOrderAt XiC ((γ : ℝ) : ℂ) = (m : ℕ∞))
     (hγ : XiC ((γ : ℝ) : ℂ) = 0) :
-    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / (x - γ) ^ 2) :=
+    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / (x - γ) ^ (2 : ℕ)) :=
   (integrable_and_integral_normSq_suzukiHalfInner_div_sq hRH hm hord hγ).1
 
 /-- **The diagonal norm.**  At a zero of `A` of order `m` the boundary energy integrates to
@@ -258,7 +258,7 @@ theorem integrable_normSq_suzukiHalfInner_div_sq (hRH : RiemannHypothesis) {γ :
 theorem integral_normSq_suzukiHalfInner_div_sq (hRH : RiemannHypothesis) {γ : ℝ} {m : ℕ}
     (hm : 0 < m) (hord : analyticOrderAt XiC ((γ : ℝ) : ℂ) = (m : ℕ∞))
     (hγ : XiC ((γ : ℝ) : ℂ) = 0) :
-    (∫ x : ℝ, ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / (x - γ) ^ 2) = Real.pi / (m : ℝ) :=
+    (∫ x : ℝ, ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / (x - γ) ^ (2 : ℕ)) = Real.pi / (m : ℝ) :=
   (integrable_and_integral_normSq_suzukiHalfInner_div_sq hRH hm hord hγ).2
 
 end

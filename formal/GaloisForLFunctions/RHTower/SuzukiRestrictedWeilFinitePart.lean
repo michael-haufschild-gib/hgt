@@ -175,11 +175,11 @@ theorem suzukiFinitePartDividedDifference_symmetrization {a : ℝ} (ha : 0 < a) 
         ((∫ y in (-a)..x, (u y - u x) * (x - y)⁻¹) +
           ∫ y in x..a, (u y - u x) * (y - x)⁻¹) * u x) =
         -(1 / 2) * ∫ x in (-a)..a, ∫ y in (-a)..a,
-          (u x - u y) ^ 2 * |x - y|⁻¹ ∧
+          (u x - u y) ^ (2 : ℕ) * |x - y|⁻¹ ∧
       (∀ x ∈ Icc (-a) a, IntervalIntegrable
-        (fun y => (u x - u y) ^ 2 * |x - y|⁻¹) volume (-a) a) ∧
+        (fun y => (u x - u y) ^ (2 : ℕ) * |x - y|⁻¹) volume (-a) a) ∧
       IntervalIntegrable (fun x => ∫ y in (-a)..a,
-        (u x - u y) ^ 2 * |x - y|⁻¹) volume (-a) a := by
+        (u x - u y) ^ (2 : ℕ) * |x - y|⁻¹) volume (-a) a := by
   have hab : -a ≤ a := by linarith
   have huc : Continuous u := hu.continuous
   obtain ⟨D, hD0, hlip⟩ := finitePart_exists_lipschitz_bound (a := a) hu
@@ -195,7 +195,7 @@ theorem suzukiFinitePartDividedDifference_symmetrization {a : ℝ} (ha : 0 < a) 
     exact hxU0.trans (le_max_left _ _)
   let qL : ℝ → ℝ → ℝ := fun x y => (u y - u x) * (x - y)⁻¹
   let qR : ℝ → ℝ → ℝ := fun x y => (u y - u x) * (y - x)⁻¹
-  let energy : ℝ → ℝ → ℝ := fun x y => (u x - u y) ^ 2 * |x - y|⁻¹
+  let energy : ℝ → ℝ → ℝ := fun x y => (u x - u y) ^ (2 : ℕ) * |x - y|⁻¹
   let K : ℝ → ℝ → ℝ := fun x y => if y ≤ x then qL x y * u x else 0
   let L : ℝ → ℝ → ℝ := fun x y => if x ≤ y then qR x y * u x else 0
   let T : ℝ → ℝ → ℝ := fun x y => if y ≤ x then energy x y else 0
@@ -255,7 +255,7 @@ theorem suzukiFinitePartDividedDifference_symmetrization {a : ℝ} (ha : 0 < a) 
       rw [abs_of_nonneg hnonneg]
       dsimp [energy]
       calc
-        (u x - u y) ^ 2 * |x - y|⁻¹ =
+        (u x - u y) ^ (2 : ℕ) * |x - y|⁻¹ =
             |u x - u y| * (|u x - u y| * |x - y|⁻¹) := by
               rw [← sq_abs]
               ring
@@ -460,39 +460,39 @@ theorem suzukiFinitePartDividedDifference_symmetrization {a : ℝ} (ha : 0 < a) 
 theorem suzukiFinitePartDifferenceEnergy_intervalIntegrable {a : ℝ} (ha : 0 < a)
     {u : ℝ → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) :
     (∀ x ∈ Icc (-a) a, IntervalIntegrable
-      (fun y => (u x - u y) ^ 2 * |x - y|⁻¹) volume (-a) a) ∧
+      (fun y => (u x - u y) ^ (2 : ℕ) * |x - y|⁻¹) volume (-a) a) ∧
     IntervalIntegrable (fun x => ∫ y in (-a)..a,
-      (u x - u y) ^ 2 * |x - y|⁻¹) volume (-a) a := by
+      (u x - u y) ^ (2 : ℕ) * |x - y|⁻¹) volume (-a) a := by
   have h := suzukiFinitePartDividedDifference_symmetrization ha hu
   exact h.2.2
 
 theorem suzukiFinitePartLogPotential_integrable_upper {a r : ℝ} (ha : 0 < a)
     (hr : 0 ≤ r) (hra : r < a) {u : ℝ → ℝ} (hu : Continuous u)
     (hsupp : Function.support u ⊆ Icc (-r) r) :
-    IntervalIntegrable (fun x => Real.log (a ^ 2 - x ^ 2) * u x ^ 2)
+    IntervalIntegrable (fun x => Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) * u x ^ (2 : ℕ))
         volume (-a) a ∧
-      (∫ x in (-a)..a, Real.log (a ^ 2 - x ^ 2) * u x ^ 2) ≤
-        max (Real.log (a ^ 2)) 0 * ∫ x in (-a)..a, u x ^ 2 := by
+      (∫ x in (-a)..a, Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) * u x ^ (2 : ℕ)) ≤
+        max (Real.log (a ^ (2 : ℕ))) 0 * ∫ x in (-a)..a, u x ^ (2 : ℕ) := by
   have hab : -a ≤ a := by linarith
-  have hargpos : ∀ x ∈ Icc (-r) r, 0 < a ^ 2 - x ^ 2 := by
+  have hargpos : ∀ x ∈ Icc (-r) r, 0 < a ^ (2 : ℕ) - x ^ (2 : ℕ) := by
     intro x hx
     have habsx : |x| ≤ r := (abs_le).2 hx
-    have hx2 : x ^ 2 ≤ r ^ 2 := by
+    have hx2 : x ^ (2 : ℕ) ≤ r ^ (2 : ℕ) := by
       have := (sq_le_sq₀ (abs_nonneg x) hr).2 habsx
       simpa using this
-    have hr2 : r ^ 2 < a ^ 2 := (sq_lt_sq₀ hr ha.le).2 hra
+    have hr2 : r ^ (2 : ℕ) < a ^ (2 : ℕ) := (sq_lt_sq₀ hr ha.le).2 hra
     linarith
-  have hargcont : Continuous fun x : ℝ => a ^ 2 - x ^ 2 :=
+  have hargcont : Continuous fun x : ℝ => a ^ (2 : ℕ) - x ^ (2 : ℕ) :=
     continuous_const.sub (continuous_id.pow 2)
-  have hlogcont : ContinuousOn (fun x => Real.log (a ^ 2 - x ^ 2)) (Icc (-r) r) :=
+  have hlogcont : ContinuousOn (fun x => Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))) (Icc (-r) r) :=
     hargcont.continuousOn.log (fun x hx => (hargpos x hx).ne')
   have hcompactr : IsCompact (Icc (-r) r) := isCompact_Icc
   obtain ⟨L0, hL0⟩ := hcompactr.exists_bound_of_continuousOn hlogcont
   let L : ℝ := max L0 0
   have hLnonneg : 0 ≤ L := le_max_right _ _
-  have hL : ∀ x ∈ Icc (-r) r, |Real.log (a ^ 2 - x ^ 2)| ≤ L := by
+  have hL : ∀ x ∈ Icc (-r) r, |Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))| ≤ L := by
     intro x hx
-    have hxL0 : |Real.log (a ^ 2 - x ^ 2)| ≤ L0 := by
+    have hxL0 : |Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ))| ≤ L0 := by
       simpa [Real.norm_eq_abs] using hL0 x hx
     exact hxL0.trans (le_max_left _ _)
   have hcompacta : IsCompact (Icc (-a) a) := isCompact_Icc
@@ -503,46 +503,46 @@ theorem suzukiFinitePartLogPotential_integrable_upper {a r : ℝ} (ha : 0 < a)
     intro x hx
     have hxU0 : |u x| ≤ U0 := by simpa [Real.norm_eq_abs] using hU0 x hx
     exact hxU0.trans (le_max_left _ _)
-  have hmeas : Measurable (fun x => Real.log (a ^ 2 - x ^ 2) * u x ^ 2) :=
+  have hmeas : Measurable (fun x => Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) * u x ^ (2 : ℕ)) :=
     (Real.measurable_log.comp
       ((measurable_const.pow_const 2).sub (measurable_id.pow_const 2))).mul
       (hu.measurable.pow_const 2)
   have hbound : ∀ x ∈ Icc (-a) a,
-      |Real.log (a ^ 2 - x ^ 2) * u x ^ 2| ≤ L * U ^ 2 := by
+      |Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) * u x ^ (2 : ℕ)| ≤ L * U ^ (2 : ℕ) := by
     intro x hx
     by_cases hux : u x = 0
     · simpa [hux] using mul_nonneg hLnonneg (sq_nonneg U)
     · have hxr : x ∈ Icc (-r) r := hsupp hux
-      have hu2 : |u x| ^ 2 ≤ U ^ 2 :=
+      have hu2 : |u x| ^ (2 : ℕ) ≤ U ^ (2 : ℕ) :=
         (sq_le_sq₀ (abs_nonneg (u x)) hUnonneg).2 (hU x hx)
       rw [abs_mul, abs_pow]
       exact mul_le_mul (hL x hxr) hu2 (sq_nonneg _) hLnonneg
   have hint := finitePart_intervalIntegrable_of_bound_on hmeas hab hbound
   refine ⟨hint, ?_⟩
   have hpoint : ∀ x ∈ Icc (-a) a,
-      Real.log (a ^ 2 - x ^ 2) * u x ^ 2 ≤
-        max (Real.log (a ^ 2)) 0 * u x ^ 2 := by
+      Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) * u x ^ (2 : ℕ) ≤
+        max (Real.log (a ^ (2 : ℕ))) 0 * u x ^ (2 : ℕ) := by
     intro x hx
     by_cases hux : u x = 0
     · simp [hux]
     · have hxr : x ∈ Icc (-r) r := hsupp hux
       have hpos := hargpos x hxr
-      have hargle : a ^ 2 - x ^ 2 ≤ a ^ 2 := by nlinarith [sq_nonneg x]
-      have hlogle : Real.log (a ^ 2 - x ^ 2) ≤ max (Real.log (a ^ 2)) 0 :=
+      have hargle : a ^ (2 : ℕ) - x ^ (2 : ℕ) ≤ a ^ (2 : ℕ) := by nlinarith [sq_nonneg x]
+      have hlogle : Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) ≤ max (Real.log (a ^ (2 : ℕ))) 0 :=
         (Real.log_le_log hpos hargle).trans (le_max_left _ _)
       exact mul_le_mul_of_nonneg_right hlogle (sq_nonneg _)
   have hmono := intervalIntegral.integral_mono_on hab hint
     ((continuous_const.mul (hu.pow 2)).intervalIntegrable (-a) a) hpoint
-  change (∫ x in (-a)..a, Real.log (a ^ 2 - x ^ 2) * u x ^ 2) ≤
-    ∫ x in (-a)..a, max (Real.log (a ^ 2)) 0 * u x ^ 2 at hmono
+  change (∫ x in (-a)..a, Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) * u x ^ (2 : ℕ)) ≤
+    ∫ x in (-a)..a, max (Real.log (a ^ (2 : ℕ))) 0 * u x ^ (2 : ℕ) at hmono
   rw [intervalIntegral.integral_const_mul] at hmono
   exact hmono
 
 def suzukiFinitePartDifferenceEnergy (a : ℝ) (u : ℝ → ℝ) : ℝ :=
-  ∫ x in (-a)..a, ∫ y in (-a)..a, (u x - u y) ^ 2 * |x - y|⁻¹
+  ∫ x in (-a)..a, ∫ y in (-a)..a, (u x - u y) ^ (2 : ℕ) * |x - y|⁻¹
 
 def suzukiFinitePartLogPotential (a : ℝ) (u : ℝ → ℝ) : ℝ :=
-  ∫ x in (-a)..a, Real.log (a ^ 2 - x ^ 2) * u x ^ 2
+  ∫ x in (-a)..a, Real.log (a ^ (2 : ℕ) - x ^ (2 : ℕ)) * u x ^ (2 : ℕ)
 
 def suzukiFinitePartEnergy (a : ℝ) (u : ℝ → ℝ) : ℝ :=
   (1 / 4) * suzukiFinitePartDifferenceEnergy a u - (1 / 2) * suzukiFinitePartLogPotential a u
@@ -580,13 +580,13 @@ theorem suzukiWeilFinitePartBlock_eq_energy
 
 theorem suzukiWeilFinitePartBlock_lowerBound
     (a : RHTower.SuzukiPositiveAperture) (u : SuzukiRestrictedWeilCore a.1) :
-    -(1 / 2 * max (Real.log (a.1 ^ 2)) 0 *
-        ∫ x in (-a.1)..a.1, u x ^ 2) ≤ weilFinitePartBlock a.1 u u := by
+    -(1 / 2 * max (Real.log (a.1 ^ (2 : ℕ))) 0 *
+        ∫ x in (-a.1)..a.1, u x ^ (2 : ℕ)) ≤ weilFinitePartBlock a.1 u u := by
   have hlog := suzukiFinitePartLogPotential_integrable_upper a.property
     u.supportRadius_nonneg u.supportRadius_lt_aperture u.continuous u.support_subset
   have henergy := suzukiFinitePartDifferenceEnergy_nonneg a u
   have hlogUpper : suzukiFinitePartLogPotential a.1 u ≤
-      max (Real.log (a.1 ^ 2)) 0 * ∫ x in (-a.1)..a.1, u x ^ 2 := by
+      max (Real.log (a.1 ^ (2 : ℕ))) 0 * ∫ x in (-a.1)..a.1, u x ^ (2 : ℕ) := by
     simpa [suzukiFinitePartLogPotential] using hlog.2
   rw [suzukiWeilFinitePartBlock_eq_energy]
   unfold suzukiFinitePartEnergy

@@ -61,7 +61,7 @@ noncomputable def kerrNewmanMaxwellStressMixed
 /-- Nonnegative energy-density magnitude of the canonical field. -/
 noncomputable def kerrNewmanCanonicalMaxwellStressMagnitude
     (electric magnetic : ℝ) : ℝ :=
-  (electric ^ 2 + magnetic ^ 2) / 2
+  (electric ^ (2 : ℕ) + magnetic ^ (2 : ℕ)) / 2
 
 /-- Canonical mixed Maxwell stress: negative on its Lorentzian principal plane and positive on its
 spacelike complement. -/
@@ -103,7 +103,7 @@ theorem kerrNewmanCanonicalMaxwellStress_dualityRotate
 /-- Direct invariant calculation for the canonical Maxwell two-form. -/
 theorem kerrNewmanCanonicalMaxwellTwoForm_invariant (electric magnetic : ℝ) :
     kerrNewmanTwoFormQuadraticInvariant (kerrNewmanCanonicalMaxwellTwoForm electric magnetic) =
-      2 * (magnetic ^ 2 - electric ^ 2) := by
+      2 * (magnetic ^ (2 : ℕ) - electric ^ (2 : ℕ)) := by
   simp [kerrNewmanTwoFormQuadraticInvariant, kerrNewmanRaiseBothIndices,
     kerrNewmanCanonicalMaxwellTwoForm, kerrNewmanFlatFrameSign, Fin.sum_univ_succ]
   ring
@@ -123,7 +123,7 @@ theorem kerrNewmanMaxwellStressMixed_canonical (electric magnetic : ℝ) :
 theorem kerrNewmanCanonicalMaxwellStress_sq (electric magnetic : ℝ) :
     kerrNewmanCanonicalMaxwellStress electric magnetic *
         kerrNewmanCanonicalMaxwellStress electric magnetic =
-      kerrNewmanCanonicalMaxwellStressMagnitude electric magnetic ^ 2 •
+      kerrNewmanCanonicalMaxwellStressMagnitude electric magnetic ^ (2 : ℕ) •
         (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -142,11 +142,11 @@ theorem kerrNewmanCanonicalMaxwellStress_sq_eq_zero_iff
     have h00 := congrFun (congrFun h 0) 0
     simp [Matrix.mul_apply, kerrNewmanCanonicalMaxwellStress,
       kerrNewmanCanonicalMaxwellStressMagnitude, Fin.sum_univ_succ] at h00
-    have hsum : electric ^ 2 + magnetic ^ 2 = 0 := by
-      nlinarith [sq_nonneg (electric ^ 2 + magnetic ^ 2)]
-    have helectricSq : electric ^ 2 = 0 := by
+    have hsum : electric ^ (2 : ℕ) + magnetic ^ (2 : ℕ) = 0 := by
+      nlinarith [sq_nonneg (electric ^ (2 : ℕ) + magnetic ^ (2 : ℕ))]
+    have helectricSq : electric ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg magnetic]
-    have hmagneticSq : magnetic ^ 2 = 0 := by
+    have hmagneticSq : magnetic ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg electric]
     exact ⟨(sq_eq_zero_iff).mp helectricSq, (sq_eq_zero_iff).mp hmagneticSq⟩
   · rintro ⟨rfl, rfl⟩

@@ -8,10 +8,10 @@ Planat--Solé second-level concavity is a one-point Laguerre law.  This module g
 structural counterexample to promoting that law, without theta-specific input, to the nonlocal
 fifth-root curvature required by the reflected rank-four route.
 
-For the positive even kernel `F(r) = exp (-r^4)`, its radial profile is
-`s(x) = F(sqrt x) = exp (-x^2)`.  The first Laguerre expression is exactly
-`2 exp (-2x^2)`, so its logarithm has constant second derivative `-4`.  Nevertheless the
-centered reflected product `P(t) = F(t)F(-t) = exp (-2t^4)` has strictly negative fifth-root
+For the positive even kernel `F(r) = exp (-r^(4 : ℕ))`, its radial profile is
+`s(x) = F(sqrt x) = exp (-x^(2 : ℕ))`.  The first Laguerre expression is exactly
+`2 exp (-2x^(2 : ℕ))`, so its logarithm has constant second derivative `-4`.  Nevertheless the
+centered reflected product `P(t) = F(t)F(-t) = exp (-2t^(4 : ℕ))` has strictly negative fifth-root
 divided-drop curvature numerator at `t = 1/2`.
 
 Thus second-level Laguerre concavity alone cannot close C5.  Any successful use of the published
@@ -25,24 +25,24 @@ namespace HilbertMetric
 noncomputable section
 
 /-- Positive even quartic Gaussian kernel used by the no-go. -/
-def quarticGaussianKernel (x : ℝ) : ℝ := Real.exp (-x ^ 4)
+def quarticGaussianKernel (x : ℝ) : ℝ := Real.exp (-x ^ (4 : ℕ))
 
 /-- Centered reflected product of the quartic Gaussian kernel. -/
-def quarticGaussianReflectedProfile (x : ℝ) : ℝ := Real.exp (-2 * x ^ 4)
+def quarticGaussianReflectedProfile (x : ℝ) : ℝ := Real.exp (-2 * x ^ (4 : ℕ))
 
 /-- Radial square-coordinate profile of the quartic Gaussian kernel. -/
-def quadraticGaussianRadialProfile (x : ℝ) : ℝ := Real.exp (-x ^ 2)
+def quadraticGaussianRadialProfile (x : ℝ) : ℝ := Real.exp (-x ^ (2 : ℕ))
 
 /-- First Laguerre expression in the convention used by second-level concavity. -/
 def firstLaguerreExpression (f : ℝ → ℝ) (x : ℝ) : ℝ :=
-  iteratedDeriv 1 f x ^ 2 - f x * iteratedDeriv 2 f x
+  iteratedDeriv 1 f x ^ (2 : ℕ) - f x * iteratedDeriv 2 f x
 
 theorem hasDerivAt_quadraticGaussianRadialProfile (x : ℝ) :
     HasDerivAt quadraticGaussianRadialProfile
-      (-2 * x * Real.exp (-x ^ 2)) x := by
-  have h := (Real.hasDerivAt_exp (-x ^ 2)).comp x
+      (-2 * x * Real.exp (-x ^ (2 : ℕ))) x := by
+  have h := (Real.hasDerivAt_exp (-x ^ (2 : ℕ))).comp x
     (((hasDerivAt_id x).pow 2).neg)
-  have hfun : quadraticGaussianRadialProfile = Real.exp ∘ (-id ^ 2) := by
+  have hfun : quadraticGaussianRadialProfile = Real.exp ∘ (-id ^ (2 : ℕ)) := by
     funext y
     rfl
   rw [hfun]
@@ -52,21 +52,21 @@ theorem hasDerivAt_quadraticGaussianRadialProfile (x : ℝ) :
 
 theorem iteratedDeriv_one_quadraticGaussianRadialProfile (x : ℝ) :
     iteratedDeriv 1 quadraticGaussianRadialProfile x =
-      -2 * x * Real.exp (-x ^ 2) := by
+      -2 * x * Real.exp (-x ^ (2 : ℕ)) := by
   rw [iteratedDeriv_one, (hasDerivAt_quadraticGaussianRadialProfile x).deriv]
 
 theorem iteratedDeriv_two_quadraticGaussianRadialProfile (x : ℝ) :
     iteratedDeriv 2 quadraticGaussianRadialProfile x =
-      (4 * x ^ 2 - 2) * Real.exp (-x ^ 2) := by
+      (4 * x ^ (2 : ℕ) - 2) * Real.exp (-x ^ (2 : ℕ)) := by
   rw [iteratedDeriv_succ, iteratedDeriv_one]
   have hfun : deriv quadraticGaussianRadialProfile =
-      fun y : ℝ => -2 * y * Real.exp (-y ^ 2) := by
+      fun y : ℝ => -2 * y * Real.exp (-y ^ (2 : ℕ)) := by
     funext y
     exact (hasDerivAt_quadraticGaussianRadialProfile y).deriv
   rw [hfun]
   have hmul := ((hasDerivAt_id x).const_mul (-2)).mul
     (hasDerivAt_quadraticGaussianRadialProfile x)
-  have hprod : (fun y : ℝ => -2 * y * Real.exp (-y ^ 2)) =
+  have hprod : (fun y : ℝ => -2 * y * Real.exp (-y ^ (2 : ℕ))) =
       (fun y : ℝ => -2 * id y) * quadraticGaussianRadialProfile := by
     funext y
     rfl
@@ -74,19 +74,19 @@ theorem iteratedDeriv_two_quadraticGaussianRadialProfile (x : ℝ) :
   simp only [quadraticGaussianRadialProfile, id_eq]
   ring
 
-/-- The first Laguerre expression of `exp (-x^2)` is a single quadratic Gaussian. -/
+/-- The first Laguerre expression of `exp (-x^(2 : ℕ))` is a single quadratic Gaussian. -/
 theorem firstLaguerreExpression_quadraticGaussianRadialProfile (x : ℝ) :
     firstLaguerreExpression quadraticGaussianRadialProfile x =
-      2 * Real.exp (-2 * x ^ 2) := by
+      2 * Real.exp (-2 * x ^ (2 : ℕ)) := by
   unfold firstLaguerreExpression
   rw [iteratedDeriv_one_quadraticGaussianRadialProfile,
     iteratedDeriv_two_quadraticGaussianRadialProfile]
   unfold quadraticGaussianRadialProfile
-  have hexp : Real.exp (-2 * x ^ 2) = Real.exp (-x ^ 2) ^ 2 := by
+  have hexp : Real.exp (-2 * x ^ (2 : ℕ)) = Real.exp (-x ^ (2 : ℕ)) ^ (2 : ℕ) := by
     calc
-      Real.exp (-2 * x ^ 2) = Real.exp (-x ^ 2 + -x ^ 2) := by congr 1; ring
-      _ = Real.exp (-x ^ 2) * Real.exp (-x ^ 2) := Real.exp_add _ _
-      _ = Real.exp (-x ^ 2) ^ 2 := by ring
+      Real.exp (-2 * x ^ (2 : ℕ)) = Real.exp (-x ^ (2 : ℕ) + -x ^ (2 : ℕ)) := by congr 1; ring
+      _ = Real.exp (-x ^ (2 : ℕ)) * Real.exp (-x ^ (2 : ℕ)) := Real.exp_add _ _
+      _ = Real.exp (-x ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
   rw [hexp]
   ring
 
@@ -96,25 +96,25 @@ theorem quadraticGaussianRadialProfile_secondLevelLogCurvature (x : ℝ) :
       (fun y => Real.log (firstLaguerreExpression quadraticGaussianRadialProfile y)) x = -4 := by
   have hlog (y : ℝ) :
       Real.log (firstLaguerreExpression quadraticGaussianRadialProfile y) =
-        Real.log 2 - 2 * y ^ 2 := by
+        Real.log 2 - 2 * y ^ (2 : ℕ) := by
     rw [firstLaguerreExpression_quadraticGaussianRadialProfile,
       Real.log_mul (by norm_num) (Real.exp_ne_zero _), Real.log_exp]
     ring
   have hfun :
       (fun y => Real.log (firstLaguerreExpression quadraticGaussianRadialProfile y)) =
-        fun y => Real.log 2 - 2 * y ^ 2 := by
+        fun y => Real.log 2 - 2 * y ^ (2 : ℕ) := by
     funext y
     exact hlog y
   rw [hfun, iteratedDeriv_succ, iteratedDeriv_one]
-  have hfirst : deriv (fun y : ℝ => Real.log 2 - 2 * y ^ 2) =
+  have hfirst : deriv (fun y : ℝ => Real.log 2 - 2 * y ^ (2 : ℕ)) =
       fun y => -4 * y := by
     funext y
     have hderiv := (hasDerivAt_const y (Real.log 2)).sub
       (((hasDerivAt_id y).pow 2).const_mul 2)
-    have htarget : HasDerivAt (fun z : ℝ => Real.log 2 - 2 * z ^ 2)
+    have htarget : HasDerivAt (fun z : ℝ => Real.log 2 - 2 * z ^ (2 : ℕ))
         (-4 * y) y := by
-      rw [show (fun z : ℝ => Real.log 2 - 2 * z ^ 2) =
-          (fun _ : ℝ => Real.log 2) - fun z => 2 * (id ^ 2) z by
+      rw [show (fun z : ℝ => Real.log 2 - 2 * z ^ (2 : ℕ)) =
+          (fun _ : ℝ => Real.log 2) - fun z => 2 * (id ^ (2 : ℕ)) z by
         funext z
         simp only [Pi.sub_apply, Pi.pow_apply, id_eq]]
       refine hderiv.congr_deriv ?_
@@ -133,20 +133,20 @@ theorem quadraticGaussianRadialProfile_secondLevel_strict (x : ℝ) :
 
 theorem hasDerivAt_quarticGaussianReflectedProfile (x : ℝ) :
     HasDerivAt quarticGaussianReflectedProfile
-      (-8 * x ^ 3 * Real.exp (-2 * x ^ 4)) x := by
+      (-8 * x ^ (3 : ℕ) * Real.exp (-2 * x ^ (4 : ℕ))) x := by
   have hinner := (((hasDerivAt_id x).pow 4).const_mul 2).neg
-  have hinner' : HasDerivAt (fun y : ℝ => -2 * y ^ 4) (-8 * x ^ 3) x := by
-    rw [show (fun y : ℝ => -2 * y ^ 4) =
-        -(fun y : ℝ => 2 * (id ^ 4) y) by
+  have hinner' : HasDerivAt (fun y : ℝ => -2 * y ^ (4 : ℕ)) (-8 * x ^ (3 : ℕ)) x := by
+    rw [show (fun y : ℝ => -2 * y ^ (4 : ℕ)) =
+        -(fun y : ℝ => 2 * (id ^ (4 : ℕ)) y) by
       funext y
       simp only [Pi.neg_apply, Pi.pow_apply, id_eq]
       ring]
     refine hinner.congr_deriv ?_
     norm_num
     ring
-  have h := (Real.hasDerivAt_exp (-2 * x ^ 4)).comp x hinner'
+  have h := (Real.hasDerivAt_exp (-2 * x ^ (4 : ℕ))).comp x hinner'
   have hfun : quarticGaussianReflectedProfile =
-      Real.exp ∘ fun y : ℝ => -2 * y ^ 4 := by
+      Real.exp ∘ fun y : ℝ => -2 * y ^ (4 : ℕ) := by
     funext y
     rfl
   rw [hfun]
@@ -156,22 +156,22 @@ theorem hasDerivAt_quarticGaussianReflectedProfile (x : ℝ) :
 
 theorem iteratedDeriv_one_quarticGaussianReflectedProfile (x : ℝ) :
     iteratedDeriv 1 quarticGaussianReflectedProfile x =
-      -8 * x ^ 3 * Real.exp (-2 * x ^ 4) := by
+      -8 * x ^ (3 : ℕ) * Real.exp (-2 * x ^ (4 : ℕ)) := by
   rw [iteratedDeriv_one, (hasDerivAt_quarticGaussianReflectedProfile x).deriv]
 
 theorem iteratedDeriv_two_quarticGaussianReflectedProfile (x : ℝ) :
     iteratedDeriv 2 quarticGaussianReflectedProfile x =
-      (64 * x ^ 6 - 24 * x ^ 2) * Real.exp (-2 * x ^ 4) := by
+      (64 * x ^ (6 : ℕ) - 24 * x ^ (2 : ℕ)) * Real.exp (-2 * x ^ (4 : ℕ)) := by
   rw [iteratedDeriv_succ, iteratedDeriv_one]
   have hfun : deriv quarticGaussianReflectedProfile =
-      fun y : ℝ => -8 * y ^ 3 * Real.exp (-2 * y ^ 4) := by
+      fun y : ℝ => -8 * y ^ (3 : ℕ) * Real.exp (-2 * y ^ (4 : ℕ)) := by
     funext y
     exact (hasDerivAt_quarticGaussianReflectedProfile y).deriv
   rw [hfun]
   have hmul := (((hasDerivAt_id x).pow 3).const_mul (-8)).mul
     (hasDerivAt_quarticGaussianReflectedProfile x)
-  have hprod : (fun y : ℝ => -8 * y ^ 3 * Real.exp (-2 * y ^ 4)) =
-      (fun y : ℝ => -8 * (id ^ 3) y) * quarticGaussianReflectedProfile := by
+  have hprod : (fun y : ℝ => -8 * y ^ (3 : ℕ) * Real.exp (-2 * y ^ (4 : ℕ))) =
+      (fun y : ℝ => -8 * (id ^ (3 : ℕ)) y) * quarticGaussianReflectedProfile := by
     funext y
     rfl
   rw [hprod, hmul.deriv]
@@ -185,8 +185,8 @@ private theorem exp_one_eighth_lt_eight_sevenths :
   norm_num [Finset.sum_range_succ, Nat.factorial] at hb
   nlinarith [le_abs_self
     (Real.exp (1 / 8 : ℝ) -
-      (1 + (1 / 8 : ℝ) + (1 / 8 : ℝ) ^ 2 / 2 +
-        (1 / 8 : ℝ) ^ 3 / 6))]
+      (1 + (1 / 8 : ℝ) + (1 / 8 : ℝ) ^ (2 : ℕ) / 2 +
+        (1 / 8 : ℝ) ^ (3 : ℕ) / 6))]
 
 /-- Despite strict second-level concavity, the reflected fifth-root curvature is negative. -/
 theorem quarticGaussianReflectedProfile_fifthRootCurvature_neg :
@@ -204,8 +204,8 @@ theorem quarticGaussianReflectedProfile_fifthRootCurvature_neg :
   have hpLower : 7 / 8 < p := by
     have hmul := mul_lt_mul_of_pos_left exp_one_eighth_lt_eight_sevenths hp0
     nlinarith
-  have hpoly : 85 * p ^ 2 - 185 * p + 96 < 0 := by
-    have hfactor : 85 * p ^ 2 - 185 * p + 96 =
+  have hpoly : 85 * p ^ (2 : ℕ) - 185 * p + 96 < 0 := by
+    have hfactor : 85 * p ^ (2 : ℕ) - 185 * p + 96 =
         -(51 / 64 : ℝ) +
           (p - 7 / 8) * (85 * (p + 7 / 8) - 185) := by ring
     have hcoeff : 85 * (p + 7 / 8) - 185 < 0 := by nlinarith
@@ -217,8 +217,8 @@ theorem quarticGaussianReflectedProfile_fifthRootCurvature_neg :
   rw [iteratedDeriv_one_quarticGaussianReflectedProfile,
     iteratedDeriv_two_quarticGaussianReflectedProfile]
   norm_num [quarticGaussianReflectedProfile]
-  change 24 * (1 - p) ^ 2 - 9 / 2 * (1 - p) * p +
-      1 / 4 * (5 * (1 - p) * (5 * p) - 4 * p ^ 2) < 0
+  change 24 * (1 - p) ^ (2 : ℕ) - 9 / 2 * (1 - p) * p +
+      1 / 4 * (5 * (1 - p) * (5 * p) - 4 * p ^ (2 : ℕ)) < 0
   nlinarith
 
 theorem quarticGaussianKernel_pos (x : ℝ) :
@@ -237,7 +237,7 @@ theorem quadraticGaussianRadialProfile_eq_quarticGaussianKernel_sqrt
     quadraticGaussianRadialProfile x = quarticGaussianKernel (Real.sqrt x) := by
   unfold quadraticGaussianRadialProfile quarticGaussianKernel
   congr 1
-  rw [show Real.sqrt x ^ 4 = (Real.sqrt x ^ 2) ^ 2 by ring,
+  rw [show Real.sqrt x ^ (4 : ℕ) = (Real.sqrt x ^ (2 : ℕ)) ^ (2 : ℕ) by ring,
     Real.sq_sqrt hx]
 
 theorem firstLaguerreExpression_quadraticGaussianRadialProfile_pos (x : ℝ) :

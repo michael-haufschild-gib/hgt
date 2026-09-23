@@ -185,10 +185,10 @@ coefficient. -/
 theorem tendsto_normSq_div_pow_of_hasSum {u : ℕ → E} {R : ℝ} (hR : 0 < R)
     (hsum : Summable fun k => ‖u k‖ * R ^ k) {r : ℕ} (hzero : ∀ k, k < r → u k = 0)
     {g : ℝ → E} (hg : ∀ c : ℝ, 0 < c → c ≤ R → HasSum (fun k => c ^ k • u k) (g c)) :
-    Tendsto (fun c : ℝ => ‖g c‖ ^ 2 / c ^ (2 * r)) (𝓝[>] (0 : ℝ)) (𝓝 (‖u r‖ ^ 2)) := by
+    Tendsto (fun c : ℝ => ‖g c‖ ^ (2 : ℕ) / c ^ (2 * r)) (𝓝[>] (0 : ℝ)) (𝓝 (‖u r‖ ^ (2 : ℕ))) := by
   have hlim := tendsto_smul_inv_pow_of_hasSum hR hsum hzero hg
-  have hnorm : Tendsto (fun c : ℝ => ‖(c ^ r)⁻¹ • g c‖ ^ 2)
-      (𝓝[>] (0 : ℝ)) (𝓝 (‖u r‖ ^ 2)) := (hlim.norm).pow 2
+  have hnorm : Tendsto (fun c : ℝ => ‖(c ^ r)⁻¹ • g c‖ ^ (2 : ℕ))
+      (𝓝[>] (0 : ℝ)) (𝓝 (‖u r‖ ^ (2 : ℕ))) := (hlim.norm).pow 2
   refine hnorm.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with c hc
   have hcpos : (0 : ℝ) < c := Set.mem_Ioi.mp hc
@@ -202,11 +202,11 @@ has squared norm of exact order `c^{4j}`. -/
 theorem tendsto_normSq_div_pow_even {u : ℕ → E} {R : ℝ} (hR : 0 < R)
     (hsum : Summable fun k => ‖u k‖ * R ^ k) {j : ℕ} (hzero : ∀ k, k < j → u k = 0)
     {g : ℝ → E} (hg : ∀ t : ℝ, 0 < t → t ≤ R → HasSum (fun k => t ^ k • u k) (g t)) :
-    Tendsto (fun c : ℝ => ‖g (c ^ 2)‖ ^ 2 / c ^ (4 * j)) (𝓝[>] (0 : ℝ)) (𝓝 (‖u j‖ ^ 2)) := by
+    Tendsto (fun c : ℝ => ‖g (c ^ (2 : ℕ))‖ ^ (2 : ℕ) / c ^ (4 * j)) (𝓝[>] (0 : ℝ)) (𝓝 (‖u j‖ ^ (2 : ℕ))) := by
   have hbase := tendsto_normSq_div_pow_of_hasSum hR hsum hzero hg
-  have hsq : Tendsto (fun c : ℝ => c ^ 2) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
+  have hsq : Tendsto (fun c : ℝ => c ^ (2 : ℕ)) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
     refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
-    · have h0 : Tendsto (fun c : ℝ => c ^ 2) (𝓝 (0 : ℝ)) (𝓝 0) := by
+    · have h0 : Tendsto (fun c : ℝ => c ^ (2 : ℕ)) (𝓝 (0 : ℝ)) (𝓝 0) := by
         simpa using (continuous_pow 2).tendsto (0 : ℝ)
       exact h0.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with c hc

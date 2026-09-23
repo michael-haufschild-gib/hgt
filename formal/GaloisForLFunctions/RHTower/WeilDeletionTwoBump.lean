@@ -217,7 +217,7 @@ theorem mul_eq_zero_of_far {φ : ℝ → ℝ} {s : ℝ} (hsupp : Function.suppor
 
 theorem twoBump_mul_shift {φ : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s)
     (hsupp : Function.support φ ⊆ Icc (-s) s) {u₀ : ℝ} (hu : 2 * s < u₀) (t : ℝ) :
-    twoBump φ u₀ t * twoBump φ u₀ (t - u₀) = -(φ (t - u₀ / 2)) ^ 2 := by
+    twoBump φ u₀ t * twoBump φ u₀ (t - u₀) = -(φ (t - u₀ / 2)) ^ (2 : ℕ) := by
   unfold twoBump
   have e1 : t - u₀ + u₀ / 2 = t - u₀ / 2 := by ring
   rw [e1]
@@ -231,7 +231,7 @@ theorem twoBump_mul_shift {φ : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s)
 
 theorem twoBump_mul_shift' {φ : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s)
     (hsupp : Function.support φ ⊆ Icc (-s) s) {u₀ : ℝ} (hu : 2 * s < u₀) (t : ℝ) :
-    twoBump φ u₀ t * twoBump φ u₀ (t + u₀) = -(φ (t + u₀ / 2)) ^ 2 := by
+    twoBump φ u₀ t * twoBump φ u₀ (t + u₀) = -(φ (t + u₀ / 2)) ^ (2 : ℕ) := by
   unfold twoBump
   have e1 : t + u₀ - u₀ / 2 = t + u₀ / 2 := by ring
   rw [e1]
@@ -246,29 +246,29 @@ theorem twoBump_mul_shift' {φ : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s)
 /-- `k(u₀) = −∫ φ²`. -/
 theorem autocorr_twoBump_apply {φ : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s)
     (hsupp : Function.support φ ⊆ Icc (-s) s) {u₀ : ℝ} (hu : 2 * s < u₀) :
-    autocorr (twoBump φ u₀) u₀ = -∫ x, φ x ^ 2 := by
+    autocorr (twoBump φ u₀) u₀ = -∫ x, φ x ^ (2 : ℕ) := by
   unfold autocorr
   rw [convolution_def]
   simp only [ContinuousLinearMap.lsmul_apply, smul_eq_mul, reflectFn, neg_sub]
   have h : (fun t : ℝ => twoBump φ u₀ t * twoBump φ u₀ (t - u₀)) =
-      fun t : ℝ => -((fun x : ℝ => φ x ^ 2) (t - u₀ / 2)) := by
+      fun t : ℝ => -((fun x : ℝ => φ x ^ (2 : ℕ)) (t - u₀ / 2)) := by
     funext t
     exact twoBump_mul_shift hs hsupp hu t
-  rw [h, integral_neg, integral_sub_right_eq_self (fun x : ℝ => φ x ^ 2) (u₀ / 2)]
+  rw [h, integral_neg, integral_sub_right_eq_self (fun x : ℝ => φ x ^ (2 : ℕ)) (u₀ / 2)]
 
 /-- `k(−u₀) = −∫ φ²`. -/
 theorem autocorr_twoBump_apply_neg {φ : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s)
     (hsupp : Function.support φ ⊆ Icc (-s) s) {u₀ : ℝ} (hu : 2 * s < u₀) :
-    autocorr (twoBump φ u₀) (-u₀) = -∫ x, φ x ^ 2 := by
+    autocorr (twoBump φ u₀) (-u₀) = -∫ x, φ x ^ (2 : ℕ) := by
   unfold autocorr
   rw [convolution_def]
   simp only [ContinuousLinearMap.lsmul_apply, smul_eq_mul, reflectFn, neg_sub]
   have h : (fun t : ℝ => twoBump φ u₀ t * twoBump φ u₀ (t - -u₀)) =
-      fun t : ℝ => -((fun x : ℝ => φ x ^ 2) (t + u₀ / 2)) := by
+      fun t : ℝ => -((fun x : ℝ => φ x ^ (2 : ℕ)) (t + u₀ / 2)) := by
     funext t
     rw [sub_neg_eq_add]
     exact twoBump_mul_shift' hs hsupp hu t
-  rw [h, integral_neg, integral_add_right_eq_self (fun x : ℝ => φ x ^ 2) (u₀ / 2)]
+  rw [h, integral_neg, integral_add_right_eq_self (fun x : ℝ => φ x ^ (2 : ℕ)) (u₀ / 2)]
 
 end
 

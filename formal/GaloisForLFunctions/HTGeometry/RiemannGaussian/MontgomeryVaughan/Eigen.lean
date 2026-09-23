@@ -35,15 +35,15 @@ theorem eigen_identity (hinj : Function.Injective freq) (c : ι → ℝ) (hc : �
     (heig : ∀ m, ∑ n ∈ Finset.univ.erase m,
         ((c m * c n / (freq m - freq n) : ℝ) : ℂ) * u n = (μ : ℂ) * Complex.I * u m)
     (m : ι) :
-    μ ^ 2 * ‖u m‖ ^ 2 =
-      (∑ n ∈ Finset.univ.erase m, (c m * c n) ^ 2 * ‖u n‖ ^ 2 / (freq m - freq n) ^ 2)
+    μ ^ (2 : ℕ) * ‖u m‖ ^ (2 : ℕ) =
+      (∑ n ∈ Finset.univ.erase m, (c m * c n) ^ (2 : ℕ) * ‖u n‖ ^ (2 : ℕ) / (freq m - freq n) ^ (2 : ℕ))
       + 2 * ∑ n ∈ Finset.univ.erase m,
-          c m ^ 3 * c n * (u m * conj (u n)).re / (freq m - freq n) ^ 2 :=
+          c m ^ (3 : ℕ) * c n * (u m * conj (u n)).re / (freq m - freq n) ^ (2 : ℕ) :=
   eigen_identity' hinj c hc u μ heig m
 
 /-- **Step 3, eigenvalue bound**: every eigenvalue of the normalized matrix
 (`c = √δ`) with a unit eigenvector has `|μ| ≤ 13`. -/
-theorem eigen_bound (h : Adm freq δ) (u : ι → ℂ) (hu : ∑ n, ‖u n‖ ^ 2 = 1) (μ : ℝ)
+theorem eigen_bound (h : Adm freq δ) (u : ι → ℂ) (hu : ∑ n, ‖u n‖ ^ (2 : ℕ) = 1) (μ : ℝ)
     (heig : ∀ m, ∑ n ∈ Finset.univ.erase m,
         ((Real.sqrt (δ m) * Real.sqrt (δ n) / (freq m - freq n) : ℝ) : ℂ) * u n
           = (μ : ℂ) * Complex.I * u m) :
@@ -52,57 +52,57 @@ theorem eigen_bound (h : Adm freq δ) (u : ι → ℂ) (hu : ∑ n, ‖u n‖ ^ 
   set c : ι → ℝ := fun r => Real.sqrt (δ r) with hc
   have hcpos : ∀ r, 0 < c r := fun r => Real.sqrt_pos.2 (h.pos r)
   have hid := eigen_identity' h.inj c hcpos u μ heig
-  have hsumid : μ ^ 2
-      = (∑ m, ∑ n ∈ Finset.univ.erase m, (c m * c n) ^ 2 * ‖u n‖ ^ 2 / (freq m - freq n) ^ 2)
+  have hsumid : μ ^ (2 : ℕ)
+      = (∑ m, ∑ n ∈ Finset.univ.erase m, (c m * c n) ^ (2 : ℕ) * ‖u n‖ ^ (2 : ℕ) / (freq m - freq n) ^ (2 : ℕ))
         + 2 * ∑ m, ∑ n ∈ Finset.univ.erase m,
-            c m ^ 3 * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ 2 := by
-    calc μ ^ 2 = μ ^ 2 * ∑ m, ‖u m‖ ^ 2 := by rw [hu, mul_one]
-      _ = ∑ m, μ ^ 2 * ‖u m‖ ^ 2 := Finset.mul_sum _ _ _
-      _ = ∑ m, ((∑ n ∈ Finset.univ.erase m, (c m * c n) ^ 2 * ‖u n‖ ^ 2 / (freq m - freq n) ^ 2)
+            c m ^ (3 : ℕ) * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ (2 : ℕ) := by
+    calc μ ^ (2 : ℕ) = μ ^ (2 : ℕ) * ∑ m, ‖u m‖ ^ (2 : ℕ) := by rw [hu, mul_one]
+      _ = ∑ m, μ ^ (2 : ℕ) * ‖u m‖ ^ (2 : ℕ) := Finset.mul_sum _ _ _
+      _ = ∑ m, ((∑ n ∈ Finset.univ.erase m, (c m * c n) ^ (2 : ℕ) * ‖u n‖ ^ (2 : ℕ) / (freq m - freq n) ^ (2 : ℕ))
             + 2 * ∑ n ∈ Finset.univ.erase m,
-                c m ^ 3 * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ 2) :=
+                c m ^ (3 : ℕ) * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ (2 : ℕ)) :=
           Finset.sum_congr rfl fun m _ => hid m
       _ = _ := by
           rw [Finset.sum_add_distrib, ← Finset.mul_sum]
   have hS : (∑ m, ∑ n ∈ Finset.univ.erase m,
-      (c m * c n) ^ 2 * ‖u n‖ ^ 2 / (freq m - freq n) ^ 2) ≤ 9 := by
-    have e1 : ∀ m n, (c m * c n) ^ 2 * ‖u n‖ ^ 2 / (freq m - freq n) ^ 2
-        = (δ n * ‖u n‖ ^ 2) * (δ m / (freq n - freq m) ^ 2) := by
+      (c m * c n) ^ (2 : ℕ) * ‖u n‖ ^ (2 : ℕ) / (freq m - freq n) ^ (2 : ℕ)) ≤ 9 := by
+    have e1 : ∀ m n, (c m * c n) ^ (2 : ℕ) * ‖u n‖ ^ (2 : ℕ) / (freq m - freq n) ^ (2 : ℕ)
+        = (δ n * ‖u n‖ ^ (2 : ℕ)) * (δ m / (freq n - freq m) ^ (2 : ℕ)) := by
       intro m n
       rw [hc]
       simp only [mul_pow, Real.sq_sqrt (h.pos m).le, Real.sq_sqrt (h.pos n).le,
-        show (freq m - freq n) ^ 2 = (freq n - freq m) ^ 2 by ring]
+        show (freq m - freq n) ^ (2 : ℕ) = (freq n - freq m) ^ (2 : ℕ) by ring]
       ring
-    calc ∑ m, ∑ n ∈ Finset.univ.erase m, (c m * c n) ^ 2 * ‖u n‖ ^ 2 / (freq m - freq n) ^ 2
-        = ∑ m, ∑ n ∈ Finset.univ.erase m, (δ n * ‖u n‖ ^ 2) * (δ m / (freq n - freq m) ^ 2) :=
+    calc ∑ m, ∑ n ∈ Finset.univ.erase m, (c m * c n) ^ (2 : ℕ) * ‖u n‖ ^ (2 : ℕ) / (freq m - freq n) ^ (2 : ℕ)
+        = ∑ m, ∑ n ∈ Finset.univ.erase m, (δ n * ‖u n‖ ^ (2 : ℕ)) * (δ m / (freq n - freq m) ^ (2 : ℕ)) :=
           Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun n _ => e1 m n
-      _ = ∑ n, ∑ m ∈ Finset.univ.erase n, (δ n * ‖u n‖ ^ 2) * (δ m / (freq n - freq m) ^ 2) :=
+      _ = ∑ n, ∑ m ∈ Finset.univ.erase n, (δ n * ‖u n‖ ^ (2 : ℕ)) * (δ m / (freq n - freq m) ^ (2 : ℕ)) :=
           sum_erase_comm _
-      _ = ∑ n, (δ n * ‖u n‖ ^ 2) * ∑ m ∈ Finset.univ.erase n, δ m / (freq n - freq m) ^ 2 := by
+      _ = ∑ n, (δ n * ‖u n‖ ^ (2 : ℕ)) * ∑ m ∈ Finset.univ.erase n, δ m / (freq n - freq m) ^ (2 : ℕ) := by
           refine Finset.sum_congr rfl fun n _ => ?_
           rw [Finset.mul_sum]
-      _ ≤ ∑ n, (δ n * ‖u n‖ ^ 2) * (9 / δ n) := by
+      _ ≤ ∑ n, (δ n * ‖u n‖ ^ (2 : ℕ)) * (9 / δ n) := by
           refine Finset.sum_le_sum fun n _ => ?_
           refine mul_le_mul_of_nonneg_left (h.spacing_sq n) ?_
           have := (h.pos n).le
           positivity
-      _ = ∑ n, 9 * ‖u n‖ ^ 2 := by
+      _ = ∑ n, 9 * ‖u n‖ ^ (2 : ℕ) := by
           refine Finset.sum_congr rfl fun n _ => ?_
           have hδn := (h.pos n).ne'
           field_simp
       _ = 9 := by rw [← Finset.mul_sum, hu, mul_one]
   have hT : |∑ m, ∑ n ∈ Finset.univ.erase m,
-      c m ^ 3 * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ 2| ≤ 73 := by
-    have hper : ∀ m n : ι, |c m ^ 3 * c n * (u m * (starRingEnd ℂ) (u n)).re
-          / (freq m - freq n) ^ 2|
-        ≤ δ m * Real.sqrt (δ m) * Real.sqrt (δ n) * ‖u m‖ * ‖u n‖ / (freq m - freq n) ^ 2 := by
+      c m ^ (3 : ℕ) * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ (2 : ℕ)| ≤ 73 := by
+    have hper : ∀ m n : ι, |c m ^ (3 : ℕ) * c n * (u m * (starRingEnd ℂ) (u n)).re
+          / (freq m - freq n) ^ (2 : ℕ)|
+        ≤ δ m * Real.sqrt (δ m) * Real.sqrt (δ n) * ‖u m‖ * ‖u n‖ / (freq m - freq n) ^ (2 : ℕ) := by
       intro m n
       have hre : |(u m * (starRingEnd ℂ) (u n)).re| ≤ ‖u m‖ * ‖u n‖ := by
         refine (Complex.abs_re_le_norm _).trans ?_
         rw [norm_mul, RCLike.norm_conj]
-      have hcube : c m ^ 3 = δ m * Real.sqrt (δ m) := by
+      have hcube : c m ^ (3 : ℕ) = δ m * Real.sqrt (δ m) := by
         rw [hc]
-        calc Real.sqrt (δ m) ^ 3 = Real.sqrt (δ m) ^ 2 * Real.sqrt (δ m) := by ring
+        calc Real.sqrt (δ m) ^ (3 : ℕ) = Real.sqrt (δ m) ^ (2 : ℕ) * Real.sqrt (δ m) := by ring
           _ = δ m * Real.sqrt (δ m) := by rw [Real.sq_sqrt (h.pos m).le]
       rw [abs_div, abs_of_nonneg (sq_nonneg (freq m - freq n)), abs_mul, hcube]
       have hnn : (0:ℝ) ≤ δ m * Real.sqrt (δ m) * Real.sqrt (δ n) := by
@@ -113,26 +113,26 @@ theorem eigen_bound (h : Adm freq δ) (u : ι → ℂ) (hu : ∑ n, ‖u n‖ ^ 
         rw [hc, abs_of_nonneg hnn]
       rw [h1]
       calc δ m * Real.sqrt (δ m) * Real.sqrt (δ n) * |(u m * (starRingEnd ℂ) (u n)).re|
-            / (freq m - freq n) ^ 2
+            / (freq m - freq n) ^ (2 : ℕ)
           ≤ δ m * Real.sqrt (δ m) * Real.sqrt (δ n) * (‖u m‖ * ‖u n‖)
-              / (freq m - freq n) ^ 2 := by gcongr
+              / (freq m - freq n) ^ (2 : ℕ) := by gcongr
         _ = δ m * Real.sqrt (δ m) * Real.sqrt (δ n) * ‖u m‖ * ‖u n‖
-              / (freq m - freq n) ^ 2 := by ring
+              / (freq m - freq n) ^ (2 : ℕ) := by ring
     calc |∑ m, ∑ n ∈ Finset.univ.erase m,
-          c m ^ 3 * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ 2|
+          c m ^ (3 : ℕ) * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ (2 : ℕ)|
         ≤ ∑ m, |∑ n ∈ Finset.univ.erase m,
-            c m ^ 3 * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ 2| :=
+            c m ^ (3 : ℕ) * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ (2 : ℕ)| :=
           Finset.abs_sum_le_sum_abs _ _
       _ ≤ ∑ m, ∑ n ∈ Finset.univ.erase m,
-            |c m ^ 3 * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ 2| :=
+            |c m ^ (3 : ℕ) * c n * (u m * (starRingEnd ℂ) (u n)).re / (freq m - freq n) ^ (2 : ℕ)| :=
           Finset.sum_le_sum fun m _ => Finset.abs_sum_le_sum_abs _ _
       _ ≤ ∑ m, ∑ n ∈ Finset.univ.erase m,
-            δ m * Real.sqrt (δ m) * Real.sqrt (δ n) * ‖u m‖ * ‖u n‖ / (freq m - freq n) ^ 2 :=
+            δ m * Real.sqrt (δ m) * Real.sqrt (δ n) * ‖u m‖ * ‖u n‖ / (freq m - freq n) ^ (2 : ℕ) :=
           Finset.sum_le_sum fun m _ => Finset.sum_le_sum fun n _ => hper m n
       _ = Uform freq δ (fun r => ‖u r‖) := rfl
-      _ ≤ 73 * ∑ n, ‖u n‖ ^ 2 := Uform_le h _ fun r => norm_nonneg _
+      _ ≤ 73 * ∑ n, ‖u n‖ ^ (2 : ℕ) := Uform_le h _ fun r => norm_nonneg _
       _ = 73 := by rw [hu, mul_one]
-  have hmain : μ ^ 2 ≤ 155 := by
+  have hmain : μ ^ (2 : ℕ) ≤ 155 := by
     have h2 := abs_le.1 hT
     linarith [hS, h2.1, h2.2]
   nlinarith [abs_nonneg μ, sq_abs μ]

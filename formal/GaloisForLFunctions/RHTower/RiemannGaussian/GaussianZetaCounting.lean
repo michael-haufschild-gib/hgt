@@ -236,7 +236,7 @@ enough for Jensen to give a polynomial zero-count and hence Gaussian
 summability of zero ordinates. -/
 def RiemannXiQuadraticGrowth : Prop :=
   ∃ A : ℝ, 1 ≤ A ∧ ∀ z : ℂ,
-    ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ 2)
+    ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ (2 : ℕ))
 
 /-- Jensen's inequality specialized to the pole-cleared xi function.  A
 quadratic exponential norm bound gives an explicit quadratic bound for the
@@ -244,16 +244,16 @@ xi divisor in every centered closed ball. -/
 theorem jensen_riemannXi_divisor_le
     {A r : ℝ} (hA : 1 ≤ A) (hr : 0 < r)
     (hbound : ∀ z : ℂ,
-      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ 2)) :
+      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ (2 : ℕ))) :
     ∑ᶠ u, divisor riemannXi (closedBall 0 r) u ≤
-      A * (2 * r + 1) ^ 2 / Real.log 2 := by
+      A * (2 * r + 1) ^ (2 : ℕ) / Real.log 2 := by
   have hRpos : 0 < 2 * r := mul_pos (by norm_num) hr
-  have hM : 1 ≤ Real.exp (A * (2 * r + 1) ^ 2) := by
+  have hM : 1 ≤ Real.exp (A * (2 * r + 1) ^ (2 : ℕ)) := by
     rw [Real.one_le_exp_iff]
     exact mul_nonneg (le_trans (by norm_num) hA) (sq_nonneg _)
   have hJensen := AnalyticOnNhd.sum_divisor_le
     (f := riemannXi) (c := (0 : ℂ)) (r := r) (R := 2 * r)
-    (M := Real.exp (A * (2 * r + 1) ^ 2))
+    (M := Real.exp (A * (2 * r + 1) ^ (2 : ℕ)))
     (by simpa [abs_of_pos hr] using hr)
     (by simp only [abs_of_pos hr, abs_of_pos hRpos]; linarith)
     hM
@@ -275,7 +275,7 @@ theorem RiemannXiQuadraticGrowth.exists_divisor_bound
     (hGrowth : RiemannXiQuadraticGrowth) :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ r : ℝ, 0 < r →
       ∑ᶠ u, divisor riemannXi (closedBall 0 r) u ≤
-        A * (2 * r + 1) ^ 2 / Real.log 2 := by
+        A * (2 * r + 1) ^ (2 : ℕ) / Real.log 2 := by
   rcases hGrowth with ⟨A, hA, hbound⟩
   exact ⟨A, hA, fun r hr =>
     jensen_riemannXi_divisor_le hA hr hbound⟩
@@ -342,13 +342,13 @@ is summable over integer shells. -/
 theorem summable_riemannXi_shell_majorant
     (A : ℝ) {c : ℝ} (hc : 0 < c) :
     Summable fun n : ℕ =>
-      (A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2) *
+      (A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2) *
         Real.exp (-c * (n : ℝ)) := by
   have h0 := Real.summable_pow_mul_exp_neg_nat_mul 0 hc
   have h1 := Real.summable_pow_mul_exp_neg_nat_mul 1 hc
   have h2 := Real.summable_pow_mul_exp_neg_nat_mul 2 hc
   have hpoly : Summable fun n : ℕ =>
-      (2 * ((n : ℝ) + 2) + 1) ^ 2 *
+      (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) *
         Real.exp (-c * (n : ℝ)) := by
     refine ((h2.mul_left 4).add
       ((h1.mul_left 20).add (h0.mul_left 25))).congr fun n => ?_
@@ -362,15 +362,15 @@ multiplicity. -/
 theorem tsum_zetaZeroOrdinateShell_le
     {A c : ℝ} (hA : 1 ≤ A) (hc : 0 < c)
     (hbound : ∀ z : ℂ,
-      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ 2))
+      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) :
     ∑' ρ : {ρ : NontrivialZetaZero |
         zetaZeroOrdinateShellIndex ρ = n},
       (analyticZetaZeroMultiplicity ρ.1 : ℝ) *
         Real.exp
-          (-c * (zetaSpectralCoordinate ρ.1.1).re ^ 2) ≤
-      (A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2) *
-        Real.exp (-c * (n : ℝ) ^ 2) := by
+          (-c * (zetaSpectralCoordinate ρ.1.1).re ^ (2 : ℕ)) ≤
+      (A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2) *
+        Real.exp (-c * (n : ℝ) ^ (2 : ℕ)) := by
   classical
   let shell : Set NontrivialZetaZero :=
     {ρ | zetaZeroOrdinateShellIndex ρ = n}
@@ -392,7 +392,7 @@ theorem tsum_zetaZeroOrdinateShell_le
     simp
   have hcount :
       ∑ ρ : shell, (analyticZetaZeroMultiplicity ρ.1 : ℝ) ≤
-        A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2 := by
+        A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2 := by
     rw [← hsumEq]
     exact (sum_analyticZetaZeroMultiplicity_le_riemannXi_divisor
       S hSinBall).trans
@@ -401,28 +401,28 @@ theorem tsum_zetaZeroOrdinateShell_le
   calc
     ∑ ρ : shell,
         (analyticZetaZeroMultiplicity ρ.1 : ℝ) *
-          Real.exp (-c * (zetaSpectralCoordinate ρ.1.1).re ^ 2) ≤
+          Real.exp (-c * (zetaSpectralCoordinate ρ.1.1).re ^ (2 : ℕ)) ≤
         ∑ ρ : shell,
           (analyticZetaZeroMultiplicity ρ.1 : ℝ) *
-            Real.exp (-c * (n : ℝ) ^ 2) := by
+            Real.exp (-c * (n : ℝ) ^ (2 : ℕ)) := by
       apply Finset.sum_le_sum
       intro ρ _
       apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
       apply Real.exp_le_exp.mpr
       have hlower := zetaZeroOrdinateShellIndex_le_abs ρ.1
       rw [ρ.2] at hlower
-      have hsquare : (n : ℝ) ^ 2 ≤
-          (zetaSpectralCoordinate ρ.1.1).re ^ 2 := by
+      have hsquare : (n : ℝ) ^ (2 : ℕ) ≤
+          (zetaSpectralCoordinate ρ.1.1).re ^ (2 : ℕ) := by
         rw [sq_le_sq]
         simpa [abs_of_nonneg (show (0 : ℝ) ≤ (n : ℝ) by positivity)]
           using hlower
       nlinarith
     _ = (∑ ρ : shell,
           (analyticZetaZeroMultiplicity ρ.1 : ℝ)) *
-        Real.exp (-c * (n : ℝ) ^ 2) := by
+        Real.exp (-c * (n : ℝ) ^ (2 : ℕ)) := by
       rw [Finset.sum_mul]
-    _ ≤ (A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2) *
-        Real.exp (-c * (n : ℝ) ^ 2) :=
+    _ ≤ (A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2) *
+        Real.exp (-c * (n : ℝ) ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_right hcount (Real.exp_nonneg _)
 
 /-- A quadratic xi growth bound makes the multiplicity-weighted Gaussian
@@ -430,18 +430,18 @@ series over distinct nontrivial zeros summable. -/
 theorem summable_distinct_zetaZeroGaussianOrdinate_of_growth
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ z : ℂ,
-      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ 2))
+      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ (2 : ℕ)))
     {c : ℝ} (hc : 0 < c) :
     Summable fun ρ : NontrivialZetaZero =>
       (analyticZetaZeroMultiplicity ρ : ℝ) *
         Real.exp
-          (-c * (zetaSpectralCoordinate ρ.1).re ^ 2) := by
+          (-c * (zetaSpectralCoordinate ρ.1).re ^ (2 : ℕ)) := by
   let shell : ℕ → Set NontrivialZetaZero := fun n =>
     {ρ | zetaZeroOrdinateShellIndex ρ = n}
   apply (summable_partition
     (f := fun ρ : NontrivialZetaZero =>
       (analyticZetaZeroMultiplicity ρ : ℝ) *
-        Real.exp (-c * (zetaSpectralCoordinate ρ.1).re ^ 2))
+        Real.exp (-c * (zetaSpectralCoordinate ρ.1).re ^ (2 : ℕ)))
     (fun ρ => mul_nonneg (Nat.cast_nonneg _)
       (Real.exp_nonneg _))
     (s := shell) (by
@@ -461,15 +461,15 @@ theorem summable_distinct_zetaZeroGaussianOrdinate_of_growth
       ∑' ρ : shell n,
           (analyticZetaZeroMultiplicity ρ.1 : ℝ) *
             Real.exp
-              (-c * (zetaSpectralCoordinate ρ.1.1).re ^ 2) ≤
-          (A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2) *
-            Real.exp (-c * (n : ℝ) ^ 2) := by
+              (-c * (zetaSpectralCoordinate ρ.1.1).re ^ (2 : ℕ)) ≤
+          (A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2) *
+            Real.exp (-c * (n : ℝ) ^ (2 : ℕ)) := by
         exact tsum_zetaZeroOrdinateShell_le hA hc hbound n
-      _ ≤ (A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2) *
+      _ ≤ (A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2) *
           Real.exp (-c * (n : ℝ)) := by
         apply mul_le_mul_of_nonneg_left
         · apply Real.exp_le_exp.mpr
-          have hnSquare : (n : ℝ) ≤ (n : ℝ) ^ 2 := by
+          have hnSquare : (n : ℝ) ≤ (n : ℝ) ^ (2 : ℕ) := by
             cases n with
             | zero => norm_num
             | succ n =>
@@ -494,7 +494,7 @@ theorem zetaZeroGaussianOrdinateSummable_of_riemannXiQuadraticGrowth
     (f := fun occurrence :
         NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity =>
       Real.exp
-        (-c * (zetaSpectralCoordinate occurrence.1.1).re ^ 2))
+        (-c * (zetaSpectralCoordinate occurrence.1.1).re ^ (2 : ℕ)))
     (fun _ => Real.exp_nonneg _)).2
   constructor
   · intro ρ

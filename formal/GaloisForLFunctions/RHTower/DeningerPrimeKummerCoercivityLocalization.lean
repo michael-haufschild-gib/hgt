@@ -31,11 +31,11 @@ theorem deningerTateCircleModeRate_succ_gap (k : ℕ) :
 
 /-- Squared mass of a finite packet of nonconstant Tate-normalized circle modes. -/
 def deningerTatePacketMass {n : ℕ} (a : Fin n → ℝ) : ℝ :=
-  ∑ i, (a i) ^ 2
+  ∑ i, (a i) ^ (2 : ℕ)
 
 /-- Positive-generator energy of a finite packet, indexed from its first nonconstant mode. -/
 def deningerTatePacketEnergy {n : ℕ} (a : Fin n → ℝ) : ℝ :=
-  ∑ i, deningerTateCircleModeRate (i.1 + 1) * (a i) ^ 2
+  ∑ i, deningerTateCircleModeRate (i.1 + 1) * (a i) ^ (2 : ℕ)
 
 /-- Every finite Tate packet is uniformly coercive with gap `2π`. -/
 theorem deningerTatePacketEnergy_uniform_coercive {n : ℕ} (a : Fin n → ℝ) :
@@ -65,7 +65,7 @@ theorem deningerIncidenceCompression_inner_eq
 /-- A coercive operator stays quantitatively bounded below after arbitrary incidence compression. -/
 theorem deningerIncidenceCompression_norm_lower
     (A : E →ₗ[ℝ] E) (L : Submodule ℝ E) (kappa : ℝ)
-    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ 2 ≤ inner ℝ (A x) x)
+    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ (2 : ℕ) ≤ inner ℝ (A x) x)
     (x : L) :
     kappa * ‖x‖ ≤ ‖deningerIncidenceCompression A L x‖ := by
   by_cases hx : x = 0
@@ -82,14 +82,14 @@ theorem deningerIncidenceCompression_norm_lower
         ‖deningerIncidenceCompression A L x‖ * ‖x‖ :=
     norm_inner_le_norm _ _
   have hmul :
-      kappa * ‖x‖ ^ 2 ≤ ‖deningerIncidenceCompression A L x‖ * ‖x‖ :=
+      kappa * ‖x‖ ^ (2 : ℕ) ≤ ‖deningerIncidenceCompression A L x‖ * ‖x‖ :=
     hq.trans (habs.trans hcs)
   nlinarith
 
 /-- A strictly coercive operator has injective incidence compression. -/
 theorem deningerIncidenceCompression_injective
     (A : E →ₗ[ℝ] E) (L : Submodule ℝ E) {kappa : ℝ} (hkappa : 0 < kappa)
-    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ 2 ≤ inner ℝ (A x) x) :
+    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ (2 : ℕ) ≤ inner ℝ (A x) x) :
     Function.Injective (deningerIncidenceCompression A L) := by
   refine (injective_iff_map_eq_zero _).mpr fun x hx => ?_
   have h := deningerIncidenceCompression_norm_lower A L kappa hcoercive x
@@ -101,7 +101,7 @@ theorem deningerIncidenceCompression_injective
 automorphism. -/
 noncomputable def deningerIncidenceCompressionEquiv
     (A : E →ₗ[ℝ] E) (L : Submodule ℝ E) {kappa : ℝ} (hkappa : 0 < kappa)
-    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ 2 ≤ inner ℝ (A x) x) : L ≃ₗ[ℝ] L :=
+    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ (2 : ℕ) ≤ inner ℝ (A x) x) : L ≃ₗ[ℝ] L :=
   LinearEquiv.ofBijective (deningerIncidenceCompression A L)
     ⟨deningerIncidenceCompression_injective A L hkappa hcoercive,
       LinearMap.injective_iff_surjective.mp
@@ -110,7 +110,7 @@ noncomputable def deningerIncidenceCompressionEquiv
 @[simp]
 theorem deningerIncidenceCompressionEquiv_apply
     (A : E →ₗ[ℝ] E) (L : Submodule ℝ E) {kappa : ℝ} (hkappa : 0 < kappa)
-    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ 2 ≤ inner ℝ (A x) x) (x : L) :
+    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ (2 : ℕ) ≤ inner ℝ (A x) x) (x : L) :
     deningerIncidenceCompressionEquiv A L hkappa hcoercive x =
       deningerIncidenceCompression A L x :=
   rfl
@@ -119,7 +119,7 @@ theorem deningerIncidenceCompressionEquiv_apply
 incidence subspace. -/
 theorem deningerIncidenceCompressionEquiv_symm_norm_le
     (A : E →ₗ[ℝ] E) (L : Submodule ℝ E) {kappa : ℝ} (hkappa : 0 < kappa)
-    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ 2 ≤ inner ℝ (A x) x) (y : L) :
+    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ (2 : ℕ) ≤ inner ℝ (A x) x) (y : L) :
     ‖(deningerIncidenceCompressionEquiv A L hkappa hcoercive).symm y‖ ≤ kappa⁻¹ * ‖y‖ := by
   have hx : deningerIncidenceCompression A L
       ((deningerIncidenceCompressionEquiv A L hkappa hcoercive).symm y) = y :=

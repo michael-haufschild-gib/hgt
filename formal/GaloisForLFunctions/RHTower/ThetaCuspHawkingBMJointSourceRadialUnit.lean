@@ -33,7 +33,7 @@ theorem radialUnit_add_one_pos (t : ℝ) : 0 < 1+radialUnit t := by
   exact div_pos (by linarith) hc
 
 theorem radialUnit_hasDerivAt (t : ℝ) :
-    HasDerivAt radialUnit (radialUnit t ^ 2-1) t := by
+    HasDerivAt radialUnit (radialUnit t ^ (2 : ℕ)-1) t := by
   have hc : Real.cosh t ≠ 0 := ne_of_gt (Real.cosh_pos t)
   convert! ((Real.hasDerivAt_sinh t).neg.div (Real.hasDerivAt_cosh t) hc) using 1
   dsimp only [radialUnit,Pi.neg_apply]

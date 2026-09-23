@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.LevinsonLinearOptimizationInterior
 The exponent `49/100` lies strictly below the square-root barrier while retaining the strict
 `> 1/3` scalar margin in Young's linear mollifier optimization.  Unlike the abstract interior
 parameter obtained from continuity, this rational value is compatible with exact natural-power
-scales `M = N^49`, `L = N^100`.
+scales `M = N^(49 : ℕ)`, `L = N^(100 : ℕ)`.
 -/
 
 noncomputable section
@@ -27,33 +27,33 @@ theorem levinsonLinearFortyNineTheta_lt_half :
   norm_num [levinsonLinearFortyNineTheta]
 
 private def levinsonLinearFortyNinePolynomial (v : ℝ) : ℝ :=
-  (3462609 - 8539278 * v + 5316769 * v ^ 2) / 3000000
+  (3462609 - 8539278 * v + 5316769 * v ^ (2 : ℕ)) / 3000000
 
 private lemma integral_levinsonLinearOptimizationDerivativeAt_fortyNine_sq (v : ℝ) :
     (∫ u in (0 : ℝ)..1,
-      levinsonLinearOptimizationDerivativeAt (49 / 100) u v ^ 2) =
+      levinsonLinearOptimizationDerivativeAt (49 / 100) u v ^ (2 : ℕ)) =
       levinsonLinearFortyNinePolynomial v := by
   let A : ℝ := 1 - v
   let B : ℝ := (49 / 100) * ((13 / 10) * (1 - v) - 1)
   let F : ℝ → ℝ := fun u =>
-    A ^ 2 * u + (A * B) * u ^ 2 + (B ^ 2 / 3) * u ^ 3
+    A ^ (2 : ℕ) * u + (A * B) * u ^ (2 : ℕ) + (B ^ (2 : ℕ) / 3) * u ^ (3 : ℕ)
   have hderiv : ∀ u : ℝ,
       HasDerivAt F
-        (levinsonLinearOptimizationDerivativeAt (49 / 100) u v ^ 2) u := by
+        (levinsonLinearOptimizationDerivativeAt (49 / 100) u v ^ (2 : ℕ)) u := by
     intro u
-    have hraw := (((hasDerivAt_id u).const_mul (A ^ 2)).add
+    have hraw := (((hasDerivAt_id u).const_mul (A ^ (2 : ℕ))).add
         (((hasDerivAt_id u).pow 2).const_mul (A * B))).add
-          (((hasDerivAt_id u).pow 3).const_mul (B ^ 2 / 3))
+          (((hasDerivAt_id u).pow 3).const_mul (B ^ (2 : ℕ) / 3))
     change HasDerivAt F _ u at hraw
     exact hraw.congr_deriv (by
       dsimp only [F, A, B, levinsonLinearOptimizationDerivativeAt] at *
       simp only [id_eq] at *
       ring)
   have hint : IntervalIntegrable
-      (fun u : ℝ => levinsonLinearOptimizationDerivativeAt (49 / 100) u v ^ 2)
+      (fun u : ℝ => levinsonLinearOptimizationDerivativeAt (49 / 100) u v ^ (2 : ℕ))
       volume 0 1 :=
     (show Continuous (fun u : ℝ =>
-      levinsonLinearOptimizationDerivativeAt (49 / 100) u v ^ 2) by
+      levinsonLinearOptimizationDerivativeAt (49 / 100) u v ^ (2 : ℕ)) by
         unfold levinsonLinearOptimizationDerivativeAt
         fun_prop).intervalIntegrable 0 1
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -68,8 +68,8 @@ private def levinsonLinearFortyNinePrimitive (v : ℝ) : ℝ :=
   let c : ℝ := 5316769 / 3000000
   let k : ℝ := 13 / 5
   Real.exp (k * v) *
-    (c / k * v ^ 2 + (b / k - 2 * c / k ^ 2) * v +
-      (a / k - b / k ^ 2 + 2 * c / k ^ 3))
+    (c / k * v ^ (2 : ℕ) + (b / k - 2 * c / k ^ (2 : ℕ)) * v +
+      (a / k - b / k ^ (2 : ℕ) + 2 * c / k ^ (3 : ℕ)))
 
 private lemma hasDerivAt_levinsonLinearFortyNinePrimitive (v : ℝ) :
     HasDerivAt levinsonLinearFortyNinePrimitive
@@ -79,11 +79,11 @@ private lemma hasDerivAt_levinsonLinearFortyNinePrimitive (v : ℝ) :
       ((5316769 / 3000000 : ℝ) / (13 / 5))).add
       ((hasDerivAt_id v).const_mul
         ((-8539278 / 3000000 : ℝ) / (13 / 5) -
-          2 * (5316769 / 3000000 : ℝ) / (13 / 5) ^ 2))).add
+          2 * (5316769 / 3000000 : ℝ) / (13 / 5) ^ (2 : ℕ)))).add
       (hasDerivAt_const v
         ((3462609 / 3000000 : ℝ) / (13 / 5) -
-          (-8539278 / 3000000 : ℝ) / (13 / 5) ^ 2 +
-          2 * (5316769 / 3000000 : ℝ) / (13 / 5) ^ 3)))
+          (-8539278 / 3000000 : ℝ) / (13 / 5) ^ (2 : ℕ) +
+          2 * (5316769 / 3000000 : ℝ) / (13 / 5) ^ (3 : ℕ))))
   change HasDerivAt levinsonLinearFortyNinePrimitive _ v at hraw
   exact hraw.congr_deriv (by
     dsimp only [levinsonLinearFortyNinePrimitive,
@@ -125,10 +125,10 @@ theorem levinsonLinearOptimizationConstantAt_fortyNine_lt_nineteen_eighths :
     norm_num [Finset.sum_range_succ, Nat.factorial] at hb ⊢
     have h := (abs_le.mp hb).2
     linarith
-  have hpow : Real.exp (13 / 5 : ℝ) = Real.exp (13 / 20 : ℝ) ^ 4 := by
+  have hpow : Real.exp (13 / 5 : ℝ) = Real.exp (13 / 20 : ℝ) ^ (4 : ℕ) := by
     rw [show (13 / 5 : ℝ) = (4 : ℕ) * (13 / 20 : ℝ) by norm_num,
       Real.exp_nat_mul]
-  have hexp : Real.exp (13 / 5 : ℝ) < (19157 / 10000 : ℝ) ^ 4 := by
+  have hexp : Real.exp (13 / 5 : ℝ) < (19157 / 10000 : ℝ) ^ (4 : ℕ) := by
     rw [hpow]
     exact pow_lt_pow_left₀ hroot (Real.exp_pos _).le (by norm_num)
   dsimp only [levinsonLinearFortyNinePrimitive]

@@ -31,18 +31,18 @@ inner product against the unit vector. -/
 theorem hasFDerivAt_norm_of_ne_zero {x : E} (hx : x ≠ 0) :
     HasFDerivAt (fun y : E => ‖y‖) ((‖x‖⁻¹) • (innerSL ℝ x)) x := by
   have hpos : 0 < ‖x‖ := norm_pos_iff.mpr hx
-  have hsq : HasFDerivAt (fun y : E => ‖y‖ ^ 2) ((2 : ℕ) • (innerSL ℝ x)) x := by
+  have hsq : HasFDerivAt (fun y : E => ‖y‖ ^ (2 : ℕ)) ((2 : ℕ) • (innerSL ℝ x)) x := by
     simpa using (hasFDerivAt_id x).norm_sq
-  have hne : ‖x‖ ^ 2 ≠ 0 := by positivity
-  have hsqrt : HasDerivAt Real.sqrt (1 / (2 * Real.sqrt (‖x‖ ^ 2))) (‖x‖ ^ 2) :=
+  have hne : ‖x‖ ^ (2 : ℕ) ≠ 0 := by positivity
+  have hsqrt : HasDerivAt Real.sqrt (1 / (2 * Real.sqrt (‖x‖ ^ (2 : ℕ)))) (‖x‖ ^ (2 : ℕ)) :=
     Real.hasDerivAt_sqrt hne
   have hcomp := hsqrt.hasFDerivAt.comp x hsq
-  have hfun : (Real.sqrt ∘ fun y : E => ‖y‖ ^ 2) = fun y : E => ‖y‖ := by
+  have hfun : (Real.sqrt ∘ fun y : E => ‖y‖ ^ (2 : ℕ)) = fun y : E => ‖y‖ := by
     funext y
     exact Real.sqrt_sq (norm_nonneg y)
   rw [hfun] at hcomp
   have hval : (ContinuousLinearMap.toSpanSingleton ℝ
-        (1 / (2 * Real.sqrt (‖x‖ ^ 2)))).comp ((2 : ℕ) • (innerSL ℝ x))
+        (1 / (2 * Real.sqrt (‖x‖ ^ (2 : ℕ))))).comp ((2 : ℕ) • (innerSL ℝ x))
       = (‖x‖⁻¹) • (innerSL ℝ x) := by
     ext v
     simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,

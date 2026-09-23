@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEKernelPeierlsClassi
 
 The literal BM unit-source functional-equation cocycle is real exactly on the critical line.  The
 proof is source-native: a real cocycle makes the reflected/unreflected source product real; after
-cancelling the nonzero helicity factor, the carrier product becomes `t^2 * (t+6)` for
+cancelling the nonzero helicity factor, the carrier product becomes `t^(2 : ℕ) * (t+6)` for
 `t=s*(1-s)`.  Its imaginary part is the centered displacement times a strictly positive open-strip
 cofactor.
 
@@ -25,14 +25,14 @@ noncomputable section
 
 /-- Unit-amplitude polynomial factor of the literal BM quadratic Einstein source. -/
 def hbXiPeierlsUnitSourceCarrierPolynomial (s : ℂ) : ℂ :=
-  (1 + s / 2) * (s / 2) ^ 2
+  (1 + s / 2) * (s / 2) ^ (2 : ℕ)
 
 /-- Reflection-paired carrier product collapses to one cubic in `s(1-s)`. -/
 theorem hbXiPeierlsUnitSourceCarrierPolynomial_reflectionProduct
     (s : ℂ) :
     hbXiPeierlsUnitSourceCarrierPolynomial (1 - s) *
         hbXiPeierlsUnitSourceCarrierPolynomial s =
-      (s * (1 - s)) ^ 2 * (s * (1 - s) + 6) / 64 := by
+      (s * (1 - s)) ^ (2 : ℕ) * (s * (1 - s) + 6) / 64 := by
   unfold hbXiPeierlsUnitSourceCarrierPolynomial
   ring
 
@@ -45,7 +45,7 @@ theorem hbXiPeierlsUnitSourceCarrierPolynomial_reflectionProduct_im_eq_zero_impl
         hbXiPeierlsUnitSourceCarrierPolynomial s).im = 0) :
     s.re = 1 / 2 := by
   let t : ℂ := s * (1 - s)
-  let u : ℝ := s.re * (1 - s.re) + s.im ^ 2
+  let u : ℝ := s.re * (1 - s.re) + s.im ^ (2 : ℕ)
   let v : ℝ := s.im * (1 - 2 * s.re)
   have htRe : t.re = u := by
     simp [t, u, Complex.mul_re]
@@ -54,34 +54,34 @@ theorem hbXiPeierlsUnitSourceCarrierPolynomial_reflectionProduct_im_eq_zero_impl
     simp [t, v, Complex.mul_im]
     ring
   have hfactor := hbXiPeierlsUnitSourceCarrierPolynomial_reflectionProduct s
-  have hpoly : (t ^ 2 * (t + 6)).im = 0 := by
+  have hpoly : (t ^ (2 : ℕ) * (t + 6)).im = 0 := by
     have hfactorIm := congrArg Complex.im hfactor
     rw [hreal] at hfactorIm
-    change 0 = ((t ^ 2 * (t + 6)) / 64).im at hfactorIm
+    change 0 = ((t ^ (2 : ℕ) * (t + 6)) / 64).im at hfactorIm
     norm_num [Complex.div_im] at hfactorIm
     norm_num [Complex.mul_im] at hfactorIm ⊢
     linarith
   have hpolyIm :
-      (t ^ 2 * (t + 6)).im =
-        t.im * (3 * t.re ^ 2 - t.im ^ 2 + 12 * t.re) := by
+      (t ^ (2 : ℕ) * (t + 6)).im =
+        t.im * (3 * t.re ^ (2 : ℕ) - t.im ^ (2 : ℕ) + 12 * t.re) := by
     simp [pow_two, Complex.mul_re, Complex.mul_im]
     ring
   rw [hpolyIm, htRe, htIm] at hpoly
   have hstrip : 0 < s.re * (1 - s.re) :=
     mul_pos h0 (sub_pos.mpr h1)
-  have hbSq : 0 < s.im ^ 2 := sq_pos_of_ne_zero him
+  have hbSq : 0 < s.im ^ (2 : ℕ) := sq_pos_of_ne_zero him
   have hu : 0 < u := by
     dsimp [u]
     positivity
-  have hcenterSq : (1 - 2 * s.re) ^ 2 < 1 := by
+  have hcenterSq : (1 - 2 * s.re) ^ (2 : ℕ) < 1 := by
     nlinarith
-  have hvSq_lt_bSq : v ^ 2 < s.im ^ 2 := by
+  have hvSq_lt_bSq : v ^ (2 : ℕ) < s.im ^ (2 : ℕ) := by
     dsimp [v]
     nlinarith [mul_pos hbSq (sub_pos.mpr hcenterSq)]
-  have hvSq_lt_u : v ^ 2 < u := by
+  have hvSq_lt_u : v ^ (2 : ℕ) < u := by
     dsimp [u]
     nlinarith
-  have hcofactor : 0 < 3 * u ^ 2 - v ^ 2 + 12 * u := by
+  have hcofactor : 0 < 3 * u ^ (2 : ℕ) - v ^ (2 : ℕ) + 12 * u := by
     nlinarith [sq_nonneg u]
   have hv : v = 0 :=
     (mul_eq_zero.mp hpoly).resolve_right (ne_of_gt hcofactor)
@@ -134,7 +134,7 @@ theorem hbXiPeierlsUnitSourceFECocycle_im_eq_zero_iff (q : XiZeroCopy) :
       simp
     have hsourceFactor :
         source (xiZeroCopyReflectEquiv q) * source q =
-          mixing ^ 2 *
+          mixing ^ (2 : ℕ) *
             (carrier (xiZeroCopyReflectEquiv q) * carrier q) := by
       dsimp [source, mixing, carrier]
       rw [d4BMXiSecondHarmonicPolarizedSourceAmplitude,

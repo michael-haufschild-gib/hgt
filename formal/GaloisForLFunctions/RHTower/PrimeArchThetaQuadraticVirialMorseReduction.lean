@@ -43,8 +43,8 @@ def thetaCuspFirstRadialQuadraticMorseGibbsField (x : ℝ) : ℝ :=
   5 * thetaCuspFirstRadialQuadraticMorseField x +
     2 * thetaCuspFirstRadialQuadraticMorseFieldDerivative x
 
-/-- The shifted Morse density `(q+1) psi^2`, selected because its derivative cancels the
-`t q psi^2` scale insertion exactly. -/
+/-- The shifted Morse density `(q+1) psi^(2 : ℕ)`, selected because its derivative cancels the
+`t q psi^(2 : ℕ)` scale insertion exactly. -/
 def thetaCuspFirstAtomMorseShiftDensity (x : ℝ) : ℝ :=
   (thetaCuspBornWittenWeight 1 x + 1) * thetaCuspLiouvilleGibbsAtom 1 x
 
@@ -110,7 +110,7 @@ theorem thetaCuspFirstRadialQuadraticMorseSourceField_eq (x : ℝ) :
   ring
 
 /-- Exact derivative of the shifted density.  This is the source-specific hypervirial value
-relation which removes the `t q psi^2` insertion after integration by parts. -/
+relation which removes the `t q psi^(2 : ℕ)` insertion after integration by parts. -/
 theorem hasDerivAt_thetaCuspFirstAtomMorseShiftDensity (x : ℝ) :
     HasDerivAt thetaCuspFirstAtomMorseShiftDensity
       ((5 / 2 : ℝ) * (thetaCuspBornWittenWeight 1 x + 1) *

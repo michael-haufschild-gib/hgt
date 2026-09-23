@@ -14,7 +14,7 @@ open scoped Topology
 open GaloisForLFunctions.HTGeometry.DispersivePDE
 open D4BMJointSource D4BMJointWave D4BMLaplaceRadial
 
-private def eigenvalue (q : XiZeroCopy) : ℂ := physicalAngularParameter q ^ 2 - 1/4
+private def eigenvalue (q : XiZeroCopy) : ℂ := physicalAngularParameter q ^ (2 : ℕ) - 1/4
 private def slope (q : XiZeroCopy) : ℂ := -(physicalAngularParameter q/2+1/8)
 private def Q (t : ℝ) : ℂ := solitonQ t
 private def T (t : ℝ) : ℂ := solitonT t
@@ -29,20 +29,20 @@ def transformedMode (q : XiZeroCopy) (w : ℂ) (outer : Bool) (t : ℝ) : ℂ :=
   f1 q w outer t + slope q*T t*f q w outer t
 
 private def transformedFirst (q : XiZeroCopy) (w : ℂ) (outer : Bool) (t : ℝ) : ℂ :=
-  (w^2+(slope q-eigenvalue q)*Q t)*f q w outer t +
+  (w^(2 : ℕ)+(slope q-eigenvalue q)*Q t)*f q w outer t +
     slope q*T t*f1 q w outer t
 
 /-- The original reflected-reader differential expression, at the unchanged clock. -/
 def reflectedResidual (q : XiZeroCopy) (w : ℂ) (outer : Bool) (t : ℝ) : ℂ :=
   deriv (deriv (transformedMode q w outer)) t -
-    (w^2-eigenvalue (xiZeroCopyReflectEquiv q)*angularWeight t^2)*
+    (w^(2 : ℕ)-eigenvalue (xiZeroCopyReflectEquiv q)*angularWeight t^(2 : ℕ))*
       transformedMode q w outer t
 
 /-- Coefficient of the source retained by the attempted physical reader transport. -/
 def defectCoefficient (q : XiZeroCopy) : ℂ :=
   (3/32)* (2*(q.1:ℂ)-3)*(2*(q.1:ℂ)+1)
 
-private theorem Q_eq (t : ℝ) : Q t = angularWeight t^2 := by
+private theorem Q_eq (t : ℝ) : Q t = angularWeight t^(2 : ℕ) := by
   rw [Q,solitonQ_eq_inv_cosh_sq]
   simp [angularWeight,one_div,inv_pow]
 
@@ -56,7 +56,7 @@ private theorem T_deriv (t : ℝ) : HasDerivAt T (Q t) t :=
 private theorem modes_deriv (q : XiZeroCopy) (w : ℂ) (hw : 1/2<w.re)
     (outer : Bool) (t : ℝ) (ht : t<0) :
     HasDerivAt (f q w outer) (f1 q w outer t) t ∧
-    HasDerivAt (f1 q w outer) ((w^2-eigenvalue q*Q t)*f q w outer t) t := by
+    HasDerivAt (f1 q w outer) ((w^(2 : ℕ)-eigenvalue q*Q t)*f q w outer t) t := by
   simpa only [f,f1,eigenvalue,Q_eq] using physicalTortoiseMode_hasDerivAt q w hw outer t ht
 
 private theorem transformed_deriv (q : XiZeroCopy) (w : ℂ) (hw : 1/2<w.re)
@@ -71,10 +71,10 @@ private theorem transformed_first_deriv (q : XiZeroCopy) (w : ℂ) (hw : 1/2<w.r
     (outer : Bool) (t : ℝ) (ht : t<0) :
     HasDerivAt (transformedFirst q w outer)
       (((slope q-eigenvalue q)*(-2*T t*Q t)+
-          slope q*T t*(w^2-eigenvalue q*Q t))*f q w outer t +
-        (w^2+(2*slope q-eigenvalue q)*Q t)*f1 q w outer t) t := by
+          slope q*T t*(w^(2 : ℕ)-eigenvalue q*Q t))*f q w outer t +
+        (w^(2 : ℕ)+(2*slope q-eigenvalue q)*Q t)*f1 q w outer t) t := by
   obtain ⟨h0,h1⟩ := modes_deriv q w hw outer t ht
-  have hA := ((Q_deriv t).const_mul (slope q-eigenvalue q)).const_add (w^2)
+  have hA := ((Q_deriv t).const_mul (slope q-eigenvalue q)).const_add (w^(2 : ℕ))
   apply ((hA.mul h0).add (((T_deriv t).const_mul (slope q)).mul h1)).congr_deriv
   ring
 
@@ -101,7 +101,7 @@ covariance, source identification or zero-flux premise is imposed. -/
 theorem reflectedResidual_eq (q : XiZeroCopy) (w : {w : ℂ // 1/2<w.re})
     (outer : Bool) (t : Iio (0:ℝ)) :
     reflectedResidual q w outer t = defectCoefficient q*
-      angularWeight t^2*(Real.tanh t:ℂ)*
+      angularWeight t^(2 : ℕ)*(Real.tanh t:ℂ)*
         tortoiseMode outer w (physicalRadialFrequency q) t := by
   simpa only [Q_eq,T,solitonT,f] using residual_eq q w w.property outer t t.property
 
@@ -125,18 +125,18 @@ theorem reflectedResidual_wronskian (q : XiZeroCopy) (w : {w : ℂ // 1/2<w.re})
     (t : Iio (0:ℝ)) :
     reflectedResidual q w false t*tortoiseModeFirst true w (physicalRadialFrequency q) t -
       reflectedResidual q w true t*tortoiseModeFirst false w (physicalRadialFrequency q) t =
-    -defectCoefficient q*angularWeight t^2*(Real.tanh t:ℂ)*
+    -defectCoefficient q*angularWeight t^(2 : ℕ)*(Real.tanh t:ℂ)*
       connection w (physicalRadialFrequency q) := by
   rw [reflectedResidual_eq,reflectedResidual_eq]
   have hW := tortoiseMode_wronskian (physicalRadialFrequency_chamber q w w.property) t t.property
-  linear_combination defectCoefficient q*angularWeight t^2*(Real.tanh t:ℂ)*hW
+  linear_combination defectCoefficient q*angularWeight t^(2 : ℕ)*(Real.tanh t:ℂ)*hW
 
 /-- At every original radial point the reflected-reader defect is present in at
 least one original mode. This obstructs this first-order repair, not the full HB route. -/
 theorem reflectedResidual_pair_ne_zero (q : XiZeroCopy) (w : {w : ℂ // 1/2<w.re})
     (t : Iio (0:ℝ)) :
     (reflectedResidual q w false t,reflectedResidual q w true t) ≠ (0,0) := by
-  have hQ : angularWeight t^2 ≠ 0 := by
+  have hQ : angularWeight t^(2 : ℕ) ≠ 0 := by
     apply pow_ne_zero
     exact Complex.ofReal_ne_zero.mpr (inv_ne_zero (ne_of_gt (Real.cosh_pos t)))
   have hT : (Real.tanh t:ℂ) ≠ 0 := by

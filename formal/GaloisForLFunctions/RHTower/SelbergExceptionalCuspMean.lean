@@ -155,7 +155,7 @@ private theorem logVelocity_hasDerivAt (N : ℕ) {lam : ℝ}
 /-- The defining Maass data force the exceptional constant term to vanish. -/
 theorem maassMean_eq_zero_of_exceptional (N : ℕ) {nu : ℝ}
     (hnu : 0 < nu) (hnu' : nu < 1 / 2)
-    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (1 / 4 - nu ^ 2))
+    (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (1 / 4 - nu ^ (2 : ℕ)))
     (t : ℝ) : maassMean N f (Real.exp t) = 0 := by
   have hder : deriv (logMean N f) = logVelocity N f :=
     funext (fun t => (logMean_hasDerivAt N f t).deriv)
@@ -171,14 +171,14 @@ theorem maassMean_eq_zero_of_exceptional (N : ℕ) {nu : ℝ}
   · intro s
     rw [hder, (logVelocity_hasDerivAt N f s).deriv]
     have hab : (1 / 2 + nu) + (1 / 2 - nu) = (1 : ℝ) := by ring
-    have hprod : (1 / 2 + nu) * (1 / 2 - nu) = (1 / 4 - nu ^ 2 : ℝ) := by ring
+    have hprod : (1 / 2 + nu) * (1 / 2 - nu) = (1 / 4 - nu ^ (2 : ℕ) : ℝ) := by ring
     rw [hab, hprod, Complex.ofReal_one, one_mul]
   · exact (maassMean_decay N f).comp Real.tendsto_exp_atTop
 
 /-- Vanishing at every upper-half-plane height in the exceptional parameter range. -/
 theorem maassMean_exceptional_zero (N : ℕ) (nu : Set.Ioo (0 : ℝ) (1 / 2))
     (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1)))
-      (1 / 4 - (nu : ℝ) ^ 2)) (z : UpperHalfPlane) : maassMean N f z.im = 0 := by
+      (1 / 4 - (nu : ℝ) ^ (2 : ℕ))) (z : UpperHalfPlane) : maassMean N f z.im = 0 := by
   simpa only [Real.exp_log z.im_pos] using
     maassMean_eq_zero_of_exceptional N nu.2.1 nu.2.2 f (Real.log z.im)
 
@@ -189,9 +189,9 @@ theorem maassMean_subquarter_zero (N : ℕ) (lam : Set.Ioo (0 : ℝ) (1 / 4))
   let nu := Real.sqrt (1 / 4 - (lam : ℝ))
   have hgap : 0 < 1 / 4 - (lam : ℝ) := sub_pos.mpr lam.2.2
   have hnu : 0 < nu := Real.sqrt_pos.mpr hgap
-  have hsq : nu ^ 2 = 1 / 4 - (lam : ℝ) := Real.sq_sqrt hgap.le
+  have hsq : nu ^ (2 : ℕ) = 1 / 4 - (lam : ℝ) := Real.sq_sqrt hgap.le
   have hnu' : nu < 1 / 2 := by nlinarith [Real.sqrt_nonneg (1 / 4 - (lam : ℝ)), lam.2.1]
-  have hlam : 1 / 4 - nu ^ 2 = (lam : ℝ) := by rw [hsq]; ring
+  have hlam : 1 / 4 - nu ^ (2 : ℕ) = (lam : ℝ) := by rw [hsq]; ring
   have hvan := maassMean_eq_zero_of_exceptional N hnu hnu'
   rw [hlam] at hvan
   simpa only [Real.exp_log z.im_pos] using

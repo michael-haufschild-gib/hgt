@@ -31,13 +31,13 @@ def fzzScreeningAngularRadius (u : ℝ) : ℝ := (1+Real.exp u)⁻¹
 
 /-- Exact remainder after the three divergent angular coefficients at exponent `-6`. -/
 def fzzScreeningCubicAngularRemainder (r : ℝ) : ℝ :=
-  (100-275*r^2+316*r^4-171*r^6+36*r^8)/(1-r^2)^5
+  (100-275*r^(2 : ℕ)+316*r^(4 : ℕ)-171*r^(6 : ℕ)+36*r^(8 : ℕ))/(1-r^(2 : ℕ))^(5 : ℕ)
 
 /-- Integrated singular coefficients, before the polar factor `2*pi`. -/
 def fzzScreeningCubicCollisionPrimitive (r : ℝ) : ℝ :=
-  -(r^4)⁻¹/4-9*(r^2)⁻¹/2+36*Real.log r
+  -(r^(4 : ℕ))⁻¹/4-9*(r^(2 : ℕ))⁻¹/2+36*Real.log r
 
-private def angularQ (r θ : ℝ) : ℝ := 1-2*r*Real.cos θ+r^2
+private def angularQ (r θ : ℝ) : ℝ := 1-2*r*Real.cos θ+r^(2 : ℕ)
 private def angularPower (n : ℕ) (r θ : ℝ) : ℝ := (angularQ r θ^n)⁻¹
 private def angularMean (n : ℕ) (r : ℝ) : ℝ :=
   (2*Real.pi)⁻¹*(∫ θ : ℝ in Ioc 0 (2*Real.pi), angularPower n r θ)
@@ -47,25 +47,25 @@ private def angularPowerDerivative (n : ℕ) (r θ : ℝ) : ℝ :=
 private theorem angularQ_pos (r θ : ℝ) (hr0 : 0 ≤ r) (hr1 : r < 1) :
     0 < angularQ r θ := by
   have hh := mul_le_mul_of_nonneg_left (Real.cos_le_one θ) (show 0 ≤ 2*r by positivity)
-  have hs : 0 < (1-r)^2 := by
+  have hs : 0 < (1-r)^(2 : ℕ) := by
     have h : 0 < 1-r := by linarith
     positivity
   unfold angularQ
   nlinarith
 
 private theorem norm_circle_eq_angularQ (r θ : ℝ) :
-    ‖1-(r : ℂ)*circleMap 0 1 θ‖^2 = angularQ r θ := by
+    ‖1-(r : ℂ)*circleMap 0 1 θ‖^(2 : ℕ) = angularQ r θ := by
   rw [← Complex.normSq_eq_norm_sq]
   simp only [Complex.normSq_apply, circleMap_zero_re, circleMap_zero_im, one_mul,
     Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im, Complex.mul_re, Complex.mul_im,
     Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero, add_zero]
-  have ht : r^2*(Real.sin θ^2+Real.cos θ^2)=r^2 := by
+  have ht : r^(2 : ℕ)*(Real.sin θ^(2 : ℕ)+Real.cos θ^(2 : ℕ))=r^(2 : ℕ) := by
     rw [Real.sin_sq_add_cos_sq, mul_one]
   unfold angularQ
   nlinarith [ht]
 
 private theorem angularMean_one (r : ℝ) (hr0 : 0 ≤ r) (hr1 : r < 1) :
-    angularMean 1 r = (1-r^2)⁻¹ := by
+    angularMean 1 r = (1-r^(2 : ℕ))⁻¹ := by
   have h := _root_.RHTower.circleAverage_inv_normSq_one_sub_mul hr0 hr1
   rw [Real.circleAverage_def, smul_eq_mul,
     intervalIntegral.integral_of_le (by positivity : (0 : ℝ) ≤ 2*Real.pi)] at h
@@ -150,7 +150,7 @@ private theorem angularMean_hasDerivAt (n : ℕ) (r : ℝ) (hr0 : 0 < r) (hr1 : 
 
 private theorem angularPower_recurrence (n : ℕ) (r θ : ℝ) (hr0 : 0 ≤ r) (hr1 : r < 1) :
     r*angularPowerDerivative n r θ =
-      ((n+1 : ℕ) : ℝ)*((1-r^2)*angularPower (n+2) r θ-angularPower (n+1) r θ) := by
+      ((n+1 : ℕ) : ℝ)*((1-r^(2 : ℕ))*angularPower (n+2) r θ-angularPower (n+1) r θ) := by
   have hq := (angularQ_pos r θ hr0 hr1).ne'
   unfold angularPowerDerivative angularPower
   simp only [pow_succ]
@@ -160,7 +160,7 @@ private theorem angularPower_recurrence (n : ℕ) (r θ : ℝ) (hr0 : 0 ≤ r) (
 
 private theorem angularMean_recurrence (n : ℕ) (r : ℝ) (hr0 : 0 < r) (hr1 : r < 1) :
     r*deriv (angularMean (n+1)) r =
-      ((n+1 : ℕ) : ℝ)*((1-r^2)*angularMean (n+2) r-angularMean (n+1) r) := by
+      ((n+1 : ℕ) : ℝ)*((1-r^(2 : ℕ))*angularMean (n+2) r-angularMean (n+1) r) := by
   have h1 : IntegrableOn (angularPower (n+1) r) (Ioc 0 (2*Real.pi)) :=
     (angularPower_continuous (n+1) r hr0.le hr1).integrableOn_Icc.mono_set
     (Ioc_subset_Icc_self (a := (0 : ℝ)) (b := 2*Real.pi))
@@ -170,7 +170,7 @@ private theorem angularMean_recurrence (n : ℕ) (r : ℝ) (hr0 : 0 < r) (hr1 : 
   rw [(angularMean_hasDerivAt n r hr0 hr1).deriv]
   have hi : (∫ θ : ℝ in Ioc 0 (2*Real.pi), r*angularPowerDerivative n r θ) =
       ∫ θ : ℝ in Ioc 0 (2*Real.pi),
-        ((n+1 : ℕ) : ℝ)*((1-r^2)*angularPower (n+2) r θ-angularPower (n+1) r θ) := by
+        ((n+1 : ℕ) : ℝ)*((1-r^(2 : ℕ))*angularPower (n+2) r θ-angularPower (n+1) r θ) := by
     apply integral_congr_ae
     filter_upwards with θ
     exact angularPower_recurrence n r θ hr0.le hr1
@@ -179,21 +179,21 @@ private theorem angularMean_recurrence (n : ℕ) (r : ℝ) (hr0 : 0 < r) (hr1 : 
   unfold angularMean
   linear_combination (2*Real.pi)⁻¹*hi
 
-private theorem angularDen_pos (r : ℝ) (hr0 : 0 ≤ r) (hr1 : r < 1) : 0 < 1-r^2 := by
+private theorem angularDen_pos (r : ℝ) (hr0 : 0 ≤ r) (hr1 : r < 1) : 0 < 1-r^(2 : ℕ) := by
   nlinarith [mul_pos (sub_pos.mpr hr1) (show 0 < 1+r by linarith)]
 
 private theorem angularDen_hasDerivAt (r : ℝ) :
-    HasDerivAt (fun t : ℝ => 1-t^2) (-2*r) r := by
+    HasDerivAt (fun t : ℝ => 1-t^(2 : ℕ)) (-2*r) r := by
   convert! (hasDerivAt_const r (1 : ℝ)).sub ((hasDerivAt_id r).pow 2) using 1
   simp
 
 private theorem angularMean_two (r : ℝ) (hr0 : 0 < r) (hr1 : r < 1) :
-    angularMean 2 r = (1+r^2)/(1-r^2)^3 := by
+    angularMean 2 r = (1+r^(2 : ℕ))/(1-r^(2 : ℕ))^(3 : ℕ) := by
   have hn := (angularDen_pos r hr0.le hr1).ne'
-  have hd : HasDerivAt (fun t : ℝ => (1-t^2)⁻¹) (2*r/(1-r^2)^2) r := by
+  have hd : HasDerivAt (fun t : ℝ => (1-t^(2 : ℕ))⁻¹) (2*r/(1-r^(2 : ℕ))^(2 : ℕ)) r := by
     convert! (angularDen_hasDerivAt r).inv hn using 1
     simp
-  have he : angularMean 1 =ᶠ[𝓝 r] (fun t : ℝ => (1-t^2)⁻¹) := by
+  have he : angularMean 1 =ᶠ[𝓝 r] (fun t : ℝ => (1-t^(2 : ℕ))⁻¹) := by
     filter_upwards [Ioo_mem_nhds hr0 hr1] with t ht
     exact angularMean_one t ht.1.le ht.2
   have h := angularMean_recurrence 0 r hr0 hr1
@@ -203,18 +203,18 @@ private theorem angularMean_two (r : ℝ) (hr0 : 0 < r) (hr1 : r < 1) :
   nlinarith [h]
 
 private theorem angularMean_three (r : ℝ) (hr0 : 0 < r) (hr1 : r < 1) :
-    angularMean 3 r = (1+4*r^2+r^4)/(1-r^2)^5 := by
+    angularMean 3 r = (1+4*r^(2 : ℕ)+r^(4 : ℕ))/(1-r^(2 : ℕ))^(5 : ℕ) := by
   have hn := (angularDen_pos r hr0.le hr1).ne'
-  have hnum : HasDerivAt (fun t : ℝ => 1+t^2) (2*r) r := by
+  have hnum : HasDerivAt (fun t : ℝ => 1+t^(2 : ℕ)) (2*r) r := by
     convert! (hasDerivAt_const r (1 : ℝ)).add ((hasDerivAt_id r).pow 2) using 1
     simp
-  have hd : HasDerivAt (fun t : ℝ => (1+t^2)/(1-t^2)^3)
-      (4*r*(2+r^2)/(1-r^2)^4) r := by
+  have hd : HasDerivAt (fun t : ℝ => (1+t^(2 : ℕ))/(1-t^(2 : ℕ))^(3 : ℕ))
+      (4*r*(2+r^(2 : ℕ))/(1-r^(2 : ℕ))^(4 : ℕ)) r := by
     convert! hnum.div ((angularDen_hasDerivAt r).pow 3) (pow_ne_zero _ hn) using 1
     dsimp
     field_simp [hn]
     ring
-  have he : angularMean 2 =ᶠ[𝓝 r] (fun t : ℝ => (1+t^2)/(1-t^2)^3) := by
+  have he : angularMean 2 =ᶠ[𝓝 r] (fun t : ℝ => (1+t^(2 : ℕ))/(1-t^(2 : ℕ))^(3 : ℕ)) := by
     filter_upwards [Ioo_mem_nhds hr0 hr1] with t ht
     exact angularMean_two t ht.1 ht.2
   have h := angularMean_recurrence 1 r hr0 hr1
@@ -243,7 +243,7 @@ private theorem angularRadius_range (u : ℝ) :
 theorem fzzScreeningHigherAngular_recurrence (n : ℕ) (u : ℝ) :
     fzzScreeningAngularRadius u *
         deriv (fzzScreeningHigherAngular (n+1)) (fzzScreeningAngularRadius u) =
-      ((n+1 : ℕ) : ℝ)*((1-fzzScreeningAngularRadius u^2)*
+      ((n+1 : ℕ) : ℝ)*((1-fzzScreeningAngularRadius u^(2 : ℕ))*
         fzzScreeningHigherAngular (n+2) (fzzScreeningAngularRadius u)-
         fzzScreeningHigherAngular (n+1) (fzzScreeningAngularRadius u)) := by
   have he : fzzScreeningHigherAngular (n+1) = angularMean (n+1) :=
@@ -254,21 +254,21 @@ theorem fzzScreeningHigherAngular_recurrence (n : ℕ) (u : ℝ) :
 /-- The original inverse fourth-power average. -/
 theorem fzzScreeningHigherAngular_two (u : ℝ) :
     fzzScreeningHigherAngular 2 (fzzScreeningAngularRadius u) =
-      (1+fzzScreeningAngularRadius u^2)/(1-fzzScreeningAngularRadius u^2)^3 := by
+      (1+fzzScreeningAngularRadius u^(2 : ℕ))/(1-fzzScreeningAngularRadius u^(2 : ℕ))^(3 : ℕ) := by
   rw [higherAngular_eq_mean]
   exact angularMean_two _ (angularRadius_range u).1 (angularRadius_range u).2
 
 /-- The original inverse sixth-power average needed by the `k=4` collision. -/
 theorem fzzScreeningHigherAngular_three (u : ℝ) :
     fzzScreeningHigherAngular 3 (fzzScreeningAngularRadius u) =
-      (1+4*fzzScreeningAngularRadius u^2+fzzScreeningAngularRadius u^4)/
-        (1-fzzScreeningAngularRadius u^2)^5 := by
+      (1+4*fzzScreeningAngularRadius u^(2 : ℕ)+fzzScreeningAngularRadius u^(4 : ℕ))/
+        (1-fzzScreeningAngularRadius u^(2 : ℕ))^(5 : ℕ) := by
   rw [higherAngular_eq_mean]
   exact angularMean_three _ (angularRadius_range u).1 (angularRadius_range u).2
 
 private theorem cubic_remainder (r : ℝ) (hr0 : 0 < r) (hr1 : r < 1) :
     fzzScreeningHigherAngular 3 r =
-      1+9*r^2+36*r^4+r^6*fzzScreeningCubicAngularRemainder r := by
+      1+9*r^(2 : ℕ)+36*r^(4 : ℕ)+r^(6 : ℕ)*fzzScreeningCubicAngularRemainder r := by
   rw [higherAngular_eq_mean, angularMean_three r hr0 hr1]
   unfold fzzScreeningCubicAngularRemainder
   field_simp [(angularDen_pos r hr0.le hr1).ne']
@@ -277,8 +277,8 @@ private theorem cubic_remainder (r : ℝ) (hr0 : 0 < r) (hr1 : r < 1) :
 /-- All three singular radial coefficients are derived from the original source. -/
 theorem fzzScreeningHigherAngular_three_remainder (u : ℝ) :
     fzzScreeningHigherAngular 3 (fzzScreeningAngularRadius u) =
-      1+9*fzzScreeningAngularRadius u^2+36*fzzScreeningAngularRadius u^4+
-        fzzScreeningAngularRadius u^6*
+      1+9*fzzScreeningAngularRadius u^(2 : ℕ)+36*fzzScreeningAngularRadius u^(4 : ℕ)+
+        fzzScreeningAngularRadius u^(6 : ℕ)*
           fzzScreeningCubicAngularRemainder (fzzScreeningAngularRadius u) :=
   cubic_remainder _ (angularRadius_range u).1 (angularRadius_range u).2
 
@@ -292,7 +292,7 @@ private theorem cubicRemainder_continuousOn :
 
 /-- After angular integration, subtracting these coefficients leaves an admitted radial source. -/
 theorem fzzScreeningHigherAngular_three_subtracted_integrable :
-    IntegrableOn (fun r : ℝ => (r^5)⁻¹*(fzzScreeningHigherAngular 3 r-1-9*r^2-36*r^4))
+    IntegrableOn (fun r : ℝ => (r^(5 : ℕ))⁻¹*(fzzScreeningHigherAngular 3 r-1-9*r^(2 : ℕ)-36*r^(4 : ℕ)))
       (Ioc 0 (1/2 : ℝ)) := by
   have hi : IntegrableOn (fun r : ℝ => r*fzzScreeningCubicAngularRemainder r)
       (Ioc 0 (1/2 : ℝ)) :=
@@ -306,7 +306,7 @@ theorem fzzScreeningHigherAngular_three_subtracted_integrable :
 
 private theorem cubicPrimitive_hasDerivAt (r : ℝ) (hr : 0 < r) :
     HasDerivAt fzzScreeningCubicCollisionPrimitive
-      ((r^5)⁻¹+9*(r^3)⁻¹+36*r⁻¹) r := by
+      ((r^(5 : ℕ))⁻¹+9*(r^(3 : ℕ))⁻¹+36*r⁻¹) r := by
   have h4 := ((hasDerivAt_id r).pow 4).inv (pow_ne_zero _ hr.ne')
   have h2 := ((hasDerivAt_id r).pow 2).inv (pow_ne_zero _ hr.ne')
   have h := ((h4.neg.div_const 4).sub ((h2.const_mul 9).div_const 2)).add
@@ -317,11 +317,11 @@ private theorem cubicPrimitive_hasDerivAt (r : ℝ) (hr : 0 < r) :
   ring
 
 private theorem cubic_angular_cutoff_identity (ε : ℝ) (hε : 0 < ε) (hεR : ε ≤ 1/2) :
-    (∫ r : ℝ in ε..(1/2), (r^5)⁻¹*fzzScreeningHigherAngular 3 r)+
+    (∫ r : ℝ in ε..(1/2), (r^(5 : ℕ))⁻¹*fzzScreeningHigherAngular 3 r)+
         fzzScreeningCubicCollisionPrimitive ε =
       (∫ r : ℝ in ε..(1/2), r*fzzScreeningCubicAngularRemainder r)+
         fzzScreeningCubicCollisionPrimitive (1/2) := by
-  have hp : ContinuousOn (fun r : ℝ => (r^5)⁻¹+9*(r^3)⁻¹+36*r⁻¹) (Icc ε (1/2)) := by
+  have hp : ContinuousOn (fun r : ℝ => (r^(5 : ℕ))⁻¹+9*(r^(3 : ℕ))⁻¹+36*r⁻¹) (Icc ε (1/2)) := by
     apply ContinuousOn.add
     · apply ContinuousOn.add
       · exact (continuous_id.continuousOn.pow 5).inv₀
@@ -337,8 +337,8 @@ private theorem cubic_angular_cutoff_identity (ε : ℝ) (hε : 0 < ε) (hεR : 
     (fun r hr => cubicPrimitive_hasDerivAt r (by
       rw [uIcc_of_le hεR] at hr
       exact hε.trans_le hr.1)) (hp.intervalIntegrable_of_Icc hεR)
-  have he : (∫ r : ℝ in ε..(1/2), (r^5)⁻¹*fzzScreeningHigherAngular 3 r) =
-      ∫ r : ℝ in ε..(1/2), (r^5)⁻¹+9*(r^3)⁻¹+36*r⁻¹+
+  have he : (∫ r : ℝ in ε..(1/2), (r^(5 : ℕ))⁻¹*fzzScreeningHigherAngular 3 r) =
+      ∫ r : ℝ in ε..(1/2), (r^(5 : ℕ))⁻¹+9*(r^(3 : ℕ))⁻¹+36*r⁻¹+
         r*fzzScreeningCubicAngularRemainder r := by
     apply intervalIntegral.integral_congr
     intro r hr
@@ -392,7 +392,7 @@ private theorem cubic_remainder_cutoff_limit :
 /-- The original angular source has the forced two-power and logarithmic cutoff correction. -/
 theorem fzzScreeningHigherAngular_three_cutoff_limit :
     Tendsto (fun T : ℝ => 2*Real.pi*
-      ((∫ r : ℝ in (Real.exp (-T))..(1/2), (r^5)⁻¹*fzzScreeningHigherAngular 3 r)+
+      ((∫ r : ℝ in (Real.exp (-T))..(1/2), (r^(5 : ℕ))⁻¹*fzzScreeningHigherAngular 3 r)+
         fzzScreeningCubicCollisionPrimitive (Real.exp (-T)))) atTop
       (𝓝 (2*Real.pi*((∫ r : ℝ in (0 : ℝ)..(1/2),
         r*fzzScreeningCubicAngularRemainder r)+fzzScreeningCubicCollisionPrimitive (1/2)))) := by

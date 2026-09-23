@@ -52,7 +52,7 @@ theorem hasDerivAt_besselNormalFormDeriv {u : ℝ} (hu : 0 < u) :
   have hdenne : 2 * Real.sqrt u ≠ 0 := by positivity
   have h1 : HasDerivAt (fun v : ℝ => besselJ0 v / (2 * Real.sqrt v))
       ((besselJ0Deriv u * (2 * Real.sqrt u)
-        - besselJ0 u * (2 * (1 / (2 * Real.sqrt u)))) / (2 * Real.sqrt u) ^ 2) u :=
+        - besselJ0 u * (2 * (1 / (2 * Real.sqrt u)))) / (2 * Real.sqrt u) ^ (2 : ℕ)) u :=
     (hasDerivAt_besselJ0 u).div hden hdenne
   -- the second summand
   have h2 : HasDerivAt (fun v : ℝ => Real.sqrt v * besselJ0Deriv v)
@@ -61,7 +61,7 @@ theorem hasDerivAt_besselNormalFormDeriv {u : ℝ} (hu : 0 < u) :
   have h := h1.add h2
   have hss : Real.sqrt u * Real.sqrt u = u := Real.mul_self_sqrt hu.le
   have hval : (besselJ0Deriv u * (2 * Real.sqrt u)
-        - besselJ0 u * (2 * (1 / (2 * Real.sqrt u)))) / (2 * Real.sqrt u) ^ 2
+        - besselJ0 u * (2 * (1 / (2 * Real.sqrt u)))) / (2 * Real.sqrt u) ^ (2 : ℕ)
       + (1 / (2 * Real.sqrt u) * besselJ0Deriv u + Real.sqrt u * besselJ0SecondDeriv u)
       = besselNormalFormSecond u := by
     rw [besselNormalFormSecond]
@@ -72,7 +72,7 @@ theorem hasDerivAt_besselNormalFormDeriv {u : ℝ} (hu : 0 < u) :
 
 /-- **The normal form.**  The first-order term is gone and the potential is `1 + 1/(4u²)`. -/
 theorem besselNormalForm_ode {u : ℝ} (hu : 0 < u) :
-    besselNormalFormSecond u + (1 + 1 / (4 * u ^ 2)) * besselNormalForm u = 0 := by
+    besselNormalFormSecond u + (1 + 1 / (4 * u ^ (2 : ℕ))) * besselNormalForm u = 0 := by
   have hne : u ≠ 0 := ne_of_gt hu
   have hs : 0 < Real.sqrt u := Real.sqrt_pos.mpr hu
   have hss : Real.sqrt u * Real.sqrt u = u := Real.mul_self_sqrt hu.le
@@ -83,7 +83,7 @@ theorem besselNormalForm_ode {u : ℝ} (hu : 0 < u) :
   linear_combination (besselJ0 u - 4 * u * besselJ0Deriv u) * hss
 
 /-- The oscillator energy of the normal form. -/
-def besselEnergy (u : ℝ) : ℝ := besselNormalForm u ^ 2 + besselNormalFormDeriv u ^ 2
+def besselEnergy (u : ℝ) : ℝ := besselNormalForm u ^ (2 : ℕ) + besselNormalFormDeriv u ^ (2 : ℕ)
 
 theorem besselEnergy_nonneg (u : ℝ) : 0 ≤ besselEnergy u := by
   rw [besselEnergy]
@@ -93,17 +93,17 @@ theorem besselEnergy_nonneg (u : ℝ) : 0 ≤ besselEnergy u := by
 product of the solution and its derivative -- there is no unperturbed contribution at all. -/
 theorem hasDerivAt_besselEnergy {u : ℝ} (hu : 0 < u) :
     HasDerivAt besselEnergy
-      (-(2 * (1 / (4 * u ^ 2)) * (besselNormalForm u * besselNormalFormDeriv u))) u := by
+      (-(2 * (1 / (4 * u ^ (2 : ℕ))) * (besselNormalForm u * besselNormalFormDeriv u))) u := by
   have hw := hasDerivAt_besselNormalForm hu
   have hw' := hasDerivAt_besselNormalFormDeriv hu
-  have h1 : HasDerivAt (fun v : ℝ => besselNormalForm v ^ 2)
+  have h1 : HasDerivAt (fun v : ℝ => besselNormalForm v ^ (2 : ℕ))
       (2 * besselNormalForm u * besselNormalFormDeriv u) u := by
     have h := hw.pow 2
     have hv : ((2 : ℕ) : ℝ) * besselNormalForm u ^ (2 - 1) * besselNormalFormDeriv u
         = 2 * besselNormalForm u * besselNormalFormDeriv u := by norm_num
     rw [hv] at h
     exact h
-  have h2 : HasDerivAt (fun v : ℝ => besselNormalFormDeriv v ^ 2)
+  have h2 : HasDerivAt (fun v : ℝ => besselNormalFormDeriv v ^ (2 : ℕ))
       (2 * besselNormalFormDeriv u * besselNormalFormSecond u) u := by
     have h := hw'.pow 2
     have hv : ((2 : ℕ) : ℝ) * besselNormalFormDeriv u ^ (2 - 1) * besselNormalFormSecond u
@@ -114,9 +114,9 @@ theorem hasDerivAt_besselEnergy {u : ℝ} (hu : 0 < u) :
   have hode := besselNormalForm_ode hu
   have hval : 2 * besselNormalForm u * besselNormalFormDeriv u
       + 2 * besselNormalFormDeriv u * besselNormalFormSecond u
-      = -(2 * (1 / (4 * u ^ 2)) * (besselNormalForm u * besselNormalFormDeriv u)) := by
+      = -(2 * (1 / (4 * u ^ (2 : ℕ))) * (besselNormalForm u * besselNormalFormDeriv u)) := by
     have hsec : besselNormalFormSecond u
-        = -((1 + 1 / (4 * u ^ 2)) * besselNormalForm u) := by linarith [hode]
+        = -((1 + 1 / (4 * u ^ (2 : ℕ))) * besselNormalForm u) := by linarith [hode]
     rw [hsec]
     ring
   rw [hval] at h
@@ -125,11 +125,11 @@ theorem hasDerivAt_besselEnergy {u : ℝ} (hu : 0 < u) :
 /-- **The differential inequality.**  The energy's logarithmic derivative is bounded by the
 perturbation, by the arithmetic–geometric mean inequality. -/
 theorem abs_deriv_besselEnergy_le {u : ℝ} (hu : 0 < u) :
-    |-(2 * (1 / (4 * u ^ 2)) * (besselNormalForm u * besselNormalFormDeriv u))|
-      ≤ 1 / (4 * u ^ 2) * besselEnergy u := by
-  have hq : (0 : ℝ) < 1 / (4 * u ^ 2) := by positivity
+    |-(2 * (1 / (4 * u ^ (2 : ℕ))) * (besselNormalForm u * besselNormalFormDeriv u))|
+      ≤ 1 / (4 * u ^ (2 : ℕ)) * besselEnergy u := by
+  have hq : (0 : ℝ) < 1 / (4 * u ^ (2 : ℕ)) := by positivity
   have hamgm : 2 * |besselNormalForm u| * |besselNormalFormDeriv u|
-      ≤ besselNormalForm u ^ 2 + besselNormalFormDeriv u ^ 2 := by
+      ≤ besselNormalForm u ^ (2 : ℕ) + besselNormalFormDeriv u ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (|besselNormalForm u| - |besselNormalFormDeriv u|),
       sq_abs (besselNormalForm u), sq_abs (besselNormalFormDeriv u)]
   rw [abs_neg, abs_mul, abs_mul, abs_of_pos hq, besselEnergy,
@@ -140,14 +140,14 @@ theorem abs_deriv_besselEnergy_le {u : ℝ} (hu : 0 < u) :
 
 
 theorem hasDerivAt_inv_four_mul {v : ℝ} (hv : v ≠ 0) :
-    HasDerivAt (fun w : ℝ => 1 / (4 * w)) (-(1 / (4 * v ^ 2))) v := by
+    HasDerivAt (fun w : ℝ => 1 / (4 * w)) (-(1 / (4 * v ^ (2 : ℕ)))) v := by
   have h := (hasDerivAt_inv hv).const_mul (1 / 4 : ℝ)
   have hfun : (fun w : ℝ => 1 / 4 * w⁻¹) = fun w : ℝ => 1 / (4 * w) := by
     funext w
     rw [one_div, one_div, mul_inv_rev]
     ring
   rw [hfun] at h
-  have hval : (1 : ℝ) / 4 * -(v ^ 2)⁻¹ = -(1 / (4 * v ^ 2)) := by
+  have hval : (1 : ℝ) / 4 * -(v ^ (2 : ℕ))⁻¹ = -(1 / (4 * v ^ (2 : ℕ))) := by
     field_simp
   rwa [hval] at h
 
@@ -158,22 +158,22 @@ theorem besselEnergy_le_exp {a u : ℝ} (ha : 0 < a) (hau : a ≤ u) :
   have hu : 0 < u := lt_of_lt_of_le ha hau
   set G : ℝ → ℝ := fun v : ℝ => besselEnergy v * Real.exp (1 / (4 * v)) with hGdef
   have hGd : ∀ v : ℝ, 0 < v → HasDerivAt G
-      (-(2 * (1 / (4 * v ^ 2)) * (besselNormalForm v * besselNormalFormDeriv v))
+      (-(2 * (1 / (4 * v ^ (2 : ℕ))) * (besselNormalForm v * besselNormalFormDeriv v))
           * Real.exp (1 / (4 * v))
-        + besselEnergy v * (Real.exp (1 / (4 * v)) * -(1 / (4 * v ^ 2)))) v := by
+        + besselEnergy v * (Real.exp (1 / (4 * v)) * -(1 / (4 * v ^ (2 : ℕ))))) v := by
     intro v hv
     have hexp : HasDerivAt (fun w : ℝ => Real.exp (1 / (4 * w)))
-        (Real.exp (1 / (4 * v)) * -(1 / (4 * v ^ 2))) v :=
+        (Real.exp (1 / (4 * v)) * -(1 / (4 * v ^ (2 : ℕ)))) v :=
       (hasDerivAt_inv_four_mul (ne_of_gt hv)).exp
     exact (hasDerivAt_besselEnergy hv).mul hexp
   have hnonpos : ∀ v ∈ Set.Ioo a u, deriv G v ≤ 0 := by
     intro v hv
     have hv0 : 0 < v := lt_trans ha hv.1
     have hE0 : 0 ≤ besselEnergy v := besselEnergy_nonneg v
-    have hq : (0 : ℝ) < 1 / (4 * v ^ 2) := by positivity
+    have hq : (0 : ℝ) < 1 / (4 * v ^ (2 : ℕ)) := by positivity
     have hbound := abs_deriv_besselEnergy_le hv0
-    have hle : -(2 * (1 / (4 * v ^ 2)) * (besselNormalForm v * besselNormalFormDeriv v))
-        ≤ 1 / (4 * v ^ 2) * besselEnergy v :=
+    have hle : -(2 * (1 / (4 * v ^ (2 : ℕ))) * (besselNormalForm v * besselNormalFormDeriv v))
+        ≤ 1 / (4 * v ^ (2 : ℕ)) * besselEnergy v :=
       le_trans (le_abs_self _) hbound
     have hexppos : 0 < Real.exp (1 / (4 * v)) := Real.exp_pos _
     rw [(hGd v hv0).deriv]
@@ -207,14 +207,14 @@ theorem abs_besselNormalForm_le {a u : ℝ} (ha : 0 < a) (hau : a ≤ u) :
   have hu : 0 < u := lt_of_lt_of_le ha hau
   have hE := besselEnergy_le_exp ha hau
   have hEa : 0 ≤ besselEnergy a := besselEnergy_nonneg a
-  have hsq : besselNormalForm u ^ 2 ≤ besselEnergy u := by
+  have hsq : besselNormalForm u ^ (2 : ℕ) ≤ besselEnergy u := by
     rw [besselEnergy]
     nlinarith [sq_nonneg (besselNormalFormDeriv u)]
   have hexp1 : Real.exp (1 / (4 * a) - 1 / (4 * u)) ≤ Real.exp (1 / (4 * a)) := by
     refine Real.exp_le_exp.mpr ?_
     have : (0 : ℝ) < 1 / (4 * u) := by positivity
     linarith
-  have hchain : besselNormalForm u ^ 2 ≤ besselEnergy a * Real.exp (1 / (4 * a)) := by
+  have hchain : besselNormalForm u ^ (2 : ℕ) ≤ besselEnergy a * Real.exp (1 / (4 * a)) := by
     have hstep : besselEnergy a * Real.exp (1 / (4 * a) - 1 / (4 * u))
         ≤ besselEnergy a * Real.exp (1 / (4 * a)) :=
       mul_le_mul_of_nonneg_left hexp1 hEa
@@ -243,7 +243,7 @@ theorem besselNormalForm_eq_coeff (u : ℝ) :
 /-- **The cosine coefficient moves only through the perturbation.** -/
 theorem hasDerivAt_besselCosCoeff {u : ℝ} (hu : 0 < u) :
     HasDerivAt besselCosCoeff
-      (1 / (4 * u ^ 2) * besselNormalForm u * Real.sin u) u := by
+      (1 / (4 * u ^ (2 : ℕ)) * besselNormalForm u * Real.sin u) u := by
   have hw := hasDerivAt_besselNormalForm hu
   have hw' := hasDerivAt_besselNormalFormDeriv hu
   have hc : HasDerivAt Real.cos (-Real.sin u) u := Real.hasDerivAt_cos u
@@ -251,10 +251,10 @@ theorem hasDerivAt_besselCosCoeff {u : ℝ} (hu : 0 < u) :
   have h := (hw.mul hc).sub (hw'.mul hs)
   have hode := besselNormalForm_ode hu
   have hsec : besselNormalFormSecond u
-      = -((1 + 1 / (4 * u ^ 2)) * besselNormalForm u) := by linarith [hode]
+      = -((1 + 1 / (4 * u ^ (2 : ℕ))) * besselNormalForm u) := by linarith [hode]
   have hval : besselNormalFormDeriv u * Real.cos u + besselNormalForm u * -Real.sin u
       - (besselNormalFormSecond u * Real.sin u + besselNormalFormDeriv u * Real.cos u)
-      = 1 / (4 * u ^ 2) * besselNormalForm u * Real.sin u := by
+      = 1 / (4 * u ^ (2 : ℕ)) * besselNormalForm u * Real.sin u := by
     rw [hsec]
     ring
   rw [hval] at h
@@ -263,7 +263,7 @@ theorem hasDerivAt_besselCosCoeff {u : ℝ} (hu : 0 < u) :
 /-- **The sine coefficient likewise.** -/
 theorem hasDerivAt_besselSinCoeff {u : ℝ} (hu : 0 < u) :
     HasDerivAt besselSinCoeff
-      (-(1 / (4 * u ^ 2) * besselNormalForm u * Real.cos u)) u := by
+      (-(1 / (4 * u ^ (2 : ℕ)) * besselNormalForm u * Real.cos u)) u := by
   have hw := hasDerivAt_besselNormalForm hu
   have hw' := hasDerivAt_besselNormalFormDeriv hu
   have hc : HasDerivAt Real.cos (-Real.sin u) u := Real.hasDerivAt_cos u
@@ -271,10 +271,10 @@ theorem hasDerivAt_besselSinCoeff {u : ℝ} (hu : 0 < u) :
   have h := (hw.mul hs).add (hw'.mul hc)
   have hode := besselNormalForm_ode hu
   have hsec : besselNormalFormSecond u
-      = -((1 + 1 / (4 * u ^ 2)) * besselNormalForm u) := by linarith [hode]
+      = -((1 + 1 / (4 * u ^ (2 : ℕ))) * besselNormalForm u) := by linarith [hode]
   have hval : besselNormalFormDeriv u * Real.sin u + besselNormalForm u * Real.cos u
       + (besselNormalFormSecond u * Real.cos u + besselNormalFormDeriv u * -Real.sin u)
-      = -(1 / (4 * u ^ 2) * besselNormalForm u * Real.cos u) := by
+      = -(1 / (4 * u ^ (2 : ℕ)) * besselNormalForm u * Real.cos u) := by
     rw [hsec]
     ring
   rw [hval] at h
@@ -282,12 +282,12 @@ theorem hasDerivAt_besselSinCoeff {u : ℝ} (hu : 0 < u) :
 
 
 theorem hasDerivAt_neg_inv_four_mul {v : ℝ} (hv : v ≠ 0) :
-    HasDerivAt (fun w : ℝ => -(1 / (4 * w))) (1 / (4 * v ^ 2)) v := by
+    HasDerivAt (fun w : ℝ => -(1 / (4 * w))) (1 / (4 * v ^ (2 : ℕ))) v := by
   have h := (hasDerivAt_inv_four_mul hv).neg
   rwa [neg_neg] at h
 
 theorem intervalIntegrable_inv_four_sq {a u : ℝ} (ha : 0 < a) (hau : a ≤ u) :
-    IntervalIntegrable (fun v : ℝ => 1 / (4 * v ^ 2)) MeasureTheory.volume a u := by
+    IntervalIntegrable (fun v : ℝ => 1 / (4 * v ^ (2 : ℕ))) MeasureTheory.volume a u := by
   refine ContinuousOn.intervalIntegrable ?_
   refine continuousOn_const.div (continuousOn_const.mul (continuousOn_pow 2)) ?_
   intro v hv
@@ -297,7 +297,7 @@ theorem intervalIntegrable_inv_four_sq {a u : ℝ} (ha : 0 < a) (hau : a ≤ u) 
 
 /-- The perturbation's tail mass. -/
 theorem integral_inv_four_sq {a u : ℝ} (ha : 0 < a) (hau : a ≤ u) :
-    (∫ v in a..u, 1 / (4 * v ^ 2)) = 1 / (4 * a) - 1 / (4 * u) := by
+    (∫ v in a..u, 1 / (4 * v ^ (2 : ℕ))) = 1 / (4 * a) - 1 / (4 * u) := by
   have hpos : ∀ v ∈ Set.uIcc a u, v ≠ 0 := by
     intro v hv
     rw [Set.uIcc_of_le hau] at hv
@@ -320,18 +320,18 @@ theorem abs_besselCoeff_sub_le {a u M : ℝ} (ha : 0 < a) (hau : a ≤ u)
     exact lt_of_lt_of_le ha hv.1
   have hwc : ContinuousOn besselNormalForm (Set.uIcc a u) :=
     fun v hv => ((hasDerivAt_besselNormalForm (hpos v hv)).continuousAt).continuousWithinAt
-  have hqc : ContinuousOn (fun v : ℝ => 1 / (4 * v ^ 2)) (Set.uIcc a u) := by
+  have hqc : ContinuousOn (fun v : ℝ => 1 / (4 * v ^ (2 : ℕ))) (Set.uIcc a u) := by
     refine continuousOn_const.div (continuousOn_const.mul (continuousOn_pow 2)) ?_
     intro v hv
     have := hpos v hv
     positivity
-  have hmaj : IntervalIntegrable (fun v : ℝ => M * (1 / (4 * v ^ 2)))
+  have hmaj : IntervalIntegrable (fun v : ℝ => M * (1 / (4 * v ^ (2 : ℕ))))
       MeasureTheory.volume a u := (intervalIntegrable_inv_four_sq ha hau).const_mul M
-  have hmajval : (∫ v in a..u, M * (1 / (4 * v ^ 2))) = M * (1 / (4 * a) - 1 / (4 * u)) := by
+  have hmajval : (∫ v in a..u, M * (1 / (4 * v ^ (2 : ℕ)))) = M * (1 / (4 * a) - 1 / (4 * u)) := by
     rw [intervalIntegral.integral_const_mul, integral_inv_four_sq ha hau]
   constructor
   · have hint : IntervalIntegrable
-        (fun v : ℝ => 1 / (4 * v ^ 2) * besselNormalForm v * Real.sin v)
+        (fun v : ℝ => 1 / (4 * v ^ (2 : ℕ)) * besselNormalForm v * Real.sin v)
         MeasureTheory.volume a u :=
       ((hqc.mul hwc).mul Real.continuous_sin.continuousOn).intervalIntegrable
     have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -339,22 +339,22 @@ theorem abs_besselCoeff_sub_le {a u M : ℝ} (ha : 0 < a) (hau : a ≤ u)
     rw [← hftc]
     refine le_trans (intervalIntegral.abs_integral_le_integral_abs
       (μ := MeasureTheory.volume) hau) ?_
-    have hmono : (∫ v in a..u, |1 / (4 * v ^ 2) * besselNormalForm v * Real.sin v|)
-        ≤ ∫ v in a..u, M * (1 / (4 * v ^ 2)) := by
+    have hmono : (∫ v in a..u, |1 / (4 * v ^ (2 : ℕ)) * besselNormalForm v * Real.sin v|)
+        ≤ ∫ v in a..u, M * (1 / (4 * v ^ (2 : ℕ))) := by
       refine intervalIntegral.integral_mono_on hau hint.abs hmaj fun v hv => ?_
       have hv0 : (0 : ℝ) < v := lt_of_lt_of_le ha hv.1
-      have hq0 : (0 : ℝ) < 1 / (4 * v ^ 2) := by positivity
+      have hq0 : (0 : ℝ) < 1 / (4 * v ^ (2 : ℕ)) := by positivity
       rw [abs_mul, abs_mul, abs_of_pos hq0]
       have hsin := Real.abs_sin_le_one v
       have hw := hM v hv
-      calc 1 / (4 * v ^ 2) * |besselNormalForm v| * |Real.sin v|
-          ≤ 1 / (4 * v ^ 2) * M * 1 :=
+      calc 1 / (4 * v ^ (2 : ℕ)) * |besselNormalForm v| * |Real.sin v|
+          ≤ 1 / (4 * v ^ (2 : ℕ)) * M * 1 :=
             mul_le_mul (mul_le_mul_of_nonneg_left hw hq0.le) hsin (abs_nonneg _)
               (by positivity)
-        _ = M * (1 / (4 * v ^ 2)) := by ring
+        _ = M * (1 / (4 * v ^ (2 : ℕ))) := by ring
     rwa [hmajval] at hmono
   · have hint : IntervalIntegrable
-        (fun v : ℝ => -(1 / (4 * v ^ 2) * besselNormalForm v * Real.cos v))
+        (fun v : ℝ => -(1 / (4 * v ^ (2 : ℕ)) * besselNormalForm v * Real.cos v))
         MeasureTheory.volume a u :=
       (((hqc.mul hwc).mul Real.continuous_cos.continuousOn).neg).intervalIntegrable
     have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -362,19 +362,19 @@ theorem abs_besselCoeff_sub_le {a u M : ℝ} (ha : 0 < a) (hau : a ≤ u)
     rw [← hftc]
     refine le_trans (intervalIntegral.abs_integral_le_integral_abs
       (μ := MeasureTheory.volume) hau) ?_
-    have hmono : (∫ v in a..u, |-(1 / (4 * v ^ 2) * besselNormalForm v * Real.cos v)|)
-        ≤ ∫ v in a..u, M * (1 / (4 * v ^ 2)) := by
+    have hmono : (∫ v in a..u, |-(1 / (4 * v ^ (2 : ℕ)) * besselNormalForm v * Real.cos v)|)
+        ≤ ∫ v in a..u, M * (1 / (4 * v ^ (2 : ℕ))) := by
       refine intervalIntegral.integral_mono_on hau hint.abs hmaj fun v hv => ?_
       have hv0 : (0 : ℝ) < v := lt_of_lt_of_le ha hv.1
-      have hq0 : (0 : ℝ) < 1 / (4 * v ^ 2) := by positivity
+      have hq0 : (0 : ℝ) < 1 / (4 * v ^ (2 : ℕ)) := by positivity
       rw [abs_neg, abs_mul, abs_mul, abs_of_pos hq0]
       have hcos := Real.abs_cos_le_one v
       have hw := hM v hv
-      calc 1 / (4 * v ^ 2) * |besselNormalForm v| * |Real.cos v|
-          ≤ 1 / (4 * v ^ 2) * M * 1 :=
+      calc 1 / (4 * v ^ (2 : ℕ)) * |besselNormalForm v| * |Real.cos v|
+          ≤ 1 / (4 * v ^ (2 : ℕ)) * M * 1 :=
             mul_le_mul (mul_le_mul_of_nonneg_left hw hq0.le) hcos (abs_nonneg _)
               (by positivity)
-        _ = M * (1 / (4 * v ^ 2)) := by ring
+        _ = M * (1 / (4 * v ^ (2 : ℕ))) := by ring
     rwa [hmajval] at hmono
 
 
@@ -418,7 +418,7 @@ theorem abs_besselNormalForm_sub_fixed_le {a u M : ℝ} (ha : 0 < a) (hau : a �
 /-- **The coefficient pair carries exactly the energy.**  The two-branch amplitude is not an
 auxiliary quantity: its square is the conserved-up-to-perturbation energy. -/
 theorem besselCoeff_sq_add (a : ℝ) :
-    besselCosCoeff a ^ 2 + besselSinCoeff a ^ 2 = besselEnergy a := by
+    besselCosCoeff a ^ (2 : ℕ) + besselSinCoeff a ^ (2 : ℕ) = besselEnergy a := by
   rw [besselCosCoeff, besselSinCoeff, besselEnergy]
   have h := Real.sin_sq_add_cos_sq a
   nlinarith [h, sq_nonneg (besselNormalForm a), sq_nonneg (besselNormalFormDeriv a)]
@@ -459,11 +459,11 @@ theorem abs_besselCoeff_le_sqrt_energy (u : ℝ) :
       ∧ |besselSinCoeff u| ≤ Real.sqrt (besselEnergy u) := by
   have hsum := besselCoeff_sq_add u
   constructor
-  · have hle : besselCosCoeff u ^ 2 ≤ besselEnergy u := by
+  · have hle : besselCosCoeff u ^ (2 : ℕ) ≤ besselEnergy u := by
       nlinarith [sq_nonneg (besselSinCoeff u), hsum]
     have h := Real.sqrt_le_sqrt hle
     rwa [Real.sqrt_sq_eq_abs] at h
-  · have hle : besselSinCoeff u ^ 2 ≤ besselEnergy u := by
+  · have hle : besselSinCoeff u ^ (2 : ℕ) ≤ besselEnergy u := by
       nlinarith [sq_nonneg (besselCosCoeff u), hsum]
     have h := Real.sqrt_le_sqrt hle
     rwa [Real.sqrt_sq_eq_abs] at h
@@ -489,26 +489,26 @@ theorem abs_besselCoeff_le_base {a u : ℝ} (ha : 0 < a) (hau : a ≤ u) :
 
 /-- The branch amplitudes' derivatives decay like the perturbation. -/
 theorem abs_deriv_besselCoeff_le_base {a u : ℝ} (ha : 0 < a) (hau : a ≤ u) :
-    |1 / (4 * u ^ 2) * besselNormalForm u * Real.sin u|
-        ≤ 1 / (4 * u ^ 2) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a)))
-      ∧ |-(1 / (4 * u ^ 2) * besselNormalForm u * Real.cos u)|
-        ≤ 1 / (4 * u ^ 2) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) := by
+    |1 / (4 * u ^ (2 : ℕ)) * besselNormalForm u * Real.sin u|
+        ≤ 1 / (4 * u ^ (2 : ℕ)) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a)))
+      ∧ |-(1 / (4 * u ^ (2 : ℕ)) * besselNormalForm u * Real.cos u)|
+        ≤ 1 / (4 * u ^ (2 : ℕ)) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) := by
   have hu : 0 < u := lt_of_lt_of_le ha hau
-  have hq : (0 : ℝ) < 1 / (4 * u ^ 2) := by positivity
+  have hq : (0 : ℝ) < 1 / (4 * u ^ (2 : ℕ)) := by positivity
   have hw := abs_besselNormalForm_le ha hau
   constructor
   · rw [abs_mul, abs_mul, abs_of_pos hq]
-    calc 1 / (4 * u ^ 2) * |besselNormalForm u| * |Real.sin u|
-        ≤ 1 / (4 * u ^ 2) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) * 1 :=
+    calc 1 / (4 * u ^ (2 : ℕ)) * |besselNormalForm u| * |Real.sin u|
+        ≤ 1 / (4 * u ^ (2 : ℕ)) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) * 1 :=
           mul_le_mul (mul_le_mul_of_nonneg_left hw hq.le) (Real.abs_sin_le_one u)
             (abs_nonneg _) (by positivity)
-      _ = 1 / (4 * u ^ 2) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) := by ring
+      _ = 1 / (4 * u ^ (2 : ℕ)) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) := by ring
   · rw [abs_neg, abs_mul, abs_mul, abs_of_pos hq]
-    calc 1 / (4 * u ^ 2) * |besselNormalForm u| * |Real.cos u|
-        ≤ 1 / (4 * u ^ 2) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) * 1 :=
+    calc 1 / (4 * u ^ (2 : ℕ)) * |besselNormalForm u| * |Real.cos u|
+        ≤ 1 / (4 * u ^ (2 : ℕ)) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) * 1 :=
           mul_le_mul (mul_le_mul_of_nonneg_left hw hq.le) (Real.abs_cos_le_one u)
             (abs_nonneg _) (by positivity)
-      _ = 1 / (4 * u ^ 2) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) := by ring
+      _ = 1 / (4 * u ^ (2 : ℕ)) * Real.sqrt (besselEnergy a * Real.exp (1 / (4 * a))) := by ring
 
 
 end GaloisForLFunctions.RHTower

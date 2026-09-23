@@ -215,7 +215,7 @@ theorem burnolCenteredSawtoothPrimitive_periodic :
   rw [← hsplit, hcell, add_zero]
 
 theorem burnolCenteredSawtoothPrimitive_of_mem_Ico {s : ℝ} (h0 : 0 ≤ s) (h1 : s < 1) :
-    burnolCenteredSawtoothPrimitive s = s ^ 2 / 2 - s / 2 := by
+    burnolCenteredSawtoothPrimitive s = s ^ (2 : ℕ) / 2 - s / 2 := by
   have hne : ∀ᵐ y : ℝ ∂volume, y ≠ 1 := by
     rw [MeasureTheory.ae_iff]
     simp
@@ -269,7 +269,7 @@ theorem abs_integral_burnolCenteredSawtooth_div_le {R : ℝ} (hR : 0 < R) :
     |∫ x in R..(2 * R), burnolCenteredSawtooth x / x| ≤ 1 / (2 * R) := by
   have hle : R ≤ 2 * R := by linarith
   have hquot : IntervalIntegrable
-      (fun x : ℝ => burnolCenteredSawtoothPrimitive x / x ^ 2) volume R (2 * R) := by
+      (fun x : ℝ => burnolCenteredSawtoothPrimitive x / x ^ (2 : ℕ)) volume R (2 * R) := by
     refine ContinuousOn.intervalIntegrable ?_
     rw [Set.uIcc_of_le hle]
     refine ContinuousOn.div continuous_burnolCenteredSawtoothPrimitive.continuousOn
@@ -279,12 +279,12 @@ theorem abs_integral_burnolCenteredSawtooth_div_le {R : ℝ} (hR : 0 < R) :
     positivity
   have hderiv : ∀ x ∈ Ioo R (2 * R), HasDerivWithinAt
       (fun y : ℝ => burnolCenteredSawtoothPrimitive y / y)
-      (burnolCenteredSawtooth x / x - burnolCenteredSawtoothPrimitive x / x ^ 2) (Ioi x) x := by
+      (burnolCenteredSawtooth x / x - burnolCenteredSawtoothPrimitive x / x ^ (2 : ℕ)) (Ioi x) x := by
     intro x hx
     have hx0 : x ≠ 0 := ne_of_gt (lt_trans hR hx.1)
     have hQ := (hasDerivWithinAt_burnolCenteredSawtoothPrimitive x).mono
       (Ioi_subset_Ici_self (a := x))
-    have hinv : HasDerivWithinAt (fun y : ℝ => y⁻¹) (-(x ^ 2)⁻¹) (Ioi x) x :=
+    have hinv : HasDerivWithinAt (fun y : ℝ => y⁻¹) (-(x ^ (2 : ℕ))⁻¹) (Ioi x) x :=
       (hasDerivAt_inv hx0).hasDerivWithinAt
     have hmul := hQ.mul hinv
     refine hmul.congr_deriv ?_
@@ -297,7 +297,7 @@ theorem abs_integral_burnolCenteredSawtooth_div_le {R : ℝ} (hR : 0 < R) :
     intro x hx
     exact ne_of_gt (lt_of_lt_of_le hR hx.1)
   have hint : IntervalIntegrable
-      (fun x : ℝ => burnolCenteredSawtooth x / x - burnolCenteredSawtoothPrimitive x / x ^ 2)
+      (fun x : ℝ => burnolCenteredSawtooth x / x - burnolCenteredSawtoothPrimitive x / x ^ (2 : ℕ))
       volume R (2 * R) := (intervalIntegrable_burnolCenteredSawtooth_div hR).sub hquot
   have hftc := intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le hle hcont hderiv hint
   rw [intervalIntegral.integral_sub (intervalIntegrable_burnolCenteredSawtooth_div hR) hquot]
@@ -309,9 +309,9 @@ theorem abs_integral_burnolCenteredSawtooth_div_le {R : ℝ} (hR : 0 < R) :
   have hb2 : |burnolCenteredSawtoothPrimitive R / R| ≤ 1 / (8 * R) := by
     rw [abs_div, abs_of_pos hR, div_le_div_iff₀ hR (by linarith : (0:ℝ) < 8 * R)]
     nlinarith [abs_burnolCenteredSawtoothPrimitive_le R, hR]
-  have hb3 : |∫ x in R..(2 * R), burnolCenteredSawtoothPrimitive x / x ^ 2| ≤ 1 / (8 * R) := by
+  have hb3 : |∫ x in R..(2 * R), burnolCenteredSawtoothPrimitive x / x ^ (2 : ℕ)| ≤ 1 / (8 * R) := by
     have hbound : ∀ x ∈ Set.uIoc R (2 * R),
-        ‖burnolCenteredSawtoothPrimitive x / x ^ 2‖ ≤ 1 / (8 * R ^ 2) := by
+        ‖burnolCenteredSawtoothPrimitive x / x ^ (2 : ℕ)‖ ≤ 1 / (8 * R ^ (2 : ℕ)) := by
       intro x hx
       rw [Set.uIoc_of_le hle] at hx
       have hxR : R < x := hx.1
@@ -327,7 +327,7 @@ theorem abs_integral_burnolCenteredSawtooth_div_le {R : ℝ} (hR : 0 < R) :
     field_simp
   have hexpand : (∫ x in R..(2 * R), burnolCenteredSawtooth x / x) =
       burnolCenteredSawtoothPrimitive (2 * R) / (2 * R) - burnolCenteredSawtoothPrimitive R / R
-        + ∫ x in R..(2 * R), burnolCenteredSawtoothPrimitive x / x ^ 2 := by
+        + ∫ x in R..(2 * R), burnolCenteredSawtoothPrimitive x / x ^ (2 : ℕ) := by
     linarith [hftc]
   rw [hexpand]
   have hsum : 1 / (16 * R) + 1 / (8 * R) + 1 / (8 * R) ≤ 1 / (2 * R) := by

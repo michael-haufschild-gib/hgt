@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.BesselJZeroEnvelope
 # Vortex Liouville transform from arXiv:2608.28167
 
 The paper removes the cylindrical first derivative by writing `psi(r,T) = u(r,T) / sqrt(r)`.
-This module certifies the resulting `ell^2 - 1/4` centrifugal coefficient, its radial norm-density
+This module certifies the resulting `ell^(2 : ℕ) - 1/4` centrifugal coefficient, its radial norm-density
 invariance, and the exact order-zero linear mode already present in the corpus.
 -/
 
@@ -21,7 +21,7 @@ abbrev VortexPositiveRadius := Set.Ioi (0 : ℝ)
 
 /-- Coefficient produced by the cylindrical Liouville substitution in equation (9). -/
 def vortexCentrifugalCoefficient (ell : ℤ) : ℝ :=
-  (ell : ℝ) ^ 2 - 1 / 4
+  (ell : ℝ) ^ (2 : ℕ) - 1 / 4
 
 @[simp] theorem vortexCentrifugalCoefficient_zero :
     vortexCentrifugalCoefficient 0 = -1 / 4 := by
@@ -46,20 +46,20 @@ def vortexLiouvilleFirst (r u u₁ : ℝ) : ℝ :=
 /-- Second radial jet induced by `psi = u / sqrt(r)`. -/
 def vortexLiouvilleSecond (r u u₁ u₂ : ℝ) : ℝ :=
   u₂ / Real.sqrt r - u₁ / (r * Real.sqrt r) +
-    3 * u / (4 * r ^ 2 * Real.sqrt r)
+    3 * u / (4 * r ^ (2 : ℕ) * Real.sqrt r)
 
 /-- Cylindrical radial operator before the Liouville substitution. -/
 def vortexCylindricalRadialResidual
     (ell : ℤ) (r psi psi₁ psi₂ : ℝ) : ℝ :=
-  psi₂ + psi₁ / r - (ell : ℝ) ^ 2 / r ^ 2 * psi
+  psi₂ + psi₁ / r - (ell : ℝ) ^ (2 : ℕ) / r ^ (2 : ℕ) * psi
 
 /-- Radial operator after the Liouville substitution. -/
 def vortexLiouvilleRadialResidual
     (ell : ℤ) (r u u₂ : ℝ) : ℝ :=
-  u₂ - vortexCentrifugalCoefficient ell / r ^ 2 * u
+  u₂ - vortexCentrifugalCoefficient ell / r ^ (2 : ℕ) * u
 
 /-- Equation (9), as an exact jet identity: the cylindrical operator is conjugate to the
-Schrodinger-form operator with coefficient `ell^2 - 1/4`. -/
+Schrodinger-form operator with coefficient `ell^(2 : ℕ) - 1/4`. -/
 theorem vortex_liouville_radial_identity
     (ell : ℤ) (r : VortexPositiveRadius) (u u₁ u₂ : ℝ) :
     vortexCylindricalRadialResidual ell r
@@ -79,7 +79,7 @@ theorem vortex_liouville_radial_identity
 /-- Pointwise version of the norm identity in equation (10): multiplication by the cylindrical
 Jacobian `r` exactly cancels division by `sqrt(r)`. -/
 theorem vortex_liouville_norm_density (r : VortexPositiveRadius) (u : ℂ) :
-    ‖u / (Real.sqrt (r : ℝ) : ℂ)‖ ^ 2 * (r : ℝ) = ‖u‖ ^ 2 := by
+    ‖u / (Real.sqrt (r : ℝ) : ℂ)‖ ^ (2 : ℕ) * (r : ℝ) = ‖u‖ ^ (2 : ℕ) := by
   have hr : (0 : ℝ) < r := r.property
   have hs : 0 < Real.sqrt (r : ℝ) := Real.sqrt_pos.mpr hr
   rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hs, div_pow]
@@ -89,8 +89,8 @@ theorem vortex_liouville_norm_density (r : VortexPositiveRadius) (u : ℂ) :
 /-- Radial integral form of equation (10), valid whether the integrals are finite or not. -/
 theorem vortex_liouville_radial_norm_integral (u : ℝ → ℂ) :
     (∫ r : ℝ in Set.Ioi 0,
-        ‖u r / (Real.sqrt r : ℂ)‖ ^ 2 * r) =
-      ∫ r : ℝ in Set.Ioi 0, ‖u r‖ ^ 2 := by
+        ‖u r / (Real.sqrt r : ℂ)‖ ^ (2 : ℕ) * r) =
+      ∫ r : ℝ in Set.Ioi 0, ‖u r‖ ^ (2 : ℕ) := by
   refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi fun r hr => ?_
   exact vortex_liouville_norm_density ⟨r, hr⟩ (u r)
 
@@ -98,17 +98,17 @@ theorem vortex_liouville_radial_norm_integral (u : ℝ → ℂ) :
 conditions because both extended integral conventions see the same pointwise density. -/
 theorem vortex_liouville_spatiotemporal_norm_integral (u : ℝ → ℝ → ℂ) :
     (∫ T : ℝ, ∫ r : ℝ in Set.Ioi 0,
-        ‖u T r / (Real.sqrt r : ℂ)‖ ^ 2 * r) =
-      ∫ T : ℝ, ∫ r : ℝ in Set.Ioi 0, ‖u T r‖ ^ 2 := by
+        ‖u T r / (Real.sqrt r : ℂ)‖ ^ (2 : ℕ) * r) =
+      ∫ T : ℝ, ∫ r : ℝ in Set.Ioi 0, ‖u T r‖ ^ (2 : ℕ) := by
   apply MeasureTheory.integral_congr_ae
   filter_upwards with T
   exact vortex_liouville_radial_norm_integral (u T)
 
 /-! ## Full stationary nonlinear equation -/
 
-/-- Squared-Bessel guide `V(r) = gamma J_0(r)^2` from equations (4) and (6). -/
+/-- Squared-Bessel guide `V(r) = gamma J_0(r)^(2 : ℕ)` from equations (4) and (6). -/
 def vortexBesselWaveguide (gamma r : ℝ) : ℝ :=
-  gamma * GaloisForLFunctions.RHTower.besselJ0 r ^ 2
+  gamma * GaloisForLFunctions.RHTower.besselJ0 r ^ (2 : ℕ)
 
 @[simp] theorem vortexBesselWaveguide_zero (gamma : ℝ) :
     vortexBesselWaveguide gamma 0 = gamma := by
@@ -119,7 +119,7 @@ theorem vortexBesselWaveguide_mem_Icc
     (gamma : Set.Ici (0 : ℝ)) (r : ℝ) :
     vortexBesselWaveguide gamma r ∈ Set.Icc 0 (gamma : ℝ) := by
   have hJ := GaloisForLFunctions.RHTower.abs_besselJ0_le_one r
-  have hJsq : GaloisForLFunctions.RHTower.besselJ0 r ^ 2 ≤ 1 := by
+  have hJsq : GaloisForLFunctions.RHTower.besselJ0 r ^ (2 : ℕ) ≤ 1 := by
     have hprod : 0 ≤
         (1 - |GaloisForLFunctions.RHTower.besselJ0 r|) *
           (1 + |GaloisForLFunctions.RHTower.besselJ0 r|) :=
@@ -133,15 +133,15 @@ theorem vortexBesselWaveguide_mem_Icc
 def vortexStationaryResidual
     (ell : ℤ) (beta potential r psi psiᵣ psiᵣᵣ psiTT : ℝ) : ℝ :=
   -beta * psi + psiTT + vortexCylindricalRadialResidual ell r psi psiᵣ psiᵣᵣ +
-    (potential + psi ^ 2) * psi
+    (potential + psi ^ (2 : ℕ)) * psi
 
 /-- Transformed stationary residual in equation (9). -/
 def vortexLiouvilleStationaryResidual
     (ell : ℤ) (beta potential r u uᵣᵣ uTT : ℝ) : ℝ :=
   uTT + vortexLiouvilleRadialResidual ell r u uᵣᵣ +
-    (potential - beta + u ^ 2 / r) * u
+    (potential - beta + u ^ (2 : ℕ) / r) * u
 
-/-- Equations (8)--(9) as a full exact identity, including cubic scaling `psi^3 -> u^3/r`. -/
+/-- Equations (8)--(9) as a full exact identity, including cubic scaling `psi^(3 : ℕ) -> u^(3 : ℕ)/r`. -/
 theorem vortex_liouville_stationary_identity
     (ell : ℤ) (beta potential : ℝ) (r : VortexPositiveRadius)
     (u uᵣ uᵣᵣ uTT : ℝ) :
@@ -173,7 +173,7 @@ def vortexLinearJ0ModeDeriv (eta : VortexPositiveFrequency) (r : ℝ) : ℝ :=
   GaloisForLFunctions.RHTower.besselNormalFormDeriv ((eta : ℝ) * r) * (eta : ℝ)
 
 def vortexLinearJ0ModeSecond (eta : VortexPositiveFrequency) (r : ℝ) : ℝ :=
-  (eta : ℝ) ^ 2 * GaloisForLFunctions.RHTower.besselNormalFormSecond ((eta : ℝ) * r)
+  (eta : ℝ) ^ (2 : ℕ) * GaloisForLFunctions.RHTower.besselNormalFormSecond ((eta : ℝ) * r)
 
 theorem hasDerivAt_vortexLinearJ0Mode
     (eta : VortexPositiveFrequency) (r : VortexPositiveRadius) :
@@ -204,13 +204,13 @@ theorem hasDerivAt_vortexLinearJ0ModeDeriv
 removing nonlinear and guiding terms. -/
 def vortexLinearStationaryResidual
     (ell : ℤ) (waveSq r value second : ℝ) : ℝ :=
-  second + (waveSq - vortexCentrifugalCoefficient ell / r ^ 2) * value
+  second + (waveSq - vortexCentrifugalCoefficient ell / r ^ (2 : ℕ)) * value
 
 /-- Existing corpus normal form solves every positive-frequency, order-zero linear specialization
 of the vortex equation exactly. -/
 theorem vortexLinearJ0Mode_residual_zero
     (eta : VortexPositiveFrequency) (r : VortexPositiveRadius) :
-    vortexLinearStationaryResidual 0 ((eta : ℝ) ^ 2) r
+    vortexLinearStationaryResidual 0 ((eta : ℝ) ^ (2 : ℕ)) r
       (vortexLinearJ0Mode eta r) (vortexLinearJ0ModeSecond eta r) = 0 := by
   have harg : 0 < (eta : ℝ) * (r : ℝ) := mul_pos eta.property r.property
   have hode := GaloisForLFunctions.RHTower.besselNormalForm_ode harg
@@ -219,13 +219,13 @@ theorem vortexLinearJ0Mode_residual_zero
   simp only [vortexLinearStationaryResidual, vortexCentrifugalCoefficient_zero,
     vortexLinearJ0Mode, vortexLinearJ0ModeSecond]
   calc
-    (eta : ℝ) ^ 2 * GaloisForLFunctions.RHTower.besselNormalFormSecond
+    (eta : ℝ) ^ (2 : ℕ) * GaloisForLFunctions.RHTower.besselNormalFormSecond
           ((eta : ℝ) * (r : ℝ)) +
-        ((eta : ℝ) ^ 2 - (-1 / 4) / (r : ℝ) ^ 2) *
+        ((eta : ℝ) ^ (2 : ℕ) - (-1 / 4) / (r : ℝ) ^ (2 : ℕ)) *
           GaloisForLFunctions.RHTower.besselNormalForm ((eta : ℝ) * (r : ℝ)) =
-      (eta : ℝ) ^ 2 *
+      (eta : ℝ) ^ (2 : ℕ) *
         (GaloisForLFunctions.RHTower.besselNormalFormSecond ((eta : ℝ) * (r : ℝ)) +
-          (1 + 1 / (4 * ((eta : ℝ) * (r : ℝ)) ^ 2)) *
+          (1 + 1 / (4 * ((eta : ℝ) * (r : ℝ)) ^ (2 : ℕ))) *
             GaloisForLFunctions.RHTower.besselNormalForm ((eta : ℝ) * (r : ℝ))) := by
         field_simp [heta, hr]
         ring

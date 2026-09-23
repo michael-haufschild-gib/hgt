@@ -23,7 +23,7 @@ variable {b c R : ℝ}
 
 set_option maxHeartbeats 1000000 in
 /-- **On a sub-band the shifted cosine propagator is the scalar `cos(ct)`.** -/
-theorem kgShiftedCosOp_kgTunedPot_subband (hc0 : 0 < c) (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b))
+theorem kgShiftedCosOp_kgTunedPot_subband (hc0 : 0 < c) (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b))
     (t : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
     kgShiftedCosOp (measurable_kgTunedPot (E := E) b c).neg t (kgLowPassOp R x)
       = ((Real.cos (t * c) : ℝ) : ℂ) • kgLowPassOp R x := by
@@ -58,8 +58,8 @@ theorem kgShiftedCosOp_kgTunedPot_subband (hc0 : 0 < c) (hR : R ≤ Real.sqrt (c
 
 set_option maxHeartbeats 1000000 in
 /-- **On a sub-band the shifted sine propagator is the scalar `sin(ct)/c`.** -/
-theorem kgShiftedSinFreqOp_kgTunedPot_subband (hc0 : 0 < c) (hc1 : 1 ≤ c ^ 2)
-    (hR : R ≤ Real.sqrt (c ^ 2 - 1 + b)) (t : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
+theorem kgShiftedSinFreqOp_kgTunedPot_subband (hc0 : 0 < c) (hc1 : 1 ≤ c ^ (2 : ℕ))
+    (hR : R ≤ Real.sqrt (c ^ (2 : ℕ) - 1 + b)) (t : ℝ) (x : Lp ℂ 2 (volume : Measure E)) :
     kgShiftedSinFreqOp (measurable_kgTunedPot (E := E) b c).neg t (kgLowPassOp R x)
       = ((Real.sin (t * c) / c : ℝ) : ℂ) • kgLowPassOp R x := by
   have hcge := one_le_of_one_le_sq hc0 hc1

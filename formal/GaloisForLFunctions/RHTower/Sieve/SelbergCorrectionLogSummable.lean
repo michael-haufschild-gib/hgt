@@ -36,7 +36,7 @@ theorem summable_selbergCorrectionLogMajorant' (p : ℕ) :
 
 theorem tsum_selbergCorrectionLogMajorant_le' (p : ℕ) :
     (∑' ab : ℕ × ℕ, selbergCorrectionLogMajorant p ab.1 ab.2) ≤
-      16 * Real.log (p : ℝ) / (p : ℝ) ^ 2 := by
+      16 * Real.log (p : ℝ) / (p : ℝ) ^ (2 : ℕ) := by
   rcases Nat.lt_or_ge p 2 with hp | hp
   · have hfun : ∀ ab : ℕ × ℕ, selbergCorrectionLogMajorant p ab.1 ab.2 = 0 := by
       intro ab
@@ -49,7 +49,7 @@ theorem tsum_selbergCorrectionLogMajorant_le' (p : ℕ) :
   · exact tsum_selbergCorrectionLogMajorant_le hp
 
 theorem summable_sixteen_log_div_sq :
-    Summable (fun p : ℕ => 16 * Real.log (p : ℝ) / (p : ℝ) ^ 2) := by
+    Summable (fun p : ℕ => 16 * Real.log (p : ℝ) / (p : ℝ) ^ (2 : ℕ)) := by
   refine (summable_log_div_sq.mul_left 16).congr ?_
   intro p
   ring
@@ -126,7 +126,7 @@ theorem summable_padicMajorantTerm (p : ℕ) : Summable (padicMajorantTerm p) :=
 
 theorem tsum_padicMajorantTerm_le (p : ℕ) :
     (∑' mn : ℕ × ℕ, padicMajorantTerm p mn) ≤
-      (16 * Real.log (p : ℝ) / (p : ℝ) ^ 2) *
+      (16 * Real.log (p : ℝ) / (p : ℝ) ^ (2 : ℕ)) *
         (∑' mn : ℕ × ℕ, |selbergEulerCorrectionCoeff mn.1 mn.2|) := by
   refine (summable_padicMajorantTerm p).tsum_le_of_sum_le ?_
   intro s

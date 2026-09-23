@@ -51,10 +51,10 @@ theorem integral_fejer_zero {T : ℝ} (hT : 0 < T) :
   rw [intervalIntegral.integral_congr (fun t _ => hone t)]
   rw [intervalIntegral.integral_ofReal]
   congr 1
-  have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => s - s ^ 2 / (2 * T)) (1 - t / T) t := by
+  have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => s - s ^ (2 : ℕ) / (2 * T)) (1 - t / T) t := by
     intro t
     have h1 : HasDerivAt (fun s : ℝ => s) 1 t := hasDerivAt_id t
-    have h2 : HasDerivAt (fun s : ℝ => s ^ 2 / (2 * T)) (2 * t / (2 * T)) t := by
+    have h2 : HasDerivAt (fun s : ℝ => s ^ (2 : ℕ) / (2 * T)) (2 * t / (2 * T)) t := by
       have h := (hasDerivAt_pow 2 t).div_const (2 * T)
       simpa using h
     have hd := h1.sub h2

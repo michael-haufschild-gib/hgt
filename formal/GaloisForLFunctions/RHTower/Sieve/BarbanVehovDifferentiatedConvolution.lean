@@ -111,7 +111,7 @@ theorem levinsonCriticalDetectorFullLongDerivativeMoment_eq_vonMangoldtConvoluti
     (L M : ℕ) :
     levinsonCriticalDetectorFullLongDerivativeMoment L M =
       ∑ k ∈ Finset.Ioc L (L * M),
-        Sieve.barbanVehovVonMangoldtConvolution M k ^ 2 / (k : ℝ) := by
+        Sieve.barbanVehovVonMangoldtConvolution M k ^ (2 : ℕ) / (k : ℝ) := by
   rw [levinsonCriticalDetectorFullLongDerivativeMoment]
   apply Finset.sum_congr rfl
   intro k hk

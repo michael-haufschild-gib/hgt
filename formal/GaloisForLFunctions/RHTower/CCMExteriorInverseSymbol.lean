@@ -59,31 +59,31 @@ theorem tendsto_integral_modulated_symbol {m g : ℝ → ℝ} {M : ℝ}
     (hmeas : Measurable m) (hbound : ∀ ξ, |m ξ| ≤ M)
     (h0 : Tendsto m atTop (nhds 0))
     (hg : Integrable g) (hgnn : ∀ η, 0 ≤ g η) :
-    Tendsto (fun n : ℕ => ∫ η, (m (η + n)) ^ 2 * g η) atTop (nhds 0) := by
+    Tendsto (fun n : ℕ => ∫ η, (m (η + n)) ^ (2 : ℕ) * g η) atTop (nhds 0) := by
   have hgmeas : AEStronglyMeasurable g volume := hg.aestronglyMeasurable
-  have hFmeas : ∀ n : ℕ, AEStronglyMeasurable (fun η => (m (η + n)) ^ 2 * g η) volume := by
+  have hFmeas : ∀ n : ℕ, AEStronglyMeasurable (fun η => (m (η + n)) ^ (2 : ℕ) * g η) volume := by
     intro n
     refine AEStronglyMeasurable.mul ?_ hgmeas
     exact ((hmeas.comp (measurable_id.add_const _)).pow_const 2).aestronglyMeasurable
-  have hboundInt : Integrable (fun η => M ^ 2 * g η) := hg.const_mul _
-  have hdom : ∀ n : ℕ, ∀ᵐ η : ℝ, ‖(m (η + n)) ^ 2 * g η‖ ≤ M ^ 2 * g η := by
+  have hboundInt : Integrable (fun η => M ^ (2 : ℕ) * g η) := hg.const_mul _
+  have hdom : ∀ n : ℕ, ∀ᵐ η : ℝ, ‖(m (η + n)) ^ (2 : ℕ) * g η‖ ≤ M ^ (2 : ℕ) * g η := by
     intro n
     refine Filter.Eventually.of_forall fun η => ?_
-    have h1 : (m (η + n)) ^ 2 ≤ M ^ 2 := by
+    have h1 : (m (η + n)) ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by
       have habs := hbound (η + n)
       nlinarith [abs_nonneg (m (η + n)), sq_abs (m (η + n))]
-    have h2 : 0 ≤ (m (η + n)) ^ 2 := sq_nonneg _
+    have h2 : 0 ≤ (m (η + n)) ^ (2 : ℕ) := sq_nonneg _
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg h2 (hgnn η))]
     exact mul_le_mul_of_nonneg_right h1 (hgnn η)
-  have hlim : ∀ᵐ η : ℝ, Tendsto (fun n : ℕ => (m (η + n)) ^ 2 * g η) atTop (nhds (0 * g η)) := by
+  have hlim : ∀ᵐ η : ℝ, Tendsto (fun n : ℕ => (m (η + n)) ^ (2 : ℕ) * g η) atTop (nhds (0 * g η)) := by
     refine Filter.Eventually.of_forall fun η => ?_
     have hshift : Tendsto (fun n : ℕ => η + (n : ℝ)) atTop atTop :=
       tendsto_atTop_add_const_left _ _ tendsto_natCast_atTop_atTop
     have hm : Tendsto (fun n : ℕ => m (η + (n : ℝ))) atTop (nhds 0) := h0.comp hshift
-    have hsq : Tendsto (fun n : ℕ => (m (η + (n : ℝ))) ^ 2) atTop (nhds (0 ^ 2)) := hm.pow 2
-    rw [show ((0 : ℝ) ^ 2) = 0 by norm_num] at hsq
+    have hsq : Tendsto (fun n : ℕ => (m (η + (n : ℝ))) ^ (2 : ℕ)) atTop (nhds (0 ^ (2 : ℕ))) := hm.pow 2
+    rw [show ((0 : ℝ) ^ (2 : ℕ)) = 0 by norm_num] at hsq
     exact hsq.mul_const (g η)
-  have := tendsto_integral_of_dominated_convergence (fun η => M ^ 2 * g η) hFmeas hboundInt
+  have := tendsto_integral_of_dominated_convergence (fun η => M ^ (2 : ℕ) * g η) hFmeas hboundInt
     hdom hlim
   simpa using this
 

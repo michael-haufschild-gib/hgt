@@ -109,13 +109,13 @@ def ContinuedXiWardPrimeLogTailThreeHalvesSlackLaw : Prop :=
     ContinuedXiWardThreeHalvesSlackSampledScalarLaw (xiWardPrimeLogSampleSet Y)
 
 /-- The source-calibrated prime-log tail criterion with refined allowance
-`3C/(log(|t|+9)+1/405)^9`, asymptotic to three local margin units. -/
+`3C/(log(|t|+9)+1/405)^(9 : ℕ)`, asymptotic to three local margin units. -/
 def ContinuedXiWardPrimeLogTailRefinedSlackLaw : Prop :=
   ∃ y₀ : ℝ, ∀ Y : ℝ, y₀ ≤ Y →
     ContinuedXiWardRefinedSlackSampledScalarLaw (xiWardPrimeLogSampleSet Y)
 
 /-- The lowest-burden Ward tail criterion: only the real channel is bounded by
-`2 + E(C/(log(|t|+9)+1/405)^9)`, where
+`2 + E(C/(log(|t|+9)+1/405)^(9 : ℕ))`, where
 `E(m)=m(1-2m)/(1-3m/2+m²)`, on canonical prime-log samples. -/
 def ContinuedXiWardPrimeLogTailRefinedRealLaw : Prop :=
   ∃ y₀ : ℝ, ∀ Y : ℝ, y₀ ≤ Y →
@@ -191,7 +191,7 @@ theorem riemannHypothesis_iff_continuedXiWardPrimeLogTailThreeHalvesSlackLaw :
     exact htail (max y₀ y₁) (le_max_left _ _)
 
 /-- **Lowest-burden prime-log scalar endpoint.**  Exact detector variation permits the sampled
-Ward budget to absorb `3C/(log(|t|+9)+1/405)^9`, pointwise more than three halves of the local
+Ward budget to absorb `3C/(log(|t|+9)+1/405)^(9 : ℕ)`, pointwise more than three halves of the local
 margin and asymptotic to three margins, without restoring a cover premise. -/
 theorem riemannHypothesis_iff_continuedXiWardPrimeLogTailRefinedSlackLaw :
     RiemannHypothesis ↔ ContinuedXiWardPrimeLogTailRefinedSlackLaw := by

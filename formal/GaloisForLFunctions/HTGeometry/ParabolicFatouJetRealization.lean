@@ -6,7 +6,7 @@ import Mathlib
 Fix `N >= 4` and a normalized zero-residue parabolic jet
 
 ```text
-h(z) = z + z^2 + z^3 + a_4 z^4 + ... + a_N z^N.
+h(z) = z + z^(2 : ℕ) + z^(3 : ℕ) + a_4 z^(4 : ℕ) + ... + a_N z^N.
 ```
 
 There is a polynomial `P` of degree at most `N - 3` with `P(0) = 0` such that the rational Fatou
@@ -90,7 +90,7 @@ theorem fatouResidual_add_monomial (h P : Polynomial ℂ) (c : ℂ) (k : ℕ) :
 parabolic jet there is a polynomial `P` with `P(0) = 0` and `deg P ≤ m - 3` whose Fatou residual
 vanishes to order `m + 1`. -/
 theorem exists_fatouPolynomial (hfac : h = X * u) (hu0 : u.coeff 0 = 1) (hu1 : u.coeff 1 = 1)
-    (hbase : (X : Polynomial ℂ) ^ 4 ∣ (h - X - X * h)) {m : ℕ} (hm : 3 ≤ m) :
+    (hbase : (X : Polynomial ℂ) ^ (4 : ℕ) ∣ (h - X - X * h)) {m : ℕ} (hm : 3 ≤ m) :
     ∃ P : Polynomial ℂ, P.coeff 0 = 0 ∧ P.natDegree ≤ m - 3 ∧
       (X : Polynomial ℂ) ^ (m + 1) ∣ fatouResidual h P := by
   induction m, hm using Nat.le_induction with
@@ -135,7 +135,7 @@ theorem exists_fatouPolynomial (hfac : h = X * u) (hu0 : u.coeff 0 = 1) (hu1 : u
 
 /-! ## The analytic Fatou germ -/
 
-theorem analyticAt_polyEval (P : Polynomial ℂ) (z : ℂ) :
+theorem analyticAt_polyEval_parabolicFatouJetRealization (P : Polynomial ℂ) (z : ℂ) :
     AnalyticAt ℂ (fun w : ℂ => Polynomial.eval w P) z := by
   have hd : Differentiable ℂ (fun w : ℂ => Polynomial.eval w P) := fun x =>
     (P.hasDerivAt x).differentiableAt
@@ -149,7 +149,7 @@ def fatouRecip (P : Polynomial ℂ) (w : ℂ) : ℂ := w / (-1 + w * Polynomial.
 
 theorem analyticAt_fatouRecip (P : Polynomial ℂ) : AnalyticAt ℂ (fatouRecip P) 0 := by
   have hden : AnalyticAt ℂ (fun w : ℂ => -1 + w * Polynomial.eval w P) 0 :=
-    analyticAt_const.add (analyticAt_id.mul (analyticAt_polyEval P 0))
+    analyticAt_const.add (analyticAt_id.mul (analyticAt_polyEval_parabolicFatouJetRealization P 0))
   have hne : (-1 : ℂ) + 0 * Polynomial.eval 0 P ≠ 0 := by norm_num
   exact analyticAt_id.div hden (by simp)
 
@@ -255,7 +255,7 @@ theorem fatouRecip_eq (P : Polynomial ℂ) (w : ℂ) : fatouRecip P w = w / fato
 
 theorem analyticAt_fatouDen (P : Polynomial ℂ) {A : ℂ → ℂ} {z₀ : ℂ} (hA : AnalyticAt ℂ A z₀) :
     AnalyticAt ℂ (fun z => fatouDen P (A z)) z₀ :=
-  analyticAt_const.add (hA.mul ((analyticAt_polyEval P (A z₀)).comp hA))
+  analyticAt_const.add (hA.mul ((analyticAt_polyEval_parabolicFatouJetRealization P (A z₀)).comp hA))
 
 /-- The cleared-denominator Abel identity for the jet polynomial: the numerator of
 `Φ_P ∘ h - Φ_P - 1` is the negative of the Fatou residual. -/
@@ -284,7 +284,7 @@ polynomial relation that makes it algebraic, and agrees with the prescribed jet 
 `N`. -/
 theorem exists_algebraicFatouGerm {h u : Polynomial ℂ} (hfac : h = Polynomial.X * u)
     (hu0 : u.coeff 0 = 1) (hu1 : u.coeff 1 = 1)
-    (hbase : (Polynomial.X : Polynomial ℂ) ^ 4 ∣ (h - Polynomial.X - Polynomial.X * h))
+    (hbase : (Polynomial.X : Polynomial ℂ) ^ (4 : ℕ) ∣ (h - Polynomial.X - Polynomial.X * h))
     {N : ℕ} (hN : 4 ≤ N) :
     ∃ (P : Polynomial ℂ) (f : ℂ → ℂ),
       P.coeff 0 = 0 ∧ P.natDegree ≤ N - 3 ∧ AnalyticAt ℂ f 0 ∧ f 0 = 0 ∧
@@ -315,7 +315,7 @@ theorem exists_algebraicFatouGerm {h u : Polynomial ℂ} (hfac : h = Polynomial.
   have hF0 : F 0 = 0 := by
     show γ (S 0) = 0
     rw [hS0, hγ0]
-  have hHan : AnalyticAt ℂ (fun z : ℂ => Polynomial.eval z h) 0 := analyticAt_polyEval h 0
+  have hHan : AnalyticAt ℂ (fun z : ℂ => Polynomial.eval z h) 0 := analyticAt_polyEval_parabolicFatouJetRealization h 0
   have hH0 : Polynomial.eval (0 : ℂ) h = 0 := by rw [hfac]; simp
   have habel : ∀ᶠ z in nhds (0 : ℂ), fatouRecip P (F z) = S z := by
     have htend : Filter.Tendsto S (nhds 0) (nhds 0) := by
@@ -353,7 +353,7 @@ theorem exists_algebraicFatouGerm {h u : Polynomial ℂ} (hfac : h = Polynomial.
   have hBan : AnalyticAt ℂ B 0 := by
     refine ((analyticAt_fatouDen P analyticAt_id).add analyticAt_id).sub
       (analyticAt_id.mul ((hHan.mul (analyticAt_polyDivDiff P hHan hFan)).add ?_))
-    exact (analyticAt_polyEval P (F 0)).comp hFan
+    exact (analyticAt_polyEval_parabolicFatouJetRealization P (F 0)).comp hFan
   have hB0 : B 0 = -1 := by
     rw [hB]
     simp
@@ -388,7 +388,7 @@ theorem exists_algebraicFatouGerm {h u : Polynomial ℂ} (hfac : h = Polynomial.
     rw [hexp, hHrel, hz, hdd]
     ring
   have hgan : AnalyticAt ℂ (fun z : ℂ => Polynomial.eval z R / B z) 0 :=
-    (analyticAt_polyEval R 0).div hBan (by rw [hB0]; norm_num)
+    (analyticAt_polyEval_parabolicFatouJetRealization R 0).div hBan (by rw [hB0]; norm_num)
   have hgeq : (fun z => F z - Polynomial.eval z h) =ᶠ[nhds 0]
       fun z => z ^ (N + 1) * (Polynomial.eval z R / B z) := by
     filter_upwards [hkey, hBne] with z h1 h2
@@ -403,7 +403,7 @@ theorem exists_algebraicFatouGerm {h u : Polynomial ℂ} (hfac : h = Polynomial.
     exact iteratedDeriv_eq_zero_of_flat_factor hgan hgeq (by omega)
 
 /-- **Coefficient form of the realization theorem.**  Any polynomial jet normalized as
-`z + z^2 + z^3 + O(z^4)` is realized, through order `N`, by an algebraic germ with a rational
+`z + z^(2 : ℕ) + z^(3 : ℕ) + O(z^(4 : ℕ))` is realized, through order `N`, by an algebraic germ with a rational
 Fatou coordinate of degree at most `N - 3`. -/
 theorem exists_algebraicFatouGerm_of_coeff {h : Polynomial ℂ}
     (h0 : h.coeff 0 = 0) (h1 : h.coeff 1 = 1) (h2 : h.coeff 2 = 1) (h3 : h.coeff 3 = 1)
@@ -422,7 +422,7 @@ theorem exists_algebraicFatouGerm_of_coeff {h : Polynomial ℂ}
   have hu1 : u.coeff 1 = 1 := by
     have : h.coeff 2 = u.coeff 1 := by rw [hu, Polynomial.coeff_X_mul]
     rw [← this, h2]
-  have hbase : (Polynomial.X : Polynomial ℂ) ^ 4 ∣ (h - Polynomial.X - Polynomial.X * h) := by
+  have hbase : (Polynomial.X : Polynomial ℂ) ^ (4 : ℕ) ∣ (h - Polynomial.X - Polynomial.X * h) := by
     rw [Polynomial.X_pow_dvd_iff]
     intro d hd
     interval_cases d <;>

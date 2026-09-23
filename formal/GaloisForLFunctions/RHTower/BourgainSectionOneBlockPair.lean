@@ -9,7 +9,7 @@ For `J` coarse blocks of `H` samples, take denominator `D = 4 J H`.
 The left blocks start at `i/(4J)` and the right blocks at `1/2+j/(4J)`.
 Thus every block stays in `[0,1]`, every pair is separated by at least
 `1/4`, and the sole Taylor condition follows from
-`J >= 6 * C_Taylor * H^2`.
+`J >= 6 * C_Taylor * H^(2 : ℕ)`.
 -/
 import GaloisForLFunctions.RHTower.BourgainNormalizedCellDecoupling
 import GaloisForLFunctions.RHTower.BourgainSectionOneScaleSelection
@@ -139,7 +139,7 @@ theorem bourgainSectionOneBlockBases_separated
     linarith
   linarith
 
-/-- Coarse-block count dominating `6 C_Taylor H^2` forces the exact cubic
+/-- Coarse-block count dominating `6 C_Taylor H^(2 : ℕ)` forces the exact cubic
 Taylor smallness condition for every block pair. -/
 theorem bourgainSectionOneBlock_taylor_small
     {J H : ℕ} (hJ : 0 < J) (hH : 0 < H)

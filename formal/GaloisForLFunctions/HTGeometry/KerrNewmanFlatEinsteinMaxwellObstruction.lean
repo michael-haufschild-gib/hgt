@@ -54,11 +54,11 @@ theorem kerrNewmanFlatBZDressed_coordinateEinsteinMaxwell_iff_trivial
       kerrNewmanFlatBZDressedMetric, kerrNewmanCanonicalMaxwellStress,
       kerrNewmanCanonicalMaxwellStressMagnitude, Matrix.transpose_apply, Matrix.mul_apply,
       Fin.sum_univ_four] at h11 h22
-    have hsum : electric ^ 2 + magnetic ^ 2 = 0 := by
+    have hsum : electric ^ (2 : ℕ) + magnetic ^ (2 : ℕ) = 0 := by
       nlinarith [h11, h22]
-    have helectricSq : electric ^ 2 = 0 := by
+    have helectricSq : electric ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg magnetic]
-    have hmagneticSq : magnetic ^ 2 = 0 := by
+    have hmagneticSq : magnetic ^ (2 : ℕ) = 0 := by
       nlinarith [sq_nonneg electric]
     refine ⟨?_, (sq_eq_zero_iff).mp helectricSq, (sq_eq_zero_iff).mp hmagneticSq⟩
     nlinarith [h11, hsum]

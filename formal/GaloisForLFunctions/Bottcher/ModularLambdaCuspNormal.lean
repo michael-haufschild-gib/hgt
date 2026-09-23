@@ -19,8 +19,8 @@ noncomputable def northPole : EuclideanSpace ℝ (Fin 3) := !₂[0, 0, 1]
 /-- Stereographic projection in the inverse coordinate, continuously extended across `0`.
 For `w ≠ 0`, `stereoInvExtended w = stereo w⁻¹`; at `w = 0` it is the north pole. -/
 noncomputable def stereoInvExtended (w : ℂ) : EuclideanSpace ℝ (Fin 3) :=
-  !₂[2 * w.re / (1 + ‖w‖ ^ 2), -2 * w.im / (1 + ‖w‖ ^ 2),
-    (1 - ‖w‖ ^ 2) / (1 + ‖w‖ ^ 2)]
+  !₂[2 * w.re / (1 + ‖w‖ ^ (2 : ℕ)), -2 * w.im / (1 + ‖w‖ ^ (2 : ℕ)),
+    (1 - ‖w‖ ^ (2 : ℕ)) / (1 + ‖w‖ ^ (2 : ℕ))]
 
 @[simp] theorem stereoInvExtended_zero : stereoInvExtended 0 = northPole := by
   ext i
@@ -45,12 +45,12 @@ theorem stereo_eq_stereoInvExtended_inv {z : ℂ} (hz : z ≠ 0) :
 
 /-- The inverse-coordinate stereographic extension is continuous. -/
 theorem continuous_stereoInvExtended : Continuous stereoInvExtended := by
-  have hden : ∀ z : ℂ, (1 : ℝ) + ‖z‖ ^ 2 ≠ 0 := fun z =>
-    (by positivity : (0 : ℝ) < 1 + ‖z‖ ^ 2).ne'
-  have hc : Continuous (fun z : ℂ => (1 : ℝ) + ‖z‖ ^ 2) := by fun_prop
+  have hden : ∀ z : ℂ, (1 : ℝ) + ‖z‖ ^ (2 : ℕ) ≠ 0 := fun z =>
+    (by positivity : (0 : ℝ) < 1 + ‖z‖ ^ (2 : ℕ)).ne'
+  have hc : Continuous (fun z : ℂ => (1 : ℝ) + ‖z‖ ^ (2 : ℕ)) := by fun_prop
   have hpi : Continuous (fun z : ℂ =>
-      (![2 * z.re / (1 + ‖z‖ ^ 2), -2 * z.im / (1 + ‖z‖ ^ 2),
-        (1 - ‖z‖ ^ 2) / (1 + ‖z‖ ^ 2)] : Fin 3 → ℝ)) := by
+      (![2 * z.re / (1 + ‖z‖ ^ (2 : ℕ)), -2 * z.im / (1 + ‖z‖ ^ (2 : ℕ)),
+        (1 - ‖z‖ ^ (2 : ℕ)) / (1 + ‖z‖ ^ (2 : ℕ))] : Fin 3 → ℝ)) := by
     apply continuous_pi
     intro i
     fin_cases i

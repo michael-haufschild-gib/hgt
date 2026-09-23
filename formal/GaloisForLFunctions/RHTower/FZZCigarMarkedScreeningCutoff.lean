@@ -24,13 +24,13 @@ open scoped Topology
 noncomputable section
 namespace GaloisForLFunctions.RHTower
 
-private def radialMarkedPrimitive (q r : ℝ) : ℝ := r^q*(Real.log r/q-1/q^2)
+private def radialMarkedPrimitive (q r : ℝ) : ℝ := r^q*(Real.log r/q-1/q^(2 : ℕ))
 
 private theorem radialMarkedPrimitive_hasDerivAt (q r : ℝ) (hq : q ≠ 0) (hr : 0 < r) :
     HasDerivAt (radialMarkedPrimitive q) (r^(q-1)*Real.log r) r := by
   have hp : HasDerivAt (fun t : ℝ => t^q) (q*r^(q-1)) r :=
     Real.hasDerivAt_rpow_const (Or.inl hr.ne')
-  have hl := ((Real.hasDerivAt_log hr.ne').div_const q).sub_const (1/q^2)
+  have hl := ((Real.hasDerivAt_log hr.ne').div_const q).sub_const (1/q^(2 : ℕ))
   have hd := hp.mul hl
   have he : r^q = r^(q-1)*r := by
     calc

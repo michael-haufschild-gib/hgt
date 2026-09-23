@@ -4,7 +4,7 @@
 Definition 2.1 of the source: `T` is *quasi-α-firmly nonexpansive* when, for every fixed
 point `p`,
 ```
-d(Tx, p)^2 ≤ d(x,p)^2 - ((1-α)/α) d(Tx, x)^2 .
+d(Tx, p)^(2 : ℕ) ≤ d(x,p)^(2 : ℕ) - ((1-α)/α) d(Tx, x)^(2 : ℕ) .
 ```
 It is convenient to carry the coefficient `ξ = (1-α)/α` directly; `quasiFirmCoeff` translates.
 
@@ -27,7 +27,7 @@ variable {X : Type*} [MetricSpace X]
 /-- Quasi-firmness of `T` at the point `p`, with coefficient `ξ`. Definition 2.1 is the case
 `ξ = (1-α)/α`, required at every fixed point of `T`. -/
 def QuasiFirmAt (T : X → X) (p : X) (ξ : ℝ) : Prop :=
-  ∀ x : X, dist (T x) p ^ 2 ≤ dist x p ^ 2 - ξ * dist (T x) x ^ 2
+  ∀ x : X, dist (T x) p ^ (2 : ℕ) ≤ dist x p ^ (2 : ℕ) - ξ * dist (T x) x ^ (2 : ℕ)
 
 /-- Definition 2.1: `T` is quasi-α-firmly nonexpansive. -/
 structure QuasiFirmlyNonexpansive (T : X → X) (α : ℝ) : Prop where
@@ -72,9 +72,9 @@ theorem quasiFirmAt_gd (N : X → X) (hN : ∀ x y, dist (N x) (N y) ≤ dist x 
   rw [hxN] at hnpc
   have hnn : 0 ≤ dist (N x) p := dist_nonneg
   have hnn2 : 0 ≤ dist x p := dist_nonneg
-  have hsq : dist (N x) p ^ 2 ≤ dist x p ^ 2 := by nlinarith
-  have hcoef : α * (1 - α) * (dist (NPCSpace.gd x (N x) α) x / α) ^ 2
-      = (1 - α) / α * dist (NPCSpace.gd x (N x) α) x ^ 2 := by
+  have hsq : dist (N x) p ^ (2 : ℕ) ≤ dist x p ^ (2 : ℕ) := by nlinarith
+  have hcoef : α * (1 - α) * (dist (NPCSpace.gd x (N x) α) x / α) ^ (2 : ℕ)
+      = (1 - α) / α * dist (NPCSpace.gd x (N x) α) x ^ (2 : ℕ) := by
     field_simp
   rw [hcoef] at hnpc
   nlinarith [hnpc, hsq]
@@ -114,8 +114,8 @@ theorem quasiFirmAt_comp {T₁ T₂ : X → X} {p : X} {ξ₁ ξ₂ : ℝ} (h₁
   have hBnn : 0 ≤ B := dist_nonneg
   have htri : dist (T₂ (T₁ x)) x ≤ B + A := dist_triangle _ _ _
   have hCnn : 0 ≤ dist (T₂ (T₁ x)) x := dist_nonneg
-  have hCsq : dist (T₂ (T₁ x)) x ^ 2 ≤ (B + A) ^ 2 := by nlinarith
-  have hcs : ξ₁ * ξ₂ / (ξ₁ + ξ₂) * (B + A) ^ 2 ≤ ξ₁ * A ^ 2 + ξ₂ * B ^ 2 := by
+  have hCsq : dist (T₂ (T₁ x)) x ^ (2 : ℕ) ≤ (B + A) ^ (2 : ℕ) := by nlinarith
+  have hcs : ξ₁ * ξ₂ / (ξ₁ + ξ₂) * (B + A) ^ (2 : ℕ) ≤ ξ₁ * A ^ (2 : ℕ) + ξ₂ * B ^ (2 : ℕ) := by
     rw [div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
     nlinarith [sq_nonneg (ξ₁ * A - ξ₂ * B)]
   have hpos : 0 < ξ₁ * ξ₂ / (ξ₁ + ξ₂) := by positivity

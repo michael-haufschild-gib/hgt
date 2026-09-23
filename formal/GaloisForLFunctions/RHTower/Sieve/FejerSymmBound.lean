@@ -20,7 +20,7 @@ theorem integral_fejer_symm_real (L : ℝ) (hL : L ≠ 0) {T : ℝ} (hT : 0 < T)
     (∫ t in (0 : ℝ)..T, ((1 - t / T : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I))
       + (∫ t in (0 : ℝ)..T,
           ((1 - t / T : ℝ) : ℂ) * Complex.exp (((t * (-L) : ℝ) : ℂ) * Complex.I))
-      = (((2 - 2 * Real.cos (T * L)) / (T * L ^ 2) : ℝ) : ℂ) := by
+      = (((2 - 2 * Real.cos (T * L)) / (T * L ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [integral_fejer_symm L hL hT]
   push_cast [Complex.ofReal_cos]
   ring
@@ -30,7 +30,7 @@ theorem norm_integral_fejer_symm_le_inv (L : ℝ) (hL : L ≠ 0) {T : ℝ} (hT :
     ‖(∫ t in (0 : ℝ)..T, ((1 - t / T : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I))
         + (∫ t in (0 : ℝ)..T,
             ((1 - t / T : ℝ) : ℂ) * Complex.exp (((t * (-L) : ℝ) : ℂ) * Complex.I))‖
-      ≤ 4 / (T * L ^ 2) := by
+      ≤ 4 / (T * L ^ (2 : ℕ)) := by
   rw [integral_fejer_symm_real L hL hT, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (fejer_transform_nonneg L hT)]
   exact fejer_transform_le_inv L hL hT

@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeWindowSharpDelta
 
 The logarithmic near-product condition confines every primitive direction to an explicit
 multiplicative slope interval.  Farey packing and the source's elementary exponential-width bound
-then give the `O(delta Q^2)` nonexceptional-direction count with explicit constant four.
+then give the `O(delta Q^(2 : ℕ))` nonexceptional-direction count with explicit constant four.
 -/
 
 namespace RHTower.Sieve
@@ -66,7 +66,7 @@ theorem card_heathBrownPrimitiveLogWindow_le
     (hm1 : 0 < m1) (hm2 : 0 < m2) (hm : m2 ≤ m1)
     (hdelta0 : 0 < delta) (hdelta1 : delta ≤ 1) :
     ((heathBrownPrimitiveLogWindow Q m1 m2 delta).card : ℝ) ≤
-      4 * delta * (Q : ℝ) ^ 2 + 1 := by
+      4 * delta * (Q : ℝ) ^ (2 : ℕ) + 1 := by
   let a := (m2 / m1) * Real.exp (-delta)
   let b := (m2 / m1) * Real.exp delta
   have hratio0 : 0 < m2 / m1 := div_pos hm2 hm1
@@ -104,8 +104,8 @@ theorem card_heathBrownPrimitiveLogWindow_le
   calc
     ((heathBrownPrimitiveLogWindow Q m1 m2 delta).card : ℝ) ≤
         ((heathBrownPrimitiveWindow Q a b).card : ℝ) := hcardReal
-    _ ≤ (b - a) * (Q : ℝ) ^ 2 + 1 := hpack
-    _ ≤ 4 * delta * (Q : ℝ) ^ 2 + 1 := by
+    _ ≤ (b - a) * (Q : ℝ) ^ (2 : ℕ) + 1 := hpack
+    _ ≤ 4 * delta * (Q : ℝ) ^ (2 : ℕ) + 1 := by
       gcongr
 
 end

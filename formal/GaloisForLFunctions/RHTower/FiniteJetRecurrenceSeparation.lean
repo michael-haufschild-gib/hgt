@@ -292,12 +292,12 @@ theorem aperiodicClock_norm_eq_one (N : ℕ) (hN : 2 ≤ N) :
 
 /-- The two realized clocks have exactly the same energy variance. -/
 theorem clock_variance_eq (N : ℕ) (hN : 2 ≤ N) :
-    ‖clockHamiltonian N (periodicClock N)‖ ^ 2 -
+    ‖clockHamiltonian N (periodicClock N)‖ ^ (2 : ℕ) -
         ‖inner ℂ (periodicClock N)
-          (clockHamiltonian N (periodicClock N))‖ ^ 2 =
-      ‖clockHamiltonian N (aperiodicClock N)‖ ^ 2 -
+          (clockHamiltonian N (periodicClock N))‖ ^ (2 : ℕ) =
+      ‖clockHamiltonian N (aperiodicClock N)‖ ^ (2 : ℕ) -
         ‖inner ℂ (aperiodicClock N)
-          (clockHamiltonian N (aperiodicClock N))‖ ^ 2 := by
+          (clockHamiltonian N (aperiodicClock N))‖ ^ (2 : ℕ) := by
   have hfirst := probability_moment_eq N 1 hN (by omega)
   have hsecond := probability_moment_eq N 2 hN (by omega)
   simp only [pow_one] at hfirst
@@ -439,8 +439,8 @@ theorem irrationalMass_lt_one (N : ℕ) (hN : 2 ≤ N) :
 
 theorem twoPoint_fidelityDeficit
     (μ : ℝ) (z : ℂ) (hz : ‖z‖ = 1) :
-    1 - ‖((1 - μ : ℝ) : ℂ) + (μ : ℂ) * z‖ ^ 2 =
-      μ * (1 - μ) * ‖z - 1‖ ^ 2 := by
+    1 - ‖((1 - μ : ℝ) : ℂ) + (μ : ℂ) * z‖ ^ (2 : ℕ) =
+      μ * (1 - μ) * ‖z - 1‖ ^ (2 : ℕ) := by
   let w : Fin 2 → ℝ := ![1 - μ, μ]
   let phase : Fin 2 → ℂ := ![1, z]
   have hmass : ∑ i, w i = 1 := by
@@ -454,7 +454,7 @@ theorem twoPoint_fidelityDeficit
     w phase hmass hphase
   have henergy :
       RHTower.projectiveWeightedPairwiseEnergy w phase =
-        2 * μ * (1 - μ) * ‖z - 1‖ ^ 2 := by
+        2 * μ * (1 - μ) * ‖z - 1‖ ^ (2 : ℕ) := by
     simp [RHTower.projectiveWeightedPairwiseEnergy, w, phase,
       Fin.sum_univ_two, norm_sub_rev]
     ring
@@ -466,13 +466,13 @@ theorem twoPoint_fidelityDeficit
 
 def recurrenceAmplitude (N : ℕ)
     (w : Option (Fin (N + 1)) → ℝ) (n : ℕ) : ℝ :=
-  (1 / 2 : ℝ) * Real.sqrt (1 - ‖phaseAmplitude N w n‖ ^ 2)
+  (1 / 2 : ℝ) * Real.sqrt (1 - ‖phaseAmplitude N w n‖ ^ (2 : ℕ))
 
 /-- Operational recurrence amplitude from the actual clock-state overlap. -/
 def clockRecurrenceAmplitude (N : ℕ)
     (w : Option (Fin (N + 1)) → ℝ) (n : ℕ) : ℝ :=
   (1 / 2 : ℝ) * Real.sqrt
-    (1 - ‖inner ℂ (RHTower.finiteIndexWeightKet w) (tickClock N w n)‖ ^ 2)
+    (1 - ‖inner ℂ (RHTower.finiteIndexWeightKet w) (tickClock N w n)‖ ^ (2 : ℕ))
 
 /-- Root survival deficit of the realized pure clock. -/
 def rootSurvivalDeficit (N : ℕ)
@@ -515,7 +515,7 @@ theorem aperiodic_recurrenceAmplitude_eq
   change (1 / 2 : ℝ) * Real.sqrt
       (1 - ‖(((1 - irrationalMass N : ℝ) : ℂ) +
         ((irrationalMass N : ℝ) : ℂ) *
-          HTGeometry.ee ((n : ℝ) * Real.sqrt 2))‖ ^ 2) = _
+          HTGeometry.ee ((n : ℝ) * Real.sqrt 2))‖ ^ (2 : ℕ)) = _
   rw [hfd, Real.sqrt_mul
     (mul_nonneg (irrationalMass_pos N hN).le
       (by linarith [irrationalMass_lt_one N hN]))]

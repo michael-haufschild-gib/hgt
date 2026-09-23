@@ -157,19 +157,19 @@ theorem two_prime_real_rooted (p q : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hpq : p
   have hpq' : p ∉ ({q} : Finset ℕ) := by simp [hpq]
   have hexp : ∀ z : ℝ, gibbsDiag {p, q} x z
       = Real.exp (-x) + (Real.exp (-((p:ℝ)*x)) + Real.exp (-((q:ℝ)*x))) * z
-        + Real.exp (-((q:ℝ)*((p:ℝ)*x))) * z^2 := by
+        + Real.exp (-((q:ℝ)*((p:ℝ)*x))) * z^(2 : ℕ) := by
     intro z
     rw [gibbsDiag_insert p {q} hpq', gibbsDiag_singleton, gibbsDiag_singleton]
     ring
   set A : ℝ := Real.exp (-((q:ℝ)*((p:ℝ)*x))) with hA
   set Bc : ℝ := Real.exp (-((p:ℝ)*x)) + Real.exp (-((q:ℝ)*x)) with hB
   set E0 : ℝ := Real.exp (-x) with hE0
-  set D : ℝ := Bc^2 - 4 * (A * E0) with hD
+  set D : ℝ := Bc^(2 : ℕ) - 4 * (A * E0) with hD
   have hA0 : 0 < A := Real.exp_pos _
   have hAne : A ≠ 0 := ne_of_gt hA0
   have hDpos : 0 < D := by
     rw [hD, hB, hA, hE0]
-    have hAM : (Real.exp (-((p:ℝ)*x)) - Real.exp (-((q:ℝ)*x)))^2 ≥ 0 := sq_nonneg _
+    have hAM : (Real.exp (-((p:ℝ)*x)) - Real.exp (-((q:ℝ)*x)))^(2 : ℕ) ≥ 0 := sq_nonneg _
     have hprod : Real.exp (-((p:ℝ)*x)) * Real.exp (-((q:ℝ)*x))
         = Real.exp (-(((p:ℝ)+(q:ℝ))*x)) := by
       rw [← Real.exp_add]
@@ -190,9 +190,9 @@ theorem two_prime_real_rooted (p q : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hpq : p
     nlinarith [hAM, hprod, hexparg, hlt]
   set s : ℝ := Real.sqrt D with hs
   have hs0 : 0 < s := Real.sqrt_pos.mpr hDpos
-  have hs2 : s^2 = D := Real.sq_sqrt hDpos.le
+  have hs2 : s^(2 : ℕ) = D := Real.sq_sqrt hDpos.le
   have h2A : (2*A) ≠ 0 := mul_ne_zero two_ne_zero hAne
-  have hs2' : s^2 = Bc^2 - 4 * (A * E0) := by rw [hs2, hD]
+  have hs2' : s^(2 : ℕ) = Bc^(2 : ℕ) - 4 * (A * E0) := by rw [hs2, hD]
   refine ⟨(-Bc + s) / (2*A), (-Bc - s) / (2*A), ?_, ?_⟩
   · intro hcon
     rw [div_eq_div_iff h2A h2A] at hcon
@@ -207,7 +207,7 @@ theorem two_prime_real_rooted (p q : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hpq : p
 
 /-- Vieta's formulas, extracted from a pointwise real factorization of a cubic. -/
 theorem cubic_vieta (a3 a2 a1 a0 r₁ r₂ r₃ : ℝ)
-    (h : ∀ w : ℝ, a3*w^3 + a2*w^2 + a1*w + a0
+    (h : ∀ w : ℝ, a3*w^(3 : ℕ) + a2*w^(2 : ℕ) + a1*w + a0
       = a3 * ((w - r₁) * ((w - r₂) * (w - r₃)))) :
     a2 = -(a3*(r₁+r₂+r₃)) ∧ a1 = a3*(r₁*r₂+r₁*r₃+r₂*r₃) ∧ a0 = -(a3*(r₁*r₂*r₃)) := by
   have h0 := h 0
@@ -221,14 +221,14 @@ theorem cubic_vieta (a3 a2 a1 a0 r₁ r₂ r₃ : ℝ)
 /-- A real cubic with a real root factorization has nonnegative discriminant:
 `Δ = a₃⁴·∏(rᵢ−rⱼ)²`. -/
 theorem cubic_discrim_nonneg_of_real_rooted (a3 a2 a1 a0 r₁ r₂ r₃ : ℝ)
-    (h : ∀ w : ℝ, a3*w^3 + a2*w^2 + a1*w + a0
+    (h : ∀ w : ℝ, a3*w^(3 : ℕ) + a2*w^(2 : ℕ) + a1*w + a0
       = a3 * ((w - r₁) * ((w - r₂) * (w - r₃)))) :
-    0 ≤ 18 * a3 * a2 * a1 * a0 - 4 * a2^3 * a0 + a2^2 * a1^2
-      - 4 * a3 * a1^3 - 27 * a3^2 * a0^2 := by
+    0 ≤ 18 * a3 * a2 * a1 * a0 - 4 * a2^(3 : ℕ) * a0 + a2^(2 : ℕ) * a1^(2 : ℕ)
+      - 4 * a3 * a1^(3 : ℕ) - 27 * a3^(2 : ℕ) * a0^(2 : ℕ) := by
   obtain ⟨hb, hc, hd⟩ := cubic_vieta a3 a2 a1 a0 r₁ r₂ r₃ h
-  have key : 18 * a3 * a2 * a1 * a0 - 4 * a2^3 * a0 + a2^2 * a1^2
-      - 4 * a3 * a1^3 - 27 * a3^2 * a0^2
-      = (a3^2 * ((r₁ - r₂) * ((r₁ - r₃) * (r₂ - r₃))))^2 := by
+  have key : 18 * a3 * a2 * a1 * a0 - 4 * a2^(3 : ℕ) * a0 + a2^(2 : ℕ) * a1^(2 : ℕ)
+      - 4 * a3 * a1^(3 : ℕ) - 27 * a3^(2 : ℕ) * a0^(2 : ℕ)
+      = (a3^(2 : ℕ) * ((r₁ - r₂) * ((r₁ - r₃) * (r₂ - r₃))))^(2 : ℕ) := by
     rw [hb, hc, hd]
     ring
   rw [key]
@@ -238,10 +238,10 @@ theorem cubic_discrim_nonneg_of_real_rooted (a3 a2 a1 a0 r₁ r₂ r₃ : ℝ)
 roots, the squared constant term (the parity current, at the parity point) is dominated by
 an explicit polynomial in the higher jet: real-rootedness is a current detector. -/
 theorem current_sq_le_of_real_rooted (a3 a2 a1 a0 r₁ r₂ r₃ : ℝ)
-    (h : ∀ w : ℝ, a3*w^3 + a2*w^2 + a1*w + a0
+    (h : ∀ w : ℝ, a3*w^(3 : ℕ) + a2*w^(2 : ℕ) + a1*w + a0
       = a3 * ((w - r₁) * ((w - r₂) * (w - r₃)))) :
-    27 * a3^2 * a0^2
-      ≤ 18 * a3 * a2 * a1 * a0 - 4 * a2^3 * a0 + a2^2 * a1^2 - 4 * a3 * a1^3 := by
+    27 * a3^(2 : ℕ) * a0^(2 : ℕ)
+      ≤ 18 * a3 * a2 * a1 * a0 - 4 * a2^(3 : ℕ) * a0 + a2^(2 : ℕ) * a1^(2 : ℕ) - 4 * a3 * a1^(3 : ℕ) := by
   have h1 := cubic_discrim_nonneg_of_real_rooted a3 a2 a1 a0 r₁ r₂ r₃ h
   linarith
 
@@ -265,7 +265,7 @@ theorem parity_vortex_three (p q r : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 
   have hp' : p ∉ ({q, r} : Finset ℕ) := by simp [hpq, hpr]
   have hexp2 : ∀ y z : ℝ, gibbsDiag {q, r} y z
       = Real.exp (-y) + (Real.exp (-((q:ℝ)*y)) + Real.exp (-((r:ℝ)*y))) * z
-        + Real.exp (-((r:ℝ)*((q:ℝ)*y))) * z^2 := by
+        + Real.exp (-((r:ℝ)*((q:ℝ)*y))) * z^(2 : ℕ) := by
     intro y z
     rw [gibbsDiag_insert q {r} hqr', gibbsDiag_singleton, gibbsDiag_singleton]
     ring
@@ -273,8 +273,8 @@ theorem parity_vortex_three (p q r : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 
       = Real.exp (-x)
         + (Real.exp (-((p:ℝ)*x)) + Real.exp (-((q:ℝ)*x)) + Real.exp (-((r:ℝ)*x))) * z
         + (Real.exp (-((q:ℝ)*((p:ℝ)*x))) + Real.exp (-((r:ℝ)*((p:ℝ)*x)))
-            + Real.exp (-((r:ℝ)*((q:ℝ)*x)))) * z^2
-        + Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) * z^3 := by
+            + Real.exp (-((r:ℝ)*((q:ℝ)*x)))) * z^(2 : ℕ)
+        + Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) * z^(3 : ℕ) := by
     intro x z
     rw [gibbsDiag_insert p {q, r} hp', hexp2, hexp2]
     ring
@@ -296,7 +296,7 @@ theorem parity_vortex_three (p q r : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 
       - 3 * Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) with hg2
   set g3 : ℝ → ℝ := fun x => Real.exp (-((r:ℝ)*((q:ℝ)*((p:ℝ)*x)))) with hg3
   have hjet : ∀ x w : ℝ, gibbsDiag {p, q, r} x (-1 + w)
-      = g3 x * w^3 + g2 x * w^2 + g1 x * w + g0 x := by
+      = g3 x * w^(3 : ℕ) + g2 x * w^(2 : ℕ) + g1 x * w + g0 x := by
     intro x w
     rw [hexp3, hg0, hg1, hg2, hg3]
     ring
@@ -382,16 +382,16 @@ theorem parity_vortex_three (p q r : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 
   -- the rescaled discriminant
   set Gf : ℝ → ℝ := fun x =>
     x * (18 * g3 x * (g2 x / x) * (g1 x / x) * (g0 x / x))
-      - x^2 * (4 * (g2 x / x)^3 * (g0 x / x))
-      + x^2 * ((g2 x / x)^2 * (g1 x / x)^2)
-      - x * (4 * g3 x * (g1 x / x)^3)
-      - 27 * (g3 x)^2 * (g0 x / x)^2 with hGf
+      - x^(2 : ℕ) * (4 * (g2 x / x)^(3 : ℕ) * (g0 x / x))
+      + x^(2 : ℕ) * ((g2 x / x)^(2 : ℕ) * (g1 x / x)^(2 : ℕ))
+      - x * (4 * g3 x * (g1 x / x)^(3 : ℕ))
+      - 27 * (g3 x)^(2 : ℕ) * (g0 x / x)^(2 : ℕ) with hGf
   have hGlim : Filter.Tendsto Gf (nhdsWithin (0:ℝ) (Set.Ioi 0))
       (nhds (0 * (18 * 1 * (deriv g2 0) * (deriv g1 0) * φ)
-        - 0^2 * (4 * (deriv g2 0)^3 * φ)
-        + 0^2 * ((deriv g2 0)^2 * (deriv g1 0)^2)
-        - 0 * (4 * 1 * (deriv g1 0)^3)
-        - 27 * 1^2 * φ^2)) := by
+        - 0^(2 : ℕ) * (4 * (deriv g2 0)^(3 : ℕ) * φ)
+        + 0^(2 : ℕ) * ((deriv g2 0)^(2 : ℕ) * (deriv g1 0)^(2 : ℕ))
+        - 0 * (4 * 1 * (deriv g1 0)^(3 : ℕ))
+        - 27 * 1^(2 : ℕ) * φ^(2 : ℕ))) := by
     rw [hGf]
     exact (((((hxlim.mul ((((Filter.Tendsto.const_mul 18 hg3c).mul hs2).mul hs1).mul
         hs0)).sub ((hxlim.pow 2).mul ((Filter.Tendsto.const_mul 4 (hs2.pow 3)).mul
@@ -400,10 +400,10 @@ theorem parity_vortex_three (p q r : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 
         ((Filter.Tendsto.const_mul 27 (hg3c.pow 2)).mul (hs0.pow 2)))
   have hGneg : ∀ᶠ x in nhdsWithin (0:ℝ) (Set.Ioi 0), Gf x < 0 := by
     have hlim0 : (0 * (18 * 1 * (deriv g2 0) * (deriv g1 0) * φ)
-        - 0^2 * (4 * (deriv g2 0)^3 * φ)
-        + 0^2 * ((deriv g2 0)^2 * (deriv g1 0)^2)
-        - 0 * (4 * 1 * (deriv g1 0)^3)
-        - 27 * 1^2 * φ^2) < 0 := by
+        - 0^(2 : ℕ) * (4 * (deriv g2 0)^(3 : ℕ) * φ)
+        + 0^(2 : ℕ) * ((deriv g2 0)^(2 : ℕ) * (deriv g1 0)^(2 : ℕ))
+        - 0 * (4 * 1 * (deriv g1 0)^(3 : ℕ))
+        - 27 * 1^(2 : ℕ) * φ^(2 : ℕ)) < 0 := by
       have := mul_pos hφ0 hφ0
       nlinarith [this]
     exact hGlim.eventually_lt_const hlim0
@@ -412,20 +412,20 @@ theorem parity_vortex_three (p q r : ℕ) (hp : 2 ≤ p) (hq : 2 ≤ q) (hr : 2 
     exact hx
   filter_upwards [hGneg, hxpos] with x hG hx
   rintro ⟨r₁, r₂, r₃, hfac⟩
-  have hforall : ∀ w : ℝ, g3 x * w^3 + g2 x * w^2 + g1 x * w + g0 x
+  have hforall : ∀ w : ℝ, g3 x * w^(3 : ℕ) + g2 x * w^(2 : ℕ) + g1 x * w + g0 x
       = g3 x * ((w - r₁) * ((w - r₂) * (w - r₃))) := by
     intro w
     rw [← hjet x w, hfac w, hg3]
   have hnonneg := cubic_discrim_nonneg_of_real_rooted (g3 x) (g2 x) (g1 x) (g0 x)
     r₁ r₂ r₃ hforall
   have hxne : x ≠ 0 := ne_of_gt hx
-  have hΔG : 18 * g3 x * g2 x * g1 x * g0 x - 4 * (g2 x)^3 * g0 x
-      + (g2 x)^2 * (g1 x)^2 - 4 * g3 x * (g1 x)^3 - 27 * (g3 x)^2 * (g0 x)^2
-      = x^2 * Gf x := by
+  have hΔG : 18 * g3 x * g2 x * g1 x * g0 x - 4 * (g2 x)^(3 : ℕ) * g0 x
+      + (g2 x)^(2 : ℕ) * (g1 x)^(2 : ℕ) - 4 * g3 x * (g1 x)^(3 : ℕ) - 27 * (g3 x)^(2 : ℕ) * (g0 x)^(2 : ℕ)
+      = x^(2 : ℕ) * Gf x := by
     rw [hGf]
     field_simp
-  have hneg : 18 * g3 x * g2 x * g1 x * g0 x - 4 * (g2 x)^3 * g0 x
-      + (g2 x)^2 * (g1 x)^2 - 4 * g3 x * (g1 x)^3 - 27 * (g3 x)^2 * (g0 x)^2 < 0 := by
+  have hneg : 18 * g3 x * g2 x * g1 x * g0 x - 4 * (g2 x)^(3 : ℕ) * g0 x
+      + (g2 x)^(2 : ℕ) * (g1 x)^(2 : ℕ) - 4 * g3 x * (g1 x)^(3 : ℕ) - 27 * (g3 x)^(2 : ℕ) * (g0 x)^(2 : ℕ) < 0 := by
     rw [hΔG]
     exact mul_neg_of_pos_of_neg (by positivity) hG
   linarith

@@ -21,12 +21,12 @@ theorem polarizedPacketTransform_degree_energy_neutral
     {q : I → ℝ} (hq0 : ∀ i, 0 < q i) (hq1 : ∀ i, q i < 1)
     (c : Finset I → ℝ) (E : Finset ℕ) :
     ∑ S ∈ Finset.univ.filter (fun S : Finset I => S.card ∈ E),
-        (polarizedPacketTransform (fun i => 1 - q i) (rawComplementPacket c) S) ^ 2
+        (polarizedPacketTransform (fun i => 1 - q i) (rawComplementPacket c) S) ^ (2 : ℕ)
       = ∑ S ∈ Finset.univ.filter (fun S : Finset I => S.card ∈ E),
-        (polarizedPacketTransform q c S) ^ 2 := by
+        (polarizedPacketTransform q c S) ^ (2 : ℕ) := by
   refine Finset.sum_congr rfl fun S _ => ?_
   rw [polarizedPacketTransform_complement_intertwining hq0 hq1]
-  have hsq : ((-1 : ℝ) ^ S.card) ^ 2 = 1 := by
+  have hsq : ((-1 : ℝ) ^ S.card) ^ (2 : ℕ) = 1 := by
     rw [← pow_mul, mul_comm, pow_mul]
     norm_num
   rw [mul_pow, hsq, one_mul]
@@ -36,11 +36,11 @@ theorem polarizedPacketTransform_total_energy_neutral
     {I : Type*} [Fintype I] [DecidableEq I]
     {q : I → ℝ} (hq0 : ∀ i, 0 < q i) (hq1 : ∀ i, q i < 1)
     (c : Finset I → ℝ) :
-    ∑ S : Finset I, (polarizedPacketTransform (fun i => 1 - q i) (rawComplementPacket c) S) ^ 2
-      = ∑ S : Finset I, (polarizedPacketTransform q c S) ^ 2 := by
+    ∑ S : Finset I, (polarizedPacketTransform (fun i => 1 - q i) (rawComplementPacket c) S) ^ (2 : ℕ)
+      = ∑ S : Finset I, (polarizedPacketTransform q c S) ^ (2 : ℕ) := by
   refine Finset.sum_congr rfl fun S _ => ?_
   rw [polarizedPacketTransform_complement_intertwining hq0 hq1]
-  have hsq : ((-1 : ℝ) ^ S.card) ^ 2 = 1 := by
+  have hsq : ((-1 : ℝ) ^ S.card) ^ (2 : ℕ) = 1 := by
     rw [← pow_mul, mul_comm, pow_mul]
     norm_num
   rw [mul_pow, hsq, one_mul]

@@ -68,7 +68,7 @@ theorem deningerEulerOp_iterate_eval_lt (δ : ℂ) {n k : ℕ} {Q : ℂ[X]}
     (h : (X - C w) ^ n ∣ Q) (hk : k < n) :
     ((deningerEulerOp δ)^[k] Q).eval w = 0 := by
   have hdvd := deningerEulerOp_iterate_dvd δ (w := w) h (k := k)
-  have hone : (X - C w) ^ 1 ∣ (X - C w) ^ (n - k) :=
+  have hone : (X - C w) ^ (1 : ℕ) ∣ (X - C w) ^ (n - k) :=
     pow_dvd_pow _ (by omega)
   obtain ⟨H, hH⟩ := hone.trans hdvd
   rw [hH]

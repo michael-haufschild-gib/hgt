@@ -27,7 +27,7 @@ local notation "K3" => deningerQ8RootNumberNegOneTopField
 def q8FirstConjugation : K1 →+* K1 :=
   AdjoinRoot.lift (algebraMap ℚ K1)
     (-deningerQ8RootNumberNegOneFirstQuadraticRoot) (by
-      change (X ^ 2 - C (5 : ℚ)).eval₂ (algebraMap ℚ K1)
+      change (X ^ (2 : ℕ) - C (5 : ℚ)).eval₂ (algebraMap ℚ K1)
         (-deningerQ8RootNumberNegOneFirstQuadraticRoot) = 0
       rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C]
       rw [neg_sq, deningerQ8RootNumberNegOneFirstQuadraticRoot_sq]
@@ -93,7 +93,7 @@ def q8FirstConjugationToSecond : K1 →+* K2 :=
 def q8FirstConjugationSecond : K2 →+* K2 :=
   AdjoinRoot.lift q8FirstConjugationToSecond
     deningerQ8RootNumberNegOneSecondQuadraticRoot (by
-      change (X ^ 2 - C (41 : K1)).eval₂ q8FirstConjugationToSecond
+      change (X ^ (2 : ℕ) - C (41 : K1)).eval₂ q8FirstConjugationToSecond
         deningerQ8RootNumberNegOneSecondQuadraticRoot = 0
       rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C,
         deningerQ8RootNumberNegOneSecondQuadraticRoot_sq]
@@ -216,7 +216,7 @@ theorem q8JBase_secondRoot :
   rw [deningerQ8RootNumberNegOne_secondConjugation_root, map_neg]
 
 theorem q8TopRoot_radical_relation :
-    deningerQ8RootNumberNegOneTopRoot ^ 2 =
+    deningerQ8RootNumberNegOneTopRoot ^ (2 : ℕ) =
       deningerQ8RootNumberNegOneR deningerQ8RootNumberNegOneTopX *
         deningerQ8RootNumberNegOneS deningerQ8RootNumberNegOneTopY := by
   simpa [deningerQ8RootNumberNegOneTopU,
@@ -306,12 +306,12 @@ def q8I : K3 →+* K3 :=
   AdjoinRoot.lift q8IBase q8ITopCandidate (by
     letI : CharZero K3 :=
       charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-    change (X ^ 2 - C deningerQ8RootNumberNegOneTopRadicand).eval₂ q8IBase
+    change (X ^ (2 : ℕ) - C deningerQ8RootNumberNegOneTopRadicand).eval₂ q8IBase
       q8ITopCandidate = 0
     rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C]
-    change q8ITopCandidate ^ 2 - q8IBase deningerQ8RootNumberNegOneTopRadicand = 0
+    change q8ITopCandidate ^ (2 : ℕ) - q8IBase deningerQ8RootNumberNegOneTopRadicand = 0
     have hz := q8TopRoot_radical_relation
-    rw [show q8ITopCandidate ^ 2 =
+    rw [show q8ITopCandidate ^ (2 : ℕ) =
       deningerQ8RootNumberNegOneRConj deningerQ8RootNumberNegOneTopX *
         deningerQ8RootNumberNegOneS deningerQ8RootNumberNegOneTopY by
           exact deningerQ8RootNumberNegOne_iLift_sq
@@ -324,12 +324,12 @@ def q8J : K3 →+* K3 :=
   AdjoinRoot.lift q8JBase q8JTopCandidate (by
     letI : CharZero K3 :=
       charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-    change (X ^ 2 - C deningerQ8RootNumberNegOneTopRadicand).eval₂ q8JBase
+    change (X ^ (2 : ℕ) - C deningerQ8RootNumberNegOneTopRadicand).eval₂ q8JBase
       q8JTopCandidate = 0
     rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C]
-    change q8JTopCandidate ^ 2 - q8JBase deningerQ8RootNumberNegOneTopRadicand = 0
+    change q8JTopCandidate ^ (2 : ℕ) - q8JBase deningerQ8RootNumberNegOneTopRadicand = 0
     have hz := q8TopRoot_radical_relation
-    rw [show q8JTopCandidate ^ 2 =
+    rw [show q8JTopCandidate ^ (2 : ℕ) =
       deningerQ8RootNumberNegOneR deningerQ8RootNumberNegOneTopX *
         deningerQ8RootNumberNegOneSConj deningerQ8RootNumberNegOneTopY by
           exact deningerQ8RootNumberNegOne_jLift_sq
@@ -520,7 +520,7 @@ theorem q8End_eq_of_topRoot (f g : K3 →+* K3)
 def q8C : K3 →+* K3 :=
   AdjoinRoot.lift (AdjoinRoot.of deningerQ8RootNumberNegOneThirdQuadraticPolynomial)
     (-deningerQ8RootNumberNegOneTopRoot) (by
-      change (X ^ 2 - C deningerQ8RootNumberNegOneTopRadicand).eval₂
+      change (X ^ (2 : ℕ) - C deningerQ8RootNumberNegOneTopRadicand).eval₂
         (AdjoinRoot.of deningerQ8RootNumberNegOneThirdQuadraticPolynomial)
         (-deningerQ8RootNumberNegOneTopRoot) = 0
       rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C, neg_sq,

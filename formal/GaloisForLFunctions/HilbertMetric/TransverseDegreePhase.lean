@@ -5,7 +5,7 @@ import GaloisForLFunctions.HilbertMetric.QuadraticGraphCompletion
 
 This module formalizes the finite Hilbert-coordinate core of the transverse-degree phase
 transition.  A top Fock channel of degree `M`, completed by an orthogonal one-particle channel,
-has Gram determinant `(t ^ M + λ ^ 2 * t) ^ k`.  Its degree gap is therefore `M - 1`.
+has Gram determinant `(t ^ M + λ ^ (2 : ℕ) * t) ^ k`.  Its degree gap is therefore `M - 1`.
 
 The exact square completion below shows that the sign of the mean-minus-variance margin is
 controlled by one quantity: the lowering charge per top direction minus `M * (M - 4) / 4`.
@@ -39,7 +39,7 @@ theorem higherDegreeGraphGram_eq {k : ℕ} (L : Matrix κ (Fin k) ℝ)
         t • (L.transpose * L) := by
   unfold higherDegreeGraphGram
   rw [standardFeatureGram_graphFeatureRow]
-  have htop : ((Real.sqrt t) ^ M) ^ 2 = t ^ M := by
+  have htop : ((Real.sqrt t) ^ M) ^ (2 : ℕ) = t ^ M := by
     rw [← pow_mul, Nat.mul_comm M 2, pow_mul, Real.sq_sqrt ht]
   rw [htop, Real.sq_sqrt ht]
 
@@ -80,13 +80,13 @@ def transverseDegreeGram (k M : ℕ) (lam t : ℝ) : Matrix (Fin k) (Fin k) ℝ 
 /-- **Transverse graph Gram law.**  Degree `M` and degree `1` channels add orthogonally. -/
 theorem transverseDegreeGram_eq (k M : ℕ) (lam t : ℝ) (ht : 0 ≤ t) :
     transverseDegreeGram k M lam t =
-      (t ^ M + lam ^ 2 * t) • (1 : Matrix (Fin k) (Fin k) ℝ) := by
+      (t ^ M + lam ^ (2 : ℕ) * t) • (1 : Matrix (Fin k) (Fin k) ℝ) := by
   unfold transverseDegreeGram transverseDegreeFeatureRow
   rw [standardFeatureGram_graphFeatureRow]
   simp only [Matrix.transpose_one, Matrix.one_mul]
-  have htop : ((Real.sqrt t) ^ M) ^ 2 = t ^ M := by
+  have htop : ((Real.sqrt t) ^ M) ^ (2 : ℕ) = t ^ M := by
     rw [← pow_mul, Nat.mul_comm M 2, pow_mul, Real.sq_sqrt ht]
-  have hlinear : (lam * Real.sqrt t) ^ 2 = lam ^ 2 * t := by
+  have hlinear : (lam * Real.sqrt t) ^ (2 : ℕ) = lam ^ (2 : ℕ) * t := by
     rw [mul_pow, Real.sq_sqrt ht]
   rw [htop, hlinear]
   ext i j
@@ -97,7 +97,7 @@ theorem transverseDegreeGram_eq (k M : ℕ) (lam t : ℝ) (ht : 0 ≤ t) :
 same two-degree factor. -/
 theorem det_transverseDegreeGram (k M : ℕ) (lam t : ℝ) (ht : 0 ≤ t) :
     (transverseDegreeGram k M lam t).det =
-      (t ^ M + lam ^ 2 * t) ^ k := by
+      (t ^ M + lam ^ (2 : ℕ) * t) ^ k := by
   rw [transverseDegreeGram_eq k M lam t ht, Matrix.det_smul]
   simp
 
@@ -110,11 +110,11 @@ def transverseDegreePartition (loweringCharge k M : ℕ) (lam t : ℝ) : ℝ :=
 theorem transverseDegreePartition_eq (loweringCharge k M : ℕ) (lam t : ℝ)
     (ht : 0 ≤ t) (hM : 1 ≤ M) :
     transverseDegreePartition loweringCharge k M lam t =
-      t ^ (loweringCharge + k) * (t ^ (M - 1) + lam ^ 2) ^ k := by
+      t ^ (loweringCharge + k) * (t ^ (M - 1) + lam ^ (2 : ℕ)) ^ k := by
   rw [transverseDegreePartition, det_transverseDegreeGram k M lam t ht]
   obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hM
   simp only [Nat.add_sub_cancel_left]
-  rw [show t ^ (1 + m) + lam ^ 2 * t = t * (t ^ m + lam ^ 2) by
+  rw [show t ^ (1 + m) + lam ^ (2 : ℕ) * t = t * (t ^ m + lam ^ (2 : ℕ)) by
     rw [pow_succ']
     ring]
   rw [mul_pow, ← mul_assoc, ← pow_add]
@@ -131,7 +131,7 @@ def transverseChannelMean (loweringCharge topDegree : ℝ) (p : ι → ℝ) : �
 
 /-- Variance of arbitrary transverse Bernoulli channels, each with jump `topDegree - 1`. -/
 def transverseChannelVariance (topDegree : ℝ) (p : ι → ℝ) : ℝ :=
-  ∑ i, (topDegree - 1) ^ 2 * p i * (1 - p i)
+  ∑ i, (topDegree - 1) ^ (2 : ℕ) * p i * (1 - p i)
 
 /-- Mean-minus-variance margin of arbitrary transverse channels. -/
 def transverseChannelFanoMargin (loweringCharge topDegree : ℝ) (p : ι → ℝ) : ℝ :=
@@ -145,12 +145,12 @@ theorem transverseChannelFanoMargin_square
     transverseChannelFanoMargin loweringCharge topDegree p =
       loweringCharge +
         ∑ i, (-topDegree * (topDegree - 4) / 4 +
-          ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ 2) := by
+          ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ (2 : ℕ)) := by
   unfold transverseChannelFanoMargin transverseChannelMean transverseChannelVariance
   rw [show loweringCharge + (∑ i, (1 + (topDegree - 1) * p i)) -
-      ∑ i, (topDegree - 1) ^ 2 * p i * (1 - p i) =
+      ∑ i, (topDegree - 1) ^ (2 : ℕ) * p i * (1 - p i) =
       loweringCharge + ((∑ i, (1 + (topDegree - 1) * p i)) -
-        ∑ i, (topDegree - 1) ^ 2 * p i * (1 - p i)) by ring]
+        ∑ i, (topDegree - 1) ^ (2 : ℕ) * p i * (1 - p i)) by ring]
   rw [← Finset.sum_sub_distrib]
   apply congrArg (loweringCharge + ·)
   apply Finset.sum_congr rfl
@@ -163,7 +163,7 @@ theorem transverseChannelFanoMargin_square_card
     transverseChannelFanoMargin loweringCharge topDegree p =
       loweringCharge - (Fintype.card ι : ℝ) *
           (topDegree * (topDegree - 4) / 4) +
-        ∑ i, ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ 2 := by
+        ∑ i, ((topDegree - 1) * p i - (topDegree - 2) / 2) ^ (2 : ℕ) := by
   rw [transverseChannelFanoMargin_square]
   rw [Finset.sum_add_distrib]
   simp
@@ -189,7 +189,7 @@ def unequalGapChannelMean (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ
 
 /-- Variance of independent Bernoulli channels with channel-dependent degree gaps. -/
 def unequalGapChannelVariance (gap p : ι → ℝ) : ℝ :=
-  ∑ i, (gap i) ^ 2 * p i * (1 - p i)
+  ∑ i, (gap i) ^ (2 : ℕ) * p i * (1 - p i)
 
 /-- Mean-minus-variance margin for an arbitrary unequal-gap graph completion. -/
 def unequalGapChannelFanoMargin
@@ -203,13 +203,13 @@ theorem unequalGapChannelFanoMargin_square
     (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) :
     unequalGapChannelFanoMargin loweringCharge lowerDegree gap p =
       loweringCharge +
-        ∑ i, (lowerDegree i - (gap i - 1) ^ 2 / 4 +
-          (gap i * p i - (gap i - 1) / 2) ^ 2) := by
+        ∑ i, (lowerDegree i - (gap i - 1) ^ (2 : ℕ) / 4 +
+          (gap i * p i - (gap i - 1) / 2) ^ (2 : ℕ)) := by
   unfold unequalGapChannelFanoMargin unequalGapChannelMean unequalGapChannelVariance
   rw [show loweringCharge + (∑ i, (lowerDegree i + gap i * p i)) -
-      ∑ i, (gap i) ^ 2 * p i * (1 - p i) =
+      ∑ i, (gap i) ^ (2 : ℕ) * p i * (1 - p i) =
       loweringCharge + ((∑ i, (lowerDegree i + gap i * p i)) -
-        ∑ i, (gap i) ^ 2 * p i * (1 - p i)) by ring]
+        ∑ i, (gap i) ^ (2 : ℕ) * p i * (1 - p i)) by ring]
   rw [← Finset.sum_sub_distrib]
   apply congrArg (loweringCharge + ·)
   apply Finset.sum_congr rfl
@@ -222,8 +222,8 @@ theorem unequalGapChannelFanoMargin_square_separated
     (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) :
     unequalGapChannelFanoMargin loweringCharge lowerDegree gap p =
       loweringCharge +
-          ∑ i, (lowerDegree i - (gap i - 1) ^ 2 / 4) +
-        ∑ i, (gap i * p i - (gap i - 1) / 2) ^ 2 := by
+          ∑ i, (lowerDegree i - (gap i - 1) ^ (2 : ℕ) / 4) +
+        ∑ i, (gap i * p i - (gap i - 1) / 2) ^ (2 : ℕ) := by
   rw [unequalGapChannelFanoMargin_square]
   rw [Finset.sum_add_distrib]
   ring
@@ -231,7 +231,7 @@ theorem unequalGapChannelFanoMargin_square_separated
 /-- The unequal-gap squares give the sharp channelwise phase lower bound. -/
 theorem unequalGapChannelFanoMargin_lower_bound
     (loweringCharge : ℝ) (lowerDegree gap p : ι → ℝ) :
-    loweringCharge + ∑ i, (lowerDegree i - (gap i - 1) ^ 2 / 4) ≤
+    loweringCharge + ∑ i, (lowerDegree i - (gap i - 1) ^ (2 : ℕ) / 4) ≤
       unequalGapChannelFanoMargin loweringCharge lowerDegree gap p := by
   rw [unequalGapChannelFanoMargin_square_separated]
   exact le_add_of_nonneg_right
@@ -245,7 +245,7 @@ def transverseDegreeMean (loweringCharge topCount topDegree p : ℝ) : ℝ :=
 
 /-- Variance of `topCount` identical Bernoulli jumps of size `topDegree - 1`. -/
 def transverseDegreeVariance (topCount topDegree p : ℝ) : ℝ :=
-  (topDegree - 1) ^ 2 * topCount * p * (1 - p)
+  (topDegree - 1) ^ (2 : ℕ) * topCount * p * (1 - p)
 
 /-- Mean-minus-variance margin for a transverse-degree completion. -/
 def transverseDegreeFanoMargin (loweringCharge topCount topDegree p : ℝ) : ℝ :=
@@ -259,7 +259,7 @@ theorem transverseDegreeFanoMargin_square
     transverseDegreeFanoMargin loweringCharge topCount topDegree p =
       loweringCharge - topCount * (topDegree * (topDegree - 4) / 4) +
         topCount *
-          ((topDegree - 1) * p - (topDegree - 2) / 2) ^ 2 := by
+          ((topDegree - 1) * p - (topDegree - 2) / 2) ^ (2 : ℕ) := by
   unfold transverseDegreeFanoMargin transverseDegreeMean transverseDegreeVariance
   ring
 

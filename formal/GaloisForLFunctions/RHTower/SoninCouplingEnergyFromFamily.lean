@@ -56,7 +56,7 @@ theorem card_sub_le_hsNormSq_soninApertureCoupling
         ‖evenFourierCutoff b (e i)‖ ≤ β) :
     ((Fintype.card ι : ℝ) -
         ∑ k : Fin 3, hsNormSq (soninCouplingIdealErrors a b r⁻¹
-          (inv_pos.mpr (zero_lt_one.trans hr)) k) / ε ^ 2) * (1 - η) ^ 2 ≤
+          (inv_pos.mpr (zero_lt_one.trans hr)) k) / ε ^ (2 : ℕ)) * (1 - η) ^ (2 : ℕ) ≤
       hsNormSq (evenSoninApertureSuccessiveLayerTransition a b c r hr) := by
   classical
   set D := evenDilationCLM r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)) with hD

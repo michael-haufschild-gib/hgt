@@ -25,7 +25,7 @@ def levinsonLinearOptimizationConstantAt (theta : ℝ) : ℝ :=
   1 + theta⁻¹ * ∫ v in (0 : ℝ)..1,
     Real.exp ((13 / 5) * v) *
       (∫ u in (0 : ℝ)..1,
-        levinsonLinearOptimizationDerivativeAt theta u v ^ 2)
+        levinsonLinearOptimizationDerivativeAt theta u v ^ (2 : ℕ))
 
 lemma levinsonLinearOptimizationDerivativeAt_half (u v : ℝ) :
     levinsonLinearOptimizationDerivativeAt (1 / 2) u v =
@@ -49,7 +49,7 @@ private def levinsonLinearOptimizationSlope (v : ℝ) : ℝ :=
 
 private def levinsonLinearOptimizationOuterBaseMoment : ℝ :=
   ∫ v in (0 : ℝ)..1, Real.exp ((13 / 5) * v) *
-    levinsonLinearOptimizationBase v ^ 2
+    levinsonLinearOptimizationBase v ^ (2 : ℕ)
 
 private def levinsonLinearOptimizationOuterCrossMoment : ℝ :=
   ∫ v in (0 : ℝ)..1, Real.exp ((13 / 5) * v) *
@@ -57,26 +57,26 @@ private def levinsonLinearOptimizationOuterCrossMoment : ℝ :=
 
 private def levinsonLinearOptimizationOuterDerivativeMoment : ℝ :=
   ∫ v in (0 : ℝ)..1, Real.exp ((13 / 5) * v) *
-    (levinsonLinearOptimizationSlope v ^ 2 / 3)
+    (levinsonLinearOptimizationSlope v ^ (2 : ℕ) / 3)
 
 private lemma integral_levinsonLinearOptimizationDerivativeAt_sq (theta v : ℝ) :
     (∫ u in (0 : ℝ)..1,
-      levinsonLinearOptimizationDerivativeAt theta u v ^ 2) =
-      levinsonLinearOptimizationBase v ^ 2 +
+      levinsonLinearOptimizationDerivativeAt theta u v ^ (2 : ℕ)) =
+      levinsonLinearOptimizationBase v ^ (2 : ℕ) +
         theta * levinsonLinearOptimizationBase v *
           levinsonLinearOptimizationSlope v +
-        theta ^ 2 * levinsonLinearOptimizationSlope v ^ 2 / 3 := by
+        theta ^ (2 : ℕ) * levinsonLinearOptimizationSlope v ^ (2 : ℕ) / 3 := by
   let A : ℝ := levinsonLinearOptimizationBase v
   let B : ℝ := levinsonLinearOptimizationSlope v
   let F : ℝ → ℝ := fun u =>
-    A ^ 2 * u + (theta * A * B) * u ^ 2 +
-      (theta ^ 2 * B ^ 2 / 3) * u ^ 3
+    A ^ (2 : ℕ) * u + (theta * A * B) * u ^ (2 : ℕ) +
+      (theta ^ (2 : ℕ) * B ^ (2 : ℕ) / 3) * u ^ (3 : ℕ)
   have hderiv : ∀ u : ℝ,
-      HasDerivAt F (levinsonLinearOptimizationDerivativeAt theta u v ^ 2) u := by
+      HasDerivAt F (levinsonLinearOptimizationDerivativeAt theta u v ^ (2 : ℕ)) u := by
     intro u
-    have hraw := (((hasDerivAt_id u).const_mul (A ^ 2)).add
+    have hraw := (((hasDerivAt_id u).const_mul (A ^ (2 : ℕ))).add
         (((hasDerivAt_id u).pow 2).const_mul (theta * A * B))).add
-          (((hasDerivAt_id u).pow 3).const_mul (theta ^ 2 * B ^ 2 / 3))
+          (((hasDerivAt_id u).pow 3).const_mul (theta ^ (2 : ℕ) * B ^ (2 : ℕ) / 3))
     change HasDerivAt F _ u at hraw
     exact hraw.congr_deriv (by
       dsimp only [F, A, B, levinsonLinearOptimizationBase,
@@ -85,10 +85,10 @@ private lemma integral_levinsonLinearOptimizationDerivativeAt_sq (theta v : ℝ)
       simp only [id_eq] at *
       ring)
   have hint : IntervalIntegrable
-      (fun u : ℝ => levinsonLinearOptimizationDerivativeAt theta u v ^ 2)
+      (fun u : ℝ => levinsonLinearOptimizationDerivativeAt theta u v ^ (2 : ℕ))
       volume 0 1 :=
     (show Continuous (fun u : ℝ =>
-      levinsonLinearOptimizationDerivativeAt theta u v ^ 2) by
+      levinsonLinearOptimizationDerivativeAt theta u v ^ (2 : ℕ)) by
         unfold levinsonLinearOptimizationDerivativeAt
         fun_prop).intervalIntegrable 0 1
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -99,17 +99,17 @@ private lemma integral_levinsonLinearOptimizationDerivativeAt_sq (theta v : ℝ)
 private lemma levinsonLinearOptimizationOuterIntegral_eq (theta : ℝ) :
     (∫ v in (0 : ℝ)..1, Real.exp ((13 / 5) * v) *
       (∫ u in (0 : ℝ)..1,
-        levinsonLinearOptimizationDerivativeAt theta u v ^ 2)) =
+        levinsonLinearOptimizationDerivativeAt theta u v ^ (2 : ℕ))) =
       levinsonLinearOptimizationOuterBaseMoment +
         theta * levinsonLinearOptimizationOuterCrossMoment +
-        theta ^ 2 * levinsonLinearOptimizationOuterDerivativeMoment := by
+        theta ^ (2 : ℕ) * levinsonLinearOptimizationOuterDerivativeMoment := by
   simp_rw [integral_levinsonLinearOptimizationDerivativeAt_sq]
   let f0 : ℝ → ℝ := fun v => Real.exp ((13 / 5) * v) *
-    levinsonLinearOptimizationBase v ^ 2
+    levinsonLinearOptimizationBase v ^ (2 : ℕ)
   let f1 : ℝ → ℝ := fun v => Real.exp ((13 / 5) * v) *
     (levinsonLinearOptimizationBase v * levinsonLinearOptimizationSlope v)
   let f2 : ℝ → ℝ := fun v => Real.exp ((13 / 5) * v) *
-    (levinsonLinearOptimizationSlope v ^ 2 / 3)
+    (levinsonLinearOptimizationSlope v ^ (2 : ℕ) / 3)
   have h0 : IntervalIntegrable f0 volume 0 1 := by
     apply Continuous.intervalIntegrable
     dsimp only [f0, levinsonLinearOptimizationBase]
@@ -125,17 +125,17 @@ private lemma levinsonLinearOptimizationOuterIntegral_eq (theta : ℝ) :
     fun_prop
   have hpoint : ∀ v : ℝ,
       Real.exp ((13 / 5) * v) *
-          (levinsonLinearOptimizationBase v ^ 2 +
+          (levinsonLinearOptimizationBase v ^ (2 : ℕ) +
             theta * levinsonLinearOptimizationBase v *
               levinsonLinearOptimizationSlope v +
-            theta ^ 2 * levinsonLinearOptimizationSlope v ^ 2 / 3) =
-        f0 v + theta * f1 v + theta ^ 2 * f2 v := by
+            theta ^ (2 : ℕ) * levinsonLinearOptimizationSlope v ^ (2 : ℕ) / 3) =
+        f0 v + theta * f1 v + theta ^ (2 : ℕ) * f2 v := by
     intro v
     dsimp only [f0, f1, f2]
     ring
   simp_rw [hpoint]
   rw [intervalIntegral.integral_add
-      (h0.add (h1.const_mul theta)) (h2.const_mul (theta ^ 2)),
+      (h0.add (h1.const_mul theta)) (h2.const_mul (theta ^ (2 : ℕ))),
     intervalIntegral.integral_add h0 (h1.const_mul theta),
     intervalIntegral.integral_const_mul,
     intervalIntegral.integral_const_mul]
@@ -145,7 +145,7 @@ private theorem levinsonLinearOptimizationConstantAt_eq (theta : ℝ) :
     levinsonLinearOptimizationConstantAt theta =
       1 + theta⁻¹ * (levinsonLinearOptimizationOuterBaseMoment +
         theta * levinsonLinearOptimizationOuterCrossMoment +
-        theta ^ 2 * levinsonLinearOptimizationOuterDerivativeMoment) := by
+        theta ^ (2 : ℕ) * levinsonLinearOptimizationOuterDerivativeMoment) := by
   rw [levinsonLinearOptimizationConstantAt,
     levinsonLinearOptimizationOuterIntegral_eq]
 
@@ -154,7 +154,7 @@ theorem continuousAt_levinsonLinearOptimizationConstantAt_half :
   rw [show levinsonLinearOptimizationConstantAt = fun theta =>
       1 + theta⁻¹ * (levinsonLinearOptimizationOuterBaseMoment +
         theta * levinsonLinearOptimizationOuterCrossMoment +
-        theta ^ 2 * levinsonLinearOptimizationOuterDerivativeMoment) by
+        theta ^ (2 : ℕ) * levinsonLinearOptimizationOuterDerivativeMoment) by
     funext theta
     exact levinsonLinearOptimizationConstantAt_eq theta]
   have hne : (1 / 2 : ℝ) ≠ 0 := by norm_num
@@ -165,13 +165,13 @@ lemma levinsonLinearOptimizationConstantAt_pos {theta : ℝ}
     0 < levinsonLinearOptimizationConstantAt theta := by
   have hinner : ∀ v : ℝ,
       0 ≤ ∫ u in (0 : ℝ)..1,
-        levinsonLinearOptimizationDerivativeAt theta u v ^ 2 := by
+        levinsonLinearOptimizationDerivativeAt theta u v ^ (2 : ℕ) := by
     intro v
     exact intervalIntegral.integral_nonneg (by norm_num) fun u hu => sq_nonneg _
   have houter : 0 ≤ ∫ v in (0 : ℝ)..1,
       Real.exp ((13 / 5) * v) *
         (∫ u in (0 : ℝ)..1,
-          levinsonLinearOptimizationDerivativeAt theta u v ^ 2) := by
+          levinsonLinearOptimizationDerivativeAt theta u v ^ (2 : ℕ)) := by
     exact intervalIntegral.integral_nonneg (by norm_num) fun v hv =>
       mul_nonneg (Real.exp_pos _).le (hinner v)
   unfold levinsonLinearOptimizationConstantAt

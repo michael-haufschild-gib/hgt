@@ -74,7 +74,7 @@ theorem twoMode_twoChannelKernel_realRay_energy_nonneg
   let C := xiSquaredEulerFullKernel x y
   have hy : 1 / 2 < y := hx.trans hxy
   have hA : 0 < A := xiSquaredEulerFullKernel_diag_pos (by linarith)
-  have hdet : 0 < A * B - C ^ 2 := by
+  have hdet : 0 < A * B - C ^ (2 : ℕ) := by
     exact xiSquaredEulerFullKernel_twoPoint_det_pos (by linarith) hxy
   have henergy :
       (kernelEnergy twoChannelKernel c nodes).re =
@@ -93,17 +93,17 @@ theorem twoMode_twoChannelKernel_realRay_energy_nonneg
     simp only [Complex.normSq_apply]
     ring
   have hsquares :
-      0 ≤ (A * (c 0).re + C * (c 1).re) ^ 2 +
-          (A * (c 0).im + C * (c 1).im) ^ 2 +
-          (A * B - C ^ 2) * ((c 1).re ^ 2 + (c 1).im ^ 2) := by
+      0 ≤ (A * (c 0).re + C * (c 1).re) ^ (2 : ℕ) +
+          (A * (c 0).im + C * (c 1).im) ^ (2 : ℕ) +
+          (A * B - C ^ (2 : ℕ)) * ((c 1).re ^ (2 : ℕ) + (c 1).im ^ (2 : ℕ)) := by
     positivity
   rw [henergy]
   have hscaled :
       A * (A * Complex.normSq (c 0) + B * Complex.normSq (c 1) +
           2 * C * (conj (c 0) * c 1).re) =
-        (A * (c 0).re + C * (c 1).re) ^ 2 +
-          (A * (c 0).im + C * (c 1).im) ^ 2 +
-          (A * B - C ^ 2) * ((c 1).re ^ 2 + (c 1).im ^ 2) := by
+        (A * (c 0).re + C * (c 1).re) ^ (2 : ℕ) +
+          (A * (c 0).im + C * (c 1).im) ^ (2 : ℕ) +
+          (A * B - C ^ (2 : ℕ)) * ((c 1).re ^ (2 : ℕ) + (c 1).im ^ (2 : ℕ)) := by
     simp only [Complex.normSq_apply, Complex.mul_re, Complex.conj_re,
       Complex.conj_im]
     ring

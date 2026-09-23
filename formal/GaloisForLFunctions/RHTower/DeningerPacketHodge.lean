@@ -104,11 +104,11 @@ coefficients. -/
 theorem deningerPacketCup_hodge (ℓ : ι → ℝ) (σ : ι → ι) (S : Finset ι) (φ : ι → ℂ)
     (hσ : ∀ a, σ (σ a) = a) (hσℓ : ∀ a, ℓ (σ a) = -ℓ a) (hℓ : ∀ a ∈ S, ℓ a ≠ 0) :
     deningerPacketCup ℓ σ S φ (deningerHodgeW ℓ (deningerConjReverse σ φ))
-      = ((∑ a ∈ S, |ℓ a| * ‖φ a‖ ^ 2 : ℝ) : ℂ) := by
+      = ((∑ a ∈ S, |ℓ a| * ‖φ a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [deningerPacketCup_eq ℓ σ S φ _ hσℓ hℓ]
   have hterm : ∀ a ∈ S,
       (ℓ a : ℂ) * (φ a * deningerHodgeW ℓ (deningerConjReverse σ φ) (σ a))
-        = -Complex.I * ((|ℓ a| * ‖φ a‖ ^ 2 : ℝ) : ℂ) := by
+        = -Complex.I * ((|ℓ a| * ‖φ a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro a ha
     have hsign : deningerFreqSign (ℓ (σ a)) = -deningerFreqSign (ℓ a) := by
       rw [hσℓ a]
@@ -123,7 +123,7 @@ theorem deningerPacketCup_hodge (ℓ : ι → ℝ) (σ : ι → ι) (S : Finset 
       rw [h3]
       push_cast
       ring
-    have hnormSq : φ a * (starRingEnd ℂ) (φ a) = ((‖φ a‖ ^ 2 : ℝ) : ℂ) := by
+    have hnormSq : φ a * (starRingEnd ℂ) (φ a) = ((‖φ a‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [Complex.mul_conj]
       norm_cast
       exact Complex.normSq_eq_norm_sq (φ a)
@@ -149,9 +149,9 @@ theorem deningerPacketCup_hodge (ℓ : ι → ℝ) (σ : ι → ι) (S : Finset 
 the term of a nonzero coefficient is positive. -/
 theorem deningerPacketCup_hodge_pos (ℓ : ι → ℝ) (S : Finset ι) (φ : ι → ℂ)
     (hℓ : ∀ a ∈ S, ℓ a ≠ 0) {b : ι} (hb : b ∈ S) (hφ : φ b ≠ 0) :
-    0 < ∑ a ∈ S, |ℓ a| * ‖φ a‖ ^ 2 := by
-  have hnonneg : ∀ a ∈ S, 0 ≤ |ℓ a| * ‖φ a‖ ^ 2 := fun a _ => by positivity
-  have hposb : 0 < |ℓ b| * ‖φ b‖ ^ 2 := by
+    0 < ∑ a ∈ S, |ℓ a| * ‖φ a‖ ^ (2 : ℕ) := by
+  have hnonneg : ∀ a ∈ S, 0 ≤ |ℓ a| * ‖φ a‖ ^ (2 : ℕ) := fun a _ => by positivity
+  have hposb : 0 < |ℓ b| * ‖φ b‖ ^ (2 : ℕ) := by
     have h1 : 0 < |ℓ b| := abs_pos.mpr (hℓ b hb)
     have h2 : 0 < ‖φ b‖ := norm_pos_iff.mpr hφ
     positivity

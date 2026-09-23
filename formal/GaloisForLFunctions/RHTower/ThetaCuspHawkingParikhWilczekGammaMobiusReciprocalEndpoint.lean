@@ -58,7 +58,7 @@ theorem pwGammaMobiusReciprocalCurrentAtom_norm_le {N : ℕ} {z : ℂ}
     (hz : ‖z‖ ≤ (N:ℝ)) (n : ℕ) {v : ℝ} (hv : 0<v) (hv1 : v≤1) :
     ‖pwGammaMobiusReciprocalCurrentAtom z n v‖ ≤
       (2^(N+1)*((N+4).factorial:ℝ)*
-        (∫ h in Ioi (0:ℝ), Real.exp (-h)*(1+h)^(N+2)))*(1/((n:ℝ)+1)^2) := by
+        (∫ h in Ioi (0:ℝ), Real.exp (-h)*(1+h)^(N+2)))*(1/((n:ℝ)+1)^(2 : ℕ)) := by
   have ha : (0:ℝ)<(n:ℝ)+1 := by positivity
   have hI := (pwGammaReciprocalTranslationKernel_integral_pos ha hv).le
   have hJ : 0 ≤ ∫ h in Ioi (0:ℝ), Real.exp (-h)*(1+h)^(N+2) := by
@@ -88,9 +88,9 @@ theorem pwGammaMobiusReciprocalCurrentAtom_norm_le {N : ℕ} {z : ℂ}
 private theorem pwGammaReciprocalSeries_bound_summable (N : ℕ) :
     Summable (fun n : ℕ =>
       (2^(N+1)*((N+4).factorial:ℝ)*
-        (∫ h in Ioi (0:ℝ), Real.exp (-h)*(1+h)^(N+2)))*(1/((n:ℝ)+1)^2)) := by
+        (∫ h in Ioi (0:ℝ), Real.exp (-h)*(1+h)^(N+2)))*(1/((n:ℝ)+1)^(2 : ℕ))) := by
   have ht := (Real.summable_one_div_nat_pow.mpr one_lt_two).comp_injective Nat.succ_injective
-  have hs : Summable (fun n : ℕ => (1:ℝ)/((n:ℝ)+1)^2) := by
+  have hs : Summable (fun n : ℕ => (1:ℝ)/((n:ℝ)+1)^(2 : ℕ)) := by
     simpa only [Function.comp_def, Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one] using ht
   exact hs.mul_left _
 

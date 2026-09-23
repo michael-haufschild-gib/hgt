@@ -19,6 +19,7 @@ namespace RHTower.D4BMFullAngularSourceHorizonTrace
 
 open D4BMHorizon D4BMModularCore D4BMCausalKernel
 open D4BMFullAngularCircle D4BMFullAngularCircleAction D4BMFullAngularGoursat
+open D4BMFullAngularReconstruction
 open D4BMFutureSeedHorizon
 
 noncomputable section
@@ -69,9 +70,10 @@ theorem fullAngularDirichletKernel_source_horizon (q : XiZeroCopy) (branch : Boo
     simp [invariant, Real.sinh_neg, Real.cosh_neg]
   have ha : |(-x)-y| = |x+y| := by
     rw [show -x-y = -(x+y) by ring, abs_neg]
-  unfold angularDirichletKernel horizonKernel
-  rw [ha, he]
+  unfold angularDirichletKernel
   simp only [fullAngularRiemannKernel_eq_angularMean]
+  rw [ha, he]
+  rfl
 
 end
 

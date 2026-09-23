@@ -151,8 +151,8 @@ theorem det_momentHankelMatrix_shift_suzukiCounterexample_nonneg (n : ℕ) :
 
 theorem suzukiCounterexample_shiftedMomentFunctional_neg :
     momentFunctional suzukiDeterminantCounterexample
-      (X * (X ^ 2 - X) ^ 2) = -1 := by
-  rw [show X * (X ^ 2 - X) ^ 2 = X ^ 5 - 2 • X ^ 4 + X ^ 3 by ring]
+      (X * (X ^ (2 : ℕ) - X) ^ (2 : ℕ)) = -1 := by
+  rw [show X * (X ^ (2 : ℕ) - X) ^ (2 : ℕ) = X ^ (5 : ℕ) - 2 • X ^ (4 : ℕ) + X ^ (3 : ℕ) by ring]
   rw [momentFunctional_add, momentFunctional_sub]
   rw [two_smul, momentFunctional_add]
   simp [momentFunctional_X_pow, suzukiDeterminantCounterexample, initialOneSequence]
@@ -164,12 +164,12 @@ theorem exists_nonnegative_hankel_determinant_chains_not_stieltjesPositive :
     ∃ s : ℕ → ℝ,
       (∀ n, 0 ≤ (momentHankelMatrix s (n + 1)).det) ∧
       (∀ n, 0 ≤ (momentHankelMatrix (fun k => s (k + 1)) (n + 1)).det) ∧
-      ¬ (∀ p : Polynomial ℝ, 0 ≤ momentFunctional s (X * p ^ 2)) := by
+      ¬ (∀ p : Polynomial ℝ, 0 ≤ momentFunctional s (X * p ^ (2 : ℕ))) := by
   refine ⟨suzukiDeterminantCounterexample,
     det_momentHankelMatrix_suzukiCounterexample_nonneg,
     det_momentHankelMatrix_shift_suzukiCounterexample_nonneg, ?_⟩
   intro h
-  have := h (X ^ 2 - X)
+  have := h (X ^ (2 : ℕ) - X)
   rw [suzukiCounterexample_shiftedMomentFunctional_neg] at this
   norm_num at this
 

@@ -19,14 +19,14 @@ namespace RHTower
 theorem twoPoint_moments {m₁ v p : ℝ} (hp0 : 0 < p) (hp1 : p < 1) (hv : 0 ≤ v) :
     let d := Real.sqrt (v / (p * (1 - p)))
     (1 - p) * (m₁ - p * d) + p * (m₁ + (1 - p) * d) = m₁ ∧
-    (1 - p) * (m₁ - p * d) ^ 2 + p * (m₁ + (1 - p) * d) ^ 2 = m₁ ^ 2 + v := by
+    (1 - p) * (m₁ - p * d) ^ (2 : ℕ) + p * (m₁ + (1 - p) * d) ^ (2 : ℕ) = m₁ ^ (2 : ℕ) + v := by
   intro d
   have hpp : 0 < p * (1 - p) := mul_pos hp0 (by linarith)
-  have hd2 : d ^ 2 = v / (p * (1 - p)) := Real.sq_sqrt (div_nonneg hv hpp.le)
+  have hd2 : d ^ (2 : ℕ) = v / (p * (1 - p)) := Real.sq_sqrt (div_nonneg hv hpp.le)
   constructor
   · ring
-  · have : (1 - p) * (m₁ - p * d) ^ 2 + p * (m₁ + (1 - p) * d) ^ 2
-        = m₁ ^ 2 + p * (1 - p) * d ^ 2 := by ring
+  · have : (1 - p) * (m₁ - p * d) ^ (2 : ℕ) + p * (m₁ + (1 - p) * d) ^ (2 : ℕ)
+        = m₁ ^ (2 : ℕ) + p * (1 - p) * d ^ (2 : ℕ) := by ring
     rw [this, hd2, mul_div_cancel₀ _ hpp.ne']
 
 /-- Jensen: the log-mean of a two-point law is at most the log of its mean. -/
@@ -38,7 +38,7 @@ theorem twoPoint_logMean_le {a b p : ℝ} (ha : 0 < a) (hb : 0 < b) (hp0 : 0 ≤
   simpa [smul_eq_mul] using h
 
 /-- `log (1 - x) ≥ -2x` for `0 ≤ x ≤ 1/2`. -/
-theorem neg_two_mul_le_log_one_sub {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) :
+theorem neg_two_mul_le_log_one_sub_jensenSecondMomentSaturation {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) :
     -2 * x ≤ Real.log (1 - x) := by
   have hy : 0 < 1 - x := by linarith
   have h := Real.one_sub_inv_le_log_of_pos hy
@@ -52,7 +52,7 @@ second moment `m₁² + v`, positive atoms, and log-mean at least `log m₁ − 
 `log m₁` by Jensen). -/
 theorem exists_twoPoint_logMean_ge {m₁ v δ : ℝ} (hm : 0 < m₁) (hv : 0 < v) (hδ : 0 < δ) :
     ∃ p a b : ℝ, 0 < p ∧ p < 1 ∧ 0 < a ∧ 0 < b ∧
-      (1 - p) * a + p * b = m₁ ∧ (1 - p) * a ^ 2 + p * b ^ 2 = m₁ ^ 2 + v ∧
+      (1 - p) * a + p * b = m₁ ∧ (1 - p) * a ^ (2 : ℕ) + p * b ^ (2 : ℕ) = m₁ ^ (2 : ℕ) + v ∧
       Real.log m₁ - δ ≤ (1 - p) * Real.log a + p * Real.log b ∧
       (1 - p) * Real.log a + p * Real.log b ≤ Real.log m₁ := by
   -- choose `p` small: `p ≤ 1/2` and `2 p v ≤ (min δ 1)² m₁² / 16`
@@ -60,25 +60,25 @@ theorem exists_twoPoint_logMean_ge {m₁ v δ : ℝ} (hm : 0 < m₁) (hv : 0 < v
   have hη0 : 0 < η := lt_min hδ one_pos
   have hη1 : η ≤ 1 := min_le_right _ _
   have hηδ : η ≤ δ := min_le_left _ _
-  set p : ℝ := min (1 / 2) (η ^ 2 * m₁ ^ 2 / (32 * v)) with hp
+  set p : ℝ := min (1 / 2) (η ^ (2 : ℕ) * m₁ ^ (2 : ℕ) / (32 * v)) with hp
   have hp0 : 0 < p := lt_min (by norm_num) (by positivity)
   have hp12 : p ≤ 1 / 2 := min_le_left _ _
-  have hpv : p ≤ η ^ 2 * m₁ ^ 2 / (32 * v) := min_le_right _ _
+  have hpv : p ≤ η ^ (2 : ℕ) * m₁ ^ (2 : ℕ) / (32 * v) := min_le_right _ _
   have hp1 : p < 1 := by linarith
   have h1p : 1 / 2 ≤ 1 - p := by linarith
   have hpp : 0 < p * (1 - p) := mul_pos hp0 (by linarith)
   set d : ℝ := Real.sqrt (v / (p * (1 - p))) with hd
   have hd0 : 0 ≤ d := Real.sqrt_nonneg _
-  have hd2 : d ^ 2 = v / (p * (1 - p)) := Real.sq_sqrt (div_nonneg hv.le hpp.le)
+  have hd2 : d ^ (2 : ℕ) = v / (p * (1 - p)) := Real.sq_sqrt (div_nonneg hv.le hpp.le)
   -- the key size bound: `(p d)² = p v / (1 - p) ≤ 2 p v ≤ η² m₁² / 16`
-  have hpd2 : (p * d) ^ 2 ≤ η ^ 2 * m₁ ^ 2 / 16 := by
-    have h1 : (p * d) ^ 2 = p * v / (1 - p) := by
+  have hpd2 : (p * d) ^ (2 : ℕ) ≤ η ^ (2 : ℕ) * m₁ ^ (2 : ℕ) / 16 := by
+    have h1 : (p * d) ^ (2 : ℕ) = p * v / (1 - p) := by
       rw [mul_pow, hd2]
       field_simp
     have h2 : p * v / (1 - p) ≤ 2 * (p * v) := by
       rw [div_le_iff₀ (by linarith)]
       nlinarith [mul_pos hp0 hv]
-    have h3 : 2 * (p * v) ≤ η ^ 2 * m₁ ^ 2 / 16 := by
+    have h3 : 2 * (p * v) ≤ η ^ (2 : ℕ) * m₁ ^ (2 : ℕ) / 16 := by
       have := mul_le_mul_of_nonneg_right hpv hv.le
       rw [div_mul_eq_mul_div, mul_div_assoc] at this
       have hv' : v / (32 * v) = 1 / 32 := by field_simp
@@ -87,9 +87,9 @@ theorem exists_twoPoint_logMean_ge {m₁ v δ : ℝ} (hm : 0 < m₁) (hv : 0 < v
     linarith
   have hpd : p * d ≤ η * m₁ / 4 := by
     have hnn : 0 ≤ η * m₁ / 4 := by positivity
-    have hsq : (p * d) ^ 2 ≤ (η * m₁ / 4) ^ 2 := by
-      calc (p * d) ^ 2 ≤ η ^ 2 * m₁ ^ 2 / 16 := hpd2
-        _ = (η * m₁ / 4) ^ 2 := by ring
+    have hsq : (p * d) ^ (2 : ℕ) ≤ (η * m₁ / 4) ^ (2 : ℕ) := by
+      calc (p * d) ^ (2 : ℕ) ≤ η ^ (2 : ℕ) * m₁ ^ (2 : ℕ) / 16 := hpd2
+        _ = (η * m₁ / 4) ^ (2 : ℕ) := by ring
     exact (pow_le_pow_iff_left₀ (mul_nonneg hp0.le hd0) hnn two_ne_zero).mp hsq
   have hpdm : p * d ≤ m₁ / 4 := le_trans hpd (by nlinarith [hη1, hm])
   have ha : 0 < m₁ - p * d := by linarith
@@ -107,7 +107,7 @@ theorem exists_twoPoint_logMean_ge {m₁ v δ : ℝ} (hm : 0 < m₁) (hv : 0 < v
       congr 1
       field_simp
     have hlog1 : -2 * (p * d / m₁) ≤ Real.log (1 - p * d / m₁) :=
-      neg_two_mul_le_log_one_sub hx0 hx1
+      neg_two_mul_le_log_one_sub_jensenSecondMomentSaturation hx0 hx1
     have hlogb : Real.log m₁ ≤ Real.log (m₁ + (1 - p) * d) :=
       Real.log_le_log hm (by linarith [mul_nonneg (by linarith : (0:ℝ) ≤ 1 - p) hd0])
     have hkey : 2 * (p * d / m₁) ≤ δ := by

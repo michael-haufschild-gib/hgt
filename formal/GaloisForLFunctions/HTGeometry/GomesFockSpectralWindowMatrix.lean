@@ -60,7 +60,7 @@ theorem gomesFockWindowMass_le_total {d k : ℕ}
 /-- The existing finite-dimensional bound controls every window's quadratic observation. -/
 theorem gomesFockWindowMass_bound {d k : ℕ}
     (B : Fin k → Matrix (Fin (d+1)) (Fin (d+1)) ℂ) (S : Set ℝ) (x : Fin (d+1) → ℂ) :
-    gomesFockWindowMass B S x ≤ (Fintype.card (Fin (d+1)) : ℝ)*‖x‖^2 := by
+    gomesFockWindowMass B S x ≤ (Fintype.card (Fin (d+1)) : ℝ)*‖x‖^(2 : ℕ) := by
   apply (gomesFockWindowMass_le_total B S x).trans
   rw [freeFockVectorMoment_zero]
   exact sum_normSq_le_card_mul_norm_sq x

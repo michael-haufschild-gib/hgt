@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.XiMassPrimeApertureGap
 # Canonical semigroup aperture high-pass for the Xi prime source
 
 Choose fixed mass `1` and Euler depth `3/4`.  The co-moving mass `|u|+2` is exactly an additional
-mass deformation of this fixed carrier, with second mass `sqrt ((|u|+2)^2-1)`.  Legal-depth
+mass deformation of this fixed carrier, with second mass `sqrt ((|u|+2)^(2 : ℕ)-1)`.  Legal-depth
 independence moves the bounded co-moving source onto the same Euler line.  The transverse aperture
 gap is then one factored von-Mangoldt integral whose kernel is the difference of the two analytic
 mass tests.
@@ -21,22 +21,22 @@ noncomputable section
 
 /-- Additional mass taking the mass-one carrier to the co-moving carrier. -/
 def xiComovingAdditionalMass (u : ℝ) : ℝ :=
-  Real.sqrt (xiComovingMass u ^ 2 - 1)
+  Real.sqrt (xiComovingMass u ^ (2 : ℕ) - 1)
 
 theorem xiComovingAdditionalMass_half (u : ℝ) :
     1 / 2 ≤ xiComovingAdditionalMass u := by
   have hA := xiComovingMass_ge_two u
-  have harg : 0 ≤ xiComovingMass u ^ 2 - 1 := by nlinarith
-  have hsquare : xiComovingAdditionalMass u ^ 2 = xiComovingMass u ^ 2 - 1 := by
+  have harg : 0 ≤ xiComovingMass u ^ (2 : ℕ) - 1 := by nlinarith
+  have hsquare : xiComovingAdditionalMass u ^ (2 : ℕ) = xiComovingMass u ^ (2 : ℕ) - 1 := by
     rw [xiComovingAdditionalMass, Real.sq_sqrt harg]
-  have hnonneg := Real.sqrt_nonneg (xiComovingMass u ^ 2 - 1)
+  have hnonneg := Real.sqrt_nonneg (xiComovingMass u ^ (2 : ℕ) - 1)
   rw [← xiComovingAdditionalMass] at hnonneg
   nlinarith
 
 theorem xiComovingMass_sq_eq_one_add_additional_sq (u : ℝ) :
-    xiComovingMass u ^ 2 = 1 ^ 2 + xiComovingAdditionalMass u ^ 2 := by
+    xiComovingMass u ^ (2 : ℕ) = 1 ^ (2 : ℕ) + xiComovingAdditionalMass u ^ (2 : ℕ) := by
   have hA := xiComovingMass_ge_two u
-  have harg : 0 ≤ xiComovingMass u ^ 2 - 1 := by nlinarith
+  have harg : 0 ≤ xiComovingMass u ^ (2 : ℕ) - 1 := by nlinarith
   rw [xiComovingAdditionalMass, Real.sq_sqrt harg]
   ring
 

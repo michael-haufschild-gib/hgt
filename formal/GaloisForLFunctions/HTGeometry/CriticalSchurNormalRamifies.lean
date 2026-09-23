@@ -66,7 +66,7 @@ theorem criticalSchur_normalUpper_map_maximalIdeal_le_sq :
         (criticalSchurObservationValuationToNormalClosure K (Fact.out : 0 < m)
           (Fact.out : 0 < n))
       ≤ (maximalIdeal (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
-          (Fact.out : 0 < n))) ^ 2 := by
+          (Fact.out : 0 < n))) ^ (2 : ℕ) := by
   rw [← criticalSchurSourceToNormalUpper_comp K, ← Ideal.map_map]
   refine le_trans (Ideal.map_mono (criticalSchur_map_maximalIdeal_le_sq K)) ?_
   rw [Ideal.map_pow]
@@ -81,7 +81,7 @@ theorem criticalNormalUpper_not_maximalIdeal_le_sq :
     ¬ (maximalIdeal (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
         (Fact.out : 0 < n))
       ≤ (maximalIdeal (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)
-        (Fact.out : 0 < n))) ^ 2) := by
+        (Fact.out : 0 < n))) ^ (2 : ℕ)) := by
   intro h
   have hbot := Submodule.eq_bot_of_le_smul_of_le_jacobson_bot
     (maximalIdeal (criticalNormalClosureSchurValuationSubring K (Fact.out : 0 < m)

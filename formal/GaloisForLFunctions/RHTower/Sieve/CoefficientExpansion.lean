@@ -34,11 +34,11 @@ theorem inner_expRow_apply (Q : ℕ) (ξ : ℂ) (x : EuclideanSpace ℂ (Fin Q))
 
 /-- The squared modulus of an exponential coefficient, expanded. -/
 theorem normSq_inner_expRow (Q : ℕ) (ξ : ℂ) (x : EuclideanSpace ℂ (Fin Q)) :
-    ((‖⟪expRow Q ξ, x⟫_ℂ‖ ^ 2 : ℝ) : ℂ)
+    ((‖⟪expRow Q ξ, x⟫_ℂ‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ m : Fin Q, ∑ n : Fin Q,
           ((starRingEnd ℂ) (ξ ^ (m : ℕ)) * x m)
             * (starRingEnd ℂ) ((starRingEnd ℂ) (ξ ^ (n : ℕ)) * x n) := by
-  have hz : ((‖⟪expRow Q ξ, x⟫_ℂ‖ ^ 2 : ℝ) : ℂ)
+  have hz : ((‖⟪expRow Q ξ, x⟫_ℂ‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ⟪expRow Q ξ, x⟫_ℂ * (starRingEnd ℂ) ⟪expRow Q ξ, x⟫_ℂ := by
     rw [mul_comm, conj_mul_self]
   rw [hz, inner_expRow_apply, map_sum]
@@ -48,14 +48,14 @@ theorem normSq_inner_expRow (Q : ℕ) (ξ : ℂ) (x : EuclideanSpace ℂ (Fin Q)
 summation exhibits the multiplier with symbol `c` as the kernel `∑_j c_j conj(ζ^{jm}) ζ^{jn}`. -/
 theorem sum_symbol_mul_normSq_eq (Q : ℕ) (ζ : ℂ) (c : Fin Q → ℝ)
     (x : EuclideanSpace ℂ (Fin Q)) :
-    ((∑ j : Fin Q, c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2 : ℝ) : ℂ)
+    ((∑ j : Fin Q, c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ m : Fin Q, ∑ n : Fin Q,
           (x m * (starRingEnd ℂ) (x n))
             * ∑ j : Fin Q, (c j : ℂ)
                 * ((starRingEnd ℂ) ((ζ ^ (j : ℕ)) ^ (m : ℕ)) * (ζ ^ (j : ℕ)) ^ (n : ℕ)) := by
   classical
   rw [Complex.ofReal_sum]
-  have h1 : ∀ j : Fin Q, ((c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2 : ℝ) : ℂ)
+  have h1 : ∀ j : Fin Q, ((c j * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ m : Fin Q, ∑ n : Fin Q, (c j : ℂ) *
           (((starRingEnd ℂ) ((ζ ^ (j : ℕ)) ^ (m : ℕ)) * x m) *
             (starRingEnd ℂ) ((starRingEnd ℂ) ((ζ ^ (j : ℕ)) ^ (n : ℕ)) * x n)) := by

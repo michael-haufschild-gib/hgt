@@ -29,7 +29,7 @@ def xiReciprocalDiagonalKernel : XiZeroCopy × XiZeroCopy → ℂ :=
   diagMul (fun q => (xiSpectralPoint q)⁻¹)
 
 theorem summable_norm_xiSpectralPoint_inv_sq :
-    Summable (fun q : XiZeroCopy => ‖(xiSpectralPoint q)⁻¹‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => ‖(xiSpectralPoint q)⁻¹‖ ^ (2 : ℕ)) := by
   simpa [norm_inv, one_div, inv_pow] using xiSpectralPoint_inv_sq_summable
 
 theorem isHS_xiReciprocalDiagonalKernel : IsHS xiReciprocalDiagonalKernel :=

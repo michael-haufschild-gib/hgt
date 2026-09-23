@@ -3,9 +3,9 @@ import GaloisForLFunctions.RHTower.XiMassFiniteOrderZeroFreeMarginBudget
 /-!
 # Xi zero-free margin budget near entropy scale
 
-A residual fraction `log(3A+9)^11/A` is smaller than every fixed algebraic margin order but
+A residual fraction `log(3A+9)^(11 : ℕ)/A` is smaller than every fixed algebraic margin order but
 still yields logarithmic-square decay against linear-log corona entropy.  The complete literal
-source vanishes, locating the remaining constant-sensitive boundary at order `log(A)^10/A`.
+source vanishes, locating the remaining constant-sensitive boundary at order `log(A)^(10 : ℕ)/A`.
 -/
 
 open Complex Metric Set Filter
@@ -78,22 +78,22 @@ theorem tendsto_xiMassEntropyScaledEnvelope_zero
     have hL1 : 1 ≤ L := by simpa only [L] using hlargeB.1
     have hL8 : 8 / c ≤ L := by simpa only [L] using hlargeB.2.1
     have hLD : 4 * Real.log D / c ≤ L := by simpa only [L] using hlargeB.2.2
-    have hpart1 : Real.log D ≤ c / 4 * L ^ 2 := by
+    have hpart1 : Real.log D ≤ c / 4 * L ^ (2 : ℕ) := by
       have hmul := mul_le_mul_of_nonneg_left hLD (show 0 ≤ c / 4 * L by positivity)
       calc
         Real.log D ≤ L * Real.log D := by nlinarith [hL1, hlogD]
         _ = (c / 4 * L) * (4 * Real.log D / c) := by
           field_simp [hc.ne']
         _ ≤ (c / 4 * L) * L := hmul
-        _ = c / 4 * L ^ 2 := by ring
-    have hpart2 : 2 * L ≤ c / 4 * L ^ 2 := by
+        _ = c / 4 * L ^ (2 : ℕ) := by ring
+    have hpart2 : 2 * L ≤ c / 4 * L ^ (2 : ℕ) := by
       have hmul := mul_le_mul_of_nonneg_left hL8 (show 0 ≤ c / 4 * L by positivity)
       calc
         2 * L = (c / 4 * L) * (8 / c) := by
           field_simp [hc.ne']
           ring
         _ ≤ (c / 4 * L) * L := hmul
-        _ = c / 4 * L ^ 2 := by ring
+        _ = c / 4 * L ^ (2 : ℕ) := by ring
     dsimp only [L] at hpart1 hpart2 ⊢
     linarith
   have hLsq : Tendsto (fun B : ℝ => Real.log (2 * B + 9) ^ (2 : ℕ))
@@ -131,34 +131,34 @@ theorem tendsto_xiMassEntropyScaledEnvelope_zero
       dsimp only [L]
       linarith
     have hlogyx' : Real.log y ≤ x := hlogyx.trans hLx
-    have hP : P ≤ D * x ^ 2 := by
+    have hP : P ≤ D * x ^ (2 : ℕ) := by
       dsimp only [P]
       calc
         C * (2 * B + 3) * Real.log y ≤ D * x * x := by gcongr
-        _ = D * x ^ 2 := by ring
-    have hexpEq : Real.exp (Real.log D + 2 * L) = D * x ^ 2 := by
+        _ = D * x ^ (2 : ℕ) := by ring
+    have hexpEq : Real.exp (Real.log D + 2 * L) = D * x ^ (2 : ℕ) := by
       rw [Real.exp_add, Real.exp_log hD]
       have htwo : 2 * L = L + L := by ring
       rw [htwo, Real.exp_add]
       dsimp only [L]
       rw [Real.exp_log hx]
       ring
-    have hPexp : P ≤ Real.exp (c / 2 * L ^ 2) := by
+    have hPexp : P ≤ Real.exp (c / 2 * L ^ (2 : ℕ)) := by
       calc
-        P ≤ D * x ^ 2 := hP
+        P ≤ D * x ^ (2 : ℕ) := hP
         _ = Real.exp (Real.log D + 2 * L) := hexpEq.symm
-        _ ≤ Real.exp (c / 2 * L ^ 2) := by
+        _ ≤ Real.exp (c / 2 * L ^ (2 : ℕ)) := by
           apply Real.exp_le_exp.mpr
           simpa only [L, x] using hbudgetB
-    have hcalc : P * Real.exp (-c * L ^ 2) ≤ Real.exp (-(c / 2) * L ^ 2) := by
+    have hcalc : P * Real.exp (-c * L ^ (2 : ℕ)) ≤ Real.exp (-(c / 2) * L ^ (2 : ℕ)) := by
       calc
-        P * Real.exp (-c * L ^ 2) ≤ Real.exp (c / 2 * L ^ 2) * Real.exp (-c * L ^ 2) :=
+        P * Real.exp (-c * L ^ (2 : ℕ)) ≤ Real.exp (c / 2 * L ^ (2 : ℕ)) * Real.exp (-c * L ^ (2 : ℕ)) :=
           mul_le_mul_of_nonneg_right hPexp (Real.exp_pos _).le
-        _ = Real.exp (-(c / 2) * L ^ 2) := by
+        _ = Real.exp (-(c / 2) * L ^ (2 : ℕ)) := by
           rw [← Real.exp_add]
           congr 1
           ring
-    change P * Real.exp (-c * L ^ 2) ≤ Real.exp (-(c / 2) * L ^ 2)
+    change P * Real.exp (-c * L ^ (2 : ℕ)) ≤ Real.exp (-(c / 2) * L ^ (2 : ℕ))
     exact hcalc
   · exact hdecay
 

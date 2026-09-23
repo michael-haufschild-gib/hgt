@@ -8,11 +8,11 @@ The distinguished block in the Connes--Consani decomposition is, after deleting 
 isometries, the real local-factor scalar `(1-p)/p` times the paired circle block
 `C_full = B D_full I B`.  This file proves the literal operator identity
 
-`E_p^* E_p = ((p-1)/p)^2 G_full`,
+`E_p^* E_p = ((p-1)/p)^(2 : ℕ) G_full`,
 
 where the right side is exactly the depth-one `gaussChannelOperator`.  The proof first promotes
 circle reflection to an involutive linear isometry, derives its self-adjointness, proves the paired
-block self-adjoint, and then combines `C^2 = G` with the archimedean scale.
+block self-adjoint, and then combines `C^(2 : ℕ) = G` with the archimedean scale.
 
 This closes the algebraic distinguished-block identification.  It does not identify the full
 Hardy defect or prove the depth-one singular-value residue of the actual Gauss channel.
@@ -122,7 +122,7 @@ theorem gaussPairedBlockFull_modulusSq
     simpa only [ContinuousLinearMap.coe_comp, Function.comp_apply] using h]
   have hscale :
       ((gaussArchScale m : Complex) * (gaussArchScale m : Complex)) =
-        ((gaussArchScale m ^ 2 : ℝ) : Complex) := by
+        ((gaussArchScale m ^ (2 : ℕ) : ℝ) : Complex) := by
     push_cast
     ring
   rw [hscale]

@@ -26,7 +26,7 @@ to `cosh m · (1 + cosh m) ≥ cosh² m + 1`, which holds for every `m` because
 `cosh m ≥ 1`. Hence the reversal integrand needs no positive-part clipping at the base
 point — the input the abstract reversal shells consume. -/
 theorem posTwo_algebraic_criterion (m : ℝ) :
-    Real.cosh m ^ 2 + 1 ≤ Real.cosh m * (1 + Real.cosh m) := by
+    Real.cosh m ^ (2 : ℕ) + 1 ≤ Real.cosh m * (1 + Real.cosh m) := by
   nlinarith [Real.one_le_cosh m]
 
 end RHTower

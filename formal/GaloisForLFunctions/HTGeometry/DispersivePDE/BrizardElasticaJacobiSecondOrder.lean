@@ -15,8 +15,8 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 noncomputable def jacobiSquaredCurvatureAcceleration
     (P : Parameters) (J : JacobiEllipticSystem P.modulus) (v : ℝ) : ℝ :=
   -2 * P.modulus *
-    ((J.cn v * J.dn v) ^ 2 - (J.sn v * J.dn v) ^ 2 -
-      P.modulus * (J.sn v * J.cn v) ^ 2)
+    ((J.cn v * J.dn v) ^ (2 : ℕ) - (J.sn v * J.dn v) ^ (2 : ℕ) -
+      P.modulus * (J.sn v * J.cn v) ^ (2 : ℕ))
 
 theorem jacobiSquaredCurvatureVelocity_hasDerivAt
     (P : Parameters) (J : JacobiEllipticSystem P.modulus) (v : ℝ) :
@@ -44,18 +44,18 @@ theorem jacobiSquaredCurvatureVelocity_hasDerivAt
 theorem jacobiSquaredCurvature_secondOrderEquation
     (P : Parameters) (J : JacobiEllipticSystem P.modulus) (v : ℝ) :
     jacobiSquaredCurvatureAcceleration P J v =
-      -6 * jacobiSquaredCurvature P J v ^ 2 -
+      -6 * jacobiSquaredCurvature P J v ^ (2 : ℕ) -
         4 * gammaSq P * (P.q₀ : ℝ) * jacobiSquaredCurvature P J v +
-        2 * (1 + nuSq P + gammaSq P) * (P.q₀ : ℝ) ^ 2 := by
-  have hcn : J.cn v ^ 2 = 1 - J.sn v ^ 2 := by
+        2 * (1 + nuSq P + gammaSq P) * (P.q₀ : ℝ) ^ (2 : ℕ) := by
+  have hcn : J.cn v ^ (2 : ℕ) = 1 - J.sn v ^ (2 : ℕ) := by
     linarith [J.sn_sq_add_cn_sq v]
-  have hdn : J.dn v ^ 2 = 1 - P.modulus * J.sn v ^ 2 := by
+  have hdn : J.dn v ^ (2 : ℕ) = 1 - P.modulus * J.sn v ^ (2 : ℕ) := by
     linarith [J.dn_sq_add_m_sn_sq v]
   rw [jacobiSquaredCurvatureAcceleration, jacobiSquaredCurvature,
     gammaSq, nuSq]
-  rw [show (J.cn v * J.dn v) ^ 2 = J.cn v ^ 2 * J.dn v ^ 2 by ring,
-    show (J.sn v * J.dn v) ^ 2 = J.sn v ^ 2 * J.dn v ^ 2 by ring,
-    show (J.sn v * J.cn v) ^ 2 = J.sn v ^ 2 * J.cn v ^ 2 by ring,
+  rw [show (J.cn v * J.dn v) ^ (2 : ℕ) = J.cn v ^ (2 : ℕ) * J.dn v ^ (2 : ℕ) by ring,
+    show (J.sn v * J.dn v) ^ (2 : ℕ) = J.sn v ^ (2 : ℕ) * J.dn v ^ (2 : ℕ) by ring,
+    show (J.sn v * J.cn v) ^ (2 : ℕ) = J.sn v ^ (2 : ℕ) * J.cn v ^ (2 : ℕ) by ring,
     hcn, hdn]
   field_simp [P.q₀.ne_zero]
   ring

@@ -30,8 +30,8 @@ noncomputable section
 /-- Value of the action fifth-root curvature numerator on an exactly Gaussian profile, as a
 function of the accumulated action alone. -/
 def thetaCuspFifthRootGaussianActionMargin (q : ℝ) : ℝ :=
-  24 * (Real.exp q - 1) ^ 2 - 8 * q * (Real.exp q - 1) -
-    20 * q ^ 2 * (Real.exp q - 1) - 16 * q ^ 2
+  24 * (Real.exp q - 1) ^ (2 : ℕ) - 8 * q * (Real.exp q - 1) -
+    20 * q ^ (2 : ℕ) * (Real.exp q - 1) - 16 * q ^ (2 : ℕ)
 
 /-- First shape deviation of a reflected fibre from its Gaussian profile: the scaled first jet
 minus twice the action. -/
@@ -41,14 +41,14 @@ def thetaCuspReflectedActionShapeDeviationOne (u t : ℝ) : ℝ :=
 /-- Second shape deviation of a reflected fibre from its Gaussian profile: the twice-scaled
 second jet minus twice the action. -/
 def thetaCuspReflectedActionShapeDeviationTwo (u t : ℝ) : ℝ :=
-  t ^ 2 * thetaCuspReflectedLogJetTwo u t - 2 * thetaCuspReflectedLogAction u t
+  t ^ (2 : ℕ) * thetaCuspReflectedLogJetTwo u t - 2 * thetaCuspReflectedLogAction u t
 
 /-- Quartic Taylor partial sum bound for the shifted exponential on the nonnegative ray. -/
 private theorem quartic_sum_le_exp_sub_one {q : ℝ} (hq : 0 ≤ q) :
-    q + q ^ 2 / 2 + q ^ 3 / 6 + q ^ 4 / 24 ≤ Real.exp q - 1 := by
+    q + q ^ (2 : ℕ) / 2 + q ^ (3 : ℕ) / 6 + q ^ (4 : ℕ) / 24 ≤ Real.exp q - 1 := by
   have h := Real.sum_le_exp_of_nonneg hq 5
   have hsum : ∑ i ∈ Finset.range 5, q ^ i / i.factorial =
-      1 + q + q ^ 2 / 2 + q ^ 3 / 6 + q ^ 4 / 24 := by
+      1 + q + q ^ (2 : ℕ) / 2 + q ^ (3 : ℕ) / 6 + q ^ (4 : ℕ) / 24 := by
     simp [Finset.sum_range_succ, Nat.factorial]
   rw [hsum] at h
   linarith
@@ -57,16 +57,16 @@ private theorem quartic_sum_le_exp_sub_one {q : ℝ} (hq : 0 ≤ q) :
 dominates an explicit nonnegative-coefficient quartic-order polynomial; the leading coefficient
 `8/3` is the pure-Gaussian coalescence jet. -/
 theorem le_thetaCuspFifthRootGaussianActionMargin {q : ℝ} (hq : 0 ≤ q) :
-    q ^ 4 * (8 / 3 + 7 * q / 3 + 5 * q ^ 2 / 6 + q ^ 3 / 3 + q ^ 4 / 24) ≤
+    q ^ (4 : ℕ) * (8 / 3 + 7 * q / 3 + 5 * q ^ (2 : ℕ) / 6 + q ^ (3 : ℕ) / 3 + q ^ (4 : ℕ) / 24) ≤
       thetaCuspFifthRootGaussianActionMargin q := by
   unfold thetaCuspFifthRootGaussianActionMargin
   have hsE := quartic_sum_le_exp_sub_one hq
-  have hcoef : 0 ≤ 24 * ((Real.exp q - 1) + (q + q ^ 2 / 2 + q ^ 3 / 6 + q ^ 4 / 24)) -
-      (8 * q + 20 * q ^ 2) := by
+  have hcoef : 0 ≤ 24 * ((Real.exp q - 1) + (q + q ^ (2 : ℕ) / 2 + q ^ (3 : ℕ) / 6 + q ^ (4 : ℕ) / 24)) -
+      (8 * q + 20 * q ^ (2 : ℕ)) := by
     nlinarith [pow_nonneg hq 3, pow_nonneg hq 4, sq_nonneg q]
-  have hprod : 0 ≤ ((Real.exp q - 1) - (q + q ^ 2 / 2 + q ^ 3 / 6 + q ^ 4 / 24)) *
-      (24 * ((Real.exp q - 1) + (q + q ^ 2 / 2 + q ^ 3 / 6 + q ^ 4 / 24)) -
-        (8 * q + 20 * q ^ 2)) :=
+  have hprod : 0 ≤ ((Real.exp q - 1) - (q + q ^ (2 : ℕ) / 2 + q ^ (3 : ℕ) / 6 + q ^ (4 : ℕ) / 24)) *
+      (24 * ((Real.exp q - 1) + (q + q ^ (2 : ℕ) / 2 + q ^ (3 : ℕ) / 6 + q ^ (4 : ℕ) / 24)) -
+        (8 * q + 20 * q ^ (2 : ℕ))) :=
     mul_nonneg (by linarith) hcoef
   nlinarith [hprod]
 
@@ -74,7 +74,7 @@ theorem le_thetaCuspFifthRootGaussianActionMargin {q : ℝ} (hq : 0 ≤ q) :
 theorem thetaCuspFifthRootGaussianActionMargin_nonneg {q : ℝ} (hq : 0 ≤ q) :
     0 ≤ thetaCuspFifthRootGaussianActionMargin q := by
   have hfloor := le_thetaCuspFifthRootGaussianActionMargin hq
-  have hpoly : 0 ≤ q ^ 4 * (8 / 3 + 7 * q / 3 + 5 * q ^ 2 / 6 + q ^ 3 / 3 + q ^ 4 / 24) := by
+  have hpoly : 0 ≤ q ^ (4 : ℕ) * (8 / 3 + 7 * q / 3 + 5 * q ^ (2 : ℕ) / 6 + q ^ (3 : ℕ) / 3 + q ^ (4 : ℕ) / 24) := by
     positivity
   linarith
 
@@ -93,7 +93,7 @@ theorem thetaCuspReflectedActionFifthRootCurvatureNumerator_eq_gaussianMargin_ad
             (Real.exp (thetaCuspReflectedLogAction u t) - 1)) *
           thetaCuspReflectedActionShapeDeviationOne u t -
         (4 + 5 * (Real.exp (thetaCuspReflectedLogAction u t) - 1)) *
-          thetaCuspReflectedActionShapeDeviationOne u t ^ 2 := by
+          thetaCuspReflectedActionShapeDeviationOne u t ^ (2 : ℕ) := by
   unfold thetaCuspReflectedActionFifthRootCurvatureNumerator
     thetaCuspFifthRootGaussianActionMargin
     thetaCuspReflectedActionShapeDeviationOne

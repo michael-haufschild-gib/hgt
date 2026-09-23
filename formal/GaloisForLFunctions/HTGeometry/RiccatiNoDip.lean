@@ -43,10 +43,10 @@ theorem sub_sub_div_le_of_riccati_nonneg {y₀ y₁ S M : ℝ} {v v' B Q : ℝ �
     (hlt : y₀ < y₁)
     (hvc : ContinuousOn v (Icc y₀ y₁))
     (hv : ∀ y ∈ Ioo y₀ y₁, HasDerivAt v (v' y) y)
-    (hric : ∀ y ∈ Ioo y₀ y₁, v' y = v y ^ 2 + B y * v y - Q y)
+    (hric : ∀ y ∈ Ioo y₀ y₁, v' y = v y ^ (2 : ℕ) + B y * v y - Q y)
     (hBc : ContinuousOn B (Icc y₀ y₁))
     (hvnn : ∀ y ∈ Icc y₀ y₁, 0 ≤ v y)
-    (hS : 0 < S) (hQ : ∀ y ∈ Icc y₀ y₁, S ^ 2 ≤ Q y)
+    (hS : 0 < S) (hQ : ∀ y ∈ Icc y₀ y₁, S ^ (2 : ℕ) ≤ Q y)
     (hB : ∀ y ∈ Icc y₀ y₁, 0 ≤ B y) (hBM : ∀ y ∈ Icc y₀ y₁, B y ≤ M) :
     S - M - 2 / (y₁ - y₀) ≤ v y₀ := by
   set L : ℝ := y₁ - y₀ with hL
@@ -59,12 +59,12 @@ theorem sub_sub_div_le_of_riccati_nonneg {y₀ y₁ S M : ℝ} {v v' B Q : ℝ �
   have hgap : 0 < S - M - 2 / L := lt_of_le_of_lt hm0 hcon
   have hLinv : 0 < 2 / L := by positivity
   have hmS : m < S := by linarith
-  set κ : ℝ := S ^ 2 - M * m - m ^ 2 with hκ
+  set κ : ℝ := S ^ (2 : ℕ) - M * m - m ^ (2 : ℕ) with hκ
   have hSL : 0 < S - 2 / L := by linarith
   have hκbig : 2 * S / L < κ := by
     have h1 : m * (M + m) ≤ m * (S - 2 / L) := by nlinarith [hm0, hcon]
     have h2 : m * (S - 2 / L) < S * (S - 2 / L) := mul_lt_mul_of_pos_right hmS hSL
-    have h3 : S * (S - 2 / L) = S ^ 2 - 2 * S / L := by
+    have h3 : S * (S - 2 / L) = S ^ (2 : ℕ) - 2 * S / L := by
       field_simp
     rw [hκ]
     nlinarith [h1, h2, h3]
@@ -122,7 +122,7 @@ theorem sub_sub_div_le_of_riccati_nonneg {y₀ y₁ S M : ℝ} {v v' B Q : ℝ �
     have hQy := hQ y hymem'
     have hBy := hBM y hymem'
     have hBy0 := hB y hymem'
-    have hsq : U y ^ 2 ≤ m ^ 2 := by nlinarith
+    have hsq : U y ^ (2 : ℕ) ≤ m ^ (2 : ℕ) := by nlinarith
     have hBU : B y * U y ≤ M * m := by nlinarith
     rw [hκ]
     linarith
@@ -135,9 +135,9 @@ theorem sub_sub_div_le_of_riccati_nonneg {y₀ y₁ S M : ℝ} {v v' B Q : ℝ �
     have h3 : 0 ≤ v z := hvnn z ⟨hz0, hz1.le⟩
     linarith
   -- stage two: an affine descent below zero
-  set lam : ℝ := min (S ^ 2 / 2) (S / (2 * L)) with hlam
+  set lam : ℝ := min (S ^ (2 : ℕ) / 2) (S / (2 * L)) with hlam
   have hlampos : 0 < lam := lt_min (by positivity) (by positivity)
-  have hlam1 : lam ≤ S ^ 2 / 2 := min_le_left _ _
+  have hlam1 : lam ≤ S ^ (2 : ℕ) / 2 := min_le_left _ _
   have hlam2 : lam ≤ S / (2 * L) := min_le_right _ _
   set V : ℝ → ℝ := fun y => -(lam * (y - z)) with hV
   have hVderiv : ∀ y : ℝ, HasDerivAt V (-lam) y := by
@@ -169,16 +169,16 @@ theorem sub_sub_div_le_of_riccati_nonneg {y₀ y₁ S M : ℝ} {v v' B Q : ℝ �
       rw [hV]
       linarith
     have hBV : B y * V y ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hBy0 hVnonpos
-    have hVsq : V y ^ 2 ≤ lam ^ 2 * L ^ 2 := by
-      have hexp : V y ^ 2 = lam ^ 2 * (y - z) ^ 2 := by rw [hV]; ring
-      have hsq : (y - z) ^ 2 ≤ L ^ 2 := by nlinarith [hyz, hyL]
+    have hVsq : V y ^ (2 : ℕ) ≤ lam ^ (2 : ℕ) * L ^ (2 : ℕ) := by
+      have hexp : V y ^ (2 : ℕ) = lam ^ (2 : ℕ) * (y - z) ^ (2 : ℕ) := by rw [hV]; ring
+      have hsq : (y - z) ^ (2 : ℕ) ≤ L ^ (2 : ℕ) := by nlinarith [hyz, hyL]
       rw [hexp]
       nlinarith [hlampos.le, hsq]
-    have hkey : lam ^ 2 * L ^ 2 ≤ S ^ 2 / 4 := by
+    have hkey : lam ^ (2 : ℕ) * L ^ (2 : ℕ) ≤ S ^ (2 : ℕ) / 4 := by
       have h1 : lam * (2 * L) ≤ S := by
         rw [le_div_iff₀ (by positivity)] at hlam2
         linarith
-      have h2 : (lam * (2 * L)) ^ 2 ≤ S ^ 2 :=
+      have h2 : (lam * (2 * L)) ^ (2 : ℕ) ≤ S ^ (2 : ℕ) :=
         pow_le_pow_left₀ (by positivity) h1 2
       nlinarith [h2]
     linarith

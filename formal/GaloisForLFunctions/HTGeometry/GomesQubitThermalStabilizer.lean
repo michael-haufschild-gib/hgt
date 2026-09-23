@@ -9,7 +9,7 @@ Applies the mass-kernel/stabilizer construction of Gomes, arXiv:2509.25276v7,
 to the corpus's normalized qubit density. Its actual commutator energy certifies
 the thermal Gram. Normalization preserves the entire commutant and Gram kernel,
 while nonzero parameter scaling preserves symmetry and zero scaling restores it.
-The exact characteristic polynomial has transverse value `tanh(radius)^2 / 4`,
+The exact characteristic polynomial has transverse value `tanh(radius)^(2 : ℕ) / 4`,
 strictly below one quarter for every finite carrier.
 
 The tensor-reconstruction problem in arXiv:2607.24901 remains sharp after this
@@ -88,7 +88,7 @@ theorem gomesQubitDensity_scaled_full_stabilizer (beta b t : ℝ) :
 
 /-- The normalized adjoint Gram of the actual thermal density carrier. -/
 def gomesQubitDensityMass (b t : ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
-  (gomesQubitThermalScale b t)^2 • gomesPauliAdjointMass ![b,0,t]
+  (gomesQubitThermalScale b t)^(2 : ℕ) • gomesPauliAdjointMass ![b,0,t]
 
 /-- The declared thermal Gram is certified by the actual density commutator energy. -/
 theorem gomesQubitDensityMass_commutator_energy (b t : ℝ) (x : Fin 3 → ℝ) :
@@ -124,8 +124,8 @@ theorem gomesQubitDensityMass_kernel_iff_commutes (b t : ℝ) (x : Fin 3 → ℝ
 
 /-- Thermal normalization converts the squared radius to an exact hyperbolic scale. -/
 theorem gomesQubitThermalScale_radius (b t : ℝ) :
-    (gomesQubitThermalScale b t)^2*(b^2+t^2) = Real.tanh (qubitRadius b t)^2/4 := by
-  have hr2 : qubitRadius b t ^ 2 = b^2+t^2 := by
+    (gomesQubitThermalScale b t)^(2 : ℕ)*(b^(2 : ℕ)+t^(2 : ℕ)) = Real.tanh (qubitRadius b t)^(2 : ℕ)/4 := by
+  have hr2 : qubitRadius b t ^ (2 : ℕ) = b^(2 : ℕ)+t^(2 : ℕ) := by
     simpa [qubitRadius,add_comm] using Real.sq_sqrt (add_nonneg (sq_nonneg t) (sq_nonneg b))
   by_cases hr : qubitRadius b t = 0
   · obtain ⟨rfl,rfl⟩ := (gomesQubitRadius_zero_iff b t).mp hr
@@ -138,7 +138,7 @@ theorem gomesQubitThermalScale_radius (b t : ℝ) :
 /-- The full thermal Gram characteristic polynomial, with the degenerate case included. -/
 theorem gomesQubitDensityMass_characteristic (b t mu : ℝ) :
     Matrix.det (mu • (1 : Matrix (Fin 3) (Fin 3) ℝ)-gomesQubitDensityMass b t) =
-      mu*(mu-Real.tanh (qubitRadius b t)^2/4)^2 := by
+      mu*(mu-Real.tanh (qubitRadius b t)^(2 : ℕ)/4)^(2 : ℕ) := by
   rw [← gomesQubitThermalScale_radius]
   simp [gomesQubitDensityMass,gomesPauliAdjointMass,Matrix.det_fin_three,
     Matrix.vecMulVec,dotProduct,Fin.sum_univ_three]
@@ -146,14 +146,14 @@ theorem gomesQubitDensityMass_characteristic (b t mu : ℝ) :
 
 /-- The thermal Gram scale is uniformly below one quarter at every finite carrier. -/
 theorem gomesQubitDensityMass_spectral_bound (b t : ℝ) :
-    0 ≤ Real.tanh (qubitRadius b t)^2/4 ∧ Real.tanh (qubitRadius b t)^2/4 < 1/4 := by
+    0 ≤ Real.tanh (qubitRadius b t)^(2 : ℕ)/4 ∧ Real.tanh (qubitRadius b t)^(2 : ℕ)/4 < 1/4 := by
   constructor
   · positivity
   · linarith [Real.tanh_sq_lt_one (qubitRadius b t)]
 
 /-- The full thermal Gram trace records the squared radial polarization. -/
 theorem gomesQubitDensityMass_trace (b t : ℝ) :
-    Matrix.trace (gomesQubitDensityMass b t) = Real.tanh (qubitRadius b t)^2/2 := by
+    Matrix.trace (gomesQubitDensityMass b t) = Real.tanh (qubitRadius b t)^(2 : ℕ)/2 := by
   rw [gomesQubitDensityMass,Matrix.trace_smul,gomesPauliAdjointMass_trace]
   simp [dotProduct,Fin.sum_univ_three]
   have h := gomesQubitThermalScale_radius b t
@@ -184,7 +184,7 @@ theorem gomesQubitDensityMass_reconstruction (b t c s : ℝ) :
     · unfold gomesQubitDensityMass at h
       rw [hk] at h
       have hm := congrArg (fun A : Matrix (Fin 3) (Fin 3) ℝ =>
-        ((gomesQubitThermalScale c s)^2)⁻¹ • A) h
+        ((gomesQubitThermalScale c s)^(2 : ℕ))⁻¹ • A) h
       have hh : gomesPauliAdjointMass ![b,0,t] = gomesPauliAdjointMass ![c,0,s] := by
         simpa [smul_smul,hz] using hm
       exact (gomesQubitMass_reconstruction b t c s).mp hh

@@ -9,8 +9,8 @@ Two identical pure qubits, an XOR/entangling gate, a successful projective measu
 one-qubit rotation induce exact rational maps on the projective amplitude coordinate.  This module
 formalizes the unconditional algebra of two such maps:
 
-* the balanced XOR--rotation map `(z^2+1)/(1-z^2)`;
-* the experimentally realized orthogonalizer `2z/(1+z^2)`.
+* the balanced XOR--rotation map `(z^(2 : ℕ)+1)/(1-z^(2 : ℕ))`;
+* the experimentally realized orthogonalizer `2z/(1+z^(2 : ℕ))`.
 
 The first map's projective critical orbit data differ from the second map's exact projective
 conjugacy to squaring.  An explicit pair of successive pure-state projector numerators also proves
@@ -28,7 +28,7 @@ noncomputable section
 
 /-- XOR plus successful zero-outcome postselection squares the projective amplitudes. -/
 def xorPostselectedQubitAmplitude (z : ℚ) : ℚ × ℚ :=
-  (z ^ 2, 1)
+  (z ^ (2 : ℕ), 1)
 
 /-- Balanced one-qubit rotation, with the common square-root normalization removed. -/
 def balancedQubitRotationAmplitude (q : ℚ × ℚ) : ℚ × ℚ :=
@@ -36,7 +36,7 @@ def balancedQubitRotationAmplitude (q : ℚ × ℚ) : ℚ × ℚ :=
 
 /-- Homogeneous projective lift of the balanced conditional-qubit rational map. -/
 def postselectedQubitProjectiveMap (q : ℚ × ℚ) : ℚ × ℚ :=
-  (q.1 ^ 2 + q.2 ^ 2, q.2 ^ 2 - q.1 ^ 2)
+  (q.1 ^ (2 : ℕ) + q.2 ^ (2 : ℕ), q.2 ^ (2 : ℕ) - q.1 ^ (2 : ℕ))
 
 /-- The physical XOR/postselection step followed by balanced rotation is the projective map. -/
 theorem balancedRotation_after_xorPostselection (z : ℚ) :
@@ -47,23 +47,23 @@ theorem balancedRotation_after_xorPostselection (z : ℚ) :
 
 /-- Primitive numerator of the balanced conditional-qubit map. -/
 def postselectedQubitNumerator : ℚ[X] :=
-  X ^ 2 + 1
+  X ^ (2 : ℕ) + 1
 
 /-- Primitive denominator of the balanced conditional-qubit map. -/
 def postselectedQubitDenominator : ℚ[X] :=
-  1 - X ^ 2
+  1 - X ^ (2 : ℕ)
 
 /-- Exact rational map on the affine amplitude chart. -/
 def postselectedQubitRationalMap : RatFunc ℚ :=
-  ((RatFunc.X : RatFunc ℚ) ^ 2 + 1) / (1 - (RatFunc.X : RatFunc ℚ) ^ 2)
+  ((RatFunc.X : RatFunc ℚ) ^ (2 : ℕ) + 1) / (1 - (RatFunc.X : RatFunc ℚ) ^ (2 : ℕ))
 
 /-- Exact affine formula away from the projective pole. -/
 def postselectedQubitAffineStep (z : ℚ) : ℚ :=
-  (z ^ 2 + 1) / (1 - z ^ 2)
+  (z ^ (2 : ℕ) + 1) / (1 - z ^ (2 : ℕ))
 
 /-- The balanced map's primitive projective pair has no common complex zero. -/
 theorem postselectedQubit_noCommonZero
-    (z : ℂ) (hN : z ^ 2 + 1 = 0) (hD : 1 - z ^ 2 = 0) : False := by
+    (z : ℂ) (hN : z ^ (2 : ℕ) + 1 = 0) (hD : 1 - z ^ (2 : ℕ) = 0) : False := by
   have htwo : (2 : ℂ) = 0 := by
     linear_combination hN + hD
   norm_num at htwo
@@ -99,21 +99,21 @@ theorem postselectedQubit_derivativeCrossNumerator :
 
 /-- In the reciprocal coordinate at infinity, displacement from minus one has quadratic numerator. -/
 theorem postselectedQubit_infinityLocalDisplacementNumerator (w : ℚ) :
-    (1 + w ^ 2) + (w ^ 2 - 1) = 2 * w ^ 2 := by
+    (1 + w ^ (2 : ℕ)) + (w ^ (2 : ℕ) - 1) = 2 * w ^ (2 : ℕ) := by
   ring
 
 /-- The quadratic local displacement at infinity has nonzero second derivative. -/
 theorem postselectedQubit_infinityLocal_secondDerivative :
-    (derivative (derivative ((2 : ℚ[X]) * X ^ 2))).eval 0 = 4 := by
+    (derivative (derivative ((2 : ℚ[X]) * X ^ (2 : ℕ)))).eval 0 = 4 := by
   norm_num [derivative_pow]
 
 /-- Homogeneous projective lift of the experimentally realized qubit orthogonalizer. -/
 def experimentalQubitProjectiveMap (q : ℚ × ℚ) : ℚ × ℚ :=
-  (2 * q.1 * q.2, q.1 ^ 2 + q.2 ^ 2)
+  (2 * q.1 * q.2, q.1 ^ (2 : ℕ) + q.2 ^ (2 : ℕ))
 
 /-- Exact experimentally realized affine rational map. -/
 def experimentalQubitOrthogonalizer : RatFunc ℚ :=
-  (2 * RatFunc.X) / (1 + (RatFunc.X : RatFunc ℚ) ^ 2)
+  (2 * RatFunc.X) / (1 + (RatFunc.X : RatFunc ℚ) ^ (2 : ℕ))
 
 /-- Projective Moebius coordinate used to expose the power-map conjugacy. -/
 def qubitPowerProjectiveCoordinate (q : ℚ × ℚ) : ℚ × ℚ :=
@@ -121,7 +121,7 @@ def qubitPowerProjectiveCoordinate (q : ℚ × ℚ) : ℚ × ℚ :=
 
 /-- Homogeneous lift of the squaring map. -/
 def qubitProjectiveSquare (q : ℚ × ℚ) : ℚ × ℚ :=
-  (q.1 ^ 2, q.2 ^ 2)
+  (q.1 ^ (2 : ℕ), q.2 ^ (2 : ℕ))
 
 /-- The experimental orthogonalizer is exactly projectively conjugate to squaring. -/
 theorem qubitPowerCoordinate_after_experimental (q : ℚ × ℚ) :
@@ -144,15 +144,15 @@ theorem qubitPowerCoordinate_after_experimental (q : ℚ × ℚ) :
 
 /-- Exact critical polynomial of the experimental map, exposing its two fixed critical points. -/
 theorem experimentalQubit_derivativeCrossNumerator :
-    derivative ((2 : ℚ[X]) * X) * (1 + X ^ 2) -
-        ((2 : ℚ[X]) * X) * derivative (1 + X ^ 2) =
-      2 * (1 - X ^ 2) := by
+    derivative ((2 : ℚ[X]) * X) * (1 + X ^ (2 : ℕ)) -
+        ((2 : ℚ[X]) * X) * derivative (1 + X ^ (2 : ℕ)) =
+      2 * (1 - X ^ (2 : ℕ)) := by
   simp [derivative_pow, Polynomial.C_ofNat]
   ring
 
 /-- Unnormalized rank-one projector of the real pure ray `z|0>+|1>`. -/
 def qubitRayProjectorNumerator (z : ℚ) : Matrix (Fin 2) (Fin 2) ℚ :=
-  !![z ^ 2, z; z, 1]
+  !![z ^ (2 : ℕ), z; z, 1]
 
 /-- Exact commutator entry for two real pure-state projector numerators. -/
 theorem qubitRayProjector_commutator_zero_one (z w : ℚ) :

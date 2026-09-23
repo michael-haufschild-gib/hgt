@@ -10,21 +10,21 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSimilarityInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalBoundedSimilarityInst2 : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance fokasLenellsCausalBoundedSimilarityInst3 : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance fokasLenellsCausalBoundedSimilarityInst4 : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance fokasLenellsCausalBoundedSimilarityInst5 : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSimilarityInst6 : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSimilarityInst7 : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
 
 open GaloisForLFunctions.HilbertMetric
-local instance : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedSimilarityInst8 : NormedAlgebra ℂ (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedAlgebra
 local instance : Nontrivial (causalBoundedChain →L[ℂ] causalBoundedChain) := by
   refine ⟨⟨causalBoundedChainExponential 0, 0, ?_⟩⟩

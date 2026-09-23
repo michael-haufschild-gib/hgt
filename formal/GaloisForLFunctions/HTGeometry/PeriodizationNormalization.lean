@@ -19,7 +19,7 @@ noncomputable section
 theorem centeredComplexGaussian_real_translate {d : ℕ} (σ : Fin d → ℝ) (center : Fin d → ℂ)
     (v : Fin d → ℝ) :
     (centeredComplexGaussian σ center).1 (center + fun i => ((v i : ℝ) : ℂ))
-      = ((Real.exp (-∑ i, σ i * (v i) ^ 2) : ℝ) : ℂ) := by
+      = ((Real.exp (-∑ i, σ i * (v i) ^ (2 : ℕ)) : ℝ) : ℂ) := by
   rw [centeredComplexGaussian_apply]
   rw [Complex.ofReal_exp]
   congr 1
@@ -36,37 +36,37 @@ theorem centeredComplexGaussian_real_translate {d : ℕ} (σ : Fin d → ℝ) (c
 theorem one_le_latticePeriodization_center {d k : ℕ}
     (vec : (Fin k → ℤ) → Fin d → ℝ)
     (hvec0 : ∀ i, vec 0 i = 0) (σ : Fin d → ℝ)
-    (hsum : Summable fun n : Fin k → ℤ => Real.exp (-∑ i, σ i * (vec n i) ^ 2)) :
-    (1 : ℝ) ≤ ∑' n : Fin k → ℤ, Real.exp (-∑ i, σ i * (vec n i) ^ 2) := by
-  have hzero : Real.exp (-∑ i, σ i * (vec 0 i) ^ 2) = 1 := by
-    have : ∑ i, σ i * (vec 0 i) ^ 2 = 0 := by
+    (hsum : Summable fun n : Fin k → ℤ => Real.exp (-∑ i, σ i * (vec n i) ^ (2 : ℕ))) :
+    (1 : ℝ) ≤ ∑' n : Fin k → ℤ, Real.exp (-∑ i, σ i * (vec n i) ^ (2 : ℕ)) := by
+  have hzero : Real.exp (-∑ i, σ i * (vec 0 i) ^ (2 : ℕ)) = 1 := by
+    have : ∑ i, σ i * (vec 0 i) ^ (2 : ℕ) = 0 := by
       refine Finset.sum_eq_zero fun i _ => ?_
       rw [hvec0 i]
       ring
     rw [this, neg_zero, Real.exp_zero]
-  calc (1 : ℝ) = Real.exp (-∑ i, σ i * (vec 0 i) ^ 2) := hzero.symm
-    _ ≤ ∑' n : Fin k → ℤ, Real.exp (-∑ i, σ i * (vec n i) ^ 2) :=
+  calc (1 : ℝ) = Real.exp (-∑ i, σ i * (vec 0 i) ^ (2 : ℕ)) := hzero.symm
+    _ ≤ ∑' n : Fin k → ℤ, Real.exp (-∑ i, σ i * (vec n i) ^ (2 : ℕ)) :=
         hsum.le_tsum 0 (fun n _ => (Real.exp_pos _).le)
 
 /-- **The periodization at the centre is a positive real**, hence nonzero. -/
 theorem latticePeriodizationFun_center_ne_zero {d k : ℕ} (emb : (Fin k → ℤ) →+ (Fin d → ℂ))
     (vec : (Fin k → ℤ) → Fin d → ℝ) (hvec : ∀ n i, emb n i = ((vec n i : ℝ) : ℂ))
     (hvec0 : ∀ i, vec 0 i = 0) (σ : Fin d → ℝ) (center : Fin d → ℂ)
-    (hsum : Summable fun n : Fin k → ℤ => Real.exp (-∑ i, σ i * (vec n i) ^ 2)) :
+    (hsum : Summable fun n : Fin k → ℤ => Real.exp (-∑ i, σ i * (vec n i) ^ (2 : ℕ))) :
     latticePeriodizationFun emb (centeredComplexGaussian σ center) center ≠ 0 := by
   have hterm : ∀ n : Fin k → ℤ,
       (centeredComplexGaussian σ center).1 (center + emb n)
-        = ((Real.exp (-∑ i, σ i * (vec n i) ^ 2) : ℝ) : ℂ) := by
+        = ((Real.exp (-∑ i, σ i * (vec n i) ^ (2 : ℕ)) : ℝ) : ℂ) := by
     intro n
     have hpt : center + emb n = center + fun i => ((vec n i : ℝ) : ℂ) := by
       funext i
       rw [Pi.add_apply, Pi.add_apply, hvec n i]
     rw [hpt, centeredComplexGaussian_real_translate]
   have hval : latticePeriodizationFun emb (centeredComplexGaussian σ center) center
-      = ((∑' n : Fin k → ℤ, Real.exp (-∑ i, σ i * (vec n i) ^ 2) : ℝ) : ℂ) := by
+      = ((∑' n : Fin k → ℤ, Real.exp (-∑ i, σ i * (vec n i) ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [latticePeriodizationFun]
     rw [show (fun n : Fin k → ℤ => (centeredComplexGaussian σ center).1 (center + emb n))
-        = fun n : Fin k → ℤ => ((Real.exp (-∑ i, σ i * (vec n i) ^ 2) : ℝ) : ℂ) from
+        = fun n : Fin k → ℤ => ((Real.exp (-∑ i, σ i * (vec n i) ^ (2 : ℕ)) : ℝ) : ℂ) from
       funext hterm]
     exact (Complex.ofRealCLM.map_tsum hsum).symm
   rw [hval]

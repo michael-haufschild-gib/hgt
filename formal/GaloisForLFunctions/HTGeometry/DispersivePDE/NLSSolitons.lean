@@ -28,12 +28,12 @@ noncomputable def solitonA (x : ℝ) : ℝ := 1 / Real.cosh x
 
 noncomputable def solitonA1 (x : ℝ) : ℝ := -(solitonT x * solitonA x)
 
-noncomputable def solitonA2 (x : ℝ) : ℝ := solitonA x - 2 * solitonA x ^ 3
+noncomputable def solitonA2 (x : ℝ) : ℝ := solitonA x - 2 * solitonA x ^ (3 : ℕ)
 
 theorem solitonA_pos (x : ℝ) : 0 < solitonA x := by
   exact one_div_pos.mpr (Real.cosh_pos x)
 
-theorem solitonA_sq (x : ℝ) : solitonA x ^ 2 = solitonQ x := by
+theorem solitonA_sq (x : ℝ) : solitonA x ^ (2 : ℕ) = solitonQ x := by
   rw [solitonQ_eq_inv_cosh_sq]
   unfold solitonA
   ring
@@ -55,7 +55,7 @@ theorem hasDerivAt_solitonA1 (x : ℝ) : HasDerivAt solitonA1 (solitonA2 x) x :=
   apply (h.congr_deriv ?_).congr_of_eventuallyEq
   · filter_upwards with y
     simp [solitonA1]
-  · have hunit : solitonT x ^ 2 + solitonA x ^ 2 = 1 := by
+  · have hunit : solitonT x ^ (2 : ℕ) + solitonA x ^ (2 : ℕ) = 1 := by
       rw [solitonA_sq]
       simp [solitonQ]
     have hsq := solitonA_sq x
@@ -149,22 +149,22 @@ noncomputable def nlsDarkSolitonJet : ComplexEvolutionJet2 where
       ((solitonQ1 x : ℂ) * darkPhase t) x
     exact (hasDerivAt_solitonQ x).ofReal_comp.mul_const (darkPhase t)
 
-theorem norm_nlsDarkSoliton_sq (t x : ℝ) : ‖nlsDarkSoliton t x‖ ^ 2 = solitonT x ^ 2 := by
+theorem norm_nlsDarkSoliton_sq (t x : ℝ) : ‖nlsDarkSoliton t x‖ ^ (2 : ℕ) = solitonT x ^ (2 : ℕ) := by
   rw [nlsDarkSoliton, norm_mul, norm_darkPhase, mul_one]
   simp
 
 theorem nlsDarkSoliton_solves : SolvesDefocusingNLS nlsDarkSolitonJet := by
   intro t x
   simp only [nlsDarkSolitonJet, nlsDarkSoliton]
-  rw [show ‖(solitonT x : ℂ) * darkPhase t‖ ^ 2 = solitonT x ^ 2 by
+  rw [show ‖(solitonT x : ℂ) * darkPhase t‖ ^ (2 : ℕ) = solitonT x ^ (2 : ℕ) by
     simpa [nlsDarkSoliton] using norm_nlsDarkSoliton_sq t x]
   simp only [solitonQ1]
-  have hunit : solitonQ x + solitonT x ^ 2 = 1 := by simp [solitonQ]
+  have hunit : solitonQ x + solitonT x ^ (2 : ℕ) = 1 := by simp [solitonQ]
   push_cast
   ring_nf
   rw [Complex.I_sq]
   ring_nf
-  have hunitC : (solitonQ x : ℂ) + (solitonT x : ℂ) ^ 2 = 1 := by
+  have hunitC : (solitonQ x : ℂ) + (solitonT x : ℂ) ^ (2 : ℕ) = 1 := by
     exact_mod_cast hunit
   linear_combination -(2 * (solitonT x : ℂ) * darkPhase t) * hunitC
 
@@ -213,10 +213,10 @@ theorem nlsPlaneWave_solves : SolvesFocusingNLS nlsPlaneWaveJet := by
 theorem solitonA_schrodinger (x : ℝ) :
     solitonA2 x + 2 * solitonQ x * solitonA x = solitonA x := by
   rw [solitonA2]
-  have hsq : solitonA x ^ 2 = solitonQ x := solitonA_sq x
+  have hsq : solitonA x ^ (2 : ℕ) = solitonQ x := solitonA_sq x
   calc
-    solitonA x - 2 * solitonA x ^ 3 + 2 * solitonQ x * solitonA x =
-        solitonA x + 2 * solitonA x * (solitonQ x - solitonA x ^ 2) := by ring
+    solitonA x - 2 * solitonA x ^ (3 : ℕ) + 2 * solitonQ x * solitonA x =
+        solitonA x + 2 * solitonA x * (solitonQ x - solitonA x ^ (2 : ℕ)) := by ring
     _ = solitonA x := by rw [hsq]; ring
 
 theorem nlsBrightSoliton_center_norm (t : ℝ) : ‖nlsBrightSoliton t 0‖ = 1 := by

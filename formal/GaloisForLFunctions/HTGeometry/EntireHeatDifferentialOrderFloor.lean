@@ -43,7 +43,7 @@ theorem not_exists_polynomial_coeffFun_of_infinite_support (ha : EntireCoeffs a)
 theorem tendsto_entireHeat_centralIndex_div_log_zero
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
     Tendsto (fun r : ℝ => (centralIndex a r : ℝ) / Real.log r) atTop (nhds 0) := by
@@ -64,7 +64,7 @@ equation. -/
 theorem not_differentiallyAlgebraicOfOrder_one_entireHeat
     (ha : EntireCoeffs a)
     (hheat : ∀ t z : ℂ, Summable (fun n : ℕ =>
-      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ 2) * (n : ℂ) ^ 2 * t)
+      a n * Complex.exp (-(4 * (Real.pi : ℂ) ^ (2 : ℕ)) * (n : ℂ) ^ (2 : ℕ) * t)
         * Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ) * z)))
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0) :
     ¬ GaloisForLFunctions.DifferentiallyAlgebraicOfOrder (coeffFun a) 1 := by

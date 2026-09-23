@@ -46,7 +46,7 @@ theorem splits_evenCanonicalPartial (θ : BoundedRealSequence) (N : ℕ) :
 
 theorem polyEvalC_evenCanonicalPartial (θ : BoundedRealSequence) (N : ℕ) (z : ℂ) :
     polyEvalC (evenCanonicalPartial θ N) z
-      = ∏ n ∈ Finset.range N, (1 + (-(z ^ 2 / (movingCanonicalZero θ n : ℂ) ^ 2))) := by
+      = ∏ n ∈ Finset.range N, (1 + (-(z ^ (2 : ℕ) / (movingCanonicalZero θ n : ℂ) ^ (2 : ℕ)))) := by
   rw [polyEvalC, evenCanonicalPartial, map_prod]
   refine Finset.prod_congr rfl fun n _ => ?_
   have hne : ((movingCanonicalZero θ n : ℝ) : ℂ) ≠ 0 :=
@@ -63,9 +63,9 @@ theorem polyEvalC_evenCanonicalPartial (θ : BoundedRealSequence) (N : ℕ) (z :
 
 theorem hasProdLocallyUniformlyOn_evenCanonical (θ : BoundedRealSequence) :
     HasProdLocallyUniformlyOn
-      (fun n (z : ℂ) => 1 + (-(z ^ 2 / (movingCanonicalZero θ n : ℂ) ^ 2)))
+      (fun n (z : ℂ) => 1 + (-(z ^ (2 : ℕ) / (movingCanonicalZero θ n : ℂ) ^ (2 : ℕ))))
       (movingEvenCanonicalProduct θ) Set.univ := by
-  have hlim : (fun z : ℂ => ∏' n : ℕ, (1 + (-(z ^ 2 / (movingCanonicalZero θ n : ℂ) ^ 2))))
+  have hlim : (fun z : ℂ => ∏' n : ℕ, (1 + (-(z ^ (2 : ℕ) / (movingCanonicalZero θ n : ℂ) ^ (2 : ℕ)))))
       = movingEvenCanonicalProduct θ := by
     funext z
     rw [movingEvenCanonicalProduct_eq_tprod]
@@ -76,7 +76,7 @@ theorem hasProdLocallyUniformlyOn_evenCanonical (θ : BoundedRealSequence) :
   obtain ⟨R, hRS⟩ := hS.isBounded.subset_closedBall 0
   have hR0 : (0 : ℝ) ≤ max R 0 := le_max_right _ _
   refine Summable.hasProdUniformlyOn_nat_one_add hS
-    (u := fun n => (max R 0) ^ 2 * (1 / ‖(movingCanonicalZero θ n : ℂ)‖ ^ 2))
+    (u := fun n => (max R 0) ^ (2 : ℕ) * (1 / ‖(movingCanonicalZero θ n : ℂ)‖ ^ (2 : ℕ)))
     ((summable_movingCanonicalZero_inv_sq θ).mul_left _) ?_ (fun n => by fun_prop)
   refine Filter.Eventually.of_forall fun n z hz => ?_
   have hzR : ‖z‖ ≤ max R 0 := by
@@ -99,7 +99,7 @@ theorem laguerrePolya_movingEvenCanonicalProduct (θ : BoundedRealSequence) :
   rw [tendstoLocallyUniformlyOn_univ] at h2
   have heq : (fun N => polyEvalC (evenCanonicalPartial θ N))
       = fun N (z : ℂ) =>
-        ∏ n ∈ Finset.range N, (1 + (-(z ^ 2 / (movingCanonicalZero θ n : ℂ) ^ 2))) := by
+        ∏ n ∈ Finset.range N, (1 + (-(z ^ (2 : ℕ) / (movingCanonicalZero θ n : ℂ) ^ (2 : ℕ)))) := by
     funext N z
     exact polyEvalC_evenCanonicalPartial θ N z
   rw [heq]

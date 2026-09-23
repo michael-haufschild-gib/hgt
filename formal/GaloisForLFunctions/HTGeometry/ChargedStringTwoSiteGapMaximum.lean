@@ -30,7 +30,7 @@ theorem stringTwoSiteGap_at_optimal (ell tau : ℝ) :
 
 /-- The gap maximizer also attains the exact temperature-calibrated squared bound. -/
 theorem stringTwoSiteGap_at_optimal_temperature (ell tau : ℝ) :
-    stringTwoSiteGap ell tau (stringTwoSiteOptimalRadiusCoordinate ell) ^ 2 =
+    stringTwoSiteGap ell tau (stringTwoSiteOptimalRadiusCoordinate ell) ^ (2 : ℕ) =
       (1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell) / 16 := by
   rw [stringTwoSiteGap_at_optimal]
   have ht := stringBlackHole_charge_temperature ell tau

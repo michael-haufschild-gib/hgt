@@ -27,8 +27,8 @@ theorem egbFixedChargeACriticalFourierCoordinates_norm (n : ℕ)
 /-- Parseval's identity is exact for every complex input on the critical grid. -/
 theorem egbFixedChargeACriticalFourierCoordinates_parseval (n : ℕ)
     (f : Fin (2 ^ (n + 3)) → ℂ) :
-    ∑ j, ‖egbFixedChargeACriticalFourierCoordinates n f j‖ ^ 2 = ∑ i, ‖f i‖ ^ 2 := by
-  have h := congrArg (fun r : ℝ => r ^ 2) (egbFixedChargeACriticalFourierCoordinates_norm n f)
+    ∑ j, ‖egbFixedChargeACriticalFourierCoordinates n f j‖ ^ (2 : ℕ) = ∑ i, ‖f i‖ ^ (2 : ℕ) := by
+  have h := congrArg (fun r : ℝ => r ^ (2 : ℕ)) (egbFixedChargeACriticalFourierCoordinates_norm n f)
   simp only [EuclideanSpace.norm_eq] at h
   rw [Real.sq_sqrt (by positivity), Real.sq_sqrt (by positivity)] at h
   exact h
@@ -36,9 +36,9 @@ theorem egbFixedChargeACriticalFourierCoordinates_parseval (n : ℕ)
 /-- The output squared norm is the exact spectral sum of the damped Fourier coordinates. -/
 theorem egbFixedChargeACriticalMarkovMatrix_spectral_energy (n m : ℕ)
     (f : Fin (2 ^ (n + 3)) → ℂ) :
-    ∑ i, ‖((egbFixedChargeACriticalMarkovMatrix n ^ m) *ᵥ f) i‖ ^ 2 =
+    ∑ i, ‖((egbFixedChargeACriticalMarkovMatrix n ^ m) *ᵥ f) i‖ ^ (2 : ℕ) =
       ∑ j, ‖egbFixedChargeAFiveModeSpectrum n egbFixedChargeACriticalMarkovEigenvalues j ^ m *
-        egbFixedChargeACriticalFourierCoordinates n f j‖ ^ 2 := by
+        egbFixedChargeACriticalFourierCoordinates n f j‖ ^ (2 : ℕ) := by
   rw [← egbFixedChargeACriticalFourierCoordinates_parseval,
     egbFixedChargeACriticalFourierCoordinates_evolution]
 

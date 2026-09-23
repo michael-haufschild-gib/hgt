@@ -89,7 +89,7 @@ theorem finiteReplicaPauliCommutatorEnd_mem_generatorSpan_pow_weight
           exact finiteReplicaTwoLocalPauliEnd_mem_generatorSpan R A
         have hpos : 0 < w := by
           simpa [hweight] using pauliWeight4_pos_of_ne_zero s hs
-        have hmono : S ^ 1 ≤ S ^ w :=
+        have hmono : S ^ (1 : ℕ) ≤ S ^ w :=
           pow_le_pow_right' (a := S)
             (one_le_finiteReplicaTwoLocalPauliEndGeneratorSpan R n)
             hpos
@@ -104,7 +104,7 @@ theorem finiteReplicaPauliCommutatorEnd_mem_generatorSpan_pow_weight
             (by simpa [hweight] using htWeight) t ht rfl
         let A : QuantumAlg.twoLocalPauliMatrices n :=
           ⟨QuantumAlg.pauliMat u, ⟨u, hu, huWeight.le, rfl⟩⟩
-        have humem : f (QuantumAlg.pauliMat u) ∈ S ^ 1 := by
+        have humem : f (QuantumAlg.pauliMat u) ∈ S ^ (1 : ℕ) := by
           rw [Submodule.pow_one]
           exact finiteReplicaTwoLocalPauliEnd_mem_generatorSpan R A
         have hprod1 :

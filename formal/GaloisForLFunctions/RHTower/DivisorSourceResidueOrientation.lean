@@ -22,7 +22,7 @@ private lemma source_reflection_coefficient_gt :
   have hlog : Real.log (24:ℝ)<Real.log (8*Real.pi) :=
     Real.log_lt_log (by norm_num) (by nlinarith [Real.pi_gt_three])
   have he : Real.log (24:ℝ)=3*Real.log 2+Real.log 3 := by
-    rw [show (24:ℝ)=2^3*3 by norm_num, Real.log_mul (by positivity) (by norm_num),
+    rw [show (24:ℝ)=2^(3 : ℕ)*3 by norm_num, Real.log_mul (by positivity) (by norm_num),
       Real.log_pow]
     norm_num
   rw [he] at hlog
@@ -43,12 +43,12 @@ theorem divisorSourceEntire_negative_half_lower :
   have hlin : -eulerMass (3/2)<
       (Real.log (8*Real.pi)-Real.eulerMascheroniConstant-2-Real.pi/2)*eulerMass (3/2) := by
     nlinarith
-  have hquad : (eulerMass (3/2))^2/(4*Real.pi)<3/4 := by
+  have hquad : (eulerMass (3/2))^(2 : ℕ)/(4*Real.pi)<3/4 := by
     apply (div_lt_iff₀ (by positivity : (0:ℝ)<4*Real.pi)).mpr
     nlinarith [Real.pi_gt_three]
   have hmargin : (1/68:ℝ)<eulerLogMass (3/2)+
       (Real.log (8*Real.pi)-Real.eulerMascheroniConstant-2-Real.pi/2)*eulerMass (3/2)-
-      (eulerMass (3/2))^2/(4*Real.pi) := by
+      (eulerMass (3/2))^(2 : ℕ)/(4*Real.pi) := by
     linarith [eulerLogMass_three_halves_gt]
   rw [divisorSourceEntire_negative_half_eq,Complex.ofReal_re]
   calc
@@ -83,7 +83,7 @@ theorem divisorCoreMellinPairResidue_oriented_pos (P : Finset ℕ) (hP : P.Nonem
         intro p _
         ring
       _ = _ := by rw [Finset.prod_mul_distrib,Finset.prod_const]
-  have hs : ((-1:ℝ)^P.card)^2=1 := by
+  have hs : ((-1:ℝ)^P.card)^(2 : ℕ)=1 := by
     rw [← pow_mul,mul_comm P.card 2,pow_mul]
     norm_num
   rw [divisorCoreMellinPairResidue_eq_signed_moment P hP hprime,
@@ -95,9 +95,9 @@ theorem divisorCoreMellinPairResidue_oriented_pos (P : Finset ℕ) (hP : P.Nonem
     (integral_mobiusDivisorContinuousHead_moment_pos P hprime)
   convert! hh using 1
   calc
-    _ = ((-1:ℝ)^P.card)^2*((divisorSourceEntire (-(1/2))).re*
+    _ = ((-1:ℝ)^P.card)^(2 : ℕ)*((divisorSourceEntire (-(1/2))).re*
         (∏p∈P,(Real.sqrt p-1))*
-        (∫x in Ioi (0:ℝ),mobiusDivisorContinuousHead P x/x^3)) := by ring
+        (∫x in Ioi (0:ℝ),mobiusDivisorContinuousHead P x/x^(3 : ℕ))) := by ring
     _ = _ := by rw [hs,one_mul]
 
 /-- For every fixed nonempty prime core the actual signed head average has

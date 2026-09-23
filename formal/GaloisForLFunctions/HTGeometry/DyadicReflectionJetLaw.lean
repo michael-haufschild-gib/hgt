@@ -16,7 +16,7 @@ has an exact derivative tower at `c = 0`: only odd orders survive, and there
 D^(n)(0) = -2 (2^n - 2) f^(n)(s).
 ```
 
-The order-one term vanishes because `2^1 - 2 = 0`, so the combination has contact of order three at
+The order-one term vanishes because `2^(1 : ℕ) - 2 = 0`, so the combination has contact of order three at
 the centre, with `D'''(0) = -12 f'''(s)`; every higher odd order is a nonzero multiple of the
 corresponding jet of `f`.  The proof is the scaling law for iterated derivatives along an affine
 substitution, applied to the antisymmetric pair `f(s - ac) - f(s + ac)`, whose `n`-th derivative at
@@ -150,7 +150,7 @@ theorem dyadicReflectionCombination_coeff_ne_zero {n : ℕ} (hn : Odd n) (hn1 : 
   obtain ⟨k, hk⟩ := hn
   have h3 : 3 ≤ n := by omega
   have hpow : (8 : ℝ) ≤ 2 ^ n := by
-    calc (8 : ℝ) = 2 ^ 3 := by norm_num
+    calc (8 : ℝ) = 2 ^ (3 : ℕ) := by norm_num
       _ ≤ 2 ^ n := pow_le_pow_right₀ (by norm_num) h3
   intro h
   rcases mul_eq_zero.mp h with h' | h'

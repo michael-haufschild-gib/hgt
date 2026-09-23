@@ -50,13 +50,13 @@ theorem pwGammaModeReciprocal_image {n : ℕ} (hn : 0<n) :
       pwGammaModeReciprocal_involutive hn x⟩
 
 theorem pwGammaModeReciprocal_hasDerivAt {n : ℕ} (hn : 0<n) {x : ℝ} (hx : 0<x) :
-    HasDerivAt (pwGammaModeReciprocal n) (-(n:ℝ)/((n:ℝ)*x)^2) x := by
+    HasDerivAt (pwGammaModeReciprocal n) (-(n:ℝ)/((n:ℝ)*x)^(2 : ℕ)) x := by
   change HasDerivAt (fun y : ℝ => ((n:ℝ)*y)⁻¹) _ x
   simpa only [Pi.inv_def, id_eq, mul_one] using
     ((hasDerivAt_id x).const_mul (n:ℝ)).inv (mul_ne_zero (by exact_mod_cast hn.ne') hx.ne')
 
 theorem pwGammaReversibleModeCross_reciprocal {n : ℕ} (hn : 0<n) {x : ℝ} (hx : 0<x) :
-    ((n:ℝ)/((n:ℝ)*x)^2)*pwGammaReversibleModeCross n (pwGammaModeReciprocal n x) =
+    ((n:ℝ)/((n:ℝ)*x)^(2 : ℕ))*pwGammaReversibleModeCross n (pwGammaModeReciprocal n x) =
       pwGammaReversibleModeCross n x := by
   have hn0 : (n:ℝ)≠0 := by exact_mod_cast hn.ne'
   rw [pwGammaReversibleModeCross_eq, pwGammaReversibleModeCross_eq]
@@ -78,14 +78,14 @@ private theorem pwGammaLogDensity_bound {x : ℝ} (hx : 0<x) :
   have hr : 0<x⁻¹ := inv_pos.mpr hx
   have hp := Real.pow_div_factorial_le_exp x⁻¹ hr.le 2
   have hf : (0:ℝ)<(2:ℕ).factorial := by positivity
-  have hpow : (x⁻¹)^2*Real.exp (-x⁻¹) ≤ ((2:ℕ).factorial:ℝ) := by
+  have hpow : (x⁻¹)^(2 : ℕ)*Real.exp (-x⁻¹) ≤ ((2:ℕ).factorial:ℝ) := by
     rw [Real.exp_neg, ← div_eq_mul_inv]
     apply (div_le_iff₀ (Real.exp_pos _)).mpr
     simpa only [mul_comm] using (div_le_iff₀ hf).mp hp
   calc
     _ ≤ (x+x⁻¹)*pwGammaReversibleDensity x :=
       mul_le_mul_of_nonneg_right hl (pwGammaReversibleDensity_pos hx).le
-    _ = Real.exp (-x)*(Real.exp (-x⁻¹)+(x⁻¹)^2*Real.exp (-x⁻¹)) := by
+    _ = Real.exp (-x)*(Real.exp (-x⁻¹)+(x⁻¹)^(2 : ℕ)*Real.exp (-x⁻¹)) := by
       unfold pwGammaReversibleDensity
       rw [sub_eq_add_neg, Real.exp_add]
       field_simp
@@ -122,17 +122,17 @@ theorem pwGammaReversibleModeLogMoment_eq {n : ℕ} (hn : 0<n) :
     (pwGammaModeReciprocal_involutive hn).injective.injOn
     (fun x => Real.log x*pwGammaReversibleModeCross n x)
   rw [pwGammaModeReciprocal_image hn] at hs
-  have hr : (∫ x in Ioi (0:ℝ), |-(n:ℝ)/((n:ℝ)*x)^2| •
+  have hr : (∫ x in Ioi (0:ℝ), |-(n:ℝ)/((n:ℝ)*x)^(2 : ℕ)| •
       (Real.log (pwGammaModeReciprocal n x)*pwGammaReversibleModeCross n (pwGammaModeReciprocal n x))) =
       ∫ x in Ioi (0:ℝ), -Real.log (n:ℝ)*pwGammaReversibleModeCross n x -
         Real.log x*pwGammaReversibleModeCross n x := by
     apply setIntegral_congr_fun measurableSet_Ioi
     intro x hx
     dsimp only
-    rw [smul_eq_mul, neg_div, abs_neg, abs_of_nonneg (by positivity : (0:ℝ)≤n/((n:ℝ)*x)^2)]
+    rw [smul_eq_mul, neg_div, abs_neg, abs_of_nonneg (by positivity : (0:ℝ)≤n/((n:ℝ)*x)^(2 : ℕ))]
     calc
       _ = Real.log (pwGammaModeReciprocal n x)*
-          (((n:ℝ)/((n:ℝ)*x)^2)*pwGammaReversibleModeCross n (pwGammaModeReciprocal n x)) := by ring
+          (((n:ℝ)/((n:ℝ)*x)^(2 : ℕ))*pwGammaReversibleModeCross n (pwGammaModeReciprocal n x)) := by ring
       _ = _ := by
         rw [pwGammaReversibleModeCross_reciprocal hn hx, pwGammaModeReciprocal,
           Real.log_inv, Real.log_mul hn0 (ne_of_gt hx)]

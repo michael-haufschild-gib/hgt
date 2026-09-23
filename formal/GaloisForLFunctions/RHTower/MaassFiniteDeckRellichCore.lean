@@ -11,8 +11,8 @@ noncomputable section
 /-- A real rotation and scale multiplies total squared norm by its complex norm square. -/
 theorem rotation_scale_normSq {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     (d : ℂ) (u₀ u₁ : E) :
-    ‖d.re • u₀ + d.im • u₁‖ ^ 2 + ‖(-d.im) • u₀ + d.re • u₁‖ ^ 2 =
-      Complex.normSq d * (‖u₀‖ ^ 2 + ‖u₁‖ ^ 2) := by
+    ‖d.re • u₀ + d.im • u₁‖ ^ (2 : ℕ) + ‖(-d.im) • u₀ + d.re • u₁‖ ^ (2 : ℕ) =
+      Complex.normSq d * (‖u₀‖ ^ (2 : ℕ) + ‖u₁‖ ^ (2 : ℕ)) := by
   rw [norm_add_sq_real, norm_add_sq_real]
   simp only [real_inner_smul_left, real_inner_smul_right, norm_smul,
     Real.norm_eq_abs, mul_pow, sq_abs, neg_sq]
@@ -22,7 +22,7 @@ theorem rotation_scale_normSq {E : Type*} [NormedAddCommGroup E] [InnerProductSp
 /-- Equivariance differentiates to the literal reciprocal-square tangent law. -/
 theorem chartDeriv_modular {N : ℕ} (F : formPreDomain N)
     (A : SL2Z) (z : ℍ) (v : ℂ) :
-    chartDeriv (F : ℍ → DeckSpace N) ((1 / (denom A z) ^ 2) * v) (A • z) =
+    chartDeriv (F : ℍ → DeckSpace N) ((1 / (denom A z) ^ (2 : ℕ)) * v) (A • z) =
       finiteRegularUnitary (QuotientGroup.mk A : Deck N) (chartDeriv (F : ℍ → DeckSpace N) v z) := by
   let G : ℂ → ℂ := fun w => ((A • ofComplex w : ℍ) : ℂ)
   let V := finiteRegularUnitary (QuotientGroup.mk A : Deck N)
@@ -53,7 +53,7 @@ theorem chartDeriv_modular {N : ℕ} (F : formPreDomain N)
   simp only [ContinuousLinearMap.comp_apply] at h
   rw [hU_apply] at h
   have hj : UpperHalfPlane.smulFDeriv (A : GL (Fin 2) ℝ) (z : ℂ) v =
-      (1 / (denom A z) ^ 2) * v := by
+      (1 / (denom A z) ^ (2 : ℕ)) * v := by
     simp [UpperHalfPlane.smulFDeriv, UpperHalfPlane.σ, mul_comm]
   simpa only [chartDeriv, G, ofComplex_apply, ContinuousLinearMap.comp_apply, V, hj] using h
 
@@ -69,14 +69,14 @@ theorem chartDeriv_components {N : ℕ} (F : formPreDomain N) (v : ℂ) (z : ℍ
   conv_lhs => rw [hv, map_add, map_smul, map_smul]
 
 def chartGradientNormSq {N : ℕ} (F : ℍ → DeckSpace N) (z : ℍ) : ℝ :=
-  ‖chartDeriv F 1 z‖ ^ 2 + ‖chartDeriv F Complex.I z‖ ^ 2
+  ‖chartDeriv F 1 z‖ ^ (2 : ℕ) + ‖chartDeriv F Complex.I z‖ ^ (2 : ℕ)
 
 theorem chartGradientNormSq_modular {N : ℕ} (F : formPreDomain N)
     (A : SL2Z) (z : ℍ) :
     chartGradientNormSq (F : ℍ → DeckSpace N) z =
-      Complex.normSq (1 / (denom A z) ^ 2) *
+      Complex.normSq (1 / (denom A z) ^ (2 : ℕ)) *
         chartGradientNormSq (F : ℍ → DeckSpace N) (A • z) := by
-  let d : ℂ := 1 / (denom A z) ^ 2
+  let d : ℂ := 1 / (denom A z) ^ (2 : ℕ)
   let V := finiteRegularUnitary (QuotientGroup.mk A : Deck N)
   have h1 : d.re • chartDeriv (F : ℍ → DeckSpace N) 1 (A • z) +
       d.im • chartDeriv (F : ℍ → DeckSpace N) Complex.I (A • z) =
@@ -100,27 +100,27 @@ theorem chartGradientNormSq_modular {N : ℕ} (F : formPreDomain N)
               (chartDeriv_components F (d * Complex.I) (A • z)).symm
       _ = V (chartDeriv (F : ℍ → DeckSpace N) Complex.I z) := by
             simpa only [d, V] using chartDeriv_modular F A z Complex.I
-  change ‖chartDeriv (F : ℍ → DeckSpace N) 1 z‖ ^ 2 +
-      ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I z‖ ^ 2 =
-        Complex.normSq d * (‖chartDeriv (F : ℍ → DeckSpace N) 1 (A • z)‖ ^ 2 +
-          ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I (A • z)‖ ^ 2)
+  change ‖chartDeriv (F : ℍ → DeckSpace N) 1 z‖ ^ (2 : ℕ) +
+      ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I z‖ ^ (2 : ℕ) =
+        Complex.normSq d * (‖chartDeriv (F : ℍ → DeckSpace N) 1 (A • z)‖ ^ (2 : ℕ) +
+          ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I (A • z)‖ ^ (2 : ℕ))
   calc
-    ‖chartDeriv (F : ℍ → DeckSpace N) 1 z‖ ^ 2 +
-        ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I z‖ ^ 2 =
-        ‖V (chartDeriv (F : ℍ → DeckSpace N) 1 z)‖ ^ 2 +
-          ‖V (chartDeriv (F : ℍ → DeckSpace N) Complex.I z)‖ ^ 2 := by
+    ‖chartDeriv (F : ℍ → DeckSpace N) 1 z‖ ^ (2 : ℕ) +
+        ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I z‖ ^ (2 : ℕ) =
+        ‖V (chartDeriv (F : ℍ → DeckSpace N) 1 z)‖ ^ (2 : ℕ) +
+          ‖V (chartDeriv (F : ℍ → DeckSpace N) Complex.I z)‖ ^ (2 : ℕ) := by
             rw [V.norm_map, V.norm_map]
     _ = ‖d.re • chartDeriv (F : ℍ → DeckSpace N) 1 (A • z) +
-          d.im • chartDeriv (F : ℍ → DeckSpace N) Complex.I (A • z)‖ ^ 2 +
+          d.im • chartDeriv (F : ℍ → DeckSpace N) Complex.I (A • z)‖ ^ (2 : ℕ) +
         ‖(-d.im) • chartDeriv (F : ℍ → DeckSpace N) 1 (A • z) +
-          d.re • chartDeriv (F : ℍ → DeckSpace N) Complex.I (A • z)‖ ^ 2 := by
+          d.re • chartDeriv (F : ℍ → DeckSpace N) Complex.I (A • z)‖ ^ (2 : ℕ) := by
             rw [h1, h2]
-    _ = Complex.normSq d * (‖chartDeriv (F : ℍ → DeckSpace N) 1 (A • z)‖ ^ 2 +
-          ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I (A • z)‖ ^ 2) :=
+    _ = Complex.normSq d * (‖chartDeriv (F : ℍ → DeckSpace N) 1 (A • z)‖ ^ (2 : ℕ) +
+          ‖chartDeriv (F : ℍ → DeckSpace N) Complex.I (A • z)‖ ^ (2 : ℕ)) :=
       rotation_scale_normSq d _ _
 
 def hyperbolicChartGradientDensity {N : ℕ} (F : ℍ → DeckSpace N) (z : ℍ) : ℝ :=
-  z.im ^ 2 * chartGradientNormSq F z
+  z.im ^ (2 : ℕ) * chartGradientNormSq F z
 
 theorem hyperbolicChartGradientDensity_modular {N : ℕ} (F : formPreDomain N)
     (A : SL2Z) (z : ℍ) :
@@ -130,14 +130,14 @@ theorem hyperbolicChartGradientDensity_modular {N : ℕ} (F : formPreDomain N)
     ne_of_gt (Complex.normSq_pos.mpr (UpperHalfPlane.denom_ne_zero A z))
   unfold hyperbolicChartGradientDensity
   rw [ModularGroup.im_smul_eq_div_normSq, chartGradientNormSq_modular F A z]
-  simp only [show Complex.normSq (1 / denom A z ^ 2) =
-      1 / Complex.normSq (denom A z) ^ 2 by simp [one_div]]
+  simp only [show Complex.normSq (1 / denom A z ^ (2 : ℕ)) =
+      1 / Complex.normSq (denom A z) ^ (2 : ℕ) by simp [one_div]]
   field_simp
 
 theorem hyperbolicChartGradientDensity_eq_hypGradNormSq {N : ℕ}
     (F : ℍ → DeckSpace N) (z : ℍ) :
     hyperbolicChartGradientDensity F z =
-      ‖hypGradX F z‖ ^ 2 + ‖hypGradY F z‖ ^ 2 := by
+      ‖hypGradX F z‖ ^ (2 : ℕ) + ‖hypGradY F z‖ ^ (2 : ℕ) := by
   unfold hyperbolicChartGradientDensity chartGradientNormSq hypGradX hypGradY
   simp only [norm_smul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs]
   ring
@@ -145,7 +145,7 @@ theorem hyperbolicChartGradientDensity_eq_hypGradNormSq {N : ℕ}
 theorem hyperbolicChartGradientDensity_integrable_fd {N : ℕ} (F : formPreDomain N) :
     IntegrableOn (hyperbolicChartGradientDensity (F : ℍ → DeckSpace N)) fd volume := by
   have hsum : IntegrableOn (fun z =>
-      ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ 2 + ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ 2)
+      ‖hypGradX (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ) + ‖hypGradY (F : ℍ → DeckSpace N) z‖ ^ (2 : ℕ))
       fd volume :=
     ((memLp_two_iff_integrable_sq_norm (formPreDomain.memLp_gradX F).aestronglyMeasurable).mp
       (formPreDomain.memLp_gradX F)).add

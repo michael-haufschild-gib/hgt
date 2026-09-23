@@ -24,12 +24,12 @@ noncomputable section
 /-- **A continuous function whose squared norm integrates to zero over an interval vanishes on its
 interior.** -/
 theorem continuous_eq_zero_of_intervalIntegral_normSq {f : ℝ → ℂ} (hf : Continuous f) {L : ℝ}
-    (hL : 0 < L) (hzero : (∫ t in (0 : ℝ)..L, ‖f t‖ ^ 2) = 0) :
+    (hL : 0 < L) (hzero : (∫ t in (0 : ℝ)..L, ‖f t‖ ^ (2 : ℕ)) = 0) :
     ∀ t ∈ Set.Ioo (0 : ℝ) L, f t = 0 := by
   by_contra hcon
   push Not at hcon
   obtain ⟨t₀, ht₀, hne⟩ := hcon
-  set g : ℝ → ℝ := fun t => ‖f t‖ ^ 2 with hg
+  set g : ℝ → ℝ := fun t => ‖f t‖ ^ (2 : ℕ) with hg
   have hgcont : Continuous g := (hf.norm.pow 2)
   have hgnn : 0 ≤ g := fun t => by positivity
   have hint : IntegrableOn g (Set.Ioc (0 : ℝ) L) volume := by
@@ -66,8 +66,8 @@ theorem deningerPeriodizationSum_eq_zero_of_floquetTerm {h : DeningerExpSchwartz
   have hqpos : (0 : ℝ) < (q : ℝ) := by linarith
   set S := deningerPeriodizationSum ((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log q) with hS
   have hcont : Continuous S := deningerPeriodizationSum_continuous (h := h) hLpos
-  have hintzero : (∫ t in (0 : ℝ)..Real.log q, ‖S t‖ ^ 2) = 0 := by
-    have hfac : ((q : ℝ) ^ 2)⁻¹ ≠ 0 := by positivity
+  have hintzero : (∫ t in (0 : ℝ)..Real.log q, ‖S t‖ ^ (2 : ℕ)) = 0 := by
+    have hfac : ((q : ℝ) ^ (2 : ℕ))⁻¹ ≠ 0 := by positivity
     have := hterm
     rw [deningerFloquetTerm] at this
     exact (mul_eq_zero.1 this).resolve_left hfac
@@ -128,7 +128,7 @@ theorem deningerFloquetEnergy_eq_zero_iff (h : DeningerExpSchwartz) :
         simp
       rw [deningerFloquetTerm]
       have hfun : (fun t : ℝ => ‖deningerPeriodizationSum
-          (((0 : DeningerExpSchwartz) : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log (q : ℕ)) t‖ ^ 2)
+          (((0 : DeningerExpSchwartz) : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (Real.log (q : ℕ)) t‖ ^ (2 : ℕ))
           = fun _ : ℝ => (0 : ℝ) := by
         funext t
         rw [hper t]

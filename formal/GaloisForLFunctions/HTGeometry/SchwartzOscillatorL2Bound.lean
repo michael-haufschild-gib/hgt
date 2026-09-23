@@ -58,7 +58,7 @@ theorem norm_schwartzPair_le (u v : 𝓢(ℝ, ℂ)) :
   rw [norm_toLp_conjSLM]
 
 theorem norm_schwartzPair_conj_self (u : 𝓢(ℝ, ℂ)) :
-    ‖schwartzPair (SchwartzMap.conjSLM u) u‖ = ‖u.toLp 2 volume‖ ^ 2 := by
+    ‖schwartzPair (SchwartzMap.conjSLM u) u‖ = ‖u.toLp 2 volume‖ ^ (2 : ℕ) := by
   rw [schwartzPair_eq_inner, conjSLM_conjSLM, inner_self_eq_norm_sq_to_K, norm_pow,
     RCLike.norm_ofReal, abs_of_nonneg (norm_nonneg _)]
 
@@ -103,13 +103,13 @@ theorem conjSLM_annihilationCLM (f : 𝓢(ℝ, ℂ)) :
 
 /-- **The `L²` norm of the creation operator is controlled by the number operator.** -/
 theorem norm_toLp_creationCLM_sq_le (g : 𝓢(ℝ, ℂ)) :
-    ‖(creationCLM g).toLp 2 volume‖ ^ 2
+    ‖(creationCLM g).toLp 2 volume‖ ^ (2 : ℕ)
       ≤ ‖g.toLp 2 volume‖ * ‖(numberCLM g + (4 * (π : ℂ)) • g).toLp 2 volume‖ := by
   have hBA : annihilationCLM (creationCLM g) = numberCLM g + (4 * (π : ℂ)) • g := by
     have h := annihilationCLM_creationCLM_sub g
     rw [sub_eq_iff_eq_add] at h
     rw [h, numberCLM_apply, add_comm]
-  calc ‖(creationCLM g).toLp 2 volume‖ ^ 2
+  calc ‖(creationCLM g).toLp 2 volume‖ ^ (2 : ℕ)
       = ‖schwartzPair (SchwartzMap.conjSLM (creationCLM g)) (creationCLM g)‖ :=
         (norm_schwartzPair_conj_self _).symm
     _ = ‖schwartzPair (SchwartzMap.conjSLM g) (numberCLM g + (4 * (π : ℂ)) • g)‖ := by
@@ -121,7 +121,7 @@ theorem norm_toLp_creationCLM_sq_le (g : 𝓢(ℝ, ℂ)) :
 
 /-- **The `L²` norm of the annihilation operator is controlled by the number operator.** -/
 theorem norm_toLp_annihilationCLM_sq_le (g : 𝓢(ℝ, ℂ)) :
-    ‖(annihilationCLM g).toLp 2 volume‖ ^ 2
+    ‖(annihilationCLM g).toLp 2 volume‖ ^ (2 : ℕ)
       ≤ ‖g.toLp 2 volume‖ * ‖(numberCLM g).toLp 2 volume‖ := by
   have hadj : schwartzPair (annihilationCLM (SchwartzMap.conjSLM g)) (annihilationCLM g)
       = schwartzPair (SchwartzMap.conjSLM g) (creationCLM (annihilationCLM g)) := by
@@ -129,7 +129,7 @@ theorem norm_toLp_annihilationCLM_sq_le (g : 𝓢(ℝ, ℂ)) :
     rw [schwartzPair_comm (annihilationCLM (SchwartzMap.conjSLM g)) (annihilationCLM g),
       schwartzPair_comm (SchwartzMap.conjSLM g) (creationCLM (annihilationCLM g))]
     exact h.symm
-  calc ‖(annihilationCLM g).toLp 2 volume‖ ^ 2
+  calc ‖(annihilationCLM g).toLp 2 volume‖ ^ (2 : ℕ)
       = ‖schwartzPair (SchwartzMap.conjSLM (annihilationCLM g)) (annihilationCLM g)‖ :=
         (norm_schwartzPair_conj_self _).symm
     _ = ‖schwartzPair (SchwartzMap.conjSLM g) (numberCLM g)‖ := by

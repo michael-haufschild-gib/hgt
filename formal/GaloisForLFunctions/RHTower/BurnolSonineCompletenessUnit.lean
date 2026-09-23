@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.SoninExtendedApertureChain
 
 `K_a ⊆ L_a`, so the Krein-free Proposition 6.1 of `BurnolCompletenessUnit` restricts at once to
 the Sonine space at **every** aperture `a ≥ 1`, the critical value `a = 1` included.  This is the
-completeness half of Burnol's Theorem 6.3 for the systems `Y^1` and `Z^1`.
+completeness half of Burnol's Theorem 6.3 for the systems `Y^(1 : ℕ)` and `Z^(1 : ℕ)`.
 
 ## Main results
 

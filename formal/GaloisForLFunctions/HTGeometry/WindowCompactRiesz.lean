@@ -26,7 +26,7 @@ theorem rieszProjection_eq_zero_iff_closedBall_subset_resolvent_of_compact
         exact hzero (h ▸ hmu)
       obtain ⟨v, hv⟩ := (hT.hasEigenvalue_iff_mem_spectrum hmu0).2 hspec |>.exists_hasEigenvector
       have hTv : T v = mu • v := Module.End.mem_eigenspace_iff.mp hv.1
-      have hpoly : ((T - mu • (1 : H →L[ℂ] H)) ^ 1) v = 0 := by
+      have hpoly : ((T - mu • (1 : H →L[ℂ] H)) ^ (1 : ℕ)) v = 0 := by
         simpa using sub_eq_zero.mpr hTv
       have hfix := rieszProjection_apply_eq_self hr hboundary
         (mem_ball.mpr hinside) hpoly

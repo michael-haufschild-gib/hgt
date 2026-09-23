@@ -159,7 +159,7 @@ not merely its scalar trace.
 theorem deningerCalderonWittMilnorGreenRetraction_gradingEquivariant
     (p : Nat.Primes)
     (c : ℂ)
-    (w : ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :
+    (w : ⋀[ℂ]^(2 : ℕ) (DeningerCalderonWittAlgebraicDegreeOne p)) :
     deningerCalderonWittMilnorGreenRetraction p
         (deningerCalderonWittExteriorPacketTransport p c w) =
       deningerCalderonWittMilnorPacketGradingAction p c

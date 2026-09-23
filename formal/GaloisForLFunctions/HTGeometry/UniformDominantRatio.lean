@@ -42,7 +42,7 @@ theorem TubeLimit.inv {M : ℝ} {f : ℝ → ℝ → ℂ} {c : ℂ} (h : TubeLim
   have hcpos : 0 < ‖c‖ := norm_pos_iff.mpr hc
   obtain ⟨T₀, hT₀⟩ := h.exists_lower_bound hc
   intro ε hε
-  obtain ⟨T₁, hT₁⟩ := h (ε * ‖c‖ ^ 2 / 2) (by positivity)
+  obtain ⟨T₁, hT₁⟩ := h (ε * ‖c‖ ^ (2 : ℕ) / 2) (by positivity)
   refine ⟨max T₀ T₁, fun σ t hσ hσM ht => ?_⟩
   have hlow := hT₀ σ t hσ hσM (le_trans (le_max_left _ _) ht)
   have hclose := hT₁ σ t hσ hσM (le_trans (le_max_right _ _) ht)
@@ -54,7 +54,7 @@ theorem TubeLimit.inv {M : ℝ} {f : ℝ → ℝ → ℂ} {c : ℂ} (h : TubeLim
     field_simp
   rw [hsplit, norm_div, norm_mul, norm_sub_rev]
   rw [div_le_iff₀ (by positivity)]
-  calc ‖f σ t - c‖ ≤ ε * ‖c‖ ^ 2 / 2 := hclose
+  calc ‖f σ t - c‖ ≤ ε * ‖c‖ ^ (2 : ℕ) / 2 := hclose
     _ ≤ ε * (‖f σ t‖ * ‖c‖) := by
         have hmul : ‖c‖ / 2 * ‖c‖ ≤ ‖f σ t‖ * ‖c‖ :=
           mul_le_mul_of_nonneg_right hlow (norm_nonneg _)

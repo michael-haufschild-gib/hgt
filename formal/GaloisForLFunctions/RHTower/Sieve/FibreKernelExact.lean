@@ -25,15 +25,15 @@ namespace RHTower.Sieve
 open Finset
 
 /-- The lower endpoint of the admissible outer indices. -/
-def fibreLow (x : ℝ) (n : ℕ) : ℝ := max (x / (n : ℝ)) (Real.sqrt x)
+def fibreLow_fibreKernelExact (x : ℝ) (n : ℕ) : ℝ := max (x / (n : ℝ)) (Real.sqrt x)
 
 /-- The upper endpoint of the admissible outer indices. -/
-def fibreHigh (x h : ℝ) (m : ℕ) : ℝ :=
+def fibreHigh_fibreKernelExact (x h : ℝ) (m : ℕ) : ℝ :=
   min ((x + h * Real.sqrt x) / (m : ℝ)) (2 * Real.sqrt x)
 
 theorem two_le_sqrt {x : ℝ} (hx : 4 ≤ x) : (2 : ℝ) ≤ Real.sqrt x := by
   have h4 : Real.sqrt 4 = 2 := by
-    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
+    rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
   rw [← h4]
   exact Real.sqrt_le_sqrt hx
 
@@ -43,9 +43,9 @@ theorem two_sqrt_le_self {x : ℝ} (hx : 4 ≤ x) : 2 * Real.sqrt x ≤ x := by
   nlinarith [hs, hsq]
 
 theorem fibreHigh_nonneg {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (m : ℕ) :
-    0 ≤ fibreHigh x h m := by
+    0 ≤ fibreHigh_fibreKernelExact x h m := by
   have hs : (0 : ℝ) ≤ Real.sqrt x := Real.sqrt_nonneg x
-  rw [fibreHigh]
+  rw [fibreHigh_fibreKernelExact]
   refine le_min ?_ (by linarith)
   have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
   positivity
@@ -54,7 +54,7 @@ theorem fibreHigh_nonneg {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (m : ℕ) :
 theorem fibre_kernel_eq_Icc {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {m n : ℕ}
     (hn : 1 ≤ n) (hnm : n ≤ m) (hmM : m ≤ ⌊x + h * Real.sqrt x⌋₊) :
     (outerBlock x h).filter (fun a => m ∈ innerFibre x h a ∧ n ∈ innerFibre x h a)
-      = Finset.Icc ⌈fibreLow x n⌉₊ ⌊fibreHigh x h m⌋₊ := by
+      = Finset.Icc ⌈fibreLow_fibreKernelExact x n⌉₊ ⌊fibreHigh_fibreKernelExact x h m⌋₊ := by
   classical
   have hs2 : (2 : ℝ) ≤ Real.sqrt x := two_le_sqrt hx
   have hs0 : (0 : ℝ) ≤ Real.sqrt x := Real.sqrt_nonneg x
@@ -71,22 +71,22 @@ theorem fibre_kernel_eq_Icc {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) {m n : ℕ
     rw [hmR] at hmx2
     rw [hnR] at hnx1
     constructor
-    · rw [Nat.ceil_le, fibreLow]
+    · rw [Nat.ceil_le, fibreLow_fibreKernelExact]
       refine max_le ?_ hsa
       rw [div_le_iff₀ hn0]
       exact hnx1
     · refine Nat.le_floor ?_
-      rw [fibreHigh]
+      rw [fibreHigh_fibreKernelExact]
       refine le_min ?_ ha2
       rw [le_div_iff₀ hm0]
       exact hmx2
   · rintro ⟨hlo, hhi⟩
-    have hlo' : fibreLow x n ≤ (a : ℝ) := le_trans (Nat.le_ceil _) (by exact_mod_cast hlo)
-    have hhi' : (a : ℝ) ≤ fibreHigh x h m := by
+    have hlo' : fibreLow_fibreKernelExact x n ≤ (a : ℝ) := le_trans (Nat.le_ceil _) (by exact_mod_cast hlo)
+    have hhi' : (a : ℝ) ≤ fibreHigh_fibreKernelExact x h m := by
       refine le_trans ?_ (Nat.floor_le (fibreHigh_nonneg hx hh m))
       exact_mod_cast hhi
-    rw [fibreLow] at hlo'
-    rw [fibreHigh] at hhi'
+    rw [fibreLow_fibreKernelExact] at hlo'
+    rw [fibreHigh_fibreKernelExact] at hhi'
     have hsa : Real.sqrt x ≤ (a : ℝ) := le_trans (le_max_right _ _) hlo'
     have ha2 : (a : ℝ) ≤ 2 * Real.sqrt x := le_trans hhi' (min_le_right _ _)
     have hlown : x / (n : ℝ) ≤ (a : ℝ) := le_trans (le_max_left _ _) hlo'

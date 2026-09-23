@@ -90,7 +90,7 @@ theorem localExtension_packet_eq_zero_of_flatSquare
     (hbase : ∀ i, branch i 0 = layerSplitEnergy E z i)
     (hroot : ∀ i, ∀ᶠ g in 𝓝 (0 : ℂ), matrixCharpolyRelation
         (Matrix.diagonal (layerSplitEnergy E z) + g • layerCrossPerturbation M, branch i g) = 0)
-    (hident : ∀ᶠ g in 𝓝 (0 : ℂ), (∑ i, c i * branch i g) ^ 2 = 0) :
+    (hident : ∀ᶠ g in 𝓝 (0 : ℂ), (∑ i, c i * branch i g) ^ (2 : ℕ) = 0) :
     (∑ α, ∑ β, (c (α, false) - c (β, true)) * (M α β * M β α) / (z + E α - E β)) = 0 := by
   classical
   have hFzero : ∀ᶠ g in 𝓝 (0 : ℂ), (∑ i, c i * branch i g) = 0 := by
@@ -138,7 +138,7 @@ theorem localExtension_quadraticRate_eq_zero_of_flat (hcard : 3 ≤ Fintype.card
     (hroot : ∀ z ∈ S, ∀ i, ∀ᶠ g in 𝓝 (0 : ℂ), matrixCharpolyRelation
         (Matrix.diagonal (layerSplitEnergy E z) + g • layerCrossPerturbation M, branch z i g) = 0)
     (hident : ∀ z ∈ S, ∀ᶠ g in 𝓝 (0 : ℂ),
-        (∑ i, c i * branch z i g) ^ 2 = κ * (Q₀ z + g ^ 2 * Qv))
+        (∑ i, c i * branch z i g) ^ (2 : ℕ) = κ * (Q₀ z + g ^ (2 : ℕ) * Qv))
     (hzero : ∑ i, c i = 0) : c = 0 := by
   classical
   obtain ⟨z₀, hz₀⟩ := hS.nonempty
@@ -183,7 +183,7 @@ theorem localExtension_quadraticRate_eq_zero_unconditional (hcard : 3 ≤ Fintyp
     (hroot : ∀ z ∈ S, ∀ i, ∀ᶠ g in 𝓝 (0 : ℂ), matrixCharpolyRelation
         (Matrix.diagonal (layerSplitEnergy E z) + g • layerCrossPerturbation M, branch z i g) = 0)
     (hident : ∀ z ∈ S, ∀ᶠ g in 𝓝 (0 : ℂ),
-        (∑ i, c i * branch z i g) ^ 2 = κ * (Q₀ z + g ^ 2 * Qv))
+        (∑ i, c i * branch z i g) ^ (2 : ℕ) = κ * (Q₀ z + g ^ (2 : ℕ) * Qv))
     (hzero : ∑ i, c i = 0) : c = 0 := by
   by_cases hL : (∑ α, (c (α, false) + c (α, true)) * E α) ≠ 0
       ∨ ((∑ α, c (α, false) - ∑ α, c (α, true)) / 2) ≠ 0
@@ -213,7 +213,7 @@ theorem exists_localField_quadraticRate_not_eventually (hcard : 3 ≤ Fintype.ca
         (Matrix.diagonal (layerSplitEnergy E z) + g • layerCrossPerturbation M, branch z i g) = 0)
     (hzero : ∑ i, c i = 0) (hcne : c ≠ 0) :
     ∃ z ∈ S, ¬ (∀ᶠ g in 𝓝 (0 : ℂ),
-      (∑ i, c i * branch z i g) ^ 2 = κ * (Q₀ z + g ^ 2 * Qv)) := by
+      (∑ i, c i * branch z i g) ^ (2 : ℕ) = κ * (Q₀ z + g ^ (2 : ℕ) * Qv)) := by
   by_contra hcon
   push Not at hcon
   exact hcne (localExtension_quadraticRate_eq_zero_unconditional hcard hE hgap hM c hQv hS

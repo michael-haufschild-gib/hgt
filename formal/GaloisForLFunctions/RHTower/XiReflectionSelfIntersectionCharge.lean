@@ -9,7 +9,7 @@ import GaloisForLFunctions.RHTower.SourceZeroHorizontalCarrier
 The full horizontal collision charge counts every ordered pair of distinct Xi zeros at one
 ordinate.  This module separates its canonical part: the two oriented incidences between each
 right-half zero and its critical-line reflection.  If the local divisor order is `m`, this forced
-contribution is `2 * m^2`.
+contribution is `2 * m^(2 : ℕ)`.
 
 The resulting reflection charge is bounded by the full collision charge and has the same exact
 two-unit RH endpoint.  Unlike the full charge, every local square is the literal cardinality of a
@@ -27,12 +27,12 @@ noncomputable section
 /-- Sum of squared Xi orders at off-critical points in a positive-height strip window. -/
 def xiStripWindowOffLineSquareOrder (T : ℝ) : ℕ :=
   ∑ rho ∈ (stripZeros_finite T).toFinset.filter (fun rho => rho.re ≠ 1 / 2),
-    ((analyticOrderAt xi rho).toNat) ^ 2
+    ((analyticOrderAt xi rho).toNat) ^ (2 : ℕ)
 
 /-- Sum of squared Xi orders strictly right of the critical line in a positive-height window. -/
 def xiStripWindowRightSquareOrder (T : ℝ) : ℕ :=
   ∑ rho ∈ (stripZeros_finite T).toFinset.filter (fun rho => 1 / 2 < rho.re),
-    ((analyticOrderAt xi rho).toNat) ^ 2
+    ((analyticOrderAt xi rho).toNat) ^ (2 : ℕ)
 
 /-- Canonical two-oriented self-intersection charge forced by critical-line reflection. -/
 def xiReflectionSelfIntersectionCharge (T : ℝ) : ℕ :=
@@ -50,12 +50,12 @@ theorem xiStripWindowOffLineSquareOrder_eq_two_mul_rightSquareOrder (T : ℝ) :
   let m : ℂ → ℕ := fun rho => (analyticOrderAt xi rho).toNat
   have hsplit :=
     Finset.sum_filter_add_sum_filter_not S (fun rho => rho.re = 1 / 2)
-      (fun rho => m rho ^ 2)
+      (fun rho => m rho ^ (2 : ℕ))
   have hwindow :
-      (∑ rho ∈ S, m rho ^ 2) =
-        (∑ rho ∈ S.filter (fun rho => rho.re = 1 / 2), m rho ^ 2) +
-          2 * ∑ rho ∈ S.filter (fun rho => 1 / 2 < rho.re), m rho ^ 2 := by
-    refine window_identity (m := fun rho => m rho ^ 2) ?_ ?_
+      (∑ rho ∈ S, m rho ^ (2 : ℕ)) =
+        (∑ rho ∈ S.filter (fun rho => rho.re = 1 / 2), m rho ^ (2 : ℕ)) +
+          2 * ∑ rho ∈ S.filter (fun rho => 1 / 2 < rho.re), m rho ^ (2 : ℕ) := by
+    refine window_identity (m := fun rho => m rho ^ (2 : ℕ)) ?_ ?_
     · intro rho hrho
       rw [Set.Finite.mem_toFinset] at hrho ⊢
       exact lineReflect_mem_stripZeros hrho
@@ -63,19 +63,19 @@ theorem xiStripWindowOffLineSquareOrder_eq_two_mul_rightSquareOrder (T : ℝ) :
       dsimp only [m]
       rw [xi_orderAt_lineReflect]
   change
-    (∑ rho ∈ S.filter (fun rho => rho.re ≠ 1 / 2), m rho ^ 2) =
-      2 * ∑ rho ∈ S.filter (fun rho => 1 / 2 < rho.re), m rho ^ 2
+    (∑ rho ∈ S.filter (fun rho => rho.re ≠ 1 / 2), m rho ^ (2 : ℕ)) =
+      2 * ∑ rho ∈ S.filter (fun rho => 1 / 2 < rho.re), m rho ^ (2 : ℕ)
   have hsplit' :
-      (∑ rho ∈ S.filter (fun rho => rho.re = 1 / 2), m rho ^ 2) +
-          (∑ rho ∈ S.filter (fun rho => rho.re ≠ 1 / 2), m rho ^ 2) =
-        ∑ rho ∈ S, m rho ^ 2 := hsplit
+      (∑ rho ∈ S.filter (fun rho => rho.re = 1 / 2), m rho ^ (2 : ℕ)) +
+          (∑ rho ∈ S.filter (fun rho => rho.re ≠ 1 / 2), m rho ^ (2 : ℕ)) =
+        ∑ rho ∈ S, m rho ^ (2 : ℕ) := hsplit
   omega
 
 /-- At an off-line zero, its local square is paid by the horizontal collision summand. -/
 theorem xi_order_sq_le_horizontalCollisionTerm_of_offLine
     {T : ℝ} {rho : ℂ} (hrho : rho ∈ (stripZeros_finite T).toFinset)
     (hoff : rho.re ≠ 1 / 2) :
-    ((analyticOrderAt xi rho).toNat) ^ 2 ≤
+    ((analyticOrderAt xi rho).toNat) ^ (2 : ℕ) ≤
       (analyticOrderAt xi rho).toNat *
         (xiHorizontalMultiplicity rho.im - (analyticOrderAt xi rho).toNat) := by
   let m := (analyticOrderAt xi rho).toNat
@@ -94,7 +94,7 @@ theorem xiStripWindowOffLineSquareOrder_le_horizontalCollisionCharge (T : ℝ) :
   let c : ℂ → ℕ := fun rho =>
     m rho * (xiHorizontalMultiplicity rho.im - m rho)
   have hfiltered :
-      (∑ rho ∈ S.filter (fun rho => rho.re ≠ 1 / 2), m rho ^ 2) ≤
+      (∑ rho ∈ S.filter (fun rho => rho.re ≠ 1 / 2), m rho ^ (2 : ℕ)) ≤
         ∑ rho ∈ S.filter (fun rho => rho.re ≠ 1 / 2), c rho := by
     apply Finset.sum_le_sum
     intro rho hrho
@@ -161,17 +161,17 @@ theorem boxZeros_eq_empty_of_reflectionSelfIntersectionCharge_lt_two
   have hmemRight :
       rho ∈ (stripZeros_finite T).toFinset.filter (fun z => 1 / 2 < z.re) :=
     Finset.mem_filter.mpr ⟨hmemStrip, hrho.1.1⟩
-  have hle : ((analyticOrderAt xi rho).toNat) ^ 2 ≤
+  have hle : ((analyticOrderAt xi rho).toNat) ^ (2 : ℕ) ≤
       xiStripWindowRightSquareOrder T := by
     rw [xiStripWindowRightSquareOrder]
     exact Finset.single_le_sum
-      (fun z _ => Nat.zero_le ((analyticOrderAt xi z).toNat ^ 2)) hmemRight
+      (fun z _ => Nat.zero_le ((analyticOrderAt xi z).toNat ^ (2 : ℕ))) hmemRight
   rw [hright] at hle
-  have hsquare : ((analyticOrderAt xi rho).toNat) ^ 2 = 0 :=
+  have hsquare : ((analyticOrderAt xi rho).toNat) ^ (2 : ℕ) = 0 :=
     Nat.eq_zero_of_le_zero hle
   have horder : (analyticOrderAt xi rho).toNat = 0 := by
     by_contra hne
-    have hpos : 0 < ((analyticOrderAt xi rho).toNat) ^ 2 :=
+    have hpos : 0 < ((analyticOrderAt xi rho).toNat) ^ (2 : ℕ) :=
       Nat.pow_pos (Nat.pos_of_ne_zero hne)
     omega
   exact (xi_order_toNat_ne_zero hrho.2) horder
@@ -283,11 +283,11 @@ theorem xi_orderAt_xiZeroLineConjEquiv (rho : XiDivisorSupport) :
   change analyticOrderAt xi (lineReflect (rho : ℂ)) = analyticOrderAt xi (rho : ℂ)
   exact xi_orderAt_lineReflect (rho : ℂ)
 
-/-- **Coefficient-faithful local square law.** Reflection incidence has exactly `m_rho^2`
+/-- **Coefficient-faithful local square law.** Reflection incidence has exactly `m_rho^(2 : ℕ)`
 elements, one for each ordered pair of actual divisor-multiplicity copies. -/
 theorem card_xiZeroCopyLineReflectionIncidence (rho : XiDivisorSupport) :
     (xiZeroCopyLineReflectionIncidence rho).card =
-      ((analyticOrderAt xi (rho : ℂ)).toNat) ^ 2 := by
+      ((analyticOrderAt xi (rho : ℂ)).toNat) ^ (2 : ℕ) := by
   rw [xiZeroCopyLineReflectionIncidence, Finset.card_product,
     card_xiZeroCopyFiber_eq_order_toNat, card_xiZeroCopyFiber_eq_order_toNat,
     xi_orderAt_xiZeroLineConjEquiv, pow_two]
@@ -340,7 +340,7 @@ theorem riemannHypothesis_iff_no_right_reflectionCopyIncidence :
 /-- Local canonical reflection charge is twice literal reflection-incidence cardinality. -/
 theorem two_mul_card_xiZeroCopyLineReflectionIncidence (rho : XiDivisorSupport) :
     2 * (xiZeroCopyLineReflectionIncidence rho).card =
-      2 * ((analyticOrderAt xi (rho : ℂ)).toNat) ^ 2 := by
+      2 * ((analyticOrderAt xi (rho : ℂ)).toNat) ^ (2 : ℕ) := by
   rw [card_xiZeroCopyLineReflectionIncidence]
 
 /-! ## Prime-labelled source energy on reflection incidence -/
@@ -443,8 +443,8 @@ positive source square for every literal pair of divisor-multiplicity copies. -/
 theorem xiZeroCopyLineReflectionPrimeIncidenceEnergy_eq
     (rho : XiDivisorSupport) (p : Nat.Primes) :
     xiZeroCopyLineReflectionPrimeIncidenceEnergy rho p =
-      (((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ 2) *
-        sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ 2 := by
+      (((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ (2 : ℕ)) *
+        sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ (2 : ℕ) := by
   classical
   rw [xiZeroCopyLineReflectionPrimeIncidenceEnergy]
   calc
@@ -452,7 +452,7 @@ theorem xiZeroCopyLineReflectionPrimeIncidenceEnergy_eq
         -(sourceZeroHorizontalPrimeCarrier qr.1 p *
           sourceZeroHorizontalPrimeCarrier qr.2 p)) =
         ∑ _qr ∈ xiZeroCopyLineReflectionIncidence rho,
-          sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ 2 := by
+          sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ (2 : ℕ) := by
       apply Finset.sum_congr rfl
       intro qr hqr
       have hmem := Finset.mem_product.mp hqr
@@ -463,10 +463,10 @@ theorem xiZeroCopyLineReflectionPrimeIncidenceEnergy_eq
       rw [hq, hreflect, hq]
       ring
     _ = ((xiZeroCopyLineReflectionIncidence rho).card : ℝ) *
-          sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ 2 := by
+          sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ (2 : ℕ) := by
       rw [Finset.sum_const, nsmul_eq_mul]
-    _ = (((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ 2) *
-          sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ 2 := by
+    _ = (((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ (2 : ℕ)) *
+          sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ (2 : ℕ) := by
       rw [card_xiZeroCopyLineReflectionIncidence]
       norm_cast
 
@@ -494,7 +494,7 @@ theorem xiZeroCopyLineReflectionPrimeIncidenceEnergy_eq_zero_iff
     xiZeroCopyLineReflectionPrimeIncidenceEnergy rho p = 0 ↔
       (rho : ℂ).re = 1 / 2 := by
   rw [xiZeroCopyLineReflectionPrimeIncidenceEnergy_eq, mul_eq_zero]
-  have horder : ((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ 2 ≠ 0 := by
+  have horder : ((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ (2 : ℕ) ≠ 0 := by
     exact pow_ne_zero 2 (Nat.cast_ne_zero.mpr
       (xi_order_toNat_ne_zero (xi_eq_zero_of_mem_divisor_support rho)))
   simp only [horder, false_or, sq_eq_zero_iff]
@@ -511,14 +511,14 @@ theorem xiZeroCopyLineReflectionPrimeIncidenceEnergy_pos_of_offLine
       (xiZeroCopyLineReflectionPrimeIncidenceEnergy_eq_zero_iff rho p)).mpr hoff))
 
 /-- **Normalized source reconstruction.** Away from the critical line, dividing by the retained
-prime coefficient square recovers literal reflection-incidence cardinality, hence exact `m^2`.
+prime coefficient square recovers literal reflection-incidence cardinality, hence exact `m^(2 : ℕ)`.
 This normalization is coefficient-faithful but singular at the desired critical radical. -/
 theorem xiZeroCopyLineReflectionPrimeIncidenceEnergy_div_sq
     (rho : XiDivisorSupport) (p : Nat.Primes)
     (hoff : (rho : ℂ).re ≠ 1 / 2) :
     xiZeroCopyLineReflectionPrimeIncidenceEnergy rho p /
-        sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ 2 =
-      ((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ 2 := by
+        sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ (2 : ℕ) =
+      ((analyticOrderAt xi (rho : ℂ)).toNat : ℝ) ^ (2 : ℕ) := by
   have hcoeff : sourceZeroHorizontalPrimeCarrierAtSupport rho p ≠ 0 :=
     (not_congr
       (sourceZeroHorizontalPrimeCarrierAtSupport_eq_zero_iff rho p)).mpr hoff
@@ -531,7 +531,7 @@ theorem xiZeroCopyLineReflectionPrimeIncidenceEnergy_div_sq_eq_card
     (rho : XiDivisorSupport) (p : Nat.Primes)
     (hoff : (rho : ℂ).re ≠ 1 / 2) :
     xiZeroCopyLineReflectionPrimeIncidenceEnergy rho p /
-        sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ 2 =
+        sourceZeroHorizontalPrimeCarrierAtSupport rho p ^ (2 : ℕ) =
       (xiZeroCopyLineReflectionIncidence rho).card := by
   rw [xiZeroCopyLineReflectionPrimeIncidenceEnergy_div_sq rho p hoff,
     card_xiZeroCopyLineReflectionIncidence]

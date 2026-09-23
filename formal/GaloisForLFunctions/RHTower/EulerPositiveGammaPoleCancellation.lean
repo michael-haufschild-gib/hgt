@@ -11,7 +11,7 @@ only one literal vector form:
 
 Thus the pole is cancelled algebraically, but centering is lost.  The
 resulting raw-clock vector has energy of exact order
-`8 / (sigma - 1)^2`.  In particular the direct fixed-carrier vector
+`8 / (sigma - 1)^(2 : ℕ)`.  In particular the direct fixed-carrier vector
 completion cannot be the missing uniformly contractive CCM incidence.
 
 All statements are unconditional.
@@ -33,7 +33,7 @@ def eulerPositiveGammaPoleCancelledWeight
 private theorem summable_norm_sq_eulerPositiveGammaPoleCancelledWeight
     {sigma : ℝ} (hsigma : 1 < sigma) :
     Summable (fun n : ℕ+ =>
-      ‖eulerPositiveGammaPoleCancelledWeight sigma n‖ ^ 2) := by
+      ‖eulerPositiveGammaPoleCancelledWeight sigma n‖ ^ (2 : ℕ)) := by
   have h := (summable_eulerPositiveLogMoment 2 hsigma).mul_left 4
   apply h.congr
   intro n
@@ -88,15 +88,15 @@ theorem eulerPositive_pole_base_sub_normalized_tangent
 /-- Exact energy of the pole-cancelled vector. -/
 theorem norm_eulerPositiveGammaPoleCancelledLp_sq
     {sigma : ℝ} (hsigma : 1 < sigma) :
-    ‖eulerPositiveGammaPoleCancelledLp sigma hsigma‖ ^ 2 =
+    ‖eulerPositiveGammaPoleCancelledLp sigma hsigma‖ ^ (2 : ℕ) =
       4 * eulerPositiveLogMoment 2 sigma := by
   rw [HilbertSchmidt.lp_norm_sq_eq]
   simp only [eulerPositiveGammaPoleCancelledLp]
   rw [show (∑' n : ℕ+,
-      ‖eulerPositiveGammaPoleCancelledWeight sigma n‖ ^ 2) =
+      ‖eulerPositiveGammaPoleCancelledWeight sigma n‖ ^ (2 : ℕ)) =
       4 * ∑' n : ℕ+,
         eulerPositiveProbability sigma n *
-          Real.log (n : ℕ) ^ 2 by
+          Real.log (n : ℕ) ^ (2 : ℕ) by
     rw [← tsum_mul_left]
     apply tsum_congr
     intro n
@@ -121,7 +121,7 @@ theorem sub_one_mul_eulerPositiveLogMoment_one_eq_affineMean
 second moment. -/
 theorem sub_one_sq_mul_eulerPositiveLogMoment_two_eq_affineSecondMoment
     {sigma : ℝ} (hsigma : 1 < sigma) :
-    (sigma - 1) ^ 2 * eulerPositiveLogMoment 2 sigma =
+    (sigma - 1) ^ (2 : ℕ) * eulerPositiveLogMoment 2 sigma =
       eulerSquarefreeAffineCriticalClockSecondMoment sigma := by
   rw [eulerPositiveLogMoment_two_eq_affine hsigma]
   unfold eulerSquarefreeAffineCriticalClockSecondMoment
@@ -134,7 +134,7 @@ rescaling. -/
 theorem tendsto_sub_one_sq_mul_eulerPositiveLogMoment_two :
     Tendsto
       (fun sigma : ℝ =>
-        (sigma - 1) ^ 2 * eulerPositiveLogMoment 2 sigma)
+        (sigma - 1) ^ (2 : ℕ) * eulerPositiveLogMoment 2 sigma)
       (nhdsWithin 1 (Ioi 1)) (nhds 2) := by
   have hsecond :
       Tendsto eulerSquarefreeAffineCriticalClockSecondMoment
@@ -155,19 +155,19 @@ theorem tendsto_sub_one_sq_mul_eulerPositiveLogMoment_two :
 
 /-- **Eight-unit blow-up law.**  After pole cancellation the vector has
 scaled energy `8`; equivalently its unscaled energy is of exact order
-`8 / (sigma - 1)^2`, not four-unit bounded. -/
+`8 / (sigma - 1)^(2 : ℕ)`, not four-unit bounded. -/
 theorem tendsto_sub_one_sq_mul_norm_eulerPositiveGammaPoleCancelledLp_sq :
     Tendsto
       (fun sigma : ℝ =>
         if hsigma : 1 < sigma then
-          (sigma - 1) ^ 2 *
-            ‖eulerPositiveGammaPoleCancelledLp sigma hsigma‖ ^ 2
+          (sigma - 1) ^ (2 : ℕ) *
+            ‖eulerPositiveGammaPoleCancelledLp sigma hsigma‖ ^ (2 : ℕ)
         else 0)
       (nhdsWithin 1 (Ioi 1)) (nhds 8) := by
   have h :
       Tendsto
         (fun sigma : ℝ =>
-          4 * ((sigma - 1) ^ 2 *
+          4 * ((sigma - 1) ^ (2 : ℕ) *
             eulerPositiveLogMoment 2 sigma))
         (nhdsWithin 1 (Ioi 1)) (nhds 8) := by
     convert

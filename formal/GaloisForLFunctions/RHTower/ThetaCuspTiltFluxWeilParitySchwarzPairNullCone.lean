@@ -118,7 +118,7 @@ theorem xiWeilSchwarzPairedFiber_evenEnergy_pos
     exact (mul_eq_zero.mp htwo).resolve_left (by norm_num)
   have h' : (starRingEnd ℂ) alpha ≠ alpha := by
     simpa only [alpha] using h
-  have hterm : 0 < ‖xiWeilEvenPart F alpha‖ ^ 2 := by
+  have hterm : 0 < ‖xiWeilEvenPart F alpha‖ ^ (2 : ℕ) := by
     by_cases hs : alpha = -(starRingEnd ℂ) alpha
     · have hFa : F alpha = 2 := by
         change (if alpha = alpha then 1 else 0) +
@@ -145,7 +145,7 @@ theorem xiWeilSchwarzPairedFiber_evenEnergy_pos
       rw [xiWeilEvenPart, hFa, hFc]
       norm_num
   change 0 < ∑' q' : XiZeroCopy,
-    ‖xiWeilEvenPart F (xiSpectralPoint q')‖ ^ 2
+    ‖xiWeilEvenPart F (xiSpectralPoint q')‖ ^ (2 : ℕ)
   exact hsum.tsum_pos (fun q' => sq_nonneg _) q (by simpa [alpha] using hterm)
 
 /-- On every off-line Xi quartet the common odd energy is strictly positive. -/

@@ -43,7 +43,7 @@ namespace RHTower
 
 /-- **The sensitivity identity.**  `-(2u) / (-(4j/u + 2j/u²)) = u³ / (j(2u+1))`. -/
 theorem sensitivity_identity {u j : ℝ} (hu : 0 < u) (hj : 0 < j) :
-    -(2 * u) / (-(4 * j / u + 2 * j / u ^ 2)) = u ^ 3 / (j * (2 * u + 1)) := by
+    -(2 * u) / (-(4 * j / u + 2 * j / u ^ (2 : ℕ))) = u ^ (3 : ℕ) / (j * (2 * u + 1)) := by
   have hune : u ≠ 0 := ne_of_gt hu
   have hjne : j ≠ 0 := ne_of_gt hj
   have hpos : 0 < 2 * u + 1 := by linarith
@@ -53,7 +53,7 @@ theorem sensitivity_identity {u j : ℝ} (hu : 0 < u) (hj : 0 < j) :
 /-- **The absorption-time identity.**  Dividing the available drop `(2u+1)/2` by the sensitivity gives
 `j(2u+1)²/(2u³)`. -/
 theorem absorption_identity {u j : ℝ} (hu : 0 < u) (hj : 0 < j) :
-    ((2 * u + 1) / 2) / (u ^ 3 / (j * (2 * u + 1))) = j * (2 * u + 1) ^ 2 / (2 * u ^ 3) := by
+    ((2 * u + 1) / 2) / (u ^ (3 : ℕ) / (j * (2 * u + 1))) = j * (2 * u + 1) ^ (2 : ℕ) / (2 * u ^ (3 : ℕ)) := by
   have hune : u ≠ 0 := ne_of_gt hu
   have hjne : j ≠ 0 := ne_of_gt hj
   have hpos : 0 < 2 * u + 1 := by linarith
@@ -61,24 +61,24 @@ theorem absorption_identity {u j : ℝ} (hu : 0 < u) (hj : 0 < j) :
 
 /-- **The absorption time is at least linear in the jet order** once the saddle place is bounded. -/
 theorem absorption_ge {u j : ℝ} (hu : 0 < u) (hj : 0 < j) :
-    j / (2 * u ^ 3) ≤ j * (2 * u + 1) ^ 2 / (2 * u ^ 3) := by
-  have hcube : 0 < 2 * u ^ 3 := by positivity
-  have hone : (1 : ℝ) ≤ (2 * u + 1) ^ 2 := by nlinarith
-  have hnum : j ≤ j * (2 * u + 1) ^ 2 := by nlinarith [hj.le, hone]
+    j / (2 * u ^ (3 : ℕ)) ≤ j * (2 * u + 1) ^ (2 : ℕ) / (2 * u ^ (3 : ℕ)) := by
+  have hcube : 0 < 2 * u ^ (3 : ℕ) := by positivity
+  have hone : (1 : ℝ) ≤ (2 * u + 1) ^ (2 : ℕ) := by nlinarith
+  have hnum : j ≤ j * (2 * u + 1) ^ (2 : ℕ) := by nlinarith [hj.le, hone]
   exact (div_le_div_iff_of_pos_right hcube).mpr hnum
 
 /-- **And the comparison quantity diverges.**  `x / (log x)³ → ∞`, so with `u* ≈ ½ log j` the
 absorption time grows without bound. -/
 theorem absorption_diverges :
-    Tendsto (fun x : ℝ => x / Real.log x ^ 3) atTop atTop := by
+    Tendsto (fun x : ℝ => x / Real.log x ^ (3 : ℕ)) atTop atTop := by
   have h := tendsto_pow_log_div_mul_add_atTop 1 0 3 one_ne_zero
   simp only [one_mul, add_zero] at h
-  have hpos : ∀ᶠ x : ℝ in atTop, Real.log x ^ 3 / x ∈ Set.Ioi (0 : ℝ) := by
+  have hpos : ∀ᶠ x : ℝ in atTop, Real.log x ^ (3 : ℕ) / x ∈ Set.Ioi (0 : ℝ) := by
     filter_upwards [eventually_gt_atTop 1] with x hx
     have hlog : 0 < Real.log x := Real.log_pos hx
     have hx0 : 0 < x := lt_trans one_pos hx
     exact Set.mem_Ioi.mpr (by positivity)
-  have h2 : Tendsto (fun x : ℝ => Real.log x ^ 3 / x) atTop (𝓝[>] 0) :=
+  have h2 : Tendsto (fun x : ℝ => Real.log x ^ (3 : ℕ) / x) atTop (𝓝[>] 0) :=
     tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ h hpos
   have h3 := h2.inv_tendsto_nhdsGT_zero
   refine h3.congr fun x => ?_
@@ -87,7 +87,7 @@ theorem absorption_diverges :
 /-- **The blindness, stated.**  Since the absorption time exceeds every bound, no backward flow time
 is excluded by the order-two condition. -/
 theorem no_flow_bound_from_order_two (M : ℝ) :
-    ∃ x : ℝ, M < x / Real.log x ^ 3 :=
+    ∃ x : ℝ, M < x / Real.log x ^ (3 : ℕ) :=
   (absorption_diverges.eventually_gt_atTop M).exists
 
 end RHTower

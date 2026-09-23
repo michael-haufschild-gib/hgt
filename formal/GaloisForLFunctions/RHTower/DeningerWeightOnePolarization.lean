@@ -129,7 +129,7 @@ theorem eigenvalue_re_eq_half
   ring_nf at hreal
   have hpos : 0 < (@inner ℂ H _ v v).re := by
     have hnorm := InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ) v
-    change ‖v‖ ^ 2 = (@inner ℂ H _ v v).re at hnorm
+    change ‖v‖ ^ (2 : ℕ) = (@inner ℂ H _ v v).re at hnorm
     exact lt_of_lt_of_eq (sq_pos_of_pos (norm_pos_iff.mpr hv0))
       hnorm
   nlinarith

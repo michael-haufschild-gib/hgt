@@ -148,7 +148,7 @@ theorem norm_exp_neg_mul_le_one {c : ℂ} (hc : 0 ≤ c.re) {a : ℝ} (ha : 0 �
   nlinarith
 
 theorem sq_add_sq_ne_zero_of_re_pos {w z : ℂ} (h1 : 0 < (w - Complex.I * z).re)
-    (h2 : 0 < (w + Complex.I * z).re) : w ^ 2 + z ^ 2 ≠ 0 := by
+    (h2 : 0 < (w + Complex.I * z).re) : w ^ (2 : ℕ) + z ^ (2 : ℕ) ≠ 0 := by
   have hn1 : w - Complex.I * z ≠ 0 := by
     intro h
     rw [h] at h1
@@ -157,8 +157,8 @@ theorem sq_add_sq_ne_zero_of_re_pos {w z : ℂ} (h1 : 0 < (w - Complex.I * z).re
     intro h
     rw [h] at h2
     simp at h2
-  have hfac : w ^ 2 + z ^ 2 = (w - Complex.I * z) * (w + Complex.I * z) := by
-    linear_combination (z ^ 2) * Complex.I_mul_I
+  have hfac : w ^ (2 : ℕ) + z ^ (2 : ℕ) = (w - Complex.I * z) * (w + Complex.I * z) := by
+    linear_combination (z ^ (2 : ℕ)) * Complex.I_mul_I
   rw [hfac]
   exact mul_ne_zero hn1 hn2
 
@@ -442,14 +442,14 @@ theorem norm_weilApertureB_spectral_le' {w : ℂ} (hw : 1 / 2 < w.re) {q : XiZer
 
 /-- The uniform dominating constant of the aperture channel products. -/
 def apertureDominant (w u : ℂ) : ℝ :=
-  16 + 4 * (2 * max ‖w‖ ‖u‖) ^ 2 / ((w.re - 1 / 2) * (u.re - 1 / 2))
+  16 + 4 * (2 * max ‖w‖ ‖u‖) ^ (2 : ℕ) / ((w.re - 1 / 2) * (u.re - 1 / 2))
 
 theorem apertureDominant_bound {w u : ℂ} (hw : 1 / 2 < w.re) (hu : 1 / 2 < u.re)
     {q : XiZeroCopy} {p r : ℝ} (hr : 0 ≤ r)
     (hglob : p ≤ 2 / (w.re - 1 / 2)) (hglob' : r ≤ 2 / (u.re - 1 / 2))
     (hfar : 2 * max ‖w‖ ‖u‖ ≤ ‖xiSpectralPoint q‖ →
       p ≤ 4 / ‖xiSpectralPoint q‖ ∧ r ≤ 4 / ‖xiSpectralPoint q‖) :
-    p * r ≤ apertureDominant w u / ‖xiSpectralPoint q‖ ^ 2 := by
+    p * r ≤ apertureDominant w u / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   have hpos : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
   have hdw : 0 < w.re - 1 / 2 := by linarith
   have hdu : 0 < u.re - 1 / 2 := by linarith
@@ -460,13 +460,13 @@ theorem apertureDominant_bound {w u : ℂ} (hw : 1 / 2 < w.re) (hu : 1 / 2 < u.r
     have hprod : p * r ≤ (4 / ‖xiSpectralPoint q‖) * (4 / ‖xiSpectralPoint q‖) :=
       mul_le_mul hp4 hr4 hr (by positivity)
     have hval : (4 / ‖xiSpectralPoint q‖) * (4 / ‖xiSpectralPoint q‖)
-        = 16 / ‖xiSpectralPoint q‖ ^ 2 := by
+        = 16 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       field_simp
       ring
     rw [hval] at hprod
     refine hprod.trans ?_
     rw [apertureDominant, div_le_div_iff₀ (by positivity) (by positivity)]
-    have hextra : 0 ≤ 4 * M ^ 2 / ((w.re - 1 / 2) * (u.re - 1 / 2)) := by positivity
+    have hextra : 0 ≤ 4 * M ^ (2 : ℕ) / ((w.re - 1 / 2) * (u.re - 1 / 2)) := by positivity
     nlinarith [hextra, sq_nonneg ‖xiSpectralPoint q‖, hpos]
   · rw [not_le] at hcase
     have hprod : p * r ≤ (2 / (w.re - 1 / 2)) * (2 / (u.re - 1 / 2)) :=
@@ -474,18 +474,18 @@ theorem apertureDominant_bound {w u : ℂ} (hw : 1 / 2 < w.re) (hu : 1 / 2 < u.r
     refine hprod.trans ?_
     rw [apertureDominant]
     have hkey : (2 / (w.re - 1 / 2)) * (2 / (u.re - 1 / 2))
-        ≤ (4 * M ^ 2 / ((w.re - 1 / 2) * (u.re - 1 / 2))) / ‖xiSpectralPoint q‖ ^ 2 := by
+        ≤ (4 * M ^ (2 : ℕ) / ((w.re - 1 / 2) * (u.re - 1 / 2))) / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       rw [div_mul_div_comm, div_div, div_le_div_iff₀ (by positivity) (by positivity)]
-      have hsq : ‖xiSpectralPoint q‖ ^ 2 ≤ M ^ 2 := by nlinarith [hcase, hpos, hMnn]
+      have hsq : ‖xiSpectralPoint q‖ ^ (2 : ℕ) ≤ M ^ (2 : ℕ) := by nlinarith [hcase, hpos, hMnn]
       nlinarith [hsq, mul_pos hdw hdu]
     refine hkey.trans ?_
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     have h16 : (0 : ℝ) ≤ 16 := by norm_num
     nlinarith [h16, sq_nonneg ‖xiSpectralPoint q‖, hpos,
-      div_nonneg (by positivity : (0:ℝ) ≤ 4 * M ^ 2) (le_of_lt (mul_pos hdw hdu))]
+      div_nonneg (by positivity : (0:ℝ) ≤ 4 * M ^ (2 : ℕ)) (le_of_lt (mul_pos hdw hdu))]
 
 theorem summable_apertureDominant (w u : ℂ) :
-    Summable (fun q : XiZeroCopy => apertureDominant w u / ‖xiSpectralPoint q‖ ^ 2) := by
+    Summable (fun q : XiZeroCopy => apertureDominant w u / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
   refine (xiSpectralPoint_inv_sq_summable.mul_left (apertureDominant w u)).congr fun q => ?_
   rw [mul_one_div]
 

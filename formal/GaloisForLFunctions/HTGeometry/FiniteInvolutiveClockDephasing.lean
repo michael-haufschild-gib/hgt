@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.TwoOutcomePinchingKadison
 
 Relational quantum-clock models produce double-commutator decoherence terms.  For a two-reading
 clock the algebraic content of that term is already present in the observer conditional
-expectation: if `U ^ 2 = 1`, then
+expectation: if `U ^ (2 : ℕ) = 1`, then
 
 `[U,[U,X]] = 4 * (X - E_U(X))`,
 
@@ -39,7 +39,7 @@ commutator is four times the observable component erased by the two-reading cond
 expectation.  The identity is operator-valued and assumes no state, Hamiltonian, positivity,
 unitarity, or self-adjointness. -/
 theorem finiteInvolutiveClockDoubleCommutator_eq_four_smul_disturbance
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) :
     finiteInvolutiveClockDoubleCommutator U X =
       (4 : k) • (X - finiteCyclicObservableTwirl U X 2) := by
   have hUU : U * U = 1 := by
@@ -60,7 +60,7 @@ omit [CompleteSpace E] in
 commutator.  This is the state-value conversion used to compare dephasing strength with quantum
 Fisher information. -/
 theorem finiteInvolutiveClockDoubleCommutator_apply_of_fixed
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) {ψ : E} (hψ : U ψ = ψ) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) {ψ : E} (hψ : U ψ = ψ) :
     finiteInvolutiveClockDoubleCommutator U X ψ =
       (2 : k) • ((X * U - U * X) ψ) := by
   rw [finiteInvolutiveClockDoubleCommutator_eq_four_smul_disturbance U X hsq,
@@ -74,7 +74,7 @@ omit [CompleteSpace E] in
 Kadison-defect theorem, this exact conditional-expectation criterion needs neither unitarity
 of the clock nor self-adjointness of the observable. -/
 theorem sub_finiteInvolutiveObservableTwirl_eq_zero_iff_commutes
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) :
     X - finiteCyclicObservableTwirl U X 2 = 0 ↔ U * X = X * U := by
   constructor
   · intro hzero
@@ -94,7 +94,7 @@ omit [CompleteSpace E] in
 relational-clock double commutator is equivalent to belonging to the observable commutant.
 No self-adjointness or unitary/isometric premise remains. -/
 theorem finiteInvolutiveClockDoubleCommutator_eq_zero_iff_commutes
-    (U X : E →L[k] E) (hsq : U ^ 2 = 1) :
+    (U X : E →L[k] E) (hsq : U ^ (2 : ℕ) = 1) :
     finiteInvolutiveClockDoubleCommutator U X = 0 ↔ U * X = X * U := by
   rw [finiteInvolutiveClockDoubleCommutator_eq_four_smul_disturbance U X hsq]
   constructor

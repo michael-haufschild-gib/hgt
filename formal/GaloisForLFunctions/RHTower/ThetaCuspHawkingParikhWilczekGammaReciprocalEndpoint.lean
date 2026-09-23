@@ -18,18 +18,18 @@ private theorem pwGammaFlat_exp_neg_bound (k : ℕ) {y : ℝ} (hy : 0<y) :
 
 theorem pwGammaReciprocalExp_hasDerivAt {a v : ℝ} (hv : 0<v) :
     HasDerivAt (fun u : ℝ => Real.exp (-a/u))
-      ((a/v^2)*Real.exp (-a/v)) v := by
-  have hd : HasDerivAt (fun u : ℝ => -a/u) (a/v^2) v := by
+      ((a/v^(2 : ℕ))*Real.exp (-a/v)) v := by
+  have hd : HasDerivAt (fun u : ℝ => -a/u) (a/v^(2 : ℕ)) v := by
     simpa only [div_eq_mul_inv, neg_mul, mul_neg, neg_neg] using
       (hasDerivAt_inv hv.ne').const_mul (-a)
   simpa only [mul_comm] using hd.exp
 
 theorem pwGammaReciprocalExp_derivative_bound (k : ℕ) {a v : ℝ}
     (ha : 0<a) (hv : 0<v) :
-    (a/v^2)*Real.exp (-a/v) ≤ (((k+2).factorial:ℝ)/a^(k+1))*v^k := by
+    (a/v^(2 : ℕ))*Real.exp (-a/v) ≤ (((k+2).factorial:ℝ)/a^(k+1))*v^k := by
   have he := pwGammaFlat_exp_neg_bound (k+2) (div_pos ha hv)
   calc
-    _ ≤ (a/v^2)*(((k+2).factorial:ℝ)/(a/v)^(k+2)) := by
+    _ ≤ (a/v^(2 : ℕ))*(((k+2).factorial:ℝ)/(a/v)^(k+2)) := by
       apply mul_le_mul_of_nonneg_left _ (by positivity)
       simpa only [neg_div] using he
     _ = _ := by
@@ -44,10 +44,10 @@ theorem pwGammaReciprocalTranslationKernel_flat_bound (k : ℕ) {a v h : ℝ}
   let C : ℝ := ((k+2).factorial:ℝ)/a^(k+1)
   have hC : 0≤C := by dsimp [C]; positivity
   have hd : ∀ u ∈ Icc v (v+h), HasDerivWithinAt (fun u : ℝ => Real.exp (-a/u))
-      ((a/u^2)*Real.exp (-a/u)) (Icc v (v+h)) u := by
+      ((a/u^(2 : ℕ))*Real.exp (-a/u)) (Icc v (v+h)) u := by
     intro u hu
     exact (pwGammaReciprocalExp_hasDerivAt (hv.trans_le hu.1)).hasDerivWithinAt
-  have hb : ∀ u ∈ Icc v (v+h), ‖(a/u^2)*Real.exp (-a/u)‖ ≤ C*(v+h)^k := by
+  have hb : ∀ u ∈ Icc v (v+h), ‖(a/u^(2 : ℕ))*Real.exp (-a/u)‖ ≤ C*(v+h)^k := by
     intro u hu
     have hu0 := hv.trans_le hu.1
     rw [Real.norm_of_nonneg (by positivity)]

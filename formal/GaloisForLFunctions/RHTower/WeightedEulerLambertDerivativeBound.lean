@@ -82,12 +82,12 @@ theorem norm_compactCarrierLambertTransform_le_on_closedBall
   have hρ1 : ρ < 1 := lt_of_le_of_lt hcontr (by norm_num)
   have hker : ‖compactLambertKernel s z‖ ≤ ∑' n : ℕ, (n : ℝ) * ρ ^ n :=
     norm_compactLambertKernel_le_geometricMajorant s z ρ hρ0.le hρ1 hq
-  have hgeom : (∑' n : ℕ, (n : ℝ) * ρ ^ n) = ρ / (1 - ρ) ^ 2 :=
+  have hgeom : (∑' n : ℕ, (n : ℝ) * ρ ^ n) = ρ / (1 - ρ) ^ (2 : ℕ) :=
     tsum_coe_mul_geometric_of_norm_lt_one
       (by rw [Real.norm_eq_abs, abs_of_pos hρ0]; exact hρ1)
-  have hquarter : (1/4 : ℝ) ≤ (1 - ρ) ^ 2 := by nlinarith
-  have hmajor : ρ / (1 - ρ) ^ 2 ≤ 4 * ρ := by
-    calc ρ / (1 - ρ) ^ 2 ≤ ρ / (1/4) :=
+  have hquarter : (1/4 : ℝ) ≤ (1 - ρ) ^ (2 : ℕ) := by nlinarith
+  have hmajor : ρ / (1 - ρ) ^ (2 : ℕ) ≤ 4 * ρ := by
+    calc ρ / (1 - ρ) ^ (2 : ℕ) ≤ ρ / (1/4) :=
           div_le_div_of_nonneg_left hρ0.le (by norm_num) hquarter
       _ = 4 * ρ := by ring
   calc ‖compactCarrierLambertTransform L s z‖

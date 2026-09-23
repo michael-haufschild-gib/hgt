@@ -19,25 +19,25 @@ noncomputable section
 theorem omegaBudget_le_of_head {x h : ℝ} {z₀ z : ℕ} {G β₀ : ℝ}
     (hδ : 0 < fibreWidth x h) (hG : 1 ≤ G)
     (hhead : (∫ w in Set.Icc (-G) G,
-        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (fibreIndex x h) w‖ ^ 2) ≤ β₀) :
+        ‖omegaWeightedMoebiusPoly (primesRange z₀ z) (fibreIndex x h) w‖ ^ (2 : ℕ)) ≤ β₀) :
     omegaBudget x h z₀ z
       ≤ 16 * Real.sqrt x
-          * (2 * (fibreWidth x h) ^ 2 * β₀
+          * (2 * (fibreWidth x h) ^ (2 : ℕ) * β₀
             + (4 * (5 * Real.pi / 2
-                  * ∑ n ∈ fibreIndex x h, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2)
-                / (Real.pi ^ 2 * G)
+                  * ∑ n ∈ fibreIndex x h, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ))
+                / (Real.pi ^ (2 : ℕ) * G)
               + 4 * (β₀ + 5 * Real.exp 1 / 2 * ((⌊Real.sqrt x + h⌋₊ : ℕ) : ℝ)
-                    * ∑ n ∈ fibreIndex x h, ‖omegaCoeff (primesRange z₀ z) n‖ ^ 2)
-                / (3 * Real.pi ^ 2 * G ^ 2)))
-        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ 2 * (Real.sqrt x + 1)
+                    * ∑ n ∈ fibreIndex x h, ‖omegaCoeff (primesRange z₀ z) n‖ ^ (2 : ℕ))
+                / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ))))
+        + 204 * (((primesRange z₀ z).card : ℝ) + 1) ^ (2 : ℕ) * (Real.sqrt x + 1)
         + 2 * (h + 1) * (2 * h + 1)
             * (4 * (Real.sqrt x / 2 + h + 1) * mertensS z + 4 * ((Nat.primesLE z).card : ℝ)
-              + 8 * ((Nat.primesLE z).card : ℝ) ^ 2) := by
+              + 8 * ((Nat.primesLE z).card : ℝ) ^ (2 : ℕ)) := by
   classical
   have hidx : fibreIndex x h = Finset.Icc 1 ⌊Real.sqrt x + h⌋₊ := rfl
   have hhead' : (∫ w in Set.Icc (-G) G,
       ‖omegaWeightedMoebiusPoly (primesRange z₀ z)
-        (Finset.Icc 1 ⌊Real.sqrt x + h⌋₊) w‖ ^ 2) ≤ β₀ := by
+        (Finset.Icc 1 ⌊Real.sqrt x + h⌋₊) w‖ ^ (2 : ℕ)) ≤ β₀ := by
     rw [← hidx]
     exact hhead
   have hspec := integral_kernel_normSq_omegaWeighted_head_le

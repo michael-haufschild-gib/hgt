@@ -101,7 +101,7 @@ theorem flatPortProfile_ratio_le {L y : ℝ} (hL : 4 ≤ L) (hy : 0 < L + y) :
   have hB : Real.sqrt (L + y) * Real.sqrt (L + y) = L + y := Real.mul_self_sqrt hy.le
   have hA2 : (2:ℝ) ≤ Real.sqrt L := by
     have : Real.sqrt 4 ≤ Real.sqrt L := Real.sqrt_le_sqrt hL
-    rwa [show (4:ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)] at this
+    rwa [show (4:ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)] at this
   have hBnn : 0 ≤ Real.sqrt (L + y) := Real.sqrt_nonneg _
   have hkey : Real.sqrt L - Real.sqrt (L + y) ≤ |y| / 2 := by
     rcases le_total 0 y with hy0 | hy0

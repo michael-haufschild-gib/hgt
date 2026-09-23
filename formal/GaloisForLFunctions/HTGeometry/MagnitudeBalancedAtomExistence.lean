@@ -32,7 +32,7 @@ theorem exists_injective_nat_eval_ne_zero_modSum {D : ℕ} (hD : 0 < D)
   by_contra hcon
   push Not at hcon
   apply hW
-  let A := D ^ 2
+  let A := D ^ (2 : ℕ)
   let i0 : Fin D := ⟨0, hD⟩
   let b : Fin D → ℕ := fun i => if i = i0 then ρ % D else D * (i : ℕ)
   let S : Fin D → Set ℂ := fun i =>

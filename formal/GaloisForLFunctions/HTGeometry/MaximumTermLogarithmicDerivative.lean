@@ -476,7 +476,7 @@ theorem normalisedCoeff_def (a : ℕ → ℂ) (r : ℝ) (z : ℂ) (n : ℕ) :
 /-- **The weighted window sum.**  Over any finite window the weighted sum of the normalised
 coefficients differs from a real multiple of the common direction by at most
 `sqrt 2 * sqrt (sum of squared weights) * sqrt (total misalignment)`.  The weights enter only through
-their `l^2` norm, which is the gain over bounding each term by its modulus. -/
+their `l^(2 : ℕ)` norm, which is the gain over bounding each term by its modulus. -/
 theorem norm_weighted_window_sub_le
     (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
     {u : ℂ} (hu : ‖u‖ = 1) {D : ℝ}

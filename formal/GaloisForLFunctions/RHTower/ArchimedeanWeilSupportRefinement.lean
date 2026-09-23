@@ -77,7 +77,7 @@ theorem disjoint_overlap_windows {S u : ℝ} (h : S / 2 < u) :
   linarith
 
 /-- Disjoint masses give a halved product: `a² + b² ≤ c` forces `a b ≤ c / 2`. -/
-theorem mul_le_half_of_sq_add_sq_le {a b c : ℝ} (h : a ^ 2 + b ^ 2 ≤ c) : a * b ≤ c / 2 := by
+theorem mul_le_half_of_sq_add_sq_le {a b c : ℝ} (h : a ^ (2 : ℕ) + b ^ (2 : ℕ) ≤ c) : a * b ≤ c / 2 := by
   nlinarith [sq_nonneg (a - b)]
 
 /-- **The support-refined deficit bound.**  If the correlation at `u` is bounded by half the value
@@ -102,7 +102,7 @@ theorem deficit_mul_kernel_ge_refined {d m k : ℝ} (hd0 : 0 ≤ d) (hd : d ≤ 
 /-- Packaging: from disjoint window masses `α, β` with `α + β ≤ g 0`, the correlation is at most
 half the value at the origin, and hence the deficit is at most `(3/2) g 0`. -/
 theorem deficit_le_of_disjoint_masses {α β g0 gu : ℝ}
-    (hsum : α ^ 2 + β ^ 2 ≤ g0) (hcorr : |gu| ≤ α * β) :
+    (hsum : α ^ (2 : ℕ) + β ^ (2 : ℕ) ≤ g0) (hcorr : |gu| ≤ α * β) :
     g0 - gu ≤ 3 / 2 * g0 := by
   have hhalf : α * β ≤ g0 / 2 := mul_le_half_of_sq_add_sq_le hsum
   exact deficit_le_three_halves (le_trans hcorr hhalf)

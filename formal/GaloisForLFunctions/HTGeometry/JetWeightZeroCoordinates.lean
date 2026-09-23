@@ -14,7 +14,7 @@ and on them the substitution endomorphism becomes *triangular affine*:
 
 The scalar attached to `z_j` is `R'(y₀)^{1−j}` — it depends on `j` — and the inhomogeneous term
 `s_j` involves only the ratios of lower index, because `σ_j` is isobaric of weight `j` and polynomial
-in `y₁, …, y_{j−1}`.  At `j = 2` the identity reads `R'^2·Φ(z₂) = R'·z₂ + R''`, whose linearization
+in `y₁, …, y_{j−1}`.  At `j = 2` the identity reads `R'^(2 : ℕ)·Φ(z₂) = R'·z₂ + R''`, whose linearization
 is exactly the rational affine-connection equation.
 
 This is the normal form in which the descent of a normalizing shift is a finite triangular

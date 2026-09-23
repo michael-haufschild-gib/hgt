@@ -20,20 +20,20 @@ open MeasureTheory Set intervalIntegral
 namespace RHTower
 
 theorem integral_inv_sq_le_left {L X : ℝ} (hL : 0 < L) (hLX : L ≤ X) :
-    (∫ x in L..X, (x ^ 2)⁻¹) ≤ 1 / L := by
+    (∫ x in L..X, (x ^ (2 : ℕ))⁻¹) ≤ 1 / L := by
   have hpos : ∀ x ∈ Set.uIcc L X, x ≠ 0 := by
     intro x hx
     rw [Set.uIcc_of_le hLX] at hx
     exact ne_of_gt (lt_of_lt_of_le hL hx.1)
-  have hderiv : ∀ x ∈ Set.uIcc L X, HasDerivAt (fun y : ℝ => -y⁻¹) ((x ^ 2)⁻¹) x := by
+  have hderiv : ∀ x ∈ Set.uIcc L X, HasDerivAt (fun y : ℝ => -y⁻¹) ((x ^ (2 : ℕ))⁻¹) x := by
     intro x hx
     have h := (hasDerivAt_inv (hpos x hx)).neg
     rwa [neg_neg] at h
-  have hint : IntervalIntegrable (fun x : ℝ => (x ^ 2)⁻¹) volume L X := by
+  have hint : IntervalIntegrable (fun x : ℝ => (x ^ (2 : ℕ))⁻¹) volume L X := by
     refine ContinuousOn.intervalIntegrable ?_
     refine ContinuousOn.inv₀ (continuousOn_pow 2) fun x hx => ?_
     exact pow_ne_zero 2 (hpos x hx)
-  have hftc : (∫ x in L..X, (x ^ 2)⁻¹) = -X⁻¹ - -L⁻¹ :=
+  have hftc : (∫ x in L..X, (x ^ (2 : ℕ))⁻¹) = -X⁻¹ - -L⁻¹ :=
     intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
   have hXpos : (0 : ℝ) < X := lt_of_lt_of_le hL hLX
   have hXinv : 0 < X⁻¹ := inv_pos.mpr hXpos
@@ -49,7 +49,7 @@ theorem norm_integral_cexp_le_of_decay_left {L X K : ℝ} (hL : 0 < L) (hLX : L 
     (hAc : ContinuousOn A (Set.uIcc L X))
     (hrel : ∀ x ∈ Set.uIcc L X, B x * (Complex.I * (φ' x : ℂ)) = A x)
     (hBdecay : ∀ x ∈ Set.uIcc L X, ‖B x‖ ≤ K / x)
-    (hB'decay : ∀ x ∈ Set.uIcc L X, ‖B' x‖ ≤ K * (x ^ 2)⁻¹) :
+    (hB'decay : ∀ x ∈ Set.uIcc L X, ‖B' x‖ ≤ K * (x ^ (2 : ℕ))⁻¹) :
     ‖∫ t in L..X, A t * Complex.exp (Complex.I * φ t)‖ ≤ 3 * K / L := by
   have hmain := norm_integral_cexp_le_of_antiderivative hLX hφ hB hB'c hAc hrel
   have hbX : ‖B X‖ ≤ K / L := by
@@ -57,19 +57,19 @@ theorem norm_integral_cexp_le_of_decay_left {L X K : ℝ} (hL : 0 < L) (hLX : L 
     exact div_le_div_of_nonneg_left hK hL hLX
   have hbL : ‖B L‖ ≤ K / L := hBdecay L Set.left_mem_uIcc
   have hi1 : IntervalIntegrable (fun t : ℝ => ‖B' t‖) volume L X := hB'c.norm.intervalIntegrable
-  have hi2 : IntervalIntegrable (fun t : ℝ => K * (t ^ 2)⁻¹) volume L X := by
+  have hi2 : IntervalIntegrable (fun t : ℝ => K * (t ^ (2 : ℕ))⁻¹) volume L X := by
     refine (ContinuousOn.mul continuousOn_const ?_).intervalIntegrable
     refine ContinuousOn.inv₀ (continuousOn_pow 2) fun x hx => ?_
     rw [Set.uIcc_of_le hLX] at hx
     exact pow_ne_zero 2 (ne_of_gt (lt_of_lt_of_le hL hx.1))
   have htail : (∫ t in L..X, ‖B' t‖) ≤ K / L := by
-    have hmono : (∫ t in L..X, ‖B' t‖) ≤ ∫ t in L..X, K * (t ^ 2)⁻¹ := by
+    have hmono : (∫ t in L..X, ‖B' t‖) ≤ ∫ t in L..X, K * (t ^ (2 : ℕ))⁻¹ := by
       refine intervalIntegral.integral_mono_on hLX hi1 hi2 fun t ht => ?_
       exact hB'decay t (Set.uIcc_of_le hLX ▸ ht)
-    have hconst : (∫ t in L..X, K * (t ^ 2)⁻¹) = K * ∫ t in L..X, (t ^ 2)⁻¹ :=
+    have hconst : (∫ t in L..X, K * (t ^ (2 : ℕ))⁻¹) = K * ∫ t in L..X, (t ^ (2 : ℕ))⁻¹ :=
       intervalIntegral.integral_const_mul K _
     have hbase := integral_inv_sq_le_left hL hLX
-    have hstep : K * (∫ t in L..X, (t ^ 2)⁻¹) ≤ K * (1 / L) :=
+    have hstep : K * (∫ t in L..X, (t ^ (2 : ℕ))⁻¹) ≤ K * (1 / L) :=
       mul_le_mul_of_nonneg_left hbase hK
     rw [hconst] at hmono
     have hval : K * (1 / L) = K / L := by ring
@@ -87,7 +87,7 @@ theorem norm_integral_cexp_le_of_profile_left {L X C c eps : ℝ} (hL : 0 < L) (
     (hAc : ContinuousOn A (Set.uIcc L X))
     (hrel : ∀ x ∈ Set.uIcc L X, P x * (ξ' x : ℂ) = A x)
     (hPd : ∀ x ∈ Set.uIcc L X, ‖P x‖ ≤ C / x)
-    (hP'd : ∀ x ∈ Set.uIcc L X, ‖P' x‖ ≤ C * (x ^ 2)⁻¹) :
+    (hP'd : ∀ x ∈ Set.uIcc L X, ‖P' x‖ ≤ C * (x ^ (2 : ℕ))⁻¹) :
     ‖∫ t in L..X, A t * Complex.exp (Complex.I * ((eps * c * ξ t : ℝ) : ℂ))‖
       ≤ 3 * C / (L * c) := by
   have hepsne : eps ≠ 0 := by
@@ -126,12 +126,12 @@ theorem norm_integral_cexp_le_of_profile_left {L X C c eps : ℝ} (hL : 0 < L) (
     rw [norm_div, hd, hnormden]
     calc ‖P x‖ / c ≤ (C / x) / c := by gcongr; exact hPd x hx
       _ = (C / c) / x := by ring
-  have hB'd : ∀ x ∈ Set.uIcc L X, ‖P' x / d‖ ≤ (C / c) * (x ^ 2)⁻¹ := by
+  have hB'd : ∀ x ∈ Set.uIcc L X, ‖P' x / d‖ ≤ (C / c) * (x ^ (2 : ℕ))⁻¹ := by
     intro x hx
     have hx0 := hxpos x hx
     rw [norm_div, hd, hnormden]
-    calc ‖P' x‖ / c ≤ (C * (x ^ 2)⁻¹) / c := by gcongr; exact hP'd x hx
-      _ = (C / c) * (x ^ 2)⁻¹ := by ring
+    calc ‖P' x‖ / c ≤ (C * (x ^ (2 : ℕ))⁻¹) / c := by gcongr; exact hP'd x hx
+      _ = (C / c) * (x ^ (2 : ℕ))⁻¹ := by ring
   have hmain := norm_integral_cexp_le_of_decay_left (K := C / c) hL hLX hK hφ hB hB'c hAc
     hrel' hBd hB'd
   have hval : 3 * (C / c) / L = 3 * C / (L * c) := by
@@ -143,37 +143,37 @@ theorem norm_integral_cexp_le_of_profile_left {L X C c eps : ℝ} (hL : 0 < L) (
 `3Ca/2 + Ca Cr` rather than `3Ca/2 + Ca Cr/2`. -/
 theorem norm_deriv_exteriorProfile_left {x Ca Cr : ℝ} (hx1 : 1 ≤ x)
     (hCa : 0 ≤ Ca) (hCr : 0 ≤ Cr) {ξ' ρ : ℝ → ℝ} {a a' : ℝ → ℂ}
-    (hξ : 1 ≤ ξ' x) (hρ : |ρ x| ≤ Cr / x ^ 2)
+    (hξ : 1 ≤ ξ' x) (hρ : |ρ x| ≤ Cr / x ^ (2 : ℕ))
     (ha : ‖a x‖ ≤ Ca / Real.sqrt x) (ha' : ‖a' x‖ ≤ Ca / (x * Real.sqrt x)) :
     ‖a' x * (exteriorWeight ξ' x : ℂ)
         + a x * ((-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x : ℝ) : ℂ)‖
-      ≤ (3 * Ca / 2 + Ca * Cr) / x ^ 2 := by
+      ≤ (3 * Ca / 2 + Ca * Cr) / x ^ (2 : ℕ) := by
   have hx : 0 < x := lt_of_lt_of_le zero_lt_one hx1
   have hsx : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
   have hw := abs_exteriorWeight_le hx hξ
   have hw' := abs_deriv_exteriorWeight_le hx hξ hρ
-  have hterm1 : ‖a' x * (exteriorWeight ξ' x : ℂ)‖ ≤ Ca / x ^ 2 := by
+  have hterm1 : ‖a' x * (exteriorWeight ξ' x : ℂ)‖ ≤ Ca / x ^ (2 : ℕ) := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     calc ‖a' x‖ * |exteriorWeight ξ' x| ≤ (Ca / (x * Real.sqrt x)) * (Real.sqrt x)⁻¹ :=
           mul_le_mul ha' hw (abs_nonneg _) (le_trans (norm_nonneg _) ha')
-      _ = Ca / x ^ 2 := by
+      _ = Ca / x ^ (2 : ℕ) := by
           field_simp
           rw [Real.sq_sqrt hx.le]
   have hterm2 : ‖a x * ((-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹
         + (Real.sqrt x)⁻¹ * ρ x : ℝ) : ℂ)‖
-      ≤ Ca / (2 * x ^ 2) + Ca * Cr / x ^ 3 := by
+      ≤ Ca / (2 * x ^ (2 : ℕ)) + Ca * Cr / x ^ (3 : ℕ) := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     have hbase : ‖a x‖ * |(-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x)|
-        ≤ (Ca / Real.sqrt x) * ((2 * x * Real.sqrt x)⁻¹ + (Real.sqrt x)⁻¹ * (Cr / x ^ 2)) :=
+        ≤ (Ca / Real.sqrt x) * ((2 * x * Real.sqrt x)⁻¹ + (Real.sqrt x)⁻¹ * (Cr / x ^ (2 : ℕ))) :=
       mul_le_mul ha hw' (abs_nonneg _) (le_trans (norm_nonneg _) ha)
     refine le_trans hbase (le_of_eq ?_)
     field_simp
     rw [Real.sq_sqrt hx.le]
-  have htail : Ca * Cr / x ^ 3 ≤ Ca * Cr / x ^ 2 := by
+  have htail : Ca * Cr / x ^ (3 : ℕ) ≤ Ca * Cr / x ^ (2 : ℕ) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [mul_nonneg (mul_nonneg hCa hCr) (sq_nonneg x), hx.le, hx1]
-  have hsum : Ca / x ^ 2 + (Ca / (2 * x ^ 2) + Ca * Cr / x ^ 2)
-      = (3 * Ca / 2 + Ca * Cr) / x ^ 2 := by
+  have hsum : Ca / x ^ (2 : ℕ) + (Ca / (2 * x ^ (2 : ℕ)) + Ca * Cr / x ^ (2 : ℕ))
+      = (3 * Ca / 2 + Ca * Cr) / x ^ (2 : ℕ) := by
     field_simp
     ring
   calc ‖a' x * (exteriorWeight ξ' x : ℂ)
@@ -181,7 +181,7 @@ theorem norm_deriv_exteriorProfile_left {x Ca Cr : ℝ} (hx1 : 1 ≤ x)
       ≤ ‖a' x * (exteriorWeight ξ' x : ℂ)‖
         + ‖a x * ((-(2 * x * Real.sqrt x)⁻¹ * (ξ' x)⁻¹ + (Real.sqrt x)⁻¹ * ρ x : ℝ) : ℂ)‖ :=
         norm_add_le _ _
-    _ ≤ (3 * Ca / 2 + Ca * Cr) / x ^ 2 := by linarith [hterm1, hterm2, htail, hsum]
+    _ ≤ (3 * Ca / 2 + Ca * Cr) / x ^ (2 : ℕ) := by linarith [hterm1, hterm2, htail, hsum]
 
 /-- **The exterior estimate over `[L, X]` with `L ≥ 1`.** -/
 theorem norm_integral_exterior_left {L X Ca Cr c eps : ℝ} (hL : 1 ≤ L) (hLX : L ≤ X)
@@ -197,7 +197,7 @@ theorem norm_integral_exterior_left {L X Ca Cr c eps : ℝ} (hL : 1 ≤ L) (hLX 
     (hspeed : ∀ x ∈ Set.uIcc L X, 1 ≤ ξ' x)
     (haB : ∀ x ∈ Set.uIcc L X, ‖a x‖ ≤ Ca / Real.sqrt x)
     (ha'B : ∀ x ∈ Set.uIcc L X, ‖a' x‖ ≤ Ca / (x * Real.sqrt x))
-    (hρB : ∀ x ∈ Set.uIcc L X, |ρ x| ≤ Cr / x ^ 2) :
+    (hρB : ∀ x ∈ Set.uIcc L X, |ρ x| ≤ Cr / x ^ (2 : ℕ)) :
     ‖∫ t in L..X, (a t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
         * Complex.exp (Complex.I * ((eps * c * ξ t : ℝ) : ℂ))‖
       ≤ 3 * (Ca * (3 / 2 + Cr)) / (L * c) := by
@@ -261,12 +261,12 @@ theorem norm_integral_exterior_left {L X Ca Cr c eps : ℝ} (hL : 1 ≤ L) (hLX 
     gcongr
   have hP'd : ∀ x ∈ Set.uIcc L X,
       ‖a' x * ((exteriorWeight ξ' x : ℝ) : ℂ) + a x * ((W' x : ℝ) : ℂ)‖
-        ≤ C' * (x ^ 2)⁻¹ := by
+        ≤ C' * (x ^ (2 : ℕ))⁻¹ := by
     intro x hx
     have h := norm_deriv_exteriorProfile_left (hx1 x hx) hCa hCr (hspeed x hx)
       (hρB x hx) (haB x hx) (ha'B x hx)
     rw [hW'def]
-    have hval : (3 * Ca / 2 + Ca * Cr) / x ^ 2 = C' * (x ^ 2)⁻¹ := by
+    have hval : (3 * Ca / 2 + Ca * Cr) / x ^ (2 : ℕ) = C' * (x ^ (2 : ℕ))⁻¹ := by
       rw [hC'def, div_eq_mul_inv]
       ring
     rw [hval] at h

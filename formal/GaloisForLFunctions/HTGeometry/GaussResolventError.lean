@@ -27,20 +27,20 @@ variable {s : ℕ → ℝ}
 
 /-- The polynomial `X ↦ (p(z)² - p(X)²)/(X - z)`. -/
 def dividedSquare (p : Polynomial ℝ) (z : ℝ) : Polynomial ℝ :=
-  (Polynomial.C (p.eval z ^ 2) - p ^ 2) /ₘ (Polynomial.X - Polynomial.C z)
+  (Polynomial.C (p.eval z ^ (2 : ℕ)) - p ^ (2 : ℕ)) /ₘ (Polynomial.X - Polynomial.C z)
 
 theorem dividedSquare_mul (p : Polynomial ℝ) (z : ℝ) :
     (Polynomial.X - Polynomial.C z) * dividedSquare p z
-      = Polynomial.C (p.eval z ^ 2) - p ^ 2 := by
-  have hroot : (Polynomial.C (p.eval z ^ 2) - p ^ 2).IsRoot z := by
+      = Polynomial.C (p.eval z ^ (2 : ℕ)) - p ^ (2 : ℕ) := by
+  have hroot : (Polynomial.C (p.eval z ^ (2 : ℕ)) - p ^ (2 : ℕ)).IsRoot z := by
     simp [Polynomial.IsRoot]
-  have hdvd : (Polynomial.X - Polynomial.C z) ∣ (Polynomial.C (p.eval z ^ 2) - p ^ 2) :=
+  have hdvd : (Polynomial.X - Polynomial.C z) ∣ (Polynomial.C (p.eval z ^ (2 : ℕ)) - p ^ (2 : ℕ)) :=
     Polynomial.dvd_iff_isRoot.2 hroot
   rw [dividedSquare]
   exact (Polynomial.mul_divByMonic_eq_iff_isRoot.2 hroot)
 
 theorem eval_dividedSquare (p : Polynomial ℝ) (z x : ℝ) (hx : x ≠ z) :
-    (dividedSquare p z).eval x = (p.eval z ^ 2 - p.eval x ^ 2) / (x - z) := by
+    (dividedSquare p z).eval x = (p.eval z ^ (2 : ℕ) - p.eval x ^ (2 : ℕ)) / (x - z) := by
   have h := congrArg (fun q : Polynomial ℝ => q.eval x) (dividedSquare_mul p z)
   simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C,
     Polynomial.eval_pow] at h
@@ -52,9 +52,9 @@ theorem natDegree_dividedSquare_lt (p : Polynomial ℝ) (z : ℝ) (hp : 0 < p.na
     (dividedSquare p z).natDegree < 2 * p.natDegree := by
   have hmonic : (Polynomial.X - Polynomial.C z).Monic := Polynomial.monic_X_sub_C z
   have hnd : (dividedSquare p z).natDegree
-      = (Polynomial.C (p.eval z ^ 2) - p ^ 2).natDegree - 1 := by
+      = (Polynomial.C (p.eval z ^ (2 : ℕ)) - p ^ (2 : ℕ)).natDegree - 1 := by
     rw [dividedSquare, Polynomial.natDegree_divByMonic _ hmonic, Polynomial.natDegree_X_sub_C]
-  have hle : (Polynomial.C (p.eval z ^ 2) - p ^ 2).natDegree ≤ 2 * p.natDegree := by
+  have hle : (Polynomial.C (p.eval z ^ (2 : ℕ)) - p ^ (2 : ℕ)).natDegree ≤ 2 * p.natDegree := by
     refine le_trans (Polynomial.natDegree_sub_le _ _) ?_
     simp only [Polynomial.natDegree_C, max_le_iff]
     exact ⟨Nat.zero_le _, le_of_eq (Polynomial.natDegree_pow p 2 ▸ by ring)⟩
@@ -73,7 +73,7 @@ Gauss exactness applied to the degree-`2n+1` polynomial `(p(z)² - p(X)²)/(X - 
 theorem momentFunctional_dividedSquare (h : PositiveMomentForm s) (n : ℕ) (z : ℝ)
     (hz : ∀ x ∈ gaussNodes s n, x ≠ z) :
     momentFunctional s (dividedSquare (monicOrtho s (n + 1)) z)
-      = (monicOrtho s (n + 1)).eval z ^ 2
+      = (monicOrtho s (n + 1)).eval z ^ (2 : ℕ)
         * ∑ x ∈ gaussNodes s n, christoffel s n x / (x - z) := by
   have hdegp : (monicOrtho s (n + 1)).natDegree = n + 1 := by
     have hd := monicOrtho_degree s (n + 1)
@@ -98,7 +98,7 @@ theorem gaussSum_resolvent_eq (h : PositiveMomentForm s) (n : ℕ) (z : ℝ)
     (hz : ∀ x ∈ gaussNodes s n, x ≠ z) (hp : (monicOrtho s (n + 1)).eval z ≠ 0) :
     (∑ x ∈ gaussNodes s n, christoffel s n x / (x - z))
       = momentFunctional s (dividedSquare (monicOrtho s (n + 1)) z)
-        / (monicOrtho s (n + 1)).eval z ^ 2 := by
+        / (monicOrtho s (n + 1)).eval z ^ (2 : ℕ) := by
   rw [momentFunctional_dividedSquare h n z hz]
   field_simp
 
@@ -122,10 +122,10 @@ theorem natDegree_nodeCofactor (p : Polynomial ℝ) (x₀ : ℝ) :
 /-- The residual source polynomial `-(X - x₀)·(p/(X - x₀))²`, which is `p(X)²/(x₀ - X)` after the
 removable cancellation at `x₀`. -/
 def nodeResidual (p : Polynomial ℝ) (x₀ : ℝ) : Polynomial ℝ :=
-  -((Polynomial.X - Polynomial.C x₀) * (nodeCofactor p x₀) ^ 2)
+  -((Polynomial.X - Polynomial.C x₀) * (nodeCofactor p x₀) ^ (2 : ℕ))
 
 theorem eval_nodeResidual_mul (p : Polynomial ℝ) {x₀ : ℝ} (hx₀ : p.eval x₀ = 0) (x : ℝ) :
-    (nodeResidual p x₀).eval x * (x₀ - x) = (p.eval x) ^ 2 := by
+    (nodeResidual p x₀).eval x * (x₀ - x) = (p.eval x) ^ (2 : ℕ) := by
   have hp := congrArg (fun q : Polynomial ℝ => q.eval x) (nodeCofactor_mul p hx₀)
   simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_X,
     Polynomial.eval_C] at hp

@@ -512,7 +512,7 @@ theorem su2TorusWeylOddFourierScale_sq_mul_neg {r : ℕ} (hr : 0 < r) :
   have hpos : 0 < (2 * r : ℝ) := by positivity
   have hsqrtne : ((Real.sqrt (2 * r : ℝ) : ℝ) : ℂ) ≠ 0 := by
     exact_mod_cast Real.sqrt_ne_zero'.mpr hpos
-  have hsquare : ((Real.sqrt (2 * r : ℝ) : ℝ) : ℂ) ^ 2 = (2 * r : ℂ) := by
+  have hsquare : ((Real.sqrt (2 * r : ℝ) : ℝ) : ℂ) ^ (2 : ℕ) = (2 * r : ℂ) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt hpos.le]
     norm_num
   unfold su2TorusWeylOddFourierScale

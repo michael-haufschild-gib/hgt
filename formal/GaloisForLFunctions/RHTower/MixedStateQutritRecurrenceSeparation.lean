@@ -43,7 +43,7 @@ def qutritEnergy : Fin 3 → ℝ := ![0, 1, Real.sqrt 2]
 /-- Variance of a finite energy list in a real weight packet. -/
 def finiteWeightedVariance {d : ℕ}
     (w energy : Fin d → ℝ) : ℝ :=
-  (∑ i, w i * energy i ^ 2) - (∑ i, w i * energy i) ^ 2
+  (∑ i, w i * energy i ^ (2 : ℕ)) - (∑ i, w i * energy i) ^ (2 : ℕ)
 
 theorem qutritRecurrenceDelta_pos : 0 < qutritRecurrenceDelta := by
   rw [qutritRecurrenceDelta]
@@ -110,7 +110,7 @@ def qutritAperiodicTickPhase (n : ℕ) : Fin 3 → ℂ :=
 /-- Fidelity deficit of a finite weighted phase packet. -/
 def weightedFidelityDeficit {d : ℕ}
     (w : Fin d → ℝ) (phase : Fin d → ℂ) : ℝ :=
-  1 - ‖projectiveWeightedPhaseAmplitude w phase‖ ^ 2
+  1 - ‖projectiveWeightedPhaseAmplitude w phase‖ ^ (2 : ℕ)
 
 theorem qutritPeriodic_fidelityDeficit_eq_zero (n : ℕ) :
     weightedFidelityDeficit qutritPeriodicWeight
@@ -123,7 +123,7 @@ theorem qutritAperiodic_fidelityDeficit_eq (n : ℕ) :
     weightedFidelityDeficit qutritAperiodicWeight
         (qutritAperiodicTickPhase n) =
       qutritRecurrenceDelta * (1 - qutritRecurrenceDelta) *
-        ‖HTGeometry.ee ((n : ℝ) * Real.sqrt 2) - 1‖ ^ 2 := by
+        ‖HTGeometry.ee ((n : ℝ) * Real.sqrt 2) - 1‖ ^ (2 : ℕ) := by
   let phase := qutritAperiodicTickPhase n
   have hphase : ∀ i, ‖phase i‖ = 1 := by
     intro i
@@ -136,7 +136,7 @@ theorem qutritAperiodic_fidelityDeficit_eq (n : ℕ) :
   rw [weightedFidelityDeficit]
   rw [show projectiveWeightedPairwiseEnergy qutritAperiodicWeight phase =
       2 * qutritRecurrenceDelta * (1 - qutritRecurrenceDelta) *
-        ‖HTGeometry.ee ((n : ℝ) * Real.sqrt 2) - 1‖ ^ 2 by
+        ‖HTGeometry.ee ((n : ℝ) * Real.sqrt 2) - 1‖ ^ (2 : ℕ) by
     simp [projectiveWeightedPairwiseEnergy, qutritAperiodicWeight,
       phase, qutritAperiodicTickPhase, Fin.sum_univ_three,
       norm_sub_rev]
@@ -177,7 +177,7 @@ theorem distToInt_nat_mul_sqrt_two_lower
   let p : ℤ := round x
   have hnR : (0 : ℝ) < n := by exact_mod_cast hn
   have hs0 : 0 ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
-  have hs2 : Real.sqrt 2 ^ 2 = 2 :=
+  have hs2 : Real.sqrt 2 ^ (2 : ℕ) = 2 :=
     Real.sq_sqrt (by norm_num)
   have hslt : Real.sqrt 2 < 3 / 2 := by
     nlinarith
@@ -203,12 +203,12 @@ theorem distToInt_nat_mul_sqrt_two_lower
     simpa only [Int.cast_natCast] using
       irrational_sqrt_two.intCast_mul
         (show (n : ℤ) ≠ 0 by exact_mod_cast hn.ne')
-  let k : ℤ := 2 * (n : ℤ) ^ 2 - p ^ 2
+  let k : ℤ := 2 * (n : ℤ) ^ (2 : ℕ) - p ^ (2 : ℕ)
   have hk : k ≠ 0 := by
     intro hk0
-    have hkR : (2 : ℝ) * (n : ℝ) ^ 2 - (p : ℝ) ^ 2 = 0 := by
+    have hkR : (2 : ℝ) * (n : ℝ) ^ (2 : ℕ) - (p : ℝ) ^ (2 : ℕ) = 0 := by
       exact_mod_cast hk0
-    have hsquare : x ^ 2 = (p : ℝ) ^ 2 := by
+    have hsquare : x ^ (2 : ℕ) = (p : ℝ) ^ (2 : ℕ) := by
       dsimp only [x]
       rw [mul_pow, hs2]
       nlinarith
@@ -346,12 +346,12 @@ theorem exists_qutritAperiodic_tickRecurrenceAmplitude_upper
 
 /-- Squared Hilbert--Schmidt speed of the `c=1/2` mixed-spike family. -/
 def qutritMixedSpikeHSSpeedSq (w : Fin 3 → ℝ) : ℝ :=
-  2 * (1 / 2 : ℝ) ^ 2 * finiteWeightedVariance w qutritEnergy
+  2 * (1 / 2 : ℝ) ^ (2 : ℕ) * finiteWeightedVariance w qutritEnergy
 
 /-- Standard spectral-formula QFI of the `b=1/6`, `c=1/2` mixed-spike
 family for elapsed-time estimation. -/
 def qutritMixedSpikeQuantumFisher (w : Fin 3 → ℝ) : ℝ :=
-  4 * (1 / 2 : ℝ) ^ 2 / (2 * (1 / 6 : ℝ) + 1 / 2) *
+  4 * (1 / 2 : ℝ) ^ (2 : ℕ) / (2 * (1 / 6 : ℝ) + 1 / 2) *
     finiteWeightedVariance w qutritEnergy
 
 theorem qutrit_mixedSpikeHSSpeedSq_eq :

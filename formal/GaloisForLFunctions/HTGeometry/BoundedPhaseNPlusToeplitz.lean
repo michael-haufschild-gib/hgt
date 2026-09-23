@@ -80,7 +80,7 @@ theorem boundedPhaseReciprocal_half_radial_eq_halfValue
       (measurable_halfBoundedPhase hb) (abs_halfBoundedPhase_le hbound) w hw
   have he : sectorExponential v ≠ 0 := sectorExponential_ne_zero v
   have hden : sectorExponential v + 1 ≠ 0 :=
-    add_one_ne_zero_of_re_nonneg (sectorExponential_re_nonneg hvBound)
+    add_one_ne_zero_of_re_nonneg_sectorCayleyMultiplier (sectorExponential_re_nonneg hvBound)
   have hquot : (1 - sectorCayleyValue v) / (1 + sectorCayleyValue v) =
       (sectorExponential v)⁻¹ := by
     unfold sectorCayleyValue

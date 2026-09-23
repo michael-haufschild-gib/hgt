@@ -26,9 +26,9 @@ theorem one_le_betaFixed {c : ℝ} (hc0 : c ≤ 0) : 1 ≤ betaFixed c := by
 
 /-- The fixed-point equation `β² + c = β`. -/
 theorem betaFixed_sq {c : ℝ} (hc0 : c ≤ 0) :
-    betaFixed c ^ 2 + c = betaFixed c := by
+    betaFixed c ^ (2 : ℕ) + c = betaFixed c := by
   unfold betaFixed
-  have h1 : Real.sqrt (1 - 4 * c) ^ 2 = 1 - 4 * c :=
+  have h1 : Real.sqrt (1 - 4 * c) ^ (2 : ℕ) = 1 - 4 * c :=
     Real.sq_sqrt (by linarith)
   linear_combination (1/4 : ℝ) * h1
 
@@ -54,33 +54,33 @@ theorem filledJulia_subset_closedBall_betaFixed {c : ℝ} (hc0 : c ≤ 0) :
     | succ m ih =>
         rw [Function.iterate_succ_apply']
         set w := (quadratic (c:ℂ))^[m] z with hwdef
-        have h2 : ‖w‖ ^ 2 - ‖(c:ℂ)‖ ≤ ‖quadratic (c:ℂ) w‖ := by
+        have h2 : ‖w‖ ^ (2 : ℕ) - ‖(c:ℂ)‖ ≤ ‖quadratic (c:ℂ) w‖ := by
           unfold quadratic
-          calc ‖w‖ ^ 2 - ‖(c:ℂ)‖ = ‖w ^ 2‖ - ‖(c:ℂ)‖ := by rw [norm_pow]
-            _ ≤ ‖w ^ 2 + (c:ℂ)‖ := by
-                have := norm_sub_norm_le (w ^ 2) (-(c:ℂ))
+          calc ‖w‖ ^ (2 : ℕ) - ‖(c:ℂ)‖ = ‖w ^ (2 : ℕ)‖ - ‖(c:ℂ)‖ := by rw [norm_pow]
+            _ ≤ ‖w ^ (2 : ℕ) + (c:ℂ)‖ := by
+                have := norm_sub_norm_le (w ^ (2 : ℕ)) (-(c:ℂ))
                 simpa [sub_neg_eq_add] using this
         have h3 : ‖(c:ℂ)‖ = -c := by
           rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos hc0]
         have h4 : (0:ℝ) < 2 ^ m := by positivity
         have h5 : β + 2 ^ m * t₀ ≤ ‖w‖ := ih
-        have h6 : (β + 2 ^ m * t₀) ^ 2 + c ≤ ‖w‖ ^ 2 + c := by
+        have h6 : (β + 2 ^ m * t₀) ^ (2 : ℕ) + c ≤ ‖w‖ ^ (2 : ℕ) + c := by
           have h7 : (0:ℝ) ≤ β + 2 ^ m * t₀ := by nlinarith
           nlinarith
-        have h8 : β + 2 ^ (m + 1) * t₀ ≤ (β + 2 ^ m * t₀) ^ 2 + c := by
+        have h8 : β + 2 ^ (m + 1) * t₀ ≤ (β + 2 ^ m * t₀) ^ (2 : ℕ) + c := by
           have h9 := betaFixed_sq hc0
           rw [← hβdef] at h9
-          have h10 : (β + 2 ^ m * t₀) ^ 2 + c
-              = β ^ 2 + c + 2 * β * (2 ^ m * t₀) + (2 ^ m * t₀) ^ 2 := by ring
+          have h10 : (β + 2 ^ m * t₀) ^ (2 : ℕ) + c
+              = β ^ (2 : ℕ) + c + 2 * β * (2 ^ m * t₀) + (2 ^ m * t₀) ^ (2 : ℕ) := by ring
           rw [h10, h9]
-          have h11 : (0:ℝ) ≤ (2 ^ m * t₀) ^ 2 := sq_nonneg _
+          have h11 : (0:ℝ) ≤ (2 ^ m * t₀) ^ (2 : ℕ) := sq_nonneg _
           have h12 : 2 * (2 ^ m * t₀) ≤ 2 * β * (2 ^ m * t₀) := by
             nlinarith [mul_pos h4 ht₀]
           have h13 : (2:ℝ) ^ (m + 1) * t₀ = 2 * (2 ^ m * t₀) := by ring
           linarith
-        calc β + 2 ^ (m + 1) * t₀ ≤ (β + 2 ^ m * t₀) ^ 2 + c := h8
-          _ ≤ ‖w‖ ^ 2 + c := h6
-          _ = ‖w‖ ^ 2 - ‖(c:ℂ)‖ := by rw [h3]; ring
+        calc β + 2 ^ (m + 1) * t₀ ≤ (β + 2 ^ m * t₀) ^ (2 : ℕ) + c := h8
+          _ ≤ ‖w‖ ^ (2 : ℕ) + c := h6
+          _ = ‖w‖ ^ (2 : ℕ) - ‖(c:ℂ)‖ := by rw [h3]; ring
           _ ≤ ‖quadratic (c:ℂ) w‖ := h2
   -- unboundedness contradicts membership
   have hzb : IsBounded (Set.range fun n : ℕ => (quadratic (c:ℂ))^[n] z) := hz

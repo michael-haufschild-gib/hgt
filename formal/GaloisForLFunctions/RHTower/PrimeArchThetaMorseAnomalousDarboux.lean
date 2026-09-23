@@ -76,8 +76,8 @@ theorem thetaCuspMorseGroundState_robin (n : ℕ) :
   ring
 
 theorem thetaCuspMorseGroundState_zero_sq (n : ℕ) :
-    thetaCuspMorseGroundState n 0 ^ 2 =
-      (n : ℝ) ^ 2 * Real.exp (-Real.pi * (n : ℝ) ^ 2) := by
+    thetaCuspMorseGroundState n 0 ^ (2 : ℕ) =
+      (n : ℝ) ^ (2 : ℕ) * Real.exp (-Real.pi * (n : ℝ) ^ (2 : ℕ)) := by
   rw [thetaCuspMorseGroundState_sq, thetaCuspLiouvilleGibbsAtom_zero]
 
 theorem hasDerivAt_deriv_thetaCuspMorseDressedPolynomial
@@ -156,7 +156,7 @@ theorem derivative_eval_mul_thetaCuspSourceTerm_eq_morseHamiltonianWard
               (thetaCuspMorseDressedPolynomial (5 / 4 : ℝ) n P) x +
           (P.derivative.derivative.eval x -
               (1 / 2 : ℝ) * P.derivative.eval x) *
-            thetaCuspMorseGroundState n x ^ 2) := by
+            thetaCuspMorseGroundState n x ^ (2 : ℕ)) := by
   rw [thetaCuspSourceTerm_eq_morseBornObservable,
     thetaCuspMorseHamiltonianMinus_dressedPolynomial]
   simp only [thetaCuspMorseGroundState]
@@ -214,7 +214,7 @@ def thetaCuspMorseHamiltonianWardDensity (j n : ℕ) (x : ℝ) : ℝ :=
           (thetaCuspMorseMomentTestPolynomial j)) x +
     (((2 * j : ℕ) : ℝ) * x ^ (2 * j - 1) -
         (1 / 2 : ℝ) * x ^ (2 * j)) *
-      thetaCuspMorseGroundState n x ^ 2
+      thetaCuspMorseGroundState n x ^ (2 : ℕ)
 
 /-- Every theta Born-moment integrand is an anomalous half-line Hamiltonian matrix value. -/
 theorem pow_mul_thetaCuspSourceTerm_eq_morseHamiltonianWard
@@ -267,7 +267,7 @@ theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_morseHamiltonianWard
     (hupper :
       14 * ((3005 / 2997 : ℝ) *
           (2 * ∫ x : ℝ in Ioi 0,
-            thetaCuspMorseHamiltonianWardDensity 2 1 x)) ^ 2 ≤
+            thetaCuspMorseHamiltonianWardDensity 2 1 x)) ^ (2 : ℕ) ≤
         9 *
           (2 * ∫ x : ℝ in Ioi 0,
             thetaCuspMorseHamiltonianWardDensity 1 1 x) *
@@ -282,7 +282,7 @@ theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_morseHamiltonianWard
               thetaCuspMorseHamiltonianWardDensity 2 1 x)) ≤
         45 *
           (2 * ∫ x : ℝ in Ioi 0,
-            thetaCuspMorseHamiltonianWardDensity 1 1 x) ^ 2) :
+            thetaCuspMorseHamiltonianWardDensity 1 1 x) ^ (2 : ℕ)) :
     ∀ a b : ℝ, 0 ≤ (primeArchSourceTraceHankel (C a + C b * X)).re := by
   apply forall_primeArchSourceTraceHankel_linear_nonneg_of_morseBorn
   · simpa only [thetaCuspMorseBornMoment_eq_morseHamiltonianWard] using hupper

@@ -250,7 +250,7 @@ theorem dense_compl_hardyDALocus : Dense ((hardyDALocus)ᶜ) := by
         (fun z => (-1 : ℂ) * hardyFun (a + l2 • hardyHTCarrier) z) unitDiskDomain :=
       differentiallyAlgebraicOn_const_mul hopen hconn hnee hinf (-1)
         (analyticOnNhd_hardyFun _) h2
-    have hsum := differentiallyAlgebraicOn_add hopen hconn hnee hinf
+    have hsum := differentiallyAlgebraicOn_add_differentialAlgebraicOnSum hopen hconn hnee hinf
       (analyticOnNhd_hardyFun (a + l1 • hardyHTCarrier))
       (fun z hz => analyticAt_const.mul (analyticOnNhd_hardyFun _ z hz)) h1 hneg
     have heq : Set.EqOn

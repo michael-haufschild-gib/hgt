@@ -31,7 +31,7 @@ def boseGrowth (t : ℝ) : ℝ := t / (1 - Real.exp (-t))
 
 /-- The derivative of the Bose growth factor, in closed form. -/
 def boseGrowthDeriv (t : ℝ) : ℝ :=
-  (1 - (1 + t) * Real.exp (-t)) / (1 - Real.exp (-t)) ^ 2
+  (1 - (1 + t) * Real.exp (-t)) / (1 - Real.exp (-t)) ^ (2 : ℕ)
 
 theorem one_sub_exp_neg_pos {t : ℝ} (ht : 0 < t) : 0 < 1 - Real.exp (-t) := by
   have : Real.exp (-t) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
@@ -49,7 +49,7 @@ theorem hasDerivAt_boseGrowth {t : ℝ} (ht : 0 < t) :
     rw [show -(Real.exp (-t) * (-1 : ℝ)) = Real.exp (-t) from by ring] at hraw
     exact hraw
   have h := hnum.div hd hden
-  have hval : (1 * (1 - Real.exp (-t)) - t * Real.exp (-t)) / (1 - Real.exp (-t)) ^ 2
+  have hval : (1 * (1 - Real.exp (-t)) - t * Real.exp (-t)) / (1 - Real.exp (-t)) ^ (2 : ℕ)
       = boseGrowthDeriv t := by
     rw [boseGrowthDeriv]
     congr 1
@@ -60,7 +60,7 @@ theorem hasDerivAt_boseGrowth {t : ℝ} (ht : 0 < t) :
 /-- **The growth factor is strictly increasing.**  The numerator of `g'` is
 `1 - (1+t) exp (-t)`, which is positive exactly because `exp t > 1 + t`. -/
 theorem boseGrowthDeriv_pos {t : ℝ} (ht : 0 < t) : 0 < boseGrowthDeriv t := by
-  have hden : 0 < (1 - Real.exp (-t)) ^ 2 := pow_pos (one_sub_exp_neg_pos ht) 2
+  have hden : 0 < (1 - Real.exp (-t)) ^ (2 : ℕ) := pow_pos (one_sub_exp_neg_pos ht) 2
   have hkey : (1 + t) * Real.exp (-t) < 1 := by
     have h := Real.add_one_lt_exp (x := t) (ne_of_gt ht)
     have hpos : (0:ℝ) < Real.exp (-t) := Real.exp_pos _

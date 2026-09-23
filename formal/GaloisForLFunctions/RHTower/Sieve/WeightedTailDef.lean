@@ -28,7 +28,7 @@ def weightedNearDiagonalTail (T ε : ℝ) (mLo mHi rLo : ℕ) : ℂ :=
 `V = T/((1+ε)log²T)`, `R = T^{1/4}`. -/
 def kubalalikaWeightedTail (T : ℝ) : ℂ :=
   weightedNearDiagonalTail T (kubalalikaEps T)
-    ⌈T / ((1 + kubalalikaEps T) * (Real.log T) ^ 2)⌉₊
+    ⌈T / ((1 + kubalalikaEps T) * (Real.log T) ^ (2 : ℕ))⌉₊
     ⌊T * (1 + kubalalikaEps T)⌋₊
     ⌈Real.sqrt (Real.sqrt T)⌉₊
 

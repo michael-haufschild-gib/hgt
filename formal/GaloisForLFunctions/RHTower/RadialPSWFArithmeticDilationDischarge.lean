@@ -9,9 +9,9 @@ asymptotic Dunster leading arclength density of the exterior radial prolate sphe
 functions (PSWF).
 
 1. **PSWF Leading Dilation Weight Limit**:
-   $$\lim_{i} \frac{8}{11} \frac{1}{k} \int_{\sqrt{k^2-1}}^\infty \text{radialPSWFLeadingArclengthDensity}(c_i, \sigma_i, \theta, t) dt = \frac{8}{11\pi k} \arcsin\frac{1}{k}$$
+   $$\lim_{i} \frac{8}{11} \frac{1}{k} \int_{\sqrt{k^(2 : ℕ)-1}}^\infty \text{radialPSWFLeadingArclengthDensity}(c_i, \sigma_i, \theta, t) dt = \frac{8}{11\pi k} \arcsin\frac{1}{k}$$
 2. **PSWF Arithmetic Eigenvalue Convergence**:
-   $$\lim_{i} 2 \log(n+2) \left(\frac{8}{11(n+2)} \int_{\sqrt{(n+2)^2-1}}^\infty \text{density}_i(t) dt\right) = \kappa_{n+2} = \frac{16\log(n+2)}{11\pi(n+2)} \arcsin\frac{1}{n+2}$$
+   $$\lim_{i} 2 \log(n+2) \left(\frac{8}{11(n+2)} \int_{\sqrt{(n+2)^(2 : ℕ)-1}}^\infty \text{density}_i(t) dt\right) = \kappa_{n+2} = \frac{16\log(n+2)}{11\pi(n+2)} \arcsin\frac{1}{n+2}$$
 -/
 
 open Filter MeasureTheory Set RHTower GaloisForLFunctions
@@ -23,7 +23,7 @@ theorem tendsto_radialPSWF_leading_tail_to_arithmetic_weight
     {ι : Type*} {l : Filter ι} {c sigma : ι → ℝ} {theta k : ℝ}
     (hc : Tendsto c l atTop) (hsigma : Tendsto sigma l (nhds 0)) (hk : 1 ≤ k) :
     Tendsto (fun i => (8 / 11) * (1 / k) *
-        ∫ t in Ioi (Real.sqrt (k ^ 2 - 1)),
+        ∫ t in Ioi (Real.sqrt (k ^ (2 : ℕ) - 1)),
           radialPSWFLeadingArclengthDensity (c i) (sigma i) theta t)
       l (nhds ((8 / (11 * Real.pi * k)) * Real.arcsin (1 / k))) := by
   have h := tendsto_integral_Ioi_sqrt_sq_sub_one_radialPSWFLeadingArclengthDensity
@@ -41,7 +41,7 @@ theorem tendsto_radialPSWF_leading_tail_to_arithmetic_eigenvalue
     (hc : Tendsto c l atTop) (hsigma : Tendsto sigma l (nhds 0)) :
     Tendsto (fun i => 2 * Real.log ((n + 2 : ℕ) : ℝ) *
         ((8 / 11) * (1 / ((n + 2 : ℕ) : ℝ)) *
-          ∫ t in Ioi (Real.sqrt (((n + 2 : ℕ) : ℝ) ^ 2 - 1)),
+          ∫ t in Ioi (Real.sqrt (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ) - 1)),
             radialPSWFLeadingArclengthDensity (c i) (sigma i) theta t))
       l (nhds (constrainedProlateArithmeticEigenvalue n)) := by
   have hk : 1 ≤ ((n + 2 : ℕ) : ℝ) := by
@@ -62,7 +62,7 @@ theorem tendsto_radialPSWF_leading_tail_sum_to_arithmetic_partial_sum
     (hc : Tendsto c l atTop) (hsigma : Tendsto sigma l (nhds 0)) :
     Tendsto (fun i => ∑ n ∈ Finset.range N, 2 * Real.log ((n + 2 : ℕ) : ℝ) *
         ((8 / 11) * (1 / ((n + 2 : ℕ) : ℝ)) *
-          ∫ t in Ioi (Real.sqrt (((n + 2 : ℕ) : ℝ) ^ 2 - 1)),
+          ∫ t in Ioi (Real.sqrt (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ) - 1)),
             radialPSWFLeadingArclengthDensity (c i) (sigma i) theta t))
       l (nhds (∑ n ∈ Finset.range N, constrainedProlateArithmeticEigenvalue n)) :=
   tendsto_finsetSum (Finset.range N) fun n _ =>
@@ -74,7 +74,7 @@ theorem tendsto_radialPSWF_leading_tail_sum_to_neg_primeConstant_limit
     (hc : Tendsto c l atTop) (hsigma : Tendsto sigma l (nhds 0)) :
     Tendsto (fun i => - ∑ n ∈ Finset.range N, 2 * Real.log ((n + 2 : ℕ) : ℝ) *
         ((8 / 11) * (1 / ((n + 2 : ℕ) : ℝ)) *
-          ∫ t in Ioi (Real.sqrt (((n + 2 : ℕ) : ℝ) ^ 2 - 1)),
+          ∫ t in Ioi (Real.sqrt (((n + 2 : ℕ) : ℝ) ^ (2 : ℕ) - 1)),
             radialPSWFLeadingArclengthDensity (c i) (sigma i) theta t))
       l (nhds (- ∑ n ∈ Finset.range N, constrainedProlateArithmeticEigenvalue n)) :=
   (tendsto_radialPSWF_leading_tail_sum_to_arithmetic_partial_sum N hc hsigma).neg

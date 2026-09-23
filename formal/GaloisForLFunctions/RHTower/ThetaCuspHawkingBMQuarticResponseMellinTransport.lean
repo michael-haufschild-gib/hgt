@@ -74,13 +74,13 @@ private theorem fullPlanar_periodic (q : XiZeroCopy) (branch : Bool) {y : ℝ}
 
 private theorem fullPlanar_equation (q : XiZeroCopy) (branch : Bool) (z : ℂ)
     (hz : 0 < z.im) :
-    (z.im:ℂ)^2*planarLaplacian (fullPlanar q branch) z=
+    (z.im:ℂ)^(2 : ℕ)*planarLaplacian (fullPlanar q branch) z=
       parameter q branch*(fullPlanar q branch z+squarePlanar q z) := by
   have h := fullAngular_classical_equation q branch ⟨z,hz⟩
   simp only [chartLaplacian,coordinates] at h
-  change (z.im:ℂ)^2*planarLaplacian (fullPlanar q branch) z-
+  change (z.im:ℂ)^(2 : ℕ)*planarLaplacian (fullPlanar q branch) z-
     parameter q branch*fullAngular q branch ⟨z,hz⟩=
-      parameter q branch/2*scalar (center q) (angularCoordinates z)^2 at h
+      parameter q branch/2*scalar (center q) (angularCoordinates z)^(2 : ℕ) at h
   dsimp only [fullPlanar] at h
   dsimp only [fullPlanar,Function.comp_apply,squarePlanar,fullSquarePotential]
   rw [ofComplex_apply_of_im_pos hz]
@@ -97,7 +97,7 @@ private theorem fullMean_second_hasDerivAt (q : XiZeroCopy) (branch : Bool) {y :
 
 /-- The constructed full mean solves the original equation, with no principal-source replacement. -/
 theorem fullMean_equation (q : XiZeroCopy) (branch : Bool) (y : Ioi (0:ℝ)) :
-    (y:ℂ)^2*deriv (deriv (fullMean q branch)) y-parameter q branch*fullMean q branch y=
+    (y:ℂ)^(2 : ℕ)*deriv (deriv (fullMean q branch)) y-parameter q branch*fullMean q branch y=
       parameter q branch*sourceMean q y := by
   have hL := average_laplacian (fullPlanar q branch) (fullPlanar_smooth q branch) y.2
     (fullPlanar_periodic q branch y.2)
@@ -107,7 +107,7 @@ theorem fullMean_equation (q : XiZeroCopy) (branch : Bool) (y : Ioi (0:ℝ)) :
   have hQ : IntegrableOn (fun x : ℝ => squarePlanar q (point x y))
       (Ioc (-1/2:ℝ) (1/2)) volume :=
     (slice_continuous (squarePlanar q) (squarePlanar_smooth q) y.2).integrableOn_Ioc
-  have he : (y:ℂ)^2*average (planarLaplacian (fullPlanar q branch)) y=
+  have he : (y:ℂ)^(2 : ℕ)*average (planarLaplacian (fullPlanar q branch)) y=
       parameter q branch*(fullMean q branch y+sourceMean q y) := by
     dsimp only [D4BMCuspResponse.average,D4BMCuspProjection.mean,fullMean,sourceMean]
     rw [← integral_const_mul]
@@ -124,7 +124,7 @@ theorem fullMean_equation (q : XiZeroCopy) (branch : Bool) (y : Ioi (0:ℝ)) :
               Complex.ofReal_re,zero_add] using hy)
       _ = _ := by rw [integral_const_mul,integral_add hA hQ]
   rw [hL] at he
-  change (y:ℂ)^2*deriv (deriv (fullMean q branch)) y=_ at he
+  change (y:ℂ)^(2 : ℕ)*deriv (deriv (fullMean q branch)) y=_ at he
   linear_combination he
 
 /-- Agreement with the source-faithful cusp formula, retaining its native coefficients and moments. -/
@@ -183,8 +183,8 @@ def physicalFlux (q : XiZeroCopy) (branch : Bool) (i : Fin 3) (y : ℝ) : ℂ :=
     physicalWeight q i*(y:ℂ)^(physicalWeight q i-1)*fullMean q branch y
 
 private theorem power_step (a : ℂ) {y : ℝ} (hy : 0 < y) :
-    (y:ℂ)^a=(y:ℂ)^(a-2)*(y:ℂ)^2 := by
-  have he : (y:ℂ)^(2:ℂ)=(y:ℂ)^2 := by norm_cast
+    (y:ℂ)^a=(y:ℂ)^(a-2)*(y:ℂ)^(2 : ℕ) := by
+  have he : (y:ℂ)^(2:ℂ)=(y:ℂ)^(2 : ℕ) := by norm_cast
   rw [← he,← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hy.ne')]
   congr 1
   ring
@@ -252,7 +252,7 @@ theorem physical_principal_response_segment (q : XiZeroCopy) (branch : Bool)
     (a b : Ioi (0:ℝ)) :
     (∫ y in (a:ℝ)..b,
       D4BMGlobalAngularResponse.principal (physicalAngularParameter q) ![0,y]*
-        principalSquare q ![0,y]*fullMean q branch y/(y:ℂ)^2)=
+        principalSquare q ![0,y]*fullMean q branch y/(y:ℂ)^(2 : ℕ))=
       reflectedCompletedLambda ((q.1:ℂ)-1)*∑ i : Fin 3, principalAmplitude q i*
         ((physicalFlux q branch i b-physicalFlux q branch i a-
           parameter q branch*(∫ y in (a:ℝ)..b, (y:ℂ)^(physicalWeight q i-2)*sourceMean q y))/
@@ -292,7 +292,7 @@ theorem physical_tested_response_segment (q : XiZeroCopy) (branch : Bool)
       (D4BMCuspProjection.mean (fun x => scalar (physicalAngularParameter q) ![x,y]*
           fullSquarePotential q ![x,y]*fullAngularField q branch ![x,y])-
         D4BMCuspProjection.mean (fun x => testedResponseTail q branch (physicalAngularParameter q) ![x,y]))/
-          (y:ℂ)^2)=
+          (y:ℂ)^(2 : ℕ))=
       reflectedCompletedLambda ((q.1:ℂ)-1)*∑ i : Fin 3, principalAmplitude q i*
         ((physicalFlux q branch i b-physicalFlux q branch i a-
           parameter q branch*(∫ y in (a:ℝ)..b, (y:ℂ)^(physicalWeight q i-2)*sourceMean q y))/
@@ -300,7 +300,7 @@ theorem physical_tested_response_segment (q : XiZeroCopy) (branch : Bool)
   calc
     _ = ∫ y in (a:ℝ)..b,
         D4BMGlobalAngularResponse.principal (physicalAngularParameter q) ![0,y]*
-          principalSquare q ![0,y]*fullMean q branch y/(y:ℂ)^2 := by
+          principalSquare q ![0,y]*fullMean q branch y/(y:ℂ)^(2 : ℕ) := by
       apply intervalIntegral.integral_congr
       intro y hy
       have hhigh : 3 < y := (lt_min a.2 b.2).trans_le hy.1

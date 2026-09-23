@@ -12,7 +12,7 @@ The convergence module constructs the actual primitive-pair Poincare series.  Th
 the next quotient-sensitive step.  For each certified positive denominator `c`, its primitive
 translation tail is the finite reduced-residue sum of the `L¹` periodization of
 
-`t |-> (y^2+t^2)^(-s)`.
+`t |-> (y^(2 : ℕ)+t^(2 : ℕ))^(-s)`.
 
 Lean proves the kernel integrable throughout `Re(s)>1`, then unfolds its exact `m`-th unit-circle
 Fourier coefficient.  The coefficient is the genuine finite Ramanujan sum `c_c(m)` times the

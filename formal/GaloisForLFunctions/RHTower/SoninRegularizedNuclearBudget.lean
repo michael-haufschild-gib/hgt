@@ -122,7 +122,7 @@ theorem rectTraceNorm_finsetSum_le (s : Finset ι) (A : ι → E →L[ℂ] F)
 end FiniteNuclearSum
 
 local instance : DecidableEq SoninHilbertIndex := Classical.decEq _
-local instance : DecidableEq SoninAllPrimeIndex := Classical.decEq _
+local instance soninRegularizedNuclearBudgetInst1 : DecidableEq SoninAllPrimeIndex := Classical.decEq _
 
 def soninPrimeRowInclusion (pk : Nat.Primes × ℕ) : SoninL2 →ₗᵢ[ℂ] SoninAllPrimeL2 :=
   (lpScalarInjection (fun i : SoninHilbertIndex => (pk, i))

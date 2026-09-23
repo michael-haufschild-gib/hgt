@@ -16,7 +16,7 @@ noncomputable section
 def menonSharpIntervalAmbientKernelMajorant (C0 : ℝ) (X : ℕ) (sigma : ℝ) : ℝ :=
   let Z : ℝ := (X : ℝ) + 2
   let M0 : ℝ := Z ^ sigma / sigma
-  let M2 : ℝ := 4 * C0 * Z ^ 2 * Z ^ sigma
+  let M2 : ℝ := 4 * C0 * Z ^ (2 : ℕ) * Z ^ sigma
   1 + 4 * (M0 + M2)
 
 /-- The explicit ambient constant controls every sharp subinterval of `[1,X]`. -/
@@ -27,7 +27,7 @@ theorem exists_menonSharpIntervalAmbientKernelMajorant :
         1 ≤ menonSharpIntervalAmbientKernelMajorant C0 X sigma ∧
         ∀ y : ℝ,
           ‖menonSharpIntervalMellinKernel (a : ℝ) (b : ℝ) sigma y‖ ≤
-            menonSharpIntervalAmbientKernelMajorant C0 X sigma * (1 + y ^ 2)⁻¹ := by
+            menonSharpIntervalAmbientKernelMajorant C0 X sigma * (1 + y ^ (2 : ℕ))⁻¹ := by
   obtain ⟨C0, hC0, hmajorant⟩ := exists_menonSharpIntervalUniformKernelMajorant
   refine ⟨C0, hC0, ?_⟩
   intro X a b sigma ha hab hbX hsigma
@@ -40,9 +40,9 @@ theorem exists_absolute_menonHeathBrownCaseIISelection_variableUpper_coloring :
     ∃ C0 : ℝ, 0 ≤ C0 ∧
       ∀ (L X a cells : ℕ) (T0 t : ℝ)
           (B sigma V Δ : ℝ) (S : Finset ℕ) (upper : ℕ → ℕ) (tau : ℕ → ℝ),
-        X < (L + 1) ^ 3 → 1 < T0 →
-        ((2 ^ 6 : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
-        (64 : ℝ) ^ 8 ≤ (a : ℝ) → 1 ≤ L →
+        X < (L + 1) ^ (3 : ℕ) → 1 < T0 →
+        ((2 ^ (6 : ℕ) : ℕ) : ℝ) * T0 ^ t ≤ (a : ℝ) →
+        (64 : ℝ) ^ (8 : ℕ) ≤ (a : ℝ) → 1 ≤ L →
         (L : ℝ) ≤ (a : ℝ) ^ (1 / 3 : ℝ) →
         1 < sigma → 0 ≤ V → 0 < Δ → 0 < cells →
         2 * V = (cells : ℝ) * Δ →
@@ -74,7 +74,7 @@ theorem exists_absolute_menonHeathBrownCaseIISelection_variableUpper_coloring :
   have haOne : 1 ≤ a := by
     have haReal : (1 : ℝ) ≤ (a : ℝ) := by
       calc
-        (1 : ℝ) ≤ (64 : ℝ) ^ 8 := by norm_num
+        (1 : ℝ) ≤ (64 : ℝ) ^ (8 : ℕ) := by norm_num
         _ ≤ (a : ℝ) := ha
     exact_mod_cast haReal
   have hpoint : ∀ r : ℕ, r ∈ S →

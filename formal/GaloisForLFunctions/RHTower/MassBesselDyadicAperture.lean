@@ -49,9 +49,9 @@ profile to within half of it, plus a quarter of it in absolute terms, the apertu
 quarter of the profile times the weighted prime mass. -/
 theorem norm_massBesselDyadicAperture_ge {a σ X u M : ℝ} (ha : 0 < a) (hσ : 0 < σ)
     (hu : 1 ≤ u) (hσu : σ ≤ u)
-    (hlog : ∀ n ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊, Real.log n ^ 2 ≤ M ^ 2)
-    (h1 : 2 * M ^ 2 ≤ u) (h2 : 4 * M ^ 2 ≤ σ * u) (h3 : 2 * a * M ^ 2 ≤ u)
-    (hR : (12 + 2 * a) * (M ^ 2 / u) ≤ 1 / 2)
+    (hlog : ∀ n ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊, Real.log n ^ (2 : ℕ) ≤ M ^ (2 : ℕ))
+    (h1 : 2 * M ^ (2 : ℕ) ≤ u) (h2 : 4 * M ^ (2 : ℕ) ≤ σ * u) (h3 : 2 * a * M ^ (2 : ℕ) ≤ u)
+    (hR : (12 + 2 * a) * (M ^ (2 : ℕ) / u) ≤ 1 / 2)
     (hQ : 8 * Real.exp (-(a * σ / 2)) * Real.sqrt (2 * Real.pi / (a * σ)) / u
         ≤ ‖massBesselLeading a (apertureSpectralPoint σ u)‖ / 4) :
     ‖massBesselLeading a (apertureSpectralPoint σ u)‖ * dyadicSqrtVonMangoldtMass X / 4
@@ -66,19 +66,19 @@ theorem norm_massBesselDyadicAperture_ge {a σ X u M : ℝ} (ha : 0 < a) (hσ : 
       ‖massBesselCarrier a (apertureSpectralPoint σ u) (Real.log n) - L‖ ≤ ‖L‖ / 2 + ‖L‖ / 4 := by
     intro n hn
     have hx := hlog n hn
-    have hx2 : 2 * Real.log n ^ 2 ≤ u := by nlinarith [hx, h1]
-    have hxσ : 4 * Real.log n ^ 2 ≤ σ * u := by nlinarith [hx, h2]
-    have hax : 2 * a * Real.log n ^ 2 ≤ u := by nlinarith [hx, h3, ha]
+    have hx2 : 2 * Real.log n ^ (2 : ℕ) ≤ u := by nlinarith [hx, h1]
+    have hxσ : 4 * Real.log n ^ (2 : ℕ) ≤ σ * u := by nlinarith [hx, h2]
+    have hax : 2 * a * Real.log n ^ (2 : ℕ) ≤ u := by nlinarith [hx, h3, ha]
     have hshell := norm_massBesselCarrier_sub_leading_le_shell (a := a) (σ := σ) (u := u)
       (x := Real.log n) ha hσ hu hσu hx2 hxσ hax
     rw [← hLdef] at hshell
     refine le_trans hshell ?_
     refine add_le_add ?_ hQ
-    have hmono : (12 + 2 * a) * (Real.log n ^ 2 / u) ≤ (12 + 2 * a) * (M ^ 2 / u) := by
+    have hmono : (12 + 2 * a) * (Real.log n ^ (2 : ℕ) / u) ≤ (12 + 2 * a) * (M ^ (2 : ℕ) / u) := by
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       exact div_le_div_of_nonneg_right hx hu0.le
-    calc (12 + 2 * a) * (Real.log n ^ 2 / u) * ‖L‖
-        ≤ (12 + 2 * a) * (M ^ 2 / u) * ‖L‖ :=
+    calc (12 + 2 * a) * (Real.log n ^ (2 : ℕ) / u) * ‖L‖
+        ≤ (12 + 2 * a) * (M ^ (2 : ℕ) / u) * ‖L‖ :=
           mul_le_mul_of_nonneg_right hmono (norm_nonneg _)
       _ ≤ (1 / 2) * ‖L‖ := mul_le_mul_of_nonneg_right hR (norm_nonneg _)
       _ = ‖L‖ / 2 := by ring
@@ -110,30 +110,30 @@ theorem norm_massBesselDyadicAperture_ge {a σ X u M : ℝ} (ha : 0 < a) (hσ : 
 /-! ## The deep-time aperture diverges -/
 
 theorem tendsto_sqrt_div_log_sq_atTop :
-    Tendsto (fun X : ℝ => Real.sqrt X / Real.log X ^ 2) atTop atTop := by
+    Tendsto (fun X : ℝ => Real.sqrt X / Real.log X ^ (2 : ℕ)) atTop atTop := by
   have h0 := Real.tendsto_pow_log_div_mul_add_atTop 1 0 2 one_ne_zero
-  have h1 : Tendsto (fun y : ℝ => Real.log y ^ 2 / y) atTop (nhds 0) := by
+  have h1 : Tendsto (fun y : ℝ => Real.log y ^ (2 : ℕ) / y) atTop (nhds 0) := by
     refine h0.congr' ?_
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with y _
     ring_nf
-  have hpos : ∀ᶠ y : ℝ in atTop, Real.log y ^ 2 / y ∈ Set.Ioi (0 : ℝ) := by
+  have hpos : ∀ᶠ y : ℝ in atTop, Real.log y ^ (2 : ℕ) / y ∈ Set.Ioi (0 : ℝ) := by
     filter_upwards [eventually_gt_atTop (2 : ℝ)] with y hy
     have hy0 : (0 : ℝ) < y := by linarith
     have hlog : 0 < Real.log y := Real.log_pos (by linarith)
     exact div_pos (by positivity) hy0
-  have h2 : Tendsto (fun y : ℝ => Real.log y ^ 2 / y) atTop (nhdsWithin 0 (Set.Ioi 0)) :=
+  have h2 : Tendsto (fun y : ℝ => Real.log y ^ (2 : ℕ) / y) atTop (nhdsWithin 0 (Set.Ioi 0)) :=
     tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ h1 hpos
-  have h3 : Tendsto (fun y : ℝ => (Real.log y ^ 2 / y)⁻¹) atTop atTop :=
+  have h3 : Tendsto (fun y : ℝ => (Real.log y ^ (2 : ℕ) / y)⁻¹) atTop atTop :=
     h2.inv_tendsto_nhdsGT_zero
-  have h4 : Tendsto (fun y : ℝ => y / Real.log y ^ 2) atTop atTop := by
+  have h4 : Tendsto (fun y : ℝ => y / Real.log y ^ (2 : ℕ)) atTop atTop := by
     refine h3.congr' ?_
     filter_upwards [eventually_gt_atTop (2 : ℝ)] with y hy
     have hy0 : (0 : ℝ) < y := by linarith
     have hlog : 0 < Real.log y := Real.log_pos (by linarith)
     rw [inv_div]
-  have h5 : Tendsto (fun X : ℝ => Real.sqrt X / Real.log (Real.sqrt X) ^ 2) atTop atTop :=
+  have h5 : Tendsto (fun X : ℝ => Real.sqrt X / Real.log (Real.sqrt X) ^ (2 : ℕ)) atTop atTop :=
     h4.comp Real.tendsto_sqrt_atTop
-  have h6 : Tendsto (fun X : ℝ => 4 * (Real.sqrt X / Real.log X ^ 2)) atTop atTop := by
+  have h6 : Tendsto (fun X : ℝ => 4 * (Real.sqrt X / Real.log X ^ (2 : ℕ))) atTop atTop := by
     refine h5.congr' ?_
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with X hX
     have hlogsqrt : Real.log (Real.sqrt X) = Real.log X / 2 := Real.log_sqrt hX.le
@@ -162,27 +162,27 @@ theorem apertureRemainderConst_nonneg (a σ : ℝ) : 0 ≤ apertureRemainderCons
 /-- The deep-time profile of the aperture is at least the profile constant over the square of the
 logarithm. -/
 theorem apertureProfileConst_div_le {a σ L : ℝ} (ha : 0 < a) (hσ : 0 < σ) (hL : 1 ≤ L)
-    (hσL : σ ≤ L ^ 4) :
-    apertureProfileConst a σ / L ^ 2
-      ≤ ‖massBesselLeading a (apertureSpectralPoint σ (L ^ 4))‖ := by
+    (hσL : σ ≤ L ^ (4 : ℕ)) :
+    apertureProfileConst a σ / L ^ (2 : ℕ)
+      ≤ ‖massBesselLeading a (apertureSpectralPoint σ (L ^ (4 : ℕ)))‖ := by
   have hL0 : (0 : ℝ) < L := lt_of_lt_of_le zero_lt_one hL
-  have hre : 0 < (apertureSpectralPoint σ (L ^ 4)).re := by
+  have hre : 0 < (apertureSpectralPoint σ (L ^ (4 : ℕ))).re := by
     rw [spectralPoint_re]; exact hσ
   rw [norm_massBesselLeading a hre, spectralPoint_re]
-  have hnorm : ‖apertureSpectralPoint σ (L ^ 4)‖ ≤ 2 * L ^ 4 :=
+  have hnorm : ‖apertureSpectralPoint σ (L ^ (4 : ℕ))‖ ≤ 2 * L ^ (4 : ℕ) :=
     norm_spectralPoint_le hσ hσL
-  have hsqrt : Real.sqrt ‖apertureSpectralPoint σ (L ^ 4)‖ ≤ Real.sqrt 2 * L ^ 2 := by
-    have h1 : Real.sqrt ‖apertureSpectralPoint σ (L ^ 4)‖ ≤ Real.sqrt (2 * L ^ 4) :=
+  have hsqrt : Real.sqrt ‖apertureSpectralPoint σ (L ^ (4 : ℕ))‖ ≤ Real.sqrt 2 * L ^ (2 : ℕ) := by
+    have h1 : Real.sqrt ‖apertureSpectralPoint σ (L ^ (4 : ℕ))‖ ≤ Real.sqrt (2 * L ^ (4 : ℕ)) :=
       Real.sqrt_le_sqrt hnorm
-    have h2 : Real.sqrt (2 * L ^ 4) = Real.sqrt 2 * L ^ 2 := by
+    have h2 : Real.sqrt (2 * L ^ (4 : ℕ)) = Real.sqrt 2 * L ^ (2 : ℕ) := by
       rw [Real.sqrt_mul (by norm_num)]
       congr 1
-      rw [show L ^ 4 = (L ^ 2) ^ 2 by ring, Real.sqrt_sq (by positivity)]
+      rw [show L ^ (4 : ℕ) = (L ^ (2 : ℕ)) ^ (2 : ℕ) by ring, Real.sqrt_sq (by positivity)]
     linarith [h1, h2]
-  have hsqrtpos : (0 : ℝ) < Real.sqrt ‖apertureSpectralPoint σ (L ^ 4)‖ := by
+  have hsqrtpos : (0 : ℝ) < Real.sqrt ‖apertureSpectralPoint σ (L ^ (4 : ℕ))‖ := by
     refine Real.sqrt_pos.2 ?_
-    have := le_norm_spectralPoint σ (L ^ 4)
-    have hL4 : (0 : ℝ) < L ^ 4 := by positivity
+    have := le_norm_spectralPoint σ (L ^ (4 : ℕ))
+    have hL4 : (0 : ℝ) < L ^ (4 : ℕ) := by positivity
     linarith
   rw [apertureProfileConst, div_le_div_iff₀ (by positivity) hsqrtpos]
   have hnum : (0 : ℝ) ≤ Real.sqrt (2 * Real.pi * a) * Real.exp (-(a * σ)) := by positivity
@@ -193,8 +193,8 @@ theorem apertureProfileConst_div_le {a σ L : ℝ} (ha : 0 < a) (hσ : 0 < σ) (
 /-- **The mass-Bessel dyadic aperture grows like `√X/(log X)²` along the deep-time ray.** -/
 theorem exists_massBesselDyadicAperture_lower (a σ : ℝ) (ha : 0 < a) (hσ : 0 < σ) :
     ∃ c > 0, ∀ᶠ X : ℝ in atTop,
-      c * (Real.sqrt X / Real.log X ^ 2)
-        ≤ ‖massBesselDyadicAperture a σ X (Real.log X ^ 4)‖ := by
+      c * (Real.sqrt X / Real.log X ^ (2 : ℕ))
+        ≤ ‖massBesselDyadicAperture a σ X (Real.log X ^ (4 : ℕ))‖ := by
   classical
   refine ⟨apertureProfileConst a σ / 12,
     div_pos (apertureProfileConst_pos ha) (by norm_num), ?_⟩
@@ -215,23 +215,23 @@ theorem exists_massBesselDyadicAperture_lower (a σ : ℝ) (ha : 0 < a) (hσ : 0
     set L : ℝ := Real.log X with hLdef
     have hL1 : (1 : ℝ) ≤ L := by linarith
     have hL0 : (0 : ℝ) < L := by linarith
-    have hL2ge : (1 : ℝ) ≤ L ^ 2 := one_le_pow₀ hL1
-    have hL3ge : (1 : ℝ) ≤ L ^ 3 := one_le_pow₀ hL1
-    have hL4 : (1 : ℝ) ≤ L ^ 4 := one_le_pow₀ hL1
-    have hLle4 : L ≤ L ^ 4 := by nlinarith [hL3ge, hL0]
-    have hsqT : ∀ T : ℝ, 0 ≤ T → Real.sqrt T ≤ L → T ≤ L ^ 2 := by
+    have hL2ge : (1 : ℝ) ≤ L ^ (2 : ℕ) := one_le_pow₀ hL1
+    have hL3ge : (1 : ℝ) ≤ L ^ (3 : ℕ) := one_le_pow₀ hL1
+    have hL4 : (1 : ℝ) ≤ L ^ (4 : ℕ) := one_le_pow₀ hL1
+    have hLle4 : L ≤ L ^ (4 : ℕ) := by nlinarith [hL3ge, hL0]
+    have hsqT : ∀ T : ℝ, 0 ≤ T → Real.sqrt T ≤ L → T ≤ L ^ (2 : ℕ) := by
       intro T hT hle
       nlinarith [Real.sq_sqrt hT, Real.sqrt_nonneg T, hle]
-    have hLσ4 : σ ≤ L ^ 4 := le_trans hLσ hLle4
-    have hL2 : (8 : ℝ) ≤ L ^ 2 := by nlinarith [hL3]
-    have h2' : (16 : ℝ) / σ ≤ L ^ 2 := hsqT _ (by positivity) hLT2
-    have h3' : (8 : ℝ) * a ≤ L ^ 2 := hsqT _ (by positivity) hLT3
-    have h4' : (8 : ℝ) * (12 + 2 * a) ≤ L ^ 2 := hsqT _ (by positivity) hLT4
-    have h5' : 4 * apertureRemainderConst a σ / apertureProfileConst a σ ≤ L ^ 2 :=
+    have hLσ4 : σ ≤ L ^ (4 : ℕ) := le_trans hLσ hLle4
+    have hL2 : (8 : ℝ) ≤ L ^ (2 : ℕ) := by nlinarith [hL3]
+    have h2' : (16 : ℝ) / σ ≤ L ^ (2 : ℕ) := hsqT _ (by positivity) hLT2
+    have h3' : (8 : ℝ) * a ≤ L ^ (2 : ℕ) := hsqT _ (by positivity) hLT3
+    have h4' : (8 : ℝ) * (12 + 2 * a) ≤ L ^ (2 : ℕ) := hsqT _ (by positivity) hLT4
+    have h5' : 4 * apertureRemainderConst a σ / apertureProfileConst a σ ≤ L ^ (2 : ℕ) :=
       hsqT _ (div_nonneg (by linarith [apertureRemainderConst_nonneg a σ])
         (apertureProfileConst_pos ha).le) hLT5
     -- the shell hypothesis
-    have hlog : ∀ n ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊, Real.log n ^ 2 ≤ (2 * L) ^ 2 := by
+    have hlog : ∀ n ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊, Real.log n ^ (2 : ℕ) ≤ (2 * L) ^ (2 : ℕ) := by
       intro n hn
       rw [Finset.mem_Ioc] at hn
       have hX0 : (0 : ℝ) < X := by linarith
@@ -253,46 +253,46 @@ theorem exists_massBesselDyadicAperture_lower (a σ : ℝ) (ha : 0 < a) (hσ : 0
         linarith
       nlinarith [hlogn0, hlognle, hL0]
     -- the shell conditions
-    have hcond1 : 2 * (2 * L) ^ 2 ≤ L ^ 4 := by nlinarith [hL2, hL0]
-    have hcond2 : 4 * (2 * L) ^ 2 ≤ σ * L ^ 4 := by
-      have : 16 ≤ σ * L ^ 2 := by
+    have hcond1 : 2 * (2 * L) ^ (2 : ℕ) ≤ L ^ (4 : ℕ) := by nlinarith [hL2, hL0]
+    have hcond2 : 4 * (2 * L) ^ (2 : ℕ) ≤ σ * L ^ (4 : ℕ) := by
+      have : 16 ≤ σ * L ^ (2 : ℕ) := by
         rw [div_le_iff₀ hσ] at h2'
         linarith
       nlinarith [this, hL2, hL0]
-    have hcond3 : 2 * a * (2 * L) ^ 2 ≤ L ^ 4 := by nlinarith [h3', hL0, ha]
-    have hcondR : (12 + 2 * a) * ((2 * L) ^ 2 / L ^ 4) ≤ 1 / 2 := by
-      have hval : (2 * L) ^ 2 / L ^ 4 = 4 / L ^ 2 := by
+    have hcond3 : 2 * a * (2 * L) ^ (2 : ℕ) ≤ L ^ (4 : ℕ) := by nlinarith [h3', hL0, ha]
+    have hcondR : (12 + 2 * a) * ((2 * L) ^ (2 : ℕ) / L ^ (4 : ℕ)) ≤ 1 / 2 := by
+      have hval : (2 * L) ^ (2 : ℕ) / L ^ (4 : ℕ) = 4 / L ^ (2 : ℕ) := by
         field_simp
         ring
       rw [hval, ← mul_div_assoc, div_le_div_iff₀ (by positivity) (by norm_num)]
       linarith [h4']
     have hprofile := apertureProfileConst_div_le (a := a) (σ := σ) (L := L) ha hσ hL1 hLσ4
-    have hcondQ : apertureRemainderConst a σ / L ^ 4
-        ≤ ‖massBesselLeading a (apertureSpectralPoint σ (L ^ 4))‖ / 4 := by
+    have hcondQ : apertureRemainderConst a σ / L ^ (4 : ℕ)
+        ≤ ‖massBesselLeading a (apertureSpectralPoint σ (L ^ (4 : ℕ)))‖ / 4 := by
       refine le_trans ?_ (by linarith [hprofile] :
-        apertureProfileConst a σ / L ^ 2 / 4
-          ≤ ‖massBesselLeading a (apertureSpectralPoint σ (L ^ 4))‖ / 4)
+        apertureProfileConst a σ / L ^ (2 : ℕ) / 4
+          ≤ ‖massBesselLeading a (apertureSpectralPoint σ (L ^ (4 : ℕ)))‖ / 4)
       rw [div_div, div_le_div_iff₀ (by positivity) (by positivity)]
       have hP : 0 < apertureProfileConst a σ := apertureProfileConst_pos ha
       rw [div_le_iff₀ hP] at h5'
       nlinarith [h5', hL0, apertureRemainderConst_nonneg a σ]
-    have hmain := norm_massBesselDyadicAperture_ge (a := a) (σ := σ) (X := X) (u := L ^ 4)
+    have hmain := norm_massBesselDyadicAperture_ge (a := a) (σ := σ) (X := X) (u := L ^ (4 : ℕ))
       (M := 2 * L) ha hσ hL4 hLσ4 hlog hcond1 hcond2 hcond3 hcondR
       (by rw [apertureRemainderConst] at hcondQ; exact hcondQ)
     refine le_trans ?_ hmain
     have hPpos : 0 < apertureProfileConst a σ := apertureProfileConst_pos ha
     have hsqX : 0 ≤ Real.sqrt X := Real.sqrt_nonneg X
-    have hstep : apertureProfileConst a σ / 12 * (Real.sqrt X / L ^ 2)
-        ≤ (apertureProfileConst a σ / L ^ 2) * (Real.sqrt X / 3) / 4 := by
+    have hstep : apertureProfileConst a σ / 12 * (Real.sqrt X / L ^ (2 : ℕ))
+        ≤ (apertureProfileConst a σ / L ^ (2 : ℕ)) * (Real.sqrt X / 3) / 4 := by
       rw [div_mul_eq_mul_div, div_le_div_iff₀ (by norm_num) (by norm_num)]
-      have : apertureProfileConst a σ / L ^ 2 * (Real.sqrt X / 3) * 12
-          = apertureProfileConst a σ * (Real.sqrt X / L ^ 2) * 4 := by
+      have : apertureProfileConst a σ / L ^ (2 : ℕ) * (Real.sqrt X / 3) * 12
+          = apertureProfileConst a σ * (Real.sqrt X / L ^ (2 : ℕ)) * 4 := by
         field_simp
         ring
       linarith [this]
     refine le_trans hstep ?_
-    have hmono : (apertureProfileConst a σ / L ^ 2) * (Real.sqrt X / 3) / 4
-        ≤ ‖massBesselLeading a (apertureSpectralPoint σ (L ^ 4))‖ *
+    have hmono : (apertureProfileConst a σ / L ^ (2 : ℕ)) * (Real.sqrt X / 3) / 4
+        ≤ ‖massBesselLeading a (apertureSpectralPoint σ (L ^ (4 : ℕ)))‖ *
             dyadicSqrtVonMangoldtMass X / 4 := by
       refine div_le_div_of_nonneg_right ?_ (by norm_num) |>.trans_eq rfl
       refine mul_le_mul hprofile hS (by positivity) (norm_nonneg _)
@@ -300,9 +300,9 @@ theorem exists_massBesselDyadicAperture_lower (a σ : ℝ) (ha : 0 < a) (hσ : 0
 
 /-- **The finite mass-Bessel prime apertures are not uniformly bounded.** -/
 theorem tendsto_norm_massBesselDyadicAperture_atTop (a σ : ℝ) (ha : 0 < a) (hσ : 0 < σ) :
-    Tendsto (fun X : ℝ => ‖massBesselDyadicAperture a σ X (Real.log X ^ 4)‖) atTop atTop := by
+    Tendsto (fun X : ℝ => ‖massBesselDyadicAperture a σ X (Real.log X ^ (4 : ℕ))‖) atTop atTop := by
   obtain ⟨c, hc, hbound⟩ := exists_massBesselDyadicAperture_lower a σ ha hσ
-  have hgrow : Tendsto (fun X : ℝ => c * (Real.sqrt X / Real.log X ^ 2)) atTop atTop :=
+  have hgrow : Tendsto (fun X : ℝ => c * (Real.sqrt X / Real.log X ^ (2 : ℕ))) atTop atTop :=
     tendsto_sqrt_div_log_sq_atTop.const_mul_atTop hc
   exact tendsto_atTop_mono' atTop hbound hgrow
 
@@ -311,30 +311,30 @@ theorem tendsto_norm_massBesselDyadicAperture_atTop (a σ : ℝ) (ha : 0 < a) (h
 /-- The aperture differs from the profile times the weighted prime mass by the shell error. -/
 theorem norm_massBesselDyadicAperture_sub_le {a σ X u M : ℝ} (ha : 0 < a) (hσ : 0 < σ)
     (hu : 1 ≤ u) (hσu : σ ≤ u)
-    (hlog : ∀ n ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊, Real.log n ^ 2 ≤ M ^ 2)
-    (h1 : 2 * M ^ 2 ≤ u) (h2 : 4 * M ^ 2 ≤ σ * u) (h3 : 2 * a * M ^ 2 ≤ u) :
+    (hlog : ∀ n ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊, Real.log n ^ (2 : ℕ) ≤ M ^ (2 : ℕ))
+    (h1 : 2 * M ^ (2 : ℕ) ≤ u) (h2 : 4 * M ^ (2 : ℕ) ≤ σ * u) (h3 : 2 * a * M ^ (2 : ℕ) ≤ u) :
     ‖massBesselDyadicAperture a σ X u
         - massBesselLeading a (apertureSpectralPoint σ u) *
           ((dyadicSqrtVonMangoldtMass X : ℝ) : ℂ)‖
       ≤ dyadicSqrtVonMangoldtMass X *
-          ((12 + 2 * a) * (M ^ 2 / u) * ‖massBesselLeading a (apertureSpectralPoint σ u)‖
+          ((12 + 2 * a) * (M ^ (2 : ℕ) / u) * ‖massBesselLeading a (apertureSpectralPoint σ u)‖
             + apertureRemainderConst a σ / u) := by
   classical
   set L : ℂ := massBesselLeading a (apertureSpectralPoint σ u) with hLdef
   have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
   have hterm : ∀ n ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊,
       ‖massBesselCarrier a (apertureSpectralPoint σ u) (Real.log n) - L‖
-        ≤ (12 + 2 * a) * (M ^ 2 / u) * ‖L‖ + apertureRemainderConst a σ / u := by
+        ≤ (12 + 2 * a) * (M ^ (2 : ℕ) / u) * ‖L‖ + apertureRemainderConst a σ / u := by
     intro n hn
     have hx := hlog n hn
-    have hx2 : 2 * Real.log n ^ 2 ≤ u := by nlinarith [hx, h1]
-    have hxσ : 4 * Real.log n ^ 2 ≤ σ * u := by nlinarith [hx, h2]
-    have hax : 2 * a * Real.log n ^ 2 ≤ u := by nlinarith [hx, h3, ha]
+    have hx2 : 2 * Real.log n ^ (2 : ℕ) ≤ u := by nlinarith [hx, h1]
+    have hxσ : 4 * Real.log n ^ (2 : ℕ) ≤ σ * u := by nlinarith [hx, h2]
+    have hax : 2 * a * Real.log n ^ (2 : ℕ) ≤ u := by nlinarith [hx, h3, ha]
     have hshell := norm_massBesselCarrier_sub_leading_le_shell (a := a) (σ := σ) (u := u)
       (x := Real.log n) ha hσ hu hσu hx2 hxσ hax
     rw [← hLdef] at hshell
     refine le_trans hshell (add_le_add ?_ (le_of_eq (by rw [apertureRemainderConst])))
-    have hmono : (12 + 2 * a) * (Real.log n ^ 2 / u) ≤ (12 + 2 * a) * (M ^ 2 / u) := by
+    have hmono : (12 + 2 * a) * (Real.log n ^ (2 : ℕ) / u) ≤ (12 + 2 * a) * (M ^ (2 : ℕ) / u) := by
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       exact div_le_div_of_nonneg_right hx hu0.le
     exact mul_le_mul_of_nonneg_right hmono (norm_nonneg _)
@@ -348,8 +348,8 @@ theorem norm_massBesselDyadicAperture_sub_le {a σ X u M : ℝ} (ha : 0 < a) (h�
   exact hterm n hn
 
 theorem tendsto_inv_log_sq :
-    Tendsto (fun X : ℝ => 1 / Real.log X ^ 2) atTop (nhds 0) := by
-  have hlog : Tendsto (fun X : ℝ => Real.log X ^ 2) atTop atTop := by
+    Tendsto (fun X : ℝ => 1 / Real.log X ^ (2 : ℕ)) atTop (nhds 0) := by
+  have hlog : Tendsto (fun X : ℝ => Real.log X ^ (2 : ℕ)) atTop atTop := by
     refine tendsto_atTop_mono' atTop ?_ Real.tendsto_log_atTop
     filter_upwards [Real.tendsto_log_atTop.eventually (eventually_ge_atTop (1 : ℝ))] with X hX
     nlinarith [hX]
@@ -361,23 +361,23 @@ theorem tendsto_inv_log_sq :
 profile times `2(√2−1)√X`, with relative error tending to zero. -/
 theorem tendsto_massBesselDyadicAperture_asymptotic (a σ : ℝ) (ha : 0 < a) (hσ : 0 < σ) :
     Tendsto (fun X : ℝ =>
-        ‖massBesselDyadicAperture a σ X (Real.log X ^ 4)
-            - massBesselLeading a (apertureSpectralPoint σ (Real.log X ^ 4))
+        ‖massBesselDyadicAperture a σ X (Real.log X ^ (4 : ℕ))
+            - massBesselLeading a (apertureSpectralPoint σ (Real.log X ^ (4 : ℕ)))
               * ((2 * (Real.sqrt 2 - 1) * Real.sqrt X : ℝ) : ℂ)‖
-          / (‖massBesselLeading a (apertureSpectralPoint σ (Real.log X ^ 4))‖ * Real.sqrt X))
+          / (‖massBesselLeading a (apertureSpectralPoint σ (Real.log X ^ (4 : ℕ)))‖ * Real.sqrt X))
       atTop (nhds 0) := by
   classical
   set c : ℝ := 2 * (Real.sqrt 2 - 1) with hcdef
   set g : ℝ → ℝ := fun X =>
     (dyadicSqrtVonMangoldtMass X / Real.sqrt X) *
-        ((12 + 2 * a) * (4 * (1 / Real.log X ^ 2))
-          + apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Real.log X ^ 2))
+        ((12 + 2 * a) * (4 * (1 / Real.log X ^ (2 : ℕ)))
+          + apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Real.log X ^ (2 : ℕ)))
       + |dyadicSqrtVonMangoldtMass X / Real.sqrt X - c| with hgdef
   have hSlim := tendsto_dyadicSqrtVonMangoldtMass_div_sqrt
   have hinv := tendsto_inv_log_sq
   have hglim : Tendsto g atTop (nhds 0) := by
-    have h1 : Tendsto (fun X : ℝ => (12 + 2 * a) * (4 * (1 / Real.log X ^ 2))
-        + apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Real.log X ^ 2))
+    have h1 : Tendsto (fun X : ℝ => (12 + 2 * a) * (4 * (1 / Real.log X ^ (2 : ℕ)))
+        + apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Real.log X ^ (2 : ℕ)))
         atTop (nhds 0) := by
       have ha1 := (hinv.const_mul (4 : ℝ)).const_mul (12 + 2 * a)
       have ha2 := hinv.const_mul (apertureRemainderConst a σ / apertureProfileConst a σ)
@@ -403,19 +403,19 @@ theorem tendsto_massBesselDyadicAperture_asymptotic (a σ : ℝ) (ha : 0 < a) (h
     set Lg : ℝ := Real.log X with hLgdef
     have hL1 : (1 : ℝ) ≤ Lg := by linarith
     have hL0 : (0 : ℝ) < Lg := by linarith
-    have hL3ge : (1 : ℝ) ≤ Lg ^ 3 := one_le_pow₀ hL1
-    have hu : (1 : ℝ) ≤ Lg ^ 4 := one_le_pow₀ hL1
-    have hLle4 : Lg ≤ Lg ^ 4 := by nlinarith [hL3ge, hL0]
-    have hσu : σ ≤ Lg ^ 4 := le_trans hLσ hLle4
-    have hsqT : ∀ T : ℝ, 0 ≤ T → Real.sqrt T ≤ Lg → T ≤ Lg ^ 2 := by
+    have hL3ge : (1 : ℝ) ≤ Lg ^ (3 : ℕ) := one_le_pow₀ hL1
+    have hu : (1 : ℝ) ≤ Lg ^ (4 : ℕ) := one_le_pow₀ hL1
+    have hLle4 : Lg ≤ Lg ^ (4 : ℕ) := by nlinarith [hL3ge, hL0]
+    have hσu : σ ≤ Lg ^ (4 : ℕ) := le_trans hLσ hLle4
+    have hsqT : ∀ T : ℝ, 0 ≤ T → Real.sqrt T ≤ Lg → T ≤ Lg ^ (2 : ℕ) := by
       intro T hT hle
       nlinarith [Real.sq_sqrt hT, Real.sqrt_nonneg T, hle]
-    have hL2 : (8 : ℝ) ≤ Lg ^ 2 := by nlinarith [hL3]
-    have h2' : (16 : ℝ) / σ ≤ Lg ^ 2 := hsqT _ (by positivity) hLT2
-    have h3' : (8 : ℝ) * a ≤ Lg ^ 2 := hsqT _ (by positivity) hLT3
+    have hL2 : (8 : ℝ) ≤ Lg ^ (2 : ℕ) := by nlinarith [hL3]
+    have h2' : (16 : ℝ) / σ ≤ Lg ^ (2 : ℕ) := hsqT _ (by positivity) hLT2
+    have h3' : (8 : ℝ) * a ≤ Lg ^ (2 : ℕ) := hsqT _ (by positivity) hLT3
     have hX0 : (0 : ℝ) < X := by linarith
     have hXs : (0 : ℝ) < Real.sqrt X := Real.sqrt_pos.2 hX0
-    have hlog : ∀ n ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊, Real.log n ^ 2 ≤ (2 * Lg) ^ 2 := by
+    have hlog : ∀ n ∈ Finset.Ioc ⌊X⌋₊ ⌊2 * X⌋₊, Real.log n ^ (2 : ℕ) ≤ (2 * Lg) ^ (2 : ℕ) := by
       intro n hn
       rw [Finset.mem_Ioc] at hn
       have hn1 : 1 ≤ n := by
@@ -435,34 +435,34 @@ theorem tendsto_massBesselDyadicAperture_asymptotic (a σ : ℝ) (ha : 0 < a) (h
         rw [Real.log_mul (by norm_num) (by linarith)] at h
         linarith
       nlinarith [hlogn0, hlognle, hL0]
-    have hcond1 : 2 * (2 * Lg) ^ 2 ≤ Lg ^ 4 := by nlinarith [hL2, hL0]
-    have hcond2 : 4 * (2 * Lg) ^ 2 ≤ σ * Lg ^ 4 := by
-      have hkey : 16 ≤ σ * Lg ^ 2 := by
+    have hcond1 : 2 * (2 * Lg) ^ (2 : ℕ) ≤ Lg ^ (4 : ℕ) := by nlinarith [hL2, hL0]
+    have hcond2 : 4 * (2 * Lg) ^ (2 : ℕ) ≤ σ * Lg ^ (4 : ℕ) := by
+      have hkey : 16 ≤ σ * Lg ^ (2 : ℕ) := by
         rw [div_le_iff₀ hσ] at h2'
         linarith
       nlinarith [hkey, hL2, hL0]
-    have hcond3 : 2 * a * (2 * Lg) ^ 2 ≤ Lg ^ 4 := by nlinarith [h3', hL0, ha]
+    have hcond3 : 2 * a * (2 * Lg) ^ (2 : ℕ) ≤ Lg ^ (4 : ℕ) := by nlinarith [h3', hL0, ha]
     have hupper := norm_massBesselDyadicAperture_sub_le (a := a) (σ := σ) (X := X)
-      (u := Lg ^ 4) (M := 2 * Lg) ha hσ hu hσu hlog hcond1 hcond2 hcond3
+      (u := Lg ^ (4 : ℕ)) (M := 2 * Lg) ha hσ hu hσu hlog hcond1 hcond2 hcond3
     have hprofile := apertureProfileConst_div_le (a := a) (σ := σ) (L := Lg) ha hσ hL1 hσu
     have hPpos : 0 < apertureProfileConst a σ := apertureProfileConst_pos ha
-    have hLnorm : 0 < ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖ :=
+    have hLnorm : 0 < ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖ :=
       lt_of_lt_of_le (by positivity) hprofile
     have hS0 : 0 ≤ dyadicSqrtVonMangoldtMass X := dyadicSqrtVonMangoldtMass_nonneg X
     -- split the numerator
-    have hsplit : ‖massBesselDyadicAperture a σ X (Lg ^ 4)
-        - massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4)) * ((c * Real.sqrt X : ℝ) : ℂ)‖
-        ≤ ‖massBesselDyadicAperture a σ X (Lg ^ 4)
-            - massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4)) *
+    have hsplit : ‖massBesselDyadicAperture a σ X (Lg ^ (4 : ℕ))
+        - massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ))) * ((c * Real.sqrt X : ℝ) : ℂ)‖
+        ≤ ‖massBesselDyadicAperture a σ X (Lg ^ (4 : ℕ))
+            - massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ))) *
               ((dyadicSqrtVonMangoldtMass X : ℝ) : ℂ)‖
-          + ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖ *
+          + ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖ *
               |dyadicSqrtVonMangoldtMass X - c * Real.sqrt X| := by
-      have hval : massBesselDyadicAperture a σ X (Lg ^ 4)
-          - massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4)) * ((c * Real.sqrt X : ℝ) : ℂ)
-          = (massBesselDyadicAperture a σ X (Lg ^ 4)
-              - massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4)) *
+      have hval : massBesselDyadicAperture a σ X (Lg ^ (4 : ℕ))
+          - massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ))) * ((c * Real.sqrt X : ℝ) : ℂ)
+          = (massBesselDyadicAperture a σ X (Lg ^ (4 : ℕ))
+              - massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ))) *
                 ((dyadicSqrtVonMangoldtMass X : ℝ) : ℂ))
-            + massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4)) *
+            + massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ))) *
                 (((dyadicSqrtVonMangoldtMass X - c * Real.sqrt X : ℝ)) : ℂ) := by
         push_cast
         ring
@@ -471,31 +471,31 @@ theorem tendsto_massBesselDyadicAperture_asymptotic (a σ : ℝ) (ha : 0 < a) (h
       rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     rw [div_le_iff₀ (by positivity)]
     refine le_trans hsplit ?_
-    have hbound1 : ‖massBesselDyadicAperture a σ X (Lg ^ 4)
-        - massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4)) *
+    have hbound1 : ‖massBesselDyadicAperture a σ X (Lg ^ (4 : ℕ))
+        - massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ))) *
           ((dyadicSqrtVonMangoldtMass X : ℝ) : ℂ)‖
         ≤ dyadicSqrtVonMangoldtMass X *
-            ((12 + 2 * a) * ((2 * Lg) ^ 2 / Lg ^ 4) *
-              ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖
-              + apertureRemainderConst a σ / Lg ^ 4) := hupper
-    have hcoef : (2 * Lg) ^ 2 / Lg ^ 4 = 4 * (1 / Lg ^ 2) := by
+            ((12 + 2 * a) * ((2 * Lg) ^ (2 : ℕ) / Lg ^ (4 : ℕ)) *
+              ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖
+              + apertureRemainderConst a σ / Lg ^ (4 : ℕ)) := hupper
+    have hcoef : (2 * Lg) ^ (2 : ℕ) / Lg ^ (4 : ℕ) = 4 * (1 / Lg ^ (2 : ℕ)) := by
       field_simp
       ring
     rw [hcoef] at hbound1
-    have hQle : apertureRemainderConst a σ / Lg ^ 4
-        ≤ apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ 2) *
-            ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖ := by
-      have hstep : apertureProfileConst a σ / Lg ^ 2
-          ≤ ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖ := hprofile
+    have hQle : apertureRemainderConst a σ / Lg ^ (4 : ℕ)
+        ≤ apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ (2 : ℕ)) *
+            ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖ := by
+      have hstep : apertureProfileConst a σ / Lg ^ (2 : ℕ)
+          ≤ ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖ := hprofile
       have hQ0 : 0 ≤ apertureRemainderConst a σ := apertureRemainderConst_nonneg a σ
-      have hmul : apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ 2) *
-          (apertureProfileConst a σ / Lg ^ 2) = apertureRemainderConst a σ / Lg ^ 4 := by
+      have hmul : apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ (2 : ℕ)) *
+          (apertureProfileConst a σ / Lg ^ (2 : ℕ)) = apertureRemainderConst a σ / Lg ^ (4 : ℕ) := by
         field_simp
-      calc apertureRemainderConst a σ / Lg ^ 4
-          = apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ 2) *
-              (apertureProfileConst a σ / Lg ^ 2) := hmul.symm
-        _ ≤ apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ 2) *
-              ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖ :=
+      calc apertureRemainderConst a σ / Lg ^ (4 : ℕ)
+          = apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ (2 : ℕ)) *
+              (apertureProfileConst a σ / Lg ^ (2 : ℕ)) := hmul.symm
+        _ ≤ apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ (2 : ℕ)) *
+              ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖ :=
             mul_le_mul_of_nonneg_left hstep (by positivity)
     have hnormS : |dyadicSqrtVonMangoldtMass X - c * Real.sqrt X|
         = |dyadicSqrtVonMangoldtMass X / Real.sqrt X - c| * Real.sqrt X := by
@@ -508,13 +508,13 @@ theorem tendsto_massBesselDyadicAperture_asymptotic (a σ : ℝ) (ha : 0 < a) (h
         = dyadicSqrtVonMangoldtMass X / Real.sqrt X * Real.sqrt X := by
       field_simp
     have hfinal : dyadicSqrtVonMangoldtMass X *
-          ((12 + 2 * a) * (4 * (1 / Lg ^ 2)) *
-            ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖
-            + apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ 2) *
-              ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖)
-        + ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖ *
+          ((12 + 2 * a) * (4 * (1 / Lg ^ (2 : ℕ))) *
+            ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖
+            + apertureRemainderConst a σ / apertureProfileConst a σ * (1 / Lg ^ (2 : ℕ)) *
+              ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖)
+        + ‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖ *
             (|dyadicSqrtVonMangoldtMass X / Real.sqrt X - c| * Real.sqrt X)
-        = g X * (‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ 4))‖ * Real.sqrt X) := by
+        = g X * (‖massBesselLeading a (apertureSpectralPoint σ (Lg ^ (4 : ℕ)))‖ * Real.sqrt X) := by
       rw [hgdef, hLgdef]
       nth_rewrite 1 [hSX]
       ring

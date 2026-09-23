@@ -42,7 +42,7 @@ theorem deningerBigWittFrobeniusPrimeSeamPairCoefficient_eq
     (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
     deningerBigWittFrobeniusPrimeSeamPairCoefficient a p q =
       ((-2 * deningerBigWittPrimePairExtendedPhysicalAtom p q *
-        ‖a p - a q‖ ^ 2 : ℝ) : ℂ) := by
+        ‖a p - a q‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [deningerBigWittFrobeniusPrimeSeamPairCoefficient,
     deningerBigWittFrobeniusTwo_ghost_one,
     deningerBigWittPolarizedPrimeSeamPairSource_ghost_two]
@@ -196,7 +196,7 @@ theorem deningerBigWittFrobeniusPrimeSeamFiniteIncidenceSource_coordinate
 its reciprocal degree. -/
 def deningerBigWittFrobeniusPrimeSeamPairBVWeight
     (a : Nat.Primes → ℂ) (p q : Nat.Primes) : ℂ :=
-  ((-2 * ‖a p - a q‖ ^ 2 : ℝ) : ℂ)
+  ((-2 * ‖a p - a q‖ ^ (2 : ℕ) : ℝ) : ℂ)
 
 /-- Ordinary-integer degree-`pq` Hochschild chain whose boundary vacuum
 coefficient is the transgressed physical pair coefficient. -/

@@ -24,16 +24,16 @@ theorem l1Norm_nonneg (f : ℝ → ℂ) : 0 ≤ l1Norm f := by
 
 /-- **Cauchy--Schwarz against the constant one.** -/
 theorem l1Norm_sq_le_l2NormSq {f : ℝ → ℂ} (hf : Continuous f) :
-    l1Norm f ^ 2 ≤ l2NormSq f := by
+    l1Norm f ^ (2 : ℕ) ≤ l2NormSq f := by
   set c : ℝ := l1Norm f with hc
-  have hint : IntervalIntegrable (fun x : ℝ => (‖f x‖ - c) ^ 2) volume 0 1 := by
+  have hint : IntervalIntegrable (fun x : ℝ => (‖f x‖ - c) ^ (2 : ℕ)) volume 0 1 := by
     refine Continuous.intervalIntegrable ?_ _ _
     fun_prop
-  have hnn : 0 ≤ ∫ x in (0 : ℝ)..1, (‖f x‖ - c) ^ 2 :=
+  have hnn : 0 ≤ ∫ x in (0 : ℝ)..1, (‖f x‖ - c) ^ (2 : ℕ) :=
     intervalIntegral.integral_nonneg (by norm_num) fun x _ => by positivity
-  have hexp : (∫ x in (0 : ℝ)..1, (‖f x‖ - c) ^ 2)
-      = l2NormSq f - 2 * c * l1Norm f + c ^ 2 := by
-    have hsplit : ∀ x : ℝ, (‖f x‖ - c) ^ 2 = ‖f x‖ ^ 2 - 2 * c * ‖f x‖ + c ^ 2 := by
+  have hexp : (∫ x in (0 : ℝ)..1, (‖f x‖ - c) ^ (2 : ℕ))
+      = l2NormSq f - 2 * c * l1Norm f + c ^ (2 : ℕ) := by
+    have hsplit : ∀ x : ℝ, (‖f x‖ - c) ^ (2 : ℕ) = ‖f x‖ ^ (2 : ℕ) - 2 * c * ‖f x‖ + c ^ (2 : ℕ) := by
       intro x
       ring
     rw [intervalIntegral.integral_congr (fun x _ => hsplit x)]
@@ -52,7 +52,7 @@ theorem l1Norm_sq_le_l2NormSq {f : ℝ → ℂ} (hf : Continuous f) :
 theorem l1Norm_le_sqrt_l2NormSq {f : ℝ → ℂ} (hf : Continuous f) :
     l1Norm f ≤ Real.sqrt (l2NormSq f) := by
   have h := l1Norm_sq_le_l2NormSq hf
-  have hle : Real.sqrt (l1Norm f ^ 2) ≤ Real.sqrt (l2NormSq f) := Real.sqrt_le_sqrt h
+  have hle : Real.sqrt (l1Norm f ^ (2 : ℕ)) ≤ Real.sqrt (l2NormSq f) := Real.sqrt_le_sqrt h
   rwa [Real.sqrt_sq (l1Norm_nonneg f)] at hle
 
 /-- **The truncated-convolution pairing is bounded by the kernel bound times the `L¹` norms.** -/

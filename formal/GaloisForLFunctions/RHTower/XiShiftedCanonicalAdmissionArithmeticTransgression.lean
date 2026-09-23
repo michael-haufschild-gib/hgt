@@ -193,7 +193,7 @@ theorem xiShiftedCompletedMomentAggregate_frozenAdmission_eq_currentJacobiEnergy
     {w : ℝ} (hw : 1 / 2 < w) (a : ℝ) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix (xiShiftedRealMomentSequence w)
       (n + 2)).PosDef) :
-    xiShiftedCompletedMomentAggregate (w ^ 2) 2
+    xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
         (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
           (xiShiftedOddCrossingCoefficientPacket
             (HTGeometry.monicMomentAdmissionPolynomial
@@ -218,7 +218,7 @@ theorem xiShiftedCompletedMomentAggregate_frozenAdmission_neg_iff_transgression_
     {w : ℝ} (hw : 1 / 2 < w) (a : ℝ) {n : ℕ} (hn : 0 < n)
     (hH : (HTGeometry.momentHankelMatrix (xiShiftedRealMomentSequence w)
       (n + 2)).PosDef) :
-    xiShiftedCompletedMomentAggregate (w ^ 2) 2
+    xiShiftedCompletedMomentAggregate (w ^ (2 : ℕ)) 2
         (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
           (xiShiftedOddCrossingCoefficientPacket
             (HTGeometry.monicMomentAdmissionPolynomial

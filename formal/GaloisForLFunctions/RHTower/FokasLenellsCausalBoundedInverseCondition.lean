@@ -8,16 +8,16 @@ open GaloisForLFunctions.HTGeometry.FokasLenells
 namespace RHTower.FokasLenells
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-local instance : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
-local instance : CompleteSpace causalBoundedChain := causalBoundedChain_complete
-local instance : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
-local instance : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
-local instance : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedInverseConditionInst1 : CompleteSpace (hardyL2ᗮ) := hardyL2.isClosed_orthogonal.completeSpace_coe
+local instance fokasLenellsCausalBoundedInverseConditionInst2 : CompleteSpace causalBoundedChain := causalBoundedChain_complete
+local instance fokasLenellsCausalBoundedInverseConditionInst3 : NormedAddCommGroup causalBoundedChain := causalBoundedChain.normedAddCommGroup
+local instance fokasLenellsCausalBoundedInverseConditionInst4 : NormedSpace ℂ causalBoundedChain := causalBoundedChain.normedSpace
+local instance fokasLenellsCausalBoundedInverseConditionInst5 : NormedRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   ContinuousLinearMap.toNormedRing
-local instance : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedInverseConditionInst6 : TopologicalSpace (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   (inferInstance : NormedAddCommGroup
     (causalBoundedChain →L[ℂ] causalBoundedChain)).toUniformSpace.toTopologicalSpace
-local instance : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
+local instance fokasLenellsCausalBoundedInverseConditionInst7 : IsTopologicalRing (causalBoundedChain →L[ℂ] causalBoundedChain) :=
   NonUnitalSeminormedRing.toIsTopologicalRing
 
 

@@ -41,11 +41,11 @@ theorem integral_Icc_normSq_harmonicPrimeBlockPoly_bigPrimeSet_le_canonical
     (hW : 1 ≤ W) (hhR : h ≤ R) (hR1 : 1 ≤ R)
     (hP₁ : 2 ≤ P₁) (hP₁h : P₁ ≤ h) (hh1 : 1 ≤ h) :
     (∫ w in Set.Icc (-W) W,
-        ‖harmonicPrimeBlockPoly (bigPrimeSet R (2 * R)) w‖ ^ 2)
-      ≤ (5 / (4 * sieveSwappedDelta W)) * (1 / (R : ℝ) ^ 2)
+        ‖harmonicPrimeBlockPoly (bigPrimeSet R (2 * R)) w‖ ^ (2 : ℕ))
+      ≤ (5 / (4 * sieveSwappedDelta W)) * (1 / (R : ℝ) ^ (2 : ℕ))
           * (((bigPrimeSet R (2 * R)).card : ℝ)
             + 2 * (2 * Real.exp 1 * ((sieveSwappedBudget R W : ℕ) : ℝ) * (2 * (R : ℝ))
-                    / (Real.exp (mertensS h - mertensS P₁)) ^ 2
+                    / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
                   + ((sieveSwappedBudget R W : ℕ) : ℝ) *
                       ∑ e ∈ (rangePrimorial P₁ h).divisors,
                       (if ((e : ℕ) : ℝ) ≤ sieveSwappedLevel P₁ h
@@ -54,9 +54,9 @@ theorem integral_Icc_normSq_harmonicPrimeBlockPoly_bigPrimeSet_le_canonical
     (P := (∅ : Finset ℕ)) (D := (∅ : Finset ℕ)) (R := R) (h := h) (P₁ := P₁) (W := W)
     hW hhR hR1 hP₁ hP₁h hh1
   have hrw : (∫ w in Set.Icc (-W) W,
-      ‖harmonicPrimeBlockPoly (bigPrimeSet R (2 * R)) w‖ ^ 2)
+      ‖harmonicPrimeBlockPoly (bigPrimeSet R (2 * R)) w‖ ^ (2 : ℕ))
       = ∫ w in Set.Icc (-W) W,
-        ‖logPoly (fun n => ((1 : ℂ) / (n : ℂ))) (bigPrimeSet R (2 * R)) w‖ ^ 2 := by
+        ‖logPoly (fun n => ((1 : ℂ) / (n : ℂ))) (bigPrimeSet R (2 * R)) w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [norm_harmonicPrimeBlockPoly_eq_of_prime (fun p hp => prime_of_mem_bigPrimeSet hp)]
   rw [hrw]

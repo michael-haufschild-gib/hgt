@@ -9,7 +9,7 @@ import GaloisForLFunctions.HTGeometry.SmirnovBoundaryInnerOuterFactor
 
 A bounded measurable real phase has a Herglotz analytic lift.  Its reciprocal sector exponential
 has uniformly bounded half-power circle means.  Radial Fatou gives exact circle-boundary
-integrability, and the fourth-order Cayley decay `(1-z)^4` transports that admission to Lebesgue
+integrability, and the fourth-order Cayley decay `(1-z)^(4 : ℕ)` transports that admission to Lebesgue
 measure on the real line.  The resulting nonzero Toeplitz-kernel element is unconditional.
 -/
 
@@ -47,7 +47,7 @@ theorem sqrt_norm_sectorCayley_reciprocal {w : ℂ}
       ‖Complex.exp (-I * w / 2)‖ := by
   have he : sectorExponential w ≠ 0 := sectorExponential_ne_zero w
   have hden : sectorExponential w + 1 ≠ 0 :=
-    add_one_ne_zero_of_re_nonneg (sectorExponential_re_nonneg hw)
+    add_one_ne_zero_of_re_nonneg_sectorCayleyMultiplier (sectorExponential_re_nonneg hw)
   have hquot : (1 - sectorCayleyValue w) / (1 + sectorCayleyValue w) =
       (sectorExponential w)⁻¹ := by
     unfold sectorCayleyValue

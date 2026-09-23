@@ -10,7 +10,7 @@ derivative on the real axis.
 
 Away from a simultaneous zero of `xi` and `xi'`, the density is
 
-`xi(x)^2 / (xi(x)^2 + xi'(x)^2)`.
+`xi(x)^(2 : ℕ) / (xi(x)^(2 : ℕ) + xi'(x)^(2 : ℕ))`.
 
 At a simultaneous zero, Suzuki's literal totalized theta quotient assigns
 the carrier the value `i/2`, so the exact pointwise density is `1/4` there.
@@ -30,7 +30,7 @@ namespace RiemannGaussian
 
 noncomputable section
 
-/-- The real-axis spectral energy `xi(x)^2 + xi'(x)^2`, expressed through
+/-- The real-axis spectral energy `xi(x)^(2 : ℕ) + xi'(x)^(2 : ℕ)`, expressed through
 the real parts of the two real-valued complex quantities. -/
 def suzukiXiRealAxisSpectralEnergy (x : ℝ) : ℝ :=
   (riemannXiSpectral (x : ℂ)).re ^ 2 +
@@ -88,7 +88,7 @@ theorem suzukiXiRealAxisSpectralEnergy_pos_of_E_ne_zero
   exact sq_pos_of_pos (norm_pos_iff.mpr hE)
 
 /-- Away from the simultaneous-zero set, the carrier density is the exact
-xi-energy ratio `xi^2 / (xi^2 + xi'^2)`. -/
+xi-energy ratio `xi^(2 : ℕ) / (xi^(2 : ℕ) + xi'^(2 : ℕ))`. -/
 theorem suzukiXiRealAxisCarrierDensity_eq_ratio_of_E_ne_zero
     (x : ℝ) (hE : suzukiXiEValue (x : ℂ) ≠ 0) :
     suzukiXiRealAxisCarrierDensity x =

@@ -28,26 +28,26 @@ namespace GaloisForLFunctions.HTGeometry
 /-- **The Liouville transformation.**  The transformed amplitude solves the normal form. -/
 theorem hasDerivAt_liouvilleTransform {c : ℝ} {f g y y' X X' X'' A A' A'' : ℝ → ℝ}
     (hy : ∀ x, HasDerivAt y (y' x) x)
-    (hy' : ∀ x, HasDerivAt y' (-(c ^ 2 * f x + g x) * y x) x)
+    (hy' : ∀ x, HasDerivAt y' (-(c ^ (2 : ℕ) * f x + g x) * y x) x)
     (hX : ∀ ξ, HasDerivAt X (X' ξ) ξ) (hX' : ∀ ξ, HasDerivAt X' (X'' ξ) ξ)
     (hA : ∀ ξ, HasDerivAt A (A' ξ) ξ) (hA' : ∀ ξ, HasDerivAt A' (A'' ξ) ξ)
     (ξ : ℝ) (hAne : A ξ ≠ 0) (hfne : f (X ξ) ≠ 0)
-    (hspeed : X' ξ ^ 2 = 1 / f (X ξ))
+    (hspeed : X' ξ ^ (2 : ℕ) = 1 / f (X ξ))
     (hamp : 2 * A' ξ * X' ξ + A ξ * X'' ξ = 0) :
     HasDerivAt (fun η => A' η * y (X η) + A η * (y' (X η) * X' η))
-      (-(c ^ 2 + (g (X ξ) / f (X ξ) - A'' ξ / A ξ)) * (A ξ * y (X ξ))) ξ := by
+      (-(c ^ (2 : ℕ) + (g (X ξ) / f (X ξ) - A'' ξ / A ξ)) * (A ξ * y (X ξ))) ξ := by
   have hyX : HasDerivAt (fun η => y (X η)) (y' (X ξ) * X' ξ) ξ :=
     HasDerivAt.comp ξ (hy (X ξ)) (hX ξ)
-  have hy'X : HasDerivAt (fun η => y' (X η)) (-(c ^ 2 * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ) ξ :=
+  have hy'X : HasDerivAt (fun η => y' (X η)) (-(c ^ (2 : ℕ) * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ) ξ :=
     HasDerivAt.comp ξ (hy' (X ξ)) (hX ξ)
   have h1 : HasDerivAt (fun η => A' η * y (X η))
       (A'' ξ * y (X ξ) + A' ξ * (y' (X ξ) * X' ξ)) ξ := (hA' ξ).mul hyX
   have h2 : HasDerivAt (fun η => y' (X η) * X' η)
-      (-(c ^ 2 * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ * X' ξ + y' (X ξ) * X'' ξ) ξ :=
+      (-(c ^ (2 : ℕ) * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ * X' ξ + y' (X ξ) * X'' ξ) ξ :=
     hy'X.mul (hX' ξ)
   have h3 : HasDerivAt (fun η => A η * (y' (X η) * X' η))
       (A' ξ * (y' (X ξ) * X' ξ)
-        + A ξ * (-(c ^ 2 * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ * X' ξ + y' (X ξ) * X'' ξ)) ξ :=
+        + A ξ * (-(c ^ (2 : ℕ) * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ * X' ξ + y' (X ξ) * X'' ξ)) ξ :=
     (hA ξ).mul h2
   have h := h1.add h3
   have hsq : X' ξ * X' ξ = 1 / f (X ξ) := by
@@ -55,10 +55,10 @@ theorem hasDerivAt_liouvilleTransform {c : ℝ} {f g y y' X X' X'' A A' A'' : �
     exact hspeed
   have hval : A'' ξ * y (X ξ) + A' ξ * (y' (X ξ) * X' ξ)
       + (A' ξ * (y' (X ξ) * X' ξ)
-        + A ξ * (-(c ^ 2 * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ * X' ξ + y' (X ξ) * X'' ξ))
-      = -(c ^ 2 + (g (X ξ) / f (X ξ) - A'' ξ / A ξ)) * (A ξ * y (X ξ)) := by
-    have hrw : A ξ * (-(c ^ 2 * f (X ξ) + g (X ξ)) * y (X ξ) * (X' ξ * X' ξ))
-        = -(c ^ 2 + g (X ξ) / f (X ξ)) * (A ξ * y (X ξ)) := by
+        + A ξ * (-(c ^ (2 : ℕ) * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ * X' ξ + y' (X ξ) * X'' ξ))
+      = -(c ^ (2 : ℕ) + (g (X ξ) / f (X ξ) - A'' ξ / A ξ)) * (A ξ * y (X ξ)) := by
+    have hrw : A ξ * (-(c ^ (2 : ℕ) * f (X ξ) + g (X ξ)) * y (X ξ) * (X' ξ * X' ξ))
+        = -(c ^ (2 : ℕ) + g (X ξ) / f (X ξ)) * (A ξ * y (X ξ)) := by
       rw [hsq]
       field_simp
     have hzero : (2 * A' ξ * X' ξ + A ξ * X'' ξ) * y' (X ξ) = 0 := by
@@ -68,14 +68,14 @@ theorem hasDerivAt_liouvilleTransform {c : ℝ} {f g y y' X X' X'' A A' A'' : �
       field_simp
     calc A'' ξ * y (X ξ) + A' ξ * (y' (X ξ) * X' ξ)
           + (A' ξ * (y' (X ξ) * X' ξ)
-            + A ξ * (-(c ^ 2 * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ * X' ξ + y' (X ξ) * X'' ξ))
+            + A ξ * (-(c ^ (2 : ℕ) * f (X ξ) + g (X ξ)) * y (X ξ) * X' ξ * X' ξ + y' (X ξ) * X'' ξ))
         = A'' ξ * y (X ξ)
           + (2 * A' ξ * X' ξ + A ξ * X'' ξ) * y' (X ξ)
-          + A ξ * (-(c ^ 2 * f (X ξ) + g (X ξ)) * y (X ξ) * (X' ξ * X' ξ)) := by ring
-      _ = A'' ξ * y (X ξ) + -(c ^ 2 + g (X ξ) / f (X ξ)) * (A ξ * y (X ξ)) := by
+          + A ξ * (-(c ^ (2 : ℕ) * f (X ξ) + g (X ξ)) * y (X ξ) * (X' ξ * X' ξ)) := by ring
+      _ = A'' ξ * y (X ξ) + -(c ^ (2 : ℕ) + g (X ξ) / f (X ξ)) * (A ξ * y (X ξ)) := by
           rw [hzero, hrw]
           ring
-      _ = -(c ^ 2 + (g (X ξ) / f (X ξ) - A'' ξ / A ξ)) * (A ξ * y (X ξ)) := by
+      _ = -(c ^ (2 : ℕ) + (g (X ξ) / f (X ξ) - A'' ξ / A ξ)) * (A ξ * y (X ξ)) := by
           rw [hAdiv]
           ring
   rwa [hval] at h

@@ -47,11 +47,11 @@ structure XiCCMBVWindowDilationOrientationUniversalCertificate
   weightedPrimeWindow_squareIndexDecimation :
     ∀ n : ℕ,
       (W.argumentDilation r (natCast_pos_of_one_lt hr)).weightedPrimeWindow n =
-        (W.argumentExpansion r (natCast_pos_of_one_lt hr)).weightedPrimeWindow (r ^ 2 * n)
+        (W.argumentExpansion r (natCast_pos_of_one_lt hr)).weightedPrimeWindow (r ^ (2 : ℕ) * n)
   polarCoefficient_squareIndexDecimation :
     ∀ n : ℕ,
       (W.argumentDilation r (natCast_pos_of_one_lt hr)).polarCoefficient n =
-        (W.argumentExpansion r (natCast_pos_of_one_lt hr)).polarCoefficient (r ^ 2 * n)
+        (W.argumentExpansion r (natCast_pos_of_one_lt hr)).polarCoefficient (r ^ (2 : ℕ) * n)
   actualResidueLimits :
     Tendsto
         (fun s : ℂ => (s - ((q.1.1 : ℂ) + 1 / 2)) *

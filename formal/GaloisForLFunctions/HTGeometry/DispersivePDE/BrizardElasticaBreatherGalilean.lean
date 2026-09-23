@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica
 
 /-- Dimensionless velocity convention printed after equation (36). -/
 noncomputable def dimensionlessGalileanField (u : ℝ) (q : ℝ → ℝ → ℂ) (τ ξ : ℝ) : ℂ :=
-  q τ (ξ - u * τ) * linearPhase (-(u ^ 2) / 4) (u / 2) τ ξ
+  q τ (ξ - u * τ) * linearPhase (-(u ^ (2 : ℕ)) / 4) (u / 2) τ ξ
 
 theorem dimensionlessGalileanField_eq_galileanField (u : ℝ) (q : ℝ → ℝ → ℂ) :
     dimensionlessGalileanField u q = galileanField 1 (u / 2) q := by

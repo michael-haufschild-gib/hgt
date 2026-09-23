@@ -109,20 +109,20 @@ gives the exact cancellation.  Hence the renormalized observable `8α²·ζ(s-½
 polar term `(21)`'s leading piece plus the moving-tent prime channel `(20)` — has a finite limit at
 `s = 3/2`, restoring regularity at the point the bare-observable criterion had to exclude. -/
 theorem primeObservable_polar_regular_at_pole (L : ℝ) :
-    ∃ M : ℂ, Tendsto (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 * riemannZeta (s - 1 / 2)
+    ∃ M : ℂ, Tendsto (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ) * riemannZeta (s - 1 / 2)
         + primeObservable L s) (𝓝[≠] (3 / 2)) (𝓝 M) := by
-  have hconv : (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 * riemannZeta (s - 1 / 2)
+  have hconv : (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ) * riemannZeta (s - 1 / 2)
       + primeObservable L s)
-      = polarPrimeObservable (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2)
-        (fun s => -2 * (rectangularWindowAmplitude L (s - 1)) ^ 2) := by
+      = polarPrimeObservable (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ))
+        (fun s => -2 * (rectangularWindowAmplitude L (s - 1)) ^ (2 : ℕ)) := by
     funext s
     simp only [polarPrimeObservable, windowObservable, primeObservable]
   rw [hconv]
   apply polarPrimeObservable_regular_at_pole
   · exact (((rectangularWindowAmplitude_differentiable L).comp
       (differentiable_id.sub_const 1)).pow 2).differentiableAt.const_mul (-2)
-  · show -2 * (rectangularWindowAmplitude L (3 / 2 - 1)) ^ 2
-        = -(8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2)
+  · show -2 * (rectangularWindowAmplitude L (3 / 2 - 1)) ^ (2 : ℕ)
+        = -(8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ))
     rw [rectangularWindowAmplitude_at_half]; ring
 
 /-- Detection: regularity of the renormalized observable at the off-critical shifts forces RH.  At
@@ -192,12 +192,12 @@ tent window `W(s) = -2·A_L(s-1)²` is entire, nonvanishing on the off-critical 
 theorem RH_iff_primeObservable_polar_regular (L : ℝ) (hL : 0 < L) :
     RiemannHypothesis
       ↔ (∀ a : ℂ, 1 < a.re → ∃ M : ℂ,
-          Tendsto (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 * riemannZeta (s - 1 / 2)
+          Tendsto (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ) * riemannZeta (s - 1 / 2)
             + primeObservable L s) (𝓝[≠] a) (𝓝 M)) := by
-  have hconv : (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 * riemannZeta (s - 1 / 2)
+  have hconv : (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ) * riemannZeta (s - 1 / 2)
       + primeObservable L s)
-      = polarPrimeObservable (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2)
-        (fun s => -2 * (rectangularWindowAmplitude L (s - 1)) ^ 2) := by
+      = polarPrimeObservable (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ))
+        (fun s => -2 * (rectangularWindowAmplitude L (s - 1)) ^ (2 : ℕ)) := by
     funext s; simp only [polarPrimeObservable, windowObservable, primeObservable]
   rw [hconv]
   refine RH_iff_polarPrimeObservable_regular _ _
@@ -209,10 +209,10 @@ theorem RH_iff_primeObservable_polar_regular (L : ℝ) (hL : 0 < L) :
       rw [Complex.sub_re, Complex.add_re, Complex.one_re, e2]; linarith
     have hAne : rectangularWindowAmplitude L (ρ + 1 / 2 - 1) ≠ 0 :=
       rectangularWindowAmplitude_ne_zero hL hpos
-    show -2 * (rectangularWindowAmplitude L (ρ + 1 / 2 - 1)) ^ 2 ≠ 0
+    show -2 * (rectangularWindowAmplitude L (ρ + 1 / 2 - 1)) ^ (2 : ℕ) ≠ 0
     exact mul_ne_zero (by norm_num) (pow_ne_zero 2 hAne)
-  · show -2 * (rectangularWindowAmplitude L (3 / 2 - 1)) ^ 2
-        = -(8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2)
+  · show -2 * (rectangularWindowAmplitude L (3 / 2 - 1)) ^ (2 : ℕ)
+        = -(8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ))
     rw [rectangularWindowAmplitude_at_half]; ring
 
 /-- Adding a function continuous at `a` does not change whether a function has a finite limit at `a`
@@ -253,14 +253,14 @@ theorem polarPrimeObservable_no_limit (κ : ℂ) (W : ℂ → ℂ) (hWcont : Con
 `α = 1 - e^{-L/2}`, `β = e^{L/2} - 1`. -/
 noncomputable def PcalCorrection (L : ℝ) (s : ℂ) : ℂ :=
   16 * (1 - (Real.exp (-(L / 2)) : ℂ)) * ((Real.exp (L / 2) : ℂ) - 1) * riemannZeta s
-    + 8 * ((Real.exp (L / 2) : ℂ) - 1) ^ 2 * riemannZeta (s + 1 / 2)
+    + 8 * ((Real.exp (L / 2) : ℂ) - 1) ^ (2 : ℕ) * riemannZeta (s + 1 / 2)
     - 2 * HL L s
 
 /-- The full moving-tent observable `Pcal_L` of `(22)`: the ordinary Dirichlet series of the
 prime–polar coefficient `p_L`, meromorphically continued to `Re s > 1`.  It is the renormalized
 observable `8α²·ζ(s-½) + primeObservable L s` plus the holomorphic correction `PcalCorrection`. -/
 noncomputable def PcalObservable (L : ℝ) (s : ℂ) : ℂ :=
-  8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 * riemannZeta (s - 1 / 2)
+  8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ (2 : ℕ) * riemannZeta (s - 1 / 2)
     + primeObservable L s + PcalCorrection L s
 
 /-- The `Pcal_L` correction terms are continuous at every `a` with `Re a > 1`: `ζ(s)` (`a ≠ 1`),

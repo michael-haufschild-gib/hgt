@@ -22,7 +22,7 @@ theorem coeffMajorant_mono_const {C₁ C₂ C₁' C₂' M₀ a t : ℝ} (h : C�
     (hM₀ : 0 ≤ M₀) (ha : 0 ≤ a) (ht : 0 ≤ t) :
     coeffMajorant C₁ C₁' M₀ a t ≤ coeffMajorant C₂ C₂' M₀ a t := by
   have hexp : (0 : ℝ) ≤ Real.exp (22 / 4) := (Real.exp_pos _).le
-  have hP : (0 : ℝ) ≤ (1 + a * t ^ 9) * (5 / 2 + 2 * t) := by positivity
+  have hP : (0 : ℝ) ≤ (1 + a * t ^ (9 : ℕ)) * (5 / 2 + 2 * t) := by positivity
   rw [coeffMajorant, coeffMajorant]
   gcongr
 
@@ -31,7 +31,7 @@ theorem coeffMajorant_scale {C C' M₀ a w E : ℝ} (hE : 1 ≤ E)
     (hM₀ : 0 ≤ M₀) (ha : 0 ≤ a) (hw : 0 ≤ w) :
     coeffMajorant (C * E) (C' * E) M₀ a w ≤ E * coeffMajorant C C' M₀ a w := by
   have hexp : (0 : ℝ) < Real.exp (22 / 4) := Real.exp_pos _
-  have hP : (0 : ℝ) ≤ (1 + a * w ^ 9) * (5 / 2 + 2 * w) := by positivity
+  have hP : (0 : ℝ) ≤ (1 + a * w ^ (9 : ℕ)) * (5 / 2 + 2 * w) := by positivity
   have hE1 : (0 : ℝ) ≤ E - 1 := by linarith
   rw [coeffMajorant, coeffMajorant]
   nlinarith [mul_nonneg hE1 hP, mul_nonneg hE1 hM₀, hexp.le,

@@ -100,7 +100,7 @@ theorem gomesGaussianChargeLadder_toLp_ne_zero (a : Set.Ioi (0 : ℝ)) (n : ℕ)
 /-- Self-pairing is exactly the squared L² norm. -/
 theorem gomesGaussianChargeLadder_pair_self (a : Set.Ioi (0 : ℝ)) (n : ℕ) :
     schwartzPair (gomesGaussianChargeLadder a n) (gomesGaussianChargeLadder a n) =
-      ((‖(gomesGaussianChargeLadder a n).toLp 2 (volume : Measure ℝ)‖ ^ 2 : ℝ) : ℂ) := by
+      ((‖(gomesGaussianChargeLadder a n).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [← schwartzPair_conj_self, gomesGaussianChargeLadder_conj]
 
 /-- Orthogonality is exact: the pairing vanishes precisely off the diagonal. -/
@@ -110,7 +110,7 @@ theorem gomesGaussianChargeLadder_pair_zero_iff (a : Set.Ioi (0 : ℝ)) (m n : �
   · intro hz hmn
     subst n
     rw [gomesGaussianChargeLadder_pair_self] at hz
-    have hn : ‖(gomesGaussianChargeLadder a m).toLp 2 (volume : Measure ℝ)‖ ^ 2 = 0 := by
+    have hn : ‖(gomesGaussianChargeLadder a m).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) = 0 := by
       exact_mod_cast hz
     exact gomesGaussianChargeLadder_toLp_ne_zero a m (norm_eq_zero.mp (sq_eq_zero_iff.mp hn))
   · intro hmn
@@ -140,9 +140,9 @@ theorem gomesGaussianChargeLadder_pair_self_factorial (a : Set.Ioi (0 : ℝ)) (n
 
 /-- The factorial growth identity holds for the actual Hilbert norms. -/
 theorem gomesGaussianChargeLadder_norm_sq_factorial (a : Set.Ioi (0 : ℝ)) (n : ℕ) :
-    ‖(gomesGaussianChargeLadder a n).toLp 2 (volume : Measure ℝ)‖ ^ 2 =
+    ‖(gomesGaussianChargeLadder a n).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) =
       ((4 * Real.pi * a.val) ^ n * (n.factorial : ℝ)) *
-        ‖(gomesGaussianChargeGroundState a).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+        ‖(gomesGaussianChargeGroundState a).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   have h := gomesGaussianChargeLadder_pair_self_factorial a n
   rw [gomesGaussianChargeLadder_pair_self] at h
   have hzero := gomesGaussianChargeLadder_pair_self a 0

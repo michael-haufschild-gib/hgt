@@ -11,7 +11,7 @@ The squarefree common reporter deletes every valuation-depth coordinate.
 This module constructs the required upstream replacement: the literal
 primitive-promoted Euler amplitude on the full `(prime, valuation)` index.
 
-For positive displacement `u` it is a genuine `ell^2` vector.  Its energy
+For positive displacement `u` it is a genuine `ell^(2 : ℕ)` vector.  Its energy
 threshold is sharp: summability holds exactly for `u > 0`.  Thus the family
 is a moving noncompact source approaching the critical boundary, while every
 finite-displacement vector retains every prime-power depth before any scalar

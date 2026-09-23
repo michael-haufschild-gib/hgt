@@ -154,19 +154,19 @@ theorem finiteAndersonSiteSurvivalLoss_le
     (hsmall : FiniteHorizonOffDiagonalSmall T g p H ε)
     (i : Fin n) (t : ℝ) (ht : t ∈ Set.Icc (-H) H) :
     finiteAndersonSiteSurvivalLoss T g p t i ≤
-      ((n - 1 : ℕ) : ℝ) * ε ^ 2 := by
+      ((n - 1 : ℕ) : ℝ) * ε ^ (2 : ℕ) := by
   rw [finiteAndersonSiteSurvivalLoss_eq_offDiagonal_sum T hT]
   calc
     (∑ j ∈ Finset.univ.erase i,
         Complex.normSq (finiteAndersonEvolution T g p t j i)) ≤
-        ∑ _j ∈ Finset.univ.erase i, ε ^ 2 := by
+        ∑ _j ∈ Finset.univ.erase i, ε ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro j hj
       have hji : j ≠ i := Finset.ne_of_mem_erase hj
       have hamp := hsmall j i hji t ht
       rw [Complex.normSq_eq_norm_sq]
       nlinarith [norm_nonneg (finiteAndersonEvolution T g p t j i)]
-    _ = ((n - 1 : ℕ) : ℝ) * ε ^ 2 := by
+    _ = ((n - 1 : ℕ) : ℝ) * ε ^ (2 : ℕ) := by
       rw [Finset.sum_const, nsmul_eq_mul,
         Finset.card_erase_of_mem (Finset.mem_univ i),
         Finset.card_univ, Fintype.card_fin]
@@ -178,7 +178,7 @@ theorem finiteAndersonSiteSurvivalDeviation_le
     (hsmall : FiniteHorizonOffDiagonalSmall T g p H ε)
     (i : Fin n) (t : ℝ) (ht : t ∈ Set.Icc (-H) H) :
     finiteAndersonSiteSurvivalDeviation T g p t i ≤
-      ((n - 1 : ℕ) : ℝ) * ε ^ 2 := by
+      ((n - 1 : ℕ) : ℝ) * ε ^ (2 : ℕ) := by
   rw [finiteAndersonSiteSurvivalDeviation_eq_loss T hT]
   exact finiteAndersonSiteSurvivalLoss_le T hT g p H ε hε hsmall i t ht
 
@@ -197,7 +197,7 @@ theorem exists_finiteAnderson_maximalProjective_finiteHorizon_survivalNonExit
       p ∈ scaledFiniteAndersonProjectiveMaximalSet T hT g ∧
       ∀ i : Fin n, ∀ t ∈ Set.Icc (-H) H,
         finiteAndersonSiteSurvivalDeviation T g p t i ≤
-          ((n - 1 : ℕ) : ℝ) * ε ^ 2 := by
+          ((n - 1 : ℕ) : ℝ) * ε ^ (2 : ℕ) := by
   obtain ⟨g, p, hg, hmax, hsmall⟩ :=
     exists_finiteAnderson_maximalProjective_finiteHorizonLocalized
       T hT p₀ H hε
@@ -228,7 +228,7 @@ theorem exists_finiteAnderson_maximalProjective_finiteHorizon_survivalTarget
   refine ⟨g, p, hg, hmax, ?_⟩
   intro i t ht
   have hi := hbound i t ht
-  have hsq : ε ^ 2 = δ / (n : ℝ) := by
+  have hsq : ε ^ (2 : ℕ) = δ / (n : ℝ) := by
     dsimp only [ε]
     exact Real.sq_sqrt (div_nonneg hδ.le hnR.le)
   rw [hsq, Nat.cast_pred hn] at hi

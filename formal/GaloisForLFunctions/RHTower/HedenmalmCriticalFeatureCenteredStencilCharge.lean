@@ -23,7 +23,7 @@ theorem finite_offLine_card_mul_centeredStencilLocalCharge_le_offLineLatticeBudg
     (hlocal : ∀ q ∈ S, c ≤ ∑ j ∈ J,
       ((criticalFeatureCauchyKernelTest
         ((round (xiSpectralPoint q).re + j : ℤ) : ℝ)
-        (xiSpectralPoint q)) ^ 2).re) :
+        (xiSpectralPoint q)) ^ (2 : ℕ)).re) :
     (S.card : ℝ) * c ≤ criticalFeaturePrimeGammaOffLineLatticeBudget K := by
   calc
     (S.card : ℝ) * c = ∑ _q ∈ S, c := by simp
@@ -40,7 +40,7 @@ theorem finite_offLine_card_mul_centeredStencilLocalCharge_le_offLineLatticeBudg
         exact hcenters q hq j hj
       have hoffeq (j : ℤ) :
           ((criticalFeatureCauchyKernelTest (j : ℝ)
-            (xiSpectralPoint q)) ^ 2).re =
+            (xiSpectralPoint q)) ^ (2 : ℕ)).re =
             offLineCriticalFeatureHolomorphicEnergy (j : ℝ) q := by
         rw [offLineCriticalFeatureHolomorphicEnergy, if_neg (hoff q hq)]
       have hinj : Set.InjOn (fun j : ℤ => kq + j) J := by

@@ -216,12 +216,12 @@ theorem hasDerivAt_blackHoleHigherMultipoleRGKernel
   field_simp [hnu]
 
 /-- The paper's complete normalized response for `ell >= 1`, after the dressed running variable
-`y = -eta^2 tau / 2` is inserted.  The second term is exactly `-eta Phi'(y)/2`. -/
+`y = -eta^(2 : ℕ) tau / 2` is inserted.  The second term is exactly `-eta Phi'(y)/2`. -/
 def blackHoleHigherMultipoleDressedResponse
     (seed nu eta tau : ℂ) : ℂ :=
-  blackHoleHigherMultipoleRGKernel seed nu (-1 / 2 * eta ^ 2 * tau) -
+  blackHoleHigherMultipoleRGKernel seed nu (-1 / 2 * eta ^ (2 : ℕ) * tau) -
     1 / 2 * eta * seed *
-      Complex.exp (-4 * nu * (-1 / 2 * eta ^ 2 * tau))
+      Complex.exp (-4 * nu * (-1 / 2 * eta ^ (2 : ℕ) * tau))
 
 /-- **Complete higher-multipole value relation.**  The full Schwarzschild response is an affine
 observation of one exponential of the hypertranscendental dressed-log source. -/
@@ -230,9 +230,9 @@ theorem blackHoleHigherMultipoleDressedResponse_eq_exponentialAffine
     blackHoleHigherMultipoleDressedResponse seed nu eta tau =
       seed / (-4 * nu) *
         ((1 + 2 * nu * eta) *
-          Complex.exp (2 * nu * eta ^ 2 * tau) - 1) := by
-  have harg : -4 * nu * (-1 / 2 * eta ^ 2 * tau) =
-      2 * nu * eta ^ 2 * tau := by ring
+          Complex.exp (2 * nu * eta ^ (2 : ℕ) * tau) - 1) := by
+  have harg : -4 * nu * (-1 / 2 * eta ^ (2 : ℕ) * tau) =
+      2 * nu * eta ^ (2 : ℕ) * tau := by ring
   rw [blackHoleHigherMultipoleDressedResponse,
     blackHoleHigherMultipoleRGKernel, harg]
   field_simp [hnu]
@@ -248,7 +248,7 @@ theorem blackHoleHigherMultipoleDressedResponse_eq_phaseReadout
     (seed nu eta tau : ℂ) (hnu : nu ≠ 0) :
     blackHoleHigherMultipoleDressedResponse seed nu eta tau =
       blackHoleHigherMultipolePhaseReadout seed nu eta
-        (Complex.exp (2 * nu * eta ^ 2 * tau)) := by
+        (Complex.exp (2 * nu * eta ^ (2 : ℕ) * tau)) := by
   simpa [blackHoleHigherMultipolePhaseReadout] using
     blackHoleHigherMultipoleDressedResponse_eq_exponentialAffine
       seed nu eta tau hnu
@@ -284,13 +284,13 @@ theorem blackHoleHigherMultipolePhaseReadout_injective
 /-- The monopole response written directly in terms of its exponential RG phase `phase`. -/
 def blackHoleMonopoleDressedResponse (eta phase : ℂ) : ℂ :=
   ((3 / 2) * phase - 1 / 3) / (1 - phase) +
-    49 / 18 * eta * phase / (1 - phase) ^ 2
+    49 / 18 * eta * phase / (1 - phase) ^ (2 : ℕ)
 
 /-- **Cleared monopole value relation.**  Away from the pole `phase = 1`, the full monopole
 response is algebraically related to the exponential phase by a quadratic equation. -/
 theorem blackHoleMonopoleDressedResponse_cleared
     (eta phase : ℂ) (hphase : phase ≠ 1) :
-    blackHoleMonopoleDressedResponse eta phase * (1 - phase) ^ 2 =
+    blackHoleMonopoleDressedResponse eta phase * (1 - phase) ^ (2 : ℕ) =
       ((3 / 2) * phase - 1 / 3) * (1 - phase) +
         49 / 18 * eta * phase := by
   rw [blackHoleMonopoleDressedResponse]
@@ -322,12 +322,12 @@ theorem hypertranscendentalOver_blackHoleHigherMultipoleResponse
     (haffine : 1 + 2 * nu * eta ≠ 0)
     (htau : HypertranscendentalOver F tau)
     (hlog : phase′ / phase =
-      (algebraMap F E (2 * nu * eta ^ 2) * tau)′) :
+      (algebraMap F E (2 * nu * eta ^ (2 : ℕ)) * tau)′) :
     HypertranscendentalOver F
       (algebraMap F E (seed / (-4 * nu)) *
         (algebraMap F E (1 + 2 * nu * eta) * phase - 1)) := by
   apply hypertranscendentalOver_exponentialAffineObservable
-    (a := 2 * nu * eta ^ 2) (b := 1 + 2 * nu * eta)
+    (a := 2 * nu * eta ^ (2 : ℕ)) (b := 1 + 2 * nu * eta)
       (c := seed / (-4 * nu))
   · exact mul_ne_zero (mul_ne_zero (by norm_num) hnu) (pow_ne_zero 2 heta)
   · exact haffine
@@ -344,7 +344,7 @@ theorem hypertranscendentalOver_blackHoleMonopoleResponse
     [CharZero F] [CharZero E]
     {phase response : E} {eta : F} (heta : eta ≠ 0)
     (hphase : HypertranscendentalOver F phase)
-    (hrel : response * (1 - phase) ^ 2 =
+    (hrel : response * (1 - phase) ^ (2 : ℕ) =
       ((3 / 2) * phase - 1 / 3) * (1 - phase) +
         algebraMap F E (49 / 18 * eta) * phase) :
     HypertranscendentalOver F response := by
@@ -353,7 +353,7 @@ theorem hypertranscendentalOver_blackHoleMonopoleResponse
     ⟨response, subset_differentialAdjoin F ({response} : Set E) rfl⟩
   let X : MvPolynomial (Fin 1) S := MvPolynomial.X 0
   let Q : MvPolynomial (Fin 1) S :=
-    MvPolynomial.C responseS * (1 - X) ^ 2 -
+    MvPolynomial.C responseS * (1 - X) ^ (2 : ℕ) -
       (MvPolynomial.C (algebraMap F S (3 / 2)) * X -
         MvPolynomial.C (algebraMap F S (1 / 3))) * (1 - X) -
       MvPolynomial.C (algebraMap F S (49 / 18 * eta)) * X

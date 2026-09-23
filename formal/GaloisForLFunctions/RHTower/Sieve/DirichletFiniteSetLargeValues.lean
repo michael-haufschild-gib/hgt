@@ -101,9 +101,9 @@ theorem largeValues_dirPoly_finset
     (hdelta : 0 < delta) (hT : 0 ≤ T)
     (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
     (hband : ∀ r ∈ S, delta / 2 ≤ lam r ∧ lam r + delta / 2 ≤ T) :
-    ∑ r ∈ S, ‖dirPoly N a (lam r)‖ ^ 2
+    ∑ r ∈ S, ‖dirPoly N a (lam r)‖ ^ (2 : ℕ)
       ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) *
-          (1 / delta + 2 * Real.log N) * ∑ m : Fin N, ‖a m‖ ^ 2 := by
+          (1 / delta + 2 * Real.log N) * ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ) := by
   by_cases hS : S.Nonempty
   · let ext : ℕ → ℝ := finsetSeparatedExtension S hS lam delta
     let R : ℕ := S.card - 1
@@ -123,7 +123,7 @@ theorem largeValues_dirPoly_finset
       (finsetSeparatedExtension_gap S hS lam hdelta hgap) hlow R hhigh
     rw [hRsucc] at hbase
     rw [sum_finset_eq_sum_extension S hS lam delta
-      (fun t => ‖dirPoly N a t‖ ^ 2)]
+      (fun t => ‖dirPoly N a t‖ ^ (2 : ℕ))]
     exact hbase
   · have hempty : S = ∅ := Finset.not_nonempty_iff_eq_empty.mp hS
     subst S
@@ -138,13 +138,13 @@ theorem card_largeValues_dirPoly_finset
     (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
     (hband : ∀ r ∈ S, delta / 2 ≤ lam r ∧ lam r + delta / 2 ≤ T)
     (hbig : ∀ r ∈ S, V ≤ ‖dirPoly N a (lam r)‖) :
-    (S.card : ℝ) * V ^ 2
+    (S.card : ℝ) * V ^ (2 : ℕ)
       ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) *
-          (1 / delta + 2 * Real.log N) * ∑ m : Fin N, ‖a m‖ ^ 2 := by
-  have hlower : (S.card : ℝ) * V ^ 2 ≤
-      ∑ r ∈ S, ‖dirPoly N a (lam r)‖ ^ 2 := by
+          (1 / delta + 2 * Real.log N) * ∑ m : Fin N, ‖a m‖ ^ (2 : ℕ) := by
+  have hlower : (S.card : ℝ) * V ^ (2 : ℕ) ≤
+      ∑ r ∈ S, ‖dirPoly N a (lam r)‖ ^ (2 : ℕ) := by
     calc
-      (S.card : ℝ) * V ^ 2 = ∑ _r ∈ S, V ^ 2 := by
+      (S.card : ℝ) * V ^ (2 : ℕ) = ∑ _r ∈ S, V ^ (2 : ℕ) := by
         rw [Finset.sum_const, nsmul_eq_mul]
       _ ≤ _ := Finset.sum_le_sum fun r hr =>
         pow_le_pow_left₀ hV.le (hbig r hr) 2

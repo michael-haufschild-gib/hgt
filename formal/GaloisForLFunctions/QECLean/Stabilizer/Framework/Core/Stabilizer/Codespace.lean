@@ -157,7 +157,7 @@ lemma exists_codespace_state (S : StabilizerGroup n) : ∃ ψ : NQubitState n, I
     refine ⟨(stabilizerSum S).mulVec v, hv, ?_⟩
     intro g hg
     simp +decide [mul_stabilizerSum_eq S g hg]
-  refine ⟨⟨fun i => v i / Real.sqrt (∑ i, ‖v i‖ ^ 2), ?_⟩, ?_⟩
+  refine ⟨⟨fun i => v i / Real.sqrt (∑ i, ‖v i‖ ^ (2 : ℕ)), ?_⟩, ?_⟩
   · unfold Quantum.norm
     simp +decide [div_pow, Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _)]
     rw [← Finset.sum_div, div_self (ne_of_gt (lt_of_le_of_ne

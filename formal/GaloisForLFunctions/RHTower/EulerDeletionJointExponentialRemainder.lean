@@ -14,7 +14,7 @@ The chronological moduli-2-and-3 block has the literal velocities
 Integer-normalized exponential coefficients obey the ordinary Leibniz convolution. Their
 first four positive degrees vanish as universal noncommutative ring identities. Identifying
 these coefficients with derivatives of the actual Banach-algebra exponential word proves
-`B(z)-1 = O(norm(z)^5)` at zero, directly, without a path-signature axiom or theorem.
+`B(z)-1 = O(norm(z)^(5 : ℕ))` at zero, directly, without a path-signature axiom or theorem.
 
 This is a local analytic statement about one complete arithmetic block. The infinite product
 with varying Dirichlet weights, its convergence region, and its sharpness require additional
@@ -134,7 +134,7 @@ theorem exponentialWord_zero (vs : List A) : exponentialWord vs 0 = 1 := by
 /-- The analytic remainder has order at least five, without importing any signature theorem. -/
 theorem twoThreeSourceBlock_remainder (X Y : A) :
     (fun z : ℂ => twoThreeSourceBlock X Y z - 1) =O[nhds 0]
-      (fun z : ℂ => ‖z‖^5) := by
+      (fun z : ℂ => ‖z‖^(5 : ℕ)) := by
   have heq : twoThreeSourceBlock X Y = exponentialWord (twoThreeVelocities X Y) := by
     unfold twoThreeSourceBlock
     rw [twoThreeVelocities_eq_source]

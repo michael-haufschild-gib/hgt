@@ -12,7 +12,7 @@ open Real Filter Set
 open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 
-def egbFixedChargeAGibbsReciprocal (τ t : ℝ) : ℝ := 1 / (1 + egbCoexistenceASymmetricRatio τ * t) ^ 2
+def egbFixedChargeAGibbsReciprocal (τ t : ℝ) : ℝ := 1 / (1 + egbCoexistenceASymmetricRatio τ * t) ^ (2 : ℕ)
 
 theorem egbFixedChargeAGibbsRadialScale_critical_limit (t : ℝ) :
     Tendsto (fun τ => 1 + egbCoexistenceASymmetricRatio τ * t) atBot (𝓝 (1 : ℝ)) := by
@@ -26,7 +26,7 @@ theorem egbFixedChargeAGibbsReciprocal_critical_limit (t : ℝ) :
 
 theorem egbFixedChargeAGibbsReciprocal_difference_onInterval (τ : ℝ) :
     EqOn (fun t => (egbFixedChargeAGibbsReciprocal τ t - 1) / egbCoexistenceASymmetricRatio τ)
-      (fun t => -t * (2 + egbCoexistenceASymmetricRatio τ * t) / (1 + egbCoexistenceASymmetricRatio τ * t) ^ 2)
+      (fun t => -t * (2 + egbCoexistenceASymmetricRatio τ * t) / (1 + egbCoexistenceASymmetricRatio τ * t) ^ (2 : ℕ))
       (Icc (-1 : ℝ) 1) := by
   intro t ht
   have hd := egbCoexistenceASymmetricRatio_bounds τ
@@ -38,7 +38,7 @@ theorem egbFixedChargeAGibbsReciprocal_difference_onInterval (τ : ℝ) :
 
 theorem egbFixedChargeAGibbsReciprocal_difference_eventually (t : ℝ) :
     ∀ᶠ τ in atBot, (egbFixedChargeAGibbsReciprocal τ t - 1) / egbCoexistenceASymmetricRatio τ =
-      -t * (2 + egbCoexistenceASymmetricRatio τ * t) / (1 + egbCoexistenceASymmetricRatio τ * t) ^ 2 := by
+      -t * (2 + egbCoexistenceASymmetricRatio τ * t) / (1 + egbCoexistenceASymmetricRatio τ * t) ^ (2 : ℕ) := by
   have hs := (egbFixedChargeAGibbsRadialScale_critical_limit t).eventually_const_lt (by norm_num : (0 : ℝ) < 1)
   filter_upwards [hs] with τ hs
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
@@ -55,7 +55,7 @@ theorem egbFixedChargeAGibbsReciprocal_linear_limit (t : ℝ) :
   have h := hn.div ((egbFixedChargeAGibbsRadialScale_critical_limit t).pow 2) (by norm_num)
   simp only [Pi.div_def, one_pow, div_one] at h
   have hevent : ∀ᶠ τ in atBot,
-      -t * (2 + egbCoexistenceASymmetricRatio τ * t) / (1 + egbCoexistenceASymmetricRatio τ * t) ^ 2 =
+      -t * (2 + egbCoexistenceASymmetricRatio τ * t) / (1 + egbCoexistenceASymmetricRatio τ * t) ^ (2 : ℕ) =
       (egbFixedChargeAGibbsReciprocal τ t - 1) / egbCoexistenceASymmetricRatio τ := by
     filter_upwards [egbFixedChargeAGibbsReciprocal_difference_eventually t] with τ heq
     exact heq.symm
@@ -71,9 +71,9 @@ theorem egbFixedChargeAGibbsReciprocal_uniform_bounds :
   have hd := (egbCoexistenceASymmetricRatio_bounds τ).1
   have hscale := (egbFixedChargeAInteriorScale_mapsTo τ ht).1
   have hs : 1 / 2 ≤ 1 + egbCoexistenceASymmetricRatio τ * t := by linarith
-  have hs2 : 1 / 4 ≤ (1 + egbCoexistenceASymmetricRatio τ * t) ^ 2 := by
+  have hs2 : 1 / 4 ≤ (1 + egbCoexistenceASymmetricRatio τ * t) ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (1 + egbCoexistenceASymmetricRatio τ * t - 1 / 2)]
-  have hsp : 0 < (1 + egbCoexistenceASymmetricRatio τ * t) ^ 2 := by linarith
+  have hsp : 0 < (1 + egbCoexistenceASymmetricRatio τ * t) ^ (2 : ℕ) := by linarith
   have htabs : |t| ≤ 1 := abs_le.mpr ht
   have hdabs : |egbCoexistenceASymmetricRatio τ| ≤ 1 := by rw [abs_of_pos hd]; linarith
   have hdt : |egbCoexistenceASymmetricRatio τ * t| ≤ 1 := by

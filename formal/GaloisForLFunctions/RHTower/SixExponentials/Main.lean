@@ -34,10 +34,10 @@ theorem log_two_thirds : Real.log (2 / 3) = -Real.log (3 / 2) := by
 
 /-- `(2/3)^{n³} · P · exp c < ε` follows from `log P + c < n³ log(3/2) + log ε`. -/
 theorem two_thirds_pow_mul_lt {n : ℕ} {P c ε : ℝ} (hP : 0 < P) (hε : 0 < ε)
-    (h : Real.log P + c < (n : ℝ) ^ 3 * Real.log (3 / 2) + Real.log ε) :
-    (2 / 3 : ℝ) ^ (n ^ 3) * (P * Real.exp c) < ε := by
+    (h : Real.log P + c < (n : ℝ) ^ (3 : ℕ) * Real.log (3 / 2) + Real.log ε) :
+    (2 / 3 : ℝ) ^ (n ^ (3 : ℕ)) * (P * Real.exp c) < ε := by
   have h23 : (0 : ℝ) < 2 / 3 := by norm_num
-  have e1 : (2 / 3 : ℝ) ^ (n ^ 3) = Real.exp (((n ^ 3 : ℕ) : ℝ) * Real.log (2 / 3)) := by
+  have e1 : (2 / 3 : ℝ) ^ (n ^ (3 : ℕ)) = Real.exp (((n ^ (3 : ℕ) : ℕ) : ℝ) * Real.log (2 / 3)) := by
     rw [Real.exp_nat_mul, Real.exp_log h23]
   have e2 : P = Real.exp (Real.log P) := (Real.exp_log hP).symm
   rw [e1]
@@ -48,8 +48,8 @@ theorem two_thirds_pow_mul_lt {n : ℕ} {P c ε : ℝ} (hP : 0 < P) (hε : 0 < �
 
 /-- For `N` large and `M ≥ N²`, `K₁ + K₂ N³ M < M³ log(3/2)`. -/
 theorem exists_parameter {K₁ K₂ : ℝ} (hK₁ : 0 ≤ K₁) (hK₂ : 0 ≤ K₂) :
-    ∃ N₀ : ℕ, 1 ≤ N₀ ∧ ∀ M : ℕ, N₀ ^ 2 ≤ M →
-      K₁ + K₂ * ((N₀ : ℝ) ^ 3 * M) < (M : ℝ) ^ 3 * Real.log (3 / 2) := by
+    ∃ N₀ : ℕ, 1 ≤ N₀ ∧ ∀ M : ℕ, N₀ ^ (2 : ℕ) ≤ M →
+      K₁ + K₂ * ((N₀ : ℝ) ^ (3 : ℕ) * M) < (M : ℝ) ^ (3 : ℕ) * Real.log (3 / 2) := by
   have hlog := log_three_halves_pos
   refine ⟨⌈(K₁ + 1 + K₂) / Real.log (3 / 2)⌉₊ + 1, by omega, ?_⟩
   intro M hM
@@ -64,31 +64,31 @@ theorem exists_parameter {K₁ K₂ : ℝ} (hK₁ : 0 ≤ K₁) (hK₂ : 0 ≤ K
             push_cast
             linarith
     rwa [div_le_iff₀ hlog] at h1
-  have hMr : (N : ℝ) ^ 2 ≤ M := by exact_mod_cast hM
+  have hMr : (N : ℝ) ^ (2 : ℕ) ≤ M := by exact_mod_cast hM
   have hM1 : (1 : ℝ) ≤ M := by nlinarith
-  have hN3 : (1 : ℝ) ≤ (N : ℝ) ^ 3 := one_le_pow₀ hN1
-  set T : ℝ := (N : ℝ) ^ 3 * M with hT
+  have hN3 : (1 : ℝ) ≤ (N : ℝ) ^ (3 : ℕ) := one_le_pow₀ hN1
+  set T : ℝ := (N : ℝ) ^ (3 : ℕ) * M with hT
   have hT1 : 1 ≤ T := by
     rw [hT]
     nlinarith
-  have hM3 : (N : ℝ) * T ≤ (M : ℝ) ^ 3 := by
+  have hM3 : (N : ℝ) * T ≤ (M : ℝ) ^ (3 : ℕ) := by
     rw [hT]
-    have h4 : (N : ℝ) ^ 4 ≤ (M : ℝ) ^ 2 := by
-      calc (N : ℝ) ^ 4 = ((N : ℝ) ^ 2) ^ 2 := by ring
-        _ ≤ (M : ℝ) ^ 2 := pow_le_pow_left₀ (by positivity) hMr 2
-    calc (N : ℝ) * ((N : ℝ) ^ 3 * M) = (N : ℝ) ^ 4 * M := by ring
-      _ ≤ (M : ℝ) ^ 2 * M := mul_le_mul_of_nonneg_right h4 (by positivity)
-      _ = (M : ℝ) ^ 3 := by ring
+    have h4 : (N : ℝ) ^ (4 : ℕ) ≤ (M : ℝ) ^ (2 : ℕ) := by
+      calc (N : ℝ) ^ (4 : ℕ) = ((N : ℝ) ^ (2 : ℕ)) ^ (2 : ℕ) := by ring
+        _ ≤ (M : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ (by positivity) hMr 2
+    calc (N : ℝ) * ((N : ℝ) ^ (3 : ℕ) * M) = (N : ℝ) ^ (4 : ℕ) * M := by ring
+      _ ≤ (M : ℝ) ^ (2 : ℕ) * M := mul_le_mul_of_nonneg_right h4 (by positivity)
+      _ = (M : ℝ) ^ (3 : ℕ) := by ring
   calc K₁ + K₂ * T < K₁ * T + T + K₂ * T := by nlinarith [mul_nonneg hK₁ (sub_nonneg.mpr hT1)]
     _ = (K₁ + 1 + K₂) * T := by ring
     _ ≤ (N * Real.log (3 / 2)) * T := mul_le_mul_of_nonneg_right hNlog (by linarith)
     _ = Real.log (3 / 2) * (N * T) := by ring
-    _ ≤ Real.log (3 / 2) * (M : ℝ) ^ 3 := mul_le_mul_of_nonneg_left hM3 hlog.le
-    _ = (M : ℝ) ^ 3 * Real.log (3 / 2) := by ring
+    _ ≤ Real.log (3 / 2) * (M : ℝ) ^ (3 : ℕ) := mul_le_mul_of_nonneg_left hM3 hlog.le
+    _ = (M : ℝ) ^ (3 : ℕ) * Real.log (3 / 2) := by ring
 
 /-- For `M` large, `a + b (M + 1) < M³ log(3/2)`. -/
 theorem exists_M_large (a b : ℝ) : ∃ M₁ : ℕ, ∀ M : ℕ, M₁ ≤ M →
-    a + b * ((M : ℝ) + 1) < (M : ℝ) ^ 3 * Real.log (3 / 2) := by
+    a + b * ((M : ℝ) + 1) < (M : ℝ) ^ (3 : ℕ) * Real.log (3 / 2) := by
   have hlog := log_three_halves_pos
   refine ⟨⌈(|a| + 2 * |b| + 1) / Real.log (3 / 2)⌉₊ + 1, ?_⟩
   intro M hM
@@ -106,35 +106,35 @@ theorem exists_M_large (a b : ℝ) : ∃ M₁ : ℕ, ∀ M : ℕ, M₁ ≤ M →
   have habs0 : 0 ≤ |b| := abs_nonneg b
   have hab : 0 ≤ |a| * ((M : ℝ) - 1) := mul_nonneg (abs_nonneg a) (by linarith)
   have hbb : 0 ≤ |b| * ((M : ℝ) - 1) := mul_nonneg habs0 (by linarith)
-  have hM23 : (M : ℝ) ^ 2 ≤ (M : ℝ) ^ 3 := by
-    have : 0 ≤ (M : ℝ) ^ 2 * ((M : ℝ) - 1) := mul_nonneg (sq_nonneg _) (by linarith)
+  have hM23 : (M : ℝ) ^ (2 : ℕ) ≤ (M : ℝ) ^ (3 : ℕ) := by
+    have : 0 ≤ (M : ℝ) ^ (2 : ℕ) * ((M : ℝ) - 1) := mul_nonneg (sq_nonneg _) (by linarith)
     nlinarith
   calc a + b * ((M : ℝ) + 1) ≤ |a| + |b| * ((M : ℝ) + 1) := by linarith
     _ < (|a| + 2 * |b| + 1) * M := by nlinarith
     _ ≤ (M * Real.log (3 / 2)) * M := mul_le_mul_of_nonneg_right hMlog (by linarith)
-    _ = (M : ℝ) ^ 2 * Real.log (3 / 2) := by ring
-    _ ≤ (M : ℝ) ^ 3 * Real.log (3 / 2) := mul_le_mul_of_nonneg_right hM23 hlog.le
+    _ = (M : ℝ) ^ (2 : ℕ) * Real.log (3 / 2) := by ring
+    _ ≤ (M : ℝ) ^ (3 : ℕ) * Real.log (3 / 2) := mul_le_mul_of_nonneg_right hM23 hlog.le
 
 /-- **The key parameter inequality in multiplicative form.**  With `L = 2 d N³`, `M ≥ N²`, and
 the Siegel bound on `B`, the product of the Schwarz and Liouville factors is below one. -/
 theorem final_lt_one {d L N M : ℕ} {c₁ H X Y B : ℝ} (hd : 1 ≤ d) (hc₁ : 1 ≤ c₁) (hH : 1 ≤ H)
-    (hX : 0 ≤ X) (hY : 0 ≤ Y) (hL : L = 2 * d * N ^ 3) (hN : 1 ≤ N) (hM : N ^ 2 ≤ M)
-    (hB1 : 1 ≤ B) (hB : B ≤ 2 * c₁ ^ 2 * ((L : ℝ) * L) * H ^ (6 * L * N ^ 2))
-    (hpar : (d * Real.log (2 * c₁ ^ 2) + 2 * d * Real.log (4 * (d : ℝ) ^ 2))
-      + (12 * d + 36 * (d : ℝ) ^ 2 * Real.log H + 16 * d * X * Y) * ((N : ℝ) ^ 3 * M)
-      < (M : ℝ) ^ 3 * Real.log (3 / 2)) :
-    (2 / 3 : ℝ) ^ (M ^ 3) * ((((L : ℝ) * L) * B) ^ d * H ^ (6 * L * (M + 1) * d)
+    (hX : 0 ≤ X) (hY : 0 ≤ Y) (hL : L = 2 * d * N ^ (3 : ℕ)) (hN : 1 ≤ N) (hM : N ^ (2 : ℕ) ≤ M)
+    (hB1 : 1 ≤ B) (hB : B ≤ 2 * c₁ ^ (2 : ℕ) * ((L : ℝ) * L) * H ^ (6 * L * N ^ (2 : ℕ)))
+    (hpar : (d * Real.log (2 * c₁ ^ (2 : ℕ)) + 2 * d * Real.log (4 * (d : ℝ) ^ (2 : ℕ)))
+      + (12 * d + 36 * (d : ℝ) ^ (2 : ℕ) * Real.log H + 16 * d * X * Y) * ((N : ℝ) ^ (3 : ℕ) * M)
+      < (M : ℝ) ^ (3 : ℕ) * Real.log (3 / 2)) :
+    (2 / 3 : ℝ) ^ (M ^ (3 : ℕ)) * ((((L : ℝ) * L) * B) ^ d * H ^ (6 * L * (M + 1) * d)
       * Real.exp (4 * L * X * Y * (M + 1))) < 1 := by
   have hlogH : 0 ≤ Real.log H := Real.log_nonneg hH
   have hHpos : 0 < H := by linarith
   have hdr : (1 : ℝ) ≤ d := by exact_mod_cast hd
   have hd0 : (0 : ℝ) ≤ d := by linarith
   have hNr : (1 : ℝ) ≤ N := by exact_mod_cast hN
-  have hMr : (N : ℝ) ^ 2 ≤ M := by exact_mod_cast hM
-  have hN2 : (1 : ℝ) ≤ (N : ℝ) ^ 2 := one_le_pow₀ hNr
+  have hMr : (N : ℝ) ^ (2 : ℕ) ≤ M := by exact_mod_cast hM
+  have hN2 : (1 : ℝ) ≤ (N : ℝ) ^ (2 : ℕ) := one_le_pow₀ hNr
   have hM1 : (1 : ℝ) ≤ M := le_trans hN2 hMr
-  have hLr : (L : ℝ) = 2 * d * (N : ℝ) ^ 3 := by rw [hL]; push_cast; ring
-  have hLL : (L : ℝ) * L = 4 * (d : ℝ) ^ 2 * (N : ℝ) ^ 6 := by rw [hLr]; ring
+  have hLr : (L : ℝ) = 2 * d * (N : ℝ) ^ (3 : ℕ) := by rw [hL]; push_cast; ring
+  have hLL : (L : ℝ) * L = 4 * (d : ℝ) ^ (2 : ℕ) * (N : ℝ) ^ (6 : ℕ) := by rw [hLr]; ring
   have hLLpos : (0 : ℝ) < (L : ℝ) * L := by rw [hLL]; positivity
   have hQpos : 0 < (L : ℝ) * L * B := mul_pos hLLpos (by linarith)
   have hP : 0 < ((L : ℝ) * L * B) ^ d * H ^ (6 * L * (M + 1) * d) :=
@@ -142,79 +142,79 @@ theorem final_lt_one {d L N M : ℕ} {c₁ H X Y B : ℝ} (hd : 1 ≤ d) (hc₁ 
   apply two_thirds_pow_mul_lt hP one_pos
   rw [Real.log_one, add_zero, Real.log_mul (pow_pos hQpos d).ne' (pow_pos hHpos _).ne',
     Real.log_pow, Real.log_pow, Real.log_mul hLLpos.ne' (by linarith)]
-  have hlogB : Real.log B ≤ Real.log (2 * c₁ ^ 2) + Real.log ((L : ℝ) * L)
-      + ((6 * L * N ^ 2 : ℕ) : ℝ) * Real.log H := by
-    calc Real.log B ≤ Real.log (2 * c₁ ^ 2 * ((L : ℝ) * L) * H ^ (6 * L * N ^ 2)) :=
+  have hlogB : Real.log B ≤ Real.log (2 * c₁ ^ (2 : ℕ)) + Real.log ((L : ℝ) * L)
+      + ((6 * L * N ^ (2 : ℕ) : ℕ) : ℝ) * Real.log H := by
+    calc Real.log B ≤ Real.log (2 * c₁ ^ (2 : ℕ) * ((L : ℝ) * L) * H ^ (6 * L * N ^ (2 : ℕ))) :=
           Real.log_le_log (by linarith) hB
-      _ = Real.log (2 * c₁ ^ 2) + Real.log ((L : ℝ) * L)
-          + ((6 * L * N ^ 2 : ℕ) : ℝ) * Real.log H := by
+      _ = Real.log (2 * c₁ ^ (2 : ℕ)) + Real.log ((L : ℝ) * L)
+          + ((6 * L * N ^ (2 : ℕ) : ℕ) : ℝ) * Real.log H := by
           rw [Real.log_mul (by positivity) (pow_pos hHpos _).ne',
             Real.log_mul (by positivity) hLLpos.ne', Real.log_pow]
-  have hlogLL : Real.log ((L : ℝ) * L) ≤ Real.log (4 * (d : ℝ) ^ 2) + 6 * N := by
+  have hlogLL : Real.log ((L : ℝ) * L) ≤ Real.log (4 * (d : ℝ) ^ (2 : ℕ)) + 6 * N := by
     rw [hLL, Real.log_mul (by positivity) (by positivity), Real.log_pow]
     have := Real.log_le_sub_one_of_pos (by linarith : (0 : ℝ) < N)
     push_cast
     linarith
-  set S : ℝ := (N : ℝ) ^ 3 * M with hS
-  have hN3 : (1 : ℝ) ≤ (N : ℝ) ^ 3 := one_le_pow₀ hNr
+  set S : ℝ := (N : ℝ) ^ (3 : ℕ) * M with hS
+  have hN3 : (1 : ℝ) ≤ (N : ℝ) ^ (3 : ℕ) := one_le_pow₀ hNr
   have hS1 : (N : ℝ) ≤ S := by
     rw [hS]
-    have h1 : (N : ℝ) ≤ (N : ℝ) ^ 3 := by
+    have h1 : (N : ℝ) ≤ (N : ℝ) ^ (3 : ℕ) := by
       calc (N : ℝ) = N * 1 := by ring
-        _ ≤ N * (N : ℝ) ^ 2 := mul_le_mul_of_nonneg_left hN2 (by linarith)
-        _ = (N : ℝ) ^ 3 := by ring
-    calc (N : ℝ) ≤ (N : ℝ) ^ 3 := h1
-      _ = (N : ℝ) ^ 3 * 1 := by ring
-      _ ≤ (N : ℝ) ^ 3 * M := mul_le_mul_of_nonneg_left hM1 (by linarith)
-  have hS5 : (N : ℝ) ^ 5 ≤ S := by
+        _ ≤ N * (N : ℝ) ^ (2 : ℕ) := mul_le_mul_of_nonneg_left hN2 (by linarith)
+        _ = (N : ℝ) ^ (3 : ℕ) := by ring
+    calc (N : ℝ) ≤ (N : ℝ) ^ (3 : ℕ) := h1
+      _ = (N : ℝ) ^ (3 : ℕ) * 1 := by ring
+      _ ≤ (N : ℝ) ^ (3 : ℕ) * M := mul_le_mul_of_nonneg_left hM1 (by linarith)
+  have hS5 : (N : ℝ) ^ (5 : ℕ) ≤ S := by
     rw [hS]
-    calc (N : ℝ) ^ 5 = (N : ℝ) ^ 3 * (N : ℝ) ^ 2 := by ring
-      _ ≤ (N : ℝ) ^ 3 * M := mul_le_mul_of_nonneg_left hMr (by linarith)
-  have hS3 : (N : ℝ) ^ 3 * ((M : ℝ) + 1) ≤ 2 * S := by
+    calc (N : ℝ) ^ (5 : ℕ) = (N : ℝ) ^ (3 : ℕ) * (N : ℝ) ^ (2 : ℕ) := by ring
+      _ ≤ (N : ℝ) ^ (3 : ℕ) * M := mul_le_mul_of_nonneg_left hMr (by linarith)
+  have hS3 : (N : ℝ) ^ (3 : ℕ) * ((M : ℝ) + 1) ≤ 2 * S := by
     rw [hS]
     have : (M : ℝ) + 1 ≤ 2 * M := by linarith
-    calc (N : ℝ) ^ 3 * ((M : ℝ) + 1) ≤ (N : ℝ) ^ 3 * (2 * M) :=
+    calc (N : ℝ) ^ (3 : ℕ) * ((M : ℝ) + 1) ≤ (N : ℝ) ^ (3 : ℕ) * (2 * M) :=
           mul_le_mul_of_nonneg_left this (by linarith)
-      _ = 2 * ((N : ℝ) ^ 3 * M) := by ring
-  have hpos1 : 0 ≤ Real.log (2 * c₁ ^ 2) := Real.log_nonneg (by nlinarith)
-  have hpos2 : 0 ≤ Real.log (4 * (d : ℝ) ^ 2) := Real.log_nonneg (by nlinarith)
-  have e1 : ((6 * L * N ^ 2 : ℕ) : ℝ) * Real.log H = 12 * (d : ℝ) * (N : ℝ) ^ 5 * Real.log H := by
+      _ = 2 * ((N : ℝ) ^ (3 : ℕ) * M) := by ring
+  have hpos1 : 0 ≤ Real.log (2 * c₁ ^ (2 : ℕ)) := Real.log_nonneg (by nlinarith)
+  have hpos2 : 0 ≤ Real.log (4 * (d : ℝ) ^ (2 : ℕ)) := Real.log_nonneg (by nlinarith)
+  have e1 : ((6 * L * N ^ (2 : ℕ) : ℕ) : ℝ) * Real.log H = 12 * (d : ℝ) * (N : ℝ) ^ (5 : ℕ) * Real.log H := by
     push_cast
     rw [hLr]
     ring
   have e2 : ((6 * L * (M + 1) * d : ℕ) : ℝ) * Real.log H
-      = 12 * (d : ℝ) ^ 2 * Real.log H * ((N : ℝ) ^ 3 * ((M : ℝ) + 1)) := by
+      = 12 * (d : ℝ) ^ (2 : ℕ) * Real.log H * ((N : ℝ) ^ (3 : ℕ) * ((M : ℝ) + 1)) := by
     push_cast
     rw [hLr]
     ring
   have e3 : 4 * (L : ℝ) * X * Y * ((M : ℝ) + 1)
-      = 8 * (d : ℝ) * X * Y * ((N : ℝ) ^ 3 * ((M : ℝ) + 1)) := by
+      = 8 * (d : ℝ) * X * Y * ((N : ℝ) ^ (3 : ℕ) * ((M : ℝ) + 1)) := by
     rw [hLr]
     ring
   have hXY : 0 ≤ X * Y := mul_nonneg hX hY
-  have hc2 : 0 ≤ 12 * (d : ℝ) ^ 2 * Real.log H := mul_nonneg (by positivity) hlogH
+  have hc2 : 0 ≤ 12 * (d : ℝ) ^ (2 : ℕ) * Real.log H := mul_nonneg (by positivity) hlogH
   have hc3 : 0 ≤ 8 * (d : ℝ) * X * Y := mul_nonneg (mul_nonneg (by positivity) hX) hY
-  have t1 : (d : ℝ) * Real.log B ≤ d * Real.log (2 * c₁ ^ 2) + d * Real.log ((L : ℝ) * L)
-      + 12 * (d : ℝ) ^ 2 * Real.log H * (N : ℝ) ^ 5 := by
-    calc (d : ℝ) * Real.log B ≤ d * (Real.log (2 * c₁ ^ 2) + Real.log ((L : ℝ) * L)
-          + ((6 * L * N ^ 2 : ℕ) : ℝ) * Real.log H) := mul_le_mul_of_nonneg_left hlogB hd0
-      _ = d * Real.log (2 * c₁ ^ 2) + d * Real.log ((L : ℝ) * L)
-          + 12 * (d : ℝ) ^ 2 * Real.log H * (N : ℝ) ^ 5 := by
+  have t1 : (d : ℝ) * Real.log B ≤ d * Real.log (2 * c₁ ^ (2 : ℕ)) + d * Real.log ((L : ℝ) * L)
+      + 12 * (d : ℝ) ^ (2 : ℕ) * Real.log H * (N : ℝ) ^ (5 : ℕ) := by
+    calc (d : ℝ) * Real.log B ≤ d * (Real.log (2 * c₁ ^ (2 : ℕ)) + Real.log ((L : ℝ) * L)
+          + ((6 * L * N ^ (2 : ℕ) : ℕ) : ℝ) * Real.log H) := mul_le_mul_of_nonneg_left hlogB hd0
+      _ = d * Real.log (2 * c₁ ^ (2 : ℕ)) + d * Real.log ((L : ℝ) * L)
+          + 12 * (d : ℝ) ^ (2 : ℕ) * Real.log H * (N : ℝ) ^ (5 : ℕ) := by
           rw [e1]
           ring
-  have t2 : (d : ℝ) * Real.log ((L : ℝ) * L) ≤ d * Real.log (4 * (d : ℝ) ^ 2) + 6 * d * N := by
-    calc (d : ℝ) * Real.log ((L : ℝ) * L) ≤ d * (Real.log (4 * (d : ℝ) ^ 2) + 6 * N) :=
+  have t2 : (d : ℝ) * Real.log ((L : ℝ) * L) ≤ d * Real.log (4 * (d : ℝ) ^ (2 : ℕ)) + 6 * d * N := by
+    calc (d : ℝ) * Real.log ((L : ℝ) * L) ≤ d * (Real.log (4 * (d : ℝ) ^ (2 : ℕ)) + 6 * N) :=
           mul_le_mul_of_nonneg_left hlogLL hd0
-      _ = d * Real.log (4 * (d : ℝ) ^ 2) + 6 * d * N := by ring
-  have t3 : 12 * (d : ℝ) ^ 2 * Real.log H * (N : ℝ) ^ 5 ≤ 12 * (d : ℝ) ^ 2 * Real.log H * S :=
+      _ = d * Real.log (4 * (d : ℝ) ^ (2 : ℕ)) + 6 * d * N := by ring
+  have t3 : 12 * (d : ℝ) ^ (2 : ℕ) * Real.log H * (N : ℝ) ^ (5 : ℕ) ≤ 12 * (d : ℝ) ^ (2 : ℕ) * Real.log H * S :=
     mul_le_mul_of_nonneg_left hS5 hc2
-  have t4 : 12 * (d : ℝ) ^ 2 * Real.log H * ((N : ℝ) ^ 3 * ((M : ℝ) + 1))
-      ≤ 12 * (d : ℝ) ^ 2 * Real.log H * (2 * S) := mul_le_mul_of_nonneg_left hS3 hc2
-  have t5 : 8 * (d : ℝ) * X * Y * ((N : ℝ) ^ 3 * ((M : ℝ) + 1))
+  have t4 : 12 * (d : ℝ) ^ (2 : ℕ) * Real.log H * ((N : ℝ) ^ (3 : ℕ) * ((M : ℝ) + 1))
+      ≤ 12 * (d : ℝ) ^ (2 : ℕ) * Real.log H * (2 * S) := mul_le_mul_of_nonneg_left hS3 hc2
+  have t5 : 8 * (d : ℝ) * X * Y * ((N : ℝ) ^ (3 : ℕ) * ((M : ℝ) + 1))
       ≤ 8 * (d : ℝ) * X * Y * (2 * S) := mul_le_mul_of_nonneg_left hS3 hc3
   have t6 : 6 * (d : ℝ) * N ≤ 6 * (d : ℝ) * S := mul_le_mul_of_nonneg_left hS1 (by positivity)
-  have hpar2 : (12 * d + 36 * (d : ℝ) ^ 2 * Real.log H + 16 * d * X * Y) * S
-      = 12 * d * S + 36 * (d : ℝ) ^ 2 * Real.log H * S + 16 * d * X * Y * S := by ring
+  have hpar2 : (12 * d + 36 * (d : ℝ) ^ (2 : ℕ) * Real.log H + 16 * d * X * Y) * S
+      = 12 * d * S + 36 * (d : ℝ) ^ (2 : ℕ) * Real.log H * S + 16 * d * X * Y * S := by ring
   rw [hpar2] at hpar
   rw [e2, e3, mul_add]
   linarith [t1, t2, t3, t4, t5, t6, hpar]
@@ -253,25 +253,25 @@ theorem AlgData.false (A : AlgData) : False := by
   have hX0 := A.toData.X_nonneg
   have hY0 := A.toData.Y_pos
   have hdr : (1 : ℝ) ≤ d := by exact_mod_cast hd1
-  have hK₁ : 0 ≤ d * Real.log (2 * c₁ ^ 2) + 2 * d * Real.log (4 * (d : ℝ) ^ 2) := by
-    have h1 : 0 ≤ Real.log (2 * c₁ ^ 2) := Real.log_nonneg (by nlinarith)
-    have h2 : 0 ≤ Real.log (4 * (d : ℝ) ^ 2) := Real.log_nonneg (by nlinarith)
+  have hK₁ : 0 ≤ d * Real.log (2 * c₁ ^ (2 : ℕ)) + 2 * d * Real.log (4 * (d : ℝ) ^ (2 : ℕ)) := by
+    have h1 : 0 ≤ Real.log (2 * c₁ ^ (2 : ℕ)) := Real.log_nonneg (by nlinarith)
+    have h2 : 0 ≤ Real.log (4 * (d : ℝ) ^ (2 : ℕ)) := Real.log_nonneg (by nlinarith)
     positivity
-  have hK₂ : 0 ≤ 12 * d + 36 * (d : ℝ) ^ 2 * Real.log A.Hb
+  have hK₂ : 0 ≤ 12 * d + 36 * (d : ℝ) ^ (2 : ℕ) * Real.log A.Hb
       + 16 * d * A.toData.X * A.toData.Y := by
     have := Real.log_nonneg hH1
     positivity
   obtain ⟨N, hN1, hpar⟩ := exists_parameter hK₁ hK₂
-  set L := 2 * d * N ^ 3 with hL
-  set M₀ := N ^ 2 with hM₀
+  set L := 2 * d * N ^ (3 : ℕ) with hL
+  set M₀ := N ^ (2 : ℕ) with hM₀
   have hLpos : 0 < L := by positivity
   have hM₀pos : 0 < M₀ := by positivity
-  have h2 : 2 * M₀ ^ 3 ≤ L * L := by
+  have h2 : 2 * M₀ ^ (3 : ℕ) ≤ L * L := by
     rw [hL, hM₀]
     have hdd : 1 ≤ d * d := Nat.one_le_iff_ne_zero.mpr (by positivity)
-    calc 2 * (N ^ 2) ^ 3 = 2 * N ^ 6 := by ring
-      _ ≤ (4 * (d * d)) * N ^ 6 := Nat.mul_le_mul_right _ (by omega)
-      _ = 2 * d * N ^ 3 * (2 * d * N ^ 3) := by ring
+    calc 2 * (N ^ (2 : ℕ)) ^ (3 : ℕ) = 2 * N ^ (6 : ℕ) := by ring
+      _ ≤ (4 * (d * d)) * N ^ (6 : ℕ) := Nat.mul_le_mul_right _ (by omega)
+      _ = 2 * d * N ^ (3 : ℕ) * (2 * d * N ^ (3 : ℕ)) := by ring
   obtain ⟨ξ, B, hξ, hker, hB1, hB, hBle⟩ := A.exists_coefficients hLpos hM₀pos h2
   have hB0 : 0 ≤ B := by linarith
   have hLr : (0 : ℝ) < (L : ℝ) := by exact_mod_cast hLpos
@@ -285,7 +285,7 @@ theorem AlgData.false (A : AlgData) : False := by
     | succ k ih =>
       intro m
       by_contra hne
-      have hMge : N ^ 2 ≤ M₀ + k := by omega
+      have hMge : N ^ (2 : ℕ) ≤ M₀ + k := by omega
       have hz : ‖A.toData.pt m‖ ≤ ((M₀ + k : ℕ) + 1) * A.toData.Y := by
         have := A.toData.norm_pt_le m
         push_cast at this ⊢
@@ -298,7 +298,7 @@ theorem AlgData.false (A : AlgData) : False := by
           = Real.exp (4 * L * A.toData.X * A.toData.Y * (((M₀ + k : ℕ) : ℝ) + 1)) := by
         congr 1
         ring
-      have hup' : ‖A.F ξ (A.toData.pt m)‖ ≤ (2 / 3 : ℝ) ^ ((M₀ + k) ^ 3)
+      have hup' : ‖A.F ξ (A.toData.pt m)‖ ≤ (2 / 3 : ℝ) ^ ((M₀ + k) ^ (3 : ℕ))
           * (((L : ℝ) * L * B) * Real.exp (4 * L * A.toData.X * A.toData.Y
             * (((M₀ + k : ℕ) : ℝ) + 1))) := by
         calc ‖A.F ξ (A.toData.pt m)‖ ≤ _ := hup
@@ -310,7 +310,7 @@ theorem AlgData.false (A : AlgData) : False := by
           * (((L : ℝ) * L * B) * A.Hb ^ (6 * L * (M₀ + (k + 1)))) ^ (d - 1) := by
         calc (1 : ℝ) ≤ _ := hlow
           _ = _ := by ring
-      have hfin' : (2 / 3 : ℝ) ^ ((M₀ + k) ^ 3) * (((L : ℝ) * L * B) ^ d
+      have hfin' : (2 / 3 : ℝ) ^ ((M₀ + k) ^ (3 : ℕ)) * (((L : ℝ) * L * B) ^ d
           * (A.Hb ^ (6 * L * (M₀ + (k + 1)))) ^ d
           * Real.exp (4 * L * A.toData.X * A.toData.Y * (((M₀ + k : ℕ) : ℝ) + 1))) < 1 := by
         rw [hapow]
@@ -341,7 +341,7 @@ theorem AlgData.false (A : AlgData) : False := by
     have hup := A.norm_F_le_of_vanishing ξ hB hB0 hvank hzle
     have hbig := hM₁ (M₀ + (M₁ + ⌈‖z‖ / A.toData.Y⌉₊)) (by omega)
     have hQpos : 0 < (L : ℝ) * L * B := by positivity
-    have hlt : (2 / 3 : ℝ) ^ ((M₀ + (M₁ + ⌈‖z‖ / A.toData.Y⌉₊)) ^ 3)
+    have hlt : (2 / 3 : ℝ) ^ ((M₀ + (M₁ + ⌈‖z‖ / A.toData.Y⌉₊)) ^ (3 : ℕ))
         * (((L : ℝ) * L * B) * Real.exp (4 * L * A.toData.X * A.toData.Y
           * (((M₀ + (M₁ + ⌈‖z‖ / A.toData.Y⌉₊) : ℕ) : ℝ) + 1)))
         < ‖A.F ξ z‖ := by
@@ -355,7 +355,7 @@ theorem AlgData.false (A : AlgData) : False := by
       congr 1
       ring
     rw [hexp] at hup
-    have hup' : ‖A.F ξ z‖ ≤ (2 / 3 : ℝ) ^ ((M₀ + (M₁ + ⌈‖z‖ / A.toData.Y⌉₊)) ^ 3)
+    have hup' : ‖A.F ξ z‖ ≤ (2 / 3 : ℝ) ^ ((M₀ + (M₁ + ⌈‖z‖ / A.toData.Y⌉₊)) ^ (3 : ℕ))
         * (((L : ℝ) * L * B) * Real.exp (4 * L * A.toData.X * A.toData.Y
           * (((M₀ + (M₁ + ⌈‖z‖ / A.toData.Y⌉₊) : ℕ) : ℝ) + 1))) := by
       calc ‖A.F ξ z‖ ≤ _ := hup

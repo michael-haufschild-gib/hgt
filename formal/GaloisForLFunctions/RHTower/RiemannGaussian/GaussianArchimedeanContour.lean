@@ -24,7 +24,7 @@ positive infinity. -/
 lemma tendsto_exp_neg_quadratic_add_linear_atTop
     {ε : ℝ} (hε : 0 < ε) (a b c : ℝ) :
     Filter.Tendsto
-      (fun T : ℝ => Real.exp (-ε * (T - a) ^ 2 + b * T + c))
+      (fun T : ℝ => Real.exp (-ε * (T - a) ^ (2 : ℕ) + b * T + c))
       Filter.atTop (nhds 0) := by
   have hshift : Filter.Tendsto
       (fun T : ℝ => T - (a + b / (2 * ε)))
@@ -34,20 +34,20 @@ lemma tendsto_exp_neg_quadratic_add_linear_atTop
     filter_upwards with T
     simp only [id_eq, sub_eq_add_neg]
   have hsquare : Filter.Tendsto
-      (fun T : ℝ => (T - (a + b / (2 * ε))) ^ 2)
+      (fun T : ℝ => (T - (a + b / (2 * ε))) ^ (2 : ℕ))
       Filter.atTop Filter.atTop :=
     (Filter.tendsto_pow_atTop (by norm_num : (2 : ℕ) ≠ 0)).comp hshift
   have hquad : Filter.Tendsto
-      (fun T : ℝ => -ε * (T - (a + b / (2 * ε))) ^ 2)
+      (fun T : ℝ => -ε * (T - (a + b / (2 * ε))) ^ (2 : ℕ))
       Filter.atTop Filter.atBot :=
     hsquare.const_mul_atTop_of_neg (neg_lt_zero.mpr hε)
   have hadd : Filter.Tendsto
       (fun T : ℝ =>
-        -ε * (T - (a + b / (2 * ε))) ^ 2 +
-          (c + a * b + b ^ 2 / (4 * ε)))
+        -ε * (T - (a + b / (2 * ε))) ^ (2 : ℕ) +
+          (c + a * b + b ^ (2 : ℕ) / (4 * ε)))
       Filter.atTop Filter.atBot :=
     Filter.tendsto_atBot_add_const_right Filter.atTop
-      (c + a * b + b ^ 2 / (4 * ε)) hquad
+      (c + a * b + b ^ (2 : ℕ) / (4 * ε)) hquad
   refine (Real.tendsto_exp_atBot.comp hadd).congr' ?_
   filter_upwards with T
   apply congrArg Real.exp
@@ -103,7 +103,7 @@ lemma digamma_quarter_line_neg (r : ℝ) :
 
 theorem integrable_translatedGaussian (hε : 0 < ε) (t : ℝ) :
     Integrable (translatedGaussian ε t) := by
-  change Integrable (fun r : ℝ => Real.exp (-ε * (r - t) ^ 2))
+  change Integrable (fun r : ℝ => Real.exp (-ε * (r - t) ^ (2 : ℕ)))
   exact (integrable_exp_neg_mul_sq hε).comp_sub_right t
 
 theorem integral_translatedGaussian
@@ -112,10 +112,10 @@ theorem integral_translatedGaussian
       Real.sqrt (Real.pi / ε) := by
   calc
     (∫ r : ℝ, translatedGaussian ε t r) =
-        ∫ r : ℝ, Real.exp (-ε * r ^ 2) := by
+        ∫ r : ℝ, Real.exp (-ε * r ^ (2 : ℕ)) := by
       simpa only [translatedGaussian] using
         integral_sub_right_eq_self
-          (fun r : ℝ => Real.exp (-ε * r ^ 2)) t
+          (fun r : ℝ => Real.exp (-ε * r ^ (2 : ℕ))) t
     _ = Real.sqrt (Real.pi / ε) := integral_gaussian ε
 
 theorem integrable_symmetricGaussian
@@ -456,13 +456,13 @@ lemma gaussianArchimedean_criticalLine_normalization
         Real.pi * gaussianDigammaIntegral ε t =
       Real.pi *
         (gaussianArchimedeanContribution ε t -
-          4 * Real.exp (ε / 4 - ε * t ^ 2) * Real.cos (ε * t)) := by
+          4 * Real.exp (ε / 4 - ε * t ^ (2 : ℕ)) * Real.cos (ε * t)) := by
   have hpi : 0 ≤ Real.pi := Real.pi_pos.le
   have hsqrtPi : Real.sqrt Real.pi ≠ 0 :=
     (Real.sqrt_pos.2 Real.pi_pos).ne'
   have hsqrtε : Real.sqrt ε ≠ 0 :=
     (Real.sqrt_pos.2 hε).ne'
-  have hsqrtPiSq : (Real.sqrt Real.pi) ^ 2 = Real.pi :=
+  have hsqrtPiSq : (Real.sqrt Real.pi) ^ (2 : ℕ) = Real.pi :=
     Real.sq_sqrt hpi
   have hsqrt : Real.sqrt (Real.pi / ε) =
       Real.pi / Real.sqrt (Real.pi * ε) := by
@@ -486,7 +486,7 @@ theorem integral_criticalLine_completedElementary_terms_eq_archimedean
             (1 / 4 + Complex.I * (r / 2)) / 2)) =
       ((Real.pi *
         (gaussianArchimedeanContribution ε t -
-          4 * Real.exp (ε / 4 - ε * t ^ 2) *
+          4 * Real.exp (ε / 4 - ε * t ^ (2 : ℕ)) *
             Real.cos (ε * t)) : ℝ) : ℂ) := by
   rw [integral_criticalLine_completedElementary_terms hε t]
   exact_mod_cast gaussianArchimedean_criticalLine_normalization hε t
@@ -522,7 +522,7 @@ lemma completedSpectralCoordinate_archimedeanPolePoint :
 certificate normalization. -/
 theorem complexSymmetricGaussian_archimedeanPolePoint (ε t : ℝ) :
     complexSymmetricGaussian ε t archimedeanPolePoint =
-      (2 * Real.exp (ε / 4 - ε * t ^ 2) *
+      (2 * Real.exp (ε / 4 - ε * t ^ (2 : ℕ)) *
         Real.cos (ε * t) : ℝ) := by
   unfold archimedeanPolePoint complexSymmetricGaussian
   rw [complexTranslatedGaussian_neg_center]
@@ -535,10 +535,10 @@ theorem complexSymmetricGaussian_archimedeanPolePoint (ε t : ℝ) :
           (((0 : ℝ) : ℂ) - ((1 / 2 : ℝ) : ℂ) * Complex.I) := by
       rw [add_comm]
       congr 1 <;> push_cast <;> ring_nf
-    _ = (2 * Real.exp (ε * (1 / 2 : ℝ) ^ 2 - ε * (0 - t) ^ 2) *
+    _ = (2 * Real.exp (ε * (1 / 2 : ℝ) ^ (2 : ℕ) - ε * (0 - t) ^ (2 : ℕ)) *
         Real.cos (2 * ε * (1 / 2 : ℝ) * (0 - t)) : ℝ) :=
       complexTranslatedGaussian_conjugate_pair ε t 0 (1 / 2)
-    _ = (2 * Real.exp (ε / 4 - ε * t ^ 2) *
+    _ = (2 * Real.exp (ε / 4 - ε * t ^ (2 : ℕ)) *
         Real.cos (ε * t) : ℝ) := by
       norm_cast
       rw [show 2 * ε * (1 / 2 : ℝ) * (0 - t) = -(ε * t) by ring,
@@ -675,17 +675,17 @@ theorem archimedeanSpectralIntegrand_eq_regularized_sub_principal
 /-- A real Gaussian envelope which dominates the symmetric entire kernel
 on both vertical sides of the contour strip. -/
 def archimedeanVerticalGaussianBound (ε t T : ℝ) : ℝ :=
-  Real.exp (ε - ε * (T - t) ^ 2) +
-    Real.exp (ε - ε * (T + t) ^ 2)
+  Real.exp (ε - ε * (T - t) ^ (2 : ℕ)) +
+    Real.exp (ε - ε * (T + t) ^ (2 : ℕ))
 
 lemma norm_complexSymmetricGaussian_horizontal_strip_le
     {ε : ℝ} (hε : 0 < ε) (t x y : ℝ)
     (hylo : -1 ≤ y) (hyhi : y ≤ 0) :
     ‖complexSymmetricGaussian ε t
         ((x : ℂ) + (y : ℂ) * Complex.I)‖ ≤
-      Real.exp (ε - ε * (x - t) ^ 2) +
-        Real.exp (ε - ε * (x + t) ^ 2) := by
-  have hysq : y ^ 2 ≤ 1 := by nlinarith
+      Real.exp (ε - ε * (x - t) ^ (2 : ℕ)) +
+        Real.exp (ε - ε * (x + t) ^ (2 : ℕ)) := by
+  have hysq : y ^ (2 : ℕ) ≤ 1 := by nlinarith
   unfold complexSymmetricGaussian
   calc
     ‖complexTranslatedGaussian ε t
@@ -696,13 +696,13 @@ lemma norm_complexSymmetricGaussian_horizontal_strip_le
           ((x : ℂ) + (y : ℂ) * Complex.I)‖ +
         ‖complexTranslatedGaussian ε (-t)
           ((x : ℂ) + (y : ℂ) * Complex.I)‖ := norm_add_le _ _
-    _ = Real.exp (ε * y ^ 2 - ε * (x - t) ^ 2) +
-        Real.exp (ε * y ^ 2 - ε * (x + t) ^ 2) := by
+    _ = Real.exp (ε * y ^ (2 : ℕ) - ε * (x - t) ^ (2 : ℕ)) +
+        Real.exp (ε * y ^ (2 : ℕ) - ε * (x + t) ^ (2 : ℕ)) := by
       rw [norm_complexTranslatedGaussian,
         norm_complexTranslatedGaussian]
       congr 1 <;> simp
-    _ ≤ Real.exp (ε - ε * (x - t) ^ 2) +
-        Real.exp (ε - ε * (x + t) ^ 2) := by
+    _ ≤ Real.exp (ε - ε * (x - t) ^ (2 : ℕ)) +
+        Real.exp (ε - ε * (x + t) ^ (2 : ℕ)) := by
       gcongr <;>
         simpa using mul_le_mul_of_nonneg_left hysq hε.le
 
@@ -726,13 +726,13 @@ lemma norm_complexSymmetricGaussian_left_vertical_le
   calc
     ‖complexSymmetricGaussian ε t
         ((-T : ℂ) + (y : ℂ) * Complex.I)‖ ≤
-      Real.exp (ε - ε * (-T - t) ^ 2) +
-        Real.exp (ε - ε * (-T + t) ^ 2) := by
+      Real.exp (ε - ε * (-T - t) ^ (2 : ℕ)) +
+        Real.exp (ε - ε * (-T + t) ^ (2 : ℕ)) := by
       simpa only [Complex.ofReal_neg] using h
     _ = archimedeanVerticalGaussianBound ε t T := by
       unfold archimedeanVerticalGaussianBound
-      rw [show (-T - t) ^ 2 = (T + t) ^ 2 by ring,
-        show (-T + t) ^ 2 = (T - t) ^ 2 by ring,
+      rw [show (-T - t) ^ (2 : ℕ) = (T + t) ^ (2 : ℕ) by ring,
+        show (-T + t) ^ (2 : ℕ) = (T - t) ^ (2 : ℕ) by ring,
         add_comm]
 
 /-- Height-independent elementary terms plus the deliberately coarse
@@ -983,8 +983,8 @@ theorem tendsto_archimedeanVerticalMajorant
     {ε : ℝ} (hε : 0 < ε) (t : ℝ) :
     Filter.Tendsto (archimedeanVerticalMajorant ε t)
       Filter.atTop (nhds 0) := by
-  let E₁ : ℝ → ℝ := fun T => Real.exp (ε - ε * (T - t) ^ 2)
-  let E₂ : ℝ → ℝ := fun T => Real.exp (ε - ε * (T + t) ^ 2)
+  let E₁ : ℝ → ℝ := fun T => Real.exp (ε - ε * (T - t) ^ (2 : ℕ))
+  let E₂ : ℝ → ℝ := fun T => Real.exp (ε - ε * (T + t) ^ (2 : ℕ))
   let L : ℝ → ℝ := fun T => Real.exp (Real.pi * (T + 1))
   let C : ℝ := 3 + ‖Complex.log Real.pi‖
   let D : ℝ := stripDigammaExponentialConstant
@@ -1192,7 +1192,7 @@ theorem integrable_complexTranslatedGaussian_safeLine_mul_digamma
   · filter_upwards with r
     have hnormGaussian :
         ‖complexTranslatedGaussian ε c ((r : ℂ) - Complex.I)‖ =
-          Real.exp (ε - ε * (r - c) ^ 2) := by
+          Real.exp (ε - ε * (r - c) ^ (2 : ℕ)) := by
       rw [norm_complexTranslatedGaussian]
       congr 1
       simp
@@ -1208,13 +1208,13 @@ theorem integrable_complexTranslatedGaussian_safeLine_mul_digamma
       norm_num
     rw [norm_mul, hnormGaussian]
     calc
-      Real.exp (ε - ε * (r - c) ^ 2) *
+      Real.exp (ε - ε * (r - c) ^ (2 : ℕ)) *
           ‖Complex.digamma (3 / 4 + Complex.I * (r / 2))‖ ≤
-        Real.exp (ε - ε * (r - c) ^ 2) *
+        Real.exp (ε - ε * (r - c) ^ (2 : ℕ)) *
           (stripDigammaExponentialConstant *
             Real.exp (Real.pi * (|r / 2| + 1))) :=
         mul_le_mul_of_nonneg_left hDigamma (Real.exp_pos _).le
-      _ ≤ Real.exp (ε - ε * (r - c) ^ 2) *
+      _ ≤ Real.exp (ε - ε * (r - c) ^ (2 : ℕ)) *
           (stripDigammaExponentialConstant *
             Real.exp (Real.pi * (|r| + 1))) := by
         apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
@@ -1223,10 +1223,10 @@ theorem integrable_complexTranslatedGaussian_safeLine_mul_digamma
         apply Real.exp_le_exp.mpr
         exact mul_le_mul_of_nonneg_left (by linarith) Real.pi_pos.le
       _ = (Real.exp ε * stripDigammaExponentialConstant) *
-          (Real.exp (-ε * (r - c) ^ 2) *
+          (Real.exp (-ε * (r - c) ^ (2 : ℕ)) *
             Real.exp (Real.pi * (|r| + 1))) := by
-        rw [show ε - ε * (r - c) ^ 2 =
-          ε + (-ε * (r - c) ^ 2) by ring, Real.exp_add]
+        rw [show ε - ε * (r - c) ^ (2 : ℕ) =
+          ε + (-ε * (r - c) ^ (2 : ℕ)) by ring, Real.exp_add]
         ring
 
 theorem integrable_complexSymmetricGaussian_safeLine_mul_digamma
@@ -1421,7 +1421,7 @@ theorem integrable_archimedeanSpectralIntegrand_criticalLine
 lemma principalKernel_safeLine_sub_criticalLine (A : ℂ) (x : ℝ) :
     -Complex.I * A / ((x : ℂ) - Complex.I / 2) -
         (-Complex.I * A / ((x : ℂ) + Complex.I / 2)) =
-      A * ((1 / (x ^ 2 + 1 / 4) : ℝ) : ℂ) := by
+      A * ((1 / (x ^ (2 : ℕ) + 1 / 4) : ℝ) : ℂ) := by
   have hminus : (x : ℂ) - Complex.I / 2 ≠ 0 := by
     intro h
     have him := congrArg Complex.im h
@@ -1430,9 +1430,9 @@ lemma principalKernel_safeLine_sub_criticalLine (A : ℂ) (x : ℝ) :
     intro h
     have him := congrArg Complex.im h
     norm_num at him
-  have hquadReal : x ^ 2 + 1 / 4 ≠ 0 := by
+  have hquadReal : x ^ (2 : ℕ) + 1 / 4 ≠ 0 := by
     positivity
-  have hquad : (((x ^ 2 + 1 / 4 : ℝ) : ℂ)) ≠ 0 :=
+  have hquad : (((x ^ (2 : ℕ) + 1 / 4 : ℝ) : ℂ)) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr hquadReal
   push_cast
   field_simp [hminus, hplus, hquad]
@@ -1445,9 +1445,9 @@ lemma principalKernel_safeLine_sub_criticalLine (A : ℂ) (x : ℝ) :
     intro h
     have him := congrArg Complex.im h
     norm_num at him
-  have hquadFour : 1 + (x : ℂ) ^ 2 * 4 ≠ 0 := by
-    rw [show 1 + (x : ℂ) ^ 2 * 4 =
-        4 * ((x ^ 2 + 1 / 4 : ℝ) : ℂ) by
+  have hquadFour : 1 + (x : ℂ) ^ (2 : ℕ) * 4 ≠ 0 := by
+    rw [show 1 + (x : ℂ) ^ (2 : ℕ) * 4 =
+        4 * ((x ^ (2 : ℕ) + 1 / 4 : ℝ) : ℂ) by
       push_cast
       ring]
     exact mul_ne_zero (by norm_num) hquad
@@ -1463,7 +1463,7 @@ theorem archimedeanPrincipalPart_safeLine_sub_criticalLine
     archimedeanPrincipalPart ε t ((x : ℂ) - Complex.I) -
         archimedeanPrincipalPart ε t (x : ℂ) =
       complexSymmetricGaussian ε t archimedeanPolePoint *
-        ((1 / (x ^ 2 + 1 / 4) : ℝ) : ℂ) := by
+        ((1 / (x ^ (2 : ℕ) + 1 / 4) : ℝ) : ℂ) := by
   unfold archimedeanPrincipalPart
   rw [show (x : ℂ) - Complex.I - archimedeanPolePoint =
       (x : ℂ) - Complex.I / 2 by
@@ -1477,10 +1477,10 @@ theorem archimedeanPrincipalPart_safeLine_sub_criticalLine
     (complexSymmetricGaussian ε t archimedeanPolePoint) x
 
 lemma integral_cauchyDensity_neg_T_T (T : ℝ) :
-    (∫ x : ℝ in -T..T, 1 / (x ^ 2 + 1 / 4)) =
+    (∫ x : ℝ in -T..T, 1 / (x ^ (2 : ℕ) + 1 / 4)) =
       4 * Real.arctan (2 * T) := by
-  rw [show (fun x : ℝ => 1 / (x ^ 2 + 1 / 4)) =
-      fun x : ℝ => ((1 / 2 : ℝ) ^ 2 + x ^ 2)⁻¹ by
+  rw [show (fun x : ℝ => 1 / (x ^ (2 : ℕ) + 1 / 4)) =
+      fun x : ℝ => ((1 / 2 : ℝ) ^ (2 : ℕ) + x ^ (2 : ℕ))⁻¹ by
     funext x
     ring]
   rw [integral_inv_sq_add_sq (by norm_num : (1 / 2 : ℝ) ≠ 0)]
@@ -1745,7 +1745,7 @@ theorem integral_archimedeanSpectralTerms_criticalLine
         archimedeanSpectralTerms (x : ℂ)) =
       ((Real.pi *
         (gaussianArchimedeanContribution ε t -
-          4 * Real.exp (ε / 4 - ε * t ^ 2) *
+          4 * Real.exp (ε / 4 - ε * t ^ (2 : ℕ)) *
             Real.cos (ε * t)) : ℝ) : ℂ) := by
   rw [show (fun x : ℝ =>
       complexSymmetricGaussian ε t (x : ℂ) *

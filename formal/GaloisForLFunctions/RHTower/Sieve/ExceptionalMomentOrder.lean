@@ -57,7 +57,7 @@ theorem log_natPow_cast {NA k : ℕ} (hNA : 1 ≤ NA) :
 theorem measureReal_shortExceptional_le_exp {B : Finset ℕ} {NA k : ℕ}
     (hBprime : ∀ p ∈ B, p.Prime) (hB : B ⊆ Finset.Icc 1 NA) (hk : 1 ≤ k) (hNA : 1 ≤ NA)
     {W θ g n : ℝ} (hW : 0 ≤ W) (hθ : 0 < θ) (hcard : 0 < (B.card : ℝ))
-    (hg : g ≤ Real.log ((B.card : ℝ) * θ ^ 2 / (k : ℝ)))
+    (hg : g ≤ Real.log ((B.card : ℝ) * θ ^ (2 : ℕ) / (k : ℝ)))
     (hn : Real.log ((NA : ℕ) : ℝ) ≤ n) :
     volume.real (shortExceptional B W ((B.card : ℝ) * θ))
       ≤ 2 * W * Real.exp (-((k : ℝ) * g))
@@ -65,22 +65,22 @@ theorem measureReal_shortExceptional_le_exp {B : Finset ℕ} {NA k : ℕ}
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hpi2 : (2 : ℝ) < Real.pi := by linarith [Real.pi_gt_three]
   have hk0 : (0 : ℝ) < (k : ℝ) := by exact_mod_cast hk
-  have hΘ : (0 : ℝ) < (B.card : ℝ) * θ ^ 2 := by positivity
+  have hΘ : (0 : ℝ) < (B.card : ℝ) * θ ^ (2 : ℕ) := by positivity
   have hNA0 : (0 : ℝ) < ((NA : ℕ) : ℝ) := by exact_mod_cast Nat.lt_of_lt_of_le zero_lt_one hNA
   have hlogNA : (0 : ℝ) ≤ Real.log ((NA : ℕ) : ℝ) := Real.log_nonneg (by exact_mod_cast hNA)
   have hn0 : (0 : ℝ) ≤ n := le_trans hlogNA hn
   -- the saving
-  have hS : ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k ≤ Real.exp (-((k : ℝ) * g)) := by
+  have hS : ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k ≤ Real.exp (-((k : ℝ) * g)) := by
     rw [momentSaving_eq hk hΘ]
     exact Real.exp_le_exp.2 (by nlinarith [hg, hk0])
-  have hS0 : (0 : ℝ) ≤ ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k := by positivity
+  have hS0 : (0 : ℝ) ≤ ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k := by positivity
   -- the diagonal factor
   have hpow : ((NA ^ k : ℕ) : ℝ) = Real.exp ((k : ℝ) * Real.log ((NA : ℕ) : ℝ)) :=
     natPow_cast_eq_exp hNA
   have hlogpow : Real.log ((NA ^ k : ℕ) : ℝ) = (k : ℝ) * Real.log ((NA : ℕ) : ℝ) :=
     log_natPow_cast hNA
   have hdiag : 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ))
-        * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k
+        * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k
       ≤ 4 * (1 + (k : ℝ) * n) * Real.exp (-((k : ℝ) * (g - n))) := by
     have hA : ((NA ^ k : ℕ) : ℝ) ≤ Real.exp ((k : ℝ) * n) := by
       rw [hpow]
@@ -93,7 +93,7 @@ theorem measureReal_shortExceptional_le_exp {B : Finset ℕ} {NA k : ℕ}
       rw [hlogpow]
       nlinarith [hlogNA, hk0]
     have hstep : 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ))
-          * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k
+          * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k
         ≤ 4 * Real.exp ((k : ℝ) * n) * (1 + (k : ℝ) * n) * Real.exp (-((k : ℝ) * g)) := by
       have h1 : 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ))
           ≤ 4 * Real.exp ((k : ℝ) * n) * (1 + (k : ℝ) * n) := by
@@ -116,18 +116,18 @@ theorem measureReal_shortExceptional_le_exp {B : Finset ℕ} {NA k : ℕ}
   refine (measureReal_shortExceptional_le_relative hBprime hB hk hW hθ hcard).trans ?_
   have hsplit : (2 * Real.pi)⁻¹
         * (2 * (2 * Real.pi * W + 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ)))
-          * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k)
-      = 2 * W * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k
+          * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k)
+      = 2 * W * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k
         + (2 * Real.pi)⁻¹ * (2 * (4 * ((NA ^ k : ℕ) : ℝ)
             * (1 + Real.log ((NA ^ k : ℕ) : ℝ))
-              * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k)) := by
+              * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k)) := by
     field_simp
   rw [hsplit]
-  have hfirst : 2 * W * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k
+  have hfirst : 2 * W * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k
       ≤ 2 * W * Real.exp (-((k : ℝ) * g)) :=
     mul_le_mul_of_nonneg_left hS (by linarith)
   have hsecond : (2 * Real.pi)⁻¹ * (2 * (4 * ((NA ^ k : ℕ) : ℝ)
-        * (1 + Real.log ((NA ^ k : ℕ) : ℝ)) * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k))
+        * (1 + Real.log ((NA ^ k : ℕ) : ℝ)) * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k))
       ≤ 2 * (1 + (k : ℝ) * n) * Real.exp (-((k : ℝ) * (g - n))) := by
     have hcoef : (2 * Real.pi)⁻¹ * 2 ≤ 1 / 2 := by
       rw [inv_mul_eq_div, div_le_div_iff₀ (by positivity) (by norm_num)]
@@ -136,13 +136,13 @@ theorem measureReal_shortExceptional_le_exp {B : Finset ℕ} {NA k : ℕ}
       have : (0 : ℝ) ≤ 1 + (k : ℝ) * n := by nlinarith [hn0, hk0]
       positivity
     have hval : (2 * Real.pi)⁻¹ * (2 * (4 * ((NA ^ k : ℕ) : ℝ)
-          * (1 + Real.log ((NA ^ k : ℕ) : ℝ)) * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k))
+          * (1 + Real.log ((NA ^ k : ℕ) : ℝ)) * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k))
         = ((2 * Real.pi)⁻¹ * 2) * (4 * ((NA ^ k : ℕ) : ℝ)
-          * (1 + Real.log ((NA ^ k : ℕ) : ℝ)) * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k) := by
+          * (1 + Real.log ((NA ^ k : ℕ) : ℝ)) * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k) := by
       ring
     rw [hval]
     have hpos : (0 : ℝ) ≤ 4 * ((NA ^ k : ℕ) : ℝ) * (1 + Real.log ((NA ^ k : ℕ) : ℝ))
-        * ((k : ℝ) / ((B.card : ℝ) * θ ^ 2)) ^ k := by
+        * ((k : ℝ) / ((B.card : ℝ) * θ ^ (2 : ℕ))) ^ k := by
       have hB0 : (0 : ℝ) ≤ 1 + Real.log ((NA ^ k : ℕ) : ℝ) := by
         rw [hlogpow]
         nlinarith [hlogNA, hk0]
@@ -161,11 +161,11 @@ theorem measureReal_annulusLarge_le_exp {P : Finset ℕ} {R η θ W w₀ g₀ d 
     (hNA : ∀ j ∈ Finset.range L, 1 ≤ ⌊R * (1 + η) ^ (j + 1)⌋₊)
     (hcard : ∀ j ∈ Finset.range L, 0 < ((geomBlock P R (1 + η) j).card : ℝ))
     (hg : ∀ j ∈ Finset.range L,
-      g₀ ≤ Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ 2 / (k : ℝ)))
+      g₀ ≤ Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ (2 : ℕ) / (k : ℝ)))
     (hn : ∀ j ∈ Finset.range L,
       Real.log ((⌊R * (1 + η) ^ (j + 1)⌋₊ : ℕ) : ℝ) ≤ nmax)
     (hd : ∀ j ∈ Finset.range L,
-      d ≤ Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ 2 / (k : ℝ))
+      d ≤ Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ (2 : ℕ) / (k : ℝ))
         - Real.log ((⌊R * (1 + η) ^ (j + 1)⌋₊ : ℕ) : ℝ)) :
     volume.real (annulusLarge
         (allBlocksSmall P R η L
@@ -193,11 +193,11 @@ theorem measureReal_annulusLarge_le_exp {P : Finset ℕ} {R η θ W w₀ g₀ d 
       refine Real.log_nonneg ?_
       exact_mod_cast hNA j hj
     have h1 : Real.exp (-((k : ℝ)
-          * Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ 2 / (k : ℝ))))
+          * Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ (2 : ℕ) / (k : ℝ))))
         ≤ Real.exp (-((k : ℝ) * g₀)) :=
       Real.exp_le_exp.2 (by nlinarith [hg j hj, hk0])
     have h2 : Real.exp (-((k : ℝ)
-          * (Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ 2 / (k : ℝ)) - nj)))
+          * (Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ (2 : ℕ) / (k : ℝ)) - nj)))
         ≤ Real.exp (-((k : ℝ) * d)) :=
       Real.exp_le_exp.2 (by nlinarith [hd j hj, hk0])
     have h3 : 1 + (k : ℝ) * nj ≤ 1 + (k : ℝ) * nmax := by
@@ -207,7 +207,7 @@ theorem measureReal_annulusLarge_le_exp {P : Finset ℕ} {R η θ W w₀ g₀ d 
     have hnn : (0 : ℝ) ≤ 1 + (k : ℝ) * nj := by nlinarith [hnj0, hk0]
     nlinarith [h1, h2, h3, hE0, hnn, hW,
       Real.exp_pos (-((k : ℝ)
-        * (Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ 2 / (k : ℝ)) - nj)))]
+        * (Real.log (((geomBlock P R (1 + η) j).card : ℝ) * θ ^ (2 : ℕ) / (k : ℝ)) - nj)))]
   refine (Finset.sum_le_sum hterm).trans (le_of_eq ?_)
   rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
 

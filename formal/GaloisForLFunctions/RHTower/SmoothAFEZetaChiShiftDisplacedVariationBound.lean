@@ -26,7 +26,7 @@ theorem norm_digamma_positive_conductor_two_strip_le
         ((a : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I) -
       Complex.digamma
         ((b : ℂ) + ((tau / 2 : ℝ) : ℂ) * I)‖ ≤
-      2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+      2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
   let z : ℂ := Complex.digamma
     (((1 / 4 : ℝ) : ℂ) + ((tau / 2 : ℝ) : ℂ) * I)
   have ha := norm_digamma_positive_conductor_increment_quarter_le
@@ -37,11 +37,11 @@ theorem norm_digamma_positive_conductor_two_strip_le
   have hb :
       ‖z - Complex.digamma
           ((b : ℂ) + ((tau / 2 : ℝ) : ℂ) * I)‖ ≤
-        (16 / tau ^ 2 + 2 * Real.pi / tau) := by
+        (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) := by
     rw [norm_sub_rev]
     simpa only [z, sub_zero, abs_zero, add_zero, one_mul, mul_one] using hb0
   have hq : 1 ≤ 1 + |v| := by linarith [abs_nonneg v]
-  have hbase : 0 ≤ 16 / tau ^ 2 + 2 * Real.pi / tau := by positivity
+  have hbase : 0 ≤ 16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau := by positivity
   calc
     ‖Complex.digamma
           ((a : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I) -
@@ -57,18 +57,18 @@ theorem norm_digamma_positive_conductor_two_strip_le
             ((a : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I) - z‖ +
           ‖z - Complex.digamma
             ((b : ℂ) + ((tau / 2 : ℝ) : ℂ) * I)‖ := norm_add_le _ _
-    _ ≤ (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) +
-          (16 / tau ^ 2 + 2 * Real.pi / tau) := by
+    _ ≤ (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) +
+          (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) := by
           exact add_le_add (by simpa only [z] using ha) hb
-    _ ≤ (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) +
-          (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+    _ ≤ (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) +
+          (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
           have hbaseq :
-              16 / tau ^ 2 + 2 * Real.pi / tau ≤
-                (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+              16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau ≤
+                (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
             simpa only [mul_one] using
               (mul_le_mul_of_nonneg_left hq hbase)
           exact add_le_add (le_refl _) hbaseq
-    _ = 2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by ring
+    _ = 2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by ring
 
 /-- Conjugate lower-height form of the two-strip conductor increment. -/
 theorem norm_digamma_negative_conductor_two_strip_le
@@ -79,7 +79,7 @@ theorem norm_digamma_negative_conductor_two_strip_le
         ((a : ℂ) - (((tau - v) / 2 : ℝ) : ℂ) * I) -
       Complex.digamma
         ((b : ℂ) - ((tau / 2 : ℝ) : ℂ) * I)‖ ≤
-      2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+      2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
   let A : ℂ := (a : ℂ) + (((tau - v) / 2 : ℝ) : ℂ) * I
   let B : ℂ := (b : ℂ) + ((tau / 2 : ℝ) : ℂ) * I
   have hA : (starRingEnd ℂ) A =
@@ -103,7 +103,7 @@ theorem norm_logDeriv_zetaChi_displaced_neg_shift_sub_le
         (displacedLinePt d tau -
           (((-(d + eta) : ℝ) : ℂ) + (v : ℂ) * I)) -
       logDeriv zetaChi (displacedLinePt d tau)‖ ≤
-      2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+      2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
   have hdhalf : d < 1 / 2 := by linarith
   have hetaHalf : eta < 1 / 2 := by linarith
   rw [logDeriv_zetaChi_displaced_neg_shift_sub_eq_digamma_increments
@@ -151,13 +151,13 @@ theorem norm_logDeriv_zetaChi_displaced_neg_shift_sub_le
     · norm_num [displacedLinePt]
       ring
   have hAB : ‖A - B‖ ≤
-      2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+      2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
     dsimp only [A, B]
     rw [hAarg, hBarg]
     exact norm_digamma_positive_conductor_two_strip_le htau hv
       (by linarith) (by linarith) (by linarith) (by linarith)
   have hCE : ‖C - E‖ ≤
-      2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by
+      2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by
     dsimp only [C, E]
     rw [hCarg, hEarg]
     exact norm_digamma_negative_conductor_two_strip_le htau hv
@@ -169,10 +169,10 @@ theorem norm_logDeriv_zetaChi_displaced_neg_shift_sub_le
     _ = ‖A - B‖ / 2 + ‖C - E‖ / 2 := by
       rw [norm_div, norm_neg, norm_div]
       norm_num
-    _ ≤ (2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|)) / 2 +
-          (2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|)) / 2 := by
+    _ ≤ (2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|)) / 2 +
+          (2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|)) / 2 := by
       gcongr
-    _ = 2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|) := by ring
+    _ = 2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|) := by ring
 
 /-- Integration-friendly displaced slow-variation bound. -/
 theorem norm_logDeriv_zetaChi_displaced_neg_shift_sub_le_coarse
@@ -187,12 +187,12 @@ theorem norm_logDeriv_zetaChi_displaced_neg_shift_sub_le_coarse
   have h := norm_logDeriv_zetaChi_displaced_neg_shift_sub_le
     hd hdquarter heta hetaquarter htau hv
   have htau0 : 0 < tau := by linarith
-  have hpow : 16 / tau ^ 2 ≤ 4 / tau := by
+  have hpow : 16 / tau ^ (2 : ℕ) ≤ 4 / tau := by
     rw [div_le_div_iff₀ (sq_pos_of_pos htau0) htau0]
     nlinarith
   refine h.trans ?_
   calc
-    2 * (16 / tau ^ 2 + 2 * Real.pi / tau) * (1 + |v|)
+    2 * (16 / tau ^ (2 : ℕ) + 2 * Real.pi / tau) * (1 + |v|)
         ≤ 2 * (4 / tau + 2 * Real.pi / tau) * (1 + |v|) := by gcongr
     _ = (8 + 4 * Real.pi) * (1 + |v|) / tau := by
       field_simp

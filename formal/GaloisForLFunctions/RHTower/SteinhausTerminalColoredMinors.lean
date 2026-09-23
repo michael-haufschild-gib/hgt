@@ -177,7 +177,7 @@ theorem prod_normalizedProductBlock_card_mul_sq_le_arithmeticGram_det_re
     (hminor : ∀ q : ∀ j, ↥(steinhausFiniteNodeNormalizedProductBlock P (a j) (b j) N),
       c ≤ ‖(Matrix.of fun i j => coeff i ((q j).1.1.1 * (q j).1.1.2)).det‖) :
     ((∏ j, (steinhausFiniteNodeNormalizedProductBlock P (a j) (b j) N).card : ℕ) : ℝ) *
-        c ^ 2 ≤ (steinhausFiniteNodeArithmeticGram P coeff N).det.re := by
+        c ^ (2 : ℕ) ≤ (steinhausFiniteNodeArithmeticGram P coeff N).det.re := by
   let S : Fin J → Finset (steinhausFiniteNodeFeatureIndex P N) :=
     fun j => steinhausFiniteNodeNormalizedProductBlock P (a j) (b j) N
   have hSsep : ∀ i j : Fin J, i < j → ∀ x ∈ S i, ∀ y ∈ S j, x < y :=
@@ -188,7 +188,7 @@ theorem prod_normalizedProductBlock_card_mul_sq_le_arithmeticGram_det_re
       simpa [S, steinhausFiniteNodeFeature] using hminor q)
   calc
     ((∏ j, (steinhausFiniteNodeNormalizedProductBlock P (a j) (b j) N).card : ℕ) : ℝ) *
-          c ^ 2 = ((∏ j, (S j).card : ℕ) : ℝ) * c ^ 2 := by rfl
+          c ^ (2 : ℕ) = ((∏ j, (S j).card : ℕ) : ℝ) * c ^ (2 : ℕ) := by rfl
     _ ≤ hermPluckerNormSq (steinhausFiniteNodeFeature P coeff N) := hbound
     _ = (steinhausFiniteNodeArithmeticGram P coeff N).det.re := by
       rw [det_steinhausFiniteNodeArithmeticGram_eq_pluckerNormSq]

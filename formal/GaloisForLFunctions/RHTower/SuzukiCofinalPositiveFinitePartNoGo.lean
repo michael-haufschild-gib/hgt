@@ -186,7 +186,7 @@ end Universal
 
 /-- Critical depth-zero Suzuki sharp-wall mass on one prime coordinate. -/
 def suzukiCriticalSharpPrimeMass (p : Nat.Primes) : ℝ :=
-  suzukiCriticalEntryWallBareAmplitude p 0 ^ 2
+  suzukiCriticalEntryWallBareAmplitude p 0 ^ (2 : ℕ)
 
 theorem suzukiCriticalSharpPrimeMass_nonneg (p : Nat.Primes) :
     0 ≤ suzukiCriticalSharpPrimeMass p := by

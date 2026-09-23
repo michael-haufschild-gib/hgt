@@ -140,7 +140,7 @@ private theorem abs_gamma_sqrtBoundary_div_le
       |2 * Real.eulerMascheroniConstant| := by
   have hMR : (0 : ℝ) < M := by positivity
   have hMone : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast (by omega : 1 ≤ M)
-  have hsqrtSq : Real.sqrt (M : ℝ) ^ 2 = (M : ℝ) :=
+  have hsqrtSq : Real.sqrt (M : ℝ) ^ (2 : ℕ) = (M : ℝ) :=
     Real.sq_sqrt hMR.le
   have hsqrtOne : (1 : ℝ) ≤ Real.sqrt M := by
     nlinarith [Real.sqrt_nonneg (M : ℝ)]

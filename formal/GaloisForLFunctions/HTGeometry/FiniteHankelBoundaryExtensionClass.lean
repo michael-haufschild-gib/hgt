@@ -59,7 +59,7 @@ theorem terminal_mul_hankelFirstOmittedCoupling_eq_sq_mul_monicRemainder
     (hlast : c (Fin.last n) ≠ 0) :
     c (Fin.last n) *
         GaloisForLFunctions.HTGeometry.hankelFirstOmittedCoupling s (n + 1) c =
-      c (Fin.last n) ^ 2 * finiteHankelBoundaryMonicRemainder s c := by
+      c (Fin.last n) ^ (2 : ℕ) * finiteHankelBoundaryMonicRemainder s c := by
   rw [GaloisForLFunctions.HTGeometry.hankelFirstOmittedCoupling,
     ← momentFunctional_X_pow_mul_finiteHankelNullPolynomial]
   rw [finiteHankelBoundaryMonicRemainder_eq_inv_mul_raw s c hlast]
@@ -204,7 +204,7 @@ theorem atomicMobiusMomentTrajectory_hasDerivAt
       (0 * ((fun h : ℝ => 1 + h * node) ^ (k + 1)) 0 -
           (weight * node ^ k) *
             (((k + 1 : ℕ) : ℝ) * (1 + 0 * node) ^ (k + 1 - 1) * node)) /
-        ((fun h : ℝ => 1 + h * node) ^ (k + 1)) 0 ^ 2 =
+        ((fun h : ℝ => 1 + h * node) ^ (k + 1)) 0 ^ (2 : ℕ) =
       -((k + 1 : ℕ) : ℝ) * weight * node ^ (k + 1) := by
     simp only [Pi.pow_apply, zero_mul, add_zero, one_pow, zero_sub, neg_mul]
     rw [pow_succ]
@@ -421,7 +421,7 @@ theorem atomicMobiusTransportNoGo_monicRemainder (r : ℝ) :
     rw [finiteHankelNullMonicPolynomial, hraw]
     simp
   rw [finiteHankelBoundaryMonicRemainder, hmonic]
-  rw [show X ^ (1 + 1) * X = (X : Polynomial ℝ) ^ 3 by ring,
+  rw [show X ^ (1 + 1) * X = (X : Polynomial ℝ) ^ (3 : ℕ) by ring,
     momentFunctional_X_pow]
   exact atomicMobiusTransportNoGoMoment_three r
 
@@ -507,7 +507,7 @@ theorem finiteHankelBoundaryMonicRemainder_eq_shiftedSquare
   rw [show X *
       (finiteHankelNullPolynomial c * C (c (Fin.last n))⁻¹) *
       (finiteHankelNullPolynomial c * C (c (Fin.last n))⁻¹) =
-        (c (Fin.last n))⁻¹ ^ 2 •
+        (c (Fin.last n))⁻¹ ^ (2 : ℕ) •
           (X * finiteHankelNullPolynomial c * finiteHankelNullPolynomial c) by
     simp only [Polynomial.smul_eq_C_mul]
     rw [map_pow]
@@ -522,36 +522,36 @@ between the forward and backward affine-multiplier square energies is exactly fo
 adjacent Hankel energy.  No positivity or moment-representability assumption is used. -/
 theorem momentFunctional_christoffelPortDifference
     (s : ℕ → ℝ) (p : Polynomial ℝ) (a : ℝ) :
-    momentFunctional s (((X + C a) * p) ^ 2) -
-        momentFunctional s (((X - C a) * p) ^ 2) =
+    momentFunctional s (((X + C a) * p) ^ (2 : ℕ)) -
+        momentFunctional s (((X - C a) * p) ^ (2 : ℕ)) =
       4 * a * momentFunctional s (X * p * p) := by
   have hC4 : C (4 : ℝ) = (4 : Polynomial ℝ) := by
     exact map_natCast (Polynomial.C : ℝ →+* Polynomial ℝ) 4
   have hpoly :
-      ((X + C a) * p) ^ 2 - ((X - C a) * p) ^ 2 =
+      ((X + C a) * p) ^ (2 : ℕ) - ((X - C a) * p) ^ (2 : ℕ) =
         (4 * a) • (X * p * p) := by
     simp only [Polynomial.smul_eq_C_mul]
     rw [map_mul, hC4]
     ring
   have hlinear :
-      momentFunctional s (((X + C a) * p) ^ 2) -
-          momentFunctional s (((X - C a) * p) ^ 2) =
+      momentFunctional s (((X + C a) * p) ^ (2 : ℕ)) -
+          momentFunctional s (((X - C a) * p) ^ (2 : ℕ)) =
         momentFunctional s
-          (((X + C a) * p) ^ 2 - ((X - C a) * p) ^ 2) := by
+          (((X + C a) * p) ^ (2 : ℕ) - ((X - C a) * p) ^ (2 : ℕ)) := by
     symm
     calc
       momentFunctional s
-          (((X + C a) * p) ^ 2 - ((X - C a) * p) ^ 2) =
+          (((X + C a) * p) ^ (2 : ℕ) - ((X - C a) * p) ^ (2 : ℕ)) =
           momentFunctional s
-            (((X + C a) * p) ^ 2 + -((X - C a) * p) ^ 2) := by
+            (((X + C a) * p) ^ (2 : ℕ) + -((X - C a) * p) ^ (2 : ℕ)) := by
               rw [sub_eq_add_neg]
-      _ = momentFunctional s (((X + C a) * p) ^ 2) +
-          momentFunctional s (-((X - C a) * p) ^ 2) := by
+      _ = momentFunctional s (((X + C a) * p) ^ (2 : ℕ)) +
+          momentFunctional s (-((X - C a) * p) ^ (2 : ℕ)) := by
             rw [momentFunctional_add]
-      _ = momentFunctional s (((X + C a) * p) ^ 2) -
-          momentFunctional s (((X - C a) * p) ^ 2) := by
-            rw [show -((X - C a) * p) ^ 2 =
-                (-1 : ℝ) • (((X - C a) * p) ^ 2) by rw [neg_one_smul],
+      _ = momentFunctional s (((X + C a) * p) ^ (2 : ℕ)) -
+          momentFunctional s (((X - C a) * p) ^ (2 : ℕ)) := by
+            rw [show -((X - C a) * p) ^ (2 : ℕ) =
+                (-1 : ℝ) • (((X - C a) * p) ^ (2 : ℕ)) by rw [neg_one_smul],
               momentFunctional_smul]
             ring
   rw [hlinear, hpoly, momentFunctional_smul]
@@ -561,29 +561,29 @@ energy, but no orientation term.  Together with `momentFunctional_christoffelPor
 is the exact capacity/orientation decomposition of the affine-multiplier pair. -/
 theorem momentFunctional_christoffelPortSum
     (s : ℕ → ℝ) (p : Polynomial ℝ) (a : ℝ) :
-    momentFunctional s (((X + C a) * p) ^ 2) +
-        momentFunctional s (((X - C a) * p) ^ 2) =
-      2 * momentFunctional s (X ^ 2 * p * p) +
-        2 * a ^ 2 * momentFunctional s (p * p) := by
+    momentFunctional s (((X + C a) * p) ^ (2 : ℕ)) +
+        momentFunctional s (((X - C a) * p) ^ (2 : ℕ)) =
+      2 * momentFunctional s (X ^ (2 : ℕ) * p * p) +
+        2 * a ^ (2 : ℕ) * momentFunctional s (p * p) := by
   have hC2 : C (2 : ℝ) = (2 : Polynomial ℝ) := by
     exact map_natCast (Polynomial.C : ℝ →+* Polynomial ℝ) 2
   have hpoly :
-      ((X + C a) * p) ^ 2 + ((X - C a) * p) ^ 2 =
-        (2 : ℝ) • (X ^ 2 * p * p) + (2 * a ^ 2) • (p * p) := by
+      ((X + C a) * p) ^ (2 : ℕ) + ((X - C a) * p) ^ (2 : ℕ) =
+        (2 : ℝ) • (X ^ (2 : ℕ) * p * p) + (2 * a ^ (2 : ℕ)) • (p * p) := by
     simp only [Polynomial.smul_eq_C_mul]
     rw [map_mul, map_pow, hC2]
     ring
   calc
-    momentFunctional s (((X + C a) * p) ^ 2) +
-        momentFunctional s (((X - C a) * p) ^ 2) =
+    momentFunctional s (((X + C a) * p) ^ (2 : ℕ)) +
+        momentFunctional s (((X - C a) * p) ^ (2 : ℕ)) =
       momentFunctional s
-        ((((X + C a) * p) ^ 2) + (((X - C a) * p) ^ 2)) := by
+        ((((X + C a) * p) ^ (2 : ℕ)) + (((X - C a) * p) ^ (2 : ℕ))) := by
           rw [momentFunctional_add]
     _ = momentFunctional s
-        ((2 : ℝ) • (X ^ 2 * p * p) + (2 * a ^ 2) • (p * p)) := by
+        ((2 : ℝ) • (X ^ (2 : ℕ) * p * p) + (2 * a ^ (2 : ℕ)) • (p * p)) := by
           rw [hpoly]
-    _ = 2 * momentFunctional s (X ^ 2 * p * p) +
-        2 * a ^ 2 * momentFunctional s (p * p) := by
+    _ = 2 * momentFunctional s (X ^ (2 : ℕ) * p * p) +
+        2 * a ^ (2 : ℕ) * momentFunctional s (p * p) := by
           simp only [momentFunctional_add, momentFunctional_smul]
 
 /-- A monic null polynomial has zero square energy on its current singular Hankel face. -/
@@ -608,9 +608,9 @@ theorem finiteHankelBoundary_christoffelPortDifference_eq_monicRemainder
     (hc : momentHankelMatrix s (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     momentFunctional s
-          (((X + C a) * finiteHankelNullMonicPolynomial c) ^ 2) -
+          (((X + C a) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) -
         momentFunctional s
-          (((X - C a) * finiteHankelNullMonicPolynomial c) ^ 2) =
+          (((X - C a) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) =
       4 * a * finiteHankelBoundaryMonicRemainder s c := by
   rw [momentFunctional_christoffelPortDifference,
     ← finiteHankelBoundaryMonicRemainder_eq_shiftedSquare s c hc hlast]
@@ -623,21 +623,21 @@ theorem finiteHankelBoundary_christoffelPortCapacityOrientation
     (hc : momentHankelMatrix s (n + 1) *ᵥ c = 0)
     (hlast : c (Fin.last n) ≠ 0) :
     momentFunctional s
-        (((X + C a) * finiteHankelNullMonicPolynomial c) ^ 2) =
+        (((X + C a) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) =
           momentFunctional s
-              (X ^ 2 * finiteHankelNullMonicPolynomial c *
+              (X ^ (2 : ℕ) * finiteHankelNullMonicPolynomial c *
                 finiteHankelNullMonicPolynomial c) +
             2 * a * finiteHankelBoundaryMonicRemainder s c ∧
       momentFunctional s
-        (((X - C a) * finiteHankelNullMonicPolynomial c) ^ 2) =
+        (((X - C a) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) =
           momentFunctional s
-              (X ^ 2 * finiteHankelNullMonicPolynomial c *
+              (X ^ (2 : ℕ) * finiteHankelNullMonicPolynomial c *
                 finiteHankelNullMonicPolynomial c) -
             2 * a * finiteHankelBoundaryMonicRemainder s c := by
   let p := finiteHankelNullMonicPolynomial c
-  let Eplus := momentFunctional s (((X + C a) * p) ^ 2)
-  let Eminus := momentFunctional s (((X - C a) * p) ^ 2)
-  let T := momentFunctional s (X ^ 2 * p * p)
+  let Eplus := momentFunctional s (((X + C a) * p) ^ (2 : ℕ))
+  let Eminus := momentFunctional s (((X - C a) * p) ^ (2 : ℕ))
+  let T := momentFunctional s (X ^ (2 : ℕ) * p * p)
   let R := finiteHankelBoundaryMonicRemainder s c
   have hzero : momentFunctional s (p * p) = 0 := by
     exact momentFunctional_finiteHankelNullMonicPolynomial_sq_eq_zero
@@ -647,7 +647,7 @@ theorem finiteHankelBoundary_christoffelPortCapacityOrientation
     finiteHankelBoundary_christoffelPortDifference_eq_monicRemainder
       s c a hc hlast
   change Eplus + Eminus =
-    2 * T + 2 * a ^ 2 * momentFunctional s (p * p) at hsum
+    2 * T + 2 * a ^ (2 : ℕ) * momentFunctional s (p * p) at hsum
   change Eplus - Eminus = 4 * a * R at hdiff
   rw [hzero, mul_zero, add_zero] at hsum
   change Eplus = T + 2 * a * R ∧ Eminus = T - 2 * a * R
@@ -661,9 +661,9 @@ theorem finiteHankelBoundaryMonicRemainder_pos_iff_christoffelPortOrder
     (hlast : c (Fin.last n) ≠ 0) :
     0 < finiteHankelBoundaryMonicRemainder s c ↔
       momentFunctional s
-          (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ 2) <
+          (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) <
         momentFunctional s
-          (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ 2) := by
+          (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) := by
   have hdiff :=
     finiteHankelBoundary_christoffelPortDifference_eq_monicRemainder
       s c 1 hc hlast
@@ -672,17 +672,17 @@ theorem finiteHankelBoundaryMonicRemainder_pos_iff_christoffelPortOrder
   · intro h
     have h' :
         momentFunctional s
-            (((X - 1) * finiteHankelNullMonicPolynomial c) ^ 2) <
+            (((X - 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) <
           momentFunctional s
-            (((X + 1) * finiteHankelNullMonicPolynomial c) ^ 2) := by
+            (((X + 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) := by
       linarith
     simpa using h'
   · intro h
     have h' :
         momentFunctional s
-            (((X - 1) * finiteHankelNullMonicPolynomial c) ^ 2) <
+            (((X - 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) <
           momentFunctional s
-            (((X + 1) * finiteHankelNullMonicPolynomial c) ^ 2) := by
+            (((X + 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) := by
       simpa using h
     linarith
 
@@ -808,9 +808,9 @@ theorem exists_momentSequence_same_face_christoffelPortDifference_eq
     ∃ t : ℕ → ℝ,
       momentHankelMatrix t (n + 1) = momentHankelMatrix s (n + 1) ∧
         momentFunctional t
-              (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ 2) -
+              (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) -
             momentFunctional t
-              (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ 2) = d := by
+              (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) = d := by
   obtain ⟨t, hface, hremainder⟩ :=
     exists_momentSequence_same_face_monicRemainder_eq s c hlast (d / 4)
   have hct : momentHankelMatrix t (n + 1) *ᵥ c = 0 := by
@@ -824,9 +824,9 @@ theorem exists_momentSequence_same_face_christoffelPortDifference_eq
   rw [hremainder] at hdiff
   calc
     momentFunctional t
-          (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ 2) -
+          (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) -
         momentFunctional t
-          (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ 2) =
+          (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ (2 : ℕ)) =
         4 * (d / 4) := by simpa using hdiff
     _ = d := by ring
 
@@ -858,24 +858,24 @@ theorem finiteHankelBoundaryMonicRemainder_smul
   rw [hcoupling] at hnew
   dsimp [ac] at hnew
   have heq :
-      (a * c (Fin.last n)) ^ 2 *
+      (a * c (Fin.last n)) ^ (2 : ℕ) *
           finiteHankelBoundaryMonicRemainder s (fun i => a * c i) =
-        (a * c (Fin.last n)) ^ 2 *
+        (a * c (Fin.last n)) ^ (2 : ℕ) *
           finiteHankelBoundaryMonicRemainder s c := by
     calc
-      (a * c (Fin.last n)) ^ 2 *
+      (a * c (Fin.last n)) ^ (2 : ℕ) *
           finiteHankelBoundaryMonicRemainder s (fun i => a * c i) =
           (a * c (Fin.last n)) *
             (a * GaloisForLFunctions.HTGeometry.hankelFirstOmittedCoupling
               s (n + 1) c) := hnew.symm
-      _ = a ^ 2 *
+      _ = a ^ (2 : ℕ) *
           (c (Fin.last n) *
             GaloisForLFunctions.HTGeometry.hankelFirstOmittedCoupling
               s (n + 1) c) := by ring
-      _ = a ^ 2 *
-          (c (Fin.last n) ^ 2 * finiteHankelBoundaryMonicRemainder s c) := by
+      _ = a ^ (2 : ℕ) *
+          (c (Fin.last n) ^ (2 : ℕ) * finiteHankelBoundaryMonicRemainder s c) := by
             rw [hold]
-      _ = (a * c (Fin.last n)) ^ 2 *
+      _ = (a * c (Fin.last n)) ^ (2 : ℕ) *
           finiteHankelBoundaryMonicRemainder s c := by ring
   exact mul_left_cancel₀ (pow_ne_zero 2 (mul_ne_zero ha hlast)) heq
 

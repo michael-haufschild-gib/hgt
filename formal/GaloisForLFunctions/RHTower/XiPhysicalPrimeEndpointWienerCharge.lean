@@ -48,10 +48,10 @@ theorem tendsto_xiPhysicalPrimeLogEndpointCircleMoment_cesaro_norm_sq
     (P : Finset Nat.Primes) {A : ℝ} (hA : 0 < A) (m k : ℝ) :
     Tendsto
       (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
-        ‖xiPhysicalPrimeLogEndpointCircleMoment P A m k n‖ ^ 2)
+        ‖xiPhysicalPrimeLogEndpointCircleMoment P A m k n‖ ^ (2 : ℕ))
       atTop
       (nhds (∑ x ∈ xiPhysicalPrimeLogEndpointNodeSet P A m k,
-        ‖xiPhysicalPrimeLogEndpointCircleJump P A m k x‖ ^ 2)) := by
+        ‖xiPhysicalPrimeLogEndpointCircleJump P A m k x‖ ^ (2 : ℕ))) := by
   simpa only [xiPhysicalPrimeLogEndpointCircleMoment,
     finiteExponentialPencil] using
     (tendsto_finiteExponentialPencil_cesaro_norm_sq
@@ -80,7 +80,7 @@ theorem sum_normSq_xiPhysicalPrimeLogEndpointCircleJump_pos
     (hactive : ∀ p ∈ P, 0 < xiPhysicalPrimeLogApertureLength A m k p)
     (hwidth0 : 0 < k - m) (hwidthA : k - m < A) :
     0 < ∑ x ∈ xiPhysicalPrimeLogEndpointNodeSet P A m k,
-      ‖xiPhysicalPrimeLogEndpointCircleJump P A m k x‖ ^ 2 := by
+      ‖xiPhysicalPrimeLogEndpointCircleJump P A m k x‖ ^ (2 : ℕ) := by
   have hA : 0 < A := hwidth0.trans hwidthA
   rcases exists_xiPhysicalPrimeLogCharacterAmplitude_ne_zero
       hP hactive hwidth0 hwidthA with ⟨n, hn, hamp⟩
@@ -98,9 +98,9 @@ theorem sum_normSq_xiPhysicalPrimeLogEndpointCircleJump_pos
     intro x hx
     rw [h x hx, zero_mul]
   rcases hexists with ⟨x, hx, hjump⟩
-  have hle : ‖xiPhysicalPrimeLogEndpointCircleJump P A m k x‖ ^ 2 ≤
+  have hle : ‖xiPhysicalPrimeLogEndpointCircleJump P A m k x‖ ^ (2 : ℕ) ≤
       ∑ y ∈ xiPhysicalPrimeLogEndpointNodeSet P A m k,
-        ‖xiPhysicalPrimeLogEndpointCircleJump P A m k y‖ ^ 2 := by
+        ‖xiPhysicalPrimeLogEndpointCircleJump P A m k y‖ ^ (2 : ℕ) := by
     exact Finset.single_le_sum
       (fun y hy => sq_nonneg ‖xiPhysicalPrimeLogEndpointCircleJump P A m k y‖) hx
   exact lt_of_lt_of_le (sq_pos_of_pos (norm_pos_iff.mpr hjump)) hle
@@ -116,7 +116,7 @@ theorem not_tendsto_xiPhysicalPrimeLogEndpointCircleMoment_zero
       atTop (nhds 0) := by
   intro hzero
   have hnorm : Tendsto
-      (fun n : ℕ => ‖xiPhysicalPrimeLogEndpointCircleMoment P A m k n‖ ^ 2)
+      (fun n : ℕ => ‖xiPhysicalPrimeLogEndpointCircleMoment P A m k n‖ ^ (2 : ℕ))
       atTop (nhds 0) := by
     have hnorm' := Complex.continuous_normSq.continuousAt.tendsto.comp hzero
     have hnorm'' : Tendsto (fun n : ℕ =>
@@ -130,7 +130,7 @@ theorem not_tendsto_xiPhysicalPrimeLogEndpointCircleMoment_zero
     tendsto_xiPhysicalPrimeLogEndpointCircleMoment_cesaro_norm_sq P hA m k
   have hmassZero :
       (∑ x ∈ xiPhysicalPrimeLogEndpointNodeSet P A m k,
-        ‖xiPhysicalPrimeLogEndpointCircleJump P A m k x‖ ^ 2) = 0 :=
+        ‖xiPhysicalPrimeLogEndpointCircleJump P A m k x‖ ^ (2 : ℕ)) = 0 :=
     tendsto_nhds_unique hwiener hcesaro
   have hmassPos := sum_normSq_xiPhysicalPrimeLogEndpointCircleJump_pos
     hP hactive hwidth0 hwidthA

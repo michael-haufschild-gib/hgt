@@ -197,7 +197,7 @@ theorem isPreconnected_preimage_escapeLevel (c : ℂ) (n : ℕ)
     have hfwV : quadratic c w ∈ V := hwP
     rw [← hfUV] at hfwV
     obtain ⟨u, huU, hfuw⟩ := hfwV
-    have hsq : u ^ 2 = w ^ 2 := by
+    have hsq : u ^ (2 : ℕ) = w ^ (2 : ℕ) := by
       have : quadratic c u = quadratic c w := hfuw
       rw [quadratic_apply, quadratic_apply] at this; linear_combination this
     have : u = w ∨ u = -w := by

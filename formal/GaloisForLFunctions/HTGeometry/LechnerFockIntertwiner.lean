@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.UnimodularMulLp
 
 Assembling the per-particle-number intertwiners over all `n` gives one operator on the direct sum
 
-`lp (fun n => L^2 (Fin n -> R)) 2`,
+`lp (fun n => L^(2 : ℕ) (Fin n -> R)) 2`,
 
 which is the rapidity Fock space.  It is a linear isometry because each summand map is, and the
 `lp` norm depends only on the summand norms.
@@ -21,7 +21,7 @@ open scoped ENNReal
 
 namespace GaloisForLFunctions.HTGeometry
 
-/-- The rapidity Fock space: the `l^2` direct sum of the `n`-particle rapidity spaces. -/
+/-- The rapidity Fock space: the `l^(2 : ℕ)` direct sum of the `n`-particle rapidity spaces. -/
 abbrev rapidityFock : Type :=
   lp (fun n : ℕ => Lp ℂ 2 (volume : Measure (Fin n → ℝ))) 2
 

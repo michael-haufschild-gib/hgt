@@ -179,7 +179,7 @@ theorem traceSeries_not_ratFunc [CharZero k] (p : ℕ) (hp : 1 < p) (r : RatFunc
     have := Nat.cast_injective (R := k) h2
     omega
   refine hp1 ?_
-  have h2 : (((p : k)) - 1) ^ 2 = 0 := by linear_combination -hcon
+  have h2 : (((p : k)) - 1) ^ (2 : ℕ) = 0 := by linear_combination -hcon
   exact (pow_eq_zero_iff (show (2 : ℕ) ≠ 0 by norm_num)).mp h2
 
 end

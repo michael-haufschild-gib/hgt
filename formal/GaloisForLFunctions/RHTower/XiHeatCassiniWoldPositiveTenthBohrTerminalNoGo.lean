@@ -42,7 +42,7 @@ def t2BohrTerminalCounterCoefficient (N : ℕ) : ℂ :=
 
 /-- Finite prime-frequency current with the same geometry as the T2 Abel current. -/
 def t2BohrTerminalCounterCurrent (N : ℕ) (x : ℝ) : ℂ :=
-  expSum (Finset.range N) t2BohrTerminalCounterCoefficient
+  expSum_exponentialSumMeanSquareLower (Finset.range N) t2BohrTerminalCounterCoefficient
     xiHeatCassiniWoldPositiveTenthJointFrequency x
 
 /-- The counterexample primitive vanishes before positive-height reweighting. -/
@@ -84,9 +84,9 @@ theorem t2BohrTerminalCounterAbsTerminal_tendsto_atTop :
 
 /-- One counterexample increment is dominated by the proved positive-height prime-gap energy. -/
 lemma norm_t2BohrTerminalCounterCoefficient_sq_le (N : ℕ) :
-    ‖t2BohrTerminalCounterCoefficient N‖ ^ 2 ≤
+    ‖t2BohrTerminalCounterCoefficient N‖ ^ (2 : ℕ) ≤
       (1 / 400 : ℝ) *
-        (xiHeatCassiniOrderedPrimeLogGap N ^ 2 *
+        (xiHeatCassiniOrderedPrimeLogGap N ^ (2 : ℕ) *
           Real.exp (xiMassNthPrimeLogHeight (N + 1) / 5)) := by
   let h : ℝ := xiMassNthPrimeLogHeight N
   let h' : ℝ := xiMassNthPrimeLogHeight (N + 1)
@@ -128,30 +128,30 @@ lemma norm_t2BohrTerminalCounterCoefficient_sq_le (N : ℕ) :
         exact mul_le_mul hbasele hone (sub_nonneg.mpr hexple) zero_le_one
       _ = g / 20 := one_mul _
   have hdiffsq :
-      |Real.exp (-h' / 20) - Real.exp (-h / 20)| ^ 2 ≤
-        (g / 20) ^ 2 := by
+      |Real.exp (-h' / 20) - Real.exp (-h / 20)| ^ (2 : ℕ) ≤
+        (g / 20) ^ (2 : ℕ) := by
     exact pow_le_pow_left₀ (abs_nonneg _) hdiff 2
   change ‖((Real.exp (-h' / 20) - Real.exp (-h / 20) : ℝ) : ℂ) *
-      (Real.exp (h' / 10) : ℂ)‖ ^ 2 ≤
-    (1 / 400 : ℝ) * (g ^ 2 * Real.exp (h' / 5))
+      (Real.exp (h' / 10) : ℂ)‖ ^ (2 : ℕ) ≤
+    (1 / 400 : ℝ) * (g ^ (2 : ℕ) * Real.exp (h' / 5))
   rw [norm_mul, Complex.norm_real, Complex.norm_real,
     Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), mul_pow]
-  have hexpsq : Real.exp (h' / 10) ^ 2 = Real.exp (h' / 5) := by
+  have hexpsq : Real.exp (h' / 10) ^ (2 : ℕ) = Real.exp (h' / 5) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
   rw [hexpsq]
   have hE0 : 0 ≤ Real.exp (h' / 5) := (Real.exp_pos _).le
   calc
-    |Real.exp (-h' / 20) - Real.exp (-h / 20)| ^ 2 *
+    |Real.exp (-h' / 20) - Real.exp (-h / 20)| ^ (2 : ℕ) *
         Real.exp (h' / 5) ≤
-      (g / 20) ^ 2 * Real.exp (h' / 5) :=
+      (g / 20) ^ (2 : ℕ) * Real.exp (h' / 5) :=
         mul_le_mul_of_nonneg_right hdiffsq hE0
-    _ = (1 / 400 : ℝ) * (g ^ 2 * Real.exp (h' / 5)) := by ring
+    _ = (1 / 400 : ℝ) * (g ^ (2 : ℕ) * Real.exp (h' / 5)) := by ring
 
 /-- Exact positive-height Abel increments of the witness are square summable. -/
 theorem summable_norm_sq_t2BohrTerminalCounterCoefficient :
-    Summable (fun N : ℕ => ‖t2BohrTerminalCounterCoefficient N‖ ^ 2) := by
+    Summable (fun N : ℕ => ‖t2BohrTerminalCounterCoefficient N‖ ^ (2 : ℕ)) := by
   have hmajor :=
     summable_xiHeatCassiniOrderedPrimeLogGap_sq_mul_positiveFifthHeight.mul_left
       (1 / 400 : ℝ)
@@ -161,9 +161,9 @@ theorem summable_norm_sq_t2BohrTerminalCounterCoefficient :
 theorem t2BohrTerminalCounterCurrent_sub_eq_expSum
     {L M : ℕ} (hLM : L ≤ M) (x : ℝ) :
     t2BohrTerminalCounterCurrent M x - t2BohrTerminalCounterCurrent L x =
-      expSum (Finset.Ico L M) t2BohrTerminalCounterCoefficient
+      expSum_exponentialSumMeanSquareLower (Finset.Ico L M) t2BohrTerminalCounterCoefficient
         xiHeatCassiniWoldPositiveTenthJointFrequency x := by
-  unfold t2BohrTerminalCounterCurrent expSum
+  unfold t2BohrTerminalCounterCurrent expSum_exponentialSumMeanSquareLower
   let f : ℕ → ℂ := fun j =>
     t2BohrTerminalCounterCoefficient j *
       Complex.exp (-Complex.I *
@@ -182,10 +182,10 @@ theorem tendsto_t2BohrTerminalCounterCurrent_tail_cesaro_normSq
     {L M : ℕ} (hLM : L ≤ M) :
     Tendsto (fun T : ℝ => (1 / T) * ∫ x in (1 : ℝ)..T,
       ‖t2BohrTerminalCounterCurrent M x -
-        t2BohrTerminalCounterCurrent L x‖ ^ 2)
+        t2BohrTerminalCounterCurrent L x‖ ^ (2 : ℕ))
       atTop
       (𝓝 (∑ j ∈ Finset.Ico L M,
-        ‖t2BohrTerminalCounterCoefficient j‖ ^ 2)) := by
+        ‖t2BohrTerminalCounterCoefficient j‖ ^ (2 : ℕ))) := by
   have hparseval := tendsto_cesaro_normSq_expSum
     (Finset.Ico L M) t2BohrTerminalCounterCoefficient
       xiHeatCassiniWoldPositiveTenthJointFrequency
@@ -198,15 +198,15 @@ theorem t2BohrTerminalCounterCurrent_bohrCauchy :
     ∀ ε : ℝ, 0 < ε →
       ∃ N : ℕ, ∀ L M : ℕ, N ≤ L → L ≤ M →
         (∑ j ∈ Finset.Ico L M,
-          ‖t2BohrTerminalCounterCoefficient j‖ ^ 2) < ε ∧
+          ‖t2BohrTerminalCounterCoefficient j‖ ^ (2 : ℕ)) < ε ∧
         Tendsto (fun T : ℝ => (1 / T) * ∫ x in (1 : ℝ)..T,
           ‖t2BohrTerminalCounterCurrent M x -
-            t2BohrTerminalCounterCurrent L x‖ ^ 2)
+            t2BohrTerminalCounterCurrent L x‖ ^ (2 : ℕ))
           atTop
           (𝓝 (∑ j ∈ Finset.Ico L M,
-            ‖t2BohrTerminalCounterCoefficient j‖ ^ 2)) := by
+            ‖t2BohrTerminalCounterCoefficient j‖ ^ (2 : ℕ))) := by
   intro ε hε
-  let c : ℕ → ℝ := fun j => ‖t2BohrTerminalCounterCoefficient j‖ ^ 2
+  let c : ℕ → ℝ := fun j => ‖t2BohrTerminalCounterCoefficient j‖ ^ (2 : ℕ)
   have hc : Summable c := summable_norm_sq_t2BohrTerminalCounterCoefficient
   let S : ℝ := ∑' j, c j
   have htend : Tendsto (fun N : ℕ => ∑ j ∈ Finset.range N, c j)
@@ -237,7 +237,7 @@ def T2PrimeClockBohrTerminalLandingPrinciple : Prop :=
     Tendsto r atTop (𝓝 0) →
     Summable (fun N : ℕ =>
       ‖(((r (N + 1) - r N : ℝ) : ℂ) *
-        (Real.exp (xiMassNthPrimeLogHeight (N + 1) / 10) : ℂ))‖ ^ 2) →
+        (Real.exp (xiMassNthPrimeLogHeight (N + 1) / 10) : ℂ))‖ ^ (2 : ℕ)) →
     Tendsto (fun N : ℕ =>
       |r N| * Real.exp (xiMassNthPrimeLogHeight N / 10)) atTop (𝓝 0)
 

@@ -92,8 +92,8 @@ private theorem quotient_bounds {N d : ℕ} (hd : 0 < d) (hdN : d ≤ N) (j : �
   refine ⟨hq, ?_, ?_⟩ <;> nlinarith
 
 private theorem inverse_square_bound {N d : ℕ} (hd : 0 < d) (hdN : d ≤ N) (j : ℕ) :
-    1 / ((d*(N/d+j+1) : ℕ) : ℝ)^2 ≤
-      (1/(d : ℝ)^2) / (((N/d : ℕ) : ℝ)+j) / (((N/d : ℕ) : ℝ)+j+1) := by
+    1 / ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ) ≤
+      (1/(d : ℝ)^(2 : ℕ)) / (((N/d : ℕ) : ℝ)+j) / (((N/d : ℕ) : ℝ)+j+1) := by
   have hq := (quotient_bounds hd hdN j).1
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd
   have hqR : (0 : ℝ) < (N/d : ℕ) := by exact_mod_cast hq
@@ -104,7 +104,7 @@ private theorem inverse_square_bound {N d : ℕ} (hd : 0 < d) (hdN : d ≤ N) (j
   nlinarith [sq_nonneg (d : ℝ)]
 
 private theorem weight_gap {k : ℕ} (hk : 0 < k) :
-    1/(k : ℝ)^2 - 1/((k : ℝ)*(k+1)) = (1/(k : ℝ)^2)*(1/(k+1)) := by
+    1/(k : ℝ)^(2 : ℕ) - 1/((k : ℝ)*(k+1)) = (1/(k : ℝ)^(2 : ℕ))*(1/(k+1)) := by
   have hkR : (0 : ℝ) < k := by exact_mod_cast hk
   field_simp
   ring
@@ -112,30 +112,30 @@ private theorem weight_gap {k : ℕ} (hk : 0 < k) :
 
 
 private theorem channel_summable {N d : ℕ} (hd : 0 < d) (hdN : d ≤ N)
-    (w : ℕ → ℝ) (hw : ∀ k, 0 < k → |w k| ≤ 1/(k : ℝ)^2) :
+    (w : ℕ → ℝ) (hw : ∀ k, 0 < k → |w k| ≤ 1/(k : ℝ)^(2 : ℕ)) :
     Summable (fun j : ℕ => primitive N (d*(N/d+j+1))*w (d*(N/d+j+1))) := by
   let B : ℝ := (N : ℝ)*(N+1)/16
   have hq := (quotient_bounds hd hdN 0).1
-  apply (reciprocal_series_bound hq (C := B/(d : ℝ)^2) (by dsimp [B]; positivity) _ ?_).1
+  apply (reciprocal_series_bound hq (C := B/(d : ℝ)^(2 : ℕ)) (by dsimp [B]; positivity) _ ?_).1
   intro j
   have hk : 0 < d*(N/d+j+1) := by positivity
   calc
     _ = |primitive N (d*(N/d+j+1))| * |w (d*(N/d+j+1))| := abs_mul _ _
-    _ ≤ B*(1/((d*(N/d+j+1) : ℕ) : ℝ)^2) :=
+    _ ≤ B*(1/((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) :=
       mul_le_mul (primitive_bound N _) (hw _ hk) (abs_nonneg _) (by dsimp [B]; positivity)
-    _ ≤ B*((1/(d : ℝ)^2) / (((N/d : ℕ) : ℝ)+j) / (((N/d : ℕ) : ℝ)+j+1)) :=
+    _ ≤ B*((1/(d : ℝ)^(2 : ℕ)) / (((N/d : ℕ) : ℝ)+j) / (((N/d : ℕ) : ℝ)+j+1)) :=
       mul_le_mul_of_nonneg_left (inverse_square_bound hd hdN j) (by dsimp [B]; positivity)
     _ = _ := by simp only [div_eq_mul_inv, mul_inv_rev, one_mul]; ring
 
 /-- Every literal divisor channel converges for both the physical and inverse-square weights. -/
 theorem channels_summable {N d : ℕ} (hd : 0 < d) (hdN : d ≤ N) :
     Summable (fun j : ℕ => primitive N (d*(N/d+j+1)) /
-      ((d*(N/d+j+1) : ℕ) : ℝ)^2) ∧
+      ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) ∧
     Summable (fun j : ℕ => primitive N (d*(N/d+j+1)) /
       (((d*(N/d+j+1) : ℕ) : ℝ)*(((d*(N/d+j+1) : ℕ) : ℝ)+1))) := by
   constructor
   · have h := channel_summable hd hdN
-      (fun k => 1/(k : ℝ)^2) (fun k hk => by rw [abs_of_nonneg (by positivity)])
+      (fun k => 1/(k : ℝ)^(2 : ℕ)) (fun k hk => by rw [abs_of_nonneg (by positivity)])
     exact h.congr (fun j => by ring)
   · have h := channel_summable hd hdN (fun k => 1/((k : ℝ)*(k+1))) (by
       intro k hk
@@ -154,10 +154,10 @@ def stepFlux (N : ℕ) : ℝ :=
 /-- The same complete signed flux in homogeneous inverse-square weights. -/
 def reciprocalFlux (N : ℕ) : ℝ :=
   ∑ d ∈ Icc 1 N, ((ArithmeticFunction.moebius d : ℤ) : ℝ) *
-    ∑' j : ℕ, primitive N (d*(N/d+j+1)) / ((d*(N/d+j+1) : ℕ) : ℝ)^2
+    ∑' j : ℕ, primitive N (d*(N/d+j+1)) / ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)
 
 private theorem channel_difference {N d : ℕ} (hd : 0 < d) (hdN : d ≤ N) :
-    |(∑' j : ℕ, primitive N (d*(N/d+j+1)) / ((d*(N/d+j+1) : ℕ) : ℝ)^2) -
+    |(∑' j : ℕ, primitive N (d*(N/d+j+1)) / ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) -
       ∑' j : ℕ, primitive N (d*(N/d+j+1)) /
         (((d*(N/d+j+1) : ℕ) : ℝ)*(((d*(N/d+j+1) : ℕ) : ℝ)+1))| ≤ 1/(4*(d : ℝ)) := by
   let B : ℝ := (N : ℝ)*(N+1)/16
@@ -167,9 +167,9 @@ private theorem channel_difference {N d : ℕ} (hd : 0 < d) (hdN : d ≤ N) :
   have hq := (quotient_bounds hd hdN 0).1
   have hqR : (0 : ℝ) < (N/d : ℕ) := by exact_mod_cast hq
   let f (j : ℕ) : ℝ := primitive N (d*(N/d+j+1)) *
-    (1/((d*(N/d+j+1) : ℕ) : ℝ)^2 -
+    (1/((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ) -
       1/(((d*(N/d+j+1) : ℕ) : ℝ)*(((d*(N/d+j+1) : ℕ) : ℝ)+1)))
-  have hb := reciprocal_series_bound hq (C := B/((N : ℝ)*(d : ℝ)^2))
+  have hb := reciprocal_series_bound hq (C := B/((N : ℝ)*(d : ℝ)^(2 : ℕ)))
     (by dsimp [B]; positivity) f (by
       intro j
       let k := d*(N/d+j+1)
@@ -179,28 +179,28 @@ private theorem channel_difference {N d : ℕ} (hd : 0 < d) (hdN : d ≤ N) :
       have hNkR : (N : ℝ) ≤ (k : ℝ)+1 := by exact_mod_cast (show N ≤ k+1 by omega)
       have hrec : 1/((k : ℝ)+1) ≤ 1/(N : ℝ) :=
         div_le_div_of_nonneg_left (by norm_num) hNR hNkR
-      change |primitive N k * (1/(k : ℝ)^2-1/((k : ℝ)*(k+1)))| ≤ _
+      change |primitive N k * (1/(k : ℝ)^(2 : ℕ)-1/((k : ℝ)*(k+1)))| ≤ _
       rw [weight_gap hk, abs_mul,
-        abs_of_nonneg (show 0 ≤ (1/(k : ℝ)^2)*(1/(k+1)) by positivity)]
+        abs_of_nonneg (show 0 ≤ (1/(k : ℝ)^(2 : ℕ))*(1/(k+1)) by positivity)]
       calc
-        _ ≤ B*((1/(k : ℝ)^2)*(1/(k+1))) :=
+        _ ≤ B*((1/(k : ℝ)^(2 : ℕ))*(1/(k+1))) :=
           mul_le_mul_of_nonneg_right (primitive_bound N k) (by positivity)
-        _ ≤ B*((1/(k : ℝ)^2)*(1/N)) := by
+        _ ≤ B*((1/(k : ℝ)^(2 : ℕ))*(1/N)) := by
           exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hrec (by positivity))
             (by dsimp [B]; positivity)
-        _ ≤ B*(((1/(d : ℝ)^2) / (((N/d : ℕ) : ℝ)+j) /
+        _ ≤ B*(((1/(d : ℝ)^(2 : ℕ)) / (((N/d : ℕ) : ℝ)+j) /
             (((N/d : ℕ) : ℝ)+j+1))*(1/N)) :=
           mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right (inverse_square_bound hd hdN j)
             (by positivity)) (by dsimp [B]; positivity)
         _ = _ := by simp only [div_eq_mul_inv, mul_inv_rev, one_mul]; ring)
-  have hscale : B/((N : ℝ)*(d : ℝ)^2)/((N/d : ℕ) : ℝ) ≤ 1/(4*(d : ℝ)) := by
+  have hscale : B/((N : ℝ)*(d : ℝ)^(2 : ℕ))/((N/d : ℕ) : ℝ) ≤ 1/(4*(d : ℝ)) := by
     have hqn : (N : ℝ) ≤ 2*(d : ℝ)*((N/d : ℕ) : ℝ) := by
       exact_mod_cast (quotient_bounds hd hdN 0).2.2
     have hN1 : (N : ℝ)+1 ≤ 4*(d : ℝ)*((N/d : ℕ) : ℝ) := by
       have hNge : (1 : ℝ) ≤ N := by exact_mod_cast hN
       linarith
-    calc _ = ((N : ℝ)+1)/(16*(d : ℝ)^2*((N/d : ℕ) : ℝ)) := by dsimp [B]; field_simp
-         _ ≤ (4*(d : ℝ)*((N/d : ℕ) : ℝ))/(16*(d : ℝ)^2*((N/d : ℕ) : ℝ)) :=
+    calc _ = ((N : ℝ)+1)/(16*(d : ℝ)^(2 : ℕ)*((N/d : ℕ) : ℝ)) := by dsimp [B]; field_simp
+         _ ≤ (4*(d : ℝ)*((N/d : ℕ) : ℝ))/(16*(d : ℝ)^(2 : ℕ)*((N/d : ℕ) : ℝ)) :=
            div_le_div_of_nonneg_right hN1 (by positivity)
          _ = _ := by field_simp; ring
   have hc := channels_summable hd hdN
@@ -208,7 +208,7 @@ private theorem channel_difference {N d : ℕ} (hd : 0 < d) (hdN : d ≤ N) :
       (((d*(N/d+j+1) : ℕ) : ℝ)*(((d*(N/d+j+1) : ℕ) : ℝ)+1))) := by
     exact hc.2
   have he : (∑' j, f j) =
-      (∑' j : ℕ, primitive N (d*(N/d+j+1)) / ((d*(N/d+j+1) : ℕ) : ℝ)^2) -
+      (∑' j : ℕ, primitive N (d*(N/d+j+1)) / ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) -
       ∑' j : ℕ, primitive N (d*(N/d+j+1)) /
         (((d*(N/d+j+1) : ℕ) : ℝ)*(((d*(N/d+j+1) : ℕ) : ℝ)+1)) := by
     rw [← hc.1.tsum_sub hc2]
@@ -227,7 +227,7 @@ theorem flux_weight_replacement (N : ℕ) :
   rw [← sum_sub_distrib]
   calc
     _ ≤ ∑ d ∈ Icc 1 N, |((ArithmeticFunction.moebius d : ℤ) : ℝ) *
-        (∑' j : ℕ, primitive N (d*(N/d+j+1)) / ((d*(N/d+j+1) : ℕ) : ℝ)^2) -
+        (∑' j : ℕ, primitive N (d*(N/d+j+1)) / ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) -
         ((ArithmeticFunction.moebius d : ℤ) : ℝ) *
         ∑' j : ℕ, primitive N (d*(N/d+j+1)) /
           (((d*(N/d+j+1) : ℕ) : ℝ)*(((d*(N/d+j+1) : ℕ) : ℝ)+1))| := abs_sum_le_sum_abs _ _

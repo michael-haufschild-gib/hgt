@@ -56,7 +56,7 @@ theorem eigenvalues_congr_of_eq {ι : Type*} [Fintype ι] [DecidableEq ι] {A B 
   subst h
   rfl
 
-theorem spectralEnsembleMatrix_smul (P : Fin N → Matrix (Fin D) (Fin D) ℂ) (t : ℝ)
+theorem spectralEnsembleMatrix_smul_shellFamilySimpleSpectrum (P : Fin N → Matrix (Fin D) (Fin D) ℂ) (t : ℝ)
     (θ : Fin N → ℝ) :
     spectralEnsembleMatrix P (fun a => t * θ a) = ((t : ℂ)) • spectralEnsembleMatrix P θ := by
   rw [spectralEnsembleMatrix, spectralEnsembleMatrix, Finset.smul_sum]
@@ -72,7 +72,7 @@ theorem injective_eigenvalues_spectralEnsemble_smul_iff
         (isHermitian_spectralEnsembleMatrix hP (fun a => t * θ a)).eigenvalues
       ↔ Function.Injective (isHermitian_spectralEnsembleMatrix hP θ).eigenvalues := by
   have hsm : (spectralEnsembleMatrix P fun a => t * θ a)
-      = ((t : ℂ)) • spectralEnsembleMatrix P θ := spectralEnsembleMatrix_smul P t θ
+      = ((t : ℂ)) • spectralEnsembleMatrix P θ := spectralEnsembleMatrix_smul_shellFamilySimpleSpectrum P t θ
   have hherm : (((t : ℂ)) • spectralEnsembleMatrix P θ).IsHermitian := by
     rw [← hsm]
     exact isHermitian_spectralEnsembleMatrix hP _

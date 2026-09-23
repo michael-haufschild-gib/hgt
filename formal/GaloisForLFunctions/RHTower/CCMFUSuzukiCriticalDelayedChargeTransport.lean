@@ -28,7 +28,7 @@ theorem ccmFUSuzukiCriticalCauchyVolterraCells_eq_delayedChargeTransport
             cauchyVolterraKernel (Real.sqrt ((j + 3 : ℕ) : ℝ)) y) =
       ∫ y in 1..Real.exp (H / 2),
         cauchyVolterraFUCurvature H y *
-          (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ 2) := by
+          (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ (2 : ℕ)) := by
   let M := suzukiCheckpointEventIndex H - 2
   let a : ℕ → ℝ := fun j =>
     ((j + 3 : ℕ) : ℝ) * ccmFUSuzukiCriticalPrimePolarIncrement j
@@ -95,14 +95,14 @@ theorem ccmFUSuzukiCriticalCauchyVolterraCells_eq_delayedChargeTransport
           intro j hj
           split_ifs <;> ring
     _ = ∫ y in 1..Y, cauchyVolterraFUCurvature H y *
-        (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ 2) := by
+        (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ (2 : ℕ)) := by
           apply intervalIntegral.integral_congr
           intro y hy
           rw [Set.uIcc_of_le hY1] at hy
           change cauchyVolterraFUCurvature H y *
               ccmFUSuzukiCriticalActiveCauchyCodiagonal H y =
             cauchyVolterraFUCurvature H y *
-              (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ 2)
+              (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ (2 : ℕ))
           rw [ccmFUSuzukiCriticalActiveCauchyCodiagonal_eq_delayedCharge_div_sq
             (ne_of_gt (lt_of_lt_of_le zero_lt_one hy.1))]
 
@@ -114,10 +114,10 @@ theorem ccmFUSuzukiCriticalMertensDeviationVariationAction_eq_zeroClock_add_dela
     suzukiCheckpointCriticalVariationAction suzukiCheckpointCriticalMertensDeviation H =
       suzukiCheckpointCriticalMertensDeviation 0 *
           suzukiCheckpointCriticalTriangularMultiplier H 0 +
-      (64 / (Real.exp (H / 2) ^ 2 * H ^ 4)) *
+      (64 / (Real.exp (H / 2) ^ (2 : ℕ) * H ^ (4 : ℕ))) *
         ccmFUSuzukiCriticalActiveDelayedCharge H (Real.exp (H / 2)) +
       ∫ y in 1..Real.exp (H / 2), cauchyVolterraFUCurvature H y *
-        (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ 2) := by
+        (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ (2 : ℕ)) := by
   have hH0 : 0 < H := by linarith
   have hHne : H ≠ 0 := ne_of_gt hH0
   have hYne : Real.exp (H / 2) ≠ 0 := (Real.exp_pos _).ne'
@@ -135,10 +135,10 @@ theorem ccmFUSuzukiCriticalMertensDeviationVariationAction_eq_zeroClock_add_dela
 
 /-- The sole RH-bearing arithmetic observable remaining after exact FU completion. -/
 def ccmFUSuzukiCriticalDelayedChargeTransform (H : ℝ) : ℝ :=
-  (64 / (Real.exp (H / 2) ^ 2 * H ^ 4)) *
+  (64 / (Real.exp (H / 2) ^ (2 : ℕ) * H ^ (4 : ℕ))) *
       ccmFUSuzukiCriticalActiveDelayedCharge H (Real.exp (H / 2)) +
     ∫ y in 1..Real.exp (H / 2), cauchyVolterraFUCurvature H y *
-      (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ 2)
+      (ccmFUSuzukiCriticalActiveDelayedCharge H y / y ^ (2 : ℕ))
 
 /-- Uniform control of the literal completed delayed-charge transform. -/
 def CCMFUSuzukiCriticalDelayedChargeTransformBound : Prop :=

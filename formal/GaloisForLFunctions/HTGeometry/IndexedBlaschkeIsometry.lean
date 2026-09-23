@@ -216,7 +216,7 @@ private theorem tendsto_blaschkeTailMass
 private theorem tail_hardyOne_sub_norm_sq_le
     {ι : Type*} (a : ι → ℂ) (haDisk : ∀ i, ‖a i‖ < 1)
     (hsum : Summable (fun i => 1 - ‖a i‖)) (s : Finset ι) :
-    ‖hardyOf (indexedBlaschkeTailMultiplier a haDisk hsum s) - hardyOne‖ ^ 2 ≤
+    ‖hardyOf (indexedBlaschkeTailMultiplier a haDisk hsum s) - hardyOne‖ ^ (2 : ℕ) ≤
       2 * (Real.exp (blaschkeTailMass a s) - 1) := by
   let J := ↑((↑s : Set ι)ᶜ)
   let b : J → ℂ := fun i => a i
@@ -268,15 +268,15 @@ private theorem tail_hardyOne_sub_norm_sq_le
           -(indexedBlaschkeProduct b 0 - 1).re := by simp
       _ ≤ |(indexedBlaschkeProduct b 0 - 1).re| := neg_le_abs _
       _ ≤ ‖indexedBlaschkeProduct b 0 - 1‖ := Complex.abs_re_le_norm _
-  have hqnormsq : ‖q‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg q]
+  have hqnormsq : ‖q‖ ^ (2 : ℕ) ≤ 1 := by nlinarith [norm_nonneg q]
   calc
-    ‖hardyOf T - hardyOne‖ ^ 2 = ‖hardyOne - q‖ ^ 2 := by
+    ‖hardyOf T - hardyOne‖ ^ (2 : ℕ) = ‖hardyOne - q‖ ^ (2 : ℕ) := by
       rw [norm_sub_rev]
-    _ = ‖hardyOne‖ ^ 2 - 2 * RCLike.re (inner ℂ hardyOne q) + ‖q‖ ^ 2 :=
+    _ = ‖hardyOne‖ ^ (2 : ℕ) - 2 * RCLike.re (inner ℂ hardyOne q) + ‖q‖ ^ (2 : ℕ) :=
       norm_sub_sq hardyOne q
     _ ≤ 2 * (1 - (indexedBlaschkeProduct b 0).re) := by
       rw [norm_hardyOne, hinner]
-      change 1 ^ 2 - 2 * (indexedBlaschkeProduct b 0).re + ‖q‖ ^ 2 ≤
+      change 1 ^ (2 : ℕ) - 2 * (indexedBlaschkeProduct b 0).re + ‖q‖ ^ (2 : ℕ) ≤
         2 * (1 - (indexedBlaschkeProduct b 0).re)
       nlinarith
     _ ≤ 2 * ‖indexedBlaschkeProduct b 0 - 1‖ :=
@@ -305,7 +305,7 @@ private theorem tendsto_tail_hardyOne
     simpa only [sub_self, mul_zero] using (hexp.sub hone).const_mul 2
   rw [Metric.tendsto_nhds]
   intro ε hε
-  have hev := Metric.tendsto_nhds.mp hbound (ε ^ 2) (sq_pos_of_pos hε)
+  have hev := Metric.tendsto_nhds.mp hbound (ε ^ (2 : ℕ)) (sq_pos_of_pos hε)
   filter_upwards [hev] with s hs
   rw [dist_eq_norm]
   have hb := tail_hardyOne_sub_norm_sq_le a haDisk hsum s
@@ -314,7 +314,7 @@ private theorem tendsto_tail_hardyOne
     exact tsum_nonneg fun i => sub_nonneg.mpr (haDisk i).le
   have hbound0 : 0 ≤ 2 * (Real.exp (blaschkeTailMass a s) - 1) := by
     exact mul_nonneg (by norm_num) (sub_nonneg.mpr (Real.one_le_exp hmass0))
-  have hs' : 2 * (Real.exp (blaschkeTailMass a s) - 1) < ε ^ 2 := by
+  have hs' : 2 * (Real.exp (blaschkeTailMass a s) - 1) < ε ^ (2 : ℕ) := by
     rw [Real.dist_eq, sub_zero, abs_of_nonneg hbound0] at hs
     exact hs
   nlinarith [norm_nonneg

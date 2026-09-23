@@ -195,9 +195,9 @@ theorem covarianceHilbert_not_finiteDimensional
 /-- Canonical positive norm action has a noncompact unit sublevel under relative jet freedom. -/
 theorem canonicalPositiveAction_unitSublevel_not_compact
     (T : RelativeJetCovarianceRealization E (H := H)) :
-    ¬ IsCompact {x : H | ‖x‖ ^ 2 ≤ 1} := by
+    ¬ IsCompact {x : H | ‖x‖ ^ (2 : ℕ) ≤ 1} := by
   intro hcompact
-  have hset : {x : H | ‖x‖ ^ 2 ≤ 1} = Metric.closedBall 0 1 := by
+  have hset : {x : H | ‖x‖ ^ (2 : ℕ) ≤ 1} = Metric.closedBall 0 1 := by
     ext x
     simp only [Set.mem_setOf_eq, Metric.mem_closedBall, dist_zero_right]
     constructor

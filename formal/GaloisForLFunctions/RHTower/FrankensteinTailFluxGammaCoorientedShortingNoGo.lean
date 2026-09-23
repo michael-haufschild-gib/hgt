@@ -87,7 +87,7 @@ theorem frankensteinTailFluxGamma_cooriented_swap_noShorting
             (a * xiGammaEulerPrimitiveCoorientedReflectionGauge a i j) +
           frankensteinTailFluxGammaPairWeight j i *
             (a * xiGammaEulerPrimitiveCoorientedReflectionGauge a j i)) =
-      a ^ 2 *
+      a ^ (2 : ℕ) *
         (frankensteinTailFluxGammaPairWeight i j *
             xiGammaEulerPrimitiveCoorientedReflectionGauge a i j +
           frankensteinTailFluxGammaPairWeight j i *

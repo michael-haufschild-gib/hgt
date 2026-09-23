@@ -19,8 +19,8 @@ variable {X Y : Type*} [AddCommGroup X] [Module ℂ X]
 
 /-- Exact energy transport; no blind-direction or small-change assumption is needed. -/
 theorem observation_energy_transport (A B : X →ₗ[ℂ] Y) (x : X) :
-    ‖B x‖ ^ 2 = ‖A x‖ ^ 2 +
-      2 * (inner ℂ (A x) ((B - A) x)).re + ‖(B - A) x‖ ^ 2 := by
+    ‖B x‖ ^ (2 : ℕ) = ‖A x‖ ^ (2 : ℕ) +
+      2 * (inner ℂ (A x) ((B - A) x)).re + ‖(B - A) x‖ ^ (2 : ℕ) := by
   have h := norm_add_sq (𝕜 := ℂ) (A x) ((B - A) x)
   simpa only [LinearMap.sub_apply, add_sub_cancel, RCLike.re_to_complex] using h
 
@@ -50,11 +50,11 @@ theorem observation_kernel_preservation_iff (A B : X →ₗ[ℂ] Y) :
 theorem finiteDerivativeReporter_energy_transport
     (n : ℕ) (f : ℂ → ℂ)
     (A B : (ℂ → ℂ) →ₗ[ℂ] Y) (c : Fin n → ℂ) :
-    ‖finiteDerivativeReporterMap n f B c‖ ^ 2 =
-      ‖finiteDerivativeReporterMap n f A c‖ ^ 2 +
+    ‖finiteDerivativeReporterMap n f B c‖ ^ (2 : ℕ) =
+      ‖finiteDerivativeReporterMap n f A c‖ ^ (2 : ℕ) +
       2 * (inner ℂ (finiteDerivativeReporterMap n f A c)
         (finiteDerivativeReporterMap n f (B - A) c)).re +
-      ‖finiteDerivativeReporterMap n f (B - A) c‖ ^ 2 := by
+      ‖finiteDerivativeReporterMap n f (B - A) c‖ ^ (2 : ℕ) := by
   exact observation_energy_transport A B (finiteDerivativeReporterPacket c f)
 
 /-- A rotating rank-one real observation panel. -/
@@ -108,19 +108,19 @@ theorem rotatingInformation_idempotent (t : ℝ) :
 
 /-- Exact activation energy, also valid for finite rotations. -/
 theorem rotatingObservation_null_energy (s t : ℝ) :
-    ‖rotatingObservation t (rotatingNullDirection s)‖ ^ 2 = Real.sin (t - s) ^ 2 := by
+    ‖rotatingObservation t (rotatingNullDirection s)‖ ^ (2 : ℕ) = Real.sin (t - s) ^ (2 : ℕ) := by
   rw [rotatingObservation_null_transport, Real.norm_eq_abs, sq_abs]
 
 /-- A quarter turn activates the entire old unit null direction. -/
 theorem rotatingObservation_quarter_turn (t : ℝ) :
-    ‖rotatingObservation (t + Real.pi / 2) (rotatingNullDirection t)‖ ^ 2 = 1 := by
+    ‖rotatingObservation (t + Real.pi / 2) (rotatingNullDirection t)‖ ^ (2 : ℕ) = 1 := by
   rw [rotatingObservation_null_energy]
   simp only [add_sub_cancel_left, Real.sin_pi_div_two, one_pow]
 
 /-- The matrix quadratic form equals the squared physical readout. -/
 theorem rotatingInformation_quadratic (t : ℝ) (x : Fin 2 → ℝ) :
     (∑ i, ∑ j, x i * rotatingInformation t i j * x j) =
-      rotatingObservation t x ^ 2 := by
+      rotatingObservation t x ^ (2 : ℕ) := by
   simp [rotatingInformation, rotatingObservation, Fin.sum_univ_two,
     Matrix.gram_apply, RCLike.inner_apply]
   ring

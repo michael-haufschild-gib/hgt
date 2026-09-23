@@ -239,7 +239,7 @@ theorem norm_prod_one_add_sub_one_sub_sum_le {ι : Type*} (s : Finset ι) (u : �
 theorem norm_tprod_one_add_sub_one_sub_tsum_le {ι : Type*} {u : ι → ℂ}
     (hu : Summable fun i => ‖u i‖) :
     ‖(∏' i, (1 + u i)) - 1 - ∑' i, u i‖
-      ≤ (∑' i, ‖u i‖) ^ 2 * Real.exp (∑' i, ‖u i‖) := by
+      ≤ (∑' i, ‖u i‖) ^ (2 : ℕ) * Real.exp (∑' i, ‖u i‖) := by
   set S : ℝ := ∑' i, ‖u i‖ with hS
   have hSnn : 0 ≤ S := tsum_nonneg fun i => norm_nonneg _
   have husum : Summable u := hu.of_norm
@@ -257,7 +257,7 @@ theorem norm_tprod_one_add_sub_one_sub_tsum_le {ι : Type*} {u : ι → ℂ}
   have hss : (∑ i ∈ s, ‖u i‖) ≤ S := hu.sum_le_tsum s fun i _ => norm_nonneg _
   have hssnn : (0 : ℝ) ≤ ∑ i ∈ s, ‖u i‖ := Finset.sum_nonneg fun i _ => norm_nonneg _
   set t : ℝ := ∑ i ∈ s, ‖u i‖ with ht
-  have hexp : Real.exp t - 1 - t ≤ t ^ 2 * Real.exp t := by
+  have hexp : Real.exp t - 1 - t ≤ t ^ (2 : ℕ) * Real.exp t := by
     rcases lt_or_ge t 1 with hlt | hge
     · have h1 : (0 : ℝ) < 1 - t := by linarith
       have h2 : (1 : ℝ) - t ≤ Real.exp (-t) := by
@@ -267,10 +267,10 @@ theorem norm_tprod_one_add_sub_one_sub_tsum_le {ι : Type*} {u : ι → ℂ}
         rw [← Real.exp_add]
         simp
       nlinarith [Real.exp_pos t, h2, h3, hssnn]
-    · have hsq : (0 : ℝ) ≤ t ^ 2 - 1 := by nlinarith
+    · have hsq : (0 : ℝ) ≤ t ^ (2 : ℕ) - 1 := by nlinarith
       nlinarith [Real.exp_pos t, mul_nonneg hsq (Real.exp_pos t).le]
-  have hmono : t ^ 2 * Real.exp t ≤ S ^ 2 * Real.exp S := by
-    have h1 : t ^ 2 ≤ S ^ 2 := by nlinarith
+  have hmono : t ^ (2 : ℕ) * Real.exp t ≤ S ^ (2 : ℕ) * Real.exp S := by
+    have h1 : t ^ (2 : ℕ) ≤ S ^ (2 : ℕ) := by nlinarith
     have h2 : Real.exp t ≤ Real.exp S := Real.exp_le_exp.mpr hss
     nlinarith [Real.exp_pos t, sq_nonneg t]
   linarith [hps, hexp, hmono]
@@ -292,7 +292,7 @@ theorem hasDerivAt_tprod_one_add_mul {ι : Type*} {q : ι → ℂ} (hq : Summabl
     exact tsum_congr fun i => by rw [norm_mul]
   have hsum : ∀ x : ℂ, (∑' i, x * q i) = x * ∑' i, q i := fun x => tsum_mul_left
   have hbound : ∀ x : ℂ, ‖(∏' i, (1 + x * q i)) - 1 - x * ∑' i, q i‖
-      ≤ (‖x‖ * Q) ^ 2 * Real.exp (‖x‖ * Q) := by
+      ≤ (‖x‖ * Q) ^ (2 : ℕ) * Real.exp (‖x‖ * Q) := by
     intro x
     have h := norm_tprod_one_add_sub_one_sub_tsum_le (u := fun i => x * q i) (hnorm x)
     rw [hsum x, hmass x] at h
@@ -301,10 +301,10 @@ theorem hasDerivAt_tprod_one_add_mul {ι : Type*} {q : ι → ℂ} (hq : Summabl
     simp
   rw [hasDerivAt_iff_tendsto_slope]
   refine tendsto_iff_norm_sub_tendsto_zero.mpr ?_
-  have hg : Tendsto (fun y : ℂ => ‖y‖ * Q ^ 2 * Real.exp (‖y‖ * Q)) (𝓝[≠] (0 : ℂ)) (𝓝 0) := by
-    have hc : Continuous fun y : ℂ => ‖y‖ * Q ^ 2 * Real.exp (‖y‖ * Q) := by fun_prop
-    have h0 : Tendsto (fun y : ℂ => ‖y‖ * Q ^ 2 * Real.exp (‖y‖ * Q)) (𝓝[≠] (0 : ℂ))
-        (𝓝 (‖(0 : ℂ)‖ * Q ^ 2 * Real.exp (‖(0 : ℂ)‖ * Q))) :=
+  have hg : Tendsto (fun y : ℂ => ‖y‖ * Q ^ (2 : ℕ) * Real.exp (‖y‖ * Q)) (𝓝[≠] (0 : ℂ)) (𝓝 0) := by
+    have hc : Continuous fun y : ℂ => ‖y‖ * Q ^ (2 : ℕ) * Real.exp (‖y‖ * Q) := by fun_prop
+    have h0 : Tendsto (fun y : ℂ => ‖y‖ * Q ^ (2 : ℕ) * Real.exp (‖y‖ * Q)) (𝓝[≠] (0 : ℂ))
+        (𝓝 (‖(0 : ℂ)‖ * Q ^ (2 : ℕ) * Real.exp (‖(0 : ℂ)‖ * Q))) :=
       (hc.tendsto (0 : ℂ)).mono_left (nhdsWithin_le_nhds (s := {(0 : ℂ)}ᶜ))
     simpa using h0
   refine squeeze_zero' (Eventually.of_forall fun y => norm_nonneg _) ?_ hg

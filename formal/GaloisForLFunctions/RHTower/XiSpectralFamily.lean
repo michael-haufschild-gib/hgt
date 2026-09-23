@@ -18,7 +18,7 @@ the vertical-line rigidity theorem -- applies to the Xi family verbatim, with no
 between.
 
 The Poisson family is the instance carried by the rest of the corpus.  The point of the abstraction
-is a second instance -- the mass-shifted family `sqrt (alpha ^ 2 + a ^ 2)`, which is
+is a second instance -- the mass-shifted family `sqrt (alpha ^ (2 : ℕ) + a ^ (2 : ℕ))`, which is
 prime-accessible where the Poisson family is not.
 -/
 

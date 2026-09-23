@@ -17,22 +17,22 @@ noncomputable section
 abbrev RawOperator := SpectralVector →L[ℂ] SpectralVector
 
 def rawInteractionOperator (q : SchwartzMap ℝ ℂ) (k x : ℝ) : RawOperator :=
-  ((I*(k : ℂ)*FDNLS.staggerPhase (2*k^2) x*reflectedDerivative q x) •
+  ((I*(k : ℂ)*FDNLS.staggerPhase (2*k^(2 : ℕ)) x*reflectedDerivative q x) •
     ContinuousLinearMap.snd ℂ ℂ ℂ).prod
-  ((I*(k : ℂ)*FDNLS.staggerPhase (-(2*k^2)) x*SchwartzMap.derivCLM ℂ ℂ q x) •
+  ((I*(k : ℂ)*FDNLS.staggerPhase (-(2*k^(2 : ℕ))) x*SchwartzMap.derivCLM ℂ ℂ q x) •
     ContinuousLinearMap.fst ℂ ℂ ℂ)
 
 theorem rawInteractionOperator_apply (q : SchwartzMap ℝ ℂ) (k x : ℝ) (v : SpectralVector) :
     rawInteractionOperator q k x v =
-      (I*(k : ℂ)*FDNLS.staggerPhase (2*k^2) x*reflectedDerivative q x*v.2,
-       I*(k : ℂ)*FDNLS.staggerPhase (-(2*k^2)) x*SchwartzMap.derivCLM ℂ ℂ q x*v.1) := rfl
+      (I*(k : ℂ)*FDNLS.staggerPhase (2*k^(2 : ℕ)) x*reflectedDerivative q x*v.2,
+       I*(k : ℂ)*FDNLS.staggerPhase (-(2*k^(2 : ℕ))) x*SchwartzMap.derivCLM ℂ ℂ q x*v.1) := rfl
 
 theorem continuous_rawInteractionOperator_parameters (q : SchwartzMap ℝ ℂ) :
     Continuous (fun p : ℝ × ℝ => rawInteractionOperator q p.1 p.2) := by
   let U : ℝ × ℝ → SpectralVector →L[ℂ] ℂ := fun p =>
-    (I*(p.1 : ℂ)*FDNLS.staggerPhase (2*p.1^2) p.2*reflectedDerivative q p.2) • ContinuousLinearMap.snd ℂ ℂ ℂ
+    (I*(p.1 : ℂ)*FDNLS.staggerPhase (2*p.1^(2 : ℕ)) p.2*reflectedDerivative q p.2) • ContinuousLinearMap.snd ℂ ℂ ℂ
   let V : ℝ × ℝ → SpectralVector →L[ℂ] ℂ := fun p =>
-    (I*(p.1 : ℂ)*FDNLS.staggerPhase (-(2*p.1^2)) p.2*SchwartzMap.derivCLM ℂ ℂ q p.2) • ContinuousLinearMap.fst ℂ ℂ ℂ
+    (I*(p.1 : ℂ)*FDNLS.staggerPhase (-(2*p.1^(2 : ℕ))) p.2*SchwartzMap.derivCLM ℂ ℂ q p.2) • ContinuousLinearMap.fst ℂ ℂ ℂ
   have hU : Continuous U := by unfold U FDNLS.staggerPhase; fun_prop
   have hV : Continuous V := by unfold V FDNLS.staggerPhase; fun_prop
   exact (ContinuousLinearMap.prodₗᵢ (𝕜 := ℂ) (E := SpectralVector) (F := ℂ) (G := ℂ) ℂ).continuous.comp (hU.prodMk hV)
@@ -105,16 +105,16 @@ theorem rawInteractionOperator_exp_apply (q : SchwartzMap ℝ ℂ) (κ x : ℝ) 
   apply Prod.ext <;> simp only [interactionRate,rotatingFrame,pairOperator,ContinuousLinearMap.prod_apply,
     _root_.add_apply,_root_.smul_apply,smul_eq_mul,
     zero_mul,zero_add,add_zero,neg_neg]
-  · change I*(Real.exp κ : ℂ)*FDNLS.staggerPhase (2*(Real.exp κ)^2) x*reflectedDerivative q x*v.2 =
-      FDNLS.staggerPhase ((Real.exp κ)^2) x*
-        ((I*(Real.exp κ : ℂ)*reflectedDerivative q x)*(FDNLS.staggerPhase ((Real.exp κ)^2) x*v.2))
+  · change I*(Real.exp κ : ℂ)*FDNLS.staggerPhase (2*(Real.exp κ)^(2 : ℕ)) x*reflectedDerivative q x*v.2 =
+      FDNLS.staggerPhase ((Real.exp κ)^(2 : ℕ)) x*
+        ((I*(Real.exp κ : ℂ)*reflectedDerivative q x)*(FDNLS.staggerPhase ((Real.exp κ)^(2 : ℕ)) x*v.2))
     rw [← staggerPhase_square]
     ring
-  · change I*(Real.exp κ : ℂ)*FDNLS.staggerPhase (-(2*(Real.exp κ)^2)) x*SchwartzMap.derivCLM ℂ ℂ q x*v.1 =
-      FDNLS.staggerPhase (-((Real.exp κ)^2)) x*
-        ((I*(Real.exp κ : ℂ)*deriv (q : ℝ → ℂ) x)*(FDNLS.staggerPhase (-((Real.exp κ)^2)) x*v.1))
+  · change I*(Real.exp κ : ℂ)*FDNLS.staggerPhase (-(2*(Real.exp κ)^(2 : ℕ))) x*SchwartzMap.derivCLM ℂ ℂ q x*v.1 =
+      FDNLS.staggerPhase (-((Real.exp κ)^(2 : ℕ))) x*
+        ((I*(Real.exp κ : ℂ)*deriv (q : ℝ → ℂ) x)*(FDNLS.staggerPhase (-((Real.exp κ)^(2 : ℕ))) x*v.1))
     rw [SchwartzMap.derivCLM_apply]
-    have he : -(2*(Real.exp κ)^2) = 2*(-((Real.exp κ)^2)) := by ring
+    have he : -(2*(Real.exp κ)^(2 : ℕ)) = 2*(-((Real.exp κ)^(2 : ℕ))) := by ring
     rw [he,← staggerPhase_square]
     ring
 

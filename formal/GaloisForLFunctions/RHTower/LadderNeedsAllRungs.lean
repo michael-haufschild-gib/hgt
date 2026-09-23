@@ -46,27 +46,27 @@ namespace RHTower
 /-- **The second symmetric function of a `2×2` symmetric matrix** is its determinant, so rung two is
 the Cauchy–Schwarz inequality for the form. -/
 theorem rung_two_is_cauchy_schwarz (a b c : ℝ) :
-    a * c - b ^ 2 = a * c - b * b := by ring
+    a * c - b ^ (2 : ℕ) = a * c - b * b := by ring
 
 /-- **The `2×2` principal minors** of the unit-diagonal matrix with constant off-diagonal `t`. -/
-theorem constant_offdiag_minor (t : ℝ) : 1 * 1 - t ^ 2 = 1 - t ^ 2 := by ring
+theorem constant_offdiag_minor (t : ℝ) : 1 * 1 - t ^ (2 : ℕ) = 1 - t ^ (2 : ℕ) := by ring
 
 /-- **The determinant** of the `3×3` unit-diagonal matrix with constant off-diagonal `t`. -/
 theorem constant_offdiag_det (t : ℝ) :
-    1 * (1 - t ^ 2) - t * (t - t ^ 2) + t * (t ^ 2 - t) = (1 - t) ^ 2 * (1 + 2 * t) := by
+    1 * (1 - t ^ (2 : ℕ)) - t * (t - t ^ (2 : ℕ)) + t * (t ^ (2 : ℕ) - t) = (1 - t) ^ (2 : ℕ) * (1 + 2 * t) := by
   ring
 
 /-- At `t = -3/5` the minors are positive. -/
-theorem minors_pos_at_witness : (0:ℝ) < 1 - (-(3:ℝ) / 5) ^ 2 := by norm_num
+theorem minors_pos_at_witness : (0:ℝ) < 1 - (-(3:ℝ) / 5) ^ (2 : ℕ) := by norm_num
 
 /-- At `t = -3/5` the determinant is negative. -/
-theorem det_neg_at_witness : (1 - (-(3:ℝ) / 5)) ^ 2 * (1 + 2 * (-(3:ℝ) / 5)) < 0 := by norm_num
+theorem det_neg_at_witness : (1 - (-(3:ℝ) / 5)) ^ (2 : ℕ) * (1 + 2 * (-(3:ℝ) / 5)) < 0 := by norm_num
 
 /-- **The truncation fails.**  A symmetric matrix can have all `1×1` and `2×2` principal minors
 positive and still fail positivity, so the ladder needs every rung. -/
 theorem truncation_insufficient :
-    (0:ℝ) < 1 ∧ (0:ℝ) < 1 - (-(3:ℝ) / 5) ^ 2 ∧
-      (1 - (-(3:ℝ) / 5)) ^ 2 * (1 + 2 * (-(3:ℝ) / 5)) < 0 :=
+    (0:ℝ) < 1 ∧ (0:ℝ) < 1 - (-(3:ℝ) / 5) ^ (2 : ℕ) ∧
+      (1 - (-(3:ℝ) / 5)) ^ (2 : ℕ) * (1 + 2 * (-(3:ℝ) / 5)) < 0 :=
   ⟨by norm_num, minors_pos_at_witness, det_neg_at_witness⟩
 
 /-- A negative determinant forbids positive semidefiniteness, since the determinant is the product of

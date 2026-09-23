@@ -28,11 +28,11 @@ noncomputable section
 def xiThermalSquareReflectionDefectEnergy : ℝ :=
   ∑' q : XiZeroCopy,
     ‖xiZeroCopyReciprocalSquare q -
-      (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q)‖ ^ 2
+      (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q)‖ ^ (2 : ℕ)
 
 /-- Pointwise conversion from conjugation distance to imaginary-square mass. -/
 lemma norm_sub_conj_sq_eq_four_im_sq (z : ℂ) :
-    ‖z - (starRingEnd ℂ) z‖ ^ 2 = 4 * z.im ^ 2 := by
+    ‖z - (starRingEnd ℂ) z‖ ^ (2 : ℕ) = 4 * z.im ^ (2 : ℕ) := by
   rw [Complex.sq_norm, Complex.normSq_apply]
   simp [Complex.conj_re, Complex.conj_im]
   ring
@@ -41,7 +41,7 @@ lemma norm_sub_conj_sq_eq_four_im_sq (z : ℂ) :
 theorem summable_xiThermalSquareReflectionDefectEnergy :
     Summable (fun q : XiZeroCopy =>
       ‖xiZeroCopyReciprocalSquare q -
-        (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q)‖ ^ 2) := by
+        (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q)‖ ^ (2 : ℕ)) := by
   apply summable_xiThermalOrientationTerm.mul_left 4 |>.congr
   intro q
   exact (norm_sub_conj_sq_eq_four_im_sq _).symm

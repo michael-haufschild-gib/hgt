@@ -185,9 +185,9 @@ theorem numberCLM_polyGauss_norm_le (P : Polynomial ℝ) :
   have hnormP := HTGeometry.norm_sq_sum_smul_orthonormal he c Finset.univ
   have hboundSq :
       ‖∑ j : Fin (P.natDegree + 1),
-          (c j * (4 * (π : ℂ) * (j : ℕ))) • e j‖ ^ 2 ≤
-        (4 * π * P.natDegree) ^ 2 *
-          ‖∑ j : Fin (P.natDegree + 1), c j • e j‖ ^ 2 := by
+          (c j * (4 * (π : ℂ) * (j : ℕ))) • e j‖ ^ (2 : ℕ) ≤
+        (4 * π * P.natDegree) ^ (2 : ℕ) *
+          ‖∑ j : Fin (P.natDegree + 1), c j • e j‖ ^ (2 : ℕ) := by
     rw [hnormN, hnormP, Finset.mul_sum]
     refine Finset.sum_le_sum fun j _ => ?_
     rw [norm_mul, norm_mul, Complex.norm_natCast, mul_pow, mul_pow]
@@ -197,21 +197,21 @@ theorem numberCLM_polyGauss_norm_le (P : Polynomial ℝ) :
     rw [hnorm4pi]
     have hj : ((j : ℕ) : ℝ) ≤ P.natDegree := by
       exact_mod_cast Nat.le_of_lt_succ j.2
-    have hscale : (4 * π * ((j : ℕ) : ℝ)) ^ 2 ≤ (4 * π * P.natDegree) ^ 2 := by
+    have hscale : (4 * π * ((j : ℕ) : ℝ)) ^ (2 : ℕ) ≤ (4 * π * P.natDegree) ^ (2 : ℕ) := by
       have hbase : 4 * π * ((j : ℕ) : ℝ) ≤ 4 * π * P.natDegree :=
         mul_le_mul_of_nonneg_left hj (by positivity)
       exact pow_le_pow_left₀ (by positivity) hbase 2
     nlinarith [hscale, sq_nonneg ‖c j‖]
   have hboundSq' :
       ‖∑ j : Fin (P.natDegree + 1),
-          (c j * (4 * (π : ℂ) * (j : ℕ))) • e j‖ ^ 2 ≤
-        (4 * π * P.natDegree) ^ 2 *
-          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+          (c j * (4 * (π : ℂ) * (j : ℕ))) • e j‖ ^ (2 : ℕ) ≤
+        (4 * π * P.natDegree) ^ (2 : ℕ) *
+          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
     rwa [hc] at hboundSq
   have hnonneg : 0 ≤ 4 * π * P.natDegree := by positivity
   have hsquare :
-      ‖(numberCLM (polyGaussSchwartz P)).toLp 2 (volume : Measure ℝ)‖ ^ 2 ≤
-        (4 * π * P.natDegree * ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖) ^ 2 := by
+      ‖(numberCLM (polyGaussSchwartz P)).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) ≤
+        (4 * π * P.natDegree * ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖) ^ (2 : ℕ) := by
     rw [hNsum]
     nlinarith [hboundSq']
   apply (sq_le_sq₀ (norm_nonneg _)
@@ -240,14 +240,14 @@ side conditions, differentiation costs at most the top Hermite number `4π natDe
 Gaussian `L²` energy.  This is the sharp finite-oscillator inequality used by Route U's
 imaginary-translation and prime-aperture estimate. -/
 theorem gaussianPolynomialDerivativeEnergy_le (P : Polynomial ℝ) :
-    ‖(polyGaussSchwartz P.derivative).toLp 2 (volume : Measure ℝ)‖ ^ 2 ≤
-      4 * π * P.natDegree * ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by
+    ‖(polyGaussSchwartz P.derivative).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) ≤
+      4 * π * P.natDegree * ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   have hosc := norm_toLp_annihilationCLM_sq_le (polyGaussSchwartz P)
   have hnum := numberCLM_polyGauss_norm_le P
   rw [annihilationCLM_polyGaussSchwartz] at hosc
   have hnonneg : 0 ≤ ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ := norm_nonneg _
   calc
-    ‖(polyGaussSchwartz P.derivative).toLp 2 (volume : Measure ℝ)‖ ^ 2
+    ‖(polyGaussSchwartz P.derivative).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ)
         ≤ ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ *
           ‖(numberCLM (polyGaussSchwartz P)).toLp 2 (volume : Measure ℝ)‖ := hosc
     _ ≤ ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ *
@@ -255,7 +255,7 @@ theorem gaussianPolynomialDerivativeEnergy_le (P : Polynomial ℝ) :
             ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖) :=
       mul_le_mul_of_nonneg_left hnum hnonneg
     _ = 4 * π * P.natDegree *
-          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ 2 := by ring
+          ‖(polyGaussSchwartz P).toLp 2 (volume : Measure ℝ)‖ ^ (2 : ℕ) := by ring
 
 /-- Hermite functions are fixed by pointwise conjugation. -/
 theorem conjSLM_hermiteSchwartz_eq (n : ℕ) :
@@ -268,9 +268,9 @@ theorem conjSLM_hermiteSchwartz_eq (n : ℕ) :
 coefficient-uniform derivative-energy ceiling exactly. -/
 theorem gaussianHermitePolynomialDerivativeEnergy_eq (n : ℕ) :
     ‖(polyGaussSchwartz (hermitePoly n).derivative).toLp 2
-        (volume : Measure ℝ)‖ ^ 2 =
+        (volume : Measure ℝ)‖ ^ (2 : ℕ) =
       4 * π * n * ‖(polyGaussSchwartz (hermitePoly n)).toLp 2
-        (volume : Measure ℝ)‖ ^ 2 := by
+        (volume : Measure ℝ)‖ ^ (2 : ℕ) := by
   have h := schwartzPair_conj_numberCLM (hermiteSchwartz n)
   rw [conjSLM_hermiteSchwartz_eq, numberCLM_hermiteSchwartz,
     schwartzPair_smul_right] at h
@@ -280,7 +280,7 @@ theorem gaussianHermitePolynomialDerivativeEnergy_eq (n : ℕ) :
   have hhermite : polyGaussSchwartz (hermitePoly n) = hermiteSchwartz n := rfl
   rw [hhermite]
   rw [← annihilationCLM_polyGaussSchwartz]
-  change ‖(annihilationCLM (hermiteSchwartz n)).toLp 2 volume‖ ^ 2 = _
+  change ‖(annihilationCLM (hermiteSchwartz n)).toLp 2 volume‖ ^ (2 : ℕ) = _
   symm
   exact_mod_cast h
 

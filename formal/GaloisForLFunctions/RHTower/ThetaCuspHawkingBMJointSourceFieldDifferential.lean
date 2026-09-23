@@ -77,11 +77,11 @@ theorem explicitField_laplacian (q : XiZeroCopy) (branch : Bool) (w a T : ℂ)
 
 /-- Original scalar wave with actual radial and metric angular derivatives. -/
 def fieldWave (w : ℂ) (U : ℝ → Point → ℂ) (t : ℝ) (z : Point) : ℂ :=
-  w^2*U t z-deriv (deriv (fun x => U x z)) t-(horizonCoordinate t:ℂ)*scalarLaplacian (U t) z
+  w^(2 : ℕ)*U t z-deriv (deriv (fun x => U x z)) t-(horizonCoordinate t:ℂ)*scalarLaplacian (U t) z
 
 /-- The angular coefficient is exactly the squared weight in the constructed joint energy domain. -/
 theorem horizonCoordinate_jointWeight (t : ℝ) (ht : t < 0) :
-    (horizonCoordinate t:ℂ) = D4BMJointWave.angularWeight t^2 := by
+    (horizonCoordinate t:ℂ) = D4BMJointWave.angularWeight t^(2 : ℕ) := by
   have hr := D4BMJointWave.tortoiseRadius_exterior t ht
   have hr0 : (D4BMJointWave.tortoiseRadius t:ℂ) ≠ 0 := by
     exact_mod_cast (ne_of_gt (by linarith : 0 < D4BMJointWave.tortoiseRadius t))

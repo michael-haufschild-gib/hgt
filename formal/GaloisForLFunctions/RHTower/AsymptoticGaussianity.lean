@@ -42,7 +42,7 @@ namespace RHTower
 
 /-- **The third-derivative identity.**  Differentiating `g'' = g'(2e^w + 1)` once more. -/
 theorem third_derivative_identity (G E : ℝ) :
-    G * (2 * E + 1) * (2 * E + 1) + G * (2 * E) = G * ((2 * E + 1) ^ 2 + 2 * E) := by ring
+    G * (2 * E + 1) * (2 * E + 1) + G * (2 * E) = G * ((2 * E + 1) ^ (2 : ℕ) + 2 * E) := by ring
 
 /-- **The non-Gaussianity ratio, simplified.**  A linear numerator over a `3/2`-power denominator
 leaves an inverse half-power: `xA / (x √x B) = A / (√x B)`. -/

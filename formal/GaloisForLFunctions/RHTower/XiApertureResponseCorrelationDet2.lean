@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.FredholmDeterminantInfinite
 
 The true aperture-one fused response gain has correction
 
-`h_p = ((1 + p⁻¹) / (1 - p⁻¹))^3 - 1`.
+`h_p = ((1 + p⁻¹) / (1 - p⁻¹))^(3 : ℕ) - 1`.
 
 The preceding renormalization theorem proves that `h_p` is square-summable but not summable:
 its exact non-trace-class channel is `6 / p`.  This file constructs the corresponding countable
@@ -14,14 +14,14 @@ Hilbert--Schmidt diagonal and applies the HTGeometry Hilbert--Carleman determina
 
 The resulting logarithmic response is the convergent quadratic resolvent
 
-`-∑_p z h_p^2 / (1 - z h_p)`.
+`-∑_p z h_p^(2 : ℕ) / (1 - z h_p)`.
 
 In particular its linear coefficient vanishes exactly: the regularized response cancels the
 prime-harmonic Jordan channel rather than estimating it.  The remaining real response is
 one-signed on the positive Hilbert--Schmidt disk.  Its infinitesimal quadratic mass has the sharp
 source decomposition
 
-`h_p^2 = 36 / p^2 + c_p`,
+`h_p^(2 : ℕ) = 36 / p^(2 : ℕ) + c_p`,
 
 where `c_p > 0` and `∑_p c_p < ∞`.  Thus diagonal regularization exposes a canonical positive
 prime-square correlation, but cannot itself provide the sign-indefinite global FCRJ saturation;
@@ -76,11 +76,11 @@ theorem summable_xiApertureOnePrimeFusedResponseGainSq_sub_one_sub_c_mul_iff
 /-- The response-correlation diagonal has summable energy. -/
 theorem summable_norm_xiApertureOnePrimeResponseCorrelationEntry_sq :
     Summable (fun p : Nat.Primes =>
-      ‖xiApertureOnePrimeResponseCorrelationEntry p‖ ^ 2) := by
+      ‖xiApertureOnePrimeResponseCorrelationEntry p‖ ^ (2 : ℕ)) := by
   have heq : (fun p : Nat.Primes =>
-      ‖xiApertureOnePrimeResponseCorrelationEntry p‖ ^ 2) =
+      ‖xiApertureOnePrimeResponseCorrelationEntry p‖ ^ (2 : ℕ)) =
       fun p : Nat.Primes =>
-        (xiApertureOnePrimeFusedResponseGainSq p - 1) ^ 2 := by
+        (xiApertureOnePrimeFusedResponseGainSq p - 1) ^ (2 : ℕ) := by
     funext p
     simp only [xiApertureOnePrimeResponseCorrelationEntry, Complex.norm_real,
       Real.norm_eq_abs, sq_abs]
@@ -108,7 +108,7 @@ theorem logDeriv_xiApertureOneResponseCorrelationDet
     (z : ℂ) (hz : z ∈ Metric.ball (0 : ℂ) r) :
     logDeriv xiApertureOneResponseCorrelationDet z =
       -∑' p : Nat.Primes,
-        z * xiApertureOnePrimeResponseCorrelationEntry p ^ 2 /
+        z * xiApertureOnePrimeResponseCorrelationEntry p ^ (2 : ℕ) /
           (1 - z * xiApertureOnePrimeResponseCorrelationEntry p) := by
   exact HilbertSchmidt.logDeriv_fredholmDet_diagMul_infinite
     xiApertureOnePrimeResponseCorrelationEntry
@@ -133,7 +133,7 @@ theorem logDeriv_xiApertureOneResponseCorrelationDet_zero :
 
 /-- The real quadratic-resolvent summand at positive coupling. -/
 def xiApertureOneResponseCorrelationResolventTerm (x : ℝ) (p : Nat.Primes) : ℝ :=
-  x * (xiApertureOnePrimeFusedResponseGainSq p - 1) ^ 2 /
+  x * (xiApertureOnePrimeFusedResponseGainSq p - 1) ^ (2 : ℕ) /
     (1 - x * (xiApertureOnePrimeFusedResponseGainSq p - 1))
 
 /-- Every positive-coupling summand is strictly positive on the Hilbert--Schmidt disk. -/
@@ -158,21 +158,21 @@ theorem xiApertureOneResponseCorrelationResolventTerm_pos
   have hxhh : x * h < 1 :=
     lt_of_le_of_lt (mul_le_mul_of_nonneg_left hhK hx.le) hxK
   have hden : 0 < 1 - x * h := by linarith
-  have hnum : 0 < x * h ^ 2 := mul_pos hx (sq_pos_of_pos hhpos)
-  change 0 < x * h ^ 2 / (1 - x * h)
+  have hnum : 0 < x * h ^ (2 : ℕ) := mul_pos hx (sq_pos_of_pos hhpos)
+  change 0 < x * h ^ (2 : ℕ) / (1 - x * h)
   exact div_pos hnum hden
 
 /-- Positive correction to the universal `36 / p²` quadratic channel. -/
 def xiApertureOnePrimeResponseCorrelationRemainder (p : Nat.Primes) : ℝ :=
-  (xiApertureOnePrimeFusedResponseGainSq p - 1) ^ 2 -
-    36 * xiTransversePrimeApertureDiskNode 1 p ^ 2
+  (xiApertureOnePrimeFusedResponseGainSq p - 1) ^ (2 : ℕ) -
+    36 * xiTransversePrimeApertureDiskNode 1 p ^ (2 : ℕ)
 
 /-- Exact pointwise correlation remainder after removing `36 / p²`. -/
 theorem xiApertureOnePrimeResponseCorrelationRemainder_eq (p : Nat.Primes) :
     xiApertureOnePrimeResponseCorrelationRemainder p =
       12 * xiTransversePrimeApertureDiskNode 1 p *
           xiApertureOnePrimeFusedResponseRenormalizedGain p +
-        xiApertureOnePrimeFusedResponseRenormalizedGain p ^ 2 := by
+        xiApertureOnePrimeFusedResponseRenormalizedGain p ^ (2 : ℕ) := by
   rw [xiApertureOnePrimeResponseCorrelationRemainder,
     xiApertureOnePrimeFusedResponseRenormalizedGain]
   ring
@@ -190,12 +190,12 @@ theorem xiApertureOnePrimeResponseCorrelationRemainder_pos (p : Nat.Primes) :
 /-- The correction beyond the universal prime-square channel is trace class. -/
 theorem summable_xiApertureOnePrimeResponseCorrelationRemainder :
     Summable xiApertureOnePrimeResponseCorrelationRemainder := by
-  have hnat : Summable (fun n : ℕ => ((n : ℝ) ^ 2)⁻¹) :=
+  have hnat : Summable (fun n : ℕ => ((n : ℝ) ^ (2 : ℕ))⁻¹) :=
     Real.summable_nat_pow_inv.mpr (by norm_num)
-  have hprime : Summable (fun p : Nat.Primes => ((p : ℝ) ^ 2)⁻¹) :=
+  have hprime : Summable (fun p : Nat.Primes => ((p : ℝ) ^ (2 : ℕ))⁻¹) :=
     hnat.comp_injective Subtype.val_injective
   have hnodes : Summable (fun p : Nat.Primes =>
-      xiTransversePrimeApertureDiskNode 1 p ^ 2) := by
+      xiTransversePrimeApertureDiskNode 1 p ^ (2 : ℕ)) := by
     simpa [xiTransversePrimeApertureDiskNode_one_eq_inv, inv_pow] using hprime
   simpa [xiApertureOnePrimeResponseCorrelationRemainder] using!
     summable_xiApertureOnePrimeFusedResponseGainSq_sub_one_sq.sub

@@ -156,7 +156,7 @@ theorem norm_ccmFirstClockDilationKernel (x : ℝ) :
 theorem norm_ccmFirstClockDilationKernel_le_origin
     {x : ℝ} (hx : 0 ≤ x) :
     ‖ccmFirstClockDilationKernel x‖ ≤
-      (2 * Real.pi) ^ 2 * x := by
+      (2 * Real.pi) ^ (2 : ℕ) * x := by
   rw [norm_ccmFirstClockDilationKernel]
   have hsin :
       |Real.sin ((2 * Real.pi) * x)| ≤
@@ -167,12 +167,12 @@ theorem norm_ccmFirstClockDilationKernel_le_origin
     (2 * Real.pi) * |Real.sin ((2 * Real.pi) * x)| ≤
         (2 * Real.pi) * ((2 * Real.pi) * x) :=
       mul_le_mul_of_nonneg_left hsin (by positivity)
-    _ = (2 * Real.pi) ^ 2 * x := by ring
+    _ = (2 * Real.pi) ^ (2 : ℕ) * x := by ring
 
 theorem norm_ccmFirstClockDilationKernel_le_endpoint
     {x : ℝ} (_hx0 : 0 ≤ x) (hx1 : x ≤ 1) :
     ‖ccmFirstClockDilationKernel x‖ ≤
-      (2 * Real.pi) ^ 2 * (1 - x) := by
+      (2 * Real.pi) ^ (2 : ℕ) * (1 - x) := by
   rw [norm_ccmFirstClockDilationKernel]
   have harg :
       2 * Real.pi - (2 * Real.pi) * x =
@@ -194,7 +194,7 @@ theorem norm_ccmFirstClockDilationKernel_le_endpoint
     (2 * Real.pi) * |Real.sin ((2 * Real.pi) * (1 - x))| ≤
         (2 * Real.pi) * ((2 * Real.pi) * (1 - x)) :=
       mul_le_mul_of_nonneg_left hsin (by positivity)
-    _ = (2 * Real.pi) ^ 2 * (1 - x) := by ring
+    _ = (2 * Real.pi) ^ (2 : ℕ) * (1 - x) := by ring
 
 /-- Fixed contraction ratio used by dilation--Volterra reflection. -/
 def ccmFirstClockReflectionRatio : ℝ := 15 / 16
@@ -215,10 +215,10 @@ theorem ccmFirstClockMellinKernel_tail_bound
     ccmFirstClockReflectionRatio_pos.trans_le hxr
   have hk :=
     norm_ccmFirstClockDilationKernel_le_endpoint hx0.le hx1
-  have hpiSq : (2 * Real.pi) ^ 2 ≤ 64 := by
+  have hpiSq : (2 * Real.pi) ^ (2 : ℕ) ≤ 64 := by
     have htwo : 2 * Real.pi ≤ 8 := by
       nlinarith [Real.pi_le_four]
-    have hsquare : (2 * Real.pi) ^ 2 ≤ (8 : ℝ) ^ 2 :=
+    have hsquare : (2 * Real.pi) ^ (2 : ℕ) ≤ (8 : ℝ) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (by positivity : 0 ≤ 2 * Real.pi) htwo 2
     norm_num at hsquare ⊢
     exact hsquare
@@ -228,9 +228,9 @@ theorem ccmFirstClockMellinKernel_tail_bound
     nlinarith
   calc
     ‖ccmFirstClockDilationKernel x‖ / x ≤
-        ((2 * Real.pi) ^ 2 * (1 - x)) / x := by
+        ((2 * Real.pi) ^ (2 : ℕ) * (1 - x)) / x := by
       exact div_le_div_of_nonneg_right hk hx0.le
-    _ = (2 * Real.pi) ^ 2 * (1 / x) * (1 - x) := by ring
+    _ = (2 * Real.pi) ^ (2 : ℕ) * (1 / x) * (1 - x) := by ring
     _ ≤ 64 * (16 / 15) * (1 - x) := by
       gcongr
     _ = (1024 / 15 : ℝ) * (1 - x) := by ring
@@ -269,7 +269,7 @@ theorem integral_ccmFirstClockMellinKernel_tail_lt_one :
       rw [intervalIntegral.integral_const_mul]
       have hderiv : ∀ x ∈
           uIcc ccmFirstClockReflectionRatio 1,
-          HasDerivAt (fun y : ℝ => y - y ^ 2 / 2) (1 - x) x := by
+          HasDerivAt (fun y : ℝ => y - y ^ (2 : ℕ) / 2) (1 - x) x := by
         intro x hx
         convert (hasDerivAt_id x).sub
           (((hasDerivAt_id x).pow 2).div_const 2) using 1 <;>
@@ -292,7 +292,7 @@ set_option maxHeartbeats 800000 in
 theorem norm_xiScrewDivisor_le (t : ℝ) :
     ‖xiScrewDivisor t‖ ≤
       (Real.exp (|t| / 2) + 1) *
-        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
   rw [xiScrewDivisor]
   calc
     ‖∑' q : XiZeroCopy, xiScrewDivisorTerm t q‖ ≤
@@ -300,10 +300,10 @@ theorem norm_xiScrewDivisor_le (t : ℝ) :
       norm_tsum_le_tsum_norm (xiScrewDivisorTerm_summable t).norm
     _ ≤ ∑' q : XiZeroCopy,
         (Real.exp (|t| / 2) + 1) /
-          ‖xiSpectralPoint q‖ ^ 2 := by
+          ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       have hupper : Summable (fun q : XiZeroCopy =>
           (Real.exp (|t| / 2) + 1) /
-            ‖xiSpectralPoint q‖ ^ 2) := by
+            ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         apply (xiSpectralPoint_inv_sq_summable.mul_left
           (Real.exp (|t| / 2) + 1)).congr
         intro q
@@ -313,7 +313,7 @@ theorem norm_xiScrewDivisor_le (t : ℝ) :
         (xiScrewDivisorTerm_summable t).norm
         hupper
     _ = (Real.exp (|t| / 2) + 1) *
-        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2 := by
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by
       rw [← tsum_mul_left]
       apply tsum_congr
       intro q
@@ -337,7 +337,7 @@ private theorem intervalIntegrable_dilationKernel_mul_screw
   let M : ℝ :=
     (2 * Real.pi) *
       (Real.exp (L / 2) + 1) *
-        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+        ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   have hbound :
       ∀ᵐ x : ℝ ∂volume.restrict (Ioc (0 : ℝ) 1),
         ‖ccmFirstClockDilationKernel x *
@@ -363,11 +363,11 @@ private theorem intervalIntegrable_dilationKernel_mul_screw
         (2 * Real.pi) *
           ((Real.exp (|L * x| / 2) + 1) *
             ∑' q : XiZeroCopy,
-              1 / ‖xiSpectralPoint q‖ ^ 2) := by gcongr
+              1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by gcongr
       _ ≤ (2 * Real.pi) *
           ((Real.exp (L / 2) + 1) *
             ∑' q : XiZeroCopy,
-              1 / ‖xiSpectralPoint q‖ ^ 2) := by
+              1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
         gcongr
       _ = _ := by ring
   exact IntegrableOn.of_bound measure_Ioc_lt_top
@@ -546,18 +546,18 @@ theorem ccmFirstClockMellinKernel_le_sixtyFour
     {x : ℝ} (hx : 0 < x) :
     ‖ccmFirstClockDilationKernel x‖ / x ≤ 64 := by
   have hk := norm_ccmFirstClockDilationKernel_le_origin hx.le
-  have hpiSq : (2 * Real.pi) ^ 2 ≤ 64 := by
+  have hpiSq : (2 * Real.pi) ^ (2 : ℕ) ≤ 64 := by
     have htwo : 2 * Real.pi ≤ 8 := by
       nlinarith [Real.pi_le_four]
-    have hsquare : (2 * Real.pi) ^ 2 ≤ (8 : ℝ) ^ 2 :=
+    have hsquare : (2 * Real.pi) ^ (2 : ℕ) ≤ (8 : ℝ) ^ (2 : ℕ) :=
       pow_le_pow_left₀ (by positivity : 0 ≤ 2 * Real.pi) htwo 2
     norm_num at hsquare ⊢
     exact hsquare
   calc
     ‖ccmFirstClockDilationKernel x‖ / x ≤
-        ((2 * Real.pi) ^ 2 * x) / x :=
+        ((2 * Real.pi) ^ (2 : ℕ) * x) / x :=
       div_le_div_of_nonneg_right hk hx.le
-    _ = (2 * Real.pi) ^ 2 := by field_simp [hx.ne']
+    _ = (2 * Real.pi) ^ (2 : ℕ) := by field_simp [hx.ne']
     _ ≤ 64 := hpiSq
 
 theorem integral_ccmFirstClockMellinKernel_low_le :
@@ -661,7 +661,7 @@ private theorem integrable_weightedDilation_rectangle
         (volume.restrict (Ioc (0 : ℝ) 1))) := by
   let M : ℝ :=
     (2 * Real.pi) * (Real.exp (N / 2) + 1) *
-      ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+      ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   have hfunMeas : Measurable (fun p : ℝ × ℝ =>
       Real.exp (-a * p.1) *
         ‖ccmFirstClockDilationKernel p.2‖ *
@@ -715,11 +715,11 @@ private theorem integrable_weightedDilation_rectangle
     _ ≤ 1 * (2 * Real.pi) *
         ((Real.exp (|L * x| / 2) + 1) *
           ∑' q : XiZeroCopy,
-            1 / ‖xiSpectralPoint q‖ ^ 2) := by gcongr
+            1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by gcongr
     _ ≤ 1 * (2 * Real.pi) *
         ((Real.exp (N / 2) + 1) *
           ∑' q : XiZeroCopy,
-            1 / ‖xiSpectralPoint q‖ ^ 2) := by gcongr
+            1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by gcongr
     _ = _ := by ring
 
 theorem integral_integral_weightedDilation_swap
@@ -756,7 +756,7 @@ private theorem intervalIntegrable_ccmXiScrewWeightedNorm_Icc
   rw [intervalIntegrable_iff, uIoc_of_le hN]
   let M : ℝ :=
     (Real.exp (N / 2) + 1) *
-      ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+      ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   have hbound :
       ∀ᵐ L : ℝ ∂volume.restrict (Ioc (0 : ℝ) N),
         ‖ccmXiScrewWeightedNorm a L‖ ≤ M := by
@@ -781,10 +781,10 @@ private theorem intervalIntegrable_ccmXiScrewWeightedNorm_Icc
       Real.exp (-a * L) * ‖xiScrewDivisor L‖ ≤
         1 * ((Real.exp (|L| / 2) + 1) *
           ∑' q : XiZeroCopy,
-            1 / ‖xiSpectralPoint q‖ ^ 2) := by gcongr
+            1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by gcongr
       _ ≤ 1 * ((Real.exp (N / 2) + 1) *
           ∑' q : XiZeroCopy,
-            1 / ‖xiSpectralPoint q‖ ^ 2) := by gcongr
+            1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by gcongr
       _ = _ := by ring
   exact IntegrableOn.of_bound measure_Ioc_lt_top
     (measurable_ccmXiScrewWeightedNorm a).aestronglyMeasurable
@@ -799,7 +799,7 @@ private theorem intervalIntegrable_exp_norm_screw_dilate
   rw [intervalIntegrable_iff, uIoc_of_le hN]
   let M : ℝ :=
     (Real.exp (N / 2) + 1) *
-      ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+      ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   have hmeas : AEStronglyMeasurable (fun L : ℝ =>
       Real.exp (-a * L) * ‖xiScrewDivisor (L * x)‖)
       (volume.restrict (Ioc (0 : ℝ) N)) := by
@@ -832,10 +832,10 @@ private theorem intervalIntegrable_exp_norm_screw_dilate
         Real.exp (-a * L) * ‖xiScrewDivisor (L * x)‖ ≤
           1 * ((Real.exp (|L * x| / 2) + 1) *
             ∑' q : XiZeroCopy,
-              1 / ‖xiSpectralPoint q‖ ^ 2) := by gcongr
+              1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by gcongr
         _ ≤ 1 * ((Real.exp (N / 2) + 1) *
             ∑' q : XiZeroCopy,
-              1 / ‖xiSpectralPoint q‖ ^ 2) := by gcongr
+              1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by gcongr
         _ = _ := by ring
     · positivity
   exact IntegrableOn.of_bound measure_Ioc_lt_top hmeas M hbound
@@ -1580,7 +1580,7 @@ theorem integrableOn_exp_mul_xiScrewDivisor_of_one_half_lt
       Complex.exp (-(a : ℂ) * (L : ℂ)) *
         xiScrewDivisor L) (Ioi 0) := by
   let M : ℝ :=
-    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ 2
+    ∑' q : XiZeroCopy, 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)
   let g : ℝ → ℝ := fun L =>
     M * (Real.exp ((-a + 1 / 2) * L) +
       Real.exp (-a * L))

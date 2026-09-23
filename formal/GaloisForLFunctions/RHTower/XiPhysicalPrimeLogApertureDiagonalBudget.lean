@@ -30,7 +30,7 @@ theorem xiPhysicalPrimeLogApertureFusionKernel_diagonal_le
     xiPhysicalPrimeLogApertureLength_nonneg A m k p
   have hLA : xiPhysicalPrimeLogApertureLength A m k p ≤ A :=
     xiPhysicalPrimeLogApertureLength_le hA.le m k p
-  have hsq : 0 ≤ xiPhysicalPrimeLogApertureLength A m k p ^ 2 / A := by positivity
+  have hsq : 0 ≤ xiPhysicalPrimeLogApertureLength A m k p ^ (2 : ℕ) / A := by positivity
   linarith
 
 /-- Diagonal-budget inequality: the prime-diagonal fusion energy is at most `A` times the sum of
@@ -38,17 +38,17 @@ squared endpoint weights, since `0 ≤ κ(p,p) ≤ A` and `w_p² ≥ 0`. -/
 theorem xiPhysicalPrimeLogApertureDiagonalEnergy_le_weightSq_mul
     {A : ℝ} (hA : 0 < A) (m k : ℝ) (P : Finset Nat.Primes) :
     xiPhysicalPrimeLogApertureDiagonalEnergy P A m k ≤
-      A * ∑ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ 2 := by
+      A * ∑ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ (2 : ℕ) := by
   rw [xiPhysicalPrimeLogApertureDiagonalEnergy, Finset.mul_sum]
   apply Finset.sum_le_sum
   intro p hp
   have hkappa := xiPhysicalPrimeLogApertureFusionKernel_diagonal_le hA m k p
-  have hw2 : 0 ≤ physicalPrimeEndpointWeight (p : ℕ) ^ 2 := sq_nonneg _
-  calc physicalPrimeEndpointWeight (p : ℕ) ^ 2 *
+  have hw2 : 0 ≤ physicalPrimeEndpointWeight (p : ℕ) ^ (2 : ℕ) := sq_nonneg _
+  calc physicalPrimeEndpointWeight (p : ℕ) ^ (2 : ℕ) *
         xiPhysicalPrimeLogApertureFusionKernel A m k p p
-      ≤ physicalPrimeEndpointWeight (p : ℕ) ^ 2 * A :=
+      ≤ physicalPrimeEndpointWeight (p : ℕ) ^ (2 : ℕ) * A :=
         mul_le_mul_of_nonneg_left hkappa hw2
-    _ = A * physicalPrimeEndpointWeight (p : ℕ) ^ 2 := by ring
+    _ = A * physicalPrimeEndpointWeight (p : ℕ) ^ (2 : ℕ) := by ring
 
 /-- `e ≤ N₀` for every natural `N₀ ≥ 3`, since `e < 2.7182818286 < 3`. -/
 theorem exp_one_le_of_three_le {N₀ : ℕ} (hN₀ : 3 ≤ N₀) : Real.exp 1 ≤ (N₀ : ℝ) := by
@@ -63,13 +63,13 @@ theorem exp_one_le_of_three_le {N₀ : ℕ} (hN₀ : 3 ≤ N₀) : Real.exp 1 �
 theorem sum_primes_weightSq_le_tail
     {N₀ : ℕ} (hN₀ : 3 ≤ N₀) (P : Finset Nat.Primes)
     (hP : ∀ p ∈ P, N₀ < (p : ℕ)) :
-    ∑ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ 2 ≤
-      (Real.log (N₀ : ℝ) ^ 2 + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ) := by
-  set g : ℕ → ℝ := fun i => (Real.log ((N₀ : ℝ) + ((i : ℝ) + 1)) / ((N₀ : ℝ) + ((i : ℝ) + 1))) ^ 2
+    ∑ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ (2 : ℕ) ≤
+      (Real.log (N₀ : ℝ) ^ (2 : ℕ) + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ) := by
+  set g : ℕ → ℝ := fun i => (Real.log ((N₀ : ℝ) + ((i : ℝ) + 1)) / ((N₀ : ℝ) + ((i : ℝ) + 1))) ^ (2 : ℕ)
     with hg_def
   set φ : Nat.Primes → ℕ := fun p => (p : ℕ) - (N₀ + 1) with hφ_def
   have hgsum : Summable g := by
-    have hbase := (summable_nat_add_iff (f := fun n => (Real.log (n : ℝ) / (n : ℝ)) ^ 2)
+    have hbase := (summable_nat_add_iff (f := fun n => (Real.log (n : ℝ) / (n : ℝ)) ^ (2 : ℕ))
       (N₀ + 1)).mpr summable_logSq_div_sq
     refine hbase.congr ?_
     intro i
@@ -83,7 +83,7 @@ theorem sum_primes_weightSq_le_tail
     have hqq := hP q (Finset.mem_coe.mp hq)
     have : (p : ℕ) = (q : ℕ) := by rw [hφ_def] at h; simp only at h; omega
     exact Subtype.ext this
-  have hpoint : ∀ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ 2 = g (φ p) := by
+  have hpoint : ∀ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ (2 : ℕ) = g (φ p) := by
     intro p hp
     have hp_ge : N₀ + 1 ≤ (p : ℕ) := hP p hp
     have harg : (N₀ : ℝ) + ((((p : ℕ) - (N₀ + 1) : ℕ) : ℝ) + 1) = ((p : ℕ) : ℝ) := by
@@ -91,11 +91,11 @@ theorem sum_primes_weightSq_le_tail
     rw [physicalPrimeEndpointWeight, hg_def, hφ_def]
     simp only
     rw [harg]
-  calc ∑ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ 2
+  calc ∑ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ (2 : ℕ)
       = ∑ p ∈ P, g (φ p) := Finset.sum_congr rfl hpoint
     _ = ∑ i ∈ P.image φ, g i := (Finset.sum_image hinj).symm
     _ ≤ ∑' i, g i := hgsum.sum_le_tsum _ (fun i _ => by rw [hg_def]; exact sq_nonneg _)
-    _ ≤ (Real.log (N₀ : ℝ) ^ 2 + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ) :=
+    _ ≤ (Real.log (N₀ : ℝ) ^ (2 : ℕ) + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ) :=
         tsum_logSq_div_sq_le (exp_one_le_of_three_le hN₀)
 
 /-- Unconditional PFK11 diagonal budget: when every active prime exceeds `N₀ ≥ 3`, the prime-diagonal
@@ -105,11 +105,11 @@ theorem xiPhysicalPrimeLogApertureDiagonalEnergy_le_tail
     {A : ℝ} (hA : 0 < A) (m k : ℝ) {N₀ : ℕ} (hN₀ : 3 ≤ N₀)
     (P : Finset Nat.Primes) (hP : ∀ p ∈ P, N₀ < (p : ℕ)) :
     xiPhysicalPrimeLogApertureDiagonalEnergy P A m k ≤
-      A * ((Real.log (N₀ : ℝ) ^ 2 + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ)) := by
+      A * ((Real.log (N₀ : ℝ) ^ (2 : ℕ) + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ)) := by
   calc xiPhysicalPrimeLogApertureDiagonalEnergy P A m k
-      ≤ A * ∑ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ 2 :=
+      ≤ A * ∑ p ∈ P, physicalPrimeEndpointWeight (p : ℕ) ^ (2 : ℕ) :=
         xiPhysicalPrimeLogApertureDiagonalEnergy_le_weightSq_mul hA m k P
-    _ ≤ A * ((Real.log (N₀ : ℝ) ^ 2 + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ)) :=
+    _ ≤ A * ((Real.log (N₀ : ℝ) ^ (2 : ℕ) + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ)) :=
         mul_le_mul_of_nonneg_left (sum_primes_weightSq_le_tail hN₀ P hP) hA.le
 
 /-- Explicit `(PFK10)`+`(PFK11)` lower bound on the off-diagonal cross defect: the automatic bound
@@ -119,7 +119,7 @@ active prime exceeds `N₀ ≥ 3`.  Chains the Hilbert-norm lower bound
 theorem xiPhysicalPrimeLogApertureCrossDefect_ge_neg_tail
     {A : ℝ} (hA : 0 < A) (m k : ℝ) {N₀ : ℕ} (hN₀ : 3 ≤ N₀)
     (P : Finset Nat.Primes) (hP : ∀ p ∈ P, N₀ < (p : ℕ)) :
-    -(A * ((Real.log (N₀ : ℝ) ^ 2 + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ))) ≤
+    -(A * ((Real.log (N₀ : ℝ) ^ (2 : ℕ) + 2 * Real.log (N₀ : ℝ) + 2) / (N₀ : ℝ))) ≤
       xiPhysicalPrimeLogApertureCrossDefect P A m k := by
   have h1 := neg_xiPhysicalPrimeLogApertureDiagonalEnergy_le_crossDefect P hA m k
   have h2 := xiPhysicalPrimeLogApertureDiagonalEnergy_le_tail hA m k hN₀ P hP
@@ -128,7 +128,7 @@ theorem xiPhysicalPrimeLogApertureCrossDefect_ge_neg_tail
 /-- Each centered aperture carrier has norm at most `√A`, since `‖φ_p‖² = κ(p,p) ≤ A`. -/
 theorem norm_centeredCarrier_le {A : ℝ} (hA : 0 < A) (m k : ℝ) (p : Nat.Primes) :
     ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ≤ Real.sqrt A := by
-  have hsq : ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ 2 ≤ A := by
+  have hsq : ‖xiPhysicalPrimeLogCenteredApertureCarrier A m k p‖ ^ (2 : ℕ) ≤ A := by
     rw [← real_inner_self_eq_norm_sq, real_inner_xiPhysicalPrimeLogCenteredApertureCarrier hA]
     exact xiPhysicalPrimeLogApertureFusionKernel_diagonal_le hA m k p
   rw [← Real.sqrt_sq (norm_nonneg _)]

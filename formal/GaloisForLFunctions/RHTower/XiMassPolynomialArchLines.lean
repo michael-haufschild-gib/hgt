@@ -17,21 +17,21 @@ noncomputable section
 
 /-- Polynomial-filtered archimedean integrand on the bottom edge. -/
 def xiMassPolyBottomArchIntegrand (P : Polynomial ℝ) (a c : ℝ) (τ : ℂ) (x : ℝ) : ℂ :=
-  evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2 * xiMassBottomArchIntegrand a c τ x
+  evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ) * xiMassBottomArchIntegrand a c τ x
 
 /-- Polynomial-filtered archimedean integrand on the centred real line. -/
 def xiMassPolyCenteredArchIntegrand (P : Polynomial ℝ) (a : ℝ) (τ : ℂ) (x : ℝ) : ℂ :=
-  evalRealPolynomial P ((x : ℂ) ^ 2) ^ 2 * xiMassCenteredArchIntegrand a τ x
+  evalRealPolynomial P ((x : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ) * xiMassCenteredArchIntegrand a τ x
 
 theorem continuous_xiMassPolyWeight_shift (P : Polynomial ℝ) (c : ℝ) :
-    Continuous (fun x : ℝ => evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2) := by
+    Continuous (fun x : ℝ => evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   have hQ : Continuous (fun x : ℝ =>
       evalRealPolynomial (xiMassPolySquare P) ((x : ℂ) - c * I)) :=
     (continuous_evalRealPolynomial (xiMassPolySquare P)).comp (by fun_prop)
   exact hQ.congr fun x => evalRealPolynomial_xiMassPolySquare P _
 
 theorem continuous_xiMassPolyWeight_centered (P : Polynomial ℝ) :
-    Continuous (fun x : ℝ => evalRealPolynomial P ((x : ℂ) ^ 2) ^ 2) := by
+    Continuous (fun x : ℝ => evalRealPolynomial P ((x : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   have hQ : Continuous (fun x : ℝ => evalRealPolynomial (xiMassPolySquare P) (x : ℂ)) :=
     (continuous_evalRealPolynomial (xiMassPolySquare P)).comp (by fun_prop)
   exact hQ.congr fun x => evalRealPolynomial_xiMassPolySquare P _
@@ -62,8 +62,8 @@ theorem integrable_xiMassPolyBottomArchIntegrand (P : Polynomial ℝ) {a c : ℝ
   have hG : 0 ≤ G := xiMassPolyWeightConstant_nonneg P hc0
   have hE : 0 < E := Real.exp_pos _
   have hmajor : Integrable (fun x : ℝ =>
-      (G * E * A) * (|x| ^ 0 * Real.exp (-τ.re * |x|)) +
-      (G * E / 2) * (|x| ^ 1 * Real.exp (-τ.re * |x|)) +
+      (G * E * A) * (|x| ^ (0 : ℕ) * Real.exp (-τ.re * |x|)) +
+      (G * E / 2) * (|x| ^ (1 : ℕ) * Real.exp (-τ.re * |x|)) +
       (G * E * A) * (|x| ^ D * Real.exp (-τ.re * |x|)) +
       (G * E / 2) * (|x| ^ (D + 1) * Real.exp (-τ.re * |x|))) :=
     ((((HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0 hτ).const_mul (G * E * A)).add
@@ -94,13 +94,13 @@ theorem integrable_xiMassPolyBottomArchIntegrand (P : Polynomial ℝ) {a c : ℝ
     have hexpEq : Real.exp (-(τ.re * |x|)) = Real.exp (-τ.re * |x|) := by
       rw [show -(τ.re * |x|) = -τ.re * |x| by ring]
     rw [xiMassPolyBottomArchIntegrand, norm_mul]
-    calc ‖evalRealPolynomial P (((x : ℂ) - c * I) ^ 2) ^ 2‖ *
+    calc ‖evalRealPolynomial P (((x : ℂ) - c * I) ^ (2 : ℕ)) ^ (2 : ℕ)‖ *
           ‖xiMassBottomArchIntegrand a c τ x‖
         ≤ (G * (1 + |x| ^ D)) * ((E * Real.exp (-(τ.re * |x|))) * (A + |x| / 2)) := by
           refine mul_le_mul hw hbase (norm_nonneg _) ?_
           positivity
-      _ = (G * E * A) * (|x| ^ 0 * Real.exp (-τ.re * |x|)) +
-          (G * E / 2) * (|x| ^ 1 * Real.exp (-τ.re * |x|)) +
+      _ = (G * E * A) * (|x| ^ (0 : ℕ) * Real.exp (-τ.re * |x|)) +
+          (G * E / 2) * (|x| ^ (1 : ℕ) * Real.exp (-τ.re * |x|)) +
           (G * E * A) * (|x| ^ D * Real.exp (-τ.re * |x|)) +
           (G * E / 2) * (|x| ^ (D + 1) * Real.exp (-τ.re * |x|)) := by
           rw [hexpEq, pow_succ]
@@ -128,8 +128,8 @@ theorem integrable_xiMassPolyCenteredArchIntegrand (P : Polynomial ℝ) {a σ u 
   have hC : 0 ≤ C := xiMassArchVerticalGrowthConstant_nonneg
   have hσre : ((σ : ℂ) + u * I).re = σ := by simp [Complex.mul_re]
   have hmajor : Integrable (fun x : ℝ =>
-      (G * C) * (|x| ^ 0 * Real.exp (-σ * |x|)) +
-      (G / 2) * (|x| ^ 1 * Real.exp (-σ * |x|)) +
+      (G * C) * (|x| ^ (0 : ℕ) * Real.exp (-σ * |x|)) +
+      (G / 2) * (|x| ^ (1 : ℕ) * Real.exp (-σ * |x|)) +
       (G * C) * (|x| ^ D * Real.exp (-σ * |x|)) +
       (G / 2) * (|x| ^ (D + 1) * Real.exp (-σ * |x|))) := by
     have hτ : (0 : ℝ) < ((σ : ℂ) + u * I).re := by rw [hσre]; exact hσ
@@ -153,13 +153,13 @@ theorem integrable_xiMassPolyCenteredArchIntegrand (P : Polynomial ℝ) {a σ u 
     have hexpEq : Real.exp (-(σ * |x|)) = Real.exp (-σ * |x|) := by
       rw [show -(σ * |x|) = -σ * |x| by ring]
     rw [xiMassPolyCenteredArchIntegrand, norm_mul]
-    calc ‖evalRealPolynomial P ((x : ℂ) ^ 2) ^ 2‖ *
+    calc ‖evalRealPolynomial P ((x : ℂ) ^ (2 : ℕ)) ^ (2 : ℕ)‖ *
           ‖xiMassCenteredArchIntegrand a (σ + u * I) x‖
         ≤ (G * (1 + |x| ^ D)) * (Real.exp (-(σ * |x|)) * (C + |x| / 2)) := by
           refine mul_le_mul hw hbase (norm_nonneg _) ?_
           positivity
-      _ = (G * C) * (|x| ^ 0 * Real.exp (-σ * |x|)) +
-          (G / 2) * (|x| ^ 1 * Real.exp (-σ * |x|)) +
+      _ = (G * C) * (|x| ^ (0 : ℕ) * Real.exp (-σ * |x|)) +
+          (G / 2) * (|x| ^ (1 : ℕ) * Real.exp (-σ * |x|)) +
           (G * C) * (|x| ^ D * Real.exp (-σ * |x|)) +
           (G / 2) * (|x| ^ (D + 1) * Real.exp (-σ * |x|)) := by
           rw [hexpEq, pow_succ]

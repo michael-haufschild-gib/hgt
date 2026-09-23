@@ -31,7 +31,7 @@ def gammaMeixnerTimeOneCompletedChiral (tau : ℝ) : ℂ :=
 /-- Symmetric time-one factor is exactly the squared norm of the completed Gamma orientation. -/
 theorem gammaMeixnerTimeOneCompletedSymmetric_eq_normSq (tau : ℝ) :
     gammaMeixnerTimeOneCompletedSymmetric tau =
-      (‖Complex.Gammaℝ (linePt tau)‖ : ℂ) ^ 2 := by
+      (‖Complex.Gammaℝ (linePt tau)‖ : ℂ) ^ (2 : ℕ) := by
   unfold gammaMeixnerTimeOneCompletedSymmetric
   rw [← conj_linePt, Gammaℝ_conj, Complex.mul_conj']
 

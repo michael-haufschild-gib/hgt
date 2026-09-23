@@ -9,7 +9,7 @@ namespace RHTower
 /-- Literal diagonal of the finite-aperture radial dilation Gram matrix.  This is equation `(20)`
 before its elementary dilation change of variables. -/
 def radialLeakageGramDiagonal (lam k : ℝ) (q : ℝ → ℂ) : ℝ :=
-  lam * ∫ x in Ioi (1 : ℝ), ‖q (lam * (k * x))‖ ^ 2
+  lam * ∫ x in Ioi (1 : ℝ), ‖q (lam * (k * x))‖ ^ (2 : ℕ)
 
 /-- Exact finite-aperture identity relating the literal radial Gram diagonal to the `k`-tail of
 the normalized leakage density, including the load-bearing factor `1/k`. -/
@@ -18,7 +18,7 @@ theorem radialLeakageGramDiagonal_eq_scaled_nuLambda_tail
     radialLeakageGramDiagonal lam k q / d =
       (1 / k) * ∫ y in Ioi k, nuLambdaDensity lam d q y := by
   have hscale := integral_comp_mul_left_Ioi
-    (fun y : ℝ => ‖q (lam * y)‖ ^ 2) 1 hk
+    (fun y : ℝ => ‖q (lam * y)‖ ^ (2 : ℕ)) 1 hk
   simp only [mul_one, smul_eq_mul] at hscale
   unfold radialLeakageGramDiagonal nuLambdaDensity
   rw [integral_div, integral_const_mul]
@@ -76,38 +76,38 @@ theorem radialLeakageGramDiagonal_tendsto
 theorem integral_Ioi_nuLambdaDensity_eq_scaled_tail
     {lam d : ℝ} (hlam : 0 < lam) (hd : d ≠ 0) (q : ℝ → ℂ) :
     ∫ x in Ioi (1 : ℝ), nuLambdaDensity lam d q x =
-      (∫ y in Ioi lam, ‖q y‖ ^ 2) / d := by
-  have hscale := integral_comp_mul_left_Ioi (fun y : ℝ => ‖q y‖ ^ 2) 1 hlam
+      (∫ y in Ioi lam, ‖q y‖ ^ (2 : ℕ)) / d := by
+  have hscale := integral_comp_mul_left_Ioi (fun y : ℝ => ‖q y‖ ^ (2 : ℕ)) 1 hlam
   simp only [mul_one, smul_eq_mul] at hscale
-  change (∫ x in Ioi (1 : ℝ), lam * ‖q (lam * x)‖ ^ 2 / d) = _
+  change (∫ x in Ioi (1 : ℝ), lam * ‖q (lam * x)‖ ^ (2 : ℕ) / d) = _
   rw [integral_div, integral_const_mul, hscale]
   field_simp
 
 theorem integrableOn_Ioi_nuLambdaDensity
     {lam d : ℝ} (hlam : 0 < lam) (q : ℝ → ℂ)
-    (hq : IntegrableOn (fun y : ℝ => ‖q y‖ ^ 2) (Ioi lam)) :
+    (hq : IntegrableOn (fun y : ℝ => ‖q y‖ ^ (2 : ℕ)) (Ioi lam)) :
     IntegrableOn (nuLambdaDensity lam d q) (Ioi (1 : ℝ)) := by
-  have hcomp : IntegrableOn (fun x : ℝ => ‖q (lam * x)‖ ^ 2) (Ioi (1 : ℝ)) := by
-    exact (integrableOn_Ioi_comp_mul_left_iff (fun y : ℝ => ‖q y‖ ^ 2) 1 hlam).2
+  have hcomp : IntegrableOn (fun x : ℝ => ‖q (lam * x)‖ ^ (2 : ℕ)) (Ioi (1 : ℝ)) := by
+    exact (integrableOn_Ioi_comp_mul_left_iff (fun y : ℝ => ‖q y‖ ^ (2 : ℕ)) 1 hlam).2
       (by simpa using hq)
   exact (hcomp.const_mul lam).div_const d
 
 theorem integral_Iic_norm_sq_eq_integral_Ioi_of_even
     {lam : ℝ} {q : ℝ → ℂ} (hq : Function.Even q) :
-    ∫ y in Iic (-lam), ‖q y‖ ^ 2 = ∫ y in Ioi lam, ‖q y‖ ^ 2 := by
-  have href := integral_comp_neg_Iic (-lam) (fun y : ℝ => ‖q y‖ ^ 2)
+    ∫ y in Iic (-lam), ‖q y‖ ^ (2 : ℕ) = ∫ y in Ioi lam, ‖q y‖ ^ (2 : ℕ) := by
+  have href := integral_comp_neg_Iic (-lam) (fun y : ℝ => ‖q y‖ ^ (2 : ℕ))
   simp only [neg_neg] at href
   rw [← href]
   apply setIntegral_congr_fun measurableSet_Iic
   intro y _
-  change ‖q y‖ ^ 2 = ‖q (-y)‖ ^ 2
+  change ‖q y‖ ^ (2 : ℕ) = ‖q (-y)‖ ^ (2 : ℕ)
   rw [hq y]
 
 theorem integral_Ioi_nuLambdaDensity_eq_half_exterior
     {lam d delta : ℝ} (hlam : 0 < lam) (hd : d ≠ 0) {q : ℝ → ℂ}
     (hq : Function.Even q)
     (hexterior :
-      (∫ y in Iic (-lam), ‖q y‖ ^ 2) + ∫ y in Ioi lam, ‖q y‖ ^ 2 = delta) :
+      (∫ y in Iic (-lam), ‖q y‖ ^ (2 : ℕ)) + ∫ y in Ioi lam, ‖q y‖ ^ (2 : ℕ) = delta) :
     ∫ x in Ioi (1 : ℝ), nuLambdaDensity lam d q x = delta / (2 * d) := by
   rw [integral_Ioi_nuLambdaDensity_eq_scaled_tail hlam hd]
   have heven := integral_Iic_norm_sq_eq_integral_Ioi_of_even (lam := lam) hq
@@ -121,7 +121,7 @@ theorem tendsto_integral_Ioi_nuLambdaDensity_of_exterior_ratio
     (hparam : ∀ᶠ i in l, 0 < lam i ∧ d i ≠ 0)
     (hq : ∀ i, Function.Even (q i))
     (hexterior : ∀ i,
-      (∫ y in Iic (-lam i), ‖q i y‖ ^ 2) + ∫ y in Ioi (lam i), ‖q i y‖ ^ 2 = delta i)
+      (∫ y in Iic (-lam i), ‖q i y‖ ^ (2 : ℕ)) + ∫ y in Ioi (lam i), ‖q i y‖ ^ (2 : ℕ) = delta i)
     (hratio : Tendsto (fun i => delta i / d i) l (nhds (8 / 11))) :
     Tendsto (fun i => ∫ x in Ioi (1 : ℝ), nuLambdaDensity (lam i) (d i) (q i) x)
       l (nhds (4 / 11)) := by
@@ -144,10 +144,10 @@ theorem nuLambdaDensity_tendsto_L1_of_exterior_ratio
     (hparam : ∀ᶠ i in l, 0 < lam i ∧ 0 < d i)
     (hqeven : ∀ i, Function.Even (q i))
     (hexterior : ∀ i,
-      (∫ y in Iic (-lam i), ‖q i y‖ ^ 2) + ∫ y in Ioi (lam i), ‖q i y‖ ^ 2 = delta i)
+      (∫ y in Iic (-lam i), ‖q i y‖ ^ (2 : ℕ)) + ∫ y in Ioi (lam i), ‖q i y‖ ^ (2 : ℕ) = delta i)
     (hratio : Tendsto (fun i => delta i / d i) l (nhds (8 / 11)))
     (hqint : ∀ᶠ i in l,
-      IntegrableOn (fun y : ℝ => ‖q i y‖ ^ 2) (Ioi (lam i)))
+      IntegrableOn (fun y : ℝ => ‖q i y‖ ^ (2 : ℕ)) (Ioi (lam i)))
     (hae : ∀ᵐ x ∂(volume.restrict (Ioi (1 : ℝ))),
       Tendsto (fun i => nuLambdaDensity (lam i) (d i) (q i) x) l
         (nhds (nuInfinityDensity x))) :
@@ -174,10 +174,10 @@ theorem radialLeakageGramDiagonal_tendsto_of_exterior_ratio
     (hparam : ∀ᶠ i in l, 0 < lam i ∧ 0 < d i)
     (hqeven : ∀ i, Function.Even (q i))
     (hexterior : ∀ i,
-      (∫ y in Iic (-lam i), ‖q i y‖ ^ 2) + ∫ y in Ioi (lam i), ‖q i y‖ ^ 2 = delta i)
+      (∫ y in Iic (-lam i), ‖q i y‖ ^ (2 : ℕ)) + ∫ y in Ioi (lam i), ‖q i y‖ ^ (2 : ℕ) = delta i)
     (hratio : Tendsto (fun i => delta i / d i) l (nhds (8 / 11)))
     (hqint : ∀ᶠ i in l,
-      IntegrableOn (fun y : ℝ => ‖q i y‖ ^ 2) (Ioi (lam i)))
+      IntegrableOn (fun y : ℝ => ‖q i y‖ ^ (2 : ℕ)) (Ioi (lam i)))
     (hae : ∀ᵐ x ∂(volume.restrict (Ioi (1 : ℝ))),
       Tendsto (fun i => nuLambdaDensity (lam i) (d i) (q i) x) l
         (nhds (nuInfinityDensity x)))

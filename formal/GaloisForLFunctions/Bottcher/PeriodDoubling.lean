@@ -53,9 +53,9 @@ theorem Lroot_pow (m : ℕ) {z : ℂ} (hz : z ∈ coverPlane c) :
   induction m with
   | zero => simp
   | succ k ih =>
-    have h2 : (Lroot c (k + 1) z) ^ 2 = Lroot c k z := Lroot_succ_sq c k hz
+    have h2 : (Lroot c (k + 1) z) ^ (2 : ℕ) = Lroot c k z := Lroot_succ_sq c k hz
     calc (Lroot c (k + 1) z) ^ (2 ^ (k + 1))
-        = ((Lroot c (k + 1) z) ^ 2) ^ (2 ^ k) := by
+        = ((Lroot c (k + 1) z) ^ (2 : ℕ)) ^ (2 ^ k) := by
           rw [← pow_mul]; congr 1; rw [pow_succ]; ring
       _ = (Lroot c k z) ^ (2 ^ k) := by rw [h2]
       _ = Lroot c 0 z := ih
@@ -73,10 +73,10 @@ theorem Lroot_one_anti {t : ℂ} (ht : t ∈ coverPlane c) :
     have := shift_mem_coverPlane ht 1
     simpa using this
   -- `L_1(t+2πi)² = L_1(t)²` (both equal `L_0(t) = bottcherCoord(exp t)`)
-  have e1 : (Lroot c 1 (t + 2 * (Real.pi : ℂ) * Complex.I)) ^ 2
+  have e1 : (Lroot c 1 (t + 2 * (Real.pi : ℂ) * Complex.I)) ^ (2 : ℕ)
       = Lroot c 0 (t + 2 * (Real.pi : ℂ) * Complex.I) := Lroot_succ_sq c 0 ht2
-  have e2 : (Lroot c 1 t) ^ 2 = Lroot c 0 t := Lroot_succ_sq c 0 ht
-  have hsq : (Lroot c 1 (t + 2 * (Real.pi : ℂ) * Complex.I)) ^ 2 = (Lroot c 1 t) ^ 2 := by
+  have e2 : (Lroot c 1 t) ^ (2 : ℕ) = Lroot c 0 t := Lroot_succ_sq c 0 ht
+  have hsq : (Lroot c 1 (t + 2 * (Real.pi : ℂ) * Complex.I)) ^ (2 : ℕ) = (Lroot c 1 t) ^ (2 : ℕ) := by
     rw [e1, e2, Lroot_zero, Lroot_zero, exp_add_two_pi]
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with h | h
   · -- the `+` case: derive a parity contradiction and discharge by `exfalso`
@@ -161,14 +161,14 @@ theorem Lroot_one_anti {t : ℂ} (ht : t ∈ coverPlane c) :
       apply Path.ext
       funext s
       apply Subtype.ext
-      show (Lroot c 1 (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)) / Lroot c 1 t) ^ 2
+      show (Lroot c 1 (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)) / Lroot c 1 t) ^ (2 : ℕ)
         = bottcherCoord c (Complex.exp (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)))
           / bottcherCoord c (Complex.exp t)
-      have hnum : (Lroot c 1 (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ))) ^ 2
+      have hnum : (Lroot c 1 (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ))) ^ (2 : ℕ)
           = bottcherCoord c (Complex.exp (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ))) := by
         have hh := Lroot_succ_sq c 0 (shift_mem_coverPlane ht (s : ℝ))
         rw [Lroot_zero] at hh; exact hh
-      have hden : (Lroot c 1 t) ^ 2 = bottcherCoord c (Complex.exp t) := by
+      have hden : (Lroot c 1 t) ^ (2 : ℕ) = bottcherCoord c (Complex.exp t) := by
         have hh := Lroot_succ_sq c 0 ht; rw [Lroot_zero] at hh; exact hh
       rw [div_pow, hnum, hden]
     have hfin : (1 : ℤ) = 2 * degZ ⟦q1⟧ := by
@@ -186,10 +186,10 @@ theorem rho_one_anti (hc : ∀ n, c ∉ escapeLevel c n) {t : ℂ} (ht : t ∈ c
   have ht2 : t + 2 * (Real.pi : ℂ) * Complex.I ∈ coverPlane c := by
     have := shift_mem_coverPlane ht 1
     simpa using this
-  have e1 : (rho c 1 (t + 2 * (Real.pi : ℂ) * Complex.I)) ^ 2
+  have e1 : (rho c 1 (t + 2 * (Real.pi : ℂ) * Complex.I)) ^ (2 : ℕ)
       = rho c 0 (t + 2 * (Real.pi : ℂ) * Complex.I) - c := rho_succ_sq c hc 0 ht2
-  have e2 : (rho c 1 t) ^ 2 = rho c 0 t - c := rho_succ_sq c hc 0 ht
-  have hsq : (rho c 1 (t + 2 * (Real.pi : ℂ) * Complex.I)) ^ 2 = (rho c 1 t) ^ 2 := by
+  have e2 : (rho c 1 t) ^ (2 : ℕ) = rho c 0 t - c := rho_succ_sq c hc 0 ht
+  have hsq : (rho c 1 (t + 2 * (Real.pi : ℂ) * Complex.I)) ^ (2 : ℕ) = (rho c 1 t) ^ (2 : ℕ) := by
     rw [e1, e2, rho_zero, exp_add_two_pi]
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with h | h
   · exfalso
@@ -308,14 +308,14 @@ theorem rho_one_anti (hc : ∀ n, c ∉ escapeLevel c n) {t : ℂ} (ht : t ∈ c
       apply Path.ext
       funext s
       apply Subtype.ext
-      show (rho c 1 (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)) / rho c 1 t) ^ 2
+      show (rho c 1 (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)) / rho c 1 t) ^ (2 : ℕ)
         = (Complex.exp (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)) - c) / (Complex.exp t - c)
-      have hnum : (rho c 1 (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ))) ^ 2
+      have hnum : (rho c 1 (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ))) ^ (2 : ℕ)
           = Complex.exp (t + (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)) - c := by
         have hh := rho_succ_sq c hc 0 (shift_mem_coverPlane ht (s : ℝ))
         rw [rho_zero] at hh
         exact hh
-      have hden : (rho c 1 t) ^ 2 = Complex.exp t - c := by
+      have hden : (rho c 1 t) ^ (2 : ℕ) = Complex.exp t - c := by
         have hh := rho_succ_sq c hc 0 ht
         rw [rho_zero] at hh
         exact hh
@@ -360,11 +360,11 @@ theorem Lroot_flip_of_period (m : ℕ)
     intro s; rw [Complex.mul_re, vshift_re_zero, zero_mul, Complex.ofReal_im, mul_zero, sub_zero]
   have ht2 : t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) ∈ coverPlane c :=
     exp_add_im_mem ht (vshift_re_zero m)
-  have e1 : (Lroot c (m + 1) (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I))) ^ 2
+  have e1 : (Lroot c (m + 1) (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I))) ^ (2 : ℕ)
       = Lroot c m (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I)) := Lroot_succ_sq c m ht2
-  have e2 : (Lroot c (m + 1) t) ^ 2 = Lroot c m t := Lroot_succ_sq c m ht
-  have hsq : (Lroot c (m + 1) (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I))) ^ 2
-      = (Lroot c (m + 1) t) ^ 2 := by rw [e1, e2, hper ht]
+  have e2 : (Lroot c (m + 1) t) ^ (2 : ℕ) = Lroot c m t := Lroot_succ_sq c m ht
+  have hsq : (Lroot c (m + 1) (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I))) ^ (2 : ℕ)
+      = (Lroot c (m + 1) t) ^ (2 : ℕ) := by rw [e1, e2, hper ht]
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with h | h
   · exfalso
     have hgId : Continuous (fun x : escapeOpen c => (x : ℂ)) := continuous_subtype_val
@@ -487,12 +487,12 @@ theorem Lroot_flip_of_period (m : ℕ)
     have hsqeq : sqLoop q1 = q0m := by
       apply Path.ext; funext s; apply Subtype.ext
       show (Lroot c (m + 1) (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ))
-            / Lroot c (m + 1) t) ^ 2
+            / Lroot c (m + 1) t) ^ (2 : ℕ)
         = Lroot c m (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)) / Lroot c m t
-      have hnum : (Lroot c (m + 1) (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ))) ^ 2
+      have hnum : (Lroot c (m + 1) (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ))) ^ (2 : ℕ)
           = Lroot c m (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)) :=
         Lroot_succ_sq c m (exp_add_im_mem ht (hPsim (s : ℝ)))
-      have hden : (Lroot c (m + 1) t) ^ 2 = Lroot c m t := Lroot_succ_sq c m ht
+      have hden : (Lroot c (m + 1) t) ^ (2 : ℕ) = Lroot c m t := Lroot_succ_sq c m ht
       rw [div_pow, hnum, hden]
     have hfin : (1 : ℤ) = 2 * degZ ⟦q1⟧ := by rw [← hq0mdeg, ← hsqeq, degZ_sqLoop]
     omega
@@ -504,7 +504,7 @@ theorem Lroot_period (n : ℕ) {t : ℂ} (ht : t ∈ coverPlane c) :
   induction n generalizing t with
   | zero =>
     rw [Lroot_zero, Lroot_zero]
-    have : ((2 ^ 0 : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) = 2 * (Real.pi : ℂ) * Complex.I := by
+    have : ((2 ^ (0 : ℕ) : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) = 2 * (Real.pi : ℂ) * Complex.I := by
       push_cast; ring
     rw [this, exp_add_two_pi]
   | succ m ih =>
@@ -571,7 +571,7 @@ theorem rho_period (hc : ∀ n, c ∉ escapeLevel c n) (n : ℕ) {t : ℂ}
         have hden : ContinuousOn (fun u => rho c (n + 1) u) (coverPlane c) :=
           (rho_analytic c hc (n + 1)).continuousOn
         exact hnum.div hden (fun u hu => rho_ne_zero hc (n + 1) hu)
-      have hpow : ∀ u ∈ coverPlane c, ξ u ^ 2 = 1 := by
+      have hpow : ∀ u ∈ coverPlane c, ξ u ^ (2 : ℕ) = 1 := by
         intro u hu
         have huP : u + P ∈ coverPlane c := exp_add_im_mem hu hPre
         have hsqP := rho_succ_sq c hc n huP
@@ -593,10 +593,10 @@ theorem rho_period (hc : ∀ n, c ∉ escapeLevel c n) (n : ℕ) {t : ℂ}
           ξ (t + P) * rho c (n + 1) (t + P) := by
         rw [hξdef]
         field_simp [rho_ne_zero hc (n + 1) htP]
-      have hξsq : ξ t ^ 2 = 1 := hpow t ht
+      have hξsq : ξ t ^ (2 : ℕ) = 1 := hpow t ht
       rw [hshift, hstep_tP, hconst, hstep_t]
       calc
-        ξ t * (ξ t * rho c (n + 1) t) = (ξ t) ^ 2 * rho c (n + 1) t := by ring
+        ξ t * (ξ t * rho c (n + 1) t) = (ξ t) ^ (2 : ℕ) * rho c (n + 1) t := by ring
         _ = rho c (n + 1) t := by rw [hξsq]; ring
 
 /-- The normalized loop traced by `rho_n(t + 2^n 2πi s) - c`. This is the exact
@@ -663,13 +663,13 @@ theorem rho_antiperiod_of_odd_shift_winding (hc : ∀ n, c ∉ escapeLevel c n) 
     intro s
     rw [Complex.mul_re, hPre, zero_mul, Complex.ofReal_im, mul_zero, sub_zero]
   have htP : t + P ∈ coverPlane c := exp_add_im_mem ht hPre
-  have e1 : (rho c (n + 1) (t + P)) ^ 2 = rho c n (t + P) - c :=
+  have e1 : (rho c (n + 1) (t + P)) ^ (2 : ℕ) = rho c n (t + P) - c :=
     rho_succ_sq c hc n htP
-  have e2 : (rho c (n + 1) t) ^ 2 = rho c n t - c := rho_succ_sq c hc n ht
+  have e2 : (rho c (n + 1) t) ^ (2 : ℕ) = rho c n t - c := rho_succ_sq c hc n ht
   have hper : rho c n (t + P) = rho c n t := by
     dsimp [P] at htP ⊢
     exact rho_period hc n ht
-  have hsq : (rho c (n + 1) (t + P)) ^ 2 = (rho c (n + 1) t) ^ 2 := by
+  have hsq : (rho c (n + 1) (t + P)) ^ (2 : ℕ) = (rho c (n + 1) t) ^ (2 : ℕ) := by
     rw [e1, e2, hper]
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with hsame | hneg
   · exfalso
@@ -702,12 +702,12 @@ theorem rho_antiperiod_of_odd_shift_winding (hc : ∀ n, c ∉ escapeLevel c n) 
       apply Path.ext
       funext s
       apply Subtype.ext
-      show (rho c (n + 1) (t + P * (s : ℂ)) / rho c (n + 1) t) ^ 2 =
+      show (rho c (n + 1) (t + P * (s : ℂ)) / rho c (n + 1) t) ^ (2 : ℕ) =
         (rho c n (t + P * (s : ℂ)) - c) / (rho c n t - c)
       have hs : t + P * (s : ℂ) ∈ coverPlane c := exp_add_im_mem ht (hPsim (s : ℝ))
-      have hnum : (rho c (n + 1) (t + P * (s : ℂ))) ^ 2 =
+      have hnum : (rho c (n + 1) (t + P * (s : ℂ))) ^ (2 : ℕ) =
           rho c n (t + P * (s : ℂ)) - c := rho_succ_sq c hc n hs
-      have hden : (rho c (n + 1) t) ^ 2 = rho c n t - c := rho_succ_sq c hc n ht
+      have hden : (rho c (n + 1) t) ^ (2 : ℕ) = rho c n t - c := rho_succ_sq c hc n ht
       rw [div_pow, hnum, hden]
     obtain ⟨k, hk⟩ := hodd
     have hfin : degZ ⟦rhoShiftLoop c hc n ht⟧ = 2 * degZ ⟦q1⟧ := by

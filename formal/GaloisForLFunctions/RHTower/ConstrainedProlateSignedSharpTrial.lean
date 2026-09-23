@@ -6,11 +6,11 @@ import GaloisForLFunctions.RHTower.HermiteTruncationTailAsymptotic
 
 The exact normalized Hermite tail laws aggregate over the finite trial space and then pass through
 the signed Courant--Fischer estimate.  This gives the true signed prolate leakage its sharp
-step-four Hermite trial exponent `exp (-2*pi*a^2)` with no hypothesis and no aperture-dependent
+step-four Hermite trial exponent `exp (-2*pi*a^(2 : ℕ))` with no hypothesis and no aperture-dependent
 constant.
 
 This is a trial-envelope theorem, not the stronger Fuchs asymptotic: the latter has exponent
-`exp (-4*pi*a^2)` and still requires fixed-mode identification through the prolate differential
+`exp (-4*pi*a^(2 : ℕ))` and still requires fixed-mode identification through the prolate differential
 equation.
 -/
 
@@ -46,7 +46,7 @@ theorem eventually_evenProlateLeakageValue_le_hermiteTailScale (n : ℕ) :
 /-- Sharp fixed-depth Hermite envelope for the leakage of the true signed prolate values. -/
 theorem eventually_one_sub_evenProlateSignedValue_sq_le_hermiteTailScale (n : ℕ) :
     ∀ᶠ a : ℝ in atTop,
-      1 - evenProlateSignedValue a n ^ 2 ≤
+      1 - evenProlateSignedValue a n ^ (2 : ℕ) ≤
         hermiteTrialTailEnvelopeConstant n * hermiteStepFourTailScale n a := by
   filter_upwards [eventually_hermiteTrialDefect_le_tailScale n,
     eventually_gt_atTop (0 : ℝ)] with a htail ha
@@ -58,18 +58,18 @@ polynomial--Gaussian rate. -/
 theorem eventually_one_sub_evenProlateSignedValue_sq_le_hermiteTailScale_of_pos
     (n : ℕ) (hn : 0 < n) :
     ∀ᶠ a : ℝ in atTop,
-      1 - evenProlateSignedValue a n ^ 2 ≤
+      1 - evenProlateSignedValue a n ^ (2 : ℕ) ≤
         hermiteTrialTailEnvelopeConstant n *
-          (a ^ (8 * n - 1) * Real.exp (-(2 * Real.pi * a ^ 2))) := by
+          (a ^ (8 * n - 1) * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))) := by
   simpa [hermiteStepFourTailScale, ne_of_gt hn] using
     eventually_one_sub_evenProlateSignedValue_sq_le_hermiteTailScale n
 
 /-- Ground-index specialization of the signed leakage envelope. -/
 theorem eventually_one_sub_evenProlateSignedValue_zero_sq_le_hermiteTailScale :
     ∀ᶠ a : ℝ in atTop,
-      1 - evenProlateSignedValue a 0 ^ 2 ≤
+      1 - evenProlateSignedValue a 0 ^ (2 : ℕ) ≤
         hermiteTrialTailEnvelopeConstant 0 *
-          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ 2))) := by
+          (a⁻¹ * Real.exp (-(2 * Real.pi * a ^ (2 : ℕ)))) := by
   simpa [hermiteStepFourTailScale] using
     eventually_one_sub_evenProlateSignedValue_sq_le_hermiteTailScale 0
 

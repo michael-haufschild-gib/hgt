@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.HedenmalmCenterMixedOrientationBoundary
 The moving-mirror Born pair kernel has a canonical source form factor after its universal
 kinematic factor `2 i p q` is removed.  That form factor is the completed theta/Xi amplitude.
 Following the quantum-amplifier description of Hawking radiation, this file assigns the minimal
-phase-insensitive amplifier gain `1 + |beta|^2` to the continued source form factor.
+phase-insensitive amplifier gain `1 + |beta|^(2 : ℕ)` to the continued source form factor.
 
 Every individual aperture is a valid quantum-limited amplifier, unconditionally.  The nontrivial
 condition is finite CP-divisibility as the centered-strip aperture increases: quantum-limited
@@ -77,7 +77,7 @@ def thetaCuspHawkingAmplifierAmplitudeGain (a b : ℝ) : ℝ :=
 
 /-- The amplitude gain squares to the Hawking power gain. -/
 theorem thetaCuspHawkingAmplifierAmplitudeGain_sq (a b : ℝ) :
-    thetaCuspHawkingAmplifierAmplitudeGain a b ^ 2 =
+    thetaCuspHawkingAmplifierAmplitudeGain a b ^ (2 : ℕ) =
       thetaCuspHawkingAmplifierGain a b := by
   rw [thetaCuspHawkingAmplifierAmplitudeGain, Real.sq_sqrt]
   have hgain := thetaCuspHawkingAmplifierGain_isQuantumLimited a b

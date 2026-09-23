@@ -23,7 +23,7 @@ open scoped Topology InnerProduct InnerProductSpace
 /-- The pairings of a bounded family against vectors of bounded norm form a bounded sequence. -/
 theorem re_inner_family_le (C : ℕ → (evenSubspace →L[ℂ] evenSubspace)) {B : ℝ}
     (hC : ∀ i, ‖C i‖ ≤ B) (hBnn : 0 ≤ B) (w : ℕ → evenSubspace) {W : ℝ}
-    (hw : ∀ i, ‖w i‖ ≤ W) (i : ℕ) : (⟪w i, C i (w i)⟫_ℂ).re ≤ B * W ^ 2 :=
+    (hw : ∀ i, ‖w i‖ ≤ W) (i : ℕ) : (⟪w i, C i (w i)⟫_ℂ).re ≤ B * W ^ (2 : ℕ) :=
   re_inner_self_le_opNorm_mul_sq (hC i) (hw i) hBnn
 
 /-- **No completion from a bounded operator family restores the floor.** -/
@@ -38,7 +38,7 @@ theorem not_bddBelow_soninCompletedPacketValueVar_of_bounded_family (N₀ : ℕ)
           (fun i => soninShellCutScale b c (Nstart + i) κ) hp
           (fun i => (⟪w i, C i (w i)⟫_ℂ).re) :=
   not_bddBelow_soninCompletedPacketValueVar_of_bddAbove_seq N₀ hN₀ a b c q hbc ha hab hb haq hqb
-    (fun i => (⟪w i, C i (w i)⟫_ℂ).re) (B * W ^ 2)
+    (fun i => (⟪w i, C i (w i)⟫_ℂ).re) (B * W ^ (2 : ℕ))
     (re_inner_family_le C hC hBnn w hw)
 
 end RHTower

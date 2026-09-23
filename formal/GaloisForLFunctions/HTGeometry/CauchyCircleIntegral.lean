@@ -54,7 +54,7 @@ theorem circleFactor_im (r d y : ℝ) : (circleFactor r d y).im = -(r * Real.sin
 
 /-- The squared modulus of the circle factor. -/
 theorem normSq_circleFactor (r d y : ℝ) :
-    Complex.normSq (circleFactor r d y) = 1 - 2 * r * Real.cos (d * y) + r ^ 2 := by
+    Complex.normSq (circleFactor r d y) = 1 - 2 * r * Real.cos (d * y) + r ^ (2 : ℕ) := by
   rw [Complex.normSq_apply, circleFactor_re, circleFactor_im]
   nlinarith [Real.sin_sq_add_cos_sq (d * y)]
 
@@ -120,12 +120,12 @@ theorem integral_circleKernel {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {d : ℝ} 
 
 theorem circleKernel_re (r d y : ℝ) :
     ((circleFactor r d y)⁻¹).re
-      = (1 - r * Real.cos (d * y)) / (1 - 2 * r * Real.cos (d * y) + r ^ 2) := by
+      = (1 - r * Real.cos (d * y)) / (1 - 2 * r * Real.cos (d * y) + r ^ (2 : ℕ)) := by
   rw [Complex.inv_re, circleFactor_re, normSq_circleFactor]
 
 theorem circleKernel_im (r d y : ℝ) :
     ((circleFactor r d y)⁻¹).im
-      = r * Real.sin (d * y) / (1 - 2 * r * Real.cos (d * y) + r ^ 2) := by
+      = r * Real.sin (d * y) / (1 - 2 * r * Real.cos (d * y) + r ^ (2 : ℕ)) := by
   rw [Complex.inv_im, circleFactor_im, normSq_circleFactor]
   ring
 
@@ -133,8 +133,8 @@ theorem circleKernel_im (r d y : ℝ) :
 def poissonFactor (r d y : ℝ) : ℝ := 2 * ((circleFactor r d y)⁻¹).re - 1
 
 theorem poissonFactor_eq {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (d y : ℝ) :
-    poissonFactor r d y = (1 - r ^ 2) / (1 - 2 * r * Real.cos (d * y) + r ^ 2) := by
-  have hpos : 0 < 1 - 2 * r * Real.cos (d * y) + r ^ 2 := by
+    poissonFactor r d y = (1 - r ^ (2 : ℕ)) / (1 - 2 * r * Real.cos (d * y) + r ^ (2 : ℕ)) := by
+  have hpos : 0 < 1 - 2 * r * Real.cos (d * y) + r ^ (2 : ℕ) := by
     have := normSq_circleFactor_pos hr0 hr1 d y
     rwa [normSq_circleFactor] at this
   rw [poissonFactor, circleKernel_re]
@@ -143,11 +143,11 @@ theorem poissonFactor_eq {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (d y : ℝ) :
 
 theorem poissonFactor_nonneg {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (d y : ℝ) :
     0 ≤ poissonFactor r d y := by
-  have hpos : 0 < 1 - 2 * r * Real.cos (d * y) + r ^ 2 := by
+  have hpos : 0 < 1 - 2 * r * Real.cos (d * y) + r ^ (2 : ℕ) := by
     have := normSq_circleFactor_pos hr0 hr1 d y
     rwa [normSq_circleFactor] at this
   rw [poissonFactor_eq hr0 hr1]
-  have : (0 : ℝ) ≤ 1 - r ^ 2 := by nlinarith
+  have : (0 : ℝ) ≤ 1 - r ^ (2 : ℕ) := by nlinarith
   positivity
 
 /-- Reflection across the half period flips the sign of the imaginary part of the kernel. -/
@@ -171,12 +171,12 @@ theorem poissonFactor_reflect {d T : ℝ} (hT : d * T = 2 * Real.pi) (r y : ℝ)
 /-- Away from the singularity the imaginary part of the kernel is uniformly bounded. -/
 theorem abs_circleKernel_im_le {r γ : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {d y : ℝ}
     (hγ : Real.cos (d * y) ≤ γ) (hγ1 : γ < 1) (hγ0 : -1 < γ) :
-    |((circleFactor r d y)⁻¹).im| ≤ 1 / (1 - γ ^ 2) := by
-  have hden : 0 < 1 - 2 * r * Real.cos (d * y) + r ^ 2 := by
+    |((circleFactor r d y)⁻¹).im| ≤ 1 / (1 - γ ^ (2 : ℕ)) := by
+  have hden : 0 < 1 - 2 * r * Real.cos (d * y) + r ^ (2 : ℕ) := by
     have := normSq_circleFactor_pos hr0 hr1 d y
     rwa [normSq_circleFactor] at this
-  have hγpos : 0 < 1 - γ ^ 2 := by nlinarith
-  have hlow : 1 - γ ^ 2 ≤ 1 - 2 * r * Real.cos (d * y) + r ^ 2 := by
+  have hγpos : 0 < 1 - γ ^ (2 : ℕ) := by nlinarith
+  have hlow : 1 - γ ^ (2 : ℕ) ≤ 1 - 2 * r * Real.cos (d * y) + r ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (r - γ), hr0, hγ]
   have hnum : |r * Real.sin (d * y)| ≤ 1 := by
     rw [abs_mul, abs_of_nonneg hr0]
@@ -189,7 +189,7 @@ theorem abs_circleKernel_im_le {r γ : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {d y :
 /-- On the first half period the imaginary part of the kernel is nonnegative. -/
 theorem circleKernel_im_nonneg {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {d y : ℝ}
     (hsin : 0 ≤ Real.sin (d * y)) : 0 ≤ ((circleFactor r d y)⁻¹).im := by
-  have hden : 0 < 1 - 2 * r * Real.cos (d * y) + r ^ 2 := by
+  have hden : 0 < 1 - 2 * r * Real.cos (d * y) + r ^ (2 : ℕ) := by
     have := normSq_circleFactor_pos hr0 hr1 d y
     rwa [normSq_circleFactor] at this
   rw [circleKernel_im]

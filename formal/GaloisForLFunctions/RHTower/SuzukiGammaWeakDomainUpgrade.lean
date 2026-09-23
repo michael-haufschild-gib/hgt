@@ -29,9 +29,9 @@ namespace GaloisForLFunctions.RHTower
 
 theorem integrable_sq_add' {f g : ℝ → ℝ}
     (hfm : AEStronglyMeasurable f volume) (hgm : AEStronglyMeasurable g volume)
-    (hf2 : Integrable (fun x => f x ^ 2)) (hg2 : Integrable (fun x => g x ^ 2)) :
-    Integrable (fun x => (f x + g x) ^ 2) := by
-  have hsum : Integrable (fun x => 2 * f x ^ 2 + 2 * g x ^ 2) :=
+    (hf2 : Integrable (fun x => f x ^ (2 : ℕ))) (hg2 : Integrable (fun x => g x ^ (2 : ℕ))) :
+    Integrable (fun x => (f x + g x) ^ (2 : ℕ)) := by
+  have hsum : Integrable (fun x => 2 * f x ^ (2 : ℕ) + 2 * g x ^ (2 : ℕ)) :=
     (hf2.const_mul 2).add (hg2.const_mul 2)
   refine Integrable.mono' hsum (aestronglyMeasurable_sq (hfm.add hgm)) ?_
   filter_upwards with x
@@ -39,9 +39,9 @@ theorem integrable_sq_add' {f g : ℝ → ℝ}
   exact sq_add_le_two _ _
 
 theorem integrable_sq_const_mul {f : ℝ → ℝ} (c : ℝ)
-    (hf2 : Integrable (fun x => f x ^ 2)) :
-    Integrable (fun x => (c * f x) ^ 2) := by
-  refine (hf2.const_mul (c ^ 2)).congr ?_
+    (hf2 : Integrable (fun x => f x ^ (2 : ℕ))) :
+    Integrable (fun x => (c * f x) ^ (2 : ℕ)) := by
+  refine (hf2.const_mul (c ^ (2 : ℕ))).congr ?_
   filter_upwards with x
   ring
 
@@ -86,7 +86,7 @@ section MollifiedDerivData
 variable {σ ε : ℝ} {V : ℝ → ℝ}
 
 theorem continuous_suzukiMollifiedDeriv (hε : 0 < ε)
-    (hVm : AEStronglyMeasurable V volume) (hV2 : Integrable (fun t => V t ^ 2)) :
+    (hVm : AEStronglyMeasurable V volume) (hV2 : Integrable (fun t => V t ^ (2 : ℕ))) :
     Continuous (suzukiMollifiedDeriv σ ε V) := by
   rw [suzukiMollifiedDeriv_eq]
   exact continuous_lineConvolution (continuous_suzukiDerivKernel σ ε)
@@ -94,8 +94,8 @@ theorem continuous_suzukiMollifiedDeriv (hε : 0 < ε)
     (locallyIntegrable_of_sq_integrable hVm hV2)
 
 theorem integrable_sq_suzukiMollifiedDeriv (hε : 0 < ε)
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2)) :
-    Integrable (fun x => suzukiMollifiedDeriv σ ε V x ^ 2) := by
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ))) :
+    Integrable (fun x => suzukiMollifiedDeriv σ ε V x ^ (2 : ℕ)) := by
   rw [suzukiMollifiedDeriv_eq]
   exact integrable_sq_lineConvolution (continuous_suzukiDerivKernel σ ε)
     (hasCompactSupport_suzukiDerivKernel hε) hVmm hV2
@@ -107,9 +107,9 @@ theorem suzukiMollifiedDeriv_eq_zero {L₀ : ℝ} (hε : 0 < ε)
   exact lineConvolution_eq_zero_of_lt (fun u hu => suzukiDerivKernel_eq_zero hε hu) hsupp hx
 
 theorem abs_suzukiMollifiedDeriv_le (hε : 0 < ε)
-    (hVm : AEStronglyMeasurable V volume) (hV2 : Integrable (fun t => V t ^ 2)) (x : ℝ) :
+    (hVm : AEStronglyMeasurable V volume) (hV2 : Integrable (fun t => V t ^ (2 : ℕ))) (x : ℝ) :
     |suzukiMollifiedDeriv σ ε V x|
-      ≤ Real.sqrt ((∫ u, suzukiDerivKernel σ ε u ^ 2) * ∫ t, V t ^ 2) := by
+      ≤ Real.sqrt ((∫ u, suzukiDerivKernel σ ε u ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ)) := by
   rw [suzukiMollifiedDeriv_eq]
   exact abs_lineConvolution_le (continuous_suzukiDerivKernel σ ε).aestronglyMeasurable
     (((continuous_suzukiDerivKernel σ ε).pow 2).integrable_of_hasCompactSupport
@@ -117,9 +117,9 @@ theorem abs_suzukiMollifiedDeriv_le (hε : 0 < ε)
     hVm hV2 x
 
 theorem abs_suzukiMollifiedDeriv_sub_le (hε : 0 < ε)
-    (hVm : AEStronglyMeasurable V volume) (hV2 : Integrable (fun t => V t ^ 2)) (x y : ℝ) :
+    (hVm : AEStronglyMeasurable V volume) (hV2 : Integrable (fun t => V t ^ (2 : ℕ))) (x y : ℝ) :
     |suzukiMollifiedDeriv σ ε V x - suzukiMollifiedDeriv σ ε V y|
-      ≤ Real.sqrt ((∫ u, deriv (suzukiDerivKernel σ ε) u ^ 2) * ∫ t, V t ^ 2) * |x - y| := by
+      ≤ Real.sqrt ((∫ u, deriv (suzukiDerivKernel σ ε) u ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ)) * |x - y| := by
   rw [suzukiMollifiedDeriv_eq]
   exact abs_lineConvolution_sub_le (contDiff_suzukiDerivKernel σ ε)
     (hasCompactSupport_suzukiDerivKernel hε) hVm hV2 x y
@@ -268,9 +268,9 @@ theorem integral_abs_suzukiDefectKernel_le {σ ε : ℝ}
 
 /-- Mollification by the family is an `L²` contraction. -/
 theorem integral_sq_suzukiMollified_le {ε : ℝ} (hε : 0 < ε) {f : ℝ → ℝ}
-    (hfm : Measurable f) (hf2 : Integrable (fun t => f t ^ 2)) :
-    (∫ x, lineConvolution (suzukiMollifier ε) f x ^ 2) ≤ ∫ t, f t ^ 2 := by
-  have hconv : Integrable (fun x => mollify (suzukiMollifier ε) f x ^ 2) := by
+    (hfm : Measurable f) (hf2 : Integrable (fun t => f t ^ (2 : ℕ))) :
+    (∫ x, lineConvolution (suzukiMollifier ε) f x ^ (2 : ℕ)) ≤ ∫ t, f t ^ (2 : ℕ) := by
+  have hconv : Integrable (fun x => mollify (suzukiMollifier ε) f x ^ (2 : ℕ)) := by
     rw [mollify_eq_lineConvolution]
     exact integrable_sq_lineConvolution (contDiff_suzukiMollifier ε).continuous
       (hasCompactSupport_suzukiMollifier hε) hfm hf2
@@ -281,14 +281,14 @@ theorem integral_sq_suzukiMollified_le {ε : ℝ} (hε : 0 < ε) {f : ℝ → �
   rwa [mollify_eq_lineConvolution] at h
 
 theorem integrable_sq_suzukiMollified {ε : ℝ} (hε : 0 < ε) {f : ℝ → ℝ}
-    (hfm : Measurable f) (hf2 : Integrable (fun t => f t ^ 2)) :
-    Integrable (fun x => lineConvolution (suzukiMollifier ε) f x ^ 2) :=
+    (hfm : Measurable f) (hf2 : Integrable (fun t => f t ^ (2 : ℕ))) :
+    Integrable (fun x => lineConvolution (suzukiMollifier ε) f x ^ (2 : ℕ)) :=
   integrable_sq_lineConvolution (contDiff_suzukiMollifier ε).continuous
     (hasCompactSupport_suzukiMollifier hε) hfm hf2
 
 theorem integrable_sq_suzukiMollifiedDefect {σ ε : ℝ} (hε : 0 < ε) {V : ℝ → ℝ}
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2)) :
-    Integrable (fun x => suzukiMollifiedDefect σ ε V x ^ 2) := by
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ))) :
+    Integrable (fun x => suzukiMollifiedDefect σ ε V x ^ (2 : ℕ)) := by
   rw [suzukiMollifiedDefect_eq]
   exact integrable_sq_lineConvolution (continuous_suzukiDefectKernel ε σ)
     (hasCompactSupport_suzukiDefectKernel hε) hVmm hV2
@@ -296,9 +296,9 @@ theorem integrable_sq_suzukiMollifiedDefect {σ ε : ℝ} (hε : 0 < ε) {V : �
 /-- **The defect is uniformly small in `L²`.** -/
 theorem integral_sq_suzukiMollifiedDefect_le {σ ε : ℝ}
     (hε : 0 < ε) (hε1 : ε ≤ 1) (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) {V : ℝ → ℝ}
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2)) :
-    (∫ x, suzukiMollifiedDefect σ ε V x ^ 2)
-      ≤ suzukiDefectMass ^ 2 * ∫ t, V t ^ 2 := by
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ))) :
+    (∫ x, suzukiMollifiedDefect σ ε V x ^ (2 : ℕ))
+      ≤ suzukiDefectMass ^ (2 : ℕ) * ∫ t, V t ^ (2 : ℕ) := by
   rw [suzukiMollifiedDefect_eq]
   have hyoung := integral_sq_lineConvolution_le
     (continuous_suzukiDefectKernel ε σ).measurable hVmm
@@ -310,10 +310,10 @@ theorem integral_sq_suzukiMollifiedDefect_le {σ ε : ℝ}
   have hmass := integral_abs_suzukiDefectKernel_le hε hε1 hσ0 hσ1
   have hnn : (0 : ℝ) ≤ ∫ u, |suzukiDefectKernel σ ε u| :=
     integral_nonneg fun u => abs_nonneg _
-  have hVnn : (0 : ℝ) ≤ ∫ t, V t ^ 2 := integral_nonneg fun t => sq_nonneg _
-  calc (∫ x, lineConvolution (suzukiDefectKernel σ ε) V x ^ 2)
-      ≤ (∫ u, |suzukiDefectKernel σ ε u|) ^ 2 * ∫ t, V t ^ 2 := hyoung
-    _ ≤ suzukiDefectMass ^ 2 * ∫ t, V t ^ 2 := by
+  have hVnn : (0 : ℝ) ≤ ∫ t, V t ^ (2 : ℕ) := integral_nonneg fun t => sq_nonneg _
+  calc (∫ x, lineConvolution (suzukiDefectKernel σ ε) V x ^ (2 : ℕ))
+      ≤ (∫ u, |suzukiDefectKernel σ ε u|) ^ (2 : ℕ) * ∫ t, V t ^ (2 : ℕ) := hyoung
+    _ ≤ suzukiDefectMass ^ (2 : ℕ) * ∫ t, V t ^ (2 : ℕ) := by
         refine mul_le_mul_of_nonneg_right ?_ hVnn
         exact pow_le_pow_left₀ hnn hmass 2
 
@@ -323,13 +323,13 @@ theorem integral_sq_suzukiMollifiedDefect_le {σ ε : ℝ}
 at small scales, so the `L²` scale majorant applies. -/
 theorem integrable_sq_shiftedGammaJump_suzukiMollifiedDeriv {σ ε : ℝ} {V : ℝ → ℝ}
     (hε : 0 < ε) (hε1 : ε ≤ 1)
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ)))
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) :
-    Integrable (fun x => shiftedGammaJump σ (suzukiMollifiedDeriv σ ε V) x ^ 2) := by
+    Integrable (fun x => shiftedGammaJump σ (suzukiMollifiedDeriv σ ε V) x ^ (2 : ℕ)) := by
   have hVm : AEStronglyMeasurable V volume := hVmm.aestronglyMeasurable
   have hPm : Measurable (suzukiMollifiedDeriv σ ε V) :=
     (continuous_suzukiMollifiedDeriv hε hVm hV2).measurable
-  have hP2 : Integrable (fun x => suzukiMollifiedDeriv σ ε V x ^ 2) :=
+  have hP2 : Integrable (fun x => suzukiMollifiedDeriv σ ε V x ^ (2 : ℕ)) :=
     integrable_sq_suzukiMollifiedDeriv hε hVmm hV2
   have hgc := continuous_suzukiDerivKernel σ ε
   have hgC1 := contDiff_suzukiDerivKernel σ ε
@@ -341,11 +341,11 @@ theorem integrable_sq_shiftedGammaJump_suzukiMollifiedDeriv {σ ε : ℝ} {V : �
       ≤ Mg * |u - v| := fun u v => abs_sub_le_of_deriv_bound hgC1 hMg u v
   have hgsupp1 : ∀ u : ℝ, (1 : ℝ) < |u| → suzukiDerivKernel σ ε u = 0 := fun u hu =>
     suzukiDerivKernel_eq_zero hε (lt_of_le_of_lt hε1 hu)
-  have hCV : (0 : ℝ) ≤ ∫ t, V t ^ 2 := integral_nonneg fun t => sq_nonneg _
-  set CV : ℝ := Real.sqrt (∫ t, V t ^ 2) with hCVdef
+  have hCV : (0 : ℝ) ≤ ∫ t, V t ^ (2 : ℕ) := integral_nonneg fun t => sq_nonneg _
+  set CV : ℝ := Real.sqrt (∫ t, V t ^ (2 : ℕ)) with hCVdef
   have hCV0 : 0 ≤ CV := Real.sqrt_nonneg _
   set C₁ : ℝ := 3 * Mg * CV + 1 with hC₁def
-  set C₂ : ℝ := Real.sqrt (∫ x, suzukiMollifiedDeriv σ ε V x ^ 2) + 1 with hC₂def
+  set C₂ : ℝ := Real.sqrt (∫ x, suzukiMollifiedDeriv σ ε V x ^ (2 : ℕ)) + 1 with hC₂def
   have hC₁ : 0 < C₁ := by
     rw [hC₁def]
     positivity
@@ -353,13 +353,13 @@ theorem integrable_sq_shiftedGammaJump_suzukiMollifiedDeriv {σ ε : ℝ} {V : �
     rw [hC₂def]
     positivity
   have htrans : ∀ s : ℝ, 0 ≤ s → s ≤ 1 →
-      (∫ x, (suzukiMollifiedDeriv σ ε V (x + s) - suzukiMollifiedDeriv σ ε V x) ^ 2)
-        ≤ (C₁ * s) ^ 2 := by
+      (∫ x, (suzukiMollifiedDeriv σ ε V (x + s) - suzukiMollifiedDeriv σ ε V x) ^ (2 : ℕ))
+        ≤ (C₁ * s) ^ (2 : ℕ) := by
     intro s hs0 hs1
     have hyoung : (∫ x, (suzukiMollifiedDeriv σ ε V (x + s)
-          - suzukiMollifiedDeriv σ ε V x) ^ 2)
-        ≤ (∫ u, |suzukiDerivKernel σ ε (u + s) - suzukiDerivKernel σ ε u|) ^ 2
-          * ∫ t, V t ^ 2 := by
+          - suzukiMollifiedDeriv σ ε V x) ^ (2 : ℕ))
+        ≤ (∫ u, |suzukiDerivKernel σ ε (u + s) - suzukiDerivKernel σ ε u|) ^ (2 : ℕ)
+          * ∫ t, V t ^ (2 : ℕ) := by
       rw [suzukiMollifiedDeriv_eq]
       exact integral_sq_lineConvolution_translate_le hgc
         (hasCompactSupport_suzukiDerivKernel hε) hVmm hV2 s
@@ -371,28 +371,28 @@ theorem integrable_sq_shiftedGammaJump_suzukiMollifiedDeriv {σ ε : ℝ} {V : �
         _ ≤ 3 * Mg * s := by nlinarith [mul_nonneg hMg0 hs0]
     have hknn : (0 : ℝ) ≤ ∫ u, |suzukiDerivKernel σ ε (u + s) - suzukiDerivKernel σ ε u| :=
       integral_nonneg fun u => abs_nonneg _
-    calc (∫ x, (suzukiMollifiedDeriv σ ε V (x + s) - suzukiMollifiedDeriv σ ε V x) ^ 2)
-        ≤ (∫ u, |suzukiDerivKernel σ ε (u + s) - suzukiDerivKernel σ ε u|) ^ 2
-          * ∫ t, V t ^ 2 := hyoung
-      _ ≤ (3 * Mg * s) ^ 2 * ∫ t, V t ^ 2 := by
+    calc (∫ x, (suzukiMollifiedDeriv σ ε V (x + s) - suzukiMollifiedDeriv σ ε V x) ^ (2 : ℕ))
+        ≤ (∫ u, |suzukiDerivKernel σ ε (u + s) - suzukiDerivKernel σ ε u|) ^ (2 : ℕ)
+          * ∫ t, V t ^ (2 : ℕ) := hyoung
+      _ ≤ (3 * Mg * s) ^ (2 : ℕ) * ∫ t, V t ^ (2 : ℕ) := by
           refine mul_le_mul_of_nonneg_right ?_ hCV
           exact pow_le_pow_left₀ hknn hkernel 2
-      _ = (3 * Mg * CV * s) ^ 2 := by
+      _ = (3 * Mg * CV * s) ^ (2 : ℕ) := by
           rw [hCVdef]
-          rw [show (3 * Mg * Real.sqrt (∫ t, V t ^ 2) * s) ^ 2
-              = (3 * Mg * s) ^ 2 * Real.sqrt (∫ t, V t ^ 2) ^ 2 from by ring,
+          rw [show (3 * Mg * Real.sqrt (∫ t, V t ^ (2 : ℕ)) * s) ^ (2 : ℕ)
+              = (3 * Mg * s) ^ (2 : ℕ) * Real.sqrt (∫ t, V t ^ (2 : ℕ)) ^ (2 : ℕ) from by ring,
             Real.sq_sqrt hCV]
-      _ ≤ (C₁ * s) ^ 2 := by
+      _ ≤ (C₁ * s) ^ (2 : ℕ) := by
           have h1 : 0 ≤ 3 * Mg * CV * s := by positivity
           have h2 : 3 * Mg * CV * s ≤ C₁ * s := by
             rw [hC₁def]
             nlinarith
           exact pow_le_pow_left₀ h1 h2 2
-  have hE : (∫ x, suzukiMollifiedDeriv σ ε V x ^ 2) ≤ C₂ ^ 2 := by
+  have hE : (∫ x, suzukiMollifiedDeriv σ ε V x ^ (2 : ℕ)) ≤ C₂ ^ (2 : ℕ) := by
     rw [hC₂def]
-    have hPnn : (0 : ℝ) ≤ ∫ x, suzukiMollifiedDeriv σ ε V x ^ 2 :=
+    have hPnn : (0 : ℝ) ≤ ∫ x, suzukiMollifiedDeriv σ ε V x ^ (2 : ℕ) :=
       integral_nonneg fun x => sq_nonneg _
-    nlinarith [Real.sq_sqrt hPnn, Real.sqrt_nonneg (∫ x, suzukiMollifiedDeriv σ ε V x ^ 2)]
+    nlinarith [Real.sq_sqrt hPnn, Real.sqrt_nonneg (∫ x, suzukiMollifiedDeriv σ ε V x ^ (2 : ℕ))]
   have h := (integrable_sq_gammaScaleIntegral hPm hP2 htrans hE hC₁ hC₂ hσ0 hσ1).1
   unfold shiftedGammaJump
   exact h
@@ -401,9 +401,9 @@ theorem integrable_sq_shiftedGammaJump_suzukiMollifiedDeriv {σ ε : ℝ} {V : �
 
 /-- Closing the coercive square: `cA ≤ D√A` forces `c²A ≤ D²`. -/
 theorem sq_energy_close {c A D : ℝ} (hc : 0 < c) (hA0 : 0 ≤ A)
-    (h : c * A ≤ D * Real.sqrt A) : c ^ 2 * A ≤ D ^ 2 := by
+    (h : c * A ≤ D * Real.sqrt A) : c ^ (2 : ℕ) * A ≤ D ^ (2 : ℕ) := by
   have hs0 : 0 ≤ Real.sqrt A := Real.sqrt_nonneg A
-  have hsq : Real.sqrt A ^ 2 = A := Real.sq_sqrt hA0
+  have hsq : Real.sqrt A ^ (2 : ℕ) = A := Real.sq_sqrt hA0
   rcases eq_or_lt_of_le hs0 with hzero | hpos
   · have hA00 : A = 0 := by
       rw [← hsq, ← hzero]
@@ -415,12 +415,12 @@ theorem sq_energy_close {c A D : ℝ} (hc : 0 < c) (hA0 : 0 ≤ A)
         calc c * Real.sqrt A * Real.sqrt A = c * A := by linear_combination c * hsq
           _ ≤ D * Real.sqrt A := h
       exact le_of_mul_le_mul_right h' hpos
-    calc c ^ 2 * A = (c * Real.sqrt A) ^ 2 := by linear_combination (-(c ^ 2)) * hsq
-      _ ≤ D ^ 2 := pow_le_pow_left₀ (mul_nonneg hc.le hs0) hstep 2
+    calc c ^ (2 : ℕ) * A = (c * Real.sqrt A) ^ (2 : ℕ) := by linear_combination (-(c ^ (2 : ℕ))) * hsq
+      _ ≤ D ^ (2 : ℕ) := pow_le_pow_left₀ (mul_nonneg hc.le hs0) hstep 2
 
 /-- `(a+b+c)² ≤ 3a² + 3b² + 3c²`. -/
 theorem sq_add_three_le (a b c : ℝ) :
-    (a + b + c) ^ 2 ≤ 3 * a ^ 2 + 3 * b ^ 2 + 3 * c ^ 2 := by
+    (a + b + c) ^ (2 : ℕ) ≤ 3 * a ^ (2 : ℕ) + 3 * b ^ (2 : ℕ) + 3 * c ^ (2 : ℕ) := by
   nlinarith [sq_nonneg (a - b), sq_nonneg (a - c), sq_nonneg (b - c)]
 
 /-- **The uniform energy bound.**  On the coercive budget
@@ -428,13 +428,13 @@ theorem sq_add_three_le (a b c : ℝ) :
 uniformly in the width: `c² ∫U_ε² ≤ 3∫G² + (3 + 12 Λ²)∫V²`, `Λ` the defect-kernel mass. -/
 theorem suzukiGamma_uniform_energy_bound {σ τ L₀ ε c : ℝ} {V G : ℝ → ℝ}
     (heq : SuzukiGammaTestedEquation σ τ V G)
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
-    (hGmm : Measurable G) (hG2 : Integrable (fun t => G t ^ 2))
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ)))
+    (hGmm : Measurable G) (hG2 : Integrable (fun t => G t ^ (2 : ℕ)))
     (hsupp : ∀ t : ℝ, t < L₀ → V t = 0)
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hε : 0 < ε) (hε1 : ε ≤ 1)
     (hc : 0 < c) (hcle : c ≤ 2 * (L₀ - ε) - suzukiGammaShiftKappa σ - |τ|) :
-    c ^ 2 * ∫ x, suzukiMollifiedDeriv σ ε V x ^ 2
-      ≤ 3 * (∫ t, G t ^ 2) + (3 + 12 * suzukiDefectMass ^ 2) * ∫ t, V t ^ 2 := by
+    c ^ (2 : ℕ) * ∫ x, suzukiMollifiedDeriv σ ε V x ^ (2 : ℕ)
+      ≤ 3 * (∫ t, G t ^ (2 : ℕ)) + (3 + 12 * suzukiDefectMass ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ) := by
   have hVm : AEStronglyMeasurable V volume := hVmm.aestronglyMeasurable
   set U : ℝ → ℝ := suzukiMollifiedDeriv σ ε V with hUdef
   set W : ℝ → ℝ := suzukiMollifiedDefect σ ε V with hWdef
@@ -446,8 +446,8 @@ theorem suzukiGamma_uniform_energy_bound {σ τ L₀ ε c : ℝ} {V G : ℝ → 
   -- regularity of the players
   have hUc : Continuous U := continuous_suzukiMollifiedDeriv hε hVm hV2
   have hUa : AEStronglyMeasurable U volume := hUc.aestronglyMeasurable
-  have hU2 : Integrable (fun x => U x ^ 2) := integrable_sq_suzukiMollifiedDeriv hε hVmm hV2
-  have hJ2 : Integrable (fun x => J x ^ 2) :=
+  have hU2 : Integrable (fun x => U x ^ (2 : ℕ)) := integrable_sq_suzukiMollifiedDeriv hε hVmm hV2
+  have hJ2 : Integrable (fun x => J x ^ (2 : ℕ)) :=
     integrable_sq_shiftedGammaJump_suzukiMollifiedDeriv hε hε1 hVmm hV2 hσ0 hσ1
   have hJa : AEStronglyMeasurable J volume := by
     have hm : Measurable fun x =>
@@ -461,37 +461,37 @@ theorem suzukiGamma_uniform_energy_bound {σ τ L₀ ε c : ℝ} {V G : ℝ → 
       (hasCompactSupport_suzukiDefectKernel hε)
       (locallyIntegrable_of_sq_integrable hVm hV2)
   have hWa : AEStronglyMeasurable W volume := hWc.aestronglyMeasurable
-  have hW2 : Integrable (fun x => W x ^ 2) := integrable_sq_suzukiMollifiedDefect hε hVmm hV2
+  have hW2 : Integrable (fun x => W x ^ (2 : ℕ)) := integrable_sq_suzukiMollifiedDefect hε hVmm hV2
   have hVmc : Continuous Vm :=
     continuous_lineConvolution (contDiff_suzukiMollifier ε).continuous
       (hasCompactSupport_suzukiMollifier hε) (locallyIntegrable_of_sq_integrable hVm hV2)
   have hVma : AEStronglyMeasurable Vm volume := hVmc.aestronglyMeasurable
-  have hVm2 : Integrable (fun x => Vm x ^ 2) := integrable_sq_suzukiMollified hε hVmm hV2
+  have hVm2 : Integrable (fun x => Vm x ^ (2 : ℕ)) := integrable_sq_suzukiMollified hε hVmm hV2
   have hGmc : Continuous Gm :=
     continuous_lineConvolution (contDiff_suzukiMollifier ε).continuous
       (hasCompactSupport_suzukiMollifier hε)
       (locallyIntegrable_of_sq_integrable hGmm.aestronglyMeasurable hG2)
   have hGma : AEStronglyMeasurable Gm volume := hGmc.aestronglyMeasurable
-  have hGm2 : Integrable (fun x => Gm x ^ 2) := integrable_sq_suzukiMollified hε hGmm hG2
+  have hGm2 : Integrable (fun x => Gm x ^ (2 : ℕ)) := integrable_sq_suzukiMollified hε hGmm hG2
   -- the position-weighted copy of U is square-integrable, from the equation
-  have hidU2 : Integrable (fun x => (x * U x) ^ 2) := by
+  have hidU2 : Integrable (fun x => (x * U x) ^ (2 : ℕ)) := by
     have hs1a : AEStronglyMeasurable (fun x => Gm x + 2 * W x) volume :=
       hGma.add (hWa.const_mul 2)
-    have hs1 : Integrable (fun x => (Gm x + 2 * W x) ^ 2) :=
+    have hs1 : Integrable (fun x => (Gm x + 2 * W x) ^ (2 : ℕ)) :=
       integrable_sq_add' hGma (hWa.const_mul 2) hGm2 (integrable_sq_const_mul 2 hW2)
     have hs2a : AEStronglyMeasurable (fun x => Gm x + 2 * W x + τ * U x) volume :=
       hs1a.add (hUa.const_mul τ)
-    have hs2 : Integrable (fun x => (Gm x + 2 * W x + τ * U x) ^ 2) :=
+    have hs2 : Integrable (fun x => (Gm x + 2 * W x + τ * U x) ^ (2 : ℕ)) :=
       integrable_sq_add' hs1a (hUa.const_mul τ) hs1 (integrable_sq_const_mul τ hU2)
     have hs3a : AEStronglyMeasurable (fun x => Gm x + 2 * W x + τ * U x + (-1) * J x)
         volume := hs2a.add (hJa.const_mul (-1))
-    have hs3 : Integrable (fun x => (Gm x + 2 * W x + τ * U x + (-1) * J x) ^ 2) :=
+    have hs3 : Integrable (fun x => (Gm x + 2 * W x + τ * U x + (-1) * J x) ^ (2 : ℕ)) :=
       integrable_sq_add' hs2a (hJa.const_mul (-1)) hs2 (integrable_sq_const_mul (-1) hJ2)
     have hs4 : Integrable
-        (fun x => (Gm x + 2 * W x + τ * U x + (-1) * J x + (-1) * Vm x) ^ 2) :=
+        (fun x => (Gm x + 2 * W x + τ * U x + (-1) * J x + (-1) * Vm x) ^ (2 : ℕ)) :=
       integrable_sq_add' hs3a (hVma.const_mul (-1)) hs3 (integrable_sq_const_mul (-1) hVm2)
     have hs5 : Integrable (fun x =>
-        ((1 / 2) * (Gm x + 2 * W x + τ * U x + (-1) * J x + (-1) * Vm x)) ^ 2) :=
+        ((1 / 2) * (Gm x + 2 * W x + τ * U x + (-1) * J x + (-1) * Vm x)) ^ (2 : ℕ)) :=
       integrable_sq_const_mul (1 / 2) hs4
     refine hs5.congr ?_
     filter_upwards with x
@@ -506,24 +506,24 @@ theorem suzukiGamma_uniform_energy_bound {σ τ L₀ ε c : ℝ} {V G : ℝ → 
     integrable_of_sq_integrable_of_mul_sq_integrable hUa hU2 hidU2
   have hUB := abs_suzukiMollifiedDeriv_le (σ := σ) hε hVm hV2
   have hUK := abs_suzukiMollifiedDeriv_sub_le (σ := σ) hε hVm hV2
-  have hNR : -(suzukiGammaShiftKappa σ * ∫ x, U x ^ 2) ≤ ∫ x, J x * U x := by
+  have hNR : -(suzukiGammaShiftKappa σ * ∫ x, U x ^ (2 : ℕ)) ≤ ∫ x, J x * U x := by
     have h := neg_suzukiGammaShiftKappa_mul_le_gammaJumpPairing
       (U := suzukiMollifiedDeriv σ ε V)
       hUc.measurable (fun x y => hUK x y) (fun x => hUB x) hσ0 hσ1 hUL1 hU2
-    calc -(suzukiGammaShiftKappa σ * ∫ x, U x ^ 2)
+    calc -(suzukiGammaShiftKappa σ * ∫ x, U x ^ (2 : ℕ))
         ≤ ∫ L, shiftedGammaJump σ (suzukiMollifiedDeriv σ ε V) L
             * suzukiMollifiedDeriv σ ε V L := h
       _ = ∫ x, J x * U x := rfl
   -- the support lower bound for the position pairing
   have hIP1 : Integrable (fun x => x * U x * U x) :=
     integrable_mul_of_sq_integrable hidUa hUa hidU2 hU2
-  have hIx : (L₀ - ε) * (∫ x, U x ^ 2) ≤ ∫ x, x * U x * U x := by
-    have hint : Integrable (fun x => (x - (L₀ - ε)) * U x ^ 2) := by
+  have hIx : (L₀ - ε) * (∫ x, U x ^ (2 : ℕ)) ≤ ∫ x, x * U x * U x := by
+    have hint : Integrable (fun x => (x - (L₀ - ε)) * U x ^ (2 : ℕ)) := by
       refine (hIP1.sub (hU2.const_mul (L₀ - ε))).congr ?_
       filter_upwards with x
-      show x * U x * U x - (L₀ - ε) * U x ^ 2 = (x - (L₀ - ε)) * U x ^ 2
+      show x * U x * U x - (L₀ - ε) * U x ^ (2 : ℕ) = (x - (L₀ - ε)) * U x ^ (2 : ℕ)
       ring
-    have hnn : 0 ≤ ∫ x, (x - (L₀ - ε)) * U x ^ 2 := by
+    have hnn : 0 ≤ ∫ x, (x - (L₀ - ε)) * U x ^ (2 : ℕ) := by
       refine integral_nonneg fun x => ?_
       rcases lt_or_ge x (L₀ - ε) with hx | hx
       · have hzero : U x = 0 := suzukiMollifiedDeriv_eq_zero hε hsupp hx
@@ -531,16 +531,16 @@ theorem suzukiGamma_uniform_energy_bound {σ τ L₀ ε c : ℝ} {V G : ℝ → 
         simp
       · have h1 : 0 ≤ x - (L₀ - ε) := by linarith
         exact mul_nonneg h1 (sq_nonneg _)
-    have hsplit : (∫ x, (x - (L₀ - ε)) * U x ^ 2)
-        = (∫ x, x * U x * U x) - (L₀ - ε) * ∫ x, U x ^ 2 := by
-      calc (∫ x, (x - (L₀ - ε)) * U x ^ 2)
-          = ∫ x, x * U x * U x - (L₀ - ε) * U x ^ 2 := by
+    have hsplit : (∫ x, (x - (L₀ - ε)) * U x ^ (2 : ℕ))
+        = (∫ x, x * U x * U x) - (L₀ - ε) * ∫ x, U x ^ (2 : ℕ) := by
+      calc (∫ x, (x - (L₀ - ε)) * U x ^ (2 : ℕ))
+          = ∫ x, x * U x * U x - (L₀ - ε) * U x ^ (2 : ℕ) := by
             refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-            show (x - (L₀ - ε)) * U x ^ 2 = x * U x * U x - (L₀ - ε) * U x ^ 2
+            show (x - (L₀ - ε)) * U x ^ (2 : ℕ) = x * U x * U x - (L₀ - ε) * U x ^ (2 : ℕ)
             ring
-        _ = (∫ x, x * U x * U x) - ∫ x, (L₀ - ε) * U x ^ 2 :=
+        _ = (∫ x, x * U x * U x) - ∫ x, (L₀ - ε) * U x ^ (2 : ℕ) :=
             integral_sub hIP1 (hU2.const_mul (L₀ - ε))
-        _ = (∫ x, x * U x * U x) - (L₀ - ε) * ∫ x, U x ^ 2 := by
+        _ = (∫ x, x * U x * U x) - (L₀ - ε) * ∫ x, U x ^ (2 : ℕ) := by
             rw [integral_const_mul]
     linarith [hsplit ▸ hnn]
   -- the integrated pairing
@@ -608,36 +608,36 @@ theorem suzukiGamma_uniform_energy_bound {σ τ L₀ ε c : ℝ} {V G : ℝ → 
     rw [← q4]
     exact integral_congr_ae (Filter.Eventually.of_forall fun x => hptw x)
   -- Cauchy–Schwarz on the data pairings
-  set A : ℝ := ∫ x, U x ^ 2 with hAdef
+  set A : ℝ := ∫ x, U x ^ (2 : ℕ) with hAdef
   have hA0 : 0 ≤ A := integral_nonneg fun x => sq_nonneg _
   set sA : ℝ := Real.sqrt A with hsAdef
   have habsCS : ∀ (F : ℝ → ℝ), AEStronglyMeasurable F volume →
-      Integrable (fun x => F x ^ 2) →
-      |∫ x, F x * U x| ≤ Real.sqrt (∫ x, F x ^ 2) * sA := by
+      Integrable (fun x => F x ^ (2 : ℕ)) →
+      |∫ x, F x * U x| ≤ Real.sqrt (∫ x, F x ^ (2 : ℕ)) * sA := by
     intro F hFm hF2
     have h := sq_integral_mul_le (μ := (volume : Measure ℝ)) hFm hUa hF2 hU2
-    calc |∫ x, F x * U x| = Real.sqrt ((∫ x, F x * U x) ^ 2) :=
+    calc |∫ x, F x * U x| = Real.sqrt ((∫ x, F x * U x) ^ (2 : ℕ)) :=
           (Real.sqrt_sq_eq_abs _).symm
-      _ ≤ Real.sqrt ((∫ x, F x ^ 2) * A) := Real.sqrt_le_sqrt h
-      _ = Real.sqrt (∫ x, F x ^ 2) * sA := by
+      _ ≤ Real.sqrt ((∫ x, F x ^ (2 : ℕ)) * A) := Real.sqrt_le_sqrt h
+      _ = Real.sqrt (∫ x, F x ^ (2 : ℕ)) * sA := by
           rw [hsAdef, Real.sqrt_mul (integral_nonneg fun x => sq_nonneg _)]
   -- data bounds
-  have hCVnn : (0 : ℝ) ≤ ∫ t, V t ^ 2 := integral_nonneg fun t => sq_nonneg _
-  have hCGnn : (0 : ℝ) ≤ ∫ t, G t ^ 2 := integral_nonneg fun t => sq_nonneg _
-  set CV : ℝ := Real.sqrt (∫ t, V t ^ 2) with hCVdef
-  set CG : ℝ := Real.sqrt (∫ t, G t ^ 2) with hCGdef
-  have hGmB : Real.sqrt (∫ x, Gm x ^ 2) ≤ CG := by
+  have hCVnn : (0 : ℝ) ≤ ∫ t, V t ^ (2 : ℕ) := integral_nonneg fun t => sq_nonneg _
+  have hCGnn : (0 : ℝ) ≤ ∫ t, G t ^ (2 : ℕ) := integral_nonneg fun t => sq_nonneg _
+  set CV : ℝ := Real.sqrt (∫ t, V t ^ (2 : ℕ)) with hCVdef
+  set CG : ℝ := Real.sqrt (∫ t, G t ^ (2 : ℕ)) with hCGdef
+  have hGmB : Real.sqrt (∫ x, Gm x ^ (2 : ℕ)) ≤ CG := by
     rw [hCGdef]
     exact Real.sqrt_le_sqrt (integral_sq_suzukiMollified_le hε hGmm hG2)
-  have hVmB : Real.sqrt (∫ x, Vm x ^ 2) ≤ CV := by
+  have hVmB : Real.sqrt (∫ x, Vm x ^ (2 : ℕ)) ≤ CV := by
     rw [hCVdef]
     exact Real.sqrt_le_sqrt (integral_sq_suzukiMollified_le hε hVmm hV2)
-  have hWB : Real.sqrt (∫ x, W x ^ 2) ≤ suzukiDefectMass * CV := by
+  have hWB : Real.sqrt (∫ x, W x ^ (2 : ℕ)) ≤ suzukiDefectMass * CV := by
     have h := integral_sq_suzukiMollifiedDefect_le hε hε1 hσ0 hσ1 hVmm hV2
     have hb : (0 : ℝ) ≤ suzukiDefectMass * CV :=
       mul_nonneg suzukiDefectMass_nonneg (Real.sqrt_nonneg _)
-    calc Real.sqrt (∫ x, W x ^ 2)
-        ≤ Real.sqrt (suzukiDefectMass ^ 2 * ∫ t, V t ^ 2) := Real.sqrt_le_sqrt h
+    calc Real.sqrt (∫ x, W x ^ (2 : ℕ))
+        ≤ Real.sqrt (suzukiDefectMass ^ (2 : ℕ) * ∫ t, V t ^ (2 : ℕ)) := Real.sqrt_le_sqrt h
       _ = suzukiDefectMass * CV := by
           rw [hCVdef, Real.sqrt_mul (sq_nonneg _),
             Real.sqrt_sq suzukiDefectMass_nonneg]
@@ -648,7 +648,7 @@ theorem suzukiGamma_uniform_energy_bound {σ τ L₀ ε c : ℝ} {V G : ℝ → 
       have hUU : (∫ x, U x * U x) = A := by
         rw [hAdef]
         refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-        show U x * U x = U x ^ 2
+        show U x * U x = U x ^ (2 : ℕ)
         rw [pow_two]
       rw [hUU]
       have hτ : -|τ| * A ≤ -τ * A := by
@@ -666,34 +666,34 @@ theorem suzukiGamma_uniform_energy_bound {σ τ L₀ ε c : ℝ} {V G : ℝ → 
       have hsA0 : 0 ≤ sA := Real.sqrt_nonneg _
       have hGle : (∫ x, Gm x * U x) ≤ CG * sA := by
         calc (∫ x, Gm x * U x) ≤ |∫ x, Gm x * U x| := le_abs_self _
-          _ ≤ Real.sqrt (∫ x, Gm x ^ 2) * sA := hG'
+          _ ≤ Real.sqrt (∫ x, Gm x ^ (2 : ℕ)) * sA := hG'
           _ ≤ CG * sA := mul_le_mul_of_nonneg_right hGmB hsA0
       have hWle : (∫ x, W x * U x) ≤ suzukiDefectMass * CV * sA := by
         calc (∫ x, W x * U x) ≤ |∫ x, W x * U x| := le_abs_self _
-          _ ≤ Real.sqrt (∫ x, W x ^ 2) * sA := hW'
+          _ ≤ Real.sqrt (∫ x, W x ^ (2 : ℕ)) * sA := hW'
           _ ≤ suzukiDefectMass * CV * sA := mul_le_mul_of_nonneg_right hWB hsA0
       have hVle : -(∫ x, Vm x * U x) ≤ CV * sA := by
         calc -(∫ x, Vm x * U x) ≤ |∫ x, Vm x * U x| := neg_le_abs _
-          _ ≤ Real.sqrt (∫ x, Vm x ^ 2) * sA := hV'
+          _ ≤ Real.sqrt (∫ x, Vm x ^ (2 : ℕ)) * sA := hV'
           _ ≤ CV * sA := mul_le_mul_of_nonneg_right hVmB hsA0
       nlinarith [hGle, hWle, hVle]
     linarith
   -- close the square
-  have hfinal : c ^ 2 * A ≤ (CG + 2 * (suzukiDefectMass * CV) + CV) ^ 2 :=
+  have hfinal : c ^ (2 : ℕ) * A ≤ (CG + 2 * (suzukiDefectMass * CV) + CV) ^ (2 : ℕ) :=
     sq_energy_close hc hA0 hcoercive
-  have hexpand : (CG + 2 * (suzukiDefectMass * CV) + CV) ^ 2
-      ≤ 3 * (∫ t, G t ^ 2) + (3 + 12 * suzukiDefectMass ^ 2) * ∫ t, V t ^ 2 := by
-    have hCG2 : CG ^ 2 = ∫ t, G t ^ 2 := Real.sq_sqrt hCGnn
-    have hCV2 : CV ^ 2 = ∫ t, V t ^ 2 := Real.sq_sqrt hCVnn
-    calc (CG + 2 * (suzukiDefectMass * CV) + CV) ^ 2
-        ≤ 3 * CG ^ 2 + 3 * (2 * (suzukiDefectMass * CV)) ^ 2 + 3 * CV ^ 2 :=
+  have hexpand : (CG + 2 * (suzukiDefectMass * CV) + CV) ^ (2 : ℕ)
+      ≤ 3 * (∫ t, G t ^ (2 : ℕ)) + (3 + 12 * suzukiDefectMass ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ) := by
+    have hCG2 : CG ^ (2 : ℕ) = ∫ t, G t ^ (2 : ℕ) := Real.sq_sqrt hCGnn
+    have hCV2 : CV ^ (2 : ℕ) = ∫ t, V t ^ (2 : ℕ) := Real.sq_sqrt hCVnn
+    calc (CG + 2 * (suzukiDefectMass * CV) + CV) ^ (2 : ℕ)
+        ≤ 3 * CG ^ (2 : ℕ) + 3 * (2 * (suzukiDefectMass * CV)) ^ (2 : ℕ) + 3 * CV ^ (2 : ℕ) :=
           sq_add_three_le CG (2 * (suzukiDefectMass * CV)) CV
-      _ = 3 * (∫ t, G t ^ 2) + (3 + 12 * suzukiDefectMass ^ 2) * ∫ t, V t ^ 2 := by
+      _ = 3 * (∫ t, G t ^ (2 : ℕ)) + (3 + 12 * suzukiDefectMass ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ) := by
           rw [← hCG2, ← hCV2]
           ring
-  calc c ^ 2 * ∫ x, suzukiMollifiedDeriv σ ε V x ^ 2 = c ^ 2 * A := by rw [hAdef]
-    _ ≤ (CG + 2 * (suzukiDefectMass * CV) + CV) ^ 2 := hfinal
-    _ ≤ 3 * (∫ t, G t ^ 2) + (3 + 12 * suzukiDefectMass ^ 2) * ∫ t, V t ^ 2 := hexpand
+  calc c ^ (2 : ℕ) * ∫ x, suzukiMollifiedDeriv σ ε V x ^ (2 : ℕ) = c ^ (2 : ℕ) * A := by rw [hAdef]
+    _ ≤ (CG + 2 * (suzukiDefectMass * CV) + CV) ^ (2 : ℕ) := hfinal
+    _ ≤ 3 * (∫ t, G t ^ (2 : ℕ)) + (3 + 12 * suzukiDefectMass ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ) := hexpand
 
 /-! ## The transported test: regularity and support -/
 
@@ -740,7 +740,7 @@ theorem kernelTest_eq_zero {ρ φ : ℝ → ℝ} {r A : ℝ}
 /-- **The pairing identity.**  The mollified weak derivative pairs against a test as the profile
 against the transported test: the kernel derivative moves onto the test by parts. -/
 theorem integral_suzukiMollifiedDeriv_mul_test {σ ε : ℝ} {V φ : ℝ → ℝ}
-    (hε : 0 < ε) (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
+    (hε : 0 < ε) (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ)))
     (hφ : ContDiff ℝ 1 φ) (hφsupp : HasCompactSupport φ) :
     (∫ x, suzukiMollifiedDeriv σ ε V x * φ x)
       = -(∫ t, V t * ∫ u, suzukiMollifier ε u * deriv φ (t + u))
@@ -862,7 +862,7 @@ theorem integral_suzukiMollifiedDeriv_mul_test {σ ε : ℝ} {V φ : ℝ → ℝ
 /-- **The transported-test limit.**  As the width shrinks, pairing the profile against the
 transported test converges to pairing against the test itself. -/
 theorem tendsto_integral_mul_kernelTest {V φ : ℝ → ℝ} {εs : ℕ → ℝ}
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ)))
     (hφ : ContDiff ℝ 1 φ) (hφsupp : HasCompactSupport φ)
     (hpos : ∀ n, 0 < εs n) (hle : ∀ n, εs n ≤ 1)
     (h0 : Filter.Tendsto εs Filter.atTop (nhds 0)) :
@@ -1007,19 +1007,19 @@ theorem inner_toLp_left_eq {f : ℝ → ℝ} (hf : MemLp f 2 (volume : Measure �
 /-- An `L²` energy bound is an `Lp` norm bound. -/
 theorem norm_toLp_le_of_integral_sq_le {f : ℝ → ℝ}
     (hf : MemLp f 2 (volume : Measure ℝ)) {b : ℝ} (hb : 0 ≤ b)
-    (h : (∫ x, f x ^ 2) ≤ b ^ 2) : ‖hf.toLp f‖ ≤ b := by
+    (h : (∫ x, f x ^ (2 : ℕ)) ≤ b ^ (2 : ℕ)) : ‖hf.toLp f‖ ≤ b := by
   have hinner : (inner ℝ (hf.toLp f) (hf.toLp f) : ℝ) = ∫ x, f x * f x := by
     rw [MeasureTheory.L2.inner_def]
     refine integral_congr_ae ?_
     filter_upwards [hf.coeFn_toLp] with x hx
     rw [hx, RCLike.inner_apply, starRingEnd_apply, star_trivial]
-  have hnormsq : ‖hf.toLp f‖ ^ 2 = ∫ x, f x * f x := by
+  have hnormsq : ‖hf.toLp f‖ ^ (2 : ℕ) = ∫ x, f x * f x := by
     rw [← real_inner_self_eq_norm_sq, hinner]
-  have hsq : (∫ x, f x * f x) = ∫ x, f x ^ 2 := by
+  have hsq : (∫ x, f x * f x) = ∫ x, f x ^ (2 : ℕ) := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    show f x * f x = f x ^ 2
+    show f x * f x = f x ^ (2 : ℕ)
     rw [pow_two]
-  have h2 : ‖hf.toLp f‖ ^ 2 ≤ b ^ 2 := by
+  have h2 : ‖hf.toLp f‖ ^ (2 : ℕ) ≤ b ^ (2 : ℕ) := by
     rw [hnormsq, hsq]
     exact h
   nlinarith [norm_nonneg (hf.toLp f)]
@@ -1034,8 +1034,8 @@ supported in `[L₀, ∞)`, and `0 ≤ σ < 1` forces the distributional derivat
 Equivalently, `V ∈ H¹` with weak derivative `σV + u ∈ L²`. -/
 theorem suzukiGamma_weakDomain_upgrade {σ τ L₀ : ℝ} {V G : ℝ → ℝ}
     (heq : SuzukiGammaTestedEquation σ τ V G)
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
-    (hGmm : Measurable G) (hG2 : Integrable (fun t => G t ^ 2))
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ)))
+    (hGmm : Measurable G) (hG2 : Integrable (fun t => G t ^ (2 : ℕ)))
     (hsupp : ∀ t : ℝ, t < L₀ → V t = 0)
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1)
     (hbudget : suzukiGammaShiftKappa σ + |τ| < 2 * L₀) :
@@ -1090,11 +1090,11 @@ theorem suzukiGamma_weakDomain_upgrade {σ τ L₀ : ℝ} {V G : ℝ → ℝ}
     exact (memLp_two_iff_integrable_sq
       (continuous_suzukiMollifiedDeriv (hεs_pos n) hVm hV2).aestronglyMeasurable).mpr
       (integrable_sq_suzukiMollifiedDeriv (hεs_pos n) hVmm hV2)
-  set M₀ : ℝ := 3 * (∫ t, G t ^ 2) + (3 + 12 * suzukiDefectMass ^ 2) * ∫ t, V t ^ 2
+  set M₀ : ℝ := 3 * (∫ t, G t ^ (2 : ℕ)) + (3 + 12 * suzukiDefectMass ^ (2 : ℕ)) * ∫ t, V t ^ (2 : ℕ)
     with hM₀def
   have hM₀0 : 0 ≤ M₀ := by
-    have h1 : (0 : ℝ) ≤ ∫ t, G t ^ 2 := integral_nonneg fun t => sq_nonneg _
-    have h2 : (0 : ℝ) ≤ ∫ t, V t ^ 2 := integral_nonneg fun t => sq_nonneg _
+    have h1 : (0 : ℝ) ≤ ∫ t, G t ^ (2 : ℕ) := integral_nonneg fun t => sq_nonneg _
+    have h2 : (0 : ℝ) ≤ ∫ t, V t ^ (2 : ℕ) := integral_nonneg fun t => sq_nonneg _
     rw [hM₀def]
     nlinarith [sq_nonneg suzukiDefectMass]
   set M : ℝ := Real.sqrt M₀ / c with hMdef
@@ -1104,11 +1104,11 @@ theorem suzukiGamma_weakDomain_upgrade {σ τ L₀ : ℝ} {V G : ℝ → ℝ}
     refine norm_toLp_le_of_integral_sq_le (hmem n) hM0 ?_
     have h := suzukiGamma_uniform_energy_bound heq hVmm hV2 hGmm hG2 hsupp hσ0 hσ1
       (hεs_pos n) (hεs_le1 n) hc (hcle n)
-    have hM2 : M ^ 2 = M₀ / c ^ 2 := by
+    have hM2 : M ^ (2 : ℕ) = M₀ / c ^ (2 : ℕ) := by
       rw [hMdef, div_pow, Real.sq_sqrt hM₀0]
-    rw [hM2, le_div_iff₀ (by positivity : (0 : ℝ) < c ^ 2)]
-    calc (∫ x, suzukiMollifiedDeriv σ (εs n) V x ^ 2) * c ^ 2
-        = c ^ 2 * ∫ x, suzukiMollifiedDeriv σ (εs n) V x ^ 2 := by ring
+    rw [hM2, le_div_iff₀ (by positivity : (0 : ℝ) < c ^ (2 : ℕ))]
+    calc (∫ x, suzukiMollifiedDeriv σ (εs n) V x ^ (2 : ℕ)) * c ^ (2 : ℕ)
+        = c ^ (2 : ℕ) * ∫ x, suzukiMollifiedDeriv σ (εs n) V x ^ (2 : ℕ) := by ring
       _ ≤ M₀ := h
   -- the key limit against every smooth compactly supported test
   have hKEY : ∀ (φ : ℝ → ℝ), ContDiff ℝ ∞ φ → HasCompactSupport φ →
@@ -1175,8 +1175,8 @@ theorem suzukiGamma_weakDomain_upgrade {σ τ L₀ : ℝ} {V G : ℝ → ℝ}
 `v′ = σV + u` satisfies `∫ v′ φ = −∫ V φ′` for every smooth compactly supported test. -/
 theorem suzukiGamma_profile_H1 {σ τ L₀ : ℝ} {V G : ℝ → ℝ}
     (heq : SuzukiGammaTestedEquation σ τ V G)
-    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
-    (hGmm : Measurable G) (hG2 : Integrable (fun t => G t ^ 2))
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ (2 : ℕ)))
+    (hGmm : Measurable G) (hG2 : Integrable (fun t => G t ^ (2 : ℕ)))
     (hsupp : ∀ t : ℝ, t < L₀ → V t = 0)
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1)
     (hbudget : suzukiGammaShiftKappa σ + |τ| < 2 * L₀) :
@@ -1192,9 +1192,9 @@ theorem suzukiGamma_profile_H1 {σ τ L₀ : ℝ} {V G : ℝ → ℝ}
     exact h1.add humem
   · intro φ hφsm hφsupp
     have hφc : Continuous φ := hφsm.continuous
-    have hφ2 : Integrable (fun t => φ t ^ 2) :=
+    have hφ2 : Integrable (fun t => φ t ^ (2 : ℕ)) :=
       (hφc.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hφsupp)
-    have hu2 : Integrable (fun t => u t ^ 2) :=
+    have hu2 : Integrable (fun t => u t ^ (2 : ℕ)) :=
       (memLp_two_iff_integrable_sq humem.aestronglyMeasurable).mp humem
     have hIV : Integrable (fun t => σ * (V t * φ t)) :=
       (integrable_mul_of_sq_integrable hVmm.aestronglyMeasurable

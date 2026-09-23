@@ -33,8 +33,8 @@ private theorem root_parameter (q : XiZeroCopy) (branch alternate : Bool) :
   cases alternate <;> simp only [root,Bool.false_eq_true,if_false,if_true] <;> ring
 
 private theorem power_step (a : ℂ) {y : ℝ} (hy : 0 < y) :
-    (y:ℂ)^a = (y:ℂ)^(a-2)*(y:ℂ)^2 := by
-  have he : (y:ℂ)^(2:ℂ)=(y:ℂ)^2 := by norm_cast
+    (y:ℂ)^a = (y:ℂ)^(a-2)*(y:ℂ)^(2 : ℕ) := by
+  have he : (y:ℂ)^(2:ℂ)=(y:ℂ)^(2 : ℕ) := by norm_cast
   rw [← he,← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hy.ne')]
   congr 1
   ring
@@ -57,9 +57,9 @@ theorem responseFlux_hasDerivAt (q : XiZeroCopy) (branch alternate : Bool)
   change HasDerivAt (responseFlux q branch alternate) _ y at h
   convert h using 1
   have he := responseMean_global_equation q branch hy
-  change (y:ℂ)^2*deriv (deriv m) y-parameter q branch*m y=_ at he
+  change (y:ℂ)^(2 : ℕ)*deriv (deriv m) y-parameter q branch*m y=_ at he
   rw [fluxSource,← he,← root_parameter q branch alternate]
-  change (y:ℂ)^(a-2)*((y:ℂ)^2*deriv (deriv m) y-a*(a-1)*m y)=_
+  change (y:ℂ)^(a-2)*((y:ℂ)^(2 : ℕ)*deriv (deriv m) y-a*(a-1)*m y)=_
   rw [show a-1-1=a-2 by ring,power_step a hy]
   ring
 
@@ -88,9 +88,9 @@ is exactly the source density in the boundary flux law. -/
 theorem fluxSource_explicit (q : XiZeroCopy) (branch alternate : Bool) {y : ℝ} (hy : 2 < y) :
     fluxSource q branch alternate y =
       (y:ℂ)^(root q branch alternate-2)*
-        ((parameter q branch/2)*(principal (center q) ![0,y] ^2+
-          8*∑' N, amplitude (center q) y N^2)-
-          ((y:ℂ)^2*deriv (deriv (cutoffHeight q branch)) y-
+        ((parameter q branch/2)*(principal (center q) ![0,y] ^(2 : ℕ)+
+          8*∑' N, amplitude (center q) y N^(2 : ℕ))-
+          ((y:ℂ)^(2 : ℕ)*deriv (deriv (cutoffHeight q branch)) y-
             parameter q branch*cutoffHeight q branch y)) := by
   rw [fluxSource,globalForcing_average q branch hy,mean_forcing q branch (by linarith)]
 

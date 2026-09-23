@@ -8,11 +8,11 @@ open D4BMJointSource
 noncomputable section
 
 def inverseChart (q : Point3) : Point3 :=
-  ![-Real.arsinh (q 0/q 1),q 2,Real.sqrt ((q 0)^2+(q 1)^2)]
+  ![-Real.arsinh (q 0/q 1),q 2,Real.sqrt ((q 0)^(2 : ℕ)+(q 1)^(2 : ℕ))]
 
-theorem chart_radius (p : Point3) : (chart p 0)^2+(chart p 1)^2 = (p 2)^2 := by
+theorem chart_radius (p : Point3) : (chart p 0)^(2 : ℕ)+(chart p 1)^(2 : ℕ) = (p 2)^(2 : ℕ) := by
   dsimp [chart]
-  linear_combination (p 2)^2*(warp_relation (p 0))
+  linear_combination (p 2)^(2 : ℕ)*(warp_relation (p 0))
 
 theorem chart_ratio (p : Point3) (hp : 0 < p 2) :
     chart p 0/chart p 1 = -Real.sinh (p 0) := by
@@ -28,17 +28,17 @@ theorem inverseChart_chart (p : Point3) (hp : 0 < p 2) : inverseChart (chart p) 
   · change -Real.arsinh (chart p 0/chart p 1) = p 0
     rw [chart_ratio p hp,Real.arsinh_neg,Real.arsinh_sinh,neg_neg]
   · rfl
-  · change Real.sqrt ((chart p 0)^2+(chart p 1)^2) = p 2
+  · change Real.sqrt ((chart p 0)^(2 : ℕ)+(chart p 1)^(2 : ℕ)) = p 2
     rw [chart_radius,Real.sqrt_sq hp.le]
 
 private theorem radius_pos (q : Point3) (hq : 0 < q 1) :
-    0 < Real.sqrt ((q 0)^2+(q 1)^2) :=
+    0 < Real.sqrt ((q 0)^(2 : ℕ)+(q 1)^(2 : ℕ)) :=
   Real.sqrt_pos.mpr (by nlinarith [sq_nonneg (q 0)])
 
 private theorem sqrt_ratio (q : Point3) (hq : 0 < q 1) :
-    Real.sqrt (1+(q 0/q 1)^2) = Real.sqrt ((q 0)^2+(q 1)^2)/q 1 := by
+    Real.sqrt (1+(q 0/q 1)^(2 : ℕ)) = Real.sqrt ((q 0)^(2 : ℕ)+(q 1)^(2 : ℕ))/q 1 := by
   have hy := ne_of_gt hq
-  rw [show 1+(q 0/q 1)^2 = ((q 0)^2+(q 1)^2)/(q 1)^2 by field_simp; ring,
+  rw [show 1+(q 0/q 1)^(2 : ℕ) = ((q 0)^(2 : ℕ)+(q 1)^(2 : ℕ))/(q 1)^(2 : ℕ) by field_simp; ring,
     Real.sqrt_div,Real.sqrt_sq hq.le]
   positivity
 
@@ -78,7 +78,7 @@ theorem inverseChart_smooth (q : Point3) (hY : 0 < q 1) : ContDiffAt ℝ ∞ inv
       ((hc 0).contDiffAt.div (hc 1).contDiffAt (ne_of_gt hY))).neg
   · exact (hc 2).contDiffAt
   · exact (((hc 0).contDiffAt.pow 2).add ((hc 1).contDiffAt.pow 2)).sqrt
-      (ne_of_gt (by nlinarith [sq_nonneg (q 0)] : 0 < (q 0)^2+(q 1)^2))
+      (ne_of_gt (by nlinarith [sq_nonneg (q 0)] : 0 < (q 0)^(2 : ℕ)+(q 1)^(2 : ℕ)))
 
 end
 end RHTower.D4BMJointConformal

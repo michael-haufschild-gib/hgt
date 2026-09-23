@@ -28,12 +28,12 @@ theorem menonHarmonicLevelTrivialBlockCost_mono
     menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W u k j J V₀
       ≤ menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W v k j J V₀ := by
   rw [menonHarmonicLevelTrivialBlockCost, menonHarmonicLevelTrivialBlockCost]
-  have hm : (0 : ℝ) ≤ harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2 := by
+  have hm : (0 : ℝ) ≤ harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ) := by
     positivity
-  have hstep : u * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2
-      ≤ v * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2 :=
+  have hstep : u * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ)
+      ≤ v * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_right huv hm
-  have hV₀sq : (0 : ℝ) ≤ V₀ ^ 2 := by positivity
+  have hV₀sq : (0 : ℝ) ≤ V₀ ^ (2 : ℕ) := by positivity
   nlinarith [hstep, hV₀sq]
 
 /-- **The small-set ladder with the measure replaced by any budget.** -/
@@ -52,7 +52,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_levelTrivial_mass_budget
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W)
     (hbudget : volume.real E ≤ vol) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ Finset.range L,
           menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W vol k j (J j) (V₀ j)
             / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by
@@ -86,7 +86,7 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_partition_mass
     (J : ℕ → ℕ)
     (hJ : ∀ j ∈ Finset.range L,
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j) :
-    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ Finset.range L,
             min (menonHarmonicAllSmallBlockCost P A₀ B₀ Q eta W (V j)
                   (menonHarmonicAllBlocksSmall P Q eta L V W) j)
@@ -99,10 +99,10 @@ theorem integral_Icc_normSq_harmonicRamareBilinear_le_partition_mass
               / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by
   classical
   have hcont : Continuous fun w : ℝ =>
-      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2 :=
+      ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ) :=
     ((continuous_harmonicRamareBilinear P (Finset.Icc A₀ B₀)).norm).pow 2
   have hpart := setIntegral_menonHarmonic_frequencyPartition P Q eta L V W
-    (fun w => ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (fun w => ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
     hcont.integrableOn_Icc
   rw [hpart]
   refine add_le_add ?_ ?_

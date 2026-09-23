@@ -32,11 +32,11 @@ theorem tendsto_partialSumReal_vonMangoldt_div :
   exact tendsto_chebyshevPsiReal_div
 
 theorem partialSumReal_primeLogWeight (t : ℝ) :
-    partialSumReal primeLogWeight t = Chebyshev.theta t :=
+    partialSumReal primeLogWeight_primeRpowAbelSummation t = Chebyshev.theta t :=
   sum_primeLogWeight_eq_theta t
 
 theorem tendsto_partialSumReal_primeLogWeight_div :
-    Tendsto (fun t : ℝ => partialSumReal primeLogWeight t / t) atTop (𝓝 1) := by
+    Tendsto (fun t : ℝ => partialSumReal primeLogWeight_primeRpowAbelSummation t / t) atTop (𝓝 1) := by
   simp_rw [partialSumReal_primeLogWeight]
   rw [Metric.tendsto_atTop]
   intro ε hε
@@ -50,18 +50,18 @@ theorem tendsto_partialSumReal_primeLogWeight_div :
     abs_div, abs_of_pos hx0, div_lt_iff₀ hx0]
   nlinarith
 
-theorem primeLogWeight_nonneg (n : ℕ) : 0 ≤ primeLogWeight n := by
-  unfold primeLogWeight
+theorem primeLogWeight_nonneg (n : ℕ) : 0 ≤ primeLogWeight_primeRpowAbelSummation n := by
+  unfold primeLogWeight_primeRpowAbelSummation
   split_ifs with h
   · exact Real.log_nonneg (by exact_mod_cast h.one_lt.le)
   · exact le_rfl
 
-theorem primeLogWeight_zero : primeLogWeight 0 = 0 := by simp [primeLogWeight]
+theorem primeLogWeight_zero : primeLogWeight_primeRpowAbelSummation 0 = 0 := by simp [primeLogWeight_primeRpowAbelSummation]
 
-/-- The squeeze `log n · primeLogWeight n ≤ Λ(n)² ≤ Λ(n) log n`. -/
+/-- The squeeze `log n · primeLogWeight_primeRpowAbelSummation n ≤ Λ(n)² ≤ Λ(n) log n`. -/
 theorem log_mul_primeLogWeight_le_vonMangoldt_sq (n : ℕ) :
-    Real.log n * primeLogWeight n ≤ vonMangoldt n ^ 2 := by
-  unfold primeLogWeight
+    Real.log n * primeLogWeight_primeRpowAbelSummation n ≤ vonMangoldt n ^ 2 := by
+  unfold primeLogWeight_primeRpowAbelSummation
   split_ifs with h
   · rw [ArithmeticFunction.vonMangoldt_apply_prime h]; ring_nf; exact le_rfl
   · rw [mul_zero]; positivity
@@ -80,7 +80,7 @@ theorem tendsto_sum_vonMangoldt_sq_mul_div :
       atTop (𝓝 (1 / 2)) := by
   have hΛ := tendsto_sum_mul_log_div_sq_log (c := fun n : ℕ => (vonMangoldt n : ℝ)) (by simp)
     (fun n => ArithmeticFunction.vonMangoldt_nonneg) tendsto_partialSumReal_vonMangoldt_div
-  have hθ := tendsto_sum_mul_log_div_sq_log (c := primeLogWeight) primeLogWeight_zero
+  have hθ := tendsto_sum_mul_log_div_sq_log (c := primeLogWeight_primeRpowAbelSummation) primeLogWeight_zero
     primeLogWeight_nonneg tendsto_partialSumReal_primeLogWeight_div
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hθ hΛ ?_ ?_
   · filter_upwards [eventually_ge_atTop (2 : ℝ)] with x hx
@@ -154,7 +154,7 @@ theorem tendsto_tail_vonMangoldt_sq (k : ℕ) :
       atTop (𝓝 (1 / ((k : ℝ) + 1))) := by
   have hΛ := tendsto_tail_log_moment (c := fun n : ℕ => (vonMangoldt n : ℝ)) (by simp)
     (fun n => ArithmeticFunction.vonMangoldt_nonneg) tendsto_partialSumReal_vonMangoldt_div k
-  have hθ := tendsto_tail_log_moment (c := primeLogWeight) primeLogWeight_zero
+  have hθ := tendsto_tail_log_moment (c := primeLogWeight_primeRpowAbelSummation) primeLogWeight_zero
     primeLogWeight_nonneg tendsto_partialSumReal_primeLogWeight_div k
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hθ hΛ ?_ ?_
   · filter_upwards [eventually_ge_atTop (2 : ℝ)] with x hx

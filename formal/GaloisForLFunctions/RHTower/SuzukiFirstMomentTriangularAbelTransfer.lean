@@ -111,7 +111,7 @@ theorem shiftedReciprocalLog_step (p i : ℕ) :
 theorem summable_shiftedReciprocalLogWeight_two :
     Summable (shiftedReciprocalLogWeight 2) := by
   change Summable (fun i : ℕ =>
-    1 / (((i : ℝ) + 3) * Real.log ((i : ℝ) + 3) ^ 2))
+    1 / (((i : ℝ) + 3) * Real.log ((i : ℝ) + 3) ^ (2 : ℕ)))
   exact RHTower.burnolSummable_shifted_one_div_mul_log_sq
 
 theorem summable_shiftedReciprocalLogWeight_three :
@@ -123,8 +123,8 @@ theorem summable_shiftedReciprocalLogWeight_three :
   have hx : (0 : ℝ) < (i : ℝ) + 3 := by positivity
   have hl : 1 ≤ Real.log ((i : ℝ) + 3) := one_le_log_natCast_add_three i
   have hlpos : 0 < Real.log ((i : ℝ) + 3) := zero_lt_one.trans_le hl
-  have hpows : Real.log ((i : ℝ) + 3) ^ 2 ≤
-      Real.log ((i : ℝ) + 3) ^ 3 := by
+  have hpows : Real.log ((i : ℝ) + 3) ^ (2 : ℕ) ≤
+      Real.log ((i : ℝ) + 3) ^ (3 : ℕ) := by
     nlinarith [sq_nonneg (Real.log ((i : ℝ) + 3)),
       mul_nonneg (sq_nonneg (Real.log ((i : ℝ) + 3))) (sub_nonneg.mpr hl)]
   unfold shiftedReciprocalLogWeight

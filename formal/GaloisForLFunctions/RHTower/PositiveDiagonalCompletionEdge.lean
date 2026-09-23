@@ -13,7 +13,7 @@ theorem positiveDiagonalCompletion_edge_bounds
     (W : Matrix n n ℂ) (d : n → ℝ) (hW : W.IsHermitian)
     (a b : n) (hab : a ≠ b) (hWaa : W a a = 0) (hWbb : W b b = 0)
     (hpsd : (W + Matrix.diagonal (fun i => (d i : ℂ))).PosSemidef) :
-    0 ≤ d a ∧ 0 ≤ d b ∧ ‖W a b‖ ^ 2 ≤ d a * d b := by
+    0 ≤ d a ∧ 0 ≤ d b ∧ ‖W a b‖ ^ (2 : ℕ) ≤ d a * d b := by
   let A := W + Matrix.diagonal (fun i => (d i : ℂ))
   have haC : (0 : ℂ) ≤ (d a : ℂ) := by
     simpa [A, Matrix.diagonal_apply, hWaa] using hpsd.diag_nonneg (i := a)
@@ -46,7 +46,7 @@ theorem positiveDiagonalCompletion_edge_strict
     0 < d a ∧ 0 < d b := by
   obtain ⟨ha, hb, habBound⟩ :=
     positiveDiagonalCompletion_edge_bounds W d hW a b hab hWaa hWbb hpsd
-  have hnorm : 0 < ‖W a b‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hWab)
+  have hnorm : 0 < ‖W a b‖ ^ (2 : ℕ) := sq_pos_of_pos (norm_pos_iff.mpr hWab)
   have hprod : 0 < d a * d b := hnorm.trans_le habBound
   constructor
   · by_contra hda

@@ -47,7 +47,7 @@ theorem measurable_binomialTail_comp (r k : ℕ) {Y : Ω → ℝ} (hYm : Measura
     Measurable fun ω => binomialTail r k (Y ω) :=
   (continuous_binomialTail r k).measurable.comp hYm
 
-theorem integrable_binomialTail_comp (μ : Measure Ω) [IsFiniteMeasure μ] (r k : ℕ) {Y : Ω → ℝ}
+theorem integrable_binomialTail_comp_betaThresholdIncidenceLaw (μ : Measure Ω) [IsFiniteMeasure μ] (r k : ℕ) {Y : Ω → ℝ}
     (hYm : Measurable Y) (hY0 : ∀ ω, 0 ≤ Y ω) (hY1 : ∀ ω, Y ω ≤ 1) :
     Integrable (fun ω => binomialTail r k (Y ω)) μ := by
   refine ⟨(measurable_binomialTail_comp r k hYm).aestronglyMeasurable, ?_⟩
@@ -80,7 +80,7 @@ theorem incidenceAction_le (μ : Measure Ω) [IsFiniteMeasure μ] {r : ℕ} {a b
       have hxb : Y ω ≤ b := le_of_lt (not_le.mp hω)
       have := binomialTail_replicaThreshold_le (r := r) hba ha (hY0 ω) hxb
       linarith
-  have hint1 := integrable_binomialTail_comp μ r (replicaThreshold r a b) hYm hY0 hY1
+  have hint1 := integrable_binomialTail_comp_betaThresholdIncidenceLaw μ r (replicaThreshold r a b) hYm hY0 hY1
   have hint2 : Integrable (fun ω => S.indicator (fun _ => (1 : ℝ)) ω + η) μ :=
     ((integrable_indicator_iff hSm).mpr (integrableOn_const)).add
       (integrable_const η)
@@ -114,7 +114,7 @@ theorem le_incidenceAction (μ : Measure Ω) [IsFiniteMeasure μ] {r : ℕ} {a b
       exact binomialTail_nonneg (hY0 ω) (hY1 ω) r _
   have hint1 : Integrable (fun ω => S.indicator (fun _ => (1 - η : ℝ)) ω) μ :=
     (integrable_indicator_iff hSm).mpr integrableOn_const
-  have hint2 := integrable_binomialTail_comp μ r (replicaThreshold r a b) hYm hY0 hY1
+  have hint2 := integrable_binomialTail_comp_betaThresholdIncidenceLaw μ r (replicaThreshold r a b) hYm hY0 hY1
   have hle := integral_mono hint1 hint2 hpt
   rw [integral_indicator_const (1 - η : ℝ) hSm] at hle
   simp only [smul_eq_mul] at hle

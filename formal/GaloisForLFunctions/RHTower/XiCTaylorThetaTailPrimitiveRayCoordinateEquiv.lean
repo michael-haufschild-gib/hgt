@@ -18,14 +18,14 @@ noncomputable section
 
 theorem exp_thetaCuspPrimitiveRayRadialLog_sq
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (x y : ℝ) :
-    Real.exp (thetaCuspPrimitiveRayRadialLog a b x y) ^ 2 =
-      ((a : ℝ) * Real.exp x) ^ 2 + ((b : ℝ) * Real.exp y) ^ 2 := by
-  let S : ℝ := ((a : ℝ) * Real.exp x) ^ 2 + ((b : ℝ) * Real.exp y) ^ 2
+    Real.exp (thetaCuspPrimitiveRayRadialLog a b x y) ^ (2 : ℕ) =
+      ((a : ℝ) * Real.exp x) ^ (2 : ℕ) + ((b : ℝ) * Real.exp y) ^ (2 : ℕ) := by
+  let S : ℝ := ((a : ℝ) * Real.exp x) ^ (2 : ℕ) + ((b : ℝ) * Real.exp y) ^ (2 : ℕ)
   have hS : 0 < S := by
     dsimp only [S]
     positivity
   unfold thetaCuspPrimitiveRayRadialLog
-  change Real.exp ((1 / 2 : ℝ) * Real.log S) ^ 2 = S
+  change Real.exp ((1 / 2 : ℝ) * Real.log S) ^ (2 : ℕ) = S
   rw [pow_two, ← Real.exp_add]
   rw [show (1 / 2 : ℝ) * Real.log S + (1 / 2 : ℝ) * Real.log S =
       Real.log S by ring,
@@ -41,8 +41,8 @@ theorem thetaCuspPrimitiveRayAngularWeight_lt_one
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (x y : ℝ) :
     thetaCuspPrimitiveRayAngularWeight a b x y < 1 := by
   unfold thetaCuspPrimitiveRayAngularWeight
-  have hA : 0 ≤ ((a : ℝ) * Real.exp x) ^ 2 := sq_nonneg _
-  have hB : 0 < ((b : ℝ) * Real.exp y) ^ 2 :=
+  have hA : 0 ≤ ((a : ℝ) * Real.exp x) ^ (2 : ℕ) := sq_nonneg _
+  have hB : 0 < ((b : ℝ) * Real.exp y) ^ (2 : ℕ) :=
     sq_pos_of_pos (mul_pos (by exact_mod_cast hb) (Real.exp_pos y))
   apply (div_lt_one (by positivity)).mpr
   linarith
@@ -50,8 +50,8 @@ theorem thetaCuspPrimitiveRayAngularWeight_lt_one
 theorem thetaCuspPrimitiveRayAngularWeight_mul_exp_radialLog_sq
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (x y : ℝ) :
     thetaCuspPrimitiveRayAngularWeight a b x y *
-        Real.exp (thetaCuspPrimitiveRayRadialLog a b x y) ^ 2 =
-      ((a : ℝ) * Real.exp x) ^ 2 := by
+        Real.exp (thetaCuspPrimitiveRayRadialLog a b x y) ^ (2 : ℕ) =
+      ((a : ℝ) * Real.exp x) ^ (2 : ℕ) := by
   rw [exp_thetaCuspPrimitiveRayRadialLog_sq ha hb]
   unfold thetaCuspPrimitiveRayAngularWeight
   field_simp
@@ -59,12 +59,12 @@ theorem thetaCuspPrimitiveRayAngularWeight_mul_exp_radialLog_sq
 theorem one_sub_thetaCuspPrimitiveRayAngularWeight_mul_exp_radialLog_sq
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (x y : ℝ) :
     (1 - thetaCuspPrimitiveRayAngularWeight a b x y) *
-        Real.exp (thetaCuspPrimitiveRayRadialLog a b x y) ^ 2 =
-      ((b : ℝ) * Real.exp y) ^ 2 := by
+        Real.exp (thetaCuspPrimitiveRayRadialLog a b x y) ^ (2 : ℕ) =
+      ((b : ℝ) * Real.exp y) ^ (2 : ℕ) := by
   rw [exp_thetaCuspPrimitiveRayRadialLog_sq ha hb]
   unfold thetaCuspPrimitiveRayAngularWeight
-  have hden : ((a : ℝ) * Real.exp x) ^ 2 +
-      ((b : ℝ) * Real.exp y) ^ 2 ≠ 0 := by positivity
+  have hden : ((a : ℝ) * Real.exp x) ^ (2 : ℕ) +
+      ((b : ℝ) * Real.exp y) ^ (2 : ℕ) ≠ 0 := by positivity
   field_simp [hden]
   ring
 
@@ -79,7 +79,7 @@ theorem thetaCuspPrimitiveRayArithmeticPolarX_radialLog_angularWeight
   have hu : 0 < u := thetaCuspPrimitiveRayAngularWeight_pos ha hb x y
   have hsq := thetaCuspPrimitiveRayArithmeticPolarX_scaled_sq ha r hu
   have htarget := thetaCuspPrimitiveRayAngularWeight_mul_exp_radialLog_sq ha hb x y
-  change u * Real.exp r ^ 2 = ((a : ℝ) * Real.exp x) ^ 2 at htarget
+  change u * Real.exp r ^ (2 : ℕ) = ((a : ℝ) * Real.exp x) ^ (2 : ℕ) at htarget
   rw [htarget] at hsq
   have haR : (0 : ℝ) < (a : ℝ) := by exact_mod_cast ha
   have hleft : 0 < (a : ℝ) * Real.exp
@@ -104,7 +104,7 @@ theorem thetaCuspPrimitiveRayArithmeticPolarY_radialLog_angularWeight
   have hu : u < 1 := thetaCuspPrimitiveRayAngularWeight_lt_one ha hb x y
   have hsq := thetaCuspPrimitiveRayArithmeticPolarY_scaled_sq hb r hu
   have htarget := one_sub_thetaCuspPrimitiveRayAngularWeight_mul_exp_radialLog_sq ha hb x y
-  change (1 - u) * Real.exp r ^ 2 = ((b : ℝ) * Real.exp y) ^ 2 at htarget
+  change (1 - u) * Real.exp r ^ (2 : ℕ) = ((b : ℝ) * Real.exp y) ^ (2 : ℕ) at htarget
   rw [htarget] at hsq
   have hbR : (0 : ℝ) < (b : ℝ) := by exact_mod_cast hb
   have hleft : 0 < (b : ℝ) * Real.exp

@@ -100,8 +100,8 @@ theorem abs_harmonicLogWindowMoment_zero_natDiv_sub_continuous_le
 theorem abs_harmonicLogWindowMoment_one_natDiv_sub_continuous_le
     {L U e : ℕ} (he : 0 < e) (hscale : 8 * e ≤ L) (hLU : L ≤ U) :
     |harmonicLogWindowMoment 1 (L / e) (U / e) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2)| ≤
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2)| ≤
       3 * Real.log ((U + 1 : ℕ) : ℝ) * ((e : ℝ) / (L : ℝ)) := by
   have hL : 0 < L := by nlinarith
   have hU : 0 < U := hL.trans_le hLU
@@ -124,8 +124,8 @@ theorem abs_harmonicLogWindowMoment_one_natDiv_sub_continuous_le
   have hrec := one_div_natDiv_add_one_le_div hL he
   have hquad :
       |harmonicLogWindowMoment 1 (L / e) (U / e) -
-          (Real.log (U / e + 1 : ℕ) ^ 2 / 2 -
-            Real.log (L / e + 1 : ℕ) ^ 2 / 2)| ≤
+          (Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) / 2 -
+            Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) / 2)| ≤
         K * ((e : ℝ) / (L : ℝ)) := by
     refine hsharp.trans ?_
     calc
@@ -144,14 +144,14 @@ theorem abs_harmonicLogWindowMoment_one_natDiv_sub_continuous_le
   have hdiv := natCast_div_antitone_denominator (e := e) hL hLU
   have hlogLU := log_nat_succ_le_log_nat_succ hLU
   have hu' :
-      |Real.log (U / e + 1 : ℕ) ^ 2 - Real.log ((U : ℝ) / (e : ℝ)) ^ 2| / 2 ≤
+      |Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) - Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ)| / 2 ≤
         K * ((e : ℝ) / (L : ℝ)) := by
     calc
       _ ≤ (2 * K * ((e : ℝ) / (U : ℝ))) / 2 := div_le_div_of_nonneg_right hu (by norm_num)
       _ = K * ((e : ℝ) / (U : ℝ)) := by ring
       _ ≤ K * ((e : ℝ) / (L : ℝ)) := mul_le_mul_of_nonneg_left hdiv hK0
   have hl' :
-      |Real.log (L / e + 1 : ℕ) ^ 2 - Real.log ((L : ℝ) / (e : ℝ)) ^ 2| / 2 ≤
+      |Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) - Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ)| / 2 ≤
         K * ((e : ℝ) / (L : ℝ)) := by
     calc
       _ ≤ (2 * Real.log ((L + 1 : ℕ) : ℝ) * ((e : ℝ) / (L : ℝ))) / 2 :=
@@ -160,52 +160,52 @@ theorem abs_harmonicLogWindowMoment_one_natDiv_sub_continuous_le
       _ ≤ K * ((e : ℝ) / (L : ℝ)) :=
         mul_le_mul_of_nonneg_right hlogLU (by positivity)
   have hend :
-      |(Real.log (U / e + 1 : ℕ) ^ 2 / 2 -
-          Real.log (L / e + 1 : ℕ) ^ 2 / 2) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2)| ≤
+      |(Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) / 2 -
+          Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) / 2) -
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2)| ≤
         2 * K * ((e : ℝ) / (L : ℝ)) := by
     calc
-      _ = |(Real.log (U / e + 1 : ℕ) ^ 2 -
-            Real.log ((U : ℝ) / (e : ℝ)) ^ 2) / 2 -
-          (Real.log (L / e + 1 : ℕ) ^ 2 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 2) / 2| := by
+      _ = |(Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) -
+            Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ)) / 2 -
+          (Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ)) / 2| := by
               congr 1
               ring
-      _ ≤ |Real.log (U / e + 1 : ℕ) ^ 2 -
-            Real.log ((U : ℝ) / (e : ℝ)) ^ 2| / 2 +
-          |Real.log (L / e + 1 : ℕ) ^ 2 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 2| / 2 := by
+      _ ≤ |Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) -
+            Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ)| / 2 +
+          |Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ)| / 2 := by
               calc
-                _ ≤ |(Real.log (U / e + 1 : ℕ) ^ 2 -
-                        Real.log ((U : ℝ) / (e : ℝ)) ^ 2) / 2| +
-                    |(Real.log (L / e + 1 : ℕ) ^ 2 -
-                        Real.log ((L : ℝ) / (e : ℝ)) ^ 2) / 2| := abs_sub _ _
+                _ ≤ |(Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) -
+                        Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ)) / 2| +
+                    |(Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) -
+                        Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ)) / 2| := abs_sub _ _
                 _ = _ := by rw [abs_div, abs_div]; norm_num
       _ ≤ K * ((e : ℝ) / (L : ℝ)) + K * ((e : ℝ) / (L : ℝ)) := add_le_add hu' hl'
       _ = 2 * K * ((e : ℝ) / (L : ℝ)) := by ring
   calc
     |harmonicLogWindowMoment 1 (L / e) (U / e) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2)| ≤
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2)| ≤
       |harmonicLogWindowMoment 1 (L / e) (U / e) -
-          (Real.log (U / e + 1 : ℕ) ^ 2 / 2 -
-            Real.log (L / e + 1 : ℕ) ^ 2 / 2)| +
-        |(Real.log (U / e + 1 : ℕ) ^ 2 / 2 -
-            Real.log (L / e + 1 : ℕ) ^ 2 / 2) -
-          (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2)| := by
+          (Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) / 2 -
+            Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) / 2)| +
+        |(Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) / 2 -
+            Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) / 2) -
+          (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2)| := by
               have heq :
                   harmonicLogWindowMoment 1 (L / e) (U / e) -
-                      (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-                        Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2) =
+                      (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+                        Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2) =
                     (harmonicLogWindowMoment 1 (L / e) (U / e) -
-                      (Real.log (U / e + 1 : ℕ) ^ 2 / 2 -
-                        Real.log (L / e + 1 : ℕ) ^ 2 / 2)) +
-                    ((Real.log (U / e + 1 : ℕ) ^ 2 / 2 -
-                        Real.log (L / e + 1 : ℕ) ^ 2 / 2) -
-                      (Real.log ((U : ℝ) / (e : ℝ)) ^ 2 / 2 -
-                        Real.log ((L : ℝ) / (e : ℝ)) ^ 2 / 2)) := by ring
+                      (Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) / 2 -
+                        Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) / 2)) +
+                    ((Real.log (U / e + 1 : ℕ) ^ (2 : ℕ) / 2 -
+                        Real.log (L / e + 1 : ℕ) ^ (2 : ℕ) / 2) -
+                      (Real.log ((U : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2 -
+                        Real.log ((L : ℝ) / (e : ℝ)) ^ (2 : ℕ) / 2)) := by ring
               rw [heq]
               exact abs_add_le _ _
     _ ≤ K * ((e : ℝ) / (L : ℝ)) + 2 * K * ((e : ℝ) / (L : ℝ)) :=
@@ -217,9 +217,9 @@ theorem abs_harmonicLogWindowMoment_one_natDiv_sub_continuous_le
 theorem abs_harmonicLogWindowMoment_two_natDiv_sub_continuous_le
     {L U e : ℕ} (he : 0 < e) (hscale : 8 * e ≤ L) (hLU : L ≤ U) :
     |harmonicLogWindowMoment 2 (L / e) (U / e) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3)| ≤
-      3 * Real.log ((U + 1 : ℕ) : ℝ) ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3)| ≤
+      3 * Real.log ((U + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
   have hL : 0 < L := by nlinarith
   have hU : 0 < U := hL.trans_le hLU
   have heL : e ≤ L := by nlinarith
@@ -241,25 +241,25 @@ theorem abs_harmonicLogWindowMoment_two_natDiv_sub_continuous_le
   have hrec := one_div_natDiv_add_one_le_div hL he
   have hlogA0 : 0 ≤ Real.log ((L / e + 1 : ℕ) : ℝ) :=
     Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ L / e + 1))
-  have hlogA2 : Real.log ((L / e + 1 : ℕ) : ℝ) ^ 2 ≤ K ^ 2 := by
+  have hlogA2 : Real.log ((L / e + 1 : ℕ) : ℝ) ^ (2 : ℕ) ≤ K ^ (2 : ℕ) := by
     have h1 := mul_le_mul_of_nonneg_left hlogA hlogA0
     have h2 := mul_le_mul_of_nonneg_right hlogA hK0
     nlinarith
   have hquad :
       |harmonicLogWindowMoment 2 (L / e) (U / e) -
-          (Real.log (U / e + 1 : ℕ) ^ 3 / 3 -
-            Real.log (L / e + 1 : ℕ) ^ 3 / 3)| ≤
-        K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+          (Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) / 3 -
+            Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) / 3)| ≤
+        K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     refine hsharp.trans ?_
     calc
       RHTower.logPowDivId 2 (L / e + 1 : ℕ) -
           RHTower.logPowDivId 2 (U / e + 1 : ℕ) ≤
         RHTower.logPowDivId 2 (L / e + 1 : ℕ) := sub_le_self _ htail0
-      _ = Real.log ((L / e + 1 : ℕ) : ℝ) ^ 2 *
+      _ = Real.log ((L / e + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
           (1 / (((L / e + 1 : ℕ) : ℝ))) := by
             rw [RHTower.logPowDivId]
             ring
-      _ ≤ K ^ 2 * ((e : ℝ) / (L : ℝ)) :=
+      _ ≤ K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) :=
         mul_le_mul hlogA2 hrec (by positivity) (sq_nonneg K)
   have hu := abs_log_natDiv_add_one_cube_sub_log_div_cube_le hU he heU
   have hl := abs_log_natDiv_add_one_cube_sub_log_div_cube_le hL he heL
@@ -267,82 +267,82 @@ theorem abs_harmonicLogWindowMoment_two_natDiv_sub_continuous_le
   have hlogLU := log_nat_succ_le_log_nat_succ hLU
   have hlogL0 : 0 ≤ Real.log ((L + 1 : ℕ) : ℝ) :=
     Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ L + 1))
-  have hlogL2 : Real.log ((L + 1 : ℕ) : ℝ) ^ 2 ≤ K ^ 2 := by
+  have hlogL2 : Real.log ((L + 1 : ℕ) : ℝ) ^ (2 : ℕ) ≤ K ^ (2 : ℕ) := by
     have h1 := mul_le_mul_of_nonneg_left hlogLU hlogL0
     have h2 := mul_le_mul_of_nonneg_right hlogLU hK0
     nlinarith
   have hu' :
-      |Real.log (U / e + 1 : ℕ) ^ 3 - Real.log ((U : ℝ) / (e : ℝ)) ^ 3| / 3 ≤
-        K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+      |Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) - Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ)| / 3 ≤
+        K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     calc
-      _ ≤ (3 * K ^ 2 * ((e : ℝ) / (U : ℝ))) / 3 :=
+      _ ≤ (3 * K ^ (2 : ℕ) * ((e : ℝ) / (U : ℝ))) / 3 :=
         div_le_div_of_nonneg_right hu (by norm_num)
-      _ = K ^ 2 * ((e : ℝ) / (U : ℝ)) := by ring
-      _ ≤ K ^ 2 * ((e : ℝ) / (L : ℝ)) :=
+      _ = K ^ (2 : ℕ) * ((e : ℝ) / (U : ℝ)) := by ring
+      _ ≤ K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) :=
         mul_le_mul_of_nonneg_left hdiv (sq_nonneg K)
   have hl' :
-      |Real.log (L / e + 1 : ℕ) ^ 3 - Real.log ((L : ℝ) / (e : ℝ)) ^ 3| / 3 ≤
-        K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+      |Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) - Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ)| / 3 ≤
+        K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     calc
-      _ ≤ (3 * Real.log ((L + 1 : ℕ) : ℝ) ^ 2 *
+      _ ≤ (3 * Real.log ((L + 1 : ℕ) : ℝ) ^ (2 : ℕ) *
           ((e : ℝ) / (L : ℝ))) / 3 :=
         div_le_div_of_nonneg_right hl (by norm_num)
-      _ = Real.log ((L + 1 : ℕ) : ℝ) ^ 2 * ((e : ℝ) / (L : ℝ)) := by ring
-      _ ≤ K ^ 2 * ((e : ℝ) / (L : ℝ)) :=
+      _ = Real.log ((L + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by ring
+      _ ≤ K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) :=
         mul_le_mul_of_nonneg_right hlogL2 (by positivity)
   have hend :
-      |(Real.log (U / e + 1 : ℕ) ^ 3 / 3 -
-          Real.log (L / e + 1 : ℕ) ^ 3 / 3) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3)| ≤
-        2 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+      |(Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) / 3 -
+          Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) / 3) -
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3)| ≤
+        2 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
     calc
-      _ = |(Real.log (U / e + 1 : ℕ) ^ 3 -
-            Real.log ((U : ℝ) / (e : ℝ)) ^ 3) / 3 -
-          (Real.log (L / e + 1 : ℕ) ^ 3 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 3) / 3| := by
+      _ = |(Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) -
+            Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ)) / 3 -
+          (Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ)) / 3| := by
               congr 1
               ring
-      _ ≤ |Real.log (U / e + 1 : ℕ) ^ 3 -
-            Real.log ((U : ℝ) / (e : ℝ)) ^ 3| / 3 +
-          |Real.log (L / e + 1 : ℕ) ^ 3 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 3| / 3 := by
+      _ ≤ |Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) -
+            Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ)| / 3 +
+          |Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ)| / 3 := by
               calc
-                _ ≤ |(Real.log (U / e + 1 : ℕ) ^ 3 -
-                        Real.log ((U : ℝ) / (e : ℝ)) ^ 3) / 3| +
-                    |(Real.log (L / e + 1 : ℕ) ^ 3 -
-                        Real.log ((L : ℝ) / (e : ℝ)) ^ 3) / 3| := abs_sub _ _
+                _ ≤ |(Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) -
+                        Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ)) / 3| +
+                    |(Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) -
+                        Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ)) / 3| := abs_sub _ _
                 _ = _ := by rw [abs_div, abs_div]; norm_num
-      _ ≤ K ^ 2 * ((e : ℝ) / (L : ℝ)) + K ^ 2 * ((e : ℝ) / (L : ℝ)) :=
+      _ ≤ K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) + K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) :=
         add_le_add hu' hl'
-      _ = 2 * K ^ 2 * ((e : ℝ) / (L : ℝ)) := by ring
+      _ = 2 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by ring
   calc
     |harmonicLogWindowMoment 2 (L / e) (U / e) -
-        (Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-          Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3)| ≤
+        (Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+          Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3)| ≤
       |harmonicLogWindowMoment 2 (L / e) (U / e) -
-          (Real.log (U / e + 1 : ℕ) ^ 3 / 3 -
-            Real.log (L / e + 1 : ℕ) ^ 3 / 3)| +
-        |(Real.log (U / e + 1 : ℕ) ^ 3 / 3 -
-            Real.log (L / e + 1 : ℕ) ^ 3 / 3) -
-          (Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-            Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3)| := by
+          (Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) / 3 -
+            Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) / 3)| +
+        |(Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) / 3 -
+            Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) / 3) -
+          (Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+            Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3)| := by
               have heq :
                   harmonicLogWindowMoment 2 (L / e) (U / e) -
-                      (Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-                        Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3) =
+                      (Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+                        Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3) =
                     (harmonicLogWindowMoment 2 (L / e) (U / e) -
-                      (Real.log (U / e + 1 : ℕ) ^ 3 / 3 -
-                        Real.log (L / e + 1 : ℕ) ^ 3 / 3)) +
-                    ((Real.log (U / e + 1 : ℕ) ^ 3 / 3 -
-                        Real.log (L / e + 1 : ℕ) ^ 3 / 3) -
-                      (Real.log ((U : ℝ) / (e : ℝ)) ^ 3 / 3 -
-                        Real.log ((L : ℝ) / (e : ℝ)) ^ 3 / 3)) := by ring
+                      (Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) / 3 -
+                        Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) / 3)) +
+                    ((Real.log (U / e + 1 : ℕ) ^ (3 : ℕ) / 3 -
+                        Real.log (L / e + 1 : ℕ) ^ (3 : ℕ) / 3) -
+                      (Real.log ((U : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3 -
+                        Real.log ((L : ℝ) / (e : ℝ)) ^ (3 : ℕ) / 3)) := by ring
               rw [heq]
               exact abs_add_le _ _
-    _ ≤ K ^ 2 * ((e : ℝ) / (L : ℝ)) + 2 * K ^ 2 * ((e : ℝ) / (L : ℝ)) :=
+    _ ≤ K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) + 2 * K ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) :=
       add_le_add hquad hend
-    _ = 3 * Real.log ((U + 1 : ℕ) : ℝ) ^ 2 * ((e : ℝ) / (L : ℝ)) := by
+    _ = 3 * Real.log ((U + 1 : ℕ) : ℝ) ^ (2 : ℕ) * ((e : ℝ) / (L : ℝ)) := by
       dsimp [K]
       ring
 

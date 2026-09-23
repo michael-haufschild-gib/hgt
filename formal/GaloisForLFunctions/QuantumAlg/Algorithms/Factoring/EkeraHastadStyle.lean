@@ -1166,13 +1166,13 @@ def logicalQubitBound (params : FormulaParameters) : ℕ :=
     QuantumAlg.Nat.ceilDiv
       (params.factorBits * params.logDoubleFactorBitsUpperBound) 250
 
-/-- Natural-number upper bound for `2.4n^3 + 0.004n^3 log(2n)`. -/
+/-- Natural-number upper bound for `2.4n^(3 : ℕ) + 0.004n^(3 : ℕ) log(2n)`. -/
 def toffoliBaseBound (params : FormulaParameters) : ℕ :=
   QuantumAlg.Nat.ceilDiv (12 * params.factorBits ^ 3) 5 +
     QuantumAlg.Nat.ceilDiv
       (params.factorBits ^ 3 * params.logDoubleFactorBitsUpperBound) 250
 
-/-- Natural-number upper bound for `2000n^2 + 4n^2 log(2n)`. -/
+/-- Natural-number upper bound for `2000n^(2 : ℕ) + 4n^(2 : ℕ) log(2n)`. -/
 def circuitDepthBaseBound (params : FormulaParameters) : ℕ :=
   2000 * params.factorBits ^ 2 +
     4 * params.factorBits ^ 2 * params.logDoubleFactorBitsUpperBound
@@ -2045,12 +2045,12 @@ end ShortDLPHalfSumSource
 
 /-- Source data for the Ekerå-Håstad quadratic-root recovery step.  Given the
 half-sum `c=d+1`, the recovered root candidate is accepted through the source
-quadratic `N = 2cq - q^2`; the candidate is kept as route data rather than
+quadratic `N = 2cq - q^(2 : ℕ)`; the candidate is kept as route data rather than
 selected from the declared factors [EH17, source.tex:915-925]. -/
 structure QuadraticRootCandidateSource {N : ℕ}
     (model : ShorFactoring.SemiprimeFactorModel N)
     (halfSum candidate : ℕ) where
-  /-- Source quadratic equation `N = 2c q - q^2`, written as a product. -/
+  /-- Source quadratic equation `N = 2c q - q^(2 : ℕ)`, written as a product. -/
   quadratic_product_eq :
     candidate * (2 * halfSum - candidate) = N
 

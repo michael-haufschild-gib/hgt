@@ -118,7 +118,7 @@ theorem friedrichsFormOperator_re_inner_nonneg (J : V →L[ℂ] H)
   change 0 ≤ (inner ℂ y (J (J.adjoint y))).re
   rw [← J.adjoint_inner_left]
   rw [inner_self_eq_norm_sq_to_K]
-  have hsq : 0 ≤ ‖J.adjoint y‖ ^ 2 := sq_nonneg _
+  have hsq : 0 ≤ ‖J.adjoint y‖ ^ (2 : ℕ) := sq_nonneg _
   exact_mod_cast hsq
 
 theorem formEmbeddingCovariance_isCompact (J : V →L[ℂ] H)

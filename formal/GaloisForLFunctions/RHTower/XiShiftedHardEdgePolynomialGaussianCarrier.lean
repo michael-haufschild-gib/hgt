@@ -29,13 +29,13 @@ open GaloisForLFunctions.HTGeometry
 /-- Unsquared entire polynomial--Gaussian profile whose square is the Xi heat summand. -/
 def routeUXiPolynomialGaussianProfile
     (P : Polynomial ℝ) (t : {τ : ℝ // 0 < τ}) (z : ℂ) : ℂ :=
-  evalRealPolynomial P (z ^ 2) *
-    Complex.exp (-(((t : ℝ) / 2 : ℝ) : ℂ) * z ^ 2)
+  evalRealPolynomial P (z ^ (2 : ℕ)) *
+    Complex.exp (-(((t : ℝ) / 2 : ℝ) : ℂ) * z ^ (2 : ℕ))
 
 /-- Squaring the carrier gives exactly the already formalized polynomial--Gaussian Xi term. -/
 theorem routeUXiPolynomialGaussianProfile_sq_xiSpectralPoint
     (P : Polynomial ℝ) (t : {τ : ℝ // 0 < τ}) (q : XiZeroCopy) :
-    routeUXiPolynomialGaussianProfile P t (xiSpectralPoint q) ^ 2 =
+    routeUXiPolynomialGaussianProfile P t (xiSpectralPoint q) ^ (2 : ℕ) =
       xiPolynomialGaussianHeatTerm P (t : ℝ) q := by
   rw [routeUXiPolynomialGaussianProfile, xiPolynomialGaussianHeatTerm,
     xiGaussianHeatTerm, mul_pow]
@@ -72,7 +72,7 @@ theorem routeUXiHeatProfileSchwartz_apply
     routeUXiHeatProfileSchwartz P t x =
       routeUXiPolynomialGaussianProfile P t ((2 * Real.pi * x : ℝ) : ℂ) := by
   have hc : 0 < routeUXiHeatProfileScale t := routeUXiHeatProfileScale_pos t
-  have hcsq : routeUXiHeatProfileScale t ^ 2 = 2 * Real.pi * (t : ℝ) := by
+  have hcsq : routeUXiHeatProfileScale t ^ (2 : ℕ) = 2 * Real.pi * (t : ℝ) := by
     rw [routeUXiHeatProfileScale, Real.sq_sqrt]
     exact (mul_pos (mul_pos (by norm_num) Real.pi_pos) t.property).le
   rw [routeUXiHeatProfileSchwartz, schwartzDilate_apply, polyGaussSchwartz_apply,
@@ -84,13 +84,13 @@ theorem routeUXiHeatProfileSchwartz_apply
       (routeUXiHeatProfileScale t * x) = 2 * Real.pi * x := by
     field_simp [hc.ne']
   rw [hlin]
-  have hz : ((((2 * Real.pi * x : ℝ) : ℂ)) ^ 2) =
-      ((((2 * Real.pi * x) ^ 2 : ℝ) : ℂ)) := by exact_mod_cast rfl
+  have hz : ((((2 * Real.pi * x : ℝ) : ℂ)) ^ (2 : ℕ)) =
+      ((((2 * Real.pi * x) ^ (2 : ℕ) : ℝ) : ℂ)) := by exact_mod_cast rfl
   rw [hz, evalRealPolynomial_ofReal]
   push_cast
   congr 1
   congr 1
-  have hcsqC : ((routeUXiHeatProfileScale t : ℂ) ^ 2) =
+  have hcsqC : ((routeUXiHeatProfileScale t : ℂ) ^ (2 : ℕ)) =
       (2 * Real.pi : ℂ) * (t : ℝ) := by exact_mod_cast hcsq
   rw [mul_pow, hcsqC]
   ring

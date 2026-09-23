@@ -26,12 +26,12 @@ namespace GaloisForLFunctions.RHTower
 /-- **`(399)`: a small enough ridge mass keeps the regularized defect near the approximation
 defect.** -/
 theorem tikhonov_lt_of_small_ridge {ε r d cn : ℝ} (hε : 0 < ε) (hd0 : 0 ≤ d) (hd : d < ε)
-    (hcn : 0 ≤ cn) (hr0 : 0 < r) (hr : r < ε ^ 2 / (1 + cn)) :
-    d ^ 2 + r * cn < 2 * ε ^ 2 := by
+    (hcn : 0 ≤ cn) (hr0 : 0 < r) (hr : r < ε ^ (2 : ℕ) / (1 + cn)) :
+    d ^ (2 : ℕ) + r * cn < 2 * ε ^ (2 : ℕ) := by
   have h1c : (0 : ℝ) < 1 + cn := by linarith
-  have hd2 : d ^ 2 < ε ^ 2 := by nlinarith
-  have hrc : r * cn < ε ^ 2 := by
-    have hmul : r * (1 + cn) < ε ^ 2 := by
+  have hd2 : d ^ (2 : ℕ) < ε ^ (2 : ℕ) := by nlinarith
+  have hrc : r * cn < ε ^ (2 : ℕ) := by
+    have hmul : r * (1 + cn) < ε ^ (2 : ℕ) := by
       rw [lt_div_iff₀ h1c] at hr
       linarith
     nlinarith [hmul, hr0, hcn]
@@ -44,7 +44,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 /-- The synthesis pairs strongly with the source. -/
 theorem inner_gt_of_small_defect {h p : E} (hh : ‖h‖ = 1) (hd : ‖h - p‖ < 1 / 4) :
     3 / 4 < (inner ℝ h p : ℝ) := by
-  have hsplit : (inner ℝ h p : ℝ) = ‖h‖ ^ 2 - inner ℝ h (h - p) := by
+  have hsplit : (inner ℝ h p : ℝ) = ‖h‖ ^ (2 : ℕ) - inner ℝ h (h - p) := by
     rw [inner_sub_right, real_inner_self_eq_norm_sq]
     ring
   have hcs : (inner ℝ h (h - p) : ℝ) ≤ ‖h‖ * ‖h - p‖ :=
@@ -56,7 +56,7 @@ theorem inner_gt_of_small_defect {h p : E} (hh : ‖h‖ = 1) (hd : ‖h - p‖ 
 tail.** -/
 theorem coefficient_norm_sq_gt {h p uH c : E} (hh : ‖h‖ = 1) (hd : ‖h - p‖ < 1 / 4)
     (hpair : (inner ℝ h p : ℝ) = inner ℝ uH c) (huH : 0 < ‖uH‖) :
-    (3 / 4) ^ 2 / ‖uH‖ ^ 2 < ‖c‖ ^ 2 := by
+    (3 / 4) ^ (2 : ℕ) / ‖uH‖ ^ (2 : ℕ) < ‖c‖ ^ (2 : ℕ) := by
   have hgt : 3 / 4 < (inner ℝ uH c : ℝ) := by
     rw [← hpair]
     exact inner_gt_of_small_defect hh hd
@@ -73,12 +73,12 @@ theorem coefficient_norm_sq_gt {h p uH c : E} (hh : ‖h‖ = 1) (hd : ‖h - p�
 
 /-- **`(401)`, with the analysis tail bound inserted.** -/
 theorem coefficient_price {cn uHsq C T logT : ℝ} (hC : 0 < C) (hT : 0 < T) (hlog : 0 < logT)
-    (huposs : 0 < uHsq) (hu : uHsq ≤ C * logT / T) (hc : (3 / 4) ^ 2 / uHsq < cn) :
+    (huposs : 0 < uHsq) (hu : uHsq ≤ C * logT / T) (hc : (3 / 4) ^ (2 : ℕ) / uHsq < cn) :
     9 / (16 * C) * (T / logT) < cn := by
-  have hstep : 9 / (16 * C) * (T / logT) ≤ (3 / 4) ^ 2 / uHsq := by
+  have hstep : 9 / (16 * C) * (T / logT) ≤ (3 / 4) ^ (2 : ℕ) / uHsq := by
     have hL : 9 / (16 * C) * (T / logT) = 9 * T / (16 * C * logT) := by
       field_simp
-    have hR : ((3 : ℝ) / 4) ^ 2 / uHsq = 9 / (16 * uHsq) := by
+    have hR : ((3 : ℝ) / 4) ^ (2 : ℕ) / uHsq = 9 / (16 * uHsq) := by
       field_simp
       ring
     rw [hL, hR, div_le_div_iff₀ (by positivity) (by positivity)]
@@ -112,7 +112,7 @@ theorem ridge_cutoff_bound {r cn C T logT : ℝ} (hr : 0 < r) (hC : 0 < C) (hT :
 
 /-- The cubic-over-logarithm rate diverges, which is what kills the cutoff `T = r^{-4}`. -/
 theorem tendsto_cube_div_log_atTop :
-    Tendsto (fun x : ℝ => x ^ 3 / Real.log x) atTop atTop := by
+    Tendsto (fun x : ℝ => x ^ (3 : ℕ) / Real.log x) atTop atTop := by
   refine tendsto_atTop_mono' atTop ?_ (tendsto_pow_atTop (n := 2) (by norm_num))
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
   have hlog : 0 < Real.log x := Real.log_pos hx

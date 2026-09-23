@@ -112,8 +112,8 @@ theorem hardyMultiplierModelSpace_orthogonal_eq_range_of_isometry
 
 theorem norm_sq_adjoint_hardyMul_of_isometry
     (B : DiskMultiplier) (hB : HardyMultiplierIsometry B) (g : HardyDisk) :
-    ‖(hardyMul B).adjoint g‖ ^ 2 =
-      ‖g‖ ^ 2 - ‖(hardyMultiplierModelSpace B).starProjection g‖ ^ 2 := by
+    ‖(hardyMul B).adjoint g‖ ^ (2 : ℕ) =
+      ‖g‖ ^ (2 : ℕ) - ‖(hardyMultiplierModelSpace B).starProjection g‖ ^ (2 : ℕ) := by
   classical
   let K := hardyMultiplierModelSpace B
   set u : HardyDisk := K.starProjection g with hu
@@ -149,7 +149,7 @@ theorem norm_sq_adjoint_hardyMul_of_isometry
       adjoint_hardyMul_comp_of_isometry B hB]
   have hperp : (inner ℂ u y : ℂ) = 0 :=
     ((K.mem_orthogonal y).1 hymem u humem)
-  have hpyth : ‖g‖ ^ 2 = ‖u‖ ^ 2 + ‖y‖ ^ 2 := by
+  have hpyth : ‖g‖ ^ (2 : ℕ) = ‖u‖ ^ (2 : ℕ) + ‖y‖ ^ (2 : ℕ) := by
     rw [hsplit]
     simpa [sq] using norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero u y hperp
   have hnx : ‖x‖ = ‖y‖ := by rw [← hx, hB]
@@ -161,7 +161,7 @@ theorem generalizedSchurOperator_quadratic_eq_projectedAdjointDefect
     (inner ℂ x (generalizedSchurOperator F B x)).re =
       projectedAdjointDefectForm (hardyMultiplierModelSpace B) (hardyMul F) x := by
   have hnorm : ∀ (A : HardyDisk →L[ℂ] HardyDisk),
-      (inner ℂ x (A (A.adjoint x))).re = ‖A.adjoint x‖ ^ 2 := by
+      (inner ℂ x (A (A.adjoint x))).re = ‖A.adjoint x‖ ^ (2 : ℕ) := by
     intro A
     rw [show inner ℂ x (A (A.adjoint x)) = inner ℂ (A.adjoint x) (A.adjoint x) by
       exact (ContinuousLinearMap.adjoint_inner_left A (A.adjoint x) x).symm]

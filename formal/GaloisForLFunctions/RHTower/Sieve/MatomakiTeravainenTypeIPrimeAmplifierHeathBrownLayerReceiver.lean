@@ -40,13 +40,13 @@ theorem setIntegral_mtTypeI_primeAmplifier_heathBrown_layer
     (hblockHeight : ∀ r : Fin ell,
       (((2 * mtTypeIPrimeHeathBrownBlockLength P ell r : ℕ) : ℝ)) ≤ T) :
     (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V,
-        ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-          ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+        ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+          ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
       ∑ r : Fin ell,
         mtTypeIPrimeHeathBrownLayerBlockMomentBound
           eta a A P ell N N' T V r := by
   let f : ℝ → ℝ := fun t =>
-    ‖mtWattCoefficientBlock a A t‖ ^ 2 * ‖mtWattUnitBlock N N' t‖ ^ 2
+    ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) * ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)
   have hunion : (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V, f t) ≤
       ∑ r : Fin ell,
         ∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r, f t :=
@@ -92,11 +92,11 @@ theorem setIntegral_mtTypeI_primeAmplifier_heathBrown_layer
       (mtTypeIPrimeAmplifierBlockLargeSet_subset_Icc P ell T V r) hlarge
     have hmixedSet :
         (∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r,
-          ‖mtWattUnitBlock N N' t‖ ^ 4 *
-            ‖mtWattCoefficientBlock b B t‖ ^ 2) ≤
+          ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) *
+            ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ)) ≤
           ∫ t in (-T)..T,
-            ‖mtWattUnitBlock N N' t‖ ^ 4 *
-              ‖mtWattCoefficientBlock b B t‖ ^ 2 :=
+            ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) *
+              ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ) :=
       setIntegral_le_intervalIntegral_of_subset_Icc
         (((continuous_perronPoly _ _ _).norm.pow 4).mul
           ((continuous_perronPoly _ _ _).norm.pow 2))
@@ -108,21 +108,21 @@ theorem setIntegral_mtTypeI_primeAmplifier_heathBrown_layer
         (fun t => mul_nonneg (pow_nonneg (norm_nonneg _) 4) (sq_nonneg _))
     have hmixedFull :
         (∫ t in (-T)..T,
-          ‖mtWattUnitBlock N N' t‖ ^ 4 *
-            ‖mtWattCoefficientBlock b B t‖ ^ 2) ≤
+          ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) *
+            ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ)) ≤
         (mtTypeIPrimeRaisedHeathBrownLayerRootBound
             P ell B N' (N * N) T eta +
           mtTypeIPrimeRaisedHeathBrownLayerRootBound
-            P ell B N' (2 * (N * N)) T eta) ^ 2 := by
+            P ell B N' (2 * (N * N)) T eta) ^ (2 : ℕ) := by
       rw [intervalIntegral.integral_of_le (by linarith),
         ← MeasureTheory.integral_Icc_eq_integral_Ioc]
       have hshape :
           (∫ t in Set.Icc (-T) T,
-            ‖mtWattUnitBlock N N' t‖ ^ 4 *
-              ‖mtWattCoefficientBlock b B t‖ ^ 2) =
+            ‖mtWattUnitBlock N N' t‖ ^ (4 : ℕ) *
+              ‖mtWattCoefficientBlock b B t‖ ^ (2 : ℕ)) =
           ∫ t in Set.Icc (-T) T,
             ‖mtWattCoefficientBlock b B t *
-              (mtWattUnitBlock N N' t) ^ 2‖ ^ 2 := by
+              (mtWattUnitBlock N N' t) ^ (2 : ℕ)‖ ^ (2 : ℕ) := by
         apply MeasureTheory.integral_congr_ae
         filter_upwards with t
         simp only [norm_mul, norm_pow]
@@ -134,8 +134,8 @@ theorem setIntegral_mtTypeI_primeAmplifier_heathBrown_layer
             (by simpa only [T', B] using hblockHeight r) heta
     have hfourthSet :
         (∫ t in mtTypeIPrimeAmplifierBlockLargeSet P ell T V r,
-          ‖mtWattCoefficientBlock a A t‖ ^ 4) ≤
-        ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ 4 :=
+          ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ)) ≤
+        ∫ t in (T / 2)..T, ‖mtWattCoefficientBlock a A t‖ ^ (4 : ℕ) :=
       setIntegral_le_intervalIntegral_of_subset_Icc
         ((continuous_perronPoly _ _ _).norm.pow 4)
         (by linarith)
@@ -176,8 +176,8 @@ theorem setIntegral_mtTypeI_primeAmplifier_heathBrown_layer_of_fullSupport_le
     (hT : 2 ≤ T) (hV : 0 < V) (heta : 0 < eta)
     (hfull : ((((2 * P) ^ ell : ℕ) : ℝ)) ≤ T) :
     (∫ t in mtTypeIPrimeAmplifierLargeSet P ell T V,
-        ‖mtWattCoefficientBlock a A t‖ ^ 2 *
-          ‖mtWattUnitBlock N N' t‖ ^ 2) ≤
+        ‖mtWattCoefficientBlock a A t‖ ^ (2 : ℕ) *
+          ‖mtWattUnitBlock N N' t‖ ^ (2 : ℕ)) ≤
       ∑ r : Fin ell,
         mtTypeIPrimeHeathBrownLayerBlockMomentBound
           eta a A P ell N N' T V r := by

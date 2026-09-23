@@ -21,16 +21,16 @@ namespace GaloisForLFunctions.RHTower
 correlation with the extra factor `1/r`.** -/
 theorem normalized_cross_le {cross hs xn yn Lq Dq r : ℝ} (hr : 0 < r)
     (hxn : 0 ≤ xn) (hyn : 0 ≤ yn) (hhs : 0 ≤ hs)
-    (hL : r * xn ^ 2 ≤ Lq) (hD : r * yn ^ 2 ≤ Dq)
+    (hL : r * xn ^ (2 : ℕ) ≤ Lq) (hD : r * yn ^ (2 : ℕ) ≤ Dq)
     (hcross : cross ≤ hs * (xn * yn)) :
     cross ≤ hs / r * Real.sqrt (Lq * Dq) := by
-  have hprod : (r * xn ^ 2) * (r * yn ^ 2) ≤ Lq * Dq := by
-    have h1 : (0 : ℝ) ≤ r * xn ^ 2 := by positivity
-    have h2 : (0 : ℝ) ≤ r * yn ^ 2 := by positivity
+  have hprod : (r * xn ^ (2 : ℕ)) * (r * yn ^ (2 : ℕ)) ≤ Lq * Dq := by
+    have h1 : (0 : ℝ) ≤ r * xn ^ (2 : ℕ) := by positivity
+    have h2 : (0 : ℝ) ≤ r * yn ^ (2 : ℕ) := by positivity
     exact mul_le_mul hL hD h2 (le_trans h1 hL)
-  have heq : (r * xn ^ 2) * (r * yn ^ 2) = (r * (xn * yn)) ^ 2 := by ring
+  have heq : (r * xn ^ (2 : ℕ)) * (r * yn ^ (2 : ℕ)) = (r * (xn * yn)) ^ (2 : ℕ) := by ring
   have hsqrt : r * (xn * yn) ≤ Real.sqrt (Lq * Dq) := by
-    calc r * (xn * yn) = Real.sqrt ((r * (xn * yn)) ^ 2) :=
+    calc r * (xn * yn) = Real.sqrt ((r * (xn * yn)) ^ (2 : ℕ)) :=
           (Real.sqrt_sq (by positivity)).symm
       _ ≤ Real.sqrt (Lq * Dq) := Real.sqrt_le_sqrt (by rw [← heq]; exact hprod)
   have hfac : hs / r * (r * (xn * yn)) = hs * (xn * yn) := by

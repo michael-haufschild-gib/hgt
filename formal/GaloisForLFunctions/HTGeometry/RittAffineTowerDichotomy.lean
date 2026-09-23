@@ -40,15 +40,15 @@ theorem affine_descent_dichotomy_gen (Fr : RittFrame K L) {τ : L} {q : K}
         + ∑ j ∈ Finset.range m, algebraMap K L (-(N : K) * A' j) * Fr.d^[j] τ) ∨
     (∃ v z y : L, v ≠ 0 ∧ v ∈ Fr.jetPrefixField τ m ∧ z ∈ Fr.jetPrefixField τ m ∧
       y ∈ Fr.jetPrefixField τ m ∧ α ≠ 0 ∧
-      Fr.σ v = algebraMap K L (c / (q / Fr.ρ ^ m) ^ 2) * v ∧
+      Fr.σ v = algebraMap K L (c / (q / Fr.ρ ^ m) ^ (2 : ℕ)) * v ∧
       Fr.σ z = algebraMap K L (q / Fr.ρ ^ m) * z
         + algebraMap K L ((q / Fr.ρ ^ m) * α / c) / v
         - (2 : L) * (Fr.σ (Fr.d^[m] τ)
             - algebraMap K L (q / Fr.ρ ^ m) * Fr.d^[m] τ) ∧
-      Fr.σ y = algebraMap K L ((q / Fr.ρ ^ m) ^ 2) * y
+      Fr.σ y = algebraMap K L ((q / Fr.ρ ^ m) ^ (2 : ℕ)) * y
         - algebraMap K L (q / Fr.ρ ^ m)
             * (Fr.σ (Fr.d^[m] τ) - algebraMap K L (q / Fr.ρ ^ m) * Fr.d^[m] τ) * z
-        + (Fr.σ (Fr.d^[m] τ) - algebraMap K L (q / Fr.ρ ^ m) * Fr.d^[m] τ) ^ 2
+        + (Fr.σ (Fr.d^[m] τ) - algebraMap K L (q / Fr.ρ ^ m) * Fr.d^[m] τ) ^ (2 : ℕ)
         + algebraMap K L (q / Fr.ρ ^ m)
             * (algebraMap K L (q / Fr.ρ ^ m) * β - algebraMap K L α
                 * (Fr.σ (Fr.d^[m] τ) - algebraMap K L (q / Fr.ρ ^ m) * Fr.d^[m] τ))
@@ -148,7 +148,7 @@ theorem affine_descent_dichotomy_gen (Fr : RittFrame K L) {τ : L} {q : K}
     · have hcast := congrArg (fun z : ↥E => (z : L)) heq
       simp only [hφ, haE, hcE] at hcast
       push_cast at hcast
-      have e1 : algebraMap K L (c / aK ^ 2) = algebraMap K L c / algebraMap K L aK ^ 2 := by
+      have e1 : algebraMap K L (c / aK ^ (2 : ℕ)) = algebraMap K L c / algebraMap K L aK ^ (2 : ℕ) := by
         rw [map_div₀, map_pow]
       rw [e1, div_mul_eq_mul_div, eq_div_iff (pow_ne_zero 2 haKL)]
       linear_combination hcast
@@ -164,7 +164,7 @@ theorem affine_descent_dichotomy_gen (Fr : RittFrame K L) {τ : L} {q : K}
     · have hcast := congrArg (fun z : ↥E => (z : L)) hconst
       simp only [hφ, haE, hcE, hαE, hβE] at hcast
       push_cast at hcast
-      have e3 : algebraMap K L (aK ^ 2) = algebraMap K L aK ^ 2 := map_pow _ _ _
+      have e3 : algebraMap K L (aK ^ (2 : ℕ)) = algebraMap K L aK ^ (2 : ℕ) := map_pow _ _ _
       rw [e3, ← hbval]
       linear_combination hcast
   · obtain ⟨u, hu⟩ := h5
@@ -219,15 +219,15 @@ theorem affine_descent_dichotomy (Fr : RittFrame K L) {τ : L} {q : K}
         + ∑ j ∈ Finset.range m, algebraMap K L (-(N : K) * A' j) * Fr.d^[j] τ) ∨
     (∃ v z y : L, v ≠ 0 ∧ v ∈ Fr.jetPrefixField τ m ∧ z ∈ Fr.jetPrefixField τ m ∧
       y ∈ Fr.jetPrefixField τ m ∧ A m ≠ 0 ∧
-      Fr.σ v = algebraMap K L (c / (q / Fr.ρ ^ m) ^ 2) * v ∧
+      Fr.σ v = algebraMap K L (c / (q / Fr.ρ ^ m) ^ (2 : ℕ)) * v ∧
       Fr.σ z = algebraMap K L (q / Fr.ρ ^ m) * z
         + algebraMap K L ((q / Fr.ρ ^ m) * A m / c) / v
         - (2 : L) * (Fr.σ (Fr.d^[m] τ)
             - algebraMap K L (q / Fr.ρ ^ m) * Fr.d^[m] τ) ∧
-      Fr.σ y = algebraMap K L ((q / Fr.ρ ^ m) ^ 2) * y
+      Fr.σ y = algebraMap K L ((q / Fr.ρ ^ m) ^ (2 : ℕ)) * y
         - algebraMap K L (q / Fr.ρ ^ m)
             * (Fr.σ (Fr.d^[m] τ) - algebraMap K L (q / Fr.ρ ^ m) * Fr.d^[m] τ) * z
-        + (Fr.σ (Fr.d^[m] τ) - algebraMap K L (q / Fr.ρ ^ m) * Fr.d^[m] τ) ^ 2
+        + (Fr.σ (Fr.d^[m] τ) - algebraMap K L (q / Fr.ρ ^ m) * Fr.d^[m] τ) ^ (2 : ℕ)
         + algebraMap K L (q / Fr.ρ ^ m)
             * (algebraMap K L (q / Fr.ρ ^ m)
                   * (algebraMap K L g + ∑ j ∈ Finset.range m,

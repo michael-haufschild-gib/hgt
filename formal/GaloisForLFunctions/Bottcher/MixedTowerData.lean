@@ -66,11 +66,11 @@ theorem bottcher_towerDataG_mixed (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
   rw [← hhdef] at h2h
   have hexp1 : Real.exp 1 ≤ 2.7182818286 := le_of_lt Real.exp_one_lt_d9
   have hexp6 : Real.exp 6 ≤ 1000 := by
-    have h1 : Real.exp 6 = Real.exp 1 ^ 6 := by
+    have h1 : Real.exp 6 = Real.exp 1 ^ (6 : ℕ) := by
       rw [← Real.exp_nat_mul]
       norm_num
     rw [h1]
-    calc Real.exp 1 ^ 6 ≤ 2.7182818286 ^ 6 :=
+    calc Real.exp 1 ^ (6 : ℕ) ≤ 2.7182818286 ^ (6 : ℕ) :=
           pow_le_pow_left₀ (Real.exp_pos 1).le hexp1 6
       _ ≤ 1000 := by norm_num
   have hlogc6 : (6:ℝ) ≤ Real.log ‖c‖ := by
@@ -182,8 +182,8 @@ theorem bottcher_towerDataG_mixed (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
       _ < Real.exp (Real.log ‖v‖) := Real.exp_lt_exp.mpr h6
       _ = ‖v‖ := Real.exp_log hvpos
   -- the slit center avoiding the critical-value ball
-  have hrlo_ceiling : Real.log rlo' ≤ (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 := by
-    have h1 : Real.log (‖c‖ ^ 2) ≤ Real.log (‖c‖ ^ 2 + ‖c‖) :=
+  have hrlo_ceiling : Real.log rlo' ≤ (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 := by
+    have h1 : Real.log (‖c‖ ^ (2 : ℕ)) ≤ Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) :=
       Real.log_le_log (by positivity) (by nlinarith)
     rw [Real.log_pow] at h1
     push_cast at h1
@@ -234,7 +234,7 @@ theorem bottcher_towerDataG_mixed (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
   have hrb14 : Real.log rb ≤ 2 * h - 1/4 := by
     rw [hrbdef, Real.log_exp]
     linarith
-  have hraRW : ra ^ 2 < RW := by
+  have hraRW : ra ^ (2 : ℕ) < RW := by
     rw [hradef, hRWdef, ← Real.exp_nat_mul]
     apply Real.exp_lt_exp.mpr
     push_cast
@@ -714,8 +714,8 @@ set_option maxHeartbeats 1600000 in
 (`2 ≤ s`, `s² ≤ ‖c‖/40`, patch-square smallness) — the geometric input for disconnected
 second parameters up to norm `s`. -/
 theorem bottcher_towerDataG_normS (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
-    (hc1000 : (1000:ℝ) ≤ ‖c‖) {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ 2 ≤ ‖c‖ / 40)
-    (hsmall : 2 * s ^ 2 * ‖c‖ + s ^ 4 + 1 ≤ 1/100 * (‖c‖ ^ 2 - ‖c‖)) :
+    (hc1000 : (1000:ℝ) ≤ ‖c‖) {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ (2 : ℕ) ≤ ‖c‖ / 40)
+    (hsmall : 2 * s ^ (2 : ℕ) * ‖c‖ + s ^ (4 : ℕ) + 1 ≤ 1/100 * (‖c‖ ^ (2 : ℕ) - ‖c‖)) :
     ∃ Bmin : ℝ, 1 < Bmin ∧
     ∀ (U : Set ℂ), IsOpen U → IsPreconnected U → U.Nonempty → U.Infinite →
       (∀ z ∈ U, Bmin < ‖z‖) →
@@ -749,11 +749,11 @@ theorem bottcher_towerDataG_normS (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
   rw [← hhdef] at h2h
   have hexp1 : Real.exp 1 ≤ 2.7182818286 := le_of_lt Real.exp_one_lt_d9
   have hexp6 : Real.exp 6 ≤ 1000 := by
-    have h1 : Real.exp 6 = Real.exp 1 ^ 6 := by
+    have h1 : Real.exp 6 = Real.exp 1 ^ (6 : ℕ) := by
       rw [← Real.exp_nat_mul]
       norm_num
     rw [h1]
-    calc Real.exp 1 ^ 6 ≤ 2.7182818286 ^ 6 :=
+    calc Real.exp 1 ^ (6 : ℕ) ≤ 2.7182818286 ^ (6 : ℕ) :=
           pow_le_pow_left₀ (Real.exp_pos 1).le hexp1 6
       _ ≤ 1000 := by norm_num
   have hlogc6 : (6:ℝ) ≤ Real.log ‖c‖ := by
@@ -865,8 +865,8 @@ theorem bottcher_towerDataG_normS (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
       _ < Real.exp (Real.log ‖v‖) := Real.exp_lt_exp.mpr h6
       _ = ‖v‖ := Real.exp_log hvpos
   -- the slit center avoiding the critical-value ball
-  have hrlo_ceiling : Real.log rlo' ≤ (Real.log (‖c‖ ^ 2 + ‖c‖) + 1) / 2 := by
-    have h1 : Real.log (‖c‖ ^ 2) ≤ Real.log (‖c‖ ^ 2 + ‖c‖) :=
+  have hrlo_ceiling : Real.log rlo' ≤ (Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) + 1) / 2 := by
+    have h1 : Real.log (‖c‖ ^ (2 : ℕ)) ≤ Real.log (‖c‖ ^ (2 : ℕ) + ‖c‖) :=
       Real.log_le_log (by positivity) (by nlinarith)
     rw [Real.log_pow] at h1
     push_cast at h1
@@ -917,7 +917,7 @@ theorem bottcher_towerDataG_normS (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
   have hrb14 : Real.log rb ≤ 2 * h - 1/4 := by
     rw [hrbdef, Real.log_exp]
     linarith
-  have hraRW : ra ^ 2 < RW := by
+  have hraRW : ra ^ (2 : ℕ) < RW := by
     rw [hradef, hRWdef, ← Real.exp_nat_mul]
     apply Real.exp_lt_exp.mpr
     push_cast
@@ -1061,7 +1061,7 @@ theorem bottcher_towerDataG_normS (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
     rintro z (hzE | hzA)
     · exact hnorm z hzE
     · have h1 : Bmin < ‖z‖ := hzA
-      have hss : s ≤ s ^ 2 / 2 := by nlinarith
+      have hss : s ≤ s ^ (2 : ℕ) / 2 := by nlinarith
       linarith [hs40, hBminc3, hc100]
   refine ⟨Ext', hExt'o, hExt'c, hUinf.mono hUExt', hUExt', F', aExt, k, ?_, ?_, hF'an, hF'ne,
     rfl, ?_, hnorm', ?_⟩
@@ -1122,7 +1122,7 @@ whole moderate-second band `‖c₂‖ ≲ √(‖c₁‖/300)` beyond the level
 theorem q62_phiMero_pair_far_general {c₁ c₂ : ℂ}
     (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc1000 : (1000:ℝ) ≤ ‖c₁‖)
     (hc₂ : (0:ℂ) ∉ filledJulia c₂)
-    (hgap : 300 * (max 2 ‖c₂‖) ^ 2 ≤ ‖c₁‖) :
+    (hgap : 300 * (max 2 ‖c₂‖) ^ (2 : ℕ) ≤ ‖c₁‖) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne
@@ -1132,12 +1132,12 @@ theorem q62_phiMero_pair_far_general {c₁ c₂ : ℂ}
   set s : ℝ := max 2 ‖c₂‖ with hsdef
   have hs2 : (2:ℝ) ≤ s := le_max_left _ _
   have hs0 : (0:ℝ) < s := by linarith
-  have hssq : s ^ 2 ≤ ‖c₁‖ / 300 := by nlinarith
-  have hs40 : s ^ 2 ≤ ‖c₁‖ / 40 := by linarith
+  have hssq : s ^ (2 : ℕ) ≤ ‖c₁‖ / 300 := by nlinarith
+  have hs40 : s ^ (2 : ℕ) ≤ ‖c₁‖ / 40 := by linarith
   have hc₁0 : (0:ℝ) < ‖c₁‖ := by linarith
-  have hsmall : 2 * s ^ 2 * ‖c₁‖ + s ^ 4 + 1 ≤ 1/100 * (‖c₁‖ ^ 2 - ‖c₁‖) := by
-    have h1 : 2 * s ^ 2 * ‖c₁‖ ≤ 2 / 300 * ‖c₁‖ ^ 2 := by nlinarith
-    have h2 : s ^ 4 ≤ ‖c₁‖ ^ 2 / 90000 := by nlinarith [sq_nonneg (s ^ 2)]
+  have hsmall : 2 * s ^ (2 : ℕ) * ‖c₁‖ + s ^ (4 : ℕ) + 1 ≤ 1/100 * (‖c₁‖ ^ (2 : ℕ) - ‖c₁‖) := by
+    have h1 : 2 * s ^ (2 : ℕ) * ‖c₁‖ ≤ 2 / 300 * ‖c₁‖ ^ (2 : ℕ) := by nlinarith
+    have h2 : s ^ (4 : ℕ) ≤ ‖c₁‖ ^ (2 : ℕ) / 90000 := by nlinarith [sq_nonneg (s ^ (2 : ℕ))]
     nlinarith [sq_nonneg ‖c₁‖]
   obtain ⟨Bmin, hBmin1, hspec⟩ := bottcher_towerDataG_normS c₁ hc₁ hc1000 hs2 hs40 hsmall
   set FB : ℝ := bottcherFarBound c₂ hc₂ with hFBdef
@@ -1213,7 +1213,7 @@ theorem q62_phiMero_pair_far_general {c₁ c₂ : ℂ}
 theorem q62_phiMero_pair_far_general_swapped {c₁ c₂ : ℂ}
     (hc₁ : (0:ℂ) ∉ filledJulia c₁)
     (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc1000 : (1000:ℝ) ≤ ‖c₂‖)
-    (hgap : 300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖) :
+    (hgap : 300 * (max 2 ‖c₁‖) ^ (2 : ℕ) ≤ ‖c₂‖) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne
@@ -1238,7 +1238,7 @@ close, both served by the same `s`-norm-bounded tower. -/
 theorem q62_phiMero_norm_gap {c₁ c₂ : ℂ}
     (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc1000 : (1000:ℝ) ≤ ‖c₁‖)
     (hc₂0 : c₂ ≠ 0) (hc₂2 : c₂ ≠ -2)
-    (hgap : 300 * (max 2 ‖c₂‖) ^ 2 ≤ ‖c₁‖) :
+    (hgap : 300 * (max 2 ‖c₂‖) ^ (2 : ℕ) ≤ ‖c₁‖) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne
@@ -1259,7 +1259,7 @@ under the same quadratic gap. -/
 theorem q62_phiMero_norm_gap_swapped {c₁ c₂ : ℂ}
     (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc1000 : (1000:ℝ) ≤ ‖c₂‖)
     (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2)
-    (hgap : 300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖) :
+    (hgap : 300 * (max 2 ‖c₁‖) ^ (2 : ℕ) ≤ ‖c₂‖) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne
@@ -1283,9 +1283,9 @@ then the Böttcher coordinates are algebraically independent on a common far car
 theorem q62_phiMero_norm_gap_either {c₁ c₂ : ℂ}
     (hor :
       ((0:ℂ) ∉ filledJulia c₁ ∧ (1000:ℝ) ≤ ‖c₁‖ ∧ c₂ ≠ 0 ∧ c₂ ≠ -2 ∧
-        300 * (max 2 ‖c₂‖) ^ 2 ≤ ‖c₁‖) ∨
+        300 * (max 2 ‖c₂‖) ^ (2 : ℕ) ≤ ‖c₁‖) ∨
       ((0:ℂ) ∉ filledJulia c₂ ∧ (1000:ℝ) ≤ ‖c₂‖ ∧ c₁ ≠ 0 ∧ c₁ ≠ -2 ∧
-        300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖)) :
+        300 * (max 2 ‖c₁‖) ^ (2 : ℕ) ≤ ‖c₂‖)) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne

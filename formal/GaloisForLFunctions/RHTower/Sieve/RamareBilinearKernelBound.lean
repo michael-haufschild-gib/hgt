@@ -34,9 +34,9 @@ theorem logPoly_nonRoughCoeff_eq_ramareBilinear {P : Finset ℕ} (hPprime : ∀ 
 
 /-- The energy of the non-rough coefficient over an initial block. -/
 theorem sum_normSq_nonRoughCoeff_le (P : Finset ℕ) (M : ℕ) :
-    (∑ n ∈ Finset.Icc 1 M, ‖nonRoughCoeff P n‖ ^ 2) ≤ (M : ℝ) := by
+    (∑ n ∈ Finset.Icc 1 M, ‖nonRoughCoeff P n‖ ^ (2 : ℕ)) ≤ (M : ℝ) := by
   classical
-  have hle : ∑ n ∈ Finset.Icc 1 M, ‖nonRoughCoeff P n‖ ^ 2
+  have hle : ∑ n ∈ Finset.Icc 1 M, ‖nonRoughCoeff P n‖ ^ (2 : ℕ)
       ≤ ∑ _n ∈ Finset.Icc 1 M, (1 : ℝ) := by
     refine Finset.sum_le_sum fun n _ => ?_
     have h := norm_nonRoughCoeff_le_one P n
@@ -49,14 +49,14 @@ theorem sum_normSq_nonRoughCoeff_le (P : Finset ℕ) (M : ℕ) :
 theorem integral_kernel_normSq_ramareBilinear_le {P : Finset ℕ} {M : ℕ} {δ G T₀ αL βL β₀ : ℝ}
     (hPprime : ∀ q ∈ P, q.Prime) (hδ : 0 < δ) (hG : 1 ≤ G) (hGT₀ : G ≤ T₀)
     (hαL : 0 ≤ αL) (hβL : 0 ≤ βL)
-    (hhead : (∫ w in Set.Icc (-G) G, ‖ramareBilinear P M w‖ ^ 2) ≤ β₀)
+    (hhead : (∫ w in Set.Icc (-G) G, ‖ramareBilinear P M w‖ ^ (2 : ℕ)) ≤ β₀)
     (hmid : ∀ T : ℝ, G ≤ T → T ≤ T₀ →
-      (∫ w in Set.Icc (-T) T, ‖ramareBilinear P M w‖ ^ 2) ≤ αL * T + βL) :
-    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ 2 * ‖ramareBilinear P M w‖ ^ 2)
-      ≤ 2 * δ ^ 2 * β₀
+      (∫ w in Set.Icc (-T) T, ‖ramareBilinear P M w‖ ^ (2 : ℕ)) ≤ αL * T + βL) :
+    (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ (2 : ℕ) * ‖ramareBilinear P M w‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ) * β₀
         + (4 * (αL + 5 * Real.pi / 2 * (M : ℝ) + 5 * Real.exp 1 / 2 * (M : ℝ) * (M : ℝ) / T₀)
-            / (Real.pi ^ 2 * G)
-          + 4 * βL / (3 * Real.pi ^ 2 * G ^ 2)) := by
+            / (Real.pi ^ (2 : ℕ) * G)
+          + 4 * βL / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ))) := by
   classical
   set S : Finset ℕ := Finset.Icc 1 M with hS
   set a : ℕ → ℂ := nonRoughCoeff P with ha
@@ -69,12 +69,12 @@ theorem integral_kernel_normSq_ramareBilinear_le {P : Finset ℕ} {M : ℕ} {δ 
     exact hn.2
   have hconv : ∀ w : ℝ, logPoly a S w = ramareBilinear P M w := fun w =>
     logPoly_nonRoughCoeff_eq_ramareBilinear hPprime M w
-  have hhead' : (∫ w in Set.Icc (-G) G, ‖logPoly a S w‖ ^ 2) ≤ β₀ := by
+  have hhead' : (∫ w in Set.Icc (-G) G, ‖logPoly a S w‖ ^ (2 : ℕ)) ≤ β₀ := by
     refine le_trans (le_of_eq ?_) hhead
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
     rw [hconv]
   have hmid' : ∀ T : ℝ, G ≤ T → T ≤ T₀ →
-      (∫ w in Set.Icc (-T) T, ‖logPoly a S w‖ ^ 2) ≤ αL * T + βL := by
+      (∫ w in Set.Icc (-T) T, ‖logPoly a S w‖ ^ (2 : ℕ)) ≤ αL * T + βL := by
     intro T h1 h2
     refine le_trans (le_of_eq ?_) (hmid T h1 h2)
     refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun w _ => ?_
@@ -83,8 +83,8 @@ theorem integral_kernel_normSq_ramareBilinear_le {P : Finset ℕ} {M : ℕ} {δ 
   have hG0 : (0 : ℝ) < G := lt_of_lt_of_le zero_lt_one hG
   have hgal := gallagher_split_integral_dyadic_head a S hδ hG0 hhead' haff
   rw [integral_normSq_logWindowSum_eq _ _ hδ.le] at hgal
-  have hkern : (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ 2 * ‖ramareBilinear P M w‖ ^ 2)
-      = ∫ w : ℝ, ‖logWindowKernel δ w‖ ^ 2 * ‖logPoly a S w‖ ^ 2 := by
+  have hkern : (∫ w : ℝ, ‖logWindowKernel δ w‖ ^ (2 : ℕ) * ‖ramareBilinear P M w‖ ^ (2 : ℕ))
+      = ∫ w : ℝ, ‖logWindowKernel δ w‖ ^ (2 : ℕ) * ‖logPoly a S w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
     simp only []
     rw [hconv]
@@ -92,7 +92,7 @@ theorem integral_kernel_normSq_ramareBilinear_le {P : Finset ℕ} {M : ℕ} {δ 
   refine hgal.trans ?_
   -- the energy of the non-rough coefficient is at most the length of the block
   have hE := sum_normSq_nonRoughCoeff_le P M
-  have hE0 : (0 : ℝ) ≤ ∑ n ∈ S, ‖a n‖ ^ 2 := Finset.sum_nonneg fun n _ => by positivity
+  have hE0 : (0 : ℝ) ≤ ∑ n ∈ S, ‖a n‖ ^ (2 : ℕ) := Finset.sum_nonneg fun n _ => by positivity
   have hT₀0 : (0 : ℝ) < T₀ := lt_of_lt_of_le zero_lt_one (le_trans hG hGT₀)
   have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos

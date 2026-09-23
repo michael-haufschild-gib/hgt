@@ -25,7 +25,7 @@ theorem fullSector_quadratic_lower_bound
     (hnegative : ∀ x ∈ S, J x = -x)
     (hpositive : ∀ x : E, 0 ≤ Complex.re ⟪(J + G) x, x⟫_ℂ)
     {x : E} (hx : x ∈ S) :
-    ‖x‖ ^ 2 ≤ Complex.re ⟪G x, x⟫_ℂ := by
+    ‖x‖ ^ (2 : ℕ) ≤ Complex.re ⟪G x, x⟫_ℂ := by
   have h := hpositive x
   rw [add_apply, hnegative x hx, inner_add_left, inner_neg_left] at h
   rw [inner_self_eq_norm_sq_to_K] at h
@@ -38,9 +38,9 @@ theorem fullSector_quadratic_lower_bound_of_uniform
     (J G : E →L[ℂ] E) (S : Submodule ℂ E) (epsilon : ℝ)
     (hnegative : ∀ x ∈ S, J x = -x)
     (hpositive : ∀ x : E,
-      epsilon * ‖x‖ ^ 2 ≤ Complex.re ⟪(J + G) x, x⟫_ℂ)
+      epsilon * ‖x‖ ^ (2 : ℕ) ≤ Complex.re ⟪(J + G) x, x⟫_ℂ)
     {x : E} (hx : x ∈ S) :
-    (1 + epsilon) * ‖x‖ ^ 2 ≤ Complex.re ⟪G x, x⟫_ℂ := by
+    (1 + epsilon) * ‖x‖ ^ (2 : ℕ) ≤ Complex.re ⟪G x, x⟫_ℂ := by
   have h := hpositive x
   rw [add_apply, hnegative x hx, inner_add_left, inner_neg_left] at h
   rw [inner_self_eq_norm_sq_to_K] at h
@@ -63,7 +63,7 @@ theorem fullSector_norm_lower_bound
       le_trans (Complex.re_le_norm _) (norm_inner_le_norm _ _)
     have hmul : ‖x‖ * ‖x‖ ≤ ‖G x‖ * ‖x‖ := by
       calc
-        ‖x‖ * ‖x‖ = ‖x‖ ^ 2 := by ring
+        ‖x‖ * ‖x‖ = ‖x‖ ^ (2 : ℕ) := by ring
         _ ≤ Complex.re ⟪G x, x⟫_ℂ := hquad
         _ ≤ ‖G x‖ * ‖x‖ := hupper
     exact le_of_mul_le_mul_right hmul hnorm

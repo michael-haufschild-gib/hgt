@@ -55,18 +55,18 @@ every `t ∈ [0, 1]`. -/
 theorem deningerSphereSlide_norm (S : H →ₗᵢ[ℝ] H) {e : H} (he : ‖e‖ = 1)
     (hperp : ∀ y : H, ⟪S y, e⟫_ℝ = 0)
     {x : H} (hx : ‖x‖ = 1) {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
-    ‖Real.sqrt (1 - t ^ 2) • S x + t • e‖ = 1 := by
-  have hsq : (0 : ℝ) ≤ 1 - t ^ 2 := by nlinarith
+    ‖Real.sqrt (1 - t ^ (2 : ℕ)) • S x + t • e‖ = 1 := by
+  have hsq : (0 : ℝ) ≤ 1 - t ^ (2 : ℕ) := by nlinarith
   have hSx : ‖S x‖ = 1 := by rw [S.norm_map, hx]
-  have hinner : ⟪Real.sqrt (1 - t ^ 2) • S x, t • e⟫_ℝ = 0 := by
+  have hinner : ⟪Real.sqrt (1 - t ^ (2 : ℕ)) • S x, t • e⟫_ℝ = 0 := by
     rw [real_inner_smul_left, real_inner_smul_right, hperp x]
     ring
-  have hnormsq : ‖Real.sqrt (1 - t ^ 2) • S x + t • e‖ ^ 2 = 1 := by
+  have hnormsq : ‖Real.sqrt (1 - t ^ (2 : ℕ)) • S x + t • e‖ ^ (2 : ℕ) = 1 := by
     rw [norm_add_sq_real, hinner, norm_smul, norm_smul, hSx, he, Real.norm_eq_abs,
       Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg ht0,
       mul_one, mul_one, Real.sq_sqrt hsq]
     ring
-  have hnn : 0 ≤ ‖Real.sqrt (1 - t ^ 2) • S x + t • e‖ := norm_nonneg _
+  have hnn : 0 ≤ ‖Real.sqrt (1 - t ^ (2 : ℕ)) • S x + t • e‖ := norm_nonneg _
   nlinarith [hnormsq, hnn]
 
 end SphereDeformation

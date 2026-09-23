@@ -114,7 +114,7 @@ theorem realPart_eq_twoBranch {c : ℝ} (hc : c ≠ 0) {W V : ℝ → ℂ}
   set v : ℝ := (V x).re with hv
   set C : ℝ := Real.cos (c * x) with hCdef
   set S : ℝ := Real.sin (c * x) with hSdef
-  have hpy : S ^ 2 + C ^ 2 = 1 := by
+  have hpy : S ^ (2 : ℕ) + C ^ (2 : ℕ) = 1 := by
     rw [hSdef, hCdef]
     exact Real.sin_sq_add_cos_sq (c * x)
   have hval : radialInteractionPlus c W V x
@@ -143,7 +143,7 @@ theorem abs_radialAmpSin_le (c : ℝ) (W V : ℝ → ℂ) (x : ℝ) :
 
 theorem hasDerivAt_radialAmpCos {c x : ℝ} (hc : c ≠ 0) {W V psi : ℝ → ℂ}
     (hW : HasDerivAt W (V x) x)
-    (hV : HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x) :
+    (hV : HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x) :
     HasDerivAt (radialAmpCos c W V)
       (2 * (Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x
         / (2 * Complex.I * (c : ℂ))).re) x := by
@@ -153,7 +153,7 @@ theorem hasDerivAt_radialAmpCos {c x : ℝ} (hc : c ≠ 0) {W V psi : ℝ → �
 
 theorem hasDerivAt_radialAmpSin {c x : ℝ} (hc : c ≠ 0) {W V psi : ℝ → ℂ}
     (hW : HasDerivAt W (V x) x)
-    (hV : HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x) :
+    (hV : HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x) :
     HasDerivAt (radialAmpSin c W V)
       (-(2 * (Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x
         / (2 * Complex.I * (c : ℂ))).im)) x := by
@@ -200,21 +200,21 @@ theorem abs_transport_deriv_im_le {c : ℝ} (hc : 0 < c) (psi W : ℝ → ℂ) (
 symbol record wants, with `K' = κ K L / c` — one power of the bandwidth small. -/
 theorem abs_transport_deriv_comp_le {c κ K L x : ℝ} (hc : 0 < c) (hκ : 0 ≤ κ) (hK : 0 ≤ K)
     (hx : 0 < x) {psi W : ℝ → ℂ} {Φ Φ' : ℝ → ℝ}
-    (hpsi : ‖psi (Φ x)‖ ≤ κ / x ^ 2) (hWb : ‖W (Φ x)‖ ≤ K) (hΦ : |Φ' x| ≤ L) :
+    (hpsi : ‖psi (Φ x)‖ ≤ κ / x ^ (2 : ℕ)) (hWb : ‖W (Φ x)‖ ≤ K) (hΦ : |Φ' x| ≤ L) :
     |2 * (Complex.exp (-Complex.I * (c : ℂ) * ((Φ x : ℝ) : ℂ)) * psi (Φ x) * W (Φ x)
-        / (2 * Complex.I * (c : ℂ))).re * Φ' x| ≤ (κ * K * L / c) / x ^ 2 := by
+        / (2 * Complex.I * (c : ℂ))).re * Φ' x| ≤ (κ * K * L / c) / x ^ (2 : ℕ) := by
   have hL : (0 : ℝ) ≤ L := le_trans (abs_nonneg _) hΦ
   have hbase := abs_transport_deriv_re_le hc psi W (Φ x)
-  have hmul : ‖psi (Φ x)‖ * ‖W (Φ x)‖ ≤ (κ / x ^ 2) * K :=
+  have hmul : ‖psi (Φ x)‖ * ‖W (Φ x)‖ ≤ (κ / x ^ (2 : ℕ)) * K :=
     mul_le_mul hpsi hWb (norm_nonneg _) (by positivity)
   rw [abs_mul]
   have hstep : |2 * (Complex.exp (-Complex.I * (c : ℂ) * ((Φ x : ℝ) : ℂ)) * psi (Φ x) * W (Φ x)
       / (2 * Complex.I * (c : ℂ))).re| * |Φ' x|
-      ≤ ((κ / x ^ 2) * K / c) * L := by
+      ≤ ((κ / x ^ (2 : ℕ)) * K / c) * L := by
     refine mul_le_mul ?_ hΦ (abs_nonneg _) (by positivity)
     refine hbase.trans ?_
     gcongr
-  have hval : ((κ / x ^ 2) * K / c) * L = (κ * K * L / c) / x ^ 2 := by
+  have hval : ((κ / x ^ (2 : ℕ)) * K / c) * L = (κ * K * L / c) / x ^ (2 : ℕ) := by
     field_simp
   linarith [hstep, hval.le, hval.ge]
 
@@ -222,7 +222,7 @@ section
 
 variable (hc : 0 < c)
   (hW : ∀ x, HasDerivAt W (V x) x)
-  (hV : ∀ x, HasDerivAt V ((psi x - (c : ℂ) ^ 2) * W x) x)
+  (hV : ∀ x, HasDerivAt V ((psi x - (c : ℂ) ^ (2 : ℕ)) * W x) x)
   (hWc : Continuous W) (hpsic : Continuous psi)
 
 include hc hW hV hWc hpsic

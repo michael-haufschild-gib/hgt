@@ -24,8 +24,8 @@ theorem swap_pairSum_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r) {A B P Q : ℕ}
     (∑ d₁ ∈ Finset.Ico P Q, ∑ d₂ ∈ Finset.Ico P Q, |a d₁| * |a d₂|
         * ‖∑ m ∈ Finset.Ico (effLow A Q) (effHigh B P + 1),
             maskedNdExp T r A B m d₁ * (starRingEnd ℂ) (maskedNdExp T r A B m d₂)‖)
-      ≤ ((effHigh B P + 1 - effLow A Q : ℕ) : ℝ) * (∑ d ∈ Finset.Ico P Q, |a d| ^ 2)
-        + (∑ d ∈ Finset.Ico P Q, |a d| ^ 2)
+      ≤ ((effHigh B P + 1 - effLow A Q : ℕ) : ℝ) * (∑ d ∈ Finset.Ico P Q, |a d| ^ (2 : ℕ))
+        + (∑ d ∈ Finset.Ico P Q, |a d| ^ (2 : ℕ))
           * (2 * ∑ h ∈ Finset.Icc 1 (Q - 1 - P),
               gapCorrBound T r P (Q - 1) (effLow A Q) (effHigh B P + 1) h) := by
   classical
@@ -57,10 +57,10 @@ theorem norm_maskedBlockSum_sq_le_swap_bound {T r : ℝ} (hT : 0 < T) (hr : 0 < 
     (hfour : ∀ d ∈ Finset.Ico P Q, 4 * (r / d) ≤ ((effLow A Q : ℕ) : ℝ))
     (hlam : ∀ d₁ ∈ Finset.Ico P Q, ∀ d₂ ∈ Finset.Ico P Q,
       curvedLambda (T * |r / d₁ - r / d₂|) ((effLow A Q : ℕ) : ℝ) ≤ 1) :
-    ‖maskedBlockSum T r A B L P Q a b‖ ^ 2
-      ≤ (∑ m ∈ Finset.Ico (effLow A Q) (effHigh B P + 1), |b m| ^ 2)
-        * (((effHigh B P + 1 - effLow A Q : ℕ) : ℝ) * (∑ d ∈ Finset.Ico P Q, |a d| ^ 2)
-          + (∑ d ∈ Finset.Ico P Q, |a d| ^ 2)
+    ‖maskedBlockSum T r A B L P Q a b‖ ^ (2 : ℕ)
+      ≤ (∑ m ∈ Finset.Ico (effLow A Q) (effHigh B P + 1), |b m| ^ (2 : ℕ))
+        * (((effHigh B P + 1 - effLow A Q : ℕ) : ℝ) * (∑ d ∈ Finset.Ico P Q, |a d| ^ (2 : ℕ))
+          + (∑ d ∈ Finset.Ico P Q, |a d| ^ (2 : ℕ))
             * (2 * ∑ h ∈ Finset.Icc 1 (Q - 1 - P),
                 gapCorrBound T r P (Q - 1) (effLow A Q) (effHigh B P + 1) h)) := by
   refine le_trans (norm_maskedBlockSum_sq_le_swap hA hB hP hQ hBL T r a b) ?_

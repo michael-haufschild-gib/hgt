@@ -17,11 +17,11 @@ noncomputable section
 /-- Squared numerator in the upper-half-plane pseudo-hyperbolic distance
 between points whose horizontal displacement is `d` and heights are `v,a`. -/
 def pairHyperbolicUpperSq (d v a : ℝ) : ℝ :=
-  d ^ 2 + (v - a) ^ 2
+  d ^ (2 : ℕ) + (v - a) ^ (2 : ℕ)
 
 /-- Squared denominator in that pseudo-hyperbolic distance. -/
 def pairHyperbolicLowerSq (d v a : ℝ) : ℝ :=
-  d ^ 2 + (v + a) ^ 2
+  d ^ (2 : ℕ) + (v + a) ^ (2 : ℕ)
 
 /-- Pseudo-hyperbolic radius in real coordinates. -/
 def pairHyperbolicRadius (d v a : ℝ) : ℝ :=
@@ -56,12 +56,12 @@ theorem pairHyperbolicUpperSq_lt_lowerSq
 
 /-- Exact factorization exposing the sign of one conjugate-pair imaginary
 energy.  Its only sign-changing factor is the signed squared distance
-`d^2 + v^2 - a^2`. -/
+`d^(2 : ℕ) + v^(2 : ℕ) - a^(2 : ℕ)`. -/
 theorem pairImaginaryEnergy_eq_signedDistance
     {m d v a : ℝ} (ha : 0 < a) (hv : 0 < v)
     (hupper : 0 < pairHyperbolicUpperSq d v a) :
     pairImaginaryEnergy m d v a =
-      2 * m * v * (d ^ 2 + v ^ 2 - a ^ 2) /
+      2 * m * v * (d ^ (2 : ℕ) + v ^ (2 : ℕ) - a ^ (2 : ℕ)) /
         (pairHyperbolicUpperSq d v a *
           pairHyperbolicLowerSq d v a) := by
   have hlower : 0 < pairHyperbolicLowerSq d v a :=
@@ -77,7 +77,7 @@ at every upper-half-plane point outside (or on) its Euclidean influence disk.
 theorem pairImaginaryEnergy_nonneg_of_height_sq_le
     {m d v a : ℝ} (hm : 0 ≤ m) (ha : 0 < a) (hv : 0 < v)
     (hupper : 0 < pairHyperbolicUpperSq d v a)
-    (houtside : a ^ 2 ≤ d ^ 2 + v ^ 2) :
+    (houtside : a ^ (2 : ℕ) ≤ d ^ (2 : ℕ) + v ^ (2 : ℕ)) :
     0 ≤ pairImaginaryEnergy m d v a := by
   rw [pairImaginaryEnergy_eq_signedDistance ha hv hupper]
   exact div_nonneg
@@ -91,7 +91,7 @@ sufficient: it exactly characterizes nonnegative pair energy. -/
 theorem pairImaginaryEnergy_nonneg_iff_height_sq_le
     {m d v a : ℝ} (hm : 0 < m) (ha : 0 < a) (hv : 0 < v)
     (hupper : 0 < pairHyperbolicUpperSq d v a) :
-    0 ≤ pairImaginaryEnergy m d v a ↔ a ^ 2 ≤ d ^ 2 + v ^ 2 := by
+    0 ≤ pairImaginaryEnergy m d v a ↔ a ^ (2 : ℕ) ≤ d ^ (2 : ℕ) + v ^ (2 : ℕ) := by
   rw [pairImaginaryEnergy_eq_signedDistance ha hv hupper]
   have hcoeff : 0 < 2 * m * v := by positivity
   have hden : 0 < pairHyperbolicUpperSq d v a *
@@ -112,7 +112,7 @@ exactly when the evaluation point lies strictly inside its influence disk. -/
 theorem pairImaginaryEnergy_neg_iff_height_sq_lt
     {m d v a : ℝ} (hm : 0 < m) (ha : 0 < a) (hv : 0 < v)
     (hupper : 0 < pairHyperbolicUpperSq d v a) :
-    pairImaginaryEnergy m d v a < 0 ↔ d ^ 2 + v ^ 2 < a ^ 2 := by
+    pairImaginaryEnergy m d v a < 0 ↔ d ^ (2 : ℕ) + v ^ (2 : ℕ) < a ^ (2 : ℕ) := by
   rw [pairImaginaryEnergy_eq_signedDistance ha hv hupper]
   have hcoeff : 0 < 2 * m * v := by positivity
   have hden : 0 < pairHyperbolicUpperSq d v a *
@@ -132,7 +132,7 @@ theorem pairImaginaryEnergy_neg_iff_height_sq_lt
 
 theorem pairHyperbolicRadius_sq
     {d v a : ℝ} (ha : 0 < a) (hv : 0 < v) :
-    pairHyperbolicRadius d v a ^ 2 =
+    pairHyperbolicRadius d v a ^ (2 : ℕ) =
       pairHyperbolicUpperSq d v a / pairHyperbolicLowerSq d v a := by
   unfold pairHyperbolicRadius
   apply Real.sq_sqrt
@@ -155,7 +155,7 @@ theorem pairHyperbolicRadius_lt_one
     pairHyperbolicRadius d v a < 1 := by
   let r := pairHyperbolicRadius d v a
   have hr0 : 0 ≤ r := pairHyperbolicRadius_nonneg d v a
-  have hrsq : r ^ 2 = pairHyperbolicUpperSq d v a /
+  have hrsq : r ^ (2 : ℕ) = pairHyperbolicUpperSq d v a /
       pairHyperbolicLowerSq d v a := pairHyperbolicRadius_sq ha hv
   have hratio : pairHyperbolicUpperSq d v a /
       pairHyperbolicLowerSq d v a < 1 :=
@@ -184,8 +184,8 @@ theorem pair_height_lower_bound
   by_cases hav : a ≤ v
   · nlinarith
   · have hva : v < a := lt_of_not_ge hav
-    let A : ℝ := (a - v) ^ 2
-    let B : ℝ := (a + v) ^ 2
+    let A : ℝ := (a - v) ^ (2 : ℕ)
+    let B : ℝ := (a + v) ^ (2 : ℕ)
     let U : ℝ := pairHyperbolicUpperSq d v a
     let L : ℝ := pairHyperbolicLowerSq d v a
     have hB : 0 < B := by
@@ -197,17 +197,17 @@ theorem pair_height_lower_bound
       dsimp only [A, B]
       nlinarith
     have hcross : A * L ≤ U * B := by
-      have hid : U * B - A * L = d ^ 2 * (B - A) := by
+      have hid : U * B - A * L = d ^ (2 : ℕ) * (B - A) := by
         dsimp only [A, B, U, L]
         unfold pairHyperbolicUpperSq pairHyperbolicLowerSq
         ring
       nlinarith [mul_nonneg (sq_nonneg d) hBA]
     have hratio : A / B ≤ U / L :=
       (div_le_div_iff₀ hB hL).2 hcross
-    have hrsq : r ^ 2 = U / L := by
+    have hrsq : r ^ (2 : ℕ) = U / L := by
       exact pairHyperbolicRadius_sq ha hv
     have hquotpos : 0 ≤ (a - v) / (a + v) := by positivity
-    have hquotSq : ((a - v) / (a + v)) ^ 2 = A / B := by
+    have hquotSq : ((a - v) / (a + v)) ^ (2 : ℕ) = A / B := by
       dsimp only [A, B]
       field_simp [(add_pos ha hv).ne']
     have hquot_le_r : (a - v) / (a + v) ≤ r := by
@@ -231,8 +231,8 @@ theorem pair_height_lower_bound_strict_of_horizontal_ne
   by_cases hav : a ≤ v
   · nlinarith
   · have hva : v < a := lt_of_not_ge hav
-    let A : ℝ := (a - v) ^ 2
-    let B : ℝ := (a + v) ^ 2
+    let A : ℝ := (a - v) ^ (2 : ℕ)
+    let B : ℝ := (a + v) ^ (2 : ℕ)
     let U : ℝ := pairHyperbolicUpperSq d v a
     let L : ℝ := pairHyperbolicLowerSq d v a
     have hB : 0 < B := by
@@ -243,17 +243,17 @@ theorem pair_height_lower_bound_strict_of_horizontal_ne
       dsimp only [A, B]
       nlinarith
     have hcross : A * L < U * B := by
-      have hid : U * B - A * L = d ^ 2 * (B - A) := by
+      have hid : U * B - A * L = d ^ (2 : ℕ) * (B - A) := by
         dsimp only [A, B, U, L]
         unfold pairHyperbolicUpperSq pairHyperbolicLowerSq
         ring
       nlinarith [mul_pos (sq_pos_of_ne_zero hd) hBA]
     have hratio : A / B < U / L :=
       (div_lt_div_iff₀ hB hL).2 hcross
-    have hrsq : r ^ 2 = U / L := by
+    have hrsq : r ^ (2 : ℕ) = U / L := by
       exact pairHyperbolicRadius_sq ha hv
     have hquotpos : 0 ≤ (a - v) / (a + v) := by positivity
-    have hquotSq : ((a - v) / (a + v)) ^ 2 = A / B := by
+    have hquotSq : ((a - v) / (a + v)) ^ (2 : ℕ) = A / B := by
       dsimp only [A, B]
       field_simp [(add_pos ha hv).ne']
     have hquot_lt_r : (a - v) / (a + v) < r := by
@@ -269,41 +269,41 @@ theorem pairImaginaryEnergy_eq_hyperbolicNormalForm
     {m d v a : ℝ} (ha : 0 < a) (hv : 0 < v)
     (hupper : 0 < pairHyperbolicUpperSq d v a) :
     pairImaginaryEnergy m d v a =
-      m * (1 - pairHyperbolicRadius d v a ^ 2) /
-          (4 * a * v * pairHyperbolicRadius d v a ^ 2) *
-        (v * (1 + pairHyperbolicRadius d v a ^ 2) -
-          a * (1 - pairHyperbolicRadius d v a ^ 2)) := by
+      m * (1 - pairHyperbolicRadius d v a ^ (2 : ℕ)) /
+          (4 * a * v * pairHyperbolicRadius d v a ^ (2 : ℕ)) *
+        (v * (1 + pairHyperbolicRadius d v a ^ (2 : ℕ)) -
+          a * (1 - pairHyperbolicRadius d v a ^ (2 : ℕ))) := by
   let U := pairHyperbolicUpperSq d v a
   let L := pairHyperbolicLowerSq d v a
   let r := pairHyperbolicRadius d v a
   have hU : 0 < U := hupper
   have hL : 0 < L := pairHyperbolicLowerSq_pos ha hv
   have hr : 0 < r := pairHyperbolicRadius_pos ha hv hupper
-  have hrsq : r ^ 2 = U / L := pairHyperbolicRadius_sq ha hv
+  have hrsq : r ^ (2 : ℕ) = U / L := pairHyperbolicRadius_sq ha hv
   have hdiff : L - U = 4 * a * v := by
     dsimp only [U, L]
     unfold pairHyperbolicUpperSq pairHyperbolicLowerSq
     ring
   unfold pairImaginaryEnergy
   change m * ((v - a) / U + (v + a) / L) = _
-  change _ = m * (1 - r ^ 2) / (4 * a * v * r ^ 2) *
-    (v * (1 + r ^ 2) - a * (1 - r ^ 2))
-  have hUeq : U = r ^ 2 * L := by
+  change _ = m * (1 - r ^ (2 : ℕ)) / (4 * a * v * r ^ (2 : ℕ)) *
+    (v * (1 + r ^ (2 : ℕ)) - a * (1 - r ^ (2 : ℕ)))
+  have hUeq : U = r ^ (2 : ℕ) * L := by
     apply (eq_div_iff hL.ne').mp at hrsq
     nlinarith
   rw [hUeq] at hdiff ⊢
-  have hcoeff : L * (1 - r ^ 2) = 4 * a * v := by
+  have hcoeff : L * (1 - r ^ (2 : ℕ)) = 4 * a * v := by
     nlinarith
   field_simp [hL.ne', ha.ne', hv.ne', hr.ne']
-  change m * v * a * (v - a + r ^ 2 * (v + a)) * 4 =
-    m * L * (1 - r ^ 2) *
-      (v * (1 + r ^ 2) - a * (1 - r ^ 2))
+  change m * v * a * (v - a + r ^ (2 : ℕ) * (v + a)) * 4 =
+    m * L * (1 - r ^ (2 : ℕ)) *
+      (v * (1 + r ^ (2 : ℕ)) - a * (1 - r ^ (2 : ℕ)))
   calc
-    m * v * a * (v - a + r ^ 2 * (v + a)) * 4 =
+    m * v * a * (v - a + r ^ (2 : ℕ) * (v + a)) * 4 =
         m * (4 * a * v) *
-          (v * (1 + r ^ 2) - a * (1 - r ^ 2)) := by ring
-    _ = m * (L * (1 - r ^ 2)) *
-          (v * (1 + r ^ 2) - a * (1 - r ^ 2)) := by rw [hcoeff]
+          (v * (1 + r ^ (2 : ℕ)) - a * (1 - r ^ (2 : ℕ))) := by ring
+    _ = m * (L * (1 - r ^ (2 : ℕ))) *
+          (v * (1 + r ^ (2 : ℕ)) - a * (1 - r ^ (2 : ℕ))) := by rw [hcoeff]
     _ = _ := by ring
 
 /-- Universal one-pair hyperbolic-energy inequality.  No horizontal
@@ -321,10 +321,10 @@ theorem pairImaginaryEnergy_ge_neg_hyperbolicCost
   rw [pairImaginaryEnergy_eq_hyperbolicNormalForm ha hv hupper]
   unfold pairHyperbolicCost
   change -(m / (2 * a) * (1 / r - r)) ≤
-    m * (1 - r ^ 2) / (4 * a * v * r ^ 2) *
-      (v * (1 + r ^ 2) - a * (1 - r ^ 2))
+    m * (1 - r ^ (2 : ℕ)) / (4 * a * v * r ^ (2 : ℕ)) *
+      (v * (1 + r ^ (2 : ℕ)) - a * (1 - r ^ (2 : ℕ)))
   have hfactor : 0 ≤
-      m * (1 - r ^ 2) * (1 + r) := by
+      m * (1 - r ^ (2 : ℕ)) * (1 + r) := by
     exact mul_nonneg (mul_nonneg hm (by nlinarith)) (by nlinarith)
   have hcore : 0 ≤ v * (1 + r) - a * (1 - r) := by linarith
   field_simp [ha.ne', hv.ne', hr.ne']
@@ -348,9 +348,9 @@ theorem pairImaginaryEnergy_gt_neg_hyperbolicCost_of_horizontal_ne
   rw [pairImaginaryEnergy_eq_hyperbolicNormalForm ha hv hupper]
   unfold pairHyperbolicCost
   change -(m / (2 * a) * (1 / r - r)) <
-    m * (1 - r ^ 2) / (4 * a * v * r ^ 2) *
-      (v * (1 + r ^ 2) - a * (1 - r ^ 2))
-  have hfactor : 0 < m * (1 - r ^ 2) * (1 + r) := by
+    m * (1 - r ^ (2 : ℕ)) / (4 * a * v * r ^ (2 : ℕ)) *
+      (v * (1 + r ^ (2 : ℕ)) - a * (1 - r ^ (2 : ℕ)))
+  have hfactor : 0 < m * (1 - r ^ (2 : ℕ)) * (1 + r) := by
     exact mul_pos (mul_pos hm (by nlinarith)) (by nlinarith)
   have hcore : 0 < v * (1 + r) - a * (1 - r) := by linarith
   field_simp [ha.ne', hv.ne', hr.ne']
@@ -363,7 +363,7 @@ def upperHalfPlanePseudoHyperbolicDistance (z alpha : ℂ) : ℝ :=
   ‖(z - alpha) / (z - starRingEnd ℂ alpha)‖
 
 private theorem norm_add_mul_I_sq (u w : ℝ) :
-    ‖(u : ℂ) + Complex.I * (w : ℂ)‖ ^ 2 = u ^ 2 + w ^ 2 := by
+    ‖(u : ℂ) + Complex.I * (w : ℂ)‖ ^ (2 : ℕ) = u ^ (2 : ℕ) + w ^ (2 : ℕ) := by
   rw [Complex.sq_norm, Complex.normSq_apply]
   simp
   ring
@@ -390,11 +390,11 @@ theorem upperHalfPlanePseudoHyperbolicDistance_eq_pairRadius
       ((x - c : ℝ) : ℂ) + Complex.I * ((v + a : ℝ) : ℂ) := by
     dsimp only [denominator]
     apply Complex.ext <;> simp
-  have hnumSq : ‖numerator‖ ^ 2 =
+  have hnumSq : ‖numerator‖ ^ (2 : ℕ) =
       pairHyperbolicUpperSq (x - c) v a := by
     rw [hnumerator, norm_add_mul_I_sq]
     rfl
-  have hdenSq : ‖denominator‖ ^ 2 =
+  have hdenSq : ‖denominator‖ ^ (2 : ℕ) =
       pairHyperbolicLowerSq (x - c) v a := by
     rw [hdenominator, norm_add_mul_I_sq]
     rfl
@@ -408,12 +408,12 @@ theorem upperHalfPlanePseudoHyperbolicDistance_eq_pairRadius
   let r := pairHyperbolicRadius (x - c) v a
   have hR0 : 0 ≤ R := norm_nonneg _
   have hr0 : 0 ≤ r := pairHyperbolicRadius_nonneg (x - c) v a
-  have hRsq : R ^ 2 = pairHyperbolicUpperSq (x - c) v a /
+  have hRsq : R ^ (2 : ℕ) = pairHyperbolicUpperSq (x - c) v a /
       pairHyperbolicLowerSq (x - c) v a := by
     dsimp only [R, upperHalfPlanePseudoHyperbolicDistance]
-    change ‖numerator / denominator‖ ^ 2 = _
+    change ‖numerator / denominator‖ ^ (2 : ℕ) = _
     rw [Complex.norm_div, div_pow, hnumSq, hdenSq]
-  have hrsq : r ^ 2 = pairHyperbolicUpperSq (x - c) v a /
+  have hrsq : r ^ (2 : ℕ) = pairHyperbolicUpperSq (x - c) v a /
       pairHyperbolicLowerSq (x - c) v a :=
     pairHyperbolicRadius_sq ha hv
   nlinarith
@@ -424,9 +424,9 @@ def onePairLogDerivativeContribution (m : ℝ) (alpha z : ℂ) : ℂ :=
     (-(m : ℂ)) / (z - starRingEnd ℂ alpha)
 
 private theorem neg_real_div_add_mul_I_im
-    (m u w : ℝ) (hden : u ^ 2 + w ^ 2 ≠ 0) :
+    (m u w : ℝ) (hden : u ^ (2 : ℕ) + w ^ (2 : ℕ) ≠ 0) :
     ((-(m : ℂ)) / ((u : ℂ) + Complex.I * (w : ℂ))).im =
-      m * w / (u ^ 2 + w ^ 2) := by
+      m * w / (u ^ (2 : ℕ) + w ^ (2 : ℕ)) := by
   rw [Complex.div_im]
   simp only [Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
     Complex.ofReal_im, Complex.add_re, Complex.add_im, Complex.I_re,
@@ -443,9 +443,9 @@ theorem onePairLogDerivativeContribution_im
       ((c : ℂ) + Complex.I * (a : ℂ))
       ((x : ℂ) + Complex.I * (v : ℂ))).im =
         pairImaginaryEnergy m (x - c) v a := by
-  have hU : (x - c) ^ 2 + (v - a) ^ 2 ≠ 0 := by
+  have hU : (x - c) ^ (2 : ℕ) + (v - a) ^ (2 : ℕ) ≠ 0 := by
     exact ne_of_gt hupper
-  have hL : (x - c) ^ 2 + (v + a) ^ 2 ≠ 0 := by
+  have hL : (x - c) ^ (2 : ℕ) + (v + a) ^ (2 : ℕ) ≠ 0 := by
     exact ne_of_gt (pairHyperbolicLowerSq_pos (d := x - c) ha hv)
   have hsubUpper :
       ((x : ℂ) + Complex.I * (v : ℂ)) -
@@ -468,8 +468,8 @@ theorem onePairLogDerivativeContribution_im
 theorem onePairLogDerivativeContribution_im_nonneg_of_height_sq_le
     {m : ℝ} (hm : 0 ≤ m) {z alpha : ℂ}
     (hz : 0 < z.im) (halpha : 0 < alpha.im) (hne : z ≠ alpha)
-    (houtside : alpha.im ^ 2 ≤
-      (z.re - alpha.re) ^ 2 + z.im ^ 2) :
+    (houtside : alpha.im ^ (2 : ℕ) ≤
+      (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ)) :
     0 ≤ (onePairLogDerivativeContribution m alpha z).im := by
   have hupper : 0 <
       pairHyperbolicUpperSq (z.re - alpha.re) z.im alpha.im := by
@@ -497,7 +497,7 @@ theorem onePairLogDerivativeContribution_im_nonneg_iff_height_sq_le
     {m : ℝ} (hm : 0 < m) {z alpha : ℂ}
     (hz : 0 < z.im) (halpha : 0 < alpha.im) (hne : z ≠ alpha) :
     0 ≤ (onePairLogDerivativeContribution m alpha z).im ↔
-      alpha.im ^ 2 ≤ (z.re - alpha.re) ^ 2 + z.im ^ 2 := by
+      alpha.im ^ (2 : ℕ) ≤ (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) := by
   have hupper : 0 <
       pairHyperbolicUpperSq (z.re - alpha.re) z.im alpha.im := by
     rw [show pairHyperbolicUpperSq (z.re - alpha.re) z.im alpha.im =
@@ -524,7 +524,7 @@ theorem onePairLogDerivativeContribution_im_neg_iff_height_sq_lt
     {m : ℝ} (hm : 0 < m) {z alpha : ℂ}
     (hz : 0 < z.im) (halpha : 0 < alpha.im) (hne : z ≠ alpha) :
     (onePairLogDerivativeContribution m alpha z).im < 0 ↔
-      (z.re - alpha.re) ^ 2 + z.im ^ 2 < alpha.im ^ 2 := by
+      (z.re - alpha.re) ^ (2 : ℕ) + z.im ^ (2 : ℕ) < alpha.im ^ (2 : ℕ) := by
   rw [← not_le,
     onePairLogDerivativeContribution_im_nonneg_iff_height_sq_le
       hm hz halpha hne, not_le]

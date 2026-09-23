@@ -40,7 +40,7 @@ theorem integral_normSq_ramareBilinear_ladder_affine {P : Finset ℕ} (M : ℕ)
       ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖
         ≤ ladderCofactorSup M Q η s j) :
     ∀ T : ℝ, G ≤ T → T ≤ T₀ →
-      (∫ w in Set.Icc (-T) T, ‖ramareBilinear P M w‖ ^ 2)
+      (∫ w in Set.Icc (-T) T, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
         ≤ ramareLadderSlope M L Q η (ladderPrimeSup Q η ρ) * T
           + ramareLadderConst M L Q η w₀ (ladderPrimeSup Q η ρ) (ladderCofactorSup M Q η s)
               (ladderPrimeCard P Q η) := by
@@ -88,21 +88,21 @@ theorem sum_sq_fibreSum_moebius_le_ramareLadder_final {x h : ℝ} (hx : 4 ≤ x)
     (hU : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly (ramareCofactorCoeff (Nat.primesLE z)) (geomCofactorBlock M Q η j) w‖
         ≤ ladderCofactorSup M Q η s j) :
-    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ 2
+    ∑ a ∈ outerBlock x h, (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ (2 : ℕ)
       ≤ 16 * Real.sqrt x
-          * (2 * (fibreWidth x h) ^ 2
+          * (2 * (fibreWidth x h) ^ (2 : ℕ)
               * (ramareLadderSlope M L Q η (ladderPrimeSup Q η ρ) * G
                 + ramareLadderConst M L Q η w₀ (ladderPrimeSup Q η ρ)
                     (ladderCofactorSup M Q η s) (ladderPrimeCard (Nat.primesLE z) Q η))
             + (4 * (ramareLadderSlope M L Q η (ladderPrimeSup Q η ρ)
                     + 5 * Real.pi / 2 * (M : ℝ)
                     + 5 * Real.exp 1 / 2 * (M : ℝ) * (M : ℝ) / T₀)
-                / (Real.pi ^ 2 * G)
+                / (Real.pi ^ (2 : ℕ) * G)
               + 4 * ramareLadderConst M L Q η w₀ (ladderPrimeSup Q η ρ)
                     (ladderCofactorSup M Q η s) (ladderPrimeCard (Nat.primesLE z) Q η)
-                / (3 * Real.pi ^ 2 * G ^ 2)))
+                / (3 * Real.pi ^ (2 : ℕ) * G ^ (2 : ℕ))))
         + 204 * (Real.sqrt x + 1)
-        + 2 * ((outerBlock x h).card : ℝ) * (fibreRamareSieveError h z r lam) ^ 2 := by
+        + 2 * ((outerBlock x h).card : ℝ) * (fibreRamareSieveError h z r lam) ^ (2 : ℕ) := by
   classical
   have hPprime : ∀ q ∈ Nat.primesLE z, q.Prime := fun q hq => Nat.prime_of_mem_primesLE hq
   have hmid := integral_normSq_ramareBilinear_ladder_affine (P := Nat.primesLE z) M hQ hη hG

@@ -151,7 +151,7 @@ private theorem nearHilbertTwentiethCircuitBudget_entropy_majorant
     calc
       1 + 80 * R ≤ 128 * 2 ^ n := by omega
       _ = 2 ^ (n + 7) := by
-        rw [show (128 : ℕ) = 2 ^ 7 by norm_num, ← pow_add]
+        rw [show (128 : ℕ) = 2 ^ (7 : ℕ) by norm_num, ← pow_add]
         congr 1
         omega
   have hterm {R : ℕ} (hRmem : R ∈ Finset.range (s + 1)) :

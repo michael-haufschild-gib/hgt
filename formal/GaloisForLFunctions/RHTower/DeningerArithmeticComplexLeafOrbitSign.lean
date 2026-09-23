@@ -18,14 +18,14 @@ namespace GaloisForLFunctions.RHTower
 
 /-- Coordinate formula for the real determinant of `1 - a` on a complex line. -/
 theorem deningerComplexLeaf_returnDet_eq_normSq (a : ℂ) :
-    (1 - a.re) ^ 2 + a.im ^ 2 = Complex.normSq (1 - a) := by
+    (1 - a.re) ^ (2 : ℕ) + a.im ^ (2 : ℕ) = Complex.normSq (1 - a) := by
   simp [Complex.normSq]
   ring
 
 /-- A nondegenerate complex-linear return map has positive real determinant. -/
 theorem deningerComplexLeaf_returnDet_pos
     {a : ℂ} (ha : a ≠ 1) :
-    0 < (1 - a.re) ^ 2 + a.im ^ 2 := by
+    0 < (1 - a.re) ^ (2 : ℕ) + a.im ^ (2 : ℕ) := by
   rw [deningerComplexLeaf_returnDet_eq_normSq]
   exact Complex.normSq_pos.mpr (sub_ne_zero.mpr ha.symm)
 
@@ -73,7 +73,7 @@ theorem id_sub_complexLeafReturn (a : ℂ) :
 /-- The real Lefschetz determinant of a complex-linear return map is `|1 - a|²`. -/
 theorem det_id_sub_complexLeafReturn (a : ℂ) :
     LinearMap.det ((LinearMap.id : ℂ →ₗ[ℝ] ℂ) - complexLeafReturn a)
-      = (1 - a.re) ^ 2 + a.im ^ 2 := by
+      = (1 - a.re) ^ (2 : ℕ) + a.im ^ (2 : ℕ) := by
   rw [id_sub_complexLeafReturn, det_complexLeafReturn,
     deningerComplexLeaf_returnDet_eq_normSq]
 

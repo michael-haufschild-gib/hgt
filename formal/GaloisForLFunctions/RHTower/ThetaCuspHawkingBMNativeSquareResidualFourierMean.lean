@@ -26,17 +26,17 @@ private theorem horizontalPoint_continuous {y : ℝ} (hy : 0 < y) :
   exact (contMDiffAt_ofComplex (n := 0) (by simpa using hy)).continuousAt.comp hm.continuousAt
 
 private theorem scalarSquare_unit_mean (q : XiZeroCopy) {y : ℝ} (hy : 0 < y) :
-    (∫ x in Ico (0:ℝ) 1, scalar (center q) ![x,y] ^2) =
-      principal (center q) ![0,y] ^2+8*∑' N, amplitude (center q) y N^2 := by
-  have hp : Function.Periodic (fun x : ℝ => scalar (center q) ![x,y] ^2) 1 := by
+    (∫ x in Ico (0:ℝ) 1, scalar (center q) ![x,y] ^(2 : ℕ)) =
+      principal (center q) ![0,y] ^(2 : ℕ)+8*∑' N, amplitude (center q) y N^(2 : ℕ) := by
+  have hp : Function.Periodic (fun x : ℝ => scalar (center q) ![x,y] ^(2 : ℕ)) 1 := by
     intro x
     have he : scalar (center q) ![x+1,y] = scalar (center q) ![x,y] := by
       simpa [scalar] using d4BM_completedEisensteinCuspLeg_scalar_periodic (center q) y x
     dsimp only
     rw [he]
   have hs := hp.intervalIntegral_add_eq 0 (-1/2)
-  have hs' : (∫ x in (0:ℝ)..1, scalar (center q) ![x,y] ^2) =
-      ∫ x in (-1/2:ℝ)..(1/2:ℝ), scalar (center q) ![x,y] ^2 := by
+  have hs' : (∫ x in (0:ℝ)..1, scalar (center q) ![x,y] ^(2 : ℕ)) =
+      ∫ x in (-1/2:ℝ)..(1/2:ℝ), scalar (center q) ![x,y] ^(2 : ℕ) := by
     convert hs using 1 <;> norm_num
   rw [intervalIntegral.integral_of_le (show (0:ℝ)≤1 by norm_num),
     intervalIntegral.integral_of_le (show (-1/2:ℝ)≤1/2 by norm_num)] at hs'
@@ -45,9 +45,9 @@ private theorem scalarSquare_unit_mean (q : XiZeroCopy) {y : ℝ} (hy : 0 < y) :
 
 /-- Exact full source mean; the cutoff orbit correction is retained before the Mellin integral. -/
 theorem residualStripMean_eq_fourier (q : XiZeroCopy) {y : ℝ} (hy : 0 < y) :
-    residualStripMean q y = principal (center q) ![0,y] ^2/2+
-      4*(∑' N, amplitude (center q) y N^2)-squareCutoffStripMean q y := by
-  let F (x : ℝ) := scalar (center q) ![x,y] ^2
+    residualStripMean q y = principal (center q) ![0,y] ^(2 : ℕ)/2+
+      4*(∑' N, amplitude (center q) y N^(2 : ℕ))-squareCutoffStripMean q y := by
+  let F (x : ℝ) := scalar (center q) ![x,y] ^(2 : ℕ)
   let G (x : ℝ) := globalSquareResidual q (ofComplex (⟨x,y⟩:ℂ))
   let H (x : ℝ) := periodize (squareCutoffSeed q) (ofComplex (⟨x,y⟩:ℂ))
   have hF : Continuous F :=
@@ -74,7 +74,7 @@ theorem residualStripMean_eq_fourier (q : XiZeroCopy) {y : ℝ} (hy : 0 < y) :
   have hdiv : (∫ x in Ico (0:ℝ) 1, F x/2) = (∫ x in Ico (0:ℝ) 1, F x)/2 := by
     simp only [div_eq_mul_inv,integral_mul_const]
   rw [hdiv]
-  change (∫ x in Ico (0:ℝ) 1, scalar (center q) ![x,y] ^2)/2-squareCutoffStripMean q y = _
+  change (∫ x in Ico (0:ℝ) 1, scalar (center q) ![x,y] ^(2 : ℕ))/2-squareCutoffStripMean q y = _
   rw [scalarSquare_unit_mean q hy]
   ring
 
@@ -83,7 +83,7 @@ theorem scalarResidualPeriod_eq_full_fourier_mellin (q : XiZeroCopy)
     (P : D4BMEisensteinAbsoluteConvergenceParameter) :
     scalarResidualPeriod q (P.s-1/2) = reflectedCompletedLambda (2*P.s)*
       ∫ y in Ioi (0:ℝ), (y:ℂ)^(P.s-2)*
-        (principal (center q) ![0,y] ^2/2+4*(∑' N, amplitude (center q) y N^2)-
+        (principal (center q) ![0,y] ^(2 : ℕ)/2+4*(∑' N, amplitude (center q) y N^(2 : ℕ))-
           squareCutoffStripMean q y) := by
   rw [scalarResidualPeriod_eq_mellin]
   congr 1

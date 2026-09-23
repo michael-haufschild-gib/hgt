@@ -138,10 +138,10 @@ private theorem norm_complement_limit
     (hi : Tendsto (fun m => inner ℂ v (u m)) atTop (𝓝 0))
     (hn : Tendsto (fun m => ‖u m‖) atTop (𝓝 L)) :
     Tendsto (fun m => ‖(ℂ ∙ v)ᗮ.starProjection (u m)‖) atTop (𝓝 L) := by
-  have hscalar : Tendsto (fun m => inner ℂ v (u m) / ((‖v‖ ^ 2 : ℝ) : ℂ))
+  have hscalar : Tendsto (fun m => inner ℂ v (u m) / ((‖v‖ ^ (2 : ℕ) : ℝ) : ℂ))
       atTop (𝓝 (0 : ℂ)) := by
-    simpa only [zero_div] using hi.div_const ((‖v‖ ^ 2 : ℝ) : ℂ)
-  have hv : Tendsto (fun m => (inner ℂ v (u m) / ((‖v‖ ^ 2 : ℝ) : ℂ)) • v)
+    simpa only [zero_div] using hi.div_const ((‖v‖ ^ (2 : ℕ) : ℝ) : ℂ)
+  have hv : Tendsto (fun m => (inner ℂ v (u m) / ((‖v‖ ^ (2 : ℕ) : ℝ) : ℂ)) • v)
       atTop (𝓝 (0 : E)) := by
     simpa only [zero_smul] using hscalar.smul_const v
   have hproj : Tendsto (fun m => (ℂ ∙ v).starProjection (u m)) atTop (𝓝 (0 : E)) :=
@@ -220,7 +220,7 @@ private theorem leadingComplement_separates {s : MobiusThetaSourceL2}
   · intro hz
     have h := (ℂ ∙ xiThetaSourceL2)ᗮ.re_inner_starProjection_eq_normSq s
     change (inner ℂ (xiThetaLeadingComplement s) s).re =
-      ‖(ℂ ∙ xiThetaSourceL2)ᗮ.orthogonalProjectionOnto s‖ ^ 2 at h
+      ‖(ℂ ∙ xiThetaSourceL2)ᗮ.orthogonalProjectionOnto s‖ ^ (2 : ℕ) at h
     rw [hz, zero_re] at h
     have hnorm : ‖xiThetaLeadingComplement s‖ = 0 := by
       change ‖(ℂ ∙ xiThetaSourceL2)ᗮ.orthogonalProjectionOnto s‖ = 0
@@ -231,9 +231,9 @@ private theorem leadingComplement_separates {s : MobiusThetaSourceL2}
 The witness is the actual source's component under one fixed, divisor-independent projection. -/
 theorem eventually_gammaSixSource_not_dominated_by_pure_leading :
     ∀ᶠ n : ℕ in atTop, ∀ C : ℝ, ¬ ∀ g : MobiusThetaSourceL2,
-      ‖inner ℂ g (deningerGammaSixCountertransportedSource ⟨n + 3, by omega⟩)‖ ^ 2 ≤
+      ‖inner ℂ g (deningerGammaSixCountertransportedSource ⟨n + 3, by omega⟩)‖ ^ (2 : ℕ) ≤
         C * ‖inner ℂ g
-          (deningerGammaSixCountertransportedLeadingSource ⟨n + 3, by omega⟩)‖ ^ 2 := by
+          (deningerGammaSixCountertransportedLeadingSource ⟨n + 3, by omega⟩)‖ ^ (2 : ℕ) := by
   filter_upwards [eventually_xiThetaLeadingComplement_gammaSixSource_ne_zero] with n hn
   obtain ⟨hdark, hbright⟩ := leadingComplement_separates hn
   intro C hC

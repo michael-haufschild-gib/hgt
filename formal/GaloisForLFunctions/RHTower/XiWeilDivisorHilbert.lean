@@ -363,10 +363,10 @@ theorem differentiableAt_annihilator (a : XiDivisorL2) {s : ℂ}
 
 /-! ## §5 The identity theorem on the divisor complement -/
 
-noncomputable local instance : Countable XiDivisorSupport :=
+noncomputable local instance xiWeilDivisorHilbertInst1 : Countable XiDivisorSupport :=
   Set.countable_univ_iff.mp xiDivisorSupport_univ_countable
 
-noncomputable local instance : Countable XiZeroCopy := inferInstance
+noncomputable local instance xiWeilDivisorHilbertInst2 : Countable XiZeroCopy := inferInstance
 
 /-- The zero set of the centered completed zeta is countable: it is the range of
 the spectral-point map on a countable index. -/

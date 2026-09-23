@@ -139,7 +139,7 @@ theorem norm_zetaUpperBlaschkeSelectedLogDerivativeSummand_approach_le
       nlinarith [norm_nonneg ((x : ℂ) - alpha),
         norm_nonneg
           (upperBoundaryApproachPoint x y - starRingEnd ℂ alpha)]
-    have hproduct : r ^ 2 / 2 ≤ A * B := by
+    have hproduct : r ^ (2 : ℕ) / 2 ≤ A * B := by
       have hmul := mul_le_mul hhalf hboundaryReflected
         (norm_nonneg ((x : ℂ) - alpha)) hA.le
       dsimp [r, A, B] at hmul ⊢
@@ -168,9 +168,9 @@ theorem norm_zetaUpperBlaschkeSelectedLogDerivativeSummand_approach_le
           ring
       rw [hid, norm_mul, Complex.norm_real, norm_I, mul_one,
         Real.norm_eq_abs, abs_of_pos (by positivity)]
-    have hinv : 1 / (A * B) ≤ 2 / r ^ 2 := by
+    have hinv : 1 / (A * B) ≤ 2 / r ^ (2 : ℕ) := by
       have hAB : 0 < A * B := mul_pos hA hB
-      have hrSq : 0 < r ^ 2 := sq_pos_of_pos hr
+      have hrSq : 0 < r ^ (2 : ℕ) := sq_pos_of_pos hr
       rw [div_le_div_iff₀ hAB hrSq]
       nlinarith
     rw [zetaUpperBlaschkeSelectedLogDerivativeSummand, if_pos hupper,
@@ -182,17 +182,17 @@ theorem norm_zetaUpperBlaschkeSelectedLogDerivativeSummand_approach_le
       (analyticZetaZeroMultiplicity rho : ℝ) *
           (2 * alpha.im / (A * B)) ≤
         2 * ((analyticZetaZeroMultiplicity rho : ℝ) *
-          (2 * alpha.im / r ^ 2))
+          (2 * alpha.im / r ^ (2 : ℕ)))
     calc
       (analyticZetaZeroMultiplicity rho : ℝ) *
             (2 * alpha.im / (A * B)) =
           ((analyticZetaZeroMultiplicity rho : ℝ) *
             (2 * alpha.im)) * (1 / (A * B)) := by ring
       _ ≤ ((analyticZetaZeroMultiplicity rho : ℝ) *
-            (2 * alpha.im)) * (2 / r ^ 2) :=
+            (2 * alpha.im)) * (2 / r ^ (2 : ℕ)) :=
         mul_le_mul_of_nonneg_left hinv (by positivity)
       _ = 2 * ((analyticZetaZeroMultiplicity rho : ℝ) *
-          (2 * alpha.im / r ^ 2)) := by ring
+          (2 * alpha.im / r ^ (2 : ℕ))) := by ring
   · rw [zetaUpperBlaschkeSelectedLogDerivativeSummand, if_neg hupper,
       norm_zero, zetaUpperBlaschkeBoundaryDensitySummand, if_neg hupper,
       mul_zero]

@@ -60,8 +60,8 @@ theorem routePOneStepWildSaddlePrimeReciprocal_lt_twoStep (p : Nat.Primes) :
 
 /-- First even Hilbert--Carleman coordinate changed by the second stationary-phase correction. -/
 def routePWildSaddleQuadraticDet2Anomaly (p : Nat.Primes) : ℝ :=
-  routePTwoStepWildSaddlePrimeReciprocal p ^ 2 -
-    routePOneStepWildSaddlePrimeReciprocal p ^ 2
+  routePTwoStepWildSaddlePrimeReciprocal p ^ (2 : ℕ) -
+    routePOneStepWildSaddlePrimeReciprocal p ^ (2 : ℕ)
 
 theorem routePWildSaddleQuadraticDet2Anomaly_pos (p : Nat.Primes) :
     0 < routePWildSaddleQuadraticDet2Anomaly p := by
@@ -78,18 +78,18 @@ theorem summable_routePWildSaddleQuadraticDet2Anomaly :
     (memSchattenClass_two_iff_isHilbertSchmidt _).mp
       routePTwoStepWildSaddleSignedOperator_memSchattenClass_two
   have hsumSigned : Summable (fun i : RouteKSignedPrimeIndex =>
-      ‖routePTwoStepWildSaddleSignedMultiplier i‖ ^ 2) :=
+      ‖routePTwoStepWildSaddleSignedMultiplier i‖ ^ (2 : ℕ)) :=
     (HTGeometry.isHilbertSchmidt_ellTwoDiagonal_iff
       routePTwoStepWildSaddleSignedMultiplier
       norm_routePTwoStepWildSaddleSignedMultiplier_le_one).mp htwoHS
   have hsumPosNorm : Summable (fun p : Nat.Primes =>
-      ‖(routePTwoStepWildSaddlePrimeReciprocal p : ℂ)‖ ^ 2) := by
+      ‖(routePTwoStepWildSaddlePrimeReciprocal p : ℂ)‖ ^ (2 : ℕ)) := by
     simpa [Function.comp_def, routePTwoStepWildSaddleSignedMultiplier,
       Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (routePTwoStepWildSaddlePrimeReciprocal_nonneg _)] using
       hsumSigned.comp_injective Sum.inl_injective
   have hsumPos : Summable (fun p : Nat.Primes =>
-      routePTwoStepWildSaddlePrimeReciprocal p ^ 2) := by
+      routePTwoStepWildSaddlePrimeReciprocal p ^ (2 : ℕ)) := by
     simpa [Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (routePTwoStepWildSaddlePrimeReciprocal_nonneg _)] using
       hsumPosNorm
@@ -127,19 +127,19 @@ theorem routePWildSaddleOneToTwoCorrectionMultiplier_pair_sum_zero (p : Nat.Prim
 
 /-- The same signed pair doubles, rather than cancels, its quadratic correction. -/
 theorem routePWildSaddle_pairQuadraticCorrection_eq (p : Nat.Primes) :
-    routePTwoStepWildSaddlePrimeReciprocal p ^ 2 +
-        (-routePTwoStepWildSaddlePrimeReciprocal p) ^ 2 -
-      (routePOneStepWildSaddlePrimeReciprocal p ^ 2 +
-        (-routePOneStepWildSaddlePrimeReciprocal p) ^ 2) =
+    routePTwoStepWildSaddlePrimeReciprocal p ^ (2 : ℕ) +
+        (-routePTwoStepWildSaddlePrimeReciprocal p) ^ (2 : ℕ) -
+      (routePOneStepWildSaddlePrimeReciprocal p ^ (2 : ℕ) +
+        (-routePOneStepWildSaddlePrimeReciprocal p) ^ (2 : ℕ)) =
       2 * routePWildSaddleQuadraticDet2Anomaly p := by
   rw [routePWildSaddleQuadraticDet2Anomaly]
   ring
 
 theorem routePWildSaddle_pairQuadraticCorrection_pos (p : Nat.Primes) :
-    0 < routePTwoStepWildSaddlePrimeReciprocal p ^ 2 +
-        (-routePTwoStepWildSaddlePrimeReciprocal p) ^ 2 -
-      (routePOneStepWildSaddlePrimeReciprocal p ^ 2 +
-        (-routePOneStepWildSaddlePrimeReciprocal p) ^ 2) := by
+    0 < routePTwoStepWildSaddlePrimeReciprocal p ^ (2 : ℕ) +
+        (-routePTwoStepWildSaddlePrimeReciprocal p) ^ (2 : ℕ) -
+      (routePOneStepWildSaddlePrimeReciprocal p ^ (2 : ℕ) +
+        (-routePOneStepWildSaddlePrimeReciprocal p) ^ (2 : ℕ)) := by
   rw [routePWildSaddle_pairQuadraticCorrection_eq]
   nlinarith [routePWildSaddleQuadraticDet2Anomaly_pos p]
 
@@ -148,7 +148,7 @@ the square-spectrum factor. -/
 theorem pairedDet2Factor_eq_squareFactor (a z : ℂ) :
     ((1 - z * a) * Complex.exp (z * a)) *
         ((1 + z * a) * Complex.exp (-(z * a))) =
-      1 - z ^ 2 * a ^ 2 := by
+      1 - z ^ (2 : ℕ) * a ^ (2 : ℕ) := by
   calc
     ((1 - z * a) * Complex.exp (z * a)) *
           ((1 + z * a) * Complex.exp (-(z * a))) =
@@ -157,13 +157,13 @@ theorem pairedDet2Factor_eq_squareFactor (a z : ℂ) :
     _ = (1 - z * a) * (1 + z * a) := by
       rw [← Complex.exp_add]
       simp
-    _ = 1 - z ^ 2 * a ^ 2 := by ring
+    _ = 1 - z ^ (2 : ℕ) * a ^ (2 : ℕ) := by ring
 
 /-- At determinant parameter one, every second-step square factor is strictly below the
 corresponding first-step factor. -/
 theorem routePWildSaddle_twoStep_squareFactor_lt_oneStep (p : Nat.Primes) :
-    1 - routePTwoStepWildSaddlePrimeReciprocal p ^ 2 <
-      1 - routePOneStepWildSaddlePrimeReciprocal p ^ 2 := by
+    1 - routePTwoStepWildSaddlePrimeReciprocal p ^ (2 : ℕ) <
+      1 - routePOneStepWildSaddlePrimeReciprocal p ^ (2 : ℕ) := by
   have h := routePWildSaddleQuadraticDet2Anomaly_pos p
   rw [routePWildSaddleQuadraticDet2Anomaly] at h
   linarith
@@ -177,8 +177,8 @@ theorem routeP_wildSaddle_stokesParity_quadraticAnomaly :
     Summable routePWildSaddleQuadraticDet2Anomaly ∧
     0 < routePWildSaddleTotalQuadraticDet2Anomaly ∧
     ∀ p : Nat.Primes,
-      1 - routePTwoStepWildSaddlePrimeReciprocal p ^ 2 <
-        1 - routePOneStepWildSaddlePrimeReciprocal p ^ 2 := by
+      1 - routePTwoStepWildSaddlePrimeReciprocal p ^ (2 : ℕ) <
+        1 - routePOneStepWildSaddlePrimeReciprocal p ^ (2 : ℕ) := by
   exact ⟨routePWildSaddleOneToTwoCorrectionMultiplier_pair_sum_zero,
     summable_routePWildSaddleQuadraticDet2Anomaly,
     routePWildSaddleTotalQuadraticDet2Anomaly_pos,

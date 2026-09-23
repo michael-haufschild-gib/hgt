@@ -198,14 +198,14 @@ theorem fidelityReplicaPermutationFloor_le_factorial_mul_sqMoment
     {I : Type*} [Fintype I] [DecidableEq I]
     {weight : I → ℝ} (hweight : ∀ i, 0 ≤ weight i) (n : ℕ) :
     fidelityReplicaPermutationFloor weight n ≤
-      (n.factorial : ℝ) * (∑ i, weight i ^ 2) ^ n := by
+      (n.factorial : ℝ) * (∑ i, weight i ^ (2 : ℕ)) ^ n := by
   unfold fidelityReplicaPermutationFloor
   calc
     (∑ p ∈ Finset.univ.piAntidiag n,
         fidelityReplicaMultiplicityWeight weight p p) ≤
       ∑ p ∈ Finset.univ.piAntidiag n,
         (n.factorial : ℝ) * (Nat.multinomial Finset.univ p : ℝ) *
-          ∏ i, (weight i ^ 2) ^ p i := by
+          ∏ i, (weight i ^ (2 : ℕ)) ^ p i := by
       apply Finset.sum_le_sum
       intro p hp
       have hpSum := (Finset.mem_piAntidiag.mp hp).1
@@ -239,17 +239,17 @@ theorem fidelityReplicaPermutationFloor_le_factorial_mul_sqMoment
             mul_le_mul_of_nonneg_right hMM (mul_nonneg hPnonneg hPnonneg)
         _ = (n.factorial : ℝ) *
               (Nat.multinomial Finset.univ p : ℝ) *
-                ∏ i, (weight i ^ 2) ^ p i := by
+                ∏ i, (weight i ^ (2 : ℕ)) ^ p i := by
             simp only [pow_two, mul_pow, Finset.prod_mul_distrib]
     _ = (n.factorial : ℝ) *
         ∑ p ∈ Finset.univ.piAntidiag n,
           (Nat.multinomial Finset.univ p : ℝ) *
-            ∏ i, (weight i ^ 2) ^ p i := by
+            ∏ i, (weight i ^ (2 : ℕ)) ^ p i := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro p _
       ring
-    _ = (n.factorial : ℝ) * (∑ i, weight i ^ 2) ^ n := by
+    _ = (n.factorial : ℝ) * (∑ i, weight i ^ (2 : ℕ)) ^ n := by
       rw [Finset.sum_pow_eq_sum_piAntidiag]
 
 theorem finiteGridCoherenceCap_card_mul_pow_le_factorial
@@ -259,13 +259,13 @@ theorem finiteGridCoherenceCap_card_mul_pow_le_factorial
     ((finiteGridCoherenceCap M weight threshold).card : ℝ) *
         threshold ^ (2 * n) ≤
       (M : ℝ) ^ Fintype.card I * (n.factorial : ℝ) *
-        (∑ i, weight i ^ 2) ^ n := by
+        (∑ i, weight i ^ (2 : ℕ)) ^ n := by
   calc
     _ ≤ (M : ℝ) ^ Fintype.card I *
         fidelityReplicaPermutationFloor weight n :=
       finiteGridCoherenceCap_card_mul_pow_le M weight n hM threshold hthreshold
     _ ≤ (M : ℝ) ^ Fintype.card I *
-        ((n.factorial : ℝ) * (∑ i, weight i ^ 2) ^ n) := by
+        ((n.factorial : ℝ) * (∑ i, weight i ^ (2 : ℕ)) ^ n) := by
       exact mul_le_mul_of_nonneg_left
         (fidelityReplicaPermutationFloor_le_factorial_mul_sqMoment hweight n)
         (by positivity)

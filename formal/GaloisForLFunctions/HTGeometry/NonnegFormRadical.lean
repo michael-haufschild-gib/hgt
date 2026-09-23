@@ -24,7 +24,7 @@ variable {W : Type*} [AddCommGroup W] [Module ℝ W]
 
 /-- Cauchy–Schwarz for a nonnegative symmetric bilinear form. -/
 theorem bilinForm_sq_le (B : W →ₗ[ℝ] W →ₗ[ℝ] ℝ) (hsymm : ∀ x y, B x y = B y x)
-    (hnn : ∀ x, 0 ≤ B x x) (x y : W) : (B x y) ^ 2 ≤ B x x * B y y := by
+    (hnn : ∀ x, 0 ≤ B x x) (x y : W) : (B x y) ^ (2 : ℕ) ≤ B x x * B y y := by
   refine symmBilin_sq_le (S := fun u v => B u v) (comb := fun t u v => u + t • v) ?_ hnn x y
   intro t u v
   simp only [map_add, LinearMap.add_apply, map_smul, LinearMap.smul_apply, smul_eq_mul]

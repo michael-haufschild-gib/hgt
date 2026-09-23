@@ -32,20 +32,20 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H]
 
 /-- The squared distance between unit vectors. -/
 theorem norm_sub_sq_of_unit (u w : H) (hu : ‖u‖ = 1) (hw : ‖w‖ = 1) :
-    ‖u - w‖ ^ 2 = 2 - 2 * inner ℝ u w := by
+    ‖u - w‖ ^ (2 : ℕ) = 2 - 2 * inner ℝ u w := by
   rw [norm_sub_sq_real, hu, hw]
   ring
 
 /-- The squared distance between a unit vector and the negative of a unit vector. -/
 theorem norm_add_sq_of_unit (u w : H) (hu : ‖u‖ = 1) (hw : ‖w‖ = 1) :
-    ‖u + w‖ ^ 2 = 2 + 2 * inner ℝ u w := by
+    ‖u + w‖ ^ (2 : ℕ) = 2 + 2 * inner ℝ u w := by
   rw [norm_add_sq_real, hu, hw]
   ring
 
 /-- **The sign-optimized distance between unit vectors depends only on the angle.**  Minimizing
 over the sign of the second vector replaces the inner product by its absolute value. -/
 theorem min_norm_sub_sq_of_unit (u w : H) (hu : ‖u‖ = 1) (hw : ‖w‖ = 1) :
-    min (‖u - w‖ ^ 2) (‖u + w‖ ^ 2) = 2 - 2 * |inner ℝ u w| := by
+    min (‖u - w‖ ^ (2 : ℕ)) (‖u + w‖ ^ (2 : ℕ)) = 2 - 2 * |inner ℝ u w| := by
   rw [norm_sub_sq_of_unit u w hu hw, norm_add_sq_of_unit u w hu hw]
   by_cases h : 0 ≤ inner ℝ u w
   · rw [abs_of_nonneg h, min_eq_left (by linarith)]
@@ -58,7 +58,7 @@ theorem min_norm_sub_sq_of_unit (u w : H) (hu : ‖u‖ = 1) (hw : ‖w‖ = 1) 
 is at most `2ε`.  The sign is `+1` when the inner product is nonnegative and `-1` otherwise. -/
 theorem exists_sign_norm_sub_sq_le_of_unit (u w : H) (hu : ‖u‖ = 1) (hw : ‖w‖ = 1)
     {ε : ℝ} (h : 1 - ε ≤ |inner ℝ u w|) :
-    ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧ ‖u - σ • w‖ ^ 2 ≤ 2 * ε := by
+    ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧ ‖u - σ • w‖ ^ (2 : ℕ) ≤ 2 * ε := by
   by_cases hpos : 0 ≤ inner ℝ u w
   · refine ⟨1, Or.inl rfl, ?_⟩
     rw [one_smul, norm_sub_sq_of_unit u w hu hw]
@@ -80,7 +80,7 @@ theorem norm_inv_norm_smul {v : H} (hv : v ≠ 0) : ‖(‖v‖)⁻¹ • v‖ =
 /-- The sign-optimized distance between the normalizations of two nonzero vectors, in terms of the
 unnormalized inner product. -/
 theorem min_norm_sub_sq_normalize {u w : H} (hu : u ≠ 0) (hw : w ≠ 0) :
-    min (‖(‖u‖)⁻¹ • u - (‖w‖)⁻¹ • w‖ ^ 2) (‖(‖u‖)⁻¹ • u + (‖w‖)⁻¹ • w‖ ^ 2)
+    min (‖(‖u‖)⁻¹ • u - (‖w‖)⁻¹ • w‖ ^ (2 : ℕ)) (‖(‖u‖)⁻¹ • u + (‖w‖)⁻¹ • w‖ ^ (2 : ℕ))
       = 2 - 2 * (|inner ℝ u w| / (‖u‖ * ‖w‖)) := by
   rw [min_norm_sub_sq_of_unit _ _ (norm_inv_norm_smul hu) (norm_inv_norm_smul hw)]
   congr 2
@@ -96,7 +96,7 @@ projective statement of directional convergence to its metric statement. -/
 theorem tendsto_min_norm_sub_sq_of_unit {ι : Type*} {l : Filter ι} {u w : ι → H}
     (hu : ∀ i, ‖u i‖ = 1) (hw : ∀ i, ‖w i‖ = 1)
     (h : Filter.Tendsto (fun i => |inner ℝ (u i) (w i)|) l (nhds 1)) :
-    Filter.Tendsto (fun i => min (‖u i - w i‖ ^ 2) (‖u i + w i‖ ^ 2)) l (nhds 0) := by
+    Filter.Tendsto (fun i => min (‖u i - w i‖ ^ (2 : ℕ)) (‖u i + w i‖ ^ (2 : ℕ))) l (nhds 0) := by
   have h2 : Filter.Tendsto (fun i => 2 - 2 * |inner ℝ (u i) (w i)|) l (nhds (2 - 2 * 1)) :=
     Filter.Tendsto.sub tendsto_const_nhds (h.const_mul 2)
   norm_num at h2
@@ -107,8 +107,8 @@ theorem tendsto_min_norm_sub_sq_normalize {ι : Type*} {l : Filter ι} {u w : ι
     (hu : ∀ i, u i ≠ 0) (hw : ∀ i, w i ≠ 0)
     (h : Filter.Tendsto (fun i => |inner ℝ (u i) (w i)| / (‖u i‖ * ‖w i‖)) l (nhds 1)) :
     Filter.Tendsto
-      (fun i => min (‖(‖u i‖)⁻¹ • u i - (‖w i‖)⁻¹ • w i‖ ^ 2)
-        (‖(‖u i‖)⁻¹ • u i + (‖w i‖)⁻¹ • w i‖ ^ 2)) l (nhds 0) :=
+      (fun i => min (‖(‖u i‖)⁻¹ • u i - (‖w i‖)⁻¹ • w i‖ ^ (2 : ℕ))
+        (‖(‖u i‖)⁻¹ • u i + (‖w i‖)⁻¹ • w i‖ ^ (2 : ℕ))) l (nhds 0) :=
   tendsto_min_norm_sub_sq_of_unit (fun i => norm_inv_norm_smul (hu i))
     (fun i => norm_inv_norm_smul (hw i))
     (by
@@ -136,7 +136,7 @@ variable {n g x : H}
 theorem inner_sq_add_inner_sq_of_mem_span
     (hn : ‖n‖ = 1) (hg : ‖g‖ = 1) (hng : inner ℝ n g = 0)
     (hx : x ∈ Submodule.span ℝ ({n, g} : Set H)) :
-    inner ℝ x n ^ 2 + inner ℝ x g ^ 2 = ‖x‖ ^ 2 := by
+    inner ℝ x n ^ (2 : ℕ) + inner ℝ x g ^ (2 : ℕ) = ‖x‖ ^ (2 : ℕ) := by
   obtain ⟨a, b, hab⟩ := Submodule.mem_span_pair.mp hx
   have hgn : inner ℝ g n = 0 := by rw [real_inner_comm]; exact hng
   have hxn : inner ℝ x n = a := by
@@ -147,7 +147,7 @@ theorem inner_sq_add_inner_sq_of_mem_span
     rw [← hab, inner_add_left, real_inner_smul_left, real_inner_smul_left, hng,
       real_inner_self_eq_norm_sq, hg]
     ring
-  have hnorm : ‖x‖ ^ 2 = a ^ 2 + b ^ 2 := by
+  have hnorm : ‖x‖ ^ (2 : ℕ) = a ^ (2 : ℕ) + b ^ (2 : ℕ) := by
     rw [← real_inner_self_eq_norm_sq]
     nth_rewrite 2 [← hab]
     rw [inner_add_right, real_inner_smul_right, real_inner_smul_right, hxn, hxg]
@@ -159,7 +159,7 @@ deficit against `g` is exactly the squared relative component along the normal `
 theorem inner_normalize_sq_eq_one_sub
     (hn : ‖n‖ = 1) (hg : ‖g‖ = 1) (hng : inner ℝ n g = 0)
     (hx : x ∈ Submodule.span ℝ ({n, g} : Set H)) (hx0 : x ≠ 0) :
-    (inner ℝ x g / ‖x‖) ^ 2 = 1 - (inner ℝ x n / ‖x‖) ^ 2 := by
+    (inner ℝ x g / ‖x‖) ^ (2 : ℕ) = 1 - (inner ℝ x n / ‖x‖) ^ (2 : ℕ) := by
   have hxn : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx0
   have h := inner_sq_add_inner_sq_of_mem_span hn hg hng hx
   field_simp
@@ -171,10 +171,10 @@ theorem one_sub_sq_le_inner_normalize_sq
     (hn : ‖n‖ = 1) (hg : ‖g‖ = 1) (hng : inner ℝ n g = 0)
     (hx : x ∈ Submodule.span ℝ ({n, g} : Set H)) (hx0 : x ≠ 0)
     {δ : ℝ} (hδ : |inner ℝ x n| / ‖x‖ ≤ δ) :
-    1 - δ ^ 2 ≤ (inner ℝ x g / ‖x‖) ^ 2 := by
+    1 - δ ^ (2 : ℕ) ≤ (inner ℝ x g / ‖x‖) ^ (2 : ℕ) := by
   have hxn : (0 : ℝ) < ‖x‖ := norm_pos_iff.mpr hx0
   have heq := inner_normalize_sq_eq_one_sub hn hg hng hx hx0
-  have hsq : (inner ℝ x n / ‖x‖) ^ 2 ≤ δ ^ 2 := by
+  have hsq : (inner ℝ x n / ‖x‖) ^ (2 : ℕ) ≤ δ ^ (2 : ℕ) := by
     have habs : |inner ℝ x n / ‖x‖| ≤ δ := by
       rw [abs_div, abs_of_pos hxn]
       exact hδ
@@ -190,8 +190,8 @@ theorem tendsto_min_norm_sub_sq_normalize_of_eventually {ι : Type*} {l : Filter
     (hu : ∀ᶠ i in l, u i ≠ 0) (hw : ∀ᶠ i in l, w i ≠ 0)
     (h : Filter.Tendsto (fun i => |inner ℝ (u i) (w i)| / (‖u i‖ * ‖w i‖)) l (nhds 1)) :
     Filter.Tendsto
-      (fun i => min (‖(‖u i‖)⁻¹ • u i - (‖w i‖)⁻¹ • w i‖ ^ 2)
-        (‖(‖u i‖)⁻¹ • u i + (‖w i‖)⁻¹ • w i‖ ^ 2)) l (nhds 0) := by
+      (fun i => min (‖(‖u i‖)⁻¹ • u i - (‖w i‖)⁻¹ • w i‖ ^ (2 : ℕ))
+        (‖(‖u i‖)⁻¹ • u i + (‖w i‖)⁻¹ • w i‖ ^ (2 : ℕ))) l (nhds 0) := by
   have h2 : Filter.Tendsto
       (fun i => 2 - 2 * (|inner ℝ (u i) (w i)| / (‖u i‖ * ‖w i‖))) l (nhds (2 - 2 * 1)) :=
     Filter.Tendsto.sub tendsto_const_nhds (h.const_mul 2)
@@ -205,24 +205,24 @@ Lagrange-identity computation produces (no square roots are taken upstream). -/
 theorem tendsto_min_norm_sub_sq_normalize_of_inner_sq {ι : Type*} {l : Filter ι} {u w : ι → H}
     (hu : ∀ᶠ i in l, u i ≠ 0) (hw : ∀ᶠ i in l, w i ≠ 0)
     (h : Filter.Tendsto
-      (fun i => inner ℝ (u i) (w i) ^ 2 / (‖u i‖ ^ 2 * ‖w i‖ ^ 2)) l (nhds 1)) :
+      (fun i => inner ℝ (u i) (w i) ^ (2 : ℕ) / (‖u i‖ ^ (2 : ℕ) * ‖w i‖ ^ (2 : ℕ))) l (nhds 1)) :
     Filter.Tendsto
-      (fun i => min (‖(‖u i‖)⁻¹ • u i - (‖w i‖)⁻¹ • w i‖ ^ 2)
-        (‖(‖u i‖)⁻¹ • u i + (‖w i‖)⁻¹ • w i‖ ^ 2)) l (nhds 0) := by
+      (fun i => min (‖(‖u i‖)⁻¹ • u i - (‖w i‖)⁻¹ • w i‖ ^ (2 : ℕ))
+        (‖(‖u i‖)⁻¹ • u i + (‖w i‖)⁻¹ • w i‖ ^ (2 : ℕ))) l (nhds 0) := by
   refine tendsto_min_norm_sub_sq_normalize_of_eventually hu hw ?_
   have hs : Filter.Tendsto
-      (fun i => Real.sqrt (inner ℝ (u i) (w i) ^ 2 / (‖u i‖ ^ 2 * ‖w i‖ ^ 2))) l (nhds 1) := by
+      (fun i => Real.sqrt (inner ℝ (u i) (w i) ^ (2 : ℕ) / (‖u i‖ ^ (2 : ℕ) * ‖w i‖ ^ (2 : ℕ)))) l (nhds 1) := by
     have hc := (Real.continuous_sqrt.tendsto (1 : ℝ)).comp h
     rw [show (fun i => Real.sqrt
-      (inner ℝ (u i) (w i) ^ 2 / (‖u i‖ ^ 2 * ‖w i‖ ^ 2))) =
+      (inner ℝ (u i) (w i) ^ (2 : ℕ) / (‖u i‖ ^ (2 : ℕ) * ‖w i‖ ^ (2 : ℕ)))) =
         Real.sqrt ∘ fun i =>
-          inner ℝ (u i) (w i) ^ 2 / (‖u i‖ ^ 2 * ‖w i‖ ^ 2) by rfl]
+          inner ℝ (u i) (w i) ^ (2 : ℕ) / (‖u i‖ ^ (2 : ℕ) * ‖w i‖ ^ (2 : ℕ)) by rfl]
     simpa only [Real.sqrt_one] using hc
   refine hs.congr' ?_
   filter_upwards [hu, hw] with i hui hwi
   have ha : (0 : ℝ) < ‖u i‖ := norm_pos_iff.mpr hui
   have hb : (0 : ℝ) < ‖w i‖ := norm_pos_iff.mpr hwi
-  rw [show ‖u i‖ ^ 2 * ‖w i‖ ^ 2 = (‖u i‖ * ‖w i‖) ^ 2 by ring, ← div_pow,
+  rw [show ‖u i‖ ^ (2 : ℕ) * ‖w i‖ ^ (2 : ℕ) = (‖u i‖ * ‖w i‖) ^ (2 : ℕ) by ring, ← div_pow,
     Real.sqrt_sq_eq_abs, abs_div, abs_of_pos (mul_pos ha hb)]
 
 end GaloisForLFunctions

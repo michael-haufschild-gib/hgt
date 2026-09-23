@@ -50,11 +50,11 @@ theorem exists_linear_hsNormSq_soninApertureCoupling (N₀ : ℕ) (hN₀ : 1 ≤
   have hinv : (0 : ℝ) < (soninShellCutScale b c N κ)⁻¹ := inv_pos.mpr hrpos
   have hsum : ∑ k : Fin 3, hsNormSq (soninCouplingIdealErrors a b
       (soninShellCutScale b c N κ)⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)) k) /
-      ((1 : ℝ) / 2 / 6) ^ 2 = Dis / ((1 : ℝ) / 2 / 6) ^ 2 := by
+      ((1 : ℝ) / 2 / 6) ^ (2 : ℕ) = Dis / ((1 : ℝ) / 2 / 6) ^ (2 : ℕ) := by
     rw [← Finset.sum_div, hDis,
       sum_hsNormSq_soninCouplingIdealErrors a b (soninShellCutScale b c N κ)⁻¹ ha hb hinv]
   rw [hsum] at hbound
-  have harith : ((N : ℝ) - Dis / ((1 : ℝ) / 2 / 6) ^ 2) * (1 - (1 : ℝ) / 2) ^ 2 =
+  have harith : ((N : ℝ) - Dis / ((1 : ℝ) / 2 / 6) ^ (2 : ℕ)) * (1 - (1 : ℝ) / 2) ^ (2 : ℕ) =
       (N : ℝ) / 4 - 36 * Dis := by
     norm_num
     ring

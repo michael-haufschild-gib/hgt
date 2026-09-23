@@ -32,7 +32,7 @@ theorem linearPhase_shift (ω k c t x : ℝ) :
 
 /-- Field-level Galilean gauge with wave-number parameter `v`. -/
 noncomputable def galileanField (D v : ℝ) (u : ℝ → ℝ → ℂ) (t x : ℝ) : ℂ :=
-  u t (x - 2 * D * v * t) * linearPhase (-D * v ^ 2) v t x
+  u t (x - 2 * D * v * t) * linearPhase (-D * v ^ (2 : ℕ)) v t x
 
 theorem norm_galileanField (D v : ℝ) (u : ℝ → ℝ → ℂ) (t x : ℝ) :
     ‖galileanField D v u t x‖ = ‖u t (x - 2 * D * v * t)‖ := by

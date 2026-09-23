@@ -57,11 +57,11 @@ the prefix coordinates whose total weighted square budget is below `B`. -/
 theorem exists_sparsePrefixEmbedding_of_cofinally_small
     {P : Type*} [DecidableEq P] (r : P → ℝ) (B : ℝ) (hB : 0 < B)
     (hsmall : ∀ (F : Finset P) (d : ℝ), 0 < d →
-      ∃ p, p ∉ F ∧ 4 * r p ^ 2 < d) :
+      ∃ p, p ∉ F ∧ 4 * r p ^ (2 : ℕ) < d) :
     ∃ e : PrefixFunctionCoordinate ↪ P,
-      Summable ((Set.range e).indicator (fun p => 4 * r p ^ 2)) ∧
+      Summable ((Set.range e).indicator (fun p => 4 * r p ^ (2 : ℕ))) ∧
       sparseCoherenceBudget r e < B := by
-  let Good : ℕ × P → Prop := fun y => 4 * r y.2 ^ 2 < B / 4 / 2 ^ y.1
+  let Good : ℕ × P → Prop := fun y => 4 * r y.2 ^ (2 : ℕ) < B / 4 / 2 ^ y.1
   let LaterFresh : (ℕ × P) → (ℕ × P) → Prop :=
     fun x y => x.1 < y.1 ∧ x.2 ≠ y.2
   have hstep : ∀ s : Finset (ℕ × P), (∀ x ∈ s, Good x) →
@@ -100,7 +100,7 @@ theorem exists_sparsePrefixEmbedding_of_cofinally_small
   let qNat : PrefixFunctionCoordinate ≃ ℕ := prefixFunctionCoordinateEquivNat
   let e : PrefixFunctionCoordinate ↪ P :=
     ⟨fun q => g (qNat q), fun _ _ h => qNat.injective (hg h)⟩
-  let u : ℕ → ℝ := fun n => 4 * r (g n) ^ 2
+  let u : ℕ → ℝ := fun n => 4 * r (g n) ^ (2 : ℕ)
   let v : ℕ → ℝ := fun n => B / 4 / 2 ^ (k n)
   let geom : ℕ → ℝ := fun n => (B / 2) / 2 / 2 ^ n
   have huv : ∀ n, u n ≤ v n := fun n => (hfGood n).le
@@ -150,7 +150,7 @@ theorem exists_coherenceLocalTailIndependentFamily_of_cofinally_small
     {I P : Type*} [Fintype I] [DecidableEq P]
     (r : P → ℝ) (B : ℝ) (hB : 0 < B)
     (hsmall : ∀ (F : Finset P) (d : ℝ), 0 < d →
-      ∃ p, p ∉ F ∧ 4 * r p ^ 2 < d)
+      ∃ p, p ∉ F ∧ 4 * r p ^ (2 : ℕ) < d)
     (base : P → Bool) (x : I → ℕ → Bool) (hx : Function.Injective x) :
     ∃ e : PrefixFunctionCoordinate ↪ P,
       PrimeOrientationTailIndependent

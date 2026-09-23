@@ -31,7 +31,7 @@ def d4PreDivisorReflectedHorizonAngularShiftHolomorphic (z : ℂ) : ℂ :=
 
 /-- Complexification of the exact moving-horizon third-mass cross numerator. -/
 def d4EventHorizonThirdMassParityCrossNumeratorHolomorphic (A B : ℂ) : ℂ :=
-  A ^ 2 * (2 - B) + B ^ 2 * (2 - A) + 2 * A * B
+  A ^ (2 : ℕ) * (2 - B) + B ^ (2 : ℕ) * (2 - A) + 2 * A * B
 
 /-- Coefficient-faithful complex rational continuation of the HC74 pre-divisor optical-cancellation
 profile. Its only possible denominator zeros come from the four horizon-shift boundary roots. -/
@@ -39,7 +39,7 @@ def d4PreDivisorOpticalCancellationHolomorphicContinuation (z : ℂ) : ℂ :=
   let A := d4PreDivisorHorizonAngularShiftHolomorphic z
   let B := d4PreDivisorReflectedHorizonAngularShiftHolomorphic z
   (648 * d4EventHorizonThirdMassParityCrossNumeratorHolomorphic A B /
-      (A ^ 3 * B ^ 3)) *
+      (A ^ (3 : ℕ) * B ^ (3 : ℕ))) *
     (z * (1 - z) * (2 - z) * (3 - z) * (z + 1) * (z + 2)) / 12
 
 /-- The complex rational continuation specializes literally to the real HC74 optical-cancellation
@@ -107,8 +107,8 @@ theorem analyticOnNhd_d4PreDivisorOpticalCancellationHolomorphicContinuation :
       (fun w => 648 * d4EventHorizonThirdMassParityCrossNumeratorHolomorphic
           (d4PreDivisorHorizonAngularShiftHolomorphic w)
           (d4PreDivisorReflectedHorizonAngularShiftHolomorphic w) /
-        (d4PreDivisorHorizonAngularShiftHolomorphic w ^ 3 *
-          d4PreDivisorReflectedHorizonAngularShiftHolomorphic w ^ 3)) z := by
+        (d4PreDivisorHorizonAngularShiftHolomorphic w ^ (3 : ℕ) *
+          d4PreDivisorReflectedHorizonAngularShiftHolomorphic w ^ (3 : ℕ))) z := by
     exact (analyticAt_const.mul hcross).div
       ((hAan.pow 3).mul (hBan.pow 3))
       (mul_ne_zero (pow_ne_zero _ hA) (pow_ne_zero _ hB))

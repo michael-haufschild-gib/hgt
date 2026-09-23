@@ -19,31 +19,31 @@ local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 local notation "S" => q8BiquadQuadraticSourceField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualQuadraticSourceHigherRamificationInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
-local instance : CharZero K3 :=
+local instance deningerQ8ActualQuadraticSourceHigherRamificationInst2 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst3 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst4 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst5 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst6 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional S K2 := by infer_instance
-noncomputable local instance : FiniteDimensional S K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst7 : FiniteDimensional S K2 := by infer_instance
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst8 : FiniteDimensional S K3 :=
   FiniteDimensional.trans S K2 K3
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst9 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : NumberField S := NumberField.mk
-noncomputable local instance : NumberField K2 := NumberField.mk
-noncomputable local instance : NumberField K3 := NumberField.mk
-noncomputable local instance : IsGalois ℚ K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst10 : NumberField S := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst11 : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst12 : NumberField K3 := NumberField.mk
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst13 : IsGalois ℚ K3 :=
   deningerQ8RootNumberNegOne_isGalois
-noncomputable local instance : IsGalois S K3 :=
+noncomputable local instance deningerQ8ActualQuadraticSourceHigherRamificationInst14 : IsGalois S K3 :=
   IsGalois.tower_top_of_isGalois ℚ S K3
 noncomputable local instance q8SourceFieldAction :
     MulSemiringAction Gal(K3/S) K3 := inferInstance
@@ -332,7 +332,7 @@ theorem q8QuadraticSourceCharacter_lowerArtinTerm_profile
       P hPtwo n (by omega)
 
 /-- The actual coefficient-faithful quadratic-source character has exact dyadic Artin conductor
-three. Thus its multiplicative conductor exponent is three, i.e. conductor norm `2^3 = 8`. -/
+three. Thus its multiplicative conductor exponent is three, i.e. conductor norm `2^(3 : ℕ) = 8`. -/
 theorem q8QuadraticSourceCharacter_lowerArtinConductor_eq_three
     (P : Ideal (𝓞 K3)) [P.IsMaximal] (hPtwo : (2 : 𝓞 K3) ∈ P) :
     GaloisForLFunctions.HTGeometry.Representation.lowerArtinConductorUpTo

@@ -47,8 +47,8 @@ theorem sum_typeII_piece_eq {A B L : ℕ} (hA : 1 ≤ A) (hB : 1 ≤ B) (hBL : B
 /-- **The type-II energy bound for the Vaughan piece.** -/
 theorem norm_typeII_piece_sq_le {A B L : ℕ} (hA : 1 ≤ A) (hB : 1 ≤ B) (hBL : B - 1 ≤ L)
     (T r : ℝ) (U V : ℕ) :
-    ‖∑ n ∈ Finset.Ico A B, (((typeIILong U * typeIIShort V) n : ℝ) : ℂ) * ndPhaseExp T r n‖ ^ 2
-      ≤ (∑ d ∈ Finset.Ico 1 (L + 1), ‖((typeIILong U d : ℝ) : ℂ)‖ ^ 2)
+    ‖∑ n ∈ Finset.Ico A B, (((typeIILong U * typeIIShort V) n : ℝ) : ℂ) * ndPhaseExp T r n‖ ^ (2 : ℕ)
+      ≤ (∑ d ∈ Finset.Ico 1 (L + 1), ‖((typeIILong U d : ℝ) : ℂ)‖ ^ (2 : ℕ))
         * ∑ m₁ ∈ Finset.Icc 1 L, ∑ m₂ ∈ Finset.Icc 1 L,
             ‖((typeIIShort V m₁ : ℝ) : ℂ)‖ * ‖((typeIIShort V m₂ : ℝ) : ℂ)‖
               * ‖∑ d ∈ Finset.Ico 1 (L + 1),

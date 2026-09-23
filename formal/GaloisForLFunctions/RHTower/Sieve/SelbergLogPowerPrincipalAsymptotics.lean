@@ -359,7 +359,7 @@ theorem selbergLogPowerHarmonicMain_one_two_eq_twoThree
 theorem tendsto_selbergPrincipalScaledLogPowerModel_one_four_div_log_fourth_one
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :
     Tendsto (fun N : ℕ =>
-      selbergPrincipalScaledLogPowerModel 1 4 a b N / Real.log N ^ 4)
+      selbergPrincipalScaledLogPowerModel 1 4 a b N / Real.log N ^ (4 : ℕ))
       atTop (𝓝 1) := by
   let c : ℕ := max a b
   have hc : 0 < c := lt_of_lt_of_le ha (le_max_left a b)
@@ -383,7 +383,7 @@ theorem tendsto_selbergPrincipalScaledLogPowerModel_one_four_div_log_fourth_one
 theorem tendsto_selbergPrincipalScaledLogPowerModel_two_three_div_log_fourth_three_halves
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :
     Tendsto (fun N : ℕ =>
-      selbergPrincipalScaledLogPowerModel 2 3 a b N / Real.log N ^ 4)
+      selbergPrincipalScaledLogPowerModel 2 3 a b N / Real.log N ^ (4 : ℕ))
       atTop (𝓝 (3 / 2 : ℝ)) := by
   let c : ℕ := max a b
   have hc : 0 < c := lt_of_lt_of_le ha (le_max_left a b)

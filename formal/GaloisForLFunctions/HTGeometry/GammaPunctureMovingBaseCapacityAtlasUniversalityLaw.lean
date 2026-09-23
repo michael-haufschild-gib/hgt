@@ -69,10 +69,10 @@ theorem gammaPunctureNormalizedSheet_capacity_congruent
     {z v : ℂ}
     (hz : gammaPunctureCoordinate z ∈ Metric.closedBall (0 : ℂ) (1 / 4))
     (hshell : ‖gammaMovingBaseShell n‖ < (1 / 2 : ℝ)) :
-    (16 / 81 : ℝ) * ‖v‖ ^ 2 ≤
-        ‖(1 - gammaMovingBaseShell n * gammaPunctureNormalizedSheet n z)⁻¹ ^ 2 * v‖ ^ 2 ∧
-      ‖(1 - gammaMovingBaseShell n * gammaPunctureNormalizedSheet n z)⁻¹ ^ 2 * v‖ ^ 2 ≤
-        16 * ‖v‖ ^ 2 := by
+    (16 / 81 : ℝ) * ‖v‖ ^ (2 : ℕ) ≤
+        ‖(1 - gammaMovingBaseShell n * gammaPunctureNormalizedSheet n z)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ∧
+      ‖(1 - gammaMovingBaseShell n * gammaPunctureNormalizedSheet n z)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ≤
+        16 * ‖v‖ ^ (2 : ℕ) := by
   rw [gammaPunctureNormalizedSheet_eq_branch]
   exact gammaMovingBaseTransition_capacity_congruent hn hz hshell
 
@@ -83,7 +83,7 @@ theorem tendsto_gammaPunctureNormalizedSheet_tangentFactor_one
     (hz : gammaPunctureCoordinate z ∈ Metric.closedBall (0 : ℂ) (1 / 4)) :
     Tendsto
       (fun n : ℕ =>
-        (1 - gammaMovingBaseShell n * gammaPunctureNormalizedSheet n z)⁻¹ ^ 2)
+        (1 - gammaMovingBaseShell n * gammaPunctureNormalizedSheet n z)⁻¹ ^ (2 : ℕ))
       atTop (nhds 1) := by
   simpa only [gammaPunctureNormalizedSheet_eq_branch] using
     tendsto_gammaMovingBaseTangentFactor_one hz

@@ -75,10 +75,10 @@ density, pointwise and with divisor multiplicity retained. -/
 theorem thetaXiNormalizedRankTwoBoundaryFluxTerm_eq_sourceEntropyDensity
     (q : XiZeroCopy) :
     thetaXiNormalizedRankTwoBoundaryFluxTerm q =
-      riemannReflectedSourceEntropy (q.1 : ℂ) ^ 2 *
-          (q.1 : ℂ).im ^ 2 /
-        (((q.1 : ℂ).re - 1 / 2) ^ 2 +
-          (q.1 : ℂ).im ^ 2) ^ 4 := by
+      riemannReflectedSourceEntropy (q.1 : ℂ) ^ (2 : ℕ) *
+          (q.1 : ℂ).im ^ (2 : ℕ) /
+        (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) +
+          (q.1 : ℂ).im ^ (2 : ℕ)) ^ (4 : ℕ) := by
   rw [thetaXiNormalizedRankTwoBoundaryFluxTerm_eq,
     xiZeroCopyThermalOrientationTerm_eq_sourceEntropyDensity]
 

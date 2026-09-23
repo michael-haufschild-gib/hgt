@@ -187,7 +187,7 @@ def d4BMPlusPlusAdSLeadingNormalizableBranchDerivative (z : ℝ) : ℂ :=
 
 def d4BMPlusPlusAdSLeadingNormalizableBranchSecondDerivative (z : ℝ) : ℂ :=
   (1 / 2 : ℂ) * ((1 / 2 : ℂ) - 1) *
-    d4BMPlusPlusAdSLeadingNormalizableBranch z / ((1 - z : ℝ) : ℂ) ^ 2
+    d4BMPlusPlusAdSLeadingNormalizableBranch z / ((1 - z : ℝ) : ℂ) ^ (2 : ℕ)
 
 theorem hasDerivAt_d4BMPlusPlusAdSLeadingNormalizableBranch
     {z : ℝ} (hz1 : z < 1) :
@@ -231,15 +231,15 @@ theorem hasDerivAt_d4BMPlusPlusAdSLeadingNormalizableBranchDerivative
   change HasDerivAt
     (fun x : ℝ => -(1 / 2 : ℂ) * h x / ((1 - x : ℝ) : ℂ))
     ((1 / 2 : ℂ) * ((1 / 2 : ℂ) - 1) * h z /
-      ((1 - z : ℝ) : ℂ) ^ 2) z
+      ((1 - z : ℝ) : ℂ) ^ (2 : ℕ)) z
   apply hquot.congr_deriv
   change
     ((-(1 / 2 : ℂ) * (-(1 / 2 : ℂ) * h z / ((1 - z : ℝ) : ℂ)) *
           ((1 - z : ℝ) : ℂ) -
         (-(1 / 2 : ℂ) * h z) * ((-1 : ℝ) : ℂ)) /
-        ((1 - z : ℝ) : ℂ) ^ 2) =
+        ((1 - z : ℝ) : ℂ) ^ (2 : ℕ)) =
       (1 / 2 : ℂ) * ((1 / 2 : ℂ) - 1) * h z /
-        ((1 - z : ℝ) : ℂ) ^ 2
+        ((1 - z : ℝ) : ℂ) ^ (2 : ℕ)
   apply (div_left_inj' (pow_ne_zero 2 hwC)).2
   norm_num
   field_simp [hwC, hwC']
@@ -375,7 +375,7 @@ theorem d4BMPlusPlusAdSNormalizableSolution_jet_eq_zero
   rw [hA, hB] at hfactor
   have hfactor0 :
       w * (1 - w) *
-          (((1 - c0) * ((1 - c0) - 1) * h / w ^ 2) * F +
+          (((1 - c0) * ((1 - c0) - 1) * h / w ^ (2 : ℕ)) * F +
             2 * ((1 - c0) * h / w) * dF + h * ddF) +
         (c0 - (a + b + 1) * w) *
           (((1 - c0) * h / w) * F + h * dF) -

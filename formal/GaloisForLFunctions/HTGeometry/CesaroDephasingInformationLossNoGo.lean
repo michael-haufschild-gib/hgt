@@ -26,7 +26,7 @@ def parityCoherentAmplitude (c : ℕ) : ℂ :=
 
 /-- Resolved energy of the parity packet. -/
 def parityResolvedEnergy (c : ℕ) : ℝ :=
-  ‖parityCoherentAmplitude c‖ ^ 2
+  ‖parityCoherentAmplitude c‖ ^ (2 : ℕ)
 
 /-- Deficit of the finite Cesàro-resolved energy from its coherent value. -/
 def parityCesaroInformationLoss (M : ℕ) : ℝ :=

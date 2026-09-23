@@ -20,15 +20,15 @@ def harmonicDiagonalHSKernel : ℕ × ℕ → ℂ := fun ij =>
   if ij.1 = ij.2 then ((ij.1 + 1 : ℕ) : ℂ)⁻¹ else 0
 
 private theorem summable_harmonicDiagonalHSKernel_row (i : ℕ) :
-    Summable (fun j : ℕ => ‖harmonicDiagonalHSKernel (i, j)‖ ^ 2) := by
+    Summable (fun j : ℕ => ‖harmonicDiagonalHSKernel (i, j)‖ ^ (2 : ℕ)) := by
   apply summable_of_ne_finset_zero (s := {i})
   intro j hj
   simp only [Finset.mem_singleton] at hj
   simp [harmonicDiagonalHSKernel, Ne.symm hj]
 
 private theorem tsum_harmonicDiagonalHSKernel_row (i : ℕ) :
-    (∑' j : ℕ, ‖harmonicDiagonalHSKernel (i, j)‖ ^ 2) =
-      1 / ((i + 1 : ℕ) : ℝ) ^ 2 := by
+    (∑' j : ℕ, ‖harmonicDiagonalHSKernel (i, j)‖ ^ (2 : ℕ)) =
+      1 / ((i + 1 : ℕ) : ℝ) ^ (2 : ℕ) := by
   rw [tsum_eq_single i]
   · simp only [harmonicDiagonalHSKernel, if_pos, norm_inv,
       Nat.cast_add, Nat.cast_one]
@@ -45,11 +45,11 @@ theorem harmonicDiagonalHSKernel_isHS :
   rw [HilbertSchmidt.IsHS, summable_prod_of_nonneg (fun _ => sq_nonneg _)]
   constructor
   · exact summable_harmonicDiagonalHSKernel_row
-  · have hp : Summable (fun i : ℕ => 1 / ((i + 1 : ℕ) : ℝ) ^ 2) := by
-      have hbase : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 2) :=
+  · have hp : Summable (fun i : ℕ => 1 / ((i + 1 : ℕ) : ℝ) ^ (2 : ℕ)) := by
+      have hbase : Summable (fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) :=
         Real.summable_one_div_nat_pow.mpr (by norm_num)
       simpa only [Nat.cast_add, Nat.cast_one] using
-        ((summable_nat_add_iff (f := fun n : ℕ => 1 / (n : ℝ) ^ 2) 1).mpr hbase)
+        ((summable_nat_add_iff (f := fun n : ℕ => 1 / (n : ℝ) ^ (2 : ℕ)) 1).mpr hbase)
     apply hp.congr
     intro i
     exact (tsum_harmonicDiagonalHSKernel_row i).symm

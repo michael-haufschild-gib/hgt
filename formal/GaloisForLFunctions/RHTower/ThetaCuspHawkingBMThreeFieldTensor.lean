@@ -16,7 +16,7 @@ set_option autoImplicit false
 
 abbrev AngularJet := Fin 6 → ℂ
 
-def lapJet (y : ℂ) (P : AngularJet) : ℂ := y^2*(P 3+P 5)
+def lapJet (y : ℂ) (P : AngularJet) : ℂ := y^(2 : ℕ)*(P 3+P 5)
 def hessJet (y : ℂ) (P : AngularJet) : Fin 2 → ℂ :=
   ![(P 3-P 5)/2-P 2/y,P 4+P 1/y]
 
@@ -31,7 +31,7 @@ def operatorMatrix (s r y : ℂ) (J : RowJet) (P : AngularJet) : Matrix (Fin 4) 
   let ty := rowOperator s r 0 3 J*P 2
   let rx := rowOperator s r 0 4 J*P 1
   let ry := rowOperator s r 0 4 J*P 2
-  let L := readRow s r 6 J (P 0) (lapJet y P)/y^2
+  let L := readRow s r 6 J (P 0) (lapJet y P)/y^(2 : ℕ)
   let A := rowOperator s r 0 5 J*hessJet y P 0
   let C := rowOperator s r 0 5 J*hessJet y P 1
   !![TT,TR,tx,ty;TR,RR,rx,ry;tx,rx,L+A,C;ty,ry,C,L-A]
@@ -42,7 +42,7 @@ def jetFor (s r y : ℂ) (J : RowJet) (P : AngularJet) : CoordinateMetricTwoJet 
     (P 0) (P 1) (P 2) (P 3) (P 4) (P 5)
 
 private theorem jetFor_component_0_0 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 0 0 = operatorMatrix s r y J P 0 0 := by
   unfold jetFor
@@ -53,7 +53,7 @@ private theorem jetFor_component_0_0 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   ring
 
 private theorem jetFor_component_0_1 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 0 1 = operatorMatrix s r y J P 0 1 := by
   unfold jetFor
@@ -64,7 +64,7 @@ private theorem jetFor_component_0_1 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   ring
 
 private theorem jetFor_component_0_2 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 0 2 = operatorMatrix s r y J P 0 2 := by
   unfold jetFor
@@ -74,7 +74,7 @@ private theorem jetFor_component_0_2 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   field_simp
 
 private theorem jetFor_component_0_3 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 0 3 = operatorMatrix s r y J P 0 3 := by
   unfold jetFor
@@ -84,7 +84,7 @@ private theorem jetFor_component_0_3 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   field_simp
 
 private theorem jetFor_component_1_0 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 1 0 = operatorMatrix s r y J P 1 0 := by
   unfold jetFor
@@ -95,7 +95,7 @@ private theorem jetFor_component_1_0 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   ring
 
 private theorem jetFor_component_1_1 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 1 1 = operatorMatrix s r y J P 1 1 := by
   unfold jetFor
@@ -106,7 +106,7 @@ private theorem jetFor_component_1_1 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   ring
 
 private theorem jetFor_component_1_2 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 1 2 = operatorMatrix s r y J P 1 2 := by
   unfold jetFor
@@ -116,7 +116,7 @@ private theorem jetFor_component_1_2 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   field_simp
 
 private theorem jetFor_component_1_3 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 1 3 = operatorMatrix s r y J P 1 3 := by
   unfold jetFor
@@ -126,7 +126,7 @@ private theorem jetFor_component_1_3 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   field_simp
 
 private theorem jetFor_component_2_0 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 2 0 = operatorMatrix s r y J P 2 0 := by
   unfold jetFor
@@ -136,7 +136,7 @@ private theorem jetFor_component_2_0 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   field_simp
 
 private theorem jetFor_component_2_1 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 2 1 = operatorMatrix s r y J P 2 1 := by
   unfold jetFor
@@ -146,7 +146,7 @@ private theorem jetFor_component_2_1 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   field_simp
 
 private theorem jetFor_component_2_2 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 2 2 = operatorMatrix s r y J P 2 2 := by
   unfold jetFor
@@ -157,7 +157,7 @@ private theorem jetFor_component_2_2 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   ring
 
 private theorem jetFor_component_2_3 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 2 3 = operatorMatrix s r y J P 2 3 := by
   unfold jetFor
@@ -168,7 +168,7 @@ private theorem jetFor_component_2_3 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   ring
 
 private theorem jetFor_component_3_0 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 3 0 = operatorMatrix s r y J P 3 0 := by
   unfold jetFor
@@ -178,7 +178,7 @@ private theorem jetFor_component_3_0 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   field_simp
 
 private theorem jetFor_component_3_1 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 3 1 = operatorMatrix s r y J P 3 1 := by
   unfold jetFor
@@ -188,7 +188,7 @@ private theorem jetFor_component_3_1 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   field_simp
 
 private theorem jetFor_component_3_2 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 3 2 = operatorMatrix s r y J P 3 2 := by
   unfold jetFor
@@ -199,7 +199,7 @@ private theorem jetFor_component_3_2 (s r y : ℂ) (J : RowJet) (P : AngularJet)
   ring
 
 private theorem jetFor_component_3_3 (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) 3 3 = operatorMatrix s r y J P 3 3 := by
   unfold jetFor
@@ -211,7 +211,7 @@ private theorem jetFor_component_3_3 (s r y : ℂ) (J : RowJet) (P : AngularJet)
 
 /-- The actual free-angular-jet Einstein operator, with no eigenfunction assumption. -/
 theorem jetFor_cosmological (s r y : ℂ) (J : RowJet) (P : AngularJet)
-    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^2-1 ≠ 0) (i j : Fin 4) :
+    (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) (i j : Fin 4) :
     CoordinateMetricTwoJet.Linearization.cosmological (D4BMBackground.jet r y)
       (jetFor s r y J P) (-3) i j = operatorMatrix s r y J P i j := by
   fin_cases i <;> fin_cases j
@@ -293,12 +293,12 @@ theorem assembled_matrix (s r y : ℂ) (J : Fin 3 → RowJet) (P Q R : AngularJe
   · linear_combination hry
   · linear_combination htx
   · linear_combination hrx
-  · linear_combination hL/y^2+hA
+  · linear_combination hL/y^(2 : ℕ)+hA
   · linear_combination hB
   · linear_combination hty
   · linear_combination hry
   · linear_combination hB
-  · linear_combination hL/y^2-hA
+  · linear_combination hL/y^(2 : ℕ)-hA
 
 end
 end RHTower.D4BMThreeFieldTensor

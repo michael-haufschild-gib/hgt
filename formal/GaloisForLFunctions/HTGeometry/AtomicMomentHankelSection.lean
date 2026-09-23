@@ -40,7 +40,7 @@ theorem atomicHankel_isHermitian {N : ℕ} (w x : Fin N → ℝ) (J : ℕ) :
 /-- **The Hankel quadratic form is the weighted nodal polynomial energy.** -/
 theorem dotProduct_mulVec_atomicHankel {N J : ℕ} (w x : Fin N → ℝ) (a : Fin J → ℝ) :
     a ⬝ᵥ (atomicHankel w x J).mulVec a
-      = ∑ r : Fin N, w r * (Polynomial.eval (x r) (Polynomial.ofFn J a)) ^ 2 := by
+      = ∑ r : Fin N, w r * (Polynomial.eval (x r) (Polynomial.ofFn J a)) ^ (2 : ℕ) := by
   have hpoly : ∀ r : Fin N,
       Polynomial.eval (x r) (Polynomial.ofFn J a) = ∑ i : Fin J, a i * x r ^ (i : ℕ) := by
     intro r
@@ -61,7 +61,7 @@ theorem dotProduct_mulVec_atomicHankel {N J : ℕ} (w x : Fin N → ℝ) (a : Fi
     refine Finset.sum_congr rfl fun r _ => ?_
     rw [pow_add]
     ring
-  have hrhs : ∑ r : Fin N, w r * (Polynomial.eval (x r) (Polynomial.ofFn J a)) ^ 2
+  have hrhs : ∑ r : Fin N, w r * (Polynomial.eval (x r) (Polynomial.ofFn J a)) ^ (2 : ℕ)
       = ∑ r : Fin N, ∑ i : Fin J, ∑ j : Fin J,
           w r * (a i * x r ^ (i : ℕ)) * (a j * x r ^ (j : ℕ)) := by
     refine Finset.sum_congr rfl fun r _ => ?_
@@ -94,7 +94,7 @@ theorem atomicHankel_posDef {N J : ℕ} (hJ : 0 < J) (w x : Fin N → ℝ) (hw :
     apply ha
     apply Polynomial.injective_ofFn J
     simpa [hpdef] using hp0
-  have hnonneg : 0 ≤ ∑ r : Fin N, w r * Polynomial.eval (x r) p ^ 2 :=
+  have hnonneg : 0 ≤ ∑ r : Fin N, w r * Polynomial.eval (x r) p ^ (2 : ℕ) :=
     Finset.sum_nonneg fun r _ => mul_nonneg (hw r).le (sq_nonneg _)
   refine lt_of_le_of_ne hnonneg ?_
   intro hzero
@@ -120,16 +120,16 @@ theorem atomicHankel_posDef {N J : ℕ} (hJ : 0 < J) (w x : Fin N → ℝ) (hw :
 /-- **Rayleigh solvability.**  A uniform quadratic lower bound solves the linear system with an
 explicit size bound on the solution. -/
 theorem exists_solve_atomicHankel {N J : ℕ} (w x : Fin N → ℝ) {lam : ℝ} (hlam : 0 < lam)
-    (hquad : ∀ a : Fin J → ℝ, lam * (∑ i, a i ^ 2) ≤ a ⬝ᵥ (atomicHankel w x J).mulVec a)
+    (hquad : ∀ a : Fin J → ℝ, lam * (∑ i, a i ^ (2 : ℕ)) ≤ a ⬝ᵥ (atomicHankel w x J).mulVec a)
     (ξ : Fin J → ℝ) :
     ∃ c : Fin J → ℝ, (atomicHankel w x J).mulVec c = ξ ∧
-      lam ^ 2 * (∑ i, c i ^ 2) ≤ ∑ i, ξ i ^ 2 := by
+      lam ^ (2 : ℕ) * (∑ i, c i ^ (2 : ℕ)) ≤ ∑ i, ξ i ^ (2 : ℕ) := by
   classical
   have hpd : (atomicHankel w x J).PosDef := by
     rw [Matrix.posDef_iff_dotProduct_mulVec]
     refine ⟨atomicHankel_isHermitian w x J, ?_⟩
     intro a ha
-    have hsum : 0 < ∑ i, a i ^ 2 := by
+    have hsum : 0 < ∑ i, a i ^ (2 : ℕ) := by
       rcases Function.ne_iff.mp ha with ⟨i, hi⟩
       refine Finset.sum_pos' (fun j _ => sq_nonneg _) ⟨i, Finset.mem_univ i, ?_⟩
       exact pow_pos (abs_pos.mpr hi) 2 |>.trans_le (le_of_eq (sq_abs _))
@@ -145,17 +145,17 @@ theorem exists_solve_atomicHankel {N J : ℕ} (w x : Fin N → ℝ) {lam : ℝ} 
         Matrix.mul_nonsing_inv _ (isUnit_iff_ne_zero.mpr hdet), Matrix.one_mulVec]
     have hlow := hquad c
     rw [hMc] at hlow
-    have hCS : (∑ i, c i * ξ i) ^ 2 ≤ (∑ i, c i ^ 2) * ∑ i, ξ i ^ 2 :=
+    have hCS : (∑ i, c i * ξ i) ^ (2 : ℕ) ≤ (∑ i, c i ^ (2 : ℕ)) * ∑ i, ξ i ^ (2 : ℕ) :=
       Finset.sum_mul_sq_le_sq_mul_sq Finset.univ c ξ
     have hdot : c ⬝ᵥ ξ = ∑ i, c i * ξ i := rfl
     rw [hdot] at hlow
-    have hSc : 0 ≤ ∑ i, c i ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
-    have hSx : 0 ≤ ∑ i, ξ i ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
+    have hSc : 0 ≤ ∑ i, c i ^ (2 : ℕ) := Finset.sum_nonneg fun i _ => sq_nonneg _
+    have hSx : 0 ≤ ∑ i, ξ i ^ (2 : ℕ) := Finset.sum_nonneg fun i _ => sq_nonneg _
     rcases eq_or_lt_of_le hSc with hzero | hpos
     · rw [← hzero]
       simpa using hSx
     · have hdotpos : 0 < ∑ i, c i * ξ i := lt_of_lt_of_le (mul_pos hlam hpos) hlow
-      have hsq : (lam * ∑ i, c i ^ 2) ^ 2 ≤ (∑ i, c i * ξ i) ^ 2 := by
+      have hsq : (lam * ∑ i, c i ^ (2 : ℕ)) ^ (2 : ℕ) ≤ (∑ i, c i * ξ i) ^ (2 : ℕ) := by
         nlinarith [hlow, mul_pos hlam hpos, hdotpos]
       nlinarith [hsq, hCS, hpos]
 

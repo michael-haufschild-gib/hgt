@@ -17,7 +17,7 @@ noncomputable section
 
 /-- The Schwarzian differential invariant. -/
 def schwarzian {K : Type*} [Field K] [Differential K] (x : K) : K :=
-  x′′′ / x′ - (3 / 2 : K) * (x′′ / x′) ^ 2
+  x′′′ / x′ - (3 / 2 : K) * (x′′ / x′) ^ (2 : ℕ)
 
 /-- The Schwarzian is unchanged by a differential-constant affine transformation. -/
 theorem schwarzian_affine
@@ -40,15 +40,15 @@ theorem schwarzian_inv
     {K : Type*} [Field K] [CharZero K] [Differential K]
     (x : K) (hx : x ≠ 0) (hdx : x′ ≠ 0) :
     schwarzian x⁻¹ = schwarzian x := by
-  have h1 : (x⁻¹)′ = -x⁻¹ ^ 2 * x′ := by
+  have h1 : (x⁻¹)′ = -x⁻¹ ^ (2 : ℕ) * x′ := by
     simpa [smul_eq_mul] using Differential.deriv.leibniz_inv x
-  have h2 : (x⁻¹)′′ = 2 * x⁻¹ ^ 3 * x′ ^ 2 - x⁻¹ ^ 2 * x′′ := by
+  have h2 : (x⁻¹)′′ = 2 * x⁻¹ ^ (3 : ℕ) * x′ ^ (2 : ℕ) - x⁻¹ ^ (2 : ℕ) * x′′ := by
     rw [h1]
     simp only [map_neg, Derivation.leibniz,
       Derivation.leibniz_pow, Derivation.leibniz_inv, smul_eq_mul]
     ring
   have h3 : (x⁻¹)′′′ =
-      -6 * x⁻¹ ^ 4 * x′ ^ 3 + 6 * x⁻¹ ^ 3 * x′ * x′′ - x⁻¹ ^ 2 * x′′′ := by
+      -6 * x⁻¹ ^ (4 : ℕ) * x′ ^ (3 : ℕ) + 6 * x⁻¹ ^ (3 : ℕ) * x′ * x′′ - x⁻¹ ^ (2 : ℕ) * x′′′ := by
     have htwo : (2 : K)′ = 0 := by
       have h := (Differential.deriv : Derivation ℤ K K).map_intCast (2 : ℤ)
       norm_num at h
@@ -170,8 +170,8 @@ theorem schwarzian_fixed_of_projective_semiconjugacy
 def schwarzianRelation {C : Type*} [Field C] (c : C) :
     DifferentialPolynomial Unit C :=
   2 * MvPolynomial.X ((), 1) * MvPolynomial.X ((), 3) -
-    3 * MvPolynomial.X ((), 2) ^ 2 -
-    2 * MvPolynomial.C c * MvPolynomial.X ((), 1) ^ 2
+    3 * MvPolynomial.X ((), 2) ^ (2 : ℕ) -
+    2 * MvPolynomial.C c * MvPolynomial.X ((), 1) ^ (2 : ℕ)
 
 theorem schwarzianRelation_ne_zero
     {C : Type*} [Field C] [CharZero C] (c : C) :
@@ -190,7 +190,7 @@ theorem differentialPolynomialEval_schwarzianRelation
     {C K : Type*} [Field C] [Field K] [Algebra C K] [Differential K]
     (x : K) (c : C) :
     differentialPolynomialEval (C := C) (fun _ : Unit => x) (schwarzianRelation c) =
-      2 * x′ * x′′′ - 3 * x′′ ^ 2 - 2 * algebraMap C K c * x′ ^ 2 := by
+      2 * x′ * x′′′ - 3 * x′′ ^ (2 : ℕ) - 2 * algebraMap C K c * x′ ^ (2 : ℕ) := by
   simp [schwarzianRelation, differentialJet_succ, map_ofNat]
 
 /-- The Schwarzian of a hypertranscendental scalar cannot collapse to a base constant. -/
@@ -211,7 +211,7 @@ theorem schwarzian_ne_constant_of_hypertranscendentalOver
     simpa [differentialJet_succ, hzero] using
       (isAlgebraic_zero : IsAlgebraic C (0 : K))
   have hcross :
-      2 * x′ * x′′′ - 3 * x′′ ^ 2 - 2 * algebraMap C K c * x′ ^ 2 = 0 := by
+      2 * x′ * x′′′ - 3 * x′′ ^ (2 : ℕ) - 2 * algebraMap C K c * x′ ^ (2 : ℕ) = 0 := by
     unfold schwarzian at hconst
     field_simp [hdx] at hconst
     linear_combination hconst

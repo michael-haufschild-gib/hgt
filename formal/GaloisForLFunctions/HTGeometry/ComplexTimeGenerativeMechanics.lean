@@ -85,7 +85,7 @@ theorem hasDerivAt_finiteExponentialTilt_zero {w r : Fin n → ℝ}
       (w x * r x * finiteExpPartition w r 0 -
         w x * Real.exp (0 * r x) *
           (∑ x, w x * r x * Real.exp (0 * r x))) /
-        finiteExpPartition w r 0 ^ 2 = finiteExponentialTangent w r x := by
+        finiteExpPartition w r 0 ^ (2 : ℕ) = finiteExponentialTangent w r x := by
     rw [hden0]
     simp [finiteExponentialTangent, finiteScoreMean]
     ring
@@ -187,7 +187,7 @@ theorem hasDerivAt_finiteExponentialTilt {w r : Fin n → ℝ}
       (w x * r x * Real.exp (t * r x) * finiteExpPartition w r t -
         w x * Real.exp (t * r x) *
           (∑ x, w x * r x * Real.exp (t * r x))) /
-          finiteExpPartition w r t ^ 2 =
+          finiteExpPartition w r t ^ (2 : ℕ) =
         finiteExponentialTilt w r t x * (r x - finiteTiltScoreMean w r t) := by
     rw [hmean]
     unfold finiteExponentialTilt
@@ -296,31 +296,31 @@ def markovScoreCurrent (w r : Fin n → ℝ) (K : Fin n → Fin m → ℝ) (y : 
 /-- Conditional Fisher loss. -/
 def markovConditionalLoss (w r : Fin n → ℝ) (K : Fin n → Fin m → ℝ)
     (s : Fin m → ℝ) : ℝ :=
-  ∑ x, ∑ y, w x * K x y * (r x - s y) ^ 2
+  ∑ x, ∑ y, w x * K x y * (r x - s y) ^ (2 : ℕ)
 
 /-- Exact law of total second moment for a Markov score transport. -/
 theorem markov_secondMoment_conservation
     {w r : Fin n → ℝ} {K : Fin n → Fin m → ℝ} {s : Fin m → ℝ}
     (hrow : ∀ x, ∑ y, K x y = 1)
     (hscore : ∀ y, markovPushforward w K y * s y = markovScoreCurrent w r K y) :
-    ∑ x, w x * r x ^ 2 =
-      ∑ y, markovPushforward w K y * s y ^ 2 +
+    ∑ x, w x * r x ^ (2 : ℕ) =
+      ∑ y, markovPushforward w K y * s y ^ (2 : ℕ) +
         markovConditionalLoss w r K s := by
   have hfirst :
-      ∑ x, ∑ y, w x * K x y * r x ^ 2 = ∑ x, w x * r x ^ 2 := by
+      ∑ x, ∑ y, w x * K x y * r x ^ (2 : ℕ) = ∑ x, w x * r x ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro x _
     calc
-      ∑ y, w x * K x y * r x ^ 2 =
-          (w x * r x ^ 2) * ∑ y, K x y := by
+      ∑ y, w x * K x y * r x ^ (2 : ℕ) =
+          (w x * r x ^ (2 : ℕ)) * ∑ y, K x y := by
             rw [Finset.mul_sum]
             apply Finset.sum_congr rfl
             intro y _
             ring
-      _ = w x * r x ^ 2 := by rw [hrow x, mul_one]
+      _ = w x * r x ^ (2 : ℕ) := by rw [hrow x, mul_one]
   have hcross :
       ∑ x, ∑ y, w x * K x y * r x * s y =
-        ∑ y, markovPushforward w K y * s y ^ 2 := by
+        ∑ y, markovPushforward w K y * s y ^ (2 : ℕ) := by
     rw [Finset.sum_comm]
     apply Finset.sum_congr rfl
     intro y _
@@ -331,24 +331,24 @@ theorem markov_secondMoment_conservation
     rw [← hscore y]
     ring
   have hlast :
-      ∑ x, ∑ y, w x * K x y * s y ^ 2 =
-        ∑ y, markovPushforward w K y * s y ^ 2 := by
+      ∑ x, ∑ y, w x * K x y * s y ^ (2 : ℕ) =
+        ∑ y, markovPushforward w K y * s y ^ (2 : ℕ) := by
     rw [Finset.sum_comm]
     apply Finset.sum_congr rfl
     intro y _
-    rw [show (∑ x, w x * K x y * s y ^ 2) =
-        markovPushforward w K y * s y ^ 2 by
+    rw [show (∑ x, w x * K x y * s y ^ (2 : ℕ)) =
+        markovPushforward w K y * s y ^ (2 : ℕ) by
       unfold markovPushforward
       rw [Finset.sum_mul]]
   unfold markovConditionalLoss
-  rw [show (∑ x, ∑ y, w x * K x y * (r x - s y) ^ 2) =
-      (∑ x, ∑ y, w x * K x y * r x ^ 2) -
+  rw [show (∑ x, ∑ y, w x * K x y * (r x - s y) ^ (2 : ℕ)) =
+      (∑ x, ∑ y, w x * K x y * r x ^ (2 : ℕ)) -
       2 * (∑ x, ∑ y, w x * K x y * r x * s y) +
-      (∑ x, ∑ y, w x * K x y * s y ^ 2) by
+      (∑ x, ∑ y, w x * K x y * s y ^ (2 : ℕ)) by
     calc
-      (∑ x, ∑ y, w x * K x y * (r x - s y) ^ 2) =
-          ∑ x, ∑ y, (w x * K x y * r x ^ 2 -
-            2 * (w x * K x y * r x * s y) + w x * K x y * s y ^ 2) := by
+      (∑ x, ∑ y, w x * K x y * (r x - s y) ^ (2 : ℕ)) =
+          ∑ x, ∑ y, (w x * K x y * r x ^ (2 : ℕ) -
+            2 * (w x * K x y * r x * s y) + w x * K x y * s y ^ (2 : ℕ)) := by
               apply Finset.sum_congr rfl
               intro x _
               apply Finset.sum_congr rfl
@@ -366,7 +366,7 @@ theorem markov_secondMoment_dataProcessing
     (hw : ∀ x, 0 ≤ w x) (hK : ∀ x y, 0 ≤ K x y)
     (hrow : ∀ x, ∑ y, K x y = 1)
     (hscore : ∀ y, markovPushforward w K y * s y = markovScoreCurrent w r K y) :
-    ∑ y, markovPushforward w K y * s y ^ 2 ≤ ∑ x, w x * r x ^ 2 := by
+    ∑ y, markovPushforward w K y * s y ^ (2 : ℕ) ≤ ∑ x, w x * r x ^ (2 : ℕ) := by
   rw [markov_secondMoment_conservation hrow hscore]
   exact le_add_of_nonneg_right (Finset.sum_nonneg fun x _ =>
     Finset.sum_nonneg fun y _ => mul_nonneg (mul_nonneg (hw x) (hK x y)) (sq_nonneg _))
@@ -378,8 +378,8 @@ theorem no_positiveMarkov_realization_of_strictAmplification
     (hw : ∀ x, 0 ≤ w x) (hK : ∀ x y, 0 ≤ K x y)
     (hrow : ∀ x, ∑ y, K x y = 1)
     (hscore : ∀ y, markovPushforward w K y * s y = markovScoreCurrent w r K y)
-    (hamplifies : ∑ x, w x * r x ^ 2 <
-      ∑ y, markovPushforward w K y * s y ^ 2) :
+    (hamplifies : ∑ x, w x * r x ^ (2 : ℕ) <
+      ∑ y, markovPushforward w K y * s y ^ (2 : ℕ)) :
     False :=
   (not_lt_of_ge (markov_secondMoment_dataProcessing hw hK hrow hscore)) hamplifies
 
@@ -457,7 +457,7 @@ noncomputable def countableMarkovScoreCurrent
 /-- Conditional Fisher loss for a summably admitted Markov kernel. -/
 noncomputable def countableMarkovConditionalLoss
     (w r : ι → ℝ) (K : ι → κ → ℝ) (s : κ → ℝ) : ℝ :=
-  ∑' p : ι × κ, w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ 2
+  ∑' p : ι × κ, w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ (2 : ℕ)
 
 /-- Summably admitted Markov transport preserves the score mean. -/
 theorem countableMarkov_scoreMean_conservation
@@ -497,12 +497,12 @@ theorem countableMarkov_scoreMean_zero
 
 theorem summable_countableMarkovConditionalLoss
     {w r : ι → ℝ} {K : ι → κ → ℝ} {s : κ → ℝ}
-    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ 2))
+    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ (2 : ℕ)))
     (hcross : Summable (fun p : ι × κ =>
       w p.1 * K p.1 p.2 * r p.1 * s p.2))
-    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ 2)) :
+    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ (2 : ℕ))) :
     Summable (fun p : ι × κ =>
-      w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ 2) := by
+      w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ (2 : ℕ)) := by
   refine ((hfirst.sub (hcross.mul_left 2)).add hlast).congr ?_
   intro p
   ring
@@ -512,24 +512,24 @@ theorem countableMarkovConditionalLoss_eq_zero_iff
     {w r : ι → ℝ} {K : ι → κ → ℝ} {s : κ → ℝ}
     (hw : ∀ x, 0 ≤ w x) (hK : ∀ x y, 0 ≤ K x y)
     (hLoss : Summable (fun p : ι × κ =>
-      w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ 2)) :
+      w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ (2 : ℕ))) :
     countableMarkovConditionalLoss w r K s = 0 ↔
       ∀ x y, 0 < w x * K x y → r x = s y := by
   rw [countableMarkovConditionalLoss]
   constructor
   · intro hzero x y hpos
     have hnonneg : ∀ p : ι × κ,
-        0 ≤ w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ 2 := fun p =>
+        0 ≤ w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ (2 : ℕ) := fun p =>
       mul_nonneg (mul_nonneg (hw p.1) (hK p.1 p.2)) (sq_nonneg _)
     have hle := hLoss.le_tsum (x, y) (fun p _ => hnonneg p)
     rw [hzero] at hle
-    have hterm : w x * K x y * (r x - s y) ^ 2 = 0 :=
+    have hterm : w x * K x y * (r x - s y) ^ (2 : ℕ) = 0 :=
       le_antisymm hle (hnonneg (x, y))
     have hcoeff : w x * K x y ≠ 0 := ne_of_gt hpos
     exact sub_eq_zero.mp (sq_eq_zero_iff.mp ((mul_eq_zero.mp hterm).resolve_left hcoeff))
   · intro hedge
     calc
-      ∑' p : ι × κ, w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ 2 =
+      ∑' p : ι × κ, w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ (2 : ℕ) =
           ∑' _p : ι × κ, (0 : ℝ) := by
         apply tsum_congr
         intro p
@@ -546,39 +546,39 @@ theorem countableMarkov_secondMoment_conservation
     (hrow : ∀ x, HasSum (K x) 1)
     (hscore : ∀ y, countableMarkovPushforward w K y * s y =
       countableMarkovScoreCurrent w r K y)
-    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ 2))
+    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ (2 : ℕ)))
     (hcross : Summable (fun p : ι × κ =>
       w p.1 * K p.1 p.2 * r p.1 * s p.2))
-    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ 2)) :
-    ∑' x, w x * r x ^ 2 =
-      ∑' y, countableMarkovPushforward w K y * s y ^ 2 +
+    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ (2 : ℕ))) :
+    ∑' x, w x * r x ^ (2 : ℕ) =
+      ∑' y, countableMarkovPushforward w K y * s y ^ (2 : ℕ) +
         countableMarkovConditionalLoss w r K s := by
-  let A : ι × κ → ℝ := fun p => w p.1 * K p.1 p.2 * r p.1 ^ 2
+  let A : ι × κ → ℝ := fun p => w p.1 * K p.1 p.2 * r p.1 ^ (2 : ℕ)
   let B : ι × κ → ℝ := fun p => w p.1 * K p.1 p.2 * r p.1 * s p.2
-  let C : ι × κ → ℝ := fun p => w p.1 * K p.1 p.2 * s p.2 ^ 2
+  let C : ι × κ → ℝ := fun p => w p.1 * K p.1 p.2 * s p.2 ^ (2 : ℕ)
   have hA : Summable A := hfirst
   have hB : Summable B := hcross
   have hC : Summable C := hlast
-  have hAtotal : ∑' p, A p = ∑' x, w x * r x ^ 2 := by
+  have hAtotal : ∑' p, A p = ∑' x, w x * r x ^ (2 : ℕ) := by
     rw [hA.tsum_prod]
     apply tsum_congr
     intro x
-    have hs := (hrow x).mul_left (w x * r x ^ 2)
+    have hs := (hrow x).mul_left (w x * r x ^ (2 : ℕ))
     calc
-      ∑' y, A (x, y) = ∑' y, (w x * r x ^ 2) * K x y := by
+      ∑' y, A (x, y) = ∑' y, (w x * r x ^ (2 : ℕ)) * K x y := by
         apply tsum_congr
         intro y
         simp only [A]
         ring
-      _ = w x * r x ^ 2 := by simpa using hs.tsum_eq
+      _ = w x * r x ^ (2 : ℕ) := by simpa using hs.tsum_eq
   have hBtotal : ∑' p, B p =
-      ∑' y, countableMarkovPushforward w K y * s y ^ 2 := by
+      ∑' y, countableMarkovPushforward w K y * s y ^ (2 : ℕ) := by
     have hcomm : (∑' y, ∑' x, B (x, y)) = ∑' x, ∑' y, B (x, y) :=
       Summable.tsum_comm (f := fun x y => B (x, y)) hB
     calc
       ∑' p, B p = ∑' x, ∑' y, B (x, y) := hB.tsum_prod
       _ = ∑' y, ∑' x, B (x, y) := hcomm.symm
-      _ = ∑' y, countableMarkovPushforward w K y * s y ^ 2 := by
+      _ = ∑' y, countableMarkovPushforward w K y * s y ^ (2 : ℕ) := by
         apply tsum_congr
         intro y
         calc
@@ -586,21 +586,21 @@ theorem countableMarkov_secondMoment_conservation
             change (∑' x, (w x * K x y * r x) * s y) =
               (∑' x, w x * K x y * r x) * s y
             rw [tsum_mul_right]
-          _ = countableMarkovPushforward w K y * s y ^ 2 := by
+          _ = countableMarkovPushforward w K y * s y ^ (2 : ℕ) := by
             rw [← hscore y]
             ring
   have hCtotal : ∑' p, C p =
-      ∑' y, countableMarkovPushforward w K y * s y ^ 2 := by
+      ∑' y, countableMarkovPushforward w K y * s y ^ (2 : ℕ) := by
     have hcomm : (∑' y, ∑' x, C (x, y)) = ∑' x, ∑' y, C (x, y) :=
       Summable.tsum_comm (f := fun x y => C (x, y)) hC
     calc
       ∑' p, C p = ∑' x, ∑' y, C (x, y) := hC.tsum_prod
       _ = ∑' y, ∑' x, C (x, y) := hcomm.symm
-      _ = ∑' y, countableMarkovPushforward w K y * s y ^ 2 := by
+      _ = ∑' y, countableMarkovPushforward w K y * s y ^ (2 : ℕ) := by
         apply tsum_congr
         intro y
-        change (∑' x, (w x * K x y) * s y ^ 2) =
-          (∑' x, w x * K x y) * s y ^ 2
+        change (∑' x, (w x * K x y) * s y ^ (2 : ℕ)) =
+          (∑' x, w x * K x y) * s y ^ (2 : ℕ)
         rw [tsum_mul_right]
   have htwoB : Summable (fun p => 2 * B p) := hB.mul_left 2
   have hAB : Summable (fun p => A p - 2 * B p) := hA.sub htwoB
@@ -608,7 +608,7 @@ theorem countableMarkov_secondMoment_conservation
       (∑' p, A p) - 2 * (∑' p, B p) + ∑' p, C p := by
     rw [countableMarkovConditionalLoss]
     calc
-      ∑' p : ι × κ, w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ 2 =
+      ∑' p : ι × κ, w p.1 * K p.1 p.2 * (r p.1 - s p.2) ^ (2 : ℕ) =
           ∑' p, ((A p - 2 * B p) + C p) := by
         apply tsum_congr
         intro p
@@ -620,8 +620,8 @@ theorem countableMarkov_secondMoment_conservation
       _ = (∑' p, A p) - 2 * (∑' p, B p) + ∑' p, C p := by
         rw [tsum_mul_left]
   calc
-    ∑' x, w x * r x ^ 2 = ∑' p, A p := hAtotal.symm
-    _ = (∑' y, countableMarkovPushforward w K y * s y ^ 2) +
+    ∑' x, w x * r x ^ (2 : ℕ) = ∑' p, A p := hAtotal.symm
+    _ = (∑' y, countableMarkovPushforward w K y * s y ^ (2 : ℕ)) +
         countableMarkovConditionalLoss w r K s := by
       rw [hLoss, hBtotal, hCtotal]
       ring
@@ -633,12 +633,12 @@ theorem countableMarkov_secondMoment_dataProcessing
     (hrow : ∀ x, HasSum (K x) 1)
     (hscore : ∀ y, countableMarkovPushforward w K y * s y =
       countableMarkovScoreCurrent w r K y)
-    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ 2))
+    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ (2 : ℕ)))
     (hcross : Summable (fun p : ι × κ =>
       w p.1 * K p.1 p.2 * r p.1 * s p.2))
-    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ 2)) :
-    ∑' y, countableMarkovPushforward w K y * s y ^ 2 ≤
-      ∑' x, w x * r x ^ 2 := by
+    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ (2 : ℕ))) :
+    ∑' y, countableMarkovPushforward w K y * s y ^ (2 : ℕ) ≤
+      ∑' x, w x * r x ^ (2 : ℕ) := by
   rw [countableMarkov_secondMoment_conservation hrow hscore hfirst hcross hlast]
   exact le_add_of_nonneg_right (tsum_nonneg fun p =>
     mul_nonneg (mul_nonneg (hw p.1) (hK p.1 p.2)) (sq_nonneg _))
@@ -650,12 +650,12 @@ theorem no_countablePositiveMarkov_realization_of_strictAmplification
     (hrow : ∀ x, HasSum (K x) 1)
     (hscore : ∀ y, countableMarkovPushforward w K y * s y =
       countableMarkovScoreCurrent w r K y)
-    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ 2))
+    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ (2 : ℕ)))
     (hcross : Summable (fun p : ι × κ =>
       w p.1 * K p.1 p.2 * r p.1 * s p.2))
-    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ 2))
-    (hamplifies : (∑' x, w x * r x ^ 2) <
-      ∑' y, countableMarkovPushforward w K y * s y ^ 2) :
+    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ (2 : ℕ)))
+    (hamplifies : (∑' x, w x * r x ^ (2 : ℕ)) <
+      ∑' y, countableMarkovPushforward w K y * s y ^ (2 : ℕ)) :
     False :=
   (not_lt_of_ge (countableMarkov_secondMoment_dataProcessing
     hw hK hrow hscore hfirst hcross hlast)) hamplifies
@@ -667,12 +667,12 @@ theorem countableMarkov_secondMoment_eq_iff_scorePreserved
     (hrow : ∀ x, HasSum (K x) 1)
     (hscore : ∀ y, countableMarkovPushforward w K y * s y =
       countableMarkovScoreCurrent w r K y)
-    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ 2))
+    (hfirst : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * r p.1 ^ (2 : ℕ)))
     (hcross : Summable (fun p : ι × κ =>
       w p.1 * K p.1 p.2 * r p.1 * s p.2))
-    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ 2)) :
-    (∑' y, countableMarkovPushforward w K y * s y ^ 2) =
-        ∑' x, w x * r x ^ 2 ↔
+    (hlast : Summable (fun p : ι × κ => w p.1 * K p.1 p.2 * s p.2 ^ (2 : ℕ))) :
+    (∑' y, countableMarkovPushforward w K y * s y ^ (2 : ℕ)) =
+        ∑' x, w x * r x ^ (2 : ℕ) ↔
       ∀ x y, 0 < w x * K x y → r x = s y := by
   have hcons := countableMarkov_secondMoment_conservation
     hrow hscore hfirst hcross hlast

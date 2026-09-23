@@ -238,14 +238,14 @@ theorem rationalHeckeConjugateFiberTrace_memLp_of_stronglyMeasurable
       (realSL2Haar.restrict (rationalConjugateSL2FundamentalSet N g))
       (rationalConjugateSL2QuotientMeasure N g)
     exact (rationalConjugateSL2FundamentalSet_isFundamentalDomain N g).measurePreserving_quotient_mk _
-  have hfsq : Integrable (fun x => ‖f x‖ ^ 2)
+  have hfsq : Integrable (fun x => ‖f x‖ ^ (2 : ℕ))
       (integralSubgroupQuotientMeasure (rationalHeckeIntegralIntersection N g)) :=
     (memLp_two_iff_integrable_sq_norm hLf.aestronglyMeasurable).mp hLf
-  have hsourceSq : Integrable (fun x => ‖f (πK x)‖ ^ 2)
+  have hsourceSq : Integrable (fun x => ‖f (πK x)‖ ^ (2 : ℕ))
       (realSL2Haar.restrict FC) :=
     (hπKpres.integrable_comp hfsq.aestronglyMeasurable).mpr hfsq
   have hfiberSq : ∀ c : D,
-      Integrable (fun x => ‖f (πK (x * c.out.val))‖ ^ 2)
+      Integrable (fun x => ‖f (πK (x * c.out.val))‖ ^ (2 : ℕ))
         (realSL2Haar.restrict S) := by
     intro c
     have hsub : MulOpposite.op c.out.val • S ⊆ FC := by
@@ -254,7 +254,7 @@ theorem rationalHeckeConjugateFiberTrace_memLp_of_stronglyMeasurable
       rw [rationalConjugateFiniteCoverFundamentalSet]
       exact Set.subset_iUnion (fun c : D =>
         MulOpposite.op c.out.val • rationalConjugateSL2FundamentalSet N g) c
-    have htrans : Integrable (fun x => ‖f (πK x)‖ ^ 2)
+    have htrans : Integrable (fun x => ‖f (πK x)‖ ^ (2 : ℕ))
         (realSL2Haar.restrict (MulOpposite.op c.out.val • S)) :=
       hsourceSq.mono_measure (Measure.restrict_mono hsub le_rfl)
     have hpre : (fun x : SL2R => x * c.out.val) ⁻¹'
@@ -273,22 +273,22 @@ theorem rationalHeckeConjugateFiberTrace_memLp_of_stronglyMeasurable
       exact hpres0
     exact (hpres.integrable_comp htrans.aestronglyMeasurable).mpr htrans
   have hfiberEnergy : Integrable (fun x =>
-      ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ 2) (realSL2Haar.restrict S) :=
+      ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ (2 : ℕ)) (realSL2Haar.restrict S) :=
     integrable_finsetSum Finset.univ fun c _ => hfiberSq c
   have htraceSqMeas : AEStronglyMeasurable (fun x =>
-      ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ 2)
+      ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ (2 : ℕ))
       (realSL2Haar.restrict S) :=
     ((rationalHeckeConjugateFiberTrace_measurable_of_stronglyMeasurable N g f hf).comp hπR).aestronglyMeasurable.norm.pow 2
   have hpoint : ∀ x : SL2R,
-      ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ 2 ≤
-        (Fintype.card D : ℝ) * ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ 2 := by
+      ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ (2 : ℕ) ≤
+        (Fintype.card D : ℝ) * ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ (2 : ℕ) := by
     intro x
     rw [rationalHeckeConjugateFiberTrace_mk]
     simpa only [rationalHeckeConjugateFiberCoordinate_eq_mk_out] using
       GaloisForLFunctions.HTGeometry.norm_sum_sq_le_card_mul
         (fun c : D => f (RHTower.deningerFiberMap (H := K) x c))
   have htraceSq : Integrable (fun x =>
-      ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ 2)
+      ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ (2 : ℕ))
       (realSL2Haar.restrict S) :=
     hfiberEnergy.const_mul (Fintype.card D : ℝ) |>.mono' htraceSqMeas
       (ae_of_all _ fun x => by
@@ -304,11 +304,11 @@ theorem rationalHeckeConjugateFiberTrace_integral_norm_sq_le_of_stronglyMeasurab
     (hf : StronglyMeasurable f)
     (hLf : MemLp f 2
       (integralSubgroupQuotientMeasure (rationalHeckeIntegralIntersection N g))) :
-    (∫ y, ‖rationalHeckeConjugateFiberTrace N g f y‖ ^ 2
+    (∫ y, ‖rationalHeckeConjugateFiberTrace N g f y‖ ^ (2 : ℕ)
       ∂rationalConjugateSL2QuotientMeasure N g) ≤
       (Fintype.card ((rationalConjugateSL2Group N g) ⧸
         (rationalHeckeCommonCoverReal N g).subgroupOf (rationalConjugateSL2Group N g)) : ℝ) *
-        ∫ y, ‖f y‖ ^ 2 ∂integralSubgroupQuotientMeasure
+        ∫ y, ‖f y‖ ^ (2 : ℕ) ∂integralSubgroupQuotientMeasure
           (rationalHeckeIntegralIntersection N g) := by
   let K := rationalHeckeCommonCoverReal N g
   let R := rationalConjugateSL2Group N g
@@ -320,18 +320,18 @@ theorem rationalHeckeConjugateFiberTrace_integral_norm_sq_le_of_stronglyMeasurab
   let πR : SL2R → SL2R ⧸ R := QuotientGroup.mk
   have hπK : Measurable πK := QuotientGroup.measurable_coe
   have hπR : Measurable πR := QuotientGroup.measurable_coe
-  have hfsq : Integrable (fun x => ‖f x‖ ^ 2)
+  have hfsq : Integrable (fun x => ‖f x‖ ^ (2 : ℕ))
       (integralSubgroupQuotientMeasure (rationalHeckeIntegralIntersection N g)) :=
     (memLp_two_iff_integrable_sq_norm hLf.aestronglyMeasurable).mp hLf
   have hπKpres : MeasurePreserving πK (realSL2Haar.restrict FC)
       (integralSubgroupQuotientMeasure (rationalHeckeIntegralIntersection N g)) := by
     rw [integralSubgroupQuotientMeasure_eq_map_rationalConjugateFiniteCoverFundamentalSet N g]
     exact ⟨hπK, rfl⟩
-  have hsourceSq : Integrable (fun x => ‖f (πK x)‖ ^ 2)
+  have hsourceSq : Integrable (fun x => ‖f (πK x)‖ ^ (2 : ℕ))
       (realSL2Haar.restrict FC) := by
     exact (hπKpres.integrable_comp hfsq.aestronglyMeasurable).mpr hfsq
   have hfiberSq : ∀ c : D,
-      Integrable (fun x => ‖f (πK (x * c.out.val))‖ ^ 2)
+      Integrable (fun x => ‖f (πK (x * c.out.val))‖ ^ (2 : ℕ))
         (realSL2Haar.restrict S) := by
     intro c
     have hsub : MulOpposite.op c.out.val • S ⊆ FC := by
@@ -340,7 +340,7 @@ theorem rationalHeckeConjugateFiberTrace_integral_norm_sq_le_of_stronglyMeasurab
       rw [rationalConjugateFiniteCoverFundamentalSet]
       exact Set.subset_iUnion (fun c : D =>
         MulOpposite.op c.out.val • rationalConjugateSL2FundamentalSet N g) c
-    have htrans : Integrable (fun x => ‖f (πK x)‖ ^ 2)
+    have htrans : Integrable (fun x => ‖f (πK x)‖ ^ (2 : ℕ))
         (realSL2Haar.restrict (MulOpposite.op c.out.val • S)) :=
       hsourceSq.mono_measure (Measure.restrict_mono hsub le_rfl)
     have hpre : (fun x : SL2R => x * c.out.val) ⁻¹'
@@ -359,13 +359,13 @@ theorem rationalHeckeConjugateFiberTrace_integral_norm_sq_le_of_stronglyMeasurab
       exact hpres0
     exact (hpres.integrable_comp htrans.aestronglyMeasurable).mpr htrans
   have hfiberEnergy : Integrable (fun x =>
-      ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ 2) (realSL2Haar.restrict S) :=
+      ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ (2 : ℕ)) (realSL2Haar.restrict S) :=
     integrable_finsetSum Finset.univ fun c _ => hfiberSq c
   have htraceSq : Integrable (fun x =>
-      ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ 2)
+      ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ (2 : ℕ))
       (realSL2Haar.restrict S) := by
     have htraceSqMeas : AEStronglyMeasurable (fun x =>
-        ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ 2)
+        ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ (2 : ℕ))
         (realSL2Haar.restrict S) :=
       ((rationalHeckeConjugateFiberTrace_measurable_of_stronglyMeasurable N g f hf).comp hπR).aestronglyMeasurable.norm.pow 2
     refine hfiberEnergy.const_mul (Fintype.card D : ℝ) |>.mono' htraceSqMeas ?_
@@ -376,15 +376,15 @@ theorem rationalHeckeConjugateFiberTrace_integral_norm_sq_le_of_stronglyMeasurab
       GaloisForLFunctions.HTGeometry.norm_sum_sq_le_card_mul
         (fun c : D => f (RHTower.deningerFiberMap (H := K) x c))
   have henergyEq :
-      (∫ x in FC, ‖f (πK x)‖ ^ 2 ∂realSL2Haar) =
-        ∫ x in S, ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ 2 ∂realSL2Haar :=
+      (∫ x in FC, ‖f (πK x)‖ ^ (2 : ℕ) ∂realSL2Haar) =
+        ∫ x in S, ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ (2 : ℕ) ∂realSL2Haar :=
     setIntegral_rationalConjugateFiniteCoverFundamentalSet_eq_fiberSum N g
-      (fun x => ‖f (πK x)‖ ^ 2) hsourceSq
+      (fun x => ‖f (πK x)‖ ^ (2 : ℕ)) hsourceSq
   have hpointIntegral :
-      (∫ x in S, ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ 2
+      (∫ x in S, ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ (2 : ℕ)
         ∂realSL2Haar) ≤
         ∫ x in S, (Fintype.card D : ℝ) *
-          ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ 2 ∂realSL2Haar := by
+          ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ (2 : ℕ) ∂realSL2Haar := by
     apply integral_mono_ae htraceSq (hfiberEnergy.const_mul (Fintype.card D : ℝ))
     filter_upwards with x
     rw [rationalHeckeConjugateFiberTrace_mk]
@@ -392,27 +392,27 @@ theorem rationalHeckeConjugateFiberTrace_integral_norm_sq_le_of_stronglyMeasurab
       GaloisForLFunctions.HTGeometry.norm_sum_sq_le_card_mul
         (fun c : D => f (RHTower.deningerFiberMap (H := K) x c))
   have htraceSqQ : AEStronglyMeasurable (fun y =>
-      ‖rationalHeckeConjugateFiberTrace N g f y‖ ^ 2)
+      ‖rationalHeckeConjugateFiberTrace N g f y‖ ^ (2 : ℕ))
       (rationalConjugateSL2QuotientMeasure N g) :=
     (rationalHeckeConjugateFiberTrace_measurable_of_stronglyMeasurable N g f hf).aestronglyMeasurable.norm.pow 2
   calc
-    (∫ y, ‖rationalHeckeConjugateFiberTrace N g f y‖ ^ 2
+    (∫ y, ‖rationalHeckeConjugateFiberTrace N g f y‖ ^ (2 : ℕ)
       ∂rationalConjugateSL2QuotientMeasure N g) =
-        ∫ x in S, ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ 2
+        ∫ x in S, ‖rationalHeckeConjugateFiberTrace N g f (πR x)‖ ^ (2 : ℕ)
           ∂realSL2Haar := by
-      change (∫ y, ‖rationalHeckeConjugateFiberTrace N g f y‖ ^ 2
+      change (∫ y, ‖rationalHeckeConjugateFiberTrace N g f y‖ ^ (2 : ℕ)
         ∂Measure.map πR (realSL2Haar.restrict S)) = _
       rw [integral_map hπR.aemeasurable htraceSqQ]
     _ ≤ ∫ x in S, (Fintype.card D : ℝ) *
-          ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ 2 ∂realSL2Haar := hpointIntegral
+          ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ (2 : ℕ) ∂realSL2Haar := hpointIntegral
     _ = (Fintype.card D : ℝ) *
-        ∫ x in S, ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ 2 ∂realSL2Haar := by
+        ∫ x in S, ∑ c : D, ‖f (πK (x * c.out.val))‖ ^ (2 : ℕ) ∂realSL2Haar := by
       rw [integral_const_mul]
     _ = (Fintype.card D : ℝ) *
-        (∫ x in FC, ‖f (πK x)‖ ^ 2 ∂realSL2Haar) := by
+        (∫ x in FC, ‖f (πK x)‖ ^ (2 : ℕ) ∂realSL2Haar) := by
       rw [henergyEq]
     _ = (Fintype.card D : ℝ) *
-        ∫ y, ‖f y‖ ^ 2 ∂integralSubgroupQuotientMeasure
+        ∫ y, ‖f y‖ ^ (2 : ℕ) ∂integralSubgroupQuotientMeasure
           (rationalHeckeIntegralIntersection N g) := by
       congr 1
       rw [← hπKpres.map_eq]
@@ -1129,21 +1129,21 @@ theorem rationalHeckeConjugateFiberTraceLp_norm_le_card_mul (N : ℕ) (g : GL (F
   have henergy :=
     rationalHeckeConjugateFiberTrace_integral_norm_sq_le_of_stronglyMeasurable
       N g f₀ hf₀ hmemf₀
-  have htargetEnergy : ‖rationalHeckeConjugateFiberTraceLp N g f‖ ^ 2 =
-      ∫ y, ‖rationalHeckeConjugateFiberTrace N g f₀ y‖ ^ 2
+  have htargetEnergy : ‖rationalHeckeConjugateFiberTraceLp N g f‖ ^ (2 : ℕ) =
+      ∫ y, ‖rationalHeckeConjugateFiberTrace N g f₀ y‖ ^ (2 : ℕ)
         ∂rationalConjugateSL2QuotientMeasure N g := by
     rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     apply integral_congr_ae
     filter_upwards [coe_rationalHeckeConjugateFiberTraceLp N g f] with y hy
     rw [hy]
-  have hsourceEnergy : ‖f‖ ^ 2 = ∫ y, ‖f₀ y‖ ^ 2
+  have hsourceEnergy : ‖f‖ ^ (2 : ℕ) = ∫ y, ‖f₀ y‖ ^ (2 : ℕ)
       ∂integralSubgroupQuotientMeasure (rationalHeckeIntegralIntersection N g) := by
     rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     apply integral_congr_ae
     filter_upwards [(Lp.aestronglyMeasurable f).ae_eq_mk] with y hy
     rw [hy]
-  have hsq : ‖rationalHeckeConjugateFiberTraceLp N g f‖ ^ 2 ≤
-      (Fintype.card D : ℝ) * ‖f‖ ^ 2 := by
+  have hsq : ‖rationalHeckeConjugateFiberTraceLp N g f‖ ^ (2 : ℕ) ≤
+      (Fintype.card D : ℝ) * ‖f‖ ^ (2 : ℕ) := by
     rw [htargetEnergy, hsourceEnergy]
     simpa only [D, R, K] using henergy
   letI : Nonempty D := ⟨QuotientGroup.mk 1⟩
@@ -1151,12 +1151,12 @@ theorem rationalHeckeConjugateFiberTraceLp_norm_le_card_mul (N : ℕ) (g : GL (F
     exact_mod_cast Nat.succ_le_of_lt (Fintype.card_pos (α := D))
   apply (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (le_trans zero_le_one hcard) (norm_nonneg _))).mp
   calc
-    ‖rationalHeckeConjugateFiberTraceLp N g f‖ ^ 2 ≤
-        (Fintype.card D : ℝ) * ‖f‖ ^ 2 := hsq
-    _ ≤ ((Fintype.card D : ℝ) * (Fintype.card D : ℝ)) * ‖f‖ ^ 2 := by
+    ‖rationalHeckeConjugateFiberTraceLp N g f‖ ^ (2 : ℕ) ≤
+        (Fintype.card D : ℝ) * ‖f‖ ^ (2 : ℕ) := hsq
+    _ ≤ ((Fintype.card D : ℝ) * (Fintype.card D : ℝ)) * ‖f‖ ^ (2 : ℕ) := by
       exact mul_le_mul_of_nonneg_right
         (le_mul_of_one_le_right (le_trans zero_le_one hcard) hcard) (sq_nonneg ‖f‖)
-    _ = ((Fintype.card D : ℝ) * ‖f‖) ^ 2 := by ring
+    _ = ((Fintype.card D : ℝ) * ‖f‖) ^ (2 : ℕ) := by ring
 
 /-- The finite-fibre rational correspondence is a continuous complex-linear
 operator on the two quotient `L²` spaces. -/

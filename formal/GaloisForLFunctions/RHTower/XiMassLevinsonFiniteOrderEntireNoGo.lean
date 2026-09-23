@@ -9,7 +9,7 @@ vanish at all but finitely many prime logarithms. Finite-order prime-log uniquen
 difference to vanish everywhere. A rough exterior prime square then contradicts true-prime support.
 
 The capstone retains arbitrary scale-dependent normalized mollifiers supported through the literal
-T1 aperture `N^49`. Thus every viable fixed entire T1 symbol must have infinite order; alternatives
+T1 aperture `N^(49 : ℕ)`. Thus every viable fixed entire T1 symbol must have infinite order; alternatives
 must be scale-varying, singular/non-entire, or explicitly prime-power-aware.
 -/
 
@@ -41,7 +41,7 @@ every sufficiently large literal T1 moving window. -/
 theorem no_fixedEntireFiniteOrder_truePrime_eventually_t1AfeWindows (N₀ : ℕ) :
     ¬ ∃ F : EntireFiniteOrder,
       ∀ N : ℕ, N₀ ≤ N → 2 ≤ N → ∀ n : ℕ, 0 < n →
-        IsApertureRough (N ^ 49) n → n ≤ N ^ 100 →
+        IsApertureRough (N ^ (49 : ℕ)) n → n ≤ N ^ (100 : ℕ) →
         finiteTypeAnalyticCriticalHeadCoeff F n = truePrimeLogHalfDensityCoeff n := by
   rintro ⟨F, hcorrect⟩
   let B : ℕ := max N₀ 2
@@ -66,15 +66,15 @@ theorem no_fixedEntireFiniteOrder_truePrime_eventually_t1AfeWindows (N₀ : ℕ)
   have hFid' : F.toFun = id := hFid
   let N : ℕ := max N₀ 4
   let i : Fin 1 := ⟨0, by omega⟩
-  let p : ℕ := vinogradovBertrandPrimeReservoir (N ^ 49) 1 i
+  let p : ℕ := vinogradovBertrandPrimeReservoir (N ^ (49 : ℕ)) 1 i
   have hp : p.Prime := by
-    simpa only [p, i] using vinogradovBertrandPrimeReservoir_prime (N ^ 49) 1 i
-  have hlow : N ^ 49 < p := by
-    simpa only [p, i] using lt_vinogradovBertrandPrimeReservoir (N ^ 49) 1 i
-  have hpR : p ≤ 2 ^ (0 + 1) * (N ^ 49 + 2) := by
-    have hreservoir := vinogradovBertrandPrimeReservoir_add_two_le (N ^ 49) 1 i
+    simpa only [p, i] using vinogradovBertrandPrimeReservoir_prime (N ^ (49 : ℕ)) 1 i
+  have hlow : N ^ (49 : ℕ) < p := by
+    simpa only [p, i] using lt_vinogradovBertrandPrimeReservoir (N ^ (49 : ℕ)) 1 i
+  have hpR : p ≤ 2 ^ (0 + 1) * (N ^ (49 : ℕ) + 2) := by
+    have hreservoir := vinogradovBertrandPrimeReservoir_add_two_le (N ^ (49 : ℕ)) 1 i
     exact (Nat.le_add_right p 2).trans (by simpa only [p, i] using hreservoir)
-  have hupp : p ^ 2 ≤ N ^ 100 :=
+  have hupp : p ^ (2 : ℕ) ≤ N ^ (100 : ℕ) :=
     (Nat.pow_le_pow_left hpR 2).trans
       (finiteOrderBertrandReservoir_square_le_t1AfeWindow
         (d := 0) (N := N) (by
@@ -84,23 +84,23 @@ theorem no_fixedEntireFiniteOrder_truePrime_eventually_t1AfeWindows (N₀ : ℕ)
   have hN₀N : N₀ ≤ N := by simpa only [N] using le_max_left N₀ 4
   have hN2 : 2 ≤ N :=
     (by omega : 2 ≤ 4).trans (by simpa only [N] using le_max_right N₀ 4)
-  have hp2pos : 0 < p ^ 2 := pow_pos hp.pos 2
-  have hp2rough : IsApertureRough (N ^ 49) (p ^ 2) :=
+  have hp2pos : 0 < p ^ (2 : ℕ) := pow_pos hp.pos 2
+  have hp2rough : IsApertureRough (N ^ (49 : ℕ)) (p ^ (2 : ℕ)) :=
     prime_sq_isApertureRough hp hlow
-  have heq := hcorrect N hN₀N hN2 (p ^ 2) hp2pos hp2rough hupp
+  have heq := hcorrect N hN₀N hN2 (p ^ (2 : ℕ)) hp2pos hp2rough hupp
   rw [hFid'] at heq
   exact finiteTypeAnalyticCriticalHeadCoeff_id_ne_truePrime_at_prime_sq hp heq
 
 /-- **Detector-native finite-order T1 no-go.** Arbitrary normalized scale-dependent mollification
-inside `N^49` cannot make one fixed finite-order entire symbol coefficient-faithful throughout all
+inside `N^(49 : ℕ)` cannot make one fixed finite-order entire symbol coefficient-faithful throughout all
 sufficiently large T1 AFE windows. -/
 theorem no_fixedEntireFiniteOrder_normalizedMollified_truePrime_eventually_t1AfeWindows
     (N₀ : ℕ) :
     ¬ ∃ (F : EntireFiniteOrder) (moll : ℕ → ℕ → ℂ),
       (∀ N : ℕ, moll N 1 = 1) ∧
-      (∀ N q : ℕ, N ^ 49 < q → moll N q = 0) ∧
+      (∀ N q : ℕ, N ^ (49 : ℕ) < q → moll N q = 0) ∧
       (∀ N : ℕ, N₀ ≤ N → 2 ≤ N → ∀ n : ℕ, 0 < n →
-        IsApertureRough (N ^ 49) n → n ≤ N ^ 100 →
+        IsApertureRough (N ^ (49 : ℕ)) n → n ≤ N ^ (100 : ℕ) →
         finiteTypeAnalyticMollifiedCriticalDetectorCoeff F (moll N) n =
           truePrimeLogHalfDensityCoeff n) := by
   rintro ⟨F, moll, hmoll_one, hsupport, hcorrect⟩
@@ -109,7 +109,7 @@ theorem no_fixedEntireFiniteOrder_normalizedMollified_truePrime_eventually_t1Afe
   intro N hN₀ hN2 n hn hrough hnupper
   have hcollapse :=
     finiteTypeAnalyticMollifiedCriticalDetectorCoeff_eq_head_of_rough
-      (F := F) (moll := moll N) (M := N ^ 49) (n := n)
+      (F := F) (moll := moll N) (M := N ^ (49 : ℕ)) (n := n)
       (hmoll_one N) (hsupport N) hn hrough
   exact hcollapse.symm.trans (hcorrect N hN₀ hN2 n hn hrough hnupper)
 

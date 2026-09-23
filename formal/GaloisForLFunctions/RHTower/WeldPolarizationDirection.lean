@@ -255,7 +255,7 @@ def weldLightNegative (c : ℝ) : Fin 1 → (Fin 2 → ℂ) :=
 /-- The difference of the two light-cone rank-one squares is exactly the FE hyperbolic block. -/
 theorem factoredKrein_weldLight_eq (c : ℝ) :
     _root_.RHTower.factoredKreinForm (weldLightPositive c) (weldLightNegative c) =
-      weldFEKreinGram (2 * c ^ 2) := by
+      weldFEKreinGram (2 * c ^ (2 : ℕ)) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [weldLightPositive, weldLightNegative, _root_.RHTower.factoredKreinForm,
@@ -274,7 +274,7 @@ theorem factoredKrein_weldLight_eq_rate {θ : ℝ} (hθ : 0 ≤ θ) :
   rw [factoredKrein_weldLight_eq]
   congr 1
   unfold weldLightScale
-  rw [show (Real.sqrt (θ / 2)) ^ 2 = θ / 2 by
+  rw [show (Real.sqrt (θ / 2)) ^ (2 : ℕ) = θ / 2 by
     exact Real.sq_sqrt (div_nonneg hθ (by norm_num))]
   ring
 

@@ -18,7 +18,7 @@ def reversalConeCoefficients (s B : ℝ) : Fin 2 → ℝ :=
 
 theorem one_enclosure_cone_bound (s B a b c d e : ℝ) :
     |(a+b+c+d+e)*weightedSixResponse (27*unitMagnitude s*|B|) (-|B|) a b c d e| ≤
-      |B| * sixCost a b c d e ^ 4 := by
+      |B| * sixCost a b c d e ^ (4 : ℕ) := by
   let S := a+b+c+d+e
   let T := sixCost a b c d e
   let q := unitMagnitude s
@@ -33,18 +33,18 @@ theorem one_enclosure_cone_bound (s B a b c d e : ℝ) :
     have h4 := abs_add_le (a+b+c+d) e
     dsimp [S,T,sixCost]
     linarith only [h1,h2,h3,h4]
-  have hR : |S*rainbowThree a b c d e| ≤ T^4 := by
+  have hR : |S*rainbowThree a b c d e| ≤ T^(4 : ℕ) := by
     rw [abs_mul]
     calc
-      |S| * |rainbowThree a b c d e| ≤ T*T^3 :=
+      |S| * |rainbowThree a b c d e| ≤ T*T^(3 : ℕ) :=
         mul_le_mul hS (rainbow_bound a b c d e) (abs_nonneg _) hT
-      _ = T^4 := by ring
-  have hP : |S*reversalResponse a b c d e| ≤ T^4 := one_enclosure_reversal_bound a b c d e
+      _ = T^(4 : ℕ) := by ring
+  have hP : |S*reversalResponse a b c d e| ≤ T^(4 : ℕ) := one_enclosure_reversal_bound a b c d e
   have hid : S*weightedSixResponse (27*q*|B|) (-|B|) a b c d e =
       |B| * (q*(S*reversalResponse a b c d e) - (1-q)*(S*rainbowThree a b c d e)) := by
     unfold weightedSixResponse reversalResponse
     ring
-  change |S*weightedSixResponse (27*q*|B|) (-|B|) a b c d e| ≤ |B| * T^4
+  change |S*weightedSixResponse (27*q*|B|) (-|B|) a b c d e| ≤ |B| * T^(4 : ℕ)
   rw [hid,abs_mul,abs_abs]
   apply mul_le_mul_of_nonneg_left _ (abs_nonneg B)
   have ht := abs_sub_le (q*(S*reversalResponse a b c d e)) 0 ((1-q)*(S*rainbowThree a b c d e))

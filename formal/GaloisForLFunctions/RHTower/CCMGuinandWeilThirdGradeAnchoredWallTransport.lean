@@ -37,13 +37,13 @@ private theorem intervalIntegrable_anchoredCubicProduct
     {a b c : ℝ} (hb : 0 < b) (hbc : b ≤ c) :
     IntervalIntegrable
       (fun h : ℝ =>
-        (criticalMellinCompletedError a - criticalMellinCompletedError h) / h ^ 3)
+        (criticalMellinCompletedError a - criticalMellinCompletedError h) / h ^ (3 : ℕ))
       volume b c := by
   have hE := intervalIntegrable_criticalMellinCompletedError_on_Icc hbc
   have hdiff : IntervalIntegrable
       (fun h : ℝ => criticalMellinCompletedError a - criticalMellinCompletedError h)
       volume b c := intervalIntegrable_const.sub hE
-  have hcubic : ContinuousOn (fun h : ℝ => 1 / h ^ 3) (uIcc b c) := by
+  have hcubic : ContinuousOn (fun h : ℝ => 1 / h ^ (3 : ℕ)) (uIcc b c) := by
     rw [uIcc_of_le hbc]
     intro h hh
     exact (continuousAt_const.div (continuousAt_id.pow 3)
@@ -65,7 +65,7 @@ theorem ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_wallTransport
           (criticalMellinCompletedError b - criticalMellinCompletedError c) +
         64 * (1 / c - 1 / H) *
           (∫ h in b..c,
-            (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ 3) := by
+            (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ (3 : ℕ)) := by
   have hc : 0 < c := hb.trans_le hbc
   have hH : 0 < H := hc.trans_le hcH
   let F : ℝ → ℝ := fun h =>
@@ -83,11 +83,11 @@ theorem ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_wallTransport
     (intervalIntegral.integral_add_adjacent_intervals hKHbc hKHcH).symm
   have hKCbc : IntervalIntegrable (fun h => KC h * F h) volume b c :=
     intervalIntegrable_anchoredKernelProduct (a := b) hb hbc
-  have hJ : IntervalIntegrable (fun h => F h / h ^ 3) volume b c :=
+  have hJ : IntervalIntegrable (fun h => F h / h ^ (3 : ℕ)) volume b c :=
     intervalIntegrable_anchoredCubicProduct (a := b) hb hbc
   have hprefix : (∫ h in b..c, KH h * F h) =
       (∫ h in b..c, KC h * F h) +
-        64 * (1 / c - 1 / H) * ∫ h in b..c, F h / h ^ 3 := by
+        64 * (1 / c - 1 / H) * ∫ h in b..c, F h / h ^ (3 : ℕ) := by
     rw [← intervalIntegral.integral_const_mul]
     rw [← intervalIntegral.integral_add hKCbc
       (hJ.const_mul (64 * (1 / c - 1 / H)))]
@@ -145,17 +145,17 @@ theorem ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_sub_eq_wallCofinalCocy
     ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H -
         ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment c H =
       ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b c +
-        (32 / c ^ 3) *
+        (32 / c ^ (3 : ℕ)) *
           (criticalMellinCompletedError b - criticalMellinCompletedError c) +
         (64 / c) *
           (∫ h in b..c,
-            (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ 3) -
+            (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ (3 : ℕ)) -
         (1 / H) *
-          ((32 / c ^ 2) *
+          ((32 / c ^ (2 : ℕ)) *
               (criticalMellinCompletedError b - criticalMellinCompletedError c) +
             64 *
               (∫ h in b..c,
-                (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ 3)) := by
+                (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ (3 : ℕ))) := by
   have hc : 0 < c := hb.trans_le hbc
   have hH : 0 < H := hc.trans_le hcH
   have htransport :=
@@ -179,22 +179,22 @@ theorem tendsto_ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_sub
       Filter.atTop
       (nhds
         (ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b c +
-          (32 / c ^ 3) *
+          (32 / c ^ (3 : ℕ)) *
             (criticalMellinCompletedError b - criticalMellinCompletedError c) +
           (64 / c) *
             (∫ h in b..c,
-              (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ 3))) := by
+              (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ (3 : ℕ)))) := by
   let L := ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b c +
-    (32 / c ^ 3) *
+    (32 / c ^ (3 : ℕ)) *
       (criticalMellinCompletedError b - criticalMellinCompletedError c) +
     (64 / c) *
       (∫ h in b..c,
-        (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ 3)
-  let Q := (32 / c ^ 2) *
+        (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ (3 : ℕ))
+  let Q := (32 / c ^ (2 : ℕ)) *
       (criticalMellinCompletedError b - criticalMellinCompletedError c) +
     64 *
       (∫ h in b..c,
-        (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ 3)
+        (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ (3 : ℕ))
   have hinv : Filter.Tendsto (fun H : ℝ => (1 / H) * Q)
       Filter.atTop (nhds 0) := by
     simpa only [one_div, mul_comm, zero_mul] using
@@ -221,9 +221,9 @@ private theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_of_le
   let A := ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b c
   let D := criticalMellinCompletedError b - criticalMellinCompletedError c
   let J := ∫ h in b..c,
-    (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ 3
-  let C := B + |A| + (32 / c ^ 3) * |D| + (64 / c) * |J|
-  have h32 : 0 ≤ 32 / c ^ 3 := by positivity
+    (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ (3 : ℕ)
+  let C := B + |A| + (32 / c ^ (3 : ℕ)) * |D| + (64 / c) * |J|
+  have h32 : 0 ≤ 32 / c ^ (3 : ℕ) := by positivity
   have h64 : 0 ≤ 64 / c := by positivity
   refine ⟨C, by
     dsimp only [C]
@@ -243,8 +243,8 @@ private theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_of_le
   have hfac1 : 1 - c / H ≤ 1 := by
     have : 0 ≤ c / H := by positivity
     linarith
-  have hT : |T| ≤ 32 / c ^ 3 := by
-    have hTeq : T = (32 / c ^ 3) * (1 - c / H) := by
+  have hT : |T| ≤ 32 / c ^ (3 : ℕ) := by
+    have hTeq : T = (32 / c ^ (3 : ℕ)) * (1 - c / H) := by
       dsimp only [T]
       unfold ccmGuinandWeilThirdGradeCesaroTriangularWeight
         ccmGuinandWeilThirdGradeWeight
@@ -262,7 +262,7 @@ private theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_of_le
     calc
       64 * (1 / c - 1 / H) ≤ 64 * (1 / c) := by nlinarith
       _ = 64 / c := by ring
-  have hTD : |T * D| ≤ (32 / c ^ 3) * |D| := by
+  have hTD : |T * D| ≤ (32 / c ^ (3 : ℕ)) * |D| := by
     rw [abs_mul]
     exact mul_le_mul_of_nonneg_right hT (abs_nonneg D)
   have hRJ : |R * J| ≤ (64 / c) * |J| := by
@@ -287,13 +287,13 @@ cofinal arithmetic problem: no bounded interval of apertures contributes to CCM-
 theorem abs_ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_le_of_mem
     {b c H : ℝ} (hb : 0 < b) (hbH : b ≤ H) (hHc : H ≤ c) :
     |ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b H| ≤
-      (96 / b ^ 4) *
+      (96 / b ^ (4 : ℕ)) *
         (|criticalMellinCompletedError b| + 23 * Real.exp (c / 2)) * (c - b) := by
   have hH : 0 < H := hb.trans_le hbH
   have hbc : b ≤ c := hbH.trans hHc
-  let M := (96 / b ^ 4) *
+  let M := (96 / b ^ (4 : ℕ)) *
     (|criticalMellinCompletedError b| + 23 * Real.exp (c / 2))
-  have h96 : 0 ≤ 96 / b ^ 4 := by positivity
+  have h96 : 0 ≤ 96 / b ^ (4 : ℕ) := by positivity
   have hM : 0 ≤ M := by
     dsimp only [M]
     positivity
@@ -307,9 +307,9 @@ theorem abs_ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_le_of_mem
     have hhc : h ≤ c := hh'.2.trans hHc
     have hkernel :=
       (ccmGuinandWeilThirdGradeCesaroErrorKernel_bounds hb hbH hh').2
-    have hpow : b ^ 4 ≤ h ^ 4 := pow_le_pow_left₀ hb.le hh'.1 4
-    have hb4 : 0 < b ^ 4 := pow_pos hb 4
-    have hkernel' : ccmGuinandWeilThirdGradeCesaroErrorKernel H h ≤ 96 / b ^ 4 :=
+    have hpow : b ^ (4 : ℕ) ≤ h ^ (4 : ℕ) := pow_le_pow_left₀ hb.le hh'.1 4
+    have hb4 : 0 < b ^ (4 : ℕ) := pow_pos hb 4
+    have hkernel' : ccmGuinandWeilThirdGradeCesaroErrorKernel H h ≤ 96 / b ^ (4 : ℕ) :=
       hkernel.trans (div_le_div_of_nonneg_left (by norm_num) hb4 hpow)
     have hkernel0 :=
       (ccmGuinandWeilThirdGradeCesaroErrorKernel_pos hb hbH hh').le
@@ -351,12 +351,12 @@ private theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_lower_of_le
   let A := ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment b c
   let D := criticalMellinCompletedError b - criticalMellinCompletedError c
   let J := ∫ h in b..c,
-    (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ 3
-  let TAIL := B + |A| + (32 / c ^ 3) * |D| + (64 / c) * |J|
-  let LOCAL := (96 / b ^ 4) *
+    (criticalMellinCompletedError b - criticalMellinCompletedError h) / h ^ (3 : ℕ)
+  let TAIL := B + |A| + (32 / c ^ (3 : ℕ)) * |D| + (64 / c) * |J|
+  let LOCAL := (96 / b ^ (4 : ℕ)) *
     (|criticalMellinCompletedError b| + 23 * Real.exp (c / 2)) * (c - b)
   let C := max TAIL LOCAL
-  have h32 : 0 ≤ 32 / c ^ 3 := by positivity
+  have h32 : 0 ≤ 32 / c ^ (3 : ℕ) := by positivity
   have h64 : 0 ≤ 64 / c := by positivity
   have hTAIL : 0 ≤ TAIL := by
     dsimp only [TAIL]
@@ -383,8 +383,8 @@ private theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_lower_of_le
     have hfac1 : 1 - c / H ≤ 1 := by
       have : 0 ≤ c / H := by positivity
       linarith
-    have hT : |T| ≤ 32 / c ^ 3 := by
-      have hTeq : T = (32 / c ^ 3) * (1 - c / H) := by
+    have hT : |T| ≤ 32 / c ^ (3 : ℕ) := by
+      have hTeq : T = (32 / c ^ (3 : ℕ)) * (1 - c / H) := by
         dsimp only [T]
         unfold ccmGuinandWeilThirdGradeCesaroTriangularWeight
           ccmGuinandWeilThirdGradeWeight
@@ -402,7 +402,7 @@ private theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_lower_of_le
       calc
         64 * (1 / c - 1 / H) ≤ 64 * (1 / c) := by nlinarith
         _ = 64 / c := by ring
-    have hTD : |T * D| ≤ (32 / c ^ 3) * |D| := by
+    have hTD : |T * D| ≤ (32 / c ^ (3 : ℕ)) * |D| := by
       rw [abs_mul]
       exact mul_le_mul_of_nonneg_right hT (abs_nonneg D)
     have hRJ : |R * J| ≤ (64 / c) * |J| := by
@@ -455,7 +455,7 @@ theorem ccmGuinandWeilThirdGradeCesaroAnchoredMomentBound_iff_tailBound
     exact hbound H (lt_of_lt_of_le (by linarith) hH)
   · rintro ⟨U, C, hbU, hC, htail⟩
     let B : ℝ :=
-      (96 / b ^ 4) *
+      (96 / b ^ (4 : ℕ)) *
         (|criticalMellinCompletedError b| + 23 * Real.exp (U / 2)) * (U - b)
     refine ⟨max C B, hC.trans (le_max_left _ _), ?_⟩
     intro H hbH

@@ -47,7 +47,7 @@ theorem exp_neg_half_le_exponentialChordFactor
 
 theorem exponentialChordFactor_le_exp_neg_half_add_sq_eighth
     {y : ℝ} (hy : 0 ≤ y) :
-    exponentialChordFactor y ≤ Real.exp (-(y / 2) + y ^ 2 / 8) := by
+    exponentialChordFactor y ≤ Real.exp (-(y / 2) + y ^ (2 : ℕ) / 8) := by
   rcases hy.eq_or_lt with rfl | hy
   · simp [exponentialChordFactor]
   rw [exponentialChordFactor_eq_exp_sinh hy]
@@ -57,16 +57,16 @@ theorem exponentialChordFactor_le_exp_neg_half_add_sq_eighth
   have hdiv : Real.sinh (y / 2) / (y / 2) ≤ Real.cosh (y / 2) := by
     rw [div_le_iff₀ (by positivity)]
     simpa [mul_comm] using hsinh
-  have hcosh : Real.cosh (y / 2) ≤ Real.exp (y ^ 2 / 8) := by
+  have hcosh : Real.cosh (y / 2) ≤ Real.exp (y ^ (2 : ℕ) / 8) := by
     calc
-      Real.cosh (y / 2) ≤ Real.exp ((y / 2) ^ 2 / 2) :=
+      Real.cosh (y / 2) ≤ Real.exp ((y / 2) ^ (2 : ℕ) / 2) :=
         Real.cosh_le_exp_half_sq (y / 2)
-      _ = Real.exp (y ^ 2 / 8) := by ring_nf
+      _ = Real.exp (y ^ (2 : ℕ) / 8) := by ring_nf
   calc
     Real.exp (-(y / 2)) * (Real.sinh (y / 2) / (y / 2)) ≤
-        Real.exp (-(y / 2)) * Real.exp (y ^ 2 / 8) :=
+        Real.exp (-(y / 2)) * Real.exp (y ^ (2 : ℕ) / 8) :=
       mul_le_mul_of_nonneg_left (hdiv.trans hcosh) (Real.exp_pos _).le
-    _ = Real.exp (-(y / 2) + y ^ 2 / 8) := by rw [Real.exp_add]
+    _ = Real.exp (-(y / 2) + y ^ (2 : ℕ) / 8) := by rw [Real.exp_add]
 
 theorem prod_exponentialChordFactor_mem_diffuseBounds
     {α : Type*} [DecidableEq α]
@@ -76,7 +76,7 @@ theorem prod_exponentialChordFactor_mem_diffuseBounds
         ∏ i ∈ s, exponentialChordFactor (y i) ∧
       (∏ i ∈ s, exponentialChordFactor (y i)) ≤
         Real.exp (-(∑ i ∈ s, y i) / 2 +
-          (∑ i ∈ s, (y i) ^ 2) / 8) := by
+          (∑ i ∈ s, (y i) ^ (2 : ℕ)) / 8) := by
   constructor
   · calc
       Real.exp (-(∑ i ∈ s, y i) / 2) =
@@ -91,13 +91,13 @@ theorem prod_exponentialChordFactor_mem_diffuseBounds
           (fun i hi => exp_neg_half_le_exponentialChordFactor (hy i hi))
   · calc
       (∏ i ∈ s, exponentialChordFactor (y i)) ≤
-          ∏ i ∈ s, Real.exp (-(y i / 2) + (y i) ^ 2 / 8) := by
+          ∏ i ∈ s, Real.exp (-(y i / 2) + (y i) ^ (2 : ℕ) / 8) := by
         exact Finset.prod_le_prod
           (fun i hi => exponentialChordFactor_nonneg (hy i hi))
           (fun i hi =>
             exponentialChordFactor_le_exp_neg_half_add_sq_eighth (hy i hi))
       _ = Real.exp (-(∑ i ∈ s, y i) / 2 +
-          (∑ i ∈ s, (y i) ^ 2) / 8) := by
+          (∑ i ∈ s, (y i) ^ (2 : ℕ)) / 8) := by
         rw [← Real.exp_sum]
         congr 1
         simp only [Finset.sum_add_distrib, div_eq_mul_inv, neg_mul,
@@ -130,7 +130,7 @@ private theorem one_sub_sum_le_prod_one_sub
 
 theorem gammaSewnContractionProd_mem_diffuseBounds
     {x : ℝ} (hx : 0 < x) (P : Finset Nat.Primes) :
-    1 - 3 * ∑ p ∈ P, (x * Real.log (p : ℝ)) ^ 2 ≤
+    1 - 3 * ∑ p ∈ P, (x * Real.log (p : ℝ)) ^ (2 : ℕ) ≤
         ∏ p ∈ P, gammaSewnMobiusValuationContractionMultiplier x p ∧
       (∏ p ∈ P, gammaSewnMobiusValuationContractionMultiplier x p) ≤ 1 := by
   let c : Nat.Primes → ℝ := fun p =>
@@ -150,18 +150,18 @@ theorem gammaSewnContractionProd_mem_diffuseBounds
   · have hprod := one_sub_sum_le_prod_one_sub P a ha0 ha1
     have hloss :
         (∑ p ∈ P, a p) ≤
-          3 * ∑ p ∈ P, (x * Real.log (p : ℝ)) ^ 2 := by
+          3 * ∑ p ∈ P, (x * Real.log (p : ℝ)) ^ (2 : ℕ) := by
       calc
         (∑ p ∈ P, a p) ≤
-            ∑ p ∈ P, 3 * (x * Real.log (p : ℝ)) ^ 2 := by
+            ∑ p ∈ P, 3 * (x * Real.log (p : ℝ)) ^ (2 : ℕ) := by
           exact Finset.sum_le_sum fun p hp => by
             simpa only [a, c] using
               one_sub_gammaSewnMobiusValuationContractionMultiplier_le_three_mul_sq
                 hx p
-        _ = 3 * ∑ p ∈ P, (x * Real.log (p : ℝ)) ^ 2 := by
+        _ = 3 * ∑ p ∈ P, (x * Real.log (p : ℝ)) ^ (2 : ℕ) := by
           rw [Finset.mul_sum]
     apply (by linarith :
-      1 - 3 * ∑ p ∈ P, (x * Real.log (p : ℝ)) ^ 2 ≤
+      1 - 3 * ∑ p ∈ P, (x * Real.log (p : ℝ)) ^ (2 : ℕ) ≤
         1 - ∑ p ∈ P, a p).trans
     apply hprod.trans_eq
     apply Finset.prod_congr rfl
@@ -183,7 +183,7 @@ theorem tendsto_prod_exponentialChordFactor_diffuse
       (fun N => aperture N * ∑ p ∈ P N, Real.log (p : ℝ))
       atTop (𝓝 τ))
     (hsq : Tendsto
-      (fun N => ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ 2)
+      (fun N => ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ (2 : ℕ))
       atTop (𝓝 0)) :
     Tendsto
       (fun N => ∏ p ∈ P N,
@@ -192,7 +192,7 @@ theorem tendsto_prod_exponentialChordFactor_diffuse
   let X : ℕ → ℝ := fun N =>
     aperture N * ∑ p ∈ P N, Real.log (p : ℝ)
   let Q : ℕ → ℝ := fun N =>
-    ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ 2
+    ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ (2 : ℕ)
   have hbounds : ∀ N,
       Real.exp (-(X N) / 2) ≤
           ∏ p ∈ P N,
@@ -222,14 +222,14 @@ theorem tendsto_prod_gammaSewnContraction_diffuse
     (aperture : ℕ → ℝ) (P : ℕ → Finset Nat.Primes)
     (hpos : ∀ N, 0 < aperture N)
     (hsq : Tendsto
-      (fun N => ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ 2)
+      (fun N => ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ (2 : ℕ))
       atTop (𝓝 0)) :
     Tendsto
       (fun N => ∏ p ∈ P N,
         gammaSewnMobiusValuationContractionMultiplier (aperture N) p)
       atTop (𝓝 1) := by
   let Q : ℕ → ℝ := fun N =>
-    ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ 2
+    ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ (2 : ℕ)
   have hQ : Tendsto Q atTop (𝓝 0) := by simpa only [Q] using hsq
   have hlower : Tendsto (fun N => 1 - 3 * Q N) atTop (𝓝 1) := by
     convert tendsto_const_nhds.sub (tendsto_const_nhds.mul hQ) using 1
@@ -248,7 +248,7 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_diffuse
       (fun N => aperture N * ∑ p ∈ P N, Real.log (p : ℝ))
       atTop (𝓝 τ))
     (hsq : Tendsto
-      (fun N => ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ 2)
+      (fun N => ∑ p ∈ P N, (aperture N * Real.log (p : ℝ)) ^ (2 : ℕ))
       atTop (𝓝 0)) :
     Tendsto
       (fun N => gammaSewnSynchronizedRecoveryRatio nu (aperture N) (P N))
@@ -426,13 +426,13 @@ theorem tendsto_gammaSewnDiffusePrimeAperture_totalPhase
 
 private theorem sum_primesBelowSubtype_log_sq_le (N : ℕ) :
     (∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
-      Real.log (p : ℝ) ^ 2) ≤
+      Real.log (p : ℝ) ^ (2 : ℕ)) ≤
       Real.log (N : ℝ) *
         ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
           Real.log (p : ℝ) := by
   calc
     (∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
-        Real.log (p : ℝ) ^ 2) ≤
+        Real.log (p : ℝ) ^ (2 : ℕ)) ≤
         ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
           Real.log (N : ℝ) * Real.log (p : ℝ) := by
       apply Finset.sum_le_sum
@@ -453,8 +453,8 @@ private theorem sum_primesBelowSubtype_log_sq_le (N : ℕ) :
 theorem gammaSewnDiffusePrimeAperture_quadraticPhase_le
     (τ : ℝ) (N : ℕ) :
     (∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
-      (gammaSewnDiffusePrimeAperture τ N * Real.log (p : ℝ)) ^ 2) ≤
-      τ ^ 2 * (Real.log (N : ℝ) / ((N : ℝ) + 1)) *
+      (gammaSewnDiffusePrimeAperture τ N * Real.log (p : ℝ)) ^ (2 : ℕ)) ≤
+      τ ^ (2 : ℕ) * (Real.log (N : ℝ) / ((N : ℝ) + 1)) *
         ((∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
             Real.log (p : ℝ)) / ((N : ℝ) + 1)) := by
   let L : ℝ := ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
@@ -462,20 +462,20 @@ theorem gammaSewnDiffusePrimeAperture_quadraticPhase_le
   let a : ℝ := gammaSewnDiffusePrimeAperture τ N
   have hrewrite :
       (∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
-        (a * Real.log (p : ℝ)) ^ 2) =
-        a ^ 2 * ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
-          Real.log (p : ℝ) ^ 2 := by
+        (a * Real.log (p : ℝ)) ^ (2 : ℕ)) =
+        a ^ (2 : ℕ) * ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
+          Real.log (p : ℝ) ^ (2 : ℕ) := by
     simp_rw [mul_pow]
     rw [Finset.mul_sum]
   rw [hrewrite]
   calc
-    a ^ 2 * ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
-          Real.log (p : ℝ) ^ 2 ≤
-        a ^ 2 * (Real.log (N : ℝ) * L) := by
+    a ^ (2 : ℕ) * ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
+          Real.log (p : ℝ) ^ (2 : ℕ) ≤
+        a ^ (2 : ℕ) * (Real.log (N : ℝ) * L) := by
       exact mul_le_mul_of_nonneg_left
         (by simpa only [L] using sum_primesBelowSubtype_log_sq_le N)
         (sq_nonneg a)
-    _ = τ ^ 2 * (Real.log (N : ℝ) / ((N : ℝ) + 1)) *
+    _ = τ ^ (2 : ℕ) * (Real.log (N : ℝ) / ((N : ℝ) + 1)) *
         (L / ((N : ℝ) + 1)) := by
       dsimp only [a, L, gammaSewnDiffusePrimeAperture]
       have hden : (N : ℝ) + 1 ≠ 0 := by positivity
@@ -485,7 +485,7 @@ theorem tendsto_gammaSewnDiffusePrimeAperture_quadraticPhase_zero
     (τ : ℝ) :
     Tendsto
       (fun N => ∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
-        (gammaSewnDiffusePrimeAperture τ N * Real.log (p : ℝ)) ^ 2)
+        (gammaSewnDiffusePrimeAperture τ N * Real.log (p : ℝ)) ^ (2 : ℕ))
       atTop (𝓝 0) := by
   have hmass :
       Tendsto
@@ -499,14 +499,14 @@ theorem tendsto_gammaSewnDiffusePrimeAperture_quadraticPhase_zero
         (sum_primesBelowSubtype_log_eq N).symm
   have hupper :
       Tendsto
-        (fun N : ℕ => τ ^ 2 *
+        (fun N : ℕ => τ ^ (2 : ℕ) *
           (Real.log (N : ℝ) / ((N : ℝ) + 1)) *
           ((∑ p ∈ GaloisForLFunctions.primesBelowSubtype N,
               Real.log (p : ℝ)) / ((N : ℝ) + 1)))
         atTop (𝓝 0) := by
     convert
-      ((tendsto_const_nhds : Tendsto (fun _ : ℕ => τ ^ 2)
-          atTop (𝓝 (τ ^ 2))).mul
+      ((tendsto_const_nhds : Tendsto (fun _ : ℕ => τ ^ (2 : ℕ))
+          atTop (𝓝 (τ ^ (2 : ℕ)))).mul
         (tendsto_log_natCast_div_natCast_add_one_zero.mul hmass)) using 1
     all_goals ring
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le
@@ -538,13 +538,13 @@ theorem tendsto_gammaSewnDiffusePrimeAperture_localChord_one
     simpa only [y, zero_mul] using
       (tendsto_gammaSewnDiffusePrimeAperture_zero τ).mul_const
         (Real.log (p : ℝ))
-  have hlower : Tendsto (fun N => 1 - y N - 3 * (y N) ^ 2)
+  have hlower : Tendsto (fun N => 1 - y N - 3 * (y N) ^ (2 : ℕ))
       atTop (𝓝 1) := by
     convert (tendsto_const_nhds.sub hy).sub
       (tendsto_const_nhds.mul (hy.pow 2)) using 1
     all_goals ring
   have hbounds : ∀ N,
-      1 - y N - 3 * (y N) ^ 2 ≤
+      1 - y N - 3 * (y N) ^ (2 : ℕ) ≤
           gammaSewnMobiusValuationContractionMultiplier
               (gammaSewnDiffusePrimeAperture τ N) p *
             exponentialChordFactor (y N) ∧

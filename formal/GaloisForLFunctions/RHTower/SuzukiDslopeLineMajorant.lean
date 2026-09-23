@@ -36,14 +36,14 @@ theorem norm_sq_dslope_le_lineMajorant (hRH : RiemannHypothesis) {γ : ℂ} (hγ
     {C : ℝ} (hC1 : 1 ≤ C)
     (hCb : ∀ z : ℂ, 0 ≤ z.im → ‖dslope suzukiHalfInner γ z‖ ≤ C)
     {z : ℂ} (hz : 0 ≤ z.im) :
-    ‖dslope suzukiHalfInner γ z‖ ^ 2 ≤ 2 * C ^ 2 / (1 + (z.re - γ.re) ^ 2) := by
+    ‖dslope suzukiHalfInner γ z‖ ^ (2 : ℕ) ≤ 2 * C ^ (2 : ℕ) / (1 + (z.re - γ.re) ^ (2 : ℕ)) := by
   have hnn : 0 ≤ ‖dslope suzukiHalfInner γ z‖ := norm_nonneg _
   have hCpos : (0 : ℝ) < C := lt_of_lt_of_le one_pos hC1
-  have hden : (0 : ℝ) < 1 + (z.re - γ.re) ^ 2 := by positivity
+  have hden : (0 : ℝ) < 1 + (z.re - γ.re) ^ (2 : ℕ) := by positivity
   rcases le_or_gt |z.re - γ.re| 1 with h | h
   · have hb := hCb z hz
-    have hsq : ‖dslope suzukiHalfInner γ z‖ ^ 2 ≤ C ^ 2 := by nlinarith [hnn, hb]
-    have hd2 : (z.re - γ.re) ^ 2 ≤ 1 := by
+    have hsq : ‖dslope suzukiHalfInner γ z‖ ^ (2 : ℕ) ≤ C ^ (2 : ℕ) := by nlinarith [hnn, hb]
+    have hd2 : (z.re - γ.re) ^ (2 : ℕ) ≤ 1 := by
       nlinarith [sq_abs (z.re - γ.re), h, abs_nonneg (z.re - γ.re)]
     rw [le_div_iff₀ hden]
     nlinarith [hsq, hd2, sq_nonneg ‖dslope suzukiHalfInner γ z‖, sq_nonneg C]
@@ -57,15 +57,15 @@ theorem norm_sq_dslope_le_lineMajorant (hRH : RiemannHypothesis) {γ : ℂ} (hγ
       simpa [Complex.sub_re] using this
     have hpos : (0 : ℝ) < ‖z - γ‖ := lt_of_lt_of_le (by linarith) hre
     have hb := norm_dslope_suzukiHalfInner_le_inv hRH hγ hz hne
-    have hsq : ‖dslope suzukiHalfInner γ z‖ ^ 2 ≤ 1 / ‖z - γ‖ ^ 2 := by
-      have h1 : ‖dslope suzukiHalfInner γ z‖ ^ 2 ≤ (1 / ‖z - γ‖) ^ 2 := by
+    have hsq : ‖dslope suzukiHalfInner γ z‖ ^ (2 : ℕ) ≤ 1 / ‖z - γ‖ ^ (2 : ℕ) := by
+      have h1 : ‖dslope suzukiHalfInner γ z‖ ^ (2 : ℕ) ≤ (1 / ‖z - γ‖) ^ (2 : ℕ) := by
         nlinarith [hnn, hb, hpos]
       rwa [div_pow, one_pow] at h1
-    have hgz : (1 : ℝ) ≤ (z.re - γ.re) ^ 2 := by
+    have hgz : (1 : ℝ) ≤ (z.re - γ.re) ^ (2 : ℕ) := by
       nlinarith [sq_abs (z.re - γ.re), h]
-    have hzsq : (z.re - γ.re) ^ 2 ≤ ‖z - γ‖ ^ 2 := by
+    have hzsq : (z.re - γ.re) ^ (2 : ℕ) ≤ ‖z - γ‖ ^ (2 : ℕ) := by
       nlinarith [sq_abs (z.re - γ.re), hre, abs_nonneg (z.re - γ.re)]
-    have hstep : 1 / ‖z - γ‖ ^ 2 ≤ 2 * C ^ 2 / (1 + (z.re - γ.re) ^ 2) := by
+    have hstep : 1 / ‖z - γ‖ ^ (2 : ℕ) ≤ 2 * C ^ (2 : ℕ) / (1 + (z.re - γ.re) ^ (2 : ℕ)) := by
       rw [div_le_div_iff₀ (by positivity) hden]
       nlinarith [hgz, hzsq, hC1, sq_nonneg (C - 1)]
     linarith

@@ -24,7 +24,7 @@ def lamPoly (D : ℕ → ℂ) (N : ℕ) : ℂ[X] :=
 
 /-- The forced next coefficient. -/
 def expLadderCoeffOf (D : ℕ → ℂ) (P : ℂ[X]) (N : ℕ) : ℂ :=
-  (D (N + 1) - (lamPoly D N * P + X ^ 2 * derivative P).coeff (N + 2)) / ((N : ℂ) + 1)
+  (D (N + 1) - (lamPoly D N * P + X ^ (2 : ℕ) * derivative P).coeff (N + 2)) / ((N : ℂ) + 1)
 
 /-- The forced truncation of the exponential series. -/
 def inverseSeriesLadderExpPoly (D : ℕ → ℂ) : ℕ → ℂ[X]
@@ -33,7 +33,7 @@ def inverseSeriesLadderExpPoly (D : ℕ → ℂ) : ℕ → ℂ[X]
 
 /-- The residual of the differential equation at truncation order `N`. -/
 def resPoly (D : ℕ → ℂ) (N : ℕ) : ℂ[X] :=
-  lamPoly D N * inverseSeriesLadderExpPoly D N + X ^ 2 * derivative (inverseSeriesLadderExpPoly D N)
+  lamPoly D N * inverseSeriesLadderExpPoly D N + X ^ (2 : ℕ) * derivative (inverseSeriesLadderExpPoly D N)
 
 theorem lamPoly_succ (D : ℕ → ℂ) (N : ℕ) :
     lamPoly D (N + 1) = lamPoly D N - C (D (N + 1)) * X ^ (N + 2) := by
@@ -129,7 +129,7 @@ theorem X_pow_dvd_resPoly (D : ℕ → ℂ) (hD0 : D 0 = 0) (N : ℕ) :
           linarith
         have hcval : c * (((n + 1 : ℕ) : ℂ)) = D (n + 1) - (resPoly D n).coeff (n + 2) := by
           rw [hc, expLadderCoeffOf]
-          have hres : (lamPoly D n * inverseSeriesLadderExpPoly D n + X ^ 2 * derivative (inverseSeriesLadderExpPoly D n)).coeff (n + 2)
+          have hres : (lamPoly D n * inverseSeriesLadderExpPoly D n + X ^ (2 : ℕ) * derivative (inverseSeriesLadderExpPoly D n)).coeff (n + 2)
               = (resPoly D n).coeff (n + 2) := rfl
           rw [hres]
           push_cast

@@ -52,7 +52,7 @@ private theorem nullValue_continuous (nu s amp : ℂ) : Continuous (fun z : ℝ 
 
 private theorem nullDensity_continuous (nu s amp : ℂ) : Continuous (fun z : ℝ × ℝ => nullDensity nu s amp z.1 z.2) := by
   have hs := (odd_continuous s amp).comp (show Continuous (fun z : ℝ × ℝ => ((z.1+z.2)/2,(z.1-z.2)/2)) by fun_prop)
-  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^2)) := by
+  have hv : Continuous (fun z : ℝ × ℝ => nu*(nu+1)/(4*(Real.cosh ((z.1-z.2)/2):ℂ)^(2 : ℕ))) := by
     apply Continuous.div continuous_const (by fun_prop)
     intro z
     exact mul_ne_zero (by norm_num) (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.cosh_pos _).ne'))
@@ -358,7 +358,7 @@ private theorem collarDensity_source (nu s amp : ℂ) {L : ℝ} (hL : 0 < L) (p 
     collarDensity nu s amp L p =
       (1/4:ℂ)*(reducedCoefficient s 0 amp 1 (-L/2)*timeOnset (2*s) p+
         2*radialLiftFirst s 0 amp 1 (-L/2)*timeOnsetFirst (2*s) p)+
-      nu*(nu+1)/(4*(Real.cosh (-L/2):ℂ)^2)*collarValue nu s amp L p := by
+      nu*(nu+1)/(4*(Real.cosh (-L/2):ℂ)^(2 : ℕ))*collarValue nu s amp L p := by
   have hx : (p-(p+L))/2 = -L/2 := by ring
   have ht : (p+(p+L))/2+(-L/2) = p := by ring
   have hn : -L/2 ≤ 0 := by linarith
@@ -377,13 +377,13 @@ theorem physical_transform_density (q : XiZeroCopy) (br : Bool) (amp m w : ℂ)
       transform w (collarDensity (-m) (physicalRate q br) amp L) =
       reducedCoefficient (physicalRate q br) w amp
         (onsetTransform (2*physicalRate q br) w) (-L/2)+
-      m*(m-1)/(Real.cosh (-L/2):ℂ)^2 *
+      m*(m-1)/(Real.cosh (-L/2):ℂ)^(2 : ℕ) *
         (Complex.exp (w*((-L/2:ℝ):ℂ))*transform w (collarValue (-m) (physicalRate q br) amp L)) := by
   let s := physicalRate q br
   let A := collarValue (-m) s amp L
   let c0 := reducedCoefficient s 0 amp 1 (-L/2)
   let c1 := 2*radialLiftFirst s 0 amp 1 (-L/2)
-  let k := (-m)*(-m+1)/(4*(Real.cosh (-L/2):ℂ)^2)
+  let k := (-m)*(-m+1)/(4*(Real.cosh (-L/2):ℂ)^(2 : ℕ))
   obtain ⟨B,hB,hbound⟩ := physical_collar_growth q br amp m hm
   have hc := (collar_continuous (-m) s amp).1.comp
     (show Continuous (fun p : ℝ => (L,p)) by fun_prop)
@@ -424,7 +424,7 @@ def staticTransformFirst (nu s amp w : ℂ) (x : ℝ) : ℂ :=
     w*transform w (collarValue nu s amp (-2*x)))
 
 def staticTransformSecond (nu s amp w : ℂ) (x : ℝ) : ℂ :=
-  w^2*staticTransform nu s amp w x-
+  w^(2 : ℕ)*staticTransform nu s amp w x-
     4*Complex.exp (w*(x:ℂ))*transform w (collarDensity nu s amp (-2*x))
 
 /-- Two genuine static radial derivatives of the original time transform. -/
@@ -456,9 +456,9 @@ the forcing is evaluated from the original source, not assumed as Green data. -/
 theorem physical_static_equation (q : XiZeroCopy) (br : Bool) (amp m w : ℂ)
     (hm : 0 ≤ m.re) (hw : m.re < w.re)
     (hs : (2*physicalRate q br).re < w.re) {x : ℝ} (hx : x < 0) :
-    w^2*staticTransform (-m) (physicalRate q br) amp w x-
+    w^(2 : ℕ)*staticTransform (-m) (physicalRate q br) amp w x-
       staticTransformSecond (-m) (physicalRate q br) amp w x-
-      m*(m-1)/(Real.cosh x:ℂ)^2*staticTransform (-m) (physicalRate q br) amp w x =
+      m*(m-1)/(Real.cosh x:ℂ)^(2 : ℕ)*staticTransform (-m) (physicalRate q br) amp w x =
       reducedCoefficient (physicalRate q br) w amp (onsetTransform (2*physicalRate q br) w) x := by
   have hd := physical_transform_density q br amp m w hm
     (L:=-2*x) (mul_pos_of_neg_of_neg (by norm_num) hx) hw hs
@@ -516,9 +516,9 @@ theorem original_reader_frequency_equation (q : XiZeroCopy) (br : Bool) (amp w :
       (staticTransformFirst (-m) (physicalRate q br) amp w x) x ∧
     HasDerivAt (staticTransformFirst (-m) (physicalRate q br) amp w)
       (staticTransformSecond (-m) (physicalRate q br) amp w x) x ∧
-    w^2*staticTransform (-m) (physicalRate q br) amp w x-
+    w^(2 : ℕ)*staticTransform (-m) (physicalRate q br) amp w x-
       staticTransformSecond (-m) (physicalRate q br) amp w x-
-      m*(m-1)/(Real.cosh x:ℂ)^2*staticTransform (-m) (physicalRate q br) amp w x =
+      m*(m-1)/(Real.cosh x:ℂ)^(2 : ℕ)*staticTransform (-m) (physicalRate q br) amp w x =
       reducedCoefficient (physicalRate q br) w amp (onsetTransform (2*physicalRate q br) w) x := by
   dsimp only
   have hm : 0 ≤ (D4BMOriginalCirclePeriod.readerExponent q).re := by
@@ -610,9 +610,9 @@ theorem physical_static_boundary (q : XiZeroCopy) (br : Bool) (amp m w : ℂ)
 
 /-- The unchanged reader's angular eigenvalue is the original radial potential coefficient. -/
 private theorem reader_potential (q : XiZeroCopy) (x : ℝ) :
-    (horizonCoordinate x:ℂ)*(1/4+physicalRadialFrequency q^2) =
+    (horizonCoordinate x:ℂ)*(1/4+physicalRadialFrequency q^(2 : ℕ)) =
       -(D4BMOriginalCirclePeriod.readerExponent q*(D4BMOriginalCirclePeriod.readerExponent q-1))/
-        (Real.cosh x:ℂ)^2 := by
+        (Real.cosh x:ℂ)^(2 : ℕ) := by
   rw [physicalRadialFrequency_parameter,← D4BMOriginalCirclePeriod.readerEigenvalue_eq,
     D4BMOriginalCirclePeriod.readerEigenvalue,horizonCoordinate_eq_inv_cosh_sq]
   push_cast
@@ -650,7 +650,7 @@ theorem original_reader_eq_continuedGreen (q : XiZeroCopy) (br : Bool) (amp w : 
   have hd (t : ℝ) (ht : t < 0) :
       HasDerivAt (fun t => f t-g t) (f1 t-g1 t) t ∧
       HasDerivAt (fun t => f1 t-g1 t)
-        ((w^2+(horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency q^2))*
+        ((w^(2 : ℕ)+(horizonCoordinate t:ℂ)*(1/4+physicalRadialFrequency q^(2 : ℕ)))*
           (f t-g t)) t := by
     have hf := physical_static_derivatives q br amp m w hm hmw ht
     have hg := continuedReducedGreen_hasDerivAt w (physicalRadialFrequency q)

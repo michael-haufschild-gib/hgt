@@ -103,11 +103,11 @@ theorem abs_le_of_bandTransform_eigen {c chi2 : ℝ} (hchi : chi2 ≠ 0) {Φ : �
 
 /-- The differentiated sinc kernel decays like `1/|u|`. -/
 theorem abs_deriv_sincSmooth_le {c u : ℝ} (hu : u ≠ 0) :
-    |deriv (sincSmooth c) u| ≤ (|c| * |u| + 1) / (Real.pi * u ^ 2) := by
+    |deriv (sincSmooth c) u| ≤ (|c| * |u| + 1) / (Real.pi * u ^ (2 : ℕ)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hu2 : (0 : ℝ) < u ^ 2 := by positivity
+  have hu2 : (0 : ℝ) < u ^ (2 : ℕ) := by positivity
   rw [deriv_sincSmooth_off hu, (hasDerivAt_sincScalar hu).deriv, sincScalarD]
-  rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < Real.pi * u ^ 2)]
+  rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < Real.pi * u ^ (2 : ℕ))]
   refine div_le_div_of_nonneg_right ?_ (by positivity)
   refine (abs_sub _ _).trans ?_
   have h1 : |c * u * Real.cos (c * u)| ≤ |c| * |u| := by
@@ -122,7 +122,7 @@ theorem abs_deriv_le_of_bandTransform_eigen {c chi2 : ℝ} (hchi : chi2 ≠ 0) {
     {x : ℝ} (hx : 1 < |x|) :
     |deriv Φ x|
       ≤ (|c| * (|x| + 1) + 1) * (∫ y in (-1 : ℝ)..1, |Φ y|)
-          / (|chi2| * (Real.pi * (|x| - 1) ^ 2)) := by
+          / (|chi2| * (Real.pi * (|x| - 1) ^ (2 : ℕ))) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hgap : (0 : ℝ) < |x| - 1 := by linarith
   have hchi0 : (0 : ℝ) < |chi2| := abs_pos.mpr hchi
@@ -130,7 +130,7 @@ theorem abs_deriv_le_of_bandTransform_eigen {c chi2 : ℝ} (hchi : chi2 ≠ 0) {
   -- the differentiated kernel is uniformly small on the band
   have hker : ∀ y ∈ Set.Icc (-1 : ℝ) 1,
       |deriv (sincSmooth c) (x - y) * Φ y|
-        ≤ (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ 2) * |Φ y| := by
+        ≤ (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ (2 : ℕ)) * |Φ y| := by
     intro y hy
     have hy1 : |y| ≤ 1 := abs_le.mpr ⟨hy.1, hy.2⟩
     have hlow : |x| - 1 ≤ |x - y| := by
@@ -143,29 +143,29 @@ theorem abs_deriv_le_of_bandTransform_eigen {c chi2 : ℝ} (hchi : chi2 ≠ 0) {
       intro h
       rw [h, abs_zero] at hlow
       linarith
-    have hsq : (|x| - 1) ^ 2 ≤ (x - y) ^ 2 := by
+    have hsq : (|x| - 1) ^ (2 : ℕ) ≤ (x - y) ^ (2 : ℕ) := by
       have := sq_abs (x - y)
       nlinarith [hlow, hgap]
     have hkerle : |deriv (sincSmooth c) (x - y)|
-        ≤ (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ 2) := by
+        ≤ (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ (2 : ℕ)) := by
       refine (abs_deriv_sincSmooth_le (c := c) hxy).trans ?_
       have hnum : |c| * |x - y| + 1 ≤ |c| * (|x| + 1) + 1 := by
         have : |c| * |x - y| ≤ |c| * (|x| + 1) :=
           mul_le_mul_of_nonneg_left hup (abs_nonneg c)
         linarith
-      have hden : (0 : ℝ) < Real.pi * (|x| - 1) ^ 2 := by positivity
-      have hden2 : (0 : ℝ) < Real.pi * (x - y) ^ 2 := by
-        have : (0 : ℝ) < (x - y) ^ 2 := by positivity
+      have hden : (0 : ℝ) < Real.pi * (|x| - 1) ^ (2 : ℕ) := by positivity
+      have hden2 : (0 : ℝ) < Real.pi * (x - y) ^ (2 : ℕ) := by
+        have : (0 : ℝ) < (x - y) ^ (2 : ℕ) := by positivity
         positivity
       rw [div_le_div_iff₀ hden2 hden]
-      have hS : (0 : ℝ) ≤ Real.pi * (|x| - 1) ^ 2 := by positivity
+      have hS : (0 : ℝ) ≤ Real.pi * (|x| - 1) ^ (2 : ℕ) := by positivity
       have hB : (0 : ℝ) ≤ |c| * (|x| + 1) + 1 := by positivity
-      have hT : Real.pi * (|x| - 1) ^ 2 ≤ Real.pi * (x - y) ^ 2 := by
+      have hT : Real.pi * (|x| - 1) ^ (2 : ℕ) ≤ Real.pi * (x - y) ^ (2 : ℕ) := by
         nlinarith [hsq, hpi.le]
-      calc (|c| * |x - y| + 1) * (Real.pi * (|x| - 1) ^ 2)
-          ≤ (|c| * (|x| + 1) + 1) * (Real.pi * (|x| - 1) ^ 2) :=
+      calc (|c| * |x - y| + 1) * (Real.pi * (|x| - 1) ^ (2 : ℕ))
+          ≤ (|c| * (|x| + 1) + 1) * (Real.pi * (|x| - 1) ^ (2 : ℕ)) :=
             mul_le_mul_of_nonneg_right hnum hS
-        _ ≤ (|c| * (|x| + 1) + 1) * (Real.pi * (x - y) ^ 2) :=
+        _ ≤ (|c| * (|x| + 1) + 1) * (Real.pi * (x - y) ^ (2 : ℕ)) :=
             mul_le_mul_of_nonneg_left hT hB
     rw [abs_mul]
     exact mul_le_mul_of_nonneg_right hkerle (abs_nonneg _)
@@ -176,17 +176,17 @@ theorem abs_deriv_le_of_bandTransform_eigen {c chi2 : ℝ} (hchi : chi2 ≠ 0) {
   have hint : IntervalIntegrable (fun y => deriv (sincSmooth c) (x - y) * Φ y) volume (-1) 1 :=
     hcont.intervalIntegrable _ _
   have hintR : IntervalIntegrable
-      (fun y => (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ 2) * |Φ y|) volume (-1) 1 := by
+      (fun y => (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ (2 : ℕ)) * |Φ y|) volume (-1) 1 := by
     refine ContinuousOn.intervalIntegrable ?_
     exact continuousOn_const.mul hΦ.abs.continuousOn
   have habs : |∫ y in (-1 : ℝ)..1, deriv (sincSmooth c) (x - y) * Φ y|
       ≤ ∫ y in (-1 : ℝ)..1, |deriv (sincSmooth c) (x - y) * Φ y| :=
     intervalIntegral.abs_integral_le_integral_abs hle
   have hmono : (∫ y in (-1 : ℝ)..1, |deriv (sincSmooth c) (x - y) * Φ y|)
-      ≤ ∫ y in (-1 : ℝ)..1, (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ 2) * |Φ y| :=
+      ≤ ∫ y in (-1 : ℝ)..1, (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ (2 : ℕ)) * |Φ y| :=
     intervalIntegral.integral_mono_on hle hint.abs hintR hker
-  have hval : (∫ y in (-1 : ℝ)..1, (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ 2) * |Φ y|)
-      = (|c| * (|x| + 1) + 1) * (∫ y in (-1 : ℝ)..1, |Φ y|) / (Real.pi * (|x| - 1) ^ 2) := by
+  have hval : (∫ y in (-1 : ℝ)..1, (|c| * (|x| + 1) + 1) / (Real.pi * (|x| - 1) ^ (2 : ℕ)) * |Φ y|)
+      = (|c| * (|x| + 1) + 1) * (∫ y in (-1 : ℝ)..1, |Φ y|) / (Real.pi * (|x| - 1) ^ (2 : ℕ)) := by
     rw [intervalIntegral.integral_const_mul]
     ring
   -- the eigen relation differentiates
@@ -197,18 +197,18 @@ theorem abs_deriv_le_of_bandTransform_eigen {c chi2 : ℝ} (hchi : chi2 ≠ 0) {
       = ∫ y in (-1 : ℝ)..1, deriv (sincSmooth c) (x - y) * Φ y := by
     rw [deriv_bandTransform c hΦ]
   have hchain : |chi2| * |deriv Φ x|
-      ≤ (|c| * (|x| + 1) + 1) * (∫ y in (-1 : ℝ)..1, |Φ y|) / (Real.pi * (|x| - 1) ^ 2) := by
+      ≤ (|c| * (|x| + 1) + 1) * (∫ y in (-1 : ℝ)..1, |Φ y|) / (Real.pi * (|x| - 1) ^ (2 : ℕ)) := by
     have hEq : |chi2| * |deriv Φ x|
         = |∫ y in (-1 : ℝ)..1, deriv (sincSmooth c) (x - y) * Φ y| := by
       rw [← abs_mul, ← hderivEig, hderivBand]
     rw [hEq]
     exact habs.trans (hmono.trans (le_of_eq hval))
-  rw [le_div_iff₀ (by positivity : (0 : ℝ) < |chi2| * (Real.pi * (|x| - 1) ^ 2))]
+  rw [le_div_iff₀ (by positivity : (0 : ℝ) < |chi2| * (Real.pi * (|x| - 1) ^ (2 : ℕ)))]
   have h := mul_le_mul_of_nonneg_right hchain
-    (by positivity : (0 : ℝ) ≤ Real.pi * (|x| - 1) ^ 2)
-  rw [div_mul_cancel₀ _ (by positivity : (Real.pi * (|x| - 1) ^ 2) ≠ 0)] at h
-  have hEq2 : |deriv Φ x| * (|chi2| * (Real.pi * (|x| - 1) ^ 2))
-      = |chi2| * |deriv Φ x| * (Real.pi * (|x| - 1) ^ 2) := by ring
+    (by positivity : (0 : ℝ) ≤ Real.pi * (|x| - 1) ^ (2 : ℕ))
+  rw [div_mul_cancel₀ _ (by positivity : (Real.pi * (|x| - 1) ^ (2 : ℕ)) ≠ 0)] at h
+  have hEq2 : |deriv Φ x| * (|chi2| * (Real.pi * (|x| - 1) ^ (2 : ℕ)))
+      = |chi2| * |deriv Φ x| * (Real.pi * (|x| - 1) ^ (2 : ℕ)) := by ring
   rw [hEq2]
   exact h
 

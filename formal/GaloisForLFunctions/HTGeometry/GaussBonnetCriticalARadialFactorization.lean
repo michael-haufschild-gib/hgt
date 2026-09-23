@@ -12,19 +12,19 @@ open Real
 namespace GaloisForLFunctions.HTGeometry
 
 def egbTemperatureARadialNumerator (P Q a r : ℝ) : ℝ :=
-  8 * Real.pi * P * r ^ 6 + 48 * Real.pi * P * a ^ 2 * r ^ 4 - r ^ 4 +
-    (2 * a ^ 2 + 3 * (Q ^ 2 + a ^ 2)) * r ^ 2 + 2 * a ^ 2 * (Q ^ 2 + a ^ 2)
+  8 * Real.pi * P * r ^ (6 : ℕ) + 48 * Real.pi * P * a ^ (2 : ℕ) * r ^ (4 : ℕ) - r ^ (4 : ℕ) +
+    (2 * a ^ (2 : ℕ) + 3 * (Q ^ (2 : ℕ) + a ^ (2 : ℕ))) * r ^ (2 : ℕ) + 2 * a ^ (2 : ℕ) * (Q ^ (2 : ℕ) + a ^ (2 : ℕ))
 
 theorem egbTemperatureARadialNumerator_pressure_difference (P P₀ Q a r : ℝ) :
     egbTemperatureARadialNumerator P Q a r = egbTemperatureARadialNumerator P₀ Q a r -
-      8 * Real.pi * (P₀ - P) * r ^ 4 * (r ^ 2 + 6 * a ^ 2) := by
+      8 * Real.pi * (P₀ - P) * r ^ (4 : ℕ) * (r ^ (2 : ℕ) + 6 * a ^ (2 : ℕ)) := by
   unfold egbTemperatureARadialNumerator
   ring
 
 theorem egbFixedChargeACritical_radial_numerator_factorization (w φ r : ℝ) :
     egbTemperatureARadialNumerator (egbFixedChargeACriticalPressure w φ) (exp w * cos φ) (exp w * sin φ) r =
-      (r ^ 2 - egbFixedChargeACriticalRadius w φ ^ 2) ^ 2 *
-        (8 * Real.pi * egbFixedChargeACriticalPressure w φ * r ^ 2 +
+      (r ^ (2 : ℕ) - egbFixedChargeACriticalRadius w φ ^ (2 : ℕ)) ^ (2 : ℕ) *
+        (8 * Real.pi * egbFixedChargeACriticalPressure w φ * r ^ (2 : ℕ) +
           2 * egbFixedChargeACriticalCouplingWeight φ * egbFixedChargeACriticalWeight φ) := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
@@ -36,7 +36,7 @@ theorem egbFixedChargeACritical_radial_numerator_factorization (w φ r : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeACritical_radial_factor_at_critical (w φ : ℝ) :
-    8 * Real.pi * egbFixedChargeACriticalPressure w φ * egbFixedChargeACriticalRadius w φ ^ 2 +
+    8 * Real.pi * egbFixedChargeACriticalPressure w φ * egbFixedChargeACriticalRadius w φ ^ (2 : ℕ) +
       2 * egbFixedChargeACriticalCouplingWeight φ * egbFixedChargeACriticalWeight φ =
     (1 - 2 * egbFixedChargeACriticalCouplingWeight φ) / 2 := by
   have hr := egbFixedChargeACriticalRadius_pos w φ
@@ -47,7 +47,7 @@ theorem egbFixedChargeACritical_radial_factor_at_critical (w φ : ℝ) :
   field_simp <;> ring
 
 theorem egbFixedChargeACritical_radial_factor_pos (w φ u : ℝ) :
-    0 < 8 * Real.pi * egbFixedChargeACriticalPressure w φ * exp u ^ 2 +
+    0 < 8 * Real.pi * egbFixedChargeACriticalPressure w φ * exp u ^ (2 : ℕ) +
       2 * egbFixedChargeACriticalCouplingWeight φ * egbFixedChargeACriticalWeight φ := by
   have hp := egbFixedChargeACriticalPressure_pos w φ
   have hb := (egbFixedChargeACriticalCouplingWeight_bounds φ).1
@@ -57,10 +57,10 @@ theorem egbFixedChargeACritical_radial_factor_pos (w φ u : ℝ) :
 
 theorem egbFixedChargeACritical_radial_slope_factorization (w φ r : ℝ) :
     egbTemperatureARadialSlope (egbFixedChargeACriticalPressure w φ) (exp w * cos φ) (exp w * sin φ) r =
-      (r ^ 2 - egbFixedChargeACriticalRadius w φ ^ 2) ^ 2 *
-        (8 * Real.pi * egbFixedChargeACriticalPressure w φ * r ^ 2 +
+      (r ^ (2 : ℕ) - egbFixedChargeACriticalRadius w φ ^ (2 : ℕ)) ^ (2 : ℕ) *
+        (8 * Real.pi * egbFixedChargeACriticalPressure w φ * r ^ (2 : ℕ) +
           2 * egbFixedChargeACriticalCouplingWeight φ * egbFixedChargeACriticalWeight φ) /
-        (4 * Real.pi * r ^ 2 * (r ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2) := by
+        (4 * Real.pi * r ^ (2 : ℕ) * (r ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   change egbTemperatureARadialNumerator _ _ _ _ / _ = _
   rw [egbFixedChargeACritical_radial_numerator_factorization]
 
@@ -73,15 +73,15 @@ theorem egbFixedChargeACritical_radial_slope_nonneg (w φ u : ℝ) :
 
 theorem egbFixedChargeA_radial_slope_pressure_decomposition (P w φ u : ℝ) :
     egbTemperatureARadialSlope P (exp w * cos φ) (exp w * sin φ) (exp u) =
-      (exp u ^ 2 - egbFixedChargeACriticalRadius w φ ^ 2) ^ 2 *
-        (8 * Real.pi * egbFixedChargeACriticalPressure w φ * exp u ^ 2 +
+      (exp u ^ (2 : ℕ) - egbFixedChargeACriticalRadius w φ ^ (2 : ℕ)) ^ (2 : ℕ) *
+        (8 * Real.pi * egbFixedChargeACriticalPressure w φ * exp u ^ (2 : ℕ) +
           2 * egbFixedChargeACriticalCouplingWeight φ * egbFixedChargeACriticalWeight φ) /
-        (4 * Real.pi * exp u ^ 2 * (exp u ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2) -
+        (4 * Real.pi * exp u ^ (2 : ℕ) * (exp u ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ)) -
       (egbFixedChargeACriticalPressure w φ - P) *
-        (2 * exp u ^ 2 * (exp u ^ 2 + 6 * (exp w * sin φ) ^ 2) / (exp u ^ 2 + 2 * (exp w * sin φ) ^ 2) ^ 2) := by
+        (2 * exp u ^ (2 : ℕ) * (exp u ^ (2 : ℕ) + 6 * (exp w * sin φ) ^ (2 : ℕ)) / (exp u ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ)) ^ (2 : ℕ)) := by
   have hu := exp_pos u
   have hpi := Real.pi_pos
-  have hden : 0 < exp u ^ 2 + 2 * (exp w * sin φ) ^ 2 := by positivity
+  have hden : 0 < exp u ^ (2 : ℕ) + 2 * (exp w * sin φ) ^ (2 : ℕ) := by positivity
   change egbTemperatureARadialNumerator _ _ _ _ / _ = _
   rw [egbTemperatureARadialNumerator_pressure_difference P (egbFixedChargeACriticalPressure w φ),
     egbFixedChargeACritical_radial_numerator_factorization]

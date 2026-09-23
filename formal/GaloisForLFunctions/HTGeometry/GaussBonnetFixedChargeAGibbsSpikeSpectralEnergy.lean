@@ -8,18 +8,18 @@ noncomputable section
 open QuantumAlg
 
 private theorem inv_sqrt_norm_sq (n : ℕ) :
-    ‖invSqrtN (n + 3)‖ ^ 2 = ((2 : ℝ) ^ (n + 3))⁻¹ := by
+    ‖invSqrtN (n + 3)‖ ^ (2 : ℕ) = ((2 : ℝ) ^ (n + 3))⁻¹ := by
   rw [norm_invSqrtN, inv_pow (Real.sqrt ((2 : ℝ) ^ (n + 3))) 2, Real.sq_sqrt (by positivity)]
 
 private theorem half_inv_sqrt_norm_sq (n : ℕ) :
-    ‖invSqrtN (n + 3) / 2‖ ^ 2 = ((2 : ℝ) ^ (n + 3))⁻¹ / 4 := by
+    ‖invSqrtN (n + 3) / 2‖ ^ (2 : ℕ) = ((2 : ℝ) ^ (n + 3))⁻¹ / 4 := by
   rw [norm_div, div_pow]
   norm_num [inv_sqrt_norm_sq]
 
 /-- Every nonzero Fourier frequency carries the same strictly positive energy. -/
 theorem egbFixedChargeAGibbsSpike_fourier_norm_sq (n : ℕ) (k : Fin (2 ^ (n + 3))) :
     ‖egbFixedChargeACriticalFourierCoordinates n
-      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight 1 (egbFixedChargeAGibbsSpikeEnergy n) i : ℂ)) k‖ ^ 2 =
+      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight 1 (egbFixedChargeAGibbsSpikeEnergy n) i : ℂ)) k‖ ^ (2 : ℕ) =
       if k = 0 then ((2 : ℝ) ^ (n + 3))⁻¹ else ((2 : ℝ) ^ (n + 3))⁻¹ / 4 := by
   rw [egbFixedChargeAGibbsSpike_fourier_coordinates]
   by_cases hk : k = 0
@@ -67,11 +67,11 @@ theorem egbFixedChargeAGibbsSpike_fast_energy (n : ℕ) :
 /-- Summing every Fourier coordinate gives an exact energy formula with no omitted frequencies. -/
 theorem egbFixedChargeAGibbsSpike_total_fourier_energy (n : ℕ) :
     (∑ k, ‖egbFixedChargeACriticalFourierCoordinates n
-      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight 1 (egbFixedChargeAGibbsSpikeEnergy n) i : ℂ)) k‖ ^ 2) =
+      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight 1 (egbFixedChargeAGibbsSpikeEnergy n) i : ℂ)) k‖ ^ (2 : ℕ)) =
       ((2 : ℝ) ^ (n + 3) + 3) / (4 * (2 : ℝ) ^ (n + 3)) := by
   have hn : (2 : ℝ) ^ (n + 3) ≠ 0 := pow_ne_zero _ (by norm_num)
   have he : (∑ k, ‖egbFixedChargeACriticalFourierCoordinates n
-      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight 1 (egbFixedChargeAGibbsSpikeEnergy n) i : ℂ)) k‖ ^ 2) =
+      (fun i => (_root_.HTGeometry.finiteGibbsStateWeight 1 (egbFixedChargeAGibbsSpikeEnergy n) i : ℂ)) k‖ ^ (2 : ℕ)) =
       ∑ k : Fin (2 ^ (n + 3)),
         (((2 : ℝ) ^ (n + 3))⁻¹ / 4 + if k = 0 then 3 * ((2 : ℝ) ^ (n + 3))⁻¹ / 4 else 0) := by
     apply Finset.sum_congr rfl

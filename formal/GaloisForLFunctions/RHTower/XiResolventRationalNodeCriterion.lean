@@ -102,15 +102,15 @@ theorem norm_xiPolyMoment_shiftedFinNodal_le {X : ℝ} (hX : 0 ≤ X) {j m : ℕ
   have hsum := summable_norm_polyAtom hX (Polynomial.X ^ m * finNodalPolynomial c) k
   have hmass : Summable (fun q : XiZeroCopy => ‖xiResolventPoint X q‖ * 4 ^ j) :=
     (summable_norm_xiResolventPoint hX).mul_right _
-  have hpow4 : ((2 : ℝ) ^ j) ^ 2 = 4 ^ j := by
-    rw [← pow_mul, show (4 : ℝ) = 2 ^ 2 by norm_num, ← pow_mul, mul_comm]
+  have hpow4 : ((2 : ℝ) ^ j) ^ (2 : ℕ) = 4 ^ j := by
+    rw [← pow_mul, show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, ← pow_mul, mul_comm]
   calc ‖xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) k X‖
       = ‖∑' q : XiZeroCopy, xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
-            (xiResolventPoint X q) ^ 2‖ := rfl
+            (xiResolventPoint X q) ^ (2 : ℕ)‖ := rfl
     _ ≤ ∑' q : XiZeroCopy, ‖xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
-            (xiResolventPoint X q) ^ 2‖ := norm_tsum_le_tsum_norm hsum
+            (xiResolventPoint X q) ^ (2 : ℕ)‖ := norm_tsum_le_tsum_norm hsum
     _ ≤ ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ * 4 ^ j := by
         refine Summable.tsum_le_tsum (fun q => ?_) hsum hmass
         rw [norm_mul, norm_pow]
@@ -122,7 +122,7 @@ theorem norm_xiPolyMoment_shiftedFinNodal_le {X : ℝ} (hX : 0 ≤ X) {j m : ℕ
                 (pow_le_one₀ (norm_nonneg _) hu1) (norm_nonneg _)
             _ = ‖xiResolventPoint X q‖ := mul_one _
         have hev : ‖evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
-            (xiResolventPoint X q) ^ 2‖ ≤ 4 ^ j := by
+            (xiResolventPoint X q) ^ (2 : ℕ)‖ ≤ 4 ^ j := by
           rw [norm_pow, ← hpow4]
           exact pow_le_pow_left₀ (norm_nonneg _)
             (norm_evalRealPolynomial_shiftedFinNodal_le hc hu1) 2
@@ -141,11 +141,11 @@ theorem norm_xiPolyMoment_shiftedFinNodal_sub_le {X : ℝ} (hX : 0 ≤ X) {j m :
       S * ((j : ℝ) * 2 ^ (2 * j + 1) * ε) := by
   have hsc : Summable (fun q : XiZeroCopy => xiResolventPoint X q ^ (k + 1) *
       evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
-        (xiResolventPoint X q) ^ 2) :=
+        (xiResolventPoint X q) ^ (2 : ℕ)) :=
     (summable_norm_polyAtom hX _ k).of_norm
   have hsc' : Summable (fun q : XiZeroCopy => xiResolventPoint X q ^ (k + 1) *
       evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c')
-        (xiResolventPoint X q) ^ 2) :=
+        (xiResolventPoint X q) ^ (2 : ℕ)) :=
     (summable_norm_polyAtom hX _ k).of_norm
   have hK0 : 0 ≤ (j : ℝ) * 2 ^ (2 * j + 1) * ε :=
     mul_nonneg (mul_nonneg (Nat.cast_nonneg j) (by positivity)) hε
@@ -154,19 +154,19 @@ theorem norm_xiPolyMoment_shiftedFinNodal_sub_le {X : ℝ} (hX : 0 ≤ X) {j m :
   have hnormdiff : ∀ q : XiZeroCopy,
       ‖(xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
-            (xiResolventPoint X q) ^ 2) -
+            (xiResolventPoint X q) ^ (2 : ℕ)) -
         (xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c')
-            (xiResolventPoint X q) ^ 2)‖ ≤
+            (xiResolventPoint X q) ^ (2 : ℕ))‖ ≤
       ‖xiResolventPoint X q‖ * ((j : ℝ) * 2 ^ (2 * j + 1) * ε) := by
     intro q
     have hu1 : ‖xiResolventPoint X q‖ ≤ 1 := norm_xiResolventPoint_le_one hX q
     have hfac : (xiResolventPoint X q ^ (k + 1) *
         evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
-          (xiResolventPoint X q) ^ 2) -
+          (xiResolventPoint X q) ^ (2 : ℕ)) -
         (xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c')
-            (xiResolventPoint X q) ^ 2) =
+            (xiResolventPoint X q) ^ (2 : ℕ)) =
         xiResolventPoint X q ^ (k + 1) *
           ((evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
               (xiResolventPoint X q) +
@@ -217,28 +217,28 @@ theorem norm_xiPolyMoment_shiftedFinNodal_sub_le {X : ℝ} (hX : 0 ≤ X) {j m :
   have hsubsum : Summable (fun q : XiZeroCopy =>
       ‖(xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
-            (xiResolventPoint X q) ^ 2) -
+            (xiResolventPoint X q) ^ (2 : ℕ)) -
         (xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c')
-            (xiResolventPoint X q) ^ 2)‖) :=
+            (xiResolventPoint X q) ^ (2 : ℕ))‖) :=
     Summable.of_nonneg_of_le (fun q => norm_nonneg _) hnormdiff hmass
   have heq : xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) k X -
       xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') k X =
       ∑' q : XiZeroCopy, ((xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
-            (xiResolventPoint X q) ^ 2) -
+            (xiResolventPoint X q) ^ (2 : ℕ)) -
         (xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c')
-            (xiResolventPoint X q) ^ 2)) :=
+            (xiResolventPoint X q) ^ (2 : ℕ))) :=
     (hsc.tsum_sub hsc').symm
   rw [heq]
   calc ‖∑' q : XiZeroCopy, _‖
       ≤ ∑' q : XiZeroCopy, ‖(xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c)
-            (xiResolventPoint X q) ^ 2) -
+            (xiResolventPoint X q) ^ (2 : ℕ)) -
         (xiResolventPoint X q ^ (k + 1) *
           evalRealPolynomial (Polynomial.X ^ m * finNodalPolynomial c')
-            (xiResolventPoint X q) ^ 2)‖ := norm_tsum_le_tsum_norm hsubsum
+            (xiResolventPoint X q) ^ (2 : ℕ))‖ := norm_tsum_le_tsum_norm hsubsum
     _ ≤ ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ *
           ((j : ℝ) * 2 ^ (2 * j + 1) * ε) :=
         Summable.tsum_le_tsum hnormdiff hsubsum hmass
@@ -254,11 +254,11 @@ theorem abs_re_datum_shiftedFinNodal_sub_le {X : ℝ} (hX : 0 ≤ X) {j m : ℕ}
     (hS : ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ≤ S) :
     |(xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 0 X *
         xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 2 X -
-        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ 2).re -
+        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ (2 : ℕ)).re -
       (xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 0 X *
         xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 2 X -
-        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 1 X ^ 2).re| ≤
-      8 * (j : ℝ) * S ^ 2 * 16 ^ j * ε := by
+        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 1 X ^ (2 : ℕ)).re| ≤
+      8 * (j : ℝ) * S ^ (2 : ℕ) * 16 ^ j * ε := by
   have hS0 : 0 ≤ S := le_trans (tsum_nonneg fun q => norm_nonneg _) hS
   have hb0 := norm_xiPolyMoment_shiftedFinNodal_le (m := m) hX hc hS 0
   have hb1 := norm_xiPolyMoment_shiftedFinNodal_le (m := m) hX hc hS 1
@@ -271,25 +271,25 @@ theorem abs_re_datum_shiftedFinNodal_sub_le {X : ℝ} (hX : 0 ≤ X) {j m : ℕ}
     mul_nonneg hS0 (mul_nonneg (mul_nonneg (Nat.cast_nonneg j) (by positivity)) hε)
   have habs : |(xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 0 X *
       xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 2 X -
-      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ 2).re -
+      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ (2 : ℕ)).re -
       (xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 0 X *
         xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 2 X -
-        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 1 X ^ 2).re| ≤
+        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 1 X ^ (2 : ℕ)).re| ≤
       ‖(xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 0 X *
         xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 2 X -
-        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ 2) -
+        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ (2 : ℕ)) -
       (xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 0 X *
         xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 2 X -
-        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 1 X ^ 2)‖ := by
+        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 1 X ^ (2 : ℕ))‖ := by
     rw [← Complex.sub_re]
     exact Complex.abs_re_le_norm _
   refine le_trans habs ?_
   have hsplit : (xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 0 X *
       xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 2 X -
-      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ 2) -
+      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ (2 : ℕ)) -
       (xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 0 X *
         xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 2 X -
-        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 1 X ^ 2) =
+        xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 1 X ^ (2 : ℕ)) =
       xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 0 X *
         (xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 2 X -
           xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c') 2 X) +
@@ -376,18 +376,18 @@ theorem finNodal_datum_re_nonneg_of_rational {X : ℝ} (hX : 0 ≤ X)
         xiPolyMoment (Polynomial.X ^ m *
           finNodalPolynomial (fun i => ((c i : ℝ)))) 2 X -
         xiPolyMoment (Polynomial.X ^ m *
-          finNodalPolynomial (fun i => ((c i : ℝ)))) 1 X ^ 2).re)
+          finNodalPolynomial (fun i => ((c i : ℝ)))) 1 X ^ (2 : ℕ)).re)
     {j m : ℕ} {c : Fin j → ℝ} (hc : ∀ i, 0 < c i ∧ c i ≤ 1) :
     0 ≤ (xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 0 X *
       xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 2 X -
-      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ 2).re := by
+      xiPolyMoment (Polynomial.X ^ m * finNodalPolynomial c) 1 X ^ (2 : ℕ)).re := by
   classical
   set S : ℝ := ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ with hSdef
   have hS : ∑' q : XiZeroCopy, ‖xiResolventPoint X q‖ ≤ S := hSdef.ge
   have hS0 : 0 ≤ S := le_trans (tsum_nonneg fun q => norm_nonneg _) hS
-  have hL0 : 0 ≤ 8 * (j : ℝ) * S ^ 2 * 16 ^ j := by positivity
+  have hL0 : 0 ≤ 8 * (j : ℝ) * S ^ (2 : ℕ) * 16 ^ j := by positivity
   refine le_of_forall_pos_le_add fun δ hδ => ?_
-  set ε : ℝ := δ / (8 * (j : ℝ) * S ^ 2 * 16 ^ j + 1) with hεdef
+  set ε : ℝ := δ / (8 * (j : ℝ) * S ^ (2 : ℕ) * 16 ^ j + 1) with hεdef
   have hεpos : 0 < ε := by
     rw [hεdef]
     positivity
@@ -413,10 +413,10 @@ theorem finNodal_datum_re_nonneg_of_rational {X : ℝ} (hX : 0 ≤ X)
     (fun i => ⟨le_of_lt (hc i).1, (hc i).2⟩)
     (fun i => ⟨by exact_mod_cast le_of_lt (hqf i).1, (hqf i).2.1⟩)
     (le_of_lt hεpos) (fun i => (hqf i).2.2) hS
-  have hLε : 8 * (j : ℝ) * S ^ 2 * 16 ^ j * ε ≤ δ := by
-    rw [hεdef, show 8 * (j : ℝ) * S ^ 2 * 16 ^ j *
-        (δ / (8 * (j : ℝ) * S ^ 2 * 16 ^ j + 1)) =
-        8 * (j : ℝ) * S ^ 2 * 16 ^ j * δ / (8 * (j : ℝ) * S ^ 2 * 16 ^ j + 1) by ring,
+  have hLε : 8 * (j : ℝ) * S ^ (2 : ℕ) * 16 ^ j * ε ≤ δ := by
+    rw [hεdef, show 8 * (j : ℝ) * S ^ (2 : ℕ) * 16 ^ j *
+        (δ / (8 * (j : ℝ) * S ^ (2 : ℕ) * 16 ^ j + 1)) =
+        8 * (j : ℝ) * S ^ (2 : ℕ) * 16 ^ j * δ / (8 * (j : ℝ) * S ^ (2 : ℕ) * 16 ^ j + 1) by ring,
       div_le_iff₀ (by positivity)]
     nlinarith
   have habs := abs_le.mp hstab
@@ -430,7 +430,7 @@ theorem riemannHypothesis_of_forall_rational_nodal_single_minor {X : ℝ} (hX : 
         xiPolyMoment (Polynomial.X ^ m *
           finNodalPolynomial (fun i => ((c i : ℝ)))) 2 X -
         xiPolyMoment (Polynomial.X ^ m *
-          finNodalPolynomial (fun i => ((c i : ℝ)))) 1 X ^ 2).re) :
+          finNodalPolynomial (fun i => ((c i : ℝ)))) 1 X ^ (2 : ℕ)).re) :
     RiemannHypothesis := by
   refine riemannHypothesis_of_forall_nodal_single_minor hX (fun R hR m => ?_)
   have hbridge : nodalPolynomial R =
@@ -454,7 +454,7 @@ theorem riemannHypothesis_iff_forall_rational_nodal_single_minor {X : ℝ} (hX :
         xiPolyMoment (Polynomial.X ^ m *
           finNodalPolynomial (fun i => ((c i : ℝ)))) 2 X -
         xiPolyMoment (Polynomial.X ^ m *
-          finNodalPolynomial (fun i => ((c i : ℝ)))) 1 X ^ 2).re :=
+          finNodalPolynomial (fun i => ((c i : ℝ)))) 1 X ^ (2 : ℕ)).re :=
   ⟨fun hRH j m c _ => by
       simpa only [Nat.zero_add] using
         polyTuranMinor_re_nonneg_of_riemannHypothesis hRH hX

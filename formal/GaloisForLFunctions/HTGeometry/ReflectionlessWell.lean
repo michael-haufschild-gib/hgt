@@ -25,16 +25,16 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 open DispersivePDE
 
-def reflectionlessWellPotential (l x : ℝ) : ℝ := -2 * Real.exp l ^ 2 * solitonQ (Real.exp l * x)
+def reflectionlessWellPotential (l x : ℝ) : ℝ := -2 * Real.exp l ^ (2 : ℕ) * solitonQ (Real.exp l * x)
 
 def reflectionlessWellAmplitude (k l x : ℝ) : ℂ :=
   (I * (Real.exp k : ℂ) - (Real.exp l : ℂ) * (solitonT (Real.exp l * x) : ℂ)) / (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
 
 def reflectionlessWellAmplitude1 (k l x : ℝ) : ℂ :=
-  (-(Real.exp l : ℂ) ^ 2 * (solitonQ (Real.exp l * x) : ℂ)) / (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
+  (-(Real.exp l : ℂ) ^ (2 : ℕ) * (solitonQ (Real.exp l * x) : ℂ)) / (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
 
 def reflectionlessWellAmplitude2 (k l x : ℝ) : ℂ :=
-  (-(Real.exp l : ℂ) ^ 3 * (solitonQ1 (Real.exp l * x) : ℂ)) / (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
+  (-(Real.exp l : ℂ) ^ (3 : ℕ) * (solitonQ1 (Real.exp l * x) : ℂ)) / (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
 
 def reflectionlessWellWave (k l x : ℝ) : ℂ :=
   reflectionlessWellAmplitude k l x * FDNLS.staggerPhase (-Real.exp k) x
@@ -68,7 +68,7 @@ theorem reflectionlessWellAmplitude_derivative (k l x : ℝ) :
 theorem reflectionlessWellAmplitude1_derivative (k l x : ℝ) :
     HasDerivAt (reflectionlessWellAmplitude1 k l) (reflectionlessWellAmplitude2 k l x) x := by
   have h := ((((hasDerivAt_solitonQ (Real.exp l * x)).comp x
-    ((hasDerivAt_id x).const_mul (Real.exp l))).ofReal_comp).const_mul (-(Real.exp l : ℂ) ^ 2)).div_const
+    ((hasDerivAt_id x).const_mul (Real.exp l))).ofReal_comp).const_mul (-(Real.exp l : ℂ) ^ (2 : ℕ))).div_const
       (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
   apply h.congr_deriv
   dsimp [reflectionlessWellAmplitude2]
@@ -79,7 +79,7 @@ theorem reflectionlessWellAmplitude1_derivative (k l x : ℝ) :
 theorem reflectionlessWellAmplitude_darboux (k l x : ℝ) :
     reflectionlessWellAmplitude2 k l x +
       2 * I * (Real.exp k : ℂ) * reflectionlessWellAmplitude1 k l x +
-        2 * (Real.exp l : ℂ) ^ 2 * (solitonQ (Real.exp l * x) : ℂ) * reflectionlessWellAmplitude k l x = 0 := by
+        2 * (Real.exp l : ℂ) ^ (2 : ℕ) * (solitonQ (Real.exp l * x) : ℂ) * reflectionlessWellAmplitude k l x = 0 := by
   unfold reflectionlessWellAmplitude2 reflectionlessWellAmplitude1 reflectionlessWellAmplitude solitonQ1
   push_cast
   ring
@@ -93,7 +93,7 @@ theorem reflectionlessWellWave_derivative (k l x : ℝ) :
 
 theorem reflectionlessWellWave1_derivative (k l x : ℝ) :
     HasDerivAt (reflectionlessWellWave1 k l)
-      (-((Real.exp k : ℂ) ^ 2 - (reflectionlessWellPotential l x : ℂ)) * reflectionlessWellWave k l x) x := by
+      (-((Real.exp k : ℂ) ^ (2 : ℕ) - (reflectionlessWellPotential l x : ℂ)) * reflectionlessWellWave k l x) x := by
   have h := ((reflectionlessWellAmplitude1_derivative k l x).add
     ((reflectionlessWellAmplitude_derivative k l x).const_mul (I * (Real.exp k : ℂ)))).mul
       (FDNLS.hasDerivAt_staggerPhase (-Real.exp k) x)
@@ -102,12 +102,12 @@ theorem reflectionlessWellWave1_derivative (k l x : ℝ) :
     Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
   have hd := reflectionlessWellAmplitude_darboux k l x
   linear_combination FDNLS.staggerPhase (-Real.exp k) x * hd +
-    ((Real.exp k : ℂ) ^ 2 * reflectionlessWellAmplitude k l x * FDNLS.staggerPhase (-Real.exp k) x) * I_sq
+    ((Real.exp k : ℂ) ^ (2 : ℕ) * reflectionlessWellAmplitude k l x * FDNLS.staggerPhase (-Real.exp k) x) * I_sq
 
 /-- A genuine smooth scattering wave solves the negative-well radial equation. -/
 theorem reflectionlessWellWave_equation (k l x : ℝ) :
     deriv (deriv (reflectionlessWellWave k l)) x +
-      ((Real.exp k : ℂ) ^ 2 - (reflectionlessWellPotential l x : ℂ)) * reflectionlessWellWave k l x = 0 := by
+      ((Real.exp k : ℂ) ^ (2 : ℕ) - (reflectionlessWellPotential l x : ℂ)) * reflectionlessWellWave k l x = 0 := by
   have he : deriv (reflectionlessWellWave k l) = reflectionlessWellWave1 k l :=
     funext (fun y => (reflectionlessWellWave_derivative k l y).deriv)
   rw [he, (reflectionlessWellWave1_derivative k l x).deriv]
@@ -232,7 +232,7 @@ private theorem reflectionlessWellAmplitude1_atTop (k l : ℝ) :
   have hq := (tendsto_const_nhds (x := (1 : ℝ))).sub ((reflectionlessWell_tanh_atTop l).pow 2)
   simp only [one_pow, sub_self] at hq
   have ht := Complex.continuous_ofReal.continuousAt.tendsto.comp hq
-  have h := (ht.const_mul (-(Real.exp l : ℂ) ^ 2)).div_const (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
+  have h := (ht.const_mul (-(Real.exp l : ℂ) ^ (2 : ℕ))).div_const (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
   unfold reflectionlessWellAmplitude1 solitonQ
   simpa only [Function.comp_def, Complex.ofReal_zero, mul_zero, zero_div] using h
 
@@ -241,7 +241,7 @@ private theorem reflectionlessWellAmplitude1_atBot (k l : ℝ) :
   have hq := (tendsto_const_nhds (x := (1 : ℝ))).sub ((reflectionlessWell_tanh_atBot l).pow 2)
   simp only [neg_sq, one_pow, sub_self] at hq
   have ht := Complex.continuous_ofReal.continuousAt.tendsto.comp hq
-  have h := (ht.const_mul (-(Real.exp l : ℂ) ^ 2)).div_const (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
+  have h := (ht.const_mul (-(Real.exp l : ℂ) ^ (2 : ℕ))).div_const (I * (Real.exp k : ℂ) + (Real.exp l : ℂ))
   unfold reflectionlessWellAmplitude1 solitonQ
   simpa only [Function.comp_def, Complex.ofReal_zero, mul_zero, zero_div] using h
 

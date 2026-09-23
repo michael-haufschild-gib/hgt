@@ -56,7 +56,7 @@ theorem gradedFockTransverse_rank_bound_eq_iff_phase_rigidity
         GradedFockTransversePhaseBalanced M p := by
   classical
   let phaseSquare : J → ℝ := fun i =>
-    (((M : ℝ) - 1) * p i - ((M : ℝ) - 2) / 2) ^ 2
+    (((M : ℝ) - 1) * p i - ((M : ℝ) - 2) / 2) ^ (2 : ℕ)
   have hmargin :
       gradedFockTransverseFanoMargin M U p =
         gradedFockLoweringCharge M U +

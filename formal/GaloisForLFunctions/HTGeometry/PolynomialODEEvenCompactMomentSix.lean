@@ -220,8 +220,8 @@ private def relativeMomentSix (r a v : ℝ) : ℝ :=
     (77077/3359232000000000 : ℝ)*r^(8 : ℕ) : ℝ) : ℝ) : ℝ) : ℝ) : ℝ) : ℝ) : ℝ) : ℝ)
 
 private theorem relativeMomentSix_eq (u a v : ℝ) :
-    (-1 : ℝ)^6*evenCompactReflectedScalar12 u a (u*(1+v/4))/(100 : ℝ)^6 =
-      relativeMomentSix (u^2) a v := by
+    (-1 : ℝ)^(6 : ℕ)*evenCompactReflectedScalar12 u a (u*(1+v/4))/(100 : ℝ)^(6 : ℕ) =
+      relativeMomentSix (u^(2 : ℕ)) a v := by
   unfold evenCompactReflectedScalar12 relativeMomentSix
   ring
 
@@ -706,7 +706,7 @@ def evenCompactUnitMomentSix (r t v : ℝ) : ℝ :=
 
 /-- Exact drift-square substitution; this identity assumes no sign or approximation. -/
 theorem evenCompactUnitMomentSix_eq (u t v : ℝ) :
-    (-1 : ℝ)^6*(evenCompactReflectedScalar12 u (evenCompactUnitGap (u^2) t) (u*(1+v/4)))/(100 : ℝ)^6 = evenCompactUnitMomentSix (u^2) t v := by
+    (-1 : ℝ)^(6 : ℕ)*(evenCompactReflectedScalar12 u (evenCompactUnitGap (u^(2 : ℕ)) t) (u*(1+v/4)))/(100 : ℝ)^(6 : ℕ) = evenCompactUnitMomentSix (u^(2 : ℕ)) t v := by
   have h (r t v : ℝ) : relativeMomentSix r (evenCompactUnitGap r t) v =
       evenCompactUnitMomentSix r t v := by
     unfold relativeMomentSix evenCompactUnitGap evenCompactUnitMomentSix

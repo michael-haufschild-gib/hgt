@@ -27,48 +27,48 @@ equation on the unit disk, holomorphic continuation across a boundary point `ζ`
 propagates to continuation across `ζ²`, via `G'(s) = G(τ s)² + c·s` with `τ` the branch of `√`
 normalized by `τ(ζ²)=ζ`. -/
 theorem continuesAcross_sq {h : ℂ → ℂ} {c : ℂ} {ζ : ℂ} (hζ : ‖ζ‖ = 1)
-    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2)
+    (hfe : ∀ t ∈ ball (0 : ℂ) 1, h (t ^ (2 : ℕ)) = (h t) ^ (2 : ℕ) + c * t ^ (2 : ℕ))
     (hcont : ContinuesAcross h ζ) :
-    ContinuesAcross h (ζ ^ 2) := by
+    ContinuesAcross h (ζ ^ (2 : ℕ)) := by
   obtain ⟨U, hUopen, hζU, G, hGd, hGh⟩ := hcont
   have hζ0 : ζ ≠ 0 := by
     intro h0; rw [h0, norm_zero] at hζ; norm_num at hζ
-  have hζ2 : (ζ : ℂ) ^ 2 ≠ 0 := pow_ne_zero 2 hζ0
+  have hζ2 : (ζ : ℂ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hζ0
   -- τ(s) = ζ · (s / ζ²)^{1/2}
-  set τ : ℂ → ℂ := fun s => ζ * (s / ζ ^ 2) ^ ((2 : ℂ)⁻¹) with hτdef
-  have hτsq : ∀ s : ℂ, (τ s) ^ 2 = s := by
+  set τ : ℂ → ℂ := fun s => ζ * (s / ζ ^ (2 : ℕ)) ^ ((2 : ℂ)⁻¹) with hτdef
+  have hτsq : ∀ s : ℂ, (τ s) ^ (2 : ℕ) = s := by
     intro s
     rw [hτdef, mul_pow]
-    have hcp : ((s / ζ ^ 2) ^ ((2 : ℂ)⁻¹)) ^ 2 = s / ζ ^ 2 := by
-      have := Complex.cpow_nat_inv_pow (s / ζ ^ 2) (n := 2) two_ne_zero
+    have hcp : ((s / ζ ^ (2 : ℕ)) ^ ((2 : ℂ)⁻¹)) ^ (2 : ℕ) = s / ζ ^ (2 : ℕ) := by
+      have := Complex.cpow_nat_inv_pow (s / ζ ^ (2 : ℕ)) (n := 2) two_ne_zero
       rwa [Nat.cast_ofNat] at this
     rw [hcp]; field_simp
-  have hτζ2 : τ (ζ ^ 2) = ζ := by
+  have hτζ2 : τ (ζ ^ (2 : ℕ)) = ζ := by
     simp only [hτdef, div_self hζ2, Complex.one_cpow, mul_one]
-  have hτnorm : ∀ s : ℂ, ‖τ s‖ ^ 2 = ‖s‖ := fun s => by rw [← norm_pow, hτsq]
+  have hτnorm : ∀ s : ℂ, ‖τ s‖ ^ (2 : ℕ) = ‖s‖ := fun s => by rw [← norm_pow, hτsq]
   -- S = where the branch is analytic;  τ holomorphic on S
-  set S : Set ℂ := {s : ℂ | s / ζ ^ 2 ∈ slitPlane} with hSdef
+  set S : Set ℂ := {s : ℂ | s / ζ ^ (2 : ℕ) ∈ slitPlane} with hSdef
   have hSopen : IsOpen S := Complex.isOpen_slitPlane.preimage (continuous_id.div_const _)
-  have hζ2S : (ζ : ℂ) ^ 2 ∈ S := by
+  have hζ2S : (ζ : ℂ) ^ (2 : ℕ) ∈ S := by
     rw [hSdef, mem_setOf_eq, div_self hζ2]; exact Complex.one_mem_slitPlane
   have hτd : DifferentiableOn ℂ τ S := by
     intro s hs
     apply DifferentiableAt.differentiableWithinAt
-    have hinner : DifferentiableAt ℂ (fun u : ℂ => u ^ ((2 : ℂ)⁻¹)) (s / ζ ^ 2) :=
-      (Complex.hasStrictDerivAt_cpow_const (hs : s / ζ ^ 2 ∈ slitPlane)).hasDerivAt.differentiableAt
-    have hdiv : DifferentiableAt ℂ (fun s : ℂ => s / ζ ^ 2) s := differentiableAt_id.div_const _
-    have hcomp : DifferentiableAt ℂ (fun s => (s / ζ ^ 2) ^ ((2 : ℂ)⁻¹)) s := by
+    have hinner : DifferentiableAt ℂ (fun u : ℂ => u ^ ((2 : ℂ)⁻¹)) (s / ζ ^ (2 : ℕ)) :=
+      (Complex.hasStrictDerivAt_cpow_const (hs : s / ζ ^ (2 : ℕ) ∈ slitPlane)).hasDerivAt.differentiableAt
+    have hdiv : DifferentiableAt ℂ (fun s : ℂ => s / ζ ^ (2 : ℕ)) s := differentiableAt_id.div_const _
+    have hcomp : DifferentiableAt ℂ (fun s => (s / ζ ^ (2 : ℕ)) ^ ((2 : ℂ)⁻¹)) s := by
       simpa [Function.comp_def] using hinner.comp s hdiv
     rw [hτdef]
     exact hcomp.const_mul ζ
   -- V = S ∩ τ⁻¹U:  open nbhd of ζ² on which τ lands in U
   set V : Set ℂ := S ∩ τ ⁻¹' U with hVdef
   have hVopen : IsOpen V := hτd.continuousOn.isOpen_inter_preimage hSopen hUopen
-  have hζ2V : (ζ : ℂ) ^ 2 ∈ V := ⟨hζ2S, by rw [mem_preimage, hτζ2]; exact hζU⟩
+  have hζ2V : (ζ : ℂ) ^ (2 : ℕ) ∈ V := ⟨hζ2S, by rw [mem_preimage, hτζ2]; exact hζU⟩
   have hVS : V ⊆ S := inter_subset_left
   have hτmaps : MapsTo τ V U := fun s hs => hs.2
   -- the propagated continuation
-  set G' : ℂ → ℂ := fun s => (G (τ s)) ^ 2 + c * s with hG'def
+  set G' : ℂ → ℂ := fun s => (G (τ s)) ^ (2 : ℕ) + c * s with hG'def
   have hG'd : DifferentiableOn ℂ G' V := by
     have hGτ : DifferentiableOn ℂ (fun s => G (τ s)) V := hGd.comp (hτd.mono hVS) hτmaps
     exact (hGτ.pow 2).add ((differentiableOn_const c).mul differentiableOn_id)
@@ -81,8 +81,8 @@ theorem continuesAcross_sq {h : ℂ → ℂ} {c : ℂ} {ζ : ℂ} (hζ : ‖ζ�
       rw [mem_ball_zero_iff]
       nlinarith [hτnorm s, norm_nonneg (τ s), sq_nonneg (‖τ s‖ - 1), hsball]
     have hGτh : G (τ s) = h (τ s) := hGh ⟨hτU, hτball⟩
-    calc G' s = (h (τ s)) ^ 2 + c * (τ s) ^ 2 := by simp only [hG'def]; rw [hGτh, hτsq s]
-      _ = h ((τ s) ^ 2) := (hfe (τ s) hτball).symm
+    calc G' s = (h (τ s)) ^ (2 : ℕ) + c * (τ s) ^ (2 : ℕ) := by simp only [hG'def]; rw [hGτh, hτsq s]
+      _ = h ((τ s) ^ (2 : ℕ)) := (hfe (τ s) hτball).symm
       _ = h s := by rw [hτsq s]
   exact ⟨V, hVopen, hζ2V, G', hG'd, hG'h⟩
 

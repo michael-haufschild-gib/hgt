@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityLaw
 # Exact return and operator-norm complexity reflection for the inverse-square chain
 
 The rational inverse-square and inverse-cube coefficients admit the explicit common denominator
-`(L!)^3`.  This gives a nonminimal exact return period.  Adjoint reversal of support-certified
+`(L!)^(3 : ℕ)`.  This gives a nonminimal exact return period.  Adjoint reversal of support-certified
 local circuits then proves exact operator-norm complexity reflection.  The capstone transfers the
 existing laboratory-time floor/ceiling ramp to both sides of the exact return.
 -/
@@ -17,18 +17,18 @@ open GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 namespace GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 
 theorem factorialCube_mul_invSq_exists {L k : ℕ} (hk0 : 0 < k) (hkL : k ≤ L) :
-    ∃ N : ℕ, ((L.factorial : ℝ) ^ 3) * (1 / (k : ℝ) ^ 2) = N := by
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ (3 : ℕ)) * (1 / (k : ℝ) ^ (2 : ℕ)) = N := by
   rcases Nat.dvd_factorial hk0 hkL with ⟨a, ha⟩
-  refine ⟨k * a ^ 3, ?_⟩
+  refine ⟨k * a ^ (3 : ℕ), ?_⟩
   rw [ha]
   push_cast
   have hkR : (k : ℝ) ≠ 0 := by positivity
   field_simp
 
 theorem factorialCube_mul_invCube_exists {L k : ℕ} (hk0 : 0 < k) (hkL : k ≤ L) :
-    ∃ N : ℕ, ((L.factorial : ℝ) ^ 3) * (1 / (k : ℝ) ^ 3) = N := by
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ (3 : ℕ)) * (1 / (k : ℝ) ^ (3 : ℕ)) = N := by
   rcases Nat.dvd_factorial hk0 hkL with ⟨a, ha⟩
-  refine ⟨a ^ 3, ?_⟩
+  refine ⟨a ^ (3 : ℕ), ?_⟩
   rw [ha]
   push_cast
   have hkR : (k : ℝ) ≠ 0 := by positivity
@@ -51,12 +51,12 @@ theorem inverseCubeBridge_sum_eq_count {L : ℕ} (x : Config (PairQubit L)) :
 
 theorem exists_factorialCube_mul_inverseSquareMatchingEnergy {L : ℕ}
     (x : Config (PairQubit L)) :
-    ∃ N : ℕ, ((L.factorial : ℝ) ^ 3) * inverseSquareMatchingEnergy x = N := by
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ (3 : ℕ)) * inverseSquareMatchingEnergy x = N := by
   classical
   have hterm : ∀ j : Fin L, ∃ N : ℕ,
-      ((L.factorial : ℝ) ^ 3) *
+      ((L.factorial : ℝ) ^ (3 : ℕ)) *
         (if x (j, false) = true ∧ x (j, true) = true
-          then 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) else 0) = N := by
+          then 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) else 0) = N := by
     intro j
     by_cases hx : x (j, false) = true ∧ x (j, true) = true
     · rcases factorialCube_mul_invSq_exists (L := L) (k := j.val + 1)
@@ -75,21 +75,21 @@ theorem exists_factorialCube_mul_inverseSquareMatchingEnergy {L : ℕ}
 
 theorem exists_factorialCube_mul_inverseCubeBridgeEnergy {L : ℕ} (hL : 0 < L)
     (x : Config (PairQubit L)) :
-    ∃ N : ℕ, ((L.factorial : ℝ) ^ 3) * inverseCubeBridgeEnergy x = N := by
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ (3 : ℕ)) * inverseCubeBridgeEnergy x = N := by
   rcases factorialCube_mul_invCube_exists (L := L) (k := L) hL le_rfl with ⟨a, ha⟩
   refine ⟨a * inverseCubeBridgeCount x, ?_⟩
   rw [inverseCubeBridgeEnergy, inverseCubeBridge_sum_eq_count]
   push_cast
   calc
-    ((L.factorial : ℝ) ^ 3) *
-        (1 / (L : ℝ) ^ 3 * inverseCubeBridgeCount x) =
-        (((L.factorial : ℝ) ^ 3) * (1 / (L : ℝ) ^ 3)) *
+    ((L.factorial : ℝ) ^ (3 : ℕ)) *
+        (1 / (L : ℝ) ^ (3 : ℕ) * inverseCubeBridgeCount x) =
+        (((L.factorial : ℝ) ^ (3 : ℕ)) * (1 / (L : ℝ) ^ (3 : ℕ))) *
           inverseCubeBridgeCount x := by ring
     _ = (a : ℝ) * inverseCubeBridgeCount x := by rw [ha]
 
 theorem exists_factorialCube_mul_inverseSquareChainEnergy {L : ℕ}
     (x : Config (PairQubit L)) :
-    ∃ N : ℕ, ((L.factorial : ℝ) ^ 3) * inverseSquareChainEnergy x = N := by
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ (3 : ℕ)) * inverseSquareChainEnergy x = N := by
   rcases exists_factorialCube_mul_inverseSquareMatchingEnergy x with ⟨a, ha⟩
   by_cases hL : L = 0
   · subst L
@@ -103,7 +103,7 @@ theorem exists_factorialCube_mul_inverseSquareChainEnergy {L : ℕ}
     rfl
 
 noncomputable def inverseSquareChainReturnPeriod (L : ℕ) : ℝ :=
-  2 * Real.pi * (L.factorial : ℝ) ^ 3
+  2 * Real.pi * (L.factorial : ℝ) ^ (3 : ℕ)
 
 theorem inverseSquareChain_exact_return (L : ℕ) :
     inverseSquareChainEvolution L (inverseSquareChainReturnPeriod L) = 1 := by

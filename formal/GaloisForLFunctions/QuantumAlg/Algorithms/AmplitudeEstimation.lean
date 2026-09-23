@@ -17,7 +17,7 @@ public import GaloisForLFunctions.QuantumAlg.Core.Circuit
 Amplitude estimation reads the unknown good-state amplitude of an amplitude-
 amplification instance by running quantum phase estimation on the amplification
 operator [Lin22]. This module records the exact dyadic regime: QPE reads out the
-phase-register basis vector, and the estimate `sin^2(pi*j/2^t)` equals the
+phase-register basis vector, and the estimate `sin^(2 : ℕ)(pi*j/2^t)` equals the
 good-state probability in the two-dimensional amplitude-amplification model.
 -/
 
@@ -36,8 +36,8 @@ theorem AmplitudeEstimation.main_exact_dyadic (t : Nat) (j : Fin (2 ^ t)) (theta
     (htheta : theta = Real.pi * (j.val : Real) / (2 : Real) ^ t) :
     (invQFT t).applyVec (phaseState t ((j.val : Real) / (2 : Real) ^ t))
         = (PureState.ket (R := Qubits t) j : StateVector (Qubits t)) ∧
-      PureState.probOutcome (amplitudeAmplificationState theta 0) (1 : Fin (2 ^ 1))
-          = Real.sin (Real.pi * (j.val : Real) / (2 : Real) ^ t) ^ 2 := by
+      PureState.probOutcome (amplitudeAmplificationState theta 0) (1 : Fin (2 ^ (1 : ℕ)))
+          = Real.sin (Real.pi * (j.val : Real) / (2 : Real) ^ t) ^ (2 : ℕ) := by
   refine ⟨?_, ?_⟩
   · exact QuantumPhaseEstimation.main_exact_dyadic t j _ rfl
   · rw [amplitudeAmplificationState_good_probability]
@@ -56,13 +56,13 @@ def amplitudeEstimationExactResourceProfile (t : Nat) : ResourceProfile :=
 
 theorem amplitudeEstimationExactResourceProfile_exact (t : Nat) :
     ResourceProfile.HasExactCounts
-      (amplitudeEstimationExactResourceProfile t) (2 ^ t - 1) t (t ^ 2) 0 := by
+      (amplitudeEstimationExactResourceProfile t) (2 ^ t - 1) t (t ^ (2 : ℕ)) 0 := by
   exact qpeExactResourceProfile_exact t
 
 /-- Typed circuit witness for the exact amplitude-estimation endpoint. -/
 def amplitudeEstimationCircuit (t : Nat) : Circuit (Qubits t) :=
   Circuit.abstract (Qubits t) "amplitude-estimation" (amplitudeEstimationExactResourceProfile t)
-    (t ^ 2) (2 ^ t - 1)
+    (t ^ (2 : ℕ)) (2 ^ t - 1)
 
 /-- Exact amplitude estimation paired with the decoupled QPE resource profile. -/
 theorem AmplitudeEstimation.main_exact_dyadic_with_resources
@@ -70,10 +70,10 @@ theorem AmplitudeEstimation.main_exact_dyadic_with_resources
     (htheta : theta = Real.pi * (j.val : Real) / (2 : Real) ^ t) :
     ((invQFT t).applyVec (phaseState t ((j.val : Real) / (2 : Real) ^ t))
         = (PureState.ket (R := Qubits t) j : StateVector (Qubits t)) ∧
-      PureState.probOutcome (amplitudeAmplificationState theta 0) (1 : Fin (2 ^ 1))
-          = Real.sin (Real.pi * (j.val : Real) / (2 : Real) ^ t) ^ 2) ∧
+      PureState.probOutcome (amplitudeAmplificationState theta 0) (1 : Fin (2 ^ (1 : ℕ)))
+          = Real.sin (Real.pi * (j.val : Real) / (2 : Real) ^ t) ^ (2 : ℕ)) ∧
       ResourceProfile.HasExactCounts
-        (amplitudeEstimationExactResourceProfile t) (2 ^ t - 1) t (t ^ 2) 0 := by
+        (amplitudeEstimationExactResourceProfile t) (2 ^ t - 1) t (t ^ (2 : ℕ)) 0 := by
   constructor
   · exact AmplitudeEstimation.main_exact_dyadic t j theta htheta
   · exact amplitudeEstimationExactResourceProfile_exact t
@@ -91,18 +91,18 @@ structure SourceAmplitudeEstimationInput where
   theta_eq : source.theta = Real.pi * (j.val : Real) / (2 : Real) ^ t
 
 /-- Source-level exact amplitude-estimation bridge: the source preparation has
-good-state probability `sin^2(theta)`, exact QPE reads the dyadic phase register,
+good-state probability `sin^(2 : ℕ)(theta)`, exact QPE reads the dyadic phase register,
 and the same trusted exact-QPE resource profile is recorded. -/
 theorem AmplitudeEstimation.main
     (E : SourceAmplitudeEstimationInput) :
-    (PureState.probOutcome (E.source.preparation.apply ket0) (1 : Fin (2 ^ 1)) =
-        Real.sin (Real.pi * (E.j.val : Real) / (2 : Real) ^ E.t) ^ 2 ∧
+    (PureState.probOutcome (E.source.preparation.apply ket0) (1 : Fin (2 ^ (1 : ℕ))) =
+        Real.sin (Real.pi * (E.j.val : Real) / (2 : Real) ^ E.t) ^ (2 : ℕ) ∧
       (invQFT E.t).applyVec
           (phaseState E.t ((E.j.val : Real) / (2 : Real) ^ E.t))
           = (PureState.ket (R := Qubits E.t) E.j : StateVector (Qubits E.t))) ∧
       ResourceProfile.HasExactCounts
         (amplitudeEstimationExactResourceProfile E.t)
-        (2 ^ E.t - 1) E.t (E.t ^ 2) 0 := by
+        (2 ^ E.t - 1) E.t (E.t ^ (2 : ℕ)) 0 := by
   constructor
   · constructor
     · rw [SourceAmplitudeAmplificationModel.prepared_eq_state E.source,
@@ -117,16 +117,16 @@ theorem AmplitudeEstimation.main
 def AmplitudeEstimation.mainResourceCorrectWitness
     (E : SourceAmplitudeEstimationInput) :
     ResourceCorrectWitness (R := Qubits E.t)
-      ((PureState.probOutcome (E.source.preparation.apply ket0) (1 : Fin (2 ^ 1)) =
-          Real.sin (Real.pi * (E.j.val : Real) / (2 : Real) ^ E.t) ^ 2 ∧
+      ((PureState.probOutcome (E.source.preparation.apply ket0) (1 : Fin (2 ^ (1 : ℕ))) =
+          Real.sin (Real.pi * (E.j.val : Real) / (2 : Real) ^ E.t) ^ (2 : ℕ) ∧
         (invQFT E.t).applyVec
             (phaseState E.t ((E.j.val : Real) / (2 : Real) ^ E.t))
             = (PureState.ket (R := Qubits E.t) E.j : StateVector (Qubits E.t))) ∧
         ResourceProfile.HasExactCounts
           (amplitudeEstimationExactResourceProfile E.t)
-          (2 ^ E.t - 1) E.t (E.t ^ 2) 0)
+          (2 ^ E.t - 1) E.t (E.t ^ (2 : ℕ)) 0)
       (ResourceProfile.HasExactCounts (amplitudeEstimationCircuit E.t).resources
-        (2 ^ E.t - 1) E.t (E.t ^ 2) 0) := by
+        (2 ^ E.t - 1) E.t (E.t ^ (2 : ℕ)) 0) := by
   exact
     { circuit := amplitudeEstimationCircuit E.t
       correctness := AmplitudeEstimation.main E

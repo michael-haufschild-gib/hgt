@@ -48,14 +48,14 @@ def gammaSewnXiShiftEndpointUnitTangentPacketDistanceEnergy
 def gammaSewnXiShiftEndpointUnitTangentPacketDepthPrefix
     {N : ℕ} (p : Fin N → Nat.Primes) (c : Fin N → ℝ) (D : ℕ) : ℝ :=
   -2 * ∑ e ∈ Finset.range D,
-    gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ 2
+    gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ (2 : ℕ)
 
 /-- Arbitrary coefficient interference remains square-summable after the source-defined
 all-depth completion. -/
 theorem hasSum_gammaSewnXiShiftEndpointUnitTangentPacketResultant_sq
     {N : ℕ} (p : Fin N → Nat.Primes) (c : Fin N → ℝ) :
     HasSum
-      (fun e => gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ 2)
+      (fun e => gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ (2 : ℕ))
       (∑ i, ∑ j, c i * c j *
         gammaSewnXiShiftEndpointUnitTangentKernel (p i) (p j)) := by
   classical
@@ -98,7 +98,7 @@ theorem gammaSewnXiShiftEndpointUnitTangentPacketDistanceEnergy_eq_negative_tsum
     (hc : ∑ i, c i = 0) :
     gammaSewnXiShiftEndpointUnitTangentPacketDistanceEnergy p c =
       -2 * ∑' e : ℕ,
-        gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ 2 := by
+        gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ (2 : ℕ) := by
   have hsum :=
     (hasSum_gammaSewnXiShiftEndpointUnitTangentPacketResultant_sq p c).tsum_eq
   unfold gammaSewnXiShiftEndpointUnitTangentPacketDistanceEnergy
@@ -107,17 +107,17 @@ theorem gammaSewnXiShiftEndpointUnitTangentPacketDistanceEnergy_eq_negative_tsum
   calc
     (∑ i, ∑ j, c i * c j *
         (2 * (1 - gammaSewnXiShiftEndpointUnitTangentKernel (p i) (p j)))) =
-        2 * (∑ i, c i) ^ 2 -
+        2 * (∑ i, c i) ^ (2 : ℕ) -
           2 * ∑ i, ∑ j, c i * c j *
             gammaSewnXiShiftEndpointUnitTangentKernel (p i) (p j) := by
       have hproduct :
-          (∑ i, ∑ j, c i * c j) = (∑ i, c i) ^ 2 := by
+          (∑ i, ∑ j, c i * c j) = (∑ i, c i) ^ (2 : ℕ) := by
         rw [sq, Finset.sum_mul]
         apply Finset.sum_congr rfl
         intro i _
         rw [Finset.mul_sum]
       have hconst :
-          (∑ i, ∑ j, c i * c j * 2) = 2 * (∑ i, c i) ^ 2 := by
+          (∑ i, ∑ j, c i * c j * 2) = 2 * (∑ i, c i) ^ (2 : ℕ) := by
         calc
           (∑ i, ∑ j, c i * c j * 2) =
               (∑ i, ∑ j, c i * c j) * 2 := by
@@ -125,7 +125,7 @@ theorem gammaSewnXiShiftEndpointUnitTangentPacketDistanceEnergy_eq_negative_tsum
             apply Finset.sum_congr rfl
             intro i _
             rw [Finset.sum_mul]
-          _ = 2 * (∑ i, c i) ^ 2 := by rw [hproduct]; ring
+          _ = 2 * (∑ i, c i) ^ (2 : ℕ) := by rw [hproduct]; ring
       have hkernel :
           (∑ i, ∑ j, c i * c j *
               (2 * gammaSewnXiShiftEndpointUnitTangentKernel (p i) (p j))) =
@@ -177,7 +177,7 @@ theorem tendsto_gammaSewnXiShiftEndpointUnitTangentPacketDepthPrefix
   have hscaled :
       Tendsto
         (fun D => (-2 : ℝ) * ∑ e ∈ Finset.range D,
-          gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ 2)
+          gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ (2 : ℕ))
         atTop
         (nhds ((-2 : ℝ) * ∑ i, ∑ j, c i * c j *
           gammaSewnXiShiftEndpointUnitTangentKernel (p i) (p j))) :=
@@ -188,10 +188,10 @@ theorem tendsto_gammaSewnXiShiftEndpointUnitTangentPacketDepthPrefix
   rw [gammaSewnXiShiftEndpointUnitTangentPacketDistanceEnergy_eq_negative_tsum p c hc]
   change Tendsto
     (fun D => (-2 : ℝ) * ∑ e ∈ Finset.range D,
-      gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ 2)
+      gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ (2 : ℕ))
     atTop
     (nhds ((-2 : ℝ) * ∑' e : ℕ,
-      gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ 2))
+      gammaSewnXiShiftEndpointUnitTangentPacketResultant p c e ^ (2 : ℕ)))
   exact hscaled
 
 end

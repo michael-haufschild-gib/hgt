@@ -35,7 +35,7 @@ def coeff (N q : ℕ) : ℝ := vonMangoldt q * deningerHarmonicPartial (N / q)
 /-- The complete correction in the original physical Hilbert carrier. -/
 def forcing (N : ℕ) : BDCarrier := DeletionCoefficientTransfer.source (coeff N) N
 /-- The absolutely convergent signed reciprocal-square Mobius series. -/
-def c2 : ℝ := ∑' n : ℕ, ((moebius (n+1) : ℤ) : ℝ) / ((n : ℝ)+1)^2
+def c2 : ℝ := ∑' n : ℕ, ((moebius (n+1) : ℤ) : ℝ) / ((n : ℝ)+1)^(2 : ℕ)
 private def Cpsi : ℝ := Real.log 4 + 4
 
 private theorem Cpsi_pos : 0 < Cpsi := by
@@ -56,13 +56,13 @@ private theorem harmonic_bound (N : ℕ) : |deningerHarmonicPartial N| ≤ 2 := 
   nlinarith
 
 private theorem inverse_square_summable :
-    Summable (fun n : ℕ => 1 / ((n : ℝ)+1)^2) := by
-  have h := (summable_nat_add_iff (f := fun n : ℕ => 1/(n : ℝ)^2) 1).2
+    Summable (fun n : ℕ => 1 / ((n : ℝ)+1)^(2 : ℕ)) := by
+  have h := (summable_nat_add_iff (f := fun n : ℕ => 1/(n : ℝ)^(2 : ℕ)) 1).2
     (Real.summable_one_div_nat_pow.mpr (by norm_num : 1 < (2 : ℕ)))
   simpa only [Nat.cast_add, Nat.cast_one] using h
 
 private theorem c2_summable :
-    Summable (fun n : ℕ => ((moebius (n+1) : ℤ) : ℝ)/((n : ℝ)+1)^2) := by
+    Summable (fun n : ℕ => ((moebius (n+1) : ℤ) : ℝ)/((n : ℝ)+1)^(2 : ℕ)) := by
   apply Summable.of_norm
   apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _) _ inverse_square_summable
   intro n
@@ -72,21 +72,21 @@ private theorem c2_summable :
 
 private theorem c2_prefix_lower (n : ℕ) :
     1/4 + 1/((n : ℝ)+2) ≤
-      ∑ d ∈ Icc 1 (n+2), ((moebius d : ℤ) : ℝ)/(d : ℝ)^2 := by
+      ∑ d ∈ Icc 1 (n+2), ((moebius d : ℤ) : ℝ)/(d : ℝ)^(2 : ℕ) := by
   induction n with
   | zero =>
       norm_num [Finset.sum_Icc_succ_top, moebius_apply_prime Nat.prime_two]
   | succ n ih =>
       rw [show n+1+2 = (n+2)+1 by omega, sum_Icc_succ_top (by omega)]
       have hmu := (abs_le.mp (Sieve.abs_moebius_real_le_one (n+3))).1
-      have hterm : -(1/((n : ℝ)+3)^2) ≤
-          ((moebius (n+2+1) : ℤ) : ℝ)/((n+2+1 : ℕ) : ℝ)^2 := by
+      have hterm : -(1/((n : ℝ)+3)^(2 : ℕ)) ≤
+          ((moebius (n+2+1) : ℤ) : ℝ)/((n+2+1 : ℕ) : ℝ)^(2 : ℕ) := by
         have h := div_le_div_of_nonneg_right hmu (sq_nonneg ((n : ℝ)+3))
         simpa only [Nat.cast_add, Nat.cast_one, Nat.cast_ofNat,
           show (n : ℝ)+2+1 = (n : ℝ)+3 by ring, neg_div, one_div] using h
       have hgap : 1/((n : ℝ)+2)-1/((n : ℝ)+3) =
           1/(((n : ℝ)+2)*((n : ℝ)+3)) := by field_simp; ring
-      have hrec : 1/((n : ℝ)+3)^2 ≤ 1/(((n : ℝ)+2)*((n : ℝ)+3)) := by
+      have hrec : 1/((n : ℝ)+3)^(2 : ℕ) ≤ 1/(((n : ℝ)+2)*((n : ℝ)+3)) := by
         apply one_div_le_one_div_of_le (by positivity)
         nlinarith [show (0 : ℝ) ≤ n from Nat.cast_nonneg n]
       simp only [Nat.cast_add, Nat.cast_one, Nat.cast_ofNat] at hterm ⊢
@@ -163,18 +163,18 @@ theorem coeff_sum_limit :
     ((moebius (n+1) : ℤ) : ℝ)/((n : ℝ)+1)*
       (Chebyshev.psi ((N/(n+1) : ℕ) : ℝ)/(N : ℝ))
   have hrow (n : ℕ) : Tendsto (fun N => row N n) atTop
-      (𝓝 (((moebius (n+1) : ℤ) : ℝ)/((n : ℝ)+1)^2)) := by
+      (𝓝 (((moebius (n+1) : ℤ) : ℝ)/((n : ℝ)+1)^(2 : ℕ))) := by
     have h := (psi_dilated_limit (by omega : 0 < n+1)).const_mul
       (((moebius (n+1) : ℤ) : ℝ)/((n : ℝ)+1))
     have he : ((moebius (n+1) : ℤ) : ℝ)/((n : ℝ)+1)*
         (1/((n+1 : ℕ) : ℝ)) =
-        ((moebius (n+1) : ℤ) : ℝ)/((n : ℝ)+1)^2 := by
+        ((moebius (n+1) : ℤ) : ℝ)/((n : ℝ)+1)^(2 : ℕ) := by
       push_cast
       field_simp
     rw [he] at h
     exact h
   have hdom : ∀ᶠ N : ℕ in atTop, ∀ n : ℕ,
-      ‖row N n‖ ≤ Cpsi*(1/((n : ℝ)+1)^2) := by
+      ‖row N n‖ ≤ Cpsi*(1/((n : ℝ)+1)^(2 : ℕ)) := by
     filter_upwards with N n
     have hnon : 0 ≤ Chebyshev.psi ((N/(n+1) : ℕ) : ℝ)/(N : ℝ) :=
       div_nonneg (Chebyshev.psi_nonneg _) (Nat.cast_nonneg _)
@@ -295,7 +295,7 @@ theorem mean_limit :
   ring
 
 private theorem moment_bound (N : ℕ) :
-    DeletionCellWindow.moment (coeff N) N ≤ 2*Cpsi*(N : ℝ)^2 := by
+    DeletionCellWindow.moment (coeff N) N ≤ 2*Cpsi*(N : ℝ)^(2 : ℕ) := by
   unfold DeletionCellWindow.moment
   calc
     _ ≤ ∑ i ∈ range N, |coeff N (i+1)| * (N : ℝ) := by
@@ -370,13 +370,13 @@ theorem norm_forcing_le (N : ℕ) :
 
 /-- The compulsory correction has positive linear physical energy growth. -/
 theorem linear_energy_bounds : ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
-    ∀ᶠ N : ℕ in atTop, c*(N : ℝ) ≤ ‖forcing N‖^2 ∧
-      ‖forcing N‖^2 ≤ C*(N : ℝ) := by
+    ∀ᶠ N : ℕ in atTop, c*(N : ℝ) ≤ ‖forcing N‖^(2 : ℕ) ∧
+      ‖forcing N‖^(2 : ℕ) ≤ C*(N : ℝ) := by
   have hC := Cpsi_pos
   have hc2 : 0 < c2 := lt_of_lt_of_le (by norm_num) c2_lower
   let k : ℝ := c2/4
   have hk : 0 < k := by dsimp [k]; positivity
-  refine ⟨k^3/(16*Cpsi), 64*Cpsi^2, by positivity, by positivity, ?_⟩
+  refine ⟨k^(3 : ℕ)/(16*Cpsi), 64*Cpsi^(2 : ℕ), by positivity, by positivity, ?_⟩
   have hm := mean_limit.eventually (eventually_gt_nhds (show k < c2/2 by dsimp [k]; linarith))
   filter_upwards [hm, eventually_ge_atTop 1] with N hmean hN
   have hNr : (0 : ℝ) < N := by exact_mod_cast hN
@@ -386,10 +386,10 @@ theorem linear_energy_bounds : ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
   have hcube := pow_le_pow_left₀ (mul_nonneg hk.le hNr.le) hmeanlow 3
   have hcoerce := DeletionCellWindow.abs_mean_cube_le_moment_energy (coeff N) N
   have hmom := mul_le_mul_of_nonneg_right (moment_bound N)
-    (show 0 ≤ 8*‖forcing N‖^2 by positivity)
-  change _ ≤ 8*DeletionCellWindow.moment (coeff N) N*‖forcing N‖^2 at hcoerce
-  have hcancel : (N : ℝ)^2*(k^3*(N : ℝ)) ≤
-      (N : ℝ)^2*(16*Cpsi*‖forcing N‖^2) := by nlinarith
+    (show 0 ≤ 8*‖forcing N‖^(2 : ℕ) by positivity)
+  change _ ≤ 8*DeletionCellWindow.moment (coeff N) N*‖forcing N‖^(2 : ℕ) at hcoerce
+  have hcancel : (N : ℝ)^(2 : ℕ)*(k^(3 : ℕ)*(N : ℝ)) ≤
+      (N : ℝ)^(2 : ℕ)*(16*Cpsi*‖forcing N‖^(2 : ℕ)) := by nlinarith
   have hlow := le_of_mul_le_mul_left hcancel (sq_pos_of_pos hNr)
   have hnorm := norm_forcing_le N
   change ‖forcing N‖ ≤ 8*Cpsi*Real.sqrt (N : ℝ) at hnorm

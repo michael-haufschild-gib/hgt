@@ -18,8 +18,8 @@ private theorem constant_profile_fixed (n m : ℕ) (f : Fin (2 ^ (n + 3)) → �
   rw [← Finset.sum_mul, egbFixedChargeACriticalMarkovMatrix_pow_row_sum, one_mul]
 
 private theorem two_step_norm_preservation (n m : ℕ) (f : Fin (2 ^ (n + 3)) → ℝ) :
-    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n (m + 2)).toFinitePositiveKernel.applyReal f i ^ 2) =
-      (∑ i, f i ^ 2) ↔ ∀ i, f i = f 0 := by
+    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n (m + 2)).toFinitePositiveKernel.applyReal f i ^ (2 : ℕ)) =
+      (∑ i, f i ^ (2 : ℕ)) ↔ ∀ i, f i = f 0 := by
   constructor
   · intro he
     have h := (egbFixedChargeACriticalMarkov_sum_sq_eq_iff n (m + 2) f).mp he
@@ -33,15 +33,15 @@ private theorem two_step_norm_preservation (n m : ℕ) (f : Fin (2 ^ (n + 3)) �
 /-- Every positive number of transitions preserves squared norm exactly for constant profiles. -/
 theorem egbFixedChargeACriticalMarkov_norm_preserved_iff_constant
     (n m : ℕ) (f : Fin (2 ^ (n + 3)) → ℝ) :
-    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n (m + 1)).toFinitePositiveKernel.applyReal f i ^ 2) =
-      (∑ i, f i ^ 2) ↔ ∀ i, f i = f 0 := by
+    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n (m + 1)).toFinitePositiveKernel.applyReal f i ^ (2 : ℕ)) =
+      (∑ i, f i ^ (2 : ℕ)) ↔ ∀ i, f i = f 0 := by
   cases m with
   | zero =>
     constructor
     · intro he
       have h := (egbFixedChargeACriticalMarkov_sum_sq_eq_iff n 1 f).mp he
       have hd (i : Fin (2 ^ (n + 3))) :
-          0 < ((egbFixedChargeACriticalMarkovMatrix n ^ 1) i i).re := by
+          0 < ((egbFixedChargeACriticalMarkovMatrix n ^ (1 : ℕ)) i i).re := by
         simp only [pow_one, egbFixedChargeACriticalMarkovMatrix, Matrix.of_apply,
           Complex.ofReal_re, egbFixedChargeACriticalMarkovWeight, sub_self,
           Real.cos_zero, one_pow, mul_one]
@@ -60,8 +60,8 @@ theorem egbFixedChargeACriticalMarkov_norm_preserved_iff_constant
 /-- Every nonconstant profile loses a strictly positive amount of squared norm. -/
 theorem egbFixedChargeACriticalMarkov_norm_strict_iff
     (n m : ℕ) (f : Fin (2 ^ (n + 3)) → ℝ) :
-    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n (m + 1)).toFinitePositiveKernel.applyReal f i ^ 2) <
-      (∑ i, f i ^ 2) ↔ ¬ ∀ i, f i = f 0 := by
+    (∑ i, (egbFixedChargeACriticalMarkovIteratedKernel n (m + 1)).toFinitePositiveKernel.applyReal f i ^ (2 : ℕ)) <
+      (∑ i, f i ^ (2 : ℕ)) ↔ ¬ ∀ i, f i = f 0 := by
   constructor
   · intro h hf
     have he := (egbFixedChargeACriticalMarkov_norm_preserved_iff_constant n m f).mpr hf

@@ -32,17 +32,17 @@ theorem sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_zeta_sq
     (haggregate : ∀ n,
       ∑ i ∈ S, ‖F i n‖ ≤
         (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ)) :
-    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ 2 ≤
+    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ (2 : ℕ) ≤
       (∑ n ∈ mtLowerProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ 2)) +
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ (2 : ℕ))) +
       ∑ n ∈ mtUpperProductScaleCollar Y eta,
-        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ 2) := by
+        ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ (2 : ℕ)) := by
   let E := mtProductScaleBoundaryErrorAF S F M Y
-  let G := fun n => ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ 2)
+  let G := fun n => ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ (2 : ℕ))
   let C₁ := mtLowerProductScaleCollar Y eta
   let C₂ := mtUpperProductScaleCollar Y eta
   have hpoint : ∀ n,
-      ‖E n‖ ^ 2 ≤ (if n ∈ C₁ then G n else 0) + (if n ∈ C₂ then G n else 0) := by
+      ‖E n‖ ^ (2 : ℕ) ≤ (if n ∈ C₁ then G n else 0) + (if n ∈ C₂ then G n else 0) := by
     intro n
     by_cases hE : E n = 0
     · simp only [hE, norm_zero, zero_pow (by norm_num : (2 : ℕ) ≠ 0)]
@@ -52,7 +52,7 @@ theorem sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_zeta_sq
     have hnorm : ‖E n‖ ≤
         (((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) :=
       (norm_mtProductScaleBoundaryErrorAF_apply_le S F M Y n).trans (haggregate n)
-    have hsq : ‖E n‖ ^ 2 ≤ G n := by
+    have hsq : ‖E n‖ ^ (2 : ℕ) ≤ G n := by
       exact pow_le_pow_left₀ (norm_nonneg _) hnorm 2
     rcases hcollar with hC₁ | hC₂
     · have hmem : n ∈ C₁ := by simpa [C₁, mtLowerProductScaleCollar] using hC₁
@@ -68,8 +68,8 @@ theorem sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_zeta_sq
     intro n hn
     exact (Finset.mem_filter.mp hn).2
   calc
-    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ 2 =
-        ∑ n ∈ A, ‖E n‖ ^ 2 := rfl
+    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ (2 : ℕ) =
+        ∑ n ∈ A, ‖E n‖ ^ (2 : ℕ) := rfl
     _ ≤ ∑ n ∈ A,
         ((if n ∈ C₁ then G n else 0) + (if n ∈ C₂ then G n else 0)) := by
       exact Finset.sum_le_sum fun n hn => hpoint n
@@ -83,9 +83,9 @@ theorem sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_zeta_sq
       · exact Finset.sum_le_sum_of_subset_of_nonneg hsubset₂
           (fun n hn hnot => by positivity)
     _ = (∑ n ∈ mtLowerProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ 2)) +
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ (2 : ℕ))) +
         ∑ n ∈ mtUpperProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ 2) := rfl
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ (2 : ℕ)) := rfl
 
 /-- Fully explicit two-collar polylog bound. -/
 theorem sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_polylog
@@ -104,45 +104,45 @@ theorem sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_polylog
     (hLU₂ : Nat.floor (4 * Y) ≤ Nat.floor ((1 + eta) * (4 * Y)))
     (hTU₁ : T ≤ Nat.floor ((1 + eta) * (Y / 2)))
     (hTU₂ : T ≤ Nat.floor ((1 + eta) * (4 * Y)))
-    (hpow₁ : T ^ (r ^ 2) ≤ Nat.floor (Y / 2))
-    (hpow₂ : T ^ (r ^ 2) ≤ Nat.floor (4 * Y)) :
-    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ 2 ≤
-      ((r ^ 2 : ℕ) : ℝ) *
+    (hpow₁ : T ^ (r ^ (2 : ℕ)) ≤ Nat.floor (Y / 2))
+    (hpow₂ : T ^ (r ^ (2 : ℕ)) ≤ Nat.floor (4 * Y)) :
+    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ (2 : ℕ) ≤
+      ((r ^ (2 : ℕ) : ℕ) : ℝ) *
         (((Nat.floor ((1 + eta) * (Y / 2)) - Nat.floor (Y / 2) : ℕ) : ℝ) *
             (1 + Real.log (Nat.floor ((1 + eta) * (Y / 2)) / T : ℕ)) ^
-              (r ^ 2 - 1) +
+              (r ^ (2 : ℕ) - 1) +
           ((Nat.floor ((1 + eta) * (Y / 2)) / T : ℕ) : ℝ) *
             (1 + Real.log (Nat.floor ((1 + eta) * (Y / 2)) / T : ℕ)) ^
-              (r ^ 2 - 2)) +
-      ((r ^ 2 : ℕ) : ℝ) *
+              (r ^ (2 : ℕ) - 2)) +
+      ((r ^ (2 : ℕ) : ℕ) : ℝ) *
         (((Nat.floor ((1 + eta) * (4 * Y)) - Nat.floor (4 * Y) : ℕ) : ℝ) *
             (1 + Real.log (Nat.floor ((1 + eta) * (4 * Y)) / T : ℕ)) ^
-              (r ^ 2 - 1) +
+              (r ^ (2 : ℕ) - 1) +
           ((Nat.floor ((1 + eta) * (4 * Y)) / T : ℕ) : ℝ) *
             (1 + Real.log (Nat.floor ((1 + eta) * (4 * Y)) / T : ℕ)) ^
-              (r ^ 2 - 2)) := by
+              (r ^ (2 : ℕ) - 2)) := by
   calc
-    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ 2 ≤
+    ∑ n ∈ A, ‖mtProductScaleBoundaryErrorAF S F M Y n‖ ^ (2 : ℕ) ≤
         (∑ n ∈ mtLowerProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ 2)) +
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ (2 : ℕ))) +
         ∑ n ∈ mtUpperProductScaleCollar Y eta,
-          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ 2) :=
+          ((((ArithmeticFunction.zeta : ArithmeticFunction ℕ) ^ r) n : ℝ) ^ (2 : ℕ)) :=
       sum_normSq_mtProductScaleBoundaryErrorAF_le_collar_zeta_sq
         A S F M Y eta r hY heta hsupport haggregate
-    _ ≤ ((r ^ 2 : ℕ) : ℝ) *
+    _ ≤ ((r ^ (2 : ℕ) : ℕ) : ℝ) *
           (((Nat.floor ((1 + eta) * (Y / 2)) - Nat.floor (Y / 2) : ℕ) : ℝ) *
               (1 + Real.log (Nat.floor ((1 + eta) * (Y / 2)) / T : ℕ)) ^
-                (r ^ 2 - 1) +
+                (r ^ (2 : ℕ) - 1) +
             ((Nat.floor ((1 + eta) * (Y / 2)) / T : ℕ) : ℝ) *
               (1 + Real.log (Nat.floor ((1 + eta) * (Y / 2)) / T : ℕ)) ^
-                (r ^ 2 - 2)) +
-        ((r ^ 2 : ℕ) : ℝ) *
+                (r ^ (2 : ℕ) - 2)) +
+        ((r ^ (2 : ℕ) : ℕ) : ℝ) *
           (((Nat.floor ((1 + eta) * (4 * Y)) - Nat.floor (4 * Y) : ℕ) : ℝ) *
               (1 + Real.log (Nat.floor ((1 + eta) * (4 * Y)) / T : ℕ)) ^
-                (r ^ 2 - 1) +
+                (r ^ (2 : ℕ) - 1) +
             ((Nat.floor ((1 + eta) * (4 * Y)) / T : ℕ) : ℝ) *
               (1 + Real.log (Nat.floor ((1 + eta) * (4 * Y)) / T : ℕ)) ^
-                (r ^ 2 - 2)) := by
+                (r ^ (2 : ℕ) - 2)) := by
       apply add_le_add
       · simpa [mtLowerProductScaleCollar] using
           sum_zeta_pow_sq_Ioc_le_polylog r T

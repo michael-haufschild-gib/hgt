@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.KerrNewmanHorizonAlgebra
 
 The numerator of the Boyer--Lindquist `g_tt` coefficient is the stationary-limit
 polynomial.  Its discriminant differs from the horizon discriminant by the
-nonnegative rotational term `a^2 sin^2(theta)`.  This gives an exact algebraic
+nonnegative rotational term `a^(2 : ℕ) sin^(2 : ℕ)(theta)`.  This gives an exact algebraic
 comparison between the stationary-limit and horizon boundaries without dividing
 at coordinate-singular points.
 
@@ -19,15 +19,15 @@ noncomputable section
 /-- The denominator-free stationary-limit polynomial of the Kerr--Newman `t--t` coefficient. -/
 def kerrNewmanStationaryLimitPolynomial
     (mass spin charge radius polar : ℝ) : ℝ :=
-  kerrNewmanDelta mass spin charge radius - spin ^ 2 * Real.sin polar ^ 2
+  kerrNewmanDelta mass spin charge radius - spin ^ (2 : ℕ) * Real.sin polar ^ (2 : ℕ)
 
-/-- The stationary-limit polynomial is `Sigma - 2 M r + Q^2`. -/
+/-- The stationary-limit polynomial is `Sigma - 2 M r + Q^(2 : ℕ)`. -/
 theorem kerrNewmanStationaryLimitPolynomial_eq_sigma
     (mass spin charge radius polar : ℝ) :
     kerrNewmanStationaryLimitPolynomial mass spin charge radius polar =
-      kerrNewmanSigma spin radius polar - 2 * mass * radius + charge ^ 2 := by
+      kerrNewmanSigma spin radius polar - 2 * mass * radius + charge ^ (2 : ℕ) := by
   unfold kerrNewmanStationaryLimitPolynomial
-  have htrig : Real.sin polar ^ 2 = 1 - Real.cos polar ^ 2 := by
+  have htrig : Real.sin polar ^ (2 : ℕ) = 1 - Real.cos polar ^ (2 : ℕ) := by
     nlinarith [Real.sin_sq_add_cos_sq polar]
   rw [htrig]
   simp only [kerrNewmanDelta, kerrNewmanSigma]
@@ -38,15 +38,15 @@ theorem kerrNewmanStationaryLimitPolynomial_eq_sigma
 singular locus. -/
 theorem kerrNewmanKillingBlock_tt_cleared_stationaryLimitPolynomial
     (mass spin charge radius polar : ℝ) :
-    kerrNewmanSigma spin radius polar ^ 2 *
+    kerrNewmanSigma spin radius polar ^ (2 : ℕ) *
         kerrNewmanKillingBlock mass spin charge radius polar 0 0 =
       -kerrNewmanSigma spin radius polar *
         kerrNewmanStationaryLimitPolynomial mass spin charge radius polar := by
-  change kerrNewmanSigma spin radius polar ^ 2 *
-      (-(kerrNewmanDelta mass spin charge radius - spin ^ 2 * Real.sin polar ^ 2) /
+  change kerrNewmanSigma spin radius polar ^ (2 : ℕ) *
+      (-(kerrNewmanDelta mass spin charge radius - spin ^ (2 : ℕ) * Real.sin polar ^ (2 : ℕ)) /
         kerrNewmanSigma spin radius polar) =
     -kerrNewmanSigma spin radius polar *
-      (kerrNewmanDelta mass spin charge radius - spin ^ 2 * Real.sin polar ^ 2)
+      (kerrNewmanDelta mass spin charge radius - spin ^ (2 : ℕ) * Real.sin polar ^ (2 : ℕ))
   by_cases hSigma : kerrNewmanSigma spin radius polar = 0
   · simp [hSigma]
   · field_simp [hSigma]
@@ -55,7 +55,7 @@ theorem kerrNewmanKillingBlock_tt_cleared_stationaryLimitPolynomial
 theorem kerrNewmanStationaryLimitPolynomial_completeSquare
     (mass spin charge radius polar : ℝ) :
     kerrNewmanStationaryLimitPolynomial mass spin charge radius polar =
-      (radius - mass) ^ 2 - (mass ^ 2 - charge ^ 2 - spin ^ 2 * Real.cos polar ^ 2) := by
+      (radius - mass) ^ (2 : ℕ) - (mass ^ (2 : ℕ) - charge ^ (2 : ℕ) - spin ^ (2 : ℕ) * Real.cos polar ^ (2 : ℕ)) := by
   rw [kerrNewmanStationaryLimitPolynomial_eq_sigma]
   simp only [kerrNewmanSigma]
   ring
@@ -65,7 +65,7 @@ discriminant boundary. -/
 theorem kerrNewmanStationaryLimitPolynomial_at_mass_zero_iff
     (mass spin charge polar : ℝ) :
     kerrNewmanStationaryLimitPolynomial mass spin charge mass polar = 0 ↔
-      mass ^ 2 = charge ^ 2 + spin ^ 2 * Real.cos polar ^ 2 := by
+      mass ^ (2 : ℕ) = charge ^ (2 : ℕ) + spin ^ (2 : ℕ) * Real.cos polar ^ (2 : ℕ) := by
   rw [kerrNewmanStationaryLimitPolynomial_completeSquare]
   constructor <;> intro h <;> nlinarith
 
@@ -80,7 +80,7 @@ theorem kerrNewmanStationaryLimitPolynomial_axis
 theorem kerrNewmanStationaryLimitPolynomial_axis_at_mass_zero_iff_extremal
     (mass spin charge : ℝ) :
     kerrNewmanStationaryLimitPolynomial mass spin charge mass 0 = 0 ↔
-      mass ^ 2 = spin ^ 2 + charge ^ 2 := by
+      mass ^ (2 : ℕ) = spin ^ (2 : ℕ) + charge ^ (2 : ℕ) := by
   rw [kerrNewmanStationaryLimitPolynomial_axis,
     kerrNewmanDelta_at_mass_zero_iff_extremal]
 
@@ -88,9 +88,9 @@ theorem kerrNewmanStationaryLimitPolynomial_axis_at_mass_zero_iff_extremal
 term. -/
 theorem kerrNewmanStationaryLimit_discriminant_eq_horizonDiscriminant_add
     (mass spin charge polar : ℝ) :
-    mass ^ 2 - charge ^ 2 - spin ^ 2 * Real.cos polar ^ 2 =
-      (mass ^ 2 - spin ^ 2 - charge ^ 2) + spin ^ 2 * Real.sin polar ^ 2 := by
-  have htrig : Real.sin polar ^ 2 = 1 - Real.cos polar ^ 2 := by
+    mass ^ (2 : ℕ) - charge ^ (2 : ℕ) - spin ^ (2 : ℕ) * Real.cos polar ^ (2 : ℕ) =
+      (mass ^ (2 : ℕ) - spin ^ (2 : ℕ) - charge ^ (2 : ℕ)) + spin ^ (2 : ℕ) * Real.sin polar ^ (2 : ℕ) := by
+  have htrig : Real.sin polar ^ (2 : ℕ) = 1 - Real.cos polar ^ (2 : ℕ) := by
     nlinarith [Real.sin_sq_add_cos_sq polar]
   rw [htrig]
   ring
@@ -99,8 +99,8 @@ theorem kerrNewmanStationaryLimit_discriminant_eq_horizonDiscriminant_add
 discriminant. -/
 theorem kerrNewmanStationaryLimit_discriminant_ge_horizonDiscriminant
     (mass spin charge polar : ℝ) :
-    mass ^ 2 - spin ^ 2 - charge ^ 2 ≤
-      mass ^ 2 - charge ^ 2 - spin ^ 2 * Real.cos polar ^ 2 := by
+    mass ^ (2 : ℕ) - spin ^ (2 : ℕ) - charge ^ (2 : ℕ) ≤
+      mass ^ (2 : ℕ) - charge ^ (2 : ℕ) - spin ^ (2 : ℕ) * Real.cos polar ^ (2 : ℕ) := by
   rw [kerrNewmanStationaryLimit_discriminant_eq_horizonDiscriminant_add]
   exact le_add_of_nonneg_right (mul_nonneg (sq_nonneg spin) (sq_nonneg (Real.sin polar)))
 

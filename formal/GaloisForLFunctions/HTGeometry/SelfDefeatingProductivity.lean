@@ -58,7 +58,7 @@ theorem procA_line_mu {κ : ℚ} (h : κ + 1 ≠ 0) :
 /-- Its excess over the pair's own exponent. -/
 theorem procA_line_excess {κ : ℚ} (h : κ + 1 ≠ 0) :
     epMu (procA_fst κ) (procA_snd κ (κ + 1 / 2)) - κ
-      = (1 - 4 * κ - 8 * κ ^ 2) / (8 * κ + 8) := by
+      = (1 - 4 * κ - 8 * κ ^ (2 : ℕ)) / (8 * κ + 8) := by
   have h2 : 8 * κ + 8 ≠ 0 := by intro hc; apply h; linarith
   rw [procA_line_mu h]
   field_simp
@@ -67,7 +67,7 @@ theorem procA_line_excess {κ : ℚ} (h : κ + 1 ≠ 0) :
 /-! ### Efficiency and productivity threshold -/
 
 /-- The self-efficiency of the `A`-process at a line pair. -/
-def lineSelfEfficiency (κ : ℚ) : ℚ := 2 / (1 - 4 * κ - 8 * κ ^ 2)
+def lineSelfEfficiency (κ : ℚ) : ℚ := 2 / (1 - 4 * κ - 8 * κ ^ (2 : ℕ))
 
 /-- The productivity threshold of the `A`-process at a line pair. -/
 def aProductivityThreshold (κ : ℚ) : ℚ := 2 * κ * (1 + 2 * κ)
@@ -104,7 +104,7 @@ theorem aProductivityThreshold_strictMono {κ κ' : ℚ} (h0 : 0 ≤ κ) (h : κ
 /-- **The threshold reaches the critical length exactly at the stationarity threshold of the
 `A`-process for the pointwise exponent.** -/
 theorem threshold_reaches_critical_iff (κ : ℚ) :
-    aProductivityThreshold κ = 1 / 2 ↔ 8 * κ ^ 2 + 4 * κ - 1 = 0 := by
+    aProductivityThreshold κ = 1 / 2 ↔ 8 * κ ^ (2 : ℕ) + 4 * κ - 1 = 0 := by
   unfold aProductivityThreshold
   constructor <;> intro h <;> nlinarith
 
@@ -143,23 +143,23 @@ def handoffCrossingSq : ℚ := 1155
 
 /-- **The crossing point satisfies `(84κ + 21)² = 1155`.**  Equivalently `κ = (√1155 - 21)/84`. -/
 theorem handoff_crossing_equation (κ : ℚ) :
-    aProductivityThreshold κ = decouplingStart ↔ (84 * κ + 21) ^ 2 = handoffCrossingSq := by
+    aProductivityThreshold κ = decouplingStart ↔ (84 * κ + 21) ^ (2 : ℕ) = handoffCrossingSq := by
   unfold aProductivityThreshold decouplingStart handoffCrossingSq
   constructor <;> intro h <;> nlinarith
 
 /-- **`1155 = 34² - 1`**, so the crossing point is strictly below the record `13/84`. -/
-theorem crossing_below_record : handoffCrossingSq = 34 ^ 2 - 1 := by
+theorem crossing_below_record : handoffCrossingSq = 34 ^ (2 : ℕ) - 1 := by
   unfold handoffCrossingSq; norm_num
 
 /-- The record's own value of `(84κ + 21)²` is `34² = 1156`, one more than the crossing value. -/
 theorem record_exceeds_crossing :
-    (84 * bourgainKappa + 21) ^ 2 = handoffCrossingSq + 1 := by
+    (84 * bourgainKappa + 21) ^ (2 : ℕ) = handoffCrossingSq + 1 := by
   unfold bourgainKappa handoffCrossingSq; norm_num
 
 /-- **The covering floor's value of `(84κ + 21)²` is below the crossing value**, so the crossing point
 lies strictly between the covering floor and the record. -/
 theorem covering_floor_below_crossing :
-    (84 * (277 / 1792 : ℚ) + 21) ^ 2 < handoffCrossingSq := by
+    (84 * (277 / 1792 : ℚ) + 21) ^ (2 : ℕ) < handoffCrossingSq := by
   unfold handoffCrossingSq; norm_num
 
 /-- **The productive range at the record still exceeds the handoff length, by `1/1764`; at the
@@ -176,7 +176,7 @@ theorem productivity_vs_handoff :
 the exponent-pair machinery unproductive on the whole covered range: the architecture would have to be
 rebuilt, not merely re-tuned. -/
 theorem next_improvement_breaks_architecture {κ : ℚ}
-    (h : (84 * κ + 21) ^ 2 < handoffCrossingSq) :
+    (h : (84 * κ + 21) ^ (2 : ℕ) < handoffCrossingSq) :
     aProductivityThreshold κ < decouplingStart := by
   unfold aProductivityThreshold decouplingStart
   unfold handoffCrossingSq at h

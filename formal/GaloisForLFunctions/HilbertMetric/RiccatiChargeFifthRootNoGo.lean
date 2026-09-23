@@ -28,12 +28,12 @@ def sexticGaussianRiccatiCharge (t : ℝ) : ℝ :=
       sexticGaussianActionThree t)
 
 private theorem sexticGaussianRiccatiChargeDerivativeCore_pos (t : ℝ) :
-    0 < 2 * sexticGaussianActionTwo t ^ 2 +
-      4 * sexticGaussianActionOne t ^ 2 * sexticGaussianActionTwo t -
+    0 < 2 * sexticGaussianActionTwo t ^ (2 : ℕ) +
+      4 * sexticGaussianActionOne t ^ (2 : ℕ) * sexticGaussianActionTwo t -
       sexticGaussianActionFour t := by
-  let x : ℝ := t ^ 2
-  let a : ℝ := 4 + 4 / 5 * x + 6 * x ^ 2
-  let b : ℝ := 4 + 12 / 5 * x + 30 * x ^ 2
+  let x : ℝ := t ^ (2 : ℕ)
+  let a : ℝ := 4 + 4 / 5 * x + 6 * x ^ (2 : ℕ)
+  let b : ℝ := 4 + 12 / 5 * x + 30 * x ^ (2 : ℕ)
   have hx : 0 ≤ x := by
     dsimp [x]
     positivity
@@ -43,35 +43,35 @@ private theorem sexticGaussianRiccatiChargeDerivativeCore_pos (t : ℝ) :
   have hb : 4 ≤ b := by
     dsimp [b]
     nlinarith [sq_nonneg x]
-  have haSq : 16 ≤ a ^ 2 := by nlinarith [sq_nonneg (a - 4)]
-  have hab : 64 ≤ a ^ 2 * b := by
+  have haSq : 16 ≤ a ^ (2 : ℕ) := by nlinarith [sq_nonneg (a - 4)]
+  have hab : 64 ≤ a ^ (2 : ℕ) * b := by
     have h₁ : 64 ≤ 16 * b := by nlinarith
-    have h₂ : 16 * b ≤ a ^ 2 * b :=
+    have h₂ : 16 * b ≤ a ^ (2 : ℕ) * b :=
       mul_le_mul_of_nonneg_right haSq (by positivity)
     linarith
-  have hlarge : 256 * x ≤ 4 * x * a ^ 2 * b := by
+  have hlarge : 256 * x ≤ 4 * x * a ^ (2 : ℕ) * b := by
     have := mul_le_mul_of_nonneg_left hab (by positivity : 0 ≤ 4 * x)
     nlinarith
   have hquad :
-      0 < 136 / 5 - 328 / 5 * x + 12288 / 25 * x ^ 2 := by
+      0 < 136 / 5 - 328 / 5 * x + 12288 / 25 * x ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (x - (205 / 3072 : ℝ))]
   have hbase :
-      0 < 136 / 5 - 1608 / 5 * x + 12288 / 25 * x ^ 2 +
-          288 * x ^ 3 + 1800 * x ^ 4 + 256 * x := by
-    have hx3 : 0 ≤ x ^ 3 := by positivity
-    have hx4 : 0 ≤ x ^ 4 := by positivity
+      0 < 136 / 5 - 1608 / 5 * x + 12288 / 25 * x ^ (2 : ℕ) +
+          288 * x ^ (3 : ℕ) + 1800 * x ^ (4 : ℕ) + 256 * x := by
+    have hx3 : 0 ≤ x ^ (3 : ℕ) := by positivity
+    have hx4 : 0 ≤ x ^ (4 : ℕ) := by positivity
     nlinarith
   have hcore :
       0 <
-        (136 / 5 - 1608 / 5 * x + 12288 / 25 * x ^ 2 +
-          288 * x ^ 3 + 1800 * x ^ 4) + 4 * x * a ^ 2 * b := by
+        (136 / 5 - 1608 / 5 * x + 12288 / 25 * x ^ (2 : ℕ) +
+          288 * x ^ (3 : ℕ) + 1800 * x ^ (4 : ℕ)) + 4 * x * a ^ (2 : ℕ) * b := by
     nlinarith
   have hidentity :
-      2 * sexticGaussianActionTwo t ^ 2 +
-          4 * sexticGaussianActionOne t ^ 2 * sexticGaussianActionTwo t -
+      2 * sexticGaussianActionTwo t ^ (2 : ℕ) +
+          4 * sexticGaussianActionOne t ^ (2 : ℕ) * sexticGaussianActionTwo t -
           sexticGaussianActionFour t =
-        (136 / 5 - 1608 / 5 * x + 12288 / 25 * x ^ 2 +
-          288 * x ^ 3 + 1800 * x ^ 4) + 4 * x * a ^ 2 * b := by
+        (136 / 5 - 1608 / 5 * x + 12288 / 25 * x ^ (2 : ℕ) +
+          288 * x ^ (3 : ℕ) + 1800 * x ^ (4 : ℕ)) + 4 * x * a ^ (2 : ℕ) * b := by
     dsimp [x, a, b]
     unfold sexticGaussianActionOne sexticGaussianActionTwo
       sexticGaussianActionFour
@@ -83,8 +83,8 @@ private theorem sexticGaussianRiccatiChargeDerivativeCore_pos (t : ℝ) :
 theorem hasDerivAt_sexticGaussianRiccatiCharge (t : ℝ) :
     HasDerivAt sexticGaussianRiccatiCharge
       (Real.exp (2 * sexticGaussianAction t) *
-        (2 * sexticGaussianActionTwo t ^ 2 +
-          4 * sexticGaussianActionOne t ^ 2 * sexticGaussianActionTwo t -
+        (2 * sexticGaussianActionTwo t ^ (2 : ℕ) +
+          4 * sexticGaussianActionOne t ^ (2 : ℕ) * sexticGaussianActionTwo t -
           sexticGaussianActionFour t)) t := by
   have hExp := ((hasDerivAt_sexticGaussianAction t).const_mul 2).exp
   have hMarginRaw :=

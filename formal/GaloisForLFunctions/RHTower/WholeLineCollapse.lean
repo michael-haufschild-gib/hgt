@@ -59,23 +59,23 @@ theorem multiplier_ineq_pointwise {p q : ℝ → ℝ} :
 /-- **The zero term is positive on the critical line.**  With `β = 1/2` the term at abscissa
 `1/2 + ε` has numerator `ε > 0`. -/
 theorem zero_term_pos {ε d : ℝ} (hε : 0 < ε) :
-    0 < ε / (ε ^ 2 + d ^ 2) := by
+    0 < ε / (ε ^ (2 : ℕ) + d ^ (2 : ℕ)) := by
   apply div_pos hε
   positivity
 
 /-- **The zero term reverses off the line.**  A zero at abscissa `1/2 + a` with `a > ε` contributes a
 term with negative numerator. -/
 theorem zero_term_neg {ε a d : ℝ} (hεa : ε < a) :
-    (ε - a) / ((ε - a) ^ 2 + d ^ 2) ≤ 0 := by
+    (ε - a) / ((ε - a) ^ (2 : ℕ) + d ^ (2 : ℕ)) ≤ 0 := by
   apply div_nonpos_of_nonpos_of_nonneg (by linarith)
   positivity
 
 /-- **And it blows up at the ordinate.**  At `d = 0` the term is `1/(ε - a)`, whose modulus tends to
 infinity as `ε` rises to `a`. -/
 theorem zero_term_blowup {ε a : ℝ} (hεa : ε < a) :
-    (ε - a) / ((ε - a) ^ 2 + 0 ^ 2) = 1 / (ε - a) := by
+    (ε - a) / ((ε - a) ^ (2 : ℕ) + 0 ^ (2 : ℕ)) = 1 / (ε - a) := by
   have hne : ε - a ≠ 0 := by intro h; linarith [sub_eq_zero.mp h]
-  rw [show (0:ℝ) ^ 2 = 0 by ring, add_zero]
+  rw [show (0:ℝ) ^ (2 : ℕ) = 0 by ring, add_zero]
   field_simp
 
 /-- The blow-up is quantitative: the modulus exceeds any bound once `ε` is close enough to `a`. -/

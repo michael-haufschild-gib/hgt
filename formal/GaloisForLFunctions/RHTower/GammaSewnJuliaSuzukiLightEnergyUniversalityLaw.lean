@@ -33,7 +33,7 @@ theorem suzukiEndpoint_mul_juliaGain_eq_scale_mul_juliaDefectSq
     suzukiCriticalEntryWallEndpointAmplitude h a p 0 *
         gammaSewnJuliaSuzukiDefectGain h a p =
       gammaSewnJuliaSuzukiSourceScale h p *
-        gammaSewnMobiusJuliaDefect ((h / 2) * a) p ^ 2 := by
+        gammaSewnMobiusJuliaDefect ((h / 2) * a) p ^ (2 : ℕ) := by
   rw [suzukiCriticalEntryWallEndpointAmplitude_zero_eq_coherentWeight,
     gammaSewnMobiusJuliaDefect_sq_eq_aperture_sq_mul_gain
       (mul_nonneg (div_nonneg hh.le (by norm_num)) ha.le)]
@@ -48,10 +48,10 @@ theorem gammaSewnJulia_suzukiLightEnergyUniversality
     (t : ℝ) (p : Nat.Primes) :
     (suzukiCriticalApertureNegativeLightDepthEnergy h a t hh ha p +
         suzukiCriticalAperturePositiveLightDepthEnergy h a t hh ha p) *
-        gammaSewnJuliaSuzukiDefectGain h a p ^ 2 =
+        gammaSewnJuliaSuzukiDefectGain h a p ^ (2 : ℕ) =
       (gammaSewnJuliaSuzukiSourceScale h p *
-          gammaSewnMobiusJuliaDefect ((h / 2) * a) p ^ 2) ^ 2 /
-        (1 - suzukiCriticalApertureDepthFusionRadius h a p ^ 2) ∧
+          gammaSewnMobiusJuliaDefect ((h / 2) * a) p ^ (2 : ℕ)) ^ (2 : ℕ) /
+        (1 - suzukiCriticalApertureDepthFusionRadius h a p ^ (2 : ℕ)) ∧
       0 < suzukiCriticalApertureNegativeLightDepthEnergy h a t hh ha p ∧
       0 < suzukiCriticalAperturePositiveLightDepthEnergy h a t hh ha p := by
   refine ⟨?_,

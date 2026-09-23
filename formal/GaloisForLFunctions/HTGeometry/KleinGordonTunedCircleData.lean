@@ -40,11 +40,11 @@ theorem norm_kgTunedPhase (c t : ℝ) : ‖kgTunedPhase c t‖ = 1 := by
 
 set_option maxHeartbeats 1000000 in
 /-- **The tuned clock started from the complex datum acquires a phase.** -/
-theorem kgShiftedField_kgTunedPot_circle (hc0 : 0 < c) (hc1 : 1 ≤ c ^ 2)
+theorem kgShiftedField_kgTunedPot_circle (hc0 : 0 < c) (hc1 : 1 ≤ c ^ (2 : ℕ))
     (x : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
-    kgShiftedField (measurable_kgTunedPot (E := E) b c) (Real.sqrt (c ^ 2 - 1 + b)) x
+    kgShiftedField (measurable_kgTunedPot (E := E) b c) (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x
         ((-(Complex.I * (c : ℂ))) • x) t
-      = kgTunedPhase c t • kgLowPassOp (Real.sqrt (c ^ 2 - 1 + b)) x := by
+      = kgTunedPhase c t • kgLowPassOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x := by
   have hcne : (c : ℂ) ≠ 0 := by
     simpa using ne_of_gt hc0
   rw [kgShiftedField_kgTunedPot hc0 hc1, map_smul, smul_smul, kgTunedPhase, ← add_smul]
@@ -56,12 +56,12 @@ theorem kgShiftedField_kgTunedPot_circle (hc0 : 0 < c) (hc1 : 1 ≤ c ^ 2)
 set_option maxHeartbeats 1000000 in
 /-- **So does its velocity.** -/
 theorem kgShiftedVel_kgTunedPot_circle (hb0 : 0 ≤ b) (hb1 : b < 1) (hc0 : 0 < c)
-    (hc1 : 1 ≤ c ^ 2) (hcb : c ^ 2 ≤ 1 + b) (x : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
+    (hc1 : 1 ≤ c ^ (2 : ℕ)) (hcb : c ^ (2 : ℕ) ≤ 1 + b) (x : Lp ℂ 2 (volume : Measure E)) (t : ℝ) :
     kgShiftedVel (measurable_kgTunedPot (E := E) b c) hb0 hb1
-        (abs_kgTunedPot_le hb0 hc1 hcb) (Real.sqrt (c ^ 2 - 1 + b)) x
+        (abs_kgTunedPot_le hb0 hc1 hcb) (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x
         ((-(Complex.I * (c : ℂ))) • x) t
       = kgTunedPhase c t
-        • ((-(Complex.I * (c : ℂ))) • kgLowPassOp (Real.sqrt (c ^ 2 - 1 + b)) x) := by
+        • ((-(Complex.I * (c : ℂ))) • kgLowPassOp (Real.sqrt (c ^ (2 : ℕ) - 1 + b)) x) := by
   rw [kgShiftedVel_kgTunedPot hb0 hb1 hc0 hc1 hcb, map_smul, smul_smul, smul_smul,
     kgTunedPhase, ← neg_smul, ← add_smul]
   congr 1

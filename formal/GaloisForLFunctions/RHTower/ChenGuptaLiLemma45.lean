@@ -23,7 +23,7 @@ theorem cglLemma45_literalEpsilon_expansion_and_zeroBound
     (S : CGLLemma45LiteralEpsilonSourcePacket P N) (w : CGLRealSmoothBump) :
     cglCharacterDyadicWeightedGramCubicTrace N.value (q + 1) R
         (cglSmoothBumpDyadicWeight w.toCGLSmoothBump N) (cglLemma45FibreRows P) =
-      (R : ℂ) * cglLemma45DiagonalPoissonMass w N (cglLemma45FibreModulus q) ^ 3 +
+      (R : ℂ) * cglLemma45DiagonalPoissonMass w N (cglLemma45FibreModulus q) ^ (3 : ℕ) +
         cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R
           (cglLemma45FibreRows P) 0 +
         ∑' m : {m : (ℤ × ℤ) × ℤ // m ∉ ({0} : Finset ((ℤ × ℤ) × ℤ))},
@@ -35,7 +35,7 @@ theorem cglLemma45_literalEpsilon_expansion_and_zeroBound
         (S.epsilonDenominator * 115) *
         cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0 *
         cglLogFourierAmplitudeAllOrderBudget w.toCGLSmoothBump 0) /
-          S.base ^ 100 := by
+          S.base ^ (100 : ℕ) := by
   constructor
   · exact cglLemma45_cubicTrace_eq_diagonal_add_zeroOffDiagonal_add_nonzero w N
       (cglLemma45FibreModulus q) R (cglLemma45FibreRows P)

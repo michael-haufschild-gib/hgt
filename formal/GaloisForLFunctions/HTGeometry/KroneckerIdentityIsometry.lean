@@ -35,10 +35,10 @@ def euclideanAncillaEmbed (a : n) :
       (fun p => if p.2 = a then x.ofLp p.1 else 0)‖ = ‖x‖
     apply (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
     rw [norm_sq_euclideanOfFun]
-    change (∑ p : d × n, ‖if p.2 = a then x.ofLp p.1 else 0‖ ^ 2) = ‖x‖ ^ 2
+    change (∑ p : d × n, ‖if p.2 = a then x.ofLp p.1 else 0‖ ^ (2 : ℕ)) = ‖x‖ ^ (2 : ℕ)
     rw [Fintype.sum_prod_type]
     have hinner : ∀ i : d,
-        (∑ b : n, ‖if b = a then x.ofLp i else 0‖ ^ 2) = ‖x.ofLp i‖ ^ 2 := by
+        (∑ b : n, ‖if b = a then x.ofLp i else 0‖ ^ (2 : ℕ)) = ‖x.ofLp i‖ ^ (2 : ℕ) := by
       intro i
       rw [Finset.sum_eq_single a]
       · simp

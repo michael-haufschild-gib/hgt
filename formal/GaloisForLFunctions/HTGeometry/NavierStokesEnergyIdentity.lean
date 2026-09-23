@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.HTGeometry.NavierStokesEnergyIdentity
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 /-- Half the squared Hilbert norm, matching the kinetic-energy normalization in (7.22). -/
-def kineticEnergy (u : E) : ℝ := ‖u‖ ^ 2 / 2
+def kineticEnergy (u : E) : ℝ := ‖u‖ ^ (2 : ℕ) / 2
 
 /-- The chain rule `d(‖u‖²/2)/dt = ⟨u,u'⟩`. -/
 theorem hasDerivAt_kineticEnergy {u : ℝ → E} {u' : E} {t : ℝ}
@@ -35,7 +35,7 @@ theorem hasDerivAt_kineticEnergy_of_damped_mode
     (hode : u' = forcing - d • u t)
     (htransfer : inner ℝ (u t) forcing = -transfer) :
     HasDerivAt (fun s => kineticEnergy (u s))
-      (-transfer - d * ‖u t‖ ^ 2) t := by
+      (-transfer - d * ‖u t‖ ^ (2 : ℕ)) t := by
   convert hasDerivAt_kineticEnergy hu using 1
   rw [hode, inner_sub_right, inner_smul_right, htransfer,
     real_inner_self_eq_norm_sq]
@@ -50,7 +50,7 @@ theorem kineticEnergy_deriv_nonpos_of_damped_mode
     (hd : 0 ≤ d) (htransfer_nonneg : 0 ≤ transfer) :
     deriv (fun s => kineticEnergy (u s)) t ≤ 0 := by
   rw [(hasDerivAt_kineticEnergy_of_damped_mode hu hode htransfer).deriv]
-  have hdis : 0 ≤ d * ‖u t‖ ^ 2 := mul_nonneg hd (sq_nonneg _)
+  have hdis : 0 ≤ d * ‖u t‖ ^ (2 : ℕ) := mul_nonneg hd (sq_nonneg _)
   linarith
 
 end GaloisForLFunctions.HTGeometry.NavierStokesEnergyIdentity

@@ -168,32 +168,32 @@ theorem abs_mSym_le (ξ : ℝ) : |mSym ξ| ≤ 2 * (1 + Real.cosh (1 / 2)) := by
 
 /-- `1 − cos θ ≥ 2θ²/π²` for `|θ| ≤ π`. -/
 theorem one_sub_cos_ge {θ : ℝ} (hθ : |θ| ≤ Real.pi) :
-    2 * θ ^ 2 / Real.pi ^ 2 ≤ 1 - Real.cos θ := by
-  have hcos : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ 2 := by
+    2 * θ ^ (2 : ℕ) / Real.pi ^ (2 : ℕ) ≤ 1 - Real.cos θ := by
+  have hcos : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ (2 : ℕ) := by
     have h := Real.cos_two_mul (θ / 2)
     rw [show 2 * (θ / 2) = θ by ring] at h
     rw [h, Real.cos_sq']
     ring
   have hsin : 2 / Real.pi * (|θ| / 2) ≤ Real.sin (|θ| / 2) :=
     Real.mul_le_sin (by positivity) (by linarith)
-  have hsq : Real.sin (θ / 2) ^ 2 = Real.sin (|θ| / 2) ^ 2 := by
+  have hsq : Real.sin (θ / 2) ^ (2 : ℕ) = Real.sin (|θ| / 2) ^ (2 : ℕ) := by
     rcases le_or_gt 0 θ with h | h
     · rw [abs_of_nonneg h]
     · rw [abs_of_neg h, show -θ / 2 = -(θ / 2) by ring, Real.sin_neg, neg_sq]
   have hpi : 0 < Real.pi := Real.pi_pos
   have hnn : 0 ≤ 2 / Real.pi * (|θ| / 2) := by positivity
-  have hsq' : (2 / Real.pi * (|θ| / 2)) ^ 2 ≤ Real.sin (|θ| / 2) ^ 2 :=
+  have hsq' : (2 / Real.pi * (|θ| / 2)) ^ (2 : ℕ) ≤ Real.sin (|θ| / 2) ^ (2 : ℕ) :=
     pow_le_pow_left₀ hnn hsin 2
   rw [hcos, hsq]
   have h1 : 2 / Real.pi * (|θ| / 2) = |θ| / Real.pi := by field_simp
-  have this : (2 / Real.pi * (|θ| / 2)) ^ 2 = θ ^ 2 / Real.pi ^ 2 := by
+  have this : (2 / Real.pi * (|θ| / 2)) ^ (2 : ℕ) = θ ^ (2 : ℕ) / Real.pi ^ (2 : ℕ) := by
     rw [h1, div_pow, sq_abs]
-  have h2 : 2 * θ ^ 2 / Real.pi ^ 2 = 2 * (θ ^ 2 / Real.pi ^ 2) := by ring
+  have h2 : 2 * θ ^ (2 : ℕ) / Real.pi ^ (2 : ℕ) = 2 * (θ ^ (2 : ℕ) / Real.pi ^ (2 : ℕ)) := by ring
   rw [h2]
   linarith
 
 theorem mSym_sq_ge {ξ : ℝ} (hξ : |ξ| ≤ 1 / 2) :
-    64 * (Real.cosh (1 / 2) - 1) ^ 2 * ξ ^ 4 ≤ mSym ξ ^ 2 := by
+    64 * (Real.cosh (1 / 2) - 1) ^ (2 : ℕ) * ξ ^ (4 : ℕ) ≤ mSym ξ ^ (2 : ℕ) := by
   unfold mSym
   have hθ : |2 * Real.pi * ξ| ≤ Real.pi := by
     rw [abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 * Real.pi)]
@@ -201,22 +201,22 @@ theorem mSym_sq_ge {ξ : ℝ} (hξ : |ξ| ≤ 1 / 2) :
   have hcos := one_sub_cos_ge hθ
   have hcosh : 1 < Real.cosh (1 / 2) := Real.one_lt_cosh.mpr (by norm_num)
   have hc2 := Real.cos_le_one (2 * Real.pi * ξ)
-  have hA : 8 * ξ ^ 2 ≤ 1 - Real.cos (2 * Real.pi * ξ) := by
-    have : 2 * (2 * Real.pi * ξ) ^ 2 / Real.pi ^ 2 = 8 * ξ ^ 2 := by
+  have hA : 8 * ξ ^ (2 : ℕ) ≤ 1 - Real.cos (2 * Real.pi * ξ) := by
+    have : 2 * (2 * Real.pi * ξ) ^ (2 : ℕ) / Real.pi ^ (2 : ℕ) = 8 * ξ ^ (2 : ℕ) := by
       field_simp
       ring
     linarith
   have hB : Real.cosh (1 / 2) - 1 ≤ Real.cosh (1 / 2) - Real.cos (2 * Real.pi * ξ) := by linarith
-  have hA0 : 0 ≤ 8 * ξ ^ 2 := by positivity
+  have hA0 : 0 ≤ 8 * ξ ^ (2 : ℕ) := by positivity
   have hB0 : 0 ≤ Real.cosh (1 / 2) - 1 := by linarith
-  have hprod : (8 * ξ ^ 2) * (Real.cosh (1 / 2) - 1) ≤
+  have hprod : (8 * ξ ^ (2 : ℕ)) * (Real.cosh (1 / 2) - 1) ≤
       (1 - Real.cos (2 * Real.pi * ξ)) * (Real.cosh (1 / 2) - Real.cos (2 * Real.pi * ξ)) :=
     mul_le_mul hA hB hB0 (by linarith)
-  have hsq : ((Real.cos (2 * Real.pi * ξ) - 1) * (Real.cos (2 * Real.pi * ξ) - Real.cosh (1 / 2))) ^ 2 =
-      ((1 - Real.cos (2 * Real.pi * ξ)) * (Real.cosh (1 / 2) - Real.cos (2 * Real.pi * ξ))) ^ 2 := by
+  have hsq : ((Real.cos (2 * Real.pi * ξ) - 1) * (Real.cos (2 * Real.pi * ξ) - Real.cosh (1 / 2))) ^ (2 : ℕ) =
+      ((1 - Real.cos (2 * Real.pi * ξ)) * (Real.cosh (1 / 2) - Real.cos (2 * Real.pi * ξ))) ^ (2 : ℕ) := by
     ring
   rw [hsq]
-  have hlhs : 64 * (Real.cosh (1 / 2) - 1) ^ 2 * ξ ^ 4 = ((8 * ξ ^ 2) * (Real.cosh (1 / 2) - 1)) ^ 2 := by
+  have hlhs : 64 * (Real.cosh (1 / 2) - 1) ^ (2 : ℕ) * ξ ^ (4 : ℕ) = ((8 * ξ ^ (2 : ℕ)) * (Real.cosh (1 / 2) - 1)) ^ (2 : ℕ) := by
     ring
   rw [hlhs]
   exact pow_le_pow_left₀ (mul_nonneg hA0 hB0) hprod 2
@@ -224,11 +224,11 @@ theorem mSym_sq_ge {ξ : ℝ} (hξ : |ξ| ≤ 1 / 2) :
 /-! ## Bounds on the transform of the base kernel -/
 
 /-- Decay constant of the base kernel transform. -/
-def kappaTwo : ℝ := Real.exp (1 / 5) * (1081 / 780) ^ 3 / (2 * Real.pi) ^ 3
+def kappaTwo : ℝ := Real.exp (1 / 5) * (1081 / 780) ^ (3 : ℕ) / (2 * Real.pi) ^ (3 : ℕ)
 
 theorem kappaTwo_pos : 0 < kappaTwo := by unfold kappaTwo; positivity
 
-theorem norm_fourier_phiTwoC_le {η : ℝ} (hη : η ≠ 0) : ‖𝓕 phiTwoC η‖ ≤ kappaTwo / |η| ^ 3 := by
+theorem norm_fourier_phiTwoC_le {η : ℝ} (hη : η ≠ 0) : ‖𝓕 phiTwoC η‖ ≤ kappaTwo / |η| ^ (3 : ℕ) := by
   rw [fourier_eq_paperFT]
   have hz : (-(2 * Real.pi * η) : ℂ) ≠ 0 := by
     have : (2 * Real.pi * η) ≠ 0 := by positivity

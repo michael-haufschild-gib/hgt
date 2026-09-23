@@ -239,7 +239,7 @@ theorem tendsto_suzukiDyadicReciprocalSecant
     {F : ℂ → ℂ} {d : ℂ} (hF : HasDerivAt F d 0) (hzero : F 0 ≠ 0) :
     Tendsto (fun epsilon : ℂ =>
       ((F (epsilon / 2))⁻¹ - (F epsilon)⁻¹) / epsilon)
-      (nhdsWithin 0 ({0} : Set ℂ)ᶜ) (𝓝 (d / (2 * (F 0) ^ 2))) := by
+      (nhdsWithin 0 ({0} : Set ℂ)ᶜ) (𝓝 (d / (2 * (F 0) ^ (2 : ℕ)))) := by
   have harg : HasDerivAt (fun epsilon : ℂ => epsilon / 2) (1 / 2) 0 := by
     simpa using (hasDerivAt_id (𝕜 := ℂ) 0).div_const 2
   have hFzero : HasDerivAt F d ((0 : ℂ) / 2) := by
@@ -251,17 +251,17 @@ theorem tendsto_suzukiDyadicReciprocalSecant
   have hInv := hF.inv hzero
   have hhalfInv' : HasDerivAt
       (fun epsilon : ℂ => (F (epsilon / 2))⁻¹)
-      (-(d / 2) / (F 0) ^ 2) 0 := by
+      (-(d / 2) / (F 0) ^ (2 : ℕ)) 0 := by
     have hhalfInv'' := hhalfInv.congr_deriv
-      (g' := -(d / 2) / (F 0) ^ 2) (by norm_num)
+      (g' := -(d / 2) / (F 0) ^ (2 : ℕ)) (by norm_num)
     exact hhalfInv''.congr_of_eventuallyEq
       (Eventually.of_forall fun _ => rfl)
   have hdiff : HasDerivAt
       (fun epsilon : ℂ => (F (epsilon / 2))⁻¹ - (F epsilon)⁻¹)
-      (d / (2 * (F 0) ^ 2)) 0 := by
+      (d / (2 * (F 0) ^ (2 : ℕ))) 0 := by
     have hraw := hhalfInv'.sub hInv
     have hraw' := hraw.congr_deriv
-      (g' := d / (2 * (F 0) ^ 2)) (by
+      (g' := d / (2 * (F 0) ^ (2 : ℕ))) (by
         field_simp [hzero]
         ring)
     exact hraw'.congr_of_eventuallyEq
@@ -365,7 +365,7 @@ theorem IsOddSourceMoments.zeroth {s : ℕ → ℝ} (h : IsOddSourceMoments s) :
 /-- The moment functional of a constant polynomial is that constant times the zeroth moment. -/
 theorem momentFunctional_C (s : ℕ → ℝ) (c : ℝ) :
     HTGeometry.momentFunctional s (Polynomial.C c) = c * s 0 := by
-  have hsmul : (Polynomial.C c : Polynomial ℝ) = c • (Polynomial.X : Polynomial ℝ) ^ 0 := by
+  have hsmul : (Polynomial.C c : Polynomial ℝ) = c • (Polynomial.X : Polynomial ℝ) ^ (0 : ℕ) := by
     rw [pow_zero, Polynomial.smul_eq_C_mul, mul_one]
   rw [hsmul, HTGeometry.momentFunctional_smul, HTGeometry.momentFunctional_X_pow]
 
@@ -382,7 +382,7 @@ theorem momentFunctional_neumannResponseDifference {s : ℕ → ℝ}
     congr 1
     ring
   have hsplit : (Polynomial.C (2⁻¹ : ℝ) * (Polynomial.X - Polynomial.C x) : Polynomial ℝ)
-      = (2⁻¹ : ℝ) • (Polynomial.X : Polynomial ℝ) ^ 1 + Polynomial.C (-(x / 2)) := by
+      = (2⁻¹ : ℝ) • (Polynomial.X : Polynomial ℝ) ^ (1 : ℕ) + Polynomial.C (-(x / 2)) := by
     rw [pow_one, Polynomial.smul_eq_C_mul, mul_sub, hC, Polynomial.C_neg]
     ring
   rw [hsplit, HTGeometry.momentFunctional_add, HTGeometry.momentFunctional_smul,

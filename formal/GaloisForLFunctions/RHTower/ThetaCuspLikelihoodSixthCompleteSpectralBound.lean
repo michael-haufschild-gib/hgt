@@ -27,7 +27,7 @@ theorem thetaCuspSingleAtomScale_likelihoodCoordinate (x : ℝ) :
       thetaCuspSingleAtomReflectionScale 1 x - 3 / 2 := by
   unfold thetaCuspLikelihoodCoordinate thetaCuspSingleAtomReflectionScale
   norm_num
-  rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+  rw [show Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) by
     rw [show 2 * x = x + x by ring, Real.exp_add]
     ring]
 
@@ -85,7 +85,7 @@ theorem thetaCuspLikelihoodSixthScoreIntegral_le_completeEnvelope
         ∂thetaCuspHigherLikelihoodSpectralMeasure) ≤
       (16 * 50000 + 18 * (25 / 41 : ℝ) * 1000000) *
           Real.exp (-(471 / 50 : ℝ)) +
-        (10 / 999 : ℝ) * Real.pi ^ 6 := by
+        (10 / 999 : ℝ) * Real.pi ^ (6 : ℕ) := by
   let A := thetaCuspSingleAtomReflectionScale 1 x
   let B := thetaCuspLikelihoodCoordinate x
   have hA : Real.pi ≤ A := by
@@ -108,11 +108,11 @@ theorem thetaCuspLikelihoodSourceOrdinaryJetSix_le_completeEnvelope
     thetaCuspLikelihoodSourceOrdinaryJetSix x ≤
       64 * ((16 * 50000 + 18 * (25 / 41 : ℝ) * 1000000) *
           Real.exp (-(471 / 50 : ℝ)) +
-        (10 / 999 : ℝ) * Real.pi ^ 6) := by
+        (10 / 999 : ℝ) * Real.pi ^ (6 : ℕ)) := by
   let B := thetaCuspLikelihoodCoordinate x
   let P := thetaCuspLikelihoodPartition B
   let C := (16 * 50000 + 18 * (25 / 41 : ℝ) * 1000000) *
-      Real.exp (-(471 / 50 : ℝ)) + (10 / 999 : ℝ) * Real.pi ^ 6
+      Real.exp (-(471 / 50 : ℝ)) + (10 / 999 : ℝ) * Real.pi ^ (6 : ℕ)
   have hB : 0 < B := by simpa only [B] using thetaCuspLikelihoodCoordinate_pos hx
   have hP : 0 < P := by simpa only [P] using thetaCuspLikelihoodPartition_pos hB
   have hPone : 1 ≤ P := by
@@ -141,7 +141,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_completeEnvelope
       (26 / 25 : ℝ) * 64 *
         ((16 * 50000 + 18 * (25 / 41 : ℝ) * 1000000) *
             Real.exp (-(471 / 50 : ℝ)) +
-          (10 / 999 : ℝ) * Real.pi ^ 6) := by
+          (10 / 999 : ℝ) * Real.pi ^ (6 : ℕ)) := by
   have hordinary :=
     thetaCuspLikelihoodSourceOrdinaryJetSix_le_completeEnvelope hx
   have hscaled := mul_le_mul_of_nonneg_left hordinary

@@ -40,11 +40,11 @@ theorem error_eq_harmonic_add_mertens_increment {N n : ℕ} (hn : N < n) (hcap :
 
 /-- Literal weighted target error on N<n<=2N. -/
 def firstTailErrorEnergy (N : ℕ) : ℝ :=
-  ∑ n ∈ Finset.Ioc N (2*N), (1-bdMobiusModularApproximant N n)^2/((n : ℝ)*((n : ℝ)+1))
+  ∑ n ∈ Finset.Ioc N (2*N), (1-bdMobiusModularApproximant N n)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1))
 
 /-- Actual signed Mertens increments, squared only after subtraction at the cutoff. -/
 def incrementEnergy (N : ℕ) : ℝ :=
-  ∑ n ∈ Finset.Ioc N (2*N), (Sieve.mertensM n-Sieve.mertensM N)^2/((n : ℝ)*((n : ℝ)+1))
+  ∑ n ∈ Finset.Ioc N (2*N), (Sieve.mertensM n-Sieve.mertensM N)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1))
 
 /-- The signed interaction of the increment field with the harmonic defect. -/
 def incrementMoment (N : ℕ) : ℝ :=
@@ -120,7 +120,7 @@ theorem incrementMoment_eq_mobius_block_covariance (N : ℕ) :
 /-- Complete first-tail energy, with its signed cross term retained exactly. -/
 theorem firstTailErrorEnergy_eq (N : ℕ) :
     firstTailErrorEnergy N = incrementEnergy N + 2*deningerHarmonicPartial N*incrementMoment N +
-      deningerHarmonicPartial N^2*(∑ n ∈ Finset.Ioc N (2*N), (n : ℝ)/((n : ℝ)+1)) := by
+      deningerHarmonicPartial N^(2 : ℕ)*(∑ n ∈ Finset.Ioc N (2*N), (n : ℝ)/((n : ℝ)+1)) := by
   unfold firstTailErrorEnergy incrementEnergy incrementMoment
   rw [Finset.mul_sum,Finset.mul_sum,← Finset.sum_add_distrib,← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
@@ -132,9 +132,9 @@ theorem firstTailErrorEnergy_eq (N : ℕ) :
   ring
 
 private theorem harmonic_block_energy_le (N : ℕ) :
-    (∑ n ∈ Finset.Ioc N (2*N), ((n : ℝ)*deningerHarmonicPartial N)^2/((n : ℝ)*((n : ℝ)+1))) ≤
-      (N : ℝ)*deningerHarmonicPartial N^2 := by
-  calc _ ≤ ∑ n ∈ Finset.Ioc N (2*N), deningerHarmonicPartial N^2 := by
+    (∑ n ∈ Finset.Ioc N (2*N), ((n : ℝ)*deningerHarmonicPartial N)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1))) ≤
+      (N : ℝ)*deningerHarmonicPartial N^(2 : ℕ) := by
+  calc _ ≤ ∑ n ∈ Finset.Ioc N (2*N), deningerHarmonicPartial N^(2 : ℕ) := by
          apply Finset.sum_le_sum
          intro n hn
          have hn0 : (0 : ℝ) < n := by
@@ -145,11 +145,11 @@ private theorem harmonic_block_energy_le (N : ℕ) :
 
 /-- A first-tail upper bound retains both the harmonic defect and increment energy. -/
 theorem firstTailErrorEnergy_le (N : ℕ) :
-    firstTailErrorEnergy N ≤ 2*incrementEnergy N + 2*(N : ℝ)*deningerHarmonicPartial N^2 := by
+    firstTailErrorEnergy N ≤ 2*incrementEnergy N + 2*(N : ℝ)*deningerHarmonicPartial N^(2 : ℕ) := by
   have hpoint (n : ℕ) (hn : n ∈ Finset.Ioc N (2*N)) :
-      (1-bdMobiusModularApproximant N n)^2/((n : ℝ)*((n : ℝ)+1)) ≤
-      2*((Sieve.mertensM n-Sieve.mertensM N)^2/((n : ℝ)*((n : ℝ)+1))) +
-        2*(((n : ℝ)*deningerHarmonicPartial N)^2/((n : ℝ)*((n : ℝ)+1))) := by
+      (1-bdMobiusModularApproximant N n)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1)) ≤
+      2*((Sieve.mertensM n-Sieve.mertensM N)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1))) +
+        2*(((n : ℝ)*deningerHarmonicPartial N)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1))) := by
     obtain ⟨hNn,hnN⟩ := Finset.mem_Ioc.mp hn
     rw [error_eq_harmonic_add_mertens_increment hNn hnN]
     rw [← mul_div_assoc,← mul_div_assoc,← add_div]
@@ -161,11 +161,11 @@ theorem firstTailErrorEnergy_le (N : ℕ) :
 
 /-- The converse estimate exposes increment energy that the scalar initial defect cannot erase. -/
 theorem incrementEnergy_le (N : ℕ) :
-    incrementEnergy N ≤ 2*firstTailErrorEnergy N + 2*(N : ℝ)*deningerHarmonicPartial N^2 := by
+    incrementEnergy N ≤ 2*firstTailErrorEnergy N + 2*(N : ℝ)*deningerHarmonicPartial N^(2 : ℕ) := by
   have hpoint (n : ℕ) (hn : n ∈ Finset.Ioc N (2*N)) :
-      (Sieve.mertensM n-Sieve.mertensM N)^2/((n : ℝ)*((n : ℝ)+1)) ≤
-      2*((1-bdMobiusModularApproximant N n)^2/((n : ℝ)*((n : ℝ)+1))) +
-        2*(((n : ℝ)*deningerHarmonicPartial N)^2/((n : ℝ)*((n : ℝ)+1))) := by
+      (Sieve.mertensM n-Sieve.mertensM N)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1)) ≤
+      2*((1-bdMobiusModularApproximant N n)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1))) +
+        2*(((n : ℝ)*deningerHarmonicPartial N)^(2 : ℕ)/((n : ℝ)*((n : ℝ)+1))) := by
     obtain ⟨hNn,hnN⟩ := Finset.mem_Ioc.mp hn
     rw [error_eq_harmonic_add_mertens_increment hNn hnN]
     rw [← mul_div_assoc,← mul_div_assoc,← add_div]
@@ -192,7 +192,7 @@ theorem firstTailErrorEnergy_le_complementaryTail (N : ℕ) :
 /-- An unconditional lower obstruction inside the full complementary tail. -/
 theorem incrementEnergy_le_full_tail (N : ℕ) :
     incrementEnergy N ≤ 2*bdMobiusComplementaryTailErrorEnergy N N +
-      2*(N : ℝ)*deningerHarmonicPartial N^2 := by
+      2*(N : ℝ)*deningerHarmonicPartial N^(2 : ℕ) := by
   linarith [incrementEnergy_le N,firstTailErrorEnergy_le_complementaryTail N]
 
 /-- The full actual error controls the complete first-block Mertens-increment energy. -/

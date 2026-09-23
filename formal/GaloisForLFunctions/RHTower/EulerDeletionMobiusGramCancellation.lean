@@ -27,7 +27,7 @@ def cross (N : ℕ) : ℝ :=
 
 /-- Exact arithmetic decomposition of the entire existing carrier norm. -/
 theorem modular_norm_sq_eq_diagonal_add_cross (N : ℕ) :
-    ‖bdMobiusModularApproximantVec N‖^2 = diagonal N + cross N := by
+    ‖bdMobiusModularApproximantVec N‖^(2 : ℕ) = diagonal N + cross N := by
   rw [bdMobiusModularApproximantVec_eq_generatorCombination, bdMobiusGeneratorCombination,
     ← bdGram_quadraticForm_eq_norm_sq]
   simp only [neg_mul_neg]
@@ -49,7 +49,7 @@ theorem gram_self_le_two_div {m : ℕ} (hm : 1 ≤ m) :
   let g (n : ℕ) : ℝ := (((n+1)%m : ℕ) : ℝ) * (((n+1)%m : ℕ) : ℝ) /
     ((m : ℝ)*(m : ℝ)*((n : ℝ)+1)*((n : ℝ)+2))
   have hnonneg (n : ℕ) : 0 ≤ g n := by unfold g; positivity
-  have hhead (n : ℕ) : g n ≤ 1 / (m : ℝ)^2 := by
+  have hhead (n : ℕ) : g n ≤ 1 / (m : ℝ)^(2 : ℕ) := by
     have hr : (0 : ℝ) ≤ (((n+1)%m : ℕ) : ℝ) := Nat.cast_nonneg _
     have hx : (((n+1)%m : ℕ) : ℝ) ≤ (n : ℝ)+1 := by exact_mod_cast Nat.mod_le (n+1) m
     have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
@@ -73,7 +73,7 @@ theorem gram_self_le_two_div {m : ℕ} (hm : 1 ≤ m) :
       (show 0 ≤ ((n : ℝ)+1)*((n : ℝ)+2) by positivity)]
   have hfinite (L : ℕ) : ∑ n ∈ Finset.range L, g n ≤ 2 / (m : ℝ) := by
     have hfirst : ∑ n ∈ Finset.range m, g n ≤ 1 / (m : ℝ) := by
-      calc _ ≤ ∑ n ∈ Finset.range m, 1 / (m : ℝ)^2 := Finset.sum_le_sum (fun n _ => hhead n)
+      calc _ ≤ ∑ n ∈ Finset.range m, 1 / (m : ℝ)^(2 : ℕ) := Finset.sum_le_sum (fun n _ => hhead n)
            _ = _ := by simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; field_simp
     have hlast : ∑ n ∈ Finset.range L, g (m+n) ≤ 1 / ((m : ℝ)+1) := by
       calc _ ≤ ∑ n ∈ Finset.range L,
@@ -134,7 +134,7 @@ theorem diagonal_eventually_le_four_log :
 /-- At every hypothetical off-line zero, the complete raw source norm escapes every log power. -/
 theorem modular_norm_sq_div_log_pow_tendsto (rho : RiemannGaussian.NontrivialZetaZero)
     (hs : rho.1.re ≠ 1/2) (q : ℕ) :
-    Tendsto (fun N : ℕ => ‖bdMobiusModularApproximantVec N‖^2 / Real.log (N : ℝ)^q) atTop atTop := by
+    Tendsto (fun N : ℕ => ‖bdMobiusModularApproximantVec N‖^(2 : ℕ) / Real.log (N : ℝ)^q) atTop atTop := by
   obtain ⟨C,hC,hbound⟩ := DeletionMobiusPrimitive.exists_current_bound_by_primitiveEnergy rho
   have hcurrent := (DeletionMobiusLogGrowth.abs_sourceCurrent_div_log_pow_tendsto rho hs q).atTop_div_const
     (show 0 < 2*C by positivity)
@@ -145,7 +145,7 @@ theorem modular_norm_sq_div_log_pow_tendsto (rho : RiemannGaussian.NontrivialZet
     (DeletionMobiusPrimitive.primitiveEnergy_le_two_modular_norm_sq N) hC.le)
   apply (div_le_iff₀ (show 0 < 2*C by positivity)).mpr
   apply (div_le_iff₀ hpow).mpr
-  calc |(DeletionMobiusCurrent.sourceCurrent N rho.1).re| ≤ C*(2*‖bdMobiusModularApproximantVec N‖^2) := hb
+  calc |(DeletionMobiusCurrent.sourceCurrent N rho.1).re| ≤ C*(2*‖bdMobiusModularApproximantVec N‖^(2 : ℕ)) := hb
        _ = _ := by field_simp
 
 /-- Every hypothetical off-line zero forces aggregate constructive arithmetic interference

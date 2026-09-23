@@ -250,8 +250,8 @@ theorem riemannHypothesis_iff_logChebyshevDeficitPrimitive_bound :
 arithmetic entries, with every visible prime power and boundary mass retained. -/
 theorem riemannHypothesis_iff_primeGammaPoleInequality :
     RiemannHypothesis ↔ ∀ a : SuzukiPositiveAperture,
-      |(-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)+2*a.1^2+
-        (2*Real.sinh a.1)^2+ccmGammaPoleCrossBoundaryMass a-ccmPolarPrimeTent a| ≤
+      |(-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*a.1)+2*a.1^(2 : ℕ)+
+        (2*Real.sinh a.1)^(2 : ℕ)+ccmGammaPoleCrossBoundaryMass a-ccmPolarPrimeTent a| ≤
       (-Real.eulerMascheroniConstant-Real.log (2*Real.pi))*(2*Real.sinh a.1)-
         Real.exp a.1+(1-2*a.1)*Real.exp (-a.1)+ccmGammaPoleSelfBoundaryMass a-
         2*Real.exp a.1*ccmReciprocalMangoldtError (2*a.1)+

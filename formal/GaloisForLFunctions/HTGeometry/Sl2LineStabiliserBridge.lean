@@ -165,11 +165,11 @@ theorem line_stabiliser_mem_base [IsAlgClosed C] [CharZero U]
     show ((1 : U) * δ ^ k) • adFun Z W ∈ L
     rw [one_mul]
     exact hmemL
-  have hmemc : ∀ k : ℕ, c * (δ * c ^ 2) ^ k ∈ {t : U | t • adFun Z W ∈ L} := by
+  have hmemc : ∀ k : ℕ, c * (δ * c ^ (2 : ℕ)) ^ k ∈ {t : U | t • adFun Z W ∈ L} := by
     intro k
     have hmemL : (adFun (c • Z))^[2 * k + 1] W ∈ L := iterate_adFun_mem L hbr hc _ hW
     rw [iterate_adFun_smul c Z (2 * k + 1) W, iterate_adFun_odd hZtr W k, smul_smul] at hmemL
-    have hval : ∀ d : U, c ^ (2 * k + 1) * d ^ k = c * (d * c ^ 2) ^ k := by
+    have hval : ∀ d : U, c ^ (2 * k + 1) * d ^ k = c * (d * c ^ (2 : ℕ)) ^ k := by
       intro d
       rw [mul_pow]
       ring
@@ -185,7 +185,7 @@ theorem line_stabiliser_mem_base [IsAlgClosed C] [CharZero U]
     rw [hd₀, h0, map_zero]
   have hd₀U : algebraMap C U d₀ ≠ 0 := by
     simpa using (map_ne_zero_iff (algebraMap C U) (algebraMap C U).injective).mpr hd₀ne
-  have hc2 : c ^ 2 = algebraMap C U (e₀ / d₀) := by
+  have hc2 : c ^ (2 : ℕ) = algebraMap C U (e₀ / d₀) := by
     rw [map_div₀, eq_div_iff hd₀U, ← hd₀, ← he₀]
     ring
   exact exists_eq_algebraMap_of_sq hc2

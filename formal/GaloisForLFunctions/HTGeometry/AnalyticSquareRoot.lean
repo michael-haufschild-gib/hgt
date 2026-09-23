@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 `ball c r` has a holomorphic square root there. -/
 theorem exists_sqrt_of_ne_zero {c : ℂ} {r : ℝ} {f : ℂ → ℂ}
     (hf : DifferentiableOn ℂ f (ball c r)) (hne : ∀ z ∈ ball c r, f z ≠ 0) :
-    ∃ s : ℂ → ℂ, DifferentiableOn ℂ s (ball c r) ∧ ∀ z ∈ ball c r, s z ^ 2 = f z := by
+    ∃ s : ℂ → ℂ, DifferentiableOn ℂ s (ball c r) ∧ ∀ z ∈ ball c r, s z ^ (2 : ℕ) = f z := by
   by_cases hr : 0 < r
   swap
   · have hr' : r ≤ 0 := not_lt.mp hr

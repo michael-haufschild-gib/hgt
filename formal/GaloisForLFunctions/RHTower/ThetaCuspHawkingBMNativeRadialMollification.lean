@@ -174,9 +174,9 @@ private theorem mollification_L2_convergence {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [CompleteSpace E] (g : ℝ → E) (hg : Continuous g)
     (hc : HasCompactSupport g) (m : ℕ) :
     (∀ k : ℕ, Integrable (fun x => ‖convolution (bumpMollifier (smoothingWidth_pos m k)) g
-      (ContinuousLinearMap.lsmul ℝ ℝ) volume x-g x‖^2) radialMeasure) ∧
+      (ContinuousLinearMap.lsmul ℝ ℝ) volume x-g x‖^(2 : ℕ)) radialMeasure) ∧
     Tendsto (fun k : ℕ => ∫ x, ‖convolution (bumpMollifier (smoothingWidth_pos m k)) g
-      (ContinuousLinearMap.lsmul ℝ ℝ) volume x-g x‖^2 ∂radialMeasure) atTop (𝓝 0) := by
+      (ContinuousLinearMap.lsmul ℝ ℝ) volume x-g x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0) := by
   let f (k : ℕ) : ℝ → E := convolution (bumpMollifier (smoothingWidth_pos m k)) g
     (ContinuousLinearMap.lsmul ℝ ℝ) volume
   have hfc (k : ℕ) : Continuous (f k) :=
@@ -214,11 +214,11 @@ private theorem mollification_L2_convergence {E : Type*} [NormedAddCommGroup E]
       hs (nonneg_bumpMollifier (smoothingWidth_pos m k)) (integral_bumpMollifier (smoothingWidth_pos m k))
       hg.aestronglyMeasurable (fun y _ => by simpa only [dist_zero_right] using hC y)
     simpa only [dist_zero_right] using h
-  let M : ℝ → ℝ := K.indicator (fun _ => 4*C^2)
+  let M : ℝ → ℝ := K.indicator (fun _ => 4*C^(2 : ℕ))
   have hM : Integrable M radialMeasure :=
-    (integrableOn_const (μ := radialMeasure) (s := K) (C := 4*C^2) hK.measure_lt_top.ne).integrable_indicator hK.measurableSet
-  have hec (k : ℕ) : Continuous (fun x => ‖f k x-g x‖^2) := ((hfc k).sub hg).norm.pow 2
-  have hb (k : ℕ) (x : ℝ) : ‖‖f k x-g x‖^2‖ ≤ M x := by
+    (integrableOn_const (μ := radialMeasure) (s := K) (C := 4*C^(2 : ℕ)) hK.measure_lt_top.ne).integrable_indicator hK.measurableSet
+  have hec (k : ℕ) : Continuous (fun x => ‖f k x-g x‖^(2 : ℕ)) := ((hfc k).sub hg).norm.pow 2
+  have hb (k : ℕ) (x : ℝ) : ‖‖f k x-g x‖^(2 : ℕ)‖ ≤ M x := by
     rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
     dsimp only [M]
     by_cases hx : x ∈ K
@@ -248,9 +248,9 @@ private theorem mollification_L2_convergence {E : Type*} [NormedAddCommGroup E]
 theorem nativeRadialMollification_energy_convergence (q : XiZeroCopy) (s amplitude : ℂ)
     (t : ℝ) (n m : ℕ) :
     (∀ k : ℕ, Integrable (fun x => ‖nativeRadialMollification q s amplitude t n m k x-
-      nativeInteriorAngularEnergy q s amplitude t n m x‖^2) radialMeasure) ∧
+      nativeInteriorAngularEnergy q s amplitude t n m x‖^(2 : ℕ)) radialMeasure) ∧
     Tendsto (fun k : ℕ => ∫ x, ‖nativeRadialMollification q s amplitude t n m k x-
-      nativeInteriorAngularEnergy q s amplitude t n m x‖^2 ∂radialMeasure) atTop (𝓝 0) :=
+      nativeInteriorAngularEnergy q s amplitude t n m x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0) :=
   mollification_L2_convergence _ (interior_continuous q s amplitude t n m)
     (interior_compact q s amplitude t n m) m
 
@@ -261,9 +261,9 @@ theorem nativeRadialMollification_radial_convergence (q : XiZeroCopy) (s amplitu
     let g : ℝ → D4BMModularCore.Space := fun x => D4BMModularCore.embedding
       (nativeInteriorAngularEnergy q s amplitude t n m x)
     (∀ k : ℕ, Integrable (fun x => ‖deriv (fun y => D4BMModularCore.embedding
-      (nativeRadialMollification q s amplitude t n m k y)) x-deriv g x‖^2) radialMeasure) ∧
+      (nativeRadialMollification q s amplitude t n m k y)) x-deriv g x‖^(2 : ℕ)) radialMeasure) ∧
     Tendsto (fun k : ℕ => ∫ x, ‖deriv (fun y => D4BMModularCore.embedding
-      (nativeRadialMollification q s amplitude t n m k y)) x-deriv g x‖^2 ∂radialMeasure) atTop (𝓝 0) := by
+      (nativeRadialMollification q s amplitude t n m k y)) x-deriv g x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0) := by
   intro g
   have hc : HasCompactSupport g := (interior_compact q s amplitude t n m).comp_left
     (map_zero D4BMModularCore.embedding)
@@ -275,17 +275,17 @@ theorem nativeRadialMollification_radial_convergence (q : XiZeroCopy) (s amplitu
 private theorem toLp_tendsto_of_integral_sq {E : Type*} [NormedAddCommGroup E]
     (a : ℕ → ℝ → E) (b : ℝ → E) (ha : ∀ k, MemLp (a k) 2 radialMeasure)
     (hb : MemLp b 2 radialMeasure)
-    (hl : Tendsto (fun k => ∫ x, ‖a k x-b x‖^2 ∂radialMeasure) atTop (𝓝 0)) :
+    (hl : Tendsto (fun k => ∫ x, ‖a k x-b x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0)) :
     Tendsto (fun k => (ha k).toLp (a k)) atTop (𝓝 (hb.toLp b)) := by
-  have hn (k : ℕ) : ‖(ha k).toLp (a k)-hb.toLp b‖^2 =
-      ∫ x, ‖a k x-b x‖^2 ∂radialMeasure := by
+  have hn (k : ℕ) : ‖(ha k).toLp (a k)-hb.toLp b‖^(2 : ℕ) =
+      ∫ x, ‖a k x-b x‖^(2 : ℕ) ∂radialMeasure := by
     rw [← MemLp.toLp_sub,_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq]
     apply integral_congr_ae
     filter_upwards [((ha k).sub hb).coeFn_toLp] with x hx
     rw [hx]
     rfl
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
-  have hs : Tendsto (fun k => ‖(ha k).toLp (a k)-hb.toLp b‖^2) atTop (𝓝 0) := by
+  have hs : Tendsto (fun k => ‖(ha k).toLp (a k)-hb.toLp b‖^(2 : ℕ)) atTop (𝓝 0) := by
     simpa only [hn] using hl
   have h := (Real.continuous_sqrt.tendsto 0).comp hs
   simpa only [Function.comp_def,Real.sqrt_zero,Real.sqrt_sq (norm_nonneg _)] using h
@@ -327,14 +327,14 @@ private theorem angularWeight_norm_le_one (x : ℝ) : ‖angularWeight x‖ ≤ 
   simpa only [one_div] using (div_le_one (Real.cosh_pos x)).mpr (Real.one_le_cosh x)
 
 private theorem NativeFormFamily.graph_tendsto (a : ℕ → NativeFormFamily) (b : NativeFormFamily)
-    (hv : Tendsto (fun k => ∫ x, ‖(a k).field x-b.field x‖^2 ∂radialMeasure) atTop (𝓝 0))
-    (hr : Tendsto (fun k => ∫ x, ‖(a k).radialField x-b.radialField x‖^2 ∂radialMeasure) atTop (𝓝 0)) :
+    (hv : Tendsto (fun k => ∫ x, ‖(a k).field x-b.field x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0))
+    (hr : Tendsto (fun k => ∫ x, ‖(a k).radialField x-b.radialField x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0)) :
     Tendsto (fun k => (a k).graph) atTop (𝓝 b.graph) := by
   have hv' : Tendsto (fun k => (a k).value) atTop (𝓝 b.value) :=
     toLp_tendsto_of_integral_sq _ _ (fun k => (a k).valueMem) b.valueMem hv
   have hr' : Tendsto (fun k => (a k).radial) atTop (𝓝 b.radial) :=
     toLp_tendsto_of_integral_sq _ _ (fun k => (a k).radialMem) b.radialMem hr
-  have hw : Tendsto (fun k => ∫ x, ‖(a k).weightedField x-b.weightedField x‖^2 ∂radialMeasure)
+  have hw : Tendsto (fun k => ∫ x, ‖(a k).weightedField x-b.weightedField x‖^(2 : ℕ) ∂radialMeasure)
       atTop (𝓝 0) := by
     apply squeeze_zero (fun k => integral_nonneg (fun x => sq_nonneg _)) ?_ hv
     intro k
@@ -343,9 +343,9 @@ private theorem NativeFormFamily.graph_tendsto (a : ℕ → NativeFormFamily) (b
     apply integral_mono ((memLp_two_iff_integrable_sq_norm hwi.aestronglyMeasurable).mp hwi)
       ((memLp_two_iff_integrable_sq_norm hvi.aestronglyMeasurable).mp hvi)
     intro x
-    change ‖angularWeight x • (a k).field x-angularWeight x • b.field x‖^2 ≤ _
+    change ‖angularWeight x • (a k).field x-angularWeight x • b.field x‖^(2 : ℕ) ≤ _
     rw [← smul_sub,norm_smul]
-    change (‖angularWeight x‖*‖(a k).field x-b.field x‖)^2 ≤ ‖(a k).field x-b.field x‖^2
+    change (‖angularWeight x‖*‖(a k).field x-b.field x‖)^(2 : ℕ) ≤ ‖(a k).field x-b.field x‖^(2 : ℕ)
     have he : ‖angularWeight x‖*‖(a k).field x-b.field x‖ ≤ ‖(a k).field x-b.field x‖ := by
       simpa only [one_mul] using mul_le_mul_of_nonneg_right (angularWeight_norm_le_one x)
         (norm_nonneg ((a k).field x-b.field x))
@@ -430,13 +430,13 @@ theorem nativeCuspJointGraph_mem (q : XiZeroCopy) (s amplitude : ℂ) (t : ℝ) 
     nativeCuspJointGraph q s amplitude t n ∈ jointDomain := by
   have hv := (nativeTimePrimitiveAngularEnergy_endpoint_value_convergence q s amplitude t n).2
   have hr : Tendsto (fun m => ∫ x, ‖(nativeInteriorFormFamily q s amplitude t n m).radialField x-
-      (nativeCuspFormFamily q s amplitude t n).radialField x‖^2 ∂radialMeasure) atTop (𝓝 0) := by
+      (nativeCuspFormFamily q s amplitude t n).radialField x‖^(2 : ℕ) ∂radialMeasure) atTop (𝓝 0) := by
     have hd : deriv (fun x => D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n x)) =
         nativeTimePrimitiveAngularRadial q s amplitude t n :=
       funext (fun x => (nativeTimePrimitiveAngularEnergy_value_hasDerivAt q s amplitude t n x).deriv)
     change Tendsto (fun m => ∫ x, ‖deriv (fun y => D4BMModularCore.embedding
       (nativeInteriorAngularEnergy q s amplitude t n m y)) x-
-      deriv (fun y => D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n y)) x‖^2
+      deriv (fun y => D4BMModularCore.embedding (nativeTimePrimitiveAngularEnergy q s amplitude t n y)) x‖^(2 : ℕ)
       ∂radialMeasure) atTop (𝓝 0)
     simp only [interior_value,hd]
     exact (nativeTimePrimitiveAngularEnergy_endpoint_radial_convergence q s amplitude t n).2

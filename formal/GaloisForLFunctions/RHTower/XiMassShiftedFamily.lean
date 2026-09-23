@@ -4,17 +4,17 @@ import GaloisForLFunctions.HTGeometry.PrincipalSquareRoot
 /-!
 # The mass-shifted spectral family
 
-`beta_a q = sqrt (alpha^ q ^ 2 + a^2)` with `a > 1/2`.  Writing `alpha^ = R + i J` with `R` the
+`beta_a q = sqrt (alpha^ q ^ (2 : ℕ) + a^(2 : ℕ))` with `a > 1/2`.  Writing `alpha^ = R + i J` with `R` the
 height and `|J| < 1/2`, the argument of the root has
 
-`Re = R^2 - J^2 + a^2 >= a^2`,   `Im = 2 R J`,
+`Re = R^(2 : ℕ) - J^(2 : ℕ) + a^(2 : ℕ) >= a^(2 : ℕ)`,   `Im = 2 R J`,
 
-so the root's real part exceeds `R` -- because `a^2 > J^2` -- and its imaginary part is
+so the root's real part exceeds `R` -- because `a^(2 : ℕ) > J^(2 : ℕ)` -- and its imaginary part is
 `R |J| / Re beta_a < |J|`.  Every condition of `SpectralFamily` follows, with the height comparison
 `R < Re beta_a` supplying summability and finite shells at once.
 
 This is the carrier whose explicit formula converges: the corner of `exp(-t |r|)` is smoothed to
-`exp(-t sqrt(r^2 + a^2))`, whose Fourier transform decays like `exp(-a|x|)`.
+`exp(-t sqrt(r^(2 : ℕ) + a^(2 : ℕ)))`, whose Fourier transform decays like `exp(-a|x|)`.
 -/
 
 open Complex
@@ -25,11 +25,11 @@ namespace RHTower
 noncomputable section
 
 /-- The argument of the mass-shifted root. -/
-def xiMassArg (a : ℝ) (q : XiZeroCopy) : ℂ := xiPoissonPoint q ^ 2 + ((a ^ 2 : ℝ) : ℂ)
+def xiMassArg (a : ℝ) (q : XiZeroCopy) : ℂ := xiPoissonPoint q ^ (2 : ℕ) + ((a ^ (2 : ℕ) : ℝ) : ℂ)
 
 theorem xiMassArg_re (a : ℝ) (q : XiZeroCopy) :
     (xiMassArg a q).re =
-      (xiPoissonPoint q).re ^ 2 - (xiPoissonPoint q).im ^ 2 + a ^ 2 := by
+      (xiPoissonPoint q).re ^ (2 : ℕ) - (xiPoissonPoint q).im ^ (2 : ℕ) + a ^ (2 : ℕ) := by
   rw [xiMassArg, Complex.add_re, Complex.ofReal_re, pow_two, Complex.mul_re]
   ring
 
@@ -49,7 +49,7 @@ theorem three_lt_xiPoissonPoint_re (q : XiZeroCopy) : 3 < (xiPoissonPoint q).re 
 theorem xiMassArg_re_pos {a : ℝ} (ha : 1 / 2 ≤ a) (q : XiZeroCopy) : 0 < (xiMassArg a q).re := by
   have hR := three_lt_xiPoissonPoint_re q
   have hJ : |(xiPoissonPoint q).im| < 1 / 2 := abs_xiPoissonPoint_im_lt_half q
-  have hJ2 : (xiPoissonPoint q).im ^ 2 < 1 / 4 := by
+  have hJ2 : (xiPoissonPoint q).im ^ (2 : ℕ) < 1 / 4 := by
     have := abs_nonneg (xiPoissonPoint q).im
     nlinarith [sq_abs (xiPoissonPoint q).im]
   rw [xiMassArg_re]
@@ -60,13 +60,13 @@ theorem xiPoissonPoint_re_lt_csqrtRe {a : ℝ} (ha : 1 / 2 ≤ a) (q : XiZeroCop
     (xiPoissonPoint q).re < HTGeometry.csqrtRe (xiMassArg a q) := by
   have hR := three_lt_xiPoissonPoint_re q
   have hJ : |(xiPoissonPoint q).im| < 1 / 2 := abs_xiPoissonPoint_im_lt_half q
-  have hJ2 : (xiPoissonPoint q).im ^ 2 < a ^ 2 := by
+  have hJ2 : (xiPoissonPoint q).im ^ (2 : ℕ) < a ^ (2 : ℕ) := by
     have h0 : (0 : ℝ) ≤ |(xiPoissonPoint q).im| := abs_nonneg _
     nlinarith [sq_abs (xiPoissonPoint q).im, ha]
   have hpos := xiMassArg_re_pos ha q
-  have hle : (xiMassArg a q).re ≤ HTGeometry.csqrtRe (xiMassArg a q) ^ 2 :=
+  have hle : (xiMassArg a q).re ≤ HTGeometry.csqrtRe (xiMassArg a q) ^ (2 : ℕ) :=
     HTGeometry.re_le_sq_csqrtRe hpos
-  have hgt : (xiPoissonPoint q).re ^ 2 < (xiMassArg a q).re := by
+  have hgt : (xiPoissonPoint q).re ^ (2 : ℕ) < (xiMassArg a q).re := by
     rw [xiMassArg_re]; linarith
   nlinarith [HTGeometry.csqrtRe_nonneg (xiMassArg a q), hR]
 
@@ -80,11 +80,11 @@ def xiMassFamily {a : ℝ} (ha : 1 / 2 ≤ a) : SpectralFamily where
     intro q
     rw [HTGeometry.csqrt_re]
     have hpos := xiMassArg_re_pos ha q
-    have hle : (xiMassArg a q).re ≤ HTGeometry.csqrtRe (xiMassArg a q) ^ 2 :=
+    have hle : (xiMassArg a q).re ≤ HTGeometry.csqrtRe (xiMassArg a q) ^ (2 : ℕ) :=
       HTGeometry.re_le_sq_csqrtRe hpos
-    have hJ2 : 0 ≤ (xiPoissonPoint q).im ^ 2 := sq_nonneg _
+    have hJ2 : 0 ≤ (xiPoissonPoint q).im ^ (2 : ℕ) := sq_nonneg _
     have hR := three_lt_xiPoissonPoint_re q
-    have hge : a ^ 2 ≤ (xiMassArg a q).re := by
+    have hge : a ^ (2 : ℕ) ≤ (xiMassArg a q).re := by
       rw [xiMassArg_re]
       nlinarith [hR, abs_xiPoissonPoint_im_lt_half q, sq_abs (xiPoissonPoint q).im,
         abs_nonneg (xiPoissonPoint q).im]

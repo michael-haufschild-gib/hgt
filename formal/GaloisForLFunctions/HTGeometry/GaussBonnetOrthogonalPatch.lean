@@ -89,9 +89,9 @@ theorem vSpeed_pos (p : ℝ × ℝ) : 0 < M.vSpeed p := Real.sqrt_pos.mpr (M.pos
 
 theorem area_pos (p : ℝ × ℝ) : 0 < M.area p := mul_pos (M.uSpeed_pos p) (M.vSpeed_pos p)
 
-theorem uSpeed_sq (p : ℝ × ℝ) : M.uSpeed p ^ 2 = M.E p := Real.sq_sqrt (M.posE p).le
+theorem uSpeed_sq (p : ℝ × ℝ) : M.uSpeed p ^ (2 : ℕ) = M.E p := Real.sq_sqrt (M.posE p).le
 
-theorem vSpeed_sq (p : ℝ × ℝ) : M.vSpeed p ^ 2 = M.G p := Real.sq_sqrt (M.posG p).le
+theorem vSpeed_sq (p : ℝ × ℝ) : M.vSpeed p ^ (2 : ℕ) = M.G p := Real.sq_sqrt (M.posG p).le
 
 theorem area_eq_sqrt (p : ℝ × ℝ) : M.area p = Real.sqrt (M.E p * M.G p) :=
   (Real.sqrt_mul (M.posE p).le _).symm
@@ -140,7 +140,7 @@ noncomputable def vCurveGeodesicCurvature (p : ℝ × ℝ) : ℝ :=
 /-- The arclength form of the geodesic curvature along a `u`-coordinate curve is `-Q du`. -/
 theorem uCurve_kappa_mul_speed (p : ℝ × ℝ) :
     M.uCurveGeodesicCurvature p * M.uSpeed p = -M.Q p := by
-  have he : M.E p = M.uSpeed p ^ 2 := (M.uSpeed_sq p).symm
+  have he : M.E p = M.uSpeed p ^ (2 : ℕ) := (M.uSpeed_sq p).symm
   have he0 : M.uSpeed p ≠ 0 := (M.uSpeed_pos p).ne'
   have hg0 : M.vSpeed p ≠ 0 := (M.vSpeed_pos p).ne'
   unfold uCurveGeodesicCurvature Q area
@@ -150,7 +150,7 @@ theorem uCurve_kappa_mul_speed (p : ℝ × ℝ) :
 /-- The arclength form of the geodesic curvature along a `v`-coordinate curve is `P dv`. -/
 theorem vCurve_kappa_mul_speed (p : ℝ × ℝ) :
     M.vCurveGeodesicCurvature p * M.vSpeed p = M.P p := by
-  have hg : M.G p = M.vSpeed p ^ 2 := (M.vSpeed_sq p).symm
+  have hg : M.G p = M.vSpeed p ^ (2 : ℕ) := (M.vSpeed_sq p).symm
   have he0 : M.uSpeed p ≠ 0 := (M.uSpeed_pos p).ne'
   have hg0 : M.vSpeed p ≠ 0 := (M.vSpeed_pos p).ne'
   unfold vCurveGeodesicCurvature P area

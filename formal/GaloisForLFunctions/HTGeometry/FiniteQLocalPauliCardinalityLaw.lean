@@ -91,8 +91,8 @@ theorem card_finiteQLocalPauliLabel_eq_count (σ : Type*) [Fintype σ]
 Hilbert dimension plus one. -/
 theorem eventually_twoLocalPauli_separator :
     ∀ᶠ n : ℕ in atTop,
-      Fintype.card (FiniteQLocalPauliLabel (Fin n) 2) * 3 ^ 2 < 2 ^ n + 1 := by
-  have hlim : Tendsto (fun n : ℕ => (n : ℝ) ^ 2 / (2 : ℝ) ^ n)
+      Fintype.card (FiniteQLocalPauliLabel (Fin n) 2) * 3 ^ (2 : ℕ) < 2 ^ n + 1 := by
+  have hlim : Tendsto (fun n : ℕ => (n : ℝ) ^ (2 : ℕ) / (2 : ℝ) ^ n)
       atTop (nhds 0) :=
     tendsto_pow_const_div_const_pow_of_one_lt 2 (by norm_num)
   have hsmall := hlim.eventually_lt_const (show (0 : ℝ) < 1 / 324 by norm_num)
@@ -100,19 +100,19 @@ theorem eventually_twoLocalPauli_separator :
   have hnpos : 1 ≤ n := by omega
   have hcount := Quantum.nonidentityPauliWeightCount_le n 2 hnpos
   rw [card_finiteQLocalPauliLabel]
-  have hpolyR : (((Quantum.nonidentityPauliWeightCount n 2 + 1) * 3 ^ 2 : ℕ) : ℝ) <
+  have hpolyR : (((Quantum.nonidentityPauliWeightCount n 2 + 1) * 3 ^ (2 : ℕ) : ℕ) : ℝ) <
       ((2 ^ n + 1 : ℕ) : ℝ) := by
     have hcountR : (Quantum.nonidentityPauliWeightCount n 2 : ℝ) ≤
-        (18 : ℝ) * (n : ℝ) ^ 2 := by
+        (18 : ℝ) * (n : ℝ) ^ (2 : ℕ) := by
       exact_mod_cast hcount
     have hpowpos : (0 : ℝ) < (2 : ℝ) ^ n := by positivity
-    have hnratio : (n : ℝ) ^ 2 < (2 : ℝ) ^ n / 324 := by
+    have hnratio : (n : ℝ) ^ (2 : ℕ) < (2 : ℝ) ^ n / 324 := by
       calc
-        (n : ℝ) ^ 2 < (1 / 324 : ℝ) * (2 : ℝ) ^ n :=
+        (n : ℝ) ^ (2 : ℕ) < (1 / 324 : ℝ) * (2 : ℝ) ^ n :=
           (div_lt_iff₀ hpowpos).mp hn
         _ = (2 : ℝ) ^ n / 324 := by ring
     have hpowLarge : (16 : ℝ) ≤ (2 : ℝ) ^ n := by
-      have hnat : 2 ^ 4 ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hnlarge
+      have hnat : 2 ^ (4 : ℕ) ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hnlarge
       norm_num at hnat ⊢
       exact_mod_cast hnat
     norm_num at hcountR ⊢

@@ -22,18 +22,18 @@ open Set
 namespace HTGeometry
 
 /-- The cubic Taylor bound for `arctan`. -/
-theorem abs_arctan_sub_self_le (u : ℝ) : |Real.arctan u - u| ≤ |u| ^ 3 := by
+theorem abs_arctan_sub_self_le (u : ℝ) : |Real.arctan u - u| ≤ |u| ^ (3 : ℕ) := by
   have hderiv : ∀ x ∈ uIcc (0 : ℝ) u,
-      HasDerivWithinAt (fun y : ℝ => Real.arctan y - y) (1 / (1 + x ^ 2) - 1) (uIcc 0 u) x := by
+      HasDerivWithinAt (fun y : ℝ => Real.arctan y - y) (1 / (1 + x ^ (2 : ℕ)) - 1) (uIcc 0 u) x := by
     intro x _
     exact ((Real.hasDerivAt_arctan x).sub (hasDerivAt_id x)).hasDerivWithinAt
-  have hbound : ∀ x ∈ uIcc (0 : ℝ) u, ‖1 / (1 + x ^ 2) - 1‖ ≤ |u| ^ 2 := by
+  have hbound : ∀ x ∈ uIcc (0 : ℝ) u, ‖1 / (1 + x ^ (2 : ℕ)) - 1‖ ≤ |u| ^ (2 : ℕ) := by
     intro x hx
-    have hden : (0 : ℝ) < 1 + x ^ 2 := by positivity
-    have hval : 1 / (1 + x ^ 2) - 1 = -(x ^ 2 / (1 + x ^ 2)) := by
+    have hden : (0 : ℝ) < 1 + x ^ (2 : ℕ) := by positivity
+    have hval : 1 / (1 + x ^ (2 : ℕ)) - 1 = -(x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ))) := by
       field_simp
       ring
-    have hle : x ^ 2 / (1 + x ^ 2) ≤ x ^ 2 := by
+    have hle : x ^ (2 : ℕ) / (1 + x ^ (2 : ℕ)) ≤ x ^ (2 : ℕ) := by
       rw [div_le_iff₀ hden]
       nlinarith [sq_nonneg x]
     have hxu : |x| ≤ |u| := by
@@ -44,8 +44,8 @@ theorem abs_arctan_sub_self_le (u : ℝ) : |Real.arctan u - u| ≤ |u| ^ 3 := by
       · rw [uIcc_of_ge hu] at hx
         rw [abs_of_nonpos hx.2, abs_of_nonpos hu]
         linarith [hx.1]
-    have hsq : x ^ 2 ≤ |u| ^ 2 := by
-      have h1 : x ^ 2 = |x| ^ 2 := (sq_abs x).symm
+    have hsq : x ^ (2 : ℕ) ≤ |u| ^ (2 : ℕ) := by
+      have h1 : x ^ (2 : ℕ) = |x| ^ (2 : ℕ) := (sq_abs x).symm
       rw [h1]
       exact pow_le_pow_left₀ (abs_nonneg x) hxu 2
     rw [hval, Real.norm_eq_abs, abs_neg, abs_of_nonneg (by positivity)]
@@ -53,16 +53,16 @@ theorem abs_arctan_sub_self_le (u : ℝ) : |Real.arctan u - u| ≤ |u| ^ 3 := by
   have hmvt := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound
     (convex_uIcc 0 u) (left_mem_uIcc) (right_mem_uIcc)
   simp only [Real.arctan_zero, sub_zero, Real.norm_eq_abs, sub_zero] at hmvt
-  calc |Real.arctan u - u| ≤ |u| ^ 2 * |u| := hmvt
-    _ = |u| ^ 3 := by ring
+  calc |Real.arctan u - u| ≤ |u| ^ (2 : ℕ) * |u| := hmvt
+    _ = |u| ^ (3 : ℕ) := by ring
 
 /-- The cubic Taylor bound for `sin`. -/
-theorem abs_sin_sub_self_le (u : ℝ) : |Real.sin u - u| ≤ |u| ^ 3 := by
+theorem abs_sin_sub_self_le (u : ℝ) : |Real.sin u - u| ≤ |u| ^ (3 : ℕ) := by
   have hderiv : ∀ x ∈ uIcc (0 : ℝ) u,
       HasDerivWithinAt (fun y : ℝ => Real.sin y - y) (Real.cos x - 1) (uIcc 0 u) x := by
     intro x _
     exact ((Real.hasDerivAt_sin x).sub (hasDerivAt_id x)).hasDerivWithinAt
-  have hbound : ∀ x ∈ uIcc (0 : ℝ) u, ‖Real.cos x - 1‖ ≤ |u| ^ 2 := by
+  have hbound : ∀ x ∈ uIcc (0 : ℝ) u, ‖Real.cos x - 1‖ ≤ |u| ^ (2 : ℕ) := by
     intro x hx
     have hcos := Real.one_sub_sq_div_two_le_cos (x := x)
     have hcos1 := Real.cos_le_one x
@@ -74,8 +74,8 @@ theorem abs_sin_sub_self_le (u : ℝ) : |Real.sin u - u| ≤ |u| ^ 3 := by
       · rw [uIcc_of_ge hu] at hx
         rw [abs_of_nonpos hx.2, abs_of_nonpos hu]
         linarith [hx.1]
-    have hsq : x ^ 2 ≤ |u| ^ 2 := by
-      have h1 : x ^ 2 = |x| ^ 2 := (sq_abs x).symm
+    have hsq : x ^ (2 : ℕ) ≤ |u| ^ (2 : ℕ) := by
+      have h1 : x ^ (2 : ℕ) = |x| ^ (2 : ℕ) := (sq_abs x).symm
       rw [h1]
       exact pow_le_pow_left₀ (abs_nonneg x) hxu 2
     rw [Real.norm_eq_abs, abs_of_nonpos (by linarith)]
@@ -83,12 +83,12 @@ theorem abs_sin_sub_self_le (u : ℝ) : |Real.sin u - u| ≤ |u| ^ 3 := by
   have hmvt := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound
     (convex_uIcc 0 u) (left_mem_uIcc) (right_mem_uIcc)
   simp only [Real.sin_zero, sub_zero, Real.norm_eq_abs] at hmvt
-  calc |Real.sin u - u| ≤ |u| ^ 2 * |u| := hmvt
-    _ = |u| ^ 3 := by ring
+  calc |Real.sin u - u| ≤ |u| ^ (2 : ℕ) * |u| := hmvt
+    _ = |u| ^ (3 : ℕ) := by ring
 
 /-- The quadratic Taylor bound for the logarithm on `|x| ≤ 1/2`. -/
 theorem abs_log_one_add_sub_self_le {x : ℝ} (hx : |x| ≤ 1 / 2) :
-    |Real.log (1 + x) - x| ≤ 2 * x ^ 2 := by
+    |Real.log (1 + x) - x| ≤ 2 * x ^ (2 : ℕ) := by
   have hxabs : -(1 / 2 : ℝ) ≤ x ∧ x ≤ 1 / 2 := abs_le.mp hx
   have hmem : ∀ y ∈ uIcc (0 : ℝ) x, |y| ≤ |x| := by
     intro y hy
@@ -132,13 +132,13 @@ theorem abs_log_one_add_sub_self_le {x : ℝ} (hx : |x| ≤ 1 / 2) :
     (convex_uIcc 0 x) (left_mem_uIcc) (right_mem_uIcc)
   simp only [add_zero, Real.log_one, sub_zero, Real.norm_eq_abs] at hmvt
   calc |Real.log (1 + x) - x| ≤ 2 * |x| * |x| := hmvt
-    _ = 2 * x ^ 2 := by
+    _ = 2 * x ^ (2 : ℕ) := by
         rw [show (2 : ℝ) * |x| * |x| = 2 * (|x| * |x|) by ring, abs_mul_abs_self]
         ring
 
 /-- The quadratic Taylor bound for `artanh` on `|u| ≤ 1/2`. -/
 theorem abs_artanh_sub_self_le {u : ℝ} (hu : |u| ≤ 1 / 2) :
-    |Real.artanh u - u| ≤ 4 * u ^ 2 := by
+    |Real.artanh u - u| ≤ 4 * u ^ (2 : ℕ) := by
   have huabs := abs_le.mp hu
   have hu1 : (0 : ℝ) < 1 + u := by linarith [huabs.1]
   have hu2 : (0 : ℝ) < 1 - u := by linarith [huabs.2]
@@ -146,23 +146,23 @@ theorem abs_artanh_sub_self_le {u : ℝ} (hu : |u| ≤ 1 / 2) :
   have hval : Real.artanh u = 1 / 2 * (Real.log (1 + u) - Real.log (1 - u)) := by
     rw [Real.artanh_eq_half_log hmem, Real.log_div (ne_of_gt hu1) (ne_of_gt hu2)]
   have hplus := abs_log_one_add_sub_self_le hu
-  have hminus : |Real.log (1 - u) - (-u)| ≤ 2 * u ^ 2 := by
+  have hminus : |Real.log (1 - u) - (-u)| ≤ 2 * u ^ (2 : ℕ) := by
     have hneg : |(-u)| ≤ 1 / 2 := by rwa [abs_neg]
     have h := abs_log_one_add_sub_self_le hneg
     have hrw : (1 : ℝ) + -u = 1 - u := by ring
     rw [hrw] at h
-    have hsq : (-u) ^ 2 = u ^ 2 := by ring
+    have hsq : (-u) ^ (2 : ℕ) = u ^ (2 : ℕ) := by ring
     rw [hsq] at h
     exact h
   have hdiff : Real.artanh u - u
       = 1 / 2 * ((Real.log (1 + u) - u) - (Real.log (1 - u) - (-u))) := by
     rw [hval]
     ring
-  have hkey : |Real.log (1 + u) - u - (Real.log (1 - u) - -u)| ≤ 4 * u ^ 2 := by
+  have hkey : |Real.log (1 + u) - u - (Real.log (1 - u) - -u)| ≤ 4 * u ^ (2 : ℕ) := by
     calc |Real.log (1 + u) - u - (Real.log (1 - u) - -u)|
         ≤ |Real.log (1 + u) - u| + |Real.log (1 - u) - -u| := abs_sub _ _
-      _ ≤ 2 * u ^ 2 + 2 * u ^ 2 := by linarith
-      _ = 4 * u ^ 2 := by ring
+      _ ≤ 2 * u ^ (2 : ℕ) + 2 * u ^ (2 : ℕ) := by linarith
+      _ = 4 * u ^ (2 : ℕ) := by ring
   rw [hdiff, abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1 / 2)]
   linarith [hkey, sq_nonneg u]
 

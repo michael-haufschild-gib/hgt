@@ -27,43 +27,43 @@ local notation "K2" => deningerQ8RootNumberNegOneSecondQuadraticField
 local notation "K3" => deningerQ8RootNumberNegOneTopField
 local notation "S" => q8BiquadQuadraticSourceField
 
-local instance : CharZero K2 :=
+local instance deningerQ8ActualTwoAdicTateEpsilonInst1 : CharZero K2 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K2).injective
-local instance : CharZero K3 :=
+local instance deningerQ8ActualTwoAdicTateEpsilonInst2 : CharZero K3 :=
   charZero_of_injective_algebraMap (algebraMap ℚ K3).injective
-noncomputable local instance : FiniteDimensional ℚ K1 :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst3 : FiniteDimensional ℚ K1 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadUBasis
-noncomputable local instance : FiniteDimensional K1 K2 :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst4 : FiniteDimensional K1 K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadVBasis
-noncomputable local instance : FiniteDimensional ℚ K2 :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst5 : FiniteDimensional ℚ K2 :=
   Module.Basis.finiteDimensional_of_finite q8BiquadIntegralBasis
-noncomputable local instance : FiniteDimensional K2 K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst6 : FiniteDimensional K2 K3 :=
   Module.Basis.finiteDimensional_of_finite
     (AdjoinRoot.powerBasis
       deningerQ8RootNumberNegOne_thirdQuadratic_irreducible.ne_zero).basis
-noncomputable local instance : FiniteDimensional S K2 := by infer_instance
-noncomputable local instance : FiniteDimensional S K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst7 : FiniteDimensional S K2 := by infer_instance
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst8 : FiniteDimensional S K3 :=
   FiniteDimensional.trans S K2 K3
-noncomputable local instance : FiniteDimensional ℚ K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst9 : FiniteDimensional ℚ K3 :=
   FiniteDimensional.trans ℚ K2 K3
-noncomputable local instance : NumberField S := NumberField.mk
-noncomputable local instance : NumberField K2 := NumberField.mk
-noncomputable local instance : NumberField K3 := NumberField.mk
-noncomputable local instance : IsGalois ℚ K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst10 : NumberField S := NumberField.mk
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst11 : NumberField K2 := NumberField.mk
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst12 : NumberField K3 := NumberField.mk
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst13 : IsGalois ℚ K3 :=
   deningerQ8RootNumberNegOne_isGalois
-noncomputable local instance : IsGalois S K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst14 : IsGalois S K3 :=
   IsGalois.tower_top_of_isGalois ℚ S K3
 
-noncomputable local instance : IsCyclic deningerQ8ActualCyclicSubgroup := by
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst15 : IsCyclic deningerQ8ActualCyclicSubgroup := by
   have hq8 : IsCyclic q8CyclicSubgroup :=
     (MulEquiv.isCyclic q8CyclicSourceEquiv).mp inferInstance
   exact (MulEquiv.isCyclic deningerQ8ActualCyclicSubgroupEquiv).mpr hq8
 
-noncomputable local instance : IsCyclic Gal(K3/S) :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst16 : IsCyclic Gal(K3/S) :=
   (MulEquiv.isCyclic q8QuadraticSourceGalEquivCyclicSubgroup).mpr
     (inferInstance : IsCyclic deningerQ8ActualCyclicSubgroup)
 
-noncomputable local instance : IsAbelianGalois S K3 :=
+noncomputable local instance deningerQ8ActualTwoAdicTateEpsilonInst17 : IsAbelianGalois S K3 :=
   IsAbelianGalois.of_isCyclic _ _
 
 noncomputable local instance q8ActualTwoAdicTateChosenLocalGalIsCyclic
@@ -79,7 +79,7 @@ noncomputable local instance q8ActualTwoAdicTateChosenLocalIsAbelianGalois
       (ChosenFinitePlaceLocalizedCompletion (K := S) (L := K3) v) :=
   IsAbelianGalois.of_isCyclic _ _
 
-local instance : Fact (Nat.Prime 2) := ⟨by norm_num⟩
+local instance deningerQ8ActualTwoAdicTateEpsilonInst18 : Fact (Nat.Prime 2) := ⟨by norm_num⟩
 
 set_option maxRecDepth 4000 in
 set_option maxHeartbeats 2000000 in

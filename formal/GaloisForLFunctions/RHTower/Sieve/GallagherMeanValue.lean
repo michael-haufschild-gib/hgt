@@ -34,14 +34,14 @@ theorem norm_logPoly_le (a : ℕ → ℂ) (s : Finset ℕ) (w : ℝ) :
 
 /-- **The short-interval mean square from the mean value theorem alone.** -/
 theorem gallagher_meanValue_le (a : ℕ → ℂ) (N : ℕ) {δ W : ℝ} (hδ : 0 < δ) (hW : 0 < W) :
-    (∫ u : ℝ, ‖logWindowSum a (Finset.Icc 1 N) δ u‖ ^ 2)
-      ≤ 2 * δ ^ 2
+    (∫ u : ℝ, ‖logWindowSum a (Finset.Icc 1 N) δ u‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ)
           * ((2 * Real.pi * W + 4 * (N : ℝ) * (1 + Real.log N)) / Real.pi
-              * ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
-        + (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ 2 * (2 / (Real.pi ^ 2 * W)) := by
+              * ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+        + (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ (2 : ℕ) * (2 / (Real.pi ^ (2 : ℕ) * W)) := by
   have hI := integral_Icc_normSq_logPoly_le a N (W := W) hW.le
-  have hM₂ : ∀ w : ℝ, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2
-      ≤ (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ 2 := by
+  have hM₂ : ∀ w : ℝ, ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ)
+      ≤ (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ (2 : ℕ) := by
     intro w
     exact pow_le_pow_left₀ (norm_nonneg _) (norm_logPoly_le a (Finset.Icc 1 N) w) 2
   exact gallagher_split_integral a (Finset.Icc 1 N) hδ hW (by positivity) hI hM₂
@@ -51,14 +51,14 @@ theorem gallagher_meanValue_window_le (a : ℕ → ℂ) (N : ℕ) {δ W : ℝ} (
     (A B : ℝ) :
     (∫ u in Set.Ioc (Real.log A) (Real.log B),
         ‖∑ n ∈ (Finset.Icc 1 N).filter (fun n : ℕ =>
-          Real.exp u < (n : ℝ) ∧ (n : ℝ) ≤ Real.exp u * Real.exp δ), a n‖ ^ 2)
-      ≤ 2 * δ ^ 2
+          Real.exp u < (n : ℝ) ∧ (n : ℝ) ≤ Real.exp u * Real.exp δ), a n‖ ^ (2 : ℕ))
+      ≤ 2 * δ ^ (2 : ℕ)
           * ((2 * Real.pi * W + 4 * (N : ℝ) * (1 + Real.log N)) / Real.pi
-              * ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
-        + (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ 2 * (2 / (Real.pi ^ 2 * W)) := by
+              * ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ (2 : ℕ))
+        + (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ (2 : ℕ) * (2 / (Real.pi ^ (2 : ℕ) * W)) := by
   have hI := integral_Icc_normSq_logPoly_le a N (W := W) hW.le
-  have hM₂ : ∀ w : ℝ, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2
-      ≤ (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ 2 := by
+  have hM₂ : ∀ w : ℝ, ‖logPoly a (Finset.Icc 1 N) w‖ ^ (2 : ℕ)
+      ≤ (∑ n ∈ Finset.Icc 1 N, ‖a n‖) ^ (2 : ℕ) := by
     intro w
     exact pow_le_pow_left₀ (norm_nonneg _) (norm_logPoly_le a (Finset.Icc 1 N) w) 2
   have hs : ∀ n ∈ Finset.Icc 1 N, 0 < n := by

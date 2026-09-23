@@ -40,7 +40,7 @@ theorem suzukiFGammaFun_self {γ : ℝ} {m : ℕ} (hm : 0 < m)
     (hasDerivAt_suzukiHalfInner hm hord).deriv
   have hprod : Real.sqrt ((m : ℝ) / Real.pi) * Real.sqrt ((m : ℝ) * Real.pi) = m := by
     rw [← Real.sqrt_mul (by positivity)]
-    have hval : (m : ℝ) / Real.pi * ((m : ℝ) * Real.pi) = (m : ℝ) ^ 2 := by
+    have hval : (m : ℝ) / Real.pi * ((m : ℝ) * Real.pi) = (m : ℝ) ^ (2 : ℕ) := by
       field_simp
     rw [hval, Real.sqrt_sq hmR.le]
   have hsqne : Real.sqrt ((m : ℝ) * Real.pi) ≠ 0 := by positivity
@@ -77,8 +77,8 @@ theorem continuous_suzukiFGammaFun_ofReal (hRH : RiemannHypothesis) {γ : ℝ} (
 
 theorem norm_sq_suzukiFGammaFun_ofReal {γ : ℝ} {m : ℕ} (hγ : XiC ((γ : ℝ) : ℂ) = 0)
     {x : ℝ} (hx : x ≠ γ) :
-    ‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ 2
-      = ((m : ℝ) / Real.pi) * (‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / (x - γ) ^ 2) := by
+    ‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ (2 : ℕ)
+      = ((m : ℝ) / Real.pi) * (‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / (x - γ) ^ (2 : ℕ)) := by
   have hxne : ((x : ℝ) : ℂ) ≠ ((γ : ℝ) : ℂ) := by simpa using hx
   have hmR : (0 : ℝ) ≤ (m : ℝ) / Real.pi := by positivity
   have hcast : ((x : ℝ) : ℂ) - ((γ : ℝ) : ℂ) = (((x - γ : ℝ)) : ℂ) := by push_cast; ring
@@ -90,7 +90,7 @@ theorem norm_sq_suzukiFGammaFun_ofReal {γ : ℝ} {m : ℕ} (hγ : XiC ((γ : �
 theorem integrable_norm_sq_suzukiFGammaFun (hRH : RiemannHypothesis) {γ : ℝ} {m : ℕ}
     (hm : 0 < m) (hord : analyticOrderAt XiC ((γ : ℝ) : ℂ) = (m : ℕ∞))
     (hγ : XiC ((γ : ℝ) : ℂ) = 0) :
-    Integrable fun x : ℝ => ‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ 2 := by
+    Integrable fun x : ℝ => ‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) := by
   have hbase := integrable_normSq_suzukiHalfInner_div_sq hRH hm hord hγ
   refine (hbase.const_mul ((m : ℝ) / Real.pi)).congr ?_
   have hnull : volume ({γ} : Set ℝ) = 0 := by simp
@@ -102,13 +102,13 @@ theorem integrable_norm_sq_suzukiFGammaFun (hRH : RiemannHypothesis) {γ : ℝ} 
 theorem integral_norm_sq_suzukiFGammaFun (hRH : RiemannHypothesis) {γ : ℝ} {m : ℕ}
     (hm : 0 < m) (hord : analyticOrderAt XiC ((γ : ℝ) : ℂ) = (m : ℕ∞))
     (hγ : XiC ((γ : ℝ) : ℂ) = 0) :
-    (∫ x : ℝ, ‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ 2) = 1 := by
+    (∫ x : ℝ, ‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ (2 : ℕ)) = 1 := by
   have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
   have hpi := Real.pi_pos
   have hnull : volume ({γ} : Set ℝ) = 0 := by simp
-  have hae : (fun x : ℝ => ‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ 2)
+  have hae : (fun x : ℝ => ‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ (2 : ℕ))
       =ᵐ[volume] fun x : ℝ =>
-        ((m : ℝ) / Real.pi) * (‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / (x - γ) ^ 2) := by
+        ((m : ℝ) / Real.pi) * (‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / (x - γ) ^ (2 : ℕ)) := by
     filter_upwards [MeasureTheory.compl_mem_ae_iff.mpr hnull] with x hx
     exact norm_sq_suzukiFGammaFun_ofReal hγ (fun h => hx (by simp [h]))
   rw [MeasureTheory.integral_congr_ae hae, MeasureTheory.integral_const_mul,
@@ -145,7 +145,7 @@ theorem integral_conj_mul_suzukiFGammaFun (hRH : RiemannHypothesis) {γ δ : ℝ
   have hae : (fun x : ℝ => (starRingEnd ℂ) (suzukiFGammaFun γ mγ ((x : ℝ) : ℂ))
         * suzukiFGammaFun δ mδ ((x : ℝ) : ℂ))
       =ᵐ[volume] fun x : ℝ =>
-        c * (((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / ((x - γ) * (x - δ)) : ℝ)) : ℂ) := by
+        c * (((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / ((x - γ) * (x - δ)) : ℝ)) : ℂ) := by
     filter_upwards [MeasureTheory.compl_mem_ae_iff.mpr hnull] with x hx
     have hxγ : ((x : ℝ) : ℂ) ≠ ((γ : ℝ) : ℂ) := by
       simp only [ne_eq, Complex.ofReal_inj]
@@ -155,10 +155,10 @@ theorem integral_conj_mul_suzukiFGammaFun (hRH : RiemannHypothesis) {γ δ : ℝ
       exact fun h => hx (by simp [h])
     have hnormSq : (starRingEnd ℂ) (suzukiHalfInner ((x : ℝ) : ℂ))
         * suzukiHalfInner ((x : ℝ) : ℂ)
-        = ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ) := by
+        = ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       rw [mul_comm, Complex.mul_conj, Complex.sq_norm]
-    have hcast : (((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / ((x - γ) * (x - δ)) : ℝ)) : ℂ)
-        = ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ)
+    have hcast : (((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / ((x - γ) * (x - δ)) : ℝ)) : ℂ)
+        = ((‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ)
           / ((((x : ℝ) : ℂ) - ((γ : ℝ) : ℂ)) * (((x : ℝ) : ℂ) - ((δ : ℝ) : ℂ))) := by
       push_cast
       ring
@@ -205,7 +205,7 @@ theorem norm_suzukiFGammaLp (hRH : RiemannHypothesis) {γ : ℝ} {m : ℕ} (hm :
     ‖suzukiFGammaLp hRH hm hord hγ‖ = 1 := by
   have hae : (fun x : ℝ => inner ℂ ((suzukiFGammaLp hRH hm hord hγ : Lp ℂ 2 _) x)
         ((suzukiFGammaLp hRH hm hord hγ : Lp ℂ 2 _) x))
-      =ᵐ[volume] fun x : ℝ => ((‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ) := by
+      =ᵐ[volume] fun x : ℝ => ((‖suzukiFGammaFun γ m ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     simp only [suzukiFGammaLp]
     filter_upwards [(memLp_suzukiFGammaFun hRH hm hord hγ).coeFn_toLp] with x h1
     rw [h1, RCLike.inner_apply, Complex.mul_conj, Complex.sq_norm]
@@ -214,7 +214,7 @@ theorem norm_suzukiFGammaLp (hRH : RiemannHypothesis) {γ : ℝ} {m : ℕ} (hm :
     rw [MeasureTheory.L2.inner_def, MeasureTheory.integral_congr_ae hae,
       integral_complex_ofReal, integral_norm_sq_suzukiFGammaFun hRH hm hord hγ]
     norm_num
-  have hreal : ‖suzukiFGammaLp hRH hm hord hγ‖ ^ 2 = 1 := by
+  have hreal : ‖suzukiFGammaLp hRH hm hord hγ‖ ^ (2 : ℕ) = 1 := by
     have h := @inner_self_eq_norm_sq ℂ _ _ _ _ (suzukiFGammaLp hRH hm hord hγ)
     rw [hinner] at h
     simpa using h.symm

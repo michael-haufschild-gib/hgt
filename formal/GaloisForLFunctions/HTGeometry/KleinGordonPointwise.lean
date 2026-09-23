@@ -47,11 +47,11 @@ theorem coe_kgFreeVel (f : 𝓢(E, F)) (t : ℝ) :
 
 /-- **The Klein–Gordon operator applied to the free evolution, as an inverse Fourier integral.** -/
 theorem coe_kgOperator_kgFree (f : 𝓢(E, F)) (t : ℝ) :
-    ((kgFree f t - (((2 * Real.pi) ^ 2)⁻¹ : ℝ) • Δ (kgFree f t) : 𝓢(E, F)) : E → F)
-      = 𝓕⁻ fun ξ : E => (((kgFreq ξ ^ 2 : ℝ) : ℂ) * kgCosSymbol t ξ) • (𝓕 f) ξ := by
+    ((kgFree f t - (((2 * Real.pi) ^ (2 : ℕ))⁻¹ : ℝ) • Δ (kgFree f t) : 𝓢(E, F)) : E → F)
+      = 𝓕⁻ fun ξ : E => (((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) * kgCosSymbol t ξ) • (𝓕 f) ξ := by
   rw [kgOperator_kgFree]
   refine coe_fourierMultiplierCLM ?_ f
-  have hfreq : Function.HasTemperateGrowth fun ξ : E => ((kgFreq ξ ^ 2 : ℝ) : ℂ) :=
+  have hfreq : Function.HasTemperateGrowth fun ξ : E => ((kgFreq ξ ^ (2 : ℕ) : ℝ) : ℂ) :=
     Complex.hasTemperateGrowth_ofReal.comp ((hasTemperateGrowth_kgFreq E).pow 2)
   exact hfreq.mul (hasTemperateGrowth_kgCosSymbol t)
 

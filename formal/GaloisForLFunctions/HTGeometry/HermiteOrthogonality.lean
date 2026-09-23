@@ -259,7 +259,7 @@ theorem schwartzPair_gaussianSchwartz_self :
     schwartzPair gaussianSchwartz gaussianSchwartz = ((Real.sqrt (π / (2 * π)) : ℝ) : ℂ) := by
   rw [schwartzPair_eq_integral]
   have hfun : (fun x : ℝ => gaussianSchwartz x * gaussianSchwartz x)
-      = fun x : ℝ => ((Real.exp (-(2 * π) * x ^ 2) : ℝ) : ℂ) := by
+      = fun x : ℝ => ((Real.exp (-(2 * π) * x ^ (2 : ℕ)) : ℝ) : ℂ) := by
     funext x
     rw [gaussianSchwartz_apply]
     norm_cast

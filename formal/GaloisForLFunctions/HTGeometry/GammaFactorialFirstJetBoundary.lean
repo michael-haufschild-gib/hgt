@@ -18,14 +18,14 @@ noncomputable section
 /-- The first-jet Riccati defect of the factorially rescaled Gamma germ. -/
 def gammaFactorialFirstJetDefect (n : ℕ) (x : ℂ) : ℂ :=
   iteratedDeriv 1 (factorialBlowUpZoom Complex.Gamma n) x -
-    factorialBlowUpZoom Complex.Gamma n x ^ 2
+    factorialBlowUpZoom Complex.Gamma n x ^ (2 : ℕ)
 
 /-- The reciprocal boundary germ lies exactly on the Riccati hypersurface `y' = y²`. -/
 theorem iteratedDeriv_one_outerReciprocalLimit_id (x : ℂ) (hx : x ≠ 0) :
     iteratedDeriv 1 (outerReciprocalLimit id) x =
-      outerReciprocalLimit id x ^ 2 := by
+      outerReciprocalLimit id x ^ (2 : ℕ) := by
   rw [iteratedDeriv_one]
-  have h : HasDerivAt (fun x : ℂ => (-x)⁻¹) (x⁻¹ ^ 2) x := by
+  have h : HasDerivAt (fun x : ℂ => (-x)⁻¹) (x⁻¹ ^ (2 : ℕ)) x := by
     simpa [inv_pow] using! (hasDerivAt_inv hx).neg
   rw [show outerReciprocalLimit id = fun x : ℂ => (-x)⁻¹ by
     funext y

@@ -44,7 +44,7 @@ theorem natSucc_mul_norm_smoothAFEZetaSquareDualDerivativeCoefficient_sq_eq
       rw [hpow, mul_one]
 
 /-- The exact weighted mass inherits the corpus' Abel-summed divisor-square
-tail, improving the subpower estimate to `log^3 N / N`. -/
+tail, improving the subpower estimate to `log^(3 : ℕ) N / N`. -/
 theorem exists_tsum_weighted_norm_smoothAFEZetaSquareDualDerivativeCoefficient_sq_le_logCube :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {N : ℕ} {r center : ℝ},
       4 ≤ N → r ∈ Set.Icc (N : ℝ) (2 * N : ℝ) →

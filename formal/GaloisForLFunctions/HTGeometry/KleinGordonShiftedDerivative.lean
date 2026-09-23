@@ -37,12 +37,12 @@ theorem hasDerivAt_kgShiftedSinFreqOp_lowPass (hv : Measurable v) (hb0 : 0 ≤ b
     HasDerivAt (fun s : ℝ => kgShiftedSinFreqOp hv s (kgLowPassOp R x))
       (kgShiftedCosOp hv t (kgLowPassOp R x)) t := by
   have hband := band_bound_nonneg (b := b) hb0 R
-  have hK0 : (0 : ℝ) ≤ (|t| * (1 + R ^ 2 + b) / 2 + (1 + R ^ 2 + b) / 6) * ‖x‖ := by
-    have h1 : (0 : ℝ) ≤ |t| * (1 + R ^ 2 + b) / 2 :=
+  have hK0 : (0 : ℝ) ≤ (|t| * (1 + R ^ (2 : ℕ) + b) / 2 + (1 + R ^ (2 : ℕ) + b) / 6) * ‖x‖ := by
+    have h1 : (0 : ℝ) ≤ |t| * (1 + R ^ (2 : ℕ) + b) / 2 :=
       div_nonneg (mul_nonneg (abs_nonneg t) hband) (by norm_num)
-    have h2 : (0 : ℝ) ≤ (1 + R ^ 2 + b) / 6 := div_nonneg hband (by norm_num)
+    have h2 : (0 : ℝ) ≤ (1 + R ^ (2 : ℕ) + b) / 6 := div_nonneg hband (by norm_num)
     exact mul_nonneg (by linarith) (norm_nonneg x)
-  set K : ℝ := (|t| * (1 + R ^ 2 + b) / 2 + (1 + R ^ 2 + b) / 6) * ‖x‖ with hKdef
+  set K : ℝ := (|t| * (1 + R ^ (2 : ℕ) + b) / 2 + (1 + R ^ (2 : ℕ) + b) / 6) * ‖x‖ with hKdef
   rw [hasDerivAt_iff_isLittleO, isLittleO_iff]
   intro c hc
   rw [Metric.eventually_nhds_iff]
@@ -82,38 +82,38 @@ theorem hasDerivAt_kgShiftedSinFreqOp_lowPass (hv : Measurable v) (hb0 : 0 ≤ b
       ≤ 1 * ‖kgShiftedSinFreqOp hv (s - t) (kgLowPassOp R x)
           - ((s - t : ℝ) : ℂ) • kgLowPassOp R x‖ :=
     ContinuousLinearMap.le_of_opNorm_le _ (norm_kgShiftedCosOp_le hv t) _
-  have hsq : (s - t) ^ 2 = |s - t| ^ 2 := (sq_abs _).symm
-  have hcube : |s - t| ^ 3 ≤ |s - t| ^ 2 :=
+  have hsq : (s - t) ^ (2 : ℕ) = |s - t| ^ (2 : ℕ) := (sq_abs _).symm
+  have hcube : |s - t| ^ (3 : ℕ) ≤ |s - t| ^ (2 : ℕ) :=
     pow_le_pow_of_le_one hd0 hd1 (by norm_num : (2 : ℕ) ≤ 3)
   have htotal : ‖kgShiftedSinFreqOp hv s (kgLowPassOp R x)
         - kgShiftedSinFreqOp hv t (kgLowPassOp R x)
         - (s - t) • kgShiftedCosOp hv t (kgLowPassOp R x)‖
-      ≤ |s - t| ^ 2 * K := by
+      ≤ |s - t| ^ (2 : ℕ) * K := by
     rw [hkey]
     refine le_trans (norm_add_le _ _) ?_
     have hAB : ‖kgShiftedSinFreqOp hv t
           (kgShiftedCosOp hv (s - t) (kgLowPassOp R x) - kgLowPassOp R x)‖
         + ‖kgShiftedCosOp hv t (kgShiftedSinFreqOp hv (s - t) (kgLowPassOp R x)
             - ((s - t : ℝ) : ℂ) • kgLowPassOp R x)‖
-        ≤ |t| * ((s - t) ^ 2 * (1 + R ^ 2 + b) / 2 * ‖x‖)
-          + 1 * (|s - t| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖) := by
+        ≤ |t| * ((s - t) ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 2 * ‖x‖)
+          + 1 * (|s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖) := by
       have h1 : |t| * ‖kgShiftedCosOp hv (s - t) (kgLowPassOp R x) - kgLowPassOp R x‖
-          ≤ |t| * ((s - t) ^ 2 * (1 + R ^ 2 + b) / 2 * ‖x‖) :=
+          ≤ |t| * ((s - t) ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 2 * ‖x‖) :=
         mul_le_mul_of_nonneg_left hcos (abs_nonneg t)
       have h2 : 1 * ‖kgShiftedSinFreqOp hv (s - t) (kgLowPassOp R x)
             - ((s - t : ℝ) : ℂ) • kgLowPassOp R x‖
-          ≤ 1 * (|s - t| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖) :=
+          ≤ 1 * (|s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖) :=
         mul_le_mul_of_nonneg_left hsin zero_le_one
       linarith
     refine le_trans hAB ?_
     rw [hsq, hKdef]
     have hx0 : (0 : ℝ) ≤ ‖x‖ := norm_nonneg x
-    have hstep : |s - t| ^ 3 * (1 + R ^ 2 + b) / 6 * ‖x‖
-        ≤ |s - t| ^ 2 * (1 + R ^ 2 + b) / 6 * ‖x‖ := by
-      have hmul : |s - t| ^ 3 * (1 + R ^ 2 + b) ≤ |s - t| ^ 2 * (1 + R ^ 2 + b) :=
+    have hstep : |s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖
+        ≤ |s - t| ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 * ‖x‖ := by
+      have hmul : |s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) ≤ |s - t| ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) :=
         mul_le_mul_of_nonneg_right hcube hband
-      have hdiv : |s - t| ^ 3 * (1 + R ^ 2 + b) / 6
-          ≤ |s - t| ^ 2 * (1 + R ^ 2 + b) / 6 := by linarith
+      have hdiv : |s - t| ^ (3 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6
+          ≤ |s - t| ^ (2 : ℕ) * (1 + R ^ (2 : ℕ) + b) / 6 := by linarith
       exact mul_le_mul_of_nonneg_right hdiv hx0
     nlinarith [hx0, hstep]
   refine le_trans htotal ?_

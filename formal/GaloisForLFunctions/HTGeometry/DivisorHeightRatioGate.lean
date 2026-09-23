@@ -11,7 +11,7 @@ The absolute centered reciprocal moments of the xi divisor,
 `absMoment n = ∑_ρ mult(ρ) * ‖ρ - 1/2‖⁻¹ ^ (2(n+1))`,
 
 satisfy a purely geometric damping law: a lower bound `c` on the centered heights of the divisor
-points forces `absMoment (n+1) ≤ absMoment n / c ^ 2`, and hence geometric decay in `n` with ratio
+points forces `absMoment (n+1) ≤ absMoment n / c ^ (2 : ℕ)`, and hence geometric decay in `n` with ratio
 `c⁻²`.  A positive lower bound always exists, because the divisor is locally finite, so the decay
 law holds unconditionally with *some* ratio; the arithmetic input is only the size of `c`.
 
@@ -82,7 +82,7 @@ theorem xiCentralAbsMoment_term_succ (n : ℕ)
     (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) :
     ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
         ‖(ρ : ℂ) - 1 / 2‖⁻¹ ^ (2 * (n + 1 + 1)) =
-      ‖(ρ : ℂ) - 1 / 2‖⁻¹ ^ 2 *
+      ‖(ρ : ℂ) - 1 / 2‖⁻¹ ^ (2 : ℕ) *
         (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
           ‖(ρ : ℂ) - 1 / 2‖⁻¹ ^ (2 * (n + 1))) := by
   rw [show 2 * (n + 1 + 1) = 2 + 2 * (n + 1) by ring, pow_add]
@@ -101,9 +101,9 @@ damps successive absolute moments by the square of that bound. -/
 theorem xiCentralAbsMoment_succ_le_div {c : ℝ} (hc : 0 < c)
     (hheight : ∀ ρ : ℂ, (MeromorphicOn.divisor xi Set.univ) ρ ≠ 0 → ρ ≠ 1 / 2 →
       c ≤ ‖ρ - 1 / 2‖) (n : ℕ) :
-    xiCentralAbsMoment (n + 1) ≤ xiCentralAbsMoment n / c ^ 2 := by
+    xiCentralAbsMoment (n + 1) ≤ xiCentralAbsMoment n / c ^ (2 : ℕ) := by
   have hmul : ∀ ρ : ↥(MeromorphicOn.divisor xi Set.univ).support,
-      ‖(ρ : ℂ) - 1 / 2‖⁻¹ ^ 2 ≤ (c ^ 2)⁻¹ := by
+      ‖(ρ : ℂ) - 1 / 2‖⁻¹ ^ (2 : ℕ) ≤ (c ^ (2 : ℕ))⁻¹ := by
     intro ρ
     by_cases hhalf : (ρ : ℂ) = 1 / 2
     · rw [hhalf]
@@ -119,11 +119,11 @@ theorem xiCentralAbsMoment_succ_le_div {c : ℝ} (hc : 0 < c)
   have key := tsum_mul_le_const_mul_tsum hsum hsum2 (xiCentralAbsMoment_term_nonneg n) hmul
   have hrewrite : xiCentralAbsMoment (n + 1) =
       ∑' ρ : ↥(MeromorphicOn.divisor xi Set.univ).support,
-        ‖(ρ : ℂ) - 1 / 2‖⁻¹ ^ 2 *
+        ‖(ρ : ℂ) - 1 / 2‖⁻¹ ^ (2 : ℕ) *
           (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) *
             ‖(ρ : ℂ) - 1 / 2‖⁻¹ ^ (2 * (n + 1))) :=
     tsum_congr (fun ρ => xiCentralAbsMoment_term_succ n ρ)
-  have hdiv : xiCentralAbsMoment n / c ^ 2 = (c ^ 2)⁻¹ * xiCentralAbsMoment n := by ring
+  have hdiv : xiCentralAbsMoment n / c ^ (2 : ℕ) = (c ^ (2 : ℕ))⁻¹ * xiCentralAbsMoment n := by ring
   rw [hrewrite, hdiv]
   exact key
 
@@ -154,7 +154,7 @@ theorem exists_pos_xiCentralHeightFloor :
 /-- **Unconditional geometric decay.**  Some fixed ratio damps every step of the absolute
 centered moment sequence. -/
 theorem exists_pos_xiCentralAbsMoment_ratio :
-    ∃ c > 0, ∀ n : ℕ, xiCentralAbsMoment (n + 1) ≤ xiCentralAbsMoment n / c ^ 2 := by
+    ∃ c > 0, ∀ n : ℕ, xiCentralAbsMoment (n + 1) ≤ xiCentralAbsMoment n / c ^ (2 : ℕ) := by
   obtain ⟨c, hc, hcle⟩ := exists_pos_xiCentralHeightFloor
   exact ⟨c, hc, fun n => xiCentralAbsMoment_succ_le_div hc hcle n⟩
 
@@ -170,8 +170,8 @@ theorem xiCentralAbsMoment_add_le_div {c : ℝ} (hc : 0 < c)
       have hpow : (0 : ℝ) < c ^ (2 * k) := by positivity
       calc xiCentralAbsMoment (n + (k + 1))
           = xiCentralAbsMoment ((n + k) + 1) := by ring_nf
-        _ ≤ xiCentralAbsMoment (n + k) / c ^ 2 := hstep
-        _ ≤ (xiCentralAbsMoment n / c ^ (2 * k)) / c ^ 2 := by
+        _ ≤ xiCentralAbsMoment (n + k) / c ^ (2 : ℕ) := hstep
+        _ ≤ (xiCentralAbsMoment n / c ^ (2 * k)) / c ^ (2 : ℕ) := by
             gcongr
         _ = xiCentralAbsMoment n / c ^ (2 * (k + 1)) := by
             rw [div_div, ← pow_add]
@@ -185,8 +185,8 @@ theorem xiCentralAbsMoment_two_lt_div_of_height {c : ℝ} (hc : 9 < c)
       c ≤ ‖ρ - 1 / 2‖) (hpos : 0 < xiCentralAbsMoment 1) :
     xiCentralAbsMoment 2 < xiCentralAbsMoment 1 / 81 := by
   have hc0 : (0 : ℝ) < c := lt_trans (by norm_num) hc
-  have hsq : (81 : ℝ) < c ^ 2 := by nlinarith
-  calc xiCentralAbsMoment 2 ≤ xiCentralAbsMoment 1 / c ^ 2 :=
+  have hsq : (81 : ℝ) < c ^ (2 : ℕ) := by nlinarith
+  calc xiCentralAbsMoment 2 ≤ xiCentralAbsMoment 1 / c ^ (2 : ℕ) :=
         xiCentralAbsMoment_succ_le_div hc0 hheight 1
     _ < xiCentralAbsMoment 1 / 81 := by
         exact div_lt_div_of_pos_left hpos (by norm_num) hsq

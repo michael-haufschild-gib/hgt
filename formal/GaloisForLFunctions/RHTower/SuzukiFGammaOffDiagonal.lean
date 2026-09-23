@@ -25,7 +25,7 @@ noncomputable section
 theorem norm_dslope2_suzukiHalfInner_le (hRH : RiemannHypothesis) {γ δ : ℂ}
     (hγ : XiC γ = 0) (hδ : XiC δ = 0) (hne : δ ≠ γ) {z : ℂ} (hz : 0 ≤ z.im)
     (hR : 2 * (‖γ‖ + ‖δ‖ + 1) ≤ ‖z‖) :
-    ‖dslope (dslope suzukiHalfInner γ) δ z‖ ≤ 4 / ‖z‖ ^ 2 := by
+    ‖dslope (dslope suzukiHalfInner γ) δ z‖ ≤ 4 / ‖z‖ ^ (2 : ℕ) := by
   have hzpos : 0 < ‖z‖ := by
     have h : (0 : ℝ) < 2 * (‖γ‖ + ‖δ‖ + 1) := by positivity
     linarith
@@ -49,10 +49,10 @@ theorem norm_dslope2_suzukiHalfInner_le (hRH : RiemannHypothesis) {γ δ : ℂ}
     linarith
   rw [dslope2_suzukiHalfInner_apply hγ hδ hne hzγ hzδ, norm_div, norm_mul]
   have hh := norm_suzukiHalfInner_le_one_of_rh hRH hz
-  have hden : ‖z‖ ^ 2 / 4 ≤ ‖z - γ‖ * ‖z - δ‖ := by nlinarith [hgz, hdz, hzpos]
-  have hpos : (0 : ℝ) < ‖z‖ ^ 2 / 4 := by positivity
-  calc ‖suzukiHalfInner z‖ / (‖z - γ‖ * ‖z - δ‖) ≤ 1 / (‖z‖ ^ 2 / 4) := by gcongr
-    _ = 4 / ‖z‖ ^ 2 := by field_simp
+  have hden : ‖z‖ ^ (2 : ℕ) / 4 ≤ ‖z - γ‖ * ‖z - δ‖ := by nlinarith [hgz, hdz, hzpos]
+  have hpos : (0 : ℝ) < ‖z‖ ^ (2 : ℕ) / 4 := by positivity
+  calc ‖suzukiHalfInner z‖ / (‖z - γ‖ * ‖z - δ‖) ≤ 1 / (‖z‖ ^ (2 : ℕ) / 4) := by gcongr
+    _ = 4 / ‖z‖ ^ (2 : ℕ) := by field_simp
 
 theorem integral_dslope2_suzukiHalfInner_eq_zero (hRH : RiemannHypothesis) {γ δ : ℂ}
     (hγ : XiC γ = 0) (hδ : XiC δ = 0) (hne : δ ≠ γ) :
@@ -83,8 +83,8 @@ theorem div_ofReal_re (z : ℂ) (c : ℝ) : (z / (c : ℂ)).re = z.re / c := by
 energy `|A/E|²` integrates to zero against `1/((x-γ)(x-δ))`. -/
 theorem integrable_and_integral_normSq_suzukiHalfInner_div_pair (hRH : RiemannHypothesis)
     {γ δ : ℝ} (hγ : XiC ((γ : ℝ) : ℂ) = 0) (hδ : XiC ((δ : ℝ) : ℂ) = 0) (hne : δ ≠ γ) :
-    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / ((x - γ) * (x - δ))) ∧
-      (∫ x : ℝ, ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / ((x - γ) * (x - δ))) = 0 := by
+    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / ((x - γ) * (x - δ))) ∧
+      (∫ x : ℝ, ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / ((x - γ) * (x - δ))) = 0 := by
   have hneC : ((δ : ℝ) : ℂ) ≠ ((γ : ℝ) : ℂ) := by
     simpa using hne
   have hint := integrable_dslope2_suzukiHalfInner hRH hγ hδ hneC
@@ -96,7 +96,7 @@ theorem integrable_and_integral_normSq_suzukiHalfInner_div_pair (hRH : RiemannHy
   have hae : (fun x : ℝ =>
         Complex.reCLM (dslope (dslope suzukiHalfInner ((γ : ℝ) : ℂ)) ((δ : ℝ) : ℂ) ((x : ℝ) : ℂ)))
       =ᵐ[volume]
-      fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / ((x - γ) * (x - δ)) := by
+      fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / ((x - γ) * (x - δ)) := by
     filter_upwards [MeasureTheory.compl_mem_ae_iff.mpr hnull] with x hx
     have hxγ : ((x : ℝ) : ℂ) ≠ ((γ : ℝ) : ℂ) := by
       simp only [ne_eq, Complex.ofReal_inj]
@@ -115,13 +115,13 @@ theorem integrable_and_integral_normSq_suzukiHalfInner_div_pair (hRH : RiemannHy
 
 theorem integrable_normSq_suzukiHalfInner_div_pair (hRH : RiemannHypothesis) {γ δ : ℝ}
     (hγ : XiC ((γ : ℝ) : ℂ) = 0) (hδ : XiC ((δ : ℝ) : ℂ) = 0) (hne : δ ≠ γ) :
-    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / ((x - γ) * (x - δ))) :=
+    Integrable (fun x : ℝ => ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / ((x - γ) * (x - δ))) :=
   (integrable_and_integral_normSq_suzukiHalfInner_div_pair hRH hγ hδ hne).1
 
 /-- **The off-diagonal orthogonality integral.** -/
 theorem integral_normSq_suzukiHalfInner_div_pair (hRH : RiemannHypothesis) {γ δ : ℝ}
     (hγ : XiC ((γ : ℝ) : ℂ) = 0) (hδ : XiC ((δ : ℝ) : ℂ) = 0) (hne : δ ≠ γ) :
-    (∫ x : ℝ, ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ 2 / ((x - γ) * (x - δ))) = 0 :=
+    (∫ x : ℝ, ‖suzukiHalfInner ((x : ℝ) : ℂ)‖ ^ (2 : ℕ) / ((x - γ) * (x - δ))) = 0 :=
   (integrable_and_integral_normSq_suzukiHalfInner_div_pair hRH hγ hδ hne).2
 
 end

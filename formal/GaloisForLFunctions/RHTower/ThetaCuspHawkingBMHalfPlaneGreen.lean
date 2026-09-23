@@ -62,14 +62,14 @@ theorem map_volume_chart_eq : Measure.map UpperHalfPlane.coe (volume : Measure U
 
 /-- Squared height cancels the actual density on the entire upper half-plane. -/
 theorem integral_volume_height_sq_chart (F : ℂ → ℂ) :
-    (∫ z : UpperHalfPlane, (z.im : ℂ)^2*F z) = ∫ z in {z : ℂ | 0 < z.im}, F z := by
+    (∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*F z) = ∫ z in {z : ℂ | 0 < z.im}, F z := by
   have hm : Measurable chartDensity := by unfold chartDensity; fun_prop
   have hi (G : ℂ → ℂ) : (∫ z : UpperHalfPlane, G z) =
       ∫ z in {z : ℂ | 0 < z.im}, chartDensity z • G z := by
     rw [← UpperHalfPlane.measurableEmbedding_coe.integral_map, map_volume_chart_eq,
       integral_withDensity_eq_integral_smul hm]
-  change (∫ z : UpperHalfPlane, (((z:ℂ).im : ℂ)^2*F z)) = _
-  rw [hi (fun z => (z.im : ℂ)^2*F z)]
+  change (∫ z : UpperHalfPlane, (((z:ℂ).im : ℂ)^(2 : ℕ)*F z)) = _
+  rw [hi (fun z => (z.im : ℂ)^(2 : ℕ)*F z)]
   apply setIntegral_congr_fun isOpen_upperHalfPlaneSet.measurableSet
   intro z hz
   change 0 < z.im at hz
@@ -103,7 +103,7 @@ half-plane. Positive-height compact support discharges every boundary term. -/
 theorem weightedDeriv_full_test_identity (f : UpperHalfPlane → ℂ) (hf : ChartSmooth f)
     (g : PlanarChartTest) (v : ℂ) :
     (∫ z : UpperHalfPlane, weightedDeriv v f z*((z.im : ℂ)*g.field z)) =
-      -(∫ z : UpperHalfPlane, f z*((z.im : ℂ)^2*fderiv ℝ g.field (z:ℂ) v)) := by
+      -(∫ z : UpperHalfPlane, f z*((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g.field (z:ℂ) v)) := by
   let F : ℂ → ℂ := f ∘ ofComplex
   have hf'g := integrable_planar_test_mul _ g (chart_deriv_continuousOn_full f hf v)
   have hfg' := integrable_planar_test_mul F (g.derivative v) (chart_continuousOn_full f hf)
@@ -114,7 +114,7 @@ theorem weightedDeriv_full_test_identity (f : UpperHalfPlane → ℂ) (hf : Char
   have hL : (∫ z : UpperHalfPlane, weightedDeriv v f z*((z.im : ℂ)*g.field z)) =
       ∫ z : ℂ, fderiv ℝ F z v*g.field z := by
     calc
-      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^2*(fderiv ℝ F (z:ℂ) v*g.field z) := by
+      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*(fderiv ℝ F (z:ℂ) v*g.field z) := by
         apply integral_congr_ae
         exact Filter.Eventually.of_forall (fun z => by unfold weightedDeriv F; ring)
       _ = ∫ z in {z : ℂ | 0 < z.im}, fderiv ℝ F z v*g.field z :=
@@ -122,10 +122,10 @@ theorem weightedDeriv_full_test_identity (f : UpperHalfPlane → ℂ) (hf : Char
       _ = _ := setIntegral_eq_integral_of_forall_compl_eq_zero (fun z hz => by
         have hn : z ∉ tsupport g.field := fun hg => hz (g.support hg)
         rw [image_eq_zero_of_notMem_tsupport hn,mul_zero])
-  have hR : (∫ z : UpperHalfPlane, f z*((z.im : ℂ)^2*fderiv ℝ g.field (z:ℂ) v)) =
+  have hR : (∫ z : UpperHalfPlane, f z*((z.im : ℂ)^(2 : ℕ)*fderiv ℝ g.field (z:ℂ) v)) =
       ∫ z : ℂ, F z*fderiv ℝ g.field z v := by
     calc
-      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^2*(F z*fderiv ℝ g.field (z:ℂ) v) := by
+      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*(F z*fderiv ℝ g.field (z:ℂ) v) := by
         apply integral_congr_ae
         filter_upwards [] with z
         simp only [F,Function.comp_apply,ofComplex_apply]

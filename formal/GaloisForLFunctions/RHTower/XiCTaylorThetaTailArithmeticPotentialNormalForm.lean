@@ -346,7 +346,7 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
     hendpoint]
 
 /-- The critically normalized phase transform of the `n`-th arithmetic atom has an explicit
-affine endpoint jet and one `z^2`-weighted potential tail. -/
+affine endpoint jet and one `z^(2 : ℕ)`-weighted potential tail. -/
 theorem thetaCuspTailSecondDensityAtomPhase_eq_arithmeticEndpoint_sub_sq_potential
     {n : ℕ} (hn : 0 < n) {z : ℂ} (hz : 0 ≤ z.im) :
     thetaCuspTailSecondDensityAtomPhase n z =

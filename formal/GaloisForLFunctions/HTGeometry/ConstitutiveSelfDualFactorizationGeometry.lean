@@ -9,7 +9,7 @@ invertible lineage gauge.  Adjoint reversal acts on that gauge by `s ↦ (star s
 is exactly the balanced subgroup.  The two positive algebraic Gram coordinates are reciprocal, so
 they retain the radial gauge while exchanging it under reversal.
 
-The scalar Cartan work `4 sinh(x)^2` is nonnegative, even, and zero only at the balanced point.
+The scalar Cartan work `4 sinh(x)^(2 : ℕ)` is nonnegative, even, and zero only at the balanced point.
 For a finite packet, bounded work along every natural depth forces every radial rate to vanish.
 This is the unconditional algebraic/properness core of ULF-FFM-2.  It is not an RH statement.
 -/
@@ -144,7 +144,7 @@ end AdjointReversal
 noncomputable section CartanWork
 
 /-- One radial Cartan mode's reciprocal positive work. -/
-def cartanModeWork (x : ℝ) : ℝ := 4 * Real.sinh x ^ 2
+def cartanModeWork (x : ℝ) : ℝ := 4 * Real.sinh x ^ (2 : ℕ)
 
 /-- Reciprocal exponential form of Cartan work. -/
 theorem cartanModeWork_add_two (x : ℝ) :
@@ -152,9 +152,9 @@ theorem cartanModeWork_add_two (x : ℝ) :
   have hmul : Real.exp x * Real.exp (-x) = 1 := by
     rw [← Real.exp_add]
     simp
-  have hpos : Real.exp (2 * x) = Real.exp x ^ 2 := by
+  have hpos : Real.exp (2 * x) = Real.exp x ^ (2 : ℕ) := by
     rw [show 2 * x = x + x by ring, Real.exp_add, pow_two]
-  have hneg : Real.exp (-2 * x) = Real.exp (-x) ^ 2 := by
+  have hneg : Real.exp (-2 * x) = Real.exp (-x) ^ (2 : ℕ) := by
     rw [show -2 * x = -x + -x by ring, Real.exp_add, pow_two]
   rw [cartanModeWork, Real.sinh_eq, hpos, hneg]
   field_simp

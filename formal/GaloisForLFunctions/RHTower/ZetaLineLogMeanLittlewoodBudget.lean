@@ -213,10 +213,10 @@ theorem exists_zetaLine_littlewood_edge_budget :
   have horder : ∀ w ∈ Z, analyticOrderAt F w = analyticOrderAt riemannZeta w := by
     intro w hw
     have hwne : w ≠ 1 := hw1 w ((hZ w).mp hw).1
-    have hev : F =ᶠ[nhds w] (fun z : ℂ => (z - 1) ^ 2) * riemannZeta := by
+    have hev : F =ᶠ[nhds w] (fun z : ℂ => (z - 1) ^ (2 : ℕ)) * riemannZeta := by
       filter_upwards [isOpen_ne.mem_nhds hwne] with z hz
       rw [Pi.mul_apply, hFdef, levinsonGEntire_eq _ hz, levinsonG_zero_eq]
-    have hpow_an : AnalyticAt ℂ (fun z : ℂ => (z - 1) ^ 2) w :=
+    have hpow_an : AnalyticAt ℂ (fun z : ℂ => (z - 1) ^ (2 : ℕ)) w :=
       ((analyticAt_id.sub analyticAt_const).pow 2)
     rw [analyticOrderAt_congr hev,
       analyticOrderAt_mul hpow_an (analyticAt_riemannZeta_of_ne_one hwne),
@@ -232,7 +232,7 @@ theorem exists_zetaLine_littlewood_edge_budget :
   have hUsub : (uIcc (1 / 2 : ℝ) (15 / 2 : ℝ) ×ℂ uIcc T₁ T₂) ⊆ {z : ℂ | z ≠ 1} :=
     fun z hz => hw1 z hz
   have hcongrF : weightedLittlewoodBoundary F (1 / 2) (15 / 2) T₁ T₂
-      = weightedLittlewoodBoundary (fun z => (z - 1) ^ 2 * riemannZeta z) (1 / 2) (15 / 2)
+      = weightedLittlewoodBoundary (fun z => (z - 1) ^ (2 : ℕ) * riemannZeta z) (1 / 2) (15 / 2)
           T₁ T₂ := by
     refine weightedLittlewoodBoundary_congr hUopen hUsub ?_
     intro z hz
@@ -252,7 +252,7 @@ theorem exists_zetaLine_littlewood_edge_budget :
       rw [h]; exact left_mem_uIcc
     · have h : ((((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)).im = t := by simp
       rw [h]; exact ht
-  have hgaugefree : weightedLittlewoodBoundary (fun z => (z - 1) ^ 2 * riemannZeta z)
+  have hgaugefree : weightedLittlewoodBoundary (fun z => (z - 1) ^ (2 : ℕ) * riemannZeta z)
       (1 / 2) (15 / 2) T₁ T₂ = weightedLittlewoodBoundary riemannZeta (1 / 2) (15 / 2) T₁ T₂ := by
     refine weightedLittlewoodBoundary_poleGauge_mul (by norm_num) hT ?_ ?_ ?_ ?_ ?_ hleftfin
     · intro hmem
@@ -332,7 +332,7 @@ theorem exists_zetaLine_logMean_sandwich :
           edPoly b (Finset.Icc 1 N) ((x : ℂ) + (T₂ : ℂ) * I) ≠ 0) →
         (∫ t in T₁..T₂,
           ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
-            edPoly b (Finset.Icc 1 N) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq →
+            edPoly b (Finset.Icc 1 N) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ Msq →
         -(C + K * Real.log T₂) ≤
             (∫ t in T₁..T₂, Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) ∧
           (∫ t in T₁..T₂, Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖)

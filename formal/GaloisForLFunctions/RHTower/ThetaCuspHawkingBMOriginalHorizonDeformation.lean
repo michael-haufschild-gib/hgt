@@ -39,10 +39,10 @@ private theorem rate_parameter (u : ℂ) (b : Bool) :
 
 /-- The regular ingoing expression for every component of the original first field. -/
 def regularMetric (s aS aV E r y S Vx Vy : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  let T := aS*E*S*(s*(s-3)/2+s*(s+1)/(2*r^2))
-  let C := -aS*E*S*s*(r-1)*(2*r+s+1)/(2*r^2*(r+1))
-  let R := aS*E*S*s*(2*r+s+1)/(r^2*(r+1)^2)
-  let A := -aS*E*S*(r^2+s*(s+1)/2)*y⁻¹^2
+  let T := aS*E*S*(s*(s-3)/2+s*(s+1)/(2*r^(2 : ℕ)))
+  let C := -aS*E*S*s*(r-1)*(2*r+s+1)/(2*r^(2 : ℕ)*(r+1))
+  let R := aS*E*S*s*(2*r+s+1)/(r^(2 : ℕ)*(r+1)^(2 : ℕ))
+  let A := -aS*E*S*(r^(2 : ℕ)+s*(s+1)/2)*y⁻¹^(2 : ℕ)
   let t := -s*aV*E/r
   let d := -s*aV*E/(r*(r+1))
   !![T,C,t*Vx,t*Vy; C,R,d*Vx,d*Vy; t*Vx,d*Vx,A,0; t*Vy,d*Vy,0,A]
@@ -62,8 +62,8 @@ theorem regularMetric_eq_pullback (u aS aV : ℂ) (b : Bool)
   have hp : (p.val 1 : ℂ)+1 ≠ 0 := by
     have h : p.val 1+1 ≠ 0 := by linarith [p.property.1]
     exact_mod_cast h
-  have hf : (p.val 1 : ℂ)^2-1 ≠ 0 := by
-    have h : (p.val 1)^2-1 ≠ 0 := by nlinarith [p.property.1]
+  have hf : (p.val 1 : ℂ)^(2 : ℕ)-1 ≠ 0 := by
+    have h : (p.val 1)^(2 : ℕ)-1 ≠ 0 := by nlinarith [p.property.1]
     exact_mod_cast h
   rw [D4BMFullLinearEquation.literal_perturbation_split]
   change D4BMIngoingCoordinates.pullback _
@@ -320,7 +320,7 @@ def contraction (z : Point) (H K : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   ∑ i, ∑ j, ∑ k, ∑ l, (metric z)⁻¹ i k*(metric z)⁻¹ j l*H i j*K k l
 
 private theorem contraction_eq (z : AngularPoint) (H K : Matrix (Fin 2) (Fin 2) ℂ) :
-    contraction z H K = (z.val 1 : ℂ)^4*
+    contraction z H K = (z.val 1 : ℂ)^(4 : ℕ)*
       (H 0 0*K 0 0+H 0 1*K 0 1+H 1 0*K 1 0+H 1 1*K 1 1) := by
   simp [contraction, metric_inverse z z.property, Fin.sum_univ_two]
   ring
@@ -328,7 +328,7 @@ private theorem contraction_eq (z : AngularPoint) (H K : Matrix (Fin 2) (Fin 2) 
 /-- Distinct literal angular fields retain an antisymmetric mixed spin-two term. -/
 theorem hessian_rotated_pairing (u w : ℂ) (z : AngularPoint) :
     contraction z (tracefreeHessian u z) (rotatedHessian w z) =
-      2*(z.val 1 : ℂ)^4*(spinA u z*spinB w z-spinB u z*spinA w z) := by
+      2*(z.val 1 : ℂ)^(4 : ℕ)*(spinA u z*spinB w z-spinB u z*spinA w z) := by
   rw [contraction_eq, tracefreeHessian_values, rotatedHessian_values]
   simp
   ring
@@ -363,7 +363,7 @@ theorem deformation_pairing (u aS aV cS cV : ℂ) (b c : Bool) (v : ℝ) (z : An
 /-- Exact retained spin-two square, expressed in actual angular derivatives and metric weight. -/
 theorem tracefreeHessian_square (u : ℂ) (z : AngularPoint) :
     contraction z (tracefreeHessian u z) (tracefreeHessian u z) =
-      2*(z.val 1 : ℂ)^4*(spinA u z^2+spinB u z^2) := by
+      2*(z.val 1 : ℂ)^(4 : ℕ)*(spinA u z^(2 : ℕ)+spinB u z^(2 : ℕ)) := by
   rw [contraction_eq, tracefreeHessian_values]
   simp
   ring

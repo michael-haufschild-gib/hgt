@@ -124,7 +124,7 @@ theorem chronologicalDampedResponse_error (ε t : ℝ) (hε : 0 ≤ ε) :
       ε * Real.exp (-2*t) / (1 + ε * Real.exp (-t)) := by
   have hd : 1 + ε * Real.exp (-t) ≠ 0 := by positivity
   unfold chronologicalDampedResponse
-  have he : Real.exp (-2*t) = Real.exp (-t)^2 := by
+  have he : Real.exp (-2*t) = Real.exp (-t)^(2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -133,7 +133,7 @@ theorem chronologicalDampedResponse_error (ε t : ℝ) (hε : 0 ≤ ε) :
   ring
 
 theorem chronologicalDampedResponse_error_sq_le (ε t : ℝ) (hε : 0 ≤ ε) :
-    (Real.exp (-t) - chronologicalDampedResponse ε t)^2 ≤ ε^2 * Real.exp (-4*t) := by
+    (Real.exp (-t) - chronologicalDampedResponse ε t)^(2 : ℕ) ≤ ε^(2 : ℕ) * Real.exp (-4*t) := by
   rw [chronologicalDampedResponse_error ε t hε]
   have hd : 1 ≤ 1 + ε * Real.exp (-t) := by
     have hh : 0 ≤ ε * Real.exp (-t) := by positivity
@@ -141,7 +141,7 @@ theorem chronologicalDampedResponse_error_sq_le (ε t : ℝ) (hε : 0 ≤ ε) :
   have he : 0 ≤ ε * Real.exp (-2*t) := by positivity
   have hh := div_le_self he hd
   have hp := sq_le_sq₀ (by positivity : 0 ≤ ε * Real.exp (-2*t) / (1 + ε * Real.exp (-t))) he |>.mpr hh
-  have hex : Real.exp (-2*t)^2 = Real.exp (-4*t) := by
+  have hex : Real.exp (-2*t)^(2 : ℕ) = Real.exp (-4*t) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -156,11 +156,11 @@ theorem chronologicalDampedResponse_continuous (ε : ℝ) (hε : 0 ≤ ε) :
   positivity
 
 def chronologicalDampedResponseEnergy (ε : ℝ) : ℝ :=
-  ∫ t in Ioi (0:ℝ), (Real.exp (-t) - chronologicalDampedResponse ε t)^2
+  ∫ t in Ioi (0:ℝ), (Real.exp (-t) - chronologicalDampedResponse ε t)^(2 : ℕ)
 
 theorem chronologicalDampedResponse_error_integrable (ε : ℝ) (hε : 0 ≤ ε) :
-    IntegrableOn (fun t => (Real.exp (-t) - chronologicalDampedResponse ε t)^2) (Ioi 0) := by
-  have hb := (integrableOn_exp_mul_Ioi (a := (-4:ℝ)) (by linarith) 0).const_mul (ε^2)
+    IntegrableOn (fun t => (Real.exp (-t) - chronologicalDampedResponse ε t)^(2 : ℕ)) (Ioi 0) := by
+  have hb := (integrableOn_exp_mul_Ioi (a := (-4:ℝ)) (by linarith) 0).const_mul (ε^(2 : ℕ))
   apply hb.mono' ((Real.continuous_exp.comp continuous_neg).sub
     (chronologicalDampedResponse_continuous ε hε) |>.pow 2 |>.aestronglyMeasurable)
   filter_upwards with t
@@ -168,11 +168,11 @@ theorem chronologicalDampedResponse_error_integrable (ε : ℝ) (hε : 0 ≤ ε)
   exact chronologicalDampedResponse_error_sq_le ε t hε
 
 theorem chronologicalDampedResponseEnergy_bound (ε : ℝ) (hε : 0 ≤ ε) :
-    0 ≤ chronologicalDampedResponseEnergy ε ∧ chronologicalDampedResponseEnergy ε ≤ ε^2/4 := by
+    0 ≤ chronologicalDampedResponseEnergy ε ∧ chronologicalDampedResponseEnergy ε ≤ ε^(2 : ℕ)/4 := by
   constructor
   · exact integral_nonneg (fun t => sq_nonneg _)
   · have hh := integral_mono (chronologicalDampedResponse_error_integrable ε hε)
-      ((integrableOn_exp_mul_Ioi (a := (-4:ℝ)) (by linarith) 0).const_mul (ε^2))
+      ((integrableOn_exp_mul_Ioi (a := (-4:ℝ)) (by linarith) 0).const_mul (ε^(2 : ℕ)))
       (chronologicalDampedResponse_error_sq_le ε · hε)
     rw [integral_const_mul, integral_exp_mul_Ioi (by linarith : (-4:ℝ)<0) 0] at hh
     simpa only [chronologicalDampedResponseEnergy, mul_zero, Real.exp_zero, neg_div_neg_eq,

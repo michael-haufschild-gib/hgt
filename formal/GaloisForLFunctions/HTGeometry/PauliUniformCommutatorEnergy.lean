@@ -62,7 +62,7 @@ theorem frobSq_pauli_commutator_sum
         (finitePauliMatrix Q * (∑ P, J P • finitePauliMatrix P) -
           (∑ P, J P • finitePauliMatrix P) * finitePauliMatrix Q) =
       2 ^ Fintype.card σ *
-        ∑ P, ‖J P‖ ^ 2 * ‖optPhaseProd Q P - optPhaseProd P Q‖ ^ 2 := by
+        ∑ P, ‖J P‖ ^ (2 : ℕ) * ‖optPhaseProd Q P - optPhaseProd P Q‖ ^ (2 : ℕ) := by
   rw [pauli_commutator_sum_eq_response, frobSq_pauliCombination]
   congr 1
   apply Fintype.sum_equiv (optMulLabelEquiv Q).symm
@@ -73,14 +73,14 @@ theorem frobSq_pauli_commutator_sum
 theorem norm_phaseDifference_sq_eq_indicator
     {σ : Type*} [Fintype σ] [DecidableEq σ]
     (Q P : σ → Option (Fin 3)) :
-    ‖optPhaseProd Q P - optPhaseProd P Q‖ ^ 2 =
+    ‖optPhaseProd Q P - optPhaseProd P Q‖ ^ (2 : ℕ) =
       if finitePauliConjugationSign Q P = -1 then 4 else 0 := by
   by_cases hanti : finitePauliConjugationSign Q P = -1
   · rw [if_pos hanti,
       norm_optPhaseProd_sub_swap_of_conjugationSign_eq_neg_one hanti]
     norm_num
   · rw [if_neg hanti]
-    have hsq : finitePauliConjugationSign Q P ^ 2 = 1 := by
+    have hsq : finitePauliConjugationSign Q P ^ (2 : ℕ) = 1 := by
       simpa [pow_two] using finitePauliConjugationSign_sq Q P
     have hone : finitePauliConjugationSign Q P = 1 := by
       rcases (sq_eq_one_iff.mp hsq) with h | h
@@ -94,13 +94,13 @@ theorem four_mul_pauliAnticommutingIncidenceMass_le_phaseEnergy
     (J : (Fin n → Option (Fin 3)) → ℂ)
     (Q : boundedLocalPauliLabel n q) :
     4 * pauliAnticommutingIncidenceMass
-          (fun P => ‖J P.1‖ ^ 2) Q ≤
+          (fun P => ‖J P.1‖ ^ (2 : ℕ)) Q ≤
       ∑ P : Fin n → Option (Fin 3),
-        ‖J P‖ ^ 2 * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ 2 := by
+        ‖J P‖ ^ (2 : ℕ) * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ (2 : ℕ) := by
   let nz : Finset (Fin n → Option (Fin 3)) :=
     Finset.univ.filter fun P => P ≠ pauliCharacterZero
   let energy : (Fin n → Option (Fin 3)) → ℝ := fun P =>
-    ‖J P‖ ^ 2 * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ 2
+    ‖J P‖ ^ (2 : ℕ) * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ (2 : ℕ)
   have hsub :
       (∑ P ∈ nz, energy P) =
         ∑ P : NonzeroPauliCharacter (Fin n), energy P.1 := by
@@ -109,12 +109,12 @@ theorem four_mul_pauliAnticommutingIncidenceMass_le_phaseEnergy
     mul_nonneg (sq_nonneg _) (sq_nonneg _)
   calc
     4 * pauliAnticommutingIncidenceMass
-          (fun P => ‖J P.1‖ ^ 2) Q =
+          (fun P => ‖J P.1‖ ^ (2 : ℕ)) Q =
         ∑ P : NonzeroPauliCharacter (Fin n), energy P.1 := by
       rw [pauliAnticommutingIncidenceMass, Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro P _
-      rw [show energy P.1 = ‖J P.1‖ ^ 2 *
+      rw [show energy P.1 = ‖J P.1‖ ^ (2 : ℕ) *
           (if finitePauliConjugationSign Q.1 P.1 = -1 then 4 else 0) by
         simp only [energy]
         rw [norm_phaseDifference_sq_eq_indicator]]
@@ -125,7 +125,7 @@ theorem four_mul_pauliAnticommutingIncidenceMass_le_phaseEnergy
       exact Finset.sum_le_sum_of_subset_of_nonneg (by simp [nz])
         (fun P _ _ => hnonneg P)
     _ = ∑ P : Fin n → Option (Fin 3),
-        ‖J P‖ ^ 2 * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ 2 := rfl
+        ‖J P‖ ^ (2 : ℕ) * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ (2 : ℕ) := rfl
 
 /-- Exact form of the incidence law.  The apparent inequality above comes
 only from retaining the scalar Pauli label; its phase energy vanishes exactly,
@@ -135,13 +135,13 @@ theorem four_mul_pauliAnticommutingIncidenceMass_eq_phaseEnergy
     (J : (Fin n → Option (Fin 3)) → ℂ)
     (Q : boundedLocalPauliLabel n q) :
     4 * pauliAnticommutingIncidenceMass
-          (fun P => ‖J P.1‖ ^ 2) Q =
+          (fun P => ‖J P.1‖ ^ (2 : ℕ)) Q =
       ∑ P : Fin n → Option (Fin 3),
-        ‖J P‖ ^ 2 * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ 2 := by
+        ‖J P‖ ^ (2 : ℕ) * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ (2 : ℕ) := by
   let nz : Finset (Fin n → Option (Fin 3)) :=
     Finset.univ.filter fun P => P ≠ pauliCharacterZero
   let energy : (Fin n → Option (Fin 3)) → ℝ := fun P =>
-    ‖J P‖ ^ 2 * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ 2
+    ‖J P‖ ^ (2 : ℕ) * ‖optPhaseProd Q.1 P - optPhaseProd P Q.1‖ ^ (2 : ℕ)
   have hsub :
       (∑ P ∈ nz, energy P) =
         ∑ P : NonzeroPauliCharacter (Fin n), energy P.1 := by
@@ -159,7 +159,7 @@ theorem four_mul_pauliAnticommutingIncidenceMass_eq_phaseEnergy
       intro s _
       simp [pauliCharacterZero, boolPauliConjugationSign]
     rw [show energy pauliCharacterZero =
-        ‖J pauliCharacterZero‖ ^ 2 *
+        ‖J pauliCharacterZero‖ ^ (2 : ℕ) *
           (if finitePauliConjugationSign Q.1 pauliCharacterZero = -1
             then 4 else 0) by
       simp only [energy]
@@ -168,12 +168,12 @@ theorem four_mul_pauliAnticommutingIncidenceMass_eq_phaseEnergy
     norm_num
   calc
     4 * pauliAnticommutingIncidenceMass
-          (fun P => ‖J P.1‖ ^ 2) Q =
+          (fun P => ‖J P.1‖ ^ (2 : ℕ)) Q =
         ∑ P : NonzeroPauliCharacter (Fin n), energy P.1 := by
       rw [pauliAnticommutingIncidenceMass, Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro P _
-      rw [show energy P.1 = ‖J P.1‖ ^ 2 *
+      rw [show energy P.1 = ‖J P.1‖ ^ (2 : ℕ) *
           (if finitePauliConjugationSign Q.1 P.1 = -1 then 4 else 0) by
         simp only [energy]
         rw [norm_phaseDifference_sq_eq_indicator]]
@@ -194,7 +194,7 @@ theorem boundedLocalPauli_total_commutator_energy_eq_incidenceMass
       4 * (2 : ℝ) ^ n *
         ∑ Q : boundedLocalPauliLabel n q,
           pauliAnticommutingIncidenceMass
-            (fun P => ‖J P.1‖ ^ 2) Q := by
+            (fun P => ‖J P.1‖ ^ (2 : ℕ)) Q := by
   calc
     (∑ Q : boundedLocalPauliLabel n q,
         frobSq
@@ -203,7 +203,7 @@ theorem boundedLocalPauli_total_commutator_energy_eq_incidenceMass
       ∑ Q : boundedLocalPauliLabel n q,
         (2 : ℝ) ^ n *
           (4 * pauliAnticommutingIncidenceMass
-            (fun P => ‖J P.1‖ ^ 2) Q) := by
+            (fun P => ‖J P.1‖ ^ (2 : ℕ)) Q) := by
       apply Finset.sum_congr rfl
       intro Q _
       rw [frobSq_pauli_commutator_sum]
@@ -212,7 +212,7 @@ theorem boundedLocalPauli_total_commutator_energy_eq_incidenceMass
     _ = 4 * (2 : ℝ) ^ n *
         ∑ Q : boundedLocalPauliLabel n q,
           pauliAnticommutingIncidenceMass
-            (fun P => ‖J P.1‖ ^ 2) Q := by
+            (fun P => ‖J P.1‖ ^ (2 : ℕ)) Q := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro Q _
@@ -228,7 +228,7 @@ theorem boundedLocalPauli_total_commutator_energy_matrix_eq_incidenceMass
       4 * (2 : ℝ) ^ n *
         ∑ Q : boundedLocalPauliLabel n q,
           pauliAnticommutingIncidenceMass
-            (fun P => ‖pauliCoeff A P.1‖ ^ 2) Q := by
+            (fun P => ‖pauliCoeff A P.1‖ ^ (2 : ℕ)) Q := by
   simpa only [sum_pauliCoeff_smul] using
     boundedLocalPauli_total_commutator_energy_eq_incidenceMass
       (q := q) (pauliCoeff A)
@@ -240,19 +240,19 @@ theorem boundedLocalPauli_total_commutator_energy_ge
     {n q : ℕ} (hq : 2 ≤ q)
     (J : (Fin n → Option (Fin 3)) → ℂ) :
     4 * (2 : ℝ) ^ n * ((n - 1 : ℕ) : ℝ) *
-        ∑ P : NonzeroPauliCharacter (Fin n), ‖J P.1‖ ^ 2 ≤
+        ∑ P : NonzeroPauliCharacter (Fin n), ‖J P.1‖ ^ (2 : ℕ) ≤
       ∑ Q : boundedLocalPauliLabel n q,
         frobSq
           (finitePauliMatrix Q.1 * (∑ P, J P • finitePauliMatrix P) -
             (∑ P, J P • finitePauliMatrix P) * finitePauliMatrix Q.1) := by
-  let mass : NonzeroPauliCharacter (Fin n) → ℝ := fun P => ‖J P.1‖ ^ 2
+  let mass : NonzeroPauliCharacter (Fin n) → ℝ := fun P => ‖J P.1‖ ^ (2 : ℕ)
   have hinc := total_pauliAnticommutingIncidenceMass_ge hq mass
     (fun P => sq_nonneg ‖J P.1‖)
   have hscale_nonneg : 0 ≤ 4 * (2 : ℝ) ^ n := by positivity
   have hscaled := mul_le_mul_of_nonneg_left hinc hscale_nonneg
   calc
     4 * (2 : ℝ) ^ n * ((n - 1 : ℕ) : ℝ) *
-          ∑ P : NonzeroPauliCharacter (Fin n), ‖J P.1‖ ^ 2 =
+          ∑ P : NonzeroPauliCharacter (Fin n), ‖J P.1‖ ^ (2 : ℕ) =
         (4 * (2 : ℝ) ^ n) *
           (((n - 1 : ℕ) : ℝ) * ∑ P, mass P) := by
       simp only [mass]
@@ -286,7 +286,7 @@ theorem boundedLocalPauli_total_commutator_energy_matrix_ge
     (A : Matrix (FiniteQubitConfiguration (Fin n))
       (FiniteQubitConfiguration (Fin n)) ℂ) :
     4 * (2 : ℝ) ^ n * ((n - 1 : ℕ) : ℝ) *
-        ∑ P : NonzeroPauliCharacter (Fin n), ‖pauliCoeff A P.1‖ ^ 2 ≤
+        ∑ P : NonzeroPauliCharacter (Fin n), ‖pauliCoeff A P.1‖ ^ (2 : ℕ) ≤
       ∑ Q : boundedLocalPauliLabel n q,
         frobSq
           (finitePauliMatrix Q.1 * A - A * finitePauliMatrix Q.1) := by

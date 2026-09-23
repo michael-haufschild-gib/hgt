@@ -96,7 +96,7 @@ theorem differentialAlgebraicOver_zeroNomeMeroInv :
     (c₂ := 2 * (Real.pi : ℂ) * Complex.I) (c₁ := -(2 * (Real.pi : ℂ) * Complex.I))
     (c₀ := 0) ?_
   have hne := zeroNomeMero_ne_zero
-  have hinv : (zeroNomeMero⁻¹)′ = -zeroNomeMero⁻¹ ^ 2 * (zeroNomeMero)′ := by
+  have hinv : (zeroNomeMero⁻¹)′ = -zeroNomeMero⁻¹ ^ (2 : ℕ) * (zeroNomeMero)′ := by
     letI : Algebra ℤ (meroField (Set.univ : Set ℂ)) := Ring.toIntAlgebra _
     simpa [smul_eq_mul] using Differential.deriv.leibniz_inv zeroNomeMero
   rw [hinv, deriv_zeroNomeMero, map_zero, map_neg, add_zero]

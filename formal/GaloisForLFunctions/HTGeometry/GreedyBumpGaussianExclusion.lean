@@ -8,16 +8,16 @@ noncomputable section
 
 /-- Unit-width Gaussian-template overlap from the paper's worked model. -/
 def greedyBumpGaussianOverlap (x : ℝ) : ℝ :=
-  Real.exp (-x ^ 2 / 4)
+  Real.exp (-x ^ (2 : ℕ) / 4)
 
 /-- Symmetric conditional derivative variance in principal coordinates. -/
 def greedyBumpGaussianDPlus (x : ℝ) : ℝ :=
-  1 / 2 + (1 / 2 - x ^ 2 / 4) * greedyBumpGaussianOverlap x
+  1 / 2 + (1 / 2 - x ^ (2 : ℕ) / 4) * greedyBumpGaussianOverlap x
 
 /-- Antisymmetric conditional derivative variance after value conditioning. -/
 def greedyBumpGaussianLambdaMinus (x : ℝ) : ℝ :=
   1 - greedyBumpGaussianOverlap x -
-    x ^ 2 * greedyBumpGaussianOverlap x ^ 2 /
+    x ^ (2 : ℕ) * greedyBumpGaussianOverlap x ^ (2 : ℕ) /
       (4 * greedyBumpGaussianDPlus x)
 
 /-- Polynomially simplified numerator of the conditioned variance. -/
@@ -36,8 +36,8 @@ def greedyBumpGaussianLambdaMinusSq (t : ℝ) : ℝ :=
 /-- Squared-separation and physical-separation conditional variances agree exactly. -/
 theorem greedyBumpGaussianLambdaMinus_eq_sq (x : ℝ) :
     greedyBumpGaussianLambdaMinus x =
-      greedyBumpGaussianLambdaMinusSq (x ^ 2) := by
-  have hexp : greedyBumpGaussianOverlap x ^ 2 = Real.exp (-(x ^ 2) / 2) := by
+      greedyBumpGaussianLambdaMinusSq (x ^ (2 : ℕ)) := by
+  have hexp : greedyBumpGaussianOverlap x ^ (2 : ℕ) = Real.exp (-(x ^ (2 : ℕ)) / 2) := by
     unfold greedyBumpGaussianOverlap
     rw [sq, ← Real.exp_add]
     congr 1
@@ -81,16 +81,16 @@ theorem greedyBumpGaussian_coincidence :
 
 /-- Cubic numerator cancellation in squared separation. -/
 theorem greedyBumpGaussianNumerator_ratio_tendsto :
-    Tendsto (fun t : ℝ => greedyBumpGaussianNumerator t / t ^ 3)
+    Tendsto (fun t : ℝ => greedyBumpGaussianNumerator t / t ^ (3 : ℕ))
       (𝓝[≠] 0) (𝓝 (1 / 96 : ℝ)) := by
   have htend : Tendsto (fun t : ℝ => -t / 4) (𝓝 0) (𝓝 0) := by
     simpa using (by fun_prop : ContinuousAt (fun t : ℝ => -t / 4) 0).tendsto
   have h4raw := (Real.exp_sub_sum_range_succ_isLittleO_pow 2).comp_tendsto htend
   have h4 :
-      (fun t : ℝ => Real.exp (-t / 4) - (1 - t / 4 + t ^ 2 / 32)) =o[𝓝 0]
-        (fun t => t ^ 2) := by
-    have hrhs : (fun t : ℝ => (-t / 4) ^ 2) =O[𝓝 0] (fun t => t ^ 2) := by
-      apply (isBigO_const_mul_self (1 / 16 : ℝ) (fun t : ℝ => t ^ 2) (𝓝 0)).congr'
+      (fun t : ℝ => Real.exp (-t / 4) - (1 - t / 4 + t ^ (2 : ℕ) / 32)) =o[𝓝 0]
+        (fun t => t ^ (2 : ℕ)) := by
+    have hrhs : (fun t : ℝ => (-t / 4) ^ (2 : ℕ)) =O[𝓝 0] (fun t => t ^ (2 : ℕ)) := by
+      apply (isBigO_const_mul_self (1 / 16 : ℝ) (fun t : ℝ => t ^ (2 : ℕ)) (𝓝 0)).congr'
       · filter_upwards with t
         ring
       · rfl
@@ -104,10 +104,10 @@ theorem greedyBumpGaussianNumerator_ratio_tendsto :
   have h2raw := (Real.exp_sub_sum_range_succ_isLittleO_pow 3).comp_tendsto htend2
   have h2 :
       (fun t : ℝ => Real.exp (-t / 2) -
-        (1 - t / 2 + t ^ 2 / 8 - t ^ 3 / 48)) =o[𝓝 0]
-          (fun t => t ^ 3) := by
-    have hrhs : (fun t : ℝ => (-t / 2) ^ 3) =O[𝓝 0] (fun t => t ^ 3) := by
-      apply (isBigO_const_mul_self (-1 / 8 : ℝ) (fun t : ℝ => t ^ 3) (𝓝 0)).congr'
+        (1 - t / 2 + t ^ (2 : ℕ) / 8 - t ^ (3 : ℕ) / 48)) =o[𝓝 0]
+          (fun t => t ^ (3 : ℕ)) := by
+    have hrhs : (fun t : ℝ => (-t / 2) ^ (3 : ℕ)) =O[𝓝 0] (fun t => t ^ (3 : ℕ)) := by
+      apply (isBigO_const_mul_self (-1 / 8 : ℝ) (fun t : ℝ => t ^ (3 : ℕ)) (𝓝 0)).congr'
       · filter_upwards with t
         ring
       · rfl
@@ -119,8 +119,8 @@ theorem greedyBumpGaussianNumerator_ratio_tendsto :
   have ht : (fun t : ℝ => t) =O[𝓝 0] (fun t => t) := isBigO_refl _ _
   have h4mul :
       (fun t : ℝ => -t *
-        (Real.exp (-t / 4) - (1 - t / 4 + t ^ 2 / 32))) =o[𝓝 0]
-          (fun t => t ^ 3) := by
+        (Real.exp (-t / 4) - (1 - t / 4 + t ^ (2 : ℕ) / 32))) =o[𝓝 0]
+          (fun t => t ^ (3 : ℕ)) := by
     apply (ht.neg_left.mul_isLittleO h4).congr'
     · filter_upwards with t
       rfl
@@ -128,11 +128,11 @@ theorem greedyBumpGaussianNumerator_ratio_tendsto :
       ring
   have h2mul :
       (fun t : ℝ => -2 * (Real.exp (-t / 2) -
-        (1 - t / 2 + t ^ 2 / 8 - t ^ 3 / 48))) =o[𝓝 0]
-          (fun t => t ^ 3) := h2.const_mul_left (-2)
+        (1 - t / 2 + t ^ (2 : ℕ) / 8 - t ^ (3 : ℕ) / 48))) =o[𝓝 0]
+          (fun t => t ^ (3 : ℕ)) := h2.const_mul_left (-2)
   have hnum :
-      (fun t : ℝ => greedyBumpGaussianNumerator t - t ^ 3 / 96) =o[𝓝 0]
-        (fun t => t ^ 3) := by
+      (fun t : ℝ => greedyBumpGaussianNumerator t - t ^ (3 : ℕ) / 96) =o[𝓝 0]
+        (fun t => t ^ (3 : ℕ)) := by
     apply (h4mul.add h2mul).congr'
     · filter_upwards with t
       simp only [greedyBumpGaussianNumerator]
@@ -142,10 +142,10 @@ theorem greedyBumpGaussianNumerator_ratio_tendsto :
   have hsum0 := hzero.add (tendsto_const_nhds :
     Tendsto (fun _ : ℝ => (1 / 96 : ℝ)) (𝓝 0) (𝓝 (1 / 96 : ℝ)))
   have hsum0' : Tendsto
-      (fun x => (greedyBumpGaussianNumerator x - x ^ 3 / 96) / x ^ 3 + 1 / 96)
+      (fun x => (greedyBumpGaussianNumerator x - x ^ (3 : ℕ) / 96) / x ^ (3 : ℕ) + 1 / 96)
       (𝓝 0) (𝓝 (1 / 96 : ℝ)) := by simpa using hsum0
   have hsum : Tendsto
-      (fun x => (greedyBumpGaussianNumerator x - x ^ 3 / 96) / x ^ 3 + 1 / 96)
+      (fun x => (greedyBumpGaussianNumerator x - x ^ (3 : ℕ) / 96) / x ^ (3 : ℕ) + 1 / 96)
       (𝓝[≠] 0) (𝓝 (1 / 96 : ℝ)) := tendsto_nhdsWithin_of_tendsto_nhds hsum0'
   refine hsum.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with t ht
@@ -155,7 +155,7 @@ theorem greedyBumpGaussianNumerator_ratio_tendsto :
 
 /-- Sixth-order conditioned-variance cancellation in squared separation. -/
 theorem greedyBumpGaussianLambdaMinusSq_ratio_tendsto :
-    Tendsto (fun t : ℝ => greedyBumpGaussianLambdaMinusSq t / t ^ 3)
+    Tendsto (fun t : ℝ => greedyBumpGaussianLambdaMinusSq t / t ^ (3 : ℕ))
       (𝓝[≠] 0) (𝓝 (1 / 384 : ℝ)) := by
   have hden : Tendsto (fun t : ℝ => 4 * greedyBumpGaussianDPlusSq t)
       (𝓝[≠] 0) (𝓝 4) := by
@@ -168,7 +168,7 @@ theorem greedyBumpGaussianLambdaMinusSq_ratio_tendsto :
     simpa only [hzero, mul_one] using hc.tendsto
   have hquot := greedyBumpGaussianNumerator_ratio_tendsto.div hden (by norm_num)
   have hquot' : Tendsto
-      (fun t : ℝ => (greedyBumpGaussianNumerator t / t ^ 3) /
+      (fun t : ℝ => (greedyBumpGaussianNumerator t / t ^ (3 : ℕ)) /
         (4 * greedyBumpGaussianDPlusSq t))
       (𝓝[≠] 0) (𝓝 (1 / 384 : ℝ)) := by
     norm_num at hquot ⊢
@@ -189,21 +189,21 @@ theorem greedyBumpGaussianLambdaMinusSq_ratio_tendsto :
 
 /-- Paper's physical sixth-order exclusion law: `λ₋(x) / x⁶ → 1/384`. -/
 theorem greedyBumpGaussianLambdaMinus_ratio_six_tendsto :
-    Tendsto (fun x : ℝ => greedyBumpGaussianLambdaMinus x / x ^ 6)
+    Tendsto (fun x : ℝ => greedyBumpGaussianLambdaMinus x / x ^ (6 : ℕ))
       (𝓝[≠] 0) (𝓝 (1 / 384 : ℝ)) := by
-  have hmap : Tendsto (fun x : ℝ => x ^ 2)
+  have hmap : Tendsto (fun x : ℝ => x ^ (2 : ℕ))
       (𝓝[≠] (0 : ℝ)) (𝓝[≠] (0 : ℝ)) := by
     rw [tendsto_nhdsWithin_iff]
     constructor
-    · have hsq : Tendsto (fun x : ℝ => x ^ 2)
+    · have hsq : Tendsto (fun x : ℝ => x ^ (2 : ℕ))
           (𝓝 (0 : ℝ)) (𝓝 (0 : ℝ)) := by
-        simpa using (by fun_prop : ContinuousAt (fun x : ℝ => x ^ 2) 0).tendsto
+        simpa using (by fun_prop : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ)) 0).tendsto
       exact hsq.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with x hx
       exact pow_ne_zero 2 hx
   have hcomp := greedyBumpGaussianLambdaMinusSq_ratio_tendsto.comp hmap
   change Tendsto
-    (fun x : ℝ => greedyBumpGaussianLambdaMinusSq (x ^ 2) / (x ^ 2) ^ 3)
+    (fun x : ℝ => greedyBumpGaussianLambdaMinusSq (x ^ (2 : ℕ)) / (x ^ (2 : ℕ)) ^ (3 : ℕ))
       (𝓝[≠] 0) (𝓝 (1 / 384 : ℝ)) at hcomp
   refine hcomp.congr' ?_
   filter_upwards with x
@@ -215,12 +215,12 @@ theorem greedyBumpGaussianLambdaMinus_ratio_six_tendsto :
 
 /-- Antisymmetric derivative-covariance eigenvalue at unit template width. -/
 def greedyBumpGaussianDMinus (x : ℝ) : ℝ :=
-  1 / 2 - (1 / 2 - x ^ 2 / 4) * greedyBumpGaussianOverlap x
+  1 / 2 - (1 / 2 - x ^ (2 : ℕ) / 4) * greedyBumpGaussianOverlap x
 
 /-- Symmetric height variance after conditioning both slopes to vanish. -/
 def greedyBumpGaussianLambdaPlus (x : ℝ) : ℝ :=
   1 + greedyBumpGaussianOverlap x -
-    x ^ 2 * greedyBumpGaussianOverlap x ^ 2 /
+    x ^ (2 : ℕ) * greedyBumpGaussianOverlap x ^ (2 : ℕ) /
       (4 * greedyBumpGaussianDMinus x)
 
 /-- Antisymmetric derivative variance as a function of squared separation. -/
@@ -242,13 +242,13 @@ abbrev GaussianSymmetricAdmissibleSquaredSeparation :=
 
 /-- Physical and squared-separation derivative eigenvalues agree. -/
 theorem greedyBumpGaussianDMinus_eq_sq (x : ℝ) :
-    greedyBumpGaussianDMinus x = greedyBumpGaussianDMinusSq (x ^ 2) := by
+    greedyBumpGaussianDMinus x = greedyBumpGaussianDMinusSq (x ^ (2 : ℕ)) := by
   rfl
 
 /-- Physical and squared-separation symmetric height variances agree. -/
 theorem greedyBumpGaussianLambdaPlus_eq_sq (x : ℝ) :
-    greedyBumpGaussianLambdaPlus x = greedyBumpGaussianLambdaPlusSq (x ^ 2) := by
-  have hexp : greedyBumpGaussianOverlap x ^ 2 = Real.exp (-(x ^ 2) / 2) := by
+    greedyBumpGaussianLambdaPlus x = greedyBumpGaussianLambdaPlusSq (x ^ (2 : ℕ)) := by
+  have hexp : greedyBumpGaussianOverlap x ^ (2 : ℕ) = Real.exp (-(x ^ (2 : ℕ)) / 2) := by
     unfold greedyBumpGaussianOverlap
     rw [sq, ← Real.exp_add]
     congr 1
@@ -357,15 +357,15 @@ theorem greedyBumpGaussianLambdaPlusSq_tendsto :
 
 /-- In physical separation, the derivative exclusion mode opens as `3x²/8`. -/
 theorem greedyBumpGaussianDMinus_ratio_sq_tendsto :
-    Tendsto (fun x : ℝ => greedyBumpGaussianDMinus x / x ^ 2)
+    Tendsto (fun x : ℝ => greedyBumpGaussianDMinus x / x ^ (2 : ℕ))
       (𝓝[≠] 0) (𝓝 (3 / 8 : ℝ)) := by
-  have hmap : Tendsto (fun x : ℝ => x ^ 2)
+  have hmap : Tendsto (fun x : ℝ => x ^ (2 : ℕ))
       (𝓝[≠] (0 : ℝ)) (𝓝[≠] (0 : ℝ)) := by
     rw [tendsto_nhdsWithin_iff]
     constructor
-    · have hsq : Tendsto (fun x : ℝ => x ^ 2)
+    · have hsq : Tendsto (fun x : ℝ => x ^ (2 : ℕ))
           (𝓝 (0 : ℝ)) (𝓝 (0 : ℝ)) := by
-        simpa using (by fun_prop : ContinuousAt (fun x : ℝ => x ^ 2) 0).tendsto
+        simpa using (by fun_prop : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ)) 0).tendsto
       exact hsq.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with x hx
       exact pow_ne_zero 2 hx
@@ -378,13 +378,13 @@ theorem greedyBumpGaussianDMinus_ratio_sq_tendsto :
 /-- In physical separation, the symmetric conditional variance tends to `4/3`. -/
 theorem greedyBumpGaussianLambdaPlus_tendsto :
     Tendsto greedyBumpGaussianLambdaPlus (𝓝[≠] 0) (𝓝 (4 / 3 : ℝ)) := by
-  have hmap : Tendsto (fun x : ℝ => x ^ 2)
+  have hmap : Tendsto (fun x : ℝ => x ^ (2 : ℕ))
       (𝓝[≠] (0 : ℝ)) (𝓝[≠] (0 : ℝ)) := by
     rw [tendsto_nhdsWithin_iff]
     constructor
-    · have hsq : Tendsto (fun x : ℝ => x ^ 2)
+    · have hsq : Tendsto (fun x : ℝ => x ^ (2 : ℕ))
           (𝓝 (0 : ℝ)) (𝓝 (0 : ℝ)) := by
-        simpa using (by fun_prop : ContinuousAt (fun x : ℝ => x ^ 2) 0).tendsto
+        simpa using (by fun_prop : ContinuousAt (fun x : ℝ => x ^ (2 : ℕ)) 0).tendsto
       exact hsq.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with x hx
       exact pow_ne_zero 2 hx
@@ -397,7 +397,7 @@ theorem greedyBumpGaussianLambdaPlus_tendsto :
 /-- Paper's principal-mode separation: `Λ₋/Λ₊` is asymptotic to `x⁶/512`. -/
 theorem greedyBumpGaussian_heightMode_ratio_six_tendsto :
     Tendsto (fun x : ℝ =>
-      (greedyBumpGaussianLambdaMinus x / greedyBumpGaussianLambdaPlus x) / x ^ 6)
+      (greedyBumpGaussianLambdaMinus x / greedyBumpGaussianLambdaPlus x) / x ^ (6 : ℕ))
       (𝓝[≠] 0) (𝓝 (1 / 512 : ℝ)) := by
   have hquot := (greedyBumpGaussianLambdaMinus_ratio_six_tendsto).div
     greedyBumpGaussianLambdaPlus_tendsto (by norm_num)
@@ -405,7 +405,7 @@ theorem greedyBumpGaussian_heightMode_ratio_six_tendsto :
       greedyBumpGaussianLambdaPlus x ≠ 0 :=
     greedyBumpGaussianLambdaPlus_tendsto.eventually_ne (by norm_num)
   have hquot' : Tendsto
-      (fun x : ℝ => (greedyBumpGaussianLambdaMinus x / x ^ 6) /
+      (fun x : ℝ => (greedyBumpGaussianLambdaMinus x / x ^ (6 : ℕ)) /
         greedyBumpGaussianLambdaPlus x)
       (𝓝[≠] 0) (𝓝 (1 / 512 : ℝ)) := by
     norm_num at hquot ⊢
@@ -437,7 +437,7 @@ theorem greedyBumpGaussianDPlus_tendsto_right :
 
 /-- The vanishing derivative mode has normalized limit `3/8` on positive separations. -/
 theorem greedyBumpGaussianDMinus_ratio_sq_tendsto_right :
-    Tendsto (fun x : ℝ => greedyBumpGaussianDMinus x / x ^ 2)
+    Tendsto (fun x : ℝ => greedyBumpGaussianDMinus x / x ^ (2 : ℕ))
       (𝓝[>] 0) (𝓝 (3 / 8 : ℝ)) := by
   exact greedyBumpGaussianDMinus_ratio_sq_tendsto.mono_left
     (nhdsWithin_mono 0 (by
@@ -447,7 +447,7 @@ theorem greedyBumpGaussianDMinus_ratio_sq_tendsto_right :
 
 /-- The derivative determinant divided by `x²` tends to `3/8`. -/
 theorem greedyBumpGaussianDerivativeDeterminant_ratio_sq_tendsto :
-    Tendsto (fun x : ℝ => greedyBumpGaussianDerivativeDeterminant x / x ^ 2)
+    Tendsto (fun x : ℝ => greedyBumpGaussianDerivativeDeterminant x / x ^ (2 : ℕ))
       (𝓝[>] 0) (𝓝 (3 / 8 : ℝ)) := by
   have h := greedyBumpGaussianDPlus_tendsto_right.mul
     greedyBumpGaussianDMinus_ratio_sq_tendsto_right
@@ -460,16 +460,16 @@ theorem greedyBumpGaussianSqrtDerivativeDeterminant_ratio_tendsto :
       (𝓝[>] 0) (𝓝 (Real.sqrt (3 / 8))) := by
   have hroot : Tendsto
       (fun x : ℝ => Real.sqrt
-        (greedyBumpGaussianDerivativeDeterminant x / x ^ 2))
+        (greedyBumpGaussianDerivativeDeterminant x / x ^ (2 : ℕ)))
       (𝓝[>] 0) (𝓝 (Real.sqrt (3 / 8))) :=
     Real.continuous_sqrt.continuousAt.tendsto.comp
       greedyBumpGaussianDerivativeDeterminant_ratio_sq_tendsto
   refine hroot.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with x hx
   have hx0 : x ≠ 0 := ne_of_gt hx
-  have hdiv : greedyBumpGaussianDerivativeDeterminant x / x ^ 2 =
-      (1 / x ^ 2) * greedyBumpGaussianDerivativeDeterminant x := by ring
-  rw [hdiv, Real.sqrt_mul (by positivity : 0 ≤ (1 / x ^ 2 : ℝ)),
+  have hdiv : greedyBumpGaussianDerivativeDeterminant x / x ^ (2 : ℕ) =
+      (1 / x ^ (2 : ℕ)) * greedyBumpGaussianDerivativeDeterminant x := by ring
+  rw [hdiv, Real.sqrt_mul (by positivity : 0 ≤ (1 / x ^ (2 : ℕ) : ℝ)),
     Real.sqrt_div (by positivity : 0 ≤ (1 : ℝ)), Real.sqrt_sq (le_of_lt hx)]
   norm_num
   field_simp [hx0]
@@ -485,7 +485,7 @@ theorem greedyBumpGaussianZeroSlopeCoefficient_eq :
     congr 1
     norm_num
   have hs94 : Real.sqrt (9 / 4 : ℝ) = 3 / 2 := by
-    rw [show (9 / 4 : ℝ) = (3 / 2) ^ 2 by norm_num,
+    rw [show (9 / 4 : ℝ) = (3 / 2) ^ (2 : ℕ) by norm_num,
       Real.sqrt_sq (by norm_num)]
   rw [hs94] at hm
   field_simp [hpi, hs38]

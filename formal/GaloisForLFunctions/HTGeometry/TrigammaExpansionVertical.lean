@@ -25,7 +25,7 @@ noncomputable section
 theorem deriv_digamma_genDefect_eq (Q : Polynomial ℂ) {z : ℂ} (hre : 0 < z.re) :
     (deriv Complex.digamma (z + 1) - Q.eval (1 / (z + 1)))
         - (deriv Complex.digamma z - Q.eval (1 / z))
-      = genDefect (fun w : ℂ => -w ^ 2) Q (1 / z) := by
+      = genDefect (fun w : ℂ => -w ^ (2 : ℕ)) Q (1 / z) := by
   have hz0 : z ≠ 0 := by
     intro h0
     rw [h0] at hre
@@ -40,7 +40,7 @@ theorem deriv_digamma_genDefect_eq (Q : Polynomial ℂ) {z : ℂ} (hre : 0 < z.r
   have hquot : 1 / (z + 1) = (1 / z) / (1 + 1 / z) := by
     field_simp
   rw [hrec, hquot, genDefect]
-  have hsq : -((1 / z) ^ 2) = -(z ^ 2)⁻¹ := by
+  have hsq : -((1 / z) ^ (2 : ℕ)) = -(z ^ (2 : ℕ))⁻¹ := by
     rw [div_pow, one_pow]
     simp
   rw [hsq]
@@ -54,11 +54,11 @@ theorem exists_deriv_digamma_expansion (N : ℕ) :
       ∀ σ t : ℝ, 0 < σ → T ≤ t →
         ‖deriv Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
             - Q.eval (1 / ((σ : ℂ) + (t : ℂ) * Complex.I))‖ ≤ C / t ^ (N + 1) := by
-  have hseed : ∀ᶠ w in nhds (0 : ℂ), (fun w : ℂ => -w ^ 2) w = w ^ 2 * (-1 : ℂ) := by
+  have hseed : ∀ᶠ w in nhds (0 : ℂ), (fun w : ℂ => -w ^ (2 : ℕ)) w = w ^ (2 : ℕ) * (-1 : ℂ) := by
     filter_upwards with w
     ring
   obtain ⟨Q, g, hQ0, hg, hfac⟩ :=
-    exists_genDefect_factor (F := fun w : ℂ => -w ^ 2) (g₀ := fun _ => (-1 : ℂ))
+    exists_genDefect_factor (F := fun w : ℂ => -w ^ (2 : ℕ)) (g₀ := fun _ => (-1 : ℂ))
       analyticAt_const hseed N
   obtain ⟨C, r, hC, hr, hbound⟩ := exists_bound_of_factor hg hfac
   refine ⟨Q, 4 * C, max 2 (1 / r), hQ0, by positivity, le_max_left _ _, ?_⟩
@@ -66,7 +66,7 @@ theorem exists_deriv_digamma_expansion (N : ℕ) :
   have ht2 : (2 : ℝ) ≤ t := le_trans (le_max_left _ _) ht
   have htr : 1 / r ≤ t := le_trans (le_max_right _ _) ht
   set R : ℂ → ℂ := fun z => deriv Complex.digamma z - Q.eval (1 / z) with hR
-  set E : ℂ → ℂ := fun z => genDefect (fun w : ℂ => -w ^ 2) Q (1 / z) with hE
+  set E : ℂ → ℂ := fun z => genDefect (fun w : ℂ => -w ^ (2 : ℕ)) Q (1 / z) with hE
   have hzre : ∀ n : ℕ, (0 : ℝ) < ((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)).re := by
     intro n
     have hval : ((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)).re = σ + n := by simp

@@ -24,7 +24,7 @@ open _root_.RHTower
 theorem routePBurnolApertureEnergy_primeGammaCauchyCubicComplexRayFeature_eq
     {s : ℝ} (hs : 0 < s) :
     routePBurnolApertureEnergy (primeGammaCauchyCubicComplexRayFeature s) =
-      1 / (4 * s ^ 3) := by
+      1 / (4 * s ^ (3 : ℕ)) := by
   unfold routePBurnolApertureEnergy
   simp_rw [primeGammaCauchyCubicComplexRayFeature_eq_xiWardResolvedRadialGeneratorMode]
   exact integral_norm_xiWardResolvedRadialGeneratorMode_sq hs
@@ -36,8 +36,8 @@ theorem routePBurnolApertureEnergy_primeGammaCauchyCubicComplexRayFeature_le_two
     routePBurnolApertureEnergy (primeGammaCauchyCubicComplexRayFeature s) ≤ 2 := by
   have hspos : 0 < s := lt_of_lt_of_le (by norm_num) hs
   rw [routePBurnolApertureEnergy_primeGammaCauchyCubicComplexRayFeature_eq hspos]
-  have hcube : (1 / 2 : ℝ) ^ 3 ≤ s ^ 3 := by gcongr
-  have hden : 0 < 4 * s ^ 3 := by positivity
+  have hcube : (1 / 2 : ℝ) ^ (3 : ℕ) ≤ s ^ (3 : ℕ) := by gcongr
+  have hden : 0 < 4 * s ^ (3 : ℕ) := by positivity
   apply (div_le_iff₀ hden).2
   nlinarith
 

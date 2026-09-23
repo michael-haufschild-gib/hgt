@@ -73,7 +73,7 @@ private theorem origin_weighted_integrable_forces_compatibility (q : SchwartzMap
     (originWeightedReflection_mul_coordinate_tendsto q) r hr hW
   exact (mul_eq_zero.mp hz).resolve_left (by norm_num)
 
-/-- Even local L^1 at the origin forces precisely the cubic compatibility moment to vanish. -/
+/-- Even local L^(1 : ℕ) at the origin forces precisely the cubic compatibility moment to vanish. -/
 theorem originWeightedReflection_locally_integrable_iff (q : SchwartzMap ℝ ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ IntegrableOn (originWeightedReflection q) (Ioo 0 δ)) ↔
       compatibilityMoment q = 0 := by
@@ -84,7 +84,7 @@ theorem originWeightedReflection_locally_integrable_iff (q : SchwartzMap ℝ ℂ
     obtain ⟨δ,hδ,hW⟩ := origin_weighted_bounded_window q hm
     exact ⟨δ,hδ,MemLp.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2) (hW 2)⟩
 
-/-- Sharp replacement for the positive-axis weighted L^2 conclusion of Proposition 3.9. -/
+/-- Sharp replacement for the positive-axis weighted L^(2 : ℕ) conclusion of Proposition 3.9. -/
 theorem originWeightedReflection_locally_memLp_two_iff (q : SchwartzMap ℝ ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ MemLp (originWeightedReflection q) 2 (volume.restrict (Ioo 0 δ))) ↔
       compatibilityMoment q = 0 := by
@@ -118,7 +118,7 @@ theorem originWeightedReflection_locally_memLp_one_add_iff (q : SchwartzMap ℝ 
     obtain ⟨δ,hδ,hW⟩ := origin_weighted_bounded_window q hm
     exact ⟨δ,hδ,hW (1+p)⟩
 
-/-- Arbitrarily small Gaussian scattering data fail the local weighted L^1 assertion on every window. -/
+/-- Arbitrarily small Gaussian scattering data fail the local weighted L^(1 : ℕ) assertion on every window. -/
 theorem originWeightedReflection_globalSmallGaussian_not_integrable (a r : ℝ) :
     ¬ IntegrableOn (originWeightedReflection (globalSmallScatteringPotential (compatibilityGaussian a)))
       (Ioo 0 (Real.exp r)) := by
@@ -126,7 +126,7 @@ theorem originWeightedReflection_globalSmallGaussian_not_integrable (a r : ℝ) 
   exact compatibilityMoment_globalSmallGaussian_ne_zero a
     ((originWeightedReflection_locally_integrable_iff _).1 ⟨Real.exp r,Real.exp_pos r,h⟩)
 
-/-- An explicit smooth small-data obstruction to the weighted L^2 conclusion as a spatial assertion. -/
+/-- An explicit smooth small-data obstruction to the weighted L^(2 : ℕ) conclusion as a spatial assertion. -/
 theorem originWeightedReflection_globalSmallGaussian_not_memLp_two (a r : ℝ) :
     ¬ MemLp (originWeightedReflection (globalSmallScatteringPotential (compatibilityGaussian a))) 2
       (volume.restrict (Ioo 0 (Real.exp r))) := by
@@ -168,7 +168,7 @@ theorem renormalizedOriginReflection_finite_limit_iff (q : SchwartzMap ℝ ℂ) 
   · rintro rfl
     exact ⟨rawScatteringFifthCoefficient q 1 0,originWeightedReflection_sub_pole_tendsto q⟩
 
-/-- The explicit subtraction is also uniquely characterized by local L^1 integrability. -/
+/-- The explicit subtraction is also uniquely characterized by local L^(1 : ℕ) integrability. -/
 theorem renormalizedOriginReflection_locally_integrable_iff (q : SchwartzMap ℝ ℂ) (c : ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ IntegrableOn (renormalizedOriginReflection q c) (Ioo 0 δ)) ↔
       c = 2*compatibilityMoment q := by
@@ -183,7 +183,7 @@ theorem renormalizedOriginReflection_locally_integrable_iff (q : SchwartzMap ℝ
       (renormalizedOriginReflection_measurable q c) d hd
     exact ⟨δ,hδ,MemLp.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2) (hW 2)⟩
 
-/-- The paper's local L^2 assertion holds after exactly one explicit pole subtraction. -/
+/-- The paper's local L^(2 : ℕ) assertion holds after exactly one explicit pole subtraction. -/
 theorem renormalizedOriginReflection_locally_memLp_two_iff (q : SchwartzMap ℝ ℂ) (c : ℂ) :
     (∃ δ : ℝ, 0 < δ ∧ MemLp (renormalizedOriginReflection q c) 2
       (volume.restrict (Ioo 0 δ))) ↔ c = 2*compatibilityMoment q := by

@@ -36,7 +36,7 @@ theorem rawScatteringQuadraticCoefficient_upper (q : SchwartzMap ℝ ℂ) :
 theorem rawThirdIntegrand_zero_lower (q : SchwartzMap ℝ ℂ) (x : ℝ) :
     (rawThirdIntegrand q 0 (1,0) x).2 =
       -I*deriv q x*rawMixedPrimitive q x+I*q 0*deriv q x*q (-x)-
-        I*(q 0)^2*deriv q x-2*(x : ℂ)*deriv q x := by
+        I*(q 0)^(2 : ℕ)*deriv q x-2*(x : ℂ)*deriv q x := by
   unfold rawThirdIntegrand
   rw [rawSecondSlope_zero_eq,rawInteractionSolution_zero_frequency]
   simp only [rawDividedOperator_apply,rawCubicOperator_zero_apply,rawSecondPrimitive,

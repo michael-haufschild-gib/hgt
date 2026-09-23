@@ -317,7 +317,7 @@ theorem averagedMeanSquare_moebius_scaledLength_all {c β : ℝ} (hc0 : 0 < c) (
     have hfib : fibreIndex x (scaledLength c β x) = Finset.Icc 1 (scaledFibreLength c β x) := rfl
     rw [hfib]
     have hmain := setIntegral_normSq_logPoly_le_of_subset
-      (a := fun n => ((μ n : ℤ) : ℂ)) norm_moebius_complex_le_one hsub hTop0 hb.2
+      (a := fun n => ((μ n : ℤ) : ℂ)) norm_moebius_complex_le_one_moebiusHeadGate hsub hTop0 hb.2
     have hcardT : ((Finset.Icc 1 (twoRangeLength β x)).card : ℝ)
         = ((twoRangeLength β x : ℕ) : ℝ) := by
       rw [Nat.card_Icc]

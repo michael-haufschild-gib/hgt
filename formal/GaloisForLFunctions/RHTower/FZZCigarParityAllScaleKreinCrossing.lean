@@ -26,7 +26,7 @@ noncomputable section
 /-- Two-scale FZZ parity Hankel determinant at physical dilation `beta`. -/
 def fzzCigarParityDilatedTwoScaleHankelMinor (beta : ℝ) : ℝ :=
   fzzCigarParityDelay beta * fzzCigarParityDelay (4 * beta) -
-    fzzCigarParityDelay (2 * beta) ^ 2
+    fzzCigarParityDelay (2 * beta) ^ (2 : ℕ)
 
 /-- **All-scale strict indefiniteness.** Every positive dilation has negative Hankel determinant. -/
 theorem fzzCigarParityDilatedTwoScaleHankelMinor_neg
@@ -40,21 +40,21 @@ theorem fzzCigarParityDilatedTwoScaleHankelMinor_neg
   have ha : 1 < a := by
     change 1 < Real.exp beta
     exact Real.one_lt_exp_iff.mpr hbeta
-  have he2 : Real.exp (2 * beta) = a ^ 2 := by
+  have he2 : Real.exp (2 * beta) = a ^ (2 : ℕ) := by
     rw [show 2 * beta = beta + beta by ring, Real.exp_add]
-    change a * a = a ^ 2
+    change a * a = a ^ (2 : ℕ)
     ring
-  have he4 : Real.exp (4 * beta) = a ^ 4 := by
+  have he4 : Real.exp (4 * beta) = a ^ (4 : ℕ) := by
     rw [show 4 * beta = 2 * beta + 2 * beta by ring, Real.exp_add, he2]
     ring
   rw [show Real.exp beta = a by rfl, he2, he4]
-  have hB : 0 < (a ^ 2 + 1) ^ 2 := sq_pos_of_pos (by positivity)
-  have hBA : (a ^ 2 + 1) ^ 2 < (a + 1) * (a ^ 4 + 1) := by
+  have hB : 0 < (a ^ (2 : ℕ) + 1) ^ (2 : ℕ) := sq_pos_of_pos (by positivity)
+  have hBA : (a ^ (2 : ℕ) + 1) ^ (2 : ℕ) < (a + 1) * (a ^ (4 : ℕ) + 1) := by
     have ha0 : 0 < a := lt_trans zero_lt_one ha
-    have ha2 : 1 < a ^ 2 := one_lt_pow₀ ha (by norm_num)
-    have ha4 : a ^ 2 < a ^ 4 := by nlinarith [ha2]
+    have ha2 : 1 < a ^ (2 : ℕ) := one_lt_pow₀ ha (by norm_num)
+    have ha4 : a ^ (2 : ℕ) < a ^ (4 : ℕ) := by nlinarith [ha2]
     nlinarith [ha0]
-  have hinv : ((a + 1) * (a ^ 4 + 1))⁻¹ < ((a ^ 2 + 1) ^ 2)⁻¹ := by
+  have hinv : ((a + 1) * (a ^ (4 : ℕ) + 1))⁻¹ < ((a ^ (2 : ℕ) + 1) ^ (2 : ℕ))⁻¹ := by
     simpa [one_div] using one_div_lt_one_div_of_lt hB hBA
   exact sub_neg.mpr (by simpa [mul_inv, inv_pow, mul_comm] using hinv)
 
@@ -117,14 +117,14 @@ theorem fzzCigarParityDilatedTwoScaleKreinOperator_formallySelfAdjoint
 /-- Positive discriminant complementary to the dilated negative Hankel determinant. -/
 def fzzCigarParityDilatedTwoScaleKreinDiscriminant (beta : ℝ) : ℝ :=
   fzzKreinPAt beta *
-      (fzzKreinQAt beta ^ 2 - fzzKreinPAt beta * fzzKreinRAt beta) /
+      (fzzKreinQAt beta ^ (2 : ℕ) - fzzKreinPAt beta * fzzKreinRAt beta) /
     fzzKreinRAt beta
 
 theorem fzzCigarParityDilatedTwoScaleKreinDiscriminant_pos
     {beta : ℝ} (hbeta : 0 < beta) :
     0 < fzzCigarParityDilatedTwoScaleKreinDiscriminant beta := by
   have hminor := fzzCigarParityDilatedTwoScaleHankelMinor_neg hbeta
-  change fzzKreinPAt beta * fzzKreinRAt beta - fzzKreinQAt beta ^ 2 < 0 at hminor
+  change fzzKreinPAt beta * fzzKreinRAt beta - fzzKreinQAt beta ^ (2 : ℕ) < 0 at hminor
   rw [fzzCigarParityDilatedTwoScaleKreinDiscriminant]
   exact div_pos (mul_pos (fzzKreinPAt_pos hbeta) (by linarith))
     (fzzKreinRAt_pos hbeta)
@@ -141,15 +141,15 @@ def fzzCigarParityDilatedTwoScaleKreinEigenvector (beta : ℝ) : ℂ × ℂ :=
 
 theorem fzzCigarParityDilatedTwoScaleKreinEigenvalue_sq
     {beta : ℝ} (hbeta : 0 < beta) :
-    fzzCigarParityDilatedTwoScaleKreinEigenvalue beta ^ 2 =
+    fzzCigarParityDilatedTwoScaleKreinEigenvalue beta ^ (2 : ℕ) =
       -(fzzCigarParityDilatedTwoScaleKreinDiscriminant beta : ℂ) := by
   rw [fzzCigarParityDilatedTwoScaleKreinEigenvalue]
   have hsqrt :
-      Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) ^ 2 =
+      Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) ^ (2 : ℕ) =
         fzzCigarParityDilatedTwoScaleKreinDiscriminant beta :=
     Real.sq_sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant_pos hbeta).le
   have hcast :
-      ((Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) : ℝ) : ℂ) ^ 2 =
+      ((Real.sqrt (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta) : ℝ) : ℂ) ^ (2 : ℕ) =
         (fzzCigarParityDilatedTwoScaleKreinDiscriminant beta : ℂ) := by
     exact_mod_cast hsqrt
   rw [mul_pow, Complex.I_sq, hcast]
@@ -191,7 +191,7 @@ theorem fzzCigarParityDilatedTwoScaleKreinEigenpair
               push_cast
               field_simp
               ring
-      _ = fzzCigarParityDilatedTwoScaleKreinEigenvalue beta ^ 2 -
+      _ = fzzCigarParityDilatedTwoScaleKreinEigenvalue beta ^ (2 : ℕ) -
             (fzzKreinPAt beta : ℂ) *
               fzzCigarParityDilatedTwoScaleKreinEigenvalue beta := by
               rw [fzzCigarParityDilatedTwoScaleKreinEigenvalue_sq hbeta]
@@ -258,12 +258,12 @@ def fzzCigarParityDilatedTwoScaleGradeCrossing
   fzzCigarParityDilatedTwoScaleKreinPairing beta u
     (fzzCigarParityDilatedTwoScaleGrade u)
 
-/-- Exact all-scale crossing identity `C_beta(v_beta)=q_beta^2 lambda_beta`. -/
+/-- Exact all-scale crossing identity `C_beta(v_beta)=q_beta^(2 : ℕ) lambda_beta`. -/
 theorem fzzCigarParityDilatedTwoScaleKreinEigenvector_gradeCrossing
     {beta : ℝ} (hbeta : 0 < beta) :
     fzzCigarParityDilatedTwoScaleGradeCrossing beta
         (fzzCigarParityDilatedTwoScaleKreinEigenvector beta) =
-      (fzzKreinQAt beta : ℂ) ^ 2 *
+      (fzzKreinQAt beta : ℂ) ^ (2 : ℕ) *
         fzzCigarParityDilatedTwoScaleKreinEigenvalue beta := by
   rw [fzzCigarParityDilatedTwoScaleGradeCrossing,
     fzzCigarParityDilatedTwoScaleGrade,
@@ -295,7 +295,7 @@ theorem fzzCigarParityDilatedTwoScaleKreinEigenvector_gradeCrossing_im_pos
   rw [fzzCigarParityDilatedTwoScaleKreinEigenvector_gradeCrossing hbeta]
   rw [fzzCigarParityDilatedTwoScaleKreinEigenvalue]
   simp
-  have hre : ((fzzKreinQAt beta : ℂ) ^ 2).re = fzzKreinQAt beta ^ 2 := by
+  have hre : ((fzzKreinQAt beta : ℂ) ^ (2 : ℕ)).re = fzzKreinQAt beta ^ (2 : ℕ) := by
     rw [← Complex.ofReal_pow, Complex.ofReal_re]
   rw [hre]
   exact mul_pos (sq_pos_of_pos (fzzKreinQAt_pos hbeta))

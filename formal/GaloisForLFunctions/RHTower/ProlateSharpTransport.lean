@@ -37,13 +37,13 @@ def prolateRiccatiDefect (c s y : ℝ) : ℝ :=
 
 /-- The error control of the sharp band transport. -/
 def prolateBandErrorControl (c s y : ℝ) : ℝ :=
-  2 * (c * prolateWKBProfile s y) * prolateRiccatiDefect c s y ^ 2
+  2 * (c * prolateWKBProfile s y) * prolateRiccatiDefect c s y ^ (2 : ℕ)
     + |prolateBandScaleDeriv c s y / prolateBandScale c s y|
       * (prolateRiccatiDefect c s y * (2 + prolateRiccatiDefect c s y)) / 2
 
-theorem prolateRiccatiDefect_nonneg {c s y : ℝ} (hc : 0 < c) (hsy : s < y ^ 2) (hy0 : 0 < y)
+theorem prolateRiccatiDefect_nonneg {c s y : ℝ} (hc : 0 < c) (hsy : s < y ^ (2 : ℕ)) (hy0 : 0 < y)
     (hy1 : y < 1) : 0 ≤ prolateRiccatiDefect c s y := by
-  have h2 : (0 : ℝ) < 1 - y ^ 2 := by nlinarith
+  have h2 : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by nlinarith
   have hP : 0 < prolateWKBProfile s y := by
     rw [prolateWKBProfile]
     exact Real.sqrt_pos.2 (by positivity)
@@ -53,52 +53,52 @@ theorem prolateRiccatiDefect_nonneg {c s y : ℝ} (hc : 0 < c) (hsy : s < y ^ 2)
 
 /-- The band data satisfies the structural identity `Q p = -K`. -/
 theorem prolateBand_Q_mul_p {c s y : ℝ} :
-    c ^ 2 * (s - y ^ 2) * (1 - y ^ 2) = -(prolateBandScale c s y) := by
+    c ^ (2 : ℕ) * (s - y ^ (2 : ℕ)) * (1 - y ^ (2 : ℕ)) = -(prolateBandScale c s y) := by
   rw [prolateBandScale]
   ring
 
 /-- The local rate of the band is the scaled WKB profile. -/
-theorem sqrt_prolateBandScale_div {c s y : ℝ} (hc : 0 < c) (hsy : s < y ^ 2) (hy : y ^ 2 < 1) :
-    Real.sqrt (prolateBandScale c s y) / (1 - y ^ 2) = c * prolateWKBProfile s y := by
-  have h2 : (0 : ℝ) < 1 - y ^ 2 := by linarith
+theorem sqrt_prolateBandScale_div {c s y : ℝ} (hc : 0 < c) (hsy : s < y ^ (2 : ℕ)) (hy : y ^ (2 : ℕ) < 1) :
+    Real.sqrt (prolateBandScale c s y) / (1 - y ^ (2 : ℕ)) = c * prolateWKBProfile s y := by
+  have h2 : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by linarith
   rw [sqrt_prolateBandScale_eq hc hsy hy]
   field_simp
 
 /-- **The error control dominates the quadratic Riccati defect.** -/
 theorem prolateBand_error_bound {c s y : ℝ} {Φ : ℝ → ℝ}
-    (hc : 0 < c) (hsy : s < y ^ 2) (hy0 : 0 < y) (hy1 : y < 1)
+    (hc : 0 < c) (hsy : s < y ^ (2 : ℕ)) (hy0 : 0 < y) (hy1 : y < 1)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ 2) * Φ t)
+    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ (2 : ℕ)) * Φ t)
     (hpos : ∀ t ∈ Icc y 1, 0 < Φ t)
-    (hbar : prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ 2)) y)
+    (hbar : prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ (2 : ℕ))) y)
     (hs1 : s < 1) :
-    2 * (Real.sqrt (prolateBandScale c s y) / (1 - y ^ 2))
-        * (1 - sturmRiccatiRatio (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) y) ^ 2
+    2 * (Real.sqrt (prolateBandScale c s y) / (1 - y ^ (2 : ℕ)))
+        * (1 - sturmRiccatiRatio (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) y) ^ (2 : ℕ)
       + |prolateBandScaleDeriv c s y / prolateBandScale c s y|
-        * |1 - sturmRiccatiRatio (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) y ^ 2| / 2
+        * |1 - sturmRiccatiRatio (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) y ^ (2 : ℕ)| / 2
       ≤ prolateBandErrorControl c s y := by
-  have hy2 : y ^ 2 < 1 := by nlinarith
-  set ρ : ℝ := sturmRiccatiRatio (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) y with hρ
+  have hy2 : y ^ (2 : ℕ) < 1 := by nlinarith
+  set ρ : ℝ := sturmRiccatiRatio (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) y with hρ
   have hδ := abs_one_sub_sturmRiccatiRatio_prolate_le (c := c) (s := s) (y := y)
     (Φ := Φ) (DΦ := deriv Φ) hc hsy hy0 hy1 hsm heig hpos hbar rfl hs1
   rw [← hρ] at hδ
   have hδ' : |1 - ρ| ≤ prolateRiccatiDefect c s y := hδ
   have hδnn : 0 ≤ prolateRiccatiDefect c s y :=
     prolateRiccatiDefect_nonneg hc hsy hy0 hy1
-  have hrate : Real.sqrt (prolateBandScale c s y) / (1 - y ^ 2) = c * prolateWKBProfile s y :=
+  have hrate : Real.sqrt (prolateBandScale c s y) / (1 - y ^ (2 : ℕ)) = c * prolateWKBProfile s y :=
     sqrt_prolateBandScale_div hc hsy hy2
   have hratenn : (0 : ℝ) ≤ c * prolateWKBProfile s y := by
     have : (0 : ℝ) ≤ prolateWKBProfile s y := Real.sqrt_nonneg _
     positivity
   -- the quadratic term
-  have hsq : (1 - ρ) ^ 2 ≤ prolateRiccatiDefect c s y ^ 2 := by
+  have hsq : (1 - ρ) ^ (2 : ℕ) ≤ prolateRiccatiDefect c s y ^ (2 : ℕ) := by
     have h := sq_abs (1 - ρ)
     nlinarith [hδ', abs_nonneg (1 - ρ), h]
   -- the cross term
-  have hcross : |1 - ρ ^ 2|
+  have hcross : |1 - ρ ^ (2 : ℕ)|
       ≤ prolateRiccatiDefect c s y * (2 + prolateRiccatiDefect c s y) := by
-    have hfac : (1 : ℝ) - ρ ^ 2 = (1 - ρ) * (1 + ρ) := by ring
-    have habs : |1 - ρ ^ 2| = |1 - ρ| * |1 + ρ| := by
+    have hfac : (1 : ℝ) - ρ ^ (2 : ℕ) = (1 - ρ) * (1 + ρ) := by ring
+    have habs : |1 - ρ ^ (2 : ℕ)| = |1 - ρ| * |1 + ρ| := by
       rw [hfac, abs_mul]
     have hplus : |1 + ρ| ≤ 2 + prolateRiccatiDefect c s y := by
       have hid : (1 : ℝ) + ρ = 2 - (1 - ρ) := by ring
@@ -115,10 +115,10 @@ theorem prolateBand_error_bound {c s y : ℝ} {Φ : ℝ → ℝ}
           mul_le_mul_of_nonneg_left hplus hδnn
   rw [prolateBandErrorControl, hrate]
   have hKnn : (0 : ℝ) ≤ |prolateBandScaleDeriv c s y / prolateBandScale c s y| := abs_nonneg _
-  have hterm1 : 2 * (c * prolateWKBProfile s y) * (1 - ρ) ^ 2
-      ≤ 2 * (c * prolateWKBProfile s y) * prolateRiccatiDefect c s y ^ 2 :=
+  have hterm1 : 2 * (c * prolateWKBProfile s y) * (1 - ρ) ^ (2 : ℕ)
+      ≤ 2 * (c * prolateWKBProfile s y) * prolateRiccatiDefect c s y ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hsq (by positivity)
-  have hterm2 : |prolateBandScaleDeriv c s y / prolateBandScale c s y| * |1 - ρ ^ 2| / 2
+  have hterm2 : |prolateBandScaleDeriv c s y / prolateBandScale c s y| * |1 - ρ ^ (2 : ℕ)| / 2
       ≤ |prolateBandScaleDeriv c s y / prolateBandScale c s y|
         * (prolateRiccatiDefect c s y * (2 + prolateRiccatiDefect c s y)) / 2 := by
     have := mul_le_mul_of_nonneg_left hcross hKnn
@@ -130,27 +130,27 @@ theorem prolateBand_error_bound {c s y : ℝ} {Φ : ℝ → ℝ}
 set_option maxHeartbeats 1600000 in
 /-- **The pointwise error control, as a single fraction over `c·sqrt(y²-s)`.** -/
 theorem prolateBandErrorControl_le {c s a α y : ℝ}
-    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ 2)
+    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ (2 : ℕ))
     (hay : a ≤ y) (hyα : y ≤ α) (hα1 : α < 1)
     (hδ1 : prolateRiccatiDefect c s y ≤ 1) :
     prolateBandErrorControl c s y
-      ≤ (2 / y ^ 2 + 4 * (9 / (1 - α)) / a + 2 * (9 / (1 - α)) ^ 2
-          + 3 * (1 + 9 / (1 - α)) / Real.sqrt (y ^ 2 - s) ^ 2
-          + 3 * (1 / a + 9 / (1 - α)) / (1 - α ^ 2))
-        / (c * Real.sqrt (y ^ 2 - s)) := by
+      ≤ (2 / y ^ (2 : ℕ) + 4 * (9 / (1 - α)) / a + 2 * (9 / (1 - α)) ^ (2 : ℕ)
+          + 3 * (1 + 9 / (1 - α)) / Real.sqrt (y ^ (2 : ℕ) - s) ^ (2 : ℕ)
+          + 3 * (1 / a + 9 / (1 - α)) / (1 - α ^ (2 : ℕ)))
+        / (c * Real.sqrt (y ^ (2 : ℕ) - s)) := by
   have hy0 : 0 < y := lt_of_lt_of_le ha hay
   have hy1 : y < 1 := lt_of_le_of_lt hyα hα1
-  have hy2 : y ^ 2 < 1 := by nlinarith
-  have hsy : s < y ^ 2 := by nlinarith [hay, ha]
+  have hy2 : y ^ (2 : ℕ) < 1 := by nlinarith
+  have hsy : s < y ^ (2 : ℕ) := by nlinarith [hay, ha]
   have h1y : (0 : ℝ) < 1 - y := by linarith
   have hα0 : (0 : ℝ) < 1 - α := by linarith
-  have hαsq : (0 : ℝ) < 1 - α ^ 2 := by nlinarith
-  set u : ℝ := Real.sqrt (y ^ 2 - s) with hu
-  set v : ℝ := Real.sqrt (1 - y ^ 2) with hv
+  have hαsq : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith
+  set u : ℝ := Real.sqrt (y ^ (2 : ℕ) - s) with hu
+  set v : ℝ := Real.sqrt (1 - y ^ (2 : ℕ)) with hv
   have hu0 : 0 < u := Real.sqrt_pos.2 (by linarith)
   have hv0 : 0 < v := Real.sqrt_pos.2 (by linarith)
-  have hu2 : u ^ 2 = y ^ 2 - s := Real.sq_sqrt (by linarith)
-  have hv2 : v ^ 2 = 1 - y ^ 2 := Real.sq_sqrt (by linarith)
+  have hu2 : u ^ (2 : ℕ) = y ^ (2 : ℕ) - s := Real.sq_sqrt (by linarith)
+  have hv2 : v ^ (2 : ℕ) = 1 - y ^ (2 : ℕ) := Real.sq_sqrt (by linarith)
   have hv1 : v ≤ 1 := by nlinarith [hv2, hv0]
   have hP : prolateWKBProfile s y = u / v := prolateWKBProfile_eq_div hsy.le
   set M : ℝ := 9 / (1 - α) with hM
@@ -172,12 +172,12 @@ theorem prolateBandErrorControl_le {c s a α y : ℝ}
   have hδ : prolateRiccatiDefect c s y = B * v / (c * u) := by
     rw [prolateRiccatiDefect, hP, ← hB]
     field_simp
-  have hfirst : 2 * (c * prolateWKBProfile s y) * prolateRiccatiDefect c s y ^ 2
-      = 2 * B ^ 2 * v / (c * u) := by
+  have hfirst : 2 * (c * prolateWKBProfile s y) * prolateRiccatiDefect c s y ^ (2 : ℕ)
+      = 2 * B ^ (2 : ℕ) * v / (c * u) := by
     rw [hP, hδ]
     field_simp
   have hKle : |prolateBandScaleDeriv c s y / prolateBandScale c s y|
-      ≤ 2 * y / (y ^ 2 - s) + 2 * y / (1 - y ^ 2) := by
+      ≤ 2 * y / (y ^ (2 : ℕ) - s) + 2 * y / (1 - y ^ (2 : ℕ)) := by
     have hK := abs_prolateBandScaleDeriv_div_le (c := c) (s := s) (y := y) hc hy0.le hsy hy2
     have hKpos : 0 < prolateBandScale c s y := prolateBandScale_pos hc hsy hy2
     have hval : |prolateBandScaleDeriv c s y / prolateBandScale c s y|
@@ -188,7 +188,7 @@ theorem prolateBandErrorControl_le {c s a α y : ℝ}
   have hδ0 : 0 ≤ prolateRiccatiDefect c s y := by rw [hδ]; positivity
   have hsecond : |prolateBandScaleDeriv c s y / prolateBandScale c s y|
       * (prolateRiccatiDefect c s y * (2 + prolateRiccatiDefect c s y)) / 2
-      ≤ (2 * y / (y ^ 2 - s) + 2 * y / (1 - y ^ 2)) * ((3 / 2) * (B * v / (c * u))) := by
+      ≤ (2 * y / (y ^ (2 : ℕ) - s) + 2 * y / (1 - y ^ (2 : ℕ))) * ((3 / 2) * (B * v / (c * u))) := by
     have hstep : prolateRiccatiDefect c s y * (2 + prolateRiccatiDefect c s y) / 2
         ≤ (3 / 2) * (B * v / (c * u)) := by
       have hd : prolateRiccatiDefect c s y * (2 + prolateRiccatiDefect c s y) / 2
@@ -204,13 +204,13 @@ theorem prolateBandErrorControl_le {c s a α y : ℝ}
           * (prolateRiccatiDefect c s y * (2 + prolateRiccatiDefect c s y) / 2) := by ring
       _ ≤ |prolateBandScaleDeriv c s y / prolateBandScale c s y| * ((3 / 2) * (B * v / (c * u))) :=
           mul_le_mul_of_nonneg_left hstep hKnn
-      _ ≤ (2 * y / (y ^ 2 - s) + 2 * y / (1 - y ^ 2)) * ((3 / 2) * (B * v / (c * u))) :=
+      _ ≤ (2 * y / (y ^ (2 : ℕ) - s) + 2 * y / (1 - y ^ (2 : ℕ))) * ((3 / 2) * (B * v / (c * u))) :=
           mul_le_mul_of_nonneg_right hKle hcoef
   -- the three numerator bounds
-  have hBsq : 2 * B ^ 2 * v ≤ 2 / y ^ 2 + 4 * M / a + 2 * M ^ 2 := by
-    have hv1' : 2 * B ^ 2 * v ≤ 2 * B ^ 2 := by nlinarith [hv1, hv0, sq_nonneg B]
-    have hsq : B ^ 2 ≤ (1 / y + M) ^ 2 := by nlinarith [hBle, hB0]
-    have hexp : 2 * (1 / y + M) ^ 2 = 2 / y ^ 2 + 4 * M / y + 2 * M ^ 2 := by
+  have hBsq : 2 * B ^ (2 : ℕ) * v ≤ 2 / y ^ (2 : ℕ) + 4 * M / a + 2 * M ^ (2 : ℕ) := by
+    have hv1' : 2 * B ^ (2 : ℕ) * v ≤ 2 * B ^ (2 : ℕ) := by nlinarith [hv1, hv0, sq_nonneg B]
+    have hsq : B ^ (2 : ℕ) ≤ (1 / y + M) ^ (2 : ℕ) := by nlinarith [hBle, hB0]
+    have hexp : 2 * (1 / y + M) ^ (2 : ℕ) = 2 / y ^ (2 : ℕ) + 4 * M / y + 2 * M ^ (2 : ℕ) := by
       field_simp
       ring
     have hMy : 4 * M / y ≤ 4 * M / a := by
@@ -228,40 +228,40 @@ theorem prolateBandErrorControl_le {c s a α y : ℝ}
     nlinarith [h1, hyB, hM0, hy1]
   have hyBa : y * B ≤ 1 / a + M := by nlinarith [hBa, hy0, hy1, hB0]
   -- assemble as a single fraction
-  have hid : (2 / y ^ 2 + 4 * M / a + 2 * M ^ 2 + 3 * (1 + M) / u ^ 2
-        + 3 * (1 / a + M) / (1 - α ^ 2)) / (c * u)
-      = (2 / y ^ 2 + 4 * M / a + 2 * M ^ 2) / (c * u)
-        + (3 * (1 + M) / u ^ 2 / (c * u) + 3 * (1 / a + M) / (1 - α ^ 2) / (c * u)) := by
+  have hid : (2 / y ^ (2 : ℕ) + 4 * M / a + 2 * M ^ (2 : ℕ) + 3 * (1 + M) / u ^ (2 : ℕ)
+        + 3 * (1 / a + M) / (1 - α ^ (2 : ℕ))) / (c * u)
+      = (2 / y ^ (2 : ℕ) + 4 * M / a + 2 * M ^ (2 : ℕ)) / (c * u)
+        + (3 * (1 + M) / u ^ (2 : ℕ) / (c * u) + 3 * (1 / a + M) / (1 - α ^ (2 : ℕ)) / (c * u)) := by
     field_simp
     ring
   have hle1 : prolateBandErrorControl c s y
-      ≤ 2 * B ^ 2 * v / (c * u)
-        + (2 * y / (y ^ 2 - s) + 2 * y / (1 - y ^ 2)) * ((3 / 2) * (B * v / (c * u))) := by
+      ≤ 2 * B ^ (2 : ℕ) * v / (c * u)
+        + (2 * y / (y ^ (2 : ℕ) - s) + 2 * y / (1 - y ^ (2 : ℕ))) * ((3 / 2) * (B * v / (c * u))) := by
     rw [prolateBandErrorControl, hfirst]
     linarith [hsecond]
-  have hexpand : (2 * y / (y ^ 2 - s) + 2 * y / (1 - y ^ 2)) * ((3 / 2) * (B * v / (c * u)))
-      = 3 * (y * B * v) / u ^ 2 / (c * u) + 3 * (y * B) / v / (c * u) := by
+  have hexpand : (2 * y / (y ^ (2 : ℕ) - s) + 2 * y / (1 - y ^ (2 : ℕ))) * ((3 / 2) * (B * v / (c * u)))
+      = 3 * (y * B * v) / u ^ (2 : ℕ) / (c * u) + 3 * (y * B) / v / (c * u) := by
     rw [← hu2, ← hv2]
     field_simp
   rw [hexpand] at hle1
   refine le_trans hle1 ?_
   rw [hid]
-  have hA : 2 * B ^ 2 * v / (c * u) ≤ (2 / y ^ 2 + 4 * M / a + 2 * M ^ 2) / (c * u) :=
+  have hA : 2 * B ^ (2 : ℕ) * v / (c * u) ≤ (2 / y ^ (2 : ℕ) + 4 * M / a + 2 * M ^ (2 : ℕ)) / (c * u) :=
     div_le_div_right_of_le hBsq hcu
-  have hBt : 3 * (y * B * v) / u ^ 2 / (c * u) ≤ 3 * (1 + M) / u ^ 2 / (c * u) := by
-    have hnum : 3 * (y * B * v) / u ^ 2 ≤ 3 * (1 + M) / u ^ 2 :=
+  have hBt : 3 * (y * B * v) / u ^ (2 : ℕ) / (c * u) ≤ 3 * (1 + M) / u ^ (2 : ℕ) / (c * u) := by
+    have hnum : 3 * (y * B * v) / u ^ (2 : ℕ) ≤ 3 * (1 + M) / u ^ (2 : ℕ) :=
       div_le_div_right_of_le (by linarith [hyBv]) (by positivity)
     exact div_le_div_right_of_le hnum hcu
-  have hCt : 3 * (y * B) / v / (c * u) ≤ 3 * (1 / a + M) / (1 - α ^ 2) / (c * u) := by
-    have hvge : (1 : ℝ) - α ^ 2 ≤ v := by
-      have h1 : Real.sqrt (1 - α ^ 2) ≤ v := by
+  have hCt : 3 * (y * B) / v / (c * u) ≤ 3 * (1 / a + M) / (1 - α ^ (2 : ℕ)) / (c * u) := by
+    have hvge : (1 : ℝ) - α ^ (2 : ℕ) ≤ v := by
+      have h1 : Real.sqrt (1 - α ^ (2 : ℕ)) ≤ v := by
         rw [hv]
         exact Real.sqrt_le_sqrt (by nlinarith [hyα, hy0, hα1])
-      have h2 : (1 : ℝ) - α ^ 2 ≤ Real.sqrt (1 - α ^ 2) := by
-        nlinarith [Real.sq_sqrt (by linarith : (0:ℝ) ≤ 1 - α ^ 2),
-          Real.sqrt_nonneg (1 - α ^ 2), hαsq, hα1]
+      have h2 : (1 : ℝ) - α ^ (2 : ℕ) ≤ Real.sqrt (1 - α ^ (2 : ℕ)) := by
+        nlinarith [Real.sq_sqrt (by linarith : (0:ℝ) ≤ 1 - α ^ (2 : ℕ)),
+          Real.sqrt_nonneg (1 - α ^ (2 : ℕ)), hαsq, hα1]
       linarith
-    have hnum : 3 * (y * B) / v ≤ 3 * (1 / a + M) / (1 - α ^ 2) := by
+    have hnum : 3 * (y * B) / v ≤ 3 * (1 / a + M) / (1 - α ^ (2 : ℕ)) := by
       rw [div_le_div_iff₀ hv0 hαsq]
       have hpos : (0 : ℝ) ≤ 3 * (1 / a + M) := by positivity
       nlinarith [hyBa, hvge, hαsq, hpos, hM0, ha]
@@ -271,45 +271,45 @@ theorem prolateBandErrorControl_le {c s a α y : ℝ}
 
 /-- The error majorant of the band, in the three-mass shape. -/
 def prolateBandErrorMajorant (c s a α : ℝ) (y : ℝ) : ℝ :=
-  1 / c * (2 * (1 / (y ^ 2 * Real.sqrt (y ^ 2 - s)))
-    + 3 * (1 + 9 / (1 - α)) * (1 / Real.sqrt (y ^ 2 - s) ^ 3)
-    + (4 * (9 / (1 - α)) / a + 2 * (9 / (1 - α)) ^ 2
-        + 3 * (1 / a + 9 / (1 - α)) / (1 - α ^ 2)) * (1 / Real.sqrt (y ^ 2 - s)))
+  1 / c * (2 * (1 / (y ^ (2 : ℕ) * Real.sqrt (y ^ (2 : ℕ) - s)))
+    + 3 * (1 + 9 / (1 - α)) * (1 / Real.sqrt (y ^ (2 : ℕ) - s) ^ (3 : ℕ))
+    + (4 * (9 / (1 - α)) / a + 2 * (9 / (1 - α)) ^ (2 : ℕ)
+        + 3 * (1 / a + 9 / (1 - α)) / (1 - α ^ (2 : ℕ))) * (1 / Real.sqrt (y ^ (2 : ℕ) - s)))
 
 theorem prolateBandErrorControl_le_majorant {c s a α y : ℝ}
-    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ 2)
+    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ (2 : ℕ))
     (hay : a ≤ y) (hyα : y ≤ α) (hα1 : α < 1)
     (hδ1 : prolateRiccatiDefect c s y ≤ 1) :
     prolateBandErrorControl c s y ≤ prolateBandErrorMajorant c s a α y := by
   have h := prolateBandErrorControl_le hc ha has hay hyα hα1 hδ1
   refine le_trans h (le_of_eq ?_)
   have hy0 : 0 < y := lt_of_lt_of_le ha hay
-  have hsy : s < y ^ 2 := by nlinarith [hay, ha]
-  have hu0 : 0 < Real.sqrt (y ^ 2 - s) := Real.sqrt_pos.2 (by linarith)
+  have hsy : s < y ^ (2 : ℕ) := by nlinarith [hay, ha]
+  have hu0 : 0 < Real.sqrt (y ^ (2 : ℕ) - s) := Real.sqrt_pos.2 (by linarith)
   have hα0 : (0 : ℝ) < 1 - α := by linarith
   have hy1 : y < 1 := lt_of_le_of_lt hyα hα1
-  have hαsq : (0 : ℝ) < 1 - α ^ 2 := by nlinarith [hα1, hy0, hay, ha]
+  have hαsq : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by nlinarith [hα1, hy0, hay, ha]
   rw [prolateBandErrorMajorant]
   field_simp
   ring
 
 /-- **The abstract transport defect is dominated by the majorant.** -/
 theorem prolateBand_defect_le_majorant {c s a α y : ℝ} {Φ : ℝ → ℝ}
-    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ 2)
+    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ (2 : ℕ))
     (hay : a ≤ y) (hyα : y ≤ α) (hα1 : α < 1)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ 2) * Φ t)
+    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ (2 : ℕ)) * Φ t)
     (hpos : ∀ t ∈ Icc y 1, 0 < Φ t)
-    (hbar : prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ 2)) y)
+    (hbar : prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ (2 : ℕ))) y)
     (hs1 : s < 1) (hδ1 : prolateRiccatiDefect c s y ≤ 1) :
-    2 * (Real.sqrt (prolateBandScale c s y) / (1 - y ^ 2))
-        * (1 - sturmRiccatiRatio (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) y) ^ 2
+    2 * (Real.sqrt (prolateBandScale c s y) / (1 - y ^ (2 : ℕ)))
+        * (1 - sturmRiccatiRatio (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) y) ^ (2 : ℕ)
       + |prolateBandScaleDeriv c s y / prolateBandScale c s y|
-        * |1 - sturmRiccatiRatio (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) y ^ 2| / 2
+        * |1 - sturmRiccatiRatio (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) y ^ (2 : ℕ)| / 2
       ≤ prolateBandErrorMajorant c s a α y := by
   have hy0 : 0 < y := lt_of_lt_of_le ha hay
   have hy1 : y < 1 := lt_of_le_of_lt hyα hα1
-  have hsy : s < y ^ 2 := by nlinarith [hay, ha]
+  have hsy : s < y ^ (2 : ℕ) := by nlinarith [hay, ha]
   exact le_trans (prolateBand_error_bound hc hsy hy0 hy1 hsm heig hpos hbar hs1)
     (prolateBandErrorControl_le_majorant hc ha has hay hyα hα1 hδ1)
 
@@ -322,30 +322,30 @@ theorem continuous_prolateBandScaleDeriv (c s : ℝ) : Continuous (prolateBandSc
   unfold prolateBandScaleDeriv
   fun_prop
 
-theorem continuousOn_prolateBandErrorMajorant {c s a α : ℝ} (ha : 0 < a) (has : s < a ^ 2) :
+theorem continuousOn_prolateBandErrorMajorant {c s a α : ℝ} (ha : 0 < a) (has : s < a ^ (2 : ℕ)) :
     ContinuousOn (prolateBandErrorMajorant c s a α) (Icc a α) := by
-  have hmem : ∀ y ∈ Icc a α, 0 < y ∧ s < y ^ 2 := by
+  have hmem : ∀ y ∈ Icc a α, 0 < y ∧ s < y ^ (2 : ℕ) := by
     intro y hy
     have hya : a ≤ y := hy.1
     have hy0 : 0 < y := lt_of_lt_of_le ha hya
     exact ⟨hy0, by nlinarith [hya, ha]⟩
-  have hsqrt : ContinuousOn (fun y : ℝ => Real.sqrt (y ^ 2 - s)) (Icc a α) :=
+  have hsqrt : ContinuousOn (fun y : ℝ => Real.sqrt (y ^ (2 : ℕ) - s)) (Icc a α) :=
     Real.continuous_sqrt.comp_continuousOn ((continuousOn_pow 2).sub continuousOn_const)
-  have hne : ∀ y ∈ Icc a α, Real.sqrt (y ^ 2 - s) ≠ 0 := by
+  have hne : ∀ y ∈ Icc a α, Real.sqrt (y ^ (2 : ℕ) - s) ≠ 0 := by
     intro y hy
     obtain ⟨_, hys⟩ := hmem y hy
     exact (Real.sqrt_pos.2 (by linarith)).ne'
-  have h1 : ContinuousOn (fun y : ℝ => 1 / (y ^ 2 * Real.sqrt (y ^ 2 - s))) (Icc a α) := by
+  have h1 : ContinuousOn (fun y : ℝ => 1 / (y ^ (2 : ℕ) * Real.sqrt (y ^ (2 : ℕ) - s))) (Icc a α) := by
     refine ContinuousOn.div continuousOn_const ((continuousOn_pow 2).mul hsqrt) fun y hy => ?_
     obtain ⟨hy0, hys⟩ := hmem y hy
-    have hp1 : (0 : ℝ) < y ^ 2 := by positivity
-    have hp2 : 0 < Real.sqrt (y ^ 2 - s) := Real.sqrt_pos.2 (by linarith)
+    have hp1 : (0 : ℝ) < y ^ (2 : ℕ) := by positivity
+    have hp2 : 0 < Real.sqrt (y ^ (2 : ℕ) - s) := Real.sqrt_pos.2 (by linarith)
     exact (mul_pos hp1 hp2).ne'
-  have h2 : ContinuousOn (fun y : ℝ => 1 / Real.sqrt (y ^ 2 - s) ^ 3) (Icc a α) := by
+  have h2 : ContinuousOn (fun y : ℝ => 1 / Real.sqrt (y ^ (2 : ℕ) - s) ^ (3 : ℕ)) (Icc a α) := by
     refine ContinuousOn.div continuousOn_const (hsqrt.pow 3) fun y hy => ?_
     obtain ⟨_, hys⟩ := hmem y hy
     exact (pow_pos (Real.sqrt_pos.2 (by linarith)) 3).ne'
-  have h3 : ContinuousOn (fun y : ℝ => 1 / Real.sqrt (y ^ 2 - s)) (Icc a α) :=
+  have h3 : ContinuousOn (fun y : ℝ => 1 / Real.sqrt (y ^ (2 : ℕ) - s)) (Icc a α) :=
     ContinuousOn.div continuousOn_const hsqrt hne
   unfold prolateBandErrorMajorant
   exact continuousOn_const.mul
@@ -353,26 +353,26 @@ theorem continuousOn_prolateBandErrorMajorant {c s a α : ℝ} (ha : 0 < a) (has
       (continuousOn_const.mul h3))
 
 theorem continuousOn_prolateSharpMajorant {c s a α : ℝ} (hc : 0 < c) (hα1 : α < 1) (ha : 0 < a)
-    (has : s < a ^ 2) :
-    ContinuousOn (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c s)
+    (has : s < a ^ (2 : ℕ)) :
+    ContinuousOn (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c s)
       (prolateBandScaleDeriv c s)) (Icc a α) := by
-  have hmem : ∀ y ∈ Icc a α, 0 < y ∧ s < y ^ 2 ∧ y < 1 := by
+  have hmem : ∀ y ∈ Icc a α, 0 < y ∧ s < y ^ (2 : ℕ) ∧ y < 1 := by
     intro y hy
     have hya : a ≤ y := hy.1
     have hy0 : 0 < y := lt_of_lt_of_le ha hya
     exact ⟨hy0, by nlinarith [hya, ha], lt_of_le_of_lt hy.2 hα1⟩
-  have hpne : ∀ y ∈ Icc a α, (1 : ℝ) - y ^ 2 ≠ 0 := by
+  have hpne : ∀ y ∈ Icc a α, (1 : ℝ) - y ^ (2 : ℕ) ≠ 0 := by
     intro y hy
     obtain ⟨hy0, _, hy1⟩ := hmem y hy
-    have : (0 : ℝ) < 1 - y ^ 2 := by nlinarith
+    have : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by nlinarith
     exact this.ne'
   have hKne : ∀ y ∈ Icc a α, prolateBandScale c s y ≠ 0 := by
     intro y hy
     obtain ⟨hy0, hys, hy1⟩ := hmem y hy
-    have hy2 : y ^ 2 < 1 := by nlinarith
-    have h1 : (0 : ℝ) < y ^ 2 - s := by linarith
-    have h2 : (0 : ℝ) < 1 - y ^ 2 := by linarith
-    have hc0 : (0 : ℝ) < c ^ 2 * (y ^ 2 - s) * (1 - y ^ 2) := by positivity
+    have hy2 : y ^ (2 : ℕ) < 1 := by nlinarith
+    have h1 : (0 : ℝ) < y ^ (2 : ℕ) - s := by linarith
+    have h2 : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by linarith
+    have hc0 : (0 : ℝ) < c ^ (2 : ℕ) * (y ^ (2 : ℕ) - s) * (1 - y ^ (2 : ℕ)) := by positivity
     rw [prolateBandScale]
     exact hc0.ne'
   unfold sturmSharpMajorant
@@ -389,23 +389,23 @@ set_option maxHeartbeats 1600000 in
 majorant `2 c P + (1/2)(K'/K)`; they differ only by the accumulated error majorant, whose mass is
 `O(1/K²) + O(1/K) + O(1/sqrt c)` at the matching point `a = K/sqrt c`. -/
 theorem prolateBand_sharp_transport {c s a α : ℝ} {Φ : ℝ → ℝ}
-    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ 2) (haα : a ≤ α) (hα1 : α < 1) (hs1 : s < 1)
+    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ (2 : ℕ)) (haα : a ≤ α) (hα1 : α < 1) (hs1 : s < 1)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ 2) * Φ t)
-    (hode : ∀ x : ℝ, (x ^ 2 - 1) * deriv (deriv Φ) x + 2 * x * deriv Φ x
-      - (s * c ^ 2 - c ^ 2 * x ^ 2) * Φ x = 0)
+    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ (2 : ℕ)) * Φ t)
+    (hode : ∀ x : ℝ, (x ^ (2 : ℕ) - 1) * deriv (deriv Φ) x + 2 * x * deriv Φ x
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φ x = 0)
     (hpos : ∀ t ∈ Icc a 1, 0 < Φ t)
-    (hbar : ∀ y ∈ Icc a α, prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ 2)) y)
+    (hbar : ∀ y ∈ Icc a α, prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ (2 : ℕ))) y)
     (hδ1 : ∀ y ∈ Icc a α, prolateRiccatiDefect c s y ≤ 1) :
-    sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) α
-        * Real.exp (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c s)
+    sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) α
+        * Real.exp (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c s)
             (prolateBandScaleDeriv c s) t - prolateBandErrorMajorant c s a α t))
-      ≤ sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) a ∧
-    sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) a
-      ≤ sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) α
-        * Real.exp (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c s)
+      ≤ sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) a ∧
+    sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) a
+      ≤ sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) α
+        * Real.exp (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c s)
             (prolateBandScaleDeriv c s) t + prolateBandErrorMajorant c s a α t)) := by
-  have hmem : ∀ y ∈ Icc a α, 0 < y ∧ s < y ^ 2 ∧ y < 1 := by
+  have hmem : ∀ y ∈ Icc a α, 0 < y ∧ s < y ^ (2 : ℕ) ∧ y < 1 := by
     intro y hy
     have hya : a ≤ y := hy.1
     have hy0 : 0 < y := lt_of_lt_of_le ha hya
@@ -413,7 +413,7 @@ theorem prolateBand_sharp_transport {c s a α : ℝ} {Φ : ℝ → ℝ}
   have hdiff : Differentiable ℝ Φ := (contDiff_infty_iff_deriv.mp hsm).1
   have hdiff2 : Differentiable ℝ (deriv Φ) :=
     (contDiff_infty_iff_deriv.mp (contDiff_infty_iff_deriv.mp hsm).2).1
-  refine sturmAmplitudeVar_sharp_transport (Q := fun t => c ^ 2 * (s - t ^ 2)) haα ?_ ?_ ?_ ?_
+  refine sturmAmplitudeVar_sharp_transport (Q := fun t => c ^ (2 : ℕ) * (s - t ^ (2 : ℕ))) haα ?_ ?_ ?_ ?_
     ?_ ?_ ?_ ?_ ?_ ?_
   · intro y hy
     obtain ⟨hy0, hys, hy1⟩ := hmem y hy
@@ -429,7 +429,7 @@ theorem prolateBand_sharp_transport {c s a α : ℝ} {Φ : ℝ → ℝ}
   · intro y _
     exact (hdiff y).hasDerivAt
   · intro y _
-    have h1 : HasDerivAt (fun u : ℝ => 1 - u ^ 2) (-(2 * y)) y := by
+    have h1 : HasDerivAt (fun u : ℝ => 1 - u ^ (2 : ℕ)) (-(2 * y)) y := by
       have h0 := (hasDerivAt_pow 2 y).const_sub 1
       refine h0.congr_deriv ?_
       push_cast
@@ -452,10 +452,10 @@ theorem prolateBand_sharp_transport {c s a α : ℝ} {Φ : ℝ → ℝ}
 
 
 theorem integral_prolateBandScale_logDeriv {c s a b : ℝ} (hc : 0 < c) (ha : 0 < a)
-    (has : s < a ^ 2) (hab : a ≤ b) (hb : b < 1) :
+    (has : s < a ^ (2 : ℕ)) (hab : a ≤ b) (hb : b < 1) :
     (∫ y in a..b, prolateBandScaleDeriv c s y / prolateBandScale c s y)
       = Real.log (prolateBandScale c s b) - Real.log (prolateBandScale c s a) := by
-  have hmem : ∀ y ∈ uIcc a b, 0 < y ∧ s < y ^ 2 ∧ y ^ 2 < 1 := by
+  have hmem : ∀ y ∈ uIcc a b, 0 < y ∧ s < y ^ (2 : ℕ) ∧ y ^ (2 : ℕ) < 1 := by
     intro y hy
     rw [uIcc_of_le hab] at hy
     have hya : a ≤ y := hy.1
@@ -479,12 +479,12 @@ theorem integral_prolateBandScale_logDeriv {c s a b : ℝ} (hc : 0 < c) (ha : 0 
 
 /-- **The sharp majorant integrates to the action plus HALF the scale logarithm.** -/
 theorem integral_prolateSharpMajorant {c s a b : ℝ} (hc : 0 < c) (ha : 0 < a)
-    (has : s < a ^ 2) (hab : a ≤ b) (hb : b < 1) :
-    (∫ y in a..b, sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c s)
+    (has : s < a ^ (2 : ℕ)) (hab : a ≤ b) (hb : b < 1) :
+    (∫ y in a..b, sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c s)
         (prolateBandScaleDeriv c s) y)
       = 2 * c * (bandEndpointPhase s a - bandEndpointPhase s b)
         + (Real.log (prolateBandScale c s b) - Real.log (prolateBandScale c s a)) / 2 := by
-  have hmem : ∀ y ∈ uIcc a b, 0 < y ∧ s < y ^ 2 ∧ y ^ 2 < 1 := by
+  have hmem : ∀ y ∈ uIcc a b, 0 < y ∧ s < y ^ (2 : ℕ) ∧ y ^ (2 : ℕ) < 1 := by
     intro y hy
     rw [uIcc_of_le hab] at hy
     have hya : a ≤ y := hy.1
@@ -495,20 +495,20 @@ theorem integral_prolateSharpMajorant {c s a b : ℝ} (hc : 0 < c) (ha : 0 < a)
     intro y hy
     obtain ⟨_, hys, hy2⟩ := hmem y hy
     exact (prolateBandScale_pos hc hys hy2).ne'
-  have hpne : ∀ y ∈ uIcc a b, (1 : ℝ) - y ^ 2 ≠ 0 := by
+  have hpne : ∀ y ∈ uIcc a b, (1 : ℝ) - y ^ (2 : ℕ) ≠ 0 := by
     intro y hy
     obtain ⟨_, _, hy2⟩ := hmem y hy
-    have : (0 : ℝ) < 1 - y ^ 2 := by linarith
+    have : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by linarith
     exact this.ne'
   have hrw : ∀ y ∈ uIcc a b,
-      sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c s)
+      sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c s)
         (prolateBandScaleDeriv c s) y
       = 2 * (c * prolateWKBProfile s y)
         + prolateBandScaleDeriv c s y / prolateBandScale c s y / 2 := by
     intro y hy
     obtain ⟨_, hys, hy2⟩ := hmem y hy
     rw [sturmSharpMajorant, sqrt_prolateBandScale_div hc hys hy2]
-  have hcongr : (∫ y in a..b, sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c s)
+  have hcongr : (∫ y in a..b, sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c s)
         (prolateBandScaleDeriv c s) y)
       = ∫ y in a..b, (2 * (c * prolateWKBProfile s y)
         + prolateBandScaleDeriv c s y / prolateBandScale c s y / 2) :=
@@ -542,29 +542,29 @@ theorem integral_prolateSharpMajorant {c s a b : ℝ} (hc : 0 < c) (ha : 0 < a)
 /-- With the Riccati defect below one the amplitude is at most five times the squared value: the
 flux term cannot dominate. -/
 theorem prolateBand_amplitude_le_five_sq {c s y : ℝ} {Φ : ℝ → ℝ}
-    (hc : 0 < c) (hsy : s < y ^ 2) (hy0 : 0 < y) (hy1 : y < 1)
+    (hc : 0 < c) (hsy : s < y ^ (2 : ℕ)) (hy0 : 0 < y) (hy1 : y < 1)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ 2) * Φ t)
+    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ (2 : ℕ)) * Φ t)
     (hpos : ∀ t ∈ Icc y 1, 0 < Φ t)
-    (hbar : prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ 2)) y)
+    (hbar : prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ (2 : ℕ))) y)
     (hs1 : s < 1) (hδ1 : prolateRiccatiDefect c s y ≤ 1) :
-    sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) y
-      ≤ 5 * Φ y ^ 2 := by
-  have hy2 : y ^ 2 < 1 := by nlinarith
+    sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) y
+      ≤ 5 * Φ y ^ (2 : ℕ) := by
+  have hy2 : y ^ (2 : ℕ) < 1 := by nlinarith
   have hKpos : 0 < prolateBandScale c s y := prolateBandScale_pos hc hsy hy2
   have hΦne : Φ y ≠ 0 := (hpos y ⟨le_rfl, hy1.le⟩).ne'
-  set ρ : ℝ := sturmRiccatiRatio (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) y with hρ
+  set ρ : ℝ := sturmRiccatiRatio (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) y with hρ
   have hδ := abs_one_sub_sturmRiccatiRatio_prolate_le (c := c) (s := s) (y := y)
     (Φ := Φ) (DΦ := deriv Φ) hc hsy hy0 hy1 hsm heig hpos hbar rfl hs1
   rw [← hρ] at hδ
   have hle : |1 - ρ| ≤ 1 := le_trans hδ hδ1
-  have hbound : ρ ^ 2 ≤ 4 := by
+  have hbound : ρ ^ (2 : ℕ) ≤ 4 := by
     have h := abs_le.mp hle
     nlinarith [h.1, h.2]
-  have hspec := sturmRiccatiRatio_spec (p := fun t => 1 - t ^ 2) (R := Φ) (DR := deriv Φ)
+  have hspec := sturmRiccatiRatio_spec (p := fun t => 1 - t ^ (2 : ℕ)) (R := Φ) (DR := deriv Φ)
     (K := prolateBandScale c s) (y := y) hKpos hΦne
-  have hG : sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) y
-      = Φ y ^ 2 * (1 + ρ ^ 2) := by
+  have hG : sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) y
+      = Φ y ^ (2 : ℕ) * (1 + ρ ^ (2 : ℕ)) := by
     rw [hρ]
     exact sturmAmplitudeVar_eq_mul_one_add_sq hKpos hspec
   rw [hG]
@@ -575,29 +575,29 @@ set_option maxHeartbeats 1600000 in
 /-- **The squared value at the matching point is two-sided at the sharp rate.**  Both bounds carry
 the same sharp majorant; they differ by an absolute factor five and the accumulated error mass. -/
 theorem prolateBand_sq_two_sided_sharp {c s a α : ℝ} {Φ : ℝ → ℝ}
-    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ 2) (haα : a ≤ α) (hα1 : α < 1) (hs1 : s < 1)
+    (hc : 0 < c) (ha : 0 < a) (has : s < a ^ (2 : ℕ)) (haα : a ≤ α) (hα1 : α < 1) (hs1 : s < 1)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ 2) * Φ t)
-    (hode : ∀ x : ℝ, (x ^ 2 - 1) * deriv (deriv Φ) x + 2 * x * deriv Φ x
-      - (s * c ^ 2 - c ^ 2 * x ^ 2) * Φ x = 0)
+    (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ (2 : ℕ)) * Φ t)
+    (hode : ∀ x : ℝ, (x ^ (2 : ℕ) - 1) * deriv (deriv Φ) x + 2 * x * deriv Φ x
+      - (s * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φ x = 0)
     (hpos : ∀ t ∈ Icc a 1, 0 < Φ t)
-    (hbar : ∀ y ∈ Icc a α, prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ 2)) y)
+    (hbar : ∀ y ∈ Icc a α, prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ (2 : ℕ))) y)
     (hδ1 : ∀ y ∈ Icc a α, prolateRiccatiDefect c s y ≤ 1) :
-    Φ a ^ 2 ≥ sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) α
-        * Real.exp (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c s)
+    Φ a ^ (2 : ℕ) ≥ sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) α
+        * Real.exp (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c s)
             (prolateBandScaleDeriv c s) t - prolateBandErrorMajorant c s a α t)) / 5 ∧
-      Φ a ^ 2 ≤ sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) α
-        * Real.exp (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c s)
+      Φ a ^ (2 : ℕ) ≤ sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) α
+        * Real.exp (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c s)
             (prolateBandScaleDeriv c s) t + prolateBandErrorMajorant c s a α t)) := by
   obtain ⟨hlow, hup⟩ := prolateBand_sharp_transport hc ha has haα hα1 hs1 hsm heig hode hpos
     hbar hδ1
   have hy1 : a < 1 := lt_of_le_of_lt haα hα1
-  have ha2 : a ^ 2 < 1 := by nlinarith
+  have ha2 : a ^ (2 : ℕ) < 1 := by nlinarith
   have hKpos : 0 < prolateBandScale c s a := prolateBandScale_pos hc has ha2
-  have hsq : Φ a ^ 2 ≤ sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ)
+  have hsq : Φ a ^ (2 : ℕ) ≤ sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ)
       (prolateBandScale c s) a := sq_le_sturmAmplitudeVar hKpos
-  have hfive : sturmAmplitudeVar (fun t => 1 - t ^ 2) Φ (deriv Φ) (prolateBandScale c s) a
-      ≤ 5 * Φ a ^ 2 :=
+  have hfive : sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φ (deriv Φ) (prolateBandScale c s) a
+      ≤ 5 * Φ a ^ (2 : ℕ) :=
     prolateBand_amplitude_le_five_sq hc has ha hy1 hsm heig
       (fun t ht => hpos t ⟨ht.1, ht.2⟩) (hbar a ⟨le_rfl, haα⟩) hs1 (hδ1 a ⟨le_rfl, haα⟩)
   constructor
@@ -612,31 +612,31 @@ only the exponential separation of the two phases survives. -/
 theorem prolateBand_sq_ratio_sharp {c sn sm a α : ℝ} {Φn Φm : ℝ → ℝ}
     (hc : 0 < c) (ha : 0 < a) (haα : a ≤ α) (hα : 1 / 2 < α) (hα1 : α < 1)
     (hcollar : 600 * (1 - α) ≤ 1 / 4)
-    (hsn0 : 0 < sn) (hsn8 : sn ≤ 1 / 8) (hsna : sn < a ^ 2)
-    (hsm0 : 0 ≤ sm) (hsm8 : sm ≤ 1 / 8) (hsma : sm < a ^ 2)
+    (hsn0 : 0 < sn) (hsn8 : sn ≤ 1 / 8) (hsna : sn < a ^ (2 : ℕ))
+    (hsm0 : 0 ≤ sm) (hsm8 : sm ≤ 1 / 8) (hsma : sm < a ^ (2 : ℕ))
     (hsmn : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φn)
-    (heign : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φn t = -(sn * c ^ 2) * Φn t)
-    (hoden : ∀ x : ℝ, (x ^ 2 - 1) * deriv (deriv Φn) x + 2 * x * deriv Φn x
-      - (sn * c ^ 2 - c ^ 2 * x ^ 2) * Φn x = 0)
+    (heign : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φn t = -(sn * c ^ (2 : ℕ)) * Φn t)
+    (hoden : ∀ x : ℝ, (x ^ (2 : ℕ) - 1) * deriv (deriv Φn) x + 2 * x * deriv Φn x
+      - (sn * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φn x = 0)
     (hΦn1 : Φn 1 = 1) (hposn : ∀ t ∈ Icc a 1, 0 < Φn t)
-    (hbarn : ∀ y ∈ Icc a α, prolateLogDeriv Φn y ≤ prolateAnchoredBarrier c (-(sn * c ^ 2)) y)
+    (hbarn : ∀ y ∈ Icc a α, prolateLogDeriv Φn y ≤ prolateAnchoredBarrier c (-(sn * c ^ (2 : ℕ))) y)
     (hδn : ∀ y ∈ Icc a α, prolateRiccatiDefect c sn y ≤ 1)
     (hsmm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φm)
-    (heigm : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φm t = -(sm * c ^ 2) * Φm t)
-    (hodem : ∀ x : ℝ, (x ^ 2 - 1) * deriv (deriv Φm) x + 2 * x * deriv Φm x
-      - (sm * c ^ 2 - c ^ 2 * x ^ 2) * Φm x = 0)
+    (heigm : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φm t = -(sm * c ^ (2 : ℕ)) * Φm t)
+    (hodem : ∀ x : ℝ, (x ^ (2 : ℕ) - 1) * deriv (deriv Φm) x + 2 * x * deriv Φm x
+      - (sm * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φm x = 0)
     (hΦm1 : Φm 1 = 1) (hposm : ∀ t ∈ Icc a 1, 0 < Φm t)
-    (hbarm : ∀ y ∈ Icc a α, prolateLogDeriv Φm y ≤ prolateAnchoredBarrier c (-(sm * c ^ 2)) y)
+    (hbarm : ∀ y ∈ Icc a α, prolateLogDeriv Φm y ≤ prolateAnchoredBarrier c (-(sm * c ^ (2 : ℕ))) y)
     (hδm : ∀ y ∈ Icc a α, prolateRiccatiDefect c sm y ≤ 1)
     (hzn : 0 < c * bandEndpointPhase sn α) (hzm : 1 ≤ c * bandEndpointPhase sm α) :
-    Φn a ^ 2
-      ≤ 4050 * Real.pi ^ 3 * (c * bandEndpointPhase sm α / (c * bandEndpointPhase sn α))
+    Φn a ^ (2 : ℕ)
+      ≤ 4050 * Real.pi ^ (3 : ℕ) * (c * bandEndpointPhase sm α / (c * bandEndpointPhase sn α))
         * Real.exp (2 * (c * bandEndpointPhase sn α) - 2 * (c * bandEndpointPhase sm α)
-          + (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sn)
+          + (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sn)
               (prolateBandScaleDeriv c sn) t + prolateBandErrorMajorant c sn a α t))
-          - (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sm)
+          - (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sm)
               (prolateBandScaleDeriv c sm) t - prolateBandErrorMajorant c sm a α t)))
-        * Φm a ^ 2 := by
+        * Φm a ^ (2 : ℕ) := by
   have hsn1 : sn < 1 := by linarith
   have hsm1 : sm < 1 := by linarith
   have hα1' : α < 1 := hα1
@@ -644,22 +644,22 @@ theorem prolateBand_sq_ratio_sharp {c sn sm a α : ℝ} {Φn Φm : ℝ → ℝ}
   have hΦnα : 0 < Φn α := hposn α ⟨haα, hα1.le⟩
   have hΦmα : 0 < Φm α := hposm α ⟨haα, hα1.le⟩
   -- the collar bounds
-  have hoden' : ∀ x ∈ Ioo α 1, (1 - x ^ 2) * deriv (deriv Φn) x - 2 * x * deriv Φn x
-      + (sn * c ^ 2 - c ^ 2 * x ^ 2) * Φn x = 0 := by
+  have hoden' : ∀ x ∈ Ioo α 1, (1 - x ^ (2 : ℕ)) * deriv (deriv Φn) x - 2 * x * deriv Φn x
+      + (sn * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φn x = 0 := by
     intro x _
     linarith [hoden x]
-  have hodem' : ∀ x ∈ Ioo α 1, (1 - x ^ 2) * deriv (deriv Φm) x - 2 * x * deriv Φm x
-      + (sm * c ^ 2 - c ^ 2 * x ^ 2) * Φm x = 0 := by
+  have hodem' : ∀ x ∈ Ioo α 1, (1 - x ^ (2 : ℕ)) * deriv (deriv Φm) x - 2 * x * deriv Φm x
+      + (sm * c ^ (2 : ℕ) - c ^ (2 : ℕ) * x ^ (2 : ℕ)) * Φm x = 0 := by
     intro x _
     linarith [hodem x]
-  have hcolln : Φn α ^ 2 ≤ 9 * Real.pi / 2
+  have hcolln : Φn α ^ (2 : ℕ) ≤ 9 * Real.pi / 2
       * Real.exp (2 * (c * bandEndpointPhase sn α)) / (c * bandEndpointPhase sn α) :=
     prolateBand_collar_sq_le hsn0.le hsn8 hc hα hα1 hcollar hsmn hoden' hΦn1 hzn hΦnα.le
   have hcollm : Real.exp (c * bandEndpointPhase sm α)
       / (6 * Real.pi * Real.sqrt (c * bandEndpointPhase sm α)) ≤ Φm α :=
     exp_div_le_prolateBand_collar hsm0 hsm8 hc hα hα1 hcollar hsmm hodem' hΦm1 hzm
   have hcollm2 : Real.exp (2 * (c * bandEndpointPhase sm α))
-      / (36 * Real.pi ^ 2 * (c * bandEndpointPhase sm α)) ≤ Φm α ^ 2 := by
+      / (36 * Real.pi ^ (2 : ℕ) * (c * bandEndpointPhase sm α)) ≤ Φm α ^ (2 : ℕ) := by
     have hden : (0 : ℝ) < 6 * Real.pi * Real.sqrt (c * bandEndpointPhase sm α) := by
       have h1 : (0 : ℝ) < Real.sqrt (c * bandEndpointPhase sm α) := Real.sqrt_pos.2 hzm0
       have := Real.pi_pos
@@ -668,9 +668,9 @@ theorem prolateBand_sq_ratio_sharp {c sn sm a α : ℝ} {Φn Φm : ℝ → ℝ}
         / (6 * Real.pi * Real.sqrt (c * bandEndpointPhase sm α)) := le_of_lt (by positivity)
     have hsq := pow_le_pow_left₀ hnn hcollm 2
     have hval : (Real.exp (c * bandEndpointPhase sm α)
-        / (6 * Real.pi * Real.sqrt (c * bandEndpointPhase sm α))) ^ 2
+        / (6 * Real.pi * Real.sqrt (c * bandEndpointPhase sm α))) ^ (2 : ℕ)
         = Real.exp (2 * (c * bandEndpointPhase sm α))
-          / (36 * Real.pi ^ 2 * (c * bandEndpointPhase sm α)) := by
+          / (36 * Real.pi ^ (2 : ℕ) * (c * bandEndpointPhase sm α)) := by
       rw [div_pow, mul_pow, mul_pow, Real.sq_sqrt hzm0.le, ← Real.exp_nat_mul]
       norm_num
     rwa [hval] at hsq
@@ -680,45 +680,45 @@ theorem prolateBand_sq_ratio_sharp {c sn sm a α : ℝ} {Φn Φm : ℝ → ℝ}
   obtain ⟨hmlow, hmup⟩ := prolateBand_sq_two_sided_sharp hc ha hsma haα hα1 hsm1 hsmm heigm
     hodem hposm hbarm hδm
   -- the amplitude at the collar
-  have hGn : sturmAmplitudeVar (fun t => 1 - t ^ 2) Φn (deriv Φn) (prolateBandScale c sn) α
-      ≤ 5 * Φn α ^ 2 :=
+  have hGn : sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φn (deriv Φn) (prolateBandScale c sn) α
+      ≤ 5 * Φn α ^ (2 : ℕ) :=
     prolateBand_amplitude_le_five_sq hc (by nlinarith [hsna, haα, ha]) (lt_of_lt_of_le ha haα)
       hα1 hsmn heign (fun t ht => hposn t ⟨le_trans haα ht.1, ht.2⟩)
       (hbarn α ⟨haα, le_rfl⟩) hsn1 (hδn α ⟨haα, le_rfl⟩)
-  have hGm : Φm α ^ 2
-      ≤ sturmAmplitudeVar (fun t => 1 - t ^ 2) Φm (deriv Φm) (prolateBandScale c sm) α := by
-    have hα2 : α ^ 2 < 1 := by nlinarith
+  have hGm : Φm α ^ (2 : ℕ)
+      ≤ sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φm (deriv Φm) (prolateBandScale c sm) α := by
+    have hα2 : α ^ (2 : ℕ) < 1 := by nlinarith
     exact sq_le_sturmAmplitudeVar (prolateBandScale_pos hc (by nlinarith [hsma, haα, ha]) hα2)
   set zn : ℝ := c * bandEndpointPhase sn α with hzndef
   set zm : ℝ := c * bandEndpointPhase sm α with hzmdef
-  set Eup : ℝ := ∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sn)
+  set Eup : ℝ := ∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sn)
       (prolateBandScaleDeriv c sn) t + prolateBandErrorMajorant c sn a α t) with hEup
-  set Elo : ℝ := ∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sm)
+  set Elo : ℝ := ∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sm)
       (prolateBandScaleDeriv c sm) t - prolateBandErrorMajorant c sm a α t) with hElo
   have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
-  have hn : Φn a ^ 2 ≤ 5 * (9 * Real.pi / 2) * (Real.exp (2 * zn) / zn) * Real.exp Eup := by
-    have h1 : Φn a ^ 2 ≤ 5 * Φn α ^ 2 * Real.exp Eup := by
+  have hn : Φn a ^ (2 : ℕ) ≤ 5 * (9 * Real.pi / 2) * (Real.exp (2 * zn) / zn) * Real.exp Eup := by
+    have h1 : Φn a ^ (2 : ℕ) ≤ 5 * Φn α ^ (2 : ℕ) * Real.exp Eup := by
       have := mul_le_mul_of_nonneg_right hGn (Real.exp_pos Eup).le
       linarith [hnup, this]
-    have h2 : 5 * Φn α ^ 2 * Real.exp Eup
+    have h2 : 5 * Φn α ^ (2 : ℕ) * Real.exp Eup
         ≤ 5 * (9 * Real.pi / 2 * Real.exp (2 * zn) / zn) * Real.exp Eup := by
-      have hstep : 5 * Φn α ^ 2 ≤ 5 * (9 * Real.pi / 2 * Real.exp (2 * zn) / zn) := by
+      have hstep : 5 * Φn α ^ (2 : ℕ) ≤ 5 * (9 * Real.pi / 2 * Real.exp (2 * zn) / zn) := by
         linarith [hcolln]
       exact mul_le_mul_of_nonneg_right hstep (Real.exp_pos Eup).le
     have h3 : 5 * (9 * Real.pi / 2 * Real.exp (2 * zn) / zn) * Real.exp Eup
         = 5 * (9 * Real.pi / 2) * (Real.exp (2 * zn) / zn) * Real.exp Eup := by ring
     linarith [h1, h2, h3.le, h3.ge]
-  have hm : Real.exp (2 * zm) / (180 * Real.pi ^ 2 * zm) * Real.exp Elo ≤ Φm a ^ 2 := by
-    have h1 : Real.exp (2 * zm) / (36 * Real.pi ^ 2 * zm) * Real.exp Elo / 5 ≤ Φm a ^ 2 := by
-      have hstep : Real.exp (2 * zm) / (36 * Real.pi ^ 2 * zm) * Real.exp Elo
-          ≤ Φm α ^ 2 * Real.exp Elo :=
+  have hm : Real.exp (2 * zm) / (180 * Real.pi ^ (2 : ℕ) * zm) * Real.exp Elo ≤ Φm a ^ (2 : ℕ) := by
+    have h1 : Real.exp (2 * zm) / (36 * Real.pi ^ (2 : ℕ) * zm) * Real.exp Elo / 5 ≤ Φm a ^ (2 : ℕ) := by
+      have hstep : Real.exp (2 * zm) / (36 * Real.pi ^ (2 : ℕ) * zm) * Real.exp Elo
+          ≤ Φm α ^ (2 : ℕ) * Real.exp Elo :=
         mul_le_mul_of_nonneg_right hcollm2 (Real.exp_pos Elo).le
-      have hstep2 : Φm α ^ 2 * Real.exp Elo
-          ≤ sturmAmplitudeVar (fun t => 1 - t ^ 2) Φm (deriv Φm) (prolateBandScale c sm) α
+      have hstep2 : Φm α ^ (2 : ℕ) * Real.exp Elo
+          ≤ sturmAmplitudeVar (fun t => 1 - t ^ (2 : ℕ)) Φm (deriv Φm) (prolateBandScale c sm) α
             * Real.exp Elo := mul_le_mul_of_nonneg_right hGm (Real.exp_pos Elo).le
       linarith [hmlow, hstep, hstep2]
-    have hval : Real.exp (2 * zm) / (36 * Real.pi ^ 2 * zm) * Real.exp Elo / 5
-        = Real.exp (2 * zm) / (180 * Real.pi ^ 2 * zm) * Real.exp Elo := by
+    have hval : Real.exp (2 * zm) / (36 * Real.pi ^ (2 : ℕ) * zm) * Real.exp Elo / 5
+        = Real.exp (2 * zm) / (180 * Real.pi ^ (2 : ℕ) * zm) * Real.exp Elo := by
       field_simp
       ring
     linarith [h1, hval.le, hval.ge]
@@ -727,22 +727,22 @@ theorem prolateBand_sq_ratio_sharp {c sn sm a α : ℝ} {Φn Φm : ℝ → ℝ}
     rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
     congr 1
     ring
-  have hcoef : (0 : ℝ) ≤ 4050 * Real.pi ^ 3 * (zm / zn)
+  have hcoef : (0 : ℝ) ≤ 4050 * Real.pi ^ (3 : ℕ) * (zm / zn)
       * Real.exp (2 * zn - 2 * zm + Eup - Elo) := by positivity
   refine le_trans hn ?_
-  have hkey : 4050 * Real.pi ^ 3 * (zm / zn) * Real.exp (2 * zn - 2 * zm + Eup - Elo)
-      * (Real.exp (2 * zm) / (180 * Real.pi ^ 2 * zm) * Real.exp Elo)
+  have hkey : 4050 * Real.pi ^ (3 : ℕ) * (zm / zn) * Real.exp (2 * zn - 2 * zm + Eup - Elo)
+      * (Real.exp (2 * zm) / (180 * Real.pi ^ (2 : ℕ) * zm) * Real.exp Elo)
       = 5 * (9 * Real.pi / 2) * (Real.exp (2 * zn) / zn) * Real.exp Eup := by
     have hzn0 : zn ≠ 0 := hzn.ne'
     have hzm0' : zm ≠ 0 := hzm0.ne'
     have hπ0 : Real.pi ≠ 0 := hπ.ne'
-    have hrw : 4050 * Real.pi ^ 3 * (zm / zn) * Real.exp (2 * zn - 2 * zm + Eup - Elo)
-        * (Real.exp (2 * zm) / (180 * Real.pi ^ 2 * zm) * Real.exp Elo)
-        = (4050 * Real.pi ^ 3 * (zm / zn) / (180 * Real.pi ^ 2 * zm))
+    have hrw : 4050 * Real.pi ^ (3 : ℕ) * (zm / zn) * Real.exp (2 * zn - 2 * zm + Eup - Elo)
+        * (Real.exp (2 * zm) / (180 * Real.pi ^ (2 : ℕ) * zm) * Real.exp Elo)
+        = (4050 * Real.pi ^ (3 : ℕ) * (zm / zn) / (180 * Real.pi ^ (2 : ℕ) * zm))
           * (Real.exp (2 * zn - 2 * zm + Eup - Elo) * (Real.exp (2 * zm) * Real.exp Elo)) := by
       ring
     rw [hrw, hexp]
-    have hcoefeq : 4050 * Real.pi ^ 3 * (zm / zn) / (180 * Real.pi ^ 2 * zm)
+    have hcoefeq : 4050 * Real.pi ^ (3 : ℕ) * (zm / zn) / (180 * Real.pi ^ (2 : ℕ) * zm)
         = 5 * (9 * Real.pi / 2) / zn := by
       field_simp
       ring
@@ -756,23 +756,23 @@ theorem prolateBand_sq_ratio_sharp {c sn sm a α : ℝ} {Φn Φm : ℝ → ℝ}
 leaving the phase separation at the matching point, half the difference of the two scale logarithms,
 and the two error masses. -/
 theorem prolateBand_sharp_exponent_eq {c sn sm a α : ℝ} (hc : 0 < c) (ha : 0 < a)
-    (hsna : sn < a ^ 2) (hsma : sm < a ^ 2) (haα : a ≤ α) (hα1 : α < 1) :
+    (hsna : sn < a ^ (2 : ℕ)) (hsma : sm < a ^ (2 : ℕ)) (haα : a ≤ α) (hα1 : α < 1) :
     2 * (c * bandEndpointPhase sn α) - 2 * (c * bandEndpointPhase sm α)
-        + (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sn)
+        + (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sn)
             (prolateBandScaleDeriv c sn) t + prolateBandErrorMajorant c sn a α t))
-        - (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sm)
+        - (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sm)
             (prolateBandScaleDeriv c sm) t - prolateBandErrorMajorant c sm a α t))
       = 2 * c * (bandEndpointPhase sn a - bandEndpointPhase sm a)
         + (Real.log (prolateBandScale c sn α) - Real.log (prolateBandScale c sn a)) / 2
         - (Real.log (prolateBandScale c sm α) - Real.log (prolateBandScale c sm a)) / 2
         + (∫ t in a..α, prolateBandErrorMajorant c sn a α t)
         + (∫ t in a..α, prolateBandErrorMajorant c sm a α t) := by
-  have hmn : IntervalIntegrable (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sn)
+  have hmn : IntervalIntegrable (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sn)
       (prolateBandScaleDeriv c sn)) volume a α := by
     have h := continuousOn_prolateSharpMajorant (c := c) (s := sn) (a := a) (α := α) hc hα1 ha hsna
     rw [← uIcc_of_le haα] at h
     exact h.intervalIntegrable
-  have hmm : IntervalIntegrable (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sm)
+  have hmm : IntervalIntegrable (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sm)
       (prolateBandScaleDeriv c sm)) volume a α := by
     have h := continuousOn_prolateSharpMajorant (c := c) (s := sm) (a := a) (α := α) hc hα1 ha hsma
     rw [← uIcc_of_le haα] at h
@@ -791,51 +791,51 @@ theorem prolateBand_sharp_exponent_eq {c sn sm a α : ℝ} (hc : 0 < c) (ha : 0 
   ring
 
 
-theorem log_prolateBandScale {c s y : ℝ} (hc : 0 < c) (hsy : s < y ^ 2) (hy2 : y ^ 2 < 1) :
+theorem log_prolateBandScale {c s y : ℝ} (hc : 0 < c) (hsy : s < y ^ (2 : ℕ)) (hy2 : y ^ (2 : ℕ) < 1) :
     Real.log (prolateBandScale c s y)
-      = Real.log (c ^ 2) + Real.log (y ^ 2 - s) + Real.log (1 - y ^ 2) := by
-  have h1 : (c : ℝ) ^ 2 ≠ 0 := by positivity
-  have h2 : (y : ℝ) ^ 2 - s ≠ 0 := by
-    have : (0 : ℝ) < y ^ 2 - s := by linarith
+      = Real.log (c ^ (2 : ℕ)) + Real.log (y ^ (2 : ℕ) - s) + Real.log (1 - y ^ (2 : ℕ)) := by
+  have h1 : (c : ℝ) ^ (2 : ℕ) ≠ 0 := by positivity
+  have h2 : (y : ℝ) ^ (2 : ℕ) - s ≠ 0 := by
+    have : (0 : ℝ) < y ^ (2 : ℕ) - s := by linarith
     exact this.ne'
-  have h3 : (1 : ℝ) - y ^ 2 ≠ 0 := by
-    have : (0 : ℝ) < 1 - y ^ 2 := by linarith
+  have h3 : (1 : ℝ) - y ^ (2 : ℕ) ≠ 0 := by
+    have : (0 : ℝ) < 1 - y ^ (2 : ℕ) := by linarith
     exact this.ne'
   rw [prolateBandScale, Real.log_mul (mul_ne_zero h1 h2) h3, Real.log_mul h1 h2]
 
 /-- **The scale-logarithm difference is bounded by an anchor term alone.**  The endpoint factors
 `1 - y²` cancel between the two apertures, and the collar contribution has the favourable sign. -/
 theorem prolateBand_scaleLog_diff_le {c sn sm a α : ℝ} (hc : 0 < c) (ha : 0 < a)
-    (hmn : sm ≤ sn) (hsna : sn < a ^ 2) (haα : a ≤ α) (hα1 : α < 1) :
+    (hmn : sm ≤ sn) (hsna : sn < a ^ (2 : ℕ)) (haα : a ≤ α) (hα1 : α < 1) :
     (Real.log (prolateBandScale c sn α) - Real.log (prolateBandScale c sn a)) / 2
       - (Real.log (prolateBandScale c sm α) - Real.log (prolateBandScale c sm a)) / 2
-      ≤ (Real.log (a ^ 2 - sm) - Real.log (a ^ 2 - sn)) / 2 := by
-  have ha2 : a ^ 2 < 1 := by nlinarith [haα, hα1, ha]
-  have hα2 : α ^ 2 < 1 := by nlinarith [hα1, haα, ha]
-  have hsma : sm < a ^ 2 := lt_of_le_of_lt hmn hsna
-  have hsnα : sn < α ^ 2 := by nlinarith [hsna, haα, ha]
-  have hsmα : sm < α ^ 2 := lt_of_le_of_lt hmn hsnα
+      ≤ (Real.log (a ^ (2 : ℕ) - sm) - Real.log (a ^ (2 : ℕ) - sn)) / 2 := by
+  have ha2 : a ^ (2 : ℕ) < 1 := by nlinarith [haα, hα1, ha]
+  have hα2 : α ^ (2 : ℕ) < 1 := by nlinarith [hα1, haα, ha]
+  have hsma : sm < a ^ (2 : ℕ) := lt_of_le_of_lt hmn hsna
+  have hsnα : sn < α ^ (2 : ℕ) := by nlinarith [hsna, haα, ha]
+  have hsmα : sm < α ^ (2 : ℕ) := lt_of_le_of_lt hmn hsnα
   rw [log_prolateBandScale hc hsnα hα2, log_prolateBandScale hc hsna ha2,
     log_prolateBandScale hc hsmα hα2, log_prolateBandScale hc hsma ha2]
-  have hcollar : Real.log (α ^ 2 - sn) ≤ Real.log (α ^ 2 - sm) :=
+  have hcollar : Real.log (α ^ (2 : ℕ) - sn) ≤ Real.log (α ^ (2 : ℕ) - sm) :=
     Real.log_le_log (by linarith) (by linarith)
   linarith [hcollar]
 
 
 /-- **The full exponent bound.**  The three pieces of `prolateBand_sharp_exponent_eq`, bounded. -/
 theorem prolateBand_sharp_exponent_le {c sn sm a α : ℝ} (hc : 0 < c) (ha : 0 < a)
-    (hsm0 : 0 ≤ sm) (hmn : sm ≤ sn) (hsna : sn < a ^ 2) (haα : a ≤ α) (hα1 : α < 1)
+    (hsm0 : 0 ≤ sm) (hmn : sm ≤ sn) (hsna : sn < a ^ (2 : ℕ)) (haα : a ≤ α) (hα1 : α < 1)
     (ha1 : a < 1) :
     2 * (c * bandEndpointPhase sn α) - 2 * (c * bandEndpointPhase sm α)
-        + (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sn)
+        + (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sn)
             (prolateBandScaleDeriv c sn) t + prolateBandErrorMajorant c sn a α t))
-        - (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ 2) (prolateBandScale c sm)
+        - (∫ t in a..α, (sturmSharpMajorant (fun t => 1 - t ^ (2 : ℕ)) (prolateBandScale c sm)
             (prolateBandScaleDeriv c sm) t - prolateBandErrorMajorant c sm a α t))
       ≤ -(c * (sn - sm) * Real.log (1 / a))
-        + (Real.log (a ^ 2 - sm) - Real.log (a ^ 2 - sn)) / 2
+        + (Real.log (a ^ (2 : ℕ) - sm) - Real.log (a ^ (2 : ℕ) - sn)) / 2
         + (∫ t in a..α, prolateBandErrorMajorant c sn a α t)
         + (∫ t in a..α, prolateBandErrorMajorant c sm a α t) := by
-  have hsma : sm < a ^ 2 := lt_of_le_of_lt hmn hsna
+  have hsma : sm < a ^ (2 : ℕ) := lt_of_le_of_lt hmn hsna
   rw [prolateBand_sharp_exponent_eq hc ha hsna hsma haα hα1]
   have hphase : (sn - sm) / 2 * Real.log (1 / a)
       ≤ bandEndpointPhase sm a - bandEndpointPhase sn a :=
@@ -846,32 +846,32 @@ theorem prolateBand_sharp_exponent_le {c sn sm a α : ℝ} (hc : 0 < c) (ha : 0 
 
 
 /-- The WKB profile increases across the band: numerator up, denominator down. -/
-theorem prolateWKBProfile_mono {s a y : ℝ} (hs1 : s < 1) (ha : 0 < a) (hsa : s < a ^ 2)
+theorem prolateWKBProfile_mono {s a y : ℝ} (hs1 : s < 1) (ha : 0 < a) (hsa : s < a ^ (2 : ℕ))
     (hay : a ≤ y) (hy1 : y < 1) :
     prolateWKBProfile s a ≤ prolateWKBProfile s y := by
   have ha1 : a < 1 := lt_of_le_of_lt hay hy1
-  have ha2 : a ^ 2 < 1 := by nlinarith
+  have ha2 : a ^ (2 : ℕ) < 1 := by nlinarith
   have hy0 : 0 < y := lt_of_lt_of_le ha hay
-  have hy2 : y ^ 2 < 1 := by nlinarith
-  have hsy : s < y ^ 2 := by nlinarith [hay, ha]
+  have hy2 : y ^ (2 : ℕ) < 1 := by nlinarith
+  have hsy : s < y ^ (2 : ℕ) := by nlinarith [hay, ha]
   rw [prolateWKBProfile, prolateWKBProfile]
   refine Real.sqrt_le_sqrt ?_
   rw [div_le_div_iff₀ (by linarith) (by linarith)]
-  have hsq : a ^ 2 ≤ y ^ 2 := by nlinarith [hay, ha]
+  have hsq : a ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := by nlinarith [hay, ha]
   nlinarith [mul_nonneg (sub_nonneg.2 hsq) (le_of_lt (sub_pos.2 hs1))]
 
 /-- A single scalar condition at the matching point forces the Riccati defect below one on the
 whole window. -/
 theorem prolateRiccatiDefect_le_one {c s a α y : ℝ} (hc : 0 < c) (ha : 0 < a) (hs1 : s < 1)
-    (hsa : s < a ^ 2) (hay : a ≤ y) (hyα : y ≤ α) (hα1 : α < 1)
+    (hsa : s < a ^ (2 : ℕ)) (hay : a ≤ y) (hyα : y ≤ α) (hα1 : α < 1)
     (hsuff : 1 / a + 9 / (1 - α) ≤ c * prolateWKBProfile s a) :
     prolateRiccatiDefect c s y ≤ 1 := by
   have hy0 : 0 < y := lt_of_lt_of_le ha hay
   have hy1 : y < 1 := lt_of_le_of_lt hyα hα1
   have hα0 : (0 : ℝ) < 1 - α := by linarith
   have h1y : (0 : ℝ) < 1 - y := by linarith
-  have hsy : s < y ^ 2 := by nlinarith [hay, ha]
-  have hy2 : y ^ 2 < 1 := by nlinarith
+  have hsy : s < y ^ (2 : ℕ) := by nlinarith [hay, ha]
+  have hy2 : y ^ (2 : ℕ) < 1 := by nlinarith
   have hPy : 0 < prolateWKBProfile s y := by
     rw [prolateWKBProfile]
     exact Real.sqrt_pos.2 (by positivity)
@@ -892,13 +892,13 @@ theorem prolateRiccatiDefect_le_one {c s a α y : ℝ} (hc : 0 < c) (ha : 0 < a)
 /-- **The anchored barrier dominates on the whole collar window.**  The terminal inequality is
 available arbitrarily close to the endpoint, so the backward comparison reaches any fixed collar. -/
 theorem prolateLogDeriv_le_anchoredBarrier_on_collar {c s a α : ℝ} {Φ : ℝ → ℝ}
-    (hc : 0 < c) (hs1 : s < 1) (ha : 0 < a) (haα : a ≤ α) (hα1 : α < 1) (h2sa : 2 * s ≤ a ^ 2)
+    (hc : 0 < c) (hs1 : s < 1) (ha : 0 < a) (haα : a ≤ α) (hα1 : α < 1) (h2sa : 2 * s ≤ a ^ (2 : ℕ))
     (hs0 : 0 ≤ s)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
-    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ (2 : ℕ)) * Φ y)
     (hΦ1 : Φ 1 = 1) (hpos : ∀ y ∈ Icc a 1, 0 < Φ y) :
     ∀ y ∈ Icc a α, prolateLogDeriv Φ y
-      ≤ prolateAnchoredBarrier c (-(s * c ^ 2)) y := by
+      ≤ prolateAnchoredBarrier c (-(s * c ^ (2 : ℕ))) y := by
   have hev := eventually_prolateLogDeriv_le_anchoredBarrier_at_one (c := c) (s := s) (Φ := Φ)
     hc hs1 hsm hΦ1
   have h1 : ∀ᶠ b : ℝ in 𝓝[<] (1 : ℝ), α < b :=
@@ -906,23 +906,23 @@ theorem prolateLogDeriv_le_anchoredBarrier_on_collar {c s a α : ℝ} {Φ : ℝ 
   have h2 : ∀ᶠ b : ℝ in 𝓝[<] (1 : ℝ), b < 1 := self_mem_nhdsWithin
   obtain ⟨b, ⟨hbterm, hαb⟩, hb1⟩ := ((hev.and h1).and h2).exists
   have hab : a ≤ b := le_trans haα hαb.le
-  have hQ : ∀ y ∈ Icc a b, 0 < -(s * c ^ 2) + c ^ 2 * y ^ 2 := by
+  have hQ : ∀ y ∈ Icc a b, 0 < -(s * c ^ (2 : ℕ)) + c ^ (2 : ℕ) * y ^ (2 : ℕ) := by
     intro y hy
     have hya : a ≤ y := hy.1
-    have hy2 : a ^ 2 ≤ y ^ 2 := by nlinarith [hya, ha]
-    have hc2 : (0 : ℝ) < c ^ 2 := by positivity
-    have hys : 0 < y ^ 2 - s := by nlinarith [h2sa, hy2, hs0]
+    have hy2 : a ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := by nlinarith [hya, ha]
+    have hc2 : (0 : ℝ) < c ^ (2 : ℕ) := by positivity
+    have hys : 0 < y ^ (2 : ℕ) - s := by nlinarith [h2sa, hy2, hs0]
     nlinarith [mul_pos hc2 hys]
-  have hcond : ∀ y ∈ Icc a b, 0 ≤ -(s * c ^ 2) * (2 - y ^ 2) + c ^ 2 * y ^ 2 := by
+  have hcond : ∀ y ∈ Icc a b, 0 ≤ -(s * c ^ (2 : ℕ)) * (2 - y ^ (2 : ℕ)) + c ^ (2 : ℕ) * y ^ (2 : ℕ) := by
     intro y hy
     have hya : a ≤ y := hy.1
     have hy1 : y < 1 := lt_of_le_of_lt hy.2 hb1
-    have hy2 : a ^ 2 ≤ y ^ 2 := by nlinarith [hya, ha]
-    have hkey : 0 ≤ y ^ 2 * (1 + s) - 2 * s := by nlinarith [h2sa, hy2, hs0]
+    have hy2 : a ^ (2 : ℕ) ≤ y ^ (2 : ℕ) := by nlinarith [hya, ha]
+    have hkey : 0 ≤ y ^ (2 : ℕ) * (1 + s) - 2 * s := by nlinarith [h2sa, hy2, hs0]
     nlinarith [hkey, sq_nonneg c, hc]
   have hposb : ∀ y ∈ Icc a b, 0 < Φ y := fun y hy =>
     hpos y ⟨hy.1, le_trans hy.2 hb1.le⟩
-  have hmain := prolateLogDeriv_le_anchoredBarrier (c := c) (χ := -(s * c ^ 2)) (Φ := Φ)
+  have hmain := prolateLogDeriv_le_anchoredBarrier (c := c) (χ := -(s * c ^ (2 : ℕ))) (Φ := Φ)
     hsm heig hab ha hb1 hQ hcond hposb hbterm
   intro y hy
   exact hmain y ⟨hy.1, le_trans hy.2 hαb.le⟩
@@ -930,31 +930,31 @@ theorem prolateLogDeriv_le_anchoredBarrier_on_collar {c s a α : ℝ} {Φ : ℝ 
 
 /-- **The accumulated error mass of the band, in closed form.** -/
 theorem integral_prolateBandErrorMajorant_le {c s a α : ℝ} (hc : 0 < c) (hs : 0 < s) (ha : 0 < a)
-    (has : s < a ^ 2) (haα : a ≤ α) (hα1 : α < 1) :
+    (has : s < a ^ (2 : ℕ)) (haα : a ≤ α) (hα1 : α < 1) :
     (∫ t in a..α, prolateBandErrorMajorant c s a α t)
-      ≤ 1 / c * (2 * (1 / a ^ 2)
-          + 3 * (1 + 9 / (1 - α)) * (a / (s * Real.sqrt (a ^ 2 - s)))
-          + (4 * (9 / (1 - α)) / a + 2 * (9 / (1 - α)) ^ 2
-              + 3 * (1 / a + 9 / (1 - α)) / (1 - α ^ 2))
-            * ((α - a) / Real.sqrt (a ^ 2 - s))) := by
+      ≤ 1 / c * (2 * (1 / a ^ (2 : ℕ))
+          + 3 * (1 + 9 / (1 - α)) * (a / (s * Real.sqrt (a ^ (2 : ℕ) - s)))
+          + (4 * (9 / (1 - α)) / a + 2 * (9 / (1 - α)) ^ (2 : ℕ)
+              + 3 * (1 / a + 9 / (1 - α)) / (1 - α ^ (2 : ℕ)))
+            * ((α - a) / Real.sqrt (a ^ (2 : ℕ) - s))) := by
   have hα0 : (0 : ℝ) < 1 - α := by linarith
-  have hαsq : (0 : ℝ) < 1 - α ^ 2 := by
+  have hαsq : (0 : ℝ) < 1 - α ^ (2 : ℕ) := by
     have ha1 : a < 1 := lt_of_le_of_lt haα hα1
     nlinarith [ha, haα, hα1]
   set M : ℝ := 9 / (1 - α) with hM
   have hM0 : 0 < M := by rw [hM]; positivity
   set C₁ : ℝ := 3 * (1 + M) with hC₁
-  set C₂ : ℝ := 4 * M / a + 2 * M ^ 2 + 3 * (1 / a + M) / (1 - α ^ 2) with hC₂
+  set C₂ : ℝ := 4 * M / a + 2 * M ^ (2 : ℕ) + 3 * (1 / a + M) / (1 - α ^ (2 : ℕ)) with hC₂
   have hC₁0 : 0 ≤ C₁ := by rw [hC₁]; positivity
   have hC₂0 : 0 ≤ C₂ := by rw [hC₂]; positivity
   have hfun : ∀ t : ℝ, prolateBandErrorMajorant c s a α t
-      = 1 / c * (2 * (1 / (t ^ 2 * Real.sqrt (t ^ 2 - s)))
-        + C₁ * (1 / Real.sqrt (t ^ 2 - s) ^ 3) + C₂ * (1 / Real.sqrt (t ^ 2 - s))) := by
+      = 1 / c * (2 * (1 / (t ^ (2 : ℕ) * Real.sqrt (t ^ (2 : ℕ) - s)))
+        + C₁ * (1 / Real.sqrt (t ^ (2 : ℕ) - s) ^ (3 : ℕ)) + C₂ * (1 / Real.sqrt (t ^ (2 : ℕ) - s))) := by
     intro t
     rw [prolateBandErrorMajorant, hC₁, hC₂, hM]
   have hcongr : (∫ t in a..α, prolateBandErrorMajorant c s a α t)
-      = 1 / c * ∫ t in a..α, (2 * (1 / (t ^ 2 * Real.sqrt (t ^ 2 - s)))
-        + C₁ * (1 / Real.sqrt (t ^ 2 - s) ^ 3) + C₂ * (1 / Real.sqrt (t ^ 2 - s))) := by
+      = 1 / c * ∫ t in a..α, (2 * (1 / (t ^ (2 : ℕ) * Real.sqrt (t ^ (2 : ℕ) - s)))
+        + C₁ * (1 / Real.sqrt (t ^ (2 : ℕ) - s) ^ (3 : ℕ)) + C₂ * (1 / Real.sqrt (t ^ (2 : ℕ) - s))) := by
     rw [← intervalIntegral.integral_const_mul]
     exact intervalIntegral.integral_congr fun t _ => hfun t
   rw [hcongr]

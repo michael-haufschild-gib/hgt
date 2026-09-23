@@ -36,9 +36,9 @@ def wittGradedIdeal (n : ℕ) : Ideal (WittRing F ⧸ fundamentalIdeal F ^ (n + 
 /-- The `n`-th graded piece as a type. -/
 abbrev WittGraded (n : ℕ) : Type _ := ↥(wittGradedIdeal F n)
 
-/-- **In degree zero the graded piece is everything**: `I^0 = W(F)`, so `Ī^0 = W(F)/I`. -/
+/-- **In degree zero the graded piece is everything**: `I^(0 : ℕ) = W(F)`, so `Ī^(0 : ℕ) = W(F)/I`. -/
 theorem wittGradedIdeal_zero : wittGradedIdeal F 0 = ⊤ := by
-  have h0 : fundamentalIdeal F ^ 0 = ⊤ := by simp
+  have h0 : fundamentalIdeal F ^ (0 : ℕ) = ⊤ := by simp
   rw [wittGradedIdeal, h0, Ideal.map_top]
 
 /-- Two additive maps out of a free abelian group agree once they agree on the generators. -/

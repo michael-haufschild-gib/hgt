@@ -53,7 +53,7 @@ theorem pauli_conjugation_scalar_eq_one_or_neg_one
           _ = M * Matrix.conjTranspose M := by
             rw [finitePauliMatrix_mul_self, Matrix.mul_one]
       _ = 1 := hUleft
-  have hcsq_matrix : (c ^ 2 : ℂ) •
+  have hcsq_matrix : (c ^ (2 : ℕ) : ℂ) •
       (1 : Matrix (Q → Bool) (Q → Bool) ℂ) = 1 := by
     have hsquares := congrArg
       (fun A : Matrix (Q → Bool) (Q → Bool) ℂ => A * A) hconj
@@ -61,7 +61,7 @@ theorem pauli_conjugation_scalar_eq_one_or_neg_one
       finitePauliMatrix_mul_self] at hsquares
     simpa [pow_two, smul_smul] using hsquares.symm
   let x : Q → Bool := fun _ => false
-  have hcsq : c ^ 2 = 1 := by
+  have hcsq : c ^ (2 : ℕ) = 1 := by
     have hx := congrFun (congrFun hcsq_matrix x) x
     simpa [Matrix.smul_apply] using hx
   exact sq_eq_one_iff.mp hcsq

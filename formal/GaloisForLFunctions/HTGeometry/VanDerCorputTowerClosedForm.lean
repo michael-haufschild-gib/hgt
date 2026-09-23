@@ -74,7 +74,7 @@ theorem towerMu_eq_epMu (k : ℕ) : towerMu k = epMu (towerKappa k) (towerLambda
   have h : towerDen k ≠ 0 := by
     unfold towerDen
     have : (2 : ℚ) ^ (k + 2) ≥ 4 := by
-      calc (2 : ℚ) ^ (k + 2) ≥ 2 ^ 2 := by
+      calc (2 : ℚ) ^ (k + 2) ≥ 2 ^ (2 : ℕ) := by
             apply pow_le_pow_right₀ (by norm_num) (by omega)
         _ = 4 := by norm_num
     intro hc; linarith

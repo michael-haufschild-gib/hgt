@@ -36,7 +36,7 @@ theorem coefficient_contDiff (a : ℝ) : ContDiff ℝ 1 (coefficient a) :=
   contDiff_const.sub (logSlope_contDiff.comp (contDiff_const.add contDiff_id))
 
 private theorem coefficient_hasDerivAt (a t : ℝ) :
-    HasDerivAt (coefficient a) (-(logSlope (a + t) ^ 2 - Real.exp (a + t) ^ 2)) t := by
+    HasDerivAt (coefficient a) (-(logSlope (a + t) ^ (2 : ℕ) - Real.exp (a + t) ^ (2 : ℕ))) t := by
   convert ((logSlope_hasDerivAt (a + t)).comp t
     ((hasDerivAt_id t).const_add a)).const_sub (1 / 2) using 1 <;> try rfl
   simp only [mul_one]
@@ -46,11 +46,11 @@ private theorem compact_mul_left (u v : ℝ → ℝ) (hv : HasCompactSupport v) 
   convert hv.mul_left (f := u) using 1 <;> rfl
 
 private theorem compact_sq (u : ℝ → ℝ) (hu : HasCompactSupport u) :
-    HasCompactSupport (fun t => u t ^ 2) := by
+    HasCompactSupport (fun t => u t ^ (2 : ℕ)) := by
   simpa only [pow_two] using compact_mul_left u u hu
 
 /-- The complete weighted lower-boundary flux. -/
-def flux (f : Profile) (a t : ℝ) : ℝ := Real.exp (-t) * coefficient a t * f t ^ 2
+def flux (f : Profile) (a t : ℝ) : ℝ := Real.exp (-t) * coefficient a t * f t ^ (2 : ℕ)
 
 /-- The flux is C¹ on the full real line. -/
 theorem flux_contDiff (f : Profile) (a : ℝ) : ContDiff ℝ 1 (flux f a) :=
@@ -62,8 +62,8 @@ theorem flux_compact (f : Profile) (a : ℝ) : HasCompactSupport (flux f a) :=
 
 private theorem flux_hasDerivAt (f : Profile) (a t : ℝ) :
     HasDerivAt (flux f a)
-      (Real.exp (-t) * ((-coefficient a t - logSlope (a + t) ^ 2 + Real.exp (a + t) ^ 2) *
-        f t ^ 2 + 2 * coefficient a t * f t * deriv f t)) t := by
+      (Real.exp (-t) * ((-coefficient a t - logSlope (a + t) ^ (2 : ℕ) + Real.exp (a + t) ^ (2 : ℕ)) *
+        f t ^ (2 : ℕ) + 2 * coefficient a t * f t * deriv f t)) t := by
   have he := (hasDerivAt_id t).neg.exp
   have hf := (f.contDiff.differentiable one_ne_zero t).hasDerivAt
   convert (he.mul (coefficient_hasDerivAt a t)).mul (hf.pow 2) using 1 <;> try rfl
@@ -72,11 +72,11 @@ private theorem flux_hasDerivAt (f : Profile) (a t : ℝ) :
 
 /-- The nonnegative remainder after the exact Bessel square completion. -/
 def squareField (f : Profile) (a t : ℝ) : ℝ :=
-  Real.exp (-t) * (deriv f t - coefficient a t * f t) ^ 2
+  Real.exp (-t) * (deriv f t - coefficient a t * f t) ^ (2 : ℕ)
 
 /-- The nonzero-mode energy minus one quarter of mass, in logarithmic height. -/
 def excessField (f : Profile) (a t : ℝ) : ℝ :=
-  Real.exp (-t) * (deriv f t ^ 2 + (Real.exp (a + t) ^ 2 - 1 / 4) * f t ^ 2)
+  Real.exp (-t) * (deriv f t ^ (2 : ℕ) + (Real.exp (a + t) ^ (2 : ℕ) - 1 / 4) * f t ^ (2 : ℕ))
 
 private theorem field_decomposition (f : Profile) (a t : ℝ) :
     excessField f a t = squareField f a t + deriv (flux f a) t := by
@@ -106,7 +106,7 @@ theorem excessField_integrable (f : Profile) (a : ℝ) : Integrable (excessField
 /-- Exact Bessel ground-state identity, with unrestricted lower trace retained. -/
 theorem critical_boundary_identity (f : Profile) (a T : ℝ) :
     (∫ t in Ioi T, excessField f a t) = (∫ t in Ioi T, squareField f a t) +
-      outgoing a T * f T ^ 2 := by
+      outgoing a T * f T ^ (2 : ℕ) := by
   have he : (∫ t in Ioi T, excessField f a t) =
       ∫ t in Ioi T, squareField f a t + deriv (flux f a) t := by
     apply integral_congr_ae
@@ -121,7 +121,7 @@ theorem critical_boundary_identity (f : Profile) (a T : ℝ) :
 
 /-- The boundary coefficient gives a lower bound at every cutoff. -/
 theorem exact_boundary_lower_bound (f : Profile) (a T : ℝ) :
-    outgoing a T * f T ^ 2 ≤ ∫ t in Ioi T, excessField f a t := by
+    outgoing a T * f T ^ (2 : ℕ) ≤ ∫ t in Ioi T, excessField f a t := by
   rw [critical_boundary_identity]
   have hs : 0 ≤ ∫ t in Ioi T, squareField f a t :=
     integral_nonneg (fun t => mul_nonneg (Real.exp_pos _).le (sq_nonneg _))
@@ -129,10 +129,10 @@ theorem exact_boundary_lower_bound (f : Profile) (a T : ℝ) :
 
 /-- The isolated tail excess is nonnegative at every cutoff above the transition. -/
 theorem cusp_quarter_at_transition (f : Profile) (a u : ℝ) :
-    0 ≤ ∫ t in Ioi (transition - a + u ^ 2), excessField f a t := by
+    0 ≤ ∫ t in Ioi (transition - a + u ^ (2 : ℕ)), excessField f a t := by
   apply le_trans _ (exact_boundary_lower_bound f a _)
   apply mul_nonneg _ (sq_nonneg _)
-  have hh : 1 / 2 ≤ logSlope (a + (transition - a + u ^ 2)) := by
+  have hh : 1 / 2 ≤ logSlope (a + (transition - a + u ^ (2 : ℕ))) := by
     rw [← transition_eq]
     apply logSlope_strictMono.monotone
     nlinarith [sq_nonneg u]
@@ -141,42 +141,42 @@ theorem cusp_quarter_at_transition (f : Profile) (a u : ℝ) :
 
 /-- The cutoff parameterization covers exactly the whole sufficient range. -/
 theorem range_tail_cutoff (a : ℝ) :
-    Set.range (fun u : ℝ => transition - a + u ^ 2) = Ici (transition - a) := by
+    Set.range (fun u : ℝ => transition - a + u ^ (2 : ℕ)) = Ici (transition - a) := by
   ext T
   constructor
   · rintro ⟨u, rfl⟩
     exact le_add_of_nonneg_right (sq_nonneg u)
   · intro hT
     refine ⟨Real.sqrt (T - (transition - a)), ?_⟩
-    change transition - a + Real.sqrt (T - (transition - a)) ^ 2 = T
+    change transition - a + Real.sqrt (T - (transition - a)) ^ (2 : ℕ) = T
     rw [Real.sq_sqrt (sub_nonneg.mpr hT)]
     ring
 
 private theorem weighted_sq_integrable (v w : ℝ → ℝ) (hv : Continuous v)
-    (hw : Continuous w) (hs : HasCompactSupport v) : Integrable (fun t => w t * v t ^ 2) :=
+    (hw : Continuous w) (hs : HasCompactSupport v) : Integrable (fun t => w t * v t ^ (2 : ℕ)) :=
   (hw.mul (hv.pow 2)).integrable_of_hasCompactSupport (compact_mul_left _ _ (compact_sq v hs))
 
 /-- One quarter of the actual weighted mass is bounded by the kinetic and horizontal energies. -/
 theorem cusp_tail_quarter (f : Profile) (a u : ℝ) :
-    (1 / 4) * (∫ t in Ioi (transition - a + u ^ 2), Real.exp (-t) * f t ^ 2) ≤
-      (∫ t in Ioi (transition - a + u ^ 2), Real.exp (-t) * deriv f t ^ 2) +
-      (∫ t in Ioi (transition - a + u ^ 2), Real.exp (-t) * Real.exp (a + t) ^ 2 * f t ^ 2) := by
-  let T := transition - a + u ^ 2
-  have hm : IntegrableOn (fun t => Real.exp (-t) * f t ^ 2) (Ioi T) :=
+    (1 / 4) * (∫ t in Ioi (transition - a + u ^ (2 : ℕ)), Real.exp (-t) * f t ^ (2 : ℕ)) ≤
+      (∫ t in Ioi (transition - a + u ^ (2 : ℕ)), Real.exp (-t) * deriv f t ^ (2 : ℕ)) +
+      (∫ t in Ioi (transition - a + u ^ (2 : ℕ)), Real.exp (-t) * Real.exp (a + t) ^ (2 : ℕ) * f t ^ (2 : ℕ)) := by
+  let T := transition - a + u ^ (2 : ℕ)
+  have hm : IntegrableOn (fun t => Real.exp (-t) * f t ^ (2 : ℕ)) (Ioi T) :=
     (weighted_sq_integrable f (fun t => Real.exp (-t)) f.continuous
       (by fun_prop) f.hasCompactSupport).integrableOn
-  have hk : IntegrableOn (fun t => Real.exp (-t) * deriv f t ^ 2) (Ioi T) :=
+  have hk : IntegrableOn (fun t => Real.exp (-t) * deriv f t ^ (2 : ℕ)) (Ioi T) :=
     (weighted_sq_integrable (deriv f) (fun t => Real.exp (-t))
       (f.contDiff.continuous_deriv le_rfl) (by fun_prop) f.hasCompactSupport.deriv).integrableOn
-  have hp : IntegrableOn (fun t => Real.exp (-t) * Real.exp (a + t) ^ 2 * f t ^ 2) (Ioi T) :=
-    (weighted_sq_integrable f (fun t => Real.exp (-t) * Real.exp (a + t) ^ 2)
+  have hp : IntegrableOn (fun t => Real.exp (-t) * Real.exp (a + t) ^ (2 : ℕ) * f t ^ (2 : ℕ)) (Ioi T) :=
+    (weighted_sq_integrable f (fun t => Real.exp (-t) * Real.exp (a + t) ^ (2 : ℕ))
       f.continuous (by fun_prop) f.hasCompactSupport).integrableOn
   have he : (∫ t in Ioi T, excessField f a t) =
-      (∫ t in Ioi T, Real.exp (-t) * deriv f t ^ 2) +
-      (∫ t in Ioi T, Real.exp (-t) * Real.exp (a + t) ^ 2 * f t ^ 2) -
-      (∫ t in Ioi T, Real.exp (-t) * f t ^ 2) / 4 := by
-    have hfun : excessField f a = fun t => Real.exp (-t) * deriv f t ^ 2 +
-        Real.exp (-t) * Real.exp (a + t) ^ 2 * f t ^ 2 - Real.exp (-t) * f t ^ 2 / 4 := by
+      (∫ t in Ioi T, Real.exp (-t) * deriv f t ^ (2 : ℕ)) +
+      (∫ t in Ioi T, Real.exp (-t) * Real.exp (a + t) ^ (2 : ℕ) * f t ^ (2 : ℕ)) -
+      (∫ t in Ioi T, Real.exp (-t) * f t ^ (2 : ℕ)) / 4 := by
+    have hfun : excessField f a = fun t => Real.exp (-t) * deriv f t ^ (2 : ℕ) +
+        Real.exp (-t) * Real.exp (a + t) ^ (2 : ℕ) * f t ^ (2 : ℕ) - Real.exp (-t) * f t ^ (2 : ℕ) / 4 := by
       funext t; unfold excessField; ring
     have hsub := integral_sub (hk.add hp) (hm.div_const 4)
     simp only [Pi.add_apply] at hsub
@@ -184,8 +184,8 @@ theorem cusp_tail_quarter (f : Profile) (a u : ℝ) :
   have hpos := cusp_quarter_at_transition f a u
   change 0 ≤ ∫ t in Ioi T, excessField f a t at hpos
   rw [he] at hpos
-  change _ ≤ (∫ t in Ioi T, Real.exp (-t) * deriv f t ^ 2) +
-    (∫ t in Ioi T, Real.exp (-t) * Real.exp (a + t) ^ 2 * f t ^ 2)
+  change _ ≤ (∫ t in Ioi T, Real.exp (-t) * deriv f t ^ (2 : ℕ)) +
+    (∫ t in Ioi T, Real.exp (-t) * Real.exp (a + t) ^ (2 : ℕ) * f t ^ (2 : ℕ))
   linarith
 
 end

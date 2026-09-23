@@ -16,7 +16,7 @@ def finiteFiberCount {α β : Type*} [Fintype α] [DecidableEq β]
 /-- Squared `ℓ²` mass of all fibres. -/
 def finiteFiberEnergy {α β : Type*} [Fintype α] [Fintype β]
     [DecidableEq β] (f : α → β) : ℕ :=
-  ∑ b : β, finiteFiberCount f b ^ 2
+  ∑ b : β, finiteFiberCount f b ^ (2 : ℕ)
 
 /-- Correlation of the fibre-count vector with an additive translate. -/
 def finiteFiberCorrelation {α β : Type*} [Fintype α] [Fintype β]
@@ -30,13 +30,13 @@ theorem finiteFiberCorrelation_le_energy
     [DecidableEq β] [AddCommGroup β] (f : α → β) (l : β) :
     finiteFiberCorrelation f l ≤ finiteFiberEnergy f := by
   let R : β → ℕ := finiteFiberCount f
-  have hshift : (∑ b : β, R (b + l) ^ 2) = ∑ b : β, R b ^ 2 := by
-    exact Equiv.sum_comp (Equiv.addRight l) (fun b : β => R b ^ 2)
+  have hshift : (∑ b : β, R (b + l) ^ (2 : ℕ)) = ∑ b : β, R b ^ (2 : ℕ) := by
+    exact Equiv.sum_comp (Equiv.addRight l) (fun b : β => R b ^ (2 : ℕ))
   have hc := Finset.sum_mul_sq_le_sq_mul_sq (R := ℕ) Finset.univ
     (fun b : β => R (b + l)) R
   rw [hshift] at hc
-  have hsquare : (finiteFiberCorrelation f l) ^ 2 ≤
-      (finiteFiberEnergy f) ^ 2 := by
+  have hsquare : (finiteFiberCorrelation f l) ^ (2 : ℕ) ≤
+      (finiteFiberEnergy f) ^ (2 : ℕ) := by
     simpa [finiteFiberCorrelation, finiteFiberEnergy, R, pow_two] using hc
   exact (sq_le_sq₀ (Nat.zero_le _) (Nat.zero_le _)).mp hsquare
 

@@ -64,7 +64,7 @@ theorem apolar_self_ne_zero_of_integral [CharZero k] {σ : Type*} [Fintype σ] [
     intro h
     rw [h, map_zero] at hq
     exact hq rfl
-  set S : ℤ := ∑ a ∈ q.support, (MvPolynomial.coeff a q) ^ 2 * (factD a : ℤ) with hS
+  set S : ℤ := ∑ a ∈ q.support, (MvPolynomial.coeff a q) ^ (2 : ℕ) * (factD a : ℤ) with hS
   have hSpos : 0 < S := by
     obtain ⟨a₀, ha₀⟩ := MvPolynomial.support_nonempty.mpr hq0
     refine Finset.sum_pos' (fun a _ => ?_) ⟨a₀, ha₀, ?_⟩

@@ -21,7 +21,7 @@ noncomputable section
 def thetaMobiusPrimeNormalProfilePacketEnergy
     (q : XiZeroCopy) (s : Finset Nat.Primes) : ℝ :=
   ∑ p ∈ s, thetaMobiusPrimeNormalProfilePositiveGauge p q *
-    thetaMobiusPrimeNormalReflectionProfile p q ^ 2
+    thetaMobiusPrimeNormalReflectionProfile p q ^ (2 : ℕ)
 
 /-- The physical source packet energy is exactly the already isolated theta/Kakutani packet
 energy, coefficient by coefficient. -/
@@ -29,7 +29,7 @@ theorem thetaMobiusPrimeNormalProfilePacketEnergy_eq_thetaPolarization
     (q : XiZeroCopy) (s : Finset Nat.Primes) :
     thetaMobiusPrimeNormalProfilePacketEnergy q s =
       ∑ p ∈ s, thetaKakutaniFluxPositiveUnit p q *
-        thetaXiRankTwoBoundaryFlux q ^ 2 := by
+        thetaXiRankTwoBoundaryFlux q ^ (2 : ℕ) := by
   apply Finset.sum_congr rfl
   intro p _hp
   rw [← primeValuationHellingerGap_eq_positiveUnit_mul_thetaFlux_sq,
@@ -45,7 +45,7 @@ squared spectral node. -/
 theorem thetaMobiusPrimeNormalWardBoundAt_iff_reciprocalEigenvalue_sq_positiveReal
     (q : XiZeroCopy) :
     ThetaMobiusPrimeNormalWardBoundAt q ↔
-      ∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ 2 = (r : ℂ) := by
+      ∃ r : ℝ, 0 < r ∧ thetaXiReciprocalEigenvalue q ^ (2 : ℕ) = (r : ℂ) := by
   rw [thetaXiReciprocalEigenvalue_sq_positiveReal_iff_uniform_finset_polarization_bound]
   simp only [ThetaMobiusPrimeNormalWardBoundAt]
   constructor

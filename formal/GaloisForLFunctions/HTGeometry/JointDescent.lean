@@ -54,7 +54,7 @@ theorem exists_shellPoly_jointCriticalProduct {P : Fin N → Matrix (Fin D) (Fin
     ((MvPolynomial.sumAlgEquiv ℝ (Fin D) (Fin N)) (jointCriticalProduct M c k))
     (isSymmetric_sumAlgEquiv_jointCriticalProduct M c k)
   refine ⟨G, fun θ => ?_⟩
-  rw [← hG θ, eval_sumAlgEquiv]
+  rw [← hG θ, eval_sumAlgEquiv_jointGradingBridge]
 
 end
 

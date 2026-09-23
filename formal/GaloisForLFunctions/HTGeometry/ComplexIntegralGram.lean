@@ -92,7 +92,7 @@ theorem complexFeatureGram_posSemidef (μ : Measure Ω) (f : ι → Ω → ℂ)
   rw [complexFeatureGram_quadratic μ f hprod x]
   have hcast : ∀ ω, complexFeatureCombination f x ω
       * (starRingEnd ℂ) (complexFeatureCombination f x ω)
-      = ((‖complexFeatureCombination f x ω‖ ^ 2 : ℝ) : ℂ) := by
+      = ((‖complexFeatureCombination f x ω‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro ω
     rw [Complex.mul_conj, ← Complex.sq_norm]
   have hint : Integrable (fun ω => complexFeatureCombination f x ω
@@ -103,7 +103,7 @@ theorem complexFeatureGram_posSemidef (μ : Measure Ω) (f : ι → Ω → ℂ)
           (hprod l m).const_mul ((starRingEnd ℂ) (x l) * x m)) ?_
     refine Filter.Eventually.of_forall fun ω => ?_
     exact (complexFeatureCombination_mul_conj f x ω).symm
-  have hgint : Integrable (fun ω => ‖complexFeatureCombination f x ω‖ ^ 2) μ := by
+  have hgint : Integrable (fun ω => ‖complexFeatureCombination f x ω‖ ^ (2 : ℕ)) μ := by
     have hre : Integrable (fun ω => (complexFeatureCombination f x ω
         * (starRingEnd ℂ) (complexFeatureCombination f x ω)).re) μ := hint.re
     refine hre.congr (Filter.Eventually.of_forall fun ω => ?_)
@@ -111,11 +111,11 @@ theorem complexFeatureGram_posSemidef (μ : Measure Ω) (f : ι → Ω → ℂ)
     rw [hcast ω, Complex.ofReal_re]
   have hval : ∫ ω, complexFeatureCombination f x ω
       * (starRingEnd ℂ) (complexFeatureCombination f x ω) ∂μ
-      = ((∫ ω, ‖complexFeatureCombination f x ω‖ ^ 2 ∂μ : ℝ) : ℂ) := by
+      = ((∫ ω, ‖complexFeatureCombination f x ω‖ ^ (2 : ℕ) ∂μ : ℝ) : ℂ) := by
     rw [integral_congr_ae (Filter.Eventually.of_forall hcast)]
     exact Complex.ofRealCLM.integral_comp_comm hgint
   rw [hval]
-  have hnn : (0 : ℝ) ≤ ∫ ω, ‖complexFeatureCombination f x ω‖ ^ 2 ∂μ :=
+  have hnn : (0 : ℝ) ≤ ∫ ω, ‖complexFeatureCombination f x ω‖ ^ (2 : ℕ) ∂μ :=
     integral_nonneg fun ω => by positivity
   exact_mod_cast hnn
 

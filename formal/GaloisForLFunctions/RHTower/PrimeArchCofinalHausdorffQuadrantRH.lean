@@ -71,7 +71,7 @@ def cofinalHausdorffMultiplier (R : ℝ) (M : ℕ) : Polynomial ℝ :=
 /-- The square of the cofinal multiplier is the simultaneous even Hausdorff shift. -/
 theorem momentPolynomialTransform_cofinalHausdorffMultiplier_sq
     (R : ℝ) (m : ℕ → ℝ) (M n : ℕ) :
-    momentPolynomialTransform m (cofinalHausdorffMultiplier R M ^ 2) n =
+    momentPolynomialTransform m (cofinalHausdorffMultiplier R M ^ (2 : ℕ)) n =
       scaledHausdorffMomentDifference R m (2 * M + n) (2 * M) := by
   unfold momentPolynomialTransform cofinalHausdorffMultiplier
   rw [scaledHausdorffMomentDifference_eq_momentFunctional]
@@ -84,9 +84,9 @@ theorem sequenceTraceHankelNonnegative_transform_of_cofinalScaledHausdorffQuadra
     {R : ℝ} (hR : 0 < R) {m : ℕ → ℝ}
     (h : CofinalScaledHausdorffQuadrantNonnegative R m) :
     ∃ M : ℕ, SequenceTraceHankelNonnegative
-      (momentPolynomialTransform m (cofinalHausdorffMultiplier R M ^ 2)) := by
+      (momentPolynomialTransform m (cofinalHausdorffMultiplier R M ^ (2 : ℕ))) := by
   obtain ⟨M, hM⟩ := h
-  let t := momentPolynomialTransform m (cofinalHausdorffMultiplier R M ^ 2)
+  let t := momentPolynomialTransform m (cofinalHausdorffMultiplier R M ^ (2 : ℕ))
   have ht : t = fun n =>
       scaledHausdorffMomentDifference R m (2 * M + n) (2 * M) := by
     funext n
@@ -180,32 +180,32 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative_on_principalIdeal
     rw [← map_mul, had]
   let f : ℕ → I → ℂ := fun n ρ => xiCentralTraceHankelTerm (q n) ρ
   let g : I → ℂ := fun ρ =>
-    if lam ρ = α then ((weight ρ : ℝ) : ℂ) * α * c ^ 2
+    if lam ρ = α then ((weight ρ : ℝ) : ℂ) * α * c ^ (2 : ℕ)
     else if lam ρ = (starRingEnd ℂ) α then
-      ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ 2
+      ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α * ((starRingEnd ℂ) c) ^ (2 : ℕ)
     else 0
   have hpointwise (ρ : I) : Tendsto (fun n => f n ρ) atTop (nhds (g ρ)) := by
     by_cases hρα : lam ρ = α
     · have hfconst : (fun n => f n ρ) =
-          fun _ => ((weight ρ : ℝ) : ℂ) * α * c ^ 2 := by
+          fun _ => ((weight ρ : ℝ) : ℂ) * α * c ^ (2 : ℕ) := by
         funext n
         change (((weight ρ : ℝ) : ℂ) * lam ρ *
-          evalRealPolynomial (q n) (lam ρ) ^ 2) = _
+          evalRealPolynomial (q n) (lam ρ) ^ (2 : ℕ)) = _
         rw [hρα, hevalTarget]
-      have hgconst : g ρ = ((weight ρ : ℝ) : ℂ) * α * c ^ 2 := by
+      have hgconst : g ρ = ((weight ρ : ℝ) : ℂ) * α * c ^ (2 : ℕ) := by
         simp only [g, hρα, if_pos]
       rw [hfconst, hgconst]
       exact tendsto_const_nhds
     · by_cases hρc : lam ρ = (starRingEnd ℂ) α
       · have hfconst : (fun n => f n ρ) = fun _ =>
             ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α *
-              ((starRingEnd ℂ) c) ^ 2 := by
+              ((starRingEnd ℂ) c) ^ (2 : ℕ) := by
           funext n
           change (((weight ρ : ℝ) : ℂ) * lam ρ *
-            evalRealPolynomial (q n) (lam ρ) ^ 2) = _
+            evalRealPolynomial (q n) (lam ρ) ^ (2 : ℕ)) = _
           rw [hρc, hevalConjTarget]
         have hgconst : g ρ = ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α *
-            ((starRingEnd ℂ) c) ^ 2 := by
+            ((starRingEnd ℂ) c) ^ (2 : ℕ) := by
           have hconjne : (starRingEnd ℂ) α ≠ α :=
             Complex.conj_eq_iff_im.not.mpr him
           simp only [g, hρc, hconjne, if_false, if_pos]
@@ -221,7 +221,7 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative_on_principalIdeal
           have hfzero : (fun n => f n ρ) = fun _ => (0 : ℂ) := by
             funext n
             change (((weight ρ : ℝ) : ℂ) * lam ρ *
-              evalRealPolynomial (q n) (lam ρ) ^ 2) = 0
+              evalRealPolynomial (q n) (lam ρ) ^ (2 : ℕ)) = 0
             simp only [q, evalRealPolynomial_mul, hevalP, mul_zero]
             ring
           have hgzero : g ρ = 0 := by
@@ -247,9 +247,9 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative_on_principalIdeal
   let base : I → ℂ := fun ρ => ((weight ρ : ℝ) : ℂ) * lam ρ
   have hbase : Summable base := by
     simpa only [base, weight, lam] using xi_central_reciprocal_square_summable
-  let bound : I → ℝ := fun ρ => E ^ 2 * ‖base ρ‖
+  let bound : I → ℝ := fun ρ => E ^ (2 : ℕ) * ‖base ρ‖
   have hboundSum : Summable bound := by
-    exact hbase.norm.mul_left (E ^ 2)
+    exact hbase.norm.mul_left (E ^ (2 : ℕ))
   have hevalPBound (n : ℕ) (ρ : I) :
       ‖evalRealPolynomial (p n) (lam ρ)‖ ≤ C := by
     by_cases hle : ‖lam ρ‖ ≤ ‖α‖
@@ -278,10 +278,10 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative_on_principalIdeal
   have hdom : ∀ n ρ, ‖f n ρ‖ ≤ bound ρ := by
     intro n ρ
     have hev := hevalBound n ρ
-    have hevSq : ‖evalRealPolynomial (q n) (lam ρ)‖ ^ 2 ≤ E ^ 2 := by
+    have hevSq : ‖evalRealPolynomial (q n) (lam ρ)‖ ^ (2 : ℕ) ≤ E ^ (2 : ℕ) := by
       nlinarith [norm_nonneg (evalRealPolynomial (q n) (lam ρ))]
-    change ‖base ρ * evalRealPolynomial (q n) (lam ρ) ^ 2‖ ≤
-      E ^ 2 * ‖base ρ‖
+    change ‖base ρ * evalRealPolynomial (q n) (lam ρ) ^ (2 : ℕ)‖ ≤
+      E ^ (2 : ℕ) * ‖base ρ‖
     rw [norm_mul, norm_pow]
     nlinarith [norm_nonneg (base ρ)]
   have htsum : Tendsto (fun n => ∑' ρ, f n ρ) atTop (nhds (∑' ρ, g ρ)) :=
@@ -339,7 +339,7 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative_on_principalIdeal
         have hcfix : (starRingEnd ℂ) α = α := by rw [← hρc, h]
         exact him (Complex.conj_eq_iff_im.mp hcfix)
       have hgval : g ρ = ((weight ρ : ℝ) : ℂ) * (starRingEnd ℂ) α *
-          ((starRingEnd ℂ) c) ^ 2 := by
+          ((starRingEnd ℂ) c) ^ (2 : ℕ) := by
         have hconjne : (starRingEnd ℂ) α ≠ α :=
           Complex.conj_eq_iff_im.not.mpr him
         simp only [g, hρc, hconjne, if_false, if_pos]
@@ -479,7 +479,7 @@ theorem sequenceTraceHankelNonnegative_momentPolynomialTransform_iff_riemannHypo
       (xiCentralReciprocalSquare (ρ : ℂ)).im ≠ 0 →
         evalRealPolynomial a (xiCentralReciprocalSquare (ρ : ℂ)) ≠ 0) :
     SequenceTraceHankelNonnegative
-        (momentPolynomialTransform normalizedPrimeArchMoment (a ^ 2)) ↔
+        (momentPolynomialTransform normalizedPrimeArchMoment (a ^ (2 : ℕ))) ↔
       RiemannHypothesis := by
   constructor
   · intro hseq
@@ -509,13 +509,13 @@ def shiftedPrimeArchMomentTail (M : ℕ) (n : ℕ) : ℝ :=
 theorem momentPolynomialTransform_X_pow_sq_eq_shiftedPrimeArchMomentTail
     (M : ℕ) :
     momentPolynomialTransform normalizedPrimeArchMoment
-        (((Polynomial.X : Polynomial ℝ) ^ M) ^ 2) =
+        (((Polynomial.X : Polynomial ℝ) ^ M) ^ (2 : ℕ)) =
       shiftedPrimeArchMomentTail M := by
   funext n
   unfold momentPolynomialTransform shiftedPrimeArchMomentTail
   have hpoly :
       (Polynomial.X : Polynomial ℝ) ^ n *
-          ((Polynomial.X : Polynomial ℝ) ^ M) ^ 2 =
+          ((Polynomial.X : Polynomial ℝ) ^ M) ^ (2 : ℕ) =
         Polynomial.X ^ (2 * M + n) := by
     rw [← pow_mul, ← pow_add]
     congr 1

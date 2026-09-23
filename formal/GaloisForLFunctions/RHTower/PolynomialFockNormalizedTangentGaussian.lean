@@ -13,7 +13,7 @@ theorem polynomialMomentFockWeightedNormSq_normalizedTangentVector
     polynomialMomentFockWeightedNormSq m hm
         (polynomialMomentFockNormalizedTangentVector m hm x) z =
       polynomialFockTangentDensity m x z /
-        ‖polynomialMomentFockTangentVector m hm x‖ ^ 2 := by
+        ‖polynomialMomentFockTangentVector m hm x‖ ^ (2 : ℕ) := by
   let v : MomentFock := polynomialMomentFockTangentVector m hm x
   have hv : 0 < ‖v‖ := norm_pos_iff.mpr
     (polynomialMomentFockTangentVector_ne_zero_of_two_le m hm x)
@@ -25,7 +25,7 @@ theorem polynomialMomentFockWeightedNormSq_normalizedTangentVector
     abs_of_pos hv]
   rw [div_eq_mul_inv]
   change (‖v‖⁻¹ *
-      ‖polynomialMomentFockFunction m hm v z‖) ^ 2 *
+      ‖polynomialMomentFockFunction m hm v z‖) ^ (2 : ℕ) *
         Real.exp (-2 * polynomialFockPotential m ‖z‖) = _
   rw [← polynomialMomentFockWeightedNormSq_tangentVector m hm x z]
   unfold polynomialMomentFockWeightedNormSq
@@ -38,17 +38,17 @@ theorem polynomialMomentFockWeightedNormSq_normalizedTangentVector_le_gaussian
     {m x : ℝ} (hm : 4 ≤ m) (hx : 0 ≤ x) (z : ℂ) :
     polynomialMomentFockWeightedNormSq m (by linarith)
         (polynomialMomentFockNormalizedTangentVector m (by linarith) x) z ≤
-      (m * (1 + x ^ 2) ^ (m / 2 - 1) / Real.pi) *
+      (m * (1 + x ^ (2 : ℕ)) ^ (m / 2 - 1) / Real.pi) *
         Real.exp (2 * (polynomialFockLocalBregmanConstant m / m)) *
-        Real.exp (-(m * (1 + x ^ 2) ^ (m / 2 - 1) *
-          ‖z - (x : ℂ)‖ ^ 2)) := by
+        Real.exp (-(m * (1 + x ^ (2 : ℕ)) ^ (m / 2 - 1) *
+          ‖z - (x : ℂ)‖ ^ (2 : ℕ))) := by
   let hm2 : 2 ≤ m := by linarith
   let v : MomentFock := polynomialMomentFockTangentVector m hm2 x
-  let N : ℝ := ‖v‖ ^ 2
-  let c : ℝ := m * (1 + x ^ 2) ^ (m / 2 - 1)
+  let N : ℝ := ‖v‖ ^ (2 : ℕ)
+  let c : ℝ := m * (1 + x ^ (2 : ℕ)) ^ (m / 2 - 1)
   let C : ℝ := polynomialFockLocalBregmanConstant m / m
   let E : ℝ := Real.exp (-2 * polynomialFockPotential m x)
-  let G : ℝ := Real.exp (-(c * ‖z - (x : ℂ)‖ ^ 2))
+  let G : ℝ := Real.exp (-(c * ‖z - (x : ℂ)‖ ^ (2 : ℕ)))
   let B : ℝ := (c / Real.pi) * Real.exp (2 * C)
   have hc : 0 < c := by dsimp [c]; positivity
   have hN : 0 < N := by

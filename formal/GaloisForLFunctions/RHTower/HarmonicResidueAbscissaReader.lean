@@ -428,7 +428,7 @@ theorem tendsto_primeAbscissaSeries_div_abscissaLog_of_negligible
   linarith
 
 /-- The abscissa reader also computes the residue on the enlarged domain
-`ell^1 + negligible`. -/
+`ell^(1 : ℕ) + negligible`. -/
 theorem tendsto_primeAbscissaSeries_div_abscissaLog_mod
     {a : Nat.Primes → ℂ} {c : ℂ}
     (hres : HasReferenceResidueMod primeHarmonicWeight a c) :

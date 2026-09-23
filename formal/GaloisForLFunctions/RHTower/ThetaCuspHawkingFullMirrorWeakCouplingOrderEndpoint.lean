@@ -237,7 +237,7 @@ def thetaCuspHawkingFullMirrorBornScaledPairProbability
     (a lambda outgoing incoming : ℝ) : ℝ :=
   Complex.normSq
       (thetaCuspHawkingFullMirrorAmplitude a lambda outgoing incoming) /
-    lambda ^ 2
+    lambda ^ (2 : ℕ)
 
 /-- Exact weak-coupling selection: normalized full-mirror probability converges to Born
 probability, despite all nonlinear eikonal channels at finite coupling. -/
@@ -285,7 +285,7 @@ def thetaCuspHawkingFullMirrorWeakCouplingRightEnergyShellDensity
         (deriv
           (fun lambda : ℝ =>
             thetaCuspHawkingFullMirrorAmplitude a lambda u (w - u)) 0) /
-      (16 * Real.pi ^ 2 * (w - u))
+      (16 * Real.pi ^ (2 : ℕ) * (w - u))
 
 /-- Source-faithful shell weld: the coupling tangent of exact nonlinear scattering is
 exactly the shell density used by the Hawking Araki--Woods dilation. -/
@@ -302,11 +302,11 @@ theorem thetaCuspHawkingFullMirrorWeakCouplingRightEnergyShellDensity_eq
         (deriv
           (fun lambda : ℝ =>
             thetaCuspHawkingFullMirrorAmplitude a lambda u (w - u)) 0) /
-        (16 * Real.pi ^ 2 * (w - u)) =
+        (16 * Real.pi ^ (2 : ℕ) * (w - u)) =
       Complex.normSq
           (thetaCuspHawkingTiltedBornPairKernel a
             (u : ℂ) ((w - u : ℝ) : ℂ)) /
-        (16 * Real.pi ^ 2 * (w - u))
+        (16 * Real.pi ^ (2 : ℕ) * (w - u))
   rw [(hasDerivAt_thetaCuspHawkingFullMirrorAmplitude_zero
     a ha u (w - u)).deriv]
   rw [← thetaCuspHawkingTiltedBornPairKernel_real_eq_raw ha]

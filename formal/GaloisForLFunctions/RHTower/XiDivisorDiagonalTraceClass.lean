@@ -122,11 +122,11 @@ theorem norm_xiDivisorDiagonal_basis (w : XiZeroCopy → ℂ) {C : ℝ}
 /-- Square-summable weights give a Hilbert–Schmidt diagonal. -/
 theorem xiDivisorDiagonal_isHilbertSchmidt (w : XiZeroCopy → ℂ) {C : ℝ}
     (hC : 0 ≤ C) (ha : ∀ q, ‖w q‖ ≤ C)
-    (hsum : Summable fun q => ‖w q‖ ^ 2) :
+    (hsum : Summable fun q => ‖w q‖ ^ (2 : ℕ)) :
     IsHilbertSchmidt (xiDivisorDiagonal w hC ha) := by
   apply isHilbertSchmidt_of_summable xiDivisorHilbertBasis
   exact hsum.congr fun q =>
-    congrArg (· ^ 2) (norm_xiDivisorDiagonal_basis w hC ha q).symm
+    congrArg (· ^ (2 : ℕ)) (norm_xiDivisorDiagonal_basis w hC ha q).symm
 
 /-- **Divisor separation at the origin**: the spectral points are uniformly bounded away from
 zero. -/
@@ -139,7 +139,7 @@ theorem exists_uniform_norm_xiSpectralPoint_lowerBound :
 
 /-- The inverse-spectral weights are square-summable, in norm form. -/
 theorem summable_norm_inv_xiSpectralPoint_sq :
-    Summable fun q : XiZeroCopy => ‖(xiSpectralPoint q)⁻¹‖ ^ 2 := by
+    Summable fun q : XiZeroCopy => ‖(xiSpectralPoint q)⁻¹‖ ^ (2 : ℕ) := by
   apply xiSpectralPoint_inv_sq_summable.congr
   intro q
   rw [norm_inv, inv_pow, one_div]

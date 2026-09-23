@@ -269,7 +269,7 @@ def alternatingTensorProjection : Matrix (ι × ι) (ι × ι) ℂ :=
 /-- Alternating-square dimension formula, expressed as projector trace. -/
 theorem trace_alternatingTensorProjection :
     Matrix.trace (alternatingTensorProjection (ι := ι)) =
-      ((Fintype.card ι : ℂ) ^ 2 - Fintype.card ι) / 2 := by
+      ((Fintype.card ι : ℂ) ^ (2 : ℕ) - Fintype.card ι) / 2 := by
   rw [alternatingTensorProjection, Matrix.trace_smul, Matrix.trace_sub,
     Matrix.trace_one, trace_tensorSwap]
   simp [Fintype.card_prod]
@@ -286,7 +286,7 @@ theorem alternatingTensorProjection_commutes_kronecker_self (M : Matrix ι ι �
 /-- Alternating-square character formula complementary to the corpus symmetric-square formula. -/
 theorem trace_alternatingTensorProjection_mul_kronecker_self (M : Matrix ι ι ℂ) :
     Matrix.trace (alternatingTensorProjection * (M ⊗ₖ M)) =
-      (Matrix.trace M ^ 2 - Matrix.trace (M * M)) / 2 := by
+      (Matrix.trace M ^ (2 : ℕ) - Matrix.trace (M * M)) / 2 := by
   rw [alternatingTensorProjection, Matrix.smul_mul, Matrix.sub_mul,
     Matrix.one_mul, Matrix.trace_smul, Matrix.trace_sub,
     Matrix.trace_kronecker, trace_tensorSwap_mul_kronecker_self]
@@ -412,8 +412,8 @@ theorem mirrorResponse_symmetric_add_alternating (A : Matrix ι ι ℂ) :
 theorem trace_mirrorAlternatingResponseProjection
     (A : Matrix ι ι ℂ) (hA : A * A = 1) :
     Matrix.trace (mirrorAlternatingResponseProjection A) =
-      ((Fintype.card ι : ℂ) ^ 2 - 2 * Fintype.card ι +
-        Matrix.trace A ^ 2) / 4 := by
+      ((Fintype.card ι : ℂ) ^ (2 : ℕ) - 2 * Fintype.card ι +
+        Matrix.trace A ^ (2 : ℕ)) / 4 := by
   rw [mirrorAlternatingResponseProjection, Matrix.mul_smul, Matrix.mul_add,
     Matrix.mul_one, Matrix.trace_smul, Matrix.trace_add,
     trace_alternatingTensorProjection,

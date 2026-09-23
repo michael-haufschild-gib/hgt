@@ -18,13 +18,13 @@ noncomputable section
 
 /-- The height coefficient of one ladder step. -/
 def ramareStepSlope (M : ℕ) (Q η : ℝ) (V : ℕ → ℝ) (j : ℕ) : ℝ :=
-  V j ^ 2 * (5 * Real.pi / 2 * ((geomCofactorBlock M Q η j).card : ℝ))
+  V j ^ (2 : ℕ) * (5 * Real.pi / 2 * ((geomCofactorBlock M Q η j).card : ℝ))
 
 /-- The height-free part of one ladder step. -/
 def ramareStepConst (M : ℕ) (Q η w₀ : ℝ) (V U Vlow : ℕ → ℝ) (j : ℕ) : ℝ :=
-  V j ^ 2 * (5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
+  V j ^ (2 : ℕ) * (5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ)
       * ((geomCofactorBlock M Q η j).card : ℝ))
-    + Vlow j ^ 2 * U j ^ 2 * (2 * w₀)
+    + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀)
 
 /-- The slope of the ladder's affine majorant. -/
 def ramareLadderSlope (M L : ℕ) (Q η : ℝ) (V : ℕ → ℝ) : ℝ :=
@@ -82,17 +82,17 @@ theorem integral_normSq_ramareBilinear_affine_le {P : Finset ℕ} (M : ℕ) {Q �
       ‖primeBlockPoly (geomBlock P Q (1 + η) j) w‖ ≤ Vlow j)
     (hlowC : ∀ j ∈ Finset.range L, ∀ w ∈ Set.Icc (-w₀) w₀,
       ‖logPoly (ramareCofactorCoeff P) (geomCofactorBlock M Q η j) w‖ ≤ U j) :
-    (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ 2)
+    (∫ w in Set.Icc (-W) W, ‖ramareBilinear P M w‖ ^ (2 : ℕ))
       ≤ ramareLadderSlope M L Q η V * W + ramareLadderConst M L Q η w₀ V U Vlow := by
   classical
   have hbase := integral_normSq_ramareBilinear_annulus_le (P := P) M hQ hη hW hw₀ hwW hL
     hPprime hPge hP V U Vlow hV hU hVlow hann hlowP hlowC
   refine hbase.trans (le_of_eq ?_)
   have hterm : ∀ j ∈ Finset.range L,
-      (V j ^ 2 * ((5 * Real.pi / 2 * W
+      (V j ^ (2 : ℕ) * ((5 * Real.pi / 2 * W
               + 5 * Real.exp 1 / 2 * ((⌊(M : ℝ) / (Q * (1 + η) ^ j)⌋₊ : ℕ) : ℝ))
             * ((geomCofactorBlock M Q η j).card : ℝ))
-          + Vlow j ^ 2 * U j ^ 2 * (2 * w₀))
+          + Vlow j ^ (2 : ℕ) * U j ^ (2 : ℕ) * (2 * w₀))
       = ramareStepSlope M Q η V j * W + ramareStepConst M Q η w₀ V U Vlow j := by
     intro j _
     rw [ramareStepSlope, ramareStepConst]

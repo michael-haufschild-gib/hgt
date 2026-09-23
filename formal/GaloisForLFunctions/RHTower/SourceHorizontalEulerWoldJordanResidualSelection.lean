@@ -27,11 +27,11 @@ abbrev SourceHorizontalEulerWoldJordanAtom (N : ℕ) :=
 
 def sourceHorizontalEulerJordanAtomMass (N : ℕ) (n : Fin (N + 1)) : ℝ :=
   2 * sourceHorizontalEulerGammaCubicAtom (nthPrimeSubtype n) /
-    xiMassNthPrimeLogHeight N ^ 3
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)
 
 def sourceHorizontalWoldJordanAtomMass (N : ℕ) (n : Fin (N + 1)) : ℝ :=
-  2 * (woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ 2) /
-    xiMassNthPrimeLogHeight N ^ 3
+  2 * (woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ (2 : ℕ)) /
+    xiMassNthPrimeLogHeight N ^ (3 : ℕ)
 
 theorem sourceHorizontalEulerJordanAtomMass_pos (N : ℕ) (n : Fin (N + 1)) :
     0 < sourceHorizontalEulerJordanAtomMass N n := by
@@ -109,27 +109,27 @@ theorem sourceHorizontalEulerWoldJordanSelectedEulerAtom_eq_depthSum
     (N : ℕ) (n : Fin (N + 1)) :
     -sourceHorizontalEulerJordanAtomMass N n =
       ∑' k : ℕ,
-        -(2 * (Real.log (nthPrimeSubtype n : ℝ) ^ 3 * (k : ℝ) ^ 2 *
+        -(2 * (Real.log (nthPrimeSubtype n : ℝ) ^ (3 : ℕ) * (k : ℝ) ^ (2 : ℕ) *
           ((nthPrimeSubtype n : ℝ)⁻¹) ^ k) /
-            xiMassNthPrimeLogHeight N ^ 3) := by
+            xiMassNthPrimeLogHeight N ^ (3 : ℕ)) := by
   rw [sourceHorizontalEulerJordanAtomMass]
   have h := sourceHorizontalEulerGammaCubicNegativeAtom_eq_depthSum
     (nthPrimeSubtype n)
   calc
     -(2 * sourceHorizontalEulerGammaCubicAtom (nthPrimeSubtype n) /
-        xiMassNthPrimeLogHeight N ^ 3) =
-        (2 / xiMassNthPrimeLogHeight N ^ 3) *
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) =
+        (2 / xiMassNthPrimeLogHeight N ^ (3 : ℕ)) *
           (-sourceHorizontalEulerGammaCubicAtom (nthPrimeSubtype n)) := by ring
-    _ = (2 / xiMassNthPrimeLogHeight N ^ 3) *
-        (∑' k : ℕ, -(Real.log (nthPrimeSubtype n : ℝ) ^ 3 * (k : ℝ) ^ 2 *
+    _ = (2 / xiMassNthPrimeLogHeight N ^ (3 : ℕ)) *
+        (∑' k : ℕ, -(Real.log (nthPrimeSubtype n : ℝ) ^ (3 : ℕ) * (k : ℝ) ^ (2 : ℕ) *
           ((nthPrimeSubtype n : ℝ)⁻¹) ^ k)) := congrArg _ h
-    _ = ∑' k : ℕ, (2 / xiMassNthPrimeLogHeight N ^ 3) *
-        -(Real.log (nthPrimeSubtype n : ℝ) ^ 3 * (k : ℝ) ^ 2 *
+    _ = ∑' k : ℕ, (2 / xiMassNthPrimeLogHeight N ^ (3 : ℕ)) *
+        -(Real.log (nthPrimeSubtype n : ℝ) ^ (3 : ℕ) * (k : ℝ) ^ (2 : ℕ) *
           ((nthPrimeSubtype n : ℝ)⁻¹) ^ k) := tsum_mul_left.symm
     _ = ∑' k : ℕ,
-        -(2 * (Real.log (nthPrimeSubtype n : ℝ) ^ 3 * (k : ℝ) ^ 2 *
+        -(2 * (Real.log (nthPrimeSubtype n : ℝ) ^ (3 : ℕ) * (k : ℝ) ^ (2 : ℕ) *
           ((nthPrimeSubtype n : ℝ)⁻¹) ^ k) /
-            xiMassNthPrimeLogHeight N ^ 3) := by
+            xiMassNthPrimeLogHeight N ^ (3 : ℕ)) := by
           apply tsum_congr
           intro k
           ring
@@ -147,36 +147,36 @@ def sourceHorizontalEulerWoldJordanPositiveMass (N : ℕ) : ℝ :=
 theorem sourceHorizontalEulerWoldJordanNegativeMass_eq (N : ℕ) :
     sourceHorizontalEulerWoldJordanNegativeMass N =
       2 * sourceHorizontalEulerGammaCubicMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) := by
   rw [sourceHorizontalEulerWoldJordanNegativeMass, Fintype.sum_sum_type]
   simp only [sourceHorizontalEulerWoldJordanNegativePart_inl,
     sourceHorizontalEulerWoldJordanNegativePart_inr, Finset.sum_const_zero, add_zero]
   rw [show (∑ x : Fin (N + 1), sourceHorizontalEulerJordanAtomMass N x) =
       ∑ n ∈ Finset.range (N + 1),
         2 * sourceHorizontalEulerGammaCubicAtom (nthPrimeSubtype n) /
-          xiMassNthPrimeLogHeight N ^ 3 by
+          xiMassNthPrimeLogHeight N ^ (3 : ℕ) by
     simpa [sourceHorizontalEulerJordanAtomMass] using
       (Fin.sum_univ_eq_sum_range
         (fun n : ℕ => 2 * sourceHorizontalEulerGammaCubicAtom (nthPrimeSubtype n) /
-          xiMassNthPrimeLogHeight N ^ 3) (N + 1))]
+          xiMassNthPrimeLogHeight N ^ (3 : ℕ)) (N + 1))]
   rw [sourceHorizontalEulerGammaCubicMoment, ← Finset.sum_div, ← Finset.mul_sum]
 
 theorem sourceHorizontalEulerWoldJordanPositiveMass_eq (N : ℕ) :
     sourceHorizontalEulerWoldJordanPositiveMass N =
       2 * sourceHorizontalWoldCubicCountertermMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) := by
   rw [sourceHorizontalEulerWoldJordanPositiveMass, Fintype.sum_sum_type]
   simp only [sourceHorizontalEulerWoldJordanPositivePart_inl,
     sourceHorizontalEulerWoldJordanPositivePart_inr, Finset.sum_const_zero, zero_add]
   rw [show (∑ x : Fin (N + 1), sourceHorizontalWoldJordanAtomMass N x) =
       ∑ n ∈ Finset.range (N + 1),
-        2 * (woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ 2) /
-          xiMassNthPrimeLogHeight N ^ 3 by
+        2 * (woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ (2 : ℕ)) /
+          xiMassNthPrimeLogHeight N ^ (3 : ℕ) by
     simpa [sourceHorizontalWoldJordanAtomMass] using
       (Fin.sum_univ_eq_sum_range
         (fun n : ℕ =>
-          2 * (woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ 2) /
-            xiMassNthPrimeLogHeight N ^ 3) (N + 1))]
+          2 * (woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ (2 : ℕ)) /
+            xiMassNthPrimeLogHeight N ^ (3 : ℕ)) (N + 1))]
   rw [sourceHorizontalWoldCubicCountertermMoment, ← Finset.sum_div, ← Finset.mul_sum]
 
 theorem sourceHorizontalEulerWoldJordanNegativeMass_pos (N : ℕ) :
@@ -207,7 +207,7 @@ theorem sourceHorizontalEulerWoldJordanNegativeMass_sub_positiveMass_eq (N : ℕ
     sourceHorizontalEulerWoldJordanNegativeMass N -
         sourceHorizontalEulerWoldJordanPositiveMass N =
       2 * sourceHorizontalEulerGammaWoldCubicDefectMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) := by
   rw [sourceHorizontalEulerWoldJordanNegativeMass_eq,
     sourceHorizontalEulerWoldJordanPositiveMass_eq,
     sourceHorizontalWoldCubicCountertermMoment_add_defect]
@@ -227,7 +227,7 @@ theorem sourceHorizontalEulerWoldJordanPositiveMass_le_negativeMass (N : ℕ) :
 theorem sourceHorizontalEulerWoldJordanPostCompressionVariation_eq (N : ℕ) :
     sourceHorizontalEulerWoldJordanPostCompressionVariation N =
       2 * sourceHorizontalEulerGammaWoldCubicDefectMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) := by
   rw [sourceHorizontalEulerWoldJordanPostCompressionVariation,
     GaloisForLFunctions.HTGeometry.twoGradePostCompressionVariation,
     abs_of_nonpos (sub_nonpos.mpr
@@ -239,7 +239,7 @@ theorem sourceHorizontalEulerWoldJordanCompression_loss_eq (N : ℕ) :
     sourceHorizontalEulerWoldJordanPreCompressionVariation N -
         sourceHorizontalEulerWoldJordanPostCompressionVariation N =
       4 * sourceHorizontalWoldCubicCountertermMoment N /
-        xiMassNthPrimeLogHeight N ^ 3 := by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ) := by
   rw [sourceHorizontalEulerWoldJordanPreCompressionVariation,
     sourceHorizontalEulerWoldJordanPostCompressionVariation]
   rw [GaloisForLFunctions.HTGeometry.twoGradeCompression_loss_eq_twice_regulator
@@ -330,7 +330,7 @@ theorem tendsto_sourceHorizontalEulerWoldJordanPostCompressionVariation_zero :
     Tendsto sourceHorizontalEulerWoldJordanPostCompressionVariation atTop (nhds 0) := by
   rw [show sourceHorizontalEulerWoldJordanPostCompressionVariation = fun N =>
       2 * (sourceHorizontalEulerGammaWoldCubicDefectMoment N /
-        xiMassNthPrimeLogHeight N ^ 3) by
+        xiMassNthPrimeLogHeight N ^ (3 : ℕ)) by
     funext N
     rw [sourceHorizontalEulerWoldJordanPostCompressionVariation_eq]
     ring]
@@ -421,9 +421,9 @@ theorem sourceHorizontalEulerWoldJordanResidualSelection
     (∀ n : Fin (N + 1),
       -sourceHorizontalEulerJordanAtomMass N n =
         ∑' k : ℕ,
-          -(2 * (Real.log (nthPrimeSubtype n : ℝ) ^ 3 * (k : ℝ) ^ 2 *
+          -(2 * (Real.log (nthPrimeSubtype n : ℝ) ^ (3 : ℕ) * (k : ℝ) ^ (2 : ℕ) *
             ((nthPrimeSubtype n : ℝ)⁻¹) ^ k) /
-              xiMassNthPrimeLogHeight N ^ 3)) ∧
+              xiMassNthPrimeLogHeight N ^ (3 : ℕ))) ∧
     sourceHorizontalEulerWoldJordanPostCompressionVariation N <
       sourceHorizontalEulerWoldJordanPreCompressionVariation N ∧
     sourceHorizontalEulerWoldJordanSelectedPhysicalAction c N =

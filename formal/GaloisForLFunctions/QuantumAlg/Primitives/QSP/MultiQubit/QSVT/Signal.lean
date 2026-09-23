@@ -834,7 +834,7 @@ theorem exists_word_of_matchingParity {m n d : Nat}
         simpa [Polynomial.coeff_zero_eq_eval_zero] using hbounded
       simpa [realPolynomialToComplex, Polynomial.coeff_map] using hcoeffAbs
     have hcoeffSq :
-        ‖(realPolynomialToComplex PRe).coeff 0‖ ^ 2 ≤ (1 : ℝ) := by
+        ‖(realPolynomialToComplex PRe).coeff 0‖ ^ (2 : ℕ) ≤ (1 : ℝ) := by
       nlinarith [hcoeffNorm, norm_nonneg ((realPolynomialToComplex PRe).coeff 0)]
     have hcontract :
         Complex.normSq ((realPolynomialToComplex PRe).coeff 0) ≤ 1 := by

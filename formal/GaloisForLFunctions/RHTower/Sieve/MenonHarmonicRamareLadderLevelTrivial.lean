@@ -25,13 +25,13 @@ noncomputable section
 /-- The per-block cost of the level-split receiver on a small frequency set. -/
 def menonHarmonicLevelTrivialBlockCost
     (P : Finset ℕ) (A₀ B₀ : ℕ) (Q eta W volE : ℝ) (k j J : ℕ) (V₀ : ℝ) : ℝ :=
-  2 * (V₀ ^ 2 *
-          (volE * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2)
+  2 * (V₀ ^ (2 : ℕ) *
+          (volE * harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ))
         + ∑ i ∈ Finset.range J,
-            (2 ^ (i + 1) * V₀) ^ 2 *
+            (2 ^ (i + 1) * V₀) ^ (2 : ℕ) *
               ((menonHarmonicLocalBlockMomentCost k Q eta W j / (2 ^ i * V₀) ^ (2 * k)) *
-                harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ 2))
-    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ 2 *
+                harmonicPrimeMass (harmonicGeomCofactorBlock A₀ B₀ Q eta j) ^ (2 : ℕ)))
+    + 2 * harmonicPrimeMass (geomBlock P Q (1 + eta) j) ^ (2 : ℕ) *
         harmonicCofactorSupportError A₀ B₀ Q eta W j
 
 /-- **One geometric block on a small frequency set.** -/
@@ -45,7 +45,7 @@ theorem setIntegral_normSq_harmonicRamareBlock_geom_le_levelTrivial
     (hJ : harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ J * V₀) :
     (∫ w in E,
       ‖harmonicRamareBlock P (Finset.Icc A₀ B₀)
-        (geomBlock P Q (1 + eta) j) w‖ ^ 2)
+        (geomBlock P Q (1 + eta) j) w‖ ^ (2 : ℕ))
       ≤ menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W (volume.real E) k j J V₀ := by
   classical
   have hprod := setIntegral_normSq_harmonicBlockProduct_levelSplit_trivial_moment
@@ -71,7 +71,7 @@ theorem setIntegral_normSq_harmonicRamareBilinear_le_levelTrivial_mass
     (hJ : ∀ j ∈ Finset.range L,
       harmonicPrimeMass (geomBlock P Q (1 + eta) j) ≤ 2 ^ (J j) * V₀ j)
     {E : Set ℝ} (hEm : MeasurableSet E) (hEs : E ⊆ Set.Icc (-W) W) :
-    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ 2)
+    (∫ w in E, ‖harmonicRamareBilinear P (Finset.Icc A₀ B₀) w‖ ^ (2 : ℕ))
       ≤ harmonicPrimeMass P * ∑ j ∈ Finset.range L,
           menonHarmonicLevelTrivialBlockCost P A₀ B₀ Q eta W (volume.real E) k j (J j) (V₀ j)
             / harmonicPrimeMass (geomBlock P Q (1 + eta) j) := by

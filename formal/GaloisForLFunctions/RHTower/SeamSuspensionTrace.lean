@@ -28,7 +28,7 @@ Gaussian archimedean oscillator (`Γ_ℝ'/Γ_ℝ`), and two boundary states (`1/
 
 Both the Hodge relation `I − P = dG + Gd` (with renormalized cyclicity) and the Herglotz positivity
 `K_Δ ≥ 0` are the two faces of the single remaining bridge; each would give
-`Str((s − Θ_Δ)⁻¹ | H_Δ) = ξ'/ξ` on the positive `H_Δ^1`.
+`Str((s − Θ_Δ)⁻¹ | H_Δ) = ξ'/ξ` on the positive `H_Δ^(1 : ℕ)`.
 -/
 import GaloisForLFunctions.RHTower.ZetaCarrier
 

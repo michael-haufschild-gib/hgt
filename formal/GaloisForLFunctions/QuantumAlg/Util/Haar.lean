@@ -199,8 +199,8 @@ uncentered second moment. This is purely algebraic; it does not introduce a prob
 or an ansatz distribution. -/
 theorem secondMoment_eq_centered_of_mean_zero {α : Type*} [Fintype α] (loss : α → ℂ)
     (hmean : (Fintype.card α : ℂ)⁻¹ * ∑ a, loss a = 0) :
-    (Fintype.card α : ℂ)⁻¹ * ∑ a, (loss a - ((Fintype.card α : ℂ)⁻¹ * ∑ b, loss b)) ^ 2
-      = (Fintype.card α : ℂ)⁻¹ * ∑ a, (loss a) ^ 2 := by
+    (Fintype.card α : ℂ)⁻¹ * ∑ a, (loss a - ((Fintype.card α : ℂ)⁻¹ * ∑ b, loss b)) ^ (2 : ℕ)
+      = (Fintype.card α : ℂ)⁻¹ * ∑ a, (loss a) ^ (2 : ℕ) := by
   rw [hmean]
   simp
 

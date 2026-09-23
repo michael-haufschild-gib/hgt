@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.RHTower
 
 /-- The derivative of the reciprocal prolate phase speed, as a function. -/
 def xiInvSpeedDeriv (s x : ℝ) : ℝ :=
-  -(x * (s - 1) / ((x ^ 2 - 1) ^ 2 * xiSpeed s x)) / (xiSpeed s x) ^ 2
+  -(x * (s - 1) / ((x ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s x)) / (xiSpeed s x) ^ (2 : ℕ)
 
 theorem hasDerivAt_xiInvSpeedDeriv {s x : ℝ} (hs1 : s ≤ 1) (hx : 1 < x) :
     HasDerivAt (fun u : ℝ => (xiSpeed s u)⁻¹) (xiInvSpeedDeriv s x) x :=
@@ -29,10 +29,10 @@ theorem continuousOn_xiInvSpeedDeriv {s : ℝ} (hs1 : s ≤ 1) :
     ContinuousOn (xiInvSpeedDeriv s) (Set.Ioi 1) := by
   have hspeedne : ∀ x ∈ Set.Ioi (1 : ℝ), xiSpeed s x ≠ 0 := fun x hx =>
     (lt_of_lt_of_le zero_lt_one (one_le_xiSpeed hs1 hx)).ne'
-  have hdne : ∀ x ∈ Set.Ioi (1 : ℝ), (x ^ 2 - 1) ^ 2 * xiSpeed s x ≠ 0 := by
+  have hdne : ∀ x ∈ Set.Ioi (1 : ℝ), (x ^ (2 : ℕ) - 1) ^ (2 : ℕ) * xiSpeed s x ≠ 0 := by
     intro x hx
     have hx1 : (1 : ℝ) < x := hx
-    have : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+    have : (0 : ℝ) < x ^ (2 : ℕ) - 1 := by nlinarith
     exact mul_ne_zero (by positivity) (hspeedne x hx)
   refine ContinuousOn.div (ContinuousOn.neg (ContinuousOn.div ?_ ?_ hdne)) ?_ ?_
   · exact continuousOn_id.mul continuousOn_const
@@ -55,7 +55,7 @@ theorem norm_integral_exterior_xiPhase_le
     (ha'B : ∀ x ∈ Set.uIcc (2 : ℝ) X, ‖a' x‖ ≤ C / (x * Real.sqrt x)) :
     ‖∫ t in (2 : ℝ)..X, (a t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
         * Complex.exp (Complex.I * ((eps * c * xiEndpointPhase s t : ℝ) : ℂ))‖
-      ≤ 3 * (3 * max C 1 / 2 + (max C 1) ^ 2 / 2) / (2 * c) := by
+      ≤ 3 * (3 * max C 1 / 2 + (max C 1) ^ (2 : ℕ) / 2) / (2 * c) := by
   have hsub : Set.uIcc (2 : ℝ) X ⊆ Set.Ioi 1 := by
     rw [Set.uIcc_of_le hX]
     intro x hx

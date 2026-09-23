@@ -32,7 +32,7 @@ private theorem norm_moebius_lSeries_term_le_three_halves
     have hcoeff :
         ‖((ArithmeticFunction.moebius n : ℤ) : ℂ)‖ ≤ 1 :=
       norm_moebius_le_one n
-    rw [LSeries.term_of_ne_zero hn, norm_div, norm_natCast_cpow hn1]
+    rw [LSeries.term_of_ne_zero hn, norm_div, norm_natCast_cpow_zetaVerticalLineBound hn1]
     have hpowPos : (0 : ℝ) < (n : ℝ) ^ s.re :=
       Real.rpow_pos_of_pos hn0 _
     rw [Real.rpow_neg hn0.le]

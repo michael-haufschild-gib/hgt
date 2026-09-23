@@ -50,7 +50,7 @@ theorem propagator_solves {c : ℝ} (hc : c ≠ 0) : c * (1 / c) = 1 := by
   field_simp
 
 /-- **The vertex value.**  `V''' u³ = ε/c³`. -/
-theorem vertex_value {c ε : ℝ} (hc : c ≠ 0) : ε * (1 / c) ^ 3 = ε / c ^ 3 := by
+theorem vertex_value {c ε : ℝ} (hc : c ≠ 0) : ε * (1 / c) ^ (3 : ℕ) = ε / c ^ (3 : ℕ) := by
   field_simp
 
 /-- **The cancellation.**  The two first-order contributions combine to `-1`. -/
@@ -59,28 +59,28 @@ theorem cumulant_cancellation : -(15 : ℝ) / 6 + 9 / 6 = -1 := by norm_num
 /-- **The third-cumulant coefficient.**  Assembling `E[x³] - 3E[x²]E[x]` at first order in `ε`, with
 the Gaussian moments `E₀[x⁴] = 3/c²` and `E₀[x⁶] = 15/c³`, gives exactly `-ε/c³`. -/
 theorem third_cumulant_leading {c ε : ℝ} (hc : c ≠ 0) :
-    (-(ε / 6) * (15 / c ^ 3)) - 3 * (1 / c) * (-(ε / 6) * (3 / c ^ 2)) = -(ε / c ^ 3) := by
+    (-(ε / 6) * (15 / c ^ (3 : ℕ))) - 3 * (1 / c) * (-(ε / 6) * (3 / c ^ (2 : ℕ))) = -(ε / c ^ (3 : ℕ)) := by
   field_simp
   ring
 
 /-- **It equals minus the vertex value.**  So `κ₃ = -V''' u³` with `u` the propagator. -/
 theorem third_cumulant_eq_neg_vertex {c ε : ℝ} (hc : c ≠ 0) :
-    (-(ε / 6) * (15 / c ^ 3)) - 3 * (1 / c) * (-(ε / 6) * (3 / c ^ 2))
-      = -(ε * (1 / c) ^ 3) := by
+    (-(ε / 6) * (15 / c ^ (3 : ℕ))) - 3 * (1 / c) * (-(ε / 6) * (3 / c ^ (2 : ℕ)))
+      = -(ε * (1 / c) ^ (3 : ℕ)) := by
   rw [third_cumulant_leading hc, vertex_value hc]
 
 /-- **A Gaussian has no third cumulant.**  Setting `V''' = 0` kills the leading term, so the entire
 third cumulant is carried by the non-Gaussianity. -/
 theorem gaussian_third_cumulant {c : ℝ} (hc : c ≠ 0) :
-    (-((0 : ℝ) / 6) * (15 / c ^ 3)) - 3 * (1 / c) * (-((0 : ℝ) / 6) * (3 / c ^ 2)) = 0 := by
+    (-((0 : ℝ) / 6) * (15 / c ^ (3 : ℕ))) - 3 * (1 / c) * (-((0 : ℝ) / 6) * (3 / c ^ (2 : ℕ))) = 0 := by
   rw [third_cumulant_leading hc]
   simp
 
 /-- **The size.**  With `|V'''| ≤ b` and `V'' = c > 0`, the leading third cumulant is at most `b/c³`,
 which is the `d = 3` case of the diagrammatic power counting. -/
 theorem third_cumulant_bound {c ε b : ℝ} (hc : 0 < c) (hb : |ε| ≤ b) :
-    |(-(ε / 6) * (15 / c ^ 3)) - 3 * (1 / c) * (-(ε / 6) * (3 / c ^ 2))| ≤ b / c ^ 3 := by
-  rw [third_cumulant_leading (ne_of_gt hc), abs_neg, abs_div, abs_of_pos (by positivity : (0:ℝ) < c ^ 3)]
+    |(-(ε / 6) * (15 / c ^ (3 : ℕ))) - 3 * (1 / c) * (-(ε / 6) * (3 / c ^ (2 : ℕ)))| ≤ b / c ^ (3 : ℕ) := by
+  rw [third_cumulant_leading (ne_of_gt hc), abs_neg, abs_div, abs_of_pos (by positivity : (0:ℝ) < c ^ (3 : ℕ))]
   exact (div_le_div_iff_of_pos_right (by positivity)).mpr hb
 
 end RHTower

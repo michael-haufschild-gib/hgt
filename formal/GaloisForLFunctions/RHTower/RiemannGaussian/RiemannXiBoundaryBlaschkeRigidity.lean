@@ -28,7 +28,7 @@ def realBoundaryInverseSquareCoefficient (x delta : ℝ) : ℝ :=
   2 + (1 + 2 * x ^ 2) / delta ^ 2
 
 /-- A gap from the real observation point makes its upper-zero Cauchy
-denominator dominate `1 + alpha.re^2`. -/
+denominator dominate `1 + alpha.re^(2 : ℕ)`. -/
 theorem one_add_re_sq_le_realBoundaryInverseSquareCoefficient_mul_normSq
     {x delta : ℝ} {alpha : ℂ} (hdelta : 0 < delta)
     (hgap : delta ≤ ‖(x : ℂ) - alpha‖) :

@@ -85,13 +85,13 @@ theorem tendsto_norm_riemannZeta_two_mul :
 denominator of `∑ λ(n)n^{-σ} = ζ(2σ)/ζ(σ)`. -/
 theorem tendsto_poleFunctionalLiouville :
     Tendsto poleFunctionalLiouville (𝓝[>] (1 : ℝ)) (𝓝 0) := by
-  have hsq : Tendsto (fun σ : ℝ => (σ - 1) ^ 2) (𝓝[>] (1 : ℝ)) (𝓝 0) := by
-    have hc : Continuous (fun σ : ℝ => (σ - 1) ^ 2) :=
+  have hsq : Tendsto (fun σ : ℝ => (σ - 1) ^ (2 : ℕ)) (𝓝[>] (1 : ℝ)) (𝓝 0) := by
+    have hc : Continuous (fun σ : ℝ => (σ - 1) ^ (2 : ℕ)) :=
       (continuous_id.sub continuous_const).pow 2
-    have h0 : Tendsto (fun σ : ℝ => (σ - 1) ^ 2) (𝓝[>] (1 : ℝ)) (𝓝 ((1 - 1 : ℝ) ^ 2)) :=
+    have h0 : Tendsto (fun σ : ℝ => (σ - 1) ^ (2 : ℕ)) (𝓝[>] (1 : ℝ)) (𝓝 ((1 - 1 : ℝ) ^ (2 : ℕ))) :=
       (hc.tendsto 1).mono_left nhdsWithin_le_nhds
     simpa using h0
-  have hnum : Tendsto (fun σ : ℝ => (σ - 1) ^ 2 * ‖riemannZeta (2 * (σ : ℂ))‖)
+  have hnum : Tendsto (fun σ : ℝ => (σ - 1) ^ (2 : ℕ) * ‖riemannZeta (2 * (σ : ℂ))‖)
       (𝓝[>] (1 : ℝ)) (𝓝 0) := by
     have := hsq.mul tendsto_norm_riemannZeta_two_mul
     simpa using this
@@ -153,7 +153,7 @@ theorem exists_modulusCollided_gap :
 
 /-- **The de la Vallée Poussin positivity.**  `3 + 4cos θ + cos 2θ = 2(1 + cos θ)²`. -/
 theorem vallee_poussin_identity (θ : ℝ) :
-    3 + 4 * Real.cos θ + Real.cos (2 * θ) = 2 * (1 + Real.cos θ) ^ 2 := by
+    3 + 4 * Real.cos θ + Real.cos (2 * θ) = 2 * (1 + Real.cos θ) ^ (2 : ℕ) := by
   rw [Real.cos_two_mul]
   ring
 

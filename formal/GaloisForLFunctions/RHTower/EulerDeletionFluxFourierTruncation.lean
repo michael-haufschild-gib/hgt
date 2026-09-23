@@ -21,8 +21,8 @@ open Finset Filter Topology
 namespace RHTower.DeletionFlux
 
 private def fourierAtom (e k m : ℕ) : ℝ :=
-  (e : ℝ)/(2*Real.pi^2) *
-    ((Real.cos (2*Real.pi*m*((k : ℝ)/e))-1)/(m : ℝ)^2)
+  (e : ℝ)/(2*Real.pi^(2 : ℕ)) *
+    ((Real.cos (2*Real.pi*m*((k : ℝ)/e))-1)/(m : ℝ)^(2 : ℕ))
 
 /-- The modular primitive with Bernoulli frequencies one through Q retained. -/
 def fourierPrimitive (Q e k : ℕ) : ℝ :=
@@ -36,7 +36,7 @@ def truncatedPrimitive (N Q k : ℕ) : ℝ :=
 def truncatedReciprocalFlux (N Q : ℕ) : ℝ :=
   ∑ d ∈ Icc 1 N, ((ArithmeticFunction.moebius d : ℤ) : ℝ) *
     ∑' j : ℕ, truncatedPrimitive N Q (d*(N/d+j+1)) /
-      ((d*(N/d+j+1) : ℕ) : ℝ)^2
+      ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)
 
 private theorem reciprocal_bound {q : ℕ} (hq : 0 < q) {C : ℝ}
     (hC : 0 ≤ C) (f : ℕ → ℝ)
@@ -68,14 +68,14 @@ private theorem hasSum_fourierAtom {e : ℕ} (he : 0 < e) (k : ℕ) :
   have heR : (0 : ℝ) < e := by exact_mod_cast he
   have hp : Real.pi ≠ 0 := Real.pi_ne_zero
   have h := ((GaloisForLFunctions.RHTower.hasSum_cos_div_sq ((k : ℝ)/e)).sub
-    (GaloisForLFunctions.RHTower.hasSum_cos_div_sq 0)).mul_left ((e : ℝ)/(2*Real.pi^2))
+    (GaloisForLFunctions.RHTower.hasSum_cos_div_sq 0)).mul_left ((e : ℝ)/(2*Real.pi^(2 : ℕ)))
   have ht := h.congr_fun (g := fourierAtom e k) (fun m => by
     dsimp only [fourierAtom]
     simp only [mul_zero, Real.cos_zero]
     ring)
-  have hv : (e : ℝ)/(2*Real.pi^2) *
-      (2*Real.pi^2*(1/12-GaloisForLFunctions.RHTower.sawPrimitive ((k : ℝ)/e)) -
-       2*Real.pi^2*(1/12-GaloisForLFunctions.RHTower.sawPrimitive 0)) =
+  have hv : (e : ℝ)/(2*Real.pi^(2 : ℕ)) *
+      (2*Real.pi^(2 : ℕ)*(1/12-GaloisForLFunctions.RHTower.sawPrimitive ((k : ℝ)/e)) -
+       2*Real.pi^(2 : ℕ)*(1/12-GaloisForLFunctions.RHTower.sawPrimitive 0)) =
       HTGeometry.centeredModularPrimitive e k := by
     simp only [GaloisForLFunctions.RHTower.sawPrimitive,
       Int.fract_div_natCast_eq_div_natCast_mod, HTGeometry.centeredModularPrimitive]
@@ -86,27 +86,27 @@ private theorem hasSum_fourierAtom {e : ℕ} (he : 0 < e) (k : ℕ) :
   exact ht
 
 private theorem atom_bound (e k m : ℕ) :
-    |fourierAtom e k m| ≤ (e : ℝ)/(Real.pi^2*(m : ℝ)^2) := by
+    |fourierAtom e k m| ≤ (e : ℝ)/(Real.pi^(2 : ℕ)*(m : ℝ)^(2 : ℕ)) := by
   have hc : |Real.cos (2*Real.pi*m*((k : ℝ)/e))-1| ≤ 2 :=
     abs_le.mpr ⟨by linarith [Real.neg_one_le_cos (2*Real.pi*m*((k : ℝ)/e))],
       by linarith [Real.cos_le_one (2*Real.pi*m*((k : ℝ)/e))]⟩
-  rw [fourierAtom, abs_mul, abs_of_nonneg (by positivity : 0 ≤ (e : ℝ)/(2*Real.pi^2))]
+  rw [fourierAtom, abs_mul, abs_of_nonneg (by positivity : 0 ≤ (e : ℝ)/(2*Real.pi^(2 : ℕ)))]
   simp only [abs_div, abs_pow, abs_of_nonneg (show (0 : ℝ) ≤ (m : ℝ) from Nat.cast_nonneg m)]
-  calc _ ≤ (e : ℝ)/(2*Real.pi^2)*(2/(m : ℝ)^2) := by
+  calc _ ≤ (e : ℝ)/(2*Real.pi^(2 : ℕ))*(2/(m : ℝ)^(2 : ℕ)) := by
          exact mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hc (sq_nonneg _))
            (by positivity)
        _ = _ := by simp only [div_eq_mul_inv, mul_inv_rev]; ring
 
 private theorem primitive_fourier_error {Q e : ℕ} (hQ : 0 < Q) (he : 0 < e) (k : ℕ) :
     |HTGeometry.centeredModularPrimitive e k-fourierPrimitive Q e k| ≤
-      (e : ℝ)/(Real.pi^2*Q) := by
+      (e : ℝ)/(Real.pi^(2 : ℕ)*Q) := by
   have hQR : (0 : ℝ) < Q := by exact_mod_cast hQ
-  have hb := reciprocal_bound hQ (C := (e : ℝ)/Real.pi^2) (by positivity)
+  have hb := reciprocal_bound hQ (C := (e : ℝ)/Real.pi^(2 : ℕ)) (by positivity)
     (fun j => fourierAtom e k (j+(Q+1))) (by
       intro j
-      calc _ ≤ (e : ℝ)/(Real.pi^2*(j+(Q+1 : ℕ))^2) := by
+      calc _ ≤ (e : ℝ)/(Real.pi^(2 : ℕ)*(j+(Q+1 : ℕ))^(2 : ℕ)) := by
              simpa only [Nat.cast_add] using atom_bound e k (j+(Q+1))
-           _ ≤ ((e : ℝ)/Real.pi^2)/(((Q : ℝ)+j)*((Q : ℝ)+j+1)) := by
+           _ ≤ ((e : ℝ)/Real.pi^(2 : ℕ))/(((Q : ℝ)+j)*((Q : ℝ)+j+1)) := by
              rw [div_div]
              apply div_le_div_of_nonneg_left (Nat.cast_nonneg _) (by positivity)
              push_cast
@@ -136,7 +136,7 @@ private theorem abs_mu_le (n : ℕ) :
 
 private theorem source_error {Q : ℕ} (hQ : 0 < Q) (N k : ℕ) :
     |primitive N k-truncatedPrimitive N Q k| ≤
-      (N : ℝ)*(N+1)/(2*Real.pi^2*Q) := by
+      (N : ℝ)*(N+1)/(2*Real.pi^(2 : ℕ)*Q) := by
   rw [primitive, truncatedPrimitive, ← sum_sub_distrib]
   calc _ ≤ ∑ e ∈ Icc 1 N,
          |((ArithmeticFunction.moebius e : ℤ) : ℝ) *
@@ -145,7 +145,7 @@ private theorem source_error {Q : ℕ} (hQ : 0 < Q) (N k : ℕ) :
              (fun e => ((ArithmeticFunction.moebius e : ℤ) : ℝ) *
                HTGeometry.centeredModularPrimitive e k -
                ((ArithmeticFunction.moebius e : ℤ) : ℝ)*fourierPrimitive Q e k) (Icc 1 N)
-       _ ≤ ∑ e ∈ Icc 1 N, (e : ℝ)/(Real.pi^2*Q) := by
+       _ ≤ ∑ e ∈ Icc 1 N, (e : ℝ)/(Real.pi^(2 : ℕ)*Q) := by
          apply sum_le_sum
          intro e he
          rw [abs_mul]
@@ -155,11 +155,11 @@ private theorem source_error {Q : ℕ} (hQ : 0 < Q) (N k : ℕ) :
 
 private theorem channel_error {N Q d : ℕ} (hQ : 0 < Q) (hd : 0 < d) (hdN : d ≤ N) :
     Summable (fun j : ℕ => (primitive N (d*(N/d+j+1))-
-      truncatedPrimitive N Q (d*(N/d+j+1))) / ((d*(N/d+j+1) : ℕ) : ℝ)^2) ∧
+      truncatedPrimitive N Q (d*(N/d+j+1))) / ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) ∧
     |∑' j : ℕ, (primitive N (d*(N/d+j+1))-
-      truncatedPrimitive N Q (d*(N/d+j+1))) / ((d*(N/d+j+1) : ℕ) : ℝ)^2| ≤
-        (N+1 : ℝ)/(Real.pi^2*Q*d) := by
-  let B : ℝ := (N : ℝ)*(N+1)/(2*Real.pi^2*Q)
+      truncatedPrimitive N Q (d*(N/d+j+1))) / ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)| ≤
+        (N+1 : ℝ)/(Real.pi^(2 : ℕ)*Q*d) := by
+  let B : ℝ := (N : ℝ)*(N+1)/(2*Real.pi^(2 : ℕ)*Q)
   have hN : 0 < N := hd.trans_le hdN
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd
@@ -170,24 +170,24 @@ private theorem channel_error {N Q d : ℕ} (hQ : 0 < Q) (hd : 0 < d) (hdN : d �
     have hm := Nat.mod_lt N hd
     have he := Nat.mod_add_div N d
     nlinarith
-  have hb := reciprocal_bound hq (C := B/(d : ℝ)^2) (by dsimp [B]; positivity)
+  have hb := reciprocal_bound hq (C := B/(d : ℝ)^(2 : ℕ)) (by dsimp [B]; positivity)
     (fun j : ℕ => (primitive N (d*(N/d+j+1))-
-      truncatedPrimitive N Q (d*(N/d+j+1))) / ((d*(N/d+j+1) : ℕ) : ℝ)^2) (by
+      truncatedPrimitive N Q (d*(N/d+j+1))) / ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) (by
       intro j
       simp only [abs_div, abs_pow,
         abs_of_nonneg (show (0 : ℝ) ≤ ((d*(N/d+j+1) : ℕ) : ℝ) from Nat.cast_nonneg _)]
-      have hi : 1/((d*(N/d+j+1) : ℕ) : ℝ)^2 ≤
-          (1/(d : ℝ)^2)/((((N/d : ℕ) : ℝ)+j)*(((N/d : ℕ) : ℝ)+j+1)) := by
+      have hi : 1/((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ) ≤
+          (1/(d : ℝ)^(2 : ℕ))/((((N/d : ℕ) : ℝ)+j)*(((N/d : ℕ) : ℝ)+j+1)) := by
         rw [div_div]
         apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
         push_cast
         have ht : (0 : ℝ) ≤ ((N/d : ℕ) : ℝ)+j := by positivity
         nlinarith [sq_pos_of_pos hdR]
-      calc _ ≤ B*(1/((d*(N/d+j+1) : ℕ) : ℝ)^2) := by
+      calc _ ≤ B*(1/((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) := by
              simpa only [mul_one_div] using
                div_le_div_of_nonneg_right (source_error hQ N (d*(N/d+j+1)))
                  (sq_nonneg (((d*(N/d+j+1) : ℕ) : ℝ)))
-           _ ≤ B*((1/(d : ℝ)^2)/((((N/d : ℕ) : ℝ)+j)*(((N/d : ℕ) : ℝ)+j+1))) :=
+           _ ≤ B*((1/(d : ℝ)^(2 : ℕ))/((((N/d : ℕ) : ℝ)+j)*(((N/d : ℕ) : ℝ)+j+1))) :=
              mul_le_mul_of_nonneg_left hi (by dsimp [B]; positivity)
            _ = _ := by simp only [div_eq_mul_inv, mul_inv_rev]; ring)
 
@@ -199,13 +199,13 @@ private theorem channel_error {N Q d : ℕ} (hQ : 0 < Q) (hd : 0 < d) (hdN : d �
   nlinarith
 
 private theorem channel_difference {N Q d : ℕ} (hQ : 0 < Q) (hd : 0 < d) (hdN : d ≤ N) :
-    |(∑' j : ℕ, primitive N (d*(N/d+j+1))/((d*(N/d+j+1) : ℕ) : ℝ)^2) -
-      ∑' j : ℕ, truncatedPrimitive N Q (d*(N/d+j+1))/((d*(N/d+j+1) : ℕ) : ℝ)^2| ≤
-        (N+1 : ℝ)/(Real.pi^2*Q*d) := by
+    |(∑' j : ℕ, primitive N (d*(N/d+j+1))/((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) -
+      ∑' j : ℕ, truncatedPrimitive N Q (d*(N/d+j+1))/((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)| ≤
+        (N+1 : ℝ)/(Real.pi^(2 : ℕ)*Q*d) := by
   have ho := (channels_summable hd hdN).1
   have he := channel_error hQ hd hdN
   have ht : Summable (fun j : ℕ => truncatedPrimitive N Q (d*(N/d+j+1)) /
-      ((d*(N/d+j+1) : ℕ) : ℝ)^2) := by
+      ((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) := by
     apply (ho.sub he.1).congr
     intro j
     ring
@@ -215,14 +215,14 @@ private theorem channel_difference {N Q d : ℕ} (hQ : 0 < Q) (hd : 0 < d) (hdN 
 /-- A finite Bernoulli frequency cutoff has a quantitative error in the complete signed flux. -/
 theorem flux_fourier_error (N Q : ℕ) :
     |reciprocalFlux N-truncatedReciprocalFlux N (Q+1)| ≤
-      (N+1 : ℝ)*(harmonic N : ℝ)/(Real.pi^2*(Q+1)) := by
+      (N+1 : ℝ)*(harmonic N : ℝ)/(Real.pi^(2 : ℕ)*(Q+1)) := by
   rw [reciprocalFlux, truncatedReciprocalFlux, ← sum_sub_distrib]
   calc _ ≤ ∑ d ∈ Icc 1 N,
          |((ArithmeticFunction.moebius d : ℤ) : ℝ) *
-          ((∑' j : ℕ, primitive N (d*(N/d+j+1))/((d*(N/d+j+1) : ℕ) : ℝ)^2) -
-           ∑' j : ℕ, truncatedPrimitive N (Q+1) (d*(N/d+j+1))/((d*(N/d+j+1) : ℕ) : ℝ)^2)| := by
+          ((∑' j : ℕ, primitive N (d*(N/d+j+1))/((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ)) -
+           ∑' j : ℕ, truncatedPrimitive N (Q+1) (d*(N/d+j+1))/((d*(N/d+j+1) : ℕ) : ℝ)^(2 : ℕ))| := by
              simpa only [mul_sub] using abs_sum_le_sum_abs _ (Icc 1 N)
-       _ ≤ ∑ d ∈ Icc 1 N, (N+1 : ℝ)/(Real.pi^2*(Q+1)*d) := by
+       _ ≤ ∑ d ∈ Icc 1 N, (N+1 : ℝ)/(Real.pi^(2 : ℕ)*(Q+1)*d) := by
          apply sum_le_sum
          intro d hd
          rw [abs_mul]
@@ -242,7 +242,7 @@ theorem flux_fourier_error (N Q : ℕ) :
 
 /-- Frequencies through N+1 leave at most logarithmic aggregate error, with every time retained. -/
 theorem flux_fourier_cutoff_error (N : ℕ) :
-    |reciprocalFlux N-truncatedReciprocalFlux N (N+1)| ≤ (harmonic N : ℝ)/Real.pi^2 := by
+    |reciprocalFlux N-truncatedReciprocalFlux N (N+1)| ≤ (harmonic N : ℝ)/Real.pi^(2 : ℕ) := by
   have h := flux_fourier_error N N
   have hN : (N : ℝ)+1 ≠ 0 := by positivity
   convert h using 1

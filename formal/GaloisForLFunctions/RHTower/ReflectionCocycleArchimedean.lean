@@ -34,7 +34,7 @@ trigamma series converge to `ψ'(z) = deriv ψ z`.  The differentiated digamma r
 `ψ'(z+N) = ψ'(z) − Σ_{n<N} (z+n)⁻²` rearranges each partial sum to `ψ'(z) − ψ'(z+N)`, and the
 far-field anchor `ψ'(z+N) → 0` sends the shift term to `0`. -/
 theorem deriv_digamma_eq_tsum_limit {z : ℂ} (hz : 0 < z.re) :
-    Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ 2)⁻¹)
+    Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (2 : ℕ))⁻¹)
       atTop (nhds (deriv Complex.digamma z)) :=
   deriv_digamma_partialSum_tendsto hz
 
@@ -49,42 +49,42 @@ theorem deriv_digamma_real_diff_ne {x y : ℝ} (hx : 0 < x) (hxy : x < y) :
   have hyre : 0 < ((y : ℂ)).re := by rw [Complex.ofReal_re]; exact hy
   have hxre : 0 < ((x : ℂ)).re := by rw [Complex.ofReal_re]; exact hx
   have hSre : ∀ (w : ℝ) (N : ℕ),
-      (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ 2)⁻¹).re
-        = ∑ n ∈ Finset.range N, ((w + n) ^ 2)⁻¹ := by
+      (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹).re
+        = ∑ n ∈ Finset.range N, ((w + n) ^ (2 : ℕ))⁻¹ := by
     intro w N
-    rw [show (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ 2)⁻¹)
-          = ((∑ n ∈ Finset.range N, ((w + n) ^ 2)⁻¹ : ℝ) : ℂ) from ?_, Complex.ofReal_re]
+    rw [show (∑ n ∈ Finset.range N, (((w : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹)
+          = ((∑ n ∈ Finset.range N, ((w + n) ^ (2 : ℕ))⁻¹ : ℝ) : ℂ) from ?_, Complex.ofReal_re]
     rw [Complex.ofReal_sum]
     apply Finset.sum_congr rfl
     intro n _; push_cast; ring
   have hlim := (deriv_digamma_eq_tsum_limit hyre).sub (deriv_digamma_eq_tsum_limit hxre)
   have hlimre : Tendsto (fun N : ℕ =>
-      ((∑ n ∈ Finset.range N, (((y : ℂ) + (n : ℂ)) ^ 2)⁻¹)
-        - (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ 2)⁻¹)).re)
+      ((∑ n ∈ Finset.range N, (((y : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹)
+        - (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹)).re)
       atTop (nhds ((deriv Complex.digamma (y : ℂ) - deriv Complex.digamma (x : ℂ)).re)) :=
     ((Complex.continuous_re.tendsto _).comp hlim)
-  set C : ℝ := (y ^ 2)⁻¹ - (x ^ 2)⁻¹ with hC
+  set C : ℝ := (y ^ (2 : ℕ))⁻¹ - (x ^ (2 : ℕ))⁻¹ with hC
   have hCneg : C < 0 := by
     rw [hC]
-    have hsq : x ^ 2 < y ^ 2 := by nlinarith
-    have hx2 : (0 : ℝ) < x ^ 2 := by positivity
-    have : (y ^ 2)⁻¹ < (x ^ 2)⁻¹ := inv_strictAnti₀ hx2 hsq
+    have hsq : x ^ (2 : ℕ) < y ^ (2 : ℕ) := by nlinarith
+    have hx2 : (0 : ℝ) < x ^ (2 : ℕ) := by positivity
+    have : (y ^ (2 : ℕ))⁻¹ < (x ^ (2 : ℕ))⁻¹ := inv_strictAnti₀ hx2 hsq
     linarith
-  have hbound : ∀ᶠ N : ℕ in atTop, ((∑ n ∈ Finset.range N, (((y : ℂ) + (n : ℂ)) ^ 2)⁻¹)
-        - (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ 2)⁻¹)).re ≤ C := by
+  have hbound : ∀ᶠ N : ℕ in atTop, ((∑ n ∈ Finset.range N, (((y : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹)
+        - (∑ n ∈ Finset.range N, (((x : ℂ) + (n : ℂ)) ^ (2 : ℕ))⁻¹)).re ≤ C := by
     filter_upwards [eventually_ge_atTop 1] with N hN
     rw [Complex.sub_re, hSre, hSre, ← Finset.sum_sub_distrib]
     obtain ⟨M, rfl⟩ : ∃ M, N = M + 1 := ⟨N - 1, by omega⟩
-    rw [Finset.sum_range_succ' (fun n => ((y + n) ^ 2)⁻¹ - ((x + n) ^ 2)⁻¹) M]
+    rw [Finset.sum_range_succ' (fun n => ((y + n) ^ (2 : ℕ))⁻¹ - ((x + n) ^ (2 : ℕ))⁻¹) M]
     have htail : ∑ n ∈ Finset.range M,
-        (((y + (n + 1)) ^ 2)⁻¹ - ((x + (n + 1)) ^ 2)⁻¹) ≤ 0 := by
+        (((y + (n + 1)) ^ (2 : ℕ))⁻¹ - ((x + (n + 1)) ^ (2 : ℕ))⁻¹) ≤ 0 := by
       apply Finset.sum_nonpos
       intro n _
       have hxn : (0 : ℝ) < x + (n + 1) := by positivity
-      have hle : (x + (n + 1)) ^ 2 ≤ (y + (n + 1)) ^ 2 := by nlinarith
-      have : ((y + (n + 1)) ^ 2)⁻¹ ≤ ((x + (n + 1)) ^ 2)⁻¹ := inv_anti₀ (by positivity) hle
+      have hle : (x + (n + 1)) ^ (2 : ℕ) ≤ (y + (n + 1)) ^ (2 : ℕ) := by nlinarith
+      have : ((y + (n + 1)) ^ (2 : ℕ))⁻¹ ≤ ((x + (n + 1)) ^ (2 : ℕ))⁻¹ := inv_anti₀ (by positivity) hle
       linarith
-    have h0 : ((y + (0 : ℕ)) ^ 2)⁻¹ - ((x + (0 : ℕ)) ^ 2)⁻¹ = C := by
+    have h0 : ((y + (0 : ℕ)) ^ (2 : ℕ))⁻¹ - ((x + (0 : ℕ)) ^ (2 : ℕ))⁻¹ = C := by
       push_cast; rw [hC]; ring
     simp only [Nat.cast_add, Nat.cast_one] at htail ⊢
     linarith

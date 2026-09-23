@@ -92,13 +92,13 @@ theorem algebraicallyIndependentSpectrum_not_fixedRationalWeightedReciprocal
           rw [Multiset.esymm, Multiset.powersetCard_self]
           simp
       _ = S.prod⁻¹ := Multiset.prod_map_inv' S
-  have hsquare : eTop ^ 2 = algebraMap ℚ F (q ^ n) := by
+  have hsquare : eTop ^ (2 : ℕ) = algebraMap ℚ F (q ^ n) := by
     have hFE' : eTop = algebraMap ℚ F q ^ n * S.prod⁻¹ := by
       change S.esymm (top.1 + 1) = _
       rw [htop]
       simpa only [hInvTop] using hFE
     calc
-      eTop ^ 2 = eTop * eTop := pow_two eTop
+      eTop ^ (2 : ℕ) = eTop * eTop := pow_two eTop
       _ = (algebraMap ℚ F q ^ n * S.prod⁻¹) * eTop := by rw [hFE']
       _ = (algebraMap ℚ F q ^ n * S.prod⁻¹) * S.prod := by rw [heProd]
       _ = algebraMap ℚ F q ^ n := by
@@ -107,7 +107,7 @@ theorem algebraicallyIndependentSpectrum_not_fixedRationalWeightedReciprocal
         · rwa [← heProd]
       _ = algebraMap ℚ F (q ^ n) := by rw [map_pow]
   apply htrans
-  refine ⟨Polynomial.X ^ 2 - Polynomial.C (q ^ n),
+  refine ⟨Polynomial.X ^ (2 : ℕ) - Polynomial.C (q ^ n),
     Polynomial.X_pow_sub_C_ne_zero (by norm_num : 0 < 2) (q ^ n), ?_⟩
   simp only [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C]
   rw [hsquare, map_pow, sub_self]

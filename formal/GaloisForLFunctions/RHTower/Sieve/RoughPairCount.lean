@@ -34,7 +34,7 @@ theorem card_roughPair_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : ℕ} 
     ((((Finset.Icc 1 ⌊Y⌋₊).filter
           (fun m => (∀ p ∈ rangePrimes P₁ h, ¬ p ∣ m)
             ∧ ∀ p ∈ rangePrimes P₁ h, ¬ p ∣ (m + d))).card : ℕ) : ℝ)
-      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2
+      ≤ Y / ((1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ)
             * ∏ p ∈ (rangePrimes P₁ h).filter (fun p => p ∣ d), (((p : ℝ) - 1) / (p : ℝ))))
         + ∑ e ∈ (rangePrimorial P₁ h).divisors,
             (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0) := by
@@ -53,10 +53,10 @@ theorem card_roughPair_le (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : ℕ} 
     have hnum : (0 : ℝ) < (p : ℝ) - 1 := by linarith
     have hden : (0 : ℝ) < (p : ℝ) := by linarith
     positivity
-  set L : ℝ := (1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ 2 * C) with hL
+  set L : ℝ := (1 / 2) * (Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ) * C) with hL
   have hL0 : (0 : ℝ) < L := by
     rw [hL]
-    have : (0 : ℝ) < Real.exp (mertensS h - mertensS P₁) ^ 2 := by positivity
+    have : (0 : ℝ) < Real.exp (mertensS h - mertensS P₁) ^ (2 : ℕ) := by positivity
     positivity
   have hSge : L ≤ SelbergSieve.selbergBoundingSum s :=
     selbergBoundingSum_ge_mertens Y hP₁ d k hz hh1 hP₁h hlev hk

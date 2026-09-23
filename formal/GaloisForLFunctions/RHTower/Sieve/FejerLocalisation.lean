@@ -34,7 +34,7 @@ theorem fejerWeightAt_zero {T : ℝ} (hT : 0 < T) : fejerWeightAt T 0 = (T : ℂ
 
 /-- Away from the trivial frequency the weight is small. -/
 theorem norm_fejerWeightAt_le {T : ℝ} (hT : 0 < T) {L : ℝ} (hL : L ≠ 0) :
-    ‖fejerWeightAt T L‖ ≤ 4 / (T * L ^ 2) :=
+    ‖fejerWeightAt T L‖ ≤ 4 / (T * L ^ (2 : ℕ)) :=
   norm_integral_fejer_symm_le_inv L hL hT
 
 /-- The frequency of the first term vanishes. -/
@@ -60,7 +60,7 @@ theorem norm_fejer_dirPoly_sub_main_le (N : ℕ) (hN : 0 < N) (a : Fin N → ℂ
     ‖(∑ n : Fin N, a n * fejerWeightAt T (Real.log (((n : ℕ) : ℝ) + 1)))
         - a ⟨0, hN⟩ * (T : ℂ)‖
       ≤ ∑ n ∈ (Finset.univ : Finset (Fin N)).erase ⟨0, hN⟩,
-          ‖a n‖ * (4 / (T * (Real.log (((n : ℕ) : ℝ) + 1)) ^ 2)) := by
+          ‖a n‖ * (4 / (T * (Real.log (((n : ℕ) : ℝ) + 1)) ^ (2 : ℕ))) := by
   classical
   have hsplit := Finset.add_sum_erase (Finset.univ : Finset (Fin N))
     (fun n : Fin N => a n * fejerWeightAt T (Real.log (((n : ℕ) : ℝ) + 1)))

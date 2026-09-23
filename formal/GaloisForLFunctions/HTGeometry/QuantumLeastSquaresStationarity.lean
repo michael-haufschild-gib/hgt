@@ -17,7 +17,7 @@ noncomputable section
 def leastSquaresLoss
     {X Y : Type*} [AddCommGroup X] [Module ℂ X]
     [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
-    (O : X →ₗ[ℂ] Y) (E : Y) (v : X) : ℝ := ‖leastSquaresResidual O E v‖ ^ 2
+    (O : X →ₗ[ℂ] Y) (E : Y) (v : X) : ℝ := ‖leastSquaresResidual O E v‖ ^ (2 : ℕ)
 
 /-- A normal-equation solution, packaged without theorem premises. -/
 structure LeastSquaresStationaryPoint
@@ -34,7 +34,7 @@ theorem leastSquaresLoss_stationary_update
     [NormedAddCommGroup Y] [InnerProductSpace ℂ Y]
     (O : X →ₗ[ℂ] Y) (E : Y) (v : LeastSquaresStationaryPoint O E) (w : X) :
     leastSquaresLoss O E (v.parameter + w) =
-      leastSquaresLoss O E v.parameter + ‖O w‖ ^ 2 := by
+      leastSquaresLoss O E v.parameter + ‖O w‖ ^ (2 : ℕ) := by
   rw [leastSquaresLoss, leastSquaresLoss, leastSquaresResidual_update,
     v.residual_orthogonal]
   simp

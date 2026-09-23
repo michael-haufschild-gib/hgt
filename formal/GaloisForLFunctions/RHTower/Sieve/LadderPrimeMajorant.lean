@@ -32,13 +32,13 @@ theorem primeStepMajorant_pos {B₀ : ℕ} {Q η ρ : ℝ} (hQ : 0 < Q) (hη : 0
 theorem primeStepMajorant_sq_ge {B₀ : ℕ} {Q η G ρ : ℝ} (hQ : 0 < Q) (hη : 0 ≤ η)
     (hG0 : 0 ≤ G) (j : ℕ) (hG : G ≤ (B₀ : ℝ) / (Q * (1 + η) ^ j)) {V : ℕ → ℝ} (hV0 : 0 ≤ V j)
     (hVj : V j ≤ ρ * (Q * (1 + η) ^ j)) :
-    V j ^ 2 * ladderStepMVT B₀ Q η G j ≤ (primeStepMajorant B₀ Q η ρ j) ^ 2 := by
+    V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j ≤ (primeStepMajorant B₀ Q η ρ j) ^ (2 : ℕ) := by
   have hbase : (0 : ℝ) < Q * (1 + η) ^ j := by positivity
   have hmvt := ladderStepMVT_le_sq (B₀ := B₀) (Q := Q) (η := η) (G := G) hQ hη j hG
   have hmaj0 : (0 : ℝ) ≤ stepMVTMajorant B₀ Q η j := (stepMVTMajorant_pos hQ hη j).le
-  have hVsq : V j ^ 2 ≤ (ρ * (Q * (1 + η) ^ j)) ^ 2 := by nlinarith [hVj, hV0]
-  have hprod : V j ^ 2 * ladderStepMVT B₀ Q η G j
-      ≤ (ρ * (Q * (1 + η) ^ j)) ^ 2 * (stepMVTMajorant B₀ Q η j) ^ 2 := by
+  have hVsq : V j ^ (2 : ℕ) ≤ (ρ * (Q * (1 + η) ^ j)) ^ (2 : ℕ) := by nlinarith [hVj, hV0]
+  have hprod : V j ^ (2 : ℕ) * ladderStepMVT B₀ Q η G j
+      ≤ (ρ * (Q * (1 + η) ^ j)) ^ (2 : ℕ) * (stepMVTMajorant B₀ Q η j) ^ (2 : ℕ) := by
     have hT0 : (0 : ℝ) ≤ ladderStepMVT B₀ Q η G j := by
       rw [ladderStepMVT]
       have h1 : (0 : ℝ) ≤ 5 * Real.pi / 2 * G

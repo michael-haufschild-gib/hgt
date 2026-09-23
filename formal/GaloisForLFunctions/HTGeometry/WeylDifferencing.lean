@@ -31,7 +31,7 @@ noncomputable def diffSum (F : ℕ → ℂ) (N h : ℕ) : ℂ :=
 
 /-- The square of the modulus of a finite sum, as a double sum. -/
 theorem normSq_sum_eq_doubleSum (N : ℕ) (F : ℕ → ℂ) :
-    (‖∑ n ∈ range N, F n‖ : ℝ)^2
+    (‖∑ n ∈ range N, F n‖ : ℝ)^(2 : ℕ)
       = (∑ n ∈ range N, ∑ m ∈ range N, F n * (starRingEnd ℂ) (F m)).re := by
   have h1 : ∑ n ∈ range N, ∑ m ∈ range N, F n * (starRingEnd ℂ) (F m)
       = (∑ n ∈ range N, F n) * (starRingEnd ℂ) (∑ n ∈ range N, F n) := by
@@ -122,12 +122,12 @@ theorem lowerTriangle_eq_conj_upper (N : ℕ) (F : ℕ → ℂ) :
 /-- **The Weyl differencing identity.**  The square of the modulus of an exponential sum is the sum
 of the squared moduli of its terms plus twice the real part of the sum of the differenced sums. -/
 theorem weyl_differencing_identity (N : ℕ) (F : ℕ → ℂ) :
-    (‖∑ n ∈ range N, F n‖ : ℝ)^2
-      = (∑ n ∈ range N, (‖F n‖ : ℝ)^2) + 2 * (∑ h ∈ Ico 1 N, diffSum F N h).re := by
+    (‖∑ n ∈ range N, F n‖ : ℝ)^(2 : ℕ)
+      = (∑ n ∈ range N, (‖F n‖ : ℝ)^(2 : ℕ)) + 2 * (∑ h ∈ Ico 1 N, diffSum F N h).re := by
   rw [normSq_sum_eq_doubleSum, doubleSum_eq_diag_add_triangles,
     lowerTriangle_eq_conj_upper, upperTriangle_eq_sum_diffSum]
   have hdiag : (∑ n ∈ range N, F n * (starRingEnd ℂ) (F n)).re
-      = ∑ n ∈ range N, (‖F n‖ : ℝ)^2 := by
+      = ∑ n ∈ range N, (‖F n‖ : ℝ)^(2 : ℕ) := by
     rw [Complex.re_sum]
     refine Finset.sum_congr rfl fun n _ => ?_
     rw [Complex.mul_conj]
@@ -139,11 +139,11 @@ theorem weyl_differencing_identity (N : ℕ) (F : ℕ → ℂ) :
 bounded by its length plus twice the total mass of the differenced sums.  This is the inequality the
 `A` process applies: a sum of length `N` is traded for `N-1` differenced sums. -/
 theorem weyl_differencing_bound (N : ℕ) (F : ℕ → ℂ) (hF : ∀ n, ‖F n‖ ≤ 1) :
-    (‖∑ n ∈ range N, F n‖ : ℝ)^2
+    (‖∑ n ∈ range N, F n‖ : ℝ)^(2 : ℕ)
       ≤ (N : ℝ) + 2 * ∑ h ∈ Ico 1 N, ‖diffSum F N h‖ := by
   rw [weyl_differencing_identity]
-  have hdiag : (∑ n ∈ range N, (‖F n‖ : ℝ)^2) ≤ (N : ℝ) := by
-    calc (∑ n ∈ range N, (‖F n‖ : ℝ)^2) ≤ ∑ _n ∈ range N, (1 : ℝ) := by
+  have hdiag : (∑ n ∈ range N, (‖F n‖ : ℝ)^(2 : ℕ)) ≤ (N : ℝ) := by
+    calc (∑ n ∈ range N, (‖F n‖ : ℝ)^(2 : ℕ)) ≤ ∑ _n ∈ range N, (1 : ℝ) := by
           refine Finset.sum_le_sum fun n _ => ?_
           have h0 : (0:ℝ) ≤ ‖F n‖ := norm_nonneg _
           nlinarith [hF n]

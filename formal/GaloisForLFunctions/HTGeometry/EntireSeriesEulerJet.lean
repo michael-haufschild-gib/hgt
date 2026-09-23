@@ -69,7 +69,7 @@ theorem polyEuler_monomial (n : ℕ) (a : ℂ) :
   | zero => simp [polyEuler]
   | succ m =>
       rw [polyEuler, Polynomial.derivative_monomial, show (m + 1 - 1) = m by omega,
-        show (X : Polynomial ℂ) = X ^ 1 by rw [pow_one],
+        show (X : Polynomial ℂ) = X ^ (1 : ℕ) by rw [pow_one],
         Polynomial.X_pow_mul_monomial 1 m (a * ((m + 1 : ℕ) : ℂ))]
       congr 1
       ring

@@ -18,15 +18,15 @@ distance and total mass.  The normalized law is a corollary.
 
 /-- Exact squared distance from a Sonin state to the closer of its two scattering rays. -/
 def soninLogFourierScatteringRayDistanceSq (ψ : SoninL2) : ℝ :=
-  4 * min (‖soninLogFourierInvariantAverage ψ‖ ^ 2)
-    (‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2)
+  4 * min (‖soninLogFourierInvariantAverage ψ‖ ^ (2 : ℕ))
+    (‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ (2 : ℕ))
 
 /-- **Exact Sonin ray-selection law.**  One of the two real phases realizes the exact projective
 ray distance to logarithmic Sonin scattering. -/
 theorem exists_sign_soninLogFourierScatteringRayDistanceSq
     (ψ : SoninL2) :
     ∃ c : ℂ, (c = 1 ∨ c = -1) ∧ ‖c‖ = 1 ∧
-      ‖soninLogFourierScattering ψ - c • ψ‖ ^ 2 =
+      ‖soninLogFourierScattering ψ - c • ψ‖ ^ (2 : ℕ) =
         soninLogFourierScatteringRayDistanceSq ψ := by
   let P : SoninL2 →L[ℂ] SoninL2 := soninLogFourierInvariantAverage
   let a : SoninL2 := P ψ
@@ -43,25 +43,25 @@ theorem exists_sign_soninLogFourierScatteringRayDistanceSq
     rw [hPapply]
     norm_num
     module
-  by_cases hab : ‖a‖ ^ 2 ≤ ‖b‖ ^ 2
+  by_cases hab : ‖a‖ ^ (2 : ℕ) ≤ ‖b‖ ^ (2 : ℕ)
   · refine ⟨-1, Or.inr rfl, by norm_num, ?_⟩
     have hdist : soninLogFourierScattering ψ - (-1 : ℂ) • ψ =
         (2 : ℂ) • a := by
       rw [hSψ, hψ]
       module
     rw [hdist, norm_smul]
-    change (‖(2 : ℂ)‖ * ‖a‖) ^ 2 = 4 * min (‖a‖ ^ 2) (‖b‖ ^ 2)
+    change (‖(2 : ℂ)‖ * ‖a‖) ^ (2 : ℕ) = 4 * min (‖a‖ ^ (2 : ℕ)) (‖b‖ ^ (2 : ℕ))
     rw [min_eq_left hab]
     norm_num
     ring
-  · have hba : ‖b‖ ^ 2 ≤ ‖a‖ ^ 2 := le_of_not_ge hab
+  · have hba : ‖b‖ ^ (2 : ℕ) ≤ ‖a‖ ^ (2 : ℕ) := le_of_not_ge hab
     refine ⟨1, Or.inl rfl, norm_one, ?_⟩
     have hdist : soninLogFourierScattering ψ - (1 : ℂ) • ψ =
         (-2 : ℂ) • b := by
       rw [hSψ, hψ]
       module
     rw [hdist, norm_smul]
-    change (‖(-2 : ℂ)‖ * ‖b‖) ^ 2 = 4 * min (‖a‖ ^ 2) (‖b‖ ^ 2)
+    change (‖(-2 : ℂ)‖ * ‖b‖) ^ (2 : ℕ) = 4 * min (‖a‖ ^ (2 : ℕ)) (‖b‖ ^ (2 : ℕ))
     rw [min_eq_right hba]
     norm_num
     ring
@@ -73,13 +73,13 @@ theorem soninLogFourierScattering_projectiveAsymmetry_eq_rayDistanceSq_mul_massC
     HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ) ψ
         (soninLogFourierScattering ψ) =
       soninLogFourierScatteringRayDistanceSq ψ *
-        (‖ψ‖ ^ 2 - soninLogFourierScatteringRayDistanceSq ψ / 4) := by
+        (‖ψ‖ ^ (2 : ℕ) - soninLogFourierScatteringRayDistanceSq ψ / 4) := by
   have hsum := norm_soninLogFourierInvariantAverage_sq_add_complement_sq ψ
   rw [soninLogFourierScattering_projectiveAsymmetry_eq_four_mul_sectorWeights
     ψ]
   unfold soninLogFourierScatteringRayDistanceSq
-  by_cases hab : ‖soninLogFourierInvariantAverage ψ‖ ^ 2 ≤
-      ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ 2
+  by_cases hab : ‖soninLogFourierInvariantAverage ψ‖ ^ (2 : ℕ) ≤
+      ‖(1 - soninLogFourierInvariantAverage) ψ‖ ^ (2 : ℕ)
   · rw [min_eq_left hab]
     nlinarith
   · rw [min_eq_right (le_of_not_ge hab)]

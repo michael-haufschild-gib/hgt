@@ -130,17 +130,17 @@ theorem veroneseIdeal_physicalArcContact (τ : ι → ℂ) (hτ : ∀ j, τ j �
 /-! ## Least augmentation degree does not determine contact -/
 
 /-- An explicit operator with a nonzero linear part whose arc pullback is a nonzero multiple of
-`lambda^2`: the linear part cancels along the arc, so contact exceeds the least augmentation
+`lambda^(2 : ℕ)`: the linear part cancels along the arc, so contact exceeds the least augmentation
 degree. -/
 def positiveTangencyWitness : MvPolynomial (Fin 2) ℂ :=
-  MvPolynomial.X 0 - MvPolynomial.X 1 + MvPolynomial.X 0 ^ 2
+  MvPolynomial.X 0 - MvPolynomial.X 1 + MvPolynomial.X 0 ^ (2 : ℕ)
 
 /-- The comparison operator, whose linear part survives. -/
 def zeroTangencyWitness : MvPolynomial (Fin 2) ℂ := MvPolynomial.X 0
 
 theorem physicalArcPullback_positiveTangencyWitness :
     physicalArcPullback (fun _ : Fin 2 => (1 : ℂ)) positiveTangencyWitness =
-      Polynomial.X ^ 2 := by
+      Polynomial.X ^ (2 : ℕ) := by
   rw [positiveTangencyWitness, map_add, map_sub, map_pow, physicalArcPullback_X,
     physicalArcPullback_X]
   simp
@@ -154,7 +154,7 @@ theorem coeff_positiveTangencyWitness :
     MvPolynomial.coeff (Finsupp.single 0 1) positiveTangencyWitness = 1 := by
   classical
   have hsq : MvPolynomial.coeff (Finsupp.single 0 1)
-      ((MvPolynomial.X 0 : MvPolynomial (Fin 2) ℂ) ^ 2) = 0 := by
+      ((MvPolynomial.X 0 : MvPolynomial (Fin 2) ℂ) ^ (2 : ℕ)) = 0 := by
     have hne : (Finsupp.single (0 : Fin 2) 2) ≠ (Finsupp.single (0 : Fin 2) 1) := by
       intro hcontra
       have := congrArg (fun f : Fin 2 →₀ ℕ => f 0) hcontra
@@ -176,9 +176,9 @@ height alone does not determine physical obstruction multiplicity. -/
 theorem physicalContact_not_determined_by_leastDegree :
     MvPolynomial.coeff (Finsupp.single 0 1) zeroTangencyWitness ≠ 0 ∧
       MvPolynomial.coeff (Finsupp.single 0 1) positiveTangencyWitness ≠ 0 ∧
-      ¬ (Polynomial.X : Polynomial ℂ) ^ 2 ∣
+      ¬ (Polynomial.X : Polynomial ℂ) ^ (2 : ℕ) ∣
         physicalArcPullback (fun _ : Fin 2 => (1 : ℂ)) zeroTangencyWitness ∧
-      (Polynomial.X : Polynomial ℂ) ^ 2 ∣
+      (Polynomial.X : Polynomial ℂ) ^ (2 : ℕ) ∣
         physicalArcPullback (fun _ : Fin 2 => (1 : ℂ)) positiveTangencyWitness ∧
       physicalArcPullback (fun _ : Fin 2 => (1 : ℂ)) positiveTangencyWitness ≠ 0 := by
   refine ⟨by rw [coeff_zeroTangencyWitness]; exact one_ne_zero,

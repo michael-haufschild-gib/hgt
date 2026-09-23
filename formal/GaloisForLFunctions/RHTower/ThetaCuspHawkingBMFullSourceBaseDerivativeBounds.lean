@@ -41,12 +41,14 @@ private theorem tail_horizontal_eq (u : ℂ) (z : Fin 2 → ℝ) (hz : 0 < z 1) 
       Nat.cast_zero, zero_add]
   have h0 := (value_hasFDerivAt u u (1 / 2) 0 false z hz).differentiableAt
   have h1 := (value_hasFDerivAt u u (1 / 2) 0 true z hz).differentiableAt
-  unfold coordDeriv
-  rw [he.fderiv_eq, fderiv_const_mul (h0.add h1), fderiv_fun_add h0 h1]
-  simp only [add_apply, smul_apply, smul_eq_mul]
-  rw [value_horizontal_eq u u (1 / 2) 0 false z hz,
+  have hcd : coordDeriv 0 (tail u) z =
+      2 * (coordDeriv 0 (value u u (1 / 2) 0 false) z +
+        coordDeriv 0 (value u u (1 / 2) 0 true) z) := by
+    unfold coordDeriv
+    rw [he.fderiv_eq, fderiv_const_mul (h0.fun_add h1), fderiv_fun_add h0 h1]
+    simp only [add_apply, smul_apply, smul_eq_mul]
+  rw [hcd, value_horizontal_eq u u (1 / 2) 0 false z hz,
     value_horizontal_eq u u (1 / 2) 0 true z hz]
-  ring
 
 /-- The complete signed Xi tail has a uniform weighted horizontal derivative
 on every positive-height half-strip. -/
@@ -76,7 +78,7 @@ theorem weighted_tail_horizontal_bounded (u w : ℂ) (l : ℝ) (hl : 0 < l) :
           ‖(z 1 : ℂ)^w * value u u (1 / 2) 1 false z‖ +
         ‖horizontalRate true‖ *
           ‖(z 1 : ℂ)^w * value u u (1 / 2) 1 true z‖ := by
-      rw [norm_mul, norm_mul]
+      simp only [norm_mul]
     _ ≤ _ := add_le_add
       (mul_le_mul_of_nonneg_left (hbA z hz) (norm_nonneg _))
       (mul_le_mul_of_nonneg_left (hbB z hz) (norm_nonneg _))

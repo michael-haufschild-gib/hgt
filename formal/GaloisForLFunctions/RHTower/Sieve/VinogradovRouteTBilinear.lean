@@ -38,9 +38,9 @@ theorem norm_vinogradovRouteTBilinearSum_pow_le_rationalProduct
     (a q : Fin (vinogradovRouteTOrder s) → ℕ)
     (hq : ∀ j, 0 < q j) (hcop : ∀ j, Nat.Coprime (a j) (q j))
     (happrox : ∀ j,
-      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ 2) :
+      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ (2 : ℕ)) :
     ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^
-        (4 * vinogradovRouteTMoment s ^ 2) ≤
+        (4 * vinogradovRouteTMoment s ^ (2 : ℕ)) ≤
       (((X : ℝ) ^ (2 * vinogradovRouteTMoment s - 1)) ^
           (2 * vinogradovRouteTMoment s) *
         ((Y : ℝ) ^ (2 * vinogradovRouteTMoment s)) ^

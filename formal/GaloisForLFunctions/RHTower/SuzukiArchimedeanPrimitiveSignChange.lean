@@ -9,7 +9,7 @@ For `0 < ω < 3/2` Suzuki's compact kernel has the endpoint expansions
 `g_ω(y) ∼ -B_ω y^{ω-1}`     as `y → 0⁺`,  `B_ω = 4ω π^{ω-1/2} Γ(3/2-ω) > 0`.
 
 Integrating the weighted kernel `y^{-1/2} g_ω(y)` transfers these to the once-integrated kernel
-`g_ω^{⟨1⟩}(x) = x^{-1/2} ∫_x^1 y^{-1/2} g_ω(y) dy`.  In the RH-relevant range `0 < ω < 1/2` the
+`g_ω^{⟨1⟩}(x) = x^{-1/2} ∫_x^(1 : ℕ) y^{-1/2} g_ω(y) dy`.  In the RH-relevant range `0 < ω < 1/2` the
 first exponent lies below `-1`, so the primitive diverges at the origin with the opposite sign:
 
 `g_ω^{⟨1⟩}(x) ∼ -B_ω/(1/2-ω) · x^{ω-1}`  as `x → 0⁺`,

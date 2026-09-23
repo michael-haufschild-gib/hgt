@@ -241,7 +241,7 @@ def endomorphismCommutatorAlternatingMap
 /-- The internal commutator principal symbol on the second exterior law space. -/
 def endomorphismCommutatorMap
     (symbol : V →ₗ[K] Module.End K M) :
-    (⋀[K]^2 V) →ₗ[K] Module.End K M :=
+    (⋀[K]^(2 : ℕ) V) →ₗ[K] Module.End K M :=
   exteriorPower.alternatingMapLinearEquiv
     (endomorphismCommutatorAlternatingMap symbol)
 

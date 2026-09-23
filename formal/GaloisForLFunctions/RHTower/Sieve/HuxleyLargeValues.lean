@@ -12,7 +12,7 @@ is bounded by
 `N + (12*pi*N/delta) H_K + K*B`,
 
 where `K` is the number of points.  Halasz--Montgomery then absorbs the last term whenever
-`G*B <= V^2/2`, leaving the characteristic Huxley count `K V^2 <= 2 G N (1+O(H_K))`.
+`G*B <= V^(2 : ℕ)/2`, leaving the characteristic Huxley count `K V^(2 : ℕ) <= 2 G N (1+O(H_K))`.
 
 No moment estimate or analytic hypothesis is assumed: both phase regimes are the unconditional
 theorems formalised in the preceding files.
@@ -118,7 +118,7 @@ theorem sum_norm_inner_dyadicDirRow_le_huxley {N K : ℕ} (hN : 1 ≤ N)
 theorem huxley_local_large_values {N : ℕ} (hN : 1 ≤ N)
     (a : EuclideanSpace ℂ (Fin N)) {lam : ℕ → ℝ}
     {delta U T B V G : ℝ} (hdelta : 0 < delta) (hU : 0 < U) (hV : 0 < V)
-    (hmass : ‖a‖ ^ 2 ≤ G)
+    (hmass : ‖a‖ ^ (2 : ℕ) ≤ G)
     (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N T ≤ 1)
@@ -128,8 +128,8 @@ theorem huxley_local_large_values {N : ℕ} (hN : 1 ≤ N)
       |lam s - lam r| ≤ T)
     (hbig : ∀ r ∈ Finset.range (R + 1),
       V ≤ ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖)
-    (habsorb : G * B ≤ V ^ 2 / 2) :
-    ((R : ℝ) + 1) * V ^ 2
+    (habsorb : G * B ≤ V ^ (2 : ℕ) / 2) :
+    ((R : ℝ) + 1) * V ^ (2 : ℕ)
       ≤ 2 * G * ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta)
           * ∑ i ∈ Finset.range (R + 1), 1 / ((i : ℝ) + 1)) := by
   let Delta : ℝ := (N : ℝ) + (12 * Real.pi * (N : ℝ) / delta)
@@ -149,17 +149,17 @@ theorem huxley_local_large_values {N : ℕ} (hN : 1 ≤ N)
   have hbessel := sum_norm_inner_sq_le_of_schur (Finset.range (R + 1))
     (fun r => dyadicDirRow N (lam r)) hDelta0 hrow a
   have hupper : ∑ r ∈ Finset.range (R + 1),
-        ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ 2 ≤ Delta * G :=
+        ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ (2 : ℕ) ≤ Delta * G :=
     hbessel.trans (mul_le_mul_of_nonneg_left hmass hDelta0)
-  have hlower : ((R : ℝ) + 1) * V ^ 2
-      ≤ ∑ r ∈ Finset.range (R + 1), ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ 2 := by
+  have hlower : ((R : ℝ) + 1) * V ^ (2 : ℕ)
+      ≤ ∑ r ∈ Finset.range (R + 1), ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ (2 : ℕ) := by
     have hterm : ∀ r ∈ Finset.range (R + 1),
-        V ^ 2 ≤ ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ 2 := by
+        V ^ (2 : ℕ) ≤ ‖⟪dyadicDirRow N (lam r), a⟫_ℂ‖ ^ (2 : ℕ) := by
       intro r hr
       exact pow_le_pow_left₀ hV.le (hbig r hr) 2
     calc
-      ((R : ℝ) + 1) * V ^ 2
-          = ∑ r ∈ Finset.range (R + 1), V ^ 2 := by
+      ((R : ℝ) + 1) * V ^ (2 : ℕ)
+          = ∑ r ∈ Finset.range (R + 1), V ^ (2 : ℕ) := by
               rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
               push_cast
               ring
@@ -173,14 +173,14 @@ theorem huxley_local_large_values {N : ℕ} (hN : 1 ≤ N)
 /-- **Multi-block Huxley theorem.**  A large value of a sum of finitely many dyadic blocks is
 controlled without choosing a block point-by-point.  Cauchy--Schwarz is applied before the
 Halasz--Montgomery bounds, so the same frequency set is retained and the only absorption condition
-is the aggregate `card * sum (G_q B_q) <= V^2/2`.  This is the form needed after raising a short
+is the aggregate `card * sum (G_q B_q) <= V^(2 : ℕ)/2`.  This is the form needed after raising a short
 Maynard factor: its fixed-width multiplicative support is split into finitely many dyadic blocks. -/
 theorem huxley_multiblock_large_values {ι : Type*} [Fintype ι]
     (N : ι → ℕ) (hN : ∀ q, 1 ≤ N q)
     (a : ∀ q, EuclideanSpace ℂ (Fin (N q)))
     (G U B : ι → ℝ) {lam : ℕ → ℝ} {delta T V : ℝ}
     (hdelta : 0 < delta) (hV : 0 < V)
-    (hmass : ∀ q, ‖a q‖ ^ 2 ≤ G q)
+    (hmass : ∀ q, ‖a q‖ ^ (2 : ℕ) ≤ G q)
     (hU : ∀ q, 0 < U q)
     (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
     (hnear : ∀ q, 3 * U q ≤ 4 * Real.pi * (N q : ℝ))
@@ -192,8 +192,8 @@ theorem huxley_multiblock_large_values {ι : Type*} [Fintype ι]
       |lam s - lam r| ≤ T)
     (hbig : ∀ r ∈ Finset.range (R + 1),
       V ≤ ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖)
-    (habsorb : (Fintype.card ι : ℝ) * ∑ q : ι, G q * B q ≤ V ^ 2 / 2) :
-    ((R : ℝ) + 1) * V ^ 2
+    (habsorb : (Fintype.card ι : ℝ) * ∑ q : ι, G q * B q ≤ V ^ (2 : ℕ) / 2) :
+    ((R : ℝ) + 1) * V ^ (2 : ℕ)
       ≤ 2 * (Fintype.card ι : ℝ) * ∑ q : ι,
           G q * ((N q : ℝ) + (12 * Real.pi * (N q : ℝ) / delta)
             * ∑ i ∈ Finset.range (R + 1), 1 / ((i : ℝ) + 1)) := by
@@ -207,7 +207,7 @@ theorem huxley_multiblock_large_values {ι : Type*} [Fintype ι]
     dsimp [Delta, base]
     positivity
   have henergy : ∀ q, ∑ r ∈ Finset.range (R + 1),
-      ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 ≤ Delta q * G q := by
+      ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) ≤ Delta q * G q := by
     intro q
     have hrow : ∀ r ∈ Finset.range (R + 1),
         ∑ s ∈ Finset.range (R + 1),
@@ -221,44 +221,44 @@ theorem huxley_multiblock_large_values {ι : Type*} [Fintype ι]
       (fun r => dyadicDirRow (N q) (lam r)) (hDelta0 q) hrow (a q)
     exact hbessel.trans (mul_le_mul_of_nonneg_left (hmass q) (hDelta0 q))
   have hpoint : ∀ r ∈ Finset.range (R + 1),
-      V ^ 2 ≤ (Fintype.card ι : ℝ)
-        * ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+      V ^ (2 : ℕ) ≤ (Fintype.card ι : ℝ)
+        * ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) := by
     intro r hr
     have hsq := pow_le_pow_left₀ hV.le (hbig r hr) 2
     exact hsq.trans (sq_sum_le_card_mul_sum_sq
       (s := (Finset.univ : Finset ι))
       (f := fun q => ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖))
-  have htotal : ((R : ℝ) + 1) * V ^ 2
+  have htotal : ((R : ℝ) + 1) * V ^ (2 : ℕ)
       ≤ (Fintype.card ι : ℝ) * ∑ q : ι, Delta q * G q := by
     calc
-      ((R : ℝ) + 1) * V ^ 2
-          = ∑ r ∈ Finset.range (R + 1), V ^ 2 := by
+      ((R : ℝ) + 1) * V ^ (2 : ℕ)
+          = ∑ r ∈ Finset.range (R + 1), V ^ (2 : ℕ) := by
               rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
               push_cast
               ring
       _ ≤ ∑ r ∈ Finset.range (R + 1),
           (Fintype.card ι : ℝ)
-            * ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 :=
+            * ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) :=
           Finset.sum_le_sum hpoint
       _ = (Fintype.card ι : ℝ) * ∑ q : ι,
           ∑ r ∈ Finset.range (R + 1),
-            ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+            ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) := by
           calc
             ∑ r ∈ Finset.range (R + 1),
                 (Fintype.card ι : ℝ)
-                  * ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2
+                  * ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ)
                 = ∑ r ∈ Finset.range (R + 1), ∑ q : ι,
                     (Fintype.card ι : ℝ)
-                      * ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+                      * ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) := by
                     refine Finset.sum_congr rfl fun r _ => ?_
                     rw [Finset.mul_sum]
             _ = ∑ q : ι, ∑ r ∈ Finset.range (R + 1),
                     (Fintype.card ι : ℝ)
-                      * ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+                      * ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) := by
                     rw [Finset.sum_comm]
             _ = (Fintype.card ι : ℝ) * ∑ q : ι,
                   ∑ r ∈ Finset.range (R + 1),
-                    ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+                    ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ (2 : ℕ) := by
                     rw [Finset.mul_sum]
                     refine Finset.sum_congr rfl fun q _ => ?_
                     rw [Finset.mul_sum]

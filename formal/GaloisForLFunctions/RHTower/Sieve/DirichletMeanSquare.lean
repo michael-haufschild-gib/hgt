@@ -28,7 +28,7 @@ theorem intervalIntegrable_dirPhase (u : ℝ) (A B : ℝ) :
 
 /-- **The mean square as a double sum of phase integrals.** -/
 theorem integral_normSq_dirPoly_eq (N : ℕ) (a : Fin N → ℂ) (T : ℝ) :
-    (∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ))
+    (∫ t in (0 : ℝ)..T, ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ))
       = ∑ m : Fin N, ∑ n : Fin N, (a m * (starRingEnd ℂ) (a n))
           * (∫ t in (0 : ℝ)..T, Complex.exp (((t * (Real.log (((m : ℕ) : ℝ) + 1)
               - Real.log (((n : ℕ) : ℝ) + 1)) : ℝ) : ℂ) * Complex.I)) := by

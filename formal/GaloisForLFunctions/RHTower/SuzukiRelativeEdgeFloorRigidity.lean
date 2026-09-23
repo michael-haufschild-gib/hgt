@@ -26,7 +26,7 @@ namespace RHTower
 
 /-- The odd variational floor bounds the ground defect below by the floor gap. -/
 theorem groundDefect_ge_floorGap {V : Type*} [NormedAddCommGroup V]
-    {qo : V → ℝ} {αe αo : ℝ} (hfloor : ∀ f : V, αo * ‖f‖ ^ 2 ≤ qo f)
+    {qo : V → ℝ} {αe αo : ℝ} (hfloor : ∀ f : V, αo * ‖f‖ ^ (2 : ℕ) ≤ qo f)
     {φ : V} (hφ : ‖φ‖ = 1) : αo - αe ≤ qo φ - αe := by
   have h := hfloor φ
   rw [hφ] at h

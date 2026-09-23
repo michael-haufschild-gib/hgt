@@ -51,7 +51,7 @@ theorem topShift_logFactor {g : Polynomial ℂ} (hg : g ≠ 0) (n : ℕ) :
     E.toPairFam.topShift (n + 1) (logFactor g (n + 1))
       = E.toPairFam.jet n
           * (E.lead n * fact (headDefect g) (n + 1) + E.cnst n * fact (headWr g) (n + 1))
-          / (fact g (n + 1)) ^ 2 := by
+          / (fact g (n + 1)) ^ (2 : ℕ) := by
   have hne : fact g (n + 1) ≠ 0 := fact_ne_zero hg (n + 1)
   have hmem : fact g (n + 1) ∈ coordField (n + 1) := fact_mem_coordField (le_refl (n + 1)) g
   have hlf : logFactor g (n + 1)
@@ -93,7 +93,7 @@ theorem topDegLE_topShift_logFactor (g : Polynomial ℂ) (n : ℕ) :
       have := natDegree_headWr_le hdeg
       omega
     have hGinv : TopDegLE (n + 1) (-(2 * (g.natDegree : ℤ)))
-        ((fact g (n + 1) ^ 2)⁻¹) := by
+        ((fact g (n + 1) ^ (2 : ℕ))⁻¹) := by
       have h1 := topDegLE_inv_fact (n + 1) hg
       have h2 := TopDegLE.mul h1 h1
       rw [← mul_inv, ← pow_two] at h2

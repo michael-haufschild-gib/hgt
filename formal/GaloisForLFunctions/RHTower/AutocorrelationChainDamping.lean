@@ -58,19 +58,19 @@ theorem sin_sub_add_sin_add (a b : ℝ) :
 
 /-- Weighted AM–GM, the step that the sine weights make telescope. -/
 theorem two_mul_le_weighted {t x y : ℝ} (ht : 0 < t) :
-    2 * x * y ≤ t * x ^ 2 + t⁻¹ * y ^ 2 := by
-  have hsq : 0 ≤ (Real.sqrt t * x - (Real.sqrt t)⁻¹ * y) ^ 2 := sq_nonneg _
-  have hst : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht.le
+    2 * x * y ≤ t * x ^ (2 : ℕ) + t⁻¹ * y ^ (2 : ℕ) := by
+  have hsq : 0 ≤ (Real.sqrt t * x - (Real.sqrt t)⁻¹ * y) ^ (2 : ℕ) := sq_nonneg _
+  have hst : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht.le
   have hstpos : 0 < Real.sqrt t := Real.sqrt_pos.mpr ht
-  have hinv : ((Real.sqrt t)⁻¹) ^ 2 = t⁻¹ := by
+  have hinv : ((Real.sqrt t)⁻¹) ^ (2 : ℕ) = t⁻¹ := by
     rw [inv_pow, hst]
   have hcross : Real.sqrt t * (Real.sqrt t)⁻¹ = 1 := mul_inv_cancel₀ (ne_of_gt hstpos)
-  have hexp : (Real.sqrt t * x - (Real.sqrt t)⁻¹ * y) ^ 2
-      = t * x ^ 2 - 2 * x * y + t⁻¹ * y ^ 2 := by
-    have hstep : (Real.sqrt t * x - (Real.sqrt t)⁻¹ * y) ^ 2
-        = (Real.sqrt t) ^ 2 * x ^ 2
+  have hexp : (Real.sqrt t * x - (Real.sqrt t)⁻¹ * y) ^ (2 : ℕ)
+      = t * x ^ (2 : ℕ) - 2 * x * y + t⁻¹ * y ^ (2 : ℕ) := by
+    have hstep : (Real.sqrt t * x - (Real.sqrt t)⁻¹ * y) ^ (2 : ℕ)
+        = (Real.sqrt t) ^ (2 : ℕ) * x ^ (2 : ℕ)
           - 2 * (Real.sqrt t * (Real.sqrt t)⁻¹) * (x * y)
-          + ((Real.sqrt t)⁻¹) ^ 2 * y ^ 2 := by ring
+          + ((Real.sqrt t)⁻¹) ^ (2 : ℕ) * y ^ (2 : ℕ) := by ring
     rw [hstep, hst, hinv, hcross]; ring
   rw [hexp] at hsq
   linarith
@@ -78,7 +78,7 @@ theorem two_mul_le_weighted {t x y : ℝ} (ht : 0 < t) :
 /-- **Chain length two: the sharp damping factor is `cos(π/3) = 1/2`.**  This is the case carrying
 the dominant prime mass, `log n ∈ (L/2, L]`. -/
 theorem chain_two_bound (v₀ v₁ : ℝ) :
-    |v₀ * v₁| ≤ (1 / 2 : ℝ) * (v₀ ^ 2 + v₁ ^ 2) := by
+    |v₀ * v₁| ≤ (1 / 2 : ℝ) * (v₀ ^ (2 : ℕ) + v₁ ^ (2 : ℕ)) := by
   rcases abs_cases (v₀ * v₁) with ⟨h, _⟩ | ⟨h, _⟩
   · rw [h]; nlinarith [sq_nonneg (v₀ - v₁)]
   · rw [h]; nlinarith [sq_nonneg (v₀ + v₁)]
@@ -91,8 +91,8 @@ theorem cos_pi_div_three_eq : Real.cos (Real.pi / 3) = 1 / 2 := by
 /-- **Chain length three: the sharp damping factor is `cos(π/4) = √2/2`.**  The extremal vector is
 `(sin θ, sin 2θ, sin 3θ)` with `θ = π/4`. -/
 theorem chain_three_bound (v₀ v₁ v₂ : ℝ) :
-    v₀ * v₁ + v₁ * v₂ ≤ (Real.sqrt 2 / 2) * (v₀ ^ 2 + v₁ ^ 2 + v₂ ^ 2) := by
-  have h2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+    v₀ * v₁ + v₁ * v₂ ≤ (Real.sqrt 2 / 2) * (v₀ ^ (2 : ℕ) + v₁ ^ (2 : ℕ) + v₂ ^ (2 : ℕ)) := by
+  have h2 : Real.sqrt 2 ^ (2 : ℕ) = 2 := Real.sq_sqrt (by norm_num)
   have hpos : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
   nlinarith [sq_nonneg (v₀ - v₂), sq_nonneg (v₀ + v₂ - Real.sqrt 2 * v₁), h2, hpos]
 

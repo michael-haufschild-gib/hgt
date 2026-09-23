@@ -64,12 +64,12 @@ theorem gammaPunctureMobiusContactNormalizedSheet_capacity_congruent
     {z v : ℂ}
     (hz : gammaPunctureCoordinate z ∈ Metric.closedBall (0 : ℂ) (1 / 4))
     (hshell : ‖gammaMovingBaseShell n‖ < (1 / 2 : ℝ)) :
-    (16 / 81 : ℝ) * ‖v‖ ^ 2 ≤
+    (16 / 81 : ℝ) * ‖v‖ ^ (2 : ℕ) ≤
         ‖(1 - gammaMovingBaseShell n *
-          gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ 2 * v‖ ^ 2 ∧
+          gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ∧
       ‖(1 - gammaMovingBaseShell n *
-          gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ 2 * v‖ ^ 2 ≤
-        16 * ‖v‖ ^ 2 := by
+          gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ (2 : ℕ) * v‖ ^ (2 : ℕ) ≤
+        16 * ‖v‖ ^ (2 : ℕ) := by
   rw [gammaPunctureMobiusContactNormalizedSheet_eq]
   exact gammaPunctureNormalizedSheet_capacity_congruent hn hz hshell
 
@@ -80,7 +80,7 @@ theorem tendsto_gammaPunctureMobiusContactNormalizedSheet_tangentFactor_one
     Tendsto
       (fun n : ℕ =>
         (1 - gammaMovingBaseShell n *
-          gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ 2)
+          gammaPunctureMobiusContactNormalizedSheet n z)⁻¹ ^ (2 : ℕ))
       atTop (nhds 1) := by
   simpa only [gammaPunctureMobiusContactNormalizedSheet_eq] using
     tendsto_gammaPunctureNormalizedSheet_tangentFactor_one hz

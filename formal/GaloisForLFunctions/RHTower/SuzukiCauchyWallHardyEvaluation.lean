@@ -99,7 +99,7 @@ lower Hardy value of the literal completed Suzuki wall symbol. -/
 theorem riemannHypothesis_iff_suzukiCompletedCauchyWall_neg_I_sq_le_four :
     RiemannHypothesis ↔
       ∀ N : ℕ,
-        ‖suzukiUnitRieszCompletedCauchyWallSymbolComplex (N + 2) (-I)‖ ^ 2 ≤ 4 := by
+        ‖suzukiUnitRieszCompletedCauchyWallSymbolComplex (N + 2) (-I)‖ ^ (2 : ℕ) ≤ 4 := by
   constructor
   · intro hRH N
     rw [suzukiUnitRieszCompletedCauchyWallSymbolComplex_neg_I_eq_outgoingCharge]
@@ -118,7 +118,7 @@ theorem riemannHypothesis_iff_suzukiCompletedCauchyWall_neg_I_sq_le_four :
     simp only [Complex.norm_real, Real.norm_eq_abs] at h
     rw [abs_div] at h
     norm_num at h
-    have hres : criticalMellinChebyshevResolventSource (Real.log N) ^ 2 ≤ 16 := by
+    have hres : criticalMellinChebyshevResolventSource (Real.log N) ^ (2 : ℕ) ≤ 16 := by
       nlinarith [abs_nonneg (criticalMellinChebyshevResolventSource (Real.log N)),
         sq_abs (criticalMellinChebyshevResolventSource (Real.log N))]
     exact ((unitRieszCoherentCompletedOutgoingProfile_le_pole_iff hN).2 hres) u hu

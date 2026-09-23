@@ -58,7 +58,7 @@ def XiWeilPairSummable (F G : ℂ → ℂ) : Prop :=
 
 /-- Square-summability of a test function on the multiplicity-exact centered Xi divisor. -/
 def XiWeilSquareSummable (F : ℂ → ℂ) : Prop :=
-  Summable (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ 2)
+  Summable (fun q : XiZeroCopy => ‖F (xiSpectralPoint q)‖ ^ (2 : ℕ))
 
 /-- The multiplicity-exact zero-side Weil polarization. -/
 def xiWeilPolarization (F G : ℂ → ℂ) : ℂ :=
@@ -148,7 +148,7 @@ theorem xiWeilPolarization_add_XiC_right (F G : ℂ → ℂ) (c : ℂ) :
 theorem xiWeilPolarization_diagonal_of_riemannHypothesis
     (hRH : RiemannHypothesis) (F : ℂ → ℂ) :
     xiWeilPolarization F F =
-      ∑' q : XiZeroCopy, ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ) := by
+      ∑' q : XiZeroCopy, ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   unfold xiWeilPolarization
   apply tsum_congr
   intro q
@@ -165,7 +165,7 @@ theorem xiWeilPolarization_diagonal_nonneg_of_riemannHypothesis
     0 ≤ (xiWeilPolarization F F).re := by
   rw [xiWeilPolarization_diagonal_of_riemannHypothesis hRH]
   have hsumC : Summable (fun q : XiZeroCopy =>
-      ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ)) :=
+      ((‖F (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ)) :=
     by
       simpa only [Function.comp_apply] using!
         hsum.map Complex.ofRealCLM Complex.ofRealCLM.continuous
@@ -330,14 +330,14 @@ derivative of `XiC`, exactly as in the polarized Weil law. -/
 theorem xiWeilPolarization_thetaEigen_diagonal_of_riemannHypothesis
     (hRH : RiemannHypothesis) {alpha : ℂ} (halpha : XiC alpha = 0) :
     xiWeilPolarization (xiThetaEigenFourier alpha) (xiThetaEigenFourier alpha) =
-      (((xiSpectralMultiplicity alpha : ℝ) * ‖deriv XiC alpha‖ ^ 2 : ℝ) : ℂ) := by
+      (((xiSpectralMultiplicity alpha : ℝ) * ‖deriv XiC alpha‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [xiWeilPolarization_diagonal_of_riemannHypothesis hRH]
   let S : Set XiZeroCopy := {q | xiSpectralPoint q = alpha}
   let T : Finset XiZeroCopy := (finite_xiSpectralPoint_fiber alpha).toFinset
-  let c : ℂ := ((‖deriv XiC alpha‖ ^ 2 : ℝ) : ℂ)
+  let c : ℂ := ((‖deriv XiC alpha‖ ^ (2 : ℕ) : ℝ) : ℂ)
   let g : XiZeroCopy → ℂ := fun q => if q ∈ S then c else 0
   have heq (q : XiZeroCopy) :
-      ((‖xiThetaEigenFourier alpha (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ) = g q := by
+      ((‖xiThetaEigenFourier alpha (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ) = g q := by
     by_cases hq : xiSpectralPoint q = alpha
     · rw [xiThetaEigenFourier_spectralPoint halpha, if_pos hq]
       simp only [g, S, Set.mem_setOf_eq, hq, if_pos, norm_mul, norm_I, one_mul, c]
@@ -346,7 +346,7 @@ theorem xiWeilPolarization_thetaEigen_diagonal_of_riemannHypothesis
         Complex.ofReal_zero, g, S, Set.mem_setOf_eq, hq, if_false]
   calc
     (∑' q : XiZeroCopy,
-        ((‖xiThetaEigenFourier alpha (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ)) =
+        ((‖xiThetaEigenFourier alpha (xiSpectralPoint q)‖ ^ (2 : ℕ) : ℝ) : ℂ)) =
         ∑' q : XiZeroCopy, g q := tsum_congr heq
     _ = ∑ q ∈ T, g q := by
       apply tsum_eq_sum
@@ -367,7 +367,7 @@ theorem xiWeilPolarization_thetaEigen_diagonal_of_riemannHypothesis
           change (if q ∈ S then c else 0) = c
           rw [if_pos (hmem q hq)]
         _ = (T.card : ℂ) * c := by simp
-    _ = (((xiSpectralMultiplicity alpha : ℝ) * ‖deriv XiC alpha‖ ^ 2 : ℝ) : ℂ) := by
+    _ = (((xiSpectralMultiplicity alpha : ℝ) * ‖deriv XiC alpha‖ ^ (2 : ℕ) : ℝ) : ℂ) := by
       have hcard : T.card = xiSpectralMultiplicity alpha := by
         rfl
       rw [hcard]

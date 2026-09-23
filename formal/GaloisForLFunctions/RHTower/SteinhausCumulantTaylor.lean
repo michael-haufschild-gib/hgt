@@ -43,9 +43,9 @@ theorem iteratedDeriv_two_steinhausLogLaplace_zero :
     have : steinhausLaplace 0 = 1 := steinhausLaplace_zero
     exact this
   rw [hmgf, div_one]
-  have hint : (∫ ω : PhaseCircle, (steinhausProjection ω - 0) ^ 2
+  have hint : (∫ ω : PhaseCircle, (steinhausProjection ω - 0) ^ (2 : ℕ)
       * Real.exp (0 * steinhausProjection ω) ∂AddCircle.haarAddCircle)
-      = ∫ ω : PhaseCircle, steinhausProjection ω ^ 2 ∂AddCircle.haarAddCircle := by
+      = ∫ ω : PhaseCircle, steinhausProjection ω ^ (2 : ℕ) ∂AddCircle.haarAddCircle := by
     refine integral_congr_ae ?_
     filter_upwards with ω
     simp
@@ -60,7 +60,7 @@ theorem analyticOnNhd_deriv_steinhausLogLaplace :
 
 /-- **The quadratic behaviour of the cumulant at the origin.**  This is the card's `(17)`. -/
 theorem tendsto_steinhausLogLaplace_div_sq :
-    Filter.Tendsto (fun x : ℝ => steinhausLogLaplace x / x ^ 2)
+    Filter.Tendsto (fun x : ℝ => steinhausLogLaplace x / x ^ (2 : ℕ))
       (nhdsWithin 0 {(0 : ℝ)}ᶜ) (nhds (1 / 4)) := by
   have hd2 : DifferentiableAt ℝ (deriv steinhausLogLaplace) 0 :=
     (analyticOnNhd_deriv_steinhausLogLaplace 0 (Set.mem_univ 0)).differentiableAt
@@ -89,7 +89,7 @@ theorem tendsto_steinhausLogLaplace_div_sq :
   · filter_upwards with x
     exact (differentiable_steinhausLogLaplace x).hasDerivAt
   · filter_upwards with x
-    have hp : HasDerivAt (fun y : ℝ => y ^ 2) (2 * x) x := by
+    have hp : HasDerivAt (fun y : ℝ => y ^ (2 : ℕ)) (2 * x) x := by
       simpa using hasDerivAt_pow 2 x
     exact hp
   · filter_upwards [self_mem_nhdsWithin] with x hx
@@ -99,7 +99,7 @@ theorem tendsto_steinhausLogLaplace_div_sq :
       have h := continuous_steinhausLogLaplace.tendsto 0
       simpa using h
     exact hcont.mono_left nhdsWithin_le_nhds
-  · have hcont : Filter.Tendsto (fun x : ℝ => x ^ 2) (nhds 0) (nhds 0) := by
+  · have hcont : Filter.Tendsto (fun x : ℝ => x ^ (2 : ℕ)) (nhds 0) (nhds 0) := by
       have h := (continuous_pow 2).tendsto (0 : ℝ)
       simpa using h
     exact hcont.mono_left nhdsWithin_le_nhds

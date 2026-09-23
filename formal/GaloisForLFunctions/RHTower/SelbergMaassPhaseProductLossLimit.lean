@@ -15,7 +15,7 @@ variable (N : ℕ) {lam : ℝ}
   (r s : ZMod (N + 1))
 
 def phaseProductPartial (M : ℕ) : ℂ :=
-  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2 : ℝ) : ℂ) *
+  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ) : ℂ) *
     ∑ i : PhaseIndex N,
       l2Pair
         (fourierPartialSum
@@ -24,7 +24,7 @@ def phaseProductPartial (M : ℕ) : ℂ :=
           (SelbergMaassFourierPartial.unitRescaledVerticalReadout N f (phaseReadout N r s i) 1) M t)
 
 def phaseProductExact : ℂ :=
-  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2 : ℝ) : ℂ) *
+  ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ) : ℂ) *
     ∑ i : PhaseIndex N,
       l2Pair
         (SelbergMaassFourierPartial.unitRescaledHorizontalReadout N f (phaseReadout N r s i) 1)
@@ -52,7 +52,7 @@ theorem tendsto_phaseProductPartial :
         (phaseReadout N r s i) (phaseReadout N r s i) (by norm_num : (0 : ℝ) < 1)
       simpa [Finset.sum_insert, hi] using hi'.add hI
   simpa only [Finset.sum_const_zero, Finset.sum_const] using
-    (hsum Finset.univ).const_mul ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2 : ℝ)
+    (hsum Finset.univ).const_mul ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ)
       : ℂ)
 
 /-- A unit-rescaled horizontal phase readout is the horizontal source derivative at its
@@ -102,7 +102,7 @@ private theorem conj_mul_re_eq_mul_conj_re (a b : ℂ) :
 /-- The finite phase average of rescaled horizontal/vertical readouts is the
 literal physical mixed source loss. -/
 theorem phaseAverage_rescaledReadouts_re_eq_loss (t : ℝ) :
-    ((((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2) *
+    ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2) *
       ∑ i : PhaseIndex N,
         ((starRingEnd ℂ)
           (unitRescaledHorizontalReadout N f (phaseReadout N r s i) 1 t) *
@@ -152,7 +152,7 @@ theorem phaseProductExact_re_eq_unitLossMoment :
       ∫ t in (0 : ℝ)..1, t * lossPair N r s
         (sourceDerivative N f 1 (ofComplex (point (t * (N + 1 : ℕ)) 1)))
         (sourceDerivative N f Complex.I (ofComplex (point (t * (N + 1 : ℕ)) 1))) := by
-  let c : ℝ := ((N + 1 : ℕ) : ℝ)⁻¹ ^ 3 / 2
+  let c : ℝ := ((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2
   let H : PhaseIndex N → ℝ → ℂ := fun i =>
     unitRescaledHorizontalReadout N f (phaseReadout N r s i) 1
   let V : PhaseIndex N → ℝ → ℂ := fun i =>

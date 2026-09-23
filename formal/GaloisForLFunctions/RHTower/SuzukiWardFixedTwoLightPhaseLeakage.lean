@@ -135,7 +135,7 @@ theorem suzukiUnitRieszReporterWeightedPositiveLightMass_eq_naturalSum
 theorem phaseAlignedSineLeakage_ge
     {L x c : ℝ} (hL : 0 < L) (hx0 : 0 ≤ x) (hxL : x ≤ L)
     (hc0 : 0 ≤ c) (hgap : c ≤ L - x) :
-    c ^ 2 / (4 * L ^ 2) ≤
+    c ^ (2 : ℕ) / (4 * L ^ (2 : ℕ)) ≤
       (1 + Real.sin ((-Real.pi / (2 * L)) * x)) / 2 := by
   let δ : ℝ := Real.pi * (L - x) / (2 * L)
   have hden : 0 < 2 * L := by positivity
@@ -154,18 +154,18 @@ theorem phaseAlignedSineLeakage_ge
     rw [div_le_div_iff_of_pos_right hden]
     exact mul_le_mul_of_nonneg_left hgap Real.pi_pos.le
   have hlower0 : 0 ≤ Real.pi * c / (2 * L) := by positivity
-  have hδsq : (Real.pi * c / (2 * L)) ^ 2 ≤ δ ^ 2 :=
+  have hδsq : (Real.pi * c / (2 * L)) ^ (2 : ℕ) ≤ δ ^ (2 : ℕ) :=
     pow_le_pow_left₀ hlower0 hδlower 2
   have hscaled := mul_le_mul_of_nonneg_left hδsq
-    (by positivity : 0 ≤ 2 / Real.pi ^ 2)
+    (by positivity : 0 ≤ 2 / Real.pi ^ (2 : ℕ))
   have hjordan :=
     HTGeometry.AbstractSpectralFamily.two_div_pi_sq_mul_sq_le_one_sub_cos habs
   have hscale :
-      2 / Real.pi ^ 2 * (Real.pi * c / (2 * L)) ^ 2 =
-        c ^ 2 / (2 * L ^ 2) := by
+      2 / Real.pi ^ (2 : ℕ) * (Real.pi * c / (2 * L)) ^ (2 : ℕ) =
+        c ^ (2 : ℕ) / (2 * L ^ (2 : ℕ)) := by
     field_simp [Real.pi_ne_zero, hL.ne']
   rw [hscale] at hscaled
-  have hdefect : c ^ 2 / (2 * L ^ 2) ≤ 1 - Real.cos δ :=
+  have hdefect : c ^ (2 : ℕ) / (2 * L ^ (2 : ℕ)) ≤ 1 - Real.cos δ :=
     hscaled.trans hjordan
   have hphase :
       (-Real.pi / (2 * L)) * x = -(Real.pi / 2 - δ) := by
@@ -178,13 +178,13 @@ theorem phaseAlignedSineLeakage_ge
     ring
   rw [htrig]
   calc
-    c ^ 2 / (4 * L ^ 2) = (c ^ 2 / (2 * L ^ 2)) / 2 := by ring
+    c ^ (2 : ℕ) / (4 * L ^ (2 : ℕ)) = (c ^ (2 : ℕ) / (2 * L ^ (2 : ℕ))) / 2 := by ring
     _ ≤ (1 - Real.cos δ) / 2 := div_le_div_of_nonneg_right hdefect (by norm_num)
 
 /-- On `(2n,4n]`, alignment at aperture `8n` leaves a uniform logarithmic-square phase floor. -/
 theorem dyadic_phaseAlignedSineLeakage_ge
     {n k : ℕ} (hn : 1 ≤ n) (hk : k ∈ Finset.Ioc (2 * n) (4 * n)) :
-    Real.log 2 ^ 2 / (4 * Real.log (8 * n : ℕ) ^ 2) ≤
+    Real.log 2 ^ (2 : ℕ) / (4 * Real.log (8 * n : ℕ) ^ (2 : ℕ)) ≤
       (1 + Real.sin
         ((-Real.pi / (2 * Real.log (8 * n : ℕ))) * Real.log k)) / 2 := by
   have hkIoc := Finset.mem_Ioc.mp hk
@@ -228,7 +228,7 @@ private theorem dyadicSqrtVonMangoldtMass_two_nat_eq_sum (n : ℕ) :
 /-- Quantitative dyadic lower bound for the phase-aligned positive-light mass. -/
 theorem phaseAlignedPositiveLightMass_ge_dyadic
     {n : ℕ} (hn : 1 ≤ n) :
-    Real.log 2 ^ 2 / (32 * Real.log (8 * n : ℕ) ^ 2) *
+    Real.log 2 ^ (2 : ℕ) / (32 * Real.log (8 * n : ℕ) ^ (2 : ℕ)) *
         dyadicSqrtVonMangoldtMass (2 * (n : ℝ)) ≤
       suzukiUnitRieszReporterWeightedPositiveLightMass (8 * n)
         (-Real.pi / (2 * Real.log (8 * n : ℕ))) := by
@@ -258,13 +258,13 @@ theorem phaseAlignedPositiveLightMass_ge_dyadic
             (k : ℝ) / (8 * n : ℕ) := by
         rw [neg_sub, Real.exp_sub, Real.exp_log hkpos, Real.exp_log hNpos]
       have hhalfSq :
-          Real.exp (-(Real.log (8 * n : ℕ) - Real.log k) / 2) ^ 2 =
+          Real.exp (-(Real.log (8 * n : ℕ) - Real.log k) / 2) ^ (2 : ℕ) =
             (k : ℝ) / (8 * n : ℕ) := by
         rw [pow_two, ← Real.exp_add]
         convert hfull using 1
         ring
       have hratio : 0 ≤ (k : ℝ) / (8 * n : ℕ) := by positivity
-      have hsqrtSq : Real.sqrt ((k : ℝ) / (8 * n : ℕ)) ^ 2 =
+      have hsqrtSq : Real.sqrt ((k : ℝ) / (8 * n : ℕ)) ^ (2 : ℕ) =
           (k : ℝ) / (8 * n : ℕ) := Real.sq_sqrt hratio
       have hhalf :
           Real.exp (-(Real.log (8 * n : ℕ) - Real.log k) / 2) =
@@ -283,16 +283,16 @@ theorem phaseAlignedPositiveLightMass_ge_dyadic
         (-(suzukiNaturalApertureLag (8 * n) k : ℝ)) := by
       linarith
     have hphase0 : 0 ≤
-        Real.log 2 ^ 2 / (4 * Real.log (8 * n : ℕ) ^ 2) := by positivity
+        Real.log 2 ^ (2 : ℕ) / (4 * Real.log (8 * n : ℕ) ^ (2 : ℕ)) := by positivity
     calc
-      Real.log 2 ^ 2 / (32 * Real.log (8 * n : ℕ) ^ 2) *
+      Real.log 2 ^ (2 : ℕ) / (32 * Real.log (8 * n : ℕ) ^ (2 : ℕ)) *
           criticalMellinAtomWeight k =
           criticalMellinAtomWeight k * (1 / 8) *
-            (Real.log 2 ^ 2 / (4 * Real.log (8 * n : ℕ) ^ 2)) := by ring
+            (Real.log 2 ^ (2 : ℕ) / (4 * Real.log (8 * n : ℕ) ^ (2 : ℕ))) := by ring
       _ ≤ criticalMellinAtomWeight k *
           unitRieszSuzukiReporter 0
             (-(suzukiNaturalApertureLag (8 * n) k : ℝ)) *
-          (Real.log 2 ^ 2 / (4 * Real.log (8 * n : ℕ) ^ 2)) := by
+          (Real.log 2 ^ (2 : ℕ) / (4 * Real.log (8 * n : ℕ) ^ (2 : ℕ))) := by
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hrep hatom) hphase0
       _ ≤ criticalMellinAtomWeight k *
@@ -335,14 +335,14 @@ theorem tendsto_phaseAlignedPositiveLightMass_atTop :
   have h8nat : Tendsto (fun n : ℕ => (8 : ℝ) * n) atTop atTop :=
     tendsto_natCast_atTop_atTop.const_mul_atTop (by norm_num)
   have hbase : Tendsto (fun n : ℕ =>
-      Real.sqrt ((8 : ℝ) * n) / Real.log ((8 : ℝ) * n) ^ 2) atTop atTop :=
+      Real.sqrt ((8 : ℝ) * n) / Real.log ((8 : ℝ) * n) ^ (2 : ℕ)) atTop atTop :=
     tendsto_sqrt_div_log_sq_atTop.comp h8nat
-  have hconst : 0 < Real.log 2 ^ 2 / 192 := by
+  have hconst : 0 < Real.log 2 ^ (2 : ℕ) / 192 := by
     have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
     positivity
   have hgrow : Tendsto (fun n : ℕ =>
-      (Real.log 2 ^ 2 / 192) *
-        (Real.sqrt ((8 : ℝ) * n) / Real.log ((8 : ℝ) * n) ^ 2)) atTop atTop :=
+      (Real.log 2 ^ (2 : ℕ) / 192) *
+        (Real.sqrt ((8 : ℝ) * n) / Real.log ((8 : ℝ) * n) ^ (2 : ℕ))) atTop atTop :=
     hbase.const_mul_atTop hconst
   have h2nat : Tendsto (fun n : ℕ => (2 : ℝ) * n) atTop atTop :=
     tendsto_natCast_atTop_atTop.const_mul_atTop (by norm_num)
@@ -351,8 +351,8 @@ theorem tendsto_phaseAlignedPositiveLightMass_atTop :
         dyadicSqrtVonMangoldtMass (2 * (n : ℝ)) :=
     h2nat.eventually eventually_dyadicSqrtVonMangoldtMass_ge
   have hbound : ∀ᶠ n : ℕ in atTop,
-      (Real.log 2 ^ 2 / 192) *
-          (Real.sqrt ((8 : ℝ) * n) / Real.log ((8 : ℝ) * n) ^ 2) ≤
+      (Real.log 2 ^ (2 : ℕ) / 192) *
+          (Real.sqrt ((8 : ℝ) * n) / Real.log ((8 : ℝ) * n) ^ (2 : ℕ)) ≤
         suzukiUnitRieszReporterWeightedPositiveLightMass (8 * n)
           (-Real.pi / (2 * Real.log (8 * n : ℕ))) := by
     filter_upwards [hmassNat, eventually_ge_atTop 1] with n hmass hn
@@ -363,13 +363,13 @@ theorem tendsto_phaseAlignedPositiveLightMass_atTop :
     have hcast : Real.log ((8 : ℝ) * n) = Real.log (8 * n : ℕ) := by
       norm_num only [Nat.cast_mul, Nat.cast_ofNat]
     calc
-      (Real.log 2 ^ 2 / 192) *
-          (Real.sqrt ((8 : ℝ) * n) / Real.log ((8 : ℝ) * n) ^ 2) =
-          Real.log 2 ^ 2 / (32 * Real.log (8 * n : ℕ) ^ 2) *
+      (Real.log 2 ^ (2 : ℕ) / 192) *
+          (Real.sqrt ((8 : ℝ) * n) / Real.log ((8 : ℝ) * n) ^ (2 : ℕ)) =
+          Real.log 2 ^ (2 : ℕ) / (32 * Real.log (8 * n : ℕ) ^ (2 : ℕ)) *
             (Real.sqrt (2 * (n : ℝ)) / 3) := by
         rw [hsqrt, hcast]
         ring
-      _ ≤ Real.log 2 ^ 2 / (32 * Real.log (8 * n : ℕ) ^ 2) *
+      _ ≤ Real.log 2 ^ (2 : ℕ) / (32 * Real.log (8 * n : ℕ) ^ (2 : ℕ)) *
           dyadicSqrtVonMangoldtMass (2 * (n : ℝ)) := by
         exact mul_le_mul_of_nonneg_left hmass (by positivity)
       _ ≤ _ := phaseAlignedPositiveLightMass_ge_dyadic hn

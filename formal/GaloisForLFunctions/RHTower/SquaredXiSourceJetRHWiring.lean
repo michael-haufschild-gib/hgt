@@ -83,14 +83,14 @@ theorem alternating_iteratedDeriv_squaredXiRadialField_pos_of_riemannHypothesis
 hypothesis.** -/
 theorem completedSourceJet_pos_of_riemannHypothesis (hRH : RiemannHypothesis) (n : ℕ)
     {w : ℝ} (hw : 0 < w) : 0 < completedSourceJet n w := by
-  have hy : (0:ℝ) < w ^ 2 := by positivity
+  have hy : (0:ℝ) < w ^ (2 : ℕ) := by positivity
   have hpos := alternating_iteratedDeriv_squaredXiRadialField_pos_of_riemannHypothesis hRH hy n
   have hscale : (0:ℝ) < 2 ^ (n + 1) * w ^ (2 * n + 1) := by positivity
   rw [completedSourceJet_eq n hw,
     show (-1 : ℝ) ^ n * 2 ^ (n + 1) * w ^ (2 * n + 1) *
-        iteratedDeriv n squaredXiRadialField (w ^ 2)
+        iteratedDeriv n squaredXiRadialField (w ^ (2 : ℕ))
       = (2 ^ (n + 1) * w ^ (2 * n + 1)) *
-        ((-1 : ℝ) ^ n * iteratedDeriv n squaredXiRadialField (w ^ 2)) from by ring]
+        ((-1 : ℝ) ^ n * iteratedDeriv n squaredXiRadialField (w ^ (2 : ℕ))) from by ring]
   exact mul_pos hscale hpos
 
 /-- **The discriminator.**  A single strictly negative completed source jet at a positive radius

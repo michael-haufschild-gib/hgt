@@ -17,9 +17,9 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 theorem fourth_power_sub_le (a b : ℝ) :
-    (a - b) ^ 4 ≤ 8 * (a ^ 4 + b ^ 4) := by
+    (a - b) ^ (4 : ℕ) ≤ 8 * (a ^ (4 : ℕ) + b ^ (4 : ℕ)) := by
   nlinarith [sq_nonneg (a + b), sq_nonneg (a - b),
-    sq_nonneg (a ^ 2 - b ^ 2)]
+    sq_nonneg (a ^ (2 : ℕ) - b ^ (2 : ℕ))]
 
 theorem doublyStochastic_quadraticTransport_sq_le_offDiag_fourth
     {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -27,12 +27,12 @@ theorem doublyStochastic_quadraticTransport_sq_le_offDiag_fourth
     (hw : ∀ i j, 0 ≤ w i j)
     (hrow : ∀ i, ∑ j, w i j = 1)
     (hcol : ∀ j, ∑ i, w i j = 1) :
-    (∑ i, ∑ j, (s i - s j) ^ 2 * w i j) ^ 2 ≤
+    (∑ i, ∑ j, (s i - s j) ^ (2 : ℕ) * w i j) ^ (2 : ℕ) ≤
       16 * (∑ i, ∑ j, if i = j then 0 else w i j) *
-        (∑ i, s i ^ 4) := by
-  let f : ι × ι → ℝ := fun p => (s p.1 - s p.2) ^ 2 * w p.1 p.2
+        (∑ i, s i ^ (4 : ℕ)) := by
+  let f : ι × ι → ℝ := fun p => (s p.1 - s p.2) ^ (2 : ℕ) * w p.1 p.2
   let g : ι × ι → ℝ := fun p => if p.1 = p.2 then 0 else w p.1 p.2
-  let h : ι × ι → ℝ := fun p => (s p.1 - s p.2) ^ 4 * w p.1 p.2
+  let h : ι × ι → ℝ := fun p => (s p.1 - s p.2) ^ (4 : ℕ) * w p.1 p.2
   have hg : ∀ p ∈ (Finset.univ : Finset (ι × ι)), 0 ≤ g p := by
     intro p _hp
     simp only [g]
@@ -43,7 +43,7 @@ theorem doublyStochastic_quadraticTransport_sq_le_offDiag_fourth
     intro p _hp
     exact mul_nonneg (by positivity) (hw _ _)
   have hpoint : ∀ p ∈ (Finset.univ : Finset (ι × ι)),
-      f p ^ 2 ≤ g p * h p := by
+      f p ^ (2 : ℕ) ≤ g p * h p := by
     intro p _hp
     by_cases hpq : p.1 = p.2
     · simp [f, g, h, hpq]
@@ -52,19 +52,19 @@ theorem doublyStochastic_quadraticTransport_sq_le_offDiag_fourth
       exact le_rfl
   have hcs := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul
     (Finset.univ : Finset (ι × ι)) hg hh hpoint
-  have hfourth : (∑ p : ι × ι, h p) ≤ 16 * ∑ i, s i ^ 4 := by
+  have hfourth : (∑ p : ι × ι, h p) ≤ 16 * ∑ i, s i ^ (4 : ℕ) := by
     calc
-      (∑ p : ι × ι, h p) = ∑ i, ∑ j, (s i - s j) ^ 4 * w i j := by
+      (∑ p : ι × ι, h p) = ∑ i, ∑ j, (s i - s j) ^ (4 : ℕ) * w i j := by
         simp only [h, Fintype.sum_prod_type]
-      _ ≤ ∑ i, ∑ j, (8 * (s i ^ 4 + s j ^ 4)) * w i j := by
+      _ ≤ ∑ i, ∑ j, (8 * (s i ^ (4 : ℕ) + s j ^ (4 : ℕ))) * w i j := by
         apply Finset.sum_le_sum
         intro i _hi
         apply Finset.sum_le_sum
         intro j _hj
         exact mul_le_mul_of_nonneg_right (fourth_power_sub_le (s i) (s j)) (hw i j)
-      _ = 16 * ∑ i, s i ^ 4 := by
+      _ = 16 * ∑ i, s i ^ (4 : ℕ) := by
         calc
-          _ = 8 * (∑ i, ∑ j, (s i ^ 4 + s j ^ 4) * w i j) := by
+          _ = 8 * (∑ i, ∑ j, (s i ^ (4 : ℕ) + s j ^ (4 : ℕ)) * w i j) := by
                 rw [Finset.mul_sum]
                 apply Finset.sum_congr rfl
                 intro i _hi
@@ -72,11 +72,11 @@ theorem doublyStochastic_quadraticTransport_sq_le_offDiag_fourth
                 apply Finset.sum_congr rfl
                 intro j _hj
                 ring
-          _ = 8 * ((∑ i, ∑ j, s i ^ 4 * w i j) +
-              ∑ i, ∑ j, s j ^ 4 * w i j) := by
+          _ = 8 * ((∑ i, ∑ j, s i ^ (4 : ℕ) * w i j) +
+              ∑ i, ∑ j, s j ^ (4 : ℕ) * w i j) := by
                 congr 1
                 simp_rw [add_mul, Finset.sum_add_distrib]
-          _ = 8 * ((∑ i, s i ^ 4) + ∑ j, s j ^ 4) := by
+          _ = 8 * ((∑ i, s i ^ (4 : ℕ)) + ∑ j, s j ^ (4 : ℕ)) := by
                 congr 1
                 · apply congrArg₂ (· + ·)
                   · apply Finset.sum_congr rfl
@@ -89,13 +89,13 @@ theorem doublyStochastic_quadraticTransport_sq_le_offDiag_fourth
           _ = _ := by ring
   have hnonneg : 0 ≤ ∑ p : ι × ι, g p := Finset.sum_nonneg fun p _ => hg p (Finset.mem_univ p)
   calc
-    (∑ i, ∑ j, (s i - s j) ^ 2 * w i j) ^ 2 =
-        (∑ p : ι × ι, f p) ^ 2 := by simp only [f, Fintype.sum_prod_type]
+    (∑ i, ∑ j, (s i - s j) ^ (2 : ℕ) * w i j) ^ (2 : ℕ) =
+        (∑ p : ι × ι, f p) ^ (2 : ℕ) := by simp only [f, Fintype.sum_prod_type]
     _ ≤ (∑ p : ι × ι, g p) * ∑ p : ι × ι, h p := hcs
-    _ ≤ (∑ p : ι × ι, g p) * (16 * ∑ i, s i ^ 4) :=
+    _ ≤ (∑ p : ι × ι, g p) * (16 * ∑ i, s i ^ (4 : ℕ)) :=
       mul_le_mul_of_nonneg_left hfourth hnonneg
     _ = 16 * (∑ i, ∑ j, if i = j then 0 else w i j) *
-        (∑ i, s i ^ 4) := by
+        (∑ i, s i ^ (4 : ℕ)) := by
       simp only [g, Fintype.sum_prod_type]
       ring
 
@@ -105,12 +105,12 @@ theorem normSq_sum_le_card_mul_sum_normSq
       (Fintype.card ι : ℝ) * ∑ i, Complex.normSq (z i) := by
   rw [← Complex.sq_norm]
   have hnorm : ‖∑ i, z i‖ ≤ ∑ i, ‖z i‖ := norm_sum_le _ _
-  have hsq : (∑ i, ‖z i‖) ^ 2 ≤
-      (Fintype.card ι : ℝ) * ∑ i, ‖z i‖ ^ 2 := by
+  have hsq : (∑ i, ‖z i‖) ^ (2 : ℕ) ≤
+      (Fintype.card ι : ℝ) * ∑ i, ‖z i‖ ^ (2 : ℕ) := by
     simpa using (Finset.sum_mul_sq_le_sq_mul_sq
       (Finset.univ : Finset ι) (fun _ => (1 : ℝ)) (fun i => ‖z i‖))
   calc
-    ‖∑ i, z i‖ ^ 2 ≤ (∑ i, ‖z i‖) ^ 2 := by
+    ‖∑ i, z i‖ ^ (2 : ℕ) ≤ (∑ i, ‖z i‖) ^ (2 : ℕ) := by
       exact (sq_le_sq₀ (norm_nonneg _) (Finset.sum_nonneg fun i _ => norm_nonneg (z i))).2 hnorm
     _ ≤ _ := hsq
     _ = _ := by simp_rw [Complex.sq_norm]
@@ -139,7 +139,7 @@ theorem finiteUnitaryDiagonal_commutatorEnergy_eq_transport
     finiteMatrixHilbertSchmidtEnergy
         (Matrix.diagonal (fun i => (s i : ℂ)) * (U : Matrix ι ι ℂ) -
           (U : Matrix ι ι ℂ) * Matrix.diagonal (fun i => (s i : ℂ))) =
-      ∑ i, ∑ j, (s i - s j) ^ 2 * finiteUnitaryEntryWeight U j i := by
+      ∑ i, ∑ j, (s i - s j) ^ (2 : ℕ) * finiteUnitaryEntryWeight U j i := by
   rw [finiteMatrixHilbertSchmidtEnergy_eq_sum_normSq]
   apply Finset.sum_congr rfl
   intro i _hi
@@ -155,14 +155,14 @@ theorem finiteUnitaryDiagonal_commutatorEnergy_sq_le_fourthMoment_traceDefect
     (Fintype.card ι : ℝ) *
         finiteMatrixHilbertSchmidtEnergy
           (Matrix.diagonal (fun i => (s i : ℂ)) * (U : Matrix ι ι ℂ) -
-            (U : Matrix ι ι ℂ) * Matrix.diagonal (fun i => (s i : ℂ))) ^ 2 ≤
-      16 * ((Fintype.card ι : ℝ) ^ 2 -
+            (U : Matrix ι ι ℂ) * Matrix.diagonal (fun i => (s i : ℂ))) ^ (2 : ℕ) ≤
+      16 * ((Fintype.card ι : ℝ) ^ (2 : ℕ) -
         Complex.normSq (Matrix.trace (U : Matrix ι ι ℂ))) *
-        (∑ i, s i ^ 4) := by
-  let E := ∑ i, ∑ j, (s i - s j) ^ 2 * finiteUnitaryEntryWeight U j i
+        (∑ i, s i ^ (4 : ℕ)) := by
+  let E := ∑ i, ∑ j, (s i - s j) ^ (2 : ℕ) * finiteUnitaryEntryWeight U j i
   let Q := ∑ i, ∑ j, if i = j then 0 else finiteUnitaryEntryWeight U j i
-  let S4 := ∑ i, s i ^ 4
-  have htransport : E ^ 2 ≤ 16 * Q * S4 := by
+  let S4 := ∑ i, s i ^ (4 : ℕ)
+  have htransport : E ^ (2 : ℕ) ≤ 16 * Q * S4 := by
     exact doublyStochastic_quadraticTransport_sq_le_offDiag_fourth s
       (fun i j => finiteUnitaryEntryWeight U j i)
       (fun i j => Complex.normSq_nonneg ((U : Matrix ι ι ℂ) j i))
@@ -173,7 +173,7 @@ theorem finiteUnitaryDiagonal_commutatorEnergy_sq_le_fourthMoment_traceDefect
     simpa [Matrix.trace, finiteUnitaryEntryWeight, Complex.sq_norm] using
       (normSq_sum_le_card_mul_sum_normSq (fun i => (U : Matrix ι ι ℂ) i i))
   have hQ : (Fintype.card ι : ℝ) * Q ≤
-      (Fintype.card ι : ℝ) ^ 2 -
+      (Fintype.card ι : ℝ) ^ (2 : ℕ) -
         Complex.normSq (Matrix.trace (U : Matrix ι ι ℂ)) := by
     rw [show Q = (Fintype.card ι : ℝ) -
       ∑ i, finiteUnitaryEntryWeight U i i from by
@@ -184,15 +184,15 @@ theorem finiteUnitaryDiagonal_commutatorEnergy_sq_le_fourthMoment_traceDefect
   have hcard : 0 ≤ (Fintype.card ι : ℝ) := by positivity
   have hS4 : 0 ≤ S4 := Finset.sum_nonneg fun i _ => by positivity
   rw [finiteUnitaryDiagonal_commutatorEnergy_eq_transport]
-  change (Fintype.card ι : ℝ) * E ^ 2 ≤
-    16 * ((Fintype.card ι : ℝ) ^ 2 -
+  change (Fintype.card ι : ℝ) * E ^ (2 : ℕ) ≤
+    16 * ((Fintype.card ι : ℝ) ^ (2 : ℕ) -
       Complex.normSq (Matrix.trace (U : Matrix ι ι ℂ))) * S4
   calc
-    (Fintype.card ι : ℝ) * E ^ 2 ≤
+    (Fintype.card ι : ℝ) * E ^ (2 : ℕ) ≤
         (Fintype.card ι : ℝ) * (16 * Q * S4) :=
       mul_le_mul_of_nonneg_left htransport hcard
     _ = 16 * ((Fintype.card ι : ℝ) * Q) * S4 := by ring
-    _ ≤ 16 * ((Fintype.card ι : ℝ) ^ 2 -
+    _ ≤ 16 * ((Fintype.card ι : ℝ) ^ (2 : ℕ) -
         Complex.normSq (Matrix.trace (U : Matrix ι ι ℂ))) * S4 := by
       exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hQ (by norm_num)) hS4
 
@@ -200,7 +200,7 @@ theorem finiteUnitary_trace_normSq_le_card_sq
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (U : Matrix.unitaryGroup ι ℂ) :
     Complex.normSq (Matrix.trace (U : Matrix ι ι ℂ)) ≤
-      (Fintype.card ι : ℝ) ^ 2 := by
+      (Fintype.card ι : ℝ) ^ (2 : ℕ) := by
   have hdiag : Complex.normSq (Matrix.trace (U : Matrix ι ι ℂ)) ≤
       (Fintype.card ι : ℝ) * ∑ i, finiteUnitaryEntryWeight U i i := by
     simpa [Matrix.trace, finiteUnitaryEntryWeight, Complex.sq_norm] using
@@ -227,44 +227,44 @@ approximate-centralizer tube, without an operator-norm or spectral-gap loss. -/
 theorem finiteUnitaryDiagonal_commutatorEnergy_le_traceEnergy_of_kurtosis
     {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
     (s : ι → ℝ) (U : Matrix.unitaryGroup ι ℂ) (κ : ℝ)
-    (hkurt : (Fintype.card ι : ℝ) * (∑ i, s i ^ 4) ≤
-      κ * (∑ i, s i ^ 2) ^ 2)
+    (hkurt : (Fintype.card ι : ℝ) * (∑ i, s i ^ (4 : ℕ)) ≤
+      κ * (∑ i, s i ^ (2 : ℕ)) ^ (2 : ℕ))
     (hfidelity : 16 * κ *
-        ((Fintype.card ι : ℝ) ^ 2 -
+        ((Fintype.card ι : ℝ) ^ (2 : ℕ) -
           Complex.normSq (Matrix.trace (U : Matrix ι ι ℂ))) ≤
-      (Fintype.card ι : ℝ) ^ 2) :
+      (Fintype.card ι : ℝ) ^ (2 : ℕ)) :
     finiteMatrixHilbertSchmidtEnergy
         (Matrix.diagonal (fun i => (s i : ℂ)) * (U : Matrix ι ι ℂ) -
           (U : Matrix ι ι ℂ) * Matrix.diagonal (fun i => (s i : ℂ))) ≤
-      ∑ i, s i ^ 2 := by
+      ∑ i, s i ^ (2 : ℕ) := by
   let D : ℝ := Fintype.card ι
   let E : ℝ := finiteMatrixHilbertSchmidtEnergy
     (Matrix.diagonal (fun i => (s i : ℂ)) * (U : Matrix ι ι ℂ) -
       (U : Matrix ι ι ℂ) * Matrix.diagonal (fun i => (s i : ℂ)))
   let A : ℝ := Complex.normSq (Matrix.trace (U : Matrix ι ι ℂ))
-  let S2 : ℝ := ∑ i, s i ^ 2
-  let S4 : ℝ := ∑ i, s i ^ 4
+  let S2 : ℝ := ∑ i, s i ^ (2 : ℕ)
+  let S4 : ℝ := ∑ i, s i ^ (4 : ℕ)
   have hD : 0 < D := by
     change (0 : ℝ) < (Fintype.card ι : ℝ)
     exact_mod_cast (Fintype.card_pos : 0 < Fintype.card ι)
-  have hdefect : 0 ≤ D ^ 2 - A := by
+  have hdefect : 0 ≤ D ^ (2 : ℕ) - A := by
     exact sub_nonneg.mpr (finiteUnitary_trace_normSq_le_card_sq U)
   have hS2 : 0 ≤ S2 := Finset.sum_nonneg fun i _ => sq_nonneg (s i)
-  have hbase : D * E ^ 2 ≤ 16 * (D ^ 2 - A) * S4 := by
+  have hbase : D * E ^ (2 : ℕ) ≤ 16 * (D ^ (2 : ℕ) - A) * S4 := by
     exact finiteUnitaryDiagonal_commutatorEnergy_sq_le_fourthMoment_traceDefect s U
-  have hsquare : D ^ 2 * E ^ 2 ≤ D ^ 2 * S2 ^ 2 := by
+  have hsquare : D ^ (2 : ℕ) * E ^ (2 : ℕ) ≤ D ^ (2 : ℕ) * S2 ^ (2 : ℕ) := by
     calc
-      D ^ 2 * E ^ 2 = D * (D * E ^ 2) := by ring
-      _ ≤ D * (16 * (D ^ 2 - A) * S4) :=
+      D ^ (2 : ℕ) * E ^ (2 : ℕ) = D * (D * E ^ (2 : ℕ)) := by ring
+      _ ≤ D * (16 * (D ^ (2 : ℕ) - A) * S4) :=
         mul_le_mul_of_nonneg_left hbase hD.le
-      _ = 16 * (D ^ 2 - A) * (D * S4) := by ring
-      _ ≤ 16 * (D ^ 2 - A) * (κ * S2 ^ 2) := by
+      _ = 16 * (D ^ (2 : ℕ) - A) * (D * S4) := by ring
+      _ ≤ 16 * (D ^ (2 : ℕ) - A) * (κ * S2 ^ (2 : ℕ)) := by
         exact mul_le_mul_of_nonneg_left hkurt
           (mul_nonneg (by norm_num) hdefect)
-      _ = (16 * κ * (D ^ 2 - A)) * S2 ^ 2 := by ring
-      _ ≤ D ^ 2 * S2 ^ 2 :=
+      _ = (16 * κ * (D ^ (2 : ℕ) - A)) * S2 ^ (2 : ℕ) := by ring
+      _ ≤ D ^ (2 : ℕ) * S2 ^ (2 : ℕ) :=
         mul_le_mul_of_nonneg_right hfidelity (sq_nonneg S2)
-  have hEsq : E ^ 2 ≤ S2 ^ 2 := by nlinarith [sq_pos_of_pos hD]
+  have hEsq : E ^ (2 : ℕ) ≤ S2 ^ (2 : ℕ) := by nlinarith [sq_pos_of_pos hD]
   have hE : 0 ≤ E := finiteMatrixHilbertSchmidtEnergy_nonneg _
   exact (sq_le_sq₀ hE hS2).mp hEsq
 
@@ -321,12 +321,12 @@ theorem finiteUnitary_commutatorEnergy_le_traceEnergy_of_eigenKurtosis
     (H : Matrix ι ι ℂ) (hH : H.IsHermitian)
     (U : Matrix.unitaryGroup ι ℂ) (κ : ℝ)
     (hkurt : (Fintype.card ι : ℝ) *
-        (∑ i, hH.eigenvalues i ^ 4) ≤
-      κ * (∑ i, hH.eigenvalues i ^ 2) ^ 2)
+        (∑ i, hH.eigenvalues i ^ (4 : ℕ)) ≤
+      κ * (∑ i, hH.eigenvalues i ^ (2 : ℕ)) ^ (2 : ℕ))
     (hfidelity : 16 * κ *
-        ((Fintype.card ι : ℝ) ^ 2 -
+        ((Fintype.card ι : ℝ) ^ (2 : ℕ) -
           Complex.normSq (Matrix.trace (U : Matrix ι ι ℂ))) ≤
-      (Fintype.card ι : ℝ) ^ 2) :
+      (Fintype.card ι : ℝ) ^ (2 : ℕ)) :
     finiteMatrixHilbertSchmidtEnergy
         (H * (U : Matrix ι ι ℂ) - (U : Matrix ι ι ℂ) * H) ≤
       (Matrix.trace (H * H)).re := by
@@ -397,14 +397,14 @@ theorem finiteUnitary_choiShortcut_commutatorEnergy_le_traceEnergy_of_eigenKurto
     (hcomm : H * (T : Matrix ι ι ℂ) = (T : Matrix ι ι ℂ) * H)
     (κ : ℝ)
     (hkurt : (Fintype.card ι : ℝ) *
-        (∑ i, hH.eigenvalues i ^ 4) ≤
-      κ * (∑ i, hH.eigenvalues i ^ 2) ^ 2)
+        (∑ i, hH.eigenvalues i ^ (4 : ℕ)) ≤
+      κ * (∑ i, hH.eigenvalues i ^ (2 : ℕ)) ^ (2 : ℕ))
     (hfidelity : 16 * κ *
-        ((Fintype.card ι : ℝ) ^ 2 -
+        ((Fintype.card ι : ℝ) ^ (2 : ℕ) -
           Complex.normSq
             (Matrix.trace
               (star (T : Matrix ι ι ℂ) * (W : Matrix ι ι ℂ)))) ≤
-      (Fintype.card ι : ℝ) ^ 2) :
+      (Fintype.card ι : ℝ) ^ (2 : ℕ)) :
     finiteMatrixHilbertSchmidtEnergy
         (H * (W : Matrix ι ι ℂ) - (W : Matrix ι ι ℂ) * H) ≤
       (Matrix.trace (H * H)).re := by

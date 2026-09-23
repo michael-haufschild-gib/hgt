@@ -21,12 +21,12 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- The positive logarithmic-energy delay contributed by one reality-paired CDD shell. -/
 noncomputable def geometricCDDLogShellDelay (x : ℝ) : ℝ :=
-  4 * x / (1 + x ^ 2)
+  4 * x / (1 + x ^ (2 : ℕ))
 
 /-- Finite logarithmic-energy phase delay through shells `0,...,N-1`. -/
 noncomputable def geometricCDDLogPhaseSlope
     (q x : ℝ) (N : ℕ) : ℝ :=
-  4 * ∑ k ∈ Finset.range N, (q ^ k * x) / (1 + (q ^ k * x) ^ 2)
+  4 * ∑ k ∈ Finset.range N, (q ^ k * x) / (1 + (q ^ k * x) ^ (2 : ℕ))
 
 @[simp]
 theorem geometricCDDLogPhaseSlope_zero (q x : ℝ) :
@@ -44,9 +44,9 @@ theorem geometricCDDLogPhaseSlope_succ_constraint
   rw [Finset.sum_range_succ']
   simp only [pow_zero, one_mul]
   have hshift :
-      (∑ k ∈ Finset.range N, q ^ (k + 1) * x / (1 + (q ^ (k + 1) * x) ^ 2)) =
+      (∑ k ∈ Finset.range N, q ^ (k + 1) * x / (1 + (q ^ (k + 1) * x) ^ (2 : ℕ))) =
         ∑ k ∈ Finset.range N,
-          q ^ k * (q * x) / (1 + (q ^ k * (q * x)) ^ 2) := by
+          q ^ k * (q * x) / (1 + (q ^ k * (q * x)) ^ (2 : ℕ)) := by
     apply Finset.sum_congr rfl
     intro k hk
     rw [pow_succ]
@@ -71,21 +71,21 @@ theorem geometricCDDLogPhaseSlope_pos
 /-- Infinite one-sided logarithmic-energy delay.  The `tsum` is proved summable below whenever
 `|q| < 1`. -/
 noncomputable def geometricCDDLogPhaseDelay (q x : ℝ) : ℝ :=
-  ∑' k : ℕ, 4 * (q ^ k * x) / (1 + (q ^ k * x) ^ 2)
+  ∑' k : ℕ, 4 * (q ^ k * x) / (1 + (q ^ k * x) ^ (2 : ℕ))
 
 /-- The one-sided CDD delay is absolutely summable for every real energy when `|q| < 1`. -/
 theorem summable_geometricCDDLogPhaseDelay
     {q : ℝ} (hq : |q| < 1) (x : ℝ) :
     Summable (fun k : ℕ ↦
-      4 * (q ^ k * x) / (1 + (q ^ k * x) ^ 2)) := by
+      4 * (q ^ k * x) / (1 + (q ^ k * x) ^ (2 : ℕ))) := by
   apply (summable_geometric_of_lt_one (abs_nonneg q) hq).mul_left (4 * |x|) |>.of_norm_bounded
   intro k
   rw [Real.norm_eq_abs, abs_div, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 4),
     abs_mul, abs_pow]
-  rw [abs_of_nonneg (by positivity : 0 ≤ 1 + (q ^ k * x) ^ 2)]
+  rw [abs_of_nonneg (by positivity : 0 ≤ 1 + (q ^ k * x) ^ (2 : ℕ))]
   have hnum : 0 ≤ 4 * (|q| ^ k * |x|) := by positivity
   calc
-    4 * (|q| ^ k * |x|) / (1 + (q ^ k * x) ^ 2) ≤
+    4 * (|q| ^ k * |x|) / (1 + (q ^ k * x) ^ (2 : ℕ)) ≤
         4 * (|q| ^ k * |x|) := by
           exact div_le_self hnum (by nlinarith [sq_nonneg (q ^ k * x)])
     _ = 4 * |x| * |q| ^ k := by ring
@@ -125,10 +125,10 @@ theorem norm_geometricCDDLogPhaseDelay_le
   intro k
   rw [Real.norm_eq_abs, abs_div, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 4),
     abs_mul, abs_pow]
-  rw [abs_of_nonneg (by positivity : 0 ≤ 1 + (q ^ k * x) ^ 2)]
+  rw [abs_of_nonneg (by positivity : 0 ≤ 1 + (q ^ k * x) ^ (2 : ℕ))]
   have hnum : 0 ≤ 4 * (|q| ^ k * |x|) := by positivity
   calc
-    4 * (|q| ^ k * |x|) / (1 + (q ^ k * x) ^ 2) ≤
+    4 * (|q| ^ k * |x|) / (1 + (q ^ k * x) ^ (2 : ℕ)) ≤
         4 * (|q| ^ k * |x|) := by
           exact div_le_self hnum (by nlinarith [sq_nonneg (q ^ k * x)])
     _ = 4 * |x| * |q| ^ k := by ring

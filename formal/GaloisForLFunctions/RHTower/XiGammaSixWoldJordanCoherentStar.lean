@@ -7,7 +7,7 @@ A normalized indicator profile on a growing complete prime set gives an actual
 coherent Frobenius packet with trace zero and marginal variation at most two.
 Its ambient and one-leg graph limits are zero, while its prime marginal tends
 to a point mass and its reciprocal energy tends to the corresponding fixed
-prime weight. The exact squared ambient norm is `2 * (card(s) - 1) / card(s)^2`.
+prime weight. The exact squared ambient norm is `2 * (card(s) - 1) / card(s)^(2 : ℕ)`.
 
 Subtracting this complete coherent packet from the genuine fixed-left normalized
 Big-Witt row preserves trace one and its singular graph limit. Its marginal
@@ -64,8 +64,8 @@ set_option backward.isDefEq.respectTransparency false in
 theorem norm_sq_deningerBigWittCrossPairFinitePacketAdmission_coherent
     (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
     ‖deningerBigWittCrossPairFinitePacketAdmission
-      (deningerBigWittCrossPairFiniteRightLegPacket a s)‖ ^ 2 =
-      ∑ p ∈ s, ∑ q ∈ s, ‖a p - a q‖ ^ 2 := by
+      (deningerBigWittCrossPairFiniteRightLegPacket a s)‖ ^ (2 : ℕ) =
+      ∑ p ∈ s, ∑ q ∈ s, ‖a p - a q‖ ^ (2 : ℕ) := by
   classical
   let t : Finset DeningerCalderonWittCrossPrimePacketIndex :=
     (s ×ˢ s).subtype (fun i : Nat.Primes × Nat.Primes => i.1 ≠ i.2)
@@ -76,9 +76,9 @@ theorem norm_sq_deningerBigWittCrossPairFinitePacketAdmission_coherent
       {i : Nat.Primes × Nat.Primes // i.1 ≠ i.2}))).trans Finset.mem_product
   have heval : (fun i : DeningerCalderonWittCrossPrimePacketIndex =>
       ‖(deningerBigWittCrossPairFinitePacketAdmission
-        (deningerBigWittCrossPairFiniteRightLegPacket a s)) i‖ ^ 2) =
+        (deningerBigWittCrossPairFiniteRightLegPacket a s)) i‖ ^ (2 : ℕ)) =
       fun i => ‖if i.1.1 ∈ s ∧ i.1.2 ∈ s then
-        deningerBigWittCrossPairRightLeg a i.1.1 i.1.2 else 0‖ ^ 2 := by
+        deningerBigWittCrossPairRightLeg a i.1.1 i.1.2 else 0‖ ^ (2 : ℕ) := by
     funext i
     rw [show (deningerBigWittCrossPairFinitePacketAdmission
         (deningerBigWittCrossPairFiniteRightLegPacket a s)) i =
@@ -88,18 +88,18 @@ theorem norm_sq_deningerBigWittCrossPairFinitePacketAdmission_coherent
   rw [HilbertSchmidt.lp_norm_sq_eq, heval]
   rw [tsum_eq_sum (s := t) (fun i hi => by simp [(ht i).not.mp hi])]
   have heq : (∑ i ∈ t, ‖if i.1.1 ∈ s ∧ i.1.2 ∈ s then
-      deningerBigWittCrossPairRightLeg a i.1.1 i.1.2 else 0‖ ^ 2) =
-      ∑ i ∈ t, ‖a i.1.1 - a i.1.2‖ ^ 2 := by
+      deningerBigWittCrossPairRightLeg a i.1.1 i.1.2 else 0‖ ^ (2 : ℕ)) =
+      ∑ i ∈ t, ‖a i.1.1 - a i.1.2‖ ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro i hi
     rw [if_pos ((ht i).mp hi), deningerBigWittCrossPairRightLeg, Complex.norm_conj]
   rw [heq]
-  change (∑ i ∈ (s ×ˢ s).subtype (fun i : Nat.Primes × Nat.Primes => i.1 ≠ i.2), ‖a i.1.1 - a i.1.2‖ ^ 2) = _
+  change (∑ i ∈ (s ×ˢ s).subtype (fun i : Nat.Primes × Nat.Primes => i.1 ≠ i.2), ‖a i.1.1 - a i.1.2‖ ^ (2 : ℕ)) = _
   rw [Finset.sum_subtype_eq_sum_filter
-    (fun i : Nat.Primes × Nat.Primes => ‖a i.1 - a i.2‖ ^ 2), Finset.sum_filter]
+    (fun i : Nat.Primes × Nat.Primes => ‖a i.1 - a i.2‖ ^ (2 : ℕ)), Finset.sum_filter]
   have hf : (fun i : Nat.Primes × Nat.Primes =>
-      if i.1 ≠ i.2 then ‖a i.1 - a i.2‖ ^ 2 else 0) =
-      fun i => ‖a i.1 - a i.2‖ ^ 2 := by
+      if i.1 ≠ i.2 then ‖a i.1 - a i.2‖ ^ (2 : ℕ) else 0) =
+      fun i => ‖a i.1 - a i.2‖ ^ (2 : ℕ) := by
     funext i
     by_cases hi : i.1 = i.2 <;> simp [hi]
   rw [hf, Finset.sum_product]
@@ -127,13 +127,13 @@ theorem deningerBigWittCoherentStar_trace (p : Nat.Primes) (s : Finset Nat.Prime
 
 theorem norm_sq_deningerBigWittCoherentStar (p : Nat.Primes)
     (s : Finset Nat.Primes) (hp : p ∈ s) :
-    ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCoherentStar p s)‖ ^ 2 =
-      2 * ((s.card : ℝ) - 1) / (s.card : ℝ) ^ 2 := by
+    ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCoherentStar p s)‖ ^ (2 : ℕ) =
+      2 * ((s.card : ℝ) - 1) / (s.card : ℝ) ^ (2 : ℕ) := by
   classical
   let b : Nat.Primes → ℝ := fun q => if q = p then 1 else 0
   have hb : ∑ q ∈ s, b q = 1 := by simp [b, hp]
   have hterm (r t : Nat.Primes) :
-      ‖(if r = p then (1 : ℂ) else 0) - (if t = p then 1 else 0)‖ ^ 2 =
+      ‖(if r = p then (1 : ℂ) else 0) - (if t = p then 1 else 0)‖ ^ (2 : ℕ) =
       b r + b t - 2 * b r * b t := by
     by_cases hr : r = p <;> by_cases ht : t = p <;> norm_num [b, hr, ht]
   rw [deningerBigWittCoherentStar, map_smul, norm_smul, mul_pow,
@@ -228,12 +228,12 @@ theorem tendsto_deningerBigWittCoherentStar_marginal (p : Nat.Primes)
 
 theorem norm_sq_deningerBigWittCoherentStar_le (p : Nat.Primes)
     (s : Finset Nat.Primes) (hp : p ∈ s) :
-    ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCoherentStar p s)‖ ^ 2 ≤
+    ‖deningerBigWittCrossPairFinitePacketAdmission (deningerBigWittCoherentStar p s)‖ ^ (2 : ℕ) ≤
       2 / (s.card : ℝ) := by
   have hcard : (s.card : ℝ) ≠ 0 := by exact_mod_cast (Finset.card_pos.mpr ⟨p,hp⟩).ne'
   rw [norm_sq_deningerBigWittCoherentStar p s hp]
   calc
-    _ ≤ (2 * (s.card : ℝ)) / (s.card : ℝ) ^ 2 :=
+    _ ≤ (2 * (s.card : ℝ)) / (s.card : ℝ) ^ (2 : ℕ) :=
       div_le_div_of_nonneg_right (by linarith) (sq_nonneg _)
     _ = _ := by field_simp
 
@@ -244,9 +244,9 @@ theorem tendsto_deningerBigWittCoherentStar_ambient (p : Nat.Primes)
       (deningerBigWittCoherentStar p (s n))) atTop (nhds 0) := by
   rw [Metric.tendsto_nhds]
   intro ε hε
-  filter_upwards [hcard.eventually (eventually_gt_atTop (2 / ε ^ 2))] with n hn
+  filter_upwards [hcard.eventually (eventually_gt_atTop (2 / ε ^ (2 : ℕ)))] with n hn
   have hN : (0 : ℝ) < (s n).card := by exact_mod_cast Finset.card_pos.mpr ⟨p,hp n⟩
-  have hsmall : 2 / ((s n).card : ℝ) < ε ^ 2 := by
+  have hsmall : 2 / ((s n).card : ℝ) < ε ^ (2 : ℕ) := by
     apply (div_lt_iff₀ hN).mpr
     have h := (div_lt_iff₀ (sq_pos_of_pos hε)).mp hn
     nlinarith

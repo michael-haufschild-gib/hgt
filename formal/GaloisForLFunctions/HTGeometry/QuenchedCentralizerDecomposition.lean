@@ -24,7 +24,7 @@ open _root_.Matrix
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
 /-- The Hilbert--Schmidt energy of a diagonal matrix is the sum of its squared entries. -/
-theorem hsSqRe_diagonal (d : n → ℂ) : hsSqRe (Matrix.diagonal d) = ∑ j, ‖d j‖ ^ 2 := by
+theorem hsSqRe_diagonal (d : n → ℂ) : hsSqRe (Matrix.diagonal d) = ∑ j, ‖d j‖ ^ (2 : ℕ) := by
   classical
   rw [hsSqRe_eq_sum]
   refine Finset.sum_congr rfl fun a _ => ?_
@@ -98,7 +98,7 @@ theorem hsSqRe_liouvilleFlow_sub_zeroSpectralProj (lam : n → ℝ) (t : ℝ) :
   rw [liouvilleFlow_sub_zeroSpectralProj, hsSqRe_diagonal]
   rw [Finset.sum_congr rfl fun j _ =>
     show ‖if lam j = 0 then (0 : ℂ)
-        else Complex.exp (-((t * lam j : ℝ) : ℂ) * Complex.I)‖ ^ 2
+        else Complex.exp (-((t * lam j : ℝ) : ℂ) * Complex.I)‖ ^ (2 : ℕ)
       = if lam j ≠ 0 then (1 : ℝ) else 0 from by
       by_cases hj : lam j = 0
       · rw [if_pos hj, if_neg (by simpa using hj)]
@@ -112,7 +112,7 @@ theorem hsSqRe_liouvilleFlow_sub_zeroSpectralProj (lam : n → ℝ) (t : ℝ) :
 without shrinking, so the operator norm is one. -/
 theorem exists_unit_vector_liouvilleFlow_sub (lam : n → ℝ) (t : ℝ) {j : n} (hj : lam j ≠ 0) :
     ∑ l, ‖((liouvilleFlow lam t - zeroSpectralProj lam) *ᵥ
-      (fun i => if i = j then (1 : ℂ) else 0)) l‖ ^ 2 = 1 := by
+      (fun i => if i = j then (1 : ℂ) else 0)) l‖ ^ (2 : ℕ) = 1 := by
   classical
   have hentry : ∀ l : n,
       ((liouvilleFlow lam t - zeroSpectralProj lam) *ᵥ

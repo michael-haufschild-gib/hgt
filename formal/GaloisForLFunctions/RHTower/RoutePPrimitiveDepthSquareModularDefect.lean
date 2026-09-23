@@ -30,7 +30,7 @@ def routePPrimitiveDepthSquare (pe : Nat.Primes × ℕ) : Nat.Primes × ℕ :=
 theorem xiGammaEulerValuationNat_routePPrimitiveDepthSquare
     (pe : Nat.Primes × ℕ) :
     xiGammaEulerValuationNat (routePPrimitiveDepthSquare pe) =
-      xiGammaEulerValuationNat pe ^ 2 := by
+      xiGammaEulerValuationNat pe ^ (2 : ℕ) := by
   rcases pe with ⟨p, e⟩
   simp only [routePPrimitiveDepthSquare, xiGammaEulerValuationNat]
   rw [← pow_mul]
@@ -94,7 +94,7 @@ theorem routePPrimitiveDepthSquareModularGain_mul_amplitude
     dsimp [n, xiGammaEulerValuationNat]
     exact pow_ne_zero _ pe.1.property.ne_zero
   have hn : (0 : ℝ) < n := by exact_mod_cast Nat.pos_of_ne_zero hnNat
-  have hΛ : ArithmeticFunction.vonMangoldt (n ^ 2) =
+  have hΛ : ArithmeticFunction.vonMangoldt (n ^ (2 : ℕ)) =
       ArithmeticFunction.vonMangoldt n :=
     ArithmeticFunction.vonMangoldt_apply_pow (by omega)
   rw [routePPrimitiveDepthSquareModularGain,
@@ -120,7 +120,7 @@ theorem routePPrimitiveDepthSquare_cubicWeight_modularGain_sq
     (pe : Nat.Primes × ℕ) :
     xiGammaEulerPrimitiveCubicLogMomentWeight
           (routePPrimitiveDepthSquare pe) *
-        routePPrimitiveDepthSquareModularGain pe ^ 2 =
+        routePPrimitiveDepthSquareModularGain pe ^ (2 : ℕ) =
       xiGammaEulerPrimitiveCubicLogMomentWeight pe / 8 := by
   rcases pe with ⟨p, e⟩
   have hp0 : (p : ℝ) ≠ 0 := by exact_mod_cast p.property.ne_zero
@@ -130,8 +130,8 @@ theorem routePPrimitiveDepthSquare_cubicWeight_modularGain_sq
     rw [show 2 * e + 1 = e + (e + 1) by omega, pow_add]
     rw [mul_assoc, ← mul_pow, inv_mul_cancel₀ hp0, one_pow, mul_one]
   have hdepth :
-      (((2 * (e : ℝ) + 1) + 1) ^ 3)⁻¹ =
-        (((e : ℝ) + 1) ^ 3)⁻¹ / 8 := by
+      (((2 * (e : ℝ) + 1) + 1) ^ (3 : ℕ))⁻¹ =
+        (((e : ℝ) + 1) ^ (3 : ℕ))⁻¹ / 8 := by
     have he : (e : ℝ) + 1 ≠ 0 := by positivity
     field_simp
     ring
@@ -142,12 +142,12 @@ theorem routePPrimitiveDepthSquare_cubicWeight_modularGain_sq
   rw [hdepth]
   calc
     (115 / 864 : ℝ) * invNatLogSq p * ((p : ℝ)⁻¹) ^ (2 * e + 1) *
-          ((((e : ℝ) + 1) ^ 3)⁻¹ / 8) * (p : ℝ) ^ (e + 1) =
+          ((((e : ℝ) + 1) ^ (3 : ℕ))⁻¹ / 8) * (p : ℝ) ^ (e + 1) =
         ((115 / 864 : ℝ) * invNatLogSq p) *
           (((p : ℝ)⁻¹) ^ (2 * e + 1) * (p : ℝ) ^ (e + 1)) *
-          (((e : ℝ) + 1) ^ 3)⁻¹ / 8 := by ring
+          (((e : ℝ) + 1) ^ (3 : ℕ))⁻¹ / 8 := by ring
     _ = (115 / 864 : ℝ) * invNatLogSq p * ((p : ℝ)⁻¹) ^ e *
-          (((e : ℝ) + 1) ^ 3)⁻¹ / 8 := by rw [hprime]
+          (((e : ℝ) + 1) ^ (3 : ℕ))⁻¹ / 8 := by rw [hprime]
 
 theorem tendsto_routePPrimitiveDepthSquareModularGain_primeTwo :
     Tendsto
@@ -178,7 +178,7 @@ theorem routePPrimeGammaCubicWeight_depthSquare_modularGain_sq
     (pe : Nat.Primes × ℕ) :
     routePPrimeGammaCubicWeight
           (xiGammaEulerValuationNat (routePPrimitiveDepthSquare pe)) *
-        routePPrimitiveDepthSquareModularGain pe ^ 2 =
+        routePPrimitiveDepthSquareModularGain pe ^ (2 : ℕ) =
       routePPrimeGammaCubicWeight (xiGammaEulerValuationNat pe) / 8 := by
   rw [routePPrimeGammaCubicWeight_valuation,
     routePPrimeGammaCubicWeight_valuation,
@@ -191,9 +191,9 @@ theorem routePPrimitiveDepthSquare_cubicWeightedEnergy
     ∑ pe ∈ s,
         xiGammaEulerPrimitiveCubicLogMomentWeight
             (routePPrimitiveDepthSquare pe) *
-          (routePPrimitiveDepthSquareModularGain pe * f pe) ^ 2 =
+          (routePPrimitiveDepthSquareModularGain pe * f pe) ^ (2 : ℕ) =
       (∑ pe ∈ s,
-          xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ 2) / 8 := by
+          xiGammaEulerPrimitiveCubicLogMomentWeight pe * f pe ^ (2 : ℕ)) / 8 := by
   rw [Finset.sum_div]
   apply Finset.sum_congr rfl
   intro pe hpe

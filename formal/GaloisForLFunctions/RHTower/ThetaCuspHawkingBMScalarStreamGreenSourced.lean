@@ -26,7 +26,7 @@ noncomputable section
 
 /-- The master source as a Horner radial function. -/
 def srcMaster (s μ : ℂ) : ℝ → ℂ :=
-  ratCoef [(((-9 : ℂ) * s ^ 2 + (9 / 4 : ℂ) * s ^ 2 * μ + (-1 / 8 : ℂ) * s ^ 2 * μ ^ 2 + (-75 / 2 : ℂ) * s ^ 3 + (7 : ℂ) * s ^ 3 * μ + (-1 / 4 : ℂ) * s ^ 3 * μ ^ 2 + (-129 / 2 : ℂ) * s ^ 4 + (8 : ℂ) * s ^ 4 * μ + (-1 / 8 : ℂ) * s ^ 4 * μ ^ 2 + (-59 : ℂ) * s ^ 5 + (4 : ℂ) * s ^ 5 * μ + (-61 / 2 : ℂ) * s ^ 6 + (3 / 4 : ℂ) * s ^ 6 * μ + (-17 / 2 : ℂ) * s ^ 7 + (-1 : ℂ) * s ^ 8) / ((2 - μ))), (0 : ℂ), (((-8 : ℂ) * s + (2 : ℂ) * s * μ + (1 : ℂ) * s * μ ^ 2 + (-5 / 2 : ℂ) * s ^ 2 + (-9 / 4 : ℂ) * s ^ 2 * μ + (5 / 2 : ℂ) * s ^ 2 * μ ^ 2 + (79 / 2 : ℂ) * s ^ 3 + (-17 / 2 : ℂ) * s ^ 3 * μ + (54 : ℂ) * s ^ 4 + (-29 / 4 : ℂ) * s ^ 4 * μ + (51 / 2 : ℂ) * s ^ 5 + (11 / 2 : ℂ) * s ^ 6) / ((2 - μ))), (0 : ℂ), (((-2 : ℂ) * μ + (1 : ℂ) * μ ^ 2 + (-4 : ℂ) * s + (2 : ℂ) * s * μ + (8 : ℂ) * s ^ 2 + (-4 : ℂ) * s ^ 2 * μ) / ((2 - μ))), (0 : ℂ), (((-4 : ℂ) + (2 : ℂ) * μ) / ((2 - μ)))] 5 1
+  ratCoef [(((-9 : ℂ) * s ^ (2 : ℕ) + (9 / 4 : ℂ) * s ^ (2 : ℕ) * μ + (-1 / 8 : ℂ) * s ^ (2 : ℕ) * μ ^ (2 : ℕ) + (-75 / 2 : ℂ) * s ^ (3 : ℕ) + (7 : ℂ) * s ^ (3 : ℕ) * μ + (-1 / 4 : ℂ) * s ^ (3 : ℕ) * μ ^ (2 : ℕ) + (-129 / 2 : ℂ) * s ^ (4 : ℕ) + (8 : ℂ) * s ^ (4 : ℕ) * μ + (-1 / 8 : ℂ) * s ^ (4 : ℕ) * μ ^ (2 : ℕ) + (-59 : ℂ) * s ^ (5 : ℕ) + (4 : ℂ) * s ^ (5 : ℕ) * μ + (-61 / 2 : ℂ) * s ^ (6 : ℕ) + (3 / 4 : ℂ) * s ^ (6 : ℕ) * μ + (-17 / 2 : ℂ) * s ^ (7 : ℕ) + (-1 : ℂ) * s ^ (8 : ℕ)) / ((2 - μ))), (0 : ℂ), (((-8 : ℂ) * s + (2 : ℂ) * s * μ + (1 : ℂ) * s * μ ^ (2 : ℕ) + (-5 / 2 : ℂ) * s ^ (2 : ℕ) + (-9 / 4 : ℂ) * s ^ (2 : ℕ) * μ + (5 / 2 : ℂ) * s ^ (2 : ℕ) * μ ^ (2 : ℕ) + (79 / 2 : ℂ) * s ^ (3 : ℕ) + (-17 / 2 : ℂ) * s ^ (3 : ℕ) * μ + (54 : ℂ) * s ^ (4 : ℕ) + (-29 / 4 : ℂ) * s ^ (4 : ℕ) * μ + (51 / 2 : ℂ) * s ^ (5 : ℕ) + (11 / 2 : ℂ) * s ^ (6 : ℕ)) / ((2 - μ))), (0 : ℂ), (((-2 : ℂ) * μ + (1 : ℂ) * μ ^ (2 : ℕ) + (-4 : ℂ) * s + (2 : ℂ) * s * μ + (8 : ℂ) * s ^ (2 : ℕ) + (-4 : ℂ) * s ^ (2 : ℕ) * μ) / ((2 - μ))), (0 : ℂ), (((-4 : ℂ) + (2 : ℂ) * μ) / ((2 - μ)))] 5 1
 
 theorem srcMaster_eq (s μ : ℂ) {r : ℝ} (hr1 : 1 < r) (hs : s ≠ 0) (hμ : (2 : ℂ) - μ ≠ 0) :
     srcMaster s μ r = ssMasterSource s r μ := by
@@ -43,7 +43,7 @@ theorem srcMaster_contDiffOn (s μ : ℂ) : ContDiffOn ℝ ∞ (srcMaster s μ) 
 /-- The exterior radius of a horizon coordinate: `r = √((1−z)⁻¹)`. -/
 def rOfZ (z : ℝ) : ℝ := Real.sqrt ((1 - z)⁻¹)
 
-theorem rOfZ_sq {z : ℝ} (hz : z ∈ Ioo (0 : ℝ) 1) : rOfZ z ^ 2 = (1 - z)⁻¹ := by
+theorem rOfZ_sq {z : ℝ} (hz : z ∈ Ioo (0 : ℝ) 1) : rOfZ z ^ (2 : ℕ) = (1 - z)⁻¹ := by
   unfold rOfZ
   exact Real.sq_sqrt (inv_nonneg.mpr (by linarith [hz.2]))
 
@@ -61,7 +61,7 @@ theorem zmap_rOfZ {z : ℝ} (hz : z ∈ Ioo (0 : ℝ) 1) : zmap (rOfZ z) = z := 
 
 theorem rOfZ_zmap {r : ℝ} (hr1 : 1 < r) : rOfZ (zmap r) = r := by
   unfold rOfZ zmap
-  have h : (1 - (1 - r⁻¹ ^ 2))⁻¹ = r ^ 2 := by
+  have h : (1 - (1 - r⁻¹ ^ (2 : ℕ)))⁻¹ = r ^ (2 : ℕ) := by
     rw [sub_sub_cancel, inv_pow, inv_inv]
   rw [h, Real.sqrt_sq (by linarith)]
 
@@ -83,11 +83,11 @@ theorem contDiffOn_zmap : ContDiffOn ℝ ∞ zmap (Ioi (1 : ℝ)) := by
 
 /-- The forcing of the corpus Green problem producing the scalar–scalar master source. -/
 def ssForcing (s μ : ℂ) (z : ℝ) : ℂ :=
-  -(((rOfZ z : ℂ) ^ 2 * ((rOfZ z : ℂ) ^ 2 - 1)) / 4) * srcMaster s μ (rOfZ z)
+  -(((rOfZ z : ℂ) ^ (2 : ℕ) * ((rOfZ z : ℂ) ^ (2 : ℕ) - 1)) / 4) * srcMaster s μ (rOfZ z)
 
 theorem contDiffOn_ssForcing (s μ : ℂ) : ContDiffOn ℝ ∞ (ssForcing s μ) (Ioo (0 : ℝ) 1) := by
-  have hpoly : ContDiff ℝ ∞ (fun x : ℝ => -(((x : ℂ) ^ 2 * ((x : ℂ) ^ 2 - 1)) / 4)) := by fun_prop
-  have h1 : ContDiffOn ℝ ∞ (fun z : ℝ => -(((rOfZ z : ℂ) ^ 2 * ((rOfZ z : ℂ) ^ 2 - 1)) / 4)) (Ioo 0 1) :=
+  have hpoly : ContDiff ℝ ∞ (fun x : ℝ => -(((x : ℂ) ^ (2 : ℕ) * ((x : ℂ) ^ (2 : ℕ) - 1)) / 4)) := by fun_prop
+  have h1 : ContDiffOn ℝ ∞ (fun z : ℝ => -(((rOfZ z : ℂ) ^ (2 : ℕ) * ((rOfZ z : ℂ) ^ (2 : ℕ) - 1)) / 4)) (Ioo 0 1) :=
     hpoly.comp_contDiffOn contDiffOn_rOfZ
   have h2 : ContDiffOn ℝ ∞ (fun z : ℝ => srcMaster s μ (rOfZ z)) (Ioo 0 1) :=
     (srcMaster_contDiffOn s μ).comp contDiffOn_rOfZ mapsTo_rOfZ
@@ -106,11 +106,11 @@ theorem greenSS_masterEquation (n : ℕ) (chi : ℂ) (hchi : chi.re ≠ 0) {a b 
   have hf := (exterior_ne r hr1).2
   have h := greenResponse_masterOp n chi hchi (contDiffOn_ssForcing (dictRate n chi) (dictEigen chi)).continuousOn ha hb hr1
   have h2 : ssForcing (dictRate n chi) (dictEigen chi) (zmap r) =
-      -(((r : ℂ) ^ 2 * ((r : ℂ) ^ 2 - 1)) / 4) * ssMasterSource (dictRate n chi) r (dictEigen chi) := by
+      -(((r : ℂ) ^ (2 : ℕ) * ((r : ℂ) ^ (2 : ℕ) - 1)) / 4) * ssMasterSource (dictRate n chi) r (dictEigen chi) := by
     unfold ssForcing
     rw [rOfZ_zmap hr1, srcMaster_eq _ _ hr1 hs hμ]
-  have h3 : 4 / ((r : ℂ) ^ 2 * ((r : ℂ) ^ 2 - 1)) *
-      (-(((r : ℂ) ^ 2 * ((r : ℂ) ^ 2 - 1)) / 4) * ssMasterSource (dictRate n chi) r (dictEigen chi)) =
+  have h3 : 4 / ((r : ℂ) ^ (2 : ℕ) * ((r : ℂ) ^ (2 : ℕ) - 1)) *
+      (-(((r : ℂ) ^ (2 : ℕ) * ((r : ℂ) ^ (2 : ℕ) - 1)) / 4) * ssMasterSource (dictRate n chi) r (dictEigen chi)) =
       -ssMasterSource (dictRate n chi) r (dictEigen chi) := by
     field_simp
   rw [h2, h3] at h

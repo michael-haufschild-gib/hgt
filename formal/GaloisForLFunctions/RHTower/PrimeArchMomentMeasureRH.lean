@@ -30,15 +30,15 @@ def PrimeArchMomentRepresentation : Prop :=
 functional evaluated on the square of the same polynomial. -/
 theorem re_primeArchSourceTraceHankel_eq_momentFunctional_sq (p : Polynomial ℝ) :
     (primeArchSourceTraceHankel p).re =
-      HTGeometry.momentFunctional normalizedPrimeArchMoment (p ^ 2) := by
+      HTGeometry.momentFunctional normalizedPrimeArchMoment (p ^ (2 : ℕ)) := by
   rw [primeArchSourceTraceHankel, HTGeometry.momentFunctional_eq_support_sum]
-  have hmap : p.map (algebraMap ℝ ℂ) ^ 2 =
-      (p ^ 2).map (algebraMap ℝ ℂ) := by
+  have hmap : p.map (algebraMap ℝ ℂ) ^ (2 : ℕ) =
+      (p ^ (2 : ℕ)).map (algebraMap ℝ ℂ) := by
     exact (Polynomial.map_pow (p := p) (algebraMap ℝ ℂ) 2).symm
   rw [hmap]
   rw [Polynomial.natDegree_map_eq_of_injective
     (RingHom.injective (algebraMap ℝ ℂ))]
-  have hrange := (p ^ 2).sum_over_range
+  have hrange := (p ^ (2 : ℕ)).sum_over_range
     (f := fun k c => c * normalizedPrimeArchMoment k) (by simp)
   rw [Polynomial.sum_def] at hrange
   rw [hrange]

@@ -128,7 +128,7 @@ theorem pollard_step2_struct (A B A' B' : Finset G) (t : ℕ) (ht : 1 ≤ t) {y 
     (heq1 : repSet A' B' t = A' * B')
     (heq2 : A' * B' = repSet A (B.erase y) t)
     (hdrop : repSum A (B.erase y) t + t ≤ repSum A B t) :
-    PollardStruct A B t ∨ (t * A.card + t * B.card ≤ repSum A B t + t ^ 2) := by
+    PollardStruct A B t ∨ (t * A.card + t * B.card ≤ repSum A B t + t ^ (2 : ℕ)) := by
   classical
   set A'' := satur A A' B' with hA''def
   set B'' := satur (B.erase y) B' A' with hB''def
@@ -236,7 +236,7 @@ theorem pollard_step2_struct (A B A' B' : Finset G) (t : ℕ) (ht : 1 ≤ t) {y 
     have hmain := pollard_step1_smallDoubling A B A'' B'' t hA''sub hB''subB hA''ne hB''ne
       (by omega) hsubBt (by omega) hsatA hsatB
     rw [hdd, Nat.sub_self] at hmain
-    have hsq : t * t = t ^ 2 := by ring
+    have hsq : t * t = t ^ (2 : ℕ) := by ring
     omega
 
 /-! ### Symmetry of the two conclusions -/
@@ -271,7 +271,7 @@ theorem pollard_step2_struct_left (A B A' B' : Finset G) (t : ℕ) (ht : 1 ≤ t
     (heq1 : repSet A' B' t = A' * B')
     (heq2 : A' * B' = repSet (A.erase y) B t)
     (hdrop : repSum (A.erase y) B t + t ≤ repSum A B t) :
-    PollardStruct A B t ∨ (t * A.card + t * B.card ≤ repSum A B t + t ^ 2) := by
+    PollardStruct A B t ∨ (t * A.card + t * B.card ≤ repSum A B t + t ^ (2 : ℕ)) := by
   have hdrop' : repSum B (A.erase y) t + t ≤ repSum B A t := by
     rw [repSum_comm B (A.erase y), repSum_comm B A]; exact hdrop
   have hmain := pollard_step2_struct B A B' A' t ht hy hB' hA' hB'ne hA'ne

@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.XiHeatShellMinimum
 /-!
 # The Turán rung detects an off-critical bottom shell
 
-The variance expansion `2 * xiHeatTuranDefect t = sum_(q,q') (w q - w q')^2 E t q E t q'` is
+The variance expansion `2 * xiHeatTuranDefect t = sum_(q,q') (w q - w q')^(2 : ℕ) E t q E t q'` is
 governed for large `t` by the pairs of least combined shell coordinate.  When the bottom shell is a
 single conjugate pair `{w0, conj w0}` off the critical line, every bottom pair term is a nonpositive
 **real** number — the phases `exp (-i t (Im w1 + Im w2))` cancel because the two heights are
@@ -23,21 +23,21 @@ noncomputable section
 
 /-- A pair of copies at conjugate squared points contributes an explicit nonpositive real. -/
 theorem xiHeatPairTerm_of_conj (t : ℝ) {z : XiZeroCopy × XiZeroCopy}
-    (h : xiSpectralPoint z.2 ^ 2 = (starRingEnd ℂ) (xiSpectralPoint z.1 ^ 2)) :
+    (h : xiSpectralPoint z.2 ^ (2 : ℕ) = (starRingEnd ℂ) (xiSpectralPoint z.1 ^ (2 : ℕ))) :
     xiHeatPairTerm t z =
-      (((-4 * (xiSpectralPoint z.1 ^ 2).im ^ 2 *
-        Real.exp (-(2 * t * (xiSpectralPoint z.1 ^ 2).re))) : ℝ) : ℂ) := by
-  have hsq : (xiSpectralPoint z.1 ^ 2 - xiSpectralPoint z.2 ^ 2) ^ 2 =
-      (((-4 * (xiSpectralPoint z.1 ^ 2).im ^ 2) : ℝ) : ℂ) := by
+      (((-4 * (xiSpectralPoint z.1 ^ (2 : ℕ)).im ^ (2 : ℕ) *
+        Real.exp (-(2 * t * (xiSpectralPoint z.1 ^ (2 : ℕ)).re))) : ℝ) : ℂ) := by
+  have hsq : (xiSpectralPoint z.1 ^ (2 : ℕ) - xiSpectralPoint z.2 ^ (2 : ℕ)) ^ (2 : ℕ) =
+      (((-4 * (xiSpectralPoint z.1 ^ (2 : ℕ)).im ^ (2 : ℕ)) : ℝ) : ℂ) := by
     rw [h, Complex.sub_conj, mul_pow, Complex.I_sq]
     push_cast
     ring
   have hheat : xiGaussianHeatTerm t z.1 * xiGaussianHeatTerm t z.2 =
-      ((Real.exp (-(2 * t * (xiSpectralPoint z.1 ^ 2).re)) : ℝ) : ℂ) := by
+      ((Real.exp (-(2 * t * (xiSpectralPoint z.1 ^ (2 : ℕ)).re)) : ℝ) : ℂ) := by
     rw [xiGaussianHeatTerm, xiGaussianHeatTerm, ← Complex.exp_add, h, ← mul_add,
       Complex.add_conj]
-    have hsum : -(t : ℂ) * ((2 * (xiSpectralPoint z.1 ^ 2).re : ℝ) : ℂ) =
-        ((-(2 * t * (xiSpectralPoint z.1 ^ 2).re) : ℝ) : ℂ) := by
+    have hsum : -(t : ℂ) * ((2 * (xiSpectralPoint z.1 ^ (2 : ℕ)).re : ℝ) : ℂ) =
+        ((-(2 * t * (xiSpectralPoint z.1 ^ (2 : ℕ)).re) : ℝ) : ℂ) := by
       push_cast
       ring
     rw [hsum, ← Complex.ofReal_exp]
@@ -49,30 +49,30 @@ strictly negative for all large heat times. -/
 theorem exists_neg_xiHeatTuranDefect_of_bottom_conjugate_pair
     {q₀ : XiZeroCopy}
     (hmin : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q₀ ^ 2).re ≤ (xiSpectralPoint q ^ 2).re)
-    (him : (xiSpectralPoint q₀ ^ 2).im ≠ 0)
+      (xiSpectralPoint q₀ ^ (2 : ℕ)).re ≤ (xiSpectralPoint q ^ (2 : ℕ)).re)
+    (him : (xiSpectralPoint q₀ ^ (2 : ℕ)).im ≠ 0)
     (hbottom : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q ^ 2).re = (xiSpectralPoint q₀ ^ 2).re →
-      xiSpectralPoint q ^ 2 = xiSpectralPoint q₀ ^ 2 ∨
-        xiSpectralPoint q ^ 2 = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ 2)) :
+      (xiSpectralPoint q ^ (2 : ℕ)).re = (xiSpectralPoint q₀ ^ (2 : ℕ)).re →
+      xiSpectralPoint q ^ (2 : ℕ) = xiSpectralPoint q₀ ^ (2 : ℕ) ∨
+        xiSpectralPoint q ^ (2 : ℕ) = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ (2 : ℕ))) :
     ∃ T : ℝ, ∀ t : ℝ, T < t → xiHeatTuranDefect t < 0 := by
   classical
-  set A : ℝ := (xiSpectralPoint q₀ ^ 2).re with hA
+  set A : ℝ := (xiSpectralPoint q₀ ^ (2 : ℕ)).re with hA
   -- the isolation gap, transported to this minimiser
   obtain ⟨A', δ, hδ, ⟨q₀', hq₀'⟩, hmin', hgap'⟩ := exists_bottom_shell_gap
   have hAA : A' = A := le_antisymm (hmin' q₀) (by rw [← hq₀']; exact hmin q₀')
   have hgap : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q ^ 2).re = A ∨ A + δ ≤ (xiSpectralPoint q ^ 2).re := by
+      (xiSpectralPoint q ^ (2 : ℕ)).re = A ∨ A + δ ≤ (xiSpectralPoint q ^ (2 : ℕ)).re := by
     intro q
     have := hgap' q
     rwa [hAA] at this
   -- the bottom block
   set B : Finset XiZeroCopy := xiHeatShell A with hB
-  have hmemB : ∀ q : XiZeroCopy, q ∈ B ↔ (xiSpectralPoint q ^ 2).re = A := by
+  have hmemB : ∀ q : XiZeroCopy, q ∈ B ↔ (xiSpectralPoint q ^ (2 : ℕ)).re = A := by
     intro q; rw [hB]; exact mem_xiHeatShell
   have hq₀B : q₀ ∈ B := (hmemB q₀).mpr rfl
   set q₁ : XiZeroCopy := xiZeroCopyLineConjEquiv q₀ with hq₁
-  have hw₁ : xiSpectralPoint q₁ ^ 2 = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ 2) := by
+  have hw₁ : xiSpectralPoint q₁ ^ (2 : ℕ) = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ (2 : ℕ)) := by
     rw [hq₁, xiSpectralSq_lineConj]
   have hq₁B : q₁ ∈ B := by
     rw [hmemB, hw₁, Complex.conj_re]
@@ -83,9 +83,9 @@ theorem exists_neg_xiHeatTuranDefect_of_bottom_conjugate_pair
       ‖xiHeatPairTerm 1 z‖) := summable_norm_iff.mpr (summable_xiHeatPairTerm one_pos)
   set C : ℝ := ∑' z : XiZeroCopy × XiZeroCopy, ‖xiHeatPairTerm 1 z‖ with hC
   have hCnn : 0 ≤ C := tsum_nonneg fun z => norm_nonneg _
-  set μ : ℝ := 4 * (xiSpectralPoint q₀ ^ 2).im ^ 2 with hμ
+  set μ : ℝ := 4 * (xiSpectralPoint q₀ ^ (2 : ℕ)).im ^ (2 : ℕ) with hμ
   have hμpos : 0 < μ := by
-    have : 0 < (xiSpectralPoint q₀ ^ 2).im ^ 2 := by positivity
+    have : 0 < (xiSpectralPoint q₀ ^ (2 : ℕ)).im ^ (2 : ℕ) := by positivity
     rw [hμ]; linarith
   set K : ℝ := C * Real.exp (2 * A + δ) / μ with hK
   refine ⟨max 1 (K / δ), fun t ht => ?_⟩
@@ -99,8 +99,8 @@ theorem exists_neg_xiHeatTuranDefect_of_bottom_conjugate_pair
     obtain ⟨hz1, hz2⟩ := Finset.mem_product.mp (by rwa [hP] at hz)
     have h1 := hbottom z.1 ((hmemB z.1).mp hz1)
     have h2 := hbottom z.2 ((hmemB z.2).mp hz2)
-    have hcase : xiSpectralPoint z.1 ^ 2 = xiSpectralPoint z.2 ^ 2 ∨
-        xiSpectralPoint z.2 ^ 2 = (starRingEnd ℂ) (xiSpectralPoint z.1 ^ 2) := by
+    have hcase : xiSpectralPoint z.1 ^ (2 : ℕ) = xiSpectralPoint z.2 ^ (2 : ℕ) ∨
+        xiSpectralPoint z.2 ^ (2 : ℕ) = (starRingEnd ℂ) (xiSpectralPoint z.1 ^ (2 : ℕ)) := by
       rcases h1 with h1 | h1 <;> rcases h2 with h2 | h2
       · exact Or.inl (by rw [h1, h2])
       · exact Or.inr (by rw [h1, h2])
@@ -110,8 +110,8 @@ theorem exists_neg_xiHeatTuranDefect_of_bottom_conjugate_pair
     · rw [xiHeatPairTerm, heq]
       simp
     · rw [xiHeatPairTerm_of_conj t hconj, Complex.ofReal_re]
-      have h4 : 0 ≤ (xiSpectralPoint z.1 ^ 2).im ^ 2 := sq_nonneg _
-      have hexp : 0 < Real.exp (-(2 * t * (xiSpectralPoint z.1 ^ 2).re)) :=
+      have h4 : 0 ≤ (xiSpectralPoint z.1 ^ (2 : ℕ)).im ^ (2 : ℕ) := sq_nonneg _
+      have hexp : 0 < Real.exp (-(2 * t * (xiSpectralPoint z.1 ^ (2 : ℕ)).re)) :=
         Real.exp_pos _
       nlinarith
   have hz₀val : (xiHeatPairTerm t (q₀, q₁)).re = -(μ * Real.exp (-(2 * t * A))) := by
@@ -145,14 +145,14 @@ theorem exists_neg_xiHeatTuranDefect_of_bottom_conjugate_pair
       rintro ⟨z, hz⟩
       have hzP : z ∉ P := by simpa using hz
       have hcomb : 2 * A + δ ≤
-          (xiSpectralPoint z.1 ^ 2).re + (xiSpectralPoint z.2 ^ 2).re := by
+          (xiSpectralPoint z.1 ^ (2 : ℕ)).re + (xiSpectralPoint z.2 ^ (2 : ℕ)).re := by
         by_cases h1 : z.1 ∈ B
         · have h2 : z.2 ∉ B := fun hb => hzP (by rw [hP]; exact Finset.mk_mem_product h1 hb)
-          have hne : (xiSpectralPoint z.2 ^ 2).re ≠ A := fun hc => h2 ((hmemB z.2).mpr hc)
+          have hne : (xiSpectralPoint z.2 ^ (2 : ℕ)).re ≠ A := fun hc => h2 ((hmemB z.2).mpr hc)
           have := (hgap z.2).resolve_left hne
           have h1' := (hmemB z.1).mp h1
           linarith
-        · have hne : (xiSpectralPoint z.1 ^ 2).re ≠ A := fun hc => h1 ((hmemB z.1).mpr hc)
+        · have hne : (xiSpectralPoint z.1 ^ (2 : ℕ)).re ≠ A := fun hc => h1 ((hmemB z.1).mpr hc)
           have := (hgap z.1).resolve_left hne
           have := hmin z.2
           linarith
@@ -227,13 +227,13 @@ simplest shape — one conjugate class — consists of real squared points. -/
 theorem xiSpectralSq_bottom_im_eq_zero_of_forall_xiHeatTuranDefect_nonneg
     {q₀ : XiZeroCopy}
     (hmin : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q₀ ^ 2).re ≤ (xiSpectralPoint q ^ 2).re)
+      (xiSpectralPoint q₀ ^ (2 : ℕ)).re ≤ (xiSpectralPoint q ^ (2 : ℕ)).re)
     (hbottom : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q ^ 2).re = (xiSpectralPoint q₀ ^ 2).re →
-      xiSpectralPoint q ^ 2 = xiSpectralPoint q₀ ^ 2 ∨
-        xiSpectralPoint q ^ 2 = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ 2))
+      (xiSpectralPoint q ^ (2 : ℕ)).re = (xiSpectralPoint q₀ ^ (2 : ℕ)).re →
+      xiSpectralPoint q ^ (2 : ℕ) = xiSpectralPoint q₀ ^ (2 : ℕ) ∨
+        xiSpectralPoint q ^ (2 : ℕ) = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ (2 : ℕ)))
     (hpos : ∀ t : ℝ, 0 < t → 0 ≤ xiHeatTuranDefect t) :
-    (xiSpectralPoint q₀ ^ 2).im = 0 := by
+    (xiSpectralPoint q₀ ^ (2 : ℕ)).im = 0 := by
   by_contra him
   obtain ⟨T, hT⟩ :=
     exists_neg_xiHeatTuranDefect_of_bottom_conjugate_pair hmin him hbottom
@@ -253,11 +253,11 @@ critical line, so the previous theorem is a statement about the zero itself. -/
 theorem xiSpectralPoint_bottom_im_eq_zero_of_forall_xiHeatTuranDefect_nonneg
     {q₀ : XiZeroCopy}
     (hmin : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q₀ ^ 2).re ≤ (xiSpectralPoint q ^ 2).re)
+      (xiSpectralPoint q₀ ^ (2 : ℕ)).re ≤ (xiSpectralPoint q ^ (2 : ℕ)).re)
     (hbottom : ∀ q : XiZeroCopy,
-      (xiSpectralPoint q ^ 2).re = (xiSpectralPoint q₀ ^ 2).re →
-      xiSpectralPoint q ^ 2 = xiSpectralPoint q₀ ^ 2 ∨
-        xiSpectralPoint q ^ 2 = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ 2))
+      (xiSpectralPoint q ^ (2 : ℕ)).re = (xiSpectralPoint q₀ ^ (2 : ℕ)).re →
+      xiSpectralPoint q ^ (2 : ℕ) = xiSpectralPoint q₀ ^ (2 : ℕ) ∨
+        xiSpectralPoint q ^ (2 : ℕ) = (starRingEnd ℂ) (xiSpectralPoint q₀ ^ (2 : ℕ)))
     (hpos : ∀ t : ℝ, 0 < t → 0 ≤ xiHeatTuranDefect t) :
     (xiSpectralPoint q₀).im = 0 := by
   by_contra him

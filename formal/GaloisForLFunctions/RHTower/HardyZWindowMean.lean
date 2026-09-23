@@ -166,7 +166,7 @@ theorem exists_abs_integral_hardyDirectSeries_le_window :
   set M : ℕ := ⌈5 * Real.sqrt T⌉₊ with hMdef
   have hsT : Real.sqrt T ≥ 4 := by
     rw [show (4 : ℝ) = Real.sqrt 16 by
-      rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq]; norm_num]
+      rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq]; norm_num]
     exact Real.sqrt_le_sqrt hT
   have hMge : 5 * Real.sqrt T ≤ (M : ℝ) := Nat.le_ceil _
   have hMlt : (M : ℝ) < 5 * Real.sqrt T + 1 := Nat.ceil_lt_add_one (by positivity)
@@ -255,7 +255,7 @@ theorem exists_abs_integral_hardyZ_window_le :
   have hs2 : s * s = T := Real.mul_self_sqrt hT0.le
   have hs4 : (4 : ℝ) ≤ s := by
     rw [hs, show (4 : ℝ) = Real.sqrt 16 by
-      rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq]; norm_num]
+      rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq]; norm_num]
     exact Real.sqrt_le_sqrt hT
   have hs0 : (0 : ℝ) < s := by linarith
   set x : ℝ := T * s with hx
@@ -280,7 +280,7 @@ theorem exists_abs_integral_hardyZ_window_le :
     ring
   have hconst : ∀ τ ∈ Set.uIoc a b,
       ‖hardyZ τ - ∑' n : ℕ, hardyDirectTerm x n τ‖
-        ≤ 9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2)) := by
+        ≤ 9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ))) := by
     intro τ hτ
     rw [Set.uIoc_of_le hab] at hτ
     have hτ1 : (1 : ℝ) ≤ τ := by linarith [hτ.1]
@@ -292,7 +292,7 @@ theorem exists_abs_integral_hardyZ_window_le :
     · have hnum : 3 * K * (1 + τ) ≤ 9 * K * T := by nlinarith [hK]
       rw [div_le_div_iff₀ hx0 hs0]
       nlinarith [hK, hs0.le]
-    · have hexp : Real.exp (-(τ ^ 2)) ≤ Real.exp (-(T ^ 2)) := by
+    · have hexp : Real.exp (-(τ ^ (2 : ℕ))) ≤ Real.exp (-(T ^ (2 : ℕ))) := by
         refine Real.exp_le_exp.mpr ?_
         nlinarith
       have hcoef : (0 : ℝ) ≤ Real.sqrt x * Real.exp (1 / 4) := by positivity
@@ -302,33 +302,33 @@ theorem exists_abs_integral_hardyZ_window_le :
     rw [abs_of_nonneg (by linarith)]
     linarith
   have htailT : ‖∫ τ in a..b, (hardyZ τ - ∑' n : ℕ, hardyDirectTerm x n τ)‖
-      ≤ (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2))) * T := by
+      ≤ (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ)))) * T := by
     refine le_trans htailint ?_
-    have hcnn : (0 : ℝ) ≤ 9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2)) := by
+    have hcnn : (0 : ℝ) ≤ 9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ))) := by
       positivity
     exact mul_le_mul_of_nonneg_left habsba hcnn
-  have hexpbd : Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2)) * T ≤ 2 := by
+  have hexpbd : Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ))) * T ≤ 2 := by
     have h1 : Real.sqrt x ≤ T := by
       rw [hsqx]; nlinarith
     have h2 : Real.exp (1 / 4) ≤ 2 := by
       have hlog : Real.exp (1 / 4) ≤ Real.exp (Real.log 2) :=
         Real.exp_le_exp.mpr (by linarith [Real.log_two_gt_d9])
       rwa [Real.exp_log (by norm_num)] at hlog
-    have h3 : T ^ 2 * Real.exp (-(T ^ 2)) ≤ 1 := by
-      have hle : T ^ 2 ≤ Real.exp (T ^ 2) := by
-        have := Real.add_one_le_exp (T ^ 2)
+    have h3 : T ^ (2 : ℕ) * Real.exp (-(T ^ (2 : ℕ))) ≤ 1 := by
+      have hle : T ^ (2 : ℕ) ≤ Real.exp (T ^ (2 : ℕ)) := by
+        have := Real.add_one_le_exp (T ^ (2 : ℕ))
         linarith
-      have hpos : (0 : ℝ) < Real.exp (T ^ 2) := Real.exp_pos _
+      have hpos : (0 : ℝ) < Real.exp (T ^ (2 : ℕ)) := Real.exp_pos _
       rw [Real.exp_neg, mul_inv_le_iff₀ hpos]
       linarith
-    have hexppos : (0 : ℝ) < Real.exp (-(T ^ 2)) := Real.exp_pos _
+    have hexppos : (0 : ℝ) < Real.exp (-(T ^ (2 : ℕ))) := Real.exp_pos _
     have hstep : Real.sqrt x * Real.exp (1 / 4) ≤ T * 2 := by
       nlinarith [Real.sqrt_nonneg x, Real.exp_pos (1 / 4 : ℝ), hT0.le]
-    calc Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2)) * T
-        ≤ T * 2 * Real.exp (-(T ^ 2)) * T :=
+    calc Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ))) * T
+        ≤ T * 2 * Real.exp (-(T ^ (2 : ℕ))) * T :=
           mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_right hstep hexppos.le) hT0.le
-      _ = 2 * (T ^ 2 * Real.exp (-(T ^ 2))) := by ring
+      _ = 2 * (T ^ (2 : ℕ) * Real.exp (-(T ^ (2 : ℕ)))) := by ring
       _ ≤ 2 * 1 := by nlinarith
       _ = 2 := by ring
   have hdirbd := hdirect hT ha hab hb hx1
@@ -338,11 +338,11 @@ theorem exists_abs_integral_hardyZ_window_le :
     nlinarith [hs2]
   have hsplitbd : |∫ τ in a..b, hardyZ τ|
       ≤ CD * (s * Real.sqrt s + s * Real.sqrt s)
-        + (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2))) * T := by
+        + (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ)))) * T := by
     rw [hdecomp]
     refine le_trans (abs_add_le _ _) ?_
     have h1 : |∫ τ in a..b, (hardyZ τ - ∑' n : ℕ, hardyDirectTerm x n τ)|
-        ≤ (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2))) * T := by
+        ≤ (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ)))) * T := by
       rw [← Real.norm_eq_abs]
       exact htailT
     linarith [hdirbd]
@@ -351,9 +351,9 @@ theorem exists_abs_integral_hardyZ_window_le :
     linarith only [h1]
   calc |∫ τ in a..b, hardyZ τ|
       ≤ CD * (s * Real.sqrt s + s * Real.sqrt s)
-        + (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2))) * T := hsplitbd
+        + (9 * K / s + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ)))) * T := hsplitbd
     _ = 2 * CD * (s * Real.sqrt s) + 9 * K / s * T
-        + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ 2)) * T := by ring
+        + Real.sqrt x * Real.exp (1 / 4) * Real.exp (-(T ^ (2 : ℕ))) * T := by ring
     _ ≤ 2 * CD * (s * Real.sqrt s) + 9 * K * s + 2 := by
         rw [hKsT]
         linarith [hexpbd]

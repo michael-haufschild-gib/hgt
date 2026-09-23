@@ -27,7 +27,7 @@ theorem tsum_inv_one_add_natAbs_sq_ne_top :
   have hsummable : Summable fun n : ℤ => 1 / ((1 + (n.natAbs : ℝ)) ^ 2) := by
     have hbase : Summable fun k : ℕ => 1 / ((1 + (k : ℝ)) ^ 2) := by
       have h : Summable fun k : ℕ => 1 / ((k : ℝ) + 1) ^ 2 :=
-        GaloisForLFunctions.HTGeometry.summable_inv_succ_sq
+        GaloisForLFunctions.HTGeometry.summable_inv_succ_sq_flatVolterraDecay
       refine h.congr fun k => ?_
       ring_nf
     refine (Summable.of_nat_of_neg (f := fun n : ℤ => 1 / ((1 + (n.natAbs : ℝ)) ^ 2)) ?_ ?_)

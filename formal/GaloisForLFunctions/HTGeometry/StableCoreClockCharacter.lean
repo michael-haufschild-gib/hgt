@@ -74,14 +74,14 @@ theorem stableRangeCoreSymmetry_family_character
     simpa using hypertranscendentalOver_jet_transcendental hq 0
   have hlin : ∀ x y z : C, algebraMap C (stableRangeCore φ) x
       + algebraMap C (stableRangeCore φ) y * q
-      + algebraMap C (stableRangeCore φ) z * q ^ 2 = 0 → x = 0 ∧ y = 0 ∧ z = 0 := by
+      + algebraMap C (stableRangeCore φ) z * q ^ (2 : ℕ) = 0 → x = 0 ∧ y = 0 ∧ z = 0 := by
     intro x y z heq
     have hinj := transcendental_iff_injective.mp htrans
     have hP : (Polynomial.aeval q)
-        (Polynomial.C x + Polynomial.C y * Polynomial.X + Polynomial.C z * Polynomial.X ^ 2) = 0 := by
+        (Polynomial.C x + Polynomial.C y * Polynomial.X + Polynomial.C z * Polynomial.X ^ (2 : ℕ)) = 0 := by
       simp only [map_add, map_mul, map_pow, Polynomial.aeval_C, Polynomial.aeval_X]
       exact heq
-    have hP0 : Polynomial.C x + Polynomial.C y * Polynomial.X + Polynomial.C z * Polynomial.X ^ 2 = 0 :=
+    have hP0 : Polynomial.C x + Polynomial.C y * Polynomial.X + Polynomial.C z * Polynomial.X ^ (2 : ℕ) = 0 :=
       hinj (by rw [hP, map_zero])
     refine ⟨?_, ?_, ?_⟩
     · have := congrArg (Polynomial.coeff · 0) hP0; simpa using this

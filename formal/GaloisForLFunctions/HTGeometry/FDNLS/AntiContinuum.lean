@@ -32,13 +32,13 @@ namespace GaloisForLFunctions.HTGeometry.FDNLS
 /-- **Equation (40).**  In the anti-continuum limit the sites decouple and each amplitude solves
 `(|v|² - 1) v = 0`; the solutions are `v = 0` and the unimodular numbers. -/
 theorem antiContinuum_amplitude (v : ℂ) :
-    ((‖v‖ ^ 2 - 1 : ℝ) : ℂ) * v = 0 ↔ v = 0 ∨ ‖v‖ = 1 := by
+    ((‖v‖ ^ (2 : ℕ) - 1 : ℝ) : ℂ) * v = 0 ↔ v = 0 ∨ ‖v‖ = 1 := by
   constructor
   · intro h
     rcases mul_eq_zero.mp h with h1 | h2
     · right
-      have : ‖v‖ ^ 2 - 1 = 0 := by exact_mod_cast h1
-      have hv : ‖v‖ ^ 2 = 1 := by linarith
+      have : ‖v‖ ^ (2 : ℕ) - 1 = 0 := by exact_mod_cast h1
+      have hv : ‖v‖ ^ (2 : ℕ) = 1 := by linarith
       nlinarith [norm_nonneg v]
     · exact Or.inl h2
   · rintro (rfl | h)
@@ -60,12 +60,12 @@ theorem antiContinuum_amplitude_phase {v : ℂ} (hv : ‖v‖ = 1) :
 /-- **Equation (41).**  The single-site Bogoliubov--de Gennes system in the anti-continuum limit,
 at the normalised frequency `ω = -1`, for a real limit amplitude `v`. -/
 def IsACMode (v : ℝ) (a b lam : ℂ) : Prop :=
-  ((1 - 2 * v ^ 2 : ℝ) : ℂ) * a - ((v ^ 2 : ℝ) : ℂ) * b = Complex.I * lam * a
-    ∧ ((v ^ 2 : ℝ) : ℂ) * a - ((1 - 2 * v ^ 2 : ℝ) : ℂ) * b = Complex.I * lam * b
+  ((1 - 2 * v ^ (2 : ℕ) : ℝ) : ℂ) * a - ((v ^ (2 : ℕ) : ℝ) : ℂ) * b = Complex.I * lam * a
+    ∧ ((v ^ (2 : ℕ) : ℝ) : ℂ) * a - ((1 - 2 * v ^ (2 : ℕ) : ℝ) : ℂ) * b = Complex.I * lam * b
 
 /-- **An excited site admits only the zero eigenvalue.**  The `2 × 2` block at a site with `v = ±1`
 has vanishing trace *and* vanishing determinant, so it is nilpotent. -/
-theorem acMode_excited_eigenvalue_eq_zero {v : ℝ} (hv : v ^ 2 = 1) {a b lam : ℂ}
+theorem acMode_excited_eigenvalue_eq_zero {v : ℝ} (hv : v ^ (2 : ℕ) = 1) {a b lam : ℂ}
     (h : IsACMode v a b lam) (hab : ¬(a = 0 ∧ b = 0)) : lam = 0 := by
   obtain ⟨h1, h2⟩ := h
   rw [hv] at h1 h2
@@ -94,14 +94,14 @@ theorem acMode_excited_eigenvalue_eq_zero {v : ℝ} (hv : v ^ 2 = 1) {a b lam : 
     · exact absurd ha0 ha
 
 /-- The zero mode of an excited block. -/
-theorem acMode_excited_kernel {v : ℝ} (hv : v ^ 2 = 1) : IsACMode v 1 (-1) 0 := by
+theorem acMode_excited_kernel {v : ℝ} (hv : v ^ (2 : ℕ) = 1) : IsACMode v 1 (-1) 0 := by
   constructor <;> · rw [hv]; norm_num
 
 /-- The excited block is a genuine Jordan block: its zero mode `(1, -1)` is the image of another
 vector, so the zero eigenvalue occurs in a *pair*, exactly as the paper records. -/
-theorem acMode_excited_jordan {v : ℝ} (hv : v ^ 2 = 1) :
-    ((1 - 2 * v ^ 2 : ℝ) : ℂ) * (-1) - ((v ^ 2 : ℝ) : ℂ) * 0 = 1
-      ∧ ((v ^ 2 : ℝ) : ℂ) * (-1) - ((1 - 2 * v ^ 2 : ℝ) : ℂ) * 0 = -1 := by
+theorem acMode_excited_jordan {v : ℝ} (hv : v ^ (2 : ℕ) = 1) :
+    ((1 - 2 * v ^ (2 : ℕ) : ℝ) : ℂ) * (-1) - ((v ^ (2 : ℕ) : ℝ) : ℂ) * 0 = 1
+      ∧ ((v ^ (2 : ℕ) : ℝ) : ℂ) * (-1) - ((1 - 2 * v ^ (2 : ℕ) : ℝ) : ℂ) * 0 = -1 := by
   rw [hv]
   norm_num
 

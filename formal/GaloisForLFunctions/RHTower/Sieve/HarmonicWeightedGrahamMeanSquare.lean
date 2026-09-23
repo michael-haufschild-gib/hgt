@@ -24,12 +24,12 @@ namespace RHTower.Sieve
 
 /-- **The weighted divisor-sum mean square as an lcm quadratic form.** -/
 theorem sum_weighted_sq_divisorSum_eq_lcm_quadratic (N : ℕ) (a : ℕ → ℝ) (w : ℕ → ℝ) :
-    ∑ k ∈ Finset.Icc 1 N, w k * (∑ m ∈ k.divisors, a m) ^ 2
+    ∑ k ∈ Finset.Icc 1 N, w k * (∑ m ∈ k.divisors, a m) ^ (2 : ℕ)
       = ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
           a p.1 * a p.2 *
             (∑ k ∈ (Finset.Icc 1 N).filter (fun k => Nat.lcm p.1 p.2 ∣ k), w k) := by
   classical
-  have hexp : ∀ k ∈ Finset.Icc 1 N, w k * (∑ m ∈ k.divisors, a m) ^ 2
+  have hexp : ∀ k ∈ Finset.Icc 1 N, w k * (∑ m ∈ k.divisors, a m) ^ (2 : ℕ)
       = ∑ p ∈ k.divisors ×ˢ k.divisors, w k * (a p.1 * a p.2) := by
     intro k _
     rw [sq, Finset.sum_mul_sum, Finset.sum_product, Finset.mul_sum]
@@ -144,14 +144,14 @@ theorem sum_dvd_inv_ge {d N : ℕ} (hd : 0 < d) (hN : 1 ≤ N) :
 the harmonic weight costs only the square of the `ℓ¹` mass, times `1 + 2 log X`. -/
 theorem sum_harmonic_sq_divisorSum_le {N X : ℕ} (hN : 1 ≤ N) (a : ℕ → ℝ)
     (hsupp : ∀ m, X < m → a m = 0) :
-    ∑ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ 2 / (k : ℝ)
+    ∑ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ (2 : ℕ) / (k : ℝ)
       ≤ (1 + Real.log N) * (∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
             a p.1 * a p.2 / (Nat.lcm p.1 p.2 : ℝ))
-        + (1 + 2 * Real.log X) * (∑ m ∈ Finset.Icc 1 N, |a m|) ^ 2 := by
+        + (1 + 2 * Real.log X) * (∑ m ∈ Finset.Icc 1 N, |a m|) ^ (2 : ℕ) := by
   classical
   have hlogX : (0 : ℝ) ≤ Real.log X := Real.log_natCast_nonneg X
-  have hrw : ∑ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ 2 / (k : ℝ)
-      = ∑ k ∈ Finset.Icc 1 N, (1 / (k : ℝ)) * (∑ m ∈ k.divisors, a m) ^ 2 := by
+  have hrw : ∑ k ∈ Finset.Icc 1 N, (∑ m ∈ k.divisors, a m) ^ (2 : ℕ) / (k : ℝ)
+      = ∑ k ∈ Finset.Icc 1 N, (1 / (k : ℝ)) * (∑ m ∈ k.divisors, a m) ^ (2 : ℕ) := by
     refine Finset.sum_congr rfl fun k _ => ?_
     ring
   rw [hrw, sum_weighted_sq_divisorSum_eq_lcm_quadratic N a (fun k => 1 / (k : ℝ))]
@@ -246,30 +246,30 @@ theorem sum_harmonic_sq_divisorSum_le {N X : ℕ} (hN : 1 ≤ N) (a : ℕ → �
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
   have hprod : ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N), |a p.1| * |a p.2|
-      = (∑ m ∈ Finset.Icc 1 N, |a m|) ^ 2 := by
+      = (∑ m ∈ Finset.Icc 1 N, |a m|) ^ (2 : ℕ) := by
     rw [sq, Finset.sum_mul_sum, Finset.sum_product]
   rw [hprod]
 
 /-- **The harmonic-weighted Graham mean square.** -/
 theorem sum_harmonic_sq_barbanVehovCoeff_le {X N : ℕ} (hX : 1 ≤ X) (hXN : X ≤ N) :
-    ∑ k ∈ Finset.Icc 1 N, (barbanVehovCoeff X k) ^ 2 / (k : ℝ)
-      ≤ (1 + Real.log N) * (4 * coprimeLogMoebiusConst ^ 2 * (1 + Real.log X))
-        + (1 + 2 * Real.log X) * ((X : ℝ) * Real.log X) ^ 2 := by
+    ∑ k ∈ Finset.Icc 1 N, (barbanVehovCoeff X k) ^ (2 : ℕ) / (k : ℝ)
+      ≤ (1 + Real.log N) * (4 * coprimeLogMoebiusConst ^ (2 : ℕ) * (1 + Real.log X))
+        + (1 + 2 * Real.log X) * ((X : ℝ) * Real.log X) ^ (2 : ℕ) := by
   classical
   have hN : 1 ≤ N := le_trans hX hXN
   have hsupp : ∀ m, X < m → barbanVehovWeight X m = 0 := by
     intro m hm
     rw [barbanVehovWeight, if_neg (by omega)]
   have hcoeff : ∀ k ∈ Finset.Icc 1 N,
-      (∑ m ∈ k.divisors, barbanVehovWeight X m) ^ 2 / (k : ℝ)
-        = (barbanVehovCoeff X k) ^ 2 / (k : ℝ) := by
+      (∑ m ∈ k.divisors, barbanVehovWeight X m) ^ (2 : ℕ) / (k : ℝ)
+        = (barbanVehovCoeff X k) ^ (2 : ℕ) / (k : ℝ) := by
     intro k _
     rw [barbanVehovCoeff]
   rw [← Finset.sum_congr rfl hcoeff]
   refine le_trans (sum_harmonic_sq_divisorSum_le hN (barbanVehovWeight X) hsupp) ?_
   have hform : ∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
       barbanVehovWeight X p.1 * barbanVehovWeight X p.2 / (Nat.lcm p.1 p.2 : ℝ)
-      ≤ 4 * coprimeLogMoebiusConst ^ 2 * (1 + Real.log X) := by
+      ≤ 4 * coprimeLogMoebiusConst ^ (2 : ℕ) * (1 + Real.log X) := by
     have hNpos : ∀ m ∈ Finset.Icc 1 N, 0 < m := by
       intro m hm
       obtain ⟨h1, -⟩ := Finset.mem_Icc.mp hm
@@ -286,7 +286,7 @@ theorem sum_harmonic_sq_barbanVehovCoeff_le {X N : ℕ} (hX : 1 ≤ X) (hXN : X 
     have hnn : ∀ e ∈ Finset.Icc 1 N, e ∉ (Finset.Icc 1 N).biUnion Nat.divisors →
         (0 : ℝ) ≤ (Nat.totient e : ℝ) *
           (∑ m ∈ (Finset.Icc 1 N).filter (fun m => e ∣ m),
-            barbanVehovWeight X m / (m : ℝ)) ^ 2 := by
+            barbanVehovWeight X m / (m : ℝ)) ^ (2 : ℕ) := by
       intro e _ _
       positivity
     refine le_trans (Finset.sum_le_sum_of_subset_of_nonneg hbiUnion hnn) ?_
@@ -296,15 +296,15 @@ theorem sum_harmonic_sq_barbanVehovCoeff_le {X N : ℕ} (hX : 1 ≤ X) (hXN : X 
     Finset.sum_nonneg fun m _ => abs_nonneg _
   have hlogN : (0 : ℝ) ≤ Real.log N := Real.log_natCast_nonneg N
   have hlogX : (0 : ℝ) ≤ Real.log X := Real.log_natCast_nonneg X
-  have hsq : (∑ m ∈ Finset.Icc 1 N, |barbanVehovWeight X m|) ^ 2
-      ≤ ((X : ℝ) * Real.log X) ^ 2 := by
+  have hsq : (∑ m ∈ Finset.Icc 1 N, |barbanVehovWeight X m|) ^ (2 : ℕ)
+      ≤ ((X : ℝ) * Real.log X) ^ (2 : ℕ) := by
     nlinarith [hl1, hl1nn]
   have h1 : (1 + Real.log N) * (∑ p ∈ (Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N),
       barbanVehovWeight X p.1 * barbanVehovWeight X p.2 / (Nat.lcm p.1 p.2 : ℝ))
-      ≤ (1 + Real.log N) * (4 * coprimeLogMoebiusConst ^ 2 * (1 + Real.log X)) :=
+      ≤ (1 + Real.log N) * (4 * coprimeLogMoebiusConst ^ (2 : ℕ) * (1 + Real.log X)) :=
     mul_le_mul_of_nonneg_left hform (by linarith)
-  have h2 : (1 + 2 * Real.log X) * (∑ m ∈ Finset.Icc 1 N, |barbanVehovWeight X m|) ^ 2
-      ≤ (1 + 2 * Real.log X) * ((X : ℝ) * Real.log X) ^ 2 :=
+  have h2 : (1 + 2 * Real.log X) * (∑ m ∈ Finset.Icc 1 N, |barbanVehovWeight X m|) ^ (2 : ℕ)
+      ≤ (1 + 2 * Real.log X) * ((X : ℝ) * Real.log X) ^ (2 : ℕ) :=
     mul_le_mul_of_nonneg_left hsq (by linarith)
   linarith
 

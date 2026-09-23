@@ -33,18 +33,18 @@ times total current squared. -/
 theorem parallel_completion {n : ℕ} [Nonempty (Fin n)]
     (resistance current : Fin n → ℝ) (total : ℝ)
     (hres : ∀ i, 0 < resistance i) (hsum : ∑ i, current i = total) :
-    (∑ i, resistance i * current i ^ 2) =
+    (∑ i, resistance i * current i ^ (2 : ℕ)) =
       (∑ i, (current i -
-        (resistance i)⁻¹ * total / conductanceSum resistance) ^ 2 * resistance i) +
-      total ^ 2 / conductanceSum resistance := by
+        (resistance i)⁻¹ * total / conductanceSum resistance) ^ (2 : ℕ) * resistance i) +
+      total ^ (2 : ℕ) / conductanceSum resistance := by
   have hS : conductanceSum resistance ≠ 0 :=
     ne_of_gt (conductanceSum_pos hres)
   have hterm : ∀ i,
-      (current i - (resistance i)⁻¹ * total / conductanceSum resistance) ^ 2 *
+      (current i - (resistance i)⁻¹ * total / conductanceSum resistance) ^ (2 : ℕ) *
           resistance i =
-        resistance i * current i ^ 2 -
+        resistance i * current i ^ (2 : ℕ) -
           2 * current i * total / conductanceSum resistance +
-          (resistance i)⁻¹ * total ^ 2 / conductanceSum resistance ^ 2 := by
+          (resistance i)⁻¹ * total ^ (2 : ℕ) / conductanceSum resistance ^ (2 : ℕ) := by
     intro i
     have hRi : resistance i ≠ 0 := ne_of_gt (hres i)
     field_simp
@@ -63,18 +63,18 @@ theorem parallel_completion {n : ℕ} [Nonempty (Fin n)]
         ring
       _ = 2 * total / conductanceSum resistance * total := by rw [hsum]
   have hconstant :
-      (∑ i, (resistance i)⁻¹ * total ^ 2 / conductanceSum resistance ^ 2) =
-        conductanceSum resistance * total ^ 2 / conductanceSum resistance ^ 2 := by
+      (∑ i, (resistance i)⁻¹ * total ^ (2 : ℕ) / conductanceSum resistance ^ (2 : ℕ)) =
+        conductanceSum resistance * total ^ (2 : ℕ) / conductanceSum resistance ^ (2 : ℕ) := by
     calc
-      (∑ i, (resistance i)⁻¹ * total ^ 2 / conductanceSum resistance ^ 2) =
+      (∑ i, (resistance i)⁻¹ * total ^ (2 : ℕ) / conductanceSum resistance ^ (2 : ℕ)) =
           (∑ i, (resistance i)⁻¹) *
-            (total ^ 2 / conductanceSum resistance ^ 2) := by
+            (total ^ (2 : ℕ) / conductanceSum resistance ^ (2 : ℕ)) := by
         rw [Finset.sum_mul]
         apply Finset.sum_congr rfl
         intro i _
         ring
-      _ = conductanceSum resistance * total ^ 2 /
-          conductanceSum resistance ^ 2 := by
+      _ = conductanceSum resistance * total ^ (2 : ℕ) /
+          conductanceSum resistance ^ (2 : ℕ) := by
         rw [conductanceSum]
         ring
   rw [hlinear, hconstant]
@@ -92,10 +92,10 @@ theorem parallelResistance_pos {n : ℕ} [Nonempty (Fin n)]
 theorem parallel_completion_effectiveResistance {n : ℕ} [Nonempty (Fin n)]
     (resistance current : Fin n → ℝ) (total : ℝ)
     (hres : ∀ i, 0 < resistance i) (hsum : ∑ i, current i = total) :
-    (∑ i, resistance i * current i ^ 2) =
+    (∑ i, resistance i * current i ^ (2 : ℕ)) =
       (∑ i, (current i - (resistance i)⁻¹ * total /
-        conductanceSum resistance) ^ 2 * resistance i) +
-      parallelResistance resistance * total ^ 2 := by
+        conductanceSum resistance) ^ (2 : ℕ) * resistance i) +
+      parallelResistance resistance * total ^ (2 : ℕ) := by
   rw [parallel_completion resistance current total hres hsum]
   simp [parallelResistance, div_eq_mul_inv, mul_comm]
 

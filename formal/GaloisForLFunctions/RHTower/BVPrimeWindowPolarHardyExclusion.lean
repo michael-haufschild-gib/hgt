@@ -258,7 +258,7 @@ theorem not_summable_polarCoefficient_norm_sq_of_uncensored_zero
     (W : CompactBVPrimeWindow) {rho : ℂ} (hrho : 0 < rho.re)
     (hzero : regularizedRiemannZeta rho = 0)
     (hMne : W.mellinTransform (rho + 1 / 2) ≠ 0) :
-    ¬ Summable (fun n : ℕ+ => ‖W.polarCoefficient n‖ ^ 2) := by
+    ¬ Summable (fun n : ℕ+ => ‖W.polarCoefficient n‖ ^ (2 : ℕ)) := by
   intro hsquare
   let sigma : ℝ := 1 / 2 + rho.re / 2
   have hsigma : 1 / 2 < sigma := by
@@ -281,9 +281,9 @@ theorem dyadic_or_triadic_polarCoefficient_not_squareSummable_at_zero
     {rho : ℂ} (hrho : 0 < rho.re)
     (hzero : regularizedRiemannZeta rho = 0) :
     (¬ Summable (fun n : ℕ+ =>
-      ‖dyadicSharpInterval.polarCoefficient n‖ ^ 2)) ∨
+      ‖dyadicSharpInterval.polarCoefficient n‖ ^ (2 : ℕ))) ∨
     (¬ Summable (fun n : ℕ+ =>
-      ‖triadicSharpInterval.polarCoefficient n‖ ^ 2)) := by
+      ‖triadicSharpInterval.polarCoefficient n‖ ^ (2 : ℕ))) := by
   rcases mellinTransform_dyadicSharpInterval_or_triadicSharpInterval_ne_zero
       (rho + 1 / 2) with hdyadic | htriadic
   · exact Or.inl

@@ -41,7 +41,7 @@ def d4PreDivisorReflectedHorizonAngularShift (x : ℝ) : ℝ :=
 def d4PreDivisorEventHorizonThirdMassReflectionSusceptibility (x : ℝ) : ℝ :=
   let A := d4PreDivisorHorizonAngularShift x
   let B := d4PreDivisorReflectedHorizonAngularShift x
-  648 * d4EventHorizonThirdMassParityCrossNumerator A B / (A ^ 3 * B ^ 3)
+  648 * d4EventHorizonThirdMassParityCrossNumerator A B / (A ^ (3 : ℕ) * B ^ (3 : ℕ))
 
 /-- Pre-divisor theta-mirror AIME denominator. -/
 def d4PreDivisorThetaMirrorAIMEDenominator (x : ℝ) : ℝ :=

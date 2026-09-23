@@ -28,11 +28,11 @@ shell.  The positive-part clearance handles initial shells uniformly. -/
 def selectedRadialHeatShellMajorant
     (K : ℝ) (z : ℂ) (tau : ℝ) (m : ℕ) : ℝ :=
   (K *
-      (2 * (quantitativeSpectralRadialBoundary (m + 1) + 1) + 1) ^ 2 /
+      (2 * (quantitativeSpectralRadialBoundary (m + 1) + 1) + 1) ^ (2 : ℕ) /
         Real.log 2) *
     (tau⁻¹ * Real.exp
       (-((max
-        (quantitativeSpectralRadialBoundary m - ‖z‖) 0) ^ 2 * tau)))
+        (quantitativeSpectralRadialBoundary m - ‖z‖) 0) ^ (2 : ℕ) * tau)))
 
 /-- The selected radial shell majorant is nonnegative for nonnegative growth
 constant and positive proper time. -/
@@ -49,13 +49,13 @@ summable with the shift needed by the selected outer radii. -/
 theorem summable_shiftedQuadratic_mul_exp_neg_nat
     (C : ℝ) {c : ℝ} (hc : 0 < c) :
     Summable fun n : ℕ ↦
-      C * (2 * ((n : ℝ) + 3) + 1) ^ 2 *
+      C * (2 * ((n : ℝ) + 3) + 1) ^ (2 : ℕ) *
         Real.exp (-c * (n : ℝ)) := by
   have h0 := Real.summable_pow_mul_exp_neg_nat_mul 0 hc
   have h1 := Real.summable_pow_mul_exp_neg_nat_mul 1 hc
   have h2 := Real.summable_pow_mul_exp_neg_nat_mul 2 hc
   have hpoly : Summable fun n : ℕ ↦
-      (2 * ((n : ℝ) + 3) + 1) ^ 2 *
+      (2 * ((n : ℝ) + 3) + 1) ^ (2 : ℕ) *
         Real.exp (-c * (n : ℝ)) := by
     refine ((h2.mul_left 4).add
       ((h1.mul_left 28).add (h0.mul_left 49))).congr fun n ↦ ?_
@@ -79,7 +79,7 @@ theorem summable_selectedRadialHeatShellMajorant
     have hlog : 0 < Real.log 2 := Real.log_pos one_lt_two
     positivity
   have hcomparison : Summable fun n : ℕ ↦
-      C * (2 * ((n : ℝ) + 3) + 1) ^ 2 *
+      C * (2 * ((n : ℝ) + 3) + 1) ^ (2 : ℕ) *
         Real.exp (-c * (n : ℝ)) :=
     summable_shiftedQuadratic_mul_exp_neg_nat C hc
   apply hcomparison.of_norm_bounded_eventually_nat
@@ -97,7 +97,7 @@ theorem summable_selectedRadialHeatShellMajorant
     nlinarith
   have hclearanceSq :
       (n : ℝ) / 4 ≤
-        (quantitativeSpectralRadialBoundary n - ‖z‖) ^ 2 := by
+        (quantitativeSpectralRadialBoundary n - ‖z‖) ^ (2 : ℕ) := by
     have hhalf :
         (n : ℝ) / 2 ≤
           quantitativeSpectralRadialBoundary n - ‖z‖ := by
@@ -110,8 +110,8 @@ theorem summable_selectedRadialHeatShellMajorant
     norm_num [Nat.cast_add] at h
     linarith
   have hpoly :
-      (2 * (quantitativeSpectralRadialBoundary (n + 1) + 1) + 1) ^ 2 ≤
-        (2 * ((n : ℝ) + 3) + 1) ^ 2 := by
+      (2 * (quantitativeSpectralRadialBoundary (n + 1) + 1) + 1) ^ (2 : ℕ) ≤
+        (2 * ((n : ℝ) + 3) + 1) ^ (2 : ℕ) := by
     have hleft :
         0 ≤ 2 * (quantitativeSpectralRadialBoundary (n + 1) + 1) + 1 := by
       have hpos := quantitativeSpectralRadialBoundary_pos (n + 1)
@@ -119,7 +119,7 @@ theorem summable_selectedRadialHeatShellMajorant
     nlinarith
   have hexp :
       Real.exp
-          (-((quantitativeSpectralRadialBoundary n - ‖z‖) ^ 2 * tau)) ≤
+          (-((quantitativeSpectralRadialBoundary n - ‖z‖) ^ (2 : ℕ) * tau)) ≤
         Real.exp (-c * (n : ℝ)) := by
     apply Real.exp_le_exp.mpr
     dsimp [c]
@@ -130,22 +130,22 @@ theorem summable_selectedRadialHeatShellMajorant
   rw [max_eq_left hclearance]
   calc
     (K *
-          (2 * (quantitativeSpectralRadialBoundary (n + 1) + 1) + 1) ^ 2 /
+          (2 * (quantitativeSpectralRadialBoundary (n + 1) + 1) + 1) ^ (2 : ℕ) /
             Real.log 2) *
         (tau⁻¹ * Real.exp
-          (-((quantitativeSpectralRadialBoundary n - ‖z‖) ^ 2 * tau))) =
+          (-((quantitativeSpectralRadialBoundary n - ‖z‖) ^ (2 : ℕ) * tau))) =
         C *
-          (2 * (quantitativeSpectralRadialBoundary (n + 1) + 1) + 1) ^ 2 *
+          (2 * (quantitativeSpectralRadialBoundary (n + 1) + 1) + 1) ^ (2 : ℕ) *
             Real.exp
-              (-((quantitativeSpectralRadialBoundary n - ‖z‖) ^ 2 * tau)) := by
+              (-((quantitativeSpectralRadialBoundary n - ‖z‖) ^ (2 : ℕ) * tau)) := by
       dsimp [C]
       ring
-    _ ≤ C * (2 * ((n : ℝ) + 3) + 1) ^ 2 *
+    _ ≤ C * (2 * ((n : ℝ) + 3) + 1) ^ (2 : ℕ) *
           Real.exp
-            (-((quantitativeSpectralRadialBoundary n - ‖z‖) ^ 2 * tau)) :=
+            (-((quantitativeSpectralRadialBoundary n - ‖z‖) ^ (2 : ℕ) * tau)) :=
       mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hpoly hC) (Real.exp_nonneg _)
-    _ ≤ C * (2 * ((n : ℝ) + 3) + 1) ^ 2 *
+    _ ≤ C * (2 * ((n : ℝ) + 3) + 1) ^ (2 : ℕ) *
           Real.exp (-c * (n : ℝ)) :=
       mul_le_mul_of_nonneg_left hexp
         (mul_nonneg hC (sq_nonneg _))

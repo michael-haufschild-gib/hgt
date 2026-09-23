@@ -32,7 +32,7 @@ noncomputable section
 
 def c5VelocityCoolingDefectExpression
     (r g₂ g₃ : ℝ → ℝ) (t : ℝ) : ℝ :=
-  10 * r t * t ^ 2 * (g₃ t + 6 * g₂ t)
+  10 * r t * t ^ (2 : ℕ) * (g₃ t + 6 * g₂ t)
 
 theorem c5VelocityCoolingDefectExpression_seamJetClassification
     (r g₂ g₃ : ℝ → ℝ)
@@ -515,7 +515,7 @@ theorem thetaCuspCenterFifthRootVelocityMasterReservedSeamProxy_eq_masterReserve
       thetaCuspCenterFifthRootVelocityMasterReservedCore t := by
   rw [show thetaCuspCenterFifthRootVelocityMasterReservedSeamProxy t =
       thetaCuspCenterFifthRootVelocityLiteralActionCore t +
-        10 * (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) * t ^ 2 *
+        10 * (Real.exp (thetaCuspReflectedLogAction 0 t) - 1) * t ^ (2 : ℕ) *
           (thetaCuspLikelihoodSourceLogPartitionJetThree t +
             6 * thetaCuspLikelihoodSourceLogPartitionJetTwo t) by
     unfold thetaCuspCenterFifthRootVelocityMasterReservedSeamProxy

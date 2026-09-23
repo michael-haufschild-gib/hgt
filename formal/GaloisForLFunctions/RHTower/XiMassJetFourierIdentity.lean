@@ -23,11 +23,11 @@ noncomputable section
 theorem ofReal_mem_xiMassHeightRegion {σ u h : ℝ} (hσ : 0 < σ) (hh : |u| < h) :
     ((h : ℝ) : ℂ) ∈ xiMassHeightRegion ((σ : ℂ) + (u : ℂ) * I) := by
   rw [mem_xiMassHeightRegion]
-  have hre : ((((σ : ℂ) + (u : ℂ) * I) ^ 2 + ((h : ℝ) : ℂ) ^ 2)).re
-      = σ ^ 2 - u ^ 2 + h ^ 2 := by
+  have hre : ((((σ : ℂ) + (u : ℂ) * I) ^ (2 : ℕ) + ((h : ℝ) : ℂ) ^ (2 : ℕ))).re
+      = σ ^ (2 : ℕ) - u ^ (2 : ℕ) + h ^ (2 : ℕ) := by
     simp [pow_two, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im]
   rw [hre]
-  have habs : |u| ^ 2 = u ^ 2 := sq_abs u
+  have habs : |u| ^ (2 : ℕ) = u ^ (2 : ℕ) := sq_abs u
   have h0 : (0 : ℝ) ≤ |u| := abs_nonneg u
   nlinarith [hh, habs, h0, hσ]
 
@@ -123,10 +123,10 @@ theorem xiMassJetFourierDeriv_eq_jetIterate {a σ u : ℝ} (ha : 0 < a) (hσ : 0
 /-- The jet-modified test is the `2N`-th power of the dispersion polynomial times the mass test. -/
 theorem xiMassJetAnalyticTest_eq_pow {a : ℝ} (ha : 1 / 2 < a) (N : ℕ) (τ z : ℂ) :
     xiMassJetAnalyticTest a N τ z
-      = (z ^ 2 + 4 * (a : ℂ) ^ 4) ^ (2 * N) * xiMassAnalyticTest a τ z := by
+      = (z ^ (2 : ℕ) + 4 * (a : ℂ) ^ (4 : ℕ)) ^ (2 * N) * xiMassAnalyticTest a τ z := by
   rw [xiMassJetAnalyticTest_eq_poly ha N τ z, xiMassPolyAnalyticTest,
     evalRealPolynomial_xiMassJetPoly, ← pow_mul]
-  have hcast : (z ^ 2 + ((4 * a ^ 4 : ℝ) : ℂ)) = z ^ 2 + 4 * (a : ℂ) ^ 4 := by
+  have hcast : (z ^ (2 : ℕ) + ((4 * a ^ (4 : ℕ) : ℝ) : ℂ)) = z ^ (2 : ℕ) + 4 * (a : ℂ) ^ (4 : ℕ) := by
     push_cast
     ring
   rw [hcast]
@@ -145,7 +145,7 @@ theorem stripFourier_xiMassJetAnalyticTest_eq_jetIterate {a σ u : ℝ} (ha : 1 
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
     show xiMassJetAnalyticTest a N ((σ : ℂ) + (u : ℂ) * I) ((x : ℝ) : ℂ) *
         Complex.exp (-(I * ((h : ℝ) : ℂ) * ((x : ℝ) : ℂ)))
-      = (-(I * ((x : ℝ) : ℂ))) ^ 0 * xiMassJetIntegrand a (2 * N) ((σ : ℂ) + (u : ℂ) * I) h x
+      = (-(I * ((x : ℝ) : ℂ))) ^ (0 : ℕ) * xiMassJetIntegrand a (2 * N) ((σ : ℂ) + (u : ℂ) * I) h x
     rw [xiMassJetAnalyticTest_eq_pow ha N _ ((x : ℝ) : ℂ)]
     simp only [xiMassJetIntegrand, pow_zero, one_mul]
   rw [hfour]

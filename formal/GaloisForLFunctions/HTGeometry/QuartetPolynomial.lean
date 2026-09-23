@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.OrderOneEnvelope
 
 For `tau` with `Re tau * Im tau ≠ 0` the polynomial
 
-`Q(z) = (z^2 - tau^2) (z^2 - conj(tau)^2)`
+`Q(z) = (z^(2 : ℕ) - tau^(2 : ℕ)) (z^(2 : ℕ) - conj(tau)^(2 : ℕ))`
 
 is real, even, has no real zero, and has exactly the off-real quartet `{±tau, ±conj tau}` as its
 zero set.  Multiplying an even real entire function of exact order one by `Q` therefore preserves
@@ -56,17 +56,17 @@ theorem orderOneEnvelope_polyEval (p : Polynomial ℂ) :
 
 /-- The real even quartet polynomial. -/
 def quartetPoly (τ : ℂ) : Polynomial ℂ :=
-  (Polynomial.X ^ 2 - Polynomial.C (τ ^ 2)) *
-    (Polynomial.X ^ 2 - Polynomial.C (((starRingEnd ℂ) τ) ^ 2))
+  (Polynomial.X ^ (2 : ℕ) - Polynomial.C (τ ^ (2 : ℕ))) *
+    (Polynomial.X ^ (2 : ℕ) - Polynomial.C (((starRingEnd ℂ) τ) ^ (2 : ℕ)))
 
 theorem eval_quartetPoly (τ z : ℂ) :
-    Polynomial.eval z (quartetPoly τ) = (z ^ 2 - τ ^ 2) * (z ^ 2 - ((starRingEnd ℂ) τ) ^ 2) := by
+    Polynomial.eval z (quartetPoly τ) = (z ^ (2 : ℕ) - τ ^ (2 : ℕ)) * (z ^ (2 : ℕ) - ((starRingEnd ℂ) τ) ^ (2 : ℕ)) := by
   simp [quartetPoly]
 
 theorem quartetPoly_ne_zero (τ : ℂ) : quartetPoly τ ≠ 0 := by
-  have h1 : (Polynomial.X ^ 2 - Polynomial.C (τ ^ 2) : Polynomial ℂ).Monic :=
+  have h1 : (Polynomial.X ^ (2 : ℕ) - Polynomial.C (τ ^ (2 : ℕ)) : Polynomial ℂ).Monic :=
     Polynomial.monic_X_pow_sub_C _ two_ne_zero
-  have h2 : (Polynomial.X ^ 2 - Polynomial.C (((starRingEnd ℂ) τ) ^ 2) : Polynomial ℂ).Monic :=
+  have h2 : (Polynomial.X ^ (2 : ℕ) - Polynomial.C (((starRingEnd ℂ) τ) ^ (2 : ℕ)) : Polynomial ℂ).Monic :=
     Polynomial.monic_X_pow_sub_C _ two_ne_zero
   exact (h1.mul h2).ne_zero
 
@@ -89,7 +89,7 @@ theorem eval_quartetPoly_eq_zero_iff (τ z : ℂ) :
     Polynomial.eval z (quartetPoly τ) = 0 ↔
       z = τ ∨ z = -τ ∨ z = (starRingEnd ℂ) τ ∨ z = -((starRingEnd ℂ) τ) := by
   rw [eval_quartetPoly]
-  have hfac : (z ^ 2 - τ ^ 2) * (z ^ 2 - ((starRingEnd ℂ) τ) ^ 2)
+  have hfac : (z ^ (2 : ℕ) - τ ^ (2 : ℕ)) * (z ^ (2 : ℕ) - ((starRingEnd ℂ) τ) ^ (2 : ℕ))
       = ((z - τ) * (z + τ)) * ((z - (starRingEnd ℂ) τ) * (z + (starRingEnd ℂ) τ)) := by ring
   rw [hfac]
   simp only [mul_eq_zero, sub_eq_zero, add_eq_zero_iff_eq_neg]

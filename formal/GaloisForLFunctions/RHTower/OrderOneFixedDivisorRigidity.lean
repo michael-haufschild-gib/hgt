@@ -32,7 +32,7 @@ namespace RHTower.OrderOneRigidity
 /-! ## Order-one growth gives subquadratic proximity -/
 
 theorem isLittleO_orderOneEnvelope (C : ℝ) :
-    (fun r : ℝ => C * (1 + r) * Real.log (2 + r)) =o[atTop] fun r : ℝ => r ^ 2 := by
+    (fun r : ℝ => C * (1 + r) * Real.log (2 + r)) =o[atTop] fun r : ℝ => r ^ (2 : ℕ) := by
   have hlog : (fun r : ℝ => Real.log (2 + r)) =o[atTop] fun r : ℝ => r := by
     have h1 : (fun r : ℝ => Real.log (2 + r)) =o[atTop] fun r : ℝ => 2 + r := by
       have := Real.isLittleO_log_id_atTop.comp_tendsto
@@ -61,7 +61,7 @@ proximity to be `o(r²)`. -/
 theorem proximity_isLittleO_sq_of_growth {F : ℂ → ℂ} {C : ℝ} (hC : 0 ≤ C)
     (hF : Differentiable ℂ F)
     (hbound : ∀ z : ℂ, ‖F z‖ ≤ Real.exp (C * (1 + ‖z‖) * Real.log (2 + ‖z‖))) :
-    proximity F ⊤ =o[atTop] fun r : ℝ => r ^ 2 := by
+    proximity F ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ) := by
   have hFan : AnalyticOnNhd ℂ F Set.univ := analyticOnNhd_univ_iff_differentiable.mpr hF
   have hbnd : ∀ r : ℝ, 1 ≤ r →
       proximity F ⊤ r ≤ C * (1 + r) * Real.log (2 + r) := by
@@ -100,9 +100,9 @@ theorem proximity_isLittleO_sq_of_entire_quotient
     (hFord : ∀ z, meromorphicOrderAt F z ≠ ⊤)
     (hGord : ∀ z, meromorphicOrderAt G z ≠ ⊤)
     (hfac : ∀ z, G z = H z * F z)
-    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ 2)
-    (hproxG : proximity G ⊤ =o[atTop] fun r : ℝ => r ^ 2) :
-    proximity H ⊤ =o[atTop] fun r : ℝ => r ^ 2 := by
+    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ))
+    (hproxG : proximity G ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ)) :
+    proximity H ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ) := by
   have hFan : AnalyticOnNhd ℂ F Set.univ := analyticOnNhd_univ_iff_differentiable.mpr hF
   have hGan : AnalyticOnNhd ℂ G Set.univ := analyticOnNhd_univ_iff_differentiable.mpr hG
   have hHan : AnalyticOnNhd ℂ H Set.univ := analyticOnNhd_univ_iff_differentiable.mpr hH
@@ -111,20 +111,20 @@ theorem proximity_isLittleO_sq_of_entire_quotient
   intro c hc
   have hFo := (isLittleO_iff.mp hproxF) (c := c / 3) (by linarith)
   have hGo := (isLittleO_iff.mp hproxG) (c := c / 3) (by linarith)
-  have hKo : ∀ᶠ r : ℝ in atTop, K ≤ (c / 3) * r ^ 2 := by
-    have htend : Tendsto (fun r : ℝ => (c / 3) * r ^ 2) atTop atTop := by
+  have hKo : ∀ᶠ r : ℝ in atTop, K ≤ (c / 3) * r ^ (2 : ℕ) := by
+    have htend : Tendsto (fun r : ℝ => (c / 3) * r ^ (2 : ℕ)) atTop atTop := by
       refine Filter.Tendsto.const_mul_atTop (by linarith) ?_
       exact tendsto_pow_atTop (by norm_num)
     exact htend.eventually_ge_atTop K
   filter_upwards [hFo, hGo, hKo, eventually_ge_atTop (1 : ℝ)] with r hf hg hk hr
   have hnn := proximity_nonneg_of_entire hHan hr
   have hle := hbnd r hr
-  have hrsq : ‖(r : ℝ) ^ 2‖ = r ^ 2 := by
+  have hrsq : ‖(r : ℝ) ^ (2 : ℕ)‖ = r ^ (2 : ℕ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   rw [Real.norm_eq_abs, abs_of_nonneg hnn, hrsq]
   rw [Real.norm_eq_abs, hrsq] at hf hg
-  have hFabs : proximity F ⊤ r ≤ c / 3 * r ^ 2 := le_trans (le_abs_self _) hf
-  have hGabs : proximity G ⊤ r ≤ c / 3 * r ^ 2 := le_trans (le_abs_self _) hg
+  have hFabs : proximity F ⊤ r ≤ c / 3 * r ^ (2 : ℕ) := le_trans (le_abs_self _) hf
+  have hGabs : proximity G ⊤ r ≤ c / 3 * r ^ (2 : ℕ) := le_trans (le_abs_self _) hg
   linarith
 
 /-! ## Order-one fixed-divisor rigidity -/
@@ -138,8 +138,8 @@ theorem exists_expAffine_of_entire_quotient
     (hGord : ∀ z, meromorphicOrderAt G z ≠ ⊤)
     (hHne : ∀ z, H z ≠ 0)
     (hfac : ∀ z, G z = H z * F z)
-    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ 2)
-    (hproxG : proximity G ⊤ =o[atTop] fun r : ℝ => r ^ 2) :
+    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ))
+    (hproxG : proximity G ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ)) :
     ∃ a b : ℂ, ∀ z, H z = Complex.exp (a * z + b) := by
   obtain ⟨g, hg, hexp⟩ := entire_nonvanishing_has_log H hH hHne
   have hprox := proximity_isLittleO_sq_of_entire_quotient hF hG hH hFord hGord hfac hproxF hproxG
@@ -158,8 +158,8 @@ theorem exists_const_of_even_entire_quotient
     (hHne : ∀ z, H z ≠ 0)
     (hfac : ∀ z, G z = H z * F z)
     (hHeven : ∀ z, H (-z) = H z)
-    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ 2)
-    (hproxG : proximity G ⊤ =o[atTop] fun r : ℝ => r ^ 2) :
+    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ))
+    (hproxG : proximity G ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ)) :
     ∀ z, H z = H 0 := by
   obtain ⟨a, b, hab⟩ :=
     exists_expAffine_of_entire_quotient hF hG hH hFord hGord hHne hfac hproxF hproxG
@@ -203,8 +203,8 @@ theorem eq_of_even_entire_quotient
     (hHne : ∀ z, H z ≠ 0)
     (hfac : ∀ z, G z = H z * F z)
     (hHeven : ∀ z, H (-z) = H z)
-    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ 2)
-    (hproxG : proximity G ⊤ =o[atTop] fun r : ℝ => r ^ 2)
+    (hproxF : proximity F ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ))
+    (hproxG : proximity G ⊤ =o[atTop] fun r : ℝ => r ^ (2 : ℕ))
     (hFz₀ : F z₀ ≠ 0) (hnorm : G z₀ = F z₀) :
     ∀ z, G z = F z := by
   have hconst :=

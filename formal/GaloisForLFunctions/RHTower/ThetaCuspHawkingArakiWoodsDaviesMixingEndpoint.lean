@@ -8,7 +8,7 @@ from the standard thermal dilation.
 
 For one positive Bohr frequency `omega`, the source-derived unsquared shell coefficient is
 
-`F_a(omega) = omega^2 XiC(omega + a i) / (4 sqrt(3) pi)`.
+`F_a(omega) = omega^(2 : ℕ) XiC(omega + a i) / (4 sqrt(3) pi)`.
 
 At Hartle--Hawking inverse temperature `beta_H = 2 pi / kappa`, the Araki--Woods one-particle coupling has
 two on-shell components
@@ -18,8 +18,8 @@ two on-shell components
 Their norm squares are the down/up shell weights already derived from the tilted theta mirror.  The
 Davies weak-coupling population generator therefore has rates
 
-`gamma_down = 2 pi (1+n_H) |F_a|^2`,
-`gamma_up   = 2 pi n_H |F_a|^2`.
+`gamma_down = 2 pi (1+n_H) |F_a|^(2 : ℕ)`,
+`gamma_up   = 2 pi n_H |F_a|^(2 : ℕ)`.
 
 It conserves population, fixes the Hawking Gibbs vector, satisfies detailed balance, and has exactly
 one transverse population mode, with eigenvalue `-(gamma_down + gamma_up)`.  That mode converges

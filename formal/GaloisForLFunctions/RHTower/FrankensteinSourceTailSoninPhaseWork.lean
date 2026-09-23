@@ -49,16 +49,16 @@ theorem sourceZeroHorizontalTailLog_eq_neg_log_two_half_mul_rate
 theorem sourceTailSoninPhaseWork_closedForm
     (q : XiZeroCopy) :
     sourceTailSoninPhaseWork q =
-      ((Real.log 2 ^ 2 / 4 * primeDepthBVWoldXiCenteredRate q.1 ^ 2 *
-        (1 - primeDepthBVWoldXiCenteredRate q.1 ^ 2) /
-          (1 + primeDepthBVWoldXiCenteredRate q.1 ^ 2) ^ 2 : ℝ) : ℂ) := by
+      ((Real.log 2 ^ (2 : ℕ) / 4 * primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) *
+        (1 - primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ)) /
+          (1 + primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ)) ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [sourceTailSoninPhaseWork,
     xiZeroSoninCriticalPhaseOddFisherProfile,
     sourceZeroHorizontalTailLog_eq_neg_log_two_half_mul_rate,
     soninCriticalPhaseOddFisherProfile]
   push_cast
-  have hden : (1 + (primeDepthBVWoldXiCenteredRate q.1 : ℂ) ^ 2) ≠ 0 := by
-    have hpos : 0 < 1 + primeDepthBVWoldXiCenteredRate q.1 ^ 2 := by positivity
+  have hden : (1 + (primeDepthBVWoldXiCenteredRate q.1 : ℂ) ^ (2 : ℕ)) ≠ 0 := by
+    have hpos : 0 < 1 + primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) := by positivity
     exact_mod_cast hpos.ne'
   field_simp [hden]
   ring_nf
@@ -73,17 +73,17 @@ theorem sourceTailSoninPhaseWork_re_nonneg
   rw [sourceTailSoninPhaseWork_closedForm]
   simp only [ofReal_re]
   have hstrip := sourceHorizontalXiCenteredRate_abs_lt_one q
-  have hsq : primeDepthBVWoldXiCenteredRate q.1 ^ 2 < 1 := by
-    have habsSq : |primeDepthBVWoldXiCenteredRate q.1| ^ 2 < (1 : ℝ) ^ 2 :=
+  have hsq : primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) < 1 := by
+    have habsSq : |primeDepthBVWoldXiCenteredRate q.1| ^ (2 : ℕ) < (1 : ℝ) ^ (2 : ℕ) :=
       (sq_lt_sq₀ (abs_nonneg _) zero_le_one).2 hstrip
     calc
-      primeDepthBVWoldXiCenteredRate q.1 ^ 2 =
-          |primeDepthBVWoldXiCenteredRate q.1| ^ 2 := (sq_abs _).symm
-      _ < (1 : ℝ) ^ 2 := habsSq
+      primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) =
+          |primeDepthBVWoldXiCenteredRate q.1| ^ (2 : ℕ) := (sq_abs _).symm
+      _ < (1 : ℝ) ^ (2 : ℕ) := habsSq
       _ = 1 := by norm_num
-  have hfac : 0 ≤ 1 - primeDepthBVWoldXiCenteredRate q.1 ^ 2 := by
+  have hfac : 0 ≤ 1 - primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ) := by
     linarith
-  have hden : 0 < (1 + primeDepthBVWoldXiCenteredRate q.1 ^ 2) ^ 2 := by
+  have hden : 0 < (1 + primeDepthBVWoldXiCenteredRate q.1 ^ (2 : ℕ)) ^ (2 : ℕ) := by
     positivity
   exact div_nonneg (mul_nonneg
     (mul_nonneg (by positivity) (sq_nonneg _)) hfac) hden.le
@@ -98,18 +98,18 @@ theorem sourceTailSoninPhaseWork_re_pos_iff
   let t := primeDepthBVWoldXiCenteredRate q.1
   have hstrip : |t| < 1 := by
     exact sourceHorizontalXiCenteredRate_abs_lt_one q
-  have hfac : 0 < 1 - t ^ 2 := by
-    have habsSq : |t| ^ 2 < (1 : ℝ) ^ 2 :=
+  have hfac : 0 < 1 - t ^ (2 : ℕ) := by
+    have habsSq : |t| ^ (2 : ℕ) < (1 : ℝ) ^ (2 : ℕ) :=
       (sq_lt_sq₀ (abs_nonneg _) zero_le_one).2 hstrip
-    have hsq : t ^ 2 < 1 := by
+    have hsq : t ^ (2 : ℕ) < 1 := by
       calc
-        t ^ 2 = |t| ^ 2 := (sq_abs _).symm
-        _ < (1 : ℝ) ^ 2 := habsSq
+        t ^ (2 : ℕ) = |t| ^ (2 : ℕ) := (sq_abs _).symm
+        _ < (1 : ℝ) ^ (2 : ℕ) := habsSq
         _ = 1 := by norm_num
     linarith
-  have hden : 0 < (1 + t ^ 2) ^ 2 := by positivity
-  have hpos : 0 < Real.log 2 ^ 2 / 4 * t ^ 2 * (1 - t ^ 2) /
-      (1 + t ^ 2) ^ 2 ↔ t ≠ 0 := by
+  have hden : 0 < (1 + t ^ (2 : ℕ)) ^ (2 : ℕ) := by positivity
+  have hpos : 0 < Real.log 2 ^ (2 : ℕ) / 4 * t ^ (2 : ℕ) * (1 - t ^ (2 : ℕ)) /
+      (1 + t ^ (2 : ℕ)) ^ (2 : ℕ) ↔ t ≠ 0 := by
     constructor
     · intro h ht
       simp [ht] at h

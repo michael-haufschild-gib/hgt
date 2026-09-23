@@ -19,8 +19,8 @@ namespace RHTower
 open HTGeometry
 
 private lemma receiving_radius_sq (a b s : ℝ) (hs : s ≠ 0) (x y : ℝ) :
-    s^2 * (planeDisplacementRadius (-a/s+x,-b/s+y))^2 =
-      (a-s*x)^2+(b-s*y)^2 := by
+    s^(2 : ℕ) * (planeDisplacementRadius (-a/s+x,-b/s+y))^(2 : ℕ) =
+      (a-s*x)^(2 : ℕ)+(b-s*y)^(2 : ℕ) := by
   rw [planeDisplacementRadius, Real.sq_sqrt (by positivity)]
   field_simp
   ring
@@ -34,24 +34,24 @@ theorem eventually_exists_mobiusDivisorReceivingPairNeutralization :
         let M := 14*(b+1)*N
         ∀ P : Finset ℕ, mobiusDivisorCoupledTwoCore ⊆ P → 2 ∉ P →
           (∀ p ∈ mobiusDivisorCoupledTwoPool b N, p ∉ P) →
-          (mobiusDivisorSelectionFibre M P ∅)^2+
-            (mobiusDivisorSelectionFibre M P {2})^2 ≤ C*(M:ℝ)^2 →
+          (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+            (mobiusDivisorSelectionFibre M P {2})^(2 : ℕ) ≤ C*(M:ℝ)^(2 : ℕ) →
           ∃ l : List ℕ, l.Nodup ∧ l.length = ⌈A*Real.sqrt M⌉₊ ∧
             l.toFinset ⊆ mobiusDivisorCoupledTwoPool b N ∧
             (∀ k : ℕ, mobiusDivisorSelectionEnergy M (P ∪ (l.take k).toFinset) ≤
-              mobiusDivisorSelectionEnergy M P+R^2*M) ∧
-            (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) ∅)^2+
-              (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) {2})^2 ≤ R^2*M ∧
+              mobiusDivisorSelectionEnergy M P+R^(2 : ℕ)*M) ∧
+            (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) ∅)^(2 : ℕ)+
+              (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) {2})^(2 : ℕ) ≤ R^(2 : ℕ)*M ∧
             mobiusDivisorSelectionEnergy M (P ∪ l.toFinset)+
-              (mobiusDivisorSelectionFibre M P ∅)^2+
-              (mobiusDivisorSelectionFibre M P {2})^2+M ≤
+              (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+              (mobiusDivisorSelectionFibre M P {2})^(2 : ℕ)+M ≤
                 mobiusDivisorSelectionEnergy M P := by
   obtain ⟨b,c,d,hb,hc,hd,hgeometry⟩ := exists_mobiusDivisorTwoPlaneWindowGeometry
-  let R : ℝ := 4*9^2/c+2*9+c
+  let R : ℝ := 4*9^(2 : ℕ)/c+2*9+c
   have hR : 0 < R := by dsimp [R]; positivity
   refine ⟨b,R,hb,hR,?_⟩
   intro C hC
-  let A : ℝ := 4*Real.sqrt C/c+(R^2+1)/d+1
+  let A : ℝ := 4*Real.sqrt C/c+(R^(2 : ℕ)+1)/d+1
   have hA : 0 < A := by dsimp [A]; positivity
   refine ⟨A,hA,?_⟩
   filter_upwards [eventually_mobiusDivisorCoupledTwoCapacity_sub_one_ge_sqrt
@@ -62,7 +62,7 @@ theorem eventually_exists_mobiusDivisorReceivingPairNeutralization :
   have hm1 : (1:ℝ) ≤ M := by exact_mod_cast (show 1 ≤ M by omega)
   let s : ℝ := Real.sqrt M
   have hs : 0 < s := Real.sqrt_pos.mpr hMr
-  have hssq : s^2 = M := Real.sq_sqrt hMr.le
+  have hssq : s^(2 : ℕ) = M := Real.sq_sqrt hMr.le
   have hs1 : 1 ≤ s := by
     change 1 ≤ Real.sqrt (M:ℝ)
     rw [Real.le_sqrt (by norm_num) hMr.le]
@@ -111,9 +111,9 @@ theorem eventually_exists_mobiusDivisorReceivingPairNeutralization :
       change s*(_/s)=_
       field_simp
   have physical (L : Finset ℕ) (hL : L ⊆ l.toFinset) :
-      (mobiusDivisorSelectionFibre M (P ∪ L) ∅)^2+
-        (mobiusDivisorSelectionFibre M (P ∪ L) {2})^2 =
-          (M:ℝ)*(planeDisplacementRadius (z L))^2 := by
+      (mobiusDivisorSelectionFibre M (P ∪ L) ∅)^(2 : ℕ)+
+        (mobiusDivisorSelectionFibre M (P ∪ L) {2})^(2 : ℕ) =
+          (M:ℝ)*(planeDisplacementRadius (z L))^(2 : ℕ) := by
     have hchild : ∀ p ∈ L, ∀ q ∈ L, p ≠ q → M/p+1 ≤ q := by
       intro p hp q hq _
       have := (pdata p (hL hp)).2.2.2.2
@@ -128,20 +128,20 @@ theorem eventually_exists_mobiusDivisorReceivingPairNeutralization :
     symm
     rw [← hssq]
     exact receiving_radius_sq a e s hs.ne' _ _
-  have initial : (M:ℝ)*(planeDisplacementRadius z0)^2 = a^2+e^2 := by
+  have initial : (M:ℝ)*(planeDisplacementRadius z0)^(2 : ℕ) = a^(2 : ℕ)+e^(2 : ℕ) := by
     have hh := physical ∅ (empty_subset _)
     simpa only [union_empty,z,sum_empty,add_zero] using hh.symm
   have hr0 : planeDisplacementRadius z0 ≤ Real.sqrt C*s := by
     have hz0 : 0 ≤ planeDisplacementRadius z0 := Real.sqrt_nonneg _
     have hCroot := Real.sq_sqrt hC.le
-    have hrE : (planeDisplacementRadius z0)^2 ≤ C*(M:ℝ) := by
-      change a^2+e^2 ≤ C*(M:ℝ)^2 at hE
+    have hrE : (planeDisplacementRadius z0)^(2 : ℕ) ≤ C*(M:ℝ) := by
+      change a^(2 : ℕ)+e^(2 : ℕ) ≤ C*(M:ℝ)^(2 : ℕ) at hE
       nlinarith only [hE,initial,hMr]
-    have hprod : (Real.sqrt C*s)^2 = C*(M:ℝ) := by rw [mul_pow,hCroot,hssq]
+    have hprod : (Real.sqrt C*s)^(2 : ℕ) = C*(M:ℝ) := by rw [mul_pow,hCroot,hssq]
     nlinarith only [hrE,hprod,hz0,mul_nonneg (Real.sqrt_nonneg C) hs.le]
   have hdecay : planeDisplacementRadius z0-(n:ℝ)*c/4 ≤ 0 := by
     have hAroot : 4*Real.sqrt C/c ≤ A := by
-      have hh : 0 ≤ (R^2+1)/d := by positivity
+      have hh : 0 ≤ (R^(2 : ℕ)+1)/d := by positivity
       dsimp [A]
       linarith only [hh]
     have hh := mul_le_mul_of_nonneg_right hAroot hs.le
@@ -149,28 +149,28 @@ theorem eventually_exists_mobiusDivisorReceivingPairNeutralization :
     have heq : (4*Real.sqrt C/c*s)*c = 4*(Real.sqrt C*s) := by field_simp
     rw [heq] at hcn
     linarith
-  have hpay : R^2+1 ≤ d*(n:ℝ) := by
-    have hAr : (R^2+1)/d ≤ A := by
+  have hpay : R^(2 : ℕ)+1 ≤ d*(n:ℝ) := by
+    have hAr : (R^(2 : ℕ)+1)/d ≤ A := by
       have hh : 0 ≤ 4*Real.sqrt C/c := by positivity
       dsimp [A]
       linarith only [hh]
     have hAn : A ≤ (n:ℝ) := (le_mul_of_one_le_right hA.le hs1).trans hn
     exact (div_le_iff₀ hd).mp (hAr.trans hAn) |>.trans_eq (mul_comm _ _)
-  have endpoint : (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) ∅)^2+
-      (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) {2})^2 ≤ R^2*M := by
+  have endpoint : (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) ∅)^(2 : ℕ)+
+      (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) {2})^(2 : ℕ) ≤ R^(2 : ℕ)*M := by
     have hr := hradius n le_rfl
     rw [← hlen,List.take_length,hlen] at hr
     have hrr : planeDisplacementRadius (z l.toFinset) ≤ R :=
       hr.trans (max_le le_rfl (hdecay.trans hR.le))
     rw [physical _ Subset.rfl]
-    have hh : (planeDisplacementRadius (z l.toFinset))^2 ≤ R^2 :=
+    have hh : (planeDisplacementRadius (z l.toFinset))^(2 : ℕ) ≤ R^(2 : ℕ) :=
       (sq_le_sq₀ (Real.sqrt_nonneg _) hR.le).mpr hrr
     exact (mul_le_mul_of_nonneg_left hh hMr.le).trans_eq (mul_comm _ _)
   have energy (L : Finset ℕ) (hL : L ⊆ l.toFinset) :
-      mobiusDivisorSelectionEnergy M (P ∪ L)+a^2+e^2+
-        (∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-          (mobiusDivisorInterpolatedFibre M p P {2})^2)) =
-      mobiusDivisorSelectionEnergy M P+(M:ℝ)*(planeDisplacementRadius (z L))^2 := by
+      mobiusDivisorSelectionEnergy M (P ∪ L)+a^(2 : ℕ)+e^(2 : ℕ)+
+        (∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+          (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ))) =
+      mobiusDivisorSelectionEnergy M P+(M:ℝ)*(planeDisplacementRadius (z L))^(2 : ℕ) := by
     have he := mobiusDivisorSelectionEnergy_union_two_child_inactive M P L hM
       (fun p hp => ⟨(pdata p (hL hp)).1,(pdata p (hL hp)).2.1,
         (pdata p (hL hp)).2.2.1,by have := (pdata p (hL hp)).2.2.2.1; omega⟩)
@@ -182,7 +182,7 @@ theorem eventually_exists_mobiusDivisorReceivingPairNeutralization :
         omega)
     have hr := receiving_radius_sq a e s hs.ne' (∑ p ∈ L,v p).1 (∑ p ∈ L,v p).2
     rw [hssq,(coord L).1,(coord L).2] at hr
-    change (M:ℝ)*(planeDisplacementRadius (z L))^2=_ at hr
+    change (M:ℝ)*(planeDisplacementRadius (z L))^(2 : ℕ)=_ at hr
     change _ = mobiusDivisorSelectionEnergy M P-2*a*_-2*e*_+_+_-_ at he
     linarith only [he,hr]
   refine ⟨l,hlnd,hlen,hlsub,?_,endpoint,?_⟩
@@ -202,27 +202,27 @@ theorem eventually_exists_mobiusDivisorReceivingPairNeutralization :
         rw [ht]
         exact hh.trans (max_le_max_left _ (sub_le_self _ (by positivity)))
     have he := energy L hL
-    have hres : 0 ≤ ∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^2+
-        (mobiusDivisorInterpolatedFibre M p P {2})^2) := by positivity
-    change mobiusDivisorSelectionEnergy M (P ∪ L) ≤ mobiusDivisorSelectionEnergy M P+R^2*M
+    have hres : 0 ≤ ∑ p ∈ L,(p:ℝ)*((mobiusDivisorInterpolatedFibre M p P ∅)^(2 : ℕ)+
+        (mobiusDivisorInterpolatedFibre M p P {2})^(2 : ℕ)) := by positivity
+    change mobiusDivisorSelectionEnergy M (P ∪ L) ≤ mobiusDivisorSelectionEnergy M P+R^(2 : ℕ)*M
     rcases le_total R (planeDisplacementRadius z0) with hle|hle
     · rw [max_eq_right hle] at hr
       have hh := mul_le_mul_of_nonneg_left
         ((sq_le_sq₀ (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)).mpr hr) hMr.le
-      change (M:ℝ)*(planeDisplacementRadius (z L))^2 ≤
-        (M:ℝ)*(planeDisplacementRadius z0)^2 at hh
+      change (M:ℝ)*(planeDisplacementRadius (z L))^(2 : ℕ) ≤
+        (M:ℝ)*(planeDisplacementRadius z0)^(2 : ℕ) at hh
       nlinarith only [he,hh,initial,hres,sq_nonneg R,hMr]
     · rw [max_eq_left hle] at hr
       have hh := mul_le_mul_of_nonneg_left
         ((sq_le_sq₀ (Real.sqrt_nonneg _) hR.le).mpr hr) hMr.le
-      change (M:ℝ)*(planeDisplacementRadius (z L))^2 ≤ (M:ℝ)*R^2 at hh
+      change (M:ℝ)*(planeDisplacementRadius (z L))^(2 : ℕ) ≤ (M:ℝ)*R^(2 : ℕ) at hh
       nlinarith only [he,hh,hres,sq_nonneg a,sq_nonneg e]
   · have he := energy l.toFinset Subset.rfl
     have hres := sum_le_sum (fun p hp => (hreserve p (hlsub hp)).1)
     simp only [sum_const,nsmul_eq_mul,List.toFinset_card_of_nodup hlnd,hlen] at hres
     have hp := mul_le_mul_of_nonneg_right hpay hMr.le
     rw [physical _ Subset.rfl] at endpoint
-    change _+a^2+e^2+M ≤ _
+    change _+a^(2 : ℕ)+e^(2 : ℕ)+M ≤ _
     nlinarith only [he,hres,hp,endpoint]
 
 /-- With the literal fixed core, the receiving-pair construction has no
@@ -233,22 +233,22 @@ theorem eventually_exists_mobiusDivisorInitialReceivingPairNeutralization :
       ∀ᶠ N : ℕ in atTop,
         let M := 14*(b+1)*N
         let P := mobiusDivisorCoupledTwoCore
-        (∀ T ⊆ P, mobiusDivisorSelectionEnergy M T ≤ C*(M:ℝ)^2) ∧
+        (∀ T ⊆ P, mobiusDivisorSelectionEnergy M T ≤ C*(M:ℝ)^(2 : ℕ)) ∧
         ∃ l : List ℕ, l.Nodup ∧ l.length = ⌈A*Real.sqrt M⌉₊ ∧
           l.toFinset ⊆ mobiusDivisorCoupledTwoPool b N ∧
-          (∀ k : ℕ, mobiusDivisorSelectionEnergy M (P ∪ (l.take k).toFinset) ≤ C*(M:ℝ)^2) ∧
-          (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) ∅)^2+
-            (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) {2})^2 ≤ R^2*M ∧
+          (∀ k : ℕ, mobiusDivisorSelectionEnergy M (P ∪ (l.take k).toFinset) ≤ C*(M:ℝ)^(2 : ℕ)) ∧
+          (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) ∅)^(2 : ℕ)+
+            (mobiusDivisorSelectionFibre M (P ∪ l.toFinset) {2})^(2 : ℕ) ≤ R^(2 : ℕ)*M ∧
           mobiusDivisorSelectionEnergy M (P ∪ l.toFinset)+
-            (mobiusDivisorSelectionFibre M P ∅)^2+
-            (mobiusDivisorSelectionFibre M P {2})^2+M ≤
+            (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+            (mobiusDivisorSelectionFibre M P {2})^(2 : ℕ)+M ≤
               mobiusDivisorSelectionEnergy M P := by
   obtain ⟨b,R,hb,hR,hreturn⟩ := eventually_exists_mobiusDivisorReceivingPairNeutralization
   let P := mobiusDivisorCoupledTwoCore
   let D : ℝ := 2^P.card*722
   have hD : 0 < D := by dsimp [D]; positivity
   obtain ⟨A,hA,hreturn⟩ := hreturn D hD
-  refine ⟨b,R,A,D+R^2,hb,hR,hA,by positivity,?_⟩
+  refine ⟨b,R,A,D+R^(2 : ℕ),hb,hR,hA,by positivity,?_⟩
   filter_upwards [hreturn,eventually_ge_atTop (1:ℕ)] with N hreturn hN
   let M := 14*(b+1)*N
   have hM : 15 ≤ M := by dsimp [M]; nlinarith
@@ -257,21 +257,21 @@ theorem eventually_exists_mobiusDivisorInitialReceivingPairNeutralization :
     intro p hp
     obtain ⟨hp,hprime⟩ := mem_filter.mp (mem_erase.mp hp).2
     exact ⟨hprime,(mem_range.mp hp).trans_le hM⟩
-  have hprep : ∀ T ⊆ P, mobiusDivisorSelectionEnergy M T ≤ D*(M:ℝ)^2 := by
+  have hprep : ∀ T ⊆ P, mobiusDivisorSelectionEnergy M T ≤ D*(M:ℝ)^(2 : ℕ) := by
     intro T hT
     have he := mobiusDivisorSelectionEnergy_le_pow_card M T (fun p hpT => hp p (hT hpT))
     rw [mobiusDivisorSelectionEnergy_empty] at he
     have hdiag := sum_mobiusDivisorDilationChannel_sq_le_quadratic M
     have hpow : (2:ℝ)^T.card ≤ 2^P.card := by gcongr; norm_num
     calc
-      _ ≤ 2^T.card*(722*(M:ℝ)^2) := he.trans (mul_le_mul_of_nonneg_left hdiag (by positivity))
-      _ ≤ 2^P.card*(722*(M:ℝ)^2) := mul_le_mul_of_nonneg_right hpow (by positivity)
+      _ ≤ 2^T.card*(722*(M:ℝ)^(2 : ℕ)) := he.trans (mul_le_mul_of_nonneg_left hdiag (by positivity))
+      _ ≤ 2^P.card*(722*(M:ℝ)^(2 : ℕ)) := mul_le_mul_of_nonneg_right hpow (by positivity)
       _ = _ := by dsimp [D]; ring
-  have hpair : (mobiusDivisorSelectionFibre M P ∅)^2+
-      (mobiusDivisorSelectionFibre M P {2})^2 ≤ D*(M:ℝ)^2 := by
+  have hpair : (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+      (mobiusDivisorSelectionFibre M P {2})^(2 : ℕ) ≤ D*(M:ℝ)^(2 : ℕ) := by
     have hh := sum_mobiusDivisorSelectionFibre_sq_le_energy M P {∅,{2}}
-    have hh' : (mobiusDivisorSelectionFibre M P ∅)^2+
-        (mobiusDivisorSelectionFibre M P {2})^2 ≤ mobiusDivisorSelectionEnergy M P := by
+    have hh' : (mobiusDivisorSelectionFibre M P ∅)^(2 : ℕ)+
+        (mobiusDivisorSelectionFibre M P {2})^(2 : ℕ) ≤ mobiusDivisorSelectionEnergy M P := by
       simpa using hh
     exact hh'.trans (hprep P Subset.rfl)
   obtain ⟨l,hnd,hlen,hsub,hprefix,hpair',hend⟩ := hreturn P Subset.rfl
@@ -283,15 +283,15 @@ theorem eventually_exists_mobiusDivisorInitialReceivingPairNeutralization :
   refine ⟨?_,l,hnd,hlen,hsub,?_,hpair',hend⟩
   · intro T hT
     have hh := hprep T hT
-    change mobiusDivisorSelectionEnergy M T ≤ (D+R^2)*(M:ℝ)^2
+    change mobiusDivisorSelectionEnergy M T ≤ (D+R^(2 : ℕ))*(M:ℝ)^(2 : ℕ)
     nlinarith only [hh,sq_nonneg R,sq_nonneg (M:ℝ)]
   · intro k
     have hh := hprefix k
     have he := hprep P Subset.rfl
-    change mobiusDivisorSelectionEnergy M (P ∪ (l.take k).toFinset) ≤ (D+R^2)*(M:ℝ)^2
+    change mobiusDivisorSelectionEnergy M (P ∪ (l.take k).toFinset) ≤ (D+R^(2 : ℕ))*(M:ℝ)^(2 : ℕ)
     change mobiusDivisorSelectionEnergy M (P ∪ (l.take k).toFinset) ≤
-      mobiusDivisorSelectionEnergy M P+R^2*M at hh
-    have hsq : (M:ℝ) ≤ (M:ℝ)^2 := by nlinarith
+      mobiusDivisorSelectionEnergy M P+R^(2 : ℕ)*M at hh
+    have hsq : (M:ℝ) ≤ (M:ℝ)^(2 : ℕ) := by nlinarith
     nlinarith only [hh,he,mul_le_mul_of_nonneg_left hsq (sq_nonneg R)]
 
 end RHTower

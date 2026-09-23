@@ -16,7 +16,7 @@ theorem scalar_physical_equation (q : XiZeroCopy) (branch : Bool) (z : Point) (h
   rw [scalarLaplacian_eq _ z hz]
   change hyperbolicLaplacian (scalar (center q)) z = _
   have he := scalarCusp_hyperbolicLaplacian (center q) z hz
-  change hyperbolicLaplacian (scalar (center q)) z = (center q^2-1/4)*scalar (center q) z at he
+  change hyperbolicLaplacian (scalar (center q)) z = (center q^(2 : ℕ)-1/4)*scalar (center q) z at he
   rw [he]
   cases branch <;> dsimp [physicalRate,D4BMGlobalAngularResponse.center] <;> ring
 
@@ -26,7 +26,7 @@ def fullSquarePotential (q : XiZeroCopy) (z : Point) : ℂ :=
 
 /-- The complete hyperbolic gradient energy of the literal scalar. -/
 def fullGradientEnergy (q : XiZeroCopy) (z : Point) : ℂ :=
-  (z 1 : ℂ)^2*(coordDeriv 0 (scalar (center q)) z^2+coordDeriv 1 (scalar (center q)) z^2)
+  (z 1 : ℂ)^(2 : ℕ)*(coordDeriv 0 (scalar (center q)) z^(2 : ℕ)+coordDeriv 1 (scalar (center q)) z^(2 : ℕ))
 
 private theorem scalar_smooth (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) (n : ℕ) :
     ContDiffAt ℝ n (scalar (center q)) z := cuspLeg_contDiffAt .scalar (center q) n z hz
@@ -76,8 +76,8 @@ theorem fullSquarePotential_laplacian (q : XiZeroCopy) (branch : Bool) (z : Poin
 private theorem gradient_first (q : XiZeroCopy) (z : Point) (hz : 0 < z 1) (i : Fin 2) :
     coordDeriv i (fullGradientEnergy q) z =
       (if i = 1 then 2*(z 1 : ℂ) else 0)*
-        (coordDeriv 0 (scalar (center q)) z^2+coordDeriv 1 (scalar (center q)) z^2)+
-      (z 1 : ℂ)^2*(2*coordDeriv 0 (scalar (center q)) z*
+        (coordDeriv 0 (scalar (center q)) z^(2 : ℕ)+coordDeriv 1 (scalar (center q)) z^(2 : ℕ))+
+      (z 1 : ℂ)^(2 : ℕ)*(2*coordDeriv 0 (scalar (center q)) z*
           coordDeriv i (coordDeriv 0 (scalar (center q))) z+
         2*coordDeriv 1 (scalar (center q)) z*
           coordDeriv i (coordDeriv 1 (scalar (center q))) z) := by

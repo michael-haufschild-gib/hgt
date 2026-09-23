@@ -185,7 +185,7 @@ theorem quasiFreeCompressedSpectralEnergy_hermiteEvenRealGramCoordinates
     (m : ℕ) (energy occupation : Fin m → ℝ) :
     quasiFreeCompressedSpectralEnergy
         (hermiteEvenRealGramCoordinates m) energy occupation =
-      ∑ i, occupation i ^ 2 * energy i ^ 2 := by
+      ∑ i, occupation i ^ (2 : ℕ) * energy i ^ (2 : ℕ) := by
   simpa [hermiteEvenRealGramCoordinates] using
     quasiFreeCompressedSpectralEnergy_orthonormalRealGramCoordinates
       ℝ (fun j : Fin m => hermiteEvenUnit (j : ℕ))
@@ -197,7 +197,7 @@ theorem quasiFreeSpectralVariance_hermiteEvenRealGramCoordinates
     (m : ℕ) (energy occupation : Fin m → ℝ) :
     quasiFreeSpectralVariance
         (hermiteEvenRealGramCoordinates m) energy occupation =
-      ∑ i, occupation i * (1 - occupation i) * energy i ^ 2 := by
+      ∑ i, occupation i * (1 - occupation i) * energy i ^ (2 : ℕ) := by
   simpa [hermiteEvenRealGramCoordinates] using
     quasiFreeSpectralVariance_orthonormalRealGramCoordinates
       ℝ (fun j : Fin m => hermiteEvenUnit (j : ℕ))
@@ -210,7 +210,7 @@ theorem quasiFreeSpectralFanoMargin_hermiteEvenRealGramCoordinates
     quasiFreeSpectralFanoMargin
         (hermiteEvenRealGramCoordinates m) energy occupation =
       ∑ i, occupation i *
-        (energy i - (1 - occupation i) * energy i ^ 2) := by
+        (energy i - (1 - occupation i) * energy i ^ (2 : ℕ)) := by
   simpa [hermiteEvenRealGramCoordinates] using
     quasiFreeSpectralFanoMargin_orthonormalRealGramCoordinates
       ℝ (fun j : Fin m => hermiteEvenUnit (j : ℕ))
@@ -226,12 +226,12 @@ theorem hermiteEvenRealGram_quasiFree_stepFourDegree_profile
       quasiFreeSpectralVariance (hermiteEvenRealGramCoordinates m)
           (fun j => (hermiteEvenStepFourDegree j : ℝ)) occupation =
         ∑ j, occupation j * (1 - occupation j) *
-          (hermiteEvenStepFourDegree j : ℝ) ^ 2 ∧
+          (hermiteEvenStepFourDegree j : ℝ) ^ (2 : ℕ) ∧
       quasiFreeSpectralFanoMargin (hermiteEvenRealGramCoordinates m)
           (fun j => (hermiteEvenStepFourDegree j : ℝ)) occupation =
         ∑ j, occupation j *
           ((hermiteEvenStepFourDegree j : ℝ) - (1 - occupation j) *
-            (hermiteEvenStepFourDegree j : ℝ) ^ 2) := by
+            (hermiteEvenStepFourDegree j : ℝ) ^ (2 : ℕ)) := by
   exact ⟨quasiFreeSpectralMean_hermiteEvenRealGramCoordinates m _ occupation,
     quasiFreeSpectralVariance_hermiteEvenRealGramCoordinates m _ occupation,
     quasiFreeSpectralFanoMargin_hermiteEvenRealGramCoordinates m _ occupation⟩
@@ -242,7 +242,7 @@ theorem constrainedProlateHermiteWeight_stepFour_varianceSummand_pos
     {m : ℕ} (j : Fin m) (hj : 0 < (j : ℕ)) :
     0 < constrainedProlateHermiteWeight (j : ℕ) *
         (1 - constrainedProlateHermiteWeight (j : ℕ)) *
-          (hermiteEvenStepFourDegree j : ℝ) ^ 2 := by
+          (hermiteEvenStepFourDegree j : ℝ) ^ (2 : ℕ) := by
   have henergy : 0 < (hermiteEvenStepFourDegree j : ℝ) := by
     simp [hermiteEvenStepFourDegree, hj]
   exact mul_pos
@@ -257,10 +257,10 @@ theorem constrainedProlateHermiteWeight_stepFour_fanoSummand_neg
     constrainedProlateHermiteWeight (j : ℕ) *
         ((hermiteEvenStepFourDegree j : ℝ) -
           (1 - constrainedProlateHermiteWeight (j : ℕ)) *
-            (hermiteEvenStepFourDegree j : ℝ) ^ 2) < 0 := by
+            (hermiteEvenStepFourDegree j : ℝ) ^ (2 : ℕ)) < 0 := by
   let q := constrainedProlateHermiteWeight (j : ℕ)
   let e := (hermiteEvenStepFourDegree j : ℝ)
-  change q * (e - (1 - q) * e ^ 2) < 0
+  change q * (e - (1 - q) * e ^ (2 : ℕ)) < 0
   have hqpos : 0 < q := constrainedProlateHermiteWeight_pos (j : ℕ)
   have hqhalf : q ≤ 1 / 2 := constrainedProlateHermiteWeight_le_half_of_pos hj
   have he : (4 : ℝ) ≤ e := by
@@ -273,8 +273,8 @@ theorem constrainedProlateHermiteWeight_stepFour_fanoSummand_neg
       _ = (1 / 2 : ℝ) * 4 := by norm_num
       _ ≤ (1 - q) * e := mul_le_mul hqcomp he (by norm_num) (by linarith)
   have hepos : 0 < e := lt_of_lt_of_le (by norm_num) he
-  have hinner : e - (1 - q) * e ^ 2 < 0 := by
-    rw [show e - (1 - q) * e ^ 2 = e * (1 - (1 - q) * e) by ring]
+  have hinner : e - (1 - q) * e ^ (2 : ℕ) < 0 := by
+    rw [show e - (1 - q) * e ^ (2 : ℕ) = e * (1 - (1 - q) * e) by ring]
     exact mul_neg_of_pos_of_neg hepos (sub_neg.mpr hprod)
   exact mul_neg_of_pos_of_neg hqpos hinner
 
@@ -292,14 +292,14 @@ theorem constrainedProlateHermiteWeight_quasiFree_stepFourDegree_profile (m : �
           (fun j => constrainedProlateHermiteWeight (j : ℕ)) =
         ∑ j : Fin m, constrainedProlateHermiteWeight (j : ℕ) *
           (1 - constrainedProlateHermiteWeight (j : ℕ)) *
-            (hermiteEvenStepFourDegree j : ℝ) ^ 2 ∧
+            (hermiteEvenStepFourDegree j : ℝ) ^ (2 : ℕ) ∧
       quasiFreeSpectralFanoMargin (hermiteEvenRealGramCoordinates m)
           (fun j => (hermiteEvenStepFourDegree j : ℝ))
           (fun j => constrainedProlateHermiteWeight (j : ℕ)) =
         ∑ j : Fin m, constrainedProlateHermiteWeight (j : ℕ) *
           ((hermiteEvenStepFourDegree j : ℝ) -
             (1 - constrainedProlateHermiteWeight (j : ℕ)) *
-              (hermiteEvenStepFourDegree j : ℝ) ^ 2) := by
+              (hermiteEvenStepFourDegree j : ℝ) ^ (2 : ℕ)) := by
   exact hermiteEvenRealGram_quasiFree_stepFourDegree_profile m _
 
 /-- The constrained-prolate occupation has nonzero Hermite fluctuation exactly when the first
@@ -385,7 +385,7 @@ theorem constrainedProlateHermiteWeight_quasiFree_stepFourDegree_rankVarianceDis
           (constrainedProlateHermiteWeight (i : ℕ) *
               (hermiteEvenStepFourDegree i : ℝ) -
             constrainedProlateHermiteWeight (j : ℕ) *
-              (hermiteEvenStepFourDegree j : ℝ)) ^ 2) / 2 := by
+              (hermiteEvenStepFourDegree j : ℝ)) ^ (2 : ℕ)) / 2 := by
   simpa [hermiteEvenRealGramCoordinates] using
     quasiFreeSpectralRankVarianceDiscriminant_orthonormalRealGramCoordinates
       ℝ (fun j : Fin m => hermiteEvenUnit (j : ℕ))
@@ -450,7 +450,7 @@ theorem constrainedProlateHermiteWeight_quasiFree_stepFourDegree_rankBhatiaDavis
     (m : ℕ) :
     quasiFreeSpectralMean (hermiteEvenRealGramCoordinates m)
           (fun j => (hermiteEvenStepFourDegree j : ℝ))
-          (fun j => constrainedProlateHermiteWeight (j : ℕ)) ^ 2 +
+          (fun j => constrainedProlateHermiteWeight (j : ℕ)) ^ (2 : ℕ) +
         (m : ℝ) * quasiFreeSpectralVariance (hermiteEvenRealGramCoordinates m)
           (fun j => (hermiteEvenStepFourDegree j : ℝ))
           (fun j => constrainedProlateHermiteWeight (j : ℕ)) <
@@ -564,7 +564,7 @@ theorem hermiteEvenRealGram_canonicalFeatureVolume_logFanoMargin_eq_lower_bound_
       deriv (deriv (fun s => Real.log
         (canonicalFeatureVolume (hermiteEvenRealGramCoordinates m) (fun _ => 1)
           degree (Real.exp s)))) 0 =
-        (m : ℝ) * (lower - (upper - lower - 1) ^ 2 / 4) ↔
+        (m : ℝ) * (lower - (upper - lower - 1) ^ (2 : ℕ) / 4) ↔
       upper = lower + 1 ∧ ∀ k, (degree k : ℝ) = lower := by
   simpa [hermiteEvenRealGramCoordinates] using
     orthonormalRealGram_canonicalFeatureVolume_logFanoMargin_eq_lower_bound_iff ℝ

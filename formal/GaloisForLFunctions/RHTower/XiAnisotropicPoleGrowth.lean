@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.CompletedPrimeFluxFittingAttachment
 /-!
 # Xi logarithmic residues on the anisotropic rational mesh
 
-The explicit `1/n` by `1/n^2` mesh approaches every target through its punctured neighborhood.
+The explicit `1/n` by `1/n^(2 : ℕ)` mesh approaches every target through its punctured neighborhood.
 Composing this fact with the normalized Xi logarithmic-residue theorem shows that the mesh reads
 the full analytic multiplicity exactly.  Together with the mesh reciprocal amplifier, this is the
 source-pole input for the sublinear finite-Taylor flux criterion.

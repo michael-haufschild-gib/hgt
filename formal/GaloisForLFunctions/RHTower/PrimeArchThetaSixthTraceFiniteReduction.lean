@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaThirdCumulantLikelihoodTailEnve
 The exact-height damping of the higher theta atoms and their likelihood-ratio order remove the
 infinite tail from the order-24 sixth-trace budget.  The completed bound
 
-`normalizedPrimeArchMoment 2 < 3 / 10^7`
+`normalizedPrimeArchMoment 2 < 3 / 10^(7 : ℕ)`
 
 is reduced to five explicit rational enclosures for the first theta atom's first four raw even
 moments.  No Xi-zero location or RH premise is used.
@@ -46,10 +46,10 @@ theorem thetaCuspFullSource_sub_first_le_exp_neg_eighteen
     _ ≤ (8 / 2997 : ℝ) * Real.exp (-18 * x) * thetaCuspSourceTerm x 1 := by
       gcongr
 
-/-- Elementary optimizer for `x^2 exp(-18x)`. -/
+/-- Elementary optimizer for `x^(2 : ℕ) exp(-18x)`. -/
 theorem sq_mul_exp_neg_eighteen_le
     {x : ℝ} (hx : 0 ≤ x) :
-    x ^ 2 * Real.exp (-18 * x) ≤ Real.exp (-2) / 81 := by
+    x ^ (2 : ℕ) * Real.exp (-18 * x) ≤ Real.exp (-2) / 81 := by
   have ht := Real.add_one_le_exp (9 * x - 1)
   have hxexp : 9 * x * Real.exp (-9 * x) ≤ Real.exp (-1) := by
     have ht' : 9 * x ≤ Real.exp (9 * x - 1) := by nlinarith
@@ -63,23 +63,23 @@ theorem sq_mul_exp_neg_eighteen_le
         ring
   have hsq := pow_le_pow_left₀
     (mul_nonneg (by positivity) (Real.exp_pos _).le) hxexp 2
-  have hleft : (9 * x * Real.exp (-9 * x)) ^ 2 =
-      81 * (x ^ 2 * Real.exp (-18 * x)) := by
-    rw [show Real.exp (-18 * x) = Real.exp (-9 * x) ^ 2 by
+  have hleft : (9 * x * Real.exp (-9 * x)) ^ (2 : ℕ) =
+      81 * (x ^ (2 : ℕ) * Real.exp (-18 * x)) := by
+    rw [show Real.exp (-18 * x) = Real.exp (-9 * x) ^ (2 : ℕ) by
       rw [← Real.exp_nat_mul]
       congr 1
       ring]
     ring
-  have hright : Real.exp (-1) ^ 2 = Real.exp (-2) := by
+  have hright : Real.exp (-1) ^ (2 : ℕ) = Real.exp (-2) := by
     rw [← Real.exp_nat_mul]
     norm_num
   rw [hleft, hright] at hsq
   linarith
 
-/-- Elementary optimizer for `x^6 exp(-18x)`. -/
+/-- Elementary optimizer for `x^(6 : ℕ) exp(-18x)`. -/
 theorem sixth_mul_exp_neg_eighteen_le
     {x : ℝ} (hx : 0 ≤ x) :
-    x ^ 6 * Real.exp (-18 * x) ≤ Real.exp (-6) / 729 := by
+    x ^ (6 : ℕ) * Real.exp (-18 * x) ≤ Real.exp (-6) / 729 := by
   have ht := Real.add_one_le_exp (3 * x - 1)
   have hxexp : 3 * x * Real.exp (-3 * x) ≤ Real.exp (-1) := by
     have ht' : 3 * x ≤ Real.exp (3 * x - 1) := by nlinarith
@@ -93,14 +93,14 @@ theorem sixth_mul_exp_neg_eighteen_le
         ring
   have hsix := pow_le_pow_left₀
     (mul_nonneg (by positivity) (Real.exp_pos _).le) hxexp 6
-  have hleft : (3 * x * Real.exp (-3 * x)) ^ 6 =
-      729 * (x ^ 6 * Real.exp (-18 * x)) := by
-    rw [show Real.exp (-18 * x) = Real.exp (-3 * x) ^ 6 by
+  have hleft : (3 * x * Real.exp (-3 * x)) ^ (6 : ℕ) =
+      729 * (x ^ (6 : ℕ) * Real.exp (-18 * x)) := by
+    rw [show Real.exp (-18 * x) = Real.exp (-3 * x) ^ (6 : ℕ) by
       rw [← Real.exp_nat_mul]
       congr 1
       ring]
     ring
-  have hright : Real.exp (-1) ^ 6 = Real.exp (-6) := by
+  have hright : Real.exp (-1) ^ (6 : ℕ) = Real.exp (-6) := by
     rw [← Real.exp_nat_mul]
     norm_num
   rw [hleft, hright] at hsix
@@ -218,9 +218,9 @@ theorem thetaCuspHigherAtomRawEvenMoment_three_lt_one_over_twoHundredMillion :
     _ < (1 / 200000000 : ℝ) := by nlinarith
 
 private def sixthTraceCapPolynomial (s t : ℝ) : ℝ :=
-  (0.00059935 + 1 / 200000000 : ℝ) * s ^ 2 -
-    15 * (0.0029627 : ℝ) * s * t + 30 * t ^ 3 -
-      (9 / 250000 : ℝ) * s ^ 3
+  (0.00059935 + 1 / 200000000 : ℝ) * s ^ (2 : ℕ) -
+    15 * (0.0029627 : ℝ) * s * t + 30 * t ^ (3 : ℕ) -
+      (9 / 250000 : ℝ) * s ^ (3 : ℕ)
 
 private theorem sixthTraceCapPolynomial_mono_t
     {s t u : ℝ}
@@ -231,15 +231,15 @@ private theorem sixthTraceCapPolynomial_mono_t
   have hu0 : 0 < u := lt_of_lt_of_le htpos htu
   have hbracket : 0 <
       -15 * (0.0029627 : ℝ) * s +
-        30 * (u ^ 2 + u * t + t ^ 2) := by
-    have hsq_t : (0.02297 : ℝ) ^ 2 ≤ t ^ 2 := by gcongr
+        30 * (u ^ (2 : ℕ) + u * t + t ^ (2 : ℕ)) := by
+    have hsq_t : (0.02297 : ℝ) ^ (2 : ℕ) ≤ t ^ (2 : ℕ) := by gcongr
     have htu0 : (0.02297 : ℝ) ≤ u := ht0.trans htu
-    have hsq_u : (0.02297 : ℝ) ^ 2 ≤ u ^ 2 := by gcongr
-    have hmul : (0.02297 : ℝ) ^ 2 ≤ u * t := by nlinarith
+    have hsq_u : (0.02297 : ℝ) ^ (2 : ℕ) ≤ u ^ (2 : ℕ) := by gcongr
+    have hmul : (0.02297 : ℝ) ^ (2 : ℕ) ≤ u * t := by nlinarith
     nlinarith
   have hident : sixthTraceCapPolynomial s u - sixthTraceCapPolynomial s t =
       (u - t) * (-15 * (0.0029627 : ℝ) * s +
-        30 * (u ^ 2 + u * t + t ^ 2)) := by
+        30 * (u ^ (2 : ℕ) + u * t + t ^ (2 : ℕ))) := by
     unfold sixthTraceCapPolynomial
     ring
   nlinarith [mul_nonneg (sub_nonneg.mpr htu) hbracket.le]
@@ -254,14 +254,14 @@ private theorem sixthTraceCapPolynomial_antitone_s
   have hbracket :
       (0.00059935 + 1 / 200000000 : ℝ) * (v + s) -
           15 * (0.0029627 : ℝ) * t -
-        (9 / 250000 : ℝ) * (v ^ 2 + v * s + s ^ 2) < 0 := by
+        (9 / 250000 : ℝ) * (v ^ (2 : ℕ) + v * s + s ^ (2 : ℕ)) < 0 := by
     have hsum : v + s ≤ 1 := by linarith
     nlinarith [sq_nonneg v, sq_nonneg s]
   have hident : sixthTraceCapPolynomial v t - sixthTraceCapPolynomial s t =
       (v - s) *
         ((0.00059935 + 1 / 200000000 : ℝ) * (v + s) -
           15 * (0.0029627 : ℝ) * t -
-          (9 / 250000 : ℝ) * (v ^ 2 + v * s + s ^ 2)) := by
+          (9 / 250000 : ℝ) * (v ^ (2 : ℕ) + v * s + s ^ (2 : ℕ))) := by
     unfold sixthTraceCapPolynomial
     ring
   nlinarith [mul_nonpos_of_nonneg_of_nonpos (sub_nonneg.mpr hsv) hbracket.le]
@@ -281,10 +281,10 @@ private theorem sixthTraceCapPolynomial_small_tail_mono
   have hRd : R * d = 9 / 4000000 := by
     norm_num [R, d]
   have hderivLower : 0 <
-      90 * R * B ^ 2 -
+      90 * R * B ^ (2 : ℕ) -
         15 * (0.0029627 : ℝ) *
           (R * (A + d) + (B + R * d)) -
-        3 * (9 / 250000 : ℝ) * (A + d) ^ 2 := by
+        3 * (9 / 250000 : ℝ) * (A + d) ^ (2 : ℕ) := by
     norm_num [R, A, B, d]
   have hfactor : 0 ≤ d - h := sub_nonneg.mpr hh1
   have hident :
@@ -296,30 +296,30 @@ private theorem sixthTraceCapPolynomial_small_tail_mono
             15 * (0.0029627 : ℝ) *
               (R * (A + d) + (B + R * h)) +
             30 * R *
-              ((B + R * d) ^ 2 +
+              ((B + R * d) ^ (2 : ℕ) +
                 (B + R * d) * (B + R * h) +
-                (B + R * h) ^ 2) -
+                (B + R * h) ^ (2 : ℕ)) -
             (9 / 250000 : ℝ) *
-              ((A + d) ^ 2 + (A + d) * (A + h) + (A + h) ^ 2)) := by
+              ((A + d) ^ (2 : ℕ) + (A + d) * (A + h) + (A + h) ^ (2 : ℕ))) := by
     unfold sixthTraceCapPolynomial
     ring
   have hbracket : 0 ≤
       (0.00059935 + 1 / 200000000 : ℝ) * (2 * A + d + h) -
         15 * (0.0029627 : ℝ) * (R * (A + d) + (B + R * h)) +
         30 * R *
-          ((B + R * d) ^ 2 + (B + R * d) * (B + R * h) +
-            (B + R * h) ^ 2) -
+          ((B + R * d) ^ (2 : ℕ) + (B + R * d) * (B + R * h) +
+            (B + R * h) ^ (2 : ℕ)) -
         (9 / 250000 : ℝ) *
-          ((A + d) ^ 2 + (A + d) * (A + h) + (A + h) ^ 2) := by
+          ((A + d) ^ (2 : ℕ) + (A + d) * (A + h) + (A + h) ^ (2 : ℕ)) := by
     dsimp only [A, B, R, d] at hderivLower ⊢
     have hB0 : 0 ≤ (0.0229718 : ℝ) := by norm_num
     have hRh0 : 0 ≤ (47 / 1000 : ℝ) * h := mul_nonneg (by norm_num) hh0
     have hsquares :
-        3 * (0.0229718 : ℝ) ^ 2 ≤
-          ((0.0229718 : ℝ) + (47 / 1000 : ℝ) * (9 / 188000)) ^ 2 +
+        3 * (0.0229718 : ℝ) ^ (2 : ℕ) ≤
+          ((0.0229718 : ℝ) + (47 / 1000 : ℝ) * (9 / 188000)) ^ (2 : ℕ) +
           ((0.0229718 : ℝ) + (47 / 1000 : ℝ) * (9 / 188000)) *
             ((0.0229718 : ℝ) + (47 / 1000 : ℝ) * h) +
-          ((0.0229718 : ℝ) + (47 / 1000 : ℝ) * h) ^ 2 := by
+          ((0.0229718 : ℝ) + (47 / 1000 : ℝ) * h) ^ (2 : ℕ) := by
       nlinarith [sq_nonneg ((47 / 1000 : ℝ) * h),
         sq_nonneg ((47 / 1000 : ℝ) * (9 / 188000))]
     nlinarith [sq_nonneg ((0.4969488 : ℝ) + h),
@@ -388,8 +388,8 @@ theorem normalizedPrimeArchMoment_two_lt_three_over_tenMillion_of_firstAtom_boun
     dsimp only [a0, a1, h0, h1] at hcross hmul ⊢
     nlinarith
   have hpolyUpper :
-      m0 ^ 2 * m3 - 15 * m0 * m1 * m2 + 30 * m1 ^ 3 -
-          (9 / 250000 : ℝ) * m0 ^ 3 ≤
+      m0 ^ (2 : ℕ) * m3 - 15 * m0 * m1 * m2 + 30 * m1 ^ (3 : ℕ) -
+          (9 / 250000 : ℝ) * m0 ^ (3 : ℕ) ≤
         sixthTraceCapPolynomial m0 m1 := by
     have hm2lower : (0.0029627 : ℝ) < m2 := by rw [hm2]; nlinarith
     have hm3upper : m3 < (0.00059935 + 1 / 200000000 : ℝ) := by
@@ -399,7 +399,7 @@ theorem normalizedPrimeArchMoment_two_lt_three_over_tenMillion_of_firstAtom_boun
     have hm1pos : 0 < m1 :=
       (by norm_num : (0 : ℝ) < 0.02297).trans hm1lower
     dsimp only [sixthTraceCapPolynomial]
-    have hsq : 0 ≤ m0 ^ 2 := sq_nonneg m0
+    have hsq : 0 ≤ m0 ^ (2 : ℕ) := sq_nonneg m0
     have hprod : 0 ≤ m0 * m1 := mul_nonneg hm0pos.le hm1pos.le
     nlinarith [mul_le_mul_of_nonneg_left hm3upper.le hsq,
       mul_le_mul_of_nonneg_left hm2lower.le hprod]
@@ -449,19 +449,19 @@ theorem normalizedPrimeArchMoment_two_lt_three_over_tenMillion_of_firstAtom_boun
         hsLower hm0half htStarLower
       exact (htMono.trans hsMono).trans_lt hstar
   have hcross :
-      m0 ^ 2 * m3 - 15 * m0 * m1 * m2 + 30 * m1 ^ 3 -
-          (9 / 250000 : ℝ) * m0 ^ 3 < 0 :=
+      m0 ^ (2 : ℕ) * m3 - 15 * m0 * m1 * m2 + 30 * m1 ^ (3 : ℕ) -
+          (9 / 250000 : ℝ) * m0 ^ (3 : ℕ) < 0 :=
     hpolyUpper.trans_lt hpolyNeg
   rw [normalizedPrimeArchMoment_two_eq_thetaCuspNormalizedEvenMoment]
   simp only [thetaCuspNormalizedEvenMoment]
   change m3 / m0 / 120 - m1 / m0 * (m2 / m0) / 8 +
-      (m1 / m0) ^ 3 / 4 < (3 / 10000000 : ℝ)
+      (m1 / m0) ^ (3 : ℕ) / 4 < (3 / 10000000 : ℝ)
   rw [← sub_lt_zero]
   have hident :
       m3 / m0 / 120 - m1 / m0 * (m2 / m0) / 8 +
-          (m1 / m0) ^ 3 / 4 - (3 / 10000000 : ℝ) =
-        (m0 ^ 2 * m3 - 15 * m0 * m1 * m2 + 30 * m1 ^ 3 -
-          (9 / 250000 : ℝ) * m0 ^ 3) / (120 * m0 ^ 3) := by
+          (m1 / m0) ^ (3 : ℕ) / 4 - (3 / 10000000 : ℝ) =
+        (m0 ^ (2 : ℕ) * m3 - 15 * m0 * m1 * m2 + 30 * m1 ^ (3 : ℕ) -
+          (9 / 250000 : ℝ) * m0 ^ (3 : ℕ)) / (120 * m0 ^ (3 : ℕ)) := by
     field_simp [hm0pos.ne']
     ring
   rw [hident]

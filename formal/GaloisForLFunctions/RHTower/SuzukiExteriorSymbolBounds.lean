@@ -49,7 +49,7 @@ theorem suzukiArchPoint_conj (ξ : ℝ) :
   ring
 
 /-- The logarithmic frequency weight `L(ξ) = log ⟨ξ⟩`. -/
-def suzukiExteriorLogWeight (ξ : ℝ) : ℝ := (1 / 2) * Real.log (1 + ξ ^ 2)
+def suzukiExteriorLogWeight (ξ : ℝ) : ℝ := (1 / 2) * Real.log (1 + ξ ^ (2 : ℕ))
 
 theorem suzukiExteriorLogWeight_neg (ξ : ℝ) :
     suzukiExteriorLogWeight (-ξ) = suzukiExteriorLogWeight ξ := by
@@ -69,7 +69,7 @@ theorem continuous_suzukiArchRemainder : Continuous suzukiArchRemainder := by
       continuous_suzukiArchPoint.continuousAt
   have hlog : Continuous suzukiExteriorLogWeight := by
     unfold suzukiExteriorLogWeight
-    have : ∀ ξ : ℝ, (0:ℝ) < 1 + ξ ^ 2 := fun ξ => by positivity
+    have : ∀ ξ : ℝ, (0:ℝ) < 1 + ξ ^ (2 : ℕ) := fun ξ => by positivity
     fun_prop (disch := intro ξ; positivity)
   unfold suzukiArchRemainder
   exact ((Complex.continuous_re.comp hdig).sub hlog).sub continuous_const
@@ -89,19 +89,19 @@ theorem abs_log_half_sub_logWeight_le {ξ : ℝ} (hξ : 2 ≤ ξ) :
   have h1 : Real.log (ξ / 2) = Real.log ξ - Real.log 2 := by
     rw [Real.log_div (ne_of_gt hξpos) (by norm_num)]
   have hsq : suzukiExteriorLogWeight ξ - Real.log ξ =
-      (1 / 2) * Real.log ((1 + ξ ^ 2) / ξ ^ 2) := by
+      (1 / 2) * Real.log ((1 + ξ ^ (2 : ℕ)) / ξ ^ (2 : ℕ)) := by
     rw [suzukiExteriorLogWeight, Real.log_div (by positivity) (by positivity), Real.log_pow]
     push_cast
     ring
-  have hratio_le : (1 + ξ ^ 2) / ξ ^ 2 ≤ 2 := by
+  have hratio_le : (1 + ξ ^ (2 : ℕ)) / ξ ^ (2 : ℕ) ≤ 2 := by
     rw [div_le_iff₀ (by positivity)]
     nlinarith
-  have hratio_ge : (1:ℝ) ≤ (1 + ξ ^ 2) / ξ ^ 2 := by
+  have hratio_ge : (1:ℝ) ≤ (1 + ξ ^ (2 : ℕ)) / ξ ^ (2 : ℕ) := by
     rw [le_div_iff₀ (by positivity)]
     nlinarith
-  have hlogle : Real.log ((1 + ξ ^ 2) / ξ ^ 2) ≤ Real.log 2 :=
+  have hlogle : Real.log ((1 + ξ ^ (2 : ℕ)) / ξ ^ (2 : ℕ)) ≤ Real.log 2 :=
     Real.log_le_log (by linarith) hratio_le
-  have hlogge : 0 ≤ Real.log ((1 + ξ ^ 2) / ξ ^ 2) := Real.log_nonneg hratio_ge
+  have hlogge : 0 ≤ Real.log ((1 + ξ ^ (2 : ℕ)) / ξ ^ (2 : ℕ)) := Real.log_nonneg hratio_ge
   have hlog2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   rw [abs_le]
   constructor <;> [skip; skip] <;> rw [h1] <;> nlinarith [hsq, hlogle, hlogge]

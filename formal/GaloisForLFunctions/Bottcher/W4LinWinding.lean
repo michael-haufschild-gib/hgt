@@ -32,23 +32,23 @@ namespace Bottcher
 theorem sqrt_lt_norm_quadratic {c z : ℂ} (hc : (2:ℝ) ≤ ‖c‖)
     (hz : Real.sqrt (2 * ‖c‖) < ‖z‖) : Real.sqrt (2 * ‖c‖) < ‖quadratic c z‖ := by
   have hs0 : (0:ℝ) ≤ Real.sqrt (2 * ‖c‖) := Real.sqrt_nonneg _
-  have hsq : Real.sqrt (2 * ‖c‖) ^ 2 = 2 * ‖c‖ := Real.sq_sqrt (by positivity)
-  have hzsq : 2 * ‖c‖ < ‖z‖ ^ 2 := by nlinarith
-  have h1 : ‖z ^ 2‖ ≤ ‖quadratic c z‖ + ‖c‖ := by
-    have h2 : quadratic c z = z ^ 2 + c := rfl
-    calc ‖z ^ 2‖ = ‖(z ^ 2 + c) + (-c)‖ := by ring_nf
-      _ ≤ ‖z ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+  have hsq : Real.sqrt (2 * ‖c‖) ^ (2 : ℕ) = 2 * ‖c‖ := Real.sq_sqrt (by positivity)
+  have hzsq : 2 * ‖c‖ < ‖z‖ ^ (2 : ℕ) := by nlinarith
+  have h1 : ‖z ^ (2 : ℕ)‖ ≤ ‖quadratic c z‖ + ‖c‖ := by
+    have h2 : quadratic c z = z ^ (2 : ℕ) + c := rfl
+    calc ‖z ^ (2 : ℕ)‖ = ‖(z ^ (2 : ℕ) + c) + (-c)‖ := by ring_nf
+      _ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
       _ = ‖quadratic c z‖ + ‖c‖ := by rw [← h2, norm_neg]
-  have h3 : ‖z‖ ^ 2 - ‖c‖ ≤ ‖quadratic c z‖ := by
+  have h3 : ‖z‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖quadratic c z‖ := by
     rw [← norm_pow] at hzsq ⊢
     linarith
   have hcsqrt : Real.sqrt (2 * ‖c‖) ≤ ‖c‖ := by
-    have h4 : Real.sqrt (2 * ‖c‖) ≤ Real.sqrt (‖c‖ ^ 2) :=
+    have h4 : Real.sqrt (2 * ‖c‖) ≤ Real.sqrt (‖c‖ ^ (2 : ℕ)) :=
       Real.sqrt_le_sqrt (by nlinarith)
     rwa [Real.sqrt_sq (norm_nonneg c)] at h4
-  have h5 : ‖z‖ ^ 2 - ‖c‖ > ‖c‖ := by
+  have h5 : ‖z‖ ^ (2 : ℕ) - ‖c‖ > ‖c‖ := by
     rw [← norm_pow] at hzsq
-    have : ‖z ^ 2‖ = ‖z‖ ^ 2 := norm_pow z 2
+    have : ‖z ^ (2 : ℕ)‖ = ‖z‖ ^ (2 : ℕ) := norm_pow z 2
     nlinarith [norm_pow z 2]
   linarith
 
@@ -63,19 +63,19 @@ theorem windInt_iterate_quadImage_zero {c : ℂ} (hc : (2:ℝ) ≤ ‖c‖) (ℓ
     rw [neg_eq_zero] at h
     rw [h, norm_zero] at hc
     linarith
-  obtain ⟨u, hu⟩ : ∃ u : ℂ, u ^ 2 = -c := by
+  obtain ⟨u, hu⟩ : ∃ u : ℂ, u ^ (2 : ℕ) = -c := by
     refine ⟨Complex.exp (Complex.log (-c) / 2), ?_⟩
     rw [← Complex.exp_nat_mul]
     rw [show ((2 : ℕ) : ℂ) * (Complex.log (-c) / 2) = Complex.log (-c) by push_cast; ring]
     exact Complex.exp_log hcne
-  have hu2 : ‖u‖ ^ 2 = ‖c‖ := by rw [← norm_pow, hu, norm_neg]
+  have hu2 : ‖u‖ ^ (2 : ℕ) = ‖c‖ := by rw [← norm_pow, hu, norm_neg]
   have hus : ‖u‖ ≤ Real.sqrt (2 * ‖c‖) := by
     have h1 : ‖u‖ = Real.sqrt (‖c‖) := by
       rw [← hu2, Real.sqrt_sq (norm_nonneg u)]
     rw [h1]
     exact Real.sqrt_le_sqrt (by linarith)
   have hquadu : quadratic c u = 0 := by
-    show u ^ 2 + c = 0
+    show u ^ (2 : ℕ) + c = 0
     rw [hu]
     ring
   -- the invariant far bound along the iterated image loops
@@ -216,7 +216,7 @@ theorem iterate_quadImage_γ' (c : ℂ) (ℓ : C1Loop) (m : ℕ) (θ : ℝ) :
   have hdq : ∀ z : ℂ, deriv (quadratic c) z = 2 * z := by
     intro z
     have h1 : HasDerivAt (quadratic c) (2 * z) z := by
-      have h0 : HasDerivAt (fun x : ℂ => x ^ 2 + c) (2 * z) z := by
+      have h0 : HasDerivAt (fun x : ℂ => x ^ (2 : ℕ) + c) (2 * z) z := by
         simpa using (hasDerivAt_pow 2 z).add_const c
       exact h0
     exact h1.deriv
@@ -228,7 +228,7 @@ theorem iterate_quadImage_γ' (c : ℂ) (ℓ : C1Loop) (m : ℕ) (θ : ℝ) :
         intro z
         rw [Function.iterate_succ']
         have h1 : DifferentiableAt ℂ (quadratic c) (((quadratic c)^[k]) z) := by
-          have h0 : HasDerivAt (fun x : ℂ => x ^ 2 + c) (2 * ((quadratic c)^[k]) z)
+          have h0 : HasDerivAt (fun x : ℂ => x ^ (2 : ℕ) + c) (2 * ((quadratic c)^[k]) z)
               (((quadratic c)^[k]) z) := by
             simpa using (hasDerivAt_pow 2 (((quadratic c)^[k]) z)).add_const c
           exact h0.differentiableAt
@@ -253,7 +253,7 @@ theorem iterate_quadImage_γ' (c : ℂ) (ℓ : C1Loop) (m : ℕ) (θ : ℝ) :
         apply deriv_comp
         · have : HasDerivAt (quadratic c) (2 * ((quadratic c)^[k]) (ℓ.γ θ))
               (((quadratic c)^[k]) (ℓ.γ θ)) := by
-            have h0 : HasDerivAt (fun x : ℂ => x ^ 2 + c)
+            have h0 : HasDerivAt (fun x : ℂ => x ^ (2 : ℕ) + c)
                 (2 * ((quadratic c)^[k]) (ℓ.γ θ)) (((quadratic c)^[k]) (ℓ.γ θ)) := by
               simpa using (hasDerivAt_pow 2 (((quadratic c)^[k]) (ℓ.γ θ))).add_const c
             exact h0
@@ -287,7 +287,7 @@ theorem period_push_eq_two_pow_windInt {c : ℂ} (hc : (2:ℝ) ≤ ‖c‖) (ℓ
         intro z
         rw [Function.iterate_succ']
         have h1 : DifferentiableAt ℂ (quadratic c) (((quadratic c)^[k]) z) := by
-          have h0 : HasDerivAt (fun x : ℂ => x ^ 2 + c) (2 * ((quadratic c)^[k]) z)
+          have h0 : HasDerivAt (fun x : ℂ => x ^ (2 : ℕ) + c) (2 * ((quadratic c)^[k]) z)
               (((quadratic c)^[k]) z) := by
             simpa using (hasDerivAt_pow 2 (((quadratic c)^[k]) z)).add_const c
           exact h0.differentiableAt
@@ -464,7 +464,7 @@ theorem exists_pow_root_on_towerSection_image {c c₂ : ℂ} {rlo R₀ : ℝ}
   · intro z hz
     have h1 := hs_pow (S.inv z) (S.inv_mem hz)
     have h2 : S.T (S.inv z) = z := S.inv_right hz
-    calc sroot (S.inv z) ^ 2 ^ m = G (S.inv z) := h1
+    calc sroot (S.inv z) ^ (2 : ℕ) ^ m = G (S.inv z) := h1
       _ = bottcherCoord c₂ ((quadratic c₂)^[m] z) := by
           rw [hGdef]
           simp only
@@ -558,7 +558,7 @@ theorem exists_pow_root_on_biholoImage (hr1 : 1 < r) (hrR : r < R)
   · intro z hz
     have h1 := hs_pow (annulusInv T r R z) (annulusInv_mem hz)
     have h2 : T (annulusInv T r R z) = z := annulusInv_right hz
-    calc sroot (annulusInv T r R z) ^ 2 ^ k = g (T (annulusInv T r R z)) := h1
+    calc sroot (annulusInv T r R z) ^ (2 : ℕ) ^ k = g (T (annulusInv T r R z)) := h1
       _ = g z := by rw [h2]
   · intro z hz
     exact hs_ne _ (annulusInv_mem hz)
@@ -655,7 +655,7 @@ theorem exists_pow_root_on_simplyConnImage (hUo : IsOpen U) (hUsc : IsSimplyConn
   · intro z hz
     have h1 := hs_pow (imageInv T U z) (imageInv_mem hz)
     have h2 : T (imageInv T U z) = z := imageInv_right hz
-    calc sroot (imageInv T U z) ^ 2 ^ k = g (T (imageInv T U z)) := h1
+    calc sroot (imageInv T U z) ^ (2 : ℕ) ^ k = g (T (imageInv T U z)) := h1
       _ = g z := by rw [h2]
   · intro z _
     exact Complex.exp_ne_zero _
@@ -683,7 +683,7 @@ theorem scaffold_overlap_forcing {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c 
     (hitj : ∀ v ∈ arcAnnulus ra RW α β, (quadratic c)^[j] (σ j v) = S.T v)
     (hitj1 : ∀ v ∈ arcAnnulus ra RW α β, (quadratic c)^[j+1] (σ (j+1) v) = S.T v)
     {v w : ℂ} (hv : v ∈ arcAnnulus ra RW α β) (hw : w ∈ arcAnnulus ra RW α β)
-    (heq : σ (j+1) v = σ j w) : v = w ^ 2 := by
+    (heq : σ (j+1) v = σ j w) : v = w ^ (2 : ℕ) := by
   have hrapos : (0:ℝ) < ra := by linarith
   have hvn := arcAnnulus_subset α β hrapos hraRW hv
   have hwn := arcAnnulus_subset α β hrapos hraRW hw
@@ -699,13 +699,13 @@ theorem scaffold_overlap_forcing {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c 
       field_simp
     rw [h1, pow_succ]
     field_simp
-  have hnorm : ‖v‖ = ‖w‖ ^ 2 := by
+  have hnorm : ‖v‖ = ‖w‖ ^ (2 : ℕ) := by
     calc ‖v‖ = Real.exp (Real.log ‖v‖) := (Real.exp_log hvpos).symm
       _ = Real.exp (2 * Real.log ‖w‖) := by rw [hlog]
-      _ = Real.exp (Real.log ‖w‖) ^ 2 := by
+      _ = Real.exp (Real.log ‖w‖) ^ (2 : ℕ) := by
           rw [← Real.exp_nat_mul]
           norm_num
-      _ = ‖w‖ ^ 2 := by rw [Real.exp_log hwpos]
+      _ = ‖w‖ ^ (2 : ℕ) := by rw [Real.exp_log hwpos]
   -- push both sides to the section through the iterate identities
   have h1 : (quadratic c)^[j+1] (σ (j+1) v) = S.T v := hitj1 v hv
   rw [heq] at h1
@@ -714,14 +714,14 @@ theorem scaffold_overlap_forcing {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c 
   have hkey : S.T v = quadratic c (S.T w) := by rw [← h1, h2]
   -- the section functional equation turns the image into `S.T (w²)`
   have hwann : w ∈ annulusSet rlo R₀ := ⟨lt_trans hra hwn.1, lt_trans hwn.2 hRWR⟩
-  have hw2ann : w ^ 2 ∈ annulusSet rlo R₀ := by
+  have hw2ann : w ^ (2 : ℕ) ∈ annulusSet rlo R₀ := by
     constructor
     · rw [norm_pow, ← hnorm]
       exact lt_trans hra hvn.1
     · rw [norm_pow, ← hnorm]
       exact lt_trans hvn.2 hRWR
-  have hfe : S.T (w ^ 2) = (S.T w) ^ 2 + c := S.fe w hwann hw2ann
-  have hkey2 : S.T v = S.T (w ^ 2) := by
+  have hfe : S.T (w ^ (2 : ℕ)) = (S.T w) ^ (2 : ℕ) + c := S.fe w hwann hw2ann
+  have hkey2 : S.T v = S.T (w ^ (2 : ℕ)) := by
     rw [hkey, hfe]
     show quadratic c (S.T w) = _
     rw [quadratic_apply]
@@ -850,7 +850,7 @@ theorem green_band_separation {ra RW h : ℝ} (hra : 5 * h / 4 ≤ Real.log ra)
     Real.log RW / 2 ^ j ≤ Real.log ra / 2 ^ i := by
   have h2i : (0:ℝ) < 2 ^ i := by positivity
   have h4 : (4:ℝ) ≤ 2 ^ (j - i) := by
-    calc (4:ℝ) = 2 ^ 2 := by norm_num
+    calc (4:ℝ) = 2 ^ (2 : ℕ) := by norm_num
       _ ≤ 2 ^ (j - i) := by
         apply pow_le_pow_right₀ (by norm_num)
         omega
@@ -871,7 +871,7 @@ theorem green_band_separation_section {RW lr h : ℝ}
     (hlr : h ≤ lr) (hh : 0 < h) {j : ℕ} (hj : 2 ≤ j) :
     Real.log RW / 2 ^ j ≤ lr := by
   have h4 : (4:ℝ) ≤ 2 ^ j := by
-    calc (4:ℝ) = 2 ^ 2 := by norm_num
+    calc (4:ℝ) = 2 ^ (2 : ℕ) := by norm_num
       _ ≤ 2 ^ j := by
         apply pow_le_pow_right₀ (by norm_num)
         omega
@@ -1088,11 +1088,11 @@ theorem exists_uniform_push {c : ℂ} (hc : (2:ℝ) ≤ ‖c‖) {s : ℝ}
     (hs : Real.sqrt (2 * ‖c‖) + 1 ≤ s) :
     ∃ m : ℕ, ∀ z : ℂ, s ≤ ‖z‖ → 4 * ‖c‖ + 2 < ‖(quadratic c)^[m] z‖ := by
   set σ : ℝ := Real.sqrt (2 * ‖c‖) with hσdef
-  have hσsq : σ ^ 2 = 2 * ‖c‖ := Real.sq_sqrt (by positivity)
+  have hσsq : σ ^ (2 : ℕ) = 2 * ‖c‖ := Real.sq_sqrt (by positivity)
   have hσ2 : (2:ℝ) ≤ σ := by
     have h1 : Real.sqrt 4 ≤ σ := Real.sqrt_le_sqrt (by linarith)
     have h2 : Real.sqrt 4 = 2 := by
-      rw [show (4:ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
+      rw [show (4:ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
     linarith
   have hs3 : (3:ℝ) ≤ s := by linarith
   -- one-step uniform expansion
@@ -1100,15 +1100,15 @@ theorem exists_uniform_push {c : ℂ} (hc : (2:ℝ) ≤ ‖c‖) {s : ℝ}
     intro z hz
     have hz3 : (3:ℝ) ≤ ‖z‖ := le_trans hs3 hz
     have hzσ : σ + 1 ≤ ‖z‖ := le_trans hs hz
-    have h1 : ‖z ^ 2‖ ≤ ‖quadratic c z‖ + ‖c‖ := by
-      have h2 : quadratic c z = z ^ 2 + c := rfl
-      calc ‖z ^ 2‖ = ‖(z ^ 2 + c) + (-c)‖ := by ring_nf
-        _ ≤ ‖z ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+    have h1 : ‖z ^ (2 : ℕ)‖ ≤ ‖quadratic c z‖ + ‖c‖ := by
+      have h2 : quadratic c z = z ^ (2 : ℕ) + c := rfl
+      calc ‖z ^ (2 : ℕ)‖ = ‖(z ^ (2 : ℕ) + c) + (-c)‖ := by ring_nf
+        _ ≤ ‖z ^ (2 : ℕ) + c‖ + ‖-c‖ := norm_add_le _ _
         _ = ‖quadratic c z‖ + ‖c‖ := by rw [← h2, norm_neg]
-    have h3 : ‖z‖ ^ 2 - ‖c‖ ≤ ‖quadratic c z‖ := by
+    have h3 : ‖z‖ ^ (2 : ℕ) - ‖c‖ ≤ ‖quadratic c z‖ := by
       rw [norm_pow] at h1
       linarith
-    have h4 : ‖z‖ ^ 2 ≥ σ ^ 2 + 2 * σ + 1 := by nlinarith
+    have h4 : ‖z‖ ^ (2 : ℕ) ≥ σ ^ (2 : ℕ) + 2 * σ + 1 := by nlinarith
     have h5 : (3/2) * ‖z‖ ≤ ‖quadratic c z‖ := by nlinarith
     exact ⟨h5, by nlinarith⟩
   -- iterated expansion

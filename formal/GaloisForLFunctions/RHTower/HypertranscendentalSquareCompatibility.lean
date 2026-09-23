@@ -53,7 +53,7 @@ theorem hypertranscendental_square_of_entire {g : ℂ → ℂ}
     exact hHT
       (differentiallyAlgebraic_of_differentialAlgebraicOver_analyticMeroElement hg hDA)
   have hsqMeroHT :
-      HypertranscendentalOver (RatFunc ℂ) ((analyticMeroElement g hg) ^ 2) :=
+      HypertranscendentalOver (RatFunc ℂ) ((analyticMeroElement g hg) ^ (2 : ℕ)) :=
     hypertranscendentalOver_pow_of_pos (N := 2) hmeroHT (by norm_num)
   intro hsqDA
   apply hsqMeroHT

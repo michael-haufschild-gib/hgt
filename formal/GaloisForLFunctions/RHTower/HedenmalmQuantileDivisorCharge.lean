@@ -63,7 +63,7 @@ theorem re_centeredLogDeriv_residue (m : ℕ) (rho : ℂ) :
 
 /-! ### The flux law in divisor form -/
 
-theorem neg_inv_im (z : ℂ) : (-z⁻¹).im = z.im / ‖z‖ ^ 2 := by
+theorem neg_inv_im (z : ℂ) : (-z⁻¹).im = z.im / ‖z‖ ^ (2 : ℕ) := by
   rw [Complex.neg_im, Complex.inv_im, ← Complex.normSq_eq_norm_sq]
   ring
 
@@ -71,9 +71,9 @@ theorem neg_inv_im (z : ℂ) : (-z⁻¹).im = z.im / ‖z‖ ^ 2 := by
 coordinate `z = -i(ρ-1/2)`, the imaginary part of the spectral value `λ = -1/z` times `m |z|²` is
 exactly the charge `Q_ρ`. -/
 theorem im_spectralValue_mul (m : ℕ) {rho : ℂ} (hz : centeredParameter rho ≠ 0) :
-    (-(centeredParameter rho)⁻¹).im * ((m : ℝ) * ‖centeredParameter rho‖ ^ 2)
+    (-(centeredParameter rho)⁻¹).im * ((m : ℝ) * ‖centeredParameter rho‖ ^ (2 : ℕ))
       = divisorCharge m rho := by
-  have hnorm : ‖centeredParameter rho‖ ^ 2 ≠ 0 := by
+  have hnorm : ‖centeredParameter rho‖ ^ (2 : ℕ) ≠ 0 := by
     have : ‖centeredParameter rho‖ ≠ 0 := norm_ne_zero_iff.mpr hz
     positivity
   rw [neg_inv_im, divisorCharge, centeredParameter_im]
@@ -87,7 +87,7 @@ theorem inner_pinnedBoundaryCLM_divisorCharge (m : ℕ) {rho : ℂ}
     (hz : centeredParameter rho ≠ 0) {g : H}
     (h : IsQuantileRootMode S (-(centeredParameter rho)⁻¹) g) {C : ℝ} (hC0 : 0 ≤ C)
     (hC : ∀ t, ‖metricSymbol S t‖ ≤ C) :
-    ((m : ℝ) * ‖centeredParameter rho‖ ^ 2 : ℂ) * inner ℂ (pinnedBoundaryCLM g) g
+    ((m : ℝ) * ‖centeredParameter rho‖ ^ (2 : ℕ) : ℂ) * inner ℂ (pinnedBoundaryCLM g) g
       = 2 * ((divisorCharge m rho : ℝ) : ℂ) * inner ℂ (metricOperator S hC0 hC g) g := by
   rw [inner_pinnedBoundaryCLM_rootMode S h hC0 hC, ← im_spectralValue_mul m hz]
   push_cast
@@ -101,9 +101,9 @@ theorem inner_pinnedBoundaryCLM_eq_zero_iff_amplitudes (g : H) :
   rw [inner_pinnedBoundaryCLM_eq_amplitudes]
   constructor
   · intro hzero
-    have : ((‖pinnedInAmplitude g‖ : ℂ)) ^ 2 = ((‖pinnedOutAmplitude g‖ : ℂ)) ^ 2 :=
+    have : ((‖pinnedInAmplitude g‖ : ℂ)) ^ (2 : ℕ) = ((‖pinnedOutAmplitude g‖ : ℂ)) ^ (2 : ℕ) :=
       sub_eq_zero.mp hzero
-    have hreal : ‖pinnedInAmplitude g‖ ^ 2 = ‖pinnedOutAmplitude g‖ ^ 2 := by
+    have hreal : ‖pinnedInAmplitude g‖ ^ (2 : ℕ) = ‖pinnedOutAmplitude g‖ ^ (2 : ℕ) := by
       exact_mod_cast this
     have := abs_eq_abs.mpr (sq_eq_sq_iff_eq_or_eq_neg.mp hreal)
     rw [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (norm_nonneg _)] at this

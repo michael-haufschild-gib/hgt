@@ -61,7 +61,7 @@ theorem gradedFockTransverseFanoMargin_rank_bound
 
 /-- **Universal single-top Fock phase bound.**  Among all transverse ranks at most `k`, full rank
 minimizes the universal margin; the discarded rank-sensitive remainder is
-`(e + 1) * (k - r) * M^2 / 4`. -/
+`(e + 1) * (k - r) * M^(2 : ℕ) / 4`. -/
 theorem gradedFockTransverseFanoMargin_universal_bound
     (M : ℕ)
     (U : (n : ℕ) → Submodule ℝ (EuclideanSpace ℝ (Sym I n)))
@@ -76,9 +76,9 @@ theorem gradedFockTransverseFanoMargin_universal_bound
         gradedFockTransverseFanoMargin M U p := by
   have hrank' : (Fintype.card J : ℝ) ≤ (Module.finrank ℝ (U M) : ℝ) := by
     exact_mod_cast hrank
-  have hsq : 0 ≤ ((M : ℝ) ^ 2) := sq_nonneg _
+  have hsq : 0 ≤ ((M : ℝ) ^ (2 : ℕ)) := sq_nonneg _
   have hmissing : 0 ≤
-      ((Module.finrank ℝ (U M) : ℝ) - (Fintype.card J : ℝ)) * (M : ℝ) ^ 2 :=
+      ((Module.finrank ℝ (U M) : ℝ) - (Fintype.card J : ℝ)) * (M : ℝ) ^ (2 : ℕ) :=
     mul_nonneg (sub_nonneg.mpr hrank') hsq
   have hc : 0 ≤ (((Fintype.card I + 1 : ℕ) : ℝ)) := by positivity
   have h := gradedFockTransverseFanoMargin_rank_bound M U hshadow p

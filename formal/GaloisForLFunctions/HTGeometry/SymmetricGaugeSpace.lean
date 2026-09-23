@@ -135,7 +135,7 @@ theorem probeGaugeChart_mem_symGaugeSet {A : Finset ℂ} {dep : ℂ → ℕ}
       funext w
       exact probeGaugeChart_apply _ g c w
     rw [hsum, iteratedDeriv_add_entire g.2 hdiffP, hg.2.2 a ha j hj, zero_add,
-      iteratedDeriv_polynomial_eval]
+      iteratedDeriv_polynomial_eval_gaugeCarrierJets]
     rw [hP, passportProbe_poly]
     exact eval_iterate_derivative_symPassportPoly_mul ha hj _
 

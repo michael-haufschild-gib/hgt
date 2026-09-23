@@ -44,7 +44,7 @@ theorem deningerMode_neg {μ : ℝ} (hμ : μ ≠ 0) (r : ℝ) :
 /-- **The pointwise mode cup pairing**: the wedge of the two opposite chiral vectors. -/
 theorem deningerMode_wedge_neg {μ : ℝ} (hμ : μ ≠ 0) (r : ℝ) :
     deningerCxWedge (deningerMode μ r) (deningerMode (-μ) r)
-      = (2 * Complex.I * (deningerFreqSign μ : ℂ)) * ((deningerModeProfile μ r ^ 2 : ℝ) : ℂ) := by
+      = (2 * Complex.I * (deningerFreqSign μ : ℂ)) * ((deningerModeProfile μ r ^ (2 : ℕ) : ℝ) : ℂ) := by
   rw [deningerCxWedge, deningerMode_neg hμ, deningerMode_fst, deningerMode_snd]
   push_cast
   ring
@@ -81,13 +81,13 @@ theorem deningerMode_cupStar {μ : ℝ} (hμ : μ ≠ 0) :
     exact_mod_cast congrArg (fun x : ℝ => (x : ℂ)) (deningerFreqSign_sq μ)
   have hpt : ∀ r ∈ Ioi (0 : ℝ),
       deningerCxWedge (deningerMode μ r) (deningerCxStar (deningerMode (-μ) r))
-        = (2 : ℂ) * ((deningerModeProfile μ r ^ 2 : ℝ) : ℂ) := by
+        = (2 : ℂ) * ((deningerModeProfile μ r ^ (2 : ℕ) : ℝ) : ℂ) := by
     intro r _
     rw [deningerCxStar, deningerCxWedge, deningerMode_neg hμ, deningerMode_fst, deningerMode_snd]
-    have hI : Complex.I ^ 2 = -1 := Complex.I_sq
+    have hI : Complex.I ^ (2 : ℕ) = -1 := Complex.I_sq
     push_cast
-    linear_combination ((deningerModeProfile μ r : ℂ) ^ 2) * hsq
-      - ((deningerFreqSign μ : ℂ) ^ 2 * (deningerModeProfile μ r : ℂ) ^ 2) * hI
+    linear_combination ((deningerModeProfile μ r : ℂ) ^ (2 : ℕ)) * hsq
+      - ((deningerFreqSign μ : ℂ) ^ (2 : ℕ) * (deningerModeProfile μ r : ℂ) ^ (2 : ℕ)) * hI
   rw [MeasureTheory.setIntegral_congr_fun measurableSet_Ioi hpt, integral_const_mul,
     integral_complex_ofReal, deningerModeProfile_integral hμ]
   have habs : ((|μ| : ℝ) : ℂ) ≠ 0 := by
@@ -122,18 +122,18 @@ noncomputable def deningerNormalizedMode (μ : ℝ) (r : ℝ) : ℂ × ℂ :=
 /-- **The normalized mode is a unit vector.** -/
 theorem deningerNormalizedMode_normSq {μ : ℝ} (hμ : μ ≠ 0) :
     ∫ r in Ioi (0 : ℝ),
-        (‖(deningerNormalizedMode μ r).1‖ ^ 2 + ‖(deningerNormalizedMode μ r).2‖ ^ 2) = 1 := by
+        (‖(deningerNormalizedMode μ r).1‖ ^ (2 : ℕ) + ‖(deningerNormalizedMode μ r).2‖ ^ (2 : ℕ)) = 1 := by
   have habs : (0 : ℝ) < |μ| := abs_pos.mpr hμ
   have hnorm : ‖((Real.sqrt |μ| : ℝ) : ℂ)‖ = Real.sqrt |μ| := by
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _)]
   have hpt : ∀ r ∈ Ioi (0 : ℝ),
-      ‖(deningerNormalizedMode μ r).1‖ ^ 2 + ‖(deningerNormalizedMode μ r).2‖ ^ 2
-        = |μ| * (‖(deningerMode μ r).1‖ ^ 2 + ‖(deningerMode μ r).2‖ ^ 2) := by
+      ‖(deningerNormalizedMode μ r).1‖ ^ (2 : ℕ) + ‖(deningerNormalizedMode μ r).2‖ ^ (2 : ℕ)
+        = |μ| * (‖(deningerMode μ r).1‖ ^ (2 : ℕ) + ‖(deningerMode μ r).2‖ ^ (2 : ℕ)) := by
     intro r _
     rw [deningerNormalizedMode]
-    show ‖((Real.sqrt |μ| : ℝ) : ℂ) * (deningerMode μ r).1‖ ^ 2
-        + ‖((Real.sqrt |μ| : ℝ) : ℂ) * (deningerMode μ r).2‖ ^ 2
-      = |μ| * (‖(deningerMode μ r).1‖ ^ 2 + ‖(deningerMode μ r).2‖ ^ 2)
+    show ‖((Real.sqrt |μ| : ℝ) : ℂ) * (deningerMode μ r).1‖ ^ (2 : ℕ)
+        + ‖((Real.sqrt |μ| : ℝ) : ℂ) * (deningerMode μ r).2‖ ^ (2 : ℕ)
+      = |μ| * (‖(deningerMode μ r).1‖ ^ (2 : ℕ) + ‖(deningerMode μ r).2‖ ^ (2 : ℕ))
     rw [norm_mul, norm_mul, hnorm, mul_pow, mul_pow, Real.sq_sqrt habs.le]
     ring
   rw [MeasureTheory.setIntegral_congr_fun measurableSet_Ioi hpt, integral_const_mul,

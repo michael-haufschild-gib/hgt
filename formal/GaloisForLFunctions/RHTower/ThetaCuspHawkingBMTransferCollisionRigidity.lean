@@ -39,7 +39,7 @@ lemma two_lt_log_twoHundredFiftySix_div_twentySeven :
     (2 : ℝ) < Real.log (256 / 27 : ℝ) := by
   have hlt : Real.exp 2 < (256 / 27 : ℝ) := by
     have h := Real.exp_one_lt_d9
-    have he : Real.exp 2 = Real.exp 1 ^ 2 := by
+    have he : Real.exp 2 = Real.exp 1 ^ (2 : ℕ) := by
       rw [← Real.exp_nat_mul]
       norm_num
     have hp : 0 < Real.exp 1 := Real.exp_pos 1
@@ -52,7 +52,7 @@ lemma norm_digamma_horizontal_shift_le
     ‖Complex.digamma
           (((sigma + c : ℝ) : ℂ) + (tau : ℂ) * I) -
         Complex.digamma ((sigma : ℂ) + (tau : ℂ) * I)‖ ≤
-      c * (1 / |tau| ^ 2 + Real.pi / (2 * |tau|)) := by
+      c * (1 / |tau| ^ (2 : ℕ) + Real.pi / (2 * |tau|)) := by
   let z0 : ℂ := (sigma : ℂ) + (tau : ℂ) * I
   let z1 : ℂ := ((sigma + c : ℝ) : ℂ) + (tau : ℂ) * I
   have hline : ∀ r : ℝ, AffineMap.lineMap z0 z1 r =
@@ -73,7 +73,7 @@ lemma norm_digamma_horizontal_shift_le
     nlinarith [hr.1]
   have hbound : ∀ z ∈ segment ℝ z0 z1,
       ‖deriv Complex.digamma z‖ ≤
-        1 / |tau| ^ 2 + Real.pi / (2 * |tau|) := by
+        1 / |tau| ^ (2 : ℕ) + Real.pi / (2 * |tau|) := by
     intro z hz
     rw [segment_eq_image_lineMap] at hz
     rcases hz with ⟨r, hr, rfl⟩
@@ -98,7 +98,7 @@ lemma norm_digamma_horizontal_shift_abs_le
     ‖Complex.digamma
           (((sigma + c : ℝ) : ℂ) + (tau : ℂ) * I) -
         Complex.digamma ((sigma : ℂ) + (tau : ℂ) * I)‖ ≤
-      c * (1 / |tau| ^ 2 + Real.pi / (2 * |tau|)) := by
+      c * (1 / |tau| ^ (2 : ℕ) + Real.pi / (2 * |tau|)) := by
   rcases lt_or_gt_of_ne htau with htneg | htpos
   · have hpos : 0 < -tau := by linarith
     have h := norm_digamma_horizontal_shift_le hsigma hpos hc
@@ -126,7 +126,7 @@ lemma norm_digamma_horizontal_shift_abs_le
 
 lemma vertical_inv_sub_re (sigma tau a : ℝ) :
     ((((sigma : ℂ) + (tau : ℂ) * I) - (a : ℂ))⁻¹).re =
-      (sigma - a) / ((sigma - a) ^ 2 + tau ^ 2) := by
+      (sigma - a) / ((sigma - a) ^ (2 : ℕ) + tau ^ (2 : ℕ)) := by
   rw [Complex.inv_re]
   simp only [sub_re, add_re, ofReal_re, mul_re, ofReal_im, I_re, I_im,
     mul_zero, zero_mul, sub_zero, Complex.normSq_apply, sub_im, add_im,
@@ -135,17 +135,17 @@ lemma vertical_inv_sub_re (sigma tau a : ℝ) :
 
 lemma trigamma_height_budget_lt_three_halves
     {tau : ℝ} (htau : 13 / 8 < |tau|) :
-    1 / |tau| ^ 2 + Real.pi / (2 * |tau|) < 3 / 2 := by
+    1 / |tau| ^ (2 : ℕ) + Real.pi / (2 * |tau|) < 3 / 2 := by
   have htpos : 0 < |tau| := lt_trans (by norm_num) htau
-  have hsquare : (169 / 64 : ℝ) < |tau| ^ 2 := by nlinarith
-  have hinv : 1 / |tau| ^ 2 < (64 / 169 : ℝ) := by
+  have hsquare : (169 / 64 : ℝ) < |tau| ^ (2 : ℕ) := by nlinarith
+  have hinv : 1 / |tau| ^ (2 : ℕ) < (64 / 169 : ℝ) := by
     rw [div_lt_iff₀ (sq_pos_of_pos htpos)]
     nlinarith
   have hpi : Real.pi / (2 * |tau|) < (88 / 91 : ℝ) := by
     rw [div_lt_iff₀ (mul_pos (by norm_num) htpos)]
     nlinarith [Real.pi_lt_d4]
   calc
-    1 / |tau| ^ 2 + Real.pi / (2 * |tau|) < 64 / 169 + 88 / 91 :=
+    1 / |tau| ^ (2 : ℕ) + Real.pi / (2 * |tau|) < 64 / 169 + 88 / 91 :=
       add_lt_add hinv hpi
     _ < 3 / 2 := by norm_num
 
@@ -156,51 +156,51 @@ lemma positiveStrip_rationalSlope_re_gt_neg_half
         (((sigma : ℂ) + (tau : ℂ) * I) - 5 / 12)⁻¹ +
         (((sigma : ℂ) + (tau : ℂ) * I) - 1 / 12)⁻¹ -
         (((sigma : ℂ) + (tau : ℂ) * I) - 1 / 2)⁻¹).re) > -(1 / 2 : ℝ) := by
-  have ht2 : (169 / 64 : ℝ) < tau ^ 2 := by
+  have ht2 : (169 / 64 : ℝ) < tau ^ (2 : ℕ) := by
     nlinarith [sq_abs tau]
-  have h1den : 0 < (sigma - 5 / 4) ^ 2 + tau ^ 2 := by positivity
-  have h2den : 0 < (sigma - 5 / 12) ^ 2 + tau ^ 2 := by positivity
-  have h3den : 0 < (sigma - 1 / 12) ^ 2 + tau ^ 2 := by positivity
-  have h4den : 0 < (sigma - 1 / 2) ^ 2 + tau ^ 2 := by positivity
+  have h1den : 0 < (sigma - 5 / 4) ^ (2 : ℕ) + tau ^ (2 : ℕ) := by positivity
+  have h2den : 0 < (sigma - 5 / 12) ^ (2 : ℕ) + tau ^ (2 : ℕ) := by positivity
+  have h3den : 0 < (sigma - 1 / 12) ^ (2 : ℕ) + tau ^ (2 : ℕ) := by positivity
+  have h4den : 0 < (sigma - 1 / 2) ^ (2 : ℕ) + tau ^ (2 : ℕ) := by positivity
   have h1 : -(3 / 10 : ℝ) <
-      (sigma - 5 / 4) / ((sigma - 5 / 4) ^ 2 + tau ^ 2) := by
+      (sigma - 5 / 4) / ((sigma - 5 / 4) ^ (2 : ℕ) + tau ^ (2 : ℕ)) := by
     rw [lt_div_iff₀ h1den]
     nlinarith [sq_nonneg (sigma - 5 / 4)]
   have h2 : -(3 / 20 : ℝ) <
-      (sigma - 5 / 12) / ((sigma - 5 / 12) ^ 2 + tau ^ 2) := by
+      (sigma - 5 / 12) / ((sigma - 5 / 12) ^ (2 : ℕ) + tau ^ (2 : ℕ)) := by
     rw [lt_div_iff₀ h2den]
     nlinarith [sq_nonneg (sigma - 5 / 12)]
   have h3 : -(1 / 30 : ℝ) <
-      (sigma - 1 / 12) / ((sigma - 1 / 12) ^ 2 + tau ^ 2) := by
+      (sigma - 1 / 12) / ((sigma - 1 / 12) ^ (2 : ℕ) + tau ^ (2 : ℕ)) := by
     by_cases h : sigma < 1 / 12
     · rw [lt_div_iff₀ h3den]
       nlinarith [sq_nonneg (sigma - 1 / 12)]
     · have hnonneg : 0 ≤
-          (sigma - 1 / 12) / ((sigma - 1 / 12) ^ 2 + tau ^ 2) :=
+          (sigma - 1 / 12) / ((sigma - 1 / 12) ^ (2 : ℕ) + tau ^ (2 : ℕ)) :=
         div_nonneg (by linarith) h3den.le
       linarith
   have h4 : 0 <
-      -((sigma - 1 / 2) / ((sigma - 1 / 2) ^ 2 + tau ^ 2)) := by
+      -((sigma - 1 / 2) / ((sigma - 1 / 2) ^ (2 : ℕ) + tau ^ (2 : ℕ))) := by
     have hneg : sigma - 1 / 2 < 0 := by linarith
     exact neg_pos.mpr (div_neg_of_neg_of_pos hneg h4den)
   have h1re :
       ((((sigma : ℂ) + (tau : ℂ) * I) - 5 / 4)⁻¹).re =
-        (sigma - 5 / 4) / ((sigma - 5 / 4) ^ 2 + tau ^ 2) := by
+        (sigma - 5 / 4) / ((sigma - 5 / 4) ^ (2 : ℕ) + tau ^ (2 : ℕ)) := by
     convert vertical_inv_sub_re sigma tau (5 / 4) using 1
     all_goals norm_num
   have h2re :
       ((((sigma : ℂ) + (tau : ℂ) * I) - 5 / 12)⁻¹).re =
-        (sigma - 5 / 12) / ((sigma - 5 / 12) ^ 2 + tau ^ 2) := by
+        (sigma - 5 / 12) / ((sigma - 5 / 12) ^ (2 : ℕ) + tau ^ (2 : ℕ)) := by
     convert vertical_inv_sub_re sigma tau (5 / 12) using 1
     all_goals norm_num
   have h3re :
       ((((sigma : ℂ) + (tau : ℂ) * I) - 1 / 12)⁻¹).re =
-        (sigma - 1 / 12) / ((sigma - 1 / 12) ^ 2 + tau ^ 2) := by
+        (sigma - 1 / 12) / ((sigma - 1 / 12) ^ (2 : ℕ) + tau ^ (2 : ℕ)) := by
     convert vertical_inv_sub_re sigma tau (1 / 12) using 1
     all_goals norm_num
   have h4re :
       ((((sigma : ℂ) + (tau : ℂ) * I) - 1 / 2)⁻¹).re =
-        (sigma - 1 / 2) / ((sigma - 1 / 2) ^ 2 + tau ^ 2) := by
+        (sigma - 1 / 2) / ((sigma - 1 / 2) ^ (2 : ℕ) + tau ^ (2 : ℕ)) := by
     convert vertical_inv_sub_re sigma tau (1 / 2) using 1
     all_goals norm_num
   simp only [add_re, sub_re]
@@ -214,7 +214,7 @@ lemma positiveStrip_digammaSlope_re_gt_neg_three_halves
       Complex.digamma (((sigma + 7 / 12 : ℝ) : ℂ) + (tau : ℂ) * I) -
       Complex.digamma (((sigma + 11 / 12 : ℝ) : ℂ) + (tau : ℂ) * I)).re >
         -(3 / 2 : ℝ) := by
-  let B : ℝ := 1 / |tau| ^ 2 + Real.pi / (2 * |tau|)
+  let B : ℝ := 1 / |tau| ^ (2 : ℕ) + Real.pi / (2 * |tau|)
   have htau0 : tau ≠ 0 := by
     intro h
     rw [h, abs_zero] at htau
@@ -299,7 +299,7 @@ lemma d4BM_log_constant_identity :
       (Real.log (256 / 27 : ℝ) : ℂ) := by
   have hreal :
       4 * Real.log 4 - 3 * Real.log 3 = Real.log (256 / 27 : ℝ) := by
-    rw [show (256 / 27 : ℝ) = 4 ^ 4 / 3 ^ 3 by norm_num,
+    rw [show (256 / 27 : ℝ) = 4 ^ (4 : ℕ) / 3 ^ (3 : ℕ) by norm_num,
       Real.log_div (by norm_num) (by norm_num), Real.log_pow, Real.log_pow]
     norm_num
   have h4 : Complex.log (4 : ℂ) = (Real.log 4 : ℂ) :=

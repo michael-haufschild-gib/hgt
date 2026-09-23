@@ -68,10 +68,10 @@ theorem pwMatrixEndpointAntidiagonalCoefficient_eq_zero_of_sequentiallyDark
       ring
     rw [hdiff]
     exact (abs_sub _ _).trans (by linarith [hSC (n + 1), hSC n])
-  have hb : ∀ n, |b n| ≤ 2 * C / q0 ^ 2 := by
+  have hb : ∀ n, |b n| ≤ 2 * C / q0 ^ (2 : ℕ) := by
     intro n
-    have hq02 : 0 < q0 ^ 2 := sq_pos_of_pos hq0pos
-    have heq : |b n| = |a n * q0 ^ (n + 2)| / q0 ^ 2 := by
+    have hq02 : 0 < q0 ^ (2 : ℕ) := sq_pos_of_pos hq0pos
+    have heq : |b n| = |a n * q0 ^ (n + 2)| / q0 ^ (2 : ℕ) := by
       dsimp only [b]
       rw [abs_mul, abs_pow, abs_of_pos hq0pos,
         abs_mul, abs_pow, abs_of_pos hq0pos, pow_add]
@@ -95,12 +95,12 @@ theorem pwMatrixEndpointAntidiagonalCoefficient_eq_zero_of_sequentiallyDark
       GaloisForLFunctions.HTGeometry.summable_of_bounded_coeff hb (by
         simpa [q] using hqlt j)
     have hlim := hsum.hasSum.tendsto_sum_nat
-    have hscaled := hlim.const_mul (qnext ^ 2)
+    have hscaled := hlim.const_mul (qnext ^ (2 : ℕ))
     have hphysical : Tendsto
-        (fun N : ℕ => qnext ^ 2 * ∑ n ∈ Finset.range N, b n * q ^ n)
+        (fun N : ℕ => qnext ^ (2 : ℕ) * ∑ n ∈ Finset.range N, b n * q ^ n)
         atTop (𝓝 0) := by
       have hz := hdark (j + 1)
-      have heq : (fun N : ℕ => qnext ^ 2 * ∑ n ∈ Finset.range N, b n * q ^ n) =
+      have heq : (fun N : ℕ => qnext ^ (2 : ℕ) * ∑ n ∈ Finset.range N, b n * q ^ n) =
           (fun N : ℕ => ∑ n ∈ Finset.range N,
             a n * qnext ^ (n + 2)) := by
         funext N
@@ -116,7 +116,7 @@ theorem pwMatrixEndpointAntidiagonalCoefficient_eq_zero_of_sequentiallyDark
         ring
       rw [heq]
       simpa [PWMatrixEndpointSequentiallyDark, a, qnext] using hz
-    have hlimitEq : qnext ^ 2 * (∑' n : ℕ, b n * q ^ n) = 0 :=
+    have hlimitEq : qnext ^ (2 : ℕ) * (∑' n : ℕ, b n * q ^ n) = 0 :=
       tendsto_nhds_unique hscaled hphysical
     exact (mul_eq_zero.mp hlimitEq).resolve_left
       (pow_ne_zero 2 (hqpos (j + 1)).ne')

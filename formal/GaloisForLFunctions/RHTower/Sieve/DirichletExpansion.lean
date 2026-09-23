@@ -42,11 +42,11 @@ theorem log_succ_injective {m n : ℕ} (h : m ≠ n) :
 
 /-- **The squared modulus of a Dirichlet polynomial, expanded.** -/
 theorem normSq_dirPoly_eq (N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
-    ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ)
+    ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = ∑ m : Fin N, ∑ n : Fin N, (a m * (starRingEnd ℂ) (a n))
           * Complex.exp (((t * (Real.log (((m : ℕ) : ℝ) + 1)
               - Real.log (((n : ℕ) : ℝ) + 1)) : ℝ) : ℂ) * Complex.I) := by
-  have hz : ((‖dirPoly N a t‖ ^ 2 : ℝ) : ℂ)
+  have hz : ((‖dirPoly N a t‖ ^ (2 : ℕ) : ℝ) : ℂ)
       = dirPoly N a t * (starRingEnd ℂ) (dirPoly N a t) := by
     rw [mul_comm, conj_mul_self]
   rw [hz, dirPoly, map_sum, Finset.sum_mul_sum]

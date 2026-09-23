@@ -70,6 +70,93 @@ theorem differentiableOn_csqrt : DifferentiableOn ℂ csqrt {w : ℂ | 0 < w.re}
   intro w hw
   exact (differentiableAt_csqrt hw).differentiableWithinAt
 
+/-! ## The complementary nonreal locus -/
+
+/-- Away from the real axis, the principal-root radicand is strictly positive. -/
+theorem norm_add_re_pos_of_im_ne_zero {w : ℂ} (hw : w.im ≠ 0) : 0 < ‖w‖ + w.re := by
+  have hsq : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    ring
+  have hnn : 0 ≤ ‖w‖ := norm_nonneg w
+  have him : 0 < w.im ^ 2 := by positivity
+  nlinarith [hsq, hnn, him, sq_nonneg (‖w‖ + w.re), sq_nonneg (‖w‖ - w.re)]
+
+theorem csqrtRe_pos_of_im_ne_zero {w : ℂ} (hw : w.im ≠ 0) : 0 < csqrtRe w := by
+  rw [csqrtRe]
+  exact Real.sqrt_pos.mpr (by linarith [norm_add_re_pos_of_im_ne_zero hw])
+
+theorem csqrt_re_pos_of_im_ne_zero {w : ℂ} (hw : w.im ≠ 0) : 0 < (csqrt w).re := by
+  rw [csqrt_re]
+  exact csqrtRe_pos_of_im_ne_zero hw
+
+/-- Off the real axis, the chosen square root squares back to its argument. -/
+theorem csqrt_sq_of_im_ne_zero {w : ℂ} (hw : w.im ≠ 0) : csqrt w ^ 2 = w := by
+  have hp : 0 < csqrtRe w := csqrtRe_pos_of_im_ne_zero hw
+  have hrad : 0 < ‖w‖ + w.re := norm_add_re_pos_of_im_ne_zero hw
+  have hpsq : csqrtRe w ^ 2 = (‖w‖ + w.re) / 2 := by
+    rw [csqrtRe, Real.sq_sqrt (by linarith)]
+  have hnormsq : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    ring
+  have hqsq : csqrtIm w ^ 2 = (‖w‖ - w.re) / 2 := by
+    rw [csqrtIm, div_pow, mul_pow, hpsq]
+    rw [div_eq_iff (by nlinarith [hrad] : ((2:ℝ) ^ 2 * ((‖w‖ + w.re) / 2)) ≠ 0)]
+    nlinarith [hnormsq, hrad]
+  have hprod : 2 * (csqrtRe w * csqrtIm w) = w.im := by
+    rw [csqrtIm]
+    field_simp
+  apply Complex.ext
+  · rw [pow_two, Complex.mul_re, csqrt_re, csqrt_im]
+    nlinarith [hpsq, hqsq]
+  · rw [pow_two, Complex.mul_im, csqrt_re, csqrt_im]
+    nlinarith [hprod]
+
+theorem continuousAt_csqrtRe_of_im_ne_zero {z : ℂ} (hz : z.im ≠ 0) :
+    ContinuousAt csqrtRe z := by
+  have hpos : 0 < (‖z‖ + z.re) / 2 := by
+    linarith [norm_add_re_pos_of_im_ne_zero hz]
+  unfold csqrtRe
+  fun_prop
+
+theorem continuousAt_csqrt_of_im_ne_zero {z : ℂ} (hz : z.im ≠ 0) : ContinuousAt csqrt z := by
+  have hre : ContinuousAt csqrtRe z := continuousAt_csqrtRe_of_im_ne_zero hz
+  have hne : csqrtRe z ≠ 0 := ne_of_gt (csqrtRe_pos_of_im_ne_zero hz)
+  have him : ContinuousAt csqrtIm z := by
+    unfold csqrtIm
+    exact ContinuousAt.div (Complex.continuous_im.continuousAt) (by fun_prop)
+      (by simpa using hne)
+  have hsum : ContinuousAt (fun w : ℂ => (csqrtRe w : ℂ) + (csqrtIm w : ℂ) * I) z := by
+    exact (Complex.continuous_ofReal.continuousAt.comp hre).add
+      ((Complex.continuous_ofReal.continuousAt.comp him).mul continuousAt_const)
+  exact hsum.congr (Filter.Eventually.of_forall fun w => (csqrt_eq w).symm)
+
+theorem csqrt_ne_zero_of_im_ne_zero {z : ℂ} (hz : z.im ≠ 0) : csqrt z ≠ 0 := by
+  intro h
+  have hre : (csqrt z).re = 0 := by rw [h]; simp
+  rw [csqrt_re] at hre
+  exact absurd hre (ne_of_gt (csqrtRe_pos_of_im_ne_zero hz))
+
+/-- **The principal square root is complex differentiable off the real axis.** -/
+theorem hasStrictDerivAt_csqrt_of_im_ne_zero {z : ℂ} (hz : z.im ≠ 0) :
+    HasStrictDerivAt csqrt (2 * csqrt z)⁻¹ z := by
+  have hcont : ContinuousAt csqrt z := continuousAt_csqrt_of_im_ne_zero hz
+  have hsq : HasStrictDerivAt (fun w : ℂ => w ^ 2) (2 * csqrt z) (csqrt z) := by
+    have := hasStrictDerivAt_pow 2 (csqrt z)
+    simpa using this
+  have hne : (2 : ℂ) * csqrt z ≠ 0 := by
+    exact mul_ne_zero two_ne_zero (csqrt_ne_zero_of_im_ne_zero hz)
+  have hopen : IsOpen {w : ℂ | w.im ≠ 0} := by
+    change IsOpen (Complex.im ⁻¹' {r : ℝ | r ≠ 0})
+    exact isOpen_ne.preimage Complex.continuous_im
+  have hloc : ∀ᶠ y : ℂ in nhds z, (fun w : ℂ => w ^ 2) (csqrt y) = y := by
+    filter_upwards [hopen.mem_nhds hz] with y hy
+    exact csqrt_sq_of_im_ne_zero hy
+  exact hsq.of_local_left_inverse hcont hne hloc
+
+theorem differentiableAt_csqrt_of_im_ne_zero {z : ℂ} (hz : z.im ≠ 0) :
+    DifferentiableAt ℂ csqrt z :=
+  (hasStrictDerivAt_csqrt_of_im_ne_zero hz).hasDerivAt.differentiableAt
+
 
 /-- On the positive reals the principal square root is the real one. -/
 theorem csqrt_ofReal_of_pos {r : ℝ} (hr : 0 < r) :

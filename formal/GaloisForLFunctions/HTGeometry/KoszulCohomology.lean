@@ -249,7 +249,7 @@ theorem nodalKoszulRelation_boundary {F : Type*} [Field F]
 
 /-- **First unconditional Hochster class.**  The cycle carried by the disconnected nodal
 constraint boundary is not a Koszul boundary.  This is the explicit algebraic representative of
-the one-dimensional reduced `H^0` of two isolated vertices. -/
+the one-dimensional reduced `H^(0 : ℕ)` of two isolated vertices. -/
 theorem nodalDisconnectCycle_not_koszulBoundary {F : Type*} [Field F] :
     ¬ ∃ c : nodalBoundarySubring F,
       nodalKoszulBoundary c = nodalDisconnectCycle := by
@@ -484,13 +484,13 @@ theorem isolatedBoundary_mul_X_coeff_one {F : Type*} [Field F] {n : ℕ}
     simp [isolatedBoundaryX, Polynomial.coeff_mul_X]
   · simp [isolatedBoundaryX, hij]
 
-/-- The reduced-`H^0` detector comparing the two oriented coefficient-one entries. -/
+/-- The reduced-`H^(0 : ℕ)` detector comparing the two oriented coefficient-one entries. -/
 def isolatedH0Detector {F : Type*} [Field F] {n : ℕ}
     (a : Fin (n + 2) → isolatedBoundarySubring F n) : F :=
   (((a 0 : isolatedBoundarySubring F n) : Fin (n + 2) → Polynomial F) 1).coeff 1 +
     (((a 1 : isolatedBoundarySubring F n) : Fin (n + 2) → Polynomial F) 0).coeff 1
 
-/-- The reduced-`H^0` coefficient detector attached to the edge from `0` to `j.succ`. -/
+/-- The reduced-`H^(0 : ℕ)` coefficient detector attached to the edge from `0` to `j.succ`. -/
 def isolatedH0DetectorAt {F : Type*} [Field F] {n : ℕ} (j : Fin (n + 1)) :
     (Fin (n + 2) → isolatedBoundarySubring F n) →ₗ[F] F where
   toFun a :=
@@ -575,7 +575,7 @@ theorem isolatedH0DetectorAt_boundary
       rw [hfirst, hsecond, hcompat]
       simp
 
-/-- Every degree-two Koszul boundary has zero reduced-`H^0` detector. -/
+/-- Every degree-two Koszul boundary has zero reduced-`H^(0 : ℕ)` detector. -/
 @[simp]
 theorem isolatedH0Detector_boundary {F : Type*} [Field F] {n : ℕ}
     (c : Fin (n + 2) → Fin (n + 2) → isolatedBoundarySubring F n) :
@@ -595,9 +595,9 @@ theorem isolatedDisconnectCycle_not_koszulBoundary
   have h := congrArg isolatedH0Detector hc
   simp at h
 
-/-- **Full discrete reduced-`H^0` family.**  For `n+2` isolated vertices, the `n+1` canonical
+/-- **Full discrete reduced-`H^(0 : ℕ)` family.**  For `n+2` isolated vertices, the `n+1` canonical
 base-to-component cycles are linearly independent modulo degree-two Koszul boundaries.  Thus the
-explicit first Koszul quotient contains the full expected reduced-`H^0` rank, not merely one
+explicit first Koszul quotient contains the full expected reduced-`H^(0 : ℕ)` rank, not merely one
 nonzero class. -/
 theorem isolatedDisconnectCycleBasis_independent_mod_koszulBoundary
     {F : Type*} [Field F] {n : ℕ} (a : Fin (n + 1) → F)
@@ -648,7 +648,7 @@ theorem nodalHochsterPolarization_positive_not_isometric_negative :
         nodalHochsterPolarization (-1) (e a) (e b) := by
   rintro ⟨e, he⟩
   have h := he 1 1
-  have hs : 0 ≤ (e (1 : ℝ)) ^ 2 := sq_nonneg _
+  have hs : 0 ≤ (e (1 : ℝ)) ^ (2 : ℕ) := sq_nonneg _
   simp [nodalHochsterPolarization] at h
   nlinarith
 

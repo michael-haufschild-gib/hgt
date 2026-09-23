@@ -25,7 +25,7 @@ def XiWardScaledApertureFourUnitLaw : Prop :=
     Complex.normSq
         (mobiusGammaXiAntiCausalWardTransportV
           ((1 / 2 : ℂ) + I * (t : ℂ)) (a : ℂ)) ≤
-      4 * a ^ 2
+      4 * a ^ (2 : ℕ)
 
 private theorem tendsto_scaled_transport_normSq
     {w : ℂ} (hw : 0 < w.re) :
@@ -90,7 +90,7 @@ sufficiently small positive apertures around its adapted Euler-edge node. -/
 theorem eventually_normSq_mobiusGammaXiAntiCausalWardTransportV_gt_scaled_four
     (q : XiRightUpperZeroCopy) :
     ∀ᶠ a : ℝ in 𝓝[>] 0,
-      4 * a ^ 2 <
+      4 * a ^ (2 : ℕ) <
         Complex.normSq
           (mobiusGammaXiAntiCausalWardTransportV
             (xiWardEulerEdgeAdaptedNode q) (a : ℂ)) := by
@@ -119,7 +119,7 @@ theorem exists_eventually_scaledApertureFourUnit_violation_of_not_riemannHypothe
     (hRH : ¬ RiemannHypothesis) :
     ∃ q : XiRightUpperZeroCopy,
       ∀ᶠ a : ℝ in 𝓝[>] 0,
-        4 * a ^ 2 <
+        4 * a ^ (2 : ℕ) <
           Complex.normSq
             (mobiusGammaXiAntiCausalWardTransportV
               (xiWardEulerEdgeAdaptedNode q) (a : ℂ)) := by

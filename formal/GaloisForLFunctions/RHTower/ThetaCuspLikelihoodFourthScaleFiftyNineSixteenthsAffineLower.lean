@@ -17,34 +17,34 @@ noncomputable section
 /-- Live first-atom Bell factor at the endpoint `B = 53/24`. -/
 def thetaCuspLikelihoodFourthScale59Over16AtomQFloor : ℝ :=
   1296 + 18 *
-    (81 * (24 / 53 : ℝ) + 108 * (24 / 53 : ℝ) ^ 2 +
-      108 * (24 / 53 : ℝ) ^ 3 + 72 * (24 / 53 : ℝ) ^ 4 +
-      24 * (24 / 53 : ℝ) ^ 5)
+    (81 * (24 / 53 : ℝ) + 108 * (24 / 53 : ℝ) ^ (2 : ℕ) +
+      108 * (24 / 53 : ℝ) ^ (3 : ℕ) + 72 * (24 / 53 : ℝ) ^ (4 : ℕ) +
+      24 * (24 / 53 : ℝ) ^ (5 : ℕ))
 
 /-- `513/1000` of the leading fourth monomial survives already at `z ≥ 177/16`. -/
 theorem fiveHundredThirteenThousandths_mul_pow_four_le_thetaLikelihoodFourthScore_of_59Over16_support
     {z : ℝ} (hz : (177 / 16 : ℝ) ≤ z) :
-    (513 / 1000 : ℝ) * z ^ 4 ≤ thetaLikelihoodFourthScore z := by
+    (513 / 1000 : ℝ) * z ^ (4 : ℕ) ≤ thetaLikelihoodFourthScore z := by
   let y := z - 177 / 16
   have hy : 0 ≤ y := by dsimp only [y]; linarith
   rw [show z = 177 / 16 + y by dsimp only [y]; ring]
   dsimp [thetaLikelihoodFourthScore]
   ring_nf
-  have hy2 : 0 ≤ y ^ 2 := by positivity
-  have hy3 : 0 ≤ y ^ 3 := by positivity
-  have hy4 : 0 ≤ y ^ 4 := by positivity
+  have hy2 : 0 ≤ y ^ (2 : ℕ) := by positivity
+  have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+  have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
   nlinarith
 
 /-- Support-edge law transfers to the complete ordinary fourth source jet from scale `59/16`. -/
 theorem oneThousandTwentySixOneHundredTwentyFifths_mul_scale_pow_four_momentFour_le_ordinaryJetFour_of_59Over16_le
     {x : ℝ} (hx : 0 ≤ x)
     (hA : (59 / 16 : ℝ) ≤ thetaCuspSingleAtomReflectionScale 1 x) :
-    (1026 / 125 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 4 *
+    (1026 / 125 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment (thetaCuspLikelihoodCoordinate x) 4 ≤
       thetaCuspLikelihoodSourceOrdinaryJetFour x := by
   have hpoint : ∀ᵐ t ∂thetaCuspHigherLikelihoodTiltedMeasure
       (thetaCuspLikelihoodCoordinate x),
-      (513 / 1000 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 4 * t ^ 4 ≤
+      (513 / 1000 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) * t ^ (4 : ℕ) ≤
         thetaLikelihoodFourthScore (thetaCuspSingleAtomReflectionScale 1 x * t) := by
     filter_upwards [ae_three_le_thetaCuspHigherLikelihoodTiltedMeasure
       (thetaCuspLikelihoodCoordinate x)] with t ht
@@ -55,8 +55,8 @@ theorem oneThousandTwentySixOneHundredTwentyFifths_mul_scale_pow_four_momentFour
       fiveHundredThirteenThousandths_mul_pow_four_le_thetaLikelihoodFourthScore_of_59Over16_support
         hAt
     calc
-      (513 / 1000 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ 4 * t ^ 4 =
-          (513 / 1000 : ℝ) * (thetaCuspSingleAtomReflectionScale 1 x * t) ^ 4 := by
+      (513 / 1000 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (4 : ℕ) * t ^ (4 : ℕ) =
+          (513 / 1000 : ℝ) * (thetaCuspSingleAtomReflectionScale 1 x * t) ^ (4 : ℕ) := by
         ring
       _ ≤ thetaLikelihoodFourthScore (thetaCuspSingleAtomReflectionScale 1 x * t) := h
   have h := sixteen_mul_scale_pow_four_momentFour_le_ordinaryJetFour_of_ae_score_lower
@@ -66,7 +66,7 @@ theorem oneThousandTwentySixOneHundredTwentyFifths_mul_scale_pow_four_momentFour
 /-- Rational lower enclosure at scale `59/16`. -/
 theorem oneOverSixtyThreeThousandSevenHundredFifty_lt_exp_neg_oneHundredSeventySevenSixteenths :
     (1 / 63750 : ℝ) < Real.exp (-(177 / 16 : ℝ)) := by
-  have hpow11 : Real.exp 1 ^ 11 < (2.7182818286 : ℝ) ^ 11 :=
+  have hpow11 : Real.exp 1 ^ (11 : ℕ) < (2.7182818286 : ℝ) ^ (11 : ℕ) :=
     pow_lt_pow_left₀ Real.exp_one_lt_d9 (Real.exp_pos 1).le (by norm_num)
   have h11 : Real.exp 11 < (59875 : ℝ) := by
     rw [show (11 : ℝ) = (11 : ℕ) * (1 : ℝ) by norm_num, Real.exp_nat_mul]
@@ -119,7 +119,7 @@ theorem thetaCuspLikelihoodFourthScale59Over16AtomFloor_lt_dominantAtomMomentFou
     (hBA : B = A - 3 / 2) :
     (1 / 63750 : ℝ) * (1 - 3 * (A - 59 / 16)) *
         thetaCuspLikelihoodFourthScale59Over16AtomQFloor <
-      ∫ t : ℝ, t ^ 4 * Real.exp (-(B * t))
+      ∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-(B * t))
         ∂thetaCuspAtomLikelihoodSpectralMeasure 2 := by
   have hB : 0 < B := by rw [hBA]; linarith
   have hBupper : B ≤ (53 / 24 : ℝ) := by rw [hBA]; linarith
@@ -127,28 +127,28 @@ theorem thetaCuspLikelihoodFourthScale59Over16AtomFloor_lt_dominantAtomMomentFou
     have h := one_div_le_one_div_of_le hB hBupper
     norm_num at h ⊢
     exact h
-  have hinv2 : (24 / 53 : ℝ) ^ 2 ≤ 1 / B ^ 2 := by
+  have hinv2 : (24 / 53 : ℝ) ^ (2 : ℕ) ≤ 1 / B ^ (2 : ℕ) := by
     have hp := pow_le_pow_left₀ hB.le hBupper 2
     have h := one_div_le_one_div_of_le (pow_pos hB 2) hp
     norm_num at h ⊢
     exact h
-  have hinv3 : (24 / 53 : ℝ) ^ 3 ≤ 1 / B ^ 3 := by
+  have hinv3 : (24 / 53 : ℝ) ^ (3 : ℕ) ≤ 1 / B ^ (3 : ℕ) := by
     have hp := pow_le_pow_left₀ hB.le hBupper 3
     have h := one_div_le_one_div_of_le (pow_pos hB 3) hp
     norm_num at h ⊢
     exact h
-  have hinv4 : (24 / 53 : ℝ) ^ 4 ≤ 1 / B ^ 4 := by
+  have hinv4 : (24 / 53 : ℝ) ^ (4 : ℕ) ≤ 1 / B ^ (4 : ℕ) := by
     have hp := pow_le_pow_left₀ hB.le hBupper 4
     have h := one_div_le_one_div_of_le (pow_pos hB 4) hp
     norm_num at h ⊢
     exact h
-  have hinv5 : (24 / 53 : ℝ) ^ 5 ≤ 1 / B ^ 5 := by
+  have hinv5 : (24 / 53 : ℝ) ^ (5 : ℕ) ≤ 1 / B ^ (5 : ℕ) := by
     have hp := pow_le_pow_left₀ hB.le hBupper 5
     have h := one_div_le_one_div_of_le (pow_pos hB 5) hp
     norm_num at h ⊢
     exact h
   let Q := 1296 + 18 *
-    (81 / B + 108 / B ^ 2 + 108 / B ^ 3 + 72 / B ^ 4 + 24 / B ^ 5)
+    (81 / B + 108 / B ^ (2 : ℕ) + 108 / B ^ (3 : ℕ) + 72 / B ^ (4 : ℕ) + 24 / B ^ (5 : ℕ))
   have hQ : thetaCuspLikelihoodFourthScale59Over16AtomQFloor ≤ Q := by
     dsimp only [thetaCuspLikelihoodFourthScale59Over16AtomQFloor, Q]
     simp only [div_eq_mul_inv] at hinv1 hinv2 hinv3 hinv4 hinv5 ⊢
@@ -177,7 +177,7 @@ theorem thetaCuspLikelihoodFourthScale59Over16AtomFloor_lt_dominantAtomMomentFou
 theorem oneHundredNinetyNineths_mul_fourth59Over16AffineFloor_lt_atomEnvelope
     {A : ℝ} (hAlo : (59 / 16 : ℝ) ≤ A) (hAhi : A ≤ 89 / 24) :
     (100 / 99 : ℝ) * (1300 - 336 * A) <
-      (1026 / 125 : ℝ) * A ^ 4 * (399 / 400 : ℝ) *
+      (1026 / 125 : ℝ) * A ^ (4 : ℕ) * (399 / 400 : ℝ) *
         ((1 / 63750 : ℝ) * (1 - 3 * (A - 59 / 16))) *
         thetaCuspLikelihoodFourthScale59Over16AtomQFloor := by
   let y := A - 59 / 16
@@ -186,10 +186,10 @@ theorem oneHundredNinetyNineths_mul_fourth59Over16AffineFloor_lt_atomEnvelope
   rw [show A = 59 / 16 + y by dsimp only [y]; ring]
   dsimp [thetaCuspLikelihoodFourthScale59Over16AtomQFloor]
   ring_nf
-  have hy2 : y ^ 2 ≤ (1 / 48 : ℝ) ^ 2 := pow_le_pow_left₀ hy hyhi 2
-  have hy3 : y ^ 3 ≤ (1 / 48 : ℝ) ^ 3 := pow_le_pow_left₀ hy hyhi 3
-  have hy4 : y ^ 4 ≤ (1 / 48 : ℝ) ^ 4 := pow_le_pow_left₀ hy hyhi 4
-  have hy5 : 0 ≤ y ^ 5 := by positivity
+  have hy2 : y ^ (2 : ℕ) ≤ (1 / 48 : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ hy hyhi 2
+  have hy3 : y ^ (3 : ℕ) ≤ (1 / 48 : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ hy hyhi 3
+  have hy4 : y ^ (4 : ℕ) ≤ (1 / 48 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ hy hyhi 4
+  have hy5 : 0 ≤ y ^ (5 : ℕ) := by positivity
   norm_num at hy2 hy3 hy4 ⊢
   nlinarith
 
@@ -209,7 +209,7 @@ theorem oneHundredNinetyNineths_mul_fourth59Over16AffineFloor_lt_ordinaryJetFour
   have hBA : B = A - 3 / 2 := by
     simpa only [A, B] using thetaCuspSingleAtomScale_likelihoodCoordinate x
   have hAtom : atomFloor <
-      ∫ t : ℝ, t ^ 4 * Real.exp (-(B * t))
+      ∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-(B * t))
         ∂thetaCuspAtomLikelihoodSpectralMeasure 2 := by
     dsimp only [atomFloor]
     exact thetaCuspLikelihoodFourthScale59Over16AtomFloor_lt_dominantAtomMomentFour
@@ -229,9 +229,9 @@ theorem oneHundredNinetyNineths_mul_fourth59Over16AffineFloor_lt_ordinaryJetFour
       Measure.le_sum (fun k : ℕ => thetaCuspAtomLikelihoodSpectralMeasure (k + 2)) 0
   have hInt := integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 4 hB
   have hMono :
-      (∫ t : ℝ, t ^ 4 * Real.exp (-B * t)
+      (∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-B * t)
           ∂thetaCuspAtomLikelihoodSpectralMeasure 2) ≤
-        ∫ t : ℝ, t ^ 4 * Real.exp (-B * t)
+        ∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-B * t)
           ∂thetaCuspHigherLikelihoodSpectralMeasure := by
     apply integral_mono_measure hMeasure
     · exact ae_of_all _ fun t => by positivity
@@ -239,7 +239,7 @@ theorem oneHundredNinetyNineths_mul_fourth59Over16AffineFloor_lt_ordinaryJetFour
   have hMoment : atomFloor < thetaCuspHigherLikelihoodSpectralMoment B 4 := by
     rw [thetaCuspHigherLikelihoodSpectralMoment_eq_integral]
     have hAtom' : atomFloor <
-        ∫ t : ℝ, t ^ 4 * Real.exp (-B * t)
+        ∫ t : ℝ, t ^ (4 : ℕ) * Real.exp (-B * t)
           ∂thetaCuspAtomLikelihoodSpectralMeasure 2 := by
       simpa only [neg_mul] using hAtom
     exact hAtom'.trans_le hMono
@@ -278,11 +278,11 @@ theorem oneHundredNinetyNineths_mul_fourth59Over16AffineFloor_lt_ordinaryJetFour
   have hApos : 0 < A := by dsimp only [A] at hAlo ⊢; linarith
   calc
     (100 / 99 : ℝ) * (1300 - 336 * thetaCuspSingleAtomReflectionScale 1 x) <
-      (1026 / 125 : ℝ) * A ^ 4 * (399 / 400 : ℝ) * atomFloor := by
+      (1026 / 125 : ℝ) * A ^ (4 : ℕ) * (399 / 400 : ℝ) * atomFloor := by
         convert hpoly using 1 <;> dsimp only [A, atomFloor] <;> ring
-    _ < (1026 / 125 : ℝ) * A ^ 4 *
+    _ < (1026 / 125 : ℝ) * A ^ (4 : ℕ) *
         thetaCuspLikelihoodNormalizedMoment B 4 := by
-      have hcoeff : 0 < (1026 / 125 : ℝ) * A ^ 4 := by positivity
+      have hcoeff : 0 < (1026 / 125 : ℝ) * A ^ (4 : ℕ) := by positivity
       nlinarith
     _ ≤ thetaCuspLikelihoodSourceOrdinaryJetFour x := by
       simpa only [A, B] using hbase
@@ -317,7 +317,7 @@ theorem fourth59Over16AffineWeightFloor_lt_thetaCuspLikelihoodSourceLogPartition
     dsimp only [thetaCuspSingleAtomReflectionScale]
     rw [thetaCuspBornWittenWeight_eq, thetaCuspMorseScale]
     norm_num
-    rw [show Real.exp x ^ 2 = Real.exp (2 * x) by
+    rw [show Real.exp x ^ (2 : ℕ) = Real.exp (2 * x) by
       rw [show 2 * x = x + x by ring, Real.exp_add]
       ring]
   have h := fourth59Over16AffineFloor_lt_thetaCuspLikelihoodSourceLogPartitionJetFour

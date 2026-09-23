@@ -26,7 +26,7 @@ theorem isHilbertSchmidt_rankOne
     IsHilbertSchmidt (rankOne ℂ x y) := by
   unfold IsHilbertSchmidt
   have hs := (hsBasis ℂ F).summable_norm_inner_sq y
-  apply (hs.mul_right (‖x‖ ^ 2)).congr
+  apply (hs.mul_right (‖x‖ ^ (2 : ℕ))).congr
   intro i
   rw [rankOne_apply, norm_smul, mul_pow]
   rw [norm_inner_symm]
@@ -36,15 +36,15 @@ theorem hsNormSq_rankOne
     {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     [CompleteSpace E] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
     [CompleteSpace F] (x : E) (y : F) :
-    hsNormSq (rankOne ℂ x y) = ‖x‖ ^ 2 * ‖y‖ ^ 2 := by
+    hsNormSq (rankOne ℂ x y) = ‖x‖ ^ (2 : ℕ) * ‖y‖ ^ (2 : ℕ) := by
   let b := hsBasis ℂ F
   have hHS := isHilbertSchmidt_rankOne x y
   rw [hsNormSq_eq hHS b]
   simp_rw [rankOne_apply, norm_smul, mul_pow]
   rw [tsum_mul_right]
-  have hsum : (∑' i, ‖inner ℂ y (b i)‖ ^ 2) = ‖y‖ ^ 2 := by
+  have hsum : (∑' i, ‖inner ℂ y (b i)‖ ^ (2 : ℕ)) = ‖y‖ ^ (2 : ℕ) := by
     calc
-      _ = ∑' i, ‖inner ℂ (b i) y‖ ^ 2 := by
+      _ = ∑' i, ‖inner ℂ (b i) y‖ ^ (2 : ℕ) := by
         apply tsum_congr
         intro i
         rw [norm_inner_symm]
@@ -81,7 +81,7 @@ theorem hsNormSq_smul
     {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     [CompleteSpace E] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
     [CompleteSpace F] {T : E →L[ℂ] F} (hT : IsHilbertSchmidt T) (c : ℂ) :
-    hsNormSq (c • T) = ‖c‖ ^ 2 * hsNormSq T := by
+    hsNormSq (c • T) = ‖c‖ ^ (2 : ℕ) * hsNormSq T := by
   let b := hsBasis ℂ E
   rw [hsNormSq_eq (hT.smul c) b, hsNormSq_eq hT b, ← tsum_mul_left]
   apply tsum_congr
@@ -124,7 +124,7 @@ theorem hsNormSq_rankOne_add_rankOne
     [CompleteSpace E] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
     [CompleteSpace F] (x u : E) (y v : F) :
     hsNormSq (rankOne ℂ x y + rankOne ℂ u v) =
-      ‖x‖ ^ 2 * ‖y‖ ^ 2 + ‖u‖ ^ 2 * ‖v‖ ^ 2 +
+      ‖x‖ ^ (2 : ℕ) * ‖y‖ ^ (2 : ℕ) + ‖u‖ ^ (2 : ℕ) * ‖v‖ ^ (2 : ℕ) +
         2 * Complex.re (inner ℂ x u * inner ℂ v y) := by
   rw [hsNormSq_add (isHilbertSchmidt_rankOne x y)
       (isHilbertSchmidt_rankOne u v),

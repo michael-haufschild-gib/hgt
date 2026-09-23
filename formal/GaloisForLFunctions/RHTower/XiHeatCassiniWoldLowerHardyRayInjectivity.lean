@@ -169,7 +169,7 @@ theorem xiHeatCassiniOrderedPrimeComplexNegativePhase_neg_mul_I
   congr 1
   calc
     -(Complex.I * (h N : ℂ) * (-(x : ℂ) * Complex.I)) =
-        Complex.I ^ 2 * (h N : ℂ) * (x : ℂ) := by ring
+        Complex.I ^ (2 : ℕ) * (h N : ℂ) * (x : ℂ) := by ring
     _ = -(h N : ℂ) * (x : ℂ) := by rw [Complex.I_sq]; ring
 
 /-- On the lower imaginary ray, the edge current is the generalized Dirichlet series of its

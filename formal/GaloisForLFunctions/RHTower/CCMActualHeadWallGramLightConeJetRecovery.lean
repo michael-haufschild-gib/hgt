@@ -19,7 +19,7 @@ def ccmActualHeadWallChordQuadraticJet
     (p : Nat.Primes) (e : ℕ) : ℝ :=
   let n := xiGammaEulerValuationNat (p, e)
   2 * criticalMellinAtomWeight n *
-    (2 * Real.pi * Real.log n) ^ 2
+    (2 * Real.pi * Real.log n) ^ (2 : ℕ)
 
 /-- Spectral differentiation of actual scalar chord energy recovers literal wall-light orientation. -/
 theorem hasDerivAt_normSq_ccmActualHeadMellinWallChord_primePower
@@ -117,7 +117,7 @@ theorem ccmActualHeadWallChordQuadraticJet_pos
 
 /-- Forced positive dressing from the CCM prime-entry third jet to actual chord curvature. -/
 def ccmActualHeadWallChordThirdJetDressing (n : ℕ) : ℝ :=
-  Real.pi ^ 2 / 4 * Real.log n ^ 5
+  Real.pi ^ (2 : ℕ) / 4 * Real.log n ^ (5 : ℕ)
 
 theorem ccmActualHeadWallChordThirdJetDressing_primePower_pos
     (p : Nat.Primes) (e : ℕ) :

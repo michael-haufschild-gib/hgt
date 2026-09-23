@@ -157,9 +157,9 @@ number of distinct zeros in every nonnegative spectral window. -/
 theorem spectralZetaZeroWindow_card_le_of_growth
     {A T : ℝ} (hA : 1 ≤ A) (hT : 0 ≤ T)
     (hbound : ∀ z : ℂ,
-      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ 2)) :
+      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ (2 : ℕ))) :
     ((spectralZetaZeroWindow T).card : ℝ) ≤
-      A * (2 * (T + 1) + 1) ^ 2 / Real.log 2 := by
+      A * (2 * (T + 1) + 1) ^ (2 : ℕ) / Real.log 2 := by
   exact (spectralZetaZeroWindow_card_le_riemannXi_divisor hT).trans
     (jensen_riemannXi_divisor_le hA (by linarith) hbound)
 
@@ -197,16 +197,16 @@ radius by an explicit quadratic expression. -/
 theorem one_div_spectralBoundarySeparation_le_of_growth
     {A : ℝ} (hA : 1 ≤ A)
     (hbound : ∀ z : ℂ,
-      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ 2))
+      ‖riemannXi z‖ ≤ Real.exp (A * (‖z‖ + 1) ^ (2 : ℕ)))
     (n : ℕ) :
     1 / spectralBoundarySeparation n ≤
       3 *
-        (A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2 + 4) := by
+        (A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2 + 4) := by
   have hwindow := spectralZetaZeroWindow_card_le_of_growth hA
     (show 0 ≤ (n : ℝ) + 1 by positivity) hbound
   have hwindow' :
       ((spectralZetaZeroWindow ((n : ℝ) + 1)).card : ℝ) ≤
-        A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2 := by
+        A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2 := by
     convert hwindow using 1
     ring
   have hobstructions :
@@ -215,7 +215,7 @@ theorem one_div_spectralBoundarySeparation_le_of_growth
     exact_mod_cast spectralBoundaryObstructions_card_le n
   have hcard :
       ((spectralBoundaryObstructions n).card : ℝ) + 2 ≤
-        A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2 + 4 := by
+        A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2 + 4 := by
     linarith
   rw [show 1 / spectralBoundarySeparation n =
       3 * (((spectralBoundaryObstructions n).card : ℝ) + 2) by
@@ -229,7 +229,7 @@ theorem exists_one_div_spectralBoundarySeparation_quadratic_bound :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ n : ℕ,
       1 / spectralBoundarySeparation n ≤
         3 *
-          (A * (2 * ((n : ℝ) + 2) + 1) ^ 2 / Real.log 2 + 4) := by
+          (A * (2 * ((n : ℝ) + 2) + 1) ^ (2 : ℕ) / Real.log 2 + 4) := by
   rcases riemannXi_quadraticGrowth with ⟨A, hA, hbound⟩
   exact ⟨A, hA,
     one_div_spectralBoundarySeparation_le_of_growth hA hbound⟩

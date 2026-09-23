@@ -89,7 +89,7 @@ theorem tendsto_log_sub_const_div_log_one (K : ℝ) :
 /-- Every fixed `(log, log²)` harmonic dilation has leading coefficient one. -/
 theorem tendsto_selbergMixedHarmonicMain_div_log_sq_one
     {b c : ℕ} (hb : 0 < b) (hc : 0 < c) :
-    Tendsto (fun N : ℕ => selbergMixedHarmonicMain b c N / Real.log N ^ 2)
+    Tendsto (fun N : ℕ => selbergMixedHarmonicMain b c N / Real.log N ^ (2 : ℕ))
       atTop (𝓝 1) := by
   have hB := tendsto_log_sub_const_div_log_one (Real.log b)
   have hH := RHTower.tendsto_harmonic_natDiv_div_log (d := c) hc
@@ -108,7 +108,7 @@ theorem tendsto_selbergMixedHarmonicMain_div_log_sq_one
 theorem tendsto_selbergQuadraticHarmonicMain_div_log_cube_four_thirds
     {a b c : ℕ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
     Tendsto (fun N : ℕ =>
-      selbergQuadraticHarmonicMain a b c N / Real.log N ^ 3)
+      selbergQuadraticHarmonicMain a b c N / Real.log N ^ (3 : ℕ))
       atTop (𝓝 (4 / 3 : ℝ)) := by
   have hA := tendsto_log_sub_const_div_log_one (Real.log a)
   have hB := tendsto_log_sub_const_div_log_one (Real.log b)

@@ -195,7 +195,7 @@ theorem norm_forwardProduct_sub_one_le [Nonempty ι] {τ : ι → ℂ} {t : ℝ}
       Finset.prod_le_prod (fun i _ => hpnn i) fun i _ => hq i
     have hpow : (∏ _i : ι, t) = t ^ Fintype.card ι := by
       rw [Finset.prod_const, Finset.card_univ]
-    have hmono : t ^ Fintype.card ι ≤ t ^ 1 :=
+    have hmono : t ^ Fintype.card ι ≤ t ^ (1 : ℕ) :=
       pow_le_pow_of_le_one ht0 (by linarith) hcard
     rw [hpow] at hstep
     rw [pow_one] at hmono

@@ -165,7 +165,7 @@ theorem ewqHedenmalm_reflectedCrossing_eq_neg_directionalWilsonContrast_sq
         (ewqHedenmalmCovariantAmplitude p q)
         (ewqHedenmalmCovariantAmplitude p (_root_.RHTower.xiZeroCopyReflectEquiv q)) x y =
       -(Real.log (p : ℝ) / 4) *
-        ewqHedenmalmDirectionalWilsonContrast p q ^ 2 := by
+        ewqHedenmalmDirectionalWilsonContrast p q ^ (2 : ℕ) := by
   rw [ewqHedenmalm_reflectedCrossing_eq_neg_self,
     eulerPrimeQuadraticResidueOppositeCrossing_eq,
     ewqHedenmalmDirectionalWilsonContrast_eq]

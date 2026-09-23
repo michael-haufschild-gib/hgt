@@ -193,7 +193,7 @@ def scalarDensity (A B : F) (x : P) : ℂ :=
 
 /-- The planar scalar density includes exactly the original hyperbolic area weight. -/
 theorem scalarDensity_eq (A B : F) (x : P) (hy : 0<x 3) :
-    scalarDensity A B x=A x*angularLap B x/(x 3:ℂ)^2 := by
+    scalarDensity A B x=A x*angularLap B x/(x 3:ℂ)^(2 : ℕ) := by
   unfold scalarDensity angularLap
   field_simp [Complex.ofReal_ne_zero.mpr hy.ne']
 
@@ -309,7 +309,7 @@ theorem physical_scalar_green_integral (A B : PhysicalField) (p R : ℝ)
 /-- Ingoing time current uses U_R; radial current uses f U_R+U_p. -/
 def orbitDerivative (U : F) (j : Fin 2) (x : P) : ℂ :=
   if j=0 then coordDeriv 1 U x else
-    ((x 1:ℂ)^2-1)*coordDeriv 1 U x+coordDeriv 0 U x
+    ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 U x+coordDeriv 0 U x
 
 private theorem orbit_smooth {U : F} {x : P} (hU : ContDiffAt ℝ ∞ U x) (j : Fin 2) :
     ContDiffAt ℝ ∞ (orbitDerivative U j) x := by
@@ -324,8 +324,8 @@ private theorem contact_smooth {U : F} {x : P} (hU : ContDiffAt ℝ ∞ U x) :
   have hr : ContDiffAt ℝ ∞ (fun z : P => (z 1:ℂ)) x :=
     (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ (1:Fin 4))).contDiffAt
   change ContDiffAt ℝ ∞ (fun z =>
-    -(z 1:ℂ)^2*((z 1:ℂ)^2-1)*coordDeriv 1 (coordDeriv 1 U) z-
-    (z 1:ℂ)^2*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
+    -(z 1:ℂ)^(2 : ℕ)*((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 U) z-
+    (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
     2*(z 1:ℂ)*coordDeriv 1 U z+2*(z 1:ℂ)*coordDeriv 0 U z) x
   exact ((((hr.pow 2).neg.mul ((hr.pow 2).sub contDiffAt_const)).mul
     (partial_smooth (partial_smooth hU 1) 1)).sub
@@ -348,9 +348,9 @@ private theorem orbit_coexact {U : F} {x : P} (hU : ContDiffAt ℝ ∞ U x)
     (j a : Fin 2) :
     coexactField (orbitDerivative U j) a x=
     if j=0 then coexactField (coordDeriv 1 U) a x else
-      ((x 1:ℂ)^2-1)*coexactField (coordDeriv 1 U) a x+coexactField (coordDeriv 0 U) a x := by
-  have hr : ContDiff ℝ ∞ (fun z : P => ((z 1:ℂ)^2-1)) := by fun_prop
-  have hd (i : Fin 4) (hi : i≠1) : coordDeriv i (fun z : P => ((z 1:ℂ)^2-1)) x=0 := by
+      ((x 1:ℂ)^(2 : ℕ)-1)*coexactField (coordDeriv 1 U) a x+coexactField (coordDeriv 0 U) a x := by
+  have hr : ContDiff ℝ ∞ (fun z : P => ((z 1:ℂ)^(2 : ℕ)-1)) := by fun_prop
+  have hd (i : Fin 4) (hi : i≠1) : coordDeriv i (fun z : P => ((z 1:ℂ)^(2 : ℕ)-1)) x=0 := by
     have hR := Complex.ofRealCLM.hasFDerivAt.comp x (hasFDerivAt_apply (1:Fin 4) x)
     have h := (hR.mul hR).sub_const (1:ℂ)
     simp only [Function.comp_def,Complex.ofRealCLM_apply,Pi.mul_apply] at h
@@ -363,9 +363,9 @@ private theorem orbit_coexact {U : F} {x : P} (hU : ContDiffAt ℝ ∞ U x)
   have hdU0 := (partial_smooth hU 0).differentiableAt (by simp)
   have he (i : Fin 4) (hi : i≠1) :
       coordDeriv i (orbitDerivative U 1) x=
-        ((x 1:ℂ)^2-1)*coordDeriv i (coordDeriv 1 U) x+coordDeriv i (coordDeriv 0 U) x := by
-    change coordDeriv i (fun z => ((z 1:ℂ)^2-1)*coordDeriv 1 U z+coordDeriv 0 U z) x=_
-    have hprod : DifferentiableAt ℝ (fun z : P => ((z 1:ℂ)^2-1)*coordDeriv 1 U z) x :=
+        ((x 1:ℂ)^(2 : ℕ)-1)*coordDeriv i (coordDeriv 1 U) x+coordDeriv i (coordDeriv 0 U) x := by
+    change coordDeriv i (fun z => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 U z+coordDeriv 0 U z) x=_
+    have hprod : DifferentiableAt ℝ (fun z : P => ((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 U z) x :=
       (hr.differentiable (by simp) x).mul hdU1
     rw [coordDeriv_add hprod hdU0 i,
       coordDeriv_mul (hr.differentiable (by simp) x) hdU1 i,hd i hi]
@@ -383,7 +383,7 @@ private theorem orbit_current {U W : F} {x : P}
     (hU : ContDiffAt ℝ ∞ U x) (hW : ContDiffAt ℝ ∞ W x) (j : Fin 2) :
     D4BMIngoingFullCurrent.current (x 1) (x 3)
       (fun a => ofField (coexactField U a) x) (fun a => ofField (coexactField W a) x) (if j=0 then 0 else 1)=
-      1/(x 1:ℂ)^2*(pairing (orbitDerivative U j) (scalarContact W) x-
+      1/(x 1:ℂ)^(2 : ℕ)*(pairing (orbitDerivative U j) (scalarContact W) x-
         pairing (orbitDerivative W j) (scalarContact U) x) := by
   fin_cases j <;> simp [D4BMIngoingFullCurrent.current,coexact_first hU,coexact_first hW,
     coexact_contact hU,coexact_contact hW,pairing,Fin.sum_univ_two,orbit_coexact hU,orbit_coexact hW]
@@ -393,7 +393,7 @@ private theorem orbit_current {U W : F} {x : P}
 /-- The complete source contact, including the original forcing and reconstruction. -/
 def forcedContact (q : XiZeroCopy) (branch : Bool) (amp : ℂ) (x : P) : ℂ :=
   angularLap (sourceScalar q branch amp) x-2*sourceScalar q branch amp x+
-    (x 1:ℂ)^3/((x 1:ℂ)^2-1)*originalForcing q branch amp x
+    (x 1:ℂ)^(3 : ℕ)/((x 1:ℂ)^(2 : ℕ)-1)*originalForcing q branch amp x
 
 private theorem forcedContact_germ (q : XiZeroCopy) (branch : Bool) (amp : ℂ)
     (x : P) (hp : 0<x 0) (hr : 1<x 1) (hy : 0<x 3) :
@@ -414,11 +414,11 @@ def metricDensity (q r : XiZeroCopy) (branch side outer : Bool) (amp : ℂ) (j :
   let z : P := ![x 0-D4BMIngoingCoordinates.tortoise (x 1),x 1,x 2,x 3]
   let P := D4BMActualIngoingCurrent.originalStaticStream q branch amp
   let Q := D4BMPhysicalModeAction.physicalLeftModeStream r (D4BMLeftModeRadialEquation.frequency r side) outer
-  let w := fun k => (x 1:ℂ)^2/(x 3:ℂ)^2*D4BMMixedActionCurrent.actionSymplectic
+  let w := fun k => (x 1:ℂ)^(2 : ℕ)/(x 3:ℂ)^(2 : ℕ)*D4BMMixedActionCurrent.actionSymplectic
     (D4BMBackground.jet (x 1) (x 3))
     (ofMetricField (D4BMActualIngoingCurrent.reconstructedMetric P) z)
     (ofMetricField (D4BMActualIngoingCurrent.reconstructedMetric Q) z) k
-  if j=0 then w 0+w 1/((x 1:ℂ)^2-1) else w 1
+  if j=0 then w 0+w 1/((x 1:ℂ)^(2 : ℕ)-1) else w 1
 
 private theorem metricDensity_stream (q r : XiZeroCopy) (branch side outer : Bool) (amp : ℂ)
     (x : P) (hp : 0<x 0) (hr : 1<x 1) (hy : 0<x 3) (j : Fin 2) :
@@ -456,7 +456,7 @@ private theorem metricDensity_stream (q r : XiZeroCopy) (branch side outer : Boo
 theorem original_metric_density (q r : XiZeroCopy) (branch side outer : Bool) (amp : ℂ)
     (x : P) (hp : 0<x 0) (hr : 1<x 1) (hy : 0<x 3) (j : Fin 2) :
     metricDensity q r branch side outer amp j x=
-      1/(x 1:ℂ)^2*(pairing (orbitDerivative (sourceScalar q branch amp) j) (scalarContact (leftScalar r side outer)) x-
+      1/(x 1:ℂ)^(2 : ℕ)*(pairing (orbitDerivative (sourceScalar q branch amp) j) (scalarContact (leftScalar r side outer)) x-
         pairing (forcedContact q branch amp) (orbitDerivative (leftScalar r side outer) j) x) := by
   rw [metricDensity_stream q r branch side outer amp x hp hr hy j,
     orbit_current (D4BMOriginalGreenBoundary.sourceScalar_exterior_smooth q branch amp x hp hr hy)
@@ -483,9 +483,9 @@ theorem original_metric_integral (q r : XiZeroCopy) (branch side outer : Bool) (
     let D := forcedContact q branch amp
     let E := orbitDerivative W j
     (∫ w in domain Y, metricDensity q r branch side outer amp j (slice p R (point w.1 w.2)))+
-      1/(R:ℂ)^2*((∫ w in domain Y, scalarDensity A B (slice p R (point w.1 w.2)))-
+      1/(R:ℂ)^(2 : ℕ)*((∫ w in domain Y, scalarDensity A B (slice p R (point w.1 w.2)))-
         ∫ w in domain Y, scalarDensity D E (slice p R (point w.1 w.2)))=
-      1/(R:ℂ)^2*(boundary (transfer A B 0) (transfer A B 1) p R Y-
+      1/(R:ℂ)^(2 : ℕ)*(boundary (transfer A B 0) (transfer A B 1) p R Y-
         boundary (transfer D E 0) (transfer D E 1) p R Y) := by
   dsimp only
   let U := sourceScalar q branch amp
@@ -505,7 +505,7 @@ theorem original_metric_integral (q r : XiZeroCopy) (branch side outer : Bool) (
   have hAB := pairing_integral A B p R hA hB hY
   have hDE := pairing_integral D E p R hD hE hY
   have he : (∫ w in domain Y, metricDensity q r branch side outer amp j (slice p R (point w.1 w.2)))=
-      1/(R:ℂ)^2*((∫ w in domain Y, pairing A B (slice p R (point w.1 w.2)))-
+      1/(R:ℂ)^(2 : ℕ)*((∫ w in domain Y, pairing A B (slice p R (point w.1 w.2)))-
         ∫ w in domain Y, pairing D E (slice p R (point w.1 w.2))) := by
     rw [← integral_sub (area_integrable (fun z hz => (pairing_smooth (hA z hz) (hB z hz)).continuousAt) Y)
       (area_integrable (fun z hz => (pairing_smooth (hD z hz) (hE z hz)).continuousAt) Y),← integral_const_mul]
@@ -514,7 +514,7 @@ theorem original_metric_integral (q r : XiZeroCopy) (branch side outer : Bool) (
     have hy : 0<(point w.1 w.2).im := by simpa [point] using (show 0<w.2 by linarith [hw.1.2.1])
     exact original_metric_density q r branch side outer amp _ hp hr hy j
   rw [he]
-  linear_combination (1/(R:ℂ)^2)*hAB-(1/(R:ℂ)^2)*hDE
+  linear_combination (1/(R:ℂ)^(2 : ℕ))*hAB-(1/(R:ℂ)^(2 : ℕ))*hDE
 
 
 
@@ -532,7 +532,7 @@ theorem coexact_orbit_current {U W : F} {x : P}
     (hU : ContDiffAt ℝ ∞ U x) (hW : ContDiffAt ℝ ∞ W x) (j : Fin 2) :
     D4BMIngoingFullCurrent.current (x 1) (x 3)
       (fun a => ofField (coexactField U a) x) (fun a => ofField (coexactField W a) x) (if j=0 then 0 else 1)=
-      1/(x 1:ℂ)^2*(pairing (orbitDerivative U j) (scalarContact W) x-
+      1/(x 1:ℂ)^(2 : ℕ)*(pairing (orbitDerivative U j) (scalarContact W) x-
         pairing (orbitDerivative W j) (scalarContact U) x) := orbit_current hU hW j
 
 end RHTower.D4BMOriginalOrbitCurrent

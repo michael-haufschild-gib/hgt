@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.LevinsonAdmissibleHeight
 # The Levinson window with every edge estimated
 
 Transporting the right-edge and horizontal-edge estimates from `G` to the entire detector
-`G♯ = (s-1)^2 G` costs only the explicit rational term `2/(s-1)`, whose contribution to each edge is
+`G♯ = (s-1)^(2 : ℕ) G` costs only the explicit rational term `2/(s-1)`, whose contribution to each edge is
 `O(1)`.  What remains in the window inequality is the archimedean main term `θ(T₂) - θ(T₁)`, three
 `O(log T)` edge terms, and `2π` times the number of zeros of `G♯` in `[1/2,4]×[T₁,T₂]`.
 -/
@@ -23,27 +23,27 @@ theorem im_two_div_horiz {x T : ℝ} (hT : 0 < T) :
     |((2 : ℂ) / (((x : ℂ) + (T : ℂ) * I) - 1)).im| ≤ 2 / T := by
   have hre : ((((x : ℂ) + (T : ℂ) * I) - 1)).re = x - 1 := by simp
   have him : ((((x : ℂ) + (T : ℂ) * I) - 1)).im = T := by simp
-  have hns : Complex.normSq (((x : ℂ) + (T : ℂ) * I) - 1) = (x - 1) ^ 2 + T ^ 2 := by
+  have hns : Complex.normSq (((x : ℂ) + (T : ℂ) * I) - 1) = (x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, hre, him]; ring
-  have hden : (0 : ℝ) < (x - 1) ^ 2 + T ^ 2 := by positivity
+  have hden : (0 : ℝ) < (x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ) := by positivity
   rw [Complex.div_im, hns, hre, him]
   simp only [Complex.re_ofNat, Complex.im_ofNat]
-  rw [show (0 : ℝ) * (x - 1) / ((x - 1) ^ 2 + T ^ 2) - 2 * T / ((x - 1) ^ 2 + T ^ 2)
-      = -(2 * T / ((x - 1) ^ 2 + T ^ 2)) by ring]
+  rw [show (0 : ℝ) * (x - 1) / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ)) - 2 * T / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ))
+      = -(2 * T / ((x - 1) ^ (2 : ℕ) + T ^ (2 : ℕ))) by ring]
   rw [abs_neg, abs_div, abs_of_pos hden, abs_of_pos (by linarith : (0 : ℝ) < 2 * T),
     div_le_div_iff₀ hden hT]
   nlinarith [sq_nonneg (x - 1), hT]
 
 theorem re_two_div_vert {t : ℝ} :
-    |((2 : ℂ) / (((4 : ℂ) + (t : ℂ) * I) - 1)).re| ≤ 6 / (9 + t ^ 2) := by
+    |((2 : ℂ) / (((4 : ℂ) + (t : ℂ) * I) - 1)).re| ≤ 6 / (9 + t ^ (2 : ℕ)) := by
   have hre : ((((4 : ℂ) + (t : ℂ) * I) - 1)).re = 3 := by simp; norm_num
   have him : ((((4 : ℂ) + (t : ℂ) * I) - 1)).im = t := by simp
-  have hns : Complex.normSq (((4 : ℂ) + (t : ℂ) * I) - 1) = 9 + t ^ 2 := by
+  have hns : Complex.normSq (((4 : ℂ) + (t : ℂ) * I) - 1) = 9 + t ^ (2 : ℕ) := by
     rw [Complex.normSq_apply, hre, him]; ring
-  have hden : (0 : ℝ) < 9 + t ^ 2 := by positivity
+  have hden : (0 : ℝ) < 9 + t ^ (2 : ℕ) := by positivity
   rw [Complex.div_re, hns, hre, him]
   simp only [Complex.re_ofNat, Complex.im_ofNat]
-  rw [show (2 : ℝ) * 3 / (9 + t ^ 2) + 0 * t / (9 + t ^ 2) = 6 / (9 + t ^ 2) by ring]
+  rw [show (2 : ℝ) * 3 / (9 + t ^ (2 : ℕ)) + 0 * t / (9 + t ^ (2 : ℕ)) = 6 / (9 + t ^ (2 : ℕ)) by ring]
   rw [abs_of_pos (by positivity)]
 
 /-! ## The right edge for the entire detector -/
@@ -51,7 +51,7 @@ theorem re_two_div_vert {t : ℝ} :
 theorem abs_integral_re_logDeriv_levinsonGEntire_right_le {lam : ℂ} (hlam : ‖lam‖ ≤ 1)
     {T₁ T₂ : ℝ} (h20 : 20 ≤ T₁) (hT : T₁ ≤ T₂) :
     |∫ t in T₁..T₂, (logDeriv (levinsonGEntire lam) ((4 : ℂ) + (t : ℂ) * I)).re|
-      ≤ Real.pi + (T₂ - T₁) * (6 / T₁ ^ 2) := by
+      ≤ Real.pi + (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ)) := by
   have hT0 : (0 : ℝ) < T₁ := by linarith
   have hne1 : ∀ t : ℝ, ((4 : ℂ) + (t : ℂ) * I) ≠ 1 := by
     intro t h
@@ -87,29 +87,29 @@ theorem abs_integral_re_logDeriv_levinsonGEntire_right_le {lam : ℂ} (hlam : �
   rw [intervalIntegral.integral_congr hsplit,
     intervalIntegral.integral_add hcont₁.intervalIntegrable hcont₂.intervalIntegrable]
   have hcorr : |∫ t in T₁..T₂, ((2 : ℂ) / (((4 : ℂ) + (t : ℂ) * I) - 1)).re|
-      ≤ (T₂ - T₁) * (6 / T₁ ^ 2) := by
+      ≤ (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ)) := by
     have hbnd : ∀ t ∈ Set.uIoc T₁ T₂,
-        ‖((2 : ℂ) / (((4 : ℂ) + (t : ℂ) * I) - 1)).re‖ ≤ 6 / T₁ ^ 2 := by
+        ‖((2 : ℂ) / (((4 : ℂ) + (t : ℂ) * I) - 1)).re‖ ≤ 6 / T₁ ^ (2 : ℕ) := by
       intro t ht
       rw [Set.uIoc_of_le hT] at ht
       rw [Real.norm_eq_abs]
       refine le_trans re_two_div_vert ?_
       have hTt : T₁ ≤ t := ht.1.le
-      have hsq : T₁ ^ 2 ≤ 9 + t ^ 2 := by nlinarith [hTt, hT0]
+      have hsq : T₁ ^ (2 : ℕ) ≤ 9 + t ^ (2 : ℕ) := by nlinarith [hTt, hT0]
       exact div_le_div_of_nonneg_left (by norm_num) (by positivity) hsq
     have h := intervalIntegral.norm_integral_le_of_norm_le_const hbnd
     rw [Real.norm_eq_abs] at h
     calc |∫ t in T₁..T₂, ((2 : ℂ) / (((4 : ℂ) + (t : ℂ) * I) - 1)).re|
-        ≤ 6 / T₁ ^ 2 * |T₂ - T₁| := h
-      _ = (T₂ - T₁) * (6 / T₁ ^ 2) := by rw [abs_of_nonneg (by linarith)]; ring
+        ≤ 6 / T₁ ^ (2 : ℕ) * |T₂ - T₁| := h
+      _ = (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ)) := by rw [abs_of_nonneg (by linarith)]; ring
   have hmain := abs_integral_re_logDeriv_levinsonG_right_le hlam (le_refl (4 : ℝ)) hT
   calc |(∫ t in T₁..T₂, ((2 : ℂ) / (((4 : ℂ) + (t : ℂ) * I) - 1)).re)
         + ∫ t in T₁..T₂, (logDeriv (levinsonG lam) ((4 : ℂ) + (t : ℂ) * I)).re|
       ≤ |∫ t in T₁..T₂, ((2 : ℂ) / (((4 : ℂ) + (t : ℂ) * I) - 1)).re|
         + |∫ t in T₁..T₂, (logDeriv (levinsonG lam) ((4 : ℂ) + (t : ℂ) * I)).re| :=
         abs_add_le _ _
-    _ ≤ (T₂ - T₁) * (6 / T₁ ^ 2) + Real.pi := add_le_add hcorr hmain
-    _ = Real.pi + (T₂ - T₁) * (6 / T₁ ^ 2) := by ring
+    _ ≤ (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ)) + Real.pi := add_le_add hcorr hmain
+    _ = Real.pi + (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ)) := by ring
 
 /-! ## The horizontal edges for the entire detector -/
 
@@ -202,7 +202,7 @@ theorem exists_levinson_window_edge_bound :
         (∀ Z : Finset ℂ,
           (∀ z : ℂ, z ∈ Z ↔ z ∈ (Set.uIcc (1 / 2 : ℝ) 4 ×ℂ Set.uIcc T₁ T₂) ∧
             levinsonGEntire (lam : ℂ) z = 0) →
-          ((n : ℝ) + 1) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ 2)
+          ((n : ℝ) + 1) * Real.pi + Real.pi + (T₂ - T₁) * (6 / T₁ ^ (2 : ℕ))
               + c * Real.log T₁ + c * Real.log T₂
               + 2 * Real.pi *
                 (∑ w ∈ Z, ((analyticOrderAt (levinsonGEntire (lam : ℂ)) w).toNat : ℝ))

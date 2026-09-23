@@ -254,7 +254,7 @@ theorem summable_normSq_xiGammaEulerRadialSection
       (xiGammaEulerValuationNat pe : ℝ) * _ = _
   rw [vonMangoldt_prime_pow_succ_eq_log pe]
 
-/-- Positive-real radial sections are genuine complex `ell^2` vectors. -/
+/-- Positive-real radial sections are genuine complex `ell^(2 : ℕ)` vectors. -/
 theorem memℓp_xiGammaEulerRadialSection
     {s : ℂ} (hs : 0 < s.re) :
     Memℓp (fun pe : Nat.Primes × ℕ =>

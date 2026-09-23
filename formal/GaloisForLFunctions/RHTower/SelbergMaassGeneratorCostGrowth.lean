@@ -43,7 +43,7 @@ theorem level_le_card_deck (N : ℕ) : N+1 ≤ Fintype.card (Deck N) := by
 
 /-- Explicit level threshold forcing the constructed all-word comparison cost above k²/2. -/
 theorem generatorConstant_gt_of_large_level (N k : ℕ) (hk : 0 < k)
-    (hN : 2*5^k < N+1) : (k:ℝ)^2/2 < generatorConstant N := by
+    (hN : 2*5^k < N+1) : (k:ℝ)^(2 : ℕ)/2 < generatorConstant N := by
   by_contra h
   have hc := GaloisForLFunctions.HTGeometry.FiniteRegularGeneratorCost.card_le_of_comparisonConstant_le
     (generatorS N) (generatorT N) (generators_generate N) k hk (le_of_not_gt h)
@@ -58,7 +58,7 @@ theorem generatorConstant_tendsto_atTop : Tendsto generatorConstant atTop atTop 
   obtain ⟨k,hk⟩ := exists_nat_gt (2*|B|+2)
   have hkR : 0 < (k:ℝ) := by linarith [abs_nonneg B]
   have hkN : 0 < k := by exact_mod_cast hkR
-  have hB : B < (k:ℝ)^2/2 := by
+  have hB : B < (k:ℝ)^(2 : ℕ)/2 := by
     nlinarith [abs_nonneg B,le_abs_self B]
   filter_upwards [eventually_ge_atTop (2*5^k)] with N hN
   have hlevel : 2*5^k < N+1 := by omega
@@ -79,7 +79,7 @@ theorem generatorConstant_le_certifiedCost (N : ℕ) (c : Deck N → ℕ)
     (hcert : ∀ g : Deck N,
       GaloisForLFunctions.HTGeometry.FiniteRegularGeneratorCost.GeneratedCost
         (generatorS N) (generatorT N) g (c g)) :
-    generatorConstant N ≤ 1+(Fintype.card (Deck N):ℝ)⁻¹*∑ g : Deck N, (c g:ℝ)^2 := by
+    generatorConstant N ≤ 1+(Fintype.card (Deck N):ℝ)⁻¹*∑ g : Deck N, (c g:ℝ)^(2 : ℕ) := by
   classical
   have hmin (g : Deck N) :
       GaloisForLFunctions.HTGeometry.FiniteRegularGeneratorCost.cost
@@ -104,7 +104,7 @@ theorem not_exists_uniform_certifiedCost_bound
       GaloisForLFunctions.HTGeometry.FiniteRegularGeneratorCost.GeneratedCost
         (generatorS N) (generatorT N) g (c N g)) :
     ¬ ∃ B : ℝ, ∀ N : ℕ,
-      1+(Fintype.card (Deck N):ℝ)⁻¹*(∑ g : Deck N, (c N g:ℝ)^2) ≤ B := by
+      1+(Fintype.card (Deck N):ℝ)⁻¹*(∑ g : Deck N, (c N g:ℝ)^(2 : ℕ)) ≤ B := by
   rintro ⟨B,hB⟩
   apply not_exists_uniform_generatorConstant_bound
   exact ⟨B,fun N => (generatorConstant_le_certifiedCost N (c N) (hcert N)).trans (hB N)⟩

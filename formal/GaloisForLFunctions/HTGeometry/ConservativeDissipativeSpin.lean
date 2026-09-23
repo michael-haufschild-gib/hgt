@@ -20,7 +20,7 @@ noncomputable section
 
 /-- Landau–Lifshitz motion driven by an energy gradient with nonnegative damping. -/
 def spinField (m g : Fin 3 → ℝ) (a : ℝ) : Fin 3 → ℝ :=
-  m ⨯₃ g + a ^ 2 • (m ⨯₃ (m ⨯₃ g))
+  m ⨯₃ g + a ^ (2 : ℕ) • (m ⨯₃ (m ⨯₃ g))
 
 /-- Precession and damping are tangent to every centered sphere, without normalization. -/
 theorem spinField_tangent (m g : Fin 3 → ℝ) (a : ℝ) :
@@ -36,7 +36,7 @@ theorem doubleCross_power (m g : Fin 3 → ℝ) :
 
 /-- Proposition 1's pointwise energy balance, strengthened to arbitrary spin length. -/
 theorem spinField_power (m g : Fin 3 → ℝ) (a : ℝ) :
-    g ⬝ᵥ spinField m g a = -a ^ 2 * ((m ⨯₃ g) ⬝ᵥ (m ⨯₃ g)) := by
+    g ⬝ᵥ spinField m g a = -a ^ (2 : ℕ) * ((m ⨯₃ g) ⬝ᵥ (m ⨯₃ g)) := by
   rw [spinField, dotProduct_add, dotProduct_smul, dot_cross_self, doubleCross_power]
   ring
 
@@ -48,17 +48,17 @@ theorem spinField_power_nonpos (m g : Fin 3 → ℝ) (a : ℝ) :
 
 /-- Positive regularized damping detects exactly Brown's zero-torque equilibrium. -/
 theorem spinField_regularized_lossless_iff (m g : Fin 3 → ℝ) (a : ℝ) :
-    g ⬝ᵥ (m ⨯₃ g + (1 + a ^ 2) • (m ⨯₃ (m ⨯₃ g))) = 0 ↔ m ⨯₃ g = 0 := by
+    g ⬝ᵥ (m ⨯₃ g + (1 + a ^ (2 : ℕ)) • (m ⨯₃ (m ⨯₃ g))) = 0 ↔ m ⨯₃ g = 0 := by
   rw [dotProduct_add, dotProduct_smul, dot_cross_self, doubleCross_power, zero_add,
     smul_eq_mul, mul_eq_zero]
-  have ha : (1 + a ^ 2 : ℝ) ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg a])
+  have ha : (1 + a ^ (2 : ℕ) : ℝ) ≠ 0 := ne_of_gt (by nlinarith [sq_nonneg a])
   simp only [ha, false_or, neg_eq_zero, dotProduct_self_eq_zero]
 
 /-- Finite spatial sums retain the exact torque-square dissipation law. -/
 theorem spinField_total_power {ι : Type*} [Fintype ι]
     (m g : ι → Fin 3 → ℝ) (a : ι → ℝ) :
     (∑ i, g i ⬝ᵥ spinField (m i) (g i) (a i)) =
-      -∑ i, a i ^ 2 * ((m i ⨯₃ g i) ⬝ᵥ (m i ⨯₃ g i)) := by
+      -∑ i, a i ^ (2 : ℕ) * ((m i ⨯₃ g i) ⬝ᵥ (m i ⨯₃ g i)) := by
   simp only [spinField_power, neg_mul, Finset.sum_neg_distrib]
 
 theorem spinField_total_power_nonpos {ι : Type*} [Fintype ι]

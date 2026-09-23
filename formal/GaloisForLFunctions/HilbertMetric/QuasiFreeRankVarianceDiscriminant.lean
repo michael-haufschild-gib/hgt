@@ -31,21 +31,21 @@ def quasiFreeSpectralRankVarianceDiscriminant
     (occupation : ι → ℝ) (lower upper : ℝ) : ℝ :=
   (Fintype.card ι : ℝ) *
       quasiFreeSpectralBandBudget v energy occupation lower upper -
-    quasiFreeSpectralMean v energy occupation ^ 2
+    quasiFreeSpectralMean v energy occupation ^ (2 : ℕ)
 
 /-- Trace-free Hilbert--Schmidt anisotropy of the occupation-compressed observable. -/
 def quasiFreeSpectralCompressionAnisotropy
     (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ) : ℝ :=
   (Fintype.card ι : ℝ) *
       quasiFreeCompressedSpectralEnergy v energy occupation -
-    quasiFreeSpectralMean v energy occupation ^ 2
+    quasiFreeSpectralMean v energy occupation ^ (2 : ℕ)
 
 /-- Ordered pairwise dispersion of the occupation-rescaled orbital spectral means. -/
 def quasiFreeSpectralPairwiseMeanDefect
     (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ) : ℝ :=
   (∑ i, ∑ j,
       (occupation i * orbitalSpectralMean v energy i -
-        occupation j * orbitalSpectralMean v energy j) ^ 2) / 2
+        occupation j * orbitalSpectralMean v energy j) ^ (2 : ℕ)) / 2
 
 /-- Squared Hilbert--Schmidt distance from the occupation compression to its own scalar trace
 part.  The synthetic endpoints merely reuse the generic balanced-compression metric. -/
@@ -58,10 +58,10 @@ def quasiFreeMeanBalancedCompressionHilbertSchmidtSq
 def quasiFreeEndpointPairRankVarianceDiscriminant
     (lower upper occupation p : ℝ) : ℝ :=
   let mean := lower * (1 - p) + upper * p
-  let secondMoment := lower ^ 2 * (1 - p) + upper ^ 2 * p
+  let secondMoment := lower ^ (2 : ℕ) * (1 - p) + upper ^ (2 : ℕ) * p
   let totalMean := occupation * mean
-  let variance := occupation * secondMoment - occupation ^ 2 * mean ^ 2
-  (lower + upper) * totalMean - lower * upper * occupation - variance - totalMean ^ 2
+  let variance := occupation * secondMoment - occupation ^ (2 : ℕ) * mean ^ (2 : ℕ)
+  (lower + upper) * totalMean - lower * upper * occupation - variance - totalMean ^ (2 : ℕ)
 
 /-- Every rank-one endpoint pair saturates the rank-refined variance law, at every occupation and
 endpoint mixture. -/
@@ -126,27 +126,27 @@ theorem quasiFreeSpectralPairwiseMeanDefect_eq_card_mul_diagonal_sub_mean_sq
     (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ) :
     quasiFreeSpectralPairwiseMeanDefect v energy occupation =
       (Fintype.card ι : ℝ) *
-          (∑ i, (occupation i * orbitalSpectralMean v energy i) ^ 2) -
-        quasiFreeSpectralMean v energy occupation ^ 2 := by
+          (∑ i, (occupation i * orbitalSpectralMean v energy i) ^ (2 : ℕ)) -
+        quasiFreeSpectralMean v energy occupation ^ (2 : ℕ) := by
   let x : ι → ℝ := fun i => occupation i * orbitalSpectralMean v energy i
   have hinner (i : ι) :
-      (∑ j, (x i - x j) ^ 2) =
-        (Fintype.card ι : ℝ) * x i ^ 2 -
-          2 * x i * (∑ j, x j) + ∑ j, x j ^ 2 := by
+      (∑ j, (x i - x j) ^ (2 : ℕ)) =
+        (Fintype.card ι : ℝ) * x i ^ (2 : ℕ) -
+          2 * x i * (∑ j, x j) + ∑ j, x j ^ (2 : ℕ) := by
     calc
-      (∑ j, (x i - x j) ^ 2) =
-          ∑ j, (x i ^ 2 - 2 * x i * x j + x j ^ 2) := by
+      (∑ j, (x i - x j) ^ (2 : ℕ)) =
+          ∑ j, (x i ^ (2 : ℕ) - 2 * x i * x j + x j ^ (2 : ℕ)) := by
         apply Finset.sum_congr rfl
         intro j _
         ring
-      _ = (Fintype.card ι : ℝ) * x i ^ 2 -
-          2 * x i * (∑ j, x j) + ∑ j, x j ^ 2 := by
+      _ = (Fintype.card ι : ℝ) * x i ^ (2 : ℕ) -
+          2 * x i * (∑ j, x j) + ∑ j, x j ^ (2 : ℕ) := by
         rw [Finset.sum_add_distrib, Finset.sum_sub_distrib,
           Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
           ← Finset.mul_sum]
   unfold quasiFreeSpectralPairwiseMeanDefect quasiFreeSpectralMean
-  change (∑ i, ∑ j, (x i - x j) ^ 2) / 2 =
-    (Fintype.card ι : ℝ) * (∑ i, x i ^ 2) - (∑ i, x i) ^ 2
+  change (∑ i, ∑ j, (x i - x j) ^ (2 : ℕ)) / 2 =
+    (Fintype.card ι : ℝ) * (∑ i, x i ^ (2 : ℕ)) - (∑ i, x i) ^ (2 : ℕ)
   have hcross :
       (∑ i, 2 * x i * (∑ j, x j)) =
         2 * (∑ i, x i) * (∑ j, x j) := by
@@ -179,8 +179,8 @@ theorem quasiFreeSpectralCompressionAnisotropy_eq_pairwise_add_coherence
     quasiFreeCompressedSpectralEnergy_eq_diagonal_add_coherence,
     quasiFreeSpectralPairwiseMeanDefect_eq_card_mul_diagonal_sub_mean_sq]
   have hdiagonal :
-      (∑ i, occupation i ^ 2 * orbitalSpectralMean v energy i ^ 2) =
-        ∑ i, (occupation i * orbitalSpectralMean v energy i) ^ 2 := by
+      (∑ i, occupation i ^ (2 : ℕ) * orbitalSpectralMean v energy i ^ (2 : ℕ)) =
+        ∑ i, (occupation i * orbitalSpectralMean v energy i) ^ (2 : ℕ) := by
     apply Finset.sum_congr rfl
     intro i _
     ring
@@ -279,7 +279,7 @@ theorem quasiFreeSpectralVariance_rank_bhatiaDavis
     (hframe : IsOrthonormalCoordinateFrame v) (hoccupation : ∀ i, 0 ≤ occupation i)
     (lower upper : ℝ)
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper) :
-    quasiFreeSpectralMean v energy occupation ^ 2 +
+    quasiFreeSpectralMean v energy occupation ^ (2 : ℕ) +
         (Fintype.card ι : ℝ) * quasiFreeSpectralVariance v energy occupation ≤
       (Fintype.card ι : ℝ) *
         ((lower + upper) * quasiFreeSpectralMean v energy occupation -
@@ -333,7 +333,7 @@ theorem quasiFreeSpectral_support_rank_lower_bound
     (lower upper : ℝ)
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper)
     (hbudget : 0 < quasiFreeSpectralBandBudget v energy occupation lower upper) :
-    quasiFreeSpectralMean v energy occupation ^ 2 /
+    quasiFreeSpectralMean v energy occupation ^ (2 : ℕ) /
         quasiFreeSpectralBandBudget v energy occupation lower upper ≤
       (Fintype.card ι : ℝ) := by
   cases isEmpty_or_nonempty ι with
@@ -357,7 +357,7 @@ theorem quasiFreeSpectralFanoMargin_lower_bound_of_rankVariance
     (lower upper : ℝ)
     (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper) :
     lower * upper * (∑ i, occupation i) -
-        (Fintype.card ι : ℝ) * (lower + upper - 1) ^ 2 / 4 ≤
+        (Fintype.card ι : ℝ) * (lower + upper - 1) ^ (2 : ℕ) / 4 ≤
       quasiFreeSpectralFanoMargin v energy occupation := by
   cases isEmpty_or_nonempty ι with
   | inl hι =>
@@ -372,7 +372,7 @@ theorem quasiFreeSpectralFanoMargin_lower_bound_of_rankVariance
         exact_mod_cast Fintype.card_pos
       have hsquare :
           0 ≤ (2 * quasiFreeSpectralMean v energy occupation -
-            (Fintype.card ι : ℝ) * (lower + upper - 1)) ^ 2 := sq_nonneg _
+            (Fintype.card ι : ℝ) * (lower + upper - 1)) ^ (2 : ℕ) := sq_nonneg _
       unfold quasiFreeSpectralFanoMargin
       nlinarith
 
@@ -406,7 +406,7 @@ omit [Fintype ι] [DecidableEq ι] in
 theorem orbitalSpectralSecondMoment_scale
     (c : ℝ) (v : ι → κ → ℝ) (energy : κ → ℝ) (i : ι) :
     orbitalSpectralSecondMoment v (fun k => c * energy k) i =
-      c ^ 2 * orbitalSpectralSecondMoment v energy i := by
+      c ^ (2 : ℕ) * orbitalSpectralSecondMoment v energy i := by
   unfold orbitalSpectralSecondMoment
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
@@ -418,7 +418,7 @@ omit [DecidableEq ι] in
 theorem quasiFreeCompressedSpectralEnergy_scale
     (c : ℝ) (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ) :
     quasiFreeCompressedSpectralEnergy v (fun k => c * energy k) occupation =
-      c ^ 2 * quasiFreeCompressedSpectralEnergy v energy occupation := by
+      c ^ (2 : ℕ) * quasiFreeCompressedSpectralEnergy v energy occupation := by
   unfold quasiFreeCompressedSpectralEnergy
   have hinner (i j : ι) :
       (∑ k, (c * energy k) * v i k * v j k) =
@@ -441,14 +441,14 @@ omit [DecidableEq ι] in
 theorem quasiFreeSpectralVariance_scale
     (c : ℝ) (v : ι → κ → ℝ) (energy : κ → ℝ) (occupation : ι → ℝ) :
     quasiFreeSpectralVariance v (fun k => c * energy k) occupation =
-      c ^ 2 * quasiFreeSpectralVariance v energy occupation := by
+      c ^ (2 : ℕ) * quasiFreeSpectralVariance v energy occupation := by
   unfold quasiFreeSpectralVariance
   rw [quasiFreeCompressedSpectralEnergy_scale]
   simp_rw [orbitalSpectralSecondMoment_scale]
   have hsum :
       (∑ i, occupation i *
-        (c ^ 2 * orbitalSpectralSecondMoment v energy i)) =
-        c ^ 2 * ∑ i, occupation i * orbitalSpectralSecondMoment v energy i := by
+        (c ^ (2 : ℕ) * orbitalSpectralSecondMoment v energy i)) =
+        c ^ (2 : ℕ) * ∑ i, occupation i * orbitalSpectralSecondMoment v energy i := by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i _
@@ -464,7 +464,7 @@ theorem quasiFreeSpectralRankVarianceDiscriminant_scale
     (lower upper : ℝ) :
     quasiFreeSpectralRankVarianceDiscriminant
         v (fun k => c * energy k) occupation (c * lower) (c * upper) =
-      c ^ 2 * quasiFreeSpectralRankVarianceDiscriminant
+      c ^ (2 : ℕ) * quasiFreeSpectralRankVarianceDiscriminant
         v energy occupation lower upper := by
   unfold quasiFreeSpectralRankVarianceDiscriminant quasiFreeSpectralBandBudget
   rw [quasiFreeSpectralMean_scale, quasiFreeSpectralVariance_scale]

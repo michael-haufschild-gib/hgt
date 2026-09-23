@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.PrimeArchExactOffLineQuartetAccretivity
 # Unconditional complete Hedenmalm towers on the central frequency band
 
 The exact endpoint quartet budget gives the correct relative-resolvent sign on every band
-`|b| ≤ R` satisfying `C * ((R + 1/2)^2 + 1) < 4`, at every positive aperture.  Schwarz reflection
+`|b| ≤ R` satisfying `C * ((R + 1/2)^(2 : ℕ) + 1) < 4`, at every positive aperture.  Schwarz reflection
 transports the upper-half-plane sign to the lower point used by the Hedenmalm current.  Restricting
 a Gaussian window to that band then gives a complete all-order Hankel cone at every aperture in
 the theta Fourier strip, with no Riemann-hypothesis assumption.  The concrete radius `218 / 25`

@@ -165,7 +165,7 @@ def d4BMXiThetaMirrorMassSpectralFlowArea
 theorem d4BMXiThetaMirrorMassSpectralFlowArea_eq
     (n : ℕ) (M₁ M₂ : ℝ) (q : XiZeroCopy) :
     d4BMXiThetaMirrorMassSpectralFlowArea n M₁ M₂ q =
-      576 * ((q.1 : ℂ).re - 1 / 2) ^ 2 * (M₂ - M₁) /
+      576 * ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) * (M₂ - M₁) /
         d4BMXiThetaMirrorAIMEDenominator q := by
   unfold d4BMXiThetaMirrorMassSpectralFlowArea
   rw [d4BMXiThetaMirrorTopologicalStarobinskyDefect_eq,

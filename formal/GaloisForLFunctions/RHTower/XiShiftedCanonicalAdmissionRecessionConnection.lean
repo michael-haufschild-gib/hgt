@@ -30,7 +30,7 @@ theorem sourceCoordinateAdmission_monic
   · rw [sourceCoordinateAdmission,
       Polynomial.natDegree_smul _ (inv_ne_zero (pow_ne_zero _ hw)),
       Polynomial.natDegree_comp,
-      Polynomial.natDegree_C_mul_X (w ^ 2) (pow_ne_zero _ hw),
+      Polynomial.natDegree_C_mul_X (w ^ (2 : ℕ)) (pow_ne_zero _ hw),
       dimensionlessAdmission_natDegree, Nat.mul_one]
   · simp only [sourceCoordinateAdmission, Polynomial.coeff_smul,
       Polynomial.comp_C_mul_X_coeff]
@@ -39,7 +39,7 @@ theorem sourceCoordinateAdmission_monic
       rw [dimensionlessAdmission_natDegree] at hcoeff
       exact hcoeff
     rw [htop]
-    change (w ^ (2 * n))⁻¹ * (1 * (w ^ 2) ^ n) = 1
+    change (w ^ (2 * n))⁻¹ * (1 * (w ^ (2 : ℕ)) ^ n) = 1
     rw [one_mul, ← pow_mul]
     exact inv_mul_cancel₀ (pow_ne_zero _ hw)
 
@@ -49,7 +49,7 @@ theorem sourceCoordinateAdmission_natDegree
   rw [sourceCoordinateAdmission,
     Polynomial.natDegree_smul _ (inv_ne_zero (pow_ne_zero _ hw)),
     Polynomial.natDegree_comp,
-    Polynomial.natDegree_C_mul_X (w ^ 2) (pow_ne_zero _ hw),
+    Polynomial.natDegree_C_mul_X (w ^ (2 : ℕ)) (pow_ne_zero _ hw),
     dimensionlessAdmission_natDegree, Nat.mul_one]
 
 /-- Exact gauge equivalence between normalized recession admission and actual moving admission. -/
@@ -58,10 +58,10 @@ theorem sourceCoordinateAdmission_eq_actualAdmission
     (hNdet : (HTGeometry.momentHankelMatrix
       (xiShiftedFarRightNormalizedMoment w) n).det ≠ 0)
     (hAdet : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n).det ≠ 0) :
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n).det ≠ 0) :
     sourceCoordinateAdmission w n =
       HTGeometry.monicMomentAdmissionPolynomial
-        (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n := by
+        (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n := by
   have hw0 : w ≠ 0 := ne_of_gt (lt_trans zero_lt_one hw)
   apply HTGeometry.eq_monicMomentAdmissionPolynomial_of_monic_of_orthogonal hAdet
     (sourceCoordinateAdmission_monic hw0 (Nat.ne_of_gt hn))
@@ -76,15 +76,15 @@ theorem sourceCoordinateAdmission_eq_actualAdmission
     (X ^ (i : ℕ) * dimensionlessAdmission w n)
   have hpoly :
       (X ^ (i : ℕ) * dimensionlessAdmission w n).comp
-          (Polynomial.C (w ^ 2) * X) =
+          (Polynomial.C (w ^ (2 : ℕ)) * X) =
         w ^ (2 * ((i : ℕ) + n)) •
           (X ^ (i : ℕ) * sourceCoordinateAdmission w n) := by
     rw [Polynomial.mul_comp, Polynomial.pow_comp, Polynomial.X_comp]
     simp only [sourceCoordinateAdmission, Polynomial.smul_eq_C_mul]
     rw [mul_pow]
-    have hiPow : (w ^ 2) ^ (i : ℕ) = w ^ (2 * (i : ℕ)) := by
+    have hiPow : (w ^ (2 : ℕ)) ^ (i : ℕ) = w ^ (2 * (i : ℕ)) := by
       rw [← pow_mul]
-    have hCpow : (Polynomial.C (w ^ 2) : Polynomial ℝ) ^ (i : ℕ) =
+    have hCpow : (Polynomial.C (w ^ (2 : ℕ)) : Polynomial ℝ) ^ (i : ℕ) =
         Polynomial.C (w ^ (2 * (i : ℕ))) := by
       rw [← Polynomial.C_pow, hiPow]
     have hsum : 2 * ((i : ℕ) + n) = 2 * (i : ℕ) + 2 * n := by omega
@@ -96,7 +96,7 @@ theorem sourceCoordinateAdmission_eq_actualAdmission
       rw [← mul_pow, mul_inv_cancel₀ hw0, one_pow]
       simp
     let A : Polynomial ℝ := Polynomial.C (w ^ ((i : ℕ) * 2)) * X ^ (i : ℕ) *
-      (dimensionlessAdmission w n).comp (X * Polynomial.C (w ^ 2))
+      (dimensionlessAdmission w n).comp (X * Polynomial.C (w ^ (2 : ℕ)))
     change A = A * Polynomial.C (w ^ (n * 2)) * Polynomial.C (w⁻¹ ^ (n * 2))
     symm
     calc
@@ -117,11 +117,11 @@ theorem sourceCoordinateAdmission_eq_actualAdmission
 theorem sourceCoordinateAdmission_coeff_prev
     {w : ℝ} (hw : w ≠ 0) {n : ℕ} (hn : 0 < n) :
     (sourceCoordinateAdmission w n).coeff (n - 1) =
-      (w ^ 2)⁻¹ * (dimensionlessAdmission w n).coeff (n - 1) := by
+      (w ^ (2 : ℕ))⁻¹ * (dimensionlessAdmission w n).coeff (n - 1) := by
   simp only [sourceCoordinateAdmission, Polynomial.coeff_smul,
     Polynomial.comp_C_mul_X_coeff]
   have hsub : 2 * n = 2 * (n - 1) + 2 := by omega
-  have hpow : (w ^ 2) ^ (n - 1) = w ^ (2 * (n - 1)) := by
+  have hpow : (w ^ (2 : ℕ)) ^ (n - 1) = w ^ (2 * (n - 1)) := by
     rw [← pow_mul]
   rw [hpow, hsub, pow_add]
   have hz : w ^ (2 * (n - 1)) ≠ 0 := pow_ne_zero _ hw
@@ -132,14 +132,14 @@ theorem sourceCoordinateAdmission_coeff_prev
 vanishes along the square-mass ray. -/
 theorem tendsto_xiShiftedCanonicalAdmissionFirstCoeff_squareParam_zero
     {n : ℕ} (hn : 0 < n) :
-    Tendsto (fun w : ℝ => xiShiftedCanonicalAdmissionFirstCoeff (w ^ 2) n)
+    Tendsto (fun w : ℝ => xiShiftedCanonicalAdmissionFirstCoeff (w ^ (2 : ℕ)) n)
       atTop (nhds 0) := by
-  have hfactor : Tendsto (fun w : ℝ => (w ^ 2)⁻¹) atTop (nhds 0) :=
+  have hfactor : Tendsto (fun w : ℝ => (w ^ (2 : ℕ))⁻¹) atTop (nhds 0) :=
     tendsto_inv_atTop_zero.comp (tendsto_pow_atTop (by omega : 2 ≠ 0))
   have hcoeff := tendsto_dimensionlessAdmission_coeff
     (Nat.ne_of_gt hn) (n - 1)
   have hrhs : Tendsto
-      (fun w : ℝ => (w ^ 2)⁻¹ * (dimensionlessAdmission w n).coeff (n - 1))
+      (fun w : ℝ => (w ^ (2 : ℕ))⁻¹ * (dimensionlessAdmission w n).coeff (n - 1))
       atTop (nhds 0) := by
     simpa using hfactor.mul hcoeff
   apply hrhs.congr'
@@ -150,7 +150,7 @@ theorem tendsto_xiShiftedCanonicalAdmissionFirstCoeff_squareParam_zero
       (xiShiftedFarRightNormalizedMoment w) n).det ≠ 0 := by
     exact ne_of_gt hN.det_pos
   have hAdet : (HTGeometry.momentHankelMatrix
-      (fun k => (xiShiftedReciprocalMoment (w ^ 2) k).re) n).det ≠ 0 := by
+      (fun k => (xiShiftedReciprocalMoment (w ^ (2 : ℕ)) k).re) n).det ≠ 0 := by
     exact ne_of_gt hA.det_pos
   rw [xiShiftedCanonicalAdmissionFirstCoeff,
     ← sourceCoordinateAdmission_eq_actualAdmission hw hn hNdet hAdet,

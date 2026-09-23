@@ -19,13 +19,13 @@ variable {B : Type*} [CommRing B] [IsDedekindDomain B]
 
 /-- A nonzero prime of a Dedekind domain strictly contains its square. -/
 theorem exists_mem_not_mem_sq {Q : Ideal B} (hQ0 : Q ≠ ⊥) (hQT : Q ≠ ⊤) :
-    ∃ t ∈ Q, t ∉ Q ^ 2 := by
+    ∃ t ∈ Q, t ∉ Q ^ (2 : ℕ) := by
   obtain ⟨t, htQ, htn⟩ := SetLike.exists_of_lt (Ideal.pow_lt_self Q hQ0 hQT 2 le_rfl)
   exact ⟨t, htQ, htn⟩
 
 /-- **An element of `Q` outside `Q²` generates `Q` modulo any power of `Q`.** -/
 theorem span_sup_pow_eq {Q : Ideal B} [hQp : Q.IsPrime] (hQ0 : Q ≠ ⊥) {t : B}
-    (ht : t ∈ Q) (ht2 : t ∉ Q ^ 2) {k : ℕ} (hk : 1 ≤ k) :
+    (ht : t ∈ Q) (ht2 : t ∉ Q ^ (2 : ℕ)) {k : ℕ} (hk : 1 ≤ k) :
     Ideal.span {t} ⊔ Q ^ k = Q := by
   have hprime : Prime Q := Ideal.prime_of_isPrime hQ0 hQp
   have hspan : Ideal.span {t} ≤ Q := by
@@ -48,7 +48,7 @@ theorem span_sup_pow_eq {Q : Ideal B} [hQp : Q.IsPrime] (hQ0 : Q ≠ ⊥) {t : B
     exact hQp.ne_top (top_le_iff.mp (hJeq ▸ hJle))
   have hm2 : m < 2 := by
     by_contra hc
-    have hle : Q ^ m ≤ Q ^ 2 := Ideal.pow_le_pow_right (by omega)
+    have hle : Q ^ m ≤ Q ^ (2 : ℕ) := Ideal.pow_le_pow_right (by omega)
     refine ht2 (hle ?_)
     rw [← hJeq]
     exact Submodule.mem_sup_left (Ideal.mem_span_singleton_self t)
@@ -57,7 +57,7 @@ theorem span_sup_pow_eq {Q : Ideal B} [hQp : Q.IsPrime] (hQ0 : Q ≠ ⊥) {t : B
 
 /-- **The image of `Q` in a quotient between `Qᵏ` and `Q` is principal.** -/
 theorem map_eq_span_singleton {Q : Ideal B} [Q.IsPrime] (hQ0 : Q ≠ ⊥) {t : B}
-    (ht : t ∈ Q) (ht2 : t ∉ Q ^ 2) {J : Ideal B} (hJQ : J ≤ Q) {k : ℕ} (hk : 1 ≤ k)
+    (ht : t ∈ Q) (ht2 : t ∉ Q ^ (2 : ℕ)) {J : Ideal B} (hJQ : J ≤ Q) {k : ℕ} (hk : 1 ≤ k)
     (hkJ : Q ^ k ≤ J) :
     Q.map (Ideal.Quotient.mk J) = Ideal.span {Ideal.Quotient.mk J t} := by
   have hspan : Ideal.span {t} ≤ Q := by

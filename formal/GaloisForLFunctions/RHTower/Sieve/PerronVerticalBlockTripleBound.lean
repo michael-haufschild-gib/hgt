@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.BlockAffineMeanSquare
 The affine form of the triple-product estimate does not care where its two mean squares come from, so
 the block sieve substitutes for the single-level sieve without touching the analysis.  What changes is
 only the size of the constants: a global level is capped by the sieve's own error
-(`selbergFibreError z Y = Y²e^{4c}(log z)^4` must stay under a count that is `O(1)` per prime pair), while
+(`selbergFibreError z Y = Y²e^{4c}(log z)^(4 : ℕ)` must stay under a count that is `O(1)` per prime pair), while
 block by block the count is `≍ 2^j` and the level may grow with the block.
 
 `∫_{|t| ≤ t₀2^M} ‖L(A)L(B)L(f)x^s/s‖ ≤ 2·perronVerticalAffineProductBound σ x t₀ V Q_A κ_A Q_B κ_B M

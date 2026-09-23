@@ -32,20 +32,20 @@ def radialDensity (w v T T₁ R R₁ U U₁ V V₁ : ℂ) : ℂ :=
   T * (v * V - U₁) - U * (w * R - T₁)
 
 /-- Resolvent-covector stream: profile `u = 1`. -/
-theorem oddSector_radialDensity_resolvent (s r e m : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
-    let e₁ := 2 * s * e / (r * (r ^ 2 - 1))
-    let e₂ := 2 * s * e₁ / (r * (r ^ 2 - 1)) - 2 * s * e * (3 * r ^ 2 - 1) / (r * (r ^ 2 - 1)) ^ 2
-    let m₁ := (-3 - s) * m / (r * (r ^ 2 - 1))
-    let T := (r ^ 2 - 1) * e₁
-    let T₁ := 2 * r * e₁ + (r ^ 2 - 1) * e₂
-    let R := 2 * s * e / (r ^ 2 - 1)
-    let R₁ := 2 * s * e₁ / (r ^ 2 - 1) - 2 * s * e * (2 * r) / (r ^ 2 - 1) ^ 2
+theorem oddSector_radialDensity_resolvent (s r e m : ℂ) (hr : r ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
+    let e₁ := 2 * s * e / (r * (r ^ (2 : ℕ) - 1))
+    let e₂ := 2 * s * e₁ / (r * (r ^ (2 : ℕ) - 1)) - 2 * s * e * (3 * r ^ (2 : ℕ) - 1) / (r * (r ^ (2 : ℕ) - 1)) ^ (2 : ℕ)
+    let m₁ := (-3 - s) * m / (r * (r ^ (2 : ℕ) - 1))
+    let T := (r ^ (2 : ℕ) - 1) * e₁
+    let T₁ := 2 * r * e₁ + (r ^ (2 : ℕ) - 1) * e₂
+    let R := 2 * s * e / (r ^ (2 : ℕ) - 1)
+    let R₁ := 2 * s * e₁ / (r ^ (2 : ℕ) - 1) - 2 * s * e * (2 * r) / (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)
     let U := -(-3 - s) * m / r
-    let U₁ := -(-3 - s) * (m₁ * r - m) / r ^ 2
-    let V := -(-3 - s) * m / (r ^ 2 - 1)
-    let V₁ := -(-3 - s) * (m₁ * (r ^ 2 - 1) - m * (2 * r)) / (r ^ 2 - 1) ^ 2
+    let U₁ := -(-3 - s) * (m₁ * r - m) / r ^ (2 : ℕ)
+    let V := -(-3 - s) * m / (r ^ (2 : ℕ) - 1)
+    let V₁ := -(-3 - s) * (m₁ * (r ^ (2 : ℕ) - 1) - m * (2 * r)) / (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)
     radialDensity (2 * s) (-3 - s) T T₁ R R₁ U U₁ V V₁ =
-      (-6 * s * (s + 1) * (s + 3) / r ^ 3) * (e * m) := by
+      (-6 * s * (s + 1) * (s + 3) / r ^ (3 : ℕ)) * (e * m) := by
   intro e₁ e₂ m₁ T T₁ R R₁ U U₁ V V₁
   unfold radialDensity
   simp only [e₁, e₂, m₁, T, T₁, R, R₁, U, U₁, V, V₁]
@@ -53,23 +53,23 @@ theorem oddSector_radialDensity_resolvent (s r e m : ℂ) (hr : r ≠ 0) (hf : r
   ring
 
 /-- Square-covector stream: profile `u = 1/r²`. -/
-theorem oddSector_radialDensity_square (s r e m : ℂ) (hr : r ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
-    let e₁ := 2 * s * e / (r * (r ^ 2 - 1))
-    let e₂ := 2 * s * e₁ / (r * (r ^ 2 - 1)) - 2 * s * e * (3 * r ^ 2 - 1) / (r * (r ^ 2 - 1)) ^ 2
-    let m₁ := (-3 - s) * m / (r * (r ^ 2 - 1))
-    let g := e / r ^ 2
-    let g₁ := e₁ / r ^ 2 - 2 * e / r ^ 3
-    let g₂ := e₂ / r ^ 2 - 4 * e₁ / r ^ 3 + 6 * e / r ^ 4
-    let T := (r ^ 2 - 1) * g₁
-    let T₁ := 2 * r * g₁ + (r ^ 2 - 1) * g₂
-    let R := 2 * s * g / (r ^ 2 - 1)
-    let R₁ := 2 * s * g₁ / (r ^ 2 - 1) - 2 * s * g * (2 * r) / (r ^ 2 - 1) ^ 2
+theorem oddSector_radialDensity_square (s r e m : ℂ) (hr : r ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
+    let e₁ := 2 * s * e / (r * (r ^ (2 : ℕ) - 1))
+    let e₂ := 2 * s * e₁ / (r * (r ^ (2 : ℕ) - 1)) - 2 * s * e * (3 * r ^ (2 : ℕ) - 1) / (r * (r ^ (2 : ℕ) - 1)) ^ (2 : ℕ)
+    let m₁ := (-3 - s) * m / (r * (r ^ (2 : ℕ) - 1))
+    let g := e / r ^ (2 : ℕ)
+    let g₁ := e₁ / r ^ (2 : ℕ) - 2 * e / r ^ (3 : ℕ)
+    let g₂ := e₂ / r ^ (2 : ℕ) - 4 * e₁ / r ^ (3 : ℕ) + 6 * e / r ^ (4 : ℕ)
+    let T := (r ^ (2 : ℕ) - 1) * g₁
+    let T₁ := 2 * r * g₁ + (r ^ (2 : ℕ) - 1) * g₂
+    let R := 2 * s * g / (r ^ (2 : ℕ) - 1)
+    let R₁ := 2 * s * g₁ / (r ^ (2 : ℕ) - 1) - 2 * s * g * (2 * r) / (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)
     let U := -(-3 - s) * m / r
-    let U₁ := -(-3 - s) * (m₁ * r - m) / r ^ 2
-    let V := -(-3 - s) * m / (r ^ 2 - 1)
-    let V₁ := -(-3 - s) * (m₁ * (r ^ 2 - 1) - m * (2 * r)) / (r ^ 2 - 1) ^ 2
+    let U₁ := -(-3 - s) * (m₁ * r - m) / r ^ (2 : ℕ)
+    let V := -(-3 - s) * m / (r ^ (2 : ℕ) - 1)
+    let V₁ := -(-3 - s) * (m₁ * (r ^ (2 : ℕ) - 1) - m * (2 * r)) / (r ^ (2 : ℕ) - 1) ^ (2 : ℕ)
     radialDensity (2 * s) (-3 - s) T T₁ R R₁ U U₁ V V₁ =
-      (2 * (s + 3) * ((s + 3) * r ^ 2 - (s + 1) * (3 * s + 5)) / r ^ 5) * (e * m) := by
+      (2 * (s + 3) * ((s + 3) * r ^ (2 : ℕ) - (s + 1) * (3 * s + 5)) / r ^ (5 : ℕ)) * (e * m) := by
   intro e₁ e₂ m₁ g g₁ g₂ T T₁ R R₁ U U₁ V V₁
   unfold radialDensity
   simp only [e₁, e₂, m₁, g, g₁, g₂, T, T₁, R, R₁, U, U₁, V, V₁]
@@ -80,7 +80,7 @@ theorem oddSector_radialDensity_square (s r e m : ℂ) (hr : r ≠ 0) (hf : r ^ 
 a covector: it is the covector pairing times the scalar density above. -/
 theorem mixedJet_radialDensity (p : D4BMBackground.ExteriorPoint) (w v T T₁ R R₁ U U₁ V V₁ : ℂ)
     (A B : Fin 2 → ℂ) :
-    (p.val 1 : ℂ) ^ 2 / (p.val 3 : ℂ) ^ 2 * D4BMMixedActionCurrent.actionSymplectic
+    (p.val 1 : ℂ) ^ (2 : ℕ) / (p.val 3 : ℂ) ^ (2 : ℕ) * D4BMMixedActionCurrent.actionSymplectic
       (D4BMBackground.jet (p.val 1) (p.val 3))
       (D4BMMixedActionCurrent.mixedJet (fun a => T * A a) (fun a => R * A a)
         (fun k a => if k = 0 then w * T * A a else if k = 1 then T₁ * A a else 0)

@@ -379,16 +379,16 @@ def T2PrimeClockBohrAllSourceGraphInteriorAbelRegularityPrinciple : Prop :=
     Tendsto r atTop (𝓝 0) →
     (∀ k : ℕ, Summable (fun N : ℕ =>
       Real.log (nthPrimeSubtype N : ℝ) ^ (2 * k) /
-          (nthPrimeSubtype N : ℝ) * r N ^ 2)) →
+          (nthPrimeSubtype N : ℝ) * r N ^ (2 : ℕ))) →
     (∀ k : ℕ, Summable (fun N : ℕ =>
       Real.log (nthPrimeSubtype N : ℝ) ^ (2 * k) *
-          primeActivationOccupancyFisherDensity (nthPrimeSubtype N) * r N ^ 2)) →
+          primeActivationOccupancyFisherDensity (nthPrimeSubtype N) * r N ^ (2 : ℕ))) →
     (∀ k : ℕ, Summable (fun N : ℕ =>
       Real.log (nthPrimeSubtype N : ℝ) ^ (2 * k) *
-          primeFirstTraceEssentialHarmonicCoordinate (nthPrimeSubtype N) * r N ^ 2)) →
+          primeFirstTraceEssentialHarmonicCoordinate (nthPrimeSubtype N) * r N ^ (2 : ℕ))) →
     Summable (fun N : ℕ =>
       ‖(((r (N + 1) - r N : ℝ) : ℂ) *
-        (Real.exp (xiMassNthPrimeLogHeight (N + 1) / 10) : ℂ))‖ ^ 2) →
+        (Real.exp (xiMassNthPrimeLogHeight (N + 1) / 10) : ℂ))‖ ^ (2 : ℕ)) →
     ∃ F : ℝ → ℝ, ContinuousAt F (-(1 / 20 : ℝ)) ∧
       ∀ s : ℝ, -(1 / 20 : ℝ) < s → s < 0 →
         F s = primeClockResidualStieltjesCurrent r s

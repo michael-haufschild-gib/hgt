@@ -69,42 +69,42 @@ theorem exists_norm_gammaMonomial_orbit_sub_le {r : ℕ} (lam : Fin r → ℂ) (
   refine le_trans (norm_sum_le _ _) ?_
   have hterm : ∀ j ∈ Finset.range n,
       ‖((∏ k, (s + (j : ℂ) + lam k) ^ (g k)) - 1) * gammaMonomial lam g (s + (j : ℂ))‖
-        ≤ (2 * K * B * ‖gammaMonomial lam g s‖) * (1 / (‖s‖ + (j : ℝ)) ^ 2) := by
+        ≤ (2 * K * B * ‖gammaMonomial lam g s‖) * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by
     intro j _
     have hRb₀j : Rb₀ ≤ ‖s + (j : ℂ)‖ := le_trans hRb₀s (hjnorm j)
     have hb := hK (s + (j : ℂ)) hRb₀j (fun k => hjlam j k)
     have hlow := two_mul_norm_add_natCast_sq_ge hre j
     have hjpos : (0 : ℝ) < ‖s + (j : ℂ)‖ := lt_of_lt_of_le hspos (hjnorm j)
-    have hpos : (0 : ℝ) < (‖s‖ + (j : ℝ)) ^ 2 := by
+    have hpos : (0 : ℝ) < (‖s‖ + (j : ℝ)) ^ (2 : ℕ) := by
       have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
       positivity
     have hb2 : ‖(∏ k, (s + (j : ℂ) + lam k) ^ (g k)) - 1‖
-        ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2) := by
+        ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by
       refine le_trans hb ?_
-      rw [div_le_iff₀ (by positivity : (0:ℝ) < ‖s + (j : ℂ)‖ ^ 2)]
-      have hratio : (1 : ℝ) ≤ 2 * ‖s + (j : ℂ)‖ ^ 2 / (‖s‖ + (j : ℝ)) ^ 2 := by
+      rw [div_le_iff₀ (by positivity : (0:ℝ) < ‖s + (j : ℂ)‖ ^ (2 : ℕ))]
+      have hratio : (1 : ℝ) ≤ 2 * ‖s + (j : ℂ)‖ ^ (2 : ℕ) / (‖s‖ + (j : ℝ)) ^ (2 : ℕ) := by
         rw [le_div_iff₀ hpos]
         linarith [hlow]
-      have hfin : 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2) * ‖s + (j : ℂ)‖ ^ 2
-          = K * (2 * ‖s + (j : ℂ)‖ ^ 2 / (‖s‖ + (j : ℝ)) ^ 2) := by
+      have hfin : 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) * ‖s + (j : ℂ)‖ ^ (2 : ℕ)
+          = K * (2 * ‖s + (j : ℂ)‖ ^ (2 : ℕ) / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by
         field_simp
       rw [hfin]
       nlinarith [hratio, hK0]
     rw [norm_mul]
-    have hnn : (0 : ℝ) ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2) := by positivity
+    have hnn : (0 : ℝ) ≤ 2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by positivity
     calc ‖(∏ k, (s + (j : ℂ) + lam k) ^ (g k)) - 1‖ * ‖gammaMonomial lam g (s + (j : ℂ))‖
-        ≤ (2 * K * (1 / (‖s‖ + (j : ℝ)) ^ 2)) * (B * ‖gammaMonomial lam g s‖) :=
+        ≤ (2 * K * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ))) * (B * ‖gammaMonomial lam g s‖) :=
           mul_le_mul hb2 (horbit j) (norm_nonneg _) hnn
-      _ = (2 * K * B * ‖gammaMonomial lam g s‖) * (1 / (‖s‖ + (j : ℝ)) ^ 2) := by ring
+      _ = (2 * K * B * ‖gammaMonomial lam g s‖) * (1 / (‖s‖ + (j : ℝ)) ^ (2 : ℕ)) := by ring
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.mul_sum]
   have hhead := sum_inv_sq_shift_head_le hspos n
-  have hsq : (1 : ℝ) / ‖s‖ ^ 2 ≤ 1 / ‖s‖ := by
+  have hsq : (1 : ℝ) / ‖s‖ ^ (2 : ℕ) ≤ 1 / ‖s‖ := by
     rw [div_le_div_iff₀ (by positivity) hspos]
     nlinarith
   have hnn2 : (0 : ℝ) ≤ 2 * K * B * ‖gammaMonomial lam g s‖ := by positivity
   have hstep : (2 * K * B * ‖gammaMonomial lam g s‖)
-      * (∑ j ∈ Finset.range n, (1 : ℝ) / (‖s‖ + (j : ℝ)) ^ 2)
+      * (∑ j ∈ Finset.range n, (1 : ℝ) / (‖s‖ + (j : ℝ)) ^ (2 : ℕ))
       ≤ (2 * K * B * ‖gammaMonomial lam g s‖) * (2 * (1 / ‖s‖)) := by
     refine mul_le_mul_of_nonneg_left ?_ hnn2
     linarith [hhead, hsq]

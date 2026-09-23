@@ -115,12 +115,12 @@ theorem xiHedenmalmOddFold_equation
 /-- The even fold is a source-forced quadratic Helmholtz mode. -/
 theorem xiHedenmalmEvenFold_quadratic
     {alpha : ℂ} (halpha : XiC alpha = 0) (z : ℂ) :
-    (z ^ 2 - alpha ^ 2) * xiHedenmalmEvenFold alpha z =
+    (z ^ (2 : ℕ) - alpha ^ (2 : ℕ)) * xiHedenmalmEvenFold alpha z =
       I * alpha * XiC z := by
   have he := xiHedenmalmEvenFold_equation halpha z
   have ho := xiHedenmalmOddFold_equation halpha z
   calc
-    (z ^ 2 - alpha ^ 2) * xiHedenmalmEvenFold alpha z =
+    (z ^ (2 : ℕ) - alpha ^ (2 : ℕ)) * xiHedenmalmEvenFold alpha z =
         z * (z * xiHedenmalmEvenFold alpha z) -
           alpha * (alpha * xiHedenmalmEvenFold alpha z) := by ring
     _ = z * (alpha * xiHedenmalmOddFold alpha z) -
@@ -133,12 +133,12 @@ theorem xiHedenmalmEvenFold_quadratic
 /-- The odd fold is the companion source-forced quadratic Helmholtz mode. -/
 theorem xiHedenmalmOddFold_quadratic
     {alpha : ℂ} (halpha : XiC alpha = 0) (z : ℂ) :
-    (z ^ 2 - alpha ^ 2) * xiHedenmalmOddFold alpha z =
+    (z ^ (2 : ℕ) - alpha ^ (2 : ℕ)) * xiHedenmalmOddFold alpha z =
       I * z * XiC z := by
   have he := xiHedenmalmEvenFold_equation halpha z
   have ho := xiHedenmalmOddFold_equation halpha z
   calc
-    (z ^ 2 - alpha ^ 2) * xiHedenmalmOddFold alpha z =
+    (z ^ (2 : ℕ) - alpha ^ (2 : ℕ)) * xiHedenmalmOddFold alpha z =
         z * (z * xiHedenmalmOddFold alpha z) -
           alpha * (alpha * xiHedenmalmOddFold alpha z) := by ring
     _ = z * (alpha * xiHedenmalmEvenFold alpha z + I * XiC z) -

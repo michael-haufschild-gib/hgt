@@ -36,7 +36,7 @@ def xiWardCubicRadialGeneralizedMode (z : ℂ) : ℝ → ℂ :=
 /-- Second translation difference at multiplier `mu`. -/
 def xiWardCubicRadialSecondDifference
     (c : ℝ) (mu : ℂ) (f : ℝ → ℂ) : ℝ → ℂ :=
-  fun r => f (r + 2 * c) - 2 * mu * f (r + c) + mu ^ 2 * f r
+  fun r => f (r + 2 * c) - 2 * mu * f (r + c) + mu ^ (2 : ℕ) * f r
 
 /-- A cubic conormal mode is killed by the square of its exact translation character. -/
 theorem xiWardCubicRadialSecondDifference_mode (z : ℂ) (c : ℝ) :
@@ -52,7 +52,7 @@ theorem xiWardCubicRadialSecondDifference_mode (z : ℂ) (c : ℝ) :
     push_cast
     ring
   have h2 : Complex.exp (-(z * ((r + 2 * c : ℝ) : ℂ))) =
-      Complex.exp (-(z * (r : ℂ))) * Complex.exp (-(z * (c : ℂ))) ^ 2 := by
+      Complex.exp (-(z * (r : ℂ))) * Complex.exp (-(z * (c : ℂ))) ^ (2 : ℕ) := by
     rw [pow_two, ← Complex.exp_add, ← Complex.exp_add]
     congr 1
     push_cast
@@ -66,7 +66,7 @@ theorem xiWardCubicRadialSecondDifference_eq_translates
     (c : ℝ) (mu : ℂ) (f : ℝ → ℂ) :
     xiWardCubicRadialSecondDifference c mu f =
       xiWardCubicRadialTranslate (2 * c) f -
-        (2 * mu) • xiWardCubicRadialTranslate c f + mu ^ 2 • f := by
+        (2 * mu) • xiWardCubicRadialTranslate c f + mu ^ (2 : ℕ) • f := by
   rfl
 
 /-- At a wrong nonzero translation multiplier, the second difference of a cubic conormal is
@@ -81,7 +81,7 @@ theorem xiWardCubicRadialSecondDifference_mode_apply_zero
   simp only [ofReal_zero, mul_zero, neg_zero, Complex.exp_zero, zero_mul,
     zero_add]
   have he : Complex.exp (-(z * (((2 * c : ℝ) : ℂ)))) =
-      Complex.exp (-(z * (c : ℂ))) ^ 2 := by
+      Complex.exp (-(z * (c : ℂ))) ^ (2 : ℕ) := by
     rw [pow_two, ← Complex.exp_add]
     congr 1
     push_cast

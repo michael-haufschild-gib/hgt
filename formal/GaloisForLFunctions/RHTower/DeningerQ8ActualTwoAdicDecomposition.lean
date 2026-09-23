@@ -10,7 +10,7 @@ splitting table.  The integral element
 
 `u = (1 + sqrt 5) / 2`
 
-satisfies `u^2 = u + 1`; modulo every prime above two its residue is distinct
+satisfies `u^(2 : ℕ) = u + 1`; modulo every prime above two its residue is distinct
 from both zero and one.  Thus the residue field has at least three elements.
 Combining this lower bound with the exact inertia order and the literal
 order-four source stabilizer forces residue degree two and decomposition order
@@ -75,7 +75,7 @@ theorem q8Literal_two_three_le_residue_natCard
   letI : Nontrivial ((𝓞 K3) ⧸ P) :=
     Ideal.Quotient.nontrivial_iff.mpr (Ideal.IsMaximal.ne_top inferInstance)
   let ubar : (𝓞 K3) ⧸ P := Ideal.Quotient.mk P q8LiteralTwoAdicU
-  have hrel : ubar ^ 2 = ubar + 1 := by
+  have hrel : ubar ^ (2 : ℕ) = ubar + 1 := by
     exact congrArg (Ideal.Quotient.mk P) q8LiteralTwoAdicU_sq
   have htwo : (2 : (𝓞 K3) ⧸ P) = 0 := by
     exact Ideal.Quotient.eq_zero_iff_mem.mpr hPtwo
@@ -145,7 +145,7 @@ theorem q8Literal_two_decomposition_le_cyclicSource
       dsimp [v]
       calc
         q8LiteralTwoAdicV * (1 - q8LiteralTwoAdicV) =
-            q8LiteralTwoAdicV - q8LiteralTwoAdicV ^ 2 := by ring
+            q8LiteralTwoAdicV - q8LiteralTwoAdicV ^ (2 : ℕ) := by ring
         _ = -10 := by rw [q8LiteralTwoAdicV_sq]; ring
     have hv_or : v ∈ P ∨ (1 - v) ∈ P := by
       exact (Ideal.IsPrime.mem_or_mem inferInstance) (hprod.symm ▸ hminusTen)

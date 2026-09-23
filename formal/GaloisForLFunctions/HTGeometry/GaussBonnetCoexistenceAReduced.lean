@@ -15,19 +15,19 @@ namespace GaloisForLFunctions.HTGeometry
 open CPV
 
 def egbCoexistenceARadialPolynomial (τ θ v : ℝ) : ℝ :=
-  egbCoexistenceAPressureWeight τ θ * v ^ 4 - egbCoexistenceATemperatureWeight τ θ * v ^ 3 + v ^ 2 -
+  egbCoexistenceAPressureWeight τ θ * v ^ (4 : ℕ) - egbCoexistenceATemperatureWeight τ θ * v ^ (3 : ℕ) + v ^ (2 : ℕ) -
     2 * egbCoexistenceACouplingWeight τ θ * egbCoexistenceATemperatureWeight τ θ * v - egbCoexistenceAChargeWeight τ θ
 
 def egbCoexistenceAReducedGibbs (τ θ v : ℝ) : ℝ :=
-  v / 2 + egbCoexistenceAChargeWeight τ θ / (2 * v) + egbCoexistenceAPressureWeight τ θ * v ^ 3 / 6 -
-    egbCoexistenceATemperatureWeight τ θ * v ^ 2 / 4 -
+  v / 2 + egbCoexistenceAChargeWeight τ θ / (2 * v) + egbCoexistenceAPressureWeight τ θ * v ^ (3 : ℕ) / 6 -
+    egbCoexistenceATemperatureWeight τ θ * v ^ (2 : ℕ) / 4 -
       egbCoexistenceACouplingWeight τ θ * egbCoexistenceATemperatureWeight τ θ * log v
 
 def egbCoexistenceAReducedLogGibbs (τ θ u : ℝ) : ℝ := egbCoexistenceAReducedGibbs τ θ (exp u)
 
 theorem egbCoexistenceA_stationarity_difference (τ θ : ℝ) :
-    egbCoexistenceAPressureWeight τ θ * (thermalRatio τ + 1) * (thermalRatio τ ^ 2 + 1) -
-      egbCoexistenceATemperatureWeight τ θ * (thermalRatio τ ^ 2 + thermalRatio τ + 1 + 2 * egbCoexistenceACouplingWeight τ θ) +
+    egbCoexistenceAPressureWeight τ θ * (thermalRatio τ + 1) * (thermalRatio τ ^ (2 : ℕ) + 1) -
+      egbCoexistenceATemperatureWeight τ θ * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1 + 2 * egbCoexistenceACouplingWeight τ θ) +
         (thermalRatio τ + 1) = 0 := by
   have hz := thermalRatio_pos τ
   have hb := (egbCoexistenceACouplingWeight_bounds τ θ).1
@@ -55,7 +55,7 @@ theorem egbCoexistenceA_stationarity_small (τ θ : ℝ) : egbCoexistenceARadial
 /-- Only a quadratic remains after factoring out the two phase radii. -/
 theorem egbCoexistenceARadialPolynomial_factorization (τ θ v : ℝ) :
     egbCoexistenceARadialPolynomial τ θ v = (v - thermalRatio τ) * (v - 1) *
-      (egbCoexistenceAPressureWeight τ θ * v ^ 2 +
+      (egbCoexistenceAPressureWeight τ θ * v ^ (2 : ℕ) +
         (egbCoexistenceAPressureWeight τ θ * (thermalRatio τ + 1) - egbCoexistenceATemperatureWeight τ θ) * v -
           egbCoexistenceAChargeWeight τ θ / thermalRatio τ) := by
   have h₁ := egbCoexistenceA_stationarity_large τ θ
@@ -69,15 +69,15 @@ theorem egbCoexistenceARadialPolynomial_factorization (τ θ v : ℝ) :
 /-- Exact equality of free energies, including the logarithmic entropy term. -/
 theorem egbCoexistenceAReducedGibbs_balance (τ θ : ℝ) :
     egbCoexistenceAReducedGibbs τ θ (thermalRatio τ) = egbCoexistenceAReducedGibbs τ θ 1 := by
-  have hk : (thermalRatio τ - 1) ^ 3 * egbCoexistenceALogKernel τ -
-      3 * (thermalRatio τ + 1) * (thermalRatio τ ^ 2 + 1) * log (thermalRatio τ) +
-        4 * (thermalRatio τ ^ 2 + thermalRatio τ + 1) * (thermalRatio τ - 1) = 0 := by
+  have hk : (thermalRatio τ - 1) ^ (3 : ℕ) * egbCoexistenceALogKernel τ -
+      3 * (thermalRatio τ + 1) * (thermalRatio τ ^ (2 : ℕ) + 1) * log (thermalRatio τ) +
+        4 * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) * (thermalRatio τ - 1) = 0 := by
     linarith [egbCoexistenceALogKernel_cubic_identity τ]
   have he : egbCoexistenceAReducedGibbs τ θ (thermalRatio τ) - egbCoexistenceAReducedGibbs τ θ 1 =
-      4 * egbCoexistenceACouplingWeight τ θ / (3 * egbCoexistenceADenominator τ θ * (thermalRatio τ ^ 2 + 1)) *
-        ((thermalRatio τ - 1) ^ 3 * egbCoexistenceALogKernel τ -
-          3 * (thermalRatio τ + 1) * (thermalRatio τ ^ 2 + 1) * log (thermalRatio τ) +
-            4 * (thermalRatio τ ^ 2 + thermalRatio τ + 1) * (thermalRatio τ - 1)) := by
+      4 * egbCoexistenceACouplingWeight τ θ / (3 * egbCoexistenceADenominator τ θ * (thermalRatio τ ^ (2 : ℕ) + 1)) *
+        ((thermalRatio τ - 1) ^ (3 : ℕ) * egbCoexistenceALogKernel τ -
+          3 * (thermalRatio τ + 1) * (thermalRatio τ ^ (2 : ℕ) + 1) * log (thermalRatio τ) +
+            4 * (thermalRatio τ ^ (2 : ℕ) + thermalRatio τ + 1) * (thermalRatio τ - 1)) := by
     have hz := thermalRatio_pos τ
     have hb := (egbCoexistenceACouplingWeight_bounds τ θ).1
     have hH := egbCoexistenceALogKernel_pos τ
@@ -91,7 +91,7 @@ theorem egbCoexistenceAReducedGibbs_balance (τ θ : ℝ) :
 
 theorem egbCoexistenceAReducedGibbs_hasDerivAt (τ θ u : ℝ) :
     HasDerivAt (egbCoexistenceAReducedGibbs τ θ)
-      (egbCoexistenceARadialPolynomial τ θ (exp u) / (2 * exp u ^ 2)) (exp u) := by
+      (egbCoexistenceARadialPolynomial τ θ (exp u) / (2 * exp u ^ (2 : ℕ))) (exp u) := by
   have hi := hasDerivAt_id (exp u)
   have hq := (hasDerivAt_const (exp u) (egbCoexistenceAChargeWeight τ θ)).div (hi.const_mul 2) (by simp only [id_eq]; positivity)
   have h := ((((hi.div_const 2).add hq).add

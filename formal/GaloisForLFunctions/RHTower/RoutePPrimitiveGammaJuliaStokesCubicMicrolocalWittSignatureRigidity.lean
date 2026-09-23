@@ -39,7 +39,7 @@ def routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber
     (genus : ℕ) (d : LocalData p n m K N) (parameter : ReesParameter d) :=
   {x : compatibleCharges d //
     globalReesWittForm genus d parameter x =
-      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4}
+      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4}
 
 theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_value_neg
     {p : ℕ} {n m K N : Fin (p + 1) → ℕ}
@@ -104,7 +104,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_rankDebt_gt_po
     {genus : ℕ} {d : LocalData p n m K N} {parameter : ReesParameter d}
     (x : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber genus d parameter) :
     globalReesPositiveForm d parameter x.1 <
-      -globalRankCoefficient genus d * commonRankLinear d x.1 ^ 2 := by
+      -globalRankCoefficient genus d * commonRankLinear d x.1 ^ (2 : ℕ) := by
   have hneg :=
     routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_value_neg x
   rw [globalReesWittForm_eq_positive_add_oneRank] at hneg
@@ -151,7 +151,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber_rigidity
     commonRankLinear d x.1 ≠ 0 ∧
       globalRankCoefficient genus d < 0 ∧
       globalReesPositiveForm d parameter x.1 <
-        -globalRankCoefficient genus d * commonRankLinear d x.1 ^ 2 ∧
+        -globalRankCoefficient genus d * commonRankLinear d x.1 ^ (2 : ℕ) ∧
       sigNeg (globalReesWittForm genus d parameter) = 1 ∧
       Module.finrank ℝ (globalReesWittForm genus d parameter).radical = 0 := by
   exact ⟨
@@ -228,7 +228,7 @@ def routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtLandingFiber
     {p : ℕ} {n m K N : Fin (p + 1) → ℕ}
     (genus : ℕ) (d : LocalData p n m K N) (parameter : ReesParameter d) :=
   {x : routePPrimitiveGammaJuliaStokesCubicMalgrangeLandingFiber genus d parameter //
-    -globalRankCoefficient genus d * commonRankLinear d x.1 ^ 2 =
+    -globalRankCoefficient genus d * commonRankLinear d x.1 ^ (2 : ℕ) =
       ∑' k : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect k}
 
 /-- Exact cancellation identity: positive microlocal channels equal raw Euler debt plus the
@@ -240,7 +240,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtLandingFiber_positiv
       genus d parameter) :
     globalReesPositiveForm d parameter x.1.1 =
       (∑' k : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect k) +
-        (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) := by
+        (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) := by
   have hdecomp := globalReesWittForm_eq_positive_add_oneRank
     genus d parameter x.1.1
   have hlanding := x.1.2
@@ -281,7 +281,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtLandingFiber_positiv
     (x : routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtLandingFiber
       genus d parameter) :
     1999 * (-(normalizedPrimeArchMoment 2 -
-        normalizedPrimeArchMoment 0 ^ 3 / 4)) <
+        normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4)) <
       globalReesPositiveForm d parameter x.1.1 := by
   rw [routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtLandingFiber_positive_eq x]
   have hgap := twoThousand_mul_neg_xiCubicMalgrangeMagnitude_lt_rawSource
@@ -295,14 +295,14 @@ theorem routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtLandingFiber_cancell
       genus d parameter) :
     globalReesPositiveForm d parameter x.1.1 =
         (∑' k : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect k) +
-          (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) ∧
+          (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) ∧
       (1999 / 2000 : ℝ) *
           (∑' k : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect k) <
         globalReesPositiveForm d parameter x.1.1 ∧
       globalReesPositiveForm d parameter x.1.1 <
         ∑' k : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect k ∧
       1999 * (-(normalizedPrimeArchMoment 2 -
-          normalizedPrimeArchMoment 0 ^ 3 / 4)) <
+          normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4)) <
         globalReesPositiveForm d parameter x.1.1 := by
   exact ⟨
     routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtLandingFiber_positive_eq x,
@@ -323,9 +323,9 @@ def routePPrimitiveGammaJuliaStokesCubicMalgrangeReesRigidLandingFiber
     (genus : ℕ) (d : LocalData p n m K N) :=
   {x : compatibleCharges d //
     globalReesWittForm genus d (fun _ _ => 0) x =
-        normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4 ∧
+        normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4 ∧
       globalReesWittForm genus d (fun _ _ => 1) x =
-        normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4}
+        normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4}
 
 /-- Equality of the contracted and unit Xi landings annihilates total threshold coarea. -/
 theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeReesRigidLandingFiber_total_blockEnergy_eq_zero
@@ -385,7 +385,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeReesRigidLandingFiber_cutCh
   by_contra hcut
   have hterm :
       0 < (d a).toOrbitCoareaDatum.cuts.length edge *
-        (d a).toOrbitCoareaDatum.cutCharge (x.1.1 a) edge ^ 2 :=
+        (d a).toOrbitCoareaDatum.cutCharge (x.1.1 a) edge ^ (2 : ℕ) :=
     mul_pos ((d a).toOrbitCoareaDatum.cuts.length_pos edge)
       (sq_pos_of_ne_zero hcut)
   have hblockpos : 0 < (d a).toOrbitCoareaDatum.blockEnergy (x.1.1 a) := by
@@ -436,7 +436,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeReesRigidLandingFiber_landi
     (x : routePPrimitiveGammaJuliaStokesCubicMalgrangeReesRigidLandingFiber genus d)
     (parameter : ReesParameter d) :
     globalReesWittForm genus d parameter x.1 =
-      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4 := by
+      normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4 := by
   calc
     globalReesWittForm genus d parameter x.1 =
         globalReesWittForm genus d (fun _ _ => 0) x.1 := by
@@ -445,7 +445,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicMalgrangeReesRigidLandingFiber_landi
         routePPrimitiveGammaJuliaStokesCubicMalgrangeReesRigidLandingFiber_positive_parameter_eq_zero
           x parameter]
     _ = normalizedPrimeArchMoment 2 -
-        normalizedPrimeArchMoment 0 ^ 3 / 4 := x.2.1
+        normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4 := x.2.1
 
 /-- Rees-rigid cubic Xi landings whose physical-rank debt is the canonical raw Euler/Gamma--Wold
 defect at identity scale. -/
@@ -453,7 +453,7 @@ def routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtReesRigidLandingFiber
     {p : ℕ} {n m K N : Fin (p + 1) → ℕ}
     (genus : ℕ) (d : LocalData p n m K N) :=
   {x : routePPrimitiveGammaJuliaStokesCubicMalgrangeReesRigidLandingFiber genus d //
-    -globalRankCoefficient genus d * commonRankLinear d x.1 ^ 2 =
+    -globalRankCoefficient genus d * commonRankLinear d x.1 ^ (2 : ℕ) =
       ∑' k : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect k}
 
 /-- With all threshold channels annihilated, terminal orbit energy alone obeys the exact raw-source
@@ -464,7 +464,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtReesRigidLandingFibe
     (x : routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtReesRigidLandingFiber genus d) :
     (∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x.1.1.1 a)) =
       (∑' k : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect k) +
-        (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) := by
+        (normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) := by
   let y : routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtLandingFiber
       genus d (fun _ _ => 0) := ⟨⟨x.1.1, x.1.2.1⟩, x.2⟩
   have hpositive :=
@@ -500,7 +500,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtReesRigidLandingFibe
     {genus : ℕ} {d : LocalData p n m K N}
     (x : routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtReesRigidLandingFiber genus d) :
     1999 * (-(normalizedPrimeArchMoment 2 -
-        normalizedPrimeArchMoment 0 ^ 3 / 4)) <
+        normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4)) <
       ∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x.1.1.1 a) := by
   rw [routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtReesRigidLandingFiber_terminal_eq x]
   have hgap := twoThousand_mul_neg_xiCubicMalgrangeMagnitude_lt_rawSource
@@ -516,7 +516,7 @@ theorem routePPrimitiveGammaJuliaStokesCubicRawEulerRankDebtReesRigidLandingFibe
         (d a).toOrbitCoareaDatum.cutCharge (x.1.1.1 a) edge = 0) ∧
       (∀ parameter : ReesParameter d,
         globalReesWittForm genus d parameter x.1.1 =
-          normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ 3 / 4) ∧
+          normalizedPrimeArchMoment 2 - normalizedPrimeArchMoment 0 ^ (3 : ℕ) / 4) ∧
       (1999 / 2000 : ℝ) *
           (∑' k : ℕ, sourceHorizontalEulerGammaWoldCubicNaturalDefect k) <
         ∑ a, (d a).toOrbitCoareaDatum.terminalEnergy (x.1.1.1 a) ∧

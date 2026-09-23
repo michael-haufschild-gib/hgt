@@ -156,33 +156,33 @@ two-dimensional factor and propagating on the same conformally rescaled product 
 the conformal factor pointwise: the shared potential cancels in the difference of the two
 transferred potentials, the mass difference does not. -/
 theorem twoSpecies_scale_law_flatProductChart {P : (Fin (1 + 1) → ℝ) → ℝ} (hP : ContDiff ℝ 1 P)
-    {m₁ m₂ : ℝ} (hmass : m₂ ^ 2 - m₁ ^ 2 ≠ 0)
+    {m₁ m₂ : ℝ} (hmass : m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ) ≠ 0)
     {sigma : (Fin (1 + 1 + k) → ℝ) → ℝ} (hsigma : ContDiff ℝ ∞ sigma)
     {other₁ other₂ : (Fin (1 + 1 + k) → ℝ) → ℝ}
     (h₁ : ∀ (u : (Fin (1 + 1 + k) → ℝ) → ℝ) (W : Set (Fin (1 + 1 + k) → ℝ)), IsOpen W →
       SolvesPotentialWaveOn ((flatProductChart k).conformalRescale sigma hsigma).dalembert
           ((flatProductChart k).conformalTransferPotential sigma
-            (fun y => (fun z => P z - m₁ ^ 2) (frontMap (1 + 1) k y))) u W →
+            (fun y => (fun z => P z - m₁ ^ (2 : ℕ)) (frontMap (1 + 1) k y))) u W →
         SolvesPotentialWaveOn ((flatProductChart k).conformalRescale sigma hsigma).dalembert
           other₁ u W)
     (h₂ : ∀ (u : (Fin (1 + 1 + k) → ℝ) → ℝ) (W : Set (Fin (1 + 1 + k) → ℝ)), IsOpen W →
       SolvesPotentialWaveOn ((flatProductChart k).conformalRescale sigma hsigma).dalembert
           ((flatProductChart k).conformalTransferPotential sigma
-            (fun y => (fun z => P z - m₂ ^ 2) (frontMap (1 + 1) k y))) u W →
+            (fun y => (fun z => P z - m₂ ^ (2 : ℕ)) (frontMap (1 + 1) k y))) u W →
         SolvesPotentialWaveOn ((flatProductChart k).conformalRescale sigma hsigma).dalembert
           other₂ u W)
     (x : Fin (1 + 1 + k) → ℝ) :
-    (other₁ x - other₂ x) / (m₂ ^ 2 - m₁ ^ 2) = Real.exp (-2 * sigma x) := by
-  have hP₁ : ContDiff ℝ 1 fun z : Fin (1 + 1) → ℝ => P z - m₁ ^ 2 := hP.sub contDiff_const
-  have hP₂ : ContDiff ℝ 1 fun z : Fin (1 + 1) → ℝ => P z - m₂ ^ 2 := hP.sub contDiff_const
+    (other₁ x - other₂ x) / (m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ)) = Real.exp (-2 * sigma x) := by
+  have hP₁ : ContDiff ℝ 1 fun z : Fin (1 + 1) → ℝ => P z - m₁ ^ (2 : ℕ) := hP.sub contDiff_const
+  have hP₂ : ContDiff ℝ 1 fun z : Fin (1 + 1) → ℝ => P z - m₂ ^ (2 : ℕ) := hP.sub contDiff_const
   have e₁ := potential_eq_of_probes_conformalRescale_flatProductChart k hP₁ hsigma h₁
   have e₂ := potential_eq_of_probes_conformalRescale_flatProductChart k hP₂ hsigma h₂
   rw [e₁, e₂, conformalTransferPotential_sub]
   show Real.exp (-2 * sigma x) *
-      ((P (frontMap (1 + 1) k x) - m₁ ^ 2) - (P (frontMap (1 + 1) k x) - m₂ ^ 2)) /
-        (m₂ ^ 2 - m₁ ^ 2) = Real.exp (-2 * sigma x)
-  have hfac : (P (frontMap (1 + 1) k x) - m₁ ^ 2) - (P (frontMap (1 + 1) k x) - m₂ ^ 2)
-      = m₂ ^ 2 - m₁ ^ 2 := by ring
+      ((P (frontMap (1 + 1) k x) - m₁ ^ (2 : ℕ)) - (P (frontMap (1 + 1) k x) - m₂ ^ (2 : ℕ))) /
+        (m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ)) = Real.exp (-2 * sigma x)
+  have hfac : (P (frontMap (1 + 1) k x) - m₁ ^ (2 : ℕ)) - (P (frontMap (1 + 1) k x) - m₂ ^ (2 : ℕ))
+      = m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ) := by ring
   rw [hfac, mul_div_assoc, div_self hmass, mul_one]
 
 /-- **The two-species conformal clock scale law on the warped product.**
@@ -192,7 +192,7 @@ the factor of the two-dimensional block and the factor of the whole chart multip
 potential cancels. -/
 theorem twoSpecies_scale_law_warpedProductChart {sigma₂ : (Fin (1 + 1) → ℝ) → ℝ}
     (hsigma₂ : ContDiff ℝ ∞ sigma₂) {P : (Fin (1 + 1) → ℝ) → ℝ} (hP : ContDiff ℝ 1 P)
-    {m₁ m₂ : ℝ} (hmass : m₂ ^ 2 - m₁ ^ 2 ≠ 0)
+    {m₁ m₂ : ℝ} (hmass : m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ) ≠ 0)
     {sigma : (Fin (1 + 1 + k) → ℝ) → ℝ} (hsigma : ContDiff ℝ ∞ sigma)
     {other₁ other₂ : (Fin (1 + 1 + k) → ℝ) → ℝ}
     (h₁ : ∀ (u : (Fin (1 + 1 + k) → ℝ) → ℝ) (W : Set (Fin (1 + 1 + k) → ℝ)), IsOpen W →
@@ -200,7 +200,7 @@ theorem twoSpecies_scale_law_warpedProductChart {sigma₂ : (Fin (1 + 1) → ℝ
           ((warpedProductChart k hsigma₂).conformalTransferPotential sigma
             (fun y => SmoothMetricChart.conformalTransferPotential
               (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart sigma₂
-              (fun z => P z - m₁ ^ 2) (frontMap (1 + 1) k y))) u W →
+              (fun z => P z - m₁ ^ (2 : ℕ)) (frontMap (1 + 1) k y))) u W →
         SolvesPotentialWaveOn
           ((warpedProductChart k hsigma₂).conformalRescale sigma hsigma).dalembert other₁ u W)
     (h₂ : ∀ (u : (Fin (1 + 1 + k) → ℝ) → ℝ) (W : Set (Fin (1 + 1 + k) → ℝ)), IsOpen W →
@@ -208,14 +208,14 @@ theorem twoSpecies_scale_law_warpedProductChart {sigma₂ : (Fin (1 + 1) → ℝ
           ((warpedProductChart k hsigma₂).conformalTransferPotential sigma
             (fun y => SmoothMetricChart.conformalTransferPotential
               (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart sigma₂
-              (fun z => P z - m₂ ^ 2) (frontMap (1 + 1) k y))) u W →
+              (fun z => P z - m₂ ^ (2 : ℕ)) (frontMap (1 + 1) k y))) u W →
         SolvesPotentialWaveOn
           ((warpedProductChart k hsigma₂).conformalRescale sigma hsigma).dalembert other₂ u W)
     (x : Fin (1 + 1 + k) → ℝ) :
-    (other₁ x - other₂ x) / (m₂ ^ 2 - m₁ ^ 2)
+    (other₁ x - other₂ x) / (m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ))
       = Real.exp (-2 * sigma x) * Real.exp (-2 * sigma₂ (frontMap (1 + 1) k x)) := by
-  have hP₁ : ContDiff ℝ 1 fun z : Fin (1 + 1) → ℝ => P z - m₁ ^ 2 := hP.sub contDiff_const
-  have hP₂ : ContDiff ℝ 1 fun z : Fin (1 + 1) → ℝ => P z - m₂ ^ 2 := hP.sub contDiff_const
+  have hP₁ : ContDiff ℝ 1 fun z : Fin (1 + 1) → ℝ => P z - m₁ ^ (2 : ℕ) := hP.sub contDiff_const
+  have hP₂ : ContDiff ℝ 1 fun z : Fin (1 + 1) → ℝ => P z - m₂ ^ (2 : ℕ) := hP.sub contDiff_const
   have e₁ := potential_eq_of_openProbes
     (regularOpenProbes_conformalRescale_warpedProductChart k hsigma₂ hP₁ hsigma).openProbes h₁
   have e₂ := potential_eq_of_openProbes
@@ -223,19 +223,19 @@ theorem twoSpecies_scale_law_warpedProductChart {sigma₂ : (Fin (1 + 1) → ℝ
   rw [e₁, e₂, conformalTransferPotential_sub]
   have hinner : SmoothMetricChart.conformalTransferPotential
         (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart sigma₂
-        (fun z => P z - m₁ ^ 2) (frontMap (1 + 1) k x)
+        (fun z => P z - m₁ ^ (2 : ℕ)) (frontMap (1 + 1) k x)
       - SmoothMetricChart.conformalTransferPotential
         (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart sigma₂
-        (fun z => P z - m₂ ^ 2) (frontMap (1 + 1) k x)
-      = Real.exp (-2 * sigma₂ (frontMap (1 + 1) k x)) * (m₂ ^ 2 - m₁ ^ 2) := by
+        (fun z => P z - m₂ ^ (2 : ℕ)) (frontMap (1 + 1) k x)
+      = Real.exp (-2 * sigma₂ (frontMap (1 + 1) k x)) * (m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ)) := by
     rw [conformalTransferPotential_sub]
-    have hfac : (P (frontMap (1 + 1) k x) - m₁ ^ 2) - (P (frontMap (1 + 1) k x) - m₂ ^ 2)
-        = m₂ ^ 2 - m₁ ^ 2 := by ring
+    have hfac : (P (frontMap (1 + 1) k x) - m₁ ^ (2 : ℕ)) - (P (frontMap (1 + 1) k x) - m₂ ^ (2 : ℕ))
+        = m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ) := by ring
     rw [hfac]
   rw [hinner]
-  rw [mul_comm (Real.exp (-2 * sigma₂ (frontMap (1 + 1) k x))) (m₂ ^ 2 - m₁ ^ 2),
-    ← mul_assoc, mul_comm (Real.exp (-2 * sigma x)) (m₂ ^ 2 - m₁ ^ 2), mul_assoc,
-    mul_comm (m₂ ^ 2 - m₁ ^ 2)
+  rw [mul_comm (Real.exp (-2 * sigma₂ (frontMap (1 + 1) k x))) (m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ)),
+    ← mul_assoc, mul_comm (Real.exp (-2 * sigma x)) (m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ)), mul_assoc,
+    mul_comm (m₂ ^ (2 : ℕ) - m₁ ^ (2 : ℕ))
       (Real.exp (-2 * sigma x) * Real.exp (-2 * sigma₂ (frontMap (1 + 1) k x))),
     mul_div_assoc, div_self hmass, mul_one]
 

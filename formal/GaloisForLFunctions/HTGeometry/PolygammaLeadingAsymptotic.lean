@@ -25,13 +25,13 @@ variable {σ : ℝ}
 theorem norm_vertical_add_nat_le_succ (hσ : 0 < σ) (t : ℝ) (n : ℕ) :
     ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖
       ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖ := by
-  have hsq : ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2
-      ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖ ^ 2 := by
-    have h1 : ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2 = (σ + n) ^ 2 + t ^ 2 := by
+  have hsq : ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ)
+      ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖ ^ (2 : ℕ) := by
+    have h1 : ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ) = (σ + n) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
       rw [← Complex.normSq_eq_norm_sq]
       simp [Complex.normSq_apply]
       ring
-    have h2 : ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖ ^ 2 = (σ + n + 1) ^ 2 + t ^ 2 := by
+    have h2 : ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ) + 1‖ ^ (2 : ℕ) = (σ + n + 1) ^ (2 : ℕ) + t ^ (2 : ℕ) := by
       rw [← Complex.normSq_eq_norm_sq]
       simp [Complex.normSq_apply]
       ring
@@ -171,40 +171,40 @@ theorem tendsto_pow_mul_polygamma_sum (hσ : 0 < σ) (m : ℕ) :
           field_simp
   -- uniform summable bound
   have hunif : ∀ t : ℝ, max σ 1 ≤ t → ∀ n : ℕ,
-      ‖D t n‖ ≤ (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (1 / (σ + n) ^ 2) := by
+      ‖D t n‖ ≤ (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (1 / (σ + n) ^ (2 : ℕ)) := by
     intro t ht n
     have ht1 : (1 : ℝ) ≤ t := le_trans (le_max_right σ 1) ht
     have htσ : σ ≤ t := le_trans (le_max_left σ 1) ht
     have ht0 : (0 : ℝ) < t := lt_of_lt_of_le zero_lt_one ht1
     have hd := hdefect t ht0 n
-    have hden : t ^ (m + 1) * (σ + n) ^ 2
+    have hden : t ^ (m + 1) * (σ + n) ^ (2 : ℕ)
         ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (m + 3) := by
       have hsplit : ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (m + 3)
           = ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (m + 1)
-            * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ 2 := by
+            * ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (2 : ℕ) := by
         rw [← pow_add]
       rw [hsplit]
       exact mul_le_mul (pow_le_pow_left₀ ht0.le (norm_vertical_add_nat_ge_im t n) _)
         (pow_le_pow_left₀ (hpos n).le (norm_vertical_add_nat_ge_re t n) _) (by positivity)
         (by positivity)
-    have hdenpos : (0 : ℝ) < t ^ (m + 1) * (σ + n) ^ 2 := by
+    have hdenpos : (0 : ℝ) < t ^ (m + 1) * (σ + n) ^ (2 : ℕ) := by
       have := hpos n
       positivity
     have hstep : (σ + t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2))
         / ‖(σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)‖ ^ (m + 3)
-        ≤ (σ + t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) / (t ^ (m + 1) * (σ + n) ^ 2) := by
+        ≤ (σ + t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) / (t ^ (m + 1) * (σ + n) ^ (2 : ℕ)) := by
       refine div_le_div_of_nonneg_left (by positivity) hdenpos hden
     have hnum : (σ + t) ^ (m + 1) ≤ (2 * t) ^ (m + 1) := by
       refine pow_le_pow_left₀ (by positivity) ?_ _
       linarith
-    have hfinal : (σ + t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) / (t ^ (m + 1) * (σ + n) ^ 2)
-        ≤ (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (1 / (σ + n) ^ 2) := by
+    have hfinal : (σ + t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) / (t ^ (m + 1) * (σ + n) ^ (2 : ℕ))
+        ≤ (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (1 / (σ + n) ^ (2 : ℕ)) := by
       rw [div_le_iff₀ hdenpos]
       have hmul : (σ + t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2))
           ≤ (2 * t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) :=
         mul_le_mul_of_nonneg_right hnum (by positivity)
-      have hexp : (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (1 / (σ + n) ^ 2)
-          * (t ^ (m + 1) * (σ + n) ^ 2)
+      have hexp : (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (1 / (σ + n) ^ (2 : ℕ))
+          * (t ^ (m + 1) * (σ + n) ^ (2 : ℕ))
           = (2 * t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) := by
         have hn : (0 : ℝ) < σ + n := hpos n
         field_simp
@@ -217,8 +217,8 @@ theorem tendsto_pow_mul_polygamma_sum (hσ : 0 < σ) (m : ℕ) :
     intro n
     rw [tendsto_zero_iff_norm_tendsto_zero]
     have hlim : Tendsto (fun t : ℝ => (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2))
-        * (t ^ 2)⁻¹) atTop (nhds 0) := by
-      have hpow : Tendsto (fun t : ℝ => t ^ 2) atTop atTop := tendsto_pow_atTop (by omega)
+        * (t ^ (2 : ℕ))⁻¹) atTop (nhds 0) := by
+      have hpow : Tendsto (fun t : ℝ => t ^ (2 : ℕ)) atTop atTop := tendsto_pow_atTop (by omega)
       have := hpow.inv_tendsto_atTop.const_mul
         ((2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)))
       simpa using this
@@ -239,12 +239,12 @@ theorem tendsto_pow_mul_polygamma_sum (hσ : 0 < σ) (m : ℕ) :
       refine pow_le_pow_left₀ (by positivity) ?_ _
       linarith
     have hfinal : (σ + t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) / t ^ (m + 3)
-        ≤ (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (t ^ 2)⁻¹ := by
+        ≤ (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (t ^ (2 : ℕ))⁻¹ := by
       rw [div_le_iff₀ hdenpos]
       have hmul : (σ + t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2))
           ≤ (2 * t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) :=
         mul_le_mul_of_nonneg_right hnum (by positivity)
-      have hexp : (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (t ^ 2)⁻¹ * t ^ (m + 3)
+      have hexp : (2 : ℝ) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (t ^ (2 : ℕ))⁻¹ * t ^ (m + 3)
           = (2 * t) ^ (m + 1) * (((m : ℝ) + 1) * ((m : ℝ) + 2)) := by
         field_simp
         ring
@@ -253,7 +253,7 @@ theorem tendsto_pow_mul_polygamma_sum (hσ : 0 < σ) (m : ℕ) :
     exact le_trans hd (le_trans hstep hfinal)
   -- dominated convergence
   have hboundsummable : Summable (fun n : ℕ => (2 : ℝ) ^ (m + 1)
-      * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (1 / (σ + n) ^ 2)) :=
+      * (((m : ℝ) + 1) * ((m : ℝ) + 2)) * (1 / (σ + n) ^ (2 : ℕ))) :=
     (summable_one_div_shift_pow hσ 2 le_rfl).mul_left _
   have hdom := tendsto_tsum_of_dominated_convergence (𝓕 := atTop) (f := D)
     (g := fun _ : ℕ => (0 : ℂ)) hboundsummable hpoint

@@ -22,7 +22,7 @@ noncomputable section
 
 namespace RHTower
 
-private theorem log_le_two_mul_sqrt {t : ℝ} (ht : 0 < t) :
+private theorem log_le_two_mul_sqrt_logWeightedPoisson {t : ℝ} (ht : 0 < t) :
     Real.log t ≤ 2 * Real.sqrt t := by
   have hs : 0 < Real.sqrt t := Real.sqrt_pos.mpr ht
   have hlog : Real.log (Real.sqrt t) ≤ Real.sqrt t - 1 :=
@@ -40,7 +40,7 @@ theorem criticalMellinAtomWeight_le_two_of_pos {n : ℕ} (hn : 0 < n) :
   have hsqrt : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hnR
   rw [criticalMellinAtomWeight_eq_div_sqrt]
   have hvm := ArithmeticFunction.vonMangoldt_le_log (n := n)
-  have hlog := log_le_two_mul_sqrt hnR
+  have hlog := log_le_two_mul_sqrt_logWeightedPoisson hnR
   calc
     ArithmeticFunction.vonMangoldt n / Real.sqrt n ≤ Real.log n / Real.sqrt n :=
       div_le_div_of_nonneg_right hvm hsqrt.le

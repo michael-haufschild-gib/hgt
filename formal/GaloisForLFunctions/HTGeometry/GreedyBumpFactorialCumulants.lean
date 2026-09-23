@@ -26,14 +26,14 @@ def FinitePointCountLaw.factorialCumulantOne {Ω : Type*} [Fintype Ω]
 /-- Second factorial cumulant. -/
 def FinitePointCountLaw.factorialCumulantTwo {Ω : Type*} [Fintype Ω]
     (law : FinitePointCountLaw Ω) : ℝ :=
-  law.factorialMoment 2 - law.factorialMoment 1 ^ 2
+  law.factorialMoment 2 - law.factorialMoment 1 ^ (2 : ℕ)
 
 /-- Third factorial cumulant. -/
 def FinitePointCountLaw.factorialCumulantThree {Ω : Type*} [Fintype Ω]
     (law : FinitePointCountLaw Ω) : ℝ :=
   law.factorialMoment 3 -
     3 * law.factorialMoment 2 * law.factorialMoment 1 +
-    2 * law.factorialMoment 1 ^ 3
+    2 * law.factorialMoment 1 ^ (3 : ℕ)
 
 /-- Exact void mass `P(N=0)`. -/
 def FinitePointCountLaw.voidMass {Ω : Type*} [Fintype Ω]
@@ -84,15 +84,15 @@ theorem greedyBumpBernoulli_factorialCumulantOne (p : ProbabilityParameter) :
   simp [FinitePointCountLaw.factorialCumulantOne,
     FinitePointCountLaw.factorialMoment, greedyBumpBernoulliExclusion]
 
-/-- Hard exclusion forces negative second factorial cumulant `-p^2`. -/
+/-- Hard exclusion forces negative second factorial cumulant `-p^(2 : ℕ)`. -/
 theorem greedyBumpBernoulli_factorialCumulantTwo (p : ProbabilityParameter) :
-    (greedyBumpBernoulliExclusion p).factorialCumulantTwo = -(p : ℝ) ^ 2 := by
+    (greedyBumpBernoulliExclusion p).factorialCumulantTwo = -(p : ℝ) ^ (2 : ℕ) := by
   simp [FinitePointCountLaw.factorialCumulantTwo,
     FinitePointCountLaw.factorialMoment, greedyBumpBernoulliExclusion]
 
-/-- Hard exclusion has third factorial cumulant `2p^3`. -/
+/-- Hard exclusion has third factorial cumulant `2p^(3 : ℕ)`. -/
 theorem greedyBumpBernoulli_factorialCumulantThree (p : ProbabilityParameter) :
-    (greedyBumpBernoulliExclusion p).factorialCumulantThree = 2 * (p : ℝ) ^ 3 := by
+    (greedyBumpBernoulliExclusion p).factorialCumulantThree = 2 * (p : ℝ) ^ (3 : ℕ) := by
   simp [FinitePointCountLaw.factorialCumulantThree,
     FinitePointCountLaw.factorialMoment, greedyBumpBernoulliExclusion]
 
@@ -152,7 +152,7 @@ theorem greedyBumpBernoulli_signed_factorialCumulantSucc_nonneg
     (p : StrictProbabilityParameter) (k : ℕ) :
     0 ≤ (-1 : ℝ) ^ k * greedyBumpBernoulliFactorialCumulantSucc p k := by
   rw [greedyBumpBernoulliFactorialCumulantSucc]
-  have hs : 0 ≤ ((-1 : ℝ) ^ k) ^ 2 := sq_nonneg _
+  have hs : 0 ≤ ((-1 : ℝ) ^ k) ^ (2 : ℕ) := sq_nonneg _
   have hr : 0 ≤ (k.factorial : ℝ) * (p : ℝ) ^ (k + 1) := by
     exact mul_nonneg (Nat.cast_nonneg _) (pow_nonneg p.property.1 _)
   simpa only [pow_two, mul_assoc] using mul_nonneg hs hr

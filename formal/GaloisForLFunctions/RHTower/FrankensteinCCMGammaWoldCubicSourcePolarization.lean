@@ -17,7 +17,7 @@ the existing Gamma-source residue theorem.  Two independent variables are then s
 strict-right copy and its Schwarz-conjugate copy.  Cubing occurs only after the two separately
 holomorphic residue gauges have been added.  Successive source limits give
 
-`((rho - 1/2) + conj (rho - 1/2))^3 = (2 * Re (rho - 1/2))^3`.
+`((rho - 1/2) + conj (rho - 1/2))^(3 : ℕ) = (2 * Re (rho - 1/2))^(3 : ℕ)`.
 
 Multiplication by the finite prime-clock coefficient identifies this literal two-fibre source
 landing with the existing Wold cubic horizon response exactly.  Thus third-jet transport is no
@@ -78,19 +78,19 @@ The nonlinear cube is formed before either removable source limit is taken. -/
 def frankensteinCCMGammaSchwarzCenteredCubicSource
     (q : XiRightZeroCopy) (N : ℕ) (u v : ℂ) : ℂ :=
   (sourceHorizontalWoldResidualPrimitiveCubicCoefficient N /
-      xiMassNthPrimeLogHeight N ^ 3 : ℂ) *
+      xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℂ) *
     (frankensteinCCMGammaCenteredResidueGauge q.1.1 u +
       frankensteinCCMGammaCenteredResidueGauge
-        (xiRightZeroCopyConjEquiv q).1.1 v) ^ 3
+        (xiRightZeroCopyConjEquiv q).1.1 v) ^ (3 : ℕ)
 
 /-- First source landing retains the full conjugate-fibre pole gauge. -/
 def frankensteinCCMGammaSchwarzCenteredCubicFirstLanding
     (q : XiRightZeroCopy) (N : ℕ) (v : ℂ) : ℂ :=
   (sourceHorizontalWoldResidualPrimitiveCubicCoefficient N /
-      xiMassNthPrimeLogHeight N ^ 3 : ℂ) *
+      xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℂ) *
     (xiRightCenteredZero q +
       frankensteinCCMGammaCenteredResidueGauge
-        (xiRightZeroCopyConjEquiv q).1.1 v) ^ 3
+        (xiRightZeroCopyConjEquiv q).1.1 v) ^ (3 : ℕ)
 
 /-- First selected residue is coefficient-faithful and leaves the Schwarz source leg uncollapsed. -/
 theorem tendsto_frankensteinCCMGammaSchwarzCenteredCubicSource_first
@@ -106,7 +106,7 @@ theorem tendsto_frankensteinCCMGammaSchwarzCenteredCubicSource_first
   have hpow := h.pow 3
   have hmul := hpow.const_mul
     (sourceHorizontalWoldResidualPrimitiveCubicCoefficient N /
-      xiMassNthPrimeLogHeight N ^ 3 : ℂ)
+      xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℂ)
   simpa [frankensteinCCMGammaSchwarzCenteredCubicSource,
     frankensteinCCMGammaSchwarzCenteredCubicFirstLanding,
     xiRightCenteredZero_eq_support_sub_half] using hmul
@@ -141,7 +141,7 @@ theorem tendsto_frankensteinCCMGammaSchwarzCenteredCubicFirstLanding
   have hpow := hsum.pow 3
   have hmul := hpow.const_mul
     (sourceHorizontalWoldResidualPrimitiveCubicCoefficient N /
-      xiMassNthPrimeLogHeight N ^ 3 : ℂ)
+      xiMassNthPrimeLogHeight N ^ (3 : ℕ) : ℂ)
   have hconj :
       (((xiRightZeroCopyConjEquiv q).1.1 : ℂ) - 1 / 2) =
         (starRingEnd ℂ) (xiRightCenteredZero q) := by

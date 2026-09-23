@@ -86,7 +86,7 @@ theorem ccmActualHeadMatchedPhasePrimePowerMetricLineTransport_not_reachable
     (c : V → ℝ) (hc : ∀ w, c w ≠ 0)
     (t : ∀ a b : V, G.Adj a b → ℝ)
     (hiso : ∀ (a b : V) (h : G.Adj a b) (x : ℝ),
-      c b * (t a b h * x) ^ 2 = c a * x ^ 2)
+      c b * (t a b h * x) ^ (2 : ℕ) = c a * x ^ (2 : ℕ))
     (hu : GaloisForLFunctions.HTGeometry.signOrientation c u =
       ccmActualHeadMatchedPhasePrimePowerReporterOrientation
         (xiGammaEulerValuationNat (p, e)) true)
@@ -121,7 +121,7 @@ def CCMActualHeadMatchedPhasePrimePowerConnectedMetricLineWardAt
     (∀ w, c w ≠ 0) ∧
     G.Preconnected ∧
     (∀ (a b : V) (h : G.Adj a b) (x : ℝ),
-      c b * (t a b h * x) ^ 2 = c a * x ^ 2) ∧
+      c b * (t a b h * x) ^ (2 : ℕ) = c a * x ^ (2 : ℕ)) ∧
     GaloisForLFunctions.HTGeometry.signOrientation c u =
       ccmActualHeadMatchedPhasePrimePowerReporterOrientation
         (xiGammaEulerValuationNat (p, e)) true ∧

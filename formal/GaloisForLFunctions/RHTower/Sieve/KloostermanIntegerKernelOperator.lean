@@ -33,9 +33,9 @@ transform. -/
 theorem norm_kloostermanIntegerKernelBilinear_sq_le
     (Q : Finset ℕ) (w : ℕ → ℂ) (A B : Finset ℕ)
     (a b : ℕ → ℂ) :
-    ‖kloostermanIntegerKernelBilinear Q w A B a b‖ ^ 2 ≤
-      (∑ m ∈ A, ‖a m‖ ^ 2) *
-        ∑ m ∈ A, ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 := by
+    ‖kloostermanIntegerKernelBilinear Q w A B a b‖ ^ (2 : ℕ) ≤
+      (∑ m ∈ A, ‖a m‖ ^ (2 : ℕ)) *
+        ∑ m ∈ A, ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) := by
   have htri : ‖kloostermanIntegerKernelBilinear Q w A B a b‖ ≤
       ∑ m ∈ A, ‖a m‖ * ‖kloostermanIntegerKernelTransform Q w B b m‖ := by
     unfold kloostermanIntegerKernelBilinear
@@ -46,8 +46,8 @@ theorem norm_kloostermanIntegerKernelBilinear_sq_le
   have hsum0 : 0 ≤ ∑ m ∈ A,
       ‖a m‖ * ‖kloostermanIntegerKernelTransform Q w B b m‖ :=
     Finset.sum_nonneg fun m _ => mul_nonneg (norm_nonneg _) (norm_nonneg _)
-  have hsq : ‖kloostermanIntegerKernelBilinear Q w A B a b‖ ^ 2 ≤
-      (∑ m ∈ A, ‖a m‖ * ‖kloostermanIntegerKernelTransform Q w B b m‖) ^ 2 := by
+  have hsq : ‖kloostermanIntegerKernelBilinear Q w A B a b‖ ^ (2 : ℕ) ≤
+      (∑ m ∈ A, ‖a m‖ * ‖kloostermanIntegerKernelTransform Q w B b m‖) ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (kloostermanIntegerKernelBilinear Q w A B a b)]
   exact hsq.trans (Finset.sum_mul_sq_le_sq_mul_sq A
     (fun m => ‖a m‖) (fun m => ‖kloostermanIntegerKernelTransform Q w B b m‖))
@@ -56,9 +56,9 @@ theorem norm_kloostermanIntegerKernelBilinear_sq_le
 theorem norm_kloostermanIntegerKernelTransform_sq_le
     (Q : Finset ℕ) (w : ℕ → ℂ) (B : Finset ℕ)
     (b : ℕ → ℂ) (m : ℕ) :
-    ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 ≤
-      (∑ n ∈ B, ‖b n‖ ^ 2) *
-        ∑ n ∈ B, ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2 := by
+    ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) ≤
+      (∑ n ∈ B, ‖b n‖ ^ (2 : ℕ)) *
+        ∑ n ∈ B, ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ) := by
   have htri : ‖kloostermanIntegerKernelTransform Q w B b m‖ ≤
       ∑ n ∈ B, ‖b n‖ *
         ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ := by
@@ -70,9 +70,9 @@ theorem norm_kloostermanIntegerKernelTransform_sq_le
   have hsum0 : 0 ≤ ∑ n ∈ B, ‖b n‖ *
       ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ :=
     Finset.sum_nonneg fun n _ => mul_nonneg (norm_nonneg _) (norm_nonneg _)
-  have hsq : ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 ≤
+  have hsq : ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) ≤
       (∑ n ∈ B, ‖b n‖ *
-        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖) ^ 2 := by
+        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖) ^ (2 : ℕ) := by
     nlinarith [norm_nonneg (kloostermanIntegerKernelTransform Q w B b m)]
   exact hsq.trans (Finset.sum_mul_sq_le_sq_mul_sq B
     (fun n => ‖b n‖)
@@ -82,14 +82,14 @@ theorem norm_kloostermanIntegerKernelTransform_sq_le
 signed kernel. -/
 theorem sum_norm_kloostermanIntegerKernelTransform_sq_le
     (Q : Finset ℕ) (w : ℕ → ℂ) (A B : Finset ℕ) (b : ℕ → ℂ) :
-    (∑ m ∈ A, ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2) ≤
-      (∑ n ∈ B, ‖b n‖ ^ 2) *
+    (∑ m ∈ A, ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ)) ≤
+      (∑ n ∈ B, ‖b n‖ ^ (2 : ℕ)) *
         ∑ m ∈ A, ∑ n ∈ B,
-          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2 := by
+          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ) := by
   calc
-    _ ≤ ∑ m ∈ A, (∑ n ∈ B, ‖b n‖ ^ 2) *
+    _ ≤ ∑ m ∈ A, (∑ n ∈ B, ‖b n‖ ^ (2 : ℕ)) *
         ∑ n ∈ B,
-          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2 := by
+          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro m _hm
       exact norm_kloostermanIntegerKernelTransform_sq_le Q w B b m
@@ -99,20 +99,20 @@ theorem sum_norm_kloostermanIntegerKernelTransform_sq_le
 theorem norm_kloostermanIntegerKernelBilinear_sq_le_hilbertSchmidt
     (Q : Finset ℕ) (w : ℕ → ℂ) (A B : Finset ℕ)
     (a b : ℕ → ℂ) :
-    ‖kloostermanIntegerKernelBilinear Q w A B a b‖ ^ 2 ≤
-      (∑ m ∈ A, ‖a m‖ ^ 2) * (∑ n ∈ B, ‖b n‖ ^ 2) *
+    ‖kloostermanIntegerKernelBilinear Q w A B a b‖ ^ (2 : ℕ) ≤
+      (∑ m ∈ A, ‖a m‖ ^ (2 : ℕ)) * (∑ n ∈ B, ‖b n‖ ^ (2 : ℕ)) *
         ∑ m ∈ A, ∑ n ∈ B,
-          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2 := by
-  have hA : 0 ≤ ∑ m ∈ A, ‖a m‖ ^ 2 :=
+          ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ) := by
+  have hA : 0 ≤ ∑ m ∈ A, ‖a m‖ ^ (2 : ℕ) :=
     Finset.sum_nonneg fun m _ => sq_nonneg _
   calc
-    _ ≤ (∑ m ∈ A, ‖a m‖ ^ 2) *
-        ∑ m ∈ A, ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ 2 :=
+    _ ≤ (∑ m ∈ A, ‖a m‖ ^ (2 : ℕ)) *
+        ∑ m ∈ A, ‖kloostermanIntegerKernelTransform Q w B b m‖ ^ (2 : ℕ) :=
       norm_kloostermanIntegerKernelBilinear_sq_le Q w A B a b
-    _ ≤ (∑ m ∈ A, ‖a m‖ ^ 2) *
-        ((∑ n ∈ B, ‖b n‖ ^ 2) *
+    _ ≤ (∑ m ∈ A, ‖a m‖ ^ (2 : ℕ)) *
+        ((∑ n ∈ B, ‖b n‖ ^ (2 : ℕ)) *
           ∑ m ∈ A, ∑ n ∈ B,
-            ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2) :=
+            ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ)) :=
       mul_le_mul_of_nonneg_left
         (sum_norm_kloostermanIntegerKernelTransform_sq_le Q w A B b) hA
     _ = _ := by ring
@@ -121,13 +121,13 @@ theorem norm_kloostermanIntegerKernelBilinear_sq_le_hilbertSchmidt
 theorem sum_norm_kloostermanIntegerModulusKernel_sq_le_totient
     (Q : Finset ℕ) (w : ℕ → ℂ) (A B : Finset ℕ) :
     (∑ m ∈ A, ∑ n ∈ B,
-        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ 2) ≤
+        ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ^ (2 : ℕ)) ≤
       (A.card : ℝ) * (B.card : ℝ) *
-        (∑ q ∈ Q, ‖w q‖ * (Nat.totient (q + 1) : ℝ)) ^ 2 := by
+        (∑ q ∈ Q, ‖w q‖ * (Nat.totient (q + 1) : ℝ)) ^ (2 : ℕ) := by
   let W : ℝ := ∑ q ∈ Q, ‖w q‖ * (Nat.totient (q + 1) : ℝ)
   have hW : 0 ≤ W := Finset.sum_nonneg fun q _ => mul_nonneg (norm_nonneg _) (by positivity)
   calc
-    _ ≤ ∑ m ∈ A, ∑ n ∈ B, W ^ 2 := by
+    _ ≤ ∑ m ∈ A, ∑ n ∈ B, W ^ (2 : ℕ) := by
       apply Finset.sum_le_sum
       intro m _hm
       apply Finset.sum_le_sum
@@ -136,7 +136,7 @@ theorem sum_norm_kloostermanIntegerModulusKernel_sq_le_totient
         Q w (m : ℤ) (n : ℤ)
       change ‖kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ)‖ ≤ W at h
       nlinarith [norm_nonneg (kloostermanIntegerModulusKernel Q w (m : ℤ) (n : ℤ))]
-    _ = (A.card : ℝ) * (B.card : ℝ) * W ^ 2 := by simp; ring
+    _ = (A.card : ℝ) * (B.card : ℝ) * W ^ (2 : ℕ) := by simp; ring
     _ = _ := rfl
 
 /-- Fully scalar elementary baseline for the signed kernel bilinear form.  A spectral large sieve
@@ -144,11 +144,11 @@ must replace the cardinality/totient factor while retaining the two coefficient 
 theorem norm_kloostermanIntegerKernelBilinear_sq_le_totient
     (Q : Finset ℕ) (w : ℕ → ℂ) (A B : Finset ℕ)
     (a b : ℕ → ℂ) :
-    ‖kloostermanIntegerKernelBilinear Q w A B a b‖ ^ 2 ≤
-      (∑ m ∈ A, ‖a m‖ ^ 2) * (∑ n ∈ B, ‖b n‖ ^ 2) *
+    ‖kloostermanIntegerKernelBilinear Q w A B a b‖ ^ (2 : ℕ) ≤
+      (∑ m ∈ A, ‖a m‖ ^ (2 : ℕ)) * (∑ n ∈ B, ‖b n‖ ^ (2 : ℕ)) *
         ((A.card : ℝ) * (B.card : ℝ) *
-          (∑ q ∈ Q, ‖w q‖ * (Nat.totient (q + 1) : ℝ)) ^ 2) := by
-  have hAB : 0 ≤ (∑ m ∈ A, ‖a m‖ ^ 2) * (∑ n ∈ B, ‖b n‖ ^ 2) := by positivity
+          (∑ q ∈ Q, ‖w q‖ * (Nat.totient (q + 1) : ℝ)) ^ (2 : ℕ)) := by
+  have hAB : 0 ≤ (∑ m ∈ A, ‖a m‖ ^ (2 : ℕ)) * (∑ n ∈ B, ‖b n‖ ^ (2 : ℕ)) := by positivity
   exact (norm_kloostermanIntegerKernelBilinear_sq_le_hilbertSchmidt Q w A B a b).trans
     (mul_le_mul_of_nonneg_left
       (sum_norm_kloostermanIntegerModulusKernel_sq_le_totient Q w A B) hAB)

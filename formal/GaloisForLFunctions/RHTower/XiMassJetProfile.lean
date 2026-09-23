@@ -50,7 +50,7 @@ def xiJetProfile (a : ℝ) (τ : ℂ) (k : ℕ) : ℂ → ℂ :=
     (xiHeightCoeff τ (xiJetData a τ k).2.2.1 (xiJetData a τ k).2.2.2 (k + 1))
 
 /-- **The recursion differentiates the profile.** -/
-theorem hasDerivAt_xiJetProfile {a : ℝ} {τ w : ℂ} (ha : 0 < a) (hw : 0 < (τ ^ 2 + w ^ 2).re)
+theorem hasDerivAt_xiJetProfile {a : ℝ} {τ w : ℂ} (ha : 0 < a) (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re)
     (k : ℕ) :
     HasDerivAt (xiJetProfile a τ k) (xiJetProfile a τ (k + 1) w) w := by
   have hstep := hasDerivAt_xiJetState (a := a) (τ := τ) (w := w) ha hw
@@ -69,10 +69,10 @@ theorem hasDerivAt_xiJetProfile {a : ℝ} {τ w : ℂ} (ha : 0 < a) (hw : 0 < (�
   exact hstep
 
 /-- **The base of the recursion is the mass profile.** -/
-theorem xiJetProfile_zero {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ 2 + w ^ 2).re) :
+theorem xiJetProfile_zero {a : ℝ} {τ w : ℂ} (hw : 0 < (τ ^ (2 : ℕ) + w ^ (2 : ℕ)).re) :
     xiJetProfile a τ 0 w = xiMassBesselHeightSide a τ w := by
   have hZne : xiMassHeightRadius τ w ≠ 0 := xiMassHeightRadius_ne_zero hw
-  have hZ2 : xiMassHeightRadius τ w ^ 2 = τ ^ 2 + w ^ 2 := xiMassHeightRadius_sq hw
+  have hZ2 : xiMassHeightRadius τ w ^ (2 : ℕ) = τ ^ (2 : ℕ) + w ^ (2 : ℕ) := xiMassHeightRadius_sq hw
   rw [xiJetProfile, xiJetData_zero, xiMassBesselState, xiHeightCoeff, xiHeightCoeff,
     xiMassBesselHeightSide, xiMassHeightK1, ← xiMassHeightRadius, ← hZ2]
   simp only [Polynomial.eval_zero, Polynomial.eval_C, zero_add, zero_mul, pow_one]

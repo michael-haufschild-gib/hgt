@@ -14,10 +14,10 @@ open Finset ArithmeticFunction
 theorem card_le_good_add_meanSquare_start {S Bad₂ : Finset ℕ} {st Lf : ℕ → ℕ} {D V δ : ℝ}
     (hδ : 0 < δ)
     (hδL : ∀ i ∈ S, δ ≤ (1 / 8) * D * (Lf i : ℝ))
-    (hms : ∑ i ∈ S, (∑ n ∈ Finset.Ioc (st i) (st i + Lf i), ((moebius n : ℤ) : ℝ)) ^ 2 ≤ V)
+    (hms : ∑ i ∈ S, (∑ n ∈ Finset.Ioc (st i) (st i + Lf i), ((moebius n : ℤ) : ℝ)) ^ (2 : ℕ) ≤ V)
     (h2 : ∀ i ∈ S, i ∉ Bad₂ →
       (1 / 2) * D * (Lf i : ℝ)
-        ≤ ∑ n ∈ Finset.Ioc (st i) (st i + Lf i), ((moebius n : ℤ) : ℝ) ^ 2) :
+        ≤ ∑ n ∈ Finset.Ioc (st i) (st i + Lf i), ((moebius n : ℤ) : ℝ) ^ (2 : ℕ)) :
     (S.card : ℝ)
       ≤ ((S.filter (fun i =>
           (3 / 16) * D * (Lf i : ℝ)
@@ -26,7 +26,7 @@ theorem card_le_good_add_meanSquare_start {S Bad₂ : Finset ℕ} {st Lf : ℕ �
             ∧ (3 / 16) * D * (Lf i : ℝ)
               ≤ (((Finset.Ioc (st i) (st i + Lf i)).filter
                   (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
-        + V / δ ^ 2 + (Bad₂.card : ℝ) := by
+        + V / δ ^ (2 : ℕ) + (Bad₂.card : ℝ) := by
   classical
   set M : ℕ → ℝ := fun i => ∑ n ∈ Finset.Ioc (st i) (st i + Lf i), ((moebius n : ℤ) : ℝ) with hM
   set Bad₁ : Finset ℕ := S.filter (fun i => δ ≤ |M i|) with hBad₁
@@ -57,7 +57,7 @@ theorem card_le_good_add_meanSquare_start {S Bad₂ : Finset ℕ} {st Lf : ℕ �
       _ ≤ (G ∪ Bad₁).card + Bad₂.card := Finset.card_union_le _ _
       _ ≤ (G.card + Bad₁.card) + Bad₂.card :=
           Nat.add_le_add_right (Finset.card_union_le _ _) _
-  have hmarkov : (Bad₁.card : ℝ) ≤ V / δ ^ 2 := by
+  have hmarkov : (Bad₁.card : ℝ) ≤ V / δ ^ (2 : ℕ) := by
     rw [hBad₁]
     exact RHTower.card_large_le_of_sum_sq_le hδ hms
   have hcast : (S.card : ℝ) ≤ ((G.card : ℕ) : ℝ) + (Bad₁.card : ℝ) + (Bad₂.card : ℝ) := by
@@ -98,10 +98,10 @@ theorem card_le_good_add_fibreMeanSquare {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ 
     {Bad₂ : Finset ℕ} {D V δ : ℝ} (hδ : 0 < δ)
     (hδL : ∀ a ∈ outerBlock x h, δ ≤ (1 / 8) * D * (fibreLen x h a : ℝ))
     (hms : ∑ a ∈ outerBlock x h,
-        (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ 2 ≤ V)
+        (∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ)) ^ (2 : ℕ) ≤ V)
     (h2 : ∀ a ∈ outerBlock x h, a ∉ Bad₂ →
       (1 / 2) * D * (fibreLen x h a : ℝ)
-        ≤ ∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ) ^ 2) :
+        ≤ ∑ b ∈ innerFibre x h a, ((moebius b : ℤ) : ℝ) ^ (2 : ℕ)) :
     ((outerBlock x h).card : ℝ)
       ≤ (((outerBlock x h).filter (fun a =>
           (3 / 16) * D * (fibreLen x h a : ℝ)
@@ -110,21 +110,21 @@ theorem card_le_good_add_fibreMeanSquare {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ 
             ∧ (3 / 16) * D * (fibreLen x h a : ℝ)
               ≤ (((Finset.Ioc (fibreStartIdx x a) (fibreStartIdx x a + fibreLen x h a)).filter
                   (fun n => moebius n = -1)).card : ℝ))).card : ℝ)
-        + V / δ ^ 2 + (Bad₂.card : ℝ) := by
+        + V / δ ^ (2 : ℕ) + (Bad₂.card : ℝ) := by
   classical
   have hrw : ∀ a ∈ outerBlock x h,
       innerFibre x h a = Finset.Ioc (fibreStartIdx x a) (fibreStartIdx x a + fibreLen x h a) :=
     fun a ha => innerFibre_eq_Ioc hx hh ha
   have hms' : ∑ a ∈ outerBlock x h,
       (∑ n ∈ Finset.Ioc (fibreStartIdx x a) (fibreStartIdx x a + fibreLen x h a),
-        ((moebius n : ℤ) : ℝ)) ^ 2 ≤ V := by
+        ((moebius n : ℤ) : ℝ)) ^ (2 : ℕ) ≤ V := by
     refine le_trans (le_of_eq ?_) hms
     refine Finset.sum_congr rfl fun a ha => ?_
     rw [hrw a ha]
   have h2' : ∀ a ∈ outerBlock x h, a ∉ Bad₂ →
       (1 / 2) * D * (fibreLen x h a : ℝ)
         ≤ ∑ n ∈ Finset.Ioc (fibreStartIdx x a) (fibreStartIdx x a + fibreLen x h a),
-            ((moebius n : ℤ) : ℝ) ^ 2 := by
+            ((moebius n : ℤ) : ℝ) ^ (2 : ℕ) := by
     intro a ha hb
     rw [← hrw a ha]
     exact h2 a ha hb

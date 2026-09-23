@@ -42,11 +42,11 @@ theorem huxley_block_large_values_explicit {N : ℕ} (hN : 1 ≤ N) (c : ℕ →
     (hsep : ∀ x ∈ S, ∀ y ∈ S, x ≠ y → delta ≤ |x - y|)
     (hspread : ∀ x ∈ S, ∀ y ∈ S, |x - y| ≤ Ttot)
     (hbig : ∀ x ∈ S, V ≤ ‖blockPoly N c 1 x‖)
-    (hthresh : (D ^ 2 / (N : ℝ)) * (1 + 1536 * Real.sqrt (3 * (N : ℝ) / (4 * Real.pi)))
-      ≤ V ^ 2 / 3) :
-    ((S.card : ℝ)) * V ^ 2
-      ≤ (1648656 * Ttot * D ^ 4 / ((N : ℝ) ^ 2 * V ^ 4) + 1)
-        * (2 * D ^ 2 * (1 + 12 * Real.pi * (1 + Real.log (Ttot / delta + 1)) / delta)) := by
+    (hthresh : (D ^ (2 : ℕ) / (N : ℝ)) * (1 + 1536 * Real.sqrt (3 * (N : ℝ) / (4 * Real.pi)))
+      ≤ V ^ (2 : ℕ) / 3) :
+    ((S.card : ℝ)) * V ^ (2 : ℕ)
+      ≤ (1648656 * Ttot * D ^ (4 : ℕ) / ((N : ℝ) ^ (2 : ℕ) * V ^ (4 : ℕ)) + 1)
+        * (2 * D ^ (2 : ℕ) * (1 + 12 * Real.pi * (1 + Real.log (Ttot / delta + 1)) / delta)) := by
   have hbase := huxley_block_large_values hN c hdelta hV hTtot hD hc S hsep hspread hbig hthresh
   refine le_trans hbase ?_
   have hcnt := card_le_of_pairwise_spread hdelta hTtot S hsep hspread
@@ -58,10 +58,10 @@ theorem huxley_block_large_values_explicit {N : ℕ} (hN : 1 ≤ N) (c : ℕ →
     · rw [h0]
       simpa using Real.log_nonneg hone
     · exact Real.log_le_log (by exact_mod_cast hp) hcnt
-  have hnum : (0 : ℝ) ≤ 1648656 * Ttot * D ^ 4 :=
+  have hnum : (0 : ℝ) ≤ 1648656 * Ttot * D ^ (4 : ℕ) :=
     mul_nonneg (mul_nonneg (by norm_num) hTtot) (by positivity)
-  have hpos1 : (0 : ℝ) ≤ 1648656 * Ttot * D ^ 4 / ((N : ℝ) ^ 2 * V ^ 4) + 1 := by
-    have hq : (0 : ℝ) ≤ 1648656 * Ttot * D ^ 4 / ((N : ℝ) ^ 2 * V ^ 4) :=
+  have hpos1 : (0 : ℝ) ≤ 1648656 * Ttot * D ^ (4 : ℕ) / ((N : ℝ) ^ (2 : ℕ) * V ^ (4 : ℕ)) + 1 := by
+    have hq : (0 : ℝ) ≤ 1648656 * Ttot * D ^ (4 : ℕ) / ((N : ℝ) ^ (2 : ℕ) * V ^ (4 : ℕ)) :=
       div_nonneg hnum (by positivity)
     linarith
   refine mul_le_mul_of_nonneg_left ?_ hpos1
@@ -69,7 +69,7 @@ theorem huxley_block_large_values_explicit {N : ℕ} (hN : 1 ≤ N) (c : ℕ →
       ≤ 12 * Real.pi * (1 + Real.log (Ttot / delta + 1)) / delta :=
     div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left (by linarith) (by positivity)) hdelta.le
-  have hD2 : (0 : ℝ) ≤ 2 * D ^ 2 := by positivity
+  have hD2 : (0 : ℝ) ≤ 2 * D ^ (2 : ℕ) := by positivity
   nlinarith [hstep, hD2]
 
 /-- **Energy-form Huxley estimate with an explicit logarithm.**
@@ -80,13 +80,13 @@ length grows but whose weighted `ℓ²` energy has the required subpower bound. 
 theorem huxley_large_values_finset_explicit_energy
     {N : ℕ} (hN : 1 ≤ N) (a : EuclideanSpace ℂ (Fin N))
     {delta Ttot V G : ℝ} (hdelta : 0 < delta) (hV : 0 < V) (hTtot : 0 ≤ Ttot)
-    (hmass : ‖a‖ ^ 2 ≤ G) (S : Finset ℝ)
+    (hmass : ‖a‖ ^ (2 : ℕ) ≤ G) (S : Finset ℝ)
     (hsep : ∀ x ∈ S, ∀ y ∈ S, x ≠ y → delta ≤ |x - y|)
     (hspread : ∀ x ∈ S, ∀ y ∈ S, |x - y| ≤ Ttot)
     (hbig : ∀ x ∈ S, V ≤ ‖⟪dyadicDirRow N x, a⟫_ℂ‖)
-    (hthresh : G * (1 + 1536 * Real.sqrt (3 * (N : ℝ) / (4 * Real.pi))) ≤ V ^ 2 / 3) :
-    (S.card : ℝ) * V ^ 2 ≤
-      (Ttot * (1284 * G) ^ 2 / V ^ 4 + 1) *
+    (hthresh : G * (1 + 1536 * Real.sqrt (3 * (N : ℝ) / (4 * Real.pi))) ≤ V ^ (2 : ℕ) / 3) :
+    (S.card : ℝ) * V ^ (2 : ℕ) ≤
+      (Ttot * (1284 * G) ^ (2 : ℕ) / V ^ (4 : ℕ) + 1) *
         (2 * G * ((N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) *
           (1 + Real.log (Ttot / delta + 1)))) := by
   have hbase := huxley_large_values_finset hN a hdelta hV hTtot hmass S
@@ -117,7 +117,7 @@ theorem huxley_large_values_finset_explicit_energy
         (N : ℝ) + (12 * Real.pi * (N : ℝ) / delta) *
           (1 + Real.log (Ttot / delta + 1)) := by
     gcongr
-  have hfac : 0 ≤ Ttot * (1284 * G) ^ 2 / V ^ 4 + 1 := by positivity
+  have hfac : 0 ≤ Ttot * (1284 * G) ^ (2 : ℕ) / V ^ (4 : ℕ) + 1 := by positivity
   exact mul_le_mul_of_nonneg_left
     (mul_le_mul_of_nonneg_left hinner (mul_nonneg (by norm_num) hG)) hfac
 

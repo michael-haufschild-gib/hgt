@@ -132,7 +132,7 @@ theorem ccmPolarForcing_injective (a : SuzukiPositiveAperture) :
 theorem polarGround_shifted_form_zero (a : SuzukiPositiveAperture)
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u)
     (hground : ccmRestrictedWeilSourceQuadratic a u =
-      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2)
+      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ))
     (v : CCMArchimedeanFormDomain a) (hv : IsPolarConstrained a v) :
     ccmRestrictedWeilForm a u v -
       inner ℂ ((ccmRestrictedWeilPolarGroundEnergy a : ℂ) • ccmArchimedeanFormToAperture a u)
@@ -156,7 +156,7 @@ theorem polarGround_shifted_form_zero (a : SuzukiPositiveAperture)
 theorem existsUnique_polarGround_forcing_form (a : SuzukiPositiveAperture)
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u)
     (hground : ccmRestrictedWeilSourceQuadratic a u =
-      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2) :
+      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ)) :
     ∃! c : ℂ × ℂ, ∀ v,
       ccmRestrictedWeilForm a u v =
         inner ℂ ((ccmRestrictedWeilPolarGroundEnergy a : ℂ) •
@@ -191,7 +191,7 @@ Its unrestricted eigen-equation has precisely the unique two-pole forcing. -/
 theorem existsUnique_polarGround_operator_forcing (a : SuzukiPositiveAperture)
     (u : CCMArchimedeanFormDomain a) (hu : IsPolarConstrained a u)
     (hground : ccmRestrictedWeilSourceQuadratic a u =
-      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2) :
+      ccmRestrictedWeilPolarGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ (2 : ℕ)) :
     ∃! c : ℂ × ℂ, ∃ hmem : ccmArchimedeanFormToAperture a u ∈
       (ccmRestrictedWeilOperator a).domain,
       ccmRestrictedWeilOperator a ⟨ccmArchimedeanFormToAperture a u, hmem⟩ =

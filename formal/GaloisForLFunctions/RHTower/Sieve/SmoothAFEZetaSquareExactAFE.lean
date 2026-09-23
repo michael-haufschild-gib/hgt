@@ -71,7 +71,7 @@ theorem smoothAFEZetaSquare_exact_afe_confluent
     smoothAFEZetaSquareLeftMellinAt_eq_neg_tsum_dualWeight hx tau] at hnorm
   linear_combination -hnorm
 
-/-- Exact Gaussian approximate functional equation for `ζ(1/2+iτ)^2`,
+/-- Exact Gaussian approximate functional equation for `ζ(1/2+iτ)^(2 : ℕ)`,
 including the closed confluent-pole correction. -/
 theorem smoothAFEZetaSquare_exact_afe
     {x : ℝ} (hx : 0 < x) (tau : ℝ) :

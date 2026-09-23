@@ -165,10 +165,10 @@ theorem inverse_residual_gain_le_of_norm
     (R : Y →L[ℂ] Y) (e : Y) (tau ell rho : ℝ)
     (hrho : 0 ≤ rho) (hrho1 : rho < 1)
     (he : ‖e‖ ≤ Real.sqrt tau + rho * Real.sqrt ell)
-    (hR : ‖R‖ ≤ (1 - rho ^ 2)⁻¹) :
+    (hR : ‖R‖ ≤ (1 - rho ^ (2 : ℕ))⁻¹) :
     (inner ℂ e (R e)).re ≤
-      (Real.sqrt tau + rho * Real.sqrt ell) ^ 2 / (1 - rho ^ 2) := by
-  have hden : 0 < 1 - rho ^ 2 := by nlinarith
+      (Real.sqrt tau + rho * Real.sqrt ell) ^ (2 : ℕ) / (1 - rho ^ (2 : ℕ)) := by
+  have hden : 0 < 1 - rho ^ (2 : ℕ) := by nlinarith
   have hsum : 0 ≤ Real.sqrt tau + rho * Real.sqrt ell := by positivity
   calc
     (inner ℂ e (R e)).re ≤ ‖inner ℂ e (R e)‖ := Complex.re_le_norm _
@@ -177,9 +177,9 @@ theorem inverse_residual_gain_le_of_norm
       gcongr
       exact R.le_opNorm e
     _ ≤ (Real.sqrt tau + rho * Real.sqrt ell) *
-        ((1 - rho ^ 2)⁻¹ * (Real.sqrt tau + rho * Real.sqrt ell)) := by
+        ((1 - rho ^ (2 : ℕ))⁻¹ * (Real.sqrt tau + rho * Real.sqrt ell)) := by
       gcongr
-    _ = (Real.sqrt tau + rho * Real.sqrt ell) ^ 2 / (1 - rho ^ 2) := by
+    _ = (Real.sqrt tau + rho * Real.sqrt ell) ^ (2 : ℕ) / (1 - rho ^ (2 : ℕ)) := by
       field_simp
 
 /-- The target constants force normalized cross-coherence square strictly above `1/15` once the
@@ -189,10 +189,10 @@ theorem crossCoherence_sq_gt_oneFifteenth
     (hrho : 0 ≤ rho) (hrho1 : rho < 1)
     (hell : ell ≤ 7 / 8)
     (hgain : 1 / 16 < gain)
-    (henvelope : gain ≤ rho ^ 2 * ell / (1 - rho ^ 2)) :
-    1 / 15 < rho ^ 2 := by
-  have hden : 0 < 1 - rho ^ 2 := by nlinarith
-  have hscaled : gain * (1 - rho ^ 2) ≤ rho ^ 2 * ell :=
+    (henvelope : gain ≤ rho ^ (2 : ℕ) * ell / (1 - rho ^ (2 : ℕ))) :
+    1 / 15 < rho ^ (2 : ℕ) := by
+  have hden : 0 < 1 - rho ^ (2 : ℕ) := by nlinarith
+  have hscaled : gain * (1 - rho ^ (2 : ℕ)) ≤ rho ^ (2 : ℕ) * ell :=
     (le_div_iff₀ hden).mp henvelope
   nlinarith
 

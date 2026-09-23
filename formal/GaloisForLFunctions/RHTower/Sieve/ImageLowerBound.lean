@@ -22,9 +22,9 @@ open Finset
 /-- **Cauchy–Schwarz lower bound for the image of a finite set.** -/
 theorem sq_card_le_card_image_mul_sum_sq_fibre {ι κ : Type*} [DecidableEq κ]
     (S : Finset ι) (f : ι → κ) :
-    ((S.card : ℕ) : ℝ) ^ 2
+    ((S.card : ℕ) : ℝ) ^ (2 : ℕ)
       ≤ (((S.image f).card : ℕ) : ℝ)
-        * ∑ t ∈ S.image f, (((S.filter (fun i => f i = t)).card : ℕ) : ℝ) ^ 2 := by
+        * ∑ t ∈ S.image f, (((S.filter (fun i => f i = t)).card : ℕ) : ℝ) ^ (2 : ℕ) := by
   classical
   have hcard : ((S.card : ℕ) : ℝ)
       = ∑ t ∈ S.image f, (((S.filter (fun i => f i = t)).card : ℕ) : ℝ) := by
@@ -37,15 +37,15 @@ theorem sq_card_le_card_image_mul_sum_sq_fibre {ι κ : Type*} [DecidableEq κ]
 /-- **The image is large when the second moment is small.** -/
 theorem card_image_ge_of_sum_sq_le {ι κ : Type*} [DecidableEq κ]
     (S : Finset ι) (f : ι → κ) {V : ℝ} (hV : 0 < V)
-    (hsum : ∑ t ∈ S.image f, (((S.filter (fun i => f i = t)).card : ℕ) : ℝ) ^ 2 ≤ V) :
-    ((S.card : ℕ) : ℝ) ^ 2 / V ≤ (((S.image f).card : ℕ) : ℝ) := by
+    (hsum : ∑ t ∈ S.image f, (((S.filter (fun i => f i = t)).card : ℕ) : ℝ) ^ (2 : ℕ) ≤ V) :
+    ((S.card : ℕ) : ℝ) ^ (2 : ℕ) / V ≤ (((S.image f).card : ℕ) : ℝ) := by
   classical
   have hbase := sq_card_le_card_image_mul_sum_sq_fibre S f
   have himg : (0 : ℝ) ≤ (((S.image f).card : ℕ) : ℝ) := Nat.cast_nonneg _
   rw [div_le_iff₀ hV]
-  calc ((S.card : ℕ) : ℝ) ^ 2
+  calc ((S.card : ℕ) : ℝ) ^ (2 : ℕ)
       ≤ (((S.image f).card : ℕ) : ℝ)
-        * ∑ t ∈ S.image f, (((S.filter (fun i => f i = t)).card : ℕ) : ℝ) ^ 2 := hbase
+        * ∑ t ∈ S.image f, (((S.filter (fun i => f i = t)).card : ℕ) : ℝ) ^ (2 : ℕ) := hbase
     _ ≤ (((S.image f).card : ℕ) : ℝ) * V := mul_le_mul_of_nonneg_left hsum himg
 
 end RHTower.Sieve

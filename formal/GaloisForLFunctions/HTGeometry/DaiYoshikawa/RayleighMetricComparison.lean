@@ -66,12 +66,12 @@ if `Eᵢ ≤ M Nᵢ` for every `i`, then `Σ cᵢ² Eᵢ ≤ M Σ cᵢ² Nᵢ`. 
 theorem sum_sq_mul_le_of_le
     {ι : Type*} [Fintype ι] (c E N : ι → ℝ) {M : ℝ}
     (hM : ∀ i, E i ≤ M * N i) :
-    ∑ i, c i ^ 2 * E i ≤ M * ∑ i, c i ^ 2 * N i := by
+    ∑ i, c i ^ (2 : ℕ) * E i ≤ M * ∑ i, c i ^ (2 : ℕ) * N i := by
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun i _ => ?_
   have := mul_le_mul_of_nonneg_left (hM i) (sq_nonneg (c i))
-  calc c i ^ 2 * E i ≤ c i ^ 2 * (M * N i) := this
-    _ = M * (c i ^ 2 * N i) := by ring
+  calc c i ^ (2 : ℕ) * E i ≤ c i ^ (2 : ℕ) * (M * N i) := this
+    _ = M * (c i ^ (2 : ℕ) * N i) := by ring
 
 
 /-- **Lemma 3.2 of Dai–Yoshikawa, comparison chain.**
@@ -82,8 +82,8 @@ cost of the cube of the comparison constant: from `E' ≤ C₀ E`, `M' ≤ E'` a
 same quantities for the metric with positive curvature, for which Bochner–Kodaira–Nakano supplies
 `M' ≤ E'`. -/
 theorem le_of_comparable_gap {C E E' M M' : ℝ}
-    (h1 : E' ≤ C * E) (h2 : M' ≤ E') (h3 : M ≤ C ^ 2 * M') :
-    M ≤ C ^ 3 * E := by
+    (h1 : E' ≤ C * E) (h2 : M' ≤ E') (h3 : M ≤ C ^ (2 : ℕ) * M') :
+    M ≤ C ^ (3 : ℕ) * E := by
   nlinarith [sq_nonneg C]
 
 end GaloisForLFunctions.HTGeometry.DaiYoshikawa

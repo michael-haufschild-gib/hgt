@@ -162,7 +162,7 @@ theorem completedGammaSpectralHankelMatrix_posDef
 
 /-- The two inverse-square nodes carried by the rational polar pair. -/
 def completedPolarPairNode (x : ℝ) (p : Fin 2) : ℝ :=
-  if (p : ℕ) = 0 then (x ^ 2)⁻¹ else ((x - 1) ^ 2)⁻¹
+  if (p : ℕ) = 0 then (x ^ (2 : ℕ))⁻¹ else ((x - 1) ^ (2 : ℕ))⁻¹
 
 /-- The polar moment is exactly the sum of the two node powers, each node also serving as its
 positive atomic weight. -/

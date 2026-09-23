@@ -31,7 +31,7 @@ def OffDiagonalSmall (f : ℕ → ℝ) (hh : ℝ → ℝ) : Prop :=
       ∧ ∀ T : ℝ, 0 < T →
           (∫ w in Set.Icc (-T) T,
             ‖logPoly (fun n => ((f n : ℝ) : ℂ))
-              (Finset.Icc 1 ⌈Real.sqrt x + hh x⌉₊) w‖ ^ 2) ≤ α * T + β
+              (Finset.Icc 1 ⌈Real.sqrt x + hh x⌉₊) w‖ ^ (2 : ℕ)) ≤ α * T + β
 
 /-- **The bundled input follows from the off-diagonal bound alone.** -/
 theorem frequencyMeanSquareSmall_of_offDiagonal {f : ℕ → ℝ} {hh : ℝ → ℝ}
@@ -39,7 +39,7 @@ theorem frequencyMeanSquareSmall_of_offDiagonal {f : ℕ → ℝ} {hh : ℝ → 
     (hoff : OffDiagonalSmall f hh) :
     FrequencyMeanSquareSmall f hh := by
   intro ε hε
-  have hpi3 : (3 : ℝ) ≤ Real.pi ^ 2 := by nlinarith [Real.pi_gt_three]
+  have hpi3 : (3 : ℝ) ≤ Real.pi ^ (2 : ℕ) := by nlinarith [Real.pi_gt_three]
   have hε64 : (0 : ℝ) < ε / 64 := by linarith
   filter_upwards [hoff (ε / 64) hε64, hcap, Filter.eventually_ge_atTop (16 : ℝ),
     hgrow.eventually_ge_atTop (3000 / ε)] with x hx hcx hx16 hhbig
@@ -47,7 +47,7 @@ theorem frequencyMeanSquareSmall_of_offDiagonal {f : ℕ → ℝ} {hh : ℝ → 
   set S : ℝ := Real.sqrt x with hSdef
   have hS4 : (4 : ℝ) ≤ S := by
     have h16 : Real.sqrt 16 = 4 := by
-      rw [show (16 : ℝ) = 4 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 4)]
+      rw [show (16 : ℝ) = 4 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 4)]
     rw [hSdef, ← h16]
     exact Real.sqrt_le_sqrt hx16
   have hS0 : (0 : ℝ) < S := by linarith
@@ -77,9 +77,9 @@ theorem frequencyMeanSquareSmall_of_offDiagonal {f : ℕ → ℝ} {hh : ℝ → 
     have htle : t ≤ H / S := by
       rw [htdef, hSdef]
       exact fibreWidth_le_div hx0 hH0.le
-    have htsq : t ^ 2 ≤ H ^ 2 / x := by
+    have htsq : t ^ (2 : ℕ) ≤ H ^ (2 : ℕ) / x := by
       have hb := pow_le_pow_left₀ ht0 htle 2
-      have hval : (H / S) ^ 2 = H ^ 2 / x := by
+      have hval : (H / S) ^ (2 : ℕ) = H ^ (2 : ℕ) / x := by
         rw [div_pow, hxS]
         ring
       linarith [hb, hval]
@@ -89,81 +89,81 @@ theorem frequencyMeanSquareSmall_of_offDiagonal {f : ℕ → ℝ} {hh : ℝ → 
       have hval : (50 * S) * W₀ = ε * x / 80 := by
         rw [hW₀def, hxS]; ring
       linarith
-    have hterm1 : 2 * t ^ 2 * (α * W₀) ≤ ε * H ^ 2 / 40 := by
-      have h1 : 2 * t ^ 2 * (α * W₀) ≤ 2 * (H ^ 2 / x) * (α * W₀) := by
+    have hterm1 : 2 * t ^ (2 : ℕ) * (α * W₀) ≤ ε * H ^ (2 : ℕ) / 40 := by
+      have h1 : 2 * t ^ (2 : ℕ) * (α * W₀) ≤ 2 * (H ^ (2 : ℕ) / x) * (α * W₀) := by
         have hnn : (0 : ℝ) ≤ α * W₀ := by positivity
         have := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left htsq (by norm_num : (0:ℝ) ≤ 2)) hnn
         linarith
-      have h2 : 2 * (H ^ 2 / x) * (α * W₀) ≤ 2 * (H ^ 2 / x) * (ε * x / 80) := by
-        have hnn : (0 : ℝ) ≤ 2 * (H ^ 2 / x) := by positivity
+      have h2 : 2 * (H ^ (2 : ℕ) / x) * (α * W₀) ≤ 2 * (H ^ (2 : ℕ) / x) * (ε * x / 80) := by
+        have hnn : (0 : ℝ) ≤ 2 * (H ^ (2 : ℕ) / x) := by positivity
         exact mul_le_mul_of_nonneg_left hαW hnn
-      have hval : 2 * (H ^ 2 / x) * (ε * x / 80) = ε * H ^ 2 / 40 := by
+      have hval : 2 * (H ^ (2 : ℕ) / x) * (ε * x / 80) = ε * H ^ (2 : ℕ) / 40 := by
         field_simp; ring
       linarith
     -- term 2
-    have hterm2 : 2 * t ^ 2 * β ≤ ε * H ^ 2 / 32 := by
-      have h1 : 2 * t ^ 2 * β ≤ 2 * (H ^ 2 / x) * β := by
+    have hterm2 : 2 * t ^ (2 : ℕ) * β ≤ ε * H ^ (2 : ℕ) / 32 := by
+      have h1 : 2 * t ^ (2 : ℕ) * β ≤ 2 * (H ^ (2 : ℕ) / x) * β := by
         have := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left htsq (by norm_num : (0:ℝ) ≤ 2)) hβ
         linarith
-      have h2 : 2 * (H ^ 2 / x) * β ≤ 2 * (H ^ 2 / x) * (ε / 64 * x) := by
-        have hnn : (0 : ℝ) ≤ 2 * (H ^ 2 / x) := by positivity
+      have h2 : 2 * (H ^ (2 : ℕ) / x) * β ≤ 2 * (H ^ (2 : ℕ) / x) * (ε / 64 * x) := by
+        have hnn : (0 : ℝ) ≤ 2 * (H ^ (2 : ℕ) / x) := by positivity
         exact mul_le_mul_of_nonneg_left hβle hnn
-      have hval : 2 * (H ^ 2 / x) * (ε / 64 * x) = ε * H ^ 2 / 32 := by
+      have hval : 2 * (H ^ (2 : ℕ) / x) * (ε / 64 * x) = ε * H ^ (2 : ℕ) / 32 := by
         field_simp; ring
       linarith
     -- term 3
-    have hterm3 : 4 * α / (Real.pi ^ 2 * W₀) ≤ ε * H ^ 2 / 32 := by
-      have hlow : 3 * (ε * S / 4000) ≤ Real.pi ^ 2 * W₀ := by
+    have hterm3 : 4 * α / (Real.pi ^ (2 : ℕ) * W₀) ≤ ε * H ^ (2 : ℕ) / 32 := by
+      have hlow : 3 * (ε * S / 4000) ≤ Real.pi ^ (2 : ℕ) * W₀ := by
         rw [hW₀def]
         have hnn : (0 : ℝ) ≤ ε * S / 4000 := by positivity
         exact mul_le_mul_of_nonneg_right hpi3 hnn
       have hd0 : (0 : ℝ) < 3 * (ε * S / 4000) := by positivity
       have hnum : 4 * α ≤ 200 * S := by linarith
-      have hchain : 4 * α / (Real.pi ^ 2 * W₀) ≤ 200 * S / (3 * (ε * S / 4000)) := by
+      have hchain : 4 * α / (Real.pi ^ (2 : ℕ) * W₀) ≤ 200 * S / (3 * (ε * S / 4000)) := by
         refine le_trans (div_le_div_of_nonneg_left (by positivity) hd0 hlow) ?_
         exact div_le_div_of_nonneg_right hnum hd0.le
       have hval : 200 * S / (3 * (ε * S / 4000)) = 800000 / (3 * ε) := by
         field_simp; ring
       rw [hval] at hchain
-      have hfin : 800000 / (3 * ε) ≤ ε * H ^ 2 / 32 := by
+      have hfin : 800000 / (3 * ε) ≤ ε * H ^ (2 : ℕ) / 32 := by
         rw [div_le_iff₀ (by positivity)]
         nlinarith [hεH, hε.le, hH0.le]
       linarith
     -- term 4
-    have hterm4 : 4 * β / (3 * Real.pi ^ 2 * W₀ ^ 2) ≤ ε * H ^ 2 / 32 := by
-      have hW₀sq : W₀ ^ 2 = ε ^ 2 * x / 16000000 := by
+    have hterm4 : 4 * β / (3 * Real.pi ^ (2 : ℕ) * W₀ ^ (2 : ℕ)) ≤ ε * H ^ (2 : ℕ) / 32 := by
+      have hW₀sq : W₀ ^ (2 : ℕ) = ε ^ (2 : ℕ) * x / 16000000 := by
         rw [hW₀def, div_pow, mul_pow, hxS]
         ring
-      have hlow : 9 * (ε ^ 2 * x / 16000000) ≤ 3 * Real.pi ^ 2 * W₀ ^ 2 := by
+      have hlow : 9 * (ε ^ (2 : ℕ) * x / 16000000) ≤ 3 * Real.pi ^ (2 : ℕ) * W₀ ^ (2 : ℕ) := by
         rw [hW₀sq]
-        have hnn : (0 : ℝ) ≤ ε ^ 2 * x / 16000000 := by positivity
+        have hnn : (0 : ℝ) ≤ ε ^ (2 : ℕ) * x / 16000000 := by positivity
         nlinarith [hpi3, hnn]
-      have hd0 : (0 : ℝ) < 9 * (ε ^ 2 * x / 16000000) := by positivity
+      have hd0 : (0 : ℝ) < 9 * (ε ^ (2 : ℕ) * x / 16000000) := by positivity
       have hnum : 4 * β ≤ 4 * (ε / 64 * x) := by linarith
-      have hchain : 4 * β / (3 * Real.pi ^ 2 * W₀ ^ 2)
-          ≤ 4 * (ε / 64 * x) / (9 * (ε ^ 2 * x / 16000000)) := by
+      have hchain : 4 * β / (3 * Real.pi ^ (2 : ℕ) * W₀ ^ (2 : ℕ))
+          ≤ 4 * (ε / 64 * x) / (9 * (ε ^ (2 : ℕ) * x / 16000000)) := by
         refine le_trans (div_le_div_of_nonneg_left (by positivity) hd0 hlow) ?_
         exact div_le_div_of_nonneg_right hnum hd0.le
-      have hval : 4 * (ε / 64 * x) / (9 * (ε ^ 2 * x / 16000000)) = 1000000 / (9 * ε) := by
+      have hval : 4 * (ε / 64 * x) / (9 * (ε ^ (2 : ℕ) * x / 16000000)) = 1000000 / (9 * ε) := by
         field_simp; ring
       rw [hval] at hchain
-      have hfin : 1000000 / (9 * ε) ≤ ε * H ^ 2 / 32 := by
+      have hfin : 1000000 / (9 * ε) ≤ ε * H ^ (2 : ℕ) / 32 := by
         rw [div_le_iff₀ (by positivity)]
         nlinarith [hεH, hε.le, hH0.le]
       linarith
     -- assemble
-    have hsum : 2 * t ^ 2 * (α * W₀ + β)
-          + (4 * α / (Real.pi ^ 2 * W₀) + 4 * β / (3 * Real.pi ^ 2 * W₀ ^ 2))
-        ≤ ε * H ^ 2 / 8 := by
-      have hsplit : 2 * t ^ 2 * (α * W₀ + β) = 2 * t ^ 2 * (α * W₀) + 2 * t ^ 2 * β := by ring
+    have hsum : 2 * t ^ (2 : ℕ) * (α * W₀ + β)
+          + (4 * α / (Real.pi ^ (2 : ℕ) * W₀) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W₀ ^ (2 : ℕ)))
+        ≤ ε * H ^ (2 : ℕ) / 8 := by
+      have hsplit : 2 * t ^ (2 : ℕ) * (α * W₀ + β) = 2 * t ^ (2 : ℕ) * (α * W₀) + 2 * t ^ (2 : ℕ) * β := by ring
       rw [hsplit]
-      have hεH2 : (0 : ℝ) ≤ ε * H ^ 2 := by positivity
+      have hεH2 : (0 : ℝ) ≤ ε * H ^ (2 : ℕ) := by positivity
       linarith [hterm1, hterm2, hterm3, hterm4, hεH2]
-    have hmul : 8 * S * (2 * t ^ 2 * (α * W₀ + β)
-          + (4 * α / (Real.pi ^ 2 * W₀) + 4 * β / (3 * Real.pi ^ 2 * W₀ ^ 2)))
-        ≤ 8 * S * (ε * H ^ 2 / 8) :=
+    have hmul : 8 * S * (2 * t ^ (2 : ℕ) * (α * W₀ + β)
+          + (4 * α / (Real.pi ^ (2 : ℕ) * W₀) + 4 * β / (3 * Real.pi ^ (2 : ℕ) * W₀ ^ (2 : ℕ))))
+        ≤ 8 * S * (ε * H ^ (2 : ℕ) / 8) :=
       mul_le_mul_of_nonneg_left hsum (by linarith)
-    have hval : 8 * S * (ε * H ^ 2 / 8) = ε * (H ^ 2 * S) := by ring
+    have hval : 8 * S * (ε * H ^ (2 : ℕ) / 8) = ε * (H ^ (2 : ℕ) * S) := by ring
     linarith [hmul, hval]
 
 end RHTower.Sieve

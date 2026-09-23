@@ -48,7 +48,7 @@ theorem deningerLen_eq_of_pow_eq
         deningerLen d (deningerLetterProd (φ := φ) (Cy ++ Ry)) := by
   have heq2 : (deningerLetterProd (φ := φ) (Cx ++ Rx)) ^ (2 * m + 2) =
       (deningerLetterProd (φ := φ) (Cy ++ Ry)) ^ (2 * m + 2) := by
-    have hx : ∀ g : PushoutI φ, g ^ (2 * m + 2) = (g ^ (m + 1)) ^ 2 := by
+    have hx : ∀ g : PushoutI φ, g ^ (2 * m + 2) = (g ^ (m + 1)) ^ (2 : ℕ) := by
       intro g
       rw [← pow_mul]
       ring_nf

@@ -67,7 +67,7 @@ def stieltjesGammaLaneCutoff (x : ℝ) : ℝ :=
 
 /-- Prime-log-lane cutoff coefficient of the first Stieltjes constant. -/
 def stieltjesLogLaneCutoff (x : ℝ) : ℝ :=
-  ∑ p ∈ windowPrimes 1 x, (p : ℝ) * Real.log p ^ 2 / ((p : ℝ) - 1) ^ 2
+  ∑ p ∈ windowPrimes 1 x, (p : ℝ) * Real.log p ^ (2 : ℕ) / ((p : ℝ) - 1) ^ (2 : ℕ)
 
 /-- Each `γ`-lane term dominates a fixed multiple of the reciprocal prime. -/
 theorem gammaLane_term_ge {p : ℕ} (hp : Nat.Prime p) :
@@ -112,7 +112,7 @@ def stieltjesGammaLaneTail (q : ℕ) (x : ℝ) : ℝ :=
 
 /-- Log-lane tail over the window `(q, x]`. -/
 def stieltjesLogLaneTail (q : ℕ) (x : ℝ) : ℝ :=
-  ∑ p ∈ windowPrimes q x, (p : ℝ) * Real.log p ^ 2 / ((p : ℝ) - 1) ^ 2
+  ∑ p ∈ windowPrimes q x, (p : ℝ) * Real.log p ^ (2 : ℕ) / ((p : ℝ) - 1) ^ (2 : ℕ)
 
 theorem stieltjesGammaLaneCutoff_eq_head_add_tail (q : ℕ) (hq : 1 ≤ q)
     {x : ℝ} (hx : (q : ℝ) ≤ x) :
@@ -147,7 +147,7 @@ term. -/
 theorem logLane_term_ge_weighted_gammaLane {q p : ℕ} (hq : 1 < q) (hqp : (q : ℝ) < p)
     (hp : Nat.Prime p) :
     Real.log q * (Real.log p / ((p : ℝ) - 1)) ≤
-      (p : ℝ) * Real.log p ^ 2 / ((p : ℝ) - 1) ^ 2 := by
+      (p : ℝ) * Real.log p ^ (2 : ℕ) / ((p : ℝ) - 1) ^ (2 : ℕ) := by
   have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp.two_le
   have hden : (0 : ℝ) < (p : ℝ) - 1 := by linarith
   have hq0 : (0 : ℝ) < (q : ℝ) := by exact_mod_cast Nat.zero_lt_of_lt hq
@@ -157,15 +157,15 @@ theorem logLane_term_ge_weighted_gammaLane {q p : ℕ} (hq : 1 < q) (hqp : (q : 
       Real.log p * Real.log p * ((p : ℝ) - 1) :=
     mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hlogq hlogp0) hden.le
   rw [mul_div_assoc', div_le_div_iff₀ hden (by positivity)]
-  calc Real.log q * Real.log p * ((p : ℝ) - 1) ^ 2
+  calc Real.log q * Real.log p * ((p : ℝ) - 1) ^ (2 : ℕ)
       = (Real.log q * Real.log p * ((p : ℝ) - 1)) * ((p : ℝ) - 1) := by ring
     _ ≤ (Real.log p * Real.log p * ((p : ℝ) - 1)) * ((p : ℝ) - 1) :=
         mul_le_mul_of_nonneg_right h1 hden.le
-    _ = (Real.log p ^ 2 * ((p : ℝ) - 1)) * ((p : ℝ) - 1) := by ring
-    _ ≤ (Real.log p ^ 2 * ((p : ℝ) - 1)) * (p : ℝ) :=
+    _ = (Real.log p ^ (2 : ℕ) * ((p : ℝ) - 1)) * ((p : ℝ) - 1) := by ring
+    _ ≤ (Real.log p ^ (2 : ℕ) * ((p : ℝ) - 1)) * (p : ℝ) :=
         mul_le_mul_of_nonneg_left (by linarith)
           (mul_nonneg (sq_nonneg _) hden.le)
-    _ = (p : ℝ) * Real.log p ^ 2 * ((p : ℝ) - 1) := by ring
+    _ = (p : ℝ) * Real.log p ^ (2 : ℕ) * ((p : ℝ) - 1) := by ring
 
 /-- **Affine escape of the log lane.**  For every pair of real weights, the log-lane cutoff
 escapes the affine expression `r·B(x) + s` in the `γ`-lane cutoff: the two divergent lane
@@ -207,7 +207,7 @@ theorem tendsto_stieltjesLogLane_sub_affineGammaLane_atTop (r s : ℝ) :
     calc Real.log p / ((p : ℝ) - 1) + r * (Real.log p / ((p : ℝ) - 1))
         = (1 + r) * (Real.log p / ((p : ℝ) - 1)) := by ring
       _ ≤ Real.log q * (Real.log p / ((p : ℝ) - 1)) := hweight
-      _ ≤ (p : ℝ) * Real.log p ^ 2 / ((p : ℝ) - 1) ^ 2 := hbase
+      _ ≤ (p : ℝ) * Real.log p ^ (2 : ℕ) / ((p : ℝ) - 1) ^ (2 : ℕ) := hbase
   linarith [htail]
 
 end

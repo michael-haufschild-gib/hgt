@@ -7,10 +7,10 @@ import GaloisForLFunctions.HTGeometry.DixmierIdeal
 # Exact critical residue of one Gauss component
 
 The Fourier-diagonal model of the `m`-fold Gauss component at a prime `p` has the exact
-logarithmic mean `2 (p^m - 1)^2 / (m^2 log p)`.  Restoring the local-factor coefficient
+logarithmic mean `2 (p^m - 1)^(2 : ℕ) / (m^(2 : ℕ) log p)`.  Restoring the local-factor coefficient
 `((p-1)/p)^{2m}` of the isometric source reduction turns this into the arithmetic channel residue
 
-`2 (p-1)^{2m} (p^m - 1)^2 / (p^{2m} m^2 log p)`,
+`2 (p-1)^{2m} (p^m - 1)^(2 : ℕ) / (p^{2m} m^(2 : ℕ) log p)`,
 
 which is the value carried by the critical `2m`-energy of the component defect.  The value does
 not depend on the component label `k`, although the labels index pairwise distinct Gamma
@@ -66,7 +66,7 @@ def gaussComponentLocalDiagonalTerm {m : ℕ} (k : Fin m) (p : Nat.Primes) (n : 
 
 /-- **Exact critical residue of a Gauss component.**  The logarithmic mean of the localized
 Fourier diagonal is the arithmetic channel residue
-`2 (p-1)^{2m} (p^m - 1)^2 / (p^{2m} m^2 log p)`. -/
+`2 (p-1)^{2m} (p^m - 1)^(2 : ℕ) / (p^{2m} m^(2 : ℕ) log p)`. -/
 theorem gaussComponentLocalDiagonalTerm_logResidue
     {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes) :
     Tendsto (fun N : ℕ =>
@@ -270,7 +270,7 @@ theorem hasSchattenLogResidue_gaussComponentCriticalPowerOperator
 every prime `p`:
 
 * the localized Fourier diagonal has logarithmic mean the arithmetic residue
-  `2 (p-1)^{2m} (p^m - 1)^2 / (p^{2m} m^2 log p)`;
+  `2 (p-1)^{2m} (p^m - 1)^(2 : ℕ) / (p^{2m} m^(2 : ℕ) log p)`;
 * that value does not depend on `k`, although distinct labels index distinct Gamma arguments;
 * an explicit diagonal operator realizes it, with exact critical order `2m`;
 * its `2m`-th power lies in the Dixmier ideal with the same logarithmic mean. -/

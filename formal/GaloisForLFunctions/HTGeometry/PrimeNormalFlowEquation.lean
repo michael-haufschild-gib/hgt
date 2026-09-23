@@ -16,7 +16,7 @@ open Filter Topology
 variable {A : Type*} [CStarAlgebra A] [Nontrivial A]
 
 /-- The symbol of the derivative of the prime normal flow. -/
-noncomputable def flowDerivSymbol (L t : ℝ) : ℝ := -(1 / 2) * flowSymbol L t ^ 3
+noncomputable def flowDerivSymbol (L t : ℝ) : ℝ := -(1 / 2) * flowSymbol L t ^ (3 : ℕ)
 
 theorem continuousOn_flowDerivSymbol {T : A} {L : ℝ} (hL : ‖T‖ / 2 < L) :
     ContinuousOn (flowDerivSymbol L) (spectrum ℝ T) :=
@@ -36,8 +36,8 @@ theorem primeNormalFlow_equation {T : A} (hT : IsSelfAdjoint T) {L : ℝ} (hL : 
     intro t ht
     have hu : 0 < L - t / 2 := flow_shift_pos hL ht
     have hp : 0 < Real.sqrt (L - t / 2) := Real.sqrt_pos.mpr hu
-    have hp2 : Real.sqrt (L - t / 2) ^ 2 = L - t / 2 := Real.sq_sqrt hu.le
-    have hkey : 2 * (L - t / 2) * (-(1 / 2) * (Real.sqrt (L - t / 2))⁻¹ ^ 3)
+    have hp2 : Real.sqrt (L - t / 2) ^ (2 : ℕ) = L - t / 2 := Real.sq_sqrt hu.le
+    have hkey : 2 * (L - t / 2) * (-(1 / 2) * (Real.sqrt (L - t / 2))⁻¹ ^ (3 : ℕ))
         + (Real.sqrt (L - t / 2))⁻¹ = 0 := by
       set p := Real.sqrt (L - t / 2) with hpdef
       rw [← hp2]
@@ -79,11 +79,11 @@ theorem abs_traceSymbol_le {T : A} {L t : ℝ} (hL : ‖T‖ / 2 < L) (ht : t �
   have hu : 0 < L - t / 2 := flow_shift_pos hL ht
   have hp : 0 < Real.sqrt (L - t / 2) := Real.sqrt_pos.mpr hu
   have hr : 0 < Real.sqrt L := Real.sqrt_pos.mpr hL0
-  have hp2 : Real.sqrt (L - t / 2) ^ 2 = L - t / 2 := Real.sq_sqrt hu.le
-  have hr2 : Real.sqrt L ^ 2 = L := Real.sq_sqrt hL0.le
+  have hp2 : Real.sqrt (L - t / 2) ^ (2 : ℕ) = L - t / 2 := Real.sq_sqrt hu.le
+  have hr2 : Real.sqrt L ^ (2 : ℕ) = L := Real.sq_sqrt hL0.le
   have hid : Real.sqrt L * flowSymbol L t - 1
       = t / 2 / (Real.sqrt (L - t / 2) * (Real.sqrt L + Real.sqrt (L - t / 2))) := by
-    have hkey : ∀ p r : ℝ, 0 < p → 0 < r → r ^ 2 - p ^ 2 = t / 2 →
+    have hkey : ∀ p r : ℝ, 0 < p → 0 < r → r ^ (2 : ℕ) - p ^ (2 : ℕ) = t / 2 →
         r * p⁻¹ - 1 = t / 2 / (p * (r + p)) := by
       intro p r hp' hr' hrp
       rw [eq_div_iff (by positivity)]

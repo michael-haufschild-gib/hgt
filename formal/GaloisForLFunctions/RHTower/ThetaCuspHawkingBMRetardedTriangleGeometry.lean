@@ -117,14 +117,14 @@ theorem triangle_radius (image : Bool) {p r alpha beta : ℝ}
       smoothRadius image p r alpha beta (edgeWeight alpha beta) := by
   have hprod : 0 ≤ (1-alpha)*(1-beta) := mul_nonneg (sub_nonneg.mpr ha) (sub_nonneg.mpr hb)
   have hH := positiveFactor_pos image hp hpr ha beta
-  have he : (edgeWeight alpha beta)^2=(1-alpha)*(1-beta) := Real.sq_sqrt hprod
+  have he : (edgeWeight alpha beta)^(2 : ℕ)=(1-alpha)*(1-beta) := Real.sq_sqrt hprod
   have hv : 0 ≤ edgeWeight alpha beta*Real.sqrt (positiveFactor image p r alpha beta) :=
     mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
   have hc : Real.cosh (smoothRadius image p r alpha beta (edgeWeight alpha beta))=
       triangleInvariant image p r alpha beta := by
     unfold smoothRadius
     rw [Real.cosh_two_mul,Real.cosh_arsinh,Real.sinh_arsinh,
-      Real.sq_sqrt (by positivity : 0 ≤ 1+(edgeWeight alpha beta*Real.sqrt (positiveFactor image p r alpha beta))^2),
+      Real.sq_sqrt (by positivity : 0 ≤ 1+(edgeWeight alpha beta*Real.sqrt (positiveFactor image p r alpha beta))^(2 : ℕ)),
       mul_pow,he,Real.sq_sqrt hH.le]
     linear_combination -(triangleInvariant_factor image p r alpha beta)
   have hge : 1 ≤ triangleInvariant image p r alpha beta := by
@@ -149,21 +149,21 @@ theorem triangle_radius (image : Bool) {p r alpha beta : ℝ}
 
 def logarithmicRadius (image : Bool) (z : Fin 4 → ℝ) : ℝ :=
   smoothRadius image (Real.exp (z 0)) (Real.exp (z 0)+Real.exp (z 1))
-    (Real.sin (z 2)^2) (Real.sin (z 3)^2) (Real.cos (z 2)*Real.cos (z 3))
+    (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ)) (Real.cos (z 2)*Real.cos (z 3))
 
 theorem logarithmicRadius_smooth (image : Bool) : ContDiff ℝ ∞ (logarithmicRadius image) := by
   have hH : ContDiff ℝ ∞ (fun z : Fin 4 → ℝ =>
       positiveFactor image (Real.exp (z 0)) (Real.exp (z 0)+Real.exp (z 1))
-        (Real.sin (z 2)^2) (Real.sin (z 3)^2)) := by
+        (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ))) := by
     exact (positiveFactor_smooth image).comp
       (show ContDiff ℝ ∞ (fun z : Fin 4 → ℝ =>
-        ![Real.exp (z 0),Real.exp (z 0)+Real.exp (z 1),Real.sin (z 2)^2,Real.sin (z 3)^2]) by
+        ![Real.exp (z 0),Real.exp (z 0)+Real.exp (z 1),Real.sin (z 2)^(2 : ℕ),Real.sin (z 3)^(2 : ℕ)]) by
         apply contDiff_pi.mpr
         intro i
         fin_cases i <;> dsimp <;> fun_prop)
   have hn (z : Fin 4 → ℝ) :
       positiveFactor image (Real.exp (z 0)) (Real.exp (z 0)+Real.exp (z 1))
-        (Real.sin (z 2)^2) (Real.sin (z 3)^2) ≠ 0 :=
+        (Real.sin (z 2)^(2 : ℕ)) (Real.sin (z 3)^(2 : ℕ)) ≠ 0 :=
     (positiveFactor_pos image (Real.exp_pos _) (by linarith [Real.exp_pos (z 1)])
       (Real.sin_sq_le_one _) _).ne'
   have hr := hH.sqrt hn
@@ -177,7 +177,7 @@ theorem angleMap_continuous : Continuous angleMap :=
   Real.continuous_arcsin.comp Real.continuous_sqrt
 
 theorem angleMap_sine_square {t : ℝ} (ht : t ∈ Icc (0:ℝ) 1) :
-    Real.sin (angleMap t)^2=t := by
+    Real.sin (angleMap t)^(2 : ℕ)=t := by
   unfold angleMap
   rw [Real.sin_arcsin (le_trans (by norm_num) (Real.sqrt_nonneg t))
     (Real.sqrt_le_one.mpr ht.2),Real.sq_sqrt ht.1]
@@ -193,7 +193,7 @@ theorem logarithmicRadius_eq (image : Bool) {p r alpha beta : ℝ}
       Real.arcosh (max 1 (triangleInvariant image p r alpha beta)) := by
   rw [triangle_radius image hp hpr ha.2 hb.2]
   change smoothRadius image (Real.exp (Real.log p)) (Real.exp (Real.log p)+Real.exp (Real.log (r-p)))
-    (Real.sin (angleMap alpha)^2) (Real.sin (angleMap beta)^2)
+    (Real.sin (angleMap alpha)^(2 : ℕ)) (Real.sin (angleMap beta)^(2 : ℕ))
     (Real.cos (angleMap alpha)*Real.cos (angleMap beta))=_
   rw [Real.exp_log hp,Real.exp_log (sub_pos.mpr hpr),
     show p+(r-p)=r by ring,angleMap_sine_square ha,angleMap_sine_square hb,

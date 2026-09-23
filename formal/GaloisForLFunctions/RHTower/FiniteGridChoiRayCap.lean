@@ -46,7 +46,7 @@ theorem finiteGridChoiWeight_nonneg (d : ℕ) (i : Fin d) :
 
 theorem finiteGridChoiWeight_sq_sum
     {d : ℕ} (hd : 0 < d) :
-    ∑ i : Fin d, finiteGridChoiWeight d i ^ 2 = (d : ℝ)⁻¹ := by
+    ∑ i : Fin d, finiteGridChoiWeight d i ^ (2 : ℕ) = (d : ℝ)⁻¹ := by
   simp only [finiteGridChoiWeight, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin, nsmul_eq_mul]
   have hdR : (d : ℝ) ≠ 0 := by exact_mod_cast hd.ne'
@@ -166,7 +166,7 @@ theorem finiteGridChoiRayCapture_subset_translatedCoherenceCap
     (hcenter : center ∈ finiteGridChoiRayCaptureSet M d target epsilon) :
     finiteGridChoiRayCaptureSet M d target epsilon ⊆
       finiteGridTranslatedCoherenceCap M (finiteGridChoiWeight d)
-        (Real.sqrt (1 - 4 * epsilon ^ 2)) center := by
+        (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ))) center := by
   intro x hx
   have hx' : pureStateTraceDistance
       (finiteGridChoiVector M d x) target ≤ epsilon := by
@@ -209,18 +209,18 @@ theorem finiteGridChoiRayCaptureSet_card_le_coherenceCap
     (hepsilonHalf : epsilon ≤ 1 / 2) :
     (finiteGridChoiRayCaptureSet M d target epsilon).card ≤
       (finiteGridCoherenceCap M (finiteGridChoiWeight d)
-        (Real.sqrt (1 - 4 * epsilon ^ 2))).card := by
+        (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ)))).card := by
   by_cases hempty : finiteGridChoiRayCaptureSet M d target epsilon = ∅
   · simp [hempty]
   · obtain ⟨center, hcenter⟩ := Finset.nonempty_iff_ne_empty.mpr hempty
     calc
       _ ≤ (finiteGridTranslatedCoherenceCap M (finiteGridChoiWeight d)
-          (Real.sqrt (1 - 4 * epsilon ^ 2)) center).card :=
+          (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ))) center).card :=
         Finset.card_le_card
           (finiteGridChoiRayCapture_subset_translatedCoherenceCap hd htarget
             hepsilon hepsilonHalf hcenter)
       _ = _ := finiteGridTranslatedCoherenceCap_card M
-        (finiteGridChoiWeight d) (Real.sqrt (1 - 4 * epsilon ^ 2)) center
+        (finiteGridChoiWeight d) (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ))) center
 
 /-- Union of arbitrary normalized-ray caps over a finite target dictionary. -/
 def finiteGridChoiTargetCaptureSet
@@ -242,7 +242,7 @@ theorem finiteGridChoiTargetCaptureSet_card_le
     (finiteGridChoiTargetCaptureSet M d target epsilon).card ≤
       Fintype.card Y *
         (finiteGridCoherenceCap M (finiteGridChoiWeight d)
-          (Real.sqrt (1 - 4 * epsilon ^ 2))).card := by
+          (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ)))).card := by
   unfold finiteGridChoiTargetCaptureSet
   calc
     _ ≤ ∑ y ∈ Finset.univ,
@@ -250,13 +250,13 @@ theorem finiteGridChoiTargetCaptureSet_card_le
       Finset.card_biUnion_le
     _ ≤ ∑ _y ∈ Finset.univ,
         (finiteGridCoherenceCap M (finiteGridChoiWeight d)
-          (Real.sqrt (1 - 4 * epsilon ^ 2))).card := by
+          (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ)))).card := by
       apply Finset.sum_le_sum
       intro y _hy
       exact finiteGridChoiRayCaptureSet_card_le_coherenceCap hd (htarget y)
         hepsilon hepsilonHalf
     _ = Fintype.card Y *
         (finiteGridCoherenceCap M (finiteGridChoiWeight d)
-          (Real.sqrt (1 - 4 * epsilon ^ 2))).card := by simp
+          (Real.sqrt (1 - 4 * epsilon ^ (2 : ℕ)))).card := by simp
 
 end RHTower

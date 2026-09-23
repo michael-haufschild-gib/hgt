@@ -17,38 +17,38 @@ noncomputable section
 def barbanVehovIncludedLongEnergyLcm (lam : ℝ) (L M : ℕ) : ℝ :=
   (barbanVehovIncludedLongBaseLcm L M +
       2 * lam * barbanVehovIncludedLongCrossLcm L M +
-      lam ^ 2 * barbanVehovIncludedLongDerivativeLcm L M) /
-    Real.log M ^ 2
+      lam ^ (2 : ℕ) * barbanVehovIncludedLongDerivativeLcm L M) /
+    Real.log M ^ (2 : ℕ)
 
 /-- Continuous quadratic energy of the included long detector head. -/
 def barbanVehovIncludedLongEnergyContinuous (lam : ℝ) (L M : ℕ) : ℝ :=
   (barbanVehovIncludedLongBaseContinuous L M +
       2 * lam * barbanVehovIncludedLongCrossContinuous L M +
-      lam ^ 2 * barbanVehovIncludedLongDerivativeContinuous L M) /
-    Real.log M ^ 2
+      lam ^ (2 : ℕ) * barbanVehovIncludedLongDerivativeContinuous L M) /
+    Real.log M ^ (2 : ℕ)
 
 /-- Polynomial quadratic energy at logarithmic detector scale `ell`. -/
 def barbanVehovIncludedLongEnergyPolynomialMain
     (lam ell : ℝ) (M : ℕ) : ℝ :=
   (barbanVehovIncludedLongBasePolynomialMain M +
       2 * lam * barbanVehovIncludedLongCrossPolynomialMain ell M +
-      lam ^ 2 * barbanVehovIncludedLongDerivativePolynomialMain ell M) /
-    Real.log M ^ 2
+      lam ^ (2 : ℕ) * barbanVehovIncludedLongDerivativePolynomialMain ell M) /
+    Real.log M ^ (2 : ℕ)
 
 private theorem abs_quadraticCombination_sub_le
     (lam A B C a b c : ℝ) :
-    |(A + 2 * lam * B + lam ^ 2 * C) -
-        (a + 2 * lam * b + lam ^ 2 * c)| ≤
-      |A - a| + 2 * |lam| * |B - b| + lam ^ 2 * |C - c| := by
+    |(A + 2 * lam * B + lam ^ (2 : ℕ) * C) -
+        (a + 2 * lam * b + lam ^ (2 : ℕ) * c)| ≤
+      |A - a| + 2 * |lam| * |B - b| + lam ^ (2 : ℕ) * |C - c| := by
   rw [show
-    (A + 2 * lam * B + lam ^ 2 * C) -
-        (a + 2 * lam * b + lam ^ 2 * c) =
-      (A - a) + 2 * lam * (B - b) + lam ^ 2 * (C - c) by ring]
+    (A + 2 * lam * B + lam ^ (2 : ℕ) * C) -
+        (a + 2 * lam * b + lam ^ (2 : ℕ) * c) =
+      (A - a) + 2 * lam * (B - b) + lam ^ (2 : ℕ) * (C - c) by ring]
   calc
-    |(A - a) + 2 * lam * (B - b) + lam ^ 2 * (C - c)| ≤
-        |A - a| + |2 * lam * (B - b)| + |lam ^ 2 * (C - c)| := by
+    |(A - a) + 2 * lam * (B - b) + lam ^ (2 : ℕ) * (C - c)| ≤
+        |A - a| + |2 * lam * (B - b)| + |lam ^ (2 : ℕ) * (C - c)| := by
       exact (abs_add_le ((A - a) + 2 * lam * (B - b))
-        (lam ^ 2 * (C - c))).trans
+        (lam ^ (2 : ℕ) * (C - c))).trans
           (add_le_add (abs_add_le (A - a) (2 * lam * (B - b))) le_rfl)
     _ = _ := by
       rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2),
@@ -79,18 +79,18 @@ theorem barbanVehovIncludedLongEnergyContinuous_eq_polynomialMain
 
 /-- Quantitative included lcm-energy approximation by its polynomial main term. -/
 theorem abs_barbanVehovIncludedLongEnergyLcm_sub_polynomialMain_le
-    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ 2 ≤ L) :
+    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |barbanVehovIncludedLongEnergyLcm lam L M -
         barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M| ≤
-      (((M : ℝ) * Real.log M) ^ 2 * (3 / (L : ℝ)) +
-          2 * |lam| * (((M : ℝ) * Real.log M) ^ 2 *
+      (((M : ℝ) * Real.log M) ^ (2 : ℕ) * (3 / (L : ℝ)) +
+          2 * |lam| * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
             (6 * Real.log (L * M + 1 : ℕ) / (L : ℝ))) +
-          lam ^ 2 * (((M : ℝ) * Real.log M) ^ 2 *
-            (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)))) /
-        Real.log M ^ 2 := by
+          lam ^ (2 : ℕ) * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
+            (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)))) /
+        Real.log M ^ (2 : ℕ) := by
   have hM1 : 1 ≤ M := by omega
   have hMpos : 0 < M := by omega
-  have hleftpos : 0 < 8 * M ^ 2 := Nat.mul_pos (by norm_num) (pow_pos hMpos 2)
+  have hleftpos : 0 < 8 * M ^ (2 : ℕ) := Nat.mul_pos (by norm_num) (pow_pos hMpos 2)
   have hL : 0 < L := hleftpos.trans_le hscale
   have hlog : 0 < Real.log M := Real.log_pos (by exact_mod_cast hM)
   have hquad := abs_quadraticCombination_sub_le lam
@@ -114,21 +114,21 @@ theorem abs_barbanVehovIncludedLongEnergyLcm_sub_polynomialMain_le
 
 /-- Quantitative approximation of the actual finite detector's long energy. -/
 theorem abs_levinsonCriticalDetectorLongEnergy_sub_includedPolynomialMain_le
-    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ 2 ≤ L) :
+    (lam : ℝ) {L M : ℕ} (hM : 1 < M) (hscale : 8 * M ^ (2 : ℕ) ≤ L) :
     |levinsonCriticalDetectorLongEnergy lam L M -
         barbanVehovIncludedLongEnergyPolynomialMain lam (Real.log L) M| ≤
-      (((M : ℝ) * Real.log M) ^ 2 * (3 / (L : ℝ)) +
-          2 * |lam| * (((M : ℝ) * Real.log M) ^ 2 *
+      (((M : ℝ) * Real.log M) ^ (2 : ℕ) * (3 / (L : ℝ)) +
+          2 * |lam| * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
             (6 * Real.log (L * M + 1 : ℕ) / (L : ℝ))) +
-          lam ^ 2 * (((M : ℝ) * Real.log M) ^ 2 *
-            (12 * Real.log (L * M + 1 : ℕ) ^ 2 / (L : ℝ)))) /
-        Real.log M ^ 2 := by
+          lam ^ (2 : ℕ) * (((M : ℝ) * Real.log M) ^ (2 : ℕ) *
+            (12 * Real.log (L * M + 1 : ℕ) ^ (2 : ℕ) / (L : ℝ)))) /
+        Real.log M ^ (2 : ℕ) := by
   have hMpos : 0 < M := by omega
   have hML : M ≤ L := by
     calc
       M ≤ M * M := Nat.le_mul_of_pos_right M hMpos
       _ ≤ 8 * (M * M) := Nat.le_mul_of_pos_left (M * M) (by norm_num)
-      _ = 8 * M ^ 2 := by rw [pow_two]
+      _ = 8 * M ^ (2 : ℕ) := by rw [pow_two]
       _ ≤ L := hscale
   rw [levinsonCriticalDetectorLongEnergy_eq_includedLcm lam L hM hML]
   exact abs_barbanVehovIncludedLongEnergyLcm_sub_polynomialMain_le

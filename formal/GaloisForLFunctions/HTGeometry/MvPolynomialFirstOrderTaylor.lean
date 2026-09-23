@@ -82,7 +82,7 @@ theorem taylorDefect_mul_X {σ R A : Type*} [CommSemiring R] [CommRing A] [Algeb
 perturbation. -/
 theorem taylorDefect_mem_sq {σ R A : Type*} [CommSemiring R] [CommRing A] [Algebra R A]
     [Fintype σ] [DecidableEq σ] (J : Ideal A) (S L : σ → A) (hL : ∀ i, L i ∈ J)
-    (P : MvPolynomial σ R) : taylorDefect S L P ∈ J ^ 2 := by
+    (P : MvPolynomial σ R) : taylorDefect S L P ∈ J ^ (2 : ℕ) := by
   classical
   induction P using MvPolynomial.induction_on with
   | C r => rw [taylorDefect_C]; exact Submodule.zero_mem _

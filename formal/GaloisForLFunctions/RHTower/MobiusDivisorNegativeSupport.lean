@@ -31,7 +31,7 @@ private lemma partner_nonneg {M q : ℕ} {P R : Finset ℕ}
     mem_insert_self _ _, lt_of_not_ge h⟩
 
 private lemma positive_square_mono {x y : ℝ} (h : x ≤ y) :
-    (max x 0)^2 ≤ (max y 0)^2 := by
+    (max x 0)^(2 : ℕ) ≤ (max y 0)^(2 : ℕ) := by
   have hm : max x 0 ≤ max y 0 := max_le_max_right 0 h
   have hx : 0 ≤ max x 0 := le_max_right _ _
   have hy : 0 ≤ max y 0 := le_max_right _ _
@@ -66,10 +66,10 @@ theorem mobiusDivisorParityEnergy_insert_outside_negativeSupport
     mobiusDivisorParityGoodEnergy M (insert q P) ≤ mobiusDivisorParityGoodEnergy M P ∧
       mobiusDivisorParityDefectEnergy M P ≤ mobiusDivisorParityDefectEnergy M (insert q P) := by
   have hpair (R : Finset ℕ) (hR : R ∈ (mobiusDivisorSelectionPrimes M).powerset) :
-      (max (mobiusDivisorOrientedFibre M (insert q P) R) 0)^2 ≤
-        (max (mobiusDivisorOrientedFibre M P R) 0)^2 ∧
-      (max (-mobiusDivisorOrientedFibre M P R) 0)^2 ≤
-        (max (-mobiusDivisorOrientedFibre M (insert q P) R) 0)^2 := by
+      (max (mobiusDivisorOrientedFibre M (insert q P) R) 0)^(2 : ℕ) ≤
+        (max (mobiusDivisorOrientedFibre M P R) 0)^(2 : ℕ) ∧
+      (max (-mobiusDivisorOrientedFibre M P R) 0)^(2 : ℕ) ≤
+        (max (-mobiusDivisorOrientedFibre M (insert q P) R) 0)^(2 : ℕ) := by
     by_cases hqR : q ∈ R
     · have hpos : 0 ≤ mobiusDivisorOrientedFibre M P R := by
         have h := partner_nonneg hq hn hR

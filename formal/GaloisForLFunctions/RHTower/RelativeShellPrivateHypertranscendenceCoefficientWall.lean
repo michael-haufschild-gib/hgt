@@ -125,7 +125,7 @@ all other shells.
 -/
 theorem relativeShellMultiplier_quadraticDefect_not_mem_complement
     (m : RelativeShellLabel) (c : ℂ) :
-    (((relativeShellMultiplierObservable m) ^ 2 -
+    (((relativeShellMultiplierObservable m) ^ (2 : ℕ) -
           c • relativeShellMultiplierObservable m :
         RelativeShellFullObservable) :
       upperEndMeroField) ∉
@@ -136,7 +136,7 @@ theorem relativeShellMultiplier_quadraticDefect_not_mem_complement
     relativeShellSubsetDifferentialField
       (relativeShellLabelComplement m)
   let y : RelativeShellFullObservable :=
-    (relativeShellMultiplierObservable m) ^ 2 -
+    (relativeShellMultiplierObservable m) ^ (2 : ℕ) -
       c • relativeShellMultiplierObservable m
   have hyMem' :
       (y : upperEndMeroField) ∈ B := hyMem
@@ -169,7 +169,7 @@ theorem relativeShellMultiplier_quadraticDefect_not_mem_complement
         upperEndRationalCoordinateField
         upperEndMeroField c).symm
   let P : Polynomial B :=
-    Polynomial.X ^ 2 -
+    Polynomial.X ^ (2 : ℕ) -
       Polynomial.C cB * Polynomial.X -
         Polynomial.C yB
   have hPne : P ≠ 0 := by

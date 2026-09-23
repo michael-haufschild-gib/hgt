@@ -32,7 +32,7 @@ def weightedXiScrewDivisor (W : XiZeroCopy → ℂ) (t : ℝ) : ℂ :=
 
 /-- The polar spectral weights `M(γ_q)²`. -/
 def polarSpectralWeight (h : ℝ) (q : XiZeroCopy) : ℂ :=
-  polarMultiplierSpectral h (xiSpectralPoint q) ^ 2
+  polarMultiplierSpectral h (xiSpectralPoint q) ^ (2 : ℕ)
 
 /-- `‖cos(γ h)‖ ≤ cosh(h/2)` when `|Im γ| ≤ 1/2` and `h ≥ 0`. -/
 theorem norm_cos_mul_le_cosh_half {γ : ℂ} {h : ℝ} (hh : 0 ≤ h) (hγ : |γ.im| ≤ 1 / 2) :
@@ -86,7 +86,7 @@ theorem norm_polarMultiplierSpectral_le {h : ℝ} (hh : 0 ≤ h) (q : XiZeroCopy
           linarith
 
 theorem norm_polarSpectralWeight_le {h : ℝ} (hh : 0 ≤ h) (q : XiZeroCopy) :
-    ‖polarSpectralWeight h q‖ ≤ polarSymbolBound h ^ 2 := by
+    ‖polarSpectralWeight h q‖ ≤ polarSymbolBound h ^ (2 : ℕ) := by
   unfold polarSpectralWeight
   rw [norm_pow]
   exact pow_le_pow_left₀ (norm_nonneg _) (norm_polarMultiplierSpectral_le hh q) 2
@@ -96,16 +96,16 @@ theorem summable_weighted_xiScrewDivisorTerm {W : XiZeroCopy → ℂ} {C : ℝ}
     (hW : ∀ q, ‖W q‖ ≤ C) (t : ℝ) :
     Summable fun q : XiZeroCopy => W q * xiScrewDivisorTerm t q := by
   refine Summable.of_norm_bounded
-    (g := fun q : XiZeroCopy => C * (Real.exp (|t| / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2))
+    (g := fun q : XiZeroCopy => C * (Real.exp (|t| / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))
     ((xiSpectralPoint_inv_sq_summable.mul_left _)) fun q => ?_
   rw [norm_mul]
   have h1 := hW q
   have h2 := norm_xiScrewDivisorTerm_le t q
   have hC : 0 ≤ C := (norm_nonneg _).trans h1
   calc ‖W q‖ * ‖xiScrewDivisorTerm t q‖
-      ≤ C * ((Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ 2) :=
+      ≤ C * ((Real.exp (|t| / 2) + 1) / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) :=
         mul_le_mul h1 h2 (norm_nonneg _) hC
-    _ = C * (Real.exp (|t| / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+    _ = C * (Real.exp (|t| / 2) + 1) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 /-- The polar weights are conjugated by the Schwarz copy equivalence. -/
 theorem polarSpectralWeight_copyConj (h : ℝ) (q : XiZeroCopy) :
@@ -328,11 +328,11 @@ theorem tendsto_suzukiTestRayCoefBar_twoBumpSeq (t : ℝ) (q : XiZeroCopy) :
 /-- `(e^{iγt} − 1)(e^{−iγt} − 1)/γ² = 2 · (1 − cos γt)/γ²`. -/
 theorem expSlope_mul_expSlope_div_sq (t : ℝ) (q : XiZeroCopy) :
     (Complex.exp ((I * xiSpectralPoint q) * (t : ℂ)) - 1) *
-        (Complex.exp ((-(I * xiSpectralPoint q)) * (t : ℂ)) - 1) / xiSpectralPoint q ^ 2 =
+        (Complex.exp ((-(I * xiSpectralPoint q)) * (t : ℂ)) - 1) / xiSpectralPoint q ^ (2 : ℕ) =
       2 * xiScrewDivisorTerm t q := by
   unfold xiScrewDivisorTerm
   have hγ : xiSpectralPoint q ≠ 0 := xiSpectralPoint_ne_zero q
-  have hw : (I * xiSpectralPoint q) ^ 2 = -(xiSpectralPoint q ^ 2) := by
+  have hw : (I * xiSpectralPoint q) ^ (2 : ℕ) = -(xiSpectralPoint q ^ (2 : ℕ)) := by
     rw [mul_pow, I_sq]
     ring
   rw [hw, Complex.cosh]
@@ -349,7 +349,7 @@ theorem expSlope_mul_expSlope_div_sq (t : ℝ) (q : XiZeroCopy) :
   set F := Complex.exp (-((t : ℂ) * (I * xiSpectralPoint q))) with hF
   have hEF : (E - 1) * (F - 1) = 2 - E - F := by linear_combination hprod
   rw [hEF]
-  have hγ2 : xiSpectralPoint q ^ 2 ≠ 0 := pow_ne_zero 2 hγ
+  have hγ2 : xiSpectralPoint q ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hγ
   field_simp
   ring
 
@@ -360,7 +360,7 @@ theorem suzukiScrewSmoothForm_polarTranslateTest_eq_tsum {a : ℝ} (φ : SuzukiS
     {h : ℝ} (hh : 0 < h) :
     suzukiScrewSmoothForm (φ.polarTranslateTest hh) (φ.polarTranslateTest hh) =
       ∑' q : XiZeroCopy, polarSpectralWeight h q *
-        (suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ 2) := by
+        (suzukiTestRayCoefBar φ q * suzukiTestRayCoef φ q / xiSpectralPoint q ^ (2 : ℕ)) := by
   rw [suzukiScrewSmoothForm_eq_tsum]
   refine tsum_congr fun q => ?_
   rw [suzukiTestRayCoefBar_polarTranslateTest, suzukiTestRayCoef_polarTranslateTest]
@@ -377,12 +377,12 @@ theorem tendsto_suzukiScrewSmoothForm_polarTranslateTest_twoBumpSeq (t : ℝ) {h
   set E : ℝ := Real.exp (|(|t| + 2)| / 2) + 1 with hE
   have hE0 : 0 ≤ E := by rw [hE]; positivity
   refine tendsto_tsum_of_dominated_convergence
-    (bound := fun q : XiZeroCopy => polarSymbolBound h ^ 2 * (E * 2) * (E * 2) * (1 / ‖xiSpectralPoint q‖ ^ 2))
+    (bound := fun q : XiZeroCopy => polarSymbolBound h ^ (2 : ℕ) * (E * 2) * (E * 2) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)))
     (xiSpectralPoint_inv_sq_summable.mul_left _) (fun q => ?_) (Filter.Eventually.of_forall fun n q => ?_)
   · -- termwise limit
     have hB := tendsto_suzukiTestRayCoef_twoBumpSeq t q
     have hBbar := tendsto_suzukiTestRayCoefBar_twoBumpSeq t q
-    have hlim := ((hBbar.mul hB).div_const (xiSpectralPoint q ^ 2)).const_mul (polarSpectralWeight h q)
+    have hlim := ((hBbar.mul hB).div_const (xiSpectralPoint q ^ (2 : ℕ))).const_mul (polarSpectralWeight h q)
     rw [expSlope_mul_expSlope_div_sq] at hlim
     refine hlim.congr' (Filter.Eventually.of_forall fun n => ?_) |>.trans ?_
     · rfl
@@ -404,10 +404,10 @@ theorem tendsto_suzukiScrewSmoothForm_polarTranslateTest_twoBumpSeq (t : ℝ) {h
     rw [norm_mul, norm_div, norm_mul, norm_pow]
     have hγ : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
     calc ‖polarSpectralWeight h q‖ * (‖suzukiTestRayCoefBar (twoBumpSeq t n) q‖ *
-          ‖suzukiTestRayCoef (twoBumpSeq t n) q‖ / ‖xiSpectralPoint q‖ ^ 2)
-        ≤ polarSymbolBound h ^ 2 * ((E * 2) * (E * 2) / ‖xiSpectralPoint q‖ ^ 2) := by
+          ‖suzukiTestRayCoef (twoBumpSeq t n) q‖ / ‖xiSpectralPoint q‖ ^ (2 : ℕ))
+        ≤ polarSymbolBound h ^ (2 : ℕ) * ((E * 2) * (E * 2) / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by
           gcongr
-      _ = polarSymbolBound h ^ 2 * (E * 2) * (E * 2) * (1 / ‖xiSpectralPoint q‖ ^ 2) := by ring
+      _ = polarSymbolBound h ^ (2 : ℕ) * (E * 2) * (E * 2) * (1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ)) := by ring
 
 /-- **Constrained positivity at all apertures forces the polar weighted divisor to be
 nonnegative.** -/

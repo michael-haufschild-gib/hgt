@@ -8,7 +8,7 @@ Let an arbitrary cutoff-independent diagonal multiplier act on the actual prime-
 source. If the transformed source is admitted by the ambient Hilbert graph, its weighted
 coefficients are square summable and therefore define one fixed Hilbert--Schmidt feature.
 Finite-rank density then makes its pairing with every uniformly bounded response of rank at most
-`(qN)^2` sublinear. This contradicts the linear correction forced by rectangular Ward
+`(qN)^(2 : ℕ)` sublinear. This contradicts the linear correction forced by rectangular Ward
 semiboundedness.
 
 Thus no fixed diagonal Hilbert-source functional calculus can close the CCM--FU Ward gate through
@@ -30,19 +30,19 @@ Gamma source. -/
 def SuzukiCausalDepthGammaFixedDiagonalGraphAdmissible
     (m : Nat.Primes × ℕ → ℂ) : Prop :=
   Summable (fun pe : Nat.Primes × ℕ =>
-    (‖m pe‖ * suzukiCausalDepthGammaWeight 1 1 pe) ^ 2)
+    (‖m pe‖ * suzukiCausalDepthGammaWeight 1 1 pe) ^ (2 : ℕ))
 
 theorem summable_norm_sq_suzukiCausalDepthGammaFixedDiagonalWeightedFeature_allPrime
     {m : Nat.Primes × ℕ → ℂ}
     (hm : SuzukiCausalDepthGammaFixedDiagonalGraphAdmissible m) :
     Summable (fun z : (Nat.Primes × ℕ) × ℕ =>
-      ‖suzukiCausalDepthGammaSubexponentialWeightedFeature m z.1 z.2‖ ^ 2) := by
+      ‖suzukiCausalDepthGammaSubexponentialWeightedFeature m z.1 z.2‖ ^ (2 : ℕ)) := by
   apply (summable_prod_of_nonneg (fun _ => sq_nonneg _)).2
   constructor
   · exact fun pe =>
       summable_norm_sq_suzukiCausalDepthGammaSubexponentialWeightedFeature_row m pe
   · have houter : Summable (fun pe : Nat.Primes × ℕ =>
-        (‖m pe‖ * suzukiCausalDepthGammaWeight 1 1 pe) ^ 2 *
+        (‖m pe‖ * suzukiCausalDepthGammaWeight 1 1 pe) ^ (2 : ℕ) *
           gammaConductorModeSchurResidual
             (suzukiCausalDepthGammaFrequency pe)
             (suzukiCausalDepthGammaFrequency pe)) := by
@@ -88,7 +88,7 @@ theorem suzukiCausalDepthGammaFixedDiagonalFeatureKernel_isHS
     HilbertSchmidt.IsHS (suzukiCausalDepthGammaSubexponentialFeatureKernel m) := by
   let energy :
       SuzukiCausalDepthGammaTraceIndex × SuzukiCausalDepthGammaTraceIndex → ℝ :=
-    fun z => ‖suzukiCausalDepthGammaSubexponentialFeatureKernel m z‖ ^ 2
+    fun z => ‖suzukiCausalDepthGammaSubexponentialFeatureKernel m z‖ ^ (2 : ℕ)
   have hcomp : Summable (fun z : (Nat.Primes × ℕ) × ℕ =>
       energy (suzukiCausalDepthGammaFixedDiagonalCrossEquiv z)) := by
     refine (summable_norm_sq_suzukiCausalDepthGammaFixedDiagonalWeightedFeature_allPrime
@@ -102,7 +102,7 @@ theorem suzukiCausalDepthGammaFixedDiagonalFeatureKernel_isHS
     summable_subtype_iff_indicator.mp hsub
   exact hindicator.congr fun z => by
     show suzukiCausalDepthGammaFixedDiagonalCrossSupport.indicator energy z =
-      ‖suzukiCausalDepthGammaSubexponentialFeatureKernel m z‖ ^ 2
+      ‖suzukiCausalDepthGammaSubexponentialFeatureKernel m z‖ ^ (2 : ℕ)
     by_cases hz : z ∈ suzukiCausalDepthGammaFixedDiagonalCrossSupport
     · rw [Set.indicator_of_mem hz]
     · rw [Set.indicator_of_notMem hz]
@@ -175,7 +175,7 @@ theorem suzukiCausalDepthGammaFixedDiagonalGraphCorrection_sublinear
     (R : ℕ → SuzukiCausalDepthGammaTraceL2 →L[ℂ]
       SuzukiCausalDepthGammaTraceL2)
     (q : ℕ) (M : ℝ) (hM : 0 ≤ M)
-    (hRank : ∀ N : ℕ, HasRankLE (R N) ((q * N) ^ 2))
+    (hRank : ∀ N : ℕ, HasRankLE (R N) ((q * N) ^ (2 : ℕ)))
     (hNorm : ∀ N : ℕ, ‖R N‖ ≤ M) :
     SuzukiTransitionCoreCorrectionSublinear
       (suzukiCausalDepthGammaFixedDiagonalGraphCorrection m hm R) := by
@@ -200,7 +200,7 @@ structure SuzukiCausalDepthGammaFixedDiagonalGraphWardProducer where
   opNormCeiling : ℝ
   opNormCeiling_nonneg : 0 ≤ opNormCeiling
   response_rank : ∀ N : ℕ,
-    HasRankLE (response N) ((rankScale * N) ^ 2)
+    HasRankLE (response N) ((rankScale * N) ^ (2 : ℕ))
   response_opNorm_le : ∀ N : ℕ, ‖response N‖ ≤ opNormCeiling
   lower : ℝ
   ward_semibounded : ∀ᶠ n : ℕ in atTop,

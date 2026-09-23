@@ -75,7 +75,7 @@ private theorem partial_periodic {F : Point → ℂ}
 
 /-- Original hyperbolic scalar Laplacian in the positive-height chart. -/
 def lap (F : Point → ℂ) (z : Point) : ℂ :=
-  (z 1:ℂ)^2*(coordDeriv 0 (coordDeriv 0 F) z+coordDeriv 1 (coordDeriv 1 F) z)
+  (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 0 F) z+coordDeriv 1 (coordDeriv 1 F) z)
 
 private theorem lap_smooth {F : Point → ℂ} {z : Point} (hF : ContDiffAt ℝ ∞ F z) :
     ContDiffAt ℝ ∞ (lap F) z := by
@@ -92,7 +92,7 @@ private theorem lap_periodic {F : Point → ℂ} (hF : Function.Periodic F ![1,0
     Matrix.cons_val_fin_one,add_zero]
 
 private theorem lap_reader (u : ℂ) (z : Point) (hz : 0 < z 1) :
-    lap (D4BMLiteralCusp.scalar u) z=(u^2-1/4)*D4BMLiteralCusp.scalar u z := by
+    lap (D4BMLiteralCusp.scalar u) z=(u^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar u z := by
   have h := D4BMLiteralCusp.scalar_equation u z hz
   rw [scalarLaplacian_eq _ z hz] at h
   simpa only [lap,D4BMLiteralCusp.scalarQ,neg_sub] using h
@@ -100,11 +100,11 @@ private theorem lap_reader (u : ℂ) (z : Point) (hz : 0 < z 1) :
 /-- Exact Green flux for transferring the angular action to the original scalar reader. -/
 def flux (F : Point → ℂ) (u : ℂ) (j : Fin 2) (z : Point) : ℂ :=
   lap F z*coordDeriv j (D4BMLiteralCusp.scalar u) z-
-    (u^2-1/4)*D4BMLiteralCusp.scalar u z*coordDeriv j F z
+    (u^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar u z*coordDeriv j F z
 
 /-- Angular-action transfer defect, expressed using the unchanged coexact fields. -/
 def defect (F : Point → ℂ) (u : ℂ) (z : Point) : ℂ :=
-  ∑ j : Fin 2, (coexact (lap F) j z-(u^2-1/4)*coexact F j z)*
+  ∑ j : Fin 2, (coexact (lap F) j z-(u^(2 : ℕ)-1/4)*coexact F j z)*
     D4BMLiteralCusp.vector u j z
 
 private theorem flux_smooth {F : Point → ℂ} {z : Point} (hF : ContDiffAt ℝ ∞ F z)
@@ -124,21 +124,21 @@ theorem divergence_flux {F : Point → ℂ} {z : Point} (hF : ContDiffAt ℝ ∞
     (∑ j : Fin 2, coordDeriv j (flux F u j) z)=defect F u z := by
   have hS := reader_smooth u z hz
   have dS := hS.differentiableAt (by simp)
-  have hmu : DifferentiableAt ℝ (fun v => (u^2-1/4)*D4BMLiteralCusp.scalar u v) z :=
+  have hmu : DifferentiableAt ℝ (fun v => (u^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar u v) z :=
     dS.const_mul _
   have hd (j : Fin 2) : coordDeriv j (flux F u j) z=
       coordDeriv j (lap F) z*coordDeriv j (D4BMLiteralCusp.scalar u) z+
       lap F z*coordDeriv j (coordDeriv j (D4BMLiteralCusp.scalar u)) z-
-      ((u^2-1/4)*coordDeriv j (D4BMLiteralCusp.scalar u) z*coordDeriv j F z+
-        (u^2-1/4)*D4BMLiteralCusp.scalar u z*coordDeriv j (coordDeriv j F) z) := by
+      ((u^(2 : ℕ)-1/4)*coordDeriv j (D4BMLiteralCusp.scalar u) z*coordDeriv j F z+
+        (u^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar u z*coordDeriv j (coordDeriv j F) z) := by
     have hleft : DifferentiableAt ℝ (fun v => lap F v*coordDeriv j (D4BMLiteralCusp.scalar u) v) z :=
       ((lap_smooth hF).differentiableAt (by simp)).mul ((partial_smooth hS j).differentiableAt (by simp))
-    have hright : DifferentiableAt ℝ (fun v => (u^2-1/4)*D4BMLiteralCusp.scalar u v*coordDeriv j F v) z :=
+    have hright : DifferentiableAt ℝ (fun v => (u^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar u v*coordDeriv j F v) z :=
       hmu.mul ((partial_smooth hF j).differentiableAt (by simp))
-    have hmuD : coordDeriv j (fun v => (u^2-1/4)*D4BMLiteralCusp.scalar u v) z=
-        (u^2-1/4)*coordDeriv j (D4BMLiteralCusp.scalar u) z := by
-      change (fderiv ℝ (fun v => (u^2-1/4)*D4BMLiteralCusp.scalar u v) z) (Pi.single j 1)=_
-      rw [(dS.hasFDerivAt.const_mul (u^2-1/4)).fderiv]
+    have hmuD : coordDeriv j (fun v => (u^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar u v) z=
+        (u^(2 : ℕ)-1/4)*coordDeriv j (D4BMLiteralCusp.scalar u) z := by
+      change (fderiv ℝ (fun v => (u^(2 : ℕ)-1/4)*D4BMLiteralCusp.scalar u v) z) (Pi.single j 1)=_
+      rw [(dS.hasFDerivAt.const_mul (u^(2 : ℕ)-1/4)).fderiv]
       rfl
     unfold flux
     rw [coordDeriv_sub hleft hright,

@@ -18,11 +18,11 @@ noncomputable section
 /-- The zero-degree polynomial-Gaussian weight is the plain Gaussian of the index. -/
 theorem polynomialGaussianLatticeWeight_zero_deg {k : ℕ} (s : ℝ) (n : Fin k → ℤ) :
     polynomialGaussianLatticeWeight (Fin k) (fun _ => 0) (fun _ => s) n
-      = Real.exp (-(s * ∑ j, ((n j : ℤ) : ℝ) ^ 2)) := by
+      = Real.exp (-(s * ∑ j, ((n j : ℤ) : ℝ) ^ (2 : ℕ))) := by
   rw [polynomialGaussianLatticeWeight]
   rw [show (fun j : Fin k => (1 + (((n j).natAbs : ℕ) : ℝ)) ^ (0 : ℕ) *
-      Real.exp (-s * ((n j : ℤ) : ℝ) ^ 2)) = fun j : Fin k =>
-      Real.exp (-s * ((n j : ℤ) : ℝ) ^ 2) by
+      Real.exp (-s * ((n j : ℤ) : ℝ) ^ (2 : ℕ))) = fun j : Fin k =>
+      Real.exp (-s * ((n j : ℤ) : ℝ) ^ (2 : ℕ)) by
     funext j
     rw [pow_zero, one_mul]]
   rw [← Real.exp_sum]
@@ -34,7 +34,7 @@ theorem polynomialGaussianLatticeWeight_zero_deg {k : ℕ} (s : ℝ) (n : Fin k 
 theorem summable_norm_scaledGaussian_lattice {d k : ℕ} (emb : (Fin k → ℤ) →+ (Fin d → ℂ))
     (vec : (Fin k → ℤ) → Fin d → ℝ) (hvec : ∀ n i, emb n i = ((vec n i : ℝ) : ℂ))
     {kappa : ℝ} (hkappa : 0 < kappa)
-    (hdiscrete : ∀ n : Fin k → ℤ, kappa * ∑ j, ((n j : ℤ) : ℝ) ^ 2 ≤ ∑ i, (vec n i) ^ 2)
+    (hdiscrete : ∀ n : Fin k → ℤ, kappa * ∑ j, ((n j : ℤ) : ℝ) ^ (2 : ℕ) ≤ ∑ i, (vec n i) ^ (2 : ℕ))
     (σ : Fin d → ℝ) (hσ : ∀ i, 0 < σ i) {σ₀ : ℝ} (hσ₀ : 0 < σ₀) (hσ₀le : ∀ i, σ₀ ≤ σ i)
     (center : Fin d → ℂ) {K : Set (Fin d → ℂ)} (hK : IsCompact K) {B : ℝ} (hB : 1 ≤ B)
     {x : Fin d → ℂ} (hx : x ∈ K) :
@@ -53,10 +53,10 @@ theorem summable_norm_scaledGaussian_lattice {d k : ℕ} (emb : (Fin k → ℤ) 
   refine le_trans (hC (vec n) x hx) ?_
   rw [polynomialGaussianLatticeWeight_zero_deg]
   refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hC0
-  have hlow : σ₀ * ∑ i, (vec n i) ^ 2 ≤ ∑ i, σ i * (vec n i) ^ 2 := by
+  have hlow : σ₀ * ∑ i, (vec n i) ^ (2 : ℕ) ≤ ∑ i, σ i * (vec n i) ^ (2 : ℕ) := by
     rw [Finset.mul_sum]
     exact Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_right (hσ₀le i) (sq_nonneg _)
-  have hquarter : ∑ i, σ i / 4 * (vec n i) ^ 2 = (∑ i, σ i * (vec n i) ^ 2) / 4 := by
+  have hquarter : ∑ i, σ i / 4 * (vec n i) ^ (2 : ℕ) = (∑ i, σ i * (vec n i) ^ (2 : ℕ)) / 4 := by
     rw [Finset.sum_div]
     exact Finset.sum_congr rfl fun i _ => by ring
   rw [hquarter]

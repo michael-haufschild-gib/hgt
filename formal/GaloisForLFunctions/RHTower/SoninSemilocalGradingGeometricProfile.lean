@@ -11,7 +11,7 @@ has a nonzero scaling limit.  Positive and negative offsets admit independent ge
 majorants, so Tannery's theorem assembles their limits into an exact bilateral profile.
 
 Unlike the earlier two-sided `k^(-3/4)` bounds, these theorems retain the prime-lattice phase and
-the exact limiting exponential.  The full profile is invariant under `c ↦ c p^2`, and the
+the exact limiting exponential.  The full profile is invariant under `c ↦ c p^(2 : ℕ)`, and the
 intrinsically normalized literal Jacobi coefficient converges to it.  The proofs use no
 asymptotic hypothesis on the source.
 -/

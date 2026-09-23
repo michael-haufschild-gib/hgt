@@ -30,7 +30,7 @@ open scoped Interval Topology
 vertical coordinates. -/
 def suzukiChebyshevLaplaceBoundaryHeatRealKernel
     (x tau a y : ℝ) : ℝ :=
-  -2 * a * Real.exp (-tau * ((x - y) ^ 2 + a ^ 2))
+  -2 * a * Real.exp (-tau * ((x - y) ^ (2 : ℕ) + a ^ (2 : ℕ)))
 
 /-- The completed-xi logarithmic derivative at the shifted coordinate
 `1 / 2 + a + I * y`. -/
@@ -48,9 +48,9 @@ def suzukiChebyshevLaplaceBoundaryHeatXiBoundaryScalarIntegrand
 written entirely as a real coordinate integrand. -/
 def suzukiChebyshevLaplaceBoundaryHeatXiBulkScalarIntegrand
     (x tau a y : ℝ) : ℝ :=
-  2 * Real.exp (-tau * ((x - y) ^ 2 + a ^ 2)) *
+  2 * Real.exp (-tau * ((x - y) ^ (2 : ℕ) + a ^ (2 : ℕ))) *
     (2 * tau * a * (x - y) * (shiftedRiemannXiLogDerivative a y).im +
-      (2 * tau * a ^ 2 - 1) * (shiftedRiemannXiLogDerivative a y).re)
+      (2 * tau * a ^ (2 : ℕ) - 1) * (shiftedRiemannXiLogDerivative a y).re)
 
 /-- The real part of the heat-weighted xi logarithmic derivative on a vertical
 coordinate line is the explicit real boundary scalar integrand. -/
@@ -104,15 +104,15 @@ coefficient multiplying the real part of the xi logarithmic derivative. -/
 theorem hasDerivAt_suzukiChebyshevLaplaceBoundaryHeatRealKernel_realCoordinate (x tau a y : ℝ) :
     HasDerivAt (fun u : ℝ =>
       suzukiChebyshevLaplaceBoundaryHeatRealKernel x tau u y)
-      (2 * Real.exp (-tau * ((x - y) ^ 2 + a ^ 2)) *
-        (2 * tau * a ^ 2 - 1)) a := by
+      (2 * Real.exp (-tau * ((x - y) ^ (2 : ℕ) + a ^ (2 : ℕ))) *
+        (2 * tau * a ^ (2 : ℕ) - 1)) a := by
   unfold suzukiChebyshevLaplaceBoundaryHeatRealKernel
-  have hsq : HasDerivAt (fun u : ℝ => u ^ 2) (2 * a) a := by
+  have hsq : HasDerivAt (fun u : ℝ => u ^ (2 : ℕ)) (2 * a) a := by
     apply ((hasDerivAt_id a).pow 2).congr_deriv
     simp [id]
-  have hsum : HasDerivAt (fun u : ℝ => (x - y) ^ 2 + u ^ 2)
+  have hsum : HasDerivAt (fun u : ℝ => (x - y) ^ (2 : ℕ) + u ^ (2 : ℕ))
       (2 * a) a := by
-    simpa using hsq.const_add ((x - y) ^ 2)
+    simpa using hsq.const_add ((x - y) ^ (2 : ℕ))
   have hexp := (hsum.const_mul (-tau)).exp
   have hcoef : HasDerivAt (fun u : ℝ => -2 * u) (-2) a := by
     simpa using (hasDerivAt_id a).const_mul (-2)
@@ -125,18 +125,18 @@ theorem hasDerivAt_suzukiChebyshevLaplaceBoundaryHeatRealKernel_imaginaryCoordin
     (x tau a y : ℝ) :
     HasDerivAt (fun v : ℝ =>
       suzukiChebyshevLaplaceBoundaryHeatRealKernel x tau a v)
-      (-2 * Real.exp (-tau * ((x - y) ^ 2 + a ^ 2)) *
+      (-2 * Real.exp (-tau * ((x - y) ^ (2 : ℕ) + a ^ (2 : ℕ))) *
         (2 * tau * a * (x - y))) y := by
   unfold suzukiChebyshevLaplaceBoundaryHeatRealKernel
   have hxsub : HasDerivAt (fun v : ℝ => x - v) (-1) y :=
     (hasDerivAt_id y).const_sub x
-  have hsq : HasDerivAt (fun v : ℝ => (x - v) ^ 2)
+  have hsq : HasDerivAt (fun v : ℝ => (x - v) ^ (2 : ℕ))
       (-2 * (x - y)) y := by
     apply (hxsub.pow 2).congr_deriv
     ring
-  have hsum : HasDerivAt (fun v : ℝ => (x - v) ^ 2 + a ^ 2)
+  have hsum : HasDerivAt (fun v : ℝ => (x - v) ^ (2 : ℕ) + a ^ (2 : ℕ))
       (-2 * (x - y)) y := by
-    simpa using hsq.add_const (a ^ 2)
+    simpa using hsq.add_const (a ^ (2 : ℕ))
   have hexp := (hsum.const_mul (-tau)).exp
   apply ((hasDerivAt_const y (-2 * a)).mul hexp).congr_deriv
   ring

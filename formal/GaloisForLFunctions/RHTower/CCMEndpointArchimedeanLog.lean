@@ -30,23 +30,23 @@ namespace GaloisForLFunctions.RHTower
 /-! ## The sawtooth logarithmic mass -/
 
 /-- The squared modulus `|p_k|² = 1/(4k²)` of the `k`-th sawtooth Fourier coefficient. -/
-def sawtoothCoeffSq (k : ℕ) : ℝ := 1 / (4 * (k : ℝ) ^ 2)
+def sawtoothCoeffSq (k : ℕ) : ℝ := 1 / (4 * (k : ℝ) ^ (2 : ℕ))
 
 /-- **Equation (11).**  Counting both signs of the frequency, the sawtooth energy is `π²/12`. -/
 theorem hasSum_sawtoothEnergy :
-    HasSum (fun k : ℕ => 2 * sawtoothCoeffSq k) (Real.pi ^ 2 / 12) := by
+    HasSum (fun k : ℕ => 2 * sawtoothCoeffSq k) (Real.pi ^ (2 : ℕ) / 12) := by
   have heq : (fun k : ℕ => 2 * sawtoothCoeffSq k)
-      = fun k : ℕ => (1 / 2 : ℝ) * (1 / (k : ℝ) ^ 2) := by
+      = fun k : ℕ => (1 / 2 : ℝ) * (1 / (k : ℝ) ^ (2 : ℕ)) := by
     funext k
     unfold sawtoothCoeffSq
     ring
-  have hval : (1 / 2 : ℝ) * (Real.pi ^ 2 / 6) = Real.pi ^ 2 / 12 := by ring
+  have hval : (1 / 2 : ℝ) * (Real.pi ^ (2 : ℕ) / 6) = Real.pi ^ (2 : ℕ) / 12 := by ring
   rw [heq, ← hval]
   exact hasSum_zeta_two.mul_left (1 / 2 : ℝ)
 
 /-- **Equation (11), summed form.** -/
 theorem tsum_sawtoothEnergy :
-    ∑' k : ℕ, 2 * sawtoothCoeffSq k = Real.pi ^ 2 / 12 :=
+    ∑' k : ℕ, 2 * sawtoothCoeffSq k = Real.pi ^ (2 : ℕ) / 12 :=
   hasSum_sawtoothEnergy.tsum_eq
 
 /-! ## The uniform logarithmic rescaling -/
@@ -94,7 +94,7 @@ theorem tendsto_logMultiplier_ratio {M : ℝ → ℝ} {C R : ℝ}
 /-- The exact endpoint constant of `(15)`: the sawtooth mass, the constrained response constant and
 the doubling of the chirp scale multiply to `8π/33`. -/
 theorem endpoint_constant_eq :
-    (16 / (11 * Real.pi)) * (Real.pi ^ 2 / 12) * 2 = 8 * Real.pi / 33 := by
+    (16 / (11 * Real.pi)) * (Real.pi ^ (2 : ℕ) / 12) * 2 = 8 * Real.pi / 33 := by
   have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
   field_simp
   norm_num
@@ -107,14 +107,14 @@ theorem endpoint_scale_factorization {aSq d1 A logL logl : ℝ}
 
 /-- **Equations (12)–(15).**  The archimedean endpoint scale is exactly `8π/33`. -/
 theorem tendsto_endpoint_archimedean_scale {A d1 aSq logL : ℝ → ℝ}
-    (hA : Tendsto (fun l => A l / logL l) atTop (nhds (Real.pi ^ 2 / 12)))
+    (hA : Tendsto (fun l => A l / logL l) atTop (nhds (Real.pi ^ (2 : ℕ) / 12)))
     (ha : Tendsto (fun l => aSq l / d1 l) atTop (nhds (16 / (11 * Real.pi))))
     (hLl : Tendsto (fun l => logL l / Real.log l) atTop (nhds 2))
     (hdne : ∀ᶠ l in atTop, d1 l ≠ 0) (hLne : ∀ᶠ l in atTop, logL l ≠ 0) :
     Tendsto (fun l => (aSq l * A l) / (d1 l * Real.log l)) atTop
       (nhds (8 * Real.pi / 33)) := by
   have hprod : Tendsto (fun l => (aSq l / d1 l) * (A l / logL l) * (logL l / Real.log l))
-      atTop (nhds ((16 / (11 * Real.pi)) * (Real.pi ^ 2 / 12) * 2)) :=
+      atTop (nhds ((16 / (11 * Real.pi)) * (Real.pi ^ (2 : ℕ) / 12) * 2)) :=
     (ha.mul hA).mul hLl
   rw [endpoint_constant_eq] at hprod
   refine hprod.congr' ?_

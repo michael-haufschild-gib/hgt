@@ -17,11 +17,11 @@ open HedenmalmContinuousAperture
 
 /-- Weighted-source energy density of one endpoint translated by half-aperture `a`. -/
 def thetaEndpointShiftEnergyDensity (a x : ℝ) : ℝ :=
-  thetaSource.k (x - a) ^ 2 / thetaSource.k x
+  thetaSource.k (x - a) ^ (2 : ℕ) / thetaSource.k x
 
 /-- Exact double-exponential ratio of the model theta envelopes. -/
 theorem thetaEnvelope_shift_sq_div (a x : ℝ) :
-    thetaEnvelope (x - a) ^ 2 / thetaEnvelope x =
+    thetaEnvelope (x - a) ^ (2 : ℕ) / thetaEnvelope x =
       Real.exp (9 * x / 2 - 9 * a +
         Real.pi * (1 - 2 * Real.exp (-2 * a)) * Real.exp (2 * x)) := by
   rw [thetaEnvelope, thetaEnvelope, mul_pow, ← Real.exp_nat_mul,
@@ -52,7 +52,7 @@ lemma one_sub_two_mul_exp_neg_two_mul_nonneg {a : ℝ}
 /-- At and beyond half of `log 2`, the squared shifted envelope overwhelms the original envelope. -/
 theorem tendsto_thetaEnvelope_shift_sq_div_atTop {a : ℝ}
     (ha : Real.log 2 / 2 ≤ a) :
-    Tendsto (fun x : ℝ => thetaEnvelope (x - a) ^ 2 / thetaEnvelope x) atTop atTop := by
+    Tendsto (fun x : ℝ => thetaEnvelope (x - a) ^ (2 : ℕ) / thetaEnvelope x) atTop atTop := by
   have hc := one_sub_two_mul_exp_neg_two_mul_nonneg ha
   have hlinear : Tendsto (fun x : ℝ => 9 * x / 2 - 9 * a) atTop atTop := by
     refine Filter.tendsto_atTop.mpr ?_
@@ -77,10 +77,10 @@ theorem tendsto_thetaEnvelope_shift_sq_div_atTop {a : ℝ}
 theorem tendsto_thetaEndpointShiftEnergyDensity_atTop {a : ℝ}
     (ha : Real.log 2 / 2 ≤ a) :
     Tendsto (thetaEndpointShiftEnergyDensity a) atTop atTop := by
-  let C : ℝ := thetaEnvelopeLower ^ 2 / thetaEnvelopeUpper
+  let C : ℝ := thetaEnvelopeLower ^ (2 : ℕ) / thetaEnvelopeUpper
   have hC : 0 < C := div_pos (sq_pos_of_pos thetaEnvelopeLower_pos) thetaEnvelopeUpper_pos
   have hlowerT : Tendsto
-      (fun x : ℝ => C * (thetaEnvelope (x - a) ^ 2 / thetaEnvelope x)) atTop atTop :=
+      (fun x : ℝ => C * (thetaEnvelope (x - a) ^ (2 : ℕ) / thetaEnvelope x)) atTop atTop :=
     Filter.Tendsto.const_mul_atTop hC (tendsto_thetaEnvelope_shift_sq_div_atTop ha)
   refine Filter.tendsto_atTop.mpr ?_
   intro M
@@ -99,15 +99,15 @@ theorem tendsto_thetaEndpointShiftEnergyDensity_atTop {a : ℝ}
   have hkshiftNonneg : 0 ≤ thetaSource.k (x - a) := (thetaSource.pos_k _).le
   apply (le_div_iff₀ hk).2
   calc
-    C * (thetaEnvelope (x - a) ^ 2 / thetaEnvelope x) * thetaSource.k x
-        ≤ C * (thetaEnvelope (x - a) ^ 2 / thetaEnvelope x) *
+    C * (thetaEnvelope (x - a) ^ (2 : ℕ) / thetaEnvelope x) * thetaSource.k x
+        ≤ C * (thetaEnvelope (x - a) ^ (2 : ℕ) / thetaEnvelope x) *
             (thetaEnvelopeUpper * thetaEnvelope x) := by
           gcongr
           simpa only [thetaSource_k] using hdenUpper
-    _ = (thetaEnvelopeLower * thetaEnvelope (x - a)) ^ 2 := by
+    _ = (thetaEnvelopeLower * thetaEnvelope (x - a)) ^ (2 : ℕ) := by
           dsimp [C]
           field_simp [thetaEnvelopeUpper_pos.ne']
-    _ ≤ thetaSource.k (x - a) ^ 2 := by
+    _ ≤ thetaSource.k (x - a) ^ (2 : ℕ) := by
           have hle : thetaEnvelopeLower * thetaEnvelope (x - a) ≤
               thetaSource.k (x - a) := by
             simpa only [thetaSource_k] using hnumLower
@@ -146,7 +146,7 @@ theorem not_integrable_primeThetaEndpointShiftEnergyDensity (p : Nat.Primes) :
 
 /-- Canonical source-Hilbert energy density of the actual even aperture endpoint. -/
 def thetaApertureEvenEnergyDensity (L x : ℝ) : ℝ :=
-  centeredApertureEvenEndpoint thetaSource L x ^ 2 / thetaSource.k x
+  centeredApertureEvenEndpoint thetaSource L x ^ (2 : ℕ) / thetaSource.k x
 
 theorem continuous_thetaEndpointShiftEnergyDensity (a : ℝ) :
     Continuous (thetaEndpointShiftEnergyDensity a) := by
@@ -177,10 +177,10 @@ theorem not_integrable_thetaApertureEvenEnergyDensity {L : ℝ}
   have ha : Real.log 2 / 2 ≤ a := by dsimp [a]; linarith
   have hc : 0 < c := by dsimp [c]; positivity
   have hscaled : Integrable
-      (fun x : ℝ => c ^ 2 * thetaEndpointShiftEnergyDensity a x)
+      (fun x : ℝ => c ^ (2 : ℕ) * thetaEndpointShiftEnergyDensity a x)
       (volume : Measure ℝ) := by
     refine MeasureTheory.Integrable.mono heven
-      ((continuous_thetaEndpointShiftEnergyDensity a).const_mul (c ^ 2)).aestronglyMeasurable ?_
+      ((continuous_thetaEndpointShiftEnergyDensity a).const_mul (c ^ (2 : ℕ))).aestronglyMeasurable ?_
     filter_upwards with x
     have hkx : 0 < thetaSource.k x := thetaSource.pos_k x
     have hkm : 0 < thetaSource.k (x - a) := thetaSource.pos_k _
@@ -194,8 +194,8 @@ theorem not_integrable_thetaApertureEvenEnergyDensity {L : ℝ}
       dsimp [a, c]
       rw [mul_add]
       exact le_add_of_nonneg_left (mul_nonneg (Real.exp_pos _).le hkp.le)
-    have hsquare : (c * thetaSource.k (x - a)) ^ 2 ≤
-        centeredApertureEvenEndpoint thetaSource L x ^ 2 := by
+    have hsquare : (c * thetaSource.k (x - a)) ^ (2 : ℕ) ≤
+        centeredApertureEvenEndpoint thetaSource L x ^ (2 : ℕ) := by
       exact (sq_le_sq₀ (mul_nonneg hc.le hkm.le) hevenNonneg).2 hcomponent
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) (by
         rw [thetaEndpointShiftEnergyDensity]
@@ -205,12 +205,12 @@ theorem not_integrable_thetaApertureEvenEnergyDensity {L : ℝ}
         exact div_nonneg (sq_nonneg _) hkx.le)]
     rw [thetaEndpointShiftEnergyDensity, thetaApertureEvenEnergyDensity]
     calc
-      c ^ 2 * (thetaSource.k (x - a) ^ 2 / thetaSource.k x) =
-          (c * thetaSource.k (x - a)) ^ 2 / thetaSource.k x := by ring
-      _ ≤ centeredApertureEvenEndpoint thetaSource L x ^ 2 / thetaSource.k x :=
+      c ^ (2 : ℕ) * (thetaSource.k (x - a) ^ (2 : ℕ) / thetaSource.k x) =
+          (c * thetaSource.k (x - a)) ^ (2 : ℕ) / thetaSource.k x := by ring
+      _ ≤ centeredApertureEvenEndpoint thetaSource L x ^ (2 : ℕ) / thetaSource.k x :=
         (div_le_div_iff_of_pos_right hkx).2 hsquare
-  have hc2 : c ^ 2 ≠ 0 := pow_ne_zero 2 hc.ne'
-  have hunscaled := hscaled.const_mul (c ^ 2)⁻¹
+  have hc2 : c ^ (2 : ℕ) ≠ 0 := pow_ne_zero 2 hc.ne'
+  have hunscaled := hscaled.const_mul (c ^ (2 : ℕ))⁻¹
   apply not_integrable_thetaEndpointShiftEnergyDensity ha
   refine hunscaled.congr ?_
   filter_upwards with x

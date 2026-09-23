@@ -116,7 +116,7 @@ theorem horizontalWeight_pos (y : ℝ) : 0 < horizontalWeight y := by
 
 /-- One positive, parameter-independent height weight controls the full scalar theta response. -/
 def scalarResponse (q : XiZeroCopy) : ℂ :=
-  ∫ y in Ioi (0:ℝ), (y^2)⁻¹ • (heightProfile q y * (horizontalWeight y:ℂ))
+  ∫ y in Ioi (0:ℝ), (y^(2 : ℕ))⁻¹ • (heightProfile q y * (horizontalWeight y:ℂ))
 
 private theorem point_im (x y : ℝ) (hy : 0 < y) :
     (ofComplex (⟨x,y⟩:ℂ)).im = y := by
@@ -125,7 +125,7 @@ private theorem point_im (x y : ℝ) (hy : 0 < y) :
 
 /-- The displayed scalar integral is absolutely admitted in the original height measure. -/
 theorem scalarResponse_integrable (q : XiZeroCopy) :
-    IntegrableOn (fun y : ℝ => (y^2)⁻¹ •
+    IntegrableOn (fun y : ℝ => (y^(2 : ℕ))⁻¹ •
       (heightProfile q y * (horizontalWeight y:ℂ))) (Ioi (0:ℝ)) := by
   have hi := (integrableOn_modularStrip_iff _).mp (product_strip_integrable q)
   rw [Measure.volume_eq_prod,IntegrableOn,← Measure.prod_restrict] at hi
@@ -168,7 +168,7 @@ theorem nativePositive_inner_source (q : XiZeroCopy) :
   simp [hp,hq]
 
 private theorem constant_source_inner (q : XiZeroCopy) :
-    inner ℂ constantVector (nativeSource q) = (sourceMass:ℂ)/(1+(xiSpectralPoint q)^2) := by
+    inner ℂ constantVector (nativeSource q) = (sourceMass:ℂ)/(1+(xiSpectralPoint q)^(2 : ℕ)) := by
   rw [inner_constantVector,integral_congr_ae (nativeSource_coe q),source_integral]
 
 private theorem constant_positive_inner :
@@ -184,7 +184,7 @@ private theorem positive_constant_inner :
 theorem sourcePairing_eq_scalarResponse (q : XiZeroCopy) :
     SelbergThetaCommonForcingGram.sourcePairing q =
       -(1/4:ℂ) * (scalarResponse q -
-        (sourceMass:ℂ)^2 / ((1+(xiSpectralPoint q)^2) * inner ℂ constantVector constantVector)) := by
+        (sourceMass:ℂ)^(2 : ℕ) / ((1+(xiSpectralPoint q)^(2 : ℕ)) * inner ℂ constantVector constantVector)) := by
   have hz : inner ℂ constantVector (centered (nativeSource q)) = 0 := by
     rw [inner_constantVector,integral_centered]
   unfold SelbergThetaCommonForcingGram.sourcePairing SelbergThetaCommonForcingGram.forcing

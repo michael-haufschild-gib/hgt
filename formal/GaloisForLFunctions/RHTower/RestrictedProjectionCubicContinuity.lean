@@ -69,7 +69,7 @@ theorem traceNorm_cubic_sub_le_of_selfAdjoint_hilbertSchmidt
     (A B : H →L[ℂ] H) (hA : A.IsHilbertSchmidt) (hB : B.IsHilbertSchmidt)
     (hAadj : ContinuousLinearMap.adjoint A = A)
     (hBadj : ContinuousLinearMap.adjoint B = B) :
-    traceNorm H (A ^ 3 - B ^ 3) ≤
+    traceNorm H (A ^ (3 : ℕ) - B ^ (3 : ℕ)) ≤
       (‖A‖ * (A.hsNorm + B.hsNorm) + B.hsNorm * ‖B‖) * (A - B).hsNorm := by
   let D := A - B
   let G := A ∘L ContinuousLinearMap.adjoint A -
@@ -108,7 +108,7 @@ theorem traceNorm_cubic_sub_le_of_selfAdjoint_hilbertSchmidt
         simpa [Y] using traceNorm_comp_right_le hDB.one_summable_approxNumber B
       _ ≤ (D.hsNorm * B.hsNorm) * ‖B‖ :=
         mul_le_mul_of_nonneg_right hDBbound (norm_nonneg B)
-  have hdecomp : A ^ 3 - B ^ 3 = X + Y := by
+  have hdecomp : A ^ (3 : ℕ) - B ^ (3 : ℕ) = X + Y := by
     change (A * A) * A - (B * B) * B = X + Y
     dsimp [X, Y, G, D]
     change (A * A) * A - (B * B) * B =
@@ -135,7 +135,7 @@ theorem traceNorm_cubic_tendsto_of_hsNorm_displacement_tendsto
     (hBadj : ContinuousLinearMap.adjoint B = B)
     (hAnorm : ∀ i, ‖A i‖ ≤ 1) (hBnorm : ‖B‖ ≤ 1)
     (htend : Tendsto (fun i => (A i - B).hsNorm) l (nhds 0)) :
-    Tendsto (fun i => traceNorm H ((A i) ^ 3 - B ^ 3)) l (nhds 0) := by
+    Tendsto (fun i => traceNorm H ((A i) ^ (3 : ℕ) - B ^ (3 : ℕ))) l (nhds 0) := by
   have hupper : Tendsto (fun i => ((A i - B).hsNorm + 3 * B.hsNorm) *
       (A i - B).hsNorm) l (nhds 0) := by
     convert htend.add_const (3 * B.hsNorm) |>.mul htend using 1
@@ -146,7 +146,7 @@ theorem traceNorm_cubic_tendsto_of_hsNorm_displacement_tendsto
     have hadd := hsNorm_add_le (hA i |>.sub hB) hB
     simpa [sub_add_cancel] using hadd
   calc
-    traceNorm H ((A i) ^ 3 - B ^ 3) ≤
+    traceNorm H ((A i) ^ (3 : ℕ) - B ^ (3 : ℕ)) ≤
         (‖A i‖ * ((A i).hsNorm + B.hsNorm) + B.hsNorm * ‖B‖) *
           (A i - B).hsNorm :=
       traceNorm_cubic_sub_le_of_selfAdjoint_hilbertSchmidt

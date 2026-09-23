@@ -6,59 +6,59 @@ noncomputable section
 
 /-- Certified coefficients of the two factor polynomials needed at slice eight. -/
 def evenCompactGapCofactorTerm6LeftSlice0Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 0) :=
-  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 0)
+    (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 0) :=
+  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 0)
 def evenCompactGapCofactorTerm6LeftSlice1Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 1) :=
-  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 1)
+    (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 1) :=
+  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 1)
 def evenCompactGapCofactorTerm6LeftSlice2Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 2) :=
-  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 2)
+    (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 2) :=
+  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 2)
 def evenCompactGapCofactorTerm6LeftSlice3Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 3) :=
-  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 3)
+    (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 3) :=
+  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 3)
 def evenCompactGapCofactorTerm6LeftSlice4Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 4) :=
-  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 4)
+    (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 4) :=
+  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 4)
 def evenCompactGapCofactorTerm6LeftSlice5Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 5) :=
-  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 5)
+    (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 5) :=
+  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 5)
 def evenCompactGapCofactorTerm6LeftSlice6Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 6) :=
-  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 6)
+    (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 6) :=
+  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 6)
 def evenCompactGapCofactorTerm6LeftSlice7Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 7) :=
-  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 7)
+    (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 7) :=
+  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 7)
 def evenCompactGapCofactorTerm6LeftSlice8Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 8) :=
-  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^2 * evenCompactGapReflectedFourPolynomial u w -
-      (evenCompactGapReflectedTwoPolynomial u w)^2).coeff 8)
+    (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 8) :=
+  compactGapCofactorHigherCertified% (((evenCompactGapSourceZeroPolynomial u)^(2 : ℕ) * evenCompactGapReflectedFourPolynomial u w -
+      (evenCompactGapReflectedTwoPolynomial u w)^(2 : ℕ)).coeff 8)
 
 def evenCompactGapCofactorTerm6RightSlice0Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapReflectedTenPolynomial u w)^2).coeff 0) where
+    (((evenCompactGapReflectedTenPolynomial u w)^(2 : ℕ)).coeff 0) where
   value := evenCompactGapReflectedTenSlice0 u w * evenCompactGapReflectedTenSlice0 u w
   eq_value := by
     rw [pow_two, Polynomial.mul_coeff_zero]
     simp only [evenCompactGapReflectedTenPolynomial_coeff_slice0]
 def evenCompactGapCofactorTerm6RightSlice1Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapReflectedTenPolynomial u w)^2).coeff 1) where
+    (((evenCompactGapReflectedTenPolynomial u w)^(2 : ℕ)).coeff 1) where
   value := evenCompactGapReflectedTenSlice0 u w * evenCompactGapReflectedTenSlice1 u w +
     evenCompactGapReflectedTenSlice1 u w * evenCompactGapReflectedTenSlice0 u w
   eq_value := by
@@ -66,7 +66,7 @@ def evenCompactGapCofactorTerm6RightSlice1Certificate (u w : ℝ) : CompactGapNo
     simp only [evenCompactGapReflectedTenPolynomial_coeff_slice0,
       evenCompactGapReflectedTenPolynomial_coeff_slice1]
 def evenCompactGapCofactorTerm6RightSlice2Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapReflectedTenPolynomial u w)^2).coeff 2) where
+    (((evenCompactGapReflectedTenPolynomial u w)^(2 : ℕ)).coeff 2) where
   value := evenCompactGapReflectedTenSlice0 u w * evenCompactGapReflectedTenSlice2 u w +
     evenCompactGapReflectedTenSlice1 u w * evenCompactGapReflectedTenSlice1 u w +
     evenCompactGapReflectedTenSlice2 u w * evenCompactGapReflectedTenSlice0 u w
@@ -76,7 +76,7 @@ def evenCompactGapCofactorTerm6RightSlice2Certificate (u w : ℝ) : CompactGapNo
       evenCompactGapReflectedTenPolynomial_coeff_slice1,
       evenCompactGapReflectedTenPolynomial_coeff_slice2]
 def evenCompactGapCofactorTerm6RightSlice3Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapReflectedTenPolynomial u w)^2).coeff 3) where
+    (((evenCompactGapReflectedTenPolynomial u w)^(2 : ℕ)).coeff 3) where
   value := evenCompactGapReflectedTenSlice0 u w * evenCompactGapReflectedTenSlice3 u w +
     evenCompactGapReflectedTenSlice1 u w * evenCompactGapReflectedTenSlice2 u w +
     evenCompactGapReflectedTenSlice2 u w * evenCompactGapReflectedTenSlice1 u w +
@@ -88,7 +88,7 @@ def evenCompactGapCofactorTerm6RightSlice3Certificate (u w : ℝ) : CompactGapNo
       evenCompactGapReflectedTenPolynomial_coeff_slice2,
       evenCompactGapReflectedTenPolynomial_coeff_slice3]
 def evenCompactGapCofactorTerm6RightSlice4Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapReflectedTenPolynomial u w)^2).coeff 4) where
+    (((evenCompactGapReflectedTenPolynomial u w)^(2 : ℕ)).coeff 4) where
   value := evenCompactGapReflectedTenSlice0 u w * evenCompactGapReflectedTenSlice4 u w +
     evenCompactGapReflectedTenSlice1 u w * evenCompactGapReflectedTenSlice3 u w +
     evenCompactGapReflectedTenSlice2 u w * evenCompactGapReflectedTenSlice2 u w +
@@ -102,7 +102,7 @@ def evenCompactGapCofactorTerm6RightSlice4Certificate (u w : ℝ) : CompactGapNo
       evenCompactGapReflectedTenPolynomial_coeff_slice3,
       evenCompactGapReflectedTenPolynomial_coeff_slice4]
 def evenCompactGapCofactorTerm6RightSlice5Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapReflectedTenPolynomial u w)^2).coeff 5) where
+    (((evenCompactGapReflectedTenPolynomial u w)^(2 : ℕ)).coeff 5) where
   value := evenCompactGapReflectedTenSlice0 u w * evenCompactGapReflectedTenSlice5 u w +
     evenCompactGapReflectedTenSlice1 u w * evenCompactGapReflectedTenSlice4 u w +
     evenCompactGapReflectedTenSlice2 u w * evenCompactGapReflectedTenSlice3 u w +
@@ -118,7 +118,7 @@ def evenCompactGapCofactorTerm6RightSlice5Certificate (u w : ℝ) : CompactGapNo
       evenCompactGapReflectedTenPolynomial_coeff_slice4,
       evenCompactGapReflectedTenPolynomial_coeff_slice5]
 def evenCompactGapCofactorTerm6RightSlice6Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapReflectedTenPolynomial u w)^2).coeff 6) where
+    (((evenCompactGapReflectedTenPolynomial u w)^(2 : ℕ)).coeff 6) where
   value := evenCompactGapReflectedTenSlice0 u w * evenCompactGapReflectedTenSlice6 u w +
     evenCompactGapReflectedTenSlice1 u w * evenCompactGapReflectedTenSlice5 u w +
     evenCompactGapReflectedTenSlice2 u w * evenCompactGapReflectedTenSlice4 u w +
@@ -136,7 +136,7 @@ def evenCompactGapCofactorTerm6RightSlice6Certificate (u w : ℝ) : CompactGapNo
       evenCompactGapReflectedTenPolynomial_coeff_slice5,
       evenCompactGapReflectedTenPolynomial_coeff_slice6]
 def evenCompactGapCofactorTerm6RightSlice7Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapReflectedTenPolynomial u w)^2).coeff 7) where
+    (((evenCompactGapReflectedTenPolynomial u w)^(2 : ℕ)).coeff 7) where
   value := evenCompactGapReflectedTenSlice0 u w * evenCompactGapReflectedTenSlice7 u w +
     evenCompactGapReflectedTenSlice1 u w * evenCompactGapReflectedTenSlice6 u w +
     evenCompactGapReflectedTenSlice2 u w * evenCompactGapReflectedTenSlice5 u w +
@@ -156,7 +156,7 @@ def evenCompactGapCofactorTerm6RightSlice7Certificate (u w : ℝ) : CompactGapNo
       evenCompactGapReflectedTenPolynomial_coeff_slice6,
       evenCompactGapReflectedTenPolynomial_coeff_slice7]
 def evenCompactGapCofactorTerm6RightSlice8Certificate (u w : ℝ) : CompactGapNormalForm
-    (((evenCompactGapReflectedTenPolynomial u w)^2).coeff 8) where
+    (((evenCompactGapReflectedTenPolynomial u w)^(2 : ℕ)).coeff 8) where
   value := evenCompactGapReflectedTenSlice1 u w * evenCompactGapReflectedTenSlice7 u w +
     evenCompactGapReflectedTenSlice2 u w * evenCompactGapReflectedTenSlice6 u w +
     evenCompactGapReflectedTenSlice3 u w * evenCompactGapReflectedTenSlice5 u w +

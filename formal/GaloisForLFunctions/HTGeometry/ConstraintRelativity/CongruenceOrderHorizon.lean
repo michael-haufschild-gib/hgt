@@ -77,11 +77,11 @@ theorem length_quotient_span_of_isMaximal (a : R)
 
 theorem length_quotient_span_sq [IsDomain R] {a : R} (ha : a ≠ 0)
     (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
-    Module.length R (R ⧸ Ideal.span ({a ^ 2} : Set R)) = 2 := by
+    Module.length R (R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) = 2 := by
   have hord : Ring.ord R (a * a) = Ring.ord R a + Ring.ord R a :=
     Ring.ord_mul R (mem_nonZeroDivisors_of_ne_zero ha)
   have hone : Ring.ord R a = 1 := length_quotient_span_of_isMaximal a hmax
-  show Ring.ord R (a ^ 2) = 2
+  show Ring.ord R (a ^ (2 : ℕ)) = 2
   rw [pow_two, hord, hone]
   rfl
 
@@ -89,7 +89,7 @@ variable {a : R} {m : ℕ}
 
 theorem length_traceDefectModel [IsDomain R] (ha : a ≠ 0)
     (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
-    Module.length R (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) = ((2 * m : ℕ) : ℕ∞) := by
+    Module.length R (Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) = ((2 * m : ℕ) : ℕ∞) := by
   rw [Module.length_pi_of_fintype,
     Finset.sum_congr rfl (fun i (_ : i ∈ Finset.univ) => length_quotient_span_sq ha hmax),
     Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
@@ -109,7 +109,7 @@ theorem length_pairSector (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
 theorem length_cotangentModel [IsDomain R] (ha : a ≠ 0)
     (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
     Module.length R (cotangentModel a m) = ((2 * m + m.choose 2 : ℕ) : ℕ∞) := by
-  show Module.length R ((Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) ×
+  show Module.length R ((Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) ×
     (pairIndex m → R ⧸ Ideal.span ({a} : Set R))) = _
   rw [Module.length_prod, length_traceDefectModel ha hmax, length_pairSector hmax]
   push_cast
@@ -120,7 +120,7 @@ theorem length_cotangentModel [IsDomain R] (ha : a ≠ 0)
 theorem length_cotangentModel_eq_length_traceDefect_add [IsDomain R] (ha : a ≠ 0)
     (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
     Module.length R (cotangentModel a m)
-      = Module.length R (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) + ((m.choose 2 : ℕ) : ℕ∞) := by
+      = Module.length R (Fin m → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) + ((m.choose 2 : ℕ) : ℕ∞) := by
   rw [length_cotangentModel ha hmax, length_traceDefectModel ha hmax]
   push_cast
   ring
@@ -185,8 +185,8 @@ theorem aMul_quotient_span_eq_bot (a : R) :
 
 /-- The composite `R → R/a² → (R/a²)/(a·)`. -/
 noncomputable def sqFibreMap (a : R) :
-    R →ₗ[R] ((R ⧸ Ideal.span ({a ^ 2} : Set R)) ⧸ aMul a (R ⧸ Ideal.span ({a ^ 2} : Set R))) :=
-  (aMul a (R ⧸ Ideal.span ({a ^ 2} : Set R))).mkQ.comp (Ideal.span ({a ^ 2} : Set R)).mkQ
+    R →ₗ[R] ((R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) ⧸ aMul a (R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R))) :=
+  (aMul a (R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R))).mkQ.comp (Ideal.span ({a ^ (2 : ℕ)} : Set R)).mkQ
 
 theorem sqFibreMap_surjective (a : R) : Function.Surjective (sqFibreMap a) :=
   (Submodule.mkQ_surjective _).comp (Submodule.mkQ_surjective _)
@@ -198,7 +198,7 @@ theorem ker_sqFibreMap (a : R) :
     Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, mem_aMul, Ideal.mem_span_singleton]
   constructor
   · rintro ⟨u, hu⟩
-    obtain ⟨s, rfl⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a ^ 2} : Set R)) u
+    obtain ⟨s, rfl⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a ^ (2 : ℕ)} : Set R)) u
     rw [← Submodule.Quotient.mk_smul, smul_eq_mul, Submodule.Quotient.eq,
       Ideal.mem_span_singleton] at hu
     obtain ⟨w, hw⟩ := hu
@@ -208,7 +208,7 @@ theorem ker_sqFibreMap (a : R) :
 
 /-- `(R/a²)/a(R/a²) ≅ R/a`. -/
 noncomputable def sqFibreEquiv (a : R) :
-    ((R ⧸ Ideal.span ({a ^ 2} : Set R)) ⧸ aMul a (R ⧸ Ideal.span ({a ^ 2} : Set R)))
+    ((R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) ⧸ aMul a (R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)))
       ≃ₗ[R] (R ⧸ Ideal.span ({a} : Set R)) :=
   (LinearMap.quotKerEquivOfSurjective _ (sqFibreMap_surjective a)).symm.trans
     (Submodule.quotEquivOfEq _ _ (ker_sqFibreMap a))
@@ -276,7 +276,7 @@ variable {R : Type*} [CommRing R] {a : R} {m : ℕ}
 
 /-- The antisymmetric sector is the exterior square of the observer defect. -/
 noncomputable def exteriorSquareModel (m : ℕ) (k : Type*) [CommRing k] :
-    (pairIndex m → k) ≃ₗ[k] ⋀[k]^2 (Fin m → k) := by
+    (pairIndex m → k) ≃ₗ[k] ⋀[k]^(2 : ℕ) (Fin m → k) := by
   classical
   letI : Fintype (Set.powersetCard (Fin m) 2) :=
     Fintype.ofEquiv _ (pairIndexEquivPowersetCard m)
@@ -316,7 +316,7 @@ noncomputable def horizonExteriorSquareEquiv (ha : a ≠ 0) :
           (⊤ : Submodule R Ω[(MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)⁄R])))
       ≃ₗ[R ⧸ Ideal.span ({a} : Set R)]
         ((Fin m → R ⧸ Ideal.span ({a} : Set R)) ×
-          ⋀[R ⧸ Ideal.span ({a} : Set R)]^2 (Fin m → R ⧸ Ideal.span ({a} : Set R))) :=
+          ⋀[R ⧸ Ideal.span ({a} : Set R)]^(2 : ℕ) (Fin m → R ⧸ Ideal.span ({a} : Set R))) :=
   (quotientScalarsEquiv (Ideal.span ({a} : Set R)) (kaehlerFibreEquiv ha)).trans
     (LinearEquiv.prodCongr (LinearEquiv.refl _ _)
       (exteriorSquareModel m (R ⧸ Ideal.span ({a} : Set R))))
@@ -340,7 +340,7 @@ theorem length_cotangentModel_two [IsDomain R] (ha : a ≠ 0)
 /-- **Card `(29)`.**  Three sheets: the trace-law defect has length `4`. -/
 theorem length_traceDefectModel_two [IsDomain R] (ha : a ≠ 0)
     (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
-    Module.length R (Fin 2 → R ⧸ Ideal.span ({a ^ 2} : Set R)) = (4 : ℕ∞) := by
+    Module.length R (Fin 2 → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R)) = (4 : ℕ∞) := by
   rw [length_traceDefectModel ha hmax]
   norm_num
 
@@ -349,7 +349,7 @@ defect are *not isomorphic*, although the Kähler and Dedekind differents agree 
 are `5` and `4`.  Determinant-level agreement does not force module agreement. -/
 theorem not_nonempty_linearEquiv_cotangentModel_traceDefect_two [IsDomain R] (ha : a ≠ 0)
     (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
-    ¬ Nonempty (cotangentModel a 2 ≃ₗ[R] (Fin 2 → R ⧸ Ideal.span ({a ^ 2} : Set R))) := by
+    ¬ Nonempty (cotangentModel a 2 ≃ₗ[R] (Fin 2 → R ⧸ Ideal.span ({a ^ (2 : ℕ)} : Set R))) := by
   rintro ⟨e⟩
   have h := e.length_eq
   rw [length_cotangentModel_two ha hmax, length_traceDefectModel_two ha hmax] at h

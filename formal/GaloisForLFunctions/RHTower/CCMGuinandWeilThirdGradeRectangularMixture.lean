@@ -10,7 +10,7 @@ open _root_.RHTower
 
 /-- Positive aperture density forced by differentiating the third-grade anchored kernel. -/
 def ccmThirdGradeCesaroRectangularMixDensity (H t : ℝ) : ℝ :=
-  192 * (2 * H - t) / (H * t ^ 5)
+  192 * (2 * H - t) / (H * t ^ (5 : ℕ))
 
 theorem ccmThirdGradeCesaroRectangularMixDensity_nonneg
     {H t : ℝ} (hH : 0 < H) (ht : 0 < t) (htH : t ≤ H) :
@@ -31,7 +31,7 @@ theorem hasDerivAt_ccmGuinandWeilThirdGradeCesaroErrorKernel
   have hnum : HasDerivAt (fun x : ℝ => 96 - 64 * x / H) (-64 / H) t := by
     simpa only [Pi.sub_apply, zero_sub, neg_div] using!
       (hasDerivAt_const (x := t) (c := (96 : ℝ))).sub hlin
-  have hden : HasDerivAt (fun x : ℝ => x ^ 4) (4 * t ^ 3) t := by
+  have hden : HasDerivAt (fun x : ℝ => x ^ (4 : ℕ)) (4 * t ^ (3 : ℕ)) t := by
     simpa using hasDerivAt_pow 4 t
   apply (hnum.div hden (pow_ne_zero 4 ht)).congr_deriv
   unfold ccmThirdGradeCesaroRectangularMixDensity
@@ -40,7 +40,7 @@ theorem hasDerivAt_ccmGuinandWeilThirdGradeCesaroErrorKernel
 
 theorem ccmGuinandWeilThirdGradeCesaroErrorKernel_endpoint
     {H : ℝ} (hH : H ≠ 0) :
-    ccmGuinandWeilThirdGradeCesaroErrorKernel H H = 32 / H ^ 4 := by
+    ccmGuinandWeilThirdGradeCesaroErrorKernel H H = 32 / H ^ (4 : ℕ) := by
   unfold ccmGuinandWeilThirdGradeCesaroErrorKernel
   field_simp [hH]
   ring
@@ -49,7 +49,7 @@ theorem ccmGuinandWeilThirdGradeCesaroErrorKernel_endpoint
 is forced by the nonzero left derivative at the moving wall. -/
 theorem integral_rectangularMixDensity_add_endpoint_eq_errorKernel
     {H h : ℝ} (hh : 0 < h) (hhH : h ≤ H) :
-    (∫ t in h..H, ccmThirdGradeCesaroRectangularMixDensity H t) + 32 / H ^ 4 =
+    (∫ t in h..H, ccmThirdGradeCesaroRectangularMixDensity H t) + 32 / H ^ (4 : ℕ) =
       ccmGuinandWeilThirdGradeCesaroErrorKernel H h := by
   have hH : 0 < H := hh.trans_le hhH
   have hderiv : ∀ t ∈ Set.uIcc h H,
@@ -80,7 +80,7 @@ theorem ccmGuinandWeilThirdGradeCesaroTriangularWeight_eq_rectangularMixture
     ccmGuinandWeilThirdGradeCesaroTriangularWeight H h =
       (∫ t in h..H,
         ccmThirdGradeCesaroRectangularMixDensity H t * (t - h)) +
-        (32 / H ^ 4) * (H - h) := by
+        (32 / H ^ (4 : ℕ)) * (H - h) := by
   have hH : 0 < H := hh.trans_le hhH
   let A : ℝ → ℝ := fun t =>
     ccmGuinandWeilThirdGradeCesaroErrorKernel H t * (h - t) -
@@ -121,8 +121,8 @@ theorem ccmGuinandWeilThirdGradeCesaroTriangularWeight_eq_rectangularMixture
 /-- Fixed-lower-wall total mixture mass is uniformly bounded independently of the moving wall. -/
 theorem rectangularMixDensity_totalMass_le
     {b H : ℝ} (hb : 0 < b) (hbH : b ≤ H) :
-    (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t) + 32 / H ^ 4 ≤
-      96 / b ^ 4 := by
+    (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t) + 32 / H ^ (4 : ℕ) ≤
+      96 / b ^ (4 : ℕ) := by
   rw [integral_rectangularMixDensity_add_endpoint_eq_errorKernel hb hbH]
   exact (ccmGuinandWeilThirdGradeCesaroErrorKernel_bounds hb hbH
     (show b ∈ Set.Icc b H by exact ⟨le_rfl, hbH⟩)).2

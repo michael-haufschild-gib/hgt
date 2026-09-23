@@ -29,9 +29,9 @@ theorem stringTwoSiteAttenuation_bounds (ell x : ℝ) :
 theorem stringTwoSitePotential_formula (ell tau x : ℝ) :
     stringTwoSitePotential ell tau x =
       (coherentRadius tau * stringTwoSiteAttenuation ell x,
-        coherentRadius tau * stringTwoSiteAttenuation ell x ^ 2) := by
+        coherentRadius tau * stringTwoSiteAttenuation ell x ^ (2 : ℕ)) := by
   have h : Real.exp (-Real.exp ell * (2 * Real.exp x)) =
-      Real.exp (-Real.exp ell * Real.exp x) ^ 2 := by
+      Real.exp (-Real.exp ell * Real.exp x) ^ (2 : ℕ) := by
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
@@ -59,7 +59,7 @@ theorem stringTwoSiteGap_pos (ell tau x : ℝ) : 0 < stringTwoSiteGap ell tau x 
 /-- The exact nonnegative defect exposes the sharp quarter-radius gap bound. -/
 theorem stringTwoSiteGap_defect (ell tau x : ℝ) :
     coherentRadius tau / 4 - stringTwoSiteGap ell tau x =
-      coherentRadius tau * (stringTwoSiteAttenuation ell x - 1 / 2) ^ 2 := by
+      coherentRadius tau * (stringTwoSiteAttenuation ell x - 1 / 2) ^ (2 : ℕ) := by
   rw [stringTwoSiteGap_formula]
   ring
 
@@ -76,8 +76,8 @@ theorem stringTwoSiteGap_maximum_iff (ell tau x : ℝ) :
   constructor
   · intro h
     have hd := stringTwoSiteGap_defect ell tau x
-    have hs : (stringTwoSiteAttenuation ell x - 1 / 2) ^ 2 = 0 := by
-      have hp : coherentRadius tau * (stringTwoSiteAttenuation ell x - 1 / 2) ^ 2 = 0 := by linarith
+    have hs : (stringTwoSiteAttenuation ell x - 1 / 2) ^ (2 : ℕ) = 0 := by
+      have hp : coherentRadius tau * (stringTwoSiteAttenuation ell x - 1 / 2) ^ (2 : ℕ) = 0 := by linarith
       exact (mul_eq_zero.mp hp).resolve_left (coherentRadius_pos tau).ne'
     have hz := sq_eq_zero_iff.mp hs
     linarith
@@ -87,7 +87,7 @@ theorem stringTwoSiteGap_maximum_iff (ell tau x : ℝ) :
 
 /-- The exact charge-temperature identity bounds the squared electrostatic gap. -/
 theorem stringTwoSiteGap_temperature_bound (ell tau x : ℝ) :
-    stringTwoSiteGap ell tau x ^ 2 ≤
+    stringTwoSiteGap ell tau x ^ (2 : ℕ) ≤
       (1 - 4 * Real.pi * stringBlackHoleTemperature ell tau / Real.exp ell) / 16 := by
   have hb := stringTwoSiteGap_le_quarter ell tau x
   have hp := stringTwoSiteGap_pos ell tau x

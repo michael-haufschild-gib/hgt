@@ -46,7 +46,7 @@ theorem hasSum_cddPhaseKernel {y θ : ℝ} (hy : 0 ≤ y)
   · -- a positive shell: subtract the two arctangent series
     set u : ℝ := Real.sqrt y with hu
     have hu0 : 0 < u := Real.sqrt_pos.mpr hpos
-    have husq : u ^ 2 = y := Real.sq_sqrt hy
+    have husq : u ^ (2 : ℕ) = y := Real.sq_sqrt hy
     have hexp_le : ∀ t : ℝ, Real.exp t ≤ Real.exp |t| :=
       fun t => Real.exp_le_exp.mpr (le_abs_self t)
     have h1 : ‖u * Real.exp θ‖ < 1 := by
@@ -110,7 +110,7 @@ theorem abs_sinh_le_exp_abs (t : ℝ) : |Real.sinh t| ≤ Real.exp |t| := by
 inside the strip `R·exp|θ| < 1`, the phase is the odd-spin series in the moments. -/
 theorem hasSum_hausdorffCDDPhase (ν : Measure HausdorffSourceSpace) [IsFiniteMeasure ν]
     {R θ : ℝ} (hR0 : 0 ≤ R)
-    (hcar : ∀ᵐ y : HausdorffSourceSpace ∂ν, (y : ℝ) ≤ R ^ 2)
+    (hcar : ∀ᵐ y : HausdorffSourceSpace ∂ν, (y : ℝ) ≤ R ^ (2 : ℕ))
     (hθ : R * Real.exp |θ| < 1) :
     HasSum (fun m : ℕ =>
         8 * ((-1 : ℝ) ^ m * hausdorffMoment ν m *
@@ -123,15 +123,15 @@ theorem hasSum_hausdorffCDDPhase (ν : Measure HausdorffSourceSpace) [IsFiniteMe
   have hint : ∀ m : ℕ, Integrable (F m) ν := by
     intro m
     exact integrable_of_continuous ν (by fun_prop)
-  set q : ℝ := R ^ 2 * Real.exp (2 * |θ|) with hq
+  set q : ℝ := R ^ (2 : ℕ) * Real.exp (2 * |θ|) with hq
   have hq0 : 0 ≤ q := by positivity
-  have hexp2 : Real.exp |θ| ^ 2 = Real.exp (2 * |θ|) := by
+  have hexp2 : Real.exp |θ| ^ (2 : ℕ) = Real.exp (2 * |θ|) := by
     rw [← Real.exp_nat_mul]
     norm_num
   have hq1 : q < 1 := by
     have hnn : 0 ≤ R * Real.exp |θ| := by positivity
-    have hprod : (R * Real.exp |θ|) ^ 2 < 1 := by nlinarith
-    have heq : (R * Real.exp |θ|) ^ 2 = q := by rw [hq, mul_pow, hexp2]
+    have hprod : (R * Real.exp |θ|) ^ (2 : ℕ) < 1 := by nlinarith
+    have heq : (R * Real.exp |θ|) ^ (2 : ℕ) = q := by rw [hq, mul_pow, hexp2]
     linarith [heq ▸ hprod]
   have hbound : ∀ m : ℕ, ∀ᵐ y : HausdorffSourceSpace ∂ν,
       ‖F m y‖ ≤ 8 * Real.exp |θ| * q ^ m := by
@@ -142,7 +142,7 @@ theorem hasSum_hausdorffCDDPhase (ν : Measure HausdorffSourceSpace) [IsFiniteMe
       have h1 : (1 : ℕ) ≤ 2 * m + 1 := by omega
       exact_mod_cast h1
     have hdenpos : (0 : ℝ) < ((2 * m + 1 : ℕ) : ℝ) := by linarith
-    have hypow : (y : ℝ) ^ m ≤ (R ^ 2) ^ m := pow_le_pow_left₀ hy0 hy m
+    have hypow : (y : ℝ) ^ m ≤ (R ^ (2 : ℕ)) ^ m := pow_le_pow_left₀ hy0 hy m
     have hsinh : |Real.sinh (((2 * m + 1 : ℕ) : ℝ) * θ)|
         ≤ Real.exp |θ| * Real.exp (2 * |θ|) ^ m := by
       refine le_trans (abs_sinh_le_exp_abs _) (le_of_eq ?_)
@@ -159,9 +159,9 @@ theorem hasSum_hausdorffCDDPhase (ν : Measure HausdorffSourceSpace) [IsFiniteMe
       ring
     rw [hnorm]
     have hnum : (y : ℝ) ^ m * |Real.sinh (((2 * m + 1 : ℕ) : ℝ) * θ)|
-        ≤ (R ^ 2) ^ m * (Real.exp |θ| * Real.exp (2 * |θ|) ^ m) :=
+        ≤ (R ^ (2 : ℕ)) ^ m * (Real.exp |θ| * Real.exp (2 * |θ|) ^ m) :=
       mul_le_mul hypow hsinh (abs_nonneg _) (pow_nonneg (by positivity) m)
-    have hqm : (R ^ 2) ^ m * (Real.exp |θ| * Real.exp (2 * |θ|) ^ m)
+    have hqm : (R ^ (2 : ℕ)) ^ m * (Real.exp |θ| * Real.exp (2 * |θ|) ^ m)
         = Real.exp |θ| * q ^ m := by
       rw [hq, mul_pow]
       ring
@@ -207,7 +207,7 @@ theorem hasSum_hausdorffCDDPhase (ν : Measure HausdorffSourceSpace) [IsFiniteMe
     filter_upwards [hcar] with y hy
     have hy0 : (0 : ℝ) ≤ (y : ℝ) := y.2.1
     have hsq : Real.sqrt (y : ℝ) ≤ R := by
-      rw [show R = Real.sqrt (R ^ 2) from (Real.sqrt_sq hR0).symm]
+      rw [show R = Real.sqrt (R ^ (2 : ℕ)) from (Real.sqrt_sq hR0).symm]
       exact Real.sqrt_le_sqrt hy
     have hlt : Real.sqrt (y : ℝ) * Real.exp |θ| < 1 :=
       lt_of_le_of_lt (mul_le_mul_of_nonneg_right hsq (Real.exp_pos _).le) hθ

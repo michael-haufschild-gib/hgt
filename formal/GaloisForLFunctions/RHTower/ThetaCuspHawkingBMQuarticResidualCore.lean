@@ -214,7 +214,7 @@ theorem quarticResidualCoreCutoff_physical_green (q r : XiZeroCopy) (slot : Fin 
       (quarticResidualCoreCutoff q slot n).laplacian.field z) D4BMModularCore.measure ∧
     (∫ z : UpperHalfPlane, scalar (physicalAngularParameter r) (coordinates z)*
       (quarticResidualCoreCutoff q slot n).laplacian.field z ∂D4BMModularCore.measure) =
-      (physicalAngularParameter r^2-1/4)*∫ z : UpperHalfPlane,
+      (physicalAngularParameter r^(2 : ℕ)-1/4)*∫ z : UpperHalfPlane,
         scalar (physicalAngularParameter r) (coordinates z)*
           (quarticResidualCoreCutoff q slot n).field z ∂D4BMModularCore.measure := by
   let F := physicalCoreCutoff r (3*n+2)
@@ -233,7 +233,7 @@ theorem quarticResidualCoreCutoff_physical_green (q r : XiZeroCopy) (slot : Fin 
       simp only [physicalTestField,starRingEnd_self_apply]
     · rw [(hzero z hz (lt_of_not_ge hy)).1,mul_zero,mul_zero]
   have he₁ : (fun z => conj (F.laplacian.field z)*G.field z) =ᵐ[D4BMModularCore.measure]
-      (fun z => (physicalAngularParameter r^2-1/4)*
+      (fun z => (physicalAngularParameter r^(2 : ℕ)-1/4)*
         (scalar (physicalAngularParameter r) (coordinates z)*G.field z)) := by
     filter_upwards [ae_restrict_mem ModularGroup.isClosed_fd.measurableSet] with z hz
     by_cases hy : z.im ≤ 3*((n:ℝ)+1)
@@ -264,9 +264,9 @@ theorem quarticResidualCoreCutoff_laplacian (q : XiZeroCopy) (slot : Fin 6) (n :
     (quarticResidualCoreCutoff q slot n).laplacian.field z=
       (scaledCuspCutoff ((n:ℝ)+1) z.im:ℂ)*
         hyperbolicLaplacian (quarticContactResidual q slot) (coordinates z)+
-      2*(z.im:ℂ)^2*((deriv (scaledCuspCutoff ((n:ℝ)+1)) z.im:ℝ):ℂ)*
+      2*(z.im:ℂ)^(2 : ℕ)*((deriv (scaledCuspCutoff ((n:ℝ)+1)) z.im:ℝ):ℂ)*
         coordDeriv 1 (quarticContactResidual q slot) (coordinates z)+
-      (z.im:ℂ)^2*((deriv (deriv (scaledCuspCutoff ((n:ℝ)+1))) z.im:ℝ):ℂ)*
+      (z.im:ℂ)^(2 : ℕ)*((deriv (deriv (scaledCuspCutoff ((n:ℝ)+1))) z.im:ℝ):ℂ)*
         quarticContactResidual q slot (coordinates z) := by
   rw [CoreField.laplacian_field,chartLaplacian_congr (quarticResidualCoreCutoff_germ q slot n z hz)]
   change chartLaplacian (fun w =>

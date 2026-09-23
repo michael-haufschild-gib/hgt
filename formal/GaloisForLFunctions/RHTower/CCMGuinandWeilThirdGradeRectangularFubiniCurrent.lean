@@ -71,7 +71,7 @@ private theorem thirdGradeMarkedRectangular_prime_fubini
             criticalMellinAtomWeight k *
               ccmPositiveLagRectangularTriangle t (Real.log k)
           else 0)) +
-      (32 / H ^ 4) *
+      (32 / H ^ (4 : ℕ)) *
         (∑ k ∈ Finset.Icc 2 ⌊Real.exp H⌋₊,
           if b < Real.log k then
             criticalMellinAtomWeight k *
@@ -107,7 +107,7 @@ private theorem thirdGradeMarkedRectangular_prime_fubini
       (if b < Real.log k then
         criticalMellinAtomWeight k *
           ccmThirdGradeCesaroFixedRectangularMixture b H (Real.log k)
-      else 0) = (∫ t in b..H, P k t) + (32 / H ^ 4) * Q k := by
+      else 0) = (∫ t in b..H, P k t) + (32 / H ^ (4 : ℕ)) * Q k := by
     intro k hk
     by_cases hbk : b < Real.log k
     · rw [if_pos hbk]
@@ -146,7 +146,7 @@ private theorem thirdGradeMarkedRectangular_polar_fubini
       (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
         (∫ h in b..H,
           ccmPositiveLagRectangularTriangle t h * (2 * Real.cosh (h / 2)))) +
-      (32 / H ^ 4) *
+      (32 / H ^ (4 : ℕ)) *
         (∫ h in b..H,
           ccmPositiveLagRectangularTriangle H h * (2 * Real.cosh (h / 2))) := by
   let D : ℝ → ℝ := ccmThirdGradeCesaroClippedRectangularMixDensity b H
@@ -185,7 +185,7 @@ private theorem thirdGradeMarkedRectangular_polar_fubini
       (∫ h in b..H,
           ccmThirdGradeCesaroFixedRectangularMixture b H h * P h) =
         (∫ h in b..H, (∫ t in b..H, D t * T t h) * P h) +
-          ∫ h in b..H, (32 / H ^ 4) * T H h * P h := by
+          ∫ h in b..H, (32 / H ^ (4 : ℕ)) * T H h * P h := by
     rw [← intervalIntegral.integral_add]
     · apply intervalIntegral.integral_congr
       intro h hh
@@ -242,7 +242,7 @@ theorem ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent_eq_fubini
     ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent b H =
       (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t *
         ccmThirdGradeCesaroRectangularPrimePolarSlice b H t) +
-      (32 / H ^ 4) * ccmThirdGradeCesaroRectangularPrimePolarSlice b H H := by
+      (32 / H ^ (4 : ℕ)) * ccmThirdGradeCesaroRectangularPrimePolarSlice b H H := by
   rw [ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent,
     ccmGuinandWeilPrimePolarWeightedWindow]
   rw [thirdGradeMarkedRectangular_prime_fubini hb hbH,
@@ -299,11 +299,11 @@ theorem ccmThirdGradeCesaroMarkedRectangularPrimePolarCurrent_eq_fubini
     intro t ht
     ring
   change ((∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t * P t) +
-        (32 / H ^ 4) * P H) -
+        (32 / H ^ (4 : ℕ)) * P H) -
       ((∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t * Q t) +
-        (32 / H ^ 4) * Q H) =
+        (32 / H ^ (4 : ℕ)) * Q H) =
     (∫ t in b..H, ccmThirdGradeCesaroRectangularMixDensity H t * (P t - Q t)) +
-      (32 / H ^ 4) * (P H - Q H)
+      (32 / H ^ (4 : ℕ)) * (P H - Q H)
   rw [← hsub]
   ring
 

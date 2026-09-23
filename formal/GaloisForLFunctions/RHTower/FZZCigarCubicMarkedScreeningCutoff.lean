@@ -28,7 +28,7 @@ noncomputable section
 namespace GaloisForLFunctions.RHTower
 
 private def cubicPolar (p : ℝ × ℝ) : ℝ :=
-  (p.1^5)⁻¹*(‖1-circleMap 0 p.1 p.2‖^6)⁻¹
+  (p.1^(5 : ℕ))⁻¹*(‖1-circleMap 0 p.1 p.2‖^(6 : ℕ))⁻¹
 
 private theorem cubicKernel_circleMap (r θ : ℝ) (hr : 0 < r) :
     r*fzzScreeningPlaneKernel (-6) (-6) (circleMap 0 r θ) = cubicPolar (r,θ) := by
@@ -150,12 +150,12 @@ private theorem cubicMarked_annulus_polar (b : Bool) (ε : ℝ) (hε : 0 < ε) :
 
 
 private theorem cubic_angle_integral (r : ℝ) :
-    (∫ θ : ℝ in Ioo (-Real.pi) Real.pi, (‖1-circleMap 0 r θ‖^6)⁻¹) =
+    (∫ θ : ℝ in Ioo (-Real.pi) Real.pi, (‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) =
       2*Real.pi*fzzScreeningHigherAngular 3 r := by
   have h := Real.circleAverage_eq_integral_add
-    (f := fun z : ℂ => (‖1-z‖^6)⁻¹) (c := 0) (R := r) (-Real.pi)
+    (f := fun z : ℂ => (‖1-z‖^(6 : ℕ))⁻¹) (c := 0) (R := r) (-Real.pi)
   rw [intervalIntegral.integral_comp_add_right
-      (fun θ : ℝ => (‖1-circleMap 0 r θ‖^6)⁻¹) (-Real.pi), zero_add,
+      (fun θ : ℝ => (‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) (-Real.pi), zero_add,
     show 2*Real.pi+-Real.pi = Real.pi by ring, smul_eq_mul,
     intervalIntegral.integral_of_le (by linarith [Real.pi_pos] : -Real.pi ≤ Real.pi),
     integral_Ioc_eq_integral_Ioo] at h
@@ -166,12 +166,12 @@ private theorem cubic_angle_integral (r : ℝ) :
 
 private theorem cubic_marked_angle_integral (r : ℝ) :
     (∫ θ : ℝ in Ioo (-Real.pi) Real.pi,
-      Real.log ‖1-circleMap 0 r θ‖*(‖1-circleMap 0 r θ‖^6)⁻¹) =
+      Real.log ‖1-circleMap 0 r θ‖*(‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) =
       2*Real.pi*fzzScreeningHigherMarkedAngular 3 r := by
   have h := Real.circleAverage_eq_integral_add
-    (f := fun z : ℂ => Real.log ‖1-z‖*(‖1-z‖^6)⁻¹) (c := 0) (R := r) (-Real.pi)
+    (f := fun z : ℂ => Real.log ‖1-z‖*(‖1-z‖^(6 : ℕ))⁻¹) (c := 0) (R := r) (-Real.pi)
   rw [intervalIntegral.integral_comp_add_right
-      (fun θ : ℝ => Real.log ‖1-circleMap 0 r θ‖*(‖1-circleMap 0 r θ‖^6)⁻¹)
+      (fun θ : ℝ => Real.log ‖1-circleMap 0 r θ‖*(‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹)
         (-Real.pi), zero_add,
     show 2*Real.pi+-Real.pi = Real.pi by ring, smul_eq_mul,
     intervalIntegral.integral_of_le (by linarith [Real.pi_pos] : -Real.pi ≤ Real.pi),
@@ -182,7 +182,7 @@ private theorem cubic_marked_angle_integral (r : ℝ) :
 
 private theorem cubicMarked_polar_angle (b : Bool) (r : ℝ) :
     (∫ θ : ℝ in Ioo (-Real.pi) Real.pi, cubicMarkedPolar b (r,θ)) =
-      2*Real.pi*((r^5)⁻¹*cubicMarkedAngular b r) := by
+      2*Real.pi*((r^(5 : ℕ))⁻¹*cubicMarkedAngular b r) := by
   cases b
   · unfold cubicMarkedPolar cubicPolar cubicMarkedAngular
     simp only [Bool.false_eq_true, ↓reduceIte]
@@ -190,7 +190,7 @@ private theorem cubicMarked_polar_angle (b : Bool) (r : ℝ) :
     rw [integral_const_mul, cubic_angle_integral]
     ring
   · have he : (fun θ : ℝ => cubicMarkedPolar true (r,θ)) =
-        fun θ : ℝ => (r^5)⁻¹*(Real.log ‖1-circleMap 0 r θ‖*(‖1-circleMap 0 r θ‖^6)⁻¹) := by
+        fun θ : ℝ => (r^(5 : ℕ))⁻¹*(Real.log ‖1-circleMap 0 r θ‖*(‖1-circleMap 0 r θ‖^(6 : ℕ))⁻¹) := by
       funext θ
       unfold cubicMarkedPolar cubicPolar
       dsimp
@@ -201,7 +201,7 @@ private theorem cubicMarked_polar_angle (b : Bool) (r : ℝ) :
 
 private theorem cubicMarked_annulus_angular (b : Bool) (ε : ℝ) (hε : 0 < ε) (hεR : ε ≤ 1/2) :
     (∫ z : ℂ in ball 0 (1/2) \ closedBall 0 ε, cubicMarkedKernel b z) =
-      2*Real.pi*(∫ r : ℝ in ε..(1/2), (r^5)⁻¹*cubicMarkedAngular b r) := by
+      2*Real.pi*(∫ r : ℝ in ε..(1/2), (r^(5 : ℕ))⁻¹*cubicMarkedAngular b r) := by
   rw [cubicMarked_annulus_polar b ε hε, Measure.volume_eq_prod,
     setIntegral_prod _ (cubicMarkedPolar_integrable b ε hε)]
   simp_rw [cubicMarked_polar_angle]
@@ -308,8 +308,8 @@ theorem fzzScreeningCubicZeroMark_cutoff_limit :
     Real.log ‖z‖*fzzScreeningPlaneKernel (-6) (-6) z) = _ at he
   rw [he]
   simp only [cubicMarkedAngular, Bool.false_eq_true, ↓reduceIte]
-  have hi : (∫ r : ℝ in Real.exp (-T)..(1/2), (r^5)⁻¹*(Real.log r*fzzScreeningHigherAngular 3 r)) =
-      ∫ r : ℝ in Real.exp (-T)..(1/2), (r^5)⁻¹*Real.log r*fzzScreeningHigherAngular 3 r := by
+  have hi : (∫ r : ℝ in Real.exp (-T)..(1/2), (r^(5 : ℕ))⁻¹*(Real.log r*fzzScreeningHigherAngular 3 r)) =
+      ∫ r : ℝ in Real.exp (-T)..(1/2), (r^(5 : ℕ))⁻¹*Real.log r*fzzScreeningHigherAngular 3 r := by
     apply intervalIntegral.integral_congr
     intro r _
     ring
@@ -357,7 +357,7 @@ theorem fzzScreeningCubicOneMark_cutoff_limit :
   filter_upwards [Real.tendsto_exp_neg_atTop_nhds_zero.eventually
     (gt_mem_nhds (by positivity : (0 : ℝ) < 1/2))] with T hT
   change 2*Real.pi*((∫ r : ℝ in Real.exp (-T)..(1/2),
-    (r^5)⁻¹*fzzScreeningHigherMarkedAngular 3 r)+
+    (r^(5 : ℕ))⁻¹*fzzScreeningHigherMarkedAngular 3 r)+
       fzzScreeningCubicMarkedCollisionPrimitive (Real.exp (-T))) =
     (∫ z : ℂ in ball 1 (1/2) \ closedBall 1 (Real.exp (-T)), cubicMarkedKernel false z)+
       2*Real.pi*fzzScreeningCubicMarkedCollisionPrimitive (Real.exp (-T))

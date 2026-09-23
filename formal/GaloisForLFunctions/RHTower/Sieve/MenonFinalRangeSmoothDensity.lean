@@ -455,7 +455,7 @@ theorem tendsto_menonFinalRangeSmoothNormalizedMajorant_zero :
     hupper hexpDecay
 
 /-- Menon's literal final-range cutoff has squarefree smooth density
-`o(X / (log X)^10)`, by an unconditional Rankin--Euler argument specialized to Möbius support. -/
+`o(X / (log X)^(10 : ℕ))`, by an unconditional Rankin--Euler argument specialized to Möbius support. -/
 theorem tendsto_card_squarefreeSmoothUpTo_menonFinalRange_mul_logPow_div_zero :
     Tendsto (fun x : ℝ =>
       ((squarefreeSmoothUpTo (menonFinalRangePrimeCutoffNat x)

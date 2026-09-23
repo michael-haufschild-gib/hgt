@@ -88,11 +88,11 @@ theorem suzukiCriticalWallFieldGramKernel_eq_differenceCharacter
             Complex.exp ((suzukiPrimePowerEntryWallAperture p e : ℂ) * (I * (t : ℂ))) *
           ((suzukiCriticalEntryWallBareAmplitude p e : ℂ) *
             Complex.exp ((suzukiPrimePowerEntryWallAperture p e : ℂ) * (I * -(u : ℂ)))) =
-        (suzukiCriticalEntryWallBareAmplitude p e : ℂ) ^ 2 *
+        (suzukiCriticalEntryWallBareAmplitude p e : ℂ) ^ (2 : ℕ) *
           Complex.exp ((suzukiPrimePowerEntryWallAperture p e : ℂ) *
             (I * ((t : ℂ) - (u : ℂ)))) by
       calc
-        _ = (suzukiCriticalEntryWallBareAmplitude p e : ℂ) ^ 2 *
+        _ = (suzukiCriticalEntryWallBareAmplitude p e : ℂ) ^ (2 : ℕ) *
             (Complex.exp ((suzukiPrimePowerEntryWallAperture p e : ℂ) * (I * (t : ℂ))) *
               Complex.exp ((suzukiPrimePowerEntryWallAperture p e : ℂ) *
                 (I * -(u : ℂ)))) := by ring_nf
@@ -137,7 +137,7 @@ theorem suzukiCriticalDelayedHingeJumpAtom_eq_neg_I_mul_wallKernel_antidiagonal_
         (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
           Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ))
         (Real.log (xiGammaEulerValuationNat (p, e) : ℝ)) (t : ℂ) =
-      -I * suzukiCriticalWallFieldGramKernel t (-t) p e / (t : ℂ) ^ 2 := by
+      -I * suzukiCriticalWallFieldGramKernel t (-t) p e / (t : ℂ) ^ (2 : ℕ) := by
   rw [suzukiCriticalDelayedHingeJumpAtom_eq_neg_I_mul_wallField_sq_div,
     suzukiCriticalWallFieldGramKernel, star_suzukiCriticalWallField_neg, ← pow_two]
 
@@ -174,7 +174,7 @@ theorem suzukiCriticalEntryWallBareAmplitude_pos (p : Nat.Primes) (e : ℕ) :
     0 < suzukiCriticalEntryWallBareAmplitude p e := by
   have hsq := sq_suzukiCriticalEntryWallBareAmplitude_eq_vonMangoldt_div_sqrt p e
   have hpos := suzukiCriticalFarHingeWeight_pos p e
-  have hsqpos : 0 < suzukiCriticalEntryWallBareAmplitude p e ^ 2 := by rw [hsq]; exact hpos
+  have hsqpos : 0 < suzukiCriticalEntryWallBareAmplitude p e ^ (2 : ℕ) := by rw [hsq]; exact hpos
   have hnn : 0 ≤ suzukiCriticalEntryWallBareAmplitude p e := Real.sqrt_nonneg _
   rcases hnn.lt_or_eq with h | h
   · exact h
@@ -213,7 +213,7 @@ identity behind positive semidefiniteness. -/
 theorem suzukiCriticalWallFieldGramMatrix_dotProduct_mulVec {N : ℕ}
     (height : Fin N → ℝ) (p : Nat.Primes) (e : ℕ) (c : Fin N → ℂ) :
     star c ⬝ᵥ (suzukiCriticalWallFieldGramMatrix height p e) *ᵥ c =
-      ‖∑ i, star (c i) * suzukiCriticalWallField (height i) p e‖ ^ 2 := by
+      ‖∑ i, star (c i) * suzukiCriticalWallField (height i) p e‖ ^ (2 : ℕ) := by
   have expand : star c ⬝ᵥ (suzukiCriticalWallFieldGramMatrix height p e) *ᵥ c
       = ∑ i, ∑ j, (star (c i) * suzukiCriticalWallField (height i) p e) *
           (star (suzukiCriticalWallField (height j) p e) * c j) := by
@@ -256,7 +256,7 @@ theorem suzukiCriticalWallFieldGramMatrix_rank_eq_one {N : ℕ} (hN : 0 < N)
 
 /-! ## Sharp marked-tensor rooted completion -/
 
-/-- Positive diagonal wall mass supplies exact minimal `d^2` rooted completion to one scaled
+/-- Positive diagonal wall mass supplies exact minimal `d^(2 : ℕ)` rooted completion to one scaled
 marked Lorentz coordinate. -/
 theorem suzukiMarkedSecant_wallAmplitude_minimalRootedCompletion_eq
     (m d r s : ℝ) (p : Nat.Primes) (e : ℕ) :
@@ -265,10 +265,10 @@ theorem suzukiMarkedSecant_wallAmplitude_minimalRootedCompletion_eq
           (suzukiCriticalEntryWallBareAmplitude p e * s)
           (suzukiCriticalEntryWallBareAmplitude p e * r)
           (suzukiCriticalEntryWallBareAmplitude p e * s) +
-        d ^ 2 * (suzukiCriticalEntryWallBareAmplitude p e * s) ^ 2 =
+        d ^ (2 : ℕ) * (suzukiCriticalEntryWallBareAmplitude p e * s) ^ (2 : ℕ) =
       (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
           Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ)) *
-        (r - m * s) ^ 2 := by
+        (r - m * s) ^ (2 : ℕ) := by
   rw [suzukiMarkedSecant_minimalRootedCompletion_eq_square]
   rw [show suzukiCriticalEntryWallBareAmplitude p e * r -
       m * (suzukiCriticalEntryWallBareAmplitude p e * s) =
@@ -284,7 +284,7 @@ theorem suzukiMarkedSecant_wallAmplitude_minimalRootedCompletion_nonneg
           (suzukiCriticalEntryWallBareAmplitude p e * s)
           (suzukiCriticalEntryWallBareAmplitude p e * r)
           (suzukiCriticalEntryWallBareAmplitude p e * s) +
-        d ^ 2 * (suzukiCriticalEntryWallBareAmplitude p e * s) ^ 2 := by
+        d ^ (2 : ℕ) * (suzukiCriticalEntryWallBareAmplitude p e * s) ^ (2 : ℕ) := by
   rw [suzukiMarkedSecant_wallAmplitude_minimalRootedCompletion_eq]
   rw [← sq_suzukiCriticalEntryWallBareAmplitude_eq_vonMangoldt_div_sqrt]
   exact mul_nonneg (sq_nonneg _) (sq_nonneg _)

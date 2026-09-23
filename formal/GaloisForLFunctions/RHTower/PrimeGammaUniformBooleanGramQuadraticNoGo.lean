@@ -22,7 +22,7 @@ variable {ι : Type*} [Fintype ι]
 
 /-- Discounted squared mass of the noninitial Boolean edge columns. -/
 def uniformBooleanTailTrace (w discount : ι → ℝ) : ℝ :=
-  ∑ i, discount i * w i ^ 2
+  ∑ i, discount i * w i ^ (2 : ℕ)
 
 /-- Tail trace ceiling forced by `discount ≤ 1/4`, edge weight `≤ 1/6`, and total tail mass
 `≤ 1/2`. -/
@@ -35,13 +35,13 @@ theorem uniformBooleanTailTrace_le_one_div_fortyEight
     uniformBooleanTailTrace w discount ≤ 1 / 48 := by
   unfold uniformBooleanTailTrace
   calc
-    (∑ i, discount i * w i ^ 2) ≤ ∑ i, w i / 24 := by
+    (∑ i, discount i * w i ^ (2 : ℕ)) ≤ ∑ i, w i / 24 := by
       apply Finset.sum_le_sum
       intro i hi
-      have hsq : w i ^ 2 ≤ (1 / 6) * w i := by
+      have hsq : w i ^ (2 : ℕ) ≤ (1 / 6) * w i := by
         nlinarith [mul_nonneg (hw_nonneg i) (sub_nonneg.mpr (hw_le i))]
       calc
-        discount i * w i ^ 2 ≤ (1 / 4) * w i ^ 2 :=
+        discount i * w i ^ (2 : ℕ) ≤ (1 / 4) * w i ^ (2 : ℕ) :=
           mul_le_mul_of_nonneg_right (hdiscount_le i) (sq_nonneg _)
         _ ≤ (1 / 4) * ((1 / 6) * w i) :=
           mul_le_mul_of_nonneg_left hsq (by norm_num)
@@ -52,7 +52,7 @@ theorem uniformBooleanTailTrace_le_one_div_fortyEight
 
 /-- Trace ratio that equals the normalized quadratic coefficient of `det(I + u G)`. -/
 def gramNormalizedQuadraticRatio (trace traceSq : ℝ) : ℝ :=
-  (trace ^ 2 - traceSq) / (2 * trace ^ 2)
+  (trace ^ (2 : ℕ) - traceSq) / (2 * trace ^ (2 : ℕ))
 
 /-- The uniform Boolean trace ceiling and first-column square force the exact `13/98` quadratic
 ceiling. -/
@@ -63,7 +63,7 @@ theorem gramNormalizedQuadraticRatio_le_thirteen_div_ninetyEight
     (htraceSq : 1 / 64 ≤ traceSq) :
     gramNormalizedQuadraticRatio trace traceSq ≤ 13 / 98 := by
   have htrace_pos : 0 < trace := lt_of_lt_of_le (by norm_num) htrace_lower
-  have htrace_sq_upper : trace ^ 2 ≤ (7 / 48 : ℝ) ^ 2 := by
+  have htrace_sq_upper : trace ^ (2 : ℕ) ≤ (7 / 48 : ℝ) ^ (2 : ℕ) := by
     nlinarith [mul_nonneg (sub_nonneg.mpr htrace_upper)
       (add_nonneg htrace_pos.le (by norm_num : 0 ≤ (7 / 48 : ℝ)))]
   unfold gramNormalizedQuadraticRatio
@@ -71,18 +71,18 @@ theorem gramNormalizedQuadraticRatio_le_thirteen_div_ninetyEight
   nlinarith
 
 /-- Squared-entry trace of a finite real Gram matrix.  For a symmetric matrix this is
-`trace (G^2)`. -/
+`trace (G^(2 : ℕ))`. -/
 def gramEntrySqSum {n : ℕ} (G : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) : ℝ :=
-  ∑ i, ∑ j, G i j ^ 2
+  ∑ i, ∑ j, G i j ^ (2 : ℕ)
 
 /-- The initial Boolean column of squared norm `1/8` forces squared-entry trace at least `1/64`. -/
 theorem one_div_sixtyFour_le_gramEntrySqSum_of_zero_zero
     {n : ℕ} (G : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
     (h00 : G 0 0 = 1 / 8) :
     1 / 64 ≤ gramEntrySqSum G := by
-  have hrow : G 0 0 ^ 2 ≤ ∑ j, G 0 j ^ 2 := by
+  have hrow : G 0 0 ^ (2 : ℕ) ≤ ∑ j, G 0 j ^ (2 : ℕ) := by
     exact Finset.single_le_sum (fun j _ => sq_nonneg (G 0 j)) (Finset.mem_univ 0)
-  have hall : (∑ j, G 0 j ^ 2) ≤ ∑ i, ∑ j, G i j ^ 2 := by
+  have hall : (∑ j, G 0 j ^ (2 : ℕ)) ≤ ∑ i, ∑ j, G i j ^ (2 : ℕ) := by
     exact Finset.single_le_sum
       (fun i _ => Finset.sum_nonneg fun j _ => sq_nonneg (G i j)) (Finset.mem_univ 0)
   unfold gramEntrySqSum
@@ -195,7 +195,7 @@ theorem uniformBooleanTailDiscount_le_one_div_four (n : ℕ) :
 /-- Uniform-Boolean squared trace of the noninitial literal sieve edges. -/
 def sieveUniformBooleanTailTrace (e : ℕ ≃ Nat.Primes) (N : ℕ) : ℝ :=
   ∑ n ∈ Finset.range N,
-    uniformBooleanTailDiscount n * sieveFirstTraceWeight e (n + 1) ^ 2
+    uniformBooleanTailDiscount n * sieveFirstTraceWeight e (n + 1) ^ (2 : ℕ)
 
 theorem sieveUniformBooleanTailTrace_le_one_div_fortyEight
     (e : ℕ ≃ Nat.Primes) (hfirst : e 0 = ⟨2, Nat.prime_two⟩) (N : ℕ) :
@@ -245,7 +245,7 @@ noncomputable section
 /-- Scale-free quadratic ratio of the completed theta/Xi square-coordinate coefficients. -/
 def thetaSquareCoordinateQuadraticRatio : ℝ :=
   thetaCuspRawEvenMoment 0 * thetaCuspRawEvenMoment 2 /
-    (6 * thetaCuspRawEvenMoment 1 ^ 2)
+    (6 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ))
 
 /-- Completed theta-moment log-convexity gives the exact `1/6` Xi quadratic floor. -/
 theorem one_div_six_le_thetaSquareCoordinateQuadraticRatio :
@@ -253,7 +253,7 @@ theorem one_div_six_le_thetaSquareCoordinateQuadraticRatio :
   have hmoment := thetaCuspRawEvenMoment_sq_le_adjacent 1 (by omega)
   norm_num at hmoment
   have hmpos : 0 < thetaCuspRawEvenMoment 1 := thetaCuspRawEvenMoment_pos 1
-  have hden : 0 < 6 * thetaCuspRawEvenMoment 1 ^ 2 := by
+  have hden : 0 < 6 * thetaCuspRawEvenMoment 1 ^ (2 : ℕ) := by
     exact mul_pos (by norm_num) (sq_pos_of_pos hmpos)
   unfold thetaSquareCoordinateQuadraticRatio
   rw [le_div_iff₀ hden]

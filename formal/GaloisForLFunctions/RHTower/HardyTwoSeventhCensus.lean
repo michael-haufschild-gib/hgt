@@ -6,10 +6,10 @@ import GaloisForLFunctions.RHTower.HardyZWindowMeanSharp
 
 The resonance-graded window mean `|∫_a^b Z| ≤ C(T^{1/4}(1+log T) + (b-a)T^{-1/4} + √x
 + (b-a)T/x)` replaces the trivial `T^{3/4}` mean in the window pigeonhole.  At cutoff
-`x = T^{8/7}` and `K = ⌊T^{2/7}/(D(1+log T)^5)⌋` windows the per-window mean is
+`x = T^{8/7}` and `K = ⌊T^{2/7}/(D(1+log T)^(5 : ℕ))⌋` windows the per-window mean is
 `O(T^{4/7}·polylog)`, the sign-change gap `ME²·M4 < (T/8K)³` closes, and the
 Cauchy–Schwarz count gives `K/polylog` distinct critical-line ordinates per dyadic block:
-`N₀(T) ≥ c·T^{2/7}/(1+log T)^9`, unconditionally.
+`N₀(T) ≥ c·T^{2/7}/(1+log T)^(9 : ℕ)`, unconditionally.
 -/
 
 open Set MeasureTheory Complex Finset

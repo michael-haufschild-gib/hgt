@@ -17,7 +17,7 @@ namespace RHTower
 
 /-- A fixed bound on every remaining quotient eventually forces the scalar terminal phase. -/
 theorem mobiusDivisorSmallSelectionPrimes_subset_of_quotient
-    (M J : ℕ) (P : Finset ℕ) (hM : (J+1)^2 ≤ M)
+    (M J : ℕ) (P : Finset ℕ) (hM : (J+1)^(2 : ℕ) ≤ M)
     (hfront : ∀ p ∈ mobiusDivisorSelectionPrimes M \ P,M/p ≤ J) :
     mobiusDivisorSmallSelectionPrimes M ⊆ P := by
   intro p hp
@@ -50,10 +50,10 @@ private lemma selection_card_le (M : ℕ) :
 
 private lemma terminal_leaf_squares_bound (M J : ℕ) (P : Finset ℕ)
     (hfront : ∀ p ∈ mobiusDivisorSelectionPrimes M \ P,M/p ≤ J) :
-    (∑ p ∈ mobiusDivisorSelectionPrimes M \ P,(mobiusDivisorSelectionFibre M P {p})^2) ≤
-      (9/25:ℝ)*J^2*M*Nat.primeCounting M := by
-  have hs : (∑ p ∈ mobiusDivisorSelectionPrimes M \ P,(mobiusDivisorSelectionFibre M P {p})^2) ≤
-      ∑ _p ∈ mobiusDivisorSelectionPrimes M \ P,(9/25:ℝ)*J^2*M := by
+    (∑ p ∈ mobiusDivisorSelectionPrimes M \ P,(mobiusDivisorSelectionFibre M P {p})^(2 : ℕ)) ≤
+      (9/25:ℝ)*J^(2 : ℕ)*M*Nat.primeCounting M := by
+  have hs : (∑ p ∈ mobiusDivisorSelectionPrimes M \ P,(mobiusDivisorSelectionFibre M P {p})^(2 : ℕ)) ≤
+      ∑ _p ∈ mobiusDivisorSelectionPrimes M \ P,(9/25:ℝ)*J^(2 : ℕ)*M := by
     apply sum_le_sum
     intro p hp
     have hb := singleton_abs_bound M J P (mem_filter.mp (mem_sdiff.mp hp).1).2 (hfront p hp)
@@ -63,7 +63,7 @@ private lemma terminal_leaf_squares_bound (M J : ℕ) (P : Finset ℕ)
   have hc : ((mobiusDivisorSelectionPrimes M \ P).card:ℝ) ≤ Nat.primeCounting M := by
     exact_mod_cast (card_le_card sdiff_subset).trans (selection_card_le M)
   simp only [sum_const,nsmul_eq_mul] at hs
-  nlinarith only [hs,mul_le_mul_of_nonneg_right hc (by positivity : (0:ℝ) ≤ (9/25)*J^2*M)]
+  nlinarith only [hs,mul_le_mul_of_nonneg_right hc (by positivity : (0:ℝ) ≤ (9/25)*J^(2 : ℕ)*M)]
 
 /-- Once the head is square-root sized, the entire bounded terminal successor envelope is controlled by prime density. -/
 theorem mobiusDivisorSuccessorEnvelope_le_terminal_density
@@ -72,11 +72,11 @@ theorem mobiusDivisorSuccessorEnvelope_le_terminal_density
     (hfront : ∀ p ∈ mobiusDivisorSelectionPrimes M \ P,M/p ≤ J)
     (hhead : |mobiusDivisorSelectionFibre M P ∅| ≤ A*Real.sqrt M) :
     mobiusDivisorSuccessorEnvelope M P ≤
-      ((A+(3/5:ℝ)*J)^2+(9/25:ℝ)*J^2*Nat.primeCounting M)*M := by
+      ((A+(3/5:ℝ)*J)^(2 : ℕ)+(9/25:ℝ)*J^(2 : ℕ)*Nat.primeCounting M)*M := by
   have hbound (Q : Finset ℕ) (hPQ : P ⊆ Q)
       (hh : |mobiusDivisorSelectionFibre M Q ∅| ≤ (A+(3/5:ℝ)*J)*Real.sqrt M) :
       mobiusDivisorSelectionEnergy M Q ≤
-        ((A+(3/5:ℝ)*J)^2+(9/25:ℝ)*J^2*Nat.primeCounting M)*M := by
+        ((A+(3/5:ℝ)*J)^(2 : ℕ)+(9/25:ℝ)*J^(2 : ℕ)*Nat.primeCounting M)*M := by
     have hs := terminal_leaf_squares_bound M J Q (fun p hp => hfront p
       (mem_sdiff.mpr ⟨(mem_sdiff.mp hp).1,fun h => (mem_sdiff.mp hp).2 (hPQ h)⟩))
     have hsq := (sq_le_sq₀ (abs_nonneg _) (by positivity)).mpr hh
@@ -112,20 +112,20 @@ theorem eventually_mobiusDivisor_terminal_envelope_small
     ∀ᶠ M : ℕ in atTop,∀ P : Finset ℕ,
       (∀ p ∈ mobiusDivisorSelectionPrimes M \ P,M/p ≤ J) →
       |mobiusDivisorSelectionFibre M P ∅| ≤ A*Real.sqrt M →
-      mobiusDivisorSuccessorEnvelope M P ≤ ε*(M:ℝ)^2 := by
+      mobiusDivisorSuccessorEnvelope M P ≤ ε*(M:ℝ)^(2 : ℕ) := by
   have hN : Tendsto (fun M : ℕ => (M:ℝ)) atTop atTop := tendsto_natCast_atTop_atTop
   have hz : Tendsto (fun M : ℕ =>
-      (A+(3/5:ℝ)*J)^2/(M:ℝ)+(9/25:ℝ)*J^2*((Nat.primeCounting M:ℝ)/(M:ℝ))) atTop (nhds 0) := by
+      (A+(3/5:ℝ)*J)^(2 : ℕ)/(M:ℝ)+(9/25:ℝ)*J^(2 : ℕ)*((Nat.primeCounting M:ℝ)/(M:ℝ))) atTop (nhds 0) := by
     simpa [div_eq_mul_inv] using
-      (hN.inv_tendsto_atTop.const_mul ((A+(3/5:ℝ)*J)^2)).add
-        (prime_density_zero.const_mul ((9/25:ℝ)*J^2))
+      (hN.inv_tendsto_atTop.const_mul ((A+(3/5:ℝ)*J)^(2 : ℕ))).add
+        (prime_density_zero.const_mul ((9/25:ℝ)*J^(2 : ℕ)))
   filter_upwards [hz.eventually (eventually_lt_nhds hε),
-    eventually_ge_atTop ((J+1)^2),eventually_ge_atTop (1:ℕ)] with M he hM hM1
+    eventually_ge_atTop ((J+1)^(2 : ℕ)),eventually_ge_atTop (1:ℕ)] with M he hM hM1
   intro P hfront hhead
   have hb := mobiusDivisorSuccessorEnvelope_le_terminal_density M J P A hA
     (mobiusDivisorSmallSelectionPrimes_subset_of_quotient M J P hM hfront) hfront hhead
   have hm : (0:ℝ) < M := by exact_mod_cast hM1
-  have he' : ((A+(3/5:ℝ)*J)^2+(9/25:ℝ)*J^2*Nat.primeCounting M)/(M:ℝ) < ε := by
+  have he' : ((A+(3/5:ℝ)*J)^(2 : ℕ)+(9/25:ℝ)*J^(2 : ℕ)*Nat.primeCounting M)/(M:ℝ) < ε := by
     simpa only [add_div,mul_div_assoc] using he
   have hh := (div_lt_iff₀ hm).mp he'
   exact hb.trans (by nlinarith only [mul_le_mul_of_nonneg_right hh.le hm.le])

@@ -12,15 +12,15 @@ private theorem point_im (x y : ℝ) (hy : 0 < y) : (ofComplex (⟨x,y⟩:ℂ)).
   rfl
 
 private theorem density_power (s : ℂ) (c : ℂ) {y : ℝ} (hy : 0 < y) :
-    (y^2)⁻¹ • ((y:ℂ)^s*c) = (y:ℂ)^(s-2)*c := by
+    (y^(2 : ℕ))⁻¹ • ((y:ℂ)^s*c) = (y:ℂ)^(s-2)*c := by
   have hn : (y:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hy.ne'
-  have htwo : (y:ℂ)^(2:ℂ)=(y:ℂ)^2 := by norm_cast
+  have htwo : (y:ℂ)^(2:ℂ)=(y:ℂ)^(2 : ℕ) := by norm_cast
   rw [Complex.cpow_sub _ _ hn,htwo]
   simp only [Complex.real_smul,Complex.ofReal_inv,Complex.ofReal_pow]
   ring
 
 private theorem lower_density (q : XiZeroCopy) (s : ℂ) {y : ℝ} (hy : 0 < y) (hyh : y ≤ 1/2) :
-    (y^2)⁻¹ • (∫ x in Ico (0:ℝ) 1, nativeCutoffLowerPair q s (ofComplex (⟨x,y⟩:ℂ))) =
+    (y^(2 : ℕ))⁻¹ • (∫ x in Ico (0:ℝ) 1, nativeCutoffLowerPair q s (ofComplex (⟨x,y⟩:ℂ))) =
       (y:ℂ)^(s-2)*squareCutoffStripMean q y := by
   have he (x : ℝ) : nativeCutoffLowerPair q s (ofComplex (⟨x,y⟩:ℂ)) =
       (y:ℂ)^s*periodize (squareCutoffSeed q) (ofComplex (⟨x,y⟩:ℂ)) := by
@@ -30,7 +30,7 @@ private theorem lower_density (q : XiZeroCopy) (s : ℂ) {y : ℝ} (hy : 0 < y) 
   exact density_power s (squareCutoffStripMean q y) hy
 
 private theorem lower_density_zero (q : XiZeroCopy) (s : ℂ) {y : ℝ} (hy : 1/2 < y) :
-    (y^2)⁻¹ • (∫ x in Ico (0:ℝ) 1, nativeCutoffLowerPair q s (ofComplex (⟨x,y⟩:ℂ))) = 0 := by
+    (y^(2 : ℕ))⁻¹ • (∫ x in Ico (0:ℝ) 1, nativeCutoffLowerPair q s (ofComplex (⟨x,y⟩:ℂ))) = 0 := by
   have hy0 : 0 < y := lt_trans (by norm_num : (0:ℝ)<1/2) hy
   have hz (x : ℝ) := nativeCutoffLowerPair_zero q s (ofComplex (⟨x,y⟩:ℂ))
     (by rw [point_im x y hy0]; exact hy)
@@ -41,7 +41,7 @@ theorem nativeCutoffLowerPair_eq_mellin (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.r
     (∫ z : UpperHalfPlane in modularStrip, nativeCutoffLowerPair q s z) =
       ∫ y in Ioc (0:ℝ) (1/2:ℝ), (y:ℂ)^(s-2)*squareCutoffStripMean q y := by
   rw [setIntegral_modularStrip_eq_iterated _ (nativeCutoffLowerPair_integrable q s hs)]
-  have he : (∫ y in Ioi (0:ℝ), (y^2)⁻¹ • ∫ x in Ico (0:ℝ) 1,
+  have he : (∫ y in Ioi (0:ℝ), (y^(2 : ℕ))⁻¹ • ∫ x in Ico (0:ℝ) 1,
       nativeCutoffLowerPair q s (ofComplex (⟨x,y⟩:ℂ))) =
       ∫ y in Ioi (0:ℝ), (Iic (1/2:ℝ)).indicator
         (fun y : ℝ => (y:ℂ)^(s-2)*squareCutoffStripMean q y) y := by
@@ -57,7 +57,7 @@ theorem nativeCutoffLowerPair_eq_mellin (q : XiZeroCopy) (s : ℂ) (hs : 2 < s.r
 
 private theorem integrated_height_admitted (F : UpperHalfPlane → ℂ)
     (hi : IntegrableOn F modularStrip volume) :
-    IntegrableOn (fun y : ℝ => (y^2)⁻¹ • ∫ x in Ico (0:ℝ) 1,
+    IntegrableOn (fun y : ℝ => (y^(2 : ℕ))⁻¹ • ∫ x in Ico (0:ℝ) 1,
       F (ofComplex (⟨x,y⟩:ℂ))) (Ioi (0:ℝ)) := by
   have hc := (integrableOn_modularStrip_iff F).mp hi
   rw [Measure.volume_eq_prod,IntegrableOn,← Measure.prod_restrict] at hc
@@ -77,7 +77,7 @@ theorem nativeCutoffLowerMellin_integrable (q : XiZeroCopy) (s : ℂ) (hs : 2 < 
 
 private theorem upper_density (q : XiZeroCopy) (P : D4BMEisensteinAbsoluteConvergenceParameter)
     {y : ℝ} (hy : 2 < y) :
-    reflectedCompletedLambda (2*P.s)*((y^2)⁻¹ •
+    reflectedCompletedLambda (2*P.s)*((y^(2 : ℕ))⁻¹ •
       ∫ x in Ico (0:ℝ) 1, nativeCutoffUpperPair q P.s (ofComplex (⟨x,y⟩:ℂ))) =
       reflectedCompletedLambda (2*P.s-1)*(y:ℂ)^(-P.s-1)*nativeSquareCutoffHeight q y := by
   have hy0 : 0 < y := lt_trans (by norm_num : (0:ℝ)<2) hy
@@ -89,11 +89,11 @@ private theorem upper_density (q : XiZeroCopy) (P : D4BMEisensteinAbsoluteConver
   have hm := lowCuspPower_completed_mean P y hy.le
   rw [integral_const_mul] at hm
   calc
-    _ = (y^2)⁻¹ • (nativeSquareCutoffHeight q y*(reflectedCompletedLambda (2*P.s)*
+    _ = (y^(2 : ℕ))⁻¹ • (nativeSquareCutoffHeight q y*(reflectedCompletedLambda (2*P.s)*
         ∫ x in Ico (0:ℝ) 1, periodize (cuspHeightSeed (lowCuspPower P.s)) (ofComplex (⟨x,y⟩:ℂ)))) := by
       simp only [Complex.real_smul]
       ring
-    _ = (y^2)⁻¹ • ((y:ℂ)^(1-P.s)*(reflectedCompletedLambda (2*P.s-1)*nativeSquareCutoffHeight q y)) := by
+    _ = (y^(2 : ℕ))⁻¹ • ((y:ℂ)^(1-P.s)*(reflectedCompletedLambda (2*P.s-1)*nativeSquareCutoffHeight q y)) := by
       rw [hm]
       congr 1
       ring
@@ -107,7 +107,7 @@ theorem nativeCutoffUpperPair_eq_reflected_mellin (q : XiZeroCopy) (s : ℂ) (hs
       reflectedCompletedLambda (2*s-1)*∫ y in Ioi (2:ℝ), (y:ℂ)^(-s-1)*nativeSquareCutoffHeight q y := by
   let P : D4BMEisensteinAbsoluteConvergenceParameter := ⟨s,by linarith⟩
   rw [setIntegral_modularStrip_eq_iterated _ (nativeCutoffUpperPair_integrable q s hs),← integral_const_mul]
-  have he : (∫ y in Ioi (0:ℝ), reflectedCompletedLambda (2*s)*((y^2)⁻¹ •
+  have he : (∫ y in Ioi (0:ℝ), reflectedCompletedLambda (2*s)*((y^(2 : ℕ))⁻¹ •
       ∫ x in Ico (0:ℝ) 1, nativeCutoffUpperPair q s (ofComplex (⟨x,y⟩:ℂ)))) =
       ∫ y in Ioi (0:ℝ), (Ioi (2:ℝ)).indicator
         (fun y : ℝ => reflectedCompletedLambda (2*s-1)*(y:ℂ)^(-s-1)*nativeSquareCutoffHeight q y) y := by

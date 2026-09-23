@@ -44,13 +44,13 @@ theorem inner_uniformPhaseRayOf (f : Fin D → V) (q : Fin D → ℂ) (y : V) :
 /-- Bessel's inequality: pulling back is a contraction. -/
 theorem norm_pullbackVector_le {f : Fin D → V} (horth : Orthonormal ℂ f) (y : V) :
     ‖pullbackVector f y‖ ≤ ‖y‖ := by
-  have hb : ∑ a, ‖(inner ℂ (f a) y : ℂ)‖ ^ 2 ≤ ‖y‖ ^ 2 := horth.sum_inner_products_le y
+  have hb : ∑ a, ‖(inner ℂ (f a) y : ℂ)‖ ^ (2 : ℕ) ≤ ‖y‖ ^ (2 : ℕ) := horth.sum_inner_products_le y
   rw [pullbackVector, EuclideanSpace.norm_eq]
   have hcoord : ∀ a : Fin D,
-      ‖((WithLp.toLp 2 fun a => (inner ℂ (f a) y : ℂ) : EuclideanSpace ℂ (Fin D))).ofLp a‖ ^ 2
-        = ‖(inner ℂ (f a) y : ℂ)‖ ^ 2 := fun a => rfl
+      ‖((WithLp.toLp 2 fun a => (inner ℂ (f a) y : ℂ) : EuclideanSpace ℂ (Fin D))).ofLp a‖ ^ (2 : ℕ)
+        = ‖(inner ℂ (f a) y : ℂ)‖ ^ (2 : ℕ) := fun a => rfl
   rw [Finset.sum_congr rfl fun a (_ : a ∈ Finset.univ) => hcoord a]
-  calc Real.sqrt (∑ a, ‖(inner ℂ (f a) y : ℂ)‖ ^ 2) ≤ Real.sqrt (‖y‖ ^ 2) :=
+  calc Real.sqrt (∑ a, ‖(inner ℂ (f a) y : ℂ)‖ ^ (2 : ℕ)) ≤ Real.sqrt (‖y‖ ^ (2 : ℕ)) :=
         Real.sqrt_le_sqrt hb
     _ = ‖y‖ := Real.sqrt_sq (norm_nonneg y)
 
@@ -75,7 +75,7 @@ theorem norm_uniformPhaseRayOf {f : Fin D → V} (horth : Orthonormal ℂ f) {q 
   have hinner : (inner ℂ (uniformPhaseRayOf f q) (uniformPhaseRayOf f q) : ℂ)
       = inner ℂ (phaseRay q) (phaseRay q) := by
     rw [inner_uniformPhaseRayOf, pullbackVector_uniformPhaseRayOf horth]
-  have h1 : ‖uniformPhaseRayOf f q‖ ^ 2 = ‖phaseRay q‖ ^ 2 := by
+  have h1 : ‖uniformPhaseRayOf f q‖ ^ (2 : ℕ) = ‖phaseRay q‖ ^ (2 : ℕ) := by
     rw [← inner_self_eq_norm_sq (𝕜 := ℂ), ← inner_self_eq_norm_sq (𝕜 := ℂ), hinner]
   rw [norm_phaseRay hq hD] at h1
   nlinarith [norm_nonneg (uniformPhaseRayOf f q), h1]
@@ -97,7 +97,7 @@ theorem inner_flowRayOf {f : Fin D → V} (horth : Orthonormal ℂ f) (E : Fin D
 /-- The squared trace distance is the projective deficit. -/
 theorem sq_pureStateTraceDistance {ι : Type*} [Fintype ι] (u v : EuclideanSpace ℂ ι)
     (hu : ‖u‖ ≤ 1) (hv : ‖v‖ ≤ 1) :
-    pureStateTraceDistance u v ^ 2 = 1 - ‖(inner ℂ u v : ℂ)‖ ^ 2 := by
+    pureStateTraceDistance u v ^ (2 : ℕ) = 1 - ‖(inner ℂ u v : ℂ)‖ ^ (2 : ℕ) := by
   have h1 : ‖(inner ℂ u v : ℂ)‖ ≤ 1 := by
     refine le_trans (norm_inner_le_norm (𝕜 := ℂ) u v) ?_
     nlinarith [norm_nonneg u, norm_nonneg v]
@@ -125,7 +125,7 @@ theorem sq_lt_one_sub_norm_inner_sq {f : Fin D → V} (horth : Orthonormal ℂ f
     {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ < 1)
     (hhard : ∀ z ∈ pullbackDict f Y, δ < pureStateTraceDistance (phaseRay q) z)
     {y : V} (hy : y ∈ Y) :
-    δ ^ 2 < 1 - ‖(inner ℂ (uniformPhaseRayOf f q) y : ℂ)‖ ^ 2 := by
+    δ ^ (2 : ℕ) < 1 - ‖(inner ℂ (uniformPhaseRayOf f q) y : ℂ)‖ ^ (2 : ℕ) := by
   classical
   set w : EuclideanSpace ℂ (Fin D) := pullbackVector f y with hwdef
   have hwle : ‖w‖ ≤ 1 := le_trans (norm_pullbackVector_le horth y) (hY y hy)
@@ -153,10 +153,10 @@ theorem sq_lt_one_sub_norm_inner_sq {f : Fin D → V} (horth : Orthonormal ℂ f
     have hsq := sq_pureStateTraceDistance (phaseRay q) z
       (le_of_eq (norm_phaseRay hq hD)) (le_of_eq hz1)
     have hnn := pureStateTraceDistance_nonneg (phaseRay q) z
-    have hd2 : δ ^ 2 < 1 - ‖(inner ℂ (phaseRay q) z : ℂ)‖ ^ 2 := by nlinarith
-    have hw2 : ‖w‖ ^ 2 ≤ 1 := by nlinarith
-    have hkey : (‖w‖ * ‖(inner ℂ (phaseRay q) z : ℂ)‖) ^ 2
-        ≤ ‖(inner ℂ (phaseRay q) z : ℂ)‖ ^ 2 := by
+    have hd2 : δ ^ (2 : ℕ) < 1 - ‖(inner ℂ (phaseRay q) z : ℂ)‖ ^ (2 : ℕ) := by nlinarith
+    have hw2 : ‖w‖ ^ (2 : ℕ) ≤ 1 := by nlinarith
+    have hkey : (‖w‖ * ‖(inner ℂ (phaseRay q) z : ℂ)‖) ^ (2 : ℕ)
+        ≤ ‖(inner ℂ (phaseRay q) z : ℂ)‖ ^ (2 : ℕ) := by
       nlinarith [sq_nonneg ‖(inner ℂ (phaseRay q) z : ℂ)‖]
     rw [hinner, hnorm]
     linarith
@@ -168,33 +168,33 @@ theorem exists_late_recurrence_hard_polygon_orthonormal {d k : ℕ} [NeZero k] (
     (f : Fin (d + 1) → V) (horth : Orthonormal ℂ f)
     (E : Fin (d + 1) → ℝ) (hind : LinearIndependent ℚ (projectiveGapPacket E))
     (Y : Finset V) (hY : ∀ y ∈ Y, ‖y‖ ≤ 1) {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ < 1)
-    (hδ2 : 2 * δ ^ 2 ≤ 1)
+    (hδ2 : 2 * δ ^ (2 : ℕ) ≤ 1)
     (h13 : 4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-      * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) < 1)
+      * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) < 1)
     {ρ : ℝ} (hρ : 0 < ρ) (A : ℝ) :
     ∃ R : ℝ, A < R ∧
-      1 - ‖(inner ℂ (flowRayOf f E R) (flowRayOf f E 0) : ℂ)‖ ^ 2 < ρ ^ 2 ∧
+      1 - ‖(inner ℂ (flowRayOf f E R) (flowRayOf f E 0) : ℂ)‖ ^ (2 : ℕ) < ρ ^ (2 : ℕ) ∧
       ∀ j : ℕ, 1 ≤ j → j ≤ k - 1 → ∀ y ∈ Y,
-        δ ^ 2 < 1 - ‖(inner ℂ (flowRayOf f E ((j : ℝ) * R / (k : ℝ))) y : ℂ)‖ ^ 2 := by
+        δ ^ (2 : ℕ) < 1 - ‖(inner ℂ (flowRayOf f E ((j : ℝ) * R / (k : ℝ))) y : ℂ)‖ ^ (2 : ℕ) := by
   have hk1 : (0 : ℝ) ≤ (k : ℝ) - 1 := by
     have : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk.one_lt.le
     linarith
   have hcard : ((pullbackDict f Y).card : ℝ) ≤ (Y.card : ℝ) := by
     exact_mod_cast card_pullbackDict_le f Y
   have hc : (0 : ℝ) ≤ 4 * ((k : ℝ) - 1)
-      * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) :=
+      * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) :=
     mul_nonneg (mul_nonneg (by norm_num) hk1) (Real.exp_pos _).le
   have h13' : 4 * ((k : ℝ) - 1) * ((pullbackDict f Y).card : ℝ)
-      * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) < 1 := by
+      * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) < 1 := by
     refine lt_of_le_of_lt ?_ h13
     calc 4 * ((k : ℝ) - 1) * ((pullbackDict f Y).card : ℝ)
-          * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1))
-        = (4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)))
+          * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1))
+        = (4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)))
             * ((pullbackDict f Y).card : ℝ) := by ring
-      _ ≤ (4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)))
+      _ ≤ (4 * ((k : ℝ) - 1) * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)))
             * (Y.card : ℝ) := mul_le_mul_of_nonneg_left hcard hc
       _ = 4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-            * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) := by ring
+            * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) := by ring
   obtain ⟨R, hRA, hrec, hhard⟩ :=
     exists_late_recurrence_hard_polygon_of_cap hk E hind (pullbackDict f Y)
       (fun z hz => norm_of_mem_pullbackDict hz) hδ0 hδ2 h13' hρ A
@@ -260,15 +260,15 @@ theorem exists_late_recurrence_hard_polygon_choi {d k : ℕ} [NeZero k] (hk : k.
     {e : Fin (d + 1) → EuclideanSpace ℂ (Fin (d + 1))} (he : Orthonormal ℂ e)
     (E : Fin (d + 1) → ℝ) (hind : LinearIndependent ℚ (projectiveGapPacket E))
     (Y : Finset (EuclideanSpace ℂ (Fin (d + 1) × Fin (d + 1)))) (hY : ∀ y ∈ Y, ‖y‖ ≤ 1)
-    {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ < 1) (hδ2 : 2 * δ ^ 2 ≤ 1)
+    {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ < 1) (hδ2 : 2 * δ ^ (2 : ℕ) ≤ 1)
     (h13 : 4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-      * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) < 1)
+      * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) < 1)
     {ρ : ℝ} (hρ : 0 < ρ) (A : ℝ) :
     ∃ R : ℝ, A < R ∧
-      1 - ‖(inner ℂ (flowRayOf (choiVec e) E R) (flowRayOf (choiVec e) E 0) : ℂ)‖ ^ 2 < ρ ^ 2 ∧
+      1 - ‖(inner ℂ (flowRayOf (choiVec e) E R) (flowRayOf (choiVec e) E 0) : ℂ)‖ ^ (2 : ℕ) < ρ ^ (2 : ℕ) ∧
       ∀ j : ℕ, 1 ≤ j → j ≤ k - 1 → ∀ y ∈ Y,
-        δ ^ 2 < 1
-          - ‖(inner ℂ (flowRayOf (choiVec e) E ((j : ℝ) * R / (k : ℝ))) y : ℂ)‖ ^ 2 :=
+        δ ^ (2 : ℕ) < 1
+          - ‖(inner ℂ (flowRayOf (choiVec e) E ((j : ℝ) * R / (k : ℝ))) y : ℂ)‖ ^ (2 : ℕ) :=
   exists_late_recurrence_hard_polygon_orthonormal hk (choiVec e) (orthonormal_choiVec he) E hind
     Y hY hδ0 hδ1 hδ2 h13 hρ A
 
@@ -278,15 +278,15 @@ theorem exists_late_recurrence_hard_polygon_choi_of_maximallyProjective {d k : �
     (hk : k.Prime) {e : Fin (d + 1) → EuclideanSpace ℂ (Fin (d + 1))} (he : Orthonormal ℂ e)
     (E : Fin (d + 1) → ℝ) (hmax : MaximallyProjectiveEnergy E)
     (Y : Finset (EuclideanSpace ℂ (Fin (d + 1) × Fin (d + 1)))) (hY : ∀ y ∈ Y, ‖y‖ ≤ 1)
-    {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ < 1) (hδ2 : 2 * δ ^ 2 ≤ 1)
+    {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ < 1) (hδ2 : 2 * δ ^ (2 : ℕ) ≤ 1)
     (h13 : 4 * ((k : ℝ) - 1) * (Y.card : ℝ)
-      * Real.exp (-((1 - 4 * δ ^ 2) / 4) * ((d : ℝ) + 1)) < 1)
+      * Real.exp (-((1 - 4 * δ ^ (2 : ℕ)) / 4) * ((d : ℝ) + 1)) < 1)
     {ρ : ℝ} (hρ : 0 < ρ) (A : ℝ) :
     ∃ R : ℝ, A < R ∧
-      1 - ‖(inner ℂ (flowRayOf (choiVec e) E R) (flowRayOf (choiVec e) E 0) : ℂ)‖ ^ 2 < ρ ^ 2 ∧
+      1 - ‖(inner ℂ (flowRayOf (choiVec e) E R) (flowRayOf (choiVec e) E 0) : ℂ)‖ ^ (2 : ℕ) < ρ ^ (2 : ℕ) ∧
       ∀ j : ℕ, 1 ≤ j → j ≤ k - 1 → ∀ y ∈ Y,
-        δ ^ 2 < 1
-          - ‖(inner ℂ (flowRayOf (choiVec e) E ((j : ℝ) * R / (k : ℝ))) y : ℂ)‖ ^ 2 :=
+        δ ^ (2 : ℕ) < 1
+          - ‖(inner ℂ (flowRayOf (choiVec e) E ((j : ℝ) * R / (k : ℝ))) y : ℂ)‖ ^ (2 : ℕ) :=
   exists_late_recurrence_hard_polygon_choi hk he E
     (projectiveGapPacket_linearIndependent hmax) Y hY hδ0 hδ1 hδ2 h13 hρ A
 

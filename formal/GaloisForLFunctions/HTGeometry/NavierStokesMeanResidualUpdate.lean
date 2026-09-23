@@ -22,7 +22,7 @@ def weightedRadialDivergence (D : R →+ R) (weight rInv x : R) : R :=
 
 /-- Radial quadratic flux in equation (8.3). -/
 def radialMeanFlux (b beta Wrr : R) : R :=
-  2 * b * beta + beta ^ 2 + Wrr
+  2 * b * beta + beta ^ (2 : ℕ) + Wrr
 
 /-- Axial quadratic flux entering the radial source in equation (8.3). -/
 def axialMeanFlux (b G beta gamma Wzr : R) : R :=
@@ -30,11 +30,11 @@ def axialMeanFlux (b G beta gamma Wzr : R) : R :=
 
 /-- Swirl contribution to the radial source in equation (8.3). -/
 def swirlMeanFlux (V v WthetaTheta : R) : R :=
-  2 * V * v + v ^ 2 + WthetaTheta
+  2 * V * v + v ^ (2 : ℕ) + WthetaTheta
 
 /-- Radial-vector-Laplacian contribution in equation (8.3). -/
 def radialViscousTerm (lap : R →+ R) (rInv beta : R) : R :=
-  lap beta - rInv ^ 2 * beta
+  lap beta - rInv ^ (2 : ℕ) * beta
 
 /-- Algebraic model of the mean radial source `g_r` in equation (8.3). -/
 def meanRadialSource (timeD radialD axialD lap : R →+ R)
@@ -50,16 +50,16 @@ def meanRadialUpdateRemainder (timeD radialD axialD lap : R →+ R)
     (rInv epsilon b G beta v gamma deltaBeta deltaV deltaGamma : R) : R :=
   -timeD deltaBeta -
     weightedRadialDivergence radialD 1 rInv
-      (2 * b * deltaBeta + 2 * beta * deltaBeta + deltaBeta ^ 2) -
+      (2 * b * deltaBeta + 2 * beta * deltaBeta + deltaBeta ^ (2 : ℕ)) -
     axialD (b * deltaGamma + G * deltaBeta + beta * deltaGamma +
       gamma * deltaBeta + deltaBeta * deltaGamma) +
-    rInv * (2 * v * deltaV + deltaV ^ 2) +
+    rInv * (2 * v * deltaV + deltaV ^ (2 : ℕ)) +
     epsilon * radialViscousTerm lap rInv deltaBeta
 
 theorem radialMeanFlux_add (b beta deltaBeta Wrr : R) :
     radialMeanFlux b (beta + deltaBeta) Wrr =
       radialMeanFlux b beta Wrr +
-        (2 * b * deltaBeta + 2 * beta * deltaBeta + deltaBeta ^ 2) := by
+        (2 * b * deltaBeta + 2 * beta * deltaBeta + deltaBeta ^ (2 : ℕ)) := by
   simp [radialMeanFlux]
   ring
 
@@ -74,7 +74,7 @@ theorem axialMeanFlux_add (b G beta gamma deltaBeta deltaGamma Wzr : R) :
 theorem swirlMeanFlux_add (V v deltaV WthetaTheta : R) :
     swirlMeanFlux V (v + deltaV) WthetaTheta =
       swirlMeanFlux V v WthetaTheta + 2 * V * deltaV +
-        (2 * v * deltaV + deltaV ^ 2) := by
+        (2 * v * deltaV + deltaV ^ (2 : ℕ)) := by
   simp [swirlMeanFlux]
   ring
 

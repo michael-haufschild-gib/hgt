@@ -73,7 +73,7 @@ private theorem hasDerivAt_realAperture_of_complex_zero''
 def xiWardSymmetricApertureCurvature (w : ℂ) (a : ℝ) : ℂ :=
   (mobiusGammaXiAntiCausalWardTransportV w (a : ℂ) +
       mobiusGammaXiAntiCausalWardTransportV w ((-a : ℝ) : ℂ)) /
-    (a : ℂ) ^ 2
+    (a : ℂ) ^ (2 : ℕ)
 
 /-- Aperture reversal erases the linear Ward row. Its normalized two-sided
 curvature is forced to be the negative complex square of that row, so it
@@ -81,7 +81,7 @@ contains no independent positive energy. -/
 theorem tendsto_xiWardSymmetricApertureCurvature_zero_right
     {w : ℂ} (hw : 0 < w.re) :
     Tendsto (xiWardSymmetricApertureCurvature w) (𝓝[>] 0)
-      (𝓝 (-(continuedXiAntiCausalWardResponse w) ^ 2)) := by
+      (𝓝 (-(continuedXiAntiCausalWardResponse w) ^ (2 : ℕ))) := by
   let V : ℝ → ℂ := fun a =>
     mobiusGammaXiAntiCausalWardTransportV w (a : ℂ)
   let r : ℂ := continuedXiAntiCausalWardResponse w
@@ -106,7 +106,7 @@ theorem tendsto_xiWardSymmetricApertureCurvature_zero_right
     simp [hV0, div_eq_inv_mul]
   have hproduct : Tendsto
       (fun a : ℝ => (V a / (a : ℂ)) * (V (-a) / (a : ℂ)))
-      (𝓝[>] 0) (𝓝 (-(r ^ 2))) := by
+      (𝓝[>] 0) (𝓝 (-(r ^ (2 : ℕ)))) := by
     simpa [pow_two] using hplus.mul hminus
   apply hproduct.congr'
   have hpos : ∀ᶠ a : ℝ in 𝓝[>] 0, 0 < a := self_mem_nhdsWithin
@@ -136,13 +136,13 @@ theorem eventually_sixteen_lt_normSq_xiWardSymmetricApertureCurvature
     norm_num
   have hlim := Complex.continuous_normSq.continuousAt.tendsto.comp
     (tendsto_xiWardSymmetricApertureCurvature_zero_right hw)
-  have hlimit : Complex.normSq (-(r ^ 2)) =
-      (Complex.normSq r) ^ 2 := by
+  have hlimit : Complex.normSq (-(r ^ (2 : ℕ))) =
+      (Complex.normSq r) ^ (2 : ℕ) := by
     simp only [Complex.normSq_neg, map_pow]
   rw [hlimit] at hlim
   have hr : 4 < Complex.normSq r := by
     exact normSq_continuedXiAntiCausalWardResponse_at_eulerEdge_gt_four q
-  have hsixteen : 16 < (Complex.normSq r) ^ 2 := by
+  have hsixteen : 16 < (Complex.normSq r) ^ (2 : ℕ) := by
     nlinarith [Complex.normSq_nonneg r]
   exact hlim.eventually (Ioi_mem_nhds hsixteen)
 

@@ -9,7 +9,7 @@ import GaloisForLFunctions.HTGeometry.EntireMultiplicityFactor
 
 This module kills the strongest still-local repair of the FZZ-P source-selection chain.  One fixed
 completed response matches Xi through complex-order jet depth `k` at physical response order
-`(k+1)^3` for every `k`, while preserving the completed functional equation, Schwarz reality,
+`(k+1)^(3 : ℕ)` for every `k`, while preserving the completed functional equation, Schwarz reality,
 order-one growth, all three completed anchors, natural response samples, and the strictly positive
 real-axis phase ray.  The same response nevertheless has an interior off-critical zero.
 
@@ -204,8 +204,8 @@ theorem analyticOrderAt_sparseJetRawEvenProduct (k : ℕ) :
     have hre := congrArg Complex.re h
     dsimp [m, sparseJetCenteredNode, sparseJetPhysicalNode] at hre
     norm_num at hre
-    have hkpos : 0 < ((k : ℝ) + 1) ^ 3 := by positivity
-    have hlpos : 0 < ((l : ℝ) + 1) ^ 3 := by positivity
+    have hkpos : 0 < ((k : ℝ) + 1) ^ (3 : ℕ) := by positivity
+    have hlpos : 0 < ((l : ℝ) + 1) ^ (3 : ℕ) := by positivity
     nlinarith
   have hfun : (fun z : ℂ => sparseJetCanonicalProduct (z + (3 / 2 : ℂ)) *
       sparseJetCanonicalProduct (-z - (3 / 2 : ℂ))) =
@@ -258,13 +258,13 @@ def sparseJetInterpolationTarget : ℂ :=
 def sparseJetInterpolationPolynomial (z : ℂ) : ℂ :=
   (sparseJetInterpolationTarget.re : ℂ) +
     ((2 * sparseJetInterpolationTarget.im : ℝ) : ℂ) *
-      ((z + (3 / 2 : ℂ)) ^ 2 + 15 / 16)
+      ((z + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16)
 
 theorem sparseJetInterpolationPolynomial_nonrealInteriorResponsePoint :
     sparseJetInterpolationPolynomial nonrealInteriorResponsePoint =
       sparseJetInterpolationTarget := by
   have hu :
-      (nonrealInteriorResponsePoint + (3 / 2 : ℂ)) ^ 2 + 15 / 16 = I / 2 := by
+      (nonrealInteriorResponsePoint + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16 = I / 2 := by
     rw [nonrealInteriorResponsePoint]
     ring_nf
     rw [Complex.I_sq]
@@ -296,10 +296,10 @@ theorem orderOneEnvelope_sparseJetInterpolationPolynomial :
   have hid : OrderOneEnvelope (fun z : ℂ => z) := orderOneEnvelope_id
   have hc : OrderOneEnvelope (fun z : ℂ => z + (3 / 2 : ℂ)) :=
     hid.add (orderOneEnvelope_const (3 / 2))
-  have hsq : OrderOneEnvelope (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ 2) := by
+  have hsq : OrderOneEnvelope (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ (2 : ℕ)) := by
     exact (hc.mul hc).congr fun z => by ring
   have hoff : OrderOneEnvelope
-      (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ 2 + 15 / 16) :=
+      (fun z : ℂ => (z + (3 / 2 : ℂ)) ^ (2 : ℕ) + 15 / 16) :=
     hsq.add (orderOneEnvelope_const (15 / 16))
   exact ((orderOneEnvelope_const (sparseJetInterpolationTarget.re : ℂ)).add
     (((orderOneEnvelope_const ((2 * sparseJetInterpolationTarget.im : ℝ) : ℂ))).mul
@@ -461,7 +461,7 @@ theorem sparseUnboundedJetResponseCountermodel_realAxis_package (scaleLog : ℂ)
 
 theorem sparseJetSchwarzEvenProduct_sq_iteratedDeriv_zero
     (k r : ℕ) (hr : r < 4 * (k + 1)) :
-    iteratedDeriv r (fun z => sparseJetSchwarzEvenProduct z ^ 2)
+    iteratedDeriv r (fun z => sparseJetSchwarzEvenProduct z ^ (2 : ℕ))
       (sparseJetPhysicalNode k : ℂ) = 0 := by
   let m : ℂ := (sparseJetPhysicalNode k : ℂ)
   have hQzero : ∀ j < 2 * (k + 1),
@@ -478,7 +478,7 @@ theorem sparseJetSchwarzEvenProduct_sq_iteratedDeriv_zero
       (m := 2 * (k + 1)) (n := 2 * (k + 1)) hQzero hQzero (by omega)
   simpa [m, pow_two] using hmul
 
-/-- The single countermodel agrees with Xi through depth `k` at cubic physical node `(k+1)^3`. -/
+/-- The single countermodel agrees with Xi through depth `k` at cubic physical node `(k+1)^(3 : ℕ)`. -/
 theorem sparseUnboundedJetResponseCountermodel_iteratedDeriv
     (k j : ℕ) (hj : j ≤ k) :
     iteratedDeriv j sparseUnboundedJetResponseCountermodel
@@ -487,18 +487,18 @@ theorem sparseUnboundedJetResponseCountermodel_iteratedDeriv
         (sparseJetPhysicalNode k : ℂ) := by
   let H : ℂ → ℂ := fun z =>
     completedBlackHoleJetInterpolation z *
-      (sparseJetInterpolationPolynomial z * anchoredSymmetricJetNullGenerator z) ^ 2
+      (sparseJetInterpolationPolynomial z * anchoredSymmetricJetNullGenerator z) ^ (2 : ℕ)
   have hH : Differentiable ℂ H := by
     dsimp [H]
     exact differentiable_completedBlackHoleJetInterpolation.mul
       ((differentiable_sparseJetInterpolationPolynomial.mul
         differentiable_anchoredSymmetricJetNullGenerator).pow 2)
-  have hQsq : Differentiable ℂ (fun z => sparseJetSchwarzEvenProduct z ^ 2) :=
+  have hQsq : Differentiable ℂ (fun z => sparseJetSchwarzEvenProduct z ^ (2 : ℕ)) :=
     differentiable_sparseJetSchwarzEvenProduct.pow 2
   have hprod : Differentiable ℂ
-      (fun z => H z * sparseJetSchwarzEvenProduct z ^ 2) := hH.mul hQsq
+      (fun z => H z * sparseJetSchwarzEvenProduct z ^ (2 : ℕ)) := hH.mul hQsq
   have hzero : iteratedDeriv j
-      (fun z => H z * sparseJetSchwarzEvenProduct z ^ 2)
+      (fun z => H z * sparseJetSchwarzEvenProduct z ^ (2 : ℕ))
         (sparseJetPhysicalNode k : ℂ) = 0 := by
     refine complex_iteratedDeriv_mul_eq_zero_before_add_order
       hH.contDiff.contDiffAt hQsq.contDiff.contDiffAt
@@ -507,7 +507,7 @@ theorem sparseUnboundedJetResponseCountermodel_iteratedDeriv
       (by omega)
   have hcounter : sparseUnboundedJetResponseCountermodel = fun z =>
       completedBlackHoleJetInterpolation z +
-        H z * sparseJetSchwarzEvenProduct z ^ 2 := by
+        H z * sparseJetSchwarzEvenProduct z ^ (2 : ℕ) := by
     funext z
     rw [sparseUnboundedJetResponseCountermodel, sparseUnboundedJetGauge,
       completedResponsePositiveSquareGauge, sparseUnboundedJetMultiplier]
@@ -515,9 +515,9 @@ theorem sparseUnboundedJetResponseCountermodel_iteratedDeriv
     ring
   rw [hcounter]
   have hsum : (fun z => completedBlackHoleJetInterpolation z +
-      H z * sparseJetSchwarzEvenProduct z ^ 2) =
+      H z * sparseJetSchwarzEvenProduct z ^ (2 : ℕ)) =
       completedBlackHoleJetInterpolation +
-        (fun z => H z * sparseJetSchwarzEvenProduct z ^ 2) := rfl
+        (fun z => H z * sparseJetSchwarzEvenProduct z ^ (2 : ℕ)) := rfl
   rw [hsum, iteratedDeriv_add
     differentiable_completedBlackHoleJetInterpolation.contDiff.contDiffAt
     hprod.contDiff.contDiffAt, hzero, add_zero]

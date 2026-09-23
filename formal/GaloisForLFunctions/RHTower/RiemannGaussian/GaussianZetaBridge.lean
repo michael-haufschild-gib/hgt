@@ -426,8 +426,8 @@ theorem summable_zetaGaussianZeroEnvelope_of_representation
     (ε t : ℝ) (hε : 0 < ε) :
     Summable fun occurrence : NontrivialZetaZeroOccurrence multiplicity =>
       Real.exp
-        (ε * (zetaSpectralCoordinate occurrence.1.1).im ^ 2 -
-          ε * ((zetaSpectralCoordinate occurrence.1.1).re - t) ^ 2) := by
+        (ε * (zetaSpectralCoordinate occurrence.1.1).im ^ (2 : ℕ) -
+          ε * ((zetaSpectralCoordinate occurrence.1.1).re - t) ^ (2 : ℕ)) := by
   have hsummable := (hRep ε t hε).summable.norm
   simpa only [zetaGaussianZeroSummand,
     norm_complexTranslatedGaussian] using hsummable
@@ -474,8 +474,8 @@ theorem summable_weightedDistinct_fixedCenter_relativeEnvelope_of_representation
   have habsolute := hdistinct.summable.norm
   have henvelope : Summable fun ρ : NontrivialZetaZero =>
       (multiplicity ρ : ℝ) * Real.exp
-        (ε₀ * (zetaSpectralCoordinate ρ.1).im ^ 2 -
-          ε₀ * ((zetaSpectralCoordinate ρ.1).re - t) ^ 2) := by
+        (ε₀ * (zetaSpectralCoordinate ρ.1).im ^ (2 : ℕ) -
+          ε₀ * ((zetaSpectralCoordinate ρ.1).re - t) ^ (2 : ℕ)) := by
     simpa only [zetaGaussianDistinctZeroSummand, Complex.norm_mul,
       Complex.norm_natCast, norm_complexTranslatedGaussian]
       using habsolute
@@ -486,8 +486,8 @@ theorem summable_weightedDistinct_fixedCenter_relativeEnvelope_of_representation
         (zetaSpectralCoordinate ρ.1).re
         (zetaSpectralCoordinate ρ.1).im =
       -ε₀ * offAxisEnvelopeExponent t γ a +
-        (ε₀ * (zetaSpectralCoordinate ρ.1).im ^ 2 -
-          ε₀ * ((zetaSpectralCoordinate ρ.1).re - t) ^ 2) by
+        (ε₀ * (zetaSpectralCoordinate ρ.1).im ^ (2 : ℕ) -
+          ε₀ * ((zetaSpectralCoordinate ρ.1).re - t) ^ (2 : ℕ)) by
       unfold fixedCenterPacketGap offAxisEnvelopeExponent
       ring,
     Real.exp_add]
@@ -564,7 +564,7 @@ def ZetaGaussianZeroSumNonnegative (Q : ℝ → ℝ → ℝ) : Prop :=
 off-diagonal kernel obtained from half-Gaussian factors centered at `t` and
 `s`. -/
 def gaussianCoherentKernel (Q : ℝ → ℝ → ℝ) (ε t s : ℝ) : ℝ :=
-  Real.exp (-ε * (t - s) ^ 2 / 4) * Q ε ((t + s) / 2)
+  Real.exp (-ε * (t - s) ^ (2 : ℕ) / 4) * Q ε ((t + s) / 2)
 
 @[simp]
 theorem gaussianCoherentKernel_self (Q : ℝ → ℝ → ℝ) (ε t : ℝ) :
@@ -605,7 +605,7 @@ theorem hasSum_complexHalfGaussian_products
             (zetaSpectralCoordinate occurrence.1.1))
       (gaussianCoherentKernel Q ε t s : ℂ) := by
   have h := (hRep ε ((t + s) / 2) hε).mul_left
-    (Real.exp (-ε * (t - s) ^ 2 / 4) : ℂ)
+    (Real.exp (-ε * (t - s) ^ (2 : ℕ) / 4) : ℂ)
   have h' :
       HasSum
         (fun occurrence : NontrivialZetaZeroOccurrence multiplicity =>
@@ -613,7 +613,7 @@ theorem hasSum_complexHalfGaussian_products
               (zetaSpectralCoordinate occurrence.1.1) *
             complexHalfGaussian ε s
               (zetaSpectralCoordinate occurrence.1.1))
-        ((Real.exp (-ε * (t - s) ^ 2 / 4) : ℂ) *
+        ((Real.exp (-ε * (t - s) ^ (2 : ℕ) / 4) : ℂ) *
           (Q ε ((t + s) / 2) : ℂ)) := by
     refine h.congr_fun fun occurrence => ?_
     rw [zetaGaussianZeroSummand]
@@ -711,15 +711,15 @@ theorem gaussianCoherentKernelPositiveSemidefinite_of_riemannHypothesis
     Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_mul, sub_zero]
   let v : Fin n → ℝ := fun i =>
     coefficient i * Real.exp (-(ε / 2) *
-      ((zetaSpectralCoordinate occurrence.1.1).re - center i) ^ 2)
+      ((zetaSpectralCoordinate occurrence.1.1).re - center i) ^ (2 : ℕ))
   calc
-    0 ≤ (∑ i, v i) ^ 2 := sq_nonneg _
+    0 ≤ (∑ i, v i) ^ (2 : ℕ) := sq_nonneg _
     _ = ∑ i, ∑ j,
         coefficient i * coefficient j *
           (Real.exp (-(ε / 2) *
-            ((zetaSpectralCoordinate occurrence.1.1).re - center i) ^ 2) *
+            ((zetaSpectralCoordinate occurrence.1.1).re - center i) ^ (2 : ℕ)) *
            Real.exp (-(ε / 2) *
-            ((zetaSpectralCoordinate occurrence.1.1).re - center j) ^ 2)) := by
+            ((zetaSpectralCoordinate occurrence.1.1).re - center j) ^ (2 : ℕ))) := by
       rw [sq, Finset.sum_mul_sum]
       apply Finset.sum_congr rfl
       intro i _

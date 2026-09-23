@@ -57,16 +57,16 @@ theorem eulerPositivePreScalarGammaSource_eq_base_sub_tangent
 /-- Exact source capacity before taking the critical limit. -/
 theorem norm_eulerPositivePreScalarGammaSource_sq
     {sigma : ℝ} (hsigma : 1 < sigma) :
-    ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ 2 =
-      4 * (sigma - 1) ^ 2 * eulerPositiveLogMoment 2 sigma := by
+    ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ (2 : ℕ) =
+      4 * (sigma - 1) ^ (2 : ℕ) * eulerPositiveLogMoment 2 sigma := by
   rw [eulerPositivePreScalarGammaSource, norm_smul,
     Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (sub_pos.mpr hsigma)]
   rw [show
     ((sigma - 1) *
-      ‖eulerPositiveGammaPoleCancelledLp sigma hsigma‖) ^ 2 =
-      (sigma - 1) ^ 2 *
-        ‖eulerPositiveGammaPoleCancelledLp sigma hsigma‖ ^ 2 by ring,
+      ‖eulerPositiveGammaPoleCancelledLp sigma hsigma‖) ^ (2 : ℕ) =
+      (sigma - 1) ^ (2 : ℕ) *
+        ‖eulerPositiveGammaPoleCancelledLp sigma hsigma‖ ^ (2 : ℕ) by ring,
     norm_eulerPositiveGammaPoleCancelledLp_sq hsigma]
   ring
 
@@ -75,7 +75,7 @@ theorem tendsto_norm_eulerPositivePreScalarGammaSource_sq :
     Tendsto
       (fun sigma : ℝ =>
         if hsigma : 1 < sigma then
-          ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ 2
+          ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ (2 : ℕ)
         else 0)
       (nhdsWithin 1 (Ioi 1)) (nhds 8) := by
   apply
@@ -91,7 +91,7 @@ theorem tendsto_norm_eulerPositivePreScalarGammaSource_sq :
 theorem eventually_four_lt_norm_eulerPositivePreScalarGammaSource_sq :
     ∀ᶠ sigma : ℝ in nhdsWithin 1 (Ioi 1),
       if hsigma : 1 < sigma then
-        4 < ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ 2
+        4 < ‖eulerPositivePreScalarGammaSource sigma hsigma‖ ^ (2 : ℕ)
       else False := by
   have hopen : Ioi (4 : ℝ) ∈ 𝓝 (8 : ℝ) := Ioi_mem_nhds (by norm_num)
   have hevent :=
@@ -125,7 +125,7 @@ theorem inner_eulerPositiveState_dampedState_eq_affineOverlap
           (starRingEnd ℂ) (eulerPositiveStateWeight sigma n) =
         (eulerPositiveProbability sigma n : ℂ) := by
       calc
-        _ = ((‖eulerPositiveStateWeight sigma n‖ : ℂ) ^ 2) :=
+        _ = ((‖eulerPositiveStateWeight sigma n‖ : ℂ) ^ (2 : ℕ)) :=
           RCLike.mul_conj (eulerPositiveStateWeight sigma n)
         _ = _ := by
           rw [← Complex.ofReal_pow,

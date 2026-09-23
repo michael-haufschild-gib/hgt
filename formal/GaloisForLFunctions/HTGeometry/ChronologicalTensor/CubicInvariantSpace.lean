@@ -86,8 +86,8 @@ theorem cubicObservationSpace_le_flowSpace : cubicObservationSpace ≤ cubicFlow
 theorem cubicFlowObservationSpace_invariant (q : Icc (0:ℝ) 1) :
     MapsTo (cubicSectionPullback q) cubicFlowObservationSpace cubicFlowObservationSpace := by
   rintro f ⟨c,rfl⟩
-  refine ⟨![q.val*c 0,c 1,c 2,c 3,q.val^2*c 4+q.val*(1-q.val)*c 0/2,
-    q.val^3*c 5-q.val*(1-q.val^2)*c 0/4],?_⟩
+  refine ⟨![q.val*c 0,c 1,c 2,c 3,q.val^(2 : ℕ)*c 4+q.val*(1-q.val)*c 0/2,
+    q.val^(3 : ℕ)*c 5-q.val*(1-q.val^(2 : ℕ))*c 0/4],?_⟩
   ext g
   exact (cubicExtendedReadout_flow q (c 0) (c 1) (c 2) (c 3) (c 4) (c 5) g.property).symm
 

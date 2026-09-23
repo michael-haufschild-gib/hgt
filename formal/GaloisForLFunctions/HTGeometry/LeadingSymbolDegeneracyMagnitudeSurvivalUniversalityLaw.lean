@@ -25,9 +25,9 @@ def class44DegenerateWeightSymbol : Polynomial ℚ :=
 /-- The corresponding nonzero differential polynomial in the value and first three derivative
 slots. -/
 def class44DegenerateDifferentialPolynomial : MvPolynomial (Fin 5) ℂ :=
-  X 4 * X 2 * X 1 ^ 2 -
-    MvPolynomial.C 2 * X 3 ^ 2 * X 1 ^ 2 +
-      X 3 * X 2 ^ 2 * X 1
+  X 4 * X 2 * X 1 ^ (2 : ℕ) -
+    MvPolynomial.C 2 * X 3 ^ (2 : ℕ) * X 1 ^ (2 : ℕ) +
+      X 3 * X 2 ^ (2 : ℕ) * X 1
 
 /-- Its balanced leading symbol vanishes exactly. -/
 theorem class44DegenerateWeightSymbol_eq_zero :

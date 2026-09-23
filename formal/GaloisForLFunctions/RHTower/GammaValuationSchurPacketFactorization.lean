@@ -51,11 +51,11 @@ def gammaValuationSchurPacketGammaCharge
 def gammaValuationSchurPacketSignedResidual
     {N : ℕ} (p : Fin N → Nat.Primes) (c : Fin N → ℝ) : ℝ :=
   gammaValuationSchurPacketPrimeEnergy p c -
-    gammaValuationSchurPacketGammaCharge p c ^ 2 / (9 / 8 : ℝ)
+    gammaValuationSchurPacketGammaCharge p c ^ (2 : ℕ) / (9 / 8 : ℝ)
 
 def gammaValuationSchurPacketTailPrefix
     {N : ℕ} (p : Fin N → Nat.Primes) (c : Fin N → ℝ) (D : ℕ) : ℝ :=
-  ∑ e ∈ Finset.range D, gammaValuationSchurPacketResultant p c (e + 1) ^ 2
+  ∑ e ∈ Finset.range D, gammaValuationSchurPacketResultant p c (e + 1) ^ (2 : ℕ)
 
 /-- Completed Hardy vector of one corrected Gamma–valuation prime source. -/
 def gammaValuationSchurPrimeHardyVector (p : Nat.Primes) : PrimeHardy :=
@@ -94,20 +94,20 @@ def gammaValuationSchurPacketHardyVector
 
 /-- Total energy of any vector in intrinsic infinite-dimensional source completion. -/
 def gammaValuationSchurHardyEnergy (x : PrimeHardy) : ℝ :=
-  ∑' e : ℕ, x e ^ 2
+  ∑' e : ℕ, x e ^ (2 : ℕ)
 
 /-- Rank-one Gamma subtraction on entire source completion. -/
 def gammaValuationSchurHardyResidual (x : PrimeHardy) : ℝ :=
-  gammaValuationSchurHardyEnergy x - x 0 ^ 2
+  gammaValuationSchurHardyEnergy x - x 0 ^ (2 : ℕ)
 
 theorem summable_gammaValuationSchurHardy_sq (x : PrimeHardy) :
-    Summable (fun e : ℕ => x e ^ 2) := by
+    Summable (fun e : ℕ => x e ^ (2 : ℕ)) := by
   have h := (lp.memℓp x).summable (by norm_num)
   simpa [Real.norm_eq_abs, sq_abs] using h
 
 /-- Global completion law: Gamma removes exactly vacuum line, leaving positive-depth energy. -/
 theorem gammaValuationSchurHardyResidual_eq_tsum_tail (x : PrimeHardy) :
-    gammaValuationSchurHardyResidual x = ∑' e : ℕ, x (e + 1) ^ 2 := by
+    gammaValuationSchurHardyResidual x = ∑' e : ℕ, x (e + 1) ^ (2 : ℕ) := by
   have hsplit := (summable_gammaValuationSchurHardy_sq x).sum_add_tsum_nat_add 1
   simp only [Finset.sum_range_one] at hsplit
   unfold gammaValuationSchurHardyResidual gammaValuationSchurHardyEnergy
@@ -151,7 +151,7 @@ theorem hasSum_xiTransversePrimeHalfShiftedValuationCoordinate_mul
 
 theorem hasSum_gammaValuationSchurPacketResultant_sq
     {N : ℕ} (p : Fin N → Nat.Primes) (c : Fin N → ℝ) :
-    HasSum (fun e => gammaValuationSchurPacketResultant p c e ^ 2)
+    HasSum (fun e => gammaValuationSchurPacketResultant p c e ^ (2 : ℕ))
       (gammaValuationSchurPacketPrimeEnergy p c) := by
   classical
   have hpairs : ∀ i : Fin N, HasSum
@@ -204,10 +204,10 @@ theorem gammaValuationSchurPacketGammaCharge_eq_resultant_zero
 theorem gammaValuationSchurPacketSignedResidual_eq_tsum_tail
     {N : ℕ} (p : Fin N → Nat.Primes) (c : Fin N → ℝ) :
     gammaValuationSchurPacketSignedResidual p c =
-      ∑' e : ℕ, gammaValuationSchurPacketResultant p c (e + 1) ^ 2 := by
+      ∑' e : ℕ, gammaValuationSchurPacketResultant p c (e + 1) ^ (2 : ℕ) := by
   have hs := hasSum_gammaValuationSchurPacketResultant_sq p c
   have hsplit := hs.summable.sum_add_tsum_nat_add 1
-  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ 2 = 9 / 8 := by
+  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ (2 : ℕ) = 9 / 8 := by
     rw [div_pow, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
   unfold gammaValuationSchurPacketSignedResidual
@@ -216,8 +216,8 @@ theorem gammaValuationSchurPacketSignedResidual_eq_tsum_tail
   simp only [Finset.sum_range_one] at hsplit
   rw [← hsplit]
   have hcharge :
-      (-(3 * Real.sqrt 2 / 4) * gammaValuationSchurPacketResultant p c 0) ^ 2 /
-          (9 / 8 : ℝ) = gammaValuationSchurPacketResultant p c 0 ^ 2 := by
+      (-(3 * Real.sqrt 2 / 4) * gammaValuationSchurPacketResultant p c 0) ^ (2 : ℕ) /
+          (9 / 8 : ℝ) = gammaValuationSchurPacketResultant p c 0 ^ (2 : ℕ) := by
     rw [mul_pow, neg_sq, hconst]
     norm_num
   rw [hcharge]
@@ -247,7 +247,7 @@ theorem gammaValuationSchurPacketSignedResidual_eq_hardyResidual
     {N : ℕ} (p : Fin N → Nat.Primes) (c : Fin N → ℝ) :
     gammaValuationSchurPacketSignedResidual p c =
       gammaValuationSchurHardyResidual (gammaValuationSchurPacketHardyVector p c) := by
-  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ 2 = 9 / 8 := by
+  have hconst : (3 * Real.sqrt 2 / 4 : ℝ) ^ (2 : ℕ) = 9 / 8 := by
     rw [div_pow, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     norm_num
   unfold gammaValuationSchurPacketSignedResidual
@@ -255,8 +255,8 @@ theorem gammaValuationSchurPacketSignedResidual_eq_hardyResidual
   rw [gammaValuationSchurPacketPrimeEnergy_eq_hardyEnergy,
     gammaValuationSchurPacketGammaCharge_eq_hardyVacuum]
   have hcharge :
-      (-(3 * Real.sqrt 2 / 4) * gammaValuationSchurPacketHardyVector p c 0) ^ 2 /
-          (9 / 8 : ℝ) = gammaValuationSchurPacketHardyVector p c 0 ^ 2 := by
+      (-(3 * Real.sqrt 2 / 4) * gammaValuationSchurPacketHardyVector p c 0) ^ (2 : ℕ) /
+          (9 / 8 : ℝ) = gammaValuationSchurPacketHardyVector p c 0 ^ (2 : ℕ) := by
     rw [mul_pow, neg_sq, hconst]
     norm_num
   rw [hcharge]
@@ -281,7 +281,7 @@ theorem gammaValuationSchurPacketSignedResidual_eq_zero_iff
       intro e f h
       exact Nat.add_right_cancel h
     have htail : Summable
-        (fun e : ℕ => gammaValuationSchurPacketResultant p c (e + 1) ^ 2) := by
+        (fun e : ℕ => gammaValuationSchurPacketResultant p c (e + 1) ^ (2 : ℕ)) := by
       simpa [Function.comp_def] using hs.comp_injective hinj
     have hresultant : ∀ e : ℕ,
         gammaValuationSchurPacketResultant p c (e + 1) = 0 := by
@@ -289,7 +289,7 @@ theorem gammaValuationSchurPacketSignedResidual_eq_zero_iff
       have hle := htail.le_tsum e (fun j _ => sq_nonneg
         (gammaValuationSchurPacketResultant p c (j + 1)))
       rw [← gammaValuationSchurPacketSignedResidual_eq_tsum_tail p c, hzero] at hle
-      have hsquare : gammaValuationSchurPacketResultant p c (e + 1) ^ 2 = 0 :=
+      have hsquare : gammaValuationSchurPacketResultant p c (e + 1) ^ (2 : ℕ) = 0 :=
         le_antisymm hle (sq_nonneg _)
       exact sq_eq_zero_iff.mp hsquare
     let A := xiTransversePrimeHalfShiftedValuationSamplingMatrix p
@@ -347,16 +347,16 @@ theorem tendsto_gammaValuationSchurPacketTailPrefix
     intro e f h
     exact Nat.add_right_cancel h
   have htail : Summable
-      (fun e : ℕ => gammaValuationSchurPacketResultant p c (e + 1) ^ 2) := by
+      (fun e : ℕ => gammaValuationSchurPacketResultant p c (e + 1) ^ (2 : ℕ)) := by
     simpa [Function.comp_def] using
       (hasSum_gammaValuationSchurPacketResultant_sq p c).summable.comp_injective hinj
   have h := htail.hasSum.tendsto_sum_nat
   rw [gammaValuationSchurPacketSignedResidual_eq_tsum_tail]
   change Tendsto
     (fun D => ∑ e ∈ Finset.range D,
-      gammaValuationSchurPacketResultant p c (e + 1) ^ 2)
+      gammaValuationSchurPacketResultant p c (e + 1) ^ (2 : ℕ))
     atTop
-    (nhds (∑' e : ℕ, gammaValuationSchurPacketResultant p c (e + 1) ^ 2))
+    (nhds (∑' e : ℕ, gammaValuationSchurPacketResultant p c (e + 1) ^ (2 : ℕ)))
   exact h
 
 end

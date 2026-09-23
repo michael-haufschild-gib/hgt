@@ -23,21 +23,21 @@ def thetaCuspBornWittenRawLogScoreProfile (q : ℝ) : ℝ :=
 
 /-- Born--Witten log curvature in factored readout coordinates. -/
 def thetaCuspBornWittenLogCurvatureFactoredProfile (q : ℝ) : ℝ :=
-  (2 * q + 3) * (2 + 3 / q ^ 2)
+  (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ))
 
 /-- Normalized signed second entry of one symmetrized atom-pair reflected channel. -/
 def thetaCuspBornWittenCrossSignedSecondProfile (q r : ℝ) : ℝ :=
   2 * (thetaCuspBornWittenLogCurvatureFactoredProfile q +
     thetaCuspBornWittenLogCurvatureFactoredProfile r -
     (thetaCuspBornWittenRawLogScoreProfile q -
-      thetaCuspBornWittenRawLogScoreProfile r) ^ 2)
+      thetaCuspBornWittenRawLogScoreProfile r) ^ (2 : ℕ))
 
 /-- Native Born--Witten form of the normalized atom-pair cross entry. -/
 def thetaCuspBornWittenCrossSignedSecond (n m : ℕ) (x : ℝ) : ℝ :=
   2 * (thetaCuspBornWittenLogCurvature n x +
     thetaCuspBornWittenLogCurvature m x -
     ((-2 * thetaCuspBornWittenSuperpotential n x) -
-      (-2 * thetaCuspBornWittenSuperpotential m x)) ^ 2)
+      (-2 * thetaCuspBornWittenSuperpotential m x)) ^ (2 : ℕ))
 
 /-- The profile is the literal normalized Born--Witten cross entry. -/
 theorem thetaCuspBornWittenCrossSignedSecond_eq_profile
@@ -67,7 +67,7 @@ theorem thetaCuspBornWittenCrossSignedSecond_eq_profile
       thetaCuspBornWittenLogCurvature n x =
         thetaCuspBornWittenLogCurvatureFactoredProfile q := by
     rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile hn hx]
-    change 4 * q + 6 + 6 / q + 9 / q ^ 2 =
+    change 4 * q + 6 + 6 / q + 9 / q ^ (2 : ℕ) =
       thetaCuspBornWittenLogCurvatureFactoredProfile q
     unfold thetaCuspBornWittenLogCurvatureFactoredProfile
     field_simp [hq.ne']
@@ -76,7 +76,7 @@ theorem thetaCuspBornWittenCrossSignedSecond_eq_profile
       thetaCuspBornWittenLogCurvature m x =
         thetaCuspBornWittenLogCurvatureFactoredProfile r := by
     rw [thetaCuspBornWittenLogCurvature_eq_readoutProfile hm hx]
-    change 4 * r + 6 + 6 / r + 9 / r ^ 2 =
+    change 4 * r + 6 + 6 / r + 9 / r ^ (2 : ℕ) =
       thetaCuspBornWittenLogCurvatureFactoredProfile r
     unfold thetaCuspBornWittenLogCurvatureFactoredProfile
     field_simp [hr.ne']
@@ -98,46 +98,46 @@ theorem thetaCuspBornWittenCrossSignedSecondProfile_lt_neg_sixHundredFiftySix
     mul_nonneg (sub_nonneg.mpr hqlo) (sub_nonneg.mpr hqhi)
   have hscoreq : 0 ≤ thetaCuspBornWittenRawLogScoreProfile q := by
     rw [show thetaCuspBornWittenRawLogScoreProfile q =
-        (3 / 2 * q + 3 - 2 * q ^ 2) / q by
+        (3 / 2 * q + 3 - 2 * q ^ (2 : ℕ)) / q by
       unfold thetaCuspBornWittenRawLogScoreProfile
       field_simp [hq0.ne']]
     exact div_nonneg (by nlinarith) hq0.le
   have hscorer : thetaCuspBornWittenRawLogScoreProfile r < -20 := by
     have hid : thetaCuspBornWittenRawLogScoreProfile r + 20 =
-        (43 / 2 * r + 3 - 2 * r ^ 2) / r := by
+        (43 / 2 * r + 3 - 2 * r ^ (2 : ℕ)) / r := by
       unfold thetaCuspBornWittenRawLogScoreProfile
       field_simp [hr0.ne']
       ring
     have htail : 0 ≤ (r - 553 / 50) * (4 * r - 43 / 2) := by
       exact mul_nonneg (sub_nonneg.mpr hrlo) (by nlinarith)
-    have hnum : 43 / 2 * r + 3 - 2 * r ^ 2 < 0 := by nlinarith
-    have hdiv : (43 / 2 * r + 3 - 2 * r ^ 2) / r < 0 :=
+    have hnum : 43 / 2 * r + 3 - 2 * r ^ (2 : ℕ) < 0 := by nlinarith
+    have hdiv : (43 / 2 * r + 3 - 2 * r ^ (2 : ℕ)) / r < 0 :=
       div_neg_of_neg_of_pos hnum hr0
     nlinarith
-  have hqSquare : (8 / 3 : ℝ) ≤ q ^ 2 := by
+  have hqSquare : (8 / 3 : ℝ) ≤ q ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (q - 41 / 25)]
-  have hqInv : 3 / q ^ 2 ≤ (9 / 8 : ℝ) := by
+  have hqInv : 3 / q ^ (2 : ℕ) ≤ (9 / 8 : ℝ) := by
     apply (div_le_iff₀ (sq_pos_of_pos hq0)).2
     nlinarith
   have hcurvq : thetaCuspBornWittenLogCurvatureFactoredProfile q < 20 := by
     have hleft : 0 ≤ 2 * q + 3 := by positivity
-    have hright : 0 ≤ 2 + 3 / q ^ 2 := by positivity
-    have hmul : (2 * q + 3) * (2 + 3 / q ^ 2) ≤
+    have hright : 0 ≤ 2 + 3 / q ^ (2 : ℕ) := by positivity
+    have hmul : (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) ≤
         (44 / 7) * (25 / 8) := by
       gcongr
       · linarith
       · linarith
     unfold thetaCuspBornWittenLogCurvatureFactoredProfile
     nlinarith
-  have hrSquare : (120 : ℝ) ≤ r ^ 2 := by
+  have hrSquare : (120 : ℝ) ≤ r ^ (2 : ℕ) := by
     nlinarith [sq_nonneg (r - 553 / 50)]
-  have hrInv : 3 / r ^ 2 ≤ (1 / 40 : ℝ) := by
+  have hrInv : 3 / r ^ (2 : ℕ) ≤ (1 / 40 : ℝ) := by
     apply (div_le_iff₀ (sq_pos_of_pos hr0)).2
     nlinarith
   have hcurvr : thetaCuspBornWittenLogCurvatureFactoredProfile r < 52 := by
     have hleft : 0 ≤ 2 * r + 3 := by positivity
-    have hright : 0 ≤ 2 + 3 / r ^ 2 := by positivity
-    have hmul : (2 * r + 3) * (2 + 3 / r ^ 2) ≤
+    have hright : 0 ≤ 2 + 3 / r ^ (2 : ℕ) := by positivity
+    have hmul : (2 * r + 3) * (2 + 3 / r ^ (2 : ℕ)) ≤
         (176 / 7) * (81 / 40) := by
       gcongr
       · linarith
@@ -147,7 +147,7 @@ theorem thetaCuspBornWittenCrossSignedSecondProfile_lt_neg_sixHundredFiftySix
   have hdiff : 20 < thetaCuspBornWittenRawLogScoreProfile q -
       thetaCuspBornWittenRawLogScoreProfile r := by linarith
   have hdiffSq : 400 < (thetaCuspBornWittenRawLogScoreProfile q -
-      thetaCuspBornWittenRawLogScoreProfile r) ^ 2 := by
+      thetaCuspBornWittenRawLogScoreProfile r) ^ (2 : ℕ) := by
     nlinarith
   unfold thetaCuspBornWittenCrossSignedSecondProfile
   dsimp only [r] at hcurvr hscorer hdiff hdiffSq ⊢
@@ -158,7 +158,7 @@ normalized second atom. -/
 def thetaCuspBornWittenFirstSecondMixedSignedSecondProfile (q rho : ℝ) : ℝ :=
   2 * thetaCuspBornWittenLogCurvatureFactoredProfile q +
     rho * thetaCuspBornWittenCrossSignedSecondProfile q (4 * q + 9 / 2) +
-    2 * rho ^ 2 *
+    2 * rho ^ (2 : ℕ) *
       thetaCuspBornWittenLogCurvatureFactoredProfile (4 * q + 9 / 2)
 
 /-- Matching lower budget: the cross defect has magnitude less than `1058` on the same rational
@@ -174,31 +174,31 @@ theorem neg_oneThousandFiftyEight_lt_thetaCuspBornWittenCrossSignedSecondProfile
   have hscoreq : thetaCuspBornWittenRawLogScoreProfile q < 1 := by
     have htail : 0 ≤ (q - 41 / 25) * (4 * q - 1 / 2) := by
       exact mul_nonneg (sub_nonneg.mpr hqlo) (by nlinarith)
-    have hnum : 1 / 2 * q + 3 - 2 * q ^ 2 < 0 := by nlinarith
+    have hnum : 1 / 2 * q + 3 - 2 * q ^ (2 : ℕ) < 0 := by nlinarith
     have hid : thetaCuspBornWittenRawLogScoreProfile q - 1 =
-        (1 / 2 * q + 3 - 2 * q ^ 2) / q := by
+        (1 / 2 * q + 3 - 2 * q ^ (2 : ℕ)) / q := by
       unfold thetaCuspBornWittenRawLogScoreProfile
       field_simp [hq0.ne']
       ring
-    have hdiv : (1 / 2 * q + 3 - 2 * q ^ 2) / q < 0 :=
+    have hdiv : (1 / 2 * q + 3 - 2 * q ^ (2 : ℕ)) / q < 0 :=
       div_neg_of_neg_of_pos hnum hq0
     nlinarith
   have hscorer : -22 < thetaCuspBornWittenRawLogScoreProfile r := by
     have htail : 0 ≤ (155 / 14 - r) *
         (2 * (155 / 14 + r) - 47 / 2) := by
       exact mul_nonneg (sub_nonneg.mpr hrhi) (by nlinarith)
-    have hnum : 0 < 47 / 2 * r + 3 - 2 * r ^ 2 := by nlinarith
+    have hnum : 0 < 47 / 2 * r + 3 - 2 * r ^ (2 : ℕ) := by nlinarith
     have hid : thetaCuspBornWittenRawLogScoreProfile r + 22 =
-        (47 / 2 * r + 3 - 2 * r ^ 2) / r := by
+        (47 / 2 * r + 3 - 2 * r ^ (2 : ℕ)) / r := by
       unfold thetaCuspBornWittenRawLogScoreProfile
       field_simp [hr0.ne']
       ring
-    have hdiv : 0 < (47 / 2 * r + 3 - 2 * r ^ 2) / r :=
+    have hdiv : 0 < (47 / 2 * r + 3 - 2 * r ^ (2 : ℕ)) / r :=
       div_pos hnum hr0
     nlinarith
   have hscoreq0 : 0 ≤ thetaCuspBornWittenRawLogScoreProfile q := by
     rw [show thetaCuspBornWittenRawLogScoreProfile q =
-        (3 / 2 * q + 3 - 2 * q ^ 2) / q by
+        (3 / 2 * q + 3 - 2 * q ^ (2 : ℕ)) / q by
       unfold thetaCuspBornWittenRawLogScoreProfile
       field_simp [hq0.ne']]
     have hinterval : 0 ≤ (q - 41 / 25) * (23 / 14 - q) :=
@@ -207,9 +207,9 @@ theorem neg_oneThousandFiftyEight_lt_thetaCuspBornWittenCrossSignedSecondProfile
   have hscorer0 : thetaCuspBornWittenRawLogScoreProfile r < 0 := by
     have htail : 0 ≤ (r - 553 / 50) * (4 * r - 3 / 2) := by
       exact mul_nonneg (sub_nonneg.mpr hrlo) (by nlinarith)
-    have hnum : 3 / 2 * r + 3 - 2 * r ^ 2 < 0 := by nlinarith
+    have hnum : 3 / 2 * r + 3 - 2 * r ^ (2 : ℕ) < 0 := by nlinarith
     have hid : thetaCuspBornWittenRawLogScoreProfile r =
-        (3 / 2 * r + 3 - 2 * r ^ 2) / r := by
+        (3 / 2 * r + 3 - 2 * r ^ (2 : ℕ)) / r := by
       unfold thetaCuspBornWittenRawLogScoreProfile
       field_simp [hr0.ne']
     rw [hid]
@@ -219,7 +219,7 @@ theorem neg_oneThousandFiftyEight_lt_thetaCuspBornWittenCrossSignedSecondProfile
   have hdiff : thetaCuspBornWittenRawLogScoreProfile q -
       thetaCuspBornWittenRawLogScoreProfile r < 23 := by linarith
   have hdiffSq : (thetaCuspBornWittenRawLogScoreProfile q -
-      thetaCuspBornWittenRawLogScoreProfile r) ^ 2 < 529 := by
+      thetaCuspBornWittenRawLogScoreProfile r) ^ (2 : ℕ) < 529 := by
     nlinarith
   have hcurvq : 0 ≤ thetaCuspBornWittenLogCurvatureFactoredProfile q := by
     unfold thetaCuspBornWittenLogCurvatureFactoredProfile
@@ -247,18 +247,18 @@ theorem thetaCuspBornWittenFirstSecondMixedSignedSecondProfile_pos
     exact mul_nonneg hrho (by linarith)
   have hcurvq : 12 < thetaCuspBornWittenLogCurvatureFactoredProfile q := by
     have hleft : 0 < 2 * q + 3 := by positivity
-    have hright : 2 < 2 + 3 / q ^ 2 := by
-      have hdiv : 0 < 3 / q ^ 2 := div_pos (by norm_num) (sq_pos_of_pos hq0)
+    have hright : 2 < 2 + 3 / q ^ (2 : ℕ) := by
+      have hdiv : 0 < 3 / q ^ (2 : ℕ) := div_pos (by norm_num) (sq_pos_of_pos hq0)
       linarith
     have hmul : (2 * q + 3) * 2 <
-        (2 * q + 3) * (2 + 3 / q ^ 2) :=
+        (2 * q + 3) * (2 + 3 / q ^ (2 : ℕ)) :=
       mul_lt_mul_of_pos_left hright hleft
     unfold thetaCuspBornWittenLogCurvatureFactoredProfile
     nlinarith
   have hcurvr : 0 ≤ thetaCuspBornWittenLogCurvatureFactoredProfile r := by
     unfold thetaCuspBornWittenLogCurvatureFactoredProfile
     positivity
-  have hdiag : 0 ≤ 2 * rho ^ 2 *
+  have hdiag : 0 ≤ 2 * rho ^ (2 : ℕ) *
       thetaCuspBornWittenLogCurvatureFactoredProfile r := by positivity
   unfold thetaCuspBornWittenFirstSecondMixedSignedSecondProfile
   dsimp only [r] at hcurvr hdiag ⊢

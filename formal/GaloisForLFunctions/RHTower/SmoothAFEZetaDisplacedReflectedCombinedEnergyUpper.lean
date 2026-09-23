@@ -17,7 +17,7 @@ open Complex MeasureTheory Set
 def smoothAFEZetaDisplacedReflectedCombinedMollifiedMeanError
     (lam : ℝ) (q : ℂ) (L M : ℕ) : ℝ :=
   (4 * (L : ℝ) *
-      (|lam| * ‖q‖ + (1 + |lam| * Real.log L)) ^ 2 *
+      (|lam| * ‖q‖ + (1 + |lam| * Real.log L)) ^ (2 : ℕ) *
       ((L * M : ℕ) : ℝ) * (1 + Real.log L)) *
     (2 * Real.sqrt M) * (2 * Real.sqrt M)
 
@@ -37,14 +37,14 @@ theorem integral_smoothAFEZetaDisplacedReflectedCombined_mollified_normSq_le
     (∫ t in a..b,
       (‖Sieve.dirPoly L
             (fun n => smoothAFEZetaDisplacedReflectedCombinedCoeff lam d q n) t‖ *
-          ‖Sieve.levinsonLinearMollifier M t‖) ^ 2) ≤
+          ‖Sieve.levinsonLinearMollifier M t‖) ^ (2 : ℕ)) ≤
       ‖((b - a : ℝ) : ℂ) *
         smoothAFEZetaDisplacedReflectedCombinedMollifiedDiagonal lam d q L M‖ +
       smoothAFEZetaDisplacedReflectedCombinedMollifiedMeanError lam q L M := by
   let f : ℝ → ℝ := fun t =>
     (‖Sieve.dirPoly L
           (fun n => smoothAFEZetaDisplacedReflectedCombinedCoeff lam d q n) t‖ *
-        ‖Sieve.levinsonLinearMollifier M t‖) ^ 2
+        ‖Sieve.levinsonLinearMollifier M t‖) ^ (2 : ℕ)
   have hmean :=
     integral_smoothAFEZetaDisplacedReflectedCombined_mollified_normSq_Icc_error
       (lam := lam) hd q L M hM a (b - a)

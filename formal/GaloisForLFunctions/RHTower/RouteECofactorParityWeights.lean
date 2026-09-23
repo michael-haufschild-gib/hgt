@@ -67,7 +67,7 @@ theorem half_sum_oddBase_le_sum_parityClass_sqrt (hband : ¬ Band 2) {σ : ℤ}
   have hle : Real.sqrt 2 * Real.sqrt s ≤ 2 * Real.sqrt s := by
     have h2 : Real.sqrt 2 ≤ 2 := by
       rw [show (2 : ℝ) = Real.sqrt 4 by
-        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+        rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.sqrt_sq (by norm_num)]]
       exact Real.sqrt_le_sqrt (by norm_num)
     nlinarith [hsq]
   have hpos : (0 : ℝ) < Real.sqrt 2 * Real.sqrt s := by positivity

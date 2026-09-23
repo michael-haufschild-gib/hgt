@@ -128,7 +128,7 @@ private theorem mobiusGammaXiComplexHardy_graphNormal_cancel
     (-2 * I * d) * ((I / 2) * z / d) = z := by
   calc
     (-2 * I * d) * ((I / 2) * z / d) =
-        -(I ^ 2) * (d * z / d) := by ring
+        -(I ^ (2 : ℕ)) * (d * z / d) := by ring
     _ = z := by
       rw [Complex.I_sq]
       field_simp [hd]

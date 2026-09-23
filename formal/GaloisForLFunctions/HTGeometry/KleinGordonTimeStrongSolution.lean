@@ -130,8 +130,8 @@ theorem eq_zero_of_solvesKGSourceT (hb0 : 0 ≤ b) (hWb : ∀ r : ℝ, ‖W r‖
     intro V hV u' v' a' h' hz s hs
     have hle := kgStrongEnergy_le_expT hb0 hV h' hs
     rw [hz, zero_mul] at hle
-    have h1 : (0 : ℝ) ≤ ‖kgFreqInvOp (E := E) (v' s)‖ ^ 2 := sq_nonneg _
-    have h2 : ‖u' s‖ ^ 2 ≤ 0 := by
+    have h1 : (0 : ℝ) ≤ ‖kgFreqInvOp (E := E) (v' s)‖ ^ (2 : ℕ) := sq_nonneg _
+    have h2 : ‖u' s‖ ^ (2 : ℕ) ≤ 0 := by
       rw [kgStrongEnergy] at hle
       linarith
     have h3 : ‖u' s‖ = 0 := by

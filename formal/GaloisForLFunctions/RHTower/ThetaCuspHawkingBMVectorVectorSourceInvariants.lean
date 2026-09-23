@@ -25,81 +25,81 @@ noncomputable section
 variable {s r y B S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ}
 
 /-- Vector–vector source, orbit `(0,0)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_0_0 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 0 0 =
-      B ^ 2 * ((((-1 : ℂ) * s ^ 2 + (1 : ℂ) * s ^ 2 * r ^ 2) / (r ^ 6)) * (y ^ 4 * ((Sxx - Sy / y) ^ 2 + 2 * (Sxy + Sx / y) ^ 2 + (((s + 1) * (s + 2)) * S / y ^ 2 - Sxx + Sy / y) ^ 2)) + (((9 / 2 : ℂ) * s ^ 2 + (-9 / 2 : ℂ) * s ^ 2 * r ^ 2 + (2 : ℂ) * s ^ 2 * r ^ 4 + (3 : ℂ) * s ^ 3 + (-1 : ℂ) * s ^ 3 * r ^ 2 + (1 / 2 : ℂ) * s ^ 4 + (3 / 2 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6)) * (y ^ 2 * (Sx ^ 2 + Sy ^ 2)) + (((2 : ℂ) * s ^ 2 + (2 : ℂ) * s ^ 2 * r ^ 2 + (6 : ℂ) * s ^ 3 + (6 : ℂ) * s ^ 3 * r ^ 2 + (13 / 2 : ℂ) * s ^ 4 + (13 / 2 : ℂ) * s ^ 4 * r ^ 2 + (3 : ℂ) * s ^ 5 + (3 : ℂ) * s ^ 5 * r ^ 2 + (1 / 2 : ℂ) * s ^ 6 + (1 / 2 : ℂ) * s ^ 6 * r ^ 2) / (r ^ 6)) * (S ^ 2)) := by
+      B ^ (2 : ℕ) * ((((-1 : ℂ) * s ^ (2 : ℕ) + (1 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ))) * (y ^ (4 : ℕ) * ((Sxx - Sy / y) ^ (2 : ℕ) + 2 * (Sxy + Sx / y) ^ (2 : ℕ) + (((s + 1) * (s + 2)) * S / y ^ (2 : ℕ) - Sxx + Sy / y) ^ (2 : ℕ))) + (((9 / 2 : ℂ) * s ^ (2 : ℕ) + (-9 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (2 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (3 : ℂ) * s ^ (3 : ℕ) + (-1 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) + (3 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ))) * (y ^ (2 : ℕ) * (Sx ^ (2 : ℕ) + Sy ^ (2 : ℕ))) + (((2 : ℂ) * s ^ (2 : ℕ) + (2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (6 : ℂ) * s ^ (3 : ℕ) + (6 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (13 / 2 : ℂ) * s ^ (4 : ℕ) + (13 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (3 : ℂ) * s ^ (5 : ℕ) + (3 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ) + (1 / 2 : ℂ) * s ^ (6 : ℕ) + (1 / 2 : ℂ) * s ^ (6 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ))) * (S ^ (2 : ℕ))) := by
   rw [coexactJet, vectorJet_quadratic_einstein_0_0 hr hy hf]
   field_simp
   ring
 
 /-- Vector–vector source, orbit `(0,1)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_0_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 0 1 =
-      B ^ 2 * ((0 : ℂ) * (y ^ 4 * ((Sxx - Sy / y) ^ 2 + 2 * (Sxy + Sx / y) ^ 2 + (((s + 1) * (s + 2)) * S / y ^ 2 - Sxx + Sy / y) ^ 2)) + (((2 : ℂ) * s ^ 2 + (6 : ℂ) * s ^ 3 + (-4 : ℂ) * s ^ 3 * r ^ 2 + (2 : ℂ) * s ^ 4) / (r ^ 5 * (r ^ 2 - 1))) * (y ^ 2 * (Sx ^ 2 + Sy ^ 2)) + (((4 : ℂ) * s ^ 2 + (12 : ℂ) * s ^ 3 + (13 : ℂ) * s ^ 4 + (6 : ℂ) * s ^ 5 + (1 : ℂ) * s ^ 6) / (r ^ 5 * (r ^ 2 - 1))) * (S ^ 2)) := by
+      B ^ (2 : ℕ) * ((0 : ℂ) * (y ^ (4 : ℕ) * ((Sxx - Sy / y) ^ (2 : ℕ) + 2 * (Sxy + Sx / y) ^ (2 : ℕ) + (((s + 1) * (s + 2)) * S / y ^ (2 : ℕ) - Sxx + Sy / y) ^ (2 : ℕ))) + (((2 : ℂ) * s ^ (2 : ℕ) + (6 : ℂ) * s ^ (3 : ℕ) + (-4 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1))) * (y ^ (2 : ℕ) * (Sx ^ (2 : ℕ) + Sy ^ (2 : ℕ))) + (((4 : ℂ) * s ^ (2 : ℕ) + (12 : ℂ) * s ^ (3 : ℕ) + (13 : ℂ) * s ^ (4 : ℕ) + (6 : ℂ) * s ^ (5 : ℕ) + (1 : ℂ) * s ^ (6 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1))) * (S ^ (2 : ℕ))) := by
   rw [coexactJet, vectorJet_quadratic_einstein_0_1 hr hy hf]
   field_simp
   ring
 
 /-- Vector–vector source, orbit `(1,1)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_1_1 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 1 1 =
-      B ^ 2 * ((((-1 : ℂ) * s ^ 2) / (r ^ 6 * (r ^ 2 - 1))) * (y ^ 4 * ((Sxx - Sy / y) ^ 2 + 2 * (Sxy + Sx / y) ^ 2 + (((s + 1) * (s + 2)) * S / y ^ 2 - Sxx + Sy / y) ^ 2)) + (((11 / 2 : ℂ) * s ^ 2 + (-19 / 2 : ℂ) * s ^ 2 * r ^ 2 + (6 : ℂ) * s ^ 2 * r ^ 4 + (7 : ℂ) * s ^ 3 + (-5 : ℂ) * s ^ 3 * r ^ 2 + (3 / 2 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 4 * r ^ 2) / (r ^ 6 * (r ^ 2 - 1) ^ 2)) * (y ^ 2 * (Sx ^ 2 + Sy ^ 2)) + (((2 : ℂ) * s ^ 2 + (2 : ℂ) * s ^ 2 * r ^ 2 + (6 : ℂ) * s ^ 3 + (6 : ℂ) * s ^ 3 * r ^ 2 + (13 / 2 : ℂ) * s ^ 4 + (13 / 2 : ℂ) * s ^ 4 * r ^ 2 + (3 : ℂ) * s ^ 5 + (3 : ℂ) * s ^ 5 * r ^ 2 + (1 / 2 : ℂ) * s ^ 6 + (1 / 2 : ℂ) * s ^ 6 * r ^ 2) / (r ^ 6 * (r ^ 2 - 1) ^ 2)) * (S ^ 2)) := by
+      B ^ (2 : ℕ) * ((((-1 : ℂ) * s ^ (2 : ℕ)) / (r ^ (6 : ℕ) * (r ^ (2 : ℕ) - 1))) * (y ^ (4 : ℕ) * ((Sxx - Sy / y) ^ (2 : ℕ) + 2 * (Sxy + Sx / y) ^ (2 : ℕ) + (((s + 1) * (s + 2)) * S / y ^ (2 : ℕ) - Sxx + Sy / y) ^ (2 : ℕ))) + (((11 / 2 : ℂ) * s ^ (2 : ℕ) + (-19 / 2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (6 : ℂ) * s ^ (2 : ℕ) * r ^ (4 : ℕ) + (7 : ℂ) * s ^ (3 : ℕ) + (-5 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (3 / 2 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ))) * (y ^ (2 : ℕ) * (Sx ^ (2 : ℕ) + Sy ^ (2 : ℕ))) + (((2 : ℂ) * s ^ (2 : ℕ) + (2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (6 : ℂ) * s ^ (3 : ℕ) + (6 : ℂ) * s ^ (3 : ℕ) * r ^ (2 : ℕ) + (13 / 2 : ℂ) * s ^ (4 : ℕ) + (13 / 2 : ℂ) * s ^ (4 : ℕ) * r ^ (2 : ℕ) + (3 : ℂ) * s ^ (5 : ℕ) + (3 : ℂ) * s ^ (5 : ℕ) * r ^ (2 : ℕ) + (1 / 2 : ℂ) * s ^ (6 : ℕ) + (1 / 2 : ℂ) * s ^ (6 : ℕ) * r ^ (2 : ℕ)) / (r ^ (6 : ℕ) * (r ^ (2 : ℕ) - 1) ^ (2 : ℕ))) * (S ^ (2 : ℕ))) := by
   rw [coexactJet, vectorJet_quadratic_einstein_1_1 hr hy hf]
   field_simp
   ring
 
 /-- Vector–vector source, mixed `(0,2)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_0_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 0 2 =
-      B ^ 2 * ((((1 : ℂ) * s ^ 3) / (r ^ 4)) * (2 * y ^ 2 * (Sx * Sxx + Sy * Sxy)) + (((3 : ℂ) * s ^ 2 + (11 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 5) / (r ^ 4)) * (2 * S * Sx)) := by
+      B ^ (2 : ℕ) * ((((1 : ℂ) * s ^ (3 : ℕ)) / (r ^ (4 : ℕ))) * (2 * y ^ (2 : ℕ) * (Sx * Sxx + Sy * Sxy)) + (((3 : ℂ) * s ^ (2 : ℕ) + (11 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (5 : ℕ)) / (r ^ (4 : ℕ))) * (2 * S * Sx)) := by
   rw [coexactJet, vectorJet_quadratic_einstein_0_2 hr hy hf]
   field_simp
   ring
 
 /-- Vector–vector source, mixed `(0,3)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_0_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 0 3 =
-      B ^ 2 * ((((1 : ℂ) * s ^ 3) / (r ^ 4)) * (2 * y * (Sx ^ 2 + Sy ^ 2) + 2 * y ^ 2 * (Sx * Sxy + Sy * (((s + 1) * (s + 2)) * S / y ^ 2 - Sxx))) + (((3 : ℂ) * s ^ 2 + (11 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 5) / (r ^ 4)) * (2 * S * Sy)) := by
+      B ^ (2 : ℕ) * ((((1 : ℂ) * s ^ (3 : ℕ)) / (r ^ (4 : ℕ))) * (2 * y * (Sx ^ (2 : ℕ) + Sy ^ (2 : ℕ)) + 2 * y ^ (2 : ℕ) * (Sx * Sxy + Sy * (((s + 1) * (s + 2)) * S / y ^ (2 : ℕ) - Sxx))) + (((3 : ℂ) * s ^ (2 : ℕ) + (11 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (5 : ℕ)) / (r ^ (4 : ℕ))) * (2 * S * Sy)) := by
   rw [coexactJet, vectorJet_quadratic_einstein_0_3 hr hy hf]
   field_simp
   ring
 
 /-- Vector–vector source, mixed `(1,2)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_1_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 1 2 =
-      B ^ 2 * ((((2 : ℂ) * s ^ 2 + (-2 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 3) / (r ^ 5 * (r ^ 2 - 1))) * (2 * y ^ 2 * (Sx * Sxx + Sy * Sxy)) + (((3 : ℂ) * s ^ 2 + (11 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 5) / (r ^ 5 * (r ^ 2 - 1))) * (2 * S * Sx)) := by
+      B ^ (2 : ℕ) * ((((2 : ℂ) * s ^ (2 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (3 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1))) * (2 * y ^ (2 : ℕ) * (Sx * Sxx + Sy * Sxy)) + (((3 : ℂ) * s ^ (2 : ℕ) + (11 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (5 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1))) * (2 * S * Sx)) := by
   rw [coexactJet, vectorJet_quadratic_einstein_1_2 hr hy hf]
   field_simp
   ring
 
 /-- Vector–vector source, mixed `(1,3)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_1_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 1 3 =
-      B ^ 2 * ((((2 : ℂ) * s ^ 2 + (-2 : ℂ) * s ^ 2 * r ^ 2 + (1 : ℂ) * s ^ 3) / (r ^ 5 * (r ^ 2 - 1))) * (2 * y * (Sx ^ 2 + Sy ^ 2) + 2 * y ^ 2 * (Sx * Sxy + Sy * (((s + 1) * (s + 2)) * S / y ^ 2 - Sxx))) + (((3 : ℂ) * s ^ 2 + (11 / 2 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 4 + (1 / 2 : ℂ) * s ^ 5) / (r ^ 5 * (r ^ 2 - 1))) * (2 * S * Sy)) := by
+      B ^ (2 : ℕ) * ((((2 : ℂ) * s ^ (2 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (1 : ℂ) * s ^ (3 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1))) * (2 * y * (Sx ^ (2 : ℕ) + Sy ^ (2 : ℕ)) + 2 * y ^ (2 : ℕ) * (Sx * Sxy + Sy * (((s + 1) * (s + 2)) * S / y ^ (2 : ℕ) - Sxx))) + (((3 : ℂ) * s ^ (2 : ℕ) + (11 / 2 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (4 : ℕ) + (1 / 2 : ℂ) * s ^ (5 : ℕ)) / (r ^ (5 : ℕ) * (r ^ (2 : ℕ) - 1))) * (2 * S * Sy)) := by
   rw [coexactJet, vectorJet_quadratic_einstein_1_3 hr hy hf]
   field_simp
   ring
 
 /-- Vector–vector source, angular `(2,3)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_2_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 2 3 =
-      B ^ 2 * ((((11 : ℂ) * s ^ 2 + (12 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 4) / (r ^ 4)) * (Sx * Sy) + (0 : ℂ) * (2 * S * (Sxy + Sx / y) + 2 * Sx * Sy)) := by
+      B ^ (2 : ℕ) * ((((11 : ℂ) * s ^ (2 : ℕ) + (12 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ))) * (Sx * Sy) + (0 : ℂ) * (2 * S * (Sxy + Sx / y) + 2 * Sx * Sy)) := by
   rw [coexactJet, vectorJet_quadratic_einstein_2_3 hr hy hf]
   field_simp
   ring
 
 /-- Vector–vector source, angular `(2,2)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_2_2 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 2 2 =
-      B ^ 2 * (((0 : ℂ) * (y ^ 4 * ((Sxx - Sy / y) ^ 2 + 2 * (Sxy + Sx / y) ^ 2 + (((s + 1) * (s + 2)) * S / y ^ 2 - Sxx + Sy / y) ^ 2)) + (((6 : ℂ) * s ^ 2 + (-2 : ℂ) * s ^ 2 * r ^ 2 + (7 : ℂ) * s ^ 3 + (2 : ℂ) * s ^ 4) / (r ^ 4)) * (y ^ 2 * (Sx ^ 2 + Sy ^ 2)) + (((-2 : ℂ) * s ^ 2 + (-6 : ℂ) * s ^ 3 + (-13 / 2 : ℂ) * s ^ 4 + (-3 : ℂ) * s ^ 5 + (-1 / 2 : ℂ) * s ^ 6) / (r ^ 4)) * (S ^ 2)) / y ^ 2 + (1 / 2 : ℂ) * ((((11 : ℂ) * s ^ 2 + (12 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 4) / (r ^ 4)) * (Sx ^ 2 - Sy ^ 2) + (0 : ℂ) * (2 * S * (2 * Sxx - ((s + 1) * (s + 2)) * S / y ^ 2 - 2 * Sy / y) + 2 * (Sx ^ 2 - Sy ^ 2)))) := by
+      B ^ (2 : ℕ) * (((0 : ℂ) * (y ^ (4 : ℕ) * ((Sxx - Sy / y) ^ (2 : ℕ) + 2 * (Sxy + Sx / y) ^ (2 : ℕ) + (((s + 1) * (s + 2)) * S / y ^ (2 : ℕ) - Sxx + Sy / y) ^ (2 : ℕ))) + (((6 : ℂ) * s ^ (2 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (7 : ℂ) * s ^ (3 : ℕ) + (2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ))) * (y ^ (2 : ℕ) * (Sx ^ (2 : ℕ) + Sy ^ (2 : ℕ))) + (((-2 : ℂ) * s ^ (2 : ℕ) + (-6 : ℂ) * s ^ (3 : ℕ) + (-13 / 2 : ℂ) * s ^ (4 : ℕ) + (-3 : ℂ) * s ^ (5 : ℕ) + (-1 / 2 : ℂ) * s ^ (6 : ℕ)) / (r ^ (4 : ℕ))) * (S ^ (2 : ℕ))) / y ^ (2 : ℕ) + (1 / 2 : ℂ) * ((((11 : ℂ) * s ^ (2 : ℕ) + (12 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ))) * (Sx ^ (2 : ℕ) - Sy ^ (2 : ℕ)) + (0 : ℂ) * (2 * S * (2 * Sxx - ((s + 1) * (s + 2)) * S / y ^ (2 : ℕ) - 2 * Sy / y) + 2 * (Sx ^ (2 : ℕ) - Sy ^ (2 : ℕ))))) := by
   rw [coexactJet, vectorJet_quadratic_einstein_2_2 hr hy hf]
   field_simp
   ring
 
 /-- Vector–vector source, angular `(3,3)` component, as angular invariants of `S`. -/
-theorem coexactJet_quadratic_einstein_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ 2 - 1 ≠ 0) :
+theorem coexactJet_quadratic_einstein_3_3 (hr : r ≠ 0) (hy : y ≠ 0) (hf : r ^ (2 : ℕ) - 1 ≠ 0) :
     Quadratic.einstein (D4BMBackground.jet r y) (coexactJet s r y B S Sx Sy Sxx Sxy Sxxx Sxxy) 3 3 =
-      B ^ 2 * (((0 : ℂ) * (y ^ 4 * ((Sxx - Sy / y) ^ 2 + 2 * (Sxy + Sx / y) ^ 2 + (((s + 1) * (s + 2)) * S / y ^ 2 - Sxx + Sy / y) ^ 2)) + (((6 : ℂ) * s ^ 2 + (-2 : ℂ) * s ^ 2 * r ^ 2 + (7 : ℂ) * s ^ 3 + (2 : ℂ) * s ^ 4) / (r ^ 4)) * (y ^ 2 * (Sx ^ 2 + Sy ^ 2)) + (((-2 : ℂ) * s ^ 2 + (-6 : ℂ) * s ^ 3 + (-13 / 2 : ℂ) * s ^ 4 + (-3 : ℂ) * s ^ 5 + (-1 / 2 : ℂ) * s ^ 6) / (r ^ 4)) * (S ^ 2)) / y ^ 2 - (1 / 2 : ℂ) * ((((11 : ℂ) * s ^ 2 + (12 : ℂ) * s ^ 3 + (3 : ℂ) * s ^ 4) / (r ^ 4)) * (Sx ^ 2 - Sy ^ 2) + (0 : ℂ) * (2 * S * (2 * Sxx - ((s + 1) * (s + 2)) * S / y ^ 2 - 2 * Sy / y) + 2 * (Sx ^ 2 - Sy ^ 2)))) := by
+      B ^ (2 : ℕ) * (((0 : ℂ) * (y ^ (4 : ℕ) * ((Sxx - Sy / y) ^ (2 : ℕ) + 2 * (Sxy + Sx / y) ^ (2 : ℕ) + (((s + 1) * (s + 2)) * S / y ^ (2 : ℕ) - Sxx + Sy / y) ^ (2 : ℕ))) + (((6 : ℂ) * s ^ (2 : ℕ) + (-2 : ℂ) * s ^ (2 : ℕ) * r ^ (2 : ℕ) + (7 : ℂ) * s ^ (3 : ℕ) + (2 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ))) * (y ^ (2 : ℕ) * (Sx ^ (2 : ℕ) + Sy ^ (2 : ℕ))) + (((-2 : ℂ) * s ^ (2 : ℕ) + (-6 : ℂ) * s ^ (3 : ℕ) + (-13 / 2 : ℂ) * s ^ (4 : ℕ) + (-3 : ℂ) * s ^ (5 : ℕ) + (-1 / 2 : ℂ) * s ^ (6 : ℕ)) / (r ^ (4 : ℕ))) * (S ^ (2 : ℕ))) / y ^ (2 : ℕ) - (1 / 2 : ℂ) * ((((11 : ℂ) * s ^ (2 : ℕ) + (12 : ℂ) * s ^ (3 : ℕ) + (3 : ℂ) * s ^ (4 : ℕ)) / (r ^ (4 : ℕ))) * (Sx ^ (2 : ℕ) - Sy ^ (2 : ℕ)) + (0 : ℂ) * (2 * S * (2 * Sxx - ((s + 1) * (s + 2)) * S / y ^ (2 : ℕ) - 2 * Sy / y) + 2 * (Sx ^ (2 : ℕ) - Sy ^ (2 : ℕ))))) := by
   rw [coexactJet, vectorJet_quadratic_einstein_3_3 hr hy hf]
   field_simp
   ring

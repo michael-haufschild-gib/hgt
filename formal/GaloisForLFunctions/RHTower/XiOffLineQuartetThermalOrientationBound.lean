@@ -23,15 +23,15 @@ every Xi zero is at most one eighty-fourth of its positive thermal-node square. 
 vanish; off-line atoms use the exact four-copy endpoint height amplification. -/
 theorem xiThermalOrientationTerm_le_one_over_eightyFour_node_sq
     (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      (1 / 84 : ℝ) * xiThermalNode q ^ 2 := by
+    (xiZeroCopyReciprocalSquare q).im ^ (2 : ℕ) ≤
+      (1 / 84 : ℝ) * xiThermalNode q ^ (2 : ℕ) := by
   by_cases hoff : (q.1 : ℂ).re = 1 / 2
   · rw [xiZeroCopyReciprocalSquare_im_formula, hoff]
     norm_num
     positivity
-  · let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-    let v : ℝ := (q.1 : ℂ).im ^ 2
-    let D : ℝ := (u + v) ^ 2
+  · let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)
+    let v : ℝ := (q.1 : ℂ).im ^ (2 : ℕ)
+    let D : ℝ := (u + v) ^ (2 : ℕ)
     have hu0 : 0 ≤ u := by dsimp [u]; positivity
     have hu : u < 1 / 4 :=
       xi_divisor_support_centered_re_sq_lt_quarter q.1
@@ -41,29 +41,29 @@ theorem xiThermalOrientationTerm_le_one_over_eightyFour_node_sq
     have h340 : 340 * u < v := by nlinarith
     have hprod : 0 ≤ v * (v - 340 * u) :=
       mul_nonneg hv0.le (sub_nonneg.mpr h340.le)
-    have hcore : 4 * u * v ≤ (1 / 84 : ℝ) * (v - u) ^ 2 := by
+    have hcore : 4 * u * v ≤ (1 / 84 : ℝ) * (v - u) ^ (2 : ℕ) := by
       nlinarith [mul_nonneg hu0 hv0.le]
     have hD : 0 < D := by dsimp [D]; positivity
     rw [xiThermalNode, xiZeroCopyReciprocalSquare_re_formula,
       xiZeroCopyReciprocalSquare_im_formula]
     change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im /
-          (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2 ≤
+          (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
       (1 / 84 : ℝ) *
-        (((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) /
-          (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 2) ^ 2
-    rw [show ((q.1 : ℂ).re - 1 / 2) ^ 2 = u by rfl,
-      show (q.1 : ℂ).im ^ 2 = v by rfl,
-      show (u + v) ^ 2 = D by rfl]
+        (((q.1 : ℂ).im ^ (2 : ℕ) - ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ)) /
+          (((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) + (q.1 : ℂ).im ^ (2 : ℕ)) ^ (2 : ℕ)) ^ (2 : ℕ)
+    rw [show ((q.1 : ℂ).re - 1 / 2) ^ (2 : ℕ) = u by rfl,
+      show (q.1 : ℂ).im ^ (2 : ℕ) = v by rfl,
+      show (u + v) ^ (2 : ℕ) = D by rfl]
     rw [div_pow, div_pow]
-    rw [show (1 / 84 : ℝ) * ((v - u) ^ 2 / D ^ 2) =
-        ((1 / 84 : ℝ) * (v - u) ^ 2) / D ^ 2 by ring]
+    rw [show (1 / 84 : ℝ) * ((v - u) ^ (2 : ℕ) / D ^ (2 : ℕ)) =
+        ((1 / 84 : ℝ) * (v - u) ^ (2 : ℕ)) / D ^ (2 : ℕ) by ring]
     apply (div_le_div_iff_of_pos_right (sq_pos_of_pos hD)).2
     calc
-      (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 =
+      (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ (2 : ℕ) =
           4 * u * v := by
         dsimp [u, v]
         ring
-      _ ≤ (1 / 84 : ℝ) * (v - u) ^ 2 := hcore
+      _ ≤ (1 / 84 : ℝ) * (v - u) ^ (2 : ℕ) := hcore
 
 /-- The complete thermal orientation energy is at most one eighty-fourth of the positive thermal
 second moment. -/

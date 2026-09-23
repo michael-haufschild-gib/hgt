@@ -211,20 +211,20 @@ theorem rectTraceNorm_le_of_hasSum_smulRight
 in the exact form used by Hilbert--Schmidt products. -/
 theorem tsum_mul_le_sqrt_tsum_sq_mul_sqrt_tsum_sq
     {ι : Type*} (f g : ι → ℝ)
-    (hf : Summable fun i ↦ f i ^ 2)
-    (hg : Summable fun i ↦ g i ^ 2)
+    (hf : Summable fun i ↦ f i ^ (2 : ℕ))
+    (hg : Summable fun i ↦ g i ^ (2 : ℕ))
     (hfn : ∀ i, 0 ≤ f i) (hgn : ∀ i, 0 ≤ g i) :
     ∑' i, f i * g i ≤
-      Real.sqrt (∑' i, f i ^ 2) * Real.sqrt (∑' i, g i ^ 2) := by
+      Real.sqrt (∑' i, f i ^ (2 : ℕ)) * Real.sqrt (∑' i, g i ^ (2 : ℕ)) := by
   apply Real.tsum_le_of_sum_le (fun i ↦ mul_nonneg (hfn i) (hgn i))
   intro s
   calc
     ∑ i ∈ s, f i * g i ≤
-        Real.sqrt (∑ i ∈ s, f i ^ 2) *
-          Real.sqrt (∑ i ∈ s, g i ^ 2) :=
+        Real.sqrt (∑ i ∈ s, f i ^ (2 : ℕ)) *
+          Real.sqrt (∑ i ∈ s, g i ^ (2 : ℕ)) :=
       Real.sum_mul_le_sqrt_mul_sqrt s f g
-    _ ≤ Real.sqrt (∑' i, f i ^ 2) *
-          Real.sqrt (∑' i, g i ^ 2) := by
+    _ ≤ Real.sqrt (∑' i, f i ^ (2 : ℕ)) *
+          Real.sqrt (∑' i, g i ^ (2 : ℕ)) := by
       gcongr
       · exact hf.sum_le_tsum s (fun i _ ↦ sq_nonneg _)
       · exact hg.sum_le_tsum s (fun i _ ↦ sq_nonneg _)
@@ -244,8 +244,8 @@ theorem rectTraceNorm_comp_le_hsNorm_mul_hsNorm
   obtain ⟨ι, ⟨c⟩⟩ := exists_small_hilbertBasis (F := F)
   let φ : ι → E →L[ℂ] ℂ := fun i ↦ innerSL ℂ (adjoint A (c i))
   let y : ι → G := fun i ↦ B (c i)
-  have hf : Summable fun i ↦ ‖adjoint A (c i)‖ ^ 2 := hA.adjoint.summable c
-  have hg : Summable fun i ↦ ‖B (c i)‖ ^ 2 := hB.summable c
+  have hf : Summable fun i ↦ ‖adjoint A (c i)‖ ^ (2 : ℕ) := hA.adjoint.summable c
+  have hg : Summable fun i ↦ ‖B (c i)‖ ^ (2 : ℕ) := hB.summable c
   have hmass : Summable fun i ↦ ‖φ i‖ * ‖y i‖ := by
     have heq : (fun i ↦ ‖φ i‖ * ‖y i‖) =
         fun i ↦ ‖adjoint A (c i)‖ * ‖B (c i)‖ := by
@@ -279,16 +279,16 @@ theorem rectTraceNorm_comp_le_hsNorm_mul_hsNorm
     rwa [hST] at hS
   have hprojective := rectTraceNorm_le_of_hasSum_smulRight φ y hmass hseries
   have hCS : ∑' i, ‖φ i‖ * ‖y i‖ ≤
-      Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ 2) *
-        Real.sqrt (∑' i, ‖B (c i)‖ ^ 2) := by
+      Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ (2 : ℕ)) *
+        Real.sqrt (∑' i, ‖B (c i)‖ ^ (2 : ℕ)) := by
     simpa only [φ, y, innerSL_apply_norm] using
       tsum_mul_le_sqrt_tsum_sq_mul_sqrt_tsum_sq
         (fun i ↦ ‖adjoint A (c i)‖) (fun i ↦ ‖B (c i)‖)
         hf hg (fun _ ↦ norm_nonneg _) (fun _ ↦ norm_nonneg _)
   calc
     rectTraceNorm E G (B ∘L A) ≤ ∑' i, ‖φ i‖ * ‖y i‖ := hprojective
-    _ ≤ Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ 2) *
-        Real.sqrt (∑' i, ‖B (c i)‖ ^ 2) := hCS
+    _ ≤ Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ (2 : ℕ)) *
+        Real.sqrt (∑' i, ‖B (c i)‖ ^ (2 : ℕ)) := hCS
     _ = ContinuousLinearMap.hsNorm A * ContinuousLinearMap.hsNorm B := by
       have hAadj : (adjoint A).IsHilbertSchmidt := hA.adjoint
       rw [← ContinuousLinearMap.hsNormSq_eq hAadj c,
@@ -308,8 +308,8 @@ theorem rectTraceNorm_comp_le_hsNorm_mul_hsNorm_unrestricted
   let c := ContinuousLinearMap.hsBasis ℂ F
   let φ := fun i ↦ innerSL ℂ (adjoint A (c i))
   let y := fun i ↦ B (c i)
-  have hf : Summable fun i ↦ ‖adjoint A (c i)‖ ^ 2 := hA.adjoint.summable c
-  have hg : Summable fun i ↦ ‖B (c i)‖ ^ 2 := hB.summable c
+  have hf : Summable fun i ↦ ‖adjoint A (c i)‖ ^ (2 : ℕ) := hA.adjoint.summable c
+  have hg : Summable fun i ↦ ‖B (c i)‖ ^ (2 : ℕ) := hB.summable c
   have hmass : Summable fun i ↦ ‖φ i‖ * ‖y i‖ := by
     have heq : (fun i ↦ ‖φ i‖ * ‖y i‖) =
         fun i ↦ ‖adjoint A (c i)‖ * ‖B (c i)‖ := by
@@ -343,16 +343,16 @@ theorem rectTraceNorm_comp_le_hsNorm_mul_hsNorm_unrestricted
     rwa [hST] at hS
   have hprojective := rectTraceNorm_le_of_hasSum_smulRight φ y hmass hseries
   have hCS : ∑' i, ‖φ i‖ * ‖y i‖ ≤
-      Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ 2) *
-        Real.sqrt (∑' i, ‖B (c i)‖ ^ 2) := by
+      Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ (2 : ℕ)) *
+        Real.sqrt (∑' i, ‖B (c i)‖ ^ (2 : ℕ)) := by
     simpa only [φ, y, innerSL_apply_norm] using
       tsum_mul_le_sqrt_tsum_sq_mul_sqrt_tsum_sq
         (fun i ↦ ‖adjoint A (c i)‖) (fun i ↦ ‖B (c i)‖)
         hf hg (fun _ ↦ norm_nonneg _) (fun _ ↦ norm_nonneg _)
   calc
     rectTraceNorm E G (B ∘L A) ≤ ∑' i, ‖φ i‖ * ‖y i‖ := hprojective
-    _ ≤ Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ 2) *
-        Real.sqrt (∑' i, ‖B (c i)‖ ^ 2) := hCS
+    _ ≤ Real.sqrt (∑' i, ‖adjoint A (c i)‖ ^ (2 : ℕ)) *
+        Real.sqrt (∑' i, ‖B (c i)‖ ^ (2 : ℕ)) := hCS
     _ = ContinuousLinearMap.hsNorm A * ContinuousLinearMap.hsNorm B := by
       have hAadj : (adjoint A).IsHilbertSchmidt := hA.adjoint
       rw [← ContinuousLinearMap.hsNormSq_eq hAadj c,

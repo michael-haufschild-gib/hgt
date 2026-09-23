@@ -73,7 +73,7 @@ theorem exists_periodic_point_of_expanding_inverse_branch {c a : ℂ} {r R L : �
   have hLpos : (0:ℝ) < L := by linarith
   have hFd : ∀ w ∈ ball a R,
       HasDerivAt ((quadratic c)^[p]) (deriv ((quadratic c)^[p]) (g w)) (g w) :=
-    fun w _ => ((differentiable_quadratic_iterate c p) (g w)).hasDerivAt
+    fun w _ => ((differentiable_quadratic_iterate_repellingFixedPoint c p) (g w)).hasDerivAt
   set K : NNReal := ⟨1 / L, by positivity⟩ with hKdef
   have hKcoe : (K : ℝ) = 1 / L := rfl
   have hK1 : K < 1 := by

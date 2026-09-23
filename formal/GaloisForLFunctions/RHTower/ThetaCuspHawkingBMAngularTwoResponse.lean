@@ -35,7 +35,7 @@ def cutoffResponse (q : XiZeroCopy) (z : Fin 2 → ℝ) : ℂ :=
 
 /-- The original full scalar-square forcing after the exact differential cutoff subtraction. -/
 def forcing (q : XiZeroCopy) (z : Fin 2 → ℝ) : ℂ :=
-  (1 : ℂ)*scalar (D4BMGlobalAngularResponse.center q) z^2 -
+  (1 : ℂ)*scalar (D4BMGlobalAngularResponse.center q) z^(2 : ℕ) -
     (hyperbolicLaplacian (cutoffResponse q) z - (2 : ℂ)*cutoffResponse q z)
 
 private theorem principal_center (q : XiZeroCopy) (z : Fin 2 → ℝ) :
@@ -79,7 +79,7 @@ theorem cuspResponse_equation (q : XiZeroCopy)
     (z : Fin 2 → ℝ) (hz : 0 < z 1) :
     hyperbolicLaplacian (cuspResponse q) z -
       (2 : ℂ)*cuspResponse q z =
-      (1)*D4BMGlobalAngularResponse.principal (D4BMGlobalAngularResponse.center q) z^2 := by
+      (1)*D4BMGlobalAngularResponse.principal (D4BMGlobalAngularResponse.center q) z^(2 : ℕ) := by
   rw [principal_center]
   unfold cuspResponse
   obtain ⟨h0,h2⟩ := cusp_two_denominators q
@@ -318,7 +318,7 @@ private theorem scalar_chartSmooth (q : XiZeroCopy) :
 private theorem chartLaplacian_smooth (f : UpperHalfPlane → ℂ) (hf : ChartSmooth f) :
     ChartSmooth (chartLaplacian f) := by
   have hl := planarLaplacian_contDiffOn hf.planar_contDiffOn
-  have h : ContDiffOn ℝ ∞ (fun z : ℂ => (z.im : ℂ)^2*planarLaplacian (f ∘ ofComplex) z)
+  have h : ContDiffOn ℝ ∞ (fun z : ℂ => (z.im : ℂ)^(2 : ℕ)*planarLaplacian (f ∘ ofComplex) z)
       {z : ℂ | 0 < z.im} :=
     ((Complex.ofRealCLM.contDiff.comp Complex.imCLM.contDiff).pow 2).contDiffOn.mul hl
   intro z
@@ -329,7 +329,7 @@ private theorem chartLaplacian_smooth (f : UpperHalfPlane → ℂ) (hf : ChartSm
 
 /-- The original full forcing expressed globally, with every cusp-cutoff derivative retained. -/
 def globalForcing (q : XiZeroCopy) (z : UpperHalfPlane) : ℂ :=
-  scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^2 -
+  scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^(2 : ℕ) -
     (chartLaplacian (globalCuspCutoff q) z-2*globalCuspCutoff q z)
 
 /-- The global expression agrees with the admitted original residual on the entire closed cell. -/
@@ -411,7 +411,7 @@ theorem full_source_tested_identity (q : XiZeroCopy) (g : PlanarChartTest) :
     (∫ z : UpperHalfPlane, conj (g.laplaceTest.field z)*globalLift (embedding (weakResponse q)) z) -
       2*(∫ z : UpperHalfPlane, conj (g.field z)*globalLift (embedding (weakResponse q)) z) =
       -(∫ z : UpperHalfPlane, conj (g.field z)*
-        (scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^2 -
+        (scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^(2 : ℕ) -
           (chartLaplacian (globalCuspCutoff q) z-2*globalCuspCutoff q z))) :=
   weakResponse_lifted_equation q g
 
@@ -438,7 +438,7 @@ private theorem compact_pair_integrable (g : PlanarChartTest)
   exact hc.integrable_of_hasCompactSupport hk.mul_right
 
 private theorem planar_height_pairing (g : PlanarChartTest) (F : ℂ → ℂ) :
-    (∫ z : UpperHalfPlane, (z.im : ℂ)^2*(g.field z*F z)) =
+    (∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*(g.field z*F z)) =
       ∫ z : ℂ, g.field z*F z := by
   rw [integral_volume_height_sq_chart (fun z : ℂ => g.field z*F z)]
   apply setIntegral_eq_integral_of_forall_compl_eq_zero
@@ -453,13 +453,13 @@ private theorem chart_green (g : PlanarChartTest) (h : UpperHalfPlane → ℂ)
   have hL : (∫ z : UpperHalfPlane, conj (g.laplaceTest.field z)*h z) =
       ∫ z : ℂ, g.conjugate.laplacianTest.field z*(h ∘ ofComplex) z := by
     calc
-      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^2*
+      _ = ∫ z : UpperHalfPlane, (z.im : ℂ)^(2 : ℕ)*
           (g.conjugate.laplacianTest.field z*(h ∘ ofComplex) z) := by
         apply integral_congr_ae
         filter_upwards [] with z
         rw [← g.laplace_conjugate,g.conjugate.laplaceTest_field]
         simp only [Function.comp_apply,ofComplex_apply,coe_im]
-        change ((z.im : ℂ)^2*g.conjugate.laplacianTest.field z)*h z = _
+        change ((z.im : ℂ)^(2 : ℕ)*g.conjugate.laplacianTest.field z)*h z = _
         ring
       _ = _ := planar_height_pairing _ _
   rw [hL,g.conjugate.laplacian_green _ hh.planar_contDiffOn]
@@ -476,23 +476,23 @@ theorem fullResponse_distribution_equation (q : XiZeroCopy) (g : PlanarChartTest
     (∫ z : UpperHalfPlane, conj (g.laplaceTest.field z)*fullResponse q z) -
       2*(∫ z : UpperHalfPlane, conj (g.field z)*fullResponse q z) =
       -(∫ z : UpperHalfPlane, conj (g.field z)*
-        scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^2) := by
+        scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^(2 : ℕ)) := by
   have hW (a : PlanarChartTest) : Integrable (fun z : UpperHalfPlane =>
       conj (a.field z)*globalLift (embedding (weakResponse q)) z) volume :=
     compact_chart_mul_lift_integrable a.conjugate.toChartTest _
   have hK (a : PlanarChartTest) := compact_pair_integrable a _ (globalCuspCutoff_smooth q)
   have hD := compact_pair_integrable g _ (chartLaplacian_smooth _ (globalCuspCutoff_smooth q))
   have hS := compact_pair_integrable g
-    (fun z => scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^2)
+    (fun z => scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^(2 : ℕ))
     (fun z => (scalar_chartSmooth q z).pow 2)
   have hG : (∫ z : UpperHalfPlane, conj (g.field z)*globalForcing q z) =
       (∫ z : UpperHalfPlane, conj (g.field z)*
-        scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^2) -
+        scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^(2 : ℕ)) -
       (∫ z : UpperHalfPlane, conj (g.field z)*chartLaplacian (globalCuspCutoff q) z) +
       2*(∫ z : UpperHalfPlane, conj (g.field z)*globalCuspCutoff q z) := by
     calc
       _ = ∫ z : UpperHalfPlane,
-          (conj (g.field z)*scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^2 -
+          (conj (g.field z)*scalar (D4BMGlobalAngularResponse.center q) (coordinates z)^(2 : ℕ) -
             conj (g.field z)*chartLaplacian (globalCuspCutoff q) z) +
           2*(conj (g.field z)*globalCuspCutoff q z) := by
         apply integral_congr_ae

@@ -25,7 +25,7 @@ private theorem ccmActualHeadMatchedPolarCentroid_ge_two_mul_sqrt {n : ℕ} (hn 
   have hsq := ccmActualHeadMatchedPolarCentroid_sq n hn
   have hcent : 0 < ccmActualHeadMatchedPolarCentroid n :=
     ccmActualHeadMatchedPolarCentroid_pos n
-  have hsqrt : Real.sqrt (n : ℝ) ^ 2 = (n : ℝ) :=
+  have hsqrt : Real.sqrt (n : ℝ) ^ (2 : ℕ) = (n : ℝ) :=
     Real.sq_sqrt (by positivity)
   have hsqrt0 : 0 ≤ Real.sqrt (n : ℝ) := Real.sqrt_nonneg _
   nlinarith [sq_nonneg (criticalMellinAtomWeight n)]
@@ -46,13 +46,13 @@ private theorem ccmActualHeadMatchedPolarCentroid_succ_sub_le {n : ℕ} (hn : 2 
   have hsqnext := ccmActualHeadMatchedPolarCentroid_sq (n + 1) hn10
   norm_num [Nat.cast_add] at hsqnext
   have hwnext0 : 0 ≤ criticalMellinAtomWeight (n + 1) :=
-    criticalMellinAtomWeight_nonneg _
+    criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
   have hwnext2 : criticalMellinAtomWeight (n + 1) ≤ 2 :=
     criticalMellinAtomWeight_le_two_of_pos hn10
-  have hwnextsq : criticalMellinAtomWeight (n + 1) ^ 2 ≤ 4 := by
+  have hwnextsq : criticalMellinAtomWeight (n + 1) ^ (2 : ℕ) ≤ 4 := by
     nlinarith
-  have hsqdiff : ccmActualHeadMatchedPolarCentroid (n + 1) ^ 2 -
-      ccmActualHeadMatchedPolarCentroid n ^ 2 ≤ 5 := by
+  have hsqdiff : ccmActualHeadMatchedPolarCentroid (n + 1) ^ (2 : ℕ) -
+      ccmActualHeadMatchedPolarCentroid n ^ (2 : ℕ) ≤ 5 := by
     nlinarith [sq_nonneg (criticalMellinAtomWeight n)]
   have hsum : 4 * Real.sqrt (n : ℝ) ≤
       ccmActualHeadMatchedPolarCentroid (n + 1) +
@@ -105,7 +105,7 @@ private theorem prime_quantileSlope_ge_log_mul_matchedSlope (p : Nat.Primes) :
       ccmActualHeadQuantilePolarCentroid (p + 1) -
         ccmActualHeadQuantilePolarCentroid p := by
     rw [ccmActualHeadQuantilePolarCentroid_succ_sub_eq_atomMean]
-    have hnext : 0 ≤ criticalMellinAtomWeight (p + 1) := criticalMellinAtomWeight_nonneg _
+    have hnext : 0 ≤ criticalMellinAtomWeight (p + 1) := criticalMellinAtomWeight_nonneg_cCMActualHeadWallGramSignedProducer _
     rw [criticalMellinAtomWeight_eq_log_div_sqrt_prime]
     have hrewrite :
         (Real.log (p : ℝ) / Real.sqrt (p : ℝ) +

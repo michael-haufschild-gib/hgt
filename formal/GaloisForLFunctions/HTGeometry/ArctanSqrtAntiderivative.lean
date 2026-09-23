@@ -39,11 +39,11 @@ theorem hasDerivAt_arctan_sqrt_div {a t : ℝ} (ha : 0 < a) (ht : 0 < t) :
   have harctan := hdiv.arctan
   have hscale := harctan.const_mul (2 / Real.sqrt a)
   have hval : 2 / Real.sqrt a *
-        (1 / (1 + (Real.sqrt t / Real.sqrt a) ^ 2) * (1 / (2 * Real.sqrt t) / Real.sqrt a))
+        (1 / (1 + (Real.sqrt t / Real.sqrt a) ^ (2 : ℕ)) * (1 / (2 * Real.sqrt t) / Real.sqrt a))
       = 1 / ((a + t) * Real.sqrt t) := by
-    have hsa2 : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha.le
-    have hst2 : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht.le
-    have hpos : 0 < 1 + (Real.sqrt t / Real.sqrt a) ^ 2 := by positivity
+    have hsa2 : Real.sqrt a ^ (2 : ℕ) = a := Real.sq_sqrt ha.le
+    have hst2 : Real.sqrt t ^ (2 : ℕ) = t := Real.sq_sqrt ht.le
+    have hpos : 0 < 1 + (Real.sqrt t / Real.sqrt a) ^ (2 : ℕ) := by positivity
     field_simp
     nlinarith [hsa2, hst2, hsa, hst, mul_pos hsa hst]
   rw [hval] at hscale

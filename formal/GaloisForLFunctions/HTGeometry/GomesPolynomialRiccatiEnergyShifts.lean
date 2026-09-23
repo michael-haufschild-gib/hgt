@@ -15,8 +15,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Equal derivatives and a constant difference of squares force equality or two constant inputs. -/
 theorem gomesPolynomialDerivative_square_shift_iff (U V : ℝ[X]) (k : ℝ) :
-    (U.derivative = V.derivative ∧ U ^ 2 = V ^ 2 + C k) ↔
-      (U = V ∧ k = 0) ∨ ∃ a b : ℝ, U = C a ∧ V = C b ∧ a ^ 2 = b ^ 2 + k := by
+    (U.derivative = V.derivative ∧ U ^ (2 : ℕ) = V ^ (2 : ℕ) + C k) ↔
+      (U = V ∧ k = 0) ∨ ∃ a b : ℝ, U = C a ∧ V = C b ∧ a ^ (2 : ℕ) = b ^ (2 : ℕ) + k := by
   constructor
   · rintro ⟨hd, hs⟩
     have ht := congrArg Polynomial.derivative hs
@@ -47,7 +47,7 @@ theorem gomesPolynomialDerivative_square_shift_iff (U V : ℝ[X]) (k : ℝ) :
 /-- Constant Riccati differences either preserve the derivative or reverse the whole input. -/
 theorem gomesPolynomialRiccati_shifted_parts_iff (U V : ℝ[X]) (k : ℝ) :
     gomesPolynomialRiccati U = gomesPolynomialRiccati V + C k ↔
-      (U.derivative = V.derivative ∧ U ^ 2 = V ^ 2 + C k) ∨
+      (U.derivative = V.derivative ∧ U ^ (2 : ℕ) = V ^ (2 : ℕ) + C k) ∨
         (U = -V ∧ (U - V).derivative = C k) := by
   constructor
   · intro h
@@ -65,7 +65,7 @@ theorem gomesPolynomialRiccati_shifted_parts_iff (U V : ℝ[X]) (k : ℝ) :
     · unfold gomesPolynomialRiccati
       rw [hd, hs]
       ring
-    · have hs : U ^ 2 = V ^ 2 := by rw [hu]; ring
+    · have hs : U ^ (2 : ℕ) = V ^ (2 : ℕ) := by rw [hu]; ring
       simp only [derivative_sub] at hd
       unfold gomesPolynomialRiccati
       linear_combination hd + hs
@@ -74,7 +74,7 @@ theorem gomesPolynomialRiccati_shifted_parts_iff (U V : ℝ[X]) (k : ℝ) :
 theorem gomesPolynomialRiccati_shifted_iff (U V : ℝ[X]) (k : ℝ) :
     gomesPolynomialRiccati U = gomesPolynomialRiccati V + C k ↔
       (U = V ∧ k = 0) ∨
-        (∃ a b : ℝ, U = C a ∧ V = C b ∧ a ^ 2 = b ^ 2 + k) ∨
+        (∃ a b : ℝ, U = C a ∧ V = C b ∧ a ^ (2 : ℕ) = b ^ (2 : ℕ) + k) ∨
           (U = -V ∧ U.derivative = C (k / 2)) := by
   rw [gomesPolynomialRiccati_shifted_parts_iff, gomesPolynomialDerivative_square_shift_iff]
   constructor
@@ -103,7 +103,7 @@ theorem gomesPolynomialRiccati_shifted_iff (U V : ℝ[X]) (k : ℝ) :
 theorem gomesPolynomialRiccati_shifted_profiles_iff (U V : ℝ[X]) (k : ℝ) :
     gomesPolynomialRiccati U = gomesPolynomialRiccati V + C k ↔
       (U = V ∧ k = 0) ∨
-        (∃ a b : ℝ, U = C a ∧ V = C b ∧ a ^ 2 = b ^ 2 + k) ∨
+        (∃ a b : ℝ, U = C a ∧ V = C b ∧ a ^ (2 : ℕ) = b ^ (2 : ℕ) + k) ∨
           ∃ a : ℝ, U = C (k / 2) * X + C a ∧ V = -U := by
   rw [gomesPolynomialRiccati_shifted_iff]
   constructor

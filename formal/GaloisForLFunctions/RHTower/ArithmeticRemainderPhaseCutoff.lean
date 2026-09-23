@@ -69,7 +69,7 @@ theorem normalizedWeightedRemainder_scaled_eq_quartic {s : ℂ} (hs : 0 < s.re) 
 theorem norm_normalizedWeightedRemainder_scaled_sub_mean_le {s : ℂ}
     (hs : 0 < s.re) (hs1 : s ≠ 1) {N : ℕ} (hN : 1 ≤ N) :
     ‖normalizedWeightedRemainder s N * (((N:ℝ)^(2*s.re+1):ℝ):ℂ) - (-(star s+1)⁻¹/12)‖  ≤
-      (‖s+2‖*‖s+3‖)/(384*(s.re+3)*(N:ℝ)^2) := by
+      (‖s+2‖*‖s+3‖)/(384*(s.re+3)*(N:ℝ)^(2 : ℕ)) := by
   have hp : (0:ℝ) < N := by exact_mod_cast (by omega : 0 < N)
   have hs' : -1 < (star s).re := by simp; linarith
   have hq := norm_quarticPrimitiveTail_le hs' hN
@@ -97,7 +97,7 @@ theorem norm_normalizedWeightedRemainder_scaled_sub_mean_le {s : ℂ}
 theorem normalizedWeightedRemainder_im_neg_of_quartic_bound {s : ℂ}
     (hs : 0 < s.re) (ht : 0 < s.im) {N : ℕ} (hN : 1 ≤ N)
     (hcut : ‖s+2‖*‖s+3‖*Complex.normSq (s+1)  <
-      32*(s.re+3)*s.im*(N:ℝ)^2) :
+      32*(s.re+3)*s.im*(N:ℝ)^(2 : ℕ)) :
     (normalizedWeightedRemainder s N).im  <  0 := by
   have hs1 : s ≠ 1 := by intro h; rw [h] at ht; norm_num at ht
   have hp : (0:ℝ) < N := by exact_mod_cast (by omega : 0 < N)
@@ -114,9 +114,9 @@ theorem normalizedWeightedRemainder_im_neg_of_quartic_bound {s : ℂ}
     rw [he]
     ring
   have hb := norm_normalizedWeightedRemainder_scaled_sub_mean_le hs hs1 hN
-  have hsmall : (‖s+2‖*‖s+3‖)/(384*(s.re+3)*(N:ℝ)^2)  <
+  have hsmall : (‖s+2‖*‖s+3‖)/(384*(s.re+3)*(N:ℝ)^(2 : ℕ))  <
       s.im/(12*Complex.normSq (s+1)) := by
-    apply (div_lt_div_iff₀ (by positivity : 0 < 384*(s.re+3)*(N:ℝ)^2)
+    apply (div_lt_div_iff₀ (by positivity : 0 < 384*(s.re+3)*(N:ℝ)^(2 : ℕ))
       (by positivity : 0 < 12*Complex.normSq (s+1))).mpr
     nlinarith [hcut]
   have him := (le_abs_self _).trans (Complex.abs_im_le_norm
@@ -133,36 +133,36 @@ theorem normalizedWeightedRemainder_im_neg_of_quartic_bound {s : ℂ}
 /-- In the strip, the cutoff `N² ≥ Im(s)³` controls every remainder phase simultaneously. -/
 theorem normalizedWeightedRemainder_im_neg_of_height_cube {s : ℂ}
     (hs : 0 < s.re) (hs' : s.re ≤ 1) (ht : 1 ≤ s.im) {N : ℕ} (hN : 1 ≤ N)
-    (hcut : s.im^3 ≤ (N:ℝ)^2) :
+    (hcut : s.im^(3 : ℕ) ≤ (N:ℝ)^(2 : ℕ)) :
     (normalizedWeightedRemainder s N).im  <  0 := by
   have htpos : 0 < s.im := by linarith
-  have ht2 : 1 ≤ s.im^2 := by nlinarith
-  have e1 : Complex.normSq (s+1)=(s.re+1)^2+s.im^2 := by
+  have ht2 : 1 ≤ s.im^(2 : ℕ) := by nlinarith
+  have e1 : Complex.normSq (s+1)=(s.re+1)^(2 : ℕ)+s.im^(2 : ℕ) := by
     simp [Complex.normSq_apply,pow_two]
-  have e2 : ‖s+2‖^2=(s.re+2)^2+s.im^2 := by
+  have e2 : ‖s+2‖^(2 : ℕ)=(s.re+2)^(2 : ℕ)+s.im^(2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply,pow_two]
-  have e3 : ‖s+3‖^2=(s.re+3)^2+s.im^2 := by
+  have e3 : ‖s+3‖^(2 : ℕ)=(s.re+3)^(2 : ℕ)+s.im^(2 : ℕ) := by
     rw [← Complex.normSq_eq_norm_sq]
     simp [Complex.normSq_apply,pow_two]
-  have b1 : Complex.normSq (s+1) ≤ 5*s.im^2 := by
+  have b1 : Complex.normSq (s+1) ≤ 5*s.im^(2 : ℕ) := by
     rw [e1]
     nlinarith [mul_nonneg (show 0 ≤ 1-s.re by linarith) (show 0 ≤ s.re+3 by linarith)]
-  have b2 : ‖s+2‖^2 ≤ 10*s.im^2 := by
+  have b2 : ‖s+2‖^(2 : ℕ) ≤ 10*s.im^(2 : ℕ) := by
     rw [e2]
     nlinarith [mul_nonneg (show 0 ≤ 1-s.re by linarith) (show 0 ≤ s.re+5 by linarith)]
-  have b3 : ‖s+3‖^2 ≤ 17*s.im^2 := by
+  have b3 : ‖s+3‖^(2 : ℕ) ≤ 17*s.im^(2 : ℕ) := by
     rw [e3]
     nlinarith [mul_nonneg (show 0 ≤ 1-s.re by linarith) (show 0 ≤ s.re+7 by linarith)]
-  have bp : ‖s+2‖*‖s+3‖ ≤ 27/2*s.im^2 := by
+  have bp : ‖s+2‖*‖s+3‖ ≤ 27/2*s.im^(2 : ℕ) := by
     nlinarith [sq_nonneg (‖s+2‖-‖s+3‖)]
-  have bfull : ‖s+2‖*‖s+3‖*Complex.normSq (s+1) ≤ 135/2*s.im^4 := by
-    have h := mul_le_mul bp b1 (Complex.normSq_nonneg _) (by positivity : 0 ≤ 27/2*s.im^2)
+  have bfull : ‖s+2‖*‖s+3‖*Complex.normSq (s+1) ≤ 135/2*s.im^(4 : ℕ) := by
+    have h := mul_le_mul bp b1 (Complex.normSq_nonneg _) (by positivity : 0 ≤ 27/2*s.im^(2 : ℕ))
     nlinarith [h]
   apply normalizedWeightedRemainder_im_neg_of_quartic_bound hs htpos hN
-  have ht4 : 0 < s.im^4 := pow_pos htpos _
+  have ht4 : 0 < s.im^(4 : ℕ) := pow_pos htpos _
   have hx := mul_le_mul_of_nonneg_left hcut htpos.le
-  have hN2 : 0 < (N:ℝ)^2 := by positivity
+  have hN2 : 0 < (N:ℝ)^(2 : ℕ) := by positivity
   have hst := mul_pos hs (mul_pos htpos hN2)
   nlinarith [bfull,hx,hst]
 

@@ -98,7 +98,7 @@ theorem le_histogramCollisionCount (m : ℕ) :
 
 /-! ## The dimension asymptotics -/
 
-theorem pow_sub_le_descFactorial (d : ℕ) : ∀ m : ℕ, (d - m) ^ m ≤ d.descFactorial m
+theorem pow_sub_le_descFactorial_componentFormFactorExponentialLimit (d : ℕ) : ∀ m : ℕ, (d - m) ^ m ≤ d.descFactorial m
   | 0 => by simp
   | (m + 1) => by
       rw [Nat.descFactorial_succ]
@@ -106,7 +106,7 @@ theorem pow_sub_le_descFactorial (d : ℕ) : ∀ m : ℕ, (d - m) ^ m ≤ d.desc
         _ ≤ (d - m) * (d - m) ^ m :=
             Nat.mul_le_mul (by omega) (Nat.pow_le_pow_left (by omega) m)
         _ ≤ (d - m) * d.descFactorial m :=
-            Nat.mul_le_mul_left _ (pow_sub_le_descFactorial d m)
+            Nat.mul_le_mul_left _ (pow_sub_le_descFactorial_componentFormFactorExponentialLimit d m)
 
 /-- The collision coefficient of a `d`-dimensional component. -/
 def replicaFormFactorCoeff (d m : ℕ) : ℝ := replicaFormFactorCoefficient (Fin d) m
@@ -143,7 +143,7 @@ theorem le_replicaFormFactorCoeff (d m : ℕ) :
 /-- The descending-factorial ratio tends to one, in real form. -/
 theorem tendsto_natDescFactorial_div_pow (m : ℕ) :
     Filter.Tendsto (fun d : ℕ => (d.descFactorial m : ℝ) / (d : ℝ) ^ m) Filter.atTop (nhds 1) := by
-  have h := tendsto_descFactorial_div_pow 0 m
+  have h := tendsto_descFactorial_div_pow_endpointChirpGlue 0 m
   have hre := (Complex.continuous_re.tendsto (1 : ℂ)).comp h
   simp only [Function.comp_def, Complex.one_re] at hre
   refine hre.congr fun d => ?_

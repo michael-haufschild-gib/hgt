@@ -74,7 +74,7 @@ theorem setIntegral_normSq_logPoly_someBlockLarge_le (a : ℕ → ℂ) {Q D : Fi
     (hQprime : ∀ q ∈ Q, q.Prime) (hB : ∀ k ∈ Finset.range L, geomBlock Q R (1 + η) k ⊆ Finset.Icc 1 NA)
     (hND : 1 ≤ ND) (hD : D ⊆ Finset.Icc 1 ND) (hk' : 1 ≤ k') (hW : 0 ≤ W)
     (hV : ∀ k ∈ Finset.range L, 0 < Vk k) (hΩ : 0 ≤ Ω) (ha : ∀ n, ‖a n‖ ≤ Ω) :
-    (∫ w in someBlockLarge Q R η L Vk W, ‖logPoly a D w‖ ^ 2)
+    (∫ w in someBlockLarge Q R η L Vk W, ‖logPoly a D w‖ ^ (2 : ℕ))
       ≤ (2 * Real.pi)⁻¹
         * ((2 * (ND : ℝ)
             + (((Nat.log 2 ND : ℝ) + 1) * (214 * Real.sqrt (2 * (2 * Real.pi * W)))
@@ -84,16 +84,16 @@ theorem setIntegral_normSq_logPoly_someBlockLarge_le (a : ℕ → ℂ) {Q D : Fi
                       + 4 * ((NA ^ k' : ℕ) : ℝ) * (1 + Real.log ((NA ^ k' : ℕ) : ℝ)))
                     * ((k' : ℝ) ^ k' * (((geomBlock Q R (1 + η) k).card : ℕ) : ℝ) ^ k'))
                     / Vk k ^ (2 * k'))
-          * (Ω ^ 2 * (D.card : ℝ))) := by
+          * (Ω ^ (2 : ℕ) * (D.card : ℝ))) := by
   classical
   have hT0 : (0 : ℝ) ≤ 2 * Real.pi * W := by positivity
   have hSm := measurableSet_ladderExceptionalD Q R η L NA Vk (2 * Real.pi * W)
   have hSs := ladderExceptionalD_subset Q R η L NA Vk (2 * Real.pi * W)
-  have hcont : Continuous fun w : ℝ => ‖logPoly a D w‖ ^ 2 :=
+  have hcont : Continuous fun w : ℝ => ‖logPoly a D w‖ ^ (2 : ℕ) :=
     (((continuous_logPoly a D).norm).pow 2)
-  have hmono : (∫ w in someBlockLarge Q R η L Vk W, ‖logPoly a D w‖ ^ 2)
+  have hmono : (∫ w in someBlockLarge Q R η L Vk W, ‖logPoly a D w‖ ^ (2 : ℕ))
       ≤ ∫ w in (fun v : ℝ => 2 * Real.pi * v) ⁻¹'
-          (ladderExceptionalD Q R η L NA Vk (2 * Real.pi * W)), ‖logPoly a D w‖ ^ 2 := by
+          (ladderExceptionalD Q R η L NA Vk (2 * Real.pi * W)), ‖logPoly a D w‖ ^ (2 : ℕ) := by
     refine MeasureTheory.setIntegral_mono_set ?_ ?_
       (Filter.Eventually.of_forall (someBlockLarge_subset_preimage hB))
     · refine (hcont.integrableOn_Icc (a := -W) (b := W)).mono_set ?_
